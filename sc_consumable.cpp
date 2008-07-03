@@ -70,7 +70,7 @@ struct mana_potion_t : public spell_t
   
   virtual void execute()
   {
-    report_t::log( sim, "Player %s uses Mana potion", player -> name() );
+    report_t::log( sim, "%s uses Mana potion", player -> name() );
     player -> resource_gain( RESOURCE_MANA, mana, "mana_potion" );
     player -> share_cooldown( cooldown_group, cooldown );
   }
@@ -105,7 +105,7 @@ struct mana_gem_t : public spell_t
   
   virtual void execute()
   {
-    report_t::log( sim, "Player %s uses Mana Gem", player -> name() );
+    report_t::log( sim, "%s uses Mana Gem", player -> name() );
     player -> resource_gain( RESOURCE_MANA, mana, "mana_gem" );
     player -> share_cooldown( cooldown_group, cooldown );
   }
@@ -140,7 +140,7 @@ struct health_stone_t : public spell_t
   
   virtual void execute()
   {
-    report_t::log( sim, "Player %s uses Health Stone", player -> name() );
+    report_t::log( sim, "%s uses Health Stone", player -> name() );
     player -> resource_gain( RESOURCE_HEALTH, health, "health_stone" );
     player -> share_cooldown( cooldown_group, cooldown );
   }
@@ -183,7 +183,7 @@ struct dark_rune_t : public spell_t
   
   virtual void execute()
   {
-    report_t::log( sim, "Player %s uses Dark Rune", player -> name() );
+    report_t::log( sim, "%s uses Dark Rune", player -> name() );
     player -> resource_gain( RESOURCE_MANA,   mana,   "dark_rune" );
     player -> resource_loss( RESOURCE_HEALTH, health, "dark_rune" );
     player -> share_cooldown( cooldown_group, cooldown );

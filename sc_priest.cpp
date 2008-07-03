@@ -100,7 +100,7 @@ static void stack_shadow_weaving( spell_t* s )
     }
     virtual void execute()
     {
-      report_t::log( sim, "Target %s loses Shadow Weaving", sim -> target -> name() );
+      report_t::log( sim, "%s loses Shadow Weaving", sim -> target -> name() );
       sim -> target -> debuffs.shadow_weaving = 0;
       sim -> target -> expirations.shadow_weaving = 0;
     }
@@ -113,7 +113,7 @@ static void stack_shadow_weaving( spell_t* s )
     if( t -> debuffs.shadow_weaving < 5 ) 
     {
       t -> debuffs.shadow_weaving++;
-      report_t::log( s -> sim, "Target %s gains Shadow Weaving %d", t -> name(), t -> debuffs.shadow_weaving );
+      report_t::log( s -> sim, "%s gains Shadow Weaving %d", t -> name(), t -> debuffs.shadow_weaving );
     }
 
     event_t*& e = t -> expirations.shadow_weaving;
@@ -902,7 +902,7 @@ struct shadow_form_t : public priest_spell_t
    
   virtual void execute()
   {
-    report_t::log( sim, "Player %s casts Shadow Form", player -> name() );
+    report_t::log( sim, "%s performs shadow_form", player -> name() );
     player -> buffs.shadow_form = 1;
   }
 

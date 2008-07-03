@@ -33,9 +33,7 @@ void target_t::assess_damage( double  amount,
 
     if( current_health <= 0 ) 
     {
-      if( sim -> log ) printf( "Target %s dies at time %.0f seconds.\n", name(), sim -> current_time );
-
-      report_t::log( sim, "Target %s has died.", name() );
+      report_t::log( sim, "%s has died.", name() );
     }
     else report_t::debug( sim, "Target %s has %.0f remaining health", name(), current_health );
   }

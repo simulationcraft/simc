@@ -19,7 +19,8 @@ action_t::action_t( int8_t      ty,
 		    int8_t      tr ) :
   sim(p->sim), valid(true), type(ty), name_str(n), player(p), school(s), resource(r), tree(tr), result(RESULT_NONE),
   bleed(false), binary(false), channeled(false), background(false), aoe(false), harmful(true), trigger_gcd(true),
-  may_miss(false), may_resist(false), may_dodge(false), may_parry(false), may_glance(false), may_block(false), may_crush(false), may_crit(false),
+  may_miss(false), may_resist(false), may_dodge(false), may_parry(false), 
+  may_glance(false), may_block(false), may_crush(false), may_crit(false),
   base_execute_time(0), base_duration(0), base_cost(0),
     base_multiplier(1),   base_hit(0),   base_crit(0),   base_crit_bonus(1.0),   base_power(0),   base_penetration(0),
   player_multiplier(1), player_hit(0), player_crit(0), player_crit_bonus(1.0), player_power(0), player_penetration(0),
@@ -347,7 +348,7 @@ void action_t::consume_resource()
 
 void action_t::execute()
 {
-  report_t::log( sim, "Player %s executes action %s", player -> name(), name() );
+  report_t::log( sim, "%s performs %s", player -> name(), name() );
 
   update_cooldowns();
 
@@ -375,6 +376,8 @@ void action_t::execute()
   }
   else
   {
+    report_t::log( sim, "%s avoids %s (%s)", sim -> target -> name(), name(), wow_result_type_string( result ) );
+
     player -> action_miss( this );
   }
 
@@ -416,7 +419,7 @@ void action_t::last_tick()
 void action_t::assess_damage( double amount, 
 			      int8_t dmg_type )
 {
-   report_t::log( sim, "%s 's %s %s %ss for %.0f %s damage (%s)",
+   report_t::log( sim, "%s %s %ss %s for %.0f %s damage (%s)",
 		  player -> name(), name(), 
 		  wow_dmg_type_string( dmg_type ),
 		  sim -> target -> name(), amount, 
