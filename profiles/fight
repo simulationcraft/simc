@@ -1,0 +1,4 @@
+lag=0.2
+max_time=600
+infinite_mana=1
+iterations=1000
