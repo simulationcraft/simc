@@ -11,6 +11,8 @@
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
+// rating_60 =================================================================
+
 static rating_t& rating_60()
 {
   static rating_t r;
@@ -28,6 +30,8 @@ static rating_t& rating_60()
   return r;
 }
 
+// rating_70 =================================================================
+
 static rating_t& rating_70()
 {
   static rating_t r;
@@ -44,6 +48,8 @@ static rating_t& rating_70()
 
   return r;
 }
+
+// rating_80 =================================================================
 
 static rating_t& rating_80()
 {

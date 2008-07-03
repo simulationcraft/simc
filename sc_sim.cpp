@@ -137,7 +137,7 @@ sim_t::sim_t() :
   events_remaining(0), max_events_remaining(0), 
   events_processed(0), total_events_processed(0),
   seed(0), id(0), iterations(1),
-  average_dmg(1), log(0), debug(0), timestamp(1), report(0)
+  average_dmg(1), log(0), debug(0), timestamp(1), report(0), uptime_list(0)
 {
   for( int i=0; i < RESOURCE_MAX; i++ ) 
   {
@@ -313,6 +313,8 @@ bool sim_t::init()
     patch.set( arch, version, revision );
   }
 
+  target -> init();
+
   bool too_quiet = true;
 
   for( player_t* p = player_list; p; p = p -> next )
@@ -324,6 +326,25 @@ bool sim_t::init()
   if( too_quiet && ! debug ) exit(0);
 
   return true;
+}
+
+// sim_t::get_uptime ========================================================
+
+uptime_t* sim_t::get_uptime( const std::string& name )
+{
+  uptime_t* u=0;
+
+  for( u = uptime_list; u; u = u -> next )
+  {
+    if( u -> name_str == name )
+      return u;
+  }
+
+  u = new uptime_t( name );
+  u -> next = uptime_list;
+  uptime_list = u;
+
+  return u;
 }
 
 // sim_t::parse_option ======================================================

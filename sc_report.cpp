@@ -26,7 +26,8 @@ report_t::report_t( sim_t* s ) :
   report_procs(1),
   report_raid_dps(1),
   report_spell_stats(1),
-  report_tag(1)
+  report_tag(1),
+  report_uptime(1)
 {
 }
 
@@ -51,6 +52,7 @@ bool report_t::parse_option( const std::string& name,
     { "report_raid_dps",         OPT_INT8,   &( report_raid_dps         ) },
     { "report_spell_stats",      OPT_INT8,   &( report_spell_stats      ) },
     { "report_tag",              OPT_INT8,   &( report_tag              ) },
+    { "report_uptime",           OPT_INT8,   &( report_uptime           ) },
     { NULL, OPT_UNKNOWN }
   };
 
@@ -67,7 +69,7 @@ bool report_t::parse_option( const std::string& name,
 
 void report_t::print_actions( player_t* p )
 {
-  printf( "    Actions:\n" );
+  printf( "  Actions:\n" );
 
   double player_total_dmg=0;
   for( stats_t* s = p -> stats_list; s; s = s -> next )
@@ -156,7 +158,7 @@ void report_t::print_procs( player_t* p )
 void report_t::print_core_stats( player_t* p )
 {
   printf( "%s  %s%d  %s%d  %s%d  %s%d  %s%d  %s%.0f  %s%.0f\n", 
-	  report_tag ? "    Core Stats:" : "", 
+	  report_tag ? "  Core Stats:" : "", 
 	  report_tag ? "strength=" : "",
 	  p -> initial_strength, 
 	  report_tag ? "agility=" : "",
@@ -181,7 +183,7 @@ void report_t::print_spell_stats( player_t* p )
   p -> recalculate_haste();
 
   printf( "%s  %s%.0f  %s%.1f%%  %s%.1f%%  %s%.1f%%  %s%d  %s%d\n", 
-	  report_tag ? "    Spell Stats:" : "", 
+	  report_tag ? "  Spell Stats:" : "", 
 	  report_tag ? "power=" : "",
 	  p -> initial_spell_power[ SCHOOL_MAX ], 
 	  report_tag ? "hit=" : "",
@@ -204,7 +206,7 @@ void report_t::print_attack_stats( player_t* p )
   p -> recalculate_haste();
 
   printf( "%s  %s%.0f  %s%.1f%%  %s%.1f%%  %s%.1f%%  %s%.1f%%  %s%d\n", 
-	  report_tag ? "    Attack Stats:" : "",
+	  report_tag ? "  Attack Stats:" : "",
 	  report_tag ? "power=" : "",
 	  p -> initial_attack_power, 
 	  report_tag ? "hit=" : "",
@@ -217,6 +219,18 @@ void report_t::print_attack_stats( player_t* p )
 	  ( 1.0 - p -> haste ) * 100.0,
 	  report_tag ? "penetration=" : "",
 	  p -> initial_attack_penetration );
+}
+
+// report_t::print_uptime =====================================================
+
+void report_t::print_uptime()
+{
+  printf( "Up-Time Report:\n" );
+
+  for( uptime_t* u = sim -> uptime_list; u; u = u -> next )
+  {
+    printf( "  %s=%.1f%%\n", u -> name(), u -> percentage() );
+  }
 }
 
 // report_t::print ============================================================
@@ -267,7 +281,9 @@ void report_t::print()
     if( report_procs   ) print_procs  ( p );
 
   }
-  if( report_raid_dps ) printf( "%s%.1f\n", report_tag ? "Raid=" : "", raid_dps );
+  if( report_raid_dps ) printf( "%s%.1f\n", report_tag ? "Raid_DPS=" : "", raid_dps );
+
+  if( report_uptime ) print_uptime();
 
   if( report_pq ) 
     printf( "%s%d %s%d\n", 

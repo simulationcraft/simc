@@ -55,6 +55,12 @@ void target_t::recalculate_health()
   report_t::debug( sim, "Target initial health calculated to be %.0f", initial_health );     
 }
 
+// target_t::init ============================================================
+
+void target_t::init()
+{
+}
+
 // target_t::reset ===========================================================
 
 void target_t::reset()

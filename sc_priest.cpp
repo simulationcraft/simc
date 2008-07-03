@@ -678,8 +678,6 @@ struct shadow_word_death_t : public priest_spell_t
   {
     priest_t* p = player -> priest();
 
-    assert( sim -> patch.after( 2, 0, 0 ) );
-
     option_t options[] =
     {
       { "rank", OPT_INT8, &rank_index },

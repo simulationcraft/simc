@@ -50,6 +50,7 @@ struct stats_t;
 struct spell_t;
 struct talent_translation_t;
 struct target_t;
+struct uptime_t;
 struct warlock_t;
 struct warrior_t;
 struct weapon_t;
@@ -160,15 +161,6 @@ struct timing_list_t
   void     clear();
 };
 
-struct rating_t
-{
-  double haste;
-  double spell_hit, spell_crit;
-  double attack_hit, attack_crit, attack_expertise;
-  rating_t() { memset( this, 0x00, sizeof(rating_t) ); }
-  void init( int level );
-};
-
 struct sim_t
 {
   // Only one of these simulation methods in use.
@@ -177,6 +169,7 @@ struct sim_t
   timing_list_t      timing_list;
   std::string        method_str;
   int8_t             method;
+
   // Common Core 
   std::string patch_str;
   patch_t     patch;
@@ -189,18 +182,31 @@ struct sim_t
   int8_t      infinite_resource[ RESOURCE_MAX ];
   int8_t      average_dmg, log, debug, timestamp;
   report_t*   report;
+  uptime_t*   uptime_list;
 
   sim_t();
 
-  void     add_event( event_t* );
-  void     reschedule_event( event_t* );
-  void     flush_events();
-  event_t* next_event();
-  bool     execute();
-  void     reset();
-  bool     init();
-  bool     parse_option( const std::string& name, const std::string& value );
-  void     print_options();
+  void      add_event( event_t* );
+  void      reschedule_event( event_t* );
+  void      flush_events();
+  event_t*  next_event();
+  bool      execute();
+  void      reset();
+  bool      init();
+  uptime_t* get_uptime( const std::string& name );
+  bool      parse_option( const std::string& name, const std::string& value );
+  void      print_options();
+};
+
+// Gear Rating Conversions ===================================================
+
+struct rating_t
+{
+  double haste;
+  double spell_hit, spell_crit;
+  double attack_hit, attack_crit, attack_expertise;
+  rating_t() { memset( this, 0x00, sizeof(rating_t) ); }
+  void init( int level );
 };
 
 // Player ====================================================================
@@ -551,7 +557,7 @@ struct target_t
   int8_t      shield;
   double      initial_health, current_health;
   double      total_dmg;
-  
+
   struct debuff_t
   {
     // Permanent De-Buffs
@@ -595,10 +601,11 @@ struct target_t
   expirations_t expirations;
   
   target_t( sim_t* s );
-  
+
+  void init();
+  void reset();
   void assess_damage( double amount, int8_t school, int8_t type );
   void recalculate_health();
-  void reset();
   bool parse_option( const std::string& name, const std::string& value );
   const char* name() { return name_str.c_str(); }
 };
@@ -880,6 +887,19 @@ struct consumable_t
   static action_t* create_action( player_t*, const std::string& name, const std::string& options );
 };
 
+// Up-Time ===================================================================
+
+struct uptime_t
+{
+  std::string name_str;
+  int32_t up, down;
+  uptime_t* next;
+  uptime_t( const std::string& n ) : name_str(n), up(0), down(0) {}
+  void   update( bool is_up ) { if( is_up ) up++; else down++; }
+  double percentage() { return (up==0) ? 0 : (100.0*up/(up+down)); }
+  const char* name() { return name_str.c_str(); }
+};
+
 // Report =====================================================================
 
 struct report_t
@@ -899,15 +919,17 @@ struct report_t
   int8_t report_raid_dps;
   int8_t report_spell_stats;
   int8_t report_tag;
+  int8_t report_uptime;
 
   report_t( sim_t* s );
   bool parse_option( const std::string& name, const std::string& value );
   void print_actions     ( player_t* );
   void print_gains       ( player_t* );
   void print_procs       ( player_t* );
-  void print_core_stats ( player_t* );
+  void print_core_stats  ( player_t* );
   void print_spell_stats ( player_t* );
   void print_attack_stats( player_t* );
+  void print_uptime();
   void print();
   static void timestamp( sim_t* sim );
   static void va_printf( sim_t*, const char* format, va_list );

@@ -175,12 +175,11 @@ void action_t::target_debuff()
     {
       target_multiplier *= 1.0 + ( t -> debuffs.curse_of_shadows * 0.01 );
       target_multiplier *= 1.0 + ( t -> debuffs.shadow_weaving   * 0.02 );
-      if( t -> debuffs.shadow_vulnerability )
-      {
-	target_multiplier *= 1.20;
-	// FIXME! sim -> isb_up++;
-      }
-      // FIXME! else sim -> isb_down++;
+
+      if( t -> debuffs.shadow_vulnerability ) target_multiplier *= 1.20;
+      static uptime_t* sv_uptime = sim -> get_uptime( "shadow_vulnerability" );
+      sv_uptime -> update( t -> debuffs.shadow_vulnerability != 0 );
+
       if( t -> debuffs.curse_of_shadows ) target_penetration += 88;
     }
     else if( school == SCHOOL_ARCANE )

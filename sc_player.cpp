@@ -826,42 +826,35 @@ action_t* player_t::find_action( const std::string& str )
 
 double player_t::spirit_regen_per_second()
 {
-  // This? 5*log(level)*Spirit*sqrt(Intellect)/(6.5*level)
+  double base_60 = 0.010999;
+  double base_70 = 0.009327;
+  double base_80 = 0.007655;
 
-  static bool BEFORE_2_4 = sim -> patch.before( 2, 4, 0 );
+  double base_regen = 0;
 
-  if( BEFORE_2_4 )
+  if( level <= 60 )
   {
-    switch( type )
-    {
-    case DRUID:   return 7.50 + spirit / 10.0;
-    case MAGE:    return 6.25 + spirit / 8.0;
-    case PRIEST:  return 6.25 + spirit / 8.0;
-    case SHAMAN:  return 8.50 + spirit / 10.0;
-    case WARLOCK: return 7.50 + spirit / 10.0;
-    default: assert( 0 );
-    }
-    return 0;
+    base_regen = base_60;
   }
-
-  static double base_regen[] =
+  else if( level == 70 )
   {
-    0.010999, // 60
-    0.010700, // 61
-    0.010522, // 62
-    0.010290, // 63
-    0.010119, // 64
-    0.009968, // 65
-    0.009808, // 66
-    0.009651, // 67
-    0.009553, // 68
-    0.009445, // 69
-    0.009327  // 70
-  };
+    base_regen = base_70;
+  }
+  else if( level >= 80 )
+  {
+    base_regen = base_80;
+  }
+  else if( level < 70 )
+  {
+    base_regen = base_70 + ( base_60 - base_70 ) * ( level - 60 ) / 10;
+  }
+  else if( level > 70 )
+  {
+    base_regen = base_80 + ( base_70 - base_80 ) * ( level - 70 ) / 10;
+  }
+  assert( base_regen != 0 );
 
-  int index = ( level < 60 ) ? 0 : level-60;
-
-  double mana_per_second  = sqrt( intellect ) * spirit * base_regen[ index ];
+  double mana_per_second  = sqrt( intellect ) * spirit * base_regen;
 
   return mana_per_second;
 }
