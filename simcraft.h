@@ -647,7 +647,7 @@ struct stats_t
   double num_executes, num_ticks;
   double total_execute_time, total_tick_time;
   double total_dmg;
-  double dps, dpe;
+  double dps, dpe, dpet;
 
   struct stats_results_t
   {
@@ -664,6 +664,11 @@ struct stats_t
   void init();
   void analyze();
   stats_t( action_t* action );
+
+  // Necessary for proper accounting of GCD/Lag effects on Damage-Per-Execute-Time:
+  static stats_t* last_execute;
+  static double   last_execute_time;
+  static void adjust_for_gcd_and_lag( double lost_time );
 };
 
 // Rank ======================================================================
@@ -780,7 +785,7 @@ struct spell_t : public action_t
   spell_t( const char* n=0, player_t* p=0, int8_t r=RESOURCE_NONE, int8_t s=SCHOOL_PHYSICAL, int8_t t=TREE_NONE );
   virtual ~spell_t() {}
 
-  // Attack Overrides
+  // Spell Overrides
   virtual double execute_time();
   virtual double duration();
   virtual void   player_buff();

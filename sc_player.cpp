@@ -427,6 +427,8 @@ void player_t::schedule_ready( double delta_time )
   delta_time += lag;
   
   new player_ready_event_t( sim, this, delta_time );
+
+  stats_t::adjust_for_gcd_and_lag( delta_time );
 }
 
 // player_t::execute_action =================================================

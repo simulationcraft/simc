@@ -511,6 +511,7 @@ bool action_t::ready()
 
 void action_t::reset()
 {
+  stats -> channeled = channeled;
   current_tick = 0;
   time_remaining = 0;
   cooldown_ready = 0;

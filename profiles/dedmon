@@ -1,6 +1,6 @@
 priest=Dedmonwakeen
 talents=http://www.worldofwarcraft.com/info/classes/priest/talents.html?0502300110000000000000000000000000000000000503250510250103051551
-actions=shadow_form/mana_potion-2500/shadow_fiend/vampiric_touch/shadow_word_pain/mind_blast/shadow_word_death/mind_flay
+actions=shadow_form/mana_potion-2500/summon_shadow_fiend/vampiric_touch/shadow_word_pain/mind_blast/shadow_word_death/mind_flay
 gear_stamina=296
 gear_intellect=196
 gear_spirit=18

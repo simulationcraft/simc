@@ -279,6 +279,7 @@ void sim_t::reset()
   for( player_t* p = player_list; p; p = p -> next )
     p -> reset();
   new regen_event_t( this );
+  stats_t::last_execute = 0;
 }
 
 // sim_t::init ==============================================================

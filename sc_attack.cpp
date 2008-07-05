@@ -194,6 +194,8 @@ void attack_t::build_table( std::vector<double>& chances,
 
 void attack_t::calculate_result()
 {
+  dd = dot = dot_tick = 0;
+
   static std::vector<double> chances;
   static std::vector<int>    results;
 

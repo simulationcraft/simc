@@ -79,11 +79,11 @@ void report_t::print_actions( player_t* p )
   {
     if( s -> total_dmg > 0 )
     {
-      printf( "    %-20s  Count=%.1f|%4.1fsec  DPS=%6.1f  DPE=%4.0f|%.0f%%", 
+      printf( "    %-20s  Count=%.1f|%4.1fsec  DPS=%6.1f  DPE=%4.0f|%.0f%%  DPET=%4.0f", 
 	      s -> name.c_str(),
 	      s -> num_executes,
 	      p -> sim -> total_seconds / s -> num_executes,
-	      s -> dps, s -> dpe, s -> total_dmg * 100.0 / player_total_dmg );
+	      s -> dps, s -> dpe, s -> total_dmg * 100.0 / player_total_dmg, s -> dpet );
 
       if( report_miss ) printf( "  Miss=%.0f%%", s -> execute_results[ RESULT_MISS ].count * 100.0 / s -> num_executes );
       

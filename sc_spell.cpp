@@ -126,6 +126,8 @@ double spell_t::level_based_miss_chance( int8_t player,
 
 void spell_t::calculate_result()
 {
+  dd = dot = dot_tick = 0;
+
   result = RESULT_NONE;
 
   player_buff();

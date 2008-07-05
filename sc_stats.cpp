@@ -8,7 +8,7 @@
 // stats_t::stats_t =========================================================
 
 stats_t::stats_t( action_t* a ) : 
-  name(a->name_str), sim(a->sim), player(a->player), channeled(a->channeled), next(0)
+  name(a->name_str), sim(a->sim), player(a->player), channeled(false), next(0)
 {
   
 }
@@ -57,7 +57,6 @@ void stats_t::add( double amount,
 
   if( dmg_type == DMG_DIRECT )
   {
-    if( ! channeled ) time = std::max( time, player -> gcd() );
     num_executes++;
     total_execute_time += time;
     stats_results_t& r = execute_results[ result ];
@@ -65,6 +64,8 @@ void stats_t::add( double amount,
     r.total_dmg += amount;
     if( amount < r.min_dmg ) r.min_dmg = amount;
     if( amount > r.max_dmg ) r.max_dmg = amount;
+    // Keep track of last execute to adjust 'execute_time' for GCD and Lag
+    last_execute = this;
   }
   else
   {
@@ -77,7 +78,7 @@ void stats_t::add( double amount,
     if( amount > r.max_dmg ) r.max_dmg = amount;
   }
 
-  int index = (int) ( player -> sim -> current_time );
+  int index = (int) ( sim -> current_time );
   if( index >= num_buckets )
   {
     // Double the size of the vector, initializing the new elements to zero.
@@ -92,7 +93,7 @@ void stats_t::add( double amount,
 
 void stats_t::analyze()
 {
-  int num_iterations = player -> sim -> iterations;
+  int num_iterations = sim -> iterations;
 
   for( int i=0; i < RESULT_MAX; i++ )
   {
@@ -118,8 +119,9 @@ void stats_t::analyze()
 
   if( total_dmg > 0 )
   {
-    dps = total_dmg / ( total_execute_time + total_tick_time );
-    dpe = total_dmg / num_executes;
+    dps  = total_dmg / ( total_execute_time + total_tick_time );
+    dpe  = total_dmg / num_executes;
+    dpet = total_dmg / ( total_execute_time + ( channeled ? total_tick_time : 0 ) );
   }
 
   num_executes /= num_iterations;
@@ -154,3 +156,14 @@ void stats_t::analyze()
   }
 }
 
+// stats_t::adjust_for_gcd_and_lag ==========================================
+
+stats_t* stats_t::last_execute = 0;
+
+void stats_t::adjust_for_gcd_and_lag( double lost_time )
+{
+  if( last_execute )
+  {
+    last_execute -> total_execute_time += lost_time;
+  }
+}

@@ -6,12 +6,19 @@
 #include <simcraft.h>
 
 // ==========================================================================
+// Forward Declarations
+// ==========================================================================
+
+struct shadow_fiend_t;
+
+// ==========================================================================
 // Priest
 // ==========================================================================
 
 struct priest_t : public player_t
 {
-  // shadow_fiend_t* shadow_fiend;
+  shadow_fiend_t* shadow_fiend;
+  uptime_t* improved_spirit_tap_uptime;
 
   struct talents_t
   {
@@ -81,6 +88,14 @@ struct priest_spell_t : public spell_t
   virtual void tick()           { spell_t::tick();                }
   virtual void last_tick()      { spell_t::last_tick();           }
 };
+
+// ==========================================================================
+// Pet Shadow Fiend
+// ==========================================================================
+
+//struct shadow_fiend_t : public pet_t
+//{
+//};
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
@@ -912,12 +927,12 @@ struct shadow_form_t : public priest_spell_t
 
 // Shadow Fiend Spell ========================================================
 
-struct shadow_fiend_t : public priest_spell_t
+struct summon_shadow_fiend_t : public priest_spell_t
 {
   double mana;
 
-  shadow_fiend_t( player_t* player, const std::string& options_str ) : 
-    priest_spell_t( "shadow_fiend", player, SCHOOL_SHADOW, TREE_SHADOW ), mana(0)
+  summon_shadow_fiend_t( player_t* player, const std::string& options_str ) : 
+    priest_spell_t( "summon_shadow_fiend", player, SCHOOL_SHADOW, TREE_SHADOW ), mana(0)
   {
     priest_t* p = player -> priest();
 
@@ -1024,19 +1039,19 @@ void priest_t::spell_damage_event( spell_t* s,
 action_t* priest_t::create_action( const std::string& name,
 				   const std::string& options_str )
 {
-  if( name == "devouring_plague"  ) return new devouring_plague_t ( this, options_str );
-  if( name == "holy_fire"         ) return new holy_fire_t        ( this, options_str );
-  if( name == "inner_focus"       ) return new inner_focus_t      ( this, options_str );
-  if( name == "mind_blast"        ) return new mind_blast_t       ( this, options_str );
-  if( name == "mind_flay"         ) return new mind_flay_t        ( this, options_str );
-  if( name == "power_infusion"    ) return new power_infusion_t   ( this, options_str );
-  if( name == "shadow_fiend"      ) return new shadow_fiend_t     ( this, options_str );
-  if( name == "shadow_word_death" ) return new shadow_word_death_t( this, options_str );
-  if( name == "shadow_word_pain"  ) return new shadow_word_pain_t ( this, options_str );
-  if( name == "shadow_form"       ) return new shadow_form_t      ( this, options_str );
-  if( name == "smite"             ) return new smite_t            ( this, options_str );
-  if( name == "vampiric_embrace"  ) return new vampiric_embrace_t ( this, options_str );
-  if( name == "vampiric_touch"    ) return new vampiric_touch_t   ( this, options_str );
+  if( name == "devouring_plague"    ) return new devouring_plague_t   ( this, options_str );
+  if( name == "holy_fire"           ) return new holy_fire_t          ( this, options_str );
+  if( name == "inner_focus"         ) return new inner_focus_t        ( this, options_str );
+  if( name == "mind_blast"          ) return new mind_blast_t         ( this, options_str );
+  if( name == "mind_flay"           ) return new mind_flay_t          ( this, options_str );
+  if( name == "power_infusion"      ) return new power_infusion_t     ( this, options_str );
+  if( name == "shadow_word_death"   ) return new shadow_word_death_t  ( this, options_str );
+  if( name == "shadow_word_pain"    ) return new shadow_word_pain_t   ( this, options_str );
+  if( name == "shadow_form"         ) return new shadow_form_t        ( this, options_str );
+  if( name == "smite"               ) return new smite_t              ( this, options_str );
+  if( name == "summon_shadow_fiend" ) return new summon_shadow_fiend_t( this, options_str );
+  if( name == "vampiric_embrace"    ) return new vampiric_embrace_t   ( this, options_str );
+  if( name == "vampiric_touch"      ) return new vampiric_touch_t     ( this, options_str );
 
   return 0;
 }
