@@ -33,24 +33,12 @@ const char* wow_player_type_string( int8_t type )
 {
   switch( type )
   {
-  case DRUID:   return "druid";
-  case PRIEST:  return "priest";
-  case MAGE:    return "mage";
-  case SHAMAN:  return "shaman";
-  case WARLOCK: return "warlock";
-  }
-  return "unknown";
-}
-
-const char* wow_pet_type_string( int8_t type )
-{
-  switch( type )
-  {
-  case PET_NONE:       return "none";
-  case PET_FELGUARD:   return "felguard";
-  case PET_IMP:        return "imp";
-  case PET_SUCCUBUS:   return "succubus";
-  case PET_VOIDWALKER: return "voidwalker";
+  case DRUID:      return "druid";
+  case PRIEST:     return "priest";
+  case MAGE:       return "mage";
+  case SHAMAN:     return "shaman";
+  case WARLOCK:    return "warlock";
+  case PLAYER_PET: return "pet";
   }
   return "unknown";
 }

@@ -61,10 +61,10 @@ void player_t::gear_t::allocate_attack_power_budget( sim_t* sim )
 
 // player_t::player_t =======================================================
 
-player_t::player_t( sim_t*       s, 
-                    int8_t       t,
-		    std::string& n ) :
-  sim(s), name_str(n), next(0), type(t), level(70), party(0), gcd_ready(0), base_gcd(1.5), sleeping(0),
+player_t::player_t( sim_t*             s, 
+                    int8_t             t,
+		    const std::string& n ) :
+  sim(s), name_str(n), next(0), type(t), level(70), party(0), gcd_ready(0), base_gcd(1.5), sleeping(0), pet_list(0),
   // Haste
   base_haste_rating(0), initial_haste_rating(0), haste_rating(0), haste(1.0),
   // Core Stats
@@ -79,6 +79,7 @@ player_t::player_t( sim_t*       s,
   base_spell_crit(0),        initial_spell_crit(0),        spell_crit(0),
   base_spell_penetration(0), initial_spell_penetration(0), spell_penetration(0),
   base_mp5(0),               initial_mp5(0),               mp5(0),
+  spell_crit_per_intellect(0),
   last_cast(0),
   // Attack Mechanics
   base_attack_power(0),       initial_attack_power(0),        attack_power(0),
@@ -86,20 +87,21 @@ player_t::player_t( sim_t*       s,
   base_attack_expertise(0),   initial_attack_expertise(0),    attack_expertise(0),
   base_attack_crit(0),        initial_attack_crit(0),         attack_crit(0),
   base_attack_penetration(0), initial_attack_penetration(0),  attack_penetration(0),
+  attack_power_per_strength(0),
+  attack_power_per_agility(0),
+  attack_crit_per_agility(0),
   main_hand_weapon(0), off_hand_weapon(0), ranged_weapon(0),
   position( POSITION_FRONT ),
   // Resources 
   resource_constrained(0),           resource_constrained_count(0),
   resource_constrained_total_dmg(0), resource_constrained_total_time(0),
-  mana_per_intellect(15), health_per_stamina(10),
+  mana_per_intellect(0), health_per_stamina(0),
   // Events
   executing(0), channeling(0),
   // Actions
   action_list(0),
   // Reporting
-  quiet(0), report(0), iteration_dmg(0), stats_list(0),
-  // Player Pets
-  pet(PET_NONE)
+  quiet(0), report(0), iteration_dmg(0), stats_list(0)
 {
   report_t::debug( sim, "Creating Player %s", name() );
   next = sim -> player_list;
@@ -127,7 +129,6 @@ void player_t::init()
   init_spell();
   init_attack();
   init_resources();
-  init_pets();
   init_actions();
   init_stats();
 }
@@ -250,22 +251,6 @@ void player_t::init_resources()
   resource_constrained_count = 0;
   resource_constrained_total_dmg = 0;
   resource_constrained_total_time = 0;
-}
-
-// player_t::init_pets =====================================================
-
-void player_t::init_pets() 
-{
-  if( ! pet_str.empty() ) 
-  {
-    for( pet=0; pet < PET_TYPE_MAX; pet++ )
-      if( pet_str == wow_pet_type_string( pet ) )
-	break;
-
-    assert( pet != PET_TYPE_MAX );
-
-    report_t::debug( sim, "Player %s: pet=%s", name(), wow_pet_type_string( pet ) );   
-  }
 }
 
 // player_t::init_actions ==================================================
@@ -494,7 +479,8 @@ void player_t::resource_gain( int8_t       resource,
 
     if( source && sim -> report -> report_gains ) gain( source, amount );
 
-    report_t::debug( sim, "Player %s gains %.0f %s", name(), amount, wow_resource_type_string( resource ) );
+    report_t::log( sim, "%s gains %.0f %s from %s", 
+		   name(), amount, wow_resource_type_string( resource ), source ? source : "unknown" );
   }
 }
 
@@ -538,6 +524,36 @@ void player_t::check_resources()
 
     report_t::debug( sim, "Player %s is resource constrained.", name() );
   }
+}
+
+// player_t::summon_pet =====================================================
+
+void player_t::summon_pet( const std::string& pet_name )
+{
+  for( pet_t* p = pet_list; p; p = p -> next_pet )
+  {
+    if( p -> name_str == pet_name )
+    {
+      p -> summon();
+      return;
+    }
+  }
+  assert(0);
+}
+
+// player_t::dismiss_pet ====================================================
+
+void player_t::dismiss_pet( const std::string& pet_name )
+{
+  for( pet_t* p = pet_list; p; p = p -> next_pet )
+  {
+    if( p -> name_str == pet_name )
+    {
+      p -> dismiss();
+      return;
+    }
+  }
+  assert(0);
 }
 
 // player_t::action_start ===================================================
@@ -967,8 +983,6 @@ bool player_t::parse_option( const std::string& name,
     { "actions",                              OPT_STRING, &( action_list_str                          ) },
     { "post_actions",                         OPT_STRING, &( action_list_postfix                      ) },
     { "skip_actions",                         OPT_STRING, &( action_list_skip                         ) },
-    // Player - Pets
-    { "pet",                                  OPT_STRING, &( pet_str                                  ) },
     // Player - Reporting
     { "quiet",                                OPT_INT8,   &( quiet                                    ) },
     // Player - Gear - Haste

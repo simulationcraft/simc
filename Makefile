@@ -7,8 +7,8 @@ SRC =\
 	sc_consumable.cpp	\
 	sc_enchant.cpp		\
 	sc_event.cpp		\
-	sc_unique_gear.cpp	\
 	sc_option.cpp		\
+	sc_pet.cpp		\
 	sc_player.cpp		\
 	sc_priest.cpp		\
 	sc_rating.cpp		\
@@ -17,6 +17,7 @@ SRC =\
 	sc_spell.cpp		\
 	sc_stats.cpp		\
 	sc_target.cpp		\
+	sc_unique_gear.cpp	\
 	sc_util.cpp		\
 	sc_weapon.cpp
 
@@ -24,4 +25,4 @@ simcraft build:
 	g++ -I. $(OPTS) -Wall $(SRC) -o simcraft
 
 debug:
-	g++ -DDEBUG -DSIGACTION -I. $(OPTS) -Wall $(SRC) -o simcraft
+	g++ -DDEBUG -I. $(OPTS) -Wall $(SRC) -o simcraft

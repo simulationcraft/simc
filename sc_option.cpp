@@ -116,6 +116,10 @@ bool option_t::parse( sim_t*    sim,
   else if( name == "priest"  ) { player_t::create_priest ( sim, value ); }
 //else if( name == "shaman"  ) { player_t::create_shaman ( sim, value ); }
 //else if( name == "warlock" ) { player_t::create_warlock( sim, value ); }
+  else if( name == "pet"     ) 
+  { 
+    sim -> player_list -> create_pet( value );
+  }
   else if( name == "talents" )
   {
     static std::string talent_string;

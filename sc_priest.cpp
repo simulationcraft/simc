@@ -6,18 +6,11 @@
 #include <simcraft.h>
 
 // ==========================================================================
-// Forward Declarations
-// ==========================================================================
-
-struct shadow_fiend_t;
-
-// ==========================================================================
 // Priest
 // ==========================================================================
 
 struct priest_t : public player_t
 {
-  shadow_fiend_t* shadow_fiend;
   uptime_t* improved_spirit_tap_uptime;
 
   struct talents_t
@@ -60,8 +53,9 @@ struct priest_t : public player_t
   virtual void      init_resources();
   virtual void      reset();
   virtual void      parse_talents( const std::string& talent_string );
-  virtual bool      parse_option( const std::string& name, const std::string& value );
+  virtual bool      parse_option ( const std::string& name, const std::string& value );
   virtual action_t* create_action( const std::string& name, const std::string& options );
+  virtual pet_t*    create_pet   ( const std::string& name );
 
   // Event Tracking
   virtual void regen();
@@ -93,9 +87,76 @@ struct priest_spell_t : public spell_t
 // Pet Shadow Fiend
 // ==========================================================================
 
-//struct shadow_fiend_t : public pet_t
-//{
-//};
+struct shadow_fiend_pet_t : public pet_t
+{
+  struct auto_attack_t : public attack_t
+  {
+    auto_attack_t( const char* name, player_t* player ) : 
+      attack_t( name, player, RESOURCE_NONE, SCHOOL_SHADOW )
+    {
+      base_execute_time = 1.5;
+      base_dd = 111;
+      valid = false;
+      background = true;
+    }
+    void player_buff()
+    {
+      player_t* owner = player -> pet() -> owner;
+
+      player_power += 0.57 * ( owner -> spell_power[ SCHOOL_MAX    ] + 
+			       owner -> spell_power[ SCHOOL_SHADOW ] );
+
+      // Arbitrary until I figure out base stats.
+      player_crit = 0.05;
+    }
+    void assess_damage( double amount, int8_t dmg_type )
+    {
+      attack_t::assess_damage( amount, dmg_type );
+
+      player -> pet() -> owner -> resource_gain( RESOURCE_MANA, amount * 2.5, "shadow_fiend" );
+    }
+    void execute()
+    {
+      attack_t::execute();
+      // FIXME!  Change "background" to "repeating".
+      schedule_execute();
+    }
+  };
+
+  auto_attack_t* auto_attack;
+
+  shadow_fiend_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name ) :
+    pet_t( sim, owner, pet_name )
+  {
+    auto_attack = new auto_attack_t( "melee", this );
+  }
+  virtual void init_base()
+  {
+    base_attack_power = 289;
+  }
+  virtual void reset()
+  {
+    auto_attack -> reset();
+  }
+  virtual void schedule_ready()
+  {
+    assert(0);
+  }
+  virtual void summon()
+  {
+    report_t::log( sim, "%s summons Shadow Fiend.", owner -> name() );
+    auto_attack -> schedule_execute();
+  }
+  virtual void dismiss()
+  {
+    report_t::log( sim, "%s's Shadow Fiend dies.", owner -> name() );
+    if( auto_attack -> event )
+    {
+      auto_attack -> event -> invalid = true;
+      auto_attack -> event = 0;
+    }
+  }
+};
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
@@ -110,7 +171,7 @@ static void stack_shadow_weaving( spell_t* s )
     shadow_weaving_expiration_t( sim_t* sim ) : event_t( sim )
     {
       name = "Shadow Weaving Expiration";
-      time = 15.0;
+      time = 15.01;
       sim -> add_event( this );
     }
     virtual void execute()
@@ -927,16 +988,27 @@ struct shadow_form_t : public priest_spell_t
 
 // Shadow Fiend Spell ========================================================
 
-struct summon_shadow_fiend_t : public priest_spell_t
+struct shadow_fiend_spell_t : public priest_spell_t
 {
+  struct shadow_fiend_expiration_t : public event_t
+  {
+    shadow_fiend_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
+    {
+      time = 15.0;
+      sim -> add_event( this );
+    }
+    virtual void execute()
+    {
+      player -> dismiss_pet( "shadow_fiend" );
+    }
+  };
+
   double mana;
 
-  summon_shadow_fiend_t( player_t* player, const std::string& options_str ) : 
-    priest_spell_t( "summon_shadow_fiend", player, SCHOOL_SHADOW, TREE_SHADOW ), mana(0)
+  shadow_fiend_spell_t( player_t* player, const std::string& options_str ) : 
+    priest_spell_t( "summon", player, SCHOOL_SHADOW, TREE_SHADOW ), mana(0)
   {
     priest_t* p = player -> priest();
-
-    // assert( p -> shadow_fiend );
 
     mana        = atof( options_str.c_str() );
     harmful    = false;
@@ -949,10 +1021,9 @@ struct summon_shadow_fiend_t : public priest_spell_t
   {
     update_cooldowns();
     consume_resource();
-
-    // shadow_fiend -> schedule_ready();
-
+    player -> summon_pet( "shadow_fiend" );
     player -> action_finish( this );
+    new shadow_fiend_expiration_t( sim, player );
   }
 
   virtual bool ready()
@@ -1039,19 +1110,28 @@ void priest_t::spell_damage_event( spell_t* s,
 action_t* priest_t::create_action( const std::string& name,
 				   const std::string& options_str )
 {
-  if( name == "devouring_plague"    ) return new devouring_plague_t   ( this, options_str );
-  if( name == "holy_fire"           ) return new holy_fire_t          ( this, options_str );
-  if( name == "inner_focus"         ) return new inner_focus_t        ( this, options_str );
-  if( name == "mind_blast"          ) return new mind_blast_t         ( this, options_str );
-  if( name == "mind_flay"           ) return new mind_flay_t          ( this, options_str );
-  if( name == "power_infusion"      ) return new power_infusion_t     ( this, options_str );
-  if( name == "shadow_word_death"   ) return new shadow_word_death_t  ( this, options_str );
-  if( name == "shadow_word_pain"    ) return new shadow_word_pain_t   ( this, options_str );
-  if( name == "shadow_form"         ) return new shadow_form_t        ( this, options_str );
-  if( name == "smite"               ) return new smite_t              ( this, options_str );
-  if( name == "summon_shadow_fiend" ) return new summon_shadow_fiend_t( this, options_str );
-  if( name == "vampiric_embrace"    ) return new vampiric_embrace_t   ( this, options_str );
-  if( name == "vampiric_touch"      ) return new vampiric_touch_t     ( this, options_str );
+  if( name == "devouring_plague" ) return new devouring_plague_t  ( this, options_str );
+  if( name == "holy_fire"        ) return new holy_fire_t         ( this, options_str );
+  if( name == "inner_focus"      ) return new inner_focus_t       ( this, options_str );
+  if( name == "mind_blast"       ) return new mind_blast_t        ( this, options_str );
+  if( name == "mind_flay"        ) return new mind_flay_t         ( this, options_str );
+  if( name == "power_infusion"   ) return new power_infusion_t    ( this, options_str );
+  if( name == "shadow_word_death") return new shadow_word_death_t ( this, options_str );
+  if( name == "shadow_word_pain" ) return new shadow_word_pain_t  ( this, options_str );
+  if( name == "shadow_form"      ) return new shadow_form_t       ( this, options_str );
+  if( name == "smite"            ) return new smite_t             ( this, options_str );
+  if( name == "shadow_fiend"     ) return new shadow_fiend_spell_t( this, options_str );
+  if( name == "vampiric_embrace" ) return new vampiric_embrace_t  ( this, options_str );
+  if( name == "vampiric_touch"   ) return new vampiric_touch_t    ( this, options_str );
+
+  return 0;
+}
+
+// priest_t::create_pet ======================================================
+
+pet_t* priest_t::create_pet( const std::string& pet_name )
+{
+  if( pet_name == "shadow_fiend" ) return new shadow_fiend_pet_t( sim, this, pet_name );
 
   return 0;
 }
@@ -1076,12 +1156,17 @@ void priest_t::init_base()
   base_spirit    = 155;
 
   base_spell_crit = 0.0125;
+  spell_crit_per_intellect = 1.0 / ( level + 10 );
 
   base_attack_power = -10;
   base_attack_crit  = 0.03;
+  attack_power_per_strength = 1.0;
+  attack_crit_per_agility = 1.0 / ( 25 + ( level - 70 ) * 5 );
 
   resource_base[ RESOURCE_HEALTH ] = 3200;
   resource_base[ RESOURCE_MANA   ] = 2340;
+  mana_per_intellect = 15;
+  health_per_stamina = 10;
 }
 
 // priest_t::init_resources ==================================================

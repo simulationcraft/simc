@@ -40,6 +40,7 @@ struct druid_t;
 struct event_t;
 struct mage_t;
 struct option_t;
+struct pet_t;
 struct player_t;
 struct priest_t;
 struct report_t;
@@ -88,9 +89,7 @@ struct event_compare_t
 
 // Simulation Engine =========================================================
 
-enum player_type { DRUID=0, MAGE, PALADIN, PRIEST, SHAMAN, WARLOCK, PLAYER_TYPE_MAX };
-
-enum pet_type { PET_NONE=0, PET_FELGUARD, PET_IMP, PET_SUCCUBUS, PET_VOIDWALKER, PET_TYPE_MAX };
+enum player_type { DRUID=0, MAGE, PALADIN, PRIEST, SHAMAN, WARLOCK, PLAYER_PET, PLAYER_TYPE_MAX };
 
 enum dmg_type { DMG_DIRECT=0, DMG_OVER_TIME=1 };
 
@@ -223,6 +222,7 @@ struct player_t
   double      gcd_ready, base_gcd;
   int8_t      sleeping;
   rating_t    rating;
+  pet_t*      pet_list;
 
   // Haste
   int16_t base_haste_rating, initial_haste_rating, haste_rating;
@@ -241,6 +241,7 @@ struct player_t
   double      base_spell_crit,        initial_spell_crit,                  spell_crit;
   int16_t     base_spell_penetration, initial_spell_penetration,           spell_penetration;
   int16_t     base_mp5,               initial_mp5,                         mp5;
+  double      spell_crit_per_intellect;
   double      last_cast;
 
   // Attack Mechanics
@@ -249,6 +250,9 @@ struct player_t
   double      base_attack_expertise,   initial_attack_expertise,    attack_expertise;
   double      base_attack_crit,        initial_attack_crit,         attack_crit;
   int16_t     base_attack_penetration, initial_attack_penetration,  attack_penetration;
+  double      attack_power_per_strength;
+  double      attack_power_per_agility;
+  double      attack_crit_per_agility;
   weapon_t*   main_hand_weapon;
   weapon_t*   off_hand_weapon;
   weapon_t*   ranged_weapon;
@@ -285,10 +289,6 @@ struct player_t
   proc_list_t  proc_list;
   gain_list_t  gain_list;
   stats_t*    stats_list;
-
-  // Player Pets
-  std::string pet_str;
-  int8_t      pet;
 
   struct gear_t
   {
@@ -457,29 +457,33 @@ struct player_t
   };
   enchants_t enchants;
 
-  player_t( sim_t* sim, int8_t type, std::string& name );
+  player_t( sim_t* sim, int8_t type, const std::string& name );
   
+  virtual const char* name() { return name_str.c_str(); }
+
   virtual void init();
   virtual void init_base() = 0;
   virtual void init_core();
   virtual void init_spell();
   virtual void init_attack();
   virtual void init_resources();
-  virtual void init_pets();
   virtual void init_actions();
   virtual void init_rating();
   virtual void init_stats();
   virtual void reset();
 
   virtual double    gcd(); 
-  virtual void      schedule_ready( double delta_time );
+  virtual void      schedule_ready( double delta_time=0 );
   virtual action_t* execute_action();
 
-  virtual void regen() = 0;
+  virtual void regen() {}
   virtual void resource_gain( int8_t resource, double amount, const char* source=0 );
   virtual void resource_loss( int8_t resource, double amount, const char* source=0 );
   virtual bool resource_available( int8_t resource, double cost );
   virtual void check_resources();
+
+  virtual void  summon_pet( const std::string& name );
+  virtual void dismiss_pet( const std::string& name );
 
   // Managing action_xxx events:
   // (1) To "throw" an event, ALWAYS invoke the action_xxx function.
@@ -507,26 +511,26 @@ struct player_t
   virtual void attack_damage_event( attack_t*, double amount, int8_t dmg_type );
   virtual void attack_finish_event( attack_t* );
 
-  bool        in_gcd() { return gcd_ready > sim -> current_time; }
-  bool        recent_cast();
-  void        proc( const std::string& );
-  void        gain( const std::string&, double value );
-  action_t*   find_action( const std::string& );
-  void        share_cooldown( const std::string& name, double ready );
-  void        share_debuff( const std::string& name, double ready );
-  const char* name() { return name_str.c_str(); }
-  void        recalculate_haste()  {  haste = 1.0 / ( 1.0 + haste_rating / rating.haste ); }
-  bool        time_to_think() { return sim -> current_time - last_cast > 0.5; }
-  double      spirit_regen_per_second();
-  bool        dual_wield();
-  void        aura_gain( const char* name );
-  void        aura_loss( const char* name );
+  bool      in_gcd() { return gcd_ready > sim -> current_time; }
+  bool      recent_cast();
+  void      proc( const std::string& );
+  void      gain( const std::string&, double value );
+  action_t* find_action( const std::string& );
+  void      share_cooldown( const std::string& name, double ready );
+  void      share_debuff( const std::string& name, double ready );
+  void      recalculate_haste()  {  haste = 1.0 / ( 1.0 + haste_rating / rating.haste ); }
+  bool      time_to_think() { return sim -> current_time - last_cast > 0.5; }
+  double    spirit_regen_per_second();
+  bool      dual_wield();
+  void      aura_gain( const char* name );
+  void      aura_loss( const char* name );
   
   void parse_talents( talent_translation_t*, const std::string& talent_string );
 
-  virtual void parse_talents( const std::string& talent_string ) = 0;
-  virtual bool parse_option( const std::string& name, const std::string& value );
-  virtual action_t* create_action( const std::string& name, const std::string& options ) = 0;
+  virtual void      parse_talents( const std::string& talent_string ) {}
+  virtual bool      parse_option ( const std::string& name, const std::string& value );
+  virtual action_t* create_action( const std::string& name, const std::string& options ) { return 0; }
+  virtual pet_t*    create_pet   ( const std::string& name ) { return 0; }
 
   virtual ~player_t(){}
 
@@ -538,11 +542,27 @@ struct player_t
   static shaman_t  * create_shaman ( sim_t* sim, std::string& name );
   static warlock_t * create_warlock( sim_t* sim, std::string& name );
 
-  druid_t  * druid  () { if( type != DRUID   ) return 0; return (druid_t  *) this; }
-  mage_t   * mage   () { if( type != MAGE    ) return 0; return (mage_t   *) this; }
-  priest_t * priest () { if( type != PRIEST  ) return 0; return (priest_t *) this; }
-  shaman_t * shaman () { if( type != SHAMAN  ) return 0; return (shaman_t *) this; }
-  warlock_t* warlock() { if( type != WARLOCK ) return 0; return (warlock_t*) this; }
+  druid_t  * druid  () { if( type != DRUID      ) return 0; return (druid_t  *) this; }
+  mage_t   * mage   () { if( type != MAGE       ) return 0; return (mage_t   *) this; }
+  priest_t * priest () { if( type != PRIEST     ) return 0; return (priest_t *) this; }
+  shaman_t * shaman () { if( type != SHAMAN     ) return 0; return (shaman_t *) this; }
+  warlock_t* warlock() { if( type != WARLOCK    ) return 0; return (warlock_t*) this; }
+  pet_t*     pet    () { if( type != PLAYER_PET ) return 0; return (pet_t    *) this; }
+};
+
+// Pet =======================================================================
+
+struct pet_t : public player_t
+{
+  std::string full_name_str;
+  player_t* owner;
+  pet_t* next_pet;
+
+  pet_t( sim_t* sim, player_t* owner, const std::string& name );
+
+  virtual const char* name() { return full_name_str.c_str(); }
+  virtual void summon();
+  virtual void dismiss();
 };
 
 // Target ====================================================================
@@ -762,20 +782,21 @@ struct attack_t : public action_t
   virtual void   calculate_damage(); 
 
   // Passthru Methods
-  virtual double cost()                   { return action_t::cost();              }
-  virtual void get_base_damage()          { action_t::get_base_damage();          }
-  virtual double resistance()             { return action_t::resistance();        }
-  virtual void adjust_damage_for_result() { action_t::adjust_damage_for_result(); }
-  virtual void consume_resource()         { action_t::consume_resource();         }
-  virtual void execute()                  { action_t::execute();                  }
-  virtual void tick()                     { action_t::tick();                     }
-  virtual void last_tick()                { action_t::last_tick();                }
-  virtual void schedule_execute()         { action_t::schedule_execute();         }
-  virtual void schedule_tick()            { action_t::schedule_tick();            }
-  virtual void update_cooldowns()         { action_t::update_cooldowns();         }
-  virtual void update_stats( int8_t t )   { action_t::update_stats( t );          }
-  virtual bool ready()                    { return action_t::ready();             }
-  virtual void reset()                    { action_t::reset();                    }
+  virtual double cost()                            { return action_t::cost();              }
+  virtual void get_base_damage()                   { action_t::get_base_damage();          }
+  virtual double resistance()                      { return action_t::resistance();        }
+  virtual void adjust_damage_for_result()          { action_t::adjust_damage_for_result(); }
+  virtual void consume_resource()                  { action_t::consume_resource();         }
+  virtual void execute()                           { action_t::execute();                  }
+  virtual void tick()                              { action_t::tick();                     }
+  virtual void last_tick()                         { action_t::last_tick();                }
+  virtual void assess_damage( double a, int8_t t ) { action_t::assess_damage( a, t );      }
+  virtual void schedule_execute()                  { action_t::schedule_execute();         }
+  virtual void schedule_tick()                     { action_t::schedule_tick();            }
+  virtual void update_cooldowns()                  { action_t::update_cooldowns();         }
+  virtual void update_stats( int8_t t )            { action_t::update_stats( t );          }
+  virtual bool ready()                             { return action_t::ready();             }
+  virtual void reset()                             { action_t::reset();                    }
 };
 
 // Spell =====================================================================
@@ -794,21 +815,22 @@ struct spell_t : public action_t
   virtual void   calculate_result();
    
   // Passthru Methods
-  virtual double cost()                   { return action_t::cost();              }
-  virtual void get_base_damage()          { action_t::get_base_damage();          }
-  virtual void calculate_damage()         { action_t::calculate_damage();         }
-  virtual double resistance()             { return action_t::resistance();        }
-  virtual void adjust_damage_for_result() { action_t::adjust_damage_for_result(); }
-  virtual void consume_resource()         { action_t::consume_resource();         }
-  virtual void execute()                  { action_t::execute();                  }
-  virtual void tick()                     { action_t::tick();                     }
-  virtual void last_tick()                { action_t::last_tick();                }
-  virtual void schedule_execute()         { action_t::schedule_execute();         }
-  virtual void schedule_tick()            { action_t::schedule_tick();            }
-  virtual void update_cooldowns()         { action_t::update_cooldowns();         }
-  virtual void update_stats( int8_t t )   { action_t::update_stats( t );          }
-  virtual bool ready()                    { return action_t::ready();             }
-  virtual void reset()                    { action_t::reset();                    }
+  virtual double cost()                            { return action_t::cost();              }
+  virtual void get_base_damage()                   { action_t::get_base_damage();          }
+  virtual void calculate_damage()                  { action_t::calculate_damage();         }
+  virtual double resistance()                      { return action_t::resistance();        }
+  virtual void adjust_damage_for_result()          { action_t::adjust_damage_for_result(); }
+  virtual void consume_resource()                  { action_t::consume_resource();         }
+  virtual void execute()                           { action_t::execute();                  }
+  virtual void tick()                              { action_t::tick();                     }
+  virtual void last_tick()                         { action_t::last_tick();                }
+  virtual void assess_damage( double a, int8_t t ) { action_t::assess_damage( a, t );      }
+  virtual void schedule_execute()                  { action_t::schedule_execute();         }
+  virtual void schedule_tick()                     { action_t::schedule_tick();            }
+  virtual void update_cooldowns()                  { action_t::update_cooldowns();         }
+  virtual void update_stats( int8_t t )            { action_t::update_stats( t );          }
+  virtual bool ready()                             { return action_t::ready();             }
+  virtual void reset()                             { action_t::reset();                    }
 };
 
 // Player Ready Event ========================================================
@@ -996,7 +1018,6 @@ double  wow_random();
 char*   wow_dup( const char* );
 
 const char*   wow_player_type_string  ( int8_t type );
-const char*   wow_pet_type_string     ( int8_t type );
 const char*   wow_dmg_type_string     ( int8_t type );
 const char*   wow_result_type_string  ( int8_t type );
 const char*   wow_resource_type_string( int8_t type );

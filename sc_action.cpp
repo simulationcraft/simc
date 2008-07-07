@@ -221,6 +221,8 @@ bool action_t::result_is_hit()
 
 void action_t::get_base_damage()
 {
+  if( ! rank ) return;
+
   if( sim -> average_dmg )
   {
     if( base_dd == 0 )
