@@ -331,6 +331,8 @@ void player_t::init_stats()
     resource_lost[ i ] = resource_gained[ i ] = 0;
   }
 
+  // FIXME! Init the stats structure here.  Makes for cleaner "harmful/channeled" setting.
+
   for( stats_t* s = stats_list; s; s = s -> next )
   {
     s -> init();

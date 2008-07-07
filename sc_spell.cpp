@@ -75,7 +75,9 @@ void spell_t::player_buff()
 
   if( p -> buffs.improved_divine_spirit )
   {
-    player_power += p -> spirit * 0.06;
+    static bool AFTER_3_0_0 = sim -> patch.after( 3, 0, 0 );
+
+    player_power += p -> spirit * ( AFTER_3_0_0 ? 0.06 : 0.10 );
   }
 
   if( p -> gear.chaotic_skyfire ) player_crit_bonus *= 1.09;

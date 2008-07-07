@@ -23,6 +23,7 @@ struct priest_t : public player_t
   struct talents_t
   {
     int8_t  darkness;
+    int8_t  dispersion;
     int8_t  divine_fury;
     int8_t  focused_mind;
     int8_t  focused_power;
@@ -479,18 +480,18 @@ struct holy_fire_t : public priest_spell_t
 
     static rank_t ranks[] =
     {
-      { 66, 9, 412, 523, 165, 290 },
-      { 60, 8, 355, 449, 145, 255 },
-      { 54, 7, 304, 386, 125, 230 },
-      { 48, 6, 254, 322, 100, 200 },
-      { 42, 5, 204, 258,  85, 170 },
-      { 0, 0 }
+      { 78, 11, 890, 1130, 350, 290 },
+      { 72, 10, 732,  928, 287, 290 },
+      { 66,  9, 412,  523, 165, 290 },
+      { 60,  8, 355,  449, 145, 255 },
+      { 0,   0 }
     };
     rank = choose_rank( ranks );
       
     base_execute_time = 3.5; 
     base_duration     = 10.0; 
-    num_ticks         = 5;
+    num_ticks         = ( rank -> index < 10 ) ? 5 : 7;
+    cooldown          = ( rank -> index < 10 ) ? 0 : 10;
     dd_power_mod      = 0.857; 
     dot_power_mod     = 0.165; 
     may_crit          = true;    
@@ -521,10 +522,11 @@ struct smite_t : public priest_spell_t
 
     static rank_t ranks[] =
     {
+      { 80, 12, 707, 793, 0, 615 },
+      { 75, 11, 604, 676, 0, 520 },
       { 69, 10, 545, 611, 0, 385 },
       { 61,  9, 405, 455, 0, 300 },
       { 54,  8, 371, 415, 0, 280 },
-      { 46,  7, 287, 323, 0, 230 },
       { 0, 0 }
     };
     rank = choose_rank( ranks );
@@ -578,11 +580,11 @@ struct shadow_word_pain_t : public priest_spell_t
 
     static rank_t ranks[] =
     {
+      { 80, 12, 0, 0, 1530, 915 },
+      { 75, 11, 0, 0, 1302, 775 },
       { 70, 10, 0, 0, 1236, 575 },
       { 65,  9, 0, 0, 1002, 510 },
       { 58,  8, 0, 0,  852, 470 },
-      { 50,  7, 0, 0,  672, 385 },
-      { 42,  6, 0, 0,  510, 305 },
       { 0, 0 }
     };
     rank = choose_rank( ranks );
@@ -663,9 +665,10 @@ struct vampiric_touch_t : public priest_spell_t
 
     static rank_t ranks[] =
     {
+      { 80, 5, 0, 0, 850, 700 },
+      { 75, 4, 0, 0, 735, 595 },
       { 70, 3, 0, 0, 690, 475 },
       { 60, 2, 0, 0, 640, 400 },
-      { 50, 1, 0, 0, 450, 325 },
       { 0, 0 }
     };
     rank = choose_rank( ranks );
@@ -720,10 +723,10 @@ struct devouring_plague_t : public priest_spell_t
 
     static rank_t ranks[] =
     {
+      { 80, 9, 0, 0, 1720, 1850 },
+      { 76, 8, 0, 0, 1416, 1520 },
       { 68, 7, 0, 0, 1216, 1145 },
       { 60, 6, 0, 0,  904,  985 },
-      { 52, 5, 0, 0,  712,  810 },
-      { 44, 4, 0, 0,  544,  645 },
       { 0, 0 }
     };
     rank = choose_rank( ranks );
@@ -824,12 +827,11 @@ struct mind_blast_t : public priest_spell_t
 
     static rank_t ranks[] =
     {
-      { 69, 11, 708, 748, 0, 450 },
-      { 63, 10, 557, 588, 0, 380 },
-      { 58,  9, 503, 531, 0, 350 },
-      { 52,  8, 425, 449, 0, 310 },
-      { 46,  7, 346, 366, 0, 265 },
-      { 40,  6, 279, 297, 0, 225 },
+      { 80, 13, 992, 1048, 0, 715 },
+      { 75, 12, 837,  883, 0, 605 },
+      { 69, 11, 708,  748, 0, 450 },
+      { 63, 10, 557,  588, 0, 380 },
+      { 58,  9, 503,  531, 0, 350 },
       { 0, 0 }
     };
     rank = choose_rank( ranks );
@@ -887,6 +889,8 @@ struct shadow_word_death_t : public priest_spell_t
 
     static rank_t ranks[] =
     {
+      { 80, 4, 750, 870, 0, 510 },
+      { 75, 3, 639, 741, 0, 430 },
       { 70, 2, 572, 664, 0, 309 },
       { 62, 1, 450, 522, 0, 243 },
       { 0, 0 }
@@ -941,10 +945,10 @@ struct mind_flay_t : public priest_spell_t
 
     static rank_t ranks[] =
     {
+      { 80, 9, 0, 0, 690, 390 },
+      { 76, 8, 0, 0, 576, 320 },
       { 68, 7, 0, 0, 528, 230 },
       { 60, 6, 0, 0, 426, 205 },
-      { 52, 5, 0, 0, 330, 165 },
-      { 44, 4, 0, 0, 261, 135 },
       { 0, 0 }
     };
     rank = choose_rank( ranks );
@@ -1051,6 +1055,40 @@ struct mind_flay_t : public priest_spell_t
       }
     }
     return true;
+  }
+};
+
+// Dispersion Spell ============================================================
+
+struct dispersion_t : public priest_spell_t
+{
+  dispersion_t( player_t* player, const std::string& options_str ) : 
+    priest_spell_t( "dispersion", player, SCHOOL_SHADOW, TREE_SHADOW )
+  {
+    priest_t* p = player -> cast_priest();
+
+    assert( p -> talents.dispersion );
+
+    base_execute_time = 0.0; 
+    base_duration     = 6.0; 
+    num_ticks         = 6;
+    channeled         = true; 
+    harmful           = false;
+    base_cost         = 0;
+    cooldown          = 300;
+  }
+
+  virtual void tick()
+  {
+    player -> resource_gain( RESOURCE_MANA, 0.06 * player -> resource_initial[ RESOURCE_MANA ], "dispersion" );
+  }
+
+  virtual bool ready()
+  {
+    if( ! spell_t::ready() )
+      return false;
+
+    return player -> resource_current[ RESOURCE_MANA ] < 0.50 * player -> resource_initial[ RESOURCE_MANA ];
   }
 };
 
@@ -1276,6 +1314,7 @@ action_t* priest_t::create_action( const std::string& name,
 				   const std::string& options_str )
 {
   if( name == "devouring_plague" ) return new devouring_plague_t  ( this, options_str );
+  if( name == "dispersion"       ) return new dispersion_t        ( this, options_str );
   if( name == "holy_fire"        ) return new holy_fire_t         ( this, options_str );
   if( name == "inner_focus"      ) return new inner_focus_t       ( this, options_str );
   if( name == "mind_blast"       ) return new mind_blast_t        ( this, options_str );
@@ -1428,6 +1467,7 @@ bool priest_t::parse_option( const std::string& name,
   option_t options[] =
   {
     { "darkness",                  OPT_INT8,  &( talents.darkness                  ) },
+    { "dispersion",                OPT_INT8,  &( talents.dispersion                ) },
     { "divine_fury",               OPT_INT8,  &( talents.divine_fury               ) },
     { "focused_mind",              OPT_INT8,  &( talents.focused_mind              ) },
     { "focused_power",             OPT_INT8,  &( talents.focused_power             ) },
