@@ -132,7 +132,7 @@ bool timing_list_t::empty()
 // sim_t::sim_t =============================================================
 
 sim_t::sim_t() : 
-  method( SIM_LIST ), player_list(0), target(0),
+  method( SIM_LIST ), player_list(0), active_player(0), target(0),
   current_time(0), max_time(0), lag(0), total_seconds(0), 
   events_remaining(0), max_events_remaining(0), 
   events_processed(0), total_events_processed(0),
@@ -383,7 +383,7 @@ bool sim_t::parse_option( const std::string& name,
   if( target -> parse_option( name, value ) ) return true;
   if( report -> parse_option( name, value ) ) return true;
 
-  if( player_list && player_list -> parse_option( name, value ) ) return true;
+  if( active_player && active_player -> parse_option( name, value ) ) return true;
 
   return option_t::parse( options, name, value );
 }

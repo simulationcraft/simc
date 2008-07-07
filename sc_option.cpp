@@ -111,14 +111,51 @@ bool option_t::parse( sim_t*    sim,
     }
     fclose( file );      
   }
-//else if( name == "druid"   ) { player_t::create_druid  ( sim, value ); }
-//else if( name == "mage"    ) { player_t::create_mage   ( sim, value ); }
-  else if( name == "priest"  ) { player_t::create_priest ( sim, value ); }
-//else if( name == "shaman"  ) { player_t::create_shaman ( sim, value ); }
-//else if( name == "warlock" ) { player_t::create_warlock( sim, value ); }
-  else if( name == "pet"     ) 
+  else if( name == "druid" ) 
   { 
-    sim -> player_list -> create_pet( value );
+    //sim -> active_player = player_t::create_druid( sim, value ); 
+    assert( 0 );
+  }
+  else if( name == "mage" ) 
+  { 
+    //sim -> active_player = player_t::create_mage( sim, value ); 
+    assert( 0 );
+  }
+  else if( name == "priest" ) 
+  { 
+    sim -> active_player = player_t::create_priest( sim, value );
+    assert( sim -> active_player );
+  }
+  else if( name == "shaman" )
+  {
+    //sim -> active_player = player_t::create_shaman ( sim, value );
+    assert( 0 );
+  }
+  else if( name == "warlock" )
+  {
+    //sim -> active_player = player_t::create_warlock( sim, value );
+    assert( 0 );
+  }
+  else if( name == "pet" ) 
+  { 
+    sim -> active_player = sim -> active_player -> create_pet( value );
+    assert( sim -> active_player );
+  }
+  else if( name == "active"  ) 
+  { 
+    if( value == "owner" )
+    {
+      sim -> active_player = sim -> active_player -> cast_pet() -> owner;
+    }
+    else
+    {
+      for( sim -> active_player = sim -> player_list; sim -> active_player; sim -> active_player = sim -> active_player -> next )
+      {
+	if( value == sim -> active_player -> name() )
+	  break;
+      }
+      assert( sim -> active_player );
+    }
   }
   else if( name == "talents" )
   {
@@ -132,7 +169,7 @@ bool option_t::parse( sim_t*    sim,
     {
       talent_string = value;
     }
-    sim -> player_list -> parse_talents( talent_string );
+    sim -> active_player -> parse_talents( talent_string );
   }
   else
   {

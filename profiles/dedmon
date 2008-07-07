@@ -8,3 +8,4 @@ gear_spell_power=1230
 gear_spell_hit_rating=114
 gear_spell_crit_rating=86
 pet=shadow_fiend
+active=owner

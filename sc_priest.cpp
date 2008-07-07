@@ -11,7 +11,14 @@
 
 struct priest_t : public player_t
 {
+  spell_t*  devouring_plague_active;
+  spell_t*  shadow_word_pain_active;
+  spell_t*  vampiric_touch_active;
+  spell_t*  vampiric_embrace_active;
+
   uptime_t* improved_spirit_tap_uptime;
+  event_t*  improved_spirit_tap_expiration;
+  int8_t    improved_spirit_tap;
 
   struct talents_t
   {
@@ -24,12 +31,14 @@ struct priest_t : public player_t
     int8_t  improved_divine_spirit;
     int8_t  improved_shadow_word_pain;
     int8_t  improved_mind_blast;
+    int8_t  improved_spirit_tap;
     int8_t  improved_vampiric_embrace;
     int8_t  inner_focus;
     int8_t  meditation;
     int8_t  mental_agility;
     int8_t  mental_strength;
     int8_t  misery;
+    int8_t  pain_and_suffering;
     int8_t  power_infusion;
     int8_t  searing_light;
     int8_t  shadow_focus;
@@ -38,6 +47,7 @@ struct priest_t : public player_t
     int8_t  shadow_weaving;
     int8_t  spiritual_guidance;
     int8_t  surge_of_light;
+    int8_t  twisted_faith;
     int8_t  vampiric_embrace;
     int8_t  vampiric_touch;
     
@@ -45,7 +55,16 @@ struct priest_t : public player_t
   };
   talents_t talents;
 
-  priest_t( sim_t* sim, std::string& name ) : player_t( sim, PRIEST, name ) {}
+  priest_t( sim_t* sim, std::string& name ) : player_t( sim, PRIEST, name ) 
+  {
+    devouring_plague_active = 0;
+    shadow_word_pain_active = 0;
+    vampiric_touch_active = 0;
+    vampiric_embrace_active = 0;
+    improved_spirit_tap_uptime = sim -> get_uptime( name + "_improved_spirit_tap" );
+    improved_spirit_tap_expiration = 0;
+    improved_spirit_tap = 0;
+  }
 
   // Character Definition
   virtual void      init();
@@ -137,6 +156,8 @@ struct shadow_fiend_pet_t : public pet_t
     base_stamina = 280;
     base_intellect = 133;
     attack_power_per_strength = 2.0;
+
+    if( owner -> gear.tier4_2pc ) base_stamina += 75;
   }
   virtual void reset()
   {
@@ -352,6 +373,56 @@ static void trigger_surge_of_light( spell_t* s )
   }
 }
 
+// trigger_improved_spirit_tap =================================================
+
+static void trigger_improved_spirit_tap( spell_t* s )
+{
+  struct expiration_t : public event_t
+  {
+    int16_t spirit_bonus;
+    expiration_t( sim_t* sim, priest_t* p ) : event_t( sim, p )
+    {
+      name = "Improved Spirit Tap Expiration";
+      p -> improved_spirit_tap = 1;
+      p -> aura_gain( "improved_spirit_tap" );
+      spirit_bonus = p -> spirit / 2;
+      p -> spirit += spirit_bonus;
+      time = 8.0;
+      sim -> add_event( this );
+    }
+    virtual void execute()
+    {
+      priest_t* p = player -> cast_priest();
+      p -> improved_spirit_tap = 0;
+      p -> aura_loss( "improved_spirit_tap" );
+      p -> spirit -= spirit_bonus;
+      p -> improved_spirit_tap_expiration = 0;
+    }
+  };
+
+  priest_t* p = s -> player -> cast_priest();
+
+  if( s -> result == RESULT_CRIT && 
+      p -> talents.improved_spirit_tap )
+  {
+    if( wow_random( p -> talents.improved_spirit_tap * 0.50 ) )
+    {
+      p -> proc( "improved_spirit_tap" );
+
+      event_t*& e = p -> improved_spirit_tap_expiration;
+
+      if( e )
+      {
+	e -> reschedule( s -> sim -> current_time + 8.0 );
+      }
+      else
+      {
+	e = new expiration_t( s -> sim, p );
+      }
+    }
+  }
+}
+
 } // ANONYMOUS NAMESPACE =====================================================
 
 // ==========================================================================
@@ -375,7 +446,7 @@ void priest_spell_t::execute()
 {
   spell_t::execute();
 
-  if( player -> buffs.inner_focus )
+  if( player -> buffs.inner_focus && base_cost > 0 )
   {
     player -> aura_loss( "Inner Focus" );
     player -> buffs.inner_focus = 0;
@@ -516,6 +587,8 @@ struct shadow_word_pain_t : public priest_spell_t
     };
     rank = choose_rank( ranks );
       
+    static bool AFTER_3_0 = sim -> patch.after( 3, 0, 0 );
+
     base_execute_time = 0; 
     base_duration     = 18.0; 
     num_ticks         = 6;
@@ -524,8 +597,10 @@ struct shadow_word_pain_t : public priest_spell_t
     base_dot  = rank -> dot;
     base_cost = rank -> cost;
     base_cost *= 1.0 - p -> talents.mental_agility * 0.02;
+    if( AFTER_3_0 ) base_cost *= 1.0 - p -> talents.shadow_focus * 0.02;
 
-    int8_t more_ticks = p -> talents.improved_shadow_word_pain;
+    int8_t more_ticks = 0;
+    if( ! AFTER_3_0 ) more_ticks += p -> talents.improved_shadow_word_pain;
     if( p -> gear.tier6_2pc ) more_ticks++;
     if( more_ticks > 0 )
     {
@@ -539,13 +614,18 @@ struct shadow_word_pain_t : public priest_spell_t
 
     base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
     base_multiplier *= 1.0 + p -> talents.force_of_will * 0.01;
-    base_hit        += p -> talents.shadow_focus * 0.02;
+    if( AFTER_3_0 ) base_multiplier *= 1.0 + p -> talents.improved_shadow_word_pain * 0.05;
+    base_hit        += p -> talents.shadow_focus * ( AFTER_3_0 ? 0.01 : 0.02 );
   }
 
   virtual void execute() 
   {
     priest_spell_t::execute(); 
-    push_misery( this );
+    if( result == RESULT_HIT ) 
+    {
+      push_misery( this );
+      player -> cast_priest() -> shadow_word_pain_active = this;
+    }
   }
 
   virtual void tick() 
@@ -559,6 +639,7 @@ struct shadow_word_pain_t : public priest_spell_t
   {
     priest_spell_t::last_tick(); 
     pop_misery( this );
+    player -> cast_priest() -> shadow_word_pain_active = 0;
   }
 };
 
@@ -589,28 +670,35 @@ struct vampiric_touch_t : public priest_spell_t
     };
     rank = choose_rank( ranks );
       
+    static bool AFTER_3_0 = sim -> patch.after( 3, 0, 0 );
+
     base_execute_time = 1.5; 
     base_duration     = 15.0; 
     num_ticks         = 5;
     dot_power_mod     = 1.0; 
-      
+
+    base_cost        = rank -> cost;
+    if( AFTER_3_0 ) base_cost *= 1.0 - p -> talents.shadow_focus * 0.02;
     base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
     base_multiplier *= 1.0 + p -> talents.force_of_will * 0.01;
-    base_hit        += p -> talents.shadow_focus * 0.02;
+    base_hit        += p -> talents.shadow_focus * ( AFTER_3_0 ? 0.01 : 0.02 );
   }
 
   virtual void execute() 
   {
     priest_spell_t::execute(); 
-    player -> buffs.vampiric_touch = 1;
-    push_misery( this );
+    if( result == RESULT_HIT ) 
+    {
+      push_misery( this );
+      player -> cast_priest() -> vampiric_touch_active = this;
+    }
   }
 
   virtual void last_tick() 
   {
     priest_spell_t::last_tick(); 
     pop_misery( this );
-    player -> buffs.vampiric_touch = 0;
+    player -> cast_priest() -> vampiric_touch_active = 0;
   }
 };
 
@@ -640,6 +728,8 @@ struct devouring_plague_t : public priest_spell_t
     };
     rank = choose_rank( ranks );
       
+    static bool AFTER_3_0 = sim -> patch.after( 3, 0, 0 );
+
     base_execute_time = 0; 
     base_duration     = 24.0; 
     num_ticks         = 8;  
@@ -649,15 +739,20 @@ struct devouring_plague_t : public priest_spell_t
 
     base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.mental_agility * 0.02;
+    if( AFTER_3_0 ) base_cost *= 1.0 - p -> talents.shadow_focus * 0.02;
     base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
     base_multiplier *= 1.0 + p -> talents.force_of_will * 0.01;
-    base_hit        += p -> talents.shadow_focus * 0.02;
+    base_hit        += p -> talents.shadow_focus * ( AFTER_3_0 ? 0.01 : 0.02 );
   }
 
   virtual void execute() 
   {
     priest_spell_t::execute(); 
-    push_misery( this );
+    if( result == RESULT_HIT ) 
+    {
+      push_misery( this );
+      player -> cast_priest() -> devouring_plague_active = this;
+    }
   }
 
   virtual void tick() 
@@ -670,6 +765,7 @@ struct devouring_plague_t : public priest_spell_t
   {
     priest_spell_t::last_tick(); 
     pop_misery( this );
+    player -> cast_priest() -> devouring_plague_active = 0;
   }
 };
 
@@ -684,24 +780,29 @@ struct vampiric_embrace_t : public priest_spell_t
 
     assert( p -> talents.vampiric_embrace );
      
+    static bool AFTER_3_0 = sim -> patch.after( 3, 0, 0 );
+
     base_execute_time = 0; 
     base_duration     = 60.0; 
     num_ticks         = 1;
     base_cost         = 30;
     base_multiplier   = 0;
-    base_hit          = p -> talents.shadow_focus * 0.02;
+    base_hit          = p -> talents.shadow_focus * ( AFTER_3_0 ? 0.01 : 0.02 );
   }
 
   virtual void execute() 
   {
     priest_spell_t::execute(); 
-    if( result == RESULT_HIT ) player -> buffs.vampiric_embrace = 1;
+    if( result == RESULT_HIT ) 
+    {
+      player -> cast_priest() -> vampiric_embrace_active = this;
+    }
   }
 
   virtual void tick() 
   {
     priest_spell_t::tick(); 
-    player -> buffs.vampiric_embrace = 0;
+    player -> cast_priest() -> vampiric_embrace_active = 0;
   }
 };
 
@@ -733,6 +834,8 @@ struct mind_blast_t : public priest_spell_t
     };
     rank = choose_rank( ranks );
     
+    static bool AFTER_3_0 = sim -> patch.after( 3, 0, 0 );
+
     base_execute_time = 1.5; 
     cooldown          = 8.0;
     may_crit          = true; 
@@ -740,15 +843,29 @@ struct mind_blast_t : public priest_spell_t
       
     base_cost       = rank -> cost;
     base_cost       *= 1.0 - p -> talents.focused_mind * 0.05;
+    if( AFTER_3_0 ) base_cost *= 1.0 - p -> talents.shadow_focus * 0.02;
     base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
     base_multiplier *= 1.0 + p -> talents.force_of_will * 0.01;
-    base_crit       += p -> talents.shadow_power * 0.03;
+    base_crit       += p -> talents.shadow_power * ( AFTER_3_0 ? 0.02 : 0.03 );
     base_crit       += p -> talents.force_of_will * 0.01;
-    base_hit        += p -> talents.shadow_focus * 0.02;
+    if( AFTER_3_0 ) base_crit_bonus *= 1.0 + p -> talents.shadow_power * 0.10;
+    base_hit        += p -> talents.shadow_focus * ( AFTER_3_0 ? 0.01 : 0.02 );
     base_hit        += p -> talents.focused_power * 0.02;
     cooldown        -= p -> talents.improved_mind_blast * 0.5;
     
     if( p -> gear.tier6_4pc ) base_multiplier *= 1.10;
+  }
+
+  virtual void player_buff()
+  {
+    priest_spell_t::player_buff();
+    priest_t* p = player -> cast_priest();
+    if( p -> talents.twisted_faith )
+    {
+      if( p -> devouring_plague_active ) player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.01;
+      if( p -> shadow_word_pain_active ) player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.01;
+      if( p -> vampiric_touch_active   ) player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.01;
+    }
   }
 };
 
@@ -776,6 +893,8 @@ struct shadow_word_death_t : public priest_spell_t
     };
     rank = choose_rank( ranks );
     
+    static bool AFTER_3_0 = sim -> patch.after( 3, 0, 0 );
+
     base_execute_time = 0; 
     may_crit          = true; 
     cooldown          = 12.0;
@@ -783,17 +902,20 @@ struct shadow_word_death_t : public priest_spell_t
 
     base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.mental_agility * 0.02;
+    if( AFTER_3_0 ) base_cost *= 1.0 - p -> talents.shadow_focus * 0.02;
     base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
     base_multiplier *= 1.0 + p -> talents.force_of_will * 0.01;
-    base_crit       += p -> talents.shadow_power * 0.03;
+    base_crit       += p -> talents.shadow_power * ( AFTER_3_0 ? 0.02 : 0.03 );
     base_crit       += p -> talents.force_of_will * 0.01;
-    base_hit        += p -> talents.shadow_focus * 0.02;
+    if( AFTER_3_0 ) base_crit_bonus *= 1.0 + p -> talents.shadow_power * 0.10;
+    base_hit        += p -> talents.shadow_focus * ( AFTER_3_0 ? 0.01 : 0.02 );
   }
 
   virtual void execute() 
   {
     priest_spell_t::execute(); 
-    player -> resource_loss( RESOURCE_HEALTH, dd, "shadow_word_death" );
+    priest_t* p = player -> cast_priest();
+    p -> resource_loss( RESOURCE_HEALTH, dd * ( 1.0 - p -> talents.pain_and_suffering * 0.20 ), "shadow_word_death" );
   }
 };
 
@@ -827,6 +949,8 @@ struct mind_flay_t : public priest_spell_t
     };
     rank = choose_rank( ranks );
     
+    static bool AFTER_3_0 = sim -> patch.after( 3, 0, 0 );
+
     base_execute_time = 0.0; 
     base_duration     = 3.0; 
     num_ticks         = 3;
@@ -836,11 +960,39 @@ struct mind_flay_t : public priest_spell_t
 
     base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.focused_mind * 0.05;
+    if( AFTER_3_0 ) base_cost *= 1.0 - p -> talents.shadow_focus * 0.02;
     base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
     base_multiplier *= 1.0 + p -> talents.force_of_will * 0.01;
-    base_hit        += p -> talents.shadow_focus * 0.02;
+    base_hit        += p -> talents.shadow_focus * ( AFTER_3_0 ? 0.01 : 0.02 );
     
     if( p -> gear.tier4_4pc ) base_multiplier *= 1.05;
+  }
+
+  virtual void execute()
+  {
+    priest_spell_t::execute();
+    if( result == RESULT_HIT )
+    {
+      priest_t* p = player -> cast_priest();
+      spell_t*  swp = p -> shadow_word_pain_active;
+      if( swp && wow_random( p -> talents.pain_and_suffering * 0.333333 ) )
+      {
+	swp -> current_tick = 0;
+	swp -> time_remaining = swp -> duration();
+      }
+    }
+  }
+
+  virtual void player_buff()
+  {
+    priest_spell_t::player_buff();
+    priest_t* p = player -> cast_priest();
+    if( p -> talents.twisted_faith )
+    {
+      if( p -> devouring_plague_active ) player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.01;
+      if( p -> shadow_word_pain_active ) player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.01;
+      if( p -> vampiric_touch_active   ) player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.01;
+    }
   }
 
   virtual void tick()
@@ -929,7 +1081,7 @@ struct power_infusion_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
     assert( p -> talents.power_infusion );
     trigger_gcd = false;  
-    cooldown = 180.0;
+    cooldown = sim -> patch.after( 3, 0, 0 ) ? 120.0 : 180.0;
   }
    
   virtual void execute()
@@ -1002,6 +1154,7 @@ struct shadow_fiend_spell_t : public priest_spell_t
     shadow_fiend_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
     {
       time = 15.1;
+      if( p -> gear.tier4_2pc ) time += 3.0;
       sim -> add_event( this );
     }
     virtual void execute()
@@ -1057,6 +1210,7 @@ void priest_t::spell_hit_event( spell_t* s )
     if( s -> num_ticks ) push_misery( s );
   }
 
+  trigger_improved_spirit_tap( s );
   trigger_surge_of_light( s );
 }
 
@@ -1070,6 +1224,8 @@ void priest_t::spell_finish_event( spell_t* s )
     push_tier5_2pc( s );
   }
   pop_tier5_4pc( s );
+
+  improved_spirit_tap_uptime -> update( improved_spirit_tap );
 }
 
 // priest_t::spell_damage_event ==============================================
@@ -1080,9 +1236,11 @@ void priest_t::spell_damage_event( spell_t* s,
 {
   if( s -> school == SCHOOL_SHADOW )
   {
-    if( buffs.vampiric_touch )
+    if( vampiric_touch_active )
     {
-      double mana = amount * 0.05;
+      static bool AFTER_3_0 = sim -> patch.after( 3, 0, 0 );
+
+      double mana = amount * ( AFTER_3_0 ? 0.02 : 0.05 );
 
       for( player_t* p = sim -> player_list; p; p = p -> next )
       {
@@ -1092,7 +1250,7 @@ void priest_t::spell_damage_event( spell_t* s,
 	}
       }
     }
-    if( buffs.vampiric_embrace )
+    if( vampiric_embrace_active )
     {
       double adjust = 0.15 + talents.improved_vampiric_embrace * 0.05;
       double health = amount * adjust;
@@ -1163,7 +1321,9 @@ void priest_t::init_base()
   base_spirit    = 155;
 
   base_spell_crit = 0.0125;
-  spell_crit_per_intellect = 1.0 / ( level + 10 );
+  spell_crit_per_intellect = 0.01 / ( level + 10 );
+  spell_power_per_spirit = ( talents.spiritual_guidance * 0.05 +
+			     talents.twisted_faith       * 0.06 );
 
   base_attack_power = -10;
   base_attack_crit  = 0.03;
@@ -1190,6 +1350,14 @@ void priest_t::init_resources()
 void priest_t::reset()
 {
   player_t::reset();
+
+  devouring_plague_active = 0;
+  shadow_word_pain_active = 0;
+  vampiric_touch_active   = 0;
+  vampiric_embrace_active = 0;
+
+  improved_spirit_tap_expiration = 0;
+  improved_spirit_tap = 0;
 }
 
 // priest_t::regen  ==========================================================
@@ -1268,12 +1436,14 @@ bool priest_t::parse_option( const std::string& name,
     { "improved_divine_spirit",    OPT_INT8,  &( talents.improved_divine_spirit    ) },
     { "improved_shadow_word_pain", OPT_INT8,  &( talents.improved_shadow_word_pain ) },
     { "improved_mind_blast",       OPT_INT8,  &( talents.improved_mind_blast       ) },
+    { "improved_spirit_tap",       OPT_INT8,  &( talents.improved_spirit_tap       ) },
     { "improved_vampiric_embrace", OPT_INT8,  &( talents.improved_vampiric_embrace ) },
     { "inner_focus",               OPT_INT8,  &( talents.inner_focus               ) },
     { "meditation",                OPT_INT8,  &( talents.meditation                ) },
     { "mental_agility",            OPT_INT8,  &( talents.mental_agility            ) },
     { "mental_strength",           OPT_INT8,  &( talents.mental_strength           ) },
     { "misery",                    OPT_INT8,  &( talents.misery                    ) },
+    { "pain_and_suffering",        OPT_INT8,  &( talents.pain_and_suffering        ) },
     { "power_infusion",            OPT_INT8,  &( talents.power_infusion            ) },
     { "searing_light",             OPT_INT8,  &( talents.searing_light             ) },
     { "shadow_focus",              OPT_INT8,  &( talents.shadow_focus              ) },
@@ -1282,6 +1452,7 @@ bool priest_t::parse_option( const std::string& name,
     { "shadow_weaving",            OPT_INT8,  &( talents.shadow_weaving            ) },
     { "spiritual_guidance",        OPT_INT8,  &( talents.spiritual_guidance        ) },
     { "surge_of_light",            OPT_INT8,  &( talents.surge_of_light            ) },
+    { "twisted_faith",             OPT_INT8,  &( talents.twisted_faith             ) },
     { "vampiric_embrace",          OPT_INT8,  &( talents.vampiric_embrace          ) },
     { "vampiric_touch",            OPT_INT8,  &( talents.vampiric_touch            ) },
     { NULL, OPT_UNKNOWN }
@@ -1301,7 +1472,7 @@ bool priest_t::parse_option( const std::string& name,
 
 // player_t::create_priest  =================================================
 
-priest_t* player_t::create_priest( sim_t*       sim, 
+player_t* player_t::create_priest( sim_t*       sim, 
 				   std::string& name ) 
 {
   return new priest_t( sim, name );

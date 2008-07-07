@@ -173,6 +173,7 @@ struct sim_t
   std::string patch_str;
   patch_t     patch;
   player_t*   player_list;
+  player_t*   active_player;
   target_t*   target;
   double      current_time, max_time, lag, total_seconds;
   int32_t     events_remaining, max_events_remaining;
@@ -406,8 +407,6 @@ struct player_t
     int8_t  surge_of_light;
     int16_t talisman_of_ascendance;
     int8_t  totem_of_wrath;
-    int8_t  vampiric_embrace;
-    int8_t  vampiric_touch;
     int8_t  violet_eye;
     int8_t  wrath_of_air;
     int16_t zandalarian_hero_charm;
@@ -538,11 +537,11 @@ struct player_t
 
   // Class-Specific Methods
 
-  static druid_t   * create_druid  ( sim_t* sim, std::string& name );
-  static mage_t    * create_mage   ( sim_t* sim, std::string& name );
-  static priest_t  * create_priest ( sim_t* sim, std::string& name );
-  static shaman_t  * create_shaman ( sim_t* sim, std::string& name );
-  static warlock_t * create_warlock( sim_t* sim, std::string& name );
+  static player_t * create_druid  ( sim_t* sim, std::string& name );
+  static player_t * create_mage   ( sim_t* sim, std::string& name );
+  static player_t * create_priest ( sim_t* sim, std::string& name );
+  static player_t * create_shaman ( sim_t* sim, std::string& name );
+  static player_t * create_warlock( sim_t* sim, std::string& name );
 
   druid_t  * cast_druid  () { assert( type == DRUID      ); return (druid_t  *) this; }
   mage_t   * cast_mage   () { assert( type == MAGE       ); return (mage_t   *) this; }
