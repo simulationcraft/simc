@@ -79,6 +79,8 @@ player_t::player_t( sim_t*             s,
   base_spell_crit(0),        initial_spell_crit(0),        spell_crit(0),
   base_spell_penetration(0), initial_spell_penetration(0), spell_penetration(0),
   base_mp5(0),               initial_mp5(0),               mp5(0),
+  spell_power_per_intellect(0),
+  spell_power_per_spirit(0),
   spell_crit_per_intellect(0),
   last_cast(0),
   // Attack Mechanics
@@ -176,9 +178,6 @@ void player_t::init_spell()
     initial_spell_crit = base_spell_crit;
     initial_spell_crit += ( gear.spell_crit_rating + 
 			    gear.spell_crit_rating_enchant ) / rating.spell_crit;
-
-    // This -could- be done on-the-fly during player_buff(), but intellect doesn't vary too much.
-    initial_spell_crit += initial_intellect / ( ( level + 10 ) * 100.0 );
   }
   if( initial_spell_penetration == 0 )
   {

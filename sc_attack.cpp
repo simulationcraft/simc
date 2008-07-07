@@ -68,11 +68,16 @@ double attack_t::duration()
 
 void attack_t::player_buff()
 {
-  player_hit        = player -> attack_hit;
-  player_expertise  = player -> attack_expertise;
-  player_crit       = player -> attack_crit;
+  player_t* p = player;
+
+  player_hit        = p -> attack_hit;
+  player_expertise  = p -> attack_expertise;
+  player_crit       = p -> attack_crit +
+                      p -> attack_crit_per_agility  * p -> agility;
   player_crit_bonus = 1.0;
-  player_power      = player -> attack_power;
+  player_power      = p -> attack_power +
+                      p -> attack_power_per_strength * p -> strength +
+                      p -> attack_power_per_agility  * p -> agility;
 }
 
 // attack_t::target_debuff ==================================================

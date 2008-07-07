@@ -60,6 +60,11 @@ void spell_t::player_buff()
   player_power        = p -> spell_power[ SCHOOL_MAX ] + p -> spell_power[ school ];
   player_penetration += p -> spell_penetration;
 
+  player_crit += p -> spell_crit_per_intellect * p -> intellect;
+
+  player_power += p -> spell_power_per_intellect * p -> intellect;
+  player_power += p -> spell_power_per_spirit    * p -> spirit;
+
   if( p -> buffs.moonkin_aura   ) player_crit += 0.05;
   if( p -> buffs.totem_of_wrath )
   {

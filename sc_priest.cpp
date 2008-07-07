@@ -91,8 +91,8 @@ struct shadow_fiend_pet_t : public pet_t
 {
   struct auto_attack_t : public attack_t
   {
-    auto_attack_t( const char* name, player_t* player ) : 
-      attack_t( name, player, RESOURCE_NONE, SCHOOL_SHADOW )
+    auto_attack_t( player_t* player ) : 
+      attack_t( "melee", player, RESOURCE_NONE, SCHOOL_SHADOW )
     {
       weapon = player -> main_hand_weapon;
       base_execute_time = weapon -> swing_time;
@@ -126,11 +126,12 @@ struct shadow_fiend_pet_t : public pet_t
   shadow_fiend_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name ) :
     pet_t( sim, owner, pet_name )
   {
-    main_hand_weapon = new weapon_t( WEAPON_BEAST_1H, 110, 1.35, SCHOOL_SHADOW );
-    auto_attack = new auto_attack_t( "melee", this );
+    main_hand_weapon = new weapon_t( WEAPON_BEAST_1H, 110, 1.5, SCHOOL_SHADOW );
+    auto_attack = new auto_attack_t( this );
   }
   virtual void init_base()
   {
+    // FIXME! Need strengh and agility here.
     base_attack_power = 289;
   }
   virtual void reset()
@@ -144,7 +145,7 @@ struct shadow_fiend_pet_t : public pet_t
   virtual void summon()
   {
     report_t::log( sim, "%s summons Shadow Fiend.", owner -> name() );
-    auto_attack -> schedule_execute();
+    auto_attack -> execute();
   }
   virtual void dismiss()
   {

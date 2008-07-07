@@ -241,6 +241,8 @@ struct player_t
   double      base_spell_crit,        initial_spell_crit,                  spell_crit;
   int16_t     base_spell_penetration, initial_spell_penetration,           spell_penetration;
   int16_t     base_mp5,               initial_mp5,                         mp5;
+  double      spell_power_per_intellect;
+  double      spell_power_per_spirit;
   double      spell_crit_per_intellect;
   double      last_cast;
 
