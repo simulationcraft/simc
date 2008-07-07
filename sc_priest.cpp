@@ -94,13 +94,17 @@ struct shadow_fiend_pet_t : public pet_t
     auto_attack_t( const char* name, player_t* player ) : 
       attack_t( name, player, RESOURCE_NONE, SCHOOL_SHADOW )
     {
-      base_execute_time = 1.5;
-      base_dd = 111;
+      weapon = player -> main_hand_weapon;
+      base_execute_time = weapon -> swing_time;
+      base_dd = 1;
       valid = false;
       background = true;
+      repeating = true;
     }
     void player_buff()
     {
+      attack_t::player_buff();
+
       player_t* owner = player -> pet() -> owner;
 
       player_power += 0.57 * ( owner -> spell_power[ SCHOOL_MAX    ] + 
@@ -115,12 +119,6 @@ struct shadow_fiend_pet_t : public pet_t
 
       player -> pet() -> owner -> resource_gain( RESOURCE_MANA, amount * 2.5, "shadow_fiend" );
     }
-    void execute()
-    {
-      attack_t::execute();
-      // FIXME!  Change "background" to "repeating".
-      schedule_execute();
-    }
   };
 
   auto_attack_t* auto_attack;
@@ -128,6 +126,7 @@ struct shadow_fiend_pet_t : public pet_t
   shadow_fiend_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name ) :
     pet_t( sim, owner, pet_name )
   {
+    main_hand_weapon = new weapon_t( WEAPON_BEAST_1H, 110, 1.35, SCHOOL_SHADOW );
     auto_attack = new auto_attack_t( "melee", this );
   }
   virtual void init_base()

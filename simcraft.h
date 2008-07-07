@@ -123,10 +123,10 @@ enum talent_tree_type {
 };
 
 enum weapon_type { WEAPON_NONE=0, 
-		   WEAPON_DAGGER,   WEAPON_FIST,                                                  WEAPON_SMALL,
-		   WEAPON_SWORD,    WEAPON_MACE,     WEAPON_AXE,                                  WEAPON_1H,
-		   WEAPON_SWORD_2H, WEAPON_MACE_2H,  WEAPON_AXE_2H, WEAPON_STAFF, WEAPON_POLEARM, WEAPON_2H,
-		   WEAPON_BOW,      WEAPON_CROSSBOW, WEAPON_GUN,    WEAPON_WAND,  WEAPON_THROWN,  WEAPON_RANGED,
+		   WEAPON_DAGGER,   WEAPON_FIST,                                                                    WEAPON_SMALL,
+		   WEAPON_BEAST_1H, WEAPON_SWORD,    WEAPON_MACE,     WEAPON_AXE,                                   WEAPON_1H,
+		   WEAPON_BEAST_2H, WEAPON_SWORD_2H, WEAPON_MACE_2H,  WEAPON_AXE_2H, WEAPON_STAFF,  WEAPON_POLEARM, WEAPON_2H,
+		   WEAPON_BOW,      WEAPON_CROSSBOW, WEAPON_GUN,      WEAPON_WAND,   WEAPON_THROWN, WEAPON_RANGED,
 		   WEAPON_MAX };
 
 enum position_type { POSITION_NONE=0, POSITION_FRONT, POSITION_BACK, POSITION_MAX };
@@ -709,7 +709,7 @@ struct action_t
   std::string name_str;
   player_t* player;
   int8_t school, resource, tree, result;
-  bool bleed, binary, channeled, background, aoe, harmful, trigger_gcd;
+  bool bleed, binary, channeled, background, repeating, aoe, harmful, trigger_gcd;
   bool may_miss, may_resist, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
   double base_execute_time, base_duration, base_cost;
   double   base_multiplier,   base_hit,   base_crit,   base_crit_bonus,   base_power,   base_penetration;

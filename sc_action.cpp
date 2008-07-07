@@ -18,7 +18,7 @@ action_t::action_t( int8_t      ty,
 		    int8_t      s,
 		    int8_t      tr ) :
   sim(p->sim), valid(true), type(ty), name_str(n), player(p), school(s), resource(r), tree(tr), result(RESULT_NONE),
-  bleed(false), binary(false), channeled(false), background(false), aoe(false), harmful(true), trigger_gcd(true),
+  bleed(false), binary(false), channeled(false), background(false), repeating(false), aoe(false), harmful(true), trigger_gcd(true),
   may_miss(false), may_resist(false), may_dodge(false), may_parry(false), 
   may_glance(false), may_block(false), may_crush(false), may_crit(false),
   base_execute_time(0), base_duration(0), base_cost(0),
@@ -385,6 +385,8 @@ void action_t::execute()
   update_stats( DMG_DIRECT );
 
   player -> action_finish( this );
+
+  if( repeating && background ) schedule_execute();
 }
 
 // action_t::tick ===========================================================
