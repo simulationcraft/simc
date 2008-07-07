@@ -105,10 +105,10 @@ struct shadow_fiend_pet_t : public pet_t
     {
       attack_t::player_buff();
 
-      player_t* owner = player -> pet() -> owner;
+      player_t* o = player -> cast_pet() -> owner;
 
-      player_power += 0.57 * ( owner -> spell_power[ SCHOOL_MAX    ] + 
-			       owner -> spell_power[ SCHOOL_SHADOW ] );
+      player_power += 0.57 * ( o -> spell_power[ SCHOOL_MAX    ] + 
+			       o -> spell_power[ SCHOOL_SHADOW ] );
 
       // Arbitrary until I figure out base stats.
       player_crit = 0.05;
@@ -117,7 +117,7 @@ struct shadow_fiend_pet_t : public pet_t
     {
       attack_t::assess_damage( amount, dmg_type );
 
-      player -> pet() -> owner -> resource_gain( RESOURCE_MANA, amount * 2.5, "shadow_fiend" );
+      player -> cast_pet() -> owner -> resource_gain( RESOURCE_MANA, amount * 2.5, "shadow_fiend" );
     }
   };
 
@@ -131,8 +131,12 @@ struct shadow_fiend_pet_t : public pet_t
   }
   virtual void init_base()
   {
-    // FIXME! Need strengh and agility here.
-    base_attack_power = 289;
+    base_attack_power = -20;
+    base_strength = 153;
+    base_agility = 108;
+    base_stamina = 280;
+    base_intellect = 133;
+    attack_power_per_strength = 2.0;
   }
   virtual void reset()
   {
@@ -144,12 +148,15 @@ struct shadow_fiend_pet_t : public pet_t
   }
   virtual void summon()
   {
-    report_t::log( sim, "%s summons Shadow Fiend.", owner -> name() );
+    player_t* o = cast_pet() -> owner;
+    report_t::log( sim, "%s summons Shadow Fiend.", o -> name() );
+    initial_stamina   = stamina   = base_stamina   + (int16_t) ( 0.30 * o -> stamina   );
+    initial_intellect = intellect = base_intellect + (int16_t) ( 0.30 * o -> intellect );
     auto_attack -> execute();
   }
   virtual void dismiss()
   {
-    report_t::log( sim, "%s's Shadow Fiend dies.", owner -> name() );
+    report_t::log( sim, "%s's Shadow Fiend dies.", cast_pet() -> owner -> name() );
     if( auto_attack -> event )
     {
       auto_attack -> event -> invalid = true;
@@ -164,7 +171,7 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 
 static void stack_shadow_weaving( spell_t* s )
 {
-  priest_t* p = s -> player -> priest();
+  priest_t* p = s -> player -> cast_priest();
 
   struct shadow_weaving_expiration_t : public event_t
   {
@@ -210,7 +217,7 @@ static void stack_shadow_weaving( spell_t* s )
 static void push_misery( spell_t* s )
 {
   target_t* t = s -> sim -> target;
-  priest_t* p = s -> player -> priest();
+  priest_t* p = s -> player -> cast_priest();
 
   t -> debuffs.misery_stack++;
   if( p -> talents.misery > t -> debuffs.misery )
@@ -223,7 +230,7 @@ static void push_misery( spell_t* s )
 
 static void pop_misery( spell_t* s )
 {
-  priest_t* p = s -> player -> priest();
+  priest_t* p = s -> player -> cast_priest();
   target_t* t = s -> sim -> target;
     
   if( p -> talents.misery )
@@ -237,7 +244,7 @@ static void pop_misery( spell_t* s )
 
 static void push_tier5_2pc( spell_t*s )
 {
-  priest_t* p = s -> player -> priest();
+  priest_t* p = s -> player -> cast_priest();
 
   assert( p -> buffs.tier5_2pc == 0 );
 
@@ -254,7 +261,7 @@ static void push_tier5_2pc( spell_t*s )
 
 static void pop_tier5_2pc( spell_t*s )
 {
-  priest_t* p = s -> player -> priest();
+  priest_t* p = s -> player -> cast_priest();
 
   if( p -> buffs.tier5_2pc )
   {
@@ -267,7 +274,7 @@ static void pop_tier5_2pc( spell_t*s )
 
 static void push_tier5_4pc( spell_t*s )
 {
-  priest_t* p = s -> player -> priest();
+  priest_t* p = s -> player -> cast_priest();
 
   if(   p ->  gear.tier5_4pc && 
       ! p -> buffs.tier5_4pc &&
@@ -283,7 +290,7 @@ static void push_tier5_4pc( spell_t*s )
 
 static void pop_tier5_4pc( spell_t*s )
 {
-  priest_t* p = s -> player -> priest();
+  priest_t* p = s -> player -> cast_priest();
 
   if( p -> buffs.tier5_4pc)
   {
@@ -337,7 +344,7 @@ static void trigger_ashtongue_talisman( spell_t* s )
 
 static void trigger_surge_of_light( spell_t* s )
 {
-  priest_t* priest = s -> player -> priest();
+  priest_t* priest = s -> player -> cast_priest();
 
   if( priest -> talents.surge_of_light )
   {
@@ -357,7 +364,7 @@ void priest_spell_t::player_buff()
 {
   spell_t::player_buff();
 
-  priest_t* p = player -> priest();
+  priest_t* p = player -> cast_priest();
 
   player_power += p -> spirit * p -> talents.spiritual_guidance * 0.05;
 }
@@ -390,7 +397,7 @@ struct holy_fire_t : public priest_spell_t
   holy_fire_t( player_t* player, const std::string& options_str ) : 
     priest_spell_t( "holy_fire", player, SCHOOL_HOLY, TREE_HOLY )
   {
-    priest_t* p = player -> priest();
+    priest_t* p = player -> cast_priest();
     
     option_t options[] =
     {
@@ -432,7 +439,7 @@ struct smite_t : public priest_spell_t
   smite_t( player_t* player, const std::string& options_str ) : 
     priest_spell_t( "smite", player, SCHOOL_HOLY, TREE_HOLY )
   {
-    priest_t* p = player -> priest();
+    priest_t* p = player -> cast_priest();
 
     option_t options[] =
     {
@@ -489,7 +496,7 @@ struct shadow_word_pain_t : public priest_spell_t
   shadow_word_pain_t( player_t* player, const std::string& options_str ) : 
     priest_spell_t( "shadow_word_pain", player, SCHOOL_SHADOW, TREE_SHADOW )
   {
-    priest_t* p = player -> priest();
+    priest_t* p = player -> cast_priest();
 
     option_t options[] =
     {
@@ -562,7 +569,7 @@ struct vampiric_touch_t : public priest_spell_t
   vampiric_touch_t( player_t* player, const std::string& options_str ) : 
     priest_spell_t( "vampiric_touch", player, SCHOOL_SHADOW, TREE_SHADOW )
   {
-    priest_t* p = player -> priest();
+    priest_t* p = player -> cast_priest();
 
     assert( p -> talents.vampiric_touch );
      
@@ -614,7 +621,7 @@ struct devouring_plague_t : public priest_spell_t
   devouring_plague_t( player_t* player, const std::string& options_str ) : 
     priest_spell_t( "devouring_plague", player, SCHOOL_SHADOW, TREE_SHADOW )
   {
-    priest_t* p = player -> priest();
+    priest_t* p = player -> cast_priest();
 
     option_t options[] =
     {
@@ -673,7 +680,7 @@ struct vampiric_embrace_t : public priest_spell_t
   vampiric_embrace_t( player_t* player, const std::string& options_str ) : 
     priest_spell_t( "vampiric_embrace", player, SCHOOL_SHADOW, TREE_SHADOW )
   {
-    priest_t* p = player -> priest();
+    priest_t* p = player -> cast_priest();
 
     assert( p -> talents.vampiric_embrace );
      
@@ -705,7 +712,7 @@ struct mind_blast_t : public priest_spell_t
   mind_blast_t( player_t* player, const std::string& options_str ) : 
     priest_spell_t( "mind_blast", player, SCHOOL_SHADOW, TREE_SHADOW )
   {
-    priest_t* p = player -> priest();
+    priest_t* p = player -> cast_priest();
 
     option_t options[] =
     {
@@ -752,7 +759,7 @@ struct shadow_word_death_t : public priest_spell_t
   shadow_word_death_t( player_t* player, const std::string& options_str ) : 
     priest_spell_t( "shadow_word_death", player, SCHOOL_SHADOW, TREE_SHADOW )
   {
-    priest_t* p = player -> priest();
+    priest_t* p = player -> cast_priest();
 
     option_t options[] =
     {
@@ -799,7 +806,7 @@ struct mind_flay_t : public priest_spell_t
   mind_flay_t( player_t* player, const std::string& options_str ) : 
     priest_spell_t( "mind_flay", player, SCHOOL_SHADOW, TREE_SHADOW ), wait(0), cancel(0)
   {
-    priest_t* p = player -> priest();
+    priest_t* p = player -> cast_priest();
 
     option_t options[] =
     {
@@ -919,7 +926,7 @@ struct power_infusion_t : public priest_spell_t
   power_infusion_t( player_t* player, const std::string& options_str ) : 
     priest_spell_t( "power_infusion", player, SCHOOL_ARCANE, TREE_DISCIPLINE )
   {
-    priest_t* p = player -> priest();
+    priest_t* p = player -> cast_priest();
     assert( p -> talents.power_infusion );
     trigger_gcd = false;  
     cooldown = 180.0;
@@ -943,7 +950,7 @@ struct inner_focus_t : public priest_spell_t
   inner_focus_t( player_t* player, const std::string& options_str ) : 
     priest_spell_t( "inner_focus", player, SCHOOL_HOLY, TREE_DISCIPLINE )
   {
-    priest_t* p = player -> priest();
+    priest_t* p = player -> cast_priest();
     assert( p -> talents.inner_focus );
     trigger_gcd = false;  
     cooldown = 180.0;
@@ -969,7 +976,7 @@ struct shadow_form_t : public priest_spell_t
   shadow_form_t( player_t* player, const std::string& options_str ) : 
     priest_spell_t( "shadow_form", player, SCHOOL_SHADOW, TREE_SHADOW )
   {
-    priest_t* p = player -> priest();
+    priest_t* p = player -> cast_priest();
     assert( p -> talents.shadow_form );
     trigger_gcd = false;
   }
@@ -994,7 +1001,7 @@ struct shadow_fiend_spell_t : public priest_spell_t
   {
     shadow_fiend_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
     {
-      time = 15.0;
+      time = 15.1;
       sim -> add_event( this );
     }
     virtual void execute()
@@ -1008,7 +1015,7 @@ struct shadow_fiend_spell_t : public priest_spell_t
   shadow_fiend_spell_t( player_t* player, const std::string& options_str ) : 
     priest_spell_t( "summon", player, SCHOOL_SHADOW, TREE_SHADOW ), mana(0)
   {
-    priest_t* p = player -> priest();
+    priest_t* p = player -> cast_priest();
 
     mana        = atof( options_str.c_str() );
     harmful    = false;

@@ -544,12 +544,12 @@ struct player_t
   static shaman_t  * create_shaman ( sim_t* sim, std::string& name );
   static warlock_t * create_warlock( sim_t* sim, std::string& name );
 
-  druid_t  * druid  () { if( type != DRUID      ) return 0; return (druid_t  *) this; }
-  mage_t   * mage   () { if( type != MAGE       ) return 0; return (mage_t   *) this; }
-  priest_t * priest () { if( type != PRIEST     ) return 0; return (priest_t *) this; }
-  shaman_t * shaman () { if( type != SHAMAN     ) return 0; return (shaman_t *) this; }
-  warlock_t* warlock() { if( type != WARLOCK    ) return 0; return (warlock_t*) this; }
-  pet_t*     pet    () { if( type != PLAYER_PET ) return 0; return (pet_t    *) this; }
+  druid_t  * cast_druid  () { assert( type == DRUID      ); return (druid_t  *) this; }
+  mage_t   * cast_mage   () { assert( type == MAGE       ); return (mage_t   *) this; }
+  priest_t * cast_priest () { assert( type == PRIEST     ); return (priest_t *) this; }
+  shaman_t * cast_shaman () { assert( type == SHAMAN     ); return (shaman_t *) this; }
+  warlock_t* cast_warlock() { assert( type == WARLOCK    ); return (warlock_t*) this; }
+  pet_t*     cast_pet    () { assert( type == PLAYER_PET ); return (pet_t    *) this; }
 };
 
 // Pet =======================================================================
