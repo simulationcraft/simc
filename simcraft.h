@@ -290,7 +290,7 @@ struct player_t
   // Reporting
   int8_t       quiet;
   report_t*    report;
-  double       iteration_dmg;
+  double       iteration_dmg, total_dmg;
   double       resource_lost  [ RESOURCE_MAX ];
   double       resource_gained[ RESOURCE_MAX ];
   proc_list_t  proc_list;
@@ -660,8 +660,9 @@ struct stats_t
   std::string name;
   sim_t* sim;
   player_t* player;
-  bool channeled;
   stats_t* next;
+  bool channeled;
+  bool analyzed;
 
   double num_executes, num_ticks;
   double total_execute_time, total_tick_time;
@@ -940,6 +941,7 @@ struct report_t
   int8_t report_miss;
   int8_t report_mps;
   int8_t report_name;
+  int8_t report_pet;
   int8_t report_pq;
   int8_t report_procs;
   int8_t report_raid_dps;
@@ -949,6 +951,7 @@ struct report_t
 
   report_t( sim_t* s );
   bool parse_option( const std::string& name, const std::string& value );
+  void print_action      ( stats_t* );
   void print_actions     ( player_t* );
   void print_gains       ( player_t* );
   void print_procs       ( player_t* );

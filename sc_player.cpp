@@ -99,7 +99,7 @@ player_t::player_t( sim_t*             s,
   // Actions
   action_list(0),
   // Reporting
-  quiet(0), report(0), iteration_dmg(0), stats_list(0)
+  quiet(0), report(0), iteration_dmg(0), total_dmg(0), stats_list(0)
 {
   report_t::debug( sim, "Creating Player %s", name() );
   next = sim -> player_list;
@@ -335,8 +335,6 @@ void player_t::init_rating()
 
 void player_t::init_stats() 
 {
-  iteration_dmg = 0;
-
   for( int i=0; i < RESOURCE_MAX; i++ )
   {
     resource_lost[ i ] = resource_gained[ i ] = 0;

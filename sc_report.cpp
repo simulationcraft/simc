@@ -22,6 +22,7 @@ report_t::report_t( sim_t* s ) :
   report_miss(1),
   report_mps(1),
   report_name(1),
+  report_pet(0),
   report_pq(0),
   report_procs(1),
   report_raid_dps(1),
@@ -47,6 +48,7 @@ bool report_t::parse_option( const std::string& name,
     { "report_miss",             OPT_INT8,   &( report_miss             ) },
     { "report_mps",              OPT_INT8,   &( report_mps              ) },
     { "report_name",             OPT_INT8,   &( report_name             ) },
+    { "report_pet",              OPT_INT8,   &( report_pet              ) },
     { "report_pq",               OPT_INT8,   &( report_pq               ) },
     { "report_procs",            OPT_INT8,   &( report_procs            ) },
     { "report_raid_dps",         OPT_INT8,   &( report_raid_dps         ) },
@@ -65,53 +67,83 @@ bool report_t::parse_option( const std::string& name,
   return option_t::parse( options, name, value );
 }
 
+// report_t::print_action ====================================================
+
+void report_t::print_action( stats_t* s )
+{
+  if( s -> num_executes == 0 ) return;
+
+  static std::string action_name;
+  double total_dmg;
+
+  if( s -> player -> type == PLAYER_PET )
+  {
+    action_name = s -> player -> name_str + "-" + s -> name;
+    total_dmg   = s -> player -> cast_pet() -> owner ->  total_dmg;
+  }
+  else 
+  {
+    action_name = s -> name;
+    total_dmg   = s -> player -> total_dmg;
+  }
+
+  printf( "    %-20s  Count=%.1f|%4.1fsec  DPS=%6.1f  DPE=%4.0f|%2.0f%%  DPET=%4.0f", 
+	  action_name.c_str(),
+	  s -> num_executes,
+	  s -> sim -> total_seconds / s -> num_executes,
+	  s -> dps, s -> dpe, s -> total_dmg * 100.0 / total_dmg, s -> dpet );
+
+  if( report_miss ) printf( "  Miss=%.0f%%", s -> execute_results[ RESULT_MISS ].count * 100.0 / s -> num_executes );
+      
+  if( s -> execute_results[ RESULT_HIT ].avg_dmg > 0 )
+  {
+    printf( "  Hit=%.0f", s -> execute_results[ RESULT_HIT ].avg_dmg );
+  }
+  if( s -> execute_results[ RESULT_CRIT ].avg_dmg > 0 )
+  {
+    printf( "  CritHit=%.0f|%.0f|%.1f%%", 
+	    s -> execute_results[ RESULT_CRIT ].avg_dmg, 
+	    s -> execute_results[ RESULT_CRIT ].max_dmg, 
+	    s -> execute_results[ RESULT_CRIT ].count * 100.0 / s -> num_executes );
+  }
+
+  if( s -> tick_results[ RESULT_HIT ].avg_dmg > 0 )
+  {
+    printf( "  Tick=%.0f", s -> tick_results[ RESULT_HIT ].avg_dmg );
+  }
+  if( s -> tick_results[ RESULT_CRIT ].avg_dmg > 0 )
+  {
+    printf( "  CritTick=%.0f|%.0f|%.1f%%", 
+	    s -> tick_results[ RESULT_CRIT ].avg_dmg, 
+	    s -> tick_results[ RESULT_CRIT ].max_dmg, 
+	    s -> tick_results[ RESULT_CRIT ].count * 100.0 / s -> num_ticks );
+  }
+
+  printf( "\n" );
+}
+
 // report_t::print_actions ===================================================
 
 void report_t::print_actions( player_t* p )
 {
   printf( "  Actions:\n" );
 
-  double player_total_dmg=0;
-  for( stats_t* s = p -> stats_list; s; s = s -> next )
-    player_total_dmg += s -> total_dmg;
-
   for( stats_t* s = p -> stats_list; s; s = s -> next )
   {
     if( s -> total_dmg > 0 )
     {
-      printf( "    %-20s  Count=%.1f|%4.1fsec  DPS=%6.1f  DPE=%4.0f|%.0f%%  DPET=%4.0f", 
-	      s -> name.c_str(),
-	      s -> num_executes,
-	      p -> sim -> total_seconds / s -> num_executes,
-	      s -> dps, s -> dpe, s -> total_dmg * 100.0 / player_total_dmg, s -> dpet );
+      print_action( s );
+    }
+  }
 
-      if( report_miss ) printf( "  Miss=%.0f%%", s -> execute_results[ RESULT_MISS ].count * 100.0 / s -> num_executes );
-      
-      if( s -> execute_results[ RESULT_HIT ].avg_dmg > 0 )
+  for( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
+  {
+    for( stats_t* s = pet -> stats_list; s; s = s -> next )
+    {
+      if( s -> total_dmg > 0 )
       {
-	printf( "  Hit=%.0f", s -> execute_results[ RESULT_HIT ].avg_dmg );
+	print_action( s );
       }
-      if( s -> execute_results[ RESULT_CRIT ].avg_dmg > 0 )
-      {
-	printf( "  CritHit=%.0f|%.0f|%.1f%%", 
-		s -> execute_results[ RESULT_CRIT ].avg_dmg, 
-		s -> execute_results[ RESULT_CRIT ].max_dmg, 
-		s -> execute_results[ RESULT_CRIT ].count * 100.0 / s -> num_executes );
-      }
-
-      if( s -> tick_results[ RESULT_HIT ].avg_dmg > 0 )
-      {
-	printf( "  Tick=%.0f", s -> tick_results[ RESULT_HIT ].avg_dmg );
-      }
-      if( s -> tick_results[ RESULT_CRIT ].avg_dmg > 0 )
-      {
-	printf( "  CritTick=%.0f|%.0f|%.1f%%", 
-		s -> tick_results[ RESULT_CRIT ].avg_dmg, 
-		s -> tick_results[ RESULT_CRIT ].max_dmg, 
-		s -> tick_results[ RESULT_CRIT ].count * 100.0 / s -> num_ticks );
-      }
-
-      printf( "\n" );
     }
   }
 }
@@ -225,7 +257,7 @@ void report_t::print_attack_stats( player_t* p )
 
 void report_t::print_uptime()
 {
-  printf( "Up-Time Report:\n" );
+  printf( "UpTime Report:\n" );
 
   for( uptime_t* u = sim -> uptime_list; u; u = u -> next )
   {
@@ -244,18 +276,33 @@ void report_t::print()
 
   for( player_t* p = sim -> player_list; p; p = p -> next )
   {
-    if( p -> quiet ) continue;
+    if( p -> quiet ) 
+      continue;
 
-    double total_dmg=0;
+    if( p -> type == PLAYER_PET && ! report_pet )
+      continue;
+
+    p -> total_dmg = 0;
 
     for( stats_t* s = p -> stats_list; s; s = s -> next )
     {
       s -> analyze();
-      total_dmg += s -> total_dmg;
+      p -> total_dmg += s -> total_dmg;
     }
 
-    double dps = total_dmg / sim -> total_seconds;
-    raid_dps += dps;
+    for( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
+    {
+      for( stats_t* s = pet -> stats_list; s; s = s -> next )
+      {
+	s -> analyze();
+	p -> total_dmg += s -> total_dmg;
+      }
+    }
+
+    double dps = p -> total_dmg / sim -> total_seconds;
+
+    // Avoid double-counting of pet damage.
+    if( p -> type != PLAYER_PET ) raid_dps += dps;
 
     if( report_name ) printf( "%s%s ",   report_tag ? "Player=" : "", p -> name() );
     if( report_dps  ) printf( "%s%.1f ", report_tag ? "DPS="    : "", dps );
@@ -266,7 +313,7 @@ void report_t::print()
     {
       mana_loss /= sim -> iterations;
 
-      if( report_dpm  ) printf( "%s%.1f ", report_tag ? "DPM="    : "", total_dmg / mana_loss );
+      if( report_dpm  ) printf( "%s%.1f ", report_tag ? "DPM="    : "", p -> total_dmg / mana_loss );
       if( report_mps  ) printf( "%s%.1f ", report_tag ? "MPS="    : "", mana_loss / sim -> total_seconds );
     }
 
@@ -281,7 +328,7 @@ void report_t::print()
     if( report_procs   ) print_procs  ( p );
 
   }
-  if( report_raid_dps ) printf( "%s%.1f\n", report_tag ? "Raid_DPS=" : "", raid_dps );
+  if( report_raid_dps ) printf( "%s%.1f\n", report_tag ? "RDPS=" : "", raid_dps );
 
   if( report_uptime ) print_uptime();
 

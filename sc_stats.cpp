@@ -8,7 +8,7 @@
 // stats_t::stats_t =========================================================
 
 stats_t::stats_t( action_t* a ) : 
-  name(a->name_str), sim(a->sim), player(a->player), channeled(false), next(0)
+  name(a->name_str), sim(a->sim), player(a->player), next(0), channeled(false), analyzed(false)
 {
   
 }
@@ -93,6 +93,9 @@ void stats_t::add( double amount,
 
 void stats_t::analyze()
 {
+  if( analyzed ) return;
+  analyzed = true;
+
   int num_iterations = sim -> iterations;
 
   for( int i=0; i < RESULT_MAX; i++ )
