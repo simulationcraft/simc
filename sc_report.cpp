@@ -157,18 +157,18 @@ void report_t::print_procs( player_t* p )
 
 void report_t::print_core_stats( player_t* p )
 {
-  printf( "%s  %s%d  %s%d  %s%d  %s%d  %s%d  %s%.0f  %s%.0f\n", 
+  printf( "%s  %s%.0f  %s%.0f  %s%.0f  %s%.0f  %s%.0f  %s%.0f  %s%.0f\n", 
 	  report_tag ? "  Core Stats:" : "", 
 	  report_tag ? "strength=" : "",
-	  p -> initial_strength, 
+	  p -> attribute_initial[ ATTR_STRENGTH ], 
 	  report_tag ? "agility=" : "",
-	  p -> initial_agility, 
+	  p -> attribute_initial[ ATTR_AGILITY ], 
 	  report_tag ? "stamina=" : "",
-	  p -> initial_stamina, 
+	  p -> attribute_initial[ ATTR_STAMINA ], 
 	  report_tag ? "intellect=" : "",
-	  p -> initial_intellect, 
+	  p -> attribute_initial[ ATTR_INTELLECT ], 
 	  report_tag ? "spirit=" : "",
-	  p -> initial_spirit, 
+	  p -> attribute_initial[ ATTR_SPIRIT ], 
 	  report_tag ? "health=" : "",
 	  p -> resource_initial[ RESOURCE_HEALTH ], 
 	  report_tag ? "mana=" : "",
@@ -182,7 +182,7 @@ void report_t::print_spell_stats( player_t* p )
   p -> haste_rating = p -> initial_haste_rating;
   p -> recalculate_haste();
 
-  printf( "%s  %s%.0f  %s%.1f%%  %s%.1f%%  %s%.1f%%  %s%d  %s%d\n", 
+  printf( "%s  %s%.0f  %s%.1f%%  %s%.1f%%  %s%.1f%%  %s%.0f  %s%.0f\n", 
 	  report_tag ? "  Spell Stats:" : "", 
 	  report_tag ? "power=" : "",
 	  p -> initial_spell_power[ SCHOOL_MAX ], 
@@ -205,7 +205,7 @@ void report_t::print_attack_stats( player_t* p )
   p -> haste_rating = p -> initial_haste_rating;
   p -> recalculate_haste();
 
-  printf( "%s  %s%.0f  %s%.1f%%  %s%.1f%%  %s%.1f%%  %s%.1f%%  %s%d\n", 
+  printf( "%s  %s%.0f  %s%.1f%%  %s%.1f%%  %s%.1f%%  %s%.1f%%  %s%.0f\n", 
 	  report_tag ? "  Attack Stats:" : "",
 	  report_tag ? "power=" : "",
 	  p -> initial_attack_power, 

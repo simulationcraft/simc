@@ -11,20 +11,28 @@
 
 struct priest_t : public player_t
 {
-  spell_t*  devouring_plague_active;
-  spell_t*  shadow_word_pain_active;
-  spell_t*  vampiric_touch_active;
-  spell_t*  vampiric_embrace_active;
+  spell_t* devouring_plague_active;
+  spell_t* shadow_word_pain_active;
+  spell_t* vampiric_touch_active;
+  spell_t* vampiric_embrace_active;
 
-  uptime_t* improved_spirit_tap_uptime;
-  event_t*  improved_spirit_tap_expiration;
-  int8_t    improved_spirit_tap;
+  // Buffs
+  int8_t buffs_improved_spirit_tap;
+  int8_t buffs_inner_focus;
+  int8_t buffs_surge_of_light;
+
+  // Expirations
+  event_t* expirations_improved_spirit_tap;
+
+  // Up-Times
+  uptime_t* uptimes_improved_spirit_tap;
 
   struct talents_t
   {
     int8_t  darkness;
     int8_t  dispersion;
     int8_t  divine_fury;
+    int8_t  enlightenment;
     int8_t  focused_mind;
     int8_t  focused_power;
     int8_t  force_of_will;
@@ -62,15 +70,13 @@ struct priest_t : public player_t
     shadow_word_pain_active = 0;
     vampiric_touch_active = 0;
     vampiric_embrace_active = 0;
-    improved_spirit_tap_uptime = sim -> get_uptime( name + "_improved_spirit_tap" );
-    improved_spirit_tap_expiration = 0;
-    improved_spirit_tap = 0;
+    uptimes_improved_spirit_tap = sim -> get_uptime( name + "_improved_spirit_tap" );
+    expirations_improved_spirit_tap = 0;
+    buffs_improved_spirit_tap = 0;
   }
 
   // Character Definition
-  virtual void      init();
   virtual void      init_base();
-  virtual void      init_resources();
   virtual void      reset();
   virtual void      parse_talents( const std::string& talent_string );
   virtual bool      parse_option ( const std::string& name, const std::string& value );
@@ -93,12 +99,12 @@ struct priest_spell_t : public spell_t
   priest_spell_t( const char* n, player_t* p, int8_t s, int8_t t ) : 
     spell_t( n, p, RESOURCE_MANA, s, t ) {}
 
-  virtual void   player_buff();
   virtual void   execute();
   virtual double cost();
 
   // Passthru Methods
   virtual double execute_time() { return spell_t::execute_time(); }
+  virtual void player_buff()    { spell_t::player_buff();         }
   virtual void tick()           { spell_t::tick();                }
   virtual void last_tick()      { spell_t::last_tick();           }
 };
@@ -151,14 +157,15 @@ struct shadow_fiend_pet_t : public pet_t
   }
   virtual void init_base()
   {
+    attribute_base[ ATTR_STRENGTH  ] = 153;
+    attribute_base[ ATTR_AGILITY   ] = 108;
+    attribute_base[ ATTR_STAMINA   ] = 280;
+    attribute_base[ ATTR_INTELLECT ] = 133;
+
     base_attack_power = -20;
-    base_strength = 153;
-    base_agility = 108;
-    base_stamina = 280;
-    base_intellect = 133;
     attack_power_per_strength = 2.0;
 
-    if( owner -> gear.tier4_2pc ) base_stamina += 75;
+    if( owner -> gear.tier4_2pc ) attribute_base[ ATTR_STAMINA ] += 75;
   }
   virtual void reset()
   {
@@ -172,8 +179,8 @@ struct shadow_fiend_pet_t : public pet_t
   {
     player_t* o = cast_pet() -> owner;
     report_t::log( sim, "%s summons Shadow Fiend.", o -> name() );
-    initial_stamina   = stamina   = base_stamina   + (int16_t) ( 0.30 * o -> stamina   );
-    initial_intellect = intellect = base_intellect + (int16_t) ( 0.30 * o -> intellect );
+    attribute_initial[ ATTR_STAMINA   ] = attribute[ ATTR_STAMINA   ] = attribute_base[ ATTR_STAMINA   ] + (int16_t) ( 0.30 * o -> attribute[ ATTR_STAMINA   ] );
+    attribute_initial[ ATTR_INTELLECT ] = attribute[ ATTR_INTELLECT ] = attribute_base[ ATTR_INTELLECT ] + (int16_t) ( 0.30 * o -> attribute[ ATTR_INTELLECT ] );
     auto_attack -> execute();
   }
   virtual void dismiss()
@@ -366,11 +373,11 @@ static void trigger_ashtongue_talisman( spell_t* s )
 
 static void trigger_surge_of_light( spell_t* s )
 {
-  priest_t* priest = s -> player -> cast_priest();
+  priest_t* p = s -> player -> cast_priest();
 
-  if( priest -> talents.surge_of_light )
+  if( p -> talents.surge_of_light )
   {
-    priest -> buffs.surge_of_light = ( s -> result == RESULT_CRIT );
+    p -> buffs_surge_of_light = ( s -> result == RESULT_CRIT );
   }
 }
 
@@ -380,24 +387,24 @@ static void trigger_improved_spirit_tap( spell_t* s )
 {
   struct expiration_t : public event_t
   {
-    int16_t spirit_bonus;
+    double spirit_bonus;
     expiration_t( sim_t* sim, priest_t* p ) : event_t( sim, p )
     {
       name = "Improved Spirit Tap Expiration";
-      p -> improved_spirit_tap = 1;
+      p -> buffs_improved_spirit_tap = 1;
       p -> aura_gain( "improved_spirit_tap" );
-      spirit_bonus = p -> spirit / 2;
-      p -> spirit += spirit_bonus;
+      spirit_bonus = p -> attribute[ ATTR_SPIRIT ] / 2;
+      p -> attribute[ ATTR_SPIRIT ] += spirit_bonus;
       time = 8.0;
       sim -> add_event( this );
     }
     virtual void execute()
     {
       priest_t* p = player -> cast_priest();
-      p -> improved_spirit_tap = 0;
+      p -> buffs_improved_spirit_tap = 0;
       p -> aura_loss( "improved_spirit_tap" );
-      p -> spirit -= spirit_bonus;
-      p -> improved_spirit_tap_expiration = 0;
+      p -> attribute[ ATTR_SPIRIT ] -= spirit_bonus;
+      p -> expirations_improved_spirit_tap = 0;
     }
   };
 
@@ -410,7 +417,7 @@ static void trigger_improved_spirit_tap( spell_t* s )
     {
       p -> proc( "improved_spirit_tap" );
 
-      event_t*& e = p -> improved_spirit_tap_expiration;
+      event_t*& e = p -> expirations_improved_spirit_tap;
 
       if( e )
       {
@@ -430,27 +437,16 @@ static void trigger_improved_spirit_tap( spell_t* s )
 // Priest Spell
 // ==========================================================================
 
-// priest_spell_t::player_buff ================================================
-
-void priest_spell_t::player_buff()
-{
-  spell_t::player_buff();
-
-  priest_t* p = player -> cast_priest();
-
-  player_power += p -> spirit * p -> talents.spiritual_guidance * 0.05;
-}
-
 // priest_spell_t::execute ===================================================
 
 void priest_spell_t::execute()
 {
   spell_t::execute();
-
-  if( player -> buffs.inner_focus && base_cost > 0 )
+  priest_t* p = player -> cast_priest();
+  if( p -> buffs_inner_focus && base_cost > 0 )
   {
-    player -> aura_loss( "Inner Focus" );
-    player -> buffs.inner_focus = 0;
+    p -> aura_loss( "Inner Focus" );
+    p -> buffs_inner_focus = 0;
   }
 }
 
@@ -458,7 +454,8 @@ void priest_spell_t::execute()
 
 double priest_spell_t::cost()
 {
-  if( player -> buffs.inner_focus ) return 0;
+  priest_t* p = player -> cast_priest();
+  if( p -> buffs_inner_focus ) return 0;
   return spell_t::cost();
 }
 
@@ -547,18 +544,21 @@ struct smite_t : public priest_spell_t
 
   virtual double execute_time()
   {
-    return player -> buffs.surge_of_light ? 0 : priest_spell_t::execute_time();
+    priest_t* p = player -> cast_priest();
+    return p -> buffs_surge_of_light ? 0 : priest_spell_t::execute_time();
   }
 
   virtual double cost()
   {
-    return player -> buffs.surge_of_light ? 0 : priest_spell_t::cost();
+    priest_t* p = player -> cast_priest();
+    return p -> buffs_surge_of_light ? 0 : priest_spell_t::cost();
   }
 
   virtual void player_buff()
   {
     priest_spell_t::player_buff();
-    may_crit = ! ( player -> buffs.surge_of_light );
+    priest_t* p = player -> cast_priest();
+    may_crit = ! ( p -> buffs_surge_of_light );
   }
 };
 
@@ -1106,10 +1106,11 @@ struct power_infusion_t : public priest_spell_t
     }
     virtual void execute()
     {
-      player -> aura_loss( "Power Infusion" );
-      player -> buffs.power_infusion = 0;
-      player -> haste_rating -= 320;
-      player -> recalculate_haste();
+      priest_t* p = player -> cast_priest();
+      p -> aura_loss( "Power Infusion" );
+      p -> buffs.power_infusion = 0;
+      p -> haste_rating -= 320;
+      p -> recalculate_haste();
     }
   };
    
@@ -1125,10 +1126,11 @@ struct power_infusion_t : public priest_spell_t
   virtual void execute()
   {
     report_t::log( sim, "Player %s casts Power Infusion", player -> name() );
-    player -> aura_gain( "Power Infusion" );
-    player -> buffs.power_infusion = 1;
-    player -> haste_rating += 320;
-    player -> recalculate_haste();
+    priest_t* p = player -> cast_priest();
+    p -> aura_gain( "Power Infusion" );
+    p -> buffs.power_infusion = 1;
+    p -> haste_rating += 320;
+    p -> recalculate_haste();
     new power_infusion_expiration_t( sim, player );
   }
 };
@@ -1153,8 +1155,9 @@ struct inner_focus_t : public priest_spell_t
   virtual void execute()
   {
     report_t::log( sim, "Player %s casts Inner Focus", player -> name() );
-    player -> aura_gain( "Inner Focus" );
-    player -> buffs.inner_focus = 1;
+    priest_t* p = player -> cast_priest();
+    p -> aura_gain( "Inner Focus" );
+    p -> buffs_inner_focus = 1;
     cooldown_ready = sim -> current_time + cooldown;
   }
 };
@@ -1263,7 +1266,7 @@ void priest_t::spell_finish_event( spell_t* s )
   }
   pop_tier5_4pc( s );
 
-  improved_spirit_tap_uptime -> update( improved_spirit_tap );
+  uptimes_improved_spirit_tap -> update( buffs_improved_spirit_tap );
 }
 
 // priest_t::spell_damage_event ==============================================
@@ -1340,48 +1343,49 @@ pet_t* priest_t::create_pet( const std::string& pet_name )
   return 0;
 }
 
-// priest_t::init ============================================================
-
-void priest_t::init()
-{
-  player_t::init();
-
-  // Create shadowfiend pet here.
-}
-
 // priest_t::init_base =======================================================
 
 void priest_t::init_base()
 {
-  base_strength  = 40;
-  base_agility   = 45;
-  base_stamina   =  60;
-  base_intellect = 145;
-  base_spirit    = 155;
+  static bool AFTER_3_0_0 = sim -> patch.after( 3, 0, 0 );
+
+  attribute_base[ ATTR_STRENGTH  ] =  40;
+  attribute_base[ ATTR_AGILITY   ] =  45;
+  attribute_base[ ATTR_STAMINA   ] =  60;
+  attribute_base[ ATTR_INTELLECT ] = 145;
+  attribute_base[ ATTR_SPIRIT    ] = 155;
+
+  attribute_multiplier[ ATTR_STAMINA   ] *= 1.0 + talents.enlightenment * 0.01;
+  attribute_multiplier[ ATTR_INTELLECT ] *= 1.0 + talents.enlightenment * 0.01;
+  attribute_multiplier[ ATTR_SPIRIT    ] *= 1.0 + talents.enlightenment * 0.01;
 
   base_spell_crit = 0.0125;
   spell_crit_per_intellect = 0.01 / ( level + 10 );
   spell_power_per_spirit = ( talents.spiritual_guidance * 0.05 +
-			     talents.twisted_faith       * 0.06 );
+			     talents.twisted_faith      * 0.06 );
+
+  if( AFTER_3_0_0 ) spell_power_multiplier = 1.0 + talents.enlightenment * 0.01;
 
   base_attack_power = -10;
   base_attack_crit  = 0.03;
   attack_power_per_strength = 1.0;
-  attack_crit_per_agility = 1.0 / ( 25 + ( level - 70 ) * 5 );
+  attack_crit_per_agility = 1.0 / ( 25 + ( level - 70 ) * 0.5 );
 
+  // FIXME! Make this level-specific.
   resource_base[ RESOURCE_HEALTH ] = 3200;
   resource_base[ RESOURCE_MANA   ] = 2340;
-  mana_per_intellect = 15;
+
   health_per_stamina = 10;
-}
+  mana_per_intellect = 15;
 
-// priest_t::init_resources ==================================================
-
-void priest_t::init_resources()
-{
-  mana_per_intellect *= 1.0 + 0.02 * talents.mental_strength;
-
-  player_t::init_resources();
+  if( AFTER_3_0_0 )
+  {
+    attribute_multiplier[ ATTR_INTELLECT ] *= 1.0 + talents.mental_strength * 0.01;
+  }
+  else
+  {
+    mana_per_intellect *= 1.0 + talents.mental_strength * 0.02;
+  }
 }
 
 // priest_t::reset ===========================================================
@@ -1395,8 +1399,8 @@ void priest_t::reset()
   vampiric_touch_active   = 0;
   vampiric_embrace_active = 0;
 
-  improved_spirit_tap_expiration = 0;
-  improved_spirit_tap = 0;
+  expirations_improved_spirit_tap = 0;
+  buffs_improved_spirit_tap = 0;
 }
 
 // priest_t::regen  ==========================================================
@@ -1436,6 +1440,7 @@ void priest_t::parse_talents( const std::string& talent_string )
     { 16,  &( talents.focused_power             ) },
     { 17,  &( talents.force_of_will             ) },
     { 19,  &( talents.power_infusion            ) },
+    { 21,  &( talents.enlightenment             ) },
     { 25,  &( talents.holy_specialization       ) },
     { 27,  &( talents.divine_fury               ) },
     { 33,  &( talents.searing_light             ) },
@@ -1469,6 +1474,7 @@ bool priest_t::parse_option( const std::string& name,
     { "darkness",                  OPT_INT8,  &( talents.darkness                  ) },
     { "dispersion",                OPT_INT8,  &( talents.dispersion                ) },
     { "divine_fury",               OPT_INT8,  &( talents.divine_fury               ) },
+    { "enlightenment",             OPT_INT8,  &( talents.enlightenment             ) },
     { "focused_mind",              OPT_INT8,  &( talents.focused_mind              ) },
     { "focused_power",             OPT_INT8,  &( talents.focused_power             ) },
     { "force_of_will",             OPT_INT8,  &( talents.force_of_will             ) },

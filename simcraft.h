@@ -93,6 +93,8 @@ enum player_type { DRUID=0, MAGE, PALADIN, PRIEST, SHAMAN, WARLOCK, PLAYER_PET, 
 
 enum dmg_type { DMG_DIRECT=0, DMG_OVER_TIME=1 };
 
+enum attribute_type { ATTRIBUTE_NONE=0, ATTR_STRENGTH, ATTR_AGILITY, ATTR_STAMINA, ATTR_INTELLECT, ATTR_SPIRIT, ATTRIBUTE_MAX };
+
 enum resource_type { RESOURCE_NONE=0, RESOURCE_HEALTH, RESOURCE_MANA, RESOURCE_RAGE, RESOURCE_ENERGY, RESOURCE_FOCUS, RESOURCE_RUNIC, RESOURCE_MAX };
 
 enum result_type { RESULT_NONE=0, RESULT_MISS, RESULT_RESIST, RESULT_DODGE, RESULT_PARRY, RESULT_BLOCK, RESULT_GLANCE, RESULT_CRUSH, RESULT_CRIT, RESULT_HIT, RESULT_MAX };
@@ -229,41 +231,43 @@ struct player_t
   int16_t base_haste_rating, initial_haste_rating, haste_rating;
   double  haste;
 
-  // Core Stats
-  int16_t     base_strength,  initial_strength,  strength;
-  int16_t     base_agility,   initial_agility,   agility;
-  int16_t     base_stamina,   initial_stamina,   stamina;
-  int16_t     base_intellect, initial_intellect, intellect;
-  int16_t     base_spirit,    initial_spirit,    spirit;
+  // Attributes
+  double attribute           [ ATTRIBUTE_MAX ];
+  double attribute_base      [ ATTRIBUTE_MAX ];
+  double attribute_initial   [ ATTRIBUTE_MAX ];
+  double attribute_multiplier[ ATTRIBUTE_MAX ];
 
   // Spell Mechanics
-  double      base_spell_power,       initial_spell_power[ SCHOOL_MAX+1 ], spell_power[ SCHOOL_MAX+1 ];
-  double      base_spell_hit,         initial_spell_hit,                   spell_hit;
-  double      base_spell_crit,        initial_spell_crit,                  spell_crit;
-  int16_t     base_spell_penetration, initial_spell_penetration,           spell_penetration;
-  int16_t     base_mp5,               initial_mp5,                         mp5;
-  double      spell_power_per_intellect;
-  double      spell_power_per_spirit;
-  double      spell_crit_per_intellect;
-  double      last_cast;
+  double base_spell_power,       initial_spell_power[ SCHOOL_MAX+1 ], spell_power[ SCHOOL_MAX+1 ];
+  double base_spell_hit,         initial_spell_hit,                   spell_hit;
+  double base_spell_crit,        initial_spell_crit,                  spell_crit;
+  double base_spell_penetration, initial_spell_penetration,           spell_penetration;
+  double base_mp5,               initial_mp5,                         mp5;
+  double spell_power_multiplier;
+  double spell_power_per_intellect;
+  double spell_power_per_spirit;
+  double spell_crit_per_intellect;
+  double last_cast;
 
   // Attack Mechanics
-  double      base_attack_power,       initial_attack_power,        attack_power;
-  double      base_attack_hit,         initial_attack_hit,          attack_hit;
-  double      base_attack_expertise,   initial_attack_expertise,    attack_expertise;
-  double      base_attack_crit,        initial_attack_crit,         attack_crit;
-  int16_t     base_attack_penetration, initial_attack_penetration,  attack_penetration;
-  double      attack_power_per_strength;
-  double      attack_power_per_agility;
-  double      attack_crit_per_agility;
-  weapon_t*   main_hand_weapon;
-  weapon_t*   off_hand_weapon;
-  weapon_t*   ranged_weapon;
-  int8_t      position;
+  double    base_attack_power,       initial_attack_power,        attack_power;
+  double    base_attack_hit,         initial_attack_hit,          attack_hit;
+  double    base_attack_expertise,   initial_attack_expertise,    attack_expertise;
+  double    base_attack_crit,        initial_attack_crit,         attack_crit;
+  double    base_attack_penetration, initial_attack_penetration,  attack_penetration;
+  double    attack_power_multiplier;
+  double    attack_power_per_strength;
+  double    attack_power_per_agility;
+  double    attack_crit_per_agility;
+  weapon_t* main_hand_weapon;
+  weapon_t* off_hand_weapon;
+  weapon_t* ranged_weapon;
+  int8_t    position;
 
   // Resources
-  int16_t resource_base   [ RESOURCE_MAX ];
+  double  resource_base   [ RESOURCE_MAX ];
   double  resource_initial[ RESOURCE_MAX ];
+  double  resource_max    [ RESOURCE_MAX ];
   double  resource_current[ RESOURCE_MAX ];
   int8_t  resource_constrained;
   int16_t resource_constrained_count;
@@ -297,12 +301,9 @@ struct player_t
   {
     // Haste
     int16_t haste_rating, haste_rating_enchant;
-    // Core Stats
-    int16_t strength,  strength_enchant;
-    int16_t agility,   agility_enchant;
-    int16_t stamina,   stamina_enchant;
-    int16_t intellect, intellect_enchant;
-    int16_t spirit,    spirit_enchant;
+    // Attributes
+    int16_t attribute        [ ATTRIBUTE_MAX ];
+    int16_t attribute_enchant[ ATTRIBUTE_MAX ];
     // Spell Gear
     int16_t spell_power[ SCHOOL_MAX+1 ], spell_power_enchant;
     int16_t spell_hit_rating,            spell_hit_rating_enchant;
@@ -396,7 +397,6 @@ struct player_t
     int8_t  darkmoon_wrath;
     int8_t  evocation;
     int8_t  icy_veins;
-    int8_t  inner_focus;
     int8_t  innervate;
     int8_t  lightning_capacitor;
     double  mana_cost_reduction;
@@ -404,7 +404,6 @@ struct player_t
     int8_t  nightfall;
     int8_t  natures_grace;
     int8_t  power_infusion;
-    int8_t  surge_of_light;
     int16_t talisman_of_ascendance;
     int8_t  totem_of_wrath;
     int8_t  violet_eye;
@@ -638,7 +637,6 @@ struct weapon_t
   int8_t type, school;
   double damage;
   double swing_time;
-  event_t* auto_attack;
 
   struct enchants_t
   {
@@ -651,8 +649,8 @@ struct weapon_t
   int group();
   double normalized_weapon_speed();
 
-  weapon_t( int t=WEAPON_NONE, double d=0, double st=0, int s=SCHOOL_PHYSICAL ) : 
-    type(t), school(s), damage(d), swing_time(st), auto_attack(0) {}
+  weapon_t( int t=WEAPON_NONE, double d=0, double st=1.0, int s=SCHOOL_PHYSICAL ) : 
+    type(t), school(s), damage(d), swing_time(st) {}
 };
 
 // Stats =====================================================================

@@ -67,18 +67,13 @@ player_t::player_t( sim_t*             s,
   sim(s), name_str(n), next(0), type(t), level(70), party(0), gcd_ready(0), base_gcd(1.5), sleeping(0), pet_list(0),
   // Haste
   base_haste_rating(0), initial_haste_rating(0), haste_rating(0), haste(1.0),
-  // Core Stats
-  base_strength(0),  initial_strength(0),  strength(0),
-  base_agility(0),   initial_agility(0),   agility(0),
-  base_stamina(0),   initial_stamina(0),   stamina(0),
-  base_intellect(0), initial_intellect(0), intellect(0),
-  base_spirit(0),    initial_spirit(0),    spirit(0),
   // Spell Mechanics
   base_spell_power(0),
   base_spell_hit(0),         initial_spell_hit(0),         spell_hit(0),
   base_spell_crit(0),        initial_spell_crit(0),        spell_crit(0),
   base_spell_penetration(0), initial_spell_penetration(0), spell_penetration(0),
   base_mp5(0),               initial_mp5(0),               mp5(0),
+  spell_power_multiplier(1.0),
   spell_power_per_intellect(0),
   spell_power_per_spirit(0),
   spell_crit_per_intellect(0),
@@ -89,6 +84,7 @@ player_t::player_t( sim_t*             s,
   base_attack_expertise(0),   initial_attack_expertise(0),    attack_expertise(0),
   base_attack_crit(0),        initial_attack_crit(0),         attack_crit(0),
   base_attack_penetration(0), initial_attack_penetration(0),  attack_penetration(0),
+  attack_power_multiplier(1.0),
   attack_power_per_strength(0),
   attack_power_per_agility(0),
   attack_crit_per_agility(0),
@@ -109,14 +105,26 @@ player_t::player_t( sim_t*             s,
   next = sim -> player_list;
   sim -> player_list = this;
 
+  for( int i=0; i < ATTRIBUTE_MAX; i++ )
+  {
+    attribute[ i ] = attribute_base[ i ] = attribute_initial[ i ] = 0;
+
+    attribute_multiplier[ i ] = 1.0;
+  }
   for( int i=0; i <= SCHOOL_MAX; i++ )
   {
     initial_spell_power[ i ] = spell_power[ i ] = 0;
   }
   for( int i=0; i < RESOURCE_MAX; i++ )
   {
+    resource_base[ i ] = resource_initial[ i ] = resource_max[ i ] = resource_current[ i ] = 0;
+
     resource_lost[ i ] = resource_gained[ i ] = 0;
   }
+
+  main_hand_weapon = new weapon_t();
+  off_hand_weapon  = new weapon_t();
+  ranged_weapon    = new weapon_t();
 }
 
 // player_t::init ==========================================================
@@ -141,11 +149,14 @@ void player_t::init_core()
 {
   if( initial_haste_rating == 0 ) initial_haste_rating = base_haste_rating + gear.haste_rating + gear.haste_rating_enchant;
 
-  if( initial_strength  == 0 ) initial_strength  = base_strength  + gear.strength  + gear.strength_enchant;
-  if( initial_agility   == 0 ) initial_agility   = base_agility   + gear.agility   + gear.agility_enchant;
-  if( initial_stamina   == 0 ) initial_stamina   = base_stamina   + gear.stamina   + gear.stamina_enchant;
-  if( initial_intellect == 0 ) initial_intellect = base_intellect + gear.intellect + gear.intellect_enchant;
-  if( initial_spirit    == 0 ) initial_spirit    = base_spirit    + gear.spirit    + gear.spirit_enchant;
+  for( int i=0; i < ATTRIBUTE_MAX; i++ )
+  {
+    if( attribute_initial[ i ] == 0 )
+    {
+      attribute_initial[ i ]  = attribute_base[ i ] + gear.attribute[ i ] + gear.attribute_enchant[ i ];
+      attribute_initial[ i ] *= attribute_multiplier[ i ];
+    }
+  }
 }
 
 // player_t::init_spell =====================================================
@@ -234,8 +245,8 @@ void player_t::init_resources()
 {
   double resource_bonus[ RESOURCE_MAX ];
   for( int i=0; i < RESOURCE_MAX; i++ ) resource_bonus[ i ] = 0;
-  resource_bonus[ RESOURCE_MANA   ] = initial_intellect * mana_per_intellect;
-  resource_bonus[ RESOURCE_HEALTH ] = initial_stamina   * health_per_stamina;
+  resource_bonus[ RESOURCE_MANA   ] = attribute_initial[ ATTR_INTELLECT ] * mana_per_intellect;
+  resource_bonus[ RESOURCE_HEALTH ] = attribute_initial[ ATTR_STAMINA   ] * health_per_stamina;
   
   for( int i=0; i < RESOURCE_MAX; i++ )
   {
@@ -351,11 +362,10 @@ void player_t::reset()
   haste_rating = initial_haste_rating;
   recalculate_haste();
 
-  strength  = initial_strength;
-  agility   = initial_agility;
-  stamina   = initial_stamina;
-  intellect = initial_intellect;
-  spirit    = initial_spirit;
+  for( int i=0; i < ATTRIBUTE_MAX; i++ )
+  {
+    attribute[ i ] = attribute_initial[ i ];
+  }
 
   for( int i=0; i <= SCHOOL_MAX; i++ )
   {
@@ -873,7 +883,7 @@ double player_t::spirit_regen_per_second()
   }
   assert( base_regen != 0 );
 
-  double mana_per_second  = sqrt( intellect ) * spirit * base_regen;
+  double mana_per_second  = sqrt( attribute[ ATTR_INTELLECT ] ) * attribute[ ATTR_SPIRIT ] * base_regen;
 
   return mana_per_second;
 }
@@ -923,17 +933,22 @@ bool player_t::parse_option( const std::string& name,
     { "sleeping",                             OPT_INT8,   &( sleeping                                 ) },
     // Player - Haste
     { "haste_rating",                         OPT_INT16,  &( initial_haste_rating                     ) },
-    // Player - Core Stats
-    { "strength",                             OPT_INT16,  &( initial_strength                         ) },
-    { "base_strength",                        OPT_INT16,  &( base_strength                            ) },
-    { "agility",                              OPT_INT16,  &( initial_agility                          ) },
-    { "base_agility",                         OPT_INT16,  &( base_agility                             ) },
-    { "stamina",                              OPT_INT16,  &( initial_stamina                          ) },
-    { "base_stamina",                         OPT_INT16,  &( base_stamina                             ) },
-    { "intellect",                            OPT_INT16,  &( initial_intellect                        ) },
-    { "base_intellect",                       OPT_INT16,  &( base_intellect                           ) },
-    { "spirit",                               OPT_INT16,  &( initial_spirit                           ) },
-    { "base_spirit",                          OPT_INT16,  &( base_spirit                              ) },
+    // Player - Attributes
+    { "strength",                             OPT_FLT,    &( attribute_initial   [ ATTR_STRENGTH  ]   ) },
+    { "base_strength",                        OPT_FLT,    &( attribute_base      [ ATTR_STRENGTH  ]   ) },
+    { "strength_mulitplier",                  OPT_FLT,    &( attribute_multiplier[ ATTR_STRENGTH  ]   ) },
+    { "agility",                              OPT_FLT,    &( attribute_initial   [ ATTR_AGILITY   ]   ) },
+    { "base_agility",                         OPT_FLT,    &( attribute_base      [ ATTR_AGILITY   ]   ) },
+    { "agility_mulitplier",                   OPT_FLT,    &( attribute_multiplier[ ATTR_AGILITY   ]   ) },
+    { "stamina",                              OPT_FLT,    &( attribute_initial   [ ATTR_STAMINA   ]   ) },
+    { "base_stamina",                         OPT_FLT,    &( attribute_base      [ ATTR_STAMINA   ]   ) },
+    { "stamina_mulitplier",                   OPT_FLT,    &( attribute_multiplier[ ATTR_STAMINA   ]   ) },
+    { "intellect",                            OPT_FLT,    &( attribute_initial   [ ATTR_INTELLECT ]   ) },
+    { "base_intellect",                       OPT_FLT,    &( attribute_base      [ ATTR_INTELLECT ]   ) },
+    { "intellect_mulitplier",                 OPT_FLT,    &( attribute_multiplier[ ATTR_INTELLECT ]   ) },
+    { "spirit",                               OPT_FLT,    &( attribute_initial   [ ATTR_SPIRIT    ]   ) },
+    { "base_spirit",                          OPT_FLT,    &( attribute_base      [ ATTR_SPIRIT    ]   ) },
+    { "spirit_mulitplier",                    OPT_FLT,    &( attribute_multiplier[ ATTR_SPIRIT    ]   ) },
     // Player - Spell Mechanics
     { "spell_power",                          OPT_FLT,    &( initial_spell_power[ SCHOOL_MAX    ]     ) },
     { "spell_power_arcane",                   OPT_FLT,    &( initial_spell_power[ SCHOOL_ARCANE ]     ) },
@@ -947,10 +962,14 @@ bool player_t::parse_option( const std::string& name,
     { "base_spell_hit",                       OPT_FLT,    &( base_spell_hit                           ) },
     { "spell_crit",                           OPT_FLT,    &( initial_spell_crit                       ) },
     { "base_spell_crit",                      OPT_FLT,    &( base_spell_crit                          ) },
-    { "spell_penetration",                    OPT_INT16,  &( initial_spell_penetration                ) },
-    { "base_spell_penetration",               OPT_INT16,  &( base_spell_penetration                   ) },
-    { "mp5",                                  OPT_INT16,  &( initial_mp5                              ) },
-    { "base_mp5",                             OPT_INT16,  &( base_mp5                                 ) },
+    { "spell_penetration",                    OPT_FLT,    &( initial_spell_penetration                ) },
+    { "base_spell_penetration",               OPT_FLT,    &( base_spell_penetration                   ) },
+    { "mp5",                                  OPT_FLT,    &( initial_mp5                              ) },
+    { "base_mp5",                             OPT_FLT,    &( base_mp5                                 ) },
+    { "spell_power_multiplier",               OPT_FLT,    &( spell_power_multiplier                   ) },
+    { "spell_power_per_intellect",            OPT_FLT,    &( spell_power_per_intellect                ) },
+    { "spell_power_per_spirit",               OPT_FLT,    &( spell_power_per_spirit                   ) },
+    { "spell_crit_per_intellect",             OPT_FLT,    &( spell_crit_per_intellect                 ) },
     // Player - Attack Mechanics
     { "attack_power",                         OPT_FLT,    &( initial_attack_power                     ) },
     { "base_attack_power",                    OPT_FLT,    &( base_attack_power                        ) },
@@ -960,25 +979,29 @@ bool player_t::parse_option( const std::string& name,
     { "base_attack_expertise",                OPT_FLT,    &( base_attack_expertise                    ) },
     { "attack_crit",                          OPT_FLT,    &( initial_attack_crit                      ) },
     { "base_attack_crit",                     OPT_FLT,    &( base_attack_crit                         ) },
-    { "attack_penetration",                   OPT_INT16,  &( initial_attack_penetration               ) },
-    { "base_attack_penetration",              OPT_INT16,  &( base_attack_penetration                  ) },
+    { "attack_penetration",                   OPT_FLT,    &( initial_attack_penetration               ) },
+    { "base_attack_penetration",              OPT_FLT,    &( base_attack_penetration                  ) },
+    { "attack_power_multiplier",              OPT_FLT,    &( attack_power_multiplier                  ) },
+    { "attack_power_per_strength",            OPT_FLT,    &( attack_power_per_strength                ) },
+    { "attack_power_per_agility",             OPT_FLT,    &( attack_power_per_agility                 ) },
+    { "attack_crit_per_agility",              OPT_FLT,    &( attack_crit_per_agility                  ) },
     // Player - Weapons
       // main_hand
       // off_hand
       // ranged
     // Player - Resources
     { "health",                               OPT_FLT,    &( resource_initial[ RESOURCE_HEALTH ]      ) },
-    { "base_health",                          OPT_INT16,  &( resource_base   [ RESOURCE_HEALTH ]      ) },
+    { "base_health",                          OPT_FLT,    &( resource_base   [ RESOURCE_HEALTH ]      ) },
     { "mana",                                 OPT_FLT,    &( resource_initial[ RESOURCE_MANA   ]      ) },
-    { "base_mana",                            OPT_INT16,  &( resource_base   [ RESOURCE_MANA   ]      ) },
+    { "base_mana",                            OPT_FLT,    &( resource_base   [ RESOURCE_MANA   ]      ) },
     { "rage",                                 OPT_FLT,    &( resource_initial[ RESOURCE_RAGE   ]      ) },
-    { "base_rage",                            OPT_INT16,  &( resource_base   [ RESOURCE_RAGE   ]      ) },
+    { "base_rage",                            OPT_FLT,    &( resource_base   [ RESOURCE_RAGE   ]      ) },
     { "energy",                               OPT_FLT,    &( resource_initial[ RESOURCE_ENERGY ]      ) },
-    { "base_energy",                          OPT_INT16,  &( resource_base   [ RESOURCE_ENERGY ]      ) },
+    { "base_energy",                          OPT_FLT,    &( resource_base   [ RESOURCE_ENERGY ]      ) },
     { "focus",                                OPT_FLT,    &( resource_initial[ RESOURCE_FOCUS  ]      ) },
-    { "base_focus",                           OPT_INT16,  &( resource_base   [ RESOURCE_FOCUS  ]      ) },
+    { "base_focus",                           OPT_FLT,    &( resource_base   [ RESOURCE_FOCUS  ]      ) },
     { "runic",                                OPT_FLT,    &( resource_initial[ RESOURCE_RUNIC  ]      ) },
-    { "base_runic",                           OPT_INT16,  &( resource_base   [ RESOURCE_RUNIC  ]      ) },
+    { "base_runic",                           OPT_FLT,    &( resource_base   [ RESOURCE_RUNIC  ]      ) },
     // Player - Action Priority List
     { "pre_actions",                          OPT_STRING, &( action_list_prefix                       ) },
     { "actions",                              OPT_STRING, &( action_list_str                          ) },
@@ -989,17 +1012,17 @@ bool player_t::parse_option( const std::string& name,
     // Player - Gear - Haste
     { "gear_haste",                           OPT_INT16,  &( gear.haste_rating                        ) },
     { "enchant_haste",                        OPT_INT16,  &( gear.haste_rating_enchant                ) },
-    // Player - Gear - Core Stats
-    { "gear_strength",                        OPT_INT16,  &( gear.strength                            ) },
-    { "enchant_strength",                     OPT_INT16,  &( gear.strength_enchant                    ) },
-    { "gear_agility",                         OPT_INT16,  &( gear.agility                             ) },
-    { "enchant_agility",                      OPT_INT16,  &( gear.agility_enchant                     ) },
-    { "gear_stamina",                         OPT_INT16,  &( gear.stamina                             ) },
-    { "enchant_stamina",                      OPT_INT16,  &( gear.stamina_enchant                     ) },
-    { "gear_intellect",                       OPT_INT16,  &( gear.intellect                           ) },
-    { "enchant_intellect",                    OPT_INT16,  &( gear.intellect_enchant                   ) },
-    { "gear_spirit",                          OPT_INT16,  &( gear.spirit                              ) },
-    { "enchant_spirit",                       OPT_INT16,  &( gear.spirit_enchant                      ) },
+    // Player - Gear - Attributes
+    { "gear_strength",                        OPT_INT16,  &( gear.attribute        [ ATTR_STRENGTH  ] ) },
+    { "gear_agility",                         OPT_INT16,  &( gear.attribute        [ ATTR_AGILITY   ] ) },
+    { "gear_stamina",                         OPT_INT16,  &( gear.attribute        [ ATTR_STAMINA   ] ) },
+    { "gear_intellect",                       OPT_INT16,  &( gear.attribute        [ ATTR_INTELLECT ] ) },
+    { "gear_spirit",                          OPT_INT16,  &( gear.attribute        [ ATTR_SPIRIT    ] ) },
+    { "enchant_strength",                     OPT_INT16,  &( gear.attribute_enchant[ ATTR_STRENGTH  ] ) },
+    { "enchant_agility",                      OPT_INT16,  &( gear.attribute_enchant[ ATTR_AGILITY   ] ) },
+    { "enchant_stamina",                      OPT_INT16,  &( gear.attribute_enchant[ ATTR_STAMINA   ] ) },
+    { "enchant_intellect",                    OPT_INT16,  &( gear.attribute_enchant[ ATTR_INTELLECT ] ) },
+    { "enchant_spirit",                       OPT_INT16,  &( gear.attribute_enchant[ ATTR_SPIRIT    ] ) },
     // Player - Gear - Spell
     { "gear_spell_power",                     OPT_INT16,  &( gear.spell_power[ SCHOOL_MAX    ]        ) },
     { "gear_spell_power_arcane",              OPT_INT16,  &( gear.spell_power[ SCHOOL_ARCANE ]        ) },
