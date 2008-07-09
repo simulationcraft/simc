@@ -1,4 +1,10 @@
 
+# WARNING!  WARNING!  WARNING!
+#
+# THESE OPTIMIZATION FLAGS ARE VALID ONLY FOR PENTIUM-M BASED SYSTEMS!
+#
+# WARNING!  WARNING!  WARNING!
+
 OPTS = -mtune=pentium-m -malign-double -msse -msse2 -mfpmath=sse -maccumulate-outgoing-args -O3
 
 SRC =\
