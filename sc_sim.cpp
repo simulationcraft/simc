@@ -133,7 +133,7 @@ bool timing_list_t::empty()
 
 sim_t::sim_t() : 
   method( SIM_LIST ), player_list(0), active_player(0), target(0),
-  current_time(0), max_time(0), lag(0), total_seconds(0), 
+  current_time(0), max_time(0), lag(0), total_seconds(0), elapsed_cpu_seconds(0),
   events_remaining(0), max_events_remaining(0), 
   events_processed(0), total_events_processed(0),
   seed(0), id(0), iterations(1),
@@ -252,7 +252,7 @@ bool sim_t::execute()
   }
   total_seconds += current_time;
   total_events_processed += events_processed;
-  
+
   return true;
 }
 
@@ -430,12 +430,16 @@ int main( int argc, char **argv )
       return -1;
    }
    
+   time_t start_time = time(0);
+
    for( int i=0; i < sim.iterations; i++ )
    {
      wow_sim_signal_handler_t::iteration = i;
      sim.reset();
      sim.execute();
    }
+   sim.elapsed_cpu_seconds = time(0) - start_time;
+
    sim.reset();
    sim.report -> print();
    

@@ -23,6 +23,7 @@ report_t::report_t( sim_t* s ) :
   report_mps(1),
   report_name(1),
   report_pet(0),
+  report_performance(1),
   report_pq(0),
   report_procs(1),
   report_raid_dps(1),
@@ -49,6 +50,7 @@ bool report_t::parse_option( const std::string& name,
     { "report_mps",              OPT_INT8,   &( report_mps              ) },
     { "report_name",             OPT_INT8,   &( report_name             ) },
     { "report_pet",              OPT_INT8,   &( report_pet              ) },
+    { "report_performance",      OPT_INT8,   &( report_performance      ) },
     { "report_pq",               OPT_INT8,   &( report_pq               ) },
     { "report_procs",            OPT_INT8,   &( report_procs            ) },
     { "report_raid_dps",         OPT_INT8,   &( report_raid_dps         ) },
@@ -333,9 +335,14 @@ void report_t::print()
   if( report_uptime ) print_uptime();
 
   if( report_pq ) 
-    printf( "%s%d %s%d\n", 
+    printf( "%s%d  %s%d\n", 
 	    report_tag ? "MaxEventQueue=" : "", sim -> max_events_remaining, 
 	    report_tag ? "TotalEvents="   : "", sim -> total_events_processed );
+
+  if( report_performance )
+    printf( "%s%.0f  %s%.0f\n", 
+	    report_tag ? "CpuTime=" : "", sim -> elapsed_cpu_seconds,
+	    report_tag ? "SpeedUp=" : "", sim -> iterations * sim -> total_seconds / sim -> elapsed_cpu_seconds );
 
   printf( "\n" );
 }

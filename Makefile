@@ -31,4 +31,4 @@ simcraft build:
 	g++ -I. $(OPTS) -Wall $(SRC) -o simcraft
 
 debug:
-	g++ -DDEBUG -I. $(OPTS) -Wall $(SRC) -o simcraft
+	g++ -DDEBUG -g -I. -Wall $(SRC) -o simcraft

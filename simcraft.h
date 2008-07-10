@@ -177,7 +177,7 @@ struct sim_t
   player_t*   player_list;
   player_t*   active_player;
   target_t*   target;
-  double      current_time, max_time, lag, total_seconds;
+  double      current_time, max_time, lag, total_seconds, elapsed_cpu_seconds;
   int32_t     events_remaining, max_events_remaining;
   int32_t     events_processed, total_events_processed;
   int32_t     seed, id, iterations;
@@ -305,7 +305,7 @@ struct player_t
     int16_t attribute        [ ATTRIBUTE_MAX ];
     int16_t attribute_enchant[ ATTRIBUTE_MAX ];
     // Spell Gear
-    int16_t spell_power[ SCHOOL_MAX+1 ], spell_power_enchant;
+    int16_t spell_power[ SCHOOL_MAX+1 ], spell_power_enchant[ SCHOOL_MAX+1 ];
     int16_t spell_hit_rating,            spell_hit_rating_enchant;
     int16_t spell_crit_rating,           spell_crit_rating_enchant;
     int16_t spell_penetration,           spell_penetration_enchant;
@@ -942,6 +942,7 @@ struct report_t
   int8_t report_mps;
   int8_t report_name;
   int8_t report_pet;
+  int8_t report_performance;
   int8_t report_pq;
   int8_t report_procs;
   int8_t report_raid_dps;

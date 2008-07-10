@@ -201,6 +201,8 @@ void action_t::target_debuff()
     target_multiplier *= 1.0 + ( t -> debuffs.misery * 0.01 );
   }
 
+  if( t -> debuffs.judgement_of_crusader ) target_crit += 0.03;
+
   report_t::debug( sim, "action_t::target_debuff: %s multiplier=%.2f hit=%.2f crit=%.2f power=%.2f penetration=%.0f", 
 		   name(), target_multiplier, target_hit, target_crit, target_power, target_penetration );
 }
