@@ -72,12 +72,11 @@ void attack_t::player_buff()
 
   player_hit        = p -> attack_hit;
   player_expertise  = p -> attack_expertise;
-  player_crit       = p -> attack_crit +
-                      p -> attack_crit_per_agility  * p -> attribute[ ATTR_AGILITY ];
+  player_crit       = p -> attack_crit + p -> attack_crit_per_agility  * p -> agility();
   player_crit_bonus = 1.0;
   player_power      = p -> attack_power +
-                      p -> attack_power_per_strength * p -> attribute[ ATTR_STRENGTH ] +
-                      p -> attack_power_per_agility  * p -> attribute[ ATTR_AGILITY  ];
+                      p -> attack_power_per_strength * p -> strength() +
+                      p -> attack_power_per_agility  * p -> agility();
   player_power     *= p -> attack_power_multiplier;
 }
 

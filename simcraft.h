@@ -232,10 +232,11 @@ struct player_t
   double  haste;
 
   // Attributes
-  double attribute           [ ATTRIBUTE_MAX ];
-  double attribute_base      [ ATTRIBUTE_MAX ];
-  double attribute_initial   [ ATTRIBUTE_MAX ];
-  double attribute_multiplier[ ATTRIBUTE_MAX ];
+  double attribute                   [ ATTRIBUTE_MAX ];
+  double attribute_base              [ ATTRIBUTE_MAX ];
+  double attribute_initial           [ ATTRIBUTE_MAX ];
+  double attribute_multiplier        [ ATTRIBUTE_MAX ];
+  double attribute_multiplier_initial[ ATTRIBUTE_MAX ];
 
   // Spell Mechanics
   double base_spell_power,       initial_spell_power[ SCHOOL_MAX+1 ], spell_power[ SCHOOL_MAX+1 ];
@@ -524,6 +525,12 @@ struct player_t
   bool      dual_wield();
   void      aura_gain( const char* name );
   void      aura_loss( const char* name );
+
+  double strength()  { return attribute_multiplier[ ATTR_STRENGTH  ] * attribute[ ATTR_STRENGTH  ]; }
+  double agility()   { return attribute_multiplier[ ATTR_AGILITY   ] * attribute[ ATTR_AGILITY   ]; }
+  double stamina()   { return attribute_multiplier[ ATTR_STAMINA   ] * attribute[ ATTR_STAMINA   ]; }
+  double intellect() { return attribute_multiplier[ ATTR_INTELLECT ] * attribute[ ATTR_INTELLECT ]; }
+  double spirit()    { return attribute_multiplier[ ATTR_SPIRIT    ] * attribute[ ATTR_SPIRIT    ]; }
   
   void parse_talents( talent_translation_t*, const std::string& talent_string );
 

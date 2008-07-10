@@ -1080,7 +1080,7 @@ struct dispersion_t : public priest_spell_t
 
   virtual void tick()
   {
-    player -> resource_gain( RESOURCE_MANA, 0.06 * player -> resource_initial[ RESOURCE_MANA ], "dispersion" );
+    player -> resource_gain( RESOURCE_MANA, 0.06 * player -> resource_max[ RESOURCE_MANA ], "dispersion" );
   }
 
   virtual bool ready()
@@ -1088,7 +1088,7 @@ struct dispersion_t : public priest_spell_t
     if( ! spell_t::ready() )
       return false;
 
-    return player -> resource_current[ RESOURCE_MANA ] < 0.50 * player -> resource_initial[ RESOURCE_MANA ];
+    return player -> resource_current[ RESOURCE_MANA ] < 0.50 * player -> resource_max[ RESOURCE_MANA ];
   }
 };
 
@@ -1232,7 +1232,7 @@ struct shadow_fiend_spell_t : public priest_spell_t
     if( ! spell_t::ready() )
       return false;
 
-    return( player -> resource_initial[ RESOURCE_MANA ] - 
+    return( player -> resource_max    [ RESOURCE_MANA ] - 
 	    player -> resource_current[ RESOURCE_MANA ] ) > mana;
   }
 };
@@ -1355,9 +1355,9 @@ void priest_t::init_base()
   attribute_base[ ATTR_INTELLECT ] = 145;
   attribute_base[ ATTR_SPIRIT    ] = 155;
 
-  attribute_multiplier[ ATTR_STAMINA   ] *= 1.0 + talents.enlightenment * 0.01;
-  attribute_multiplier[ ATTR_INTELLECT ] *= 1.0 + talents.enlightenment * 0.01;
-  attribute_multiplier[ ATTR_SPIRIT    ] *= 1.0 + talents.enlightenment * 0.01;
+  attribute_multiplier_initial[ ATTR_STAMINA   ] *= 1.0 + talents.enlightenment * 0.01;
+  attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.0 + talents.enlightenment * 0.01;
+  attribute_multiplier_initial[ ATTR_SPIRIT    ] *= 1.0 + talents.enlightenment * 0.01;
 
   base_spell_crit = 0.0125;
   spell_crit_per_intellect = 0.01 / ( level + 10 );
@@ -1380,7 +1380,7 @@ void priest_t::init_base()
 
   if( AFTER_3_0_0 )
   {
-    attribute_multiplier[ ATTR_INTELLECT ] *= 1.0 + talents.mental_strength * 0.01;
+    attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.0 + talents.mental_strength * 0.01;
   }
   else
   {

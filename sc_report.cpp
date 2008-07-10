@@ -194,19 +194,19 @@ void report_t::print_core_stats( player_t* p )
   printf( "%s  %s%.0f  %s%.0f  %s%.0f  %s%.0f  %s%.0f  %s%.0f  %s%.0f\n", 
 	  report_tag ? "  Core Stats:" : "", 
 	  report_tag ? "strength=" : "",
-	  p -> attribute_initial[ ATTR_STRENGTH ], 
+	  p -> strength(),
 	  report_tag ? "agility=" : "",
-	  p -> attribute_initial[ ATTR_AGILITY ], 
+	  p -> agility(),
 	  report_tag ? "stamina=" : "",
-	  p -> attribute_initial[ ATTR_STAMINA ], 
+	  p -> stamina(),
 	  report_tag ? "intellect=" : "",
-	  p -> attribute_initial[ ATTR_INTELLECT ], 
+	  p -> intellect(),
 	  report_tag ? "spirit=" : "",
-	  p -> attribute_initial[ ATTR_SPIRIT ], 
+	  p -> spirit(),
 	  report_tag ? "health=" : "",
-	  p -> resource_initial[ RESOURCE_HEALTH ], 
+	  p -> resource_max[ RESOURCE_HEALTH ], 
 	  report_tag ? "mana=" : "",
-	  p -> resource_initial[ RESOURCE_MANA ] );
+	  p -> resource_max[ RESOURCE_MANA ] );
 }
 
 // report_t::print_spell_stats ================================================
@@ -340,9 +340,10 @@ void report_t::print()
 	    report_tag ? "TotalEvents="   : "", sim -> total_events_processed );
 
   if( report_performance )
-    printf( "%s%.0f  %s%.0f\n", 
-	    report_tag ? "CpuTime=" : "", sim -> elapsed_cpu_seconds,
-	    report_tag ? "SpeedUp=" : "", sim -> iterations * sim -> total_seconds / sim -> elapsed_cpu_seconds );
+    printf( "%s%.0f  %s%.0f  %s%.0f\n", 
+	    report_tag ? "SimSeconds=" : "", sim -> iterations * sim -> total_seconds,
+	    report_tag ? "CpuSeconds=" : "", sim -> elapsed_cpu_seconds,
+	    report_tag ? "SpeedUp="    : "", sim -> iterations * sim -> total_seconds / sim -> elapsed_cpu_seconds );
 
   printf( "\n" );
 }

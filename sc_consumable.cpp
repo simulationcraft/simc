@@ -80,7 +80,7 @@ struct mana_potion_t : public spell_t
     if( ! spell_t::ready() )
       return false;
 
-    return( player -> resource_initial[ RESOURCE_MANA ] - 
+    return( player -> resource_max    [ RESOURCE_MANA ] - 
 	    player -> resource_current[ RESOURCE_MANA ] ) > mana;
   }
 };
@@ -115,7 +115,7 @@ struct mana_gem_t : public spell_t
     if( ! spell_t::ready() )
       return false;
 
-    return( player -> resource_initial[ RESOURCE_MANA ] - 
+    return( player -> resource_max    [ RESOURCE_MANA ] - 
 	    player -> resource_current[ RESOURCE_MANA ] ) > mana;
   }
 };
@@ -150,7 +150,7 @@ struct health_stone_t : public spell_t
     if( ! spell_t::ready() )
       return false;
 
-    return( player -> resource_initial[ RESOURCE_HEALTH ] - 
+    return( player -> resource_max    [ RESOURCE_HEALTH ] - 
 	    player -> resource_current[ RESOURCE_HEALTH ] ) > health;
   }
 };
@@ -197,7 +197,7 @@ struct dark_rune_t : public spell_t
     if( player -> resource_current[ RESOURCE_HEALTH ] <= health )
       return false;
 
-    return( player -> resource_initial[ RESOURCE_MANA ] - 
+    return( player -> resource_max    [ RESOURCE_MANA ] - 
 	    player -> resource_current[ RESOURCE_MANA ] ) > mana;
   }
 };
