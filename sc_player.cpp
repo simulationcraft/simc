@@ -5,6 +5,81 @@
 
 #include <simcraft.h>
 
+namespace { // ANONYMOUS NAMESPACE ==========================================
+
+// trigger_moonkin_haste ====================================================
+
+static void trigger_moonkin_haste( spell_t* s )
+{
+  struct haste_cooldown_t : public event_t
+  {
+    haste_cooldown_t( sim_t* sim, player_t* p ) : event_t( sim, p )
+    {
+      name = "Moonkin Haste Cooldown";
+      for( player_t* p = sim -> player_list; p; p = p -> next )
+      {
+	if( player -> party == p -> party )
+        {
+	  p -> buffs.improved_moonkin_aura = 0;
+	}
+      }
+      time = 3.0;
+      sim -> add_event( this );
+    }
+    virtual void execute()
+    {
+      for( player_t* p = sim -> player_list; p; p = p -> next )
+      {
+	if( player -> party == p -> party )
+        {
+	  p -> buffs.improved_moonkin_aura = 1;
+	}
+      }
+    }
+  };
+
+  struct haste_expiration_t : public event_t
+  {
+    haste_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
+    {
+      name = "Moonkin Haste Expiration";
+      player -> aura_gain( "Moonkin Haste" );
+      player -> buffs.moonkin_haste = 1;
+      time = 10.0;
+      sim -> add_event( this );
+    }
+    virtual void execute()
+    {
+      player -> aura_loss( "Moonkin Haste" );
+      player -> buffs.moonkin_haste = 0;
+      player -> expirations.moonkin_haste = 0;
+    }
+  };
+
+  player_t* p = s -> player;
+
+  if( p -> buffs.improved_moonkin_aura )
+  {
+    p -> proc( "moonkin_haste" );
+
+    event_t*& e = p -> expirations.moonkin_haste;
+
+    if( e )
+    {
+      e -> reschedule( s -> sim -> current_time + 10.0 );
+    }
+    else
+    {
+      e = new haste_expiration_t( s -> sim, p );
+    }
+
+    // Remove the Improved Moonkin aura for 3 seconds to block trigger during cooldown.
+    new haste_cooldown_t( s -> sim, p );
+  }
+}
+
+} // ANONYMOUS NAMESPACE ===================================================
+
 // ==========================================================================
 // Player - Gear
 // ==========================================================================
@@ -701,6 +776,10 @@ void player_t::spell_miss_event( spell_t* spell )
 
 void player_t::spell_hit_event( spell_t* spell )
 {
+  if( spell -> result == RESULT_CRIT )
+  {
+    trigger_moonkin_haste( spell );
+  }
 }
 
 // player_t::spell_tick_event ===============================================
@@ -803,7 +882,8 @@ double player_t::gcd()
 {
   double t = base_gcd;
   t *= haste;
-  if( buffs.bloodlust ) t *= 0.70;
+  if( buffs.bloodlust     ) t *= 0.70;
+  if( buffs.moonkin_haste ) t *= 0.80;
   if( t < 1.0 ) t = 1.0;
   return t;
 }

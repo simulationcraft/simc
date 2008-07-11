@@ -70,9 +70,17 @@ struct priest_t : public player_t
     shadow_word_pain_active = 0;
     vampiric_touch_active = 0;
     vampiric_embrace_active = 0;
-    uptimes_improved_spirit_tap = sim -> get_uptime( name + "_improved_spirit_tap" );
-    expirations_improved_spirit_tap = 0;
+
+    // Buffs
     buffs_improved_spirit_tap = 0;
+    buffs_inner_focus = 0;
+    buffs_surge_of_light = 0;
+
+    // Expirations
+    expirations_improved_spirit_tap = 0;
+
+    // Up-Times
+    uptimes_improved_spirit_tap = sim -> get_uptime( name + "_improved_spirit_tap" );
   }
 
   // Character Definition
@@ -201,6 +209,8 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 static void stack_shadow_weaving( spell_t* s )
 {
   priest_t* p = s -> player -> cast_priest();
+
+  if( p -> talents.shadow_weaving == 0 ) return;
 
   struct shadow_weaving_expiration_t : public event_t
   {
@@ -332,9 +342,9 @@ static void pop_tier5_4pc( spell_t*s )
 
 static void trigger_ashtongue_talisman( spell_t* s )
 {
-  struct ashtongue_talisman_expiration_t : public event_t
+  struct expiration_t : public event_t
   {
-    ashtongue_talisman_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
+    expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
     {
       name = "Ashtongue Talisman Expiration";
       player -> aura_gain( "Ashtongue Talisman" );
@@ -364,7 +374,7 @@ static void trigger_ashtongue_talisman( spell_t* s )
     }
     else
     {
-      e = new ashtongue_talisman_expiration_t( s -> sim, p );
+      e = new expiration_t( s -> sim, p );
     }
   }
 }
@@ -623,7 +633,7 @@ struct shadow_word_pain_t : public priest_spell_t
   virtual void execute() 
   {
     priest_spell_t::execute(); 
-    if( result == RESULT_HIT ) 
+    if( result_is_hit() ) 
     {
       push_misery( this );
       player -> cast_priest() -> shadow_word_pain_active = this;
@@ -690,7 +700,7 @@ struct vampiric_touch_t : public priest_spell_t
   virtual void execute() 
   {
     priest_spell_t::execute(); 
-    if( result == RESULT_HIT ) 
+    if( result_is_hit() ) 
     {
       push_misery( this );
       player -> cast_priest() -> vampiric_touch_active = this;
@@ -751,7 +761,7 @@ struct devouring_plague_t : public priest_spell_t
   virtual void execute() 
   {
     priest_spell_t::execute(); 
-    if( result == RESULT_HIT ) 
+    if( result_is_hit() ) 
     {
       push_misery( this );
       player -> cast_priest() -> devouring_plague_active = this;
@@ -796,7 +806,7 @@ struct vampiric_embrace_t : public priest_spell_t
   virtual void execute() 
   {
     priest_spell_t::execute(); 
-    if( result == RESULT_HIT ) 
+    if( result_is_hit() ) 
     {
       player -> cast_priest() -> vampiric_embrace_active = this;
     }
@@ -975,7 +985,7 @@ struct mind_flay_t : public priest_spell_t
   virtual void execute()
   {
     priest_spell_t::execute();
-    if( result == RESULT_HIT )
+    if( result_is_hit() )
     {
       priest_t* p = player -> cast_priest();
       spell_t*  swp = p -> shadow_word_pain_active;
@@ -983,6 +993,7 @@ struct mind_flay_t : public priest_spell_t
       {
 	swp -> current_tick = 0;
 	swp -> time_remaining = swp -> duration();
+	swp -> update_debuffs();
       }
     }
   }
@@ -1146,7 +1157,7 @@ struct inner_focus_t : public priest_spell_t
     assert( p -> talents.inner_focus );
     trigger_gcd = false;  
     cooldown = 180.0;
-    assert( options_str.size() > 0 );
+    assert( ! options_str.empty() );
     // This will prevent InnerFocus from being called before the desired "free spell" is ready to be cast.
     cooldown_group = options_str;
     debuff_group   = options_str;
@@ -1154,7 +1165,7 @@ struct inner_focus_t : public priest_spell_t
    
   virtual void execute()
   {
-    report_t::log( sim, "Player %s casts Inner Focus", player -> name() );
+    report_t::log( sim, "%s performs inner_focus", player -> name() );
     priest_t* p = player -> cast_priest();
     p -> aura_gain( "Inner Focus" );
     p -> buffs_inner_focus = 1;
@@ -1245,6 +1256,8 @@ struct shadow_fiend_spell_t : public priest_spell_t
 
 void priest_t::spell_hit_event( spell_t* s )
 {
+  player_t::spell_hit_event( s );
+
   if( s -> school == SCHOOL_SHADOW )
   {
     stack_shadow_weaving( s );
@@ -1259,6 +1272,8 @@ void priest_t::spell_hit_event( spell_t* s )
 
 void priest_t::spell_finish_event( spell_t* s )
 {
+  player_t::spell_finish_event( s );
+
   if( s -> harmful )
   {
     pop_tier5_2pc ( s );
@@ -1275,6 +1290,8 @@ void priest_t::spell_damage_event( spell_t* s,
 				   double   amount,
 				   int8_t   dmg_type )
 {
+  player_t::spell_damage_event( s, amount, dmg_type );
+
   if( s -> school == SCHOOL_SHADOW )
   {
     if( vampiric_touch_active )

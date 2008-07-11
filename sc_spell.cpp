@@ -27,7 +27,8 @@ double spell_t::execute_time()
   if( t < 0 ) t = 0;
 
   t *= player -> haste;
-  if( player -> buffs.bloodlust ) t *= 0.7;
+  if( player -> buffs.bloodlust     ) t *= 0.7;
+  if( player -> buffs.moonkin_haste ) t *= 0.8;
 
   return t;
 }
@@ -65,7 +66,8 @@ void spell_t::player_buff()
   player_power += p -> spell_power_per_intellect * p -> intellect();
   player_power += p -> spell_power_per_spirit    * p -> spirit();
 
-  if( p -> buffs.moonkin_aura   ) player_crit += 0.05;
+  player_crit += p -> buffs.moonkin_aura;
+
   if( p -> buffs.totem_of_wrath )
   {
     player_hit  += 0.03;

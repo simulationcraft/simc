@@ -24,7 +24,6 @@ report_t::report_t( sim_t* s ) :
   report_name(1),
   report_pet(0),
   report_performance(1),
-  report_pq(0),
   report_procs(1),
   report_raid_dps(1),
   report_spell_stats(1),
@@ -51,7 +50,6 @@ bool report_t::parse_option( const std::string& name,
     { "report_name",             OPT_INT8,   &( report_name             ) },
     { "report_pet",              OPT_INT8,   &( report_pet              ) },
     { "report_performance",      OPT_INT8,   &( report_performance      ) },
-    { "report_pq",               OPT_INT8,   &( report_pq               ) },
     { "report_procs",            OPT_INT8,   &( report_procs            ) },
     { "report_raid_dps",         OPT_INT8,   &( report_raid_dps         ) },
     { "report_spell_stats",      OPT_INT8,   &( report_spell_stats      ) },
@@ -89,7 +87,7 @@ void report_t::print_action( stats_t* s )
     total_dmg   = s -> player -> total_dmg;
   }
 
-  printf( "    %-20s  Count=%.1f|%4.1fsec  DPS=%6.1f  DPE=%4.0f|%2.0f%%  DPET=%4.0f", 
+  printf( "    %-20s  Count=%5.1f|%4.1fsec  DPS=%6.1f  DPE=%4.0f|%2.0f%%  DPET=%4.0f", 
 	  action_name.c_str(),
 	  s -> num_executes,
 	  s -> sim -> total_seconds / s -> num_executes,
@@ -99,11 +97,11 @@ void report_t::print_action( stats_t* s )
       
   if( s -> execute_results[ RESULT_HIT ].avg_dmg > 0 )
   {
-    printf( "  Hit=%.0f", s -> execute_results[ RESULT_HIT ].avg_dmg );
+    printf( "  Hit=%4.0f", s -> execute_results[ RESULT_HIT ].avg_dmg );
   }
   if( s -> execute_results[ RESULT_CRIT ].avg_dmg > 0 )
   {
-    printf( "  CritHit=%.0f|%.0f|%.1f%%", 
+    printf( "  CritHit=%4.0f|%4.0f|%.1f%%", 
 	    s -> execute_results[ RESULT_CRIT ].avg_dmg, 
 	    s -> execute_results[ RESULT_CRIT ].max_dmg, 
 	    s -> execute_results[ RESULT_CRIT ].count * 100.0 / s -> num_executes );
@@ -259,12 +257,32 @@ void report_t::print_attack_stats( player_t* p )
 
 void report_t::print_uptime()
 {
-  printf( "UpTime Report:\n" );
+  printf( "Up-Times:\n" );
 
   for( uptime_t* u = sim -> uptime_list; u; u = u -> next )
   {
-    printf( "  %s=%.1f%%\n", u -> name(), u -> percentage() );
+    if( u -> up > 0 ) 
+    {
+      printf( "  %s=%.1f%%\n", u -> name(), u -> percentage() );
+    }
   }
+}
+
+// report_t::print_performance ================================================
+
+void report_t::print_performance()
+{
+  printf( "Performance:\n"
+	  "  TotalEvents   = %d\n"
+	  "  MaxEventQueue = %d\n"
+	  "  SimSeconds    = %.0f\n"
+	  "  CpuSeconds    = %.0f\n"
+	  "  SpeedUp       = %.0f\n", 
+	  sim -> total_events_processed,
+	  sim -> max_events_remaining,
+	  sim -> iterations * sim -> total_seconds,
+	  sim -> elapsed_cpu_seconds,
+	  sim -> iterations * sim -> total_seconds / sim -> elapsed_cpu_seconds );
 }
 
 // report_t::print ============================================================
@@ -334,16 +352,7 @@ void report_t::print()
 
   if( report_uptime ) print_uptime();
 
-  if( report_pq ) 
-    printf( "%s%d  %s%d\n", 
-	    report_tag ? "MaxEventQueue=" : "", sim -> max_events_remaining, 
-	    report_tag ? "TotalEvents="   : "", sim -> total_events_processed );
-
-  if( report_performance )
-    printf( "%s%.0f  %s%.0f  %s%.0f\n", 
-	    report_tag ? "SimSeconds=" : "", sim -> iterations * sim -> total_seconds,
-	    report_tag ? "CpuSeconds=" : "", sim -> elapsed_cpu_seconds,
-	    report_tag ? "SpeedUp="    : "", sim -> iterations * sim -> total_seconds / sim -> elapsed_cpu_seconds );
+  if( report_performance ) print_performance();
 
   printf( "\n" );
 }

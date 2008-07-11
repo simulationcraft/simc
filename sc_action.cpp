@@ -185,6 +185,7 @@ void action_t::target_debuff()
     else if( school == SCHOOL_ARCANE )
     {
       target_multiplier *= 1.0 + ( t -> debuffs.curse_of_shadows * 0.01 );       
+      target_multiplier *= 1.0 + ( t -> debuffs.natures_fury     * 0.02 );
       if( t -> debuffs.curse_of_shadows ) target_penetration += 88;
     }
     else if( school == SCHOOL_FROST )
@@ -197,6 +198,10 @@ void action_t::target_debuff()
       target_multiplier *= 1.0 + ( t -> debuffs.curse_of_elements  * 0.01 );
       target_multiplier *= 1.0 + ( t -> debuffs.fire_vulnerability * 0.01 );
       if( t -> debuffs.curse_of_elements ) target_penetration += 88;
+    }
+    else if( school == SCHOOL_NATURE )
+    {
+      target_multiplier *= 1.0 + ( t -> debuffs.natures_fury * 0.02 );
     }
     target_multiplier *= 1.0 + ( t -> debuffs.misery * 0.01 );
   }
@@ -402,6 +407,8 @@ void action_t::tick()
   dot_tick = ( dot / num_ticks ) * target_multiplier;
 
   if( ! binary ) dot_tick *= 1.0 - resistance();
+
+  result = RESULT_HIT; // DoT ticks can only "hit"
   
   assess_damage( dot_tick, DMG_OVER_TIME );
 
@@ -459,7 +466,7 @@ void action_t::schedule_tick()
   {
     time_remaining = duration();
 
-    if( ! channeled ) player -> share_debuff( debuff_group, sim -> current_time + time_remaining + 0.01 );
+    if( ! channeled ) update_debuffs();
   }
 
   time_to_tick = time_remaining / ( num_ticks - current_tick );
@@ -479,6 +486,15 @@ void action_t::update_cooldowns()
 
     player -> share_cooldown( cooldown_group, cooldown );
   }
+}
+
+// action_t::update_debuffs ==================================================
+
+void action_t::update_debuffs()
+{
+  report_t::debug( sim, "%s updates debuffs for %s", player -> name(), name() );
+
+  player -> share_debuff( debuff_group, sim -> current_time + time_remaining + 0.01 );
 }
 
 // action_t::update_stats ===================================================

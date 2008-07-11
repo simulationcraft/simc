@@ -248,6 +248,7 @@ struct player_t
   double spell_power_per_intellect;
   double spell_power_per_spirit;
   double spell_crit_per_intellect;
+  double mp5_per_intellect;
   double last_cast;
 
   // Attack Mechanics
@@ -398,9 +399,11 @@ struct player_t
     int8_t  darkmoon_wrath;
     int8_t  evocation;
     int8_t  icy_veins;
+    int8_t  improved_moonkin_aura;
     int8_t  innervate;
     int8_t  lightning_capacitor;
     double  mana_cost_reduction;
+    int8_t  moonkin_haste;
     double  moonkin_aura;
     int8_t  nightfall;
     int8_t  natures_grace;
@@ -434,6 +437,7 @@ struct player_t
     event_t* eye_of_magtheridon;
     event_t* lightning_capacitor;
     event_t* mark_of_defiance;
+    event_t* moonkin_haste;
     event_t* mystical_skyfire;
     event_t* mystical_skyfire_silent_cooldown;
     event_t* quagmirrans_eye;
@@ -449,6 +453,14 @@ struct player_t
     expirations_t() { reset(); }
   };
   expirations_t expirations;
+  
+  struct uptimes_t
+  {
+    uptime_t *improved_moonkin_aura;
+    void reset() { memset( (void*) this, 0x00, sizeof( uptimes_t ) ); }
+    uptimes_t() { reset(); }
+  };
+  uptimes_t uptimes;
   
   struct enchants_t
   {
@@ -602,6 +614,7 @@ struct target_t
     int8_t   mangle;
     int8_t   misery;
     int8_t   misery_stack;
+    int8_t   natures_fury;
     int8_t   shadow_vulnerability;
     int8_t   shadow_weaving;
     int8_t   sunder_armor;
@@ -619,6 +632,7 @@ struct target_t
   {
     event_t* fire_vulnerability;
     event_t* frozen;
+    event_t* natures_fury;
     event_t* shadow_vulnerability;
     event_t* shadow_weaving;
     event_t* winters_chill;
@@ -760,6 +774,7 @@ struct action_t
   virtual void schedule_execute();
   virtual void schedule_tick();
   virtual void update_cooldowns();
+  virtual void update_debuffs();
   virtual void update_stats( int8_t type );
   virtual bool ready();
   virtual void reset();
@@ -801,6 +816,7 @@ struct attack_t : public action_t
   virtual void schedule_execute()                  { action_t::schedule_execute();         }
   virtual void schedule_tick()                     { action_t::schedule_tick();            }
   virtual void update_cooldowns()                  { action_t::update_cooldowns();         }
+  virtual void update_debuffs()                    { action_t::update_debuffs();           }
   virtual void update_stats( int8_t t )            { action_t::update_stats( t );          }
   virtual bool ready()                             { return action_t::ready();             }
   virtual void reset()                             { action_t::reset();                    }
@@ -835,6 +851,7 @@ struct spell_t : public action_t
   virtual void schedule_execute()                  { action_t::schedule_execute();         }
   virtual void schedule_tick()                     { action_t::schedule_tick();            }
   virtual void update_cooldowns()                  { action_t::update_cooldowns();         }
+  virtual void update_debuffs()                    { action_t::update_debuffs();           }
   virtual void update_stats( int8_t t )            { action_t::update_stats( t );          }
   virtual bool ready()                             { return action_t::ready();             }
   virtual void reset()                             { action_t::reset();                    }
@@ -950,7 +967,6 @@ struct report_t
   int8_t report_name;
   int8_t report_pet;
   int8_t report_performance;
-  int8_t report_pq;
   int8_t report_procs;
   int8_t report_raid_dps;
   int8_t report_spell_stats;
@@ -967,6 +983,7 @@ struct report_t
   void print_spell_stats ( player_t* );
   void print_attack_stats( player_t* );
   void print_uptime();
+  void print_performance();
   void print();
   static void timestamp( sim_t* sim );
   static void va_printf( sim_t*, const char* format, va_list );
