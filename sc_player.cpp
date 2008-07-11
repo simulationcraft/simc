@@ -230,6 +230,7 @@ void player_t::init_core()
     {
       attribute_initial[ i ] = attribute_base[ i ] + gear.attribute[ i ] + gear.attribute_enchant[ i ];
     }
+    attribute[ i ] = attribute_initial[ i ];
   }
 }
 
