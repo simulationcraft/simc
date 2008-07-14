@@ -342,8 +342,16 @@ uptime_t* sim_t::get_uptime( const std::string& name )
   }
 
   u = new uptime_t( name );
-  u -> next = uptime_list;
-  uptime_list = u;
+
+  uptime_t** tail = &uptime_list;
+
+  while( *tail && name > ( (*tail) -> name_str ) )
+  {
+    tail = &( (*tail) -> next );
+  }
+
+  u -> next = *tail;
+  *tail = u;
 
   return u;
 }

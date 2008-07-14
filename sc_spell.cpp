@@ -22,14 +22,21 @@ spell_t::spell_t( const char* n, player_t* p, int8_t r, int8_t s, int8_t t ) :
 
 double spell_t::execute_time()
 {
+  player_t* p = player;
+
+  if( p -> buffs.moonkin_aura )
+  {
+    p -> uptimes.moonkin_haste -> update( p -> buffs.moonkin_haste );
+  }
+  
   if( base_execute_time == 0 ) return 0;
 
-  double t = base_execute_time - player -> buffs.cast_time_reduction;
+  double t = base_execute_time - p -> buffs.cast_time_reduction;
   if( t < 0 ) t = 0;
 
-  t *= player -> haste;
-  if( player -> buffs.bloodlust     ) t *= 0.7;
-  if( player -> buffs.moonkin_haste ) t *= 0.8;
+  t *= p -> haste;
+  if( p -> buffs.bloodlust     ) t *= 0.7;
+  if( p -> buffs.moonkin_haste ) t *= 0.8;
 
   return t;
 }

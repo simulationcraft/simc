@@ -44,8 +44,7 @@ double attack_t::execute_time()
   double t = base_execute_time;
 
   t *= player -> haste;
-  if( player -> buffs.bloodlust     ) t *= 0.7;
-  if( player -> buffs.moonkin_haste ) t *= 0.8;
+  if( player -> buffs.bloodlust ) t *= 0.7;
 
   return t;
 }

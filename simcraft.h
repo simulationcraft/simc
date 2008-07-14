@@ -473,7 +473,7 @@ struct player_t
   
   struct uptimes_t
   {
-    uptime_t *improved_moonkin_aura;
+    uptime_t *moonkin_haste;
     void reset() { memset( (void*) this, 0x00, sizeof( uptimes_t ) ); }
     uptimes_t() { reset(); }
   };

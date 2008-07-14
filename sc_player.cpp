@@ -60,8 +60,6 @@ static void trigger_moonkin_haste( spell_t* s )
 
   if( p -> buffs.improved_moonkin_aura )
   {
-    p -> proc( "moonkin_haste" );
-
     event_t*& e = p -> expirations.moonkin_haste;
 
     if( e )
@@ -483,6 +481,8 @@ void player_t::init_stats()
   {
     resource_lost[ i ] = resource_gained[ i ] = 0;
   }
+
+  uptimes.moonkin_haste = sim -> get_uptime( name_str + "_moonkin_haste" );
 
   // FIXME! Init the stats structure here.  Makes for cleaner "harmful/channeled" setting.
 

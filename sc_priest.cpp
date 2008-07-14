@@ -426,8 +426,6 @@ static void trigger_improved_spirit_tap( spell_t* s )
   {
     if( wow_random( p -> talents.improved_spirit_tap * 0.50 ) )
     {
-      p -> proc( "improved_spirit_tap" );
-
       event_t*& e = p -> expirations_improved_spirit_tap;
 
       if( e )

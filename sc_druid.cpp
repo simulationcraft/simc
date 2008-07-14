@@ -199,7 +199,6 @@ static void trigger_eclipse_wrath( spell_t* s )
       p -> expirations_eclipse == 0 &&
       wow_random( p -> talents.eclipse * 0.20 ) )
   {
-    p -> proc( "eclipse_wrath" );
     p -> expirations_eclipse = new expiration_t( s -> sim, p );
   }
 }
@@ -248,7 +247,6 @@ static void trigger_eclipse_starfire( spell_t* s )
       p -> expirations_eclipse == 0 &&
       wow_random( p -> talents.eclipse * 0.20 ) )
   {
-    p -> proc( "eclipse_starfire" );
     p -> expirations_eclipse = new expiration_t( s -> sim, p );
   }
 }
