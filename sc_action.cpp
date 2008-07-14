@@ -90,6 +90,8 @@ rank_t* action_t::choose_rank( rank_t* rank_list )
        return &( rank_list[ i ] );
    }
 
+   printf( "%s unable to find valid rank for %s\n", player -> name(), name() );
+   assert( 0 );
    return 0;
 }
    

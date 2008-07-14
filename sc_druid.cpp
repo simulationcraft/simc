@@ -463,6 +463,21 @@ struct moonfire_t : public druid_spell_t
     base_hit        += p -> talents.balance_of_power * 0.02;
     base_crit_bonus *= 1.0 + p -> talents.vengeance * 0.20;
   }
+
+  virtual void execute()
+  {
+    druid_spell_t::execute();
+    if( result_is_hit() )
+    {
+      player -> cast_druid() -> moonfire_active = this;
+    }
+  }
+
+  virtual void last_tick() 
+  {
+    druid_spell_t::last_tick(); 
+    player -> cast_druid() -> moonfire_active = 0;
+  }
 };
 
 // Moonkin Form Spell =====================================================

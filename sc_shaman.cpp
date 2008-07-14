@@ -17,6 +17,9 @@ struct shaman_t : public player_t
   spell_t* water_totem;
   spell_t* earth_totem;
 
+  // Active
+  spell_t* flame_shock_active;
+
   // Buffs
   int8_t buffs_elemental_focus;
   int8_t buffs_elemental_mastery;
@@ -56,10 +59,14 @@ struct shaman_t : public player_t
 
   shaman_t( sim_t* sim, std::string& name ) : player_t( sim, SHAMAN, name )
   {
+    // Totems
     fire_totem  = 0;
     air_totem   = 0;
     water_totem = 0;
     earth_totem = 0;;
+
+    // Active
+    flame_shock_active = 0;
 
     // Buffs
     buffs_elemental_focus = 0;
@@ -221,6 +228,52 @@ void shaman_spell_t::player_buff()
 // Shaman Spells
 // =========================================================================
 
+// Chain Lightning Spell ===================================================
+
+struct chain_lightning_t : public shaman_spell_t
+{
+  chain_lightning_t( player_t* player, const std::string& options_str ) : 
+    shaman_spell_t( "chain_lightning", player, SCHOOL_NATURE, TREE_ELEMENTAL )
+  {
+    shaman_t* p = player -> cast_shaman();
+
+    option_t options[] =
+    {
+      { "rank", OPT_INT8, &rank_index },
+      { NULL }
+    };
+    parse_options( options, options_str );
+
+    static rank_t ranks[] =
+    {
+      { 80, 8, 973, 1111, 0, 1695 },
+      { 74, 7, 806,  920, 0, 1380 },
+      { 70, 6, 734,  838, 0,  760 },
+      { 63, 5, 603,  687, 0,  650 },
+      { 56, 4, 493,  551, 0,  550 },
+      { 0, 0 }
+    };
+    rank = choose_rank( ranks );
+
+    bool AFTER_3_0_0 = sim -> patch.after( 3, 0, 0 );
+
+    base_execute_time  = 2.0; 
+    dd_power_mod       = 0.7143;
+    may_crit           = true;
+    cooldown           = 6.0;
+    base_cost          = rank -> cost;
+
+    base_execute_time -= p -> talents.lightning_mastery * 0.1;
+    base_cost         *= 1.0 - p -> talents.convection * ( AFTER_3_0_0 ? 0.04 : 0.02 );
+    base_multiplier   *= 1.0 + p -> talents.concussion * 0.01;
+    base_crit         += p -> talents.call_of_thunder * 0.01;
+    base_crit         += p -> talents.tidal_mastery * 0.01;
+    base_hit          += p -> talents.natures_guidance * 0.01;
+    base_hit          += p -> talents.elemental_precision * 0.02;
+    if( p -> talents.elemental_fury ) base_crit_bonus *= 2.0;
+  }
+};
+
 // Lightning Bolt Spell =====================================================
 
 struct lightning_bolt_t : public shaman_spell_t
@@ -276,6 +329,87 @@ struct lightning_bolt_t : public shaman_spell_t
       trigger_lightning_overload( this );
       trigger_tier5_4pc( this );
     }
+  }
+};
+
+// Lava Burst Spell =========================================================
+
+struct lava_burst_t : public shaman_spell_t
+{
+  int8_t fswait;
+
+  lava_burst_t( player_t* player, const std::string& options_str ) : 
+    shaman_spell_t( "lava_burst", player, SCHOOL_FIRE, TREE_ELEMENTAL ), fswait(0)
+  {
+    shaman_t* p = player -> cast_shaman();
+
+    option_t options[] =
+    {
+      { "rank",   OPT_INT8, &rank_index },
+      { "fswait", OPT_INT8, &fswait     },
+      { NULL }
+    };
+    parse_options( options, options_str );
+
+    static rank_t ranks[] =
+    {
+      { 74, 1, 888, 1132, 0, 655 },
+      { 0, 0 }
+    };
+    rank = choose_rank( ranks );
+
+    bool AFTER_3_0_0 = sim -> patch.after( 3, 0, 0 );
+
+    base_execute_time  = 2.0; 
+    dd_power_mod       = ( 2.0 / 3.5 );
+    may_crit           = true;
+    cooldown           = 8.0;
+
+    base_cost          = rank -> cost;
+    base_cost         *= 1.0 - p -> talents.convection * ( AFTER_3_0_0 ? 0.04 : 0.02 );
+    base_multiplier   *= 1.0 + p -> talents.concussion * 0.01;
+    base_multiplier   *= 1.0 + p -> talents.lava_flow * 0.033333;
+    base_hit          += p -> talents.natures_guidance * 0.01;
+    base_hit          += p -> talents.elemental_precision * 0.02;
+    if( p -> talents.elemental_fury ) base_crit_bonus *= 2.0;
+  }
+
+  virtual void execute()
+  {
+    shaman_spell_t::execute();
+    if( result_is_hit() )
+    {
+      shaman_t* p = player -> cast_shaman();
+      if( p -> flame_shock_active )
+      {
+	p -> flame_shock_active -> cancel();
+	p -> flame_shock_active = 0;
+      }
+    }
+  }
+
+  virtual void player_buff()
+  {
+    shaman_spell_t::player_buff();
+    shaman_t* p = player -> cast_shaman();
+    if( p -> flame_shock_active ) player_crit += 1.0;
+  }
+
+  virtual bool ready()
+  {
+    if( ! shaman_spell_t::ready() )
+      return false;
+
+    if( fswait )
+    {
+      shaman_t* p = player -> cast_shaman();
+      if( ! p -> flame_shock_active ) 
+	return false;
+      if( p -> flame_shock_active -> time_remaining > 4.0 )
+	return false;
+    }
+
+    return true;
   }
 };
 
@@ -473,6 +607,21 @@ struct flame_shock_t : public shaman_spell_t
     base_hit        += p -> talents.natures_guidance * 0.01;
     base_hit        += p -> talents.elemental_precision * 0.02;
     if( p -> talents.elemental_fury ) base_crit_bonus *= 2.0;
+  }
+
+  virtual void execute()
+  {
+    shaman_spell_t::execute();
+    if( result_is_hit() )
+    {
+      player -> cast_shaman() -> flame_shock_active = this;
+    }
+  }
+
+  virtual void last_tick() 
+  {
+    shaman_spell_t::last_tick(); 
+    player -> cast_shaman() -> flame_shock_active = 0;
   }
 };
 
@@ -926,10 +1075,12 @@ action_t* shaman_t::create_action( const std::string& name,
 				   const std::string& options )
 {
   if( name == "bloodlust"          ) return new           bloodlust_t( this, options );
+  if( name == "chain_lightning"    ) return new     chain_lightning_t( this, options );
   if( name == "earth_shock"        ) return new         earth_shock_t( this, options );
   if( name == "elemental_mastery"  ) return new   elemental_mastery_t( this, options );
   if( name == "flame_shock"        ) return new         flame_shock_t( this, options );
   if( name == "frost_shock"        ) return new         frost_shock_t( this, options );
+  if( name == "lava_burst"         ) return new          lava_burst_t( this, options );
   if( name == "lightning_bolt"     ) return new      lightning_bolt_t( this, options );
   if( name == "mana_spring_totem"  ) return new   mana_spring_totem_t( this, options );
   if( name == "mana_tide_totem"    ) return new     mana_tide_totem_t( this, options );
@@ -980,11 +1131,16 @@ void shaman_t::reset()
 {
   player_t::reset();
 
+  // Totems
   fire_totem  = 0;
   air_totem   = 0;
   water_totem = 0;
   earth_totem = 0;;
 
+  // Active
+  flame_shock_active = 0;
+
+  // Buffs
   buffs_elemental_focus = 0;
   buffs_elemental_mastery = 0;
   buffs_natures_swiftness = 0;
