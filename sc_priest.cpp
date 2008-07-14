@@ -112,9 +112,10 @@ struct priest_spell_t : public spell_t
 
   // Passthru Methods
   virtual double execute_time() { return spell_t::execute_time(); }
-  virtual void player_buff()    { spell_t::player_buff();         }
-  virtual void tick()           { spell_t::tick();                }
-  virtual void last_tick()      { spell_t::last_tick();           }
+  virtual void   player_buff()  { spell_t::player_buff();         }
+  virtual void   tick()         { spell_t::tick();                }
+  virtual void   last_tick()    { spell_t::last_tick();           }
+  virtual bool   ready()        { return spell_t::ready();        }
 };
 
 // ==========================================================================
@@ -993,7 +994,7 @@ struct mind_flay_t : public priest_spell_t
       {
 	swp -> current_tick = 0;
 	swp -> time_remaining = swp -> duration();
-	swp -> update_debuffs();
+	swp -> update_ready();
       }
     }
   }
@@ -1038,7 +1039,7 @@ struct mind_flay_t : public priest_spell_t
 
   virtual bool ready()
   {
-    if( ! spell_t::ready() )
+    if( ! priest_spell_t::ready() )
       return false;
 
     if( wait > 0 )
@@ -1052,8 +1053,8 @@ struct mind_flay_t : public priest_spell_t
 	if( a -> name_str == "mind_flay" ) continue;
 	if( ! a -> harmful ) continue;
 
-	if( a -> debuff_ready > 0 &&
-	    a -> debuff_ready > ( wait + sim -> current_time + a -> execute_time() ) )
+	if( a -> duration_ready > 0 &&
+	    a -> duration_ready > ( wait + sim -> current_time + a -> execute_time() ) )
 	  continue;
 
 	if( a -> cooldown_ready <= ( wait + sim -> current_time ) )
@@ -1096,7 +1097,7 @@ struct dispersion_t : public priest_spell_t
 
   virtual bool ready()
   {
-    if( ! spell_t::ready() )
+    if( ! priest_spell_t::ready() )
       return false;
 
     return player -> resource_current[ RESOURCE_MANA ] < 0.50 * player -> resource_max[ RESOURCE_MANA ];
@@ -1160,7 +1161,7 @@ struct inner_focus_t : public priest_spell_t
     assert( ! options_str.empty() );
     // This will prevent InnerFocus from being called before the desired "free spell" is ready to be cast.
     cooldown_group = options_str;
-    debuff_group   = options_str;
+    duration_group = options_str;
   }
    
   virtual void execute()
@@ -1231,8 +1232,8 @@ struct shadow_fiend_spell_t : public priest_spell_t
 
   virtual void execute() 
   {
-    update_cooldowns();
     consume_resource();
+    update_ready();
     player -> summon_pet( "shadow_fiend" );
     player -> action_finish( this );
     new shadow_fiend_expiration_t( sim, player );
@@ -1240,7 +1241,7 @@ struct shadow_fiend_spell_t : public priest_spell_t
 
   virtual bool ready()
   {
-    if( ! spell_t::ready() )
+    if( ! priest_spell_t::ready() )
       return false;
 
     return( player -> resource_max    [ RESOURCE_MANA ] - 

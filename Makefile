@@ -20,6 +20,7 @@ SRC =\
 	sc_priest.cpp		\
 	sc_rating.cpp		\
 	sc_report.cpp		\
+	sc_shaman.cpp		\
 	sc_sim.cpp		\
 	sc_spell.cpp		\
 	sc_stats.cpp		\

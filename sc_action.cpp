@@ -28,7 +28,7 @@ action_t::action_t( int8_t      ty,
    dd(0), base_dd(0) ,  dd_power_mod(0), 
   dot(0), base_dot(0), dot_power_mod(0),
   dot_tick(0), time_remaining(0), num_ticks(0), current_tick(0), 
-  cooldown_group(n), debuff_group(n), cooldown(0), cooldown_ready(0), debuff_ready(0),
+  cooldown_group(n), duration_group(n), cooldown(0), cooldown_ready(0), duration_ready(0),
   stats(0), rank(0), rank_index(-1), event(0), time_to_execute(0), time_to_tick(0), next(0)
 {
   report_t::debug( sim, "Player %s creates action %s", p -> name(), name() );
@@ -328,7 +328,13 @@ void action_t::adjust_damage_for_result()
     dd  *= 1.0 + bonus;
   }
 
-  if( ! binary && dd > 0 ) dd *= 1.0 - resistance();
+  if( may_resist )
+  {
+    if( ! binary && dd > 0 ) 
+    {
+      dd *= 1.0 - resistance();
+    }
+  }
 
   if( result == RESULT_BLOCK )
   {
@@ -357,8 +363,6 @@ void action_t::consume_resource()
 void action_t::execute()
 {
   report_t::log( sim, "%s performs %s", player -> name(), name() );
-
-  update_cooldowns();
 
   consume_resource();
 
@@ -389,6 +393,8 @@ void action_t::execute()
     player -> action_miss( this );
   }
 
+  update_ready();
+
   update_stats( DMG_DIRECT );
 
   player -> action_finish( this );
@@ -408,7 +414,7 @@ void action_t::tick()
 
   if( ! binary ) dot_tick *= 1.0 - resistance();
 
-  result = RESULT_HIT; // DoT ticks can only "hit"
+  result = RESULT_HIT; // Normal DoT ticks can only "hit"
   
   assess_damage( dot_tick, DMG_OVER_TIME );
 
@@ -465,8 +471,6 @@ void action_t::schedule_tick()
   if( current_tick == 0 )
   {
     time_remaining = duration();
-
-    if( ! channeled ) update_debuffs();
   }
 
   time_to_tick = time_remaining / ( num_ticks - current_tick );
@@ -476,25 +480,22 @@ void action_t::schedule_tick()
   if( channeled ) player -> channeling = event;
 }
 
-// action_t::update_cooldowns ===============================================
+// action_t::update_ready ====================================================
 
-void action_t::update_cooldowns()
+void action_t::update_ready()
 {
   if( cooldown > 0 )
   {
-    report_t::debug( sim, "%s updates cooldown for %s", player -> name(), name() );
+    report_t::debug( sim, "%s shares cooldown for %s (%s)", player -> name(), name(), cooldown_group.c_str() );
 
     player -> share_cooldown( cooldown_group, cooldown );
   }
-}
+  if( ! channeled && time_remaining > 0 )
+  {
+    report_t::debug( sim, "%s shares duration for %s (%s)", player -> name(), name(), duration_group.c_str() );
 
-// action_t::update_debuffs ==================================================
-
-void action_t::update_debuffs()
-{
-  report_t::debug( sim, "%s updates debuffs for %s", player -> name(), name() );
-
-  player -> share_debuff( debuff_group, sim -> current_time + time_remaining + 0.01 );
+    player -> share_duration( duration_group, sim -> current_time + time_remaining + 0.01 );
+  }
 }
 
 // action_t::update_stats ===================================================
@@ -516,8 +517,8 @@ void action_t::update_stats( int8_t type )
 
 bool action_t::ready()
 {
-  if( debuff_ready > 0 )
-    if( debuff_ready > ( sim -> current_time + execute_time() ) )
+  if( duration_ready > 0 )
+    if( duration_ready > ( sim -> current_time + execute_time() ) )
       return false;
 
   if( cooldown_ready > sim -> current_time ) 
@@ -537,7 +538,7 @@ void action_t::reset()
   current_tick = 0;
   time_remaining = 0;
   cooldown_ready = 0;
-  debuff_ready = 0;
+  duration_ready = 0;
   result = RESULT_NONE;
   event = 0;
 }

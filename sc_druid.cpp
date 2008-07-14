@@ -349,8 +349,8 @@ struct innervate_t : public druid_spell_t
       }
     };
 
-    update_cooldowns();
     consume_resource();
+    update_ready();
     player -> buffs.innervate = 1;
     player -> action_finish( this );
     new expiration_t( sim, player );
@@ -516,9 +516,9 @@ struct druids_swiftness_t : public druid_spell_t
     cooldown = 180.0;
     if( ! options_str.empty() )
     {
-      // This will prevent InnerFocus from being called before the desired "free spell" is ready to be cast.
+      // This will prevent Natures Swiftness from being called before the desired "free spell" is ready to be cast.
       cooldown_group = options_str;
-      debuff_group   = options_str;
+      duration_group = options_str;
     }
   }
    
@@ -619,7 +619,7 @@ struct starfire_t : public druid_spell_t
 
   virtual bool ready()
   {
-    if( ! spell_t::ready() )
+    if( ! druid_spell_t::ready() )
       return false;
 
     if( hasted > 0 ) 
@@ -716,7 +716,7 @@ struct wrath_t : public druid_spell_t
 
   virtual bool ready()
   {
-    if( ! spell_t::ready() )
+    if( ! druid_spell_t::ready() )
       return false;
 
     if( eclipse_trigger )

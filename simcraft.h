@@ -530,7 +530,7 @@ struct player_t
   void      gain( const std::string&, double value );
   action_t* find_action( const std::string& );
   void      share_cooldown( const std::string& name, double ready );
-  void      share_debuff( const std::string& name, double ready );
+  void      share_duration( const std::string& name, double ready );
   void      recalculate_haste()  {  haste = 1.0 / ( 1.0 + haste_rating / rating.haste ); }
   bool      time_to_think() { return sim -> current_time - last_cast > 0.5; }
   double    spirit_regen_per_second();
@@ -740,8 +740,8 @@ struct action_t
   double dot, base_dot, dot_power_mod;
   double dot_tick, time_remaining;
   int8_t num_ticks, current_tick;
-  std::string cooldown_group, debuff_group;
-  double cooldown, cooldown_ready, debuff_ready;
+  std::string cooldown_group, duration_group;
+  double cooldown, cooldown_ready, duration_ready;
   stats_t* stats;
   rank_t* rank;
   int8_t rank_index;
@@ -773,8 +773,7 @@ struct action_t
   virtual void assess_damage( double amount, int8_t dmg_type );
   virtual void schedule_execute();
   virtual void schedule_tick();
-  virtual void update_cooldowns();
-  virtual void update_debuffs();
+  virtual void update_ready();
   virtual void update_stats( int8_t type );
   virtual bool ready();
   virtual void reset();
@@ -815,8 +814,7 @@ struct attack_t : public action_t
   virtual void assess_damage( double a, int8_t t ) { action_t::assess_damage( a, t );      }
   virtual void schedule_execute()                  { action_t::schedule_execute();         }
   virtual void schedule_tick()                     { action_t::schedule_tick();            }
-  virtual void update_cooldowns()                  { action_t::update_cooldowns();         }
-  virtual void update_debuffs()                    { action_t::update_debuffs();           }
+  virtual void update_ready()                      { action_t::update_ready();             }
   virtual void update_stats( int8_t t )            { action_t::update_stats( t );          }
   virtual bool ready()                             { return action_t::ready();             }
   virtual void reset()                             { action_t::reset();                    }
@@ -850,8 +848,7 @@ struct spell_t : public action_t
   virtual void assess_damage( double a, int8_t t ) { action_t::assess_damage( a, t );      }
   virtual void schedule_execute()                  { action_t::schedule_execute();         }
   virtual void schedule_tick()                     { action_t::schedule_tick();            }
-  virtual void update_cooldowns()                  { action_t::update_cooldowns();         }
-  virtual void update_debuffs()                    { action_t::update_debuffs();           }
+  virtual void update_ready()                      { action_t::update_ready();             }
   virtual void update_stats( int8_t t )            { action_t::update_stats( t );          }
   virtual bool ready()                             { return action_t::ready();             }
   virtual void reset()                             { action_t::reset();                    }

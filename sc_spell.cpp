@@ -14,6 +14,7 @@
 spell_t::spell_t( const char* n, player_t* p, int8_t r, int8_t s, int8_t t ) :
   action_t( ACTION_SPELL, n, p, r, s, t )
 {
+  may_miss = may_resist = true;
   base_crit_bonus = 0.5;
 }   
 
@@ -144,22 +145,28 @@ void spell_t::calculate_result()
   player_buff();
   target_debuff();
 
-  double miss_chance = level_based_miss_chance( player -> level, sim -> target -> level );
-
-  miss_chance -= base_hit + player_hit + target_hit;
-
-  if( wow_random( std::max( miss_chance, (double) 0.01 ) ) )
+  if( may_miss )
   {
-    result = RESULT_MISS;
-    return;
+    double miss_chance = level_based_miss_chance( player -> level, sim -> target -> level );
+
+    miss_chance -= base_hit + player_hit + target_hit;
+
+    if( wow_random( std::max( miss_chance, (double) 0.01 ) ) )
+    {
+      result = RESULT_MISS;
+      return;
+    }
   }
 
-  if( binary || num_ticks )
+  if( may_resist )
   {
-    if( wow_random( resistance() ) )
+    if( binary || num_ticks )
     {
-      result = RESULT_RESIST;
-      return;
+      if( wow_random( resistance() ) )
+      {
+	result = RESULT_RESIST;
+	return;
+      }
     }
   }
 

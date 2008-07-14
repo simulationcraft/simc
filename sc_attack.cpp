@@ -16,7 +16,7 @@ attack_t::attack_t( const char* n, player_t* p, int8_t r, int8_t s, int8_t t ) :
   base_expertise(0), player_expertise(0), target_expertise(0), 
   normalize_weapon_speed(false), weapon(0)
 {
-  may_miss = may_dodge = may_parry = may_glance = may_block = true;
+  may_miss = may_resist = may_dodge = may_parry = may_glance = may_block = true;
 
   if( player -> position == POSITION_BACK )
   {

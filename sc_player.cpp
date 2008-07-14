@@ -860,18 +860,18 @@ void player_t::share_cooldown( const std::string& group,
   }
 }
 
-// player_t::share_debuff ====================================================
+// player_t::share_duration =================================================
 
-void player_t::share_debuff( const std::string& group,
-			     double             ready )
+void player_t::share_duration( const std::string& group,
+			       double             ready )
 {
   for( action_t* a = action_list; a; a = a -> next )
   {
-    if( a -> debuff_group == group )
+    if( a -> duration_group == group )
     {
-      if( a -> debuff_ready < ready )
+      if( a -> duration_ready < ready )
       {
-	a -> debuff_ready = ready;
+	a -> duration_ready = ready;
       }
     }
   }

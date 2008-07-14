@@ -128,8 +128,8 @@ bool option_t::parse( sim_t*    sim,
   }
   else if( name == "shaman" )
   {
-    //sim -> active_player = player_t::create_shaman ( sim, value );
-    assert( 0 );
+    sim -> active_player = player_t::create_shaman( sim, value );
+    assert( sim -> active_player );
   }
   else if( name == "warlock" )
   {
