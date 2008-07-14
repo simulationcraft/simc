@@ -124,12 +124,12 @@ struct priest_spell_t : public spell_t
 
 struct shadow_fiend_pet_t : public pet_t
 {
-  struct auto_attack_t : public attack_t
+  struct melee_t : public attack_t
   {
-    auto_attack_t( player_t* player ) : 
+    melee_t( player_t* player ) : 
       attack_t( "melee", player, RESOURCE_NONE, SCHOOL_SHADOW )
     {
-      weapon = player -> main_hand_weapon;
+      weapon = &( player -> main_hand_weapon );
       base_execute_time = weapon -> swing_time;
       base_dd = 1;
       valid = false;
@@ -156,13 +156,17 @@ struct shadow_fiend_pet_t : public pet_t
     }
   };
 
-  auto_attack_t* auto_attack;
+  melee_t* melee;
 
   shadow_fiend_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name ) :
     pet_t( sim, owner, pet_name )
   {
-    main_hand_weapon = new weapon_t( WEAPON_BEAST_1H, 110, 1.5, SCHOOL_SHADOW );
-    auto_attack = new auto_attack_t( this );
+    main_hand_weapon.type       = WEAPON_BEAST;
+    main_hand_weapon.damage     = 110;
+    main_hand_weapon.swing_time = 1.5;
+    main_hand_weapon.school     = SCHOOL_SHADOW;
+
+    melee = new melee_t( this );
   }
   virtual void init_base()
   {
@@ -178,7 +182,7 @@ struct shadow_fiend_pet_t : public pet_t
   }
   virtual void reset()
   {
-    auto_attack -> reset();
+    melee -> reset();
   }
   virtual void schedule_ready()
   {
@@ -190,16 +194,12 @@ struct shadow_fiend_pet_t : public pet_t
     report_t::log( sim, "%s summons Shadow Fiend.", o -> name() );
     attribute_initial[ ATTR_STAMINA   ] = attribute[ ATTR_STAMINA   ] = attribute_base[ ATTR_STAMINA   ] + (int16_t) ( 0.30 * o -> attribute[ ATTR_STAMINA   ] );
     attribute_initial[ ATTR_INTELLECT ] = attribute[ ATTR_INTELLECT ] = attribute_base[ ATTR_INTELLECT ] + (int16_t) ( 0.30 * o -> attribute[ ATTR_INTELLECT ] );
-    auto_attack -> execute();
+    melee -> execute();
   }
   virtual void dismiss()
   {
     report_t::log( sim, "%s's Shadow Fiend dies.", cast_pet() -> owner -> name() );
-    if( auto_attack -> event )
-    {
-      auto_attack -> event -> invalid = true;
-      auto_attack -> event = 0;
-    }
+    melee -> cancel();
   }
 };
 

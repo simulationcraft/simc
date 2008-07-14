@@ -123,6 +123,31 @@ const char* wow_talent_tree_string( int8_t tree )
   return "unknown";
 }
 
+const char* wow_weapon_type_string( int8_t school )
+{
+  switch( school )
+  {
+  case WEAPON_NONE:     return "none";
+  case WEAPON_DAGGER:   return "dagger";
+  case WEAPON_FIST:     return "fist";
+  case WEAPON_BEAST:    return "beast";
+  case WEAPON_SWORD:    return "sword";
+  case WEAPON_MACE:     return "mace";
+  case WEAPON_AXE:      return "axe";
+  case WEAPON_BEAST_2H: return "beast_2h";
+  case WEAPON_SWORD_2H: return "sword_2h";
+  case WEAPON_MACE_2H:  return "mace_2h";
+  case WEAPON_AXE_2H:   return "axe_2h";
+  case WEAPON_STAFF:    return "staff";
+  case WEAPON_POLEARM:  return "polearm";
+  case WEAPON_BOW:      return "bow";
+  case WEAPON_CROSSBOW: return "crossbow";
+  case WEAPON_GUN:      return "gun";
+  case WEAPON_THROWN:   return "thrown";
+  }
+  return "unknown";
+}
+
 int wow_string_split( std::vector<std::string>& results, 
 		      const std::string&        str,
 		      const char*               delim )

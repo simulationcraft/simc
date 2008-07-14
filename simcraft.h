@@ -66,10 +66,10 @@ struct event_t
   uint32_t  id;
   double    time;
   double    reschedule_time;
-  int8_t    invalid;
+  int8_t    canceled;
   const char* name;
   event_t( sim_t* s, player_t* p=0, const char* n=0 ) : 
-    next(0), sim(s), player(p), reschedule_time(0), invalid(false), name(n) 
+    next(0), sim(s), player(p), reschedule_time(0), canceled(false), name(n) 
   {
     if( ! name ) name = "unknown";
   }
@@ -77,6 +77,7 @@ struct event_t
   double occurs() { return reschedule_time != 0 ? reschedule_time : time; }
   virtual void execute() { assert(0); }
   virtual ~event_t() {}
+  static void cancel( event_t*& e ) { if( e ) e -> canceled = true; e=0; }
 };
 
 struct event_compare_t 
@@ -126,9 +127,9 @@ enum talent_tree_type {
 
 enum weapon_type { WEAPON_NONE=0, 
 		   WEAPON_DAGGER,   WEAPON_FIST,                                                                    WEAPON_SMALL,
-		   WEAPON_BEAST_1H, WEAPON_SWORD,    WEAPON_MACE,     WEAPON_AXE,                                   WEAPON_1H,
+		   WEAPON_BEAST,    WEAPON_SWORD,    WEAPON_MACE,     WEAPON_AXE,                                   WEAPON_1H,
 		   WEAPON_BEAST_2H, WEAPON_SWORD_2H, WEAPON_MACE_2H,  WEAPON_AXE_2H, WEAPON_STAFF,  WEAPON_POLEARM, WEAPON_2H,
-		   WEAPON_BOW,      WEAPON_CROSSBOW, WEAPON_GUN,      WEAPON_WAND,   WEAPON_THROWN, WEAPON_RANGED,
+		   WEAPON_BOW,      WEAPON_CROSSBOW, WEAPON_GUN,      WEAPON_WAND,   WEAPON_THROWN,                 WEAPON_RANGED,
 		   WEAPON_MAX };
 
 enum position_type { POSITION_NONE=0, POSITION_FRONT, POSITION_BACK, POSITION_MAX };
@@ -211,6 +212,21 @@ struct rating_t
   void init( int level );
 };
 
+// Weapon ====================================================================
+
+struct weapon_t
+{
+  int8_t type, school;
+  double damage;
+  double swing_time;
+
+  int group();
+  double normalized_weapon_speed();
+
+  weapon_t( int t=WEAPON_NONE, double d=0, double st=2.0, int s=SCHOOL_PHYSICAL ) : 
+    type(t), school(s), damage(d), swing_time(st) {}
+};
+
 // Player ====================================================================
 
 typedef std::map<std::string,int32_t> proc_list_t;
@@ -261,10 +277,11 @@ struct player_t
   double    attack_power_per_strength;
   double    attack_power_per_agility;
   double    attack_crit_per_agility;
-  weapon_t* main_hand_weapon;
-  weapon_t* off_hand_weapon;
-  weapon_t* ranged_weapon;
   int8_t    position;
+
+  // Weapons
+  std::string main_hand_str,    off_hand_str,    ranged_str;
+  weapon_t    main_hand_weapon, off_hand_weapon, ranged_weapon;
 
   // Resources
   double  resource_base   [ RESOURCE_MAX ];
@@ -479,6 +496,7 @@ struct player_t
   virtual void init_core();
   virtual void init_spell();
   virtual void init_attack();
+  virtual void init_weapon( weapon_t*, std::string& );
   virtual void init_resources();
   virtual void init_actions();
   virtual void init_rating();
@@ -651,29 +669,6 @@ struct target_t
   const char* name() { return name_str.c_str(); }
 };
 
-// Weapon ====================================================================
-
-struct weapon_t
-{
-  int8_t type, school;
-  double damage;
-  double swing_time;
-
-  struct enchants_t
-  {
-    int8_t place_holder;
-    void reset() { memset( (void*) this, 0x00, sizeof( enchants_t ) ); }
-    enchants_t() { reset(); }
-  };
-  enchants_t enchants;
-
-  int group();
-  double normalized_weapon_speed();
-
-  weapon_t( int t=WEAPON_NONE, double d=0, double st=1.0, int s=SCHOOL_PHYSICAL ) : 
-    type(t), school(s), damage(d), swing_time(st) {}
-};
-
 // Stats =====================================================================
 
 struct stats_t
@@ -777,6 +772,7 @@ struct action_t
   virtual void update_stats( int8_t type );
   virtual bool ready();
   virtual void reset();
+  virtual void cancel() { event_t::cancel( event ); reset(); }
   virtual const char* name() { return name_str.c_str(); }
 
   static action_t* create_action( player_t*, const std::string& name, const std::string& options );
@@ -1047,6 +1043,7 @@ const char*   wow_result_type_string  ( int8_t type );
 const char*   wow_resource_type_string( int8_t type );
 const char*   wow_school_type_string  ( int8_t type );
 const char*   wow_talent_tree_string  ( int8_t tree );
+const char*   wow_weapon_type_string  ( int8_t type );
 
 int wow_string_split( std::vector<std::string>& results, const std::string& str, const char* delim );
 int wow_string_split( const std::string& str, const char* delim, const char* format, ... );

@@ -163,7 +163,6 @@ player_t::player_t( sim_t*             s,
   attack_power_per_strength(0),
   attack_power_per_agility(0),
   attack_crit_per_agility(0),
-  main_hand_weapon(0), off_hand_weapon(0), ranged_weapon(0),
   position( POSITION_FRONT ),
   // Resources 
   resource_constrained(0),           resource_constrained_count(0),
@@ -196,10 +195,6 @@ player_t::player_t( sim_t*             s,
 
     resource_lost[ i ] = resource_gained[ i ] = 0;
   }
-
-  main_hand_weapon = new weapon_t();
-  off_hand_weapon  = new weapon_t();
-  ranged_weapon    = new weapon_t();
 }
 
 // player_t::init ==========================================================
@@ -213,6 +208,9 @@ void player_t::init()
   init_core();
   init_spell();
   init_attack();
+  init_weapon( &main_hand_weapon, main_hand_str );
+  init_weapon(  &off_hand_weapon,  off_hand_str );
+  init_weapon(    &ranged_weapon,    ranged_str );
   init_resources();
   init_actions();
   init_stats();
@@ -312,6 +310,77 @@ void player_t::init_attack()
   {
     initial_attack_penetration = base_attack_penetration + gear.attack_penetration + gear.attack_penetration_enchant;
   }
+}
+
+// player_t::init_weapon ===================================================
+
+void player_t::init_weapon( weapon_t*    w, 
+			    std::string& encoding )
+{
+  if( encoding.empty() ) return;
+
+  std::vector<std::string> splits;
+  int size = wow_string_split( splits, encoding, "," );
+
+  for( int i=0; i < size; i++ )
+  {
+    std::string& s = splits[ i ];
+    int t;
+
+    for( t=0; t < WEAPON_MAX; t++ )
+    {
+      const char* name = wow_weapon_type_string( t );
+      if( s == name ) break;
+    }
+
+    if( t < WEAPON_MAX )
+    {
+      w -> type = t;
+    }
+    else
+    {
+      std::string parm, value;
+      bool invalid = false;
+
+      if( 2 != wow_string_split( s, "_", "S S", &parm, &value ) )
+      {
+	invalid = true;
+      }
+      if( parm == "dmg" || parm == "damage" )
+      {
+	w -> damage = atof( value.c_str() );
+	assert( w -> damage != 0 );
+      }
+      else if( parm == "speed" )
+      {
+	w -> swing_time = atof( value.c_str() );
+	assert( w -> swing_time != 0 );
+      }
+      else if( parm == "school" )
+      {
+	for( int j=0; j <= SCHOOL_MAX; j++ )
+	{
+	  if( j == SCHOOL_MAX ) invalid = true;
+	  if( value == wow_school_type_string( j ) )
+	  {
+	    w -> school = j;
+	    break;
+	  }
+	}
+      }
+      else invalid = true;
+
+      if( invalid )
+      {
+	printf( "Invalid weapon encoding: %s\n", encoding.c_str() );
+	assert(0);
+      }
+    }
+  }
+
+  if( w == &main_hand_weapon ) assert( w -> type >= WEAPON_NONE && w -> type < WEAPON_2H );
+  if( w ==  &off_hand_weapon ) assert( w -> type >= WEAPON_NONE && w -> type < WEAPON_1H );
+  if( w ==    &ranged_weapon ) assert( w -> type == WEAPON_NONE || ( w -> type > WEAPON_2H && w -> type < WEAPON_RANGED ) );
 }
 
 // player_t::init_resources ================================================
@@ -1065,9 +1134,9 @@ bool player_t::parse_option( const std::string& name,
     { "attack_power_per_agility",             OPT_FLT,    &( attack_power_per_agility                       ) },
     { "attack_crit_per_agility",              OPT_FLT,    &( attack_crit_per_agility                        ) },
     // Player - Weapons
-      // main_hand
-      // off_hand
-      // ranged
+    { "main_hand",                            OPT_STRING, &( main_hand_str                                  ) },
+    { "off_hand",                             OPT_STRING, &( off_hand_str                                   ) },
+    { "ranged",                               OPT_STRING, &( ranged_str                                     ) },
     // Player - Resources
     { "health",                               OPT_FLT,    &( resource_initial[ RESOURCE_HEALTH ]            ) },
     { "mana",                                 OPT_FLT,    &( resource_initial[ RESOURCE_MANA   ]            ) },

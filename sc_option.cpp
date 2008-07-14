@@ -89,7 +89,7 @@ bool option_t::parse( sim_t*    sim,
 
   if( 2 != wow_string_split( str, "=\n ", "S S", &name, &value ) )
   {
-    printf( "wow_sim: Unexpected parameter '%s'.  Expected format: name=value\n", str );
+    printf( "simcraft: Unexpected parameter '%s'.  Expected format: name=value\n", str );
     return false;
   }
   
@@ -98,7 +98,7 @@ bool option_t::parse( sim_t*    sim,
     FILE* file = fopen( value.c_str(), "r" );
     if( ! file )
     {
-      printf( "wow_sim: Unable to open profile file '%s'\n", value.c_str() );
+      printf( "simcraft: Unable to open profile file '%s'\n", value.c_str() );
       exit(0);
     }
 
@@ -175,7 +175,7 @@ bool option_t::parse( sim_t*    sim,
   {
     if( ! sim -> parse_option( name, value ) )
     {
-      printf( "wow_sim: Unknown option/value pair: '%s' : '%s'\n", name.c_str(), value.c_str() );
+      printf( "simcraft: Unknown option/value pair: '%s' : '%s'\n", name.c_str(), value.c_str() );
       return false;
     }
   }
@@ -199,7 +199,7 @@ bool option_t::parse( int    argc,
 
    if( sim -> max_time <= 0 && sim -> target -> initial_health <= 0 )
    {
-     printf( "wow_sim: One of -max_time or -target_health must be specified.\n" );
+     printf( "simcraft: One of -max_time or -target_health must be specified.\n" );
      return false;
    }
 

@@ -234,9 +234,9 @@ bool sim_t::execute()
     {
       target -> recalculate_health();
     }
-    if( e -> invalid ) 
+    if( e -> canceled ) 
     {
-      report_t::debug( this, "Invalid event: %s", e -> name );     
+      report_t::debug( this, "Canceled event: %s", e -> name );     
     }
     else if( e -> reschedule_time > e -> time )
     {

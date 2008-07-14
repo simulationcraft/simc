@@ -477,7 +477,7 @@ static void clear_darkmoon_wrath( spell_t* s )
 
   if( e ) 
   {
-    e -> invalid = true;
+    e -> canceled = true;
     e -> execute();
   }
 }

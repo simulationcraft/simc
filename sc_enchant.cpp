@@ -55,10 +55,7 @@ static void trigger_spellsurge( spell_t* s )
 
 	if( spellsurge && spellsurge -> time_remaining > 0 )
 	{
-	  spellsurge -> current_tick = 0;
-	  spellsurge -> time_remaining = 0;
-	  spellsurge -> event -> invalid = true;
-	  spellsurge -> event = 0;
+	  spellsurge -> cancel();
 	  break;
 	}
       }
