@@ -100,9 +100,9 @@ void spell_t::player_buff()
 
 // spell_t::target_debuff =====================================================
 
-void spell_t::target_debuff()
+void spell_t::target_debuff( int8_t dmg_type )
 {
-  action_t::target_debuff();
+  action_t::target_debuff( dmg_type );
 
    target_t* t = sim -> target;
    
@@ -150,7 +150,7 @@ void spell_t::calculate_result()
   result = RESULT_NONE;
 
   player_buff();
-  target_debuff();
+  target_debuff( DMG_DIRECT );
 
   if( may_miss )
   {

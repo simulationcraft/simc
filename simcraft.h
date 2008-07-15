@@ -754,7 +754,7 @@ struct action_t
   virtual double execute_time() { return base_execute_time; }
   virtual double duration()     { return base_duration;     }
   virtual void player_buff();
-  virtual void target_debuff();
+  virtual void target_debuff( int8_t dmg_type );
   virtual void calculate_result() { assert(0); }
   virtual bool result_is_hit();
   virtual void get_base_damage(); 
@@ -793,7 +793,7 @@ struct attack_t : public action_t
   virtual double execute_time();
   virtual double duration();
   virtual void   player_buff();
-  virtual void   target_debuff();
+  virtual void   target_debuff( int8_t dmg_type );
   virtual void   build_table( std::vector<double>& chances, std::vector<int>& results );
   virtual void   calculate_result();
   virtual void   calculate_damage(); 
@@ -827,7 +827,7 @@ struct spell_t : public action_t
   virtual double execute_time();
   virtual double duration();
   virtual void   player_buff();
-  virtual void   target_debuff();
+  virtual void   target_debuff( int8_t dmg_type );
   virtual double level_based_miss_chance( int8_t player, int8_t target );
   virtual void   calculate_result();
    

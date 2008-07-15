@@ -31,6 +31,7 @@ action_t::action_t( int8_t      ty,
   cooldown_group(n), duration_group(n), cooldown(0), cooldown_ready(0), duration_ready(0),
   stats(0), rank(0), rank_index(-1), event(0), time_to_execute(0), time_to_tick(0), next(0)
 {
+  if( name_str == "" ) return;
   report_t::debug( sim, "Player %s creates action %s", p -> name(), name() );
   action_t** last = &( p -> action_list );
   while( *last ) last = &( (*last) -> next );
@@ -150,7 +151,7 @@ void action_t::player_buff()
 
 // action_t::target_debuff ==================================================
 
-void action_t::target_debuff()
+void action_t::target_debuff( int8_t dmg_type )
 {
   target_multiplier  = 1.0;
   target_hit         = 0;
@@ -177,11 +178,12 @@ void action_t::target_debuff()
     {
       target_multiplier *= 1.0 + ( t -> debuffs.curse_of_shadows * 0.01 );
       target_multiplier *= 1.0 + ( t -> debuffs.shadow_weaving   * 0.02 );
-
-      if( t -> debuffs.shadow_vulnerability ) target_multiplier *= 1.20;
-      static uptime_t* sv_uptime = sim -> get_uptime( "shadow_vulnerability" );
-      sv_uptime -> update( t -> debuffs.shadow_vulnerability != 0 );
-
+      if( dmg_type == DMG_DIRECT )
+      {
+	if( t -> debuffs.shadow_vulnerability ) target_multiplier *= 1.20;
+	static uptime_t* sv_uptime = sim -> get_uptime( "shadow_vulnerability" );
+	sv_uptime -> update( t -> debuffs.shadow_vulnerability != 0 );
+      }
       if( t -> debuffs.curse_of_shadows ) target_penetration += 88;
     }
     else if( school == SCHOOL_ARCANE )
@@ -410,7 +412,7 @@ void action_t::tick()
 {
   report_t::debug( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
 
-  target_debuff();
+  target_debuff( DMG_OVER_TIME );
 
   dot_tick = ( dot / num_ticks ) * target_multiplier;
 

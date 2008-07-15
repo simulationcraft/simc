@@ -82,8 +82,10 @@ void attack_t::player_buff()
 
 // attack_t::target_debuff ==================================================
 
-void attack_t::target_debuff()
+void attack_t::target_debuff( int8_t dmg_type )
 {
+  action_t::target_debuff( dmg_type );
+
   target_expertise = 0;
 
   
@@ -207,7 +209,7 @@ void attack_t::calculate_result()
   result = RESULT_NONE;
 
   player_buff();
-  target_debuff();
+  target_debuff( DMG_DIRECT );
       
   build_table( chances, results );
 

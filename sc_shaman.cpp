@@ -18,7 +18,7 @@ struct shaman_t : public player_t
   spell_t* earth_totem;
 
   // Active
-  spell_t* flame_shock_active;
+  spell_t* active_flame_shock;
 
   // Buffs
   int8_t buffs_elemental_focus;
@@ -66,7 +66,7 @@ struct shaman_t : public player_t
     earth_totem = 0;;
 
     // Active
-    flame_shock_active = 0;
+    active_flame_shock = 0;
 
     // Buffs
     buffs_elemental_focus = 0;
@@ -380,10 +380,10 @@ struct lava_burst_t : public shaman_spell_t
     if( result_is_hit() )
     {
       shaman_t* p = player -> cast_shaman();
-      if( p -> flame_shock_active )
+      if( p -> active_flame_shock )
       {
-	p -> flame_shock_active -> cancel();
-	p -> flame_shock_active = 0;
+	p -> active_flame_shock -> cancel();
+	p -> active_flame_shock = 0;
       }
     }
   }
@@ -392,7 +392,7 @@ struct lava_burst_t : public shaman_spell_t
   {
     shaman_spell_t::player_buff();
     shaman_t* p = player -> cast_shaman();
-    if( p -> flame_shock_active ) player_crit += 1.0;
+    if( p -> active_flame_shock ) player_crit += 1.0;
   }
 
   virtual bool ready()
@@ -403,9 +403,9 @@ struct lava_burst_t : public shaman_spell_t
     if( fswait )
     {
       shaman_t* p = player -> cast_shaman();
-      if( ! p -> flame_shock_active ) 
+      if( ! p -> active_flame_shock ) 
 	return false;
-      if( p -> flame_shock_active -> time_remaining > 4.0 )
+      if( p -> active_flame_shock -> time_remaining > 4.0 )
 	return false;
     }
 
@@ -614,14 +614,14 @@ struct flame_shock_t : public shaman_spell_t
     shaman_spell_t::execute();
     if( result_is_hit() )
     {
-      player -> cast_shaman() -> flame_shock_active = this;
+      player -> cast_shaman() -> active_flame_shock = this;
     }
   }
 
   virtual void last_tick() 
   {
     shaman_spell_t::last_tick(); 
-    player -> cast_shaman() -> flame_shock_active = 0;
+    player -> cast_shaman() -> active_flame_shock = 0;
   }
 };
 
@@ -1138,7 +1138,7 @@ void shaman_t::reset()
   earth_totem = 0;;
 
   // Active
-  flame_shock_active = 0;
+  active_flame_shock = 0;
 
   // Buffs
   buffs_elemental_focus = 0;

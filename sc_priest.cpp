@@ -11,10 +11,10 @@
 
 struct priest_t : public player_t
 {
-  spell_t* devouring_plague_active;
-  spell_t* shadow_word_pain_active;
-  spell_t* vampiric_touch_active;
-  spell_t* vampiric_embrace_active;
+  spell_t* active_devouring_plague;
+  spell_t* active_shadow_word_pain;
+  spell_t* active_vampiric_touch;
+  spell_t* active_vampiric_embrace;
 
   // Buffs
   int8_t buffs_improved_spirit_tap;
@@ -66,15 +66,16 @@ struct priest_t : public player_t
 
   priest_t( sim_t* sim, std::string& name ) : player_t( sim, PRIEST, name ) 
   {
-    devouring_plague_active = 0;
-    shadow_word_pain_active = 0;
-    vampiric_touch_active = 0;
-    vampiric_embrace_active = 0;
+    // Active
+    active_devouring_plague = 0;
+    active_shadow_word_pain = 0;
+    active_vampiric_touch = 0;
+    active_vampiric_embrace = 0;
 
     // Buffs
     buffs_improved_spirit_tap = 0;
-    buffs_inner_focus = 0;
-    buffs_surge_of_light = 0;
+    buffs_inner_focus         = 0;
+    buffs_surge_of_light      = 0;
 
     // Expirations
     expirations_improved_spirit_tap = 0;
@@ -635,7 +636,7 @@ struct shadow_word_pain_t : public priest_spell_t
     if( result_is_hit() ) 
     {
       push_misery( this );
-      player -> cast_priest() -> shadow_word_pain_active = this;
+      player -> cast_priest() -> active_shadow_word_pain = this;
     }
   }
 
@@ -650,7 +651,7 @@ struct shadow_word_pain_t : public priest_spell_t
   {
     priest_spell_t::last_tick(); 
     pop_misery( this );
-    player -> cast_priest() -> shadow_word_pain_active = 0;
+    player -> cast_priest() -> active_shadow_word_pain = 0;
   }
 };
 
@@ -702,7 +703,7 @@ struct vampiric_touch_t : public priest_spell_t
     if( result_is_hit() ) 
     {
       push_misery( this );
-      player -> cast_priest() -> vampiric_touch_active = this;
+      player -> cast_priest() -> active_vampiric_touch = this;
     }
   }
 
@@ -710,7 +711,7 @@ struct vampiric_touch_t : public priest_spell_t
   {
     priest_spell_t::last_tick(); 
     pop_misery( this );
-    player -> cast_priest() -> vampiric_touch_active = 0;
+    player -> cast_priest() -> active_vampiric_touch = 0;
   }
 };
 
@@ -763,7 +764,7 @@ struct devouring_plague_t : public priest_spell_t
     if( result_is_hit() ) 
     {
       push_misery( this );
-      player -> cast_priest() -> devouring_plague_active = this;
+      player -> cast_priest() -> active_devouring_plague = this;
     }
   }
 
@@ -777,7 +778,7 @@ struct devouring_plague_t : public priest_spell_t
   {
     priest_spell_t::last_tick(); 
     pop_misery( this );
-    player -> cast_priest() -> devouring_plague_active = 0;
+    player -> cast_priest() -> active_devouring_plague = 0;
   }
 };
 
@@ -807,14 +808,14 @@ struct vampiric_embrace_t : public priest_spell_t
     priest_spell_t::execute(); 
     if( result_is_hit() ) 
     {
-      player -> cast_priest() -> vampiric_embrace_active = this;
+      player -> cast_priest() -> active_vampiric_embrace = this;
     }
   }
 
   virtual void tick() 
   {
     priest_spell_t::tick(); 
-    player -> cast_priest() -> vampiric_embrace_active = 0;
+    player -> cast_priest() -> active_vampiric_embrace = 0;
   }
 };
 
@@ -873,9 +874,9 @@ struct mind_blast_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
     if( p -> talents.twisted_faith )
     {
-      if( p -> devouring_plague_active ) player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.01;
-      if( p -> shadow_word_pain_active ) player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.01;
-      if( p -> vampiric_touch_active   ) player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.01;
+      if( p -> active_devouring_plague ) player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.01;
+      if( p -> active_shadow_word_pain ) player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.01;
+      if( p -> active_vampiric_touch   ) player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.01;
     }
   }
 };
@@ -987,7 +988,7 @@ struct mind_flay_t : public priest_spell_t
     if( result_is_hit() )
     {
       priest_t* p = player -> cast_priest();
-      spell_t*  swp = p -> shadow_word_pain_active;
+      spell_t*  swp = p -> active_shadow_word_pain;
       if( swp && wow_random( p -> talents.pain_and_suffering * 0.333333 ) )
       {
 	swp -> current_tick = 0;
@@ -1003,9 +1004,9 @@ struct mind_flay_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
     if( p -> talents.twisted_faith )
     {
-      if( p -> devouring_plague_active ) player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.01;
-      if( p -> shadow_word_pain_active ) player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.01;
-      if( p -> vampiric_touch_active   ) player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.01;
+      if( p -> active_devouring_plague ) player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.01;
+      if( p -> active_shadow_word_pain ) player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.01;
+      if( p -> active_vampiric_touch   ) player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.01;
     }
   }
 
@@ -1293,7 +1294,7 @@ void priest_t::spell_damage_event( spell_t* s,
 
   if( s -> school == SCHOOL_SHADOW )
   {
-    if( vampiric_touch_active )
+    if( active_vampiric_touch )
     {
       static bool AFTER_3_0 = sim -> patch.after( 3, 0, 0 );
 
@@ -1307,7 +1308,7 @@ void priest_t::spell_damage_event( spell_t* s,
 	}
       }
     }
-    if( vampiric_embrace_active )
+    if( active_vampiric_embrace )
     {
       double adjust = 0.15 + talents.improved_vampiric_embrace * 0.05;
       double health = amount * adjust;
@@ -1410,13 +1411,19 @@ void priest_t::reset()
 {
   player_t::reset();
 
-  devouring_plague_active = 0;
-  shadow_word_pain_active = 0;
-  vampiric_touch_active   = 0;
-  vampiric_embrace_active = 0;
+  // Active
+  active_devouring_plague = 0;
+  active_shadow_word_pain = 0;
+  active_vampiric_touch   = 0;
+  active_vampiric_embrace = 0;
 
-  expirations_improved_spirit_tap = 0;
+  // Buffs
   buffs_improved_spirit_tap = 0;
+  buffs_inner_focus         = 0;
+  buffs_surge_of_light      = 0;
+
+  // Expirations
+  expirations_improved_spirit_tap = 0;
 }
 
 // priest_t::regen  ==========================================================
