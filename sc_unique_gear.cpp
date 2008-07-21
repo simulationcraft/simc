@@ -750,14 +750,6 @@ void unique_gear_t::spell_hit_event( spell_t* s )
     trigger_sextant_of_unstable_currents( s );
     trigger_shiffars_nexus_horn         ( s );
   }
-
-  if( s -> sim -> target -> debuffs.judgement_of_wisdom )
-  {
-    if( wow_random( 0.50 ) ) 
-    {
-      s -> player -> resource_gain( RESOURCE_MANA, 74, "jow" );
-    }
-  }
 }
 
 // unique_gear_t::spell_tick_event ==========================================

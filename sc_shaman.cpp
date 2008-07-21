@@ -1841,7 +1841,7 @@ struct mana_tide_totem_t : public shaman_spell_t
 struct mana_spring_totem_t : public shaman_spell_t
 {
   mana_spring_totem_t( player_t* player, const std::string& options_str ) : 
-    shaman_spell_t( "mana_tide_totem", player, SCHOOL_NATURE, TREE_RESTORATION )
+    shaman_spell_t( "mana_spring_totem", player, SCHOOL_NATURE, TREE_RESTORATION )
   {
     shaman_t* p = player -> cast_shaman();
 
@@ -1966,6 +1966,58 @@ struct bloodlust_t : public shaman_spell_t
       return true;
 
     return( ( t -> current_health / t -> initial_health ) < ( target_pct / 100.0 ) );
+  }
+};
+
+// Shamanisitc Rage Spell ===========================================================
+
+struct shamanistic_rage_t : public shaman_spell_t
+{
+  shamanistic_rage_t( player_t* player, const std::string& options_str ) : 
+    shaman_spell_t( "shamanistic_rage", player, SCHOOL_NATURE, TREE_ENHANCEMENT )
+  {
+    option_t options[] =
+    {
+      { NULL }
+    };
+    parse_options( options, options_str );
+     
+    cooldown = 120;
+  }
+
+  virtual void execute()
+  {
+    struct expiration_t : public event_t
+    {
+      expiration_t( sim_t* sim, player_t* player ) : event_t( sim, player )
+      {
+	name = "Shamanistic Rage Expiration";
+	shaman_t* p = player -> cast_shaman();
+	p -> aura_gain( "Shamanistic Rage" );
+	p -> buffs_shamanistic_rage = 1;
+	time = 15;
+	sim -> add_event( this );
+      }
+      virtual void execute()
+      {
+	shaman_t* p = player -> cast_shaman();
+	p -> aura_loss( "Shamanistic Rage" );
+	p -> buffs_shamanistic_rage = 0;
+      }
+    };
+
+    report_t::log( sim, "%s performs %s", player -> name(), name() );
+    update_ready();
+    player -> action_finish( this );
+    new expiration_t( sim, player );
+  }
+
+  virtual bool ready()
+  {
+    if( ! shaman_spell_t::ready() )
+      return false;
+
+    return( player -> resource_current[ RESOURCE_MANA ] < ( 0.90 * player -> resource_max[ RESOURCE_MANA ] ) );
   }
 };
 
@@ -2147,6 +2199,7 @@ action_t* shaman_t::create_action( const std::string& name,
   if( name == "mana_tide_totem"         ) return new          mana_tide_totem_t( this, options );
   if( name == "natures_swiftness"       ) return new        shamans_swiftness_t( this, options );
   if( name == "searing_totem"           ) return new            searing_totem_t( this, options );
+  if( name == "shamanistic_rage"        ) return new         shamanistic_rage_t( this, options );
   if( name == "stormstrike"             ) return new              stormstrike_t( this, options );
   if( name == "strength_of_earth_totem" ) return new  strength_of_earth_totem_t( this, options );
   if( name == "totem_of_wrath"          ) return new           totem_of_wrath_t( this, options );
@@ -2178,6 +2231,9 @@ void shaman_t::init_base()
 
   resource_base[ RESOURCE_HEALTH ] = 3185;
   resource_base[ RESOURCE_MANA   ] = 2680;
+
+  health_per_stamina = 10;
+  mana_per_intellect = 15;
 
   mana_per_intellect *= 1.0 + talents.ancestral_knowledge * 0.01;
 

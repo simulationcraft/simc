@@ -1136,9 +1136,14 @@ struct power_infusion_t : public priest_spell_t
 {
   struct power_infusion_expiration_t : public event_t
   {
-    power_infusion_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
+    power_infusion_expiration_t( sim_t* sim, player_t* player ) : event_t( sim, player )
     {
       name = "Power Infusion Expiration";
+      priest_t* p = player -> cast_priest();
+      p -> aura_gain( "Power Infusion" );
+      p -> buffs.power_infusion = 1;
+      p -> haste_rating += 320;
+      p -> recalculate_haste();
       time = 15.0;
       sim -> add_event( this );
     }
@@ -1164,11 +1169,8 @@ struct power_infusion_t : public priest_spell_t
   virtual void execute()
   {
     report_t::log( sim, "Player %s casts Power Infusion", player -> name() );
-    priest_t* p = player -> cast_priest();
-    p -> aura_gain( "Power Infusion" );
-    p -> buffs.power_infusion = 1;
-    p -> haste_rating += 320;
-    p -> recalculate_haste();
+    consume_resource();
+    update_ready();
     new power_infusion_expiration_t( sim, player );
   }
 };

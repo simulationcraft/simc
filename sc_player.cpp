@@ -889,6 +889,14 @@ void player_t::spell_miss_event( spell_t* spell )
 
 void player_t::spell_hit_event( spell_t* spell )
 {
+  if( sim -> target -> debuffs.judgement_of_wisdom )
+  {
+    if( resource_max[ RESOURCE_MANA ] > 0 && wow_random( 0.50 ) ) 
+    {
+      resource_gain( RESOURCE_MANA, 74, "jow" );
+    }
+  }
+
   if( spell -> result == RESULT_CRIT )
   {
     trigger_moonkin_haste( spell );
@@ -931,6 +939,14 @@ void player_t::attack_miss_event( attack_t* attack )
 
 void player_t::attack_hit_event( attack_t* attack )
 {
+  if( sim -> target -> debuffs.judgement_of_wisdom )
+  {
+    if( resource_max[ RESOURCE_MANA ] > 0 && wow_random( 0.50 ) ) 
+    {
+      resource_gain( RESOURCE_MANA, 74, "jow" );
+    }
+  }
+
 }
 
 // player_t::attack_tick_event ==============================================
