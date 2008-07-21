@@ -123,9 +123,9 @@ const char* wow_talent_tree_string( int8_t tree )
   return "unknown";
 }
 
-const char* wow_weapon_type_string( int8_t school )
+const char* wow_weapon_type_string( int8_t weapon )
 {
-  switch( school )
+  switch( weapon )
   {
   case WEAPON_NONE:     return "none";
   case WEAPON_DAGGER:   return "dagger";
@@ -144,6 +144,33 @@ const char* wow_weapon_type_string( int8_t school )
   case WEAPON_CROSSBOW: return "crossbow";
   case WEAPON_GUN:      return "gun";
   case WEAPON_THROWN:   return "thrown";
+  }
+  return "unknown";
+}
+
+const char* wow_weapon_enchant_type_string( int8_t enchant )
+{
+  switch( enchant )
+  {
+  case WEAPON_ENCHANT_NONE: return "none";
+  case DEATH_FROST:         return "deathfrost";
+  case EXECUTIONER:         return "executioner";
+  case MONGOOSE:            return "mongoose";
+  }
+  return "unknown";
+}
+
+const char* wow_weapon_buff_type_string( int8_t buff )
+{
+  switch( buff )
+  {
+  case WEAPON_BUFF_NONE:   return "none";
+  case FLAMETONGUE_WEAPON: return "flametongue_weapon";
+  case FLAMETONGUE_TOTEM:  return "flametongue_totem";
+  case POISON:             return "poison";
+  case SHARPENING_STONE:   return "sharpening_stone";
+  case WINDFURY_WEAPON:    return "windfury_weapon";
+  case WINDFURY_TOTEM:     return "windfury_totem";
   }
   return "unknown";
 }

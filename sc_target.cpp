@@ -13,7 +13,7 @@
 
 target_t::target_t( sim_t* s ) :
   sim( s ), name_str( "Fluffy Pillow" ), level( 73 ), 
-  armor(6000), block_value(0), shield(0), 
+  armor(6600), block_value(0), shield(0), 
   initial_health( 0 ), current_health(0), total_dmg(0)
 {
   for( int i=0; i < SCHOOL_MAX; i++ ) spell_resistance[ i ] = 0;
@@ -38,10 +38,15 @@ void target_t::assess_damage( double  amount,
     else report_t::debug( sim, "Target %s has %.0f remaining health", name(), current_health );
   }
 
-  if( school == SCHOOL_SHADOW && dmg_type == DMG_DIRECT )
+  if( dmg_type == DMG_DIRECT )
   {
-    if( debuffs.shadow_vulnerability > 0 )
-      debuffs.shadow_vulnerability--;
+    if( school == SCHOOL_SHADOW )
+      if( debuffs.shadow_vulnerability > 0 )
+	debuffs.shadow_vulnerability--;
+
+    if( school == SCHOOL_NATURE )
+      if( debuffs.nature_vulnerability > 0 )
+	debuffs.nature_vulnerability--;
   }
 }
    

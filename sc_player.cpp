@@ -16,25 +16,12 @@ static void trigger_moonkin_haste( spell_t* s )
     haste_cooldown_t( sim_t* sim, player_t* p ) : event_t( sim, p )
     {
       name = "Moonkin Haste Cooldown";
-      for( player_t* p = sim -> player_list; p; p = p -> next )
-      {
-	if( player -> party == p -> party )
-        {
-	  p -> buffs.improved_moonkin_aura = 0;
-	}
-      }
-      time = 3.0;
+      time = 22.0;
       sim -> add_event( this );
     }
     virtual void execute()
     {
-      for( player_t* p = sim -> player_list; p; p = p -> next )
-      {
-	if( player -> party == p -> party )
-        {
-	  p -> buffs.improved_moonkin_aura = 1;
-	}
-      }
+      player -> expirations.moonkin_haste = 0;
     }
   };
 
@@ -45,34 +32,23 @@ static void trigger_moonkin_haste( spell_t* s )
       name = "Moonkin Haste Expiration";
       player -> aura_gain( "Moonkin Haste" );
       player -> buffs.moonkin_haste = 1;
-      time = 10.0;
+      time = 8.0;
       sim -> add_event( this );
     }
     virtual void execute()
     {
       player -> aura_loss( "Moonkin Haste" );
       player -> buffs.moonkin_haste = 0;
-      player -> expirations.moonkin_haste = 0;
+      player -> expirations.moonkin_haste = new haste_cooldown_t( sim, player );
     }
   };
 
   player_t* p = s -> player;
 
-  if( p -> buffs.improved_moonkin_aura )
+  if(   p -> buffs.improved_moonkin_aura &&
+      ! p -> expirations.moonkin_haste   )
   {
-    event_t*& e = p -> expirations.moonkin_haste;
-
-    if( e )
-    {
-      e -> reschedule( s -> sim -> current_time + 10.0 );
-    }
-    else
-    {
-      e = new haste_expiration_t( s -> sim, p );
-    }
-
-    // Remove the Improved Moonkin aura for 3 seconds to block trigger during cooldown.
-    new haste_cooldown_t( s -> sim, p );
+    p -> expirations.moonkin_haste = new haste_expiration_t( s -> sim, p );
   }
 }
 
@@ -146,10 +122,10 @@ player_t::player_t( sim_t*             s,
   base_spell_crit(0),        initial_spell_crit(0),        spell_crit(0),
   base_spell_penetration(0), initial_spell_penetration(0), spell_penetration(0),
   base_mp5(0),               initial_mp5(0),               mp5(0),
-  spell_power_multiplier(1.0),
-  spell_power_per_intellect(0),
-  spell_power_per_spirit(0),
-  spell_crit_per_intellect(0),
+  spell_power_multiplier(1.0),  initial_spell_power_multiplier(1.0),
+  spell_power_per_intellect(0), initial_spell_power_per_intellect(0),
+  spell_power_per_spirit(0),    initial_spell_power_per_spirit(0),
+  spell_crit_per_intellect(0),  initial_spell_crit_per_intellect(0),
   last_cast(0),
   // Attack Mechanics
   base_attack_power(0),       initial_attack_power(0),        attack_power(0),
@@ -157,15 +133,19 @@ player_t::player_t( sim_t*             s,
   base_attack_expertise(0),   initial_attack_expertise(0),    attack_expertise(0),
   base_attack_crit(0),        initial_attack_crit(0),         attack_crit(0),
   base_attack_penetration(0), initial_attack_penetration(0),  attack_penetration(0),
-  attack_power_multiplier(1.0),
-  attack_power_per_strength(0),
-  attack_power_per_agility(0),
-  attack_crit_per_agility(0),
-  position( POSITION_FRONT ),
+  attack_power_multiplier(1.0), initial_attack_power_multiplier(1.0),
+  attack_power_per_strength(0), initial_attack_power_per_strength(0),
+  attack_power_per_agility(0),  initial_attack_power_per_agility(0),
+  attack_crit_per_agility(0),   initial_attack_crit_per_agility(0),
+  position( POSITION_BACK ),
   // Resources 
   resource_constrained(0),           resource_constrained_count(0),
   resource_constrained_total_dmg(0), resource_constrained_total_time(0),
   mana_per_intellect(0), health_per_stamina(0),
+  // Consumables
+  elixir_guardian( ELIXIR_NONE ),
+  elixir_battle( ELIXIR_NONE ),
+  flask( FLASK_NONE ),
   // Events
   executing(0), channeling(0),
   // Actions
@@ -366,6 +346,30 @@ void player_t::init_weapon( weapon_t*    w,
 	  }
 	}
       }
+      else if( parm == "enchant" )
+      {
+	for( int j=0; j <= WEAPON_ENCHANT_MAX; j++ )
+	{
+	  if( j == WEAPON_ENCHANT_MAX ) invalid = true;
+	  if( value == wow_weapon_enchant_type_string( j ) )
+	  {
+	    w -> enchant = j;
+	    break;
+	  }
+	}
+      }
+      else if( parm == "buff" )
+      {
+	for( int j=0; j <= WEAPON_BUFF_MAX; j++ )
+	{
+	  if( j == WEAPON_BUFF_MAX ) invalid = true;
+	  if( value == wow_weapon_buff_type_string( j ) )
+	  {
+	    w -> buff = j;
+	    break;
+	  }
+	}
+      }
       else invalid = true;
 
       if( invalid )
@@ -461,7 +465,7 @@ void player_t::init_actions()
     for( int i=0; i < size; i++ )
     {
       action_t* action = find_action( splits[ i ] );
-      if( action ) action -> valid = false;
+      if( action ) action -> background = true;
     }
   }
 }
@@ -482,14 +486,35 @@ void player_t::init_stats()
     resource_lost[ i ] = resource_gained[ i ] = 0;
   }
 
-  uptimes.moonkin_haste = sim -> get_uptime( name_str + "_moonkin_haste" );
+  uptimes.moonkin_haste  = sim -> get_uptime( name_str + "_moonkin_haste"  );
+  uptimes.unleashed_rage = sim -> get_uptime( name_str + "_unleashed_rage" );
+}
 
-  // FIXME! Init the stats structure here.  Makes for cleaner "harmful/channeled" setting.
+// player_t::composite_attack_power ========================================
 
-  for( stats_t* s = stats_list; s; s = s -> next )
-  {
-    s -> init();
-  }
+double player_t::composite_attack_power() 
+{
+  double ap = attack_power;
+
+  ap += attack_power_per_strength * strength();
+  ap += attack_power_per_agility  * agility();
+  ap *= attack_power_multiplier;
+
+  return ap;
+}
+
+// player_t::composite_spell_power ========================================
+
+double player_t::composite_spell_power( int8_t school ) 
+{
+  double sp = spell_power[ school ];
+
+  if( school != SCHOOL_MAX ) sp += spell_power[ SCHOOL_MAX ];
+  sp += spell_power_per_intellect * intellect();
+  sp += spell_power_per_spirit    * spirit();
+  sp *= spell_power_multiplier;
+
+  return sp;
 }
 
 // player_t::reset =========================================================
@@ -526,6 +551,16 @@ void player_t::reset()
   attack_crit        = initial_attack_crit;
   attack_penetration = initial_attack_penetration;
   
+  spell_power_multiplier    = initial_spell_power_multiplier;
+  spell_power_per_intellect = initial_spell_power_per_intellect;
+  spell_power_per_spirit    = initial_spell_power_per_spirit;
+  spell_crit_per_intellect  = initial_spell_crit_per_intellect;
+  
+  attack_power_multiplier   = initial_attack_power_multiplier;
+  attack_power_per_strength = initial_attack_power_per_strength;
+  attack_power_per_agility  = initial_attack_power_per_agility;
+  attack_crit_per_agility   = initial_attack_crit_per_agility;
+
   for( int i=0; i < RESOURCE_MAX; i++ )
   {
     resource_current[ i ] = resource_max[ i ] = resource_initial[ i ];
@@ -536,6 +571,14 @@ void player_t::reset()
   channeling = 0;
   iteration_dmg = 0;
  
+  main_hand_weapon.buff = WEAPON_BUFF_NONE;
+   off_hand_weapon.buff = WEAPON_BUFF_NONE;
+     ranged_weapon.buff = WEAPON_BUFF_NONE;
+
+  elixir_battle   = ELIXIR_NONE;
+  elixir_guardian = ELIXIR_NONE;
+  flask           = FLASK_NONE;
+
   buffs.reset();
   expirations.reset();
   
@@ -578,8 +621,8 @@ action_t* player_t::execute_action()
 
   for( action = action_list; action; action = action -> next )
   {
-    if( action -> valid && 
-	action -> ready() )
+    if( ! action -> background && 
+	  action -> ready() )
       break;
   }
 
@@ -661,7 +704,7 @@ void player_t::check_resources()
   {
     for( action_t* a = action_list; a; a = a -> next )
     {
-      if( a -> valid && a -> harmful )
+      if( ! a -> background && a -> harmful )
       {
 	if( resource_available( a -> resource, a -> cost() ) )
 	{
@@ -714,9 +757,9 @@ void player_t::dismiss_pet( const std::string& pet_name )
 
 void player_t::action_start( action_t* action )
 {
-  if( action -> trigger_gcd ) 
+  if( action -> trigger_gcd > 0 ) 
   {
-    gcd_ready =  sim -> current_time + gcd();
+    gcd_ready = sim -> current_time + gcd( action -> trigger_gcd );
   }
 
   if( ! action -> background )
@@ -948,9 +991,9 @@ void player_t::share_duration( const std::string& group,
 
 // player_t::gcd ============================================================
 
-double player_t::gcd()
+double player_t::gcd( double trigger_gcd )
 {
-  double t = base_gcd;
+  double t = trigger_gcd > 0 ? trigger_gcd : base_gcd;
   t *= haste;
   if( buffs.bloodlust     ) t *= 0.70;
   if( buffs.moonkin_haste ) t *= 0.80;
@@ -1114,7 +1157,7 @@ bool player_t::parse_option( const std::string& name,
     { "base_spell_crit",                      OPT_FLT,    &( base_spell_crit                                ) },
     { "base_spell_penetration",               OPT_FLT,    &( base_spell_penetration                         ) },
     { "base_mp5",                             OPT_FLT,    &( base_mp5                                       ) },
-    { "spell_power_multiplier",               OPT_FLT,    &( spell_power_multiplier                         ) },
+    { "spell_power_multiplier",               OPT_FLT,    &( initial_spell_power_multiplier                 ) },
     { "spell_power_per_intellect",            OPT_FLT,    &( spell_power_per_intellect                      ) },
     { "spell_power_per_spirit",               OPT_FLT,    &( spell_power_per_spirit                         ) },
     { "spell_crit_per_intellect",             OPT_FLT,    &( spell_crit_per_intellect                       ) },
@@ -1129,7 +1172,7 @@ bool player_t::parse_option( const std::string& name,
     { "base_attack_expertise",                OPT_FLT,    &( base_attack_expertise                          ) },
     { "base_attack_crit",                     OPT_FLT,    &( base_attack_crit                               ) },
     { "base_attack_penetration",              OPT_FLT,    &( base_attack_penetration                        ) },
-    { "attack_power_multiplier",              OPT_FLT,    &( attack_power_multiplier                        ) },
+    { "attack_power_multiplier",              OPT_FLT,    &( initial_attack_power_multiplier                ) },
     { "attack_power_per_strength",            OPT_FLT,    &( attack_power_per_strength                      ) },
     { "attack_power_per_agility",             OPT_FLT,    &( attack_power_per_agility                       ) },
     { "attack_crit_per_agility",              OPT_FLT,    &( attack_crit_per_agility                        ) },
@@ -1262,11 +1305,6 @@ bool player_t::parse_option( const std::string& name,
     // FIXME! These will go away eventually, and be converted into player actions.
     { "blessing_of_salvation",                OPT_INT8,   &( buffs.blessing_of_salvation                    ) },
     { "blessing_of_wisdom",                   OPT_INT8,   &( buffs.blessing_of_wisdom                       ) },
-    { "fel_armor",                            OPT_INT8,   &( buffs.fel_armor                                ) },
-    { "improved_divine_spirit",               OPT_INT8,   &( buffs.improved_divine_spirit                   ) },
-    { "mage_armor",                           OPT_INT8,   &( buffs.mage_armor                               ) },
-    { "molten_armor",                         OPT_INT8,   &( buffs.molten_armor                             ) },
-    { "sacrifice_pet",                        OPT_INT8,   &( buffs.sacrifice_pet                            ) },
     { "sanctity_aura",                        OPT_INT8,   &( buffs.sanctity_aura                            ) },
     { NULL, OPT_UNKNOWN }
   };

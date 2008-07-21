@@ -38,6 +38,9 @@ double spell_t::execute_time()
   if( p -> buffs.bloodlust     ) t *= 0.7;
   if( p -> buffs.moonkin_haste ) t *= 0.8;
 
+  static bool AFTER_3_0_0 = sim -> patch.after( 3, 0, 0 );
+  if( AFTER_3_0_0 && p -> buffs.wrath_of_air ) t *= 0.9;
+
   return t;
 }
 
@@ -65,34 +68,19 @@ void spell_t::player_buff()
   player_t* p = player;
 
   player_hit          = p -> spell_hit;
-  player_crit         = p -> spell_crit;
-  player_power        = p -> spell_power[ SCHOOL_MAX ] + p -> spell_power[ school ];
+  player_crit         = p -> spell_crit + p -> spell_crit_per_intellect * p -> intellect();
+  player_power        = p -> composite_spell_power( school );
   player_penetration += p -> spell_penetration;
 
-  player_crit += p -> spell_crit_per_intellect * p -> intellect();
+  player_crit += p -> buffs.moonkin_aura; // FIXME! Move to buff event
 
-  player_power += p -> spell_power_per_intellect * p -> intellect();
-  player_power += p -> spell_power_per_spirit    * p -> spirit();
-
-  player_crit += p -> buffs.moonkin_aura;
-
-  if( p -> buffs.totem_of_wrath )
+  if( p -> buffs.totem_of_wrath ) // FIXME! Move to buff event
   {
     player_hit  += 0.03;
     player_crit += 0.03;
   }
-  player_power += p -> buffs.wrath_of_air;
 
-  if( p -> buffs.improved_divine_spirit )
-  {
-    static bool AFTER_3_0_0 = sim -> patch.after( 3, 0, 0 );
-
-    player_power += p -> spirit() * ( AFTER_3_0_0 ? 0.06 : 0.10 );
-  }
-
-  player_power *= p -> spell_power_multiplier;
-
-  if( p -> gear.chaotic_skyfire ) player_crit_bonus *= 1.09;
+  if( p -> gear.chaotic_skyfire ) player_crit_bonus *= 1.09; // FIXME! Move to init
 
   report_t::debug( sim, "spell_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f", 
 		   name(), player_hit, player_crit, player_power, player_penetration );

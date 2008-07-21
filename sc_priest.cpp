@@ -32,6 +32,7 @@ struct priest_t : public player_t
     int8_t  darkness;
     int8_t  dispersion;
     int8_t  divine_fury;
+    int8_t  divine_spirit;
     int8_t  enlightenment;
     int8_t  focused_mind;
     int8_t  focused_power;
@@ -56,6 +57,7 @@ struct priest_t : public player_t
     int8_t  shadow_weaving;
     int8_t  spiritual_guidance;
     int8_t  surge_of_light;
+    int8_t  twin_faiths;
     int8_t  twisted_faith;
     int8_t  vampiric_embrace;
     int8_t  vampiric_touch;
@@ -133,9 +135,21 @@ struct shadow_fiend_pet_t : public pet_t
       weapon = &( player -> main_hand_weapon );
       base_execute_time = weapon -> swing_time;
       base_dd = 1;
-      valid = false;
       background = true;
       repeating = true;
+    }
+    virtual void execute()
+    {
+      attack_t::execute();
+      if( result_is_hit() &&
+	  weapon -> buff == WINDFURY_TOTEM &&
+	  wow_random( 0.20 ) )
+      {
+	player -> attack_power += player -> buffs.windfury_totem;
+	player -> proc( "windfury" );
+	attack_t::execute();
+	player -> attack_power -= player -> buffs.windfury_totem;
+      }
     }
     void player_buff()
     {
@@ -177,12 +191,13 @@ struct shadow_fiend_pet_t : public pet_t
     attribute_base[ ATTR_INTELLECT ] = 133;
 
     base_attack_power = -20;
-    attack_power_per_strength = 2.0;
+    initial_attack_power_per_strength = 2.0;
 
     if( owner -> gear.tier4_2pc ) attribute_base[ ATTR_STAMINA ] += 75;
   }
   virtual void reset()
   {
+    player_t::reset();
     melee -> reset();
   }
   virtual void schedule_ready()
@@ -494,13 +509,25 @@ struct holy_fire_t : public priest_spell_t
       { 0,   0 }
     };
     rank = choose_rank( ranks );
-      
-    base_execute_time = 3.5; 
-    base_duration     = 10.0; 
-    num_ticks         = ( rank -> index < 10 ) ? 5 : 7;
-    cooldown          = ( rank -> index < 10 ) ? 0 : 10;
-    dd_power_mod      = 0.857; 
-    dot_power_mod     = 0.165; 
+
+    if( rank -> index < 10 )
+    {
+      base_execute_time = 3.5;
+      base_duration     = 10; 
+      num_ticks         = 5;
+      cooldown          = 0;
+      dd_power_mod      = 0.857;
+      dot_power_mod     = 0.165;
+    }
+    else
+    {
+      base_execute_time = 2.0; 
+      base_duration     = 7; 
+      num_ticks         = 7;
+      cooldown          = 10;
+      dd_power_mod      = 0.314;
+      dot_power_mod     = 0.210;
+    }
     may_crit          = true;    
 
     base_execute_time -= p -> talents.divine_fury * 0.01;
@@ -1022,7 +1049,7 @@ struct mind_flay_t : public priest_spell_t
       for( action_t* a = player -> action_list; a; a = a -> next )
       {
 	if( a == this ) break;
-	if( a -> valid == false ) continue;
+	if( a -> background == true ) continue;
 	if( a -> name_str == "mind_flay" ) continue;
 	if( ! a -> harmful ) continue;
 
@@ -1048,7 +1075,7 @@ struct mind_flay_t : public priest_spell_t
       for( action_t* a = player -> action_list; a; a = a -> next )
       {
 	if( a == this ) break;
-	if( a -> valid == false ) continue;
+	if( a -> background = true ) continue;
 	if( a -> name_str == "mind_flay" ) continue;
 	if( ! a -> harmful ) continue;
 
@@ -1130,7 +1157,7 @@ struct power_infusion_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
     assert( p -> talents.power_infusion );
-    trigger_gcd = false;  
+    trigger_gcd = 0;  
     cooldown = sim -> patch.after( 3, 0, 0 ) ? 120.0 : 180.0;
   }
    
@@ -1155,7 +1182,7 @@ struct inner_focus_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
     assert( p -> talents.inner_focus );
-    trigger_gcd = false;  
+    trigger_gcd = 0;  
     cooldown = 180.0;
     assert( ! options_str.empty() );
     // This will prevent InnerFocus from being called before the desired "free spell" is ready to be cast.
@@ -1173,6 +1200,41 @@ struct inner_focus_t : public priest_spell_t
   }
 };
 
+// Divine Spirit Spell =====================================================
+
+struct divine_spirit_t : public priest_spell_t
+{
+  divine_spirit_t( player_t* player, const std::string& options_str ) : 
+    priest_spell_t( "divine_spirit", player, SCHOOL_HOLY, TREE_DISCIPLINE )
+  {
+    priest_t* p = player -> cast_priest();
+    assert( p -> talents.divine_spirit );
+    trigger_gcd = 0;
+  }
+   
+  virtual void execute()
+  {
+    report_t::log( sim, "%s performs %s", player -> name(), name() );
+    static double bonus = sim -> patch.after( 3, 0, 0 ) ? 0.03 : 0.05;
+    int8_t ids = player -> cast_priest() -> talents.improved_divine_spirit;
+    for( player_t* p = sim -> player_list; p; p = p -> next )
+    {
+      if( p -> buffs.divine_spirit > 1 )
+      {
+	p -> spell_power_per_spirit -= ( p -> buffs.divine_spirit - 1 ) * bonus;
+      }
+      p -> spell_power_per_spirit += ids * bonus;
+      p -> buffs.divine_spirit = ids + 1;
+    }
+  }
+
+  virtual bool ready()
+  {
+    int8_t ids = player -> cast_priest() -> talents.improved_divine_spirit;
+    return( player -> buffs.divine_spirit < ( ids + 1 ) );
+  }
+};
+
 // Shadow Form Spell =======================================================
 
 struct shadow_form_t : public priest_spell_t
@@ -1182,12 +1244,12 @@ struct shadow_form_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
     assert( p -> talents.shadow_form );
-    trigger_gcd = false;
+    trigger_gcd = 0;
   }
    
   virtual void execute()
   {
-    report_t::log( sim, "%s performs shadow_form", player -> name() );
+    report_t::log( sim, "%s performs %s", player -> name(), name() );
     player -> buffs.shadow_form = 1;
   }
 
@@ -1335,6 +1397,7 @@ action_t* priest_t::create_action( const std::string& name,
 {
   if( name == "devouring_plague" ) return new devouring_plague_t  ( this, options_str );
   if( name == "dispersion"       ) return new dispersion_t        ( this, options_str );
+  if( name == "divine_spirit"    ) return new divine_spirit_t     ( this, options_str );
   if( name == "holy_fire"        ) return new holy_fire_t         ( this, options_str );
   if( name == "inner_focus"      ) return new inner_focus_t       ( this, options_str );
   if( name == "mind_blast"       ) return new mind_blast_t        ( this, options_str );
@@ -1377,16 +1440,16 @@ void priest_t::init_base()
   attribute_multiplier_initial[ ATTR_SPIRIT    ] *= 1.0 + talents.enlightenment * 0.01;
 
   base_spell_crit = 0.0125;
-  spell_crit_per_intellect = 0.01 / ( level + 10 );
-  spell_power_per_spirit = ( talents.spiritual_guidance * 0.05 +
-			     talents.twisted_faith      * 0.06 );
-
-  if( AFTER_3_0_0 ) spell_power_multiplier = 1.0 + talents.enlightenment * 0.01;
+  initial_spell_crit_per_intellect = 0.01 / ( level + 10 );
+  initial_spell_power_per_spirit = ( talents.spiritual_guidance * 0.05 +
+				     talents.twisted_faith      * 0.06 );
+  initial_spell_power_multiplier *= 1.0 + talents.twin_faiths * 0.01;
+  if( AFTER_3_0_0 ) initial_spell_power_multiplier *= 1.0 + talents.enlightenment * 0.01;
 
   base_attack_power = -10;
   base_attack_crit  = 0.03;
-  attack_power_per_strength = 1.0;
-  attack_crit_per_agility = 1.0 / ( 25 + ( level - 70 ) * 0.5 );
+  initial_attack_power_per_strength = 1.0;
+  initial_attack_crit_per_agility = 0.01 / ( 25 + ( level - 70 ) * 0.5 );
 
   // FIXME! Make this level-specific.
   resource_base[ RESOURCE_HEALTH ] = 3200;
@@ -1459,6 +1522,7 @@ void priest_t::parse_talents( const std::string& talent_string )
     {  9,  &( talents.meditation                ) },
     { 11,  &( talents.mental_agility            ) },
     { 13,  &( talents.mental_strength           ) },
+    { 14,  &( talents.divine_spirit             ) },
     { 15,  &( talents.improved_divine_spirit    ) },
     { 16,  &( talents.focused_power             ) },
     { 17,  &( talents.force_of_will             ) },
@@ -1502,6 +1566,7 @@ bool priest_t::parse_option( const std::string& name,
     { "focused_power",             OPT_INT8,  &( talents.focused_power             ) },
     { "force_of_will",             OPT_INT8,  &( talents.force_of_will             ) },
     { "holy_specialization",       OPT_INT8,  &( talents.holy_specialization       ) },
+    { "divine_spirit",             OPT_INT8,  &( talents.divine_spirit             ) },
     { "improved_divine_spirit",    OPT_INT8,  &( talents.improved_divine_spirit    ) },
     { "improved_shadow_word_pain", OPT_INT8,  &( talents.improved_shadow_word_pain ) },
     { "improved_mind_blast",       OPT_INT8,  &( talents.improved_mind_blast       ) },
@@ -1521,6 +1586,7 @@ bool priest_t::parse_option( const std::string& name,
     { "shadow_weaving",            OPT_INT8,  &( talents.shadow_weaving            ) },
     { "spiritual_guidance",        OPT_INT8,  &( talents.spiritual_guidance        ) },
     { "surge_of_light",            OPT_INT8,  &( talents.surge_of_light            ) },
+    { "twin_faiths",               OPT_INT8,  &( talents.twin_faiths               ) },
     { "twisted_faith",             OPT_INT8,  &( talents.twisted_faith             ) },
     { "vampiric_embrace",          OPT_INT8,  &( talents.vampiric_embrace          ) },
     { "vampiric_touch",            OPT_INT8,  &( talents.vampiric_touch            ) },

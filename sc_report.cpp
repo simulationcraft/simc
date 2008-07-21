@@ -93,7 +93,7 @@ void report_t::print_action( stats_t* s )
 	  s -> sim -> total_seconds / s -> num_executes,
 	  s -> dps, s -> dpe, s -> total_dmg * 100.0 / total_dmg, s -> dpet );
 
-  if( report_miss ) printf( "  Miss=%.0f%%", s -> execute_results[ RESULT_MISS ].count * 100.0 / s -> num_executes );
+  if( report_miss ) printf( "  Miss=%.1f%%", s -> execute_results[ RESULT_MISS ].count * 100.0 / s -> num_executes );
       
   if( s -> execute_results[ RESULT_HIT ].avg_dmg > 0 )
   {
@@ -214,7 +214,7 @@ void report_t::print_spell_stats( player_t* p )
   spell_t dummy( "", p );
   dummy.player_buff();
 
-  printf( "%s  %s%.0f  %s%.1f%%  %s%.1f%%  %s%.0f%%  %s%.1f  %s%.0f\n", 
+  printf( "%s  %s%.0f  %s%.1f%%  %s%.1f%%  %s%.0f  %s%.1f%%  %s%.0f\n", 
 	  report_tag ? "  Spell Stats:" : "", 
 	  report_tag ? "power="       : "", dummy.player_power,
 	  report_tag ? "hit="         : "", dummy.player_hit  * 100.0, 
@@ -231,7 +231,7 @@ void report_t::print_attack_stats( player_t* p )
   attack_t dummy( "", p );
   dummy.player_buff();
 
-  printf( "%s  %s%.0f  %s%.1f%%  %s%.1f%%  %s%.1f%%  %s%.0f%%  %s%.1f\n", 
+  printf( "%s  %s%.0f  %s%.1f%%  %s%.1f%%  %s%.1f  %s%.0f  %s%.1f%%\n", 
 	  report_tag ? "  Attack Stats:" : "",
 	  report_tag ? "power="       : "", dummy.player_power,
 	  report_tag ? "hit="         : "", dummy.player_hit * 100.0, 

@@ -43,7 +43,7 @@ static rating_t& rating_70()
     r.spell_crit       = 2208;
     r.attack_hit       = 1576;
     r.attack_crit      = 2208;
-    r.attack_expertise = 1576;
+    r.attack_expertise = 15.76;
   }
 
   return r;

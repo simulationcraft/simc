@@ -19,9 +19,11 @@ struct druid_t : public player_t
   int8_t buffs_eclipse_wrath;
   int8_t buffs_natures_grace;
   int8_t buffs_natures_swiftness;
+  int8_t buffs_omen_of_clarity;
 
   // Expirations
   event_t* expirations_eclipse;
+  event_t* expirations_omen_of_clarity;
 
   // Up-Times
   uptime_t* uptimes_eclipse_starfire;
@@ -43,7 +45,8 @@ struct druid_t : public player_t
     int8_t  moonfury;
     int8_t  moonglow;
     int8_t  moonkin_form;
-    int8_t  natures_fury;
+    int8_t  omen_of_clarity;
+    int8_t  earth_and_moon;
     int8_t  natures_grace;
     int8_t  natures_swiftness;
     int8_t  natural_perfection;
@@ -61,13 +64,15 @@ struct druid_t : public player_t
     insect_swarm_active = 0;
 
     // Buffs
-    buffs_eclipse_starfire = 0;
-    buffs_eclipse_wrath = 0;
-    buffs_natures_grace = 0;
+    buffs_eclipse_starfire  = 0;
+    buffs_eclipse_wrath     = 0;
+    buffs_natures_grace     = 0;
     buffs_natures_swiftness = 0;
+    buffs_omen_of_clarity   = 0;
 
     // Expirations
     expirations_eclipse = 0;
+    expirations_omen_of_clarity = 0;
 
     // Up-Times
     uptimes_eclipse_starfire = sim -> get_uptime( name + "_eclipse_starfire" );
@@ -97,52 +102,93 @@ struct druid_spell_t : public spell_t
   druid_spell_t( const char* n, player_t* p, int8_t s, int8_t t ) : 
     spell_t( n, p, RESOURCE_MANA, s, t ) {}
 
+  virtual double cost();
   virtual double execute_time();
+  virtual void   consume_resource();
   virtual void   player_buff();
 
   // Passthru Methods
-  virtual void execute()     { spell_t::execute();      }
-  virtual void last_tick()   { spell_t::last_tick();    }
-  virtual bool ready()       { return spell_t::ready(); }
+  virtual void execute()          { spell_t::execute();          }
+  virtual void schedule_execute() { spell_t::schedule_execute(); }
+  virtual void last_tick()        { spell_t::last_tick();        }
+  virtual bool ready()            { return spell_t::ready();     }
 };
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
-// stack_shadow_weaving =====================================================
+// trigger_omen_of_clarity ==================================================
 
-static void stack_natures_fury( spell_t* s )
+static void trigger_omen_of_clarity( action_t* a )
+{
+  druid_t* p = a -> player -> cast_druid();
+
+  if( p -> talents.omen_of_clarity == 0 ) return;
+
+  static bool AFTER_3_0_0 = a -> sim -> patch.after( 3, 0, 0 );
+
+  if( AFTER_3_0_0 )
+  {
+    struct cooldown_t : public event_t
+    {
+      cooldown_t( sim_t* sim, player_t* p ) : event_t( sim, p )
+      {
+	name = "Omen of Clarity Cooldown";
+	time = 10.0;
+	sim -> add_event( this );
+      }
+      virtual void execute()
+      {
+	player -> cast_druid() -> expirations_omen_of_clarity = 0;
+      }
+    };
+
+    if( ! p -> expirations_omen_of_clarity && wow_random( 0.06 ) )
+    {
+      p -> buffs_omen_of_clarity = 1;
+      p -> expirations_omen_of_clarity = new cooldown_t( a -> sim, p );
+    }
+  }
+  else
+  {
+    
+  }
+}
+
+// stack_earth_and_moon =====================================================
+
+static void stack_earth_and_moon( spell_t* s )
 {
   druid_t* p = s -> player -> cast_druid();
 
-  if( p -> talents.natures_fury == 0 ) return;
+  if( p -> talents.earth_and_moon == 0 ) return;
 
-  struct natures_fury_expiration_t : public event_t
+  struct earth_and_moon_expiration_t : public event_t
   {
-    natures_fury_expiration_t( sim_t* sim ) : event_t( sim )
+    earth_and_moon_expiration_t( sim_t* sim ) : event_t( sim )
     {
-      name = "Natures Fury Expiration";
-      time = 12.01;
+      name = "Earth and Moon Expiration";
+      time = 12.0;
       sim -> add_event( this );
     }
     virtual void execute()
     {
-      report_t::log( sim, "%s loses Natures Fury", sim -> target -> name() );
-      sim -> target -> debuffs.natures_fury = 0;
-      sim -> target -> expirations.natures_fury = 0;
+      report_t::log( sim, "%s loses Earth and Moon", sim -> target -> name() );
+      sim -> target -> debuffs.earth_and_moon = 0;
+      sim -> target -> expirations.earth_and_moon = 0;
     }
   };
 
-  if( wow_random( p -> talents.natures_fury * 0.20 ) )
+  if( wow_random( p -> talents.earth_and_moon * 0.20 ) )
   {
     target_t* t = s -> sim -> target;
 
-    if( t -> debuffs.natures_fury < 3 ) 
+    if( t -> debuffs.earth_and_moon < 3 ) 
     {
-      t -> debuffs.natures_fury++;
-      report_t::log( s -> sim, "%s gains Natures Fury %d", t -> name(), t -> debuffs.natures_fury );
+      t -> debuffs.earth_and_moon++;
+      report_t::log( s -> sim, "%s gains Earth and Moon %d", t -> name(), t -> debuffs.earth_and_moon );
     }
 
-    event_t*& e = t -> expirations.natures_fury;
+    event_t*& e = t -> expirations.earth_and_moon;
     
     if( e )
     {
@@ -150,7 +196,7 @@ static void stack_natures_fury( spell_t* s )
     }
     else
     {
-      e = new natures_fury_expiration_t( s -> sim );
+      e = new earth_and_moon_expiration_t( s -> sim );
     }
   }
 }
@@ -298,6 +344,15 @@ static void trigger_ashtongue_talisman( spell_t* s )
 // Druid Spell
 // =========================================================================
 
+// druid_spell_t::cost =====================================================
+
+double druid_spell_t::cost()
+{
+  druid_t* p = player -> cast_druid();
+  if( p -> buffs_omen_of_clarity ) return 0;
+  return spell_t::cost();
+}
+
 // druid_spell_t::execute_time =============================================
 
 double druid_spell_t::execute_time()
@@ -305,6 +360,15 @@ double druid_spell_t::execute_time()
   druid_t* p = player -> cast_druid();
   if( p -> buffs_natures_swiftness ) return 0;
   return spell_t::execute_time();
+}
+
+// druid_spell_t::consume_resource =========================================
+
+void druid_spell_t::consume_resource()
+{
+  spell_t::consume_resource();
+  druid_t* p = player -> cast_druid();
+  if( base_cost > 0 ) p -> buffs_omen_of_clarity = 0;
 }
 
 // druid_spell_t::player_buff ==============================================
@@ -487,7 +551,7 @@ struct moonkin_form_t : public druid_spell_t
   {
     druid_t* p = player -> cast_druid();
     assert( p -> talents.moonkin_form );
-    trigger_gcd = false;
+    trigger_gcd = 0;
     base_execute_time = 0;
     base_cost = 0;
   }
@@ -525,7 +589,7 @@ struct druids_swiftness_t : public druid_spell_t
   {
     druid_t* p = player -> cast_druid();
     assert( p -> talents.natures_swiftness );
-    trigger_gcd = false;  
+    trigger_gcd = 0;  
     cooldown = 180.0;
     if( ! options_str.empty() )
     {
@@ -626,7 +690,7 @@ struct starfire_t : public druid_spell_t
     {
       trigger_ashtongue_talisman( this );
       trigger_eclipse_wrath( this );
-      stack_natures_fury( this );
+      stack_earth_and_moon( this );
     }
   }
 
@@ -712,8 +776,19 @@ struct wrath_t : public druid_spell_t
     if( result_is_hit() )
     {
       trigger_eclipse_starfire( this );
-      stack_natures_fury( this );
+      stack_earth_and_moon( this );
     }
+  }
+
+  virtual void schedule_execute()
+  {
+    static bool AFTER_3_0_0 = sim -> patch.after( 3, 0, 0 );
+    if( AFTER_3_0_0 )
+      if( player -> cast_druid() -> buffs_natures_grace ) 
+	trigger_gcd *= 0.5;
+
+    druid_spell_t::schedule_execute();
+    trigger_gcd = player -> base_gcd;
   }
 
   virtual void player_buff()
@@ -777,10 +852,16 @@ void druid_t::spell_start_event( spell_t* s )
 
 void druid_t::spell_hit_event( spell_t* s )
 {
+  static bool AFTER_3_0_0 = sim -> patch.after( 3, 0, 0 );
+
   player_t::spell_hit_event( s );
 
   if( s -> result == RESULT_CRIT )
   {
+    if( AFTER_3_0_0 && buffs.moonkin_aura )
+    {
+      resource_gain( RESOURCE_MANA, resource_max[ RESOURCE_MANA ] * 0.02, "moonkin_form" );
+    }
     if( talents.natures_grace && ! buffs_natures_grace )
     {
       aura_gain( "Natures Grace" );
@@ -794,7 +875,11 @@ void druid_t::spell_hit_event( spell_t* s )
 
 void druid_t::spell_finish_event( spell_t* s )
 {
+  static bool AFTER_3_0_0 = sim -> patch.after( 3, 0, 0 );
+
   player_t::spell_finish_event( s );
+
+  if( AFTER_3_0_0 ) trigger_omen_of_clarity( s );
 
   if( gear.tier4_2pc && wow_random( 0.05 ) )
   {
@@ -836,13 +921,13 @@ void druid_t::init_base()
   attribute_base[ ATTR_SPIRIT    ] = 135;
 
   base_spell_crit = 0.0185;
-  spell_crit_per_intellect = 0.01 / ( level + 10 );
-  spell_power_per_intellect = talents.lunar_guidance * ( AFTER_3_0_0 ? 0.04 : 0.08 );
+  initial_spell_crit_per_intellect = 0.01 / ( level + 10 );
+  initial_spell_power_per_intellect = talents.lunar_guidance * ( AFTER_3_0_0 ? 0.04 : 0.08 );
 
   base_attack_power = -20;
   base_attack_crit  = 0.01;
-  attack_power_per_strength = 2.0;
-  attack_crit_per_agility = 1.0 / ( 25 + ( level - 70 ) * 0.5 );
+  initial_attack_power_per_strength = 2.0;
+  initial_attack_crit_per_agility = 0.01 / ( 25 + ( level - 70 ) * 0.5 );
 
   // FIXME! Make this level-specific.
   resource_base[ RESOURCE_HEALTH ] = 3600;
@@ -858,15 +943,17 @@ void druid_t::reset()
 {
   player_t::reset();
 
-  moonfire_active = 0;
+  moonfire_active     = 0;
   insect_swarm_active = 0;
 
-  buffs_eclipse_starfire = 0;
-  buffs_eclipse_wrath = 0;
-  buffs_natures_grace = 0;
+  buffs_eclipse_starfire  = 0;
+  buffs_eclipse_wrath     = 0;
+  buffs_natures_grace     = 0;
   buffs_natures_swiftness = 0;
+  buffs_omen_of_clarity   = 0;
 
-  expirations_eclipse = 0;
+  expirations_eclipse         = 0;
+  expirations_omen_of_clarity = 0;
 }
 
 // druid_t::regen  ==========================================================
@@ -912,6 +999,7 @@ void druid_t::parse_talents( const std::string& talent_string )
     { 18,  &( talents.moonkin_form       ) },
     { 20,  &( talents.wrath_of_cenarius  ) },
     { 48,  &( talents.intensity          ) },
+    { 50,  &( talents.omen_of_clarity    ) },
     { 53,  &( talents.natures_swiftness  ) },
     { 58,  &( talents.living_spirit      ) },
     { 60,  &( talents.natural_perfection ) },
@@ -930,6 +1018,7 @@ bool druid_t::parse_option( const std::string& name,
   {
     { "balance_of_power",       OPT_INT8,  &( talents.balance_of_power      ) },
     { "dreamstate",             OPT_INT8,  &( talents.dreamstate            ) },
+    { "earth_and_moon",         OPT_INT8,  &( talents.earth_and_moon        ) },
     { "eclipse",                OPT_INT8,  &( talents.eclipse               ) },
     { "focused_starlight",      OPT_INT8,  &( talents.focused_starlight     ) },
     { "improved_moonfire",      OPT_INT8,  &( talents.improved_moonfire     ) },
@@ -943,9 +1032,9 @@ bool druid_t::parse_option( const std::string& name,
     { "moonglow",               OPT_INT8,  &( talents.moonglow              ) },
     { "moonkin_form",           OPT_INT8,  &( talents.moonkin_form          ) },
     { "natural_perfection",     OPT_INT8,  &( talents.natural_perfection    ) },
-    { "natures_fury",           OPT_INT8,  &( talents.natures_fury          ) },
     { "natures_grace",          OPT_INT8,  &( talents.natures_grace         ) },
     { "natures_swiftness",      OPT_INT8,  &( talents.natures_swiftness     ) },
+    { "omen_of_clarity",        OPT_INT8,  &( talents.omen_of_clarity       ) },
     { "starlight_wrath",        OPT_INT8,  &( talents.starlight_wrath       ) },
     { "vengeance",              OPT_INT8,  &( talents.vengeance             ) },
     { "wrath_of_cenarius",      OPT_INT8,  &( talents.wrath_of_cenarius     ) },

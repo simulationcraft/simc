@@ -1,13 +1,13 @@
 druid=Flowerchylde
-talents=http://www.worldofwarcraft.com/info/classes/druid/talents.html?51202201250313523135100000000000000000000050500301000000000000
+talents=http://www.worldofwarcraft.com/info/classes/druid/talents.html?tal=51202201250313523135100000000000000000000050500301000000000000
 master_shapeshifter=2
 improved_moonkin_form=3
 eclipse=3
-natures_fury=5
+earth_and_moon=5
 actions=moonkin_form/mana_potion-2500/innervate/moonfire/wrath-eclipse_trigger/starfire
 gear_stamina=296
 gear_intellect=196
 gear_spirit=18
 gear_spell_power=1230
 gear_spell_hit_rating=114
-gear_spell_crit_rating=86
+gear_spell_crit_rating=200

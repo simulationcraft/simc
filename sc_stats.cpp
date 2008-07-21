@@ -8,7 +8,7 @@
 // stats_t::stats_t =========================================================
 
 stats_t::stats_t( action_t* a ) : 
-  name(a->name_str), sim(a->sim), player(a->player), next(0), channeled(false), analyzed(false)
+  name(a->name_str), sim(a->sim), player(a->player), next(0), channeled(false), analyzed(false), initialized(false)
 {
   
 }
@@ -17,6 +17,9 @@ stats_t::stats_t( action_t* a ) :
 
 void stats_t::init()
 {
+  if( initialized ) return;
+  initialized = true;
+
   num_buckets = (int) sim -> max_time;
   if( num_buckets == 0 ) num_buckets = 600; // Default to 10 minutes
   num_buckets *= 2;

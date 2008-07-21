@@ -17,8 +17,8 @@ action_t::action_t( int8_t      ty,
 		    int8_t      r,
 		    int8_t      s,
 		    int8_t      tr ) :
-  sim(p->sim), valid(true), type(ty), name_str(n), player(p), school(s), resource(r), tree(tr), result(RESULT_NONE),
-  bleed(false), binary(false), channeled(false), background(false), repeating(false), aoe(false), harmful(true), trigger_gcd(true),
+  sim(p->sim), type(ty), name_str(n), player(p), school(s), resource(r), tree(tr), result(RESULT_NONE),
+  bleed(false), binary(false), channeled(false), background(false), repeating(false), aoe(false), harmful(true),
   may_miss(false), may_resist(false), may_dodge(false), may_parry(false), 
   may_glance(false), may_block(false), may_crush(false), may_crit(false),
   base_execute_time(0), base_duration(0), base_cost(0),
@@ -36,6 +36,7 @@ action_t::action_t( int8_t      ty,
   action_t** last = &( p -> action_list );
   while( *last ) last = &( (*last) -> next );
   *last = this;
+  trigger_gcd = p -> base_gcd;
   for( stats = player -> stats_list; stats; stats = stats -> next )
   {
     if( stats -> name == n )
@@ -44,8 +45,14 @@ action_t::action_t( int8_t      ty,
   if( ! stats )
   {
     stats = new stats_t( this );
-    stats -> next = player -> stats_list;
-    player -> stats_list = stats;
+    stats -> init();
+    stats_t** tail= &( p -> stats_list );
+    while( *tail && name_str > ( (*tail) -> name ) )
+    {
+      tail = &( (*tail) -> next );
+    }
+    stats -> next = *tail;
+    *tail = stats;
   }
 }
 
@@ -153,6 +160,8 @@ void action_t::player_buff()
 
 void action_t::target_debuff( int8_t dmg_type )
 {
+  static bool AFTER_3_0_0 = sim -> patch.after( 3, 0, 0 );
+
   target_multiplier  = 1.0;
   target_hit         = 0;
   target_crit        = 0;
@@ -178,7 +187,7 @@ void action_t::target_debuff( int8_t dmg_type )
     {
       target_multiplier *= 1.0 + ( t -> debuffs.curse_of_shadows * 0.01 );
       target_multiplier *= 1.0 + ( t -> debuffs.shadow_weaving   * 0.02 );
-      if( dmg_type == DMG_DIRECT )
+      if( ! AFTER_3_0_0 || dmg_type == DMG_DIRECT )
       {
 	if( t -> debuffs.shadow_vulnerability ) target_multiplier *= 1.20;
 	static uptime_t* sv_uptime = sim -> get_uptime( "shadow_vulnerability" );
@@ -189,7 +198,7 @@ void action_t::target_debuff( int8_t dmg_type )
     else if( school == SCHOOL_ARCANE )
     {
       target_multiplier *= 1.0 + ( t -> debuffs.curse_of_shadows * 0.01 );       
-      target_multiplier *= 1.0 + ( t -> debuffs.natures_fury     * 0.02 );
+      target_multiplier *= 1.0 + ( t -> debuffs.earth_and_moon   * 0.02 );
       if( t -> debuffs.curse_of_shadows ) target_penetration += 88;
     }
     else if( school == SCHOOL_FROST )
@@ -205,7 +214,13 @@ void action_t::target_debuff( int8_t dmg_type )
     }
     else if( school == SCHOOL_NATURE )
     {
-      target_multiplier *= 1.0 + ( t -> debuffs.natures_fury * 0.02 );
+      target_multiplier *= 1.0 + ( t -> debuffs.earth_and_moon * 0.02 );
+      if( ! AFTER_3_0_0 || dmg_type == DMG_DIRECT )
+      {
+	if( t -> debuffs.nature_vulnerability ) target_multiplier *= 1.20;
+	static uptime_t* sv_uptime = sim -> get_uptime( "nature_vulnerability" );
+	sv_uptime -> update( t -> debuffs.nature_vulnerability != 0 );
+      }
     }
     target_multiplier *= 1.0 + ( t -> debuffs.misery * 0.01 );
   }

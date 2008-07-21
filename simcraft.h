@@ -77,7 +77,8 @@ struct event_t
   double occurs() { return reschedule_time != 0 ? reschedule_time : time; }
   virtual void execute() { assert(0); }
   virtual ~event_t() {}
-  static void cancel( event_t*& e ) { if( e ) e -> canceled = true; e=0; }
+  static void cancel( event_t*& e ) { if( e ) { e -> canceled = true;                 e=0; } }
+  static void  early( event_t*& e ) { if( e ) { e -> canceled = true; e -> execute(); e=0; } }
 };
 
 struct event_compare_t 
@@ -131,6 +132,45 @@ enum weapon_type { WEAPON_NONE=0,
 		   WEAPON_BEAST_2H, WEAPON_SWORD_2H, WEAPON_MACE_2H,  WEAPON_AXE_2H, WEAPON_STAFF,  WEAPON_POLEARM, WEAPON_2H,
 		   WEAPON_BOW,      WEAPON_CROSSBOW, WEAPON_GUN,      WEAPON_WAND,   WEAPON_THROWN,                 WEAPON_RANGED,
 		   WEAPON_MAX };
+
+enum weapon_enchant_type { WEAPON_ENCHANT_NONE=0, MONGOOSE, EXECUTIONER, DEATH_FROST, WEAPON_ENCHANT_MAX };
+
+enum weapon_buff_type { WEAPON_BUFF_NONE=0, 
+			FLAMETONGUE_WEAPON, 
+			FLAMETONGUE_TOTEM, 
+			POISON,
+			SHARPENING_STONE, 
+			WINDFURY_WEAPON, 
+			WINDFURY_TOTEM, 
+			WEAPON_BUFF_MAX };
+
+enum elixir_type { ELIXIR_NONE=0,
+		   ELIXIR_DRAENIC_WISDOM,                          
+		   ELIXIR_MAJOR_MAGEBLOOD, 
+		   ELIXIR_GUARDIAN,
+		   ELIXIR_ADEPT,
+		   ELIXIR_FEL_STRENGTH,
+		   ELIXIR_GREATER_ARCANE,
+		   ELIXIR_MAJOR_AGILITY, 
+		   ELIXIR_MAJOR_FIRE_POWER, 
+		   ELIXIR_MAJOR_FROST_POWER, 
+		   ELIXIR_MAJOR_SHADOW_POWER, 
+		   ELIXIR_MAJOR_STRENGTH, 
+		   ELIXIR_MASTERY,
+		   ELIXIR_MONGOOSE,
+		   ELIXIR_ONSLAUGHT,
+		   ELIXIR_SAGES,
+		   ELIXIR_BATTLE,
+		   ELIXIR_MAX };
+
+enum flask_type { FLASK_NONE=0,
+		  FLASK_BLINDING_LIGHT, 
+		  FLASK_DISTILLED_WISDOM,
+		  FLASK_MIGHTY_RESTORATION, 
+		  FLASK_PURE_DEATH, 
+		  FLASK_RELENTLESS_ASSAULT, 
+		  FLASK_SUPREME_POWER,
+		  FLASK_MAX };
 
 enum position_type { POSITION_NONE=0, POSITION_FRONT, POSITION_BACK, POSITION_MAX };
 
@@ -219,12 +259,13 @@ struct weapon_t
   int8_t type, school;
   double damage;
   double swing_time;
+  int8_t enchant, buff;
 
   int group();
   double normalized_weapon_speed();
 
   weapon_t( int t=WEAPON_NONE, double d=0, double st=2.0, int s=SCHOOL_PHYSICAL ) : 
-    type(t), school(s), damage(d), swing_time(st) {}
+    type(t), school(s), damage(d), swing_time(st), enchant(WEAPON_ENCHANT_NONE), buff(WEAPON_BUFF_NONE) {}
 };
 
 // Player ====================================================================
@@ -260,10 +301,10 @@ struct player_t
   double base_spell_crit,        initial_spell_crit,                  spell_crit;
   double base_spell_penetration, initial_spell_penetration,           spell_penetration;
   double base_mp5,               initial_mp5,                         mp5;
-  double spell_power_multiplier;
-  double spell_power_per_intellect;
-  double spell_power_per_spirit;
-  double spell_crit_per_intellect;
+  double spell_power_multiplier,    initial_spell_power_multiplier;
+  double spell_power_per_intellect, initial_spell_power_per_intellect;
+  double spell_power_per_spirit,    initial_spell_power_per_spirit;
+  double spell_crit_per_intellect,  initial_spell_crit_per_intellect;
   double mp5_per_intellect;
   double last_cast;
 
@@ -273,10 +314,10 @@ struct player_t
   double    base_attack_expertise,   initial_attack_expertise,    attack_expertise;
   double    base_attack_crit,        initial_attack_crit,         attack_crit;
   double    base_attack_penetration, initial_attack_penetration,  attack_penetration;
-  double    attack_power_multiplier;
-  double    attack_power_per_strength;
-  double    attack_power_per_agility;
-  double    attack_crit_per_agility;
+  double    attack_power_multiplier,   initial_attack_power_multiplier;
+  double    attack_power_per_strength, initial_attack_power_per_strength;
+  double    attack_power_per_agility,  initial_attack_power_per_agility;
+  double    attack_crit_per_agility,   initial_attack_crit_per_agility;
   int8_t    position;
 
   // Weapons
@@ -294,6 +335,11 @@ struct player_t
   double  resource_constrained_total_time;
   double  mana_per_intellect;
   double  health_per_stamina;
+
+  // Consumables
+  int8_t elixir_guardian;
+  int8_t elixir_battle;
+  int8_t flask;
 
   // Events
   event_t* executing;
@@ -392,42 +438,33 @@ struct player_t
   struct buff_t
   {
     // Permanent Buffs
-    int8_t blessing_of_salvation;
-    int8_t blessing_of_wisdom;
-    int8_t improved_divine_spirit;
-    int8_t fel_armor;
-    int8_t mage_armor;
-    int8_t molten_armor;
-    int8_t sacrifice_pet;
-    int8_t sanctity_aura;
-    int8_t shadow_form; 
+    int8_t  blessing_of_salvation;
+    int8_t  blessing_of_wisdom;
+    int8_t  sanctity_aura;
     // Temporary Buffs
     int8_t  temporary_buffs;
-    int8_t  amplify_curse;
-    int8_t  arcane_blast;
-    int8_t  arcane_potency;
-    int8_t  arcane_power;
+    int8_t  arcane_intellect;
+    int8_t  mark_of_the_wild;
+    int8_t  divine_spirit;
+    int8_t  shadow_form; 
     int8_t  bloodlust;
     double  cast_time_reduction;
-    int8_t  clear_casting;
-    int8_t  combustion;
-    int8_t  combustion_crits;
     int8_t  darkmoon_crusade;
     int8_t  darkmoon_wrath;
-    int8_t  evocation;
-    int8_t  icy_veins;
+    int8_t  grace_of_air;
     int8_t  improved_moonkin_aura;
     int8_t  innervate;
     int8_t  lightning_capacitor;
     double  mana_cost_reduction;
     int8_t  moonkin_haste;
     double  moonkin_aura;
-    int8_t  nightfall;
-    int8_t  natures_grace;
     int8_t  power_infusion;
+    int8_t  strength_of_earth;
     int16_t talisman_of_ascendance;
     int8_t  totem_of_wrath;
+    int8_t  unleashed_rage;
     int8_t  violet_eye;
+    double  windfury_totem;
     int8_t  wrath_of_air;
     int16_t zandalarian_hero_charm;
     int8_t  tier4_2pc, tier4_4pc;
@@ -462,6 +499,7 @@ struct player_t
     event_t* shiffars_nexus_horn;
     event_t* spellstrike;
     event_t* timbals_crystal;
+    event_t* unleashed_rage;
     event_t* wrath_of_cenarius;
     event_t *tier4_2pc, *tier4_4pc;
     event_t *tier5_2pc, *tier5_4pc;
@@ -473,20 +511,13 @@ struct player_t
   
   struct uptimes_t
   {
-    uptime_t *moonkin_haste;
+    uptime_t* moonkin_haste;
+    uptime_t* unleashed_rage;
     void reset() { memset( (void*) this, 0x00, sizeof( uptimes_t ) ); }
     uptimes_t() { reset(); }
   };
   uptimes_t uptimes;
   
-  struct enchants_t
-  {
-    int8_t place_holder;
-    void reset() { memset( (void*) this, 0x00, sizeof( enchants_t ) ); }
-    enchants_t() { reset(); }
-  };
-  enchants_t enchants;
-
   player_t( sim_t* sim, int8_t type, const std::string& name );
   
   virtual const char* name() { return name_str.c_str(); }
@@ -503,7 +534,10 @@ struct player_t
   virtual void init_stats();
   virtual void reset();
 
-  virtual double    gcd(); 
+  virtual double composite_attack_power();
+  virtual double composite_spell_power( int8_t school );
+
+  virtual double    gcd( double trigger_gcd=0 ); 
   virtual void      schedule_ready( double delta_time=0 );
   virtual action_t* execute_action();
 
@@ -552,7 +586,7 @@ struct player_t
   void      recalculate_haste()  {  haste = 1.0 / ( 1.0 + haste_rating / rating.haste ); }
   bool      time_to_think() { return sim -> current_time - last_cast > 0.5; }
   double    spirit_regen_per_second();
-  bool      dual_wield();
+  bool      dual_wield() { return main_hand_weapon.type != WEAPON_NONE && off_hand_weapon.type != WEAPON_NONE; }
   void      aura_gain( const char* name );
   void      aura_loss( const char* name );
 
@@ -632,7 +666,8 @@ struct target_t
     int8_t   mangle;
     int8_t   misery;
     int8_t   misery_stack;
-    int8_t   natures_fury;
+    int8_t   earth_and_moon;
+    int8_t   nature_vulnerability;
     int8_t   shadow_vulnerability;
     int8_t   shadow_weaving;
     int8_t   sunder_armor;
@@ -650,7 +685,8 @@ struct target_t
   {
     event_t* fire_vulnerability;
     event_t* frozen;
-    event_t* natures_fury;
+    event_t* earth_and_moon;
+    event_t* nature_vulnerability;
     event_t* shadow_vulnerability;
     event_t* shadow_weaving;
     event_t* winters_chill;
@@ -679,6 +715,7 @@ struct stats_t
   stats_t* next;
   bool channeled;
   bool analyzed;
+  bool initialized;
 
   double num_executes, num_ticks;
   double total_execute_time, total_tick_time;
@@ -720,13 +757,13 @@ struct rank_t
 struct action_t
 {
   sim_t* sim;
-  bool valid;
   int8_t type;
   std::string name_str;
   player_t* player;
   int8_t school, resource, tree, result;
-  bool bleed, binary, channeled, background, repeating, aoe, harmful, trigger_gcd;
+  bool bleed, binary, channeled, background, repeating, aoe, harmful;
   bool may_miss, may_resist, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
+  double trigger_gcd;
   double base_execute_time, base_duration, base_cost;
   double   base_multiplier,   base_hit,   base_crit,   base_crit_bonus,   base_power,   base_penetration;
   double player_multiplier, player_hit, player_crit, player_crit_bonus, player_power, player_penetration;
@@ -1026,7 +1063,7 @@ struct option_t
 
   static void print( option_t* );
   static bool parse( option_t*, const std::string& name, const std::string& value );
-  static bool parse( sim_t*, char* str );
+  static bool parse( sim_t*, char* line );
   static bool parse( int argc, char** argv, sim_t* );
 };
 
@@ -1037,13 +1074,15 @@ int8_t  wow_random( double chance );
 double  wow_random();
 char*   wow_dup( const char* );
 
-const char*   wow_player_type_string  ( int8_t type );
-const char*   wow_dmg_type_string     ( int8_t type );
-const char*   wow_result_type_string  ( int8_t type );
-const char*   wow_resource_type_string( int8_t type );
-const char*   wow_school_type_string  ( int8_t type );
-const char*   wow_talent_tree_string  ( int8_t tree );
-const char*   wow_weapon_type_string  ( int8_t type );
+const char*   wow_player_type_string        ( int8_t type );
+const char*   wow_dmg_type_string           ( int8_t type );
+const char*   wow_result_type_string        ( int8_t type );
+const char*   wow_resource_type_string      ( int8_t type );
+const char*   wow_school_type_string        ( int8_t type );
+const char*   wow_talent_tree_string        ( int8_t tree );
+const char*   wow_weapon_type_string        ( int8_t type );
+const char*   wow_weapon_enchant_type_string( int8_t type );
+const char*   wow_weapon_buff_type_string   ( int8_t type );
 
 int wow_string_split( std::vector<std::string>& results, const std::string& str, const char* delim );
 int wow_string_split( const std::string& str, const char* delim, const char* format, ... );

@@ -16,18 +16,12 @@ attack_t::attack_t( const char* n, player_t* p, int8_t r, int8_t s, int8_t t ) :
   base_expertise(0), player_expertise(0), target_expertise(0), 
   normalize_weapon_speed(false), weapon(0)
 {
-  may_miss = may_resist = may_dodge = may_parry = may_glance = may_block = true;
+  may_miss = may_resist = may_dodge = may_parry = may_glance = may_block = may_crit = true;
 
   if( player -> position == POSITION_BACK )
   {
     may_parry = false;
     may_block = false;
-  }
-  if( weapon && weapon -> group() == WEAPON_RANGED )
-  {
-    may_dodge  = false;
-    may_parry  = false;
-    may_glance = false;
   }
 
   base_crit_bonus = 1.0;
@@ -45,6 +39,9 @@ double attack_t::execute_time()
 
   t *= player -> haste;
   if( player -> buffs.bloodlust ) t *= 0.7;
+
+  static bool AFTER_3_0_0 = sim -> patch.after( 3, 0, 0 );
+  if( AFTER_3_0_0 && player -> buffs.windfury_totem != 0 ) t *= 0.8;
 
   return t;
 }
@@ -68,16 +65,20 @@ double attack_t::duration()
 
 void attack_t::player_buff()
 {
+  action_t::player_buff();
+
   player_t* p = player;
 
   player_hit        = p -> attack_hit;
   player_expertise  = p -> attack_expertise;
   player_crit       = p -> attack_crit + p -> attack_crit_per_agility  * p -> agility();
   player_crit_bonus = 1.0;
-  player_power      = p -> attack_power +
-                      p -> attack_power_per_strength * p -> strength() +
-                      p -> attack_power_per_agility  * p -> agility();
-  player_power     *= p -> attack_power_multiplier;
+  player_power      = p -> composite_attack_power();
+
+  p -> uptimes.unleashed_rage -> update( p -> buffs.unleashed_rage );
+
+  report_t::debug( sim, "attack_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f", 
+		   name(), player_hit, player_crit, player_power, player_penetration );
 }
 
 // attack_t::target_debuff ==================================================
@@ -152,6 +153,9 @@ void attack_t::build_table( std::vector<double>& chances,
     crit = base_crit + player_crit + target_crit;
   }
 
+  report_t::debug( sim, "attack_t::build_table: %s miss=%.3f dodge=%.3f parry=%.3f glance=%.3f block=%.3f crit=%.3f",
+		   name(), miss, dodge, parry, glance, block, crit );
+  
   double total = 0;
 
   if( miss > 0 )
@@ -241,7 +245,7 @@ void attack_t::calculate_damage()
 {
   get_base_damage();
 
-  double weapon_speed  = 0;
+  double weapon_speed  = 1.0;
   double weapon_damage = 0;
 
   if( weapon )
@@ -254,13 +258,13 @@ void attack_t::calculate_damage()
 
   if( base_dd > 0 )  
   {
-    dd  = base_dd + weapon_damage + attack_power * dd_power_mod * weapon_speed;
+    dd  = base_dd + weapon_speed * ( weapon_damage + ( attack_power * dd_power_mod ) );
     dd *= base_multiplier * player_multiplier * target_multiplier;
   }
 
   if( base_dot > 0 ) 
   {
-    dot  = base_dot + weapon_damage + attack_power * dot_power_mod * weapon_speed;
+    dot  = base_dot + weapon_speed * ( weapon_damage + ( attack_power * dot_power_mod ) );
     dot *= base_multiplier * player_multiplier;
   }
 }

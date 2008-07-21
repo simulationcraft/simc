@@ -541,8 +541,7 @@ static void trigger_lightning_capacitor( spell_t* s )
       base_cost   = 0;
       cooldown    = 2.5;
       may_crit    = true;
-      valid       = false; // This spell can never be called directly.
-      trigger_gcd = false;
+      trigger_gcd = 0;
       background  = true;
     }
     virtual void player_buff()
@@ -557,7 +556,10 @@ static void trigger_lightning_capacitor( spell_t* s )
   if(  p -> gear.lightning_capacitor )
   {
     action_t* lightning_discharge = p -> find_action( "lightning_discharge" );
-    if( ! lightning_discharge ) lightning_discharge = new lightning_discharge_t( p );
+    if( ! lightning_discharge ) 
+    {
+      lightning_discharge = new lightning_discharge_t( p );
+    }
 
     if( p -> buffs.lightning_capacitor < 2 )
     {
@@ -591,8 +593,9 @@ static void trigger_timbals_crystal( spell_t* s )
       base_cost   = 0;
       cooldown    = 15;
       may_crit    = true;
-      valid       = false;
-      trigger_gcd = false;
+
+      trigger_gcd = 0;
+      background  = true;
     }
     virtual void player_buff()
     {
@@ -611,7 +614,10 @@ static void trigger_timbals_crystal( spell_t* s )
   if( p -> gear.timbals_crystal )
   {
     action_t* timbals_discharge = p -> find_action( "timbals_discharge" );
-    if( ! timbals_discharge ) timbals_discharge = new timbals_discharge_t( p );
+    if( ! timbals_discharge ) 
+    {
+      timbals_discharge = new timbals_discharge_t( p );
+    }
 
     if( timbals_discharge -> ready() &&	wow_random( 0.10 ) )
     {
@@ -803,7 +809,7 @@ struct spell_power_trinket_t : public spell_t
       printf( "Expected format: spell_power_trinket-spell_power-length-cooldown\n" );
       assert(0);
     }
-    trigger_gcd = false;
+    trigger_gcd = 0;
     harmful = false;
   }
    
@@ -853,7 +859,7 @@ struct haste_trinket_t : public spell_t
       printf( "Expected format: haste_trinket-haste_rating-length-cooldown\n" );
       assert(0);
     }
-    trigger_gcd = false;
+    trigger_gcd = 0;
     harmful = false;
   }
    
@@ -897,7 +903,7 @@ struct talisman_of_ascendance_t : public spell_t
     spell_t( "talisman_of_ascendance", p )
   {
     cooldown_group = "spell_power_trinket";
-    trigger_gcd = false;
+    trigger_gcd = 0;
     harmful = false;
   }
   
@@ -939,7 +945,7 @@ struct zandalarian_hero_charm_t : public spell_t
     spell_t( "zandalarian_hero_charm", p )
   {
     cooldown_group = "spell_power_trinket";
-    trigger_gcd = false;
+    trigger_gcd = 0;
     harmful = false;
   }
   
@@ -993,7 +999,7 @@ struct hazzrahs_charm_t : public spell_t
     spell_t( "hazzrahs_charm", p )
   {
     cooldown_group = "spell_power_trinket";
-    trigger_gcd = false;
+    trigger_gcd = 0;
     harmful = false;
 
     // This trinket is only availables to Mages, Priests, and Warlocks.
@@ -1001,7 +1007,7 @@ struct hazzrahs_charm_t : public spell_t
 	p -> type != PRIEST  &&
 	p -> type != WARLOCK )
     {
-      valid = false;
+      assert( 0 );
     }
   }
   
@@ -1045,7 +1051,7 @@ struct violet_eye_t : public spell_t
   {
     cooldown_group = "mana_trinket";
     harmful = false;
-    trigger_gcd = false;
+    trigger_gcd = 0;
   }
   
   virtual void execute()

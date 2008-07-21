@@ -2,3 +2,5 @@ lag=0.2
 max_time=600
 infinite_mana=1
 iterations=1000
+# assume 5x Sunder Armor
+target_armor=4000

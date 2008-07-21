@@ -7,20 +7,42 @@
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
+// is_white_space ===========================================================
+
+static bool is_white_space( char c )
+{
+  return( c == ' ' || c == '\t' || c == '\n' );
+}
+
 // only_white_space =========================================================
 
 static bool only_white_space( char* s )
 {
   while( *s )
   {
-    if( *s != ' '  && 
-	*s != '\t' && 
-	*s != '\n' )
+    if( ! is_white_space( *s ) )
       return false;
-
     s++;
   }
   return true;
+}
+
+// remove_space =============================================================
+
+static void remove_white_space( std::string& buffer,
+				char*        line )
+{
+  while( is_white_space( *line ) ) line++;
+
+  char* endl = line + strlen( line ) - 1;
+
+  while( endl > line && is_white_space( *endl ) ) 
+  {
+    *endl = '\0';
+    endl--;
+  }
+
+  buffer = line;
 }
 
 } // ANONYMOUS NAMESPACE ====================================================
@@ -79,20 +101,26 @@ bool option_t::parse( option_t* options,
 
 // option_t::parse ==========================================================
 
-bool option_t::parse( sim_t*    sim,
-		      char*     str )
+bool option_t::parse( sim_t* sim,
+		      char*  line )
 {
-  report_t::debug( sim, "option_t::parse: %s", str );
-   
-  static std::string name;
-  static std::string value;
+  report_t::debug( sim, "option_t::parse: %s", line );
 
-  if( 2 != wow_string_split( str, "=\n ", "S S", &name, &value ) )
+  static std::string buffer, name, value;
+
+  remove_white_space( buffer, line );
+
+  std::string::size_type cut_pt = buffer.find_first_of( "=" );
+
+  if( cut_pt == buffer.npos )
   {
-    printf( "simcraft: Unexpected parameter '%s'.  Expected format: name=value\n", str );
+    printf( "simcraft: Unexpected parameter '%s'.  Expected format: name=value\n", line );
     return false;
   }
   
+  name  = buffer.substr( 0, cut_pt );
+  value = buffer.substr( cut_pt + 1 );
+
   if( name == "file" )
   {
     FILE* file = fopen( value.c_str(), "r" );
@@ -160,8 +188,12 @@ bool option_t::parse( sim_t*    sim,
   else if( name == "talents" )
   {
     static std::string talent_string;
-    std::string::size_type cut_pt = value.find_first_of( "?" );
-    if( cut_pt != value.npos ) 
+    std::string::size_type cut_pt; 
+    if( ( cut_pt = value.find_first_of( "=" ) ) != value.npos ) 
+    {
+      talent_string = value.substr( cut_pt + 1 );
+    }
+    else if( ( cut_pt = value.find_first_of( "?" ) ) != value.npos ) 
     {
       talent_string = value.substr( cut_pt + 1 );
     }

@@ -36,7 +36,7 @@ struct destruction_potion_t : public spell_t
   {
     cooldown = 120.0;
     cooldown_group = "potion";
-    trigger_gcd = false;
+    trigger_gcd = 0;
     harmful = false;
   }
   
@@ -63,7 +63,7 @@ struct mana_potion_t : public spell_t
   {
     cooldown = 120.0;
     cooldown_group = "potion";
-    trigger_gcd = false;
+    trigger_gcd = 0;
     harmful = false;
     mana = atof( option_str.c_str() );
   }
@@ -98,7 +98,7 @@ struct mana_gem_t : public spell_t
   {
     cooldown = 120.0;
     cooldown_group = "rune";
-    trigger_gcd = false;
+    trigger_gcd = 0;
     harmful = false;
     mana = atof( option_str.c_str() );
   }
@@ -133,7 +133,7 @@ struct health_stone_t : public spell_t
   {
     cooldown = 120.0;
     cooldown_group = "rune";
-    trigger_gcd = false;
+    trigger_gcd = 0;
     harmful = false;
     health = atof( option_str.c_str() );
   }
@@ -177,7 +177,7 @@ struct dark_rune_t : public spell_t
 
     cooldown = 120.0;
     cooldown_group = "rune";
-    trigger_gcd = false;
+    trigger_gcd = 0;
     harmful = false;
   }
   

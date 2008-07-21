@@ -272,8 +272,8 @@ void sim_t::flush_events()
 
 void sim_t::reset()
 {
-  report_t::debug( this, "Reseting Simulator" );
   flush_events();
+  report_t::debug( this, "Reseting Simulator" );
   current_time = id = 0;
   target -> reset();
   for( player_t* p = player_list; p; p = p -> next )

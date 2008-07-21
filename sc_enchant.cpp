@@ -18,8 +18,7 @@ static void trigger_spellsurge( spell_t* s )
     {
       base_duration = 10.0;
       num_ticks = 10;
-      valid = false;  // This spell can never be called directly.
-      trigger_gcd = false;
+      trigger_gcd = 0;
       background = true;
     }
     virtual void execute() 
