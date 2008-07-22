@@ -16,8 +16,7 @@ static void trigger_mystical_skyfire( spell_t* s )
     mystical_skyfire_silent_cooldown_t( sim_t* sim, player_t* p ) : event_t( sim, p )
     {
       name = "Mystical Skyfire Silent Cooldown Expiration";
-      time = 41.0;
-      sim -> add_event( this );
+      sim -> add_event( this, 41.0 );
     }
     virtual void execute()
     {
@@ -32,8 +31,7 @@ static void trigger_mystical_skyfire( spell_t* s )
       player -> aura_gain( "Mystical Skyfire" );
       player -> haste_rating += 320;
       player -> recalculate_haste();
-      time = 4.0;
-      sim -> add_event( this );
+      sim -> add_event( this, 4.0 );
     }
     virtual void execute()
     {
@@ -68,8 +66,7 @@ static void trigger_spellstrike( spell_t* s )
       name = "Spellstrike Set Bonus Expiration";
       player -> aura_gain( "Spellstrike Set Bonus" );
       player -> spell_power[ SCHOOL_MAX ] += 92;
-      time = 10.0;
-      sim -> add_event( this );
+      sim -> add_event( this, 10.0 );
     }
     virtual void execute()
     {
@@ -91,7 +88,7 @@ static void trigger_spellstrike( spell_t* s )
 
     if( e )
     {
-      e -> reschedule( s -> sim -> current_time + 10.0 );
+      e -> reschedule( 10.0 );
     }
     else
     {
@@ -111,8 +108,7 @@ static void trigger_wrath_of_cenarius( spell_t* s )
       name = "Wrath of Cenarius Expiration";
       player -> aura_gain( "Wrath of Cenarius" );
       player -> spell_power[ SCHOOL_MAX ] += 132;
-      time = 10.0;
-      sim -> add_event( this );
+      sim -> add_event( this, 10.0 );
     }
     virtual void execute()
     {
@@ -134,7 +130,7 @@ static void trigger_wrath_of_cenarius( spell_t* s )
 
     if( e )
     {
-      e -> reschedule( s -> sim -> current_time + 10.0 );
+      e -> reschedule( 10.0 );
     }
     else
     {
@@ -152,8 +148,7 @@ static void trigger_elder_scribes( spell_t* s )
     elder_scribes_silent_cooldown_t( sim_t* sim, player_t* p ) : event_t( sim, p )
     {
       name = "Elder Scribes Silent Cooldown Expiration";
-      time = 50.0;
-      sim -> add_event( this );
+      sim -> add_event( this, 50.0 );
     }
     virtual void execute()
     {
@@ -168,8 +163,7 @@ static void trigger_elder_scribes( spell_t* s )
       name = "Elder Scribes Expiration";
       player -> aura_gain( "Power of Arcanagos" );
       player -> spell_power[ SCHOOL_MAX ] += 130;
-      time = 10.0;
-      sim -> add_event( this );
+      sim -> add_event( this, 10.0 );
     }
     virtual void execute()
     {
@@ -199,8 +193,7 @@ static void trigger_eternal_sage( spell_t* s )
     eternal_sage_silent_cooldown_t( sim_t* sim, player_t* p ) : event_t( sim, p )
     {
       name = "Eternal Sage Silent Cooldown Expiration";
-      time = 30.0;
-      sim -> add_event( this );
+      sim -> add_event( this, 30.0 );
     }
     virtual void execute()
     {
@@ -215,8 +208,7 @@ static void trigger_eternal_sage( spell_t* s )
       name = "Eternal Sage Expiration";
       player -> aura_gain( "Eternal Sage" );
       player -> spell_power[ SCHOOL_MAX ] += 95;
-      time = 15.0;
-      sim -> add_event( this );
+      sim -> add_event( this, 15.0 );
     }
     virtual void execute()
     {
@@ -248,8 +240,7 @@ static void trigger_eye_of_magtheridon( spell_t* s )
       name = "Eye of Magtheridon Expiration";
       player -> aura_gain( "Eye of Magtheridon" );
       player -> spell_power[ SCHOOL_MAX ] += 170;
-      time = 10.0;
-      sim -> add_event( this );
+      sim -> add_event( this, 10.0 );
     }
     virtual void execute()
     {
@@ -269,7 +260,7 @@ static void trigger_eye_of_magtheridon( spell_t* s )
 
     if( e )
     {
-      e -> reschedule( s -> sim -> current_time + 10.0 );
+      e -> reschedule( 10.0 );
     }
     else
     {
@@ -287,8 +278,7 @@ static void trigger_shiffars_nexus_horn( spell_t* s )
     shiffars_nexus_horn_silent_cooldown_t( sim_t* sim, player_t* p ) : event_t( sim, p )
     {
       name = "Shiffar's Nexus Horn Silent Cooldown Expiration";
-      time = 35.0;
-      sim -> add_event( this );
+      sim -> add_event( this, 35.0 );
     }
     virtual void execute()
     {
@@ -303,8 +293,7 @@ static void trigger_shiffars_nexus_horn( spell_t* s )
       name = "Shiffar's Nexus Horn Expiration";
       player -> aura_gain( "Shiffar's Nexus Horn" );
       player -> spell_power[ SCHOOL_MAX ] += 225;
-      time = 10.0;
-      sim -> add_event( this );
+      sim -> add_event( this, 10.0 );
     }
     virtual void execute()
     {
@@ -334,8 +323,7 @@ static void trigger_sextant_of_unstable_currents( spell_t* s )
     sextant_of_unstable_currents_silent_cooldown_t( sim_t* sim, player_t* p ) : event_t( sim, p )
     {
       name = "Sextant of Unstable Currents Silent Cooldown Expiration";
-      time = 30.0;
-      sim -> add_event( this );
+      sim -> add_event( this, 30.0 );
     }
     virtual void execute()
     {
@@ -350,8 +338,7 @@ static void trigger_sextant_of_unstable_currents( spell_t* s )
       name = "Sextant of Unstable Currents Expiration";
       player -> aura_gain( "Sextant of Unstable Currents" );
       player -> spell_power[ SCHOOL_MAX ] += 190;
-      time = 15.0;
-      sim -> add_event( this );
+      sim -> add_event( this, 15.0 );
     }
     virtual void execute()
     {
@@ -381,8 +368,7 @@ static void trigger_quagmirrans_eye( spell_t* s )
     quagmirrans_eye_silent_cooldown_t( sim_t* sim, player_t* p ) : event_t( sim, p )
     {
       name = "Quagmirran's Eye Silent Cooldown Expiration";
-      time = 39.0;
-      sim -> add_event( this );
+      sim -> add_event( this, 39.0 );
     }
     virtual void execute()
     {
@@ -398,8 +384,7 @@ static void trigger_quagmirrans_eye( spell_t* s )
       player -> aura_gain( "Quagmirran's Eye" );
       player -> haste_rating += 320;
       player -> recalculate_haste();
-      time = 6.0;
-      sim -> add_event( this );
+      sim -> add_event( this, 6.0 );
     }
     virtual void execute()
     {
@@ -432,8 +417,7 @@ static void trigger_darkmoon_crusade( spell_t* s )
     darkmoon_crusade_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
     {
       name = "Darkmoon Crusade Expiration";
-      time = 10.0;
-      sim -> add_event( this );
+      sim -> add_event( this, 10.0 );
     }
     virtual void execute()
     {
@@ -461,7 +445,7 @@ static void trigger_darkmoon_crusade( spell_t* s )
 
   if( e )
   {
-    e -> reschedule( s -> sim -> current_time + 10.0 );
+    e -> reschedule( 10.0 );
   }
   else
   {
@@ -489,8 +473,7 @@ static void trigger_darkmoon_wrath( spell_t* s )
     darkmoon_wrath_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
     {
       name = "Darkmoon Wrath Expiration";
-      time = 10.0;
-      sim -> add_event( this );
+      sim -> add_event( this, 10.0 );
     }
     virtual void execute()
     {
@@ -519,7 +502,7 @@ static void trigger_darkmoon_wrath( spell_t* s )
   
   if( e )
   {
-    e -> reschedule( s -> sim -> current_time + 10.0 );
+    e -> reschedule( 10.0 );
   }
   else
   {
@@ -672,8 +655,7 @@ static void trigger_mark_of_defiance( spell_t* s )
     mark_of_defiance_silent_cooldown_t( sim_t* sim, player_t* p ) : event_t( sim, p )
     {
       name = "Mark of Defiance Silent Cooldown Expiration";
-      time = 15.0;
-      sim -> add_event( this );
+      sim -> add_event( this, 15.0 );
     }
     virtual void execute()
     {
@@ -783,8 +765,7 @@ struct spell_power_trinket_t : public spell_t
     spell_power_trinket_expiration_t( sim_t* sim, spell_power_trinket_t* t ) : event_t( sim, t -> player ), trinket( t )
     {
       name = "Spell Power Trinket Expiration";
-      time = trinket -> length;
-      sim -> add_event( this );
+      sim -> add_event( this, trinket -> length );
     }
     virtual void execute()
     {
@@ -832,8 +813,7 @@ struct haste_trinket_t : public spell_t
     haste_trinket_expiration_t( sim_t* sim, haste_trinket_t* t ) : event_t( sim, t -> player ), trinket( t )
     {
       name = "Haste Trinket Expiration";
-      time = trinket -> length;
-      sim -> add_event( this );
+      sim -> add_event( this, trinket -> length );
     }
     virtual void execute()
     {
@@ -879,8 +859,7 @@ struct talisman_of_ascendance_t : public spell_t
     talisman_of_ascendance_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
     {
       name = "Talisman of Ascendance Expiration";
-      time = 20.0;
-      sim -> add_event( this );
+      sim -> add_event( this, 20.0 );
     }
     virtual void execute()
     {
@@ -922,8 +901,7 @@ struct zandalarian_hero_charm_t : public spell_t
     zandalarian_hero_charm_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
     {
       name = "Zandalarian Hero Charm Expiration";
-      time = 20.0;
-      sim -> add_event( this );
+      sim -> add_event( this, 20.0 );
     }
     virtual void execute()
     {
@@ -966,13 +944,14 @@ struct hazzrahs_charm_t : public spell_t
     {
       name = "Hazzrahs Charm Expiration";
       p -> aura_gain( "Hazzarahs Charm" );
+      double duration=0;
       switch( p -> type )
       {
-      case MAGE:    time = 20.0; p -> spell_power[ SCHOOL_ARCANE ] += 200;            break;
-      case PRIEST:  time = 15.0; p -> haste_rating += 400;  p -> recalculate_haste(); break;
-      case WARLOCK: time = 20.0; p -> spell_crit += 140 / ( p -> rating.spell_crit ); break;
+      case MAGE:    duration = 20.0; p -> spell_power[ SCHOOL_ARCANE ] += 200;            break;
+      case PRIEST:  duration = 15.0; p -> haste_rating += 400;  p -> recalculate_haste(); break;
+      case WARLOCK: duration = 20.0; p -> spell_crit += 140 / ( p -> rating.spell_crit ); break;
       }
-      sim -> add_event( this );
+      sim -> add_event( this, duration );
     }
     virtual void execute()
     {
@@ -1026,8 +1005,7 @@ struct violet_eye_t : public spell_t
       name = "Violet Eye Expiration";
       p -> aura_gain( "Violet Eye" );
       p -> buffs.violet_eye = -1;
-      time = 20.0;
-      sim -> add_event( this );
+      sim -> add_event( this, 20.0 );
     }
     virtual void execute()
     {

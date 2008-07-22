@@ -149,10 +149,11 @@ sim_t::sim_t() :
 
 // sim_t::add_event ==========================================================
 
-void sim_t::add_event( event_t* e )
+void sim_t::add_event( event_t* e,
+		       double   delta_time )
 {
-   assert( e -> time >= 0 );
-   e -> time += current_time;
+   assert( delta_time >= 0 );
+   e -> time = current_time + delta_time;
    e -> id   = ++id;
    switch( method )
    {
@@ -171,9 +172,8 @@ void sim_t::add_event( event_t* e )
 void sim_t::reschedule_event( event_t* e )
 {
    report_t::debug( this, "Reschedule Event: %s %d", e -> name, e -> id );
-   e -> time = ( e -> reschedule_time - e -> time );
+   add_event( e, ( e -> reschedule_time - current_time ) );
    e -> reschedule_time = 0;
-   add_event( e );
 }
 
 // sim_t::next_event ========================================================

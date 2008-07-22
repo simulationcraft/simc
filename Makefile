@@ -34,3 +34,8 @@ simcraft build:
 
 debug:
 	g++ -DDEBUG -g -I. -Wall $(SRC) -o simcraft
+
+REV=0
+tarball:
+	tar -cvf simcraft-$(REV).tar $(SRC) Makefile profiles/* 
+	gzip simcraft-$(REV).tar

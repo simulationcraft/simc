@@ -229,7 +229,7 @@ struct sim_t
 
   sim_t();
 
-  void      add_event( event_t* );
+  void      add_event( event_t*, double delta_time );
   void      reschedule_event( event_t* );
   void      flush_events();
   event_t*  next_event();

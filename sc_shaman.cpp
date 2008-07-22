@@ -256,8 +256,7 @@ static void trigger_windfury_weapon( attack_t* a )
     windfury_weapon_expiration_t( sim_t* sim, player_t* player ) : event_t( sim, player )
     {
       name = "Windfury Weapon Expiration";
-      time = 3.0;
-      sim -> add_event( this );
+      sim -> add_event( this, 3.0 );
     }
     virtual void execute()
     {
@@ -315,8 +314,7 @@ static void stack_maelstrom_weapon( attack_t* a )
     {
       name = "Maelstrom Weapon Expiration";
       player -> aura_gain( "Maelstrom Weapon" );
-      time = 15.0;
-      sim -> add_event( this );
+      sim -> add_event( this, 15.0 );
     }
     virtual void execute()
     {
@@ -337,7 +335,7 @@ static void stack_maelstrom_weapon( attack_t* a )
     
   if( e )
   {
-    e -> reschedule( a -> sim -> current_time + 15.0 );
+    e -> reschedule( 15.0 );
   }
   else
   {
@@ -362,8 +360,7 @@ static void trigger_unleashed_rage( attack_t* a )
       name = "Unleashed Rage Expiration";
       player -> aura_gain( "Unleashed Rage" );
       player -> attack_power_multiplier *= 1.0 + player -> buffs.unleashed_rage * 0.02;
-      time = 10;
-      sim -> add_event( this );
+      sim -> add_event( this, 10.0 );
     }
     virtual void execute()
     {
@@ -385,7 +382,7 @@ static void trigger_unleashed_rage( attack_t* a )
 	p -> attack_power_multiplier *= ( 1.0 + talents_ur * 0.02 ) / ( 1.0 + buffs_ur * 0.02 );
 	p -> buffs.unleashed_rage = talents_ur;
       }
-      e -> reschedule( a -> sim -> current_time + 10.0 );
+      e -> reschedule( 10.0 );
     }
     else
     {
@@ -405,8 +402,7 @@ static void trigger_nature_vulnerability( attack_t* a )
     {
       name = "Nature Vulnerability Expiration";
       report_t::log( sim, "%s gains Nature Vulnerability", sim -> target -> name() );
-      time = 12.0;
-      sim -> add_event( this );
+      sim -> add_event( this, 12.0 );
     }
     virtual void execute()
     {
@@ -424,7 +420,7 @@ static void trigger_nature_vulnerability( attack_t* a )
    
   if( e )
   {
-    e -> reschedule( a -> sim -> current_time + 12.0 );
+    e -> reschedule( 12.0 );
   }
   else
   {
@@ -498,8 +494,7 @@ static void trigger_elemental_devastation( spell_t* s )
     {
       name = "Elemental Devastation Expiration";
       p -> buffs_elemental_devastation = 1;
-      time = 10;
-      sim -> add_event( this );
+      sim -> add_event( this, 10.0 );
     }
     virtual void execute()
     {
@@ -513,7 +508,7 @@ static void trigger_elemental_devastation( spell_t* s )
     
   if( e )
   {
-    e -> reschedule( s -> sim -> current_time + 10.0 );
+    e -> reschedule( 10.0 );
   }
   else
   {
@@ -1398,8 +1393,7 @@ struct totem_of_wrath_t : public shaman_spell_t
 	    p -> buffs.totem_of_wrath = 1;
 	  }
 	}
-	time = 120;
-	sim -> add_event( this );
+	sim -> add_event( this, 120.0 );
       }
       virtual void execute()
       {
@@ -1481,8 +1475,7 @@ struct windfury_totem_t : public shaman_spell_t
 	    }
 	  }
 	}
-	time = 120;
-	sim -> add_event( this );
+	sim -> add_event( this, 120.0 );
       }
       virtual void execute()
       {
@@ -1596,8 +1589,7 @@ struct strength_of_earth_totem_t : public shaman_spell_t
 	    p -> attribute[ ATTR_STRENGTH ] += bonus;
 	  }
 	}
-	time = 120;
-	sim -> add_event( this );
+	sim -> add_event( this, 120.0 );
       }
       virtual void execute()
       {
@@ -1670,8 +1662,7 @@ struct grace_of_air_totem_t : public shaman_spell_t
 	    p -> attribute[ ATTR_AGILITY ] += bonus;
 	  }
 	}
-	time = 120;
-	sim -> add_event( this );
+	sim -> add_event( this, 120.0 );
       }
       virtual void execute()
       {
@@ -1746,8 +1737,7 @@ struct wrath_of_air_totem_t : public shaman_spell_t
 	    if( ! AFTER_3_0_0 ) p -> spell_power[ SCHOOL_MAX ] += bonus;
 	  }
 	}
-	time = 120;
-	sim -> add_event( this );
+	sim -> add_event( this, 120.0 );
       }
       virtual void execute()
       {
@@ -1931,8 +1921,7 @@ struct bloodlust_t : public shaman_spell_t
 	    p -> buffs.bloodlust = 1;
 	  }
 	}
-	time = 40;
-	sim -> add_event( this );
+	sim -> add_event( this, 40.0 );
       }
       virtual void execute()
       {
@@ -1997,8 +1986,7 @@ struct shamanistic_rage_t : public shaman_spell_t
 	shaman_t* p = player -> cast_shaman();
 	p -> aura_gain( "Shamanistic Rage" );
 	p -> buffs_shamanistic_rage = 1;
-	time = 15;
-	sim -> add_event( this );
+	sim -> add_event( this, 15.0 );
       }
       virtual void execute()
       {

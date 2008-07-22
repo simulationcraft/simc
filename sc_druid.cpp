@@ -133,8 +133,7 @@ static void trigger_omen_of_clarity( action_t* a )
       cooldown_t( sim_t* sim, player_t* p ) : event_t( sim, p )
       {
 	name = "Omen of Clarity Cooldown";
-	time = 10.0;
-	sim -> add_event( this );
+	sim -> add_event( this, 10.0 );
       }
       virtual void execute()
       {
@@ -167,8 +166,7 @@ static void stack_earth_and_moon( spell_t* s )
     earth_and_moon_expiration_t( sim_t* sim ) : event_t( sim )
     {
       name = "Earth and Moon Expiration";
-      time = 12.0;
-      sim -> add_event( this );
+      sim -> add_event( this, 12.0 );
     }
     virtual void execute()
     {
@@ -192,7 +190,7 @@ static void stack_earth_and_moon( spell_t* s )
     
     if( e )
     {
-      e -> reschedule( s -> sim -> current_time + 12.0 );
+      e -> reschedule( 12.0 );
     }
     else
     {
@@ -210,8 +208,7 @@ static void trigger_eclipse_wrath( spell_t* s )
     cooldown_t( sim_t* sim, player_t* p ) : event_t( sim, p )
     {
       name = "Eclipse Wrath Cooldown";
-      time = 90.0;
-      sim -> add_event( this );
+      sim -> add_event( this, 90.0 );
     }
     virtual void execute()
     {
@@ -227,8 +224,7 @@ static void trigger_eclipse_wrath( spell_t* s )
       name = "Eclipse Wrath Expiration";
       p -> aura_gain( "Eclipse Wrath" );
       p -> buffs_eclipse_wrath = 1;
-      time = 30.0;
-      sim -> add_event( this );
+      sim -> add_event( this, 30.0 );
     }
     virtual void execute()
     {
@@ -258,8 +254,7 @@ static void trigger_eclipse_starfire( spell_t* s )
     cooldown_t( sim_t* sim, player_t* p ) : event_t( sim, p )
     {
       name = "Eclipse Starfire Cooldown";
-      time = 90.0;
-      sim -> add_event( this );
+      sim -> add_event( this, 90.0 );
     }
     virtual void execute()
     {
@@ -275,8 +270,7 @@ static void trigger_eclipse_starfire( spell_t* s )
       name = "Eclipse Starfire Expiration";
       p -> aura_gain( "Eclipse Starfire" );
       p -> buffs_eclipse_starfire = 1;
-      time = 30.0;
-      sim -> add_event( this );
+      sim -> add_event( this, 30.0 );
     }
     virtual void execute()
     {
@@ -308,8 +302,7 @@ static void trigger_ashtongue_talisman( spell_t* s )
       name = "Ashtongue Talisman Expiration";
       player -> aura_gain( "Ashtongue Talisman" );
       player -> spell_power[ SCHOOL_MAX ] += 150;
-      time = 8.0;
-      sim -> add_event( this );
+      sim -> add_event( this, 8.0 );
     }
     virtual void execute()
     {
@@ -329,7 +322,7 @@ static void trigger_ashtongue_talisman( spell_t* s )
 
     if( e )
     {
-      e -> reschedule( s -> sim -> current_time + 8.0 );
+      e -> reschedule( 8.0 );
     }
     else
     {
@@ -402,8 +395,7 @@ struct innervate_t : public druid_spell_t
     {
       expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
       {
-	time = 20;
-	sim -> add_event( this );
+	sim -> add_event( this, 20.0 );
       }
       virtual void execute()
       {

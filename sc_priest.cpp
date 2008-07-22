@@ -235,8 +235,7 @@ static void stack_shadow_weaving( spell_t* s )
     shadow_weaving_expiration_t( sim_t* sim ) : event_t( sim )
     {
       name = "Shadow Weaving Expiration";
-      time = 15.01;
-      sim -> add_event( this );
+      sim -> add_event( this, 15.01 );
     }
     virtual void execute()
     {
@@ -260,7 +259,7 @@ static void stack_shadow_weaving( spell_t* s )
     
     if( e )
     {
-      e -> reschedule( s -> sim -> current_time + 15.0 );
+      e -> reschedule( 15.0 );
     }
     else
     {
@@ -367,8 +366,7 @@ static void trigger_ashtongue_talisman( spell_t* s )
       name = "Ashtongue Talisman Expiration";
       player -> aura_gain( "Ashtongue Talisman" );
       player -> spell_power[ SCHOOL_MAX ] += 220;
-      time = 10.0;
-      sim -> add_event( this );
+      sim -> add_event( this, 10.0 );
     }
     virtual void execute()
     {
@@ -388,7 +386,7 @@ static void trigger_ashtongue_talisman( spell_t* s )
 
     if( e )
     {
-      e -> reschedule( s -> sim -> current_time + 10.0 );
+      e -> reschedule( 10.0 );
     }
     else
     {
@@ -423,8 +421,7 @@ static void trigger_improved_spirit_tap( spell_t* s )
       p -> aura_gain( "improved_spirit_tap" );
       spirit_bonus = p -> attribute[ ATTR_SPIRIT ] / 2;
       p -> attribute[ ATTR_SPIRIT ] += spirit_bonus;
-      time = 8.0;
-      sim -> add_event( this );
+      sim -> add_event( this, 8.0 );
     }
     virtual void execute()
     {
@@ -447,7 +444,7 @@ static void trigger_improved_spirit_tap( spell_t* s )
 
       if( e )
       {
-	e -> reschedule( s -> sim -> current_time + 8.0 );
+	e -> reschedule( 8.0 );
       }
       else
       {
@@ -1226,8 +1223,7 @@ struct power_infusion_t : public priest_spell_t
       p -> buffs.power_infusion = 1;
       p -> haste_rating += 320;
       p -> recalculate_haste();
-      time = 15.0;
-      sim -> add_event( this );
+      sim -> add_event( this, 15.0 );
     }
     virtual void execute()
     {
@@ -1351,9 +1347,9 @@ struct shadow_fiend_spell_t : public priest_spell_t
   {
     shadow_fiend_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
     {
-      time = 15.1;
-      if( p -> gear.tier4_2pc ) time += 3.0;
-      sim -> add_event( this );
+      double duration = 15.1;
+      if( p -> gear.tier4_2pc ) duration += 3.0;
+      sim -> add_event( this, duration );
     }
     virtual void execute()
     {

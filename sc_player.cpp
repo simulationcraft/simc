@@ -16,8 +16,7 @@ static void trigger_moonkin_haste( spell_t* s )
     haste_cooldown_t( sim_t* sim, player_t* p ) : event_t( sim, p )
     {
       name = "Moonkin Haste Cooldown";
-      time = 22.0;
-      sim -> add_event( this );
+      sim -> add_event( this, 22.0 );
     }
     virtual void execute()
     {
@@ -32,8 +31,7 @@ static void trigger_moonkin_haste( spell_t* s )
       name = "Moonkin Haste Expiration";
       player -> aura_gain( "Moonkin Haste" );
       player -> buffs.moonkin_haste = 1;
-      time = 8.0;
-      sim -> add_event( this );
+      sim -> add_event( this, 8.0 );
     }
     virtual void execute()
     {

@@ -20,8 +20,7 @@ struct destruction_potion_t : public spell_t
     expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
     {
       name = "Destruction Potion Expiration";
-      time = 15.0;
-      sim -> add_event( this );
+      sim -> add_event( this, 15.0 );
     }
     virtual void execute()
     {
