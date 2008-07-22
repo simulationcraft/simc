@@ -588,7 +588,7 @@ void player_t::reset()
     {
       a -> reset();
     }
-    new player_ready_event_t( sim, this, 0 );
+    if( type != PLAYER_PET ) schedule_ready();
   }
 }
 

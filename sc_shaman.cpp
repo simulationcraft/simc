@@ -1332,6 +1332,8 @@ struct searing_totem_t : public shaman_spell_t
     consume_resource();
     schedule_tick();
     update_ready();
+    dd = 0;
+    update_stats( DMG_DIRECT );
     player -> action_finish( this );
   }
 

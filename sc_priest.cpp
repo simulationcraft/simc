@@ -49,6 +49,7 @@ struct priest_t : public player_t
     int8_t  mental_strength;
     int8_t  misery;
     int8_t  pain_and_suffering;
+    int8_t  pennance;
     int8_t  power_infusion;
     int8_t  searing_light;
     int8_t  shadow_focus;
@@ -596,6 +597,87 @@ struct smite_t : public priest_spell_t
     priest_spell_t::player_buff();
     priest_t* p = player -> cast_priest();
     may_crit = ! ( p -> buffs_surge_of_light );
+  }
+};
+
+// Pennance Spell ==============================================================
+
+struct pennance_t : public priest_spell_t
+{
+  pennance_t( player_t* player, const std::string& options_str ) : 
+    priest_spell_t( "pennance", player, SCHOOL_HOLY, TREE_HOLY )
+  {
+    priest_t* p = player -> cast_priest();
+    assert( p -> talents.pennance );
+
+    option_t options[] =
+    {
+      { "rank", OPT_INT8, &rank_index },
+      { NULL }
+    };
+    parse_options( options, options_str );
+
+    static rank_t ranks[] =
+    {
+      { 80, 4, 437, 437, 0, 715 },
+      { 76, 3, 355, 355, 0, 592 }, // inferred from Pennance-MindFlay ratio
+      { 68, 2, 325, 325, 0, 426 }, // inferred from Pennance-MindFlay ratio
+      { 60, 1, 263, 263, 0, 379 }, // inferred from Pennance-MindFlay ratio
+      { 0, 0 }
+    };
+    rank = choose_rank( ranks );
+    
+    base_execute_time = 0.0; 
+    base_duration     = 3.0;
+    num_ticks         = 3;
+    channeled         = true;
+    may_crit          = true;
+    cooldown          = 10;
+    dd_power_mod     = (3.0/3.5)/num_ticks;
+      
+    base_multiplier   *= 1.0 + p -> talents.searing_light * 0.05;
+    base_crit         += p -> talents.holy_specialization * 0.01;
+  }
+
+  // Odd things to handle:
+  // (1) Execute is guaranteed.
+  // (2) Each "tick" is like an "execute" and can "crit".
+  // (3) On each tick hit/miss events are triggered.
+
+  virtual void execute() 
+  {
+    report_t::log( sim, "%s performs %s", player -> name(), name() );
+    consume_resource();
+    schedule_tick();
+    update_ready();
+    dd = 0;
+    update_stats( DMG_DIRECT );
+    player -> action_finish( this );
+  }
+
+  virtual void tick() 
+  {
+    report_t::debug( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
+    may_resist = false;
+    calculate_result();
+    may_resist = true;
+    if( result_is_hit() )
+    {
+      calculate_damage();
+      adjust_damage_for_result();
+      player -> action_hit( this );
+      if( dd > 0 )
+      {
+	dot_tick = dd;
+	assess_damage( dot_tick, DMG_OVER_TIME );
+      }
+    }
+    else
+    {
+      report_t::log( sim, "%s avoids %s (%s)", sim -> target -> name(), name(), wow_result_type_string( result ) );
+      player -> action_miss( this );
+    }
+    update_stats( DMG_OVER_TIME );
   }
 };
 
@@ -1404,6 +1486,7 @@ action_t* priest_t::create_action( const std::string& name,
   if( name == "inner_focus"      ) return new inner_focus_t       ( this, options_str );
   if( name == "mind_blast"       ) return new mind_blast_t        ( this, options_str );
   if( name == "mind_flay"        ) return new mind_flay_t         ( this, options_str );
+  if( name == "pennance"         ) return new pennance_t          ( this, options_str );
   if( name == "power_infusion"   ) return new power_infusion_t    ( this, options_str );
   if( name == "shadow_word_death") return new shadow_word_death_t ( this, options_str );
   if( name == "shadow_word_pain" ) return new shadow_word_pain_t  ( this, options_str );
@@ -1580,6 +1663,7 @@ bool priest_t::parse_option( const std::string& name,
     { "mental_strength",           OPT_INT8,  &( talents.mental_strength           ) },
     { "misery",                    OPT_INT8,  &( talents.misery                    ) },
     { "pain_and_suffering",        OPT_INT8,  &( talents.pain_and_suffering        ) },
+    { "pennance",                  OPT_INT8,  &( talents.pennance                  ) },
     { "power_infusion",            OPT_INT8,  &( talents.power_infusion            ) },
     { "searing_light",             OPT_INT8,  &( talents.searing_light             ) },
     { "shadow_focus",              OPT_INT8,  &( talents.shadow_focus              ) },

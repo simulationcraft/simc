@@ -275,11 +275,11 @@ void sim_t::reset()
   flush_events();
   report_t::debug( this, "Reseting Simulator" );
   current_time = id = 0;
+  stats_t::last_execute = 0;
   target -> reset();
   for( player_t* p = player_list; p; p = p -> next )
     p -> reset();
   new regen_event_t( this );
-  stats_t::last_execute = 0;
 }
 
 // sim_t::init ==============================================================
