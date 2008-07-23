@@ -1391,6 +1391,8 @@ struct totem_of_wrath_t : public shaman_spell_t
 	  {
 	    p -> aura_gain( "Totem of Wrath" );
 	    p -> buffs.totem_of_wrath = 1;
+	    p -> spell_hit  += 0.03;
+	    p -> spell_crit += 0.03;
 	  }
 	}
 	sim -> add_event( this, 120.0 );
@@ -1403,6 +1405,8 @@ struct totem_of_wrath_t : public shaman_spell_t
 	  {
 	    p -> aura_loss( "Totem of Wrath" );
 	    p -> buffs.totem_of_wrath = 0;
+	    p -> spell_hit  -= 0.03;
+	    p -> spell_crit -= 0.03;
 	  }
 	}
       }

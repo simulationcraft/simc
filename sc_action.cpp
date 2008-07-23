@@ -31,7 +31,6 @@ action_t::action_t( int8_t      ty,
   cooldown_group(n), duration_group(n), cooldown(0), cooldown_ready(0), duration_ready(0),
   stats(0), rank(0), rank_index(-1), event(0), time_to_execute(0), time_to_tick(0), next(0)
 {
-  if( name_str == "" ) return;
   report_t::debug( sim, "Player %s creates action %s", p -> name(), name() );
   action_t** last = &( p -> action_list );
   while( *last ) last = &( (*last) -> next );
@@ -137,10 +136,12 @@ void action_t::player_buff()
 
   if( school == SCHOOL_PHYSICAL )
   {
-    player_penetration = p -> attack_penetration;
+    player_penetration = p -> composite_attack_penetration();
   }
   else
   {
+    player_penetration = p -> composite_spell_penetration();
+
     if( school == SCHOOL_HOLY )
     {
       if( p -> buffs.sanctity_aura ) player_multiplier *= 1.10 + 0.01 * ( p -> buffs.sanctity_aura - 1 );
@@ -149,7 +150,6 @@ void action_t::player_buff()
     {
       if( player -> buffs.shadow_form ) player_multiplier *= 1.15;
     }
-    player_penetration = p -> spell_penetration;
   }
 
   report_t::debug( sim, "action_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f", 

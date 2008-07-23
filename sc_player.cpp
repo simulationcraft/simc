@@ -501,6 +501,13 @@ double player_t::composite_attack_power()
   return ap;
 }
 
+// player_t::composite_attack_crit =========================================
+
+double player_t::composite_attack_crit()
+{
+  return attack_crit + attack_crit_per_agility * agility();
+}
+
 // player_t::composite_spell_power ========================================
 
 double player_t::composite_spell_power( int8_t school ) 
@@ -513,6 +520,13 @@ double player_t::composite_spell_power( int8_t school )
   sp *= spell_power_multiplier;
 
   return sp;
+}
+
+// player_t::composite_spell_crit ==========================================
+
+double player_t::composite_spell_crit()
+{
+  return spell_crit + spell_crit_per_intellect * intellect();
 }
 
 // player_t::reset =========================================================

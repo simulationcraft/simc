@@ -24,7 +24,7 @@ double spell_t::execute_time()
 {
   player_t* p = player;
 
-  if( p -> buffs.moonkin_aura )
+  if( p -> buffs.improved_moonkin_aura )
   {
     p -> uptimes.moonkin_haste -> update( p -> buffs.moonkin_haste );
   }
@@ -67,20 +67,11 @@ void spell_t::player_buff()
 
   player_t* p = player;
 
-  player_hit          = p -> spell_hit;
-  player_crit         = p -> spell_crit + p -> spell_crit_per_intellect * p -> intellect();
-  player_power        = p -> composite_spell_power( school );
-  player_penetration += p -> spell_penetration;
+  player_hit   = p -> composite_spell_hit();
+  player_crit  = p -> composite_spell_crit();
+  player_power = p -> composite_spell_power( school );
 
-  player_crit += p -> buffs.moonkin_aura; // FIXME! Move to buff event
-
-  if( p -> buffs.totem_of_wrath ) // FIXME! Move to buff event
-  {
-    player_hit  += 0.03;
-    player_crit += 0.03;
-  }
-
-  if( p -> gear.chaotic_skyfire ) player_crit_bonus *= 1.09; // FIXME! Move to init
+  if( p -> gear.chaotic_skyfire ) player_crit_bonus *= 1.09;
 
   report_t::debug( sim, "spell_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f", 
 		   name(), player_hit, player_crit, player_power, player_penetration );

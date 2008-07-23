@@ -556,7 +556,8 @@ struct moonkin_form_t : public druid_spell_t
       if( player -> party == p -> party )
       {
 	p -> aura_gain( "Moonkin Aura" );
-	p -> buffs.moonkin_aura = 0.05;
+	p -> buffs.moonkin_aura = 1;
+	p -> spell_crit += 0.05;
 
 	if( player -> cast_druid() -> talents.improved_moonkin_form )
 	{

@@ -69,16 +69,15 @@ void attack_t::player_buff()
 
   player_t* p = player;
 
-  player_hit        = p -> attack_hit;
-  player_expertise  = p -> attack_expertise;
-  player_crit       = p -> attack_crit + p -> attack_crit_per_agility  * p -> agility();
-  player_crit_bonus = 1.0;
-  player_power      = p -> composite_attack_power();
+  player_hit       = p -> composite_attack_hit();
+  player_expertise = p -> composite_attack_expertise();
+  player_crit      = p -> composite_attack_crit();
+  player_power     = p -> composite_attack_power();
 
   p -> uptimes.unleashed_rage -> update( p -> buffs.unleashed_rage );
 
-  report_t::debug( sim, "attack_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f", 
-		   name(), player_hit, player_crit, player_power, player_penetration );
+  report_t::debug( sim, "attack_t::player_buff: %s hit=%.2f expertise=%.2f crit=%.2f power=%.2f penetration=%.0f", 
+		   name(), player_hit, player_expertise, player_crit, player_power, player_penetration );
 }
 
 // attack_t::target_debuff ==================================================

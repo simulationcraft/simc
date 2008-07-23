@@ -211,15 +211,12 @@ void report_t::print_core_stats( player_t* p )
 
 void report_t::print_spell_stats( player_t* p )
 {
-  spell_t dummy( "", p );
-  dummy.player_buff();
-
   printf( "%s  %s%.0f  %s%.1f%%  %s%.1f%%  %s%.0f  %s%.1f%%  %s%.0f\n", 
 	  report_tag ? "  Spell Stats:" : "", 
-	  report_tag ? "power="       : "", dummy.player_power,
-	  report_tag ? "hit="         : "", dummy.player_hit  * 100.0, 
-	  report_tag ? "crit="        : "", dummy.player_crit * 100.0,
-	  report_tag ? "penetration=" : "", dummy.player_penetration,
+	  report_tag ? "power="       : "", p -> composite_spell_power( SCHOOL_MAX ),
+	  report_tag ? "hit="         : "", p -> composite_spell_hit()  * 100.0, 
+	  report_tag ? "crit="        : "", p -> composite_spell_crit() * 100.0,
+	  report_tag ? "penetration=" : "", p -> composite_spell_penetration(),
 	  report_tag ? "haste="       : "", ( 1.0 - p -> haste ) * 100.0,
 	  report_tag ? "mp5="         : "", p -> initial_mp5 );
 }
@@ -228,16 +225,13 @@ void report_t::print_spell_stats( player_t* p )
 
 void report_t::print_attack_stats( player_t* p )
 {
-  attack_t dummy( "", p );
-  dummy.player_buff();
-
   printf( "%s  %s%.0f  %s%.1f%%  %s%.1f%%  %s%.1f  %s%.0f  %s%.1f%%\n", 
 	  report_tag ? "  Attack Stats:" : "",
-	  report_tag ? "power="       : "", dummy.player_power,
-	  report_tag ? "hit="         : "", dummy.player_hit * 100.0, 
-	  report_tag ? "crit="        : "", dummy.player_crit * 100.0,
-	  report_tag ? "expertise="   : "", dummy.player_expertise,
-	  report_tag ? "penetration=" : "", dummy.player_penetration,
+	  report_tag ? "power="       : "", p -> composite_attack_power(),
+	  report_tag ? "hit="         : "", p -> composite_attack_hit()  * 100.0, 
+	  report_tag ? "crit="        : "", p -> composite_attack_crit() * 100.0, 
+	  report_tag ? "expertise="   : "", p -> composite_attack_expertise(),
+	  report_tag ? "penetration=" : "", p -> composite_attack_penetration(),
 	  report_tag ? "haste="       : "", ( 1.0 - p -> haste ) * 100.0 );
 }
 

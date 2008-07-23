@@ -457,7 +457,7 @@ struct player_t
     int8_t  lightning_capacitor;
     double  mana_cost_reduction;
     int8_t  moonkin_haste;
-    double  moonkin_aura;
+    int8_t  moonkin_aura;
     int8_t  power_infusion;
     int8_t  strength_of_earth;
     int16_t talisman_of_ascendance;
@@ -535,7 +535,15 @@ struct player_t
   virtual void reset();
 
   virtual double composite_attack_power();
+  virtual double composite_attack_crit();
+  virtual double composite_attack_expertise()   { return attack_expertise;   }
+  virtual double composite_attack_hit()         { return attack_hit;         }
+  virtual double composite_attack_penetration() { return attack_penetration; }
+
   virtual double composite_spell_power( int8_t school );
+  virtual double composite_spell_crit();
+  virtual double composite_spell_hit()         { return spell_hit;         }
+  virtual double composite_spell_penetration() { return spell_penetration; }
 
   virtual double    gcd( double trigger_gcd=0 ); 
   virtual void      schedule_ready( double delta_time=0 );
