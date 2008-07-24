@@ -141,7 +141,7 @@ static void trigger_omen_of_clarity( action_t* a )
       }
     };
 
-    if( ! p -> expirations_omen_of_clarity && wow_random( 0.06 ) )
+    if( ! p -> expirations_omen_of_clarity && rand_t::roll( 0.06 ) )
     {
       p -> buffs_omen_of_clarity = 1;
       p -> expirations_omen_of_clarity = new cooldown_t( a -> sim, p );
@@ -176,7 +176,7 @@ static void stack_earth_and_moon( spell_t* s )
     }
   };
 
-  if( wow_random( p -> talents.earth_and_moon * 0.20 ) )
+  if( rand_t::roll( p -> talents.earth_and_moon * 0.20 ) )
   {
     target_t* t = s -> sim -> target;
 
@@ -239,7 +239,7 @@ static void trigger_eclipse_wrath( spell_t* s )
 
   if( p -> talents.eclipse && 
       p -> expirations_eclipse == 0 &&
-      wow_random( p -> talents.eclipse * 0.20 ) )
+      rand_t::roll( p -> talents.eclipse * 0.20 ) )
   {
     p -> expirations_eclipse = new expiration_t( s -> sim, p );
   }
@@ -285,7 +285,7 @@ static void trigger_eclipse_starfire( spell_t* s )
 
   if( p -> talents.eclipse && 
       p -> expirations_eclipse == 0 &&
-      wow_random( p -> talents.eclipse * 0.20 ) )
+      rand_t::roll( p -> talents.eclipse * 0.20 ) )
   {
     p -> expirations_eclipse = new expiration_t( s -> sim, p );
   }
@@ -314,7 +314,7 @@ static void trigger_ashtongue_talisman( spell_t* s )
 
   player_t* p = s -> player;
 
-  if( p -> gear.ashtongue_talisman && wow_random( 0.25 ) )
+  if( p -> gear.ashtongue_talisman && rand_t::roll( 0.25 ) )
   {
     p -> proc( "ashtongue_talisman" );
 
@@ -874,7 +874,7 @@ void druid_t::spell_finish_event( spell_t* s )
 
   if( AFTER_3_0_0 ) trigger_omen_of_clarity( s );
 
-  if( gear.tier4_2pc && wow_random( 0.05 ) )
+  if( gear.tier4_2pc && rand_t::roll( 0.05 ) )
   {
     resource_gain( RESOURCE_MANA, 120.0, "tier4_2pc" );
   }

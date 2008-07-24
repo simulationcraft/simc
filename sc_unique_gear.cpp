@@ -48,7 +48,7 @@ static void trigger_mystical_skyfire( spell_t* s )
 
   if(   p -> gear.mystical_skyfire        &&
       ! p -> expirations.mystical_skyfire &&
-	wow_random( 0.15 )                )
+	rand_t::roll( 0.15 )                )
   {
     p -> proc( "mystical_skyfire" );
     p -> expirations.mystical_skyfire = new mystical_skyfire_expiration_t( s -> sim, p );
@@ -80,7 +80,7 @@ static void trigger_spellstrike( spell_t* s )
 
   player_t* p = s -> player;
 
-  if( p -> gear.spellstrike && wow_random( 0.05 ) )
+  if( p -> gear.spellstrike && rand_t::roll( 0.05 ) )
   {
     p -> proc( "spellstrike" );
 
@@ -122,7 +122,7 @@ static void trigger_wrath_of_cenarius( spell_t* s )
 
   player_t* p = s -> player;
 
-  if( p -> gear.wrath_of_cenarius && wow_random( 0.05 ) )
+  if( p -> gear.wrath_of_cenarius && rand_t::roll( 0.05 ) )
   {
     p -> proc( "wrath_of_cenarius" );
 
@@ -177,7 +177,7 @@ static void trigger_elder_scribes( spell_t* s )
 
   if(    p -> gear.elder_scribes        && 
        ! p -> expirations.elder_scribes &&
-	 wow_random( 0.05 ) )
+	 rand_t::roll( 0.05 ) )
   {
     p -> proc( "elder_scribes" );
     p -> expirations.elder_scribes = new elder_scribes_expiration_t( s -> sim, p );
@@ -222,7 +222,7 @@ static void trigger_eternal_sage( spell_t* s )
 
   if(    p -> gear.eternal_sage        && 
        ! p -> expirations.eternal_sage &&
-	 wow_random( 0.10 ) )
+	 rand_t::roll( 0.10 ) )
   {
     p -> proc( "eternal_sage" );
     p -> expirations.eternal_sage = new eternal_sage_expiration_t( s -> sim, p );
@@ -307,7 +307,7 @@ static void trigger_shiffars_nexus_horn( spell_t* s )
 
   if(   p ->        gear.shiffars_nexus_horn && 
       ! p -> expirations.shiffars_nexus_horn &&
-        wow_random( 0.20 ) )
+        rand_t::roll( 0.20 ) )
   {
     p -> proc( "shiffars_nexus_horn" );
     p -> expirations.shiffars_nexus_horn = new shiffars_nexus_horn_expiration_t( s -> sim, p );
@@ -352,7 +352,7 @@ static void trigger_sextant_of_unstable_currents( spell_t* s )
 
   if(   p ->        gear.sextant_of_unstable_currents && 
       ! p -> expirations.sextant_of_unstable_currents &&
-        wow_random( 0.20 ) )
+        rand_t::roll( 0.20 ) )
   {
     p -> proc( "sextant_of_unstable_currents" );
     p -> expirations.sextant_of_unstable_currents = new sextant_of_unstable_currents_expiration_t( s -> sim, p );
@@ -401,7 +401,7 @@ static void trigger_quagmirrans_eye( spell_t* s )
 
   if(   p ->        gear.quagmirrans_eye && 
       ! p -> expirations.quagmirrans_eye && 
-      wow_random( 0.10 ) )
+      rand_t::roll( 0.10 ) )
   {
     p -> proc( "quagmirrans_eye" );
     p -> expirations.quagmirrans_eye = new quagmirrans_eye_expiration_t( s -> sim, p );
@@ -602,7 +602,7 @@ static void trigger_timbals_crystal( spell_t* s )
       timbals_discharge = new timbals_discharge_t( p );
     }
 
-    if( timbals_discharge -> ready() &&	wow_random( 0.10 ) )
+    if( timbals_discharge -> ready() &&	rand_t::roll( 0.10 ) )
     {
       p -> proc( "timbals_disharge" );
       timbals_discharge -> execute();
@@ -669,7 +669,7 @@ static void trigger_mark_of_defiance( spell_t* s )
 
   if(   p ->        gear.mark_of_defiance && 
       ! p -> expirations.mark_of_defiance && 
-      wow_random( 0.15 ) )
+      rand_t::roll( 0.15 ) )
   {
     {
       p -> proc( "mark_of_defiance" );
@@ -777,7 +777,7 @@ struct spell_power_trinket_t : public spell_t
   spell_power_trinket_t( player_t* p, const std::string& options_str ) : 
     spell_t( "spell_power_trinket", p )
   {
-    if( 3 != wow_string_split( options_str, "-", "i16 f f", &spell_power, &length, &cooldown ) )
+    if( 3 != util_t::string_split( options_str, "-", "i16 f f", &spell_power, &length, &cooldown ) )
     {
       printf( "Expected format: spell_power_trinket-spell_power-length-cooldown\n" );
       assert(0);
@@ -826,7 +826,7 @@ struct haste_trinket_t : public spell_t
   haste_trinket_t( player_t* p, const std::string& options_str ) : 
     spell_t( "haste_trinket", p )
   {
-    if( 3 != wow_string_split( options_str, "-", "i16 f f", &haste_rating, &length, &cooldown ) )
+    if( 3 != util_t::string_split( options_str, "-", "i16 f f", &haste_rating, &length, &cooldown ) )
     {
       printf( "Expected format: haste_trinket-haste_rating-length-cooldown\n" );
       assert(0);

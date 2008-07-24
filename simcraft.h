@@ -1075,24 +1075,32 @@ struct option_t
   static bool parse( int argc, char** argv, sim_t* );
 };
 
+// Random Number Generation ==================================================
+
+struct rand_t
+{
+  static void     init( uint32_t seed );
+  static uint32_t gen_uint32();
+  static double   gen_float();
+  static int8_t   roll( double chance );
+};
+
 // Utilities =================================================================
 
-void    wow_random_init( int32_t seed );
-int8_t  wow_random( double chance );
-double  wow_random();
-char*   wow_dup( const char* );
+struct util_t
+{
+  static char* dup( const char* );
 
-const char*   wow_player_type_string        ( int8_t type );
-const char*   wow_dmg_type_string           ( int8_t type );
-const char*   wow_result_type_string        ( int8_t type );
-const char*   wow_resource_type_string      ( int8_t type );
-const char*   wow_school_type_string        ( int8_t type );
-const char*   wow_talent_tree_string        ( int8_t tree );
-const char*   wow_weapon_type_string        ( int8_t type );
-const char*   wow_weapon_enchant_type_string( int8_t type );
-const char*   wow_weapon_buff_type_string   ( int8_t type );
+  static const char* player_type_string        ( int8_t type );
+  static const char* dmg_type_string           ( int8_t type );
+  static const char* result_type_string        ( int8_t type );
+  static const char* resource_type_string      ( int8_t type );
+  static const char* school_type_string        ( int8_t type );
+  static const char* talent_tree_string        ( int8_t tree );
+  static const char* weapon_type_string        ( int8_t type );
+  static const char* weapon_enchant_type_string( int8_t type );
+  static const char* weapon_buff_type_string   ( int8_t type );
 
-int wow_string_split( std::vector<std::string>& results, const std::string& str, const char* delim );
-int wow_string_split( const std::string& str, const char* delim, const char* format, ... );
-
-
+  static int string_split( std::vector<std::string>& results, const std::string& str, const char* delim );
+  static int string_split( const std::string& str, const char* delim, const char* format, ... );
+};

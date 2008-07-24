@@ -85,7 +85,7 @@ bool option_t::parse( option_t* options,
       switch( o.type )
       {
       case OPT_STRING: *( (std::string*) o.address ) = value;                             break;
-      case OPT_CHAR_P: *( (char**)       o.address ) = wow_dup( value.c_str() );          break;
+      case OPT_CHAR_P: *( (char**)       o.address ) = util_t::dup( value.c_str() );      break;
       case OPT_INT8:   *( (int8_t*)      o.address ) = atoi( value.c_str() );             break;
       case OPT_INT16:  *( (int16_t*)     o.address ) = atoi( value.c_str() );             break;
       case OPT_INT32:  *( (int32_t*)     o.address ) = atoi( value.c_str() );             break;

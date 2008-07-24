@@ -296,7 +296,7 @@ void player_t::init_weapon( weapon_t*    w,
   if( encoding.empty() ) return;
 
   std::vector<std::string> splits;
-  int size = wow_string_split( splits, encoding, "," );
+  int size = util_t::string_split( splits, encoding, "," );
 
   for( int i=0; i < size; i++ )
   {
@@ -305,7 +305,7 @@ void player_t::init_weapon( weapon_t*    w,
 
     for( t=0; t < WEAPON_MAX; t++ )
     {
-      const char* name = wow_weapon_type_string( t );
+      const char* name = util_t::weapon_type_string( t );
       if( s == name ) break;
     }
 
@@ -318,7 +318,7 @@ void player_t::init_weapon( weapon_t*    w,
       std::string parm, value;
       bool invalid = false;
 
-      if( 2 != wow_string_split( s, "_", "S S", &parm, &value ) )
+      if( 2 != util_t::string_split( s, "_", "S S", &parm, &value ) )
       {
 	invalid = true;
       }
@@ -337,7 +337,7 @@ void player_t::init_weapon( weapon_t*    w,
 	for( int j=0; j <= SCHOOL_MAX; j++ )
 	{
 	  if( j == SCHOOL_MAX ) invalid = true;
-	  if( value == wow_school_type_string( j ) )
+	  if( value == util_t::school_type_string( j ) )
 	  {
 	    w -> school = j;
 	    break;
@@ -349,7 +349,7 @@ void player_t::init_weapon( weapon_t*    w,
 	for( int j=0; j <= WEAPON_ENCHANT_MAX; j++ )
 	{
 	  if( j == WEAPON_ENCHANT_MAX ) invalid = true;
-	  if( value == wow_weapon_enchant_type_string( j ) )
+	  if( value == util_t::weapon_enchant_type_string( j ) )
 	  {
 	    w -> enchant = j;
 	    break;
@@ -361,7 +361,7 @@ void player_t::init_weapon( weapon_t*    w,
 	for( int j=0; j <= WEAPON_BUFF_MAX; j++ )
 	{
 	  if( j == WEAPON_BUFF_MAX ) invalid = true;
-	  if( value == wow_weapon_buff_type_string( j ) )
+	  if( value == util_t::weapon_buff_type_string( j ) )
 	  {
 	    w -> buff = j;
 	    break;
@@ -421,17 +421,17 @@ void player_t::init_actions()
     if( ! action_list_prefix.empty() )
     {
       report_t::debug( sim, "Player %s: action_list_prefix=%s", name(), action_list_prefix.c_str() );   
-      size = wow_string_split( splits, action_list_prefix, "/" );
+      size = util_t::string_split( splits, action_list_prefix, "/" );
     }
     if( ! action_list_str.empty() )
     {
       report_t::debug( sim, "Player %s: action_list_str=%s", name(), action_list_str.c_str() );   
-      size = wow_string_split( splits, action_list_str, "/" );
+      size = util_t::string_split( splits, action_list_str, "/" );
     }
     if( ! action_list_postfix.empty() )
     {
       report_t::debug( sim, "Player %s: action_list_postfix=%s", name(), action_list_postfix.c_str() );   
-      size = wow_string_split( splits, action_list_postfix, "/" );
+      size = util_t::string_split( splits, action_list_postfix, "/" );
     }
 
     for( int i=0; i < size; i++ )
@@ -449,7 +449,7 @@ void player_t::init_actions()
 
       if( ! action_t::create_action( this, action_name, action_options ) )
       {
-	printf( "wow_player: Unknown action: %s\n", splits[ i ].c_str() );
+	printf( "util_t::player: Unknown action: %s\n", splits[ i ].c_str() );
 	assert( false );
       }
     }
@@ -459,7 +459,7 @@ void player_t::init_actions()
   {
     report_t::debug( sim, "Player %s: action_list_skip=%s", name(), action_list_skip.c_str() );   
     std::vector<std::string> splits;
-    int size = wow_string_split( splits, action_list_skip, "/" );
+    int size = util_t::string_split( splits, action_list_skip, "/" );
     for( int i=0; i < size; i++ )
     {
       action_t* action = find_action( splits[ i ] );
@@ -670,7 +670,7 @@ void player_t::resource_loss( int8_t      resource,
     last_cast = sim -> current_time;
   }
 
-  report_t::debug( sim, "Player %s spends %.0f %s", name(), amount, wow_resource_type_string( resource ) );
+  report_t::debug( sim, "Player %s spends %.0f %s", name(), amount, util_t::resource_type_string( resource ) );
 }
 
 // player_t::resource_gain =================================================
@@ -689,7 +689,7 @@ void player_t::resource_gain( int8_t       resource,
     if( source && sim -> report -> report_gains ) gain( source, amount );
 
     report_t::log( sim, "%s gains %.0f %s from %s", 
-		   name(), amount, wow_resource_type_string( resource ), source ? source : "unknown" );
+		   name(), amount, util_t::resource_type_string( resource ), source ? source : "unknown" );
   }
 }
 
@@ -903,7 +903,7 @@ void player_t::spell_hit_event( spell_t* spell )
 {
   if( sim -> target -> debuffs.judgement_of_wisdom )
   {
-    if( resource_max[ RESOURCE_MANA ] > 0 && wow_random( 0.50 ) ) 
+    if( resource_max[ RESOURCE_MANA ] > 0 && rand_t::roll( 0.50 ) ) 
     {
       resource_gain( RESOURCE_MANA, 74, "jow" );
     }
@@ -953,7 +953,7 @@ void player_t::attack_hit_event( attack_t* attack )
 {
   if( sim -> target -> debuffs.judgement_of_wisdom )
   {
-    if( resource_max[ RESOURCE_MANA ] > 0 && wow_random( 0.50 ) ) 
+    if( resource_max[ RESOURCE_MANA ] > 0 && rand_t::roll( 0.50 ) ) 
     {
       resource_gain( RESOURCE_MANA, 74, "jow" );
     }

@@ -41,7 +41,7 @@ static void trigger_spellsurge( spell_t* s )
 
   if( s -> player -> gear.spellsurge && 
       s -> player -> expirations.spellsurge <= s -> sim -> current_time &&
-      wow_random( 0.15 ) )
+      rand_t::roll( 0.15 ) )
   {
     for( player_t* p = s -> sim -> player_list; p; p = p -> next )
     {

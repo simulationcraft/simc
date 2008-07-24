@@ -5,7 +5,9 @@
 #
 # WARNING!  WARNING!  WARNING!
 
-OPTS = -mtune=pentium-m -malign-double -msse -msse2 -mfpmath=sse -maccumulate-outgoing-args -O3
+OPTS = -mtune=pentium-m -malign-double -msse -msse2 -mfpmath=sse -maccumulate-outgoing-args -O3 
+
+SFMT = -I./sfmt -DUSE_SFMT -DHAVE_SSE2
 
 SRC =\
 	sc_action.cpp		\
@@ -18,6 +20,7 @@ SRC =\
 	sc_pet.cpp		\
 	sc_player.cpp		\
 	sc_priest.cpp		\
+	sc_rand.cpp		\
 	sc_rating.cpp		\
 	sc_report.cpp		\
 	sc_shaman.cpp		\
@@ -30,7 +33,7 @@ SRC =\
 	sc_weapon.cpp
 
 simcraft build:
-	g++ -I. $(OPTS) -Wall $(SRC) -o simcraft
+	g++ -I. $(OPTS) $(SFMT) -Wall $(SRC) -o simcraft
 
 debug:
 	g++ -DDEBUG -g -I. -Wall $(SRC) -o simcraft

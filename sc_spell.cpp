@@ -137,7 +137,7 @@ void spell_t::calculate_result()
 
     miss_chance -= base_hit + player_hit + target_hit;
 
-    if( wow_random( std::max( miss_chance, (double) 0.01 ) ) )
+    if( rand_t::roll( std::max( miss_chance, (double) 0.01 ) ) )
     {
       result = RESULT_MISS;
       return;
@@ -148,7 +148,7 @@ void spell_t::calculate_result()
   {
     if( binary || num_ticks )
     {
-      if( wow_random( resistance() ) )
+      if( rand_t::roll( resistance() ) )
       {
 	result = RESULT_RESIST;
 	return;
@@ -162,7 +162,7 @@ void spell_t::calculate_result()
   {
     double crit_chance = base_crit + player_crit + target_crit;
 
-    if( wow_random( crit_chance ) )
+    if( rand_t::roll( crit_chance ) )
     {
       result = RESULT_CRIT;
     }

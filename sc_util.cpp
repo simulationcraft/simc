@@ -5,31 +5,12 @@
 
 #include <simcraft.h>
 
-static const double TIME_UNIT  = 0.1;
-
-void wow_random_init( int32_t seed )
-{
-  srand( seed );
-}
-
-double wow_random()
-{
-   static int32_t RANDOM_GRANULARITY = 10000;
-
-   return ( rand() % RANDOM_GRANULARITY ) / (double) RANDOM_GRANULARITY;
-}
-
-int8_t wow_random( double chance )
-{
-  return wow_random() <= chance ? 1 : 0;
-}
-
-char* wow_dup( const char *value )
+char* util_t::dup( const char *value )
 {
    return strcpy( (char*) malloc( strlen( value ) + 1 ), value );
 }
 
-const char* wow_player_type_string( int8_t type )
+const char* util_t::player_type_string( int8_t type )
 {
   switch( type )
   {
@@ -43,7 +24,7 @@ const char* wow_player_type_string( int8_t type )
   return "unknown";
 }
 
-const char* wow_dmg_type_string( int8_t type )
+const char* util_t::dmg_type_string( int8_t type )
 {
   switch( type )
   {
@@ -53,7 +34,7 @@ const char* wow_dmg_type_string( int8_t type )
   return "unknown";
 }
 
-const char* wow_result_type_string( int8_t type )
+const char* util_t::result_type_string( int8_t type )
 {
   switch( type )
   {
@@ -71,7 +52,7 @@ const char* wow_result_type_string( int8_t type )
   return "unknown";
 }
 
-const char* wow_resource_type_string( int8_t type )
+const char* util_t::resource_type_string( int8_t type )
 {
   switch( type )
   {
@@ -86,7 +67,7 @@ const char* wow_resource_type_string( int8_t type )
   return "unknown";
 }
 
-const char* wow_school_type_string( int8_t school )
+const char* util_t::school_type_string( int8_t school )
 {
   switch( school )
   {
@@ -101,7 +82,7 @@ const char* wow_school_type_string( int8_t school )
   return "unknown";
 }
 
-const char* wow_talent_tree_string( int8_t tree )
+const char* util_t::talent_tree_string( int8_t tree )
 {
   switch( tree )
   {
@@ -123,7 +104,7 @@ const char* wow_talent_tree_string( int8_t tree )
   return "unknown";
 }
 
-const char* wow_weapon_type_string( int8_t weapon )
+const char* util_t::weapon_type_string( int8_t weapon )
 {
   switch( weapon )
   {
@@ -148,7 +129,7 @@ const char* wow_weapon_type_string( int8_t weapon )
   return "unknown";
 }
 
-const char* wow_weapon_enchant_type_string( int8_t enchant )
+const char* util_t::weapon_enchant_type_string( int8_t enchant )
 {
   switch( enchant )
   {
@@ -160,7 +141,7 @@ const char* wow_weapon_enchant_type_string( int8_t enchant )
   return "unknown";
 }
 
-const char* wow_weapon_buff_type_string( int8_t buff )
+const char* util_t::weapon_buff_type_string( int8_t buff )
 {
   switch( buff )
   {
@@ -175,9 +156,9 @@ const char* wow_weapon_buff_type_string( int8_t buff )
   return "unknown";
 }
 
-int wow_string_split( std::vector<std::string>& results, 
-		      const std::string&        str,
-		      const char*               delim )
+int util_t::string_split( std::vector<std::string>& results, 
+			  const std::string&        str,
+			  const char*               delim )
 {
   std::string buffer = str;
   std::string::size_type cut_pt;
@@ -198,15 +179,15 @@ int wow_string_split( std::vector<std::string>& results,
   return results.size();
 }
 
-int wow_string_split( const std::string& str,
-		      const char*        delim, 
-		      const char*        format, ... )
+int util_t::string_split( const std::string& str,
+			  const char*        delim, 
+			  const char*        format, ... )
 {
   std::vector<std::string>    str_splits;
   std::vector<std::string> format_splits;
 
-  int    str_size = wow_string_split(    str_splits, str,    delim );
-  int format_size = wow_string_split( format_splits, format, " "   );
+  int    str_size = util_t::string_split(    str_splits, str,    delim );
+  int format_size = util_t::string_split( format_splits, format, " "   );
 
   if( str_size == format_size )
   {

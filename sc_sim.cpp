@@ -13,13 +13,13 @@
 #include <signal.h>
 #endif
 
-struct wow_sim_signal_handler_t
+struct sim_signal_handler_t
 {
   static int seed;
   static int iteration;
   static void callback_func( int signal )
   {
-    fprintf( stderr, "wow_sim_signal_handler:  Seed=%d  Iteration=%d\n", seed, iteration );
+    fprintf( stderr, "sim_signal_handler:  Seed=%d  Iteration=%d\n", seed, iteration );
     fflush( stderr );
     exit(0);
   }
@@ -36,8 +36,8 @@ struct wow_sim_signal_handler_t
   }
 };
 
-int wow_sim_signal_handler_t::seed = 0;
-int wow_sim_signal_handler_t::iteration = 0;
+int sim_signal_handler_t::seed = 0;
+int sim_signal_handler_t::iteration = 0;
 
 // ==========================================================================
 // Timing Wheel
@@ -291,9 +291,9 @@ bool sim_t::init()
   total_seconds = 0;
 
   if( seed == 0 ) seed = time( NULL );
-  wow_random_init( seed );
+  rand_t::init( seed );
 
-  wow_sim_signal_handler_t::init( this );
+  sim_signal_handler_t::init( this );
 
   if( ! method_str.empty() )
   {
@@ -306,9 +306,9 @@ bool sim_t::init()
   if( ! patch_str.empty() )
   {
     int8_t arch, version, revision;
-    if( 3 != wow_string_split( patch_str, ".", "i8 i8 i8", &arch, &version, &revision ) )
+    if( 3 != util_t::string_split( patch_str, ".", "i8 i8 i8", &arch, &version, &revision ) )
     {
-      printf( "wow_sim: Expected format: -patch=#.#.#\n" );
+      printf( "util_t::sim: Expected format: -patch=#.#.#\n" );
       return false;
     }
     patch.set( arch, version, revision );
@@ -410,7 +410,7 @@ void sim_t::print_options()
 
   for( player_t* p = player_list; p; p = p -> next )
   {
-    printf( "\nPlayer: %s (%s)\n", p -> name(), wow_player_type_string( p -> type ) );
+    printf( "\nPlayer: %s (%s)\n", p -> name(), util_t::player_type_string( p -> type ) );
     p -> parse_option( std::string(), std::string() );
   }
 
@@ -442,7 +442,7 @@ int main( int argc, char **argv )
 
    for( int i=0; i < sim.iterations; i++ )
    {
-     wow_sim_signal_handler_t::iteration = i;
+     sim_signal_handler_t::iteration = i;
      sim.reset();
      sim.execute();
    }

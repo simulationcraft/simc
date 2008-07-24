@@ -216,7 +216,7 @@ void attack_t::calculate_result()
       
   build_table( chances, results );
 
-  double random = wow_random();
+  double random = rand_t::gen_float();
   int num_results = results.size();
 
   for( int i=0; i < num_results; i++ )
@@ -231,7 +231,7 @@ void attack_t::calculate_result()
 
   if( binary && result_is_hit() )
   {
-    if( wow_random( resistance() ) )
+    if( rand_t::roll( resistance() ) )
     {
       result = RESULT_RESIST;
     }

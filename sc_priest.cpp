@@ -144,7 +144,7 @@ struct shadow_fiend_pet_t : public pet_t
       attack_t::execute();
       if( result_is_hit() &&
 	  weapon -> buff == WINDFURY_TOTEM &&
-	  wow_random( 0.20 ) )
+	  rand_t::roll( 0.20 ) )
       {
 	player -> attack_power += player -> buffs.windfury_totem;
 	player -> proc( "windfury" );
@@ -245,7 +245,7 @@ static void stack_shadow_weaving( spell_t* s )
     }
   };
 
-  if( wow_random( p -> talents.shadow_weaving * 0.20 ) )
+  if( rand_t::roll( p -> talents.shadow_weaving * 0.20 ) )
   {
     target_t* t = s -> sim -> target;
 
@@ -304,7 +304,7 @@ static void push_tier5_2pc( spell_t*s )
 
   assert( p -> buffs.tier5_2pc == 0 );
 
-  if( p -> gear.tier5_2pc && wow_random( 0.06 ) )
+  if( p -> gear.tier5_2pc && rand_t::roll( 0.06 ) )
   {
     p -> buffs.tier5_2pc = 1;
     p -> buffs.mana_cost_reduction += 150;
@@ -334,7 +334,7 @@ static void push_tier5_4pc( spell_t*s )
 
   if(   p ->  gear.tier5_4pc && 
       ! p -> buffs.tier5_4pc &&
-	wow_random( 0.40 ) )
+	rand_t::roll( 0.40 ) )
   {
     p -> buffs.tier5_4pc = 1;
     p -> spell_power[ SCHOOL_MAX ] += 100;
@@ -378,7 +378,7 @@ static void trigger_ashtongue_talisman( spell_t* s )
 
   player_t* p = s -> player;
 
-  if( p -> gear.ashtongue_talisman && wow_random( 0.10 ) )
+  if( p -> gear.ashtongue_talisman && rand_t::roll( 0.10 ) )
   {
     p -> proc( "ashtongue_talisman" );
 
@@ -438,7 +438,7 @@ static void trigger_improved_spirit_tap( spell_t* s )
   if( s -> result == RESULT_CRIT && 
       p -> talents.improved_spirit_tap )
   {
-    if( wow_random( p -> talents.improved_spirit_tap * 0.50 ) )
+    if( rand_t::roll( p -> talents.improved_spirit_tap * 0.50 ) )
     {
       event_t*& e = p -> expirations_improved_spirit_tap;
 
@@ -671,7 +671,7 @@ struct pennance_t : public priest_spell_t
     }
     else
     {
-      report_t::log( sim, "%s avoids %s (%s)", sim -> target -> name(), name(), wow_result_type_string( result ) );
+      report_t::log( sim, "%s avoids %s (%s)", sim -> target -> name(), name(), util_t::result_type_string( result ) );
       player -> action_miss( this );
     }
     update_stats( DMG_OVER_TIME );
@@ -1095,7 +1095,7 @@ struct mind_flay_t : public priest_spell_t
     {
       priest_t* p = player -> cast_priest();
       spell_t*  swp = p -> active_shadow_word_pain;
-      if( swp && wow_random( p -> talents.pain_and_suffering * 0.333333 ) )
+      if( swp && rand_t::roll( p -> talents.pain_and_suffering * 0.333333 ) )
       {
 	swp -> current_tick = 0;
 	swp -> time_remaining = swp -> duration();

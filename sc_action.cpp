@@ -65,22 +65,22 @@ void action_t::parse_options( option_t*          options,
 
   std::vector<std::string> splits;
 
-  int size = wow_string_split( splits, options_str, "-" );
+  int size = util_t::string_split( splits, options_str, "-" );
 
   for( int i=0; i < size; i++ )
   {
     static std::string n;
     static std::string v;
 
-    if( 2 != wow_string_split( splits[ i ], "_", "S S", &n, &v ) )
+    if( 2 != util_t::string_split( splits[ i ], "_", "S S", &n, &v ) )
     {
-      printf( "wow_action: %s: Unexpected parameter '%s'.  Expected format: name=value\n", name(), splits[ i ].c_str() );
+      printf( "util_t::action: %s: Unexpected parameter '%s'.  Expected format: name=value\n", name(), splits[ i ].c_str() );
       assert( false );
     }
     
     if( ! option_t::parse( options, n, v ) )
     {
-      printf( "wow_spell: %s: Unexpected parameter '%s'.\n", name(), n.c_str() );
+      printf( "util_t::spell: %s: Unexpected parameter '%s'.\n", name(), n.c_str() );
       assert( false );
     }
   }
@@ -235,7 +235,7 @@ void action_t::target_debuff( int8_t dmg_type )
 
 bool action_t::result_is_hit()
 {
-  report_t::debug( sim, "%s result for %s is %s", player -> name(), name(), wow_result_type_string( result ) );
+  report_t::debug( sim, "%s result for %s is %s", player -> name(), name(), util_t::result_type_string( result ) );
 
   return( result == RESULT_HIT    || 
 	  result == RESULT_CRIT   || 
@@ -259,7 +259,7 @@ void action_t::get_base_damage()
   else
   {
     double delta = rank -> dd_max - rank -> dd_min;
-    base_dd = rank -> dd_min + delta * wow_random();
+    base_dd = rank -> dd_min + delta * rand_t::gen_float();
   }
 
   if( base_dot  == 0 ) base_dot  = rank -> dot;
@@ -372,7 +372,7 @@ void action_t::consume_resource()
 {
   double c = cost();
 
-  report_t::debug( sim, "%s consumes %.1f %s for %s", player -> name(), c, wow_resource_type_string( resource ), name() );
+  report_t::debug( sim, "%s consumes %.1f %s for %s", player -> name(), c, util_t::resource_type_string( resource ), name() );
 
   player -> resource_loss( resource, c );
 }
@@ -407,7 +407,7 @@ void action_t::execute()
   }
   else
   {
-    report_t::log( sim, "%s avoids %s (%s)", sim -> target -> name(), name(), wow_result_type_string( result ) );
+    report_t::log( sim, "%s avoids %s (%s)", sim -> target -> name(), name(), util_t::result_type_string( result ) );
 
     player -> action_miss( this );
   }
@@ -458,10 +458,10 @@ void action_t::assess_damage( double amount,
 {
    report_t::log( sim, "%s %s %ss %s for %.0f %s damage (%s)",
 		  player -> name(), name(), 
-		  wow_dmg_type_string( dmg_type ),
+		  util_t::dmg_type_string( dmg_type ),
 		  sim -> target -> name(), amount, 
-		  wow_school_type_string( school ),
-		  wow_result_type_string( result ) );
+		  util_t::school_type_string( school ),
+		  util_t::result_type_string( result ) );
 
    sim -> target -> assess_damage( amount, school, dmg_type );
 

@@ -233,7 +233,7 @@ static void trigger_windfury_totem( attack_t* a )
 
   if( a -> weapon &&
       a -> weapon -> buff == WINDFURY_TOTEM &&
-      wow_random( 0.20 ) )
+      rand_t::roll( 0.20 ) )
   {
     shaman_t* p = a -> player -> cast_shaman();
 
@@ -287,7 +287,7 @@ static void trigger_windfury_weapon( attack_t* a )
   if(   a -> weapon                            &&
         a -> weapon -> buff == WINDFURY_WEAPON &&
       ! p -> expirations_windfury_weapon       &&
-        wow_random( 0.20 )                     )
+        rand_t::roll( 0.20 )                     )
   {
     if( ! p -> windfury_weapon_attack )
     {
@@ -436,7 +436,7 @@ static void trigger_tier5_4pc( spell_t* s )
 
   shaman_t* p = s -> player -> cast_shaman();
 
-  if( p -> gear.tier5_4pc && wow_random( 0.25 ) )
+  if( p -> gear.tier5_4pc && rand_t::roll( 0.25 ) )
   {
     p -> resource_gain( RESOURCE_MANA, 120.0, "tier5_4pc" );
   }
@@ -448,7 +448,7 @@ static void trigger_ashtongue_talisman( spell_t* s )
 {
   shaman_t* p = s -> player -> cast_shaman();
 
-  if( p -> gear.ashtongue_talisman && wow_random( 0.15 ) )
+  if( p -> gear.ashtongue_talisman && rand_t::roll( 0.15 ) )
   {
     p -> resource_gain( RESOURCE_MANA, 110.0, "ashtongue" );
   }
@@ -462,7 +462,7 @@ static void trigger_lightning_overload( spell_t* s )
 
   if( p -> talents.lightning_overload == 0 ) return;
 
-  if( wow_random( p -> talents.lightning_overload * 0.04 ) )
+  if( rand_t::roll( p -> talents.lightning_overload * 0.04 ) )
   {
     p -> proc( "lightning_overload" );
 
@@ -1350,7 +1350,7 @@ struct searing_totem_t : public shaman_spell_t
     }
     else
     {
-      report_t::log( sim, "%s avoids %s (%s)", sim -> target -> name(), name(), wow_result_type_string( result ) );
+      report_t::log( sim, "%s avoids %s (%s)", sim -> target -> name(), name(), util_t::result_type_string( result ) );
     }
     update_stats( DMG_OVER_TIME );
   }
@@ -2116,7 +2116,7 @@ void shaman_t::attack_damage_event( attack_t* a,
 
   if( buffs_lightning_charges > 0 )
   {
-    if( wow_random( talents.static_shock * 0.02 ) )
+    if( rand_t::roll( talents.static_shock * 0.02 ) )
     {
       buffs_lightning_charges--;
       active_lightning_charge -> execute();
@@ -2146,7 +2146,7 @@ void shaman_t::spell_hit_event( spell_t* s )
 
     if( gear.tier4_4pc )
     {
-      buffs.tier4_4pc = wow_random( 0.11 ) ;
+      buffs.tier4_4pc = rand_t::roll( 0.11 ) ;
     }
   }
 }
@@ -2161,7 +2161,7 @@ void shaman_t::spell_damage_event( spell_t* s,
 
   if( buffs_lightning_charges > 0 )
   {
-    if( wow_random( talents.static_shock * 0.02 ) )
+    if( rand_t::roll( talents.static_shock * 0.02 ) )
     {
       buffs_lightning_charges--;
       active_lightning_charge -> execute();
