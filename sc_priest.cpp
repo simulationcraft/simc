@@ -19,6 +19,7 @@ struct priest_t : public player_t
   // Buffs
   int8_t buffs_improved_spirit_tap;
   int8_t buffs_inner_focus;
+  int8_t buffs_shadow_form;
   int8_t buffs_surge_of_light;
 
   // Expirations
@@ -29,6 +30,7 @@ struct priest_t : public player_t
 
   struct talents_t
   {
+    int8_t  aspiration;
     int8_t  darkness;
     int8_t  dispersion;
     int8_t  divine_fury;
@@ -47,18 +49,21 @@ struct priest_t : public player_t
     int8_t  meditation;
     int8_t  mental_agility;
     int8_t  mental_strength;
+    int8_t  mind_flay;
     int8_t  misery;
     int8_t  pain_and_suffering;
-    int8_t  pennance;
+    int8_t  penance;
     int8_t  power_infusion;
     int8_t  searing_light;
+    int8_t  shadow_affinity;
     int8_t  shadow_focus;
     int8_t  shadow_form;
     int8_t  shadow_power;
     int8_t  shadow_weaving;
+    int8_t  spirit_of_redemption;
     int8_t  spiritual_guidance;
     int8_t  surge_of_light;
-    int8_t  twin_faiths;
+    int8_t  twin_disciplines;
     int8_t  twisted_faith;
     int8_t  vampiric_embrace;
     int8_t  vampiric_touch;
@@ -78,6 +83,7 @@ struct priest_t : public player_t
     // Buffs
     buffs_improved_spirit_tap = 0;
     buffs_inner_focus         = 0;
+    buffs_shadow_form         = 0;
     buffs_surge_of_light      = 0;
 
     // Expirations
@@ -108,15 +114,20 @@ struct priest_t : public player_t
 
 struct priest_spell_t : public spell_t
 {
-  priest_spell_t( const char* n, player_t* p, int8_t s, int8_t t ) : 
-    spell_t( n, p, RESOURCE_MANA, s, t ) {}
+  priest_spell_t( const char* n, player_t* player, int8_t s, int8_t t ) : 
+    spell_t( n, player, RESOURCE_MANA, s, t ) 
+  {
+    priest_t* p = player -> cast_priest();
+    base_multiplier *= 1.0 + p -> talents.force_of_will * 0.01;
+    base_crit       += p -> talents.force_of_will * 0.01;
+  }
 
-  virtual void   execute();
   virtual double cost();
+  virtual void   execute();
+  virtual void   player_buff();
 
   // Passthru Methods
   virtual double execute_time() { return spell_t::execute_time(); }
-  virtual void   player_buff()  { spell_t::player_buff();         }
   virtual void   tick()         { spell_t::tick();                }
   virtual void   last_tick()    { spell_t::last_tick();           }
   virtual bool   ready()        { return spell_t::ready();        }
@@ -460,6 +471,15 @@ static void trigger_improved_spirit_tap( spell_t* s )
 // Priest Spell
 // ==========================================================================
 
+// priest_spell_t::cost ======================================================
+
+double priest_spell_t::cost()
+{
+  priest_t* p = player -> cast_priest();
+  if( p -> buffs_inner_focus ) return 0;
+  return spell_t::cost();
+}
+
 // priest_spell_t::execute ===================================================
 
 void priest_spell_t::execute()
@@ -473,13 +493,16 @@ void priest_spell_t::execute()
   }
 }
 
-// priest_spell_t::cost ======================================================
+// priest_spell_t::player_buff ================================================
 
-double priest_spell_t::cost()
+void priest_spell_t::player_buff()
 {
+  spell_t::player_buff();
   priest_t* p = player -> cast_priest();
-  if( p -> buffs_inner_focus ) return 0;
-  return spell_t::cost();
+  if( p -> buffs_shadow_form && ( school == SCHOOL_SHADOW ) )
+  {
+    player_multiplier *= 1.15;
+  }
 }
 
 // Holy Fire Spell ===========================================================
@@ -530,9 +553,7 @@ struct holy_fire_t : public priest_spell_t
 
     base_execute_time -= p -> talents.divine_fury * 0.01;
     base_multiplier   *= 1.0 + p -> talents.searing_light * 0.05;
-    base_multiplier   *= 1.0 + p -> talents.force_of_will * 0.01;
     base_crit         += p -> talents.holy_specialization * 0.01;
-    base_crit         += p -> talents.force_of_will * 0.01;
   }
 };
 
@@ -569,9 +590,7 @@ struct smite_t : public priest_spell_t
       
     base_execute_time -= p -> talents.divine_fury * 0.1;
     base_multiplier   *= 1.0 + p -> talents.searing_light * 0.05;
-    base_multiplier   *= 1.0 + p -> talents.force_of_will * 0.01;
     base_crit         += p -> talents.holy_specialization * 0.01;
-    base_crit         += p -> talents.force_of_will * 0.01;
     base_hit          += p -> talents.focused_power * 0.02;
     
     if( p -> gear.tier4_4pc ) base_multiplier *= 1.05;
@@ -597,15 +616,15 @@ struct smite_t : public priest_spell_t
   }
 };
 
-// Pennance Spell ==============================================================
+// Pennnce Spell ===============================================================
 
-struct pennance_t : public priest_spell_t
+struct penance_t : public priest_spell_t
 {
-  pennance_t( player_t* player, const std::string& options_str ) : 
-    priest_spell_t( "pennance", player, SCHOOL_HOLY, TREE_HOLY )
+  penance_t( player_t* player, const std::string& options_str ) : 
+    priest_spell_t( "penance", player, SCHOOL_HOLY, TREE_HOLY )
   {
     priest_t* p = player -> cast_priest();
-    assert( p -> talents.pennance );
+    assert( p -> talents.penance );
 
     option_t options[] =
     {
@@ -617,9 +636,9 @@ struct pennance_t : public priest_spell_t
     static rank_t ranks[] =
     {
       { 80, 4, 437, 437, 0, 715 },
-      { 76, 3, 355, 355, 0, 592 }, // inferred from Pennance-MindFlay ratio
-      { 68, 2, 325, 325, 0, 426 }, // inferred from Pennance-MindFlay ratio
-      { 60, 1, 263, 263, 0, 379 }, // inferred from Pennance-MindFlay ratio
+      { 76, 3, 355, 355, 0, 592 }, // inferred from Penance-MindFlay ratio
+      { 68, 2, 325, 325, 0, 426 }, // inferred from Penance-MindFlay ratio
+      { 60, 1, 263, 263, 0, 379 }, // inferred from Penance-MindFlay ratio
       { 0, 0 }
     };
     rank = choose_rank( ranks );
@@ -705,8 +724,6 @@ struct shadow_word_pain_t : public priest_spell_t
     };
     rank = choose_rank( ranks );
       
-    static bool AFTER_3_0 = sim -> patch.after( 3, 0, 0 );
-
     base_execute_time = 0; 
     base_duration     = 18.0; 
     num_ticks         = 6;
@@ -715,10 +732,10 @@ struct shadow_word_pain_t : public priest_spell_t
     base_dot  = rank -> dot;
     base_cost = rank -> cost;
     base_cost *= 1.0 - p -> talents.mental_agility * 0.02;
-    if( AFTER_3_0 ) base_cost *= 1.0 - p -> talents.shadow_focus * 0.02;
+    if( sim_t::WotLK ) base_cost *= 1.0 - p -> talents.shadow_focus * 0.02;
 
     int8_t more_ticks = 0;
-    if( ! AFTER_3_0 ) more_ticks += p -> talents.improved_shadow_word_pain;
+    if( ! sim_t::WotLK ) more_ticks += p -> talents.improved_shadow_word_pain;
     if( p -> gear.tier6_2pc ) more_ticks++;
     if( more_ticks > 0 )
     {
@@ -731,9 +748,8 @@ struct shadow_word_pain_t : public priest_spell_t
     }
 
     base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
-    base_multiplier *= 1.0 + p -> talents.force_of_will * 0.01;
-    if( AFTER_3_0 ) base_multiplier *= 1.0 + p -> talents.improved_shadow_word_pain * 0.05;
-    base_hit        += p -> talents.shadow_focus * ( AFTER_3_0 ? 0.01 : 0.02 );
+    if( sim_t::WotLK ) base_multiplier *= 1.0 + p -> talents.improved_shadow_word_pain * 0.05;
+    base_hit        += p -> talents.shadow_focus * ( sim_t::WotLK ? 0.01 : 0.02 );
   }
 
   virtual void execute() 
@@ -788,8 +804,6 @@ struct vampiric_touch_t : public priest_spell_t
       { 0, 0 }
     };
     rank = choose_rank( ranks );
-      
-    static bool AFTER_3_0 = sim -> patch.after( 3, 0, 0 );
 
     base_execute_time = 1.5; 
     base_duration     = 15.0; 
@@ -797,10 +811,9 @@ struct vampiric_touch_t : public priest_spell_t
     dot_power_mod     = 1.0; 
 
     base_cost        = rank -> cost;
-    if( AFTER_3_0 ) base_cost *= 1.0 - p -> talents.shadow_focus * 0.02;
+    if( sim_t::WotLK ) base_cost *= 1.0 - p -> talents.shadow_focus * 0.02;
     base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
-    base_multiplier *= 1.0 + p -> talents.force_of_will * 0.01;
-    base_hit        += p -> talents.shadow_focus * ( AFTER_3_0 ? 0.01 : 0.02 );
+    base_hit        += p -> talents.shadow_focus * ( sim_t::WotLK ? 0.01 : 0.02 );
   }
 
   virtual void execute() 
@@ -846,8 +859,6 @@ struct devouring_plague_t : public priest_spell_t
       { 0, 0 }
     };
     rank = choose_rank( ranks );
-      
-    static bool AFTER_3_0 = sim -> patch.after( 3, 0, 0 );
 
     base_execute_time = 0; 
     base_duration     = 24.0; 
@@ -858,10 +869,9 @@ struct devouring_plague_t : public priest_spell_t
 
     base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.mental_agility * 0.02;
-    if( AFTER_3_0 ) base_cost *= 1.0 - p -> talents.shadow_focus * 0.02;
+    if( sim_t::WotLK ) base_cost *= 1.0 - p -> talents.shadow_focus * 0.02;
     base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
-    base_multiplier *= 1.0 + p -> talents.force_of_will * 0.01;
-    base_hit        += p -> talents.shadow_focus * ( AFTER_3_0 ? 0.01 : 0.02 );
+    base_hit        += p -> talents.shadow_focus * ( sim_t::WotLK ? 0.01 : 0.02 );
   }
 
   virtual void execute() 
@@ -899,14 +909,12 @@ struct vampiric_embrace_t : public priest_spell_t
 
     assert( p -> talents.vampiric_embrace );
      
-    static bool AFTER_3_0 = sim -> patch.after( 3, 0, 0 );
-
     base_execute_time = 0; 
     base_duration     = 60.0; 
     num_ticks         = 1;
     base_cost         = 30;
     base_multiplier   = 0;
-    base_hit          = p -> talents.shadow_focus * ( AFTER_3_0 ? 0.01 : 0.02 );
+    base_hit          = p -> talents.shadow_focus * ( sim_t::WotLK ? 0.01 : 0.02 );
   }
 
   virtual void execute() 
@@ -952,8 +960,6 @@ struct mind_blast_t : public priest_spell_t
     };
     rank = choose_rank( ranks );
     
-    static bool AFTER_3_0 = sim -> patch.after( 3, 0, 0 );
-
     base_execute_time = 1.5; 
     cooldown          = 8.0;
     may_crit          = true; 
@@ -961,13 +967,11 @@ struct mind_blast_t : public priest_spell_t
       
     base_cost       = rank -> cost;
     base_cost       *= 1.0 - p -> talents.focused_mind * 0.05;
-    if( AFTER_3_0 ) base_cost *= 1.0 - p -> talents.shadow_focus * 0.02;
+    if( sim_t::WotLK ) base_cost *= 1.0 - p -> talents.shadow_focus * 0.02;
     base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
-    base_multiplier *= 1.0 + p -> talents.force_of_will * 0.01;
-    base_crit       += p -> talents.shadow_power * ( AFTER_3_0 ? 0.02 : 0.03 );
-    base_crit       += p -> talents.force_of_will * 0.01;
-    if( AFTER_3_0 ) base_crit_bonus *= 1.0 + p -> talents.shadow_power * 0.10;
-    base_hit        += p -> talents.shadow_focus * ( AFTER_3_0 ? 0.01 : 0.02 );
+    base_crit       += p -> talents.shadow_power * ( sim_t::WotLK ? 0.02 : 0.03 );
+    if( sim_t::WotLK ) base_crit_bonus *= 1.0 + p -> talents.shadow_power * 0.10;
+    base_hit        += p -> talents.shadow_focus * ( sim_t::WotLK ? 0.01 : 0.02 );
     base_hit        += p -> talents.focused_power * 0.02;
     cooldown        -= p -> talents.improved_mind_blast * 0.5;
     
@@ -1013,8 +1017,6 @@ struct shadow_word_death_t : public priest_spell_t
     };
     rank = choose_rank( ranks );
     
-    static bool AFTER_3_0 = sim -> patch.after( 3, 0, 0 );
-
     base_execute_time = 0; 
     may_crit          = true; 
     cooldown          = 12.0;
@@ -1022,13 +1024,11 @@ struct shadow_word_death_t : public priest_spell_t
 
     base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.mental_agility * 0.02;
-    if( AFTER_3_0 ) base_cost *= 1.0 - p -> talents.shadow_focus * 0.02;
+    if( sim_t::WotLK ) base_cost *= 1.0 - p -> talents.shadow_focus * 0.02;
     base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
-    base_multiplier *= 1.0 + p -> talents.force_of_will * 0.01;
-    base_crit       += p -> talents.shadow_power * ( AFTER_3_0 ? 0.02 : 0.03 );
-    base_crit       += p -> talents.force_of_will * 0.01;
-    if( AFTER_3_0 ) base_crit_bonus *= 1.0 + p -> talents.shadow_power * 0.10;
-    base_hit        += p -> talents.shadow_focus * ( AFTER_3_0 ? 0.01 : 0.02 );
+    base_crit       += p -> talents.shadow_power * ( sim_t::WotLK ? 0.02 : 0.03 );
+    if( sim_t::WotLK ) base_crit_bonus *= 1.0 + p -> talents.shadow_power * 0.10;
+    base_hit        += p -> talents.shadow_focus * ( sim_t::WotLK ? 0.01 : 0.02 );
   }
 
   virtual void execute() 
@@ -1049,6 +1049,7 @@ struct mind_flay_t : public priest_spell_t
     priest_spell_t( "mind_flay", player, SCHOOL_SHADOW, TREE_SHADOW ), wait(0), cancel(0)
   {
     priest_t* p = player -> cast_priest();
+    assert( p -> talents.mind_flay );
 
     option_t options[] =
     {
@@ -1069,8 +1070,6 @@ struct mind_flay_t : public priest_spell_t
     };
     rank = choose_rank( ranks );
     
-    static bool AFTER_3_0 = sim -> patch.after( 3, 0, 0 );
-
     base_execute_time = 0.0; 
     base_duration     = 3.0; 
     num_ticks         = 3;
@@ -1080,10 +1079,9 @@ struct mind_flay_t : public priest_spell_t
 
     base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.focused_mind * 0.05;
-    if( AFTER_3_0 ) base_cost *= 1.0 - p -> talents.shadow_focus * 0.02;
+    if( sim_t::WotLK ) base_cost *= 1.0 - p -> talents.shadow_focus * 0.02;
     base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
-    base_multiplier *= 1.0 + p -> talents.force_of_will * 0.01;
-    base_hit        += p -> talents.shadow_focus * ( AFTER_3_0 ? 0.01 : 0.02 );
+    base_hit        += p -> talents.shadow_focus * ( sim_t::WotLK ? 0.01 : 0.02 );
     
     if( p -> gear.tier4_4pc ) base_multiplier *= 1.05;
   }
@@ -1242,6 +1240,7 @@ struct power_infusion_t : public priest_spell_t
     assert( p -> talents.power_infusion );
     trigger_gcd = 0;  
     cooldown = sim -> patch.after( 3, 0, 0 ) ? 120.0 : 180.0;
+    cooldown *= 1.0 - p -> talents.aspiration * 0.10;
   }
    
   virtual void execute()
@@ -1264,6 +1263,7 @@ struct inner_focus_t : public priest_spell_t
     assert( p -> talents.inner_focus );
     trigger_gcd = 0;  
     cooldown = 180.0;
+    cooldown *= 1.0 - p -> talents.aspiration * 0.10;
     assert( ! options_str.empty() );
     // This will prevent InnerFocus from being called before the desired "free spell" is ready to be cast.
     cooldown_group = options_str;
@@ -1340,12 +1340,12 @@ struct shadow_form_t : public priest_spell_t
   virtual void execute()
   {
     report_t::log( sim, "%s performs %s", player -> name(), name() );
-    player -> buffs.shadow_form = 1;
+    player -> cast_priest() -> buffs_shadow_form = 1;
   }
 
   virtual bool ready()
   {
-    return( player -> buffs.shadow_form == 0 );
+    return( player -> cast_priest() -> buffs_shadow_form == 0 );
   }
 };
 
@@ -1448,9 +1448,7 @@ void priest_t::spell_damage_event( spell_t* s,
   {
     if( active_vampiric_touch )
     {
-      static bool AFTER_3_0 = sim -> patch.after( 3, 0, 0 );
-
-      double mana = amount * ( AFTER_3_0 ? 0.02 : 0.05 );
+      double mana = amount * ( sim_t::WotLK ? 0.02 : 0.05 );
 
       for( player_t* p = sim -> player_list; p; p = p -> next )
       {
@@ -1492,7 +1490,7 @@ action_t* priest_t::create_action( const std::string& name,
   if( name == "inner_focus"      ) return new inner_focus_t       ( this, options_str );
   if( name == "mind_blast"       ) return new mind_blast_t        ( this, options_str );
   if( name == "mind_flay"        ) return new mind_flay_t         ( this, options_str );
-  if( name == "pennance"         ) return new pennance_t          ( this, options_str );
+  if( name == "penance"          ) return new penance_t           ( this, options_str );
   if( name == "power_infusion"   ) return new power_infusion_t    ( this, options_str );
   if( name == "shadow_word_death") return new shadow_word_death_t ( this, options_str );
   if( name == "shadow_word_pain" ) return new shadow_word_pain_t  ( this, options_str );
@@ -1527,12 +1525,13 @@ void priest_t::init_base()
   attribute_multiplier_initial[ ATTR_STAMINA   ] *= 1.0 + talents.enlightenment * 0.01;
   attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.0 + talents.enlightenment * 0.01;
   attribute_multiplier_initial[ ATTR_SPIRIT    ] *= 1.0 + talents.enlightenment * 0.01;
+  attribute_multiplier_initial[ ATTR_SPIRIT    ] *= 1.0 + talents.spirit_of_redemption * 0.05;
 
   base_spell_crit = 0.0125;
   initial_spell_crit_per_intellect = 0.01 / ( level + 10 );
   initial_spell_power_per_spirit = ( talents.spiritual_guidance * 0.05 +
 				     talents.twisted_faith      * 0.06 );
-  initial_spell_power_multiplier *= 1.0 + talents.twin_faiths * 0.01;
+  initial_spell_power_multiplier *= 1.0 + talents.twin_disciplines * 0.01;
   if( sim_t::WotLK ) initial_spell_power_multiplier *= 1.0 + talents.enlightenment * 0.01;
 
   base_attack_power = -10;
@@ -1572,6 +1571,7 @@ void priest_t::reset()
   // Buffs
   buffs_improved_spirit_tap = 0;
   buffs_inner_focus         = 0;
+  buffs_shadow_form         = 0;
   buffs_surge_of_light      = 0;
 
   // Expirations
@@ -1603,41 +1603,92 @@ void priest_t::regen()
 
 void priest_t::parse_talents( const std::string& talent_string )
 {
-  assert( talent_string.size() == 64 );
-  
-  talent_translation_t translation[] =
+  if( talent_string.size() == 64 )
   {
-    {  8,  &( talents.inner_focus               ) },
-    {  9,  &( talents.meditation                ) },
-    { 11,  &( talents.mental_agility            ) },
-    { 13,  &( talents.mental_strength           ) },
-    { 14,  &( talents.divine_spirit             ) },
-    { 15,  &( talents.improved_divine_spirit    ) },
-    { 16,  &( talents.focused_power             ) },
-    { 17,  &( talents.force_of_will             ) },
-    { 19,  &( talents.power_infusion            ) },
-    { 21,  &( talents.enlightenment             ) },
-    { 25,  &( talents.holy_specialization       ) },
-    { 27,  &( talents.divine_fury               ) },
-    { 33,  &( talents.searing_light             ) },
-    { 36,  &( talents.spiritual_guidance        ) },
-    { 37,  &( talents.surge_of_light            ) },
-    { 47,  &( talents.improved_shadow_word_pain ) },
-    { 48,  &( talents.shadow_focus              ) },
-    { 50,  &( talents.improved_mind_blast       ) },
-    { 54,  &( talents.shadow_weaving            ) },
-    { 56,  &( talents.vampiric_embrace          ) },
-    { 57,  &( talents.improved_vampiric_embrace ) },
-    { 58,  &( talents.focused_mind              ) },
-    { 60,  &( talents.darkness                  ) },
-    { 61,  &( talents.shadow_form               ) },
-    { 62,  &( talents.shadow_power              ) },
-    { 63,  &( talents.misery                    ) },
-    { 64,  &( talents.vampiric_touch            ) },
-    { 0, NULL }
-  };
-
-  player_t::parse_talents( translation, talent_string );
+    talent_translation_t translation[] =
+    {
+      {  8,  &( talents.inner_focus               ) },
+      {  9,  &( talents.meditation                ) },
+      { 11,  &( talents.mental_agility            ) },
+      { 13,  &( talents.mental_strength           ) },
+      { 14,  &( talents.divine_spirit             ) },
+      { 15,  &( talents.improved_divine_spirit    ) },
+      { 16,  &( talents.focused_power             ) },
+      { 17,  &( talents.force_of_will             ) },
+      { 19,  &( talents.power_infusion            ) },
+      { 21,  &( talents.enlightenment             ) },
+      { 25,  &( talents.holy_specialization       ) },
+      { 27,  &( talents.divine_fury               ) },
+      { 33,  &( talents.searing_light             ) },
+      { 36,  &( talents.spiritual_guidance        ) },
+      { 37,  &( talents.surge_of_light            ) },
+      { 46,  &( talents.shadow_affinity           ) },
+      { 47,  &( talents.improved_shadow_word_pain ) },
+      { 48,  &( talents.shadow_focus              ) },
+      { 50,  &( talents.improved_mind_blast       ) },
+      { 50,  &( talents.mind_flay                 ) },
+      { 54,  &( talents.shadow_weaving            ) },
+      { 56,  &( talents.vampiric_embrace          ) },
+      { 57,  &( talents.improved_vampiric_embrace ) },
+      { 58,  &( talents.focused_mind              ) },
+      { 60,  &( talents.darkness                  ) },
+      { 61,  &( talents.shadow_form               ) },
+      { 62,  &( talents.shadow_power              ) },
+      { 63,  &( talents.misery                    ) },
+      { 64,  &( talents.vampiric_touch            ) },
+      { 0, NULL }
+    };
+    player_t::parse_talents( translation, talent_string );
+  }
+  else if( talent_string.size() == 80 )
+  {
+    talent_translation_t translation[] =
+    {
+      {  2,  &( talents.twin_disciplines          ) },
+      {  8,  &( talents.inner_focus               ) },
+      {  9,  &( talents.meditation                ) },
+      { 11,  &( talents.mental_agility            ) },
+      { 13,  &( talents.mental_strength           ) },
+      { 14,  &( talents.divine_spirit             ) },
+      { 15,  &( talents.improved_divine_spirit    ) },
+      { 16,  &( talents.focused_power             ) },
+      { 17,  &( talents.enlightenment             ) },
+      { 19,  &( talents.power_infusion            ) },
+      { 21,  &( talents.aspiration                ) },
+      { 27,  &( talents.penance                   ) },
+      { 30,  &( talents.holy_specialization       ) },
+      { 32,  &( talents.divine_fury               ) },
+      { 38,  &( talents.searing_light             ) },
+      { 40,  &( talents.spirit_of_redemption      ) },
+      { 41,  &( talents.spiritual_guidance        ) },
+      { 42,  &( talents.surge_of_light            ) },
+      { 55,  &( talents.improved_spirit_tap       ) },
+      { 57,  &( talents.shadow_affinity           ) },
+      { 58,  &( talents.improved_shadow_word_pain ) },
+      { 59,  &( talents.shadow_focus              ) },
+      { 61,  &( talents.improved_mind_blast       ) },
+      { 62,  &( talents.mind_flay                 ) },
+      { 65,  &( talents.shadow_weaving            ) },
+      { 67,  &( talents.vampiric_embrace          ) },
+      { 68,  &( talents.improved_vampiric_embrace ) },
+      { 69,  &( talents.focused_mind              ) },
+      { 71,  &( talents.darkness                  ) },
+      { 72,  &( talents.shadow_form               ) },
+      { 73,  &( talents.shadow_power              ) },
+      { 75,  &( talents.misery                    ) },
+      { 77,  &( talents.vampiric_touch            ) },
+      { 78,  &( talents.pain_and_suffering        ) },
+      { 79,  &( talents.twisted_faith             ) },
+      { 80,  &( talents.dispersion                ) },
+      { 0, NULL }
+    };
+    player_t::parse_talents( translation, talent_string );
+  }
+  else
+  {
+    printf( "Malformed Priest talent string.  Number encoding should have length 64 for Burning Crusade or 80 for Wrath of the Lich King.\n" );
+    assert( 0 );
+  }
 }
 
 // priest_t::parse_option  =================================================
@@ -1647,6 +1698,7 @@ bool priest_t::parse_option( const std::string& name,
 {
   option_t options[] =
   {
+    { "aspiration",                OPT_INT8,  &( talents.aspiration                ) },
     { "darkness",                  OPT_INT8,  &( talents.darkness                  ) },
     { "dispersion",                OPT_INT8,  &( talents.dispersion                ) },
     { "divine_fury",               OPT_INT8,  &( talents.divine_fury               ) },
@@ -1665,18 +1717,21 @@ bool priest_t::parse_option( const std::string& name,
     { "meditation",                OPT_INT8,  &( talents.meditation                ) },
     { "mental_agility",            OPT_INT8,  &( talents.mental_agility            ) },
     { "mental_strength",           OPT_INT8,  &( talents.mental_strength           ) },
+    { "mind_flay",                 OPT_INT8,  &( talents.mind_flay                 ) },
     { "misery",                    OPT_INT8,  &( talents.misery                    ) },
     { "pain_and_suffering",        OPT_INT8,  &( talents.pain_and_suffering        ) },
-    { "pennance",                  OPT_INT8,  &( talents.pennance                  ) },
+    { "penance",                   OPT_INT8,  &( talents.penance                   ) },
     { "power_infusion",            OPT_INT8,  &( talents.power_infusion            ) },
     { "searing_light",             OPT_INT8,  &( talents.searing_light             ) },
+    { "shadow_affinity",           OPT_INT8,  &( talents.shadow_affinity           ) },
     { "shadow_focus",              OPT_INT8,  &( talents.shadow_focus              ) },
     { "shadow_form",               OPT_INT8,  &( talents.shadow_form               ) },
     { "shadow_power",              OPT_INT8,  &( talents.shadow_power              ) },
     { "shadow_weaving",            OPT_INT8,  &( talents.shadow_weaving            ) },
+    { "spirit_of_redemption",      OPT_INT8,  &( talents.spirit_of_redemption      ) },
     { "spiritual_guidance",        OPT_INT8,  &( talents.spiritual_guidance        ) },
     { "surge_of_light",            OPT_INT8,  &( talents.surge_of_light            ) },
-    { "twin_faiths",               OPT_INT8,  &( talents.twin_faiths               ) },
+    { "twin_disciplines",          OPT_INT8,  &( talents.twin_disciplines          ) },
     { "twisted_faith",             OPT_INT8,  &( talents.twisted_faith             ) },
     { "vampiric_embrace",          OPT_INT8,  &( talents.vampiric_embrace          ) },
     { "vampiric_touch",            OPT_INT8,  &( talents.vampiric_touch            ) },

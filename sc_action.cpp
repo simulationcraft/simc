@@ -154,10 +154,6 @@ void action_t::player_buff()
     {
       if( p -> buffs.sanctity_aura ) player_multiplier *= 1.10 + 0.01 * ( p -> buffs.sanctity_aura - 1 );
     }
-    else if( school == SCHOOL_SHADOW )
-    {
-      if( player -> buffs.shadow_form ) player_multiplier *= 1.15;
-    }
   }
 
   report_t::debug( sim, "action_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f", 

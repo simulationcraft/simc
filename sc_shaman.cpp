@@ -56,6 +56,7 @@ struct shaman_t : public player_t
   struct talents_t
   {
     int8_t  ancestral_knowledge;
+    int8_t  blessing_of_the_eternals;
     int8_t  call_of_flame;
     int8_t  call_of_thunder;
     int8_t  concussion;
@@ -154,7 +155,11 @@ struct shaman_t : public player_t
   virtual void      init_base();
   virtual void      reset();
   virtual double    composite_attack_power();
+  virtual double    composite_attack_hit();
+  virtual double    composite_attack_crit();
   virtual double    composite_spell_power( int8_t school );
+  virtual double    composite_spell_hit();
+  virtual double    composite_spell_crit();
   virtual void      parse_talents( const std::string& talent_string );
   virtual bool      parse_option( const std::string& name, const std::string& value );
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -179,12 +184,6 @@ struct shaman_attack_t : public attack_t
   {
     base_dd = 1;
     shaman_t* p = player -> cast_shaman();
-    if( p -> dual_wield() ) 
-    {
-      base_hit += p -> talents.dual_wield_specialization * 0.02;
-    }
-    base_hit        += p -> talents.natures_guidance * 0.01;
-    base_crit       += p -> talents.thundering_strikes * 0.01;
     base_multiplier *= 1.0 + p -> talents.weapon_specialization * 0.02;
   }
 
@@ -266,7 +265,6 @@ static void trigger_flametongue_weapon( attack_t* a )
       trigger_gcd      = 0;
       dd_power_mod     = 0.10;
       base_multiplier *= 1.0 + p -> talents.elemental_weapons * 0.05;
-      base_hit        += p -> talents.natures_guidance * 0.01;
       base_hit        += p -> talents.elemental_precision * ( sim_t::WotLK ? 0.01 : 0.02 );
       reset();
     }
@@ -792,7 +790,6 @@ struct stormstrike_t : public shaman_attack_t
     may_glance       = false;
     cooldown         = 10.0 - p -> talents.improved_stormstrike;
     base_cost        = p -> resource_base[ RESOURCE_MANA ] * 0.08;
-    base_hit        += p -> talents.natures_guidance * 0.01;
     base_crit       += p -> talents.thundering_strikes * 0.01;
     base_multiplier *= 1.0 + p -> talents.weapon_specialization * 0.02;
   }
@@ -936,7 +933,6 @@ struct chain_lightning_t : public shaman_spell_t
     base_multiplier   *= 1.0 + p -> talents.concussion * 0.01;
     base_crit         += p -> talents.call_of_thunder * 0.01;
     base_crit         += p -> talents.tidal_mastery * 0.01;
-    base_hit          += p -> talents.natures_guidance * 0.01;
     base_hit          += p -> talents.elemental_precision * ( sim_t::WotLK ? 0.01 : 0.02 );
     if( p -> talents.elemental_fury ) base_crit_bonus *= 2.0;
   }
@@ -1012,7 +1008,6 @@ struct lightning_bolt_t : public shaman_spell_t
     base_multiplier   *= 1.0 + p -> talents.concussion * 0.01;
     base_crit         += p -> talents.call_of_thunder * 0.01;
     base_crit         += p -> talents.tidal_mastery * 0.01;
-    base_hit          += p -> talents.natures_guidance * 0.01;
     base_hit          += p -> talents.elemental_precision * ( sim_t::WotLK ? 0.01 : 0.02 );
     if( p -> talents.elemental_fury ) base_crit_bonus *= 2.0;
 
@@ -1091,7 +1086,6 @@ struct lava_burst_t : public shaman_spell_t
     base_cost          = rank -> cost;
     base_cost         *= 1.0 - p -> talents.convection * ( sim_t::WotLK ? 0.04 : 0.02 );
     base_multiplier   *= 1.0 + p -> talents.concussion * 0.01;
-    base_hit          += p -> talents.natures_guidance * 0.01;
     base_hit          += p -> talents.elemental_precision * ( sim_t::WotLK ? 0.01 : 0.02 );
     if( p -> talents.elemental_fury ) base_crit_bonus *= 2.0;
   }
@@ -1249,7 +1243,6 @@ struct earth_shock_t : public shaman_spell_t
     base_cost       *= 1.0 - p -> talents.mental_quickness * 0.02;
     cooldown        -= ( p -> talents.reverberation * 0.2 );
     base_multiplier *= 1.0 + p -> talents.concussion * 0.01;
-    base_hit        += p -> talents.natures_guidance * 0.01;
     base_hit        += p -> talents.elemental_precision * ( sim_t::WotLK ? 0.01 : 0.02 );
     if( p -> talents.elemental_fury ) base_crit_bonus *= 2.0;
   }
@@ -1309,7 +1302,6 @@ struct frost_shock_t : public shaman_spell_t
     base_cost       *= 1.0 - p -> talents.mental_quickness * 0.02;
     cooldown        -= ( p -> talents.reverberation * 0.2 );
     base_multiplier *= 1.0 + p -> talents.concussion * 0.01;
-    base_hit        += p -> talents.natures_guidance * 0.01;
     base_hit        += p -> talents.elemental_precision * ( sim_t::WotLK ? 0.01 : 0.02 );
     if( p -> talents.elemental_fury ) base_crit_bonus *= 2.0;
   }
@@ -1364,7 +1356,6 @@ struct flame_shock_t : public shaman_spell_t
     dot_power_mod   *= ( 1.0 + p -> talents.storm_earth_and_fire * 0.20 );
     cooldown        -= ( p -> talents.reverberation * 0.2 );
     base_multiplier *= 1.0 + p -> talents.concussion * 0.01;
-    base_hit        += p -> talents.natures_guidance * 0.01;
     base_hit        += p -> talents.elemental_precision * ( sim_t::WotLK ? 0.01 : 0.02 );
     if( p -> talents.elemental_fury ) base_crit_bonus *= 2.0;
   }
@@ -2357,7 +2348,6 @@ struct lightning_shield_t : public shaman_spell_t
       dd_power_mod = 0.33;
 
       base_dd          = base_dmg;
-      base_hit        += p -> talents.natures_guidance * 0.01;
       base_hit        += p -> talents.elemental_precision * ( sim_t::WotLK ? 0.01 : 0.02 );
       base_multiplier *= 1.0 + p -> talents.improved_shields * 0.05;
     }
@@ -2638,6 +2628,38 @@ double shaman_t::composite_attack_power()
   return ap;
 }
 
+// shaman_t::composite_attack_hit ===========================================
+
+double shaman_t::composite_attack_hit()
+{
+  double hit = player_t::composite_attack_hit();
+
+  if( talents.natures_guidance )
+  {
+    hit += talents.natures_guidance * 0.01;
+  }
+  if( dual_wield() ) 
+  {
+    hit += talents.dual_wield_specialization * 0.02;
+  }
+
+  return hit;
+}
+
+// shaman_t::composite_attack_crit ==========================================
+
+double shaman_t::composite_attack_crit()
+{
+  double crit = player_t::composite_attack_crit();
+
+  if( talents.thundering_strikes )
+  {
+    crit += talents.thundering_strikes * 0.01;
+  }
+
+  return crit;
+}
+
 // shaman_t::composite_spell_power ==========================================
 
 double shaman_t::composite_spell_power( int8_t school )
@@ -2650,6 +2672,34 @@ double shaman_t::composite_spell_power( int8_t school )
   }
 
   return sp;
+}
+
+// shaman_t::composite_spell_hit =============================================
+
+double shaman_t::composite_spell_hit()
+{
+  double hit = player_t::composite_spell_hit();
+
+  if( talents.natures_guidance )
+  {
+    hit += talents.natures_guidance * 0.01;
+  }
+
+  return hit;
+}
+
+// shaman_t::composite_spell_crit ============================================
+
+double shaman_t::composite_spell_crit()
+{
+  double crit = player_t::composite_spell_crit();
+
+  if( talents.blessing_of_the_eternals )
+  {
+    crit += talents.blessing_of_the_eternals * 0.02;
+  }
+
+  return crit;
 }
 
 // shaman_t::regen  ==========================================================
@@ -2679,50 +2729,107 @@ void shaman_t::regen()
 
 void shaman_t::parse_talents( const std::string& talent_string )
 {
-  assert( talent_string.size() == 61 );
-  
-  talent_translation_t translation[] =
+  if( talent_string.size() == 61 )
   {
-    {  1,  &( talents.convection                ) },
-    {  2,  &( talents.concussion                ) },
-    {  5,  &( talents.call_of_flame             ) },
-    {  6,  &( talents.elemental_focus           ) },
-    {  7,  &( talents.reverberation             ) },
-    {  8,  &( talents.call_of_thunder           ) },
-    { 13,  &( talents.elemental_fury            ) },
-    { 14,  &( talents.unrelenting_storm         ) },
-    { 15,  &( talents.elemental_precision       ) },
-    { 16,  &( talents.lightning_mastery         ) },
-    { 17,  &( talents.elemental_mastery         ) },
-    { 19,  &( talents.lightning_overload        ) },
-    { 20,  &( talents.totem_of_wrath            ) },
-    { 21,  &( talents.ancestral_knowledge       ) },
-    { 24,  &( talents.thundering_strikes        ) },
-    { 26,  &( talents.improved_shields          ) },
-    { 27,  &( talents.enhancing_totems          ) },
-    { 28,  &( talents.shamanistic_focus         ) },
-    { 30,  &( talents.flurry                    ) },
-    { 32,  &( talents.improved_weapon_totems    ) },
-    { 33,  &( talents.spirit_weapons            ) },
-    { 34,  &( talents.elemental_weapons         ) },
-    { 35,  &( talents.mental_quickness          ) },
-    { 36,  &( talents.weapon_mastery            ) },
-    { 37,  &( talents.dual_wield_specialization ) },
-    { 38,  &( talents.dual_wield                ) },
-    { 39,  &( talents.stormstrike               ) },
-    { 40,  &( talents.unleashed_rage            ) },
-    { 41,  &( talents.shamanistic_rage          ) },
-    { 46,  &( talents.totemic_focus             ) },
-    { 47,  &( talents.natures_guidance          ) },
-    { 51,  &( talents.restorative_totems        ) },
-    { 52,  &( talents.tidal_mastery             ) },
-    { 54,  &( talents.natures_swiftness         ) },
-    { 57,  &( talents.mana_tide_totem           ) },
-    { 59,  &( talents.natures_blessing          ) },
-    { 0, NULL }
-  };
-
-  player_t::parse_talents( translation, talent_string );
+    talent_translation_t translation[] =
+    {
+      {  1,  &( talents.convection                ) },
+      {  2,  &( talents.concussion                ) },
+      {  5,  &( talents.call_of_flame             ) },
+      {  6,  &( talents.elemental_focus           ) },
+      {  7,  &( talents.reverberation             ) },
+      {  8,  &( talents.call_of_thunder           ) },
+      { 13,  &( talents.elemental_fury            ) },
+      { 14,  &( talents.unrelenting_storm         ) },
+      { 15,  &( talents.elemental_precision       ) },
+      { 16,  &( talents.lightning_mastery         ) },
+      { 17,  &( talents.elemental_mastery         ) },
+      { 19,  &( talents.lightning_overload        ) },
+      { 20,  &( talents.totem_of_wrath            ) },
+      { 21,  &( talents.ancestral_knowledge       ) },
+      { 24,  &( talents.thundering_strikes        ) },
+      { 26,  &( talents.improved_shields          ) },
+      { 27,  &( talents.enhancing_totems          ) },
+      { 28,  &( talents.shamanistic_focus         ) },
+      { 30,  &( talents.flurry                    ) },
+      { 32,  &( talents.improved_weapon_totems    ) },
+      { 33,  &( talents.spirit_weapons            ) },
+      { 34,  &( talents.elemental_weapons         ) },
+      { 35,  &( talents.mental_quickness          ) },
+      { 36,  &( talents.weapon_mastery            ) },
+      { 37,  &( talents.dual_wield_specialization ) },
+      { 38,  &( talents.dual_wield                ) },
+      { 39,  &( talents.stormstrike               ) },
+      { 40,  &( talents.unleashed_rage            ) },
+      { 41,  &( talents.shamanistic_rage          ) },
+      { 46,  &( talents.totemic_focus             ) },
+      { 47,  &( talents.natures_guidance          ) },
+      { 51,  &( talents.restorative_totems        ) },
+      { 52,  &( talents.tidal_mastery             ) },
+      { 54,  &( talents.natures_swiftness         ) },
+      { 57,  &( talents.mana_tide_totem           ) },
+      { 59,  &( talents.natures_blessing          ) },
+      { 0, NULL }
+    };
+    player_t::parse_talents( translation, talent_string );
+  } 
+  else if( talent_string.size() == 77 )
+  {
+    talent_translation_t translation[] =
+    {
+      {  1,  &( talents.convection                ) },
+      {  2,  &( talents.concussion                ) },
+      {  3,  &( talents.call_of_flame             ) },
+      {  5,  &( talents.elemental_devastation     ) },
+      {  6,  &( talents.reverberation             ) },
+      {  7,  &( talents.elemental_focus           ) },
+      {  8,  &( talents.call_of_thunder           ) },
+      { 12,  &( talents.elemental_fury            ) },
+      { 13,  &( talents.unrelenting_storm         ) },
+      { 14,  &( talents.elemental_precision       ) },
+      { 15,  &( talents.lightning_mastery         ) },
+      { 16,  &( talents.elemental_mastery         ) },
+      { 18,  &( talents.elemental_oath            ) },
+      { 19,  &( talents.lightning_overload        ) },
+      { 21,  &( talents.totem_of_wrath            ) },
+      { 23,  &( talents.storm_earth_and_fire      ) },
+      { 25,  &( talents.enhancing_totems          ) },
+      { 27,  &( talents.ancestral_knowledge       ) },
+      { 29,  &( talents.thundering_strikes        ) },
+      { 31,  &( talents.improved_shields          ) },
+      { 32,  &( talents.mental_dexterity          ) },
+      { 33,  &( talents.shamanistic_focus         ) },
+      { 35,  &( talents.flurry                    ) },
+      { 37,  &( talents.improved_weapon_totems    ) },
+      { 38,  &( talents.spirit_weapons            ) },
+      { 39,  &( talents.elemental_weapons         ) },
+      { 40,  &( talents.mental_quickness          ) },
+      { 41,  &( talents.weapon_mastery            ) },
+      { 42,  &( talents.dual_wield_specialization ) },
+      { 43,  &( talents.dual_wield                ) },
+      { 44,  &( talents.stormstrike               ) },
+      { 45,  &( talents.unleashed_rage            ) },
+      { 46,  &( talents.improved_stormstrike      ) },
+      { 47,  &( talents.static_shock              ) },
+      { 48,  &( talents.shamanistic_rage          ) },
+      { 50,  &( talents.maelstrom_weapon          ) },
+      { 51,  &( talents.feral_spirit              ) },
+      { 53,  &( talents.totemic_focus             ) },
+      { 61,  &( talents.restorative_totems        ) },
+      { 62,  &( talents.tidal_mastery             ) },
+      { 64,  &( talents.natures_swiftness         ) },
+      { 68,  &( talents.mana_tide_totem           ) },
+      { 70,  &( talents.blessing_of_the_eternals  ) },
+      { 72,  &( talents.natures_blessing          ) },
+      { 0, NULL }
+    };
+    player_t::parse_talents( translation, talent_string );
+  } 
+  else
+  {
+    printf( "Malformed Shaman talent string.  Number encoding should have length 61 for Burning Crusade or 77 for Wrath of the Lich King.\n" );
+    assert( 0 );
+  }
 }
 
 // shaman_t::parse_option  ==============================================
@@ -2733,6 +2840,7 @@ bool shaman_t::parse_option( const std::string& name,
   option_t options[] =
   {
     { "ancestral_knowledge",       OPT_INT8,  &( talents.ancestral_knowledge       ) },
+    { "blessing_of_the_eternals",  OPT_INT8,  &( talents.blessing_of_the_eternals  ) },
     { "call_of_flame",             OPT_INT8,  &( talents.call_of_flame             ) },
     { "call_of_thunder",           OPT_INT8,  &( talents.call_of_thunder           ) },
     { "concussion",                OPT_INT8,  &( talents.concussion                ) },

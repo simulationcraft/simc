@@ -189,13 +189,9 @@ bool option_t::parse( sim_t* sim,
   {
     static std::string talent_string;
     std::string::size_type cut_pt; 
-    if( ( cut_pt = value.find_first_of( "=" ) ) != value.npos ) 
+    if( ( cut_pt = value.find_first_of( "012345" ) ) != value.npos ) 
     {
-      talent_string = value.substr( cut_pt + 1 );
-    }
-    else if( ( cut_pt = value.find_first_of( "?" ) ) != value.npos ) 
-    {
-      talent_string = value.substr( cut_pt + 1 );
+      talent_string = value.substr( cut_pt );
     }
     else
     {

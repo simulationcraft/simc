@@ -35,7 +35,10 @@ struct druid_t : public player_t
     int8_t  dreamstate;
     int8_t  eclipse;
     int8_t  focused_starlight;
+    int8_t  force_of_nature;
     int8_t  improved_moonfire;
+    int8_t  improved_faerie_fire;
+    int8_t  improved_mark_of_the_wild;
     int8_t  improved_moonkin_form;
     int8_t  insect_swarm;
     int8_t  intensity;
@@ -45,6 +48,7 @@ struct druid_t : public player_t
     int8_t  moonfury;
     int8_t  moonglow;
     int8_t  moonkin_form;
+    int8_t  natures_reach;
     int8_t  omen_of_clarity;
     int8_t  earth_and_moon;
     int8_t  natures_grace;
@@ -82,6 +86,8 @@ struct druid_t : public player_t
   // Character Definition
   virtual void      init_base();
   virtual void      reset();
+  virtual double    composite_spell_hit();
+  virtual double    composite_spell_crit();
   virtual void      parse_talents( const std::string& talent_string );
   virtual bool      parse_option ( const std::string& name, const std::string& value );
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -510,9 +516,7 @@ struct moonfire_t : public druid_spell_t
     base_cost       *= 1.0 - p -> talents.moonglow * 0.03;
     base_multiplier *= 1.0 + p -> talents.moonfury * 0.02;
     base_multiplier *= 1.0 + p -> talents.improved_moonfire * 0.05;
-    base_crit       += p -> talents.natural_perfection * 0.01;
     base_crit       += p -> talents.improved_moonfire * 0.05;
-    base_hit        += p -> talents.balance_of_power * 0.02;
     base_crit_bonus *= 1.0 + p -> talents.vengeance * 0.20;
   }
 
@@ -646,9 +650,7 @@ struct starfire_t : public druid_spell_t
     base_cost         *= 1.0 - p -> talents.moonglow * 0.03;
     base_execute_time -= p -> talents.starlight_wrath * 0.1;
     base_multiplier   *= 1.0 + p -> talents.moonfury * 0.02;
-    base_crit         += p -> talents.natural_perfection * 0.01;
     base_crit         += p -> talents.focused_starlight * 0.02;
-    base_hit          += p -> talents.balance_of_power * 0.02;
     base_crit_bonus   *= 1.0 + p -> talents.vengeance * 0.20;
     dd_power_mod      += p -> talents.wrath_of_cenarius * 0.04;
 
@@ -754,9 +756,7 @@ struct wrath_t : public druid_spell_t
     base_cost         *= 1.0 - p -> talents.moonglow * 0.03;
     base_execute_time -= p -> talents.starlight_wrath * 0.1;
     base_multiplier   *= 1.0 + p -> talents.moonfury * 0.02;
-    base_crit         += p -> talents.natural_perfection * 0.01;
     base_crit         += p -> talents.focused_starlight * 0.02;
-    base_hit          += p -> talents.balance_of_power * 0.02;
     base_crit_bonus   *= 1.0 + p -> talents.vengeance * 0.20;
     dd_power_mod      += p -> talents.wrath_of_cenarius * 0.02;
   }
@@ -939,6 +939,34 @@ void druid_t::reset()
   expirations_omen_of_clarity = 0;
 }
 
+// druid_t::composite_spell_hit =============================================
+
+double druid_t::composite_spell_hit()
+{
+  double hit = player_t::composite_spell_hit();
+
+  if( talents.balance_of_power )
+  {
+    hit += talents.balance_of_power * 0.02;
+  }
+
+  return hit;
+}
+
+// druid_t::composite_spell_crit ============================================
+
+double druid_t::composite_spell_crit()
+{
+  double crit = player_t::composite_spell_crit();
+
+  if( talents.natural_perfection )
+  {
+    crit += talents.natural_perfection * 0.01;
+  }
+
+  return crit;
+}
+
 // druid_t::regen  ==========================================================
 
 void druid_t::regen()
@@ -964,32 +992,75 @@ void druid_t::regen()
 
 void druid_t::parse_talents( const std::string& talent_string )
 {
-  assert( talent_string.size() == 62 );
-  
-  talent_translation_t translation[] =
+  if( talent_string.size() == 62 ) 
   {
-    {  1,  &( talents.starlight_wrath    ) },
-    {  5,  &( talents.focused_starlight  ) },
-    {  6,  &( talents.improved_moonfire  ) },
-    {  8,  &( talents.insect_swarm       ) },
-    { 10,  &( talents.vengeance          ) },
-    { 12,  &( talents.lunar_guidance     ) },
-    { 13,  &( talents.natures_grace      ) },
-    { 14,  &( talents.moonglow           ) },
-    { 15,  &( talents.moonfury           ) },
-    { 16,  &( talents.balance_of_power   ) },
-    { 17,  &( talents.dreamstate         ) },
-    { 18,  &( talents.moonkin_form       ) },
-    { 20,  &( talents.wrath_of_cenarius  ) },
-    { 48,  &( talents.intensity          ) },
-    { 50,  &( talents.omen_of_clarity    ) },
-    { 53,  &( talents.natures_swiftness  ) },
-    { 58,  &( talents.living_spirit      ) },
-    { 60,  &( talents.natural_perfection ) },
-    { 0, NULL }
-  };
-
-  player_t::parse_talents( translation, talent_string );
+    talent_translation_t translation[] =
+    {
+      {  1,  &( talents.starlight_wrath           ) },
+      {  5,  &( talents.focused_starlight         ) },
+      {  6,  &( talents.improved_moonfire         ) },
+      {  8,  &( talents.insect_swarm              ) },
+      {  9,  &( talents.natures_reach             ) },
+      { 10,  &( talents.vengeance                 ) },
+      { 12,  &( talents.lunar_guidance            ) },
+      { 13,  &( talents.natures_grace             ) },
+      { 14,  &( talents.moonglow                  ) },
+      { 15,  &( talents.moonfury                  ) },
+      { 16,  &( talents.balance_of_power          ) },
+      { 17,  &( talents.dreamstate                ) },
+      { 18,  &( talents.moonkin_form              ) },
+      { 19,  &( talents.improved_faerie_fire      ) },
+      { 20,  &( talents.wrath_of_cenarius         ) },
+      { 21,  &( talents.force_of_nature           ) },
+      { 43,  &( talents.improved_mark_of_the_wild ) },
+      { 48,  &( talents.intensity                 ) },
+      { 50,  &( talents.omen_of_clarity           ) },
+      { 53,  &( talents.natures_swiftness         ) },
+      { 58,  &( talents.living_spirit             ) },
+      { 60,  &( talents.natural_perfection        ) },
+      { 0, NULL }
+    };
+    player_t::parse_talents( translation, talent_string );
+  }
+  else if( talent_string.size() == 81 )
+  {
+    talent_translation_t translation[] =
+    {
+      {  1,  &( talents.starlight_wrath           ) },
+      {  5,  &( talents.focused_starlight         ) },
+      {  6,  &( talents.improved_moonfire         ) },
+      {  8,  &( talents.insect_swarm              ) },
+      {  9,  &( talents.natures_reach             ) },
+      { 10,  &( talents.vengeance                 ) },
+      { 12,  &( talents.lunar_guidance            ) },
+      { 13,  &( talents.natures_grace             ) },
+      { 14,  &( talents.moonglow                  ) },
+      { 15,  &( talents.dreamstate                ) },
+      { 16,  &( talents.moonfury                  ) },
+      { 17,  &( talents.balance_of_power          ) },
+      { 18,  &( talents.moonkin_form              ) },
+      { 19,  &( talents.improved_moonkin_form     ) },
+      { 20,  &( talents.improved_faerie_fire      ) },
+      { 22,  &( talents.wrath_of_cenarius         ) },
+      { 23,  &( talents.eclipse                   ) },
+      { 25,  &( talents.force_of_nature           ) },
+      { 27,  &( talents.earth_and_moon            ) },
+      { 56,  &( talents.improved_mark_of_the_wild ) },
+      { 62,  &( talents.intensity                 ) },
+      { 63,  &( talents.omen_of_clarity           ) },
+      { 64,  &( talents.master_shapeshifter       ) },
+      { 67,  &( talents.natures_swiftness         ) },
+      { 72,  &( talents.living_spirit             ) },
+      { 74,  &( talents.natural_perfection        ) },
+      { 0, NULL }
+    };
+    player_t::parse_talents( translation, talent_string );
+  }
+  else
+  {
+    printf( "Malformed Druid talent string.  Number encoding should have length 62 for Burning Crusade or 81 for Wrath of the Lich King.\n" );
+    assert( 0 );
+  }
 }
 
 // druid_t::parse_option  ==============================================
@@ -999,28 +1070,32 @@ bool druid_t::parse_option( const std::string& name,
 {
   option_t options[] =
   {
-    { "balance_of_power",       OPT_INT8,  &( talents.balance_of_power      ) },
-    { "dreamstate",             OPT_INT8,  &( talents.dreamstate            ) },
-    { "earth_and_moon",         OPT_INT8,  &( talents.earth_and_moon        ) },
-    { "eclipse",                OPT_INT8,  &( talents.eclipse               ) },
-    { "focused_starlight",      OPT_INT8,  &( talents.focused_starlight     ) },
-    { "improved_moonfire",      OPT_INT8,  &( talents.improved_moonfire     ) },
-    { "improved_moonkin_form",  OPT_INT8,  &( talents.improved_moonkin_form ) },
-    { "insect_swarm",           OPT_INT8,  &( talents.insect_swarm          ) },
-    { "intensity",              OPT_INT8,  &( talents.intensity             ) },
-    { "living_spirit",          OPT_INT8,  &( talents.living_spirit         ) },
-    { "lunar_guidance",         OPT_INT8,  &( talents.lunar_guidance        ) },
-    { "master_shapeshifter",    OPT_INT8,  &( talents.master_shapeshifter   ) },
-    { "moonfury",               OPT_INT8,  &( talents.moonfury              ) },
-    { "moonglow",               OPT_INT8,  &( talents.moonglow              ) },
-    { "moonkin_form",           OPT_INT8,  &( talents.moonkin_form          ) },
-    { "natural_perfection",     OPT_INT8,  &( talents.natural_perfection    ) },
-    { "natures_grace",          OPT_INT8,  &( talents.natures_grace         ) },
-    { "natures_swiftness",      OPT_INT8,  &( talents.natures_swiftness     ) },
-    { "omen_of_clarity",        OPT_INT8,  &( talents.omen_of_clarity       ) },
-    { "starlight_wrath",        OPT_INT8,  &( talents.starlight_wrath       ) },
-    { "vengeance",              OPT_INT8,  &( talents.vengeance             ) },
-    { "wrath_of_cenarius",      OPT_INT8,  &( talents.wrath_of_cenarius     ) },
+    { "balance_of_power",          OPT_INT8,  &( talents.balance_of_power          ) },
+    { "dreamstate",                OPT_INT8,  &( talents.dreamstate                ) },
+    { "earth_and_moon",            OPT_INT8,  &( talents.earth_and_moon            ) },
+    { "eclipse",                   OPT_INT8,  &( talents.eclipse                   ) },
+    { "focused_starlight",         OPT_INT8,  &( talents.focused_starlight         ) },
+    { "force_of_nature",           OPT_INT8,  &( talents.force_of_nature           ) },
+    { "improved_faerie_fire",      OPT_INT8,  &( talents.improved_faerie_fire      ) },
+    { "improved_mark_of_the_wild", OPT_INT8,  &( talents.improved_mark_of_the_wild ) },
+    { "improved_moonfire",         OPT_INT8,  &( talents.improved_moonfire         ) },
+    { "improved_moonkin_form",     OPT_INT8,  &( talents.improved_moonkin_form     ) },
+    { "insect_swarm",              OPT_INT8,  &( talents.insect_swarm              ) },
+    { "intensity",                 OPT_INT8,  &( talents.intensity                 ) },
+    { "living_spirit",             OPT_INT8,  &( talents.living_spirit             ) },
+    { "lunar_guidance",            OPT_INT8,  &( talents.lunar_guidance            ) },
+    { "master_shapeshifter",       OPT_INT8,  &( talents.master_shapeshifter       ) },
+    { "moonfury",                  OPT_INT8,  &( talents.moonfury                  ) },
+    { "moonglow",                  OPT_INT8,  &( talents.moonglow                  ) },
+    { "moonkin_form",              OPT_INT8,  &( talents.moonkin_form              ) },
+    { "natural_perfection",        OPT_INT8,  &( talents.natural_perfection        ) },
+    { "natures_grace",             OPT_INT8,  &( talents.natures_grace             ) },
+    { "natures_reach",             OPT_INT8,  &( talents.natures_reach             ) },
+    { "natures_swiftness",         OPT_INT8,  &( talents.natures_swiftness         ) },
+    { "omen_of_clarity",           OPT_INT8,  &( talents.omen_of_clarity           ) },
+    { "starlight_wrath",           OPT_INT8,  &( talents.starlight_wrath           ) },
+    { "vengeance",                 OPT_INT8,  &( talents.vengeance                 ) },
+    { "wrath_of_cenarius",         OPT_INT8,  &( talents.wrath_of_cenarius         ) },
     { NULL, OPT_UNKNOWN }
   };
 

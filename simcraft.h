@@ -447,7 +447,6 @@ struct player_t
     int8_t  arcane_intellect;
     int8_t  mark_of_the_wild;
     int8_t  divine_spirit;
-    int8_t  shadow_form; 
     int8_t  bloodlust;
     double  cast_time_reduction;
     int8_t  darkmoon_crusade;
