@@ -124,9 +124,7 @@ static void trigger_omen_of_clarity( action_t* a )
 
   if( p -> talents.omen_of_clarity == 0 ) return;
 
-  static bool AFTER_3_0_0 = a -> sim -> patch.after( 3, 0, 0 );
-
-  if( AFTER_3_0_0 )
+  if( sim_t::WotLK )
   {
     struct cooldown_t : public event_t
     {
@@ -775,11 +773,9 @@ struct wrath_t : public druid_spell_t
 
   virtual void schedule_execute()
   {
-    static bool AFTER_3_0_0 = sim -> patch.after( 3, 0, 0 );
-    if( AFTER_3_0_0 )
+    if( sim_t::WotLK )
       if( player -> cast_druid() -> buffs_natures_grace ) 
 	trigger_gcd *= 0.5;
-
     druid_spell_t::schedule_execute();
     trigger_gcd = player -> base_gcd;
   }
@@ -845,13 +841,11 @@ void druid_t::spell_start_event( spell_t* s )
 
 void druid_t::spell_hit_event( spell_t* s )
 {
-  static bool AFTER_3_0_0 = sim -> patch.after( 3, 0, 0 );
-
   player_t::spell_hit_event( s );
 
   if( s -> result == RESULT_CRIT )
   {
-    if( AFTER_3_0_0 && buffs.moonkin_aura )
+    if( sim_t::WotLK && buffs.moonkin_aura )
     {
       resource_gain( RESOURCE_MANA, resource_max[ RESOURCE_MANA ] * 0.02, "moonkin_form" );
     }
@@ -868,11 +862,9 @@ void druid_t::spell_hit_event( spell_t* s )
 
 void druid_t::spell_finish_event( spell_t* s )
 {
-  static bool AFTER_3_0_0 = sim -> patch.after( 3, 0, 0 );
-
   player_t::spell_finish_event( s );
 
-  if( AFTER_3_0_0 ) trigger_omen_of_clarity( s );
+  if( sim_t::WotLK ) trigger_omen_of_clarity( s );
 
   if( gear.tier4_2pc && rand_t::roll( 0.05 ) )
   {
@@ -905,8 +897,6 @@ action_t* druid_t::create_action( const std::string& name,
 
 void druid_t::init_base()
 {
-  static bool AFTER_3_0_0 = sim -> patch.after( 3, 0, 0 );
-
   attribute_base[ ATTR_STRENGTH  ] =  81;
   attribute_base[ ATTR_AGILITY   ] =  65;
   attribute_base[ ATTR_STAMINA   ] =  85;
@@ -915,7 +905,7 @@ void druid_t::init_base()
 
   base_spell_crit = 0.0185;
   initial_spell_crit_per_intellect = 0.01 / ( level + 10 );
-  initial_spell_power_per_intellect = talents.lunar_guidance * ( AFTER_3_0_0 ? 0.04 : 0.08 );
+  initial_spell_power_per_intellect = talents.lunar_guidance * ( sim_t::WotLK ? 0.04 : 0.08 );
 
   base_attack_power = -20;
   base_attack_crit  = 0.01;

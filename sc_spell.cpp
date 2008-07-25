@@ -38,8 +38,7 @@ double spell_t::execute_time()
   if( p -> buffs.bloodlust     ) t *= 0.7;
   if( p -> buffs.moonkin_haste ) t *= 0.8;
 
-  static bool AFTER_3_0_0 = sim -> patch.after( 3, 0, 0 );
-  if( AFTER_3_0_0 && p -> buffs.wrath_of_air ) t *= 0.9;
+  if( sim_t::WotLK && p -> buffs.wrath_of_air ) t *= 0.9;
 
   return t;
 }
@@ -59,6 +58,23 @@ double spell_t::duration()
   return t;
 }
 
+// spell_t::gcd =============================================================
+
+double spell_t::gcd()
+{
+  double t = trigger_gcd;
+
+  if( t == 0 ) return 0;
+
+  t *= player -> haste;
+  if( player -> buffs.bloodlust     ) t *= 0.70;
+  if( player -> buffs.moonkin_haste ) t *= 0.80;
+
+  if( t < min_gcd ) t = min_gcd;
+
+  return t;
+}
+
 // spell_t::player_buff ======================================================
 
 void spell_t::player_buff()
@@ -72,6 +88,11 @@ void spell_t::player_buff()
   player_power = p -> composite_spell_power( school );
 
   if( p -> gear.chaotic_skyfire ) player_crit_bonus *= 1.09;
+
+  if( player -> buffs.elemental_oath )
+  {
+    player_crit_bonus *= 1.0 + p -> buffs.elemental_oath * 0.01;
+  }
 
   report_t::debug( sim, "spell_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f", 
 		   name(), player_hit, player_crit, player_power, player_penetration );
@@ -131,7 +152,7 @@ void spell_t::calculate_result()
   player_buff();
   target_debuff( DMG_DIRECT );
 
-  if( may_miss )
+  if( ( result == RESULT_NONE ) && may_miss )
   {
     double miss_chance = level_based_miss_chance( player -> level, sim -> target -> level );
 
@@ -140,31 +161,34 @@ void spell_t::calculate_result()
     if( rand_t::roll( std::max( miss_chance, (double) 0.01 ) ) )
     {
       result = RESULT_MISS;
-      return;
     }
   }
 
-  if( may_resist )
+  if( ( result == RESULT_NONE ) && may_resist )
   {
     if( binary || num_ticks )
     {
       if( rand_t::roll( resistance() ) )
       {
 	result = RESULT_RESIST;
-	return;
       }
     }
   }
 
-  result = RESULT_HIT;
-
-  if( may_crit )
+  if( result == RESULT_NONE )
   {
-    double crit_chance = base_crit + player_crit + target_crit;
+    result = RESULT_HIT;
 
-    if( rand_t::roll( crit_chance ) )
+    if( may_crit )
     {
-      result = RESULT_CRIT;
+      double crit_chance = base_crit + player_crit + target_crit;
+
+      if( rand_t::roll( crit_chance ) )
+      {
+	result = RESULT_CRIT;
+      }
     }
   }
+
+  report_t::debug( sim, "%s result for %s is %s", player -> name(), name(), util_t::result_type_string( result ) );
 }

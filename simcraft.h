@@ -213,6 +213,7 @@ struct sim_t
   int8_t             method;
 
   // Common Core 
+  static bool WotLK;
   std::string patch_str;
   patch_t     patch;
   player_t*   player_list;
@@ -451,7 +452,9 @@ struct player_t
     double  cast_time_reduction;
     int8_t  darkmoon_crusade;
     int8_t  darkmoon_wrath;
-    int8_t  grace_of_air;
+    int8_t  elemental_oath;
+    double  flametongue_totem;
+    double  grace_of_air;
     int8_t  improved_moonkin_aura;
     int8_t  innervate;
     int8_t  lightning_capacitor;
@@ -459,7 +462,7 @@ struct player_t
     int8_t  moonkin_haste;
     int8_t  moonkin_aura;
     int8_t  power_infusion;
-    int8_t  strength_of_earth;
+    double  strength_of_earth;
     int16_t talisman_of_ascendance;
     int8_t  totem_of_wrath;
     int8_t  unleashed_rage;
@@ -487,6 +490,7 @@ struct player_t
     event_t* darkmoon_crusade;
     event_t* darkmoon_wrath;
     event_t* elder_scribes;
+    event_t* elemental_oath;
     event_t* eternal_sage;
     event_t* eye_of_magtheridon;
     event_t* lightning_capacitor;
@@ -545,7 +549,6 @@ struct player_t
   virtual double composite_spell_hit()         { return spell_hit;         }
   virtual double composite_spell_penetration() { return spell_penetration; }
 
-  virtual double    gcd( double trigger_gcd=0 ); 
   virtual void      schedule_ready( double delta_time=0 );
   virtual action_t* execute_action();
 
@@ -722,6 +725,7 @@ struct stats_t
   player_t* player;
   stats_t* next;
   bool channeled;
+  bool background;
   bool analyzed;
   bool initialized;
 
@@ -771,7 +775,7 @@ struct action_t
   int8_t school, resource, tree, result;
   bool bleed, binary, channeled, background, repeating, aoe, harmful;
   bool may_miss, may_resist, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
-  double trigger_gcd;
+  double min_gcd, trigger_gcd;
   double base_execute_time, base_duration, base_cost;
   double   base_multiplier,   base_hit,   base_crit,   base_crit_bonus,   base_power,   base_penetration;
   double player_multiplier, player_hit, player_crit, player_crit_bonus, player_power, player_penetration;
@@ -782,6 +786,8 @@ struct action_t
   int8_t num_ticks, current_tick;
   std::string cooldown_group, duration_group;
   double cooldown, cooldown_ready, duration_ready;
+  weapon_t* weapon;
+  bool normalize_weapon_speed;
   stats_t* stats;
   rank_t* rank;
   int8_t rank_index;
@@ -798,6 +804,7 @@ struct action_t
   virtual double cost();
   virtual double execute_time() { return base_execute_time; }
   virtual double duration()     { return base_duration;     }
+  virtual double gcd()          { return 0;                 }
   virtual void player_buff();
   virtual void target_debuff( int8_t dmg_type );
   virtual void calculate_result() { assert(0); }
@@ -828,8 +835,6 @@ struct action_t
 struct attack_t : public action_t
 {
   double base_expertise, player_expertise, target_expertise;
-  bool normalize_weapon_speed;
-  weapon_t* weapon;
 
   attack_t( const char* n=0, player_t* p=0, int8_t r=RESOURCE_NONE, int8_t s=SCHOOL_PHYSICAL, int8_t t=TREE_NONE );
   virtual ~attack_t() {}
@@ -837,6 +842,7 @@ struct attack_t : public action_t
   // Attack Overrides
   virtual double execute_time();
   virtual double duration();
+  virtual double gcd();
   virtual void   player_buff();
   virtual void   target_debuff( int8_t dmg_type );
   virtual void   build_table( std::vector<double>& chances, std::vector<int>& results );
@@ -871,6 +877,7 @@ struct spell_t : public action_t
   // Spell Overrides
   virtual double execute_time();
   virtual double duration();
+  virtual double gcd();
   virtual void   player_buff();
   virtual void   target_debuff( int8_t dmg_type );
   virtual double level_based_miss_chance( int8_t player, int8_t target );
@@ -1100,6 +1107,8 @@ struct util_t
   static const char* weapon_type_string        ( int8_t type );
   static const char* weapon_enchant_type_string( int8_t type );
   static const char* weapon_buff_type_string   ( int8_t type );
+  static const char* elixir_type_string        ( int8_t type );
+  static const char* flask_type_string         ( int8_t type );
 
   static int string_split( std::vector<std::string>& results, const std::string& str, const char* delim );
   static int string_split( const std::string& str, const char* delim, const char* format, ... );

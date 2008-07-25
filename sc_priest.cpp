@@ -1295,15 +1295,25 @@ struct divine_spirit_t : public priest_spell_t
   virtual void execute()
   {
     report_t::log( sim, "%s performs %s", player -> name(), name() );
-    static double bonus = sim -> patch.after( 3, 0, 0 ) ? 0.03 : 0.05;
+
+    double bonus_power = sim -> patch.after( 3, 0, 0 ) ? 0.03 : 0.05;
+
+    double bonus_spirit = ( player -> level <= 69 ) ? 40 :
+                          ( player -> level <= 79 ) ? 50 : 80;
+
     int8_t ids = player -> cast_priest() -> talents.improved_divine_spirit;
+
     for( player_t* p = sim -> player_list; p; p = p -> next )
     {
-      if( p -> buffs.divine_spirit > 1 )
+      if( p -> buffs.divine_spirit == 0 )
       {
-	p -> spell_power_per_spirit -= ( p -> buffs.divine_spirit - 1 ) * bonus;
+	p -> attribute[ ATTR_SPIRIT ] += bonus_spirit;
       }
-      p -> spell_power_per_spirit += ids * bonus;
+      else if( p -> buffs.divine_spirit > 0 ) 
+      {
+	p -> buffs.divine_spirit--;
+      }
+      p -> spell_power_per_spirit += ( ids - p -> buffs.divine_spirit ) * bonus_power;
       p -> buffs.divine_spirit = ids + 1;
     }
   }
@@ -1508,8 +1518,6 @@ pet_t* priest_t::create_pet( const std::string& pet_name )
 
 void priest_t::init_base()
 {
-  static bool AFTER_3_0_0 = sim -> patch.after( 3, 0, 0 );
-
   attribute_base[ ATTR_STRENGTH  ] =  40;
   attribute_base[ ATTR_AGILITY   ] =  45;
   attribute_base[ ATTR_STAMINA   ] =  60;
@@ -1525,7 +1533,7 @@ void priest_t::init_base()
   initial_spell_power_per_spirit = ( talents.spiritual_guidance * 0.05 +
 				     talents.twisted_faith      * 0.06 );
   initial_spell_power_multiplier *= 1.0 + talents.twin_faiths * 0.01;
-  if( AFTER_3_0_0 ) initial_spell_power_multiplier *= 1.0 + talents.enlightenment * 0.01;
+  if( sim_t::WotLK ) initial_spell_power_multiplier *= 1.0 + talents.enlightenment * 0.01;
 
   base_attack_power = -10;
   base_attack_crit  = 0.03;
@@ -1539,7 +1547,7 @@ void priest_t::init_base()
   health_per_stamina = 10;
   mana_per_intellect = 15;
 
-  if( AFTER_3_0_0 )
+  if( sim_t::WotLK )
   {
     attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.0 + talents.mental_strength * 0.01;
   }

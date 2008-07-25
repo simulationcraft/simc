@@ -21,6 +21,7 @@ action_t::action_t( int8_t      ty,
   bleed(false), binary(false), channeled(false), background(false), repeating(false), aoe(false), harmful(true),
   may_miss(false), may_resist(false), may_dodge(false), may_parry(false), 
   may_glance(false), may_block(false), may_crush(false), may_crit(false),
+  min_gcd(1.0), trigger_gcd(p->base_gcd),
   base_execute_time(0), base_duration(0), base_cost(0),
     base_multiplier(1),   base_hit(0),   base_crit(0),   base_crit_bonus(1.0),   base_power(0),   base_penetration(0),
   player_multiplier(1), player_hit(0), player_crit(0), player_crit_bonus(1.0), player_power(0), player_penetration(0),
@@ -29,13 +30,13 @@ action_t::action_t( int8_t      ty,
   dot(0), base_dot(0), dot_power_mod(0),
   dot_tick(0), time_remaining(0), num_ticks(0), current_tick(0), 
   cooldown_group(n), duration_group(n), cooldown(0), cooldown_ready(0), duration_ready(0),
+  weapon( 0 ), normalize_weapon_speed( false ),
   stats(0), rank(0), rank_index(-1), event(0), time_to_execute(0), time_to_tick(0), next(0)
 {
   report_t::debug( sim, "Player %s creates action %s", p -> name(), name() );
   action_t** last = &( p -> action_list );
   while( *last ) last = &( (*last) -> next );
   *last = this;
-  trigger_gcd = p -> base_gcd;
   for( stats = player -> stats_list; stats; stats = stats -> next )
   {
     if( stats -> name == n )
@@ -114,7 +115,14 @@ double action_t::cost()
     if( c < 0 ) c = 0;
 
     if( player -> buffs.power_infusion ) c *= 0.80;
+
+    if( player -> buffs.elemental_oath )
+    {
+      c *= 1.0 - player -> buffs.elemental_oath * 0.01;
+    }
   }
+
+  report_t::debug( sim, "action_t::cost: %s %.2f %s", name(), c, util_t::resource_type_string( resource ) );
 
    return c;
 }
@@ -160,8 +168,6 @@ void action_t::player_buff()
 
 void action_t::target_debuff( int8_t dmg_type )
 {
-  static bool AFTER_3_0_0 = sim -> patch.after( 3, 0, 0 );
-
   target_multiplier  = 1.0;
   target_hit         = 0;
   target_crit        = 0;
@@ -187,7 +193,7 @@ void action_t::target_debuff( int8_t dmg_type )
     {
       target_multiplier *= 1.0 + ( t -> debuffs.curse_of_shadows * 0.01 );
       target_multiplier *= 1.0 + ( t -> debuffs.shadow_weaving   * 0.02 );
-      if( ! AFTER_3_0_0 || dmg_type == DMG_DIRECT )
+      if( ! sim_t::WotLK || dmg_type == DMG_DIRECT )
       {
 	if( t -> debuffs.shadow_vulnerability ) target_multiplier *= 1.20;
 	static uptime_t* sv_uptime = sim -> get_uptime( "shadow_vulnerability" );
@@ -215,7 +221,7 @@ void action_t::target_debuff( int8_t dmg_type )
     else if( school == SCHOOL_NATURE )
     {
       target_multiplier *= 1.0 + ( t -> debuffs.earth_and_moon * 0.02 );
-      if( ! AFTER_3_0_0 || dmg_type == DMG_DIRECT )
+      if( ! sim_t::WotLK || dmg_type == DMG_DIRECT )
       {
 	if( t -> debuffs.nature_vulnerability ) target_multiplier *= 1.20;
 	static uptime_t* sv_uptime = sim -> get_uptime( "nature_vulnerability" );
@@ -235,8 +241,6 @@ void action_t::target_debuff( int8_t dmg_type )
 
 bool action_t::result_is_hit()
 {
-  report_t::debug( sim, "%s result for %s is %s", player -> name(), name(), util_t::result_type_string( result ) );
-
   return( result == RESULT_HIT    || 
 	  result == RESULT_CRIT   || 
 	  result == RESULT_GLANCE || 
@@ -553,13 +557,18 @@ bool action_t::ready()
 
 void action_t::reset()
 {
-  stats -> channeled = channeled; // FIXME! Move this to init_stats()
   current_tick = 0;
   time_remaining = 0;
   cooldown_ready = 0;
   duration_ready = 0;
   result = RESULT_NONE;
   event = 0;
+
+  // FIXME! stats gets initialized inside action_t constructor which occurs BEFORE the 
+  // spell_t/attack_t derivative constructor gets executed.  But the "channeled" and "background"
+  // fields are set in the derived sub-class which is too late.  So set them here.....
+  stats -> channeled  = channeled;  
+  stats -> background = background;
 }
 
 // ==========================================================================

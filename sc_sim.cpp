@@ -129,6 +129,8 @@ bool timing_list_t::empty()
 // Simulator
 // ==========================================================================
 
+bool sim_t::WotLK = false;
+
 // sim_t::sim_t =============================================================
 
 sim_t::sim_t() : 
@@ -312,6 +314,8 @@ bool sim_t::init()
       return false;
     }
     patch.set( arch, version, revision );
+
+    WotLK = patch.after( 3, 0, 0 );
   }
 
   target -> init();

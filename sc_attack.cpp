@@ -13,8 +13,7 @@
 
 attack_t::attack_t( const char* n, player_t* p, int8_t r, int8_t s, int8_t t ) :
   action_t( ACTION_ATTACK, n, p, r, s, t ),
-  base_expertise(0), player_expertise(0), target_expertise(0), 
-  normalize_weapon_speed(false), weapon(0)
+  base_expertise(0), player_expertise(0), target_expertise(0)
 {
   may_miss = may_resist = may_dodge = may_parry = may_glance = may_block = may_crit = true;
 
@@ -40,8 +39,10 @@ double attack_t::execute_time()
   t *= player -> haste;
   if( player -> buffs.bloodlust ) t *= 0.7;
 
-  static bool AFTER_3_0_0 = sim -> patch.after( 3, 0, 0 );
-  if( AFTER_3_0_0 && player -> buffs.windfury_totem != 0 ) t *= 0.8;
+  if( sim_t::WotLK && player -> buffs.windfury_totem != 0 )
+  {
+    t *= 1.0 - player -> buffs.windfury_totem;
+  }
 
   return t;
 }
@@ -57,6 +58,27 @@ double attack_t::duration()
     t *= player -> haste;
     if( player -> buffs.bloodlust ) t *= 0.7;
   }
+
+  return t;
+}
+
+// attack_t::gcd ============================================================
+
+double attack_t::gcd()
+{
+  double t = trigger_gcd;
+
+  if( t == 0 ) return 0;
+
+  t *= player -> haste;
+  if( player -> buffs.bloodlust ) t *= 0.7;
+
+  if( sim_t::WotLK && player -> buffs.windfury_totem != 0 )
+  {
+    t *= 1.0 - player -> buffs.windfury_totem;
+  }
+
+  if( t < min_gcd ) t = min_gcd;
 
   return t;
 }
@@ -236,6 +258,8 @@ void attack_t::calculate_result()
       result = RESULT_RESIST;
     }
   }
+
+  report_t::debug( sim, "%s result for %s is %s", player -> name(), name(), util_t::result_type_string( result ) );
 }
 
 // attack_t::calculate_damage ===============================================

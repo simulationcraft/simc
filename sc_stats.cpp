@@ -8,7 +8,7 @@
 // stats_t::stats_t =========================================================
 
 stats_t::stats_t( action_t* a ) : 
-  name(a->name_str), sim(a->sim), player(a->player), next(0), channeled(false), analyzed(false), initialized(false)
+  name(a->name_str), sim(a->sim), player(a->player), next(0), channeled(false), background(false), analyzed(false), initialized(false)
 {
   
 }
@@ -68,7 +68,7 @@ void stats_t::add( double amount,
     if( amount < r.min_dmg ) r.min_dmg = amount;
     if( amount > r.max_dmg ) r.max_dmg = amount;
     // Keep track of last execute to adjust 'execute_time' for GCD and Lag
-    last_execute = this;
+    if( ! background ) last_execute = this;
   }
   else
   {
@@ -171,5 +171,6 @@ void stats_t::adjust_for_gcd_and_lag( double lost_time )
   if( last_execute )
   {
     last_execute -> total_execute_time += lost_time;
+    last_execute = 0;
   }
 }

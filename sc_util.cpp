@@ -156,6 +156,21 @@ const char* util_t::weapon_buff_type_string( int8_t buff )
   return "unknown";
 }
 
+const char* util_t::flask_type_string( int8_t flask )
+{
+  switch( flask )
+  {
+  case FLASK_NONE:               return "none";
+  case FLASK_BLINDING_LIGHT:     return "blinding_light";
+  case FLASK_DISTILLED_WISDOM:   return "distilled_wisdom";
+  case FLASK_MIGHTY_RESTORATION: return "mighty_restoration";
+  case FLASK_PURE_DEATH:         return "pure_death";
+  case FLASK_RELENTLESS_ASSAULT: return "relentless_assault";
+  case FLASK_SUPREME_POWER:      return "supreme_power";
+  }
+  return "unknown";
+}
+
 int util_t::string_split( std::vector<std::string>& results, 
 			  const std::string&        str,
 			  const char*               delim )

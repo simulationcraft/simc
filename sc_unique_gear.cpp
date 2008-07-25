@@ -526,6 +526,7 @@ static void trigger_lightning_capacitor( spell_t* s )
       may_crit    = true;
       trigger_gcd = 0;
       background  = true;
+      reset();
     }
     virtual void player_buff()
     {
@@ -576,9 +577,9 @@ static void trigger_timbals_crystal( spell_t* s )
       base_cost   = 0;
       cooldown    = 15;
       may_crit    = true;
-
       trigger_gcd = 0;
       background  = true;
+      reset();
     }
     virtual void player_buff()
     {

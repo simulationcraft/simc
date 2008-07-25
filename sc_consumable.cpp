@@ -10,10 +10,74 @@
 // ==========================================================================
 
 // ==========================================================================
+// Flask
+// ==========================================================================
+
+struct flask_t : public action_t
+{
+  int8_t type;
+
+  flask_t( player_t* p, const std::string& option_str ) : 
+    action_t( ACTION_OTHER, "flask", p ), type( FLASK_NONE )
+  {
+    trigger_gcd = 0;
+    harmful = false;
+    for( int i=0; i < FLASK_MAX; i++ )
+    {
+      if( option_str == util_t::flask_type_string( i ) )
+      {
+	type = i;
+	break;
+      }
+    }
+    assert( type != FLASK_NONE );
+  }
+  
+  virtual void execute()
+  {
+    report_t::log( sim, "%s uses Flask %s", player -> name(), util_t::flask_type_string( type ) );
+    player -> flask = type;
+    switch( type )
+    {
+    case FLASK_BLINDING_LIGHT:     
+      player -> spell_power[ SCHOOL_ARCANE ] += 80;
+      player -> spell_power[ SCHOOL_HOLY   ] += 80;
+      player -> spell_power[ SCHOOL_NATURE ] += 80;
+      break;
+    case FLASK_DISTILLED_WISDOM:
+      player -> attribute[ ATTR_INTELLECT ] += 65;
+      break;
+    case FLASK_MIGHTY_RESTORATION:
+      player -> mp5 += 25;
+      break;
+    case FLASK_PURE_DEATH:
+      player -> spell_power[ SCHOOL_FIRE   ] += 80;
+      player -> spell_power[ SCHOOL_FROST  ] += 80;
+      player -> spell_power[ SCHOOL_SHADOW ] += 80;
+      break;
+    case FLASK_RELENTLESS_ASSAULT:
+      player -> attack_power += 120;
+      break;
+    case FLASK_SUPREME_POWER:
+      player -> spell_power[ SCHOOL_MAX ] += 70;
+      break;
+    default: assert(0);
+    }
+  }
+
+  virtual bool ready()
+  {
+    return( player -> flask           ==  FLASK_NONE &&
+	    player -> elixir_guardian == ELIXIR_NONE &&
+	    player -> elixir_battle   == ELIXIR_NONE );
+  }
+};
+
+// ==========================================================================
 // Destruction Potion
 // ==========================================================================
 
-struct destruction_potion_t : public spell_t
+struct destruction_potion_t : public action_t
 {
   struct expiration_t : public event_t
   {
@@ -31,7 +95,7 @@ struct destruction_potion_t : public spell_t
   };
   
   destruction_potion_t( player_t* p, const std::string& option_str ) : 
-    spell_t( "destruction_potion", p )
+    action_t( ACTION_OTHER, "destruction_potion", p )
   {
     cooldown = 120.0;
     cooldown_group = "potion";
@@ -53,12 +117,12 @@ struct destruction_potion_t : public spell_t
 // Mana Potion
 // ==========================================================================
 
-struct mana_potion_t : public spell_t
+struct mana_potion_t : public action_t
 {
   double mana;
 
   mana_potion_t( player_t* p, const std::string& option_str ) : 
-    spell_t( "mana_potion", p ), mana(0)
+    action_t( ACTION_OTHER, "mana_potion", p ), mana(0)
   {
     cooldown = 120.0;
     cooldown_group = "potion";
@@ -76,9 +140,6 @@ struct mana_potion_t : public spell_t
 
   virtual bool ready()
   {
-    if( ! spell_t::ready() )
-      return false;
-
     return( player -> resource_max    [ RESOURCE_MANA ] - 
 	    player -> resource_current[ RESOURCE_MANA ] ) > mana;
   }
@@ -88,12 +149,12 @@ struct mana_potion_t : public spell_t
 // Mana Gem
 // ==========================================================================
 
-struct mana_gem_t : public spell_t
+struct mana_gem_t : public action_t
 {
   double mana;
 
   mana_gem_t( player_t* p, const std::string& option_str ) : 
-    spell_t( "mana_gem", p ), mana(0)
+    action_t( ACTION_OTHER, "mana_gem", p ), mana(0)
   {
     cooldown = 120.0;
     cooldown_group = "rune";
@@ -111,9 +172,6 @@ struct mana_gem_t : public spell_t
 
   virtual bool ready()
   {
-    if( ! spell_t::ready() )
-      return false;
-
     return( player -> resource_max    [ RESOURCE_MANA ] - 
 	    player -> resource_current[ RESOURCE_MANA ] ) > mana;
   }
@@ -123,12 +181,12 @@ struct mana_gem_t : public spell_t
 // Health Stone
 // ==========================================================================
 
-struct health_stone_t : public spell_t
+struct health_stone_t : public action_t
 {
   double health;
 
   health_stone_t( player_t* p, const std::string& option_str ) : 
-    spell_t( "health_stone", p ), health(0)
+    action_t( ACTION_OTHER, "health_stone", p ), health(0)
   {
     cooldown = 120.0;
     cooldown_group = "rune";
@@ -146,9 +204,6 @@ struct health_stone_t : public spell_t
 
   virtual bool ready()
   {
-    if( ! spell_t::ready() )
-      return false;
-
     return( player -> resource_max    [ RESOURCE_HEALTH ] - 
 	    player -> resource_current[ RESOURCE_HEALTH ] ) > health;
   }
@@ -158,13 +213,13 @@ struct health_stone_t : public spell_t
 // Dark Rune
 // ==========================================================================
 
-struct dark_rune_t : public spell_t
+struct dark_rune_t : public action_t
 {
   double health;
   double mana;
 
   dark_rune_t( player_t* p, const std::string& options_str ) : 
-    spell_t( "dark_rune", p ), health(0), mana(0)
+    action_t( ACTION_OTHER, "dark_rune", p ), health(0), mana(0)
   {
     option_t options[] =
     {
@@ -190,9 +245,6 @@ struct dark_rune_t : public spell_t
 
   virtual bool ready()
   {
-    if( ! spell_t::ready() )
-      return false;
-
     if( player -> resource_current[ RESOURCE_HEALTH ] <= health )
       return false;
 
@@ -211,6 +263,7 @@ action_t* consumable_t::create_action( player_t*          p,
 {
   if( name == "dark_rune"          ) return new          dark_rune_t( p, option_str );
   if( name == "destruction_potion" ) return new destruction_potion_t( p, option_str );
+  if( name == "flask"              ) return new              flask_t( p, option_str );
   if( name == "health_stone"       ) return new       health_stone_t( p, option_str );
   if( name == "mana_potion"        ) return new        mana_potion_t( p, option_str );
   if( name == "mana_gem"           ) return new           mana_gem_t( p, option_str );

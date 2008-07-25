@@ -769,10 +769,7 @@ void player_t::dismiss_pet( const std::string& pet_name )
 
 void player_t::action_start( action_t* action )
 {
-  if( action -> trigger_gcd > 0 ) 
-  {
-    gcd_ready = sim -> current_time + gcd( action -> trigger_gcd );
-  }
+  gcd_ready = sim -> current_time + action -> gcd();
 
   if( ! action -> background )
   {
@@ -1015,18 +1012,6 @@ void player_t::share_duration( const std::string& group,
       }
     }
   }
-}
-
-// player_t::gcd ============================================================
-
-double player_t::gcd( double trigger_gcd )
-{
-  double t = trigger_gcd > 0 ? trigger_gcd : base_gcd;
-  t *= haste;
-  if( buffs.bloodlust     ) t *= 0.70;
-  if( buffs.moonkin_haste ) t *= 0.80;
-  if( t < 1.0 ) t = 1.0;
-  return t;
 }
 
 // player_t::recent_cast ====================================================

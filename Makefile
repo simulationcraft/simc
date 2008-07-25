@@ -5,7 +5,7 @@
 #
 # WARNING!  WARNING!  WARNING!
 
-OPTS = -mtune=pentium-m -malign-double -msse -msse2 -mfpmath=sse -maccumulate-outgoing-args -O3 
+OPTS = -malign-double -msse -msse2 -mfpmath=sse -maccumulate-outgoing-args -O3 
 
 SFMT = -I./sfmt -DUSE_SFMT -DHAVE_SSE2
 
@@ -32,13 +32,13 @@ SRC =\
 	sc_util.cpp		\
 	sc_weapon.cpp
 
-simcraft build:
+simcraft opt:
 	g++ -I. $(OPTS) $(SFMT) -Wall $(SRC) -o simcraft
 
 debug:
-	g++ -DDEBUG -g -I. -Wall $(SRC) -o simcraft
+	g++ -DDEBUG -g -I. $(SFMT) -Wall $(SRC) -o simcraft
 
 REV=0
 tarball:
-	tar -cvf simcraft-$(REV).tar $(SRC) Makefile profiles/* 
+	tar -cvf simcraft-r$(REV).tar $(SRC) Makefile profiles/* 
 	gzip simcraft-$(REV).tar
