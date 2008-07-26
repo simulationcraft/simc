@@ -16,7 +16,33 @@ spell_t::spell_t( const char* n, player_t* p, int8_t r, int8_t s, int8_t t ) :
 {
   may_miss = may_resist = true;
   base_crit_bonus = 0.5;
+  trigger_gcd = p -> base_gcd;
+  min_gcd = 1.0;
 }   
+
+// spell_t::haste ============================================================
+
+double spell_t::haste()
+{
+  double h = player -> haste;
+  if( player -> buffs.bloodlust     ) h *= 0.70;
+  if( player -> buffs.moonkin_haste ) h *= 0.80;
+  if( sim_t::WotLK && player -> buffs.wrath_of_air ) h *= 0.9;
+  return h;
+}
+
+// spell_t::gcd =============================================================
+
+double spell_t::gcd()
+{
+  double t = trigger_gcd;
+  if( t == 0 ) return 0;
+
+  t *= haste();
+  if( t < min_gcd ) t = min_gcd;
+
+  return t;
+}
 
 // spell_t::execute_time =====================================================
 
@@ -34,11 +60,7 @@ double spell_t::execute_time()
   double t = base_execute_time - p -> buffs.cast_time_reduction;
   if( t < 0 ) t = 0;
 
-  t *= p -> haste;
-  if( p -> buffs.bloodlust     ) t *= 0.7;
-  if( p -> buffs.moonkin_haste ) t *= 0.8;
-
-  if( sim_t::WotLK && p -> buffs.wrath_of_air ) t *= 0.9;
+  t *= haste();
 
   return t;
 }
@@ -48,30 +70,7 @@ double spell_t::execute_time()
 double spell_t::duration()
 {
   double t = base_duration;
-
-  if( channeled ) 
-  {
-    t *= player -> haste;
-    if( player -> buffs.bloodlust ) t *= 0.7;
-  }
-
-  return t;
-}
-
-// spell_t::gcd =============================================================
-
-double spell_t::gcd()
-{
-  double t = trigger_gcd;
-
-  if( t == 0 ) return 0;
-
-  t *= player -> haste;
-  if( player -> buffs.bloodlust     ) t *= 0.70;
-  if( player -> buffs.moonkin_haste ) t *= 0.80;
-
-  if( t < min_gcd ) t = min_gcd;
-
+  if( channeled ) t *= haste();
   return t;
 }
 

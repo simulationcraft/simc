@@ -1264,10 +1264,12 @@ struct inner_focus_t : public priest_spell_t
     trigger_gcd = 0;  
     cooldown = 180.0;
     cooldown *= 1.0 - p -> talents.aspiration * 0.10;
-    assert( ! options_str.empty() );
-    // This will prevent InnerFocus from being called before the desired "free spell" is ready to be cast.
-    cooldown_group = options_str;
-    duration_group = options_str;
+    if( ! options_str.empty() )
+    {
+      // This will prevent InnerFocus from being called before the desired "free spell" is ready to be cast.
+      cooldown_group = options_str;
+      duration_group = options_str;
+    }
   }
    
   virtual void execute()

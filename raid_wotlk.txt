@@ -1,0 +1,151 @@
+#======================================================================================================
+# WARNING!  When making changes to this file in an editor, make sure it is saved in "plain text" format.
+#======================================================================================================
+
+# TO EXECUTE THIS PARAMETER FILE:  simcraft file=raid_wotlk.txt
+
+#
+# Globals
+#
+
+# patch level of 3.0.0 or later implies Wrath of the Lich King
+patch=3.0.0
+
+# Lag is a random value centered on the value below with a range of +/- 0.05 seconds
+lag=0.2
+
+# Boss Level
+target_level=83
+
+# One of "max_time" (fight time in seconds) or "target_health" must be specified.
+# When "max_time" is used, the health of the target will be infered half-way through simulation.
+max_time=300
+
+# While min/max damage effects (such as weapons and direct damage spells) are averaged out, spell event
+# and attack table mechanics are still random.  In order to get a trustworthy answer from the simulator,
+# one must have a very long fight or iterate a short fight many, many times.  Given the constraints of
+# mana, iterating a short fight is often more realistic.
+iterations=1000
+
+# For convenience it is possible to tell the simulator that a specific resource (mana, rage, etc)
+# will never run out if you do not wish to configure raid/consumable buff scenarios to ensure sufficient
+# resource replenishment.
+infinite_mana=0
+
+# Since support for the Warrior class does not yet exist, one can infer a Sunder Armor debuff by 
+# artificially setting a low target armor value.
+target_armor=4000
+
+# Since support for the Paladin class does not yet exist, one can speficy target debuffs (such as
+# Judgement of Wisdom) and player buffs (such as Blessing of Wisdom and Sanctity Aura) as parameters.
+# Both blessing_of_wisdom=1 and sanctity_aura=1 would be included in each player section as appropriate.
+judgement_of_wisdom=1
+
+#
+# Shadow Priest
+#
+# (1) The 3500 option to "mana_potion" represents the mana gained and the amount below max required to trigger
+# (2) The 6000 option to "shadow_fiend" represents the amount below max mana required to trigger
+#
+priest=Priest_Shadow
+level=80
+talents=http://www.worldofwarcraft.com/info/classes/priest/talents2.html?tal=05023001300000000000000000000000000000000000000000000320023051025012305152501351
+actions=flask-pure_death/shadow_form/mana_potion-3500/shadow_fiend-6000/dispersion/vampiric_touch/inner_focus/shadow_word_pain/mind_blast/shadow_word_death/mind_flay
+gear_stamina=600
+gear_intellect=600
+gear_spirit=600
+gear_spell_power=2500
+gear_spell_hit_rating=200
+gear_spell_crit_rating=200
+gear_haste_rating=300
+blessing_of_wisdom=1
+pet=shadow_fiend
+main_hand=beast,damage_110,speed_1.5,school_shadow
+active=owner
+
+#
+# Holy Priest
+#
+# (1) The 3500 option to "mana_potion" represents the mana gained and the amount below max required to trigger
+# (2) The 6000 option to "shadow_fiend" represents the amount below max mana required to trigger
+# (3) The "shadow_word_pain" option to the "inner_focus" action makes sure IF won't be used until SW:P needs to be refreshed.
+#
+priest=Priest_Holy
+level=80
+talents=http://www.worldofwarcraft.com/info/classes/priest/talents2.html?tal=05023031305051225010200000020505103232015200000000000000000000000000000000000000
+actions=flask-blinding_light/divine_spirit/mana_potion-3500/shadow_fiend-6000/inner_focus-shadow_word_pain/shadow_word_pain/power_infusion/holy_fire/smite
+gear_stamina=600
+gear_intellect=600
+gear_spirit=600
+gear_spell_power=2500
+gear_spell_hit_rating=200
+gear_spell_crit_rating=200
+gear_haste_rating=300
+blessing_of_wisdom=1
+pet=shadow_fiend
+main_hand=beast,damage_110,speed_1.5,school_shadow
+active=owner
+
+#
+# Balance Druid
+#
+# (1) The 3500 option to "mana_potion" represents the mana gained and the amount below max required to trigger
+# (2) The "eclipse_trigger" option to "wrath" will make sure that it is only used to trigger the Eclipse talent
+#     which means it will only be used after the cooldown is ready and the effect has not yet proc'd.
+#
+druid=Druid_Balance
+level=80
+talents=http://www.worldofwarcraft.com/info/classes/druid/talents2.html?tal=500322012503130521330530005100000000000000000000000000023020331200000000000000000
+actions=flask-blinding_light/moonkin_form/mana_potion-3500/innervate/moonfire/wrath-eclipse_trigger/starfire
+gear_stamina=600
+gear_intellect=600
+gear_spirit=600
+gear_spell_power=2000
+gear_spell_hit_rating=200
+gear_spell_crit_rating=700
+gear_haste_rating=300
+blessing_of_wisdom=1
+
+#
+# Elemental Shaman
+#
+# (1) The 3500 option to "mana_potion" represents the mana gained and the amount below max required to trigger
+#
+shaman=Shaman_Elemental
+level=80
+talents=http://www.worldofwarcraft.com/info/classes/shaman/talents2.html?tal=35303015002153510250105100000000000000000000000000045005001005000000000000000
+actions=flask-blinding_light/mana_potion-3500/mana_spring_totem/totem_of_wrath/wrath_of_air_totem/flame_shock/bloodlust/elemental_mastery/lightning_bolt
+gear_stamina=600
+gear_intellect=800
+gear_spell_power=2000
+gear_spell_hit_rating=200
+gear_spell_crit_rating=700
+gear_haste_rating=300
+blessing_of_wisdom=1
+
+#
+# Enhancement Shaman
+#
+# (1) The "main_1" option to windfury_weapon puts the enchant only on the main-hand weapon
+# (2) The "off_1" option to flametongue_weapon puts the enchant only on the off-hand weapon
+# (3) The "maelstrom_5" option to lightning_bolt means that LB will only be executed when there is a 5-stack of Maelstrom Weapon,
+#     making the LB cast instant which prevents auto_attack resets.
+# (4) The tool accepts separate value for hit/crit even though WotLK has merged them.
+#
+shaman=Shaman_Enhancement
+level=80
+talents=http://www.worldofwarcraft.com/info/classes/shaman/talents2.html?tal=05203010000000000000000030205033105021335311523125100000000000000000000000000
+actions=flask-relentless_assault/auto_attack/windfury_weapon-main_1/flametongue_weapon-off_1/stormstrike/lightning_bolt-maelstrom_5/searing_totem/strength_of_earth_totem/grace_of_air_totem/shamanistic_rage/flame_shock/earth_shock/lightning_shield
+gear_strength=600
+gear_agility=300
+gear_stamina=600
+gear_attack_power=600
+gear_attack_hit_rating=200
+gear_attack_crit_rating=800
+gear_attack_expertise_rating=200
+gear_attack_penetration=500
+gear_spell_hit_rating=200
+gear_spell_crit_rating=800
+gear_haste_rating=300
+main_hand=fist,damage_500,speed_2.5
+off_hand=fist,damage_520,speed_2.6

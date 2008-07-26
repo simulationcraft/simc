@@ -21,7 +21,7 @@ action_t::action_t( int8_t      ty,
   bleed(false), binary(false), channeled(false), background(false), repeating(false), aoe(false), harmful(true),
   may_miss(false), may_resist(false), may_dodge(false), may_parry(false), 
   may_glance(false), may_block(false), may_crush(false), may_crit(false),
-  min_gcd(1.0), trigger_gcd(p->base_gcd),
+  min_gcd(0), trigger_gcd(0),
   base_execute_time(0), base_duration(0), base_cost(0),
     base_multiplier(1),   base_hit(0),   base_crit(0),   base_crit_bonus(1.0),   base_power(0),   base_penetration(0),
   player_multiplier(1), player_hit(0), player_crit(0), player_crit_bonus(1.0), player_power(0), player_penetration(0),
@@ -472,7 +472,7 @@ void action_t::assess_damage( double amount,
 
 void action_t::schedule_execute()
 {
-  report_t::debug( sim, "%s schedules execute for %s", player -> name(), name() );
+  report_t::log( sim, "%s schedules execute for %s", player -> name(), name() );
 
   time_to_execute = execute_time();
   

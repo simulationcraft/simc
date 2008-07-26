@@ -801,9 +801,10 @@ struct action_t
   virtual void parse_options( option_t*, const std::string& options_str );
   virtual rank_t* choose_rank( rank_t* rank_list );
   virtual double cost();
+  virtual double haste()        { return 1.0;               }
+  virtual double gcd()          { return trigger_gcd;       }
   virtual double execute_time() { return base_execute_time; }
   virtual double duration()     { return base_duration;     }
-  virtual double gcd()          { return 0;                 }
   virtual void player_buff();
   virtual void target_debuff( int8_t dmg_type );
   virtual void calculate_result() { assert(0); }
@@ -839,9 +840,7 @@ struct attack_t : public action_t
   virtual ~attack_t() {}
 
   // Attack Overrides
-  virtual double execute_time();
-  virtual double duration();
-  virtual double gcd();
+  virtual double haste();
   virtual void   player_buff();
   virtual void   target_debuff( int8_t dmg_type );
   virtual void   build_table( std::vector<double>& chances, std::vector<int>& results );
@@ -850,6 +849,9 @@ struct attack_t : public action_t
 
   // Passthru Methods
   virtual double cost()                            { return action_t::cost();              }
+  virtual double gcd()                             { return action_t::gcd();               }
+  virtual double execute_time()                    { return action_t::execute_time();      }
+  virtual double duration()                        { return action_t::duration();          }
   virtual void get_base_damage()                   { action_t::get_base_damage();          }
   virtual double resistance()                      { return action_t::resistance();        }
   virtual void adjust_damage_for_result()          { action_t::adjust_damage_for_result(); }
@@ -874,9 +876,10 @@ struct spell_t : public action_t
   virtual ~spell_t() {}
 
   // Spell Overrides
+  virtual double haste();
+  virtual double gcd();
   virtual double execute_time();
   virtual double duration();
-  virtual double gcd();
   virtual void   player_buff();
   virtual void   target_debuff( int8_t dmg_type );
   virtual double level_based_miss_chance( int8_t player, int8_t target );

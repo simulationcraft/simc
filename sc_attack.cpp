@@ -26,61 +26,25 @@ attack_t::attack_t( const char* n, player_t* p, int8_t r, int8_t s, int8_t t ) :
   base_crit_bonus = 1.0;
 
   dd_power_mod = dot_power_mod = 1.0 / 14;
+
+  trigger_gcd = p -> base_gcd;
+  min_gcd = 1.0;
 }
   
-// attack_t::execute_time ===================================================
+// attack_t::haste ==========================================================
 
-double attack_t::execute_time()
+double attack_t::haste()
 {
-  if( base_execute_time == 0 ) return 0;
+  double h = player -> haste;
 
-  double t = base_execute_time;
-
-  t *= player -> haste;
-  if( player -> buffs.bloodlust ) t *= 0.7;
+  if( player -> buffs.bloodlust ) h *= 0.7;
 
   if( sim_t::WotLK && player -> buffs.windfury_totem != 0 )
   {
-    t *= 1.0 - player -> buffs.windfury_totem;
+    h *= 1.0 - player -> buffs.windfury_totem;
   }
 
-  return t;
-}
-
-// attack_t::duration =======================================================
-
-double attack_t::duration()
-{
-  double t = base_duration;
-
-  if( channeled ) 
-  {
-    t *= player -> haste;
-    if( player -> buffs.bloodlust ) t *= 0.7;
-  }
-
-  return t;
-}
-
-// attack_t::gcd ============================================================
-
-double attack_t::gcd()
-{
-  double t = trigger_gcd;
-
-  if( t == 0 ) return 0;
-
-  t *= player -> haste;
-  if( player -> buffs.bloodlust ) t *= 0.7;
-
-  if( sim_t::WotLK && player -> buffs.windfury_totem != 0 )
-  {
-    t *= 1.0 - player -> buffs.windfury_totem;
-  }
-
-  if( t < min_gcd ) t = min_gcd;
-
-  return t;
+  return h;
 }
 
 // attack_t::player_buff ====================================================

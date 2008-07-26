@@ -187,10 +187,8 @@ struct shaman_attack_t : public attack_t
     base_multiplier *= 1.0 + p -> talents.weapon_specialization * 0.02;
   }
 
-  virtual void   schedule_execute();
-  virtual double execute_time();
-  virtual void   execute();
-  virtual void   player_buff();
+  virtual void execute();
+  virtual void player_buff();
 };
 
 // ==========================================================================
@@ -650,33 +648,6 @@ static void trigger_elemental_oath( spell_t* s )
 // Shaman Attack
 // =========================================================================
 
-// shaman_attack_t::schedule_execute =======================================
-
-void shaman_attack_t::schedule_execute()
-{
-  attack_t::schedule_execute();
-  if( time_to_execute > 0 )
-  {
-    shaman_t* p = player -> cast_shaman();
-    if( p -> buffs_flurry > 0 ) p -> buffs_flurry--;
-  }
-}
-
-// shaman_attack_t::execute_time ===========================================
-
-double shaman_attack_t::execute_time()
-{
-  double t = attack_t::execute_time();
-  shaman_t* p = player -> cast_shaman();
-  if( p -> buffs_flurry > 0 ) 
-  {
-    double haste = 0.05 + 0.05 * p -> talents.flurry;
-    t *= ( 1.0 - haste );
-  }
-  p -> uptimes_flurry -> update( p -> buffs_flurry > 0 );
-  return t;
-}
-
 // shaman_attack_t::execute ================================================
 
 void shaman_attack_t::execute()
@@ -724,6 +695,25 @@ struct melee_t : public shaman_attack_t
     base_cost   = 0;
 
     if( p -> dual_wield() ) base_hit -= 0.18;
+  }
+
+  virtual double execute_time()
+  {
+    double t = base_execute_time * haste();
+    shaman_t* p = player -> cast_shaman();
+    if( p -> buffs_flurry > 0 ) 
+    {
+      t *= 1.0 - 0.05 * ( p -> talents.flurry + 1 );
+    }
+    p -> uptimes_flurry -> update( p -> buffs_flurry > 0 );
+    return t;
+  }
+
+  void schedule_execute()
+  {
+    attack_t::schedule_execute();
+    shaman_t* p = player -> cast_shaman();
+    if( p -> buffs_flurry > 0 ) p -> buffs_flurry--;
   }
 
   virtual void execute()

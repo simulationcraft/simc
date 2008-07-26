@@ -249,7 +249,7 @@ void player_t::init_spell()
   {
     initial_mp5 = base_mp5 + gear.mp5 + gear.mp5_enchant;
     // FIXME!  Make this an "action" that affects whole raid.
-    if( buffs.blessing_of_wisdom ) initial_mp5 += 49;
+    if( buffs.blessing_of_wisdom ) initial_mp5 += ( level <= 70 ) ? 49 : 91;
   }
 }
 
@@ -1214,8 +1214,8 @@ bool player_t::parse_option( const std::string& name,
     // Player - Reporting
     { "quiet",                                OPT_INT8,   &( quiet                                          ) },
     // Player - Gear - Haste									            
-    { "gear_haste",                           OPT_INT16,  &( gear.haste_rating                              ) },
-    { "enchant_haste",                        OPT_INT16,  &( gear.haste_rating_enchant                      ) },
+    { "gear_haste_rating",                    OPT_INT16,  &( gear.haste_rating                              ) },
+    { "enchant_haste_rating",                 OPT_INT16,  &( gear.haste_rating_enchant                      ) },
     // Player - Gear - Attributes								            
     { "gear_strength",                        OPT_INT16,  &( gear.attribute        [ ATTR_STRENGTH  ]       ) },
     { "gear_agility",                         OPT_INT16,  &( gear.attribute        [ ATTR_AGILITY   ]       ) },
