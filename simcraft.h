@@ -654,24 +654,23 @@ struct target_t
   std::string name_str;
   int8_t      level;
   int16_t     spell_resistance[ SCHOOL_MAX ];
-  int16_t     armor, block_value;
+  int16_t     initial_armor, armor;
+  int16_t     block_value;
   int8_t      shield;
   double      initial_health, current_health;
   double      total_dmg;
 
   struct debuff_t
   {
-    // Permanent De-Buffs
+    // Permanent De-Buffs (until appropriate player class implemented)
     int16_t  judgement_of_crusader;
     int8_t   judgement_of_wisdom;
-    // Temporary De-Buffs
-    int8_t  temporary_debuffs;
-    int8_t   affliction_effects;
-    int8_t   curse_of_agony;
-    int8_t   curse_of_doom;
     int8_t   curse_of_elements;
-    int8_t   curse_of_shadows;
     int8_t   fire_vulnerability;
+    // Temporary De-Buffs
+    int8_t   temporary_debuffs;
+    int8_t   affliction_effects;
+    int8_t   faerie_fire;
     int8_t   frozen;
     int8_t   mangle;
     int8_t   misery;
@@ -694,6 +693,7 @@ struct target_t
   struct expirations_t
   {
     event_t* fire_vulnerability;
+    event_t* faerie_fire;
     event_t* frozen;
     event_t* earth_and_moon;
     event_t* nature_vulnerability;

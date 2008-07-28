@@ -33,13 +33,20 @@ iterations=1000
 infinite_mana=0
 
 # Since support for the Warrior class does not yet exist, one can infer a Sunder Armor debuff by 
-# artificially setting a low target armor value.
-target_armor=4000
+# artificially setting a low target armor value.  I'm really not sure what to put here.  I imagine
+# that WotLK bosses will have armor close to 9k......
+target_armor=5500
 
-# Since support for the Paladin class does not yet exist, one can speficy target debuffs (such as
+# Since support for the Paladin class does not yet exist, one can specify target debuffs (such as
 # Judgement of Wisdom) and player buffs (such as Blessing of Wisdom and Sanctity Aura) as parameters.
 # Both blessing_of_wisdom=1 and sanctity_aura=1 would be included in each player section as appropriate.
 judgement_of_wisdom=1
+
+# Since support for the Warlock class does not yet exist, one can specify target debuffs
+curse_of_elements=13
+
+# Since support for the Mage class does not yet exist, one can specify target debuffs
+fire_vulnerability=15
 
 #
 # Shadow Priest
@@ -96,7 +103,7 @@ active=owner
 druid=Druid_Balance
 level=80
 talents=http://www.worldofwarcraft.com/info/classes/druid/talents2.html?tal=500322012503130521330530005100000000000000000000000000023020331200000000000000000
-actions=flask-blinding_light/moonkin_form/mana_potion-3500/innervate/moonfire/wrath-eclipse_trigger/starfire
+actions=flask-blinding_light/moonkin_form/mana_potion-3500/innervate/faerie_fire/moonfire/wrath-eclipse_trigger/starfire
 gear_stamina=600
 gear_intellect=600
 gear_spirit=600
@@ -110,11 +117,12 @@ blessing_of_wisdom=1
 # Elemental Shaman
 #
 # (1) The 3500 option to "mana_potion" represents the mana gained and the amount below max required to trigger
+# (2) The "fswait_1" option to lava_burst will prevent it from being called until there is only one tick remaining on Flame Shock
 #
 shaman=Shaman_Elemental
 level=80
-talents=http://www.worldofwarcraft.com/info/classes/shaman/talents2.html?tal=35303015002153510250105100000000000000000000000000045005001005000000000000000
-actions=flask-blinding_light/mana_potion-3500/mana_spring_totem/totem_of_wrath/wrath_of_air_totem/flame_shock/bloodlust/elemental_mastery/lightning_bolt
+talents=http://www.worldofwarcraft.com/info/classes/shaman/talents2.html?tal=35300315002153510250135130300000000000000000000000055000001000000000000000000
+actions=flask-blinding_light/mana_potion-3500/mana_spring_totem/totem_of_wrath/wrath_of_air_totem/flame_shock/lava_burst-fswait_1/elemental_mastery/lightning_bolt
 gear_stamina=600
 gear_intellect=800
 gear_spell_power=2000
@@ -128,24 +136,43 @@ blessing_of_wisdom=1
 #
 # (1) The "main_1" option to windfury_weapon puts the enchant only on the main-hand weapon
 # (2) The "off_1" option to flametongue_weapon puts the enchant only on the off-hand weapon
-# (3) The "maelstrom_5" option to lightning_bolt means that LB will only be executed when there is a 5-stack of Maelstrom Weapon,
+# (3) The "fswait_1" option to lava_burst will prevent it from being called until there is only one tick remaining on Flame Shock
+# (4) The "maelstrom_5" option to lightning_bolt means that LB will only be executed when there is a 5-stack of Maelstrom Weapon,
 #     making the LB cast instant which prevents auto_attack resets.
-# (4) The tool accepts separate value for hit/crit even though WotLK has merged them.
+# (5) The tool accepts separate value for hit/crit even though WotLK has merged them.
 #
 shaman=Shaman_Enhancement
 level=80
 talents=http://www.worldofwarcraft.com/info/classes/shaman/talents2.html?tal=05203010000000000000000030205033105021335311523125100000000000000000000000000
-actions=flask-relentless_assault/auto_attack/windfury_weapon-main_1/flametongue_weapon-off_1/stormstrike/lightning_bolt-maelstrom_5/searing_totem/strength_of_earth_totem/grace_of_air_totem/shamanistic_rage/flame_shock/earth_shock/lightning_shield
+actions=flask-relentless_assault/auto_attack/windfury_weapon-main_1/flametongue_weapon-off_1/stormstrike/lava_burst-maelstrom_5-fswait_1/lightning_bolt-maelstrom_5/searing_totem/strength_of_earth_totem/grace_of_air_totem/shamanistic_rage/flame_shock/earth_shock/lightning_shield
 gear_strength=600
 gear_agility=300
 gear_stamina=600
 gear_attack_power=600
 gear_attack_hit_rating=200
-gear_attack_crit_rating=800
+gear_attack_crit_rating=600
 gear_attack_expertise_rating=200
 gear_attack_penetration=500
 gear_spell_hit_rating=200
-gear_spell_crit_rating=800
+gear_spell_crit_rating=600
 gear_haste_rating=300
 main_hand=fist,damage_500,speed_2.5
 off_hand=fist,damage_520,speed_2.6
+
+#
+# Elemental/Enhancement Shaman  (boost spell power thru Mental Dexterity and Mental Quickness)
+#
+# (1) The 3500 option to "mana_potion" represents the mana gained and the amount below max required to trigger
+# (2) The "fswait_1" option to lava_burst will prevent it from being called until there is only one tick remaining on Flame Shock
+#
+shaman=Shaman_Hybrid
+level=80
+talents=http://www.worldofwarcraft.com/info/classes/shaman/talents2.html?tal=35300315002133510250100030520033000520230000000000000000000000000000000000000
+actions=flask-blinding_light/mana_potion-3500/mana_spring_totem/totem_of_wrath/wrath_of_air_totem/flame_shock/lava_burst-fswait_1/elemental_mastery/lightning_bolt
+gear_stamina=600
+gear_intellect=800
+gear_spell_power=2000
+gear_spell_hit_rating=200
+gear_spell_crit_rating=700
+gear_haste_rating=300
+blessing_of_wisdom=1

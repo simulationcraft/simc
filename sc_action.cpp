@@ -177,42 +177,35 @@ void action_t::target_debuff( int8_t dmg_type )
 
   if( bleed && t -> debuffs.mangle ) target_multiplier *= 1.30;
 
+  if( t -> debuffs.faerie_fire )
+  {
+    target_hit  += ( t -> debuffs.faerie_fire - 1 ) * 0.01;
+    target_crit += ( t -> debuffs.faerie_fire - 1 ) * 0.01;
+  }
+
   if( school == SCHOOL_PHYSICAL )
   {
     target_penetration += t -> debuffs.sunder_armor * 520;
-
-    
   }
   else 
   {
     if( school == SCHOOL_SHADOW )
     {
-      target_multiplier *= 1.0 + ( t -> debuffs.curse_of_shadows * 0.01 );
-      target_multiplier *= 1.0 + ( t -> debuffs.shadow_weaving   * 0.02 );
+      target_multiplier *= 1.0 + ( t -> debuffs.shadow_weaving    * 0.02 );
       if( ! sim_t::WotLK || dmg_type == DMG_DIRECT )
       {
 	if( t -> debuffs.shadow_vulnerability ) target_multiplier *= 1.20;
 	static uptime_t* sv_uptime = sim -> get_uptime( "shadow_vulnerability" );
 	sv_uptime -> update( t -> debuffs.shadow_vulnerability != 0 );
       }
-      if( t -> debuffs.curse_of_shadows ) target_penetration += 88;
     }
     else if( school == SCHOOL_ARCANE )
     {
-      target_multiplier *= 1.0 + ( t -> debuffs.curse_of_shadows * 0.01 );       
-      target_multiplier *= 1.0 + ( t -> debuffs.earth_and_moon   * 0.02 );
-      if( t -> debuffs.curse_of_shadows ) target_penetration += 88;
-    }
-    else if( school == SCHOOL_FROST )
-    {
-      target_multiplier *= 1.0 + ( t -> debuffs.curse_of_elements * 0.01 );
-      if( t -> debuffs.curse_of_elements ) target_penetration += 88;
+      target_multiplier *= 1.0 + ( t -> debuffs.earth_and_moon * 0.02 );
     }
     else if( school == SCHOOL_FIRE )
     {
-      target_multiplier *= 1.0 + ( t -> debuffs.curse_of_elements  * 0.01 );
       target_multiplier *= 1.0 + ( t -> debuffs.fire_vulnerability * 0.01 );
-      if( t -> debuffs.curse_of_elements ) target_penetration += 88;
     }
     else if( school == SCHOOL_NATURE )
     {
@@ -223,6 +216,11 @@ void action_t::target_debuff( int8_t dmg_type )
 	static uptime_t* sv_uptime = sim -> get_uptime( "nature_vulnerability" );
 	sv_uptime -> update( t -> debuffs.nature_vulnerability != 0 );
       }
+    }
+    if( school != SCHOOL_NATURE )
+    {
+      target_multiplier *= 1.0 + ( t -> debuffs.curse_of_elements * 0.01 );
+      if( t -> debuffs.curse_of_elements ) target_penetration += 88;
     }
     target_multiplier *= 1.0 + ( t -> debuffs.misery * 0.01 );
   }

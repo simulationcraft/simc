@@ -13,7 +13,7 @@
 
 target_t::target_t( sim_t* s ) :
   sim( s ), name_str( "Fluffy Pillow" ), level( 73 ), 
-  armor(6600), block_value(0), shield(0), 
+  initial_armor(6600), armor(0), block_value(0), shield(0), 
   initial_health( 0 ), current_health(0), total_dmg(0)
 {
   for( int i=0; i < SCHOOL_MAX; i++ ) spell_resistance[ i ] = 0;
@@ -72,6 +72,7 @@ void target_t::reset()
 {
   report_t::debug( sim, "Reseting target %s", name() );
   total_dmg = 0;
+  armor = initial_armor;
   current_health = initial_health;
   debuffs.reset();
   expirations.reset();
@@ -92,11 +93,13 @@ bool target_t::parse_option( const std::string& name,
     { "target_resist_frost",   OPT_INT16, &( spell_resistance[ SCHOOL_FROST  ] ) },
     { "target_resist_fire",    OPT_INT16, &( spell_resistance[ SCHOOL_FIRE   ] ) },
     { "target_resist_nature",  OPT_INT16, &( spell_resistance[ SCHOOL_NATURE ] ) },
-    { "target_armor",          OPT_INT16, &( armor                             ) },
+    { "target_armor",          OPT_INT16, &( initial_armor                     ) },
     { "target_shield",         OPT_INT8,  &( shield                            ) },
     { "target_block",          OPT_INT16, &( block_value                       ) },
     { "target_health",         OPT_FLT,   &( initial_health                    ) },
-    // Debuffs FIXME!
+    // FIXME! Once appropriate class implemented, these will be removed
+    { "curse_of_elements",     OPT_INT8,  &( debuffs.curse_of_elements         ) },
+    { "fire_vulnerability",    OPT_INT8,  &( debuffs.fire_vulnerability        ) },
     { "judgement_of_crusader", OPT_INT16, &( debuffs.judgement_of_crusader     ) },
     { "judgement_of_wisdom",   OPT_INT8,  &( debuffs.judgement_of_wisdom       ) },
     { NULL, OPT_UNKNOWN }

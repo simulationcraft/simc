@@ -380,6 +380,80 @@ void druid_spell_t::player_buff()
   }
 }
 
+struct faerie_fire_t : public druid_spell_t
+{
+  int16_t armor_penetration;
+  int8_t  bonus_hit;
+
+  faerie_fire_t( player_t* player, const std::string& options_str ) : 
+    druid_spell_t( "faerie_fire", player, SCHOOL_NATURE, TREE_BALANCE )
+  {
+    druid_t* p = player -> cast_druid();
+
+    option_t options[] =
+    {
+      { "rank", OPT_INT8, &rank_index },
+      { NULL }
+    };
+    parse_options( options, options_str );
+      
+    static rank_t ranks[] =
+    {
+      { 76, 6, 0, 0, 1260, 220 },
+      { 66, 5, 0, 0,  610, 145 },
+      { 54, 4, 0, 0,  505, 115 },
+      { 0, 0 }
+    };
+    rank = choose_rank( ranks );
+     
+    base_cost = rank -> cost;
+    armor_penetration = (int16_t) rank -> dot;
+    bonus_hit = p -> talents.improved_faerie_fire;
+  }
+
+  virtual void execute()
+  {
+    struct expiration_t : public event_t
+    {
+      faerie_fire_t* faerie_fire;
+      expiration_t( sim_t* sim, player_t* p, faerie_fire_t* ff ) : event_t( sim, p ), faerie_fire( ff )
+      {
+	target_t* t = sim -> target;
+	t -> armor -= faerie_fire -> armor_penetration;
+	t -> debuffs.faerie_fire = faerie_fire -> bonus_hit + 1;
+	sim -> add_event( this, 40.0 );
+      }
+      virtual void execute()
+      {
+	target_t* t = sim -> target;
+	t -> armor += faerie_fire -> armor_penetration;
+	t -> debuffs.faerie_fire = 0;
+	t -> expirations.faerie_fire = 0;
+      }
+    };
+
+    report_t::log( sim, "%s performs %s", player -> name(), name() );
+    consume_resource();
+
+    target_t* t = sim -> target;
+    if( t -> debuffs.faerie_fire )
+    {
+      // We are overriding an existing debuff......
+      t -> expirations.faerie_fire -> execute();
+      t -> expirations.faerie_fire -> canceled = true;
+    }
+    t -> expirations.faerie_fire = new expiration_t( sim, player, this );
+  }
+
+  virtual bool ready() 
+  {
+    if( ! druid_spell_t::ready() )
+      return false;
+
+    return ( bonus_hit + 1 ) > sim -> target -> debuffs.faerie_fire;
+  }
+};
+
 // Innervate Spell =========================================================
 
 struct innervate_t : public druid_spell_t
@@ -414,6 +488,8 @@ struct innervate_t : public druid_spell_t
     new expiration_t( sim, player );
   }
 };
+
+// Insect Swarm Spell ======================================================
 
 // Insect Swarm Spell ======================================================
 
@@ -596,7 +672,7 @@ struct druids_swiftness_t : public druid_spell_t
    
   virtual void execute()
   {
-    report_t::log( sim, "%s performs natures_swiftness", player -> name() );
+    report_t::log( sim, "%s performs %s", player -> name(), name() );
     druid_t* p = player -> cast_druid();
     p -> aura_gain( "Natures Swiftness" );
     p -> buffs_natures_swiftness = 1;
@@ -882,6 +958,7 @@ void druid_t::spell_finish_event( spell_t* s )
 action_t* druid_t::create_action( const std::string& name,
 				  const std::string& options )
 {
+  if( name == "faerie_fire"       ) return new      faerie_fire_t( this, options );
   if( name == "insect_swarm"      ) return new     insect_swarm_t( this, options );
   if( name == "innervate"         ) return new        innervate_t( this, options );
   if( name == "moonfire"          ) return new         moonfire_t( this, options );

@@ -86,6 +86,7 @@ struct shaman_t : public player_t
     int8_t  natures_guidance;
     int8_t  natures_swiftness;
     int8_t  restorative_totems;
+    int8_t  paralysis;
     int8_t  reverberation;
     int8_t  shamanistic_focus;
     int8_t  shamanistic_rage;
@@ -383,6 +384,8 @@ static void trigger_windfury_weapon( attack_t* a )
 
 static void stack_maelstrom_weapon( attack_t* a )
 {
+  if( ! a -> may_glance ) return;  // only white damage can proc
+
   shaman_t* p = a -> player -> cast_shaman();
 
   if( p -> talents.maelstrom_weapon == 0 ) return;
@@ -780,7 +783,6 @@ struct stormstrike_t : public shaman_attack_t
     may_glance       = false;
     cooldown         = 10.0 - p -> talents.improved_stormstrike;
     base_cost        = p -> resource_base[ RESOURCE_MANA ] * 0.08;
-    base_crit       += p -> talents.thundering_strikes * 0.01;
     base_multiplier *= 1.0 + p -> talents.weapon_specialization * 0.02;
   }
 
@@ -921,10 +923,11 @@ struct chain_lightning_t : public shaman_spell_t
     base_execute_time -= p -> talents.lightning_mastery * 0.1;
     base_cost         *= 1.0 - p -> talents.convection * ( sim_t::WotLK ? 0.04 : 0.02 );
     base_multiplier   *= 1.0 + p -> talents.concussion * 0.01;
+    base_hit          += p -> talents.elemental_precision * ( sim_t::WotLK ? 0.01 : 0.02 );
     base_crit         += p -> talents.call_of_thunder * 0.01;
     base_crit         += p -> talents.tidal_mastery * 0.01;
-    base_hit          += p -> talents.elemental_precision * ( sim_t::WotLK ? 0.01 : 0.02 );
     if( p -> talents.elemental_fury ) base_crit_bonus *= 2.0;
+    dd_power_mod      += p -> talents.paralysis * 0.033333;
   }
 
   virtual void execute()
@@ -989,17 +992,18 @@ struct lightning_bolt_t : public shaman_spell_t
     rank = choose_rank( ranks );
 
     base_execute_time  = 2.5; 
-    dd_power_mod       = 0.794;
+    dd_power_mod       = sim_t::WotLK ? ( 2.5 / 3.5 ) : 0.794;
     may_crit           = true;
     base_cost          = rank -> cost;
 
     base_execute_time -= p -> talents.lightning_mastery * 0.1;
     base_cost         *= 1.0 - p -> talents.convection * ( sim_t::WotLK ? 0.04 : 0.02 );
     base_multiplier   *= 1.0 + p -> talents.concussion * 0.01;
+    base_hit          += p -> talents.elemental_precision * ( sim_t::WotLK ? 0.01 : 0.02 );
     base_crit         += p -> talents.call_of_thunder * 0.01;
     base_crit         += p -> talents.tidal_mastery * 0.01;
-    base_hit          += p -> talents.elemental_precision * ( sim_t::WotLK ? 0.01 : 0.02 );
     if( p -> talents.elemental_fury ) base_crit_bonus *= 2.0;
+    dd_power_mod      += p -> talents.paralysis * 0.033333;
 
     if( p -> gear.tier6_4pc ) base_multiplier *= 1.05;
   }
@@ -1076,6 +1080,7 @@ struct lava_burst_t : public shaman_spell_t
     base_cost          = rank -> cost;
     base_cost         *= 1.0 - p -> talents.convection * ( sim_t::WotLK ? 0.04 : 0.02 );
     base_multiplier   *= 1.0 + p -> talents.concussion * 0.01;
+    base_multiplier   *= 1.0 + p -> talents.call_of_flame * 0.01;
     base_hit          += p -> talents.elemental_precision * ( sim_t::WotLK ? 0.01 : 0.02 );
     if( p -> talents.elemental_fury ) base_crit_bonus *= 2.0;
   }
@@ -2782,6 +2787,7 @@ void shaman_t::parse_talents( const std::string& talent_string )
       { 18,  &( talents.elemental_oath            ) },
       { 19,  &( talents.lightning_overload        ) },
       { 21,  &( talents.totem_of_wrath            ) },
+      { 22,  &( talents.paralysis                 ) },
       { 23,  &( talents.storm_earth_and_fire      ) },
       { 25,  &( talents.enhancing_totems          ) },
       { 27,  &( talents.ancestral_knowledge       ) },
@@ -2860,6 +2866,7 @@ bool shaman_t::parse_option( const std::string& name,
     { "natures_blessing",          OPT_INT8,  &( talents.natures_blessing          ) },
     { "natures_guidance",          OPT_INT8,  &( talents.natures_guidance          ) },
     { "natures_swiftness",         OPT_INT8,  &( talents.natures_swiftness         ) },
+    { "paralysis",                 OPT_INT8,  &( talents.paralysis                 ) },
     { "restorative_totems",        OPT_INT8,  &( talents.restorative_totems        ) },
     { "reverberation",             OPT_INT8,  &( talents.reverberation             ) },
     { "shamanistic_focus",         OPT_INT8,  &( talents.shamanistic_focus         ) },
