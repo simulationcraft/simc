@@ -34,8 +34,8 @@ infinite_mana=0
 
 # Since support for the Warrior class does not yet exist, one can infer a Sunder Armor debuff by 
 # artificially setting a low target armor value.  I'm really not sure what to put here.  I imagine
-# that WotLK bosses will have armor close to 9k......
-target_armor=5500
+# that WotLK bosses will have armor close to 10k......  (5x Sunder is 3600 penetration in WotLK)
+target_armor=6400
 
 # Since support for the Paladin class does not yet exist, one can specify target debuffs (such as
 # Judgement of Wisdom) and player buffs (such as Blessing of Wisdom and Sanctity Aura) as parameters.

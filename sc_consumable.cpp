@@ -79,23 +79,10 @@ struct flask_t : public action_t
 
 struct destruction_potion_t : public action_t
 {
-  struct expiration_t : public event_t
-  {
-    expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      name = "Destruction Potion Expiration";
-      sim -> add_event( this, 15.0 );
-    }
-    virtual void execute()
-    {
-      player -> aura_loss( "Destruction Potion Buff" );
-      player -> spell_power[ SCHOOL_MAX ] -= 120;
-      player -> spell_crit -= 0.02;
-    }
-  };
-  
+  bool used;
+
   destruction_potion_t( player_t* p, const std::string& option_str ) : 
-    action_t( ACTION_OTHER, "destruction_potion", p )
+    action_t( ACTION_OTHER, "destruction_potion", p ), used( false )
   {
     cooldown = 120.0;
     cooldown_group = "potion";
@@ -105,11 +92,41 @@ struct destruction_potion_t : public action_t
   
   virtual void execute()
   {
-    player -> aura_gain( "Destruction Potion Buff" );
-    player -> spell_power[ SCHOOL_MAX ] += 120;
-    player -> spell_crit += 0.02;
+    struct expiration_t : public event_t
+    {
+      expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
+      {
+	name = "Destruction Potion Expiration";
+	player -> aura_gain( "Destruction Potion Buff" );
+	player -> spell_power[ SCHOOL_MAX ] += 120;
+	player -> spell_crit += 0.02;
+	sim -> add_event( this, 15.0 );
+      }
+      virtual void execute()
+      {
+	player -> aura_loss( "Destruction Potion Buff" );
+	player -> spell_power[ SCHOOL_MAX ] -= 120;
+	player -> spell_crit -= 0.02;
+      }
+    };
+  
     player -> share_cooldown( cooldown_group, cooldown );
     new expiration_t( sim, player );
+    used = true;
+  }
+
+  virtual bool ready()
+  {
+    if( sim_t::WotLK && used )
+      return false;
+
+    return( cooldown_ready > sim -> current_time );
+  }
+
+  virtual void reset()
+  {
+    action_t::reset();
+    used = false;
   }
 };
 
@@ -120,9 +137,10 @@ struct destruction_potion_t : public action_t
 struct mana_potion_t : public action_t
 {
   double mana;
+  bool used;
 
   mana_potion_t( player_t* p, const std::string& option_str ) : 
-    action_t( ACTION_OTHER, "mana_potion", p ), mana(0)
+    action_t( ACTION_OTHER, "mana_potion", p ), mana(0), used(false)
   {
     cooldown = 120.0;
     cooldown_group = "potion";
@@ -136,12 +154,25 @@ struct mana_potion_t : public action_t
     report_t::log( sim, "%s uses Mana potion", player -> name() );
     player -> resource_gain( RESOURCE_MANA, mana, "mana_potion" );
     player -> share_cooldown( cooldown_group, cooldown );
+    used = true;
   }
 
   virtual bool ready()
   {
+    if( sim_t::WotLK && used )
+      return false;
+
+    if( cooldown_ready > sim -> current_time ) 
+      return false;
+
     return( player -> resource_max    [ RESOURCE_MANA ] - 
 	    player -> resource_current[ RESOURCE_MANA ] ) > mana;
+  }
+
+  virtual void reset()
+  {
+    action_t::reset();
+    used = false;
   }
 };
 
@@ -172,6 +203,9 @@ struct mana_gem_t : public action_t
 
   virtual bool ready()
   {
+    if( cooldown_ready > sim -> current_time ) 
+      return false;
+
     return( player -> resource_max    [ RESOURCE_MANA ] - 
 	    player -> resource_current[ RESOURCE_MANA ] ) > mana;
   }
@@ -204,6 +238,9 @@ struct health_stone_t : public action_t
 
   virtual bool ready()
   {
+    if( cooldown_ready > sim -> current_time ) 
+      return false;
+
     return( player -> resource_max    [ RESOURCE_HEALTH ] - 
 	    player -> resource_current[ RESOURCE_HEALTH ] ) > health;
   }
@@ -245,6 +282,9 @@ struct dark_rune_t : public action_t
 
   virtual bool ready()
   {
+    if( cooldown_ready > sim -> current_time ) 
+      return false;
+
     if( player -> resource_current[ RESOURCE_HEALTH ] <= health )
       return false;
 

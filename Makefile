@@ -34,12 +34,12 @@ SRC =\
 	sc_weapon.cpp
 
 simcraft opt:
-	g++ -DEBUG -I. $(OPTS) $(SFMT) -Wall $(SRC) -o simcraft
+	g++ -DDEBUG -I. $(OPTS) $(SFMT) -Wall $(SRC) -o simcraft
 
 debug:
 	g++ -DDEBUG -g -I. $(SFMT) -Wall $(SRC) -o simcraft
 
 REV=0
 tarball:
-	tar -cvf simcraft-r$(REV).tar $(SRC) simcraft.h Makefile profiles/* 
+	tar -cvf simcraft-r$(REV).tar $(SRC) simcraft.h Makefile profiles/* sfmt/*
 	gzip simcraft-r$(REV).tar

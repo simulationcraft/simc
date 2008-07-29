@@ -651,6 +651,7 @@ struct penance_t : public priest_spell_t
     cooldown          = 10;
     dd_power_mod     = (3.0/3.5)/num_ticks;
       
+    cooldown          *= 1.0 - p -> talents.aspiration * 0.10;
     base_multiplier   *= 1.0 + p -> talents.searing_light * 0.05;
     base_crit         += p -> talents.holy_specialization * 0.01;
   }
@@ -1190,7 +1191,7 @@ struct dispersion_t : public priest_spell_t
     channeled         = true; 
     harmful           = false;
     base_cost         = 0;
-    cooldown          = 300;
+    cooldown          = 180;
   }
 
   virtual void tick()
