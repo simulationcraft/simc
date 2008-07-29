@@ -156,6 +156,8 @@ void action_t::player_buff()
     }
   }
 
+  if( p -> buffs.sanctified_retribution ) player_multiplier *= 1.02;
+
   report_t::debug( sim, "action_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f", 
 		   name(), player_hit, player_crit, player_power, player_penetration );
 }
@@ -177,10 +179,9 @@ void action_t::target_debuff( int8_t dmg_type )
 
   if( bleed && t -> debuffs.mangle ) target_multiplier *= 1.30;
 
-  if( t -> debuffs.faerie_fire )
+  if( t -> debuffs.faerie_fire > 1 )
   {
     target_hit  += ( t -> debuffs.faerie_fire - 1 ) * 0.01;
-    target_crit += ( t -> debuffs.faerie_fire - 1 ) * 0.01;
   }
 
   if( school == SCHOOL_PHYSICAL )

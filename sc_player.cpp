@@ -205,6 +205,9 @@ void player_t::init_core()
       attribute_initial[ i ] = attribute_base[ i ] + gear.attribute[ i ] + gear.attribute_enchant[ i ];
     }
     attribute[ i ] = attribute_initial[ i ];
+
+    // FIXME! All these static buffs will go away as class support comes along.
+    if( buffs.blessing_of_kings ) attribute_multiplier_initial[ i ] *= 1.10;
   }
 }
 
@@ -248,9 +251,10 @@ void player_t::init_spell()
   if( initial_mp5 == 0 ) 
   {
     initial_mp5 = base_mp5 + gear.mp5 + gear.mp5_enchant;
-    // FIXME!  Make this an "action" that affects whole raid.
-    if( buffs.blessing_of_wisdom ) initial_mp5 += ( level <= 70 ) ? 49 : 91;
   }
+
+  // FIXME! All these static buffs will go away as class support comes along.
+  if( buffs.blessing_of_wisdom ) initial_mp5 += ( level <= 70 ) ? 49 : 91;
 }
 
 // player_t::init_attack ====================================================
@@ -285,6 +289,19 @@ void player_t::init_attack()
   if( initial_attack_penetration == 0 )
   {
     initial_attack_penetration = base_attack_penetration + gear.attack_penetration + gear.attack_penetration_enchant;
+  }
+
+  // FIXME! All these static buffs will go away as class support comes along.
+  if( buffs.blessing_of_might ) 
+  {
+    initial_attack_power += ( level >= 79 ) ? 300 :
+                            ( level >= 73 ) ? 245 :
+                            ( level >= 70 ) ? 220 : 185;
+  }
+  if( buffs.battle_shout )
+  {
+    initial_attack_power += ( level >= 78 ) ? 550 :
+                            ( level >= 69 ) ? 305 : 232;
   }
 }
 
@@ -1316,9 +1333,14 @@ bool player_t::parse_option( const std::string& name,
     { "nightfin_soup",                        OPT_INT8,   &( consumables.nightfin_soup                      ) },
     // Player - Buffs
     // FIXME! These will go away eventually, and be converted into player actions.
+    { "battle_shout",                         OPT_INT8,   &( buffs.battle_shout                             ) },
+    { "blessing_of_kings",                    OPT_INT8,   &( buffs.blessing_of_kings                        ) },
+    { "blessing_of_might",                    OPT_INT8,   &( buffs.blessing_of_might                        ) },
     { "blessing_of_salvation",                OPT_INT8,   &( buffs.blessing_of_salvation                    ) },
     { "blessing_of_wisdom",                   OPT_INT8,   &( buffs.blessing_of_wisdom                       ) },
     { "sanctity_aura",                        OPT_INT8,   &( buffs.sanctity_aura                            ) },
+    { "sanctified_retribution",               OPT_INT8,   &( buffs.sanctified_retribution                   ) },
+    { "swift_retribution",                    OPT_INT8,   &( buffs.swift_retribution                        ) },
     { NULL, OPT_UNKNOWN }
   };
   

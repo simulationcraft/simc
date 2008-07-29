@@ -65,10 +65,14 @@ gear_spell_power=2500
 gear_spell_hit_rating=200
 gear_spell_crit_rating=200
 gear_haste_rating=300
-blessing_of_wisdom=1
 pet=shadow_fiend
 main_hand=beast,damage_110,speed_1.5,school_shadow
 active=owner
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_wisdom=1
+sanctified_retribution=1
+swift_retribution=1
 
 #
 # Holy Priest
@@ -88,10 +92,14 @@ gear_spell_power=2500
 gear_spell_hit_rating=200
 gear_spell_crit_rating=200
 gear_haste_rating=300
-blessing_of_wisdom=1
 pet=shadow_fiend
 main_hand=beast,damage_110,speed_1.5,school_shadow
 active=owner
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_wisdom=1
+sanctified_retribution=1
+swift_retribution=1
 
 #
 # Balance Druid
@@ -111,7 +119,11 @@ gear_spell_power=2000
 gear_spell_hit_rating=200
 gear_spell_crit_rating=700
 gear_haste_rating=300
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
 blessing_of_wisdom=1
+sanctified_retribution=1
+swift_retribution=1
 
 #
 # Elemental Shaman
@@ -129,7 +141,11 @@ gear_spell_power=2000
 gear_spell_hit_rating=200
 gear_spell_crit_rating=700
 gear_haste_rating=300
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
 blessing_of_wisdom=1
+sanctified_retribution=1
+swift_retribution=1
 
 #
 # Enhancement Shaman
@@ -158,6 +174,13 @@ gear_spell_crit_rating=600
 gear_haste_rating=300
 main_hand=fist,damage_500,speed_2.5
 off_hand=fist,damage_520,speed_2.6
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_might=1
+sanctified_retribution=1
+swift_retribution=1
+# And a Warrior while we're at it.......
+battle_shout=1
 
 #
 # Elemental/Enhancement Shaman  (boost spell power thru Mental Dexterity and Mental Quickness)
@@ -175,4 +198,10 @@ gear_spell_power=2000
 gear_spell_hit_rating=200
 gear_spell_crit_rating=700
 gear_haste_rating=300
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
 blessing_of_wisdom=1
+sanctified_retribution=1
+swift_retribution=1
+# And a Warrior while we're at it.......
+battle_shout=1

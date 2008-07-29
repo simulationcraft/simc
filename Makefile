@@ -41,5 +41,5 @@ debug:
 
 REV=0
 tarball:
-	tar -cvf simcraft-r$(REV).tar $(SRC) Makefile profiles/* 
+	tar -cvf simcraft-r$(REV).tar $(SRC) simcraft.h Makefile profiles/* 
 	gzip simcraft-r$(REV).tar

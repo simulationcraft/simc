@@ -38,7 +38,7 @@ double attack_t::haste()
   double h = player -> haste;
 
   if( player -> buffs.bloodlust ) h *= 0.7;
-
+  if( player -> buffs.swift_retribution ) h *= 0.97;
   if( sim_t::WotLK && player -> buffs.windfury_totem != 0 )
   {
     h *= 1.0 - player -> buffs.windfury_totem;

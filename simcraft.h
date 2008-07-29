@@ -439,9 +439,14 @@ struct player_t
   struct buff_t
   {
     // Permanent Buffs
+    int8_t  battle_shout;
+    int8_t  blessing_of_kings;
+    int8_t  blessing_of_might;
     int8_t  blessing_of_salvation;
     int8_t  blessing_of_wisdom;
     int8_t  sanctity_aura;
+    int8_t  sanctified_retribution;
+    int8_t  swift_retribution;
     // Temporary Buffs
     int8_t  temporary_buffs;
     int8_t  arcane_intellect;
