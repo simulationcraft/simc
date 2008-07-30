@@ -203,10 +203,15 @@ void action_t::target_debuff( int8_t dmg_type )
     else if( school == SCHOOL_ARCANE )
     {
       target_multiplier *= 1.0 + ( t -> debuffs.earth_and_moon * 0.02 );
+      target_multiplier *= 1.0 + ( t -> debuffs.improved_scorch * 0.01 );
     }
     else if( school == SCHOOL_FIRE )
     {
-      target_multiplier *= 1.0 + ( t -> debuffs.fire_vulnerability * 0.01 );
+      target_multiplier *= 1.0 + ( t -> debuffs.improved_scorch * 0.01 );
+    }
+    else if( school == SCHOOL_FROST )
+    {
+      target_multiplier *= 1.0 + ( t -> debuffs.improved_scorch * 0.01 );
     }
     else if( school == SCHOOL_NATURE )
     {
@@ -218,12 +223,9 @@ void action_t::target_debuff( int8_t dmg_type )
 	sv_uptime -> update( t -> debuffs.nature_vulnerability != 0 );
       }
     }
-    if( school != SCHOOL_NATURE )
-    {
-      target_multiplier *= 1.0 + ( t -> debuffs.curse_of_elements * 0.01 );
-      if( t -> debuffs.curse_of_elements ) target_penetration += 88;
-    }
     target_multiplier *= 1.0 + ( t -> debuffs.misery * 0.01 );
+    target_multiplier *= 1.0 + ( t -> debuffs.curse_of_elements * 0.01 );
+    if( t -> debuffs.curse_of_elements ) target_penetration += 88;
   }
 
   if( t -> debuffs.judgement_of_crusader ) target_crit += 0.03;

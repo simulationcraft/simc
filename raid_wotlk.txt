@@ -42,11 +42,13 @@ target_armor=6400
 # Both blessing_of_wisdom=1 and sanctity_aura=1 would be included in each player section as appropriate.
 judgement_of_wisdom=1
 
-# Since support for the Warlock class does not yet exist, one can specify target debuffs
+# Since support for the Warlock class does not yet exist, one can specify static target debuffs.
+# CoE is currently coded as affecting Nature damage, too.
 curse_of_elements=13
 
-# Since support for the Mage class does not yet exist, one can specify target debuffs
-fire_vulnerability=15
+# Since support for the Mage class does not yet exist, one can specify static target debuffs.
+# Improved Scorch has been changed to add 10% damage to Fire/Frost/Arcane.
+improved_scorch=10
 
 #
 # Shadow Priest
@@ -191,7 +193,7 @@ battle_shout=1
 shaman=Shaman_Hybrid
 level=80
 talents=http://www.worldofwarcraft.com/info/classes/shaman/talents2.html?tal=35300315002133510250100030520033000520230000000000000000000000000000000000000
-actions=flask-blinding_light/mana_potion-3500/mana_spring_totem/totem_of_wrath/wrath_of_air_totem/flame_shock/lava_burst-fswait_1/elemental_mastery/lightning_bolt
+actions=flask-blinding_light/mana_potion-3500/mana_spring_totem/totem_of_wrath/flametongue_totem/flame_shock/lava_burst-fswait_1/elemental_mastery/lightning_bolt
 gear_stamina=600
 gear_intellect=800
 gear_spell_power=2000

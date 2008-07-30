@@ -1561,7 +1561,6 @@ struct flametongue_totem_t : public shaman_spell_t
     base_cost       *= 1.0 - p -> talents.totemic_focus * 0.05;
     base_cost       *= 1.0 - p -> talents.mental_quickness * 0.02;
     base_multiplier *= 1.0 + p -> talents.improved_weapon_totems * 0.06;
-    base_multiplier *= 1.0 + p -> talents.call_of_flame * 0.05;
     duration_group   = "fire_totem";
     trigger_gcd      = 1.0;
 
@@ -1571,6 +1570,7 @@ struct flametongue_totem_t : public shaman_spell_t
     }
     else
     {
+      base_multiplier *= 1.0 + p -> talents.call_of_flame * 0.05;
       bonus = rank -> dd_max * base_multiplier;
     }
   }

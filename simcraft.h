@@ -671,7 +671,7 @@ struct target_t
     int16_t  judgement_of_crusader;
     int8_t   judgement_of_wisdom;
     int8_t   curse_of_elements;
-    int8_t   fire_vulnerability;
+    int8_t   improved_scorch;
     // Temporary De-Buffs
     int8_t   temporary_debuffs;
     int8_t   affliction_effects;
@@ -697,7 +697,6 @@ struct target_t
   
   struct expirations_t
   {
-    event_t* fire_vulnerability;
     event_t* faerie_fire;
     event_t* frozen;
     event_t* earth_and_moon;
