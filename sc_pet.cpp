@@ -16,8 +16,8 @@ pet_t::pet_t( sim_t*             s,
 	      const std::string& n ) :
   player_t( s, PLAYER_PET, n ), owner(o), next_pet(0)
 {
+  level = owner -> level;
   full_name_str = owner -> name_str + "_" + name_str;
-
   next_pet = owner -> pet_list;
   owner -> pet_list = this;
 }

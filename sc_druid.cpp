@@ -491,8 +491,6 @@ struct innervate_t : public druid_spell_t
 
 // Insect Swarm Spell ======================================================
 
-// Insect Swarm Spell ======================================================
-
 struct insect_swarm_t : public druid_spell_t
 {
   insect_swarm_t( player_t* player, const std::string& options_str ) : 
