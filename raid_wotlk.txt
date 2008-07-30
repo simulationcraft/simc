@@ -154,7 +154,7 @@ swift_retribution=1
 #
 # (1) The "main_1" option to windfury_weapon puts the enchant only on the main-hand weapon
 # (2) The "off_1" option to flametongue_weapon puts the enchant only on the off-hand weapon
-# (3) The "fswait_1" option to lava_burst will prevent it from being called until there is only one tick remaining on Flame Shock
+# (3) The "fswait_1" option to lava_burst will prevent it from being called until there is only one tick remaining on Flame Shock.
 # (4) The "maelstrom_5" option to lightning_bolt means that LB will only be executed when there is a 5-stack of Maelstrom Weapon,
 #     making the LB cast instant which prevents auto_attack resets.
 # (5) The tool accepts separate value for hit/crit even though WotLK has merged them.
@@ -176,6 +176,7 @@ gear_spell_crit_rating=600
 gear_haste_rating=300
 main_hand=fist,damage_500,speed_2.5
 off_hand=fist,damage_520,speed_2.6
+off_hand=fist,damage_260,speed_1.3
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
 blessing_of_kings=1
 blessing_of_might=1

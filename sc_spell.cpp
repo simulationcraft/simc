@@ -122,23 +122,38 @@ void spell_t::target_debuff( int8_t dmg_type )
 // spell_t::level_based_miss_chance ==========================================
 
 double spell_t::level_based_miss_chance( int8_t player, 
-                                        int8_t target )
+					 int8_t target )
 {
-   int8_t diff = target - player;
-   if( diff <= -3 ) return 0.01;
-   if( diff == -2 ) return 0.02;
-   if( diff == -1 ) return 0.03;
-   if( diff ==  0 ) return 0.04;
-   if( diff == +1 ) return 0.05;
-   if( diff == +2 ) return 0.06;
-   if( diff == +3 ) return 0.17;
-   if( diff == +4 ) return 0.28;
-   if( diff == +5 ) return 0.39;
-   if( diff == +6 ) return 0.50;
-   if( diff == +7 ) return 0.61;
-   if( diff == +8 ) return 0.72;
-   if( diff == +9 ) return 0.83;
-   return 0.94;
+  int8_t delta_level = target - player;
+  double miss=0;
+
+  if( sim_t::WotLK )
+  {
+    if( delta_level > 2 )
+    {
+      miss  = 0.07 + ( delta_level - 2 ) * 0.02;
+    }
+    else
+    {
+      miss = 0.05 + delta_level * 0.005;
+    }
+  }
+  else
+  {
+    if( delta_level > 2 )
+    {
+      miss = 0.17 + ( delta_level - 3 ) * 0.11;
+    }
+    else
+    {
+      miss = 0.04 + delta_level * 0.01;
+    }
+  }
+
+  if( miss < 0.01 ) miss = 0.01;
+  if( miss > 0.99 ) miss = 0.99;
+
+  return miss;
 }
 
 // spell_t::caclulate_result ================================================
@@ -158,7 +173,7 @@ void spell_t::calculate_result()
 
     miss_chance -= base_hit + player_hit + target_hit;
 
-    if( rand_t::roll( std::max( miss_chance, (double) 0.01 ) ) )
+    if( rand_t::roll( miss_chance ) )
     {
       result = RESULT_MISS;
     }

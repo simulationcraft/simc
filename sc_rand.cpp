@@ -37,6 +37,9 @@ double rand_t::gen_float()
 
 int8_t rand_t::roll( double chance )
 {
+  if( chance <= 0 ) return 0;
+  if( chance >= 1 ) return 1;
+
   if( ( gen_uint32() % GRANULARITY ) < ( chance * GRANULARITY ) )
   {
     return 1;
