@@ -41,5 +41,5 @@ debug:
 
 REV=0
 tarball:
-	tar -cvf simcraft-r$(REV).tar $(SRC) simcraft.h Makefile profiles/* sfmt/*
+	tar -cvf simcraft-r$(REV).tar $(SRC) simcraft.h sfmt/* Makefile raid_wotlk.txt
 	gzip simcraft-r$(REV).tar

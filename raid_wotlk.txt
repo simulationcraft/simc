@@ -158,21 +158,21 @@ swift_retribution=1
 shaman=Shaman_Enhancement
 level=80
 talents=http://www.worldofwarcraft.com/info/classes/shaman/talents2.html?tal=05203010000000000000000030205033105021335311523125100000000000000000000000000
-actions=flask-relentless_assault/auto_attack/windfury_weapon-main_1/flametongue_weapon-off_1/stormstrike/lava_burst-maelstrom_5-fswait_1/lightning_bolt-maelstrom_5/searing_totem/strength_of_earth_totem/grace_of_air_totem/shamanistic_rage/flame_shock/earth_shock/lightning_shield
-gear_strength=600
-gear_agility=300
-gear_stamina=600
-gear_attack_power=600
-gear_attack_hit_rating=200
-gear_attack_crit_rating=600
-gear_attack_expertise_rating=200
-gear_attack_penetration=500
-gear_spell_hit_rating=200
-gear_spell_crit_rating=600
-gear_haste_rating=300
-main_hand=fist,damage_500,speed_2.5
-off_hand=fist,damage_520,speed_2.6
-off_hand=fist,damage_260,speed_1.3
+actions=flask-relentless_assault/auto_attack/windfury_weapon-main_1/flametongue_weapon-off_1/stormstrike/lava_burst-maelstrom_5-fswait_1/lightning_bolt-maelstrom_5/searing_totem/strength_of_earth_totem/windfury_totem/shamanistic_rage/flame_shock/earth_shock/lightning_shield
+gear_strength=400
+gear_agility=600
+gear_stamina=1000
+gear_intellect=200
+gear_attack_power=1200
+gear_attack_hit_rating=250
+gear_spell_hit_rating=250
+gear_attack_crit_rating=300
+gear_spell_crit_rating=300
+gear_attack_expertise_rating=175
+gear_attack_penetration=750
+gear_haste_rating=250
+main_hand=fist,damage_310,speed_2.8
+off_hand=fist,damage_310,speed_2.6
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
 blessing_of_kings=1
 blessing_of_might=1
@@ -186,11 +186,12 @@ battle_shout=1
 #
 # (1) The 3500 option to "mana_potion" represents the mana gained and the amount below max required to trigger
 # (2) The "fswait_1" option to lava_burst will prevent it from being called until there is only one tick remaining on Flame Shock
+# (3) The "pure" Elemental Shaman above is already putting down Totem of Wrath, so the hybrid will put down Flametongue
 #
 shaman=Shaman_Hybrid
 level=80
 talents=http://www.worldofwarcraft.com/info/classes/shaman/talents2.html?tal=35300315002133510250100030520033000520230000000000000000000000000000000000000
-actions=flask-blinding_light/mana_potion-3500/mana_spring_totem/totem_of_wrath/flametongue_totem/flame_shock/lava_burst-fswait_1/elemental_mastery/lightning_bolt
+actions=flask-blinding_light/mana_potion-3500/mana_spring_totem/flametongue_totem/wrath_of_air_totem/flame_shock/lava_burst-fswait_1/elemental_mastery/lightning_bolt
 gear_stamina=600
 gear_intellect=800
 gear_spell_power=2000
