@@ -91,7 +91,7 @@ void spell_t::player_buff()
 
   if( player -> buffs.elemental_oath )
   {
-    player_crit_bonus *= 1.0 + p -> buffs.elemental_oath * 0.01;
+    player_crit_bonus *= 1.0 + p -> buffs.elemental_oath * 0.03;
   }
 
   report_t::debug( sim, "spell_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f", 
