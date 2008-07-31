@@ -228,9 +228,9 @@ void report_t::print_attack_stats( player_t* p )
   printf( "%s  %s%.0f  %s%.1f%%  %s%.1f%%  %s%.1f  %s%.0f  %s%.1f%%\n", 
 	  report_tag ? "  Attack Stats:" : "",
 	  report_tag ? "power="       : "", p -> composite_attack_power(),
-	  report_tag ? "hit="         : "", p -> composite_attack_hit()  * 100.0, 
-	  report_tag ? "crit="        : "", p -> composite_attack_crit() * 100.0, 
-	  report_tag ? "expertise="   : "", p -> composite_attack_expertise(),
+	  report_tag ? "hit="         : "", p -> composite_attack_hit()       * 100.0, 
+	  report_tag ? "crit="        : "", p -> composite_attack_crit()      * 100.0, 
+	  report_tag ? "expertise="   : "", p -> composite_attack_expertise() * 100.0,
 	  report_tag ? "penetration=" : "", p -> composite_attack_penetration(),
 	  report_tag ? "haste="       : "", ( 1.0 - p -> haste ) * 100.0 );
 }

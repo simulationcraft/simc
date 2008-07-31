@@ -251,6 +251,7 @@ struct rating_t
   double attack_hit, attack_crit, attack_expertise;
   rating_t() { memset( this, 0x00, sizeof(rating_t) ); }
   void init( int level );
+  static double interpolate( int level, double val_60, double val_70, double val_80 );
 };
 
 // Weapon ====================================================================

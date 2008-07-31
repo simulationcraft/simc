@@ -1531,7 +1531,7 @@ void priest_t::init_base()
   attribute_multiplier_initial[ ATTR_SPIRIT    ] *= 1.0 + talents.spirit_of_redemption * 0.05;
 
   base_spell_crit = 0.0125;
-  initial_spell_crit_per_intellect = 0.01 / ( level + 10 );
+  initial_spell_crit_per_intellect = rating_t::interpolate( level, 0.01/60.0, 0.01/80.0, 0.01/166.6 );
   initial_spell_power_per_spirit = ( talents.spiritual_guidance * 0.05 +
 				     talents.twisted_faith      * 0.06 );
   initial_spell_power_multiplier *= 1.0 + talents.twin_disciplines * 0.01;
@@ -1540,7 +1540,7 @@ void priest_t::init_base()
   base_attack_power = -10;
   base_attack_crit  = 0.03;
   initial_attack_power_per_strength = 1.0;
-  initial_attack_crit_per_agility = 0.01 / ( 25 + ( level - 70 ) * 0.5 );
+  initial_attack_crit_per_agility = rating_t::interpolate( level, 0.01/16.0, 0.01/24.9, 0.01/52.1 );
 
   // FIXME! Make this level-specific.
   resource_base[ RESOURCE_HEALTH ] = 3200;

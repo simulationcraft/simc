@@ -116,13 +116,13 @@ void attack_t::build_table( std::vector<double>& chances,
     {
       dodge  = 0.05 + delta_level * 0.005;
     }
-    dodge -= expertise * 0.0025;
+    dodge -= expertise * 0.25;
   }
 
   if( may_parry ) 
   {
     parry  = 0.05 + delta_level * 0.005;
-    parry -= expertise * 0.0025;
+    parry -= expertise * 0.25;
   }
 
   if( may_glance ) 

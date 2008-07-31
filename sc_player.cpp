@@ -1078,31 +1078,9 @@ double player_t::spirit_regen_per_second()
 {
   double base_60 = 0.010999;
   double base_70 = 0.009327;
-  double base_80 = 0.007655;
+  double base_80 = 0.007125;
 
-  double base_regen = 0;
-
-  if( level <= 60 )
-  {
-    base_regen = base_60;
-  }
-  else if( level == 70 )
-  {
-    base_regen = base_70;
-  }
-  else if( level >= 80 )
-  {
-    base_regen = base_80;
-  }
-  else if( level < 70 )
-  {
-    base_regen = base_70 + ( base_60 - base_70 ) * ( level - 60 ) / 10;
-  }
-  else if( level > 70 )
-  {
-    base_regen = base_80 + ( base_70 - base_80 ) * ( level - 70 ) / 10;
-  }
-  assert( base_regen != 0 );
+  double base_regen = rating_t::interpolate( level, base_60, base_70, base_80 );
 
   double mana_per_second  = sqrt( intellect() ) * spirit() * base_regen;
 
