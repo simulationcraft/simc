@@ -384,7 +384,7 @@ static void trigger_windfury_weapon( attack_t* a )
 
 static void stack_maelstrom_weapon( attack_t* a )
 {
-  if( ! a -> may_glance ) return;  // only white damage can proc
+  if( ! a -> may_glance ) return;  // FIXME! This might just be a beta bug: only white damage can proc
 
   shaman_t* p = a -> player -> cast_shaman();
 

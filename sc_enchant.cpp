@@ -69,6 +69,116 @@ static void trigger_spellsurge( spell_t* s )
   }
 }
 
+// Mongoose Enchant =========================================================
+
+static void trigger_mongoose( attack_t* a )
+{
+
+  struct mongoose_expiration_t : public event_t
+  {
+    int8_t& buffs_mongoose;
+    event_t*& expirations_mongoose;
+
+    mongoose_expiration_t( sim_t* sim, player_t* player, int8_t& b_m, event_t*& e_m ) : 
+      event_t( sim, player ), buffs_mongoose( b_m ), expirations_mongoose( e_m )
+    {
+      name = "Mongoose Expiration";
+      player -> aura_gain( "Mongoose Lightning Speed" );
+      player -> attribute[ ATTR_AGILITY ] += 120;
+      buffs_mongoose = 1;
+      sim -> add_event( this, 15.0 );
+    }
+    virtual void execute()
+    {
+      player -> aura_loss( "Mongoose Lightning Speed" );
+      player -> attribute[ ATTR_AGILITY ] -= 120;
+      buffs_mongoose = 0;
+      expirations_mongoose = 0;
+    }
+  };
+
+  player_t* p = a -> player;
+  weapon_t* w = a -> weapon;
+
+  // Mongoose has a 1.2 PPM (proc per minute) which translates into 1 proc every 50sec on average
+
+  double proc_chance = 1.0 / ( 50.0 / w -> swing_time );
+
+  bool is_main = ( w == &( p -> main_hand_weapon ) );
+
+  int8_t&    b = is_main ? p ->       buffs.mongoose_mh : p ->       buffs.mongoose_oh;
+  event_t*&  e = is_main ? p -> expirations.mongoose_mh : p -> expirations.mongoose_oh;
+  uptime_t*& u = is_main ? p ->     uptimes.mongoose_mh : p ->     uptimes.mongoose_oh;
+
+  if( rand_t::roll( proc_chance ) )
+  {
+    if( e )
+    {
+      e -> reschedule( 15.0 );
+    }
+    else
+    {
+      e = new mongoose_expiration_t( a -> sim, p, b, e );
+    }
+  }
+
+  if( ! u )  u = a -> sim -> get_uptime( p -> name_str + "_mongoose_" + ( is_main ? "mh" : "oh" ) );
+
+  u -> update( b );
+}
+
+// Executioner Enchant =========================================================
+
+static void trigger_executioner( attack_t* a )
+{
+  struct executioner_expiration_t : public event_t
+  {
+    executioner_expiration_t( sim_t* sim, player_t* player ) : event_t( sim, player )
+    {
+      name = "Executioner Expiration";
+      player -> aura_gain( "Executioner" );
+      player -> buffs.executioner = 1;
+      player -> attack_penetration += 840;
+      sim -> add_event( this, 15.0 );
+    }
+    virtual void execute()
+    {
+      player -> aura_loss( "Executioner" );
+      player -> buffs.executioner = 0;
+      player -> attack_penetration -= 840;
+      player -> expirations.executioner = 0;
+    }
+  };
+
+  player_t* p = a -> player;
+  weapon_t* w = a -> weapon;
+
+  // Executioner has a 1.2 PPM (proc per minute) which translates into 1 proc every 50sec on average
+
+  double proc_chance = 1.0 / ( 50.0 / w -> swing_time );
+
+  if( rand_t::roll( proc_chance ) )
+  {
+    event_t*& e = p -> expirations.executioner;
+
+    if( e )
+    {
+      e -> reschedule( 15.0 );
+    }
+    else
+    {
+      e = new executioner_expiration_t( a -> sim, p );
+    }
+  }
+
+  if( ! p -> uptimes.executioner ) 
+  {
+    p -> uptimes.executioner = a -> sim -> get_uptime( p -> name_str + "_executioner" );
+  }
+
+  p -> uptimes.executioner -> update( p -> buffs.executioner );
+}
+
 } // ANONYMOUS NAMESPACE ====================================================
 
 // ==========================================================================
@@ -80,5 +190,19 @@ static void trigger_spellsurge( spell_t* s )
 void enchant_t::spell_finish_event( spell_t* s )
 {
   trigger_spellsurge( s );
+}
+
+// enchant_t::attack_hit_event ==============================================
+
+void enchant_t::attack_hit_event( attack_t* a )
+{
+  if( a -> weapon )
+  {
+    switch( a -> weapon -> enchant )
+    {
+    case MONGOOSE:    trigger_mongoose   ( a ); break;
+    case EXECUTIONER: trigger_executioner( a ); break;
+    }
+  }
 }
 

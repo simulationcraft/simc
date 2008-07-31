@@ -43,6 +43,8 @@ double attack_t::haste()
   {
     h *= 1.0 - player -> buffs.windfury_totem;
   }
+  if( player -> buffs.mongoose_mh ) h *= 0.98;
+  if( player -> buffs.mongoose_oh ) h *= 0.98;
 
   return h;
 }

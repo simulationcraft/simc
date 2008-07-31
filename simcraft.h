@@ -457,6 +457,7 @@ struct player_t
     int8_t  darkmoon_crusade;
     int8_t  darkmoon_wrath;
     int8_t  elemental_oath;
+    int8_t  executioner;
     double  flametongue_totem;
     double  grace_of_air;
     int8_t  improved_moonkin_aura;
@@ -465,6 +466,8 @@ struct player_t
     double  mana_cost_reduction;
     int8_t  moonkin_haste;
     int8_t  moonkin_aura;
+    int8_t  mongoose_mh;
+    int8_t  mongoose_oh;
     int8_t  power_infusion;
     double  strength_of_earth;
     int16_t talisman_of_ascendance;
@@ -496,10 +499,13 @@ struct player_t
     event_t* elder_scribes;
     event_t* elemental_oath;
     event_t* eternal_sage;
+    event_t* executioner;
     event_t* eye_of_magtheridon;
     event_t* lightning_capacitor;
     event_t* mark_of_defiance;
     event_t* moonkin_haste;
+    event_t* mongoose_mh;
+    event_t* mongoose_oh;
     event_t* mystical_skyfire;
     event_t* mystical_skyfire_silent_cooldown;
     event_t* quagmirrans_eye;
@@ -519,7 +525,10 @@ struct player_t
   
   struct uptimes_t
   {
+    uptime_t* executioner;
     uptime_t* moonkin_haste;
+    uptime_t* mongoose_mh;
+    uptime_t* mongoose_oh;
     uptime_t* unleashed_rage;
     void reset() { memset( (void*) this, 0x00, sizeof( uptimes_t ) ); }
     uptimes_t() { reset(); }
@@ -976,7 +985,7 @@ struct enchant_t
 
   static void attack_start_event ( attack_t* ) {}
   static void attack_miss_event  ( attack_t* ) {}
-  static void attack_hit_event   ( attack_t* ) {}
+  static void attack_hit_event   ( attack_t* );
   static void attack_tick_event  ( attack_t* ) {}
   static void attack_damage_event( attack_t*, double amount, int8_t dmg_type ) {}
   static void attack_finish_event( attack_t* ) {}

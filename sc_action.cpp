@@ -271,6 +271,8 @@ void action_t::get_base_damage()
 
 void action_t::calculate_damage()
 {
+  dd = dot = 0;
+
   get_base_damage();
 
   double power = base_power + player_power + target_power;
