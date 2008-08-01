@@ -139,7 +139,8 @@ sim_t::sim_t() :
   events_remaining(0), max_events_remaining(0), 
   events_processed(0), total_events_processed(0),
   seed(0), id(0), iterations(1),
-  average_dmg(1), log(0), debug(0), timestamp(1), report(0), uptime_list(0)
+  average_dmg(1), log(0), debug(0), timestamp(1), report(0), uptime_list(0), 
+  output_file(stdout)
 {
   for( int i=0; i < RESOURCE_MAX; i++ ) 
   {
@@ -310,7 +311,7 @@ bool sim_t::init()
     int8_t arch, version, revision;
     if( 3 != util_t::string_split( patch_str, ".", "i8 i8 i8", &arch, &version, &revision ) )
     {
-      printf( "util_t::sim: Expected format: -patch=#.#.#\n" );
+      fprintf( output_file, "util_t::sim: Expected format: -patch=#.#.#\n" );
       return false;
     }
     patch.set( arch, version, revision );
@@ -367,28 +368,28 @@ bool sim_t::parse_option( const std::string& name,
 {
   option_t options[] =
   {
-    { "method"  ,                OPT_STRING, &( method_str                           ) },
-    { "patch",                   OPT_STRING, &( patch_str                            ) },
-    { "max_time",                OPT_FLT,    &( max_time                             ) },
-    { "lag",                     OPT_FLT,    &( lag                                  ) },
-    { "seed",                    OPT_INT32,  &( seed                                 ) },
-    { "iterations",              OPT_INT32,  &( iterations                           ) },
-    { "infinite_mana",           OPT_INT8,   &( infinite_resource[ RESOURCE_MANA   ] ) },
-    { "infinite_health",         OPT_INT8,   &( infinite_resource[ RESOURCE_HEALTH ] ) },
-    { "infinite_rage",           OPT_INT8,   &( infinite_resource[ RESOURCE_RAGE   ] ) },
+    { "average_dmg",             OPT_INT8,   &( average_dmg                          ) },
+    { "debug",                   OPT_INT8,   &( debug                                ) },
     { "infinite_energy",         OPT_INT8,   &( infinite_resource[ RESOURCE_ENERGY ] ) },
     { "infinite_focus",          OPT_INT8,   &( infinite_resource[ RESOURCE_FOCUS  ] ) },
+    { "infinite_health",         OPT_INT8,   &( infinite_resource[ RESOURCE_HEALTH ] ) },
+    { "infinite_mana",           OPT_INT8,   &( infinite_resource[ RESOURCE_MANA   ] ) },
+    { "infinite_rage",           OPT_INT8,   &( infinite_resource[ RESOURCE_RAGE   ] ) },
     { "infinite_runic",          OPT_INT8,   &( infinite_resource[ RESOURCE_RUNIC  ] ) },
-    { "average_dmg",             OPT_INT8,   &( average_dmg                          ) },
+    { "iterations",              OPT_INT32,  &( iterations                           ) },
+    { "lag",                     OPT_FLT,    &( lag                                  ) },
     { "log",                     OPT_INT8,   &( log                                  ) },
-    { "debug",                   OPT_INT8,   &( debug                                ) },
+    { "max_time",                OPT_FLT,    &( max_time                             ) },
+    { "method"  ,                OPT_STRING, &( method_str                           ) },
+    { "patch",                   OPT_STRING, &( patch_str                            ) },
+    { "seed",                    OPT_INT32,  &( seed                                 ) },
     { "timestamp",               OPT_INT8,   &( timestamp                            ) },
     { NULL, OPT_UNKNOWN }
   };
 
   if( name.empty() )
   {
-    option_t::print( options );
+    option_t::print( this, options );
     return false;
   }
 
@@ -397,29 +398,29 @@ bool sim_t::parse_option( const std::string& name,
 
   if( active_player && active_player -> parse_option( name, value ) ) return true;
 
-  return option_t::parse( options, name, value );
+  return option_t::parse( this, options, name, value );
 }
 
 // sim_t::print_options =====================================================
 
 void sim_t::print_options()
 {
-  printf( "\nWorld of Warcraft Raid Simulator Options:\n" );
+  fprintf( output_file, "\nWorld of Warcraft Raid Simulator Options:\n" );
 
-  printf( "\nSimulation Engine:\n" );
+  fprintf( output_file, "\nSimulation Engine:\n" );
   parse_option( std::string(), std::string() );
 
-  printf( "\nTarget: %s\n", target -> name() );
+  fprintf( output_file, "\nTarget: %s\n", target -> name() );
   target -> parse_option( std::string(), std::string() );
 
   for( player_t* p = player_list; p; p = p -> next )
   {
-    printf( "\nPlayer: %s (%s)\n", p -> name(), util_t::player_type_string( p -> type ) );
+    fprintf( output_file, "\nPlayer: %s (%s)\n", p -> name(), util_t::player_type_string( p -> type ) );
     p -> parse_option( std::string(), std::string() );
   }
 
-  printf( "\n" );
-  fflush( stdout );
+  fprintf( output_file, "\n" );
+  fflush( output_file );
 }
 
 // ==========================================================================
@@ -428,32 +429,34 @@ void sim_t::print_options()
 
 int main( int argc, char **argv )
 {
-   sim_t sim;
+  sim_t sim;
 
-   if( ! option_t::parse( argc, argv, &sim ) )
-   {
-      printf( "ERROR! Incorrect option format..\n" );
-      return -1;
-   }
+  if( ! option_t::parse( &sim, argc, argv ) )
+  {
+    fprintf( sim.output_file, "ERROR! Incorrect option format..\n" );
+    return -1;
+  }
 
-   if( ! sim.init() )
-   {
-      printf( "ERROR! Unable to initialize.\n" );
-      return -1;
-   }
+  if( ! sim.init() )
+  {
+    fprintf( sim.output_file, "ERROR! Unable to initialize.\n" );
+    return -1;
+  }
    
-   time_t start_time = time(0);
+  time_t start_time = time(0);
 
-   for( int i=0; i < sim.iterations; i++ )
-   {
-     sim_signal_handler_t::iteration = i;
-     sim.reset();
-     sim.execute();
-   }
-   sim.elapsed_cpu_seconds = time(0) - start_time;
+  for( int i=0; i < sim.iterations; i++ )
+  {
+    sim_signal_handler_t::iteration = i;
+    sim.reset();
+    sim.execute();
+  }
+  sim.elapsed_cpu_seconds = time(0) - start_time;
+  
+  sim.reset();
+  sim.report -> print();
 
-   sim.reset();
-   sim.report -> print();
-   
-   return 0;
+  if( sim.output_file != stdout ) fclose( sim.output_file );
+  
+  return 0;
 }

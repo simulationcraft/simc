@@ -2,7 +2,7 @@
 # WARNING!  When making changes to this file in an editor, make sure it is saved in "plain text" format.
 #======================================================================================================
 
-# TO EXECUTE THIS PARAMETER FILE:  simcraft file=raid_wotlk.txt
+# TO EXECUTE THIS PARAMETER FILE:  simcraft  input=raid_wotlk.txt  output=results.txt
 
 #
 # Globals
@@ -59,7 +59,7 @@ improved_scorch=10
 priest=Priest_Shadow
 level=80
 talents=http://www.worldofwarcraft.com/info/classes/priest/talents2.html?tal=05023001300000000000000000000000000000000000000000000320023051025012305152501351
-actions=flask-pure_death/shadow_form/mana_potion-3500/shadow_fiend-6000/dispersion/vampiric_touch/inner_focus/shadow_word_pain/mind_blast/shadow_word_death/mind_flay
+actions=flask,type=pure_death/shadow_form/mana_potion,trigger=3500/shadow_fiend,trigger=6000/dispersion/vampiric_touch/inner_focus/shadow_word_pain/mind_blast/shadow_word_death/mind_flay
 gear_stamina=600
 gear_intellect=600
 gear_spirit=600
@@ -67,7 +67,7 @@ gear_spell_power=2500
 gear_spell_crit_rating=200
 gear_haste_rating=500
 pet=shadow_fiend
-main_hand=beast,damage_110,speed_1.5,school_shadow
+main_hand=beast,damage=110,speed=1.5,school=shadow
 active=owner
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
 blessing_of_kings=1
@@ -85,7 +85,7 @@ swift_retribution=1
 priest=Priest_Holy
 level=80
 talents=http://www.worldofwarcraft.com/info/classes/priest/talents2.html?tal=05023031305051225010200000020505103232015200000000000000000000000000000000000000
-actions=flask-blinding_light/divine_spirit/mana_potion-3500/shadow_fiend-6000/inner_focus-shadow_word_pain/shadow_word_pain/power_infusion/holy_fire/smite
+actions=flask,type=blinding_light/divine_spirit/mana_potion,trigger=3500/shadow_fiend,trigger=6000/inner_focus,sync=shadow_word_pain/shadow_word_pain/power_infusion/holy_fire/smite
 gear_stamina=600
 gear_intellect=600
 gear_spirit=600
@@ -93,7 +93,7 @@ gear_spell_power=2500
 gear_spell_crit_rating=400
 gear_haste_rating=300
 pet=shadow_fiend
-main_hand=beast,damage_110,speed_1.5,school_shadow
+main_hand=beast,damage=110,speed=1.5,school=shadow
 active=owner
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
 blessing_of_kings=1
@@ -105,13 +105,13 @@ swift_retribution=1
 # Balance Druid
 #
 # (1) The 3500 option to "mana_potion" represents the mana gained and the amount below max required to trigger
-# (2) The "eclipse_trigger" option to "wrath" will make sure that it is only used to trigger the Eclipse talent
+# (2) The "eclipse=trigger" option to "wrath" will make sure that it is only used to trigger the Eclipse talent
 #     which means it will only be used after the cooldown is ready and the effect has not yet proc'd.
 #
 druid=Druid_Balance
 level=80
 talents=http://www.worldofwarcraft.com/info/classes/druid/talents2.html?tal=500322012503130521330530005100000000000000000000000000023020331200000000000000000
-actions=flask-blinding_light/moonkin_form/mana_potion-3500/innervate/faerie_fire/moonfire/wrath-eclipse_trigger/starfire
+actions=flask,type=blinding_light/moonkin_form/mana_potion,trigger=3500/innervate/faerie_fire/moonfire/wrath,eclipse=trigger/starfire
 gear_stamina=600
 gear_intellect=600
 gear_spirit=600
@@ -128,12 +128,12 @@ swift_retribution=1
 # Elemental Shaman
 #
 # (1) The 3500 option to "mana_potion" represents the mana gained and the amount below max required to trigger
-# (2) The "fswait_1" option to lava_burst will prevent it from being called until there is only one tick remaining on Flame Shock
+# (2) The "flame_shock=1,max_ticks_consumed=1" option to lava_burst will prevent it from being called until there is only one tick remaining on Flame Shock
 #
 shaman=Shaman_Elemental
 level=80
 talents=http://www.worldofwarcraft.com/info/classes/shaman/talents2.html?tal=35300315002153510250135130300000000000000000000000055000001000000000000000000
-actions=flask-blinding_light/mana_potion-3500/mana_spring_totem/totem_of_wrath/wrath_of_air_totem/flame_shock/lava_burst-fswait_1/elemental_mastery/lightning_bolt
+actions=flask,type=blinding_light/mana_potion,trigger=3500/mana_spring_totem/totem_of_wrath/wrath_of_air_totem/flame_shock/lava_burst,flame_shock=1,max_ticks_consumed=1/elemental_mastery/lightning_bolt
 gear_stamina=600
 gear_intellect=800
 gear_spell_power=2000
@@ -150,15 +150,15 @@ swift_retribution=1
 #
 # (1) The "main_1" option to windfury_weapon puts the enchant only on the main-hand weapon
 # (2) The "off_1" option to flametongue_weapon puts the enchant only on the off-hand weapon
-# (3) The "fswait_1" option to lava_burst will prevent it from being called until there is only one tick remaining on Flame Shock.
-# (4) The "maelstrom_5" option to lightning_bolt means that LB will only be executed when there is a 5-stack of Maelstrom Weapon,
-#     making the LB cast instant which prevents auto_attack resets.
+# (3) The "flame_shock=1,max_ticks_consumed=1" option to lava_burst will prevent it from being called until there is only one tick remaining on Flame Shock.
+# (4) The "maelstrom_5" option to lightning_bolt/lava_burst means that LB/LvB will only be executed when there is a 5-stack of Maelstrom Weapon,
+#     making the LB/LvB cast instant which prevents auto_attack resets.
 # (5) The tool accepts separate value for hit/crit even though WotLK has merged them.
 #
 shaman=Shaman_Enhancement
 level=80
 talents=http://www.worldofwarcraft.com/info/classes/shaman/talents2.html?tal=05203010000000000000000030205033105021335311523125100000000000000000000000000
-actions=flask-relentless_assault/auto_attack/windfury_weapon-main_1/flametongue_weapon-off_1/stormstrike/lava_burst-maelstrom_5-fswait_1/lightning_bolt-maelstrom_5/searing_totem/strength_of_earth_totem/windfury_totem/shamanistic_rage/flame_shock/earth_shock/lightning_shield
+actions=flask,type=relentless_assault/auto_attack/windfury_weapon,weapon=main/flametongue_weapon,weapon=off/stormstrike/lava_burst,maelstrom=5,flame_shock=1,max_ticks_consumed=1/lightning_bolt,maelstrom=5/searing_totem/strength_of_earth_totem/windfury_totem/shamanistic_rage/flame_shock/earth_shock/lightning_shield
 gear_strength=400
 gear_agility=600
 gear_stamina=1000
@@ -171,8 +171,8 @@ gear_spell_crit_rating=300
 gear_attack_expertise_rating=175
 gear_attack_penetration=750
 gear_haste_rating=250
-main_hand=fist,damage_310,speed_2.8,enchant_mongoose
-off_hand=fist,damage_310,speed_2.6,enchant_executioner
+main_hand=fist,damage=310,speed=2.8,enchant=mongoose
+off_hand=fist,damage=310,speed=2.6,enchant=executioner
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
 blessing_of_kings=1
 blessing_of_might=1
@@ -185,13 +185,13 @@ battle_shout=1
 # Elemental/Enhancement Shaman  (boost spell power thru Mental Dexterity and Mental Quickness)
 #
 # (1) The 3500 option to "mana_potion" represents the mana gained and the amount below max required to trigger
-# (2) The "fswait_1" option to lava_burst will prevent it from being called until there is only one tick remaining on Flame Shock
+# (2) The "flame_shock=1,max_ticks_consumed=1" option to lava_burst will prevent it from being called until there is only one tick remaining on Flame Shock
 # (3) The "pure" Elemental Shaman above is already putting down Totem of Wrath, so the hybrid will put down Flametongue
 #
 shaman=Shaman_Hybrid
 level=80
 talents=http://www.worldofwarcraft.com/info/classes/shaman/talents2.html?tal=35300315002133510250100030520033000520230000000000000000000000000000000000000
-actions=flask-blinding_light/mana_potion-3500/mana_spring_totem/flametongue_totem/wrath_of_air_totem/flame_shock/lava_burst-fswait_1/elemental_mastery/lightning_bolt
+actions=flask,type=blinding_light/mana_potion,trigger=3500/mana_spring_totem/flametongue_totem/wrath_of_air_totem/flame_shock/lava_burst,flame_shock=1,max_ticks_consumed=1/elemental_mastery/lightning_bolt
 gear_stamina=600
 gear_intellect=800
 gear_spell_power=2000

@@ -1049,18 +1049,21 @@ struct lightning_bolt_t : public shaman_spell_t
 
 struct lava_burst_t : public shaman_spell_t
 {
-  int8_t fswait, maelstrom;
+  int8_t flame_shock;
+  int8_t max_ticks_consumed;
+  int8_t maelstrom;
 
   lava_burst_t( player_t* player, const std::string& options_str ) : 
-    shaman_spell_t( "lava_burst", player, SCHOOL_FIRE, TREE_ELEMENTAL ), fswait(0), maelstrom(0)
+    shaman_spell_t( "lava_burst", player, SCHOOL_FIRE, TREE_ELEMENTAL ), flame_shock(0), max_ticks_consumed(0), maelstrom(0)
   {
     shaman_t* p = player -> cast_shaman();
 
     option_t options[] =
     {
-      { "rank",      OPT_INT8, &rank_index },
-      { "fswait",    OPT_INT8, &fswait     },
-      { "maelstrom", OPT_INT8, &maelstrom  },
+      { "rank",               OPT_INT8, &rank_index         },
+      { "flame_shock",        OPT_INT8, &flame_shock        },
+      { "max_ticks_consumed", OPT_INT8, &max_ticks_consumed },
+      { "maelstrom",          OPT_INT8, &maelstrom          },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1124,13 +1127,25 @@ struct lava_burst_t : public shaman_spell_t
     if( ! shaman_spell_t::ready() )
       return false;
 
-    if( fswait )
+    if( flame_shock )
     {
       shaman_t* p = player -> cast_shaman();
+
       if( ! p -> active_flame_shock ) 
 	return false;
-      if( p -> active_flame_shock -> time_remaining > 4.0 )
+
+      double fs_time_remaining = p -> active_flame_shock -> duration_ready - ( sim -> current_time + execute_time() );
+
+      if( fs_time_remaining < 0 )
 	return false;
+
+      if( max_ticks_consumed > 0 )
+      {
+	int8_t fs_tick_remaining = (int8_t) floor( fs_time_remaining / 2.0 );
+
+	if( fs_tick_remaining > max_ticks_consumed )
+	  return false;
+      }
     }
 
     if( maelstrom > 0 && 
@@ -1756,14 +1771,37 @@ struct flametongue_weapon_t : public shaman_spell_t
   flametongue_weapon_t( player_t* player, const std::string& options_str ) : 
     shaman_spell_t( "flametongue_weapon", player, SCHOOL_NATURE, TREE_ENHANCEMENT ), main(0), off(0)
   {
+    std::string weapon_str;
+
     option_t options[] =
     {
-      { "main", OPT_INT8, &main },
-      { "off",  OPT_INT8, &off  },
+      { "weapon", OPT_STRING, &weapon_str },
       { NULL }
     };
     parse_options( options, options_str );
-    if( ! main && ! off ) main = off = 1;
+
+    if( weapon_str.empty() ) 
+    {
+      main = off = 1;
+    }
+    else if( weapon_str == "main" )
+    {
+      main = 1;
+    }
+    else if( weapon_str == "off" )
+    {
+      off = 1;
+    }
+    else if( weapon_str == "both" )
+    {
+      main = 1;
+      off = 1;
+    }
+    else
+    {
+      fprintf( sim -> output_file, "flametongue_weapon: weapon option must be one of main/off/both\n" );
+      assert(0);
+    }
     trigger_gcd = 0;
   }
 
@@ -1789,15 +1827,37 @@ struct windfury_weapon_t : public shaman_spell_t
   windfury_weapon_t( player_t* player, const std::string& options_str ) : 
     shaman_spell_t( "windfury_weapon", player, SCHOOL_NATURE, TREE_ENHANCEMENT ), main(0), off(0)
   {
+    std::string weapon_str;
+
     option_t options[] =
     {
-      { "main", OPT_INT8, &main },
-      { "off",  OPT_INT8, &off  },
+      { "weapon", OPT_STRING, &weapon_str },
       { NULL }
     };
     parse_options( options, options_str );
-    if( ! main && ! off ) main = off = 1;
 
+    if( weapon_str.empty() ) 
+    {
+      main = off = 1;
+    }
+    else if( weapon_str == "main" )
+    {
+      main = 1;
+    }
+    else if( weapon_str == "off" )
+    {
+      off = 1;
+    }
+    else if( weapon_str == "both" )
+    {
+      main = 1;
+      off = 1;
+    }
+    else
+    {
+      fprintf( sim -> output_file, "windfury_weapon: weapon option must be one of main/off/both\n" );
+      assert(0);
+    }
     trigger_gcd = 0;
   }
 
@@ -2823,7 +2883,7 @@ void shaman_t::parse_talents( const std::string& talent_string )
   } 
   else
   {
-    printf( "Malformed Shaman talent string.  Number encoding should have length 61 for Burning Crusade or 77 for Wrath of the Lich King.\n" );
+    fprintf( sim -> output_file, "Malformed Shaman talent string.  Number encoding should have length 61 for Burning Crusade or 77 for Wrath of the Lich King.\n" );
     assert( 0 );
   }
 }
@@ -2889,13 +2949,13 @@ bool shaman_t::parse_option( const std::string& name,
   if( name.empty() )
   {
     player_t::parse_option( std::string(), std::string() );
-    option_t::print( options );
+    option_t::print( sim, options );
     return false;
   }
 
   if( player_t::parse_option( name, value ) ) return true;
 
-  return option_t::parse( options, name, value );
+  return option_t::parse( sim, options, name, value );
 }
 
 // player_t::create_shaman  =================================================

@@ -790,10 +790,11 @@ struct starfire_t : public druid_spell_t
 
 struct wrath_t : public druid_spell_t
 {
+  int8_t eclipse_benefit;
   int8_t eclipse_trigger;
 
   wrath_t( player_t* player, const std::string& options_str ) : 
-    druid_spell_t( "wrath", player, SCHOOL_NATURE, TREE_BALANCE ), eclipse_trigger(0)
+    druid_spell_t( "wrath", player, SCHOOL_NATURE, TREE_BALANCE ), eclipse_benefit(0), eclipse_trigger(0)
   {
     druid_t* p = player -> cast_druid();
 
@@ -808,6 +809,7 @@ struct wrath_t : public druid_spell_t
 
     if( ! eclipse_str.empty() )
     {
+      eclipse_benefit = ( eclipse_str == "benefit" );
       eclipse_trigger = ( eclipse_str == "trigger" );
     }
 
@@ -870,15 +872,19 @@ struct wrath_t : public druid_spell_t
     if( ! druid_spell_t::ready() )
       return false;
 
+    druid_t* p = player -> cast_druid();
+
+    if( eclipse_benefit )
+      if( ! p -> buffs_eclipse_wrath )
+	return false;
+
     if( eclipse_trigger )
     {
-      druid_t* p = player -> cast_druid();
-
       if( p -> talents.eclipse == 0 )
 	return false;
 
       if( p -> expirations_eclipse )
-	if( p -> expirations_eclipse -> time > sim -> current_time + 3.0 )
+	if( p -> expirations_eclipse -> occurs() > sim -> current_time + 3.0 )
 	  return false;
     }
 
@@ -1133,7 +1139,7 @@ void druid_t::parse_talents( const std::string& talent_string )
   }
   else
   {
-    printf( "Malformed Druid talent string.  Number encoding should have length 62 for Burning Crusade or 81 for Wrath of the Lich King.\n" );
+    fprintf( sim -> output_file, "Malformed Druid talent string.  Number encoding should have length 62 for Burning Crusade or 81 for Wrath of the Lich King.\n" );
     assert( 0 );
   }
 }
@@ -1177,13 +1183,13 @@ bool druid_t::parse_option( const std::string& name,
   if( name.empty() )
   {
     player_t::parse_option( std::string(), std::string() );
-    option_t::print( options );
+    option_t::print( sim, options );
     return false;
   }
 
   if( player_t::parse_option( name, value ) ) return true;
 
-  return option_t::parse( options, name, value );
+  return option_t::parse( sim, options, name, value );
 }
 
 // player_t::create_druid  ==================================================

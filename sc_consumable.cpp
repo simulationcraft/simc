@@ -17,14 +17,23 @@ struct flask_t : public action_t
 {
   int8_t type;
 
-  flask_t( player_t* p, const std::string& option_str ) : 
-    action_t( ACTION_OTHER, "flask", p ), type( FLASK_NONE )
+  flask_t( player_t* p, const std::string& options_str ) : 
+    action_t( ACTION_USE, "flask", p ), type( FLASK_NONE )
   {
+    std::string type_str;
+
+    option_t options[] =
+    {
+      { "type", OPT_STRING, &type_str },
+      { NULL }
+    };
+    parse_options( options, options_str );
+
     trigger_gcd = 0;
     harmful = false;
     for( int i=0; i < FLASK_MAX; i++ )
     {
-      if( option_str == util_t::flask_type_string( i ) )
+      if( type_str == util_t::flask_type_string( i ) )
       {
 	type = i;
 	break;
@@ -81,8 +90,8 @@ struct destruction_potion_t : public action_t
 {
   bool used;
 
-  destruction_potion_t( player_t* p, const std::string& option_str ) : 
-    action_t( ACTION_OTHER, "destruction_potion", p ), used( false )
+  destruction_potion_t( player_t* p, const std::string& options_str ) : 
+    action_t( ACTION_USE, "destruction_potion", p ), used( false )
   {
     cooldown = 120.0;
     cooldown_group = "potion";
@@ -136,17 +145,29 @@ struct destruction_potion_t : public action_t
 
 struct mana_potion_t : public action_t
 {
+  double trigger;
   double mana;
   bool used;
 
-  mana_potion_t( player_t* p, const std::string& option_str ) : 
-    action_t( ACTION_OTHER, "mana_potion", p ), mana(0), used(false)
+  mana_potion_t( player_t* p, const std::string& options_str ) : 
+    action_t( ACTION_USE, "mana_potion", p ), trigger(0), mana(0), used(false)
   {
+    option_t options[] =
+    {
+      { "mana",    OPT_INT16, &mana    },
+      { "trigger", OPT_INT16, &trigger },
+      { NULL }
+    };
+    parse_options( options, options_str );
+
+    if( mana    == 0 ) mana = trigger;
+    if( trigger == 0 ) trigger = mana;
+    assert( mana > 0 && trigger > 0 );
+
     cooldown = 120.0;
     cooldown_group = "potion";
     trigger_gcd = 0;
     harmful = false;
-    mana = atof( option_str.c_str() );
   }
   
   virtual void execute()
@@ -166,7 +187,7 @@ struct mana_potion_t : public action_t
       return false;
 
     return( player -> resource_max    [ RESOURCE_MANA ] - 
-	    player -> resource_current[ RESOURCE_MANA ] ) > mana;
+	    player -> resource_current[ RESOURCE_MANA ] ) > trigger;
   }
 
   virtual void reset()
@@ -182,16 +203,29 @@ struct mana_potion_t : public action_t
 
 struct mana_gem_t : public action_t
 {
+  double trigger;
   double mana;
+  bool used;
 
-  mana_gem_t( player_t* p, const std::string& option_str ) : 
-    action_t( ACTION_OTHER, "mana_gem", p ), mana(0)
+  mana_gem_t( player_t* p, const std::string& options_str ) : 
+    action_t( ACTION_USE, "mana_gem", p ), trigger(0), mana(0), used(false)
   {
+    option_t options[] =
+    {
+      { "mana",    OPT_INT16, &mana    },
+      { "trigger", OPT_INT16, &trigger },
+      { NULL }
+    };
+    parse_options( options, options_str );
+
+    if( mana    == 0 ) mana = trigger;
+    if( trigger == 0 ) trigger = mana;
+    assert( mana > 0 && trigger > 0 );
+
     cooldown = 120.0;
     cooldown_group = "rune";
     trigger_gcd = 0;
     harmful = false;
-    mana = atof( option_str.c_str() );
   }
   
   virtual void execute()
@@ -199,15 +233,25 @@ struct mana_gem_t : public action_t
     report_t::log( sim, "%s uses Mana Gem", player -> name() );
     player -> resource_gain( RESOURCE_MANA, mana, "mana_gem" );
     player -> share_cooldown( cooldown_group, cooldown );
+    used = true;
   }
 
   virtual bool ready()
   {
+    if( used )
+      return false;
+
     if( cooldown_ready > sim -> current_time ) 
       return false;
 
     return( player -> resource_max    [ RESOURCE_MANA ] - 
-	    player -> resource_current[ RESOURCE_MANA ] ) > mana;
+	    player -> resource_current[ RESOURCE_MANA ] ) > trigger;
+  }
+
+  virtual void reset()
+  {
+    action_t::reset();
+    used = false;
   }
 };
 
@@ -217,16 +261,29 @@ struct mana_gem_t : public action_t
 
 struct health_stone_t : public action_t
 {
+  double trigger;
   double health;
+  bool used;
 
-  health_stone_t( player_t* p, const std::string& option_str ) : 
-    action_t( ACTION_OTHER, "health_stone", p ), health(0)
+  health_stone_t( player_t* p, const std::string& options_str ) : 
+    action_t( ACTION_USE, "health_stone", p ), trigger(0), health(0), used(false)
   {
+    option_t options[] =
+    {
+      { "health",  OPT_INT16, &health  },
+      { "trigger", OPT_INT16, &trigger },
+      { NULL }
+    };
+    parse_options( options, options_str );
+
+    if( health  == 0 ) health = trigger;
+    if( trigger == 0 ) trigger = health;
+    assert( health > 0 && trigger > 0 );
+
     cooldown = 120.0;
     cooldown_group = "rune";
     trigger_gcd = 0;
     harmful = false;
-    health = atof( option_str.c_str() );
   }
   
   virtual void execute()
@@ -234,15 +291,25 @@ struct health_stone_t : public action_t
     report_t::log( sim, "%s uses Health Stone", player -> name() );
     player -> resource_gain( RESOURCE_HEALTH, health, "health_stone" );
     player -> share_cooldown( cooldown_group, cooldown );
+    used = true;
   }
 
   virtual bool ready()
   {
+    if( used )
+      return false;
+
     if( cooldown_ready > sim -> current_time ) 
       return false;
 
     return( player -> resource_max    [ RESOURCE_HEALTH ] - 
-	    player -> resource_current[ RESOURCE_HEALTH ] ) > health;
+	    player -> resource_current[ RESOURCE_HEALTH ] ) > trigger;
+  }
+
+  virtual void reset()
+  {
+    action_t::reset();
+    used = false;
   }
 };
 
@@ -252,19 +319,26 @@ struct health_stone_t : public action_t
 
 struct dark_rune_t : public action_t
 {
+  double trigger;
   double health;
   double mana;
+  bool used;
 
   dark_rune_t( player_t* p, const std::string& options_str ) : 
-    action_t( ACTION_OTHER, "dark_rune", p ), health(0), mana(0)
+    action_t( ACTION_USE, "dark_rune", p ), trigger(0), health(0), mana(0), used(false)
   {
     option_t options[] =
     {
-      { "mana",   OPT_FLT,  &mana   },
-      { "health", OPT_FLT,  &health },
+      { "trigger", OPT_INT16,  &trigger },
+      { "mana",    OPT_INT16,  &mana    },
+      { "health",  OPT_INT16,  &health  },
       { NULL }
     };
     parse_options( options, options_str );
+
+    if( mana    == 0 ) mana = trigger;
+    if( trigger == 0 ) trigger = mana;
+    assert( mana > 0 && trigger > 0 );
 
     cooldown = 120.0;
     cooldown_group = "rune";
@@ -278,10 +352,14 @@ struct dark_rune_t : public action_t
     player -> resource_gain( RESOURCE_MANA,   mana,   "dark_rune" );
     player -> resource_loss( RESOURCE_HEALTH, health, "dark_rune" );
     player -> share_cooldown( cooldown_group, cooldown );
+    used = true;
   }
 
   virtual bool ready()
   {
+    if( sim_t::WotLK && used )
+      return false;
+
     if( cooldown_ready > sim -> current_time ) 
       return false;
 
@@ -289,7 +367,13 @@ struct dark_rune_t : public action_t
       return false;
 
     return( player -> resource_max    [ RESOURCE_MANA ] - 
-	    player -> resource_current[ RESOURCE_MANA ] ) > mana;
+	    player -> resource_current[ RESOURCE_MANA ] ) > trigger;
+  }
+
+  virtual void reset()
+  {
+    action_t::reset();
+    used = false;
   }
 };
 
@@ -299,14 +383,14 @@ struct dark_rune_t : public action_t
 
 action_t* consumable_t::create_action( player_t*          p,
 				       const std::string& name, 
-				       const std::string& option_str )
+				       const std::string& options_str )
 {
-  if( name == "dark_rune"          ) return new          dark_rune_t( p, option_str );
-  if( name == "destruction_potion" ) return new destruction_potion_t( p, option_str );
-  if( name == "flask"              ) return new              flask_t( p, option_str );
-  if( name == "health_stone"       ) return new       health_stone_t( p, option_str );
-  if( name == "mana_potion"        ) return new        mana_potion_t( p, option_str );
-  if( name == "mana_gem"           ) return new           mana_gem_t( p, option_str );
+  if( name == "dark_rune"          ) return new          dark_rune_t( p, options_str );
+  if( name == "destruction_potion" ) return new destruction_potion_t( p, options_str );
+  if( name == "flask"              ) return new              flask_t( p, options_str );
+  if( name == "health_stone"       ) return new       health_stone_t( p, options_str );
+  if( name == "mana_potion"        ) return new        mana_potion_t( p, options_str );
+  if( name == "mana_gem"           ) return new           mana_gem_t( p, options_str );
 
   return 0;
 }

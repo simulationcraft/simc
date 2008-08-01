@@ -751,36 +751,91 @@ void unique_gear_t::spell_finish_event( spell_t* s )
 }
 
 // ==========================================================================
-// Spell Power Trinket Spell
+// Attack Power Trinket Action
 // ==========================================================================
 
-struct spell_power_trinket_t : public spell_t
+struct attack_power_trinket_t : public action_t
+{
+  int16_t attack_power;
+  double length, cooldown;
+  
+  attack_power_trinket_t( player_t* p, const std::string& options_str ) : 
+    action_t( ACTION_USE, "attack_power_trinket", p )
+  {
+    option_t options[] =
+    {
+      { "power",    OPT_INT16, &attack_power },
+      { "length",   OPT_INT16, &length       },
+      { "cooldown", OPT_INT16, &cooldown     },
+      { NULL }
+    };
+    parse_options( options, options_str );
+
+    if( attack_power <= 0 ||
+	length       <= 0 ||
+	cooldown     <= 0 )
+    {
+      fprintf( sim -> output_file, "Expected format: attack_power_trinket,power=X,length=Y,cooldown=Z\n" );
+      assert(0);
+    }
+    trigger_gcd = 0;
+    harmful = false;
+  }
+   
+  virtual void execute()
+  {
+    struct expiration_t : public event_t
+    {
+      attack_power_trinket_t* trinket;
+
+      expiration_t( sim_t* sim, attack_power_trinket_t* t ) : event_t( sim, t -> player ), trinket( t )
+      {
+	name = "Attack Power Trinket Expiration";
+	player -> aura_gain( "Attack Power Trinket" );
+	player -> attack_power += trinket -> attack_power;
+	sim -> add_event( this, trinket -> length );
+      }
+      virtual void execute()
+      {
+	player -> aura_loss( "Attack Power Trinket" );
+	player -> attack_power -= trinket -> attack_power;
+      }
+    };
+  
+    report_t::log( sim, "Player %s uses Attack Power Trinket", player -> name() );
+    cooldown_ready = player -> sim -> current_time + cooldown;
+    // Trinket use may not overlap.....
+    player -> share_cooldown( cooldown_group, length );
+    new expiration_t( sim, this );
+  }
+};
+
+// ==========================================================================
+// Spell Power Trinket Action
+// ==========================================================================
+
+struct spell_power_trinket_t : public action_t
 {
   int16_t spell_power;
   double length, cooldown;
   
-  struct spell_power_trinket_expiration_t : public event_t
-  {
-    spell_power_trinket_t* trinket;
-
-    spell_power_trinket_expiration_t( sim_t* sim, spell_power_trinket_t* t ) : event_t( sim, t -> player ), trinket( t )
-    {
-      name = "Spell Power Trinket Expiration";
-      sim -> add_event( this, trinket -> length );
-    }
-    virtual void execute()
-    {
-      player -> aura_loss( "Spell Power Trinket" );
-      player -> spell_power[ SCHOOL_MAX ] -= trinket -> spell_power;
-    }
-  };
-  
   spell_power_trinket_t( player_t* p, const std::string& options_str ) : 
-    spell_t( "spell_power_trinket", p )
+    action_t( ACTION_USE, "spell_power_trinket", p )
   {
-    if( 3 != util_t::string_split( options_str, "-", "i16 f f", &spell_power, &length, &cooldown ) )
+    option_t options[] =
     {
-      printf( "Expected format: spell_power_trinket-spell_power-length-cooldown\n" );
+      { "power",    OPT_INT16, &spell_power },
+      { "length",   OPT_INT16, &length      },
+      { "cooldown", OPT_INT16, &cooldown    },
+      { NULL }
+    };
+    parse_options( options, options_str );
+
+    if( spell_power <= 0 ||
+	length      <= 0 ||
+	cooldown    <= 0 )
+    {
+      fprintf( sim -> output_file, "Expected format: spell_power_trinket,power=X,length=Y,cooldown=Z\n" );
       assert(0);
     }
     trigger_gcd = 0;
@@ -789,47 +844,58 @@ struct spell_power_trinket_t : public spell_t
    
   virtual void execute()
   {
+    struct expiration_t : public event_t
+    {
+      spell_power_trinket_t* trinket;
+
+      expiration_t( sim_t* sim, spell_power_trinket_t* t ) : event_t( sim, t -> player ), trinket( t )
+      {
+	name = "Spell Power Trinket Expiration";
+	player -> aura_gain( "Spell Power Trinket" );
+	player -> spell_power[ SCHOOL_MAX ] += trinket -> spell_power;
+	sim -> add_event( this, trinket -> length );
+      }
+      virtual void execute()
+      {
+	player -> aura_loss( "Spell Power Trinket" );
+	player -> spell_power[ SCHOOL_MAX ] -= trinket -> spell_power;
+      }
+    };
+  
     report_t::log( sim, "Player %s uses Spell Power Trinket", player -> name() );
-    player -> aura_gain( "Spell Power Trinket" );
-    player -> spell_power[ SCHOOL_MAX ] += spell_power;
     cooldown_ready = player -> sim -> current_time + cooldown;
     // Trinket use may not overlap.....
     player -> share_cooldown( cooldown_group, length );
-    new spell_power_trinket_expiration_t( sim, this );
+    new expiration_t( sim, this );
   }
 };
 
 // ==========================================================================
-// Haste Trinket Spell
+// Haste Trinket Action
 // ==========================================================================
 
-struct haste_trinket_t : public spell_t
+struct haste_trinket_t : public action_t
 {
   int16_t haste_rating;
   double length, cooldown;
   
-  struct haste_trinket_expiration_t : public event_t
-  {
-    haste_trinket_t* trinket;
-    haste_trinket_expiration_t( sim_t* sim, haste_trinket_t* t ) : event_t( sim, t -> player ), trinket( t )
-    {
-      name = "Haste Trinket Expiration";
-      sim -> add_event( this, trinket -> length );
-    }
-    virtual void execute()
-    {
-      player -> aura_loss( "Haste Trinket" );
-      player -> haste_rating -= trinket -> haste_rating;
-      player -> recalculate_haste();
-    }
-  };
-  
   haste_trinket_t( player_t* p, const std::string& options_str ) : 
-    spell_t( "haste_trinket", p )
+    action_t( ACTION_USE, "haste_trinket", p )
   {
-    if( 3 != util_t::string_split( options_str, "-", "i16 f f", &haste_rating, &length, &cooldown ) )
+    option_t options[] =
     {
-      printf( "Expected format: haste_trinket-haste_rating-length-cooldown\n" );
+      { "rating",   OPT_INT16, &haste_rating },
+      { "length",   OPT_INT16, &length       },
+      { "cooldown", OPT_INT16, &cooldown     },
+      { NULL }
+    };
+    parse_options( options, options_str );
+
+    if( haste_rating <= 0 ||
+	length       <= 0 ||
+	cooldown     <= 0 )
+    {
+      fprintf( sim -> output_file, "Expected format: haste_trinket,rating=X,length=Y,cooldown=Z\n" );
       assert(0);
     }
     trigger_gcd = 0;
@@ -838,22 +904,39 @@ struct haste_trinket_t : public spell_t
    
   virtual void execute()
   {
+    struct expiration_t : public event_t
+    {
+      haste_trinket_t* trinket;
+
+      expiration_t( sim_t* sim, haste_trinket_t* t ) : event_t( sim, t -> player ), trinket( t )
+      {
+	name = "Haste Trinket Expiration";
+	player -> aura_gain( "Haste Trinket" );
+	player -> haste_rating += trinket -> haste_rating;
+	player -> recalculate_haste();
+	sim -> add_event( this, trinket -> length );
+      }
+      virtual void execute()
+      {
+	player -> aura_loss( "Haste Trinket" );
+	player -> haste_rating -= trinket -> haste_rating;
+	player -> recalculate_haste();
+      }
+    };
+  
     report_t::log( sim, "Player %s uses Haste Trinket", player -> name() );
-    player -> aura_gain( "Haste Trinket" );
-    player -> haste_rating += haste_rating;
-    player -> recalculate_haste();
     cooldown_ready = player -> sim -> current_time + cooldown;
     // Trinket use may not overlap.....
     player -> share_cooldown( cooldown_group, length );
-    new haste_trinket_expiration_t( sim, this );
+    new expiration_t( sim, this );
   }
 };
 
 // ==========================================================================
-// Talisman of Ascendance Spell
+// Talisman of Ascendance Action
 // ==========================================================================
 
-struct talisman_of_ascendance_t : public spell_t
+struct talisman_of_ascendance_t : public action_t
 {
   struct talisman_of_ascendance_expiration_t : public event_t
   {
@@ -872,7 +955,7 @@ struct talisman_of_ascendance_t : public spell_t
   };
   
   talisman_of_ascendance_t( player_t* p, const std::string& options_str ) : 
-    spell_t( "talisman_of_ascendance", p )
+    action_t( ACTION_USE, "talisman_of_ascendance", p )
   {
     cooldown_group = "spell_power_trinket";
     trigger_gcd = 0;
@@ -892,10 +975,10 @@ struct talisman_of_ascendance_t : public spell_t
 };
 
 // ==========================================================================
-// Zandalarian Hero Charm Spell
+// Zandalarian Hero Charm Action
 // ==========================================================================
 
-struct zandalarian_hero_charm_t : public spell_t
+struct zandalarian_hero_charm_t : public action_t
 {
   struct zandalarian_hero_charm_expiration_t : public event_t
   {
@@ -913,7 +996,7 @@ struct zandalarian_hero_charm_t : public spell_t
   };
   
   zandalarian_hero_charm_t( player_t* p, const std::string& options_str ) : 
-    spell_t( "zandalarian_hero_charm", p )
+    action_t( ACTION_USE, "zandalarian_hero_charm", p )
   {
     cooldown_group = "spell_power_trinket";
     trigger_gcd = 0;
@@ -937,7 +1020,7 @@ struct zandalarian_hero_charm_t : public spell_t
 // Hazzrahs Charm Spell
 // ==========================================================================
 
-struct hazzrahs_charm_t : public spell_t
+struct hazzrahs_charm_t : public action_t
 {
   struct hazzrahs_charm_expiration_t : public event_t
   {
@@ -968,7 +1051,7 @@ struct hazzrahs_charm_t : public spell_t
   };
   
   hazzrahs_charm_t( player_t* p, const std::string& options_str ) : 
-    spell_t( "hazzrahs_charm", p )
+    action_t( ACTION_USE, "hazzrahs_charm", p )
   {
     cooldown_group = "spell_power_trinket";
     trigger_gcd = 0;
@@ -997,7 +1080,7 @@ struct hazzrahs_charm_t : public spell_t
 // Violet Eye Spell
 // ==========================================================================
 
-struct violet_eye_t : public spell_t
+struct violet_eye_t : public action_t
 {
   struct violet_eye_expiration_t : public event_t
   {
@@ -1018,7 +1101,7 @@ struct violet_eye_t : public spell_t
   };
 
   violet_eye_t( player_t* p, const std::string& options_str ) : 
-    spell_t( "violet_eye", p )
+    action_t( ACTION_USE, "violet_eye", p )
   {
     cooldown_group = "mana_trinket";
     harmful = false;
@@ -1043,12 +1126,13 @@ action_t* unique_gear_t::create_action( player_t*          p,
 					const std::string& name, 
 					const std::string& options_str )
 {
-  if( name == "spell_power_trinket"    ) return new spell_power_trinket_t   ( p, options_str );
+  if( name == "attack_power_trinket"   ) return new attack_power_trinket_t  ( p, options_str );
   if( name == "haste_trinket"          ) return new haste_trinket_t         ( p, options_str );
-  if( name == "talisman_of_ascendance" ) return new talisman_of_ascendance_t( p, options_str );
-  if( name == "zandalarian_hero_charm" ) return new zandalarian_hero_charm_t( p, options_str );
   if( name == "hazzrahs_charm"         ) return new hazzrahs_charm_t        ( p, options_str );
+  if( name == "spell_power_trinket"    ) return new spell_power_trinket_t   ( p, options_str );
+  if( name == "talisman_of_ascendance" ) return new talisman_of_ascendance_t( p, options_str );
   if( name == "violet_eye"             ) return new violet_eye_t            ( p, options_str );
+  if( name == "zandalarian_hero_charm" ) return new zandalarian_hero_charm_t( p, options_str );
 
   return 0;
 }

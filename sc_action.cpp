@@ -66,22 +66,22 @@ void action_t::parse_options( option_t*          options,
 
   std::vector<std::string> splits;
 
-  int size = util_t::string_split( splits, options_str, "-" );
+  int size = util_t::string_split( splits, options_str, "," );
 
   for( int i=0; i < size; i++ )
   {
     static std::string n;
     static std::string v;
 
-    if( 2 != util_t::string_split( splits[ i ], "_", "S S", &n, &v ) )
+    if( 2 != util_t::string_split( splits[ i ], "=", "S S", &n, &v ) )
     {
-      printf( "util_t::action: %s: Unexpected parameter '%s'.  Expected format: name=value\n", name(), splits[ i ].c_str() );
+      fprintf( sim -> output_file, "util_t::action: %s: Unexpected parameter '%s'.  Expected format: name=value\n", name(), splits[ i ].c_str() );
       assert( false );
     }
     
-    if( ! option_t::parse( options, n, v ) )
+    if( ! option_t::parse( sim, options, n, v ) )
     {
-      printf( "util_t::spell: %s: Unexpected parameter '%s'.\n", name(), n.c_str() );
+      fprintf( sim -> output_file, "util_t::spell: %s: Unexpected parameter '%s'.\n", name(), n.c_str() );
       assert( false );
     }
   }
@@ -98,7 +98,7 @@ rank_t* action_t::choose_rank( rank_t* rank_list )
        return &( rank_list[ i ] );
    }
 
-   printf( "%s unable to find valid rank for %s\n", player -> name(), name() );
+   fprintf( sim -> output_file, "%s unable to find valid rank for %s\n", player -> name(), name() );
    assert( 0 );
    return 0;
 }

@@ -101,7 +101,7 @@ enum resource_type { RESOURCE_NONE=0, RESOURCE_HEALTH, RESOURCE_MANA, RESOURCE_R
 
 enum result_type { RESULT_NONE=0, RESULT_MISS, RESULT_RESIST, RESULT_DODGE, RESULT_PARRY, RESULT_BLOCK, RESULT_GLANCE, RESULT_CRUSH, RESULT_CRIT, RESULT_HIT, RESULT_MAX };
 
-enum action_type { ACTION_OTHER=0, ACTION_SPELL, ACTION_ATTACK, ACTION_MAX };
+enum action_type { ACTION_USE=0, ACTION_SPELL, ACTION_ATTACK, ACTION_MAX };
 
 enum school_type {
      SCHOOL_NONE=0, 
@@ -227,6 +227,7 @@ struct sim_t
   int8_t      average_dmg, log, debug, timestamp;
   report_t*   report;
   uptime_t*   uptime_list;
+  FILE*       output_file;
 
   sim_t();
 
@@ -1092,10 +1093,10 @@ struct option_t
   int8_t type; 
   void*  address;
 
-  static void print( option_t* );
-  static bool parse( option_t*, const std::string& name, const std::string& value );
+  static void print( sim_t*, option_t* );
+  static bool parse( sim_t*, option_t*, const std::string& name, const std::string& value );
   static bool parse( sim_t*, char* line );
-  static bool parse( int argc, char** argv, sim_t* );
+  static bool parse( sim_t*, int argc, char** argv );
 };
 
 // Random Number Generation ==================================================

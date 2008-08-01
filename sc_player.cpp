@@ -335,7 +335,7 @@ void player_t::init_weapon( weapon_t*    w,
       std::string parm, value;
       bool invalid = false;
 
-      if( 2 != util_t::string_split( s, "_", "S S", &parm, &value ) )
+      if( 2 != util_t::string_split( s, "=", "S S", &parm, &value ) )
       {
 	invalid = true;
       }
@@ -456,7 +456,7 @@ void player_t::init_actions()
       std::string action_name    = splits[ i ];
       std::string action_options = "";
 
-      std::string::size_type cut_pt = action_name.find_first_of( "-" );       
+      std::string::size_type cut_pt = action_name.find_first_of( "," );       
 
       if( cut_pt != action_name.npos )
       {
@@ -1324,9 +1324,9 @@ bool player_t::parse_option( const std::string& name,
   
   if( name.empty() )
   {
-    option_t::print( options );
+    option_t::print( sim, options );
     return false;
   }
 
-  return option_t::parse( options, name, value );
+  return option_t::parse( sim, options, name, value );
 }

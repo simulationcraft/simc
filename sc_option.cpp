@@ -49,22 +49,24 @@ static void remove_white_space( std::string& buffer,
 
 // option_t::print ==========================================================
 
-void option_t::print( option_t* options )
+void option_t::print( sim_t* sim, option_t* options )
 {
+  FILE* f = sim -> output_file;
+
   for( int i=0; options[ i ].name; i++ )
   {
     option_t& o = options[ i ];
 
-    printf( "\t%s : ", o.name );
+    fprintf( sim -> output_file, "\t%s : ", o.name );
     
     switch( o.type )
     {
-    case OPT_STRING: printf( "%s\n",    ( (std::string*) o.address ) -> c_str()         ); break;
-    case OPT_CHAR_P: printf( "%s\n",   *( (char**)       o.address )                    ); break;
-    case OPT_INT8:   printf( "%d\n",   *( (int8_t*)      o.address )                    ); break;
-    case OPT_INT16:  printf( "%d\n",   *( (int16_t*)     o.address )                    ); break;
-    case OPT_INT32:  printf( "%d\n",   *( (int32_t*)     o.address )                    ); break;
-    case OPT_FLT:    printf( "%.2f\n", *( (double*)       o.address )                    ); break;
+    case OPT_STRING: fprintf( f, "%s\n",    ( (std::string*) o.address ) -> c_str()         ); break;
+    case OPT_CHAR_P: fprintf( f, "%s\n",   *( (char**)       o.address )                    ); break;
+    case OPT_INT8:   fprintf( f, "%d\n",   *( (int8_t*)      o.address )                    ); break;
+    case OPT_INT16:  fprintf( f, "%d\n",   *( (int16_t*)     o.address )                    ); break;
+    case OPT_INT32:  fprintf( f, "%d\n",   *( (int32_t*)     o.address )                    ); break;
+    case OPT_FLT:    fprintf( f, "%.2f\n", *( (double*)      o.address )                    ); break;
     default: assert(0);
     }
   }
@@ -72,7 +74,8 @@ void option_t::print( option_t* options )
 
 // option_t::parse ==========================================================
 
-bool option_t::parse( option_t* options,
+bool option_t::parse( sim_t*             sim,
+		      option_t*          options,
 		      const std::string& name,
 		      const std::string& value )
 {
@@ -114,19 +117,30 @@ bool option_t::parse( sim_t* sim,
 
   if( cut_pt == buffer.npos )
   {
-    printf( "simcraft: Unexpected parameter '%s'.  Expected format: name=value\n", line );
+    fprintf( sim -> output_file, "simcraft: Unexpected parameter '%s'.  Expected format: name=value\n", line );
     return false;
   }
   
   name  = buffer.substr( 0, cut_pt );
   value = buffer.substr( cut_pt + 1 );
 
-  if( name == "file" )
+  if( name == "output" )
+  {
+    if( sim -> output_file != stdout ) fclose( sim -> output_file );
+
+    sim -> output_file = fopen( value.c_str(), "w" );
+    if( ! sim -> output_file )
+    {
+      fprintf( stderr, "simcraft: Unable to open output file '%s'\n", value.c_str() );
+      exit(0);
+    }
+  }
+  else if( name == "input" )
   {
     FILE* file = fopen( value.c_str(), "r" );
     if( ! file )
     {
-      printf( "simcraft: Unable to open profile file '%s'\n", value.c_str() );
+      fprintf( sim -> output_file, "simcraft: Unable to open input parameter file '%s'\n", value.c_str() );
       exit(0);
     }
 
@@ -203,7 +217,7 @@ bool option_t::parse( sim_t* sim,
   {
     if( ! sim -> parse_option( name, value ) )
     {
-      printf( "simcraft: Unknown option/value pair: '%s' : '%s'\n", name.c_str(), value.c_str() );
+      fprintf( sim -> output_file, "simcraft: Unknown option/value pair: '%s' : '%s'\n", name.c_str(), value.c_str() );
       return false;
     }
   }
@@ -213,9 +227,9 @@ bool option_t::parse( sim_t* sim,
 
 // option_t::parse ==========================================================
 
-bool option_t::parse( int    argc, 
-		      char** argv,
-		      sim_t* sim )
+bool option_t::parse( sim_t* sim,
+		      int    argc, 
+		      char** argv )
 {
   if( argc <= 1 ) return false;
 
@@ -227,7 +241,7 @@ bool option_t::parse( int    argc,
 
    if( sim -> max_time <= 0 && sim -> target -> initial_health <= 0 )
    {
-     printf( "simcraft: One of -max_time or -target_health must be specified.\n" );
+     fprintf( sim -> output_file, "simcraft: One of -max_time or -target_health must be specified.\n" );
      return false;
    }
 

@@ -1261,15 +1261,25 @@ struct inner_focus_t : public priest_spell_t
     priest_spell_t( "inner_focus", player, SCHOOL_HOLY, TREE_DISCIPLINE )
   {
     priest_t* p = player -> cast_priest();
+
+    std::string sync;
+    option_t options[] =
+    {
+      { "sync", OPT_STRING, &sync },
+      { NULL }
+    };
+    parse_options( options, options_str );
+
     assert( p -> talents.inner_focus );
     trigger_gcd = 0;  
     cooldown = 180.0;
     cooldown *= 1.0 - p -> talents.aspiration * 0.10;
-    if( ! options_str.empty() )
+
+    if( ! sync.empty() )
     {
       // This will prevent InnerFocus from being called before the desired "free spell" is ready to be cast.
-      cooldown_group = options_str;
-      duration_group = options_str;
+      cooldown_group = sync;
+      duration_group = sync;
     }
   }
    
@@ -1689,7 +1699,7 @@ void priest_t::parse_talents( const std::string& talent_string )
   }
   else
   {
-    printf( "Malformed Priest talent string.  Number encoding should have length 64 for Burning Crusade or 80 for Wrath of the Lich King.\n" );
+    fprintf( sim -> output_file, "Malformed Priest talent string.  Number encoding should have length 64 for Burning Crusade or 80 for Wrath of the Lich King.\n" );
     assert( 0 );
   }
 }
@@ -1744,13 +1754,13 @@ bool priest_t::parse_option( const std::string& name,
   if( name.empty() )
   {
     player_t::parse_option( std::string(), std::string() );
-    option_t::print( options );
+    option_t::print( sim, options );
     return false;
   }
 
   if( player_t::parse_option( name, value ) ) return true;
 
-  return option_t::parse( options, name, value );
+  return option_t::parse( sim, options, name, value );
 }
 
 // player_t::create_priest  =================================================

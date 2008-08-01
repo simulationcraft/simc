@@ -107,10 +107,10 @@ bool target_t::parse_option( const std::string& name,
 
   if( name.empty() )
   {
-    option_t::print( options );
+    option_t::print( sim, options );
     return false;
   }
 
-  return option_t::parse( options, name, value );
+  return option_t::parse( sim, options, name, value );
 }
 
