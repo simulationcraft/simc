@@ -503,6 +503,14 @@ void priest_spell_t::player_buff()
   {
     player_multiplier *= 1.15;
   }
+  if( sim_t::WotLK && p -> talents.enlightenment ) 
+  {
+    player_multiplier *= 1.0 + p -> talents.enlightenment * 0.01;
+  }
+  if( p -> talents.twin_disciplines )
+  {
+    player_multiplier *= 1.0 + p -> talents.twin_disciplines * 0.01;
+  }
 }
 
 // Holy Fire Spell ===========================================================
@@ -1544,8 +1552,6 @@ void priest_t::init_base()
   initial_spell_crit_per_intellect = rating_t::interpolate( level, 0.01/60.0, 0.01/80.0, 0.01/166.6 );
   initial_spell_power_per_spirit = ( talents.spiritual_guidance * 0.05 +
 				     talents.twisted_faith      * 0.06 );
-  initial_spell_power_multiplier *= 1.0 + talents.twin_disciplines * 0.01;
-  if( sim_t::WotLK ) initial_spell_power_multiplier *= 1.0 + talents.enlightenment * 0.01;
 
   base_attack_power = -10;
   base_attack_crit  = 0.03;

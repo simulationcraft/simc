@@ -26,6 +26,7 @@ action_t::action_t( int8_t      ty,
     base_multiplier(1),   base_hit(0),   base_crit(0),   base_crit_bonus(1.0),   base_power(0),   base_penetration(0),
   player_multiplier(1), player_hit(0), player_crit(0), player_crit_bonus(1.0), player_power(0), player_penetration(0),
   target_multiplier(1), target_hit(0), target_crit(0), target_crit_bonus(1.0), target_power(0), target_penetration(0),
+  resource_consumed(0),
    dd(0), base_dd(0) ,  dd_power_mod(0), 
   dot(0), base_dot(0), dot_power_mod(0),
   dot_tick(0), time_remaining(0), num_ticks(0), current_tick(0), 
@@ -373,11 +374,12 @@ void action_t::adjust_damage_for_result()
 
 void action_t::consume_resource()
 {
-  double c = cost();
+  resource_consumed = cost();
 
-  report_t::debug( sim, "%s consumes %.1f %s for %s", player -> name(), c, util_t::resource_type_string( resource ), name() );
+  report_t::debug( sim, "%s consumes %.1f %s for %s", player -> name(), 
+		   resource_consumed, util_t::resource_type_string( resource ), name() );
 
-  player -> resource_loss( resource, c );
+  player -> resource_loss( resource, resource_consumed );
 }
 
 // action_t::execute ========================================================

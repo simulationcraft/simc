@@ -794,6 +794,7 @@ struct action_t
   double   base_multiplier,   base_hit,   base_crit,   base_crit_bonus,   base_power,   base_penetration;
   double player_multiplier, player_hit, player_crit, player_crit_bonus, player_power, player_penetration;
   double target_multiplier, target_hit, target_crit, target_crit_bonus, target_power, target_penetration;
+  double resource_consumed;
   double  dd, base_dd,   dd_power_mod;
   double dot, base_dot, dot_power_mod;
   double dot_tick, time_remaining;
