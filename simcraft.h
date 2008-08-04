@@ -522,6 +522,7 @@ struct player_t
     float spellsurge;
     double elder_scribes;
     double eternal_sage;
+    double judgement_of_wisdom;
     double mark_of_defiance;
     double moonkin_haste;
     double mystical_skyfire;
@@ -693,7 +694,7 @@ struct target_t
   {
     // Permanent De-Buffs (until appropriate player class implemented)
     int16_t  judgement_of_crusader;
-    int8_t   judgement_of_wisdom;
+    double   judgement_of_wisdom;
     int8_t   curse_of_elements;
     int8_t   improved_scorch;
     // Temporary De-Buffs

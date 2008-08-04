@@ -40,7 +40,7 @@ target_armor=6400
 # Since support for the Paladin class does not yet exist, one can specify target debuffs (such as
 # Judgement of Wisdom) and player buffs (such as Blessing of Wisdom and Sanctity Aura) as parameters.
 # Both blessing_of_wisdom=1 and sanctity_aura=1 would be included in each player section as appropriate.
-judgement_of_wisdom=1
+judgement_of_wisdom=400
 
 # Since support for the Warlock class does not yet exist, one can specify static target debuffs.
 # CoE is currently coded as affecting Nature damage, too.
@@ -100,6 +100,8 @@ blessing_of_kings=1
 blessing_of_wisdom=1
 sanctified_retribution=1
 swift_retribution=1
+# Holy DPS Priests have ridiculous mana problems.  For now, give them arbitrary mp5 bonus just to confirm scaling.
+gear_mp5=200
 
 #
 # Balance Druid

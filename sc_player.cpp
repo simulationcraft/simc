@@ -7,6 +7,31 @@
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
+// trigger_judgement_of_wisdom ==============================================
+
+static void trigger_judgement_of_wisdom( action_t* action )
+{
+  player_t* p = action -> player;
+
+  if( p -> resource_max[ RESOURCE_MANA ] <= 0 )
+    return;
+
+  double jow = p -> sim -> target -> debuffs.judgement_of_wisdom;
+
+  if( jow <= 0 )
+    return;
+
+  if( sim_t::WotLK && ! p -> sim -> cooldown_ready( p -> cooldowns.judgement_of_wisdom ) )
+    return;
+
+  if( ! rand_t::roll( 0.50 ) )
+    return;
+
+  p -> proc( "jow" );
+  p -> resource_gain( RESOURCE_MANA, sim_t::WotLK ? jow : 74, "jow" );
+  p -> cooldowns.judgement_of_wisdom = p -> sim -> current_time + 4.0;
+}
+
 // trigger_moonkin_haste ====================================================
 
 static void trigger_moonkin_haste( spell_t* s )
@@ -908,13 +933,7 @@ void player_t::spell_miss_event( spell_t* spell )
 
 void player_t::spell_hit_event( spell_t* spell )
 {
-  if( sim -> target -> debuffs.judgement_of_wisdom )
-  {
-    if( resource_max[ RESOURCE_MANA ] > 0 && rand_t::roll( 0.50 ) ) 
-    {
-      resource_gain( RESOURCE_MANA, 74, "jow" );
-    }
-  }
+  trigger_judgement_of_wisdom( spell );
 
   if( spell -> result == RESULT_CRIT )
   {
@@ -958,14 +977,7 @@ void player_t::attack_miss_event( attack_t* attack )
 
 void player_t::attack_hit_event( attack_t* attack )
 {
-  if( sim -> target -> debuffs.judgement_of_wisdom )
-  {
-    if( resource_max[ RESOURCE_MANA ] > 0 && rand_t::roll( 0.50 ) ) 
-    {
-      resource_gain( RESOURCE_MANA, 74, "jow" );
-    }
-  }
-
+  trigger_judgement_of_wisdom( attack );
 }
 
 // player_t::attack_tick_event ==============================================
