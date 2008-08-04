@@ -265,12 +265,13 @@ struct weapon_t
   double damage;
   double swing_time;
   int8_t enchant, buff;
+  bool   main;
 
   int group();
   double normalized_weapon_speed();
 
   weapon_t( int t=WEAPON_NONE, double d=0, double st=2.0, int s=SCHOOL_PHYSICAL ) : 
-    type(t), school(s), damage(d), swing_time(st), enchant(WEAPON_ENCHANT_NONE), buff(WEAPON_BUFF_NONE) {}
+    type(t), school(s), damage(d), swing_time(st), enchant(WEAPON_ENCHANT_NONE), buff(WEAPON_BUFF_NONE), main(true) {}
 };
 
 // Player ====================================================================

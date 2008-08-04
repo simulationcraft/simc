@@ -249,12 +249,14 @@ void attack_t::calculate_damage()
   {
     dd  = base_dd + weapon_speed * ( weapon_damage + ( attack_power * dd_power_mod ) );
     dd *= base_multiplier * player_multiplier * target_multiplier;
+    if( weapon && ! weapon -> main ) dd *= 0.5;
   }
 
   if( base_dot > 0 ) 
   {
     dot  = base_dot + weapon_speed * ( weapon_damage + ( attack_power * dot_power_mod ) );
     dot *= base_multiplier * player_multiplier;
+    if( weapon && ! weapon -> main ) dot *= 0.5;
   }
 }
 

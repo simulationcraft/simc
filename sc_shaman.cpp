@@ -357,7 +357,6 @@ static void trigger_windfury_weapon( attack_t* a )
     {
       shaman_attack_t::player_buff();
       player_power += ( player -> level < 68 ) ? 433 : 475;
-      if( weapon == &( player -> off_hand_weapon ) ) player_multiplier *= 0.5;
     }
   };
 
@@ -751,7 +750,6 @@ struct auto_attack_t : public shaman_attack_t
       p -> off_hand_attack = new melee_t( "melee_off_hand", player );
       p -> off_hand_attack -> weapon = &( p -> off_hand_weapon );
       p -> off_hand_attack -> base_execute_time = p -> off_hand_weapon.swing_time;
-      p -> off_hand_attack -> base_multiplier *= 0.5;
     }
   }
 
@@ -800,7 +798,6 @@ struct stormstrike_t : public shaman_attack_t
 
       if( player -> off_hand_weapon.type != WEAPON_NONE )
       {
-	// FIXME! Need to make off-hand be 50%???
 	weapon = &( player -> off_hand_weapon );
 	shaman_attack_t::execute();
       }

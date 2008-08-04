@@ -172,7 +172,7 @@ void player_t::init()
   init_spell();
   init_attack();
   init_weapon( &main_hand_weapon, main_hand_str );
-  init_weapon(  &off_hand_weapon,  off_hand_str );
+  init_weapon(  &off_hand_weapon,  off_hand_str ); off_hand_weapon.main = false;
   init_weapon(    &ranged_weapon,    ranged_str );
   init_resources();
   init_actions();
@@ -598,6 +598,7 @@ void player_t::reset()
 
   buffs.reset();
   expirations.reset();
+  cooldowns.reset();
   
   if( action_list )
   {

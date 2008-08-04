@@ -104,11 +104,9 @@ static void trigger_mongoose( attack_t* a )
 
   double proc_chance = 1.0 / ( 50.0 / w -> swing_time );
 
-  bool is_main = ( w == &( p -> main_hand_weapon ) );
-
-  int8_t&    b = is_main ? p ->       buffs.mongoose_mh : p ->       buffs.mongoose_oh;
-  event_t*&  e = is_main ? p -> expirations.mongoose_mh : p -> expirations.mongoose_oh;
-  uptime_t*& u = is_main ? p ->     uptimes.mongoose_mh : p ->     uptimes.mongoose_oh;
+  int8_t&    b = w -> main ? p ->       buffs.mongoose_mh : p ->       buffs.mongoose_oh;
+  event_t*&  e = w -> main ? p -> expirations.mongoose_mh : p -> expirations.mongoose_oh;
+  uptime_t*& u = w -> main ? p ->     uptimes.mongoose_mh : p ->     uptimes.mongoose_oh;
 
   if( rand_t::roll( proc_chance ) )
   {
@@ -122,7 +120,7 @@ static void trigger_mongoose( attack_t* a )
     }
   }
 
-  if( ! u )  u = a -> sim -> get_uptime( p -> name_str + "_mongoose_" + ( is_main ? "mh" : "oh" ) );
+  if( ! u )  u = a -> sim -> get_uptime( p -> name_str + "_mongoose_" + ( w -> main ? "mh" : "oh" ) );
 
   u -> update( b );
 }
