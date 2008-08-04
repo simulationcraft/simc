@@ -11,19 +11,6 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 
 static void trigger_moonkin_haste( spell_t* s )
 {
-  struct haste_cooldown_t : public event_t
-  {
-    haste_cooldown_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      name = "Moonkin Haste Cooldown";
-      sim -> add_event( this, 22.0 );
-    }
-    virtual void execute()
-    {
-      player -> expirations.moonkin_haste = 0;
-    }
-  };
-
   struct haste_expiration_t : public event_t
   {
     haste_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
@@ -31,22 +18,22 @@ static void trigger_moonkin_haste( spell_t* s )
       name = "Moonkin Haste Expiration";
       player -> aura_gain( "Moonkin Haste" );
       player -> buffs.moonkin_haste = 1;
+      player -> cooldowns.moonkin_haste = sim -> current_time + 30.0;
       sim -> add_event( this, 8.0 );
     }
     virtual void execute()
     {
       player -> aura_loss( "Moonkin Haste" );
       player -> buffs.moonkin_haste = 0;
-      player -> expirations.moonkin_haste = new haste_cooldown_t( sim, player );
     }
   };
 
   player_t* p = s -> player;
 
-  if(   p -> buffs.improved_moonkin_aura &&
-      ! p -> expirations.moonkin_haste   )
+  if( p -> buffs.improved_moonkin_aura &&
+      s -> sim -> cooldown_ready( p -> cooldowns.moonkin_haste ) )
   {
-    p -> expirations.moonkin_haste = new haste_expiration_t( s -> sim, p );
+    new haste_expiration_t( s -> sim, p );
   }
 }
 
@@ -552,6 +539,7 @@ void player_t::reset()
 {
   report_t::debug( sim, "Reseting player %s", name() );   
 
+  last_cast = 0;
   gcd_ready = 0;
   sleeping = 0;
 
@@ -623,7 +611,8 @@ void player_t::reset()
 
 // player_t::schedule_ready =================================================
 
-void player_t::schedule_ready( double delta_time )
+void player_t::schedule_ready( double delta_time,
+			       bool   ignore_lag )
 {
   sleeping = 0;
   executing = 0;
@@ -632,10 +621,13 @@ void player_t::schedule_ready( double delta_time )
   double gcd_adjust = gcd_ready - ( sim -> current_time + delta_time );
   if( gcd_adjust > 0 ) delta_time += gcd_adjust;
 
-  double lag = sim -> lag;
-  if( lag > 0 ) lag += ( ( rand() % 11 ) - 5 ) * 0.01;
-  if( lag < 0 ) lag = 0;
-  delta_time += lag;
+  if( ! ignore_lag )
+  {
+    double lag = sim -> lag;
+    if( lag > 0 ) lag += ( ( rand() % 11 ) - 5 ) * 0.01;
+    if( lag < 0 ) lag = 0;
+    delta_time += lag;
+  }
   
   new player_ready_event_t( sim, this, delta_time );
 
@@ -1035,7 +1027,7 @@ void player_t::share_duration( const std::string& group,
 
 bool player_t::recent_cast()
 {
-  return last_cast > 0 && last_cast + 5.0 > sim -> current_time;
+  return ( last_cast > 0 ) && ( ( last_cast + 5.0 ) > sim -> current_time );
 }
 
 // player_t::gain ===========================================================

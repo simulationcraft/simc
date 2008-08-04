@@ -413,9 +413,8 @@ static void trigger_surge_of_light( spell_t* s )
   priest_t* p = s -> player -> cast_priest();
 
   if( p -> talents.surge_of_light )
-  {
-    p -> buffs_surge_of_light = ( s -> result == RESULT_CRIT );
-  }
+    if( rand_t::roll( p -> talents.surge_of_light * 0.25 ) )
+      p -> buffs_surge_of_light = 1;
 }
 
 // trigger_improved_spirit_tap =================================================
@@ -446,8 +445,7 @@ static void trigger_improved_spirit_tap( spell_t* s )
 
   priest_t* p = s -> player -> cast_priest();
 
-  if( s -> result == RESULT_CRIT && 
-      p -> talents.improved_spirit_tap )
+  if( p -> talents.improved_spirit_tap )
   {
     if( rand_t::roll( p -> talents.improved_spirit_tap * 0.50 ) )
     {
@@ -604,6 +602,11 @@ struct smite_t : public priest_spell_t
     if( p -> gear.tier4_4pc ) base_multiplier *= 1.05;
   }
 
+  virtual void execute()
+  {
+    priest_spell_t::execute();
+    player -> cast_priest() -> buffs_surge_of_light = 0;
+  }
   virtual double execute_time()
   {
     priest_t* p = player -> cast_priest();
@@ -1305,11 +1308,14 @@ struct inner_focus_t : public priest_spell_t
 
 struct divine_spirit_t : public priest_spell_t
 {
+  int8_t improved;
+
   divine_spirit_t( player_t* player, const std::string& options_str ) : 
-    priest_spell_t( "divine_spirit", player, SCHOOL_HOLY, TREE_DISCIPLINE )
+    priest_spell_t( "divine_spirit", player, SCHOOL_HOLY, TREE_DISCIPLINE ), improved(0)
   {
     priest_t* p = player -> cast_priest();
     assert( p -> talents.divine_spirit );
+    improved = p -> talents.improved_divine_spirit;
     trigger_gcd = 0;
   }
    
@@ -1322,27 +1328,28 @@ struct divine_spirit_t : public priest_spell_t
     double bonus_spirit = ( player -> level <= 69 ) ? 40 :
                           ( player -> level <= 79 ) ? 50 : 80;
 
-    int8_t ids = player -> cast_priest() -> talents.improved_divine_spirit;
-
     for( player_t* p = sim -> player_list; p; p = p -> next )
     {
       if( p -> buffs.divine_spirit == 0 )
       {
+	p -> buffs.divine_spirit = 1;
 	p -> attribute[ ATTR_SPIRIT ] += bonus_spirit;
       }
-      else if( p -> buffs.divine_spirit > 0 ) 
+      if( p -> buffs.improved_divine_spirit == 0 )
       {
-	p -> buffs.divine_spirit--;
+	if( improved > 0 )
+	{
+	  p -> buffs.improved_divine_spirit = improved;
+	  p -> spell_power_per_spirit += improved * bonus_power;
+	}
       }
-      p -> spell_power_per_spirit += ( ids - p -> buffs.divine_spirit ) * bonus_power;
-      p -> buffs.divine_spirit = ids + 1;
     }
   }
 
   virtual bool ready()
   {
-    int8_t ids = player -> cast_priest() -> talents.improved_divine_spirit;
-    return( player -> buffs.divine_spirit < ( ids + 1 ) );
+    if( improved ) return ! player -> buffs.improved_divine_spirit;
+    return ! player -> buffs.divine_spirit;
   }
 };
 
@@ -1437,8 +1444,11 @@ void priest_t::spell_hit_event( spell_t* s )
     if( s -> num_ticks ) push_misery( s );
   }
 
-  trigger_improved_spirit_tap( s );
-  trigger_surge_of_light( s );
+  if( s -> result == RESULT_CRIT )
+  {
+    trigger_improved_spirit_tap( s );
+    trigger_surge_of_light( s );
+  }
 }
 
 // priest_t::spell_finish_event ==============================================

@@ -23,7 +23,10 @@ struct druid_t : public player_t
 
   // Expirations
   event_t* expirations_eclipse;
-  event_t* expirations_omen_of_clarity;
+
+  // Cooldowns
+  double cooldowns_eclipse;
+  double cooldowns_omen_of_clarity;
 
   // Up-Times
   uptime_t* uptimes_eclipse_starfire;
@@ -76,7 +79,10 @@ struct druid_t : public player_t
 
     // Expirations
     expirations_eclipse = 0;
-    expirations_omen_of_clarity = 0;
+
+    // Cooldowns
+    cooldowns_eclipse         = 0;
+    cooldowns_omen_of_clarity = 0;
 
     // Up-Times
     uptimes_eclipse_starfire = sim -> get_uptime( name + "_eclipse_starfire" );
@@ -132,23 +138,10 @@ static void trigger_omen_of_clarity( action_t* a )
 
   if( sim_t::WotLK )
   {
-    struct cooldown_t : public event_t
-    {
-      cooldown_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-      {
-	name = "Omen of Clarity Cooldown";
-	sim -> add_event( this, 10.0 );
-      }
-      virtual void execute()
-      {
-	player -> cast_druid() -> expirations_omen_of_clarity = 0;
-      }
-    };
-
-    if( ! p -> expirations_omen_of_clarity && rand_t::roll( 0.06 ) )
+    if( a -> sim -> cooldown_ready( p -> cooldowns_omen_of_clarity ) && rand_t::roll( 0.06 ) )
     {
       p -> buffs_omen_of_clarity = 1;
-      p -> expirations_omen_of_clarity = new cooldown_t( a -> sim, p );
+      p -> cooldowns_omen_of_clarity = a -> sim -> current_time;
     }
   }
   else
@@ -207,20 +200,6 @@ static void stack_earth_and_moon( spell_t* s )
 
 static void trigger_eclipse_wrath( spell_t* s )
 {
-  struct cooldown_t : public event_t
-  {
-    cooldown_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      name = "Eclipse Wrath Cooldown";
-      sim -> add_event( this, 90.0 );
-    }
-    virtual void execute()
-    {
-      druid_t* p = player -> cast_druid();
-      p -> expirations_eclipse = 0;
-    }
-  };
-
   struct expiration_t : public event_t
   {
     expiration_t( sim_t* sim, druid_t* p ) : event_t( sim, p )
@@ -228,6 +207,7 @@ static void trigger_eclipse_wrath( spell_t* s )
       name = "Eclipse Wrath Expiration";
       p -> aura_gain( "Eclipse Wrath" );
       p -> buffs_eclipse_wrath = 1;
+      p -> cooldowns_eclipse = sim -> current_time + 120;
       sim -> add_event( this, 30.0 );
     }
     virtual void execute()
@@ -235,14 +215,14 @@ static void trigger_eclipse_wrath( spell_t* s )
       druid_t* p = player -> cast_druid();
       p -> aura_loss( "Eclipse Wrath" );
       p -> buffs_eclipse_wrath = 0;
-      p -> expirations_eclipse = new cooldown_t( sim, p );;
+      p -> expirations_eclipse = 0;
     }
   };
 
   druid_t* p = s -> player -> cast_druid();
 
   if( p -> talents.eclipse && 
-      p -> expirations_eclipse == 0 &&
+      s -> sim -> cooldown_ready( p -> cooldowns_eclipse ) &&
       rand_t::roll( p -> talents.eclipse * 0.20 ) )
   {
     p -> expirations_eclipse = new expiration_t( s -> sim, p );
@@ -253,20 +233,6 @@ static void trigger_eclipse_wrath( spell_t* s )
 
 static void trigger_eclipse_starfire( spell_t* s )
 {
-  struct cooldown_t : public event_t
-  {
-    cooldown_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      name = "Eclipse Starfire Cooldown";
-      sim -> add_event( this, 90.0 );
-    }
-    virtual void execute()
-    {
-      druid_t* p = player -> cast_druid();
-      p -> expirations_eclipse = 0;
-    }
-  };
-
   struct expiration_t : public event_t
   {
     expiration_t( sim_t* sim, druid_t* p ) : event_t( sim, p )
@@ -274,6 +240,7 @@ static void trigger_eclipse_starfire( spell_t* s )
       name = "Eclipse Starfire Expiration";
       p -> aura_gain( "Eclipse Starfire" );
       p -> buffs_eclipse_starfire = 1;
+      p -> cooldowns_eclipse = sim -> current_time + 120;
       sim -> add_event( this, 30.0 );
     }
     virtual void execute()
@@ -281,14 +248,14 @@ static void trigger_eclipse_starfire( spell_t* s )
       druid_t* p = player -> cast_druid();
       p -> aura_loss( "Eclipse Starfire" );
       p -> buffs_eclipse_starfire = 0;
-      p -> expirations_eclipse = new cooldown_t( sim, p );;
+      p -> expirations_eclipse = 0;
     }
   };
 
   druid_t* p = s -> player -> cast_druid();
 
   if( p -> talents.eclipse && 
-      p -> expirations_eclipse == 0 &&
+      s -> sim -> cooldown_ready( p -> cooldowns_eclipse ) &&
       rand_t::roll( p -> talents.eclipse * 0.20 ) )
   {
     p -> expirations_eclipse = new expiration_t( s -> sim, p );
@@ -682,11 +649,11 @@ struct druids_swiftness_t : public druid_spell_t
 
 struct starfire_t : public druid_spell_t
 {
+  int8_t eclipse_benefit;
   int8_t eclipse_trigger;
-  double hasted;
 
   starfire_t( player_t* player, const std::string& options_str ) : 
-    druid_spell_t( "starfire", player, SCHOOL_ARCANE, TREE_BALANCE ), eclipse_trigger(0), hasted( 0 )
+    druid_spell_t( "starfire", player, SCHOOL_ARCANE, TREE_BALANCE ), eclipse_trigger(0)
   {
     druid_t* p = player -> cast_druid();
 
@@ -694,7 +661,6 @@ struct starfire_t : public druid_spell_t
     option_t options[] =
     {
       { "rank",    OPT_INT8,   &rank_index  },
-      { "hasted",  OPT_FLT,    &hasted      },
       { "eclipse", OPT_STRING, &eclipse_str },
       { NULL }
     };
@@ -702,6 +668,7 @@ struct starfire_t : public druid_spell_t
 
     if( ! eclipse_str.empty() )
     {
+      eclipse_benefit = ( eclipse_str == "benefit" );
       eclipse_trigger = ( eclipse_str == "trigger" );
     }
 
@@ -766,19 +733,18 @@ struct starfire_t : public druid_spell_t
     if( ! druid_spell_t::ready() )
       return false;
 
-    if( hasted > 0 ) 
-      if( execute_time() > hasted || ! player -> time_to_think() )
+    druid_t* p = player -> cast_druid();
+
+    if( eclipse_benefit )
+      if( ! p -> buffs_eclipse_starfire )
 	return false;
 
     if( eclipse_trigger )
     {
-      druid_t* p = player -> cast_druid();
-
       if( p -> talents.eclipse == 0 )
 	return false;
 
-      if( p -> expirations_eclipse )
-	if( p -> expirations_eclipse -> time > sim -> current_time + 1.5 )
+      if( sim -> current_time + 1.5 < p -> cooldowns_eclipse )
 	  return false;
     }
 
@@ -883,12 +849,55 @@ struct wrath_t : public druid_spell_t
       if( p -> talents.eclipse == 0 )
 	return false;
 
-      if( p -> expirations_eclipse )
-	if( p -> expirations_eclipse -> occurs() > sim -> current_time + 3.0 )
+      if( sim -> current_time + 3.0 < p -> cooldowns_eclipse )
 	  return false;
     }
 
     return true;
+  }
+};
+
+// Mark of the Wild Spell =====================================================
+
+struct mark_of_the_wild_t : public druid_spell_t
+{
+  double bonus;
+
+  mark_of_the_wild_t( player_t* player, const std::string& options_str ) : 
+    druid_spell_t( "mark_of_the_wild", player, SCHOOL_NATURE, TREE_RESTORATION ), bonus(0)
+  {
+    trigger_gcd = 0;
+
+    bonus = ( player -> level == 80 ) ? 37 :
+            ( player -> level >= 70 ) ? 14 : 12;
+
+    int8_t improved = player -> cast_druid() -> talents.improved_mark_of_the_wild;
+
+    if( improved )
+    {
+      bonus *= sim_t::WotLK ? ( 1.0 + improved * 0.20 ) : ( 1.0 + improved * 0.07 );
+    }
+  }
+   
+  virtual void execute()
+  {
+    report_t::log( sim, "%s performs %s", player -> name(), name() );
+
+    double delta = bonus - player -> buffs.mark_of_the_wild;
+
+    for( player_t* p = sim -> player_list; p; p = p -> next )
+    {
+      for( int i=0; i < ATTRIBUTE_MAX; i++ )
+      {
+	p -> attribute[ i ] += delta;
+	p -> buffs.mark_of_the_wild = bonus;
+      }
+    }
+  }
+
+  virtual bool ready()
+  {
+    return( player -> buffs.mark_of_the_wild < bonus );
   }
 };
 
@@ -965,6 +974,7 @@ action_t* druid_t::create_action( const std::string& name,
   if( name == "faerie_fire"       ) return new      faerie_fire_t( this, options );
   if( name == "insect_swarm"      ) return new     insect_swarm_t( this, options );
   if( name == "innervate"         ) return new        innervate_t( this, options );
+  if( name == "mark_of_the_wild"  ) return new mark_of_the_wild_t( this, options );
   if( name == "moonfire"          ) return new         moonfire_t( this, options );
   if( name == "moonkin_form"      ) return new     moonkin_form_t( this, options );
   if( name == "natures_swiftness" ) return new druids_swiftness_t( this, options );
@@ -1007,17 +1017,23 @@ void druid_t::reset()
 {
   player_t::reset();
 
+  // Spells
   moonfire_active     = 0;
   insect_swarm_active = 0;
 
+  // Buffs
   buffs_eclipse_starfire  = 0;
   buffs_eclipse_wrath     = 0;
   buffs_natures_grace     = 0;
   buffs_natures_swiftness = 0;
   buffs_omen_of_clarity   = 0;
 
-  expirations_eclipse         = 0;
-  expirations_omen_of_clarity = 0;
+  // Expirations
+  expirations_eclipse = 0;
+
+  // Cooldowns
+  cooldowns_eclipse         = 0;
+  cooldowns_omen_of_clarity = 0;
 }
 
 // druid_t::composite_spell_hit =============================================

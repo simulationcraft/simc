@@ -219,7 +219,7 @@ struct sim_t
   player_t*   player_list;
   player_t*   active_player;
   target_t*   target;
-  double      current_time, max_time, lag, total_seconds, elapsed_cpu_seconds;
+  double      current_time, max_time, lag, reaction_time, total_seconds, elapsed_cpu_seconds;
   int32_t     events_remaining, max_events_remaining;
   int32_t     events_processed, total_events_processed;
   int32_t     seed, id, iterations;
@@ -241,6 +241,8 @@ struct sim_t
   uptime_t* get_uptime( const std::string& name );
   bool      parse_option( const std::string& name, const std::string& value );
   void      print_options();
+  bool      time_to_think( double proc_time ) { if( proc_time == 0 ) return false; return current_time - proc_time > reaction_time; }
+  bool      cooldown_ready( double cooldown_time ) { return cooldown_time <= current_time; }
 };
 
 // Gear Rating Conversions ===================================================
@@ -452,7 +454,7 @@ struct player_t
     // Temporary Buffs
     int8_t  temporary_buffs;
     int8_t  arcane_intellect;
-    int8_t  mark_of_the_wild;
+    double  mark_of_the_wild;
     int8_t  divine_spirit;
     int8_t  bloodlust;
     double  cast_time_reduction;
@@ -462,6 +464,7 @@ struct player_t
     int8_t  executioner;
     double  flametongue_totem;
     double  grace_of_air;
+    int8_t  improved_divine_spirit;
     int8_t  improved_moonkin_aura;
     int8_t  innervate;
     int8_t  lightning_capacitor;
@@ -494,27 +497,15 @@ struct player_t
   struct expirations_t
   {
     float spellsurge;
-    event_t* arcane_blast;
     event_t* ashtongue_talisman;
     event_t* darkmoon_crusade;
     event_t* darkmoon_wrath;
-    event_t* elder_scribes;
     event_t* elemental_oath;
-    event_t* eternal_sage;
     event_t* executioner;
     event_t* eye_of_magtheridon;
-    event_t* lightning_capacitor;
-    event_t* mark_of_defiance;
-    event_t* moonkin_haste;
     event_t* mongoose_mh;
     event_t* mongoose_oh;
-    event_t* mystical_skyfire;
-    event_t* mystical_skyfire_silent_cooldown;
-    event_t* quagmirrans_eye;
-    event_t* sextant_of_unstable_currents;
-    event_t* shiffars_nexus_horn;
     event_t* spellstrike;
-    event_t* timbals_crystal;
     event_t* unleashed_rage;
     event_t* wrath_of_cenarius;
     event_t *tier4_2pc, *tier4_4pc;
@@ -525,6 +516,25 @@ struct player_t
   };
   expirations_t expirations;
   
+  struct cooldowns_t
+  {
+    float spellsurge;
+    double elder_scribes;
+    double eternal_sage;
+    double mark_of_defiance;
+    double moonkin_haste;
+    double mystical_skyfire;
+    double quagmirrans_eye;
+    double sextant_of_unstable_currents;
+    double shiffars_nexus_horn;
+    double tier4_2pc, tier4_4pc;
+    double tier5_2pc, tier5_4pc;
+    double tier6_2pc, tier6_4pc;
+    void reset() { memset( (void*) this, 0x00, sizeof( cooldowns_t ) ); }
+    cooldowns_t() { reset(); }
+  };
+  cooldowns_t cooldowns;
+  
   struct uptimes_t
   {
     uptime_t* executioner;
@@ -532,6 +542,9 @@ struct player_t
     uptime_t* mongoose_mh;
     uptime_t* mongoose_oh;
     uptime_t* unleashed_rage;
+    uptime_t *tier4_2pc, *tier4_4pc;
+    uptime_t *tier5_2pc, *tier5_4pc;
+    uptime_t *tier6_2pc, *tier6_4pc;
     void reset() { memset( (void*) this, 0x00, sizeof( uptimes_t ) ); }
     uptimes_t() { reset(); }
   };
@@ -564,7 +577,7 @@ struct player_t
   virtual double composite_spell_hit()         { return spell_hit;         }
   virtual double composite_spell_penetration() { return spell_penetration; }
 
-  virtual void      schedule_ready( double delta_time=0 );
+  virtual void      schedule_ready( double delta_time=0, bool ignore_lag=false );
   virtual action_t* execute_action();
 
   virtual void regen() {}
@@ -610,7 +623,6 @@ struct player_t
   void      share_cooldown( const std::string& name, double ready );
   void      share_duration( const std::string& name, double ready );
   void      recalculate_haste()  {  haste = 1.0 / ( 1.0 + haste_rating / rating.haste ); }
-  bool      time_to_think() { return sim -> current_time - last_cast > 0.5; }
   double    spirit_regen_per_second();
   bool      dual_wield() { return main_hand_weapon.type != WEAPON_NONE && off_hand_weapon.type != WEAPON_NONE; }
   void      aura_gain( const char* name );

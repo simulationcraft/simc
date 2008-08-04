@@ -145,8 +145,8 @@ struct destruction_potion_t : public action_t
 
 struct mana_potion_t : public action_t
 {
-  double trigger;
-  double mana;
+  int16_t trigger;
+  int16_t mana;
   bool used;
 
   mana_potion_t( player_t* p, const std::string& options_str ) : 
@@ -203,8 +203,8 @@ struct mana_potion_t : public action_t
 
 struct mana_gem_t : public action_t
 {
-  double trigger;
-  double mana;
+  int16_t trigger;
+  int16_t mana;
   bool used;
 
   mana_gem_t( player_t* p, const std::string& options_str ) : 
@@ -261,8 +261,8 @@ struct mana_gem_t : public action_t
 
 struct health_stone_t : public action_t
 {
-  double trigger;
-  double health;
+  int16_t trigger;
+  int16_t health;
   bool used;
 
   health_stone_t( player_t* p, const std::string& options_str ) : 
@@ -319,9 +319,9 @@ struct health_stone_t : public action_t
 
 struct dark_rune_t : public action_t
 {
-  double trigger;
-  double health;
-  double mana;
+  int16_t trigger;
+  int16_t health;
+  int16_t mana;
   bool used;
 
   dark_rune_t( player_t* p, const std::string& options_str ) : 

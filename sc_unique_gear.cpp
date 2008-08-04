@@ -11,19 +11,6 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 
 static void trigger_mystical_skyfire( spell_t* s )
 {
-  struct mystical_skyfire_silent_cooldown_t : public event_t
-  {
-    mystical_skyfire_silent_cooldown_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      name = "Mystical Skyfire Silent Cooldown Expiration";
-      sim -> add_event( this, 41.0 );
-    }
-    virtual void execute()
-    {
-      player -> expirations.mystical_skyfire = 0;
-    }
-  };
-
   struct mystical_skyfire_expiration_t : public event_t
   {
     mystical_skyfire_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
@@ -31,6 +18,7 @@ static void trigger_mystical_skyfire( spell_t* s )
       player -> aura_gain( "Mystical Skyfire" );
       player -> haste_rating += 320;
       player -> recalculate_haste();
+      player -> cooldowns.mystical_skyfire = sim -> current_time + 45;
       sim -> add_event( this, 4.0 );
     }
     virtual void execute()
@@ -38,7 +26,6 @@ static void trigger_mystical_skyfire( spell_t* s )
       player -> aura_loss( "Mystical Skyfire" );
       player -> haste_rating -= 320;
       player -> recalculate_haste();
-      player -> expirations.mystical_skyfire = new mystical_skyfire_silent_cooldown_t( sim, player );
     }
   };
 
@@ -46,12 +33,12 @@ static void trigger_mystical_skyfire( spell_t* s )
 
   player_t* p = s -> player;
 
-  if(   p -> gear.mystical_skyfire        &&
-      ! p -> expirations.mystical_skyfire &&
-	rand_t::roll( 0.15 )                )
+  if( p -> gear.mystical_skyfire                                    &&
+      s -> sim -> cooldown_ready( p -> cooldowns.mystical_skyfire ) &&
+      rand_t::roll( 0.15 ) )
   {
     p -> proc( "mystical_skyfire" );
-    p -> expirations.mystical_skyfire = new mystical_skyfire_expiration_t( s -> sim, p );
+    new mystical_skyfire_expiration_t( s -> sim, p );
   }
 }
 
@@ -143,19 +130,6 @@ static void trigger_wrath_of_cenarius( spell_t* s )
 
 static void trigger_elder_scribes( spell_t* s )
 {
-  struct elder_scribes_silent_cooldown_t : public event_t
-  {
-    elder_scribes_silent_cooldown_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      name = "Elder Scribes Silent Cooldown Expiration";
-      sim -> add_event( this, 50.0 );
-    }
-    virtual void execute()
-    {
-      player -> expirations.elder_scribes = 0;
-    }
-  };
-
   struct elder_scribes_expiration_t : public event_t
   {
     elder_scribes_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
@@ -163,24 +137,24 @@ static void trigger_elder_scribes( spell_t* s )
       name = "Elder Scribes Expiration";
       player -> aura_gain( "Power of Arcanagos" );
       player -> spell_power[ SCHOOL_MAX ] += 130;
+      player -> cooldowns.elder_scribes = sim -> current_time + 60;
       sim -> add_event( this, 10.0 );
     }
     virtual void execute()
     {
       player -> aura_loss( "Power of Arcanagos" );
       player -> spell_power[ SCHOOL_MAX ] -= 130;
-      player -> expirations.elder_scribes = new elder_scribes_silent_cooldown_t( sim, player );
     }
   };
 
   player_t* p = s -> player;
 
-  if(    p -> gear.elder_scribes        && 
-       ! p -> expirations.elder_scribes &&
-	 rand_t::roll( 0.05 ) )
+  if(  p -> gear.elder_scribes                                    && 
+       s -> sim -> cooldown_ready( p -> cooldowns.elder_scribes ) &&
+       rand_t::roll( 0.05 ) )
   {
     p -> proc( "elder_scribes" );
-    p -> expirations.elder_scribes = new elder_scribes_expiration_t( s -> sim, p );
+    new elder_scribes_expiration_t( s -> sim, p );
   }
 }
 
@@ -188,19 +162,6 @@ static void trigger_elder_scribes( spell_t* s )
 
 static void trigger_eternal_sage( spell_t* s )
 {
-  struct eternal_sage_silent_cooldown_t : public event_t
-  {
-    eternal_sage_silent_cooldown_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      name = "Eternal Sage Silent Cooldown Expiration";
-      sim -> add_event( this, 30.0 );
-    }
-    virtual void execute()
-    {
-      player -> expirations.eternal_sage = 0;
-    }
-  };
-
   struct eternal_sage_expiration_t : public event_t
   {
     eternal_sage_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
@@ -208,24 +169,24 @@ static void trigger_eternal_sage( spell_t* s )
       name = "Eternal Sage Expiration";
       player -> aura_gain( "Eternal Sage" );
       player -> spell_power[ SCHOOL_MAX ] += 95;
-      sim -> add_event( this, 15.0 );
+      player -> cooldowns.eternal_sage = sim -> current_time + 45;
+      sim -> add_event( this, 10.0 );
     }
     virtual void execute()
     {
       player -> aura_loss( "Eternal Sage" );
       player -> spell_power[ SCHOOL_MAX ] -= 95;
-      player -> expirations.eternal_sage = new eternal_sage_silent_cooldown_t( sim, player );
     }
   };
 
   player_t* p = s -> player;
 
-  if(    p -> gear.eternal_sage        && 
-       ! p -> expirations.eternal_sage &&
-	 rand_t::roll( 0.10 ) )
+  if(  p -> gear.eternal_sage                                    && 
+       s -> sim -> cooldown_ready( p -> cooldowns.eternal_sage ) &&
+       rand_t::roll( 0.10 ) )
   {
     p -> proc( "eternal_sage" );
-    p -> expirations.eternal_sage = new eternal_sage_expiration_t( s -> sim, p );
+    new eternal_sage_expiration_t( s -> sim, p );
   }
 }
 
@@ -273,19 +234,6 @@ static void trigger_eye_of_magtheridon( spell_t* s )
 
 static void trigger_shiffars_nexus_horn( spell_t* s )
 {
-  struct shiffars_nexus_horn_silent_cooldown_t : public event_t
-  {
-    shiffars_nexus_horn_silent_cooldown_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      name = "Shiffar's Nexus Horn Silent Cooldown Expiration";
-      sim -> add_event( this, 35.0 );
-    }
-    virtual void execute()
-    {
-      player -> expirations.shiffars_nexus_horn = 0;
-    }
-  };
-
   struct shiffars_nexus_horn_expiration_t : public event_t
   {
     shiffars_nexus_horn_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
@@ -293,24 +241,24 @@ static void trigger_shiffars_nexus_horn( spell_t* s )
       name = "Shiffar's Nexus Horn Expiration";
       player -> aura_gain( "Shiffar's Nexus Horn" );
       player -> spell_power[ SCHOOL_MAX ] += 225;
+      player -> cooldowns.shiffars_nexus_horn = sim -> current_time + 45;
       sim -> add_event( this, 10.0 );
     }
     virtual void execute()
     {
       player -> aura_loss( "Shiffar's Nexus Horn" );
       player -> spell_power[ SCHOOL_MAX ] -= 225;
-      player -> expirations.shiffars_nexus_horn = new shiffars_nexus_horn_silent_cooldown_t( sim, player );
     }
   };
 
   player_t* p = s -> player;
 
-  if(   p ->        gear.shiffars_nexus_horn && 
-      ! p -> expirations.shiffars_nexus_horn &&
-        rand_t::roll( 0.20 ) )
+  if( p ->        gear.shiffars_nexus_horn                             && 
+      s -> sim -> cooldown_ready( p -> cooldowns.shiffars_nexus_horn ) &&
+      rand_t::roll( 0.20 ) )
   {
     p -> proc( "shiffars_nexus_horn" );
-    p -> expirations.shiffars_nexus_horn = new shiffars_nexus_horn_expiration_t( s -> sim, p );
+    new shiffars_nexus_horn_expiration_t( s -> sim, p );
   }
 }
 
@@ -318,19 +266,6 @@ static void trigger_shiffars_nexus_horn( spell_t* s )
 
 static void trigger_sextant_of_unstable_currents( spell_t* s )
 {
-  struct sextant_of_unstable_currents_silent_cooldown_t : public event_t
-  {
-    sextant_of_unstable_currents_silent_cooldown_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      name = "Sextant of Unstable Currents Silent Cooldown Expiration";
-      sim -> add_event( this, 30.0 );
-    }
-    virtual void execute()
-    {
-      player -> expirations.sextant_of_unstable_currents = 0;
-    }
-  };
-
   struct sextant_of_unstable_currents_expiration_t : public event_t
   {
     sextant_of_unstable_currents_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
@@ -338,24 +273,24 @@ static void trigger_sextant_of_unstable_currents( spell_t* s )
       name = "Sextant of Unstable Currents Expiration";
       player -> aura_gain( "Sextant of Unstable Currents" );
       player -> spell_power[ SCHOOL_MAX ] += 190;
+      player -> cooldowns.sextant_of_unstable_currents = sim -> current_time + 45;
       sim -> add_event( this, 15.0 );
     }
     virtual void execute()
     {
       player -> aura_loss( "Sextant of Unstable Currents" );
       player -> spell_power[ SCHOOL_MAX ] -= 190;
-      player -> expirations.sextant_of_unstable_currents = new sextant_of_unstable_currents_silent_cooldown_t( sim, player );
     }
   };
 
   player_t* p = s -> player;
 
-  if(   p ->        gear.sextant_of_unstable_currents && 
-      ! p -> expirations.sextant_of_unstable_currents &&
-        rand_t::roll( 0.20 ) )
+  if( p ->        gear.sextant_of_unstable_currents                             && 
+      s -> sim -> cooldown_ready( p -> cooldowns.sextant_of_unstable_currents ) &&
+      rand_t::roll( 0.20 ) )
   {
     p -> proc( "sextant_of_unstable_currents" );
-    p -> expirations.sextant_of_unstable_currents = new sextant_of_unstable_currents_expiration_t( s -> sim, p );
+    new sextant_of_unstable_currents_expiration_t( s -> sim, p );
   }
 }
 
@@ -363,19 +298,6 @@ static void trigger_sextant_of_unstable_currents( spell_t* s )
 
 static void trigger_quagmirrans_eye( spell_t* s )
 {
-  struct quagmirrans_eye_silent_cooldown_t : public event_t
-  {
-    quagmirrans_eye_silent_cooldown_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      name = "Quagmirran's Eye Silent Cooldown Expiration";
-      sim -> add_event( this, 39.0 );
-    }
-    virtual void execute()
-    {
-      player -> expirations.quagmirrans_eye = 0;
-    }
-  };
-
   struct quagmirrans_eye_expiration_t : public event_t
   {
     quagmirrans_eye_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
@@ -384,6 +306,7 @@ static void trigger_quagmirrans_eye( spell_t* s )
       player -> aura_gain( "Quagmirran's Eye" );
       player -> haste_rating += 320;
       player -> recalculate_haste();
+      player -> cooldowns.quagmirrans_eye = sim -> current_time + 45;
       sim -> add_event( this, 6.0 );
     }
     virtual void execute()
@@ -391,7 +314,6 @@ static void trigger_quagmirrans_eye( spell_t* s )
       player -> aura_loss( "Quagmirran's Eye" );
       player -> haste_rating -= 320;
       player -> recalculate_haste();
-      player -> expirations.quagmirrans_eye = new quagmirrans_eye_silent_cooldown_t( sim, player );
     }
   };
 
@@ -399,12 +321,12 @@ static void trigger_quagmirrans_eye( spell_t* s )
 
   player_t* p = s -> player;
 
-  if(   p ->        gear.quagmirrans_eye && 
-      ! p -> expirations.quagmirrans_eye && 
+  if( p ->        gear.quagmirrans_eye                             && 
+      s -> sim -> cooldown_ready( p -> cooldowns.quagmirrans_eye ) && 
       rand_t::roll( 0.10 ) )
   {
     p -> proc( "quagmirrans_eye" );
-    p -> expirations.quagmirrans_eye = new quagmirrans_eye_expiration_t( s -> sim, p );
+    new quagmirrans_eye_expiration_t( s -> sim, p );
   }
 }
 
@@ -651,31 +573,18 @@ static void trigger_zandalarian_hero_charm( spell_t* s )
 
 static void trigger_mark_of_defiance( spell_t* s )
 {
-  struct mark_of_defiance_silent_cooldown_t : public event_t
-  {
-    mark_of_defiance_silent_cooldown_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      name = "Mark of Defiance Silent Cooldown Expiration";
-      sim -> add_event( this, 15.0 );
-    }
-    virtual void execute()
-    {
-      player -> expirations.mark_of_defiance = 0;
-    }
-  };
-
   if( ! s -> harmful ) return;
 
   player_t* p = s -> player;
 
-  if(   p ->        gear.mark_of_defiance && 
-      ! p -> expirations.mark_of_defiance && 
+  if( p -> gear.mark_of_defiance                                    && 
+      s -> sim -> cooldown_ready( p -> cooldowns.mark_of_defiance ) && 
       rand_t::roll( 0.15 ) )
   {
     {
       p -> proc( "mark_of_defiance" );
       p -> resource_gain( RESOURCE_MANA, 150.0, "mark_of_defiance" );
-      p -> expirations.mark_of_defiance = new mark_of_defiance_silent_cooldown_t( s -> sim, p );
+      p -> cooldowns.mark_of_defiance = s -> sim -> current_time + 15;
     }
   }
 }

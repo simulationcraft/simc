@@ -111,7 +111,7 @@ swift_retribution=1
 druid=Druid_Balance
 level=80
 talents=http://www.worldofwarcraft.com/info/classes/druid/talents2.html?tal=500322012503130521330530005100000000000000000000000000023020331200000000000000000
-actions=flask,type=blinding_light/moonkin_form/mana_potion,trigger=3500/innervate/faerie_fire/moonfire/wrath,eclipse=trigger/starfire
+actions=flask,type=blinding_light/mark_of_the_wild/moonkin_form/mana_potion,trigger=3500/innervate/faerie_fire/moonfire/wrath,eclipse=trigger/starfire
 gear_stamina=600
 gear_intellect=600
 gear_spirit=600
