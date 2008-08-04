@@ -28,7 +28,7 @@ static void trigger_judgement_of_wisdom( action_t* action )
     return;
 
   p -> proc( "jow" );
-  p -> resource_gain( RESOURCE_MANA, sim_t::WotLK ? jow : 74, "jow" );
+  p -> resource_gain( RESOURCE_MANA, jow, "jow" );
   p -> cooldowns.judgement_of_wisdom = p -> sim -> current_time + 4.0;
 }
 
