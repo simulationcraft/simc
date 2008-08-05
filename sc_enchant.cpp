@@ -32,7 +32,7 @@ static void trigger_spellsurge( spell_t* s )
       {
 	if( p -> party == player -> party ) 
 	{
-	  report_t::log( sim, "Player %s gains mana from %s 's Spellsurge.", p -> name(), player -> name() );
+	  if( sim -> log ) report_t::log( sim, "Player %s gains mana from %s 's Spellsurge.", p -> name(), player -> name() );
 	  p -> resource_gain( RESOURCE_MANA, 10.0, "spellsurge" );
 	}
       }

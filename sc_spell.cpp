@@ -94,7 +94,7 @@ void spell_t::player_buff()
     player_crit_bonus *= 1.0 + p -> buffs.elemental_oath * 0.03;
   }
 
-  report_t::debug( sim, "spell_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f", 
+  if( sim -> debug ) report_t::log( sim, "spell_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f", 
 		   name(), player_hit, player_crit, player_power, player_penetration );
 }
 
@@ -115,7 +115,7 @@ void spell_t::target_debuff( int8_t dmg_type )
      if( t -> debuffs.judgement_of_crusader ) target_power += 218;
    }      
 
-   report_t::debug( sim, "spell_t::target_debuff: %s multiplier=%.2f hit=%.2f crit=%.2f power=%.2f penetration=%.0f", 
+   if( sim -> debug ) report_t::log( sim, "spell_t::target_debuff: %s multiplier=%.2f hit=%.2f crit=%.2f power=%.2f penetration=%.0f", 
 		    name(), target_multiplier, target_hit, target_crit, target_power, target_penetration );
 }
    
@@ -205,5 +205,5 @@ void spell_t::calculate_result()
     }
   }
 
-  report_t::debug( sim, "%s result for %s is %s", player -> name(), name(), util_t::result_type_string( result ) );
+  if( sim -> debug ) report_t::log( sim, "%s result for %s is %s", player -> name(), name(), util_t::result_type_string( result ) );
 }

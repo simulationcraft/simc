@@ -167,14 +167,14 @@ void sim_t::add_event( event_t* e,
    }
    events_remaining++;
    if( events_remaining > max_events_remaining ) max_events_remaining = events_remaining;
-   report_t::debug( this, "Add Event: %s %.2f %d", e -> name, e -> time, e -> id );
+   if( debug ) report_t::log( this, "Add Event: %s %.2f %d", e -> name, e -> time, e -> id );
 }
 
 // sim_t::reschedule_event ==========================================================
 
 void sim_t::reschedule_event( event_t* e )
 {
-   report_t::debug( this, "Reschedule Event: %s %d", e -> name, e -> id );
+   if( debug ) report_t::log( this, "Reschedule Event: %s %d", e -> name, e -> id );
    add_event( e, ( e -> reschedule_time - current_time ) );
    e -> reschedule_time = 0;
 }
@@ -212,7 +212,7 @@ event_t* sim_t::next_event()
 
 bool sim_t::execute()
 {
-  report_t::debug( this, "Starting Simulator" );
+  if( debug ) report_t::log( this, "Starting Simulator" );
 
   while( event_t* e = next_event() )
   {
@@ -223,13 +223,13 @@ bool sim_t::execute()
 
     if( max_time > 0 && current_time > max_time ) 
     {
-      report_t::debug( this, "MaxTime reached, ending simulation" );     
+      if( debug ) report_t::log( this, "MaxTime reached, ending simulation" );     
       delete e;
       break;
     }
     if( target -> initial_health > 0 && target -> current_health <= 0 )
     {
-      report_t::debug( this, "Target has died, ending simulation" );     
+      if( debug ) report_t::log( this, "Target has died, ending simulation" );     
       delete e;
       break;
     }
@@ -239,7 +239,7 @@ bool sim_t::execute()
     }
     if( e -> canceled ) 
     {
-      report_t::debug( this, "Canceled event: %s", e -> name );     
+      if( debug ) report_t::log( this, "Canceled event: %s", e -> name );     
     }
     else if( e -> reschedule_time > e -> time )
     {
@@ -248,7 +248,7 @@ bool sim_t::execute()
     }
     else
     {
-      report_t::debug( this, "Executing event: %s", e -> name );     
+      if( debug ) report_t::log( this, "Executing event: %s", e -> name );     
       e -> execute();
     }
     delete e;
@@ -263,7 +263,7 @@ bool sim_t::execute()
 
 void sim_t::flush_events()
 {
-   report_t::debug( this, "Flush Events" );
+   if( debug ) report_t::log( this, "Flush Events" );
    while( event_t* e = next_event() )
      delete e;
    events_remaining = 0;
@@ -276,7 +276,7 @@ void sim_t::flush_events()
 void sim_t::reset()
 {
   flush_events();
-  report_t::debug( this, "Reseting Simulator" );
+  if( debug ) report_t::log( this, "Reseting Simulator" );
   current_time = id = 0;
   stats_t::last_execute = 0;
   target -> reset();

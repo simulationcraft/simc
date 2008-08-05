@@ -107,7 +107,7 @@ bool option_t::parse( sim_t*             sim,
 bool option_t::parse( sim_t* sim,
 		      char*  line )
 {
-  report_t::debug( sim, "option_t::parse: %s", line );
+  if( sim -> debug ) report_t::log( sim, "option_t::parse: %s", line );
 
   static std::string buffer, name, value;
 

@@ -79,6 +79,11 @@ struct event_t
   virtual ~event_t() {}
   static void cancel( event_t*& e ) { if( e ) { e -> canceled = true;                 e=0; } }
   static void  early( event_t*& e ) { if( e ) { e -> canceled = true; e -> execute(); e=0; } }
+#ifdef EVENT_MM
+  // Simple free-list memory manager.
+  static void* operator new( size_t ); 
+  static void  operator delete( void * );
+#endif
 };
 
 struct event_compare_t 
@@ -1066,25 +1071,9 @@ struct report_t
   static void va_printf( sim_t*, const char* format, va_list );
   inline static void log( sim_t* sim, const char* format, ... )
   {
-#if DEBUG
-    if( sim -> log ) 
-    {
-      va_list vap;
-      va_start( vap, format );
-      va_printf( sim, format, vap );
-    }
-#endif
-  }
-  inline static void debug( sim_t* sim, const char* format, ... )
-  {
-#if DEBUG
-    if( sim -> debug ) 
-    {
-      va_list vap;
-      va_start( vap, format );
-      va_printf( sim, format, vap );
-    }
-#endif
+    va_list vap;
+    va_start( vap, format );
+    va_printf( sim, format, vap );
   }
 };
 

@@ -407,7 +407,8 @@ static void stack_maelstrom_weapon( attack_t* a )
   if( p -> buffs_maelstrom_weapon < 5 ) 
   {
     p -> buffs_maelstrom_weapon++;
-    report_t::log( a -> sim, "%s gains Maelstrom Weapon %d", p -> name(), p -> buffs_maelstrom_weapon );
+
+    if( a -> sim -> log ) report_t::log( a -> sim, "%s gains Maelstrom Weapon %d", p -> name(), p -> buffs_maelstrom_weapon );
   }
 
   event_t*& e = p -> expirations_maelstrom_weapon;
@@ -483,12 +484,12 @@ static void trigger_nature_vulnerability( attack_t* a )
     nature_vulnerability_expiration_t( sim_t* sim ) : event_t( sim )
     {
       name = "Nature Vulnerability Expiration";
-      report_t::log( sim, "%s gains Nature Vulnerability", sim -> target -> name() );
+      if( sim -> log ) report_t::log( sim, "%s gains Nature Vulnerability", sim -> target -> name() );
       sim -> add_event( this, 12.0 );
     }
     virtual void execute()
     {
-      report_t::log( sim, "%s loses Nature Vulnerability", sim -> target -> name() );
+      if( sim -> log ) report_t::log( sim, "%s loses Nature Vulnerability", sim -> target -> name() );
       sim -> target -> debuffs.nature_vulnerability = 0;
       sim -> target -> expirations.nature_vulnerability = 0;
     }
@@ -626,7 +627,8 @@ static void trigger_elemental_oath( spell_t* s )
     {
       // Assume talent has two ranks.
       p -> buffs.elemental_oath += 2;
-      report_t::log( s -> sim, "%s gains Elemental Oath %d", p -> name(), p -> buffs.elemental_oath );
+
+      if( s -> sim -> log ) report_t::log( s -> sim, "%s gains Elemental Oath %d", p -> name(), p -> buffs.elemental_oath );
     }
 
     event_t*& e = p -> expirations.elemental_oath;
@@ -784,7 +786,7 @@ struct stormstrike_t : public shaman_attack_t
 
   virtual void execute()
   {
-    report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
     player -> action_finish( this );
@@ -1172,7 +1174,7 @@ struct elemental_mastery_t : public shaman_spell_t
    
   virtual void execute()
   {
-    report_t::log( sim, "%s performs elemental_mastery", player -> name() );
+    if( sim -> log ) report_t::log( sim, "%s performs elemental_mastery", player -> name() );
     update_ready();
     shaman_t* p = player -> cast_shaman();
     p -> aura_gain( "Elemental Mastery" );
@@ -1201,7 +1203,7 @@ struct shamans_swiftness_t : public shaman_spell_t
    
   virtual void execute()
   {
-    report_t::log( sim, "%s performs natures_swiftness", player -> name() );
+    if( sim -> log ) report_t::log( sim, "%s performs natures_swiftness", player -> name() );
     update_ready();
     shaman_t* p = player -> cast_shaman();
     p -> aura_gain( "Natures Swiftness" );
@@ -1436,7 +1438,7 @@ struct searing_totem_t : public shaman_spell_t
 
   virtual void execute() 
   {
-    report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     schedule_tick();
     update_ready();
@@ -1447,7 +1449,7 @@ struct searing_totem_t : public shaman_spell_t
 
   virtual void tick() 
   {
-    report_t::debug( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
+    if( sim -> debug ) report_t::log( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
     may_resist = false;
     calculate_result();
     may_resist = true;
@@ -1463,7 +1465,7 @@ struct searing_totem_t : public shaman_spell_t
     }
     else
     {
-      report_t::log( sim, "%s avoids %s (%s)", sim -> target -> name(), name(), util_t::result_type_string( result ) );
+      if( sim -> log ) report_t::log( sim, "%s avoids %s (%s)", sim -> target -> name(), name(), util_t::result_type_string( result ) );
     }
     update_stats( DMG_OVER_TIME );
   }
@@ -1525,7 +1527,7 @@ struct totem_of_wrath_t : public shaman_spell_t
       }
     };
 
-    report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
     player -> action_finish( this );
@@ -1637,7 +1639,7 @@ struct flametongue_totem_t : public shaman_spell_t
       }
     };
 
-    report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
     player -> action_finish( this );
@@ -1741,7 +1743,7 @@ struct windfury_totem_t : public shaman_spell_t
       }
     };
 
-    report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
     player -> action_finish( this );
@@ -1959,7 +1961,7 @@ struct strength_of_earth_totem_t : public shaman_spell_t
       }
     };
 
-    report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
     player -> action_finish( this );
@@ -2049,7 +2051,7 @@ struct grace_of_air_totem_t : public shaman_spell_t
       }
     };
 
-    report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
     player -> action_finish( this );
@@ -2123,7 +2125,7 @@ struct wrath_of_air_totem_t : public shaman_spell_t
       }
     };
 
-    report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
     player -> action_finish( this );
@@ -2168,7 +2170,7 @@ struct mana_tide_totem_t : public shaman_spell_t
 
   virtual void execute() 
   {
-    report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     schedule_tick();
     update_ready();
@@ -2177,7 +2179,7 @@ struct mana_tide_totem_t : public shaman_spell_t
 
   virtual void tick() 
   {
-    report_t::debug( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
+    if( sim -> debug ) report_t::log( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
 
     for( player_t* p = sim -> player_list; p; p = p -> next )
     {
@@ -2225,7 +2227,7 @@ struct mana_spring_totem_t : public shaman_spell_t
 
   virtual void execute() 
   {
-    report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     schedule_tick();
     update_ready();
@@ -2234,7 +2236,7 @@ struct mana_spring_totem_t : public shaman_spell_t
 
   virtual void tick() 
   {
-    report_t::debug( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
+    if( sim -> debug ) report_t::log( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
 
     for( player_t* p = sim -> player_list; p; p = p -> next )
     {
@@ -2305,7 +2307,7 @@ struct bloodlust_t : public shaman_spell_t
       }
     };
 
-    report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
     player -> action_finish( this );
@@ -2365,7 +2367,7 @@ struct shamanistic_rage_t : public shaman_spell_t
       }
     };
 
-    report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
     update_ready();
     player -> action_finish( this );
     new expiration_t( sim, player );
@@ -2445,7 +2447,7 @@ struct lightning_shield_t : public shaman_spell_t
   virtual void execute()
   {
     shaman_t* p = player -> cast_shaman();
-    report_t::log( sim, "%s performs %s", p -> name(), name() );
+    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
     p -> buffs_lightning_charges = 3 + p -> talents.static_shock;
     consume_resource();
     update_ready();

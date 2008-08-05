@@ -711,7 +711,7 @@ struct attack_power_trinket_t : public action_t
       }
     };
   
-    report_t::log( sim, "Player %s uses Attack Power Trinket", player -> name() );
+    if( sim -> log ) report_t::log( sim, "Player %s uses Attack Power Trinket", player -> name() );
     cooldown_ready = player -> sim -> current_time + cooldown;
     // Trinket use may not overlap.....
     player -> share_cooldown( cooldown_group, length );
@@ -771,7 +771,7 @@ struct spell_power_trinket_t : public action_t
       }
     };
   
-    report_t::log( sim, "Player %s uses Spell Power Trinket", player -> name() );
+    if( sim -> log ) report_t::log( sim, "Player %s uses Spell Power Trinket", player -> name() );
     cooldown_ready = player -> sim -> current_time + cooldown;
     // Trinket use may not overlap.....
     player -> share_cooldown( cooldown_group, length );
@@ -833,7 +833,7 @@ struct haste_trinket_t : public action_t
       }
     };
   
-    report_t::log( sim, "Player %s uses Haste Trinket", player -> name() );
+    if( sim -> log ) report_t::log( sim, "Player %s uses Haste Trinket", player -> name() );
     cooldown_ready = player -> sim -> current_time + cooldown;
     // Trinket use may not overlap.....
     player -> share_cooldown( cooldown_group, length );
@@ -873,7 +873,7 @@ struct talisman_of_ascendance_t : public action_t
   
   virtual void execute()
   {
-    report_t::log( sim, "Player %s uses Talisman of Ascendance", player -> name() );
+    if( sim -> log ) report_t::log( sim, "Player %s uses Talisman of Ascendance", player -> name() );
     player -> aura_gain( "Talisman of Ascendance" );
     player -> buffs.talisman_of_ascendance = -1;
     cooldown_ready = sim -> current_time + 60.0;
@@ -914,7 +914,7 @@ struct zandalarian_hero_charm_t : public action_t
   
   virtual void execute()
   {
-    report_t::log( sim, "Player %s uses Zandalarian Hero Charm", player -> name() );
+    if( sim -> log ) report_t::log( sim, "Player %s uses Zandalarian Hero Charm", player -> name() );
     player -> aura_gain( "Zandalarian Hero Charm" );
     player -> buffs.zandalarian_hero_charm = 204;
     player -> spell_power[ SCHOOL_MAX ] += player -> buffs.zandalarian_hero_charm;
@@ -977,7 +977,7 @@ struct hazzrahs_charm_t : public action_t
   
   virtual void execute()
   {
-    report_t::log( sim, "Player %s uses Hazzrahs Charm", player -> name() );
+    if( sim -> log ) report_t::log( sim, "Player %s uses Hazzrahs Charm", player -> name() );
     cooldown_ready = sim -> current_time + 180.0;
     // Trinket use may not overlap.....
     player -> share_cooldown( cooldown_group, 20.0 );
@@ -1019,7 +1019,7 @@ struct violet_eye_t : public action_t
   
   virtual void execute()
   {
-    report_t::log( sim, "Player %s uses Pendant of the Violet Eye", player -> name() );
+    if( sim -> log ) report_t::log( sim, "Player %s uses Pendant of the Violet Eye", player -> name() );
     cooldown_ready = sim -> current_time + 120.0;
     // Trinket use may not overlap.....
     player -> share_cooldown( cooldown_group, 20.0 );

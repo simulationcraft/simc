@@ -167,7 +167,7 @@ static void stack_earth_and_moon( spell_t* s )
     }
     virtual void execute()
     {
-      report_t::log( sim, "%s loses Earth and Moon", sim -> target -> name() );
+      if( sim -> log ) report_t::log( sim, "%s loses Earth and Moon", sim -> target -> name() );
       sim -> target -> debuffs.earth_and_moon = 0;
       sim -> target -> expirations.earth_and_moon = 0;
     }
@@ -175,12 +175,13 @@ static void stack_earth_and_moon( spell_t* s )
 
   if( rand_t::roll( p -> talents.earth_and_moon * 0.20 ) )
   {
-    target_t* t = s -> sim -> target;
+    sim_t* sim = s -> sim;
+    target_t* t = sim -> target;
 
     if( t -> debuffs.earth_and_moon < 3 ) 
     {
       t -> debuffs.earth_and_moon++;
-      report_t::log( s -> sim, "%s gains Earth and Moon %d", t -> name(), t -> debuffs.earth_and_moon );
+      if( sim -> log ) report_t::log( sim, "%s gains Earth and Moon %d", t -> name(), t -> debuffs.earth_and_moon );
     }
 
     event_t*& e = t -> expirations.earth_and_moon;
@@ -399,7 +400,7 @@ struct faerie_fire_t : public druid_spell_t
       }
     };
 
-    report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
 
     target_t* t = sim -> target;
@@ -593,7 +594,7 @@ struct moonkin_form_t : public druid_spell_t
    
   virtual void execute()
   {
-    report_t::log( sim, "%s performs moonkin_form", player -> name() );
+    if( sim -> log ) report_t::log( sim, "%s performs moonkin_form", player -> name() );
     for( player_t* p = sim -> player_list; p; p = p -> next )
     {
       if( player -> party == p -> party )
@@ -637,7 +638,7 @@ struct druids_swiftness_t : public druid_spell_t
    
   virtual void execute()
   {
-    report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
     druid_t* p = player -> cast_druid();
     p -> aura_gain( "Natures Swiftness" );
     p -> buffs_natures_swiftness = 1;
@@ -881,7 +882,7 @@ struct mark_of_the_wild_t : public druid_spell_t
    
   virtual void execute()
   {
-    report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
 
     double delta = bonus - player -> buffs.mark_of_the_wild;
 

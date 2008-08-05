@@ -219,14 +219,14 @@ struct shadow_fiend_pet_t : public pet_t
   virtual void summon()
   {
     player_t* o = cast_pet() -> owner;
-    report_t::log( sim, "%s summons Shadow Fiend.", o -> name() );
+    if( sim -> log ) report_t::log( sim, "%s summons Shadow Fiend.", o -> name() );
     attribute_initial[ ATTR_STAMINA   ] = attribute[ ATTR_STAMINA   ] = attribute_base[ ATTR_STAMINA   ] + (int16_t) ( 0.30 * o -> attribute[ ATTR_STAMINA   ] );
     attribute_initial[ ATTR_INTELLECT ] = attribute[ ATTR_INTELLECT ] = attribute_base[ ATTR_INTELLECT ] + (int16_t) ( 0.30 * o -> attribute[ ATTR_INTELLECT ] );
     melee -> execute();
   }
   virtual void dismiss()
   {
-    report_t::log( sim, "%s's Shadow Fiend dies.", cast_pet() -> owner -> name() );
+    if( sim -> log ) report_t::log( sim, "%s's Shadow Fiend dies.", cast_pet() -> owner -> name() );
     melee -> cancel();
   }
 };
@@ -250,7 +250,7 @@ static void stack_shadow_weaving( spell_t* s )
     }
     virtual void execute()
     {
-      report_t::log( sim, "%s loses Shadow Weaving", sim -> target -> name() );
+      if( sim -> log ) report_t::log( sim, "%s loses Shadow Weaving", sim -> target -> name() );
       sim -> target -> debuffs.shadow_weaving = 0;
       sim -> target -> expirations.shadow_weaving = 0;
     }
@@ -258,12 +258,13 @@ static void stack_shadow_weaving( spell_t* s )
 
   if( rand_t::roll( p -> talents.shadow_weaving * 0.20 ) )
   {
-    target_t* t = s -> sim -> target;
+    sim_t* sim = s -> sim;
+    target_t* t = sim -> target;
 
     if( t -> debuffs.shadow_weaving < 5 ) 
     {
       t -> debuffs.shadow_weaving++;
-      report_t::log( s -> sim, "%s gains Shadow Weaving %d", t -> name(), t -> debuffs.shadow_weaving );
+      if( sim -> log ) report_t::log( sim, "%s gains Shadow Weaving %d", t -> name(), t -> debuffs.shadow_weaving );
     }
 
     event_t*& e = t -> expirations.shadow_weaving;
@@ -674,7 +675,7 @@ struct penance_t : public priest_spell_t
 
   virtual void execute() 
   {
-    report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     schedule_tick();
     update_ready();
@@ -685,7 +686,7 @@ struct penance_t : public priest_spell_t
 
   virtual void tick() 
   {
-    report_t::debug( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
+    if( sim -> debug ) report_t::log( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
     may_resist = false;
     calculate_result();
     may_resist = true;
@@ -702,7 +703,7 @@ struct penance_t : public priest_spell_t
     }
     else
     {
-      report_t::log( sim, "%s avoids %s (%s)", sim -> target -> name(), name(), util_t::result_type_string( result ) );
+      if( sim -> log ) report_t::log( sim, "%s avoids %s (%s)", sim -> target -> name(), name(), util_t::result_type_string( result ) );
       player -> action_miss( this );
     }
     update_stats( DMG_OVER_TIME );
@@ -1257,7 +1258,7 @@ struct power_infusion_t : public priest_spell_t
    
   virtual void execute()
   {
-    report_t::log( sim, "Player %s casts Power Infusion", player -> name() );
+    if( sim -> log ) report_t::log( sim, "Player %s casts Power Infusion", player -> name() );
     consume_resource();
     update_ready();
     new power_infusion_expiration_t( sim, player );
@@ -1296,7 +1297,7 @@ struct inner_focus_t : public priest_spell_t
    
   virtual void execute()
   {
-    report_t::log( sim, "%s performs inner_focus", player -> name() );
+    if( sim -> log ) report_t::log( sim, "%s performs inner_focus", player -> name() );
     priest_t* p = player -> cast_priest();
     p -> aura_gain( "Inner Focus" );
     p -> buffs_inner_focus = 1;
@@ -1321,7 +1322,7 @@ struct divine_spirit_t : public priest_spell_t
    
   virtual void execute()
   {
-    report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
 
     double bonus_power = sim -> patch.after( 3, 0, 0 ) ? 0.03 : 0.05;
 
@@ -1367,7 +1368,7 @@ struct shadow_form_t : public priest_spell_t
    
   virtual void execute()
   {
-    report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
     player -> cast_priest() -> buffs_shadow_form = 1;
   }
 

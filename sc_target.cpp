@@ -33,9 +33,9 @@ void target_t::assess_damage( double  amount,
 
     if( current_health <= 0 ) 
     {
-      report_t::log( sim, "%s has died.", name() );
+      if( sim -> log ) report_t::log( sim, "%s has died.", name() );
     }
-    else report_t::debug( sim, "Target %s has %.0f remaining health", name(), current_health );
+    else if( sim -> debug ) report_t::log( sim, "Target %s has %.0f remaining health", name(), current_health );
   }
 
   if( dmg_type == DMG_DIRECT )
@@ -57,7 +57,7 @@ void target_t::recalculate_health()
   current_health = total_dmg;
   initial_health = current_health * ( sim -> max_time / sim -> current_time );
   
-  report_t::debug( sim, "Target initial health calculated to be %.0f", initial_health );     
+  if( sim -> debug ) report_t::log( sim, "Target initial health calculated to be %.0f", initial_health );     
 }
 
 // target_t::init ============================================================
@@ -70,7 +70,7 @@ void target_t::init()
 
 void target_t::reset()
 {
-  report_t::debug( sim, "Reseting target %s", name() );
+  if( sim -> debug ) report_t::log( sim, "Reseting target %s", name() );
   total_dmg = 0;
   armor = initial_armor;
   current_health = initial_health;

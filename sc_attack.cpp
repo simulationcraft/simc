@@ -64,7 +64,7 @@ void attack_t::player_buff()
 
   p -> uptimes.unleashed_rage -> update( p -> buffs.unleashed_rage );
 
-  report_t::debug( sim, "attack_t::player_buff: %s hit=%.2f expertise=%.2f crit=%.2f power=%.2f penetration=%.0f", 
+  if( sim -> debug ) report_t::log( sim, "attack_t::player_buff: %s hit=%.2f expertise=%.2f crit=%.2f power=%.2f penetration=%.0f", 
 		   name(), player_hit, player_expertise, player_crit, player_power, player_penetration );
 }
 
@@ -140,7 +140,7 @@ void attack_t::build_table( std::vector<double>& chances,
     crit = base_crit + player_crit + target_crit;
   }
 
-  report_t::debug( sim, "attack_t::build_table: %s miss=%.3f dodge=%.3f parry=%.3f glance=%.3f block=%.3f crit=%.3f",
+  if( sim -> debug ) report_t::log( sim, "attack_t::build_table: %s miss=%.3f dodge=%.3f parry=%.3f glance=%.3f block=%.3f crit=%.3f",
 		   name(), miss, dodge, parry, glance, block, crit );
   
   double total = 0;
@@ -225,7 +225,7 @@ void attack_t::calculate_result()
     }
   }
 
-  report_t::debug( sim, "%s result for %s is %s", player -> name(), name(), util_t::result_type_string( result ) );
+  if( sim -> debug ) report_t::log( sim, "%s result for %s is %s", player -> name(), name(), util_t::result_type_string( result ) );
 }
 
 // attack_t::calculate_damage ===============================================

@@ -72,7 +72,7 @@ static void trigger_moonkin_haste( spell_t* s )
 
 void player_t::gear_t::allocate_spell_power_budget( sim_t* sim )
 {
-  report_t::debug( sim, "Allocating spell_power budget...." );   
+  if( sim -> debug ) report_t::log( sim, "Allocating spell_power budget...." );   
 
   if(  spell_hit_rating  == 0 &&
        spell_crit_rating == 0 &&
@@ -99,7 +99,7 @@ void player_t::gear_t::allocate_spell_power_budget( sim_t* sim )
 
   spell_power[ SCHOOL_MAX ] = (int16_t) ( budget_slots * pow( target - cost, 1.0 / 1.5 ) / spell_power_statmod );
   
-  report_t::debug( sim, "slot_power=%.1f  slot_hit=%.1f  slot_crit=%.1f  slot_haste=%.1f  target=%.1f  cost=%.1f  spell_power=%d\n",
+  if( sim -> debug ) report_t::log( sim, "slot_power=%.1f  slot_hit=%.1f  slot_crit=%.1f  slot_haste=%.1f  target=%.1f  cost=%.1f  spell_power=%d\n",
                    slot_power, slot_hit, slot_crit, slot_haste, target, cost, spell_power[ SCHOOL_MAX ] );
 }
 
@@ -107,7 +107,7 @@ void player_t::gear_t::allocate_spell_power_budget( sim_t* sim )
 
 void player_t::gear_t::allocate_attack_power_budget( sim_t* sim )
 {
-  report_t::debug( sim, "Allocating attack_power budget...." );   
+  if( sim -> debug ) report_t::log( sim, "Allocating attack_power budget...." );   
 
   // double attack_power_statmod = 0.5;
 
@@ -163,7 +163,7 @@ player_t::player_t( sim_t*             s,
   // Reporting
   quiet(0), report(0), iteration_dmg(0), total_dmg(0), stats_list(0)
 {
-  report_t::debug( sim, "Creating Player %s", name() );
+  if( sim -> debug ) report_t::log( sim, "Creating Player %s", name() );
   next = sim -> player_list;
   sim -> player_list = this;
 
@@ -189,7 +189,7 @@ player_t::player_t( sim_t*             s,
 
 void player_t::init() 
 {
-  report_t::debug( sim, "Initializing player %s", name() );   
+  if( sim -> debug ) report_t::log( sim, "Initializing player %s", name() );   
 
   init_rating();
   init_base();
@@ -449,17 +449,17 @@ void player_t::init_actions()
 
     if( ! action_list_prefix.empty() )
     {
-      report_t::debug( sim, "Player %s: action_list_prefix=%s", name(), action_list_prefix.c_str() );   
+      if( sim -> debug ) report_t::log( sim, "Player %s: action_list_prefix=%s", name(), action_list_prefix.c_str() );   
       size = util_t::string_split( splits, action_list_prefix, "/" );
     }
     if( ! action_list_str.empty() )
     {
-      report_t::debug( sim, "Player %s: action_list_str=%s", name(), action_list_str.c_str() );   
+      if( sim -> debug ) report_t::log( sim, "Player %s: action_list_str=%s", name(), action_list_str.c_str() );   
       size = util_t::string_split( splits, action_list_str, "/" );
     }
     if( ! action_list_postfix.empty() )
     {
-      report_t::debug( sim, "Player %s: action_list_postfix=%s", name(), action_list_postfix.c_str() );   
+      if( sim -> debug ) report_t::log( sim, "Player %s: action_list_postfix=%s", name(), action_list_postfix.c_str() );   
       size = util_t::string_split( splits, action_list_postfix, "/" );
     }
 
@@ -486,7 +486,7 @@ void player_t::init_actions()
 
   if( ! action_list_skip.empty() )
   {
-    report_t::debug( sim, "Player %s: action_list_skip=%s", name(), action_list_skip.c_str() );   
+    if( sim -> debug ) report_t::log( sim, "Player %s: action_list_skip=%s", name(), action_list_skip.c_str() );   
     std::vector<std::string> splits;
     int size = util_t::string_split( splits, action_list_skip, "/" );
     for( int i=0; i < size; i++ )
@@ -562,7 +562,7 @@ double player_t::composite_spell_crit()
 
 void player_t::reset() 
 {
-  report_t::debug( sim, "Reseting player %s", name() );   
+  if( sim -> debug ) report_t::log( sim, "Reseting player %s", name() );   
 
   last_cast = 0;
   gcd_ready = 0;
@@ -705,7 +705,7 @@ void player_t::resource_loss( int8_t      resource,
     last_cast = sim -> current_time;
   }
 
-  report_t::debug( sim, "Player %s spends %.0f %s", name(), amount, util_t::resource_type_string( resource ) );
+  if( sim -> debug ) report_t::log( sim, "Player %s spends %.0f %s", name(), amount, util_t::resource_type_string( resource ) );
 }
 
 // player_t::resource_gain =================================================
@@ -723,7 +723,7 @@ void player_t::resource_gain( int8_t       resource,
 
     if( source && sim -> report -> report_gains ) gain( source, amount );
 
-    report_t::log( sim, "%s gains %.0f %s from %s", 
+    if( sim -> log ) report_t::log( sim, "%s gains %.0f %s from %s", 
 		   name(), amount, util_t::resource_type_string( resource ), source ? source : "unknown" );
   }
 }
@@ -766,7 +766,7 @@ void player_t::check_resources()
     resource_constrained_total_time += sim -> current_time;
     resource_constrained_total_dmg  += iteration_dmg;
 
-    report_t::debug( sim, "Player %s is resource constrained.", name() );
+    if( sim -> debug ) report_t::log( sim, "Player %s is resource constrained.", name() );
   }
 }
 
@@ -1098,7 +1098,7 @@ void player_t::aura_gain( const char* aura_name )
 {
   // FIXME! Aura-tracking here.
 
-  report_t::log( sim, "Player %s gains %s", name(), aura_name );
+  if( sim -> log ) report_t::log( sim, "Player %s gains %s", name(), aura_name );
 }
 
 // player_t::aura_loss ======================================================
@@ -1107,7 +1107,7 @@ void player_t::aura_loss( const char* aura_name )
 {
   // FIXME! Aura-tracking here.
 
-  report_t::log( sim, "Player %s loses %s", name(), aura_name );
+  if( sim -> log ) report_t::log( sim, "Player %s loses %s", name(), aura_name );
 }
 
 // player_t::parse_talents ==================================================

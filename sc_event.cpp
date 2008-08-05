@@ -6,10 +6,50 @@
 #include <simcraft.h>
 
 // ==========================================================================
+// Event Memory Management
+// ==========================================================================
+
+#ifdef EVENT_MM
+
+static event_t* free_list = 0;
+
+// event_t::new =============================================================
+
+void* event_t::operator new( size_t size )
+{
+  static size_t SIZE = 2 * sizeof( event_t );
+  assert( SIZE > size );
+
+  event_t* new_event = free_list;
+
+  if( new_event )
+  {
+    free_list = free_list -> next;
+  }
+  else
+  {
+    new_event = (event_t*) malloc( SIZE );
+  }
+
+  return new_event;
+}
+
+// event_t::delete ==========================================================
+
+void event_t::operator delete( void* p )
+{
+  event_t* e = (event_t*) p;
+  e -> next = free_list;
+  free_list = e;
+}
+
+#endif
+
+// ==========================================================================
 // Player Ready Event
 // ==========================================================================
 
-// player_ready_event_t::player_ready_event_t ================================
+// player_ready_event_t::player_ready_event_t ===============================
 
 player_ready_event_t::player_ready_event_t( sim_t*    sim, 
                                             player_t* p, 
@@ -17,7 +57,7 @@ player_ready_event_t::player_ready_event_t( sim_t*    sim,
   event_t( sim, p ) 
 {
   name = "Player-Ready";
-  report_t::debug( sim, "New Player-Ready Event: %s", p -> name() );
+  if( sim -> debug ) report_t::log( sim, "New Player-Ready Event: %s", p -> name() );
   sim -> add_event( this, delta_time );
 }
 
@@ -43,7 +83,7 @@ action_execute_event_t::action_execute_event_t( sim_t*    sim,
   event_t( sim, a -> player ), action( a ) 
 {
   name = "Action-Execute";
-  report_t::debug( sim, "New Action Execute Event: %s %s %.1f", player -> name(), a -> name(), time_to_execute );
+  if( sim -> debug ) report_t::log( sim, "New Action Execute Event: %s %s %.1f", player -> name(), a -> name(), time_to_execute );
   sim -> add_event( this, time_to_execute );
 }
 
@@ -75,7 +115,7 @@ action_tick_event_t::action_tick_event_t( sim_t*    sim,
 {
   name = "Action Tick";
 
-  report_t::debug( sim, "New Action Tick Event: %s %s %.2f %d %.2f", 
+  if( sim -> debug ) report_t::log( sim, "New Action Tick Event: %s %s %.2f %d %.2f", 
 		   player -> name(), a -> name(), a -> time_remaining, a -> current_tick, time_to_tick );
   
   sim -> add_event( this, time_to_tick );
@@ -118,7 +158,7 @@ void action_tick_event_t::execute()
 regen_event_t::regen_event_t( sim_t* sim ) : event_t( sim )
 {
   name = "Regen Event";
-  report_t::debug( sim, "New Regen Event" );
+  if( sim -> debug ) report_t::log( sim, "New Regen Event" );
   sim -> add_event( this, 2.0 );
 }
 
@@ -141,5 +181,6 @@ void regen_event_t::execute()
 void event_t::reschedule( double new_time )
 {
   reschedule_time = sim -> current_time + new_time;
-  report_t::debug( sim, "Rescheduling event %s (%d) from %.2f to %.2f", name, id, time, reschedule_time );
+
+  if( sim -> debug ) report_t::log( sim, "Rescheduling event %s (%d) from %.2f to %.2f", name, id, time, reschedule_time );
 }
