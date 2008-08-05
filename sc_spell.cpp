@@ -127,7 +127,7 @@ double spell_t::level_based_miss_chance( int8_t player,
   int8_t delta_level = target - player;
   double miss=0;
 
-  if( sim_t::WotLK )
+  if( false && sim_t::WotLK ) // FIXME! Currently back to 17% miss
   {
     if( delta_level > 2 )
     {
@@ -172,6 +172,8 @@ void spell_t::calculate_result()
     double miss_chance = level_based_miss_chance( player -> level, sim -> target -> level );
 
     miss_chance -= base_hit + player_hit + target_hit;
+
+    if( ! sim_t::WotLK && miss_chance < 0.01 ) miss_chance = 0.01;
 
     if( rand_t::roll( miss_chance ) )
     {

@@ -65,9 +65,11 @@ gear_intellect=600
 gear_spirit=600
 gear_spell_power=2500
 gear_spell_crit_rating=200
+gear_spell_hit_rating=200
 gear_haste_rating=500
 pet=shadow_fiend
 main_hand=beast,damage=110,speed=1.5,school=shadow
+quiet=1
 active=owner
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
 blessing_of_kings=1
@@ -91,9 +93,11 @@ gear_intellect=600
 gear_spirit=600
 gear_spell_power=2500
 gear_spell_crit_rating=400
+gear_spell_hit_rating=200
 gear_haste_rating=300
 pet=shadow_fiend
 main_hand=beast,damage=110,speed=1.5,school=shadow
+quiet=1
 active=owner
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
 blessing_of_kings=1
@@ -119,6 +123,7 @@ gear_intellect=600
 gear_spirit=600
 gear_spell_power=2000
 gear_spell_crit_rating=800
+gear_spell_hit_rating=200
 gear_haste_rating=400
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
 blessing_of_kings=1
@@ -140,6 +145,7 @@ gear_stamina=600
 gear_intellect=800
 gear_spell_power=2000
 gear_spell_crit_rating=800
+gear_spell_hit_rating=200
 gear_haste_rating=400
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
 blessing_of_kings=1
@@ -198,6 +204,7 @@ gear_stamina=600
 gear_intellect=800
 gear_spell_power=2000
 gear_spell_crit_rating=800
+gear_spell_hit_rating=200
 gear_haste_rating=400
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
 blessing_of_kings=1

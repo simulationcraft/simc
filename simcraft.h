@@ -38,11 +38,13 @@ struct action_t;
 struct attack_t;
 struct druid_t;
 struct event_t;
+struct gain_t;
 struct mage_t;
 struct option_t;
 struct pet_t;
 struct player_t;
 struct priest_t;
+struct proc_t;
 struct report_t;
 struct shaman_t;
 struct sim_t;
@@ -281,9 +283,6 @@ struct weapon_t
 
 // Player ====================================================================
 
-typedef std::map<std::string,int32_t> proc_list_t;
-typedef std::map<std::string,double>  gain_list_t;
-
 struct player_t
 {
   sim_t*      sim;
@@ -369,9 +368,10 @@ struct player_t
   double       iteration_dmg, total_dmg;
   double       resource_lost  [ RESOURCE_MAX ];
   double       resource_gained[ RESOURCE_MAX ];
-  proc_list_t  proc_list;
-  gain_list_t  gain_list;
-  stats_t*    stats_list;
+  proc_t*      proc_list;
+  gain_t*      gain_list;
+  stats_t*     stats_list;
+  uptime_t*    uptime_list;
 
   struct gear_t
   {
@@ -556,6 +556,53 @@ struct player_t
     uptimes_t() { reset(); }
   };
   uptimes_t uptimes;
+
+  struct gains_t
+  {
+    gain_t* ashtongue_talisman;
+    gain_t* dark_rune;
+    gain_t* judgement_of_wisdom;
+    gain_t* mana_gem;
+    gain_t* mana_potion;
+    gain_t* mana_spring;
+    gain_t* mana_tide;
+    gain_t* mark_of_defiance;
+    gain_t* mp5_regen;
+    gain_t* spellsurge;
+    gain_t* spirit_regen;
+    gain_t* vampiric_touch;
+    gain_t *tier4_2pc, *tier4_4pc;
+    gain_t *tier5_2pc, *tier5_4pc;
+    gain_t *tier6_2pc, *tier6_4pc;
+    void reset() { memset( (void*) this, 0x00, sizeof( gains_t ) ); }
+    gains_t() { reset(); }
+  };
+  gains_t gains;
+  
+  struct procs_t
+  {
+    proc_t* ashtongue_talisman;
+    proc_t* elder_scribes;
+    proc_t* eternal_sage;
+    proc_t* eye_of_magtheridon;
+    proc_t* judgement_of_wisdom;
+    proc_t* lightning_capacitor;
+    proc_t* mark_of_defiance;
+    proc_t* mystical_skyfire;
+    proc_t* quagmirrans_eye;
+    proc_t* sextant_of_unstable_currents;
+    proc_t* shiffars_nexus_horn;
+    proc_t* spellstrike;
+    proc_t* timbals_crystal;
+    proc_t* windfury;
+    proc_t* wrath_of_cenarius;
+    proc_t *tier4_2pc, *tier4_4pc;
+    proc_t *tier5_2pc, *tier5_4pc;
+    proc_t *tier6_2pc, *tier6_4pc;
+    void reset() { memset( (void*) this, 0x00, sizeof( procs_t ) ); }
+    procs_t() { reset(); }
+  };
+  procs_t procs;
   
   player_t( sim_t* sim, int8_t type, const std::string& name );
   
@@ -588,8 +635,8 @@ struct player_t
   virtual action_t* execute_action();
 
   virtual void regen() {}
-  virtual void resource_gain( int8_t resource, double amount, const char* source=0 );
-  virtual void resource_loss( int8_t resource, double amount, const char* source=0 );
+  virtual void resource_gain( int8_t resource, double amount, gain_t* g=0 );
+  virtual void resource_loss( int8_t resource, double amount );
   virtual bool resource_available( int8_t resource, double cost );
   virtual void check_resources();
 
@@ -624,8 +671,6 @@ struct player_t
 
   bool      in_gcd() { return gcd_ready > sim -> current_time; }
   bool      recent_cast();
-  void      proc( const std::string& );
-  void      gain( const std::string&, double value );
   action_t* find_action( const std::string& );
   void      share_cooldown( const std::string& name, double ready );
   void      share_duration( const std::string& name, double ready );
@@ -634,6 +679,9 @@ struct player_t
   bool      dual_wield() { return main_hand_weapon.type != WEAPON_NONE && off_hand_weapon.type != WEAPON_NONE; }
   void      aura_gain( const char* name );
   void      aura_loss( const char* name );
+  gain_t*   get_gain  ( const std::string& name );
+  proc_t*   get_proc  ( const std::string& name );
+  uptime_t* get_uptime( const std::string& name );
 
   double strength()  { return attribute_multiplier[ ATTR_STRENGTH  ] * attribute[ ATTR_STRENGTH  ]; }
   double agility()   { return attribute_multiplier[ ATTR_AGILITY   ] * attribute[ ATTR_AGILITY   ]; }
@@ -1020,6 +1068,30 @@ struct consumable_t
   static action_t* create_action( player_t*, const std::string& name, const std::string& options );
 };
 
+// Gain ======================================================================
+
+struct gain_t
+{
+  std::string name_str;
+  double amount;
+  gain_t* next;
+  gain_t( const std::string& n ) : name_str(n), amount(0) {}
+  void   add( double a ) { amount += a; }
+  const char* name() { return name_str.c_str(); }
+};
+
+// Proc ======================================================================
+
+struct proc_t
+{
+  std::string name_str;
+  int32_t count;
+  proc_t* next;
+  proc_t( const std::string& n ) : name_str(n), count(0) {}
+  void   occur() { count++; }
+  const char* name() { return name_str.c_str(); }
+};
+
 // Up-Time ===================================================================
 
 struct uptime_t
@@ -1059,11 +1131,11 @@ struct report_t
   bool parse_option( const std::string& name, const std::string& value );
   void print_action      ( stats_t* );
   void print_actions     ( player_t* );
-  void print_gains       ( player_t* );
-  void print_procs       ( player_t* );
   void print_core_stats  ( player_t* );
   void print_spell_stats ( player_t* );
   void print_attack_stats( player_t* );
+  void print_gains();
+  void print_procs();
   void print_uptime();
   void print_performance();
   void print();

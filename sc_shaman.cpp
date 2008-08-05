@@ -36,6 +36,12 @@ struct shaman_t : public player_t
   event_t* expirations_elemental_devastation;
   event_t* expirations_maelstrom_weapon;
   event_t* expirations_windfury_weapon;
+
+  // Gains
+  gain_t* gains_shamanistic_rage;
+
+  // Procs
+  proc_t* procs_lightning_overload;
   
   // Up-Times
   uptime_t* uptimes_flurry;
@@ -135,9 +141,15 @@ struct shaman_t : public player_t
     expirations_maelstrom_weapon      = 0;
     expirations_windfury_weapon       = 0;
   
+    // Gains
+    gains_shamanistic_rage = get_gain( "shamanistic_rage" );
+
+    // Procs
+    procs_lightning_overload = get_proc( "lightning_overload" );
+
     // Up-Times
-    uptimes_flurry                = sim -> get_uptime( name_str + "_flurry"                );
-    uptimes_elemental_devastation = sim -> get_uptime( name_str + "_elemental_devastation" );
+    uptimes_flurry                = get_uptime( "flurry"                );
+    uptimes_elemental_devastation = get_uptime( "elemental_devastation" );
   
     // Auto-Attack
     main_hand_attack = 0;
@@ -521,7 +533,7 @@ static void trigger_tier5_4pc( spell_t* s )
 
   if( p -> gear.tier5_4pc && rand_t::roll( 0.25 ) )
   {
-    p -> resource_gain( RESOURCE_MANA, 120.0, "tier5_4pc" );
+    p -> resource_gain( RESOURCE_MANA, 120.0, p -> gains.tier5_4pc );
   }
 }
 
@@ -533,7 +545,7 @@ static void trigger_ashtongue_talisman( spell_t* s )
 
   if( p -> gear.ashtongue_talisman && rand_t::roll( 0.15 ) )
   {
-    p -> resource_gain( RESOURCE_MANA, 110.0, "ashtongue" );
+    p -> resource_gain( RESOURCE_MANA, 110.0, p -> gains.ashtongue_talisman );
   }
 }
 
@@ -547,7 +559,7 @@ static void trigger_lightning_overload( spell_t* s )
 
   if( rand_t::roll( p -> talents.lightning_overload * 0.04 ) )
   {
-    p -> proc( "lightning_overload" );
+    p -> procs_lightning_overload -> occur();
 
     double cost       = s -> base_cost;
     double multiplier = s -> base_multiplier;
@@ -660,7 +672,7 @@ void shaman_attack_t::execute()
     shaman_t* p = player -> cast_shaman();
     if( p -> buffs_shamanistic_rage ) 
     {
-      p -> resource_gain( RESOURCE_MANA, player_power * 0.30, "shamanistic_rage" );
+      p -> resource_gain( RESOURCE_MANA, player_power * 0.30, p -> gains_shamanistic_rage );
     }
   }
 }
@@ -2185,7 +2197,7 @@ struct mana_tide_totem_t : public shaman_spell_t
     {
       if( p -> party == player -> party )
       {
-	p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.06, "mana_tide" );
+	p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.06, p -> gains.mana_tide );
       }
     }
   }
@@ -2242,7 +2254,7 @@ struct mana_spring_totem_t : public shaman_spell_t
     {
       if( p -> party == player -> party )
       {
-	p -> resource_gain( RESOURCE_MANA, base_multiplier * 20.0, "mana_spring" );
+	p -> resource_gain( RESOURCE_MANA, base_multiplier * 20.0, p -> gains.mana_spring );
       }
     }
   }
@@ -2773,8 +2785,8 @@ void shaman_t::regen()
 
   mp5_regen /= 2.5;
 
-  resource_gain( RESOURCE_MANA, spirit_regen, "spirit_regen" );
-  resource_gain( RESOURCE_MANA,    mp5_regen, "mp5_regen"    );
+  resource_gain( RESOURCE_MANA, spirit_regen, gains.spirit_regen );
+  resource_gain( RESOURCE_MANA,    mp5_regen, gains.mp5_regen    );
 }
 
 // shaman_t::parse_talents ===============================================

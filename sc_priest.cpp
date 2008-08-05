@@ -25,6 +25,10 @@ struct priest_t : public player_t
   // Expirations
   event_t* expirations_improved_spirit_tap;
 
+  // Gains
+  gain_t* gains_shadow_fiend;
+  gain_t* gains_dispersion;
+
   // Up-Times
   uptime_t* uptimes_improved_spirit_tap;
 
@@ -89,8 +93,12 @@ struct priest_t : public player_t
     // Expirations
     expirations_improved_spirit_tap = 0;
 
+    // Gains
+    gains_dispersion   = get_gain( "dispersion" );
+    gains_shadow_fiend = get_gain( "shadow_fiend" );
+
     // Up-Times
-    uptimes_improved_spirit_tap = sim -> get_uptime( name + "_improved_spirit_tap" );
+    uptimes_improved_spirit_tap = get_uptime( "improved_spirit_tap" );
   }
 
   // Character Definition
@@ -158,7 +166,7 @@ struct shadow_fiend_pet_t : public pet_t
 	  rand_t::roll( 0.20 ) )
       {
 	player -> attack_power += player -> buffs.windfury_totem;
-	player -> proc( "windfury" );
+	player -> procs.windfury -> occur();
 	attack_t::execute();
 	player -> attack_power -= player -> buffs.windfury_totem;
       }
@@ -178,8 +186,8 @@ struct shadow_fiend_pet_t : public pet_t
     void assess_damage( double amount, int8_t dmg_type )
     {
       attack_t::assess_damage( amount, dmg_type );
-
-      player -> cast_pet() -> owner -> resource_gain( RESOURCE_MANA, amount * 2.5, "shadow_fiend" );
+      priest_t* p = player -> cast_pet() -> owner -> cast_priest();
+      p -> resource_gain( RESOURCE_MANA, amount * 2.5, p -> gains_shadow_fiend );
     }
   };
 
@@ -320,7 +328,7 @@ static void push_tier5_2pc( spell_t*s )
   {
     p -> buffs.tier5_2pc = 1;
     p -> buffs.mana_cost_reduction += 150;
-    p -> proc( "tier5_2pc" );
+    p -> procs.tier5_2pc -> occur();
   }
 
 }
@@ -350,7 +358,7 @@ static void push_tier5_4pc( spell_t*s )
   {
     p -> buffs.tier5_4pc = 1;
     p -> spell_power[ SCHOOL_MAX ] += 100;
-    p -> proc( "tier5_4pc" );
+    p -> procs.tier5_4pc -> occur();
   }
 }
 
@@ -392,7 +400,7 @@ static void trigger_ashtongue_talisman( spell_t* s )
 
   if( p -> gear.ashtongue_talisman && rand_t::roll( 0.10 ) )
   {
-    p -> proc( "ashtongue_talisman" );
+    p -> procs.ashtongue_talisman -> occur();
 
     event_t*& e = p -> expirations.ashtongue_talisman;
 
@@ -900,7 +908,7 @@ struct devouring_plague_t : public priest_spell_t
   virtual void tick() 
   {
     priest_spell_t::tick(); 
-    player -> resource_gain( RESOURCE_HEALTH, dot_tick, "devouring_plague" );
+    player -> resource_gain( RESOURCE_HEALTH, dot_tick );
   }
 
   virtual void last_tick() 
@@ -1048,7 +1056,7 @@ struct shadow_word_death_t : public priest_spell_t
   {
     priest_spell_t::execute(); 
     priest_t* p = player -> cast_priest();
-    p -> resource_loss( RESOURCE_HEALTH, dd * ( 1.0 - p -> talents.pain_and_suffering * 0.20 ), "shadow_word_death" );
+    p -> resource_loss( RESOURCE_HEALTH, dd * ( 1.0 - p -> talents.pain_and_suffering * 0.20 ) );
   }
 };
 
@@ -1208,7 +1216,8 @@ struct dispersion_t : public priest_spell_t
 
   virtual void tick()
   {
-    player -> resource_gain( RESOURCE_MANA, 0.06 * player -> resource_max[ RESOURCE_MANA ], "dispersion" );
+    priest_t* p = player -> cast_priest();
+    p -> resource_gain( RESOURCE_MANA, 0.06 * p -> resource_max[ RESOURCE_MANA ], p -> gains_dispersion );
   }
 
   virtual bool ready()
@@ -1486,7 +1495,7 @@ void priest_t::spell_damage_event( spell_t* s,
       {
 	if( p -> party == party )
         {
-	  p -> resource_gain( RESOURCE_MANA, mana, "vampiric_touch" );
+	  p -> resource_gain( RESOURCE_MANA, mana, p -> gains.vampiric_touch );
 	}
       }
     }
@@ -1499,7 +1508,7 @@ void priest_t::spell_damage_event( spell_t* s,
       {
 	if( p -> party == party )
         {
-	  p -> resource_gain( RESOURCE_HEALTH, health, "vampiric_embrace" );
+	  p -> resource_gain( RESOURCE_HEALTH, health );
 	}
       }
     }
@@ -1625,8 +1634,8 @@ void priest_t::regen()
 
   double mp5_regen = mp5 / 2.5;
 
-  resource_gain( RESOURCE_MANA, spirit_regen, "spirit_regen" );
-  resource_gain( RESOURCE_MANA,    mp5_regen, "mp5_regen"    );
+  resource_gain( RESOURCE_MANA, spirit_regen, gains.spirit_regen );
+  resource_gain( RESOURCE_MANA,    mp5_regen, gains.mp5_regen    );
 }
 
 // priest_t::parse_talents =================================================

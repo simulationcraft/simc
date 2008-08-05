@@ -33,7 +33,7 @@ static void trigger_spellsurge( spell_t* s )
 	if( p -> party == player -> party ) 
 	{
 	  if( sim -> log ) report_t::log( sim, "Player %s gains mana from %s 's Spellsurge.", p -> name(), player -> name() );
-	  p -> resource_gain( RESOURCE_MANA, 10.0, "spellsurge" );
+	  p -> resource_gain( RESOURCE_MANA, 10.0, p -> gains.spellsurge );
 	}
       }
     }
@@ -120,7 +120,7 @@ static void trigger_mongoose( attack_t* a )
     }
   }
 
-  if( ! u )  u = a -> sim -> get_uptime( p -> name_str + "_mongoose_" + ( w -> main ? "mh" : "oh" ) );
+  if( ! u )  u = p -> get_uptime( w -> main ? "moongoose_mh" : "mongoose_oh" );
 
   u -> update( b );
 }
@@ -171,7 +171,7 @@ static void trigger_executioner( attack_t* a )
 
   if( ! p -> uptimes.executioner ) 
   {
-    p -> uptimes.executioner = a -> sim -> get_uptime( p -> name_str + "_executioner" );
+    p -> uptimes.executioner = p -> get_uptime( "executioner" );
   }
 
   p -> uptimes.executioner -> update( p -> buffs.executioner );

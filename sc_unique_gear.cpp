@@ -37,7 +37,7 @@ static void trigger_mystical_skyfire( spell_t* s )
       s -> sim -> cooldown_ready( p -> cooldowns.mystical_skyfire ) &&
       rand_t::roll( 0.15 ) )
   {
-    p -> proc( "mystical_skyfire" );
+    p -> procs.mystical_skyfire -> occur();
     new mystical_skyfire_expiration_t( s -> sim, p );
   }
 }
@@ -69,7 +69,7 @@ static void trigger_spellstrike( spell_t* s )
 
   if( p -> gear.spellstrike && rand_t::roll( 0.05 ) )
   {
-    p -> proc( "spellstrike" );
+    p -> procs.spellstrike -> occur();
 
     event_t*& e = p -> expirations.spellstrike;
 
@@ -111,7 +111,7 @@ static void trigger_wrath_of_cenarius( spell_t* s )
 
   if( p -> gear.wrath_of_cenarius && rand_t::roll( 0.05 ) )
   {
-    p -> proc( "wrath_of_cenarius" );
+    p -> procs.wrath_of_cenarius -> occur();
 
     event_t*& e = p -> expirations.wrath_of_cenarius;
 
@@ -153,7 +153,7 @@ static void trigger_elder_scribes( spell_t* s )
        s -> sim -> cooldown_ready( p -> cooldowns.elder_scribes ) &&
        rand_t::roll( 0.05 ) )
   {
-    p -> proc( "elder_scribes" );
+    p -> procs.elder_scribes -> occur();
     new elder_scribes_expiration_t( s -> sim, p );
   }
 }
@@ -185,7 +185,7 @@ static void trigger_eternal_sage( spell_t* s )
        s -> sim -> cooldown_ready( p -> cooldowns.eternal_sage ) &&
        rand_t::roll( 0.10 ) )
   {
-    p -> proc( "eternal_sage" );
+    p -> procs.eternal_sage -> occur();
     new eternal_sage_expiration_t( s -> sim, p );
   }
 }
@@ -215,7 +215,7 @@ static void trigger_eye_of_magtheridon( spell_t* s )
 
   if( p -> gear.eye_of_magtheridon )
   {
-    p -> proc( "eye_of_magtheridon" );
+    p -> procs.eye_of_magtheridon -> occur();
 
     event_t*& e = p -> expirations.eye_of_magtheridon;
 
@@ -257,7 +257,7 @@ static void trigger_shiffars_nexus_horn( spell_t* s )
       s -> sim -> cooldown_ready( p -> cooldowns.shiffars_nexus_horn ) &&
       rand_t::roll( 0.20 ) )
   {
-    p -> proc( "shiffars_nexus_horn" );
+    p -> procs.shiffars_nexus_horn -> occur();
     new shiffars_nexus_horn_expiration_t( s -> sim, p );
   }
 }
@@ -289,7 +289,7 @@ static void trigger_sextant_of_unstable_currents( spell_t* s )
       s -> sim -> cooldown_ready( p -> cooldowns.sextant_of_unstable_currents ) &&
       rand_t::roll( 0.20 ) )
   {
-    p -> proc( "sextant_of_unstable_currents" );
+    p -> procs.sextant_of_unstable_currents -> occur();
     new sextant_of_unstable_currents_expiration_t( s -> sim, p );
   }
 }
@@ -325,7 +325,7 @@ static void trigger_quagmirrans_eye( spell_t* s )
       s -> sim -> cooldown_ready( p -> cooldowns.quagmirrans_eye ) && 
       rand_t::roll( 0.10 ) )
   {
-    p -> proc( "quagmirrans_eye" );
+    p -> procs.quagmirrans_eye -> occur();
     new quagmirrans_eye_expiration_t( s -> sim, p );
   }
 }
@@ -476,7 +476,7 @@ static void trigger_lightning_capacitor( spell_t* s )
     {
       if( lightning_discharge -> ready() )
       {
-	p -> proc( "lightning_capacitor" );
+	p -> procs.lightning_capacitor -> occur();
 	p -> buffs.lightning_capacitor = 0;
 	p -> aura_loss( "Lightning Capacitor" );
 	lightning_discharge -> execute();
@@ -527,7 +527,7 @@ static void trigger_timbals_crystal( spell_t* s )
 
     if( timbals_discharge -> ready() &&	rand_t::roll( 0.10 ) )
     {
-      p -> proc( "timbals_disharge" );
+      p -> procs.timbals_crystal -> occur();
       timbals_discharge -> execute();
     }
   } 
@@ -582,8 +582,8 @@ static void trigger_mark_of_defiance( spell_t* s )
       rand_t::roll( 0.15 ) )
   {
     {
-      p -> proc( "mark_of_defiance" );
-      p -> resource_gain( RESOURCE_MANA, 150.0, "mark_of_defiance" );
+      p -> procs.mark_of_defiance -> occur();
+      p -> resource_gain( RESOURCE_MANA, 150.0, p -> gains.mark_of_defiance );
       p -> cooldowns.mark_of_defiance = s -> sim -> current_time + 15;
     }
   }

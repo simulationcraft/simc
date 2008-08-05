@@ -152,45 +152,6 @@ void report_t::print_actions( player_t* p )
   }
 }
 
-// report_t::print_gains ====================================================
-
-void report_t::print_gains( player_t* p )
-{
-  if( p -> gain_list.size() == 0 ) return;
-  
-  fprintf( sim -> output_file, "    Gains: " );
-  
-  for( gain_list_t::iterator i = p -> gain_list.begin(); i != p -> gain_list.end(); ++i )
-  {
-    fprintf( sim -> output_file, 
-	     "  %s=%.1f", 
-	     i -> first.c_str(), 
-	     i -> second / sim -> iterations );
-  }
-
-  fprintf( sim -> output_file, "\n" );
-}
-
-// report_t::print_procs ====================================================
-
-void report_t::print_procs( player_t* p )
-{
-  if( p -> proc_list.size() == 0 ) return;
-
-  fprintf( sim -> output_file, "    Procs: " );
-  
-  for( proc_list_t::iterator i = p -> proc_list.begin(); i != p -> proc_list.end(); ++i )
-  {
-    fprintf( sim -> output_file, 
-	     "  %s=%d|%.1fsec", 
-	     i -> first.c_str(), 
-	     i -> second / sim -> iterations,
-	     sim -> iterations * sim -> total_seconds / (double) i -> second );
-  }
-
-  fprintf( sim -> output_file, "\n" );
-}
-
 // report_t::print_core_stats =================================================
 
 void report_t::print_core_stats( player_t* p )
@@ -244,17 +205,102 @@ void report_t::print_attack_stats( player_t* p )
 	   report_tag ? "haste="       : "", ( 1.0 - p -> haste ) * 100.0 );
 }
 
+// report_t::print_gains =====================================================
+
+void report_t::print_gains()
+{
+  fprintf( sim -> output_file, "\nGains:\n" );
+
+  for( player_t* p = sim -> player_list; p; p = p -> next )
+  {
+    if( p -> quiet ) 
+      continue;
+
+    bool first=true;
+    for( gain_t* g = p -> gain_list; g; g = g -> next )
+    {
+      if( g -> amount > 0 ) 
+      {
+	if( first )
+        {
+	  fprintf( sim -> output_file, "  %-20s:", p -> name() );
+	  first = false;
+	}
+	fprintf( sim -> output_file, "  %s=%.1f", g -> name(), g -> amount / sim -> iterations );
+      }
+    }
+    if( ! first ) printf( "\n" );
+  }
+}
+
+// report_t::print_procs =====================================================
+
+void report_t::print_procs()
+{
+  fprintf( sim -> output_file, "\nProcs:\n" );
+
+  for( player_t* player = sim -> player_list; player; player = player -> next )
+  {
+    if( player -> quiet ) 
+      continue;
+
+    bool first=true;
+    for( proc_t* p = player -> proc_list; p; p = p -> next )
+    {
+      if( p -> count > 0 ) 
+      {
+	if( first )
+        {
+	  fprintf( sim -> output_file, "  %-20s:", player -> name() );
+	  first = false;
+	}
+	fprintf( sim -> output_file, "  %s=%d|%.1fsec", 
+		 p -> name(),
+		 p -> count / sim -> iterations,
+		 sim -> iterations * sim -> total_seconds / p -> count );
+      }
+    }
+    if( ! first ) printf( "\n" );
+  }
+}
+
 // report_t::print_uptime =====================================================
 
 void report_t::print_uptime()
 {
-  fprintf( sim -> output_file, "Up-Times:\n" );
+  fprintf( sim -> output_file, "\nUp-Times:\n" );
 
+  bool first=true;
   for( uptime_t* u = sim -> uptime_list; u; u = u -> next )
   {
     if( u -> up > 0 ) 
     {
-      fprintf( sim -> output_file, "  %s=%.1f%%\n", u -> name(), u -> percentage() );
+      if( first )
+      {
+	fprintf( sim -> output_file, "    Global:\n" );
+	first = false;
+      }
+      fprintf( sim -> output_file, "        %.1f%% : %s\n", u -> percentage(), u -> name() );
+    }
+  }
+
+  for( player_t* p = sim -> player_list; p; p = p -> next )
+  {
+    if( p -> quiet ) 
+      continue;
+
+    first=true;
+    for( uptime_t* u = p -> uptime_list; u; u = u -> next )
+    {
+      if( u -> up > 0 ) 
+      {
+	if( first )
+        {
+	  fprintf( sim -> output_file, "    %s:\n", p -> name() );
+	  first = false;
+	}
+	fprintf( sim -> output_file, "        %.1f%% : %s\n", u -> percentage(), u -> name() );
+      }
     }
   }
 }
@@ -264,7 +310,7 @@ void report_t::print_uptime()
 void report_t::print_performance()
 {
   fprintf( sim -> output_file, 
-	   "Performance:\n"
+	   "\nPerformance:\n"
 	   "  TotalEvents   = %d\n"
 	   "  MaxEventQueue = %d\n"
 	   "  SimSeconds    = %.0f\n"
@@ -316,6 +362,7 @@ void report_t::print()
     // Avoid double-counting of pet damage.
     if( p -> type != PLAYER_PET ) raid_dps += dps;
 
+    if( report_tag  ) fprintf( sim -> output_file, "\n" );
     if( report_name ) fprintf( sim -> output_file, "%s%s ",   report_tag ? "Player=" : "", p -> name() );
     if( report_dps  ) fprintf( sim -> output_file, "%s%.1f ", report_tag ? "DPS="    : "", dps );
 
@@ -336,12 +383,12 @@ void report_t::print()
     if( report_attack_stats ) print_attack_stats( p );
 
     if( report_actions ) print_actions( p );
-    if( report_gains   ) print_gains  ( p );
-    if( report_procs   ) print_procs  ( p );
 
   }
-  if( report_raid_dps ) fprintf( sim -> output_file, "%s%.1f\n", report_tag ? "RDPS=" : "", raid_dps );
+  if( report_raid_dps ) fprintf( sim -> output_file, "%s%.1f\n", report_tag ? "\nRDPS=" : "", raid_dps );
 
+  if( report_gains  ) print_gains();
+  if( report_procs  ) print_procs();
   if( report_uptime ) print_uptime();
 
   if( report_performance ) print_performance();

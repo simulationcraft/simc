@@ -28,6 +28,9 @@ struct druid_t : public player_t
   double cooldowns_eclipse;
   double cooldowns_omen_of_clarity;
 
+  // Gains
+  gain_t* gains_moonkin_form;
+
   // Up-Times
   uptime_t* uptimes_eclipse_starfire;
   uptime_t* uptimes_eclipse_wrath;
@@ -84,9 +87,12 @@ struct druid_t : public player_t
     cooldowns_eclipse         = 0;
     cooldowns_omen_of_clarity = 0;
 
+    // Gains
+    gains_moonkin_form = get_gain( "moonkin_form" );
+
     // Up-Times
-    uptimes_eclipse_starfire = sim -> get_uptime( name + "_eclipse_starfire" );
-    uptimes_eclipse_wrath    = sim -> get_uptime( name + "_eclipse_wrath"    );
+    uptimes_eclipse_starfire = get_uptime( "eclipse_starfire" );
+    uptimes_eclipse_wrath    = get_uptime( "eclipse_wrath"    );
   }
 
   // Character Definition
@@ -288,7 +294,7 @@ static void trigger_ashtongue_talisman( spell_t* s )
 
   if( p -> gear.ashtongue_talisman && rand_t::roll( 0.25 ) )
   {
-    p -> proc( "ashtongue_talisman" );
+    p -> procs.ashtongue_talisman -> occur();
 
     event_t*& e = p -> expirations.ashtongue_talisman;
 
@@ -937,7 +943,7 @@ void druid_t::spell_hit_event( spell_t* s )
   {
     if( sim_t::WotLK && buffs.moonkin_aura )
     {
-      resource_gain( RESOURCE_MANA, resource_max[ RESOURCE_MANA ] * 0.02, "moonkin_form" );
+      resource_gain( RESOURCE_MANA, resource_max[ RESOURCE_MANA ] * 0.02, gains_moonkin_form );
     }
     if( talents.natures_grace && ! buffs_natures_grace )
     {
@@ -958,7 +964,7 @@ void druid_t::spell_finish_event( spell_t* s )
 
   if( gear.tier4_2pc && rand_t::roll( 0.05 ) )
   {
-    resource_gain( RESOURCE_MANA, 120.0, "tier4_2pc" );
+    resource_gain( RESOURCE_MANA, 120.0, gains.tier4_2pc );
   }
 }
 
@@ -1082,8 +1088,8 @@ void druid_t::regen()
 
   double mp5_regen = ( mp5 + intellect() * talents.dreamstate * 0.04 ) / 2.5;
 
-  resource_gain( RESOURCE_MANA, spirit_regen, "spirit_regen" );
-  resource_gain( RESOURCE_MANA,    mp5_regen, "mp5_regen"    );
+  resource_gain( RESOURCE_MANA, spirit_regen, gains.spirit_regen );
+  resource_gain( RESOURCE_MANA,    mp5_regen, gains.mp5_regen    );
 }
 
 // druid_t::parse_talents =================================================

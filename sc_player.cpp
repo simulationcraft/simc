@@ -16,9 +16,9 @@ static void trigger_judgement_of_wisdom( action_t* action )
   if( p -> resource_max[ RESOURCE_MANA ] <= 0 )
     return;
 
-  double jow = p -> sim -> target -> debuffs.judgement_of_wisdom;
+  double amount = p -> sim -> target -> debuffs.judgement_of_wisdom;
 
-  if( jow <= 0 )
+  if( amount <= 0 )
     return;
 
   if( sim_t::WotLK && ! p -> sim -> cooldown_ready( p -> cooldowns.judgement_of_wisdom ) )
@@ -27,8 +27,8 @@ static void trigger_judgement_of_wisdom( action_t* action )
   if( ! rand_t::roll( 0.50 ) )
     return;
 
-  p -> proc( "jow" );
-  p -> resource_gain( RESOURCE_MANA, jow, "jow" );
+  p -> procs.judgement_of_wisdom -> occur();
+  p -> resource_gain( RESOURCE_MANA, amount, p -> gains.judgement_of_wisdom );
   p -> cooldowns.judgement_of_wisdom = p -> sim -> current_time + 4.0;
 }
 
@@ -513,8 +513,48 @@ void player_t::init_stats()
     resource_lost[ i ] = resource_gained[ i ] = 0;
   }
 
-  uptimes.moonkin_haste  = sim -> get_uptime( name_str + "_moonkin_haste"  );
-  uptimes.unleashed_rage = sim -> get_uptime( name_str + "_unleashed_rage" );
+  uptimes.moonkin_haste  = get_uptime( "moonkin_haste"  );
+  uptimes.unleashed_rage = get_uptime( "unleashed_rage" );
+
+  gains.ashtongue_talisman = get_gain( "ashtongue_talisman" );
+  gains.dark_rune          = get_gain( "dark_rune" );
+  gains.mana_gem           = get_gain( "mana_gem" );
+  gains.mana_potion        = get_gain( "mana_potion" );
+  gains.mana_spring        = get_gain( "mana_spring" );
+  gains.mana_tide          = get_gain( "mana_tide" );
+  gains.mark_of_defiance   = get_gain( "mark_of_defiance" );
+  gains.mp5_regen          = get_gain( "mp5_regen" );
+  gains.spellsurge         = get_gain( "spellsurge" );
+  gains.spirit_regen       = get_gain( "spirit_regen" );
+  gains.vampiric_touch     = get_gain( "vampiric_touch" );
+  gains.tier4_2pc          = get_gain( "tier4_2pc" );
+  gains.tier4_4pc          = get_gain( "tier4_4pc" );
+  gains.tier5_2pc          = get_gain( "tier5_2pc" );
+  gains.tier5_4pc          = get_gain( "tier5_4pc" );
+  gains.tier6_2pc          = get_gain( "tier6_2pc" );
+  gains.tier6_4pc          = get_gain( "tier6_4pc" );
+
+  procs.ashtongue_talisman           = get_proc( "ashtongue_talisman" );
+  procs.elder_scribes                = get_proc( "elder_scribes" );
+  procs.eternal_sage                 = get_proc( "eternal_sage" );
+  procs.eye_of_magtheridon           = get_proc( "eye_of_magtheridon" );
+  procs.judgement_of_wisdom          = get_proc( "judgement_of_wisdom" );
+  procs.lightning_capacitor          = get_proc( "lightning_capacitor" );
+  procs.mark_of_defiance             = get_proc( "mark_of_defiance" );
+  procs.mystical_skyfire             = get_proc( "mystical_skyfire" );
+  procs.quagmirrans_eye              = get_proc( "quagmirrans_eye" );
+  procs.sextant_of_unstable_currents = get_proc( "sextant_of_unstable_currents" );
+  procs.shiffars_nexus_horn          = get_proc( "shiffars_nexus_horn" );
+  procs.spellstrike                  = get_proc( "spellstrike" );
+  procs.timbals_crystal              = get_proc( "timbals_crystal" );
+  procs.windfury                     = get_proc( "windfury" );
+  procs.wrath_of_cenarius            = get_proc( "wrath_of_cenarius" );
+  procs.tier4_2pc                    = get_proc( "tier4_2pc" );
+  procs.tier4_4pc                    = get_proc( "tier4_4pc" );
+  procs.tier5_2pc                    = get_proc( "tier5_2pc" );
+  procs.tier5_4pc                    = get_proc( "tier5_4pc" );
+  procs.tier6_2pc                    = get_proc( "tier6_2pc" );
+  procs.tier6_4pc                    = get_proc( "tier6_4pc" );
 }
 
 // player_t::composite_attack_power ========================================
@@ -687,9 +727,8 @@ action_t* player_t::execute_action()
 
 // player_t::resource_loss =================================================
 
-void player_t::resource_loss( int8_t      resource,
-			      double      amount,
-			      const char* source )
+void player_t::resource_loss( int8_t resource,
+			      double amount )
 {
   if( amount == 0 ) return;
 
@@ -710,9 +749,9 @@ void player_t::resource_loss( int8_t      resource,
 
 // player_t::resource_gain =================================================
 
-void player_t::resource_gain( int8_t       resource,
-			      double       amount,
-			      const  char* source )
+void player_t::resource_gain( int8_t  resource,
+			      double  amount,
+			      gain_t* source )
 {
   amount = std::min( amount, resource_max[ resource ] - resource_current[ resource ] );
 
@@ -721,10 +760,11 @@ void player_t::resource_gain( int8_t       resource,
     resource_current[ resource ] += amount;
     resource_gained [ resource ] += amount;
 
-    if( source && sim -> report -> report_gains ) gain( source, amount );
+    if( source ) source -> add( amount );
 
-    if( sim -> log ) report_t::log( sim, "%s gains %.0f %s from %s", 
-		   name(), amount, util_t::resource_type_string( resource ), source ? source : "unknown" );
+    if( sim -> log ) 
+      report_t::log( sim, "%s gains %.0f %s from %s", 
+		     name(), amount, util_t::resource_type_string( resource ), source ? source -> name() : "unknown" );
   }
 }
 
@@ -1043,29 +1083,6 @@ bool player_t::recent_cast()
   return ( last_cast > 0 ) && ( ( last_cast + 5.0 ) > sim -> current_time );
 }
 
-// player_t::gain ===========================================================
-
-void player_t::gain( const std::string& name,
-		     double             amount )
-{
-  if( gain_list.find( name ) == gain_list.end() )
-  {
-    gain_list[ name ] = amount;
-  }
-  else gain_list[ name ] += amount;
-}
-
-// player_t::proc ===========================================================
-
-void player_t::proc( const std::string& name )
-{
-  if( proc_list.find( name ) == proc_list.end() )
-  {
-    proc_list[ name ] = 1;
-  }
-  else proc_list[ name ]++;
-}
-
 // player_t::find_action ====================================================
 
 action_t* player_t::find_action( const std::string& str )
@@ -1108,6 +1125,87 @@ void player_t::aura_loss( const char* aura_name )
   // FIXME! Aura-tracking here.
 
   if( sim -> log ) report_t::log( sim, "Player %s loses %s", name(), aura_name );
+}
+
+// player_t::get_gain =======================================================
+
+gain_t* player_t::get_gain( const std::string& name )
+{
+  gain_t* g=0;
+
+  for( g = gain_list; g; g = g -> next )
+  {
+    if( g -> name_str == name )
+      return g;
+  }
+
+  g = new gain_t( name );
+
+  gain_t** tail = &gain_list;
+
+  while( *tail && name > ( (*tail) -> name_str ) )
+  {
+    tail = &( (*tail) -> next );
+  }
+
+  g -> next = *tail;
+  *tail = g;
+
+  return g;
+}
+
+// player_t::get_proc =======================================================
+
+proc_t* player_t::get_proc( const std::string& name )
+{
+  proc_t* p=0;
+
+  for( p = proc_list; p; p = p -> next )
+  {
+    if( p -> name_str == name )
+      return p;
+  }
+
+  p = new proc_t( name );
+
+  proc_t** tail = &proc_list;
+
+  while( *tail && name > ( (*tail) -> name_str ) )
+  {
+    tail = &( (*tail) -> next );
+  }
+
+  p -> next = *tail;
+  *tail = p;
+
+  return p;
+}
+
+// player_t::get_uptime =====================================================
+
+uptime_t* player_t::get_uptime( const std::string& name )
+{
+  uptime_t* u=0;
+
+  for( u = uptime_list; u; u = u -> next )
+  {
+    if( u -> name_str == name )
+      return u;
+  }
+
+  u = new uptime_t( name );
+
+  uptime_t** tail = &uptime_list;
+
+  while( *tail && name > ( (*tail) -> name_str ) )
+  {
+    tail = &( (*tail) -> next );
+  }
+
+  u -> next = *tail;
+  *tail = u;
+
+  return u;
 }
 
 // player_t::parse_talents ==================================================
