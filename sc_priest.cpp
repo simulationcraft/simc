@@ -15,6 +15,8 @@ struct priest_t : public player_t
   spell_t* active_shadow_word_pain;
   spell_t* active_vampiric_touch;
   spell_t* active_vampiric_embrace;
+  spell_t* active_mind_blast;
+  spell_t* active_shadow_word_death;
 
   // Buffs
   int8_t buffs_improved_spirit_tap;
@@ -35,6 +37,7 @@ struct priest_t : public player_t
   struct talents_t
   {
     int8_t  aspiration;
+    int8_t  creeping_shadows;
     int8_t  darkness;
     int8_t  dispersion;
     int8_t  divine_fury;
@@ -47,6 +50,7 @@ struct priest_t : public player_t
     int8_t  improved_divine_spirit;
     int8_t  improved_shadow_word_pain;
     int8_t  improved_mind_blast;
+    int8_t  improved_mind_flay;
     int8_t  improved_spirit_tap;
     int8_t  improved_vampiric_embrace;
     int8_t  inner_focus;
@@ -79,10 +83,12 @@ struct priest_t : public player_t
   priest_t( sim_t* sim, std::string& name ) : player_t( sim, PRIEST, name ) 
   {
     // Active
-    active_devouring_plague = 0;
-    active_shadow_word_pain = 0;
-    active_vampiric_touch = 0;
-    active_vampiric_embrace = 0;
+    active_devouring_plague  = 0;
+    active_shadow_word_pain  = 0;
+    active_vampiric_touch    = 0;
+    active_vampiric_embrace  = 0;
+    active_mind_blast        = 0;
+    active_shadow_word_death = 0;
 
     // Buffs
     buffs_improved_spirit_tap = 0;
@@ -997,6 +1003,9 @@ struct mind_blast_t : public priest_spell_t
     cooldown        -= p -> talents.improved_mind_blast * 0.5;
     
     if( p -> gear.tier6_4pc ) base_multiplier *= 1.10;
+
+    assert( p -> active_mind_blast == 0 );
+    p -> active_mind_blast = this;
   }
 
   virtual void player_buff()
@@ -1050,6 +1059,9 @@ struct shadow_word_death_t : public priest_spell_t
     base_crit       += p -> talents.shadow_power * ( sim_t::WotLK ? 0.02 : 0.03 );
     if( sim_t::WotLK ) base_crit_bonus *= 1.0 + p -> talents.shadow_power * 0.10;
     base_hit        += p -> talents.shadow_focus * ( sim_t::WotLK ? 0.01 : 0.02 );
+
+    assert( p -> active_shadow_word_death == 0 );
+    p -> active_shadow_word_death = this;
   }
 
   virtual void execute() 
@@ -1103,6 +1115,7 @@ struct mind_flay_t : public priest_spell_t
     if( sim_t::WotLK ) base_cost *= 1.0 - p -> talents.shadow_focus * 0.02;
     base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
     base_hit        += p -> talents.shadow_focus * ( sim_t::WotLK ? 0.01 : 0.02 );
+    base_duration   -= p -> talents.improved_mind_flay * 0.1;
     
     if( p -> gear.tier4_4pc ) base_multiplier *= 1.05;
   }
@@ -1138,7 +1151,18 @@ struct mind_flay_t : public priest_spell_t
   virtual void tick()
   {
     priest_spell_t::tick();
-
+    priest_t* p = player -> cast_priest();
+    if( p -> talents.creeping_shadows )
+    {
+      if( p -> active_mind_blast )
+      {
+	p -> active_mind_blast -> cooldown_ready -= 0.5 * p -> talents.creeping_shadows;
+      }
+      if( p -> active_shadow_word_death )
+      {
+	p -> active_shadow_word_death -> cooldown_ready -= 0.5 * p -> talents.creeping_shadows;
+      }
+    }
     if( cancel       != 0 && 
 	current_tick == 2 )
     {
@@ -1738,6 +1762,7 @@ bool priest_t::parse_option( const std::string& name,
   option_t options[] =
   {
     { "aspiration",                OPT_INT8,  &( talents.aspiration                ) },
+    { "creeping_shadows",          OPT_INT8,  &( talents.creeping_shadows          ) },
     { "darkness",                  OPT_INT8,  &( talents.darkness                  ) },
     { "dispersion",                OPT_INT8,  &( talents.dispersion                ) },
     { "divine_fury",               OPT_INT8,  &( talents.divine_fury               ) },
@@ -1750,6 +1775,7 @@ bool priest_t::parse_option( const std::string& name,
     { "improved_divine_spirit",    OPT_INT8,  &( talents.improved_divine_spirit    ) },
     { "improved_shadow_word_pain", OPT_INT8,  &( talents.improved_shadow_word_pain ) },
     { "improved_mind_blast",       OPT_INT8,  &( talents.improved_mind_blast       ) },
+    { "improved_mind_flay",        OPT_INT8,  &( talents.improved_mind_flay        ) },
     { "improved_spirit_tap",       OPT_INT8,  &( talents.improved_spirit_tap       ) },
     { "improved_vampiric_embrace", OPT_INT8,  &( talents.improved_vampiric_embrace ) },
     { "inner_focus",               OPT_INT8,  &( talents.inner_focus               ) },

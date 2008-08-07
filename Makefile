@@ -6,9 +6,10 @@
 #
 # WARNING!  WARNING!  WARNING!
 
-OPTS = -malign-double -msse -msse2 -mfpmath=sse -maccumulate-outgoing-args -O3 
+PG   =
+OPTS = -DHAVE_SSE2 -malign-double -msse -msse2 -mfpmath=sse -maccumulate-outgoing-args -O3 
 MM   = -DEVENT_MM
-SFMT = -DUSE_SFMT -DHAVE_SSE2 -I./sfmt 
+SFMT = -DUSE_SFMT -I./sfmt 
 
 SRC =\
 	sc_action.cpp		\
@@ -34,10 +35,10 @@ SRC =\
 	sc_weapon.cpp
 
 simcraft opt:
-	g++ -I. $(OPTS) $(MM) $(SFMT) -Wall $(SRC) -o simcraft
+	g++ -I. $(PG) $(OPTS) $(MM) $(SFMT) -Wall $(SRC) -o simcraft
 
 debug:
-	g++ -g -I. $(SFMT) -Wall $(SRC) -o simcraft
+	g++ -g -I. $(PG) $(SFMT) -Wall $(SRC) -o simcraft
 
 REV=0
 tarball:

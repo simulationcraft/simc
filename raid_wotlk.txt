@@ -53,8 +53,8 @@ improved_scorch=10
 #
 # Shadow Priest
 #
-# (1) The 3500 option to "mana_potion" represents the mana gained and the amount below max required to trigger
-# (2) The 6000 option to "shadow_fiend" represents the amount below max mana required to trigger
+# (1) The "trigger=3500" option to mana_potion represents the mana gained and the amount below max required to trigger
+# (2) The "trigger=6000" option to shadow_fiend represents the amount below max mana required to trigger
 #
 priest=Priest_Shadow
 level=80
@@ -80,9 +80,9 @@ swift_retribution=1
 #
 # Holy Priest
 #
-# (1) The 3500 option to "mana_potion" represents the mana gained and the amount below max required to trigger
-# (2) The 6000 option to "shadow_fiend" represents the amount below max mana required to trigger
-# (3) The "shadow_word_pain" option to the "inner_focus" action makes sure IF won't be used until SW:P needs to be refreshed.
+# (1) The "trigger=3500" option to mana_potion represents the mana gained and the amount below max required to trigger
+# (2) The "trigger=6000" option to shadow_fiend represents the amount below max mana required to trigger
+# (3) The "sync=shadow_word_pain" option to the inner_focus action makes sure IF won't be used until SW:P needs to be refreshed.
 #
 priest=Priest_Holy
 level=80
@@ -110,8 +110,8 @@ gear_mp5=200
 #
 # Balance Druid
 #
-# (1) The 3500 option to "mana_potion" represents the mana gained and the amount below max required to trigger
-# (2) The "eclipse=trigger" option to "wrath" will make sure that it is only used to trigger the Eclipse talent
+# (1) The "trigger=3500" option to mana_potion represents the mana gained and the amount below max required to trigger
+# (2) The "eclipse=trigger" option to wrath will make sure that it is only used to trigger the Eclipse talent
 #     which means it will only be used after the cooldown is ready and the effect has not yet proc'd.
 #
 druid=Druid_Balance
@@ -134,7 +134,7 @@ swift_retribution=1
 #
 # Elemental Shaman
 #
-# (1) The 3500 option to "mana_potion" represents the mana gained and the amount below max required to trigger
+# (1) The "trigger=3500" option to mana_potion represents the mana gained and the amount below max required to trigger
 # (2) The "flame_shock=1,max_ticks_consumed=1" option to lava_burst will prevent it from being called until there is only one tick remaining on Flame Shock
 #
 shaman=Shaman_Elemental
@@ -156,10 +156,10 @@ swift_retribution=1
 #
 # Enhancement Shaman
 #
-# (1) The "main_1" option to windfury_weapon puts the enchant only on the main-hand weapon
-# (2) The "off_1" option to flametongue_weapon puts the enchant only on the off-hand weapon
+# (1) The "weapon=main" option to windfury_weapon puts the enchant only on the main-hand weapon
+# (2) The "weapon=off" option to flametongue_weapon puts the enchant only on the off-hand weapon
 # (3) The "flame_shock=1,max_ticks_consumed=1" option to lava_burst will prevent it from being called until there is only one tick remaining on Flame Shock.
-# (4) The "maelstrom_5" option to lightning_bolt/lava_burst means that LB/LvB will only be executed when there is a 5-stack of Maelstrom Weapon,
+# (4) The "maelstrom=5" option to lightning_bolt/lava_burst means that LB/LvB will only be executed when there is a 5-stack of Maelstrom Weapon,
 #     making the LB/LvB cast instant which prevents auto_attack resets.
 # (5) The tool accepts separate value for hit/crit even though WotLK has merged them.
 #
@@ -192,7 +192,7 @@ battle_shout=1
 #
 # Elemental/Enhancement Shaman  (boost spell power thru Mental Dexterity and Mental Quickness)
 #
-# (1) The 3500 option to "mana_potion" represents the mana gained and the amount below max required to trigger
+# (1) The "trigger=3500" option to mana_potion represents the mana gained and the amount below max required to trigger
 # (2) The "flame_shock=1,max_ticks_consumed=1" option to lava_burst will prevent it from being called until there is only one tick remaining on Flame Shock
 # (3) The "pure" Elemental Shaman above is already putting down Totem of Wrath, so the hybrid will put down Flametongue
 #
