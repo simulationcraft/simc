@@ -51,13 +51,9 @@ struct shaman_t : public player_t
   attack_t* main_hand_attack;
   attack_t*  off_hand_attack;
 
-  // Windfury
-  attack_t* windfury_totem_attack;
+  // Weapon Enchants
   attack_t* windfury_weapon_attack;
-
-  // Flametongue
-  spell_t* flametongue_totem_spell;
-  spell_t* flametongue_weapon_spell;
+  spell_t*  flametongue_weapon_spell;
 
   struct talents_t
   {
@@ -155,12 +151,8 @@ struct shaman_t : public player_t
     main_hand_attack = 0;
     off_hand_attack  = 0;
 
-    // Windfury
-    windfury_totem_attack  = 0;
-    windfury_weapon_attack = 0;
-
-    // Flametongue
-    flametongue_totem_spell  = 0;
+    // Weapon Enchants
+    windfury_weapon_attack   = 0;
     flametongue_weapon_spell = 0;
   }
 
@@ -227,40 +219,6 @@ struct shaman_spell_t : public spell_t
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
-// trigger_flametongue_totem ================================================
-
-static void trigger_flametongue_totem( attack_t* a )
-{
-  struct flametongue_totem_spell_t : public shaman_spell_t
-  {
-    flametongue_totem_spell_t( player_t* player ) :
-      shaman_spell_t( "flametongue", player, SCHOOL_FIRE, TREE_ENHANCEMENT )
-    {
-      trigger_gcd = 0;
-      background  = true;
-      reset();
-    }
-    virtual void get_base_damage()
-    {
-      base_dd = player -> buffs.flametongue_totem * weapon -> swing_time;
-    }
-  };
-
-  if( a -> weapon &&
-      a -> weapon -> buff == FLAMETONGUE_TOTEM )
-  {
-    shaman_t* p = a -> player -> cast_shaman();
-
-    if( ! p -> flametongue_totem_spell )
-    {
-      p -> flametongue_totem_spell = new flametongue_totem_spell_t( p );
-    }
-
-    p -> flametongue_totem_spell -> weapon = a -> weapon;
-    p -> flametongue_totem_spell -> execute();
-  }
-}
-
 // trigger_flametongue_weapon ===============================================
 
 static void trigger_flametongue_weapon( attack_t* a )
@@ -301,42 +259,6 @@ static void trigger_flametongue_weapon( attack_t* a )
   }
 }
 
-// trigger_windfury_totem ===================================================
-
-static void trigger_windfury_totem( attack_t* a )
-{
-  struct windfury_totem_attack_t : public shaman_attack_t
-  {
-    windfury_totem_attack_t( player_t* player ) :
-      shaman_attack_t( "windfury", player )
-    {
-      trigger_gcd = 0;
-      background  = true;
-      reset();
-    }
-    virtual void player_buff()
-    {
-      shaman_attack_t::player_buff();
-      player_power += player -> buffs.windfury_totem;
-    }
-  };
-
-  if( a -> weapon &&
-      a -> weapon -> buff == WINDFURY_TOTEM &&
-      rand_t::roll( 0.20 ) )
-  {
-    shaman_t* p = a -> player -> cast_shaman();
-
-    if( ! p -> windfury_totem_attack )
-    {
-      p -> windfury_totem_attack = new windfury_totem_attack_t( p );
-      p -> windfury_totem_attack -> weapon = a -> weapon;
-    }
-
-    p -> windfury_totem_attack -> execute();
-  }
-}
-
 // trigger_windfury_weapon ================================================
 
 static void trigger_windfury_weapon( attack_t* a )
@@ -354,12 +276,12 @@ static void trigger_windfury_weapon( attack_t* a )
     }
   };
 
-
   struct windfury_weapon_attack_t : public shaman_attack_t
   {
     windfury_weapon_attack_t( player_t* player ) :
       shaman_attack_t( "windfury", player )
     {
+      may_glance  = false;
       background  = true;
       trigger_gcd = 0;
       base_multiplier *= 1.0 + player -> cast_shaman() -> talents.elemental_weapons * 0.133333;
@@ -385,6 +307,7 @@ static void trigger_windfury_weapon( attack_t* a )
     }
     p -> expirations_windfury_weapon = new windfury_weapon_expiration_t( a -> sim, p );
 
+    p -> procs.windfury -> occur();
     p -> windfury_weapon_attack -> weapon = a -> weapon;
     p -> windfury_weapon_attack -> execute();
     p -> windfury_weapon_attack -> execute();
@@ -737,8 +660,8 @@ struct melee_t : public shaman_attack_t
     {
       if( ! sim_t::WotLK )
       {
-	trigger_flametongue_totem( this );
-	trigger_windfury_totem( this );
+	enchant_t::trigger_flametongue_totem( this );
+	enchant_t::trigger_windfury_totem( this );
       }
     }
   }
@@ -2651,7 +2574,6 @@ void shaman_t::reset()
 
   // Active
   active_flame_shock = 0;
-  if( active_lightning_charge ) active_lightning_charge -> reset();
 
   // Buffs
   buffs_elemental_devastation = 0;
@@ -2668,14 +2590,6 @@ void shaman_t::reset()
   expirations_elemental_devastation = 0;
   expirations_maelstrom_weapon      = 0;
   expirations_windfury_weapon       = 0;
-  
-  // Auto-Attack
-  if( main_hand_attack ) main_hand_attack -> reset();
-  if(  off_hand_attack )  off_hand_attack -> reset();
-
-  // Windfury
-  if( windfury_totem_attack  ) windfury_totem_attack  -> reset();
-  if( windfury_weapon_attack ) windfury_weapon_attack -> reset();
 }
 
 // shaman_t::composite_attack_power ==========================================

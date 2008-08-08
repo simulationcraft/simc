@@ -461,10 +461,9 @@ static void trigger_lightning_capacitor( spell_t* s )
 
   if(  p -> gear.lightning_capacitor )
   {
-    action_t* lightning_discharge = p -> find_action( "lightning_discharge" );
-    if( ! lightning_discharge ) 
+    if( ! p -> actions.lightning_discharge ) 
     {
-      lightning_discharge = new lightning_discharge_t( p );
+      p -> actions.lightning_discharge = new lightning_discharge_t( p );
     }
 
     if( p -> buffs.lightning_capacitor < 2 )
@@ -474,12 +473,12 @@ static void trigger_lightning_capacitor( spell_t* s )
     }
     else
     {
-      if( lightning_discharge -> ready() )
+      if( p -> actions.lightning_discharge -> ready() )
       {
 	p -> procs.lightning_capacitor -> occur();
 	p -> buffs.lightning_capacitor = 0;
 	p -> aura_loss( "Lightning Capacitor" );
-	lightning_discharge -> execute();
+	p -> actions.lightning_discharge -> execute();
       }
     }
   } 
@@ -519,16 +518,16 @@ static void trigger_timbals_crystal( spell_t* s )
 
   if( p -> gear.timbals_crystal )
   {
-    action_t* timbals_discharge = p -> find_action( "timbals_discharge" );
-    if( ! timbals_discharge ) 
+    if( ! p -> actions.timbals_discharge ) 
     {
-      timbals_discharge = new timbals_discharge_t( p );
+      p -> actions.timbals_discharge = new timbals_discharge_t( p );
     }
 
-    if( timbals_discharge -> ready() &&	rand_t::roll( 0.10 ) )
+    if( p -> actions.timbals_discharge -> ready() && 
+	rand_t::roll( 0.10 ) )
     {
       p -> procs.timbals_crystal -> occur();
-      timbals_discharge -> execute();
+      p -> actions.timbals_discharge -> execute();
     }
   } 
 }

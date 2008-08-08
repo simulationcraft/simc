@@ -603,7 +603,17 @@ struct player_t
     procs_t() { reset(); }
   };
   procs_t procs;
-  
+
+  struct actions_t
+  {
+    action_t* flametongue_totem;
+    action_t* lightning_discharge;
+    action_t* timbals_discharge;
+    void reset() { memset( (void*) this, 0x00, sizeof( actions_t ) ); }
+    actions_t() { reset(); }
+  };
+  actions_t actions;
+
   player_t( sim_t* sim, int8_t type, const std::string& name );
   
   virtual const char* name() { return name_str.c_str(); }
@@ -1059,6 +1069,9 @@ struct enchant_t
   static void attack_tick_event  ( attack_t* ) {}
   static void attack_damage_event( attack_t*, double amount, int8_t dmg_type ) {}
   static void attack_finish_event( attack_t* ) {}
+
+  static void trigger_flametongue_totem( attack_t* );
+  static void trigger_windfury_totem   ( attack_t* );
 };
 
 // Consumable ================================================================

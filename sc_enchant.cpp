@@ -101,8 +101,14 @@ static void trigger_mongoose( attack_t* a )
   weapon_t* w = a -> weapon;
 
   // Mongoose has a 1.2 PPM (proc per minute) which translates into 1 proc every 50sec on average
+  // We cannot use the base swing time because that would over-value haste.  Instead, we use
+  // the hasted swing time which is represented in the "time_to_execute" field.  When this field
+  // is zero, we are dealing with a "special" attack in which case the base swing time is used.
 
-  double proc_chance = 1.0 / ( 50.0 / w -> swing_time );
+  double swing_time = a -> time_to_execute;
+  if( a -> time_to_execute == 0 ) swing_time = w -> swing_time;
+
+  double proc_chance = 1.0 / ( 50.0 / swing_time );
 
   int8_t&    b = w -> main ? p ->       buffs.mongoose_mh : p ->       buffs.mongoose_oh;
   event_t*&  e = w -> main ? p -> expirations.mongoose_mh : p -> expirations.mongoose_oh;
@@ -152,8 +158,14 @@ static void trigger_executioner( attack_t* a )
   weapon_t* w = a -> weapon;
 
   // Executioner has a 1.2 PPM (proc per minute) which translates into 1 proc every 50sec on average
+  // We cannot use the base swing time because that would over-value haste.  Instead, we use
+  // the hasted swing time which is represented in the "time_to_execute" field.  When this field
+  // is zero, we are dealing with a "special" attack in which case the base swing time is used.
 
-  double proc_chance = 1.0 / ( 50.0 / w -> swing_time );
+  double swing_time = a -> time_to_execute;
+  if( a -> time_to_execute == 0 ) swing_time = w -> swing_time;
+
+  double proc_chance = 1.0 / ( 50.0 / swing_time );
 
   if( rand_t::roll( proc_chance ) )
   {
@@ -201,6 +213,65 @@ void enchant_t::attack_hit_event( attack_t* a )
     case MONGOOSE:    trigger_mongoose   ( a ); break;
     case EXECUTIONER: trigger_executioner( a ); break;
     }
+  }
+}
+
+// ==========================================================================
+// Totem Enchants
+// ==========================================================================
+
+// trigger_flametongue_totem ================================================
+
+void enchant_t::trigger_flametongue_totem( attack_t* a )
+{
+  struct flametongue_totem_spell_t : public spell_t
+  {
+    flametongue_totem_spell_t( player_t* player ) :
+      spell_t( "flametongue", player, RESOURCE_NONE, SCHOOL_FIRE )
+    {
+      trigger_gcd = 0;
+      background  = true;
+      reset();
+    }
+    virtual void get_base_damage()
+    {
+      base_dd = player -> buffs.flametongue_totem * weapon -> swing_time;
+    }
+  };
+
+  if( a -> weapon &&
+      a -> weapon -> buff == FLAMETONGUE_TOTEM )
+  {
+    player_t* p = a -> player;
+
+    if( ! p -> actions.flametongue_totem )
+    {
+      p -> actions.flametongue_totem = new flametongue_totem_spell_t( p );
+    }
+
+    p -> actions.flametongue_totem -> weapon = a -> weapon;
+    p -> actions.flametongue_totem -> execute();
+  }
+}
+
+// trigger_windfury_totem ===================================================
+
+void enchant_t::trigger_windfury_totem( attack_t* a )
+{
+  static bool wf_proc = false; // WF cannot proc itself.
+
+  if( a -> weapon &&
+      a -> weapon -> buff == WINDFURY_TOTEM &&
+      rand_t::roll( 0.20 ) &&
+      ! wf_proc )
+  {
+    wf_proc = true;
+    player_t* p = a -> player;
+    p -> procs.windfury -> occur();
+    p -> attack_power += p -> buffs.windfury_totem;
+    a -> execute();
+    p -> attack_power -= p -> buffs.windfury_totem;
+    wf_proc = true;
   }
 }
 

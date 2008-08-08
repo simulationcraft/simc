@@ -366,14 +366,17 @@ void report_t::print()
     if( report_name ) fprintf( sim -> output_file, "%s%s ",   report_tag ? "Player=" : "", p -> name() );
     if( report_dps  ) fprintf( sim -> output_file, "%s%.1f ", report_tag ? "DPS="    : "", dps );
 
-    double mana_loss = p -> resource_lost[ RESOURCE_MANA ];
+    double mana_loss = p -> resource_lost  [ RESOURCE_MANA ];
+    double mana_gain = p -> resource_gained[ RESOURCE_MANA ];
 
     if( mana_loss > 0 )
     {
       mana_loss /= sim -> iterations;
+      mana_gain /= sim -> iterations;
 
-      if( report_dpm  ) fprintf( sim -> output_file, "%s%.1f ", report_tag ? "DPM="    : "", p -> total_dmg / mana_loss );
-      if( report_mps  ) fprintf( sim -> output_file, "%s%.1f ", report_tag ? "MPS="    : "", mana_loss / sim -> total_seconds );
+      if( report_dpm  ) fprintf( sim -> output_file, "%s%.1f ",      report_tag ? "DPM="    : "", p -> total_dmg / mana_loss );
+      if( report_mps  ) fprintf( sim -> output_file, "%s%.1f/%.1f ", report_tag ? "MPS="    : "", 
+				 mana_loss / sim -> total_seconds, mana_gain / sim -> total_seconds );
     }
 
     if( report_name ) fprintf( sim -> output_file, "\n" );
