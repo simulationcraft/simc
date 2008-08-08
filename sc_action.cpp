@@ -159,7 +159,8 @@ void action_t::player_buff()
 
   if( p -> buffs.sanctified_retribution ) player_multiplier *= 1.02;
 
-  if( sim -> debug ) report_t::log( sim, "action_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f", 
+  if( sim -> debug ) 
+    report_t::log( sim, "action_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f", 
 		   name(), player_hit, player_crit, player_power, player_penetration );
 }
 
@@ -193,7 +194,7 @@ void action_t::target_debuff( int8_t dmg_type )
   {
     if( school == SCHOOL_SHADOW )
     {
-      target_multiplier *= 1.0 + ( t -> debuffs.shadow_weaving    * 0.02 );
+      target_multiplier *= 1.0 + ( t -> debuffs.shadow_weaving * 0.02 );
       if( ! sim_t::WotLK || dmg_type == DMG_DIRECT )
       {
 	if( t -> debuffs.shadow_vulnerability ) target_multiplier *= 1.20;
@@ -231,7 +232,8 @@ void action_t::target_debuff( int8_t dmg_type )
 
   if( t -> debuffs.judgement_of_crusader ) target_crit += 0.03;
 
-  if( sim -> debug ) report_t::log( sim, "action_t::target_debuff: %s multiplier=%.2f hit=%.2f crit=%.2f power=%.2f penetration=%.0f", 
+  if( sim -> debug ) 
+    report_t::log( sim, "action_t::target_debuff: %s multiplier=%.2f hit=%.2f crit=%.2f power=%.2f penetration=%.0f", 
 		   name(), target_multiplier, target_hit, target_crit, target_power, target_penetration );
 }
 
@@ -376,7 +378,8 @@ void action_t::consume_resource()
 {
   resource_consumed = cost();
 
-  if( sim -> debug ) report_t::log( sim, "%s consumes %.1f %s for %s", player -> name(), 
+  if( sim -> debug ) 
+    report_t::log( sim, "%s consumes %.1f %s for %s", player -> name(), 
 		   resource_consumed, util_t::resource_type_string( resource ), name() );
 
   player -> resource_loss( resource, resource_consumed );
@@ -461,12 +464,13 @@ void action_t::last_tick()
 void action_t::assess_damage( double amount, 
 			      int8_t dmg_type )
 {
-   if( sim -> log ) report_t::log( sim, "%s %s %ss %s for %.0f %s damage (%s)",
-		  player -> name(), name(), 
-		  util_t::dmg_type_string( dmg_type ),
-		  sim -> target -> name(), amount, 
-		  util_t::school_type_string( school ),
-		  util_t::result_type_string( result ) );
+   if( sim -> log )
+     report_t::log( sim, "%s %s %ss %s for %.0f %s damage (%s)",
+		    player -> name(), name(), 
+		    util_t::dmg_type_string( dmg_type ),
+		    sim -> target -> name(), amount, 
+		    util_t::school_type_string( school ),
+		    util_t::result_type_string( result ) );
 
    sim -> target -> assess_damage( amount, school, dmg_type );
 

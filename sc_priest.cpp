@@ -19,8 +19,8 @@ struct priest_t : public player_t
   spell_t* active_shadow_word_death;
 
   // Buffs
+  int8_t buffs_inner_fire;
   int8_t buffs_improved_spirit_tap;
-  int8_t buffs_inner_focus;
   int8_t buffs_shadow_form;
   int8_t buffs_surge_of_light;
 
@@ -48,9 +48,10 @@ struct priest_t : public player_t
     int8_t  force_of_will;
     int8_t  holy_specialization;
     int8_t  improved_divine_spirit;
-    int8_t  improved_shadow_word_pain;
+    int8_t  improved_inner_fire;
     int8_t  improved_mind_blast;
     int8_t  improved_mind_flay;
+    int8_t  improved_shadow_word_pain;
     int8_t  improved_spirit_tap;
     int8_t  improved_vampiric_embrace;
     int8_t  inner_focus;
@@ -92,7 +93,7 @@ struct priest_t : public player_t
 
     // Buffs
     buffs_improved_spirit_tap = 0;
-    buffs_inner_focus         = 0;
+    buffs_inner_fire          = 0;
     buffs_shadow_form         = 0;
     buffs_surge_of_light      = 0;
 
@@ -136,12 +137,13 @@ struct priest_spell_t : public spell_t
     base_crit       += p -> talents.force_of_will * 0.01;
   }
 
-  virtual double cost();
-  virtual void   execute();
-  virtual void   player_buff();
+  // Overridden Methods
+  virtual void player_buff();
 
   // Passthru Methods
+  virtual double cost()         { return spell_t::cost();         }
   virtual double execute_time() { return spell_t::execute_time(); }
+  virtual void   execute()      { spell_t::execute();             }
   virtual void   tick()         { spell_t::tick();                }
   virtual void   last_tick()    { spell_t::last_tick();           }
   virtual bool   ready()        { return spell_t::ready();        }
@@ -483,28 +485,6 @@ static void trigger_improved_spirit_tap( spell_t* s )
 // ==========================================================================
 // Priest Spell
 // ==========================================================================
-
-// priest_spell_t::cost ======================================================
-
-double priest_spell_t::cost()
-{
-  priest_t* p = player -> cast_priest();
-  if( p -> buffs_inner_focus ) return 0;
-  return spell_t::cost();
-}
-
-// priest_spell_t::execute ===================================================
-
-void priest_spell_t::execute()
-{
-  spell_t::execute();
-  priest_t* p = player -> cast_priest();
-  if( p -> buffs_inner_focus && base_cost > 0 )
-  {
-    p -> aura_loss( "Inner Focus" );
-    p -> buffs_inner_focus = 0;
-  }
-}
 
 // priest_spell_t::player_buff ================================================
 
@@ -1257,9 +1237,9 @@ struct dispersion_t : public priest_spell_t
 
 struct power_infusion_t : public priest_spell_t
 {
-  struct power_infusion_expiration_t : public event_t
+  struct expiration_t : public event_t
   {
-    power_infusion_expiration_t( sim_t* sim, player_t* player ) : event_t( sim, player )
+    expiration_t( sim_t* sim, player_t* player ) : event_t( sim, player )
     {
       name = "Power Infusion Expiration";
       priest_t* p = player -> cast_priest();
@@ -1291,10 +1271,10 @@ struct power_infusion_t : public priest_spell_t
    
   virtual void execute()
   {
-    if( sim -> log ) report_t::log( sim, "Player %s casts Power Infusion", player -> name() );
+    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
-    new power_infusion_expiration_t( sim, player );
+    new expiration_t( sim, player );
   }
 };
 
@@ -1302,39 +1282,47 @@ struct power_infusion_t : public priest_spell_t
 
 struct inner_focus_t : public priest_spell_t
 {
+  action_t* free_action;
+
   inner_focus_t( player_t* player, const std::string& options_str ) : 
     priest_spell_t( "inner_focus", player, SCHOOL_HOLY, TREE_DISCIPLINE )
   {
     priest_t* p = player -> cast_priest();
-
-    std::string sync;
-    option_t options[] =
-    {
-      { "sync", OPT_STRING, &sync },
-      { NULL }
-    };
-    parse_options( options, options_str );
-
     assert( p -> talents.inner_focus );
+
     trigger_gcd = 0;  
     cooldown = 180.0;
     cooldown *= 1.0 - p -> talents.aspiration * 0.10;
 
-    if( ! sync.empty() )
+    std::string spell_name    = options_str;
+    std::string spell_options = "";
+
+    std::string::size_type cut_pt = spell_name.find_first_of( "," );       
+
+    if( cut_pt != spell_name.npos )
     {
-      // This will prevent InnerFocus from being called before the desired "free spell" is ready to be cast.
-      cooldown_group = sync;
-      duration_group = sync;
+      spell_options = spell_name.substr( cut_pt + 1 );
+      spell_name    = spell_name.substr( 0, cut_pt );
     }
+
+    free_action = p -> create_action( spell_name.c_str(), spell_options.c_str() );
+    free_action -> base_cost = 0;
+    free_action -> background = true;
   }
    
   virtual void execute()
   {
-    if( sim -> log ) report_t::log( sim, "%s performs inner_focus", player -> name() );
+    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
     priest_t* p = player -> cast_priest();
     p -> aura_gain( "Inner Focus" );
-    p -> buffs_inner_focus = 1;
-    cooldown_ready = sim -> current_time + cooldown;
+    free_action -> execute();
+    p -> aura_loss( "Inner Focus" );
+    update_ready();
+  }
+
+  virtual bool ready()
+  {
+    return( priest_spell_t::ready() && free_action -> ready() );
   }
 };
 
@@ -1384,6 +1372,37 @@ struct divine_spirit_t : public priest_spell_t
   {
     if( improved ) return ! player -> buffs.improved_divine_spirit;
     return ! player -> buffs.divine_spirit;
+  }
+};
+
+// Inner Fire Spell ======================================================
+
+struct inner_fire_t : public priest_spell_t
+{
+  inner_fire_t( player_t* player, const std::string& options_str ) : 
+    priest_spell_t( "inner_fire", player, SCHOOL_HOLY, TREE_DISCIPLINE )
+  {
+    trigger_gcd = 0;
+  }
+   
+  virtual void execute()
+  {
+    priest_t* p = player -> cast_priest();
+
+    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+
+    double bonus_power = ( p -> level >= 77 ) ? 120 : 
+                         ( p -> level >= 71 ) ?  95 : 0;
+
+    bonus_power *= 1.0 + p -> talents.improved_inner_fire * 0.10;
+
+    p -> spell_power[ SCHOOL_MAX ] += bonus_power;
+    p -> buffs_inner_fire = 1;
+  }
+
+  virtual bool ready()
+  {
+    return ! player -> cast_priest() -> buffs_inner_fire;
   }
 };
 
@@ -1552,6 +1571,7 @@ action_t* priest_t::create_action( const std::string& name,
   if( name == "dispersion"       ) return new dispersion_t        ( this, options_str );
   if( name == "divine_spirit"    ) return new divine_spirit_t     ( this, options_str );
   if( name == "holy_fire"        ) return new holy_fire_t         ( this, options_str );
+  if( name == "inner_fire"       ) return new inner_fire_t        ( this, options_str );
   if( name == "inner_focus"      ) return new inner_focus_t       ( this, options_str );
   if( name == "mind_blast"       ) return new mind_blast_t        ( this, options_str );
   if( name == "mind_flay"        ) return new mind_flay_t         ( this, options_str );
@@ -1611,7 +1631,7 @@ void priest_t::init_base()
 
   if( sim_t::WotLK )
   {
-    attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.0 + talents.mental_strength * 0.01;
+    attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.0 + talents.mental_strength * 0.03;
   }
   else
   {
@@ -1633,7 +1653,7 @@ void priest_t::reset()
 
   // Buffs
   buffs_improved_spirit_tap = 0;
-  buffs_inner_focus         = 0;
+  buffs_inner_fire          = 0;
   buffs_shadow_form         = 0;
   buffs_surge_of_light      = 0;
 
@@ -1672,6 +1692,7 @@ void priest_t::parse_talents( const std::string& talent_string )
     {
       {  8,  &( talents.inner_focus               ) },
       {  9,  &( talents.meditation                ) },
+      { 10,  &( talents.improved_inner_fire       ) },
       { 11,  &( talents.mental_agility            ) },
       { 13,  &( talents.mental_strength           ) },
       { 14,  &( talents.divine_spirit             ) },
@@ -1710,6 +1731,7 @@ void priest_t::parse_talents( const std::string& talent_string )
       {  2,  &( talents.twin_disciplines          ) },
       {  8,  &( talents.inner_focus               ) },
       {  9,  &( talents.meditation                ) },
+      { 10,  &( talents.improved_inner_fire       ) },
       { 11,  &( talents.mental_agility            ) },
       { 13,  &( talents.mental_strength           ) },
       { 14,  &( talents.divine_spirit             ) },
@@ -1773,9 +1795,10 @@ bool priest_t::parse_option( const std::string& name,
     { "holy_specialization",       OPT_INT8,  &( talents.holy_specialization       ) },
     { "divine_spirit",             OPT_INT8,  &( talents.divine_spirit             ) },
     { "improved_divine_spirit",    OPT_INT8,  &( talents.improved_divine_spirit    ) },
-    { "improved_shadow_word_pain", OPT_INT8,  &( talents.improved_shadow_word_pain ) },
+    { "improved_inner_fire",       OPT_INT8,  &( talents.improved_inner_fire       ) },
     { "improved_mind_blast",       OPT_INT8,  &( talents.improved_mind_blast       ) },
     { "improved_mind_flay",        OPT_INT8,  &( talents.improved_mind_flay        ) },
+    { "improved_shadow_word_pain", OPT_INT8,  &( talents.improved_shadow_word_pain ) },
     { "improved_spirit_tap",       OPT_INT8,  &( talents.improved_spirit_tap       ) },
     { "improved_vampiric_embrace", OPT_INT8,  &( talents.improved_vampiric_embrace ) },
     { "inner_focus",               OPT_INT8,  &( talents.inner_focus               ) },

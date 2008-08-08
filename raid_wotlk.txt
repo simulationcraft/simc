@@ -2,7 +2,7 @@
 # WARNING!  When making changes to this file in an editor, make sure it is saved in "plain text" format.
 #======================================================================================================
 
-# TO EXECUTE THIS PARAMETER FILE:  simcraft  input=raid_wotlk.txt  output=results.txt
+# TO EXECUTE THIS PARAMETER FILE:  simcraft  output=results.txt  input=raid_wotlk.txt
 
 #
 # Globals
@@ -59,7 +59,7 @@ improved_scorch=10
 priest=Priest_Shadow
 level=80
 talents=http://www.worldofwarcraft.com/info/classes/priest/talents2.html?tal=05023001300000000000000000000000000000000000000000000320023051025012305152501351
-actions=flask,type=pure_death/shadow_form/mana_potion,trigger=3500/shadow_fiend,trigger=6000/dispersion/vampiric_touch/inner_focus/shadow_word_pain/mind_blast/shadow_word_death/mind_flay
+actions=flask,type=pure_death/inner_fire/shadow_form/mana_potion,trigger=3500/shadow_fiend,trigger=6000/dispersion/vampiric_touch/inner_focus,shadow_word_pain/shadow_word_pain/mind_blast/shadow_word_death/mind_flay
 gear_stamina=600
 gear_intellect=600
 gear_spirit=600
@@ -82,12 +82,12 @@ swift_retribution=1
 #
 # (1) The "trigger=3500" option to mana_potion represents the mana gained and the amount below max required to trigger
 # (2) The "trigger=6000" option to shadow_fiend represents the amount below max mana required to trigger
-# (3) The "sync=shadow_word_pain" option to the inner_focus action makes sure IF won't be used until SW:P needs to be refreshed.
+# (3) The "shadow_word_pain" option to the inner_focus action makes sure IF won't be used until SW:P needs to be refreshed.
 #
 priest=Priest_Holy
 level=80
 talents=http://www.worldofwarcraft.com/info/classes/priest/talents2.html?tal=05023031305051225010200000020505103232015200000000000000000000000000000000000000
-actions=flask,type=blinding_light/divine_spirit/mana_potion,trigger=3500/shadow_fiend,trigger=6000/inner_focus,sync=shadow_word_pain/shadow_word_pain/power_infusion/holy_fire/smite
+actions=flask,type=blinding_light/inner_fire/divine_spirit/mana_potion,trigger=3500/shadow_fiend,trigger=6000/inner_focus,shadow_word_pain/shadow_word_pain/power_infusion/holy_fire/smite
 gear_stamina=600
 gear_intellect=600
 gear_spirit=600
