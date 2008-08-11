@@ -81,6 +81,14 @@ struct priest_t : public player_t
   };
   talents_t talents;
 
+  struct glyphs_t
+  {
+    int8_t shadow_word_death;
+    int8_t shadow_word_pain;
+    glyphs_t() { memset( (void*) this, 0x0, sizeof( glyphs_t ) ); }
+  };
+  glyphs_t glyphs;
+
   priest_t( sim_t* sim, std::string& name ) : player_t( sim, PRIEST, name ) 
   {
     // Active
@@ -236,8 +244,9 @@ struct shadow_fiend_pet_t : public pet_t
   {
     player_t* o = cast_pet() -> owner;
     if( sim -> log ) report_t::log( sim, "%s summons Shadow Fiend.", o -> name() );
-    attribute_initial[ ATTR_STAMINA   ] = attribute[ ATTR_STAMINA   ] = attribute_base[ ATTR_STAMINA   ] + (int16_t) ( 0.30 * o -> attribute[ ATTR_STAMINA   ] );
-    attribute_initial[ ATTR_INTELLECT ] = attribute[ ATTR_INTELLECT ] = attribute_base[ ATTR_INTELLECT ] + (int16_t) ( 0.30 * o -> attribute[ ATTR_INTELLECT ] );
+    attribute_initial[ ATTR_STAMINA   ] = attribute[ ATTR_STAMINA   ] = attribute_base[ ATTR_STAMINA   ] + ( 0.30 * o -> attribute[ ATTR_STAMINA   ] );
+    attribute_initial[ ATTR_INTELLECT ] = attribute[ ATTR_INTELLECT ] = attribute_base[ ATTR_INTELLECT ] + ( 0.30 * o -> attribute[ ATTR_INTELLECT ] );
+    // Kick-off repeating attack
     melee -> execute();
   }
   virtual void dismiss()
@@ -743,6 +752,7 @@ struct shadow_word_pain_t : public priest_spell_t
 
     int8_t more_ticks = 0;
     if( ! sim_t::WotLK ) more_ticks += p -> talents.improved_shadow_word_pain;
+    if( p -> glyphs.shadow_word_pain ) more_ticks++;
     if( p -> gear.tier6_2pc ) more_ticks++;
     if( more_ticks > 0 )
     {
@@ -1049,6 +1059,20 @@ struct shadow_word_death_t : public priest_spell_t
     priest_spell_t::execute(); 
     priest_t* p = player -> cast_priest();
     p -> resource_loss( RESOURCE_HEALTH, dd * ( 1.0 - p -> talents.pain_and_suffering * 0.20 ) );
+  }
+
+  virtual void player_buff()
+  {
+    priest_spell_t::player_buff();
+    priest_t* p = player -> cast_priest();
+    if( p -> glyphs.shadow_word_death )
+    {
+      target_t* t = sim -> target;
+      if( t -> initial_health > 0 && ( t -> current_health / t -> initial_health ) < 0.35 )
+      {
+	player_multiplier *= 1.05;
+      }
+    }
   }
 };
 
@@ -1823,6 +1847,9 @@ bool priest_t::parse_option( const std::string& name,
     { "twisted_faith",             OPT_INT8,  &( talents.twisted_faith             ) },
     { "vampiric_embrace",          OPT_INT8,  &( talents.vampiric_embrace          ) },
     { "vampiric_touch",            OPT_INT8,  &( talents.vampiric_touch            ) },
+    // Glyphs
+    { "glyph_shadow_word_death",   OPT_INT8,  &( glyphs.shadow_word_death          ) },
+    { "glyph_shadow_word_pain",    OPT_INT8,  &( glyphs.shadow_word_pain           ) },
     { NULL, OPT_UNKNOWN }
   };
 

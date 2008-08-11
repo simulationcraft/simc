@@ -181,11 +181,6 @@ void action_t::target_debuff( int8_t dmg_type )
 
   if( bleed && t -> debuffs.mangle ) target_multiplier *= 1.30;
 
-  if( t -> debuffs.faerie_fire > 1 )
-  {
-    target_hit  += ( t -> debuffs.faerie_fire - 1 ) * 0.01;
-  }
-
   if( school == SCHOOL_PHYSICAL )
   {
     target_penetration += t -> debuffs.sunder_armor * 520;
@@ -195,12 +190,9 @@ void action_t::target_debuff( int8_t dmg_type )
     if( school == SCHOOL_SHADOW )
     {
       target_multiplier *= 1.0 + ( t -> debuffs.shadow_weaving * 0.02 );
-      if( ! sim_t::WotLK || dmg_type == DMG_DIRECT )
-      {
-	if( t -> debuffs.shadow_vulnerability ) target_multiplier *= 1.20;
-	static uptime_t* sv_uptime = sim -> get_uptime( "shadow_vulnerability" );
-	sv_uptime -> update( t -> debuffs.shadow_vulnerability != 0 );
-      }
+      if( t -> debuffs.shadow_vulnerability ) target_multiplier *= 1.20;
+      static uptime_t* sv_uptime = sim -> get_uptime( "shadow_vulnerability" );
+      sv_uptime -> update( t -> debuffs.shadow_vulnerability != 0 );
     }
     else if( school == SCHOOL_ARCANE )
     {
@@ -218,12 +210,12 @@ void action_t::target_debuff( int8_t dmg_type )
     else if( school == SCHOOL_NATURE )
     {
       target_multiplier *= 1.0 + ( t -> debuffs.earth_and_moon * 0.02 );
-      if( ! sim_t::WotLK || dmg_type == DMG_DIRECT )
+      if( t -> debuffs.nature_vulnerability ) 
       {
-	if( t -> debuffs.nature_vulnerability ) target_multiplier *= 1.20;
-	static uptime_t* sv_uptime = sim -> get_uptime( "nature_vulnerability" );
-	sv_uptime -> update( t -> debuffs.nature_vulnerability != 0 );
+	target_multiplier *= t -> debuffs.nature_vulnerability_glyph ? 1.28 : 1.20;
       }
+      static uptime_t* sv_uptime = sim -> get_uptime( "nature_vulnerability" );
+      sv_uptime -> update( t -> debuffs.nature_vulnerability != 0 );
     }
     target_multiplier *= 1.0 + ( t -> debuffs.misery * 0.01 );
     target_multiplier *= 1.0 + ( t -> debuffs.curse_of_elements * 0.01 );

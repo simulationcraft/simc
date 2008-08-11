@@ -25,10 +25,11 @@ spell_t::spell_t( const char* n, player_t* p, int8_t r, int8_t s, int8_t t ) :
 double spell_t::haste()
 {
   double h = player -> haste;
-  if( player -> buffs.bloodlust         ) h *= 0.70;
-  if( player -> buffs.moonkin_haste     ) h *= 0.80;
-  if( player -> buffs.swift_retribution ) h *= 0.97;
-  if( sim_t::WotLK && player -> buffs.wrath_of_air ) h *= 0.9;
+  if( player -> buffs.bloodlust           ) h *= 0.70;
+  if( player -> buffs.moonkin_haste       ) h *= 0.80;
+  if( player -> buffs.swift_retribution   ) h *= 0.97;
+  if( player -> buffs.totem_of_wrath == 2 ) h *= 0.99;
+  if( sim_t::WotLK && player -> buffs.wrath_of_air ) h *= 0.95;
   return h;
 }
 
@@ -94,6 +95,19 @@ void spell_t::player_buff()
     player_crit_bonus *= 1.0 + p -> buffs.elemental_oath * 0.03;
   }
 
+  if( player -> buffs.totem_of_wrath )
+  {
+    if( sim_t::WotLK )
+    {
+      player_multiplier *= 1.06;
+    }
+    else
+    {
+      player_crit += 0.03;
+    }
+    player_hit += 0.03;
+  }
+
   if( sim -> debug ) report_t::log( sim, "spell_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f", 
 		   name(), player_hit, player_crit, player_power, player_penetration );
 }
@@ -104,19 +118,25 @@ void spell_t::target_debuff( int8_t dmg_type )
 {
   action_t::target_debuff( dmg_type );
 
-   target_t* t = sim -> target;
+  target_t* t = sim -> target;
    
-   if( school == SCHOOL_FROST )
-   {
-      target_crit += ( t -> debuffs.winters_chill * 0.01 );
-   }
-   else if( school == SCHOOL_HOLY )
-   {
-     if( t -> debuffs.judgement_of_crusader ) target_power += 218;
-   }      
+  if( sim_t::WotLK && ( t -> debuffs.faerie_fire > 1 ) )
+  {
+    target_hit += ( t -> debuffs.faerie_fire - 1 ) * 0.01;
+  }
 
-   if( sim -> debug ) report_t::log( sim, "spell_t::target_debuff: %s multiplier=%.2f hit=%.2f crit=%.2f power=%.2f penetration=%.0f", 
-		    name(), target_multiplier, target_hit, target_crit, target_power, target_penetration );
+  if( school == SCHOOL_FROST )
+  {
+    target_crit += ( t -> debuffs.winters_chill * 0.01 );
+  }
+  else if( school == SCHOOL_HOLY )
+  {
+    if( t -> debuffs.judgement_of_crusader ) target_power += 218;
+  }      
+
+  if( sim -> debug ) 
+    report_t::log( sim, "spell_t::target_debuff: %s multiplier=%.2f hit=%.2f crit=%.2f power=%.2f penetration=%.0f", 
+		   name(), target_multiplier, target_hit, target_crit, target_power, target_penetration );
 }
    
 // spell_t::level_based_miss_chance ==========================================

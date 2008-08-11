@@ -67,6 +67,7 @@ gear_spell_power=2500
 gear_spell_crit_rating=200
 gear_spell_hit_rating=200
 gear_haste_rating=500
+glyph_shadow_word_death=1
 pet=shadow_fiend
 main_hand=beast,damage=110,speed=1.5,school=shadow
 quiet=1
@@ -95,6 +96,8 @@ gear_spell_power=2500
 gear_spell_crit_rating=400
 gear_spell_hit_rating=200
 gear_haste_rating=300
+glyph_shadow_word_death=1
+glyph_shadow_word_pain=1
 pet=shadow_fiend
 main_hand=beast,damage=110,speed=1.5,school=shadow
 quiet=1
@@ -117,7 +120,7 @@ gear_mp5=200
 druid=Druid_Balance
 level=80
 talents=http://www.worldofwarcraft.com/info/classes/druid/talents2.html?tal=500322012503130521330530005100000000000000000000000000023020331200000000000000000
-actions=flask,type=blinding_light/mark_of_the_wild/moonkin_form/mana_potion,trigger=3500/innervate/faerie_fire/moonfire/wrath,eclipse=trigger/starfire
+actions=flask,type=blinding_light/mark_of_the_wild/moonkin_form/mana_potion,trigger=3500/innervate/faerie_fire/insect_swarm/moonfire/wrath,eclipse=trigger/starfire
 gear_stamina=600
 gear_intellect=600
 gear_spirit=600
@@ -125,6 +128,9 @@ gear_spell_power=2000
 gear_spell_crit_rating=800
 gear_spell_hit_rating=200
 gear_haste_rating=400
+glyph_moonfire=1
+glyph_starfire=1
+glyph_insect_swarm=1
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
 blessing_of_kings=1
 blessing_of_wisdom=1
@@ -140,13 +146,16 @@ swift_retribution=1
 shaman=Shaman_Elemental
 level=80
 talents=http://www.worldofwarcraft.com/info/classes/shaman/talents2.html?tal=35300315002153510250135130300000000000000000000000055000001000000000000000000
-actions=flask,type=blinding_light/mana_potion,trigger=3500/mana_spring_totem/totem_of_wrath/wrath_of_air_totem/flame_shock/lava_burst,flame_shock=1,max_ticks_consumed=1/elemental_mastery/lightning_bolt
+actions=flask,type=blinding_light/flametongue_weapon,weapon=main/mana_potion,trigger=3500/mana_spring_totem/totem_of_wrath/wrath_of_air_totem/flame_shock/lava_burst,flame_shock=1,max_ticks_consumed=1/elemental_mastery/lightning_bolt
 gear_stamina=600
 gear_intellect=800
 gear_spell_power=2000
 gear_spell_crit_rating=800
 gear_spell_hit_rating=200
 gear_haste_rating=400
+glyph_flametongue_weapon=1
+glyph_totem_of_wrath=1
+glyph_lightning_bolt=1
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
 blessing_of_kings=1
 blessing_of_wisdom=1
@@ -166,7 +175,7 @@ swift_retribution=1
 shaman=Shaman_Enhancement
 level=80
 talents=http://www.worldofwarcraft.com/info/classes/shaman/talents2.html?tal=05203010000000000000000030205033105021335311523125100000000000000000000000000
-actions=flask,type=relentless_assault/auto_attack/windfury_weapon,weapon=main/flametongue_weapon,weapon=off/stormstrike/lava_burst,maelstrom=5,flame_shock=1,max_ticks_consumed=1/lightning_bolt,maelstrom=5/searing_totem/strength_of_earth_totem/windfury_totem/shamanistic_rage/flame_shock/earth_shock/lightning_shield
+actions=flask,type=relentless_assault/auto_attack/windfury_weapon,weapon=both/stormstrike/lava_burst,maelstrom=5,flame_shock=1,max_ticks_consumed=1/lightning_bolt,maelstrom=5/searing_totem/strength_of_earth_totem/windfury_totem/shamanistic_rage/flame_shock/earth_shock/lightning_shield
 gear_strength=400
 gear_agility=600
 gear_stamina=1000
@@ -181,6 +190,11 @@ gear_attack_penetration=750
 gear_haste_rating=250
 main_hand=fist,damage=310,speed=2.8,enchant=mongoose
 off_hand=fist,damage=310,speed=2.6,enchant=executioner
+glyph_earth_shock=0
+glyph_strength_of_earth=1
+glyph_windfury_weapon=1
+glyph_stormstrike=1
+glyph_lightning_shield=1
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
 blessing_of_kings=1
 blessing_of_might=1
@@ -199,13 +213,16 @@ battle_shout=1
 shaman=Shaman_Hybrid
 level=80
 talents=http://www.worldofwarcraft.com/info/classes/shaman/talents2.html?tal=35300315002133510250100030520033000520230000000000000000000000000000000000000
-actions=flask,type=blinding_light/mana_potion,trigger=3500/mana_spring_totem/flametongue_totem/wrath_of_air_totem/flame_shock/lava_burst,flame_shock=1,max_ticks_consumed=1/elemental_mastery/lightning_bolt
+actions=flask,type=blinding_light/flametongue_weapon,weapon=main/mana_potion,trigger=3500/mana_spring_totem/flametongue_totem/wrath_of_air_totem/flame_shock/lava_burst,flame_shock=1,max_ticks_consumed=1/elemental_mastery/lightning_bolt
 gear_stamina=600
 gear_intellect=800
 gear_spell_power=2000
 gear_spell_crit_rating=800
 gear_spell_hit_rating=200
 gear_haste_rating=400
+glyph_flametongue_weapon=1
+glyph_totem_of_wrath=1
+glyph_lightning_bolt=1
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
 blessing_of_kings=1
 blessing_of_wisdom=1

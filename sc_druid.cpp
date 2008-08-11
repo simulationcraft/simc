@@ -68,6 +68,16 @@ struct druid_t : public player_t
   };
   talents_t talents;
 
+  struct glyphs_t
+  {
+    int8_t innervate;
+    int8_t insect_swarm;
+    int8_t moonfire;
+    int8_t starfire;
+    glyphs_t() { memset( (void*) this, 0x0, sizeof( glyphs_t ) ); }
+  };
+  glyphs_t glyphs;
+
   druid_t( sim_t* sim, std::string& name ) : player_t( sim, DRUID, name ) 
   {
     moonfire_active = 0;
@@ -126,6 +136,7 @@ struct druid_spell_t : public spell_t
   virtual void   player_buff();
 
   // Passthru Methods
+  virtual void calculate_damage() { spell_t::calculate_damage(); }
   virtual void execute()          { spell_t::execute();          }
   virtual void schedule_execute() { spell_t::schedule_execute(); }
   virtual void last_tick()        { spell_t::last_tick();        }
@@ -440,6 +451,9 @@ struct innervate_t : public druid_spell_t
     harmful   = false;
     
     if( player -> gear.tier4_4pc ) cooldown -= 48.0;
+
+    // FIXME! Innervate cannot be currently cast on other players.
+    // FIXME! Glyph not supported.
   }
   virtual void execute()
   {
@@ -471,7 +485,6 @@ struct insect_swarm_t : public druid_spell_t
     druid_spell_t( "insect_swarm", player, SCHOOL_NATURE, TREE_BALANCE )
   {
     druid_t* p = player -> cast_druid();
-
     assert( p -> talents.insect_swarm );
 
     option_t options[] =
@@ -497,6 +510,8 @@ struct insect_swarm_t : public druid_spell_t
     num_ticks         = 6;
     dot_power_mod     = ( 12.0 / 15.0 );
     base_cost         = rank -> cost;
+
+    if( p -> glyphs.insect_swarm ) base_multiplier *= 1.30;
   }
 
   virtual void execute()
@@ -574,6 +589,17 @@ struct moonfire_t : public druid_spell_t
     if( result_is_hit() )
     {
       player -> cast_druid() -> moonfire_active = this;
+    }
+  }
+
+  virtual void calculate_damage()
+  {
+    druid_t* p = player -> cast_druid();
+    druid_spell_t::calculate_damage();
+    if( p -> glyphs.moonfire )
+    {
+      dd  *= 0.10;
+      dot *= 1.75;
     }
   }
 
@@ -726,12 +752,23 @@ struct starfire_t : public druid_spell_t
 
   virtual void execute()
   {
+    druid_t* p = player -> cast_druid();
     druid_spell_t::execute();
     if( result_is_hit() )
     {
       trigger_ashtongue_talisman( this );
       trigger_eclipse_wrath( this );
       stack_earth_and_moon( this );
+      if( p -> glyphs.starfire )
+      {
+	if( p -> moonfire_active &&
+	    p -> moonfire_active -> current_tick > 0 )
+	{
+	  p -> moonfire_active -> current_tick--;
+	  p -> moonfire_active -> time_remaining += 3.0;
+	  p -> moonfire_active -> update_ready();
+	}
+      }
     }
   }
 
@@ -1200,6 +1237,11 @@ bool druid_t::parse_option( const std::string& name,
     { "starlight_wrath",           OPT_INT8,  &( talents.starlight_wrath           ) },
     { "vengeance",                 OPT_INT8,  &( talents.vengeance                 ) },
     { "wrath_of_cenarius",         OPT_INT8,  &( talents.wrath_of_cenarius         ) },
+    // Glyphs
+    { "glyph_innervate",           OPT_INT8,  &( glyphs.innervate                  ) },
+    { "glyph_insect_swarm",        OPT_INT8,  &( glyphs.insect_swarm               ) },
+    { "glyph_moonfire",            OPT_INT8,  &( glyphs.moonfire                   ) },
+    { "glyph_starfire",            OPT_INT8,  &( glyphs.starfire                   ) },
     { NULL, OPT_UNKNOWN }
   };
 

@@ -770,6 +770,7 @@ struct target_t
     int8_t   misery_stack;
     int8_t   earth_and_moon;
     int8_t   nature_vulnerability;
+    int8_t   nature_vulnerability_glyph;
     int8_t   shadow_vulnerability;
     int8_t   shadow_weaving;
     int8_t   sunder_armor;

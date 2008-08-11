@@ -64,7 +64,10 @@ void attack_t::player_buff()
 
   p -> uptimes.unleashed_rage -> update( p -> buffs.unleashed_rage );
 
-  if( sim -> debug ) report_t::log( sim, "attack_t::player_buff: %s hit=%.2f expertise=%.2f crit=%.2f power=%.2f penetration=%.0f", 
+  if( sim_t::WotLK && p -> buffs.grace_of_air ) player_crit += 0.01;
+
+  if( sim -> debug ) 
+    report_t::log( sim, "attack_t::player_buff: %s hit=%.2f expertise=%.2f crit=%.2f power=%.2f penetration=%.0f", 
 		   name(), player_hit, player_expertise, player_crit, player_power, player_penetration );
 }
 
@@ -76,7 +79,12 @@ void attack_t::target_debuff( int8_t dmg_type )
 
   target_expertise = 0;
 
-  
+  target_t* t = sim -> target;
+
+  if( t -> debuffs.faerie_fire > 1 )
+  {
+    target_hit += ( t -> debuffs.faerie_fire - 1 ) * 0.01;
+  }
 }
 
 // attack_t::build_table ====================================================

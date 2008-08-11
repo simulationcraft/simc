@@ -215,11 +215,11 @@ void player_t::init_core()
     if( attribute_initial[ i ] == 0 )
     {
       attribute_initial[ i ] = attribute_base[ i ] + gear.attribute[ i ] + gear.attribute_enchant[ i ];
+
+      // FIXME! All these static buffs will go away as class support comes along.
+      if( buffs.blessing_of_kings ) attribute_multiplier_initial[ i ] *= 1.10;
     }
     attribute[ i ] = attribute_initial[ i ];
-
-    // FIXME! All these static buffs will go away as class support comes along.
-    if( buffs.blessing_of_kings ) attribute_multiplier_initial[ i ] *= 1.10;
   }
 }
 
@@ -263,10 +263,10 @@ void player_t::init_spell()
   if( initial_mp5 == 0 ) 
   {
     initial_mp5 = base_mp5 + gear.mp5 + gear.mp5_enchant;
-  }
 
-  // FIXME! All these static buffs will go away as class support comes along.
-  if( buffs.blessing_of_wisdom ) initial_mp5 += ( level <= 70 ) ? 49 : 91;
+    // FIXME! All these static buffs will go away as class support comes along.
+    if( buffs.blessing_of_wisdom ) initial_mp5 += ( level <= 70 ) ? 49 : 91;
+  }
 }
 
 // player_t::init_attack ====================================================
@@ -282,6 +282,19 @@ void player_t::init_attack()
   if( initial_attack_power == 0 )
   {
     initial_attack_power = base_attack_power += gear.attack_power + gear.attack_power_enchant;
+
+    // FIXME! All these static buffs will go away as class support comes along.
+    if( buffs.blessing_of_might ) 
+    {
+      initial_attack_power += ( level >= 79 ) ? 300 :
+	                      ( level >= 73 ) ? 245 :
+	                      ( level >= 70 ) ? 220 : 185;
+    }
+    if( buffs.battle_shout )
+    {
+      initial_attack_power += ( level >= 78 ) ? 550 :
+                              ( level >= 69 ) ? 305 : 232;
+    }
   }
   if( initial_attack_hit == 0 )
   {
@@ -303,18 +316,6 @@ void player_t::init_attack()
     initial_attack_penetration = base_attack_penetration + gear.attack_penetration + gear.attack_penetration_enchant;
   }
 
-  // FIXME! All these static buffs will go away as class support comes along.
-  if( buffs.blessing_of_might ) 
-  {
-    initial_attack_power += ( level >= 79 ) ? 300 :
-                            ( level >= 73 ) ? 245 :
-                            ( level >= 70 ) ? 220 : 185;
-  }
-  if( buffs.battle_shout )
-  {
-    initial_attack_power += ( level >= 78 ) ? 550 :
-                            ( level >= 69 ) ? 305 : 232;
-  }
 }
 
 // player_t::init_weapon ===================================================
