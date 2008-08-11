@@ -107,8 +107,6 @@ blessing_of_kings=1
 blessing_of_wisdom=1
 sanctified_retribution=1
 swift_retribution=1
-# Holy DPS Priests have ridiculous mana problems.  For now, give them arbitrary mp5 bonus just to confirm scaling.
-gear_mp5=200
 
 #
 # Balance Druid

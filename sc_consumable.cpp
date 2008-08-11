@@ -9,6 +9,8 @@
 // Consumable
 // ==========================================================================
 
+static bool POTION_SICKNESS = false;
+
 // ==========================================================================
 // Flask
 // ==========================================================================
@@ -121,7 +123,7 @@ struct destruction_potion_t : public action_t
   
     player -> share_cooldown( cooldown_group, cooldown );
     new expiration_t( sim, player );
-    used = true;
+    used = POTION_SICKNESS;
   }
 
   virtual bool ready()
@@ -175,7 +177,7 @@ struct mana_potion_t : public action_t
     if( sim -> log ) report_t::log( sim, "%s uses Mana potion", player -> name() );
     player -> resource_gain( RESOURCE_MANA, mana, player -> gains.mana_potion );
     player -> share_cooldown( cooldown_group, cooldown );
-    used = true;
+    used = POTION_SICKNESS;
   }
 
   virtual bool ready()
@@ -233,7 +235,7 @@ struct mana_gem_t : public action_t
     if( sim -> log ) report_t::log( sim, "%s uses Mana Gem", player -> name() );
     player -> resource_gain( RESOURCE_MANA, mana, player -> gains.mana_gem );
     player -> share_cooldown( cooldown_group, cooldown );
-    used = true;
+    used = POTION_SICKNESS;
   }
 
   virtual bool ready()
@@ -291,7 +293,7 @@ struct health_stone_t : public action_t
     if( sim -> log ) report_t::log( sim, "%s uses Health Stone", player -> name() );
     player -> resource_gain( RESOURCE_HEALTH, health );
     player -> share_cooldown( cooldown_group, cooldown );
-    used = true;
+    used = POTION_SICKNESS;
   }
 
   virtual bool ready()
@@ -352,7 +354,7 @@ struct dark_rune_t : public action_t
     player -> resource_gain( RESOURCE_MANA,   mana, player -> gains.dark_rune );
     player -> resource_loss( RESOURCE_HEALTH, health );
     player -> share_cooldown( cooldown_group, cooldown );
-    used = true;
+    used = POTION_SICKNESS;
   }
 
   virtual bool ready()
