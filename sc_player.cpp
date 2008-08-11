@@ -161,7 +161,8 @@ player_t::player_t( sim_t*             s,
   // Actions
   action_list(0),
   // Reporting
-  quiet(0), report(0), iteration_dmg(0), total_dmg(0), stats_list(0)
+  quiet(0), report(0), iteration_dmg(0), total_dmg(0), 
+  proc_list(0), gain_list(0), stats_list(0), uptime_list(0)
 {
   if( sim -> debug ) report_t::log( sim, "Creating Player %s", name() );
   next = sim -> player_list;

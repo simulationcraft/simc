@@ -686,7 +686,7 @@ struct starfire_t : public druid_spell_t
   int8_t eclipse_trigger;
 
   starfire_t( player_t* player, const std::string& options_str ) : 
-    druid_spell_t( "starfire", player, SCHOOL_ARCANE, TREE_BALANCE ), eclipse_trigger(0)
+    druid_spell_t( "starfire", player, SCHOOL_ARCANE, TREE_BALANCE ), eclipse_benefit(0), eclipse_trigger(0)
   {
     druid_t* p = player -> cast_druid();
 

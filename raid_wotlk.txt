@@ -118,7 +118,7 @@ swift_retribution=1
 druid=Druid_Balance
 level=80
 talents=http://www.worldofwarcraft.com/info/classes/druid/talents2.html?tal=500322012503130521330530005100000000000000000000000000023020331200000000000000000
-actions=flask,type=blinding_light/mark_of_the_wild/moonkin_form/mana_potion,trigger=3500/innervate/faerie_fire/insect_swarm/moonfire/wrath,eclipse=trigger/starfire
+actions=flask,type=blinding_light/mark_of_the_wild/moonkin_form/mana_potion,trigger=3500/innervate/faerie_fire/moonfire/wrath,eclipse=trigger/starfire
 gear_stamina=600
 gear_intellect=600
 gear_spirit=600
@@ -126,9 +126,11 @@ gear_spell_power=2000
 gear_spell_crit_rating=800
 gear_spell_hit_rating=200
 gear_haste_rating=400
+# Realistically, only two of the following three glyphs should be used.
+# Also, the starfire glyph is coded with starfire refreshing moonfire, not starfall.
 glyph_moonfire=1
 glyph_starfire=1
-glyph_insect_swarm=1
+glyph_insect_swarm=0
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
 blessing_of_kings=1
 blessing_of_wisdom=1
