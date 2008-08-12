@@ -175,7 +175,7 @@ swift_retribution=1
 shaman=Shaman_Enhancement
 level=80
 talents=http://www.worldofwarcraft.com/info/classes/shaman/talents2.html?tal=05203010000000000000000030205033105021335311523125100000000000000000000000000
-actions=flask,type=relentless_assault/auto_attack/windfury_weapon,weapon=both/stormstrike/lava_burst,maelstrom=5,flame_shock=1,max_ticks_consumed=1/lightning_bolt,maelstrom=5/searing_totem/strength_of_earth_totem/windfury_totem/shamanistic_rage/flame_shock/earth_shock/lightning_shield
+actions=flask,type=relentless_assault/auto_attack/windfury_weapon,weapon=main/flametongue_weapon,weapon=off/stormstrike/lava_burst,maelstrom=5,flame_shock=1,max_ticks_consumed=1/lightning_bolt,maelstrom=5/searing_totem/strength_of_earth_totem/windfury_totem/shamanistic_rage/flame_shock/earth_shock/lightning_shield
 gear_strength=400
 gear_agility=600
 gear_stamina=1000

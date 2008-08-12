@@ -2457,7 +2457,7 @@ void shaman_t::attack_hit_event( attack_t* a )
     if( p -> talents.flurry ) p -> buffs_flurry = 3;
     if( p -> talents.shamanistic_focus ) buffs_shamanistic_focus = 1;
   }
-  if( ! sim_t::WotLK ) trigger_flametongue_weapon( a );
+  trigger_flametongue_weapon( a );
   trigger_windfury_weapon( a );
 }
 
@@ -2687,13 +2687,12 @@ double shaman_t::composite_spell_power( int8_t school )
   {
     sp += composite_attack_power() * talents.mental_quickness * 0.10;
   }
-  if(  sim_t::WotLK ) 
+  if( sim_t::WotLK ) 
   {
-    if( main_hand_weapon.buff == FLAMETONGUE_WEAPON ||
-	 off_hand_weapon.buff == FLAMETONGUE_WEAPON ) 
-    {
-      sp += 70 * ( 1.0 + talents.lava_flows * 0.20 );
-    }
+    double bonus = 1.0 + talents.lava_flows * 0.20;
+
+    if( main_hand_weapon.buff == FLAMETONGUE_WEAPON ) sp += 52 * bonus;
+    if(  off_hand_weapon.buff == FLAMETONGUE_WEAPON ) sp += 52 * bonus;
   }
 
   return sp;
