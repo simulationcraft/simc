@@ -659,7 +659,7 @@ struct melee_t : public shaman_attack_t
     shaman_t* p = player -> cast_shaman();
     if( p -> buffs_flurry > 0 ) 
     {
-      t *= 1.0 - 0.05 * ( p -> talents.flurry + 1 );
+      t *= 1.0 / ( 1.0 + 0.05 * ( p -> talents.flurry + 1 ) );
     }
     p -> uptimes_flurry -> update( p -> buffs_flurry > 0 );
     return t;
