@@ -25,11 +25,11 @@ spell_t::spell_t( const char* n, player_t* p, int8_t r, int8_t s, int8_t t ) :
 double spell_t::haste()
 {
   double h = player -> haste;
-  if( player -> buffs.bloodlust           ) h *= 0.70;
-  if( player -> buffs.moonkin_haste       ) h *= 0.80;
-  if( player -> buffs.swift_retribution   ) h *= 0.97;
-  if( player -> buffs.totem_of_wrath == 2 ) h *= 0.99;
-  if( sim_t::WotLK && player -> buffs.wrath_of_air ) h *= 0.95;
+  if( player -> buffs.bloodlust                    ) h *= 1.0 / ( 1.0 + 0.30 );
+  if( player -> buffs.swift_retribution            ) h *= 1.0 / ( 1.0 + 0.03 );
+  if( player -> buffs.moonkin_haste                ) h *= 1.0 / ( 1.0 + 0.20 );
+  if( player -> buffs.totem_of_wrath == 2          ) h *= 1.0 / ( 1.0 + 0.01 );
+  if( sim_t::WotLK && player -> buffs.wrath_of_air ) h *= 1.0 / ( 1.0 + 0.05 );
   return h;
 }
 
