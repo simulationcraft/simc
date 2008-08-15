@@ -160,8 +160,7 @@ bool option_t::parse( sim_t* sim,
   }
   else if( name == "mage" ) 
   { 
-    //sim -> active_player = player_t::create_mage( sim, value ); 
-    assert( 0 );
+    sim -> active_player = player_t::create_mage( sim, value ); 
   }
   else if( name == "priest" ) 
   { 

@@ -443,9 +443,18 @@ struct faerie_fire_t : public druid_spell_t
 
 struct innervate_t : public druid_spell_t
 {
+  int16_t trigger;
+
   innervate_t( player_t* player, const std::string& options_str ) : 
-    druid_spell_t( "innervate", player, SCHOOL_NATURE, TREE_BALANCE )
+    druid_spell_t( "innervate", player, SCHOOL_NATURE, TREE_BALANCE ), trigger(0)
   {
+    option_t options[] =
+    {
+      { "trigger", OPT_INT16, &trigger },
+      { NULL }
+    };
+    parse_options( options, options_str );
+
     base_cost = 300;
     cooldown  = 480;
     harmful   = false;
@@ -474,6 +483,15 @@ struct innervate_t : public druid_spell_t
     player -> buffs.innervate = 1;
     player -> action_finish( this );
     new expiration_t( sim, player );
+  }
+
+  virtual bool ready()
+  {
+    if( ! druid_spell_t::ready() )
+      return false;
+
+    return( player -> resource_max    [ RESOURCE_MANA ] - 
+	    player -> resource_current[ RESOURCE_MANA ] ) > trigger;
   }
 };
 

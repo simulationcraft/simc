@@ -177,14 +177,13 @@ struct shadow_fiend_pet_t : public pet_t
     virtual void execute()
     {
       attack_t::execute();
-      if( result_is_hit() &&
-	  weapon -> buff == WINDFURY_TOTEM &&
-	  rand_t::roll( 0.20 ) )
+      if( result_is_hit() )
       {
-	player -> attack_power += player -> buffs.windfury_totem;
-	player -> procs.windfury -> occur();
-	attack_t::execute();
-	player -> attack_power -= player -> buffs.windfury_totem;
+	if( ! sim_t::WotLK )
+	{
+	  enchant_t::trigger_flametongue_totem( this );
+	  enchant_t::trigger_windfury_totem( this );
+	}
       }
     }
     void player_buff()
@@ -1113,6 +1112,7 @@ struct mind_flay_t : public priest_spell_t
     channeled         = true; 
     binary            = true; 
     dot_power_mod     = 0.57;
+    dot_power_mod     = ( 3.0 / 3.5 ) - 0.05;
 
     base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.focused_mind * 0.05;
@@ -1472,14 +1472,20 @@ struct shadow_fiend_spell_t : public priest_spell_t
     }
   };
 
-  double mana;
+  int16_t trigger;
 
   shadow_fiend_spell_t( player_t* player, const std::string& options_str ) : 
-    priest_spell_t( "summon", player, SCHOOL_SHADOW, TREE_SHADOW ), mana(0)
+    priest_spell_t( "summon", player, SCHOOL_SHADOW, TREE_SHADOW ), trigger(0)
   {
     priest_t* p = player -> cast_priest();
 
-    mana        = atof( options_str.c_str() );
+    option_t options[] =
+    {
+      { "trigger", OPT_INT16, &trigger },
+      { NULL }
+    };
+    parse_options( options, options_str );
+
     harmful    = false;
     cooldown   = 300.0;
     base_cost  = 300;
@@ -1501,7 +1507,7 @@ struct shadow_fiend_spell_t : public priest_spell_t
       return false;
 
     return( player -> resource_max    [ RESOURCE_MANA ] - 
-	    player -> resource_current[ RESOURCE_MANA ] ) > mana;
+	    player -> resource_current[ RESOURCE_MANA ] ) > trigger;
   }
 };
 

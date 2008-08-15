@@ -99,7 +99,6 @@ bool target_t::parse_option( const std::string& name,
     { "target_health",         OPT_FLT,   &( initial_health                    ) },
     // FIXME! Once appropriate class implemented, these will be removed
     { "curse_of_elements",     OPT_INT8,  &( debuffs.curse_of_elements         ) },
-    { "improved_scorch",       OPT_INT8,  &( debuffs.improved_scorch           ) },
     { "judgement_of_crusader", OPT_INT16, &( debuffs.judgement_of_crusader     ) },
     { "judgement_of_wisdom",   OPT_FLT,   &( debuffs.judgement_of_wisdom       ) },
     { NULL, OPT_UNKNOWN }

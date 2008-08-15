@@ -1663,19 +1663,17 @@ struct windfury_totem_t : public shaman_spell_t
 	name = "Windfury Totem Expiration";
 	for( player_t* p = sim -> player_list; p; p = p -> next )
 	{
-	  if( p -> party == player -> party )
+	  if( sim_t::WotLK || p -> party == player -> party )
 	  {
 	    p -> aura_gain( "Windfury Totem" );
-	    
-	    if( sim_t::WotLK )
+	    p -> buffs.windfury_totem = t -> bonus;
+
+	    if( ! sim_t::WotLK )
 	    {
-	      p -> buffs.windfury_totem = t -> bonus;
-	    }
-	    else if( p -> main_hand_weapon.buff == WEAPON_BUFF_NONE ||
-		     p -> main_hand_weapon.buff == WINDFURY_TOTEM   )
-	    {
-	      p -> main_hand_weapon.buff = WINDFURY_TOTEM;
-	      p -> buffs.windfury_totem = t -> bonus;
+	      if( p -> main_hand_weapon.buff == WEAPON_BUFF_NONE )
+	      {
+		p -> main_hand_weapon.buff = WINDFURY_TOTEM;
+	      }
 	    }
 	  }
 	}
@@ -1685,22 +1683,21 @@ struct windfury_totem_t : public shaman_spell_t
       {
 	for( player_t* p = sim -> player_list; p; p = p -> next )
 	{
-	  if( p -> party == player -> party )
+	  if( sim_t::WotLK || p -> party == player -> party )
 	  {
 	    // Make sure it hasn't already been overriden by a more powerful totem.
 	    if( totem -> bonus < p -> buffs.windfury_totem )
 	      continue;
 
 	    p -> aura_loss( "Windfury Totem" );
+	    p -> buffs.windfury_totem = 0;
 
-	    if( sim_t::WotLK )
+	    if( ! sim_t::WotLK )
 	    {
-	      p -> buffs.windfury_totem = 0;
-	    }
-	    else if( p -> main_hand_weapon.buff == WINDFURY_TOTEM )
-	    {
-	      p -> main_hand_weapon.buff = WEAPON_BUFF_NONE;
-	      p -> buffs.windfury_totem = 0;
+	      if( p -> main_hand_weapon.buff == WINDFURY_TOTEM )
+	      {
+		p -> main_hand_weapon.buff = WEAPON_BUFF_NONE;
+	      }
 	    }
 	  }
 	}
@@ -1768,6 +1765,7 @@ struct flametongue_weapon_t : public shaman_spell_t
 
   virtual void execute()
   {
+    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
     if( main ) player -> main_hand_weapon.buff = FLAMETONGUE_WEAPON;
     if( off  ) player ->  off_hand_weapon.buff = FLAMETONGUE_WEAPON;
   };
@@ -1824,6 +1822,7 @@ struct windfury_weapon_t : public shaman_spell_t
 
   virtual void execute()
   {
+    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
     if( main ) player -> main_hand_weapon.buff = WINDFURY_WEAPON;
     if( off  ) player ->  off_hand_weapon.buff = WINDFURY_WEAPON;
   };

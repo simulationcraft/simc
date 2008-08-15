@@ -18,7 +18,7 @@ action_t::action_t( int8_t      ty,
 		    int8_t      s,
 		    int8_t      tr ) :
   sim(p->sim), type(ty), name_str(n), player(p), school(s), resource(r), tree(tr), result(RESULT_NONE),
-  bleed(false), binary(false), channeled(false), background(false), repeating(false), aoe(false), harmful(true),
+  bleed(false), binary(false), channeled(false), background(false), repeating(false), aoe(false), harmful(true), proc(false),
   may_miss(false), may_resist(false), may_dodge(false), may_parry(false), 
   may_glance(false), may_block(false), may_crush(false), may_crit(false),
   min_gcd(0), trigger_gcd(0),
@@ -202,6 +202,8 @@ void action_t::target_debuff( int8_t dmg_type )
     else if( school == SCHOOL_FIRE )
     {
       target_multiplier *= 1.0 + ( t -> debuffs.improved_scorch * 0.01 );
+      static uptime_t* sv_uptime = sim -> get_uptime( "improved_scorch" );
+      sv_uptime -> update( t -> debuffs.improved_scorch != 0 );
     }
     else if( school == SCHOOL_FROST )
     {
@@ -418,7 +420,7 @@ void action_t::execute()
 
   player -> action_finish( this );
 
-  if( repeating && background ) schedule_execute();
+  if( repeating && ! proc ) schedule_execute();
 }
 
 // action_t::tick ===========================================================

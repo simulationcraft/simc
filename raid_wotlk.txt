@@ -38,8 +38,8 @@ infinite_mana=0
 target_armor=6400
 
 # Since support for the Paladin class does not yet exist, one can specify target debuffs (such as
-# Judgement of Wisdom) and player buffs (such as Blessing of Wisdom and Sanctity Aura) as parameters.
-# Both blessing_of_wisdom=1 and sanctity_aura=1 would be included in each player section as appropriate.
+# Judgement of Wisdom) and player buffs (such as Blessing of Wisdom and Blessing of Might) as parameters.
+# Both blessing_of_wisdom=1 and blessing_of_might=1 would be included in each player section as appropriate.
 judgement_of_wisdom=400
 
 # Since support for the Warlock class does not yet exist, one can specify static target debuffs.
@@ -48,7 +48,7 @@ curse_of_elements=13
 
 # Since support for the Mage class does not yet exist, one can specify static target debuffs.
 # Improved Scorch has been changed to add 10% damage to Fire/Frost/Arcane.
-improved_scorch=10
+#improved_scorch=10
 
 #
 # Shadow Priest

@@ -258,20 +258,18 @@ void enchant_t::trigger_flametongue_totem( attack_t* a )
 
 void enchant_t::trigger_windfury_totem( attack_t* a )
 {
-  static bool wf_proc = false; // WF cannot proc itself.
-
-  if( a -> weapon &&
-      a -> weapon -> buff == WINDFURY_TOTEM &&
-      rand_t::roll( 0.20 ) &&
-      ! wf_proc )
+  if( ! a -> proc &&
+        a -> weapon &&
+        a -> weapon -> buff == WINDFURY_TOTEM &&
+      rand_t::roll( 0.20 ) )
   {
-    wf_proc = true;
+    a -> proc = true;
     player_t* p = a -> player;
     p -> procs.windfury -> occur();
     p -> attack_power += p -> buffs.windfury_totem;
     a -> execute();
     p -> attack_power -= p -> buffs.windfury_totem;
-    wf_proc = true;
+    a -> proc = false;
   }
 }
 

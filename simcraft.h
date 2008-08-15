@@ -693,6 +693,7 @@ struct player_t
   proc_t*   get_proc  ( const std::string& name );
   uptime_t* get_uptime( const std::string& name );
 
+
   double strength()  { return attribute_multiplier[ ATTR_STRENGTH  ] * attribute[ ATTR_STRENGTH  ]; }
   double agility()   { return attribute_multiplier[ ATTR_AGILITY   ] * attribute[ ATTR_AGILITY   ]; }
   double stamina()   { return attribute_multiplier[ ATTR_STAMINA   ] * attribute[ ATTR_STAMINA   ]; }
@@ -759,12 +760,12 @@ struct target_t
     int16_t  judgement_of_crusader;
     double   judgement_of_wisdom;
     int8_t   curse_of_elements;
-    int8_t   improved_scorch;
     // Temporary De-Buffs
     int8_t   temporary_debuffs;
     int8_t   affliction_effects;
     int8_t   faerie_fire;
     int8_t   frozen;
+    int8_t   improved_scorch;
     int8_t   mangle;
     int8_t   misery;
     int8_t   misery_stack;
@@ -789,6 +790,7 @@ struct target_t
     event_t* faerie_fire;
     event_t* frozen;
     event_t* earth_and_moon;
+    event_t* improved_scorch;
     event_t* nature_vulnerability;
     event_t* shadow_vulnerability;
     event_t* shadow_weaving;
@@ -865,7 +867,7 @@ struct action_t
   std::string name_str;
   player_t* player;
   int8_t school, resource, tree, result;
-  bool bleed, binary, channeled, background, repeating, aoe, harmful;
+  bool bleed, binary, channeled, background, repeating, aoe, harmful, proc;
   bool may_miss, may_resist, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
   double min_gcd, trigger_gcd;
   double base_execute_time, base_duration, base_cost;
