@@ -30,7 +30,7 @@ iterations=1000
 # For convenience it is possible to tell the simulator that a specific resource (mana, rage, etc)
 # will never run out if you do not wish to configure raid/consumable buff scenarios to ensure sufficient
 # resource replenishment.
-infinite_mana=0
+infinite_mana=1
 
 # Since support for the Warrior class does not yet exist, one can infer a Sunder Armor debuff by 
 # artificially setting a low target armor value.  Many BC bosses have an armor of 7700.  A 5-stack
@@ -107,7 +107,52 @@ sanctity_aura=1
 mage=Mage_Fire
 level=70
 talents=http://www.worldofwarcraft.com/info/classes/mage/talents.html?tal=0200000000000000000000050520201030333105312510232003013000000000000
-actions=flask,type=pure_death/molten_armor/mana_potion,trigger=2500/evocation,trigger=4000/scorch
+actions=flask,type=pure_death/molten_armor/mana_potion,trigger=2500/scorch,debuff=1/evocation,trigger=4000/icy_veins/fire_ball
+gear_stamina=300
+gear_intellect=300
+gear_spirit=300
+gear_spell_power=1000
+gear_spell_crit_rating=400
+gear_spell_hit_rating=100
+gear_haste_rating=100
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_wisdom=1
+
+#
+# Frost Mage
+#
+# (1) The "trigger=2500" option to mana_potion represents the mana gained and the amount below max required to trigger
+# (2) The "trigger=4000" option to evocation represents the mana gained and the amount below max required to trigger
+#
+mage=Mage_Frost
+level=70
+talents=http://www.worldofwarcraft.com/info/classes/mage/talents.html?tal=2030050000000000000000000000000000000000000000535320310235010250551
+actions=flask,type=pure_death/molten_armor/mana_potion,trigger=2500/evocation,trigger=4000/water_elemental/ice_lance,frozen=1/icy_veins/cold_snap/frost_bolt
+gear_stamina=300
+gear_intellect=300
+gear_spirit=300
+gear_spell_power=1000
+gear_spell_crit_rating=400
+gear_spell_hit_rating=100
+gear_haste_rating=100
+pet=water_elemental
+quiet=0
+active=owner
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_wisdom=1
+
+#
+# Arcane Mage
+#
+# (1) The "trigger=2500" option to mana_potion represents the mana gained and the amount below max required to trigger
+# (2) The "trigger=4000" option to evocation represents the mana gained and the amount below max required to trigger
+#
+mage=Mage_Arcane
+level=70
+talents=http://www.worldofwarcraft.com/info/classes/mage/talents.html?tal=2540050300230150333125150500201000000000000000000000000000000000000
+actions=flask,type=pure_death/mage_armor/mana_potion,trigger=2500/evocation,trigger=4000/arcane_power/presence_of_mind,pyroblast/arcane_blast,reset=3/arcane_missiles,ab_filler=1/fire_ball,ab_filler=1/scorch,ab_filler=1
 gear_stamina=300
 gear_intellect=300
 gear_spirit=300

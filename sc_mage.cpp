@@ -14,6 +14,7 @@ struct mage_t : public player_t
   // Active
   spell_t* active_ignite;
   spell_t* active_evocation;
+  pet_t*   active_water_elemental;
 
   // Buffs
   int8_t buffs_arcane_blast;
@@ -86,8 +87,9 @@ struct mage_t : public player_t
   mage_t( sim_t* sim, std::string& name ) : player_t( sim, MAGE, name )
   {
     // Active
-    active_ignite    = 0;
-    active_evocation = 0;
+    active_ignite          = 0;
+    active_evocation       = 0;
+    active_water_elemental = 0;
 
     // Buffs
     buffs_arcane_blast     = 0;
@@ -213,6 +215,8 @@ struct water_elemental_pet_t : public pet_t
     init_spell();
     init_resources();
 
+    o -> cast_mage() -> active_water_elemental = this;
+
     // Kick-off repeating attack
     // Eventually, this needs to go thru schedule_ready() in case the Elemental is OOM
     frost_bolt -> execute();
@@ -221,6 +225,7 @@ struct water_elemental_pet_t : public pet_t
   {
     if( sim -> log ) report_t::log( sim, "%s's Water Elemental dies.", cast_pet() -> owner -> name() );
     frost_bolt -> cancel();
+    cast_pet() -> owner -> cast_mage() -> active_water_elemental = 0;
   }
 };
 
@@ -279,7 +284,7 @@ static void trigger_ignite( spell_t* s )
   struct ignite_t : public mage_spell_t
   {
     ignite_t( player_t* player ) : 
-      mage_spell_t( "ignite", player, RESOURCE_NONE, SCHOOL_FIRE )
+      mage_spell_t( "ignite", player, SCHOOL_FIRE, TREE_FIRE )
     {
       base_duration = 4.0;  
       num_ticks = 2;
@@ -494,7 +499,7 @@ static bool arcane_blast_filler( spell_t* s )
 
   // Need to be able to finish this spell and start Arcane Blast before the buff wears out.
 
-  double cast_time = std::max( s -> execute_time(), s -> gcd() );
+  double cast_time = s -> channeled ? s -> duration() : std::max( s -> execute_time(), s -> gcd() );
 
   double finished = s -> sim -> current_time + cast_time + s -> sim -> lag;
 
@@ -1274,7 +1279,12 @@ struct scorch_t : public mage_spell_t
 
     if( debuff )
     {
-      event_t* e = sim -> target -> expirations.improved_scorch;
+      target_t* t = sim -> target;
+
+      if( t -> debuffs.improved_scorch < 15 )
+	return true;
+
+      event_t* e = t -> expirations.improved_scorch;
 
       if( e && sim -> current_time < ( e -> occurs() - 6.0 ) )
 	return false;
@@ -1454,8 +1464,8 @@ struct icy_veins_t : public mage_spell_t
     {
       name = "Icy Veins Expiration";
       mage_t* p = player -> cast_mage();
-      p -> aura_loss( "Icy Veins" );
-      p -> buffs_icy_veins = 0;
+      p -> aura_gain( "Icy Veins" );
+      p -> buffs_icy_veins = 1;
       sim -> add_event( this, 20.0 );
     }
     virtual void execute()
@@ -1479,7 +1489,17 @@ struct icy_veins_t : public mage_spell_t
   virtual void execute()
   {
     if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
+    consume_resource();
+    update_ready();
     new expiration_t( sim, player );
+  }
+
+  virtual bool ready()
+  {
+    if( ! mage_spell_t::ready() )
+      return false;
+
+    return player -> cast_mage() -> buffs_icy_veins == 0;
   }
 };
 
@@ -1501,11 +1521,13 @@ struct cold_snap_t : public mage_spell_t
 
     for( action_t* a = player -> action_list; a; a = a -> next )
     {
-      if( a -> school == SCHOOL_FROST && a -> name_str != "cold_snap" )
+      if( a -> school == SCHOOL_FROST )
       {
 	a -> cooldown_ready = 0;
       }
     }
+
+    update_ready();
   }
 };
 
@@ -1563,6 +1585,7 @@ struct water_elemental_spell_t : public mage_spell_t
   {
     water_elemental_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
     {
+      player -> summon_pet( "water_elemental" );
       sim -> add_event( this, 45.0 );
     }
     virtual void execute()
@@ -1587,11 +1610,16 @@ struct water_elemental_spell_t : public mage_spell_t
   {
     consume_resource();
     update_ready();
-    player -> summon_pet( "water_elemental" );
-    player -> action_finish( this );
     new water_elemental_expiration_t( sim, player );
   }
 
+  virtual bool ready()
+  {
+    if( ! mage_spell_t::ready() )
+      return false;
+
+    return player -> cast_mage() -> active_water_elemental == 0;
+  }
 };
 
 // mage_t::create_action ====================================================
@@ -1602,18 +1630,19 @@ action_t* mage_t::create_action( const std::string& name,
   if( name == "arcane_blast"     ) return new          arcane_blast_t( this, options_str );
   if( name == "arcane_missiles"  ) return new       arcane_missiles_t( this, options_str );
   if( name == "arcane_power"     ) return new          arcane_power_t( this, options_str );
-  if( name == "combustion"       ) return new            combustion_t( this, options_str );
   if( name == "cold_snap"        ) return new             cold_snap_t( this, options_str );
+  if( name == "combustion"       ) return new            combustion_t( this, options_str );
   if( name == "evocation"        ) return new             evocation_t( this, options_str );
-  if( name == "presence_of_mind" ) return new      presence_of_mind_t( this, options_str );
   if( name == "fire_ball"        ) return new             fire_ball_t( this, options_str );
   if( name == "fire_blast"       ) return new            fire_blast_t( this, options_str );
-  if( name == "mage_armor"       ) return new            mage_armor_t( this, options_str );
-  if( name == "molten_armor"     ) return new          molten_armor_t( this, options_str );
-  if( name == "pyroblast"        ) return new             pyroblast_t( this, options_str );
-  if( name == "scorch"           ) return new                scorch_t( this, options_str );
   if( name == "frost_bolt"       ) return new            frost_bolt_t( this, options_str );
   if( name == "ice_lance"        ) return new             ice_lance_t( this, options_str );
+  if( name == "icy_veins"        ) return new             icy_veins_t( this, options_str );
+  if( name == "mage_armor"       ) return new            mage_armor_t( this, options_str );
+  if( name == "molten_armor"     ) return new          molten_armor_t( this, options_str );
+  if( name == "presence_of_mind" ) return new      presence_of_mind_t( this, options_str );
+  if( name == "pyroblast"        ) return new             pyroblast_t( this, options_str );
+  if( name == "scorch"           ) return new                scorch_t( this, options_str );
   if( name == "water_elemental"  ) return new water_elemental_spell_t( this, options_str );
 
   return 0;
@@ -1663,7 +1692,23 @@ void mage_t::reset()
 {
   player_t::reset();
 
+  // Active
+  active_evocation       = 0;
+  active_water_elemental = 0;
   
+  // Buffs
+  buffs_arcane_blast     = 0;
+  buffs_arcane_potency   = 0;
+  buffs_arcane_power     = 0;
+  buffs_clearcasting     = 0;
+  buffs_combustion       = 0;
+  buffs_combustion_crits = 0;
+  buffs_icy_veins        = 0;
+  buffs_mage_armor       = 0;
+  buffs_molten_armor     = 0;
+  
+  // Expirations
+  expirations_arcane_blast = 0;
 }
 
 // mage_t::composite_spell_crit ============================================

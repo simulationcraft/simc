@@ -71,7 +71,7 @@ bool report_t::parse_option( const std::string& name,
 
 void report_t::print_action( stats_t* s )
 {
-  if( s -> num_executes == 0 ) return;
+  if( s -> total_dmg == 0 ) return;
 
   static std::string action_name;
   double total_dmg;

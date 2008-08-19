@@ -233,7 +233,6 @@ struct shadow_fiend_pet_t : public pet_t
   virtual void reset()
   {
     player_t::reset();
-    melee -> reset();
   }
   virtual void schedule_ready()
   {
