@@ -764,7 +764,7 @@ struct target_t
     int8_t   temporary_debuffs;
     int8_t   affliction_effects;
     int8_t   faerie_fire;
-    int8_t   frozen;
+    double   frozen;
     int8_t   improved_scorch;
     int8_t   mangle;
     int8_t   misery;
@@ -776,6 +776,7 @@ struct target_t
     int8_t   shadow_weaving;
     int8_t   sunder_armor;
     int8_t   winters_chill;
+    int8_t   winters_grasp;
     debuff_t() { memset( (void*) this, 0x0, sizeof( debuff_t ) ); }
     void reset()
     { 
@@ -795,6 +796,7 @@ struct target_t
     event_t* shadow_vulnerability;
     event_t* shadow_weaving;
     event_t* winters_chill;
+    event_t* winters_grasp;
     void reset() { memset( (void*) this, 0x00, sizeof( expirations_t ) ); }
     expirations_t() { reset(); }
   };

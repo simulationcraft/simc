@@ -197,17 +197,17 @@ void action_t::target_debuff( int8_t dmg_type )
     else if( school == SCHOOL_ARCANE )
     {
       target_multiplier *= 1.0 + ( t -> debuffs.earth_and_moon * 0.02 );
-      target_multiplier *= 1.0 + ( t -> debuffs.improved_scorch * 0.01 );
+      if( sim_t::WotLK) target_multiplier *= 1.0 + ( t -> debuffs.improved_scorch * 0.01 );
     }
     else if( school == SCHOOL_FIRE )
     {
       target_multiplier *= 1.0 + ( t -> debuffs.improved_scorch * 0.01 );
-      static uptime_t* sv_uptime = sim -> get_uptime( "improved_scorch" );
-      sv_uptime -> update( t -> debuffs.improved_scorch != 0 );
+      static uptime_t* is_uptime = sim -> get_uptime( "improved_scorch" );
+      is_uptime -> update( t -> debuffs.improved_scorch != 0 );
     }
     else if( school == SCHOOL_FROST )
     {
-      target_multiplier *= 1.0 + ( t -> debuffs.improved_scorch * 0.01 );
+      if( sim_t::WotLK) target_multiplier *= 1.0 + ( t -> debuffs.improved_scorch * 0.01 );
     }
     else if( school == SCHOOL_NATURE )
     {
@@ -216,13 +216,17 @@ void action_t::target_debuff( int8_t dmg_type )
       {
 	target_multiplier *= t -> debuffs.nature_vulnerability_glyph ? 1.28 : 1.20;
       }
-      static uptime_t* sv_uptime = sim -> get_uptime( "nature_vulnerability" );
-      sv_uptime -> update( t -> debuffs.nature_vulnerability != 0 );
+      static uptime_t* nv_uptime = sim -> get_uptime( "nature_vulnerability" );
+      nv_uptime -> update( t -> debuffs.nature_vulnerability != 0 );
     }
     target_multiplier *= 1.0 + ( t -> debuffs.misery * 0.01 );
     target_multiplier *= 1.0 + ( t -> debuffs.curse_of_elements * 0.01 );
     if( t -> debuffs.curse_of_elements ) target_penetration += 88;
   }
+
+  if( t -> debuffs.winters_grasp ) target_hit += 0.02;
+  static uptime_t* wg_uptime = sim -> get_uptime( "winters_grasp" );
+  wg_uptime -> update( t -> debuffs.winters_grasp != 0 );
 
   if( t -> debuffs.judgement_of_crusader ) target_crit += 0.03;
 

@@ -59,9 +59,9 @@ actions=flask,type=pure_death/shadow_form/mana_potion,trigger=2500/shadow_fiend,
 gear_stamina=300
 gear_intellect=300
 gear_spirit=300
-gear_spell_power=1200
+gear_spell_power=1150
 gear_spell_crit_rating=100
-gear_spell_hit_rating=100
+gear_spell_hit_rating=50
 gear_haste_rating=200
 pet=shadow_fiend
 main_hand=beast,damage=110,speed=1.5,school=shadow
@@ -86,7 +86,7 @@ gear_stamina=300
 gear_intellect=300
 gear_spirit=300
 gear_spell_power=1200
-gear_spell_crit_rating=200
+gear_spell_crit_rating=100
 gear_spell_hit_rating=100
 gear_haste_rating=100
 pet=shadow_fiend
@@ -111,8 +111,8 @@ actions=flask,type=pure_death/molten_armor/mana_potion,trigger=2500/scorch,debuf
 gear_stamina=300
 gear_intellect=300
 gear_spirit=300
-gear_spell_power=1000
-gear_spell_crit_rating=400
+gear_spell_power=1100
+gear_spell_crit_rating=300
 gear_spell_hit_rating=100
 gear_haste_rating=100
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
@@ -133,7 +133,7 @@ gear_stamina=300
 gear_intellect=300
 gear_spirit=300
 gear_spell_power=1000
-gear_spell_crit_rating=400
+gear_spell_crit_rating=300
 gear_spell_hit_rating=100
 gear_haste_rating=100
 pet=water_elemental
@@ -152,14 +152,14 @@ blessing_of_wisdom=1
 mage=Mage_Arcane
 level=70
 talents=http://www.worldofwarcraft.com/info/classes/mage/talents.html?tal=2540050300230150333125150500201000000000000000000000000000000000000
-actions=flask,type=pure_death/mage_armor/mana_potion,trigger=2500/evocation,trigger=4000/arcane_power/presence_of_mind,pyroblast/arcane_blast,reset=3/arcane_missiles,ab_filler=1/fire_ball,ab_filler=1/scorch,ab_filler=1
+actions=flask,type=pure_death/mage_armor/mana_potion,trigger=2500/evocation,trigger=4000/presence_of_mind,pyroblast/arcane_blast,ap_burn=1/arcane_blast,reset=3/arcane_power/arcane_missiles,ab_filler=1/fire_ball,ab_filler=1/scorch,ab_filler=1
 gear_stamina=300
 gear_intellect=300
 gear_spirit=300
-gear_spell_power=1000
-gear_spell_crit_rating=400
-gear_spell_hit_rating=100
-gear_haste_rating=100
+gear_spell_power=1200
+gear_spell_crit_rating=250
+gear_spell_hit_rating=50
+tier5_2pc=1
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
 blessing_of_kings=1
 blessing_of_wisdom=1
@@ -177,8 +177,8 @@ actions=flask,type=blinding_light/mark_of_the_wild/moonkin_form/mana_potion,trig
 gear_stamina=300
 gear_intellect=300
 gear_spirit=300
-gear_spell_power=1000
-gear_spell_crit_rating=400
+gear_spell_power=1100
+gear_spell_crit_rating=200
 gear_spell_hit_rating=100
 gear_haste_rating=100
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
@@ -197,8 +197,8 @@ actions=flask,type=blinding_light/mana_potion,trigger=3500/mana_spring_totem/tot
 gear_stamina=300
 gear_intellect=400
 gear_spell_power=1000
-gear_spell_crit_rating=400
-gear_spell_hit_rating=100
+gear_spell_crit_rating=250
+gear_spell_hit_rating=50
 gear_haste_rating=200
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
 blessing_of_kings=1
