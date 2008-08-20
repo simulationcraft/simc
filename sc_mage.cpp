@@ -42,13 +42,18 @@ struct mage_t : public player_t
   // Procs
   proc_t* procs_hot_streak;
   proc_t* procs_missile_barrage;
+  proc_t* procs_deferred_ignite;
 
   // Up-Times
   uptime_t* uptimes_fingers_of_frost;
+  uptime_t* uptimes_arcane_blast[ 4 ];
 
   struct talents_t
   {
+    int8_t  arcane_barrage;
     int8_t  arcane_concentration;
+    int8_t  arcane_empowerment;
+    int8_t  arcane_flows;
     int8_t  arcane_focus;
     int8_t  arcane_impact;
     int8_t  arcane_instability;
@@ -58,16 +63,24 @@ struct mage_t : public player_t
     int8_t  arcane_power;
     int8_t  arcane_subtlety;
     int8_t  arctic_winds;
+    int8_t  brain_freeze;
+    int8_t  burning_soul;
+    int8_t  burnout;
+    int8_t  chilled_to_the_bone;
+    int8_t  cold_as_ice;
     int8_t  cold_snap;
     int8_t  combustion;
     int8_t  critical_mass;
     int8_t  elemental_precision;
+    int8_t  empowered_arcane_missiles;
     int8_t  empowered_fire_ball;
     int8_t  empowered_frost_bolt;
-    int8_t  empowered_arcane_missiles;
+    int8_t  fingers_of_frost;
     int8_t  fire_power;
+    int8_t  focus_magic;
     int8_t  frost_channeling;
     int8_t  frostbite;
+    int8_t  hot_streak;
     int8_t  ice_floes;
     int8_t  ice_shards;
     int8_t  icy_veins;
@@ -79,36 +92,24 @@ struct mage_t : public player_t
     int8_t  incineration;
     int8_t  master_of_elements;
     int8_t  mind_mastery;
+    int8_t  missile_barrage;
     int8_t  molten_fury;
+    int8_t  netherwind_presence;
     int8_t  piercing_ice;
     int8_t  playing_with_fire;
     int8_t  presence_of_mind;
     int8_t  pyroblast;
     int8_t  pyromaniac;
     int8_t  shatter;
+    int8_t  slow;
+    int8_t  spell_impact;
     int8_t  spell_power;
+    int8_t  student_of_the_mind;
+    int8_t  torment_the_weak;
     int8_t  water_elemental;
     int8_t  winters_chill;
-
-    int8_t  burning_soul;
     int8_t  winters_grasp;
-    int8_t  student_of_the_mind;
-    int8_t  netherwind_presence;
-    int8_t  torment_the_weak;
-    int8_t  arcane_empowerment;
-    int8_t  arcane_flows;
-    int8_t  fingers_of_frost;
-    int8_t  spell_impact;
-    int8_t  burnout;
-    int8_t  missile_barrage;
-    int8_t  hot_streak;
-    int8_t  cold_as_ice;
-    int8_t  chilled_to_the_bone;
-    int8_t  brain_freeze;
 
-    int8_t  slow;
-    int8_t  focus_magic;
-    int8_t  arcane_barrage;
     int8_t  world_in_flames;
     int8_t  living_bomb;
     int8_t  improved_water_elemental;
@@ -150,9 +151,14 @@ struct mage_t : public player_t
     // Procs
     procs_hot_streak      = get_proc( "hot_streak" );
     procs_missile_barrage = get_proc( "missile_barrage" );
+    procs_deferred_ignite = get_proc( "deferred_ignite" );
 
     // Up-Times
-    uptimes_fingers_of_frost = get_uptime( "fingers_of_frost" );
+    uptimes_fingers_of_frost  = get_uptime( "fingers_of_frost" );
+    uptimes_arcane_blast[ 0 ] = get_uptime( "arcane_blast_0" );
+    uptimes_arcane_blast[ 1 ] = get_uptime( "arcane_blast_1" );
+    uptimes_arcane_blast[ 2 ] = get_uptime( "arcane_blast_2" );
+    uptimes_arcane_blast[ 3 ] = get_uptime( "arcane_blast_3" );
   }
 
   // Character Definition
@@ -344,7 +350,9 @@ static void trigger_ignite( spell_t* s )
 
   if( p -> active_ignite -> time_remaining > 0 ) 
   {
-    if( s -> sim -> debug ) report_t::log( s -> sim, "Player %s Ignite rolls.", p -> name() );
+    p -> procs_deferred_ignite -> occur();
+
+    if( s -> sim -> debug ) report_t::log( s -> sim, "Player %s defers Ignite.", p -> name() );
 
     int num_ticks = p -> active_ignite -> num_ticks;
     int remaining_ticks = num_ticks - p -> active_ignite -> current_tick;
@@ -870,6 +878,47 @@ void mage_spell_t::player_buff()
 // Mage Spells
 // =========================================================================
 
+// Arcane Barrage Spell ====================================================
+
+struct arcane_barrage_t : public mage_spell_t
+{
+  arcane_barrage_t( player_t* player, const std::string& options_str ) : 
+    mage_spell_t( "arcane_barrage", player, SCHOOL_ARCANE, TREE_ARCANE )
+  {
+    mage_t* p = player -> cast_mage();
+    assert( p -> talents.arcane_barrage );
+
+    option_t options[] =
+    {
+      { "rank",    OPT_INT8, &rank_index },
+      { NULL }
+    };
+    parse_options( options, options_str );
+      
+    static rank_t ranks[] =
+    {
+      { 80, 3, 936, 1144, 0, 0.18 },
+      { 70, 2, 709,  865, 0, 0.18 },
+      { 60, 1, 386,  470, 0, 0.18 },
+      { 0, 0 }
+    };
+    player -> init_mana_costs( ranks );
+    rank = choose_rank( ranks );
+    
+    base_execute_time = 0; 
+    may_crit          = true;
+    dd_power_mod      = (3.0/3.5); 
+    cooldown          = 3.0;
+
+    base_cost         = rank -> cost;
+    base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
+    base_crit        += p -> talents.arcane_instability * 0.01;
+    base_hit         += p -> talents.arcane_focus * ( sim_t::WotLK ? 0.01 : 0.02 );
+    base_penetration += p -> talents.arcane_subtlety * 5;
+    base_crit_bonus  *= 1.0 + p -> talents.spell_power * 0.25;
+  }
+};
+
 // Arcane Blast Spell =======================================================
 
 struct arcane_blast_t : public mage_spell_t
@@ -895,21 +944,25 @@ struct arcane_blast_t : public mage_spell_t
       
     static rank_t ranks[] =
     {
-      { 64, 1, 648, 752, 0, 195 },
+      { 80, 4, 912, 1058, 0, 0.09 }, // should be 0.40
+      { 76, 3, 805,  935, 0, 0.09 }, // should be 0.40
+      { 71, 2, 690,  800, 0, 0.09 }, // should be 0.40
+      { 64, 1, 648,  752, 0, 195  },
       { 0, 0 }
     };
+    player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
     
     base_execute_time = 2.5; 
     may_crit          = true;
     dd_power_mod      = (2.5/3.5); 
-      
+
     base_cost         = rank -> cost;
     base_multiplier  *= 1.0 + p -> talents.spell_impact * 0.02;
     base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
     base_crit        += p -> talents.arcane_instability * 0.01;
     base_crit        += p -> talents.arcane_impact * 0.02;
-    base_hit         += p -> talents.arcane_focus * 0.02;
+    base_hit         += p -> talents.arcane_focus * ( sim_t::WotLK ? 0.01 : 0.02 );
     base_penetration += p -> talents.arcane_subtlety * 5;
     base_crit_bonus  *= 1.0 + p -> talents.spell_power * 0.25;
     dd_power_mod     += p -> talents.arcane_empowerment * 0.03;
@@ -962,6 +1015,11 @@ struct arcane_blast_t : public mage_spell_t
 
     mage_t* p = player -> cast_mage();
 
+    for( int i=0; i < 4; i++ ) 
+    {
+      p -> uptimes_arcane_blast[ i ] -> update( i == p -> buffs_arcane_blast );
+    }
+
     if( p -> buffs_arcane_blast < 3 )
     {
       p -> buffs_arcane_blast++;
@@ -979,6 +1037,7 @@ struct arcane_blast_t : public mage_spell_t
     }
 
     trigger_missile_barrage( this );
+
   }
 
   virtual void player_buff()
@@ -1002,7 +1061,7 @@ struct arcane_blast_t : public mage_spell_t
       return( p -> buffs_arcane_power );
 
     if( max_buff > 0 )
-      if( p -> buffs_arcane_blast > max_buff )
+      if( p -> buffs_arcane_blast >= max_buff )
 	return false;
 
     if( reset_buff > 0 )
@@ -1039,12 +1098,15 @@ struct arcane_missiles_t : public mage_spell_t
       
     static rank_t ranks[] =
     {
-      { 70, 11, 280, 280, 0, 785 },
-      { 69, 10, 260, 260, 0, 740 },
-      { 63,  9, 240, 240, 0, 685 },
-      { 60,  8, 230, 230, 0, 655 },
+      { 79, 13, 360, 260, 0, 0.34 },
+      { 75, 12, 320, 320, 0, 0.34 },
+      { 70, 11, 280, 280, 0, 785  },
+      { 69, 10, 260, 260, 0, 740  },
+      { 63,  9, 240, 240, 0, 685  },
+      { 60,  8, 230, 230, 0, 655  },
       { 0, 0 }
     };
+    player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
 
     base_duration = 5.0; 
@@ -1057,7 +1119,7 @@ struct arcane_missiles_t : public mage_spell_t
     base_cost        *= 1.0 + p -> talents.empowered_arcane_missiles * 0.02;
     base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
     base_crit        += p -> talents.arcane_instability * 0.01;
-    base_hit         += p -> talents.arcane_focus * 0.02;
+    base_hit         += p -> talents.arcane_focus * ( sim_t::WotLK ? 0.01 : 0.02 );
     base_penetration += p -> talents.arcane_subtlety * 5;
     base_crit_bonus  *= 1.0 + p -> talents.spell_power * 0.25;
     dd_power_mod     += p -> talents.empowered_arcane_missiles * 0.03; // bonus per missle
@@ -1187,6 +1249,99 @@ struct arcane_power_t : public mage_spell_t
   }
 };
 
+// Slow Spell ================================================================
+
+struct slow_t : public mage_spell_t
+{
+  struct expiration_t : public event_t
+  {
+    expiration_t( sim_t* sim ) : event_t( sim )
+    {
+      name = "Slow Expiration";
+      if( sim -> log ) report_t::log( sim, "Target %s gains Slowed", sim -> target -> name() );
+      sim -> target -> debuffs.slowed = 1;
+      sim -> add_event( this, 15.0 );
+    }
+    virtual void execute()
+    {
+      if( sim -> log ) report_t::log( sim, "Target %s loses Slowed", sim -> target -> name() );
+      sim -> target -> debuffs.slowed = 0;
+    }
+  };
+   
+  slow_t( player_t* player, const std::string& options_str ) : 
+    mage_spell_t( "slow", player, SCHOOL_ARCANE, TREE_ARCANE )
+  {
+    mage_t* p = player -> cast_mage();
+    assert( p -> talents.slow );
+    base_cost = p -> resource_base[ RESOURCE_MANA ] * 0.20;
+  }
+   
+  virtual void execute()
+  {
+    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
+    consume_resource();
+    update_ready();
+    new expiration_t( sim );
+  }
+
+  virtual bool ready()
+  {
+    if( ! mage_spell_t::ready() )
+      return false;
+
+    return( sim -> target -> debuffs.slowed == 0 );
+  }
+};
+
+// Focus Magic Spell ========================================================
+
+struct focus_magic_t : public mage_spell_t
+{
+  focus_magic_t( player_t* player, const std::string& options_str ) : 
+    mage_spell_t( "focus_magic", player, SCHOOL_ARCANE, TREE_ARCANE )
+  {
+    mage_t* p = player -> cast_mage();
+    assert( p -> talents.focus_magic );
+
+    option_t options[] =
+    {
+      { "rank", OPT_INT8, &rank_index },
+      { NULL }
+    };
+    parse_options( options, options_str );
+      
+    static rank_t ranks[] =
+    {
+      { 80, 7, 0, 0, 150, 1000 },
+      { 70, 6, 0, 0,  80,  535 },
+      { 60, 5, 0, 0,  60,  400 },
+      { 0, 0 }
+    };
+    player -> init_mana_costs( ranks );
+    rank = choose_rank( ranks );
+
+    base_cost = rank -> cost;
+  }
+   
+  virtual void execute()
+  {
+    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) report_t::log( sim, "Target %s gains Focus Magic", sim -> target -> name() );
+    consume_resource();
+    sim -> target -> debuffs.focus_magic = rank -> dot;
+    sim -> target -> debuffs.focus_magic_charges = 50;
+  }
+
+  virtual bool ready()
+  {
+    if( ! mage_spell_t::ready() )
+      return false;
+
+    return( sim -> target -> debuffs.focus_magic_charges == 0 );
+  }
+};
+
 // Evocation Spell ==========================================================
 
 struct evocation_t : public mage_spell_t
@@ -1299,11 +1454,15 @@ struct fire_ball_t : public mage_spell_t
       
     static rank_t ranks[] =
     {
-      { 66, 13, 633+42, 805+42, 0, 425 },
-      { 60, 12, 596+38, 760+38, 0, 410 },
-      { 60, 11, 561+36, 715+36, 0, 395 },
+      { 78, 16, 888, 1132, 0, 0.21 },
+      { 74, 15, 783,  997, 0, 0.21 },
+      { 70, 14, 717,  913, 0, 0.21 },
+      { 66, 13, 633,  805, 0, 425  },
+      { 60, 12, 596,  760, 0, 410  },
+      { 60, 11, 561,  715, 0, 395  },
       { 0, 0 }
     };
+    player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
     
     base_execute_time = 3.5; 
@@ -1324,7 +1483,7 @@ struct fire_ball_t : public mage_spell_t
     base_penetration  += p -> talents.arcane_subtlety * 5;
     base_crit_bonus   *= 1.0 + p -> talents.spell_power * 0.25;
     base_crit_bonus   *= 1.0 + p -> talents.burnout * 0.10;
-    dd_power_mod      += p -> talents.empowered_fire_ball * 0.03;
+    dd_power_mod      += p -> talents.empowered_fire_ball * ( sim_t::WotLK ? 0.05 : 0.03 );
 
     if( p -> gear.tier6_4pc ) base_multiplier *= 1.05;
   }
@@ -1390,11 +1549,14 @@ struct fire_blast_t : public mage_spell_t
       
     static rank_t ranks[] =
     {
-      { 70, 9, 664, 786, 0, 465 },
-      { 61, 8, 539, 637, 0, 400 },
-      { 54, 7, 431, 509, 0, 340 },
+      { 80, 11, 925, 1095, 0, 0.21 },
+      { 74, 10, 760,  900, 0, 0.21 },
+      { 70,  9, 664,  786, 0, 465  },
+      { 61,  8, 539,  637, 0, 400  },
+      { 54,  7, 431,  509, 0, 340  },
       { 0, 0 }
     };
+    player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
     
     base_execute_time = 0; 
@@ -1452,11 +1614,14 @@ struct pyroblast_t : public mage_spell_t
       
     static rank_t ranks[] =
     {
-      { 70, 10, 939, 1191, 356, 500 },
-      { 66,  9, 846, 1074, 312, 460 },
-      { 60,  8, 708,  898, 268, 440 },
+      { 77, 12, 1190, 1510, 452, 0.22 },
+      { 73, 11, 1014, 1286, 384, 0.22 },
+      { 70, 10,  939, 1191, 356, 500  },
+      { 66,  9,  846, 1074, 312, 460  },
+      { 60,  8,  708,  898, 268, 440  },
       { 0, 0 }
     };
+    player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
     
     base_execute_time = 6.0; 
@@ -1486,6 +1651,7 @@ struct pyroblast_t : public mage_spell_t
 
 struct scorch_t : public mage_spell_t
 {
+  int8_t increment;
   int8_t debuff;
   int8_t ab_filler;
 
@@ -1505,11 +1671,14 @@ struct scorch_t : public mage_spell_t
       
     static rank_t ranks[] =
     {
-      { 70, 9, 305, 361, 0, 180 },
-      { 64, 8, 269, 317, 0, 165 },
-      { 58, 7, 233, 275, 0, 150 },
+      { 78, 11, 376, 444, 0, 0.08 },
+      { 73, 10, 321, 379, 0, 0.08 },
+      { 70,  9, 305, 361, 0, 180  },
+      { 64,  8, 269, 317, 0, 165  },
+      { 58,  7, 233, 275, 0, 150  },
       { 0, 0 }
     };
+    player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
     
     base_execute_time = 1.5; 
@@ -1532,6 +1701,8 @@ struct scorch_t : public mage_spell_t
     base_crit_bonus  *= 1.0 + p -> talents.burnout * 0.10;
 
     if( debuff ) assert( p -> talents.improved_scorch );
+
+    increment = sim_t::WotLK ? 2 : 3;
   }
 
   virtual void execute()
@@ -1559,10 +1730,10 @@ struct scorch_t : public mage_spell_t
       {
 	target_t* t = sim -> target;
 
-	if( t -> debuffs.improved_scorch < 15 ) 
+	if( t -> debuffs.improved_scorch < ( 5 * increment ) ) 
 	{
-	  t -> debuffs.improved_scorch += 3;
-	  if( sim -> log ) report_t::log( sim, "%s gains Improved Scorch %d", t -> name(), t -> debuffs.improved_scorch / 3 );
+	  t -> debuffs.improved_scorch += increment;
+	  if( sim -> log ) report_t::log( sim, "%s gains Improved Scorch %d", t -> name(), t -> debuffs.improved_scorch / increment );
 	}
 
 	event_t*& e = t -> expirations.improved_scorch;
@@ -1588,7 +1759,7 @@ struct scorch_t : public mage_spell_t
     {
       target_t* t = sim -> target;
 
-      if( t -> debuffs.improved_scorch < 15 )
+      if( t -> debuffs.improved_scorch < ( 5 * increment ) )
 	return true;
 
       event_t* e = t -> expirations.improved_scorch;
@@ -1619,11 +1790,12 @@ struct combustion_t : public mage_spell_t
    
   virtual void execute()
   {
-    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
     mage_t* p = player -> cast_mage();
+    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
     p -> aura_gain( "Combustion" );
     p -> buffs_combustion = 0;
     p -> buffs_combustion_crits = 3;
+    update_ready();
   }
 };
 
@@ -1648,14 +1820,18 @@ struct frost_bolt_t : public mage_spell_t
       
     static rank_t ranks[] =
     {
-      { 68, 13, 597, 644, 0, 330 },
-      { 62, 12, 522, 563, 0, 300 },
-      { 60, 11, 515, 555, 0, 290 },
-      { 56, 10, 429, 463, 0, 260 },
-      { 50, 9,  353, 383, 0, 225 },
-      { 44, 8,  292, 316, 0, 195 },
+      { 79, 16, 799, 861, 0, 0.15 },
+      { 75, 15, 702, 758, 0, 0.15 },
+      { 70, 14, 630, 680, 0, 0.15 },
+      { 68, 13, 597, 644, 0, 330  },
+      { 62, 12, 522, 563, 0, 300  },
+      { 60, 11, 515, 555, 0, 290  },
+      { 56, 10, 429, 463, 0, 260  },
+      { 50, 9,  353, 383, 0, 225  },
+      { 44, 8,  292, 316, 0, 195  },
       { 0, 0 }
     };
+    player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
     
     base_execute_time   = 3.0; 
@@ -1671,12 +1847,12 @@ struct frost_bolt_t : public mage_spell_t
     base_multiplier   *= 1.0 + p -> talents.arcane_instability * 0.01;
     base_multiplier   *= 1.0 + p -> talents.chilled_to_the_bone * 0.01;
     base_crit         += p -> talents.arcane_instability * 0.01;
-    base_crit         += p -> talents.empowered_frost_bolt * 0.01;
+    base_crit         += p -> talents.empowered_frost_bolt * ( sim_t::WotLK ? 0.02 : 0.01 );
     base_hit          += p -> talents.elemental_precision * 0.01;
     base_penetration  += p -> talents.arcane_subtlety * 5;
     base_crit_bonus   *= 1.0 + p -> talents.ice_shards * 0.20;
     base_crit_bonus   *= 1.0 + p -> talents.spell_power * 0.25;
-    dd_power_mod      += p -> talents.empowered_frost_bolt * 0.02;
+    dd_power_mod      += p -> talents.empowered_frost_bolt * ( sim_t::WotLK ? 0.05 : 0.02 );
 
     if( p -> gear.tier6_4pc ) base_multiplier *= 1.05;
   }
@@ -1720,9 +1896,12 @@ struct ice_lance_t : public mage_spell_t
       
     static rank_t ranks[] =
     {
-      { 66, 1,  161, 187, 0, 150 },
+      { 78, 3,  221, 255, 0, 0.07 },
+      { 72, 2,  182, 210, 0, 0.07 },
+      { 66, 1,  161, 187, 0, 150  },
       { 0, 0 }
     };
+    player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
     
     base_execute_time   = 0.0; 
@@ -1894,10 +2073,11 @@ struct water_elemental_spell_t : public mage_spell_t
 {
   struct water_elemental_expiration_t : public event_t
   {
-    water_elemental_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
+    water_elemental_expiration_t( sim_t* sim, player_t* player ) : event_t( sim, player )
     {
-      player -> summon_pet( "water_elemental" );
-      sim -> add_event( this, 45.0 );
+      mage_t* p = player -> cast_mage();
+      p -> summon_pet( "water_elemental" );
+      sim -> add_event( this, 45.0 + p -> talents.improved_water_elemental * 5.0 );
     }
     virtual void execute()
     {
@@ -1939,6 +2119,7 @@ struct water_elemental_spell_t : public mage_spell_t
 action_t* mage_t::create_action( const std::string& name,
 				 const std::string& options_str )
 {
+  if( name == "arcane_barrage"   ) return new        arcane_barrage_t( this, options_str );
   if( name == "arcane_blast"     ) return new          arcane_blast_t( this, options_str );
   if( name == "arcane_missiles"  ) return new       arcane_missiles_t( this, options_str );
   if( name == "arcane_power"     ) return new          arcane_power_t( this, options_str );
@@ -1947,6 +2128,7 @@ action_t* mage_t::create_action( const std::string& name,
   if( name == "evocation"        ) return new             evocation_t( this, options_str );
   if( name == "fire_ball"        ) return new             fire_ball_t( this, options_str );
   if( name == "fire_blast"       ) return new            fire_blast_t( this, options_str );
+  if( name == "focus_magic"      ) return new           focus_magic_t( this, options_str );
   if( name == "frost_bolt"       ) return new            frost_bolt_t( this, options_str );
   if( name == "ice_lance"        ) return new             ice_lance_t( this, options_str );
   if( name == "icy_veins"        ) return new             icy_veins_t( this, options_str );
@@ -1955,6 +2137,7 @@ action_t* mage_t::create_action( const std::string& name,
   if( name == "presence_of_mind" ) return new      presence_of_mind_t( this, options_str );
   if( name == "pyroblast"        ) return new             pyroblast_t( this, options_str );
   if( name == "scorch"           ) return new                scorch_t( this, options_str );
+  if( name == "slow"             ) return new                  slow_t( this, options_str );
   if( name == "water_elemental"  ) return new water_elemental_spell_t( this, options_str );
 
   return 0;
@@ -1993,7 +2176,7 @@ void mage_t::init_base()
 
   // FIXME! Make this level-specific.
   resource_base[ RESOURCE_HEALTH ] = 3200;
-  resource_base[ RESOURCE_MANA   ] = 2340;
+  resource_base[ RESOURCE_MANA   ] = rating_t::interpolate( level, 1183, 2241, 3268 );
 
   health_per_stamina = 10;
   mana_per_intellect = 15;

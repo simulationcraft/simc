@@ -280,7 +280,7 @@ void report_t::print_uptime()
 	fprintf( sim -> output_file, "    Global:\n" );
 	first = false;
       }
-      fprintf( sim -> output_file, "        %.1f%% : %s\n", u -> percentage(), u -> name() );
+      fprintf( sim -> output_file, "        %4.1f%% : %s\n", u -> percentage(), u -> name() );
     }
   }
 
@@ -299,7 +299,7 @@ void report_t::print_uptime()
 	  fprintf( sim -> output_file, "    %s:\n", p -> name() );
 	  first = false;
 	}
-	fprintf( sim -> output_file, "        %.1f%% : %s\n", u -> percentage(), u -> name() );
+	fprintf( sim -> output_file, "        %4.1f%% : %s\n", u -> percentage(), u -> name() );
       }
     }
   }

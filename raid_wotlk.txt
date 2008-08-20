@@ -109,6 +109,78 @@ sanctified_retribution=1
 swift_retribution=1
 
 #
+# Mage_Arcane
+#
+# (1) The "trigger=3500" option to mana_potion represents the mana gained and the amount below max required to trigger
+# (2) The "trigger=6000" option to evocation represents the mana gained and the amount below max required to trigger
+#
+mage=Mage_Arcane
+level=80
+talents=http://www.worldofwarcraft.com/info/classes/mage/talents2.html?tal=23000503310033014032310251532103000000000000000000000000000530003010000000000000000000
+actions=flask,type=blinding_light/molten_armor/mana_potion,trigger=3500/evocation,trigger=6000/arcane_power/arcane_missiles,barrage=1/arcane_barrage/arcane_blast,ap_burn=1/arcane_blast
+gear_stamina=600
+gear_intellect=600
+gear_spirit=600
+gear_spell_power=2000
+gear_spell_crit_rating=800
+gear_spell_hit_rating=200
+gear_haste_rating=400
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_wisdom=1
+sanctified_retribution=1
+swift_retribution=1
+
+#
+# Mage_Fire
+#
+# (1) The "trigger=3500" option to mana_potion represents the mana gained and the amount below max required to trigger
+# (2) The "trigger=6000" option to evocation represents the mana gained and the amount below max required to trigger
+#
+mage=Mage_Fire
+level=80
+talents=http://www.worldofwarcraft.com/info/classes/mage/talents2.html?tal=00000000000000000000000000000003550320123033310531203213510230032010000000000000000000
+actions=flask,type=pure_death/molten_armor/mana_potion,trigger=3500/scorch,debuff=1/evocation,trigger=6000/icy_veins/fire_ball
+gear_stamina=600
+gear_intellect=600
+gear_spirit=600
+gear_spell_power=2000
+gear_spell_crit_rating=800
+gear_spell_hit_rating=200
+gear_haste_rating=400
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_wisdom=1
+sanctified_retribution=1
+swift_retribution=1
+
+#
+# Mage_Frost
+#
+# (1) The "trigger=3500" option to mana_potion represents the mana gained and the amount below max required to trigger
+# (2) The "trigger=6000" option to evocation represents the mana gained and the amount below max required to trigger
+#
+mage=Mage_Frost
+level=80
+talents=http://www.worldofwarcraft.com/info/classes/mage/talents2.html?tal=00000000000000000000000000000023050020123000000000000000000535030310005100230052231351
+actions=flask,type=pure_death/molten_armor/mana_potion,trigger=2500/evocation,trigger=4000/water_elemental/ice_lance,frozen=1/icy_veins/cold_snap/frost_bolt
+gear_stamina=600
+gear_intellect=600
+gear_spirit=600
+gear_spell_power=2000
+gear_spell_crit_rating=800
+gear_spell_hit_rating=200
+gear_haste_rating=400
+pet=water_elemental
+quiet=0
+active=owner
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_wisdom=1
+sanctified_retribution=1
+swift_retribution=1
+
+#
 # Balance Druid
 #
 # (1) The "trigger=3500" option to mana_potion represents the mana gained and the amount below max required to trigger
@@ -175,7 +247,7 @@ swift_retribution=1
 shaman=Shaman_Enhancement
 level=80
 talents=http://www.worldofwarcraft.com/info/classes/shaman/talents2.html?tal=05203010000000000000000030205033105021335311523125100000000000000000000000000
-actions=flask,type=relentless_assault/auto_attack/windfury_weapon,weapon=main/flametongue_weapon,weapon=off/stormstrike/lava_burst,maelstrom=5,flame_shock=1,max_ticks_consumed=1/lightning_bolt,maelstrom=5/searing_totem/strength_of_earth_totem/windfury_totem/shamanistic_rage/flame_shock/earth_shock/lightning_shield
+actions=flask,type=relentless_assault/windfury_weapon,weapon=main/flametongue_weapon,weapon=off/auto_attack/stormstrike/lava_burst,maelstrom=5,flame_shock=1,max_ticks_consumed=1/lightning_bolt,maelstrom=5/searing_totem/strength_of_earth_totem/windfury_totem/shamanistic_rage/flame_shock/earth_shock/lightning_shield
 gear_strength=400
 gear_agility=600
 gear_stamina=1000

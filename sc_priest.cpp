@@ -531,12 +531,13 @@ struct holy_fire_t : public priest_spell_t
 
     static rank_t ranks[] =
     {
-      { 78, 11, 890, 1130, 350, 290 },
-      { 72, 10, 732,  928, 287, 290 },
-      { 66,  9, 412,  523, 165, 290 },
-      { 60,  8, 355,  449, 145, 255 },
+      { 78, 11, 890, 1130, 350, 0.11 },
+      { 72, 10, 732,  928, 287, 0.11 },
+      { 66,  9, 412,  523, 165, 290  },
+      { 60,  8, 355,  449, 145, 255  },
       { 0,   0 }
     };
+    player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
 
     if( rank -> index < 10 )
@@ -583,13 +584,14 @@ struct smite_t : public priest_spell_t
 
     static rank_t ranks[] =
     {
-      { 80, 12, 707, 793, 0, 615 },
-      { 75, 11, 604, 676, 0, 520 },
-      { 69, 10, 545, 611, 0, 385 },
-      { 61,  9, 405, 455, 0, 300 },
-      { 54,  8, 371, 415, 0, 280 },
+      { 80, 12, 707, 793, 0, 0.15 },
+      { 75, 11, 604, 676, 0, 0.15 },
+      { 69, 10, 545, 611, 0, 385  },
+      { 61,  9, 405, 455, 0, 300  },
+      { 54,  8, 371, 415, 0, 280  },
       { 0, 0 }
     };
+    player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
     
     base_execute_time = 2.5; 
@@ -648,12 +650,13 @@ struct penance_t : public priest_spell_t
 
     static rank_t ranks[] =
     {
-      { 80, 4, 437, 437, 0, 715 },
-      { 76, 3, 355, 355, 0, 592 }, // inferred from Penance-MindFlay ratio
-      { 68, 2, 325, 325, 0, 426 }, // inferred from Penance-MindFlay ratio
-      { 60, 1, 263, 263, 0, 379 }, // inferred from Penance-MindFlay ratio
+      { 80, 4, 437, 437, 0, 0.33 },
+      { 76, 3, 355, 355, 0, 0.33 },
+      { 68, 2, 325, 325, 0, 0.33 },
+      { 60, 1, 263, 263, 0, 0.33 },
       { 0, 0 }
     };
+    player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
     
     base_execute_time = 0.0; 
@@ -729,13 +732,14 @@ struct shadow_word_pain_t : public priest_spell_t
 
     static rank_t ranks[] =
     {
-      { 80, 12, 0, 0, 1530, 915 },
-      { 75, 11, 0, 0, 1302, 775 },
-      { 70, 10, 0, 0, 1236, 575 },
-      { 65,  9, 0, 0, 1002, 510 },
-      { 58,  8, 0, 0,  852, 470 },
+      { 80, 12, 0, 0, 1530, 0.22 },
+      { 75, 11, 0, 0, 1302, 0.22 },
+      { 70, 10, 0, 0, 1236, 575  },
+      { 65,  9, 0, 0, 1002, 510  },
+      { 58,  8, 0, 0,  852, 470  },
       { 0, 0 }
     };
+    player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
       
     base_execute_time = 0; 
@@ -812,12 +816,13 @@ struct vampiric_touch_t : public priest_spell_t
 
     static rank_t ranks[] =
     {
-      { 80, 5, 0, 0, 850, 700 },
-      { 75, 4, 0, 0, 735, 595 },
-      { 70, 3, 0, 0, 690, 475 },
-      { 60, 2, 0, 0, 640, 400 },
+      { 80, 5, 0, 0, 850, 0.16 },
+      { 75, 4, 0, 0, 735, 0.16 },
+      { 70, 3, 0, 0, 690, 475  },
+      { 60, 2, 0, 0, 640, 400  },
       { 0, 0 }
     };
+    player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
 
     base_execute_time = 1.5; 
@@ -867,12 +872,13 @@ struct devouring_plague_t : public priest_spell_t
 
     static rank_t ranks[] =
     {
-      { 80, 9, 0, 0, 1720, 1850 },
-      { 76, 8, 0, 0, 1416, 1520 },
+      { 80, 9, 0, 0, 1720, 0.44 },
+      { 76, 8, 0, 0, 1416, 0.44 },
       { 68, 7, 0, 0, 1216, 1145 },
       { 60, 6, 0, 0,  904,  985 },
       { 0, 0 }
     };
+    player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
 
     base_execute_time = 0; 
@@ -966,13 +972,14 @@ struct mind_blast_t : public priest_spell_t
 
     static rank_t ranks[] =
     {
-      { 80, 13, 992, 1048, 0, 715 },
-      { 75, 12, 837,  883, 0, 605 },
-      { 69, 11, 708,  748, 0, 450 },
-      { 63, 10, 557,  588, 0, 380 },
-      { 58,  9, 503,  531, 0, 350 },
+      { 80, 13, 992, 1048, 0, 0.17 },
+      { 75, 12, 837,  883, 0, 0.17 },
+      { 69, 11, 708,  748, 0, 450  },
+      { 63, 10, 557,  588, 0, 380  },
+      { 58,  9, 503,  531, 0, 350  },
       { 0, 0 }
     };
+    player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
     
     base_execute_time = 1.5; 
@@ -1027,12 +1034,13 @@ struct shadow_word_death_t : public priest_spell_t
 
     static rank_t ranks[] =
     {
-      { 80, 4, 750, 870, 0, 510 },
-      { 75, 3, 639, 741, 0, 430 },
-      { 70, 2, 572, 664, 0, 309 },
-      { 62, 1, 450, 522, 0, 243 },
+      { 80, 4, 750, 870, 0, 0.22 },
+      { 75, 3, 639, 741, 0, 0.22 },
+      { 70, 2, 572, 664, 0, 309  },
+      { 62, 1, 450, 522, 0, 243  },
       { 0, 0 }
     };
+    player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
     
     base_execute_time = 0; 
@@ -1097,12 +1105,13 @@ struct mind_flay_t : public priest_spell_t
 
     static rank_t ranks[] =
     {
-      { 80, 9, 0, 0, 690, 390 },
-      { 76, 8, 0, 0, 576, 320 },
-      { 68, 7, 0, 0, 528, 230 },
-      { 60, 6, 0, 0, 426, 205 },
+      { 80, 9, 0, 0, 690, 0.09 },
+      { 76, 8, 0, 0, 576, 0.09 },
+      { 68, 7, 0, 0, 528, 230  },
+      { 60, 6, 0, 0, 426, 205  },
       { 0, 0 }
     };
+    player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
     
     base_execute_time = 0.0; 
@@ -1111,7 +1120,6 @@ struct mind_flay_t : public priest_spell_t
     channeled         = true; 
     binary            = true; 
     dot_power_mod     = 0.57;
-    dot_power_mod     = ( 3.0 / 3.5 ) - 0.05;
 
     base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.focused_mind * 0.05;
@@ -1653,7 +1661,7 @@ void priest_t::init_base()
 
   // FIXME! Make this level-specific.
   resource_base[ RESOURCE_HEALTH ] = 3200;
-  resource_base[ RESOURCE_MANA   ] = 2340;
+  resource_base[ RESOURCE_MANA   ] = rating_t::interpolate( level, 1383, 2620, 3820 );
 
   health_per_stamina = 10;
   mana_per_intellect = 15;

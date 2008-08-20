@@ -856,13 +856,14 @@ struct chain_lightning_t : public shaman_spell_t
 
     static rank_t ranks[] =
     {
-      { 80, 8, 973, 1111, 0, 1695 },
-      { 74, 7, 806,  920, 0, 1380 },
+      { 80, 8, 973, 1111, 0, 0.26 },
+      { 74, 7, 806,  920, 0, 0.26 },
       { 70, 6, 734,  838, 0,  760 },
       { 63, 5, 603,  687, 0,  650 },
       { 56, 4, 493,  551, 0,  550 },
       { 0, 0 }
     };
+    player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
 
     base_execute_time  = 2.0; 
@@ -932,13 +933,16 @@ struct lightning_bolt_t : public shaman_spell_t
 
     static rank_t ranks[] =
     {
-      { 67, 12, 563, 643, 0, 330 },
-      { 62, 11, 495, 565, 0, 300 },
-      { 56, 10, 419, 467, 0, 265 },
-      { 50,  9, 347, 389, 0, 230 },
-      { 44,  8, 282, 316, 0, 195 },
+      { 79, 14, 715, 815, 0, 0.10 },
+      { 73, 13, 595, 679, 0, 0.10 },
+      { 67, 12, 563, 643, 0, 330  },
+      { 62, 11, 495, 565, 0, 300  },
+      { 56, 10, 419, 467, 0, 265  },
+      { 50,  9, 347, 389, 0, 230  },
+      { 44,  8, 282, 316, 0, 195  },
       { 0, 0 }
     };
+    player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
 
     base_execute_time  = 2.5; 
@@ -1025,6 +1029,7 @@ struct lava_burst_t : public shaman_spell_t
       { 74, 1, 888, 1132, 0, 655 },
       { 0, 0 }
     };
+    player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
 
     base_execute_time  = 2.0; 
@@ -1188,11 +1193,14 @@ struct earth_shock_t : public shaman_spell_t
 
     static rank_t ranks[] =
     {
-      { 69, 8, 658, 692, 0, 535 },
-      { 60, 7, 517, 545, 0, 450 },
-      { 48, 6, 359, 381, 0, 345 },
+      { 79, 10, 849, 895, 0, 0.18 },
+      { 74,  9, 723, 761, 0, 0.18 },
+      { 69,  8, 658, 692, 0, 535  },
+      { 60,  7, 517, 545, 0, 450  },
+      { 48,  6, 359, 381, 0, 345  },
       { 0, 0 }
     };
+    player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
     
     base_execute_time = 0; 
@@ -1249,11 +1257,14 @@ struct frost_shock_t : public shaman_spell_t
 
     static rank_t ranks[] =
     {
-      { 68, 5, 640, 676, 0, 525 },
-      { 58, 4, 486, 514, 0, 430 },
-      { 46, 3, 333, 353, 0, 325 },
+      { 78, 7, 802, 848, 0, 0.18 },
+      { 73, 6, 681, 719, 0, 0.18 },
+      { 68, 5, 640, 676, 0, 525  },
+      { 58, 4, 486, 514, 0, 430  },
+      { 46, 3, 333, 353, 0, 325  },
       { 0, 0 }
     };
+    player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
     
     base_execute_time = 0; 
@@ -1297,12 +1308,15 @@ struct flame_shock_t : public shaman_spell_t
 
     static rank_t ranks[] =
     {
-      { 70, 7, 377, 377, 420, 500 },
-      { 60, 6, 309, 309, 344, 450 },
-      { 52, 5, 230, 230, 256, 345 },
-      { 40, 4, 152, 152, 168, 250 },
+      { 80, 9, 500, 500, 556, 0.17 },
+      { 75, 8, 425, 425, 476, 0.17 },
+      { 70, 7, 377, 377, 420, 500  },
+      { 60, 6, 309, 309, 344, 450  },
+      { 52, 5, 230, 230, 256, 345  },
+      { 40, 4, 152, 152, 168, 250  },
       { 0, 0 }
     };
+    player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
     
     base_execute_time = 0; 
@@ -1372,6 +1386,7 @@ struct searing_totem_t : public shaman_spell_t
       { 40, 4, 30, 30, 0, 110 },
       { 0, 0 }
     };
+    player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
 
     base_execute_time = 0; 
@@ -1531,6 +1546,7 @@ struct flametongue_totem_t : public shaman_spell_t
       { 58, 4, 15, 15, 62, 275 },
       { 0, 0 }
     };
+    player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
       
     base_cost       = rank -> cost;
@@ -1859,6 +1875,7 @@ struct strength_of_earth_totem_t : public shaman_spell_t
       { 60, 4, 0, 0, 77, 275 },
       { 0, 0 }
     };
+    player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
       
     base_cost      = rank -> cost;
@@ -1968,6 +1985,7 @@ struct grace_of_air_totem_t : public shaman_spell_t
       { 60, 4, 0, 0, 77, 310 },
       { 0, 0 }
     };
+    player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
       
     base_cost      = rank -> cost;
@@ -2399,6 +2417,7 @@ struct lightning_shield_t : public shaman_spell_t
       { 56, 3, 198, 198, 0, 275 },
       { 0, 0 }
     };
+    player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
     
     if( sim_t::WotLK )
@@ -2581,7 +2600,7 @@ void shaman_t::init_base()
   initial_attack_crit_per_agility = rating_t::interpolate( level, 0.01/25.0, 0.01/40.0, 0.01/83.3 );
 
   resource_base[ RESOURCE_HEALTH ] = 3185;
-  resource_base[ RESOURCE_MANA   ] = 2680;
+  resource_base[ RESOURCE_MANA   ] = rating_t::interpolate( level, 1415, 2680, 3907 );
 
   health_per_stamina = 10;
   mana_per_intellect = 15;

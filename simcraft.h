@@ -48,6 +48,7 @@ struct proc_t;
 struct report_t;
 struct shaman_t;
 struct sim_t;
+struct rank_t;
 struct rating_t;
 struct stats_t;
 struct spell_t;
@@ -686,6 +687,7 @@ struct player_t
   void      share_duration( const std::string& name, double ready );
   void      recalculate_haste()  {  haste = 1.0 / ( 1.0 + haste_rating / rating.haste ); }
   double    spirit_regen_per_second();
+  void      init_mana_costs( rank_t* );
   bool      dual_wield() { return main_hand_weapon.type != WEAPON_NONE && off_hand_weapon.type != WEAPON_NONE; }
   void      aura_gain( const char* name );
   void      aura_loss( const char* name );
@@ -764,6 +766,8 @@ struct target_t
     int8_t   temporary_debuffs;
     int8_t   affliction_effects;
     int8_t   faerie_fire;
+    double   focus_magic;
+    int8_t   focus_magic_charges;
     double   frozen;
     int8_t   improved_scorch;
     int8_t   mangle;
@@ -983,6 +987,7 @@ struct spell_t : public action_t
   virtual void   target_debuff( int8_t dmg_type );
   virtual double level_based_miss_chance( int8_t player, int8_t target );
   virtual void   calculate_result();
+  virtual void   schedule_execute();
    
   // Passthru Methods
   virtual double cost()                            { return action_t::cost();              }
@@ -995,7 +1000,6 @@ struct spell_t : public action_t
   virtual void tick()                              { action_t::tick();                     }
   virtual void last_tick()                         { action_t::last_tick();                }
   virtual void assess_damage( double a, int8_t t ) { action_t::assess_damage( a, t );      }
-  virtual void schedule_execute()                  { action_t::schedule_execute();         }
   virtual void schedule_tick()                     { action_t::schedule_tick();            }
   virtual void update_ready()                      { action_t::update_ready();             }
   virtual void update_stats( int8_t t )            { action_t::update_stats( t );          }

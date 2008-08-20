@@ -983,6 +983,17 @@ void player_t::spell_hit_event( spell_t* spell )
   {
     trigger_moonkin_haste( spell );
   }
+
+  target_t* t = sim -> target;
+  if( t -> debuffs.focus_magic ) 
+  {
+    t -> debuffs.focus_magic_charges--;
+    if( t -> debuffs.focus_magic_charges <= 0 ) 
+    {
+      if( sim -> log ) report_t::log( sim, "Target %s loses Focus Magic", t -> name() );
+      t -> debuffs.focus_magic = 0;
+    }
+  }
 }
 
 // player_t::spell_tick_event ===============================================
@@ -1111,6 +1122,22 @@ double player_t::spirit_regen_per_second()
   double mana_per_second  = sqrt( intellect() ) * spirit() * base_regen;
 
   return mana_per_second;
+}
+
+// player_t::init_mana_costs ================================================
+
+void player_t::init_mana_costs( rank_t* rank_list )
+{
+   for( int i=0; rank_list[ i ].level; i++ )
+   {
+     rank_t& r = rank_list[ i ];
+
+     // Look for ranks in which the cost of an action is a percentage of base mana
+     if( r.cost > 0 && r.cost < 1 )
+     {
+       r.cost *= resource_base[ RESOURCE_MANA ];
+     }
+   }
 }
 
 // player_t::aura_gain ======================================================

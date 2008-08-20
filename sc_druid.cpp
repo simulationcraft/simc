@@ -384,11 +384,12 @@ struct faerie_fire_t : public druid_spell_t
       
     static rank_t ranks[] =
     {
-      { 76, 6, 0, 0, 1260, 220 },
-      { 66, 5, 0, 0,  610, 145 },
-      { 54, 4, 0, 0,  505, 115 },
+      { 76, 6, 0, 0, 1260, 0.07 },
+      { 66, 5, 0, 0,  610, 145  },
+      { 54, 4, 0, 0,  505, 115  },
       { 0, 0 }
     };
+    player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
      
     base_cost = rank -> cost;
@@ -514,13 +515,14 @@ struct insect_swarm_t : public druid_spell_t
       
     static rank_t ranks[] =
     {
-      { 80, 7, 0, 0, 1050, 265 },
-      { 70, 6, 0, 0,  792, 175 },
-      { 60, 5, 0, 0,  594, 155 },
-      { 50, 4, 0, 0,  432, 135 },
-      { 40, 3, 0, 0,  300, 110 },
+      { 80, 7, 0, 0, 1050, 0.08 },
+      { 70, 6, 0, 0,  792, 175  },
+      { 60, 5, 0, 0,  594, 155  },
+      { 50, 4, 0, 0,  432, 135  },
+      { 40, 3, 0, 0,  300, 110  },
       { 0, 0 }
     };
+    player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
      
     base_execute_time = 0; 
@@ -566,13 +568,14 @@ struct moonfire_t : public druid_spell_t
       
     static rank_t ranks[] =
     {
-      { 80, 14, 406, 476, 800, 745 },
-      { 75, 13, 347, 407, 684, 640 },
-      { 70, 12, 305, 357, 600, 495 },
-      { 64, 11, 220, 220, 444, 430 },
-      { 58, 10, 189, 221, 384, 375 },
+      { 80, 14, 406, 476, 800, 0.21 },
+      { 75, 13, 347, 407, 684, 0.21 },
+      { 70, 12, 305, 357, 600, 495  },
+      { 64, 11, 220, 220, 444, 430  },
+      { 58, 10, 189, 221, 384, 375  },
       { 0, 0 }
     };
+    player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
      
     base_dot          = rank -> dot;
@@ -725,13 +728,14 @@ struct starfire_t : public druid_spell_t
 
     static rank_t ranks[] =
     {
-      { 80, 8, 661, 779, 0, 555 },
-      { 73, 8, 554, 652, 0, 455 },
-      { 66, 8, 540, 636, 0, 370 },
-      { 60, 7, 496, 584, 0, 340 },
-      { 58, 6, 445, 525, 0, 315 },
+      { 80, 8, 661, 779, 0, 0.16 },
+      { 73, 8, 554, 652, 0, 0.16 },
+      { 66, 8, 540, 636, 0, 370  },
+      { 60, 7, 496, 584, 0, 340  },
+      { 58, 6, 445, 525, 0, 315  },
       { 0, 0 }
     };
+    player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
     
     base_execute_time = 3.5; 
@@ -843,13 +847,14 @@ struct wrath_t : public druid_spell_t
 
     static rank_t ranks[] =
     {
-      { 80, 12, 489, 551, 0, 380 },
-      { 75, 11, 414, 466, 0, 320 },
-      { 70, 10, 381, 429, 0, 255 },
-      { 62,  9, 278, 312, 0, 210 },
-      { 54,  8, 236, 264, 0, 180 },
+      { 80, 12, 489, 551, 0, 0.11 },
+      { 75, 11, 414, 466, 0, 0.11 },
+      { 70, 10, 381, 429, 0, 255  },
+      { 62,  9, 278, 312, 0, 210  },
+      { 54,  8, 236, 264, 0, 180  },
       { 0, 0 }
     };
+    player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
     
     base_execute_time = 2.0; 
@@ -1067,7 +1072,7 @@ void druid_t::init_base()
 
   // FIXME! Make this level-specific.
   resource_base[ RESOURCE_HEALTH ] = 3600;
-  resource_base[ RESOURCE_MANA   ] = 2090;
+  resource_base[ RESOURCE_MANA   ] = rating_t::interpolate( level, 1103, 2090, 3047 );
 
   health_per_stamina = 10;
   mana_per_intellect = 15;

@@ -50,16 +50,9 @@ double spell_t::gcd()
 
 double spell_t::execute_time()
 {
-  player_t* p = player;
-
-  if( p -> buffs.improved_moonkin_aura )
-  {
-    p -> uptimes.moonkin_haste -> update( p -> buffs.moonkin_haste );
-  }
-  
   if( base_execute_time == 0 ) return 0;
 
-  double t = base_execute_time - p -> buffs.cast_time_reduction;
+  double t = base_execute_time - player -> buffs.cast_time_reduction;
   if( t < 0 ) t = 0;
 
   t *= haste();
@@ -143,6 +136,8 @@ void spell_t::target_debuff( int8_t dmg_type )
   {
     if( t -> debuffs.judgement_of_crusader ) target_power += 218;
   }      
+
+  target_power += t -> debuffs.focus_magic;
 
   if( sim -> debug ) 
     report_t::log( sim, "spell_t::target_debuff: %s multiplier=%.2f hit=%.2f crit=%.2f power=%.2f penetration=%.0f", 
@@ -239,3 +234,18 @@ void spell_t::calculate_result()
 
   if( sim -> debug ) report_t::log( sim, "%s result for %s is %s", player -> name(), name(), util_t::result_type_string( result ) );
 }
+
+// spell_t::schedule_execute ===================================================
+
+void spell_t::schedule_execute()
+{
+  player_t* p = player;
+
+  if( p -> buffs.improved_moonkin_aura )
+  {
+    p -> uptimes.moonkin_haste -> update( p -> buffs.moonkin_haste );
+  }
+
+  action_t::schedule_execute();
+}
+
