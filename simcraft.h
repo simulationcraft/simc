@@ -774,6 +774,7 @@ struct target_t
     int8_t   nature_vulnerability_glyph;
     int8_t   shadow_vulnerability;
     int8_t   shadow_weaving;
+    int8_t   slowed;
     int8_t   sunder_armor;
     int8_t   winters_chill;
     int8_t   winters_grasp;
@@ -820,8 +821,8 @@ struct stats_t
   sim_t* sim;
   player_t* player;
   stats_t* next;
+  bool adjust_for_lost_time;
   bool channeled;
-  bool background;
   bool analyzed;
   bool initialized;
 

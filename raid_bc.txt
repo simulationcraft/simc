@@ -30,7 +30,7 @@ iterations=1000
 # For convenience it is possible to tell the simulator that a specific resource (mana, rage, etc)
 # will never run out if you do not wish to configure raid/consumable buff scenarios to ensure sufficient
 # resource replenishment.
-infinite_mana=1
+infinite_mana=0
 
 # Since support for the Warrior class does not yet exist, one can infer a Sunder Armor debuff by 
 # artificially setting a low target armor value.  Many BC bosses have an armor of 7700.  A 5-stack

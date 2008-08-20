@@ -710,8 +710,10 @@ action_t* player_t::execute_action()
 
   for( action = action_list; action; action = action -> next )
   {
-    if( ! action -> background && 
-	  action -> ready() )
+    if( action -> background )
+      continue;
+
+    if( action -> ready() )
       break;
   }
 

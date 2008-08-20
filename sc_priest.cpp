@@ -1313,7 +1313,6 @@ struct inner_focus_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
     assert( p -> talents.inner_focus );
 
-    trigger_gcd = 0;  
     cooldown = 180.0;
     cooldown *= 1.0 - p -> talents.aspiration * 0.10;
 
@@ -1338,6 +1337,7 @@ struct inner_focus_t : public priest_spell_t
     if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
     priest_t* p = player -> cast_priest();
     p -> aura_gain( "Inner Focus" );
+    free_action -> stats -> adjust_for_lost_time = true;
     free_action -> execute();
     p -> aura_loss( "Inner Focus" );
     update_ready();

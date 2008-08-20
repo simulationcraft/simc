@@ -18,7 +18,7 @@ action_t::action_t( int8_t      ty,
 		    int8_t      s,
 		    int8_t      tr ) :
   sim(p->sim), type(ty), name_str(n), player(p), school(s), resource(r), tree(tr), result(RESULT_NONE),
-  bleed(false), binary(false), channeled(false), background(false), repeating(false), aoe(false), harmful(true), proc(false),
+  binary(false), channeled(false), background(false), repeating(false), aoe(false), harmful(true), proc(false),
   may_miss(false), may_resist(false), may_dodge(false), may_parry(false), 
   may_glance(false), may_block(false), may_crush(false), may_crit(false),
   min_gcd(0), trigger_gcd(0),
@@ -179,8 +179,6 @@ void action_t::target_debuff( int8_t dmg_type )
 
   target_t* t = sim -> target;
 
-  if( bleed && t -> debuffs.mangle ) target_multiplier *= 1.30;
-
   if( school == SCHOOL_PHYSICAL )
   {
     target_penetration += t -> debuffs.sunder_armor * 520;
@@ -297,7 +295,7 @@ void action_t::calculate_damage()
 
 double action_t::resistance()
 {
-  if( bleed ) return 0;
+  if( ! may_resist ) return 0;
 
   double resist=0;
 
@@ -351,12 +349,9 @@ void action_t::adjust_damage_for_result()
     dd  *= 1.0 + bonus;
   }
 
-  if( may_resist )
+  if( ! binary && dd > 0 ) 
   {
-    if( ! binary && dd > 0 ) 
-    {
-      dd *= 1.0 - resistance();
-    }
+    dd *= 1.0 - resistance();
   }
 
   if( result == RESULT_BLOCK )
@@ -570,8 +565,8 @@ void action_t::reset()
   // FIXME! stats gets initialized inside action_t constructor which occurs BEFORE the 
   // spell_t/attack_t derivative constructor gets executed.  But the "channeled" and "background"
   // fields are set in the derived sub-class which is too late.  So set them here.....
-  stats -> channeled  = channeled;  
-  stats -> background = background;
+  stats -> channeled = channeled;  
+  stats -> adjust_for_lost_time = ! background;
 }
 
 // ==========================================================================

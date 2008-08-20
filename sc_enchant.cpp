@@ -17,9 +17,9 @@ static void trigger_spellsurge( spell_t* s )
       spell_t( "spellsurge", p, RESOURCE_MANA, SCHOOL_ARCANE )
     {
       base_duration = 10.0;
-      num_ticks = 10;
-      trigger_gcd = 0;
-      background = true;
+      num_ticks     = 10;
+      trigger_gcd   = 0;
+      background    = true;
     }
     virtual void execute() 
     {
