@@ -24,7 +24,7 @@ struct mage_t : public player_t
   double buffs_clearcasting;
   int8_t buffs_combustion;
   int8_t buffs_combustion_crits;
-  int8_t buffs_fingers_of_frost;
+  double buffs_fingers_of_frost;
   int8_t buffs_hot_streak;
   int8_t buffs_icy_veins;
   int8_t buffs_mage_armor;
@@ -71,6 +71,7 @@ struct mage_t : public player_t
     int8_t  cold_snap;
     int8_t  combustion;
     int8_t  critical_mass;
+    int8_t  deep_freeze;
     int8_t  elemental_precision;
     int8_t  empowered_arcane_missiles;
     int8_t  empowered_fire_ball;
@@ -89,7 +90,9 @@ struct mage_t : public player_t
     int8_t  improved_fire_blast;
     int8_t  improved_frost_bolt;
     int8_t  improved_scorch;
+    int8_t  improved_water_elemental;
     int8_t  incineration;
+    int8_t  living_bomb;
     int8_t  master_of_elements;
     int8_t  mind_mastery;
     int8_t  missile_barrage;
@@ -109,11 +112,7 @@ struct mage_t : public player_t
     int8_t  water_elemental;
     int8_t  winters_chill;
     int8_t  winters_grasp;
-
     int8_t  world_in_flames;
-    int8_t  living_bomb;
-    int8_t  improved_water_elemental;
-    int8_t  deep_freeze;
     
     talents_t() { memset( (void*) this, 0x0, sizeof( talents_t ) ); }
   };
@@ -170,7 +169,7 @@ struct mage_t : public player_t
   virtual pet_t*    create_pet   ( const std::string& name );
 
   // Event Tracking
-  virtual void regen();
+  virtual void regen( double periodicity );
 };
 
 // ==========================================================================
@@ -323,7 +322,8 @@ static void trigger_tier5_4pc( spell_t* s )
 
 static void trigger_ignite( spell_t* s )
 {
-  if( s -> school != SCHOOL_FIRE ) return;
+  if( s -> school != SCHOOL_FIRE &&
+      s -> school != SCHOOL_FROSTFIRE ) return;
 
   mage_t* p = s -> player -> cast_mage();
 
@@ -399,7 +399,8 @@ static void trigger_molten_fury( spell_t* s )
 
 static void trigger_combustion( spell_t* s )
 {
-  if( s -> school != SCHOOL_FIRE ) return;
+  if( s -> school != SCHOOL_FIRE &&
+      s -> school != SCHOOL_FROSTFIRE ) return;
 
   mage_t* p = s -> player -> cast_mage();
 
@@ -453,7 +454,8 @@ static void trigger_arcane_concentration( spell_t* s )
 
 static void stack_winters_chill( spell_t* s )
 {
-  if( s -> school != SCHOOL_FROST ) return;
+  if( s -> school != SCHOOL_FROST &&
+      s -> school != SCHOOL_FROSTFIRE ) return;
 
   struct expiration_t : public event_t
   {
@@ -502,7 +504,8 @@ static void stack_winters_chill( spell_t* s )
 
 static void trigger_frostbite( spell_t* s )
 {
-  if( s -> school != SCHOOL_FROST ) return;
+  if( s -> school != SCHOOL_FROST &&
+      s -> school != SCHOOL_FROSTFIRE ) return;
 
   struct expiration_t : public event_t
   {
@@ -546,7 +549,8 @@ static void trigger_frostbite( spell_t* s )
 
 static void trigger_winters_grasp( spell_t* s )
 {
-  if( s -> school != SCHOOL_FROST ) return;
+  if( s -> school != SCHOOL_FROST &&
+      s -> school != SCHOOL_FROSTFIRE ) return;
 
   struct expiration_t : public event_t
   {
@@ -588,7 +592,8 @@ static void trigger_winters_grasp( spell_t* s )
 
 static void trigger_fingers_of_frost( spell_t* s )
 {
-  if( s -> school != SCHOOL_FROST ) return;
+  if( s -> school != SCHOOL_FROST &&
+      s -> school != SCHOOL_FROSTFIRE ) return;
 
   struct expiration_t : public event_t
   {
@@ -597,7 +602,7 @@ static void trigger_fingers_of_frost( spell_t* s )
       name = "Fingers of Frost Expiration";
       mage_t* p = player -> cast_mage();
       p -> aura_gain( "Fingers of Frost" );
-      p -> buffs_fingers_of_frost = 1;
+      p -> buffs_fingers_of_frost = sim -> current_time;
       sim -> add_event( this, 4.0 );
     }
     virtual void execute()
@@ -630,7 +635,8 @@ static void trigger_fingers_of_frost( spell_t* s )
 
 static void trigger_brain_freeze( spell_t* s )
 {
-  if( s -> school != SCHOOL_FROST ) return;
+  if( s -> school != SCHOOL_FROST &&
+      s -> school != SCHOOL_FROSTFIRE ) return;
 
   mage_t* p = s -> player -> cast_mage();
 
@@ -817,17 +823,19 @@ void mage_spell_t::player_buff()
 
   trigger_molten_fury( this );
   
-  if( school == SCHOOL_FIRE )
+  if( school == SCHOOL_FIRE ||
+      school == SCHOOL_FROSTFIRE )
   {
     player_crit += ( p -> buffs_combustion * 0.10 );
   }
-  if( school == SCHOOL_FROST )
+  if( school == SCHOOL_FROST ||
+      school == SCHOOL_FROSTFIRE )
   {
     if( sim -> target -> debuffs.frozen )
     {
       player_crit += p -> talents.shatter * 0.10;
     }
-    if( p -> talents.fingers_of_frost )
+    else if( p -> talents.fingers_of_frost )
     {
       if( p -> buffs_fingers_of_frost ) 
       {
@@ -1446,8 +1454,9 @@ struct fire_ball_t : public mage_spell_t
 
     option_t options[] =
     {
-      { "rank",      OPT_INT8, &rank_index },
-      { "ab_filler", OPT_INT8, &ab_filler  },
+      { "rank",         OPT_INT8, &rank_index   },
+      { "ab_filler",    OPT_INT8, &ab_filler    },
+      { "brain_freeze", OPT_INT8, &brain_freeze },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1592,6 +1601,86 @@ struct fire_blast_t : public mage_spell_t
 	return false;
 
     return true;
+  }
+};
+
+// Living Bomb Spell ========================================================
+
+struct living_bomb_t : public mage_spell_t
+{
+  living_bomb_t( player_t* player, const std::string& options_str ) : 
+    mage_spell_t( "living_bomb", player, SCHOOL_FIRE, TREE_FIRE )
+  {
+    mage_t* p = player -> cast_mage();
+    assert( p -> talents.living_bomb );
+
+    option_t options[] =
+    {
+      { "rank", OPT_INT8, &rank_index },
+      { NULL }
+    };
+    parse_options( options, options_str );
+      
+    static rank_t ranks[] =
+    {
+      { 80, 3, 690, 690, 1380, 0.31 },
+      { 73, 2, 512, 512, 1024, 0.31 },
+      { 0, 0 }
+    };
+    player -> init_mana_costs( ranks );
+    rank = choose_rank( ranks );
+    
+    base_execute_time = 0; 
+    base_duration     = 12.0; 
+    num_ticks         = 4; 
+    dd_power_mod      = 0.40; 
+    dot_power_mod     = 0.80;
+    may_crit          = true;
+
+    base_cost         = rank -> cost;
+    base_cost        *= 1.0 - p -> talents.elemental_precision * 0.01;
+    base_cost        *= 1.0 - p -> talents.pyromaniac * 0.01;
+    base_cost        *= 1.0 + p -> talents.burnout * 0.01;
+    base_multiplier  *= 1.0 + p -> talents.fire_power * 0.02;
+    base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
+    base_crit        += p -> talents.arcane_instability * 0.01;
+    base_crit        += p -> talents.critical_mass * 0.01;
+    base_crit        += p -> talents.pyromaniac * 0.01;
+    base_crit        += p -> talents.world_in_flames * 0.02;
+    base_hit         += p -> talents.elemental_precision * 0.01;
+    base_penetration += p -> talents.arcane_subtlety * 5;
+    base_crit_bonus  *= 1.0 + p -> talents.spell_power * 0.25;
+    base_crit_bonus  *= 1.0 + p -> talents.burnout * 0.10;
+  }
+
+  // Odd thing to handle: The direct-damage comes at the last tick instead of the beginning of the spell.
+
+  virtual void execute()
+  {
+    mage_t* p = player -> cast_mage();
+    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    consume_resource();
+    calculate_result();
+    if( result_is_hit() )
+    {
+      calculate_damage();
+      adjust_damage_for_result();
+      player -> action_hit( this );
+      schedule_tick();
+    }
+    else
+    {
+      if( sim -> log ) report_t::log( sim, "%s avoids %s (%s)", sim -> target -> name(), name(), util_t::result_type_string( result ) );
+      player -> action_miss( this );
+    }
+    update_ready();
+    update_stats( DMG_DIRECT );
+    p -> action_finish( this );
+  }
+
+  virtual void last_tick() 
+  {
+    if( dd > 0 ) assess_damage( dd, DMG_DIRECT );
   }
 };
 
@@ -1896,9 +1985,9 @@ struct ice_lance_t : public mage_spell_t
       
     static rank_t ranks[] =
     {
-      { 78, 3,  221, 255, 0, 0.07 },
-      { 72, 2,  182, 210, 0, 0.07 },
-      { 66, 1,  161, 187, 0, 150  },
+      { 78, 3, 221, 255, 0, 0.07 },
+      { 72, 2, 182, 210, 0, 0.07 },
+      { 66, 1, 161, 187, 0, 150  },
       { 0, 0 }
     };
     player -> init_mana_costs( ranks );
@@ -1939,6 +2028,132 @@ struct ice_lance_t : public mage_spell_t
 	return false;
 
     return true;
+  }
+};
+
+// Deep Freeze Spell =======================================================
+
+struct deep_freeze_t : public mage_spell_t
+{
+  deep_freeze_t( player_t* player, const std::string& options_str ) : 
+    mage_spell_t( "deep_freeze", player, SCHOOL_FROST, TREE_FROST )
+  {
+    mage_t* p = player -> cast_mage();
+
+    option_t options[] =
+    {
+      { "rank",   OPT_INT8, &rank_index },
+      { NULL }
+    };
+    parse_options( options, options_str );
+      
+    static rank_t ranks[] =
+    {
+      { 80, 4, 1319, 1531, 0, 0.08 },
+      { 72, 3, 1018, 1182, 0, 0.08 },
+      { 66, 2,  787,  913, 0, 0.08 },
+      { 0, 0 }
+    };
+    player -> init_mana_costs( ranks );
+    rank = choose_rank( ranks );
+    
+    base_execute_time = 0.0; 
+    may_crit          = true; 
+    dd_power_mod      = (1.0/3.5); 
+    cooldown          = 30;
+    base_cost         = rank -> cost;
+      
+    cooldown         *= 1.0 - p -> talents.cold_as_ice * 0.10;
+    base_cost        *= 1.0 - p -> talents.elemental_precision * 0.01;
+    base_cost        *= 1.0 - p -> talents.frost_channeling * 0.05;
+    base_multiplier  *= 1.0 + p -> talents.piercing_ice * 0.02;
+    base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
+    base_multiplier  *= 1.0 + p -> talents.arctic_winds * 0.01;
+    base_crit        += p -> talents.arcane_instability * 0.01;
+    base_hit         += p -> talents.elemental_precision * 0.01;
+    base_penetration += p -> talents.arcane_subtlety * 5;
+    base_crit_bonus  *= 1.0 + p -> talents.ice_shards * 0.20;
+    base_crit_bonus  *= p -> talents.spell_power * 0.125;
+  }
+
+  virtual bool ready()
+  {
+    mage_t* p = player -> cast_mage();
+
+    if( ! mage_spell_t::ready() )
+      return false;
+
+    if( sim -> time_to_think( sim -> target -> debuffs.frozen ) ||
+	sim -> time_to_think( p -> buffs_fingers_of_frost     ) )
+      return true;
+
+    return false;
+  }
+};
+
+// Frostfire Bolt Spell ======================================================
+
+struct frostfire_bolt_t : public mage_spell_t
+{
+  int8_t dot_wait;
+
+  frostfire_bolt_t( player_t* player, const std::string& options_str ) : 
+    mage_spell_t( "frostfire_bolt", player, SCHOOL_FROSTFIRE, TREE_FROST ), dot_wait(0)
+  {
+    mage_t* p = player -> cast_mage();
+
+    option_t options[] =
+    {
+      { "rank",     OPT_INT8, &rank_index },
+      { "dot_wait", OPT_INT8, &dot_wait   },
+      { NULL }
+    };
+    parse_options( options, options_str );
+      
+    static rank_t ranks[] =
+    {
+      { 80, 2, 722, 838, 90, 0.16 },
+      { 75, 1, 629, 731, 60, 0.16 },
+      { 0, 0 }
+    };
+    player -> init_mana_costs( ranks );
+    rank = choose_rank( ranks );
+    
+    base_execute_time = 3.0; 
+    may_crit          = true; 
+    dd_power_mod      = (3.0/3.5); 
+
+    if( dot_wait )
+    {
+      base_duration = 9.0;
+      num_ticks     = 3;
+      dot_power_mod = 0.05;
+    }
+      
+    base_cost         = rank -> cost;
+    base_cost         *= 1.0 - p -> talents.elemental_precision * 0.01;
+    base_cost         *= 1.0 - p -> talents.pyromaniac * 0.01;
+    base_cost         *= 1.0 + p -> talents.burnout * 0.01;
+    base_cost         *= 1.0 - p -> talents.frost_channeling * 0.05;
+    base_multiplier   *= 1.0 + p -> talents.fire_power * 0.02;
+    base_multiplier   *= 1.0 + p -> talents.arcane_instability * 0.01;
+    base_multiplier   *= 1.0 + p -> talents.piercing_ice * 0.02;
+    base_multiplier   *= 1.0 + p -> talents.arctic_winds * 0.01;
+    base_multiplier   *= 1.0 + p -> talents.chilled_to_the_bone * 0.01;
+    base_crit         += p -> talents.arcane_instability * 0.01;
+    base_crit         += p -> talents.critical_mass * 0.01;
+    base_crit         += p -> talents.pyromaniac * 0.01;
+    base_hit          += p -> talents.elemental_precision * 0.01;
+    base_penetration  += p -> talents.arcane_subtlety * 5;
+    base_crit_bonus   *= 1.0 + p -> talents.spell_power * 0.25;
+    base_crit_bonus   *= 1.0 + p -> talents.burnout * 0.10;
+    base_crit_bonus   *= 1.0 + p -> talents.ice_shards * 0.20;
+  }
+
+  virtual void execute()
+  {
+    mage_spell_t::execute();
+    trigger_missile_barrage( this );
   }
 };
 
@@ -2125,13 +2340,16 @@ action_t* mage_t::create_action( const std::string& name,
   if( name == "arcane_power"     ) return new          arcane_power_t( this, options_str );
   if( name == "cold_snap"        ) return new             cold_snap_t( this, options_str );
   if( name == "combustion"       ) return new            combustion_t( this, options_str );
+  if( name == "deep_freeze"      ) return new           deep_freeze_t( this, options_str );
   if( name == "evocation"        ) return new             evocation_t( this, options_str );
   if( name == "fire_ball"        ) return new             fire_ball_t( this, options_str );
   if( name == "fire_blast"       ) return new            fire_blast_t( this, options_str );
   if( name == "focus_magic"      ) return new           focus_magic_t( this, options_str );
   if( name == "frost_bolt"       ) return new            frost_bolt_t( this, options_str );
+  if( name == "frostfire_bolt"   ) return new        frostfire_bolt_t( this, options_str );
   if( name == "ice_lance"        ) return new             ice_lance_t( this, options_str );
   if( name == "icy_veins"        ) return new             icy_veins_t( this, options_str );
+  if( name == "living_bomb"      ) return new           living_bomb_t( this, options_str );
   if( name == "mage_armor"       ) return new            mage_armor_t( this, options_str );
   if( name == "molten_armor"     ) return new          molten_armor_t( this, options_str );
   if( name == "presence_of_mind" ) return new      presence_of_mind_t( this, options_str );
@@ -2213,9 +2431,9 @@ void mage_t::reset()
 
 // mage_t::regen  ==========================================================
 
-void mage_t::regen()
+void mage_t::regen( double periodicity )
 {
-  double spirit_regen = spirit_regen_per_second() * 2.0;
+  double spirit_regen = periodicity * spirit_regen_per_second();
 
   if( buffs.innervate )
   {
@@ -2228,7 +2446,7 @@ void mage_t::regen()
     spirit_regen *= while_casting;
   }
 
-  double mp5_regen = mp5 / 2.5;
+  double mp5_regen = periodicity * mp5 / 5.0;
 
   resource_gain( RESOURCE_MANA, spirit_regen, gains.spirit_regen );
   resource_gain( RESOURCE_MANA,    mp5_regen, gains.mp5_regen    );
@@ -2422,7 +2640,7 @@ bool mage_t::parse_option( const std::string& name,
     { "pyroblast",                 OPT_INT8,  &( talents.pyroblast                 ) },
     { "pyromaniac",                OPT_INT8,  &( talents.pyromaniac                ) },
     { "shatter",                   OPT_INT8,  &( talents.shatter                   ) },
-    { "slow",                     OPT_INT8,  &( talents.slow                      ) },
+    { "slow",                      OPT_INT8,  &( talents.slow                      ) },
     { "spell_impact",              OPT_INT8,  &( talents.spell_impact              ) },
     { "spell_power",               OPT_INT8,  &( talents.spell_power               ) },
     { "student_of_the_mind",       OPT_INT8,  &( talents.student_of_the_mind       ) },

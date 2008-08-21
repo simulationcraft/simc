@@ -185,7 +185,7 @@ struct shaman_t : public player_t
   virtual action_t* create_action( const std::string& name, const std::string& options );
 
   // Event Tracking
-  virtual void regen();
+  virtual void regen( double periodicity );
   virtual void attack_hit_event   ( attack_t* );
   virtual void attack_damage_event( attack_t*, double amount, int8_t dmg_type );
   virtual void spell_start_event ( spell_t* );
@@ -2754,9 +2754,9 @@ double shaman_t::composite_spell_crit()
 
 // shaman_t::regen  ==========================================================
 
-void shaman_t::regen()
+void shaman_t::regen( double periodicity )
 {
-  double spirit_regen = spirit_regen_per_second() * 2.0;
+  double spirit_regen = periodicity * spirit_regen_per_second();
 
   if( buffs.innervate )
   {
@@ -2767,9 +2767,7 @@ void shaman_t::regen()
     spirit_regen = 0;
   }
 
-  double mp5_regen = mp5 + intellect() * talents.unrelenting_storm * 0.02;
-
-  mp5_regen /= 2.5;
+  double mp5_regen = periodicity * ( mp5 + intellect() * talents.unrelenting_storm * 0.02 ) / 5.0;
 
   resource_gain( RESOURCE_MANA, spirit_regen, gains.spirit_regen );
   resource_gain( RESOURCE_MANA,    mp5_regen, gains.mp5_regen    );

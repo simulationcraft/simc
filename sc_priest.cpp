@@ -125,7 +125,7 @@ struct priest_t : public player_t
   virtual pet_t*    create_pet   ( const std::string& name );
 
   // Event Tracking
-  virtual void regen();
+  virtual void regen( double periodicity );
   virtual void spell_hit_event   ( spell_t* );
   virtual void spell_finish_event( spell_t* );
   virtual void spell_damage_event( spell_t*, double amount, int8_t dmg_type );
@@ -1700,9 +1700,9 @@ void priest_t::reset()
 
 // priest_t::regen  ==========================================================
 
-void priest_t::regen()
+void priest_t::regen( double periodicity )
 {
-  double spirit_regen = spirit_regen_per_second() * 2.0;
+  double spirit_regen = periodicity * spirit_regen_per_second();
 
   if( buffs.innervate )
   {
@@ -1713,7 +1713,7 @@ void priest_t::regen()
     spirit_regen *= talents.meditation * 0.10;
   }
 
-  double mp5_regen = mp5 / 2.5;
+  double mp5_regen = periodicity * mp5 / 5.0;
 
   resource_gain( RESOURCE_MANA, spirit_regen, gains.spirit_regen );
   resource_gain( RESOURCE_MANA,    mp5_regen, gains.mp5_regen    );

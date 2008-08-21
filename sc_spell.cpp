@@ -111,6 +111,8 @@ void spell_t::target_debuff( int8_t dmg_type )
 {
   action_t::target_debuff( dmg_type );
 
+  static uptime_t* wc_uptime = sim -> get_uptime( "winters_chill" );
+
   target_t* t = sim -> target;
    
   if( sim_t::WotLK && ( t -> debuffs.faerie_fire > 1 ) )
@@ -120,16 +122,28 @@ void spell_t::target_debuff( int8_t dmg_type )
 
   if( school == SCHOOL_ARCANE )
   {
-    if( sim_t::WotLK ) target_crit += ( t -> debuffs.winters_chill * 0.01 );
+    if( sim_t::WotLK ) 
+    {
+      target_crit += ( t -> debuffs.winters_chill * 0.01 );
+      wc_uptime -> update( t -> debuffs.winters_chill != 0 );
+    }
   }
   else if( school == SCHOOL_FIRE )
   {
-    if( sim_t::WotLK ) target_crit += ( t -> debuffs.winters_chill * 0.01 );
+    if( sim_t::WotLK ) 
+    {
+      target_crit += ( t -> debuffs.winters_chill * 0.01 );
+      wc_uptime -> update( t -> debuffs.winters_chill != 0 );
+    }
   }
   else if( school == SCHOOL_FROST )
   {
     target_crit += ( t -> debuffs.winters_chill * 0.01 );
-    static uptime_t* wc_uptime = sim -> get_uptime( "winters_chill" );
+    wc_uptime -> update( t -> debuffs.winters_chill != 0 );
+  }
+  else if( school == SCHOOL_FROSTFIRE )
+  {
+    target_crit += ( t -> debuffs.winters_chill * 0.01 );
     wc_uptime -> update( t -> debuffs.winters_chill != 0 );
   }
   else if( school == SCHOOL_HOLY )

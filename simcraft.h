@@ -118,6 +118,7 @@ enum school_type {
      SCHOOL_ARCANE, 
      SCHOOL_FROST, 
      SCHOOL_FIRE, 
+     SCHOOL_FROSTFIRE, 
      SCHOOL_NATURE, 
      SCHOOL_PHYSICAL,
      SCHOOL_MAX 
@@ -645,7 +646,7 @@ struct player_t
   virtual void      schedule_ready( double delta_time=0, bool ignore_lag=false );
   virtual action_t* execute_action();
 
-  virtual void regen() {}
+  virtual void regen( double periodicity=2.0 ) {}
   virtual void resource_gain( int8_t resource, double amount, gain_t* g=0 );
   virtual void resource_loss( int8_t resource, double amount );
   virtual bool resource_available( int8_t resource, double cost );

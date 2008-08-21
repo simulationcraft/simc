@@ -115,7 +115,7 @@ struct druid_t : public player_t
   virtual action_t* create_action( const std::string& name, const std::string& options );
 
   // Event Tracking
-  virtual void regen();
+  virtual void regen( double periodicity );
   virtual void spell_start_event ( spell_t* );
   virtual void spell_hit_event   ( spell_t* );
   virtual void spell_finish_event( spell_t* );
@@ -1133,9 +1133,9 @@ double druid_t::composite_spell_crit()
 
 // druid_t::regen  ==========================================================
 
-void druid_t::regen()
+void druid_t::regen( double periodicity )
 {
-  double spirit_regen = spirit_regen_per_second() * 2.0;
+  double spirit_regen = periodicity * spirit_regen_per_second();
 
   if( buffs.innervate )
   {
@@ -1146,7 +1146,7 @@ void druid_t::regen()
     spirit_regen *= talents.intensity * 0.10;
   }
 
-  double mp5_regen = ( mp5 + intellect() * talents.dreamstate * 0.04 ) / 2.5;
+  double mp5_regen = periodicity * ( mp5 + intellect() * talents.dreamstate * 0.04 ) / 5.0;
 
   resource_gain( RESOURCE_MANA, spirit_regen, gains.spirit_regen );
   resource_gain( RESOURCE_MANA,    mp5_regen, gains.mp5_regen    );
