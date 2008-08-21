@@ -1150,6 +1150,13 @@ void druid_t::regen( double periodicity )
 
   resource_gain( RESOURCE_MANA, spirit_regen, gains.spirit_regen );
   resource_gain( RESOURCE_MANA,    mp5_regen, gains.mp5_regen    );
+
+  if( buffs.water_elemental_regen )
+  {
+    double water_elemental_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.03;
+
+    resource_gain( RESOURCE_MANA, water_elemental_regen, gains.water_elemental_regen );
+  }
 }
 
 // druid_t::parse_talents =================================================

@@ -45,8 +45,9 @@ struct mage_t : public player_t
   proc_t* procs_deferred_ignite;
 
   // Up-Times
-  uptime_t* uptimes_fingers_of_frost;
   uptime_t* uptimes_arcane_blast[ 4 ];
+  uptime_t* uptimes_fingers_of_frost;
+  uptime_t* uptimes_water_elemental;
 
   struct talents_t
   {
@@ -153,11 +154,12 @@ struct mage_t : public player_t
     procs_deferred_ignite = get_proc( "deferred_ignite" );
 
     // Up-Times
-    uptimes_fingers_of_frost  = get_uptime( "fingers_of_frost" );
     uptimes_arcane_blast[ 0 ] = get_uptime( "arcane_blast_0" );
     uptimes_arcane_blast[ 1 ] = get_uptime( "arcane_blast_1" );
     uptimes_arcane_blast[ 2 ] = get_uptime( "arcane_blast_2" );
     uptimes_arcane_blast[ 3 ] = get_uptime( "arcane_blast_3" );
+    uptimes_fingers_of_frost  = get_uptime( "fingers_of_frost" );
+    uptimes_water_elemental   = get_uptime( "water_elemental" );
   }
 
   // Character Definition
@@ -243,8 +245,11 @@ struct water_elemental_pet_t : public pet_t
   }
   virtual void summon()
   {
-    player_t* o = cast_pet() -> owner;
+    mage_t* o = cast_pet() -> owner -> cast_mage();
+
     if( sim -> log ) report_t::log( sim, "%s summons Water Elemental.", o -> name() );
+
+    o -> active_water_elemental = this;
 
     initial_haste_rating=0;
     for( int i=0; i < ATTRIBUTE_MAX; i++ ) attribute_initial[ i ] = 0;
@@ -262,17 +267,36 @@ struct water_elemental_pet_t : public pet_t
     init_spell();
     init_resources();
 
-    o -> cast_mage() -> active_water_elemental = this;
+    if( o -> talents.improved_water_elemental )
+    {
+      for( player_t* p = sim -> player_list; p; p = p -> next )
+      {
+	p -> buffs.water_elemental_regen++;
+	if( p -> buffs.water_elemental_regen == 1 ) p -> aura_gain( "Water Elemental Regen" );
+      }
+    }
 
-    // Kick-off repeating attack
-    // Eventually, this needs to go thru schedule_ready() in case the Elemental is OOM
+    // Kick-off repeating attack.  Eventually, this should go thru schedule_ready().
     frost_bolt -> execute();
   }
   virtual void dismiss()
   {
+    mage_t* o = cast_pet() -> owner -> cast_mage();
+
     if( sim -> log ) report_t::log( sim, "%s's Water Elemental dies.", cast_pet() -> owner -> name() );
+
+    if( o -> talents.improved_water_elemental )
+    {
+      for( player_t* p = sim -> player_list; p; p = p -> next )
+      {
+	p -> buffs.water_elemental_regen--;
+	if( p -> buffs.water_elemental_regen == 0 ) p -> aura_loss( "Water Elemental Regen" );
+      }
+    }
+
     frost_bolt -> cancel();
-    cast_pet() -> owner -> cast_mage() -> active_water_elemental = 0;
+
+    o -> active_water_elemental = 0;
   }
 };
 
@@ -952,9 +976,9 @@ struct arcane_blast_t : public mage_spell_t
       
     static rank_t ranks[] =
     {
-      { 80, 4, 912, 1058, 0, 0.09 }, // should be 0.40
-      { 76, 3, 805,  935, 0, 0.09 }, // should be 0.40
-      { 71, 2, 690,  800, 0, 0.09 }, // should be 0.40
+      { 80, 4, 912, 1058, 0, 0.20 }, // should be 0.40
+      { 76, 3, 805,  935, 0, 0.20 }, // should be 0.40
+      { 71, 2, 690,  800, 0, 0.20 }, // should be 0.40
       { 64, 1, 648,  752, 0, 195  },
       { 0, 0 }
     };
@@ -2035,14 +2059,17 @@ struct ice_lance_t : public mage_spell_t
 
 struct deep_freeze_t : public mage_spell_t
 {
+  int8_t fb_priority;
+
   deep_freeze_t( player_t* player, const std::string& options_str ) : 
-    mage_spell_t( "deep_freeze", player, SCHOOL_FROST, TREE_FROST )
+    mage_spell_t( "deep_freeze", player, SCHOOL_FROST, TREE_FROST ), fb_priority(0)
   {
     mage_t* p = player -> cast_mage();
 
     option_t options[] =
     {
-      { "rank",   OPT_INT8, &rank_index },
+      { "fb_priority", OPT_INT8, &fb_priority },
+      { "rank",        OPT_INT8, &rank_index  },
       { NULL }
     };
     parse_options( options, options_str );
@@ -2083,10 +2110,28 @@ struct deep_freeze_t : public mage_spell_t
     if( ! mage_spell_t::ready() )
       return false;
 
-    if( sim -> time_to_think( sim -> target -> debuffs.frozen ) ||
-	sim -> time_to_think( p -> buffs_fingers_of_frost     ) )
-      return true;
+    if( sim -> time_to_think( sim -> target -> debuffs.frozen ) )
+    {
+      if( fb_priority )
+      {
+	double fb_execute_time = sim -> current_time + 2.5 * haste();
 
+	if( fb_execute_time < sim -> target -> expirations.frozen -> occurs() )
+	  return false;
+      }
+      return true;
+    }
+    else if( sim -> time_to_think( p -> buffs_fingers_of_frost ) )
+    {
+      if( fb_priority )
+      {
+	double fb_execute_time = sim -> current_time + 2.5 * haste();
+
+	if( fb_execute_time < p -> expirations_fingers_of_frost -> occurs() )
+	  return false;
+      }
+      return true;
+    }
     return false;
   }
 };
@@ -2450,6 +2495,15 @@ void mage_t::regen( double periodicity )
 
   resource_gain( RESOURCE_MANA, spirit_regen, gains.spirit_regen );
   resource_gain( RESOURCE_MANA,    mp5_regen, gains.mp5_regen    );
+
+  if( buffs.water_elemental_regen )
+  {
+    double water_elemental_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.03;
+
+    resource_gain( RESOURCE_MANA, water_elemental_regen, gains.water_elemental_regen );
+  }
+
+  uptimes_water_elemental -> update( active_water_elemental );
 }
 
 // mage_t::parse_talents =================================================

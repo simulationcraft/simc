@@ -223,13 +223,12 @@ void report_t::print_gains()
       {
 	if( first )
         {
-	  fprintf( sim -> output_file, "  %-20s:", p -> name() );
+	  fprintf( sim -> output_file, "\n    %s:\n", p -> name() );
 	  first = false;
 	}
-	fprintf( sim -> output_file, "  %s=%.1f", g -> name(), g -> amount / sim -> iterations );
+	fprintf( sim -> output_file, "        %s=%.1f\n", g -> name(), g -> amount / sim -> iterations );
       }
     }
-    if( ! first ) printf( "\n" );
   }
 }
 
@@ -251,16 +250,15 @@ void report_t::print_procs()
       {
 	if( first )
         {
-	  fprintf( sim -> output_file, "  %-20s:", player -> name() );
+	  fprintf( sim -> output_file, "\n    %s:\n", player -> name() );
 	  first = false;
 	}
-	fprintf( sim -> output_file, "  %s=%d|%.1fsec", 
+	fprintf( sim -> output_file, "        %s=%d|%.1fsec\n", 
 		 p -> name(),
 		 p -> count / sim -> iterations,
 		 sim -> iterations * sim -> total_seconds / p -> count );
       }
     }
-    if( ! first ) printf( "\n" );
   }
 }
 
@@ -277,7 +275,7 @@ void report_t::print_uptime()
     {
       if( first )
       {
-	fprintf( sim -> output_file, "    Global:\n" );
+	fprintf( sim -> output_file, "\n    Global:\n" );
 	first = false;
       }
       fprintf( sim -> output_file, "        %4.1f%% : %s\n", u -> percentage(), u -> name() );
@@ -296,7 +294,7 @@ void report_t::print_uptime()
       {
 	if( first )
         {
-	  fprintf( sim -> output_file, "    %s:\n", p -> name() );
+	  fprintf( sim -> output_file, "\n    %s:\n", p -> name() );
 	  first = false;
 	}
 	fprintf( sim -> output_file, "        %4.1f%% : %s\n", u -> percentage(), u -> name() );

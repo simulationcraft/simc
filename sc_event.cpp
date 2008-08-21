@@ -153,13 +153,15 @@ void action_tick_event_t::execute()
 // Regen Event
 // ===========================================================================
 
+static double REGEN_PERIODICITY = 1.0;  // Live=2.0 and Beta=0.1
+
 // regen_event_t::regen_event_t ==============================================
 
 regen_event_t::regen_event_t( sim_t* sim ) : event_t( sim )
 {
   name = "Regen Event";
   if( sim -> debug ) report_t::log( sim, "New Regen Event" );
-  sim -> add_event( this, 2.0 );
+  sim -> add_event( this, REGEN_PERIODICITY );
 }
 
 // regen_event_t::execute ====================================================
@@ -168,7 +170,7 @@ void regen_event_t::execute()
 {
   for( player_t* p = sim -> player_list; p; p = p -> next )
   {
-    p -> regen( 2.0 );
+    p -> regen( REGEN_PERIODICITY );
   }
   
   new regen_event_t( sim );

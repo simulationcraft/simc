@@ -246,6 +246,7 @@ static void trigger_flametongue_weapon( attack_t* a )
       shaman_t* p = player -> cast_shaman();
 
       background       = true;
+      proc             = true;
       trigger_gcd      = 0;
       dd_power_mod     = 0.10;
       base_multiplier *= 1.0 + p -> talents.elemental_weapons * 0.05;
@@ -2771,6 +2772,13 @@ void shaman_t::regen( double periodicity )
 
   resource_gain( RESOURCE_MANA, spirit_regen, gains.spirit_regen );
   resource_gain( RESOURCE_MANA,    mp5_regen, gains.mp5_regen    );
+
+  if( buffs.water_elemental_regen )
+  {
+    double water_elemental_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.03;
+
+    resource_gain( RESOURCE_MANA, water_elemental_regen, gains.water_elemental_regen );
+  }
 }
 
 // shaman_t::parse_talents ===============================================

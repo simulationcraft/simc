@@ -488,6 +488,7 @@ struct player_t
     int8_t  unleashed_rage;
     int8_t  violet_eye;
     double  windfury_totem;
+    int8_t  water_elemental_regen;
     int8_t  wrath_of_air;
     int16_t zandalarian_hero_charm;
     int8_t  tier4_2pc, tier4_4pc;
@@ -573,6 +574,7 @@ struct player_t
     gain_t* spellsurge;
     gain_t* spirit_regen;
     gain_t* vampiric_touch;
+    gain_t* water_elemental_regen;
     gain_t *tier4_2pc, *tier4_4pc;
     gain_t *tier5_2pc, *tier5_4pc;
     gain_t *tier6_2pc, *tier6_4pc;

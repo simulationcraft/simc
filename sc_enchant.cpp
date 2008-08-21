@@ -230,6 +230,7 @@ void enchant_t::trigger_flametongue_totem( attack_t* a )
       spell_t( "flametongue", player, RESOURCE_NONE, SCHOOL_FIRE )
     {
       trigger_gcd = 0;
+      proc        = true;
       background  = true;
       reset();
     }
