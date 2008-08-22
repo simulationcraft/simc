@@ -367,6 +367,7 @@ struct player_t
   // Reporting
   int8_t       quiet;
   report_t*    report;
+  double       total_waiting;
   double       iteration_dmg, total_dmg;
   double       resource_lost  [ RESOURCE_MAX ];
   double       resource_gained[ RESOURCE_MAX ];
@@ -645,7 +646,7 @@ struct player_t
   virtual double composite_spell_hit()         { return spell_hit;         }
   virtual double composite_spell_penetration() { return spell_penetration; }
 
-  virtual void      schedule_ready( double delta_time=0, bool ignore_lag=false );
+  virtual void      schedule_ready( double delta_time=0, bool waiting=false );
   virtual action_t* execute_action();
 
   virtual void regen( double periodicity=2.0 ) {}
@@ -1152,6 +1153,7 @@ struct report_t
   int8_t report_spell_stats;
   int8_t report_tag;
   int8_t report_uptime;
+  int8_t report_waiting;
 
   report_t( sim_t* s );
   bool parse_option( const std::string& name, const std::string& value );
@@ -1163,6 +1165,7 @@ struct report_t
   void print_gains();
   void print_procs();
   void print_uptime();
+  void print_waiting();
   void print_performance();
   void print();
   static void timestamp( sim_t* sim );

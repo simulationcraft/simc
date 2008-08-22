@@ -161,7 +161,7 @@ player_t::player_t( sim_t*             s,
   // Actions
   action_list(0),
   // Reporting
-  quiet(0), report(0), iteration_dmg(0), total_dmg(0), 
+  quiet(0), report(0), total_waiting(0), iteration_dmg(0), total_dmg(0), 
   proc_list(0), gain_list(0), stats_list(0), uptime_list(0)
 {
   if( sim -> debug ) report_t::log( sim, "Creating Player %s", name() );
@@ -681,7 +681,7 @@ void player_t::reset()
 // player_t::schedule_ready =================================================
 
 void player_t::schedule_ready( double delta_time,
-			       bool   ignore_lag )
+			       bool   waiting )
 {
   sleeping = 0;
   executing = 0;
@@ -690,7 +690,11 @@ void player_t::schedule_ready( double delta_time,
   double gcd_adjust = gcd_ready - ( sim -> current_time + delta_time );
   if( gcd_adjust > 0 ) delta_time += gcd_adjust;
 
-  if( ! ignore_lag )
+  if( waiting )
+  {
+    total_waiting += delta_time;
+  }
+  else
   {
     double lag = sim -> lag;
     if( lag > 0 ) lag += ( ( rand() % 11 ) - 5 ) * 0.01;

@@ -129,7 +129,7 @@ swift_retribution=1
 mage=Mage_Arcane
 level=80
 talents=http://www.worldofwarcraft.com/info/classes/mage/talents2.html?tal=23000503310033014032310251532103000000000000000000000000000530003010000000000000000000
-actions=flask,type=blinding_light/molten_armor/mana_potion,trigger=3500/evocation,trigger=6000/arcane_power/arcane_missiles,barrage=1/arcane_barrage/arcane_blast
+actions=flask,type=blinding_light/mage_armor/mana_potion,trigger=3500/evocation,trigger=6000/arcane_power/arcane_missiles,barrage=1/arcane_barrage/arcane_blast
 gear_stamina=600
 gear_intellect=600
 gear_spirit=600
@@ -139,7 +139,7 @@ gear_spell_hit_rating=200
 gear_haste_rating=400
 # Glyphs
 glyph_arcane_power=1
-glyph_molten_armor=1
+glyph_mage_armor=1
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
 blessing_of_kings=1
 blessing_of_wisdom=1

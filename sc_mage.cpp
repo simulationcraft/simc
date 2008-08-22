@@ -995,9 +995,9 @@ struct arcane_blast_t : public mage_spell_t
       
     static rank_t ranks[] =
     {
-      { 80, 4, 912, 1058, 0, 0.18 }, // should be 0.40, set to match arcane_barrage
-      { 76, 3, 805,  935, 0, 0.18 }, // should be 0.40, set to match arcane_barrage
-      { 71, 2, 690,  800, 0, 0.18 }, // should be 0.40, set to match arcane_barrage
+      { 80, 4, 912, 1058, 0, 0.40 },
+      { 76, 3, 805,  935, 0, 0.40 },
+      { 71, 2, 690,  800, 0, 0.40 },
       { 64, 1, 648,  752, 0, 195  },
       { 0, 0 }
     };

@@ -28,7 +28,8 @@ report_t::report_t( sim_t* s ) :
   report_raid_dps(1),
   report_spell_stats(1),
   report_tag(1),
-  report_uptime(1)
+  report_uptime(1),
+  report_waiting(1)
 {
 }
 
@@ -303,6 +304,30 @@ void report_t::print_uptime()
   }
 }
 
+// report_t::print_waiting =====================================================
+
+void report_t::print_waiting()
+{
+  fprintf( sim -> output_file, "\nWaiting:\n" );
+
+  bool nobody_waits = true;
+
+  for( player_t* p = sim -> player_list; p; p = p -> next )
+  {
+    if( p -> quiet ) 
+      continue;
+    
+    if( p -> total_waiting )
+    {
+      nobody_waits = false;
+      p -> total_waiting /= sim -> iterations;
+      fprintf( sim -> output_file, "    %4.1f%% : %s\n", 100.0 * p -> total_waiting / sim -> total_seconds,  p -> name() );
+    }
+  }
+
+  if( nobody_waits ) fprintf( sim -> output_file, "    All players active 100%% of the time.\n" );
+}
+
 // report_t::print_performance ================================================
 
 void report_t::print_performance()
@@ -388,9 +413,10 @@ void report_t::print()
   }
   if( report_raid_dps ) fprintf( sim -> output_file, "%s%.1f\n", report_tag ? "\nRDPS=" : "", raid_dps );
 
-  if( report_gains  ) print_gains();
-  if( report_procs  ) print_procs();
-  if( report_uptime ) print_uptime();
+  if( report_gains   ) print_gains();
+  if( report_procs   ) print_procs();
+  if( report_uptime  ) print_uptime();
+  if( report_waiting ) print_waiting();
 
   if( report_performance ) print_performance();
 
