@@ -1153,7 +1153,7 @@ void druid_t::regen( double periodicity )
 
   if( buffs.water_elemental_regen )
   {
-    double water_elemental_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.03;
+    double water_elemental_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.03 / 5.0;
 
     resource_gain( RESOURCE_MANA, water_elemental_regen, gains.water_elemental_regen );
   }
