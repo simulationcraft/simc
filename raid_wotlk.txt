@@ -123,11 +123,13 @@ swift_retribution=1
 #
 # (1) The "trigger=3500" option to mana_potion represents the mana gained and the amount below max required to trigger
 # (2) The "trigger=6000" option to evocation represents the mana gained and the amount below max required to trigger
+# (3) The "barrage=1" option to arcane_missles means that it will only get executed when the "barrage" buff has been up 
+#     for at least 0.5sec (to account for lag and reaction time).
 #
 mage=Mage_Arcane
 level=80
 talents=http://www.worldofwarcraft.com/info/classes/mage/talents2.html?tal=23000503310033014032310251532103000000000000000000000000000530003010000000000000000000
-actions=flask,type=blinding_light/molten_armor/mana_potion,trigger=3500/evocation,trigger=6000/arcane_power/arcane_missiles,barrage=1/arcane_barrage/arcane_blast,ap_burn=1/arcane_blast
+actions=flask,type=blinding_light/molten_armor/mana_potion,trigger=3500/evocation,trigger=6000/arcane_power/arcane_missiles,barrage=1/arcane_barrage/arcane_blast
 gear_stamina=600
 gear_intellect=600
 gear_spirit=600
@@ -175,11 +177,13 @@ swift_retribution=1
 #
 # (1) The "trigger=3500" option to mana_potion represents the mana gained and the amount below max required to trigger
 # (2) The "trigger=6000" option to evocation represents the mana gained and the amount below max required to trigger
+# (3) The "frozen=1" option to ice_lance means that it will only be cast if the target is frozen (via winters_grasp) or virtually frozen (via fingers_of_frost)
+# (4) The "fb_priority=1" option to ice_lance means that it will only be cast if the frozen debuff/buff will end before a frost_bolt could be cast
 #
 mage=Mage_Frost
 level=80
 talents=http://www.worldofwarcraft.com/info/classes/mage/talents2.html?tal=00000000000000000000000000000023050020123000000000000000000535030310005100230052231351
-actions=flask,type=pure_death/molten_armor/mana_potion,trigger=2500/evocation,trigger=4000/water_elemental/ice_lance,frozen=1/icy_veins/cold_snap/fire_ball,brain_freeze=1/deep_freeze,fb_priority=1/frost_bolt
+actions=flask,type=pure_death/molten_armor/mana_potion,trigger=2500/evocation,trigger=4000/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/ice_lance,frozen=1,fb_priority=1/frost_bolt
 gear_stamina=600
 gear_intellect=600
 gear_spirit=600

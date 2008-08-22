@@ -695,8 +695,13 @@ static void trigger_hot_streak( spell_t* s )
   {
     if( s -> result == RESULT_CRIT )
     {
-      p -> buffs_hot_streak++;
-      p -> buffs_hot_streak %= 3;
+      switch( p -> buffs_hot_streak )
+      {
+        case 0: p -> buffs_hot_streak = 1; break;
+	case 1: p -> buffs_hot_streak = 2; break;
+	case 2: p -> buffs_hot_streak = 3; break;
+	case 3: p -> buffs_hot_streak = 1; break;
+      }
     }
     else
     {
@@ -990,9 +995,9 @@ struct arcane_blast_t : public mage_spell_t
       
     static rank_t ranks[] =
     {
-      { 80, 4, 912, 1058, 0, 0.20 }, // should be 0.40
-      { 76, 3, 805,  935, 0, 0.20 }, // should be 0.40
-      { 71, 2, 690,  800, 0, 0.20 }, // should be 0.40
+      { 80, 4, 912, 1058, 0, 0.18 }, // should be 0.40, set to match arcane_barrage
+      { 76, 3, 805,  935, 0, 0.18 }, // should be 0.40, set to match arcane_barrage
+      { 71, 2, 690,  800, 0, 0.18 }, // should be 0.40, set to match arcane_barrage
       { 64, 1, 648,  752, 0, 195  },
       { 0, 0 }
     };
@@ -2017,15 +2022,18 @@ struct frost_bolt_t : public mage_spell_t
 struct ice_lance_t : public mage_spell_t
 {
   int8_t frozen;
+  int8_t fb_priority;
+
   ice_lance_t( player_t* player, const std::string& options_str ) : 
-    mage_spell_t( "ice_lance", player, SCHOOL_FROST, TREE_FROST ), frozen(0)
+    mage_spell_t( "ice_lance", player, SCHOOL_FROST, TREE_FROST ), frozen(0), fb_priority(0)
   {
     mage_t* p = player -> cast_mage();
 
     option_t options[] =
     {
-      { "rank",   OPT_INT8, &rank_index },
-      { "frozen", OPT_INT8, &frozen     },
+      { "rank",        OPT_INT8, &rank_index  },
+      { "frozen",      OPT_INT8, &frozen      },
+      { "fb_priority", OPT_INT8, &fb_priority },
       { NULL }
     };
     parse_options( options, options_str );
@@ -2061,18 +2069,48 @@ struct ice_lance_t : public mage_spell_t
 
   virtual void player_buff()
   {
+    mage_t* p = player -> cast_mage();
     mage_spell_t::player_buff();
-    if( sim -> target -> debuffs.frozen ) player_multiplier *= 3.0;
+    if( sim -> target -> debuffs.frozen ||
+	p -> buffs_fingers_of_frost     ) 
+    {
+      player_multiplier *= 3.0;
+    }
   }
 
   virtual bool ready()
   {
+    mage_t* p = player -> cast_mage();
+
     if( ! mage_spell_t::ready() )
       return false;
 
     if( frozen )
-      if( ! sim -> time_to_think( sim -> target -> debuffs.frozen ) )
-	return false;
+    {
+      if( sim -> time_to_think( sim -> target -> debuffs.frozen ) )
+      {
+	if( fb_priority )
+        {
+	  double fb_execute_time = sim -> current_time + 2.5 * haste();
+
+	  if( fb_execute_time < sim -> target -> expirations.frozen -> occurs() )
+	    return false;
+	}
+	return true;
+      }
+      else if( sim -> time_to_think( p -> buffs_fingers_of_frost ) )
+      {
+	if( fb_priority )
+        {
+	  double fb_execute_time = sim -> current_time + 2.5 * haste();
+
+	  if( fb_execute_time < p -> expirations_fingers_of_frost -> occurs() )
+	    return false;
+	}
+	return true;
+      }
+      else return false;
+    }
 
     return true;
   }
