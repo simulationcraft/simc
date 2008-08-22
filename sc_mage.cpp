@@ -119,6 +119,20 @@ struct mage_t : public player_t
   };
   talents_t talents;
 
+  struct glyphs_t
+  {
+    int8_t arcane_power;
+    int8_t fire_ball;
+    int8_t frost_bolt;
+    int8_t improved_scorch;
+    int8_t mage_armor;
+    int8_t mana_gem;  // FIXME!  Not supported yet.
+    int8_t molten_armor;
+    int8_t water_elemental;
+    glyphs_t() { memset( (void*) this, 0x0, sizeof( glyphs_t ) ); }
+  };
+  glyphs_t glyphs;
+
   mage_t( sim_t* sim, std::string& name ) : player_t( sim, MAGE, name )
   {
     // Active
@@ -898,7 +912,7 @@ void mage_spell_t::player_buff()
 
   if( p -> buffs_molten_armor )
   {
-    player_crit += 0.03;
+    player_crit += p -> glyphs.molten_armor ? 0.05 : 0.03;
   }
 
   if( sim -> debug ) 
@@ -1252,7 +1266,7 @@ struct arcane_power_t : public mage_spell_t
       mage_t* p = player -> cast_mage();
       p -> aura_gain( "Arcane Power" );
       p -> buffs_arcane_power = 1;
-      sim -> add_event( this, 15.0 );
+      sim -> add_event( this, p -> glyphs.arcane_power ? 18.0 : 15.0 );
     }
     virtual void execute()
     {
@@ -1518,7 +1532,8 @@ struct fire_ball_t : public mage_spell_t
     base_crit_bonus   *= 1.0 + p -> talents.burnout * 0.10;
     dd_power_mod      += p -> talents.empowered_fire_ball * ( sim_t::WotLK ? 0.05 : 0.03 );
 
-    if( p -> gear.tier6_4pc ) base_multiplier *= 1.05;
+    if( p -> gear.tier6_4pc   ) base_multiplier *= 1.05;
+    if( p -> glyphs.fire_ball ) base_multiplier *= 1.05;
   }
 
   virtual double cost()
@@ -1845,7 +1860,14 @@ struct scorch_t : public mage_spell_t
 
 	if( t -> debuffs.improved_scorch < ( 5 * increment ) ) 
 	{
-	  t -> debuffs.improved_scorch += increment;
+	  if( p -> glyphs.improved_scorch )
+	  {
+	    t -> debuffs.improved_scorch = 5 * increment;
+	  }
+	  else
+	  {
+	    t -> debuffs.improved_scorch += increment;
+	  }
 	  if( sim -> log ) report_t::log( sim, "%s gains Improved Scorch %d", t -> name(), t -> debuffs.improved_scorch / increment );
 	}
 
@@ -1967,7 +1989,8 @@ struct frost_bolt_t : public mage_spell_t
     base_crit_bonus   *= 1.0 + p -> talents.spell_power * 0.25;
     dd_power_mod      += p -> talents.empowered_frost_bolt * ( sim_t::WotLK ? 0.05 : 0.02 );
 
-    if( p -> gear.tier6_4pc ) base_multiplier *= 1.05;
+    if( p -> gear.tier6_4pc    ) base_multiplier *= 1.05;
+    if( p -> glyphs.frost_bolt ) base_multiplier *= 1.05;
   }
 
   virtual void execute()
@@ -2353,7 +2376,7 @@ struct water_elemental_spell_t : public mage_spell_t
     
     base_cost  = 492;
     base_cost *= 1.0 - p -> talents.frost_channeling * 0.05;
-    cooldown   = 180;
+    cooldown   = p -> glyphs.water_elemental ? 150 : 180;
     cooldown  *= 1.0 - p -> talents.cold_as_ice * 0.10;
     harmful    = false;
   }
@@ -2487,7 +2510,7 @@ void mage_t::regen( double periodicity )
   else if( recent_cast() )
   {
     double while_casting = talents.arcane_meditation * 0.10;
-    if( buffs_mage_armor ) while_casting += 0.30;
+    if( buffs_mage_armor ) while_casting += glyphs.mage_armor ? 0.50 : 0.30;
     spirit_regen *= while_casting;
   }
 
@@ -2703,6 +2726,15 @@ bool mage_t::parse_option( const std::string& name,
     { "winters_chill",             OPT_INT8,  &( talents.winters_chill             ) },
     { "winters_grasp",             OPT_INT8,  &( talents.winters_grasp             ) },
     { "world_in_flames",           OPT_INT8,  &( talents.world_in_flames           ) },
+    // Glyphs
+    { "glyph_arcane_power",        OPT_INT8,  &( glyphs.arcane_power               ) },
+    { "glyph_fire_ball",           OPT_INT8,  &( glyphs.fire_ball                  ) },
+    { "glyph_frost_bolt",          OPT_INT8,  &( glyphs.frost_bolt                 ) },
+    { "glyph_improved_scorch",     OPT_INT8,  &( glyphs.improved_scorch            ) },
+    { "glyph_mage_armor",          OPT_INT8,  &( glyphs.mage_armor                 ) },
+    { "glyph_mana_gem",            OPT_INT8,  &( glyphs.mana_gem                   ) },
+    { "glyph_molten_armor",        OPT_INT8,  &( glyphs.molten_armor               ) },
+    { "glyph_water_elemental",     OPT_INT8,  &( glyphs.water_elemental            ) },
     { NULL, OPT_UNKNOWN }
   };
   
