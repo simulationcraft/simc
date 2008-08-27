@@ -92,7 +92,7 @@ void report_t::print_action( stats_t* s )
 	   "    %-20s  Count=%5.1f|%4.1fsec  DPS=%6.1f  DPE=%4.0f|%2.0f%%  DPET=%4.0f", 
 	   action_name.c_str(),
 	   s -> num_executes,
-	   s -> sim -> total_seconds / s -> num_executes,
+	   s -> player -> total_seconds / s -> num_executes,
 	   s -> dps, s -> dpe, s -> total_dmg * 100.0 / total_dmg, s -> dpet );
 
   if( report_miss ) fprintf( sim -> output_file, "  Miss=%.1f%%", s -> execute_results[ RESULT_MISS ].count * 100.0 / s -> num_executes );
@@ -257,7 +257,7 @@ void report_t::print_procs()
 	fprintf( sim -> output_file, "        %s=%d|%.1fsec\n", 
 		 p -> name(),
 		 p -> count / sim -> iterations,
-		 sim -> iterations * sim -> total_seconds / p -> count );
+		 sim -> iterations * player -> total_seconds / p -> count );
       }
     }
   }
@@ -321,7 +321,7 @@ void report_t::print_waiting()
     {
       nobody_waits = false;
       p -> total_waiting /= sim -> iterations;
-      fprintf( sim -> output_file, "    %4.1f%% : %s\n", 100.0 * p -> total_waiting / sim -> total_seconds,  p -> name() );
+      fprintf( sim -> output_file, "    %4.1f%% : %s\n", 100.0 * p -> total_waiting / p -> total_seconds,  p -> name() );
     }
   }
 
@@ -363,6 +363,7 @@ void report_t::print()
     if( p -> type == PLAYER_PET && ! report_pet )
       continue;
 
+    p -> total_seconds /= sim -> iterations;
     p -> total_dmg = 0;
 
     for( stats_t* s = p -> stats_list; s; s = s -> next )
@@ -380,7 +381,7 @@ void report_t::print()
       }
     }
 
-    double dps = p -> total_dmg / sim -> total_seconds;
+    double dps = p -> total_dmg / p -> total_seconds;
 
     // Avoid double-counting of pet damage.
     if( p -> type != PLAYER_PET ) raid_dps += dps;
@@ -399,7 +400,7 @@ void report_t::print()
 
       if( report_dpm  ) fprintf( sim -> output_file, "%s%.1f ",      report_tag ? "DPM="    : "", p -> total_dmg / mana_loss );
       if( report_mps  ) fprintf( sim -> output_file, "%s%.1f/%.1f ", report_tag ? "MPS="    : "", 
-				 mana_loss / sim -> total_seconds, mana_gain / sim -> total_seconds );
+				 mana_loss / p -> total_seconds, mana_gain / p -> total_seconds );
     }
 
     if( report_name ) fprintf( sim -> output_file, "\n" );

@@ -250,11 +250,18 @@ bool sim_t::execute()
     {
       if( debug ) report_t::log( this, "Executing event: %s", e -> name );     
       e -> execute();
+      
+      if( e -> player ) e -> player -> last_action = current_time;
     }
     delete e;
   }
   total_seconds += current_time;
   total_events_processed += events_processed;
+
+  for( player_t* p = player_list; p; p = p -> next )
+  {
+    p -> total_seconds += p -> last_action;
+  }
 
   return true;
 }

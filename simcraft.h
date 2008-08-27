@@ -369,6 +369,7 @@ struct player_t
   // Reporting
   int8_t       quiet;
   report_t*    report;
+  double       last_action, total_seconds;
   double       total_waiting;
   double       iteration_dmg, total_dmg;
   double       resource_lost  [ RESOURCE_MAX ];
