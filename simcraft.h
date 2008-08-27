@@ -235,7 +235,7 @@ struct sim_t
   int32_t     events_processed, total_events_processed;
   int32_t     seed, id, iterations;
   int8_t      infinite_resource[ RESOURCE_MAX ];
-  int8_t      average_dmg, log, debug, timestamp;
+  int8_t      potion_sickness, average_dmg, log, debug, timestamp;
   report_t*   report;
   uptime_t*   uptime_list;
   FILE*       output_file;

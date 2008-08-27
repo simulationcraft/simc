@@ -37,6 +37,9 @@ infinite_mana=0
 # improvement is worth the slight inaccuracy.
 regen_periodicity=1.0
 
+# WotLK gives you a Potion Sickness debuff that only lows one potion consumed per combat.
+potion_sickness=1
+
 # Since support for the Warrior class does not yet exist, one can infer a Sunder Armor debuff by 
 # artificially setting a low target armor value.  I'm really not sure what to put here.  I imagine
 # that WotLK bosses will have armor close to 10k......  (5x Sunder is 3600 penetration in WotLK)

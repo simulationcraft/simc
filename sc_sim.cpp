@@ -139,8 +139,8 @@ sim_t::sim_t() :
   events_remaining(0), max_events_remaining(0), 
   events_processed(0), total_events_processed(0),
   seed(0), id(0), iterations(1),
-  average_dmg(1), log(0), debug(0), timestamp(1), report(0), uptime_list(0), 
-  output_file(stdout)
+  potion_sickness(0), average_dmg(1), log(0), debug(0), timestamp(1), 
+  report(0), uptime_list(0), output_file(stdout)
 {
   for( int i=0; i < RESOURCE_MAX; i++ ) 
   {
@@ -384,6 +384,7 @@ bool sim_t::parse_option( const std::string& name,
     { "max_time",                OPT_FLT,    &( max_time                             ) },
     { "method"  ,                OPT_STRING, &( method_str                           ) },
     { "patch",                   OPT_STRING, &( patch_str                            ) },
+    { "potion_sickness",         OPT_INT8,   &( potion_sickness                      ) },
     { "seed",                    OPT_INT32,  &( seed                                 ) },
     { "timestamp",               OPT_INT8,   &( timestamp                            ) },
     { NULL, OPT_UNKNOWN }

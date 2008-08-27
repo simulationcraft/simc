@@ -9,8 +9,6 @@
 // Consumable
 // ==========================================================================
 
-static bool POTION_SICKNESS = false;
-
 // ==========================================================================
 // Flask
 // ==========================================================================
@@ -90,10 +88,10 @@ struct flask_t : public action_t
 
 struct destruction_potion_t : public action_t
 {
-  bool used;
+  int8_t used;
 
   destruction_potion_t( player_t* p, const std::string& options_str ) : 
-    action_t( ACTION_USE, "destruction_potion", p ), used( false )
+    action_t( ACTION_USE, "destruction_potion", p ), used( 0 )
   {
     cooldown = 120.0;
     cooldown_group = "potion";
@@ -123,7 +121,7 @@ struct destruction_potion_t : public action_t
   
     player -> share_cooldown( cooldown_group, cooldown );
     new expiration_t( sim, player );
-    used = POTION_SICKNESS;
+    used = sim -> potion_sickness;
   }
 
   virtual bool ready()
@@ -137,7 +135,7 @@ struct destruction_potion_t : public action_t
   virtual void reset()
   {
     action_t::reset();
-    used = false;
+    used = 0;
   }
 };
 
@@ -149,10 +147,10 @@ struct mana_potion_t : public action_t
 {
   int16_t trigger;
   int16_t mana;
-  bool used;
+  int8_t  used;
 
   mana_potion_t( player_t* p, const std::string& options_str ) : 
-    action_t( ACTION_USE, "mana_potion", p ), trigger(0), mana(0), used(false)
+    action_t( ACTION_USE, "mana_potion", p ), trigger(0), mana(0), used(0)
   {
     option_t options[] =
     {
@@ -177,7 +175,7 @@ struct mana_potion_t : public action_t
     if( sim -> log ) report_t::log( sim, "%s uses Mana potion", player -> name() );
     player -> resource_gain( RESOURCE_MANA, mana, player -> gains.mana_potion );
     player -> share_cooldown( cooldown_group, cooldown );
-    used = POTION_SICKNESS;
+    used = sim -> potion_sickness;
   }
 
   virtual bool ready()
@@ -195,7 +193,7 @@ struct mana_potion_t : public action_t
   virtual void reset()
   {
     action_t::reset();
-    used = false;
+    used = 0;
   }
 };
 
@@ -207,10 +205,10 @@ struct mana_gem_t : public action_t
 {
   int16_t trigger;
   int16_t mana;
-  bool used;
+  int8_t  used;
 
   mana_gem_t( player_t* p, const std::string& options_str ) : 
-    action_t( ACTION_USE, "mana_gem", p ), trigger(0), mana(0), used(false)
+    action_t( ACTION_USE, "mana_gem", p ), trigger(0), mana(0), used(0)
   {
     option_t options[] =
     {
@@ -235,7 +233,7 @@ struct mana_gem_t : public action_t
     if( sim -> log ) report_t::log( sim, "%s uses Mana Gem", player -> name() );
     player -> resource_gain( RESOURCE_MANA, mana, player -> gains.mana_gem );
     player -> share_cooldown( cooldown_group, cooldown );
-    used = POTION_SICKNESS;
+    used = sim -> potion_sickness;
   }
 
   virtual bool ready()
@@ -253,7 +251,7 @@ struct mana_gem_t : public action_t
   virtual void reset()
   {
     action_t::reset();
-    used = false;
+    used = 0;
   }
 };
 
@@ -265,10 +263,10 @@ struct health_stone_t : public action_t
 {
   int16_t trigger;
   int16_t health;
-  bool used;
+  int8_t  used;
 
   health_stone_t( player_t* p, const std::string& options_str ) : 
-    action_t( ACTION_USE, "health_stone", p ), trigger(0), health(0), used(false)
+    action_t( ACTION_USE, "health_stone", p ), trigger(0), health(0), used(0)
   {
     option_t options[] =
     {
@@ -293,7 +291,7 @@ struct health_stone_t : public action_t
     if( sim -> log ) report_t::log( sim, "%s uses Health Stone", player -> name() );
     player -> resource_gain( RESOURCE_HEALTH, health );
     player -> share_cooldown( cooldown_group, cooldown );
-    used = POTION_SICKNESS;
+    used = sim -> potion_sickness;
   }
 
   virtual bool ready()
@@ -311,7 +309,7 @@ struct health_stone_t : public action_t
   virtual void reset()
   {
     action_t::reset();
-    used = false;
+    used = 0;
   }
 };
 
@@ -324,10 +322,10 @@ struct dark_rune_t : public action_t
   int16_t trigger;
   int16_t health;
   int16_t mana;
-  bool used;
+  int8_t  used;
 
   dark_rune_t( player_t* p, const std::string& options_str ) : 
-    action_t( ACTION_USE, "dark_rune", p ), trigger(0), health(0), mana(0), used(false)
+    action_t( ACTION_USE, "dark_rune", p ), trigger(0), health(0), mana(0), used(0)
   {
     option_t options[] =
     {
@@ -354,7 +352,7 @@ struct dark_rune_t : public action_t
     player -> resource_gain( RESOURCE_MANA,   mana, player -> gains.dark_rune );
     player -> resource_loss( RESOURCE_HEALTH, health );
     player -> share_cooldown( cooldown_group, cooldown );
-    used = POTION_SICKNESS;
+    used = sim -> potion_sickness;
   }
 
   virtual bool ready()
@@ -375,7 +373,7 @@ struct dark_rune_t : public action_t
   virtual void reset()
   {
     action_t::reset();
-    used = false;
+    used = 0;
   }
 };
 
