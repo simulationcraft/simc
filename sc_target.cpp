@@ -41,12 +41,24 @@ void target_t::assess_damage( double  amount,
   if( dmg_type == DMG_DIRECT )
   {
     if( school == SCHOOL_SHADOW )
-      if( debuffs.shadow_vulnerability > 0 )
-	debuffs.shadow_vulnerability--;
+    {
+      if( debuffs.shadow_vulnerability_charges > 0 )
+      {
+	debuffs.shadow_vulnerability_charges--;
+	if( debuffs.shadow_vulnerability_charges == 0 ) 
+	  debuffs.shadow_vulnerability = 0;
+      }
+    }
 
     if( school == SCHOOL_NATURE )
-      if( debuffs.nature_vulnerability > 0 )
-	debuffs.nature_vulnerability--;
+    {
+      if( debuffs.nature_vulnerability_charges > 0 )
+      {
+	debuffs.nature_vulnerability_charges--;
+	if( debuffs.nature_vulnerability_charges == 0 ) 
+	  debuffs.nature_vulnerability = 0;
+      }
+    }
   }
 }
    
@@ -101,6 +113,7 @@ bool target_t::parse_option( const std::string& name,
     { "curse_of_elements",     OPT_INT8,  &( debuffs.curse_of_elements         ) },
     { "judgement_of_crusader", OPT_INT16, &( debuffs.judgement_of_crusader     ) },
     { "judgement_of_wisdom",   OPT_FLT,   &( debuffs.judgement_of_wisdom       ) },
+    { "shadow_vulnerability",  OPT_INT8,  &( debuffs.shadow_vulnerability      ) },
     { NULL, OPT_UNKNOWN }
   };
 

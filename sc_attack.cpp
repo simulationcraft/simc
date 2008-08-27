@@ -207,9 +207,6 @@ void attack_t::calculate_result()
 
   result = RESULT_NONE;
 
-  player_buff();
-  target_debuff( DMG_DIRECT );
-      
   build_table( chances, results );
 
   double random = rand_t::gen_float();

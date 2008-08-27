@@ -586,7 +586,15 @@ double player_t::composite_spell_power( int8_t school )
 {
   double sp = spell_power[ school ];
 
-  if( school != SCHOOL_MAX ) sp += spell_power[ SCHOOL_MAX ];
+  if( school == SCHOOL_FROSTFIRE )
+  {
+    sp = std::max( spell_power[ SCHOOL_FROST ],
+		   spell_power[ SCHOOL_FIRE  ] );
+  }
+
+  if( school != SCHOOL_MAX ) 
+    sp += spell_power[ SCHOOL_MAX ];
+
   sp += spell_power_per_intellect * intellect();
   sp += spell_power_per_spirit    * spirit();
   sp *= spell_power_multiplier;

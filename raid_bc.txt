@@ -32,6 +32,9 @@ iterations=1000
 # resource replenishment.
 infinite_mana=0
 
+# The Burning Crusade has regen ticks occuring every 2.0sec.
+regen_periodicity=2.0
+
 # Since support for the Warrior class does not yet exist, one can infer a Sunder Armor debuff by 
 # artificially setting a low target armor value.  Many BC bosses have an armor of 7700.  A 5-stack
 # of Sunder armor reduces this by 2600.
@@ -44,6 +47,7 @@ judgement_of_wisdom=1
 
 # Since support for the Warlock class does not yet exist, one can specify static target debuffs.
 curse_of_elements=13
+shadow_vulnerability=10
 
 #
 # Shadow Priest

@@ -228,7 +228,9 @@ struct sim_t
   player_t*   player_list;
   player_t*   active_player;
   target_t*   target;
-  double      current_time, max_time, lag, reaction_time, total_seconds, elapsed_cpu_seconds;
+  double      lag, reaction_time, regen_periodicity;
+  double      current_time, max_time;
+  double      total_seconds, elapsed_cpu_seconds;
   int32_t     events_remaining, max_events_remaining;
   int32_t     events_processed, total_events_processed;
   int32_t     seed, id, iterations;
@@ -766,6 +768,7 @@ struct target_t
     int16_t  judgement_of_crusader;
     double   judgement_of_wisdom;
     int8_t   curse_of_elements;
+    int8_t   shadow_vulnerability;
     // Temporary De-Buffs
     int8_t   temporary_debuffs;
     int8_t   affliction_effects;
@@ -779,8 +782,8 @@ struct target_t
     int8_t   misery_stack;
     int8_t   earth_and_moon;
     int8_t   nature_vulnerability;
-    int8_t   nature_vulnerability_glyph;
-    int8_t   shadow_vulnerability;
+    int8_t   nature_vulnerability_charges;
+    int8_t   shadow_vulnerability_charges;
     int8_t   shadow_weaving;
     int8_t   slowed;
     int8_t   sunder_armor;
@@ -919,7 +922,7 @@ struct action_t
   virtual void get_base_damage(); 
   virtual void calculate_damage(); 
   virtual double resistance();
-  virtual void adjust_damage_for_result();
+  virtual void adjust_dd_for_result();
   virtual void consume_resource();
   virtual void execute();
   virtual void tick();
@@ -961,7 +964,7 @@ struct attack_t : public action_t
   virtual double duration()                        { return action_t::duration();          }
   virtual void get_base_damage()                   { action_t::get_base_damage();          }
   virtual double resistance()                      { return action_t::resistance();        }
-  virtual void adjust_damage_for_result()          { action_t::adjust_damage_for_result(); }
+  virtual void adjust_dd_for_result()              { action_t::adjust_dd_for_result();     }
   virtual void consume_resource()                  { action_t::consume_resource();         }
   virtual void execute()                           { action_t::execute();                  }
   virtual void tick()                              { action_t::tick();                     }
@@ -998,7 +1001,7 @@ struct spell_t : public action_t
   virtual void get_base_damage()                   { action_t::get_base_damage();          }
   virtual void calculate_damage()                  { action_t::calculate_damage();         }
   virtual double resistance()                      { return action_t::resistance();        }
-  virtual void adjust_damage_for_result()          { action_t::adjust_damage_for_result(); }
+  virtual void adjust_dd_for_result()              { action_t::adjust_dd_for_result();     }
   virtual void consume_resource()                  { action_t::consume_resource();         }
   virtual void execute()                           { action_t::execute();                  }
   virtual void tick()                              { action_t::tick();                     }

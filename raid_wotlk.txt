@@ -32,6 +32,11 @@ iterations=1000
 # resource replenishment.
 infinite_mana=0
 
+# WotLK has regen ticks occuring every 0.1sec.  Modeling this exactly produces a ton of churn in the
+# event list and tons of unnecessary calculations.  A value of 1.0 is not perfect, but the performance
+# improvement is worth the slight inaccuracy.
+regen_periodicity=1.0
+
 # Since support for the Warrior class does not yet exist, one can infer a Sunder Armor debuff by 
 # artificially setting a low target armor value.  I'm really not sure what to put here.  I imagine
 # that WotLK bosses will have armor close to 10k......  (5x Sunder is 3600 penetration in WotLK)
@@ -45,10 +50,7 @@ judgement_of_wisdom=400
 # Since support for the Warlock class does not yet exist, one can specify static target debuffs.
 # CoE is currently coded as affecting Nature damage, too.
 curse_of_elements=13
-
-# Since support for the Mage class does not yet exist, one can specify static target debuffs.
-# Improved Scorch has been changed to add 10% damage to Fire/Frost/Arcane.
-#improved_scorch=10
+shadow_vulnerability=5
 
 #
 # Shadow Priest
@@ -121,15 +123,15 @@ swift_retribution=1
 #
 # Mage_Arcane
 #
-# (1) The "trigger=3500" option to mana_potion represents the mana gained and the amount below max required to trigger
+# (1) The "trigger=3500" option to mana_gem and mana_potion represents the mana gained and the amount below max required to trigger
 # (2) The "trigger=6000" option to evocation represents the mana gained and the amount below max required to trigger
 # (3) The "barrage=1" option to arcane_missles means that it will only get executed when the "barrage" buff has been up 
 #     for at least 0.5sec (to account for lag and reaction time).
 #
 mage=Mage_Arcane
 level=80
-talents=http://www.worldofwarcraft.com/info/classes/mage/talents2.html?tal=23000503310033014032310251532103000000000000000000000000000530003010000000000000000000
-actions=flask,type=blinding_light/mage_armor/mana_potion,trigger=3500/evocation,trigger=6000/arcane_power/arcane_missiles,barrage=1/arcane_barrage/arcane_blast
+talents=http://www.worldofwarcraft.com/info/classes/mage/talents2.html?tal=23000503310030015032310241532100000000000000000000000000000530033010030000000000000000
+actions=flask,type=blinding_light/mage_armor/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=6000/arcane_power/arcane_missiles,barrage=1/arcane_barrage/arcane_blast
 gear_stamina=600
 gear_intellect=600
 gear_spirit=600
@@ -149,13 +151,16 @@ swift_retribution=1
 #
 # Mage_Fire
 #
-# (1) The "trigger=3500" option to mana_potion represents the mana gained and the amount below max required to trigger
+# (1) The "trigger=3500" option to mana_gem and mana_potion represents the mana gained and the amount below max required to trigger
 # (2) The "trigger=6000" option to evocation represents the mana gained and the amount below max required to trigger
+# (3) The "debuff=1" option to scorch prevents it from being executed unless the Improved Scorch debuff is going to expire in less than 6sec.
 #
 mage=Mage_Fire
 level=80
 talents=http://www.worldofwarcraft.com/info/classes/mage/talents2.html?tal=00000000000000000000000000000003550320123033310531203213510230032010000000000000000000
-actions=flask,type=pure_death/molten_armor/mana_potion,trigger=3500/scorch,debuff=1/evocation,trigger=6000/combustion/icy_veins/living_bomb/fire_ball
+actions=flask,type=pure_death/molten_armor/mana_gem,trigger=3500/mana_potion,trigger=3500/scorch,debuff=1/evocation,trigger=6000/combustion/icy_veins/living_bomb/fire_ball
+# We will let the poor Frost Mage raid-slave keep up the Improved Scorch debuff
+skip_actions=scorch
 gear_stamina=600
 gear_intellect=600
 gear_spirit=600
@@ -175,15 +180,16 @@ swift_retribution=1
 #
 # Mage_Frost
 #
-# (1) The "trigger=3500" option to mana_potion represents the mana gained and the amount below max required to trigger
+# (1) The "trigger=3500" option to mana_gem and mana_potion represents the mana gained and the amount below max required to trigger
 # (2) The "trigger=6000" option to evocation represents the mana gained and the amount below max required to trigger
-# (3) The "frozen=1" option to ice_lance means that it will only be cast if the target is frozen (via winters_grasp) or virtually frozen (via fingers_of_frost)
-# (4) The "fb_priority=1" option to ice_lance means that it will only be cast if the frozen debuff/buff will end before a frost_bolt could be cast
+# (3) The "debuff=1" option to scorch prevents it from being executed unless the Improved Scorch debuff is going to expire in less than 6sec.
+# (4) The "frozen=1" option to ice_lance means that it will only be cast if the target is frozen (via winters_grasp) or virtually frozen (via fingers_of_frost)
+# (5) The "fb_priority=1" option to ice_lance means that it will only be cast if the frozen debuff/buff will end before a frost_bolt could be cast
 #
 mage=Mage_Frost
 level=80
 talents=http://www.worldofwarcraft.com/info/classes/mage/talents2.html?tal=00000000000000000000000000000023050020123000000000000000000535030310005100230052231351
-actions=flask,type=pure_death/molten_armor/mana_potion,trigger=2500/evocation,trigger=4000/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/ice_lance,frozen=1,fb_priority=1/frost_bolt
+actions=flask,type=pure_death/molten_armor/mana_gem,trigger=3500/mana_potion,trigger=2500/scorch,debuff=1/evocation,trigger=4000/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/ice_lance,frozen=1,fb_priority=1/frost_bolt
 gear_stamina=600
 gear_intellect=600
 gear_spirit=600
@@ -206,13 +212,16 @@ swift_retribution=1
 #
 # Mage_FrostFire
 #
-# (1) The "trigger=3500" option to mana_potion represents the mana gained and the amount below max required to trigger
+# (1) The "trigger=3500" option to mana_gem and mana_potion represents the mana gained and the amount below max required to trigger
 # (2) The "trigger=6000" option to evocation represents the mana gained and the amount below max required to trigger
+# (3) The "debuff=1" option to scorch prevents it from being executed unless the Improved Scorch debuff is going to expire in less than 6sec.
 #
 mage=Mage_FrostFire
 level=80
 talents=http://www.worldofwarcraft.com/info/classes/mage/talents2.html?tal=00000000000000000000000000000003550300123033300531203003510235030310000000000000000000
-actions=flask,type=pure_death/molten_armor/mana_potion,trigger=3500/scorch,debuff=1/evocation,trigger=6000/combustion/icy_veins/living_bomb/frostfire_bolt
+actions=flask,type=pure_death/molten_armor/mana_gem,trigger=3500/mana_potion,trigger=3500/scorch,debuff=1/evocation,trigger=6000/combustion/icy_veins/living_bomb/frostfire_bolt
+# We will let the poor Frost Mage raid-slave keep up the Improved Scorch debuff
+skip_actions=scorch
 gear_stamina=600
 gear_intellect=600
 gear_spirit=600
@@ -296,15 +305,15 @@ shaman=Shaman_Enhancement
 level=80
 talents=http://www.worldofwarcraft.com/info/classes/shaman/talents2.html?tal=05203010000000000000000030205033105021335311523125100000000000000000000000000
 actions=flask,type=relentless_assault/windfury_weapon,weapon=main/flametongue_weapon,weapon=off/auto_attack/stormstrike/lava_burst,maelstrom=5,flame_shock=1,max_ticks_consumed=1/lightning_bolt,maelstrom=5/searing_totem/strength_of_earth_totem/windfury_totem/shamanistic_rage/flame_shock/earth_shock/lightning_shield
-gear_strength=400
-gear_agility=600
+gear_strength=600
+gear_agility=800
 gear_stamina=1000
 gear_intellect=200
-gear_attack_power=1200
-gear_attack_hit_rating=250
-gear_spell_hit_rating=250
-gear_attack_crit_rating=300
-gear_spell_crit_rating=300
+gear_attack_power=1500
+gear_attack_hit_rating=200
+gear_spell_hit_rating=200
+gear_attack_crit_rating=350
+gear_spell_crit_rating=350
 gear_attack_expertise_rating=175
 gear_attack_penetration=750
 gear_haste_rating=250

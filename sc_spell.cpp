@@ -26,6 +26,7 @@ double spell_t::haste()
 {
   double h = player -> haste;
   if( player -> buffs.bloodlust                    ) h *= 1.0 / ( 1.0 + 0.30 );
+  else if ( player -> buffs.power_infusion         ) h *= 1.0 / ( 1.0 + 0.20 );
   if( player -> buffs.swift_retribution            ) h *= 1.0 / ( 1.0 + 0.03 );
   if( player -> buffs.moonkin_haste                ) h *= 1.0 / ( 1.0 + 0.20 );
   if( player -> buffs.totem_of_wrath == 2          ) h *= 1.0 / ( 1.0 + 0.01 );
@@ -96,9 +97,9 @@ void spell_t::player_buff()
     }
     else
     {
-      player_crit += 0.03;
+      player_hit += 0.03;
     }
-    player_hit += 0.03;
+    player_crit += 0.03;
   }
 
   if( sim -> debug ) report_t::log( sim, "spell_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f", 
@@ -202,9 +203,6 @@ void spell_t::calculate_result()
   dd = dot = dot_tick = 0;
 
   result = RESULT_NONE;
-
-  player_buff();
-  target_debuff( DMG_DIRECT );
 
   if( ( result == RESULT_NONE ) && may_miss )
   {

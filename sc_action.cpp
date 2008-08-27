@@ -123,7 +123,7 @@ double action_t::cost()
     }
   }
 
-  if( sim -> debug ) report_t::log( sim, "action_t::cost: %s %.2f %s", name(), c, util_t::resource_type_string( resource ) );
+  if( sim -> debug ) report_t::log( sim, "action_t::cost: %s %.2f %.2f %s", name(), base_cost, c, util_t::resource_type_string( resource ) );
 
    return c;
 }
@@ -192,8 +192,8 @@ void action_t::target_debuff( int8_t dmg_type )
   {
     if( school == SCHOOL_SHADOW )
     {
-      target_multiplier *= 1.0 + ( t -> debuffs.shadow_weaving * 0.02 );
-      if( t -> debuffs.shadow_vulnerability ) target_multiplier *= 1.20;
+      target_multiplier *= 1.0 + ( t -> debuffs.shadow_weaving       * 0.02 );
+      target_multiplier *= 1.0 + ( t -> debuffs.shadow_vulnerability * 0.01 );
       sv_uptime -> update( t -> debuffs.shadow_vulnerability != 0 );
     }
     else if( school == SCHOOL_ARCANE )
@@ -225,11 +225,8 @@ void action_t::target_debuff( int8_t dmg_type )
     }
     else if( school == SCHOOL_NATURE )
     {
-      target_multiplier *= 1.0 + ( t -> debuffs.earth_and_moon * 0.02 );
-      if( t -> debuffs.nature_vulnerability ) 
-      {
-	target_multiplier *= t -> debuffs.nature_vulnerability_glyph ? 1.28 : 1.20;
-      }
+      target_multiplier *= 1.0 + ( t -> debuffs.earth_and_moon       * 0.02 );
+      target_multiplier *= 1.0 + ( t -> debuffs.nature_vulnerability * 0.01 );
       nv_uptime -> update( t -> debuffs.nature_vulnerability != 0 );
     }
     target_multiplier *= 1.0 + ( t -> debuffs.misery * 0.01 );
@@ -276,8 +273,7 @@ void action_t::get_base_damage()
     base_dd = rank -> dd_min + delta * rand_t::gen_float();
   }
 
-  if( base_dot  == 0 ) base_dot  = rank -> dot;
-  if( base_cost == 0 ) base_cost = rank -> cost;
+  if( base_dot == 0 ) base_dot = rank -> dot;
 }
 
 // action_t::calculate_damage ===============================================
@@ -311,13 +307,14 @@ double action_t::resistance()
 {
   if( ! may_resist ) return 0;
 
+  target_t* t = sim -> target;
   double resist=0;
 
   double penetration = base_penetration + player_penetration + target_penetration;
 
   if( school == SCHOOL_PHYSICAL )
   {
-    double adjusted_armor = sim -> target -> armor - penetration;
+    double adjusted_armor = t -> armor - penetration;
 
     if( adjusted_armor < 0 ) adjusted_armor = 0;
 
@@ -325,14 +322,22 @@ double action_t::resistance()
   }
   else
   {
-    double resist_rating = sim -> target -> spell_resistance[ school ] - penetration;
+    double resist_rating = t -> spell_resistance[ school ];
+
+    if( school == SCHOOL_FROSTFIRE )
+    {
+      resist_rating = std::min( t -> spell_resistance[ SCHOOL_FROST ],
+				t -> spell_resistance[ SCHOOL_FIRE  ] );
+    }
+
+    resist_rating -= penetration;
     if( resist_rating < 0 ) resist_rating = 0;
 
     resist = resist_rating / ( player -> level * 5.0 );
 
     if( ! binary )
     {
-      int delta_level = sim -> target -> level - player -> level;
+      int delta_level = t -> level - player -> level;
       if( delta_level > 0 )
       {
 	double level_resist = delta_level * 0.02;
@@ -346,10 +351,12 @@ double action_t::resistance()
   return resist;
 }
 
-// action_t::adjust_damage_for_result =======================================
+// action_t::adjust_dd_for_result =============================================
 
-void action_t::adjust_damage_for_result()
+void action_t::adjust_dd_for_result()
 {
+  if( dd == 0 ) return;
+
   double dd_init = dd;
 
   if( result == RESULT_GLANCE )
@@ -400,13 +407,17 @@ void action_t::execute()
 
   consume_resource();
 
+  player_buff();
+
+  target_debuff( DMG_DIRECT );
+
   calculate_result();
 
   if( result_is_hit() )
   {
     calculate_damage();
 
-    adjust_damage_for_result();
+    adjust_dd_for_result();
 
     player -> action_hit( this );
     

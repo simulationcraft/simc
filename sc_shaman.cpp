@@ -44,8 +44,9 @@ struct shaman_t : public player_t
   proc_t* procs_lightning_overload;
   
   // Up-Times
-  uptime_t* uptimes_flurry;
   uptime_t* uptimes_elemental_devastation;
+  uptime_t* uptimes_elemental_oath;
+  uptime_t* uptimes_flurry;
   
   // Auto-Attack
   attack_t* main_hand_attack;
@@ -159,8 +160,9 @@ struct shaman_t : public player_t
     procs_lightning_overload = get_proc( "lightning_overload" );
 
     // Up-Times
-    uptimes_flurry                = get_uptime( "flurry"                );
     uptimes_elemental_devastation = get_uptime( "elemental_devastation" );
+    uptimes_elemental_oath        = get_uptime( "elemental_oath"        );
+    uptimes_flurry                = get_uptime( "flurry"                );
   
     // Auto-Attack
     main_hand_attack = 0;
@@ -444,8 +446,10 @@ static void trigger_nature_vulnerability( attack_t* a )
     virtual void execute()
     {
       if( sim -> log ) report_t::log( sim, "%s loses Nature Vulnerability", sim -> target -> name() );
-      sim -> target -> debuffs.nature_vulnerability = 0;
-      sim -> target -> expirations.nature_vulnerability = 0;
+      target_t* t = sim -> target;
+      t -> debuffs.nature_vulnerability = 0;
+      t -> debuffs.nature_vulnerability_charges = 0;
+      t -> expirations.nature_vulnerability = 0;
     }
   };
 
@@ -453,8 +457,8 @@ static void trigger_nature_vulnerability( attack_t* a )
   target_t* t = a -> sim -> target;
   event_t*& e = t -> expirations.nature_vulnerability;
 
-  t -> debuffs.nature_vulnerability = 2 + p -> talents.improved_stormstrike;
-  t -> debuffs.nature_vulnerability_glyph = p -> glyphs.stormstrike;
+  t -> debuffs.nature_vulnerability_charges = 2 + p -> talents.improved_stormstrike;
+  t -> debuffs.nature_vulnerability = p -> glyphs.stormstrike ? 28 : 20;
    
   if( e )
   {
@@ -772,6 +776,7 @@ double shaman_spell_t::cost()
 {
   shaman_t* p = player -> cast_shaman();
   if( p -> buffs_elemental_mastery ) return 0;
+  p -> uptimes_elemental_oath -> update( p -> buffs.elemental_oath == 6 );
   double c = spell_t::cost();
   if( p -> buffs_elemental_focus ) c *= 0.60;
   if( p -> buffs_shamanistic_focus ) c *= 0.40;
@@ -1425,12 +1430,13 @@ struct searing_totem_t : public shaman_spell_t
   {
     if( sim -> debug ) report_t::log( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
     may_resist = false;
+    target_debuff( DMG_DIRECT );
     calculate_result();
     may_resist = true;
     if( result_is_hit() )
     {
       calculate_damage();
-      adjust_damage_for_result();
+      adjust_dd_for_result();
       if( dd > 0 )
       {
 	dot_tick = dd;

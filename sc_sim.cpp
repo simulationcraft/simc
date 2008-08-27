@@ -135,7 +135,7 @@ bool sim_t::WotLK = false;
 
 sim_t::sim_t() : 
   method( SIM_LIST ), player_list(0), active_player(0), target(0),
-  current_time(0), max_time(0), lag(0), reaction_time(0.5), total_seconds(0), elapsed_cpu_seconds(0),
+  lag(0), reaction_time(0.5), regen_periodicity(1.0), current_time(0), max_time(0), total_seconds(0), elapsed_cpu_seconds(0),
   events_remaining(0), max_events_remaining(0), 
   events_processed(0), total_events_processed(0),
   seed(0), id(0), iterations(1),
@@ -379,6 +379,7 @@ bool sim_t::parse_option( const std::string& name,
     { "iterations",              OPT_INT32,  &( iterations                           ) },
     { "lag",                     OPT_FLT,    &( lag                                  ) },
     { "reaction_time",           OPT_FLT,    &( reaction_time                        ) },
+    { "regen_periodicity",       OPT_FLT,    &( regen_periodicity                    ) },
     { "log",                     OPT_INT8,   &( log                                  ) },
     { "max_time",                OPT_FLT,    &( max_time                             ) },
     { "method"  ,                OPT_STRING, &( method_str                           ) },

@@ -206,8 +206,10 @@ struct mage_spell_t : public spell_t
   virtual void   player_buff();
 
   // Passthru Methods
-  virtual double duration() { return spell_t::duration(); }
-  virtual bool   ready()    { return spell_t::ready();    }
+  virtual void   calculate_damage() { spell_t::calculate_damage(); }
+  virtual void   last_tick()        { spell_t::last_tick();        }
+  virtual double duration()         { return spell_t::duration();  }
+  virtual bool   ready()            { return spell_t::ready();     }
 };
 
 // ==========================================================================
@@ -962,6 +964,7 @@ struct arcane_barrage_t : public mage_spell_t
     cooldown          = 3.0;
 
     base_cost         = rank -> cost;
+    base_cost        *= 1.0 - p -> talents.frost_channeling * ( sim_t::WotLK ? (0.1/3) : 0 );
     base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
     base_crit        += p -> talents.arcane_instability * 0.01;
     base_hit         += p -> talents.arcane_focus * ( sim_t::WotLK ? 0.01 : 0.02 );
@@ -1009,6 +1012,7 @@ struct arcane_blast_t : public mage_spell_t
     dd_power_mod      = (2.5/3.5); 
 
     base_cost         = rank -> cost;
+    base_cost        *= 1.0 - p -> talents.frost_channeling * ( sim_t::WotLK ? (0.1/3) : 0 );
     base_multiplier  *= 1.0 + p -> talents.spell_impact * 0.02;
     base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
     base_crit        += p -> talents.arcane_instability * 0.01;
@@ -1038,8 +1042,8 @@ struct arcane_blast_t : public mage_spell_t
     double c = mage_spell_t::cost();
     if( c != 0 )
     {
-      if( p -> buffs_arcane_blast ) c += rank -> cost * 0.75 * p -> buffs_arcane_blast;
-      if( p -> gear.tier5_2pc     ) c += rank -> cost * 0.20;
+      if( p -> buffs_arcane_blast ) c += base_cost * 0.75 * p -> buffs_arcane_blast;
+      if( p -> gear.tier5_2pc     ) c += base_cost * 0.20;
     }
     return c;
   }
@@ -1168,6 +1172,7 @@ struct arcane_missiles_t : public mage_spell_t
 
     base_cost         = rank -> cost;
     base_cost        *= 1.0 + p -> talents.empowered_arcane_missiles * 0.02;
+    base_cost        *= 1.0 - p -> talents.frost_channeling * ( sim_t::WotLK ? (0.1/3) : 0 );
     base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
     base_crit        += p -> talents.arcane_instability * 0.01;
     base_hit         += p -> talents.arcane_focus * ( sim_t::WotLK ? 0.01 : 0.02 );
@@ -1188,6 +1193,7 @@ struct arcane_missiles_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
     if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
     consume_resource();
+    player_buff();
     schedule_tick();
     update_ready();
     dd = 0;
@@ -1201,12 +1207,13 @@ struct arcane_missiles_t : public mage_spell_t
   {
     if( sim -> debug ) report_t::log( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
     may_resist = false;
+    target_debuff( DMG_DIRECT );
     calculate_result();
     may_resist = true;
     if( result_is_hit() )
     {
       calculate_damage();
-      adjust_damage_for_result();
+      adjust_dd_for_result();
       player -> action_hit( this );
       if( dd > 0 )
       {
@@ -1372,7 +1379,8 @@ struct focus_magic_t : public mage_spell_t
     player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
 
-    base_cost = rank -> cost;
+    base_cost  = rank -> cost;
+    base_cost *= 1.0 - p -> talents.frost_channeling * ( sim_t::WotLK ? (0.1/3) : 0 );
   }
    
   virtual void execute()
@@ -1525,6 +1533,7 @@ struct fire_ball_t : public mage_spell_t
     base_cost         *= 1.0 - p -> talents.elemental_precision * 0.01;
     base_cost         *= 1.0 - p -> talents.pyromaniac * 0.01;
     base_cost         *= 1.0 + p -> talents.burnout * 0.01;
+    base_cost         *= 1.0 - p -> talents.frost_channeling * ( sim_t::WotLK ? (0.1/3) : 0 );
     base_execute_time -= p -> talents.improved_fire_ball * 0.1;
     base_multiplier   *= 1.0 + p -> talents.fire_power * 0.02;
     base_multiplier   *= 1.0 + p -> talents.arcane_instability * 0.01;
@@ -1621,6 +1630,7 @@ struct fire_blast_t : public mage_spell_t
     base_cost        *= 1.0 - p -> talents.elemental_precision * 0.01;
     base_cost        *= 1.0 - p -> talents.pyromaniac * 0.01;
     base_cost        *= 1.0 + p -> talents.burnout * 0.01;
+    base_cost        *= 1.0 - p -> talents.frost_channeling * ( sim_t::WotLK ? (0.1/3) : 0 );
     cooldown         -= p -> talents.improved_fire_blast * 0.5;
     base_multiplier  *= 1.0 + p -> talents.fire_power * 0.02;
     base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
@@ -1652,8 +1662,10 @@ struct fire_blast_t : public mage_spell_t
 
 struct living_bomb_t : public mage_spell_t
 {
+  double explosion;
+
   living_bomb_t( player_t* player, const std::string& options_str ) : 
-    mage_spell_t( "living_bomb", player, SCHOOL_FIRE, TREE_FIRE )
+    mage_spell_t( "living_bomb", player, SCHOOL_FIRE, TREE_FIRE ), explosion(0)
   {
     mage_t* p = player -> cast_mage();
     assert( p -> talents.living_bomb );
@@ -1685,6 +1697,7 @@ struct living_bomb_t : public mage_spell_t
     base_cost        *= 1.0 - p -> talents.elemental_precision * 0.01;
     base_cost        *= 1.0 - p -> talents.pyromaniac * 0.01;
     base_cost        *= 1.0 + p -> talents.burnout * 0.01;
+    base_cost        *= 1.0 - p -> talents.frost_channeling * ( sim_t::WotLK ? (0.1/3) : 0 );
     base_multiplier  *= 1.0 + p -> talents.fire_power * 0.02;
     base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
     base_crit        += p -> talents.arcane_instability * 0.01;
@@ -1699,32 +1712,33 @@ struct living_bomb_t : public mage_spell_t
 
   // Odd thing to handle: The direct-damage comes at the last tick instead of the beginning of the spell.
 
-  virtual void execute()
+  virtual void last_tick()
   {
-    mage_t* p = player -> cast_mage();
-    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
-    consume_resource();
+    target_debuff( DMG_DIRECT );
+    may_miss = false;
     calculate_result();
+    may_miss = false;
     if( result_is_hit() )
     {
       calculate_damage();
-      adjust_damage_for_result();
-      player -> action_hit( this );
-      schedule_tick();
+      dd = explosion;
+      adjust_dd_for_result();
+      if( dd > 0 )
+      {
+	dot_tick = dd;
+	assess_damage( dot_tick, DMG_OVER_TIME );
+	if( result == RESULT_CRIT ) trigger_ignite( this );
+      }
     }
-    else
-    {
-      if( sim -> log ) report_t::log( sim, "%s avoids %s (%s)", sim -> target -> name(), name(), util_t::result_type_string( result ) );
-      player -> action_miss( this );
-    }
-    update_ready();
-    update_stats( DMG_DIRECT );
-    p -> action_finish( this );
+    update_stats( DMG_OVER_TIME );
+    mage_spell_t::last_tick();
   }
 
-  virtual void last_tick() 
+  virtual void calculate_damage()
   {
-    if( dd > 0 ) assess_damage( dd, DMG_DIRECT );
+    mage_spell_t::calculate_damage();
+    explosion = dd;
+    dd = 0;
   }
 };
 
@@ -1768,6 +1782,7 @@ struct pyroblast_t : public mage_spell_t
     base_cost        *= 1.0 - p -> talents.elemental_precision * 0.01;
     base_cost        *= 1.0 - p -> talents.pyromaniac * 0.01;
     base_cost        *= 1.0 + p -> talents.burnout * 0.01;
+    base_cost        *= 1.0 - p -> talents.frost_channeling * ( sim_t::WotLK ? (0.1/3) : 0 );
     base_multiplier  *= 1.0 + p -> talents.fire_power * 0.02;
     base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
     base_crit        += p -> talents.arcane_instability * 0.01;
@@ -1822,6 +1837,7 @@ struct scorch_t : public mage_spell_t
     base_cost        *= 1.0 - p -> talents.elemental_precision * 0.01;
     base_cost        *= 1.0 - p -> talents.pyromaniac * 0.01;
     base_cost        *= 1.0 + p -> talents.burnout * 0.01;
+    base_cost        *= 1.0 - p -> talents.frost_channeling * ( sim_t::WotLK ? (0.1/3) : 0 );
     base_multiplier  *= 1.0 + p -> talents.fire_power * 0.02;
     base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
     base_crit        += p -> talents.arcane_instability * 0.01;
@@ -1980,7 +1996,7 @@ struct frost_bolt_t : public mage_spell_t
       
     base_cost          = rank -> cost;
     base_cost         *= 1.0 - p -> talents.elemental_precision * 0.01;
-    base_cost         *= 1.0 - p -> talents.frost_channeling * 0.05;
+    base_cost         *= 1.0 - p -> talents.frost_channeling * ( sim_t::WotLK ? (0.1/3) : 0.05 );
     base_execute_time -= p -> talents.improved_frost_bolt * 0.1;
     base_multiplier   *= 1.0 + p -> talents.piercing_ice * 0.02;
     base_multiplier   *= 1.0 + p -> talents.arctic_winds * 0.01;
@@ -2054,7 +2070,7 @@ struct ice_lance_t : public mage_spell_t
       
     base_cost         = rank -> cost;
     base_cost        *= 1.0 - p -> talents.elemental_precision * 0.01;
-    base_cost        *= 1.0 - p -> talents.frost_channeling * 0.05;
+    base_cost        *= 1.0 - p -> talents.frost_channeling * ( sim_t::WotLK ? (0.1/3) : 0.05 );
     base_multiplier  *= 1.0 + p -> talents.piercing_ice * 0.02;
     base_multiplier  *= 1.0 + p -> talents.spell_impact * 0.02;
     base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
@@ -2153,7 +2169,7 @@ struct deep_freeze_t : public mage_spell_t
       
     cooldown         *= 1.0 - p -> talents.cold_as_ice * 0.10;
     base_cost        *= 1.0 - p -> talents.elemental_precision * 0.01;
-    base_cost        *= 1.0 - p -> talents.frost_channeling * 0.05;
+    base_cost        *= 1.0 - p -> talents.frost_channeling * ( sim_t::WotLK ? (0.1/3) : 0.05 );
     base_multiplier  *= 1.0 + p -> talents.piercing_ice * 0.02;
     base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
     base_multiplier  *= 1.0 + p -> talents.arctic_winds * 0.01;
@@ -2240,7 +2256,7 @@ struct frostfire_bolt_t : public mage_spell_t
     base_cost         *= 1.0 - p -> talents.elemental_precision * 0.01;
     base_cost         *= 1.0 - p -> talents.pyromaniac * 0.01;
     base_cost         *= 1.0 + p -> talents.burnout * 0.01;
-    base_cost         *= 1.0 - p -> talents.frost_channeling * 0.05;
+    base_cost         *= 1.0 - p -> talents.frost_channeling * ( sim_t::WotLK ? (0.1/3) : 0.05 );
     base_multiplier   *= 1.0 + p -> talents.fire_power * 0.02;
     base_multiplier   *= 1.0 + p -> talents.arcane_instability * 0.01;
     base_multiplier   *= 1.0 + p -> talents.piercing_ice * 0.02;
@@ -2413,7 +2429,7 @@ struct water_elemental_spell_t : public mage_spell_t
     assert( p -> talents.water_elemental );
     
     base_cost  = 492;
-    base_cost *= 1.0 - p -> talents.frost_channeling * 0.05;
+    base_cost *= 1.0 - p -> talents.frost_channeling * ( sim_t::WotLK ? (0.1/3) : 0.05 );
     cooldown   = p -> glyphs.water_elemental ? 150 : 180;
     cooldown  *= 1.0 - p -> talents.cold_as_ice * 0.10;
     harmful    = false;
@@ -2480,6 +2496,8 @@ pet_t* mage_t::create_pet( const std::string& pet_name )
 
 void mage_t::init_base()
 {
+  // level 80 mage stats:  Str 35,  Agi 41,  Sta 60,  Int 179,  Spi 179,  Armor 82,  Health 4884,  Mana 5673,  Crit 1.98%
+
   attribute_base[ ATTR_STRENGTH  ] =  40;
   attribute_base[ ATTR_AGILITY   ] =  45;
   attribute_base[ ATTR_STAMINA   ] =  60;

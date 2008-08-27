@@ -83,6 +83,7 @@ struct priest_t : public player_t
 
   struct glyphs_t
   {
+    int8_t shadow_power;
     int8_t shadow_word_death;
     int8_t shadow_word_pain;
     glyphs_t() { memset( (void*) this, 0x0, sizeof( glyphs_t ) ); }
@@ -692,12 +693,13 @@ struct penance_t : public priest_spell_t
   {
     if( sim -> debug ) report_t::log( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
     may_resist = false;
+    target_debuff( DMG_DIRECT );
     calculate_result();
     may_resist = true;
     if( result_is_hit() )
     {
       calculate_damage();
-      adjust_damage_for_result();
+      adjust_dd_for_result();
       player -> action_hit( this );
       if( dd > 0 )
       {
@@ -991,7 +993,7 @@ struct mind_blast_t : public priest_spell_t
     base_cost       *= 1.0 - p -> talents.focused_mind * 0.05;
     if( sim_t::WotLK ) base_cost *= 1.0 - p -> talents.shadow_focus * 0.02;
     base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
-    base_crit       += p -> talents.shadow_power * ( sim_t::WotLK ? 0.02 : 0.03 );
+    base_crit       += p -> talents.shadow_power * ( ( sim_t::WotLK && ! p -> glyphs.shadow_power ) ? 0.02 : 0.03 );
     if( sim_t::WotLK ) base_crit_bonus *= 1.0 + p -> talents.shadow_power * 0.10;
     base_hit        += p -> talents.shadow_focus * ( sim_t::WotLK ? 0.01 : 0.02 );
     base_hit        += p -> talents.focused_power * 0.02;
@@ -1273,20 +1275,14 @@ struct power_infusion_t : public priest_spell_t
     expiration_t( sim_t* sim, player_t* player ) : event_t( sim, player )
     {
       name = "Power Infusion Expiration";
-      priest_t* p = player -> cast_priest();
-      p -> aura_gain( "Power Infusion" );
-      p -> buffs.power_infusion = 1;
-      p -> haste_rating += 320;
-      p -> recalculate_haste();
+      player -> aura_gain( "Power Infusion" );
+      player -> buffs.power_infusion = 1;
       sim -> add_event( this, 15.0 );
     }
     virtual void execute()
     {
-      priest_t* p = player -> cast_priest();
-      p -> aura_loss( "Power Infusion" );
-      p -> buffs.power_infusion = 0;
-      p -> haste_rating -= 320;
-      p -> recalculate_haste();
+      player -> aura_loss( "Power Infusion" );
+      player -> buffs.power_infusion = 0;
     }
   };
    
@@ -1306,6 +1302,17 @@ struct power_infusion_t : public priest_spell_t
     consume_resource();
     update_ready();
     new expiration_t( sim, player );
+  }
+   
+  virtual bool ready()
+  {
+    if( ! priest_spell_t::ready() )
+      return false;
+
+    if( player -> buffs.bloodlust )
+      return false;
+
+    return true;
   }
 };
 
