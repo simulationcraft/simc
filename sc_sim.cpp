@@ -341,6 +341,54 @@ bool sim_t::init()
   return true;
 }
 
+// sim_t::analyze ============================================================
+
+void sim_t::analyze()
+{
+  if( total_seconds == 0 ) return;
+
+  total_seconds /= iterations;
+
+  for( player_t* p = player_list; p; p = p -> next )
+  {
+    if( p -> quiet ) 
+      continue;
+
+    p -> total_seconds /= iterations;
+    p -> total_waiting /= iterations;
+    p -> total_dmg = 0;
+
+    for( stats_t* s = p -> stats_list; s; s = s -> next )
+    {
+      s -> analyze();
+      p -> total_dmg += s -> total_dmg;
+    }
+
+    for( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
+    {
+      for( stats_t* s = pet -> stats_list; s; s = s -> next )
+      {
+	s -> analyze();
+	p -> total_dmg += s -> total_dmg;
+      }
+    }
+
+    for( gain_t* g = p -> gain_list; g; g = g -> next )
+    {
+      g -> amount /= iterations;
+    }
+
+    for( proc_t* proc = p -> proc_list; proc; proc = proc -> next )
+    {
+      if( proc -> count > 0 ) 
+      {
+	proc -> count /= iterations;
+	proc -> frequency = p -> total_seconds / proc -> count;
+      }
+    }
+  }
+}
+
 // sim_t::get_uptime ========================================================
 
 uptime_t* sim_t::get_uptime( const std::string& name )
@@ -464,7 +512,10 @@ int main( int argc, char **argv )
   sim.elapsed_cpu_seconds = time(0) - start_time;
   
   sim.reset();
+  sim.analyze();
+
   sim.report -> print();
+  sim.report -> graph();
 
   if( sim.output_file != stdout ) fclose( sim.output_file );
   

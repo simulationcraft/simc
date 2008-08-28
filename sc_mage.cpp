@@ -152,6 +152,7 @@ struct mage_t : public player_t
     buffs_hot_streak       = 0;
     buffs_icy_veins        = 0;
     buffs_mage_armor       = 0;
+    buffs_missile_barrage  = 0;
     buffs_molten_armor     = 0;
 
     // Expirations
@@ -1093,7 +1094,6 @@ struct arcane_blast_t : public mage_spell_t
     }
 
     trigger_missile_barrage( this );
-
   }
 
   virtual void player_buff()
@@ -1200,22 +1200,25 @@ struct arcane_missiles_t : public mage_spell_t
     dd = 0;
     update_stats( DMG_DIRECT );
     trigger_arcane_concentration( this );
-    p -> buffs_missile_barrage = 0;
     p -> action_finish( this );
   }
 
   virtual void tick() 
   {
+    mage_t* p = player -> cast_mage();
+
     if( sim -> debug ) report_t::log( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
+
     may_resist = false;
     target_debuff( DMG_DIRECT );
     calculate_result();
     may_resist = true;
+
     if( result_is_hit() )
     {
       calculate_damage();
       adjust_dd_for_result();
-      player -> action_hit( this );
+      p -> action_hit( this );
       if( dd > 0 )
       {
 	dot_tick = dd;
@@ -1230,10 +1233,16 @@ struct arcane_missiles_t : public mage_spell_t
     else
     {
       if( sim -> log ) report_t::log( sim, "%s avoids %s (%s)", sim -> target -> name(), name(), util_t::result_type_string( result ) );
-      player -> action_miss( this );
+      p -> action_miss( this );
     }
+
     update_stats( DMG_OVER_TIME );
-    if( current_tick == num_ticks ) clear_arcane_potency( this );
+
+    if( current_tick == num_ticks ) 
+    {
+      clear_arcane_potency( this );
+      p -> buffs_missile_barrage = 0;
+    }
   }
 
   virtual double duration()
@@ -2547,6 +2556,7 @@ void mage_t::reset()
   buffs_hot_streak       = 0;
   buffs_icy_veins        = 0;
   buffs_mage_armor       = 0;
+  buffs_missile_barrage  = 0;
   buffs_molten_armor     = 0;
   
   // Expirations

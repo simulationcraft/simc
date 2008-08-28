@@ -49,7 +49,7 @@ void stats_t::init()
   num_executes = num_ticks = 0;
   total_execute_time = total_tick_time = 0;
   total_dmg = 0;
-  dps = dpe = 0;
+  dps = dpe = dpet = dpr = 0;
 }
 
 // stats_t::add =============================================================
@@ -132,12 +132,15 @@ void stats_t::analyze()
     dps  = total_dmg / ( total_execute_time + total_tick_time );
     dpe  = total_dmg / num_executes;
     dpet = total_dmg / ( total_execute_time + ( channeled ? total_tick_time : 0 ) );
+    dpr  = total_dmg / resource_consumed;
   }
 
   resource_consumed /= num_iterations;
 
   num_executes /= num_iterations;
   num_ticks    /= num_iterations;
+
+  frequency = num_executes ? ( player -> total_seconds / num_executes ) : 0;
 
   total_execute_time /= num_iterations;
   total_tick_time    /= num_iterations;

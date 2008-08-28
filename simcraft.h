@@ -249,6 +249,7 @@ struct sim_t
   bool      execute();
   void      reset();
   bool      init();
+  void      analyze();
   uptime_t* get_uptime( const std::string& name );
   bool      parse_option( const std::string& name, const std::string& value );
   void      print_options();
@@ -841,10 +842,10 @@ struct stats_t
   bool initialized;
 
   double resource_consumed;
-  double num_executes, num_ticks;
+  double frequency, num_executes, num_ticks;
   double total_execute_time, total_tick_time;
   double total_dmg;
-  double dps, dpe, dpet;
+  double dps, dpe, dpet, dpr;
 
   struct stats_results_t
   {
@@ -1121,8 +1122,9 @@ struct proc_t
 {
   std::string name_str;
   int32_t count;
+  double  frequency;
   proc_t* next;
-  proc_t( const std::string& n ) : name_str(n), count(0) {}
+  proc_t( const std::string& n ) : name_str(n), count(0), frequency(0) {}
   void   occur() { count++; }
   const char* name() { return name_str.c_str(); }
 };
@@ -1176,6 +1178,7 @@ struct report_t
   void print_waiting();
   void print_performance();
   void print();
+  void graph();
   static void timestamp( sim_t* sim );
   static void va_printf( sim_t*, const char* format, va_list );
   inline static void log( sim_t* sim, const char* format, ... )

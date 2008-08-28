@@ -74,29 +74,26 @@ void report_t::print_action( stats_t* s )
 {
   if( s -> total_dmg == 0 ) return;
 
-  static std::string action_name;
   double total_dmg;
 
   if( s -> player -> type == PLAYER_PET )
   {
-    action_name = s -> player -> name_str + "-" + s -> name_str;
-    total_dmg   = s -> player -> cast_pet() -> owner ->  total_dmg;
+    total_dmg = s -> player -> cast_pet() -> owner ->  total_dmg;
   }
   else 
   {
-    action_name = s -> name_str;
-    total_dmg   = s -> player -> total_dmg;
+    total_dmg = s -> player -> total_dmg;
   }
 
   fprintf( sim -> output_file, 
 	   "    %-20s  Count=%5.1f|%4.1fsec  DPE=%4.0f|%2.0f%%  DPET=%4.0f  DPR=%4.1f", 
-	   action_name.c_str(),
+	   s -> name_str.c_str(),
 	   s -> num_executes,
-	   s -> player -> total_seconds / s -> num_executes,
+	   s -> frequency,
 	   s -> dpe, 
 	   s -> total_dmg * 100.0 / total_dmg, 
 	   s -> dpet,
-	   s -> total_dmg / s -> resource_consumed );
+	   s -> dpr );
 
   if( report_miss ) fprintf( sim -> output_file, "  Miss=%.1f%%", s -> execute_results[ RESULT_MISS ].count * 100.0 / s -> num_executes );
       
@@ -146,10 +143,16 @@ void report_t::print_actions( player_t* p )
 
   for( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
   {
+    bool first=true;
     for( stats_t* s = pet -> stats_list; s; s = s -> next )
     {
       if( s -> total_dmg > 0 )
       {
+	if( first )
+	{
+	  fprintf( sim -> output_file, "   %s\n", pet -> name_str.c_str() );
+	  first = false;
+	}
 	print_action( s );
       }
     }
@@ -230,7 +233,7 @@ void report_t::print_gains()
 	  fprintf( sim -> output_file, "\n    %s:\n", p -> name() );
 	  first = false;
 	}
-	fprintf( sim -> output_file, "        %s=%.1f\n", g -> name(), g -> amount / sim -> iterations );
+	fprintf( sim -> output_file, "        %s=%.1f\n", g -> name(), g -> amount );
       }
     }
   }
@@ -257,10 +260,7 @@ void report_t::print_procs()
 	  fprintf( sim -> output_file, "\n    %s:\n", player -> name() );
 	  first = false;
 	}
-	fprintf( sim -> output_file, "        %s=%d|%.1fsec\n", 
-		 p -> name(),
-		 p -> count / sim -> iterations,
-		 sim -> iterations * player -> total_seconds / p -> count );
+	fprintf( sim -> output_file, "        %s=%d|%.1fsec\n", p -> name(), p -> count, p -> frequency );
       }
     }
   }
@@ -323,7 +323,6 @@ void report_t::print_waiting()
     if( p -> total_waiting )
     {
       nobody_waits = false;
-      p -> total_waiting /= sim -> iterations;
       fprintf( sim -> output_file, "    %4.1f%% : %s\n", 100.0 * p -> total_waiting / p -> total_seconds,  p -> name() );
     }
   }
@@ -365,24 +364,6 @@ void report_t::print()
 
     if( p -> type == PLAYER_PET && ! report_pet )
       continue;
-
-    p -> total_seconds /= sim -> iterations;
-    p -> total_dmg = 0;
-
-    for( stats_t* s = p -> stats_list; s; s = s -> next )
-    {
-      s -> analyze();
-      p -> total_dmg += s -> total_dmg;
-    }
-
-    for( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
-    {
-      for( stats_t* s = pet -> stats_list; s; s = s -> next )
-      {
-	s -> analyze();
-	p -> total_dmg += s -> total_dmg;
-      }
-    }
 
     double dps = p -> total_dmg / p -> total_seconds;
 
@@ -430,6 +411,15 @@ void report_t::print()
   if( report_performance ) print_performance();
 
   fprintf( sim -> output_file, "\n" );
+}
+
+// report_t::graph ===========================================================
+
+void report_t::graph()
+{
+  if( sim -> total_seconds == 0 ) return;
+
+
 }
 
 // report_t::timestamp ======================================================
