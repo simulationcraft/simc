@@ -7,8 +7,8 @@
 
 // stats_t::stats_t =========================================================
 
-stats_t::stats_t( action_t* a ) : 
-  name(a->name_str), sim(a->sim), player(a->player), next(0),
+stats_t::stats_t( const std::string& n, sim_t* s, player_t* p ) :
+  name_str(n), sim(s), player(p), next(0),
   adjust_for_lost_time(true), channeled(false), analyzed(false), initialized(false), 
   resource_consumed(0)
 {

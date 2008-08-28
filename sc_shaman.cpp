@@ -499,7 +499,8 @@ static void trigger_ashtongue_talisman( spell_t* s )
 
 // trigger_lightning_overload ===============================================
 
-static void trigger_lightning_overload( spell_t* s )
+static void trigger_lightning_overload( spell_t* s,
+					stats_t* lightning_overload_stats )
 {
   shaman_t* p = s -> player -> cast_shaman();
 
@@ -509,17 +510,20 @@ static void trigger_lightning_overload( spell_t* s )
   {
     p -> procs_lightning_overload -> occur();
 
-    double cost       = s -> base_cost;
-    double multiplier = s -> base_multiplier;
+    double   cost       = s -> base_cost;
+    double   multiplier = s -> base_multiplier;
+    stats_t* stats      = s -> stats;
 
     s -> base_cost        = 0;
     s -> base_multiplier /= 2.0;
+    s -> stats            = lightning_overload_stats;
 
     s -> time_to_execute = 0;
     s -> execute();
 
     s -> base_cost       = cost;
     s -> base_multiplier = multiplier;
+    s -> stats           = stats;
   }
 }
 
@@ -749,10 +753,14 @@ struct stormstrike_t : public shaman_attack_t
     if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
-    player -> action_finish( this );
+
+    double mh_dd=0, oh_dd=0;
+    int8_t mh_result=RESULT_NONE, oh_result=RESULT_NONE;
 
     weapon = &( player -> main_hand_weapon );
     shaman_attack_t::execute();
+    mh_dd = dd;
+    mh_result = result;
 
     if( result_is_hit() )
     {
@@ -762,9 +770,17 @@ struct stormstrike_t : public shaman_attack_t
       {
 	weapon = &( player -> off_hand_weapon );
 	shaman_attack_t::execute();
+	oh_dd = dd;
+	oh_result = result;
       }
     }
+
+    // This is probably bad form.....  Perhaps better to merge results and call update_stats().
+    stats -> add( mh_dd + oh_dd, DMG_DIRECT, mh_result, time_to_execute );
+
+    player -> action_finish( this );
   }
+  virtual void update_stats( int8_t type ) { }
 };
 
 // =========================================================================
@@ -847,9 +863,10 @@ void shaman_spell_t::schedule_execute()
 struct chain_lightning_t : public shaman_spell_t
 {
   int8_t maelstrom;
+  stats_t* lightning_overload_stats;
 
   chain_lightning_t( player_t* player, const std::string& options_str ) : 
-    shaman_spell_t( "chain_lightning", player, SCHOOL_NATURE, TREE_ELEMENTAL ), maelstrom(0)
+    shaman_spell_t( "chain_lightning", player, SCHOOL_NATURE, TREE_ELEMENTAL ), maelstrom(0), lightning_overload_stats(0)
   {
     shaman_t* p = player -> cast_shaman();
 
@@ -886,12 +903,19 @@ struct chain_lightning_t : public shaman_spell_t
     base_crit         += p -> talents.call_of_thunder * 0.01;
     base_crit         += p -> talents.tidal_mastery * 0.01;
     if( p -> talents.elemental_fury ) base_crit_bonus *= 2.0;
+
+    lightning_overload_stats = p -> get_stats( "lightning_overload" );
+    lightning_overload_stats -> adjust_for_lost_time = false;
   }
 
   virtual void execute()
   {
     shaman_spell_t::execute();
     event_t::early( player -> cast_shaman() -> expirations_maelstrom_weapon );
+    if( result_is_hit() )
+    {
+      trigger_lightning_overload( this, lightning_overload_stats );
+    }
   }
 
   virtual double execute_time()
@@ -924,9 +948,10 @@ struct chain_lightning_t : public shaman_spell_t
 struct lightning_bolt_t : public shaman_spell_t
 {
   int8_t maelstrom;
+  stats_t* lightning_overload_stats;
 
   lightning_bolt_t( player_t* player, const std::string& options_str ) : 
-    shaman_spell_t( "lightning_bolt", player, SCHOOL_NATURE, TREE_ELEMENTAL ), maelstrom(0)
+    shaman_spell_t( "lightning_bolt", player, SCHOOL_NATURE, TREE_ELEMENTAL ), maelstrom(0), lightning_overload_stats(0)
   {
     shaman_t* p = player -> cast_shaman();
 
@@ -967,8 +992,10 @@ struct lightning_bolt_t : public shaman_spell_t
     dd_power_mod      *= 1.0 + p -> talents.storm_earth_and_fire * 0.05; 
 
     if( p -> gear.tier6_4pc ) base_multiplier *= 1.05;
-
     if( p -> glyphs.lightning_bolt ) base_cost *= 0.90;
+
+    lightning_overload_stats = p -> get_stats( "lightning_overload" );
+    lightning_overload_stats -> adjust_for_lost_time = false;
   }
 
   virtual void execute()
@@ -978,7 +1005,7 @@ struct lightning_bolt_t : public shaman_spell_t
     if( result_is_hit() )
     {
       trigger_ashtongue_talisman( this );
-      trigger_lightning_overload( this );
+      trigger_lightning_overload( this, lightning_overload_stats );
       trigger_tier5_4pc( this );
     }
   }

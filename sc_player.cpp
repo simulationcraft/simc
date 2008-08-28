@@ -1226,6 +1226,34 @@ proc_t* player_t::get_proc( const std::string& name )
   return p;
 }
 
+// player_t::get_stats ======================================================
+
+stats_t* player_t::get_stats( const std::string& n )
+{
+  stats_t* stats=0;
+
+  for( stats = stats_list; stats; stats = stats -> next )
+  {
+    if( stats -> name_str == n )
+      return stats;
+  }
+
+  if( ! stats )
+  {
+    stats = new stats_t( n, sim, this );
+    stats -> init();
+    stats_t** tail= &stats_list;
+    while( *tail && n > ( (*tail) -> name_str ) )
+    {
+      tail = &( (*tail) -> next );
+    }
+    stats -> next = *tail;
+    *tail = stats;
+  }
+
+  return stats;
+}
+
 // player_t::get_uptime =====================================================
 
 uptime_t* player_t::get_uptime( const std::string& name )

@@ -701,6 +701,7 @@ struct player_t
   void      aura_loss( const char* name );
   gain_t*   get_gain  ( const std::string& name );
   proc_t*   get_proc  ( const std::string& name );
+  stats_t*  get_stats ( const std::string& name );
   uptime_t* get_uptime( const std::string& name );
 
 
@@ -830,7 +831,7 @@ struct target_t
 
 struct stats_t
 {
-  std::string name;
+  std::string name_str;
   sim_t* sim;
   player_t* player;
   stats_t* next;
@@ -860,7 +861,7 @@ struct stats_t
   void add( double amount, int8_t dmg_type, int8_t result, double time );
   void init();
   void analyze();
-  stats_t( action_t* action );
+  stats_t( const std::string& name, sim_t*, player_t* );
 
   // Necessary for proper accounting of GCD/Lag effects on Damage-Per-Execute-Time:
   static stats_t* last_execute;

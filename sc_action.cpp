@@ -38,23 +38,7 @@ action_t::action_t( int8_t      ty,
   action_t** last = &( p -> action_list );
   while( *last ) last = &( (*last) -> next );
   *last = this;
-  for( stats = player -> stats_list; stats; stats = stats -> next )
-  {
-    if( stats -> name == n )
-      break;
-  }
-  if( ! stats )
-  {
-    stats = new stats_t( this );
-    stats -> init();
-    stats_t** tail= &( p -> stats_list );
-    while( *tail && name_str > ( (*tail) -> name ) )
-    {
-      tail = &( (*tail) -> next );
-    }
-    stats -> next = *tail;
-    *tail = stats;
-  }
+  stats = p -> get_stats( n );
 }
 
 // action_t::parse_options ==================================================

@@ -79,21 +79,20 @@ void report_t::print_action( stats_t* s )
 
   if( s -> player -> type == PLAYER_PET )
   {
-    action_name = s -> player -> name_str + "-" + s -> name;
+    action_name = s -> player -> name_str + "-" + s -> name_str;
     total_dmg   = s -> player -> cast_pet() -> owner ->  total_dmg;
   }
   else 
   {
-    action_name = s -> name;
+    action_name = s -> name_str;
     total_dmg   = s -> player -> total_dmg;
   }
 
   fprintf( sim -> output_file, 
-	   "    %-20s  Count=%5.1f|%4.1fsec  DPS=%6.1f  DPE=%4.0f|%2.0f%%  DPET=%4.0f  DPR=%4.1f", 
+	   "    %-20s  Count=%5.1f|%4.1fsec  DPE=%4.0f|%2.0f%%  DPET=%4.0f  DPR=%4.1f", 
 	   action_name.c_str(),
 	   s -> num_executes,
 	   s -> player -> total_seconds / s -> num_executes,
-	   s -> dps, 
 	   s -> dpe, 
 	   s -> total_dmg * 100.0 / total_dmg, 
 	   s -> dpet,
