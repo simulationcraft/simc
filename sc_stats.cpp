@@ -8,7 +8,9 @@
 // stats_t::stats_t =========================================================
 
 stats_t::stats_t( action_t* a ) : 
-  name(a->name_str), sim(a->sim), player(a->player), next(0), adjust_for_lost_time(true), channeled(false), analyzed(false), initialized(false)
+  name(a->name_str), sim(a->sim), player(a->player), next(0),
+  adjust_for_lost_time(true), channeled(false), analyzed(false), initialized(false), 
+  resource_consumed(0)
 {
   
 }
@@ -19,6 +21,8 @@ void stats_t::init()
 {
   if( initialized ) return;
   initialized = true;
+
+  resource_consumed = 0;
 
   num_buckets = (int) sim -> max_time;
   if( num_buckets == 0 ) num_buckets = 600; // Default to 10 minutes
@@ -129,6 +133,8 @@ void stats_t::analyze()
     dpe  = total_dmg / num_executes;
     dpet = total_dmg / ( total_execute_time + ( channeled ? total_tick_time : 0 ) );
   }
+
+  resource_consumed /= num_iterations;
 
   num_executes /= num_iterations;
   num_ticks    /= num_iterations;

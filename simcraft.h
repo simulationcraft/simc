@@ -657,6 +657,7 @@ struct player_t
   virtual void resource_loss( int8_t resource, double amount );
   virtual bool resource_available( int8_t resource, double cost );
   virtual void check_resources();
+  virtual int  primary_resource() { return RESOURCE_NONE; }
 
   virtual void  summon_pet( const std::string& name );
   virtual void dismiss_pet( const std::string& name );
@@ -838,6 +839,7 @@ struct stats_t
   bool analyzed;
   bool initialized;
 
+  double resource_consumed;
   double num_executes, num_ticks;
   double total_execute_time, total_tick_time;
   double total_dmg;
@@ -854,6 +856,7 @@ struct stats_t
   std::vector<double> timeline_dmg;
   std::vector<double> timeline_dps;
 
+  void consume_resource( double r ) { resource_consumed += r; }
   void add( double amount, int8_t dmg_type, int8_t result, double time );
   void init();
   void analyze();
@@ -1144,11 +1147,11 @@ struct report_t
   int8_t report_actions;
   int8_t report_attack_stats;
   int8_t report_core_stats;
-  int8_t report_dpm;
+  int8_t report_dpr;
   int8_t report_dps;
   int8_t report_gains;
   int8_t report_miss;
-  int8_t report_mps;
+  int8_t report_rps;
   int8_t report_name;
   int8_t report_pet;
   int8_t report_performance;

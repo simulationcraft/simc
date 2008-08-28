@@ -397,6 +397,8 @@ void action_t::consume_resource()
 		   resource_consumed, util_t::resource_type_string( resource ), name() );
 
   player -> resource_loss( resource, resource_consumed );
+
+  stats -> consume_resource( resource_consumed );
 }
 
 // action_t::execute ========================================================

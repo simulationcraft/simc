@@ -113,6 +113,7 @@ struct druid_t : public player_t
   virtual void      parse_talents( const std::string& talent_string );
   virtual bool      parse_option ( const std::string& name, const std::string& value );
   virtual action_t* create_action( const std::string& name, const std::string& options );
+  virtual int       primary_resource() { return RESOURCE_MANA; }
 
   // Event Tracking
   virtual void regen( double periodicity );

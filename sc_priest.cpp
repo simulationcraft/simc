@@ -124,6 +124,7 @@ struct priest_t : public player_t
   virtual bool      parse_option ( const std::string& name, const std::string& value );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
+  virtual int       primary_resource() { return RESOURCE_MANA; }
 
   // Event Tracking
   virtual void regen( double periodicity );
@@ -559,8 +560,8 @@ struct holy_fire_t : public priest_spell_t
       dd_power_mod      = 0.314;
       dot_power_mod     = 0.210;
     }
-    may_crit          = true;    
-
+    may_crit           = true;    
+    base_cost          = rank -> cost;
     base_execute_time -= p -> talents.divine_fury * 0.01;
     base_multiplier   *= 1.0 + p -> talents.searing_light * 0.05;
     base_crit         += p -> talents.holy_specialization * 0.01;
@@ -599,6 +600,7 @@ struct smite_t : public priest_spell_t
     dd_power_mod      = (2.5/3.5); 
     may_crit          = true;
       
+    base_cost          = rank -> cost;
     base_execute_time -= p -> talents.divine_fury * 0.1;
     base_multiplier   *= 1.0 + p -> talents.searing_light * 0.05;
     base_crit         += p -> talents.holy_specialization * 0.01;
@@ -668,6 +670,7 @@ struct penance_t : public priest_spell_t
     cooldown          = 10;
     dd_power_mod     = (3.0/3.5)/num_ticks;
       
+    base_cost          = rank -> cost;
     cooldown          *= 1.0 - p -> talents.aspiration * 0.10;
     base_multiplier   *= 1.0 + p -> talents.searing_light * 0.05;
     base_crit         += p -> talents.holy_specialization * 0.01;

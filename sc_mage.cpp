@@ -183,6 +183,7 @@ struct mage_t : public player_t
   virtual bool      parse_option ( const std::string& name, const std::string& value );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
+  virtual int       primary_resource() { return RESOURCE_MANA; }
 
   // Event Tracking
   virtual void regen( double periodicity );
