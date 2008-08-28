@@ -7,9 +7,15 @@
 # WARNING!  WARNING!  WARNING!
 
 PG   =
-OPTS = -DHAVE_SSE2 -malign-double -msse -msse2 -mfpmath=sse -maccumulate-outgoing-args -O3 
+BITS = 32
+MCP  = -DHAVE_SSE2 -msse -msse2 -mfpmath=sse
+OPTS = -maccumulate-outgoing-args -O3 
 MM   = -DEVENT_MM
 SFMT = -DUSE_SFMT -I./sfmt 
+
+ifneq "BITS" "64"
+OPTS += -malign-double 
+endif
 
 SRC =\
 	sc_action.cpp		\
@@ -36,7 +42,7 @@ SRC =\
 	sc_weapon.cpp
 
 simcraft opt:
-	g++ -I. $(PG) $(OPTS) $(MM) $(SFMT) -Wall $(SRC) -o simcraft
+	g++ -I. $(PG) $(MCP) $(OPTS) $(MM) $(SFMT) -Wall $(SRC) -o simcraft
 
 debug:
 	g++ -g -I. $(PG) $(SFMT) -Wall $(SRC) -o simcraft
@@ -45,3 +51,6 @@ REV=0
 tarball:
 	tar -cvf simcraft-r$(REV).tar $(SRC) simcraft.h sfmt/* Makefile raid_wotlk.txt raid_bc.txt
 	gzip simcraft-r$(REV).tar
+
+clean:
+	rm -f simcraft
