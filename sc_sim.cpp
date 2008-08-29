@@ -135,12 +135,13 @@ bool sim_t::WotLK = false;
 
 sim_t::sim_t() : 
   method( SIM_LIST ), player_list(0), active_player(0), target(0),
-  lag(0), reaction_time(0.5), regen_periodicity(1.0), current_time(0), max_time(0), total_seconds(0), elapsed_cpu_seconds(0),
+  lag(0), reaction_time(0.5), regen_periodicity(1.0), current_time(0), max_time(0),
   events_remaining(0), max_events_remaining(0), 
   events_processed(0), total_events_processed(0),
   seed(0), id(0), iterations(1),
   potion_sickness(0), average_dmg(1), log(0), debug(0), timestamp(1), 
-  report(0), uptime_list(0), output_file(stdout)
+  uptime_list(0), output_file(stdout), 
+  report(0), raid_dps(0), total_dmg(0), total_seconds(0), elapsed_cpu_seconds(0)
 {
   for( int i=0; i < RESOURCE_MAX; i++ ) 
   {
@@ -343,16 +344,34 @@ bool sim_t::init()
 
 // sim_t::analyze ============================================================
 
+struct compare_dmg {
+  bool operator()( player_t* l, player_t* r ) const
+  {
+    return l -> total_dmg > r -> total_dmg;
+  }
+};
+
+struct compare_name {
+  bool operator()( player_t* l, player_t* r ) const
+  {
+    return l -> name_str < r -> name_str;
+  }
+};
+
 void sim_t::analyze()
 {
   if( total_seconds == 0 ) return;
 
+  total_dmg = 0;
   total_seconds /= iterations;
 
   for( player_t* p = player_list; p; p = p -> next )
   {
     if( p -> quiet ) 
       continue;
+
+    players_by_rank.push_back( p );
+    players_by_name.push_back( p );
 
     p -> total_seconds /= iterations;
     p -> total_waiting /= iterations;
@@ -373,6 +392,22 @@ void sim_t::analyze()
       }
     }
 
+    p -> dps = p -> total_dmg / p -> total_seconds;
+
+    // Avoid double-counting of pet damage
+    if( p -> type != PLAYER_PET ) total_dmg += p -> total_dmg;
+
+    for( int i=0; i < RESOURCE_MAX; i++ )
+    {
+      p -> resource_lost  [ i ] /= iterations;
+      p -> resource_gained[ i ] /= iterations;
+    }
+
+    p -> dpr = p -> total_dmg / p -> resource_lost[ p -> primary_resource() ];
+
+    p -> rps_loss = p -> resource_lost  [ p -> primary_resource() ] / p -> total_seconds;
+    p -> rps_gain = p -> resource_gained[ p -> primary_resource() ] / p -> total_seconds;
+
     for( gain_t* g = p -> gain_list; g; g = g -> next )
     {
       g -> amount /= iterations;
@@ -387,6 +422,11 @@ void sim_t::analyze()
       }
     }
   }
+
+  std::sort( players_by_rank.begin(), players_by_rank.end(), compare_dmg()  );
+  std::sort( players_by_name.begin(), players_by_name.end(), compare_name() );
+
+  raid_dps = total_dmg / total_seconds;
 }
 
 // sim_t::get_uptime ========================================================

@@ -695,7 +695,7 @@ static void trigger_hot_streak( spell_t* s )
 {
   mage_t* p = s -> player -> cast_mage();
 
-  if( p -> talents.hot_streak && s -> may_crit )
+  if( p -> talents.hot_streak )
   {
     if( s -> result == RESULT_CRIT )
     {
@@ -843,9 +843,12 @@ void mage_spell_t::execute()
       trigger_ashtongue_talisman( this );
     }
   }
+  if( may_crit && num_ticks == 0 )
+  {
+    trigger_hot_streak( this );
+  }
   trigger_combustion( this );
   trigger_brain_freeze( this );
-  trigger_hot_streak( this );
   clear_arcane_potency( this );
 }
 
@@ -1238,6 +1241,7 @@ struct arcane_missiles_t : public mage_spell_t
 
     update_stats( DMG_OVER_TIME );
 
+    trigger_hot_streak( this );
     if( current_tick == num_ticks ) 
     {
       clear_arcane_potency( this );

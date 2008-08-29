@@ -22,7 +22,6 @@ report_t::report_t( sim_t* s ) :
   report_miss(1),
   report_rps(1),
   report_name(1),
-  report_pet(0),
   report_performance(1),
   report_procs(1),
   report_raid_dps(1),
@@ -49,7 +48,6 @@ bool report_t::parse_option( const std::string& name,
     { "report_miss",             OPT_INT8,   &( report_miss             ) },
     { "report_rps",              OPT_INT8,   &( report_rps              ) },
     { "report_name",             OPT_INT8,   &( report_name             ) },
-    { "report_pet",              OPT_INT8,   &( report_pet              ) },
     { "report_performance",      OPT_INT8,   &( report_performance      ) },
     { "report_procs",            OPT_INT8,   &( report_procs            ) },
     { "report_raid_dps",         OPT_INT8,   &( report_raid_dps         ) },
@@ -353,43 +351,35 @@ void report_t::print_performance()
 void report_t::print()
 {
   if( sim -> total_seconds == 0 ) return;
-  sim -> total_seconds /= sim -> iterations;
 
-  double raid_dps = 0;
+  int num_players = sim -> players_by_rank.size();
 
-  for( player_t* p = sim -> player_list; p; p = p -> next )
+  if( report_raid_dps ) 
   {
-    if( p -> quiet ) 
-      continue;
+    if( report_tag ) fprintf( sim -> output_file, "\nDPS Ranking:\n" );
+    fprintf( sim -> output_file, "%7.0f 100.0%%  Raid\n", sim -> raid_dps );
+    for( int i=0; i < num_players; i++ )
+    {
+      player_t* p = sim -> players_by_rank[ i ];
+      fprintf( sim -> output_file, "%7.0f  %4.1f%%  %s\n", p -> dps, 100 * p -> total_dmg / sim -> total_dmg, p -> name() );
+    }
+  }
 
-    if( p -> type == PLAYER_PET && ! report_pet )
-      continue;
-
-    double dps = p -> total_dmg / p -> total_seconds;
-
-    // Avoid double-counting of pet damage.
-    if( p -> type != PLAYER_PET ) raid_dps += dps;
+  for( int i=0; i < num_players; i++ )
+  {
+    player_t* p = sim -> players_by_name[ i ];
 
     if( report_tag  ) fprintf( sim -> output_file, "\n" );
     if( report_name ) fprintf( sim -> output_file, "%s%s",     report_tag ? "Player=" : "", p -> name() );
-    if( report_dps  ) fprintf( sim -> output_file, "  %s%.1f", report_tag ? "DPS="    : "", dps );
+    if( report_dps  ) fprintf( sim -> output_file, "  %s%.1f", report_tag ? "DPS="    : "", p -> dps );
 
-    int resource = p -> primary_resource();
-
-    double resource_loss = p -> resource_lost  [ resource ];
-    double resource_gain = p -> resource_gained[ resource ];
-
-    if( resource_loss > 0 )
+    if( p -> rps_loss > 0 )
     {
-      resource_loss /= sim -> iterations;
-      resource_gain /= sim -> iterations;
-
-      if( report_dpr  ) fprintf( sim -> output_file, "  %s%.1f",      report_tag ? "DPR="    : "", p -> total_dmg / resource_loss );
-      if( report_rps  ) fprintf( sim -> output_file, "  %s%.1f/%.1f", report_tag ? "RPS="    : "", 
-				 resource_loss / p -> total_seconds, resource_gain / p -> total_seconds );
+      if( report_dpr  ) fprintf( sim -> output_file, "  %s%.1f",      report_tag ? "DPR="    : "", p -> dpr );
+      if( report_rps  ) fprintf( sim -> output_file, "  %s%.1f/%.1f", report_tag ? "RPS="    : "", p -> rps_loss, p -> rps_gain );
 
       if( report_dpr || report_rps )
-	fprintf( sim -> output_file, "  (%s)", util_t::resource_type_string( resource ) );
+	fprintf( sim -> output_file, "  (%s)", util_t::resource_type_string( p -> primary_resource() ) );
     }
 
     if( report_name ) fprintf( sim -> output_file, "\n" );
@@ -401,7 +391,6 @@ void report_t::print()
     if( report_actions ) print_actions( p );
 
   }
-  if( report_raid_dps ) fprintf( sim -> output_file, "%s%.1f\n", report_tag ? "\nRDPS=" : "", raid_dps );
 
   if( report_gains   ) print_gains();
   if( report_procs   ) print_procs();

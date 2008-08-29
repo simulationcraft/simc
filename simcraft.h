@@ -230,15 +230,19 @@ struct sim_t
   target_t*   target;
   double      lag, reaction_time, regen_periodicity;
   double      current_time, max_time;
-  double      total_seconds, elapsed_cpu_seconds;
   int32_t     events_remaining, max_events_remaining;
   int32_t     events_processed, total_events_processed;
   int32_t     seed, id, iterations;
   int8_t      infinite_resource[ RESOURCE_MAX ];
   int8_t      potion_sickness, average_dmg, log, debug, timestamp;
-  report_t*   report;
   uptime_t*   uptime_list;
   FILE*       output_file;
+
+  // Reporting
+  report_t* report;
+  double    raid_dps, total_dmg, total_seconds, elapsed_cpu_seconds;
+  std::vector<player_t*> players_by_rank;
+  std::vector<player_t*> players_by_name;
 
   sim_t();
 
@@ -375,6 +379,7 @@ struct player_t
   double       iteration_dmg, total_dmg;
   double       resource_lost  [ RESOURCE_MAX ];
   double       resource_gained[ RESOURCE_MAX ];
+  double       dps, dpr, rps_gain, rps_loss;
   proc_t*      proc_list;
   gain_t*      gain_list;
   stats_t*     stats_list;
@@ -1156,7 +1161,6 @@ struct report_t
   int8_t report_miss;
   int8_t report_rps;
   int8_t report_name;
-  int8_t report_pet;
   int8_t report_performance;
   int8_t report_procs;
   int8_t report_raid_dps;
