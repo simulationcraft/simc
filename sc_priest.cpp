@@ -21,7 +21,6 @@ struct priest_t : public player_t
   // Buffs
   int8_t buffs_inner_fire;
   int8_t buffs_improved_spirit_tap;
-  int8_t buffs_shadow_form;
   int8_t buffs_shadow_weaving;
   int8_t buffs_surge_of_light;
 
@@ -105,7 +104,6 @@ struct priest_t : public player_t
     // Buffs
     buffs_improved_spirit_tap = 0;
     buffs_inner_fire          = 0;
-    buffs_shadow_form         = 0;
     buffs_shadow_weaving      = 0;
     buffs_surge_of_light      = 0;
 
@@ -517,10 +515,6 @@ void priest_spell_t::player_buff()
   priest_t* p = player -> cast_priest();
   if( school == SCHOOL_SHADOW )
   {
-    if( p -> buffs_shadow_form )
-    {
-      player_multiplier *= 1.15;
-    }
     if( p -> buffs_shadow_weaving )
     {
       player_multiplier *= 1.0 + p -> buffs_shadow_weaving * 0.02;
@@ -1316,7 +1310,7 @@ struct mind_flay_wotlk_t : public priest_spell_t
     {
       calculate_damage();
       adjust_dd_for_result();
-      p -> action_hit( this );
+      p -> action_tick( this ); // FIXME! Should this be hit or tick?
       if( dd > 0 )
       {
 	dot_tick = dd;
@@ -1583,12 +1577,12 @@ struct shadow_form_t : public priest_spell_t
   virtual void execute()
   {
     if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
-    player -> cast_priest() -> buffs_shadow_form = 1;
+    player -> buffs.shadow_form = 1;
   }
 
   virtual bool ready()
   {
-    return( player -> cast_priest() -> buffs_shadow_form == 0 );
+    return( player -> buffs.shadow_form == 0 );
   }
 };
 
@@ -1828,7 +1822,6 @@ void priest_t::reset()
   // Buffs
   buffs_improved_spirit_tap = 0;
   buffs_inner_fire          = 0;
-  buffs_shadow_form         = 0;
   buffs_shadow_weaving      = 0;
   buffs_surge_of_light      = 0;
 

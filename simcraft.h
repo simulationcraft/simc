@@ -493,6 +493,7 @@ struct player_t
     int8_t  mongoose_oh;
     int8_t  power_infusion;
     int8_t  replenishment;
+    int8_t  shadow_form;
     double  strength_of_earth;
     int16_t talisman_of_ascendance;
     int8_t  totem_of_wrath;

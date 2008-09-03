@@ -2524,7 +2524,7 @@ void shaman_t::attack_damage_event( attack_t* a,
 {
   player_t::attack_damage_event( a, amount, dmg_type );
 
-  if( buffs_lightning_charges > 0 )
+  if( ! a -> proc && ( dmg_type == DMG_DIRECT ) && ( buffs_lightning_charges > 0 ) )
   {
     if( rand_t::roll( talents.static_shock * 0.02 ) )
     {
@@ -2570,7 +2570,7 @@ void shaman_t::spell_damage_event( spell_t* s,
 {
   player_t::spell_damage_event( s, amount, dmg_type );
 
-  if( buffs_lightning_charges > 0 )
+  if( ! s -> proc && ( dmg_type == DMG_DIRECT ) && ( buffs_lightning_charges > 0 ) )
   {
     if( rand_t::roll( talents.static_shock * 0.02 ) )
     {

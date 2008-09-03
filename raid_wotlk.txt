@@ -371,7 +371,7 @@ gear_attack_expertise_rating=175
 gear_attack_penetration=750
 gear_haste_rating=250
 main_hand=fist,damage=310,speed=2.8,enchant=mongoose
-off_hand=fist,damage=310,speed=2.6,enchant=executioner
+off_hand=fist,damage=155,speed=1.3,enchant=executioner
 glyph_earth_shock=0
 glyph_strength_of_earth=1
 glyph_windfury_weapon=1
