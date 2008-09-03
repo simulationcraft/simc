@@ -14,12 +14,18 @@ const char* util_t::player_type_string( int8_t type )
 {
   switch( type )
   {
-  case DRUID:      return "druid";
-  case PRIEST:     return "priest";
-  case MAGE:       return "mage";
-  case SHAMAN:     return "shaman";
-  case WARLOCK:    return "warlock";
-  case PLAYER_PET: return "pet";
+  case PLAYER_NONE:  return "none";
+  case DEATH_KNIGHT: return "death_knight";
+  case DRUID:        return "druid";
+  case HUNTER:       return "hunter";
+  case MAGE:         return "mage";
+  case PALADIN:      return "paladin";
+  case PRIEST:       return "priest";
+  case ROGUE:        return "rogue";
+  case SHAMAN:       return "shaman";
+  case WARLOCK:      return "warlock";
+  case WARRIOR:      return "warrior";
+  case PLAYER_PET:   return "pet";
   }
   return "unknown";
 }
@@ -71,13 +77,14 @@ const char* util_t::school_type_string( int8_t school )
 {
   switch( school )
   {
-  case SCHOOL_HOLY:     return "holy";
-  case SCHOOL_SHADOW:   return "shadow";
-  case SCHOOL_ARCANE:   return "arcane";
-  case SCHOOL_FROST:    return "frost";
-  case SCHOOL_FIRE:     return "fire";
-  case SCHOOL_NATURE:   return "nature";
-  case SCHOOL_PHYSICAL: return "physical";
+  case SCHOOL_HOLY:      return "holy";
+  case SCHOOL_SHADOW:    return "shadow";
+  case SCHOOL_ARCANE:    return "arcane";
+  case SCHOOL_FROST:     return "frost";
+  case SCHOOL_FROSTFIRE: return "frostfire";
+  case SCHOOL_FIRE:      return "fire";
+  case SCHOOL_NATURE:    return "nature";
+  case SCHOOL_PHYSICAL:  return "physical";
   }
   return "unknown";
 }

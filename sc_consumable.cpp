@@ -205,10 +205,9 @@ struct mana_gem_t : public action_t
 {
   int16_t trigger;
   int16_t mana;
-  int8_t  used;
 
   mana_gem_t( player_t* p, const std::string& options_str ) : 
-    action_t( ACTION_USE, "mana_gem", p ), trigger(0), mana(0), used(0)
+    action_t( ACTION_USE, "mana_gem", p ), trigger(0), mana(0)
   {
     option_t options[] =
     {
@@ -233,14 +232,10 @@ struct mana_gem_t : public action_t
     if( sim -> log ) report_t::log( sim, "%s uses Mana Gem", player -> name() );
     player -> resource_gain( RESOURCE_MANA, mana, player -> gains.mana_gem );
     player -> share_cooldown( cooldown_group, cooldown );
-    used = sim -> potion_sickness;
   }
 
   virtual bool ready()
   {
-    if( used )
-      return false;
-
     if( cooldown_ready > sim -> current_time ) 
       return false;
 
@@ -251,7 +246,6 @@ struct mana_gem_t : public action_t
   virtual void reset()
   {
     action_t::reset();
-    used = 0;
   }
 };
 

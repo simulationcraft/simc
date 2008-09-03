@@ -81,9 +81,9 @@ void attack_t::target_debuff( int8_t dmg_type )
 
   target_t* t = sim -> target;
 
-  if( t -> debuffs.faerie_fire > 1 )
+  if( ! sim_t::WotLK )
   {
-    target_hit += ( t -> debuffs.faerie_fire - 1 ) * 0.01;
+    target_hit += t -> debuffs.improved_faerie_fire * 0.01;
   }
 }
 

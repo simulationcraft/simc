@@ -32,36 +32,6 @@ static void trigger_judgement_of_wisdom( action_t* action )
   p -> cooldowns.judgement_of_wisdom = p -> sim -> current_time + 4.0;
 }
 
-// trigger_moonkin_haste ====================================================
-
-static void trigger_moonkin_haste( spell_t* s )
-{
-  struct haste_expiration_t : public event_t
-  {
-    haste_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      name = "Moonkin Haste Expiration";
-      player -> aura_gain( "Moonkin Haste" );
-      player -> buffs.moonkin_haste = 1;
-      player -> cooldowns.moonkin_haste = sim -> current_time + 30.0;
-      sim -> add_event( this, 8.0 );
-    }
-    virtual void execute()
-    {
-      player -> aura_loss( "Moonkin Haste" );
-      player -> buffs.moonkin_haste = 0;
-    }
-  };
-
-  player_t* p = s -> player;
-
-  if( p -> buffs.improved_moonkin_aura &&
-      s -> sim -> cooldown_ready( p -> cooldowns.moonkin_haste ) )
-  {
-    new haste_expiration_t( s -> sim, p );
-  }
-}
-
 } // ANONYMOUS NAMESPACE ===================================================
 
 // ==========================================================================
@@ -517,7 +487,6 @@ void player_t::init_stats()
     resource_lost[ i ] = resource_gained[ i ] = 0;
   }
 
-  uptimes.moonkin_haste  = get_uptime( "moonkin_haste"  );
   uptimes.unleashed_rage = get_uptime( "unleashed_rage" );
 
   gains.ashtongue_talisman    = get_gain( "ashtongue_talisman" );
@@ -528,6 +497,7 @@ void player_t::init_stats()
   gains.mana_tide             = get_gain( "mana_tide" );
   gains.mark_of_defiance      = get_gain( "mark_of_defiance" );
   gains.mp5_regen             = get_gain( "mp5_regen" );
+  gains.replenishment         = get_gain( "replenishment" );
   gains.spellsurge            = get_gain( "spellsurge" );
   gains.spirit_regen          = get_gain( "spirit_regen" );
   gains.vampiric_touch        = get_gain( "vampiric_touch" );
@@ -994,11 +964,6 @@ void player_t::spell_hit_event( spell_t* spell )
 {
   trigger_judgement_of_wisdom( spell );
 
-  if( spell -> result == RESULT_CRIT )
-  {
-    trigger_moonkin_haste( spell );
-  }
-
   target_t* t = sim -> target;
   if( t -> debuffs.focus_magic ) 
   {
@@ -1241,7 +1206,7 @@ stats_t* player_t::get_stats( const std::string& n )
 
   if( ! stats )
   {
-    stats = new stats_t( n, sim, this );
+    stats = new stats_t( n, this );
     stats -> init();
     stats_t** tail= &stats_list;
     while( *tail && n > ( (*tail) -> name_str ) )

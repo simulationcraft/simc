@@ -153,6 +153,17 @@ bool option_t::parse( sim_t* sim,
     }
     fclose( file );      
   }
+  else if( name == "html" )
+  {
+    if( sim -> html_file != stdout ) fclose( sim -> html_file );
+
+    sim -> html_file = fopen( value.c_str(), "w" );
+    if( ! sim -> html_file )
+    {
+      fprintf( stderr, "simcraft: Unable to open html file '%s'\n", value.c_str() );
+      exit(0);
+    }
+  }
   else if( name == "druid" ) 
   { 
     sim -> active_player = player_t::create_druid( sim, value ); 

@@ -99,7 +99,7 @@ struct event_compare_t
 
 // Simulation Engine =========================================================
 
-enum player_type { DRUID=0, MAGE, PALADIN, PRIEST, SHAMAN, WARLOCK, PLAYER_PET, PLAYER_TYPE_MAX };
+enum player_type { PLAYER_NONE=0, DEATH_KNIGHT, DRUID, HUNTER, MAGE, PALADIN, PRIEST, ROGUE, SHAMAN, WARLOCK, WARRIOR, PLAYER_PET, PLAYER_TYPE_MAX };
 
 enum dmg_type { DMG_DIRECT=0, DMG_OVER_TIME=1 };
 
@@ -237,6 +237,7 @@ struct sim_t
   int8_t      potion_sickness, average_dmg, log, debug, timestamp;
   uptime_t*   uptime_list;
   FILE*       output_file;
+  FILE*       html_file;
 
   // Reporting
   report_t* report;
@@ -487,11 +488,11 @@ struct player_t
     int8_t  innervate;
     int8_t  lightning_capacitor;
     double  mana_cost_reduction;
-    int8_t  moonkin_haste;
     int8_t  moonkin_aura;
     int8_t  mongoose_mh;
     int8_t  mongoose_oh;
     int8_t  power_infusion;
+    int8_t  replenishment;
     double  strength_of_earth;
     int16_t talisman_of_ascendance;
     int8_t  totem_of_wrath;
@@ -542,7 +543,6 @@ struct player_t
     double eternal_sage;
     double judgement_of_wisdom;
     double mark_of_defiance;
-    double moonkin_haste;
     double mystical_skyfire;
     double quagmirrans_eye;
     double sextant_of_unstable_currents;
@@ -558,7 +558,6 @@ struct player_t
   struct uptimes_t
   {
     uptime_t* executioner;
-    uptime_t* moonkin_haste;
     uptime_t* mongoose_mh;
     uptime_t* mongoose_oh;
     uptime_t* unleashed_rage;
@@ -581,6 +580,7 @@ struct player_t
     gain_t* mana_tide;
     gain_t* mark_of_defiance;
     gain_t* mp5_regen;
+    gain_t* replenishment;
     gain_t* spellsurge;
     gain_t* spirit_regen;
     gain_t* vampiric_touch;
@@ -785,6 +785,7 @@ struct target_t
     double   focus_magic;
     int8_t   focus_magic_charges;
     double   frozen;
+    int8_t   improved_faerie_fire;
     int8_t   improved_scorch;
     int8_t   mangle;
     int8_t   misery;
@@ -841,6 +842,7 @@ struct stats_t
   sim_t* sim;
   player_t* player;
   stats_t* next;
+  int8_t school;
   bool adjust_for_lost_time;
   bool channeled;
   bool analyzed;
@@ -867,7 +869,7 @@ struct stats_t
   void add( double amount, int8_t dmg_type, int8_t result, double time );
   void init();
   void analyze();
-  stats_t( const std::string& name, sim_t*, player_t* );
+  stats_t( const std::string& name, player_t* );
 
   // Necessary for proper accounting of GCD/Lag effects on Damage-Per-Execute-Time:
   static stats_t* last_execute;
@@ -1005,7 +1007,6 @@ struct spell_t : public action_t
   virtual void   target_debuff( int8_t dmg_type );
   virtual double level_based_miss_chance( int8_t player, int8_t target );
   virtual void   calculate_result();
-  virtual void   schedule_execute();
    
   // Passthru Methods
   virtual double cost()                            { return action_t::cost();              }
@@ -1018,6 +1019,7 @@ struct spell_t : public action_t
   virtual void tick()                              { action_t::tick();                     }
   virtual void last_tick()                         { action_t::last_tick();                }
   virtual void assess_damage( double a, int8_t t ) { action_t::assess_damage( a, t );      }
+  virtual void schedule_execute()                  { action_t::schedule_execute();         }
   virtual void schedule_tick()                     { action_t::schedule_tick();            }
   virtual void update_ready()                      { action_t::update_ready();             }
   virtual void update_stats( int8_t t )            { action_t::update_stats( t );          }
@@ -1126,8 +1128,8 @@ struct gain_t
 struct proc_t
 {
   std::string name_str;
-  int32_t count;
-  double  frequency;
+  double count;
+  double frequency;
   proc_t* next;
   proc_t( const std::string& n ) : name_str(n), count(0), frequency(0) {}
   void   occur() { count++; }
@@ -1154,6 +1156,7 @@ struct report_t
   sim_t* sim;
   int8_t report_actions;
   int8_t report_attack_stats;
+  int8_t report_chart;
   int8_t report_core_stats;
   int8_t report_dpr;
   int8_t report_dps;
@@ -1182,7 +1185,16 @@ struct report_t
   void print_waiting();
   void print_performance();
   void print();
-  void graph();
+  void chart_raid_dps();
+  void chart_raid_downtime();
+  void chart_raid_gear();
+  void chart_raid_uptimes();
+  void chart_action_dpet      ( player_t* );
+  void chart_action_dmg       ( player_t* );
+  void chart_gains            ( player_t* );
+  void chart_uptimes_and_procs( player_t* );
+  void chart_timeline         ( player_t* );
+  void chart();
   static void timestamp( sim_t* sim );
   static void va_printf( sim_t*, const char* format, va_list );
   inline static void log( sim_t* sim, const char* format, ... )

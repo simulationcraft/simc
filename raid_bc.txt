@@ -43,7 +43,7 @@ target_armor=5100
 # Since support for the Paladin class does not yet exist, one can specify target debuffs (such as
 # Judgement of Wisdom) and player buffs (such as Blessing of Wisdom and Sanctity Aura) as parameters.
 # Both blessing_of_wisdom=1 and sanctity_aura=1 would be included in each player section as appropriate.
-judgement_of_wisdom=1
+judgement_of_wisdom=121
 
 # Since support for the Warlock class does not yet exist, one can specify static target debuffs.
 curse_of_elements=13

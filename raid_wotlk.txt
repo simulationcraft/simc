@@ -45,15 +45,9 @@ potion_sickness=1
 # that WotLK bosses will have armor close to 10k......  (5x Sunder is 3600 penetration in WotLK)
 target_armor=6400
 
-# Since support for the Paladin class does not yet exist, one can specify target debuffs (such as
-# Judgement of Wisdom) and player buffs (such as Blessing of Wisdom and Blessing of Might) as parameters.
-# Both blessing_of_wisdom=1 and blessing_of_might=1 would be included in each player section as appropriate.
-judgement_of_wisdom=400
-
 # Since support for the Warlock class does not yet exist, one can specify static target debuffs.
 # CoE is currently coded as affecting Nature damage, too.
 curse_of_elements=13
-shadow_vulnerability=5
 
 #
 # Shadow Priest
@@ -72,6 +66,34 @@ gear_spell_power=2500
 gear_spell_crit_rating=200
 gear_spell_hit_rating=200
 gear_haste_rating=500
+glyph_shadow_word_death=1
+pet=shadow_fiend
+main_hand=beast,damage=110,speed=1.5,school=shadow
+quiet=1
+active=owner
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_wisdom=1
+sanctified_retribution=1
+swift_retribution=1
+
+#
+# Shadow Priest wearing the same gear as other casters
+#
+# (1) The "trigger=3500" option to mana_potion represents the mana gained and the amount below max required to trigger
+# (2) The "trigger=6000" option to shadow_fiend represents the amount below max mana required to trigger
+#
+priest=Priest_ShadowVanilla
+level=80
+talents=http://www.worldofwarcraft.com/info/classes/priest/talents2.html?tal=05023001300000000000000000000000000000000000000000000320023051025012305152501351
+actions=flask,type=pure_death/inner_fire/shadow_form/mana_potion,trigger=3500/shadow_fiend,trigger=6000/dispersion/vampiric_touch/inner_focus,shadow_word_pain/shadow_word_pain/mind_blast/shadow_word_death/mind_flay
+gear_stamina=600
+gear_intellect=600
+gear_spirit=600
+gear_spell_power=2000
+gear_spell_crit_rating=800
+gear_spell_hit_rating=200
+gear_haste_rating=400
 glyph_shadow_word_death=1
 pet=shadow_fiend
 main_hand=beast,damage=110,speed=1.5,school=shadow
@@ -134,7 +156,7 @@ swift_retribution=1
 mage=Mage_Arcane
 level=80
 talents=http://www.worldofwarcraft.com/info/classes/mage/talents2.html?tal=23000503310030015032310241532100000000000000000000000000000530033010030000000000000000
-actions=flask,type=blinding_light/mage_armor/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=6000/arcane_power/arcane_missiles,barrage=1/arcane_barrage/arcane_blast
+actions=flask,type=blinding_light/molten_armor/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=6000/arcane_power/arcane_missiles,barrage=1/arcane_barrage/arcane_blast
 gear_stamina=600
 gear_intellect=600
 gear_spirit=600
@@ -142,6 +164,32 @@ gear_spell_power=2000
 gear_spell_crit_rating=800
 gear_spell_hit_rating=200
 gear_haste_rating=400
+# Glyphs
+glyph_arcane_power=1
+glyph_molten_armor=1
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_wisdom=1
+sanctified_retribution=1
+swift_retribution=1
+
+#
+# Mage_ArcaneSpam
+#
+# As of right now Arcane Blast spam is the highest DPS spec.
+# The Arcane tree is broken..... or Arcane Blast simply does not cost enough mana.
+#
+mage=Mage_ArcaneSpam
+level=80
+talents=http://www.worldofwarcraft.com/info/classes/mage/talents2.html?tal=23000503310030015032310241532100000000000000000000000000000530033010030000000000000000
+actions=flask,type=blinding_light/mage_armor/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=6000/arcane_power/arcane_blast
+gear_stamina=600
+gear_intellect=600
+gear_spirit=600
+gear_spell_power=2000
+gear_spell_crit_rating=800
+gear_spell_hit_rating=200
+gear_haste_rating=600
 # Glyphs
 glyph_arcane_power=1
 glyph_mage_armor=1
@@ -157,13 +205,13 @@ swift_retribution=1
 # (1) The "trigger=3500" option to mana_gem and mana_potion represents the mana gained and the amount below max required to trigger
 # (2) The "trigger=6000" option to evocation represents the mana gained and the amount below max required to trigger
 # (3) The "debuff=1" option to scorch prevents it from being executed unless the Improved Scorch debuff is going to expire in less than 6sec.
+# (4) Unfortunately, Mage Armor is a requirement due to mana constraints
 #
 mage=Mage_Fire
 level=80
-talents=http://www.worldofwarcraft.com/info/classes/mage/talents2.html?tal=00000000000000000000000000000003550320123033310531203213510230032010000000000000000000
-actions=flask,type=pure_death/molten_armor/mana_gem,trigger=3500/mana_potion,trigger=3500/scorch,debuff=1/evocation,trigger=6000/combustion/icy_veins/living_bomb/fire_ball
+talents=http://www.worldofwarcraft.com/info/classes/mage/talents2.html?tal=00000000000000000000000000000003550300120033310531203013510230033013030000000000000000
+actions=flask,type=pure_death/molten_armor/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=6000/combustion/icy_veins/living_bomb/pyroblast,hot_streak=1/fire_ball
 # We will let the poor Frost Mage raid-slave keep up the Improved Scorch debuff
-skip_actions=scorch
 gear_stamina=600
 gear_intellect=600
 gear_spirit=600
@@ -192,7 +240,7 @@ swift_retribution=1
 mage=Mage_Frost
 level=80
 talents=http://www.worldofwarcraft.com/info/classes/mage/talents2.html?tal=00000000000000000000000000000023050020123000000000000000000535030310005100230052231351
-actions=flask,type=pure_death/molten_armor/mana_gem,trigger=3500/mana_potion,trigger=2500/scorch,debuff=1/evocation,trigger=4000/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/ice_lance,frozen=1,fb_priority=1/frost_bolt
+actions=flask,type=pure_death/molten_armor/mana_gem,trigger=3500/mana_potion,trigger=2500/evocation,trigger=4000/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/frost_bolt
 gear_stamina=600
 gear_intellect=600
 gear_spirit=600
@@ -221,8 +269,8 @@ swift_retribution=1
 #
 mage=Mage_FrostFire
 level=80
-talents=http://www.worldofwarcraft.com/info/classes/mage/talents2.html?tal=00000000000000000000000000000003550300123033300531203003510235030310000000000000000000
-actions=flask,type=pure_death/molten_armor/mana_gem,trigger=3500/mana_potion,trigger=3500/scorch,debuff=1/evocation,trigger=6000/combustion/icy_veins/living_bomb/frostfire_bolt
+talents=http://www.worldofwarcraft.com/info/classes/mage/talents2.html?tal=00000000000000000000000000000003550300123033300531200003510235030310030000000000000000
+actions=flask,type=pure_death/molten_armor/mana_gem,trigger=3500/mana_potion,trigger=3500/scorch,debuff=1/evocation,trigger=6000/combustion/icy_veins/living_bomb/pyroblast,hot_streak=1/frostfire_bolt
 # We will let the poor Frost Mage raid-slave keep up the Improved Scorch debuff
 skip_actions=scorch
 gear_stamina=600
@@ -309,10 +357,11 @@ level=80
 talents=http://www.worldofwarcraft.com/info/classes/shaman/talents2.html?tal=05203010000000000000000030205033105021335311523125100000000000000000000000000
 actions=flask,type=relentless_assault/windfury_weapon,weapon=main/flametongue_weapon,weapon=off/auto_attack/stormstrike/lava_burst,maelstrom=5,flame_shock=1,max_ticks_consumed=1/lightning_bolt,maelstrom=5/searing_totem/strength_of_earth_totem/windfury_totem/shamanistic_rage/flame_shock/earth_shock/lightning_shield
 gear_strength=600
-gear_agility=800
+gear_agility=600
 gear_stamina=1000
 gear_intellect=200
 gear_attack_power=1500
+gear_spell_power=300
 gear_attack_hit_rating=200
 gear_spell_hit_rating=200
 gear_attack_crit_rating=350

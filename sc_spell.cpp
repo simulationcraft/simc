@@ -27,8 +27,8 @@ double spell_t::haste()
   double h = player -> haste;
   if( player -> buffs.bloodlust                    ) h *= 1.0 / ( 1.0 + 0.30 );
   else if ( player -> buffs.power_infusion         ) h *= 1.0 / ( 1.0 + 0.20 );
-  if( player -> buffs.swift_retribution            ) h *= 1.0 / ( 1.0 + 0.03 );
-  if( player -> buffs.moonkin_haste                ) h *= 1.0 / ( 1.0 + 0.20 );
+  if( player -> buffs.swift_retribution ||
+      player -> buffs.improved_moonkin_aura        ) h *= 1.0 / ( 1.0 + 0.03 );
   if( player -> buffs.totem_of_wrath == 2          ) h *= 1.0 / ( 1.0 + 0.01 );
   if( sim_t::WotLK && player -> buffs.wrath_of_air ) h *= 1.0 / ( 1.0 + 0.05 );
   return h;
@@ -84,22 +84,23 @@ void spell_t::player_buff()
 
   if( p -> gear.chaotic_skyfire ) player_crit_bonus *= 1.09;
 
-  if( player -> buffs.elemental_oath )
+  if( player -> buffs.elemental_oath ||
+      player -> buffs.moonkin_aura   )
   {
-    player_crit_bonus *= 1.0 + p -> buffs.elemental_oath * 0.03;
+    player_crit += 0.05;
   }
 
   if( player -> buffs.totem_of_wrath )
   {
     if( sim_t::WotLK )
     {
-      player_multiplier *= 1.06;
+      player_power += 160;
     }
     else
     {
       player_hit += 0.03;
+      player_crit += 0.03;
     }
-    player_crit += 0.03;
   }
 
   if( sim -> debug ) report_t::log( sim, "spell_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f", 
@@ -113,44 +114,49 @@ void spell_t::target_debuff( int8_t dmg_type )
   action_t::target_debuff( dmg_type );
 
   static uptime_t* wc_uptime = sim -> get_uptime( "winters_chill" );
+  static uptime_t* is_uptime = sim -> get_uptime( "improved_scorch" );
 
   target_t* t = sim -> target;
    
-  if( sim_t::WotLK && ( t -> debuffs.faerie_fire > 1 ) )
+  if( sim_t::WotLK )
   {
-    target_hit += ( t -> debuffs.faerie_fire - 1 ) * 0.01;
+    target_hit += std::max( t -> debuffs.improved_faerie_fire, t -> debuffs.misery ) * 0.01;
   }
 
-  if( school == SCHOOL_ARCANE )
+  if( school == SCHOOL_SHADOW )
   {
-    if( sim_t::WotLK ) 
-    {
-      target_crit += ( t -> debuffs.winters_chill * 0.01 );
-      wc_uptime -> update( t -> debuffs.winters_chill != 0 );
-    }
+  }
+  else if( school == SCHOOL_ARCANE )
+  {
   }
   else if( school == SCHOOL_FIRE )
   {
-    if( sim_t::WotLK ) 
+  }
+  else if( school == SCHOOL_FROST )
+  {
+    if( ! sim_t::WotLK )
     {
       target_crit += ( t -> debuffs.winters_chill * 0.01 );
       wc_uptime -> update( t -> debuffs.winters_chill != 0 );
     }
   }
-  else if( school == SCHOOL_FROST )
-  {
-    target_crit += ( t -> debuffs.winters_chill * 0.01 );
-    wc_uptime -> update( t -> debuffs.winters_chill != 0 );
-  }
   else if( school == SCHOOL_FROSTFIRE )
   {
-    target_crit += ( t -> debuffs.winters_chill * 0.01 );
-    wc_uptime -> update( t -> debuffs.winters_chill != 0 );
+  }
+  else if( school == SCHOOL_NATURE )
+  {
   }
   else if( school == SCHOOL_HOLY )
   {
     if( t -> debuffs.judgement_of_crusader ) target_power += 218;
   }      
+
+  if( sim_t::WotLK )
+  {
+    target_crit += ( std::max( t -> debuffs.winters_chill, t -> debuffs.improved_scorch ) * 0.01 );
+    wc_uptime -> update( t -> debuffs.winters_chill != 0 );
+    is_uptime -> update( t -> debuffs.improved_scorch != 0 );
+  }
 
   target_power += t -> debuffs.focus_magic;
 
@@ -245,19 +251,5 @@ void spell_t::calculate_result()
   }
 
   if( sim -> debug ) report_t::log( sim, "%s result for %s is %s", player -> name(), name(), util_t::result_type_string( result ) );
-}
-
-// spell_t::schedule_execute ===================================================
-
-void spell_t::schedule_execute()
-{
-  player_t* p = player;
-
-  if( p -> buffs.improved_moonkin_aura )
-  {
-    p -> uptimes.moonkin_haste -> update( p -> buffs.moonkin_haste );
-  }
-
-  action_t::schedule_execute();
 }
 

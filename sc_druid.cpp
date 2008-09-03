@@ -181,6 +181,8 @@ static void stack_earth_and_moon( spell_t* s )
     earth_and_moon_expiration_t( sim_t* sim ) : event_t( sim )
     {
       name = "Earth and Moon Expiration";
+      if( sim -> log ) report_t::log( sim, "%s gains Earth and Moon", sim -> target -> name() );
+      sim -> target -> debuffs.earth_and_moon = 13;
       sim -> add_event( this, 12.0 );
     }
     virtual void execute()
@@ -193,16 +195,7 @@ static void stack_earth_and_moon( spell_t* s )
 
   if( rand_t::roll( p -> talents.earth_and_moon * 0.20 ) )
   {
-    sim_t* sim = s -> sim;
-    target_t* t = sim -> target;
-
-    if( t -> debuffs.earth_and_moon < 3 ) 
-    {
-      t -> debuffs.earth_and_moon++;
-      if( sim -> log ) report_t::log( sim, "%s gains Earth and Moon %d", t -> name(), t -> debuffs.earth_and_moon );
-    }
-
-    event_t*& e = t -> expirations.earth_and_moon;
+    event_t*& e = s -> sim -> target -> expirations.earth_and_moon;
     
     if( e )
     {
@@ -407,7 +400,8 @@ struct faerie_fire_t : public druid_spell_t
       {
 	target_t* t = sim -> target;
 	t -> armor -= faerie_fire -> armor_penetration;
-	t -> debuffs.faerie_fire = faerie_fire -> bonus_hit + 1;
+	t -> debuffs.faerie_fire = 1;
+	t -> debuffs.improved_faerie_fire = faerie_fire -> bonus_hit;
 	sim -> add_event( this, 40.0 );
       }
       virtual void execute()
@@ -415,6 +409,7 @@ struct faerie_fire_t : public druid_spell_t
 	target_t* t = sim -> target;
 	t -> armor += faerie_fire -> armor_penetration;
 	t -> debuffs.faerie_fire = 0;
+	t -> debuffs.improved_faerie_fire = 0;
 	t -> expirations.faerie_fire = 0;
       }
     };
@@ -437,7 +432,10 @@ struct faerie_fire_t : public druid_spell_t
     if( ! druid_spell_t::ready() )
       return false;
 
-    return ( bonus_hit + 1 ) > sim -> target -> debuffs.faerie_fire;
+    if( ! sim -> target -> debuffs.faerie_fire )
+      return true;
+
+    return bonus_hit > sim -> target -> debuffs.improved_faerie_fire;
   }
 };
 
@@ -655,7 +653,6 @@ struct moonkin_form_t : public druid_spell_t
       {
 	p -> aura_gain( "Moonkin Aura" );
 	p -> buffs.moonkin_aura = 1;
-	p -> spell_crit += 0.05;
 
 	if( player -> cast_druid() -> talents.improved_moonkin_form )
 	{
@@ -1152,9 +1149,16 @@ void druid_t::regen( double periodicity )
   resource_gain( RESOURCE_MANA, spirit_regen, gains.spirit_regen );
   resource_gain( RESOURCE_MANA,    mp5_regen, gains.mp5_regen    );
 
+  if( buffs.replenishment )
+  {
+    double replenishment_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.005 / 1.0;
+
+    resource_gain( RESOURCE_MANA, replenishment_regen, gains.replenishment );
+  }
+
   if( buffs.water_elemental_regen )
   {
-    double water_elemental_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.03 / 5.0;
+    double water_elemental_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.006 / 5.0;
 
     resource_gain( RESOURCE_MANA, water_elemental_regen, gains.water_elemental_regen );
   }

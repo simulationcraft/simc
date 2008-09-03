@@ -39,6 +39,7 @@ action_t::action_t( int8_t      ty,
   while( *last ) last = &( (*last) -> next );
   *last = this;
   stats = p -> get_stats( n );
+  stats -> school = school;
 }
 
 // action_t::parse_options ==================================================
@@ -100,11 +101,6 @@ double action_t::cost()
     if( c < 0 ) c = 0;
 
     if( player -> buffs.power_infusion ) c *= 0.80;
-
-    if( player -> buffs.elemental_oath )
-    {
-      c *= 1.0 - player -> buffs.elemental_oath * 0.01;
-    }
   }
 
   if( sim -> debug ) report_t::log( sim, "action_t::cost: %s %.2f %.2f %s", name(), base_cost, c, util_t::resource_type_string( resource ) );
@@ -176,45 +172,44 @@ void action_t::target_debuff( int8_t dmg_type )
   {
     if( school == SCHOOL_SHADOW )
     {
-      target_multiplier *= 1.0 + ( t -> debuffs.shadow_weaving       * 0.02 );
-      target_multiplier *= 1.0 + ( t -> debuffs.shadow_vulnerability * 0.01 );
-      sv_uptime -> update( t -> debuffs.shadow_vulnerability != 0 );
+      if( ! sim_t::WotLK ) 
+      {
+	target_multiplier *= 1.0 + ( t -> debuffs.shadow_weaving * 0.02 );
+	target_multiplier *= 1.0 + ( t -> debuffs.shadow_vulnerability * 0.01 );
+	sv_uptime -> update( t -> debuffs.shadow_vulnerability != 0 );
+      }
     }
     else if( school == SCHOOL_ARCANE )
     {
-      target_multiplier *= 1.0 + ( t -> debuffs.earth_and_moon * 0.02 );
-      if( sim_t::WotLK) 
-      {
-	target_multiplier *= 1.0 + ( t -> debuffs.improved_scorch * 0.01 );
-	is_uptime -> update( t -> debuffs.improved_scorch != 0 );
-      }
     }
     else if( school == SCHOOL_FIRE )
     {
-      target_multiplier *= 1.0 + ( t -> debuffs.improved_scorch * 0.01 );
-      is_uptime -> update( t -> debuffs.improved_scorch != 0 );
-    }
-    else if( school == SCHOOL_FROST )
-    {
-      if( sim_t::WotLK) 
+      if( ! sim_t::WotLK )
       {
 	target_multiplier *= 1.0 + ( t -> debuffs.improved_scorch * 0.01 );
 	is_uptime -> update( t -> debuffs.improved_scorch != 0 );
       }
     }
+    else if( school == SCHOOL_FROST )
+    {
+    }
     else if( school == SCHOOL_FROSTFIRE )
     {
-      target_multiplier *= 1.0 + ( t -> debuffs.improved_scorch * 0.01 );
-      is_uptime -> update( t -> debuffs.improved_scorch != 0 );
     }
     else if( school == SCHOOL_NATURE )
     {
-      target_multiplier *= 1.0 + ( t -> debuffs.earth_and_moon       * 0.02 );
       target_multiplier *= 1.0 + ( t -> debuffs.nature_vulnerability * 0.01 );
       nv_uptime -> update( t -> debuffs.nature_vulnerability != 0 );
     }
-    target_multiplier *= 1.0 + ( t -> debuffs.misery * 0.01 );
-    target_multiplier *= 1.0 + ( t -> debuffs.curse_of_elements * 0.01 );
+    if( ! sim_t::WotLK ) 
+    {
+      target_multiplier *= 1.0 + ( t -> debuffs.misery * 0.01 );
+    }
+    if( sim_t::WotLK || school != SCHOOL_NATURE )
+    {
+      target_multiplier *= 1.0 + ( std::max( t -> debuffs.curse_of_elements, t -> debuffs.earth_and_moon ) * 0.01 );
+    }
+
     if( t -> debuffs.curse_of_elements ) target_penetration += 88;
   }
 

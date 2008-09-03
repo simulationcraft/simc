@@ -905,6 +905,7 @@ struct chain_lightning_t : public shaman_spell_t
     if( p -> talents.elemental_fury ) base_crit_bonus *= 2.0;
 
     lightning_overload_stats = p -> get_stats( "lightning_overload" );
+    lightning_overload_stats -> school = SCHOOL_NATURE;
     lightning_overload_stats -> adjust_for_lost_time = false;
   }
 
@@ -995,6 +996,7 @@ struct lightning_bolt_t : public shaman_spell_t
     if( p -> glyphs.lightning_bolt ) base_cost *= 0.90;
 
     lightning_overload_stats = p -> get_stats( "lightning_overload" );
+    lightning_overload_stats -> school = SCHOOL_NATURE;
     lightning_overload_stats -> adjust_for_lost_time = false;
   }
 
@@ -2807,9 +2809,16 @@ void shaman_t::regen( double periodicity )
   resource_gain( RESOURCE_MANA, spirit_regen, gains.spirit_regen );
   resource_gain( RESOURCE_MANA,    mp5_regen, gains.mp5_regen    );
 
+  if( buffs.replenishment )
+  {
+    double replenishment_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.005 / 1.0;
+
+    resource_gain( RESOURCE_MANA, replenishment_regen, gains.replenishment );
+  }
+
   if( buffs.water_elemental_regen )
   {
-    double water_elemental_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.03 / 5.0;
+    double water_elemental_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.006 / 5.0;
 
     resource_gain( RESOURCE_MANA, water_elemental_regen, gains.water_elemental_regen );
   }

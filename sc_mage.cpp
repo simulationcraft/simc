@@ -24,8 +24,9 @@ struct mage_t : public player_t
   double buffs_clearcasting;
   int8_t buffs_combustion;
   int8_t buffs_combustion_crits;
-  double buffs_fingers_of_frost;
+  int8_t buffs_fingers_of_frost;
   int8_t buffs_hot_streak;
+  double buffs_hot_streak_pyroblast;
   int8_t buffs_icy_veins;
   int8_t buffs_mage_armor;
   double buffs_missile_barrage;
@@ -33,14 +34,14 @@ struct mage_t : public player_t
 
   // Expirations
   event_t* expirations_arcane_blast;
-  event_t* expirations_fingers_of_frost;
 
   // Gains
   gain_t* gains_master_of_elements;
   gain_t* gains_evocation;
 
   // Procs
-  proc_t* procs_hot_streak;
+  proc_t* procs_clearcasting;
+  proc_t* procs_hot_streak_pyroblast;
   proc_t* procs_missile_barrage;
   proc_t* procs_deferred_ignite;
 
@@ -141,32 +142,33 @@ struct mage_t : public player_t
     active_water_elemental = 0;
 
     // Buffs
-    buffs_arcane_blast     = 0;
-    buffs_arcane_potency   = 0;
-    buffs_arcane_power     = 0;
-    buffs_brain_freeze     = 0;
-    buffs_clearcasting     = 0;
-    buffs_combustion       = 0;
-    buffs_combustion_crits = 0;
-    buffs_fingers_of_frost = 0;
-    buffs_hot_streak       = 0;
-    buffs_icy_veins        = 0;
-    buffs_mage_armor       = 0;
-    buffs_missile_barrage  = 0;
-    buffs_molten_armor     = 0;
+    buffs_arcane_blast         = 0;
+    buffs_arcane_potency       = 0;
+    buffs_arcane_power         = 0;
+    buffs_brain_freeze         = 0;
+    buffs_clearcasting         = 0;
+    buffs_combustion           = 0;
+    buffs_combustion_crits     = 0;
+    buffs_fingers_of_frost     = 0;
+    buffs_hot_streak           = 0;
+    buffs_hot_streak_pyroblast = 0;
+    buffs_icy_veins            = 0;
+    buffs_mage_armor           = 0;
+    buffs_missile_barrage      = 0;
+    buffs_molten_armor         = 0;
 
     // Expirations
-    expirations_arcane_blast     = 0;
-    expirations_fingers_of_frost = 0;
+    expirations_arcane_blast = 0;
 
     // Gains
     gains_master_of_elements = get_gain( "master_of_elements" );
     gains_evocation          = get_gain( "evocation" );
 
     // Procs
-    procs_hot_streak      = get_proc( "hot_streak" );
-    procs_missile_barrage = get_proc( "missile_barrage" );
-    procs_deferred_ignite = get_proc( "deferred_ignite" );
+    procs_clearcasting         = get_proc( "clearcasting" );
+    procs_hot_streak_pyroblast = get_proc( "hot_streak_pyroblast" );
+    procs_missile_barrage      = get_proc( "missile_barrage" );
+    procs_deferred_ignite      = get_proc( "deferred_ignite" );
 
     // Up-Times
     uptimes_arcane_blast[ 0 ] = get_uptime( "arcane_blast_0" );
@@ -220,10 +222,10 @@ struct mage_spell_t : public spell_t
 
 struct water_elemental_pet_t : public pet_t
 {
-  struct frost_bolt_t : public spell_t
+  struct water_bolt_t : public spell_t
   {
-    frost_bolt_t( player_t* player ):
-      spell_t( "frost_bolt", player, RESOURCE_MANA, SCHOOL_FROST, TREE_FROST ) 
+    water_bolt_t( player_t* player ):
+      spell_t( "water_bolt", player, RESOURCE_MANA, SCHOOL_FROST, TREE_FROST ) 
     {
       base_execute_time  = 2.5;
       base_dd            = ( 256 + 328 ) / 2;
@@ -235,12 +237,12 @@ struct water_elemental_pet_t : public pet_t
     }
   };
 
-  frost_bolt_t* frost_bolt;
+  water_bolt_t* water_bolt;
 
   water_elemental_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name ) :
     pet_t( sim, owner, pet_name )
   {
-    frost_bolt = new frost_bolt_t( this );
+    water_bolt = new water_bolt_t( this );
   }
   virtual void init_base()
   {
@@ -295,7 +297,7 @@ struct water_elemental_pet_t : public pet_t
     }
 
     // Kick-off repeating attack.  Eventually, this should go thru schedule_ready().
-    frost_bolt -> execute();
+    water_bolt -> execute();
   }
   virtual void dismiss()
   {
@@ -312,7 +314,7 @@ struct water_elemental_pet_t : public pet_t
       }
     }
 
-    frost_bolt -> cancel();
+    water_bolt -> cancel();
 
     o -> active_water_elemental = 0;
   }
@@ -482,6 +484,7 @@ static void trigger_arcane_concentration( spell_t* s )
 
   if( rand_t::roll( p -> talents.arcane_concentration * 0.02 ) )
   {
+    p -> procs_clearcasting -> occur();
     p -> buffs_clearcasting = s -> sim -> current_time;
 
     if( p -> talents.arcane_potency ) 
@@ -630,6 +633,21 @@ static void trigger_winters_grasp( spell_t* s )
   }
 }
 
+// clear_fingers_of_frost =========================================================
+
+static void clear_fingers_of_frost( spell_t* s )
+{
+  if( s -> school != SCHOOL_FROST &&
+      s -> school != SCHOOL_FROSTFIRE ) return;
+
+  mage_t* p = s -> player -> cast_mage();
+
+  if( p -> buffs_fingers_of_frost > 0 )
+  {
+    p -> buffs_fingers_of_frost--;
+  }
+}
+
 // trigger_fingers_of_frost =======================================================
 
 static void trigger_fingers_of_frost( spell_t* s )
@@ -637,39 +655,11 @@ static void trigger_fingers_of_frost( spell_t* s )
   if( s -> school != SCHOOL_FROST &&
       s -> school != SCHOOL_FROSTFIRE ) return;
 
-  struct expiration_t : public event_t
-  {
-    expiration_t( sim_t* sim, player_t* player ) : event_t( sim, player )
-    {
-      name = "Fingers of Frost Expiration";
-      mage_t* p = player -> cast_mage();
-      p -> aura_gain( "Fingers of Frost" );
-      p -> buffs_fingers_of_frost = sim -> current_time;
-      sim -> add_event( this, 4.0 );
-    }
-    virtual void execute()
-    {
-      mage_t* p = player -> cast_mage();
-      p -> aura_gain( "Fingers of Frost" );
-      p -> buffs_fingers_of_frost = 0;
-      p -> expirations_fingers_of_frost = 0;
-    }
-  };
-
   mage_t* p = s -> player -> cast_mage();
 
   if( rand_t::roll( p -> talents.fingers_of_frost * 0.05 ) )
   {
-    event_t*& e = p -> expirations_fingers_of_frost;
-    
-    if( e )
-    {
-      e -> reschedule( 4.0 );
-    }
-    else
-    {
-      e = new expiration_t( s -> sim, p );
-    }
+    p -> buffs_fingers_of_frost = 2;
   }
 }
 
@@ -697,14 +687,15 @@ static void trigger_hot_streak( spell_t* s )
 
   if( p -> talents.hot_streak )
   {
-    if( s -> result == RESULT_CRIT )
+    if( s -> result == RESULT_CRIT && 
+	rand_t::roll( p -> talents.hot_streak * (1/3.0) ) )
     {
-      switch( p -> buffs_hot_streak )
+      p -> buffs_hot_streak++;
+
+      if( p -> buffs_hot_streak == 2 )
       {
-        case 0: p -> buffs_hot_streak = 1; break;
-	case 1: p -> buffs_hot_streak = 2; break;
-	case 2: p -> buffs_hot_streak = 3; break;
-	case 3: p -> buffs_hot_streak = 1; break;
+	p -> buffs_hot_streak_pyroblast = s -> sim -> current_time;
+	p -> buffs_hot_streak = 0;
       }
     }
     else
@@ -826,7 +817,7 @@ double mage_spell_t::haste()
 void mage_spell_t::execute()
 {
   spell_t::execute();
-
+  clear_fingers_of_frost( this );
   if( result_is_hit() )
   {
     trigger_arcane_concentration( this );
@@ -911,12 +902,6 @@ void mage_spell_t::player_buff()
     player_multiplier *= 1.0 + p -> talents.playing_with_fire * 0.01;
   }
 
-  if( p -> buffs_hot_streak == 3 )
-  {
-    p -> procs_hot_streak -> occur();
-    player_crit += 1.0;
-  }
-
   if( p -> buffs_arcane_potency )
   {
     player_crit += p -> talents.arcane_potency * ( sim_t::WotLK ? 0.15 : 0.10 );
@@ -976,6 +961,12 @@ struct arcane_barrage_t : public mage_spell_t
     base_penetration += p -> talents.arcane_subtlety * 5;
     base_crit_bonus  *= 1.0 + p -> talents.spell_power * 0.25;
   }
+
+  virtual void execute()
+  {
+    mage_spell_t::execute();
+    if( result_is_hit() ) trigger_missile_barrage( this );
+  }
 };
 
 // Arcane Blast Spell =======================================================
@@ -1003,9 +994,9 @@ struct arcane_blast_t : public mage_spell_t
       
     static rank_t ranks[] =
     {
-      { 80, 4, 912, 1058, 0, 0.40 },
-      { 76, 3, 805,  935, 0, 0.40 },
-      { 71, 2, 690,  800, 0, 0.40 },
+      { 80, 4, 912, 1058, 0, 0.09 },
+      { 76, 3, 805,  935, 0, 0.09 },
+      { 71, 2, 690,  800, 0, 0.09 },
       { 64, 1, 648,  752, 0, 195  },
       { 0, 0 }
     };
@@ -1095,8 +1086,6 @@ struct arcane_blast_t : public mage_spell_t
     {
       e = new expiration_t( sim, p );
     }
-
-    trigger_missile_barrage( this );
   }
 
   virtual void player_buff()
@@ -1241,7 +1230,6 @@ struct arcane_missiles_t : public mage_spell_t
 
     update_stats( DMG_OVER_TIME );
 
-    trigger_hot_streak( this );
     if( current_tick == num_ticks ) 
     {
       clear_arcane_potency( this );
@@ -1582,7 +1570,7 @@ struct fire_ball_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
     mage_spell_t::execute();
-    trigger_missile_barrage( this );
+    if( result_is_hit() ) trigger_missile_barrage( this );
     p -> buffs_brain_freeze = 0;
   }
 
@@ -1760,15 +1748,18 @@ struct living_bomb_t : public mage_spell_t
 
 struct pyroblast_t : public mage_spell_t
 {
+  int8_t hot_streak;
+
   pyroblast_t( player_t* player, const std::string& options_str ) : 
-    mage_spell_t( "pyroblast", player, SCHOOL_FIRE, TREE_FIRE )
+    mage_spell_t( "pyroblast", player, SCHOOL_FIRE, TREE_FIRE ), hot_streak(0)
   {
     mage_t* p = player -> cast_mage();
     assert( p -> talents.pyroblast );
 
     option_t options[] =
     {
-      { "rank", OPT_INT8, &rank_index },
+      { "rank",       OPT_INT8, &rank_index },
+      { "hot_streak", OPT_INT8, &hot_streak },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1806,6 +1797,35 @@ struct pyroblast_t : public mage_spell_t
     base_penetration += p -> talents.arcane_subtlety * 5;
     base_crit_bonus  *= 1.0 + p -> talents.spell_power * 0.25;
     base_crit_bonus  *= 1.0 + p -> talents.burnout * 0.10;
+  }
+
+  virtual void execute()
+  {
+    mage_t* p = player -> cast_mage();
+    mage_spell_t::execute();
+    if( p -> buffs_hot_streak_pyroblast ) p -> procs_hot_streak_pyroblast -> occur();
+    p -> buffs_hot_streak_pyroblast = 0;
+  }
+
+  virtual double execute_time()
+  {
+    mage_t* p = player -> cast_mage();
+    if( p -> buffs_hot_streak_pyroblast ) return 0;
+    return mage_spell_t::execute_time();
+  }
+
+  virtual bool ready()
+  {
+    mage_t* p = player -> cast_mage();
+
+    if( ! mage_spell_t::ready() )
+      return false;
+
+    if( hot_streak )
+      if( ! sim -> time_to_think( p -> buffs_hot_streak_pyroblast ) )
+	return false;
+
+    return true;
   }
 };
 
@@ -2031,7 +2051,7 @@ struct frost_bolt_t : public mage_spell_t
   virtual void execute()
   {
     mage_spell_t::execute();
-    trigger_missile_barrage( this );
+    if( result_is_hit() ) trigger_missile_barrage( this );
   }
 
   virtual bool ready()
@@ -2128,15 +2148,8 @@ struct ice_lance_t : public mage_spell_t
 	}
 	return true;
       }
-      else if( sim -> time_to_think( p -> buffs_fingers_of_frost ) )
+      else if( p -> buffs_fingers_of_frost )
       {
-	if( fb_priority )
-        {
-	  double fb_execute_time = sim -> current_time + 2.5 * haste();
-
-	  if( fb_execute_time < p -> expirations_fingers_of_frost -> occurs() )
-	    return false;
-	}
 	return true;
       }
       else return false;
@@ -2212,15 +2225,8 @@ struct deep_freeze_t : public mage_spell_t
       }
       return true;
     }
-    else if( sim -> time_to_think( p -> buffs_fingers_of_frost ) )
+    else if( p -> buffs_fingers_of_frost )
     {
-      if( fb_priority )
-      {
-	double fb_execute_time = sim -> current_time + 2.5 * haste();
-
-	if( fb_execute_time < p -> expirations_fingers_of_frost -> occurs() )
-	  return false;
-      }
       return true;
     }
     return false;
@@ -2289,7 +2295,7 @@ struct frostfire_bolt_t : public mage_spell_t
   virtual void execute()
   {
     mage_spell_t::execute();
-    trigger_missile_barrage( this );
+    if( result_is_hit() ) trigger_missile_barrage( this );
   }
 };
 
@@ -2564,8 +2570,7 @@ void mage_t::reset()
   buffs_molten_armor     = 0;
   
   // Expirations
-  expirations_arcane_blast     = 0;
-  expirations_fingers_of_frost = 0;
+  expirations_arcane_blast = 0;
 }
 
 // mage_t::regen  ==========================================================
@@ -2590,9 +2595,16 @@ void mage_t::regen( double periodicity )
   resource_gain( RESOURCE_MANA, spirit_regen, gains.spirit_regen );
   resource_gain( RESOURCE_MANA,    mp5_regen, gains.mp5_regen    );
 
+  if( buffs.replenishment )
+  {
+    double replenishment_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.005 / 1.0;
+
+    resource_gain( RESOURCE_MANA, replenishment_regen, gains.replenishment );
+  }
+
   if( buffs.water_elemental_regen )
   {
-    double water_elemental_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.03 / 5.0;
+    double water_elemental_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.006 / 5.0;
 
     resource_gain( RESOURCE_MANA, water_elemental_regen, gains.water_elemental_regen );
   }

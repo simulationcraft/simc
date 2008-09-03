@@ -140,7 +140,7 @@ sim_t::sim_t() :
   events_processed(0), total_events_processed(0),
   seed(0), id(0), iterations(1),
   potion_sickness(0), average_dmg(1), log(0), debug(0), timestamp(1), 
-  uptime_list(0), output_file(stdout), 
+  uptime_list(0), output_file(stdout), html_file(stdout), 
   report(0), raid_dps(0), total_dmg(0), total_seconds(0), elapsed_cpu_seconds(0)
 {
   for( int i=0; i < RESOURCE_MAX; i++ ) 
@@ -344,10 +344,10 @@ bool sim_t::init()
 
 // sim_t::analyze ============================================================
 
-struct compare_dmg {
+struct compare_dps {
   bool operator()( player_t* l, player_t* r ) const
   {
-    return l -> total_dmg > r -> total_dmg;
+    return l -> dps > r -> dps;
   }
 };
 
@@ -423,7 +423,7 @@ void sim_t::analyze()
     }
   }
 
-  std::sort( players_by_rank.begin(), players_by_rank.end(), compare_dmg()  );
+  std::sort( players_by_rank.begin(), players_by_rank.end(), compare_dps()  );
   std::sort( players_by_name.begin(), players_by_name.end(), compare_name() );
 
   raid_dps = total_dmg / total_seconds;
@@ -555,9 +555,10 @@ int main( int argc, char **argv )
   sim.analyze();
 
   sim.report -> print();
-  sim.report -> graph();
+  sim.report -> chart();
 
   if( sim.output_file != stdout ) fclose( sim.output_file );
+  if( sim.  html_file != stdout ) fclose( sim.  html_file );
   
   return 0;
 }
