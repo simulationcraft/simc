@@ -46,6 +46,11 @@ potion_sickness=1
 # that WotLK bosses will have armor close to 10k......  (5x Sunder is 3600 penetration in WotLK)
 target_armor=6400
 
+# Since support for the Paladin class does not yet exist, one can specify target debuffs (such as
+# Judgement of Wisdom) and player buffs (such as Blessing of Wisdom and Sanctified Retribution) as parameters.
+# Both blessing_of_wisdom=1 and sanctified_retribution=1 would be included in each player section as appropriate.
+judgement_of_wisdom=400
+
 # Since support for the Warlock class does not yet exist, one can specify static target debuffs.
 # CoE is currently coded as affecting Nature damage, too.
 curse_of_elements=13
