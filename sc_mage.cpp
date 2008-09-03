@@ -2204,7 +2204,7 @@ struct deep_freeze_t : public mage_spell_t
     base_hit         += p -> talents.elemental_precision * 0.01;
     base_penetration += p -> talents.arcane_subtlety * 5;
     base_crit_bonus  *= 1.0 + p -> talents.ice_shards * 0.20;
-    base_crit_bonus  *= p -> talents.spell_power * 0.125;
+    base_crit_bonus  *= 1.0 + p -> talents.spell_power * 0.125;
   }
 
   virtual bool ready()

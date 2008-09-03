@@ -241,7 +241,7 @@ swift_retribution=1
 # (2) The "trigger=6000" option to evocation represents the mana gained and the amount below max required to trigger
 # (3) The "debuff=1" option to scorch prevents it from being executed unless the Improved Scorch debuff is going to expire in less than 6sec.
 # (4) The "frozen=1" option to ice_lance means that it will only be cast if the target is frozen (via winters_grasp) or virtually frozen (via fingers_of_frost)
-# (5) The "fb_priority=1" option to ice_lance means that it will only be cast if the frozen debuff/buff will end before a frost_bolt could be cast
+# (5) The "fb_priority=1" option to ice_lance and deep_freeze means that it will only be cast if the frozen debuff/buff will end before a frost_bolt could be cast
 #
 mage=Mage_Frost
 level=80
