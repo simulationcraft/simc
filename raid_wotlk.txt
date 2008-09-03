@@ -2,7 +2,8 @@
 # WARNING!  When making changes to this file in an editor, make sure it is saved in "plain text" format.
 #======================================================================================================
 
-# TO EXECUTE THIS PARAMETER FILE:  simcraft  output=results.txt  input=raid_wotlk.txt
+# TO EXECUTE THIS PARAMETER FILE:  simcraft  output=results.txt  input=raid_wotlk.txt 
+# TO GENERATE CHARTS IN HTML:      simcraft  output=results.txt  input=raid_wotlk.txt  html=chart.html  report_chart=1
 
 #
 # Globals

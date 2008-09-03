@@ -3,6 +3,7 @@
 #======================================================================================================
 
 # TO EXECUTE THIS PARAMETER FILE:  simcraft  output=results.txt  input=raid_bc.txt
+# TO GENERATE CHARTS IN HTML:      simcraft  output=results.txt  input=raid_bc.txt  html=chart.html  report_chart=1
 
 #
 # Globals
