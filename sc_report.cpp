@@ -505,10 +505,10 @@ void report_t::chart_raid_gear()
   int num_players = sim -> players_by_rank.size();
   if( num_players == 0 ) return;
 
-  int num_categories = 10;
-  std::vector< std::vector<double> > data_points;
-  data_points.resize( num_categories );
-  for( int i=0; i < num_categories; i++ ) 
+  const int NUM_CATEGORIES = 10;
+  std::vector<double> data_points[ NUM_CATEGORIES ];
+
+  for( int i=0; i < NUM_CATEGORIES; i++ ) 
   {
     data_points[ i ].insert( data_points[ i ].begin(), num_players, 0 );
   }
@@ -543,7 +543,7 @@ void report_t::chart_raid_gear()
   for( int i=0; i < num_players; i++ )
   {
     double total=0;
-    for( int j=0; j < num_categories; j++ )
+    for( int j=0; j < NUM_CATEGORIES; j++ )
     {
       total += data_points[ j ][ i ];
     }
@@ -562,7 +562,7 @@ void report_t::chart_raid_gear()
   fprintf( sim -> html_file, "cht=bhs" );
   fprintf( sim -> html_file, "&" );
   fprintf( sim -> html_file, "chd=t:" );
-  for( int i=0; i < num_categories; i++ )
+  for( int i=0; i < NUM_CATEGORIES; i++ )
   {
     if( i ) fprintf( sim -> html_file, "|" );
     for( int j=0; j < num_players; j++ )
@@ -574,7 +574,7 @@ void report_t::chart_raid_gear()
   fprintf( sim -> html_file, "chds=0,%.0f", max_total );
   fprintf( sim -> html_file, "&" );
   fprintf( sim -> html_file, "chco=" );
-  for( int i=0; i < num_categories; i++ )
+  for( int i=0; i < NUM_CATEGORIES; i++ )
   {
     fprintf( sim -> html_file, "%s%s", (i?",":""), colors[ i ] );
   }
