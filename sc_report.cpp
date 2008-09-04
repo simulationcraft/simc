@@ -508,7 +508,10 @@ void report_t::chart_raid_gear()
   int num_categories = 10;
   std::vector< std::vector<double> > data_points;
   data_points.resize( num_categories );
-  for( int i=0; i < num_categories; i++ ) data_points[ i ].resize( num_players );
+  for( int i=0; i < num_categories; i++ ) 
+  {
+    data_points[ i ].insert( data_points[ i ].begin(), num_players, 0 );
+  }
 
   for( int i=0; i < num_players; i++ )
   {
