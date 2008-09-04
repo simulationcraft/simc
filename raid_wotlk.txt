@@ -49,7 +49,7 @@ target_armor=6400
 # Since support for the Paladin class does not yet exist, one can specify target debuffs (such as
 # Judgement of Wisdom) and player buffs (such as Blessing of Wisdom and Sanctified Retribution) as parameters.
 # Both blessing_of_wisdom=1 and sanctified_retribution=1 would be included in each player section as appropriate.
-judgement_of_wisdom=400
+judgement_of_wisdom=1
 
 # Since support for the Warlock class does not yet exist, one can specify static target debuffs.
 # CoE is currently coded as affecting Nature damage, too.
