@@ -2263,7 +2263,7 @@ struct frostfire_bolt_t : public mage_spell_t
     
     base_execute_time = 3.0; 
     may_crit          = true; 
-    dd_power_mod      = (3.0/3.5)-0.05; 
+    dd_power_mod      = (3.0/3.5); 
 
     if( dot_wait )
     {

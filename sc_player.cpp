@@ -493,6 +493,7 @@ void player_t::init_stats()
 
   gains.ashtongue_talisman    = get_gain( "ashtongue_talisman" );
   gains.dark_rune             = get_gain( "dark_rune" );
+  gains.judgement_of_wisdom   = get_gain( "judgement_of_wisdom" );
   gains.mana_gem              = get_gain( "mana_gem" );
   gains.mana_potion           = get_gain( "mana_potion" );
   gains.mana_spring           = get_gain( "mana_spring" );
