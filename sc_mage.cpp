@@ -1024,8 +1024,8 @@ struct arcane_blast_t : public mage_spell_t
     base_crit        += p -> talents.arcane_impact * 0.02;
     base_hit         += p -> talents.arcane_focus * ( sim_t::WotLK ? 0.01 : 0.02 );
     base_penetration += p -> talents.arcane_subtlety * 5;
-    base_crit_bonus  *= 1.0 + p -> talents.spell_power * 0.25;
     dd_power_mod     += p -> talents.arcane_empowerment * 0.03;
+    base_crit_bonus  *= 1.0 + p -> talents.spell_power * 0.25;
 
     if( p -> gear.tier5_2pc ) base_multiplier *= 1.20;
   }
@@ -1179,9 +1179,9 @@ struct arcane_missiles_t : public mage_spell_t
     base_crit        += p -> talents.arcane_instability * 0.01;
     base_hit         += p -> talents.arcane_focus * ( sim_t::WotLK ? 0.01 : 0.02 );
     base_penetration += p -> talents.arcane_subtlety * 5;
-    base_crit_bonus  *= 1.0 + p -> talents.spell_power * 0.25;
     dd_power_mod     += p -> talents.empowered_arcane_missiles * 0.03; // bonus per missle
     dd_power_mod     += p -> talents.arcane_empowerment * 0.03;        // bonus per missle
+    base_crit_bonus  *= 1.0 + p -> talents.spell_power * 0.25;
 
     if( p -> gear.tier6_4pc ) base_multiplier *= 1.05;
   }
@@ -1553,9 +1553,9 @@ struct fire_ball_t : public mage_spell_t
     base_crit         += p -> talents.pyromaniac * 0.01;
     base_hit          += p -> talents.elemental_precision * 0.01;
     base_penetration  += p -> talents.arcane_subtlety * 5;
-    base_crit_bonus   *= 1.0 + p -> talents.spell_power * 0.25;
-    base_crit_bonus   *= 1.0 + p -> talents.burnout * 0.10;
     dd_power_mod      += p -> talents.empowered_fire_ball * ( sim_t::WotLK ? 0.05 : 0.03 );
+    base_crit_bonus   *= 1.0 + ( p -> talents.spell_power * 0.25 +
+				 p -> talents.burnout     * 0.10 );
 
     if( p -> gear.tier6_4pc   ) base_multiplier *= 1.05;
     if( p -> glyphs.fire_ball ) base_multiplier *= 1.05;
@@ -1652,8 +1652,8 @@ struct fire_blast_t : public mage_spell_t
     base_crit        += p -> talents.pyromaniac * 0.01;
     base_hit         += p -> talents.elemental_precision * 0.01;
     base_penetration += p -> talents.arcane_subtlety * 5;
-    base_crit_bonus  *= 1.0 + p -> talents.spell_power * 0.25;
-    base_crit_bonus  *= 1.0 + p -> talents.burnout * 0.10;
+    base_crit_bonus  *= 1.0 + ( p -> talents.spell_power * 0.25 +
+				p -> talents.burnout     * 0.10 );
   }
 
   virtual bool ready()
@@ -1717,8 +1717,8 @@ struct living_bomb_t : public mage_spell_t
     base_crit        += p -> talents.world_in_flames * 0.02;
     base_hit         += p -> talents.elemental_precision * 0.01;
     base_penetration += p -> talents.arcane_subtlety * 5;
-    base_crit_bonus  *= 1.0 + p -> talents.spell_power * 0.25;
-    base_crit_bonus  *= 1.0 + p -> talents.burnout * 0.10;
+    base_crit_bonus  *= 1.0 + ( p -> talents.spell_power * 0.25 +
+				p -> talents.burnout     * 0.10 );
   }
 
   // Odd thing to handle: The direct-damage comes at the last tick instead of the beginning of the spell.
@@ -1804,8 +1804,8 @@ struct pyroblast_t : public mage_spell_t
     base_crit        += p -> talents.pyromaniac * 0.01;
     base_hit         += p -> talents.elemental_precision * 0.01;
     base_penetration += p -> talents.arcane_subtlety * 5;
-    base_crit_bonus  *= 1.0 + p -> talents.spell_power * 0.25;
-    base_crit_bonus  *= 1.0 + p -> talents.burnout * 0.10;
+    base_crit_bonus  *= 1.0 + ( p -> talents.spell_power * 0.25 +
+				p -> talents.burnout     * 0.10 );
   }
 
   virtual void execute()
@@ -1889,8 +1889,8 @@ struct scorch_t : public mage_spell_t
     base_crit        += p -> talents.pyromaniac * 0.01;
     base_hit         += p -> talents.elemental_precision * 0.01;
     base_penetration += p -> talents.arcane_subtlety * 5;
-    base_crit_bonus  *= 1.0 + p -> talents.spell_power * 0.25;
-    base_crit_bonus  *= 1.0 + p -> talents.burnout * 0.10;
+    base_crit_bonus  *= 1.0 + ( p -> talents.spell_power * 0.25 +
+				p -> talents.burnout     * 0.10 );
 
     if( debuff ) assert( p -> talents.improved_scorch );
 
@@ -2049,9 +2049,9 @@ struct frost_bolt_t : public mage_spell_t
     base_crit         += p -> talents.empowered_frost_bolt * ( sim_t::WotLK ? 0.02 : 0.01 );
     base_hit          += p -> talents.elemental_precision * 0.01;
     base_penetration  += p -> talents.arcane_subtlety * 5;
-    base_crit_bonus   *= 1.0 + p -> talents.ice_shards * 0.20;
-    base_crit_bonus   *= 1.0 + p -> talents.spell_power * 0.25;
     dd_power_mod      += p -> talents.empowered_frost_bolt * ( sim_t::WotLK ? 0.05 : 0.02 );
+    base_crit_bonus   *= 1.0 + ( p -> talents.ice_shards  * 0.20 +
+				 p -> talents.spell_power * 0.25 );
 
     if( p -> gear.tier6_4pc    ) base_multiplier *= 1.05;
     if( p -> glyphs.frost_bolt ) base_multiplier *= 1.05;
@@ -2122,8 +2122,8 @@ struct ice_lance_t : public mage_spell_t
     base_crit        += p -> talents.arcane_instability * 0.01;
     base_hit         += p -> talents.elemental_precision * 0.01;
     base_penetration += p -> talents.arcane_subtlety * 5;
-    base_crit_bonus  *= 1.0 + p -> talents.ice_shards * 0.20;
-    base_crit_bonus  *= p -> talents.spell_power * 0.125;
+    base_crit_bonus  *= 1.0 + ( p -> talents.ice_shards  * 0.20  +
+				p -> talents.spell_power * 0.25 );
   }
 
   virtual void player_buff()
@@ -2212,8 +2212,8 @@ struct deep_freeze_t : public mage_spell_t
     base_crit        += p -> talents.arcane_instability * 0.01;
     base_hit         += p -> talents.elemental_precision * 0.01;
     base_penetration += p -> talents.arcane_subtlety * 5;
-    base_crit_bonus  *= 1.0 + p -> talents.ice_shards * 0.20;
-    base_crit_bonus  *= 1.0 + p -> talents.spell_power * 0.125;
+    base_crit_bonus  *= 1.0 + ( p -> talents.ice_shards  * 0.20 +
+				p -> talents.spell_power * 0.25 );
   }
 
   virtual bool ready()
@@ -2296,9 +2296,9 @@ struct frostfire_bolt_t : public mage_spell_t
     base_crit         += p -> talents.pyromaniac * 0.01;
     base_hit          += p -> talents.elemental_precision * 0.01;
     base_penetration  += p -> talents.arcane_subtlety * 5;
-    base_crit_bonus   *= 1.0 + p -> talents.spell_power * 0.25;
-    base_crit_bonus   *= 1.0 + p -> talents.burnout * 0.10;
-    base_crit_bonus   *= 1.0 + p -> talents.ice_shards * 0.20;
+    base_crit_bonus   *= 1.0 + ( p -> talents.spell_power * 0.25 +
+				 p -> talents.burnout     * 0.10 +
+				 p -> talents.ice_shards  * 0.20 );
   }
 
   virtual void execute()
