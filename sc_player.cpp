@@ -499,12 +499,12 @@ void player_t::init_stats()
   gains.mana_spring           = get_gain( "mana_spring" );
   gains.mana_tide             = get_gain( "mana_tide" );
   gains.mark_of_defiance      = get_gain( "mark_of_defiance" );
-  gains.mp5_regen             = get_gain( "mp5_regen" );
+  gains.mp5_regen             = get_gain( "mp5" );
   gains.replenishment         = get_gain( "replenishment" );
   gains.spellsurge            = get_gain( "spellsurge" );
-  gains.spirit_regen          = get_gain( "spirit_regen" );
+  gains.spirit_regen          = get_gain( "spirit" );
   gains.vampiric_touch        = get_gain( "vampiric_touch" );
-  gains.water_elemental_regen = get_gain( "water_elemental_regen" );
+  gains.water_elemental_regen = get_gain( "water_elemental" );
   gains.tier4_2pc             = get_gain( "tier4_2pc" );
   gains.tier4_4pc             = get_gain( "tier4_4pc" );
   gains.tier5_2pc             = get_gain( "tier5_2pc" );
