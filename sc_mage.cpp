@@ -412,6 +412,18 @@ static void trigger_ignite( spell_t* s )
   p -> active_ignite -> schedule_tick();
 }
 
+// trigger_burnout ==========================================================
+
+static void trigger_burnout( spell_t* s )
+{
+  mage_t* p = s -> player -> cast_mage();
+
+  if( p -> talents.burnout && s -> resource_consumed )
+  {
+    p -> resource_loss( RESOURCE_MANA, s -> resource_consumed * p -> talents.burnout * 0.01 );
+  }
+}
+
 // trigger_master_of_elements ===============================================
 
 static void trigger_master_of_elements( spell_t* s )
@@ -830,6 +842,7 @@ void mage_spell_t::execute()
 
     if( result == RESULT_CRIT )
     {
+      trigger_burnout( this );
       trigger_ignite( this );
       trigger_master_of_elements( this );
       trigger_tier5_4pc( this );
@@ -1543,7 +1556,6 @@ struct fire_ball_t : public mage_spell_t
     base_cost          = rank -> cost;
     base_cost         *= 1.0 - p -> talents.elemental_precision * 0.01;
     base_cost         *= 1.0 - p -> talents.pyromaniac * 0.01;
-    base_cost         *= 1.0 + p -> talents.burnout * 0.01;
     base_cost         *= 1.0 - p -> talents.frost_channeling * ( sim_t::WotLK ? (0.1/3) : 0 );
     base_execute_time -= p -> talents.improved_fire_ball * 0.1;
     base_multiplier   *= 1.0 + p -> talents.fire_power * 0.02;
@@ -1640,7 +1652,6 @@ struct fire_blast_t : public mage_spell_t
     base_cost         = rank -> cost;
     base_cost        *= 1.0 - p -> talents.elemental_precision * 0.01;
     base_cost        *= 1.0 - p -> talents.pyromaniac * 0.01;
-    base_cost        *= 1.0 + p -> talents.burnout * 0.01;
     base_cost        *= 1.0 - p -> talents.frost_channeling * ( sim_t::WotLK ? (0.1/3) : 0 );
     cooldown         -= p -> talents.improved_fire_blast * 0.5;
     base_multiplier  *= 1.0 + p -> talents.fire_power * 0.02;
@@ -1707,7 +1718,6 @@ struct living_bomb_t : public mage_spell_t
     base_cost         = rank -> cost;
     base_cost        *= 1.0 - p -> talents.elemental_precision * 0.01;
     base_cost        *= 1.0 - p -> talents.pyromaniac * 0.01;
-    base_cost        *= 1.0 + p -> talents.burnout * 0.01;
     base_cost        *= 1.0 - p -> talents.frost_channeling * ( sim_t::WotLK ? (0.1/3) : 0 );
     base_multiplier  *= 1.0 + p -> talents.fire_power * 0.02;
     base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
@@ -1795,7 +1805,6 @@ struct pyroblast_t : public mage_spell_t
     base_cost         = rank -> cost;
     base_cost        *= 1.0 - p -> talents.elemental_precision * 0.01;
     base_cost        *= 1.0 - p -> talents.pyromaniac * 0.01;
-    base_cost        *= 1.0 + p -> talents.burnout * 0.01;
     base_cost        *= 1.0 - p -> talents.frost_channeling * ( sim_t::WotLK ? (0.1/3) : 0 );
     base_multiplier  *= 1.0 + p -> talents.fire_power * 0.02;
     base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
@@ -1879,7 +1888,6 @@ struct scorch_t : public mage_spell_t
     base_cost         = rank -> cost;
     base_cost        *= 1.0 - p -> talents.elemental_precision * 0.01;
     base_cost        *= 1.0 - p -> talents.pyromaniac * 0.01;
-    base_cost        *= 1.0 + p -> talents.burnout * 0.01;
     base_cost        *= 1.0 - p -> talents.frost_channeling * ( sim_t::WotLK ? (0.1/3) : 0 );
     base_multiplier  *= 1.0 + p -> talents.fire_power * 0.02;
     base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
@@ -2284,7 +2292,6 @@ struct frostfire_bolt_t : public mage_spell_t
     base_cost         = rank -> cost;
     base_cost         *= 1.0 - p -> talents.elemental_precision * 0.01;
     base_cost         *= 1.0 - p -> talents.pyromaniac * 0.01;
-    base_cost         *= 1.0 + p -> talents.burnout * 0.01;
     base_cost         *= 1.0 - p -> talents.frost_channeling * ( sim_t::WotLK ? (0.1/3) : 0.05 );
     base_multiplier   *= 1.0 + p -> talents.fire_power * 0.02;
     base_multiplier   *= 1.0 + p -> talents.arcane_instability * 0.01;
