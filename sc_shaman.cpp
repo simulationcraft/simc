@@ -1356,10 +1356,10 @@ struct flame_shock_t : public shaman_spell_t
     rank = choose_rank( ranks );
     
     base_execute_time = 0; 
-    dd_power_mod      = 0.15;
+    dd_power_mod      = 0.21;
     base_duration     = 12.0;
     num_ticks         = 6;
-    dot_power_mod     = 0.52;
+    dot_power_mod     = 0.39;
     may_crit          = true;
     cooldown          = 6.0;
     cooldown_group    = "shock";
