@@ -46,7 +46,10 @@ void target_t::assess_damage( double  amount,
       {
 	debuffs.shadow_vulnerability_charges--;
 	if( debuffs.shadow_vulnerability_charges == 0 ) 
+	{
+	  if( sim -> log ) report_t::log( sim, "%s loses Shadow Vulnerability", name() );
 	  debuffs.shadow_vulnerability = 0;
+	}
       }
     }
 
@@ -56,7 +59,10 @@ void target_t::assess_damage( double  amount,
       {
 	debuffs.nature_vulnerability_charges--;
 	if( debuffs.nature_vulnerability_charges == 0 ) 
+	{
+	  if( sim -> log ) report_t::log( sim, "%s loses Nature Vulnerability", name() );
 	  debuffs.nature_vulnerability = 0;
+	}
       }
     }
   }

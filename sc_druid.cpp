@@ -932,7 +932,7 @@ struct wrath_t : public druid_spell_t
     p -> uptimes_eclipse_wrath -> update( p -> buffs_eclipse_wrath );
     if( p -> buffs_eclipse_wrath )
     {
-      player_multiplier *= 0.10;
+      player_multiplier *= 1.10;
     }
     if( p -> insect_swarm_active )
     {
