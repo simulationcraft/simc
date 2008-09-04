@@ -30,6 +30,10 @@ struct druid_t : public player_t
 
   // Gains
   gain_t* gains_moonkin_form;
+  gain_t* gains_omen_of_clarity;
+
+  // Procs
+  proc_t* procs_omen_of_clarity;
 
   // Up-Times
   uptime_t* uptimes_eclipse_starfire;
@@ -104,7 +108,11 @@ struct druid_t : public player_t
     cooldowns_omen_of_clarity = 0;
 
     // Gains
-    gains_moonkin_form = get_gain( "moonkin_form" );
+    gains_moonkin_form    = get_gain( "moonkin_form"    );
+    gains_omen_of_clarity = get_gain( "omen_of_clarity" );
+
+    // Procs
+    procs_omen_of_clarity = get_proc( "omen_of_clarity" );
 
     // Up-Times
     uptimes_eclipse_starfire = get_uptime( "eclipse_starfire" );
@@ -166,6 +174,7 @@ static void trigger_omen_of_clarity( action_t* a )
     if( a -> sim -> cooldown_ready( p -> cooldowns_omen_of_clarity ) && rand_t::roll( 0.06 ) )
     {
       p -> buffs_omen_of_clarity = 1;
+      p -> procs_omen_of_clarity -> occur();
       p -> cooldowns_omen_of_clarity = a -> sim -> current_time;
     }
   }
@@ -359,9 +368,18 @@ double druid_spell_t::execute_time()
 
 void druid_spell_t::consume_resource()
 {
-  spell_t::consume_resource();
   druid_t* p = player -> cast_druid();
-  if( base_cost > 0 ) p -> buffs_omen_of_clarity = 0;
+  spell_t::consume_resource();
+  if( p -> buffs_omen_of_clarity )
+  {
+    // Treat the savings like a mana gain.
+    double amount = spell_t::cost();
+    if( amount > 0 )
+    {
+      p -> gains_omen_of_clarity -> add( amount );
+      p -> buffs_omen_of_clarity = 0;
+    }
+  }
 }
 
 // druid_spell_t::player_buff ==============================================

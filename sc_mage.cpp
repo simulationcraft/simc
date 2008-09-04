@@ -36,6 +36,7 @@ struct mage_t : public player_t
   event_t* expirations_arcane_blast;
 
   // Gains
+  gain_t* gains_clearcasting;
   gain_t* gains_master_of_elements;
   gain_t* gains_evocation;
 
@@ -161,6 +162,7 @@ struct mage_t : public player_t
     expirations_arcane_blast = 0;
 
     // Gains
+    gains_clearcasting       = get_gain( "clearcasting" );
     gains_master_of_elements = get_gain( "master_of_elements" );
     gains_evocation          = get_gain( "evocation" );
 
@@ -848,10 +850,17 @@ void mage_spell_t::execute()
 void mage_spell_t::consume_resource()
 {
   mage_t* p = player -> cast_mage();
-
   spell_t::consume_resource();
-
-  p -> buffs_clearcasting = 0;
+  if( p -> buffs_clearcasting )
+  {
+    // Treat the savings like a mana gain.
+    double amount = spell_t::cost();
+    if( amount > 0 )
+    {
+      p -> gains_clearcasting -> add( amount );
+      p -> buffs_clearcasting = 0;
+    }
+  }
 }
 
 // mage_spell_t::player_buff ===============================================
