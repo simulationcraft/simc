@@ -292,7 +292,7 @@ static void stack_shadow_weaving( spell_t* s )
     }
   };
 
-  if( rand_t::roll( p -> talents.shadow_weaving * 0.20 ) )
+  if( rand_t::roll( p -> talents.shadow_weaving * ( sim_t::WotLK ? (1.0/3) : 0.2 ) ) )
   {
     sim_t* sim = s -> sim;
     target_t* t = sim -> target;
