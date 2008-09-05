@@ -1748,9 +1748,7 @@ struct living_bomb_t : public mage_spell_t
   virtual void last_tick()
   {
     target_debuff( DMG_DIRECT );
-    may_miss = false;
     calculate_result();
-    may_miss = false;
     if( result_is_hit() )
     {
       calculate_damage();
