@@ -99,8 +99,8 @@ void spell_t::player_buff()
     else
     {
       player_hit += 0.03;
-      player_crit += 0.03;
     }
+    player_crit += 0.03;
   }
 
   if( sim -> debug ) report_t::log( sim, "spell_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f", 

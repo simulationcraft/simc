@@ -143,20 +143,20 @@ struct mage_t : public player_t
     active_water_elemental = 0;
 
     // Buffs
-    buffs_arcane_blast         = 0;
-    buffs_arcane_potency       = 0;
-    buffs_arcane_power         = 0;
-    buffs_brain_freeze         = 0;
-    buffs_clearcasting         = 0;
-    buffs_combustion           = 0;
-    buffs_combustion_crits     = 0;
-    buffs_fingers_of_frost     = 0;
-    buffs_hot_streak           = 0;
-    buffs_hot_streak_pyroblast = 0;
-    buffs_icy_veins            = 0;
-    buffs_mage_armor           = 0;
-    buffs_missile_barrage      = 0;
-    buffs_molten_armor         = 0;
+    buffs_arcane_blast             = 0;
+    buffs_arcane_potency           = 0;
+    buffs_arcane_power             = 0;
+    buffs_brain_freeze             = 0;
+    buffs_clearcasting             = 0;
+    buffs_combustion               = 0;
+    buffs_combustion_crits         = 0;
+    buffs_fingers_of_frost         = 0;
+    buffs_hot_streak               = 0;
+    buffs_hot_streak_pyroblast     = 0;
+    buffs_icy_veins                = 0;
+    buffs_mage_armor               = 0;
+    buffs_missile_barrage          = 0;
+    buffs_molten_armor             = 0;
 
     // Expirations
     expirations_arcane_blast = 0;
@@ -2571,19 +2571,20 @@ void mage_t::reset()
   active_water_elemental = 0;
   
   // Buffs
-  buffs_arcane_blast     = 0;
-  buffs_arcane_potency   = 0;
-  buffs_arcane_power     = 0;
-  buffs_brain_freeze     = 0;
-  buffs_clearcasting     = 0;
-  buffs_combustion       = 0;
-  buffs_combustion_crits = 0;
-  buffs_fingers_of_frost = 0;
-  buffs_hot_streak       = 0;
-  buffs_icy_veins        = 0;
-  buffs_mage_armor       = 0;
-  buffs_missile_barrage  = 0;
-  buffs_molten_armor     = 0;
+  buffs_arcane_blast           = 0;
+  buffs_arcane_potency         = 0;
+  buffs_arcane_power           = 0;
+  buffs_brain_freeze           = 0;
+  buffs_clearcasting           = 0;
+  buffs_combustion             = 0;
+  buffs_combustion_crits       = 0;
+  buffs_fingers_of_frost       = 0;
+  buffs_hot_streak             = 0;
+  buffs_hot_streak_pyroblast   = 0;
+  buffs_icy_veins              = 0;
+  buffs_mage_armor             = 0;
+  buffs_missile_barrage        = 0;
+  buffs_molten_armor           = 0;
   
   // Expirations
   expirations_arcane_blast = 0;
