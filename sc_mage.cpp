@@ -2129,7 +2129,7 @@ struct ice_lance_t : public mage_spell_t
     
     base_execute_time   = 0.0; 
     may_crit         = true; 
-    dd_power_mod = (1.0/3.5); 
+    dd_power_mod = (0.5/3.5); 
       
     base_cost         = rank -> cost;
     base_cost        *= 1.0 - p -> talents.elemental_precision * 0.01;
