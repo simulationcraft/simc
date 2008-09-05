@@ -246,7 +246,7 @@ swift_retribution=1
 mage=Mage_Frost
 level=80
 talents=http://www.worldofwarcraft.com/info/classes/mage/talents2.html?tal=00000000000000000000000000000023050000000000000000000000000535031312235100230052231351
-actions=flask,type=pure_death/molten_armor/mana_gem,trigger=3500/mana_potion,trigger=2500/evocation,trigger=10000/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/frost_bolt
+actions=flask,type=pure_death/molten_armor/mana_gem,trigger=3500/mana_potion,trigger=2500/ice_lance,frozen=1,fb_priority=1/evocation,trigger=10000/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/frost_bolt
 gear_stamina=600
 gear_intellect=600
 gear_spirit=600
