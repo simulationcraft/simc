@@ -242,6 +242,7 @@ struct sim_t
   // Reporting
   report_t* report;
   double    raid_dps, total_dmg, total_seconds, elapsed_cpu_seconds;
+  int8_t    merge_ignite;
   std::vector<player_t*> players_by_rank;
   std::vector<player_t*> players_by_name;
 
@@ -1187,6 +1188,7 @@ struct report_t
   void print_performance();
   void print();
   void chart_raid_dps();
+  void chart_raid_dpet();
   void chart_raid_downtime();
   void chart_raid_gear();
   void chart_raid_uptimes();

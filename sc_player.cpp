@@ -13,12 +13,15 @@ static void trigger_judgement_of_wisdom( action_t* action )
 {
   player_t* p = action -> player;
 
+  double jow = p -> sim -> target -> debuffs.judgement_of_wisdom;
+  if( jow == 0 ) return;
+
   double max_mana = p -> resource_max[ RESOURCE_MANA ];
 
   if( max_mana <= 0 )
     return;
 
-  double amount = sim_t::WotLK ? ( max_mana * 0.02 ) : p -> sim -> target -> debuffs.judgement_of_wisdom;
+  double amount = sim_t::WotLK ? ( max_mana * 0.02 ) : jow;
 
   if( amount <= 0 )
     return;

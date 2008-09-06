@@ -141,7 +141,7 @@ sim_t::sim_t() :
   seed(0), id(0), iterations(1),
   potion_sickness(0), average_dmg(1), log(0), debug(0), timestamp(1), 
   uptime_list(0), output_file(stdout), html_file(stdout), 
-  report(0), raid_dps(0), total_dmg(0), total_seconds(0), elapsed_cpu_seconds(0)
+  report(0), raid_dps(0), total_dmg(0), total_seconds(0), elapsed_cpu_seconds(0), merge_ignite(0)
 {
   for( int i=0; i < RESOURCE_MAX; i++ ) 
   {
@@ -473,6 +473,7 @@ bool sim_t::parse_option( const std::string& name,
     { "infinite_runic",          OPT_INT8,   &( infinite_resource[ RESOURCE_RUNIC  ] ) },
     { "iterations",              OPT_INT32,  &( iterations                           ) },
     { "lag",                     OPT_FLT,    &( lag                                  ) },
+    { "merge_ignite",            OPT_INT8,   &( merge_ignite                         ) },
     { "reaction_time",           OPT_FLT,    &( reaction_time                        ) },
     { "regen_periodicity",       OPT_FLT,    &( regen_periodicity                    ) },
     { "log",                     OPT_INT8,   &( log                                  ) },

@@ -699,7 +699,7 @@ void report_t::chart_raid_uptimes()
   fprintf( sim -> html_file, "\" />\n" );
 }
 
-// report_t::chart_action_dpet ===============================================
+// report_t::chart_raid_dpet =================================================
 
 struct compare_dpet {
   bool operator()( stats_t* l, stats_t* r ) const
@@ -707,6 +707,76 @@ struct compare_dpet {
     return l -> dpet > r -> dpet;
   }
 };
+
+void report_t::chart_raid_dpet()
+{
+  int num_players = sim -> players_by_rank.size();
+  if( num_players == 0 ) return;
+
+  std::vector<stats_t*> stats_list;
+
+  for( int i=0; i < num_players; i++ )
+  {
+    player_t* p = sim -> players_by_rank[ i ];
+
+    for( stats_t* s = p -> stats_list; s; s = s -> next )
+    {
+      if( s -> total_dmg <= 0 ) continue;
+      if( s -> total_execute_time <= 0 ) continue;
+      if( s -> dpet > ( 10 * p -> dps ) ) continue;
+      if( ( s -> total_dmg / p -> total_dmg ) < 0.10 ) continue;
+
+      stats_list.push_back( s );
+    }
+  }
+
+  int num_stats = stats_list.size();
+  if( num_stats == 0 ) return;
+
+  std::sort( stats_list.begin(), stats_list.end(), compare_dpet() );
+
+  if( num_stats > 25 ) num_stats = 25;
+
+  fprintf( sim -> html_file, "<! Raid Damage Per Execute Time>\n" );
+  fprintf( sim -> html_file, "<img src=\"http://chart.apis.google.com/chart?" );
+  fprintf( sim -> html_file, "chs=500x%d", num_stats * 15 + 30 );
+  fprintf( sim -> html_file, "&" );
+  fprintf( sim -> html_file, "cht=bhg" );
+  fprintf( sim -> html_file, "&" );
+  fprintf( sim -> html_file, "chbh=10" );
+  fprintf( sim -> html_file, "&" );
+  fprintf( sim -> html_file, "chd=t:" );
+  double max_dpet=0;
+  for( int i=0; i < num_stats; i++ )
+  {
+    stats_t* s = stats_list[ i ];
+    fprintf( sim -> html_file, "%s%.0f", (i?"|":""), s -> dpet );
+    if( s -> dpet > max_dpet ) max_dpet = s -> dpet;
+  }
+  fprintf( sim -> html_file, "&" );
+  fprintf( sim -> html_file, "chds=0,%.0f", max_dpet * 2.5 );
+  fprintf( sim -> html_file, "&" );
+  fprintf( sim -> html_file, "chco=" );
+  for( int i=0; i < num_stats; i++ )
+  {
+    stats_t* s = stats_list[ i ];
+    fprintf( sim -> html_file, "%s%s", (i?",":""), get_color( s -> player ) );
+  }
+  fprintf( sim -> html_file, "&" );
+  fprintf( sim -> html_file, "chm=" );
+  for( int i=0; i < num_stats; i++ )
+  {
+    stats_t* s = stats_list[ i ];
+    fprintf( sim -> html_file, "%st++%.0f++%s+(%s),%s,%d,0,10", (i?"|":""), s -> dpet, s -> name_str.c_str(), s -> player -> name(), get_color( s -> player ), i );
+  }
+  fprintf( sim -> html_file, "&" );
+  fprintf( sim -> html_file, "chtt=Raid+Damage+Per+Execute+Time" );
+  fprintf( sim -> html_file, "&" );
+  fprintf( sim -> html_file, "chts=000000,20" );
+  fprintf( sim -> html_file, "\" />\n" );
+}
+
+// report_t::chart_action_dpet ===============================================
 
 void report_t::chart_action_dpet( player_t* p )
 {
@@ -996,6 +1066,7 @@ void report_t::chart()
   chart_raid_gear();
   chart_raid_downtime();
   chart_raid_uptimes();
+  chart_raid_dpet();
   fprintf( sim -> html_file, "<hr>\n" );
 
   for( int i=0; i < num_players; i++ )

@@ -392,9 +392,17 @@ static void trigger_ignite( spell_t* s )
     virtual void target_debuff() {}
   };
   
-  if( ! p -> active_ignite ) p -> active_ignite = new ignite_t( p );
-
   double ignite_dmg = s -> dd * p -> talents.ignite * 0.08;
+
+  if( s -> sim -> merge_ignite )
+  {
+    s -> result = RESULT_HIT;
+    s -> assess_damage( ( ignite_dmg / 2.0 ), DMG_OVER_TIME );
+    s -> result = RESULT_CRIT;
+    return;
+  }
+
+  if( ! p -> active_ignite ) p -> active_ignite = new ignite_t( p );
 
   if( p -> active_ignite -> time_remaining > 0 ) 
   {
