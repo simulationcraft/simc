@@ -120,7 +120,7 @@ void spell_t::target_debuff( int8_t dmg_type )
    
   if( sim_t::WotLK )
   {
-    target_hit += std::max( t -> debuffs.improved_faerie_fire, std::min( t -> debuffs.misery, (int8_t) 3 ) ) * 0.01; 
+    target_hit += std::max( t -> debuffs.improved_faerie_fire, t -> debuffs.misery ) * 0.01; 
   }
 
   if( school == SCHOOL_SHADOW )

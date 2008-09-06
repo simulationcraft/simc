@@ -449,9 +449,14 @@ static void trigger_molten_fury( spell_t* s )
 
   if( ! p -> talents.molten_fury ) return;
 
-  if( t -> initial_health > 0 && ( t -> current_health / t -> initial_health ) < 0.20 )
+  if( t -> initial_health <= 0 ) return;
+
+  static double threshold  = sim_t::WotLK ? 0.35 : 0.20;
+  static double multiplier = sim_t::WotLK ? 0.06 : 0.10;
+
+  if( ( t -> current_health / t -> initial_health ) < threshold )
   {
-    s -> player_multiplier *= 1.0 + p -> talents.molten_fury * 0.10;
+    s -> player_multiplier *= 1.0 + p -> talents.molten_fury * multiplier;
   }
 }
 

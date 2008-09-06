@@ -150,7 +150,8 @@ struct priest_spell_t : public spell_t
   }
 
   // Overridden Methods
-  virtual void player_buff();
+  virtual double haste();
+  virtual void   player_buff();
 
   // Passthru Methods
   virtual double cost()         { return spell_t::cost();         }
@@ -327,7 +328,7 @@ static void push_misery( spell_t* s )
   t -> debuffs.misery_stack++;
   if( p -> talents.misery > t -> debuffs.misery )
   {
-    t -> debuffs.misery = p -> talents.misery;
+    t -> debuffs.misery = std::min( p -> talents.misery, (int8_t) 3 );
   }
 }
 
@@ -501,18 +502,31 @@ static void trigger_improved_spirit_tap( spell_t* s )
   }
 }
 
-} // ANONYMOUS NAMESPACE =====================================================
+} // ANONYMOUS NAMESPACE ====================================================
 
 // ==========================================================================
 // Priest Spell
 // ==========================================================================
 
-// priest_spell_t::player_buff ================================================
+// priest_spell_t::haste ====================================================
+
+double priest_spell_t::haste()
+{
+  priest_t* p = player -> cast_priest();
+  double h = spell_t::haste();
+  if( sim_t::WotLK && p -> talents.enlightenment ) 
+  {
+    h *= 1.0 / ( 1.0 + p -> talents.enlightenment * 0.01 );
+  }
+  return h;
+}
+
+// priest_spell_t::player_buff ==============================================
 
 void priest_spell_t::player_buff()
 {
-  spell_t::player_buff();
   priest_t* p = player -> cast_priest();
+  spell_t::player_buff();
   if( school == SCHOOL_SHADOW )
   {
     if( p -> buffs_shadow_weaving )
@@ -520,13 +534,13 @@ void priest_spell_t::player_buff()
       player_multiplier *= 1.0 + p -> buffs_shadow_weaving * 0.02;
     }
   }
-  if( sim_t::WotLK && p -> talents.enlightenment ) 
-  {
-    player_multiplier *= 1.0 + p -> talents.enlightenment * 0.01;
-  }
   if( p -> talents.twin_disciplines )
   {
     player_multiplier *= 1.0 + p -> talents.twin_disciplines * 0.01;
+  }
+  if( p -> talents.focused_power )
+  {
+    player_multiplier *= 1.0 + p -> talents.focused_power * 0.02;
   }
 }
 
@@ -619,7 +633,6 @@ struct smite_t : public priest_spell_t
     base_execute_time -= p -> talents.divine_fury * 0.1;
     base_multiplier   *= 1.0 + p -> talents.searing_light * 0.05;
     base_crit         += p -> talents.holy_specialization * 0.01;
-    base_hit          += p -> talents.focused_power * 0.02;
     
     if( p -> gear.tier4_4pc ) base_multiplier *= 1.05;
   }
@@ -771,10 +784,10 @@ struct shadow_word_pain_t : public priest_spell_t
     base_cost = rank -> cost;
     base_cost *= 1.0 - p -> talents.mental_agility * 0.02;
     if( sim_t::WotLK ) base_cost *= 1.0 - p -> talents.shadow_focus * 0.02;
+    if( p -> glyphs.shadow_word_pain ) base_cost *= 0.80;
 
     int8_t more_ticks = 0;
     if( ! sim_t::WotLK ) more_ticks += p -> talents.improved_shadow_word_pain;
-    if( p -> glyphs.shadow_word_pain ) more_ticks++;
     if( p -> gear.tier6_2pc ) more_ticks++;
     if( more_ticks > 0 )
     {
@@ -1023,13 +1036,17 @@ struct mind_blast_t : public priest_spell_t
       
     base_cost       = rank -> cost;
     base_cost       *= 1.0 - p -> talents.focused_mind * 0.05;
-    if( sim_t::WotLK ) base_cost *= 1.0 - p -> talents.shadow_focus * 0.02;
     base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
     base_crit       += p -> talents.shadow_power * ( ( sim_t::WotLK && ! p -> glyphs.shadow_power ) ? 0.02 : 0.03 );
-    if( sim_t::WotLK ) base_crit_bonus *= 1.0 + p -> talents.shadow_power * 0.10;
     base_hit        += p -> talents.shadow_focus * ( sim_t::WotLK ? 0.01 : 0.02 );
-    base_hit        += p -> talents.focused_power * 0.02;
     cooldown        -= p -> talents.improved_mind_blast * 0.5;
+
+    if( sim_t::WotLK )
+    {
+      base_cost       *= 1.0 - p -> talents.shadow_focus * 0.02;
+      base_crit_bonus *= 1.0 + p -> talents.shadow_power * 0.10;
+      dd_power_mod    *= 1.0 + std::min( p -> talents.misery, (int8_t) 3 ) * 0.05;
+    }
     
     if( p -> gear.tier6_4pc ) base_multiplier *= 1.10;
 
@@ -1227,15 +1244,18 @@ struct mind_flay_bc_t : public priest_spell_t
 
 struct mind_flay_wotlk_t : public priest_spell_t
 {
+  int8_t swp_refresh;
+
   mind_flay_wotlk_t( player_t* player, const std::string& options_str ) : 
-    priest_spell_t( "mind_flay", player, SCHOOL_SHADOW, TREE_SHADOW )
+    priest_spell_t( "mind_flay", player, SCHOOL_SHADOW, TREE_SHADOW ), swp_refresh(0)
   {
     priest_t* p = player -> cast_priest();
     assert( p -> talents.mind_flay );
 
     option_t options[] =
     {
-      { "rank",   OPT_INT8, &rank_index },
+      { "rank",        OPT_INT8, &rank_index  },
+      { "swp_refresh", OPT_INT8, &swp_refresh },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1257,13 +1277,14 @@ struct mind_flay_wotlk_t : public priest_spell_t
     channeled         = true; 
     binary            = false;
     may_crit          = true;
-    dd_power_mod      = (1.0/3.5);
+    dd_power_mod      = ( (3.0/3.5) - 0.05 ) / 3.0;
 
     base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.focused_mind * 0.05;
     base_cost       *= 1.0 - p -> talents.shadow_focus * 0.02;
     base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
     base_hit        += p -> talents.shadow_focus * 0.01;
+    dd_power_mod    *= 1.0 + std::min( p -> talents.misery, (int8_t) 3 ) * 0.05;
     
     if( p -> gear.tier4_4pc ) base_multiplier *= 1.05;
   }
@@ -1346,6 +1367,25 @@ struct mind_flay_wotlk_t : public priest_spell_t
 	}
       }
     }
+  }
+
+  virtual bool ready()
+  {
+    priest_t* p = player -> cast_priest();
+    
+    if( ! priest_spell_t::ready() )
+      return false;
+
+    if( swp_refresh )
+    {
+      if( ! p -> active_shadow_word_pain )
+	return false;
+
+      if( p -> active_shadow_word_pain -> time_remaining > 3.0 )
+	return false;
+    }
+
+    return true;
   }
 };
 
@@ -1776,7 +1816,6 @@ void priest_t::init_base()
   attribute_base[ ATTR_SPIRIT    ] = 155;
 
   attribute_multiplier_initial[ ATTR_STAMINA   ] *= 1.0 + talents.enlightenment * 0.01;
-  attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.0 + talents.enlightenment * 0.01;
   attribute_multiplier_initial[ ATTR_SPIRIT    ] *= 1.0 + talents.enlightenment * 0.01;
   attribute_multiplier_initial[ ATTR_SPIRIT    ] *= 1.0 + talents.spirit_of_redemption * 0.05;
 
