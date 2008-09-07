@@ -664,17 +664,16 @@ void unique_gear_t::spell_finish_event( spell_t* s )
 
 struct attack_power_trinket_t : public action_t
 {
-  int16_t attack_power;
-  double length, cooldown;
+  double attack_power, length, cooldown;
   
   attack_power_trinket_t( player_t* p, const std::string& options_str ) : 
     action_t( ACTION_USE, "attack_power_trinket", p )
   {
     option_t options[] =
     {
-      { "power",    OPT_INT16, &attack_power },
-      { "length",   OPT_INT16, &length       },
-      { "cooldown", OPT_INT16, &cooldown     },
+      { "power",    OPT_FLT, &attack_power },
+      { "length",   OPT_FLT, &length       },
+      { "cooldown", OPT_FLT, &cooldown     },
       { NULL }
     };
     parse_options( options, options_str );
@@ -724,17 +723,16 @@ struct attack_power_trinket_t : public action_t
 
 struct spell_power_trinket_t : public action_t
 {
-  int16_t spell_power;
-  double length, cooldown;
+  double spell_power, length, cooldown;
   
   spell_power_trinket_t( player_t* p, const std::string& options_str ) : 
     action_t( ACTION_USE, "spell_power_trinket", p )
   {
     option_t options[] =
     {
-      { "power",    OPT_INT16, &spell_power },
-      { "length",   OPT_INT16, &length      },
-      { "cooldown", OPT_INT16, &cooldown    },
+      { "power",    OPT_FLT, &spell_power },
+      { "length",   OPT_FLT, &length      },
+      { "cooldown", OPT_FLT, &cooldown    },
       { NULL }
     };
     parse_options( options, options_str );
@@ -793,8 +791,8 @@ struct haste_trinket_t : public action_t
     option_t options[] =
     {
       { "rating",   OPT_INT16, &haste_rating },
-      { "length",   OPT_INT16, &length       },
-      { "cooldown", OPT_INT16, &cooldown     },
+      { "length",   OPT_FLT,   &length       },
+      { "cooldown", OPT_FLT,   &cooldown     },
       { NULL }
     };
     parse_options( options, options_str );

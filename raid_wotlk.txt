@@ -64,7 +64,7 @@ curse_of_elements=13
 priest=Priest_Shadow
 level=80
 talents=http://www.worldofwarcraft.com/info/classes/priest/talents2.html?tal=05023001300000000000000000000000000000000000000000000320023051025012305152501351
-actions=flask,type=pure_death/inner_fire/shadow_form/mana_potion,trigger=3500/shadow_fiend,trigger=6000/dispersion/vampiric_touch/inner_focus,shadow_word_pain/shadow_word_pain/mind_blast/shadow_word_death/mind_flay
+actions=flask,type=pure_death/inner_fire/shadow_form/mana_potion,trigger=3500/shadow_fiend,trigger=6000/dispersion/inner_focus,shadow_word_pain/shadow_word_pain/mind_blast/vampiric_touch/shadow_word_death/mind_flay
 gear_stamina=600
 gear_intellect=600
 gear_spirit=600
