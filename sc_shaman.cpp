@@ -243,8 +243,10 @@ static void trigger_flametongue_weapon( attack_t* a )
 {
   struct flametongue_weapon_spell_t : public shaman_spell_t
   {
+    double fire_dmg;
+
     flametongue_weapon_spell_t( player_t* player ) :
-      shaman_spell_t( "flametongue", player, SCHOOL_FIRE, TREE_ENHANCEMENT )
+      shaman_spell_t( "flametongue", player, SCHOOL_FIRE, TREE_ENHANCEMENT ), fire_dmg(0)
     {
       shaman_t* p = player -> cast_shaman();
 
@@ -254,12 +256,16 @@ static void trigger_flametongue_weapon( attack_t* a )
       dd_power_mod     = 0.10;
       base_multiplier *= 1.0 + p -> talents.elemental_weapons * 0.05;
       base_hit        += p -> talents.elemental_precision * ( sim_t::WotLK ? 0.01 : 0.02 );
+
+      fire_dmg  = ( p -> level < 64 ) ? 28 : 
+	          ( p -> level < 71 ) ? 35 : 
+	          ( p -> level < 80 ) ? 55 : 75;
+
       reset();
     }
     virtual void get_base_damage()
     {
-      base_dd  = ( player -> level < 64 ) ? 28 : 35;
-      base_dd *= weapon -> swing_time;
+      base_dd = fire_dmg * weapon -> swing_time;
     }
   };
 
@@ -297,21 +303,29 @@ static void trigger_windfury_weapon( attack_t* a )
 
   struct windfury_weapon_attack_t : public shaman_attack_t
   {
+    double bonus_power;
+    
     windfury_weapon_attack_t( player_t* player ) :
-      shaman_attack_t( "windfury", player )
+      shaman_attack_t( "windfury", player ), bonus_power(0)
     {
+      shaman_t* p = player -> cast_shaman();
       may_glance  = false;
       background  = true;
       trigger_gcd = 0;
-      base_multiplier *= 1.0 + player -> cast_shaman() -> talents.elemental_weapons * 0.133333;
+      base_multiplier *= 1.0 + p -> talents.elemental_weapons * 0.133333;
+
+      bonus_power = ( p -> level <= 60 ) ? 333  : 
+	            ( p -> level <= 68 ) ? 445  :
+	            ( p -> level <= 72 ) ? 835  :
+	            ( p -> level <= 76 ) ? 1090 : 1250;
+
+      if( p -> glyphs.windfury_weapon ) bonus_power *= 1.40;
+
       reset();
     }
     virtual void player_buff()
     {
-      shaman_t* p = player -> cast_shaman();
       shaman_attack_t::player_buff();
-      double bonus_power = ( player -> level < 68 ) ? 433 : 475;
-      if( p -> glyphs.windfury_weapon ) bonus_power *= 1.40;
       player_power += bonus_power;
     }
   };
