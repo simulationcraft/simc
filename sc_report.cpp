@@ -53,6 +53,37 @@ static const char* get_color( player_t* p )
   return class_color( p -> type );
 }
 
+static unsigned char simple_encoding( int number )
+{
+  if( number < 0  ) number = 0;
+  if( number > 61 ) number = 61;
+
+  static const char* encoding = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+  return encoding[ number ];
+}
+
+#if 0
+static const char* extended_encoding( int number )
+{
+  if( number < 0    ) number = 0;
+  if( number > 4095 ) number = 4095;
+
+  static const char* encoding = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+  int first  = number / 64;
+  int second = number - ( first * 64 );
+
+  static std::string pair;
+
+  pair = "";
+  pair += encoding[ first  ];
+  pair += encoding[ second ];
+
+  return pair.c_str();
+}
+#endif
+
 } // ANONYMOUS NAMESPACE =====================================================
 
 // ==========================================================================
@@ -1048,6 +1079,52 @@ void report_t::chart_uptimes_and_procs( player_t* p )
 
 void report_t::chart_timeline( player_t* p )
 {
+  int max_buckets = p -> timeline_dps.size();
+  int max_points  = 600;
+  int increment   = 1;
+
+  if( max_buckets <= max_points )
+  {
+    max_points = max_buckets;
+  }
+  else
+  {
+    increment = ( (int) floor( max_buckets / (double) max_points ) ) + 1;
+  }
+
+  double dps_max=0;
+  for( int i=0; i < max_buckets; i++ ) 
+  {
+    if( p -> timeline_dps[ i ] > dps_max ) 
+    {
+      dps_max = p -> timeline_dps[ i ];
+    }
+  }
+  double dps_range  = 60.0;
+  double dps_adjust = dps_range / dps_max;
+
+  fprintf( sim -> html_file, "<! %s DPS Timeline>\n", p -> name() );
+  fprintf( sim -> html_file, "<img src=\"http://chart.apis.google.com/chart?" );
+  fprintf( sim -> html_file, "chs=400x130" );
+  fprintf( sim -> html_file, "&" );
+  fprintf( sim -> html_file, "cht=lc" );
+  fprintf( sim -> html_file, "&" );
+  fprintf( sim -> html_file, "chd=s:" );
+  for( int i=0; i < max_buckets; i += increment ) 
+  {
+    fprintf( sim -> html_file, "%c", simple_encoding( (int) ( p -> timeline_dps[ i ] * dps_adjust ) ) );
+  }
+  fprintf( sim -> html_file, "&" );
+  fprintf( sim -> html_file, "chds=0,%.0f", dps_range );
+  fprintf( sim -> html_file, "&" );
+  fprintf( sim -> html_file, "chxt=x,y" );
+  fprintf( sim -> html_file, "&" );
+  fprintf( sim -> html_file, "chxl=0:|0|%d|1:|0|%.0f", max_buckets, dps_max );
+  fprintf( sim -> html_file, "&" );
+  fprintf( sim -> html_file, "chtt=%s+DPS+Timeline", p -> name() );
+  fprintf( sim -> html_file, "&" );
+  fprintf( sim -> html_file, "chts=000000,20" );
+  fprintf( sim -> html_file, "\" />\n" );
 }
 
 // report_t::chart ===========================================================

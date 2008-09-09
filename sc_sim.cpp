@@ -377,19 +377,29 @@ void sim_t::analyze()
     p -> total_waiting /= iterations;
     p -> total_dmg = 0;
 
+    std::vector<stats_t*> stats_list;
+
     for( stats_t* s = p -> stats_list; s; s = s -> next )
     {
-      s -> analyze();
-      p -> total_dmg += s -> total_dmg;
+      stats_list.push_back( s );
     }
 
     for( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
     {
       for( stats_t* s = pet -> stats_list; s; s = s -> next )
       {
-	s -> analyze();
-	p -> total_dmg += s -> total_dmg;
+	stats_list.push_back( s );
       }
+    }
+
+    int num_stats = stats_list.size();
+
+    for( int i=0; i < num_stats; i++ )
+    {
+      stats_t* s = stats_list[ i ];
+
+      s -> analyze();
+      p -> total_dmg += s -> total_dmg;
     }
 
     p -> dps = p -> total_dmg / p -> total_seconds;
@@ -420,6 +430,43 @@ void sim_t::analyze()
 	proc -> count /= iterations;
 	proc -> frequency = p -> total_seconds / proc -> count;
       }
+    }
+
+    int max_buckets = (int) p -> total_seconds;
+    
+    p -> timeline_dmg.clear();
+    p -> timeline_dps.clear();
+
+    p -> timeline_dmg.insert( p -> timeline_dmg.begin(), max_buckets, 0 );
+    p -> timeline_dps.insert( p -> timeline_dps.begin(), max_buckets, 0 );
+
+    for( int i=0; i < num_stats; i++ )
+    {
+      stats_t* s = stats_list[ i ];
+
+      for( int j=0; ( j < max_buckets ) && ( j < s -> num_buckets ); j++ )
+      {
+	p -> timeline_dmg[ j ] += s -> timeline_dmg[ j ];
+      }
+    }
+
+    for( int i=0; i < max_buckets; i++ )
+    {
+      double window_dmg  = p -> timeline_dmg[ i ];
+      int    window_size = 1;
+
+      for( int j=1; ( j <= 10 ) && ( (i-j) >=0 ); j++ )
+      {
+	window_dmg += p -> timeline_dmg[ i-j ];
+	window_size++;
+      }
+      for( int j=1; ( j <= 10 ) && ( (i+j) < max_buckets ); j++ )
+      {
+	window_dmg += p -> timeline_dmg[ i+j ];
+	window_size++;
+      }
+
+      p -> timeline_dps[ i ] = window_dmg / window_size;
     }
   }
 

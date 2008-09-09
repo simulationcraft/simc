@@ -149,7 +149,13 @@ void stats_t::analyze()
   timeline_dps.clear();
   timeline_dps.insert( timeline_dps.begin(), num_buckets, 0 );
 
-  for( int i=0; i < num_buckets; i++ )
+  int max_buckets = std::min( (int) player -> total_seconds, (int) timeline_dmg.size() );
+
+  for( int i=0; i < max_buckets; i++ )
+  {
+    timeline_dmg[ i ] /= num_iterations;
+  }
+  for( int i=0; i < max_buckets; i++ )
   {
     double window_dmg  = timeline_dmg[ i ];
     int    window_size = 1;
@@ -159,13 +165,11 @@ void stats_t::analyze()
       window_dmg += timeline_dmg[ i-j ];
       window_size++;
     }
-    for( int j=1; ( j <= 10 ) && ( (i+j) < num_buckets ); j++ )
+    for( int j=1; ( j <= 10 ) && ( (i+j) < max_buckets ); j++ )
     {
       window_dmg += timeline_dmg[ i+j ];
       window_size++;
     }
-
-    window_dmg /= num_iterations;
 
     timeline_dps[ i ] = window_dmg / window_size;
   }

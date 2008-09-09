@@ -374,18 +374,20 @@ struct player_t
   std::string action_list_skip;
 
   // Reporting
-  int8_t       quiet;
-  report_t*    report;
-  double       last_action, total_seconds;
-  double       total_waiting;
-  double       iteration_dmg, total_dmg;
-  double       resource_lost  [ RESOURCE_MAX ];
-  double       resource_gained[ RESOURCE_MAX ];
-  double       dps, dpr, rps_gain, rps_loss;
-  proc_t*      proc_list;
-  gain_t*      gain_list;
-  stats_t*     stats_list;
-  uptime_t*    uptime_list;
+  int8_t    quiet;
+  report_t* report;
+  double    last_action, total_seconds;
+  double    total_waiting;
+  double    iteration_dmg, total_dmg;
+  double    resource_lost  [ RESOURCE_MAX ];
+  double    resource_gained[ RESOURCE_MAX ];
+  double    dps, dpr, rps_gain, rps_loss;
+  proc_t*   proc_list;
+  gain_t*   gain_list;
+  stats_t*  stats_list;
+  uptime_t* uptime_list;
+  std::vector<double> timeline_dmg;
+  std::vector<double> timeline_dps;
 
   struct gear_t
   {

@@ -79,6 +79,7 @@ struct shaman_t : public player_t
     int8_t  improved_shields;
     int8_t  improved_stormstrike;
     int8_t  improved_weapon_totems;
+    int8_t  improved_windfury_totem;
     int8_t  lava_flows;
     int8_t  lightning_mastery;
     int8_t  lightning_overload;
@@ -1593,8 +1594,11 @@ struct flametongue_totem_t : public shaman_spell_t
 
     static rank_t ranks[] =
     {
-      { 67, 5, 12, 12, 73, 325 },
-      { 58, 4, 15, 15, 62, 275 },
+      { 80, 8,  0,  0, 144, 0.11 },
+      { 76, 7,  0,  0, 122, 0.11 },
+      { 72, 6,  0,  0, 106, 0.11 },
+      { 67, 5, 12, 12,  73, 325  },
+      { 58, 4, 15, 15,  62, 275  },
       { 0, 0 }
     };
     player -> init_mana_costs( ranks );
@@ -1603,16 +1607,17 @@ struct flametongue_totem_t : public shaman_spell_t
     base_cost       = rank -> cost;
     base_cost       *= 1.0 - p -> talents.totemic_focus * 0.05;
     base_cost       *= 1.0 - p -> talents.mental_quickness * 0.02;
-    base_multiplier *= 1.0 + p -> talents.improved_weapon_totems * 0.06;
     duration_group   = "fire_totem";
     trigger_gcd      = 1.0;
 
     if( sim_t::WotLK )
     {
+      base_multiplier *= 1.0 + p -> talents.enhancing_totems * 0.05;
       bonus = rank -> dot * base_multiplier;
     }
     else
     {
+      base_multiplier *= 1.0 + p -> talents.improved_weapon_totems * 0.06;
       base_multiplier *= 1.0 + p -> talents.call_of_flame * 0.05;
       bonus = rank -> dd_max * base_multiplier;
     }
@@ -1711,7 +1716,7 @@ struct windfury_totem_t : public shaman_spell_t
 
     if( sim_t::WotLK )
     {
-      bonus = 0.16 + p -> talents.improved_weapon_totems * 0.02;
+      bonus = 0.16 + p -> talents.improved_windfury_totem * 0.02;
     }
     else
     {
@@ -1791,11 +1796,14 @@ struct windfury_totem_t : public shaman_spell_t
 
 struct flametongue_weapon_t : public shaman_spell_t
 {
+  double bonus;
   int8_t main, off;
 
   flametongue_weapon_t( player_t* player, const std::string& options_str ) : 
-    shaman_spell_t( "flametongue_weapon", player, SCHOOL_NATURE, TREE_ENHANCEMENT ), main(0), off(0)
+    shaman_spell_t( "flametongue_weapon", player, SCHOOL_NATURE, TREE_ENHANCEMENT ), bonus(0), main(0), off(0)
   {
+    shaman_t* p = player -> cast_shaman();
+    
     std::string weapon_str;
 
     option_t options[] =
@@ -1828,13 +1836,28 @@ struct flametongue_weapon_t : public shaman_spell_t
       assert(0);
     }
     trigger_gcd = 0;
+
+    bonus = ( p -> level <  64 ) ? 30 : 
+            ( p -> level <  71 ) ? 52 : 
+            ( p -> level <  80 ) ? 74 : 96;
+
+    bonus *= 1.0 + p -> talents.lava_flows * 0.20;
   }
 
   virtual void execute()
   {
     if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
-    if( main ) player -> main_hand_weapon.buff = FLAMETONGUE_WEAPON;
-    if( off  ) player ->  off_hand_weapon.buff = FLAMETONGUE_WEAPON;
+
+    if( main && player -> main_hand_weapon.buff != FLAMETONGUE_WEAPON ) 
+    {
+      player -> main_hand_weapon.buff = FLAMETONGUE_WEAPON;
+      if( sim_t::WotLK ) player -> spell_power[ SCHOOL_MAX ] += bonus;
+    }
+    if( off && player -> off_hand_weapon.buff != FLAMETONGUE_WEAPON )
+    {
+      player -> off_hand_weapon.buff = FLAMETONGUE_WEAPON;
+      if( sim_t::WotLK ) player -> spell_power[ SCHOOL_MAX ] += bonus;
+    }
   };
 
   virtual bool ready()
@@ -1936,7 +1959,7 @@ struct strength_of_earth_totem_t : public shaman_spell_t
     trigger_gcd    = 1.0;
 
     attr_bonus = rank -> dot;
-    attr_bonus *= 1.0 + p -> talents.enhancing_totems * 0.075;
+    attr_bonus *= 1.0 + p -> talents.enhancing_totems * 0.05;
 
     crit_bonus = p -> glyphs.strength_of_earth ? 1 : 0;
   }
@@ -2046,7 +2069,7 @@ struct grace_of_air_totem_t : public shaman_spell_t
     trigger_gcd    = 1.0;
 
     attr_bonus = rank -> dot;
-    attr_bonus *= 1.0 + p -> talents.enhancing_totems * 0.075;
+    attr_bonus *= 1.0 + p -> talents.enhancing_totems * 0.05;
   }
 
   virtual void execute()
@@ -2756,13 +2779,6 @@ double shaman_t::composite_spell_power( int8_t school )
   {
     sp += composite_attack_power() * talents.mental_quickness * 0.10;
   }
-  if( sim_t::WotLK ) 
-  {
-    double bonus = 1.0 + talents.lava_flows * 0.20;
-
-    if( main_hand_weapon.buff == FLAMETONGUE_WEAPON ) sp += 52 * bonus;
-    if(  off_hand_weapon.buff == FLAMETONGUE_WEAPON ) sp += 52 * bonus;
-  }
 
   return sp;
 }
@@ -2914,7 +2930,7 @@ void shaman_t::parse_talents( const std::string& talent_string )
       { 32,  &( talents.mental_dexterity          ) },
       { 33,  &( talents.shamanistic_focus         ) },
       { 35,  &( talents.flurry                    ) },
-      { 37,  &( talents.improved_weapon_totems    ) },
+      { 37,  &( talents.improved_windfury_totem   ) },
       { 38,  &( talents.spirit_weapons            ) },
       { 39,  &( talents.elemental_weapons         ) },
       { 40,  &( talents.mental_quickness          ) },
@@ -2974,7 +2990,7 @@ bool shaman_t::parse_option( const std::string& name,
     { "improved_shields",          OPT_INT8,  &( talents.improved_shields          ) },
     { "improved_stormstrike",      OPT_INT8,  &( talents.improved_stormstrike      ) },
     { "improved_weapon_totems",    OPT_INT8,  &( talents.improved_weapon_totems    ) },
-    { "improved_windfury_totem",   OPT_INT8,  &( talents.improved_weapon_totems    ) }, // alias
+    { "improved_windfury_totem",   OPT_INT8,  &( talents.improved_windfury_totem   ) },
     { "lava_flows",                OPT_INT8,  &( talents.lava_flows                ) },
     { "lightning_mastery",         OPT_INT8,  &( talents.lightning_mastery         ) },
     { "lightning_overload",        OPT_INT8,  &( talents.lightning_overload        ) },
