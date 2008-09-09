@@ -499,7 +499,8 @@ struct player_t
     int8_t  shadow_form;
     double  strength_of_earth;
     int16_t talisman_of_ascendance;
-    int8_t  totem_of_wrath;
+    double  totem_of_wrath;
+    int8_t  totem_of_wrath_haste;
     int8_t  unleashed_rage;
     int8_t  violet_eye;
     double  windfury_totem;
@@ -542,7 +543,7 @@ struct player_t
   
   struct cooldowns_t
   {
-    float spellsurge;
+    double bloodlust;
     double elder_scribes;
     double eternal_sage;
     double judgement_of_wisdom;
@@ -551,6 +552,7 @@ struct player_t
     double quagmirrans_eye;
     double sextant_of_unstable_currents;
     double shiffars_nexus_horn;
+    double spellsurge;
     double tier4_2pc, tier4_4pc;
     double tier5_2pc, tier5_4pc;
     double tier6_2pc, tier6_4pc;

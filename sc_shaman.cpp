@@ -1500,10 +1500,11 @@ struct searing_totem_t : public shaman_spell_t
 
 struct totem_of_wrath_t : public shaman_spell_t
 {
-  int8_t buff;
+  int8_t haste;
+  double bonus;
 
   totem_of_wrath_t( player_t* player, const std::string& options_str ) : 
-    shaman_spell_t( "totem_of_wrath", player, SCHOOL_NATURE, TREE_ELEMENTAL )
+    shaman_spell_t( "totem_of_wrath", player, SCHOOL_NATURE, TREE_ELEMENTAL ), haste(0), bonus(1)
   {
     shaman_t* p = player -> cast_shaman();
     assert( p -> talents.totem_of_wrath );
@@ -1519,7 +1520,13 @@ struct totem_of_wrath_t : public shaman_spell_t
     base_cost     *= 1.0 - p -> talents.mental_quickness * 0.02;
     duration_group = "fire_totem";
 
-    buff = p -> glyphs.totem_of_wrath ? 2 : 1;
+    if( p -> glyphs.totem_of_wrath ) haste = 1;
+
+    if( sim_t::WotLK )
+    {
+      bonus = ( p -> level <= 60 ? 120 :
+		p -> level <= 70 ? 140 : 160 );
+    }
   }
 
   virtual void execute()
@@ -1536,7 +1543,8 @@ struct totem_of_wrath_t : public shaman_spell_t
 	  if( sim_t::WotLK || p -> party == player -> party )
 	  {
 	    p -> aura_gain( "Totem of Wrath" );
-	    p -> buffs.totem_of_wrath = totem -> buff;
+	    p -> buffs.totem_of_wrath       = totem -> bonus;
+	    p -> buffs.totem_of_wrath_haste = totem -> haste;
 	  }
 	}
 	sim -> add_event( this, 120.0 );
@@ -1548,11 +1556,14 @@ struct totem_of_wrath_t : public shaman_spell_t
 	  if( sim_t::WotLK || p -> party == player -> party )
 	  {
 	    // Make sure it hasn't already been overriden by a more powerful totem.
-	    if( totem -> buff < p -> buffs.totem_of_wrath )
+	    if( totem -> bonus < p -> buffs.totem_of_wrath ||
+		totem -> haste < p -> buffs.totem_of_wrath_haste )
 	      continue;
 
 	    p -> aura_loss( "Totem of Wrath" );
-	    p -> buffs.totem_of_wrath = 0;
+
+ 	    p -> buffs.totem_of_wrath = 0;
+	    p -> buffs.totem_of_wrath_haste = 0;
 	  }
 	}
       }
@@ -1570,7 +1581,8 @@ struct totem_of_wrath_t : public shaman_spell_t
     if( ! shaman_spell_t::ready() )
       return false;
 
-    return( player -> buffs.totem_of_wrath < buff );
+    return( player -> buffs.totem_of_wrath       < bonus ||
+	    player -> buffs.totem_of_wrath_haste < haste );
   }
 };
 
@@ -1634,19 +1646,14 @@ struct flametongue_totem_t : public shaman_spell_t
 	name = "Flametongue Totem Expiration";
 	for( player_t* p = sim -> player_list; p; p = p -> next )
 	{
-	  if( p -> party == player -> party )
+	  if( sim_t::WotLK || p -> party == player -> party )
 	  {
 	    p -> aura_gain( "Flametongue Totem" );
+	    p -> buffs.flametongue_totem = t -> bonus;
 
-	    if( sim_t::WotLK )
-	    {
-	      p -> spell_power[ SCHOOL_MAX ] += t -> bonus;
-	      p -> buffs.flametongue_totem = t -> bonus;
-	    }
-	    else if( p -> main_hand_weapon.buff == WEAPON_BUFF_NONE )
+	    if( ! sim_t::WotLK && p -> main_hand_weapon.buff == WEAPON_BUFF_NONE )
 	    {
 	      p -> main_hand_weapon.buff = FLAMETONGUE_TOTEM;
-	      p -> buffs.flametongue_totem = t -> bonus;
 	    }
 	  }
 	}
@@ -1656,19 +1663,14 @@ struct flametongue_totem_t : public shaman_spell_t
       {
 	for( player_t* p = sim -> player_list; p; p = p -> next )
 	{
-	  if( p -> party == player -> party )
+	  if( sim_t::WotLK || p -> party == player -> party )
 	  {
 	    p -> aura_loss( "Flametongue Totem" );
+	    p -> buffs.flametongue_totem = 0;
 
-	    if( sim_t::WotLK )
-	    {
-	      p -> spell_power[ SCHOOL_MAX ] -= totem -> bonus;
-	      p -> buffs.flametongue_totem = 0;
-	    }
-	    else if( p -> main_hand_weapon.buff == FLAMETONGUE_TOTEM )
+	    if( ! sim_t::WotLK && p -> main_hand_weapon.buff == FLAMETONGUE_TOTEM )
 	    {
 	      p -> main_hand_weapon.buff = WEAPON_BUFF_NONE;
-	      p -> buffs.flametongue_totem = 0;
 	    }
 	  }
 	}
@@ -2323,20 +2325,20 @@ struct mana_spring_totem_t : public shaman_spell_t
 
 struct bloodlust_t : public shaman_spell_t
 {
-  double target_pct;
+  int8_t target_pct;
 
   bloodlust_t( player_t* player, const std::string& options_str ) : 
     shaman_spell_t( "bloodlust", player, SCHOOL_NATURE, TREE_ENHANCEMENT ), target_pct(0)
   {
     option_t options[] =
     {
-      { "target", OPT_INT8, &target_pct },
+      { "target_pct", OPT_INT8, &target_pct },
       { NULL }
     };
     parse_options( options, options_str );
       
     harmful   = false;
-    base_cost = 750;
+    base_cost = sim_t::WotLK ? ( 0.26 * player -> resource_base[ RESOURCE_MANA ] ): 750;
     cooldown  = 600;
   }
 
@@ -2349,10 +2351,22 @@ struct bloodlust_t : public shaman_spell_t
 	name = "Bloodlust Expiration";
 	for( player_t* p = sim -> player_list; p; p = p -> next )
 	{
-	  if( p -> party == player -> party )
+	  if( sim_t::WotLK )
 	  {
-	    p -> aura_gain( "Bloodlust" );
-	    p -> buffs.bloodlust = 1;
+	    if( sim -> cooldown_ready( p -> cooldowns.bloodlust ) )
+	    {
+	      p -> aura_gain( "Bloodlust" );
+	      p -> buffs.bloodlust = 1;
+	      p -> cooldowns.bloodlust = sim -> current_time + 300;
+	    }
+	  }
+	  else
+	  {
+	    if( p -> party == player -> party )
+	    {
+	      p -> aura_gain( "Bloodlust" );
+	      p -> buffs.bloodlust = 1;
+	    }
 	  }
 	}
 	sim -> add_event( this, 40.0 );
@@ -2361,7 +2375,7 @@ struct bloodlust_t : public shaman_spell_t
       {
 	for( player_t* p = sim -> player_list; p; p = p -> next )
 	{
-	  if( p -> party == player -> party )
+	  if( sim_t::WotLK || p -> party == player -> party )
 	  {
 	    p -> aura_loss( "Bloodlust" );
 	    p -> buffs.bloodlust = 0;
@@ -2385,10 +2399,16 @@ struct bloodlust_t : public shaman_spell_t
     if( player -> buffs.bloodlust )
       return false;
 
+    if( ! sim -> cooldown_ready( player -> cooldowns.bloodlust ) )
+      return false;
+
     target_t* t = sim -> target;
 
-    if( target_pct == 0 || t -> initial_health <= 0 )
+    if( target_pct == 0 )
       return true;
+
+    if( t -> initial_health <= 0 )
+      return false;
 
     return( ( t -> current_health / t -> initial_health ) < ( target_pct / 100.0 ) );
   }

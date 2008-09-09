@@ -29,7 +29,7 @@ double spell_t::haste()
   else if ( player -> buffs.power_infusion         ) h *= 1.0 / ( 1.0 + 0.20 );
   if( player -> buffs.swift_retribution ||
       player -> buffs.improved_moonkin_aura        ) h *= 1.0 / ( 1.0 + 0.03 );
-  if( player -> buffs.totem_of_wrath == 2          ) h *= 1.0 / ( 1.0 + 0.01 );
+  if( player -> buffs.totem_of_wrath_haste         ) h *= 1.0 / ( 1.0 + 0.01 );
   if( sim_t::WotLK && player -> buffs.wrath_of_air ) h *= 1.0 / ( 1.0 + 0.05 );
   return h;
 }
@@ -84,24 +84,22 @@ void spell_t::player_buff()
 
   if( p -> gear.chaotic_skyfire ) player_crit_bonus *= 1.09;
 
-  if( player -> buffs.elemental_oath ||
-      player -> buffs.moonkin_aura   )
+  if( p -> buffs.elemental_oath ||
+      p -> buffs.moonkin_aura   )
   {
     player_crit += 0.05;
   }
 
-  if( player -> buffs.totem_of_wrath )
+  if( sim_t::WotLK )
   {
-    if( sim_t::WotLK )
-    {
-      player_power += 160;
-    }
-    else
-    {
-      player_hit += 0.03;
-    }
-    player_crit += 0.03;
+    player_power += std::max( ( p -> buffs.totem_of_wrath ? 160.0 : 0.0 ), p -> buffs.flametongue_totem );
   }
+  else
+  {
+    if( p -> buffs.totem_of_wrath ) player_hit += 0.03;
+  }
+  
+  if( p -> buffs.totem_of_wrath ) player_crit += 0.03;
 
   if( sim -> debug ) report_t::log( sim, "spell_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f", 
 		   name(), player_hit, player_crit, player_power, player_penetration );
