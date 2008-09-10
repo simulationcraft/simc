@@ -232,6 +232,7 @@ void enchant_t::trigger_flametongue_totem( attack_t* a )
       trigger_gcd = 0;
       proc        = true;
       background  = true;
+      may_crit    = true;
       reset();
     }
     virtual void get_base_damage()

@@ -84,7 +84,6 @@ struct priest_t : public player_t
 
   struct glyphs_t
   {
-    int8_t shadow_power;
     int8_t shadow_word_death;
     int8_t shadow_word_pain;
     glyphs_t() { memset( (void*) this, 0x0, sizeof( glyphs_t ) ); }
@@ -1037,14 +1036,14 @@ struct mind_blast_t : public priest_spell_t
     base_cost       = rank -> cost;
     base_cost       *= 1.0 - p -> talents.focused_mind * 0.05;
     base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
-    base_crit       += p -> talents.shadow_power * ( ( sim_t::WotLK && ! p -> glyphs.shadow_power ) ? 0.02 : 0.03 );
+    base_crit       += p -> talents.shadow_power * ( sim_t::WotLK ? 0.02 : 0.03 );
     base_hit        += p -> talents.shadow_focus * ( sim_t::WotLK ? 0.01 : 0.02 );
     cooldown        -= p -> talents.improved_mind_blast * 0.5;
 
     if( sim_t::WotLK )
     {
       base_cost       *= 1.0 - p -> talents.shadow_focus * 0.02;
-      base_crit_bonus *= 1.0 + p -> talents.shadow_power * 0.10;
+      base_crit_bonus *= 1.0 + p -> talents.shadow_power * 0.20;
       dd_power_mod    *= 1.0 + std::min( p -> talents.misery, (int8_t) 3 ) * 0.05;
     }
     
@@ -1110,11 +1109,15 @@ struct shadow_word_death_t : public priest_spell_t
 
     base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.mental_agility * 0.02;
-    if( sim_t::WotLK ) base_cost *= 1.0 - p -> talents.shadow_focus * 0.02;
     base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
     base_crit       += p -> talents.shadow_power * ( sim_t::WotLK ? 0.02 : 0.03 );
-    if( sim_t::WotLK ) base_crit_bonus *= 1.0 + p -> talents.shadow_power * 0.10;
     base_hit        += p -> talents.shadow_focus * ( sim_t::WotLK ? 0.01 : 0.02 );
+
+    if( sim_t::WotLK )
+    {
+      base_cost       *= 1.0 - p -> talents.shadow_focus * 0.02;
+      base_crit_bonus *= 1.0 + p -> talents.shadow_power * 0.20;
+    }
 
     assert( p -> active_shadow_word_death == 0 );
     p -> active_shadow_word_death = this;
@@ -1831,7 +1834,7 @@ void priest_t::init_base()
 
   // FIXME! Make this level-specific.
   resource_base[ RESOURCE_HEALTH ] = 3200;
-  resource_base[ RESOURCE_MANA   ] = rating_t::interpolate( level, 1383, 2620, 3820 );
+  resource_base[ RESOURCE_MANA   ] = rating_t::interpolate( level, 1383, 2620, 3863 );
 
   health_per_stamina = 10;
   mana_per_intellect = 15;

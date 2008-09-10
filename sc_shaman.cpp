@@ -253,6 +253,7 @@ static void trigger_flametongue_weapon( attack_t* a )
 
       background       = true;
       proc             = true;
+      may_crit         = true;
       trigger_gcd      = 0;
       dd_power_mod     = 0.10;
       base_multiplier *= 1.0 + p -> talents.elemental_weapons * 0.05;
@@ -550,6 +551,8 @@ static void trigger_elemental_devastation( spell_t* s )
 
   if( p -> talents.elemental_devastation == 0 ) return;
 
+  if( s -> proc ) return;
+
   struct elemental_devastation_expiration_t : public event_t
   {
     elemental_devastation_expiration_t( sim_t* sim, shaman_t* p ) : event_t( sim, p )
@@ -583,6 +586,8 @@ static void trigger_elemental_devastation( spell_t* s )
 static void trigger_elemental_oath( spell_t* s )
 {
   if( s -> player -> cast_shaman() -> talents.elemental_oath == 0 ) return;
+
+  if( s -> proc ) return;
 
   struct elemental_oath_expiration_t : public event_t
   {
@@ -2694,7 +2699,7 @@ void shaman_t::init_base()
   initial_attack_crit_per_agility = rating_t::interpolate( level, 0.01/25.0, 0.01/40.0, 0.01/83.3 );
 
   resource_base[ RESOURCE_HEALTH ] = 3185;
-  resource_base[ RESOURCE_MANA   ] = rating_t::interpolate( level, 1415, 2680, 3907 );
+  resource_base[ RESOURCE_MANA   ] = rating_t::interpolate( level, 1415, 2680, 4396 );
 
   health_per_stamina = 10;
   mana_per_intellect = 15;

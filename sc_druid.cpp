@@ -1135,7 +1135,7 @@ void druid_t::init_base()
 
   // FIXME! Make this level-specific.
   resource_base[ RESOURCE_HEALTH ] = 3600;
-  resource_base[ RESOURCE_MANA   ] = rating_t::interpolate( level, 1103, 2090, 3047 );
+  resource_base[ RESOURCE_MANA   ] = rating_t::interpolate( level, 1103, 2090, 3796 );
 
   health_per_stamina = 10;
   mana_per_intellect = 15;
