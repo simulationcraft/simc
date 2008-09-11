@@ -467,7 +467,7 @@ static void trigger_improved_spirit_tap( spell_t* s )
       name = "Improved Spirit Tap Expiration";
       p -> buffs_improved_spirit_tap = 1;
       p -> aura_gain( "improved_spirit_tap" );
-      spirit_bonus = p -> attribute[ ATTR_SPIRIT ] / 10;
+      spirit_bonus = p -> attribute[ ATTR_SPIRIT ] * p -> talents.improved_spirit_tap * 0.05;
       p -> attribute[ ATTR_SPIRIT ] += spirit_bonus;
       sim -> add_event( this, 8.0 );
     }
@@ -485,18 +485,15 @@ static void trigger_improved_spirit_tap( spell_t* s )
 
   if( p -> talents.improved_spirit_tap )
   {
-    if( rand_t::roll( p -> talents.improved_spirit_tap * 0.50 ) )
-    {
-      event_t*& e = p -> expirations_improved_spirit_tap;
+    event_t*& e = p -> expirations_improved_spirit_tap;
 
-      if( e )
-      {
-	e -> reschedule( 8.0 );
-      }
-      else
-      {
-	e = new expiration_t( s -> sim, p );
-      }
+    if( e )
+    {
+      e -> reschedule( 8.0 );
+    }
+    else
+    {
+      e = new expiration_t( s -> sim, p );
     }
   }
 }
@@ -1285,11 +1282,7 @@ struct mind_flay_wotlk_t : public priest_spell_t
     base_cost       *= 1.0 - p -> talents.shadow_focus * 0.02;
     base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
     base_hit        += p -> talents.shadow_focus * 0.01;
-
-    if( sim_t::WotLK )
-    {
-      base_crit_bonus *= 1.0 + p -> talents.shadow_power * 0.20;
-    }
+    base_crit_bonus *= 1.0 + p -> talents.shadow_power * 0.20;
     
     if( p -> gear.tier4_4pc ) base_multiplier *= 1.05;
   }
@@ -1886,7 +1879,9 @@ void priest_t::regen( double periodicity )
   }
   else if( recent_cast() )
   {
-    spirit_regen *= talents.meditation * 0.10;
+    double while_casting = talents.meditation * 0.10;
+    if( buffs_improved_spirit_tap ) while_casting += talents.improved_spirit_tap * 0.10;
+    spirit_regen *= while_casting;
   }
 
   double mp5_regen = periodicity * mp5 / 5.0;
