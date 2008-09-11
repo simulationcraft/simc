@@ -792,10 +792,17 @@ struct shadow_word_pain_t : public priest_spell_t
       num_ticks     += more_ticks;
     }
 
-    base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
-    base_multiplier *= 1.0 + p -> talents.twin_disciplines * 0.01;
-    if( sim_t::WotLK ) base_multiplier *= 1.0 + p -> talents.improved_shadow_word_pain * 0.05;
-    base_hit        += p -> talents.shadow_focus * ( sim_t::WotLK ? 0.01 : 0.02 );
+    if( sim_t::WotLK )
+    {
+      base_multiplier *= 1.0 + ( p -> talents.darkness                  * 0.02 + 
+				 p -> talents.twin_disciplines          * 0.01 +
+				 p -> talents.improved_shadow_word_pain * 0.05 );
+    }
+    else
+    {
+      base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
+    }
+    base_hit += p -> talents.shadow_focus * ( sim_t::WotLK ? 0.01 : 0.02 );
   }
 
   virtual void execute() 
@@ -1276,7 +1283,7 @@ struct mind_flay_wotlk_t : public priest_spell_t
     channeled         = true; 
     binary            = false;
     may_crit          = true;
-    dd_power_mod      = ((3.0 / 3.5) * 0.95) / 3.0;
+    dd_power_mod      = ( (3.0/3.5) * 0.95 ) / 3.0;
 
     base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.focused_mind * 0.05;

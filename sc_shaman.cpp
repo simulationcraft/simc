@@ -816,7 +816,6 @@ double shaman_spell_t::cost()
   p -> uptimes_elemental_oath -> update( p -> buffs.elemental_oath == 6 );
   double c = spell_t::cost();
   if( p -> buffs_elemental_focus ) c *= 0.60;
-  if( p -> buffs_shamanistic_focus ) c *= 0.40;
   if( p -> buffs.tier4_4pc )
   {
     c -= 270;
@@ -1276,6 +1275,24 @@ struct earth_shock_t : public shaman_spell_t
     if( p -> glyphs.earth_shock ) trigger_gcd -= 1.0;
   }
 
+  virtual double cost()
+  {
+    shaman_t* p = player -> cast_shaman();
+
+    double c = shaman_spell_t::cost();
+
+    if( sim_t::WotLK )
+    {
+      if( p -> talents.shamanistic_focus ) c *= 0.55;
+    }
+    else
+    {
+      if( p -> buffs_shamanistic_focus ) c *= 0.40;
+    }
+
+    return c;
+  }
+
   virtual void consume_resource()
   {
     shaman_spell_t::consume_resource();
@@ -1338,6 +1355,24 @@ struct frost_shock_t : public shaman_spell_t
     if( p -> talents.elemental_fury ) base_crit_bonus *= 2.0;
   }
 
+  virtual double cost()
+  {
+    shaman_t* p = player -> cast_shaman();
+
+    double c = shaman_spell_t::cost();
+
+    if( sim_t::WotLK )
+    {
+      if( p -> talents.shamanistic_focus ) c *= 0.55;
+    }
+    else
+    {
+      if( p -> buffs_shamanistic_focus ) c *= 0.40;
+    }
+
+    return c;
+  }
+
   virtual void consume_resource()
   {
     shaman_spell_t::consume_resource();
@@ -1393,6 +1428,24 @@ struct flame_shock_t : public shaman_spell_t
     base_multiplier *= 1.0 + p -> talents.concussion * 0.01;
     base_hit        += p -> talents.elemental_precision * ( sim_t::WotLK ? 0.01 : 0.02 );
     if( p -> talents.elemental_fury ) base_crit_bonus *= 2.0;
+  }
+
+  virtual double cost()
+  {
+    shaman_t* p = player -> cast_shaman();
+
+    double c = shaman_spell_t::cost();
+
+    if( sim_t::WotLK )
+    {
+      if( p -> talents.shamanistic_focus ) c *= 0.55;
+    }
+    else
+    {
+      if( p -> buffs_shamanistic_focus ) c *= 0.40;
+    }
+
+    return c;
   }
 
   virtual void consume_resource()
@@ -2572,7 +2625,7 @@ void shaman_t::attack_hit_event( attack_t* a )
     stack_maelstrom_weapon( a );
     shaman_t* p = a -> player -> cast_shaman();
     if( p -> talents.flurry ) p -> buffs_flurry = 3;
-    if( p -> talents.shamanistic_focus ) buffs_shamanistic_focus = 1;
+    if( ! sim_t::WotLK && p -> talents.shamanistic_focus ) buffs_shamanistic_focus = 1;
   }
   trigger_flametongue_weapon( a );
   trigger_windfury_weapon( a );
