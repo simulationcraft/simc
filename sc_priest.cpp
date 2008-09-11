@@ -84,6 +84,7 @@ struct priest_t : public player_t
 
   struct glyphs_t
   {
+    int8_t blue_promises;
     int8_t shadow_word_death;
     int8_t shadow_word_pain;
     glyphs_t() { memset( (void*) this, 0x0, sizeof( glyphs_t ) ); }
@@ -1038,7 +1039,7 @@ struct mind_blast_t : public priest_spell_t
     if( sim_t::WotLK )
     {
       base_cost       *= 1.0 - p -> talents.shadow_focus * 0.02;
-      base_crit_bonus *= 1.0 + p -> talents.shadow_power * 0.20;
+      base_crit_bonus *= 1.0 + p -> talents.shadow_power * ( p -> glyphs.blue_promises ? 0.20 : 0.10 );
     }
     
     if( p -> gear.tier6_4pc ) base_multiplier *= 1.10;
@@ -1111,7 +1112,7 @@ struct shadow_word_death_t : public priest_spell_t
     if( sim_t::WotLK )
     {
       base_cost       *= 1.0 - p -> talents.shadow_focus * 0.02;
-      base_crit_bonus *= 1.0 + p -> talents.shadow_power * 0.20;
+      base_crit_bonus *= 1.0 + p -> talents.shadow_power * ( p -> glyphs.blue_promises ? 0.20 : 0.10 );
     }
 
     assert( p -> active_shadow_word_death == 0 );
@@ -1282,7 +1283,11 @@ struct mind_flay_wotlk_t : public priest_spell_t
     base_cost       *= 1.0 - p -> talents.shadow_focus * 0.02;
     base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
     base_hit        += p -> talents.shadow_focus * 0.01;
-    base_crit_bonus *= 1.0 + p -> talents.shadow_power * 0.20;
+
+    if( p -> glyphs.blue_promises )
+    {
+      base_crit_bonus *= 1.0 + p -> talents.shadow_power * 0.20;
+    }
     
     if( p -> gear.tier4_4pc ) base_multiplier *= 1.05;
   }
@@ -2046,6 +2051,7 @@ bool priest_t::parse_option( const std::string& name,
     { "vampiric_embrace",          OPT_INT8,  &( talents.vampiric_embrace          ) },
     { "vampiric_touch",            OPT_INT8,  &( talents.vampiric_touch            ) },
     // Glyphs
+    { "glyph_blue_promises",       OPT_INT8,  &( glyphs.blue_promises              ) },
     { "glyph_shadow_word_death",   OPT_INT8,  &( glyphs.shadow_word_death          ) },
     { "glyph_shadow_word_pain",    OPT_INT8,  &( glyphs.shadow_word_pain           ) },
     { NULL, OPT_UNKNOWN }
