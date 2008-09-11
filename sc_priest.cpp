@@ -1276,7 +1276,7 @@ struct mind_flay_wotlk_t : public priest_spell_t
     channeled         = true; 
     binary            = false;
     may_crit          = true;
-    dd_power_mod      = 0.69 / 3.0;
+    dd_power_mod      = ((3.0 / 3.5) * 0.95) / 3.0;
 
     base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.focused_mind * 0.05;
