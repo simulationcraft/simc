@@ -15,8 +15,8 @@ struct druid_t : public player_t
   spell_t* insect_swarm_active;
 
   // Buffs
-  int8_t buffs_eclipse_starfire;
-  int8_t buffs_eclipse_wrath;
+  double buffs_eclipse_starfire;
+  double buffs_eclipse_wrath;
   int8_t buffs_natures_grace;
   int8_t buffs_natures_swiftness;
   int8_t buffs_omen_of_clarity;
@@ -234,7 +234,7 @@ static void trigger_eclipse_wrath( spell_t* s )
     {
       name = "Eclipse Wrath Expiration";
       p -> aura_gain( "Eclipse Wrath" );
-      p -> buffs_eclipse_wrath = 1;
+      p -> buffs_eclipse_wrath = sim -> current_time;
       p -> cooldowns_eclipse = sim -> current_time + 30;
       sim -> add_event( this, 30.0 );
     }
@@ -267,7 +267,7 @@ static void trigger_eclipse_starfire( spell_t* s )
     {
       name = "Eclipse Starfire Expiration";
       p -> aura_gain( "Eclipse Starfire" );
-      p -> buffs_eclipse_starfire = 1;
+      p -> buffs_eclipse_starfire = sim -> current_time;
       p -> cooldowns_eclipse = sim -> current_time + 30;
       sim -> add_event( this, 30.0 );
     }
@@ -855,7 +855,7 @@ struct starfire_t : public druid_spell_t
     druid_t* p = player -> cast_druid();
 
     if( eclipse_benefit )
-      if( ! p -> buffs_eclipse_starfire )
+      if( ! sim -> time_to_think( p -> buffs_eclipse_starfire ) )
 	return false;
 
     if( eclipse_trigger )
@@ -966,7 +966,7 @@ struct wrath_t : public druid_spell_t
     druid_t* p = player -> cast_druid();
 
     if( eclipse_benefit )
-      if( ! p -> buffs_eclipse_wrath )
+      if( ! sim -> time_to_think( p -> buffs_eclipse_wrath ) )
 	return false;
 
     if( eclipse_trigger )
