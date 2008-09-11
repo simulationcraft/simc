@@ -235,7 +235,7 @@ static void trigger_eclipse_wrath( spell_t* s )
       name = "Eclipse Wrath Expiration";
       p -> aura_gain( "Eclipse Wrath" );
       p -> buffs_eclipse_wrath = 1;
-      p -> cooldowns_eclipse = sim -> current_time + 120;
+      p -> cooldowns_eclipse = sim -> current_time + 30;
       sim -> add_event( this, 30.0 );
     }
     virtual void execute()
@@ -268,7 +268,7 @@ static void trigger_eclipse_starfire( spell_t* s )
       name = "Eclipse Starfire Expiration";
       p -> aura_gain( "Eclipse Starfire" );
       p -> buffs_eclipse_starfire = 1;
-      p -> cooldowns_eclipse = sim -> current_time + 120;
+      p -> cooldowns_eclipse = sim -> current_time + 30;
       sim -> add_event( this, 30.0 );
     }
     virtual void execute()

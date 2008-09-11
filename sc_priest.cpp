@@ -467,7 +467,7 @@ static void trigger_improved_spirit_tap( spell_t* s )
       name = "Improved Spirit Tap Expiration";
       p -> buffs_improved_spirit_tap = 1;
       p -> aura_gain( "improved_spirit_tap" );
-      spirit_bonus = p -> attribute[ ATTR_SPIRIT ] / 2;
+      spirit_bonus = p -> attribute[ ATTR_SPIRIT ] / 10;
       p -> attribute[ ATTR_SPIRIT ] += spirit_bonus;
       sim -> add_event( this, 8.0 );
     }
@@ -532,10 +532,6 @@ void priest_spell_t::player_buff()
     {
       player_multiplier *= 1.0 + p -> buffs_shadow_weaving * 0.02;
     }
-  }
-  if( p -> talents.twin_disciplines )
-  {
-    player_multiplier *= 1.0 + p -> talents.twin_disciplines * 0.01;
   }
   if( p -> talents.focused_power )
   {
@@ -799,6 +795,7 @@ struct shadow_word_pain_t : public priest_spell_t
     }
 
     base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
+    base_multiplier *= 1.0 + p -> talents.twin_disciplines * 0.01;
     if( sim_t::WotLK ) base_multiplier *= 1.0 + p -> talents.improved_shadow_word_pain * 0.05;
     base_hit        += p -> talents.shadow_focus * ( sim_t::WotLK ? 0.01 : 0.02 );
   }
@@ -938,6 +935,7 @@ struct devouring_plague_t : public priest_spell_t
     base_cost       *= 1.0 - p -> talents.mental_agility * 0.02;
     if( sim_t::WotLK ) base_cost *= 1.0 - p -> talents.shadow_focus * 0.02;
     base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
+    base_multiplier *= 1.0 + p -> talents.twin_disciplines * 0.01;
     base_hit        += p -> talents.shadow_focus * ( sim_t::WotLK ? 0.01 : 0.02 );
   }
 
@@ -1044,7 +1042,6 @@ struct mind_blast_t : public priest_spell_t
     {
       base_cost       *= 1.0 - p -> talents.shadow_focus * 0.02;
       base_crit_bonus *= 1.0 + p -> talents.shadow_power * 0.20;
-      dd_power_mod    *= 1.0 + std::min( p -> talents.misery, (int8_t) 3 ) * 0.05;
     }
     
     if( p -> gear.tier6_4pc ) base_multiplier *= 1.10;
@@ -1110,6 +1107,7 @@ struct shadow_word_death_t : public priest_spell_t
     base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.mental_agility * 0.02;
     base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
+    base_multiplier *= 1.0 + p -> talents.twin_disciplines * 0.01;
     base_crit       += p -> talents.shadow_power * ( sim_t::WotLK ? 0.02 : 0.03 );
     base_hit        += p -> talents.shadow_focus * ( sim_t::WotLK ? 0.01 : 0.02 );
 
@@ -1287,7 +1285,11 @@ struct mind_flay_wotlk_t : public priest_spell_t
     base_cost       *= 1.0 - p -> talents.shadow_focus * 0.02;
     base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
     base_hit        += p -> talents.shadow_focus * 0.01;
-    dd_power_mod    *= 1.0 + std::min( p -> talents.misery, (int8_t) 3 ) * 0.05;
+
+    if( sim_t::WotLK )
+    {
+      base_crit_bonus *= 1.0 + p -> talents.shadow_power * 0.20;
+    }
     
     if( p -> gear.tier4_4pc ) base_multiplier *= 1.05;
   }
@@ -1825,7 +1827,7 @@ void priest_t::init_base()
   base_spell_crit = 0.0125;
   initial_spell_crit_per_intellect = rating_t::interpolate( level, 0.01/60.0, 0.01/80.0, 0.01/166.6 );
   initial_spell_power_per_spirit = ( talents.spiritual_guidance * 0.05 +
-				     talents.twisted_faith      * 0.06 );
+				     talents.twisted_faith      * 0.02 );
 
   base_attack_power = -10;
   base_attack_crit  = 0.03;

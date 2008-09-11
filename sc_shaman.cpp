@@ -1010,7 +1010,7 @@ struct lightning_bolt_t : public shaman_spell_t
     base_crit         += p -> talents.call_of_thunder * 0.01;
     base_crit         += p -> talents.tidal_mastery * 0.01;
     if( p -> talents.elemental_fury ) base_crit_bonus *= 2.0;
-    dd_power_mod      *= 1.0 + p -> talents.storm_earth_and_fire * 0.05; 
+    dd_power_mod      *= 1.0 + p -> talents.storm_earth_and_fire * 0.02; 
 
     if( p -> gear.tier6_4pc ) base_multiplier *= 1.05;
     if( p -> glyphs.lightning_bolt ) base_cost *= 0.90;
@@ -1387,7 +1387,7 @@ struct flame_shock_t : public shaman_spell_t
     base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.convection * ( sim_t::WotLK ? 0.04 : 0.02 );
     base_cost       *= 1.0 - p -> talents.mental_quickness * 0.02;
-    base_dot         = rank -> dot * ( 1.0 + p -> talents.storm_earth_and_fire * 0.20 );
+    base_dot         = rank -> dot * ( 1.0 + p -> talents.storm_earth_and_fire * 0.10 );
     dot_power_mod   *= ( 1.0 + p -> talents.storm_earth_and_fire * 0.20 );
     cooldown        -= ( p -> talents.reverberation * 0.2 );
     base_multiplier *= 1.0 + p -> talents.concussion * 0.01;
@@ -1848,7 +1848,7 @@ struct flametongue_weapon_t : public shaman_spell_t
             ( p -> level <  71 ) ? 52 : 
             ( p -> level <  80 ) ? 74 : 96;
 
-    bonus *= 1.0 + p -> talents.lava_flows * 0.20;
+    bonus *= 1.0 + p -> talents.lava_flows * 0.15;
   }
 
   virtual void execute()
