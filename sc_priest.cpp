@@ -1051,6 +1051,11 @@ struct mind_blast_t : public priest_spell_t
       base_crit_bonus *= 1.0 + p -> talents.shadow_power * ( p -> glyphs.blue_promises ? 0.20 : 0.10 );
     }
     
+    if( p -> glyphs.blue_promises)
+    {
+      dd_power_mod	  *= 1.0 + p -> talents.misery * 0.05;
+    }
+    
     if( p -> gear.tier6_4pc ) base_multiplier *= 1.10;
 
     assert( p -> active_mind_blast == 0 );
@@ -1298,6 +1303,7 @@ struct mind_flay_wotlk_t : public priest_spell_t
       base_multiplier *= 1.0 + p -> talents.twin_disciplines * 0.01;
       base_crit       += p -> talents.mind_melt * 0.02;
       base_crit_bonus *= 1.0 + p -> talents.shadow_power * 0.20;
+      dd_power_mod	  *= 1.0 + p -> talents.misery * 0.05;
     }
     
     if( p -> gear.tier4_4pc ) base_multiplier *= 1.05;
