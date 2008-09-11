@@ -60,6 +60,7 @@ struct priest_t : public player_t
     int8_t  mental_agility;
     int8_t  mental_strength;
     int8_t  mind_flay;
+    int8_t  mind_melt;
     int8_t  misery;
     int8_t  pain_and_suffering;
     int8_t  penance;
@@ -1046,6 +1047,7 @@ struct mind_blast_t : public priest_spell_t
     if( sim_t::WotLK )
     {
       base_cost       *= 1.0 - p -> talents.shadow_focus * 0.02;
+      base_crit       += p -> talents.mind_melt * 0.02;
       base_crit_bonus *= 1.0 + p -> talents.shadow_power * ( p -> glyphs.blue_promises ? 0.20 : 0.10 );
     }
     
@@ -1293,6 +1295,8 @@ struct mind_flay_wotlk_t : public priest_spell_t
 
     if( p -> glyphs.blue_promises )
     {
+      base_multiplier *= 1.0 + p -> talents.twin_disciplines * 0.01;
+      base_crit       += p -> talents.mind_melt * 0.02;
       base_crit_bonus *= 1.0 + p -> talents.shadow_power * 0.20;
     }
     
@@ -1991,6 +1995,7 @@ void priest_t::parse_talents( const std::string& talent_string )
       { 67,  &( talents.vampiric_embrace          ) },
       { 68,  &( talents.improved_vampiric_embrace ) },
       { 69,  &( talents.focused_mind              ) },
+      { 70,  &( talents.mind_melt                 ) },
       { 71,  &( talents.darkness                  ) },
       { 72,  &( talents.shadow_form               ) },
       { 73,  &( talents.shadow_power              ) },
@@ -2040,6 +2045,7 @@ bool priest_t::parse_option( const std::string& name,
     { "mental_agility",            OPT_INT8,  &( talents.mental_agility            ) },
     { "mental_strength",           OPT_INT8,  &( talents.mental_strength           ) },
     { "mind_flay",                 OPT_INT8,  &( talents.mind_flay                 ) },
+    { "mind_melt",                 OPT_INT8,  &( talents.mind_melt                 ) },
     { "misery",                    OPT_INT8,  &( talents.misery                    ) },
     { "pain_and_suffering",        OPT_INT8,  &( talents.pain_and_suffering        ) },
     { "penance",                   OPT_INT8,  &( talents.penance                   ) },
