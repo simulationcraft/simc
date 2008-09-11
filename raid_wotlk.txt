@@ -63,7 +63,7 @@ curse_of_elements=13
 #
 priest=Priest_Shadow
 level=80
-talents=http://www.worldofwarcraft.com/info/classes/priest/talents2.html?tal=05023001300000000000000000000000000000000000000000000320023051025012305152501351
+talents=http://www.worldofwarcraft.com/info/classes/priest/talents2.html?tal=050230013000000000000000000000000000000000000000000000320023051025012325152301351
 actions=flask,type=pure_death/inner_fire/shadow_form/mana_potion,trigger=3500/shadow_fiend,trigger=6000/dispersion/inner_focus,shadow_word_pain/shadow_word_pain/mind_blast/vampiric_touch/shadow_word_death/mind_flay
 gear_stamina=600
 gear_intellect=600
@@ -91,7 +91,7 @@ swift_retribution=1
 #
 priest=Priest_ShadowVanilla
 level=80
-talents=http://www.worldofwarcraft.com/info/classes/priest/talents2.html?tal=05023001300000000000000000000000000000000000000000000320023051025012305152501351
+talents=http://www.worldofwarcraft.com/info/classes/priest/talents2.html?tal=050230013000000000000000000000000000000000000000000000320023051025012325152301351
 actions=flask,type=pure_death/inner_fire/shadow_form/mana_potion,trigger=3500/shadow_fiend,trigger=6000/dispersion/vampiric_touch/inner_focus,shadow_word_pain/shadow_word_pain/mind_blast/shadow_word_death/mind_flay
 gear_stamina=600
 gear_intellect=600
@@ -120,7 +120,7 @@ swift_retribution=1
 #
 priest=Priest_Holy
 level=80
-talents=http://www.worldofwarcraft.com/info/classes/priest/talents2.html?tal=05023031305051225010200000020505103232015200000000000000000000000000000000000000
+talents=http://www.worldofwarcraft.com/info/classes/priest/talents2.html?tal=050230113320512250100020000000555100202015200000000000320000000000000000000000000
 actions=flask,type=blinding_light/inner_fire/divine_spirit/mana_potion,trigger=3500/shadow_fiend,trigger=6000/inner_focus,shadow_word_pain/shadow_word_pain/power_infusion/holy_fire/smite
 gear_stamina=600
 gear_intellect=600

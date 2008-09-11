@@ -1046,14 +1046,18 @@ struct mind_blast_t : public priest_spell_t
 
     if( sim_t::WotLK )
     {
-      base_cost       *= 1.0 - p -> talents.shadow_focus * 0.02;
-      base_crit       += p -> talents.mind_melt * 0.02;
-      base_crit_bonus *= 1.0 + p -> talents.shadow_power * ( p -> glyphs.blue_promises ? 0.20 : 0.10 );
-    }
-    
-    if( p -> glyphs.blue_promises)
-    {
-      dd_power_mod	  *= 1.0 + p -> talents.misery * 0.05;
+      base_cost *= 1.0 - p -> talents.shadow_focus * 0.02;
+
+      if( p -> glyphs.blue_promises )
+      {
+	base_crit       += p -> talents.mind_melt * 0.02;
+	base_crit_bonus *= 1.0 + p -> talents.shadow_power * 0.20;
+	dd_power_mod    *= 1.0 + p -> talents.misery * 0.05;
+      }
+      else
+      {
+	base_crit_bonus *= 1.0 + p -> talents.shadow_power * 0.10;
+      }
     }
     
     if( p -> gear.tier6_4pc ) base_multiplier *= 1.10;
@@ -1303,7 +1307,7 @@ struct mind_flay_wotlk_t : public priest_spell_t
       base_multiplier *= 1.0 + p -> talents.twin_disciplines * 0.01;
       base_crit       += p -> talents.mind_melt * 0.02;
       base_crit_bonus *= 1.0 + p -> talents.shadow_power * 0.20;
-      dd_power_mod	  *= 1.0 + p -> talents.misery * 0.05;
+      dd_power_mod    *= 1.0 + p -> talents.misery * 0.05;
     }
     
     if( p -> gear.tier4_4pc ) base_multiplier *= 1.05;
@@ -1968,7 +1972,7 @@ void priest_t::parse_talents( const std::string& talent_string )
     };
     player_t::parse_talents( translation, talent_string );
   }
-  else if( talent_string.size() == 80 )
+  else if( talent_string.size() == 81 )
   {
     talent_translation_t translation[] =
     {
@@ -1983,33 +1987,33 @@ void priest_t::parse_talents( const std::string& talent_string )
       { 16,  &( talents.focused_power             ) },
       { 17,  &( talents.enlightenment             ) },
       { 19,  &( talents.power_infusion            ) },
-      { 21,  &( talents.aspiration                ) },
-      { 27,  &( talents.penance                   ) },
-      { 30,  &( talents.holy_specialization       ) },
-      { 32,  &( talents.divine_fury               ) },
-      { 38,  &( talents.searing_light             ) },
-      { 40,  &( talents.spirit_of_redemption      ) },
-      { 41,  &( talents.spiritual_guidance        ) },
-      { 42,  &( talents.surge_of_light            ) },
-      { 55,  &( talents.improved_spirit_tap       ) },
-      { 57,  &( talents.shadow_affinity           ) },
-      { 58,  &( talents.improved_shadow_word_pain ) },
-      { 59,  &( talents.shadow_focus              ) },
-      { 61,  &( talents.improved_mind_blast       ) },
-      { 62,  &( talents.mind_flay                 ) },
-      { 65,  &( talents.shadow_weaving            ) },
-      { 67,  &( talents.vampiric_embrace          ) },
-      { 68,  &( talents.improved_vampiric_embrace ) },
-      { 69,  &( talents.focused_mind              ) },
-      { 70,  &( talents.mind_melt                 ) },
-      { 71,  &( talents.darkness                  ) },
-      { 72,  &( talents.shadow_form               ) },
-      { 73,  &( talents.shadow_power              ) },
-      { 75,  &( talents.misery                    ) },
-      { 77,  &( talents.vampiric_touch            ) },
-      { 78,  &( talents.pain_and_suffering        ) },
-      { 79,  &( talents.twisted_faith             ) },
-      { 80,  &( talents.dispersion                ) },
+      { 23,  &( talents.aspiration                ) },
+      { 28,  &( talents.penance                   ) },
+      { 31,  &( talents.holy_specialization       ) },
+      { 33,  &( talents.divine_fury               ) },
+      { 39,  &( talents.searing_light             ) },
+      { 41,  &( talents.spirit_of_redemption      ) },
+      { 42,  &( talents.spiritual_guidance        ) },
+      { 43,  &( talents.surge_of_light            ) },
+      { 56,  &( talents.improved_spirit_tap       ) },
+      { 58,  &( talents.shadow_affinity           ) },
+      { 59,  &( talents.improved_shadow_word_pain ) },
+      { 60,  &( talents.shadow_focus              ) },
+      { 62,  &( talents.improved_mind_blast       ) },
+      { 63,  &( talents.mind_flay                 ) },
+      { 66,  &( talents.shadow_weaving            ) },
+      { 68,  &( talents.vampiric_embrace          ) },
+      { 69,  &( talents.improved_vampiric_embrace ) },
+      { 70,  &( talents.focused_mind              ) },
+      { 71,  &( talents.mind_melt                 ) },
+      { 72,  &( talents.darkness                  ) },
+      { 73,  &( talents.shadow_form               ) },
+      { 74,  &( talents.shadow_power              ) },
+      { 76,  &( talents.misery                    ) },
+      { 78,  &( talents.vampiric_touch            ) },
+      { 79,  &( talents.pain_and_suffering        ) },
+      { 80,  &( talents.twisted_faith             ) },
+      { 81,  &( talents.dispersion                ) },
       { 0, NULL }
     };
     player_t::parse_talents( translation, talent_string );
