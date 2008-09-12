@@ -956,8 +956,7 @@ struct devouring_plague_t : public priest_spell_t
     base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.mental_agility * 0.02;
     if( sim_t::WotLK ) base_cost *= 1.0 - p -> talents.shadow_focus * 0.02;
-    base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
-    base_multiplier *= 1.0 + p -> talents.twin_disciplines * 0.01;
+    base_multiplier *= 1.0 + p -> talents.darkness * 0.02 + p -> talents.twin_disciplines * 0.01;
     base_hit        += p -> talents.shadow_focus * ( sim_t::WotLK ? 0.01 : 0.02 );
   }
 
@@ -1142,9 +1141,7 @@ struct shadow_word_death_t : public priest_spell_t
 
     base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.mental_agility * 0.02;
-    base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
-    base_multiplier *= 1.0 + p -> talents.twin_disciplines * 0.01;
-    base_crit       += p -> talents.shadow_power * ( sim_t::WotLK ? 0.02 : 0.03 );
+    base_multiplier *= 1.0 + p -> talents.darkness * 0.02 + p -> talents.twin_disciplines * 0.01;
     base_hit        += p -> talents.shadow_focus * ( sim_t::WotLK ? 0.01 : 0.02 );
 
     if( sim_t::WotLK )
@@ -1331,15 +1328,18 @@ struct mind_flay_wotlk_t : public priest_spell_t
     base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.focused_mind * 0.05;
     base_cost       *= 1.0 - p -> talents.shadow_focus * 0.02;
-    base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
     base_hit        += p -> talents.shadow_focus * 0.01;
 
     if( p -> glyphs.blue_promises )
     {
-      base_multiplier *= 1.0 + p -> talents.twin_disciplines * 0.01;
+      base_multiplier *= 1.0 + p -> talents.darkness * 0.02 + p -> talents.twin_disciplines * 0.01;
       base_crit       += p -> talents.mind_melt * 0.02;
       base_crit_bonus *= 1.0 + p -> talents.shadow_power * 0.20;
       dd_power_mod    *= 1.0 + p -> talents.misery * 0.05;
+    }
+    else
+    {
+      base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
     }
     
     if( p -> gear.tier4_4pc ) base_multiplier *= 1.05;
@@ -1646,7 +1646,7 @@ struct inner_fire_t : public priest_spell_t
     double bonus_power = ( p -> level >= 77 ) ? 120 : 
                          ( p -> level >= 71 ) ?  95 : 0;
 
-    bonus_power *= 1.0 + p -> talents.improved_inner_fire * 0.10;
+    bonus_power *= 1.0 + p -> talents.improved_inner_fire * 0.15;
 
     p -> spell_power[ SCHOOL_MAX ] += bonus_power;
     p -> buffs_inner_fire = 1;
