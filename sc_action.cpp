@@ -205,8 +205,11 @@ void action_t::target_debuff( int8_t dmg_type )
     }
     else if( school == SCHOOL_NATURE )
     {
-      target_multiplier *= 1.0 + ( t -> debuffs.nature_vulnerability * 0.01 );
-      nv_uptime -> update( t -> debuffs.nature_vulnerability != 0 );
+      if( ! sim_t::WotLK )
+      {
+	target_multiplier *= 1.0 + ( t -> debuffs.nature_vulnerability * 0.01 );
+	nv_uptime -> update( t -> debuffs.nature_vulnerability != 0 );
+      }
     }
     if( ! sim_t::WotLK ) 
     {

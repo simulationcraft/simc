@@ -1040,7 +1040,6 @@ struct mind_blast_t : public priest_spell_t
     base_cost       = rank -> cost;
     base_cost       *= 1.0 - p -> talents.focused_mind * 0.05;
     base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
-    base_crit       += p -> talents.shadow_power * ( sim_t::WotLK ? 0.02 : 0.03 );
     base_hit        += p -> talents.shadow_focus * ( sim_t::WotLK ? 0.01 : 0.02 );
     cooldown        -= p -> talents.improved_mind_blast * 0.5;
 
@@ -1056,8 +1055,13 @@ struct mind_blast_t : public priest_spell_t
       }
       else
       {
+	base_crit       += p -> talents.shadow_power * 0.02;
 	base_crit_bonus *= 1.0 + p -> talents.shadow_power * 0.10;
       }
+    }
+    else
+    {
+      base_crit += p -> talents.shadow_power * 0.03;
     }
     
     if( p -> gear.tier6_4pc ) base_multiplier *= 1.10;
@@ -1129,8 +1133,20 @@ struct shadow_word_death_t : public priest_spell_t
 
     if( sim_t::WotLK )
     {
-      base_cost       *= 1.0 - p -> talents.shadow_focus * 0.02;
-      base_crit_bonus *= 1.0 + p -> talents.shadow_power * ( p -> glyphs.blue_promises ? 0.20 : 0.10 );
+      base_cost *= 1.0 - p -> talents.shadow_focus * 0.02;
+
+      if( p -> glyphs.blue_promises )
+      {
+	base_crit_bonus *= 1.0 + p -> talents.shadow_power * 0.20;
+      }
+      else
+      {
+	base_crit += p -> talents.shadow_power * 0.02;
+      }
+    }
+    else
+    {
+      base_crit += p -> talents.shadow_power * 0.03;
     }
 
     assert( p -> active_shadow_word_death == 0 );
@@ -1720,7 +1736,7 @@ void priest_t::spell_hit_event( spell_t* s )
   if( s -> school == SCHOOL_SHADOW )
   {
     stack_shadow_weaving( s );
-    if( s -> num_ticks ) push_misery( s );
+    if( s -> num_ticks && ! s -> channeled ) push_misery( s );
   }
 
   if( s -> result == RESULT_CRIT )

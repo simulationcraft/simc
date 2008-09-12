@@ -28,6 +28,8 @@ struct shaman_t : public player_t
   int8_t buffs_flurry;
   int8_t buffs_lightning_charges;
   int8_t buffs_maelstrom_weapon;
+  int8_t buffs_nature_vulnerability;
+  int8_t buffs_nature_vulnerability_charges;
   int8_t buffs_natures_swiftness;
   int8_t buffs_shamanistic_focus;
   int8_t buffs_shamanistic_rage;
@@ -35,6 +37,7 @@ struct shaman_t : public player_t
   // Expirations
   event_t* expirations_elemental_devastation;
   event_t* expirations_maelstrom_weapon;
+  event_t* expirations_nature_vulnerability;
   event_t* expirations_windfury_weapon;
 
   // Gains
@@ -47,6 +50,7 @@ struct shaman_t : public player_t
   uptime_t* uptimes_elemental_devastation;
   uptime_t* uptimes_elemental_oath;
   uptime_t* uptimes_flurry;
+  uptime_t* uptimes_nature_vulnerability;
   
   // Auto-Attack
   attack_t* main_hand_attack;
@@ -139,19 +143,22 @@ struct shaman_t : public player_t
     active_lightning_charge = 0;
 
     // Buffs
-    buffs_elemental_devastation = 0;
-    buffs_elemental_focus       = 0;
-    buffs_elemental_mastery     = 0;
-    buffs_flurry                = 0;
-    buffs_lightning_charges     = 0;
-    buffs_maelstrom_weapon      = 0;
-    buffs_natures_swiftness     = 0;
-    buffs_shamanistic_focus     = 0;
-    buffs_shamanistic_rage      = 0;
+    buffs_elemental_devastation        = 0;
+    buffs_elemental_focus              = 0;
+    buffs_elemental_mastery            = 0;
+    buffs_flurry                       = 0;
+    buffs_lightning_charges            = 0;
+    buffs_maelstrom_weapon             = 0;
+    buffs_nature_vulnerability         = 0;
+    buffs_nature_vulnerability_charges = 0;
+    buffs_natures_swiftness            = 0;
+    buffs_shamanistic_focus            = 0;
+    buffs_shamanistic_rage             = 0;
 
     // Expirations
     expirations_elemental_devastation = 0;
     expirations_maelstrom_weapon      = 0;
+    expirations_nature_vulnerability  = 0;
     expirations_windfury_weapon       = 0;
   
     // Gains
@@ -164,6 +171,7 @@ struct shaman_t : public player_t
     uptimes_elemental_devastation = get_uptime( "elemental_devastation" );
     uptimes_elemental_oath        = get_uptime( "elemental_oath"        );
     uptimes_flurry                = get_uptime( "flurry"                );
+    uptimes_nature_vulnerability  = get_uptime( "nature_vulnerability"  );
   
     // Auto-Attack
     main_hand_attack = 0;
@@ -448,13 +456,13 @@ static void trigger_unleashed_rage( attack_t* a )
   }
 }
 
-// trigger_nature_vulnerability =============================================
+// trigger_nature_vulnerability_bc ==========================================
 
-static void trigger_nature_vulnerability( attack_t* a )
+static void trigger_nature_vulnerability_bc( attack_t* a )
 {
-  struct nature_vulnerability_expiration_t : public event_t
+  struct nature_vulnerability_bc_expiration_t : public event_t
   {
-    nature_vulnerability_expiration_t( sim_t* sim ) : event_t( sim )
+    nature_vulnerability_bc_expiration_t( sim_t* sim ) : event_t( sim )
     {
       name = "Nature Vulnerability Expiration";
       if( sim -> log ) report_t::log( sim, "%s gains Nature Vulnerability", sim -> target -> name() );
@@ -483,7 +491,59 @@ static void trigger_nature_vulnerability( attack_t* a )
   }
   else
   {
-    e = new nature_vulnerability_expiration_t( a -> sim );
+    e = new nature_vulnerability_bc_expiration_t( a -> sim );
+  }
+}
+
+// trigger_nature_vulnerability_wotlk =======================================
+
+static void trigger_nature_vulnerability_wotlk( attack_t* a )
+{
+  struct nature_vulnerability_wotlk_expiration_t : public event_t
+  {
+    nature_vulnerability_wotlk_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
+    {
+      name = "Nature Vulnerability Expiration";
+      player -> aura_gain( "Nature Vulnerability" );
+      sim -> add_event( this, 12.0 );
+    }
+    virtual void execute()
+    {
+      shaman_t* p = player -> cast_shaman();
+      p -> aura_loss( "Nature Vulnerability" );
+      p -> buffs_nature_vulnerability = 0;
+      p -> buffs_nature_vulnerability_charges = 0;
+      p -> expirations_nature_vulnerability = 0;
+    }
+  };
+
+  shaman_t* p = a -> player -> cast_shaman();
+  event_t*& e = p -> expirations_nature_vulnerability;
+
+  p -> buffs_nature_vulnerability_charges = 2 + p -> talents.improved_stormstrike;
+  p -> buffs_nature_vulnerability = p -> glyphs.stormstrike ? 28 : 20;
+   
+  if( e )
+  {
+    e -> reschedule( 12.0 );
+  }
+  else
+  {
+    e = new nature_vulnerability_wotlk_expiration_t( a -> sim, p );
+  }
+}
+
+// trigger_nature_vulnerability =============================================
+
+static void trigger_nature_vulnerability( attack_t* a )
+{
+  if( sim_t::WotLK )
+  {
+    trigger_nature_vulnerability_wotlk( a );
+  }
+  else
+  {
+    trigger_nature_vulnerability_bc( a );
   }
 }
 
@@ -857,6 +917,14 @@ void shaman_spell_t::player_buff()
   {
     player_crit += 1.0;
   }
+  if( school == SCHOOL_NATURE )
+  {
+    if( p -> buffs_nature_vulnerability )
+    {
+      player_multiplier *= 1.0 + p -> buffs_nature_vulnerability * 0.01;
+    }
+    p -> uptimes_nature_vulnerability -> update( p -> buffs_nature_vulnerability );
+  }
 }
 
 // shaman_spell_t::schedule_execute ========================================
@@ -1009,7 +1077,7 @@ struct lightning_bolt_t : public shaman_spell_t
     base_crit         += p -> talents.call_of_thunder * 0.01;
     base_crit         += p -> talents.tidal_mastery * 0.01;
     if( p -> talents.elemental_fury ) base_crit_bonus *= 2.0;
-    dd_power_mod      *= 1.0 + p -> talents.storm_earth_and_fire * 0.02; 
+    dd_power_mod      += p -> talents.storm_earth_and_fire * 0.02; 
 
     if( p -> gear.tier6_4pc ) base_multiplier *= 1.05;
     if( p -> glyphs.lightning_bolt ) base_cost *= 0.90;
@@ -2675,6 +2743,20 @@ void shaman_t::spell_hit_event( spell_t* s )
       buffs.tier4_4pc = rand_t::roll( 0.11 ) ;
     }
   }
+
+  if( s -> school == SCHOOL_NATURE )
+  {
+    if( buffs_nature_vulnerability_charges > 0 )
+    {
+      buffs_nature_vulnerability_charges--;
+      if( buffs_nature_vulnerability_charges == 0 ) 
+      {
+	aura_loss( "Nature Vulnerability" );
+	buffs_nature_vulnerability = 0;
+	event_t::cancel( expirations_nature_vulnerability );
+      }
+    }
+  }  
 }
 
 // shaman_t::spell_damage_event ==============================================
@@ -2785,19 +2867,22 @@ void shaman_t::reset()
   active_flame_shock = 0;
 
   // Buffs
-  buffs_elemental_devastation = 0;
-  buffs_elemental_focus       = 0;
-  buffs_elemental_mastery     = 0;
-  buffs_flurry                = 0;
-  buffs_lightning_charges     = 0;
-  buffs_maelstrom_weapon      = 0;
-  buffs_natures_swiftness     = 0;
-  buffs_shamanistic_focus     = 0;
-  buffs_shamanistic_rage      = 0;
+  buffs_elemental_devastation        = 0;
+  buffs_elemental_focus              = 0;
+  buffs_elemental_mastery            = 0;
+  buffs_flurry                       = 0;
+  buffs_lightning_charges            = 0;
+  buffs_maelstrom_weapon             = 0;
+  buffs_nature_vulnerability         = 0;
+  buffs_nature_vulnerability_charges = 0;
+  buffs_natures_swiftness            = 0;
+  buffs_shamanistic_focus            = 0;
+  buffs_shamanistic_rage             = 0;
 
   // Expirations
   expirations_elemental_devastation = 0;
   expirations_maelstrom_weapon      = 0;
+  expirations_nature_vulnerability  = 0;
   expirations_windfury_weapon       = 0;
 }
 

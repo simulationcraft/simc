@@ -38,7 +38,7 @@ void target_t::assess_damage( double  amount,
     else if( sim -> debug ) report_t::log( sim, "Target %s has %.0f remaining health", name(), current_health );
   }
 
-  if( dmg_type == DMG_DIRECT )
+  if( dmg_type == DMG_DIRECT && ! sim_t::WotLK )
   {
     if( school == SCHOOL_SHADOW )
     {
@@ -62,6 +62,7 @@ void target_t::assess_damage( double  amount,
 	{
 	  if( sim -> log ) report_t::log( sim, "%s loses Nature Vulnerability", name() );
 	  debuffs.nature_vulnerability = 0;
+	  event_t::cancel( expirations.nature_vulnerability );
 	}
       }
     }
