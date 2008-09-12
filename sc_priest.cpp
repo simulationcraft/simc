@@ -745,14 +745,17 @@ struct penance_t : public priest_spell_t
 
 struct shadow_word_pain_t : public priest_spell_t
 {
+  int8_t shadow_weaving_wait;
+
   shadow_word_pain_t( player_t* player, const std::string& options_str ) : 
-    priest_spell_t( "shadow_word_pain", player, SCHOOL_SHADOW, TREE_SHADOW )
+    priest_spell_t( "shadow_word_pain", player, SCHOOL_SHADOW, TREE_SHADOW ), shadow_weaving_wait(0)
   {
     priest_t* p = player -> cast_priest();
 
     option_t options[] =
     {
-      { "rank", OPT_INT8, &rank_index },
+      { "rank",                OPT_INT8, &rank_index          },
+      { "shadow_weaving_wait", OPT_INT8, &shadow_weaving_wait },
       { NULL }
     };
     parse_options( options, options_str );
@@ -828,6 +831,19 @@ struct shadow_word_pain_t : public priest_spell_t
     priest_spell_t::last_tick(); 
     pop_misery( this );
     player -> cast_priest() -> active_shadow_word_pain = 0;
+  }
+
+  virtual bool ready()
+  {
+    priest_t* p = player -> cast_priest();
+
+    if( ! priest_spell_t::ready() )
+      return false;
+
+    if( shadow_weaving_wait && p -> buffs_shadow_weaving < 5 )
+      return false;
+
+    return true;
   }
 };
 
