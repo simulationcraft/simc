@@ -376,6 +376,7 @@ struct player_t
   // Reporting
   int8_t    quiet;
   report_t* report;
+  action_t* last_foreground_action;
   double    last_action, total_seconds;
   double    total_waiting;
   double    iteration_dmg, total_dmg;
@@ -849,7 +850,6 @@ struct stats_t
   player_t* player;
   stats_t* next;
   int8_t school;
-  bool adjust_for_lost_time;
   bool channeled;
   bool analyzed;
   bool initialized;
@@ -876,11 +876,6 @@ struct stats_t
   void init();
   void analyze();
   stats_t( const std::string& name, player_t* );
-
-  // Necessary for proper accounting of GCD/Lag effects on Damage-Per-Execute-Time:
-  static stats_t* last_execute;
-  static double   last_execute_time;
-  static void adjust_for_gcd_and_lag( double lost_time );
 };
 
 // Rank ======================================================================

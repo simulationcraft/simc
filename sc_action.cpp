@@ -582,7 +582,6 @@ void action_t::reset()
   // spell_t/attack_t derivative constructor gets executed.  But the "channeled" and "background"
   // fields are set in the derived sub-class which is too late.  So set them here.....
   stats -> channeled = channeled;  
-  stats -> adjust_for_lost_time = ! background;
 }
 
 // ==========================================================================

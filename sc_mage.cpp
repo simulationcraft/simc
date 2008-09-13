@@ -1526,11 +1526,12 @@ struct presence_of_mind_t : public mage_spell_t
    
   virtual void execute()
   {
-    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
-    player -> aura_gain( "Presence of Mind" );
-    fast_action -> stats -> adjust_for_lost_time = true;
+    mage_t* p = player -> cast_mage();
+    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    p -> aura_gain( "Presence of Mind" );
+    p -> last_foreground_action = fast_action;
     fast_action -> execute();
-    player -> aura_loss( "Presence of Mind" );
+    p -> aura_loss( "Presence of Mind" );
     update_ready();
   }
 

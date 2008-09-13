@@ -993,7 +993,6 @@ struct chain_lightning_t : public shaman_spell_t
 
     lightning_overload_stats = p -> get_stats( "lightning_overload" );
     lightning_overload_stats -> school = SCHOOL_NATURE;
-    lightning_overload_stats -> adjust_for_lost_time = false;
   }
 
   virtual void execute()
@@ -1084,7 +1083,6 @@ struct lightning_bolt_t : public shaman_spell_t
 
     lightning_overload_stats = p -> get_stats( "lightning_overload" );
     lightning_overload_stats -> school = SCHOOL_NATURE;
-    lightning_overload_stats -> adjust_for_lost_time = false;
   }
 
   virtual void execute()
@@ -2664,7 +2662,6 @@ struct lightning_shield_t : public shaman_spell_t
     consume_resource();
     update_ready();
     dd = 0;
-    stats_t::last_execute = stats;
     p -> action_finish( this );
   }
 

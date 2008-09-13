@@ -687,10 +687,13 @@ void player_t::schedule_ready( double delta_time,
     if( lag < 0 ) lag = 0;
     delta_time += lag;
   }
+
+  if( last_foreground_action ) 
+  {
+    last_foreground_action -> stats -> total_execute_time += delta_time;
+  }
   
   new player_ready_event_t( sim, this, delta_time );
-
-  stats_t::adjust_for_gcd_and_lag( delta_time );
 }
 
 // player_t::execute_action =================================================
@@ -716,6 +719,8 @@ action_t* player_t::execute_action()
   {
     check_resources();
   }
+
+  last_foreground_action = action;
 
   return action;
 }

@@ -1563,10 +1563,10 @@ struct inner_focus_t : public priest_spell_t
    
   virtual void execute()
   {
-    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
     priest_t* p = player -> cast_priest();
+    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
     p -> aura_gain( "Inner Focus" );
-    free_action -> stats -> adjust_for_lost_time = true;
+    p -> last_foreground_action = free_action;
     free_action -> execute();
     p -> aura_loss( "Inner Focus" );
     update_ready();

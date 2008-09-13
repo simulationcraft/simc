@@ -9,7 +9,7 @@
 
 stats_t::stats_t( const std::string& n, player_t* p ) :
   name_str(n), sim(p->sim), player(p), next(0), school(SCHOOL_PHYSICAL),
-  adjust_for_lost_time(true), channeled(false), analyzed(false), initialized(false), 
+  channeled(false), analyzed(false), initialized(false), 
   resource_consumed(0)
 {
   
@@ -72,7 +72,6 @@ void stats_t::add( double amount,
     if( amount < r.min_dmg ) r.min_dmg = amount;
     if( amount > r.max_dmg ) r.max_dmg = amount;
     // Keep track of last execute to adjust 'execute_time' for GCD and Lag
-    if( adjust_for_lost_time ) last_execute = this;
   }
   else
   {
@@ -175,15 +174,3 @@ void stats_t::analyze()
   }
 }
 
-// stats_t::adjust_for_gcd_and_lag ==========================================
-
-stats_t* stats_t::last_execute = 0;
-
-void stats_t::adjust_for_gcd_and_lag( double lost_time )
-{
-  if( last_execute )
-  {
-    last_execute -> total_execute_time += lost_time;
-    last_execute = 0;
-  }
-}
