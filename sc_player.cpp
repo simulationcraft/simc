@@ -136,7 +136,7 @@ player_t::player_t( sim_t*             s,
   // Actions
   action_list(0),
   // Reporting
-  quiet(0), report(0), 
+  quiet(0), report(0), last_foreground_action(0),
   last_action(0), total_seconds(0), total_waiting(0), iteration_dmg(0), total_dmg(0), 
   dps(0), dpr(0), rps_gain(0), rps_loss(0),
   proc_list(0), gain_list(0), stats_list(0), uptime_list(0)
@@ -631,6 +631,9 @@ void player_t::reset()
   attack_power_per_strength = initial_attack_power_per_strength;
   attack_power_per_agility  = initial_attack_power_per_agility;
   attack_crit_per_agility   = initial_attack_crit_per_agility;
+
+  last_foreground_action = 0;
+  last_action = 0;
 
   for( int i=0; i < RESOURCE_MAX; i++ )
   {
