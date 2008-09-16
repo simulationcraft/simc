@@ -949,7 +949,7 @@ struct devouring_plague_t : public priest_spell_t
     base_execute_time = 0; 
     base_duration     = 24.0; 
     num_ticks         = 8;  
-    cooldown          = 30.0;
+    cooldown          = p -> glyphs.blue_promises ? 30.0 : 180.0;
     binary            = true;
     dot_power_mod     = ( 24.0 / 15.0 ) / 2.0; 
 
