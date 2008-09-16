@@ -39,6 +39,7 @@ SRC =\
 	sc_target.cpp		\
 	sc_unique_gear.cpp	\
 	sc_util.cpp		\
+	sc_warlock.cpp		\
 	sc_weapon.cpp
 
 simcraft opt:

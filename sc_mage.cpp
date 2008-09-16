@@ -124,6 +124,7 @@ struct mage_t : public player_t
 
   struct glyphs_t
   {
+    int8_t blue_promises;
     int8_t arcane_power;
     int8_t fire_ball;
     int8_t frost_bolt;
@@ -2857,6 +2858,7 @@ bool mage_t::parse_option( const std::string& name,
     { "winters_grasp",             OPT_INT8,  &( talents.winters_grasp             ) },
     { "world_in_flames",           OPT_INT8,  &( talents.world_in_flames           ) },
     // Glyphs
+    { "glyph_blue_promises",       OPT_INT8,  &( glyphs.blue_promises              ) },
     { "glyph_arcane_power",        OPT_INT8,  &( glyphs.arcane_power               ) },
     { "glyph_fire_ball",           OPT_INT8,  &( glyphs.fire_ball                  ) },
     { "glyph_frost_bolt",          OPT_INT8,  &( glyphs.frost_bolt                 ) },

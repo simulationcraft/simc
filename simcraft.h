@@ -783,11 +783,10 @@ struct target_t
     // Permanent De-Buffs (until appropriate player class implemented)
     int16_t  judgement_of_crusader;
     double   judgement_of_wisdom;
-    int8_t   curse_of_elements;
-    int8_t   shadow_vulnerability;
     // Temporary De-Buffs
     int8_t   temporary_debuffs;
     int8_t   affliction_effects;
+    int8_t   curse_of_elements;
     int8_t   faerie_fire;
     double   focus_magic;
     int8_t   focus_magic_charges;
@@ -800,6 +799,7 @@ struct target_t
     int8_t   earth_and_moon;
     int8_t   nature_vulnerability;
     int8_t   nature_vulnerability_charges;
+    int8_t   shadow_vulnerability;
     int8_t   shadow_vulnerability_charges;
     int8_t   shadow_weaving;
     int8_t   slowed;
@@ -817,6 +817,7 @@ struct target_t
   
   struct expirations_t
   {
+    event_t* curse_of_elements;
     event_t* faerie_fire;
     event_t* frozen;
     event_t* earth_and_moon;

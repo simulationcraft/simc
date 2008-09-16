@@ -80,6 +80,7 @@ struct druid_t : public player_t
 
   struct glyphs_t
   {
+    int8_t blue_promises;
     int8_t innervate;
     int8_t insect_swarm;
     int8_t moonfire;
@@ -1349,6 +1350,7 @@ bool druid_t::parse_option( const std::string& name,
     { "vengeance",                 OPT_INT8,  &( talents.vengeance                 ) },
     { "wrath_of_cenarius",         OPT_INT8,  &( talents.wrath_of_cenarius         ) },
     // Glyphs
+    { "glyph_blue_promises",       OPT_INT8,  &( glyphs.blue_promises              ) },
     { "glyph_innervate",           OPT_INT8,  &( glyphs.innervate                  ) },
     { "glyph_insect_swarm",        OPT_INT8,  &( glyphs.insect_swarm               ) },
     { "glyph_moonfire",            OPT_INT8,  &( glyphs.moonfire                   ) },

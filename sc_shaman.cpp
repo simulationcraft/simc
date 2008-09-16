@@ -117,6 +117,7 @@ struct shaman_t : public player_t
 
   struct glyphs_t
   {
+    int8_t blue_promises;
     int8_t earth_shock;
     int8_t flametongue_weapon;
     int8_t lightning_bolt;
@@ -3178,6 +3179,7 @@ bool shaman_t::parse_option( const std::string& name,
     { "weapon_mastery",            OPT_INT8,  &( talents.weapon_mastery            ) },
     { "weapon_specialization",     OPT_INT8,  &( talents.weapon_specialization     ) },
     // Glyphs
+    { "glyph_blue_promises",       OPT_INT8,  &( glyphs.blue_promises              ) },
     { "glyph_earth_shock",         OPT_INT8,  &( glyphs.earth_shock                ) },
     { "glyph_flametongue_weapon",  OPT_INT8,  &( glyphs.flametongue_weapon         ) },
     { "glyph_lightning_bolt",      OPT_INT8,  &( glyphs.lightning_bolt             ) },
