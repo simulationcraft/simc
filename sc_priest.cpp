@@ -937,8 +937,8 @@ struct devouring_plague_t : public priest_spell_t
 
     static rank_t ranks[] =
     {
-      { 80, 9, 0, 0, 1720, 0.44 },
-      { 76, 8, 0, 0, 1416, 0.44 },
+      { 80, 9, 0, 0, 1720, 0.15 },
+      { 76, 8, 0, 0, 1416, 0.15 },
       { 68, 7, 0, 0, 1216, 1145 },
       { 60, 6, 0, 0,  904,  985 },
       { 0, 0 }
@@ -949,7 +949,7 @@ struct devouring_plague_t : public priest_spell_t
     base_execute_time = 0; 
     base_duration     = 24.0; 
     num_ticks         = 8;  
-    cooldown          = 180.0;
+    cooldown          = 3.0;
     binary            = true;
     dot_power_mod     = ( 24.0 / 15.0 ) / 2.0; 
 
