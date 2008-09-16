@@ -9,9 +9,11 @@
 // Warlock
 // ==========================================================================
 
+struct warlock_pet_t;
+
 struct warlock_t : public player_t
 {
-  enum pet_type_t { PET_NONE=0, FELGUARD, FELHUNTER, IMP, VOIDWALKER, SUCCUBUS };
+  warlock_pet_t* active_pet;
 
   spell_t* active_corruption;
   spell_t* active_curse;
@@ -19,9 +21,10 @@ struct warlock_t : public player_t
 
   // Buffs
   int8_t buffs_amplify_curse;
+  int8_t buffs_demon_armor;
+  double buffs_fel_armor;
   int8_t buffs_flame_shadow;
   int8_t buffs_nightfall;
-  int8_t buffs_pet_active;
   int8_t buffs_pet_sacrifice;
   int8_t buffs_shadow_flame;
   int8_t buffs_shadow_vulnerability;
@@ -111,14 +114,17 @@ struct warlock_t : public player_t
   warlock_t( sim_t* sim, std::string& name ) : player_t( sim, WARLOCK, name ) 
   {
     // Active
+    active_pet        = 0;
     active_corruption = 0;
+    active_curse      = 0;
     active_immolate   = 0;
 
     // Buffs
     buffs_amplify_curse                = 0;
+    buffs_demon_armor                  = 0;
+    buffs_fel_armor                    = 0;
     buffs_flame_shadow                 = 0;
     buffs_nightfall                    = 0;
-    buffs_pet_active                   = 0;
     buffs_pet_sacrifice                = 0;
     buffs_shadow_flame                 = 0;
     buffs_shadow_vulnerability         = 0;
@@ -151,6 +157,7 @@ struct warlock_t : public player_t
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
   virtual int       primary_resource() { return RESOURCE_MANA; }
+  virtual double    composite_spell_power( int8_t school );
 
   // Event Tracking
   virtual void regen( double periodicity );
@@ -181,21 +188,31 @@ struct warlock_spell_t : public spell_t
 };
 
 // ==========================================================================
-// Pet Voidwalker
+// Warlock Pet
 // ==========================================================================
 
-struct voidwalker_pet_t : public pet_t
+enum pet_type_t { PET_NONE=0, PET_FELGUARD, PET_FELHUNTER, PET_IMP, PET_VOIDWALKER, PET_SUCCUBUS };
+
+struct warlock_pet_t : public pet_t
 {
+  int8_t pet_type;
+
   struct melee_t : public attack_t
   {
     melee_t( player_t* player ) : 
-      attack_t( "melee", player, RESOURCE_NONE, SCHOOL_SHADOW )
+      attack_t( "melee", player, RESOURCE_NONE )
     {
+      warlock_pet_t* p = (warlock_pet_t*) player -> cast_pet();
+      warlock_t*     o = p -> cast_warlock();
+
       weapon = &( player -> main_hand_weapon );
       base_execute_time = weapon -> swing_time;
-      base_dd = 1;
-      background = true;
-      repeating = true;
+      base_dd           = 1;
+      background        = true;
+      repeating         = true;
+      base_crit        += o -> talents.demonic_tactics * 0.01;
+      base_multiplier  *= 1.0 + o -> talents.unholy_power * 0.04;
+      if( o -> talents.soul_link ) base_multiplier *= 1.05;
     }
     virtual void execute()
     {
@@ -212,59 +229,165 @@ struct voidwalker_pet_t : public pet_t
     void player_buff()
     {
       attack_t::player_buff();
-
-      player_t* o = player -> cast_pet() -> owner;
-
-      player_power += 0.57 * ( o -> spell_power[ SCHOOL_MAX    ] + 
-			       o -> spell_power[ SCHOOL_SHADOW ] );
-
-      // Arbitrary until I figure out base stats.
-      player_crit = 0.05;
+      player_power += 0.57 * player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_MAX );
     }
   };
 
-  melee_t* melee;
-
-  voidwalker_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name ) :
-    pet_t( sim, owner, pet_name )
+  warlock_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name, int8_t pt ) :
+    pet_t( sim, owner, pet_name ), pet_type(pt)
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.damage     = 110;
-    main_hand_weapon.swing_time = 1.5;
-
-    melee = new melee_t( this );
+    main_hand_weapon.damage     = 100;
+    main_hand_weapon.swing_time = 2.0;
   }
   virtual void init_base()
   {
     attribute_base[ ATTR_STRENGTH  ] = 153;
     attribute_base[ ATTR_AGILITY   ] = 108;
-    attribute_base[ ATTR_STAMINA   ] = 280;
+    attribute_base[ ATTR_STAMINA   ] = 278;
     attribute_base[ ATTR_INTELLECT ] = 133;
 
-    base_attack_power = -20;
     initial_attack_power_per_strength = 2.0;
-  }
-  virtual void reset()
-  {
-    player_t::reset();
   }
   virtual void schedule_ready()
   {
+    // Add pet specials later
     assert(0);
   }
   virtual void summon()
   {
-    player_t* o = cast_pet() -> owner;
-    if( sim -> log ) report_t::log( sim, "%s summons Voidwalker.", o -> name() );
-    attribute_initial[ ATTR_STAMINA   ] = attribute[ ATTR_STAMINA   ] = attribute_base[ ATTR_STAMINA   ] + ( 0.30 * o -> attribute[ ATTR_STAMINA   ] );
-    attribute_initial[ ATTR_INTELLECT ] = attribute[ ATTR_INTELLECT ] = attribute_base[ ATTR_INTELLECT ] + ( 0.30 * o -> attribute[ ATTR_INTELLECT ] );
-    // Kick-off repeating attack
-    melee -> execute();
+    warlock_t* o = cast_pet() -> owner -> cast_warlock();
+
+    if( sim -> log ) report_t::log( sim, "%s summons %s.", o -> name(), name() );
+
+    attribute[ ATTR_STAMINA   ] = attribute_base[ ATTR_STAMINA   ] + ( 0.30 * o -> stamina() );
+    attribute[ ATTR_INTELLECT ] = attribute_base[ ATTR_INTELLECT ] + ( 0.30 * o -> intellect() );
+
+    // FIXME! Ugly......
+    for( int i=0; i < ATTRIBUTE_MAX; i++ )
+    {
+      attribute_multiplier[ i ] = 1.0;
+      if( buffs.blessing_of_kings ) attribute_multiplier[ i ] *= 1.10;
+    }    
+
+    attribute_multiplier[ ATTR_STAMINA   ] *= 1.0 + o -> talents.fel_stamina   * 0.03;
+    attribute_multiplier[ ATTR_INTELLECT ] *= 1.0 + o -> talents.fel_intellect * 0.03;
   }
   virtual void dismiss()
   {
-    if( sim -> log ) report_t::log( sim, "%s's Voidwalker is dismissed.", cast_pet() -> owner -> name() );
-    melee -> cancel();
+    if( sim -> log ) report_t::log( sim, "%s dismisses %s.", cast_pet() -> owner -> name(), name() );
+  }
+};
+
+// ==========================================================================
+// Pet Felguard
+// ==========================================================================
+
+struct felguard_pet_t : public warlock_pet_t
+{
+  int8_t buffs_demonic_frenzy;
+
+  struct melee_t : public warlock_pet_t::melee_t
+  {
+    melee_t( player_t* player ) : 
+      warlock_pet_t::melee_t( player )
+    {
+      warlock_t* o = player -> cast_pet() -> owner -> cast_warlock();
+      base_multiplier *= 1.0 + o -> talents.master_demonologist * 0.01;
+    }
+    virtual void player_buff()
+    {
+      felguard_pet_t* p = (felguard_pet_t*) player -> cast_pet();
+      warlock_pet_t::melee_t::player_buff();
+      player_power *= 1.0 + p -> buffs_demonic_frenzy * 0.05;
+    }
+    virtual void assess_damage( double amount, int8_t dmg_type )
+    {
+      felguard_pet_t* p = (felguard_pet_t*) player -> cast_pet();
+      attack_t::assess_damage( amount, dmg_type );
+      if( p -> buffs_demonic_frenzy < 10 ) p -> buffs_demonic_frenzy++;
+    }    
+  };
+
+  melee_t* melee;
+
+  felguard_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name ) :
+    warlock_pet_t( sim, owner, pet_name, PET_FELGUARD ), melee(0)
+  {
+    buffs_demonic_frenzy = 0;
+    melee = new melee_t( this );
+  }
+  virtual void init_base()
+  {
+    base_attack_power = +20;
+  }
+  virtual void reset()
+  {
+    player_t::reset();
+    buffs_demonic_frenzy = 0;
+  }
+  virtual void summon()
+  {
+    warlock_pet_t::summon();
+    melee -> execute(); // Kick-off repeating attack
+  }
+  virtual void dismiss()
+  {
+    warlock_pet_t::dismiss();
+    melee -> cancel(); // Cancel repeating attack
+  }
+  virtual action_t* create_action( const std::string& name,
+				   const std::string& options_str )
+  {
+    //if( name == "cleave" ) return new cleave_t( this, options_str );
+
+    return 0;
+  }
+};
+
+// ==========================================================================
+// Pet Succubus
+// ==========================================================================
+
+struct succubus_pet_t : public warlock_pet_t
+{
+  struct melee_t : public warlock_pet_t::melee_t
+  {
+    melee_t( player_t* player ) : 
+      warlock_pet_t::melee_t( player )
+    {
+      warlock_t* o = player -> cast_pet() -> owner -> cast_warlock();
+      base_multiplier *= 1.0 + o -> talents.master_demonologist * 0.02;
+    }
+  };
+
+  melee_t* melee;
+
+  succubus_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name ) :
+    warlock_pet_t( sim, owner, pet_name, PET_SUCCUBUS )
+  {
+    melee = new melee_t( this );
+  }
+  virtual void init_base()
+  {
+    base_attack_power = -20;
+  }
+  virtual void summon()
+  {
+    warlock_pet_t::summon();
+    melee -> execute(); // Kick-off repeating attack
+  }
+  virtual void dismiss()
+  {
+    warlock_pet_t::dismiss();
+    melee -> cancel(); // Cancel repeating attack
+  }
+  virtual action_t* create_action( const std::string& name,
+				   const std::string& options_str )
+  {
+    //if( name == "lash_of_pain" ) return new lash_of_pain_t( this, options_str );
+
+    return 0;
   }
 };
 
@@ -491,26 +614,32 @@ void warlock_spell_t::player_buff()
   spell_t::player_buff();
   if( school == SCHOOL_SHADOW )
   {
-    if( p -> buffs_pet_sacrifice == warlock_t::FELGUARD ) player_multiplier *= 1.10;
-    if( p -> buffs_pet_sacrifice == warlock_t::SUCCUBUS ) player_multiplier *= 1.15;
+    if( p -> buffs_pet_sacrifice == PET_FELGUARD ) player_multiplier *= 1.10;
+    if( p -> buffs_pet_sacrifice == PET_SUCCUBUS ) player_multiplier *= 1.15;
     if( p -> buffs_flame_shadow ) player_power += 135;
     p -> uptimes_flame_shadow -> update( p -> buffs_flame_shadow );
   }
   else if( school == SCHOOL_FIRE )
   {
-    if( p -> buffs_pet_sacrifice == warlock_t::IMP ) player_multiplier *= 1.15;
+    if( p -> buffs_pet_sacrifice == PET_IMP ) player_multiplier *= 1.15;
     if( p -> buffs_shadow_flame ) player_power += 135;
     p -> uptimes_shadow_flame -> update( p -> buffs_shadow_flame );
   }
-  if( p -> talents.master_demonologist )
+  if( p -> active_pet )
   {
-    if( p -> buffs_pet_sacrifice == warlock_t::FELGUARD ) player_multiplier *= 1.0 + p -> talents.master_demonologist * 0.01;
-    if( p -> buffs_pet_sacrifice == warlock_t::SUCCUBUS ) player_multiplier *= 1.0 + p -> talents.master_demonologist * 0.02;
-  }
-  if( p -> talents.demonic_tactics && 
-      p -> buffs_pet_active != warlock_t::PET_NONE )
-  {
-    player_crit += p -> talents.demonic_tactics * 0.01;
+    if( p -> talents.master_demonologist )
+    {
+      if( p -> active_pet -> pet_type == PET_FELGUARD ) player_multiplier *= 1.0 + p -> talents.master_demonologist * 0.01;
+      if( p -> active_pet -> pet_type == PET_SUCCUBUS ) player_multiplier *= 1.0 + p -> talents.master_demonologist * 0.02;
+    }
+    if( p -> talents.soul_link )
+    {
+      player_multiplier *= 1.05;
+    }
+    if( p -> talents.demonic_tactics )
+    {
+      player_crit += p -> talents.demonic_tactics * 0.01;
+    }
   }
 }
 
@@ -1380,12 +1509,13 @@ struct incinerate_t : public warlock_spell_t
     may_crit          = true;
     dd_power_mod      = (2.5/3.5); 
 
-    base_cost        = rank -> cost;
-    base_cost       *= 1.0 -  p -> talents.cataclysm * 0.01;
-    base_multiplier *= 1.0 + p -> talents.emberstorm * 0.02;
-    base_crit       += p -> talents.devastation * 0.01;
-    base_crit       += p -> talents.backlash * 0.01;
-    dd_power_mod    += p -> talents.shadow_and_flame * 0.04;
+    base_cost          = rank -> cost;
+    base_cost         *= 1.0 - p -> talents.cataclysm * 0.01;
+    base_execute_time *= 1.0 - p -> talents.emberstorm * 0.02;
+    base_multiplier   *= 1.0 + p -> talents.emberstorm * 0.02;
+    base_crit         += p -> talents.devastation * 0.01;
+    base_crit         += p -> talents.backlash * 0.01;
+    dd_power_mod      += p -> talents.shadow_and_flame * 0.04;
     if( p -> talents.ruin ) base_crit_bonus *= 2.0;
 
     if( p -> gear.tier6_4pc ) base_multiplier *= 1.06;
@@ -1400,8 +1530,8 @@ struct incinerate_t : public warlock_spell_t
     {
       switch( rank -> index )
       {
-      case 2: base_dd += 116; break;
-      case 1: base_dd += 97;  break;
+      case 2: base_dd += 120; break;
+      case 1: base_dd += 108;  break;
       default: assert(0);
       }
     }
@@ -1599,13 +1729,114 @@ struct dark_pact_t : public warlock_spell_t
   }
 };
 
-// ==========================================================================
-// Warlock Event Tracking
-// ==========================================================================
+// Fel Armor Spell ==========================================================
+
+struct fel_armor_t : public warlock_spell_t
+{
+  double bonus_spell_power;
+
+  fel_armor_t( player_t* player, const std::string& options_str ) : 
+    warlock_spell_t( "sacrifice_pet", player, SCHOOL_SHADOW, TREE_DEMONOLOGY ), bonus_spell_power(0)
+  {
+    warlock_t* p = player -> cast_warlock();
+    trigger_gcd = 0;
+    bonus_spell_power = ( p -> level < 62 ?   0 :
+			  p -> level < 67 ?  50 :
+			  p -> level < 73 ? 100 :
+			  p -> level < 78 ? 150 : 180 );
+    bonus_spell_power *= 1.0 + p -> talents.demonic_aegis * 0.10;
+  }
+
+  virtual void execute() 
+  {
+    warlock_t* p = player -> cast_warlock();
+    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    p -> buffs_fel_armor = bonus_spell_power;
+    p -> buffs_demon_armor = 0;
+  }
+
+  virtual bool ready()
+  {
+    warlock_t* p = player -> cast_warlock();
+    return p -> buffs_fel_armor == 0;
+  }
+};
+
+// Sacrifice Pet Spell =======================================================
+
+struct sacrifice_pet_t : public warlock_spell_t
+{
+  sacrifice_pet_t( player_t* player, const std::string& options_str ) : 
+    warlock_spell_t( "sacrifice_pet", player, SCHOOL_SHADOW, TREE_DEMONOLOGY )
+  {
+    warlock_t* p = player -> cast_warlock();
+    assert( p -> talents.demonic_sacrifice );
+    trigger_gcd = 0;
+  }
+
+  virtual void execute() 
+  {
+    warlock_t* p = player -> cast_warlock();
+    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    p -> buffs_pet_sacrifice = p -> active_pet -> pet_type;
+    p -> active_pet -> dismiss();
+    p -> active_pet = 0;
+  }
+
+  virtual bool ready()
+  {
+    warlock_t* p = player -> cast_warlock();
+    return p -> active_pet != 0;
+  }
+};
+
+// Summon Pet Spell ==========================================================
+
+struct summon_pet_t : public warlock_spell_t
+{
+  std::string pet_name;
+
+  summon_pet_t( player_t* player, const std::string& options_str ) : 
+    warlock_spell_t( "summon_pet", player, SCHOOL_SHADOW, TREE_DEMONOLOGY )
+  {
+    pet_name = options_str;
+    trigger_gcd = 0;
+  }
+
+  virtual void execute()
+  {
+    player -> summon_pet( pet_name.c_str() );
+  }
+
+  virtual bool ready()
+  {
+    warlock_t* p = player -> cast_warlock();
+    if( p -> active_pet ) return false;
+    if( p -> buffs_pet_sacrifice ) return false;
+    return true;
+  }
+};
 
 // ==========================================================================
 // Warlock Character Definition
 // ==========================================================================
+
+// warlock_t::composite_spell_power =========================================
+
+double warlock_t::composite_spell_power( int8_t school )
+{
+  double sp = player_t::composite_spell_power( school );
+
+  sp += buffs_fel_armor;
+
+  if( active_pet && talents.demonic_knowledge )
+  {
+    sp += ( active_pet -> stamina() + 
+	    active_pet -> intellect() ) * talents.demonic_knowledge * 0.04;
+  }
+
+  return sp;
+}
 
 // warlock_t::create_action =================================================
 
@@ -1621,15 +1852,17 @@ action_t* warlock_t::create_action( const std::string& name,
   if( name == "dark_pact"           ) return new           dark_pact_t( this, options_str );
   if( name == "death_coil"          ) return new          death_coil_t( this, options_str );
   if( name == "drain_life"          ) return new          drain_life_t( this, options_str );
-//if( name == "fel_armor"           ) return new           fel_armor_t( this, options_str );
+  if( name == "fel_armor"           ) return new           fel_armor_t( this, options_str );
   if( name == "immolate"            ) return new            immolate_t( this, options_str );
   if( name == "incinerate"          ) return new          incinerate_t( this, options_str );
   if( name == "life_tap"            ) return new            life_tap_t( this, options_str );
+  if( name == "sacrifice_pet"       ) return new       sacrifice_pet_t( this, options_str );
   if( name == "shadow_bolt"         ) return new         shadow_bolt_t( this, options_str );
   if( name == "shadow_burn"         ) return new         shadow_burn_t( this, options_str );
   if( name == "searing_pain"        ) return new        searing_pain_t( this, options_str );
   if( name == "soul_fire"           ) return new           soul_fire_t( this, options_str );
   if( name == "siphon_life"         ) return new         siphon_life_t( this, options_str );
+  if( name == "summon_pet"          ) return new          summon_pet_t( this, options_str );
   if( name == "unstable_affliction" ) return new unstable_affliction_t( this, options_str );
 
   return 0;
@@ -1639,7 +1872,8 @@ action_t* warlock_t::create_action( const std::string& name,
 
 pet_t* warlock_t::create_pet( const std::string& pet_name )
 {
-  if( pet_name == "voidwalker" ) return new voidwalker_pet_t( sim, this, pet_name );
+  if( pet_name == "felguard" ) return new felguard_pet_t( sim, this, pet_name );
+  if( pet_name == "succubus" ) return new succubus_pet_t( sim, this, pet_name );
 
   return 0;
 }
@@ -1648,17 +1882,20 @@ pet_t* warlock_t::create_pet( const std::string& pet_name )
 
 void warlock_t::init_base()
 {
-  attribute_base[ ATTR_STRENGTH  ] =  40;
-  attribute_base[ ATTR_AGILITY   ] =  45;
-  attribute_base[ ATTR_STAMINA   ] =  60;
-  attribute_base[ ATTR_INTELLECT ] = 145;
-  attribute_base[ ATTR_SPIRIT    ] = 155;
+  attribute_base[ ATTR_STRENGTH  ] =  54;
+  attribute_base[ ATTR_AGILITY   ] =  55;
+  attribute_base[ ATTR_STAMINA   ] =  78;
+  attribute_base[ ATTR_INTELLECT ] = 130;
+  attribute_base[ ATTR_SPIRIT    ] = 142;
 
-  base_spell_crit = 0.0125;
+  attribute_multiplier_initial[ ATTR_STAMINA ] *= 1.0 + talents.demonic_embrace * 0.03;
+  attribute_multiplier_initial[ ATTR_SPIRIT  ] *= 1.0 - talents.demonic_embrace * 0.01;
+
+  base_spell_crit = 0.0170;
   initial_spell_crit_per_intellect = rating_t::interpolate( level, 0.01/60.0, 0.01/80.0, 0.01/166.6 );
 
   base_attack_power = -10;
-  base_attack_crit  = 0.03;
+  base_attack_crit  = 0.02;
   initial_attack_power_per_strength = 1.0;
   initial_attack_crit_per_agility = rating_t::interpolate( level, 0.01/16.0, 0.01/24.9, 0.01/52.1 );
 
@@ -1668,6 +1905,9 @@ void warlock_t::init_base()
 
   health_per_stamina = 10;
   mana_per_intellect = 15;
+
+  mana_per_intellect *= 1.0 + talents.fel_intellect * 0.01;
+  health_per_stamina *= 1.0 + talents.fel_stamina   * 0.01;
 }
 
 // warlock_t::reset ==========================================================
@@ -1678,13 +1918,16 @@ void warlock_t::reset()
 
   // Active
   active_corruption = 0;
+  active_curse      = 0;
   active_immolate   = 0;
+  active_pet        = 0;
 
   // Buffs
   buffs_amplify_curse                = 0;
+  buffs_demon_armor                  = 0;
+  buffs_fel_armor                    = 0;
   buffs_flame_shadow                 = 0;
   buffs_nightfall                    = 0;
-  buffs_pet_active                   = 0;
   buffs_pet_sacrifice                = 0;
   buffs_shadow_flame                 = 0;
   buffs_shadow_vulnerability         = 0;
@@ -1716,16 +1959,9 @@ void warlock_t::regen( double periodicity )
   resource_gain( RESOURCE_MANA, spirit_regen, gains.spirit_regen );
   resource_gain( RESOURCE_MANA,    mp5_regen, gains.mp5_regen    );
 
-  if( buffs_pet_sacrifice == FELGUARD )
+  if( buffs_pet_sacrifice == PET_FELGUARD )
   {
     double sacrifice_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.02 / 4.0;
-
-    resource_gain( RESOURCE_MANA, sacrifice_regen, gains_sacrifice );
-  }
-
-  if( buffs_pet_sacrifice == FELHUNTER )
-  {
-    double sacrifice_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.03 / 4.0;
 
     resource_gain( RESOURCE_MANA, sacrifice_regen, gains_sacrifice );
   }
