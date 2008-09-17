@@ -62,8 +62,6 @@ void attack_t::player_buff()
   player_crit      = p -> composite_attack_crit();
   player_power     = p -> composite_attack_power();
 
-  p -> uptimes.unleashed_rage -> update( p -> buffs.unleashed_rage );
-
   if( sim_t::WotLK && p -> buffs.grace_of_air ) player_crit += 0.01;
 
   if( sim -> debug ) 

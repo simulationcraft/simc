@@ -22,17 +22,38 @@ pet_t::pet_t( sim_t*             s,
   owner -> pet_list = this;
 }
 
+// pet_t::stamina ===========================================================
+
+double pet_t::stamina()
+{
+  return player_t::stamina() + 0.30 * owner -> stamina();
+}
+
+// pet_t::intellect =========================================================
+
+double pet_t::intellect()
+{
+  return player_t::intellect() + 0.30 * owner -> intellect();
+}
+
 // pet_t::summon ============================================================
 
 void pet_t::summon()
 {
-  schedule_ready();
+  if( sim -> log ) report_t::log( sim, "%s summons %s.", owner -> name(), name() );
+  init_resources( true );
 }
 
 // pet_t::dismiss ===========================================================
 
 void pet_t::dismiss()
 {
-  // This will not cancel actions in progress, but probably good enough.....
-  sleeping = true;
+  if( sim -> log ) report_t::log( sim, "%s dismisses %s", owner -> name(), name() );
+
+  for( action_t* a = action_list; a; a = a -> next )
+  {
+    a -> cancel();
+  }
+
+  sim -> cancel_events( this );
 }

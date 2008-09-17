@@ -195,13 +195,8 @@ struct shadow_fiend_pet_t : public pet_t
     void player_buff()
     {
       attack_t::player_buff();
-
       player_t* o = player -> cast_pet() -> owner;
-
       player_power += 0.57 * o -> composite_spell_power( SCHOOL_SHADOW );
-
-      // Arbitrary until I figure out base stats.
-      player_crit = 0.05;
     }
     void assess_damage( double amount, int8_t dmg_type )
     {
@@ -235,23 +230,10 @@ struct shadow_fiend_pet_t : public pet_t
 
     if( owner -> gear.tier4_2pc ) attribute_base[ ATTR_STAMINA ] += 75;
   }
-  virtual void schedule_ready()
-  {
-    assert(0);
-  }
   virtual void summon()
   {
-    player_t* o = cast_pet() -> owner;
-    if( sim -> log ) report_t::log( sim, "%s summons Shadow Fiend.", o -> name() );
-    attribute_initial[ ATTR_STAMINA   ] = attribute[ ATTR_STAMINA   ] = attribute_base[ ATTR_STAMINA   ] + ( 0.30 * o -> stamina() );
-    attribute_initial[ ATTR_INTELLECT ] = attribute[ ATTR_INTELLECT ] = attribute_base[ ATTR_INTELLECT ] + ( 0.30 * o -> intellect() );
-    // Kick-off repeating attack
-    melee -> execute();
-  }
-  virtual void dismiss()
-  {
-    if( sim -> log ) report_t::log( sim, "%s's Shadow Fiend dies.", cast_pet() -> owner -> name() );
-    melee -> cancel();
+    pet_t::summon();
+    melee -> execute(); // Kick-off repeating attack
   }
 };
 

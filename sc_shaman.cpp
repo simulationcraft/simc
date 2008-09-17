@@ -36,8 +36,10 @@ struct shaman_t : public player_t
 
   // Expirations
   event_t* expirations_elemental_devastation;
+  event_t* expirations_elemental_oath;
   event_t* expirations_maelstrom_weapon;
   event_t* expirations_nature_vulnerability;
+  event_t* expirations_unleashed_rage;
   event_t* expirations_windfury_weapon;
 
   // Gains
@@ -51,6 +53,7 @@ struct shaman_t : public player_t
   uptime_t* uptimes_elemental_oath;
   uptime_t* uptimes_flurry;
   uptime_t* uptimes_nature_vulnerability;
+  uptime_t* uptimes_unleashed_rage;
   
   // Auto-Attack
   attack_t* main_hand_attack;
@@ -158,8 +161,10 @@ struct shaman_t : public player_t
 
     // Expirations
     expirations_elemental_devastation = 0;
+    expirations_elemental_oath        = 0;
     expirations_maelstrom_weapon      = 0;
     expirations_nature_vulnerability  = 0;
+    expirations_unleashed_rage        = 0;
     expirations_windfury_weapon       = 0;
   
     // Gains
@@ -173,6 +178,7 @@ struct shaman_t : public player_t
     uptimes_elemental_oath        = get_uptime( "elemental_oath"        );
     uptimes_flurry                = get_uptime( "flurry"                );
     uptimes_nature_vulnerability  = get_uptime( "nature_vulnerability"  );
+    uptimes_unleashed_rage        = get_uptime( "unleashed_rage"        );
   
     // Auto-Attack
     main_hand_attack = 0;
@@ -409,51 +415,58 @@ static void stack_maelstrom_weapon( attack_t* a )
 
 static void trigger_unleashed_rage( attack_t* a )
 {
-  int8_t talents_ur = a -> player -> cast_shaman() -> talents.unleashed_rage;
-  int8_t   buffs_ur = a -> player ->                    buffs.unleashed_rage;
-  
-  if( talents_ur == 0 || ( talents_ur < buffs_ur ) )
-    return;
-
   struct unleashed_rage_expiration_t : public event_t
   {
     unleashed_rage_expiration_t( sim_t* sim, player_t* player ) : event_t( sim, player )
     {
       name = "Unleashed Rage Expiration";
-      player -> aura_gain( "Unleashed Rage" );
-      player -> attack_power_multiplier *= 1.0 + player -> buffs.unleashed_rage * 0.02;
+      for( player_t* p = sim -> player_list; p; p = p -> next )
+      {
+	if( sim_t::WotLK || p -> party == player -> party )
+        {
+	  if( p -> buffs.unleashed_rage == 0 ) 
+	  {
+	    p -> aura_gain( "Unleashed Rage" );
+	    p -> attack_power_multiplier *= 1.10;
+	  }
+	  p -> buffs.unleashed_rage++;
+	}
+      }
       sim -> add_event( this, 10.0 );
     }
     virtual void execute()
     {
-      player -> aura_loss( "Unleashed Rage" );
-      player -> attack_power_multiplier /= 1.0 + player -> buffs.unleashed_rage * 0.02;
-      player -> buffs.unleashed_rage = 0;
-      player -> expirations.unleashed_rage = 0;
+      for( player_t* p = sim -> player_list; p; p = p -> next )
+      {
+	if( sim_t::WotLK || p -> party == player -> party )
+        {
+	  p -> buffs.unleashed_rage--;
+	  if( p -> buffs.unleashed_rage == 0 ) 
+	  {
+	    p -> aura_loss( "Unleashed Rage" );
+	    p -> attack_power_multiplier /= 1.10;
+	  }
+	}
+      }
+      player -> cast_shaman() -> expirations_unleashed_rage = 0;
     }
   };
 
-  for( player_t* p = a -> sim -> player_list; p; p = p -> next )
+  if( a -> proc ) return;
+
+  shaman_t* p = a -> player -> cast_shaman();
+  
+  if( p -> talents.unleashed_rage == 0 ) return;
+
+  event_t*& e = p -> expirations_unleashed_rage;
+
+  if( e )
   {
-    if( sim_t::WotLK || p -> party == a -> player -> party )
-    {
-      event_t*& e = p -> expirations.unleashed_rage;
-    
-      if( e )
-      {
-	if( talents_ur > buffs_ur )
-	{
-	  p -> attack_power_multiplier *= ( 1.0 + talents_ur * 0.02 ) / ( 1.0 + buffs_ur * 0.02 );
-	  p -> buffs.unleashed_rage = talents_ur;
-	}
-	e -> reschedule( 10.0 );
-      }
-      else
-      {
-	p -> buffs.unleashed_rage = talents_ur;
-	e = new unleashed_rage_expiration_t( a -> sim, p );
-      }
-    }
+    e -> reschedule( 10.0 );
+  }
+  else
+  {
+    e = new unleashed_rage_expiration_t( a -> sim, p );
   }
 }
 
@@ -646,46 +659,44 @@ static void trigger_elemental_devastation( spell_t* s )
 
 static void trigger_elemental_oath( spell_t* s )
 {
-  if( s -> player -> cast_shaman() -> talents.elemental_oath == 0 ) return;
-
-  if( s -> proc ) return;
-
   struct elemental_oath_expiration_t : public event_t
   {
     elemental_oath_expiration_t( sim_t* sim, player_t* player ) : event_t( sim, player )
     {
       name = "Elemental Oath Expiration";
-      player -> aura_gain( "Maelstrom Weapon" );
+      for( player_t* p = sim -> player_list; p; p = p -> next )
+      {
+	if( p -> buffs.elemental_oath == 0 ) p -> aura_gain( "Elemental Oath" );
+	p -> buffs.elemental_oath++;
+      }
       sim -> add_event( this, 15.0 );
     }
     virtual void execute()
     {
-      player -> aura_loss( "Maelstrom Weapon" );
-      player -> buffs.elemental_oath = 0;
-      player -> expirations.elemental_oath = 0;
+      for( player_t* p = sim -> player_list; p; p = p -> next )
+      {
+	p -> buffs.elemental_oath--;
+	if( p -> buffs.elemental_oath == 0 ) p -> aura_loss( "Elemental Oath" );
+      }
+      player -> cast_shaman() -> expirations_elemental_oath = 0;
     }
   };
 
-  for( player_t* p = s -> sim -> player_list; p; p = p -> next )
-  {
-    if( p -> buffs.elemental_oath < 6 )
-    {
-      // Assume talent has two ranks.
-      p -> buffs.elemental_oath += 2;
+  if( s -> proc ) return;
 
-      if( s -> sim -> log ) report_t::log( s -> sim, "%s gains Elemental Oath %d", p -> name(), p -> buffs.elemental_oath );
-    }
+  shaman_t* p = s -> player -> cast_shaman();
+  
+  if( p -> talents.elemental_oath == 0 ) return;
 
-    event_t*& e = p -> expirations.elemental_oath;
+  event_t*& e = p -> expirations_elemental_oath;
     
-    if( e )
-    {
-      e -> reschedule( 15.0 );
-    }
-    else
-    {
-      e = new elemental_oath_expiration_t( s -> sim, p );
-    }
+  if( e )
+  {
+    e -> reschedule( 15.0 );
+  }
+  else
+  {
+    e = new elemental_oath_expiration_t( s -> sim, p );
   }
 }
 
@@ -721,6 +732,8 @@ void shaman_attack_t::player_buff()
     player_crit += p -> talents.elemental_devastation * 0.03;
   }
   p -> uptimes_elemental_devastation -> update( p -> buffs_elemental_devastation );
+  p -> uptimes_unleashed_rage        -> update( p -> buffs.unleashed_rage        );
+
 }
 
 // =========================================================================
@@ -874,7 +887,6 @@ double shaman_spell_t::cost()
 {
   shaman_t* p = player -> cast_shaman();
   if( p -> buffs_elemental_mastery ) return 0;
-  p -> uptimes_elemental_oath -> update( p -> buffs.elemental_oath == 6 );
   double c = spell_t::cost();
   if( p -> buffs_elemental_focus ) c *= 0.60;
   if( p -> buffs.tier4_4pc )
@@ -926,6 +938,7 @@ void shaman_spell_t::player_buff()
     }
     p -> uptimes_nature_vulnerability -> update( p -> buffs_nature_vulnerability );
   }
+  p -> uptimes_elemental_oath -> update( p -> buffs.elemental_oath );
 }
 
 // shaman_spell_t::schedule_execute ========================================
@@ -2879,8 +2892,10 @@ void shaman_t::reset()
 
   // Expirations
   expirations_elemental_devastation = 0;
+  expirations_elemental_oath        = 0;
   expirations_maelstrom_weapon      = 0;
   expirations_nature_vulnerability  = 0;
+  expirations_unleashed_rage        = 0;
   expirations_windfury_weapon       = 0;
 }
 

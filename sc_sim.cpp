@@ -40,92 +40,6 @@ int sim_signal_handler_t::seed = 0;
 int sim_signal_handler_t::iteration = 0;
 
 // ==========================================================================
-// Timing Wheel
-// ==========================================================================
-
-// timing_wheel_t::timing_wheel_t ===========================================
-
-timing_wheel_t::timing_wheel_t() : 
-  time_horizon( 600.0 ), granularity( 0.01 ),
-  size( 0 ), events( 0 )
-{
-}
-
-// timing_wheel_t::push =====================================================
-
-void timing_wheel_t::push( event_t* e )
-{
-  assert( false );
-}
-
-// timing_wheel_t::top ======================================================
-
-event_t* timing_wheel_t::top()
-{
-  assert( false );
-}
-
-// timing_wheel_t::pop ======================================================
-
-void timing_wheel_t::pop()
-{
-  assert( false );
-}
-
-// timing_wheel_t::empty ====================================================
-
-bool timing_wheel_t::empty()
-{
-  assert( false );
-}
-
-// ==========================================================================
-// Timing List
-// ==========================================================================
-
-// timing_list_t::timing_list_t =============================================
-
-timing_list_t::timing_list_t() : 
-  events( 0 )
-{
-}
-
-// timing_list_t::push ======================================================
-
-void timing_list_t::push( event_t* e )
-{
-  event_t** prev = &events;
-
-  while( (*prev) && (*prev) -> time < e -> time )
-    prev = &( (*prev) -> next );
-
-  e -> next = *prev;
-  *prev = e;
-}
-
-// timing_list_t::top =======================================================
-
-event_t* timing_list_t::top()
-{
-  return events;
-}
-
-// timing_list_t::pop =======================================================
-
-void timing_list_t::pop()
-{
-  // Requires event deletion to occur AFTER pop().
-  events = events -> next;
-}
-
-// timing_list_t::empty =====================================================
-
-bool timing_list_t::empty()
-{
-  return events != 0;
-}
-
-// ==========================================================================
 // Simulator
 // ==========================================================================
 
@@ -134,7 +48,7 @@ bool sim_t::WotLK = false;
 // sim_t::sim_t =============================================================
 
 sim_t::sim_t() : 
-  method( SIM_LIST ), player_list(0), active_player(0), target(0),
+  event_list(0), player_list(0), active_player(0), target(0),
   lag(0), reaction_time(0.5), regen_periodicity(1.0), current_time(0), max_time(0),
   events_remaining(0), max_events_remaining(0), 
   events_processed(0), total_events_processed(0),
@@ -156,19 +70,17 @@ sim_t::sim_t() :
 void sim_t::add_event( event_t* e,
 		       double   delta_time )
 {
-   assert( delta_time >= 0 );
-   e -> time = current_time + delta_time;
-   e -> id   = ++id;
-   switch( method )
-   {
-   case SIM_LIST:      timing_list.push( e );      break;
-   case SIM_WHEEL:     timing_wheel.push( e );     break;
-   case SIM_PRIORITYQ: timing_priorityq.push( e ); break;
-   default: assert( false );
-   }
-   events_remaining++;
-   if( events_remaining > max_events_remaining ) max_events_remaining = events_remaining;
-   if( debug ) report_t::log( this, "Add Event: %s %.2f %d", e -> name, e -> time, e -> id );
+  assert( delta_time >= 0 );
+  e -> time = current_time + delta_time;
+  e -> id   = ++id;
+  
+  event_t** prev = &event_list;
+  while( (*prev) && (*prev) -> time < e -> time ) prev = &( (*prev) -> next );
+  e -> next = *prev;
+  *prev = e;
+  events_remaining++;
+  if( events_remaining > max_events_remaining ) max_events_remaining = events_remaining;
+  if( debug ) report_t::log( this, "Add Event: %s %.2f %d", e -> name, e -> time, e -> id );
 }
 
 // sim_t::reschedule_event ==========================================================
@@ -184,28 +96,8 @@ void sim_t::reschedule_event( event_t* e )
 
 event_t* sim_t::next_event()
 {
-  event_t* e=0;
-
-  if( method == SIM_LIST )
-  {
-    e = timing_list.top();
-    if( e ) timing_list.pop();
-  }
-  else if( method == SIM_WHEEL )
-  {
-    e = timing_wheel.top();
-    if( e ) timing_wheel.pop();
-  }
-  else if( method == SIM_PRIORITYQ )
-  {
-    if( ! timing_priorityq.empty() )
-    {
-      e = timing_priorityq.top();
-      timing_priorityq.pop();
-    }
-  }
-  else assert( false );
-
+  event_t* e = event_list;
+  if( e ) event_list = e -> next;
   return e;
 }
 
@@ -279,6 +171,19 @@ void sim_t::flush_events()
    id = 0;
 }
 
+// sim_t::cancel_events =====================================================
+
+void sim_t::cancel_events( player_t* p )
+{
+  for( event_t* e = event_list; e; e = e -> next )
+  {
+    if( e -> player == p ) 
+    {
+      e -> canceled = 1;
+    }
+  }
+}
+
 // sim_t::reset =============================================================
 
 void sim_t::reset()
@@ -304,14 +209,6 @@ bool sim_t::init()
   rand_t::init( seed );
 
   sim_signal_handler_t::init( this );
-
-  if( ! method_str.empty() )
-  {
-    if     ( method_str == "list"      || method_str == "LIST"      ) method = SIM_LIST;
-    else if( method_str == "wheel"     || method_str == "WHEEL"     ) method = SIM_WHEEL;
-    else if( method_str == "priorityq" || method_str == "PRIORITYQ" ) method = SIM_PRIORITYQ;
-    else assert( false );
-  }
 
   if( ! patch_str.empty() )
   {
@@ -524,7 +421,6 @@ bool sim_t::parse_option( const std::string& name,
     { "regen_periodicity",       OPT_FLT,    &( regen_periodicity                    ) },
     { "log",                     OPT_INT8,   &( log                                  ) },
     { "max_time",                OPT_FLT,    &( max_time                             ) },
-    { "method"  ,                OPT_STRING, &( method_str                           ) },
     { "patch",                   OPT_STRING, &( patch_str                            ) },
     { "potion_sickness",         OPT_INT8,   &( potion_sickness                      ) },
     { "seed",                    OPT_INT32,  &( seed                                 ) },

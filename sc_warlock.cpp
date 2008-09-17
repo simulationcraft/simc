@@ -210,6 +210,7 @@ struct warlock_pet_t : public pet_t
       base_dd           = 1;
       background        = true;
       repeating         = true;
+
       base_crit        += o -> talents.demonic_tactics * 0.01;
       base_multiplier  *= 1.0 + o -> talents.unholy_power * 0.04;
       if( o -> talents.soul_link ) base_multiplier *= 1.05;
@@ -242,40 +243,95 @@ struct warlock_pet_t : public pet_t
   }
   virtual void init_base()
   {
+    warlock_t* o = cast_pet() -> owner -> cast_warlock();
+
     attribute_base[ ATTR_STRENGTH  ] = 153;
     attribute_base[ ATTR_AGILITY   ] = 108;
     attribute_base[ ATTR_STAMINA   ] = 278;
     attribute_base[ ATTR_INTELLECT ] = 133;
-
-    initial_attack_power_per_strength = 2.0;
-  }
-  virtual void schedule_ready()
-  {
-    // Add pet specials later
-    assert(0);
-  }
-  virtual void summon()
-  {
-    warlock_t* o = cast_pet() -> owner -> cast_warlock();
-
-    if( sim -> log ) report_t::log( sim, "%s summons %s.", o -> name(), name() );
-
-    attribute[ ATTR_STAMINA   ] = attribute_base[ ATTR_STAMINA   ] + ( 0.30 * o -> stamina() );
-    attribute[ ATTR_INTELLECT ] = attribute_base[ ATTR_INTELLECT ] + ( 0.30 * o -> intellect() );
-
-    // FIXME! Ugly......
-    for( int i=0; i < ATTRIBUTE_MAX; i++ )
-    {
-      attribute_multiplier[ i ] = 1.0;
-      if( buffs.blessing_of_kings ) attribute_multiplier[ i ] *= 1.10;
-    }    
+    attribute_base[ ATTR_SPIRIT    ] = 122;
 
     attribute_multiplier[ ATTR_STAMINA   ] *= 1.0 + o -> talents.fel_stamina   * 0.03;
     attribute_multiplier[ ATTR_INTELLECT ] *= 1.0 + o -> talents.fel_intellect * 0.03;
+
+    initial_attack_power_per_strength = 2.0;
+
+    resource_base[ RESOURCE_MANA ] = 300;
+
+    health_per_stamina = 10;
+    mana_per_intellect = 15;
   }
-  virtual void dismiss()
+  virtual void summon()
   {
-    if( sim -> log ) report_t::log( sim, "%s dismisses %s.", cast_pet() -> owner -> name(), name() );
+    pet_t::summon();
+  }
+};
+
+// ==========================================================================
+// Pet Imp
+// ==========================================================================
+
+struct imp_pet_t : public warlock_pet_t
+{
+  struct fire_bolt_t : public spell_t
+  {
+    fire_bolt_t( player_t* player ):
+      spell_t( "fire_bolt", player, RESOURCE_MANA, SCHOOL_FIRE, TREE_DEMONOLOGY ) 
+    {
+      warlock_t* o = player -> cast_pet() -> owner -> cast_warlock();
+
+      static rank_t ranks[] =
+      {
+	{ 68, 8, 110, 124, 0, 145 },
+	{ 58, 7,  83,  93, 0, 115 },
+	{ 0,  0 }
+      };
+      rank = choose_rank( ranks );
+
+      base_execute_time  = 2.0;
+      dd_power_mod       = ( 2.0 / 3.5 );
+      may_crit           = true;
+      background         = true;
+      repeating          = true;
+
+      base_execute_time -= o -> talents.improved_fire_bolt * 0.25;
+      base_crit         += o -> talents.demonic_tactics * 0.01;
+      base_multiplier   *= 1.0 + o -> talents.improved_imp * 0.10;
+      base_multiplier   *= 1.0 + o -> talents.unholy_power * 0.04;
+      if( o -> talents.soul_link ) base_multiplier *= 1.05;
+      
+    }
+    virtual void player_buff()
+    {
+      spell_t::player_buff();
+      player_power += 0.15 * player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_FIRE );
+    }
+  };
+
+  fire_bolt_t* fire_bolt;
+
+  imp_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name ) :
+    warlock_pet_t( sim, owner, pet_name, PET_FELGUARD ), fire_bolt(0)
+  {
+    fire_bolt = new fire_bolt_t( this );
+  }
+  virtual void init_base()
+  {
+    warlock_pet_t::init_base();
+
+    attribute_base[ ATTR_STRENGTH  ] = 145;
+    attribute_base[ ATTR_AGILITY   ] =  38;
+    attribute_base[ ATTR_STAMINA   ] = 190;
+    attribute_base[ ATTR_INTELLECT ] = 278;
+    attribute_base[ ATTR_SPIRIT    ] = 263;
+
+    health_per_stamina = 5;
+    mana_per_intellect = 7.5;
+  }
+  virtual void summon()
+  {
+    warlock_pet_t::summon();
+    fire_bolt -> schedule_execute(); // Kick-off repeating attack
   }
 };
 
@@ -319,6 +375,7 @@ struct felguard_pet_t : public warlock_pet_t
   }
   virtual void init_base()
   {
+    warlock_pet_t::init_base();
     base_attack_power = +20;
   }
   virtual void reset()
@@ -329,12 +386,7 @@ struct felguard_pet_t : public warlock_pet_t
   virtual void summon()
   {
     warlock_pet_t::summon();
-    melee -> execute(); // Kick-off repeating attack
-  }
-  virtual void dismiss()
-  {
-    warlock_pet_t::dismiss();
-    melee -> cancel(); // Cancel repeating attack
+    melee -> schedule_execute(); // Kick-off repeating attack
   }
   virtual action_t* create_action( const std::string& name,
 				   const std::string& options_str )
@@ -370,17 +422,13 @@ struct succubus_pet_t : public warlock_pet_t
   }
   virtual void init_base()
   {
+    warlock_pet_t::init_base();
     base_attack_power = -20;
   }
   virtual void summon()
   {
     warlock_pet_t::summon();
-    melee -> execute(); // Kick-off repeating attack
-  }
-  virtual void dismiss()
-  {
-    warlock_pet_t::dismiss();
-    melee -> cancel(); // Cancel repeating attack
+    melee -> schedule_execute(); // Kick-off repeating attack
   }
   virtual action_t* create_action( const std::string& name,
 				   const std::string& options_str )

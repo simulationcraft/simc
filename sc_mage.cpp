@@ -240,6 +240,11 @@ struct water_elemental_pet_t : public pet_t
       background         = true;
       repeating          = true;
     }
+    virtual void player_buff()
+    {
+      spell_t::player_buff();
+      player_power += 0.40 * player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_FROST );
+    }
   };
 
   water_bolt_t* water_bolt;
@@ -252,63 +257,39 @@ struct water_elemental_pet_t : public pet_t
   virtual void init_base()
   {
     // Stolen from Priest's Shadowfiend
-    attribute_base[ ATTR_STRENGTH  ] = 153;
-    attribute_base[ ATTR_AGILITY   ] = 108;
-    attribute_base[ ATTR_STAMINA   ] = 280;
+    attribute_base[ ATTR_STRENGTH  ] = 145;
+    attribute_base[ ATTR_AGILITY   ] =  38;
+    attribute_base[ ATTR_STAMINA   ] = 190;
     attribute_base[ ATTR_INTELLECT ] = 133;
 
     health_per_stamina = 7.5;
     mana_per_intellect = 5;
   }
-  virtual void reset()
-  {
-    player_t::reset();
-  }
-  virtual void schedule_ready()
-  {
-    assert(0);
-  }
   virtual void summon()
   {
+    pet_t::summon();
+
     mage_t* o = cast_pet() -> owner -> cast_mage();
 
-    if( sim -> log ) report_t::log( sim, "%s summons Water Elemental.", o -> name() );
-
     o -> active_water_elemental = this;
-
-    initial_haste_rating=0;
-    for( int i=0; i < ATTRIBUTE_MAX; i++ ) attribute_initial[ i ] = 0;
-    for( int i=0; i < RESOURCE_MAX;  i++ )  resource_initial[ i ] = 0;
-    initial_spell_power[ SCHOOL_MAX ] = 0;
-
-    // Model the stat-based contribution from the Mage as "gear enchants".
-    
-    gear.attribute_enchant[ ATTR_STAMINA   ] = (int16_t) ( 0.30 * o -> attribute[ ATTR_STAMINA   ] );
-    gear.attribute_enchant[ ATTR_INTELLECT ] = (int16_t) ( 0.30 * o -> attribute[ ATTR_INTELLECT ] );
-
-    gear.spell_power_enchant[ SCHOOL_MAX ] = (int16_t) ( 0.40 * o -> composite_spell_power( SCHOOL_FROST ) );
-
-    init_core();
-    init_spell();
-    init_resources();
 
     if( o -> talents.improved_water_elemental )
     {
       for( player_t* p = sim -> player_list; p; p = p -> next )
       {
+	if( p -> buffs.water_elemental_regen == 0 ) p -> aura_gain( "Water Elemental Regen" );
 	p -> buffs.water_elemental_regen++;
-	if( p -> buffs.water_elemental_regen == 1 ) p -> aura_gain( "Water Elemental Regen" );
       }
     }
 
     // Kick-off repeating attack.  Eventually, this should go thru schedule_ready().
-    water_bolt -> execute();
+    water_bolt -> schedule_execute();
   }
   virtual void dismiss()
   {
-    mage_t* o = cast_pet() -> owner -> cast_mage();
+    pet_t::dismiss();
 
-    if( sim -> log ) report_t::log( sim, "%s's Water Elemental dies.", cast_pet() -> owner -> name() );
+    mage_t* o = cast_pet() -> owner -> cast_mage();
 
     if( o -> talents.improved_water_elemental )
     {
@@ -318,8 +299,6 @@ struct water_elemental_pet_t : public pet_t
 	if( p -> buffs.water_elemental_regen == 0 ) p -> aura_loss( "Water Elemental Regen" );
       }
     }
-
-    water_bolt -> cancel();
 
     o -> active_water_elemental = 0;
   }

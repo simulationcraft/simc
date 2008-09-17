@@ -393,7 +393,7 @@ void player_t::init_weapon( weapon_t*    w,
 
 // player_t::init_resources ================================================
 
-void player_t::init_resources() 
+void player_t::init_resources( bool force ) 
 {
   double resource_bonus[ RESOURCE_MAX ];
   for( int i=0; i < RESOURCE_MAX; i++ ) resource_bonus[ i ] = 0;
@@ -402,11 +402,11 @@ void player_t::init_resources()
   
   for( int i=0; i < RESOURCE_MAX; i++ )
   {
-    if( resource_initial[ i ] == 0 )
+    if( force || resource_initial[ i ] == 0 )
     {
       resource_initial[ i ] = resource_base[ i ] + resource_bonus[ i ] + gear.resource[ i ] + gear.resource_enchant[ i ];
     }
-    resource_current[ i ] = resource_initial[ i ];
+    resource_current[ i ] = resource_max[ i ] = resource_initial[ i ];
   }
 
   resource_constrained = 0;
@@ -491,8 +491,6 @@ void player_t::init_stats()
   {
     resource_lost[ i ] = resource_gained[ i ] = 0;
   }
-
-  uptimes.unleashed_rage = get_uptime( "unleashed_rage" );
 
   gains.ashtongue_talisman    = get_gain( "ashtongue_talisman" );
   gains.dark_rune             = get_gain( "dark_rune" );
@@ -764,11 +762,11 @@ void player_t::resource_gain( int8_t  resource,
     resource_gained [ resource ] += amount;
 
     if( source ) source -> add( amount );
-
-    if( sim -> log ) 
-      report_t::log( sim, "%s gains %.0f %s from %s", 
-		     name(), amount, util_t::resource_type_string( resource ), source ? source -> name() : "unknown" );
   }
+
+  if( sim -> log ) 
+    report_t::log( sim, "%s gains %.0f %s from %s", 
+		   name(), amount, util_t::resource_type_string( resource ), source ? source -> name() : "unknown" );
 }
 
 // player_t::resource_available ============================================
@@ -1274,7 +1272,7 @@ void player_t::parse_talents( talent_translation_t* translation,
   }
 }
 
-// player_t::parse_option ======================================================
+// player_t::parse_option ===================================================
 
 bool player_t::parse_option( const std::string& name,
 			     const std::string& value )

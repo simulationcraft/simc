@@ -72,7 +72,7 @@ struct event_t
   int8_t    canceled;
   const char* name;
   event_t( sim_t* s, player_t* p=0, const char* n=0 ) : 
-    next(0), sim(s), player(p), reschedule_time(0), canceled(false), name(n) 
+    next(0), sim(s), player(p), reschedule_time(0), canceled(0), name(n) 
   {
     if( ! name ) name = "unknown";
   }
@@ -80,8 +80,8 @@ struct event_t
   double occurs() { return reschedule_time != 0 ? reschedule_time : time; }
   virtual void execute() { assert(0); }
   virtual ~event_t() {}
-  static void cancel( event_t*& e ) { if( e ) { e -> canceled = true;                 e=0; } }
-  static void  early( event_t*& e ) { if( e ) { e -> canceled = true; e -> execute(); e=0; } }
+  static void cancel( event_t*& e ) { if( e ) { e -> canceled = 1;                 e=0; } }
+  static void  early( event_t*& e ) { if( e ) { e -> canceled = 1; e -> execute(); e=0; } }
 #ifdef EVENT_MM
   // Simple free-list memory manager.
   static void* operator new( size_t ); 
@@ -183,48 +183,12 @@ enum flask_type { FLASK_NONE=0,
 
 enum position_type { POSITION_NONE=0, POSITION_FRONT, POSITION_BACK, POSITION_MAX };
 
-enum sim_method { SIM_LIST=0, SIM_WHEEL, SIM_PRIORITYQ };
-
-typedef std::priority_queue< event_t*, std::deque<event_t*>, event_compare_t > timing_priorityq_t;
-
-struct timing_wheel_t
-{
-  double    time_horizon;
-  double    granularity;
-  int32_t   size;
-  event_t** events;
-  timing_wheel_t();
-  void     push( event_t* );
-  event_t* top();
-  void     pop();
-  bool     empty();
-  void     clear();
-};
-
-struct timing_list_t
-{
-  event_t* events;
-  timing_list_t();
-  void     push( event_t* );
-  event_t* top();
-  void     pop();
-  bool     empty();
-  void     clear();
-};
-
 struct sim_t
 {
-  // Only one of these simulation methods in use.
-  timing_priorityq_t timing_priorityq;
-  timing_wheel_t     timing_wheel;
-  timing_list_t      timing_list;
-  std::string        method_str;
-  int8_t             method;
-
-  // Common Core 
   static bool WotLK;
   std::string patch_str;
   patch_t     patch;
+  event_t*    event_list;
   player_t*   player_list;
   player_t*   active_player;
   target_t*   target;
@@ -251,6 +215,7 @@ struct sim_t
   void      add_event( event_t*, double delta_time );
   void      reschedule_event( event_t* );
   void      flush_events();
+  void      cancel_events( player_t* );
   event_t*  next_event();
   bool      execute();
   void      reset();
@@ -526,13 +491,11 @@ struct player_t
     event_t* ashtongue_talisman;
     event_t* darkmoon_crusade;
     event_t* darkmoon_wrath;
-    event_t* elemental_oath;
     event_t* executioner;
     event_t* eye_of_magtheridon;
     event_t* mongoose_mh;
     event_t* mongoose_oh;
     event_t* spellstrike;
-    event_t* unleashed_rage;
     event_t* wrath_of_cenarius;
     event_t *tier4_2pc, *tier4_4pc;
     event_t *tier5_2pc, *tier5_4pc;
@@ -567,7 +530,6 @@ struct player_t
     uptime_t* executioner;
     uptime_t* mongoose_mh;
     uptime_t* mongoose_oh;
-    uptime_t* unleashed_rage;
     uptime_t *tier4_2pc, *tier4_4pc;
     uptime_t *tier5_2pc, *tier5_4pc;
     uptime_t *tier6_2pc, *tier6_4pc;
@@ -645,7 +607,7 @@ struct player_t
   virtual void init_spell();
   virtual void init_attack();
   virtual void init_weapon( weapon_t*, std::string& );
-  virtual void init_resources();
+  virtual void init_resources( bool force = false );
   virtual void init_actions();
   virtual void init_rating();
   virtual void init_stats();
@@ -717,12 +679,11 @@ struct player_t
   stats_t*  get_stats ( const std::string& name );
   uptime_t* get_uptime( const std::string& name );
 
-
-  double strength()  { return attribute_multiplier[ ATTR_STRENGTH  ] * attribute[ ATTR_STRENGTH  ]; }
-  double agility()   { return attribute_multiplier[ ATTR_AGILITY   ] * attribute[ ATTR_AGILITY   ]; }
-  double stamina()   { return attribute_multiplier[ ATTR_STAMINA   ] * attribute[ ATTR_STAMINA   ]; }
-  double intellect() { return attribute_multiplier[ ATTR_INTELLECT ] * attribute[ ATTR_INTELLECT ]; }
-  double spirit()    { return attribute_multiplier[ ATTR_SPIRIT    ] * attribute[ ATTR_SPIRIT    ]; }
+  virtual double strength()  { return attribute_multiplier[ ATTR_STRENGTH  ] * attribute[ ATTR_STRENGTH  ]; }
+  virtual double agility()   { return attribute_multiplier[ ATTR_AGILITY   ] * attribute[ ATTR_AGILITY   ]; }
+  virtual double stamina()   { return attribute_multiplier[ ATTR_STAMINA   ] * attribute[ ATTR_STAMINA   ]; }
+  virtual double intellect() { return attribute_multiplier[ ATTR_INTELLECT ] * attribute[ ATTR_INTELLECT ]; }
+  virtual double spirit()    { return attribute_multiplier[ ATTR_SPIRIT    ] * attribute[ ATTR_SPIRIT    ]; }
   
   void parse_talents( talent_translation_t*, const std::string& talent_string );
 
@@ -763,9 +724,14 @@ struct pet_t : public player_t
   virtual double composite_attack_crit() { return 0.05; }
   virtual double composite_spell_crit()  { return 0.05; }
 
+  virtual double stamina();
+  virtual double intellect();
+
   virtual const char* name() { return full_name_str.c_str(); }
   virtual void summon();
   virtual void dismiss();
+
+  virtual void schedule_ready( double delta_time=0, bool waiting=false ) { assert(0); }
 };
 
 // Target ====================================================================

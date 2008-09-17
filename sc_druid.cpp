@@ -458,7 +458,7 @@ struct faerie_fire_t : public druid_spell_t
     {
       // We are overriding an existing debuff......
       t -> expirations.faerie_fire -> execute();
-      t -> expirations.faerie_fire -> canceled = true;
+      t -> expirations.faerie_fire -> canceled = 1;
     }
     t -> expirations.faerie_fire = new expiration_t( sim, player, this );
   }
