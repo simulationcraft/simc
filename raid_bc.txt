@@ -46,10 +46,6 @@ target_armor=5100
 # Both blessing_of_wisdom=1 and sanctity_aura=1 would be included in each player section as appropriate.
 judgement_of_wisdom=121
 
-# Since support for the Warlock class does not yet exist, one can specify static target debuffs.
-curse_of_elements=13
-shadow_vulnerability=10
-
 #
 # Shadow Priest
 #
@@ -70,7 +66,7 @@ gear_spell_hit_rating=50
 gear_haste_rating=200
 pet=shadow_fiend
 main_hand=beast,damage=110,speed=1.5,school=shadow
-quiet=0
+quiet=1
 active=owner
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
 blessing_of_kings=1
@@ -164,7 +160,7 @@ gear_spell_crit_rating=300
 gear_spell_hit_rating=100
 gear_haste_rating=100
 pet=water_elemental
-quiet=0
+quiet=1
 active=owner
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
 blessing_of_kings=1
@@ -241,3 +237,72 @@ blessing_of_kings=1
 blessing_of_might=1
 # And a Warrior while we're at it.......
 battle_shout=1
+
+#
+# Destruction Warlock (Shadow Bolt)
+#
+#
+warlock=Warlock_Destrobolt
+level=70
+talents=http://www.worldofwarcraft.com/info/classes/warlock/talents.html?tal=0000000000000000000000350030133200100000000555000512210013030250
+actions=flask,type=pure_death/fel_armor/summon_pet,succubus/sacrifice_pet/mana_potion,trigger=2500/life_tap/curse_of_elements/curse_of_doom/shadow_bolt
+gear_stamina=300
+gear_intellect=300
+gear_spirit=300
+gear_spell_power=1100
+gear_spell_crit_rating=300
+gear_spell_hit_rating=100
+gear_haste_rating=100
+pet=succubus
+main_hand=beast,damage=100,speed=2.0
+quiet=1
+active=owner
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_wisdom=1
+
+#
+# Destruction Warlock (Incinerate)
+#
+#
+warlock=Warlock_Destrinate
+level=70
+talents=http://www.worldofwarcraft.com/info/classes/warlock/talents.html?tal=0000000000000000000000350030133200100000000525000512200510331050
+actions=flask,type=pure_death/fel_armor/summon_pet,imp/sacrifice_pet/mana_potion,trigger=2500/life_tap/curse_of_elements/curse_of_doom/incinerate
+gear_stamina=300
+gear_intellect=300
+gear_spirit=300
+gear_spell_power=1100
+gear_spell_crit_rating=300
+gear_spell_hit_rating=100
+gear_haste_rating=100
+pet=imp
+quiet=1
+active=owner
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_wisdom=1
+
+#
+# Demonology Warlock
+#
+#
+warlock=Warlock_Demonology
+level=70
+talents=http://www.worldofwarcraft.com/info/classes/warlock/talents.html?tal=0200000000000000000000350030133250103501351505000500000000000000
+actions=flask,type=pure_death/fel_armor/summon_pet,felguard/mana_potion,trigger=2500/life_tap/curse_of_elements/curse_of_doom/corruption/shadow_bolt
+gear_stamina=300
+gear_intellect=300
+gear_spirit=300
+gear_spell_power=1100
+gear_spell_crit_rating=300
+gear_spell_hit_rating=100
+gear_haste_rating=100
+pet=felguard
+main_hand=beast,damage=100,speed=2.0
+quiet=1
+active=owner
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_wisdom=1
+

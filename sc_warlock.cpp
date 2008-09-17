@@ -203,7 +203,7 @@ struct warlock_pet_t : public pet_t
       attack_t( "melee", player, RESOURCE_NONE )
     {
       warlock_pet_t* p = (warlock_pet_t*) player -> cast_pet();
-      warlock_t*     o = p -> cast_warlock();
+      warlock_t*     o = p -> owner -> cast_warlock();
 
       weapon = &( player -> main_hand_weapon );
       base_execute_time = weapon -> swing_time;
@@ -264,6 +264,8 @@ struct warlock_pet_t : public pet_t
   virtual void summon()
   {
     pet_t::summon();
+    warlock_t* o = cast_pet() -> owner -> cast_warlock();
+    o -> active_pet = this;
   }
 };
 
@@ -311,7 +313,7 @@ struct imp_pet_t : public warlock_pet_t
   fire_bolt_t* fire_bolt;
 
   imp_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name ) :
-    warlock_pet_t( sim, owner, pet_name, PET_FELGUARD ), fire_bolt(0)
+    warlock_pet_t( sim, owner, pet_name, PET_IMP ), fire_bolt(0)
   {
     fire_bolt = new fire_bolt_t( this );
   }
@@ -1921,6 +1923,7 @@ action_t* warlock_t::create_action( const std::string& name,
 pet_t* warlock_t::create_pet( const std::string& pet_name )
 {
   if( pet_name == "felguard" ) return new felguard_pet_t( sim, this, pet_name );
+  if( pet_name == "imp"      ) return new      imp_pet_t( sim, this, pet_name );
   if( pet_name == "succubus" ) return new succubus_pet_t( sim, this, pet_name );
 
   return 0;
@@ -1962,7 +1965,7 @@ void warlock_t::init_base()
 
 void warlock_t::reset()
 {
-  warlock_t::reset();
+  player_t::reset();
 
   // Active
   active_corruption = 0;

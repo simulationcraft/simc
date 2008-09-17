@@ -186,7 +186,6 @@ bool option_t::parse( sim_t* sim,
   else if( name == "warlock" )
   {
     sim -> active_player = player_t::create_warlock( sim, value );
-    assert( 0 );
   }
   else if( name == "pet" ) 
   { 
