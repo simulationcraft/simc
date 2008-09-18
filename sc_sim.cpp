@@ -263,11 +263,11 @@ void sim_t::analyze()
 
   for( player_t* p = player_list; p; p = p -> next )
   {
-    if( p -> quiet ) 
-      continue;
-
-    players_by_rank.push_back( p );
-    players_by_name.push_back( p );
+    if( ! p -> quiet ) 
+    {
+      players_by_rank.push_back( p );
+      players_by_name.push_back( p );
+    }
 
     p -> total_seconds /= iterations;
     p -> total_waiting /= iterations;

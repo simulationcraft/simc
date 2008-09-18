@@ -245,7 +245,7 @@ battle_shout=1
 warlock=Warlock_Destrobolt
 level=70
 talents=http://www.worldofwarcraft.com/info/classes/warlock/talents.html?tal=0000000000000000000000350030133200100000000555000512210013030250
-actions=flask,type=pure_death/fel_armor/summon_pet,succubus/sacrifice_pet/mana_potion,trigger=2500/life_tap/curse_of_elements/curse_of_doom/shadow_bolt
+actions=flask,type=pure_death/fel_armor/summon_pet,succubus/sacrifice_pet/mana_potion,trigger=2500/curse_of_elements/curse_of_doom/shadow_bolt/life_tap
 gear_stamina=300
 gear_intellect=300
 gear_spirit=300
@@ -268,7 +268,7 @@ blessing_of_wisdom=1
 warlock=Warlock_Destrinate
 level=70
 talents=http://www.worldofwarcraft.com/info/classes/warlock/talents.html?tal=0000000000000000000000350030133200100000000525000512200510331050
-actions=flask,type=pure_death/fel_armor/summon_pet,imp/sacrifice_pet/mana_potion,trigger=2500/life_tap/curse_of_elements/curse_of_doom/incinerate
+actions=flask,type=pure_death/fel_armor/summon_pet,imp/sacrifice_pet/mana_potion,trigger=2500/curse_of_elements/curse_of_doom/immolate/incinerate/life_tap
 gear_stamina=300
 gear_intellect=300
 gear_spirit=300
@@ -290,7 +290,7 @@ blessing_of_wisdom=1
 warlock=Warlock_Demonology
 level=70
 talents=http://www.worldofwarcraft.com/info/classes/warlock/talents.html?tal=0200000000000000000000350030133250103501351505000500000000000000
-actions=flask,type=pure_death/fel_armor/summon_pet,felguard/mana_potion,trigger=2500/life_tap/curse_of_elements/curse_of_doom/corruption/shadow_bolt
+actions=flask,type=pure_death/fel_armor/summon_pet,felguard/mana_potion,trigger=2500/curse_of_elements/curse_of_doom/corruption/immolate/shadow_bolt/life_tap
 gear_stamina=300
 gear_intellect=300
 gear_spirit=300
@@ -300,6 +300,28 @@ gear_spell_hit_rating=100
 gear_haste_rating=100
 pet=felguard
 main_hand=beast,damage=100,speed=2.0
+quiet=1
+active=owner
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_wisdom=1
+
+#
+# Affliction Warlock
+#
+#
+warlock=Warlock_Affliction
+level=70
+talents=http://www.worldofwarcraft.com/info/classes/warlock/talents.html?tal=5502202012230115510310300000000000000000000505020500000000000000
+actions=flask,type=pure_death/fel_armor/summon_pet,imp/mana_potion,trigger=2500/amplify_curse/curse_of_elements/curse_of_agony/corruption/unstable_affliction/immolate/shadow_bolt/life_tap
+gear_stamina=300
+gear_intellect=300
+gear_spirit=300
+gear_spell_power=1200
+gear_spell_crit_rating=100
+gear_spell_hit_rating=100
+gear_haste_rating=200
+pet=imp
 quiet=1
 active=owner
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
