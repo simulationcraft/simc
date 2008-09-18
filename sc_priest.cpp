@@ -1860,7 +1860,7 @@ void priest_t::init_base()
   base_spell_crit = 0.0125;
   initial_spell_crit_per_intellect = rating_t::interpolate( level, 0.01/60.0, 0.01/80.0, 0.01/166.6 );
   initial_spell_power_per_spirit = ( talents.spiritual_guidance * 0.05 +
-				     talents.twisted_faith      * 0.02 );
+                                     talents.twisted_faith      * 0.02 );
 
   base_attack_power = -10;
   base_attack_crit  = 0.03;

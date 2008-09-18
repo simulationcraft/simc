@@ -151,6 +151,7 @@ struct druid_spell_t : public spell_t
   virtual double execute_time();
   virtual void   consume_resource();
   virtual void   player_buff();
+  virtual void   target_debuff( int8_t dmg_type );
 
   // Passthru Methods
   virtual void calculate_damage() { spell_t::calculate_damage(); }
@@ -159,6 +160,17 @@ struct druid_spell_t : public spell_t
   virtual void last_tick()        { spell_t::last_tick();        }
   virtual bool ready()            { return spell_t::ready();     }
 };
+
+void druid_spell_t::target_debuff( int8_t dmg_type )
+{
+  spell_t::target_debuff( dmg_type );
+
+  if( sim_t::WotLK )
+  {
+    target_t* t = sim -> target;
+    target_crit += t -> debuffs.improved_faerie_fire * 0.01; 
+  }
+}
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
@@ -237,7 +249,7 @@ static void trigger_eclipse_wrath( spell_t* s )
       p -> aura_gain( "Eclipse Wrath" );
       p -> buffs_eclipse_wrath = sim -> current_time;
       p -> cooldowns_eclipse = sim -> current_time + 30;
-      sim -> add_event( this, 30.0 );
+      sim -> add_event( this, 15.0 );
     }
     virtual void execute()
     {
@@ -270,7 +282,7 @@ static void trigger_eclipse_starfire( spell_t* s )
       p -> aura_gain( "Eclipse Starfire" );
       p -> buffs_eclipse_starfire = sim -> current_time;
       p -> cooldowns_eclipse = sim -> current_time + 30;
-      sim -> add_event( this, 30.0 );
+      sim -> add_event( this, 15.0 );
     }
     virtual void execute()
     {
@@ -285,7 +297,7 @@ static void trigger_eclipse_starfire( spell_t* s )
 
   if( p -> talents.eclipse && 
       s -> sim -> cooldown_ready( p -> cooldowns_eclipse ) &&
-      rand_t::roll( p -> talents.eclipse * 0.20 ) )
+      rand_t::roll( p -> talents.eclipse * 1.0/3 ) )
   {
     p -> expirations_eclipse = new expiration_t( s -> sim, p );
   }
@@ -393,6 +405,8 @@ void druid_spell_t::player_buff()
   {
     player_multiplier *= 1.0 + p -> talents.master_shapeshifter * 0.02;
   }
+
+  player_multiplier *= 1.0 + p -> talents.earth_and_moon * 0.01;
 }
 
 struct faerie_fire_t : public druid_spell_t
@@ -561,17 +575,10 @@ struct insect_swarm_t : public druid_spell_t
     rank = choose_rank( ranks );
      
     base_execute_time = 0; 
-    base_duration     = 12.0; 
-    num_ticks         = 6;
-    dot_power_mod     = ( 12.0 / 15.0 );
     base_cost         = rank -> cost;
 
-    if( p -> talents.natures_splendor >= 2 )
-    {
-      base_duration = 14.0;
-      num_ticks     = 7;
-      dot_power_mod = ( 14.0 / 15.0 );
-    }
+    // base_duration, num_ticks and dot_power_mode need to be set in execute()
+    // since they dynamically depend on natures_splendor
 
     base_multiplier *= 1.0 + p -> talents.genesis * 0.01;
 
@@ -580,7 +587,18 @@ struct insect_swarm_t : public druid_spell_t
 
   virtual void execute()
   {
+    druid_t* p = player -> cast_druid();
+
+    // base_duration, num_ticks and dot_power_mode need to be set in execute()
+    // since they dynamically depend on natures_splendor
+
+    int extra_tick = rand_t::roll( p -> talents.natures_splendor * 1.0/3 );
+    base_duration = 12.0 + extra_tick * 2;
+    num_ticks     = 6 + extra_tick;
+    dot_power_mod = ( base_duration / 15.0 );
+
     druid_spell_t::execute();
+
     if( result_is_hit() )
     {
       player -> cast_druid() -> insect_swarm_active = this;
@@ -622,28 +640,12 @@ struct moonfire_t : public druid_spell_t
     player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
      
-    base_dot          = rank -> dot;
     base_execute_time = 0; 
     may_crit          = true;
-    base_duration     = 12.0; 
-    num_ticks         = 4;
     dd_power_mod      = 0.28; 
-    dot_power_mod     = 0.52; 
 
-    int extra_ticks = 0;
-
-    if( p -> talents.natures_splendor >= 3 ) extra_ticks++;
-    if( p -> gear.tier6_2pc                ) extra_ticks++;
-
-    if( extra_ticks > 0 )
-    {
-      double adjust = ( num_ticks + extra_ticks ) / (double) num_ticks;
-
-      base_dot      *= adjust;
-      dot_power_mod *= adjust;
-      base_duration *= adjust;
-      num_ticks     += extra_ticks;
-    }
+    // base_duration, num_ticks and dot_power_mode are set in execute()
+    // since they dynamically depend on natures_splendor
 
     base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.moonglow * 0.03;
@@ -656,7 +658,28 @@ struct moonfire_t : public druid_spell_t
 
   virtual void execute()
   {
+    druid_t* p = player -> cast_druid();
+
+    // base_duration, num_ticks, base_dot and dot_power_mode need to be set in execute()
+    // since they dynamically depend on natures_splendor
+
+    base_dot          = rank -> dot;
+    dot_power_mod     = 0.52; 
+    base_duration     = 12.0; 
+    num_ticks         = 4;
+
+    int extra_ticks = 0;
+    extra_ticks += rand_t::roll( p -> talents.natures_splendor * 1.0/3 );
+    if( p -> gear.tier6_2pc ) extra_ticks++;
+
+    double adjust = ( num_ticks + extra_ticks ) / (double) num_ticks;
+    base_dot      *= adjust;
+    dot_power_mod *= adjust;
+    base_duration *= adjust;
+    num_ticks     += extra_ticks;
+
     druid_spell_t::execute();
+
     if( result_is_hit() )
     {
       player -> cast_druid() -> moonfire_active = this;
@@ -1128,6 +1151,7 @@ void druid_t::init_base()
   base_spell_crit = 0.0185;
   initial_spell_crit_per_intellect = rating_t::interpolate( level, 0.01/60.0, 0.01/80.0, 0.01/166.6 );
   initial_spell_power_per_intellect = talents.lunar_guidance * ( sim_t::WotLK ? 0.04 : 0.08 );
+  initial_spell_power_per_spirit = ( talents.improved_moonkin_form * 0.05 );
 
   base_attack_power = -20;
   base_attack_crit  = 0.01;
