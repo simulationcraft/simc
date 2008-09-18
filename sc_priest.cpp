@@ -914,8 +914,8 @@ struct devouring_plague_t : public priest_spell_t
 
     static rank_t ranks[] =
     {
-      { 80, 9, 0, 0, 1720, 0.15 },
-      { 76, 8, 0, 0, 1416, 0.15 },
+      { 80, 9, 0, 0, 1720, 0.31 },
+      { 76, 8, 0, 0, 1416, 0.31 },
       { 68, 7, 0, 0, 1216, 1145 },
       { 60, 6, 0, 0,  904,  985 },
       { 0, 0 }
@@ -926,7 +926,7 @@ struct devouring_plague_t : public priest_spell_t
     base_execute_time = 0; 
     base_duration     = 24.0; 
     num_ticks         = 8;  
-    cooldown          = p -> glyphs.blue_promises ? 30.0 : 180.0;
+    cooldown          = sim_t::WotLK ? 24.0 : 180.0;
     binary            = true;
     dot_power_mod     = ( 24.0 / 15.0 ) / 2.0; 
 
@@ -1038,18 +1038,9 @@ struct mind_blast_t : public priest_spell_t
     if( sim_t::WotLK )
     {
       base_cost *= 1.0 - p -> talents.shadow_focus * 0.02;
-
-      if( p -> glyphs.blue_promises )
-      {
-	base_crit       += p -> talents.mind_melt * 0.02;
-	base_crit_bonus *= 1.0 + p -> talents.shadow_power * 0.20;
-	dd_power_mod    *= 1.0 + p -> talents.misery * 0.05;
-      }
-      else
-      {
-	base_crit       += p -> talents.shadow_power * 0.02;
-	base_crit_bonus *= 1.0 + p -> talents.shadow_power * 0.10;
-      }
+      base_crit       += p -> talents.mind_melt * 0.02;
+      base_crit_bonus *= 1.0 + p -> talents.shadow_power * 0.20;
+      dd_power_mod    *= 1.0 + p -> talents.misery * 0.05;
     }
     else
     {
@@ -1124,15 +1115,7 @@ struct shadow_word_death_t : public priest_spell_t
     if( sim_t::WotLK )
     {
       base_cost *= 1.0 - p -> talents.shadow_focus * 0.02;
-
-      if( p -> glyphs.blue_promises )
-      {
-	base_crit_bonus *= 1.0 + p -> talents.shadow_power * 0.20;
-      }
-      else
-      {
-	base_crit += p -> talents.shadow_power * 0.02;
-      }
+      base_crit_bonus *= 1.0 + p -> talents.shadow_power * 0.20;
     }
     else
     {
@@ -1307,17 +1290,10 @@ struct mind_flay_wotlk_t : public priest_spell_t
     base_cost       *= 1.0 - p -> talents.shadow_focus * 0.02;
     base_hit        += p -> talents.shadow_focus * 0.01;
 
-    if( p -> glyphs.blue_promises )
-    {
-      base_multiplier *= 1.0 + p -> talents.darkness * 0.02 + p -> talents.twin_disciplines * 0.01;
-      base_crit       += p -> talents.mind_melt * 0.02;
-      base_crit_bonus *= 1.0 + p -> talents.shadow_power * 0.20;
-      dd_power_mod    *= 1.0 + p -> talents.misery * 0.05;
-    }
-    else
-    {
-      base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
-    }
+    base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
+    base_crit       += p -> talents.mind_melt * 0.02;
+    base_crit_bonus *= 1.0 + p -> talents.shadow_power * 0.20;
+    dd_power_mod    *= 1.0 + p -> talents.misery * 0.05;
     
     if( p -> gear.tier4_4pc ) base_multiplier *= 1.05;
   }

@@ -64,7 +64,6 @@ curse_of_elements=13
 priest=Priest_Shadow
 level=80
 talents=http://www.worldofwarcraft.com/info/classes/priest/talents2.html?tal=050230013000000000000000000000000000000000000000000000320023051025012325152301351
-mind_melt=2
 actions=flask,type=pure_death/inner_fire/shadow_form/mana_potion,trigger=3500/shadow_fiend,trigger=6000/dispersion/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/shadow_word_death/mind_flay
 gear_stamina=600
 gear_intellect=600
@@ -73,37 +72,6 @@ gear_spell_power=2500
 gear_spell_crit_rating=200
 gear_spell_hit_rating=250
 gear_haste_rating=500
-glyph_blue_promises=1
-glyph_shadow_word_death=1
-pet=shadow_fiend
-main_hand=beast,damage=110,speed=1.5,school=shadow
-quiet=1
-active=owner
-# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
-blessing_of_kings=1
-blessing_of_wisdom=1
-sanctified_retribution=1
-swift_retribution=1
-
-#
-# Shadow Priest wearing the same gear as other casters
-#
-# (1) The "trigger=3500" option to mana_potion represents the mana gained and the amount below max required to trigger
-# (2) The "trigger=6000" option to shadow_fiend represents the amount below max mana required to trigger
-#
-priest=Priest_ShadowVanilla
-level=80
-talents=http://www.worldofwarcraft.com/info/classes/priest/talents2.html?tal=050230013000000000000000000000000000000000000000000000320023051025012325152301351
-actions=flask,type=pure_death/inner_fire/shadow_form/mana_potion,trigger=3500/shadow_fiend,trigger=6000/dispersion/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/shadow_word_death/mind_flay
-mind_melt=2
-gear_stamina=600
-gear_intellect=600
-gear_spirit=600
-gear_spell_power=2000
-gear_spell_crit_rating=800
-gear_spell_hit_rating=250
-gear_haste_rating=400
-glyph_blue_promises=1
 glyph_shadow_word_death=1
 pet=shadow_fiend
 main_hand=beast,damage=110,speed=1.5,school=shadow
@@ -125,8 +93,7 @@ swift_retribution=1
 priest=Priest_Holy
 level=80
 talents=http://www.worldofwarcraft.com/info/classes/priest/talents2.html?tal=050230113320512250100020000000555100202015200000000000320000000000000000000000000
-actions=flask,type=blinding_light/inner_fire/divine_spirit/mana_potion,trigger=3500/shadow_fiend,trigger=6000/inner_focus,shadow_word_pain/shadow_word_pain/power_infusion/holy_fire/smite
-# actions=flask,type=blinding_light/inner_fire/divine_spirit/mana_potion,trigger=3500/shadow_fiend,trigger=6000/inner_focus,shadow_word_pain/shadow_word_pain/devouring_plague/power_infusion/holy_fire/smite
+actions=flask,type=blinding_light/inner_fire/divine_spirit/mana_potion,trigger=3500/shadow_fiend,trigger=6000/inner_focus,shadow_word_pain/shadow_word_pain/devouring_plague/power_infusion/holy_fire/smite
 gear_stamina=600
 gear_intellect=600
 gear_spirit=600
