@@ -23,7 +23,7 @@ struct priest_t : public player_t
   int8_t buffs_improved_spirit_tap;
   int8_t buffs_shadow_weaving;
   int8_t buffs_surge_of_light;
-  int8_t buffs_dispersed;
+  int8_t buffs_dark_energy;
 
   // Expirations
   event_t* expirations_improved_spirit_tap;
@@ -108,7 +108,7 @@ struct priest_t : public player_t
     buffs_inner_fire          = 0;
     buffs_shadow_weaving      = 0;
     buffs_surge_of_light      = 0;
-    buffs_dispersed           = 0;
+    buffs_dark_energy         = 0;
 
     // Expirations
     expirations_improved_spirit_tap = 0;
@@ -515,7 +515,7 @@ void priest_spell_t::player_buff()
   {
     player_multiplier *= 1.0 + p -> talents.focused_power * 0.02;
   }
-  if( p -> buffs_dispersed )
+  if( p -> buffs_dark_energy )
   {
     player_multiplier *= 1.0 + p -> talents.dispersion * 0.25;
   }
@@ -1421,7 +1421,7 @@ struct dispersion_t : public priest_spell_t
 
       priest_t* p = player -> cast_priest();
       p -> aura_gain( "Dark Energy" );
-      p -> buffs_dispersed = 1;
+      p -> buffs_dark_energy = 1;
       sim -> add_event( this, 60.0 );
     }
 
@@ -1429,7 +1429,7 @@ struct dispersion_t : public priest_spell_t
     {
       priest_t* p = player -> cast_priest();
       p -> aura_loss( "Dark Energy" );
-      p -> buffs_dispersed = 0;
+      p -> buffs_dark_energy = 0;
     }
   };
 
