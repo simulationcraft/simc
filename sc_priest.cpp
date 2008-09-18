@@ -758,7 +758,9 @@ struct shadow_word_pain_t : public priest_spell_t
     base_execute_time = 0; 
     base_duration     = 18.0; 
     num_ticks         = 6;
+
     dot_power_mod     = 1.10; 
+    dot_power_mod     *= 1.0 + p -> talents.twin_disciplines * 0.01;
 
     base_dot  = rank -> dot;
     base_cost = rank -> cost;
@@ -782,7 +784,6 @@ struct shadow_word_pain_t : public priest_spell_t
     if( sim_t::WotLK )
     {
       base_multiplier *= 1.0 + ( p -> talents.darkness                  * 0.02 + 
-				 p -> talents.twin_disciplines          * 0.01 +
 				 p -> talents.improved_shadow_word_pain * 0.05 );
     }
     else
@@ -934,12 +935,14 @@ struct devouring_plague_t : public priest_spell_t
     num_ticks         = 8;  
     cooldown          = sim_t::WotLK ? 24.0 : 180.0;
     binary            = true;
+
     dot_power_mod     = ( 24.0 / 15.0 ) / 2.0; 
+    dot_power_mod     *= 1.0 + p -> talents.twin_disciplines * 0.01;
 
     base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.mental_agility * 0.02;
     if( sim_t::WotLK ) base_cost *= 1.0 - p -> talents.shadow_focus * 0.02;
-    base_multiplier *= 1.0 + p -> talents.darkness * 0.02 + p -> talents.twin_disciplines * 0.01;
+    base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
     base_hit        += p -> talents.shadow_focus * ( sim_t::WotLK ? 0.01 : 0.02 );
   }
 
@@ -1111,11 +1114,13 @@ struct shadow_word_death_t : public priest_spell_t
     base_execute_time = 0; 
     may_crit          = true; 
     cooldown          = 12.0;
+
     dd_power_mod      = (1.5/3.5); 
+    dd_power_mod      *= 1.0 + p -> talents.twin_disciplines * 0.01;
 
     base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.mental_agility * 0.02;
-    base_multiplier *= 1.0 + p -> talents.darkness * 0.02 + p -> talents.twin_disciplines * 0.01;
+    base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
     base_hit        += p -> talents.shadow_focus * ( sim_t::WotLK ? 0.01 : 0.02 );
 
     if( sim_t::WotLK )
