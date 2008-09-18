@@ -183,6 +183,8 @@ enum flask_type { FLASK_NONE=0,
 
 enum position_type { POSITION_NONE=0, POSITION_FRONT, POSITION_BACK, POSITION_MAX };
 
+enum encoding_type { ENCODING_NONE=0, ENCODING_BC, ENCODING_WOTLK, ENCODING_MMO, ENCODING_WOWHEAD, ENCODING_MAX };
+
 struct sim_t
 {
   static bool WotLK;
@@ -687,7 +689,7 @@ struct player_t
   
   void parse_talents( talent_translation_t*, const std::string& talent_string );
 
-  virtual void      parse_talents( const std::string& talent_string ) {}
+  virtual bool      parse_talents( const std::string& talent_string, int encoding ) { return false; }
   virtual bool      parse_option ( const std::string& name, const std::string& value );
   virtual action_t* create_action( const std::string& name, const std::string& options ) { return 0; }
   virtual pet_t*    create_pet   ( const std::string& name ) { return 0; }

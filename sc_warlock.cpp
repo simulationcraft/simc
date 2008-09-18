@@ -177,7 +177,7 @@ struct warlock_t : public player_t
   // Character Definition
   virtual void      init_base();
   virtual void      reset();
-  virtual void      parse_talents( const std::string& talent_string );
+  virtual bool      parse_talents( const std::string& talent_string, int encoding );
   virtual bool      parse_option ( const std::string& name, const std::string& value );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
@@ -2125,10 +2125,13 @@ void warlock_t::regen( double periodicity )
 
 // warlock_t::parse_talents ================================================
 
-void warlock_t::parse_talents( const std::string& talent_string )
+bool warlock_t::parse_talents( const std::string& talent_string,
+			       int                encoding )
 {
-  if( talent_string.size() == 64 )
+  if( encoding == ENCODING_BC )
   {
+    if( talent_string.size() != 64 ) return false;
+
     talent_translation_t translation[] =
     {
       // Affliction
@@ -2187,8 +2190,10 @@ void warlock_t::parse_talents( const std::string& talent_string )
     };
     player_t::parse_talents( translation, talent_string );
   }
-  else if( talent_string.size() == 80 )
+  else if( encoding == ENCODING_WOTLK )
   {
+    if( talent_string.size() != 80 ) return false;
+
     talent_translation_t translation[] =
     {
       // Affliction
@@ -2263,11 +2268,17 @@ void warlock_t::parse_talents( const std::string& talent_string )
     };
     player_t::parse_talents( translation, talent_string );
   }
-  else
+  else if( encoding == ENCODING_MMO )
   {
-    fprintf( sim -> output_file, "Malformed Warlock talent string.  Number encoding should have length 64 for Burning Crusade or 80 for Wrath of the Lich King.\n" );
-    assert( 0 );
+    return false;
   }
+  else if( encoding == ENCODING_WOWHEAD )
+  {
+    return false;
+  }
+  else assert( 0 );
+
+  return true;
 }
 
 // warlock_t::parse_option =================================================

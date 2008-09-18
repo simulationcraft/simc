@@ -210,17 +210,41 @@ bool option_t::parse( sim_t* sim,
   }
   else if( name == "talents" )
   {
-    static std::string talent_string;
+    std::string talent_string, address_string;
+    int encoding = ENCODING_NONE;
+
     std::string::size_type cut_pt; 
     if( ( cut_pt = value.find_first_of( "=" ) ) != value.npos ) 
     {
-      talent_string = value.substr( cut_pt + 1 );
+       talent_string = value.substr( cut_pt + 1 );
+      address_string = value.substr( 0, cut_pt );
+
+      if( address_string.find( "worldofwarcraft" ) != value.npos )
+      {
+	if( address_string.find( "talents2" ) != value.npos )
+	{
+	  encoding = ENCODING_WOTLK;
+	}
+	else
+	{
+	  encoding = ENCODING_BC;
+	}
+      }
+      else if( address_string.find( "mmo-champion" ) != value.npos )
+      {
+	encoding = ENCODING_MMO;
+      }
+      else if( address_string.find( "wowhead" ) != value.npos )
+      {
+	encoding = ENCODING_WOWHEAD;
+      }
     }
-    else
+
+    if( encoding == ENCODING_NONE || ! sim -> active_player -> parse_talents( talent_string, encoding ) )
     {
-      talent_string = value;
+      printf( "simcraft: Unable to decode talent string %s for %s\n", value.c_str(), sim -> active_player -> name() );
+      exit( 0 );
     }
-    sim -> active_player -> parse_talents( talent_string );
   }
   else
   {

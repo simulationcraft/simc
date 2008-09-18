@@ -198,7 +198,7 @@ struct shaman_t : public player_t
   virtual double    composite_spell_power( int8_t school );
   virtual double    composite_spell_hit();
   virtual double    composite_spell_crit();
-  virtual void      parse_talents( const std::string& talent_string );
+  virtual bool      parse_talents( const std::string& talent_string, int encoding );
   virtual bool      parse_option( const std::string& name, const std::string& value );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual int       primary_resource() { return RESOURCE_MANA; }
@@ -3032,10 +3032,13 @@ void shaman_t::regen( double periodicity )
 
 // shaman_t::parse_talents ===============================================
 
-void shaman_t::parse_talents( const std::string& talent_string )
+bool shaman_t::parse_talents( const std::string& talent_string,
+			      int                encoding )
 {
-  if( talent_string.size() == 61 )
+  if( encoding == ENCODING_BC )
   {
+    if( talent_string.size() != 61 ) return false;
+
     talent_translation_t translation[] =
     {
       {  1,  &( talents.convection                ) },
@@ -3078,8 +3081,10 @@ void shaman_t::parse_talents( const std::string& talent_string )
     };
     player_t::parse_talents( translation, talent_string );
   } 
-  else if( talent_string.size() == 77 )
+  else if( encoding == ENCODING_WOTLK )
   {
+    if( talent_string.size() != 77 ) return false;
+
     talent_translation_t translation[] =
     {
       {  1,  &( talents.convection                ) },
@@ -3097,7 +3102,7 @@ void shaman_t::parse_talents( const std::string& talent_string )
       { 18,  &( talents.elemental_oath            ) },
       { 19,  &( talents.lightning_overload        ) },
       { 21,  &( talents.totem_of_wrath            ) },
-      { 22,  &( talents.lava_flows                 ) },
+      { 22,  &( talents.lava_flows                ) },
       { 23,  &( talents.storm_earth_and_fire      ) },
       { 25,  &( talents.enhancing_totems          ) },
       { 27,  &( talents.ancestral_knowledge       ) },
@@ -3131,11 +3136,17 @@ void shaman_t::parse_talents( const std::string& talent_string )
     };
     player_t::parse_talents( translation, talent_string );
   } 
-  else
+  else if( encoding == ENCODING_MMO )
   {
-    fprintf( sim -> output_file, "Malformed Shaman talent string.  Number encoding should have length 61 for Burning Crusade or 77 for Wrath of the Lich King.\n" );
-    assert( 0 );
+    return false;
   }
+  else if( encoding == ENCODING_WOWHEAD )
+  {
+    return false;
+  }
+  else assert( 0 );
+
+  return true;
 }
 
 // shaman_t::parse_option  ==============================================

@@ -125,7 +125,7 @@ struct druid_t : public player_t
   virtual void      reset();
   virtual double    composite_spell_hit();
   virtual double    composite_spell_crit();
-  virtual void      parse_talents( const std::string& talent_string );
+  virtual bool      parse_talents( const std::string& talent_string, int encoding );
   virtual bool      parse_option ( const std::string& name, const std::string& value );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual int       primary_resource() { return RESOURCE_MANA; }
@@ -1232,10 +1232,13 @@ void druid_t::regen( double periodicity )
 
 // druid_t::parse_talents =================================================
 
-void druid_t::parse_talents( const std::string& talent_string )
+bool druid_t::parse_talents( const std::string& talent_string,
+			     int                encoding )
 {
-  if( talent_string.size() == 62 ) 
+  if( encoding == ENCODING_BC ) 
   {
+    if( talent_string.size() != 62 ) return false;
+
     talent_translation_t translation[] =
     {
       {  1,  &( talents.starlight_wrath           ) },
@@ -1264,8 +1267,10 @@ void druid_t::parse_talents( const std::string& talent_string )
     };
     player_t::parse_talents( translation, talent_string );
   }
-  else if( talent_string.size() == 83 )
+  else if( encoding == ENCODING_WOTLK )
   {
+    if( talent_string.size() != 83 ) return false;
+
     talent_translation_t translation[] =
     {
       {  1,  &( talents.starlight_wrath           ) },
@@ -1303,11 +1308,17 @@ void druid_t::parse_talents( const std::string& talent_string )
     };
     player_t::parse_talents( translation, talent_string );
   }
-  else
+  else if( encoding == ENCODING_MMO )
   {
-    fprintf( sim -> output_file, "Malformed Druid talent string.  Number encoding should have length 62 for Burning Crusade or 81 for Wrath of the Lich King.\n" );
-    assert( 0 );
+    return false;
   }
+  else if( encoding == ENCODING_WOWHEAD )
+  {
+    return false;
+  }
+  else assert( 0 );
+
+  return true;
 }
 
 // druid_t::parse_option  ==============================================
