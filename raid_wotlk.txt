@@ -20,7 +20,7 @@ target_level=83
 
 # One of "max_time" (fight time in seconds) or "target_health" must be specified.
 # When "max_time" is used, the health of the target will be infered half-way through simulation.
-max_time=300
+max_time=360
 
 # While min/max damage effects (such as weapons and direct damage spells) are averaged out, spell event
 # and attack table mechanics are still random.  In order to get a trustworthy answer from the simulator,
@@ -68,10 +68,10 @@ actions=flask,type=pure_death/inner_fire/shadow_form/mana_potion,trigger=3500/sh
 gear_stamina=600
 gear_intellect=600
 gear_spirit=600
-gear_spell_power=2500
-gear_spell_crit_rating=200
+gear_spell_power=2000
+gear_spell_crit_rating=800
 gear_spell_hit_rating=250
-gear_haste_rating=500
+gear_haste_rating=400
 glyph_shadow_word_death=1
 pet=shadow_fiend
 main_hand=beast,damage=110,speed=1.5,school=shadow

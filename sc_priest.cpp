@@ -23,6 +23,7 @@ struct priest_t : public player_t
   int8_t buffs_improved_spirit_tap;
   int8_t buffs_shadow_weaving;
   int8_t buffs_surge_of_light;
+  int8_t buffs_dispersed;
 
   // Expirations
   event_t* expirations_improved_spirit_tap;
@@ -107,6 +108,7 @@ struct priest_t : public player_t
     buffs_inner_fire          = 0;
     buffs_shadow_weaving      = 0;
     buffs_surge_of_light      = 0;
+    buffs_dispersed           = 0;
 
     // Expirations
     expirations_improved_spirit_tap = 0;
@@ -512,6 +514,10 @@ void priest_spell_t::player_buff()
   if( p -> talents.focused_power )
   {
     player_multiplier *= 1.0 + p -> talents.focused_power * 0.02;
+  }
+  if( p -> buffs_dispersed )
+  {
+    player_multiplier *= 1.0 + p -> talents.dispersion * 0.25;
   }
 }
 
@@ -1402,6 +1408,26 @@ struct mind_flay_wotlk_t : public priest_spell_t
 
 struct dispersion_t : public priest_spell_t
 {
+  struct dispersed_expiration_t : public event_t
+  {
+    dispersed_expiration_t( sim_t* sim, player_t* player ) : event_t( sim, player )
+    {
+      name = "Post-Dispersion Effect Expiration";
+
+      priest_t* p = player -> cast_priest();
+      p -> aura_gain( "Dispersed" );
+      p -> buffs_dispersed = 1;
+      sim -> add_event( this, 60.0 );
+    }
+
+    virtual void execute()
+    {
+      priest_t* p = player -> cast_priest();
+      p -> aura_loss( "Dispersed" );
+      p -> buffs_dispersed = 0;
+    }
+  };
+
   dispersion_t( player_t* player, const std::string& options_str ) : 
     priest_spell_t( "dispersion", player, SCHOOL_SHADOW, TREE_SHADOW )
   {
@@ -1422,14 +1448,12 @@ struct dispersion_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
     p -> resource_gain( RESOURCE_MANA, 0.06 * p -> resource_max[ RESOURCE_MANA ], p -> gains_dispersion );
+    priest_spell_t::tick();
   }
 
-  virtual bool ready()
+  virtual void last_tick()
   {
-    if( ! priest_spell_t::ready() )
-      return false;
-
-    return player -> resource_current[ RESOURCE_MANA ] < 0.50 * player -> resource_max[ RESOURCE_MANA ];
+    new dispersed_expiration_t( sim, player );
   }
 };
 
