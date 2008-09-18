@@ -1901,7 +1901,7 @@ void priest_t::reset()
   buffs_inner_fire          = 0;
   buffs_shadow_weaving      = 0;
   buffs_surge_of_light      = 0;
-  buffs_dispersed           = 0;
+  buffs_dark_energy         = 0;
 
   // Expirations
   expirations_improved_spirit_tap = 0;
