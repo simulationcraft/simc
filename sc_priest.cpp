@@ -1956,6 +1956,7 @@ bool priest_t::parse_talents( const std::string& talent_string,
 
     talent_translation_t translation[] =
     {
+      // Discipline
       {  8,  &( talents.inner_focus               ) },
       {  9,  &( talents.meditation                ) },
       { 10,  &( talents.improved_inner_fire       ) },
@@ -1967,11 +1968,13 @@ bool priest_t::parse_talents( const std::string& talent_string,
       { 17,  &( talents.force_of_will             ) },
       { 19,  &( talents.power_infusion            ) },
       { 21,  &( talents.enlightenment             ) },
+      // Holy
       { 25,  &( talents.holy_specialization       ) },
       { 27,  &( talents.divine_fury               ) },
       { 33,  &( talents.searing_light             ) },
       { 36,  &( talents.spiritual_guidance        ) },
       { 37,  &( talents.surge_of_light            ) },
+      // Shadow
       { 46,  &( talents.shadow_affinity           ) },
       { 47,  &( talents.improved_shadow_word_pain ) },
       { 48,  &( talents.shadow_focus              ) },
@@ -1996,6 +1999,7 @@ bool priest_t::parse_talents( const std::string& talent_string,
 
     talent_translation_t translation[] =
     {
+      // Discipline
       {  2,  &( talents.twin_disciplines          ) },
       {  8,  &( talents.inner_focus               ) },
       {  9,  &( talents.meditation                ) },
@@ -2009,12 +2013,64 @@ bool priest_t::parse_talents( const std::string& talent_string,
       { 19,  &( talents.power_infusion            ) },
       { 23,  &( talents.aspiration                ) },
       { 28,  &( talents.penance                   ) },
+      // Holy
       { 31,  &( talents.holy_specialization       ) },
       { 33,  &( talents.divine_fury               ) },
       { 39,  &( talents.searing_light             ) },
       { 41,  &( talents.spirit_of_redemption      ) },
       { 42,  &( talents.spiritual_guidance        ) },
       { 43,  &( talents.surge_of_light            ) },
+      // Shadow
+      { 56,  &( talents.improved_spirit_tap       ) },
+      { 58,  &( talents.shadow_affinity           ) },
+      { 59,  &( talents.improved_shadow_word_pain ) },
+      { 60,  &( talents.shadow_focus              ) },
+      { 62,  &( talents.improved_mind_blast       ) },
+      { 63,  &( talents.mind_flay                 ) },
+      { 66,  &( talents.shadow_weaving            ) },
+      { 68,  &( talents.vampiric_embrace          ) },
+      { 69,  &( talents.improved_vampiric_embrace ) },
+      { 70,  &( talents.focused_mind              ) },
+      { 72,  &( talents.darkness                  ) },
+      { 73,  &( talents.shadow_form               ) },
+      { 74,  &( talents.shadow_power              ) },
+      { 76,  &( talents.misery                    ) },
+      { 78,  &( talents.vampiric_touch            ) },
+      { 79,  &( talents.pain_and_suffering        ) },
+      { 80,  &( talents.twisted_faith             ) },
+      { 81,  &( talents.dispersion                ) },
+      { 0, NULL }
+    };
+    player_t::parse_talents( translation, talent_string );
+  }
+  else if( encoding == ENCODING_MMO )
+  {
+    if( talent_string.size() != 81 ) return false;
+
+    talent_translation_t translation[] =
+    {
+      // Discipline
+      {  2,  &( talents.twin_disciplines          ) },
+      {  8,  &( talents.inner_focus               ) },
+      {  9,  &( talents.meditation                ) },
+      { 10,  &( talents.improved_inner_fire       ) },
+      { 11,  &( talents.mental_agility            ) },
+      { 13,  &( talents.mental_strength           ) },
+      { 14,  &( talents.divine_spirit             ) },
+      { 15,  &( talents.improved_divine_spirit    ) },
+      { 16,  &( talents.focused_power             ) },
+      { 17,  &( talents.enlightenment             ) },
+      { 19,  &( talents.power_infusion            ) },
+      { 23,  &( talents.aspiration                ) },
+      { 28,  &( talents.penance                   ) },
+      // Holy
+      { 31,  &( talents.holy_specialization       ) },
+      { 33,  &( talents.divine_fury               ) },
+      { 39,  &( talents.searing_light             ) },
+      { 41,  &( talents.spirit_of_redemption      ) },
+      { 42,  &( talents.spiritual_guidance        ) },
+      { 43,  &( talents.surge_of_light            ) },
+      // Shadow
       { 56,  &( talents.improved_spirit_tap       ) },
       { 58,  &( talents.shadow_affinity           ) },
       { 59,  &( talents.improved_shadow_word_pain ) },
@@ -2037,10 +2093,6 @@ bool priest_t::parse_talents( const std::string& talent_string,
       { 0, NULL }
     };
     player_t::parse_talents( translation, talent_string );
-  }
-  else if( encoding == ENCODING_MMO )
-  {
-    return false;
   }
   else if( encoding == ENCODING_WOWHEAD )
   {
