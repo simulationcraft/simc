@@ -90,12 +90,12 @@ struct warlock_t : public player_t
     int8_t  summon_felguard;
     int8_t  unholy_power;
     int8_t  unstable_affliction;
-
     int8_t  dark_pact;
     int8_t  demonic_embrace;
     int8_t  demonic_sacrifice;
     int8_t  emberstorm;
     int8_t  improved_drain_soul;
+
     int8_t  improved_shadow_bolt;
     int8_t  improved_succubus;
     int8_t  master_demonologist;
@@ -689,14 +689,15 @@ void warlock_spell_t::player_buff()
   spell_t::player_buff();
   if( school == SCHOOL_SHADOW )
   {
-    if( p -> buffs_pet_sacrifice == PET_FELGUARD ) player_multiplier *= 1.10;
-    if( p -> buffs_pet_sacrifice == PET_SUCCUBUS ) player_multiplier *= 1.15;
+    if( p -> buffs_pet_sacrifice == PET_FELGUARD ) player_multiplier *= 1.0 + ( sim_t::WotLK ? 0.07 : 0.10 );
+    if( p -> buffs_pet_sacrifice == PET_SUCCUBUS ) player_multiplier *= 1.0 + ( sim_t::WotLK ? 0.10 : 0.15 );
     if( p -> buffs_flame_shadow ) player_power += 135;
     p -> uptimes_flame_shadow -> update( p -> buffs_flame_shadow );
   }
   else if( school == SCHOOL_FIRE )
   {
-    if( p -> buffs_pet_sacrifice == PET_IMP ) player_multiplier *= 1.15;
+    if( p -> buffs_pet_sacrifice == PET_FELGUARD ) player_multiplier *= 1.0 + ( sim_t::WotLK ? 0.07 : 0.10 );
+    if( p -> buffs_pet_sacrifice == PET_IMP ) player_multiplier *= 1.0 + ( sim_t::WotLK ? 0.10 : 0.15 );
     if( p -> buffs_shadow_flame ) player_power += 135;
     p -> uptimes_shadow_flame -> update( p -> buffs_shadow_flame );
   }
@@ -1345,6 +1346,66 @@ struct drain_life_t : public warlock_spell_t
   }
 };
 
+// Drain Soul Spell ===========================================================
+
+struct drain_soul_t : public warlock_spell_t
+{
+  drain_soul_t( player_t* player, const std::string& options_str ) : 
+    warlock_spell_t( "drain_soul", player, SCHOOL_SHADOW, TREE_AFFLICTION )
+  {
+    warlock_t* p = player -> cast_warlock();
+
+    option_t options[] =
+    {
+      { "rank", OPT_INT8, &rank_index },
+      { NULL }
+    };
+    parse_options( options, options_str );
+      
+    static rank_t ranks[] =
+    {
+      { 67, 5, 0, 0, 620, 360 },
+      { 52, 4, 0, 0, 455, 290 },
+      { 0, 0 }
+    };
+    player -> init_mana_costs( ranks );
+    rank = choose_rank( ranks );
+    
+    base_execute_time = 0; 
+    base_duration     = 15.0; 
+    num_ticks         = 5; 
+    channeled         = true; 
+    binary            = true;
+    dot_power_mod     = (15.0/3.5)/2.0; 
+
+    base_cost        = rank -> cost;
+    base_multiplier *= 1.0 + p -> talents.shadow_mastery * 0.02;
+    base_hit        += p -> talents.suppression * 0.02;
+  }
+
+  virtual void player_buff()
+  {
+    warlock_spell_t::player_buff();
+
+    warlock_t* p = player -> cast_warlock();
+    target_t*  t = sim -> target;
+
+    double base_multiplier[] = { 0, 0.02, 0.04 };
+    double  max_multiplier[] = { 0, 0.24, 0.60 };
+
+    assert( p -> talents.soul_siphon >= 0 &&
+	    p -> talents.soul_siphon <= 2 );
+
+    double base = base_multiplier[ p -> talents.soul_siphon ];
+    double max  =  max_multiplier[ p -> talents.soul_siphon ];
+
+    double multiplier = t -> debuffs.affliction_effects * base;
+    if( multiplier > max ) multiplier = max;
+
+    player_multiplier *= 1.0 + multiplier;    
+  }
+};
+
 // Siphon Life Spell ===========================================================
 
 struct siphon_life_t : public warlock_spell_t
@@ -1625,7 +1686,7 @@ struct incinerate_t : public warlock_spell_t
 
     base_cost          = rank -> cost;
     base_cost         *= 1.0 - p -> talents.cataclysm * 0.01;
-    base_execute_time *= 1.0 - p -> talents.emberstorm * 0.02;
+    base_execute_time -= p -> talents.emberstorm * ( sim_t::WotLK ? 0.05 : 0.1 );
     base_multiplier   *= 1.0 + p -> talents.emberstorm * 0.02;
     base_crit         += p -> talents.devastation * 0.01;
     base_crit         += p -> talents.backlash * 0.01;
@@ -1786,9 +1847,9 @@ struct life_tap_t : public warlock_spell_t
 
     static rank_t ranks[] =
     {
-      { 68, 7, 580, 580, 0, 0 },
-      { 56, 6, 420, 420, 0, 0 },
-      { 46, 5, 300, 300, 0, 0 },
+      { 80, 8, 580, 580, 1490, 0 },
+      { 68, 7, 580, 580,  710, 0 },
+      { 56, 6, 420, 420,  500, 0 },
       { 0, 0 }
     };
     player -> init_mana_costs( ranks );
@@ -1805,8 +1866,16 @@ struct life_tap_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
-    player_buff();
-    double dmg = ( base_dd + ( dd_power_mod * p -> composite_spell_power( SCHOOL_SHADOW ) ) ) * base_multiplier * player_multiplier;
+    double dmg = 0;
+    if( sim_t::WotLK )
+    {
+      dmg = base_dot + 0.30 * p -> spirit();
+    }
+    else
+    {
+      player_buff();
+      dmg = ( base_dd + ( dd_power_mod * p -> composite_spell_power( SCHOOL_SHADOW ) ) ) * base_multiplier * player_multiplier;
+    }
     p -> resource_loss( RESOURCE_HEALTH, dmg );
     p -> resource_gain( RESOURCE_MANA, dmg * ( 1.0 + p -> talents.improved_life_tap * 0.10 ), p -> gains_life_tap );
   }
@@ -1831,7 +1900,6 @@ struct dark_pact_t : public warlock_spell_t
       { 80, 5, 1200, 1200, 0, 0 },
       { 70, 3,  700,  700, 0, 0 },
       { 60, 2,  545,  545, 0, 0 },
-      { 50, 1,  440,  440, 0, 0 },
 	{ 0, 0 }
     };
     player -> init_mana_costs( ranks );
@@ -1883,6 +1951,8 @@ struct fel_armor_t : public warlock_spell_t
     if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
     p -> buffs_fel_armor = bonus_spell_power;
     p -> buffs_demon_armor = 0;
+
+    if( sim_t::WotLK ) p -> spell_power_per_spirit += 0.30;
   }
 
   virtual bool ready()
@@ -1983,7 +2053,7 @@ action_t* warlock_t::create_action( const std::string& name,
   if( name == "dark_pact"           ) return new           dark_pact_t( this, options_str );
   if( name == "death_coil"          ) return new          death_coil_t( this, options_str );
   if( name == "drain_life"          ) return new          drain_life_t( this, options_str );
-//if( name == "drain_soul"          ) return new          drain_soul_t( this, options_str );
+  if( name == "drain_soul"          ) return new          drain_soul_t( this, options_str );
   if( name == "fel_armor"           ) return new           fel_armor_t( this, options_str );
 //if( name == "grand_fire_stone"    ) return new    grand_fire_stone_t( this, options_str );
 //if( name == "grand_spell_stone"   ) return new   grand_spell_stone_t( this, options_str );
@@ -2024,7 +2094,10 @@ void warlock_t::init_base()
   attribute_base[ ATTR_SPIRIT    ] = 142;
 
   attribute_multiplier_initial[ ATTR_STAMINA ] *= 1.0 + talents.demonic_embrace * 0.03;
-  attribute_multiplier_initial[ ATTR_SPIRIT  ] *= 1.0 - talents.demonic_embrace * 0.01;
+  if( ! sim_t::WotLK ) 
+  {
+    attribute_multiplier_initial[ ATTR_SPIRIT ] *= 1.0 - talents.demonic_embrace * 0.01;
+  }
 
   base_spell_crit = 0.0170;
   initial_spell_crit_per_intellect = rating_t::interpolate( level, 0.01/60.0, 0.01/80.0, 0.01/166.6 );
