@@ -1413,14 +1413,14 @@ struct mind_flay_wotlk_t : public priest_spell_t
 
 struct dispersion_t : public priest_spell_t
 {
-  struct dispersed_expiration_t : public event_t
+  struct dark_energy_expiration_t : public event_t
   {
-    dispersed_expiration_t( sim_t* sim, player_t* player ) : event_t( sim, player )
+    dark_energy_expiration_t( sim_t* sim, player_t* player ) : event_t( sim, player )
     {
       name = "Post-Dispersion Effect Expiration";
 
       priest_t* p = player -> cast_priest();
-      p -> aura_gain( "Dispersed" );
+      p -> aura_gain( "Dark Energy" );
       p -> buffs_dispersed = 1;
       sim -> add_event( this, 60.0 );
     }
@@ -1428,7 +1428,7 @@ struct dispersion_t : public priest_spell_t
     virtual void execute()
     {
       priest_t* p = player -> cast_priest();
-      p -> aura_loss( "Dispersed" );
+      p -> aura_loss( "Dark Energy" );
       p -> buffs_dispersed = 0;
     }
   };
@@ -1458,7 +1458,7 @@ struct dispersion_t : public priest_spell_t
 
   virtual void last_tick()
   {
-    new dispersed_expiration_t( sim, player );
+    new dark_energy_expiration_t( sim, player );
   }
 };
 
