@@ -145,15 +145,16 @@ void stats_t::analyze()
   total_tick_time    /= num_iterations;
   total_dmg          /= num_iterations;
 
+  for( int i=0; i < num_buckets; i++ )
+  {
+    timeline_dmg[ i ] /= num_iterations;
+  }
+
   timeline_dps.clear();
   timeline_dps.insert( timeline_dps.begin(), num_buckets, 0 );
 
   int max_buckets = std::min( (int) player -> total_seconds, (int) timeline_dmg.size() );
 
-  for( int i=0; i < max_buckets; i++ )
-  {
-    timeline_dmg[ i ] /= num_iterations;
-  }
   for( int i=0; i < max_buckets; i++ )
   {
     double window_dmg  = timeline_dmg[ i ];
