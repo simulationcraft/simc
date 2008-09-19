@@ -739,7 +739,6 @@ struct pet_t : public player_t
   virtual void dismiss();
 
   // Expand these later
-  virtual void schedule_ready( double delta_time=0, bool waiting=false ) { assert(0); }
   virtual void regen( double periodicity ) {}
 };
 

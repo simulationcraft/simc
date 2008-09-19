@@ -248,6 +248,13 @@ void attack_t::calculate_damage()
 
   double attack_power = base_power + player_power + target_power;
 
+  if( sim -> debug ) 
+    report_t::log( sim, 
+		   "weapon_damage=%.0f weapon_speed=%.1f base_dd=%.0f "
+		   "player_power=%.0f target_power=%.0f "
+		   "base_multiplier=%.2f player_multiplier=%.2f target_multiplier=%.2f",
+		   weapon_damage, weapon_speed, base_dd, player_power, target_power, base_multiplier, player_multiplier, target_multiplier );
+
   if( base_dd > 0 )  
   {
     dd  = base_dd + weapon_speed * ( weapon_damage + ( attack_power * dd_power_mod ) );
