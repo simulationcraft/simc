@@ -206,7 +206,6 @@ struct shaman_t : public player_t
   virtual int       primary_resource() { return RESOURCE_MANA; }
 
   // Event Tracking
-  virtual void regen( double periodicity );
   virtual void attack_hit_event   ( attack_t* );
   virtual void attack_damage_event( attack_t*, double amount, int8_t dmg_type );
   virtual void spell_start_event ( spell_t* );
@@ -2855,6 +2854,8 @@ void shaman_t::init_base()
 
   mana_per_intellect *= 1.0 + talents.ancestral_knowledge * 0.01;
 
+  mp5_per_intellect = talents.unrelenting_storm * 0.02;
+
   if( gear.tier6_2pc )
   {
     // Simply assume the totems are out all the time.
@@ -2996,41 +2997,6 @@ double shaman_t::composite_spell_crit()
   }
 
   return crit;
-}
-
-// shaman_t::regen  ==========================================================
-
-void shaman_t::regen( double periodicity )
-{
-  double spirit_regen = periodicity * spirit_regen_per_second();
-
-  if( buffs.innervate )
-  {
-    spirit_regen *= 4.0;
-  }
-  else if( recent_cast() )
-  {
-    spirit_regen = 0;
-  }
-
-  double mp5_regen = periodicity * ( mp5 + intellect() * talents.unrelenting_storm * 0.02 ) / 5.0;
-
-  resource_gain( RESOURCE_MANA, spirit_regen, gains.spirit_regen );
-  resource_gain( RESOURCE_MANA,    mp5_regen, gains.mp5_regen    );
-
-  if( buffs.replenishment )
-  {
-    double replenishment_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.005 / 1.0;
-
-    resource_gain( RESOURCE_MANA, replenishment_regen, gains.replenishment );
-  }
-
-  if( buffs.water_elemental_regen )
-  {
-    double water_elemental_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.006 / 5.0;
-
-    resource_gain( RESOURCE_MANA, water_elemental_regen, gains.water_elemental_regen );
-  }
 }
 
 // shaman_t::parse_talents ===============================================

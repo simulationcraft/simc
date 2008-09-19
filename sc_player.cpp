@@ -111,6 +111,7 @@ player_t::player_t( sim_t*             s,
   spell_power_per_intellect(0), initial_spell_power_per_intellect(0),
   spell_power_per_spirit(0),    initial_spell_power_per_spirit(0),
   spell_crit_per_intellect(0),  initial_spell_crit_per_intellect(0),
+  mp5_per_intellect(0), spirit_regen_while_casting(0), 
   last_cast(0),
   // Attack Mechanics
   base_attack_power(0),       initial_attack_power(0),        attack_power(0),
@@ -726,6 +727,41 @@ action_t* player_t::execute_action()
   return action;
 }
 
+// player_t::regen =========================================================
+
+void player_t::regen( double periodicity )
+{
+  double spirit_regen = periodicity * spirit_regen_per_second();
+
+  if( buffs.innervate )
+  {
+    spirit_regen *= 4.0;
+  }
+  else if( recent_cast() )
+  {
+    spirit_regen *= spirit_regen_while_casting;
+  }
+
+  double mp5_regen = periodicity * ( mp5 + intellect() * mp5_per_intellect ) / 5.0;
+
+  resource_gain( RESOURCE_MANA, spirit_regen, gains.spirit_regen );
+  resource_gain( RESOURCE_MANA,    mp5_regen, gains.mp5_regen    );
+
+  if( buffs.replenishment )
+  {
+    double replenishment_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.0025 / 1.0;
+
+    resource_gain( RESOURCE_MANA, replenishment_regen, gains.replenishment );
+  }
+
+  if( buffs.water_elemental_regen )
+  {
+    double water_elemental_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.006 / 5.0;
+
+    resource_gain( RESOURCE_MANA, water_elemental_regen, gains.water_elemental_regen );
+  }
+}
+
 // player_t::resource_loss =================================================
 
 void player_t::resource_loss( int8_t resource,
@@ -1107,7 +1143,7 @@ double player_t::spirit_regen_per_second()
 {
   double base_60 = 0.010999;
   double base_70 = 0.009327;
-  double base_80 = 0.007125;
+  double base_80 = 0.005569;
 
   double base_regen = rating_t::interpolate( level, base_60, base_70, base_80 );
 

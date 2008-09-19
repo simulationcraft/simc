@@ -79,6 +79,7 @@ struct priest_t : public player_t
     int8_t  twisted_faith;
     int8_t  vampiric_embrace;
     int8_t  vampiric_touch;
+    int8_t  veiled_shadows;
     
     talents_t() { memset( (void*) this, 0x0, sizeof( talents_t ) ); }
   };
@@ -204,7 +205,14 @@ struct shadow_fiend_pet_t : public pet_t
     {
       attack_t::assess_damage( amount, dmg_type );
       priest_t* p = player -> cast_pet() -> owner -> cast_priest();
-      p -> resource_gain( RESOURCE_MANA, amount * 2.5, p -> gains_shadow_fiend );
+      if( sim_t::WotLK )
+      {
+	p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.04, p -> gains_shadow_fiend );
+      }
+      else
+      {
+	p -> resource_gain( RESOURCE_MANA, amount * 2.5, p -> gains_shadow_fiend );
+      }
     }
   };
 
@@ -758,15 +766,23 @@ struct shadow_word_pain_t : public priest_spell_t
     base_execute_time = 0; 
     base_duration     = 18.0; 
     num_ticks         = 6;
-
     dot_power_mod     = 1.10; 
-    dot_power_mod     *= 1.0 + p -> talents.twin_disciplines * 0.01;
 
     base_dot  = rank -> dot;
     base_cost = rank -> cost;
     base_cost *= 1.0 - p -> talents.mental_agility * 0.02;
     if( sim_t::WotLK ) base_cost *= 1.0 - p -> talents.shadow_focus * 0.02;
-    if( p -> glyphs.shadow_word_pain ) base_cost *= 0.80;
+    base_multiplier *= 1.0 + p -> talents.twin_disciplines * 0.01;
+    if( sim_t::WotLK )
+    {
+      base_multiplier *= 1.0 + ( p -> talents.darkness                  * 0.02 + 
+				 p -> talents.improved_shadow_word_pain * 0.05 );
+    }
+    else
+    {
+      base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
+    }
+    base_hit += p -> talents.shadow_focus * ( sim_t::WotLK ? 0.01 : 0.02 );
 
     int8_t more_ticks = 0;
     if( ! sim_t::WotLK ) more_ticks += p -> talents.improved_shadow_word_pain;
@@ -781,16 +797,7 @@ struct shadow_word_pain_t : public priest_spell_t
       num_ticks     += more_ticks;
     }
 
-    if( sim_t::WotLK )
-    {
-      base_multiplier *= 1.0 + ( p -> talents.darkness                  * 0.02 + 
-				 p -> talents.improved_shadow_word_pain * 0.05 );
-    }
-    else
-    {
-      base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
-    }
-    base_hit += p -> talents.shadow_focus * ( sim_t::WotLK ? 0.01 : 0.02 );
+    if( p -> glyphs.shadow_word_pain ) base_cost *= 0.80;
   }
 
   virtual void execute() 
@@ -935,13 +942,12 @@ struct devouring_plague_t : public priest_spell_t
     num_ticks         = 8;  
     cooldown          = sim_t::WotLK ? 24.0 : 180.0;
     binary            = true;
-
     dot_power_mod     = ( 24.0 / 15.0 ) / 2.0; 
-    dot_power_mod     *= 1.0 + p -> talents.twin_disciplines * 0.01;
 
     base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.mental_agility * 0.02;
     if( sim_t::WotLK ) base_cost *= 1.0 - p -> talents.shadow_focus * 0.02;
+    base_multiplier *= 1.0 + p -> talents.twin_disciplines * 0.01;
     base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
     base_hit        += p -> talents.shadow_focus * ( sim_t::WotLK ? 0.01 : 0.02 );
   }
@@ -1114,12 +1120,11 @@ struct shadow_word_death_t : public priest_spell_t
     base_execute_time = 0; 
     may_crit          = true; 
     cooldown          = 12.0;
-
     dd_power_mod      = (1.5/3.5); 
-    dd_power_mod      *= 1.0 + p -> talents.twin_disciplines * 0.01;
 
     base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.mental_agility * 0.02;
+    base_multiplier *= 1.0 + p -> talents.twin_disciplines * 0.01;
     base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
     base_hit        += p -> talents.shadow_focus * ( sim_t::WotLK ? 0.01 : 0.02 );
 
@@ -1300,7 +1305,6 @@ struct mind_flay_wotlk_t : public priest_spell_t
     base_cost       *= 1.0 - p -> talents.focused_mind * 0.05;
     base_cost       *= 1.0 - p -> talents.shadow_focus * 0.02;
     base_hit        += p -> talents.shadow_focus * 0.01;
-
     base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
     base_crit       += p -> talents.mind_melt * 0.02;
     base_crit_bonus *= 1.0 + p -> talents.shadow_power * 0.20;
@@ -1673,6 +1677,7 @@ struct shadow_fiend_spell_t : public priest_spell_t
     shadow_fiend_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
     {
       double duration = 15.1;
+      if( sim_t::WotLK        ) duration += 3.0;
       if( p -> gear.tier4_2pc ) duration += 3.0;
       sim -> add_event( this, duration );
     }
@@ -1698,6 +1703,7 @@ struct shadow_fiend_spell_t : public priest_spell_t
 
     harmful    = false;
     cooldown   = 300.0;
+    cooldown  -= 60.0 * p -> talents.veiled_shadows;
     base_cost  = 300;
     base_cost *= 1.0 - p -> talents.mental_agility * 0.02;
   }
@@ -1912,37 +1918,14 @@ void priest_t::reset()
 
 void priest_t::regen( double periodicity )
 {
-  double spirit_regen = periodicity * spirit_regen_per_second();
+  spirit_regen_while_casting = talents.meditation * 0.10;
 
-  if( buffs.innervate )
+  if( buffs_improved_spirit_tap )
   {
-    spirit_regen *= 4.0;
-  }
-  else if( recent_cast() )
-  {
-    double while_casting = talents.meditation * 0.10;
-    if( buffs_improved_spirit_tap ) while_casting += talents.improved_spirit_tap * 0.10;
-    spirit_regen *= while_casting;
+    spirit_regen_while_casting += talents.improved_spirit_tap * 0.10;
   }
 
-  double mp5_regen = periodicity * mp5 / 5.0;
-
-  resource_gain( RESOURCE_MANA, spirit_regen, gains.spirit_regen );
-  resource_gain( RESOURCE_MANA,    mp5_regen, gains.mp5_regen    );
-
-  if( buffs.replenishment )
-  {
-    double replenishment_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.005 / 1.0;
-
-    resource_gain( RESOURCE_MANA, replenishment_regen, gains.replenishment );
-  }
-
-  if( buffs.water_elemental_regen )
-  {
-    double water_elemental_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.006 / 5.0;
-
-    resource_gain( RESOURCE_MANA, water_elemental_regen, gains.water_elemental_regen );
-  }
+  player_t::regen( periodicity );
 }
 
 // priest_t::parse_talents =================================================
@@ -2077,6 +2060,7 @@ bool priest_t::parse_talents( const std::string& talent_string,
       { 60,  &( talents.shadow_focus              ) },
       { 62,  &( talents.improved_mind_blast       ) },
       { 63,  &( talents.mind_flay                 ) },
+      { 64,  &( talents.veiled_shadows            ) },
       { 66,  &( talents.shadow_weaving            ) },
       { 68,  &( talents.vampiric_embrace          ) },
       { 69,  &( talents.improved_vampiric_embrace ) },
@@ -2151,6 +2135,7 @@ bool priest_t::parse_option( const std::string& name,
     { "twisted_faith",             OPT_INT8,  &( talents.twisted_faith             ) },
     { "vampiric_embrace",          OPT_INT8,  &( talents.vampiric_embrace          ) },
     { "vampiric_touch",            OPT_INT8,  &( talents.vampiric_touch            ) },
+    { "veiled_shadows",            OPT_INT8,  &( talents.veiled_shadows            ) },
     // Glyphs
     { "glyph_blue_promises",       OPT_INT8,  &( glyphs.blue_promises              ) },
     { "glyph_shadow_word_death",   OPT_INT8,  &( glyphs.shadow_word_death          ) },

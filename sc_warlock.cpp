@@ -21,18 +21,22 @@ struct warlock_t : public player_t
 
   // Buffs
   int8_t buffs_amplify_curse;
+  int8_t buffs_backdraft;
   int8_t buffs_demon_armor;
   double buffs_fel_armor;
   int8_t buffs_flame_shadow;
   int8_t buffs_nightfall;
   int8_t buffs_pet_sacrifice;
+  int8_t buffs_shadow_embrace;
   int8_t buffs_shadow_flame;
   int8_t buffs_shadow_vulnerability;
   int8_t buffs_shadow_vulnerability_charges;
 
   // Expirations
+  event_t* expirations_backdraft;
   event_t* expirations_shadow_flame;
   event_t* expirations_flame_shadow;
+  event_t* expirations_shadow_embrace;
   event_t* expirations_shadow_vulnerability;
 
   // Gains
@@ -45,6 +49,7 @@ struct warlock_t : public player_t
   proc_t* procs_nightfall;
 
   // Up-Times
+  uptime_t* uptimes_backdraft;
   uptime_t* uptimes_shadow_flame;
   uptime_t* uptimes_flame_shadow;
   uptime_t* uptimes_shadow_vulnerability;
@@ -67,7 +72,6 @@ struct warlock_t : public player_t
     int8_t  fel_intellect;
     int8_t  fel_stamina;
     int8_t  improved_curse_of_agony;
-    int8_t  improved_corruption;
     int8_t  improved_fire_bolt;
     int8_t  improved_immolate;
     int8_t  improved_imp;
@@ -95,17 +99,18 @@ struct warlock_t : public player_t
     int8_t  demonic_sacrifice;
     int8_t  emberstorm;
     int8_t  improved_drain_soul;
-
+    int8_t  improved_corruption;
     int8_t  improved_shadow_bolt;
     int8_t  improved_succubus;
     int8_t  master_demonologist;
     int8_t  shadow_embrace;
     int8_t  soul_link;
     int8_t  suppression;
-
     int8_t  backdraft;
+
     int8_t  chaos_bolt;
     int8_t  deaths_embrace;
+    int8_t  demonic_brutality;
     int8_t  demonic_empathy;
     int8_t  demonic_empowerment;
     int8_t  demonic_pact;
@@ -145,17 +150,21 @@ struct warlock_t : public player_t
 
     // Buffs
     buffs_amplify_curse                = 0;
+    buffs_backdraft                    = 0;
     buffs_demon_armor                  = 0;
     buffs_fel_armor                    = 0;
     buffs_flame_shadow                 = 0;
     buffs_nightfall                    = 0;
     buffs_pet_sacrifice                = 0;
+    buffs_shadow_embrace               = 0;
     buffs_shadow_flame                 = 0;
     buffs_shadow_vulnerability         = 0;
     buffs_shadow_vulnerability_charges = 0;
 
     // Expirations
+    expirations_backdraft              = 0;
     expirations_flame_shadow           = 0;
+    expirations_shadow_embrace         = 0;
     expirations_shadow_flame           = 0;
     expirations_shadow_vulnerability   = 0;
 
@@ -169,8 +178,9 @@ struct warlock_t : public player_t
     procs_nightfall = get_proc( "nightfall" );
 
     // Up-Times
-    uptimes_flame_shadow         = get_uptime( "flame_shadow" );
-    uptimes_shadow_flame         = get_uptime( "shadow_flame" );
+    uptimes_backdraft            = get_uptime( "backdraft"            );
+    uptimes_flame_shadow         = get_uptime( "flame_shadow"         );
+    uptimes_shadow_flame         = get_uptime( "shadow_flame"         );
     uptimes_shadow_vulnerability = get_uptime( "shadow_vulnerability" );
   }
 
@@ -200,13 +210,14 @@ struct warlock_spell_t : public spell_t
   }
 
   // Overridden Methods
-  virtual double haste();
+  virtual double execute_time();
   virtual void   player_buff();
+  virtual void   target_debuff( int8_t dmg_type );
   virtual void   execute();
+  virtual void   assess_damage( double amount, int8_t dmg_type );
 
   // Passthru Methods
   virtual double cost()          { return spell_t::cost();         }
-  virtual double execute_time()  { return spell_t::execute_time(); }
   virtual void   tick()          { spell_t::tick();                }
   virtual void   last_tick()     { spell_t::last_tick();           }
   virtual bool   ready()         { return spell_t::ready();        }
@@ -238,7 +249,7 @@ struct warlock_pet_t : public pet_t
 
       base_crit        += o -> talents.demonic_tactics * 0.01;
       base_multiplier  *= 1.0 + o -> talents.unholy_power * 0.04;
-      if( o -> talents.soul_link ) base_multiplier *= 1.05;
+      if( ! sim_t::WotLK && o -> talents.soul_link ) base_multiplier *= 1.05;
     }
     virtual void execute()
     {
@@ -325,7 +336,7 @@ struct imp_pet_t : public warlock_pet_t
       base_crit         += o -> talents.demonic_tactics * 0.01;
       base_multiplier   *= 1.0 + o -> talents.improved_imp * 0.10;
       base_multiplier   *= 1.0 + o -> talents.unholy_power * 0.04;
-      if( o -> talents.soul_link ) base_multiplier *= 1.05;
+      if( ! sim_t::WotLK && o -> talents.soul_link ) base_multiplier *= 1.05;
       
     }
     virtual void player_buff()
@@ -436,7 +447,7 @@ struct succubus_pet_t : public warlock_pet_t
       warlock_pet_t::melee_t( player )
     {
       warlock_t* o = player -> cast_pet() -> owner -> cast_warlock();
-      base_multiplier *= 1.0 + o -> talents.master_demonologist * 0.02;
+      if( ! sim_t::WotLK ) base_multiplier *= 1.0 + o -> talents.master_demonologist * 0.02;
     }
   };
 
@@ -552,9 +563,51 @@ static void trigger_tier4_2pc( spell_t* s )
   }
 }
 
-// trigger_improved_shadow_bolt =============================================
+// trigger_improved_shadow_bolt_wotlk =======================================
 
-static void trigger_improved_shadow_bolt( spell_t* s )
+static void trigger_improved_shadow_bolt_wotlk( spell_t* s )
+{
+  struct expiration_t : public event_t
+  {
+    expiration_t( sim_t* sim, warlock_t* p ) : event_t( sim, p )
+    {
+      name = "Shadow Vulnerability Expiration";
+      p -> aura_gain( "Shadow Vulnerability" );
+      sim -> add_event( this, 12.0 );
+    }
+    virtual void execute()
+    {
+      warlock_t* p = player -> cast_warlock();
+      p -> aura_loss( "Shadow Vulnerability" );
+      p -> buffs_shadow_vulnerability = 0;
+      p -> buffs_shadow_vulnerability_charges = 0;
+      p -> expirations_shadow_vulnerability = 0;
+    }
+  };
+  
+  warlock_t* p = s -> player -> cast_warlock();
+
+  if( p -> talents.improved_shadow_bolt )
+  {
+    p -> buffs_shadow_vulnerability = p -> talents.improved_shadow_bolt * 4;
+    p -> buffs_shadow_vulnerability_charges = 4;
+
+    event_t*& e = p -> expirations_shadow_vulnerability;
+
+    if( e )
+    {
+      e -> reschedule( 12.0 );
+    }
+    else
+    {
+      e = new expiration_t( s -> sim, p );
+    }
+  }
+}
+
+// trigger_improved_shadow_bolt_bc ==========================================
+
+static void trigger_improved_shadow_bolt_bc( spell_t* s )
 {
   struct expiration_t : public event_t
   {
@@ -562,7 +615,7 @@ static void trigger_improved_shadow_bolt( spell_t* s )
     {
       name = "Shadow Vulnerability Expiration";
       target_t* t = sim -> target;
-      if( sim -> log ) report_t::log( sim, "Target %s loses Shadow Vulnerability", t -> name() );
+      if( sim -> log ) report_t::log( sim, "Target %s gains Shadow Vulnerability", t -> name() );
       sim -> add_event( this, 12.0 );
     }
     virtual void execute()
@@ -596,6 +649,62 @@ static void trigger_improved_shadow_bolt( spell_t* s )
   }
 }
 
+// trigger_improved_shadow_bolt =============================================
+
+static void trigger_improved_shadow_bolt( spell_t* s )
+{
+  if( sim_t::WotLK )
+  {
+    trigger_improved_shadow_bolt_wotlk( s );
+  }
+  else
+  {
+    trigger_improved_shadow_bolt_bc( s );
+  }
+}
+
+// stack_shadow_embrace =====================================================
+
+static void stack_shadow_embrace( spell_t* s )
+{
+  if( ! sim_t::WotLK ) return;
+
+  struct expiration_t : public event_t
+  {
+    expiration_t( sim_t* sim, warlock_t* p ) : event_t( sim, p )
+    {
+      name = "Shadow Embrace Expiration";
+      p -> aura_gain( "Shadow Embrace" );
+      sim -> add_event( this, 15.0 );
+    }
+    virtual void execute()
+    {
+      warlock_t* p = player -> cast_warlock();
+      p -> aura_loss( "Shadow Embrace" );
+      p -> buffs_shadow_embrace = 0;
+      p -> expirations_shadow_embrace = 0;
+    }
+  };
+  
+  warlock_t* p = s -> player -> cast_warlock();
+
+  if( p -> talents.shadow_embrace )
+  {
+    if( p -> buffs_shadow_embrace < 2 ) p -> buffs_shadow_embrace++;
+
+    event_t*& e = p -> expirations_shadow_vulnerability;
+
+    if( e )
+    {
+      e -> reschedule( 15.0 );
+    }
+    else
+    {
+      e = new expiration_t( s -> sim, p );
+    }
+  }
+}
+
 // trigger_nightfall ========================================================
 
 static void trigger_nightfall( spell_t* s )
@@ -624,6 +733,46 @@ static void trigger_soul_leech( spell_t* s )
     if( rand_t::roll( 0.10 * p -> talents.soul_leech ) )
     {
       p -> resource_gain( RESOURCE_HEALTH, s -> dd * 0.30 );
+    }
+  }
+}
+
+// trigger_backdraft ========================================================
+
+static void trigger_backdraft( spell_t* s )
+{
+  struct expiration_t : public event_t
+  {
+    expiration_t( sim_t* sim, warlock_t* p ) : event_t( sim, p )
+    {
+      name = "Backdraft Expiration";
+      p -> aura_gain( "Backdraft" );
+      sim -> add_event( this, 15.0 );
+    }
+    virtual void execute()
+    {
+      warlock_t* p = player -> cast_warlock();
+      p -> aura_loss( "Backdraft" );
+      p -> buffs_backdraft = 0;
+      p -> expirations_backdraft = 0;
+    }
+  };
+  
+  warlock_t* p = s -> player -> cast_warlock();
+
+  if( p -> talents.backdraft )
+  {
+    p -> buffs_backdraft = 3;
+
+    event_t*& e = p -> expirations_backdraft;
+
+    if( e )
+    {
+      e -> reschedule( 12.0 );
+    }
+    else
+    {
+      e = new expiration_t( s -> sim, p );
     }
   }
 }
@@ -674,11 +823,14 @@ static void trigger_ashtongue_talisman( spell_t* s )
 // Warlock Spell
 // ==========================================================================
 
-// warlock_spell_t::haste ===================================================
+// warlock_spell_t::execute_time ============================================
 
-double warlock_spell_t::haste()
+double warlock_spell_t::execute_time()
 {
-  return spell_t::haste();
+  warlock_t* p = player -> cast_warlock();
+  double t = spell_t::execute_time();
+  if( t > 0 && tree == TREE_DESTRUCTION && p -> buffs_backdraft ) t *= 0.70;
+  return t;
 }
 
 // warlock_spell_t::player_buff =============================================
@@ -693,6 +845,8 @@ void warlock_spell_t::player_buff()
     if( p -> buffs_pet_sacrifice == PET_SUCCUBUS ) player_multiplier *= 1.0 + ( sim_t::WotLK ? 0.10 : 0.15 );
     if( p -> buffs_flame_shadow ) player_power += 135;
     p -> uptimes_flame_shadow -> update( p -> buffs_flame_shadow );
+    player_multiplier *= 1.0 + p -> buffs_shadow_vulnerability * 0.01;
+    p -> uptimes_shadow_vulnerability -> update( p -> buffs_shadow_vulnerability );
   }
   else if( school == SCHOOL_FIRE )
   {
@@ -705,10 +859,17 @@ void warlock_spell_t::player_buff()
   {
     if( p -> talents.master_demonologist )
     {
-      if( p -> active_pet -> pet_type == PET_FELGUARD ) player_multiplier *= 1.0 + p -> talents.master_demonologist * 0.01;
-      if( p -> active_pet -> pet_type == PET_SUCCUBUS ) player_multiplier *= 1.0 + p -> talents.master_demonologist * 0.02;
+      if( p -> active_pet -> pet_type == PET_FELGUARD ) 
+      {
+	player_multiplier *= 1.0 + p -> talents.master_demonologist * 0.01;
+      }
+      else if( p -> active_pet -> pet_type == PET_SUCCUBUS ) 
+      {
+	player_multiplier *= 1.0 + p -> talents.master_demonologist * ( sim_t::WotLK ? 0.01 : 0.02 );
+	player_crit       +=       p -> talents.master_demonologist * ( sim_t::WotLK ? 0.01 : 0.00 );
+      }
     }
-    if( p -> talents.soul_link )
+    if( ! sim_t::WotLK && p -> talents.soul_link )
     {
       player_multiplier *= 1.05;
     }
@@ -719,14 +880,51 @@ void warlock_spell_t::player_buff()
   }
 }
 
+// warlock_spell_t::target_debuff ============================================
+
+void warlock_spell_t::target_debuff( int8_t dmg_type )
+{
+  warlock_t* p = player -> cast_warlock();
+  spell_t::target_debuff( dmg_type );
+  if( dmg_type == DMG_OVER_TIME && p -> buffs_shadow_embrace )
+  {
+    target_multiplier *= 1.0 + p -> buffs_shadow_embrace * p -> talents.shadow_embrace * 0.01;
+  }
+}
+
 // warlock_spell_t::execute ==================================================
 
 void warlock_spell_t::execute()
 {
+  warlock_t* p = player -> cast_warlock();
+  if( time_to_execute > 0 && tree == TREE_DESTRUCTION )
+  {
+    p -> uptimes_backdraft -> update( p -> buffs_backdraft );
+    if( p -> buffs_backdraft > 0 ) p -> buffs_backdraft--;
+  }
   spell_t::execute();
   if( result_is_hit() )
   {
     trigger_tier4_2pc( this );
+  }
+}
+
+// warlock_spell_t::execute ==================================================
+
+void warlock_spell_t::assess_damage( double amount, 
+				     int8_t dmg_type )
+{
+  warlock_t* p = player -> cast_warlock();
+  spell_t::assess_damage( amount, dmg_type );
+  if( dmg_type == DMG_DIRECT    &&
+      school   == SCHOOL_SHADOW && 
+      p -> buffs_shadow_vulnerability_charges > 0 )
+  {
+    p -> buffs_shadow_vulnerability_charges--;
+    if( p -> buffs_shadow_vulnerability_charges == 0 )
+    {
+      event_t::early( p -> expirations_shadow_vulnerability );
+    }
   }
 }
 
@@ -757,7 +955,8 @@ struct curse_of_elements_t : public warlock_spell_t
     
     base_execute_time = 0; 
     base_cost         = rank -> cost;
-    base_hit          = p -> talents.suppression * 0.02;
+    base_cost        *= 1.0 - p -> talents.suppression * ( sim_t::WotLK ? 0.02 : 0.00 );
+    base_hit         +=       p -> talents.suppression * ( sim_t::WotLK ? 0.01 : 0.02 );
 
     if( sim_t::WotLK && p -> talents.amplify_curse ) trigger_gcd = 1.0;
   }
@@ -844,11 +1043,12 @@ struct curse_of_agony_t : public warlock_spell_t
     num_ticks         = 8;
     dot_power_mod     = 1.2;
 
-    base_cost = rank -> cost;
+    base_cost        = rank -> cost;
+    base_cost       *= 1.0 - p -> talents.suppression * ( sim_t::WotLK ? 0.02 : 0.00 );
+    base_hit        +=       p -> talents.suppression * ( sim_t::WotLK ? 0.01 : 0.02 );
     base_multiplier *= 1.0 + p -> talents.shadow_mastery * 0.02;
     base_multiplier *= 1.0 + p -> talents.contagion * 0.01;
     base_multiplier *= 1.0 + p -> talents.improved_curse_of_agony * 0.05;
-    base_hit        += p -> talents.suppression * 0.02;
 
     if( sim_t::WotLK && p -> talents.amplify_curse ) 
     {
@@ -924,8 +1124,9 @@ struct curse_of_doom_t : public warlock_spell_t
     num_ticks         = 1;
     dot_power_mod     = 2.0;
 
-    base_cost = rank -> cost;
-    base_hit  += p -> talents.suppression * 0.02;
+    base_cost  = rank -> cost;
+    base_cost *= 1.0 - p -> talents.suppression * ( sim_t::WotLK ? 0.02 : 0.00 );
+    base_hit  +=       p -> talents.suppression * ( sim_t::WotLK ? 0.01 : 0.02 );
 
     if( sim_t::WotLK && p -> talents.amplify_curse )
     {
@@ -1071,6 +1272,7 @@ struct shadow_bolt_t : public warlock_spell_t
 
     if( result_is_hit() )
     {
+      stack_shadow_embrace( this );
       trigger_soul_leech( this );
       trigger_tier5_4pc( this, p -> active_corruption );
       if( result == RESULT_CRIT ) 
@@ -1230,7 +1432,7 @@ struct corruption_t : public warlock_spell_t
     rank = choose_rank( ranks );
 
     base_dot          = rank -> dot;
-    base_execute_time = 2.0; 
+    base_execute_time = sim_t::WotLK ? 0.0 : 2.0; 
     base_duration     = 18.0; 
     num_ticks         = 6;
     dot_power_mod     = 0.93;
@@ -1247,12 +1449,19 @@ struct corruption_t : public warlock_spell_t
     initial_base_dot = base_dot;
       
     base_cost          = rank -> cost;
-    base_execute_time -= p -> talents.improved_corruption * 0.4;
+    base_cost         *= 1.0 - p -> talents.suppression * ( sim_t::WotLK ? 0.02 : 0.00 );
+    base_hit          +=       p -> talents.suppression * ( sim_t::WotLK ? 0.01 : 0.02 );
     base_multiplier   *= 1.0 + p -> talents.shadow_mastery * 0.02;
     base_multiplier   *= 1.0 + p -> talents.contagion * 0.01;
-    base_hit          += p -> talents.suppression * 0.02;
     dot_power_mod     += p -> talents.empowered_corruption * 0.12;
-
+    if( sim_t::WotLK )
+    {
+      base_multiplier *= 1.0 + p -> talents.improved_corruption * 0.4;
+    }
+    else
+    {
+      base_execute_time -= p -> talents.improved_corruption * 0.4;
+    }
     p -> active_corruption = this;
   }
 
@@ -1313,8 +1522,9 @@ struct drain_life_t : public warlock_spell_t
     dot_power_mod     = (5.0/3.5)/2.0; 
 
     base_cost        = rank -> cost;
+    base_cost       *= 1.0 - p -> talents.suppression * ( sim_t::WotLK ? 0.02 : 0.00 );
+    base_hit        +=       p -> talents.suppression * ( sim_t::WotLK ? 0.01 : 0.02 );
     base_multiplier *= 1.0 + p -> talents.shadow_mastery * 0.02;
-    base_hit        += p -> talents.suppression * 0.02;
   }
 
   virtual void player_buff()
@@ -1379,8 +1589,9 @@ struct drain_soul_t : public warlock_spell_t
     dot_power_mod     = (15.0/3.5)/2.0; 
 
     base_cost        = rank -> cost;
+    base_cost       *= 1.0 - p -> talents.suppression * ( sim_t::WotLK ? 0.02 : 0.00 );
+    base_hit        +=       p -> talents.suppression * ( sim_t::WotLK ? 0.01 : 0.02 );
     base_multiplier *= 1.0 + p -> talents.shadow_mastery * 0.02;
-    base_hit        += p -> talents.suppression * 0.02;
   }
 
   virtual void player_buff()
@@ -1442,8 +1653,9 @@ struct siphon_life_t : public warlock_spell_t
     dot_power_mod     = (30.0/15.0)/2.0; 
 
     base_cost        = rank -> cost;
+    base_cost       *= 1.0 - p -> talents.suppression * ( sim_t::WotLK ? 0.02 : 0.00 );
+    base_hit        +=       p -> talents.suppression * ( sim_t::WotLK ? 0.01 : 0.02 );
     base_multiplier *= 1.0 + p -> talents.shadow_mastery * 0.02;
-    base_hit        += p -> talents.suppression * 0.02;
   }
 
   virtual void tick()
@@ -1487,8 +1699,9 @@ struct unstable_affliction_t : public warlock_spell_t
     dot_power_mod     = (18.0/15.0); 
     
     base_cost        = rank -> cost;
+    base_cost       *= 1.0 - p -> talents.suppression * ( sim_t::WotLK ? 0.02 : 0.00 );
+    base_hit        +=       p -> talents.suppression * ( sim_t::WotLK ? 0.01 : 0.02 );
     base_multiplier *= 1.0 + p -> talents.shadow_mastery * 0.02;
-    base_hit        += p -> talents.suppression * 0.02;
   }
 };
 
@@ -1633,6 +1846,7 @@ struct conflagrate_t : public warlock_spell_t
     if( result_is_hit() )
     {
       trigger_soul_leech( this );
+      trigger_backdraft( this );
     }
     p -> active_immolate -> cancel();
     p -> active_immolate = 0;
@@ -2132,17 +2346,21 @@ void warlock_t::reset()
 
   // Buffs
   buffs_amplify_curse                = 0;
+  buffs_backdraft                    = 0;
   buffs_demon_armor                  = 0;
   buffs_fel_armor                    = 0;
   buffs_flame_shadow                 = 0;
   buffs_nightfall                    = 0;
   buffs_pet_sacrifice                = 0;
+  buffs_shadow_embrace               = 0;
   buffs_shadow_flame                 = 0;
   buffs_shadow_vulnerability         = 0;
   buffs_shadow_vulnerability_charges = 0;
 
   // Expirations
+  expirations_backdraft              = 0;
   expirations_flame_shadow           = 0;
+  expirations_shadow_embrace         = 0;
   expirations_shadow_flame           = 0;
   expirations_shadow_vulnerability   = 0;
 }
@@ -2151,48 +2369,13 @@ void warlock_t::reset()
 
 void warlock_t::regen( double periodicity )
 {
-  double spirit_regen = periodicity * spirit_regen_per_second();
-
-  if( buffs.innervate )
-  {
-    spirit_regen *= 4.0;
-  }
-  else if( recent_cast() )
-  {
-    spirit_regen = 0;
-  }
-
-  double mp5_regen = periodicity * mp5 / 5.0;
-
-  resource_gain( RESOURCE_MANA, spirit_regen, gains.spirit_regen );
-  resource_gain( RESOURCE_MANA,    mp5_regen, gains.mp5_regen    );
-
-  if( buffs_pet_sacrifice == PET_FELGUARD )
-  {
-    double sacrifice_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.02 / 4.0;
-
-    resource_gain( RESOURCE_MANA, sacrifice_regen, gains_sacrifice );
-  }
+  player_t::regen( periodicity );
 
   if( sim_t::WotLK && buffs_fel_armor )
   {
     double fel_armor_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.02 / 5.0;
 
     resource_gain( RESOURCE_MANA, fel_armor_regen, gains_fel_armor );
-  }
-
-  if( buffs.replenishment )
-  {
-    double replenishment_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.005 / 1.0;
-
-    resource_gain( RESOURCE_MANA, replenishment_regen, gains.replenishment );
-  }
-
-  if( buffs.water_elemental_regen )
-  {
-    double water_elemental_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.006 / 5.0;
-
-    resource_gain( RESOURCE_MANA, water_elemental_regen, gains.water_elemental_regen );
   }
 }
 
@@ -2343,7 +2526,82 @@ bool warlock_t::parse_talents( const std::string& talent_string,
   }
   else if( encoding == ENCODING_MMO )
   {
-    return false;
+    if( talent_string.size() != 81 ) return false;
+
+    talent_translation_t translation[] =
+    {
+      // Destruction
+      {  1,  &( talents.improved_shadow_bolt     ) },
+      {  2,  &( talents.bane                     ) },
+      {  4,  &( talents.molten_core              ) },
+      {  5,  &( talents.cataclysm                ) },
+      {  6,  &( talents.demonic_power            ) },
+      {  7,  &( talents.shadow_burn              ) },
+      {  8,  &( talents.ruin                     ) },
+      { 10,  &( talents.destructive_reach        ) },
+      { 11,  &( talents.improved_searing_pain    ) },
+      { 13,  &( talents.improved_immolate        ) },
+      { 14,  &( talents.devastation              ) },
+      { 16,  &( talents.emberstorm               ) },
+      { 17,  &( talents.conflagrate              ) },
+      { 18,  &( talents.soul_leech               ) },
+      { 19,  &( talents.backlash                 ) },
+      { 20,  &( talents.shadow_and_flame         ) },
+      { 21,  &( talents.improved_soul_leech      ) },
+      { 22,  &( talents.backdraft                ) },
+      { 24,  &( talents.empowered_imp            ) },
+      { 25,  &( talents.fire_and_brimstone       ) },
+      { 26,  &( talents.chaos_bolt               ) },
+      // Affliction
+      { 27,  &( talents.improved_curse_of_agony  ) },
+      { 28,  &( talents.suppression              ) },
+      { 29,  &( talents.improved_corruption      ) },
+      { 31,  &( talents.improved_drain_soul      ) },
+      { 32,  &( talents.improved_life_tap        ) },
+      { 33,  &( talents.soul_siphon              ) },
+      { 36,  &( talents.amplify_curse            ) },
+      { 38,  &( talents.nightfall                ) },
+      { 39,  &( talents.empowered_corruption     ) },
+      { 40,  &( talents.shadow_embrace           ) },
+      { 41,  &( talents.siphon_life              ) },
+      { 43,  &( talents.improved_felhunter       ) },
+      { 44,  &( talents.shadow_mastery           ) },
+      { 45,  &( talents.eradication              ) },
+      { 46,  &( talents.contagion                ) },
+      { 47,  &( talents.dark_pact                ) },
+      { 49,  &( talents.malediction              ) },
+      { 50,  &( talents.deaths_embrace           ) },
+      { 51,  &( talents.unstable_affliction      ) },
+      { 52,  &( talents.pandemic                 ) },
+      { 53,  &( talents.everlasting_affliction   ) },
+      { 54,  &( talents.haunt                    ) },
+      // Demonology
+      { 56,  &( talents.improved_imp             ) },
+      { 57,  &( talents.demonic_embrace          ) },
+      { 59,  &( talents.demonic_brutality        ) },
+      { 60,  &( talents.fel_vitality             ) },
+      { 61,  &( talents.improved_succubus        ) },
+      { 62,  &( talents.soul_link                ) },
+      { 63,  &( talents.fel_domination           ) },
+      { 64,  &( talents.demonic_aegis            ) },
+      { 65,  &( talents.unholy_power             ) },
+      { 66,  &( talents.master_summoner          ) },
+      { 67,  &( talents.demonic_sacrifice        ) },
+      { 68,  &( talents.master_conjuror          ) },
+      { 69,  &( talents.mana_feed                ) },
+      { 70,  &( talents.master_demonologist      ) },
+      { 73,  &( talents.demonic_empowerment      ) },
+      { 74,  &( talents.demonic_knowledge        ) },
+      { 75,  &( talents.demonic_tactics          ) },
+      { 76,  &( talents.fel_synergy              ) },
+      { 77,  &( talents.improved_demonic_tactics ) },
+      { 78,  &( talents.summon_felguard          ) },
+      { 79,  &( talents.demonic_empathy          ) },
+      { 80,  &( talents.demonic_pact             ) },
+      { 81,  &( talents.metamorphosis            ) },
+      { 0, NULL }
+    };
+    player_t::parse_talents( translation, talent_string );
   }
   else if( encoding == ENCODING_WOWHEAD )
   {

@@ -2604,37 +2604,14 @@ void mage_t::reset()
 
 void mage_t::regen( double periodicity )
 {
-  double spirit_regen = periodicity * spirit_regen_per_second();
+  spirit_regen_while_casting = talents.arcane_meditation * 0.10;
 
-  if( buffs.innervate )
+  if( buffs_mage_armor )
   {
-    spirit_regen *= 4.0;
-  }
-  else if( recent_cast() )
-  {
-    double while_casting = talents.arcane_meditation * 0.10;
-    if( buffs_mage_armor ) while_casting += glyphs.mage_armor ? 0.50 : 0.30;
-    spirit_regen *= while_casting;
+    spirit_regen_while_casting += glyphs.mage_armor ? 0.50 : 0.30;
   }
 
-  double mp5_regen = periodicity * mp5 / 5.0;
-
-  resource_gain( RESOURCE_MANA, spirit_regen, gains.spirit_regen );
-  resource_gain( RESOURCE_MANA,    mp5_regen, gains.mp5_regen    );
-
-  if( buffs.replenishment )
-  {
-    double replenishment_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.005 / 1.0;
-
-    resource_gain( RESOURCE_MANA, replenishment_regen, gains.replenishment );
-  }
-
-  if( buffs.water_elemental_regen )
-  {
-    double water_elemental_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.006 / 5.0;
-
-    resource_gain( RESOURCE_MANA, water_elemental_regen, gains.water_elemental_regen );
-  }
+  player_t::regen( periodicity );
 
   uptimes_water_elemental -> update( active_water_elemental );
 }

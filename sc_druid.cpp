@@ -131,7 +131,6 @@ struct druid_t : public player_t
   virtual int       primary_resource() { return RESOURCE_MANA; }
 
   // Event Tracking
-  virtual void regen( double periodicity );
   virtual void spell_start_event ( spell_t* );
   virtual void spell_hit_event   ( spell_t* );
   virtual void spell_finish_event( spell_t* );
@@ -1179,6 +1178,9 @@ void druid_t::init_base()
 
   health_per_stamina = 10;
   mana_per_intellect = 15;
+
+  spirit_regen_while_casting = talents.intensity  * 0.10;
+  mp5_per_intellect          = talents.dreamstate * 0.04;
 }
 
 // druid_t::reset ===========================================================
@@ -1232,41 +1234,6 @@ double druid_t::composite_spell_crit()
   }
 
   return crit;
-}
-
-// druid_t::regen  ==========================================================
-
-void druid_t::regen( double periodicity )
-{
-  double spirit_regen = periodicity * spirit_regen_per_second();
-
-  if( buffs.innervate )
-  {
-    spirit_regen *= 4.0;
-  }
-  else if( recent_cast() )
-  {
-    spirit_regen *= talents.intensity * 0.10;
-  }
-
-  double mp5_regen = periodicity * ( mp5 + intellect() * talents.dreamstate * 0.04 ) / 5.0;
-
-  resource_gain( RESOURCE_MANA, spirit_regen, gains.spirit_regen );
-  resource_gain( RESOURCE_MANA,    mp5_regen, gains.mp5_regen    );
-
-  if( buffs.replenishment )
-  {
-    double replenishment_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.005 / 1.0;
-
-    resource_gain( RESOURCE_MANA, replenishment_regen, gains.replenishment );
-  }
-
-  if( buffs.water_elemental_regen )
-  {
-    double water_elemental_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.006 / 5.0;
-
-    resource_gain( RESOURCE_MANA, water_elemental_regen, gains.water_elemental_regen );
-  }
 }
 
 // druid_t::parse_talents =================================================

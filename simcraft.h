@@ -294,6 +294,7 @@ struct player_t
   double spell_power_per_spirit,    initial_spell_power_per_spirit;
   double spell_crit_per_intellect,  initial_spell_crit_per_intellect;
   double mp5_per_intellect;
+  double spirit_regen_while_casting;
   double last_cast;
 
   // Attack Mechanics
@@ -629,7 +630,7 @@ struct player_t
   virtual void      schedule_ready( double delta_time=0, bool waiting=false );
   virtual action_t* execute_action();
 
-  virtual void regen( double periodicity=2.0 ) {}
+  virtual void regen( double periodicity=2.0 );
   virtual void resource_gain( int8_t resource, double amount, gain_t* g=0 );
   virtual void resource_loss( int8_t resource, double amount );
   virtual bool resource_available( int8_t resource, double cost );
@@ -733,7 +734,9 @@ struct pet_t : public player_t
   virtual void summon();
   virtual void dismiss();
 
+  // Expand these later
   virtual void schedule_ready( double delta_time=0, bool waiting=false ) { assert(0); }
+  virtual void regen( double periodicity ) {}
 };
 
 // Target ====================================================================
