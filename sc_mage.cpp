@@ -133,6 +133,7 @@ struct mage_t : public player_t
     int8_t mana_gem;  // FIXME!  Not supported yet.
     int8_t molten_armor;
     int8_t water_elemental;
+    int8_t frostfire;
     glyphs_t() { memset( (void*) this, 0x0, sizeof( glyphs_t ) ); }
   };
   glyphs_t glyphs;
@@ -675,7 +676,7 @@ static void trigger_fingers_of_frost( spell_t* s )
 
   mage_t* p = s -> player -> cast_mage();
 
-  if( rand_t::roll( p -> talents.fingers_of_frost * 0.05 ) )
+  if( rand_t::roll( p -> talents.fingers_of_frost * 0.15/2 ) )
   {
     p -> buffs_fingers_of_frost = 2;
     p -> buffs_shatter_combo = 0;
@@ -901,13 +902,13 @@ void mage_spell_t::player_buff()
   {
     if( sim -> target -> debuffs.frozen )
     {
-      player_crit += p -> talents.shatter * 0.10;
+      player_crit += p -> talents.shatter * 0.5/3;
     }
     else if( p -> talents.fingers_of_frost )
     {
       if( p -> buffs_fingers_of_frost || ( p -> buffs_shatter_combo && time_to_execute == 0 ) )
       {
-	player_crit += p -> talents.shatter * 0.10;
+        player_crit += p -> talents.shatter * 0.5/3;
       }
       p -> uptimes_fingers_of_frost -> update( p -> buffs_fingers_of_frost );
     }
@@ -1065,7 +1066,7 @@ struct arcane_blast_t : public mage_spell_t
     double c = mage_spell_t::cost();
     if( c != 0 )
     {
-      if( p -> buffs_arcane_blast ) c += base_cost * 0.75 * p -> buffs_arcane_blast;
+      if( p -> buffs_arcane_blast ) c += base_cost * 0.30 * p -> buffs_arcane_blast;
       if( p -> gear.tier5_2pc     ) c += base_cost * 0.20;
     }
     return c;
@@ -1121,7 +1122,7 @@ struct arcane_blast_t : public mage_spell_t
     mage_spell_t::player_buff();
     if( sim_t::WotLK ) 
     {
-      player_multiplier *= 1.0 + p -> buffs_arcane_blast * 0.25;
+      player_multiplier *= 1.0 + p -> buffs_arcane_blast * 0.15;
     }
   }
 
@@ -1573,10 +1574,10 @@ struct fire_ball_t : public mage_spell_t
     base_penetration  += p -> talents.arcane_subtlety * 5;
     dd_power_mod      += p -> talents.empowered_fire_ball * ( sim_t::WotLK ? 0.05 : 0.03 );
     base_crit_bonus   *= 1.0 + ( p -> talents.spell_power * 0.25 +
-				 p -> talents.burnout     * 0.10 );
+                                 p -> talents.burnout     * 0.10 );
 
     if( p -> gear.tier6_4pc   ) base_multiplier *= 1.05;
-    if( p -> glyphs.fire_ball ) base_multiplier *= 1.05;
+    if( p -> glyphs.fire_ball ) base_crit += 0.05;
   }
 
   virtual double cost()
@@ -1932,31 +1933,31 @@ struct scorch_t : public mage_spell_t
 
       if( rand_t::roll( p -> talents.improved_scorch * (1.0/3.0) ) )
       {
-	target_t* t = sim -> target;
+        target_t* t = sim -> target;
 
-	if( t -> debuffs.improved_scorch < ( 5 * increment ) ) 
-	{
-	  if( p -> glyphs.improved_scorch )
-	  {
-	    t -> debuffs.improved_scorch = 5 * increment;
-	  }
-	  else
-	  {
-	    t -> debuffs.improved_scorch += increment;
-	  }
-	  if( sim -> log ) report_t::log( sim, "%s gains Improved Scorch %d", t -> name(), t -> debuffs.improved_scorch / increment );
-	}
+        if( t -> debuffs.improved_scorch < ( 5 * increment ) ) 
+        {
+          if( p -> glyphs.improved_scorch )
+          {
+            t -> debuffs.improved_scorch = 3 * increment;
+          }
+          else
+          {
+            t -> debuffs.improved_scorch += increment;
+          }
+          if( sim -> log ) report_t::log( sim, "%s gains Improved Scorch %d", t -> name(), t -> debuffs.improved_scorch / increment );
+        }
 
-	event_t*& e = t -> expirations.improved_scorch;
-    
-	if( e )
-	{
-	  e -> reschedule( 30.0 );
-	}
-	else
-	{
-	  e = new expiration_t( sim );
-	}
+        event_t*& e = t -> expirations.improved_scorch;
+          
+        if( e )
+        {
+          e -> reschedule( 30.0 );
+        }
+        else
+        {
+          e = new expiration_t( sim );
+        }
       }
     }
   }
@@ -2062,8 +2063,8 @@ struct frost_bolt_t : public mage_spell_t
     base_hit          += p -> talents.elemental_precision * 0.01;
     base_penetration  += p -> talents.arcane_subtlety * 5;
     dd_power_mod      += p -> talents.empowered_frost_bolt * ( sim_t::WotLK ? 0.05 : 0.02 );
-    base_crit_bonus   *= 1.0 + ( p -> talents.ice_shards  * 0.20 +
-				 p -> talents.spell_power * 0.25 );
+    base_crit_bonus   *= 1.0 + ( p -> talents.ice_shards  * 1.0/3 +
+                                 p -> talents.spell_power * 0.25 );
 
     if( p -> gear.tier6_4pc    ) base_multiplier *= 1.05;
     if( p -> glyphs.frost_bolt ) base_multiplier *= 1.05;
@@ -2134,8 +2135,8 @@ struct ice_lance_t : public mage_spell_t
     base_crit        += p -> talents.arcane_instability * 0.01;
     base_hit         += p -> talents.elemental_precision * 0.01;
     base_penetration += p -> talents.arcane_subtlety * 5;
-    base_crit_bonus  *= 1.0 + ( p -> talents.ice_shards  * 0.20  +
-				p -> talents.spell_power * 0.25 );
+    base_crit_bonus  *= 1.0 + ( p -> talents.ice_shards  * 1.0/3  +
+                                p -> talents.spell_power * 0.25 );
   }
 
   virtual void player_buff()
@@ -2227,8 +2228,8 @@ struct deep_freeze_t : public mage_spell_t
     base_crit        += p -> talents.arcane_instability * 0.01;
     base_hit         += p -> talents.elemental_precision * 0.01;
     base_penetration += p -> talents.arcane_subtlety * 5;
-    base_crit_bonus  *= 1.0 + ( p -> talents.ice_shards  * 0.20 +
-				p -> talents.spell_power * 0.25 );
+    base_crit_bonus  *= 1.0 + ( p -> talents.ice_shards  * 1.0/3 +
+                                p -> talents.spell_power * 0.25 );
   }
 
   virtual bool ready()
@@ -2313,8 +2314,14 @@ struct frostfire_bolt_t : public mage_spell_t
     base_hit          += p -> talents.elemental_precision * 0.01;
     base_penetration  += p -> talents.arcane_subtlety * 5;
     base_crit_bonus   *= 1.0 + ( p -> talents.spell_power * 0.25 +
-				 p -> talents.burnout     * 0.10 +
-				 p -> talents.ice_shards  * 0.20 );
+                                 p -> talents.burnout     * 0.10 +
+                                 p -> talents.ice_shards  * 1.0/3 );
+
+    if ( p -> glyphs.frostfire )
+    {
+      base_multiplier *= 1.02;
+      base_crit += 0.02;
+    }
   }
 
   virtual void execute()
@@ -2906,6 +2913,7 @@ bool mage_t::parse_option( const std::string& name,
     { "glyph_mana_gem",            OPT_INT8,  &( glyphs.mana_gem                   ) },
     { "glyph_molten_armor",        OPT_INT8,  &( glyphs.molten_armor               ) },
     { "glyph_water_elemental",     OPT_INT8,  &( glyphs.water_elemental            ) },
+    { "glyph_frostfire",           OPT_INT8,  &( glyphs.frostfire                  ) },
     { NULL, OPT_UNKNOWN }
   };
   

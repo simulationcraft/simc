@@ -122,6 +122,7 @@ swift_retribution=1
 # glyph_mana_gem=1
 # glyph_molten_armor=1
 # glyph_water_elemental=1
+# glyph_frostfire=1
 
 #
 # Mage_Arcane
@@ -133,7 +134,7 @@ swift_retribution=1
 #
 mage=Mage_Arcane
 level=80
-talents=http://www.worldofwarcraft.com/info/classes/mage/talents2.html?tal=23000503310030015032310241532100000000000000000000000000000530033010030000000000000000
+talents=http://talent.mmo-champion.com/?mage=00000000000000000000000000000530033010020000000000000000230005033100300150323102515321
 actions=flask,type=blinding_light/molten_armor/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/arcane_power/arcane_missiles,barrage=1/arcane_barrage/arcane_blast
 gear_stamina=600
 gear_intellect=600
@@ -159,7 +160,7 @@ swift_retribution=1
 #
 mage=Mage_ArcaneSpam
 level=80
-talents=http://www.worldofwarcraft.com/info/classes/mage/talents2.html?tal=23000503310030015032310241532100000000000000000000000000000530033010030000000000000000
+talents=http://talent.mmo-champion.com/?mage=00000000000000000000000000000530033010020000000000000000230005033100300150323102515321
 actions=flask,type=blinding_light/mage_armor/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/arcane_power/arcane_blast
 gear_stamina=600
 gear_intellect=600
@@ -187,7 +188,7 @@ swift_retribution=1
 #
 mage=Mage_Fire
 level=80
-talents=http://www.worldofwarcraft.com/info/classes/mage/talents2.html?tal=00000000000000000000000000000003550300120033310531203013510230033013030000000000000000
+talents=http://talent.mmo-champion.com/?mage=03550300120033310531203013510230033013030000000000000000000000000000000000000000000000
 actions=flask,type=pure_death/molten_armor/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/combustion/icy_veins/living_bomb/pyroblast,hot_streak=1/fire_ball
 # We will let the poor Frost Mage raid-slave keep up the Improved Scorch debuff
 gear_stamina=600
@@ -217,7 +218,7 @@ swift_retribution=1
 #
 mage=Mage_Frost
 level=80
-talents=http://www.worldofwarcraft.com/info/classes/mage/talents2.html?tal=00000000000000000000000000000023050000000000000000000000000535031312235100230052231351
+talents=http://talent.mmo-champion.com/?mage=23050000000000000000000000000533031312233100230052231351000000000000000000000000000000
 actions=flask,type=pure_death/molten_armor/mana_gem,trigger=3500/mana_potion,trigger=2500/deep_freeze,fb_priority=1/ice_lance,frozen=1,fb_priority=1/evocation,trigger=10000/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/frost_bolt
 gear_stamina=600
 gear_intellect=600
@@ -248,7 +249,7 @@ swift_retribution=1
 #
 mage=Mage_FrostFire
 level=80
-talents=http://www.worldofwarcraft.com/info/classes/mage/talents2.html?tal=00000000000000000000000000000003550300123033300531200003510235030310030000000000000000
+talents=http://talent.mmo-champion.com/?mage=03550300123033300531200003510233030310030000000000000000000000000000000000000000000000
 actions=flask,type=pure_death/molten_armor/mana_gem,trigger=3500/mana_potion,trigger=3500/scorch,debuff=1/evocation,trigger=10000/combustion/icy_veins/living_bomb/pyroblast,hot_streak=1/frostfire_bolt
 # We will let the poor Frost Mage raid-slave keep up the Improved Scorch debuff
 skip_actions=scorch
@@ -261,6 +262,7 @@ gear_spell_hit_rating=250
 gear_haste_rating=400
 # Glyphs
 glyph_molten_armor=1
+glyph_frostfire=1
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
 blessing_of_kings=1
 blessing_of_wisdom=1
@@ -276,7 +278,7 @@ swift_retribution=1
 #
 druid=Druid_Balance
 level=80
-talents=http://www.worldofwarcraft.com/info/classes/druid/talents2.html?tal=52022013053313052133053000510000000000000000000000000000020500301200000000000000000
+talents=http://talent.mmo-champion.com/?druid=00000000000000000000000000000205003012000000000000000005202201305331305213305300051
 actions=flask,type=blinding_light/mark_of_the_wild/moonkin_form/mana_potion,trigger=3500/innervate/faerie_fire/moonfire/insect_swarm/wrath,eclipse=trigger/starfire
 gear_stamina=600
 gear_intellect=600

@@ -1325,14 +1325,14 @@ bool druid_t::parse_talents( const std::string& talent_string,
     talent_translation_t translation[] =
     {
       // Restoration
-      {  1,  &( talents.improved_mark_of_the_wild ) },
-      {  2,  &( talents.furor                     ) },
-      {  7,  &( talents.intensity                 ) },
-      {  8,  &( talents.omen_of_clarity           ) },
-      {  9,  &( talents.master_shapeshifter       ) },
-      { 12,  &( talents.natures_swiftness         ) },
-      { 17,  &( talents.living_spirit             ) },
-      { 19,  &( talents.natural_perfection        ) },
+      { 30,  &( talents.improved_mark_of_the_wild ) },
+      { 31,  &( talents.furor                     ) },
+      { 36,  &( talents.intensity                 ) },
+      { 37,  &( talents.omen_of_clarity           ) },
+      { 38,  &( talents.master_shapeshifter       ) },
+      { 41,  &( talents.natures_swiftness         ) },
+      { 46,  &( talents.living_spirit             ) },
+      { 58,  &( talents.natural_perfection        ) },
       // Balance
       { 56,  &( talents.starlight_wrath           ) },
       { 57,  &( talents.genesis                   ) },
