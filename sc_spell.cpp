@@ -90,6 +90,11 @@ void spell_t::player_buff()
     player_crit += 0.05;
   }
 
+  if( p -> buffs.magic_focuser )
+  {
+    player_crit += 0.03;
+  }
+
   if( sim_t::WotLK )
   {
     player_power += std::max( ( p -> buffs.totem_of_wrath ? 160.0 : 0.0 ), p -> buffs.flametongue_totem );
@@ -155,8 +160,6 @@ void spell_t::target_debuff( int8_t dmg_type )
     wc_uptime -> update( t -> debuffs.winters_chill != 0 );
     is_uptime -> update( t -> debuffs.improved_scorch != 0 );
   }
-
-  target_power += t -> debuffs.focus_magic;
 
   if( sim -> debug ) 
     report_t::log( sim, "spell_t::target_debuff: %s multiplier=%.2f hit=%.2f crit=%.2f power=%.2f penetration=%.0f", 

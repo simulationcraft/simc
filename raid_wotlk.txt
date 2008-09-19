@@ -136,6 +136,8 @@ mage=Mage_Arcane
 level=80
 talents=http://talent.mmo-champion.com/?mage=00000000000000000000000000000530033010020000000000000000230005033100300150323102515321
 actions=flask,type=blinding_light/molten_armor/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/arcane_power/arcane_missiles,barrage=1/arcane_barrage/arcane_blast
+# Uncomment these lines to enable Focus Magic
+# actions=flask,type=blinding_light/molten_armor/focus_magic,target=Priest_Shadow/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/arcane_power/arcane_missiles,barrage=1/arcane_barrage/arcane_blast
 gear_stamina=600
 gear_intellect=600
 gear_spirit=600
@@ -162,6 +164,8 @@ mage=Mage_ArcaneSpam
 level=80
 talents=http://talent.mmo-champion.com/?mage=00000000000000000000000000000530033010020000000000000000230005033100300150323102515321
 actions=flask,type=blinding_light/mage_armor/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/arcane_power/arcane_blast
+# Uncomment these lines to enable Focus Magic
+# actions=flask,type=blinding_light/mage_armor/focus_magic,target=Druid_Balance/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/arcane_power/arcane_blast
 gear_stamina=600
 gear_intellect=600
 gear_spirit=600
@@ -185,12 +189,16 @@ swift_retribution=1
 # (2) The "trigger=10000" option to evocation represents the mana gained and the amount below max required to trigger
 # (3) The "debuff=1" option to scorch prevents it from being executed unless the Improved Scorch debuff is going to expire in less than 6sec.
 # (4) Unfortunately, Mage Armor is a requirement due to mana constraints
+# (5) Focus Magic from raid dps standpoint is better than Icy Veins, however to be fair to everyone it's not enabled by default
 #
-mage=Mage_Fire
+mage=Mage_Fire_FocusMagic
 level=80
+# We will let the poor Frost Mage raid-slave keep up the Improved Scorch debuff
 talents=http://talent.mmo-champion.com/?mage=03550300120033310531203013510230033013030000000000000000000000000000000000000000000000
 actions=flask,type=pure_death/molten_armor/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/combustion/icy_veins/living_bomb/pyroblast,hot_streak=1/fire_ball
-# We will let the poor Frost Mage raid-slave keep up the Improved Scorch debuff
+# Uncomment these lines to enable Focus Magic
+# talents=http://talent.mmo-champion.com/?mage=03550300120033310531203003510500030000000000000000000000230005000100000000000000000000
+# actions=flask,type=pure_death/molten_armor/focus_magic,target=Shaman_Elemental/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/combustion/living_bomb/pyroblast,hot_streak=1/fire_ball
 gear_stamina=600
 gear_intellect=600
 gear_spirit=600
@@ -215,11 +223,15 @@ swift_retribution=1
 # (3) The "debuff=1" option to scorch prevents it from being executed unless the Improved Scorch debuff is going to expire in less than 6sec.
 # (4) The "frozen=1" option to ice_lance means that it will only be cast if the target is frozen (via winters_grasp) or virtually frozen (via fingers_of_frost)
 # (5) The "fb_priority=1" option to ice_lance and deep_freeze means that it will only be cast if the frozen debuff/buff will end before a frost_bolt could be cast
+# (6) Focus Magic from raid dps standpoint is better than Ignite, however to be fair to everyone it's not enabled by default
 #
-mage=Mage_Frost
+mage=Mage_Frost_FocusMagic
 level=80
 talents=http://talent.mmo-champion.com/?mage=23050000000000000000000000000533031312233100230052231351000000000000000000000000000000
 actions=flask,type=pure_death/molten_armor/mana_gem,trigger=3500/mana_potion,trigger=2500/deep_freeze,fb_priority=1/ice_lance,frozen=1,fb_priority=1/evocation,trigger=10000/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/frost_bolt
+# Uncomment these lines to enable Focus Magic
+# talents=http://talent.mmo-champion.com/?mage=00000000000000000000000000000533031312233100230052231351230005003100000000000000000000
+# actions=flask,type=pure_death/molten_armor/focus_magic,target=Mage_FrostFire/mana_gem,trigger=3500/mana_potion,trigger=2500/deep_freeze,fb_priority=1/ice_lance,frozen=1,fb_priority=1/evocation,trigger=10000/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/frost_bolt
 gear_stamina=600
 gear_intellect=600
 gear_spirit=600

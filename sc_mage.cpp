@@ -32,9 +32,11 @@ struct mage_t : public player_t
   double buffs_missile_barrage;
   int8_t buffs_molten_armor;
   int8_t buffs_shatter_combo;
+  int8_t buffs_focus_magic_feedback;
 
   // Expirations
   event_t* expirations_arcane_blast;
+  event_t* expirations_focus_magic_feedback;
 
   // Gains
   gain_t* gains_clearcasting;
@@ -51,6 +53,7 @@ struct mage_t : public player_t
   uptime_t* uptimes_arcane_blast[ 4 ];
   uptime_t* uptimes_fingers_of_frost;
   uptime_t* uptimes_water_elemental;
+  uptime_t* uptimes_focus_magic_feedback;
 
   struct talents_t
   {
@@ -161,9 +164,11 @@ struct mage_t : public player_t
     buffs_missile_barrage          = 0;
     buffs_molten_armor             = 0;
     buffs_shatter_combo            = 0;
+    buffs_focus_magic_feedback     = 0;
 
     // Expirations
-    expirations_arcane_blast = 0;
+    expirations_arcane_blast         = 0;
+    expirations_focus_magic_feedback = 0;
 
     // Gains
     gains_clearcasting       = get_gain( "clearcasting" );
@@ -177,12 +182,13 @@ struct mage_t : public player_t
     procs_deferred_ignite      = get_proc( "deferred_ignite" );
 
     // Up-Times
-    uptimes_arcane_blast[ 0 ] = get_uptime( "arcane_blast_0" );
-    uptimes_arcane_blast[ 1 ] = get_uptime( "arcane_blast_1" );
-    uptimes_arcane_blast[ 2 ] = get_uptime( "arcane_blast_2" );
-    uptimes_arcane_blast[ 3 ] = get_uptime( "arcane_blast_3" );
-    uptimes_fingers_of_frost  = get_uptime( "fingers_of_frost" );
-    uptimes_water_elemental   = get_uptime( "water_elemental" );
+    uptimes_arcane_blast[ 0 ]    = get_uptime( "arcane_blast_0" );
+    uptimes_arcane_blast[ 1 ]    = get_uptime( "arcane_blast_1" );
+    uptimes_arcane_blast[ 2 ]    = get_uptime( "arcane_blast_2" );
+    uptimes_arcane_blast[ 3 ]    = get_uptime( "arcane_blast_3" );
+    uptimes_fingers_of_frost     = get_uptime( "fingers_of_frost" );
+    uptimes_water_elemental      = get_uptime( "water_elemental" );
+    uptimes_focus_magic_feedback = get_uptime( "focus_magic_feedback" );
   }
 
   // Character Definition
@@ -196,6 +202,8 @@ struct mage_t : public player_t
 
   // Event Tracking
   virtual void regen( double periodicity );
+  virtual void trigger_focus_magic_feedback();
+  virtual void spell_finish_event( spell_t* s );
 };
 
 // ==========================================================================
@@ -940,6 +948,11 @@ void mage_spell_t::player_buff()
     player_crit += p -> glyphs.molten_armor ? 0.05 : 0.03;
   }
 
+  if ( p -> buffs_focus_magic_feedback )
+  {
+    player_crit += 0.03;
+  }
+
   if( sim -> debug ) 
     report_t::log( sim, "mage_spell_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f", 
 		   name(), player_hit, player_crit, player_power, player_penetration );
@@ -1386,15 +1399,19 @@ struct slow_t : public mage_spell_t
 
 struct focus_magic_t : public mage_spell_t
 {
+  player_t* focus_magic_target;
+
   focus_magic_t( player_t* player, const std::string& options_str ) : 
     mage_spell_t( "focus_magic", player, SCHOOL_ARCANE, TREE_ARCANE )
   {
     mage_t* p = player -> cast_mage();
     assert( p -> talents.focus_magic );
 
+    std::string target_str;
     option_t options[] =
     {
-      { "rank", OPT_INT8, &rank_index },
+      { "rank",   OPT_INT8,   &rank_index  },
+      { "target", OPT_STRING, &target_str },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1411,15 +1428,28 @@ struct focus_magic_t : public mage_spell_t
 
     base_cost  = rank -> cost;
     base_cost *= 1.0 - p -> talents.frost_channeling * ( sim_t::WotLK ? (0.1/3) : 0 );
+
+    focus_magic_target = 0;
+    for( player_t* raid_member = sim -> player_list; raid_member; raid_member = raid_member -> next )
+    {
+      if ( !target_str.compare( raid_member -> name() ) )
+      {
+        focus_magic_target = raid_member;
+      }
+    }
+
+    assert ( focus_magic_target != 0 );
+    assert ( focus_magic_target != p );
   }
    
   virtual void execute()
   {
     if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
-    if( sim -> log ) report_t::log( sim, "Target %s gains Focus Magic", sim -> target -> name() );
+    if( sim -> log ) report_t::log( sim, "%s grants %s Focus Magic", player -> name(), focus_magic_target -> name() );
     consume_resource();
-    sim -> target -> debuffs.focus_magic = rank -> dot;
-    sim -> target -> debuffs.focus_magic_charges = 50;
+
+    mage_t* p = player -> cast_mage();
+    focus_magic_target -> buffs.magic_focuser = p;
   }
 
   virtual bool ready()
@@ -1427,9 +1457,48 @@ struct focus_magic_t : public mage_spell_t
     if( ! mage_spell_t::ready() )
       return false;
 
-    return( sim -> target -> debuffs.focus_magic_charges == 0 );
+    return focus_magic_target -> buffs.magic_focuser == 0;
   }
 };
+
+void mage_t::trigger_focus_magic_feedback()
+{
+  struct expiration_t : public event_t
+  {
+    expiration_t( sim_t* sim, mage_t* p ) : event_t( sim, p )
+    {
+      name = "Focus Magic Feedback Expiration";
+      p -> buffs_focus_magic_feedback = 1;
+      p -> aura_gain( "focus_magic_feedback" );
+      sim -> add_event( this, 10.0 );
+    }
+    virtual void execute()
+    {
+      mage_t* p = player -> cast_mage();
+      p -> buffs_focus_magic_feedback = 0;
+      p -> aura_loss( "focus_magic_feedback" );
+      p -> expirations_focus_magic_feedback = 0;
+    }
+  };
+
+  event_t*& e = expirations_focus_magic_feedback;
+
+  if( e )
+  {
+    e -> reschedule( 10.0 );
+  }
+  else
+  {
+    e = new expiration_t( this -> sim, this );
+  }
+}
+
+void mage_t::spell_finish_event( spell_t* s )
+{
+  player_t::spell_finish_event( s );
+
+  uptimes_focus_magic_feedback -> update( buffs_focus_magic_feedback );
+}
 
 // Evocation Spell ==========================================================
 
@@ -2602,9 +2671,11 @@ void mage_t::reset()
   buffs_missile_barrage        = 0;
   buffs_molten_armor           = 0;
   buffs_shatter_combo          = 0;
+  buffs_focus_magic_feedback   = 0;
   
   // Expirations
-  expirations_arcane_blast = 0;
+  expirations_arcane_blast         = 0;
+  expirations_focus_magic_feedback = 0;
 }
 
 // mage_t::regen  ==========================================================

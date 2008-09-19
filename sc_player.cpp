@@ -1012,15 +1012,9 @@ void player_t::spell_hit_event( spell_t* spell )
 {
   trigger_judgement_of_wisdom( spell );
 
-  target_t* t = sim -> target;
-  if( t -> debuffs.focus_magic ) 
+  if ( spell -> result == RESULT_CRIT && buffs.magic_focuser )
   {
-    t -> debuffs.focus_magic_charges--;
-    if( t -> debuffs.focus_magic_charges <= 0 ) 
-    {
-      if( sim -> log ) report_t::log( sim, "Target %s loses Focus Magic", t -> name() );
-      t -> debuffs.focus_magic = 0;
-    }
+    buffs.magic_focuser->trigger_focus_magic_feedback();
   }
 }
 

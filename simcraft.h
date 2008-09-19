@@ -444,6 +444,7 @@ struct player_t
     int8_t  swift_retribution;
     // Temporary Buffs
     int8_t  temporary_buffs;
+  player_t* magic_focuser;
     int8_t  arcane_intellect;
     double  mark_of_the_wild;
     int8_t  divine_spirit;
@@ -711,6 +712,8 @@ struct player_t
   shaman_t * cast_shaman () { assert( type == SHAMAN     ); return (shaman_t *) this; }
   warlock_t* cast_warlock() { assert( type == WARLOCK    ); return (warlock_t*) this; }
   pet_t*     cast_pet    () { assert( type == PLAYER_PET ); return (pet_t    *) this; }
+
+  virtual void trigger_focus_magic_feedback() { assert( type == MAGE); }
 };
 
 // Pet =======================================================================
@@ -763,8 +766,6 @@ struct target_t
     int8_t   affliction_effects;
     int8_t   curse_of_elements;
     int8_t   faerie_fire;
-    double   focus_magic;
-    int8_t   focus_magic_charges;
     double   frozen;
     int8_t   improved_faerie_fire;
     int8_t   improved_scorch;
