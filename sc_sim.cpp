@@ -401,6 +401,17 @@ uptime_t* sim_t::get_uptime( const std::string& name )
   return u;
 }
 
+// sim_t::find_player =======================================================
+
+player_t* sim_t::find_player( const std::string& name )
+{
+  for( player_t* p = player_list; p; p = p -> next )
+  {
+    if( name == p -> name() ) return p;
+  }
+  return 0;
+}
+
 // sim_t::parse_option ======================================================
 
 bool sim_t::parse_option( const std::string& name,

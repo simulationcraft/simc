@@ -228,6 +228,7 @@ struct sim_t
   void      print_options();
   bool      time_to_think( double proc_time ) { if( proc_time == 0 ) return false; return current_time - proc_time > reaction_time; }
   bool      cooldown_ready( double cooldown_time ) { return cooldown_time <= current_time; }
+  player_t* find_player( const std::string& name );
 };
 
 // Gear Rating Conversions ===================================================
@@ -434,52 +435,53 @@ struct player_t
   struct buff_t
   {
     // Permanent Buffs
-    int8_t  battle_shout;
-    int8_t  blessing_of_kings;
-    int8_t  blessing_of_might;
-    int8_t  blessing_of_salvation;
-    int8_t  blessing_of_wisdom;
-    int8_t  sanctity_aura;
-    int8_t  sanctified_retribution;
-    int8_t  swift_retribution;
+    int8_t    battle_shout;
+    int8_t    blessing_of_kings;
+    int8_t    blessing_of_might;
+    int8_t    blessing_of_salvation;
+    int8_t    blessing_of_wisdom;
+    int8_t    sanctity_aura;
+    int8_t    sanctified_retribution;
+    int8_t    swift_retribution;
     // Temporary Buffs
-    int8_t  temporary_buffs;
-  player_t* magic_focuser;
-    int8_t  arcane_intellect;
-    double  mark_of_the_wild;
-    int8_t  divine_spirit;
-    int8_t  bloodlust;
-    double  cast_time_reduction;
-    int8_t  darkmoon_crusade;
-    int8_t  darkmoon_wrath;
-    int8_t  elemental_oath;
-    int8_t  executioner;
-    double  flametongue_totem;
-    double  grace_of_air;
-    int8_t  improved_divine_spirit;
-    int8_t  improved_moonkin_aura;
-    int8_t  innervate;
-    int8_t  lightning_capacitor;
-    double  mana_cost_reduction;
-    int8_t  moonkin_aura;
-    int8_t  mongoose_mh;
-    int8_t  mongoose_oh;
-    int8_t  power_infusion;
-    int8_t  replenishment;
-    int8_t  shadow_form;
-    double  strength_of_earth;
-    int16_t talisman_of_ascendance;
-    double  totem_of_wrath;
-    int8_t  totem_of_wrath_haste;
-    int8_t  unleashed_rage;
-    int8_t  violet_eye;
-    double  windfury_totem;
-    int8_t  water_elemental_regen;
-    int8_t  wrath_of_air;
-    int16_t zandalarian_hero_charm;
-    int8_t  tier4_2pc, tier4_4pc;
-    int8_t  tier5_2pc, tier5_4pc;
-    int8_t  tier6_2pc, tier6_4pc;
+    int8_t    temporary_buffs;
+    int8_t    arcane_intellect;
+    double    mark_of_the_wild;
+    int8_t    divine_spirit;
+    int8_t    bloodlust;
+    double    cast_time_reduction;
+    int8_t    darkmoon_crusade;
+    int8_t    darkmoon_wrath;
+    int8_t    elemental_oath;
+    int8_t    executioner;
+    double    flametongue_totem;
+    player_t* focus_magic;
+    int8_t    focus_magic_feedback;
+    double    grace_of_air;
+    int8_t    improved_divine_spirit;
+    int8_t    improved_moonkin_aura;
+    int8_t    innervate;
+    int8_t    lightning_capacitor;
+    double    mana_cost_reduction;
+    int8_t    moonkin_aura;
+    int8_t    mongoose_mh;
+    int8_t    mongoose_oh;
+    int8_t    power_infusion;
+    int8_t    replenishment;
+    int8_t    shadow_form;
+    double    strength_of_earth;
+    int16_t   talisman_of_ascendance;
+    double    totem_of_wrath;
+    int8_t    totem_of_wrath_haste;
+    int8_t    unleashed_rage;
+    int8_t    violet_eye;
+    double    windfury_totem;
+    int8_t    water_elemental_regen;
+    int8_t    wrath_of_air;
+    int16_t   zandalarian_hero_charm;
+    int8_t    tier4_2pc, tier4_4pc;
+    int8_t    tier5_2pc, tier5_4pc;
+    int8_t    tier6_2pc, tier6_4pc;
     buff_t() { memset( (void*) this, 0x0, sizeof( buff_t ) ); }
     void reset()
     { 
@@ -497,6 +499,7 @@ struct player_t
     event_t* darkmoon_wrath;
     event_t* executioner;
     event_t* eye_of_magtheridon;
+    event_t* focus_magic_feedback;
     event_t* mongoose_mh;
     event_t* mongoose_oh;
     event_t* spellstrike;
@@ -712,8 +715,6 @@ struct player_t
   shaman_t * cast_shaman () { assert( type == SHAMAN     ); return (shaman_t *) this; }
   warlock_t* cast_warlock() { assert( type == WARLOCK    ); return (warlock_t*) this; }
   pet_t*     cast_pet    () { assert( type == PLAYER_PET ); return (pet_t    *) this; }
-
-  virtual void trigger_focus_magic_feedback() { assert( type == MAGE); }
 };
 
 // Pet =======================================================================

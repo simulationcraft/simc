@@ -37,6 +37,45 @@ static void trigger_judgement_of_wisdom( action_t* action )
   p -> cooldowns.judgement_of_wisdom = p -> sim -> current_time + 4.0;
 }
 
+// trigger_focus_magic_feedback =============================================
+
+static void trigger_focus_magic_feedback( spell_t* spell )
+{
+  struct expiration_t : public event_t
+  {
+    player_t* mage;
+
+    expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p ), mage( p -> buffs.focus_magic )
+    {
+      name = "Focus Magic Feedback Expiration";
+      mage -> aura_gain( "Focus Magic Feedback" );
+      mage -> buffs.focus_magic_feedback = 1;
+      sim -> add_event( this, 10.0 );
+    }
+    virtual void execute()
+    {
+      mage -> aura_loss( "Focus Magic Feedback" );
+      mage -> buffs.focus_magic_feedback = 0;
+      mage -> expirations.focus_magic_feedback = 0;
+    }
+  };
+
+  player_t* p = spell -> player;
+
+  if( ! p -> buffs.focus_magic ) return;
+
+  event_t*& e = p -> buffs.focus_magic -> expirations.focus_magic_feedback;
+
+  if( e )
+  {
+    e -> reschedule( 10.0 );
+  }
+  else
+  {
+    e = new expiration_t( p -> sim, p );
+  }
+}
+
 } // ANONYMOUS NAMESPACE ===================================================
 
 // ==========================================================================
@@ -1012,9 +1051,9 @@ void player_t::spell_hit_event( spell_t* spell )
 {
   trigger_judgement_of_wisdom( spell );
 
-  if ( spell -> result == RESULT_CRIT && buffs.magic_focuser )
+  if ( spell -> result == RESULT_CRIT )
   {
-    buffs.magic_focuser->trigger_focus_magic_feedback();
+    trigger_focus_magic_feedback( spell );
   }
 }
 

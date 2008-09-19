@@ -90,10 +90,7 @@ void spell_t::player_buff()
     player_crit += 0.05;
   }
 
-  if( p -> buffs.magic_focuser )
-  {
-    player_crit += 0.03;
-  }
+  if( p -> buffs.focus_magic ) player_crit += 0.03;
 
   if( sim_t::WotLK )
   {

@@ -32,11 +32,9 @@ struct mage_t : public player_t
   double buffs_missile_barrage;
   int8_t buffs_molten_armor;
   int8_t buffs_shatter_combo;
-  int8_t buffs_focus_magic_feedback;
 
   // Expirations
   event_t* expirations_arcane_blast;
-  event_t* expirations_focus_magic_feedback;
 
   // Gains
   gain_t* gains_clearcasting;
@@ -52,8 +50,8 @@ struct mage_t : public player_t
   // Up-Times
   uptime_t* uptimes_arcane_blast[ 4 ];
   uptime_t* uptimes_fingers_of_frost;
-  uptime_t* uptimes_water_elemental;
   uptime_t* uptimes_focus_magic_feedback;
+  uptime_t* uptimes_water_elemental;
 
   struct talents_t
   {
@@ -164,11 +162,9 @@ struct mage_t : public player_t
     buffs_missile_barrage          = 0;
     buffs_molten_armor             = 0;
     buffs_shatter_combo            = 0;
-    buffs_focus_magic_feedback     = 0;
 
     // Expirations
-    expirations_arcane_blast         = 0;
-    expirations_focus_magic_feedback = 0;
+    expirations_arcane_blast = 0;
 
     // Gains
     gains_clearcasting       = get_gain( "clearcasting" );
@@ -202,8 +198,6 @@ struct mage_t : public player_t
 
   // Event Tracking
   virtual void regen( double periodicity );
-  virtual void trigger_focus_magic_feedback();
-  virtual void spell_finish_event( spell_t* s );
 };
 
 // ==========================================================================
@@ -948,10 +942,11 @@ void mage_spell_t::player_buff()
     player_crit += p -> glyphs.molten_armor ? 0.05 : 0.03;
   }
 
-  if ( p -> buffs_focus_magic_feedback )
+  if ( p -> buffs.focus_magic_feedback )
   {
     player_crit += 0.03;
   }
+  p -> uptimes_focus_magic_feedback -> update( p -> buffs.focus_magic_feedback );
 
   if( sim -> debug ) 
     report_t::log( sim, "mage_spell_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f", 
@@ -1410,33 +1405,12 @@ struct focus_magic_t : public mage_spell_t
     std::string target_str;
     option_t options[] =
     {
-      { "rank",   OPT_INT8,   &rank_index  },
       { "target", OPT_STRING, &target_str },
       { NULL }
     };
     parse_options( options, options_str );
-      
-    static rank_t ranks[] =
-    {
-      { 80, 7, 0, 0, 150, 1000 },
-      { 70, 6, 0, 0,  80,  535 },
-      { 60, 5, 0, 0,  60,  400 },
-      { 0, 0 }
-    };
-    player -> init_mana_costs( ranks );
-    rank = choose_rank( ranks );
 
-    base_cost  = rank -> cost;
-    base_cost *= 1.0 - p -> talents.frost_channeling * ( sim_t::WotLK ? (0.1/3) : 0 );
-
-    focus_magic_target = 0;
-    for( player_t* raid_member = sim -> player_list; raid_member; raid_member = raid_member -> next )
-    {
-      if ( !target_str.compare( raid_member -> name() ) )
-      {
-        focus_magic_target = raid_member;
-      }
-    }
+    focus_magic_target = sim -> find_player( target_str );
 
     assert ( focus_magic_target != 0 );
     assert ( focus_magic_target != p );
@@ -1444,61 +1418,17 @@ struct focus_magic_t : public mage_spell_t
    
   virtual void execute()
   {
-    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
-    if( sim -> log ) report_t::log( sim, "%s grants %s Focus Magic", player -> name(), focus_magic_target -> name() );
-    consume_resource();
-
     mage_t* p = player -> cast_mage();
-    focus_magic_target -> buffs.magic_focuser = p;
+    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    if( sim -> log ) report_t::log( sim, "%s grants %s Focus Magic", p -> name(), focus_magic_target -> name() );
+    focus_magic_target -> buffs.focus_magic = p;
   }
 
   virtual bool ready()
   {
-    if( ! mage_spell_t::ready() )
-      return false;
-
-    return focus_magic_target -> buffs.magic_focuser == 0;
+    return focus_magic_target -> buffs.focus_magic == 0;
   }
 };
-
-void mage_t::trigger_focus_magic_feedback()
-{
-  struct expiration_t : public event_t
-  {
-    expiration_t( sim_t* sim, mage_t* p ) : event_t( sim, p )
-    {
-      name = "Focus Magic Feedback Expiration";
-      p -> buffs_focus_magic_feedback = 1;
-      p -> aura_gain( "focus_magic_feedback" );
-      sim -> add_event( this, 10.0 );
-    }
-    virtual void execute()
-    {
-      mage_t* p = player -> cast_mage();
-      p -> buffs_focus_magic_feedback = 0;
-      p -> aura_loss( "focus_magic_feedback" );
-      p -> expirations_focus_magic_feedback = 0;
-    }
-  };
-
-  event_t*& e = expirations_focus_magic_feedback;
-
-  if( e )
-  {
-    e -> reschedule( 10.0 );
-  }
-  else
-  {
-    e = new expiration_t( this -> sim, this );
-  }
-}
-
-void mage_t::spell_finish_event( spell_t* s )
-{
-  player_t::spell_finish_event( s );
-
-  uptimes_focus_magic_feedback -> update( buffs_focus_magic_feedback );
-}
 
 // Evocation Spell ==========================================================
 
@@ -2671,11 +2601,9 @@ void mage_t::reset()
   buffs_missile_barrage        = 0;
   buffs_molten_armor           = 0;
   buffs_shatter_combo          = 0;
-  buffs_focus_magic_feedback   = 0;
   
   // Expirations
-  expirations_arcane_blast         = 0;
-  expirations_focus_magic_feedback = 0;
+  expirations_arcane_blast = 0;
 }
 
 // mage_t::regen  ==========================================================

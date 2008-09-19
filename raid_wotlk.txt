@@ -189,16 +189,13 @@ swift_retribution=1
 # (2) The "trigger=10000" option to evocation represents the mana gained and the amount below max required to trigger
 # (3) The "debuff=1" option to scorch prevents it from being executed unless the Improved Scorch debuff is going to expire in less than 6sec.
 # (4) Unfortunately, Mage Armor is a requirement due to mana constraints
-# (5) Focus Magic from raid dps standpoint is better than Icy Veins, however to be fair to everyone it's not enabled by default
+# (5) Focus Magic from raid dps standpoint is better than Icy Veins, but Fire Mages cannot live without Frost Channeling due to mana constraints.
 #
-mage=Mage_Fire_FocusMagic
+mage=Mage_Fire
 level=80
 # We will let the poor Frost Mage raid-slave keep up the Improved Scorch debuff
 talents=http://talent.mmo-champion.com/?mage=03550300120033310531203013510230033013030000000000000000000000000000000000000000000000
-actions=flask,type=pure_death/molten_armor/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/combustion/icy_veins/living_bomb/pyroblast,hot_streak=1/fire_ball
-# Uncomment these lines to enable Focus Magic
-# talents=http://talent.mmo-champion.com/?mage=03550300120033310531203003510500030000000000000000000000230005000100000000000000000000
-# actions=flask,type=pure_death/molten_armor/focus_magic,target=Shaman_Elemental/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/combustion/living_bomb/pyroblast,hot_streak=1/fire_ball
+actions=flask,type=pure_death/mage_armor/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/combustion/icy_veins/living_bomb/pyroblast,hot_streak=1/fire_ball
 gear_stamina=600
 gear_intellect=600
 gear_spirit=600
@@ -208,7 +205,7 @@ gear_spell_hit_rating=250
 gear_haste_rating=400
 # Glyphs
 glyph_fire_ball=1
-glyph_molten_armor=1
+glyph_mage_armor=1
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
 blessing_of_kings=1
 blessing_of_wisdom=1
@@ -225,7 +222,7 @@ swift_retribution=1
 # (5) The "fb_priority=1" option to ice_lance and deep_freeze means that it will only be cast if the frozen debuff/buff will end before a frost_bolt could be cast
 # (6) Focus Magic from raid dps standpoint is better than Ignite, however to be fair to everyone it's not enabled by default
 #
-mage=Mage_Frost_FocusMagic
+mage=Mage_Frost
 level=80
 talents=http://talent.mmo-champion.com/?mage=23050000000000000000000000000533031312233100230052231351000000000000000000000000000000
 actions=flask,type=pure_death/molten_armor/mana_gem,trigger=3500/mana_potion,trigger=2500/deep_freeze,fb_priority=1/ice_lance,frozen=1,fb_priority=1/evocation,trigger=10000/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/frost_bolt
