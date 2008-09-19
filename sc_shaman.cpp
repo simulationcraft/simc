@@ -1162,7 +1162,8 @@ struct lava_burst_t : public shaman_spell_t
 
     static rank_t ranks[] =
     {
-      { 74, 1, 888, 1132, 0, 655 },
+      { 80, 2, 1082, 1378, 0, 0.10 },
+      { 75, 1,  920, 1172, 0, 0.10 },
       { 0, 0 }
     };
     player -> init_mana_costs( ranks );
