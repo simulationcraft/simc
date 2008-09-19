@@ -1845,7 +1845,7 @@ action_t* priest_t::create_action( const std::string& name,
       return new mind_flay_bc_t( this, options_str );
   }
 
-  return 0;
+  return player_t::create_action( name, options_str );
 }
 
 // priest_t::create_pet ======================================================

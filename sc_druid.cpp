@@ -1132,19 +1132,19 @@ void druid_t::spell_finish_event( spell_t* s )
 // druid_t::create_action  ==================================================
 
 action_t* druid_t::create_action( const std::string& name,
-				  const std::string& options )
+				  const std::string& options_str )
 {
-  if( name == "faerie_fire"       ) return new      faerie_fire_t( this, options );
-  if( name == "insect_swarm"      ) return new     insect_swarm_t( this, options );
-  if( name == "innervate"         ) return new        innervate_t( this, options );
-  if( name == "mark_of_the_wild"  ) return new mark_of_the_wild_t( this, options );
-  if( name == "moonfire"          ) return new         moonfire_t( this, options );
-  if( name == "moonkin_form"      ) return new     moonkin_form_t( this, options );
-  if( name == "natures_swiftness" ) return new druids_swiftness_t( this, options );
-  if( name == "starfire"          ) return new         starfire_t( this, options );
-  if( name == "wrath"             ) return new            wrath_t( this, options );
+  if( name == "faerie_fire"       ) return new      faerie_fire_t( this, options_str );
+  if( name == "insect_swarm"      ) return new     insect_swarm_t( this, options_str );
+  if( name == "innervate"         ) return new        innervate_t( this, options_str );
+  if( name == "mark_of_the_wild"  ) return new mark_of_the_wild_t( this, options_str );
+  if( name == "moonfire"          ) return new         moonfire_t( this, options_str );
+  if( name == "moonkin_form"      ) return new     moonkin_form_t( this, options_str );
+  if( name == "natures_swiftness" ) return new druids_swiftness_t( this, options_str );
+  if( name == "starfire"          ) return new         starfire_t( this, options_str );
+  if( name == "wrath"             ) return new            wrath_t( this, options_str );
 
-  return 0;
+  return player_t::create_action( name, options_str );
 }
 
 // druid_t::init_base =======================================================

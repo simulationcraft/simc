@@ -65,10 +65,10 @@ player_ready_event_t::player_ready_event_t( sim_t*    sim,
 
 void player_ready_event_t::execute()
 {
-   if( ! player -> execute_action() )
-   {
-     player -> schedule_ready( 0.1, true );
-   }
+  if( ! player -> execute_action() )
+  {
+    player -> schedule_ready( 0.1, true );
+  }
 }   
 
 // ==========================================================================
@@ -95,8 +95,7 @@ void action_execute_event_t::execute()
   action -> execute();
 
   if( ! action -> background && 
-      ! player -> channeling &&
-      ! player -> sleeping ) 
+      ! player -> channeling ) 
   {
     player -> schedule_ready( 0 );
   }
@@ -140,7 +139,7 @@ void action_tick_event_t::execute()
     
     if( ! action -> background )
     {
-      if( action -> channeled || player -> sleeping )
+      if( action -> channeled )
       {
 	player -> schedule_ready( 0 );
       }

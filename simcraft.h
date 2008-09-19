@@ -109,7 +109,7 @@ enum resource_type { RESOURCE_NONE=0, RESOURCE_HEALTH, RESOURCE_MANA, RESOURCE_R
 
 enum result_type { RESULT_NONE=0, RESULT_MISS, RESULT_RESIST, RESULT_DODGE, RESULT_PARRY, RESULT_BLOCK, RESULT_GLANCE, RESULT_CRUSH, RESULT_CRIT, RESULT_HIT, RESULT_MAX };
 
-enum action_type { ACTION_USE=0, ACTION_SPELL, ACTION_ATTACK, ACTION_MAX };
+enum action_type { ACTION_USE=0, ACTION_SPELL, ACTION_ATTACK, ACTION_OTHER, ACTION_MAX };
 
 enum school_type {
      SCHOOL_NONE=0, 
@@ -696,7 +696,7 @@ struct player_t
 
   virtual bool      parse_talents( const std::string& talent_string, int encoding ) { return false; }
   virtual bool      parse_option ( const std::string& name, const std::string& value );
-  virtual action_t* create_action( const std::string& name, const std::string& options ) { return 0; }
+  virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name ) { return 0; }
 
   virtual ~player_t(){}

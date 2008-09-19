@@ -633,7 +633,6 @@ void player_t::reset()
 
   last_cast = 0;
   gcd_ready = 0;
-  sleeping = 0;
 
   haste_rating = initial_haste_rating;
   recalculate_haste();
@@ -701,7 +700,7 @@ void player_t::reset()
     {
       a -> reset();
     }
-    if( type != PLAYER_PET ) schedule_ready();
+    if( type != PLAYER_PET && ! sleeping ) schedule_ready();
   }
 }
 
@@ -710,7 +709,6 @@ void player_t::reset()
 void player_t::schedule_ready( double delta_time,
 			       bool   waiting )
 {
-  sleeping = 0;
   executing = 0;
   channeling = 0;
 
@@ -721,7 +719,7 @@ void player_t::schedule_ready( double delta_time,
   {
     total_waiting += delta_time;
   }
-  else
+  else if( type != PLAYER_PET )
   {
     double lag = sim -> lag;
     if( lag > 0 ) lag += ( ( rand() % 11 ) - 5 ) * 0.01;
@@ -1326,6 +1324,50 @@ uptime_t* player_t::get_uptime( const std::string& name )
   *tail = u;
 
   return u;
+}
+
+// Wait Until Ready Action ===================================================
+
+struct wait_until_ready_t : public action_t
+{
+  wait_until_ready_t( player_t* player, const std::string& options_str ) : 
+    action_t( ACTION_OTHER, "wait", player )
+  {
+  }
+
+  virtual void execute() 
+  {
+    trigger_gcd = 0.1;
+    
+    for( action_t* a = player -> action_list; a; a = a -> next )
+    {
+      if( a -> background ) continue;
+      
+      if( cooldown_ready > sim -> current_time )
+      {
+	double delta_time = cooldown_ready - sim -> current_time;
+	if( delta_time > trigger_gcd ) trigger_gcd = delta_time;
+      }
+
+      if( duration_ready > sim -> current_time )
+      {
+	double delta_time = duration_ready - ( sim -> current_time + a -> execute_time() );
+	if( delta_time > trigger_gcd ) trigger_gcd = delta_time;
+      }
+    }
+
+    player -> total_waiting += trigger_gcd;
+  }
+};
+
+// player_t::create_action ==================================================
+
+action_t* player_t::create_action( const std::string& name,
+				   const std::string& options_str )
+{
+  if( name == "wait" ) return new wait_until_ready_t( this, options_str );
+
+  return 0;
 }
 
 // player_t::parse_talents ==================================================

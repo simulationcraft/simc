@@ -2796,35 +2796,35 @@ void shaman_t::spell_damage_event( spell_t* s,
 // shaman_t::create_action  =================================================
 
 action_t* shaman_t::create_action( const std::string& name,
-				   const std::string& options )
+				   const std::string& options_str )
 {
-  if( name == "auto_attack"             ) return new              auto_attack_t( this, options );
-  if( name == "bloodlust"               ) return new                bloodlust_t( this, options );
-  if( name == "chain_lightning"         ) return new          chain_lightning_t( this, options );
-  if( name == "earth_shock"             ) return new              earth_shock_t( this, options );
-  if( name == "elemental_mastery"       ) return new        elemental_mastery_t( this, options );
-  if( name == "flame_shock"             ) return new              flame_shock_t( this, options );
-  if( name == "flametongue_totem"       ) return new        flametongue_totem_t( this, options );
-  if( name == "flametongue_weapon"      ) return new       flametongue_weapon_t( this, options );
-  if( name == "frost_shock"             ) return new              frost_shock_t( this, options );
-  if( name == "grace_of_air_totem"      ) return new       grace_of_air_totem_t( this, options );
-  if( name == "lava_burst"              ) return new               lava_burst_t( this, options );
-  if( name == "lightning_bolt"          ) return new           lightning_bolt_t( this, options );
-  if( name == "lightning_shield"        ) return new         lightning_shield_t( this, options );
-  if( name == "mana_spring_totem"       ) return new        mana_spring_totem_t( this, options );
-  if( name == "mana_tide_totem"         ) return new          mana_tide_totem_t( this, options );
-  if( name == "natures_swiftness"       ) return new        shamans_swiftness_t( this, options );
-  if( name == "searing_totem"           ) return new            searing_totem_t( this, options );
-  if( name == "shamanistic_rage"        ) return new         shamanistic_rage_t( this, options );
-  if( name == "stormstrike"             ) return new              stormstrike_t( this, options );
-  if( name == "strength_of_earth_totem" ) return new  strength_of_earth_totem_t( this, options );
-//if( name == "thunderstorm"            ) return new             thunderstorm_t( this, options );
-  if( name == "totem_of_wrath"          ) return new           totem_of_wrath_t( this, options );
-  if( name == "windfury_totem"          ) return new           windfury_totem_t( this, options );
-  if( name == "windfury_weapon"         ) return new          windfury_weapon_t( this, options );
-  if( name == "wrath_of_air_totem"      ) return new       wrath_of_air_totem_t( this, options );
+  if( name == "auto_attack"             ) return new              auto_attack_t( this, options_str );
+  if( name == "bloodlust"               ) return new                bloodlust_t( this, options_str );
+  if( name == "chain_lightning"         ) return new          chain_lightning_t( this, options_str );
+  if( name == "earth_shock"             ) return new              earth_shock_t( this, options_str );
+  if( name == "elemental_mastery"       ) return new        elemental_mastery_t( this, options_str );
+  if( name == "flame_shock"             ) return new              flame_shock_t( this, options_str );
+  if( name == "flametongue_totem"       ) return new        flametongue_totem_t( this, options_str );
+  if( name == "flametongue_weapon"      ) return new       flametongue_weapon_t( this, options_str );
+  if( name == "frost_shock"             ) return new              frost_shock_t( this, options_str );
+  if( name == "grace_of_air_totem"      ) return new       grace_of_air_totem_t( this, options_str );
+  if( name == "lava_burst"              ) return new               lava_burst_t( this, options_str );
+  if( name == "lightning_bolt"          ) return new           lightning_bolt_t( this, options_str );
+  if( name == "lightning_shield"        ) return new         lightning_shield_t( this, options_str );
+  if( name == "mana_spring_totem"       ) return new        mana_spring_totem_t( this, options_str );
+  if( name == "mana_tide_totem"         ) return new          mana_tide_totem_t( this, options_str );
+  if( name == "natures_swiftness"       ) return new        shamans_swiftness_t( this, options_str );
+  if( name == "searing_totem"           ) return new            searing_totem_t( this, options_str );
+  if( name == "shamanistic_rage"        ) return new         shamanistic_rage_t( this, options_str );
+  if( name == "stormstrike"             ) return new              stormstrike_t( this, options_str );
+  if( name == "strength_of_earth_totem" ) return new  strength_of_earth_totem_t( this, options_str );
+//if( name == "thunderstorm"            ) return new             thunderstorm_t( this, options_str );
+  if( name == "totem_of_wrath"          ) return new           totem_of_wrath_t( this, options_str );
+  if( name == "windfury_totem"          ) return new           windfury_totem_t( this, options_str );
+  if( name == "windfury_weapon"         ) return new          windfury_weapon_t( this, options_str );
+  if( name == "wrath_of_air_totem"      ) return new       wrath_of_air_totem_t( this, options_str );
 
-  return 0;
+  return player_t::create_action( name, options_str );
 }
 
 // shaman_t::init_base ========================================================

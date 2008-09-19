@@ -2531,7 +2531,7 @@ action_t* mage_t::create_action( const std::string& name,
   if( name == "slow"             ) return new                  slow_t( this, options_str );
   if( name == "water_elemental"  ) return new water_elemental_spell_t( this, options_str );
 
-  return 0;
+  return player_t::create_action( name, options_str );
 }
 
 // mage_t::create_pet ======================================================

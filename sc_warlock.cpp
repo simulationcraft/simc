@@ -23,6 +23,8 @@ struct warlock_t : public player_t
   int8_t buffs_amplify_curse;
   int8_t buffs_backdraft;
   int8_t buffs_demon_armor;
+  int8_t buffs_demonic_empathy;
+  int8_t buffs_demonic_empathy_charges;
   double buffs_fel_armor;
   int8_t buffs_flame_shadow;
   int8_t buffs_nightfall;
@@ -42,6 +44,7 @@ struct warlock_t : public player_t
   // Gains
   gain_t* gains_dark_pact;
   gain_t* gains_fel_armor;
+  gain_t* gains_felhunter;
   gain_t* gains_life_tap;
   gain_t* gains_sacrifice;
 
@@ -152,6 +155,8 @@ struct warlock_t : public player_t
     buffs_amplify_curse                = 0;
     buffs_backdraft                    = 0;
     buffs_demon_armor                  = 0;
+    buffs_demonic_empathy              = 0;
+    buffs_demonic_empathy_charges      = 0;
     buffs_fel_armor                    = 0;
     buffs_flame_shadow                 = 0;
     buffs_nightfall                    = 0;
@@ -171,6 +176,7 @@ struct warlock_t : public player_t
     // Gains
     gains_dark_pact = get_gain( "dark_pact" );
     gains_fel_armor = get_gain( "fel_armor" );
+    gains_felhunter = get_gain( "felhunter" );
     gains_life_tap  = get_gain( "life_tap"  );
     gains_sacrifice = get_gain( "sacrifice" );
 
@@ -273,9 +279,6 @@ struct warlock_pet_t : public pet_t
   warlock_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name, int8_t pt ) :
     pet_t( sim, owner, pet_name ), pet_type(pt)
   {
-    main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.damage     = 100;
-    main_hand_weapon.swing_time = 2.0;
   }
   virtual void init_base()
   {
@@ -409,6 +412,10 @@ struct felguard_pet_t : public warlock_pet_t
   felguard_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name ) :
     warlock_pet_t( sim, owner, pet_name, PET_FELGUARD ), melee(0)
   {
+    main_hand_weapon.type       = WEAPON_BEAST;
+    main_hand_weapon.damage     = 100;
+    main_hand_weapon.swing_time = 2.0;
+
     buffs_demonic_frenzy = 0;
     melee = new melee_t( this );
   }
@@ -437,6 +444,50 @@ struct felguard_pet_t : public warlock_pet_t
 };
 
 // ==========================================================================
+// Pet Felhunter
+// ==========================================================================
+
+struct felhunter_pet_t : public warlock_pet_t
+{
+  struct melee_t : public warlock_pet_t::melee_t
+  {
+    melee_t( player_t* player ) : 
+      warlock_pet_t::melee_t( player )
+    {
+    }
+  };
+
+  melee_t* melee;
+
+  felhunter_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name ) :
+    warlock_pet_t( sim, owner, pet_name, PET_FELHUNTER )
+  {
+    main_hand_weapon.type       = WEAPON_BEAST;
+    main_hand_weapon.damage     = 70;
+    main_hand_weapon.swing_time = 2.0;
+
+    melee = new melee_t( this );
+  }
+  virtual void init_base()
+  {
+    warlock_pet_t::init_base();
+    base_attack_power = -20;
+  }
+  virtual void summon()
+  {
+    warlock_pet_t::summon();
+    melee -> schedule_execute(); // Kick-off repeating attack
+  }
+  virtual action_t* create_action( const std::string& name,
+				   const std::string& options_str )
+  {
+    //if( name == "shadow_bite" ) return new shadow_bite_t( this, options_str );
+
+    return 0;
+  }
+};
+
+// ==========================================================================
 // Pet Succubus
 // ==========================================================================
 
@@ -457,6 +508,10 @@ struct succubus_pet_t : public warlock_pet_t
   succubus_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name ) :
     warlock_pet_t( sim, owner, pet_name, PET_SUCCUBUS )
   {
+    main_hand_weapon.type       = WEAPON_BEAST;
+    main_hand_weapon.damage     = 100;
+    main_hand_weapon.swing_time = 2.0;
+
     melee = new melee_t( this );
   }
   virtual void init_base()
@@ -2371,9 +2426,10 @@ action_t* warlock_t::create_action( const std::string& name,
 
 pet_t* warlock_t::create_pet( const std::string& pet_name )
 {
-  if( pet_name == "felguard" ) return new felguard_pet_t( sim, this, pet_name );
-  if( pet_name == "imp"      ) return new      imp_pet_t( sim, this, pet_name );
-  if( pet_name == "succubus" ) return new succubus_pet_t( sim, this, pet_name );
+  if( pet_name == "felguard"  ) return new  felguard_pet_t( sim, this, pet_name );
+  if( pet_name == "felhunter" ) return new felhunter_pet_t( sim, this, pet_name );
+  if( pet_name == "imp"       ) return new       imp_pet_t( sim, this, pet_name );
+  if( pet_name == "succubus"  ) return new  succubus_pet_t( sim, this, pet_name );
 
   return 0;
 }
@@ -2429,6 +2485,8 @@ void warlock_t::reset()
   buffs_amplify_curse                = 0;
   buffs_backdraft                    = 0;
   buffs_demon_armor                  = 0;
+  buffs_demonic_empathy              = 0;
+  buffs_demonic_empathy_charges      = 0;
   buffs_fel_armor                    = 0;
   buffs_flame_shadow                 = 0;
   buffs_nightfall                    = 0;
@@ -2451,6 +2509,13 @@ void warlock_t::reset()
 void warlock_t::regen( double periodicity )
 {
   player_t::regen( periodicity );
+
+  if( buffs_pet_sacrifice == PET_FELHUNTER )
+  {
+    double felhunter_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.03 / 4.0;
+
+    resource_gain( RESOURCE_MANA, felhunter_regen, gains_felhunter );
+  }
 
   if( sim_t::WotLK && buffs_fel_armor )
   {
