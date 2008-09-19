@@ -771,17 +771,19 @@ struct shadow_word_pain_t : public priest_spell_t
     base_dot  = rank -> dot;
     base_cost = rank -> cost;
     base_cost *= 1.0 - p -> talents.mental_agility * 0.02;
-    if( sim_t::WotLK ) base_cost *= 1.0 - p -> talents.shadow_focus * 0.02;
-    base_multiplier *= 1.0 + p -> talents.twin_disciplines * 0.01;
+
     if( sim_t::WotLK )
     {
-      base_multiplier *= 1.0 + ( p -> talents.darkness                  * 0.02 + 
-				 p -> talents.improved_shadow_word_pain * 0.05 );
+      base_cost *= 1.0 - p -> talents.shadow_focus * 0.02;
+      base_multiplier *= 1.0 + ( p -> talents.darkness                  * 0.02 +
+                                 p -> talents.twin_disciplines          * 0.01 +
+                                 p -> talents.improved_shadow_word_pain * 0.05 );
     }
     else
     {
       base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
     }
+
     base_hit += p -> talents.shadow_focus * ( sim_t::WotLK ? 0.01 : 0.02 );
 
     int8_t more_ticks = 0;
@@ -947,8 +949,7 @@ struct devouring_plague_t : public priest_spell_t
     base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.mental_agility * 0.02;
     if( sim_t::WotLK ) base_cost *= 1.0 - p -> talents.shadow_focus * 0.02;
-    base_multiplier *= 1.0 + p -> talents.twin_disciplines * 0.01;
-    base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
+    base_multiplier *= 1.0 + p -> talents.darkness * 0.02 + p -> talents.twin_disciplines * 0.01;
     base_hit        += p -> talents.shadow_focus * ( sim_t::WotLK ? 0.01 : 0.02 );
   }
 
@@ -1124,8 +1125,7 @@ struct shadow_word_death_t : public priest_spell_t
 
     base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.mental_agility * 0.02;
-    base_multiplier *= 1.0 + p -> talents.twin_disciplines * 0.01;
-    base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
+    base_multiplier *= 1.0 + p -> talents.darkness * 0.02 + p -> talents.twin_disciplines * 0.01;
     base_hit        += p -> talents.shadow_focus * ( sim_t::WotLK ? 0.01 : 0.02 );
 
     if( sim_t::WotLK )
@@ -1305,7 +1305,7 @@ struct mind_flay_wotlk_t : public priest_spell_t
     base_cost       *= 1.0 - p -> talents.focused_mind * 0.05;
     base_cost       *= 1.0 - p -> talents.shadow_focus * 0.02;
     base_hit        += p -> talents.shadow_focus * 0.01;
-    base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
+    base_multiplier *= 1.0 + p -> talents.darkness * 0.02 + p -> talents.twin_disciplines * 0.01;
     base_crit       += p -> talents.mind_melt * 0.02;
     base_crit_bonus *= 1.0 + p -> talents.shadow_power * 0.20;
     dd_power_mod    *= 1.0 + p -> talents.misery * 0.05;
@@ -1583,7 +1583,6 @@ struct divine_spirit_t : public priest_spell_t
   {
     if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
 
-    double bonus_power = sim -> patch.after( 3, 0, 0 ) ? 0.03 : 0.05;
 
     double bonus_spirit = ( player -> level <= 69 ) ? 40 :
                           ( player -> level <= 79 ) ? 50 : 80;
@@ -1592,16 +1591,25 @@ struct divine_spirit_t : public priest_spell_t
     {
       if( p -> buffs.divine_spirit == 0 )
       {
-	p -> buffs.divine_spirit = 1;
-	p -> attribute[ ATTR_SPIRIT ] += bonus_spirit;
+        p -> buffs.divine_spirit = 1;
+        p -> attribute[ ATTR_SPIRIT ] += bonus_spirit;
       }
+
       if( p -> buffs.improved_divine_spirit == 0 )
       {
-	if( improved > 0 )
-	{
-	  p -> buffs.improved_divine_spirit = improved;
-	  p -> spell_power_per_spirit += improved * bonus_power;
-	}
+        if( improved > 0 )
+        {
+          p -> buffs.improved_divine_spirit = improved;
+
+          if ( sim_t::WotLK )
+          {
+            p -> base_spell_power += bonus_spirit * improved * 1.0/2;
+          }
+          else
+          {
+            p -> spell_power_per_spirit += improved * 0.05;
+          }
+        }
       }
     }
   }
