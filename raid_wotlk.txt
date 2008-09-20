@@ -341,7 +341,7 @@ swift_retribution=1
 #
 shaman=Shaman_Elemental
 level=80
-talents=http://www.worldofwarcraft.com/info/classes/shaman/talents2.html?tal=35300315002153510250135130300000000000000000000000055000001000000000000000000
+talents=http://talent.mmo-champion.com/?shaman=353003150001535102501350550050000050000000000000000000000000000000000000000000
 actions=flask,type=blinding_light/flametongue_weapon,weapon=main/mana_potion,trigger=3500/mana_spring_totem/totem_of_wrath/wrath_of_air_totem/flame_shock/lava_burst,flame_shock=1,max_ticks_consumed=1/elemental_mastery/bloodlust,target_pct=35/lightning_bolt
 gear_stamina=798
 gear_intellect=755

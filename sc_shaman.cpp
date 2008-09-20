@@ -1002,9 +1002,9 @@ struct chain_lightning_t : public shaman_spell_t
     base_cost         *= 1.0 - p -> talents.convection * ( sim_t::WotLK ? 0.04 : 0.02 );
     base_multiplier   *= 1.0 + p -> talents.concussion * 0.01;
     base_hit          += p -> talents.elemental_precision * ( sim_t::WotLK ? 0.01 : 0.02 );
-    base_crit         += p -> talents.call_of_thunder * 0.01;
+    base_crit         += p -> talents.call_of_thunder * 0.05;
     base_crit         += p -> talents.tidal_mastery * 0.01;
-    if( p -> talents.elemental_fury ) base_crit_bonus *= 2.0;
+    base_crit_bonus   *= 1.0 + p -> talents.elemental_fury * 0.20;
 
     lightning_overload_stats = p -> get_stats( "lightning_overload" );
     lightning_overload_stats -> school = SCHOOL_NATURE;
@@ -1088,9 +1088,9 @@ struct lightning_bolt_t : public shaman_spell_t
     base_cost         *= 1.0 - p -> talents.convection * ( sim_t::WotLK ? 0.04 : 0.02 );
     base_multiplier   *= 1.0 + p -> talents.concussion * 0.01;
     base_hit          += p -> talents.elemental_precision * ( sim_t::WotLK ? 0.01 : 0.02 );
-    base_crit         += p -> talents.call_of_thunder * 0.01;
+    base_crit         += p -> talents.call_of_thunder * 0.05;
     base_crit         += p -> talents.tidal_mastery * 0.01;
-    if( p -> talents.elemental_fury ) base_crit_bonus *= 2.0;
+    base_crit_bonus   *= 1.0 + p -> talents.elemental_fury * 0.20;
     dd_power_mod      += p -> talents.storm_earth_and_fire * 0.02; 
 
     if( p -> gear.tier6_4pc ) base_multiplier *= 1.05;
@@ -1179,7 +1179,7 @@ struct lava_burst_t : public shaman_spell_t
     base_multiplier   *= 1.0 + p -> talents.concussion * 0.01;
     base_multiplier   *= 1.0 + p -> talents.call_of_flame * 0.01;
     base_hit          += p -> talents.elemental_precision * ( sim_t::WotLK ? 0.01 : 0.02 );
-    if( p -> talents.elemental_fury ) base_crit_bonus *= 2.0;
+    base_crit_bonus   *= 1.0 + p -> talents.elemental_fury * 0.20;
     base_crit_bonus   *= 1.0 + p -> talents.lava_flows * 0.06;
   }
 
@@ -1352,7 +1352,7 @@ struct earth_shock_t : public shaman_spell_t
     cooldown        -= ( p -> talents.reverberation * 0.2 );
     base_multiplier *= 1.0 + p -> talents.concussion * 0.01;
     base_hit        += p -> talents.elemental_precision * ( sim_t::WotLK ? 0.01 : 0.02 );
-    if( p -> talents.elemental_fury ) base_crit_bonus *= 2.0;
+    base_crit_bonus *= 1.0 + p -> talents.elemental_fury * 0.20;
 
     if( p -> glyphs.earth_shock ) trigger_gcd -= 1.0;
   }
@@ -1434,7 +1434,7 @@ struct frost_shock_t : public shaman_spell_t
     cooldown        -= ( p -> talents.reverberation * 0.2 );
     base_multiplier *= 1.0 + p -> talents.concussion * 0.01;
     base_hit        += p -> talents.elemental_precision * ( sim_t::WotLK ? 0.01 : 0.02 );
-    if( p -> talents.elemental_fury ) base_crit_bonus *= 2.0;
+    base_crit_bonus *= 1.0 + p -> talents.elemental_fury * 0.20;
   }
 
   virtual double cost()
@@ -1509,7 +1509,7 @@ struct flame_shock_t : public shaman_spell_t
     cooldown        -= ( p -> talents.reverberation * 0.2 );
     base_multiplier *= 1.0 + p -> talents.concussion * 0.01;
     base_hit        += p -> talents.elemental_precision * ( sim_t::WotLK ? 0.01 : 0.02 );
-    if( p -> talents.elemental_fury ) base_crit_bonus *= 2.0;
+    base_crit_bonus *= 1.0 + p -> talents.elemental_fury * 0.20;
   }
 
   virtual double cost()
@@ -1592,7 +1592,7 @@ struct searing_totem_t : public shaman_spell_t
     base_cost       *= 1.0 - p -> talents.totemic_focus * 0.05;
     base_cost       *= 1.0 - p -> talents.mental_quickness * 0.02;
     base_multiplier *= 1.0 + p -> talents.call_of_flame * 0.05;
-    if( p -> talents.elemental_fury ) base_crit_bonus *= 2.0;
+    base_crit_bonus *= 1.0 + p -> talents.elemental_fury * 0.20;
   }
 
   // Odd things to handle:
@@ -3115,7 +3115,7 @@ bool shaman_t::parse_talents( const std::string& talent_string,
   } 
   else if( encoding == ENCODING_MMO )
   {
-    if( talent_string.size() != 77 ) return false;
+    if( talent_string.size() != 78 ) return false;
 
     talent_translation_t translation[] =
     {
@@ -3147,6 +3147,7 @@ bool shaman_t::parse_talents( const std::string& talent_string,
       { 43,  &( talents.blessing_of_the_eternals  ) },
       { 45,  &( talents.natures_blessing          ) },
       // Enhancement
+      /* NYI since Patch 8926
       { 51,  &( talents.enhancing_totems          ) },
       { 53,  &( talents.ancestral_knowledge       ) },
       { 55,  &( talents.thundering_strikes        ) },
@@ -3169,6 +3170,7 @@ bool shaman_t::parse_talents( const std::string& talent_string,
       { 75,  &( talents.shamanistic_rage          ) },
       { 77,  &( talents.maelstrom_weapon          ) },
       { 78,  &( talents.feral_spirit              ) },
+      */
       { 0, NULL }
     };
     player_t::parse_talents( translation, talent_string );
