@@ -693,6 +693,7 @@ struct player_t
   virtual double spirit()    { return attribute_multiplier[ ATTR_SPIRIT    ] * attribute[ ATTR_SPIRIT    ]; }
   
   void parse_talents( talent_translation_t*, const std::string& talent_string );
+  void parse_wowhead( talent_translation_t translation[][3], const std::string& talent_string );
 
   virtual bool      parse_talents( const std::string& talent_string, int encoding ) { return false; }
   virtual bool      parse_option ( const std::string& name, const std::string& value );

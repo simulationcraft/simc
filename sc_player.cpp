@@ -1370,6 +1370,73 @@ action_t* player_t::create_action( const std::string& name,
   return 0;
 }
 
+// player_t::parse_wowhead ==================================================
+
+const struct Initializer
+{
+  char key;
+  int first, second;
+
+  operator std::pair< const char, std::pair< int, int > >() const
+  {
+    return std::make_pair(key, std::make_pair(first, second));
+  }
+} initializers[] =
+{
+  { '0', 0, 0 },  { 'z', 0, 1 },  { 'M', 0, 2 },  { 'c', 0, 3 }, { 'm', 0, 4 },  { 'V', 0, 5 },
+  { 'o', 1, 0 },  { 'k', 1, 1 },  { 'R', 1, 2 },  { 's', 1, 3 }, { 'a', 1, 4 },  { 'q', 1, 5 },
+  { 'b', 2, 0 },  { 'd', 2, 1 },  { 'r', 2, 2 },  { 'f', 2, 3 }, { 'w', 2, 4 },  { 'i', 2, 5 },
+  { 'h', 3, 0 },  { 'u', 3, 1 },  { 'G', 3, 2 },  { 'I', 3, 3 }, { 'N', 3, 4 },  { 'A', 3, 5 },
+  { 'L', 4, 0 },  { 'p', 4, 1 },  { 'T', 4, 2 },  { 'j', 4, 3 }, { 'n', 4, 4 },  { 'y', 4, 5 },
+  { 'x', 5, 0 },  { 't', 5, 1 },  { 'g', 5, 2 },  { 'e', 5, 3 }, { 'v', 5, 4 },  { 'E', 5, 5 } 
+};
+const int num_initializers = sizeof(initializers) / sizeof(Initializer);
+
+void player_t::parse_wowhead( talent_translation_t translation[][3], const std::string& talent_string )
+{
+  std::map< char, std::pair< int, int > > wowhead_map(initializers, initializers + num_initializers);
+
+  int tree = 0;
+  int talent = 0;
+
+  for( unsigned int i=1; i<talent_string.length(); i++ )
+  {
+    if ( talent_string[i] == 'Z' )
+    {
+      if ( tree == 2 )
+      {
+        fprintf( sim -> output_file, "Malformed talent string. Too many trees specified.\n" );
+        assert(0);
+      }
+      tree++;
+      talent = 0;
+    }
+    else if ( wowhead_map.count(talent_string[i]) == 0 )
+    {
+      fprintf( sim -> output_file, "Malformed talent string. No mapping known for character: '%c'\n", talent_string[i] );
+      assert(0);
+    }
+    else
+    {
+      talent_translation_t& t = translation[talent  ][tree];
+      talent_translation_t& s = translation[talent+1][tree];
+      
+      if ( t.index < 1 )
+      {
+        fprintf( sim -> output_file, "Malformed talent string. Too many characters for tree: %d\n", tree+1 );
+        assert(0);
+      }
+      else
+      {
+        if ( t.address != NULL ) *( t.address ) = wowhead_map[talent_string[i]].first;
+        if ( s.address != NULL ) *( s.address ) = wowhead_map[talent_string[i]].second;
+      }
+
+      talent+=2;
+    }
+  }
+}
+
 // player_t::parse_talents ==================================================
 
 void player_t::parse_talents( talent_translation_t* translation,

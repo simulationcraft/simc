@@ -63,7 +63,7 @@ curse_of_elements=13
 #
 priest=Priest_Shadow
 level=80
-talents=http://talent.mmo-champion.com/?priest=050230013000000000000000000000000000000000000000000000320023051223012325152301351
+talents=http://wotlk.wowhead.com/?talent=bVMhzhZZG0fVRfzfiqfzAo
 actions=flask,type=pure_death/inner_fire/shadow_form/mana_potion,trigger=3500/shadow_fiend,trigger=6000/dispersion/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/shadow_word_death/mind_flay
 gear_stamina=708
 gear_intellect=687
@@ -91,7 +91,7 @@ swift_retribution=1
 #
 priest=Priest_Shadow_NoSWD
 level=80
-talents=http://talent.mmo-champion.com/?priest=050230013000000000000000000000000000000000000000000000320023051223012325152301351
+talents=http://wotlk.wowhead.com/?talent=bVMhzhZZG0fVRfzfiqfzAo
 actions=flask,type=pure_death/inner_fire/shadow_form/mana_potion,trigger=3500/shadow_fiend,trigger=6000/dispersion/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/mind_flay
 gear_stamina=708
 gear_intellect=687

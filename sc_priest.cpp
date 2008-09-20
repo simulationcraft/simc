@@ -2088,7 +2088,41 @@ bool priest_t::parse_talents( const std::string& talent_string,
   }
   else if( encoding == ENCODING_WOWHEAD )
   {
-    return false;
+    if ( talent_string[0] != 'b' ) return false;
+
+    talent_translation_t translation[][3] =
+    {
+      { { 1,  NULL                                }, { 29, NULL                              }, { 55, NULL                                   } },
+      { { 2,  &( talents.twin_disciplines )       }, { 30, NULL                              }, { 56, &( talents.improved_spirit_tap )       } },
+      { { 3,  NULL                                }, { 31, &( talents.holy_specialization )  }, { 57, NULL                                   } },
+      { { 4,  NULL                                }, { 32, NULL                              }, { 58, &( talents.shadow_affinity )           } },
+      { { 5,  NULL                                }, { 33, &( talents.divine_fury )          }, { 59, &( talents.improved_shadow_word_pain ) } },
+      { { 6,  NULL                                }, { 34, NULL                              }, { 60, &( talents.shadow_focus )              } },
+      { { 7,  NULL                                }, { 35, NULL                              }, { 61, NULL                                   } },
+      { { 8,  &( talents.inner_focus )            }, { 36, NULL                              }, { 62, &( talents.improved_mind_blast )       } },
+      { { 9,  &( talents.meditation )             }, { 37, NULL                              }, { 63, &( talents.mind_flay )                 } },
+      { { 10, &( talents.improved_inner_fire )    }, { 38, NULL                              }, { 64, &( talents.veiled_shadows )            } },
+      { { 11, &( talents.mental_agility )         }, { 39, &( talents.searing_light )        }, { 65, NULL                                   } },
+      { { 12, NULL                                }, { 40, NULL                              }, { 66, &( talents.shadow_weaving )            } },
+      { { 13, &( talents.mental_strength )        }, { 41, &( talents.spirit_of_redemption ) }, { 67, NULL                                   } },
+      { { 14, &( talents.divine_spirit )          }, { 42, &( talents.spiritual_guidance )   }, { 68, &( talents.vampiric_embrace )          } },
+      { { 15, &( talents.improved_divine_spirit ) }, { 43, &( talents.surge_of_light )       }, { 69, &( talents.improved_vampiric_embrace ) } },
+      { { 16, &( talents.focused_power )          }, { 44, NULL                              }, { 70, &( talents.focused_mind )              } },
+      { { 17, &( talents.enlightenment )          }, { 45, NULL                              }, { 71, &( talents.mind_melt )                 } },
+      { { 18, NULL                                }, { 46, NULL                              }, { 72, &( talents.darkness )                  } },
+      { { 19, &( talents.power_infusion )         }, { 47, NULL                              }, { 73, &( talents.shadow_form )               } },
+      { { 20, NULL                                }, { 48, NULL                              }, { 74, &( talents.shadow_power )              } },
+      { { 21, NULL                                }, { 49, NULL                              }, { 75, NULL                                   } },
+      { { 22, NULL                                }, { 50, NULL                              }, { 76, &( talents.misery )                    } },
+      { { 23, &( talents.aspiration )             }, { 51, NULL                              }, { 77, NULL                                   } },
+      { { 24, NULL                                }, { 52, NULL                              }, { 78, &( talents.vampiric_touch )            } },
+      { { 25, NULL                                }, { 53, NULL                              }, { 79, &( talents.pain_and_suffering )        } },
+      { { 26, NULL                                }, { 54, NULL                              }, { 80, &( talents.twisted_faith )             } },
+      { { 27, NULL                                }, {  0, NULL                              }, { 81, &( talents.dispersion )                } },
+      { { 28, &( talents.penance )                }, {  0, NULL                              }, {  0, NULL                                   } },
+      { {  0, NULL                                }, {  0, NULL                              }, { -1, NULL                                   } }
+    };
+    player_t::parse_wowhead( translation, talent_string );
   }
   else assert( 0 );
 
