@@ -754,8 +754,7 @@ void report_t::chart_raid_dpet()
     {
       if( s -> total_dmg <= 0 ) continue;
       if( ! s -> channeled && s -> total_execute_time <= 0 ) continue;
-      if( s -> dpet > ( 10 * p -> dps ) ) continue;
-      if( ( s -> total_dmg / p -> total_dmg ) < 0.10 ) continue;
+      if( s -> num_executes < 5 ) continue;
 
       stats_list.push_back( s );
     }

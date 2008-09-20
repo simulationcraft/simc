@@ -13,15 +13,12 @@ struct warlock_pet_t;
 
 struct warlock_t : public player_t
 {
+  // Active
   warlock_pet_t* active_pet;
-
-  spell_t* active_corruption;
-  spell_t* active_curse;
-  spell_t* active_curse_of_agony;
-  spell_t* active_curse_of_doom;
-  spell_t* active_immolate;
-  spell_t* active_siphon_life;
-  spell_t* active_unstable_affliction;
+  spell_t*       active_corruption;
+  spell_t*       active_curse;
+  spell_t*       active_immolate;
+  int8_t         active_dots;
 
   // Buffs
   int8_t buffs_amplify_curse;
@@ -119,6 +116,8 @@ struct warlock_t : public player_t
     int8_t  deaths_embrace;
     int8_t  demonic_brutality;
     int8_t  demonic_power;
+    int8_t  fel_synergy;
+    int8_t  fel_vitality;
 
     int8_t  demonic_empathy;
     int8_t  demonic_empowerment;
@@ -126,8 +125,6 @@ struct warlock_t : public player_t
     int8_t  empowered_imp;
     int8_t  eradication;
     int8_t  everlasting_affliction;
-    int8_t  fel_synergy;
-    int8_t  fel_vitality;
     int8_t  fire_and_brimstone;
     int8_t  haunt;
     int8_t  improved_demonic_tactics;
@@ -151,14 +148,11 @@ struct warlock_t : public player_t
   warlock_t( sim_t* sim, std::string& name ) : player_t( sim, WARLOCK, name ) 
   {
     // Active
-    active_pet                 = 0;
-    active_corruption          = 0;
-    active_curse               = 0;
-    active_curse_of_agony      = 0;
-    active_curse_of_doom       = 0;
-    active_immolate            = 0;
-    active_siphon_life         = 0;
-    active_unstable_affliction = 0;
+    active_pet        = 0;
+    active_corruption = 0;
+    active_curse      = 0;
+    active_immolate   = 0;
+    active_dots       = 0;
 
     // Buffs
     buffs_amplify_curse                = 0;
@@ -255,7 +249,7 @@ struct warlock_pet_t : public pet_t
   }
   virtual void init_base()
   {
-    warlock_t* o = cast_pet() -> owner -> cast_warlock();
+    warlock_t* o = owner -> cast_warlock();
 
     attribute_base[ ATTR_STRENGTH  ] = 153;
     attribute_base[ ATTR_AGILITY   ] = 108;
@@ -263,8 +257,11 @@ struct warlock_pet_t : public pet_t
     attribute_base[ ATTR_INTELLECT ] = 133;
     attribute_base[ ATTR_SPIRIT    ] = 122;
 
-    attribute_multiplier[ ATTR_STAMINA   ] *= 1.0 + o -> talents.fel_stamina   * 0.03;
-    attribute_multiplier[ ATTR_INTELLECT ] *= 1.0 + o -> talents.fel_intellect * 0.03;
+    attribute_multiplier[ ATTR_STAMINA   ] *= 1.0 + ( o -> talents.fel_stamina  * 0.03 +
+						      o -> talents.fel_vitality * 0.05 );
+
+    attribute_multiplier[ ATTR_INTELLECT ] *= 1.0 + ( o -> talents.fel_intellect * 0.03 +
+						      o -> talents.fel_vitality  * 0.05 );
 
     initial_attack_power_per_strength = 2.0;
 
@@ -275,9 +272,19 @@ struct warlock_pet_t : public pet_t
   }
   virtual void summon()
   {
+    warlock_t* o = owner -> cast_warlock();
     pet_t::summon();
-    warlock_t* o = cast_pet() -> owner -> cast_warlock();
     o -> active_pet = this;
+  }
+  virtual double stamina()
+  {
+    warlock_t* o = cast_pet() -> owner -> cast_warlock();
+    return pet_t::stamina() + o -> stamina() * o -> talents.fel_synergy * 0.05;
+  }
+  virtual double intellect()
+  {
+    warlock_t* o = cast_pet() -> owner -> cast_warlock();
+    return pet_t::intellect() + o -> intellect() * o -> talents.fel_synergy * 0.05;
   }
 };
 
@@ -422,7 +429,11 @@ struct imp_pet_t : public warlock_pet_t
   virtual void summon()
   {
     warlock_pet_t::summon();
-    fire_bolt -> schedule_execute(); // Kick-off repeating attack
+
+    // Since the pet only have one special attack there is no need to have an action priority list.
+    // Making the special attack a background repeating action will remove unnecessary events from the queue.
+
+    fire_bolt -> schedule_execute();
   }
 };
 
@@ -436,13 +447,15 @@ struct felguard_pet_t : public warlock_pet_t
 
   struct cleave_t : public warlock_pet_attack_t
   {
-    cleave_t( player_t* player, const std::string& options_str ) : 
+    cleave_t( player_t* player ) : 
       warlock_pet_attack_t( "cleave", player, RESOURCE_MANA, SCHOOL_PHYSICAL )
     {
       felguard_pet_t* p = (felguard_pet_t*) player -> cast_pet();
 
       weapon     = &( p -> main_hand_weapon );
       may_glance = false;
+      background = true;
+      repeating  = true;
       cooldown   = 6.0;
       base_dd    = ( p -> level < 68 ? 50 :
 		     p -> level < 80 ? 78 : 124 );
@@ -481,6 +494,7 @@ struct felguard_pet_t : public warlock_pet_t
   };
 
   melee_t* melee;
+  cleave_t* cleave;
 
   felguard_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name ) :
     warlock_pet_t( sim, owner, pet_name, PET_FELGUARD ), melee(0)
@@ -490,7 +504,9 @@ struct felguard_pet_t : public warlock_pet_t
     main_hand_weapon.swing_time = 2.0;
 
     buffs_demonic_frenzy = 0;
+
     melee = new melee_t( this );
+    cleave = new cleave_t( this );
   }
   virtual void init_base()
   {
@@ -505,15 +521,13 @@ struct felguard_pet_t : public warlock_pet_t
   virtual void summon()
   {
     warlock_pet_t::summon();
-    melee -> schedule_execute(); // Kick-off repeating attack
-    schedule_ready();
-  }
-  virtual action_t* create_action( const std::string& name,
-				   const std::string& options_str )
-  {
-    if( name == "cleave" ) return new cleave_t( this, options_str );
 
-    return player_t::create_action( name, options_str );
+    // Since the pet only have one special attack and the melee auto-attack is already a background
+    // action there is no need to have an action priority list.  Making the special attack a background
+    // repeating action will remove unnecessary events from the queue.
+
+    melee -> schedule_execute(); 
+    cleave -> schedule_execute();
   }
 };
 
@@ -525,12 +539,14 @@ struct felhunter_pet_t : public warlock_pet_t
 {
   struct shadow_bite_t : public warlock_pet_attack_t
   {
-    shadow_bite_t( player_t* player, const std::string& options_str ) : 
+    shadow_bite_t( player_t* player ) : 
       warlock_pet_attack_t( "shadow_bite", player, RESOURCE_MANA, SCHOOL_SHADOW )
     {
       felguard_pet_t* p = (felguard_pet_t*) player -> cast_pet();
 
       may_glance = false;
+      background = true;
+      repeating  = true;
       cooldown   = 6.0;
       base_dd    = ( p -> level < 66 ?  88 :
 		     p -> level < 74 ? 101 : 118 );
@@ -539,18 +555,12 @@ struct felhunter_pet_t : public warlock_pet_t
     {
       felguard_pet_t* p = (felguard_pet_t*) player -> cast_pet();
       warlock_t*      o = p -> owner -> cast_warlock();
-
       warlock_pet_attack_t::player_buff();
-
-      if( o -> active_curse_of_agony      ) player_multiplier *= 1.05;
-      if( o -> active_curse_of_doom       ) player_multiplier *= 1.05;
-      if( o -> active_corruption          ) player_multiplier *= 1.05;
-      if( o -> active_immolate            ) player_multiplier *= 1.05;
-      if( o -> active_siphon_life         ) player_multiplier *= 1.05;
-      if( o -> active_unstable_affliction ) player_multiplier *= 1.05;
+      player_multiplier *= 1.0 + o -> active_dots * 0.05;;
     }
   };
 
+  shadow_bite_t* shadow_bite;
   warlock_pet_melee_t* melee;
 
   felhunter_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name ) :
@@ -561,6 +571,7 @@ struct felhunter_pet_t : public warlock_pet_t
     main_hand_weapon.swing_time = 2.0;
 
     melee = new warlock_pet_melee_t( this );
+    shadow_bite = new shadow_bite_t( this );
   }
   virtual void init_base()
   {
@@ -570,15 +581,13 @@ struct felhunter_pet_t : public warlock_pet_t
   virtual void summon()
   {
     warlock_pet_t::summon();
-    melee -> schedule_execute(); // Kick-off repeating attack
-    schedule_ready();
-  }
-  virtual action_t* create_action( const std::string& name,
-				   const std::string& options_str )
-  {
-    if( name == "shadow_bite" ) return new shadow_bite_t( this, options_str );
 
-    return player_t::create_action( name, options_str );
+    // Since the pet only have one special attack and the melee auto-attack is already a background
+    // action there is no need to have an action priority list.  Making the special attack a background
+    // repeating action will remove unnecessary events from the queue.
+
+    melee -> schedule_execute();
+    shadow_bite -> schedule_execute();
   }
 };
 
@@ -590,13 +599,15 @@ struct succubus_pet_t : public warlock_pet_t
 {
   struct lash_of_pain_t : public warlock_pet_attack_t
   {
-    lash_of_pain_t( player_t* player, const std::string& options_str ) : 
-      warlock_pet_attack_t( "cleave", player, RESOURCE_MANA, SCHOOL_SHADOW )
+    lash_of_pain_t( player_t* player ) : 
+      warlock_pet_attack_t( "lash_of_pain", player, RESOURCE_MANA, SCHOOL_SHADOW )
     {
       felguard_pet_t* p = (felguard_pet_t*) player -> cast_pet();
       warlock_t*      o = p -> owner -> cast_warlock();
 
       may_glance = false;
+      background = true;
+      repeating  = true;
       cooldown   = 12.0;
       base_dd    = ( p -> level < 68 ?  99 :
 		     p -> level < 74 ? 123 : 
@@ -606,6 +617,7 @@ struct succubus_pet_t : public warlock_pet_t
     }
   };
 
+  lash_of_pain_t* lash_of_pain;
   warlock_pet_melee_t* melee;
 
   succubus_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name ) :
@@ -616,6 +628,7 @@ struct succubus_pet_t : public warlock_pet_t
     main_hand_weapon.swing_time = 2.0;
 
     melee = new warlock_pet_melee_t( this );
+    lash_of_pain = new lash_of_pain_t( this );
   }
   virtual void init_base()
   {
@@ -625,15 +638,13 @@ struct succubus_pet_t : public warlock_pet_t
   virtual void summon()
   {
     warlock_pet_t::summon();
-    melee -> schedule_execute(); // Kick-off repeating attack
-    schedule_ready();
-  }
-  virtual action_t* create_action( const std::string& name,
-				   const std::string& options_str )
-  {
-    if( name == "lash_of_pain" ) return new lash_of_pain_t( this, options_str );
 
-    return player_t::create_action( name, options_str );
+    // Since the pet only have one special attack and the melee auto-attack is already a background
+    // action there is no need to have an action priority list.  Making the special attack a background
+    // repeating action will remove unnecessary events from the queue.
+
+    melee -> schedule_execute();
+    lash_of_pain -> schedule_execute();
   }
 };
 
@@ -1247,8 +1258,8 @@ struct curse_of_agony_t : public warlock_spell_t
     warlock_spell_t::execute();
     if( result_is_hit() )
     {
+      p -> active_dots++;
       p -> active_curse = this;
-      p -> active_curse_of_agony = this;
       sim -> target -> debuffs.affliction_effects++;
     }
     if( p -> buffs_amplify_curse ) p -> aura_loss( "Amplify Curse" );
@@ -1259,8 +1270,8 @@ struct curse_of_agony_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::last_tick(); 
+    p -> active_dots--;
     p -> active_curse = 0;
-    p -> active_curse_of_agony = 0;
     sim -> target -> debuffs.affliction_effects--;
   }
   
@@ -1328,7 +1339,7 @@ struct curse_of_doom_t : public warlock_spell_t
     if( result_is_hit() )
     {
       p -> active_curse = this;
-      p -> active_curse_of_doom = this;
+      p -> active_dots++;
       sim -> target -> debuffs.affliction_effects++;
     }
     if( p -> buffs_amplify_curse ) p -> aura_loss( "Amplify Curse" );
@@ -1340,7 +1351,7 @@ struct curse_of_doom_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::last_tick(); 
     p -> active_curse = 0;
-    p -> active_curse_of_doom = 0;
+    p -> active_dots--;
     sim -> target -> debuffs.affliction_effects--;
   }
   
@@ -1715,6 +1726,7 @@ struct corruption_t : public warlock_spell_t
     warlock_spell_t::execute();
     if( result_is_hit() )
     {
+      p -> active_dots++;
       p -> active_corruption = this;
       sim -> target -> debuffs.affliction_effects++;
     }
@@ -1732,7 +1744,7 @@ struct corruption_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::last_tick(); 
-    p -> active_corruption = 0;
+    p -> active_dots--;
     sim -> target -> debuffs.affliction_effects--;
   }
 };
@@ -1914,7 +1926,7 @@ struct siphon_life_t : public warlock_spell_t
     warlock_spell_t::execute();
     if( result_is_hit() )
     {
-      p -> active_siphon_life = this;
+      p -> active_dots++;
       sim -> target -> debuffs.affliction_effects++;
     }
   }
@@ -1923,7 +1935,7 @@ struct siphon_life_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::last_tick(); 
-    p -> active_siphon_life = 0;
+    p -> active_dots--;
     sim -> target -> debuffs.affliction_effects--;
   }
 
@@ -1979,7 +1991,7 @@ struct unstable_affliction_t : public warlock_spell_t
     warlock_spell_t::execute();
     if( result_is_hit() )
     {
-      p -> active_unstable_affliction = this;
+      p -> active_dots++;;
       sim -> target -> debuffs.affliction_effects++;
     }
   }
@@ -1988,7 +2000,7 @@ struct unstable_affliction_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::last_tick(); 
-    p -> active_unstable_affliction = 0;
+    p -> active_dots--;;
     sim -> target -> debuffs.affliction_effects--;
   }
 };
@@ -2065,6 +2077,7 @@ struct immolate_t : public warlock_spell_t
     warlock_spell_t::execute();
     if( result_is_hit() )
     {
+      p -> active_dots++;
       p -> active_immolate = this;
     }
   }
@@ -2080,6 +2093,7 @@ struct immolate_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::last_tick(); 
     p -> active_immolate = 0;
+    p -> active_dots--;
   }
 };
 
@@ -2621,8 +2635,8 @@ void warlock_t::init_base()
   health_per_stamina = 10;
   mana_per_intellect = 15;
 
-  mana_per_intellect *= 1.0 + talents.fel_intellect * 0.01;
-  health_per_stamina *= 1.0 + talents.fel_stamina   * 0.01;
+  mana_per_intellect *= 1.0 + ( talents.fel_intellect + talents.fel_vitality ) * 0.01;
+  health_per_stamina *= 1.0 + ( talents.fel_stamina   + talents.fel_vitality ) * 0.01;
 }
 
 // warlock_t::reset ==========================================================
@@ -2632,14 +2646,11 @@ void warlock_t::reset()
   player_t::reset();
 
   // Active
-  active_pet                 = 0;
-  active_corruption          = 0;
-  active_curse               = 0;
-  active_curse_of_agony      = 0;
-  active_curse_of_doom       = 0;
-  active_immolate            = 0;
-  active_siphon_life         = 0;
-  active_unstable_affliction = 0;
+  active_pet        = 0;
+  active_corruption = 0;
+  active_curse      = 0;
+  active_immolate   = 0;
+  active_dots       = 0;
 
   // Buffs
   buffs_amplify_curse                = 0;

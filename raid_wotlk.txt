@@ -109,6 +109,7 @@ blessing_of_kings=1
 blessing_of_wisdom=1
 sanctified_retribution=1
 swift_retribution=1
+sleeping=1
 
 #
 # Holy Priest
@@ -314,7 +315,7 @@ swift_retribution=1
 #
 druid=Druid_Balance
 level=80
-talents=http://talent.mmo-champion.com/?druid=00000000000000000000000000000205003012000000000000000005202201305331305213305300051
+talents=http://talent.mmo-champion.com/?druid=00000000000000000000000000000205003312000000000000000005032003025301305213305300051
 actions=flask,type=blinding_light/mark_of_the_wild/moonkin_form/mana_potion,trigger=3500/innervate/faerie_fire/moonfire/insect_swarm/wrath,eclipse=trigger/starfire
 gear_stamina=708
 gear_intellect=687

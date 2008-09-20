@@ -37,12 +37,16 @@ double attack_t::haste()
 {
   double h = player -> haste;
 
-  if( player -> buffs.bloodlust         ) h *= 1.0 / ( 1.0 + 0.30 );
-  if( player -> buffs.swift_retribution ) h *= 1.0 / ( 1.0 + 0.03 );
+  if( player -> buffs.bloodlust ) h *= 1.0 / ( 1.0 + 0.30 );
+
+  if(      player -> buffs.swift_retribution     ) h *= 1.0 / ( 1.0 + 0.03 );
+  else if( player -> buffs.improved_moonkin_aura ) h *= 1.0 / ( 1.0 + 0.02 );
+
   if( sim_t::WotLK && player -> buffs.windfury_totem != 0 )
   {
     h *= 1.0 / ( 1.0 + player -> buffs.windfury_totem );
   }
+
   if( player -> buffs.mongoose_mh ) h *= 1.0 / ( 1.0 + 0.02 );
   if( player -> buffs.mongoose_oh ) h *= 1.0 / ( 1.0 + 0.02 );
 
