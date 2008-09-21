@@ -28,8 +28,8 @@ struct shaman_t : public player_t
   int8_t buffs_flurry;
   int8_t buffs_lightning_charges;
   int8_t buffs_maelstrom_weapon;
-  int8_t buffs_nature_vulnerability;
-  int8_t buffs_nature_vulnerability_charges;
+  int8_t buffs_elemental_vulnerability;
+  int8_t buffs_elemental_vulnerability_charges;
   int8_t buffs_natures_swiftness;
   int8_t buffs_shamanistic_focus;
   int8_t buffs_shamanistic_rage;
@@ -38,7 +38,7 @@ struct shaman_t : public player_t
   event_t* expirations_elemental_devastation;
   event_t* expirations_elemental_oath;
   event_t* expirations_maelstrom_weapon;
-  event_t* expirations_nature_vulnerability;
+  event_t* expirations_elemental_vulnerability;
   event_t* expirations_unleashed_rage;
   event_t* expirations_windfury_weapon;
 
@@ -52,7 +52,7 @@ struct shaman_t : public player_t
   uptime_t* uptimes_elemental_devastation;
   uptime_t* uptimes_elemental_oath;
   uptime_t* uptimes_flurry;
-  uptime_t* uptimes_nature_vulnerability;
+  uptime_t* uptimes_elemental_vulnerability;
   uptime_t* uptimes_unleashed_rage;
   
   // Auto-Attack
@@ -114,7 +114,6 @@ struct shaman_t : public player_t
     int8_t  unrelenting_storm;
     int8_t  unleashed_rage;
     int8_t  weapon_mastery;
-    int8_t  weapon_specialization;
     
     talents_t() { memset( (void*) this, 0x0, sizeof( talents_t ) ); }
   };
@@ -132,6 +131,7 @@ struct shaman_t : public player_t
     int8_t strength_of_earth;
     int8_t totem_of_wrath;
     int8_t windfury_weapon;
+    int8_t flame_shock;
     glyphs_t() { memset( (void*) this, 0x0, sizeof( glyphs_t ) ); }
   };
   glyphs_t glyphs;
@@ -149,25 +149,25 @@ struct shaman_t : public player_t
     active_lightning_charge = 0;
 
     // Buffs
-    buffs_elemental_devastation        = 0;
-    buffs_elemental_focus              = 0;
-    buffs_elemental_mastery            = 0;
-    buffs_flurry                       = 0;
-    buffs_lightning_charges            = 0;
-    buffs_maelstrom_weapon             = 0;
-    buffs_nature_vulnerability         = 0;
-    buffs_nature_vulnerability_charges = 0;
-    buffs_natures_swiftness            = 0;
-    buffs_shamanistic_focus            = 0;
-    buffs_shamanistic_rage             = 0;
+    buffs_elemental_devastation           = 0;
+    buffs_elemental_focus                 = 0;
+    buffs_elemental_mastery               = 0;
+    buffs_flurry                          = 0;
+    buffs_lightning_charges               = 0;
+    buffs_maelstrom_weapon                = 0;
+    buffs_elemental_vulnerability         = 0;
+    buffs_elemental_vulnerability_charges = 0;
+    buffs_natures_swiftness               = 0;
+    buffs_shamanistic_focus               = 0;
+    buffs_shamanistic_rage                = 0;
 
     // Expirations
-    expirations_elemental_devastation = 0;
-    expirations_elemental_oath        = 0;
-    expirations_maelstrom_weapon      = 0;
-    expirations_nature_vulnerability  = 0;
-    expirations_unleashed_rage        = 0;
-    expirations_windfury_weapon       = 0;
+    expirations_elemental_devastation    = 0;
+    expirations_elemental_oath           = 0;
+    expirations_maelstrom_weapon         = 0;
+    expirations_elemental_vulnerability  = 0;
+    expirations_unleashed_rage           = 0;
+    expirations_windfury_weapon          = 0;
   
     // Gains
     gains_shamanistic_rage = get_gain( "shamanistic_rage" );
@@ -176,11 +176,11 @@ struct shaman_t : public player_t
     procs_lightning_overload = get_proc( "lightning_overload" );
 
     // Up-Times
-    uptimes_elemental_devastation = get_uptime( "elemental_devastation" );
-    uptimes_elemental_oath        = get_uptime( "elemental_oath"        );
-    uptimes_flurry                = get_uptime( "flurry"                );
-    uptimes_nature_vulnerability  = get_uptime( "nature_vulnerability"  );
-    uptimes_unleashed_rage        = get_uptime( "unleashed_rage"        );
+    uptimes_elemental_devastation    = get_uptime( "elemental_devastation"    );
+    uptimes_elemental_oath           = get_uptime( "elemental_oath"           );
+    uptimes_flurry                   = get_uptime( "flurry"                   );
+    uptimes_elemental_vulnerability  = get_uptime( "elemental_vulnerability"  );
+    uptimes_unleashed_rage           = get_uptime( "unleashed_rage"           );
   
     // Auto-Attack
     main_hand_attack = 0;
@@ -196,7 +196,6 @@ struct shaman_t : public player_t
   virtual void      reset();
   virtual double    composite_attack_power();
   virtual double    composite_attack_hit();
-  virtual double    composite_attack_crit();
   virtual double    composite_spell_power( int8_t school );
   virtual double    composite_spell_hit();
   virtual double    composite_spell_crit();
@@ -224,7 +223,8 @@ struct shaman_attack_t : public attack_t
   {
     base_dd = 1;
     shaman_t* p = player -> cast_shaman();
-    base_multiplier *= 1.0 + p -> talents.weapon_specialization * 0.02;
+    base_multiplier *= 1.0 + p -> weapon_mastery * 0.1/3;
+    base_crit += p -> talents.thundering_strikes * 0.01;
   }
 
   virtual void execute();
@@ -238,7 +238,11 @@ struct shaman_attack_t : public attack_t
 struct shaman_spell_t : public spell_t
 {
   shaman_spell_t( const char* n, player_t* p, int8_t s, int8_t t ) : 
-    spell_t( n, p, RESOURCE_MANA, s, t ) {}
+    spell_t( n, p, RESOURCE_MANA, s, t ) 
+  {
+    shaman_t* shaman = p -> cast_shaman();
+    base_crit += shaman -> talents.thundering_strikes * 0.01;
+  }
 
   virtual double cost();
   virtual void   consume_resource();
@@ -510,33 +514,33 @@ static void trigger_nature_vulnerability_bc( attack_t* a )
   }
 }
 
-// trigger_nature_vulnerability_wotlk =======================================
+// trigger_elemental_vulnerability_wotlk =======================================
 
-static void trigger_nature_vulnerability_wotlk( attack_t* a )
+static void trigger_elemental_vulnerability_wotlk( attack_t* a )
 {
-  struct nature_vulnerability_wotlk_expiration_t : public event_t
+  struct elemental_vulnerability_wotlk_expiration_t : public event_t
   {
-    nature_vulnerability_wotlk_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
+    elemental_vulnerability_wotlk_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
     {
-      name = "Nature Vulnerability Expiration";
-      player -> aura_gain( "Nature Vulnerability" );
+      name = "Elemental Vulnerability Expiration";
+      player -> aura_gain( "Elemental Vulnerability" );
       sim -> add_event( this, 12.0 );
     }
     virtual void execute()
     {
       shaman_t* p = player -> cast_shaman();
-      p -> aura_loss( "Nature Vulnerability" );
-      p -> buffs_nature_vulnerability = 0;
-      p -> buffs_nature_vulnerability_charges = 0;
-      p -> expirations_nature_vulnerability = 0;
+      p -> aura_loss( "Elemental Vulnerability" );
+      p -> buffs_elemental_vulnerability = 0;
+      p -> buffs_elemental_vulnerability_charges = 0;
+      p -> expirations_elemental_vulnerability = 0;
     }
   };
 
   shaman_t* p = a -> player -> cast_shaman();
-  event_t*& e = p -> expirations_nature_vulnerability;
+  event_t*& e = p -> expirations_elemental_vulnerability;
 
-  p -> buffs_nature_vulnerability_charges = 2 + p -> talents.improved_stormstrike;
-  p -> buffs_nature_vulnerability = p -> glyphs.stormstrike ? 28 : 20;
+  p -> buffs_elemental_vulnerability_charges = 2 + p -> talents.improved_stormstrike;
+  p -> buffs_elemental_vulnerability = p -> glyphs.stormstrike ? 28 : 20;
    
   if( e )
   {
@@ -544,7 +548,7 @@ static void trigger_nature_vulnerability_wotlk( attack_t* a )
   }
   else
   {
-    e = new nature_vulnerability_wotlk_expiration_t( a -> sim, p );
+    e = new elemental_vulnerability_wotlk_expiration_t( a -> sim, p );
   }
 }
 
@@ -554,7 +558,7 @@ static void trigger_nature_vulnerability( attack_t* a )
 {
   if( sim_t::WotLK )
   {
-    trigger_nature_vulnerability_wotlk( a );
+    trigger_elemental_vulnerability_wotlk( a );
   }
   else
   {
@@ -840,7 +844,6 @@ struct stormstrike_t : public shaman_attack_t
     may_glance       = false;
     cooldown         = 10.0 - p -> talents.improved_stormstrike;
     base_cost        = p -> resource_base[ RESOURCE_MANA ] * 0.08;
-    base_multiplier *= 1.0 + p -> talents.weapon_specialization * 0.02;
   }
 
   virtual void execute()
@@ -863,10 +866,10 @@ struct stormstrike_t : public shaman_attack_t
 
       if( player -> off_hand_weapon.type != WEAPON_NONE )
       {
-	weapon = &( player -> off_hand_weapon );
-	shaman_attack_t::execute();
-	oh_dd = dd;
-	oh_result = result;
+        weapon = &( player -> off_hand_weapon );
+        shaman_attack_t::execute();
+        oh_dd = dd;
+        oh_result = result;
       }
     }
 
@@ -931,13 +934,13 @@ void shaman_spell_t::player_buff()
   {
     player_crit += 1.0;
   }
-  if( school == SCHOOL_NATURE )
+  if( school == SCHOOL_NATURE || school == SCHOOL_FROST || school == SCHOOL_FIRE )
   {
-    if( p -> buffs_nature_vulnerability )
+    if( p -> buffs_elemental_vulnerability )
     {
-      player_multiplier *= 1.0 + p -> buffs_nature_vulnerability * 0.01;
+      player_multiplier *= 1.0 + p -> buffs_elemental_vulnerability * 0.01;
     }
-    p -> uptimes_nature_vulnerability -> update( p -> buffs_nature_vulnerability );
+    p -> uptimes_elemental_vulnerability -> update( p -> buffs_elemental_vulnerability );
   }
   p -> uptimes_elemental_oath -> update( p -> buffs.elemental_oath );
 }
@@ -1038,7 +1041,7 @@ struct chain_lightning_t : public shaman_spell_t
       return false;
 
     if( maelstrom > 0 && 
-	maelstrom > player -> cast_shaman() -> buffs_maelstrom_weapon )
+        maelstrom > player -> cast_shaman() -> buffs_maelstrom_weapon )
       return false;
 
     return true;
@@ -1500,6 +1503,13 @@ struct flame_shock_t : public shaman_spell_t
     may_crit          = true;
     cooldown          = 6.0;
     cooldown_group    = "shock";
+
+    if ( p -> glyphs.flame_shock )
+    {
+      base_duration    += 2.0;
+      num_ticks        += 1;
+      dot_power_mod    *= 14/12;
+    }
       
     base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.convection * ( sim_t::WotLK ? 0.04 : 0.02 );
@@ -1783,37 +1793,38 @@ struct flametongue_totem_t : public shaman_spell_t
 
       expiration_t( sim_t* sim, player_t* player, flametongue_totem_t* t ) : event_t( sim, player ), totem(t)
       {
-	name = "Flametongue Totem Expiration";
-	for( player_t* p = sim -> player_list; p; p = p -> next )
-	{
-	  if( sim_t::WotLK || p -> party == player -> party )
-	  {
-	    p -> aura_gain( "Flametongue Totem" );
-	    p -> buffs.flametongue_totem = t -> bonus;
+        name = "Flametongue Totem Expiration";
+        for( player_t* p = sim -> player_list; p; p = p -> next )
+        {
+          if( sim_t::WotLK || p -> party == player -> party )
+          {
+            p -> aura_gain( "Flametongue Totem" );
+            p -> buffs.flametongue_totem = t -> bonus;
 
-	    if( ! sim_t::WotLK && p -> main_hand_weapon.buff == WEAPON_BUFF_NONE )
-	    {
-	      p -> main_hand_weapon.buff = FLAMETONGUE_TOTEM;
-	    }
-	  }
-	}
-	sim -> add_event( this, 120.0 );
+            if( ! sim_t::WotLK && p -> main_hand_weapon.buff == WEAPON_BUFF_NONE )
+            {
+              p -> main_hand_weapon.buff = FLAMETONGUE_TOTEM;
+            }
+          }
+        }
+        sim -> add_event( this, 120.0 );
       }
+
       virtual void execute()
       {
-	for( player_t* p = sim -> player_list; p; p = p -> next )
-	{
-	  if( sim_t::WotLK || p -> party == player -> party )
-	  {
-	    p -> aura_loss( "Flametongue Totem" );
-	    p -> buffs.flametongue_totem = 0;
+        for( player_t* p = sim -> player_list; p; p = p -> next )
+        {
+          if( sim_t::WotLK || p -> party == player -> party )
+          {
+            p -> aura_loss( "Flametongue Totem" );
+            p -> buffs.flametongue_totem = 0;
 
-	    if( ! sim_t::WotLK && p -> main_hand_weapon.buff == FLAMETONGUE_TOTEM )
-	    {
-	      p -> main_hand_weapon.buff = WEAPON_BUFF_NONE;
-	    }
-	  }
-	}
+            if( ! sim_t::WotLK && p -> main_hand_weapon.buff == FLAMETONGUE_TOTEM )
+            {
+              p -> main_hand_weapon.buff = WEAPON_BUFF_NONE;
+            }
+          }
+        }
       }
     };
 
@@ -1982,8 +1993,6 @@ struct flametongue_weapon_t : public shaman_spell_t
     bonus = ( p -> level <  64 ) ? 30 : 
             ( p -> level <  71 ) ? 52 : 
             ( p -> level <  80 ) ? 74 : 96;
-
-    bonus *= 1.0 + p -> talents.lava_flows * 0.15;
   }
 
   virtual void execute()
@@ -2209,9 +2218,6 @@ struct grace_of_air_totem_t : public shaman_spell_t
     base_cost     *= 1.0 - p -> talents.mental_quickness * 0.02;
     duration_group = "air_totem";
     trigger_gcd    = 1.0;
-
-    attr_bonus = rank -> dot;
-    attr_bonus *= 1.0 + p -> talents.enhancing_totems * 0.05;
   }
 
   virtual void execute()
@@ -2674,7 +2680,7 @@ struct lightning_shield_t : public shaman_spell_t
   {
     shaman_t* p = player -> cast_shaman();
     if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
-    p -> buffs_lightning_charges = 3 + p -> talents.static_shock;
+    p -> buffs_lightning_charges = 2 * p -> talents.static_shock;
     consume_resource();
     update_ready();
     dd = 0;
@@ -2757,16 +2763,18 @@ void shaman_t::spell_hit_event( spell_t* s )
     }
   }
 
-  if( s -> school == SCHOOL_NATURE )
+  if( s -> school == SCHOOL_NATURE ||
+      s -> school == SCHOOL_FROST ||
+      s -> school == SCHOOL_FIRE )
   {
-    if( buffs_nature_vulnerability_charges > 0 )
+    if( buffs_elemental_vulnerability_charges > 0 )
     {
-      buffs_nature_vulnerability_charges--;
-      if( buffs_nature_vulnerability_charges == 0 ) 
+      buffs_elemental_vulnerability_charges--;
+      if( buffs_elemental_vulnerability_charges == 0 ) 
       {
-	aura_loss( "Nature Vulnerability" );
-	buffs_nature_vulnerability = 0;
-	event_t::cancel( expirations_nature_vulnerability );
+        aura_loss( "Elemental Vulnerability" );
+        buffs_elemental_vulnerability = 0;
+        event_t::cancel( expirations_elemental_vulnerability );
       }
     }
   }  
@@ -2883,25 +2891,25 @@ void shaman_t::reset()
   active_flame_shock = 0;
 
   // Buffs
-  buffs_elemental_devastation        = 0;
-  buffs_elemental_focus              = 0;
-  buffs_elemental_mastery            = 0;
-  buffs_flurry                       = 0;
-  buffs_lightning_charges            = 0;
-  buffs_maelstrom_weapon             = 0;
-  buffs_nature_vulnerability         = 0;
-  buffs_nature_vulnerability_charges = 0;
-  buffs_natures_swiftness            = 0;
-  buffs_shamanistic_focus            = 0;
-  buffs_shamanistic_rage             = 0;
+  buffs_elemental_devastation           = 0;
+  buffs_elemental_focus                 = 0;
+  buffs_elemental_mastery               = 0;
+  buffs_flurry                          = 0;
+  buffs_lightning_charges               = 0;
+  buffs_maelstrom_weapon                = 0;
+  buffs_elemental_vulnerability         = 0;
+  buffs_elemental_vulnerability_charges = 0;
+  buffs_natures_swiftness               = 0;
+  buffs_shamanistic_focus               = 0;
+  buffs_shamanistic_rage                = 0;
 
   // Expirations
-  expirations_elemental_devastation = 0;
-  expirations_elemental_oath        = 0;
-  expirations_maelstrom_weapon      = 0;
-  expirations_nature_vulnerability  = 0;
-  expirations_unleashed_rage        = 0;
-  expirations_windfury_weapon       = 0;
+  expirations_elemental_devastation    = 0;
+  expirations_elemental_oath           = 0;
+  expirations_maelstrom_weapon         = 0;
+  expirations_elemental_vulnerability  = 0;
+  expirations_unleashed_rage           = 0;
+  expirations_windfury_weapon          = 0;
 }
 
 // shaman_t::composite_attack_power ==========================================
@@ -2934,20 +2942,6 @@ double shaman_t::composite_attack_hit()
   }
 
   return hit;
-}
-
-// shaman_t::composite_attack_crit ==========================================
-
-double shaman_t::composite_attack_crit()
-{
-  double crit = player_t::composite_attack_crit();
-
-  if( talents.thundering_strikes )
-  {
-    crit += talents.thundering_strikes * 0.01;
-  }
-
-  return crit;
 }
 
 // shaman_t::composite_spell_power ==========================================
@@ -3147,17 +3141,16 @@ bool shaman_t::parse_talents( const std::string& talent_string,
       { 43,  &( talents.blessing_of_the_eternals  ) },
       { 45,  &( talents.natures_blessing          ) },
       // Enhancement
-      /* NYI since Patch 8926
       { 51,  &( talents.enhancing_totems          ) },
       { 53,  &( talents.ancestral_knowledge       ) },
       { 55,  &( talents.thundering_strikes        ) },
       { 57,  &( talents.improved_shields          ) },
-      { 58,  &( talents.mental_dexterity          ) },
+      { 58,  &( talents.elemental_weapons         ) },
       { 59,  &( talents.shamanistic_focus         ) },
       { 61,  &( talents.flurry                    ) },
       { 63,  &( talents.improved_windfury_totem   ) },
       { 64,  &( talents.spirit_weapons            ) },
-      { 65,  &( talents.elemental_weapons         ) },
+      { 65,  &( talents.mental_dexterity          ) },
       { 66,  &( talents.unleashed_rage            ) },
       { 67,  &( talents.weapon_mastery            ) },
       { 68,  &( talents.dual_wield_specialization ) },
@@ -3170,7 +3163,6 @@ bool shaman_t::parse_talents( const std::string& talent_string,
       { 75,  &( talents.shamanistic_rage          ) },
       { 77,  &( talents.maelstrom_weapon          ) },
       { 78,  &( talents.feral_spirit              ) },
-      */
       { 0, NULL }
     };
     player_t::parse_talents( translation, talent_string );
@@ -3240,7 +3232,6 @@ bool shaman_t::parse_option( const std::string& name,
     { "unrelenting_storm",         OPT_INT8,  &( talents.unrelenting_storm         ) },
     { "unleashed_rage",            OPT_INT8,  &( talents.unleashed_rage            ) },
     { "weapon_mastery",            OPT_INT8,  &( talents.weapon_mastery            ) },
-    { "weapon_specialization",     OPT_INT8,  &( talents.weapon_specialization     ) },
     // Glyphs
     { "glyph_blue_promises",       OPT_INT8,  &( glyphs.blue_promises              ) },
     { "glyph_earth_shock",         OPT_INT8,  &( glyphs.earth_shock                ) },
@@ -3252,6 +3243,7 @@ bool shaman_t::parse_option( const std::string& name,
     { "glyph_strength_of_earth",   OPT_INT8,  &( glyphs.strength_of_earth          ) },
     { "glyph_totem_of_wrath",      OPT_INT8,  &( glyphs.totem_of_wrath             ) },
     { "glyph_windfury_weapon",     OPT_INT8,  &( glyphs.windfury_weapon            ) },
+    { "glyph_flame_shock",         OPT_INT8,  &( glyphs.flame_shock                ) },
     { NULL, OPT_UNKNOWN }
   };
 

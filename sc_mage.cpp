@@ -472,6 +472,19 @@ static void trigger_combustion( spell_t* s )
   }
 }
 
+// trigger_arcane_potency =====================================================
+
+static void trigger_arcane_potency( spell_t* s )
+{
+  mage_t* p = s -> player -> cast_mage();
+
+  if( p -> talents.arcane_potency ) 
+  {
+    p -> aura_gain( "Arcane Potency" );
+    p -> buffs_arcane_potency = p -> talents.arcane_potency;
+  }
+}
+
 // clear_arcane_potency =====================================================
 
 static void clear_arcane_potency( spell_t* s )
@@ -498,12 +511,7 @@ static void trigger_arcane_concentration( spell_t* s )
   {
     p -> procs_clearcasting -> occur();
     p -> buffs_clearcasting = s -> sim -> current_time;
-
-    if( p -> talents.arcane_potency ) 
-    {
-      p -> aura_gain( "Arcane Potency" );
-      p -> buffs_arcane_potency = p -> talents.arcane_potency;
-    }
+    trigger_arcane_potency( s );
   }
 }
 
@@ -1510,6 +1518,7 @@ struct presence_of_mind_t : public mage_spell_t
     if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
     p -> aura_gain( "Presence of Mind" );
     p -> last_foreground_action = fast_action;
+    trigger_arcane_potency( this );
     fast_action -> execute();
     p -> aura_loss( "Presence of Mind" );
     update_ready();
@@ -1566,6 +1575,7 @@ struct fire_ball_t : public mage_spell_t
     base_execute_time -= p -> talents.improved_fire_ball * 0.1;
     base_multiplier   *= 1.0 + p -> talents.fire_power * 0.02;
     base_multiplier   *= 1.0 + p -> talents.arcane_instability * 0.01;
+    base_multiplier   *= 1.0 + p -> talents.spell_impact * 0.02;
     base_crit         += p -> talents.arcane_instability * 0.01;
     base_crit         += p -> talents.critical_mass * 0.01;
     base_crit         += p -> talents.pyromaniac * 0.01;
@@ -1815,6 +1825,7 @@ struct pyroblast_t : public mage_spell_t
     base_crit        += p -> talents.arcane_instability * 0.01;
     base_crit        += p -> talents.critical_mass * 0.01;
     base_crit        += p -> talents.pyromaniac * 0.01;
+    base_crit        += p -> talents.world_in_flames * 0.02;
     base_hit         += p -> talents.elemental_precision * 0.01;
     base_penetration += p -> talents.arcane_subtlety * 5;
     base_crit_bonus  *= 1.0 + ( p -> talents.spell_power * 0.25 +
@@ -1895,6 +1906,7 @@ struct scorch_t : public mage_spell_t
     base_cost        *= 1.0 - p -> talents.frost_channeling * ( sim_t::WotLK ? (0.1/3) : 0 );
     base_multiplier  *= 1.0 + p -> talents.fire_power * 0.02;
     base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
+    base_multiplier  *= 1.0 + p -> talents.spell_impact * 0.02;
     base_crit        += p -> talents.arcane_instability * 0.01;
     base_crit        += p -> talents.incineration * 0.02;
     base_crit        += p -> talents.critical_mass * 0.01;

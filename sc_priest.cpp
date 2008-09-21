@@ -23,7 +23,6 @@ struct priest_t : public player_t
   int8_t buffs_improved_spirit_tap;
   int8_t buffs_shadow_weaving;
   int8_t buffs_surge_of_light;
-  int8_t buffs_dark_energy;
 
   // Expirations
   event_t* expirations_improved_spirit_tap;
@@ -109,7 +108,6 @@ struct priest_t : public player_t
     buffs_inner_fire          = 0;
     buffs_shadow_weaving      = 0;
     buffs_surge_of_light      = 0;
-    buffs_dark_energy         = 0;
 
     // Expirations
     expirations_improved_spirit_tap = 0;
@@ -523,10 +521,6 @@ void priest_spell_t::player_buff()
   {
     player_multiplier *= 1.0 + p -> talents.focused_power * 0.02;
   }
-  if( p -> buffs_dark_energy )
-  {
-    player_multiplier *= 1.0 + p -> talents.dispersion * 0.25;
-  }
 }
 
 // Holy Fire Spell ===========================================================
@@ -753,7 +747,7 @@ struct shadow_word_pain_t : public priest_spell_t
 
     static rank_t ranks[] =
     {
-      { 80, 12, 0, 0, 1530, 0.22 },
+      { 80, 12, 0, 0, 1380, 0.22 },
       { 75, 11, 0, 0, 1302, 0.22 },
       { 70, 10, 0, 0, 1236, 575  },
       { 65,  9, 0, 0, 1002, 510  },
@@ -930,10 +924,10 @@ struct devouring_plague_t : public priest_spell_t
 
     static rank_t ranks[] =
     {
-      { 80, 9, 0, 0, 1720, 0.31 },
-      { 76, 8, 0, 0, 1416, 0.31 },
-      { 68, 7, 0, 0, 1216, 1145 },
-      { 60, 6, 0, 0,  904,  985 },
+      { 80, 9, 0, 0, 1720, 0.25 },
+      { 76, 8, 0, 0, 1416, 0.25 },
+      { 68, 7, 0, 0, 1216, 0.28 },
+      { 60, 6, 0, 0,  904, 0.28 },
       { 0, 0 }
     };
     player -> init_mana_costs( ranks );
@@ -1084,7 +1078,6 @@ struct mind_blast_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
     if( p -> talents.twisted_faith )
     {
-      if( p -> active_devouring_plague ) player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.01;
       if( p -> active_shadow_word_pain ) player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.01;
       if( p -> active_vampiric_touch   ) player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.01;
     }
@@ -1237,7 +1230,6 @@ struct mind_flay_bc_t : public priest_spell_t
     priest_spell_t::player_buff();
     if( p -> talents.twisted_faith )
     {
-      if( p -> active_devouring_plague ) player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.01;
       if( p -> active_shadow_word_pain ) player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.01;
       if( p -> active_vampiric_touch   ) player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.01;
     }
@@ -1284,7 +1276,7 @@ struct mind_flay_wotlk_t : public priest_spell_t
 
     static rank_t ranks[] =
     {
-      { 80, 9, 230, 230, 0, 0.09 },
+      { 80, 9, 196, 196, 0, 0.09 },
       { 76, 8, 192, 192, 0, 0.09 },
       { 68, 7, 176, 176, 0, 230  },
       { 60, 6, 142, 142, 0, 205  },
@@ -1299,7 +1291,7 @@ struct mind_flay_wotlk_t : public priest_spell_t
     channeled         = true; 
     binary            = false;
     may_crit          = true;
-    dd_power_mod      = ( (3.0/3.5) * 0.95 ) / 3.0;
+    dd_power_mod      = 0.77 / 3;
 
     base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.focused_mind * 0.05;
@@ -1334,7 +1326,6 @@ struct mind_flay_wotlk_t : public priest_spell_t
     priest_spell_t::player_buff();
     if( p -> talents.twisted_faith )
     {
-      if( p -> active_devouring_plague ) player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.01;
       if( p -> active_shadow_word_pain ) player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.01;
       if( p -> active_vampiric_touch   ) player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.01;
     }
@@ -1417,26 +1408,6 @@ struct mind_flay_wotlk_t : public priest_spell_t
 
 struct dispersion_t : public priest_spell_t
 {
-  struct dark_energy_expiration_t : public event_t
-  {
-    dark_energy_expiration_t( sim_t* sim, player_t* player ) : event_t( sim, player )
-    {
-      name = "Post-Dispersion Effect Expiration";
-
-      priest_t* p = player -> cast_priest();
-      p -> aura_gain( "Dark Energy" );
-      p -> buffs_dark_energy = 1;
-      sim -> add_event( this, 60.0 );
-    }
-
-    virtual void execute()
-    {
-      priest_t* p = player -> cast_priest();
-      p -> aura_loss( "Dark Energy" );
-      p -> buffs_dark_energy = 0;
-    }
-  };
-
   dispersion_t( player_t* player, const std::string& options_str ) : 
     priest_spell_t( "dispersion", player, SCHOOL_SHADOW, TREE_SHADOW )
   {
@@ -1458,11 +1429,6 @@ struct dispersion_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
     p -> resource_gain( RESOURCE_MANA, 0.06 * p -> resource_max[ RESOURCE_MANA ], p -> gains_dispersion );
     priest_spell_t::tick();
-  }
-
-  virtual void last_tick()
-  {
-    new dark_energy_expiration_t( sim, player );
   }
 };
 
@@ -1915,7 +1881,6 @@ void priest_t::reset()
   buffs_inner_fire          = 0;
   buffs_shadow_weaving      = 0;
   buffs_surge_of_light      = 0;
-  buffs_dark_energy         = 0;
 
   // Expirations
   expirations_improved_spirit_tap = 0;
