@@ -223,7 +223,7 @@ struct shaman_attack_t : public attack_t
   {
     base_dd = 1;
     shaman_t* p = player -> cast_shaman();
-    base_multiplier *= 1.0 + p -> weapon_mastery * 0.1/3;
+    base_multiplier *= 1.0 + p -> talents.weapon_mastery * 0.1/3;
     base_crit += p -> talents.thundering_strikes * 0.01;
   }
 
