@@ -49,7 +49,7 @@ bool sim_t::WotLK = false;
 
 sim_t::sim_t() : 
   event_list(0), player_list(0), active_player(0), target(0),
-  lag(0), reaction_time(0.5), regen_periodicity(1.0), current_time(0), max_time(0),
+  lag(0), pet_lag(0), reaction_time(0.5), regen_periodicity(1.0), current_time(0), max_time(0),
   events_remaining(0), max_events_remaining(0), 
   events_processed(0), total_events_processed(0),
   seed(0), id(0), iterations(1),
@@ -222,6 +222,8 @@ bool sim_t::init()
 
     WotLK = patch.after( 3, 0, 0 );
   }
+
+  if( pet_lag == 0 ) pet_lag = lag;
 
   target -> init();
 
@@ -435,6 +437,7 @@ bool sim_t::parse_option( const std::string& name,
     { "log",                     OPT_INT8,   &( log                                  ) },
     { "max_time",                OPT_FLT,    &( max_time                             ) },
     { "patch",                   OPT_STRING, &( patch_str                            ) },
+    { "pet_lag",                 OPT_FLT,    &( pet_lag                              ) },
     { "potion_sickness",         OPT_INT8,   &( potion_sickness                      ) },
     { "seed",                    OPT_INT32,  &( seed                                 ) },
     { "timestamp",               OPT_INT8,   &( timestamp                            ) },

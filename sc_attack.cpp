@@ -25,7 +25,7 @@ attack_t::attack_t( const char* n, player_t* p, int8_t r, int8_t s, int8_t t ) :
 
   base_crit_bonus = 1.0;
 
-  dd_power_mod = dot_power_mod = 1.0 / 14;
+  direct_power_mod = tick_power_mod = 1.0 / 14;
 
   trigger_gcd = p -> base_gcd;
   min_gcd = 1.0;
@@ -202,7 +202,7 @@ void attack_t::build_table( std::vector<double>& chances,
 
 void attack_t::calculate_result()
 {
-  dd = dot = dot_tick = 0;
+  direct_dmg = tick_dmg = 0;
 
   static std::vector<double> chances;
   static std::vector<int>    results;
@@ -233,44 +233,5 @@ void attack_t::calculate_result()
   }
 
   if( sim -> debug ) report_t::log( sim, "%s result for %s is %s", player -> name(), name(), util_t::result_type_string( result ) );
-}
-
-// attack_t::calculate_damage ===============================================
-
-void attack_t::calculate_damage()
-{
-  get_base_damage();
-
-  double weapon_speed  = 1.0;
-  double weapon_damage = 0;
-
-  if( weapon )
-  {
-    weapon_damage = weapon -> damage;
-    weapon_speed  = normalize_weapon_speed ? weapon -> normalized_weapon_speed() : weapon -> swing_time;
-  }
-
-  double attack_power = base_power + player_power + target_power;
-
-  if( sim -> debug ) 
-    report_t::log( sim, 
-		   "weapon_damage=%.0f weapon_speed=%.1f base_dd=%.0f "
-		   "player_power=%.0f target_power=%.0f "
-		   "base_multiplier=%.2f player_multiplier=%.2f target_multiplier=%.2f",
-		   weapon_damage, weapon_speed, base_dd, player_power, target_power, base_multiplier, player_multiplier, target_multiplier );
-
-  if( base_dd > 0 )  
-  {
-    dd  = base_dd + weapon_speed * ( weapon_damage + ( attack_power * dd_power_mod ) );
-    dd *= base_multiplier * player_multiplier * target_multiplier;
-    if( weapon && ! weapon -> main ) dd *= 0.5;
-  }
-
-  if( base_dot > 0 ) 
-  {
-    dot  = base_dot + weapon_speed * ( weapon_damage + ( attack_power * dot_power_mod ) );
-    dot *= base_multiplier * player_multiplier;
-    if( weapon && ! weapon -> main ) dot *= 0.5;
-  }
 }
 

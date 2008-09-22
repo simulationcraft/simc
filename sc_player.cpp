@@ -702,6 +702,8 @@ void player_t::reset()
     }
     if( type != PLAYER_PET && ! sleeping ) schedule_ready();
   }
+
+  if( sleeping ) quiet = 1;
 }
 
 // player_t::schedule_ready =================================================
@@ -719,9 +721,9 @@ void player_t::schedule_ready( double delta_time,
   {
     total_waiting += delta_time;
   }
-  else if( type != PLAYER_PET )
+  else
   {
-    double lag = sim -> lag;
+    double lag = ( type == PLAYER_PET ? sim -> pet_lag :  sim -> lag );
     if( lag > 0 ) lag += ( ( rand() % 11 ) - 5 ) * 0.01;
     if( lag < 0 ) lag = 0;
     delta_time += lag;

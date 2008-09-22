@@ -114,8 +114,9 @@ action_tick_event_t::action_tick_event_t( sim_t*    sim,
 {
   name = "Action Tick";
 
-  if( sim -> debug ) report_t::log( sim, "New Action Tick Event: %s %s %.2f %d %.2f", 
-		   player -> name(), a -> name(), a -> time_remaining, a -> current_tick, time_to_tick );
+  if( sim -> debug ) 
+    report_t::log( sim, "New Action Tick Event: %s %s %d-of-%d %.2f", 
+		   player -> name(), a -> name(), a -> current_tick, a -> num_ticks, time_to_tick );
   
   sim -> add_event( this, time_to_tick );
 }   
@@ -127,22 +128,17 @@ void action_tick_event_t::execute()
    assert( action -> current_tick < action -> num_ticks );
 
    action -> event = 0;
-   action -> time_remaining -= action -> time_remaining / ( action -> num_ticks - action -> current_tick );
    action -> current_tick++;
    action -> tick();
 
   if( action -> current_tick == action -> num_ticks )
   {
+    action -> ticking = 0;
     action -> current_tick = 0;
 
-    assert( action -> time_remaining == 0 );
-    
-    if( ! action -> background )
+    if( action -> channeled )
     {
-      if( action -> channeled )
-      {
-	player -> schedule_ready( 0 );
-      }
+      player -> schedule_ready( 0 );
     }
   }
   else action -> schedule_tick();

@@ -66,11 +66,11 @@ double spell_t::execute_time()
   return t;
 }
 
-// spell_t::duration =========================================================
+// spell_t::tick_time ========================================================
 
-double spell_t::duration()
+double spell_t::tick_time()
 {
-  double t = base_duration;
+  double t = base_tick_time;
   if( channeled ) t *= haste();
   return t;
 }
@@ -209,7 +209,7 @@ double spell_t::level_based_miss_chance( int8_t player,
 
 void spell_t::calculate_result()
 {
-  dd = dot = dot_tick = 0;
+  direct_dmg = tick_dmg = 0;
 
   result = RESULT_NONE;
 

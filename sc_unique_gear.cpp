@@ -441,13 +441,12 @@ static void trigger_lightning_capacitor( spell_t* s )
     lightning_discharge_t( player_t* player ) : 
       spell_t( "lightning_discharge", player, RESOURCE_NONE, SCHOOL_NATURE )
     {
-      base_dd     = 750;
-      base_dot    = 0;
-      base_cost   = 0;
-      cooldown    = 2.5;
-      may_crit    = true;
-      trigger_gcd = 0;
-      background  = true;
+      base_direct_dmg = 750;
+      base_cost       = 0;
+      cooldown        = 2.5;
+      may_crit        = true;
+      trigger_gcd     = 0;
+      background      = true;
       reset();
     }
     virtual void player_buff()
@@ -493,13 +492,11 @@ static void trigger_timbals_crystal( spell_t* s )
     timbals_discharge_t( player_t* player ) : 
       spell_t( "timbals_discharge", player, RESOURCE_NONE, SCHOOL_SHADOW )
     {
-      base_dd     = 380;
-      base_dot    = 0;
-      base_cost   = 0;
-      cooldown    = 15;
-      may_crit    = true;
-      trigger_gcd = 0;
-      background  = true;
+      base_direct_dmg = 380;
+      cooldown        = 15;
+      may_crit        = true;
+      trigger_gcd     = 0;
+      background      = true;
       reset();
     }
     virtual void player_buff()
@@ -510,7 +507,7 @@ static void trigger_timbals_crystal( spell_t* s )
     virtual void assess_damage( double amount, int8_t dmg_type )
     {
       // Not considered a "direct-dmg" spell, so ISB charges not consumed.
-      spell_t::assess_damage( dd, DMG_OVER_TIME ); 
+      spell_t::assess_damage( direct_dmg, DMG_OVER_TIME ); 
     }
   };
 

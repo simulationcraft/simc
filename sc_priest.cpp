@@ -11,12 +11,12 @@
 
 struct priest_t : public player_t
 {
-  spell_t* active_devouring_plague;
-  spell_t* active_shadow_word_pain;
-  spell_t* active_vampiric_touch;
-  spell_t* active_vampiric_embrace;
-  spell_t* active_mind_blast;
-  spell_t* active_shadow_word_death;
+  action_t* active_devouring_plague;
+  action_t* active_shadow_word_pain;
+  action_t* active_vampiric_touch;
+  action_t* active_vampiric_embrace;
+  action_t* active_mind_blast;
+  action_t* active_shadow_word_death;
 
   // Buffs
   int8_t buffs_inner_fire;
@@ -51,7 +51,6 @@ struct priest_t : public player_t
     int8_t  improved_divine_spirit;
     int8_t  improved_inner_fire;
     int8_t  improved_mind_blast;
-    int8_t  improved_mind_flay;
     int8_t  improved_shadow_word_pain;
     int8_t  improved_spirit_tap;
     int8_t  improved_vampiric_embrace;
@@ -177,7 +176,7 @@ struct shadow_fiend_pet_t : public pet_t
     {
       weapon = &( player -> main_hand_weapon );
       base_execute_time = weapon -> swing_time;
-      base_dd = 1;
+      base_direct_dmg = 1;
       background = true;
       repeating = true;
     }
@@ -541,10 +540,10 @@ struct holy_fire_t : public priest_spell_t
 
     static rank_t ranks[] =
     {
-      { 78, 11, 890, 1130, 350, 0.11 },
-      { 72, 10, 732,  928, 287, 0.11 },
-      { 66,  9, 412,  523, 165, 290  },
-      { 60,  8, 355,  449, 145, 255  },
+      { 78, 11, 890, 1130, 50, 0.11 },
+      { 72, 10, 732,  928, 47, 0.11 },
+      { 66,  9, 412,  523, 33, 290  },
+      { 60,  8, 355,  449, 29, 255  },
       { 0,   0 }
     };
     player -> init_mana_costs( ranks );
@@ -553,20 +552,20 @@ struct holy_fire_t : public priest_spell_t
     if( rank -> index < 10 )
     {
       base_execute_time = 3.5;
-      base_duration     = 10; 
+      base_tick_time    = 2; 
       num_ticks         = 5;
       cooldown          = 0;
-      dd_power_mod      = 0.857;
-      dot_power_mod     = 0.165;
+      direct_power_mod  = 0.857;
+      tick_power_mod    = 0.165 / 5;
     }
     else
     {
       base_execute_time = 2.0; 
-      base_duration     = 7; 
+      base_tick_time    = 1.0;
       num_ticks         = 7;
       cooldown          = 10;
-      dd_power_mod      = 0.314;
-      dot_power_mod     = 0.210;
+      direct_power_mod  = 0.314;
+      tick_power_mod    = 0.210 / 7;
     }
     may_crit           = true;    
     base_cost          = rank -> cost;
@@ -605,7 +604,7 @@ struct smite_t : public priest_spell_t
     rank = choose_rank( ranks );
     
     base_execute_time = 2.5; 
-    dd_power_mod      = (2.5/3.5); 
+    direct_power_mod  = base_execute_time / 3.5;
     may_crit          = true;
       
     base_cost          = rank -> cost;
@@ -670,12 +669,12 @@ struct penance_t : public priest_spell_t
     rank = choose_rank( ranks );
     
     base_execute_time = 0.0; 
-    base_duration     = 3.0;
+    base_tick_time    = 1.0;
     num_ticks         = 3;
     channeled         = true;
     may_crit          = true;
     cooldown          = 10;
-    dd_power_mod     = (3.0/3.5)/num_ticks;
+    direct_power_mod  = base_tick_time / 3.5;
       
     base_cost          = rank -> cost;
     cooldown          *= 1.0 - p -> talents.aspiration * 0.10;
@@ -694,7 +693,7 @@ struct penance_t : public priest_spell_t
     consume_resource();
     schedule_tick();
     update_ready();
-    dd = 0;
+    direct_dmg = 0;
     update_stats( DMG_DIRECT );
     player -> action_finish( this );
   }
@@ -708,13 +707,12 @@ struct penance_t : public priest_spell_t
     may_resist = true;
     if( result_is_hit() )
     {
-      calculate_damage();
-      adjust_dd_for_result();
+      calculate_direct_damage();
       player -> action_hit( this );
-      if( dd > 0 )
+      if( direct_dmg > 0 )
       {
-	dot_tick = dd;
-	assess_damage( dot_tick, DMG_OVER_TIME );
+	tick_dmg = direct_dmg;
+	assess_damage( tick_dmg, DMG_OVER_TIME );
       }
     }
     else
@@ -747,24 +745,23 @@ struct shadow_word_pain_t : public priest_spell_t
 
     static rank_t ranks[] =
     {
-      { 80, 12, 0, 0, 1380, 0.22 },
-      { 75, 11, 0, 0, 1302, 0.22 },
-      { 70, 10, 0, 0, 1236, 575  },
-      { 65,  9, 0, 0, 1002, 510  },
-      { 58,  8, 0, 0,  852, 470  },
+      { 80, 12, 0, 0, 230, 0.22 },
+      { 75, 11, 0, 0, 217, 0.22 },
+      { 70, 10, 0, 0, 206, 575  },
+      { 65,  9, 0, 0, 167, 510  },
+      { 58,  8, 0, 0, 142, 470  },
       { 0, 0 }
     };
     player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
       
     base_execute_time = 0; 
-    base_duration     = 18.0; 
+    base_tick_time    = 3.0; 
     num_ticks         = 6;
-    dot_power_mod     = 1.10; 
-
-    base_dot  = rank -> dot;
-    base_cost = rank -> cost;
-    base_cost *= 1.0 - p -> talents.mental_agility * 0.02;
+    tick_power_mod    = base_tick_time / 15.0;
+    tick_power_mod   *= 0.91;  // Nerf Bat!
+    base_cost         = rank -> cost;
+    base_cost        *= 1.0 - p -> talents.mental_agility * 0.02;
 
     if( sim_t::WotLK )
     {
@@ -776,24 +773,15 @@ struct shadow_word_pain_t : public priest_spell_t
     else
     {
       base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
+      num_ticks       += p -> talents.improved_shadow_word_pain;
     }
 
     base_hit += p -> talents.shadow_focus * ( sim_t::WotLK ? 0.01 : 0.02 );
 
-    int8_t more_ticks = 0;
-    if( ! sim_t::WotLK ) more_ticks += p -> talents.improved_shadow_word_pain;
-    if( p -> gear.tier6_2pc ) more_ticks++;
-    if( more_ticks > 0 )
-    {
-      double adjust = ( num_ticks + more_ticks ) / (double) num_ticks;
-
-      base_dot      *= adjust;
-      dot_power_mod *= adjust;
-      base_duration *= adjust;
-      num_ticks     += more_ticks;
-    }
-
+    if( p -> gear.tier6_2pc ) num_ticks++;
     if( p -> glyphs.shadow_word_pain ) base_cost *= 0.80;
+
+    observer = &( p -> active_shadow_word_pain );
   }
 
   virtual void execute() 
@@ -802,7 +790,6 @@ struct shadow_word_pain_t : public priest_spell_t
     if( result_is_hit() ) 
     {
       push_misery( this );
-      player -> cast_priest() -> active_shadow_word_pain = this;
     }
   }
 
@@ -817,7 +804,6 @@ struct shadow_word_pain_t : public priest_spell_t
   {
     priest_spell_t::last_tick(); 
     pop_misery( this );
-    player -> cast_priest() -> active_shadow_word_pain = 0;
   }
 
   virtual bool ready()
@@ -854,24 +840,26 @@ struct vampiric_touch_t : public priest_spell_t
 
     static rank_t ranks[] =
     {
-      { 80, 5, 0, 0, 850, 0.16 },
-      { 75, 4, 0, 0, 735, 0.16 },
-      { 70, 3, 0, 0, 690, 475  },
-      { 60, 2, 0, 0, 640, 400  },
+      { 80, 5, 0, 0, 170, 0.16 },
+      { 75, 4, 0, 0, 147, 0.16 },
+      { 70, 3, 0, 0, 138, 475  },
+      { 60, 2, 0, 0, 128, 400  },
       { 0, 0 }
     };
     player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
 
     base_execute_time = 1.5; 
-    base_duration     = 15.0; 
+    base_tick_time    = 3.0; 
     num_ticks         = 5;
-    dot_power_mod     = 1.0; 
+    tick_power_mod    = base_tick_time / 15.0;
 
     base_cost        = rank -> cost;
     if( sim_t::WotLK ) base_cost *= 1.0 - p -> talents.shadow_focus * 0.02;
     base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
     base_hit        += p -> talents.shadow_focus * ( sim_t::WotLK ? 0.01 : 0.02 );
+
+    observer = &( p -> active_vampiric_touch );
   }
 
   virtual void execute() 
@@ -880,7 +868,6 @@ struct vampiric_touch_t : public priest_spell_t
     if( result_is_hit() ) 
     {
       push_misery( this );
-      player -> cast_priest() -> active_vampiric_touch = this;
       if( sim_t::WotLK )
       {
 	for( player_t* p = sim -> player_list; p; p = p -> next )
@@ -895,7 +882,6 @@ struct vampiric_touch_t : public priest_spell_t
   {
     priest_spell_t::last_tick(); 
     pop_misery( this );
-    player -> cast_priest() -> active_vampiric_touch = 0;
     if( sim_t::WotLK )
     {
       for( player_t* p = sim -> player_list; p; p = p -> next )
@@ -924,27 +910,29 @@ struct devouring_plague_t : public priest_spell_t
 
     static rank_t ranks[] =
     {
-      { 80, 9, 0, 0, 1720, 0.25 },
-      { 76, 8, 0, 0, 1416, 0.25 },
-      { 68, 7, 0, 0, 1216, 0.28 },
-      { 60, 6, 0, 0,  904, 0.28 },
+      { 80, 9, 0, 0, 215, 0.25 },
+      { 76, 8, 0, 0, 177, 0.25 },
+      { 68, 7, 0, 0, 152, 0.28 },
+      { 60, 6, 0, 0, 113, 0.28 },
       { 0, 0 }
     };
     player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
 
     base_execute_time = 0; 
-    base_duration     = 24.0; 
+    base_tick_time    = 3.0; 
     num_ticks         = 8;  
     cooldown          = sim_t::WotLK ? 24.0 : 180.0;
     binary            = true;
-    dot_power_mod     = ( 24.0 / 15.0 ) / 2.0; 
+    tick_power_mod   = ( base_tick_time / 15.0 ) / 2.0; 
 
     base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.mental_agility * 0.02;
     if( sim_t::WotLK ) base_cost *= 1.0 - p -> talents.shadow_focus * 0.02;
     base_multiplier *= 1.0 + p -> talents.darkness * 0.02 + p -> talents.twin_disciplines * 0.01;
     base_hit        += p -> talents.shadow_focus * ( sim_t::WotLK ? 0.01 : 0.02 );
+
+    observer = &( p -> active_devouring_plague );
   }
 
   virtual void execute() 
@@ -953,21 +941,19 @@ struct devouring_plague_t : public priest_spell_t
     if( result_is_hit() ) 
     {
       push_misery( this );
-      player -> cast_priest() -> active_devouring_plague = this;
     }
   }
 
   virtual void tick() 
   {
     priest_spell_t::tick(); 
-    player -> resource_gain( RESOURCE_HEALTH, dot_tick );
+    player -> resource_gain( RESOURCE_HEALTH, tick_dmg );
   }
 
   virtual void last_tick() 
   {
     priest_spell_t::last_tick(); 
     pop_misery( this );
-    player -> cast_priest() -> active_devouring_plague = 0;
   }
 };
 
@@ -983,26 +969,14 @@ struct vampiric_embrace_t : public priest_spell_t
     assert( p -> talents.vampiric_embrace );
      
     base_execute_time = 0; 
-    base_duration     = 60.0; 
+    base_tick_time    = 60.0; 
     num_ticks         = 1;
+    cooldown          = 10;
     base_cost         = 30;
     base_multiplier   = 0;
     base_hit          = p -> talents.shadow_focus * ( sim_t::WotLK ? 0.01 : 0.02 );
-  }
 
-  virtual void execute() 
-  {
-    priest_spell_t::execute(); 
-    if( result_is_hit() ) 
-    {
-      player -> cast_priest() -> active_vampiric_embrace = this;
-    }
-  }
-
-  virtual void tick() 
-  {
-    priest_spell_t::tick(); 
-    player -> cast_priest() -> active_vampiric_embrace = 0;
+    observer = &( p -> active_vampiric_embrace );
   }
 };
 
@@ -1037,7 +1011,7 @@ struct mind_blast_t : public priest_spell_t
     base_execute_time = 1.5; 
     cooldown          = 8.0;
     may_crit          = true; 
-    dd_power_mod      = (1.5/3.5); 
+    direct_power_mod  = base_execute_time / 3.5; 
       
     base_cost       = rank -> cost;
     base_cost       *= 1.0 - p -> talents.focused_mind * 0.05;
@@ -1047,10 +1021,10 @@ struct mind_blast_t : public priest_spell_t
 
     if( sim_t::WotLK )
     {
-      base_cost *= 1.0 - p -> talents.shadow_focus * 0.02;
-      base_crit       += p -> talents.mind_melt * 0.02;
-      base_crit_bonus *= 1.0 + p -> talents.shadow_power * 0.20;
-      dd_power_mod    *= 1.0 + p -> talents.misery * 0.05;
+      base_cost        *= 1.0 - p -> talents.shadow_focus * 0.02;
+      base_crit        += p -> talents.mind_melt * 0.02;
+      base_crit_bonus  *= 1.0 + p -> talents.shadow_power * 0.20;
+      direct_power_mod *= 1.0 + p -> talents.misery * 0.05;
     }
     else
     {
@@ -1114,7 +1088,7 @@ struct shadow_word_death_t : public priest_spell_t
     base_execute_time = 0; 
     may_crit          = true; 
     cooldown          = 12.0;
-    dd_power_mod      = (1.5/3.5); 
+    direct_power_mod  = (1.5/3.5); 
 
     base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.mental_agility * 0.02;
@@ -1137,19 +1111,22 @@ struct shadow_word_death_t : public priest_spell_t
 
   virtual void execute() 
   {
-    priest_spell_t::execute(); 
     priest_t* p = player -> cast_priest();
-    p -> resource_loss( RESOURCE_HEALTH, dd * ( 1.0 - p -> talents.pain_and_suffering * 0.20 ) );
-    if( result == RESULT_CRIT )
+    priest_spell_t::execute(); 
+    if( result_is_hit() )
     {
-      trigger_improved_spirit_tap( this );
+      p -> resource_loss( RESOURCE_HEALTH, direct_dmg * ( 1.0 - p -> talents.pain_and_suffering * 0.20 ) );
+      if( result == RESULT_CRIT )
+      {
+	trigger_improved_spirit_tap( this );
+      }
     }
   }
 
   virtual void player_buff()
   {
-    priest_spell_t::player_buff();
     priest_t* p = player -> cast_priest();
+    priest_spell_t::player_buff();
     if( p -> glyphs.shadow_word_death )
     {
       target_t* t = sim -> target;
@@ -1180,59 +1157,27 @@ struct mind_flay_bc_t : public priest_spell_t
 
     static rank_t ranks[] =
     {
-      { 80, 9, 0, 0, 690, 0.09 },
-      { 76, 8, 0, 0, 576, 0.09 },
-      { 68, 7, 0, 0, 528, 230  },
-      { 60, 6, 0, 0, 426, 205  },
+      { 68, 7, 0, 0, 176, 230  },
+      { 60, 6, 0, 0, 142, 205  },
       { 0, 0 }
     };
     player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
     
     base_execute_time = 0.0; 
-    base_duration     = 3.0; 
+    base_tick_time    = 1.0; 
     num_ticks         = 3;
     channeled         = true; 
     binary            = true;
     may_crit          = false;
-    dot_power_mod     = 0.57;
+    tick_power_mod    = 0.19;
 
     base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.focused_mind * 0.05;
     base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
     base_hit        += p -> talents.shadow_focus * 0.02;
-    base_duration   -= p -> talents.improved_mind_flay * 0.1;
     
     if( p -> gear.tier4_4pc ) base_multiplier *= 1.05;
-  }
-
-  // Odd thing to handle: WotLK has behaviour similar to Arcane Missiles
-
-  virtual void execute()
-  {
-    priest_t* p = player -> cast_priest();
-    priest_spell_t::execute();
-    if( result_is_hit() )
-    {
-      spell_t* swp = p -> active_shadow_word_pain;
-      if( swp && rand_t::roll( p -> talents.pain_and_suffering * 0.333333 ) )
-      {
-	swp -> current_tick = 0;
-	swp -> time_remaining = swp -> duration();
-	swp -> update_ready();
-      }
-    }
-  }
-
-  virtual void player_buff()
-  {
-    priest_t* p = player -> cast_priest();
-    priest_spell_t::player_buff();
-    if( p -> talents.twisted_faith )
-    {
-      if( p -> active_shadow_word_pain ) player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.01;
-      if( p -> active_vampiric_touch   ) player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.01;
-    }
   }
 
   virtual void tick()
@@ -1245,11 +1190,11 @@ struct mind_flay_bc_t : public priest_spell_t
       {
 	if( p -> active_mind_blast )
         {
-	  p -> active_mind_blast -> cooldown_ready -= 0.5 * p -> talents.creeping_shadows;
+	  p -> active_mind_blast -> cooldown_ready -= 0.1 * p -> talents.creeping_shadows;
 	}
 	if( p -> active_shadow_word_death )
         {
-	  p -> active_shadow_word_death -> cooldown_ready -= 0.5 * p -> talents.creeping_shadows;
+	  p -> active_shadow_word_death -> cooldown_ready -= 0.1 * p -> talents.creeping_shadows;
 	}
       }
     }
@@ -1286,21 +1231,21 @@ struct mind_flay_wotlk_t : public priest_spell_t
     rank = choose_rank( ranks );
     
     base_execute_time = 0.0; 
-    base_duration     = 3.0; 
+    base_tick_time    = 1.0; 
     num_ticks         = 3;
     channeled         = true; 
     binary            = false;
     may_crit          = true;
-    dd_power_mod      = 0.77 / 3;
+    direct_power_mod  = 0.77 / num_ticks;
 
-    base_cost        = rank -> cost;
-    base_cost       *= 1.0 - p -> talents.focused_mind * 0.05;
-    base_cost       *= 1.0 - p -> talents.shadow_focus * 0.02;
-    base_hit        += p -> talents.shadow_focus * 0.01;
-    base_multiplier *= 1.0 + p -> talents.darkness * 0.02 + p -> talents.twin_disciplines * 0.01;
-    base_crit       += p -> talents.mind_melt * 0.02;
-    base_crit_bonus *= 1.0 + p -> talents.shadow_power * 0.20;
-    dd_power_mod    *= 1.0 + p -> talents.misery * 0.05;
+    base_cost         = rank -> cost;
+    base_cost        *= 1.0 - p -> talents.focused_mind * 0.05;
+    base_cost        *= 1.0 - p -> talents.shadow_focus * 0.02;
+    base_hit         += p -> talents.shadow_focus * 0.01;
+    base_multiplier  *= 1.0 + p -> talents.darkness * 0.02 + p -> talents.twin_disciplines * 0.01;
+    base_crit        += p -> talents.mind_melt * 0.02;
+    base_crit_bonus  *= 1.0 + p -> talents.shadow_power * 0.20;
+    direct_power_mod *= 1.0 + p -> talents.misery * 0.05;
     
     if( p -> gear.tier4_4pc ) base_multiplier *= 1.05;
   }
@@ -1315,7 +1260,7 @@ struct mind_flay_wotlk_t : public priest_spell_t
     player_buff();
     schedule_tick();
     update_ready();
-    dd = 0;
+    direct_dmg = 0;
     update_stats( DMG_DIRECT );
     p -> action_finish( this );
   }
@@ -1344,13 +1289,12 @@ struct mind_flay_wotlk_t : public priest_spell_t
 
     if( result_is_hit() )
     {
-      calculate_damage();
-      adjust_dd_for_result();
-      p -> action_tick( this ); // FIXME! Should this be hit or tick?
-      if( dd > 0 )
+      calculate_direct_damage();
+      p -> action_hit( this );
+      if( direct_dmg > 0 )
       {
-	dot_tick = dd;
-	assess_damage( dot_tick, DMG_OVER_TIME );
+	tick_dmg = direct_dmg;
+	assess_damage( tick_dmg, DMG_OVER_TIME );
       }
     }
     else
@@ -1363,22 +1307,20 @@ struct mind_flay_wotlk_t : public priest_spell_t
 
     if( result_is_hit() )
     {
-      spell_t* swp = p -> active_shadow_word_pain;
-      if( swp && rand_t::roll( p -> talents.pain_and_suffering * 0.333333 ) )
+      action_t* swp = p -> active_shadow_word_pain;
+      if( swp && rand_t::roll( p -> talents.pain_and_suffering * (1.0/3.0) ) )
       {
-	swp -> current_tick = 0;
-	swp -> time_remaining = swp -> duration();
-	swp -> update_ready();
+	swp -> refresh_duration();
       }
       if( p -> talents.creeping_shadows )
       {
 	if( p -> active_mind_blast )
         {
-	  p -> active_mind_blast -> cooldown_ready -= 0.5 * p -> talents.creeping_shadows;
+	  p -> active_mind_blast -> cooldown_ready -= 0.1 * p -> talents.creeping_shadows;
 	}
 	if( p -> active_shadow_word_death )
         {
-	  p -> active_shadow_word_death -> cooldown_ready -= 0.5 * p -> talents.creeping_shadows;
+	  p -> active_shadow_word_death -> cooldown_ready -= 0.1 * p -> talents.creeping_shadows;
 	}
       }
     }
@@ -1396,7 +1338,8 @@ struct mind_flay_wotlk_t : public priest_spell_t
       if( ! p -> active_shadow_word_pain )
 	return false;
 
-      if( p -> active_shadow_word_pain -> time_remaining > 3.0 )
+      if( ( p -> active_shadow_word_pain -> num_ticks -
+	    p -> active_shadow_word_pain -> current_tick ) > 2 )
 	return false;
     }
 
@@ -1416,7 +1359,7 @@ struct dispersion_t : public priest_spell_t
     assert( p -> talents.dispersion );
 
     base_execute_time = 0.0; 
-    base_duration     = 6.0; 
+    base_tick_time    = 1.0; 
     num_ticks         = 6;
     channeled         = true; 
     harmful           = false;
@@ -2115,7 +2058,6 @@ bool priest_t::parse_option( const std::string& name,
     { "improved_divine_spirit",    OPT_INT8,  &( talents.improved_divine_spirit    ) },
     { "improved_inner_fire",       OPT_INT8,  &( talents.improved_inner_fire       ) },
     { "improved_mind_blast",       OPT_INT8,  &( talents.improved_mind_blast       ) },
-    { "improved_mind_flay",        OPT_INT8,  &( talents.improved_mind_flay        ) },
     { "improved_shadow_word_pain", OPT_INT8,  &( talents.improved_shadow_word_pain ) },
     { "improved_spirit_tap",       OPT_INT8,  &( talents.improved_spirit_tap       ) },
     { "improved_vampiric_embrace", OPT_INT8,  &( talents.improved_vampiric_embrace ) },

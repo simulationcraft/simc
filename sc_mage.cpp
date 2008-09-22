@@ -218,10 +218,10 @@ struct mage_spell_t : public spell_t
   virtual void   player_buff();
 
   // Passthru Methods
-  virtual void   calculate_damage() { spell_t::calculate_damage(); }
-  virtual void   last_tick()        { spell_t::last_tick();        }
-  virtual double duration()         { return spell_t::duration();  }
-  virtual bool   ready()            { return spell_t::ready();     }
+  virtual double calculate_direct_damage() { return spell_t::calculate_direct_damage(); }
+  virtual void   last_tick()               { spell_t::last_tick();                      }
+  virtual double tick_time()               { return spell_t::tick_time();               }
+  virtual bool   ready()                   { return spell_t::ready();                   }
 };
 
 // ==========================================================================
@@ -236,12 +236,10 @@ struct water_elemental_pet_t : public pet_t
       spell_t( "water_bolt", player, RESOURCE_MANA, SCHOOL_FROST, TREE_FROST ) 
     {
       base_execute_time  = 2.5;
-      base_dd            = ( 256 + 328 ) / 2;
-      base_dd           +=( player -> level - 50 ) * 11.5;
-      dd_power_mod       = ( 2.5 / 3.5 );
+      base_direct_dmg    = ( 256 + 328 ) / 2;
+      base_direct_dmg   +=( player -> level - 50 ) * 11.5;
+      direct_power_mod   = base_execute_time / 3.5;
       may_crit           = true;
-      background         = true;
-      repeating          = true;
     }
     virtual void player_buff()
     {
@@ -250,12 +248,9 @@ struct water_elemental_pet_t : public pet_t
     }
   };
 
-  water_bolt_t* water_bolt;
-
   water_elemental_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name ) :
     pet_t( sim, owner, pet_name )
   {
-    water_bolt = new water_bolt_t( this );
   }
   virtual void init_base()
   {
@@ -285,8 +280,7 @@ struct water_elemental_pet_t : public pet_t
       }
     }
 
-    // Kick-off repeating attack.  Eventually, this should go thru schedule_ready().
-    water_bolt -> schedule_execute();
+    schedule_ready();
   }
   virtual void dismiss()
   {
@@ -304,6 +298,13 @@ struct water_elemental_pet_t : public pet_t
     }
 
     o -> active_water_elemental = 0;
+  }
+  virtual action_t* create_action( const std::string& name,
+				   const std::string& options_str )
+  {
+    if( name == "water_bolt" ) return new water_bolt_t( this );
+
+    return player_t::create_action( name, options_str );
   }
 };
 
@@ -365,21 +366,23 @@ static void trigger_ignite( spell_t* s )
     ignite_t( player_t* player ) : 
       mage_spell_t( "ignite", player, SCHOOL_FIRE, TREE_FIRE )
     {
-      base_duration = 4.0;  
-      num_ticks     = 2;
-      trigger_gcd   = 0;
-      background    = true;
-      may_resist    = false;
+      base_tick_time = 2.0;  
+      num_ticks      = 2;
+      trigger_gcd    = 0;
+      background     = true;
+      may_resist     = false;
       reset();
     }
     virtual void target_debuff() {}
+    virtual void player_buff() {}
   };
   
-  double ignite_dmg = s -> dd * p -> talents.ignite * 0.08;
+  double ignite_dmg = s -> direct_dmg * p -> talents.ignite * 0.08;
 
   if( s -> sim -> merge_ignite )
   {
     s -> result = RESULT_HIT;
+    s -> assess_damage( ( ignite_dmg / 2.0 ), DMG_OVER_TIME );
     s -> assess_damage( ( ignite_dmg / 2.0 ), DMG_OVER_TIME );
     s -> result = RESULT_CRIT;
     return;
@@ -387,7 +390,7 @@ static void trigger_ignite( spell_t* s )
 
   if( ! p -> active_ignite ) p -> active_ignite = new ignite_t( p );
 
-  if( p -> active_ignite -> time_remaining > 0 ) 
+  if( p -> active_ignite -> ticking ) 
   {
     p -> procs_deferred_ignite -> occur();
 
@@ -396,12 +399,12 @@ static void trigger_ignite( spell_t* s )
     int num_ticks = p -> active_ignite -> num_ticks;
     int remaining_ticks = num_ticks - p -> active_ignite -> current_tick;
 
-    ignite_dmg += p -> active_ignite -> dot * remaining_ticks / num_ticks;
+    ignite_dmg += p -> active_ignite -> base_tick_dmg * remaining_ticks;
 
     p -> active_ignite -> cancel();
   }
 
-  p -> active_ignite -> dot = ignite_dmg;
+  p -> active_ignite -> base_tick_dmg = ignite_dmg / 2.0;
   p -> active_ignite -> schedule_tick();
 }
 
@@ -762,7 +765,16 @@ static bool arcane_blast_filler( spell_t* s )
 
   // Need to be able to finish this spell and start Arcane Blast before the buff wears out.
 
-  double cast_time = s -> channeled ? s -> duration() : std::max( s -> execute_time(), s -> gcd() );
+  double cast_time = 0;
+
+  if( s -> channeled )
+  {
+    cast_time = s -> tick_time() * s -> num_ticks;
+  }
+  else
+  {
+    cast_time = std::max( s -> execute_time(), s -> gcd() );
+  }
 
   double finished = s -> sim -> current_time + cast_time + s -> sim -> lag;
 
@@ -994,7 +1006,7 @@ struct arcane_barrage_t : public mage_spell_t
     
     base_execute_time = 0; 
     may_crit          = true;
-    dd_power_mod      = (3.0/3.5); 
+    direct_power_mod  = (3.0/3.5); 
     cooldown          = 3.0;
 
     base_cost         = rank -> cost;
@@ -1049,7 +1061,7 @@ struct arcane_blast_t : public mage_spell_t
     
     base_execute_time = 2.5; 
     may_crit          = true;
-    dd_power_mod      = (2.5/3.5); 
+    direct_power_mod  = (2.5/3.5); 
 
     base_cost         = rank -> cost;
     base_cost        *= 1.0 - p -> talents.frost_channeling * ( sim_t::WotLK ? (0.1/3) : 0 );
@@ -1059,7 +1071,7 @@ struct arcane_blast_t : public mage_spell_t
     base_crit        += p -> talents.arcane_impact * 0.02;
     base_hit         += p -> talents.arcane_focus * ( sim_t::WotLK ? 0.01 : 0.02 );
     base_penetration += p -> talents.arcane_subtlety * 5;
-    dd_power_mod     += p -> talents.arcane_empowerment * 0.03;
+    direct_power_mod += p -> talents.arcane_empowerment * 0.03;
     base_crit_bonus  *= 1.0 + p -> talents.spell_power * 0.25;
 
     if( p -> gear.tier5_2pc ) base_multiplier *= 1.20;
@@ -1201,11 +1213,11 @@ struct arcane_missiles_t : public mage_spell_t
     player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
 
-    base_duration = 5.0; 
-    num_ticks     = 5; 
-    may_crit      = true; 
-    channeled     = true;
-    dd_power_mod  = (1.0/3.5); // bonus per missle
+    base_tick_time    = 1.0; 
+    num_ticks         = 5; 
+    may_crit          = true; 
+    channeled         = true;
+    direct_power_mod  = base_tick_time / 3.5; // bonus per missle
 
     base_cost         = rank -> cost;
     base_cost        *= 1.0 + p -> talents.empowered_arcane_missiles * 0.02;
@@ -1214,8 +1226,8 @@ struct arcane_missiles_t : public mage_spell_t
     base_crit        += p -> talents.arcane_instability * 0.01;
     base_hit         += p -> talents.arcane_focus * ( sim_t::WotLK ? 0.01 : 0.02 );
     base_penetration += p -> talents.arcane_subtlety * 5;
-    dd_power_mod     += p -> talents.empowered_arcane_missiles * 0.03; // bonus per missle
-    dd_power_mod     += p -> talents.arcane_empowerment * 0.03;        // bonus per missle
+    direct_power_mod += p -> talents.empowered_arcane_missiles * 0.03; // bonus per missle
+    direct_power_mod += p -> talents.arcane_empowerment * 0.03;        // bonus per missle
     base_crit_bonus  *= 1.0 + p -> talents.spell_power * 0.25;
 
     if( p -> gear.tier6_4pc ) base_multiplier *= 1.05;
@@ -1233,7 +1245,7 @@ struct arcane_missiles_t : public mage_spell_t
     player_buff();
     schedule_tick();
     update_ready();
-    dd = 0;
+    direct_dmg = 0;
     update_stats( DMG_DIRECT );
     trigger_arcane_concentration( this );
     p -> action_finish( this );
@@ -1252,13 +1264,12 @@ struct arcane_missiles_t : public mage_spell_t
 
     if( result_is_hit() )
     {
-      calculate_damage();
-      adjust_dd_for_result();
+      calculate_direct_damage();
       p -> action_hit( this );
-      if( dd > 0 )
+      if( direct_dmg > 0 )
       {
-	dot_tick = dd;
-	assess_damage( dot_tick, DMG_OVER_TIME );
+	tick_dmg = direct_dmg;
+	assess_damage( tick_dmg, DMG_OVER_TIME );
       }
       if( result == RESULT_CRIT )
       {
@@ -1281,12 +1292,12 @@ struct arcane_missiles_t : public mage_spell_t
     }
   }
 
-  virtual double duration()
+  virtual double tick_time()
   {
     mage_t* p = player -> cast_mage();
-    double d = mage_spell_t::duration();
-    if( p -> buffs_missile_barrage ) d /= 2;
-    return d;
+    double t = mage_spell_t::tick_time();
+    if( p -> buffs_missile_barrage ) t /= 2;
+    return t;
   }
 
   virtual bool ready()
@@ -1447,17 +1458,13 @@ struct evocation_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
 
-    base_duration = 8.0; 
+    base_tick_time = 2.0; 
     num_ticks = 4; 
     channeled = true;  
     cooldown = 480;
     harmful = false;
 
-    if( p -> gear.tier6_2pc ) 
-    {
-      base_duration += 2.0;
-      num_ticks++;
-    }
+    if( p -> gear.tier6_2pc ) num_ticks++;
 
     assert( p -> active_evocation == 0 );
     p -> active_evocation = this;
@@ -1566,7 +1573,7 @@ struct fire_ball_t : public mage_spell_t
     
     base_execute_time = 3.5; 
     may_crit          = true; 
-    dd_power_mod      = 1.0; 
+    direct_power_mod  = base_execute_time / 3.5;
       
     base_cost          = rank -> cost;
     base_cost         *= 1.0 - p -> talents.elemental_precision * 0.01;
@@ -1581,7 +1588,7 @@ struct fire_ball_t : public mage_spell_t
     base_crit         += p -> talents.pyromaniac * 0.01;
     base_hit          += p -> talents.elemental_precision * 0.01;
     base_penetration  += p -> talents.arcane_subtlety * 5;
-    dd_power_mod      += p -> talents.empowered_fire_ball * ( sim_t::WotLK ? 0.05 : 0.03 );
+    direct_power_mod  += p -> talents.empowered_fire_ball * ( sim_t::WotLK ? 0.05 : 0.03 );
     base_crit_bonus   *= 1.0 + ( p -> talents.spell_power * 0.25 +
                                  p -> talents.burnout     * 0.10 );
 
@@ -1663,7 +1670,7 @@ struct fire_blast_t : public mage_spell_t
     base_execute_time = 0; 
     may_crit          = true; 
     cooldown          = 8.0;
-    dd_power_mod      = (1.5/3.5); 
+    direct_power_mod  = (1.5/3.5); 
       
     base_cost         = rank -> cost;
     base_cost        *= 1.0 - p -> talents.elemental_precision * 0.01;
@@ -1717,18 +1724,19 @@ struct living_bomb_t : public mage_spell_t
       
     static rank_t ranks[] =
     {
-      { 80, 3, 690, 690, 1380, 0.31 },
-      { 73, 2, 512, 512, 1024, 0.31 },
+      { 80, 3, 759, 759, 345, 0.31 },
+      { 70, 2, 568, 568, 256, 0.31 },
+      { 60, 1, 336, 336, 155, 0.31 },
       { 0, 0 }
     };
     player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
     
     base_execute_time = 0; 
-    base_duration     = 12.0; 
+    base_tick_time    = 3.0; 
     num_ticks         = 4; 
-    dd_power_mod      = 0.40; 
-    dot_power_mod     = 0.80;
+    direct_power_mod  = 0.40; 
+    tick_power_mod    = base_tick_time / 15;
     may_crit          = true;
 
     base_cost         = rank -> cost;
@@ -1755,13 +1763,12 @@ struct living_bomb_t : public mage_spell_t
     calculate_result();
     if( result_is_hit() )
     {
-      calculate_damage();
-      dd = explosion;
-      adjust_dd_for_result();
-      if( dd > 0 )
+      calculate_direct_damage();
+      direct_dmg = explosion;
+      if( direct_dmg > 0 )
       {
-	dot_tick = dd;
-	assess_damage( dot_tick, DMG_OVER_TIME );
+	tick_dmg = direct_dmg;
+	assess_damage( tick_dmg, DMG_OVER_TIME );
 	if( result == RESULT_CRIT ) trigger_ignite( this );
       }
     }
@@ -1769,11 +1776,12 @@ struct living_bomb_t : public mage_spell_t
     mage_spell_t::last_tick();
   }
 
-  virtual void calculate_damage()
+  virtual double calculate_direct_damage()
   {
-    mage_spell_t::calculate_damage();
-    explosion = dd;
-    dd = 0;
+    mage_spell_t::calculate_direct_damage();
+    explosion = direct_dmg;
+    direct_dmg = 0;
+    return direct_dmg;
   }
 };
 
@@ -1799,22 +1807,22 @@ struct pyroblast_t : public mage_spell_t
       
     static rank_t ranks[] =
     {
-      { 77, 12, 1190, 1510, 452, 0.22 },
-      { 73, 11, 1014, 1286, 384, 0.22 },
-      { 70, 10,  939, 1191, 356, 500  },
-      { 66,  9,  846, 1074, 312, 460  },
-      { 60,  8,  708,  898, 268, 440  },
+      { 77, 12, 1190, 1510, 75, 0.22 },
+      { 73, 11, 1014, 1286, 64, 0.22 },
+      { 70, 10,  939, 1191, 59, 500  },
+      { 66,  9,  846, 1074, 52, 460  },
+      { 60,  8,  708,  898, 45, 440  },
       { 0, 0 }
     };
     player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
     
     base_execute_time = 6.0; 
-    base_duration     = 12.0; 
+    base_tick_time    = 2.0; 
     num_ticks         = 6; 
     may_crit          = true; 
-    dd_power_mod      = 1.0; 
-    dot_power_mod     = 0.71;
+    direct_power_mod  = 1.0; 
+    tick_power_mod    = 0.71 / num_ticks;
 
     base_cost         = rank -> cost;
     base_cost        *= 1.0 - p -> talents.elemental_precision * 0.01;
@@ -1898,7 +1906,7 @@ struct scorch_t : public mage_spell_t
     
     base_execute_time = 1.5; 
     may_crit          = true;
-    dd_power_mod      = (1.5/3.5); 
+    direct_power_mod  = (1.5/3.5); 
       
     base_cost         = rank -> cost;
     base_cost        *= 1.0 - p -> talents.elemental_precision * 0.01;
@@ -2057,9 +2065,9 @@ struct frost_bolt_t : public mage_spell_t
     player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
     
-    base_execute_time   = 3.0; 
-    may_crit         = true; 
-    dd_power_mod = (3.0/3.5); 
+    base_execute_time = 3.0; 
+    may_crit          = true; 
+    direct_power_mod  = ( base_execute_time / 3.5 ) * 0.95; 
       
     base_cost          = rank -> cost;
     base_cost         *= 1.0 - p -> talents.elemental_precision * 0.01;
@@ -2073,7 +2081,7 @@ struct frost_bolt_t : public mage_spell_t
     base_crit         += p -> talents.empowered_frost_bolt * ( sim_t::WotLK ? 0.02 : 0.01 );
     base_hit          += p -> talents.elemental_precision * 0.01;
     base_penetration  += p -> talents.arcane_subtlety * 5;
-    dd_power_mod      += p -> talents.empowered_frost_bolt * ( sim_t::WotLK ? 0.05 : 0.02 );
+    direct_power_mod  += p -> talents.empowered_frost_bolt * ( sim_t::WotLK ? 0.05 : 0.02 );
     base_crit_bonus   *= 1.0 + ( p -> talents.ice_shards  * 1.0/3 +
                                  p -> talents.spell_power * 0.25 );
 
@@ -2131,9 +2139,9 @@ struct ice_lance_t : public mage_spell_t
     player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
     
-    base_execute_time   = 0.0; 
-    may_crit         = true; 
-    dd_power_mod = (0.5/3.5); 
+    base_execute_time = 0.0; 
+    may_crit          = true; 
+    direct_power_mod  = (0.5/3.5); 
       
     base_cost         = rank -> cost;
     base_cost        *= 1.0 - p -> talents.elemental_precision * 0.01;
@@ -2226,7 +2234,7 @@ struct deep_freeze_t : public mage_spell_t
     
     base_execute_time = 0.0; 
     may_crit          = true; 
-    dd_power_mod      = (1.0/3.5); 
+    direct_power_mod  = (1.5/3.5); 
     cooldown          = 30;
     base_cost         = rank -> cost;
       
@@ -2292,8 +2300,8 @@ struct frostfire_bolt_t : public mage_spell_t
       
     static rank_t ranks[] =
     {
-      { 80, 2, 722, 838, 90, 0.16 },
-      { 75, 1, 629, 731, 60, 0.16 },
+      { 80, 2, 722, 838, 30, 0.16 },
+      { 75, 1, 629, 731, 20, 0.16 },
       { 0, 0 }
     };
     player -> init_mana_costs( ranks );
@@ -2301,13 +2309,13 @@ struct frostfire_bolt_t : public mage_spell_t
     
     base_execute_time = 3.0; 
     may_crit          = true; 
-    dd_power_mod      = (3.0/3.5); 
+    direct_power_mod  = base_execute_time / 3.5; 
 
     if( dot_wait )
     {
-      base_duration = 9.0;
-      num_ticks     = 3;
-      dot_power_mod = 0.05;
+      base_tick_time = 3.0;
+      num_ticks      = 3;
+      tick_power_mod = 0.05 / 3.0;
     }
       
     base_cost         = rank -> cost;

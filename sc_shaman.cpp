@@ -221,7 +221,7 @@ struct shaman_attack_t : public attack_t
   shaman_attack_t( const char* n, player_t* player, int8_t s=SCHOOL_PHYSICAL, int8_t t=TREE_NONE ) : 
     attack_t( n, player, RESOURCE_MANA, s, t ) 
   {
-    base_dd = 1;
+    base_direct_dmg = 1;
     shaman_t* p = player -> cast_shaman();
     base_multiplier *= 1.0 + p -> talents.weapon_mastery * 0.1/3;
     base_crit += p -> talents.thundering_strikes * 0.01;
@@ -275,7 +275,7 @@ static void trigger_flametongue_weapon( attack_t* a )
       proc             = true;
       may_crit         = true;
       trigger_gcd      = 0;
-      dd_power_mod     = 0.10;
+      direct_power_mod = 0.10;
       base_multiplier *= 1.0 + p -> talents.elemental_weapons * 0.05;
       base_hit        += p -> talents.elemental_precision * ( sim_t::WotLK ? 0.01 : 0.02 );
 
@@ -287,7 +287,7 @@ static void trigger_flametongue_weapon( attack_t* a )
     }
     virtual void get_base_damage()
     {
-      base_dd = fire_dmg * weapon -> swing_time;
+      base_direct_dmg = fire_dmg * weapon -> swing_time;
     }
   };
 
@@ -857,7 +857,7 @@ struct stormstrike_t : public shaman_attack_t
 
     weapon = &( player -> main_hand_weapon );
     shaman_attack_t::execute();
-    mh_dd = dd;
+    mh_dd = direct_dmg;
     mh_result = result;
 
     if( result_is_hit() )
@@ -868,7 +868,7 @@ struct stormstrike_t : public shaman_attack_t
       {
         weapon = &( player -> off_hand_weapon );
         shaman_attack_t::execute();
-        oh_dd = dd;
+        oh_dd = direct_dmg;
         oh_result = result;
       }
     }
@@ -996,18 +996,18 @@ struct chain_lightning_t : public shaman_spell_t
     rank = choose_rank( ranks );
 
     base_execute_time  = 2.0; 
-    dd_power_mod       = 0.7143;
+    direct_power_mod   = 0.7143;
     may_crit           = true;
     cooldown           = 6.0;
     base_cost          = rank -> cost;
 
     base_execute_time -= p -> talents.lightning_mastery * 0.1;
-    base_cost         *= 1.0 - p -> talents.convection * ( sim_t::WotLK ? 0.04 : 0.02 );
+    base_cost         *= 1.0 - p -> talents.convection * 0.02;
     base_multiplier   *= 1.0 + p -> talents.concussion * 0.01;
     base_hit          += p -> talents.elemental_precision * ( sim_t::WotLK ? 0.01 : 0.02 );
-    base_crit         += p -> talents.call_of_thunder * 0.05;
+    base_crit         += p -> talents.call_of_thunder * ( sim_t::WotLK ? 0.05 : 0.01 );
     base_crit         += p -> talents.tidal_mastery * 0.01;
-    base_crit_bonus   *= 1.0 + p -> talents.elemental_fury * 0.20;
+    base_crit_bonus   *= 1.0 + p -> talents.elemental_fury * ( sim_t::WotLK ? 0.20 : 1.00 );
 
     lightning_overload_stats = p -> get_stats( "lightning_overload" );
     lightning_overload_stats -> school = SCHOOL_NATURE;
@@ -1083,18 +1083,18 @@ struct lightning_bolt_t : public shaman_spell_t
     rank = choose_rank( ranks );
 
     base_execute_time  = 2.5; 
-    dd_power_mod       = sim_t::WotLK ? ( 2.5 / 3.5 ) : 0.794;
+    direct_power_mod   = sim_t::WotLK ? ( base_execute_time / 3.5 ) : 0.794;
     may_crit           = true;
     base_cost          = rank -> cost;
 
     base_execute_time -= p -> talents.lightning_mastery * 0.1;
-    base_cost         *= 1.0 - p -> talents.convection * ( sim_t::WotLK ? 0.04 : 0.02 );
+    base_cost         *= 1.0 - p -> talents.convection * 0.02;
     base_multiplier   *= 1.0 + p -> talents.concussion * 0.01;
     base_hit          += p -> talents.elemental_precision * ( sim_t::WotLK ? 0.01 : 0.02 );
-    base_crit         += p -> talents.call_of_thunder * 0.05;
+    base_crit         += p -> talents.call_of_thunder * ( sim_t::WotLK ? 0.05 : 0.01 );;
     base_crit         += p -> talents.tidal_mastery * 0.01;
     base_crit_bonus   *= 1.0 + p -> talents.elemental_fury * 0.20;
-    dd_power_mod      += p -> talents.storm_earth_and_fire * 0.02; 
+    direct_power_mod  += p -> talents.storm_earth_and_fire * 0.02; 
 
     if( p -> gear.tier6_4pc ) base_multiplier *= 1.05;
     if( p -> glyphs.lightning_bolt ) base_cost *= 0.90;
@@ -1173,16 +1173,16 @@ struct lava_burst_t : public shaman_spell_t
     rank = choose_rank( ranks );
 
     base_execute_time  = 2.0; 
-    dd_power_mod       = ( 2.0 / 3.5 );
+    direct_power_mod   = base_execute_time / 3.5;
     may_crit           = true;
     cooldown           = 8.0;
 
     base_cost          = rank -> cost;
-    base_cost         *= 1.0 - p -> talents.convection * ( sim_t::WotLK ? 0.04 : 0.02 );
+    base_cost         *= 1.0 - p -> talents.convection * 0.02;
     base_multiplier   *= 1.0 + p -> talents.concussion * 0.01;
-    base_multiplier   *= 1.0 + p -> talents.call_of_flame * 0.01;
+    base_multiplier   *= 1.0 + p -> talents.call_of_flame * 0.02;
     base_hit          += p -> talents.elemental_precision * ( sim_t::WotLK ? 0.01 : 0.02 );
-    base_crit_bonus   *= 1.0 + p -> talents.elemental_fury * 0.20;
+    base_crit_bonus   *= 1.0 + p -> talents.elemental_fury * ( sim_t::WotLK ? 0.20 : 1.00 );
     base_crit_bonus   *= 1.0 + p -> talents.lava_flows * 0.06;
   }
 
@@ -1344,18 +1344,18 @@ struct earth_shock_t : public shaman_spell_t
     rank = choose_rank( ranks );
     
     base_execute_time = 0; 
-    dd_power_mod      = 0.41;
+    direct_power_mod  = 0.41;
     may_crit          = true;
     cooldown          = 6.0;
     cooldown_group    = "shock";
       
     base_cost       = rank -> cost;
-    base_cost       *= 1.0 - p -> talents.convection * ( sim_t::WotLK ? 0.04 : 0.02 );
+    base_cost       *= 1.0 - p -> talents.convection * 0.02;
     base_cost       *= 1.0 - p -> talents.mental_quickness * 0.02;
     cooldown        -= ( p -> talents.reverberation * 0.2 );
     base_multiplier *= 1.0 + p -> talents.concussion * 0.01;
     base_hit        += p -> talents.elemental_precision * ( sim_t::WotLK ? 0.01 : 0.02 );
-    base_crit_bonus *= 1.0 + p -> talents.elemental_fury * 0.20;
+    base_crit_bonus *= 1.0 + p -> talents.elemental_fury * ( sim_t::WotLK ? 0.20 : 1.00 );;
 
     if( p -> glyphs.earth_shock ) trigger_gcd -= 1.0;
   }
@@ -1426,18 +1426,18 @@ struct frost_shock_t : public shaman_spell_t
     rank = choose_rank( ranks );
     
     base_execute_time = 0; 
-    dd_power_mod      = 0.41;
+    direct_power_mod  = 0.41;
     may_crit          = true;
     cooldown          = 6.0;
     cooldown_group    = "shock";
       
     base_cost        = rank -> cost;
-    base_cost       *= 1.0 - p -> talents.convection * ( sim_t::WotLK ? 0.04 : 0.02 );
+    base_cost       *= 1.0 - p -> talents.convection * 0.02;
     base_cost       *= 1.0 - p -> talents.mental_quickness * 0.02;
     cooldown        -= ( p -> talents.reverberation * 0.2 );
     base_multiplier *= 1.0 + p -> talents.concussion * 0.01;
     base_hit        += p -> talents.elemental_precision * ( sim_t::WotLK ? 0.01 : 0.02 );
-    base_crit_bonus *= 1.0 + p -> talents.elemental_fury * 0.20;
+    base_crit_bonus *= 1.0 + p -> talents.elemental_fury * ( sim_t::WotLK ? 0.20 : 1.00 );
   }
 
   virtual double cost()
@@ -1484,42 +1484,37 @@ struct flame_shock_t : public shaman_spell_t
 
     static rank_t ranks[] =
     {
-      { 80, 9, 500, 500, 556, 0.17 },
-      { 75, 8, 425, 425, 476, 0.17 },
-      { 70, 7, 377, 377, 420, 500  },
-      { 60, 6, 309, 309, 344, 450  },
-      { 52, 5, 230, 230, 256, 345  },
-      { 40, 4, 152, 152, 168, 250  },
+      { 80, 9, 500, 500, 93, 0.17 },
+      { 75, 8, 425, 425, 71, 0.17 },
+      { 70, 7, 377, 377, 70, 500  },
+      { 60, 6, 309, 309, 57, 450  },
+      { 52, 5, 230, 230, 43, 345  },
+      { 40, 4, 152, 152, 28, 250  },
       { 0, 0 }
     };
     player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
     
     base_execute_time = 0; 
-    dd_power_mod      = 0.21;
-    base_duration     = 12.0;
+    base_tick_time    = 2.0;
     num_ticks         = 6;
-    dot_power_mod     = 0.39;
+    direct_power_mod  = 0.21;
+    tick_power_mod    = 0.39 / num_ticks;
     may_crit          = true;
     cooldown          = 6.0;
     cooldown_group    = "shock";
 
-    if ( p -> glyphs.flame_shock )
-    {
-      base_duration    += 2.0;
-      num_ticks        += 1;
-      dot_power_mod    *= 14/12;
-    }
+    if ( p -> glyphs.flame_shock ) num_ticks++;
       
     base_cost        = rank -> cost;
-    base_cost       *= 1.0 - p -> talents.convection * ( sim_t::WotLK ? 0.04 : 0.02 );
+    base_cost       *= 1.0 - p -> talents.convection * 0.02;
     base_cost       *= 1.0 - p -> talents.mental_quickness * 0.02;
-    base_dot         = rank -> dot * ( 1.0 + p -> talents.storm_earth_and_fire * 0.10 );
-    dot_power_mod   *= ( 1.0 + p -> talents.storm_earth_and_fire * 0.20 );
+    base_tick_dmg    = rank -> tick * ( 1.0 + p -> talents.storm_earth_and_fire * 0.10 );
+    tick_power_mod  *= ( 1.0 + p -> talents.storm_earth_and_fire * 0.10 );
     cooldown        -= ( p -> talents.reverberation * 0.2 );
     base_multiplier *= 1.0 + p -> talents.concussion * 0.01;
     base_hit        += p -> talents.elemental_precision * ( sim_t::WotLK ? 0.01 : 0.02 );
-    base_crit_bonus *= 1.0 + p -> talents.elemental_fury * 0.20;
+    base_crit_bonus *= 1.0 + p -> talents.elemental_fury * ( sim_t::WotLK ? 0.20 : 1.00 );
   }
 
   virtual double cost()
@@ -1591,8 +1586,8 @@ struct searing_totem_t : public shaman_spell_t
     rank = choose_rank( ranks );
 
     base_execute_time = 0; 
-    base_duration     = 60.0;
-    dd_power_mod      = 0.08;
+    base_tick_time    = 2.0;
+    direct_power_mod  = 0.08;
     num_ticks         = 30;
     may_crit          = true;
     duration_group    = "fire_totem";
@@ -1602,7 +1597,7 @@ struct searing_totem_t : public shaman_spell_t
     base_cost       *= 1.0 - p -> talents.totemic_focus * 0.05;
     base_cost       *= 1.0 - p -> talents.mental_quickness * 0.02;
     base_multiplier *= 1.0 + p -> talents.call_of_flame * 0.05;
-    base_crit_bonus *= 1.0 + p -> talents.elemental_fury * 0.20;
+    base_crit_bonus *= 1.0 + p -> talents.elemental_fury * ( sim_t::WotLK ? 0.20 : 1.00 );
   }
 
   // Odd things to handle:
@@ -1616,7 +1611,7 @@ struct searing_totem_t : public shaman_spell_t
     consume_resource();
     schedule_tick();
     update_ready();
-    dd = 0;
+    direct_dmg = 0;
     update_stats( DMG_DIRECT );
     player -> action_finish( this );
   }
@@ -1630,12 +1625,11 @@ struct searing_totem_t : public shaman_spell_t
     may_resist = true;
     if( result_is_hit() )
     {
-      calculate_damage();
-      adjust_dd_for_result();
-      if( dd > 0 )
+      calculate_direct_damage();
+      if( direct_dmg > 0 )
       {
-	dot_tick = dd;
-	assess_damage( dot_tick, DMG_OVER_TIME );
+	tick_dmg = direct_dmg;
+	assess_damage( tick_dmg, DMG_OVER_TIME );
       }
     }
     else
@@ -1775,7 +1769,7 @@ struct flametongue_totem_t : public shaman_spell_t
     if( sim_t::WotLK )
     {
       base_multiplier *= 1.0 + p -> talents.enhancing_totems * 0.05;
-      bonus = rank -> dot * base_multiplier;
+      bonus = rank -> tick * base_multiplier;
     }
     else
     {
@@ -2109,7 +2103,7 @@ struct strength_of_earth_totem_t : public shaman_spell_t
     duration_group = "earth_totem";
     trigger_gcd    = 1.0;
 
-    attr_bonus = rank -> dot;
+    attr_bonus = rank -> tick;
     attr_bonus *= 1.0 + p -> talents.enhancing_totems * 0.05;
 
     crit_bonus = p -> glyphs.strength_of_earth ? 1 : 0;
@@ -2366,7 +2360,7 @@ struct mana_tide_totem_t : public shaman_spell_t
     parse_options( options, options_str );
 
     harmful        = false;
-    base_duration  = 12.0; 
+    base_tick_time = 3.0; 
     num_ticks      = 4;
     cooldown       = 300.0;
     duration_group = "water_totem";
@@ -2426,7 +2420,7 @@ struct mana_spring_totem_t : public shaman_spell_t
     parse_options( options, options_str );
 
     harmful         = false;
-    base_duration   = 120.0; 
+    base_tick_time  = 2.0; 
     num_ticks       = 60;
     duration_group  = "water_totem";
     base_cost       = 120;
@@ -2624,11 +2618,11 @@ struct lightning_shield_t : public shaman_spell_t
     
       shaman_t* p = player -> cast_shaman();
 
-      trigger_gcd  = 0;
-      background   = true;
-      dd_power_mod = 0.33;
+      trigger_gcd      = 0;
+      background       = true;
+      direct_power_mod = 0.33;
 
-      base_dd          = base_dmg;
+      base_direct_dmg  = base_dmg;
       base_hit        += p -> talents.elemental_precision * ( sim_t::WotLK ? 0.01 : 0.02 );
       base_multiplier *= 1.0 + p -> talents.improved_shields * 0.05;
 
@@ -2680,10 +2674,10 @@ struct lightning_shield_t : public shaman_spell_t
   {
     shaman_t* p = player -> cast_shaman();
     if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
-    p -> buffs_lightning_charges = 2 * p -> talents.static_shock;
+    p -> buffs_lightning_charges = 3 + 2 * p -> talents.static_shock;
     consume_resource();
     update_ready();
-    dd = 0;
+    direct_dmg = 0;
     p -> action_finish( this );
   }
 

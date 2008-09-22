@@ -11,8 +11,9 @@
 
 struct druid_t : public player_t
 {
-  spell_t* moonfire_active;
-  spell_t* insect_swarm_active;
+  // Active
+  action_t* moonfire_active;
+  action_t* insect_swarm_active;
 
   // Buffs
   double buffs_eclipse_starfire;
@@ -153,7 +154,6 @@ struct druid_spell_t : public spell_t
   virtual void   target_debuff( int8_t dmg_type );
 
   // Passthru Methods
-  virtual void calculate_damage() { spell_t::calculate_damage(); }
   virtual void execute()          { spell_t::execute();          }
   virtual void schedule_execute() { spell_t::schedule_execute(); }
   virtual void last_tick()        { spell_t::last_tick();        }
@@ -440,7 +440,7 @@ struct faerie_fire_t : public druid_spell_t
     rank = choose_rank( ranks );
      
     base_cost = rank -> cost;
-    armor_penetration = (int16_t) rank -> dot;
+    armor_penetration = (int16_t) rank -> tick;
     bonus_hit = p -> talents.improved_faerie_fire;
   }
 
@@ -567,11 +567,11 @@ struct insect_swarm_t : public druid_spell_t
       
     static rank_t ranks[] =
     {
-      { 80, 7, 0, 0, 1050, 0.08 },
-      { 70, 6, 0, 0,  792, 175  },
-      { 60, 5, 0, 0,  594, 155  },
-      { 50, 4, 0, 0,  432, 135  },
-      { 40, 3, 0, 0,  300, 110  },
+      { 80, 7, 0, 0, 175, 0.08 },
+      { 70, 6, 0, 0, 132, 175  },
+      { 60, 5, 0, 0,  99, 155  },
+      { 50, 4, 0, 0,  72, 135  },
+      { 40, 3, 0, 0,  50, 110  },
       { 0, 0 }
     };
     player -> init_mana_costs( ranks );
@@ -579,22 +579,12 @@ struct insect_swarm_t : public druid_spell_t
      
     base_execute_time = 0; 
     base_cost         = rank -> cost;
-    base_dot          = rank -> dot;
-    dot_power_mod     = 1.0;
-    base_duration     = 15.0;
-    num_ticks         = 5;
-
-    if( p -> talents.natures_splendor )
-    {
-      double adjust = ( num_ticks + 1 ) / (double) num_ticks;
-      base_dot      *= adjust;
-      dot_power_mod *= adjust;
-      base_duration *= adjust;
-      num_ticks     += 1;
-    }
+    base_tick_time    = 2.0;
+    num_ticks         = 6;
+    tick_power_mod    = base_tick_time / 15.0;
 
     base_multiplier *= 1.0 + p -> talents.genesis * 0.01;
-
+    if( p -> talents.natures_splendor ) num_ticks++;
     if( p -> glyphs.insect_swarm ) base_multiplier *= 1.30;
   }
 
@@ -632,35 +622,22 @@ struct moonfire_t : public druid_spell_t
       
     static rank_t ranks[] =
     {
-      { 80, 14, 406, 476, 800, 0.21 },
-      { 75, 13, 347, 407, 684, 0.21 },
-      { 70, 12, 305, 357, 600, 495  },
-      { 64, 11, 220, 220, 444, 430  },
-      { 58, 10, 189, 221, 384, 375  },
+      { 80, 14, 406, 476, 200, 0.21 },
+      { 75, 13, 347, 407, 171, 0.21 },
+      { 70, 12, 305, 357, 150, 495  },
+      { 64, 11, 220, 220, 111, 430  },
+      { 58, 10, 189, 221,  96, 375  },
       { 0, 0 }
     };
     player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
      
     base_execute_time = 0; 
-    may_crit          = true;
-    dd_power_mod      = 0.28; 
-    base_dot          = rank -> dot;
-    dot_power_mod     = 0.52; 
-    base_duration     = 12.0; 
+    base_tick_time    = 3.0; 
     num_ticks         = 4;
-
-    int extra_ticks = 0;
-    if( p -> talents.natures_splendor ) extra_ticks++;
-    if( p -> gear.tier6_2pc           ) extra_ticks++;
-    if( extra_ticks )
-    {
-      double adjust = ( num_ticks + extra_ticks ) / (double) num_ticks;
-      base_dot      *= adjust;
-      dot_power_mod *= adjust;
-      base_duration *= adjust;
-      num_ticks     += extra_ticks;
-    }
+    direct_power_mod  = 0.28; 
+    tick_power_mod    = 0.13; 
+    may_crit          = true;
 
     base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.moonglow * 0.03;
@@ -669,32 +646,33 @@ struct moonfire_t : public druid_spell_t
     base_multiplier *= 1.0 + p -> talents.genesis * 0.01;
     base_crit       += p -> talents.improved_moonfire * 0.05;
     base_crit_bonus *= 1.0 + p -> talents.vengeance * 0.20;
+
+    observer = &( p -> moonfire_active );
   }
 
   virtual void execute()
   {
+    druid_t* p = player -> cast_druid();
+    num_ticks = 4;
+    if( p -> talents.natures_splendor ) num_ticks++;
+    if( p -> gear.tier6_2pc           ) num_ticks++;
     druid_spell_t::execute();
-    if( result_is_hit() )
-    {
-      player -> cast_druid() -> moonfire_active = this;
-    }
   }
 
-  virtual void calculate_damage()
+  virtual double calculate_direct_damage()
   {
     druid_t* p = player -> cast_druid();
-    druid_spell_t::calculate_damage();
-    if( p -> glyphs.moonfire )
-    {
-      dd  *= 0.10;
-      dot *= 1.75;
-    }
+    spell_t::calculate_direct_damage();
+    if( p -> glyphs.moonfire ) direct_dmg *= 0.10;
+    return direct_dmg;
   }
 
-  virtual void last_tick() 
+  virtual double calculate_tick_damage()
   {
-    druid_spell_t::last_tick(); 
-    player -> cast_druid() -> moonfire_active = 0;
+    druid_t* p = player -> cast_druid();
+    spell_t::calculate_tick_damage();
+    if( p -> glyphs.moonfire ) tick_dmg *= 1.75;
+    return tick_dmg;
   }
 };
 
@@ -805,7 +783,7 @@ struct starfire_t : public druid_spell_t
     rank = choose_rank( ranks );
     
     base_execute_time = 3.5; 
-    dd_power_mod      = 1.0; 
+    direct_power_mod  = 1.0; 
     may_crit          = true;
       
     base_cost          = rank -> cost;
@@ -815,7 +793,7 @@ struct starfire_t : public druid_spell_t
     base_crit         += p -> talents.focused_starlight * 0.02;
     base_crit         += p -> talents.natures_majesty * 0.02;
     base_crit_bonus   *= 1.0 + p -> talents.vengeance * 0.20;
-    dd_power_mod      += p -> talents.wrath_of_cenarius * 0.04;
+    direct_power_mod  += p -> talents.wrath_of_cenarius * 0.04;
 
     if( p -> gear.tier6_4pc ) base_crit += 0.05;
   }
@@ -852,15 +830,10 @@ struct starfire_t : public druid_spell_t
       trigger_ashtongue_talisman( this );
       trigger_eclipse_wrath( this );
       trigger_earth_and_moon( this );
-      if( p -> glyphs.starfire )
+
+      if( p -> glyphs.starfire && p -> moonfire_active )
       {
-	if( p -> moonfire_active &&
-	    p -> moonfire_active -> current_tick > 0 )
-	{
-	  p -> moonfire_active -> current_tick--;
-	  p -> moonfire_active -> time_remaining += 3.0;
-	  p -> moonfire_active -> update_ready();
-	}
+	p -> moonfire_active -> extend_duration( 1 );
       }
     }
   }
@@ -929,7 +902,7 @@ struct wrath_t : public druid_spell_t
     rank = choose_rank( ranks );
     
     base_execute_time = 2.0; 
-    dd_power_mod      = ( 1.5 / 3.5 ); 
+    direct_power_mod  = ( 1.5 / 3.5 ); 
     may_crit          = true;
       
     base_cost          = rank -> cost;
@@ -939,7 +912,7 @@ struct wrath_t : public druid_spell_t
     base_crit         += p -> talents.focused_starlight * 0.02;
     base_crit         += p -> talents.natures_majesty * 0.02;
     base_crit_bonus   *= 1.0 + p -> talents.vengeance * 0.20;
-    dd_power_mod      += p -> talents.wrath_of_cenarius * 0.02;
+    direct_power_mod  += p -> talents.wrath_of_cenarius * 0.02;
   }
 
   virtual void execute()

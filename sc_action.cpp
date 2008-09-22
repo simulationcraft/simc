@@ -22,17 +22,17 @@ action_t::action_t( int8_t      ty,
   may_miss(false), may_resist(false), may_dodge(false), may_parry(false), 
   may_glance(false), may_block(false), may_crush(false), may_crit(false),
   min_gcd(0), trigger_gcd(0),
-  base_execute_time(0), base_duration(0), base_cost(0),
+  base_execute_time(0), base_tick_time(0), base_cost(0),
     base_multiplier(1),   base_hit(0),   base_crit(0),   base_crit_bonus(1.0),   base_power(0),   base_penetration(0),
   player_multiplier(1), player_hit(0), player_crit(0), player_crit_bonus(1.0), player_power(0), player_penetration(0),
   target_multiplier(1), target_hit(0), target_crit(0), target_crit_bonus(1.0), target_power(0), target_penetration(0),
   resource_consumed(0),
-   dd(0), base_dd(0) ,  dd_power_mod(0), 
-  dot(0), base_dot(0), dot_power_mod(0),
-  dot_tick(0), time_remaining(0), num_ticks(0), current_tick(0), 
+  direct_dmg(0), base_direct_dmg(0), direct_power_mod(0), 
+  tick_dmg(0), base_tick_dmg(0), tick_power_mod(0),
+  ticking(0), num_ticks(0), current_tick(0), 
   cooldown_group(n), duration_group(n), cooldown(0), cooldown_ready(0), duration_ready(0),
   weapon( 0 ), normalize_weapon_speed( false ),
-  stats(0), rank(0), rank_index(-1), event(0), time_to_execute(0), time_to_tick(0), next(0)
+  stats(0), rank(0), rank_index(-1), event(0), time_to_execute(0), time_to_tick(0), observer(0), next(0)
 {
   if( sim -> debug ) report_t::log( sim, "Player %s creates action %s", p -> name(), name() );
   action_t** last = &( p -> action_list );
@@ -243,53 +243,6 @@ bool action_t::result_is_hit()
 	  result == RESULT_BLOCK  );
 }
 
-// action_t::get_base_damage ================================================
-
-void action_t::get_base_damage()
-{
-  if( ! rank ) return;
-
-  if( sim -> average_dmg )
-  {
-    if( base_dd == 0 )
-    {
-      base_dd = ( rank -> dd_min + rank -> dd_max ) / 2.0;
-    }
-  }
-  else
-  {
-    double delta = rank -> dd_max - rank -> dd_min;
-    base_dd = rank -> dd_min + delta * rand_t::gen_float();
-  }
-
-  if( base_dot == 0 ) base_dot = rank -> dot;
-}
-
-// action_t::calculate_damage ===============================================
-
-void action_t::calculate_damage()
-{
-  dd = dot = 0;
-
-  get_base_damage();
-
-  double power = base_power + player_power + target_power;
-
-  if( base_dd > 0 )  
-  {
-    dd  = base_dd + power * dd_power_mod;
-    dd *= base_multiplier * player_multiplier * target_multiplier;
-  }
-
-  if( base_dot > 0 ) 
-  {
-    dot  = base_dot + power * dot_power_mod;
-    dot *= base_multiplier * player_multiplier;
-  }
-
-  if( sim -> debug ) report_t::log( sim, "%s dmg for %s: dd=%.1f dot=%.1f", player -> name(), name(), dd, dot );
-}
-
 // action_t::resistance =====================================================
 
 double action_t::resistance()
@@ -340,39 +293,105 @@ double action_t::resistance()
   return resist;
 }
 
-// action_t::adjust_dd_for_result =============================================
+// action_t::calculate_tick_damage ===========================================
 
-void action_t::adjust_dd_for_result()
+double action_t::calculate_tick_damage()
 {
-  if( dd == 0 ) return;
+  if( rank && base_tick_dmg == 0 ) base_tick_dmg = rank -> tick;
 
-  double dd_init = dd;
+  if( base_tick_dmg == 0 ) return 0;
 
+  double power = base_power + player_power + target_power;
+
+  // FIXME! Are there DoT effects that include weapon damage/modifiers?
+
+  tick_dmg  = base_tick_dmg + power * tick_power_mod;
+  tick_dmg *= base_multiplier * player_multiplier * target_multiplier;
+
+  double init_tick_dmg = tick_dmg;
+
+  if( ! binary ) tick_dmg *= 1.0 - resistance();
+
+  if( sim -> debug ) 
+  {
+    report_t::log( sim, "%s dmg for %s: td=%.0f i_td=%.0f b_td=%.0f mod=%.2f b_power=%.0f p_power=%.0f t_power=%.0f b_mult=%.2f p_mult=%.2f t_mult=%.2f", 
+		   player -> name(), name(), tick_dmg, init_tick_dmg, base_tick_dmg, tick_power_mod, 
+		   base_power, player_power, target_power, base_multiplier, player_multiplier, target_multiplier );
+  }
+
+  return tick_dmg;
+}
+
+// action_t::calculate_direct_damage =========================================
+
+double action_t::calculate_direct_damage()
+{
+  if( rank )
+  {
+    if( sim -> average_dmg )
+    {
+      if( base_direct_dmg == 0 )
+      {
+	base_direct_dmg = ( rank -> dd_min + rank -> dd_max ) / 2.0;
+      }
+    }
+    else
+    {
+      double delta = rank -> dd_max - rank -> dd_min;
+      base_direct_dmg = rank -> dd_min + delta * rand_t::gen_float();
+    }
+  }
+
+  if( base_direct_dmg == 0 ) return 0;
+
+  double power = base_power + player_power + target_power;
+
+  if( weapon )
+  {
+    double weapon_damage = weapon -> damage;
+    double weapon_speed  = normalize_weapon_speed ? weapon -> normalized_weapon_speed() : weapon -> swing_time;
+
+    direct_dmg  = base_direct_dmg + weapon_speed * ( weapon_damage + ( power * direct_power_mod ) );
+    direct_dmg *= base_multiplier * player_multiplier * target_multiplier;
+    if( ! weapon -> main ) direct_dmg *= 0.5;
+  }
+  else
+  {
+    direct_dmg  = base_direct_dmg + power * direct_power_mod;
+    direct_dmg *= base_multiplier * player_multiplier * target_multiplier;
+  }
+  
+  double init_direct_dmg = direct_dmg;
+    
   if( result == RESULT_GLANCE )
   {
-    dd *= 0.75;
+    direct_dmg *= 0.75;
   }
   else if( result == RESULT_CRIT )
   {
     double bonus = base_crit_bonus * player_crit_bonus * target_crit_bonus;
-
-    dd  *= 1.0 + bonus;
+    
+    direct_dmg *= 1.0 + bonus;
   }
 
-  if( ! binary && dd > 0 ) 
-  {
-    dd *= 1.0 - resistance();
-  }
+  if( ! binary ) direct_dmg *= 1.0 - resistance();
 
   if( result == RESULT_BLOCK )
   {
     double blocked = sim -> target -> block_value;
 
-    dd -= blocked;
-    if( dd  < 0 ) dd  = 0;
+    direct_dmg -= blocked;
+    if( direct_dmg < 0 ) direct_dmg = 0;
   }
 
-  if( sim -> debug ) report_t::log( sim, "%s adjusts dmg for %s: %.1f -> %.1f", player -> name(), name(), dd_init, dd );
+  if( sim -> debug ) 
+  {
+    report_t::log( sim, "%s dmg for %s: dd=%.0f i_dd=%.of b_dd=%.0f mod=%.2f b_power=%.0f p_power=%.0f t_power=%.0f b_mult=%.2f p_mult=%.2f t_mult=%.2f", 
+		   player -> name(), name(), direct_dmg, init_direct_dmg, base_direct_dmg, direct_power_mod, 
+		   base_power, player_power, target_power, base_multiplier, player_multiplier, target_multiplier );
+  }
+
+  return direct_dmg;
 }
 
 // action_t::consume_resource ===============================================
@@ -396,6 +415,8 @@ void action_t::execute()
 {
   if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
 
+  if( observer ) *observer = 0;
+
   consume_resource();
 
   player_buff();
@@ -406,19 +427,18 @@ void action_t::execute()
 
   if( result_is_hit() )
   {
-    calculate_damage();
-
-    adjust_dd_for_result();
+    calculate_direct_damage();
 
     player -> action_hit( this );
     
-    if( dd > 0 )
+    if( direct_dmg > 0 )
     {
-      assess_damage( dd, DMG_DIRECT );
+      assess_damage( direct_dmg, DMG_DIRECT );
     }
 
     if( num_ticks > 0 )
     {
+      current_tick = 0;
       schedule_tick();
     }
   }
@@ -444,15 +464,13 @@ void action_t::tick()
 {
   if( sim -> debug ) report_t::log( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
 
+  result = RESULT_HIT; // Normal DoT ticks can only "hit"
+
   target_debuff( DMG_OVER_TIME );
 
-  dot_tick = ( dot / num_ticks ) * target_multiplier;
-
-  if( ! binary ) dot_tick *= 1.0 - resistance();
-
-  result = RESULT_HIT; // Normal DoT ticks can only "hit"
+  calculate_tick_damage();
   
-  assess_damage( dot_tick, DMG_OVER_TIME );
+  assess_damage( tick_dmg, DMG_OVER_TIME );
 
   update_stats( DMG_OVER_TIME );
 
@@ -466,6 +484,10 @@ void action_t::tick()
 void action_t::last_tick()
 {
   if( sim -> debug ) report_t::log( sim, "%s fades from %s", name(), sim -> target -> name() );
+
+  ticking = 0;
+
+  if( observer ) *observer = 0;
 }
 
 // action_t::assess_damage ==================================================
@@ -496,6 +518,8 @@ void action_t::schedule_execute()
   
   event = new action_execute_event_t( sim, this, time_to_execute );
 
+  if( observer ) *observer = this;
+
   player -> action_start( this );
 }
 
@@ -505,16 +529,35 @@ void action_t::schedule_tick()
 {
   if( sim -> debug ) report_t::log( sim, "%s schedules tick for %s", player -> name(), name() );
 
-  if( current_tick == 0 )
-  {
-    time_remaining = duration();
-  }
+  ticking = 1;
 
-  time_to_tick = time_remaining / ( num_ticks - current_tick );
+  time_to_tick = tick_time();
 
   event = new action_tick_event_t( sim, this, time_to_tick );
 
   if( channeled ) player -> channeling = event;
+
+  if( observer ) *observer = this;
+}
+
+// action_t::refresh_duration ================================================
+
+void action_t::refresh_duration()
+{
+  if( sim -> debug ) report_t::log( sim, "%s refreshes duration of %s", player -> name(), name() );
+
+  current_tick = 0;
+  duration_ready += base_tick_time * num_ticks;
+}
+
+// action_t::extend_duration =================================================
+
+void action_t::extend_duration( int8_t extra_ticks )
+{
+  if( sim -> debug ) report_t::log( sim, "%s extends duration of %s", player -> name(), name() );
+
+  num_ticks += extra_ticks;
+  duration_ready += base_tick_time * extra_ticks;
 }
 
 // action_t::update_ready ====================================================
@@ -527,11 +570,11 @@ void action_t::update_ready()
 
     player -> share_cooldown( cooldown_group, cooldown );
   }
-  if( ! channeled && time_remaining > 0 )
+  if( ! channeled && num_ticks > 0 )
   {
     if( sim -> debug ) report_t::log( sim, "%s shares duration for %s (%s)", player -> name(), name(), duration_group.c_str() );
 
-    player -> share_duration( duration_group, sim -> current_time + time_remaining + 0.01 );
+    player -> share_duration( duration_group, sim -> current_time + 0.01 + tick_time() * num_ticks );
   }
 }
 
@@ -541,11 +584,11 @@ void action_t::update_stats( int8_t type )
 {
   if( type == DMG_DIRECT )
   {
-    stats -> add( dd, type, result, time_to_execute );
+    stats -> add( direct_dmg, type, result, time_to_execute );
   }
   else if( type == DMG_OVER_TIME )
   {
-    stats -> add( dot_tick, type, result, time_to_tick );
+    stats -> add( tick_dmg, type, result, time_to_tick );
   }
   else assert(0);
 }
@@ -571,8 +614,8 @@ bool action_t::ready()
 
 void action_t::reset()
 {
+  ticking = 0;
   current_tick = 0;
-  time_remaining = 0;
   cooldown_ready = 0;
   duration_ready = 0;
   result = RESULT_NONE;

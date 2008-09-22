@@ -16,10 +16,10 @@ static void trigger_spellsurge( spell_t* s )
     spellsurge_t( player_t* p ) : 
       spell_t( "spellsurge", p, RESOURCE_MANA, SCHOOL_ARCANE )
     {
-      base_duration = 10.0;
-      num_ticks     = 10;
-      trigger_gcd   = 0;
-      background    = true;
+      base_tick_time = 1.0;
+      num_ticks      = 10;
+      trigger_gcd    = 0;
+      background     = true;
     }
     virtual void execute() 
     {
@@ -52,7 +52,7 @@ static void trigger_spellsurge( spell_t* s )
       {
 	action_t* spellsurge = p -> find_action( "spellsurge" );
 
-	if( spellsurge && spellsurge -> time_remaining > 0 )
+	if( spellsurge && spellsurge -> ticking )
 	{
 	  spellsurge -> cancel();
 	  break;
@@ -237,7 +237,7 @@ void enchant_t::trigger_flametongue_totem( attack_t* a )
     }
     virtual void get_base_damage()
     {
-      base_dd = player -> buffs.flametongue_totem * weapon -> swing_time;
+      base_direct_dmg = player -> buffs.flametongue_totem * weapon -> swing_time;
     }
   };
 
