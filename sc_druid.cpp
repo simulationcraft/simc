@@ -12,8 +12,8 @@
 struct druid_t : public player_t
 {
   // Active
-  action_t* moonfire_active;
-  action_t* insect_swarm_active;
+  action_t* active_moonfire;
+  action_t* active_insect_swarm;
 
   // Buffs
   double buffs_eclipse_starfire;
@@ -92,8 +92,8 @@ struct druid_t : public player_t
 
   druid_t( sim_t* sim, std::string& name ) : player_t( sim, DRUID, name ) 
   {
-    moonfire_active = 0;
-    insect_swarm_active = 0;
+    active_moonfire = 0;
+    active_insect_swarm = 0;
 
     // Buffs
     buffs_eclipse_starfire  = 0;
@@ -586,21 +586,8 @@ struct insect_swarm_t : public druid_spell_t
     base_multiplier *= 1.0 + p -> talents.genesis * 0.01;
     if( p -> talents.natures_splendor ) num_ticks++;
     if( p -> glyphs.insect_swarm ) base_multiplier *= 1.30;
-  }
 
-  virtual void execute()
-  {
-    druid_spell_t::execute();
-    if( result_is_hit() )
-    {
-      player -> cast_druid() -> insect_swarm_active = this;
-    }
-  }
-
-  virtual void last_tick() 
-  {
-    druid_spell_t::last_tick(); 
-    player -> cast_druid() -> insect_swarm_active = 0;
+    observer = &( p -> active_insect_swarm );
   }
 };
 
@@ -647,7 +634,7 @@ struct moonfire_t : public druid_spell_t
     base_crit       += p -> talents.improved_moonfire * 0.05;
     base_crit_bonus *= 1.0 + p -> talents.vengeance * 0.20;
 
-    observer = &( p -> moonfire_active );
+    observer = &( p -> active_moonfire );
   }
 
   virtual void execute()
@@ -807,14 +794,14 @@ struct starfire_t : public druid_spell_t
     {
       player_crit += 0.10;
     }
-    if( p -> moonfire_active )
+    if( p -> active_moonfire )
     {
       player_crit += 0.01 * p -> talents.improved_insect_swarm;
     }
     if( p -> gear.tier5_4pc )
     {
-      if( p -> moonfire_active     ||
-	  p -> insect_swarm_active )
+      if( p -> active_moonfire     ||
+	  p -> active_insect_swarm )
       {
 	player_multiplier *= 1.10;
       }
@@ -831,9 +818,9 @@ struct starfire_t : public druid_spell_t
       trigger_eclipse_wrath( this );
       trigger_earth_and_moon( this );
 
-      if( p -> glyphs.starfire && p -> moonfire_active )
+      if( p -> glyphs.starfire && p -> active_moonfire )
       {
-	p -> moonfire_active -> extend_duration( 1 );
+	p -> active_moonfire -> extend_duration( 1 );
       }
     }
   }
@@ -943,7 +930,7 @@ struct wrath_t : public druid_spell_t
     {
       player_multiplier *= 1.10;
     }
-    if( p -> insect_swarm_active )
+    if( p -> active_insect_swarm )
     {
       player_multiplier *= 1.0 + p -> talents.improved_insect_swarm * 0.01;
     }
@@ -1146,8 +1133,8 @@ void druid_t::reset()
   player_t::reset();
 
   // Spells
-  moonfire_active     = 0;
-  insect_swarm_active = 0;
+  active_moonfire     = 0;
+  active_insect_swarm = 0;
 
   // Buffs
   buffs_eclipse_starfire  = 0;

@@ -880,7 +880,8 @@ struct action_t
   double resource_consumed;
   double direct_dmg, base_direct_dmg, direct_power_mod;
   double   tick_dmg, base_tick_dmg,     tick_power_mod;
-  int8_t ticking, num_ticks, current_tick;
+  int16_t num_ticks, current_tick;
+  int8_t ticking;
   std::string cooldown_group, duration_group;
   double cooldown, cooldown_ready, duration_ready;
   weapon_t* weapon;

@@ -29,7 +29,7 @@ action_t::action_t( int8_t      ty,
   resource_consumed(0),
   direct_dmg(0), base_direct_dmg(0), direct_power_mod(0), 
   tick_dmg(0), base_tick_dmg(0), tick_power_mod(0),
-  ticking(0), num_ticks(0), current_tick(0), 
+  num_ticks(0), current_tick(0), ticking(0), 
   cooldown_group(n), duration_group(n), cooldown(0), cooldown_ready(0), duration_ready(0),
   weapon( 0 ), normalize_weapon_speed( false ),
   stats(0), rank(0), rank_index(-1), event(0), time_to_execute(0), time_to_tick(0), observer(0), next(0)
@@ -557,7 +557,7 @@ void action_t::extend_duration( int8_t extra_ticks )
   if( sim -> debug ) report_t::log( sim, "%s extends duration of %s", player -> name(), name() );
 
   num_ticks += extra_ticks;
-  duration_ready += base_tick_time * extra_ticks;
+  duration_ready += tick_time() * extra_ticks;
 }
 
 // action_t::update_ready ====================================================

@@ -9,7 +9,7 @@
 // Signal Handler
 // ==========================================================================
 
-#if SIGACTION
+#ifdef SIGACTION
 #include <signal.h>
 #endif
 
@@ -26,12 +26,12 @@ struct sim_signal_handler_t
   static void init( sim_t* sim )
   {
     seed = sim -> seed;
-#if SIGACTION
+#ifdef SIGACTION
     struct sigaction sa;
     sigemptyset( &sa.sa_mask );
     sa.sa_flags = 0;
     sa.sa_handler = callback_func;
-    sigaction( SIGSEGV, &sa, 0 );
+    sigaction( SIGSEGV|SIGABRT, &sa, 0 );
 #endif
   }
 };

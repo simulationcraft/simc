@@ -125,11 +125,11 @@ action_tick_event_t::action_tick_event_t( sim_t*    sim,
 
 void action_tick_event_t::execute()
 {
-   assert( action -> current_tick < action -> num_ticks );
+  assert( action -> current_tick < action -> num_ticks );
 
-   action -> event = 0;
-   action -> current_tick++;
-   action -> tick();
+  action -> event = 0;
+  action -> current_tick++;
+  action -> tick();
 
   if( action -> current_tick == action -> num_ticks )
   {
