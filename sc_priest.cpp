@@ -88,6 +88,7 @@ struct priest_t : public player_t
     int8_t blue_promises;
     int8_t shadow_word_death;
     int8_t shadow_word_pain;
+    int8_t plus_10pct_swd_crit;
     glyphs_t() { memset( (void*) this, 0x0, sizeof( glyphs_t ) ); }
   };
   glyphs_t glyphs;
@@ -1105,6 +1106,8 @@ struct shadow_word_death_t : public priest_spell_t
       base_crit += p -> talents.shadow_power * 0.03;
     }
 
+    base_crit += p -> glyphs.plus_10pct_swd_crit * 0.10;
+
     assert( p -> active_shadow_word_death == 0 );
     p -> active_shadow_word_death = this;
   }
@@ -2089,6 +2092,7 @@ bool priest_t::parse_option( const std::string& name,
     { "glyph_blue_promises",       OPT_INT8,  &( glyphs.blue_promises              ) },
     { "glyph_shadow_word_death",   OPT_INT8,  &( glyphs.shadow_word_death          ) },
     { "glyph_shadow_word_pain",    OPT_INT8,  &( glyphs.shadow_word_pain           ) },
+    { "glyph_+10%_swd_crit",       OPT_INT8,  &( glyphs.plus_10pct_swd_crit        ) },
     { NULL, OPT_UNKNOWN }
   };
 
