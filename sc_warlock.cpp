@@ -54,6 +54,7 @@ struct warlock_t : public player_t
   gain_t* gains_felhunter;
   gain_t* gains_life_tap;
   gain_t* gains_sacrifice;
+  gain_t* gains_soul_leech;
 
   // Procs
   proc_t* procs_life_tap;
@@ -108,6 +109,7 @@ struct warlock_t : public player_t
     int8_t  improved_life_tap;
     int8_t  improved_searing_pain;
     int8_t  improved_shadow_bolt;
+    int8_t  improved_soul_leech;
     int8_t  improved_succubus;
     int8_t  improved_voidwalker;
     int8_t  malediction;
@@ -136,7 +138,6 @@ struct warlock_t : public player_t
     int8_t  demonic_pact;
     int8_t  empowered_imp;
     int8_t  fire_and_brimstone;
-    int8_t  improved_soul_leech;
     int8_t  metamorphosis;
     int8_t  molten_core;
         
@@ -189,11 +190,12 @@ struct warlock_t : public player_t
     expirations_shadow_vulnerability   = 0;
 
     // Gains
-    gains_dark_pact = get_gain( "dark_pact" );
-    gains_fel_armor = get_gain( "fel_armor" );
-    gains_felhunter = get_gain( "felhunter" );
-    gains_life_tap  = get_gain( "life_tap"  );
-    gains_sacrifice = get_gain( "sacrifice" );
+    gains_dark_pact  = get_gain( "dark_pact"  );
+    gains_fel_armor  = get_gain( "fel_armor"  );
+    gains_felhunter  = get_gain( "felhunter"  );
+    gains_life_tap   = get_gain( "life_tap"   );
+    gains_sacrifice  = get_gain( "sacrifice"  );
+    gains_soul_leech = get_gain( "soul_leech" );
 
     // Procs
     procs_life_tap  = get_proc( "life_tap" );
@@ -961,6 +963,11 @@ static void trigger_soul_leech( spell_t* s )
     if( rand_t::roll( 0.10 * p -> talents.soul_leech ) )
     {
       p -> resource_gain( RESOURCE_HEALTH, s -> direct_dmg * 0.30 );
+
+      if( p -> talents.improved_soul_leech )
+      {
+	p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.02, p -> gains_soul_leech );
+      }
     }
   }
 }
