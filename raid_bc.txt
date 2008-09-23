@@ -300,6 +300,7 @@ gear_spell_hit_rating=100
 gear_haste_rating=100
 pet=felguard
 main_hand=beast,damage=100,speed=2.0
+actions=cleave/wait
 quiet=1
 active=owner
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
@@ -322,6 +323,7 @@ gear_spell_crit_rating=100
 gear_spell_hit_rating=100
 gear_haste_rating=200
 pet=imp
+actions=fire_bolt
 quiet=1
 active=owner
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.

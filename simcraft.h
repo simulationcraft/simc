@@ -113,14 +113,15 @@ enum action_type { ACTION_USE=0, ACTION_SPELL, ACTION_ATTACK, ACTION_OTHER, ACTI
 
 enum school_type {
      SCHOOL_NONE=0, 
-     SCHOOL_HOLY, 
-     SCHOOL_SHADOW, 
      SCHOOL_ARCANE, 
-     SCHOOL_FROST, 
+     SCHOOL_CHAOS, 
      SCHOOL_FIRE, 
+     SCHOOL_FROST, 
      SCHOOL_FROSTFIRE, 
+     SCHOOL_HOLY, 
      SCHOOL_NATURE, 
      SCHOOL_PHYSICAL,
+     SCHOOL_SHADOW, 
      SCHOOL_MAX 
 };
 
@@ -452,6 +453,7 @@ struct player_t
     double    cast_time_reduction;
     int8_t    darkmoon_crusade;
     int8_t    darkmoon_wrath;
+    int8_t    demonic_pact;
     int8_t    elemental_oath;
     int8_t    executioner;
     double    flametongue_totem;

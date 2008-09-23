@@ -99,7 +99,23 @@ void spell_t::player_buff()
 
   if( sim_t::WotLK )
   {
-    player_power += std::max( ( p -> buffs.totem_of_wrath ? 160.0 : 0.0 ), p -> buffs.flametongue_totem );
+    double best_buff = 0;
+
+    if( p -> buffs.totem_of_wrath )
+    {
+      if( best_buff < 160 ) best_buff = 160;
+    }
+    if( p -> buffs.flametongue_totem ) 
+    {
+      if( best_buff < p -> buffs.flametongue_totem ) best_buff = p -> buffs.flametongue_totem;
+    }
+    if( p -> buffs.demonic_pact )
+    {
+      double demonic_pact_buff = player_power * 0.10;
+      if( best_buff < demonic_pact_buff ) best_buff = demonic_pact_buff;
+    }
+
+    player_power += best_buff;
   }
   else
   {

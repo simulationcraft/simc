@@ -386,7 +386,7 @@ double action_t::calculate_direct_damage()
 
   if( sim -> debug ) 
   {
-    report_t::log( sim, "%s dmg for %s: dd=%.0f i_dd=%.of b_dd=%.0f mod=%.2f b_power=%.0f p_power=%.0f t_power=%.0f b_mult=%.2f p_mult=%.2f t_mult=%.2f", 
+    report_t::log( sim, "%s dmg for %s: dd=%.0f i_dd=%.0f b_dd=%.0f mod=%.2f b_power=%.0f p_power=%.0f t_power=%.0f b_mult=%.2f p_mult=%.2f t_mult=%.2f", 
 		   player -> name(), name(), direct_dmg, init_direct_dmg, base_direct_dmg, direct_power_mod, 
 		   base_power, player_power, target_power, base_multiplier, player_multiplier, target_multiplier );
   }
@@ -570,7 +570,7 @@ void action_t::update_ready()
 
     player -> share_cooldown( cooldown_group, cooldown );
   }
-  if( ! channeled && num_ticks > 0 )
+  if( ! channeled && num_ticks > 0 && result_is_hit() )
   {
     if( sim -> debug ) report_t::log( sim, "%s shares duration for %s (%s)", player -> name(), name(), duration_group.c_str() );
 
