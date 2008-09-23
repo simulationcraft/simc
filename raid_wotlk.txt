@@ -392,7 +392,7 @@ blessing_of_wisdom=1
 sanctified_retribution=1
 swift_retribution=1
 # Sleeping until bugs fixed.
-sleeping=1
+sleeping=0
 
 #
 # Demonlogy Warlock
@@ -431,7 +431,7 @@ blessing_of_wisdom=1
 sanctified_retribution=1
 swift_retribution=1
 # Sleeping until bugs fixed.
-sleeping=1
+sleeping=0
 
 #
 # Destruction Warlock
@@ -466,4 +466,4 @@ blessing_of_wisdom=1
 sanctified_retribution=1
 swift_retribution=1
 # Sleeping until bugs fixed.
-sleeping=1
+sleeping=0

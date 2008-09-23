@@ -78,7 +78,7 @@ struct event_t
   }
   void reschedule( double new_time );
   double occurs() { return reschedule_time != 0 ? reschedule_time : time; }
-  virtual void execute() { assert(0); }
+  virtual void execute() { printf( "%s\n", name ? name : "(no name)" ); assert(0); }
   virtual ~event_t() {}
   static void cancel( event_t*& e ) { if( e ) { e -> canceled = 1;                 e=0; } }
   static void  early( event_t*& e ) { if( e ) { e -> canceled = 1; e -> execute(); e=0; } }

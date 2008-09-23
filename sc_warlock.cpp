@@ -996,7 +996,7 @@ static void stack_shadow_embrace( spell_t* s )
   {
     if( p -> buffs_shadow_embrace < 2 ) p -> buffs_shadow_embrace++;
 
-    event_t*& e = p -> expirations_shadow_vulnerability;
+    event_t*& e = p -> expirations_shadow_embrace;
 
     if( e )
     {
