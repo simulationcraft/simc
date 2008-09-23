@@ -29,7 +29,7 @@ static void trigger_judgement_of_wisdom( action_t* action )
   if( sim_t::WotLK && ! p -> sim -> cooldown_ready( p -> cooldowns.judgement_of_wisdom ) )
     return;
 
-  if( ! rand_t::roll( 0.50 ) )
+  if( ! sim_t::WotLK && ! rand_t::roll( 0.50 ) )
     return;
 
   p -> procs.judgement_of_wisdom -> occur();
@@ -826,22 +826,21 @@ void player_t::resource_loss( int8_t resource,
 // player_t::resource_gain =================================================
 
 void player_t::resource_gain( int8_t  resource,
-			      double  amount,
-			      gain_t* source )
+                              double  amount,
+                              gain_t* source )
 {
-  amount = std::min( amount, resource_max[ resource ] - resource_current[ resource ] );
-
-  if( amount > 0 )
+  double actual_amount = std::min( amount, resource_max[ resource ] - resource_current[ resource ] );
+  if( actual_amount > 0 )
   {
-    resource_current[ resource ] += amount;
-    resource_gained [ resource ] += amount;
-
-    if( source ) source -> add( amount );
+    resource_current[ resource ] += actual_amount;
   }
 
+  resource_gained [ resource ] += amount;
+  if( source ) source -> add( amount );
+
   if( sim -> log ) 
-    report_t::log( sim, "%s gains %.0f %s from %s", 
-		   name(), amount, util_t::resource_type_string( resource ), source ? source -> name() : "unknown" );
+    report_t::log( sim, "%s gains %.0f (%.0f) %s from %s", 
+                   name(), actual_amount, amount, util_t::resource_type_string( resource ), source ? source -> name() : "unknown" );
 }
 
 // player_t::resource_available ============================================
