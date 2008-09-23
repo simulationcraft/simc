@@ -738,9 +738,6 @@ struct pet_t : public player_t
   virtual const char* name() { return full_name_str.c_str(); }
   virtual void summon();
   virtual void dismiss();
-
-  // Expand these later
-  virtual void regen( double periodicity ) {}
 };
 
 // Target ====================================================================

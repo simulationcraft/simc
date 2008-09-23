@@ -26,8 +26,10 @@ struct warlock_t : public player_t
   int8_t buffs_demon_armor;
   int8_t buffs_demonic_empathy;
   int8_t buffs_demonic_empathy_charges;
+  double buffs_eradication;
   double buffs_fel_armor;
   int8_t buffs_flame_shadow;
+  int8_t buffs_haunted;
   int8_t buffs_nightfall;
   int8_t buffs_pet_sacrifice;
   int8_t buffs_shadow_embrace;
@@ -35,10 +37,14 @@ struct warlock_t : public player_t
   double buffs_shadow_vulnerability;
   int8_t buffs_shadow_vulnerability_charges;
 
+  // Cooldowns
+  double cooldowns_eradication;
+
   // Expirations
   event_t* expirations_backdraft;
   event_t* expirations_shadow_flame;
   event_t* expirations_flame_shadow;
+  event_t* expirations_haunted;
   event_t* expirations_shadow_embrace;
   event_t* expirations_shadow_vulnerability;
 
@@ -62,77 +68,77 @@ struct warlock_t : public player_t
   struct talents_t
   {
     int8_t  amplify_curse;
+    int8_t  backdraft;
     int8_t  backlash;
     int8_t  bane;
     int8_t  cataclysm;
+    int8_t  chaos_bolt;
     int8_t  conflagrate;
     int8_t  contagion;
+    int8_t  dark_pact;
+    int8_t  deaths_embrace;
     int8_t  demonic_aegis;
+    int8_t  demonic_brutality;
+    int8_t  demonic_embrace;
     int8_t  demonic_knowledge;
+    int8_t  demonic_power;
+    int8_t  demonic_sacrifice;
     int8_t  demonic_tactics;
     int8_t  destructive_reach;
     int8_t  devastation;
+    int8_t  emberstorm;
     int8_t  empowered_corruption;
+    int8_t  eradication;
+    int8_t  everlasting_affliction;
     int8_t  fel_domination;
     int8_t  fel_intellect;
     int8_t  fel_stamina;
+    int8_t  fel_synergy;
+    int8_t  fel_vitality;
+    int8_t  haunt;
+    int8_t  improved_corruption;
     int8_t  improved_curse_of_agony;
+    int8_t  improved_demonic_tactics;
+    int8_t  improved_drain_soul;
+    int8_t  improved_felhunter;
     int8_t  improved_fire_bolt;
     int8_t  improved_immolate;
     int8_t  improved_imp;
     int8_t  improved_lash_of_pain;
     int8_t  improved_life_tap;
     int8_t  improved_searing_pain;
+    int8_t  improved_shadow_bolt;
+    int8_t  improved_succubus;
     int8_t  improved_voidwalker;
     int8_t  malediction;
     int8_t  mana_feed;
     int8_t  master_conjuror;
+    int8_t  master_demonologist;
     int8_t  master_summoner;
     int8_t  nightfall;
+    int8_t  pandemic;
     int8_t  ruin;
     int8_t  shadow_and_flame;
     int8_t  shadow_burn;
+    int8_t  shadow_embrace;
     int8_t  shadow_mastery;
     int8_t  siphon_life;
     int8_t  soul_leech;
+    int8_t  soul_link;
     int8_t  soul_siphon;
     int8_t  summon_felguard;
+    int8_t  suppression;
     int8_t  unholy_power;
     int8_t  unstable_affliction;
-    int8_t  dark_pact;
-    int8_t  demonic_embrace;
-    int8_t  demonic_sacrifice;
-    int8_t  emberstorm;
-    int8_t  improved_drain_soul;
-    int8_t  improved_corruption;
-    int8_t  improved_shadow_bolt;
-    int8_t  improved_succubus;
-    int8_t  master_demonologist;
-    int8_t  shadow_embrace;
-    int8_t  soul_link;
-    int8_t  suppression;
-    int8_t  backdraft;
-    int8_t  chaos_bolt;
-    int8_t  deaths_embrace;
-    int8_t  demonic_brutality;
-    int8_t  demonic_power;
-    int8_t  fel_synergy;
-    int8_t  fel_vitality;
 
     int8_t  demonic_empathy;
     int8_t  demonic_empowerment;
     int8_t  demonic_pact;
     int8_t  empowered_imp;
-    int8_t  eradication;
-    int8_t  everlasting_affliction;
     int8_t  fire_and_brimstone;
-    int8_t  haunt;
-    int8_t  improved_demonic_tactics;
-    int8_t  improved_felhunter;
     int8_t  improved_soul_leech;
     int8_t  metamorphosis;
     int8_t  molten_core;
-    int8_t  pandemic;
         
     talents_t() { memset( (void*) this, 0x0, sizeof( talents_t ) ); }
   };
@@ -160,8 +166,10 @@ struct warlock_t : public player_t
     buffs_demon_armor                  = 0;
     buffs_demonic_empathy              = 0;
     buffs_demonic_empathy_charges      = 0;
+    buffs_eradication                  = 0;
     buffs_fel_armor                    = 0;
     buffs_flame_shadow                 = 0;
+    buffs_haunted                      = 0;
     buffs_nightfall                    = 0;
     buffs_pet_sacrifice                = 0;
     buffs_shadow_embrace               = 0;
@@ -169,9 +177,13 @@ struct warlock_t : public player_t
     buffs_shadow_vulnerability         = 0;
     buffs_shadow_vulnerability_charges = 0;
 
+    // Cooldowns
+    cooldowns_eradication              = 0;
+
     // Expirations
     expirations_backdraft              = 0;
     expirations_flame_shadow           = 0;
+    expirations_haunted                = 0;
     expirations_shadow_embrace         = 0;
     expirations_shadow_flame           = 0;
     expirations_shadow_vulnerability   = 0;
@@ -227,10 +239,11 @@ struct warlock_spell_t : public spell_t
   virtual void   assess_damage( double amount, int8_t dmg_type );
 
   // Passthru Methods
-  virtual double cost()          { return spell_t::cost();         }
-  virtual void   tick()          { spell_t::tick();                }
-  virtual void   last_tick()     { spell_t::last_tick();           }
-  virtual bool   ready()         { return spell_t::ready();        }
+  virtual double cost()                  { return spell_t::cost();                  }
+  virtual double calculate_tick_damage() { return spell_t::calculate_tick_damage(); }
+  virtual void   tick()                  { spell_t::tick();                         }
+  virtual void   last_tick()             { spell_t::last_tick();                    }
+  virtual bool   ready()                 { return spell_t::ready();                 }
 };
 
 // ==========================================================================
@@ -293,7 +306,7 @@ struct warlock_pet_t : public pet_t
     warlock_t* o = cast_pet() -> owner -> cast_warlock();
     return pet_t::intellect() + o -> intellect() * o -> talents.fel_synergy * 0.05;
   }
-  void init_base_modifiers( action_t* a )
+  void adjust_base_modifiers( action_t* a )
   {
     warlock_t* o = owner -> cast_warlock();
 
@@ -326,7 +339,14 @@ struct warlock_pet_t : public pet_t
 	a -> base_crit       +=       o -> talents.master_demonologist * 0.01;
       }
     }
-
+  }
+  void adjust_player_modifiers( action_t* a )
+  {
+    warlock_t* o = owner -> cast_warlock();
+    if( o -> talents.improved_demonic_tactics )
+    {
+      a -> player_crit += o -> composite_spell_crit() * o -> talents.improved_demonic_tactics * 0.10;
+    }
   }
 };
 
@@ -347,7 +367,7 @@ struct warlock_pet_melee_t : public attack_t
     background        = true;
     repeating         = true;
 
-    p -> init_base_modifiers( this );
+    p -> adjust_base_modifiers( this );
   }
   virtual void execute()
   {
@@ -363,8 +383,11 @@ struct warlock_pet_melee_t : public attack_t
   }
   void player_buff()
   {
+    warlock_pet_t* p = (warlock_pet_t*) player -> cast_pet();
+    warlock_t* o = p -> owner -> cast_warlock();
     attack_t::player_buff();
-    player_power += 0.57 * player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_MAX );
+    player_power += 0.57 * o -> composite_spell_power( SCHOOL_MAX );
+    p -> adjust_player_modifiers( this );
   }
 };
 
@@ -378,7 +401,7 @@ struct warlock_pet_attack_t : public attack_t
     attack_t( n, player, r, s )
   {
     warlock_pet_t* p = (warlock_pet_t*) player -> cast_pet();
-    p -> init_base_modifiers( this );
+    p -> adjust_base_modifiers( this );
   }
   void player_buff()
   {
@@ -387,6 +410,7 @@ struct warlock_pet_attack_t : public attack_t
     attack_t::player_buff();
     player_power += 0.57 * player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_MAX );
     if( p -> buffs_demonic_empathy ) player_multiplier *= 1.0 + o -> talents.demonic_empathy * 0.01;
+    p -> adjust_player_modifiers( this );
   }
 };
 
@@ -400,7 +424,7 @@ struct warlock_pet_spell_t : public spell_t
     spell_t( n, player, r, s )
   {
     warlock_pet_t* p = (warlock_pet_t*) player -> cast_pet();
-    p -> init_base_modifiers( this );
+    p -> adjust_base_modifiers( this );
   }
   void player_buff()
   {
@@ -409,6 +433,7 @@ struct warlock_pet_spell_t : public spell_t
     spell_t::player_buff();
     player_power += 0.15 * player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_MAX );
     if( p -> buffs_demonic_empathy ) player_multiplier *= 1.0 + o -> talents.demonic_empathy * 0.01;
+    p -> adjust_player_modifiers( this );
   }
 };
 
@@ -427,12 +452,14 @@ struct imp_pet_t : public warlock_pet_t
 
       static rank_t ranks[] =
       {
+	{ 78, 8, 212, 212, 0, 180 },
 	{ 68, 8, 110, 124, 0, 145 },
 	{ 58, 7,  83,  93, 0, 115 },
 	{ 0,  0 }
       };
       rank = choose_rank( ranks );
 
+      base_cost         = 0;
       base_execute_time = sim_t::WotLK ? 2.5 : 2.0;
       direct_power_mod  = ( 2.0 / 3.5 );
       may_crit          = true;
@@ -978,6 +1005,76 @@ static void trigger_backdraft( spell_t* s )
   }
 }
 
+// trigger_haunt ========================================================
+
+static void trigger_haunted( spell_t* s )
+{
+  struct expiration_t : public event_t
+  {
+    expiration_t( sim_t* sim, warlock_t* p ) : event_t( sim, p )
+    {
+      name = "Haunt Expiration";
+      p -> aura_gain( "Haunted" );
+      p -> buffs_haunted = 1;
+      sim -> add_event( this, 12.0 );
+    }
+    virtual void execute()
+    {
+      warlock_t* p = player -> cast_warlock();
+      p -> aura_loss( "Haunted" );
+      p -> buffs_haunted = 0;
+      p -> expirations_haunted = 0;
+    }
+  };
+  
+  warlock_t* p = s -> player -> cast_warlock();
+  event_t*&  e = p -> expirations_haunted;
+
+  if( e )
+  {
+    e -> reschedule( 12.0 );
+  }
+  else
+  {
+    e = new expiration_t( s -> sim, p );
+  }
+}
+
+// trigger_eradication =====================================================
+
+static void trigger_eradication( spell_t* s )
+{
+  struct expiration_t : public event_t
+  {
+    expiration_t( sim_t* sim, warlock_t* p ) : event_t( sim, p )
+    {
+      name = "Eradication Expiration";
+      p -> aura_gain( "Eradication" );
+      p -> buffs_eradication = 1;
+      sim -> add_event( this, 12.0 );
+    }
+    virtual void execute()
+    {
+      warlock_t* p = player -> cast_warlock();
+      p -> aura_loss( "Eradication" );
+      p -> buffs_eradication = 0;
+    }
+  };
+  
+  warlock_t* p = s -> player -> cast_warlock();
+
+  if( ! p -> talents.eradication ) return;
+
+  if( s -> sim -> cooldown_ready( p -> cooldowns_eradication ) )
+  {
+    if( rand_t::roll( p -> talents.eradication * 0.04 ) )
+    {
+      p -> cooldowns_eradication = s -> sim -> current_time + 30;
+      new expiration_t( s -> sim, p );
+    }
+  }
+}
+
 // trigger_deaths_embrace ===================================================
 
 static void trigger_deaths_embrace( spell_t* s )
@@ -993,6 +1090,36 @@ static void trigger_deaths_embrace( spell_t* s )
   if( ( t -> current_health / t -> initial_health ) < 0.35 )
   {
     s -> player_multiplier *= 1.0 + p -> talents.deaths_embrace * 0.03;
+  }
+}
+
+// trigger_everlasting_affliction ===========================================
+
+static void trigger_everlasting_affliction( spell_t* s )
+{
+  warlock_t* p = s -> player -> cast_warlock();
+
+  if( ! p -> talents.everlasting_affliction ) return;
+
+  if( ! p -> active_corruption ) return;
+
+  if( rand_t::roll( p -> talents.everlasting_affliction * 0.20 ) )
+  {
+    p -> active_corruption -> refresh_duration();
+  }
+}
+
+// trigger_pandemic ========================================================
+
+static void trigger_pandemic( spell_t* s )
+{
+  warlock_t* p = s -> player -> cast_warlock();
+
+  if( ! p -> talents.pandemic ) return;
+
+  if( rand_t::roll( s -> player_crit ) )
+  {
+    s -> tick_dmg *= 1.0 + p -> talents.pandemic / 3.0;
   }
 }
 
@@ -1048,7 +1175,11 @@ double warlock_spell_t::execute_time()
 {
   warlock_t* p = player -> cast_warlock();
   double t = spell_t::execute_time();
-  if( t > 0 && tree == TREE_DESTRUCTION && p -> buffs_backdraft ) t *= 0.70;
+  if( t > 0 )
+  {
+    if( p -> buffs_backdraft && tree == TREE_DESTRUCTION ) t *= ( 1.0 / 1.30 );
+    if( p -> buffs_eradication ) t *= ( 1.0 / 1.20 );
+  }
   return t;
 }
 
@@ -1124,9 +1255,16 @@ void warlock_spell_t::target_debuff( int8_t dmg_type )
 {
   warlock_t* p = player -> cast_warlock();
   spell_t::target_debuff( dmg_type );
-  if( dmg_type == DMG_OVER_TIME && p -> buffs_shadow_embrace )
+  if( dmg_type == DMG_OVER_TIME )
   {
-    target_multiplier *= 1.0 + p -> buffs_shadow_embrace * p -> talents.shadow_embrace * 0.01;
+    if( p -> buffs_shadow_embrace )
+    {
+      target_multiplier *= 1.0 + p -> buffs_shadow_embrace * p -> talents.shadow_embrace * 0.01;
+    }
+    if( p -> buffs_haunted )
+    {
+      target_multiplier *= 1.20;
+    }
   }
 }
 
@@ -1268,9 +1406,10 @@ struct curse_of_agony_t : public warlock_spell_t
       
     static rank_t ranks[] =
     {
-      { 67, 7, 0, 0, 170, 265 },
-      { 58, 6, 0, 0, 130, 215 },
-      { 48, 5, 0, 0,  98, 170 },
+      { 79, 9, 0, 0, 290, 0.10 },
+      { 73, 8, 0, 0, 240, 0.10 },
+      { 67, 7, 0, 0, 170, 265  },
+      { 58, 6, 0, 0, 130, 215  },
       { 0, 0 }
     };
     player -> init_mana_costs( ranks );
@@ -1352,8 +1491,9 @@ struct curse_of_doom_t : public warlock_spell_t
       
     static rank_t ranks[] =
     {
-      { 70, 2, 0, 0, 4200, 380 },
-      { 60, 1, 0, 0, 3200, 300 },
+      { 80, 3, 0, 0, 7300, 0.15 },
+      { 70, 2, 0, 0, 4200, 380  },
+      { 60, 1, 0, 0, 3200, 300  },
       { 0, 0 }
     };
     player -> init_mana_costs( ranks );
@@ -1457,11 +1597,11 @@ struct shadow_bolt_t : public warlock_spell_t
       
     static rank_t ranks[] =
     {
-      { 69, 11, 541, 603, 0, 420 },
-      { 60, 10, 482, 538, 0, 380 },
-      { 60,  9, 455, 507, 0, 370 },
-      { 52,  8, 360, 402, 0, 315 },
-      { 44,  7, 281, 315, 0, 265 },
+      { 79, 13, 690, 770, 0, 0.17 },
+      { 74, 12, 596, 664, 0, 0.17 },
+      { 69, 11, 541, 603, 0, 420  },
+      { 60, 10, 482, 538, 0, 380  },
+      { 60,  9, 455, 507, 0, 370  },
       { 0, 0 }
     };
     player -> init_mana_costs( ranks );
@@ -1512,6 +1652,7 @@ struct shadow_bolt_t : public warlock_spell_t
     if( result_is_hit() )
     {
       stack_shadow_embrace( this );
+      trigger_everlasting_affliction( this );
       trigger_soul_leech( this );
       trigger_tier5_4pc( this, p -> active_corruption );
       if( result == RESULT_CRIT ) 
@@ -1609,10 +1750,10 @@ struct death_coil_t : public warlock_spell_t
       
     static rank_t ranks[] =
     {
-      { 68, 4, 519, 519, 0, 600 },
-      { 58, 3, 400, 400, 0, 480 },
-      { 50, 2, 319, 319, 0, 420 },
-      { 42, 1, 244, 244, 0, 365 },
+      { 78, 6, 790, 790, 0, 0.23 },
+      { 73, 5, 670, 670, 0, 0.23 },
+      { 68, 4, 519, 519, 0, 600  },
+      { 58, 3, 400, 400, 0, 480  },
       { 0, 0 }
     };
     player -> init_mana_costs( ranks );
@@ -1659,10 +1800,11 @@ struct shadow_burn_t : public warlock_spell_t
       
     static rank_t ranks[] =
     {
-      { 68, 4, 519, 519, 0, 600 },
-      { 58, 3, 400, 400, 0, 480 },
-      { 50, 2, 319, 319, 0, 420 },
-      { 42, 1, 244, 244, 0, 365 },
+      { 80, 10, 775, 865, 0, 0.20 },
+      { 75,  9, 662, 738, 0, 0.20 },
+      { 70,  8, 597, 665, 0, 0.20 },
+      { 63,  7, 518, 578, 0, 0.27 },
+      { 56,  6, 450, 502, 0, 0.27 },
       { 0, 0 }
     };
     player -> init_mana_costs( ranks );
@@ -1708,10 +1850,10 @@ struct corruption_t : public warlock_spell_t
       
     static rank_t ranks[] =
     {
-      { 65, 8, 0, 0, 150, 370 },
-      { 60, 7, 0, 0, 137, 340 },
-      { 54, 6, 0, 0, 111, 290 },
-      { 44, 5, 0, 0,  81, 225 },
+      { 77, 10, 0, 0, 180, 0.14 },
+      { 71,  9, 0, 0, 165, 0.14 },
+      { 65,  8, 0, 0, 150, 370  },
+      { 60,  7, 0, 0, 137, 340  },
       { 0, 0 }
     };
     player -> init_mana_costs( ranks );
@@ -1720,7 +1862,6 @@ struct corruption_t : public warlock_spell_t
     base_execute_time = sim_t::WotLK ? 0.0 : 2.0; 
     base_tick_time    = 3.0; 
     num_ticks         = 6;
-    tick_power_mod    = base_tick_time / 15.0;
     tick_power_mod    = 0.93 / num_ticks;
 
     base_cost          = rank -> cost;
@@ -1729,6 +1870,8 @@ struct corruption_t : public warlock_spell_t
     base_multiplier   *= 1.0 + p -> talents.shadow_mastery * 0.02;
     base_multiplier   *= 1.0 + p -> talents.contagion * 0.01;
     tick_power_mod    += p -> talents.empowered_corruption * 0.02;
+    tick_power_mod    += p -> talents.everlasting_affliction * 0.01;
+
     if( sim_t::WotLK )
     {
       base_multiplier *= 1.0 + p -> talents.improved_corruption * 0.4;
@@ -1757,6 +1900,7 @@ struct corruption_t : public warlock_spell_t
   virtual void tick()
   {
     warlock_spell_t::tick(); 
+    trigger_eradication( this );
     trigger_nightfall( this );
     trigger_ashtongue_talisman( this );
     if( player -> gear.tier6_2pc ) player -> resource_gain( RESOURCE_HEALTH, 70 );
@@ -1768,6 +1912,13 @@ struct corruption_t : public warlock_spell_t
     warlock_spell_t::last_tick(); 
     p -> active_dots--;
     sim -> target -> debuffs.affliction_effects--;
+  }
+
+  virtual double calculate_tick_damage()
+  {
+    warlock_spell_t::calculate_tick_damage();
+    trigger_pandemic( this );
+    return tick_dmg;
   }
 };
 
@@ -1789,10 +1940,10 @@ struct drain_life_t : public warlock_spell_t
       
     static rank_t ranks[] =
     {
-      { 69, 8, 0, 0, 108, 425 },
-      { 62, 7, 0, 0,  87, 355 },
-      { 54, 6, 0, 0,  71, 300 },
-      { 46, 5, 0, 0,  55, 240 },
+      { 78, 9, 0, 0, 133, 0.17 },
+      { 69, 8, 0, 0, 108, 425  },
+      { 62, 7, 0, 0,  87, 355  },
+      { 54, 6, 0, 0,  71, 300  },
       { 0, 0 }
     };
     player -> init_mana_costs( ranks );
@@ -1809,6 +1960,15 @@ struct drain_life_t : public warlock_spell_t
     base_cost       *= 1.0 - p -> talents.suppression * ( sim_t::WotLK ? 0.02 : 0.00 );
     base_hit        +=       p -> talents.suppression * ( sim_t::WotLK ? 0.01 : 0.02 );
     base_multiplier *= 1.0 + p -> talents.shadow_mastery * 0.02;
+  }
+
+  virtual void execute()
+  {
+    warlock_spell_t::execute();
+    if( result_is_hit() )
+    {
+      trigger_everlasting_affliction( this );
+    }
   }
 
   virtual void player_buff()
@@ -1858,8 +2018,9 @@ struct drain_soul_t : public warlock_spell_t
       
     static rank_t ranks[] =
     {
-      { 67, 5, 0, 0, 124, 360 },
-      { 52, 4, 0, 0,  91, 290 },
+      { 77, 6, 0, 0, 142, 0.14 },
+      { 67, 5, 0, 0, 124, 360  },
+      { 52, 4, 0, 0,  91, 290  },
       { 0, 0 }
     };
     player -> init_mana_costs( ranks );
@@ -1921,10 +2082,11 @@ struct siphon_life_t : public warlock_spell_t
       
     static rank_t ranks[] =
     {
-      { 70, 6, 0, 0, 63, 410 },
-      { 63, 5, 0, 0, 52, 350 },
-      { 58, 4, 0, 0, 45, 310 },
-      { 48, 3, 0, 0, 33, 250 },
+      { 80, 8, 0, 0, 81, 0.16 },
+      { 75, 7, 0, 0, 70, 0.16 },
+      { 70, 6, 0, 0, 63, 410  },
+      { 63, 5, 0, 0, 52, 350  },
+      { 58, 4, 0, 0, 45, 310  },
       { 0, 0 }
     };
     player -> init_mana_costs( ranks );
@@ -1940,6 +2102,7 @@ struct siphon_life_t : public warlock_spell_t
     base_cost        *= 1.0 - p -> talents.suppression * ( sim_t::WotLK ? 0.02 : 0.00 );
     base_hit         +=       p -> talents.suppression * ( sim_t::WotLK ? 0.01 : 0.02 );
     base_multiplier  *= 1.0 + p -> talents.shadow_mastery * 0.02;
+    tick_power_mod   += p -> talents.everlasting_affliction * 0.01;
   }
 
   virtual void execute()
@@ -1988,9 +2151,10 @@ struct unstable_affliction_t : public warlock_spell_t
       
     static rank_t ranks[] =
     {
-      { 70, 3,  0, 0, 175, 400 },
-      { 60, 2,  0, 0, 155, 315 },
-      { 50, 1,  0, 0, 110, 270 },
+      { 80, 5,  0, 0, 230, 0.15 },
+      { 75, 4,  0, 0, 197, 0.15 },
+      { 70, 3,  0, 0, 175, 400  },
+      { 60, 2,  0, 0, 155, 315  },
       { 0, 0 }
     };
     player -> init_mana_costs( ranks );
@@ -2005,6 +2169,7 @@ struct unstable_affliction_t : public warlock_spell_t
     base_cost        *= 1.0 - p -> talents.suppression * ( sim_t::WotLK ? 0.02 : 0.00 );
     base_hit         +=       p -> talents.suppression * ( sim_t::WotLK ? 0.01 : 0.02 );
     base_multiplier  *= 1.0 + p -> talents.shadow_mastery * 0.02;
+    tick_power_mod   += p -> talents.everlasting_affliction * 0.01;
   }
 
   virtual void execute()
@@ -2024,6 +2189,64 @@ struct unstable_affliction_t : public warlock_spell_t
     warlock_spell_t::last_tick(); 
     p -> active_dots--;;
     sim -> target -> debuffs.affliction_effects--;
+  }
+
+  virtual double calculate_tick_damage()
+  {
+    warlock_spell_t::calculate_tick_damage();
+    trigger_pandemic( this );
+    return tick_dmg;
+  }
+};
+
+// Haunt Spell ==============================================================
+
+struct haunt_t : public warlock_spell_t
+{
+  haunt_t( player_t* player, const std::string& options_str ) : 
+    warlock_spell_t( "haunt", player, SCHOOL_SHADOW, TREE_AFFLICTION )
+  {
+    warlock_t* p = player -> cast_warlock();
+    assert( p -> talents.haunt );
+
+    option_t options[] =
+    {
+      { "rank",     OPT_INT8, &rank_index },
+      { NULL }
+    };
+    parse_options( options, options_str );
+      
+    static rank_t ranks[] =
+    {
+      { 80, 4, 645, 753, 0, 0.12 },
+      { 75, 3, 550, 642, 0, 0.12 },
+      { 70, 2, 487, 569, 0, 0.12 },
+      { 60, 1, 405, 473, 0, 0.12 },
+      { 0, 0 }
+    };
+    player -> init_mana_costs( ranks );
+    rank = choose_rank( ranks );
+    
+    base_execute_time = 1.5; 
+    direct_power_mod  = base_execute_time / 3.5; 
+    cooldown          = 10.0;
+    may_crit          = true;
+      
+    base_cost         = rank -> cost;
+    base_cost        *= 1.0 - p -> talents.suppression * ( sim_t::WotLK ? 0.02 : 0.00 );
+    base_hit         +=       p -> talents.suppression * ( sim_t::WotLK ? 0.01 : 0.02 );
+    base_multiplier  *= 1.0 + p -> talents.shadow_mastery * 0.02;
+    base_crit_bonus  *= 2.0;
+  }
+
+  virtual void execute()
+  {
+    warlock_spell_t::execute(); 
+    if( result_is_hit() )
+    {
+      trigger_haunted( this );
+      stack_shadow_embrace( this );
+    }
   }
 };
 
@@ -2045,11 +2268,11 @@ struct immolate_t : public warlock_spell_t
       
     static rank_t ranks[] =
     {
-      { 69, 9, 327, 327, 123, 445 },
-      { 60, 8, 279, 279, 102, 380 },
-      { 60, 7, 258, 258,  97, 370 },
-      { 50, 6, 192, 192,  73, 295 },
-      { 40, 5, 134, 134,  51, 220 },
+      { 80, 11, 460, 460, 157, 0.17 },
+      { 75, 10, 370, 370, 139, 0.17 },
+      { 69,  9, 327, 327, 123, 445  },
+      { 60,  8, 279, 279, 102, 380  },
+      { 60,  7, 258, 258,  97, 370  },
       { 0, 0 }
     };
     player -> init_mana_costs( ranks );
@@ -2125,11 +2348,11 @@ struct conflagrate_t : public warlock_spell_t
       
     static rank_t ranks[] =
     {
-      { 70, 6, 579, 721, 0, 305 },
-      { 65, 5, 512, 638, 0, 280 },
-      { 60, 4, 447, 557, 0, 255 },
-      { 54, 3, 373, 479, 0, 230 },
-      { 48, 2, 316, 396, 0, 200 },
+      { 80, 8, 766, 954, 0, 0.12 },
+      { 75, 7, 650, 810, 0, 0.12 },
+      { 70, 6, 579, 721, 0, 305  },
+      { 65, 5, 512, 638, 0, 280  },
+      { 60, 4, 447, 557, 0, 255  },
       { 0, 0 }
     };
     player -> init_mana_costs( ranks );
@@ -2197,8 +2420,10 @@ struct incinerate_t : public warlock_spell_t
       
     static rank_t ranks[] =
     {
-      { 70, 2, 429, 497, 0, 300 },
-      { 64, 1, 357, 413, 0, 256 },
+      { 80, 4, 582, 676, 0, 0.14 },
+      { 74, 3, 485, 563, 0, 0.14 },
+      { 70, 2, 429, 497, 0, 300  },
+      { 64, 1, 357, 413, 0, 256  },
       { 0, 0 }
     };
     player -> init_mana_costs( ranks );
@@ -2230,8 +2455,10 @@ struct incinerate_t : public warlock_spell_t
     {
       switch( rank -> index )
       {
+      case 4: base_direct_dmg += 157; break;
+      case 3: base_direct_dmg += 130; break;
       case 2: base_direct_dmg += 120; break;
-      case 1: base_direct_dmg += 108;  break;
+      case 1: base_direct_dmg += 108; break;
       default: assert(0);
       }
     }
@@ -2262,11 +2489,11 @@ struct searing_pain_t : public warlock_spell_t
       
     static rank_t ranks[] =
     {
-      { 70, 8, 270, 320, 0, 205 },
-      { 65, 7, 243, 287, 0, 191 },
-      { 58, 6, 204, 240, 0, 168 },
-      { 50, 5, 158, 188, 0, 141 },
-      { 42, 4, 122, 146, 0, 118 },
+      { 79, 10, 343, 405, 0, 0.08 },
+      { 74,  9, 295, 349, 0, 0.08 },
+      { 70,  8, 270, 320, 0, 205  },
+      { 65,  7, 243, 287, 0, 191  },
+      { 58,  6, 204, 240, 0, 168  },
       { 0, 0 }
     };
     player -> init_mana_costs( ranks );
@@ -2315,10 +2542,11 @@ struct soul_fire_t : public warlock_spell_t
       
     static rank_t ranks[] =
     {
-      { 70, 4, 1003, 1257, 0, 455 },
-      { 64, 3,  839, 1051, 0, 390 },
-      { 56, 2,  703,  881, 0, 335 },
-      { 48, 1,  623,  783, 0, 305 },
+      { 80, 6, 1323, 1657, 0, 0.09 },
+      { 75, 5, 1137, 1423, 0, 0.09 },
+      { 70, 4, 1003, 1257, 0, 455  },
+      { 64, 3,  839, 1051, 0, 390  },
+      { 56, 2,  703,  881, 0, 335  },
       { 0, 0 }
     };
     player -> init_mana_costs( ranks );
@@ -2568,6 +2796,7 @@ action_t* warlock_t::create_action( const std::string& name,
   if( name == "fel_armor"           ) return new           fel_armor_t( this, options_str );
 //if( name == "grand_fire_stone"    ) return new    grand_fire_stone_t( this, options_str );
 //if( name == "grand_spell_stone"   ) return new   grand_spell_stone_t( this, options_str );
+  if( name == "haunt_t"             ) return new               haunt_t( this, options_str );
   if( name == "immolate"            ) return new            immolate_t( this, options_str );
   if( name == "incinerate"          ) return new          incinerate_t( this, options_str );
   if( name == "life_tap"            ) return new            life_tap_t( this, options_str );
@@ -2649,8 +2878,10 @@ void warlock_t::reset()
   buffs_demon_armor                  = 0;
   buffs_demonic_empathy              = 0;
   buffs_demonic_empathy_charges      = 0;
+  buffs_eradication                  = 0;
   buffs_fel_armor                    = 0;
   buffs_flame_shadow                 = 0;
+  buffs_haunted                      = 0;
   buffs_nightfall                    = 0;
   buffs_pet_sacrifice                = 0;
   buffs_shadow_embrace               = 0;
@@ -2658,9 +2889,13 @@ void warlock_t::reset()
   buffs_shadow_vulnerability         = 0;
   buffs_shadow_vulnerability_charges = 0;
 
+  // Cooldowns
+  cooldowns_eradication              = 0;
+
   // Expirations
   expirations_backdraft              = 0;
   expirations_flame_shadow           = 0;
+  expirations_haunted                = 0;
   expirations_shadow_embrace         = 0;
   expirations_shadow_flame           = 0;
   expirations_shadow_vulnerability   = 0;

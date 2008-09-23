@@ -235,6 +235,7 @@ struct water_elemental_pet_t : public pet_t
     water_bolt_t( player_t* player ):
       spell_t( "water_bolt", player, RESOURCE_MANA, SCHOOL_FROST, TREE_FROST ) 
     {
+      base_cost          = 0;
       base_execute_time  = 2.5;
       base_direct_dmg    = ( 256 + 328 ) / 2;
       base_direct_dmg   +=( player -> level - 50 ) * 11.5;
