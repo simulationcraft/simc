@@ -2266,7 +2266,7 @@ struct corruption_t : public warlock_spell_t
 
     if( sim_t::WotLK )
     {
-      base_multiplier *= 1.0 + p -> talents.improved_corruption * 0.4;
+      base_multiplier *= 1.0 + p -> talents.improved_corruption * 0.04;
     }
     else
     {
