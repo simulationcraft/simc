@@ -33,6 +33,7 @@ static const char* school_color( int type )
   {
   case SCHOOL_HOLY:      return class_color( ROGUE );
   case SCHOOL_SHADOW:    return class_color( WARLOCK );
+  case SCHOOL_CHAOS:     return class_color( DEATH_KNIGHT );
   case SCHOOL_ARCANE:    return class_color( DRUID );
   case SCHOOL_FROST:     return class_color( MAGE );
   case SCHOOL_FROSTFIRE: return class_color( PALADIN );

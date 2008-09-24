@@ -77,14 +77,15 @@ const char* util_t::school_type_string( int8_t school )
 {
   switch( school )
   {
-  case SCHOOL_HOLY:      return "holy";
-  case SCHOOL_SHADOW:    return "shadow";
   case SCHOOL_ARCANE:    return "arcane";
+  case SCHOOL_CHAOS:     return "chaos";
+  case SCHOOL_FIRE:      return "fire";
   case SCHOOL_FROST:     return "frost";
   case SCHOOL_FROSTFIRE: return "frostfire";
-  case SCHOOL_FIRE:      return "fire";
+  case SCHOOL_HOLY:      return "holy";
   case SCHOOL_NATURE:    return "nature";
   case SCHOOL_PHYSICAL:  return "physical";
+  case SCHOOL_SHADOW:    return "shadow";
   }
   return "unknown";
 }
