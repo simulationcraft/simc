@@ -559,6 +559,7 @@ struct player_t
     gain_t* mark_of_defiance;
     gain_t* mp5_regen;
     gain_t* replenishment;
+    gain_t* restore_mana;
     gain_t* spellsurge;
     gain_t* spirit_regen;
     gain_t* vampiric_touch;

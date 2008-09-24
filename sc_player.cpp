@@ -542,6 +542,7 @@ void player_t::init_stats()
   gains.mark_of_defiance      = get_gain( "mark_of_defiance" );
   gains.mp5_regen             = get_gain( "mp5" );
   gains.replenishment         = get_gain( "replenishment" );
+  gains.restore_mana          = get_gain( "restore_mana" );
   gains.spellsurge            = get_gain( "spellsurge" );
   gains.spirit_regen          = get_gain( "spirit" );
   gains.vampiric_touch        = get_gain( "vampiric_touch" );
@@ -1361,12 +1362,46 @@ struct wait_until_ready_t : public action_t
   }
 };
 
+// Restore Mana Action =====================================================
+
+struct restore_mana_t : public action_t
+{
+  double mana;
+
+  restore_mana_t( player_t* player, const std::string& options_str ) : 
+    action_t( ACTION_OTHER, "restore_mana", player ), mana(0)
+  {
+    option_t options[] =
+    {
+      { "mana", OPT_FLT, &mana },
+      { NULL }
+    };
+    parse_options( options, options_str );
+
+    trigger_gcd = 0;
+  }
+
+  virtual void execute() 
+  {
+    double mana_missing = player -> resource_max[ RESOURCE_MANA ] - player -> resource_current[ RESOURCE_MANA ];
+    double mana_gain = mana;
+
+    if( mana_gain == 0 || mana_gain > mana_missing ) mana_gain = mana_missing;
+
+    if( mana_gain > 0 )
+    {
+      player -> resource_gain( RESOURCE_MANA, mana_gain, player -> gains.restore_mana );
+    }
+  }
+};
+
 // player_t::create_action ==================================================
 
 action_t* player_t::create_action( const std::string& name,
 				   const std::string& options_str )
 {
-  if( name == "wait" ) return new wait_until_ready_t( this, options_str );
+  if( name == "restore_mana" ) return new     restore_mana_t( this, options_str );
+  if( name == "wait"         ) return new wait_until_ready_t( this, options_str );
 
   return 0;
 }

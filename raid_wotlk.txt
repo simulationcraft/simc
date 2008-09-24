@@ -121,7 +121,7 @@ sleeping=1
 priest=Priest_Holy
 level=80
 talents=http://talent.mmo-champion.com/?priest=050230313030512250100020000000555100202015200000000000320000000000000000000000000
-actions=flask,type=blinding_light/inner_fire/divine_spirit/mana_potion,trigger=3500/shadow_fiend,trigger=6000/inner_focus,shadow_word_pain/shadow_word_pain/power_infusion/holy_fire/smite
+actions=flask,type=blinding_light/inner_fire/divine_spirit/mana_potion,trigger=3500/shadow_fiend,trigger=6000/inner_focus,shadow_word_pain/shadow_word_pain/power_infusion/holy_fire/smite/restore_mana,mana=1000
 gear_stamina=708
 gear_intellect=687
 gear_spirit=250
