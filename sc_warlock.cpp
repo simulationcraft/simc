@@ -1973,16 +1973,23 @@ struct amplify_curse_t : public warlock_spell_t
 struct shadow_bolt_t : public warlock_spell_t
 {
   int8_t nightfall;
+  int8_t backdraft;
+  int8_t isb_benefit;
+  int8_t isb_trigger;
 
   shadow_bolt_t( player_t* player, const std::string& options_str ) : 
-    warlock_spell_t( "shadow_bolt", player, SCHOOL_SHADOW, TREE_DESTRUCTION ), nightfall(0)
+    warlock_spell_t( "shadow_bolt", player, SCHOOL_SHADOW, TREE_DESTRUCTION ), 
+    nightfall(0), backdraft(0), isb_benefit(0), isb_trigger(0)
   {
     warlock_t* p = player -> cast_warlock();
 
     option_t options[] =
     {
-      { "rank",      OPT_INT8, &rank_index },
-      { "nightfall", OPT_INT8, &nightfall  },
+      { "rank",        OPT_INT8, &rank_index  },
+      { "nightfall",   OPT_INT8, &nightfall   },
+      { "backdraft",   OPT_INT8, &backdraft   },
+      { "isb_benefit", OPT_INT8, &isb_benefit },
+      { "isb_trigger", OPT_INT8, &isb_trigger },
       { NULL }
     };
     parse_options( options, options_str );
@@ -2063,6 +2070,18 @@ struct shadow_bolt_t : public warlock_spell_t
 
     if( nightfall )
       if( ! p -> buffs_nightfall )
+	return false;
+
+    if( backdraft )
+      if( ! p -> buffs_backdraft )
+	return false;
+
+    if( isb_benefit )
+      if( ! sim -> time_to_think( p -> buffs_shadow_vulnerability ) )
+	return false;
+
+    if( isb_trigger )
+      if( sim -> time_to_think( p -> buffs_shadow_vulnerability ) )
 	return false;
 
     return true;
