@@ -146,7 +146,6 @@ player_t::player_t( sim_t*             s,
   base_spell_crit(0),        initial_spell_crit(0),        spell_crit(0),
   base_spell_penetration(0), initial_spell_penetration(0), spell_penetration(0),
   base_mp5(0),               initial_mp5(0),               mp5(0),
-  spell_power_multiplier(1.0),  initial_spell_power_multiplier(1.0),
   spell_power_per_intellect(0), initial_spell_power_per_intellect(0),
   spell_power_per_spirit(0),    initial_spell_power_per_spirit(0),
   spell_crit_per_intellect(0),  initial_spell_crit_per_intellect(0),
@@ -158,7 +157,6 @@ player_t::player_t( sim_t*             s,
   base_attack_expertise(0),   initial_attack_expertise(0),    attack_expertise(0),
   base_attack_crit(0),        initial_attack_crit(0),         attack_crit(0),
   base_attack_penetration(0), initial_attack_penetration(0),  attack_penetration(0),
-  attack_power_multiplier(1.0), initial_attack_power_multiplier(1.0),
   attack_power_per_strength(0), initial_attack_power_per_strength(0),
   attack_power_per_agility(0),  initial_attack_power_per_agility(0),
   attack_crit_per_agility(0),   initial_attack_crit_per_agility(0),
@@ -233,9 +231,6 @@ void player_t::init_core()
     if( attribute_initial[ i ] == 0 )
     {
       attribute_initial[ i ] = attribute_base[ i ] + gear.attribute[ i ] + gear.attribute_enchant[ i ];
-
-      // FIXME! All these static buffs will go away as class support comes along.
-      if( buffs.blessing_of_kings ) attribute_multiplier_initial[ i ] *= 1.10;
     }
     attribute[ i ] = attribute_initial[ i ];
   }
@@ -300,19 +295,6 @@ void player_t::init_attack()
   if( initial_attack_power == 0 )
   {
     initial_attack_power = base_attack_power += gear.attack_power + gear.attack_power_enchant;
-
-    // FIXME! All these static buffs will go away as class support comes along.
-    if( buffs.blessing_of_might ) 
-    {
-      initial_attack_power += ( level >= 79 ) ? 300 :
-	                      ( level >= 73 ) ? 245 :
-	                      ( level >= 70 ) ? 220 : 185;
-    }
-    if( buffs.battle_shout )
-    {
-      initial_attack_power += ( level >= 78 ) ? 550 :
-                              ( level >= 69 ) ? 305 : 232;
-    }
   }
   if( initial_attack_hit == 0 )
   {
@@ -585,7 +567,19 @@ double player_t::composite_attack_power()
 
   ap += attack_power_per_strength * strength();
   ap += attack_power_per_agility  * agility();
-  ap *= attack_power_multiplier;
+
+  if( sim_t::WotLK )
+  {
+    double best_buff=0;
+    if( buffs.blessing_of_might > best_buff ) best_buff = buffs.blessing_of_might;
+    if( buffs.battle_shout      > best_buff ) best_buff = buffs.battle_shout;
+    ap += best_buff;
+  }
+  else
+  {
+    ap += buffs.blessing_of_might;
+    ap += buffs.battle_shout;
+  }
 
   return ap;
 }
@@ -609,12 +603,10 @@ double player_t::composite_spell_power( int8_t school )
 		   spell_power[ SCHOOL_FIRE  ] );
   }
 
-  if( school != SCHOOL_MAX ) 
-    sp += spell_power[ SCHOOL_MAX ];
+  if( school != SCHOOL_MAX ) sp += spell_power[ SCHOOL_MAX ];
 
   sp += spell_power_per_intellect * intellect();
   sp += spell_power_per_spirit    * spirit();
-  sp *= spell_power_multiplier;
 
   return sp;
 }
@@ -625,6 +617,30 @@ double player_t::composite_spell_crit()
 {
   return spell_crit + spell_crit_per_intellect * intellect();
 }
+
+// player_t::composite_attack_power_multiplier =============================
+
+double player_t::composite_attack_power_multiplier()
+{
+  return buffs.unleashed_rage ? 1.10 : 1.0;
+}
+
+// player_t::composite_attribute_multiplier ================================
+
+double player_t::composite_attribute_multiplier( int8_t attr )
+{
+  double m = attribute_multiplier[ attr ]; 
+  if( buffs.blessing_of_kings ) m *= 1.10; 
+  return m;
+}
+
+// player_t::attribute() ===================================================
+
+double player_t::strength()  { return composite_attribute_multiplier( ATTR_STRENGTH  ) * attribute[ ATTR_STRENGTH  ]; }
+double player_t::agility()   { return composite_attribute_multiplier( ATTR_AGILITY   ) * attribute[ ATTR_AGILITY   ]; }
+double player_t::stamina()   { return composite_attribute_multiplier( ATTR_STAMINA   ) * attribute[ ATTR_STAMINA   ]; }
+double player_t::intellect() { return composite_attribute_multiplier( ATTR_INTELLECT ) * attribute[ ATTR_INTELLECT ]; }
+double player_t::spirit()    { return composite_attribute_multiplier( ATTR_SPIRIT    ) * attribute[ ATTR_SPIRIT    ]; }
 
 // player_t::reset =========================================================
 
@@ -660,12 +676,10 @@ void player_t::reset()
   attack_crit        = initial_attack_crit;
   attack_penetration = initial_attack_penetration;
   
-  spell_power_multiplier    = initial_spell_power_multiplier;
   spell_power_per_intellect = initial_spell_power_per_intellect;
   spell_power_per_spirit    = initial_spell_power_per_spirit;
   spell_crit_per_intellect  = initial_spell_crit_per_intellect;
   
-  attack_power_multiplier   = initial_attack_power_multiplier;
   attack_power_per_strength = initial_attack_power_per_strength;
   attack_power_per_agility  = initial_attack_power_per_agility;
   attack_crit_per_agility   = initial_attack_crit_per_agility;
@@ -686,6 +700,10 @@ void player_t::reset()
   main_hand_weapon.buff = WEAPON_BUFF_NONE;
    off_hand_weapon.buff = WEAPON_BUFF_NONE;
      ranged_weapon.buff = WEAPON_BUFF_NONE;
+
+  main_hand_weapon.buff_bonus = 0;
+   off_hand_weapon.buff_bonus = 0;
+     ranged_weapon.buff_bonus = 0;
 
   elixir_battle   = ELIXIR_NONE;
   elixir_guardian = ELIXIR_NONE;
@@ -1533,7 +1551,6 @@ bool player_t::parse_option( const std::string& name,
     { "base_spell_crit",                      OPT_FLT,    &( base_spell_crit                                ) },
     { "base_spell_penetration",               OPT_FLT,    &( base_spell_penetration                         ) },
     { "base_mp5",                             OPT_FLT,    &( base_mp5                                       ) },
-    { "spell_power_multiplier",               OPT_FLT,    &( initial_spell_power_multiplier                 ) },
     { "spell_power_per_intellect",            OPT_FLT,    &( spell_power_per_intellect                      ) },
     { "spell_power_per_spirit",               OPT_FLT,    &( spell_power_per_spirit                         ) },
     { "spell_crit_per_intellect",             OPT_FLT,    &( spell_crit_per_intellect                       ) },
@@ -1548,7 +1565,6 @@ bool player_t::parse_option( const std::string& name,
     { "base_attack_expertise",                OPT_FLT,    &( base_attack_expertise                          ) },
     { "base_attack_crit",                     OPT_FLT,    &( base_attack_crit                               ) },
     { "base_attack_penetration",              OPT_FLT,    &( base_attack_penetration                        ) },
-    { "attack_power_multiplier",              OPT_FLT,    &( initial_attack_power_multiplier                ) },
     { "attack_power_per_strength",            OPT_FLT,    &( attack_power_per_strength                      ) },
     { "attack_power_per_agility",             OPT_FLT,    &( attack_power_per_agility                       ) },
     { "attack_crit_per_agility",              OPT_FLT,    &( attack_crit_per_agility                        ) },

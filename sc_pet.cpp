@@ -26,14 +26,14 @@ pet_t::pet_t( sim_t*             s,
 
 double pet_t::stamina()
 {
-  return player_t::stamina() + 0.30 * owner -> stamina();
+  return composite_attribute_multiplier( ATTR_STAMINA ) * ( attribute[ ATTR_STAMINA ] + 0.30 * owner -> stamina() );
 }
 
 // pet_t::intellect =========================================================
 
 double pet_t::intellect()
 {
-  return player_t::intellect() + 0.30 * owner -> intellect();
+  return composite_attribute_multiplier( ATTR_INTELLECT ) * ( attribute[ ATTR_INTELLECT ] + 0.30 * owner -> intellect() );
 }
 
 // pet_t::summon ============================================================

@@ -252,13 +252,14 @@ struct weapon_t
   double damage;
   double swing_time;
   int8_t enchant, buff;
+  double buff_bonus;
   bool   main;
 
   int group();
   double normalized_weapon_speed();
 
   weapon_t( int t=WEAPON_NONE, double d=0, double st=2.0, int s=SCHOOL_PHYSICAL ) : 
-    type(t), school(s), damage(d), swing_time(st), enchant(WEAPON_ENCHANT_NONE), buff(WEAPON_BUFF_NONE), main(true) {}
+    type(t), school(s), damage(d), swing_time(st), enchant(WEAPON_ENCHANT_NONE), buff(WEAPON_BUFF_NONE), buff_bonus(0), main(true) {}
 };
 
 // Player ====================================================================
@@ -634,6 +635,16 @@ struct player_t
   virtual double composite_spell_hit()         { return spell_hit;         }
   virtual double composite_spell_penetration() { return spell_penetration; }
 
+  virtual double composite_attack_power_multiplier();
+  virtual double composite_spell_power_multiplier() { return 1.0; }
+  virtual double composite_attribute_multiplier( int8_t attr );
+
+  virtual double strength();
+  virtual double agility();
+  virtual double stamina();
+  virtual double intellect();
+  virtual double spirit();
+  
   virtual void      schedule_ready( double delta_time=0, bool waiting=false );
   virtual action_t* execute_action();
 
@@ -673,28 +684,6 @@ struct player_t
   virtual void attack_damage_event( attack_t*, double amount, int8_t dmg_type );
   virtual void attack_finish_event( attack_t* );
 
-  bool      in_gcd() { return gcd_ready > sim -> current_time; }
-  bool      recent_cast();
-  action_t* find_action( const std::string& );
-  void      share_cooldown( const std::string& name, double ready );
-  void      share_duration( const std::string& name, double ready );
-  void      recalculate_haste()  {  haste = 1.0 / ( 1.0 + haste_rating / rating.haste ); }
-  double    spirit_regen_per_second();
-  void      init_mana_costs( rank_t* );
-  bool      dual_wield() { return main_hand_weapon.type != WEAPON_NONE && off_hand_weapon.type != WEAPON_NONE; }
-  void      aura_gain( const char* name );
-  void      aura_loss( const char* name );
-  gain_t*   get_gain  ( const std::string& name );
-  proc_t*   get_proc  ( const std::string& name );
-  stats_t*  get_stats ( const std::string& name );
-  uptime_t* get_uptime( const std::string& name );
-
-  virtual double strength()  { return attribute_multiplier[ ATTR_STRENGTH  ] * attribute[ ATTR_STRENGTH  ]; }
-  virtual double agility()   { return attribute_multiplier[ ATTR_AGILITY   ] * attribute[ ATTR_AGILITY   ]; }
-  virtual double stamina()   { return attribute_multiplier[ ATTR_STAMINA   ] * attribute[ ATTR_STAMINA   ]; }
-  virtual double intellect() { return attribute_multiplier[ ATTR_INTELLECT ] * attribute[ ATTR_INTELLECT ]; }
-  virtual double spirit()    { return attribute_multiplier[ ATTR_SPIRIT    ] * attribute[ ATTR_SPIRIT    ]; }
-  
   void parse_talents( talent_translation_t*, const std::string& talent_string );
   void parse_wowhead( talent_translation_t translation[][3], const std::string& talent_string );
 
@@ -719,6 +708,22 @@ struct player_t
   shaman_t * cast_shaman () { assert( type == SHAMAN     ); return (shaman_t *) this; }
   warlock_t* cast_warlock() { assert( type == WARLOCK    ); return (warlock_t*) this; }
   pet_t*     cast_pet    () { assert( type == PLAYER_PET ); return (pet_t    *) this; }
+
+  bool      in_gcd() { return gcd_ready > sim -> current_time; }
+  bool      recent_cast();
+  action_t* find_action( const std::string& );
+  void      share_cooldown( const std::string& name, double ready );
+  void      share_duration( const std::string& name, double ready );
+  void      recalculate_haste()  {  haste = 1.0 / ( 1.0 + haste_rating / rating.haste ); }
+  double    spirit_regen_per_second();
+  void      init_mana_costs( rank_t* );
+  bool      dual_wield() { return main_hand_weapon.type != WEAPON_NONE && off_hand_weapon.type != WEAPON_NONE; }
+  void      aura_gain( const char* name );
+  void      aura_loss( const char* name );
+  gain_t*   get_gain  ( const std::string& name );
+  proc_t*   get_proc  ( const std::string& name );
+  stats_t*  get_stats ( const std::string& name );
+  uptime_t* get_uptime( const std::string& name );
 };
 
 // Pet =======================================================================

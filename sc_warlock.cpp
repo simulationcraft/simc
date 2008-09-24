@@ -298,11 +298,11 @@ struct warlock_pet_t : public pet_t
     attribute_base[ ATTR_INTELLECT ] = 133;
     attribute_base[ ATTR_SPIRIT    ] = 122;
 
-    attribute_multiplier[ ATTR_STAMINA   ] *= 1.0 + ( o -> talents.fel_stamina  * 0.03 +
-						      o -> talents.fel_vitality * 0.05 );
+    attribute_multiplier_initial[ ATTR_STAMINA   ] *= 1.0 + ( o -> talents.fel_stamina  * 0.03 +
+							      o -> talents.fel_vitality * 0.05 );
 
-    attribute_multiplier[ ATTR_INTELLECT ] *= 1.0 + ( o -> talents.fel_intellect * 0.03 +
-						      o -> talents.fel_vitality  * 0.05 );
+    attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.0 + ( o -> talents.fel_intellect * 0.03 +
+							      o -> talents.fel_vitality  * 0.05 );
 
     initial_attack_power_per_strength = 2.0;
 
@@ -327,13 +327,15 @@ struct warlock_pet_t : public pet_t
   virtual double stamina()
   {
     warlock_t* o = cast_pet() -> owner -> cast_warlock();
-    return pet_t::stamina() + o -> stamina() * o -> talents.fel_synergy * 0.05;
+    double owner_contribution = 0.30 + o -> talents.fel_synergy * 0.05;
+    return composite_attribute_multiplier( ATTR_STAMINA ) * ( attribute[ ATTR_STAMINA ] + owner_contribution * owner -> stamina() );
   }
 
   virtual double intellect()
   {
     warlock_t* o = cast_pet() -> owner -> cast_warlock();
-    return pet_t::intellect() + o -> intellect() * o -> talents.fel_synergy * 0.05;
+    double owner_contribution = 0.30 + o -> talents.fel_synergy * 0.05;
+    return composite_attribute_multiplier( ATTR_INTELLECT ) * ( attribute[ ATTR_INTELLECT ] + owner_contribution * owner -> stamina() );
   }
 
   void adjust_base_modifiers( action_t* a )

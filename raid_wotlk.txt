@@ -51,10 +51,6 @@ target_armor=6400
 # Both blessing_of_wisdom=1 and sanctified_retribution=1 would be included in each player section as appropriate.
 judgement_of_wisdom=1
 
-# Since support for the Warlock class does not yet exist, one can specify static target debuffs.
-# CoE is currently coded as affecting Nature damage, too.
-curse_of_elements=13
-
 #
 # Shadow Priest
 #
@@ -342,7 +338,7 @@ swift_retribution=1
 shaman=Shaman_Elemental
 level=80
 talents=http://talent.mmo-champion.com/?shaman=353005150021535102501350000000000000000000000000003050500300000000000000000000
-actions=flask,type=blinding_light/flametongue_weapon,weapon=main/mana_potion,trigger=3500/mana_spring_totem/totem_of_wrath/wrath_of_air_totem/flame_shock/lava_burst,flame_shock=1,max_ticks_consumed=1/elemental_mastery/bloodlust,target_pct=35/lightning_bolt
+actions=flask,type=blinding_light/flametongue_weapon,weapon=main/mana_potion,trigger=3500/mana_spring_totem/totem_of_wrath/wrath_of_air_totem/elemental_mastery/lava_burst/bloodlust,target_pct=35/lightning_bolt
 gear_stamina=708
 gear_intellect=687
 gear_spirit=250
