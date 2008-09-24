@@ -2829,14 +2829,17 @@ struct conflagrate_t : public warlock_spell_t
 
 struct incinerate_t : public warlock_spell_t
 {
+  int8_t molten_core;
+
   incinerate_t( player_t* player, const std::string& options_str ) : 
-    warlock_spell_t( "incinerate", player, SCHOOL_FIRE, TREE_DESTRUCTION )
+    warlock_spell_t( "incinerate", player, SCHOOL_FIRE, TREE_DESTRUCTION ), molten_core(0)
   {
     warlock_t* p = player -> cast_warlock();
 
     option_t options[] =
     {
-      { "rank", OPT_INT8, &rank_index },
+      { "rank",        OPT_INT8, &rank_index  },
+      { "molten_core", OPT_INT8, &molten_core },
       { NULL }
     };
     parse_options( options, options_str );
@@ -2891,6 +2894,20 @@ struct incinerate_t : public warlock_spell_t
       trigger_soul_leech( this );
       trigger_tier5_4pc( this, p -> active_immolate );
     }
+  }
+
+  virtual bool ready()
+  {
+    warlock_t* p = player -> cast_warlock();
+
+    if( ! warlock_spell_t::ready() )
+      return false;
+
+    if( molten_core )
+      if( ! sim -> time_to_think( p -> buffs_molten_core ) )
+	return false;
+	  
+    return true;
   }
 };
 
