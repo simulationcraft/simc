@@ -769,7 +769,7 @@ struct shadow_word_pain_t : public priest_spell_t
       base_cost *= 1.0 - p -> talents.shadow_focus * 0.02;
       base_multiplier *= 1.0 + ( p -> talents.darkness                  * 0.02 +
                                  p -> talents.twin_disciplines          * 0.01 +
-                                 p -> talents.improved_shadow_word_pain * 0.05 );
+                                 p -> talents.improved_shadow_word_pain * 0.03 );
     }
     else
     {
@@ -1239,7 +1239,8 @@ struct mind_flay_wotlk_t : public priest_spell_t
     channeled         = true; 
     binary            = false;
     may_crit          = true;
-    direct_power_mod  = 0.77 / num_ticks;
+    direct_power_mod  = base_tick_time / 3.5;
+    direct_power_mod *= 0.9;  // Nerf Bat!
 
     base_cost         = rank -> cost;
     base_cost        *= 1.0 - p -> talents.focused_mind * 0.05;
