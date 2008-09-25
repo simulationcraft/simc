@@ -251,6 +251,7 @@ struct warlock_spell_t : public spell_t
   }
 
   // Overridden Methods
+  virtual double haste();
   virtual double execute_time();
   virtual void   player_buff();
   virtual void   target_debuff( int8_t dmg_type );
@@ -1504,6 +1505,16 @@ void imp_pet_t::spell_hit_event( spell_t* s )
 // Warlock Spell
 // ==========================================================================
 
+// warlock_spell_t::haste ===================================================
+
+double warlock_spell_t::haste()
+{
+  warlock_t* p = player -> cast_warlock();
+  double h = spell_t::haste();
+  if( p -> buffs_eradication ) h *= ( 1.0 / 1.20 );
+  return h;
+}
+
 // warlock_spell_t::execute_time ============================================
 
 double warlock_spell_t::execute_time()
@@ -1515,8 +1526,7 @@ double warlock_spell_t::execute_time()
     p -> uptimes_backdraft   -> update( p -> buffs_backdraft   );
     p -> uptimes_eradication -> update( p -> buffs_eradication );
 
-    if( p -> buffs_backdraft && tree == TREE_DESTRUCTION ) t *= ( 1.0 / ( 1.0 + p -> talents.backdraft * 0.10 ) );
-    if( p -> buffs_eradication ) t *= ( 1.0 / 1.20 );
+    if( p -> buffs_backdraft && tree == TREE_DESTRUCTION ) t *= 1.0 - p -> talents.backdraft * 0.10;
   }
   return t;
 }
