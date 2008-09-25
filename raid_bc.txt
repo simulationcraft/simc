@@ -183,6 +183,10 @@ gear_spell_power=1100
 gear_spell_crit_rating=200
 gear_spell_hit_rating=100
 gear_haste_rating=100
+# Three Treants modeled as one pet that hits 3x hard
+pet=treants
+quiet=1
+active=owner
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
 blessing_of_kings=1
 blessing_of_wisdom=1

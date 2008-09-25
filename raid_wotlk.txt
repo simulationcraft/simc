@@ -295,6 +295,10 @@ gear_haste_rating=585
 glyph_moonfire=1
 glyph_starfire=1
 glyph_insect_swarm=1
+# Three Treants modeled as one pet that hits 3x hard
+pet=treants
+quiet=1
+active=owner
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
 blessing_of_kings=1
 blessing_of_wisdom=1

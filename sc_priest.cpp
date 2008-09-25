@@ -1609,7 +1609,7 @@ struct shadow_fiend_spell_t : public priest_spell_t
   int16_t trigger;
 
   shadow_fiend_spell_t( player_t* player, const std::string& options_str ) : 
-    priest_spell_t( "summon", player, SCHOOL_SHADOW, TREE_SHADOW ), trigger(0)
+    priest_spell_t( "shadow_fiend", player, SCHOOL_SHADOW, TREE_SHADOW ), trigger(0)
   {
     priest_t* p = player -> cast_priest();
 

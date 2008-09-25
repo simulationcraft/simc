@@ -43,6 +43,7 @@ struct druid_t : public player_t
   struct talents_t
   {
     int8_t  balance_of_power;
+    int8_t  brambles;
     int8_t  celestial_focus;
     int8_t  dreamstate;
     int8_t  earth_and_moon;
@@ -129,6 +130,7 @@ struct druid_t : public player_t
   virtual bool      parse_talents( const std::string& talent_string, int encoding );
   virtual bool      parse_option ( const std::string& name, const std::string& value );
   virtual action_t* create_action( const std::string& name, const std::string& options );
+  virtual pet_t*    create_pet   ( const std::string& name );
   virtual int       primary_resource() { return RESOURCE_MANA; }
 
   // Event Tracking
@@ -158,6 +160,78 @@ struct druid_spell_t : public spell_t
   virtual void schedule_execute() { spell_t::schedule_execute(); }
   virtual void last_tick()        { spell_t::last_tick();        }
   virtual bool ready()            { return spell_t::ready();     }
+};
+
+// ==========================================================================
+// Pet Treants
+// ==========================================================================
+
+struct treants_pet_t : public pet_t
+{
+  struct melee_t : public attack_t
+  {
+    melee_t( player_t* player ) : 
+      attack_t( "melee", player )
+    {
+      druid_t* o = player -> cast_pet() -> owner -> cast_druid();
+
+      weapon = &( player -> main_hand_weapon );
+      base_execute_time = weapon -> swing_time;
+      base_direct_dmg = 1;
+      background = true;
+      repeating = true;
+      
+      if( sim_t::WotLK ) base_multiplier *= 1.0 + o -> talents.brambles * 0.05;
+
+      // Model the three Treants as one actor hitting 3x hard
+      base_multiplier *= 3.0;
+    }
+    virtual void execute()
+    {
+      attack_t::execute();
+      if( result_is_hit() )
+      {
+	if( ! sim_t::WotLK )
+	{
+	  enchant_t::trigger_flametongue_totem( this );
+	  enchant_t::trigger_windfury_totem( this );
+	}
+      }
+    }
+    void player_buff()
+    {
+      attack_t::player_buff();
+      player_t* o = player -> cast_pet() -> owner;
+      player_power += 0.57 * o -> composite_spell_power( SCHOOL_MAX );
+    }
+  };
+
+  melee_t* melee;
+
+  treants_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name ) :
+    pet_t( sim, owner, pet_name )
+  {
+    main_hand_weapon.type       = WEAPON_BEAST;
+    main_hand_weapon.damage     = 100;
+    main_hand_weapon.swing_time = 1.6;
+
+    melee = new melee_t( this );
+  }
+  virtual void init_base()
+  {
+    attribute_base[ ATTR_STRENGTH  ] = 153;
+    attribute_base[ ATTR_AGILITY   ] = 108;
+    attribute_base[ ATTR_STAMINA   ] = 280;
+    attribute_base[ ATTR_INTELLECT ] = 133;
+
+    base_attack_power = -20;
+    initial_attack_power_per_strength = 2.0;
+  }
+  virtual void summon()
+  {
+    pet_t::summon();
+    melee -> execute(); // Kick-off repeating attack
+  }
 };
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
@@ -1000,6 +1074,67 @@ struct mark_of_the_wild_t : public druid_spell_t
   }
 };
 
+// Treants Spell ============================================================
+
+struct treants_spell_t : public druid_spell_t
+{
+  struct treants_expiration_t : public event_t
+  {
+    treants_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
+    {
+      sim -> add_event( this, 30.0 );
+    }
+    virtual void execute()
+    {
+      player -> dismiss_pet( "treants" );
+    }
+  };
+
+  int8_t target_pct;
+
+  treants_spell_t( player_t* player, const std::string& options_str ) : 
+    druid_spell_t( "treants", player, SCHOOL_NATURE, TREE_BALANCE ), target_pct(0)
+  {
+    druid_t* p = player -> cast_druid();
+    assert( p -> talents.force_of_nature );
+
+    option_t options[] =
+    {
+      { "target_pct", OPT_INT8, &target_pct },
+      { NULL }
+    };
+    parse_options( options, options_str );
+
+    cooldown = 180.0;
+    base_cost = p -> resource_base[ RESOURCE_MANA ] * 0.12;
+  }
+
+  virtual void execute() 
+  {
+    consume_resource();
+    update_ready();
+    player -> summon_pet( "treants" );
+    player -> action_finish( this );
+    new treants_expiration_t( sim, player );
+  }
+
+  virtual bool ready()
+  {
+    if( ! druid_spell_t::ready() )
+      return false;
+
+    target_t* t = sim -> target;
+
+    if( target_pct == 0 )
+      return true;
+
+    if( t -> initial_health <= 0 )
+      return false;
+
+    return( ( t -> current_health / t -> initial_health ) < ( target_pct / 100.0 ) );
+  }
+};
+
 // ============================================================================
 // Druid Event Tracking
 // ============================================================================
@@ -1081,9 +1216,19 @@ action_t* druid_t::create_action( const std::string& name,
   if( name == "moonkin_form"      ) return new     moonkin_form_t( this, options_str );
   if( name == "natures_swiftness" ) return new druids_swiftness_t( this, options_str );
   if( name == "starfire"          ) return new         starfire_t( this, options_str );
+  if( name == "treants"           ) return new    treants_spell_t( this, options_str );
   if( name == "wrath"             ) return new            wrath_t( this, options_str );
 
   return player_t::create_action( name, options_str );
+}
+
+// druid_t::create_pet ======================================================
+
+pet_t* druid_t::create_pet( const std::string& pet_name )
+{
+  if( pet_name == "treants" ) return new treants_pet_t( sim, this, pet_name );
+
+  return 0;
 }
 
 // druid_t::init_base =======================================================
@@ -1226,6 +1371,7 @@ bool druid_t::parse_talents( const std::string& talent_string,
       {  3,  &( talents.moonglow                  ) },
       {  4,  &( talents.natures_majesty           ) },
       {  5,  &( talents.improved_moonfire         ) },
+      {  6,  &( talents.brambles                  ) },
       {  7,  &( talents.natures_grace             ) },
       {  8,  &( talents.natures_splendor          ) },
       {  9,  &( talents.natures_reach             ) },
