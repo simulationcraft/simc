@@ -1095,7 +1095,7 @@ struct arcane_blast_t : public mage_spell_t
     double c = mage_spell_t::cost();
     if( c != 0 )
     {
-      if( p -> buffs_arcane_blast ) c += base_cost * 0.30 * p -> buffs_arcane_blast;
+      if( p -> buffs_arcane_blast ) c += base_cost * p -> buffs_arcane_blast * ( sim_t::WotLK ? 2.00 : 0.30 );
       if( p -> gear.tier5_2pc     ) c += base_cost * 0.20;
     }
     return c;
@@ -2217,17 +2217,18 @@ struct deep_freeze_t : public mage_spell_t
 
     option_t options[] =
     {
-      { "fb_priority", OPT_INT8, &fb_priority },
-      { "rank",        OPT_INT8, &rank_index  },
+      { "fb_priority",   OPT_INT8, &fb_priority   },
+      { "rank",          OPT_INT8, &rank_index    },
       { NULL }
     };
     parse_options( options, options_str );
       
     static rank_t ranks[] =
     {
-      { 80, 4, 1319, 1531, 0, 0.08 },
-      { 72, 3, 1018, 1182, 0, 0.08 },
-      { 66, 2,  787,  913, 0, 0.08 },
+      { 80, 4, 1189, 1381, 0, 0.08 },
+      { 72, 3,  916, 1064, 0, 0.08 },
+      { 66, 2,  708,  822, 0, 0.08 },
+      { 60, 1,  625,  725, 0, 0.08 },
       { 0, 0 }
     };
     player -> init_mana_costs( ranks );

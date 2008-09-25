@@ -179,34 +179,6 @@ sanctified_retribution=1
 swift_retribution=1
 
 #
-# Mage_ArcaneSpam
-#
-# As of right now Arcane Blast spam is the highest DPS spec.
-# The Arcane tree is broken..... or Arcane Blast simply does not cost enough mana.
-#
-mage=Mage_ArcaneSpam
-level=80
-talents=http://talent.mmo-champion.com/?mage=00000000000000000000000000000530033010020000000000000000230005033100300150323102515321
-actions=flask,type=blinding_light/mage_armor/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/arcane_power/arcane_blast
-# Uncomment these lines to enable Focus Magic
-# actions=flask,type=blinding_light/mage_armor/focus_magic,target=Druid_Balance/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/arcane_power/arcane_blast
-gear_stamina=708
-gear_intellect=687
-gear_spirit=250
-gear_spell_power=2004
-gear_spell_crit_rating=596
-gear_spell_hit_rating=12
-gear_haste_rating=585
-# Glyphs
-glyph_arcane_power=1
-glyph_mage_armor=1
-# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
-blessing_of_kings=1
-blessing_of_wisdom=1
-sanctified_retribution=1
-swift_retribution=1
-
-#
 # Mage_Fire
 #
 # (1) The "trigger=3500" option to mana_gem and mana_potion represents the mana gained and the amount below max required to trigger
