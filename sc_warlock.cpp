@@ -2850,16 +2850,18 @@ struct conflagrate_t : public warlock_spell_t
 
 struct incinerate_t : public warlock_spell_t
 {
+  int8_t backdraft;
   int8_t molten_core;
 
   incinerate_t( player_t* player, const std::string& options_str ) : 
-    warlock_spell_t( "incinerate", player, SCHOOL_FIRE, TREE_DESTRUCTION ), molten_core(0)
+    warlock_spell_t( "incinerate", player, SCHOOL_FIRE, TREE_DESTRUCTION ), backdraft(0), molten_core(0)
   {
     warlock_t* p = player -> cast_warlock();
 
     option_t options[] =
     {
       { "rank",        OPT_INT8, &rank_index  },
+      { "backdraft",   OPT_INT8, &backdraft   },
       { "molten_core", OPT_INT8, &molten_core },
       { NULL }
     };
@@ -2923,6 +2925,10 @@ struct incinerate_t : public warlock_spell_t
 
     if( ! warlock_spell_t::ready() )
       return false;
+
+    if( backdraft )
+      if( ! p -> buffs_backdraft )
+	return false;
 
     if( molten_core )
       if( ! sim -> time_to_think( p -> buffs_molten_core ) )
