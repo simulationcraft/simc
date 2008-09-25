@@ -2494,7 +2494,7 @@ struct mana_spring_totem_t : public shaman_spell_t
     {
       if( p -> party == player -> party )
       {
-	p -> resource_gain( RESOURCE_MANA, base_multiplier * 20.0, p -> gains.mana_spring );
+	p -> resource_gain( RESOURCE_MANA, base_multiplier * 30.0, p -> gains.mana_spring );
       }
     }
   }
