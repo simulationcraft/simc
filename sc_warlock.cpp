@@ -1570,7 +1570,7 @@ void warlock_spell_t::player_buff()
   else if( school == SCHOOL_CHAOS )
   {
     // FIXME! What other buffs apply???
-    if( p -> buffs_shadow_vulnerability ) player_multiplier *= 1.0 + p -> talents.improved_shadow_bolt * 0.03;
+    if( p -> buffs_shadow_vulnerability ) player_multiplier *= 1.0 + p -> talents.improved_shadow_bolt * 0.02;
     p -> uptimes_shadow_vulnerability -> update( p -> buffs_shadow_vulnerability != 0 );
   }
 
@@ -1820,8 +1820,8 @@ struct curse_of_agony_t : public warlock_spell_t
     rank = choose_rank( ranks );
       
     base_execute_time = 0; 
-    base_tick_time    = 24.0; 
-    num_ticks         = 8;
+    base_tick_time    = 2.0; 
+    num_ticks         = 12;
     tick_power_mod    = base_tick_time / 15.0;
 
     base_cost        = rank -> cost;
@@ -1833,7 +1833,6 @@ struct curse_of_agony_t : public warlock_spell_t
 
     if( sim_t::WotLK && p -> talents.amplify_curse ) 
     {
-      base_multiplier *= 1.15;
       trigger_gcd = 1.0;
     }
   }
@@ -1914,7 +1913,6 @@ struct curse_of_doom_t : public warlock_spell_t
 
     if( sim_t::WotLK && p -> talents.amplify_curse )
     {
-      base_multiplier *= 1.15;
       trigger_gcd = 1.0;
     }
   }
@@ -1977,6 +1975,13 @@ struct amplify_curse_t : public warlock_spell_t
     p -> aura_gain( "Amplify Curse" );
     p -> buffs_amplify_curse = 1;
     update_ready();
+  }
+
+  virtual bool ready()
+  {
+    if( sim_t::WotLK ) return false;
+
+    return warlock_spell_t::ready();
   }
 };
 
