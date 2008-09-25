@@ -848,6 +848,8 @@ void player_t::resource_gain( int8_t  resource,
                               double  amount,
                               gain_t* source )
 {
+  if( sleeping ) return;
+
   double actual_amount = std::min( amount, resource_max[ resource ] - resource_current[ resource ] );
   if( actual_amount > 0 )
   {

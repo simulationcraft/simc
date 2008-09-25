@@ -743,9 +743,11 @@ struct pet_t : public player_t
   virtual double stamina();
   virtual double intellect();
 
-  virtual const char* name() { return full_name_str.c_str(); }
+  virtual void reset();
   virtual void summon();
   virtual void dismiss();
+
+  virtual const char* name() { return full_name_str.c_str(); }
 };
 
 // Target ====================================================================

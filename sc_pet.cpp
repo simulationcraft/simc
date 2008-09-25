@@ -36,11 +36,20 @@ double pet_t::intellect()
   return composite_attribute_multiplier( ATTR_INTELLECT ) * ( attribute[ ATTR_INTELLECT ] + 0.30 * owner -> intellect() );
 }
 
+// pet_t::reset =============================================================
+
+void pet_t::reset()
+{
+  player_t::reset();
+  sleeping = 1;
+}
+
 // pet_t::summon ============================================================
 
 void pet_t::summon()
 {
   if( sim -> log ) report_t::log( sim, "%s summons %s.", owner -> name(), name() );
+  sleeping = 0;
   init_resources( true );
 }
 
@@ -49,6 +58,8 @@ void pet_t::summon()
 void pet_t::dismiss()
 {
   if( sim -> log ) report_t::log( sim, "%s dismisses %s", owner -> name(), name() );
+
+  sleeping = 1;
 
   for( action_t* a = action_list; a; a = a -> next )
   {

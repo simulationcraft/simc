@@ -661,7 +661,7 @@ struct felguard_pet_t : public warlock_pet_t
   }
   virtual void reset()
   {
-    player_t::reset();
+    pet_t::reset();
     buffs_demonic_frenzy = 0;
   }
   virtual void summon()

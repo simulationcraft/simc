@@ -163,7 +163,7 @@ void regen_event_t::execute()
 {
   for( player_t* p = sim -> player_list; p; p = p -> next )
   {
-    p -> regen( sim -> regen_periodicity );
+    if( ! p -> sleeping ) p -> regen( sim -> regen_periodicity );
   }
   
   new regen_event_t( sim );
