@@ -1053,8 +1053,7 @@ struct mind_blast_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
     if( p -> talents.twisted_faith )
     {
-      if( p -> active_shadow_word_pain ) player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.01;
-      if( p -> active_vampiric_touch   ) player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.01;
+      if( p -> active_shadow_word_pain ) player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.02;
     }
   }
 };
@@ -1275,8 +1274,7 @@ struct mind_flay_wotlk_t : public priest_spell_t
     priest_spell_t::player_buff();
     if( p -> talents.twisted_faith )
     {
-      if( p -> active_shadow_word_pain ) player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.01;
-      if( p -> active_vampiric_touch   ) player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.01;
+      if( p -> active_shadow_word_pain ) player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.02;
     }
   }
 
