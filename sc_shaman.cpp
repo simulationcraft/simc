@@ -1003,11 +1003,12 @@ struct chain_lightning_t : public shaman_spell_t
     rank = choose_rank( ranks );
 
     base_execute_time  = 2.0; 
-    direct_power_mod   = 0.7143;
     may_crit           = true;
     cooldown           = 6.0;
-    base_cost          = rank -> cost;
+    direct_power_mod   = 0.7143;
 
+    base_cost          = rank -> cost;
+    cooldown          -= p -> talents.storm_earth_and_fire * 0.5;
     base_execute_time -= p -> talents.lightning_mastery * 0.1;
     base_cost         *= 1.0 - p -> talents.convection * 0.02;
     base_multiplier   *= 1.0 + p -> talents.concussion * 0.01;
@@ -1107,7 +1108,6 @@ struct lightning_bolt_t : public shaman_spell_t
     base_crit         += p -> talents.call_of_thunder * ( sim_t::WotLK ? 0.05 : 0.01 );;
     base_crit         += p -> talents.tidal_mastery * 0.01;
     base_crit_bonus   *= 1.0 + p -> talents.elemental_fury * 0.20;
-    direct_power_mod  += p -> talents.storm_earth_and_fire * 0.02; 
 
     if( p -> gear.tier6_4pc ) base_multiplier *= 1.05;
     if( p -> glyphs.lightning_bolt ) base_cost *= 0.90;
@@ -1689,6 +1689,7 @@ struct totem_of_wrath_t : public shaman_spell_t
     base_cost     *= 1.0 - p -> talents.totemic_focus * 0.05;
     base_cost     *= 1.0 - p -> talents.mental_quickness * 0.02;
     duration_group = "fire_totem";
+    trigger_gcd    = 1.0;
 
     if( p -> glyphs.totem_of_wrath ) haste = 1;
 
@@ -2467,7 +2468,7 @@ struct mana_spring_totem_t : public shaman_spell_t
 
     harmful         = false;
     base_tick_time  = 2.0; 
-    num_ticks       = 60;
+    num_ticks       = 150;
     duration_group  = "water_totem";
     base_cost       = 120;
     base_cost      *= 1.0 - p -> talents.totemic_focus * 0.05;

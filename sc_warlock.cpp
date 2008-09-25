@@ -1515,7 +1515,7 @@ double warlock_spell_t::execute_time()
     p -> uptimes_backdraft   -> update( p -> buffs_backdraft   );
     p -> uptimes_eradication -> update( p -> buffs_eradication );
 
-    if( p -> buffs_backdraft && tree == TREE_DESTRUCTION ) t *= ( 1.0 / 1.30 );
+    if( p -> buffs_backdraft && tree == TREE_DESTRUCTION ) t *= ( 1.0 / ( 1.0 + p -> talents.backdraft * 0.10 ) );
     if( p -> buffs_eradication ) t *= ( 1.0 / 1.20 );
   }
   return t;
@@ -1529,7 +1529,7 @@ void warlock_spell_t::player_buff()
 
   spell_t::player_buff();
 
-  if( p -> buffs_metamorphosis ) player_multiplier *= 1.40;
+  if( p -> buffs_metamorphosis ) player_multiplier *= 1.20;
 
   if( p -> talents.malediction ) player_multiplier *= 1.0 + p -> talents.malediction * 0.01;
   
@@ -1543,7 +1543,7 @@ void warlock_spell_t::player_buff()
     if( p -> buffs_flame_shadow ) player_power += 135;
     p -> uptimes_flame_shadow -> update( p -> buffs_flame_shadow );
 
-    if( p -> buffs_shadow_vulnerability ) player_multiplier *= 1.0 + p -> talents.improved_shadow_bolt * 0.03;
+    if( p -> buffs_shadow_vulnerability ) player_multiplier *= 1.0 + p -> talents.improved_shadow_bolt * 0.02;
     p -> uptimes_shadow_vulnerability -> update( p -> buffs_shadow_vulnerability != 0 );
   }
   else if( school == SCHOOL_FIRE )
@@ -2287,7 +2287,7 @@ struct corruption_t : public warlock_spell_t
 
     if( sim_t::WotLK )
     {
-      base_multiplier *= 1.0 + p -> talents.improved_corruption * 0.04;
+      base_multiplier *= 1.0 + p -> talents.improved_corruption * 0.02;
     }
     else
     {
@@ -3234,7 +3234,7 @@ struct metamorphosis_t : public warlock_spell_t
     parse_options( options, options_str );
       
     base_cost = 0;
-    cooldown = 300;
+    cooldown = 180;
   }
 
   virtual void execute()
@@ -3247,7 +3247,7 @@ struct metamorphosis_t : public warlock_spell_t
 	warlock_t* p = player -> cast_warlock();
 	p -> aura_gain( "Metamorphosis" );
 	p -> buffs_metamorphosis = 1;
-	sim -> add_event( this, 45.0 );
+	sim -> add_event( this, 30.0 );
       }
       virtual void execute()
       {
