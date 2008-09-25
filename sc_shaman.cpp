@@ -340,7 +340,7 @@ static void trigger_windfury_weapon( attack_t* a )
   if( a -> weapon == 0 ) return;
   if( a -> weapon -> buff != WINDFURY_WEAPON ) return;
 
-  if( a -> sim -> cooldown_ready( p -> cooldowns_windfury_weapon ) ) return;
+  if( ! a -> sim -> cooldown_ready( p -> cooldowns_windfury_weapon ) ) return;
 
   if( rand_t::roll( 0.20 ) )
   {
