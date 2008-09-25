@@ -567,11 +567,9 @@ struct insect_swarm_t : public druid_spell_t
       
     static rank_t ranks[] =
     {
-      { 80, 7, 0, 0, 175, 0.08 },
-      { 70, 6, 0, 0, 132, 175  },
-      { 60, 5, 0, 0,  99, 155  },
-      { 50, 4, 0, 0,  72, 135  },
-      { 40, 3, 0, 0,  50, 110  },
+      { 80, 7, 0, 0, 215, 0.08 },
+      { 70, 6, 0, 0, 172, 175  },
+      { 60, 5, 0, 0, 124, 155  },
       { 0, 0 }
     };
     player -> init_mana_costs( ranks );
@@ -759,11 +757,10 @@ struct starfire_t : public druid_spell_t
 
     static rank_t ranks[] =
     {
-      { 80, 8, 661, 779, 0, 0.16 },
-      { 73, 8, 554, 652, 0, 0.16 },
-      { 66, 8, 540, 636, 0, 370  },
-      { 60, 7, 496, 584, 0, 340  },
-      { 58, 6, 445, 525, 0, 315  },
+      { 78, 10, 1028, 1212, 0, 0.16 },
+      { 72,  9,  854, 1006, 0, 0.16 },
+      { 67,  8,  818,  964, 0, 370  },
+      { 60,  7,  693,  817, 0, 340  },
       { 0, 0 }
     };
     player -> init_mana_costs( ranks );
@@ -792,7 +789,7 @@ struct starfire_t : public druid_spell_t
     p -> uptimes_eclipse_starfire -> update( p -> buffs_eclipse_starfire );
     if( p -> buffs_eclipse_starfire )
     {
-      player_crit += 0.10;
+      player_crit += 0.15;
     }
     if( p -> active_moonfire )
     {
@@ -878,11 +875,10 @@ struct wrath_t : public druid_spell_t
 
     static rank_t ranks[] =
     {
-      { 80, 12, 489, 551, 0, 0.11 },
-      { 75, 11, 414, 466, 0, 0.11 },
-      { 70, 10, 381, 429, 0, 255  },
-      { 62,  9, 278, 312, 0, 210  },
-      { 54,  8, 236, 264, 0, 180  },
+      { 79, 12, 553, 623, 0, 0.11 },
+      { 74, 11, 504, 568, 0, 0.11 },
+      { 69, 10, 431, 485, 0, 255  },
+      { 61,  9, 397, 447, 0, 210  },
       { 0, 0 }
     };
     player -> init_mana_costs( ranks );
