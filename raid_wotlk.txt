@@ -277,8 +277,11 @@ swift_retribution=1
 #
 druid=Druid_Balance
 level=80
+# Vanilla build, including Resto talents
 talents=http://talent.mmo-champion.com/?druid=00000000000000000000000000000205003312000000000000000005032003025301305213305300051
-actions=flask,type=blinding_light/mark_of_the_wild/moonkin_form/mana_potion,trigger=3500/innervate/faerie_fire/moonfire/insect_swarm/wrath,eclipse=trigger/starfire
+# Provided JoW is available and Treants are viable in the encounter
+talents=http://talent.mmo-champion.com/?druid=00000000000000000000000000000000000000000000000000000005532203125331335213305311051
+actions=flask,type=blinding_light/mark_of_the_wild/moonkin_form/mana_potion,trigger=3500/innervate/faerie_fire/treants/moonfire/insect_swarm/wrath,eclipse=trigger/starfire
 gear_stamina=708
 gear_intellect=687
 gear_spirit=250
