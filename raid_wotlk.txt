@@ -66,7 +66,7 @@ gear_intellect=687
 gear_spirit=250
 gear_spell_power=2004
 gear_spell_crit_rating=596
-gear_spell_hit_rating=12
+gear_spell_hit_rating=250
 gear_haste_rating=585
 glyph_shadow_word_death=1
 pet=shadow_fiend
@@ -94,7 +94,7 @@ gear_intellect=687
 gear_spirit=250
 gear_spell_power=2004
 gear_spell_crit_rating=596
-gear_spell_hit_rating=12
+gear_spell_hit_rating=250
 gear_haste_rating=585
 pet=shadow_fiend
 main_hand=beast,damage=110,speed=1.5,school=shadow
@@ -123,7 +123,7 @@ gear_intellect=687
 gear_spirit=250
 gear_spell_power=2004
 gear_spell_crit_rating=596
-gear_spell_hit_rating=12
+gear_spell_hit_rating=250
 gear_haste_rating=585
 glyph_shadow_word_death=1
 glyph_shadow_word_pain=1
@@ -161,13 +161,13 @@ level=80
 talents=http://talent.mmo-champion.com/?mage=00000000000000000000000000000530033010020000000000000000230005033100300150323102515321
 actions=flask,type=blinding_light/molten_armor/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/arcane_power/arcane_missiles,barrage=1/arcane_barrage/arcane_blast
 # Uncomment these lines to enable Focus Magic
-# actions=flask,type=blinding_light/molten_armor/focus_magic,target=Priest_Shadow/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/arcane_power/arcane_missiles,barrage=1/arcane_barrage/arcane_blast
+# actions=flask,type=blinding_light/molten_armor/focus_magic,target=Mage_Fire/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/arcane_power/arcane_missiles,barrage=1/arcane_barrage/arcane_blast
 gear_stamina=708
 gear_intellect=687
 gear_spirit=250
 gear_spell_power=2004
 gear_spell_crit_rating=596
-gear_spell_hit_rating=12
+gear_spell_hit_rating=250
 gear_haste_rating=585
 # Glyphs
 glyph_arcane_power=1
@@ -183,21 +183,19 @@ swift_retribution=1
 #
 # (1) The "trigger=3500" option to mana_gem and mana_potion represents the mana gained and the amount below max required to trigger
 # (2) The "trigger=10000" option to evocation represents the mana gained and the amount below max required to trigger
-# (3) The "debuff=1" option to scorch prevents it from being executed unless the Improved Scorch debuff is going to expire in less than 6sec.
-# (4) Unfortunately, Mage Armor is a requirement due to mana constraints
-# (5) Focus Magic from raid dps standpoint is better than Icy Veins, but Fire Mages cannot live without Frost Channeling due to mana constraints.
+# (3) Focus Magic from raid dps standpoint is better than Icy Veins, but Fire Mages cannot live without Frost Channeling due to mana constraints.
 #
 mage=Mage_Fire
 level=80
 # We will let the poor Frost Mage raid-slave keep up the Improved Scorch debuff
-talents=http://talent.mmo-champion.com/?mage=03550300120033310531203013510230033013030000000000000000000000000000000000000000000000
-actions=flask,type=pure_death/mage_armor/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/combustion/icy_veins/living_bomb/pyroblast,hot_streak=1/fire_ball
+talents=http://talent.mmo-champion.com/?mage=03550300120033310531203013510000000000000000000000000000230005031100200000000000000000
+actions=flask,type=pure_death/molten_armor/focus_magic,target=Mage_Frost/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/combustion/living_bomb/pyroblast,hot_streak=1/fire_ball
 gear_stamina=708
 gear_intellect=687
 gear_spirit=250
 gear_spell_power=2004
 gear_spell_crit_rating=596
-gear_spell_hit_rating=12
+gear_spell_hit_rating=250
 gear_haste_rating=585
 # Glyphs
 glyph_fire_ball=1
@@ -213,22 +211,19 @@ swift_retribution=1
 #
 # (1) The "trigger=3500" option to mana_gem and mana_potion represents the mana gained and the amount below max required to trigger
 # (2) The "trigger=10000" option to evocation represents the mana gained and the amount below max required to trigger
-# (3) The "debuff=1" option to scorch prevents it from being executed unless the Improved Scorch debuff is going to expire in less than 6sec.
-# (4) The "frozen=1" option to ice_lance means that it will only be cast if the target is frozen (via winters_grasp) or virtually frozen (via fingers_of_frost)
-# (5) The "fb_priority=1" option to ice_lance and deep_freeze means that it will only be cast if the frozen debuff/buff will end before a frost_bolt could be cast
+# (3) The "frozen=1" option to ice_lance means that it will only be cast if the target is frozen (via winters_grasp) or virtually frozen (via fingers_of_frost)
+# (4) The "fb_priority=1" option to ice_lance and deep_freeze means that it will only be cast if the frozen debuff/buff will end before a frost_bolt could be cast
 #
 mage=Mage_Frost
 level=80
 talents=http://talent.mmo-champion.com/?mage=00000000000000000000000000000533031312233100230052231351230005030100000000000000000000
-actions=flask,type=pure_death/molten_armor/mana_gem,trigger=3500/mana_potion,trigger=2500/deep_freeze,fb_priority=1/ice_lance,frozen=1,fb_priority=1/evocation,trigger=10000/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/frost_bolt
-# Uncomment these lines to enable Focus Magic
-# actions=flask,type=pure_death/molten_armor/focus_magic,target=Mage_FrostFire/mana_gem,trigger=3500/mana_potion,trigger=2500/deep_freeze,fb_priority=1/ice_lance,frozen=1,fb_priority=1/evocation,trigger=10000/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/frost_bolt
+ actions=flask,type=pure_death/molten_armor/focus_magic,target=Mage_Arcane/mana_gem,trigger=3500/mana_potion,trigger=2500/deep_freeze,fb_priority=1/ice_lance,frozen=1,fb_priority=1/evocation,trigger=10000/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/frost_bolt
 gear_stamina=708
 gear_intellect=687
 gear_spirit=250
 gear_spell_power=2004
 gear_spell_crit_rating=596
-gear_spell_hit_rating=12
+gear_spell_hit_rating=250
 gear_haste_rating=585
 # Glyphs
 glyph_molten_armor=1
@@ -262,7 +257,7 @@ gear_intellect=687
 gear_spirit=250
 gear_spell_power=2004
 gear_spell_crit_rating=596
-gear_spell_hit_rating=12
+gear_spell_hit_rating=250
 gear_haste_rating=585
 # Glyphs
 glyph_molten_armor=1
@@ -289,7 +284,7 @@ gear_intellect=687
 gear_spirit=250
 gear_spell_power=2004
 gear_spell_crit_rating=596
-gear_spell_hit_rating=12
+gear_spell_hit_rating=250
 gear_haste_rating=585
 # The starfire glyph is coded with starfire refreshing moonfire, not starfall.
 glyph_moonfire=1
@@ -320,7 +315,7 @@ gear_intellect=687
 gear_spirit=250
 gear_spell_power=2004
 gear_spell_crit_rating=596
-gear_spell_hit_rating=12
+gear_spell_hit_rating=250
 gear_haste_rating=585
 glyph_flametongue_weapon=1
 glyph_totem_of_wrath=1
@@ -382,7 +377,7 @@ gear_intellect=687
 gear_spirit=250
 gear_spell_power=2004
 gear_spell_crit_rating=596
-gear_spell_hit_rating=12
+gear_spell_hit_rating=250
 gear_haste_rating=585
 # Pets
 pet=felhunter
@@ -415,7 +410,7 @@ gear_intellect=687
 gear_spirit=250
 gear_spell_power=2004
 gear_spell_crit_rating=596
-gear_spell_hit_rating=12
+gear_spell_hit_rating=250
 gear_haste_rating=585
 # Pets
 pet=felguard
@@ -452,7 +447,7 @@ gear_intellect=687
 gear_spirit=250
 gear_spell_power=2004
 gear_spell_crit_rating=596
-gear_spell_hit_rating=12
+gear_spell_hit_rating=250
 gear_haste_rating=585
 # Pets
 pet=felhunter
