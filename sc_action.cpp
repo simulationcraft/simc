@@ -243,6 +243,14 @@ bool action_t::result_is_hit()
 	  result == RESULT_BLOCK  );
 }
 
+// action_t::result_is_miss =================================================
+
+bool action_t::result_is_miss()
+{
+  return( result == RESULT_MISS   || 
+	  result == RESULT_RESIST );
+}
+
 // action_t::resistance =====================================================
 
 double action_t::resistance()
@@ -570,7 +578,7 @@ void action_t::update_ready()
 
     player -> share_cooldown( cooldown_group, cooldown );
   }
-  if( ! channeled && num_ticks > 0 && result_is_hit() )
+  if( ! channeled && num_ticks > 0 && ! result_is_miss() )
   {
     if( sim -> debug ) report_t::log( sim, "%s shares duration for %s (%s)", player -> name(), name(), duration_group.c_str() );
 

@@ -739,6 +739,61 @@ static void trigger_hot_streak( spell_t* s )
   }
 }
 
+// trigger_improved_scorch =========================================================
+
+static void trigger_improved_scorch( spell_t* s )
+{
+  mage_t* p = s -> player -> cast_mage();
+
+  if( ! p -> talents.improved_scorch ) return;
+
+  struct expiration_t : public event_t
+  {
+    expiration_t( sim_t* sim ) : event_t( sim )
+    {
+      name = "Improved Scorch Expiration";
+      sim -> add_event( this, 30.0 );
+    }
+    virtual void execute()
+    {
+      if( sim -> log ) report_t::log( sim, "%s loses Improved Scorch", sim -> target -> name() );
+      sim -> target -> debuffs.improved_scorch = 0;
+      sim -> target -> expirations.improved_scorch = 0;
+    }
+  };
+
+  if( rand_t::roll( p -> talents.improved_scorch * (1.0/3.0) ) )
+  {
+    static int increment = sim_t::WotLK ? 2 : 3;
+
+    target_t* t = s -> sim -> target;
+
+    if( t -> debuffs.improved_scorch < ( 5 * increment ) ) 
+    {
+      if( p -> glyphs.improved_scorch )
+      {
+	t -> debuffs.improved_scorch = 3 * increment;
+      }
+      else
+      {
+	t -> debuffs.improved_scorch += increment;
+      }
+      if( s -> sim -> log ) report_t::log( s -> sim, "%s gains Improved Scorch %d", t -> name(), t -> debuffs.improved_scorch / increment );
+    }
+
+    event_t*& e = t -> expirations.improved_scorch;
+          
+    if( e )
+    {
+      e -> reschedule( 30.0 );
+    }
+    else
+    {
+      e = new expiration_t( s -> sim );
+    }
+  }
+}
+
 // trigger_missile_barrage =========================================================
 
 static void trigger_missile_barrage( spell_t* s )
@@ -877,10 +932,6 @@ void mage_spell_t::execute()
       trigger_tier5_4pc( this );
       trigger_ashtongue_talisman( this );
     }
-  }
-  if( may_crit && num_ticks == 0 )
-  {
-    trigger_hot_streak( this );
   }
   trigger_combustion( this );
   trigger_brain_freeze( this );
@@ -1616,6 +1667,7 @@ struct fire_ball_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
     mage_spell_t::execute();
     if( result_is_hit() ) trigger_missile_barrage( this );
+    trigger_hot_streak( this );
     p -> buffs_brain_freeze = 0;
   }
 
@@ -1875,7 +1927,6 @@ struct pyroblast_t : public mage_spell_t
 
 struct scorch_t : public mage_spell_t
 {
-  int8_t increment;
   int8_t debuff;
   int8_t ab_filler;
 
@@ -1926,60 +1977,13 @@ struct scorch_t : public mage_spell_t
 				p -> talents.burnout     * 0.10 );
 
     if( debuff ) assert( p -> talents.improved_scorch );
-
-    increment = sim_t::WotLK ? 2 : 3;
   }
 
   virtual void execute()
   {
     mage_spell_t::execute(); 
-    mage_t* p = player -> cast_mage();
-    if( result_is_hit() && p -> talents.improved_scorch )
-    {
-      struct expiration_t : public event_t
-      {
-	expiration_t( sim_t* sim ) : event_t( sim )
-        {
-	  name = "Improved Scorch Expiration";
-	  sim -> add_event( this, 30.0 );
-	}
-	virtual void execute()
-	{
-	  if( sim -> log ) report_t::log( sim, "%s loses Improved Scorch", sim -> target -> name() );
-	  sim -> target -> debuffs.improved_scorch = 0;
-	  sim -> target -> expirations.improved_scorch = 0;
-	}
-      };
-
-      if( rand_t::roll( p -> talents.improved_scorch * (1.0/3.0) ) )
-      {
-        target_t* t = sim -> target;
-
-        if( t -> debuffs.improved_scorch < ( 5 * increment ) ) 
-        {
-          if( p -> glyphs.improved_scorch )
-          {
-            t -> debuffs.improved_scorch = 3 * increment;
-          }
-          else
-          {
-            t -> debuffs.improved_scorch += increment;
-          }
-          if( sim -> log ) report_t::log( sim, "%s gains Improved Scorch %d", t -> name(), t -> debuffs.improved_scorch / increment );
-        }
-
-        event_t*& e = t -> expirations.improved_scorch;
-          
-        if( e )
-        {
-          e -> reschedule( 30.0 );
-        }
-        else
-        {
-          e = new expiration_t( sim );
-        }
-      }
-    }
+    if( result_is_hit() ) trigger_improved_scorch( this );
+    trigger_hot_streak( this );
   }
 
   virtual bool ready()
@@ -1989,6 +1993,7 @@ struct scorch_t : public mage_spell_t
 
     if( debuff )
     {
+      static int increment = sim_t::WotLK ? 2 : 3;
       target_t* t = sim -> target;
 
       if( t -> debuffs.improved_scorch < ( 5 * increment ) )
@@ -2349,6 +2354,7 @@ struct frostfire_bolt_t : public mage_spell_t
   {
     mage_spell_t::execute();
     if( result_is_hit() ) trigger_missile_barrage( this );
+    trigger_hot_streak( this );
   }
 };
 

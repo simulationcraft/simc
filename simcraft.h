@@ -919,6 +919,7 @@ struct action_t
   virtual void   target_debuff( int8_t dmg_type );
   virtual void   calculate_result() { assert(0); }
   virtual bool   result_is_hit();
+  virtual bool   result_is_miss();
   virtual double calculate_direct_damage(); 
   virtual double calculate_tick_damage(); 
   virtual double resistance();
