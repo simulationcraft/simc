@@ -1823,6 +1823,7 @@ struct curse_of_agony_t : public warlock_spell_t
     base_tick_time    = 2.0; 
     num_ticks         = 12;
     tick_power_mod    = base_tick_time / 15.0;
+    tick_power_mod    = 1.20 / num_ticks;  // Nerf Bat!
 
     base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.suppression * ( sim_t::WotLK ? 0.02 : 0.00 );

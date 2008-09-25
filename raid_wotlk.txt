@@ -374,7 +374,7 @@ swift_retribution=1
 warlock=Warlock_Affliction
 level=80
 talents=http://talent.mmo-champion.com/?warlock=550000000000000000000000002350222001223510253500331351000000000000000000000000000
-actions=flask,type=pure_death/fel_armor/summon_pet,felhunter/haunt/curse_of_doom/corruption/unstable_affliction/siphon_life/immolate/shadow_bolt/life_tap
+actions=flask,type=pure_death/fel_armor/summon_pet,felhunter/haunt/curse_of_agony/corruption/unstable_affliction/siphon_life/immolate/shadow_bolt/life_tap
 gear_stamina=708
 gear_intellect=687
 gear_spirit=250
