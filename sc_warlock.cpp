@@ -55,7 +55,6 @@ struct warlock_t : public player_t
 
   // Gains
   gain_t* gains_dark_pact;
-  gain_t* gains_fel_armor;
   gain_t* gains_felhunter;
   gain_t* gains_life_tap;
   gain_t* gains_sacrifice;
@@ -204,7 +203,6 @@ struct warlock_t : public player_t
 
     // Gains
     gains_dark_pact  = get_gain( "dark_pact"  );
-    gains_fel_armor  = get_gain( "fel_armor"  );
     gains_felhunter  = get_gain( "felhunter"  );
     gains_life_tap   = get_gain( "life_tap"   );
     gains_sacrifice  = get_gain( "sacrifice"  );
@@ -3533,13 +3531,6 @@ void warlock_t::regen( double periodicity )
     double felhunter_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.03 / 4.0;
 
     resource_gain( RESOURCE_MANA, felhunter_regen, gains_felhunter );
-  }
-
-  if( sim_t::WotLK && buffs_fel_armor )
-  {
-    double fel_armor_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.02 / 5.0;
-
-    resource_gain( RESOURCE_MANA, fel_armor_regen, gains_fel_armor );
   }
 }
 
