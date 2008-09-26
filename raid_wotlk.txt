@@ -62,12 +62,12 @@ level=80
 talents=http://wotlk.wowhead.com/?talent=bVMhzhZZG0fVRfzfiqfzAo
 actions=flask,type=pure_death/inner_fire/shadow_form/mana_potion,trigger=3500/shadow_fiend,trigger=6000/dispersion/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/shadow_word_death/mind_flay
 gear_stamina=708
-gear_intellect=687
-gear_spirit=500
-gear_spell_power=2004
-gear_spell_crit_rating=596
+gear_intellect=777
+gear_spirit=411
+gear_spell_power=2200
+gear_spell_crit_rating=461
 gear_spell_hit_rating=250
-gear_haste_rating=585
+gear_haste_rating=492
 glyph_shadow_word_death=1
 pet=shadow_fiend
 main_hand=beast,damage=110,speed=1.5,school=shadow
@@ -90,12 +90,12 @@ level=80
 talents=http://wotlk.wowhead.com/?talent=bVMhzhZZG0fVRfzfiqfzAo
 actions=flask,type=pure_death/inner_fire/shadow_form/mana_potion,trigger=3500/shadow_fiend,trigger=6000/dispersion/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/mind_flay
 gear_stamina=708
-gear_intellect=687
-gear_spirit=500
-gear_spell_power=2004
-gear_spell_crit_rating=596
+gear_intellect=777
+gear_spirit=411
+gear_spell_power=2200
+gear_spell_crit_rating=461
 gear_spell_hit_rating=250
-gear_haste_rating=585
+gear_haste_rating=492
 pet=shadow_fiend
 main_hand=beast,damage=110,speed=1.5,school=shadow
 quiet=1
@@ -119,12 +119,12 @@ level=80
 talents=http://talent.mmo-champion.com/?priest=050230313030512250100020000000555100202015200000000000320000000000000000000000000
 actions=flask,type=blinding_light/inner_fire/divine_spirit/mana_potion,trigger=3500/shadow_fiend,trigger=6000/inner_focus,shadow_word_pain/shadow_word_pain/power_infusion/holy_fire/smite
 gear_stamina=708
-gear_intellect=687
-gear_spirit=500
-gear_spell_power=2004
-gear_spell_crit_rating=596
+gear_intellect=777
+gear_spirit=411
+gear_spell_power=2200
+gear_spell_crit_rating=461
 gear_spell_hit_rating=250
-gear_haste_rating=585
+gear_haste_rating=492
 glyph_shadow_word_death=1
 glyph_shadow_word_pain=1
 pet=shadow_fiend
@@ -161,12 +161,12 @@ level=80
 talents=http://talent.mmo-champion.com/?mage=00550300120030000000000000000000000000000000000000000000230005033100300150323102315321
 actions=flask,type=blinding_light/molten_armor/focus_magic,target=Mage_Fire/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/arcane_missiles,barrage=1/arcane_barrage/fire_ball
 gear_stamina=708
-gear_intellect=687
-gear_spirit=500
-gear_spell_power=2004
-gear_spell_crit_rating=596
+gear_intellect=777
+gear_spirit=411
+gear_spell_power=2200
+gear_spell_crit_rating=461
 gear_spell_hit_rating=250
-gear_haste_rating=585
+gear_haste_rating=492
 # Glyphs
 glyph_fire_ball=1
 glyph_molten_armor=1
@@ -189,12 +189,12 @@ level=80
 talents=http://talent.mmo-champion.com/?mage=03550300120033310531203013510000000000000000000000000000230005031100200000000000000000
 actions=flask,type=pure_death/molten_armor/focus_magic,target=Mage_Frost/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/combustion/living_bomb/pyroblast,hot_streak=1/fire_ball
 gear_stamina=708
-gear_intellect=687
-gear_spirit=500
-gear_spell_power=2004
-gear_spell_crit_rating=596
+gear_intellect=777
+gear_spirit=411
+gear_spell_power=2200
+gear_spell_crit_rating=461
 gear_spell_hit_rating=250
-gear_haste_rating=585
+gear_haste_rating=492
 # Glyphs
 glyph_fire_ball=1
 glyph_molten_armor=1
@@ -217,12 +217,12 @@ level=80
 talents=http://talent.mmo-champion.com/?mage=00000000000000000000000000000533031312233100230052231351230005030100000000000000000000
  actions=flask,type=pure_death/molten_armor/focus_magic,target=Mage_Arcane/mana_gem,trigger=3500/mana_potion,trigger=2500/deep_freeze,fb_priority=1/ice_lance,frozen=1,fb_priority=1/evocation,trigger=10000/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/frost_bolt
 gear_stamina=708
-gear_intellect=687
-gear_spirit=500
-gear_spell_power=2004
-gear_spell_crit_rating=596
+gear_intellect=777
+gear_spirit=411
+gear_spell_power=2200
+gear_spell_crit_rating=461
 gear_spell_hit_rating=250
-gear_haste_rating=585
+gear_haste_rating=492
 # Glyphs
 glyph_molten_armor=1
 glyph_frost_bolt=1
@@ -251,12 +251,12 @@ actions=flask,type=pure_death/molten_armor/mana_gem,trigger=3500/mana_potion,tri
 # We will let the poor Frost Mage raid-slave keep up the Improved Scorch debuff
 skip_actions=scorch
 gear_stamina=708
-gear_intellect=687
-gear_spirit=500
-gear_spell_power=2004
-gear_spell_crit_rating=596
+gear_intellect=777
+gear_spirit=411
+gear_spell_power=2200
+gear_spell_crit_rating=461
 gear_spell_hit_rating=250
-gear_haste_rating=585
+gear_haste_rating=492
 # Glyphs
 glyph_molten_armor=1
 glyph_frostfire=1
@@ -281,12 +281,12 @@ talents=http://talent.mmo-champion.com/?druid=0000000000000000000000000000020500
 talents=http://talent.mmo-champion.com/?druid=00000000000000000000000000000000000000000000000000000005532203125331335213305311051
 actions=flask,type=blinding_light/mark_of_the_wild/moonkin_form/mana_potion,trigger=3500/innervate/faerie_fire/treants/moonfire/insect_swarm/wrath,eclipse=trigger/starfire
 gear_stamina=708
-gear_intellect=687
-gear_spirit=500
-gear_spell_power=2004
-gear_spell_crit_rating=596
+gear_intellect=777
+gear_spirit=411
+gear_spell_power=2200
+gear_spell_crit_rating=461
 gear_spell_hit_rating=250
-gear_haste_rating=585
+gear_haste_rating=492
 # The starfire glyph is coded with starfire refreshing moonfire, not starfall.
 glyph_moonfire=1
 glyph_starfire=1
@@ -312,12 +312,12 @@ level=80
 talents=http://talent.mmo-champion.com/?shaman=353005150021535102501350000000000000000000000000003050500300000000000000000000
 actions=flask,type=blinding_light/flametongue_weapon,weapon=main/mana_potion,trigger=3500/mana_spring_totem/totem_of_wrath/wrath_of_air_totem/elemental_mastery/lava_burst/bloodlust,target_pct=35/chain_lightning/lightning_bolt
 gear_stamina=708
-gear_intellect=687
-gear_spirit=500
-gear_spell_power=2004
-gear_spell_crit_rating=596
+gear_intellect=777
+gear_spirit=411
+gear_spell_power=2200
+gear_spell_crit_rating=461
 gear_spell_hit_rating=250
-gear_haste_rating=585
+gear_haste_rating=492
 glyph_flametongue_weapon=1
 glyph_totem_of_wrath=1
 glyph_lightning_bolt=1
@@ -386,12 +386,12 @@ level=80
 talents=http://talent.mmo-champion.com/?warlock=550000000000000000000000002350222001223510253500331351000000000000000000000000000
 actions=flask,type=pure_death/fel_armor/summon_pet,felhunter/haunt/curse_of_agony/corruption/unstable_affliction/siphon_life/drain_soul,target_pct=20/immolate/shadow_bolt/life_tap
 gear_stamina=708
-gear_intellect=687
-gear_spirit=500
-gear_spell_power=2004
-gear_spell_crit_rating=596
+gear_intellect=777
+gear_spirit=411
+gear_spell_power=2200
+gear_spell_crit_rating=461
 gear_spell_hit_rating=250
-gear_haste_rating=585
+gear_haste_rating=492
 # Glyphs
 glyph_corruption=1
 glyph_curse_of_agony=1
@@ -423,12 +423,12 @@ level=80
 talents=http://talent.mmo-champion.com/?warlock=550030050000000000000000000000000000000000000000000000035033011350101500135031351
 actions=flask,type=pure_death/fel_armor/summon_pet,felguard/curse_of_doom/demonic_empowerment/metamorphosis,target_pct=35/corruption/immolate/shadow_bolt/life_tap
 gear_stamina=708
-gear_intellect=687
-gear_spirit=500
-gear_spell_power=2004
-gear_spell_crit_rating=596
+gear_intellect=777
+gear_spirit=411
+gear_spell_power=2200
+gear_spell_crit_rating=461
 gear_spell_hit_rating=250
-gear_haste_rating=585
+gear_haste_rating=492
 # Glyphs
 glyph_corruption=1
 glyph_felguard=1
@@ -464,12 +464,12 @@ level=80
 talents=http://talent.mmo-champion.com/?warlock=550332050000310513352303510350020000000000000000000000030000000000000000000000000
 actions=flask,type=pure_death/fel_armor/summon_pet,imp/curse_of_doom/chaos_bolt/corruption/immolate/conflagrate/incinerate,molten_core=1/shadow_bolt/life_tap
 gear_stamina=708
-gear_intellect=687
-gear_spirit=500
-gear_spell_power=2004
-gear_spell_crit_rating=596
+gear_intellect=777
+gear_spirit=411
+gear_spell_power=2200
+gear_spell_crit_rating=461
 gear_spell_hit_rating=250
-gear_haste_rating=585
+gear_haste_rating=492
 # Glyphs
 glyph_corruption=1
 glyph_imp=1
