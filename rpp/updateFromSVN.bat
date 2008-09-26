@@ -10,6 +10,7 @@ rmdir resources /s /q
 rmdir intermediate /s /q
 rmdir results /s /q
 rmdir wiki /s /q
+rmdir releases /s /q
 attrib +s updateFromSVN.bat
 erase *.* /a-s /q
 attrib -s updateFromSVN.bat
