@@ -430,9 +430,11 @@ static void trigger_master_of_elements( spell_t* s )
 	s -> school != SCHOOL_FROST )
       return;
 
+  if( s -> resource_consumed == 0 ) return;
+
   mage_t* p = s -> player -> cast_mage();
 
-  p -> resource_gain( RESOURCE_MANA, s -> resource_consumed * p -> talents.master_of_elements * 0.10, p -> gains_master_of_elements );
+  p -> resource_gain( RESOURCE_MANA, s -> base_cost * p -> talents.master_of_elements * 0.10, p -> gains_master_of_elements );
 }
 
 // trigger_molten_fury ======================================================
