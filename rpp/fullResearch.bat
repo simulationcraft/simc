@@ -95,10 +95,10 @@ mkdir wiki
 copy bin\scratmini.templator.exe scratmini.templator.exe
 copy resources\{$Page_WikiName}.wiki wiki\{$Page_WikiName}.wiki
 scratmini.templator template=wiki\{$Page_WikiName}.wiki strings=resources\template.strings
-erase wiki\$Page_WikiName}.wiki
+erase wiki\{$Page_WikiName}.wiki
 copy results\scaling.csv wiki\scaling.csv
 copy results\shadow_manaregen.csv wiki\shadow_manaregen.csv
-del scratmini.reportgen.exe
+del scratmini.templator.exe
 
 :no_wiki
 
