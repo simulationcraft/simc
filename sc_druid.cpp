@@ -209,13 +209,11 @@ struct treants_pet_t : public pet_t
   melee_t* melee;
 
   treants_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name ) :
-    pet_t( sim, owner, pet_name )
+    pet_t( sim, owner, pet_name ), melee(0)
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.damage     = 100;
     main_hand_weapon.swing_time = 1.6;
-
-    melee = new melee_t( this );
   }
   virtual void init_base()
   {
@@ -226,6 +224,8 @@ struct treants_pet_t : public pet_t
 
     base_attack_power = -20;
     initial_attack_power_per_strength = 2.0;
+
+    melee = new melee_t( this );
   }
   virtual void summon()
   {

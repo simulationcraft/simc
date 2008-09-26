@@ -659,13 +659,12 @@ struct felguard_pet_t : public warlock_pet_t
     main_hand_weapon.swing_time = 2.0;
 
     buffs_demonic_frenzy = 0;
-
-    melee = new melee_t( this );
   }
   virtual void init_base()
   {
     warlock_pet_t::init_base();
     base_attack_power = +20;
+    melee = new melee_t( this );
   }
   virtual void reset()
   {
@@ -720,18 +719,17 @@ struct felhunter_pet_t : public warlock_pet_t
   warlock_pet_melee_t* melee;
 
   felhunter_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name ) :
-    warlock_pet_t( sim, owner, pet_name, PET_FELHUNTER )
+    warlock_pet_t( sim, owner, pet_name, PET_FELHUNTER ), melee(0)
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.damage     = 70;
     main_hand_weapon.swing_time = 2.0;
-
-    melee = new warlock_pet_melee_t( this );
   }
   virtual void init_base()
   {
     warlock_pet_t::init_base();
     base_attack_power = -20;
+    melee = new warlock_pet_melee_t( this );
   }
   virtual void summon()
   {
@@ -774,18 +772,17 @@ struct succubus_pet_t : public warlock_pet_t
   warlock_pet_melee_t* melee;
 
   succubus_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name ) :
-    warlock_pet_t( sim, owner, pet_name, PET_SUCCUBUS )
+    warlock_pet_t( sim, owner, pet_name, PET_SUCCUBUS ), melee(0)
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.damage     = 100;
     main_hand_weapon.swing_time = 2.0;
-
-    melee = new warlock_pet_melee_t( this );
   }
   virtual void init_base()
   {
     warlock_pet_t::init_base();
     base_attack_power = -20;
+    melee = new warlock_pet_melee_t( this );
   }
   virtual void summon()
   {

@@ -217,14 +217,12 @@ struct shadow_fiend_pet_t : public pet_t
   melee_t* melee;
 
   shadow_fiend_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name ) :
-    pet_t( sim, owner, pet_name )
+    pet_t( sim, owner, pet_name ), melee(0)
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.damage     = 110;
     main_hand_weapon.swing_time = 1.5;
     main_hand_weapon.school     = SCHOOL_SHADOW;
-
-    melee = new melee_t( this );
   }
   virtual void init_base()
   {
@@ -237,6 +235,8 @@ struct shadow_fiend_pet_t : public pet_t
     initial_attack_power_per_strength = 2.0;
 
     if( owner -> gear.tier4_2pc ) attribute_base[ ATTR_STAMINA ] += 75;
+
+    melee = new melee_t( this );
   }
   virtual void summon()
   {
