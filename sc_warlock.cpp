@@ -1866,9 +1866,9 @@ struct curse_of_agony_t : public warlock_spell_t
     base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.suppression * ( sim_t::WotLK ? 0.02 : 0.00 );
     base_hit        +=       p -> talents.suppression * ( sim_t::WotLK ? 0.01 : 0.02 );
-    base_multiplier *= 1.0 + p -> talents.shadow_mastery * 0.02;
-    base_multiplier *= 1.0 + p -> talents.contagion * 0.01;
-    base_multiplier *= 1.0 + p -> talents.improved_curse_of_agony * 0.05;
+    base_multiplier *= 1.0 + ( p -> talents.shadow_mastery * 0.02 +
+			       p -> talents.contagion * 0.01 +
+			       p -> talents.improved_curse_of_agony * 0.05 );
 
     if( sim_t::WotLK && p -> talents.amplify_curse ) trigger_gcd = 1.0;
 
@@ -2356,8 +2356,8 @@ struct corruption_t : public warlock_spell_t
     base_cost          = rank -> cost;
     base_cost         *= 1.0 - p -> talents.suppression * ( sim_t::WotLK ? 0.02 : 0.00 );
     base_hit          +=       p -> talents.suppression * ( sim_t::WotLK ? 0.01 : 0.02 );
-    base_multiplier   *= 1.0 + p -> talents.shadow_mastery * 0.02;
-    base_multiplier   *= 1.0 + p -> talents.contagion * 0.01;
+    base_multiplier   *= 1.0 + ( p -> talents.shadow_mastery * 0.02 +
+				 p -> talents.contagion * 0.01 );
     tick_power_mod    += p -> talents.empowered_corruption * 0.02;
     tick_power_mod    += p -> talents.everlasting_affliction * 0.01;
 
