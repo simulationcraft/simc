@@ -1,6 +1,8 @@
 = {$Page_DisplayName} =
 === Powered by !SimCraft {$Current_SimCraftRevision} ===
 
+----
+
 ===Disclaimer===
 
 One, who wants to fully comprehend results of this post and use them as valid arguments in the constructive discussion, needs to perfectly understand what assumptions author implied when he wrote the post.
@@ -23,7 +25,7 @@ In short, this research relies on some input data to work with - gear sets, spec
 
 ===Verification and feedback===
 
-If you want to reproduce tests listed below, download [{$Input_Automation_Software} the archive] attached to this post to get configs used for testing, Windows automation software and Windows batch file for 1-click test runs and report generation. To run tests follow instructions in the readme bundled with the archive.
+If you want to quickly reproduce tests listed below, follow [http://code.google.com/p/simulationcraft/wiki/HowToRun_Automation these instructions] (only Windows is supported at the moment).
 
 If you have any feedback, clarifications, bug reports, please, post them at [http://shadowpriest.com/viewtopic.php?f=54&t=16017 the original topic at www.shadowpriest.com] (posting requires you to be registered, registration is _free_).
 
