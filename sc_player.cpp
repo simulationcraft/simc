@@ -1202,9 +1202,9 @@ action_t* player_t::find_action( const std::string& str )
 
 double player_t::spirit_regen_per_second()
 {
-  double base_60 = 0.010999;
+  double base_60 = 0.011000;
   double base_70 = 0.009327;
-  double base_80 = 0.005569;
+  double base_80 = 0.005575;
 
   double base_regen = rating_t::interpolate( level, base_60, base_70, base_80 );
 
