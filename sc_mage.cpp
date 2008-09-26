@@ -2575,20 +2575,18 @@ pet_t* mage_t::create_pet( const std::string& pet_name )
 
 void mage_t::init_base()
 {
-  // level 80 mage stats:  Str 35,  Agi 41,  Sta 60,  Int 179,  Spi 179,  Armor 82,  Health 4884,  Mana 5673,  Crit 1.98%
-
-  attribute_base[ ATTR_STRENGTH  ] =  40;
-  attribute_base[ ATTR_AGILITY   ] =  45;
+  attribute_base[ ATTR_STRENGTH  ] =  35;
+  attribute_base[ ATTR_AGILITY   ] =  41;
   attribute_base[ ATTR_STAMINA   ] =  60;
-  attribute_base[ ATTR_INTELLECT ] = 145;
-  attribute_base[ ATTR_SPIRIT    ] = 155;
+  attribute_base[ ATTR_INTELLECT ] = 179;
+  attribute_base[ ATTR_SPIRIT    ] = 179;
 
   attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.0 + talents.arcane_mind * 0.03;
   attribute_multiplier_initial[ ATTR_SPIRIT    ] *= 1.0 + talents.student_of_the_mind * ( 0.1 / 3.0 );
 
   base_spell_crit = 0.0125;
   initial_spell_crit_per_intellect = rating_t::interpolate( level, 0.01/60.0, 0.01/80.0, 0.01/166.6 );
-  initial_spell_power_per_intellect = talents.mind_mastery * 0.05;
+  initial_spell_power_per_intellect = talents.mind_mastery * 0.03;
 
   base_attack_power = -10;
   base_attack_crit  = 0.03;

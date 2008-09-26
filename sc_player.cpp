@@ -419,8 +419,12 @@ void player_t::init_resources( bool force )
 {
   double resource_bonus[ RESOURCE_MAX ];
   for( int i=0; i < RESOURCE_MAX; i++ ) resource_bonus[ i ] = 0;
-  resource_bonus[ RESOURCE_MANA   ] = intellect() * mana_per_intellect;
-  resource_bonus[ RESOURCE_HEALTH ] = stamina() * health_per_stamina;
+
+  double ci = intellect();
+  double cs = stamina();
+
+  resource_bonus[ RESOURCE_MANA   ] = ( ci - 20 ) * mana_per_intellect + 20;
+  resource_bonus[ RESOURCE_HEALTH ] = ( cs - 20 ) * health_per_stamina + 20;
   
   for( int i=0; i < RESOURCE_MAX; i++ )
   {

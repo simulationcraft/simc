@@ -314,6 +314,9 @@ struct warlock_pet_t : public pet_t
     attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.0 + ( o -> talents.fel_intellect * 0.03 +
 							      o -> talents.fel_vitality  * 0.05 );
 
+      stamina_per_owner += o -> talents.fel_synergy * 0.05;
+    intellect_per_owner += o -> talents.fel_synergy * 0.05;
+
     initial_attack_power_per_strength = 2.0;
 
     resource_base[ RESOURCE_MANA ] = 300;
@@ -332,20 +335,6 @@ struct warlock_pet_t : public pet_t
     buffs_demonic_empowerment = 0;
     expirations_demonic_empathy = 0;
     expirations_demonic_pact = 0;
-  }
-
-  virtual double stamina()
-  {
-    warlock_t* o = cast_pet() -> owner -> cast_warlock();
-    double owner_contribution = 0.30 + o -> talents.fel_synergy * 0.05;
-    return composite_attribute_multiplier( ATTR_STAMINA ) * ( attribute[ ATTR_STAMINA ] + owner_contribution * owner -> stamina() );
-  }
-
-  virtual double intellect()
-  {
-    warlock_t* o = cast_pet() -> owner -> cast_warlock();
-    double owner_contribution = 0.30 + o -> talents.fel_synergy * 0.05;
-    return composite_attribute_multiplier( ATTR_INTELLECT ) * ( attribute[ ATTR_INTELLECT ] + owner_contribution * owner -> stamina() );
   }
 
   void adjust_base_modifiers( action_t* a )

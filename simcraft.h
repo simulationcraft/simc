@@ -735,11 +735,10 @@ struct pet_t : public player_t
   player_t* owner;
   pet_t* next_pet;
 
-  pet_t( sim_t* sim, player_t* owner, const std::string& name );
+  double   stamina_per_owner;
+  double intellect_per_owner;
 
-  // Pets have inherent 5% critical strike chance
-  virtual double composite_attack_crit() { return 0.05; }
-  virtual double composite_spell_crit()  { return 0.05; }
+  pet_t( sim_t* sim, player_t* owner, const std::string& name );
 
   virtual double stamina();
   virtual double intellect();

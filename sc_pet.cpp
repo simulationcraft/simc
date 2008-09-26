@@ -20,20 +20,27 @@ pet_t::pet_t( sim_t*             s,
   full_name_str = owner -> name_str + "_" + name_str;
   next_pet = owner -> pet_list;
   owner -> pet_list = this;
+
+  // Pets have inherent 5% critical strike chance
+  base_spell_crit  = 0.05;
+  base_attack_crit = 0.05;
+
+    stamina_per_owner = 0.30;
+  intellect_per_owner = 0.30;
 }
 
 // pet_t::stamina ===========================================================
 
 double pet_t::stamina()
 {
-  return composite_attribute_multiplier( ATTR_STAMINA ) * ( attribute[ ATTR_STAMINA ] + 0.30 * owner -> stamina() );
+  return composite_attribute_multiplier( ATTR_STAMINA ) * ( attribute[ ATTR_STAMINA ] + stamina_per_owner * owner -> stamina() );
 }
 
 // pet_t::intellect =========================================================
 
 double pet_t::intellect()
 {
-  return composite_attribute_multiplier( ATTR_INTELLECT ) * ( attribute[ ATTR_INTELLECT ] + 0.30 * owner -> intellect() );
+  return composite_attribute_multiplier( ATTR_INTELLECT ) * ( attribute[ ATTR_INTELLECT ] + intellect_per_owner * owner -> intellect() );
 }
 
 // pet_t::reset =============================================================
