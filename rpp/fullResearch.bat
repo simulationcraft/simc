@@ -35,7 +35,7 @@ rmdir results /s /q
 rmdir wiki /s /q
 mkdir intermediate\input
 mkdir intermediate\output
-mkdir intermediate\results
+mkdir results
 
 echo.
 echo =========Preparing binaries=========
@@ -44,11 +44,12 @@ echo.
 copy bin\scratmini.input.exe scratmini.input.exe
 copy bin\scratmini.output.exe scratmini.output.exe
 copy bin\simcraft.exe simcraft.exe
+copy source\raid_wotlk.txt raid_wotlk.txt
 
 echo.
 echo =========Generating sustainability, dps and manaregen data=========
 
-scratmini.input baseline=raid_wotlk.txt scaling=0
+scratmini.input baseline=raid_wotlk.txt scaling=false exclude=shaman=Shaman_Enhancement
 @echo on
 @call _RUN_ME.bat
 @echo off
@@ -68,7 +69,7 @@ if "%choice%" == "y" (goto :do_scaling) else (goto :no_scaling)
 
 :do_scaling
 echo.
-scratmini.input baseline=raid_wotlk.txt scaling=1
+scratmini.input baseline=raid_wotlk.txt scaling=true exclude=shaman=Shaman_Enhancement
 @echo on
 @call _RUN_ME.bat
 @echo off
@@ -89,11 +90,12 @@ if "%choice%" == "Y" (goto :do_wiki) else (goto :seems_no_wiki)
 if "%choice%" == "y" (goto :do_wiki) else (goto :no_wiki)
 
 :do_wiki
-mkdir wiki
-
 echo.
-copy bin\scratmini.reportgen.exe scratmini.reportgen.exe
-scratmini.reportgen
+mkdir wiki
+copy bin\scratmini.templator.exe scratmini.templator.exe
+copy resources\{$Page_WikiName}.wiki wiki\{$Page_WikiName}.wiki
+scratmini.templator template=wiki\{$Page_WikiName}.wiki strings=resources\template.strings
+erase wiki\$Page_WikiName}.wiki
 copy results\scaling.csv wiki\scaling.csv
 copy results\shadow_manaregen.csv wiki\shadow_manaregen.csv
 del scratmini.reportgen.exe
@@ -105,8 +107,9 @@ echo =========Press any key to remove intermediate files
 echo.
 pause
 
-del _RUN_ME.bat
-del *.exe /q
+erase _RUN_ME.bat
+erase *.exe /q
+erase raid_wotlk.txt
 rmdir intermediate /s /q
 
 :end_of_file
