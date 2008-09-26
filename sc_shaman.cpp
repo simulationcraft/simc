@@ -1696,7 +1696,7 @@ struct totem_of_wrath_t : public shaman_spell_t
     if( sim_t::WotLK )
     {
       bonus = ( p -> level <= 60 ? 120 :
-		p -> level <= 70 ? 140 : 160 );
+		p -> level <= 70 ? 140 : 280 );
     }
   }
 

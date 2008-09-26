@@ -103,7 +103,7 @@ void spell_t::player_buff()
 
     if( p -> buffs.totem_of_wrath )
     {
-      if( best_buff < 160 ) best_buff = 160;
+      if( best_buff < p -> buffs.totem_of_wrath ) best_buff = p -> buffs.totem_of_wrath;
     }
     if( p -> buffs.flametongue_totem ) 
     {
