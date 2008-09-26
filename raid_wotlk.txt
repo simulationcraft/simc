@@ -105,7 +105,6 @@ blessing_of_kings=1
 blessing_of_wisdom=1
 sanctified_retribution=1
 swift_retribution=1
-sleeping=1
 
 #
 # Holy Priest

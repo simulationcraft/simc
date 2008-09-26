@@ -40,7 +40,7 @@ Comparative dps tests use three different gear sets:
 
 {$Input_GearSets_Summary}
 
-You can check the Excel 2007 spreadsheet and several screenshots from Excel with exact items breakdown by downloading [{$Input_GearSets_Details) the archive] that is attached to this post.
+You can check the Excel 2007 spreadsheet and several screenshots from Excel with exact items breakdown by downloading [{$Input_GearSets_Details} the archive] that is attached to this post.
 
 ===Raid composition for tests===
 
