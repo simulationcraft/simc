@@ -3,24 +3,31 @@
 echo -----------------------------------------
 echo Initializing environment
 echo.
+
+rmdir bin /s /q
 rmdir source /s /q
 rmdir resources /s /q
-erase bin\simcraft.exe
-erase raid_wotlk.txt
+rmdir intermediate /s /q
+rmdir results /s /q
+rmdir wiki /s /q
+attrib +s updateFromSVN.bat
+erase *.* /a-s /q
+attrib -s updateFromSVN.bat
 
 echo.
 echo -----------------------------------------
-echo Getting sources
+echo Updating from SVN repository
 echo.
 svn checkout http://simulationcraft.googlecode.com/svn/trunk/ source
 
 echo.
 echo -----------------------------------------
-echo Preparing resources
-echo.
-mkdir resources
-copy source\rpp\*.* resources\*.*
-copy source\raid_wotlk.txt raid_wotlk.txt
+echo Deploying automation software
+echo source\rpp\updateFromSVN.bat > excludeList.txt
+xcopy source\rpp . /t /EXCLUDE:excludeList.txt /y
+xcopy source\rpp . /e /EXCLUDE:excludeList.txt /y
+pause
+erase excludeList.txt
 svn info source > resources\svn.info
 
 echo.
