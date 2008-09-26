@@ -1968,6 +1968,12 @@ struct curse_of_doom_t : public warlock_spell_t
     p -> buffs_amplify_curse = 0;
   }
 
+  virtual void assess_damage( double amount, 
+			      int8_t dmg_type )
+  {
+    warlock_spell_t::assess_damage( amount, DMG_DIRECT );
+  }
+
   virtual void last_tick()
   {
     warlock_t* p = player -> cast_warlock();
