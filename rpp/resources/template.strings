@@ -3,7 +3,6 @@ Page_DisplayName = Raid Performance Project for Patch {$Patch_DisplayName} (beta
 
 Current_SimCraftRevision = <autodetected revision of checkout>
 
-Input_Automation_Software = http://simulationcraft.googlecode.com/files/rpp-automation-software.zip
 Input_GearSets_Summary = http://simulationcraft.googlecode.com/files/rpp-gearsets-summary.PNG
 Input_GearSets_Details = http://simulationcraft.googlecode.com/files/rpp-gearsets-details.zip
 Input_SpecsAndActions_Summary = <fragment of baseline.in>
