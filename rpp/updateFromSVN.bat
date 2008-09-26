@@ -23,10 +23,10 @@ svn checkout http://simulationcraft.googlecode.com/svn/trunk/ source
 echo.
 echo -----------------------------------------
 echo Deploying automation software
+echo.
 echo source\rpp\updateFromSVN.bat > excludeList.txt
 xcopy source\rpp . /t /EXCLUDE:excludeList.txt /y
 xcopy source\rpp . /e /EXCLUDE:excludeList.txt /y
-pause
 erase excludeList.txt
 svn info source > resources\svn.info
 
