@@ -1063,17 +1063,12 @@ struct arcane_barrage_t : public mage_spell_t
 
     base_cost         = rank -> cost;
     base_cost        *= 1.0 - p -> talents.frost_channeling * ( sim_t::WotLK ? (0.1/3) : 0 );
+    base_cost        *= 1.0 - p -> talents.arcane_focus * ( sim_t::WotLK ? 0.01 : 0.00 );
     base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
     base_crit        += p -> talents.arcane_instability * 0.01;
     base_hit         += p -> talents.arcane_focus * ( sim_t::WotLK ? 0.01 : 0.02 );
-    base_penetration += p -> talents.arcane_subtlety * 5;
+    base_penetration += p -> talents.arcane_subtlety * ( sim_t::WotLK ? 0 : 5 );
     base_crit_bonus  *= 1.0 + p -> talents.spell_power * 0.25;
-  }
-
-  virtual void execute()
-  {
-    mage_spell_t::execute();
-    if( result_is_hit() ) trigger_missile_barrage( this );
   }
 };
 
@@ -1117,16 +1112,18 @@ struct arcane_blast_t : public mage_spell_t
 
     base_cost         = rank -> cost;
     base_cost        *= 1.0 - p -> talents.frost_channeling * ( sim_t::WotLK ? (0.1/3) : 0 );
+    base_cost        *= 1.0 - p -> talents.arcane_focus * ( sim_t::WotLK ? 0.01 : 0.00 );
     base_multiplier  *= 1.0 + p -> talents.spell_impact * 0.02;
     base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
     base_crit        += p -> talents.arcane_instability * 0.01;
     base_crit        += p -> talents.arcane_impact * 0.02;
+    base_crit        += p -> talents.incineration * 0.02;
     base_hit         += p -> talents.arcane_focus * ( sim_t::WotLK ? 0.01 : 0.02 );
-    base_penetration += p -> talents.arcane_subtlety * 5;
+    base_penetration += p -> talents.arcane_subtlety * ( sim_t::WotLK ? 0 : 5 );
     direct_power_mod += p -> talents.arcane_empowerment * 0.03;
     base_crit_bonus  *= 1.0 + p -> talents.spell_power * 0.25;
 
-    if( p -> gear.tier5_2pc ) base_multiplier *= 1.20;
+    if( p -> gear.tier5_2pc ) base_multiplier *= ( sim_t::WotLK ? 1.05 : 1.20 );
   }
 
   virtual double execute_time()
@@ -1147,7 +1144,13 @@ struct arcane_blast_t : public mage_spell_t
     if( c != 0 )
     {
       if( p -> buffs_arcane_blast ) c += base_cost * p -> buffs_arcane_blast * ( sim_t::WotLK ? 2.00 : 0.30 );
-      if( p -> gear.tier5_2pc     ) c += base_cost * 0.20;
+      if( p -> gear.tier5_2pc ) 
+      {
+	if( sim_t::WotLK )
+	  c *= 1.05;
+	else
+	  c += base_cost * 0.20;
+      }
     }
     return c;
   }
@@ -1274,10 +1277,11 @@ struct arcane_missiles_t : public mage_spell_t
     base_cost         = rank -> cost;
     base_cost        *= 1.0 + p -> talents.empowered_arcane_missiles * 0.02;
     base_cost        *= 1.0 - p -> talents.frost_channeling * ( sim_t::WotLK ? (0.1/3) : 0 );
+    base_cost        *= 1.0 - p -> talents.arcane_focus * ( sim_t::WotLK ? 0.01 : 0.00 );
     base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
     base_crit        += p -> talents.arcane_instability * 0.01;
     base_hit         += p -> talents.arcane_focus * ( sim_t::WotLK ? 0.01 : 0.02 );
-    base_penetration += p -> talents.arcane_subtlety * 5;
+    base_penetration += p -> talents.arcane_subtlety * ( sim_t::WotLK ? 0 : 5 );
     direct_power_mod += p -> talents.empowered_arcane_missiles * 0.03; // bonus per missle
     direct_power_mod += p -> talents.arcane_empowerment * 0.03;        // bonus per missle
     base_crit_bonus  *= 1.0 + p -> talents.spell_power * 0.25;
@@ -1636,10 +1640,10 @@ struct fire_ball_t : public mage_spell_t
     base_multiplier   *= 1.0 + p -> talents.arcane_instability * 0.01;
     base_multiplier   *= 1.0 + p -> talents.spell_impact * 0.02;
     base_crit         += p -> talents.arcane_instability * 0.01;
-    base_crit         += p -> talents.critical_mass * 0.01;
+    base_crit         += p -> talents.critical_mass * 0.02;
     base_crit         += p -> talents.pyromaniac * 0.01;
     base_hit          += p -> talents.elemental_precision * 0.01;
-    base_penetration  += p -> talents.arcane_subtlety * 5;
+    base_penetration  += p -> talents.arcane_subtlety * ( sim_t::WotLK ? 0 : 5 );
     direct_power_mod  += p -> talents.empowered_fire_ball * ( sim_t::WotLK ? 0.05 : 0.03 );
     base_crit_bonus   *= 1.0 + ( p -> talents.spell_power * 0.25 +
                                  p -> talents.burnout     * 0.10 );
@@ -1735,10 +1739,10 @@ struct fire_blast_t : public mage_spell_t
     base_crit        += p -> talents.arcane_instability * 0.01;
     base_multiplier  *= 1.0 + p -> talents.spell_impact * 0.02;
     base_crit        += p -> talents.incineration * 0.02;
-    base_crit        += p -> talents.critical_mass * 0.01;
+    base_crit        += p -> talents.critical_mass * 0.02;
     base_crit        += p -> talents.pyromaniac * 0.01;
     base_hit         += p -> talents.elemental_precision * 0.01;
-    base_penetration += p -> talents.arcane_subtlety * 5;
+    base_penetration += p -> talents.arcane_subtlety * ( sim_t::WotLK ? 0 : 5 );
     base_crit_bonus  *= 1.0 + ( p -> talents.spell_power * 0.25 +
 				p -> talents.burnout     * 0.10 );
   }
@@ -1799,11 +1803,11 @@ struct living_bomb_t : public mage_spell_t
     base_multiplier  *= 1.0 + p -> talents.fire_power * 0.02;
     base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
     base_crit        += p -> talents.arcane_instability * 0.01;
-    base_crit        += p -> talents.critical_mass * 0.01;
+    base_crit        += p -> talents.critical_mass * 0.02;
     base_crit        += p -> talents.pyromaniac * 0.01;
     base_crit        += p -> talents.world_in_flames * 0.02;
     base_hit         += p -> talents.elemental_precision * 0.01;
-    base_penetration += p -> talents.arcane_subtlety * 5;
+    base_penetration += p -> talents.arcane_subtlety * ( sim_t::WotLK ? 0 : 5 );
     base_crit_bonus  *= 1.0 + ( p -> talents.spell_power * 0.25 +
 				p -> talents.burnout     * 0.10 );
   }
@@ -1870,12 +1874,12 @@ struct pyroblast_t : public mage_spell_t
     player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
     
-    base_execute_time = 6.0; 
-    base_tick_time    = 2.0; 
-    num_ticks         = 6; 
+    base_execute_time = ( sim_t::WotLK ? 5.0 : 6.0 ); 
+    base_tick_time    = 3.0; 
+    num_ticks         = 4; 
     may_crit          = true; 
-    direct_power_mod  = 1.0; 
-    tick_power_mod    = 0.71 / num_ticks;
+    direct_power_mod  = ( sim_t::WotLK ? 1.15 : 1.00 ); 
+    tick_power_mod    = ( sim_t::WotLK ? 0.20 : 0.71 ) / num_ticks;
 
     base_cost         = rank -> cost;
     base_cost        *= 1.0 - p -> talents.elemental_precision * 0.01;
@@ -1884,11 +1888,11 @@ struct pyroblast_t : public mage_spell_t
     base_multiplier  *= 1.0 + p -> talents.fire_power * 0.02;
     base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
     base_crit        += p -> talents.arcane_instability * 0.01;
-    base_crit        += p -> talents.critical_mass * 0.01;
+    base_crit        += p -> talents.critical_mass * 0.02;
     base_crit        += p -> talents.pyromaniac * 0.01;
     base_crit        += p -> talents.world_in_flames * 0.02;
     base_hit         += p -> talents.elemental_precision * 0.01;
-    base_penetration += p -> talents.arcane_subtlety * 5;
+    base_penetration += p -> talents.arcane_subtlety * ( sim_t::WotLK ? 0 : 5 );
     base_crit_bonus  *= 1.0 + ( p -> talents.spell_power * 0.25 +
 				p -> talents.burnout     * 0.10 );
   }
@@ -1969,10 +1973,10 @@ struct scorch_t : public mage_spell_t
     base_multiplier  *= 1.0 + p -> talents.spell_impact * 0.02;
     base_crit        += p -> talents.arcane_instability * 0.01;
     base_crit        += p -> talents.incineration * 0.02;
-    base_crit        += p -> talents.critical_mass * 0.01;
+    base_crit        += p -> talents.critical_mass * 0.02;
     base_crit        += p -> talents.pyromaniac * 0.01;
     base_hit         += p -> talents.elemental_precision * 0.01;
-    base_penetration += p -> talents.arcane_subtlety * 5;
+    base_penetration += p -> talents.arcane_subtlety * ( sim_t::WotLK ? 0 : 5 );
     base_crit_bonus  *= 1.0 + ( p -> talents.spell_power * 0.25 +
 				p -> talents.burnout     * 0.10 );
 
@@ -2086,7 +2090,7 @@ struct frost_bolt_t : public mage_spell_t
     base_crit         += p -> talents.arcane_instability * 0.01;
     base_crit         += p -> talents.empowered_frost_bolt * ( sim_t::WotLK ? 0.02 : 0.01 );
     base_hit          += p -> talents.elemental_precision * 0.01;
-    base_penetration  += p -> talents.arcane_subtlety * 5;
+    base_penetration  += p -> talents.arcane_subtlety * ( sim_t::WotLK ? 0 : 5 );
     direct_power_mod  += p -> talents.empowered_frost_bolt * ( sim_t::WotLK ? 0.05 : 0.02 );
     base_crit_bonus   *= 1.0 + ( p -> talents.ice_shards  * 1.0/3 +
                                  p -> talents.spell_power * 0.25 );
@@ -2159,7 +2163,7 @@ struct ice_lance_t : public mage_spell_t
     base_multiplier  *= 1.0 + p -> talents.chilled_to_the_bone * 0.01;
     base_crit        += p -> talents.arcane_instability * 0.01;
     base_hit         += p -> talents.elemental_precision * 0.01;
-    base_penetration += p -> talents.arcane_subtlety * 5;
+    base_penetration += p -> talents.arcane_subtlety * ( sim_t::WotLK ? 0 : 5 );
     base_crit_bonus  *= 1.0 + ( p -> talents.ice_shards  * 1.0/3  +
                                 p -> talents.spell_power * 0.25 );
   }
@@ -2253,7 +2257,7 @@ struct deep_freeze_t : public mage_spell_t
     base_multiplier  *= 1.0 + p -> talents.arctic_winds * 0.01;
     base_crit        += p -> talents.arcane_instability * 0.01;
     base_hit         += p -> talents.elemental_precision * 0.01;
-    base_penetration += p -> talents.arcane_subtlety * 5;
+    base_penetration += p -> talents.arcane_subtlety * ( sim_t::WotLK ? 0 : 5 );
     base_crit_bonus  *= 1.0 + ( p -> talents.ice_shards  * 1.0/3 +
                                 p -> talents.spell_power * 0.25 );
   }
@@ -2335,10 +2339,10 @@ struct frostfire_bolt_t : public mage_spell_t
     base_multiplier   *= 1.0 + p -> talents.arctic_winds * 0.01;
     base_multiplier   *= 1.0 + p -> talents.chilled_to_the_bone * 0.01;
     base_crit         += p -> talents.arcane_instability * 0.01;
-    base_crit         += p -> talents.critical_mass * 0.01;
+    base_crit         += p -> talents.critical_mass * 0.02;
     base_crit         += p -> talents.pyromaniac * 0.01;
     base_hit          += p -> talents.elemental_precision * 0.01;
-    base_penetration  += p -> talents.arcane_subtlety * 5;
+    base_penetration  += p -> talents.arcane_subtlety * ( sim_t::WotLK ? 0 : 5 );
     base_crit_bonus   *= 1.0 + ( p -> talents.spell_power * 0.25 +
                                  p -> talents.burnout     * 0.10 +
                                  p -> talents.ice_shards  * 1.0/3 );

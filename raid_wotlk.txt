@@ -63,7 +63,7 @@ talents=http://wotlk.wowhead.com/?talent=bVMhzhZZG0fVRfzfiqfzAo
 actions=flask,type=pure_death/inner_fire/shadow_form/mana_potion,trigger=3500/shadow_fiend,trigger=6000/dispersion/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/shadow_word_death/mind_flay
 gear_stamina=708
 gear_intellect=687
-gear_spirit=250
+gear_spirit=500
 gear_spell_power=2004
 gear_spell_crit_rating=596
 gear_spell_hit_rating=250
@@ -91,7 +91,7 @@ talents=http://wotlk.wowhead.com/?talent=bVMhzhZZG0fVRfzfiqfzAo
 actions=flask,type=pure_death/inner_fire/shadow_form/mana_potion,trigger=3500/shadow_fiend,trigger=6000/dispersion/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/mind_flay
 gear_stamina=708
 gear_intellect=687
-gear_spirit=250
+gear_spirit=500
 gear_spell_power=2004
 gear_spell_crit_rating=596
 gear_spell_hit_rating=250
@@ -120,7 +120,7 @@ talents=http://talent.mmo-champion.com/?priest=050230313030512250100020000000555
 actions=flask,type=blinding_light/inner_fire/divine_spirit/mana_potion,trigger=3500/shadow_fiend,trigger=6000/inner_focus,shadow_word_pain/shadow_word_pain/power_infusion/holy_fire/smite
 gear_stamina=708
 gear_intellect=687
-gear_spirit=250
+gear_spirit=500
 gear_spell_power=2004
 gear_spell_crit_rating=596
 gear_spell_hit_rating=250
@@ -159,17 +159,17 @@ swift_retribution=1
 mage=Mage_Arcane
 level=80
 talents=http://talent.mmo-champion.com/?mage=00550300120030000000000000000000000000000000000000000000230005033100300150323102315321
-actions=flask,type=blinding_light/mage_armor/focus_magic,target=Mage_Fire/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/arcane_missiles,barrage=1/arcane_barrage/fire_ball
+actions=flask,type=blinding_light/molten_armor/focus_magic,target=Mage_Fire/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/arcane_missiles,barrage=1/arcane_barrage/fire_ball
 gear_stamina=708
 gear_intellect=687
-gear_spirit=250
+gear_spirit=500
 gear_spell_power=2004
 gear_spell_crit_rating=596
 gear_spell_hit_rating=250
 gear_haste_rating=585
 # Glyphs
 glyph_fire_ball=1
-glyph_mage_armor=1
+glyph_molten_armor=1
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
 blessing_of_kings=1
 blessing_of_wisdom=1
@@ -190,7 +190,7 @@ talents=http://talent.mmo-champion.com/?mage=03550300120033310531203013510000000
 actions=flask,type=pure_death/molten_armor/focus_magic,target=Mage_Frost/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/combustion/living_bomb/pyroblast,hot_streak=1/fire_ball
 gear_stamina=708
 gear_intellect=687
-gear_spirit=250
+gear_spirit=500
 gear_spell_power=2004
 gear_spell_crit_rating=596
 gear_spell_hit_rating=250
@@ -218,7 +218,7 @@ talents=http://talent.mmo-champion.com/?mage=00000000000000000000000000000533031
  actions=flask,type=pure_death/molten_armor/focus_magic,target=Mage_Arcane/mana_gem,trigger=3500/mana_potion,trigger=2500/deep_freeze,fb_priority=1/ice_lance,frozen=1,fb_priority=1/evocation,trigger=10000/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/frost_bolt
 gear_stamina=708
 gear_intellect=687
-gear_spirit=250
+gear_spirit=500
 gear_spell_power=2004
 gear_spell_crit_rating=596
 gear_spell_hit_rating=250
@@ -252,7 +252,7 @@ actions=flask,type=pure_death/molten_armor/mana_gem,trigger=3500/mana_potion,tri
 skip_actions=scorch
 gear_stamina=708
 gear_intellect=687
-gear_spirit=250
+gear_spirit=500
 gear_spell_power=2004
 gear_spell_crit_rating=596
 gear_spell_hit_rating=250
@@ -282,7 +282,7 @@ talents=http://talent.mmo-champion.com/?druid=0000000000000000000000000000000000
 actions=flask,type=blinding_light/mark_of_the_wild/moonkin_form/mana_potion,trigger=3500/innervate/faerie_fire/treants/moonfire/insect_swarm/wrath,eclipse=trigger/starfire
 gear_stamina=708
 gear_intellect=687
-gear_spirit=250
+gear_spirit=500
 gear_spell_power=2004
 gear_spell_crit_rating=596
 gear_spell_hit_rating=250
@@ -313,7 +313,7 @@ talents=http://talent.mmo-champion.com/?shaman=353005150021535102501350000000000
 actions=flask,type=blinding_light/flametongue_weapon,weapon=main/mana_potion,trigger=3500/mana_spring_totem/totem_of_wrath/wrath_of_air_totem/elemental_mastery/lava_burst/bloodlust,target_pct=35/chain_lightning/lightning_bolt
 gear_stamina=708
 gear_intellect=687
-gear_spirit=250
+gear_spirit=500
 gear_spell_power=2004
 gear_spell_crit_rating=596
 gear_spell_hit_rating=250
@@ -387,7 +387,7 @@ talents=http://talent.mmo-champion.com/?warlock=55000000000000000000000000235022
 actions=flask,type=pure_death/fel_armor/summon_pet,felhunter/haunt/curse_of_agony/corruption/unstable_affliction/siphon_life/drain_soul,target_pct=20/immolate/shadow_bolt/life_tap
 gear_stamina=708
 gear_intellect=687
-gear_spirit=250
+gear_spirit=500
 gear_spell_power=2004
 gear_spell_crit_rating=596
 gear_spell_hit_rating=250
@@ -424,7 +424,7 @@ talents=http://talent.mmo-champion.com/?warlock=55003005000000000000000000000000
 actions=flask,type=pure_death/fel_armor/summon_pet,felguard/curse_of_doom/demonic_empowerment/metamorphosis,target_pct=35/corruption/immolate/shadow_bolt/life_tap
 gear_stamina=708
 gear_intellect=687
-gear_spirit=250
+gear_spirit=500
 gear_spell_power=2004
 gear_spell_crit_rating=596
 gear_spell_hit_rating=250
@@ -465,7 +465,7 @@ talents=http://talent.mmo-champion.com/?warlock=55033205000031051335230351035002
 actions=flask,type=pure_death/fel_armor/summon_pet,imp/curse_of_doom/chaos_bolt/corruption/immolate/conflagrate/incinerate,molten_core=1/shadow_bolt/life_tap
 gear_stamina=708
 gear_intellect=687
-gear_spirit=250
+gear_spirit=500
 gear_spell_power=2004
 gear_spell_crit_rating=596
 gear_spell_hit_rating=250
