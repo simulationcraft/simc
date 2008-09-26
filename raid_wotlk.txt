@@ -367,13 +367,25 @@ blessing_of_might=550
 sanctified_retribution=1
 swift_retribution=1
 
+# Supported Warlock Glyphs
+# glyph_corruption=1
+# glyph_curse_of_agony=1
+# glyph_felguard=1
+# glyph_felhunter=1
+# glyph_immolate=1
+# glyph_imp=1
+# glyph_searing_pain=1
+# glyph_shadow_bolt=1
+# glyph_shadow_burn=1
+# glyph_siphon_life=1
+
 #
 # Affliction Warlock
 #
 warlock=Warlock_Affliction
 level=80
 talents=http://talent.mmo-champion.com/?warlock=550000000000000000000000002350222001223510253500331351000000000000000000000000000
-actions=flask,type=pure_death/fel_armor/summon_pet,felhunter/haunt/curse_of_agony/corruption/unstable_affliction/siphon_life/immolate/shadow_bolt/life_tap
+actions=flask,type=pure_death/fel_armor/summon_pet,felhunter/haunt/curse_of_agony/corruption/unstable_affliction/siphon_life/drain_soul,target_pct=20/immolate/shadow_bolt/life_tap
 gear_stamina=708
 gear_intellect=687
 gear_spirit=250
@@ -381,6 +393,10 @@ gear_spell_power=2004
 gear_spell_crit_rating=596
 gear_spell_hit_rating=250
 gear_haste_rating=585
+# Glyphs
+glyph_corruption=1
+glyph_curse_of_agony=1
+glyph_siphon_life=1
 # Pets
 pet=felhunter
 actions=shadow_bite/wait
@@ -414,6 +430,10 @@ gear_spell_power=2004
 gear_spell_crit_rating=596
 gear_spell_hit_rating=250
 gear_haste_rating=585
+# Glyphs
+glyph_corruption=1
+glyph_felguard=1
+glyph_shadow_bolt=1
 # Pets
 pet=felguard
 actions=cleave/wait
@@ -451,6 +471,10 @@ gear_spell_power=2004
 gear_spell_crit_rating=596
 gear_spell_hit_rating=250
 gear_haste_rating=585
+# Glyphs
+glyph_corruption=1
+glyph_imp=1
+glyph_shadow_bolt=1
 # Pets
 pet=felhunter
 actions=shadow_bite/wait

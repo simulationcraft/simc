@@ -32,10 +32,10 @@ struct warlock_t : public player_t
   int8_t buffs_haunted;
   int8_t buffs_metamorphosis;
   double buffs_molten_core;
-  int8_t buffs_nightfall;
   int8_t buffs_pet_sacrifice;
   int8_t buffs_shadow_embrace;
   int8_t buffs_shadow_flame;
+  int8_t buffs_shadow_trance;
   double buffs_shadow_vulnerability;
   int8_t buffs_shadow_vulnerability_charges;
 
@@ -63,6 +63,7 @@ struct warlock_t : public player_t
   // Procs
   proc_t* procs_life_tap;
   proc_t* procs_nightfall;
+  proc_t* procs_corruption_glyph;
 
   // Up-Times
   uptime_t* uptimes_backdraft;
@@ -154,7 +155,16 @@ struct warlock_t : public player_t
 
   struct glyphs_t
   {
-    int8_t blue_promises;
+    int8_t corruption;
+    int8_t curse_of_agony;
+    int8_t felguard;
+    int8_t felhunter;
+    int8_t immolate;
+    int8_t imp;
+    int8_t searing_pain;
+    int8_t shadow_bolt;
+    int8_t shadow_burn;
+    int8_t siphon_life;
     glyphs_t() { memset( (void*) this, 0x0, sizeof( glyphs_t ) ); }
   };
   glyphs_t glyphs;
@@ -180,10 +190,10 @@ struct warlock_t : public player_t
     buffs_haunted                      = 0;
     buffs_metamorphosis                = 0;
     buffs_molten_core                  = 0;
-    buffs_nightfall                    = 0;
     buffs_pet_sacrifice                = 0;
     buffs_shadow_embrace               = 0;
     buffs_shadow_flame                 = 0;
+    buffs_shadow_trance                = 0;
     buffs_shadow_vulnerability         = 0;
     buffs_shadow_vulnerability_charges = 0;
 
@@ -209,8 +219,9 @@ struct warlock_t : public player_t
     gains_soul_leech = get_gain( "soul_leech" );
 
     // Procs
-    procs_life_tap  = get_proc( "life_tap" );
-    procs_nightfall = get_proc( "nightfall" );
+    procs_life_tap         = get_proc( "life_tap" );
+    procs_nightfall        = get_proc( "nightfall" );
+    procs_corruption_glyph = get_proc( "corruption_glyph" );
 
     // Up-Times
     uptimes_backdraft            = get_uptime( "backdraft"            );
@@ -530,6 +541,8 @@ struct imp_pet_t : public warlock_pet_t
       base_execute_time -= 0.25 * ( o -> talents.improved_fire_bolt + o -> talents.demonic_power );
       base_multiplier   *= 1.0 + o -> talents.improved_imp * 0.10;
       base_multiplier   *= 1.0 + o -> talents.empowered_imp * 0.05;
+
+      if( o -> glyphs.imp ) base_multiplier *= 1.20;
     }
     virtual void player_buff()
     {
@@ -593,12 +606,15 @@ struct felguard_pet_t : public warlock_pet_t
       warlock_pet_attack_t( "cleave", player, RESOURCE_MANA, SCHOOL_PHYSICAL )
     {
       felguard_pet_t* p = (felguard_pet_t*) player -> cast_pet();
+      warlock_t*      o = p -> owner -> cast_warlock();
 
       weapon   = &( p -> main_hand_weapon );
       cooldown = 6.0;
 
       base_direct_dmg = ( p -> level < 68 ? 50 :
 			  p -> level < 80 ? 78 : 124 );
+
+      if( o -> glyphs.felguard ) base_multiplier *= 1.20;
     }
     virtual void player_buff()
     {
@@ -615,6 +631,10 @@ struct felguard_pet_t : public warlock_pet_t
     melee_t( player_t* player ) : 
       warlock_pet_melee_t( player )
     {
+      felguard_pet_t* p = (felguard_pet_t*) player -> cast_pet();
+      warlock_t*      o = p -> owner -> cast_warlock();
+
+      if( o -> glyphs.felguard ) base_multiplier *= 1.20;
     }
     virtual double execute_time()
     {
@@ -690,11 +710,14 @@ struct felhunter_pet_t : public warlock_pet_t
       warlock_pet_attack_t( "shadow_bite", player, RESOURCE_MANA, SCHOOL_SHADOW )
     {
       felguard_pet_t* p = (felguard_pet_t*) player -> cast_pet();
+      warlock_t*      o = p -> owner -> cast_warlock();
 
       cooldown = 6.0;
 
       base_direct_dmg = ( p -> level < 66 ?  88 :
 			  p -> level < 74 ? 101 : 118 );
+
+      if( o -> glyphs.felhunter ) base_multiplier *= 1.20;
     }
     virtual void player_buff()
     {
@@ -1016,13 +1039,30 @@ static void trigger_nightfall( spell_t* s )
 {
   warlock_t* p = s -> player -> cast_warlock();
 
-  if( p -> talents.nightfall && ! p -> buffs_nightfall )
+  if( p -> talents.nightfall && ! p -> buffs_shadow_trance )
   {
     if( rand_t::roll( 0.02 * p -> talents.nightfall ) )
     {
       p -> procs_nightfall -> occur();
-      p -> aura_gain( "Nightfall" );
-      p -> buffs_nightfall = 1;
+      p -> aura_gain( "Shadow Trance" );
+      p -> buffs_shadow_trance = 1;
+    }
+  }
+}
+
+// trigger_corruption_glyph =================================================
+
+static void trigger_corruption_glyph( spell_t* s )
+{
+  warlock_t* p = s -> player -> cast_warlock();
+
+  if( p -> glyphs.corruption && ! p -> buffs_shadow_trance )
+  {
+    if( rand_t::roll( 0.04 ) )
+    {
+      p -> procs_corruption_glyph -> occur();
+      p -> aura_gain( "Shadow Trance" );
+      p -> buffs_shadow_trance = 1;
     }
   }
 }
@@ -1808,10 +1848,10 @@ struct curse_of_agony_t : public warlock_spell_t
       
     static rank_t ranks[] =
     {
-      { 79, 9, 0, 0, 290, 0.10 },
-      { 73, 8, 0, 0, 240, 0.10 },
-      { 67, 7, 0, 0, 170, 265  },
-      { 58, 6, 0, 0, 130, 215  },
+      { 79, 9, 0, 0, 145, 0.10 },
+      { 73, 8, 0, 0, 120, 0.10 },
+      { 67, 7, 0, 0, 113, 265  },
+      { 58, 6, 0, 0,  87, 215  },
       { 0, 0 }
     };
     player -> init_mana_costs( ranks );
@@ -1830,10 +1870,9 @@ struct curse_of_agony_t : public warlock_spell_t
     base_multiplier *= 1.0 + p -> talents.contagion * 0.01;
     base_multiplier *= 1.0 + p -> talents.improved_curse_of_agony * 0.05;
 
-    if( sim_t::WotLK && p -> talents.amplify_curse ) 
-    {
-      trigger_gcd = 1.0;
-    }
+    if( sim_t::WotLK && p -> talents.amplify_curse ) trigger_gcd = 1.0;
+
+    if( p -> glyphs.curse_of_agony ) num_ticks += 2;
   }
 
   virtual void execute()
@@ -1910,10 +1949,7 @@ struct curse_of_doom_t : public warlock_spell_t
     base_cost *= 1.0 - p -> talents.suppression * ( sim_t::WotLK ? 0.02 : 0.00 );
     base_hit  +=       p -> talents.suppression * ( sim_t::WotLK ? 0.01 : 0.02 );
 
-    if( sim_t::WotLK && p -> talents.amplify_curse )
-    {
-      trigger_gcd = 1.0;
-    }
+    if( sim_t::WotLK && p -> talents.amplify_curse ) trigger_gcd = 1.0;
   }
 
   virtual void execute()
@@ -1988,24 +2024,24 @@ struct amplify_curse_t : public warlock_spell_t
 
 struct shadow_bolt_t : public warlock_spell_t
 {
-  int8_t nightfall;
+  int8_t shadow_trance;
   int8_t backdraft;
   int8_t isb_benefit;
   int8_t isb_trigger;
 
   shadow_bolt_t( player_t* player, const std::string& options_str ) : 
     warlock_spell_t( "shadow_bolt", player, SCHOOL_SHADOW, TREE_DESTRUCTION ), 
-    nightfall(0), backdraft(0), isb_benefit(0), isb_trigger(0)
+    shadow_trance(0), backdraft(0), isb_benefit(0), isb_trigger(0)
   {
     warlock_t* p = player -> cast_warlock();
 
     option_t options[] =
     {
-      { "rank",        OPT_INT8, &rank_index  },
-      { "nightfall",   OPT_INT8, &nightfall   },
-      { "backdraft",   OPT_INT8, &backdraft   },
-      { "isb_benefit", OPT_INT8, &isb_benefit },
-      { "isb_trigger", OPT_INT8, &isb_trigger },
+      { "rank",          OPT_INT8, &rank_index    },
+      { "shadow_trance", OPT_INT8, &shadow_trance },
+      { "backdraft",     OPT_INT8, &backdraft     },
+      { "isb_benefit",   OPT_INT8, &isb_benefit   },
+      { "isb_trigger",   OPT_INT8, &isb_trigger   },
       { NULL }
     };
     parse_options( options, options_str );
@@ -2038,12 +2074,14 @@ struct shadow_bolt_t : public warlock_spell_t
     if( sim_t::WotLK ) base_hit += p -> talents.cataclysm * 0.01;
 
     if( p -> gear.tier6_4pc ) base_multiplier *= 1.06;
+
+    if( p -> glyphs.shadow_bolt ) base_cost *= 0.90;
   }
 
   virtual double execute_time()
   {
     warlock_t* p = player -> cast_warlock();
-    if( p -> buffs_nightfall ) return 0;
+    if( p -> buffs_shadow_trance ) return 0;
     return warlock_spell_t::execute_time();
   }
   
@@ -2051,10 +2089,10 @@ struct shadow_bolt_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::schedule_execute(); 
-    if( p -> buffs_nightfall )
+    if( p -> buffs_shadow_trance )
     {
-      p -> aura_loss( "Nightfall" );
-      p -> buffs_nightfall = 0;
+      p -> aura_loss( "Shadow Trance" );
+      p -> buffs_shadow_trance = 0;
     }
   }
   
@@ -2084,8 +2122,8 @@ struct shadow_bolt_t : public warlock_spell_t
     if( ! warlock_spell_t::ready() )
       return false;
 
-    if( nightfall )
-      if( ! p -> buffs_nightfall )
+    if( shadow_trance )
+      if( ! p -> buffs_shadow_trance )
 	return false;
 
     if( backdraft )
@@ -2257,6 +2295,24 @@ struct shadow_burn_t : public warlock_spell_t
       trigger_soul_leech( this );
     }
   }
+
+  virtual void player_buff()
+  {
+    warlock_t* p = player -> cast_warlock();
+    warlock_spell_t::player_buff();
+    if( p -> glyphs.shadow_burn )
+    {
+      target_t* t = sim -> target;
+
+      if( t -> initial_health > 0 )
+      {
+	if( ( t -> current_health / t -> initial_health ) < 0.35 )
+	{
+	  player_crit += 0.20;
+	}
+      }
+    }
+  }
 };
 
 // Corruption Spell ===========================================================
@@ -2329,6 +2385,7 @@ struct corruption_t : public warlock_spell_t
     warlock_spell_t::tick(); 
     trigger_eradication( this );
     trigger_nightfall( this );
+    trigger_corruption_glyph( this );
     trigger_ashtongue_talisman( this );
     if( player -> gear.tier6_2pc ) player -> resource_gain( RESOURCE_HEALTH, 70 );
   }
@@ -2431,14 +2488,17 @@ struct drain_life_t : public warlock_spell_t
 
 struct drain_soul_t : public warlock_spell_t
 {
+  int8_t target_pct;
+
   drain_soul_t( player_t* player, const std::string& options_str ) : 
-    warlock_spell_t( "drain_soul", player, SCHOOL_SHADOW, TREE_AFFLICTION )
+    warlock_spell_t( "drain_soul", player, SCHOOL_SHADOW, TREE_AFFLICTION ), target_pct(0)
   {
     warlock_t* p = player -> cast_warlock();
 
     option_t options[] =
     {
-      { "rank", OPT_INT8, &rank_index },
+      { "rank",       OPT_INT8, &rank_index },
+      { "target_pct", OPT_INT8, &target_pct },
       { NULL }
     };
     parse_options( options, options_str );
@@ -2485,7 +2545,37 @@ struct drain_soul_t : public warlock_spell_t
     double multiplier = t -> debuffs.affliction_effects * base;
     if( multiplier > max ) multiplier = max;
 
-    player_multiplier *= 1.0 + multiplier;    
+    player_multiplier *= 1.0 + multiplier;
+
+    if( sim_t::WotLK )
+    {
+      target_t* t = sim -> target;
+
+      if( t -> initial_health > 0 )
+      {
+	if( ( t -> current_health / t -> initial_health ) < 0.20 )
+	{
+	  player_multiplier *= 4.0;
+	}
+      }
+    }
+    
+  }
+
+  virtual bool ready()
+  {
+    if( ! warlock_spell_t::ready() )
+      return false;
+
+    target_t* t = sim -> target;
+
+    if( target_pct == 0 )
+      return true;
+
+    if( t -> initial_health <= 0 )
+      return false;
+
+    return( ( t -> current_health / t -> initial_health ) < ( target_pct / 100.0 ) );
   }
 };
 
@@ -2530,6 +2620,8 @@ struct siphon_life_t : public warlock_spell_t
     base_hit         +=       p -> talents.suppression * ( sim_t::WotLK ? 0.01 : 0.02 );
     base_multiplier  *= 1.0 + p -> talents.shadow_mastery * 0.02;
     tick_power_mod   += p -> talents.everlasting_affliction * 0.01;
+
+    if( p -> glyphs.siphon_life ) base_multiplier *= 1.20;
   }
 
   virtual void execute()
@@ -2737,7 +2829,16 @@ struct immolate_t : public warlock_spell_t
     {
       direct_dmg *= 1.0 + p -> talents.improved_immolate * ( sim_t::WotLK ? 0.10 : 0.05 );
     }
+    if( p -> glyphs.immolate ) direct_dmg *= 0.90;
     return direct_dmg;
+  }
+
+  virtual double calculate_tick_damage()
+  {
+    warlock_t* p = player -> cast_warlock();
+    spell_t::calculate_tick_damage();
+    if( p -> glyphs.immolate ) direct_dmg *= 1.20;
+    return tick_dmg;
   }
 
   virtual void execute()
@@ -2993,6 +3094,8 @@ struct searing_pain_t : public warlock_spell_t
     if( p -> talents.ruin ) base_crit_bonus *= 2.0;
 
     if( sim_t::WotLK ) base_hit += p -> talents.cataclysm * 0.01;
+
+    if( p -> glyphs.searing_pain ) base_crit_bonus *= 1.20;
   }
 
   virtual void execute()
@@ -3498,10 +3601,10 @@ void warlock_t::reset()
   buffs_haunted                      = 0;
   buffs_metamorphosis                = 0;
   buffs_molten_core                  = 0;
-  buffs_nightfall                    = 0;
   buffs_pet_sacrifice                = 0;
   buffs_shadow_embrace               = 0;
   buffs_shadow_flame                 = 0;
+  buffs_shadow_trance                = 0;
   buffs_shadow_vulnerability         = 0;
   buffs_shadow_vulnerability_charges = 0;
 
@@ -3844,7 +3947,16 @@ bool warlock_t::parse_option( const std::string& name,
     { "unholy_power",             OPT_INT8,  &( talents.unholy_power             ) },
     { "unstable_affliction",      OPT_INT8,  &( talents.unstable_affliction      ) },
     // Glyphs
-    { "glyph_blue_promises",       OPT_INT8,  &( glyphs.blue_promises            ) },
+    { "glyph_corruption",         OPT_INT8,  &( glyphs.corruption                ) },
+    { "glyph_curse_of_agony",     OPT_INT8,  &( glyphs.curse_of_agony            ) },
+    { "glyph_felguard",           OPT_INT8,  &( glyphs.felguard                  ) },
+    { "glyph_felhunter",          OPT_INT8,  &( glyphs.felhunter                 ) },
+    { "glyph_immolate",           OPT_INT8,  &( glyphs.immolate                  ) },
+    { "glyph_imp",                OPT_INT8,  &( glyphs.imp                       ) },
+    { "glyph_searing_pain",       OPT_INT8,  &( glyphs.searing_pain              ) },
+    { "glyph_shadow_bolt",        OPT_INT8,  &( glyphs.shadow_bolt               ) },
+    { "glyph_shadow_burn",        OPT_INT8,  &( glyphs.shadow_burn               ) },
+    { "glyph_siphon_life",        OPT_INT8,  &( glyphs.siphon_life               ) },
     { NULL, OPT_UNKNOWN }
   };
 
