@@ -50,6 +50,27 @@ erase source\simcraft.exe
 echo.
 echo -----------------------------------------
 echo Creating release packages
+echo.
 
+:ask_releases
+set /p choice= ========Wanna create Windows and Linux releases? Choose: Y for "Yes", and anything else for "No". 
+if "%choice%" == "Y" (goto :do_releases) else (goto :seems_no_releases)
+:seems_no_releases
+if "%choice%" == "y" (goto :do_releases) else (goto :no_releases)
+
+:do_releases
+echo.
+mkdir releases
+echo Oops. This functionality is not supported yet. Sorry! > releases\simcraft-{$Current_SimCraftRevision}-windows.zip
+echo Oops. This functionality is not supported yet. Sorry! > releases\simcraft-{$Current_SimCraftRevision}.tar.gz
+echo Oops. This functionality is not supported yet. Sorry!
+copy bin\scratmini.templator.exe scratmini.templator.exe
+scratmini.templator template=releases\simcraft-{$Current_SimCraftRevision}-windows.zip
+scratmini.templator template=releases\simcraft-{$Current_SimCraftRevision}.tar.gz
+erase scratmini.templator.exe
+erase releases\simcraft-{$Current_SimCraftRevision}* /q
+
+:no_releases
 :end_of_file
+echo.
 pause
