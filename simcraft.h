@@ -552,6 +552,7 @@ struct player_t
   {
     gain_t* ashtongue_talisman;
     gain_t* dark_rune;
+    gain_t* innervate;
     gain_t* judgement_of_wisdom;
     gain_t* mana_gem;
     gain_t* mana_potion;

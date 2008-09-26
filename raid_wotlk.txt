@@ -158,10 +158,8 @@ swift_retribution=1
 #
 mage=Mage_Arcane
 level=80
-talents=http://talent.mmo-champion.com/?mage=00000000000000000000000000000530033010020000000000000000230005033100300150323102515321
-actions=flask,type=blinding_light/molten_armor/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/arcane_power/arcane_missiles,barrage=1/arcane_barrage/arcane_blast
-# Uncomment these lines to enable Focus Magic
-# actions=flask,type=blinding_light/molten_armor/focus_magic,target=Mage_Fire/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/arcane_power/arcane_missiles,barrage=1/arcane_barrage/arcane_blast
+talents=http://talent.mmo-champion.com/?mage=00550300120030000000000000000000000000000000000000000000230005033100300150323102315321
+actions=flask,type=blinding_light/mage_armor/focus_magic,target=Mage_Fire/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/arcane_power/arcane_missiles,barrage=1/arcane_barrage/fire_ball
 gear_stamina=708
 gear_intellect=687
 gear_spirit=250
@@ -171,7 +169,8 @@ gear_spell_hit_rating=250
 gear_haste_rating=585
 # Glyphs
 glyph_arcane_power=1
-glyph_molten_armor=1
+glyph_fire_ball=1
+glyph_mage_armor=1
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
 blessing_of_kings=1
 blessing_of_wisdom=1
@@ -199,7 +198,7 @@ gear_spell_hit_rating=250
 gear_haste_rating=585
 # Glyphs
 glyph_fire_ball=1
-glyph_mage_armor=1
+glyph_molten_armor=1
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
 blessing_of_kings=1
 blessing_of_wisdom=1

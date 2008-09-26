@@ -516,6 +516,7 @@ void player_t::init_stats()
 
   gains.ashtongue_talisman    = get_gain( "ashtongue_talisman" );
   gains.dark_rune             = get_gain( "dark_rune" );
+  gains.innervate             = get_gain( "innervate" );
   gains.judgement_of_wisdom   = get_gain( "judgement_of_wisdom" );
   gains.mana_gem              = get_gain( "mana_gem" );
   gains.mana_potion           = get_gain( "mana_potion" );
@@ -794,16 +795,19 @@ void player_t::regen( double periodicity )
   if( buffs.innervate )
   {
     spirit_regen *= 4.0;
+
+    resource_gain( RESOURCE_MANA, spirit_regen, gains.innervate );
   }
   else if( recent_cast() )
   {
     spirit_regen *= spirit_regen_while_casting;
+
+    resource_gain( RESOURCE_MANA, spirit_regen, gains.spirit_regen );
   }
 
   double mp5_regen = periodicity * ( mp5 + intellect() * mp5_per_intellect ) / 5.0;
 
-  resource_gain( RESOURCE_MANA, spirit_regen, gains.spirit_regen );
-  resource_gain( RESOURCE_MANA,    mp5_regen, gains.mp5_regen    );
+  resource_gain( RESOURCE_MANA, mp5_regen, gains.mp5_regen );
 
   if( buffs.replenishment )
   {
