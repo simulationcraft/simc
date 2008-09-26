@@ -37,6 +37,7 @@ echo.
 chdir source
 mingw32-make
 chdir ..
+ping 1.1.1.1 -n 1 -w 1000 > nul
 if exist source\simcraft.exe (goto :build_succeeded)
 echo.
 echo Build failed. Please, find and fix the reason!
