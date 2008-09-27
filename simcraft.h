@@ -450,7 +450,7 @@ struct player_t
     int8_t    swift_retribution;
     // Temporary Buffs
     int8_t    temporary_buffs;
-    int8_t    arcane_intellect;
+    int8_t    arcane_brilliance;
     double    mark_of_the_wild;
     int8_t    divine_spirit;
     int8_t    bloodlust;

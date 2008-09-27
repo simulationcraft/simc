@@ -2489,6 +2489,38 @@ struct mage_armor_t : public mage_spell_t
   }
 };
 
+// Arcane Brilliance Spell =================================================
+
+struct arcane_brilliance_t : public mage_spell_t
+{
+  double bonus;
+
+  arcane_brilliance_t( player_t* player, const std::string& options_str ) : 
+    mage_spell_t( "arcane_brilliance", player, SCHOOL_ARCANE, TREE_ARCANE ), bonus(0)
+  {
+    trigger_gcd = 0;
+
+    bonus = ( player -> level == 80 ) ? 60 :
+            ( player -> level >= 70 ) ? 40 : 31;
+  }
+   
+  virtual void execute()
+  {
+    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
+
+    for( player_t* p = sim -> player_list; p; p = p -> next )
+    {
+      p -> attribute[ ATTR_INTELLECT ] += bonus;
+      player -> buffs.arcane_brilliance = 1;
+    }
+  }
+
+  virtual bool ready()
+  {
+    return( player -> buffs.arcane_brilliance == 0 );
+  }
+};
+
 // Water Elemental Spell ================================================
 
 struct water_elemental_spell_t : public mage_spell_t
@@ -2541,29 +2573,30 @@ struct water_elemental_spell_t : public mage_spell_t
 action_t* mage_t::create_action( const std::string& name,
 				 const std::string& options_str )
 {
-  if( name == "arcane_barrage"   ) return new        arcane_barrage_t( this, options_str );
-  if( name == "arcane_blast"     ) return new          arcane_blast_t( this, options_str );
-  if( name == "arcane_missiles"  ) return new       arcane_missiles_t( this, options_str );
-  if( name == "arcane_power"     ) return new          arcane_power_t( this, options_str );
-  if( name == "cold_snap"        ) return new             cold_snap_t( this, options_str );
-  if( name == "combustion"       ) return new            combustion_t( this, options_str );
-  if( name == "deep_freeze"      ) return new           deep_freeze_t( this, options_str );
-  if( name == "evocation"        ) return new             evocation_t( this, options_str );
-  if( name == "fire_ball"        ) return new             fire_ball_t( this, options_str );
-  if( name == "fire_blast"       ) return new            fire_blast_t( this, options_str );
-  if( name == "focus_magic"      ) return new           focus_magic_t( this, options_str );
-  if( name == "frost_bolt"       ) return new            frost_bolt_t( this, options_str );
-  if( name == "frostfire_bolt"   ) return new        frostfire_bolt_t( this, options_str );
-  if( name == "ice_lance"        ) return new             ice_lance_t( this, options_str );
-  if( name == "icy_veins"        ) return new             icy_veins_t( this, options_str );
-  if( name == "living_bomb"      ) return new           living_bomb_t( this, options_str );
-  if( name == "mage_armor"       ) return new            mage_armor_t( this, options_str );
-  if( name == "molten_armor"     ) return new          molten_armor_t( this, options_str );
-  if( name == "presence_of_mind" ) return new      presence_of_mind_t( this, options_str );
-  if( name == "pyroblast"        ) return new             pyroblast_t( this, options_str );
-  if( name == "scorch"           ) return new                scorch_t( this, options_str );
-  if( name == "slow"             ) return new                  slow_t( this, options_str );
-  if( name == "water_elemental"  ) return new water_elemental_spell_t( this, options_str );
+  if( name == "arcane_barrage"    ) return new        arcane_barrage_t( this, options_str );
+  if( name == "arcane_blast"      ) return new          arcane_blast_t( this, options_str );
+  if( name == "arcane_brilliance" ) return new     arcane_brilliance_t( this, options_str );
+  if( name == "arcane_missiles"   ) return new       arcane_missiles_t( this, options_str );
+  if( name == "arcane_power"      ) return new          arcane_power_t( this, options_str );
+  if( name == "cold_snap"         ) return new             cold_snap_t( this, options_str );
+  if( name == "combustion"        ) return new            combustion_t( this, options_str );
+  if( name == "deep_freeze"       ) return new           deep_freeze_t( this, options_str );
+  if( name == "evocation"         ) return new             evocation_t( this, options_str );
+  if( name == "fire_ball"         ) return new             fire_ball_t( this, options_str );
+  if( name == "fire_blast"        ) return new            fire_blast_t( this, options_str );
+  if( name == "focus_magic"       ) return new           focus_magic_t( this, options_str );
+  if( name == "frost_bolt"        ) return new            frost_bolt_t( this, options_str );
+  if( name == "frostfire_bolt"    ) return new        frostfire_bolt_t( this, options_str );
+  if( name == "ice_lance"         ) return new             ice_lance_t( this, options_str );
+  if( name == "icy_veins"         ) return new             icy_veins_t( this, options_str );
+  if( name == "living_bomb"       ) return new           living_bomb_t( this, options_str );
+  if( name == "mage_armor"        ) return new            mage_armor_t( this, options_str );
+  if( name == "molten_armor"      ) return new          molten_armor_t( this, options_str );
+  if( name == "presence_of_mind"  ) return new      presence_of_mind_t( this, options_str );
+  if( name == "pyroblast"         ) return new             pyroblast_t( this, options_str );
+  if( name == "scorch"            ) return new                scorch_t( this, options_str );
+  if( name == "slow"              ) return new                  slow_t( this, options_str );
+  if( name == "water_elemental"   ) return new water_elemental_spell_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
