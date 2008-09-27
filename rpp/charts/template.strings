@@ -35,38 +35,38 @@ Research_ManaRegen_Shadowpriest = <script>
  Rows = ^.*$
  Cols = ^.*$
 
-Research_Scaling_MainSpecs = <scaling.csv main specs (config below)>
+Research_Scaling_MainSpecs = <script>
  Action = BuildGoogleChart
  ChartProfile = Charts_Scaling
  DataSource = scaling.csv
  Rows = ^[druid_balance|mage_frostfire|priest_shadow|shaman_elemental|warlock_affliction]*
  Cols = ^.*$
 
-Research_Scaling_Mages = <scaling.csv mage specs>
+Research_Scaling_Mages = <script>
  Action = BuildGoogleChart
  ChartProfile = Charts_Scaling
  DataSource = scaling.csv
  Rows = ^mage_*$
  Cols = ^.*$
 
-Research_Scaling_Warlocks = <scaling.csv warlocks specs>
+Research_Scaling_Warlocks = <script>
  Action = BuildGoogleChart
  ChartProfile = Charts_Scaling
  DataSource = scaling.csv
  Rows = ^warlock_.*$
  Cols = ^.*$
 
-Research_Dps_Baseline = <baseline.html raid dps chart>
+Research_Dps_Baseline = <script>
  Action = ImportSimCraftChart
  SimCraftHtml = baseline.html
  ChartName = DPS Ranking
 
-Research_Dps_Pimped_Asymm = <pimped_asymm.html raid dps chart>
+Research_Dps_Pimped_Asymm = <script>
  Action = ImportSimCraftChart
  SimCraftHtml = pimped_asymm.html
  ChartName = DPS Ranking
 
-Research_Dps_Pimped_Symm = <pimped_symm.html raid dps chart>
+Research_Dps_Pimped_Symm = <script>
  Action = ImportSimCraftChart
  SimCraftHtml = pimped_symm.html
  ChartName = DPS Ranking
