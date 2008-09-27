@@ -1,1 +1,0 @@
-@call fullResearch quick wiki
