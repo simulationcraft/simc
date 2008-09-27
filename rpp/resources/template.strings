@@ -1,10 +1,9 @@
-Page_WikiName = RPP_{$Patch_WikiName}
-Page_DisplayName = Raid Performance Project for Patch {$Patch_DisplayName} (beta)
+Page_WikiName = RPP_3_0_2_8982
+Page_DisplayName = Raid Performance Project for Patch 3.0.2.8982 (beta)
 
 Current_SimCraftRevision = <autodetected revision of checkout>
 
-Input_GearSets_Summary = http://simulationcraft.googlecode.com/files/rpp-gearsets-summary.PNG
-Input_GearSets_Details = http://simulationcraft.googlecode.com/files/rpp-gearsets-details.zip
+Input_GearSets_Summary = <fragment of baseline.in>
 Input_SpecsAndActions_Summary = <fragment of baseline.in>
 
 Research_ManaRegen_Downtime_Baseline = <baseline.html raid down-time chart>
@@ -14,4 +13,4 @@ Input_Scaling_Warlocks = <scaling.html 3rd chart>
 Research_Dps_Baseline = <baseline.html raid dps chart>
 Research_Dps_Pimped_Asymm = <pimped_asymm.html raid dps chart>
 Research_Dps_Pimped_Symm = <pimped_symm.html raid dps chart>
-Research_ManaRegen_Shadowpriest = <manaregen.html chart>
+Research_ManaRegen_Shadowpriest = <manaregen.html chart>regen.html chart>

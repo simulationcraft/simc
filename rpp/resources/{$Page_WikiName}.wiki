@@ -33,16 +33,16 @@ If you have any feedback, clarifications, bug reports, please, post them at [htt
 
 ===Gear used for tests===
 
-Gear used for scaling and sustainability tests is a surrogate set that consists of combined close-to-best-in-slot items from Naxx 10 (with almost capped spellhit).
+Gear used for scaling and sustainability tests:
+
+{{{
+{$Input_GearSets_Summary}
+}}}
 
 Comparative dps tests use three different gear sets:
  * Baseline mentioned before (with almost capped spellhit), 
  * A "pimped" set with all stats but hit rating increased by 50%
  * An "asymmetrically pimped" set with spellpower increased by 50%,and all other stats but hit rating increased by 100%.
-
-{$Input_GearSets_Summary}
-
-You can check the Excel 2007 spreadsheet and several screenshots from Excel with exact items breakdown by downloading [{$Input_GearSets_Details} the archive] that is attached to this post.
 
 ===Raid composition for tests===
 
