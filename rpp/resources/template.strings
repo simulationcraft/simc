@@ -7,10 +7,10 @@ Input_GearSets_Summary = <fragment of baseline.in>
 Input_SpecsAndActions_Summary = <fragment of baseline.in>
 
 Research_ManaRegen_Downtime_Baseline = <baseline.html raid down-time chart>
-Input_Scaling_MainSpecs = <scaling.html 1st chart>
-Input_Scaling_Mages = <scaling.html 2nd chart>
-Input_Scaling_Warlocks = <scaling.html 3rd chart>
+Input_Scaling_MainSpecs = http://simulationcraft.googlecode.com/files/scaling-main-3-0-2-8982-2.PNG
+Input_Scaling_Mages = http://simulationcraft.googlecode.com/files/scaling-mages-3-0-2-8982-2.PNG
+Input_Scaling_Warlocks = http://simulationcraft.googlecode.com/files/scaling-warlocks-3-0-2-8982-2.PNG
 Research_Dps_Baseline = <baseline.html raid dps chart>
 Research_Dps_Pimped_Asymm = <pimped_asymm.html raid dps chart>
 Research_Dps_Pimped_Symm = <pimped_symm.html raid dps chart>
-Research_ManaRegen_Shadowpriest = <manaregen.html chart>regen.html chart>
+Research_ManaRegen_Shadowpriest = <shadowpriest_manaregen spreadsheet>
