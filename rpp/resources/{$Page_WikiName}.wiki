@@ -60,8 +60,6 @@ Recently I've been receiving reports about heavy mana problems that caster specs
 
 That's why all test runs in this project are done with infinite_mana=0 parameter that makes players' mana bars to behave the same way as in reality - if a player is OOM, it will be forced to stand by and not dps, and this will be tracked by !SimCraft. To make sure that mana problems do not distort dps and scaling tests, below is presented raid downtime simulation results.
 
-Gear used for this test is a surrogate set that consists of combined close-to-best-in-slot items from Naxx 10 (with almost capped spellhit). Raid composition is quite typical and features casters of all common specs and provides all common dps/manaregen-related raid buffs and target debuffs. More details above (section "Gear used for tests" and "Raid composition for tests").
-
 {$Research_ManaRegen_Downtime_Baseline}
 
 ===Caster specs' scaling===
@@ -70,8 +68,6 @@ Scaling with a certain stat was found by simulating baseline dps for the gear se
 
 If you're unsure what's scaling or wonder about how it works, check [http://shadowpriest.com/viewtopic.php?f=13&t=16037 Scaling F.A.Q.] - a wall of text that in details describes basics of scaling and features loads of examples.
 
-Gear used for this test is a surrogate set that consists of combined close-to-best-in-slot items from Naxx 10 (with almost capped spellhit). Raid composition is quite typical and features casters of all common specs and provides all common dps/manaregen-related raid buffs and target debuffs. More details above (section "Gear used for tests" and "Raid composition for tests").
-
 {$Input_Scaling_MainSpecs}
 
 {$Input_Scaling_Mages}
@@ -79,8 +75,6 @@ Gear used for this test is a surrogate set that consists of combined close-to-be
 {$Input_Scaling_Warlocks}
 
 ===Caster specs' dps===
-
-Gear used for this test is a surrogate set that consists of combined close-to-best-in-slot items from Naxx 10 (with almost capped spellhit). Raid composition is quite typical and features casters of all common specs and provides all common dps/manaregen-related raid buffs and target debuffs. More details above (section "Gear used for tests" and "Raid composition for tests").
 
 {$Research_Dps_Baseline}
 
