@@ -97,7 +97,6 @@ copy resources\{$Page_WikiName}.wiki wiki\{$Page_WikiName}.wiki
 scratmini.templator template=wiki\{$Page_WikiName}.wiki strings=resources\template.strings
 erase wiki\{$Page_WikiName}.wiki
 copy results\scaling.csv wiki\scaling.csv
-copy results\shadow_manaregen.csv wiki\shadow_manaregen.csv
 del scratmini.templator.exe
 
 :no_wiki
