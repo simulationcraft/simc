@@ -62,8 +62,6 @@ struct warlock_t : public player_t
 
   // Procs
   proc_t* procs_life_tap;
-  proc_t* procs_nightfall;
-  proc_t* procs_corruption_glyph;
 
   // Up-Times
   uptime_t* uptimes_backdraft;
@@ -73,6 +71,7 @@ struct warlock_t : public player_t
   uptime_t* uptimes_molten_core;
   uptime_t* uptimes_shadow_flame;
   uptime_t* uptimes_flame_shadow;
+  uptime_t* uptimes_shadow_trance;
   uptime_t* uptimes_shadow_vulnerability;
 
   struct talents_t
@@ -219,9 +218,7 @@ struct warlock_t : public player_t
     gains_soul_leech = get_gain( "soul_leech" );
 
     // Procs
-    procs_life_tap         = get_proc( "life_tap" );
-    procs_nightfall        = get_proc( "nightfall" );
-    procs_corruption_glyph = get_proc( "corruption_glyph" );
+    procs_life_tap = get_proc( "life_tap" );
 
     // Up-Times
     uptimes_backdraft            = get_uptime( "backdraft"            );
@@ -231,6 +228,7 @@ struct warlock_t : public player_t
     uptimes_flame_shadow         = get_uptime( "flame_shadow"         );
     uptimes_molten_core          = get_uptime( "molten_core"          );
     uptimes_shadow_flame         = get_uptime( "shadow_flame"         );
+    uptimes_shadow_trance        = get_uptime( "shadow_trance"        );
     uptimes_shadow_vulnerability = get_uptime( "shadow_vulnerability" );
   }
 
@@ -709,7 +707,7 @@ struct felhunter_pet_t : public warlock_pet_t
     }
     virtual void player_buff()
     {
-      felguard_pet_t* p = (felguard_pet_t*) player -> cast_pet();
+      felhunter_pet_t* p = (felhunter_pet_t*) player -> cast_pet();
       warlock_t*      o = p -> owner -> cast_warlock();
       warlock_pet_attack_t::player_buff();
       player_multiplier *= 1.0 + o -> active_dots * 0.05;;
@@ -989,6 +987,7 @@ static void stack_shadow_embrace( spell_t* s )
     {
       name = "Shadow Embrace Expiration";
       p -> aura_gain( "Shadow Embrace" );
+      sim -> target -> debuffs.affliction_effects++;
       sim -> add_event( this, 15.0 );
     }
     virtual void execute()
@@ -997,6 +996,7 @@ static void stack_shadow_embrace( spell_t* s )
       p -> aura_loss( "Shadow Embrace" );
       p -> buffs_shadow_embrace = 0;
       p -> expirations_shadow_embrace = 0;
+      sim -> target -> debuffs.affliction_effects--;
     }
   };
   
@@ -1029,7 +1029,6 @@ static void trigger_nightfall( spell_t* s )
   {
     if( rand_t::roll( 0.02 * p -> talents.nightfall ) )
     {
-      p -> procs_nightfall -> occur();
       p -> aura_gain( "Shadow Trance" );
       p -> buffs_shadow_trance = 1;
     }
@@ -1046,7 +1045,6 @@ static void trigger_corruption_glyph( spell_t* s )
   {
     if( rand_t::roll( 0.04 ) )
     {
-      p -> procs_corruption_glyph -> occur();
       p -> aura_gain( "Shadow Trance" );
       p -> buffs_shadow_trance = 1;
     }
@@ -1124,6 +1122,7 @@ static void trigger_haunted( spell_t* s )
       name = "Haunt Expiration";
       p -> aura_gain( "Haunted" );
       p -> buffs_haunted = 1;
+      sim -> target -> debuffs.affliction_effects++;
       sim -> add_event( this, 12.0 );
     }
     virtual void execute()
@@ -1131,6 +1130,7 @@ static void trigger_haunted( spell_t* s )
       warlock_t* p = player -> cast_warlock();
       p -> aura_loss( "Haunted" );
       p -> buffs_haunted = 0;
+      sim -> target -> debuffs.affliction_effects--;
       p -> expirations_haunted = 0;
     }
   };
@@ -1665,6 +1665,12 @@ void warlock_spell_t::target_debuff( int8_t dmg_type )
     {
       target_multiplier *= 1.20;
     }
+
+    if( p -> main_hand_weapon.buff == SPELL_STONE ) target_multiplier *= 1.01;
+  }
+  else
+  {
+    if( p -> main_hand_weapon.buff == FIRE_STONE ) target_multiplier *= 1.01;
   }
 }
 
@@ -2073,6 +2079,7 @@ struct shadow_bolt_t : public warlock_spell_t
   virtual double execute_time()
   {
     warlock_t* p = player -> cast_warlock();
+    p -> uptimes_shadow_trance -> update( p -> buffs_shadow_trance );
     if( p -> buffs_shadow_trance ) return 0;
     return warlock_spell_t::execute_time();
   }
@@ -2440,11 +2447,22 @@ struct drain_life_t : public warlock_spell_t
 
   virtual void execute()
   {
+    warlock_t* p = player -> cast_warlock();
     warlock_spell_t::execute();
     if( result_is_hit() )
     {
       trigger_everlasting_affliction( this );
+      p -> active_dots++;
+      sim -> target -> debuffs.affliction_effects++;
     }
+  }
+
+  virtual void last_tick()
+  {
+    warlock_t* p = player -> cast_warlock();
+    warlock_spell_t::last_tick(); 
+    p -> active_dots--;
+    sim -> target -> debuffs.affliction_effects--;
   }
 
   virtual void player_buff()
@@ -2516,6 +2534,25 @@ struct drain_soul_t : public warlock_spell_t
     base_cost        *= 1.0 - p -> talents.suppression * ( sim_t::WotLK ? 0.02 : 0.00 );
     base_hit         +=       p -> talents.suppression * ( sim_t::WotLK ? 0.01 : 0.02 );
     base_multiplier  *= 1.0 + p -> talents.shadow_mastery * 0.02;
+  }
+
+  virtual void execute()
+  {
+    warlock_t* p = player -> cast_warlock();
+    warlock_spell_t::execute();
+    if( result_is_hit() )
+    {
+      p -> active_dots++;
+      sim -> target -> debuffs.affliction_effects++;
+    }
+  }
+
+  virtual void last_tick()
+  {
+    warlock_t* p = player -> cast_warlock();
+    warlock_spell_t::last_tick(); 
+    p -> active_dots--;
+    sim -> target -> debuffs.affliction_effects--;
   }
 
   virtual void player_buff()
@@ -3463,6 +3500,73 @@ struct demonic_empowerment_t : public warlock_spell_t
   }
 };
 
+// Fire Stone Spell ===========================================================
+
+struct fire_stone_t : public warlock_spell_t
+{
+  int16_t bonus_crit;
+
+  fire_stone_t( player_t* player, const std::string& options_str ) : 
+    warlock_spell_t( "fire_stone", player, SCHOOL_FIRE, TREE_DEMONOLOGY )
+  {
+    warlock_t* p = player -> cast_warlock();
+    trigger_gcd = 0;
+
+    bonus_crit = ( ( p -> level <= 56 ) ? 28  : 
+		   ( p -> level <= 66 ) ? 35  :
+		   ( p -> level <= 74 ) ? 42  : 49 );
+
+    bonus_crit = (int16_t) ( bonus_crit * ( 1.0 + p -> talents.master_conjuror * 0.15 ) );
+  }
+
+  virtual void execute()
+  {
+    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
+
+    player -> main_hand_weapon.buff = FIRE_STONE;
+    player -> spell_crit += bonus_crit / player -> rating.spell_crit;
+  };
+
+  virtual bool ready()
+  {
+    return( player -> main_hand_weapon.buff != FIRE_STONE );
+  }
+};
+
+// Spell Stone Spell ===========================================================
+
+struct spell_stone_t : public warlock_spell_t
+{
+  int16_t bonus_haste;
+
+  spell_stone_t( player_t* player, const std::string& options_str ) : 
+    warlock_spell_t( "spell_stone", player, SCHOOL_FIRE, TREE_DEMONOLOGY )
+  {
+    warlock_t* p = player -> cast_warlock();
+    trigger_gcd = 0;
+
+    bonus_haste = ( ( p -> level <= 60 ) ? 30  : 
+		    ( p -> level <= 66 ) ? 40  :
+		    ( p -> level <= 72 ) ? 50  : 60 );
+    
+    bonus_haste = (int16_t) ( bonus_haste * ( 1.0 + p -> talents.master_conjuror * 0.15 ) );
+  }
+
+  virtual void execute()
+  {
+    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
+
+    player -> main_hand_weapon.buff = SPELL_STONE;
+    player -> haste_rating += bonus_haste;
+    player -> recalculate_haste();
+  };
+
+  virtual bool ready()
+  {
+    return( player -> main_hand_weapon.buff != SPELL_STONE );
+  }
+};
+
 // ==========================================================================
 // Warlock Character Definition
 // ==========================================================================
@@ -3502,8 +3606,8 @@ action_t* warlock_t::create_action( const std::string& name,
   if( name == "drain_life"          ) return new          drain_life_t( this, options_str );
   if( name == "drain_soul"          ) return new          drain_soul_t( this, options_str );
   if( name == "fel_armor"           ) return new           fel_armor_t( this, options_str );
-//if( name == "grand_fire_stone"    ) return new    grand_fire_stone_t( this, options_str );
-//if( name == "grand_spell_stone"   ) return new   grand_spell_stone_t( this, options_str );
+  if( name == "fire_stone"          ) return new          fire_stone_t( this, options_str );
+  if( name == "spell_stone"         ) return new         spell_stone_t( this, options_str );
   if( name == "haunt"               ) return new               haunt_t( this, options_str );
   if( name == "immolate"            ) return new            immolate_t( this, options_str );
   if( name == "incinerate"          ) return new          incinerate_t( this, options_str );
