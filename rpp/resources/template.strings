@@ -1,5 +1,5 @@
-Page_WikiName = RPP_3_0_2_8982
-Page_DisplayName = Raid Performance Project for Patch 3.0.2.8982 (beta)
+Page_WikiName = RPP_{$Patch_WikiName}
+Page_DisplayName = Raid Performance Project for {$Patch_DisplayName} (beta)
 
 Current_SimCraftRevision = <autodetected revision of checkout>
 
