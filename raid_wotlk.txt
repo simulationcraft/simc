@@ -398,14 +398,9 @@ glyph_siphon_life=1
 # Pets
 pet=felhunter
 actions=shadow_bite/wait
-quiet=1
-active=owner
-pet=imp
-actions=fire_bolt
-quiet=1
-active=owner
-pet=succubus
-actions=lash_of_pain/wait
+blessing_of_kings=1
+sanctified_retribution=1
+swift_retribution=1
 quiet=1
 active=owner
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
@@ -435,18 +430,16 @@ glyph_shadow_bolt=1
 # Pets
 pet=felguard
 actions=cleave/wait
-quiet=1
-active=owner
-pet=felhunter
-actions=shadow_bite/wait
-quiet=1
-active=owner
-pet=imp
-actions=fire_bolt
+blessing_of_kings=1
+sanctified_retribution=1
+swift_retribution=1
 quiet=1
 active=owner
 pet=succubus
 actions=lash_of_pain/wait
+blessing_of_kings=1
+sanctified_retribution=1
+swift_retribution=1
 quiet=1
 active=owner
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
@@ -474,16 +467,10 @@ glyph_corruption=1
 glyph_imp=1
 glyph_shadow_bolt=1
 # Pets
-pet=felhunter
-actions=shadow_bite/wait
-quiet=1
-active=owner
 pet=imp
 actions=fire_bolt
-quiet=1
-active=owner
-pet=succubus
-actions=lash_of_pain/wait
+sanctified_retribution=1
+swift_retribution=1
 quiet=1
 active=owner
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
