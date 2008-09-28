@@ -700,9 +700,9 @@ struct moonfire_t : public druid_spell_t
 
     base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.moonglow * 0.03;
-    base_multiplier *= 1.0 + p -> talents.moonfury * 0.02;
-    base_multiplier *= 1.0 + p -> talents.improved_moonfire * 0.05;
-    base_multiplier *= 1.0 + p -> talents.genesis * 0.01;
+    base_multiplier *= 1.0 + ( p -> talents.moonfury          * 0.02 +
+			       p -> talents.improved_moonfire * 0.05 +
+			       p -> talents.genesis           * 0.01 );
     base_crit       += p -> talents.improved_moonfire * 0.05;
     base_crit_bonus *= 1.0 + p -> talents.vengeance * 0.20;
 
@@ -1106,8 +1106,7 @@ struct treants_spell_t : public druid_spell_t
     parse_options( options, options_str );
 
     cooldown = 180.0;
-    base_cost = p -> resource_base[ RESOURCE_MANA ] * 0.12;
-  }
+    base_cost = p -> resource_base[ RESOURCE_MANA ] * 0.12;  }
 
   virtual void execute() 
   {
