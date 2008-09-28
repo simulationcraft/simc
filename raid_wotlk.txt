@@ -382,7 +382,7 @@ swift_retribution=1
 #
 warlock=Warlock_Affliction
 level=80
-talents=http://talent.mmo-champion.com/?warlock=550000000000000000000000002350222001223510253500331351000000000000000000000000000
+talents=http://talent.mmo-champion.com/?warlock=550000040000000000000000002350222001023510053500331351000000000000000000000000000
 actions=flask,type=pure_death/spell_stone/fel_armor/summon_pet,felhunter/haunt/curse_of_agony/corruption/unstable_affliction/siphon_life/drain_soul,target_pct=20/immolate/shadow_bolt/life_tap
 gear_stamina=708
 gear_intellect=777
@@ -410,12 +410,12 @@ sanctified_retribution=1
 swift_retribution=1
 
 #
-# Demonlogy Warlock
+# Demonology Warlock
 #
 warlock=Warlock_Demonology
 level=80
 talents=http://talent.mmo-champion.com/?warlock=550030050000000000000000000000000000000000000000000000035033011350101500135031351
-actions=flask,type=pure_death/fire_stone/fel_armor/summon_pet,felguard/curse_of_doom/demonic_empowerment/metamorphosis,target_pct=35/corruption/immolate/shadow_bolt/life_tap
+actions=flask,type=pure_death/fire_stone/fel_armor/summon_pet,felguard/curse_of_doom/demonic_empowerment/metamorphosis/corruption/immolate/shadow_bolt/life_tap
 gear_stamina=708
 gear_intellect=777
 gear_spirit=411
