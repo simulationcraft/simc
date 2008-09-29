@@ -653,7 +653,7 @@ struct felguard_pet_t : public warlock_pet_t
     warlock_pet_t( sim, owner, pet_name, PET_FELGUARD ), melee(0)
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.damage     = 150;
+    main_hand_weapon.damage     = 130;
     main_hand_weapon.swing_time = 2.0;
 
     buffs_demonic_frenzy = 0;
