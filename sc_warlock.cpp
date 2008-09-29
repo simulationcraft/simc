@@ -2083,7 +2083,7 @@ struct shadow_bolt_t : public warlock_spell_t
     base_crit         += p -> talents.devastation * ( sim_t::WotLK ? 0.05 : 0.01 );
     base_crit         += p -> talents.backlash * 0.01;
     direct_power_mod  += p -> talents.shadow_and_flame * 0.04;
-    if( p -> talents.ruin ) base_crit_bonus *= 2.0;
+    base_crit_bonus   *= 1.0 + p -> talents.ruin * ( sim_t::WotLK ? 0.20 : 1.0 );
 
     if( sim_t::WotLK ) base_hit += p -> talents.cataclysm * 0.01;
 
@@ -2197,7 +2197,7 @@ struct chaos_bolt_t : public warlock_spell_t
     base_crit         += p -> talents.devastation * ( sim_t::WotLK ? 0.05 : 0.01 );
     base_crit         += p -> talents.backlash * 0.01;
     direct_power_mod  += p -> talents.shadow_and_flame * 0.04;
-    if( p -> talents.ruin ) base_crit_bonus *= 2.0;
+    base_crit_bonus   *= 1.0 + p -> talents.ruin * ( sim_t::WotLK ? 0.20 : 1.0 );
 
     if( sim_t::WotLK ) base_hit += p -> talents.cataclysm * 0.01;
   }
@@ -2248,7 +2248,7 @@ struct death_coil_t : public warlock_spell_t
     base_cost        = rank -> cost;
     base_cost       *= 1.0 -  p -> talents.cataclysm * 0.01;
     base_multiplier *= 1.0 + p -> talents.shadow_mastery * 0.02;
-    if( p -> talents.ruin ) base_crit_bonus *= 2.0;
+    base_crit_bonus *= 1.0 + p -> talents.ruin * ( sim_t::WotLK ? 0.20 : 1.0 );
 
     if( sim_t::WotLK ) base_hit += p -> talents.cataclysm * 0.01;
   }
@@ -2297,7 +2297,7 @@ struct shadow_burn_t : public warlock_spell_t
     base_cost        = rank -> cost;
     base_cost       *= 1.0 -  p -> talents.cataclysm * 0.01;
     base_multiplier *= 1.0 + p -> talents.shadow_mastery * 0.02;
-    if( p -> talents.ruin ) base_crit_bonus *= 2.0;
+    base_crit_bonus *= 1.0 + p -> talents.ruin * ( sim_t::WotLK ? 0.20 : 1.0 );
 
     if( sim_t::WotLK ) base_hit += p -> talents.cataclysm * 0.01;
    }
@@ -2855,7 +2855,7 @@ struct immolate_t : public warlock_spell_t
     base_multiplier   *= 1.0 + p -> talents.emberstorm * 0.02;
     base_crit         += p -> talents.devastation * ( sim_t::WotLK ? 0.05 : 0.01 );
     base_crit         += p -> talents.backlash * 0.01;
-    if( p -> talents.ruin ) base_crit_bonus *= 2.0;
+    base_crit_bonus   *= 1.0 + p -> talents.ruin * ( sim_t::WotLK ? 0.20 : 1.0 );
 
     // FIXME! These coefficients need more in-game analysis.
     direct_power_mod  += p -> talents.fire_and_brimstone * 0.03;
@@ -2955,7 +2955,7 @@ struct conflagrate_t : public warlock_spell_t
     base_multiplier  *= 1.0 + p -> talents.emberstorm * 0.02;
     base_crit        += p -> talents.devastation * ( sim_t::WotLK ? 0.05 : 0.01 );
     base_crit        += p -> talents.backlash * 0.01;
-    if( p -> talents.ruin ) base_crit_bonus *= 2.0;
+    base_crit_bonus  *= 1.0 + p -> talents.ruin * ( sim_t::WotLK ? 0.20 : 1.0 );
 
     if( sim_t::WotLK ) base_hit += p -> talents.cataclysm * 0.01;
   }
@@ -3049,7 +3049,7 @@ struct incinerate_t : public warlock_spell_t
     base_crit         += p -> talents.devastation * ( sim_t::WotLK ? 0.05 : 0.01 );
     base_crit         += p -> talents.backlash * 0.01;
     direct_power_mod  += p -> talents.shadow_and_flame * 0.04;
-    if( p -> talents.ruin ) base_crit_bonus *= 2.0;
+    base_crit_bonus   *= 1.0 + p -> talents.ruin * ( sim_t::WotLK ? 0.20 : 1.0 );
 
     if( sim_t::WotLK ) base_hit += p -> talents.cataclysm * 0.01;
 
@@ -3136,7 +3136,7 @@ struct searing_pain_t : public warlock_spell_t
     base_crit       += p -> talents.devastation * ( sim_t::WotLK ? 0.05 : 0.01 );
     base_crit       += p -> talents.backlash * 0.01;
     base_crit       += p -> talents.improved_searing_pain * 0.04;
-    if( p -> talents.ruin ) base_crit_bonus *= 2.0;
+    base_crit_bonus *= 1.0 + p -> talents.ruin * ( sim_t::WotLK ? 0.20 : 1.0 );
 
     if( sim_t::WotLK ) base_hit += p -> talents.cataclysm * 0.01;
 
@@ -3192,7 +3192,7 @@ struct soul_fire_t : public warlock_spell_t
     base_multiplier   *= 1.0 + p -> talents.emberstorm * 0.02;
     base_crit         += p -> talents.devastation * ( sim_t::WotLK ? 0.05 : 0.01 );
     base_crit         += p -> talents.backlash * 0.01;
-    if( p -> talents.ruin ) base_crit_bonus *= 2.0;
+    base_crit_bonus   *= 1.0 + p -> talents.ruin * ( sim_t::WotLK ? 0.20 : 1.0 );
 
     if( sim_t::WotLK ) base_hit += p -> talents.cataclysm * 0.01;
   }
