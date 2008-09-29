@@ -300,11 +300,11 @@ struct warlock_pet_t : public pet_t
   {
     warlock_t* o = owner -> cast_warlock();
 
-    attribute_base[ ATTR_STRENGTH  ] = 153;
-    attribute_base[ ATTR_AGILITY   ] = 108;
-    attribute_base[ ATTR_STAMINA   ] = 278;
-    attribute_base[ ATTR_INTELLECT ] = 133;
-    attribute_base[ ATTR_SPIRIT    ] = 122;
+    attribute_base[ ATTR_STRENGTH  ] = 314;
+    attribute_base[ ATTR_AGILITY   ] =  90;
+    attribute_base[ ATTR_STAMINA   ] = 328;
+    attribute_base[ ATTR_INTELLECT ] = 150;
+    attribute_base[ ATTR_SPIRIT    ] = 209;
 
     attribute_multiplier_initial[ ATTR_STAMINA   ] *= 1.0 + ( o -> talents.fel_stamina  * 0.03 +
 							      o -> talents.fel_vitality * 0.05 );
@@ -316,8 +316,6 @@ struct warlock_pet_t : public pet_t
     intellect_per_owner += o -> talents.fel_synergy * 0.05;
 
     initial_attack_power_per_strength = 2.0;
-
-    resource_base[ RESOURCE_MANA ] = 300;
 
     health_per_stamina = 10;
     mana_per_intellect = 15;
@@ -552,11 +550,14 @@ struct imp_pet_t : public warlock_pet_t
   {
     warlock_pet_t::init_base();
 
-    attribute_base[ ATTR_STRENGTH  ] = 145;
-    attribute_base[ ATTR_AGILITY   ] =  38;
-    attribute_base[ ATTR_STAMINA   ] = 190;
-    attribute_base[ ATTR_INTELLECT ] = 278;
-    attribute_base[ ATTR_SPIRIT    ] = 263;
+    attribute_base[ ATTR_STRENGTH  ] = 297;
+    attribute_base[ ATTR_AGILITY   ] =  79;
+    attribute_base[ ATTR_STAMINA   ] = 118;
+    attribute_base[ ATTR_INTELLECT ] = 369;
+    attribute_base[ ATTR_SPIRIT    ] = 357;
+
+    resource_base[ RESOURCE_HEALTH ] = 2719;
+    resource_base[ RESOURCE_MANA   ] = 150;
 
     health_per_stamina = 5;
     mana_per_intellect = 7.5;
@@ -661,7 +662,12 @@ struct felguard_pet_t : public warlock_pet_t
   virtual void init_base()
   {
     warlock_pet_t::init_base();
+
+    resource_base[ RESOURCE_HEALTH ] = 1627;
+    resource_base[ RESOURCE_MANA   ] = 3331;
+
     base_attack_power = +20;
+
     melee = new melee_t( this );
   }
   virtual void reset()
@@ -726,7 +732,12 @@ struct felhunter_pet_t : public warlock_pet_t
   virtual void init_base()
   {
     warlock_pet_t::init_base();
+
     base_attack_power = -20;
+
+    resource_base[ RESOURCE_HEALTH ] = 947;
+    resource_base[ RESOURCE_MANA   ] = 940;
+
     melee = new warlock_pet_melee_t( this );
   }
   virtual void summon()
@@ -779,7 +790,12 @@ struct succubus_pet_t : public warlock_pet_t
   virtual void init_base()
   {
     warlock_pet_t::init_base();
+
     base_attack_power = -20;
+
+    resource_base[ RESOURCE_HEALTH ] = 721;
+    resource_base[ RESOURCE_MANA   ] = 940;
+
     melee = new warlock_pet_melee_t( this );
   }
   virtual void summon()

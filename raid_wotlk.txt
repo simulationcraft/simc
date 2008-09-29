@@ -399,6 +399,40 @@ glyph_siphon_life=1
 pet=felhunter
 actions=shadow_bite/wait
 blessing_of_kings=1
+blessing_of_might=550
+sanctified_retribution=1
+swift_retribution=1
+quiet=1
+active=owner
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_wisdom=1
+sanctified_retribution=1
+swift_retribution=1
+
+#
+# Affliction Warlock (no Drain Soul)
+#
+warlock=Warlock_Affliction_NoDS
+level=80
+talents=http://talent.mmo-champion.com/?warlock=550000050000000000000000002350220001023510053510331351000000000000000000000000000
+actions=flask,type=pure_death/spell_stone/fel_armor/summon_pet,felhunter/haunt/curse_of_agony/corruption/unstable_affliction/siphon_life/immolate/shadow_bolt/life_tap
+gear_stamina=708
+gear_intellect=777
+gear_spirit=411
+gear_spell_power=2200
+gear_spell_crit_rating=461
+gear_spell_hit_rating=250
+gear_haste_rating=492
+# Glyphs
+glyph_corruption=1
+glyph_curse_of_agony=1
+glyph_siphon_life=1
+# Pets
+pet=felhunter
+actions=shadow_bite/wait
+blessing_of_kings=1
+blessing_of_might=550
 sanctified_retribution=1
 swift_retribution=1
 quiet=1
@@ -431,6 +465,7 @@ glyph_shadow_bolt=1
 pet=felguard
 actions=cleave/wait
 blessing_of_kings=1
+blessing_of_might=550
 sanctified_retribution=1
 swift_retribution=1
 quiet=1
@@ -438,6 +473,7 @@ active=owner
 pet=succubus
 actions=lash_of_pain/wait
 blessing_of_kings=1
+blessing_of_might=550
 sanctified_retribution=1
 swift_retribution=1
 quiet=1
@@ -469,6 +505,8 @@ glyph_shadow_bolt=1
 # Pets
 pet=imp
 actions=fire_bolt
+blessing_of_kings=1
+blessing_of_wisdom=1
 sanctified_retribution=1
 swift_retribution=1
 quiet=1
