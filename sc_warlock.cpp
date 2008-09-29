@@ -1175,7 +1175,7 @@ static void trigger_molten_core( spell_t* s )
       name = "Molten Core Expiration";
       p -> aura_gain( "Molten Core" );
       p -> buffs_molten_core = sim -> current_time;
-      sim -> add_event( this, 6.0 );
+      sim -> add_event( this, 12.0 );
     }
     virtual void execute()
     {
