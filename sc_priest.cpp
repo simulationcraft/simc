@@ -1375,6 +1375,14 @@ struct dispersion_t : public priest_spell_t
     p -> resource_gain( RESOURCE_MANA, 0.06 * p -> resource_max[ RESOURCE_MANA ], p -> gains_dispersion );
     priest_spell_t::tick();
   }
+
+  virtual bool ready()
+  {
+    if( ! priest_spell_t::ready() )
+      return false;
+
+    return player -> resource_current[ RESOURCE_MANA ] < 0.64 * player -> resource_max[ RESOURCE_MANA ];
+  }
 };
 
 // Power Infusion Spell =====================================================

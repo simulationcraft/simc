@@ -831,7 +831,7 @@ void player_t::regen( double periodicity )
 // player_t::resource_loss =================================================
 
 void player_t::resource_loss( int8_t resource,
-			      double amount )
+                              double amount )
 {
   if( amount == 0 ) return;
 
@@ -864,8 +864,8 @@ void player_t::resource_gain( int8_t  resource,
     resource_current[ resource ] += actual_amount;
   }
 
-  resource_gained [ resource ] += amount;
-  if( source ) source -> add( amount );
+  resource_gained [ resource ] += actual_amount;
+  if( source ) source -> add( actual_amount );
 
   if( sim -> log ) 
     report_t::log( sim, "%s gains %.0f (%.0f) %s from %s", 
