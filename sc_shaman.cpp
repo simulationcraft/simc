@@ -206,6 +206,7 @@ struct shaman_t : public player_t
   virtual bool      parse_talents( const std::string& talent_string, int encoding );
   virtual bool      parse_option( const std::string& name, const std::string& value );
   virtual action_t* create_action( const std::string& name, const std::string& options );
+  virtual pet_t*    create_pet   ( const std::string& name );
   virtual int       primary_resource() { return RESOURCE_MANA; }
 
   // Event Tracking
@@ -258,6 +259,69 @@ struct shaman_spell_t : public spell_t
   virtual double calculate_direct_damage() { return spell_t::calculate_direct_damage(); }
   virtual void last_tick()                 { spell_t::last_tick();                      }
   virtual bool ready()                     { return spell_t::ready();                   }
+};
+
+// ==========================================================================
+// Pet Spirit Wolf
+// ==========================================================================
+
+struct spirit_wolf_pet_t : public pet_t
+{
+  struct melee_t : public attack_t
+  {
+    melee_t( player_t* player ) : 
+      attack_t( "wolf_melee", player )
+    {
+      weapon = &( player -> main_hand_weapon );
+      base_execute_time = weapon -> swing_time;
+      base_direct_dmg = 1;
+      background = true;
+      repeating = true;
+
+      // There are actually two wolves.....
+      base_multiplier *= 2.0;
+    }
+    virtual void execute()
+    {
+      attack_t::execute();
+      if( result_is_hit() )
+      {
+	if( ! sim_t::WotLK )
+	{
+	  enchant_t::trigger_flametongue_totem( this );
+	  enchant_t::trigger_windfury_totem( this );
+	}
+      }
+    }
+  };
+
+  melee_t* melee;
+
+  spirit_wolf_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name ) :
+    pet_t( sim, owner, pet_name ), melee(0)
+  {
+    main_hand_weapon.type       = WEAPON_BEAST;
+    main_hand_weapon.damage     = 310;
+    main_hand_weapon.swing_time = 1.5;
+  }
+  virtual void init_base()
+  {
+    attribute_base[ ATTR_STRENGTH  ] = 331;
+    attribute_base[ ATTR_AGILITY   ] = 113;
+    attribute_base[ ATTR_STAMINA   ] = 361;
+    attribute_base[ ATTR_INTELLECT ] = 65;
+    attribute_base[ ATTR_SPIRIT    ] = 109;
+
+    base_attack_power = -20;
+    initial_attack_power_per_strength = 2.0;
+
+    melee = new melee_t( this );
+  }
+  virtual void summon()
+  {
+    pet_t::summon();
+    melee -> execute(); // Kick-off repeating attack
+  }
 };
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
@@ -2737,6 +2801,67 @@ struct lightning_shield_t : public shaman_spell_t
   }
 };
 
+// Spirit Wolf Spell ==========================================================
+
+struct spirit_wolf_spell_t : public shaman_spell_t
+{
+  struct spirit_wolf_expiration_t : public event_t
+  {
+    spirit_wolf_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
+    {
+      sim -> add_event( this, 45.0 );
+    }
+    virtual void execute()
+    {
+      player -> dismiss_pet( "spirit_wolf" );
+    }
+  };
+
+  int8_t target_pct;
+
+  spirit_wolf_spell_t( player_t* player, const std::string& options_str ) : 
+    shaman_spell_t( "spirit_wolf", player, SCHOOL_NATURE, TREE_ENHANCEMENT ), target_pct(0)
+  {
+    shaman_t* p = player -> cast_shaman();
+    assert( p -> talents.feral_spirit );
+
+    option_t options[] =
+    {
+      { "trigger", OPT_INT8, &target_pct },
+      { NULL }
+    };
+    parse_options( options, options_str );
+
+    cooldown   = 180.0;
+    base_cost  = p -> resource_max[ RESOURCE_MANA ] * 0.12;
+  }
+
+  virtual void execute() 
+  {
+    consume_resource();
+    update_ready();
+    player -> summon_pet( "spirit_wolf" );
+    player -> action_finish( this );
+    new spirit_wolf_expiration_t( sim, player );
+  }
+
+  virtual bool ready()
+  {
+    if( ! shaman_spell_t::ready() )
+      return false;
+
+    target_t* t = sim -> target;
+
+    if( target_pct == 0 )
+      return true;
+
+    if( t -> initial_health <= 0 )
+      return false;
+
+    return( ( t -> current_health / t -> initial_health ) < ( target_pct / 100.0 ) );
+  }
+};
+
 // ============================================================================
 // Shaman Event Tracking
 // ============================================================================
@@ -2855,6 +2980,7 @@ action_t* shaman_t::create_action( const std::string& name,
   if( name == "natures_swiftness"       ) return new        shamans_swiftness_t( this, options_str );
   if( name == "searing_totem"           ) return new            searing_totem_t( this, options_str );
   if( name == "shamanistic_rage"        ) return new         shamanistic_rage_t( this, options_str );
+  if( name == "spirit_wolf"             ) return new        spirit_wolf_spell_t( this, options_str );
   if( name == "stormstrike"             ) return new              stormstrike_t( this, options_str );
   if( name == "strength_of_earth_totem" ) return new  strength_of_earth_totem_t( this, options_str );
 //if( name == "thunderstorm"            ) return new             thunderstorm_t( this, options_str );
@@ -2864,6 +2990,15 @@ action_t* shaman_t::create_action( const std::string& name,
   if( name == "wrath_of_air_totem"      ) return new       wrath_of_air_totem_t( this, options_str );
 
   return player_t::create_action( name, options_str );
+}
+
+// shaman_t::create_pet ======================================================
+
+pet_t* shaman_t::create_pet( const std::string& pet_name )
+{
+  if( pet_name == "spirit_wolf" ) return new spirit_wolf_pet_t( sim, this, pet_name );
+
+  return 0;
 }
 
 // shaman_t::init_base ========================================================
