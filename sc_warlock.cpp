@@ -2598,10 +2598,10 @@ struct drain_soul_t : public warlock_spell_t
 
       if( t -> initial_health > 0 )
       {
-	if( ( t -> current_health / t -> initial_health ) < 0.20 )
-	{
-	  player_multiplier *= 4.0;
-	}
+        if( ( t -> current_health / t -> initial_health ) < 0.20 )
+        {
+          player_multiplier *= 4.0;
+        }
       }
     }
     
