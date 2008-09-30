@@ -781,6 +781,14 @@ void shaman_attack_t::player_buff()
   }
   p -> uptimes_elemental_devastation -> update( p -> buffs_elemental_devastation );
   p -> uptimes_unleashed_rage        -> update( p -> buffs.unleashed_rage        );
+
+  if( school != SCHOOL_PHYSICAL )
+  {  
+    if( p -> buffs_elemental_vulnerability )
+    {
+      player_multiplier *= 1.0 + p -> buffs_elemental_vulnerability * 0.01;
+    }
+  }
 }
 
 // =========================================================================
@@ -879,7 +887,7 @@ struct auto_attack_t : public shaman_attack_t
 struct lava_lash_t : public shaman_attack_t
 {
   lava_lash_t( player_t* player, const std::string& options_str ) : 
-    shaman_attack_t( "lava_lash", player, SCHOOL_PHYSICAL, TREE_ENHANCEMENT )
+    shaman_attack_t( "lava_lash", player, SCHOOL_FIRE, TREE_ENHANCEMENT )
   {
     shaman_t* p = player -> cast_shaman();
 
