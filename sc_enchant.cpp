@@ -235,9 +235,10 @@ void enchant_t::trigger_flametongue_totem( attack_t* a )
       may_crit    = true;
       reset();
     }
-    virtual void get_base_damage()
+    virtual double calculate_direct_damage()
     {
-      base_direct_dmg = player -> buffs.flametongue_totem * weapon -> swing_time;
+      base_direct_dmg = player -> buffs.flametongue_totem * player -> main_hand_weapon.swing_time;
+      return spell_t::calculate_direct_damage();
     }
   };
 
@@ -251,7 +252,6 @@ void enchant_t::trigger_flametongue_totem( attack_t* a )
       p -> actions.flametongue_totem = new flametongue_totem_spell_t( p );
     }
 
-    p -> actions.flametongue_totem -> weapon = a -> weapon;
     p -> actions.flametongue_totem -> execute();
   }
 }

@@ -332,10 +332,8 @@ static void trigger_flametongue_weapon( attack_t* a )
 {
   struct flametongue_weapon_spell_t : public shaman_spell_t
   {
-    double fire_dmg;
-
     flametongue_weapon_spell_t( player_t* player ) :
-      shaman_spell_t( "flametongue", player, SCHOOL_FIRE, TREE_ENHANCEMENT ), fire_dmg(0)
+      shaman_spell_t( "flametongue", player, SCHOOL_FIRE, TREE_ENHANCEMENT )
     {
       shaman_t* p = player -> cast_shaman();
 
@@ -347,17 +345,7 @@ static void trigger_flametongue_weapon( attack_t* a )
       base_multiplier *= 1.0 + p -> talents.elemental_weapons   * ( sim_t::WotLK ? 0.00 : 0.05 );
       base_hit        +=       p -> talents.elemental_precision * ( sim_t::WotLK ? 0.01 : 0.02 );
 
-      fire_dmg  = ( p -> level < 64 ) ? 30 : 
-	          ( p -> level < 71 ) ? 35 : 
-	          ( p -> level < 76 ) ? 60 : 
-	          ( p -> level < 80 ) ? 70 : 80;
-
       reset();
-    }
-    virtual double calculate_direct_damage()
-    {
-      base_direct_dmg = fire_dmg * weapon -> swing_time;
-      return shaman_spell_t::calculate_direct_damage();
     }
   };
 
@@ -371,7 +359,12 @@ static void trigger_flametongue_weapon( attack_t* a )
       p -> flametongue_weapon_spell = new flametongue_weapon_spell_t( p );
     }
 
-    p -> flametongue_weapon_spell -> weapon = a -> weapon;
+    double fire_dmg  = ( ( p -> level < 64 ) ? 30 : 
+			 ( p -> level < 71 ) ? 35 : 
+			 ( p -> level < 76 ) ? 60 : 
+			 ( p -> level < 80 ) ? 70 : 80 );
+
+    p -> flametongue_weapon_spell -> base_direct_dmg = fire_dmg * a -> weapon -> swing_time;
     p -> flametongue_weapon_spell -> execute();
   }
 }
@@ -3013,11 +3006,11 @@ pet_t* shaman_t::create_pet( const std::string& pet_name )
 
 void shaman_t::init_base()
 {
-  attribute_base[ ATTR_STRENGTH  ] = 105;
-  attribute_base[ ATTR_AGILITY   ] =  60;
-  attribute_base[ ATTR_STAMINA   ] = 115;
-  attribute_base[ ATTR_INTELLECT ] = 105;
-  attribute_base[ ATTR_SPIRIT    ] = 120;
+  attribute_base[ ATTR_STRENGTH  ] = 125;
+  attribute_base[ ATTR_AGILITY   ] =  69;
+  attribute_base[ ATTR_STAMINA   ] = 135;
+  attribute_base[ ATTR_INTELLECT ] = 123;
+  attribute_base[ ATTR_SPIRIT    ] = 140;
 
   base_spell_crit = 0.0225;
   initial_spell_crit_per_intellect = rating_t::interpolate( level, 0.01/60.0, 0.01/80.0, 0.01/166.6 );
