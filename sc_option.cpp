@@ -155,12 +155,23 @@ bool option_t::parse( sim_t* sim,
   }
   else if( name == "html" )
   {
-    if( sim -> html_file != stdout ) fclose( sim -> html_file );
+    if( sim -> html_file ) fclose( sim -> html_file );
 
     sim -> html_file = fopen( value.c_str(), "w" );
     if( ! sim -> html_file )
     {
       fprintf( stderr, "simcraft: Unable to open html file '%s'\n", value.c_str() );
+      exit(0);
+    }
+  }
+  else if( name == "wiki" )
+  {
+    if( sim -> wiki_file ) fclose( sim -> wiki_file );
+
+    sim -> wiki_file = fopen( value.c_str(), "w" );
+    if( ! sim -> wiki_file )
+    {
+      fprintf( stderr, "simcraft: Unable to open wiki file '%s'\n", value.c_str() );
       exit(0);
     }
   }

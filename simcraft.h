@@ -208,6 +208,7 @@ struct sim_t
   uptime_t*   uptime_list;
   FILE*       output_file;
   FILE*       html_file;
+  FILE*       wiki_file;
 
   // Reporting
   report_t* report;
@@ -1171,16 +1172,18 @@ struct report_t
   void print_waiting();
   void print_performance();
   void print();
-  void chart_raid_dps();
-  void chart_raid_dpet();
-  void chart_raid_downtime();
-  void chart_raid_gear();
-  void chart_raid_uptimes();
-  void chart_action_dpet      ( player_t* );
-  void chart_action_dmg       ( player_t* );
-  void chart_gains            ( player_t* );
-  void chart_uptimes_and_procs( player_t* );
-  void chart_timeline         ( player_t* );
+  const char* chart_raid_dps();
+  int         chart_raid_dpet( std::vector<std::string>& images );
+  const char* chart_raid_downtime();
+  const char* chart_raid_gear();
+  const char* chart_raid_uptimes();
+  const char* chart_action_dpet      ( player_t* );
+  const char* chart_action_dmg       ( player_t* );
+  const char* chart_gains            ( player_t* );
+  const char* chart_uptimes_and_procs( player_t* );
+  const char* chart_timeline         ( player_t* );
+  void chart_html();
+  void chart_wiki();
   void chart();
   static void timestamp( sim_t* sim );
   static void va_printf( sim_t*, const char* format, va_list );

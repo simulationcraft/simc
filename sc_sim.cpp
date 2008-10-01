@@ -54,7 +54,7 @@ sim_t::sim_t() :
   events_processed(0), total_events_processed(0),
   seed(0), id(0), iterations(1),
   potion_sickness(0), average_dmg(1), log(0), debug(0), timestamp(1), 
-  uptime_list(0), output_file(stdout), html_file(stdout), 
+  uptime_list(0), output_file(stdout), html_file(0), wiki_file(0),
   report(0), raid_dps(0), total_dmg(0), total_seconds(0), elapsed_cpu_seconds(0), merge_ignite(0)
 {
   for( int i=0; i < RESOURCE_MAX; i++ ) 
@@ -517,7 +517,8 @@ int main( int argc, char **argv )
   sim.report -> chart();
 
   if( sim.output_file != stdout ) fclose( sim.output_file );
-  if( sim.  html_file != stdout ) fclose( sim.  html_file );
+  if( sim.  html_file           ) fclose( sim.  html_file );
+  if( sim.  wiki_file           ) fclose( sim.  wiki_file );
   
   return 0;
 }

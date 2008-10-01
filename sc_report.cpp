@@ -488,54 +488,57 @@ void report_t::print()
 
 // report_t::chart_raid_dps ==================================================
 
-void report_t::chart_raid_dps()
+const char* report_t::chart_raid_dps()
 {
   int num_players = sim -> players_by_rank.size();
-  if( num_players == 0 ) return;
+  assert( num_players != 0 );
 
-  fprintf( sim -> html_file, "<! DPS Ranking>\n" );
-  fprintf( sim -> html_file, "<img src=\"http://chart.apis.google.com/chart?" );
-  fprintf( sim -> html_file, "chs=500x%d", num_players * 30 + 30 );
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "cht=bhg" );
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chd=t:" );
+  static std::string s;
+  char buffer[ 1024 ];
+
+  s = "http://chart.apis.google.com/chart?";
+  sprintf( buffer, "chs=500x%d", num_players * 30 + 30 ); s += buffer;
+  s += "&";
+  s += "cht=bhg";
+  s += "&";
+  s += "chd=t:";
   double max_dps=0;
   for( int i=0; i < num_players; i++ )
   {
     player_t* p = sim -> players_by_rank[ i ];
-    fprintf( sim -> html_file, "%s%.0f", (i?"|":""), p -> dps );
+    sprintf( buffer, "%s%.0f", (i?"|":""), p -> dps ); s += buffer;
     if( p -> dps > max_dps ) max_dps = p -> dps;
   }
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chds=0,%.0f", max_dps * 2 );
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chco=" );
+  s += "&";
+  sprintf( buffer, "chds=0,%.0f", max_dps * 2 ); s += buffer;
+  s += "&";
+  s += "chco=";
+  for( int i=0; i < num_players; i++ )
+  {
+    if( i ) s += ",";
+    s += get_color( sim -> players_by_rank[ i ] );
+  }
+  s += "&";
+  s += "chm=";
   for( int i=0; i < num_players; i++ )
   {
     player_t* p = sim -> players_by_rank[ i ];
-    fprintf( sim -> html_file, "%s%s", (i?",":""), get_color( p ) );
+    sprintf( buffer, "%st++%.0f++%s,%s,%d,0,15", (i?"|":""), p -> dps, p -> name(), get_color( p ), i ); s += buffer;
   }
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chm=" );
-  for( int i=0; i < num_players; i++ )
-  {
-    player_t* p = sim -> players_by_rank[ i ];
-    fprintf( sim -> html_file, "%st++%.0f++%s,%s,%d,0,15", (i?"|":""), p -> dps, p -> name(), get_color( p ), i );
-  }
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chtt=DPS+Ranking" );
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chts=000000,20" );
-  fprintf( sim -> html_file, "\" />\n" );
+  s += "&";
+  s += "chtt=DPS+Ranking";
+  s += "&";
+  s += "chts=000000,20";
+
+  return s.c_str();
 }
 
 // report_t::chart_raid_gear =================================================
 
-void report_t::chart_raid_gear()
+const char* report_t::chart_raid_gear()
 {
   int num_players = sim -> players_by_rank.size();
-  if( num_players == 0 ) return;
+  assert( num_players != 0 );
 
   const int NUM_CATEGORIES = 10;
   std::vector<double> data_points[ NUM_CATEGORIES ];
@@ -587,55 +590,60 @@ void report_t::chart_raid_gear()
     class_color( WARLOCK ), class_color( PRIEST  ), class_color( PALADIN ), class_color( SHAMAN  ), class_color( DEATH_KNIGHT )
   };
 
-  fprintf( sim -> html_file, "<! Gear Overview>\n" );
-  fprintf( sim -> html_file, "<img src=\"http://chart.apis.google.com/chart?" );
-  fprintf( sim -> html_file, "chs=500x%d", num_players * 30 + 30 );
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "cht=bhs" );
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chd=t:" );
+  static std::string s;
+  char buffer[ 1024 ];
+  
+  s = "http://chart.apis.google.com/chart?";
+  sprintf( buffer, "chs=500x%d", num_players * 30 + 30 ); s += buffer;
+  s += "&";
+  s += "cht=bhs";
+  s += "&";
+  s += "chd=t:";
   for( int i=0; i < NUM_CATEGORIES; i++ )
   {
-    if( i ) fprintf( sim -> html_file, "|" );
+    if( i ) s += "|";
     for( int j=0; j < num_players; j++ )
     {
-      fprintf( sim -> html_file, "%s%.0f", (j?",":""), data_points[ i ][ j ] );
+      sprintf( buffer, "%s%.0f", (j?",":""), data_points[ i ][ j ] ); s += buffer;
     }
   }
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chds=0,%.0f", max_total );
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chco=" );
+  s += "&";
+  sprintf( buffer, "chds=0,%.0f", max_total ); s += buffer;
+  s += "&";
+  s += "chco=";
   for( int i=0; i < NUM_CATEGORIES; i++ )
   {
-    fprintf( sim -> html_file, "%s%s", (i?",":""), colors[ i ] );
+    if( i ) s += ",";
+    s += colors[ i ];
   }
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chxt=y" );
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chxl=0:" );
+  s += "&";
+  s += "chxt=y";
+  s += "&";
+  s += "chxl=0:";
   for( int i = num_players-1; i >= 0; i-- )
   {
-    fprintf( sim -> html_file, "|%s", sim -> players_by_rank[ i ] -> name() );
+    s += "|";
+    s += sim -> players_by_rank[ i ] -> name();
   }
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chxs=0,000000,15" );
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chdl=Strength|Agility|Intellect|Spirit|Attack+Power|Spell+Power|Hit+Rating|Crit+Rating|Haste+Rating|Penetration" );
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chtt=Gear+Overview" );
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chts=000000,20" );
-  fprintf( sim -> html_file, "\" />\n" );
+  s += "&";
+  s += "chxs=0,000000,15";
+  s += "&";
+  s += "chdl=Strength|Agility|Intellect|Spirit|Attack+Power|Spell+Power|Hit+Rating|Crit+Rating|Haste+Rating|Penetration";
+  s += "&";
+  s += "chtt=Gear+Overview";
+  s += "&";
+  s += "chts=000000,20";
+
+  return s.c_str();
 }
 
 // report_t::chart_raid_downtime ==============================================
 
-void report_t::chart_raid_downtime()
+const char* report_t::chart_raid_downtime()
 {
   int num_players = sim -> players_by_name.size();
-  if( num_players == 0 ) return;
-
+  assert( num_players != 0 );
+  
   std::vector<player_t*> waiting_list;
 
   for( int i=0; i < num_players; i++ )
@@ -648,49 +656,52 @@ void report_t::chart_raid_downtime()
   }
 
   int num_waiting = waiting_list.size();
-  if( num_waiting == 0 ) return;
+  if( num_waiting == 0 ) return 0;
 
-  fprintf( sim -> html_file, "<! Raid Downtime>\n" );
-  fprintf( sim -> html_file, "<img src=\"http://chart.apis.google.com/chart?" );
-  fprintf( sim -> html_file, "chs=500x%d", num_waiting * 30 + 30 );
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "cht=bhg" );
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chd=t:" );
+  static std::string s;
+  char buffer[ 1024 ];
+
+  s = "http://chart.apis.google.com/chart?";
+  sprintf( buffer, "chs=500x%d", num_waiting * 30 + 30 ); s += buffer;
+  s += "&";
+  s += "cht=bhg";
+  s += "&";
+  s += "chd=t:";
   double max_waiting=0;
   for( int i=0; i < num_waiting; i++ )
   {
     player_t* p = waiting_list[ i ];
     double waiting = 100.0 * p -> total_waiting / p -> total_seconds;
     if( waiting > max_waiting ) max_waiting = waiting;
-    fprintf( sim -> html_file, "%s%.0f", (i?"|":""), waiting );
+    sprintf( buffer, "%s%.0f", (i?"|":""), waiting ); s += buffer;
   }
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chds=0,%.0f", max_waiting * 2 );
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chco=" );
+  s += "&";
+  sprintf( buffer, "chds=0,%.0f", max_waiting * 2 ); s += buffer;
+  s += "&";
+  s += "chco=";
+  for( int i=0; i < num_waiting; i++ )
+  {
+    if( i ) s += ",";
+    s += get_color( waiting_list[ i ] );
+  }
+  s += "&";
+  s += "chm=";
   for( int i=0; i < num_waiting; i++ )
   {
     player_t* p = waiting_list[ i ];
-    fprintf( sim -> html_file, "%s%s", (i?",":""), get_color( p ) );
+    sprintf( buffer, "%st++%.0f%%++%s,%s,%d,0,15", (i?"|":""), 100.0 * p -> total_waiting / p -> total_seconds, p -> name(), get_color( p ), i ); s += buffer;
   }
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chm=" );
-  for( int i=0; i < num_waiting; i++ )
-  {
-    player_t* p = waiting_list[ i ];
-    fprintf( sim -> html_file, "%st++%.0f%%++%s,%s,%d,0,15", (i?"|":""), 100.0 * p -> total_waiting / p -> total_seconds, p -> name(), get_color( p ), i );
-  }
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chtt=Raid+Down-Time" );
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chts=000000,20" );
-  fprintf( sim -> html_file, "\" />\n" );
+  s += "&";
+  s += "chtt=Raid+Down-Time";
+  s += "&";
+  s += "chts=000000,20";
+
+  return s.c_str();
 }
 
 // report_t::chart_raid_uptimes =================================================
 
-void report_t::chart_raid_uptimes()
+const char* report_t::chart_raid_uptimes()
 {
   std::vector<uptime_t*> uptime_list;
 
@@ -701,34 +712,37 @@ void report_t::chart_raid_uptimes()
   }
 
   int num_uptimes = uptime_list.size();
-  if( num_uptimes == 0 ) return;
+  if( num_uptimes == 0 ) return 0;
 
-  fprintf( sim -> html_file, "<! Global Up-Times>\n" );
-  fprintf( sim -> html_file, "<img src=\"http://chart.apis.google.com/chart?" );
-  fprintf( sim -> html_file, "chs=500x%d", num_uptimes * 30 + 30 );
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "cht=bhs" );
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chd=t:" );
+  static std::string s;
+  char buffer[ 1024 ];
+
+  s = "http://chart.apis.google.com/chart?";
+  sprintf( buffer, "chs=500x%d", num_uptimes * 30 + 30 ); s += buffer;
+  s += "&";
+  s += "cht=bhs";
+  s += "&";
+  s += "chd=t:";
   for( int i=0; i < num_uptimes; i++ )
   {
     uptime_t* u = uptime_list[ i ];
-    fprintf( sim -> html_file, "%s%.0f", (i?",":""), u -> percentage() );
+    sprintf( buffer, "%s%.0f", (i?",":""), u -> percentage() ); s += buffer;
   }
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chds=0,200" );
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chm=" );
+  s += "&";
+  s += "chds=0,200";
+  s += "&";
+  s += "chm=";
   for( int i=0; i < num_uptimes; i++ )
   {
     uptime_t* u = uptime_list[ i ];
-    fprintf( sim -> html_file, "%st++%.0f%%++%s,000000,0,%d,15", (i?"|":""), u -> percentage(), u -> name(), i );
+    sprintf( buffer, "%st++%.0f%%++%s,000000,0,%d,15", (i?"|":""), u -> percentage(), u -> name(), i ); s += buffer;
   }
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chtt=Global+Up-Times" );
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chts=000000,20" );
-  fprintf( sim -> html_file, "\" />\n" );
+  s += "&";
+  s += "chtt=Global+Up-Times";
+  s += "&";
+  s += "chts=000000,20";
+  
+  return s.c_str();
 }
 
 // report_t::chart_raid_dpet =================================================
@@ -740,10 +754,10 @@ struct compare_dpet {
   }
 };
 
-void report_t::chart_raid_dpet()
+int report_t::chart_raid_dpet( std::vector<std::string>& images )
 {
   int num_players = sim -> players_by_rank.size();
-  if( num_players == 0 ) return;
+  assert( num_players != 0 );
 
   std::vector<stats_t*> stats_list;
 
@@ -751,18 +765,18 @@ void report_t::chart_raid_dpet()
   {
     player_t* p = sim -> players_by_rank[ i ];
 
-    for( stats_t* s = p -> stats_list; s; s = s -> next )
+    for( stats_t* st = p -> stats_list; st; st = st -> next )
     {
-      if( s -> total_dmg <= 0 ) continue;
-      if( ! s -> channeled && s -> total_execute_time <= 0 ) continue;
-      if( s -> num_executes < 5 ) continue;
+      if( st -> total_dmg <= 0 ) continue;
+      if( ! st -> channeled && st -> total_execute_time <= 0 ) continue;
+      if( st -> num_executes < 5 ) continue;
 
-      stats_list.push_back( s );
+      stats_list.push_back( st );
     }
   }
 
   int num_stats = stats_list.size();
-  if( num_stats == 0 ) return;
+  if( num_stats == 0 ) return 0;
 
   std::sort( stats_list.begin(), stats_list.end(), compare_dpet() );
 
@@ -771,119 +785,128 @@ void report_t::chart_raid_dpet()
   int max_actions_per_chart = 25;
   int max_charts = 2;
 
+  static std::string s;
+  char buffer[ 1024 ];
+
   for( int chart=0; chart < max_charts; chart++ )
   {
     if( num_stats > max_actions_per_chart ) num_stats = max_actions_per_chart;
 
-    fprintf( sim -> html_file, "<! Raid Damage Per Execute Time>\n" );
-    fprintf( sim -> html_file, "<img src=\"http://chart.apis.google.com/chart?" );
-    fprintf( sim -> html_file, "chs=500x%d", num_stats * 15 + 30 );
-    fprintf( sim -> html_file, "&" );
-    fprintf( sim -> html_file, "cht=bhg" );
-    fprintf( sim -> html_file, "&" );
-    fprintf( sim -> html_file, "chbh=10" );
-    fprintf( sim -> html_file, "&" );
-    fprintf( sim -> html_file, "chd=t:" );
+    s = "http://chart.apis.google.com/chart?";
+    sprintf( buffer, "chs=500x%d", num_stats * 15 + 30 ); s += buffer;
+    s += "&";
+    s += "cht=bhg";
+    s += "&";
+    s += "chbh=10";
+    s += "&";
+    s += "chd=t:";
     for( int i=0; i < num_stats; i++ )
     {
-      stats_t* s = stats_list[ i ];
-      fprintf( sim -> html_file, "%s%.0f", (i?"|":""), s -> dpet );
+      stats_t* st = stats_list[ i ];
+      sprintf( buffer, "%s%.0f", (i?"|":""), st -> dpet ); s += buffer;
     }
-    fprintf( sim -> html_file, "&" );
-    fprintf( sim -> html_file, "chds=0,%.0f", max_dpet * 2.5 );
-    fprintf( sim -> html_file, "&" );
-    fprintf( sim -> html_file, "chco=" );
+    s += "&";
+    sprintf( buffer, "chds=0,%.0f", max_dpet * 2.5 ); s += buffer;
+    s += "&";
+    s += "chco=";
     for( int i=0; i < num_stats; i++ )
     {
-      stats_t* s = stats_list[ i ];
-      fprintf( sim -> html_file, "%s%s", (i?",":""), get_color( s -> player ) );
+      if( i ) s += ",";
+      s += get_color( stats_list[ i ] -> player );
     }
-    fprintf( sim -> html_file, "&" );
-    fprintf( sim -> html_file, "chm=" );
+    s += "&";
+    s += "chm=";
     for( int i=0; i < num_stats; i++ )
     {
-      stats_t* s = stats_list[ i ];
-      fprintf( sim -> html_file, "%st++%.0f++%s+(%s),%s,%d,0,10", (i?"|":""), s -> dpet, s -> name_str.c_str(), s -> player -> name(), get_color( s -> player ), i );
+      stats_t* st = stats_list[ i ];
+      sprintf( buffer, "%st++%.0f++%s+(%s),%s,%d,0,10", (i?"|":""), 
+	       st -> dpet, st -> name_str.c_str(), st -> player -> name(), get_color( st -> player ), i ); s += buffer;
     }
-    fprintf( sim -> html_file, "&" );
-    fprintf( sim -> html_file, "chtt=Raid+Damage+Per+Execute+Time" );
-    fprintf( sim -> html_file, "&" );
-    fprintf( sim -> html_file, "chts=000000,20" );
-    fprintf( sim -> html_file, "\" />\n" );
+    s += "&";
+    s += "chtt=Raid+Damage+Per+Execute+Time";
+    s += "&";
+    s += "chts=000000,20";
+
+    images.push_back( s );
 
     stats_list.erase( stats_list.begin(), stats_list.begin()+num_stats-1 );
     num_stats = stats_list.size();
     if( num_stats == 0 ) break;
   }
+
+  return images.size();
 }
 
 // report_t::chart_action_dpet ===============================================
 
-void report_t::chart_action_dpet( player_t* p )
+const char* report_t::chart_action_dpet( player_t* p )
 {
   std::vector<stats_t*> stats_list;
 
-  for( stats_t* s = p -> stats_list; s; s = s -> next )
+  for( stats_t* st = p -> stats_list; st; st = st -> next )
   {
-    if( s -> total_dmg <= 0 ) continue;
-    if( ! s -> channeled && s -> total_execute_time <= 0 ) continue;
-    if( s -> dpet > ( 10 * p -> dps ) ) continue;
+    if( st -> total_dmg <= 0 ) continue;
+    if( ! st -> channeled && st -> total_execute_time <= 0 ) continue;
+    if( st -> dpet > ( 10 * p -> dps ) ) continue;
 
-    stats_list.push_back( s );
+    stats_list.push_back( st );
   }
 
   for( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
   {
-    for( stats_t* s = pet -> stats_list; s; s = s -> next )
+    for( stats_t* st = pet -> stats_list; st; st = st -> next )
     {
-      if( s -> total_dmg <= 0 ) continue;
-      if( ! s -> channeled && s -> total_execute_time <= 0 ) continue;
-      if( s -> dpet > ( 10 * p -> dps ) ) continue;
+      if( st -> total_dmg <= 0 ) continue;
+      if( ! st -> channeled && st -> total_execute_time <= 0 ) continue;
+      if( st -> dpet > ( 10 * p -> dps ) ) continue;
       
-      stats_list.push_back( s );
+      stats_list.push_back( st );
     }
   }
 
   int num_stats = stats_list.size();
-  if( num_stats == 0 ) return;
+  if( num_stats == 0 ) return 0;
 
   std::sort( stats_list.begin(), stats_list.end(), compare_dpet() );
 
-  fprintf( sim -> html_file, "<! %s Damage Per Execute Time>\n", p -> name() );
-  fprintf( sim -> html_file, "<img src=\"http://chart.apis.google.com/chart?" );
-  fprintf( sim -> html_file, "chs=500x%d", num_stats * 30 + 65 );
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "cht=bhg" );
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chd=t:" );
+  static std::string s;
+  char buffer[ 1024 ];
+
+  s = "http://chart.apis.google.com/chart?";
+  sprintf( buffer, "chs=500x%d", num_stats * 30 + 65 ); s += buffer;
+  s += "&";
+  s += "cht=bhg";
+  s += "&";
+  s += "chd=t:";
   double max_dpet=0;
   for( int i=0; i < num_stats; i++ )
   {
-    stats_t* s = stats_list[ i ];
-    fprintf( sim -> html_file, "%s%.0f", (i?"|":""), s -> dpet );
-    if( s -> dpet > max_dpet ) max_dpet = s -> dpet;
+    stats_t* st = stats_list[ i ];
+    sprintf( buffer, "%s%.0f", (i?"|":""), st -> dpet ); s += buffer;
+    if( st -> dpet > max_dpet ) max_dpet = st -> dpet;
   }
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chds=0,%.0f", max_dpet * 2 );
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chco=" );
+  s += "&";
+  sprintf( buffer, "chds=0,%.0f", max_dpet * 2 ); s += buffer;
+  s += "&";
+  s += "chco=";
   for( int i=0; i < num_stats; i++ )
   {
-    stats_t* s = stats_list[ i ];
-    fprintf( sim -> html_file, "%s%s", (i?",":""), school_color( s -> school ) );
+    if( i ) s += ",";
+    s += school_color( stats_list[ i ] -> school );
   }
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chm=" );
+  s += "&";
+  s += "chm=";
   for( int i=0; i < num_stats; i++ )
   {
-    stats_t* s = stats_list[ i ];
-    fprintf( sim -> html_file, "%st++%.0f++%s,%s,%d,0,15", (i?"|":""), s -> dpet, s -> name_str.c_str(), school_color( s -> school ), i );
+    stats_t* st = stats_list[ i ];
+    sprintf( buffer, "%st++%.0f++%s,%s,%d,0,15", (i?"|":""), st -> dpet, st -> name_str.c_str(), school_color( st -> school ), i ); s += buffer;
   }
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chtt=%s|Damage+Per+Execute+Time", p -> name() );
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chts=000000,20" );
-  fprintf( sim -> html_file, "\" />\n" );
+  s += "&";
+  sprintf( buffer, "chtt=%s|Damage+Per+Execute+Time", p -> name() ); s += buffer;
+  s += "&";
+  s += "chts=000000,20";
+
+  return s.c_str();
 }
 
 // report_t::chart_action_dmg ================================================
@@ -895,63 +918,66 @@ struct compare_dmg {
   }
 };
 
-void report_t::chart_action_dmg( player_t* p )
+const char* report_t::chart_action_dmg( player_t* p )
 {
   std::vector<stats_t*> stats_list;
 
-  for( stats_t* s = p -> stats_list; s; s = s -> next )
+  for( stats_t* st = p -> stats_list; st; st = st -> next )
   {
-    if( s -> total_dmg <= 0 ) continue;
-    stats_list.push_back( s );
+    if( st -> total_dmg <= 0 ) continue;
+    stats_list.push_back( st );
   }
 
   for( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
   {
-    for( stats_t* s = pet -> stats_list; s; s = s -> next )
+    for( stats_t* st = pet -> stats_list; st; st = st -> next )
     {
-      if( s -> total_dmg <= 0 ) continue;
-      stats_list.push_back( s );
+      if( st -> total_dmg <= 0 ) continue;
+      stats_list.push_back( st );
     }
   }
 
   int num_stats = stats_list.size();
-  if( num_stats == 0 ) return;
+  if( num_stats == 0 ) return 0;
 
   std::sort( stats_list.begin(), stats_list.end(), compare_dmg() );
 
-  fprintf( sim -> html_file, "<! %s Damage Sources>\n", p -> name() );
-  fprintf( sim -> html_file, "<img src=\"http://chart.apis.google.com/chart?" );
-  fprintf( sim -> html_file, "chs=500x%d", 200 + num_stats * 10 );
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "cht=p" );
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chd=t:" );
+  static std::string s;
+  char buffer[ 1024 ];
+
+  s = "http://chart.apis.google.com/chart?";
+  sprintf( buffer, "chs=500x%d", 200 + num_stats * 10 ); s += buffer;
+  s += "&";
+  s += "cht=p";
+  s += "&";
+  s += "chd=t:";
   for( int i=0; i < num_stats; i++ )
   {
-    stats_t* s = stats_list[ i ];
-    fprintf( sim -> html_file, "%s%.0f", (i?",":""), 100.0 * s -> total_dmg / p -> total_dmg );
+    stats_t* st = stats_list[ i ];
+    sprintf( buffer, "%s%.0f", (i?",":""), 100.0 * st -> total_dmg / p -> total_dmg ); s += buffer;
   }
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chds=0,100" );
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chco=" );
+  s += "&";
+  s += "chds=0,100";
+  s += "&";
+  s += "chco=";
   for( int i=0; i < num_stats; i++ )
   {
-    stats_t* s = stats_list[ i ];
-    fprintf( sim -> html_file, "%s%s", (i?",":""), school_color( s -> school ) );
+    if( i ) s += ",";
+    s += school_color( stats_list[ i ] -> school );
   }
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chl=" );
+  s += "&";
+  s += "chl=";
   for( int i=0; i < num_stats; i++ )
   {
-    stats_t* s = stats_list[ i ];
-    fprintf( sim -> html_file, "%s%s", (i?"|":""), s -> name_str.c_str() );
+    if( i ) s += "|";
+    s += stats_list[ i ] -> name_str.c_str();
   }
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chtt=%s+Damage+Sources", p -> name() );
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chts=000000,20" );
-  fprintf( sim -> html_file, "\" />\n" );
+  s += "&";
+  sprintf( buffer, "chtt=%s+Damage+Sources", p -> name() ); s += buffer;
+  s += "&";
+  s += "chts=000000,20";
+
+  return s.c_str();
 }
 
 // report_t::chart_gains =====================================================
@@ -963,7 +989,7 @@ struct compare_gain {
   }
 };
 
-void report_t::chart_gains( player_t* p )
+const char* report_t::chart_gains( player_t* p )
 {
   std::vector<gain_t*> gains_list;
 
@@ -976,43 +1002,47 @@ void report_t::chart_gains( player_t* p )
   }
 
   int num_gains = gains_list.size();
-  if( num_gains == 0 ) return;
+  if( num_gains == 0 ) return 0;
 
   std::sort( gains_list.begin(), gains_list.end(), compare_gain() );
 
-  fprintf( sim -> html_file, "<! %s Resource Gains>\n", p -> name() );
-  fprintf( sim -> html_file, "<img src=\"http://chart.apis.google.com/chart?" );
-  fprintf( sim -> html_file, "chs=500x%d", 200 + num_gains * 10 );
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "cht=p" );
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chd=t:" );
+  static std::string s;
+  char buffer[ 1024 ];
+
+  s = "http://chart.apis.google.com/chart?";
+  sprintf( buffer, "chs=500x%d", 200 + num_gains * 10 ); s += buffer;
+  s += "&";
+  s += "cht=p";
+  s += "&";
+  s += "chd=t:";
   for( int i=0; i < num_gains; i++ )
   {
     gain_t* g = gains_list[ i ];
-    fprintf( sim -> html_file, "%s%.0f", (i?",":""), 100.0 * g -> amount / total_gain );
+    sprintf( buffer, "%s%.0f", (i?",":""), 100.0 * g -> amount / total_gain ); s += buffer;
   }
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chds=0,100" );
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chco=%s", get_color( p ) );
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chl=" );
+  s += "&";
+  s += "chds=0,100";
+  s += "&";
+  s += "chco=";  
+  s += get_color( p );
+  s += "&";
+  sprintf( buffer, "chl=" );
   for( int i=0; i < num_gains; i++ )
   {
-    gain_t* g = gains_list[ i ];
-    fprintf( sim -> html_file, "%s%s", (i?"|":""), g -> name() );
+    if( i ) s += "|";
+    s += gains_list[ i ] -> name();
   }
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chtt=%s+Resource+Gains", p -> name() );
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chts=000000,20" );
-  fprintf( sim -> html_file, "\" />\n" );
+  s += "&";
+  sprintf( buffer, "chtt=%s+Resource+Gains", p -> name() ); s += buffer;
+  s += "&";
+  s += "chts=000000,20";
+
+  return s.c_str();
 }
 
 // report_t::chart_uptimes_and_procs ===========================================
 
-void report_t::chart_uptimes_and_procs( player_t* p )
+const char* report_t::chart_uptimes_and_procs( player_t* p )
 {
   std::vector<uptime_t*> uptime_list;
   std::vector<proc_t*>     proc_list;
@@ -1035,59 +1065,65 @@ void report_t::chart_uptimes_and_procs( player_t* p )
   int num_uptimes = uptime_list.size();
   int num_procs   =   proc_list.size();
 
-  if( num_uptimes == 0 && num_procs == 0 ) return;
+  if( num_uptimes == 0 && num_procs == 0 ) return 0;
 
-  fprintf( sim -> html_file, "<! %s Up-Times and Procs>\n", p -> name() );
-  fprintf( sim -> html_file, "<img src=\"http://chart.apis.google.com/chart?" );
-  fprintf( sim -> html_file, "chs=500x%d", ( num_uptimes + num_procs ) * 30 + 65 );
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "cht=bhg" );
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chd=t:" );
+  static std::string s;
+  char buffer[ 1024 ];
+
+  s = "http://chart.apis.google.com/chart?";
+  sprintf( buffer, "chs=500x%d", ( num_uptimes + num_procs ) * 30 + 65 ); s += buffer;
+  s += "&";
+  s += "cht=bhg";
+  s += "&";
+  s += "chd=t:";
   for( int i=0; i < num_uptimes; i++ )
   {
     uptime_t* u = uptime_list[ i ];
-    fprintf( sim -> html_file, "%s%.0f", (i?"|":""), u -> percentage() );
+    sprintf( buffer, "%s%.0f", (i?"|":""), u -> percentage() ); s += buffer;
   }
   for( int i=0; i < num_procs; i++ )
   {
     proc_t* proc = proc_list[ i ];
-    fprintf( sim -> html_file, "%s%.0f", ((num_uptimes+i)?"|":""), 100 * proc -> count / max_proc_count );
+    sprintf( buffer, "%s%.0f", ((num_uptimes+i)?"|":""), 100 * proc -> count / max_proc_count ); s += buffer;
   }
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chds=0,200" );
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chco=" );
+  s += "&";
+  s += "chds=0,200";
+  s += "&";
+  s += "chco=";
   for( int i=0; i < num_uptimes; i++ )
   {
-    fprintf( sim -> html_file, "%s00FF00", (i?",":"") );
+    if( i ) s += ",";
+    s += "0FF00";
   }
   for( int i=0; i < num_procs; i++ )
   {
-    fprintf( sim -> html_file, "%sFF0000", ((num_uptimes+i)?",":"") );
+    if( num_uptimes+i) s += ",";
+    s += "FF0000";
   }
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chm=" );
+  s += "&";
+  s += "chm=";
   for( int i=0; i < num_uptimes; i++ )
   {
     uptime_t* u = uptime_list[ i ];
-    fprintf( sim -> html_file, "%st++%.0f%%++%s,000000,%d,0,15", (i?"|":""), u -> percentage(), u -> name(), i );
+    sprintf( buffer, "%st++%.0f%%++%s,000000,%d,0,15", (i?"|":""), u -> percentage(), u -> name(), i ); s += buffer;
   }
   for( int i=0; i < num_procs; i++ )
   {
     proc_t* proc = proc_list[ i ];
-    fprintf( sim -> html_file, "%st++%.0f+(%.1fsec)++%s,000000,%d,0,15", ((num_uptimes+i)?"|":""), proc -> count, proc -> frequency, proc -> name(), num_uptimes+i );
+    sprintf( buffer, "%st++%.0f+(%.1fsec)++%s,000000,%d,0,15", ((num_uptimes+i)?"|":""), 
+	     proc -> count, proc -> frequency, proc -> name(), num_uptimes+i ); s += buffer;
   }
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chtt=%s|Up-Times+and+Procs+(%.0fsec)", p -> name(), sim -> total_seconds );
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chts=000000,20" );
-  fprintf( sim -> html_file, "\" />\n" );
+  s += "&";
+  sprintf( buffer, "chtt=%s|Up-Times+and+Procs+(%.0fsec)", p -> name(), sim -> total_seconds ); s += buffer;
+  s += "&";
+  s += "chts=000000,20";
+
+  return s.c_str();
 }
 
 // report_t::chart_timeline ==================================================
 
-void report_t::chart_timeline( player_t* p )
+const char* report_t::chart_timeline( player_t* p )
 {
   int max_buckets = p -> timeline_dps.size();
   int max_points  = 600;
@@ -1113,28 +1149,123 @@ void report_t::chart_timeline( player_t* p )
   double dps_range  = 60.0;
   double dps_adjust = dps_range / dps_max;
 
-  fprintf( sim -> html_file, "<! %s DPS Timeline>\n", p -> name() );
-  fprintf( sim -> html_file, "<img src=\"http://chart.apis.google.com/chart?" );
-  fprintf( sim -> html_file, "chs=400x130" );
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "cht=lc" );
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chd=s:" );
+  static std::string s;
+  char buffer[ 1024 ];
+
+  s = "http://chart.apis.google.com/chart?";
+  s += "chs=400x130";
+  s += "&";
+  s += "cht=lc";
+  s += "&";
+  s += "chd=s:";
   for( int i=0; i < max_buckets; i += increment ) 
   {
-    fprintf( sim -> html_file, "%c", simple_encoding( (int) ( p -> timeline_dps[ i ] * dps_adjust ) ) );
+    s += simple_encoding( (int) ( p -> timeline_dps[ i ] * dps_adjust ) );
   }
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chds=0,%.0f", dps_range );
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chxt=x,y" );
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chxl=0:|0|%d|1:|0|%.0f", max_buckets, dps_max );
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chtt=%s+DPS+Timeline", p -> name() );
-  fprintf( sim -> html_file, "&" );
-  fprintf( sim -> html_file, "chts=000000,20" );
-  fprintf( sim -> html_file, "\" />\n" );
+  s += "&";
+  sprintf( buffer, "chds=0,%.0f", dps_range ); s += buffer;
+  s += "&";
+  s += "chxt=x,y";
+  s += "&";
+  sprintf( buffer, "chxl=0:|0|%d|1:|0|%.0f", max_buckets, dps_max ); s += buffer;
+  s += "&";
+  sprintf( buffer, "chtt=%s+DPS+Timeline", p -> name() ); s += buffer;
+  s += "&";
+  s += "chts=000000,20";
+
+  return s.c_str();
+}
+
+// report_t::chart_html ======================================================
+
+void report_t::chart_html()
+{
+  int num_players = sim -> players_by_name.size();
+  assert( num_players != 0 );
+
+  const char* img;
+
+  fprintf( sim -> html_file, "<h1>Raid</h1>\n" );
+
+  fprintf( sim -> html_file, "<! DPS Ranking>\n" );
+  fprintf( sim -> html_file, "<img src=\"%s\" />\n", chart_raid_dps() );
+
+  fprintf( sim -> html_file, "<! Gear Overview>\n" );
+  fprintf( sim -> html_file, "<img src=\"%s\" />", chart_raid_gear() );
+
+  img = chart_raid_downtime();
+  if( img )
+  {
+    fprintf( sim -> html_file, "<! Raid Downtime>\n" );
+    fprintf( sim -> html_file, "<img src=\"%s\" />", img );
+  }
+
+  img = chart_raid_uptimes();
+  if( img )
+  {
+    fprintf( sim -> html_file, "<! Global Up-Times>\n" );
+    fprintf( sim -> html_file, "<img src=\"%s\" />", img );
+  }
+
+  std::vector<std::string> images;
+  int count = chart_raid_dpet( images );
+  for( int i=0; i < count; i++ )
+  {
+    fprintf( sim -> html_file, "<! Raid Damage Per Execute Time>\n" );
+    fprintf( sim -> html_file, "<img src=\"%s\" />", images[ i ].c_str() );
+  }
+
+  fprintf( sim -> html_file, "<hr>\n" );
+
+  for( int i=0; i < num_players; i++ )
+  {
+    player_t* p = sim -> players_by_name[ i ];
+
+    fprintf( sim -> html_file, "<h1>Player %s</h1>\n", p -> name() );
+
+    img = chart_action_dpet( p );
+    if( img )
+    {
+      fprintf( sim -> html_file, "<! %s Damage Per Execute Time>\n", p -> name() );
+      fprintf( sim -> html_file, "<img src=\"%s\" />", img );
+    }
+
+    img = chart_uptimes_and_procs( p );
+    if( img )
+    {
+      fprintf( sim -> html_file, "<! %s Up-Times and Procs>\n", p -> name() );
+      fprintf( sim -> html_file, "<img src=\"%s\" />", img );
+    }
+
+    fprintf( sim -> html_file, "<br>\n" );
+
+    img = chart_action_dmg( p );
+    if( img )
+    {
+      fprintf( sim -> html_file, "<! %s Damage Sources>\n", p -> name() );
+      fprintf( sim -> html_file, "<img src=\"%s\" />", img );
+    }
+    
+    img = chart_gains( p );
+    if( img )
+    {
+      fprintf( sim -> html_file, "<! %s Resource Gains>\n", p -> name() );
+      fprintf( sim -> html_file, "<img src=\"%s\" />", img );
+    }
+    
+    fprintf( sim -> html_file, "<br>\n" );
+
+    fprintf( sim -> html_file, "<! %s DPS Timeline>\n", p -> name() );
+    fprintf( sim -> html_file, "<img src=\"%s\" />", chart_timeline( p ) );
+
+    fprintf( sim -> html_file, "<hr>\n" );
+  }
+}
+
+// report_t::chart_wiki ======================================================
+
+void report_t::chart_wiki()
+{
 }
 
 // report_t::chart ===========================================================
@@ -1148,28 +1279,8 @@ void report_t::chart()
 
   if( sim -> total_seconds == 0 ) return;
 
-  fprintf( sim -> html_file, "<h1>Raid</h1>\n" );
-  chart_raid_dps();
-  chart_raid_gear();
-  chart_raid_downtime();
-  chart_raid_uptimes();
-  chart_raid_dpet();
-  fprintf( sim -> html_file, "<hr>\n" );
-
-  for( int i=0; i < num_players; i++ )
-  {
-    player_t* p = sim -> players_by_name[ i ];
-
-    fprintf( sim -> html_file, "<h1>Player %s</h1>\n", p -> name() );
-    chart_action_dpet( p );
-    chart_uptimes_and_procs( p );
-    fprintf( sim -> html_file, "<br>\n" );
-    chart_action_dmg( p );
-    chart_gains( p );
-    fprintf( sim -> html_file, "<br>\n" );
-    chart_timeline( p );
-    fprintf( sim -> html_file, "<hr>\n" );
-  }
+  if( sim -> html_file ) report_t::chart_html();
+  if( sim -> wiki_file ) report_t::chart_wiki();
 }
 
 // report_t::timestamp ======================================================
