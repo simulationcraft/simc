@@ -35,6 +35,7 @@ struct patch_t
 // Forward Declarations ======================================================
 
 struct action_t;
+struct base_stats_t;
 struct attack_t;
 struct druid_t;
 struct event_t;
@@ -873,6 +874,16 @@ struct rank_t
 {
   int8_t level, index;
   double dd_min, dd_max, tick, cost;
+};
+
+// Base Stats ================================================================
+
+struct base_stats_t
+{
+  int8_t level;
+  double health, mana;
+  double strength, agility, stamina, intellect, spirit;
+  double spell_crit, melee_crit;
 };
 
 // Action ====================================================================

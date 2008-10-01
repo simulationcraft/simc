@@ -550,7 +550,16 @@ struct holy_fire_t : public priest_spell_t
     player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
 
-    if( rank -> index < 10 )
+    if ( sim_t::WotLK )
+    {
+      base_execute_time = 2.0; 
+      base_tick_time    = 1.0;
+      num_ticks         = 7;
+      cooldown          = 10;
+      direct_power_mod  = 0.5715;
+      tick_power_mod    = 0.1678 / 7;
+    }
+    else    
     {
       base_execute_time = 3.5;
       base_tick_time    = 2; 
@@ -559,15 +568,7 @@ struct holy_fire_t : public priest_spell_t
       direct_power_mod  = 0.857;
       tick_power_mod    = 0.165 / 5;
     }
-    else
-    {
-      base_execute_time = 2.0; 
-      base_tick_time    = 1.0;
-      num_ticks         = 7;
-      cooldown          = 10;
-      direct_power_mod  = 0.314;
-      tick_power_mod    = 0.210 / 7;
-    }
+    
     may_crit           = true;    
     base_cost          = rank -> cost;
     base_execute_time -= p -> talents.divine_fury * 0.01;
@@ -968,12 +969,20 @@ struct vampiric_embrace_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
 
     assert( p -> talents.vampiric_embrace );
+    
+    static rank_t ranks[] =
+    {
+      { 1, 1, 0, 0, 0, 0.02 },
+      { 0, 0 }
+    };
+    player -> init_mana_costs( ranks );
+    rank = choose_rank( ranks );    
      
     base_execute_time = 0; 
     base_tick_time    = 60.0; 
     num_ticks         = 1;
     cooldown          = 10;
-    base_cost         = 30;
+    base_cost         = rank->cost;
     base_multiplier   = 0;
     base_hit          = p -> talents.shadow_focus * ( sim_t::WotLK ? 0.01 : 0.02 );
 
@@ -1780,29 +1789,33 @@ pet_t* priest_t::create_pet( const std::string& pet_name )
 
 void priest_t::init_base()
 {
-  attribute_base[ ATTR_STRENGTH  ] =  40;
-  attribute_base[ ATTR_AGILITY   ] =  45;
-  attribute_base[ ATTR_STAMINA   ] =  60;
-  attribute_base[ ATTR_INTELLECT ] = 145;
-  attribute_base[ ATTR_SPIRIT    ] = 155;
+  // Dwarf Priest base stats
+  static base_stats_t base_stats_60 = { 60, 1397, 1376, 37, 36, 53, 119, 124, 0.007600, 0.023384 };
+  static base_stats_t base_stats_70 = { 70, 3391, 2620, 41, 41, 61, 144, 150, 0.012375, 0.011726 };
+  static base_stats_t base_stats_80 = { 80, 6960, 3863, 45, 47, 70, 173, 180, 0.012400, 0.011764 };
 
+  attribute_base[ ATTR_STRENGTH  ] = rating_t::interpolate( level, base_stats_60.strength, base_stats_70.strength, base_stats_80.strength );
+  attribute_base[ ATTR_AGILITY   ] = rating_t::interpolate( level, base_stats_60.agility, base_stats_70.agility, base_stats_80.agility );
+  attribute_base[ ATTR_STAMINA   ] = rating_t::interpolate( level, base_stats_60.stamina, base_stats_70.stamina, base_stats_80.stamina );
+  attribute_base[ ATTR_INTELLECT ] = rating_t::interpolate( level, base_stats_60.intellect, base_stats_70.intellect, base_stats_80.intellect );
+  attribute_base[ ATTR_SPIRIT    ] = rating_t::interpolate( level, base_stats_60.spirit, base_stats_70.spirit, base_stats_80.spirit );
+    
   attribute_multiplier_initial[ ATTR_STAMINA   ] *= 1.0 + talents.enlightenment * 0.01;
   attribute_multiplier_initial[ ATTR_SPIRIT    ] *= 1.0 + talents.enlightenment * 0.01;
   attribute_multiplier_initial[ ATTR_SPIRIT    ] *= 1.0 + talents.spirit_of_redemption * 0.05;
 
-  base_spell_crit = 0.0125;
-  initial_spell_crit_per_intellect = rating_t::interpolate( level, 0.01/60.0, 0.01/80.0, 0.01/166.6 );
+  base_spell_crit = rating_t::interpolate( level, base_stats_60.spell_crit, base_stats_70.spell_crit, base_stats_80.spell_crit );
+  initial_spell_crit_per_intellect = rating_t::interpolate( level, 0.01/60.0, 0.01/80.0, 0.01/166.6666709 );
   initial_spell_power_per_spirit = ( talents.spiritual_guidance * 0.05 +
                                      talents.twisted_faith      * 0.02 );
 
   base_attack_power = -10;
-  base_attack_crit  = 0.03;
+  base_attack_crit  = rating_t::interpolate( level, base_stats_60.melee_crit, base_stats_70.melee_crit, base_stats_80.melee_crit );
   initial_attack_power_per_strength = 1.0;
-  initial_attack_crit_per_agility = rating_t::interpolate( level, 0.01/16.0, 0.01/24.9, 0.01/52.1 );
+  initial_attack_crit_per_agility = rating_t::interpolate( level, 0.01/21.92982456, 0.01/24.93765586, 0.01/52.08333333 );
 
-  // FIXME! Make this level-specific.
-  resource_base[ RESOURCE_HEALTH ] = 3200;
-  resource_base[ RESOURCE_MANA   ] = rating_t::interpolate( level, 1383, 2620, 3863 );
+  resource_base[ RESOURCE_HEALTH ] = rating_t::interpolate( level, base_stats_60.health, base_stats_70.health, base_stats_80.health );
+  resource_base[ RESOURCE_MANA   ] = rating_t::interpolate( level, base_stats_60.mana, base_stats_70.mana, base_stats_80.mana );
 
   health_per_stamina = 10;
   mana_per_intellect = 15;
