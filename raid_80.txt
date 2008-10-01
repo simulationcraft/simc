@@ -341,7 +341,7 @@ swift_retribution=1
 shaman=Shaman_Enhancement
 level=80
 talents=http://talent.mmo-champion.com/?shaman=052030150000000000000000000000000000000000000000003020502300502135331131231051
-actions=flask,type=relentless_assault/windfury_weapon,weapon=main/flametongue_weapon,weapon=off/auto_attack/flame_shock/lava_burst,maelstrom=5,flame_shock=1,max_ticks_consumed=4/stormstrike/strength_of_earth_totem/windfury_totem/shamanistic_rage/spirit_wolf/earth_shock/lava_lash/searing_totem/lightning_shield/bloodlust,target_pct=35
+actions=flask,type=relentless_assault/windfury_weapon,weapon=main/flametongue_weapon,weapon=off/auto_attack/flame_shock/lava_burst,maelstrom=5,flame_shock=1,max_ticks_consumed=1/stormstrike/strength_of_earth_totem/windfury_totem/shamanistic_rage/spirit_wolf/earth_shock/lava_lash/searing_totem/lightning_shield/bloodlust,target_pct=35
 gear_agility=386
 gear_stamina=800
 gear_intellect=280

@@ -3754,69 +3754,7 @@ void warlock_t::regen( double periodicity )
 bool warlock_t::parse_talents( const std::string& talent_string,
 			       int                encoding )
 {
-  if( encoding == ENCODING_BC )
-  {
-    if( talent_string.size() != 64 ) return false;
-
-    talent_translation_t translation[] =
-    {
-      // Affliction
-      {  1,  &( talents.suppression             ) },
-      {  2,  &( talents.improved_corruption     ) },
-      {  4,  &( talents.improved_drain_soul     ) },
-      {  5,  &( talents.improved_life_tap       ) },
-      {  6,  &( talents.soul_siphon             ) },
-      {  7,  &( talents.improved_curse_of_agony ) },
-      {  9,  &( talents.amplify_curse           ) },
-      { 11,  &( talents.nightfall               ) },
-      { 12,  &( talents.empowered_corruption    ) },
-      { 14,  &( talents.siphon_life             ) },
-      { 16,  &( talents.shadow_mastery          ) },
-      { 17,  &( talents.contagion               ) },
-      { 18,  &( talents.dark_pact               ) },
-      { 20,  &( talents.malediction             ) },
-      { 21,  &( talents.unstable_affliction     ) },
-      // Demonology
-      { 23,  &( talents.improved_imp            ) },
-      { 24,  &( talents.demonic_embrace         ) },
-      { 26,  &( talents.improved_voidwalker     ) },
-      { 27,  &( talents.fel_intellect           ) },
-      { 28,  &( talents.improved_succubus       ) },
-      { 29,  &( talents.fel_domination          ) },
-      { 30,  &( talents.fel_stamina             ) },
-      { 31,  &( talents.demonic_aegis           ) },
-      { 32,  &( talents.master_summoner         ) },
-      { 33,  &( talents.unholy_power            ) },
-      { 35,  &( talents.demonic_sacrifice       ) },
-      { 36,  &( talents.master_conjuror         ) },
-      { 37,  &( talents.mana_feed               ) },
-      { 38,  &( talents.master_demonologist     ) },
-      { 40,  &( talents.soul_link               ) },
-      { 41,  &( talents.demonic_knowledge       ) },
-      { 42,  &( talents.demonic_tactics         ) },
-      { 43,  &( talents.summon_felguard         ) },
-      // Destruction
-      { 44,  &( talents.improved_shadow_bolt    ) },
-      { 45,  &( talents.cataclysm               ) },
-      { 46,  &( talents.bane                    ) },
-      { 48,  &( talents.improved_fire_bolt      ) },
-      { 49,  &( talents.improved_lash_of_pain   ) },
-      { 50,  &( talents.devastation             ) },
-      { 51,  &( talents.shadow_burn             ) },
-      { 53,  &( talents.destructive_reach       ) },
-      { 54,  &( talents.improved_searing_pain   ) },
-      { 56,  &( talents.improved_immolate       ) },
-      { 57,  &( talents.ruin                    ) },
-      { 59,  &( talents.emberstorm              ) },
-      { 60,  &( talents.backlash                ) },
-      { 61,  &( talents.conflagrate             ) },
-      { 62,  &( talents.soul_leech              ) },
-      { 63,  &( talents.shadow_and_flame        ) },
-      { 0, NULL }
-    };
-    player_t::parse_talents( translation, talent_string );
-  }
-  else if( encoding == ENCODING_WOTLK )
+  if( encoding == ENCODING_BLIZZARD )
   {
     if( talent_string.size() != 80 ) return false;
 

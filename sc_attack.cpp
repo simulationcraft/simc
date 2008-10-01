@@ -42,7 +42,7 @@ double attack_t::haste()
   if(      player -> buffs.swift_retribution     ) h *= 1.0 / ( 1.0 + 0.03 );
   else if( player -> buffs.improved_moonkin_aura ) h *= 1.0 / ( 1.0 + 0.02 );
 
-  if( sim_t::WotLK && player -> buffs.windfury_totem != 0 )
+  if( player -> buffs.windfury_totem != 0 )
   {
     h *= 1.0 / ( 1.0 + player -> buffs.windfury_totem );
   }
@@ -66,7 +66,7 @@ void attack_t::player_buff()
   player_crit      = p -> composite_attack_crit();
   player_power     = p -> composite_attack_power();
 
-  if( sim_t::WotLK && p -> buffs.grace_of_air ) player_crit += 0.01;
+  if( p -> buffs.strength_of_earth_crit ) player_crit += 0.01;
 
   if( sim -> debug ) 
     report_t::log( sim, "attack_t::player_buff: %s hit=%.2f expertise=%.2f crit=%.2f power=%.2f penetration=%.0f", 
@@ -78,15 +78,7 @@ void attack_t::player_buff()
 void attack_t::target_debuff( int8_t dmg_type )
 {
   action_t::target_debuff( dmg_type );
-
   target_expertise = 0;
-
-  target_t* t = sim -> target;
-
-  if( ! sim_t::WotLK )
-  {
-    target_hit += t -> debuffs.improved_faerie_fire * 0.01;
-  }
 }
 
 // attack_t::build_table ====================================================

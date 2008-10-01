@@ -2692,58 +2692,7 @@ void mage_t::regen( double periodicity )
 bool mage_t::parse_talents( const std::string& talent_string,
 			    int                encoding )
 {
-  if( encoding == ENCODING_BC )
-  {
-    if( talent_string.size() != 67 ) return false;
-
-    talent_translation_t translation[] =
-    {
-      {  1,  &( talents.arcane_subtlety           ) },
-      {  2,  &( talents.arcane_focus              ) },
-      {  6,  &( talents.arcane_concentration      ) },
-      {  8,  &( talents.arcane_impact             ) }, 
-      { 12,  &( talents.arcane_meditation         ) },
-      { 14,  &( talents.presence_of_mind          ) },
-      { 15,  &( talents.arcane_mind               ) },
-      { 17,  &( talents.arcane_instability        ) },
-      { 18,  &( talents.arcane_potency            ) },
-      { 19,  &( talents.empowered_arcane_missiles ) },
-      { 20,  &( talents.arcane_power              ) },
-      { 21,  &( talents.spell_power               ) },
-      { 22,  &( talents.mind_mastery              ) },
-      { 24,  &( talents.improved_fire_ball        ) },
-      { 26,  &( talents.ignite                    ) },
-      { 28,  &( talents.improved_fire_blast       ) },
-      { 29,  &( talents.incineration              ) },
-      { 31,  &( talents.pyroblast                 ) },
-      { 33,  &( talents.improved_scorch           ) },
-      { 35,  &( talents.master_of_elements        ) },
-      { 36,  &( talents.playing_with_fire         ) },
-      { 37,  &( talents.critical_mass             ) },
-      { 40,  &( talents.fire_power                ) },
-      { 41,  &( talents.pyromaniac                ) },
-      { 42,  &( talents.combustion                ) },
-      { 43,  &( talents.molten_fury               ) },
-      { 44,  &( talents.empowered_fire_ball       ) },
-      { 47,  &( talents.improved_frost_bolt       ) },
-      { 48,  &( talents.elemental_precision       ) },
-      { 49,  &( talents.ice_shards                ) },
-      { 50,  &( talents.frostbite                 ) },
-      { 53,  &( talents.piercing_ice              ) },
-      { 54,  &( talents.icy_veins                 ) },
-      { 57,  &( talents.frost_channeling          ) },
-      { 58,  &( talents.shatter                   ) },
-      { 60,  &( talents.cold_snap                 ) },
-      { 62,  &( talents.ice_floes                 ) },
-      { 63,  &( talents.winters_chill             ) },
-      { 65,  &( talents.arctic_winds              ) },
-      { 66,  &( talents.empowered_frost_bolt      ) },
-      { 67,  &( talents.water_elemental           ) },
-      { 0, NULL }
-    };
-    player_t::parse_talents( translation, talent_string );
-  }
-  else if( encoding == ENCODING_WOTLK )
+  if( encoding == ENCODING_BLIZZARD )
   {
     if( talent_string.size() != 86 ) return false;
 

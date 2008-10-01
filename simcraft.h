@@ -188,7 +188,7 @@ enum flask_type { FLASK_NONE=0,
 
 enum position_type { POSITION_NONE=0, POSITION_FRONT, POSITION_BACK, POSITION_MAX };
 
-enum encoding_type { ENCODING_NONE=0, ENCODING_BC, ENCODING_WOTLK, ENCODING_MMO, ENCODING_WOWHEAD, ENCODING_MAX };
+enum encoding_type { ENCODING_NONE=0, ENCODING_BLIZZARD, ENCODING_MMO, ENCODING_WOWHEAD, ENCODING_MAX };
 
 struct sim_t
 {
@@ -465,7 +465,6 @@ struct player_t
     double    flametongue_totem;
     player_t* focus_magic;
     int8_t    focus_magic_feedback;
-    double    grace_of_air;
     int8_t    improved_divine_spirit;
     int8_t    improved_moonkin_aura;
     int8_t    innervate;
@@ -478,6 +477,7 @@ struct player_t
     int8_t    replenishment;
     int8_t    shadow_form;
     double    strength_of_earth;
+    int8_t    strength_of_earth_crit;
     int16_t   talisman_of_ascendance;
     double    totem_of_wrath;
     int8_t    totem_of_wrath_haste;

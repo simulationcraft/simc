@@ -1324,41 +1324,7 @@ double druid_t::composite_spell_crit()
 bool druid_t::parse_talents( const std::string& talent_string,
 			     int                encoding )
 {
-  if( encoding == ENCODING_BC ) 
-  {
-    if( talent_string.size() != 62 ) return false;
-
-    talent_translation_t translation[] =
-    {
-      // Balance
-      {  1,  &( talents.starlight_wrath           ) },
-      {  5,  &( talents.focused_starlight         ) },
-      {  6,  &( talents.improved_moonfire         ) },
-      {  8,  &( talents.insect_swarm              ) },
-      {  9,  &( talents.natures_reach             ) },
-      { 10,  &( talents.vengeance                 ) },
-      { 12,  &( talents.lunar_guidance            ) },
-      { 13,  &( talents.natures_grace             ) },
-      { 14,  &( talents.moonglow                  ) },
-      { 15,  &( talents.moonfury                  ) },
-      { 16,  &( talents.balance_of_power          ) },
-      { 17,  &( talents.dreamstate                ) },
-      { 18,  &( talents.moonkin_form              ) },
-      { 19,  &( talents.improved_faerie_fire      ) },
-      { 20,  &( talents.wrath_of_cenarius         ) },
-      { 21,  &( talents.force_of_nature           ) },
-      // Restoration
-      { 43,  &( talents.improved_mark_of_the_wild ) },
-      { 48,  &( talents.intensity                 ) },
-      { 50,  &( talents.omen_of_clarity           ) },
-      { 53,  &( talents.natures_swiftness         ) },
-      { 58,  &( talents.living_spirit             ) },
-      { 60,  &( talents.natural_perfection        ) },
-      { 0, NULL }
-    };
-    player_t::parse_talents( translation, talent_string );
-  }
-  else if( encoding == ENCODING_WOTLK )
+  if( encoding == ENCODING_BLIZZARD )
   {
     if( talent_string.size() != 83 ) return false;
 

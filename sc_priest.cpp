@@ -1872,50 +1872,7 @@ void priest_t::regen( double periodicity )
 bool priest_t::parse_talents( const std::string& talent_string, 
 			      int                encoding )
 {
-  if( encoding == ENCODING_BC )
-  {
-    if( talent_string.size() != 64 ) return false;
-
-    talent_translation_t translation[] =
-    {
-      // Discipline
-      {  8,  &( talents.inner_focus               ) },
-      {  9,  &( talents.meditation                ) },
-      { 10,  &( talents.improved_inner_fire       ) },
-      { 11,  &( talents.mental_agility            ) },
-      { 13,  &( talents.mental_strength           ) },
-      { 14,  &( talents.divine_spirit             ) },
-      { 15,  &( talents.improved_divine_spirit    ) },
-      { 16,  &( talents.focused_power             ) },
-      { 17,  &( talents.force_of_will             ) },
-      { 19,  &( talents.power_infusion            ) },
-      { 21,  &( talents.enlightenment             ) },
-      // Holy
-      { 25,  &( talents.holy_specialization       ) },
-      { 27,  &( talents.divine_fury               ) },
-      { 33,  &( talents.searing_light             ) },
-      { 36,  &( talents.spiritual_guidance        ) },
-      { 37,  &( talents.surge_of_light            ) },
-      // Shadow
-      { 46,  &( talents.shadow_affinity           ) },
-      { 47,  &( talents.improved_shadow_word_pain ) },
-      { 48,  &( talents.shadow_focus              ) },
-      { 50,  &( talents.improved_mind_blast       ) },
-      { 50,  &( talents.mind_flay                 ) },
-      { 54,  &( talents.shadow_weaving            ) },
-      { 56,  &( talents.vampiric_embrace          ) },
-      { 57,  &( talents.improved_vampiric_embrace ) },
-      { 58,  &( talents.focused_mind              ) },
-      { 60,  &( talents.darkness                  ) },
-      { 61,  &( talents.shadow_form               ) },
-      { 62,  &( talents.shadow_power              ) },
-      { 63,  &( talents.misery                    ) },
-      { 64,  &( talents.vampiric_touch            ) },
-      { 0, NULL }
-    };
-    player_t::parse_talents( translation, talent_string );
-  }
-  else if( encoding == ENCODING_WOTLK )
+  if( encoding == ENCODING_BLIZZARD )
   {
     if( talent_string.size() != 81 ) return false;
 
