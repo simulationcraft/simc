@@ -34,7 +34,7 @@ double spell_t::haste()
 
   if( player -> buffs.totem_of_wrath_haste ) h *= 1.0 / ( 1.0 + 0.01 );
 
-  if( sim_t::WotLK && player -> buffs.wrath_of_air ) h *= 1.0 / ( 1.0 + 0.05 );
+  if( player -> buffs.wrath_of_air ) h *= 1.0 / ( 1.0 + 0.05 );
 
   return h;
 }
@@ -97,30 +97,21 @@ void spell_t::player_buff()
 
   if( p -> buffs.focus_magic ) player_crit += 0.03;
 
-  if( sim_t::WotLK )
+  double best_buff = 0;
+  if( p -> buffs.totem_of_wrath )
   {
-    double best_buff = 0;
-
-    if( p -> buffs.totem_of_wrath )
-    {
-      if( best_buff < p -> buffs.totem_of_wrath ) best_buff = p -> buffs.totem_of_wrath;
-    }
-    if( p -> buffs.flametongue_totem ) 
-    {
-      if( best_buff < p -> buffs.flametongue_totem ) best_buff = p -> buffs.flametongue_totem;
-    }
-    if( p -> buffs.demonic_pact )
-    {
-      double demonic_pact_buff = player_power * 0.10;
-      if( best_buff < demonic_pact_buff ) best_buff = demonic_pact_buff;
-    }
-
-    player_power += best_buff;
+    if( best_buff < p -> buffs.totem_of_wrath ) best_buff = p -> buffs.totem_of_wrath;
   }
-  else
+  if( p -> buffs.flametongue_totem ) 
   {
-    if( p -> buffs.totem_of_wrath ) player_hit += 0.03;
+    if( best_buff < p -> buffs.flametongue_totem ) best_buff = p -> buffs.flametongue_totem;
   }
+  if( p -> buffs.demonic_pact )
+  {
+    double demonic_pact_buff = player_power * 0.10;
+    if( best_buff < demonic_pact_buff ) best_buff = demonic_pact_buff;
+  }
+  player_power += best_buff;
   
   if( p -> buffs.totem_of_wrath ) player_crit += 0.03;
 
@@ -139,45 +130,16 @@ void spell_t::target_debuff( int8_t dmg_type )
 
   target_t* t = sim -> target;
    
-  if( sim_t::WotLK )
-  {
-    target_hit += std::max( t -> debuffs.improved_faerie_fire, t -> debuffs.misery ) * 0.01; 
-  }
+  target_hit += std::max( t -> debuffs.improved_faerie_fire, t -> debuffs.misery ) * 0.01; 
 
-  if( school == SCHOOL_SHADOW )
-  {
-  }
-  else if( school == SCHOOL_ARCANE )
-  {
-  }
-  else if( school == SCHOOL_FIRE )
-  {
-  }
-  else if( school == SCHOOL_FROST )
-  {
-    if( ! sim_t::WotLK )
-    {
-      target_crit += ( t -> debuffs.winters_chill * 0.01 );
-      wc_uptime -> update( t -> debuffs.winters_chill != 0 );
-    }
-  }
-  else if( school == SCHOOL_FROSTFIRE )
-  {
-  }
-  else if( school == SCHOOL_NATURE )
-  {
-  }
-  else if( school == SCHOOL_HOLY )
+  if( school == SCHOOL_HOLY )
   {
     if( t -> debuffs.judgement_of_crusader ) target_power += 218;
   }      
 
-  if( sim_t::WotLK )
-  {
-    target_crit += ( std::max( t -> debuffs.winters_chill, t -> debuffs.improved_scorch ) * 0.01 );
-    wc_uptime -> update( t -> debuffs.winters_chill != 0 );
-    is_uptime -> update( t -> debuffs.improved_scorch != 0 );
-  }
+  target_crit += ( std::max( t -> debuffs.winters_chill, t -> debuffs.improved_scorch ) * 0.02 );
+  wc_uptime -> update( t -> debuffs.winters_chill != 0 );
+  is_uptime -> update( t -> debuffs.improved_scorch != 0 );
 
   if( sim -> debug ) 
     report_t::log( sim, "spell_t::target_debuff: %s multiplier=%.2f hit=%.2f crit=%.2f power=%.2f penetration=%.0f", 
@@ -192,27 +154,13 @@ double spell_t::level_based_miss_chance( int8_t player,
   int8_t delta_level = target - player;
   double miss=0;
 
-  if( false && sim_t::WotLK ) // FIXME! Currently back to 17% miss
+  if( delta_level > 2 )
   {
-    if( delta_level > 2 )
-    {
-      miss  = 0.07 + ( delta_level - 2 ) * 0.02;
-    }
-    else
-    {
-      miss = 0.05 + delta_level * 0.005;
-    }
+    miss = 0.17 + ( delta_level - 3 ) * 0.11;
   }
   else
   {
-    if( delta_level > 2 )
-    {
-      miss = 0.17 + ( delta_level - 3 ) * 0.11;
-    }
-    else
-    {
-      miss = 0.04 + delta_level * 0.01;
-    }
+    miss = 0.04 + delta_level * 0.01;
   }
 
   if( miss < 0.01 ) miss = 0.01;
@@ -234,8 +182,6 @@ void spell_t::calculate_result()
     double miss_chance = level_based_miss_chance( player -> level, sim -> target -> level );
 
     miss_chance -= base_hit + player_hit + target_hit;
-
-    if( ! sim_t::WotLK && miss_chance < 0.01 ) miss_chance = 0.01;
 
     if( rand_t::roll( miss_chance ) )
     {

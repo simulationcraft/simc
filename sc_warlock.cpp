@@ -21,7 +21,6 @@ struct warlock_t : public player_t
   int8_t         active_dots;
 
   // Buffs
-  int8_t buffs_amplify_curse;
   int8_t buffs_backdraft;
   int8_t buffs_demon_armor;
   int8_t buffs_demonic_empathy;
@@ -178,7 +177,6 @@ struct warlock_t : public player_t
     active_dots       = 0;
 
     // Buffs
-    buffs_amplify_curse                = 0;
     buffs_backdraft                    = 0;
     buffs_demon_armor                  = 0;
     buffs_demonic_empathy              = 0;
@@ -340,15 +338,13 @@ struct warlock_pet_t : public pet_t
     a -> base_crit        += o -> talents.demonic_tactics * 0.01;
     a -> base_multiplier  *= 1.0 + o -> talents.unholy_power * 0.04;
 
-    if( ! sim_t::WotLK && o -> talents.soul_link ) a -> base_multiplier *= 1.05;
-
     if( pet_type == PET_FELGUARD )
     {
       a -> base_multiplier *= 1.0 + o -> talents.master_demonologist * 0.01;
     }
     else if( pet_type == PET_IMP )
     {
-      if( sim_t::WotLK && a -> school == SCHOOL_FIRE ) 
+      if( a -> school == SCHOOL_FIRE ) 
       {
 	a -> base_multiplier *= 1.0 + o -> talents.master_demonologist * 0.01;
 	a -> base_crit       +=       o -> talents.master_demonologist * 0.01;
@@ -356,11 +352,7 @@ struct warlock_pet_t : public pet_t
     }
     else if( pet_type == PET_SUCCUBUS )
     {
-      if( ! sim_t::WotLK ) 
-      {
-	a -> base_multiplier *= 1.0 + o -> talents.master_demonologist * 0.02;
-      }
-      else if( a -> school == SCHOOL_SHADOW ) 
+      if( a -> school == SCHOOL_SHADOW ) 
       {
 	a -> base_multiplier *= 1.0 + o -> talents.master_demonologist * 0.01;
 	a -> base_crit       +=       o -> talents.master_demonologist * 0.01;
@@ -399,19 +391,6 @@ struct warlock_pet_melee_t : public attack_t
     repeating         = true;
 
     p -> adjust_base_modifiers( this );
-  }
-
-  virtual void execute()
-  {
-    attack_t::execute();
-    if( result_is_hit() )
-    {
-      if( ! sim_t::WotLK )
-      {
-	enchant_t::trigger_flametongue_totem( this );
-	enchant_t::trigger_windfury_totem( this );
-      }
-    }
   }
 
   virtual void player_buff()
@@ -519,15 +498,15 @@ struct imp_pet_t : public warlock_pet_t
       rank = choose_rank( ranks );
 
       base_cost         = 0;
-      base_execute_time = sim_t::WotLK ? 2.5 : 2.0;
+      base_execute_time = 2.5;
       direct_power_mod  = ( 2.0 / 3.5 );
       may_crit          = true;
 
       base_execute_time -= 0.25 * ( o -> talents.improved_fire_bolt + o -> talents.demonic_power );
-      base_multiplier   *= 1.0 + o -> talents.improved_imp * 0.10;
-      base_multiplier   *= 1.0 + o -> talents.empowered_imp * 0.05;
 
-      if( o -> glyphs.imp ) base_multiplier *= 1.20;
+      base_multiplier *= 1.0 + ( o -> talents.improved_imp  * 0.10 +
+				 o -> talents.empowered_imp * 0.05 +
+				 o -> glyphs.imp            * 0.20 );
     }
     virtual void player_buff()
     {
@@ -774,7 +753,6 @@ struct succubus_pet_t : public warlock_pet_t
 			  p -> level < 74 ? 123 : 
 			  p -> level < 80 ? 193 : 237 );
       cooldown  -= 3.0 * ( o -> talents.improved_lash_of_pain + o -> talents.demonic_power );
-      if( ! sim_t::WotLK ) base_multiplier *= 1.0 + o -> talents.improved_succubus * 0.10;
     }
   };
 
@@ -891,9 +869,9 @@ static void trigger_tier4_2pc( spell_t* s )
   }
 }
 
-// trigger_improved_shadow_bolt_wotlk =======================================
+// trigger_improved_shadow_bolt =============================================
 
-static void trigger_improved_shadow_bolt_wotlk( spell_t* s )
+static void trigger_improved_shadow_bolt( spell_t* s )
 {
   struct expiration_t : public event_t
   {
@@ -933,70 +911,10 @@ static void trigger_improved_shadow_bolt_wotlk( spell_t* s )
   }
 }
 
-// trigger_improved_shadow_bolt_bc ==========================================
-
-static void trigger_improved_shadow_bolt_bc( spell_t* s )
-{
-  struct expiration_t : public event_t
-  {
-    expiration_t( sim_t* sim ) : event_t( sim )
-    {
-      name = "Shadow Vulnerability Expiration";
-      target_t* t = sim -> target;
-      if( sim -> log ) report_t::log( sim, "Target %s gains Shadow Vulnerability", t -> name() );
-      sim -> add_event( this, 12.0 );
-    }
-    virtual void execute()
-    {
-      target_t* t = sim -> target;
-      if( sim -> log ) report_t::log( sim, "Target %s loses Shadow Vulnerability", t -> name() );
-      t -> debuffs.shadow_vulnerability = 0;
-      t -> debuffs.shadow_vulnerability_charges = 0;
-      t -> expirations.shadow_vulnerability = 0;
-    }
-  };
-  
-  warlock_t* p = s -> player -> cast_warlock();
-
-  if( p -> talents.improved_shadow_bolt )
-  {
-    target_t* t = s -> sim -> target;
-    t -> debuffs.shadow_vulnerability = p -> talents.improved_shadow_bolt * 4;
-    t -> debuffs.shadow_vulnerability_charges = 4;
-    
-    event_t*& e = t -> expirations.shadow_vulnerability;
-
-    if( e )
-    {
-      e -> reschedule( 12.0 );
-    }
-    else
-    {
-      e = new expiration_t( s -> sim );
-    }
-  }
-}
-
-// trigger_improved_shadow_bolt =============================================
-
-static void trigger_improved_shadow_bolt( spell_t* s )
-{
-  if( sim_t::WotLK )
-  {
-    trigger_improved_shadow_bolt_wotlk( s );
-  }
-  else
-  {
-    trigger_improved_shadow_bolt_bc( s );
-  }
-}
-
 // stack_shadow_embrace =====================================================
 
 static void stack_shadow_embrace( spell_t* s )
 {
-  if( ! sim_t::WotLK ) return;
-
   struct expiration_t : public event_t
   {
     expiration_t( sim_t* sim, warlock_t* p ) : event_t( sim, p )
@@ -1587,8 +1505,8 @@ void warlock_spell_t::player_buff()
   {
     trigger_deaths_embrace( this );
 
-    if( p -> buffs_pet_sacrifice == PET_FELGUARD ) player_multiplier *= 1.0 + ( sim_t::WotLK ? 0.07 : 0.10 );
-    if( p -> buffs_pet_sacrifice == PET_SUCCUBUS ) player_multiplier *= 1.0 + ( sim_t::WotLK ? 0.10 : 0.15 );
+    if( p -> buffs_pet_sacrifice == PET_FELGUARD ) player_multiplier *= 1.0 + 0.07;
+    if( p -> buffs_pet_sacrifice == PET_SUCCUBUS ) player_multiplier *= 1.0 + 0.10;
 
     if( p -> buffs_flame_shadow ) player_power += 135;
     p -> uptimes_flame_shadow -> update( p -> buffs_flame_shadow );
@@ -1598,8 +1516,8 @@ void warlock_spell_t::player_buff()
   }
   else if( school == SCHOOL_FIRE )
   {
-    if( p -> buffs_pet_sacrifice == PET_FELGUARD ) player_multiplier *= 1.0 + ( sim_t::WotLK ? 0.07 : 0.10 );
-    if( p -> buffs_pet_sacrifice == PET_IMP      ) player_multiplier *= 1.0 + ( sim_t::WotLK ? 0.10 : 0.15 );
+    if( p -> buffs_pet_sacrifice == PET_FELGUARD ) player_multiplier *= 1.0 + 0.07;
+    if( p -> buffs_pet_sacrifice == PET_IMP      ) player_multiplier *= 1.0 + 0.10;
 
     if( p -> buffs_shadow_flame ) player_power += 135;
     p -> uptimes_shadow_flame -> update( p -> buffs_shadow_flame );
@@ -1624,7 +1542,7 @@ void warlock_spell_t::player_buff()
       }
       else if( p -> active_pet -> pet_type == PET_IMP ) 
       {
-	if( sim_t::WotLK && school == SCHOOL_FIRE )
+	if( school == SCHOOL_FIRE )
 	{
 	  player_multiplier *= 1.0 + p -> talents.master_demonologist * 0.01;
 	  player_crit       +=       p -> talents.master_demonologist * 0.01;
@@ -1632,21 +1550,12 @@ void warlock_spell_t::player_buff()
       }
       else if( p -> active_pet -> pet_type == PET_SUCCUBUS ) 
       {
-	if( ! sim_t::WotLK )
-	{
-	  player_multiplier *= 1.0 + p -> talents.master_demonologist * 0.02;
-	}
-	else if( school == SCHOOL_SHADOW )
+	if( school == SCHOOL_SHADOW )
 	{
 	  player_multiplier *= 1.0 + p -> talents.master_demonologist * 0.01;
 	  player_crit       +=       p -> talents.master_demonologist * 0.01;
 	}
       }
-    }
-
-    if( ! sim_t::WotLK && p -> talents.soul_link )
-    {
-      player_multiplier *= 1.05;
     }
 
     if( p -> talents.demonic_tactics )
@@ -1781,10 +1690,10 @@ struct curse_of_elements_t : public warlock_spell_t
     
     base_execute_time = 0; 
     base_cost         = rank -> cost;
-    base_cost        *= 1.0 - p -> talents.suppression * ( sim_t::WotLK ? 0.02 : 0.00 );
-    base_hit         +=       p -> talents.suppression * ( sim_t::WotLK ? 0.01 : 0.02 );
+    base_cost        *= 1.0 - p -> talents.suppression * 0.02;
+    base_hit         +=       p -> talents.suppression * 0.01;
 
-    if( sim_t::WotLK && p -> talents.amplify_curse ) trigger_gcd = 1.0;
+    if( p -> talents.amplify_curse ) trigger_gcd = 1.0;
   }
 
   virtual void execute()
@@ -1872,13 +1781,13 @@ struct curse_of_agony_t : public warlock_spell_t
     tick_power_mod    = 1.20 / num_ticks;  // Nerf Bat!
 
     base_cost        = rank -> cost;
-    base_cost       *= 1.0 - p -> talents.suppression * ( sim_t::WotLK ? 0.02 : 0.00 );
-    base_hit        +=       p -> talents.suppression * ( sim_t::WotLK ? 0.01 : 0.02 );
+    base_cost       *= 1.0 - p -> talents.suppression * 0.02;
+    base_hit        +=       p -> talents.suppression * 0.01;
     base_multiplier *= 1.0 + ( p -> talents.shadow_mastery * 0.02 +
 			       p -> talents.contagion * 0.01 +
 			       p -> talents.improved_curse_of_agony * 0.05 );
 
-    if( sim_t::WotLK && p -> talents.amplify_curse ) trigger_gcd = 1.0;
+    if( p -> talents.amplify_curse ) trigger_gcd = 1.0;
 
     if( p -> glyphs.curse_of_agony ) num_ticks += 2;
   }
@@ -1887,7 +1796,6 @@ struct curse_of_agony_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     base_tick_dmg = rank -> tick;
-    if( ! sim_t::WotLK && p -> buffs_amplify_curse ) base_tick_dmg *= 1.50;
     warlock_spell_t::execute();
     if( result_is_hit() )
     {
@@ -1895,8 +1803,6 @@ struct curse_of_agony_t : public warlock_spell_t
       p -> active_curse = this;
       sim -> target -> debuffs.affliction_effects++;
     }
-    if( p -> buffs_amplify_curse ) p -> aura_loss( "Amplify Curse" );
-    p -> buffs_amplify_curse = 0;
   }
 
   virtual void last_tick()
@@ -1954,17 +1860,16 @@ struct curse_of_doom_t : public warlock_spell_t
     tick_power_mod    = 2.0;
 
     base_cost  = rank -> cost;
-    base_cost *= 1.0 - p -> talents.suppression * ( sim_t::WotLK ? 0.02 : 0.00 );
-    base_hit  +=       p -> talents.suppression * ( sim_t::WotLK ? 0.01 : 0.02 );
+    base_cost *= 1.0 - p -> talents.suppression * 0.02;
+    base_hit  +=       p -> talents.suppression * 0.01;
 
-    if( sim_t::WotLK && p -> talents.amplify_curse ) trigger_gcd = 1.0;
+    if( p -> talents.amplify_curse ) trigger_gcd = 1.0;
   }
 
   virtual void execute()
   {
     warlock_t* p = player -> cast_warlock();
     base_tick_dmg = rank -> tick;
-    if( ! sim_t::WotLK && p -> buffs_amplify_curse ) base_tick_dmg *= 1.50;
     warlock_spell_t::execute();
     if( result_is_hit() )
     {
@@ -1972,8 +1877,6 @@ struct curse_of_doom_t : public warlock_spell_t
       p -> active_dots++;
       sim -> target -> debuffs.affliction_effects++;
     }
-    if( p -> buffs_amplify_curse ) p -> aura_loss( "Amplify Curse" );
-    p -> buffs_amplify_curse = 0;
   }
 
   virtual void assess_damage( double amount, 
@@ -2002,35 +1905,6 @@ struct curse_of_doom_t : public warlock_spell_t
       return false;
 
     return true;
-  }
-};
-
-// Amplify Curse Spell =======================================================
-
-struct amplify_curse_t : public warlock_spell_t
-{
-  amplify_curse_t( player_t* player, const std::string& options_str ) : 
-    warlock_spell_t( "amplify_curse", player, SCHOOL_SHADOW, TREE_AFFLICTION )
-  {
-    warlock_t* p = player -> cast_warlock();
-    assert( p -> talents.amplify_curse );
-    trigger_gcd = 0;
-    cooldown    = 180;
-  }
-
-  virtual void execute() 
-  {
-    warlock_t* p = player -> cast_warlock();
-    p -> aura_gain( "Amplify Curse" );
-    p -> buffs_amplify_curse = 1;
-    update_ready();
-  }
-
-  virtual bool ready()
-  {
-    if( sim_t::WotLK ) return false;
-
-    return warlock_spell_t::ready();
   }
 };
 
@@ -2080,12 +1954,11 @@ struct shadow_bolt_t : public warlock_spell_t
     base_cost         *= 1.0 -  p -> talents.cataclysm * 0.01;
     base_execute_time -=  p -> talents.bane * 0.1;
     base_multiplier   *= 1.0 + p -> talents.shadow_mastery * 0.02;
-    base_crit         += p -> talents.devastation * ( sim_t::WotLK ? 0.05 : 0.01 );
+    base_crit         += p -> talents.devastation * 0.05;
     base_crit         += p -> talents.backlash * 0.01;
     direct_power_mod  += p -> talents.shadow_and_flame * 0.04;
-    base_crit_bonus   *= 1.0 + p -> talents.ruin * ( sim_t::WotLK ? 0.20 : 1.0 );
-
-    if( sim_t::WotLK ) base_hit += p -> talents.cataclysm * 0.01;
+    base_crit_bonus   *= 1.0 + p -> talents.ruin * 0.20;
+    base_hit          += p -> talents.cataclysm * 0.01;
 
     if( p -> gear.tier6_4pc ) base_multiplier *= 1.06;
 
@@ -2194,12 +2067,11 @@ struct chaos_bolt_t : public warlock_spell_t
     base_cost         *= 1.0 -  p -> talents.cataclysm * 0.01;
     base_execute_time -=  p -> talents.bane * 0.1;
     base_multiplier   *= 1.0 + p -> talents.emberstorm * 0.02;
-    base_crit         += p -> talents.devastation * ( sim_t::WotLK ? 0.05 : 0.01 );
+    base_crit         += p -> talents.devastation * 0.05;
     base_crit         += p -> talents.backlash * 0.01;
     direct_power_mod  += p -> talents.shadow_and_flame * 0.04;
-    base_crit_bonus   *= 1.0 + p -> talents.ruin * ( sim_t::WotLK ? 0.20 : 1.0 );
-
-    if( sim_t::WotLK ) base_hit += p -> talents.cataclysm * 0.01;
+    base_crit_bonus   *= 1.0 + p -> talents.ruin * 0.20;
+    base_hit          += p -> talents.cataclysm * 0.01;
   }
 
   virtual void execute()
@@ -2248,9 +2120,8 @@ struct death_coil_t : public warlock_spell_t
     base_cost        = rank -> cost;
     base_cost       *= 1.0 -  p -> talents.cataclysm * 0.01;
     base_multiplier *= 1.0 + p -> talents.shadow_mastery * 0.02;
-    base_crit_bonus *= 1.0 + p -> talents.ruin * ( sim_t::WotLK ? 0.20 : 1.0 );
-
-    if( sim_t::WotLK ) base_hit += p -> talents.cataclysm * 0.01;
+    base_crit_bonus *= 1.0 + p -> talents.ruin * 0.20;
+    base_hit        += p -> talents.cataclysm * 0.01;
   }
 
   virtual void execute() 
@@ -2297,9 +2168,8 @@ struct shadow_burn_t : public warlock_spell_t
     base_cost        = rank -> cost;
     base_cost       *= 1.0 -  p -> talents.cataclysm * 0.01;
     base_multiplier *= 1.0 + p -> talents.shadow_mastery * 0.02;
-    base_crit_bonus *= 1.0 + p -> talents.ruin * ( sim_t::WotLK ? 0.20 : 1.0 );
-
-    if( sim_t::WotLK ) base_hit += p -> talents.cataclysm * 0.01;
+    base_crit_bonus *= 1.0 + p -> talents.ruin * 0.20;
+    base_hit        += p -> talents.cataclysm * 0.01;
    }
 
   virtual void execute()
@@ -2357,27 +2227,19 @@ struct corruption_t : public warlock_spell_t
     player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
 
-    base_execute_time = sim_t::WotLK ? 0.0 : 2.0; 
+    base_execute_time = 0.0; 
     base_tick_time    = 3.0; 
     num_ticks         = 6;
     tick_power_mod    = 0.93 / num_ticks;
 
-    base_cost          = rank -> cost;
-    base_cost         *= 1.0 - p -> talents.suppression * ( sim_t::WotLK ? 0.02 : 0.00 );
-    base_hit          +=       p -> talents.suppression * ( sim_t::WotLK ? 0.01 : 0.02 );
-    base_multiplier   *= 1.0 + ( p -> talents.shadow_mastery * 0.02 +
-				 p -> talents.contagion * 0.01 );
-    tick_power_mod    += p -> talents.empowered_corruption * 0.02;
-    tick_power_mod    += p -> talents.everlasting_affliction * 0.01;
-
-    if( sim_t::WotLK )
-    {
-      base_multiplier *= 1.0 + p -> talents.improved_corruption * 0.02;
-    }
-    else
-    {
-      base_execute_time -= p -> talents.improved_corruption * 0.4;
-    }
+    base_cost        = rank -> cost;
+    base_cost       *= 1.0 - p -> talents.suppression * 0.02;
+    base_hit        +=  p -> talents.suppression * 0.01;
+    base_multiplier *= 1.0 + ( p -> talents.shadow_mastery      * 0.02 +
+			       p -> talents.contagion           * 0.01 +
+			       p -> talents.improved_corruption * 0.02 );
+    tick_power_mod  += p -> talents.empowered_corruption * 0.02;
+    tick_power_mod  += p -> talents.everlasting_affliction * 0.01;
 
     if( p -> gear.tier4_4pc ) num_ticks++;
   }
@@ -2456,8 +2318,8 @@ struct drain_life_t : public warlock_spell_t
     tick_power_mod    = ( base_tick_time / 3.5 ) / 2.0; 
 
     base_cost        = rank -> cost;
-    base_cost       *= 1.0 - p -> talents.suppression * ( sim_t::WotLK ? 0.02 : 0.00 );
-    base_hit        +=       p -> talents.suppression * ( sim_t::WotLK ? 0.01 : 0.02 );
+    base_cost       *= 1.0 - p -> talents.suppression * 0.02;
+    base_hit        +=       p -> talents.suppression * 0.01;
     base_multiplier *= 1.0 + p -> talents.shadow_mastery * 0.02;
   }
 
@@ -2488,16 +2350,16 @@ struct drain_life_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     target_t*  t = sim -> target;
 
-    double base_multiplier[] = { 0, 0.02, 0.04 };
-    double  max_multiplier[] = { 0, 0.24, 0.60 };
+    double min_multiplier[] = { 0, 0.02, 0.04 };
+    double max_multiplier[] = { 0, 0.24, 0.60 };
 
     assert( p -> talents.soul_siphon >= 0 &&
 	    p -> talents.soul_siphon <= 2 );
 
-    double base = base_multiplier[ p -> talents.soul_siphon ];
-    double max  =  max_multiplier[ p -> talents.soul_siphon ];
+    double min = min_multiplier[ p -> talents.soul_siphon ];
+    double max = max_multiplier[ p -> talents.soul_siphon ];
 
-    double multiplier = t -> debuffs.affliction_effects * base;
+    double multiplier = t -> debuffs.affliction_effects * min;
     if( multiplier > max ) multiplier = max;
 
     player_multiplier *= 1.0 + multiplier;    
@@ -2547,8 +2409,8 @@ struct drain_soul_t : public warlock_spell_t
     tick_power_mod    = ( base_tick_time / 3.5 ) / 2.0; 
 
     base_cost         = rank -> cost;
-    base_cost        *= 1.0 - p -> talents.suppression * ( sim_t::WotLK ? 0.02 : 0.00 );
-    base_hit         +=       p -> talents.suppression * ( sim_t::WotLK ? 0.01 : 0.02 );
+    base_cost        *= 1.0 - p -> talents.suppression * 0.02;
+    base_hit         += p -> talents.suppression * 0.01;
     base_multiplier  *= 1.0 + p -> talents.shadow_mastery * 0.02;
   }
 
@@ -2578,30 +2440,25 @@ struct drain_soul_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     target_t*  t = sim -> target;
 
-    double base_multiplier[] = { 0, 0.02, 0.04 };
-    double  max_multiplier[] = { 0, 0.24, 0.60 };
+    double min_multiplier[] = { 0, 0.02, 0.04 };
+    double max_multiplier[] = { 0, 0.24, 0.60 };
 
     assert( p -> talents.soul_siphon >= 0 &&
 	    p -> talents.soul_siphon <= 2 );
 
-    double base = base_multiplier[ p -> talents.soul_siphon ];
-    double max  =  max_multiplier[ p -> talents.soul_siphon ];
+    double min = min_multiplier[ p -> talents.soul_siphon ];
+    double max = max_multiplier[ p -> talents.soul_siphon ];
 
-    double multiplier = t -> debuffs.affliction_effects * base;
+    double multiplier = t -> debuffs.affliction_effects * min;
     if( multiplier > max ) multiplier = max;
 
     player_multiplier *= 1.0 + multiplier;
 
-    if( sim_t::WotLK )
+    if( t -> initial_health > 0 )
     {
-      target_t* t = sim -> target;
-
-      if( t -> initial_health > 0 )
+      if( ( t -> current_health / t -> initial_health ) < 0.25 )
       {
-        if( ( t -> current_health / t -> initial_health ) < 0.20 )
-        {
-          player_multiplier *= 4.0;
-        }
+	player_multiplier *= 4.0;
       }
     }
     
@@ -2660,13 +2517,12 @@ struct siphon_life_t : public warlock_spell_t
     binary            = true;
     tick_power_mod    = ( base_tick_time / 15.0 ) / 2.0; 
 
-    base_cost         = rank -> cost;
-    base_cost        *= 1.0 - p -> talents.suppression * ( sim_t::WotLK ? 0.02 : 0.00 );
-    base_hit         +=       p -> talents.suppression * ( sim_t::WotLK ? 0.01 : 0.02 );
-    base_multiplier  *= 1.0 + p -> talents.shadow_mastery * 0.02;
-    tick_power_mod   += p -> talents.everlasting_affliction * 0.01;
-
-    if( p -> glyphs.siphon_life ) base_multiplier *= 1.20;
+    base_cost        = rank -> cost;
+    base_cost       *= 1.0 - p -> talents.suppression * 0.02;
+    base_hit        +=       p -> talents.suppression * 0.01;
+    base_multiplier *= 1.0 + ( p -> talents.shadow_mastery * 0.02 +
+				p -> glyphs.siphon_life     * 0.20 );			
+    tick_power_mod  += p -> talents.everlasting_affliction * 0.01;
   }
 
   virtual void execute()
@@ -2730,8 +2586,8 @@ struct unstable_affliction_t : public warlock_spell_t
     tick_power_mod    = base_tick_time / 15.0; 
     
     base_cost         = rank -> cost;
-    base_cost        *= 1.0 - p -> talents.suppression * ( sim_t::WotLK ? 0.02 : 0.00 );
-    base_hit         +=       p -> talents.suppression * ( sim_t::WotLK ? 0.01 : 0.02 );
+    base_cost        *= 1.0 - p -> talents.suppression * 0.02;
+    base_hit         +=       p -> talents.suppression * 0.01;
     base_multiplier  *= 1.0 + p -> talents.shadow_mastery * 0.02;
     tick_power_mod   += p -> talents.everlasting_affliction * 0.01;
   }
@@ -2797,8 +2653,8 @@ struct haunt_t : public warlock_spell_t
     may_crit          = true;
       
     base_cost         = rank -> cost;
-    base_cost        *= 1.0 - p -> talents.suppression * ( sim_t::WotLK ? 0.02 : 0.00 );
-    base_hit         +=       p -> talents.suppression * ( sim_t::WotLK ? 0.01 : 0.02 );
+    base_cost        *= 1.0 - p -> talents.suppression * 0.02;
+    base_hit         +=       p -> talents.suppression * 0.01;
     base_multiplier  *= 1.0 + p -> talents.shadow_mastery * 0.02;
     base_crit_bonus  *= 2.0;
   }
@@ -2853,15 +2709,14 @@ struct immolate_t : public warlock_spell_t
     base_cost         *= 1.0 -  p -> talents.cataclysm * 0.01;
     base_execute_time -= p -> talents.bane * 0.1;
     base_multiplier   *= 1.0 + p -> talents.emberstorm * 0.02;
-    base_crit         += p -> talents.devastation * ( sim_t::WotLK ? 0.05 : 0.01 );
+    base_crit         += p -> talents.devastation * 0.05;
     base_crit         += p -> talents.backlash * 0.01;
-    base_crit_bonus   *= 1.0 + p -> talents.ruin * ( sim_t::WotLK ? 0.20 : 1.0 );
+    base_crit_bonus   *= 1.0 + p -> talents.ruin * 0.20;
+    base_hit          += p -> talents.cataclysm * 0.01;
 
     // FIXME! These coefficients need more in-game analysis.
     direct_power_mod  += p -> talents.fire_and_brimstone * 0.03;
     tick_power_mod    += p -> talents.fire_and_brimstone * 0.01;
-
-    if( sim_t::WotLK ) base_hit += p -> talents.cataclysm * 0.01;
 
     if( p -> gear.tier4_4pc ) num_ticks++;
   }
@@ -2872,7 +2727,7 @@ struct immolate_t : public warlock_spell_t
     spell_t::calculate_direct_damage();
     if( p -> talents.improved_immolate )
     {
-      direct_dmg *= 1.0 + p -> talents.improved_immolate * ( sim_t::WotLK ? 0.10 : 0.05 );
+      direct_dmg *= 1.0 + p -> talents.improved_immolate * 0.10;
     }
     if( p -> glyphs.immolate ) direct_dmg *= 0.90;
     return direct_dmg;
@@ -2953,11 +2808,10 @@ struct conflagrate_t : public warlock_spell_t
     base_cost         = rank -> cost;
     base_cost        *= 1.0 -  p -> talents.cataclysm * 0.01;
     base_multiplier  *= 1.0 + p -> talents.emberstorm * 0.02;
-    base_crit        += p -> talents.devastation * ( sim_t::WotLK ? 0.05 : 0.01 );
+    base_crit        += p -> talents.devastation * 0.05;
     base_crit        += p -> talents.backlash * 0.01;
-    base_crit_bonus  *= 1.0 + p -> talents.ruin * ( sim_t::WotLK ? 0.20 : 1.0 );
-
-    if( sim_t::WotLK ) base_hit += p -> talents.cataclysm * 0.01;
+    base_crit_bonus  *= 1.0 + p -> talents.ruin * 0.20;
+    base_hit         += p -> talents.cataclysm * 0.01;
   }
 
   virtual void execute()
@@ -3044,14 +2898,13 @@ struct incinerate_t : public warlock_spell_t
 
     base_cost          = rank -> cost;
     base_cost         *= 1.0 - p -> talents.cataclysm * 0.01;
-    base_execute_time -= p -> talents.emberstorm * ( sim_t::WotLK ? 0.05 : 0.1 );
+    base_execute_time -= p -> talents.emberstorm * 0.05;
     base_multiplier   *= 1.0 + p -> talents.emberstorm * 0.02;
-    base_crit         += p -> talents.devastation * ( sim_t::WotLK ? 0.05 : 0.01 );
+    base_crit         += p -> talents.devastation * 0.05;
     base_crit         += p -> talents.backlash * 0.01;
     direct_power_mod  += p -> talents.shadow_and_flame * 0.04;
-    base_crit_bonus   *= 1.0 + p -> talents.ruin * ( sim_t::WotLK ? 0.20 : 1.0 );
-
-    if( sim_t::WotLK ) base_hit += p -> talents.cataclysm * 0.01;
+    base_crit_bonus   *= 1.0 + p -> talents.ruin * 0.20;
+    base_hit          += p -> talents.cataclysm * 0.01;
 
     if( p -> gear.tier6_4pc ) base_multiplier *= 1.06;
   }
@@ -3133,12 +2986,11 @@ struct searing_pain_t : public warlock_spell_t
     base_cost        = rank -> cost;
     base_cost       *= 1.0 -  p -> talents.cataclysm * 0.01;
     base_multiplier *= 1.0 + p -> talents.emberstorm * 0.02;
-    base_crit       += p -> talents.devastation * ( sim_t::WotLK ? 0.05 : 0.01 );
+    base_crit       += p -> talents.devastation * 0.05;
     base_crit       += p -> talents.backlash * 0.01;
     base_crit       += p -> talents.improved_searing_pain * 0.04;
-    base_crit_bonus *= 1.0 + p -> talents.ruin * ( sim_t::WotLK ? 0.20 : 1.0 );
-
-    if( sim_t::WotLK ) base_hit += p -> talents.cataclysm * 0.01;
+    base_crit_bonus *= 1.0 + p -> talents.ruin * 0.20;
+    base_hit        += p -> talents.cataclysm * 0.01;
 
     if( p -> glyphs.searing_pain ) base_crit_bonus *= 1.20;
   }
@@ -3190,11 +3042,10 @@ struct soul_fire_t : public warlock_spell_t
     base_cost         *= 1.0 -  p -> talents.cataclysm * 0.01;
     base_execute_time -= p -> talents.bane * 0.4;
     base_multiplier   *= 1.0 + p -> talents.emberstorm * 0.02;
-    base_crit         += p -> talents.devastation * ( sim_t::WotLK ? 0.05 : 0.01 );
+    base_crit         += p -> talents.devastation * 0.05;
     base_crit         += p -> talents.backlash * 0.01;
-    base_crit_bonus   *= 1.0 + p -> talents.ruin * ( sim_t::WotLK ? 0.20 : 1.0 );
-
-    if( sim_t::WotLK ) base_hit += p -> talents.cataclysm * 0.01;
+    base_crit_bonus   *= 1.0 + p -> talents.ruin * 0.20;
+    base_hit          += p -> talents.cataclysm * 0.01;
   }
 
   virtual void execute()
@@ -3236,16 +3087,7 @@ struct life_tap_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
     p -> procs_life_tap -> occur();
-    double dmg = 0;
-    if( sim_t::WotLK )
-    {
-      dmg = rank -> tick + 0.30 * p -> spirit();
-    }
-    else
-    {
-      player_buff();
-      dmg = ( base_direct_dmg + ( direct_power_mod * p -> composite_spell_power( SCHOOL_SHADOW ) ) ) * base_multiplier * player_multiplier;
-    }
+    double dmg = rank -> tick + 0.30 * p -> spirit();
     p -> resource_loss( RESOURCE_HEALTH, dmg );
     p -> resource_gain( RESOURCE_MANA, dmg * ( 1.0 + p -> talents.improved_life_tap * 0.10 ), p -> gains_life_tap );
   }
@@ -3319,8 +3161,7 @@ struct fel_armor_t : public warlock_spell_t
     if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
     p -> buffs_fel_armor = bonus_spell_power;
     p -> buffs_demon_armor = 0;
-
-    if( sim_t::WotLK ) p -> spell_power_per_spirit += 0.30;
+    p -> spell_power_per_spirit += 0.30;
   }
 
   virtual bool ready()
@@ -3609,7 +3450,6 @@ double warlock_t::composite_spell_power( int8_t school )
 action_t* warlock_t::create_action( const std::string& name,
 				    const std::string& options_str )
 {
-  if( name == "amplify_curse"       ) return new       amplify_curse_t( this, options_str );
   if( name == "chaos_bolt"          ) return new          chaos_bolt_t( this, options_str );
   if( name == "conflagrate"         ) return new         conflagrate_t( this, options_str );
   if( name == "corruption"          ) return new          corruption_t( this, options_str );
@@ -3664,10 +3504,6 @@ void warlock_t::init_base()
   attribute_base[ ATTR_SPIRIT    ] = 142;
 
   attribute_multiplier_initial[ ATTR_STAMINA ] *= 1.0 + talents.demonic_embrace * 0.03;
-  if( ! sim_t::WotLK ) 
-  {
-    attribute_multiplier_initial[ ATTR_SPIRIT ] *= 1.0 - talents.demonic_embrace * 0.01;
-  }
 
   base_spell_crit = 0.0170;
   initial_spell_crit_per_intellect = rating_t::interpolate( level, 0.01/60.0, 0.01/80.0, 0.01/166.6 );
@@ -3702,7 +3538,6 @@ void warlock_t::reset()
   active_dots       = 0;
 
   // Buffs
-  buffs_amplify_curse                = 0;
   buffs_backdraft                    = 0;
   buffs_demon_armor                  = 0;
   buffs_demonic_empathy              = 0;

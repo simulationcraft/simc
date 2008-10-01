@@ -181,22 +181,10 @@ struct treants_pet_t : public pet_t
       background = true;
       repeating = true;
       
-      if( sim_t::WotLK ) base_multiplier *= 1.0 + o -> talents.brambles * 0.05;
+      base_multiplier *= 1.0 + o -> talents.brambles * 0.05;
 
       // Model the three Treants as one actor hitting 3x hard
       base_multiplier *= 3.0;
-    }
-    virtual void execute()
-    {
-      attack_t::execute();
-      if( result_is_hit() )
-      {
-	if( ! sim_t::WotLK )
-	{
-	  enchant_t::trigger_flametongue_totem( this );
-	  enchant_t::trigger_windfury_totem( this );
-	}
-      }
     }
     void player_buff()
     {
@@ -244,18 +232,11 @@ static void trigger_omen_of_clarity( action_t* a )
 
   if( p -> talents.omen_of_clarity == 0 ) return;
 
-  if( sim_t::WotLK )
+  if( a -> sim -> cooldown_ready( p -> cooldowns_omen_of_clarity ) && rand_t::roll( 0.06 ) )
   {
-    if( a -> sim -> cooldown_ready( p -> cooldowns_omen_of_clarity ) && rand_t::roll( 0.06 ) )
-    {
-      p -> buffs_omen_of_clarity = 1;
-      p -> procs_omen_of_clarity -> occur();
-      p -> cooldowns_omen_of_clarity = a -> sim -> current_time;
-    }
-  }
-  else
-  {
-    
+    p -> buffs_omen_of_clarity = 1;
+    p -> procs_omen_of_clarity -> occur();
+    p -> cooldowns_omen_of_clarity = a -> sim -> current_time;
   }
 }
 
@@ -477,11 +458,8 @@ void druid_spell_t::target_debuff( int8_t dmg_type )
 {
   spell_t::target_debuff( dmg_type );
 
-  if( sim_t::WotLK )
-  {
-    target_t* t = sim -> target;
-    target_crit += t -> debuffs.improved_faerie_fire * 0.01; 
-  }
+  target_t* t = sim -> target;
+  target_crit += t -> debuffs.improved_faerie_fire * 0.01; 
 }
 
 // Faerie Fire Spell =======================================================
@@ -754,15 +732,12 @@ struct moonkin_form_t : public druid_spell_t
     if( sim -> log ) report_t::log( sim, "%s performs moonkin_form", player -> name() );
     for( player_t* p = sim -> player_list; p; p = p -> next )
     {
-      if( sim_t::WotLK || player -> party == p -> party )
-      {
-	p -> aura_gain( "Moonkin Aura" );
-	p -> buffs.moonkin_aura = 1;
+      p -> aura_gain( "Moonkin Aura" );
+      p -> buffs.moonkin_aura = 1;
 
-	if( player -> cast_druid() -> talents.improved_moonkin_form )
-	{
-	  p -> buffs.improved_moonkin_aura = 1;
-	}
+      if( player -> cast_druid() -> talents.improved_moonkin_form )
+      {
+	p -> buffs.improved_moonkin_aura = 1;
       }
     }
   }
@@ -984,9 +959,8 @@ struct wrath_t : public druid_spell_t
 
   virtual void schedule_execute()
   {
-    if( sim_t::WotLK )
-      if( player -> cast_druid() -> buffs_natures_grace ) 
-	trigger_gcd *= 0.5;
+    if( player -> cast_druid() -> buffs_natures_grace ) 
+      trigger_gcd *= 0.5;
     druid_spell_t::schedule_execute();
     trigger_gcd = player -> base_gcd;
   }
@@ -1048,7 +1022,7 @@ struct mark_of_the_wild_t : public druid_spell_t
 
     if( improved )
     {
-      bonus *= sim_t::WotLK ? ( 1.0 + improved * 0.20 ) : ( 1.0 + improved * 0.07 );
+      bonus *= 1.0 + improved * 0.20;
     }
   }
    
@@ -1167,13 +1141,13 @@ void druid_t::spell_hit_event( spell_t* s )
 
   if( s -> result == RESULT_CRIT )
   {
-    if( sim_t::WotLK && buffs.moonkin_aura )
+    if( buffs.moonkin_aura )
     {
       resource_gain( RESOURCE_MANA, resource_max[ RESOURCE_MANA ] * 0.02, gains_moonkin_form );
     }
     if( ! buffs_natures_grace )
     {
-      if( rand_t::roll( talents.natures_grace / ( sim_t::WotLK ? 3.0 : 1.0 ) ) )
+      if( rand_t::roll( talents.natures_grace / 3.0 ) )
       {
 	aura_gain( "Natures Grace" );
 	buffs_natures_grace = 1;
@@ -1189,7 +1163,7 @@ void druid_t::spell_finish_event( spell_t* s )
 {
   player_t::spell_finish_event( s );
 
-  if( sim_t::WotLK ) trigger_omen_of_clarity( s );
+  trigger_omen_of_clarity( s );
 
   if( gear.tier4_2pc && rand_t::roll( 0.05 ) )
   {
@@ -1240,14 +1214,14 @@ void druid_t::init_base()
   attribute_base[ ATTR_INTELLECT ] = 115;
   attribute_base[ ATTR_SPIRIT    ] = 135;
 
-  if( sim_t::WotLK && talents.moonkin_form && talents.furor )
+  if( talents.moonkin_form && talents.furor )
   {
     attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.0 + talents.furor * 0.02;
   }
 
   base_spell_crit = 0.0185;
   initial_spell_crit_per_intellect = rating_t::interpolate( level, 0.01/60.0, 0.01/80.0, 0.01/166.6 );
-  initial_spell_power_per_intellect = talents.lunar_guidance * ( sim_t::WotLK ? 0.04 : 0.08 );
+  initial_spell_power_per_intellect = talents.lunar_guidance * 0.04;
   initial_spell_power_per_spirit = ( talents.improved_moonkin_form * 0.05 );
 
   base_attack_power = -20;

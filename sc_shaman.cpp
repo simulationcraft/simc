@@ -330,7 +330,7 @@ static void trigger_flametongue_weapon( attack_t* a )
   };
 
   if( a -> weapon &&
-      a -> weapon -> buff == FLAMETONGUE_WEAPON )
+      a -> weapon -> buff == FLAMETONGUE )
   {
     shaman_t* p = a -> player -> cast_shaman();
 
@@ -375,7 +375,7 @@ static void trigger_windfury_weapon( attack_t* a )
   shaman_t* p = a -> player -> cast_shaman();
 
   if( a -> weapon == 0 ) return;
-  if( a -> weapon -> buff != WINDFURY_WEAPON ) return;
+  if( a -> weapon -> buff != WINDFURY ) return;
 
   if( ! a -> sim -> cooldown_ready( p -> cooldowns_windfury_weapon ) ) return;
 
@@ -822,7 +822,7 @@ struct lava_lash_t : public shaman_attack_t
   virtual void player_buff()
   {
     shaman_attack_t::player_buff();
-    if( weapon -> buff == FLAMETONGUE_WEAPON ) player_multiplier *= 1.25;
+    if( weapon -> buff == FLAMETONGUE ) player_multiplier *= 1.25;
   }
 };
 
@@ -936,8 +936,8 @@ void shaman_spell_t::player_buff()
 
   if( p -> glyphs.flametongue_weapon )
   {
-    if( p -> main_hand_weapon.buff == FLAMETONGUE_WEAPON ||
-	p ->  off_hand_weapon.buff == FLAMETONGUE_WEAPON ) 
+    if( p -> main_hand_weapon.buff == FLAMETONGUE ||
+	p ->  off_hand_weapon.buff == FLAMETONGUE ) 
     {
       player_crit += 0.02;
     }
@@ -1981,20 +1981,20 @@ struct flametongue_weapon_t : public shaman_spell_t
 
     if( main ) 
     {
-      player -> main_hand_weapon.buff = FLAMETONGUE_WEAPON;
+      player -> main_hand_weapon.buff = FLAMETONGUE;
       player -> main_hand_weapon.buff_bonus = bonus_power;
     }
     if( off )
     {
-      player -> off_hand_weapon.buff = FLAMETONGUE_WEAPON;
+      player -> off_hand_weapon.buff = FLAMETONGUE;
       player -> off_hand_weapon.buff_bonus = bonus_power;
     }
   };
 
   virtual bool ready()
   {
-    return( main && player -> main_hand_weapon.buff != FLAMETONGUE_WEAPON ||
-	     off && player ->  off_hand_weapon.buff != FLAMETONGUE_WEAPON );
+    return( main && player -> main_hand_weapon.buff != FLAMETONGUE ||
+	     off && player ->  off_hand_weapon.buff != FLAMETONGUE );
   }
 };
 
@@ -2055,20 +2055,20 @@ struct windfury_weapon_t : public shaman_spell_t
 
     if( main ) 
     {
-      player -> main_hand_weapon.buff = WINDFURY_WEAPON;
+      player -> main_hand_weapon.buff = WINDFURY;
       player -> main_hand_weapon.buff_bonus = bonus_power;
     }
     if( off ) 
     {
-      player -> off_hand_weapon.buff = WINDFURY_WEAPON;
+      player -> off_hand_weapon.buff = WINDFURY;
       player -> off_hand_weapon.buff_bonus = bonus_power;
     }
   };
 
   virtual bool ready()
   {
-    return( main && player -> main_hand_weapon.buff != WINDFURY_WEAPON ||
-	     off && player ->  off_hand_weapon.buff != WINDFURY_WEAPON );
+    return( main && player -> main_hand_weapon.buff != WINDFURY ||
+	     off && player ->  off_hand_weapon.buff != WINDFURY );
   }
 };
 
@@ -2771,11 +2771,11 @@ double shaman_t::composite_spell_power( int8_t school )
     sp += composite_attack_power() * talents.mental_quickness * 0.10;
   }
 
-  if( main_hand_weapon.buff == FLAMETONGUE_WEAPON )
+  if( main_hand_weapon.buff == FLAMETONGUE )
   {
     sp += main_hand_weapon.buff_bonus;
   }
-  if( off_hand_weapon.buff == FLAMETONGUE_WEAPON )
+  if( off_hand_weapon.buff == FLAMETONGUE )
   {
     sp += off_hand_weapon.buff_bonus;
   }

@@ -20,7 +20,7 @@ target_level=83
 
 # One of "max_time" (fight time in seconds) or "target_health" must be specified.
 # When "max_time" is used, the health of the target will be infered half-way through simulation.
-max_time=360
+max_time=300
 
 # While min/max damage effects (such as weapons and direct damage spells) are averaged out, spell event
 # and attack table mechanics are still random.  In order to get a trustworthy answer from the simulator,

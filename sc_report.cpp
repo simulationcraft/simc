@@ -1026,7 +1026,7 @@ const char* report_t::chart_gains( player_t* p )
   s += "chco=";  
   s += get_color( p );
   s += "&";
-  sprintf( buffer, "chl=" );
+  s += "chl=";
   for( int i=0; i < num_gains; i++ )
   {
     if( i ) s += "|";

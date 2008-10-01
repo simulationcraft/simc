@@ -37,36 +37,6 @@ void target_t::assess_damage( double  amount,
     }
     else if( sim -> debug ) report_t::log( sim, "Target %s has %.0f remaining health", name(), current_health );
   }
-
-  if( dmg_type == DMG_DIRECT && ! sim_t::WotLK )
-  {
-    if( school == SCHOOL_SHADOW )
-    {
-      if( debuffs.shadow_vulnerability_charges > 0 )
-      {
-	debuffs.shadow_vulnerability_charges--;
-	if( debuffs.shadow_vulnerability_charges == 0 ) 
-	{
-	  if( sim -> log ) report_t::log( sim, "%s loses Shadow Vulnerability", name() );
-	  debuffs.shadow_vulnerability = 0;
-	}
-      }
-    }
-
-    if( school == SCHOOL_NATURE )
-    {
-      if( debuffs.nature_vulnerability_charges > 0 )
-      {
-	debuffs.nature_vulnerability_charges--;
-	if( debuffs.nature_vulnerability_charges == 0 ) 
-	{
-	  if( sim -> log ) report_t::log( sim, "%s loses Nature Vulnerability", name() );
-	  debuffs.nature_vulnerability = 0;
-	  event_t::cancel( expirations.nature_vulnerability );
-	}
-      }
-    }
-  }
 }
    
 // target_t::recalculate_health ==============================================

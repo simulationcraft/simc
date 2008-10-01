@@ -153,13 +153,14 @@ const char* util_t::weapon_buff_type_string( int8_t buff )
 {
   switch( buff )
   {
-  case WEAPON_BUFF_NONE:   return "none";
-  case FLAMETONGUE_WEAPON: return "flametongue_weapon";
-  case FLAMETONGUE_TOTEM:  return "flametongue_totem";
-  case POISON:             return "poison";
-  case SHARPENING_STONE:   return "sharpening_stone";
-  case WINDFURY_WEAPON:    return "windfury_weapon";
-  case WINDFURY_TOTEM:     return "windfury_totem";
+  case WEAPON_BUFF_NONE: return "none";
+  case FIRE_STONE:       return "fire_stone";
+  case FLAMETONGUE:      return "flametongue";
+  case POISON:           return "poison";
+  case SHARPENING_STONE: return "sharpening_stone";
+  case SPELL_STONE:      return "spell_stone";
+  case WINDFURY:         return "windfury";
+  case WIZARD_OIL:       return "wizard_oil";
   }
   return "unknown";
 }

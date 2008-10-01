@@ -148,13 +148,11 @@ enum weapon_enchant_type { WEAPON_ENCHANT_NONE=0, MONGOOSE, EXECUTIONER, DEATH_F
 
 enum weapon_buff_type { WEAPON_BUFF_NONE=0, 
 			FIRE_STONE,
-			FLAMETONGUE_WEAPON, 
-			FLAMETONGUE_TOTEM, 
+			FLAMETONGUE, 
 			POISON,
 			SHARPENING_STONE, 
 			SPELL_STONE,
-			WINDFURY_WEAPON, 
-			WINDFURY_TOTEM, 
+			WINDFURY, 
 			WIZARD_OIL,
 			WEAPON_BUFF_MAX };
 
@@ -192,7 +190,6 @@ enum encoding_type { ENCODING_NONE=0, ENCODING_BLIZZARD, ENCODING_MMO, ENCODING_
 
 struct sim_t
 {
-  static bool WotLK;
   std::string patch_str;
   patch_t     patch;
   event_t*    event_list;

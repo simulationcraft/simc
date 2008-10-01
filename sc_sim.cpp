@@ -43,8 +43,6 @@ int sim_signal_handler_t::iteration = 0;
 // Simulator
 // ==========================================================================
 
-bool sim_t::WotLK = false;
-
 // sim_t::sim_t =============================================================
 
 sim_t::sim_t() : 
@@ -219,8 +217,6 @@ bool sim_t::init()
       return false;
     }
     patch.set( arch, version, revision );
-
-    WotLK = patch.after( 3, 0, 0 );
   }
 
   if( pet_lag == 0 ) pet_lag = lag;

@@ -126,7 +126,7 @@ struct destruction_potion_t : public action_t
 
   virtual bool ready()
   {
-    if( sim_t::WotLK && used )
+    if( used )
       return false;
 
     return( cooldown_ready > sim -> current_time );
@@ -180,7 +180,7 @@ struct mana_potion_t : public action_t
 
   virtual bool ready()
   {
-    if( sim_t::WotLK && used )
+    if( used )
       return false;
 
     if( cooldown_ready > sim -> current_time ) 
@@ -351,7 +351,7 @@ struct dark_rune_t : public action_t
 
   virtual bool ready()
   {
-    if( sim_t::WotLK && used )
+    if( used )
       return false;
 
     if( cooldown_ready > sim -> current_time ) 

@@ -21,15 +21,12 @@ static void trigger_judgement_of_wisdom( action_t* action )
   if( max_mana <= 0 )
     return;
 
-  double amount = sim_t::WotLK ? ( max_mana * 0.02 ) : jow;
+  double amount = max_mana * 0.02;
 
   if( amount <= 0 )
     return;
 
-  if( sim_t::WotLK && ! p -> sim -> cooldown_ready( p -> cooldowns.judgement_of_wisdom ) )
-    return;
-
-  if( ! sim_t::WotLK && ! rand_t::roll( 0.50 ) )
+  if( ! p -> sim -> cooldown_ready( p -> cooldowns.judgement_of_wisdom ) )
     return;
 
   p -> procs.judgement_of_wisdom -> occur();
@@ -573,18 +570,10 @@ double player_t::composite_attack_power()
   ap += attack_power_per_strength * strength();
   ap += attack_power_per_agility  * agility();
 
-  if( sim_t::WotLK )
-  {
-    double best_buff=0;
-    if( buffs.blessing_of_might > best_buff ) best_buff = buffs.blessing_of_might;
-    if( buffs.battle_shout      > best_buff ) best_buff = buffs.battle_shout;
-    ap += best_buff;
-  }
-  else
-  {
-    ap += buffs.blessing_of_might;
-    ap += buffs.battle_shout;
-  }
+  double best_buff=0;
+  if( buffs.blessing_of_might > best_buff ) best_buff = buffs.blessing_of_might;
+  if( buffs.battle_shout      > best_buff ) best_buff = buffs.battle_shout;
+  ap += best_buff;
 
   return ap;
 }

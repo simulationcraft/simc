@@ -164,9 +164,6 @@ void action_t::target_debuff( int8_t dmg_type )
 
   // 'multiplier' and 'penetration' handled here, all others handled in attack_t/spell_t
 
-  static uptime_t* sv_uptime = sim -> get_uptime( "shadow_vulnerability" );
-  static uptime_t* nv_uptime = sim -> get_uptime( "nature_vulnerability" );
-  static uptime_t* is_uptime = sim -> get_uptime( "improved_scorch"      );
   static uptime_t* wg_uptime = sim -> get_uptime( "winters_grasp"        );
   
   target_t* t = sim -> target;
@@ -177,49 +174,7 @@ void action_t::target_debuff( int8_t dmg_type )
   }
   else 
   {
-    if( school == SCHOOL_SHADOW )
-    {
-      if( ! sim_t::WotLK ) 
-      {
-	target_multiplier *= 1.0 + ( t -> debuffs.shadow_weaving * 0.02 );
-	target_multiplier *= 1.0 + ( t -> debuffs.shadow_vulnerability * 0.01 );
-	sv_uptime -> update( t -> debuffs.shadow_vulnerability != 0 );
-      }
-    }
-    else if( school == SCHOOL_ARCANE )
-    {
-    }
-    else if( school == SCHOOL_FIRE )
-    {
-      if( ! sim_t::WotLK )
-      {
-	target_multiplier *= 1.0 + ( t -> debuffs.improved_scorch * 0.01 );
-	is_uptime -> update( t -> debuffs.improved_scorch != 0 );
-      }
-    }
-    else if( school == SCHOOL_FROST )
-    {
-    }
-    else if( school == SCHOOL_FROSTFIRE )
-    {
-    }
-    else if( school == SCHOOL_NATURE )
-    {
-      if( ! sim_t::WotLK )
-      {
-	target_multiplier *= 1.0 + ( t -> debuffs.nature_vulnerability * 0.01 );
-	nv_uptime -> update( t -> debuffs.nature_vulnerability != 0 );
-      }
-    }
-    if( ! sim_t::WotLK ) 
-    {
-      target_multiplier *= 1.0 + ( t -> debuffs.misery * 0.01 );
-    }
-    if( sim_t::WotLK || school != SCHOOL_NATURE )
-    {
-      target_multiplier *= 1.0 + ( std::max( t -> debuffs.curse_of_elements, t -> debuffs.earth_and_moon ) * 0.01 );
-    }
-
+    target_multiplier *= 1.0 + ( std::max( t -> debuffs.curse_of_elements, t -> debuffs.earth_and_moon ) * 0.01 );
     if( t -> debuffs.curse_of_elements ) target_penetration += 88;
   }
 
