@@ -1381,7 +1381,7 @@ struct dispersion_t : public priest_spell_t
     if( ! priest_spell_t::ready() )
       return false;
 
-    return player -> resource_current[ RESOURCE_MANA ] < 0.64 * player -> resource_max[ RESOURCE_MANA ];
+    return player -> resource_current[ RESOURCE_MANA ] < 0.60 * player -> resource_max[ RESOURCE_MANA ];
   }
 };
 
@@ -1910,9 +1910,9 @@ bool priest_t::parse_talents( const std::string& talent_string,
     {
       // Discipline
       {  2,  &( talents.twin_disciplines          ) },
+      {  4,  &( talents.improved_inner_fire       ) },      
       {  8,  &( talents.inner_focus               ) },
       {  9,  &( talents.meditation                ) },
-      { 10,  &( talents.improved_inner_fire       ) },
       { 11,  &( talents.mental_agility            ) },
       { 13,  &( talents.mental_strength           ) },
       { 14,  &( talents.divine_spirit             ) },
@@ -1960,9 +1960,9 @@ bool priest_t::parse_talents( const std::string& talent_string,
     {
       // Discipline
       {  2,  &( talents.twin_disciplines          ) },
+      {  4,  &( talents.improved_inner_fire       ) },      
       {  8,  &( talents.inner_focus               ) },
       {  9,  &( talents.meditation                ) },
-      { 10,  &( talents.improved_inner_fire       ) },
       { 11,  &( talents.mental_agility            ) },
       { 13,  &( talents.mental_strength           ) },
       { 14,  &( talents.divine_spirit             ) },
@@ -2013,13 +2013,13 @@ bool priest_t::parse_talents( const std::string& talent_string,
       { { 1,  NULL                                }, { 29, NULL                              }, { 55, NULL                                   } },
       { { 2,  &( talents.twin_disciplines )       }, { 30, NULL                              }, { 56, &( talents.improved_spirit_tap )       } },
       { { 3,  NULL                                }, { 31, &( talents.holy_specialization )  }, { 57, NULL                                   } },
-      { { 4,  NULL                                }, { 32, NULL                              }, { 58, &( talents.shadow_affinity )           } },
+      { { 4,  &( talents.improved_inner_fire )    }, { 32, NULL                              }, { 58, &( talents.shadow_affinity )           } },
       { { 5,  NULL                                }, { 33, &( talents.divine_fury )          }, { 59, &( talents.improved_shadow_word_pain ) } },
       { { 6,  NULL                                }, { 34, NULL                              }, { 60, &( talents.shadow_focus )              } },
       { { 7,  NULL                                }, { 35, NULL                              }, { 61, NULL                                   } },
       { { 8,  &( talents.inner_focus )            }, { 36, NULL                              }, { 62, &( talents.improved_mind_blast )       } },
       { { 9,  &( talents.meditation )             }, { 37, NULL                              }, { 63, &( talents.mind_flay )                 } },
-      { { 10, &( talents.improved_inner_fire )    }, { 38, NULL                              }, { 64, &( talents.veiled_shadows )            } },
+      { { 10, NULL                                }, { 38, NULL                              }, { 64, &( talents.veiled_shadows )            } },
       { { 11, &( talents.mental_agility )         }, { 39, &( talents.searing_light )        }, { 65, NULL                                   } },
       { { 12, NULL                                }, { 40, NULL                              }, { 66, &( talents.shadow_weaving )            } },
       { { 13, &( talents.mental_strength )        }, { 41, &( talents.spirit_of_redemption ) }, { 67, NULL                                   } },
