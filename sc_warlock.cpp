@@ -262,13 +262,13 @@ struct warlock_spell_t : public spell_t
   virtual void   target_debuff( int8_t dmg_type );
   virtual void   execute();
   virtual void   tick();
-  virtual void   assess_damage( double amount, int8_t dmg_type );
 
   // Passthru Methods
-  virtual double cost()                  { return spell_t::cost();                  }
-  virtual double calculate_tick_damage() { return spell_t::calculate_tick_damage(); }
-  virtual void   last_tick()             { spell_t::last_tick();                    }
-  virtual bool   ready()                 { return spell_t::ready();                 }
+  virtual double cost()                              { return spell_t::cost();                  }
+  virtual double calculate_tick_damage()             { return spell_t::calculate_tick_damage(); }
+  virtual void   last_tick()                         { spell_t::last_tick();                    }
+  virtual void   assess_damage( double a, int8_t d ) { spell_t::assess_damage( a, d );          }
+  virtual bool   ready()                             { return spell_t::ready();                 }
 };
 
 // ==========================================================================
@@ -1510,9 +1510,6 @@ void warlock_spell_t::player_buff()
 
     if( p -> buffs_flame_shadow ) player_power += 135;
     p -> uptimes_flame_shadow -> update( p -> buffs_flame_shadow );
-
-    if( p -> buffs_shadow_vulnerability ) player_multiplier *= 1.0 + p -> talents.improved_shadow_bolt * 0.02;
-    p -> uptimes_shadow_vulnerability -> update( p -> buffs_shadow_vulnerability != 0 );
   }
   else if( school == SCHOOL_FIRE )
   {
@@ -1524,12 +1521,6 @@ void warlock_spell_t::player_buff()
 
     if( p -> buffs_molten_core ) player_multiplier *= 1.0 + p -> talents.molten_core * 0.05;
     p -> uptimes_molten_core -> update( p -> buffs_molten_core );
-  }
-  else if( school == SCHOOL_CHAOS )
-  {
-    // FIXME! What other buffs apply???
-    if( p -> buffs_shadow_vulnerability ) player_multiplier *= 1.0 + p -> talents.improved_shadow_bolt * 0.02;
-    p -> uptimes_shadow_vulnerability -> update( p -> buffs_shadow_vulnerability != 0 );
   }
 
   if( p -> active_pet )
@@ -1640,27 +1631,6 @@ void warlock_spell_t::tick()
 {
   spell_t::tick();
   trigger_molten_core( this );
-}
-
-// warlock_spell_t::assess_damage ============================================
-
-void warlock_spell_t::assess_damage( double amount, 
-				     int8_t dmg_type )
-{
-  warlock_t* p = player -> cast_warlock();
-
-  spell_t::assess_damage( amount, dmg_type );
-
-  if( dmg_type == DMG_DIRECT    &&
-      school   == SCHOOL_SHADOW && 
-      p -> buffs_shadow_vulnerability_charges > 0 )
-  {
-    p -> buffs_shadow_vulnerability_charges--;
-    if( p -> buffs_shadow_vulnerability_charges == 0 )
-    {
-      event_t::early( p -> expirations_shadow_vulnerability );
-    }
-  }
 }
 
 // Curse of Elements Spell ===================================================
@@ -1993,14 +1963,31 @@ struct shadow_bolt_t : public warlock_spell_t
     if( result_is_hit() )
     {
       stack_shadow_embrace( this );
-      trigger_everlasting_affliction( this );
       trigger_soul_leech( this );
       trigger_tier5_4pc( this, p -> active_corruption );
+
       if( result == RESULT_CRIT ) 
       {
 	trigger_improved_shadow_bolt( this );
       }
+
+      if( p -> buffs_shadow_vulnerability_charges > 0 )
+      {
+	p -> buffs_shadow_vulnerability_charges--;
+	if( p -> buffs_shadow_vulnerability_charges == 0 )
+	{
+	  event_t::early( p -> expirations_shadow_vulnerability );
+	}
+      }
     }
+  }
+
+  virtual void player_buff()
+  {
+    warlock_t* p = player -> cast_warlock();
+    warlock_spell_t::player_buff();
+    if( p -> buffs_shadow_vulnerability ) player_multiplier *= 1.0 + p -> talents.improved_shadow_bolt * 0.02;
+    p -> uptimes_shadow_vulnerability -> update( p -> buffs_shadow_vulnerability != 0 );
   }
   
   virtual bool ready()
@@ -2035,7 +2022,7 @@ struct shadow_bolt_t : public warlock_spell_t
 struct chaos_bolt_t : public warlock_spell_t
 {
   chaos_bolt_t( player_t* player, const std::string& options_str ) : 
-    warlock_spell_t( "chaos_bolt", player, SCHOOL_CHAOS, TREE_DESTRUCTION )
+    warlock_spell_t( "chaos_bolt", player, SCHOOL_FIRE, TREE_DESTRUCTION )
   {
     warlock_t* p = player -> cast_warlock();
 
@@ -2665,6 +2652,7 @@ struct haunt_t : public warlock_spell_t
     if( result_is_hit() )
     {
       trigger_haunted( this );
+      trigger_everlasting_affliction( this );
       stack_shadow_embrace( this );
     }
   }
