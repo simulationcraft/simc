@@ -814,6 +814,14 @@ struct target_t
   };
   expirations_t expirations;
   
+  struct cooldowns_t
+  {
+    double judgement_of_wisdom;
+    void reset() { memset( (void*) this, 0x00, sizeof( cooldowns_t ) ); }
+    cooldowns_t() { reset(); }
+  };
+  cooldowns_t cooldowns;
+
   target_t( sim_t* s );
 
   void init();

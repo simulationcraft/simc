@@ -65,6 +65,7 @@ void target_t::reset()
   current_health = initial_health;
   debuffs.reset();
   expirations.reset();
+  cooldowns.reset();
 }
 
 // target_t::parse_option ======================================================
