@@ -1266,6 +1266,119 @@ void report_t::chart_html()
 
 void report_t::chart_wiki()
 {
+  int num_players = sim -> players_by_name.size();
+  assert( num_players != 0 );
+
+  std::string raid_dps      = "No chart for Raid DPS";
+  std::string raid_gear     = "No chart for Raid Gear Overview";
+  std::string raid_downtime = "No chart for Raid Down-Time";
+  std::string raid_uptimes  = "No chart for Raid Up-Times";
+  std::string raid_dpet_1   = "No chart for Raid Damage Per Execute Time";
+  std::string raid_dpet_2   = "No chart for Raid Damage Per Execute Time";
+  const char* img;
+
+  img = chart_raid_dps();
+  if( img )
+  {
+    raid_dps = img;
+    raid_dps += "&dummy=dummy.png";
+  }
+  img = chart_raid_gear();
+  if( img )
+  {
+    raid_gear = img;
+    raid_gear += "&dummy=dummy.png";
+  }
+  img = chart_raid_downtime();
+  if( img )
+  {
+    raid_downtime = img;
+    raid_downtime += "&dummy=dummy.png";
+  }
+  img = chart_raid_uptimes();
+  if( img )
+  {
+    raid_uptimes = img;
+    raid_uptimes += "&dummy=dummy.png";
+  }
+
+  std::vector<std::string> images;
+  int count = chart_raid_dpet( images );
+  img = ( count >= 1 ? images[ 0 ].c_str() : 0 );
+  if( img )
+  {
+    raid_dpet_1 = img;
+    raid_dpet_1 += "&dummy=dummy.png";
+  }
+  img = ( count >= 2 ? images[ 1 ].c_str() : 0 );
+  if( img )
+  {
+    raid_dpet_2 = img;
+    raid_dpet_2 += "&dummy=dummy.png";
+  }
+
+  fprintf( sim -> wiki_file, "----\n" );
+  fprintf( sim -> wiki_file, "----\n" );
+  fprintf( sim -> wiki_file, "== Raid Charts ==\n" );
+  fprintf( sim -> wiki_file, "----\n" );
+  fprintf( sim -> wiki_file, "----\n" );
+  fprintf( sim -> wiki_file, "|| %s || %s ||\n", raid_dps.c_str(),      raid_gear.c_str() );
+  fprintf( sim -> wiki_file, "|| %s || %s ||\n", raid_downtime.c_str(), raid_uptimes.c_str() );
+  fprintf( sim -> wiki_file, "|| %s || %s ||\n", raid_dpet_1.c_str(),   raid_dpet_2.c_str() );
+  fprintf( sim -> wiki_file, "\n" );
+
+  for( int i=0; i < num_players; i++ )
+  {
+    player_t* p = sim -> players_by_name[ i ];
+
+    std::string action_dpet       = "No chart for Damage Per Execute Time";
+    std::string uptimes_and_procs = "No chart for Up-Times and Procs";
+    std::string action_dmg        = "No chart for Damage Sources";
+    std::string gains             = "No chart for Resource Gains";
+    std::string timeline          = "No chart for DPS Timeline";
+
+    img = chart_action_dpet( p );
+    if( img )
+    {
+      action_dpet = img;
+      action_dpet += "&dummy=dummy.png";
+    }
+    img = chart_uptimes_and_procs( p );
+    if( img )
+    {
+      uptimes_and_procs = img;
+      uptimes_and_procs += "&dummy=dummy.png";
+    }
+    img = chart_action_dmg( p );
+    if( img )
+    {
+      action_dmg = img;
+      action_dmg += "&dummy=dummy.png";
+    }
+    img = chart_gains( p );
+    if( img )
+    {
+      gains = img;
+      gains += "&dummy=dummy.png";
+    }
+    img = chart_timeline( p );
+    if( img )
+    {
+      timeline = img;
+      timeline += "&dummy=dummy.png";
+    }
+
+    fprintf( sim -> wiki_file, "\n" );
+    fprintf( sim -> wiki_file, "----\n" );
+    fprintf( sim -> wiki_file, "----\n" );
+    fprintf( sim -> wiki_file, "== !%s Charts ==\n", p -> name() );
+    fprintf( sim -> wiki_file, "----\n" );
+    fprintf( sim -> wiki_file, "----\n" );
+    fprintf( sim -> wiki_file, "\n" );
+    fprintf( sim -> wiki_file, "|| %s || %s ||\n", action_dpet.c_str(), uptimes_and_procs.c_str() );
+    fprintf( sim -> wiki_file, "|| %s || %s ||\n", action_dmg.c_str(),  gains.c_str() );
+    fprintf( sim -> wiki_file, "|| %s ||\n", timeline.c_str() );
+  }
 }
 
 // report_t::chart ===========================================================
