@@ -769,8 +769,8 @@ struct target_t
   struct debuff_t
   {
     // Permanent De-Buffs (until appropriate player class implemented)
-    int16_t  judgement_of_crusader;
-    double   judgement_of_wisdom;
+    int8_t  infected_wounds;
+    double  judgement_of_wisdom;
     // Temporary De-Buffs
     int8_t   temporary_debuffs;
     int8_t   affliction_effects;
@@ -783,11 +783,6 @@ struct target_t
     int8_t   misery;
     int8_t   misery_stack;
     int8_t   earth_and_moon;
-    int8_t   nature_vulnerability;
-    int8_t   nature_vulnerability_charges;
-    int8_t   shadow_vulnerability;
-    int8_t   shadow_vulnerability_charges;
-    int8_t   shadow_weaving;
     int8_t   slowed;
     int8_t   sunder_armor;
     int8_t   winters_chill;
@@ -798,6 +793,7 @@ struct target_t
       size_t delta = ( (uintptr_t) &temporary_debuffs ) - ( (uintptr_t) this );
       memset( (void*) &temporary_debuffs, 0x0, sizeof( debuff_t ) - delta );
     }
+    bool snared() { return infected_wounds || slowed || frozen; }
   };
   debuff_t debuffs;
   

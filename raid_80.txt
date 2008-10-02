@@ -186,7 +186,7 @@ mage=Mage_Fire
 level=80
 # We will let the poor Frost Mage raid-slave keep up the Improved Scorch debuff
 talents=http://talent.mmo-champion.com/?mage=03550300120033310531203013510000000000000000000000000000230005031100200000000000000000
-actions=flask,type=pure_death/wizard_oil/arcane_brilliance/molten_armor/focus_magic,target=Mage_Frost/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/combustion/living_bomb/pyroblast,hot_streak=1/fire_ball
+actions=flask,type=pure_death/wizard_oil/arcane_brilliance/molten_armor/focus_magic,target=Mage_Frost/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/combustion/pyroblast,hot_streak=1/fire_ball
 gear_stamina=708
 gear_intellect=777
 gear_spirit=411
@@ -209,12 +209,12 @@ swift_retribution=1
 # (1) The "trigger=3500" option to mana_gem and mana_potion represents the mana gained and the amount below max required to trigger
 # (2) The "trigger=10000" option to evocation represents the mana gained and the amount below max required to trigger
 # (3) The "frozen=1" option to ice_lance means that it will only be cast if the target is frozen (via winters_grasp) or virtually frozen (via fingers_of_frost)
-# (4) The "fb_priority=1" option to ice_lance and deep_freeze means that it will only be cast if the frozen debuff/buff will end before a frost_bolt could be cast
+# (4) The "fb_priority=1" option to ice_lance means that it will only be cast if the frozen debuff/buff will end before a frost_bolt could be cast
 #
 mage=Mage_Frost
 level=80
 talents=http://talent.mmo-champion.com/?mage=00000000000000000000000000000533031312233100230052231351230005030100000000000000000000
- actions=flask,type=pure_death/wizard_oil/arcane_brilliance/molten_armor/focus_magic,target=Mage_Arcane/mana_gem,trigger=3500/mana_potion,trigger=2500/deep_freeze,fb_priority=1/ice_lance,frozen=1,fb_priority=1/evocation,trigger=10000/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/frost_bolt
+ actions=flask,type=pure_death/wizard_oil/arcane_brilliance/molten_armor/focus_magic,target=Mage_Arcane/mana_gem,trigger=3500/mana_potion,trigger=2500/ice_lance,frozen=1,fb_priority=1/evocation,trigger=10000/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/frost_bolt
 gear_stamina=708
 gear_intellect=777
 gear_spirit=411
@@ -245,8 +245,8 @@ swift_retribution=1
 #
 mage=Mage_FrostFire
 level=80
-talents=http://talent.mmo-champion.com/?mage=03550300123033300531200003510233030310030000000000000000000000000000000000000000000000
-actions=flask,type=pure_death/wizard_oil/arcane_brilliance/molten_armor/mana_gem,trigger=3500/mana_potion,trigger=3500/scorch,debuff=1/evocation,trigger=10000/combustion/icy_veins/living_bomb/pyroblast,hot_streak=1/frostfire_bolt
+talents=http://talent.mmo-champion.com/?mage=23050300123033310531203013512033030310030000000000000000000000000000000000000000000000
+actions=flask,type=pure_death/wizard_oil/arcane_brilliance/molten_armor/mana_gem,trigger=3500/mana_potion,trigger=3500/scorch,debuff=1/evocation,trigger=10000/combustion/icy_veins/pyroblast,hot_streak=1/frostfire_bolt
 # We will let the poor Frost Mage raid-slave keep up the Improved Scorch debuff
 skip_actions=scorch
 gear_stamina=708

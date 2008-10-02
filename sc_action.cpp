@@ -181,8 +181,6 @@ void action_t::target_debuff( int8_t dmg_type )
   if( t -> debuffs.winters_grasp ) target_hit += 0.02;
   wg_uptime -> update( t -> debuffs.winters_grasp != 0 );
 
-  if( t -> debuffs.judgement_of_crusader ) target_crit += 0.03;
-
   if( sim -> debug ) 
     report_t::log( sim, "action_t::target_debuff: %s multiplier=%.2f hit=%.2f crit=%.2f power=%.2f penetration=%.0f", 
 		   name(), target_multiplier, target_hit, target_crit, target_power, target_penetration );

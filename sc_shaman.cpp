@@ -1444,17 +1444,19 @@ struct earth_shock_t : public shaman_spell_t
 
   virtual void consume_resource()
   {
-    shaman_spell_t::consume_resource();
     shaman_t* p = player -> cast_shaman();
+    shaman_spell_t::consume_resource();
     p -> buffs_shamanistic_focus = 0;
   }
 
   virtual bool ready()
   {
+    shaman_t* p = player -> cast_shaman();
+
     if( ! shaman_spell_t::ready() )
       return false;
 
-    if( sswait && sim -> target -> debuffs.nature_vulnerability <= 0 )
+    if( sswait && p -> buffs_nature_vulnerability <= 0 )
       return false;
 
     return true;

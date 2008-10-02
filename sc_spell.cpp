@@ -132,11 +132,6 @@ void spell_t::target_debuff( int8_t dmg_type )
    
   target_hit += std::max( t -> debuffs.improved_faerie_fire, t -> debuffs.misery ) * 0.01; 
 
-  if( school == SCHOOL_HOLY )
-  {
-    if( t -> debuffs.judgement_of_crusader ) target_power += 218;
-  }      
-
   target_crit += ( std::max( t -> debuffs.winters_chill, t -> debuffs.improved_scorch ) * 0.02 );
   wc_uptime -> update( t -> debuffs.winters_chill != 0 );
   is_uptime -> update( t -> debuffs.improved_scorch != 0 );
