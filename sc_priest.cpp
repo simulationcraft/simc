@@ -514,8 +514,8 @@ struct holy_fire_t : public priest_spell_t
     {
       { 78, 11, 890, 1130, 50, 0.11 },
       { 72, 10, 732,  928, 47, 0.11 },
-      { 66,  9, 412,  523, 33, 290  },
-      { 60,  8, 355,  449, 29, 255  },
+      { 66,  9, 412,  523, 33, 0.11  },
+      { 60,  8, 355,  449, 29, 0.13  },
       { 0,   0 }
     };
     player -> init_mana_costs( ranks );
@@ -556,9 +556,9 @@ struct smite_t : public priest_spell_t
     {
       { 80, 12, 707, 793, 0, 0.15 },
       { 75, 11, 604, 676, 0, 0.15 },
-      { 69, 10, 545, 611, 0, 385  },
-      { 61,  9, 405, 455, 0, 300  },
-      { 54,  8, 371, 415, 0, 280  },
+      { 69, 10, 545, 611, 0, 0.15 },
+      { 61,  9, 405, 455, 0, 0.17 },
+      { 54,  8, 371, 415, 0, 0.17 },
       { 0, 0 }
     };
     player -> init_mana_costs( ranks );
@@ -620,26 +620,27 @@ struct penance_t : public priest_spell_t
 
     static rank_t ranks[] =
     {
-      { 80, 4, 437, 437, 0, 0.33 },
-      { 76, 3, 355, 355, 0, 0.33 },
-      { 68, 2, 325, 325, 0, 0.33 },
-      { 60, 1, 263, 263, 0, 0.33 },
+      { 80, 4, 288, 288, 0, 0.16 },
+      { 76, 3, 256, 256, 0, 0.16 },
+      { 68, 2, 224, 224, 0, 0.16 },
+      { 60, 1, 184, 184, 0, 0.16 },
       { 0, 0 }
     };
     player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
     
+    // Fix-Me. Penance ticks instantly and then once a second for 2 seconds.
     base_execute_time = 0.0; 
     base_tick_time    = 1.0;
     num_ticks         = 3;
     channeled         = true;
     may_crit          = true;
     cooldown          = 10;
-    direct_power_mod  = base_tick_time / 3.5;
+    direct_power_mod  = 0.8 / 3.5;
       
     base_cost          = rank -> cost;
     cooldown          *= 1.0 - p -> talents.aspiration * 0.10;
-    base_multiplier   *= 1.0 + p -> talents.searing_light * 0.05;
+    base_multiplier   *= 1.0 + p -> talents.searing_light * 0.05 + p -> talents.twin_disciplines * 0.01;
     base_crit         += p -> talents.holy_specialization * 0.01;
   }
 
@@ -707,10 +708,10 @@ struct shadow_word_pain_t : public priest_spell_t
     static rank_t ranks[] =
     {
       { 80, 12, 0, 0, 230, 0.22 },
-      { 75, 11, 0, 0, 195, 0.22 },
-      { 70, 10, 0, 0, 186, 575  },
-      { 65,  9, 0, 0, 151, 510  },
-      { 58,  8, 0, 0, 128, 470  },
+      { 75, 11, 0, 0, 196, 0.22 },
+      { 70, 10, 0, 0, 186, 0.22  },
+      { 65,  9, 0, 0, 151, 0.25  },
+      { 58,  8, 0, 0, 128, 0.25  },
       { 0, 0 }
     };
     player -> init_mana_costs( ranks );
@@ -720,18 +721,18 @@ struct shadow_word_pain_t : public priest_spell_t
     base_tick_time    = 3.0; 
     num_ticks         = 6;
     tick_power_mod    = base_tick_time / 15.0;
-    tick_power_mod   *= 0.91;  // Nerf Bat!
+    tick_power_mod   *= 0.91666667;  // Nerf Bat!
     base_cost         = rank -> cost;
-    base_cost        *= 1.0 - p -> talents.mental_agility * 0.02;
-
-    base_cost *= 1.0 - p -> talents.shadow_focus * 0.02;
+    base_cost        *= 1.0 - p -> talents.mental_agility * 0.02 - p -> talents.shadow_focus * 0.02 -
+                        ((p -> glyphs.shadow_word_pain) ? 0.2 : 0.0);
+    base_cost         = floor(base_cost);
+    
     base_multiplier *= 1.0 + ( p -> talents.darkness                  * 0.02 +
-			       p -> talents.twin_disciplines          * 0.01 +
-			       p -> talents.improved_shadow_word_pain * 0.03 );
+             			       p -> talents.twin_disciplines          * 0.01 +
+			                   p -> talents.improved_shadow_word_pain * 0.03 );
     base_hit += p -> talents.shadow_focus * 0.01;
 
     if( p -> gear.tier6_2pc ) num_ticks++;
-    if( p -> glyphs.shadow_word_pain ) base_cost *= 0.80;
 
     observer = &( p -> active_shadow_word_pain );
   }
