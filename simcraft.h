@@ -365,23 +365,21 @@ struct player_t
 
   struct gear_t
   {
-    // Haste
-    int16_t haste_rating, haste_rating_enchant;
     // Attributes
     int16_t attribute        [ ATTRIBUTE_MAX ];
     int16_t attribute_enchant[ ATTRIBUTE_MAX ];
     // Spell Gear
     int16_t spell_power[ SCHOOL_MAX+1 ], spell_power_enchant[ SCHOOL_MAX+1 ];
-    int16_t spell_hit_rating,            spell_hit_rating_enchant;
-    int16_t spell_crit_rating,           spell_crit_rating_enchant;
     int16_t spell_penetration,           spell_penetration_enchant;
     int16_t mp5, mp5_enchant;
     // Attack Gear
     int16_t attack_power,            attack_power_enchant;
-    int16_t attack_expertise_rating, attack_expertise_rating_enchant;
-    int16_t attack_hit_rating,       attack_hit_rating_enchant;
-    int16_t attack_crit_rating,      attack_crit_rating_enchant;
     int16_t attack_penetration,      attack_penetration_enchant;
+    int16_t attack_expertise_rating, attack_expertise_rating_enchant;
+    // Common Gear
+    int16_t hit_rating, hit_rating_enchant;
+    int16_t crit_rating, crit_rating_enchant;
+    int16_t haste_rating, haste_rating_enchant;
     // Resource Gear
     int16_t resource        [ RESOURCE_MAX ];
     int16_t resource_enchant[ RESOURCE_MAX ];
@@ -741,6 +739,9 @@ struct pet_t : public player_t
   double intellect_per_owner;
 
   pet_t( sim_t* sim, player_t* owner, const std::string& name );
+
+  virtual double composite_attack_hit() { return owner -> composite_attack_hit(); }
+  virtual double composite_spell_hit()  { return owner -> composite_spell_hit();  }
 
   virtual double stamina();
   virtual double intellect();

@@ -85,9 +85,9 @@ void player_t::gear_t::allocate_spell_power_budget( sim_t* sim )
 {
   if( sim -> debug ) report_t::log( sim, "Allocating spell_power budget...." );   
 
-  if(  spell_hit_rating  == 0 &&
-       spell_crit_rating == 0 &&
-       haste_rating      == 0 )
+  if(  hit_rating   == 0 &&
+       crit_rating  == 0 &&
+       haste_rating == 0 )
   {
     spell_power[ SCHOOL_MAX ] = spell_power_budget;
     return;
@@ -98,8 +98,8 @@ void player_t::gear_t::allocate_spell_power_budget( sim_t* sim )
   double spell_power_statmod = 0.855;
 
   double slot_power = spell_power_budget / (double) budget_slots;
-  double slot_hit   = spell_hit_rating   / (double) budget_slots;
-  double slot_crit  = spell_crit_rating  / (double) budget_slots;
+  double slot_hit   = hit_rating         / (double) budget_slots;
+  double slot_crit  = crit_rating        / (double) budget_slots;
   double slot_haste = haste_rating       / (double) budget_slots;
 
   double target = pow( slot_power * spell_power_statmod, 1.5 );
@@ -255,14 +255,14 @@ void player_t::init_spell()
   if( initial_spell_hit == 0 )
   {
     initial_spell_hit = base_spell_hit;
-    initial_spell_hit += ( gear.spell_hit_rating  + 
-			   gear.spell_hit_rating_enchant  ) / rating.spell_hit;
+    initial_spell_hit += ( gear.hit_rating  + 
+			   gear.hit_rating_enchant  ) / rating.spell_hit;
   }
   if( initial_spell_crit == 0 )
   {
     initial_spell_crit = base_spell_crit;
-    initial_spell_crit += ( gear.spell_crit_rating + 
-			    gear.spell_crit_rating_enchant ) / rating.spell_crit;
+    initial_spell_crit += ( gear.crit_rating + 
+			    gear.crit_rating_enchant ) / rating.spell_crit;
   }
   if( initial_spell_penetration == 0 )
   {
@@ -296,7 +296,7 @@ void player_t::init_attack()
   if( initial_attack_hit == 0 )
   {
     initial_attack_hit = base_attack_hit;
-    initial_attack_hit += ( gear.attack_hit_rating + gear.attack_hit_rating_enchant ) / rating.attack_hit;
+    initial_attack_hit += ( gear.hit_rating + gear.hit_rating_enchant ) / rating.attack_hit;
   }
   if( initial_attack_expertise == 0 )
   {
@@ -306,7 +306,7 @@ void player_t::init_attack()
   if( initial_attack_crit == 0 )
   {
     initial_attack_crit = base_attack_crit;
-    initial_attack_crit += ( gear.attack_crit_rating + gear.attack_crit_rating_enchant ) / rating.attack_crit;
+    initial_attack_crit += ( gear.crit_rating + gear.crit_rating_enchant ) / rating.attack_crit;
   }
   if( initial_attack_penetration == 0 )
   {
@@ -1591,9 +1591,6 @@ bool player_t::parse_option( const std::string& name,
     { "skip_actions",                         OPT_STRING, &( action_list_skip                               ) },
     // Player - Reporting
     { "quiet",                                OPT_INT8,   &( quiet                                          ) },
-    // Player - Gear - Haste									            
-    { "gear_haste_rating",                    OPT_INT16,  &( gear.haste_rating                              ) },
-    { "enchant_haste_rating",                 OPT_INT16,  &( gear.haste_rating_enchant                      ) },
     // Player - Gear - Attributes								            
     { "gear_strength",                        OPT_INT16,  &( gear.attribute        [ ATTR_STRENGTH  ]       ) },
     { "gear_agility",                         OPT_INT16,  &( gear.attribute        [ ATTR_AGILITY   ]       ) },
@@ -1613,8 +1610,6 @@ bool player_t::parse_option( const std::string& name,
     { "gear_spell_power_holy",                OPT_INT16,  &( gear.spell_power[ SCHOOL_HOLY   ]              ) },
     { "gear_spell_power_nature",              OPT_INT16,  &( gear.spell_power[ SCHOOL_NATURE ]              ) },
     { "gear_spell_power_shadow",              OPT_INT16,  &( gear.spell_power[ SCHOOL_SHADOW ]              ) },
-    { "gear_spell_hit_rating",                OPT_INT16,  &( gear.spell_hit_rating                          ) },
-    { "gear_spell_crit_rating",               OPT_INT16,  &( gear.spell_crit_rating                         ) },
     { "gear_spell_penetration",               OPT_INT16,  &( gear.spell_penetration                         ) },
     { "gear_mp5",                             OPT_INT16,  &( gear.mp5                                       ) },
     { "enchant_spell_power",                  OPT_INT16,  &( gear.spell_power_enchant[ SCHOOL_MAX    ]      ) },
@@ -1624,21 +1619,22 @@ bool player_t::parse_option( const std::string& name,
     { "enchant_spell_power_holy",             OPT_INT16,  &( gear.spell_power_enchant[ SCHOOL_HOLY   ]      ) },
     { "enchant_spell_power_nature",           OPT_INT16,  &( gear.spell_power_enchant[ SCHOOL_NATURE ]      ) },
     { "enchant_spell_power_shadow",           OPT_INT16,  &( gear.spell_power_enchant[ SCHOOL_SHADOW ]      ) },
-    { "enchant_spell_hit_rating",             OPT_INT16,  &( gear.spell_hit_rating_enchant                  ) },
-    { "enchant_spell_crit_rating",            OPT_INT16,  &( gear.spell_crit_rating_enchant                 ) },
     { "enchant_spell_penetration",            OPT_INT16,  &( gear.spell_penetration_enchant                 ) },
     { "enchant_mp5",                          OPT_INT16,  &( gear.mp5_enchant                               ) },
     // Player - Gear - Attack									            
     { "gear_attack_power",                    OPT_INT16,  &( gear.attack_power                              ) },
     { "gear_attack_expertise_rating",         OPT_INT16,  &( gear.attack_expertise_rating                   ) },
-    { "gear_attack_hit_rating",               OPT_INT16,  &( gear.attack_hit_rating                         ) },
-    { "gear_attack_crit_rating",              OPT_INT16,  &( gear.attack_crit_rating                        ) },
     { "gear_attack_penetration",              OPT_INT16,  &( gear.attack_penetration                        ) },
     { "enchant_attack_power",                 OPT_INT16,  &( gear.attack_power_enchant                      ) },
     { "enchant_attack_expertise_rating",      OPT_INT16,  &( gear.attack_expertise_rating_enchant           ) },
-    { "enchant_attack_hit_rating",            OPT_INT16,  &( gear.attack_hit_rating_enchant                 ) },
-    { "enchant_attack_crit_rating",           OPT_INT16,  &( gear.attack_crit_rating_enchant                ) },
     { "enchant_attack_penetration",           OPT_INT16,  &( gear.attack_penetration_enchant                ) },
+    // Player - Gear - Common									            
+    { "gear_haste_rating",                    OPT_INT16,  &( gear.haste_rating                              ) },
+    { "gear_hit_rating",                      OPT_INT16,  &( gear.hit_rating                                ) },
+    { "gear_crit_rating",                     OPT_INT16,  &( gear.crit_rating                               ) },
+    { "enchant_haste_rating",                 OPT_INT16,  &( gear.haste_rating_enchant                      ) },
+    { "enchant_hit_rating",                   OPT_INT16,  &( gear.hit_rating_enchant                        ) },
+    { "enchant_crit_rating",                  OPT_INT16,  &( gear.crit_rating_enchant                       ) },
     // Player - Gear - Resource									            
     { "gear_health",                          OPT_INT16,  &( gear.resource        [ RESOURCE_HEALTH ]       ) },
     { "gear_mana",                            OPT_INT16,  &( gear.resource        [ RESOURCE_MANA   ]       ) },

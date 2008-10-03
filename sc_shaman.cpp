@@ -2704,7 +2704,7 @@ void shaman_t::init_base()
     // Simply assume the totems are out all the time.
 
     gear.spell_power_enchant[ SCHOOL_MAX ] += 45;
-    gear.spell_crit_rating_enchant         += 35;
+    gear.crit_rating_enchant               += 35;
     gear.mp5_enchant                       += 15;
   }
 }

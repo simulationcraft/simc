@@ -2701,10 +2701,8 @@ struct immolate_t : public warlock_spell_t
     base_crit         += p -> talents.backlash * 0.01;
     base_crit_bonus   *= 1.0 + p -> talents.ruin * 0.20;
     base_hit          += p -> talents.cataclysm * 0.01;
-
-    // FIXME! These coefficients need more in-game analysis.
-    direct_power_mod  += p -> talents.fire_and_brimstone * 0.03;
-    tick_power_mod    += p -> talents.fire_and_brimstone * 0.01;
+    direct_power_mod  += (2.0/3.0) * p -> talents.fire_and_brimstone * 0.03;
+    tick_power_mod    += (1.0/3.0) * p -> talents.fire_and_brimstone * 0.03 / num_ticks;
 
     if( p -> gear.tier4_4pc ) num_ticks++;
   }
@@ -2713,11 +2711,7 @@ struct immolate_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     spell_t::calculate_direct_damage();
-    if( p -> talents.improved_immolate )
-    {
-      direct_dmg *= 1.0 + p -> talents.improved_immolate * 0.10;
-    }
-    if( p -> glyphs.immolate ) direct_dmg *= 0.90;
+    direct_dmg *= 1.0 + ( p -> talents.improved_immolate * 0.10 ) - ( p -> glyphs.immolate * 0.10 );
     return direct_dmg;
   }
 

@@ -560,14 +560,8 @@ const char* report_t::chart_raid_gear()
     data_points[ 4 ][ i ] = ( p -> gear.attack_power              + p -> gear.attack_power_enchant              ) * 0.5;
     data_points[ 5 ][ i ] = ( p -> gear.spell_power[ SCHOOL_MAX ] + p -> gear.spell_power_enchant[ SCHOOL_MAX ] ) * 0.86;
 
-    // In WotLK Hit Rating is merged across attacks and spells
-    data_points[ 6 ][ i ] = std::max( ( p -> gear.attack_hit_rating + p -> gear.attack_hit_rating_enchant ),
-				      ( p -> gear. spell_hit_rating + p -> gear. spell_hit_rating_enchant ) );
-
-    // In WotLK Crit Rating is merged across attacks and spells
-    data_points[ 7 ][ i ] = std::max( ( p -> gear.attack_crit_rating + p -> gear.attack_crit_rating_enchant ),
-				      ( p -> gear. spell_crit_rating + p -> gear. spell_crit_rating_enchant ) );
-
+    data_points[ 6 ][ i ] = ( p -> gear.hit_rating   + p -> gear.hit_rating_enchant   );
+    data_points[ 7 ][ i ] = ( p -> gear.crit_rating  + p -> gear.crit_rating_enchant  );
     data_points[ 8 ][ i ] = ( p -> gear.haste_rating + p -> gear.haste_rating_enchant );
 
     data_points[ 9 ][ i ] = ( p -> gear.attack_penetration + p -> gear.attack_penetration_enchant ) * 0.14 +
