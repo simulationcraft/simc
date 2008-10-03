@@ -769,7 +769,7 @@ struct target_t
   struct debuff_t
   {
     // Permanent De-Buffs (until appropriate player class implemented)
-    int8_t  infected_wounds;
+    int8_t  snare;
     double  judgement_of_wisdom;
     // Temporary De-Buffs
     int8_t   temporary_debuffs;
@@ -783,7 +783,7 @@ struct target_t
     int8_t   misery;
     int8_t   misery_stack;
     int8_t   earth_and_moon;
-    int8_t   slowed;
+    int8_t   slow;
     int8_t   sunder_armor;
     int8_t   winters_chill;
     int8_t   winters_grasp;
@@ -793,7 +793,7 @@ struct target_t
       size_t delta = ( (uintptr_t) &temporary_debuffs ) - ( (uintptr_t) this );
       memset( (void*) &temporary_debuffs, 0x0, sizeof( debuff_t ) - delta );
     }
-    bool snared() { return infected_wounds || slowed || frozen; }
+    bool snared() { return snare || slow || frozen; }
   };
   debuff_t debuffs;
   

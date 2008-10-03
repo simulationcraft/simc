@@ -26,14 +26,12 @@ static void trigger_judgement_of_wisdom( action_t* action )
   if( amount <= 0 )
     return;
 
-  target_t* t = p -> sim -> target;
-
-  if( ! p -> sim -> cooldown_ready( t -> cooldowns.judgement_of_wisdom ) )
+  if( ! p -> sim -> cooldown_ready( p -> cooldowns.judgement_of_wisdom ) )
     return;
 
   p -> procs.judgement_of_wisdom -> occur();
   p -> resource_gain( RESOURCE_MANA, amount, p -> gains.judgement_of_wisdom );
-  t -> cooldowns.judgement_of_wisdom = p -> sim -> current_time + 4.0;
+  p -> cooldowns.judgement_of_wisdom = p -> sim -> current_time + 4.0;
 }
 
 // trigger_focus_magic_feedback =============================================

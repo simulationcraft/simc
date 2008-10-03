@@ -88,7 +88,7 @@ bool target_t::parse_option( const std::string& name,
     { "target_block",          OPT_INT16, &( block_value                       ) },
     { "target_health",         OPT_FLT,   &( initial_health                    ) },
     // FIXME! Once appropriate class implemented, these will be removed
-    { "infected_wounds",       OPT_INT8,  &( debuffs.infected_wounds           ) },
+    { "snare",                 OPT_INT8,  &( debuffs.snare                     ) },
     { "judgement_of_wisdom",   OPT_FLT,   &( debuffs.judgement_of_wisdom       ) },
     { NULL, OPT_UNKNOWN }
   };

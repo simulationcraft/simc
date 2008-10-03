@@ -2508,7 +2508,7 @@ struct siphon_life_t : public warlock_spell_t
     base_cost       *= 1.0 - p -> talents.suppression * 0.02;
     base_hit        +=       p -> talents.suppression * 0.01;
     base_multiplier *= 1.0 + ( p -> talents.shadow_mastery * 0.02 +
-				p -> glyphs.siphon_life     * 0.20 );			
+			       p -> glyphs.siphon_life     * 0.20 );			
     tick_power_mod  += p -> talents.everlasting_affliction * 0.01;
   }
 

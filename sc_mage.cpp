@@ -958,7 +958,7 @@ void mage_spell_t::player_buff()
 
   if( p -> talents.torment_the_weak && sim -> target -> debuffs.snared() )
   {
-    player_multiplier *= 1.0 + p -> talents.torment_the_weak * 0.04;
+    player_multiplier *= 1.0 + p -> talents.torment_the_weak * 0.02;
   }
 
   if( p -> talents.playing_with_fire )
@@ -1365,14 +1365,14 @@ struct slow_t : public mage_spell_t
     expiration_t( sim_t* sim ) : event_t( sim )
     {
       name = "Slow Expiration";
-      if( sim -> log ) report_t::log( sim, "Target %s gains Slowed", sim -> target -> name() );
-      sim -> target -> debuffs.slowed = 1;
+      if( sim -> log ) report_t::log( sim, "Target %s gains Slow", sim -> target -> name() );
+      sim -> target -> debuffs.slow = 1;
       sim -> add_event( this, 15.0 );
     }
     virtual void execute()
     {
-      if( sim -> log ) report_t::log( sim, "Target %s loses Slowed", sim -> target -> name() );
-      sim -> target -> debuffs.slowed = 0;
+      if( sim -> log ) report_t::log( sim, "Target %s loses Slow", sim -> target -> name() );
+      sim -> target -> debuffs.slow = 0;
     }
   };
    
