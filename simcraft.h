@@ -331,6 +331,7 @@ struct player_t
   double  health_per_stamina;
 
   // Consumables
+  std::string flask_str, elixirs_str, food_str;
   int8_t elixir_guardian;
   int8_t elixir_battle;
   int8_t flask;
@@ -417,22 +418,6 @@ struct player_t
     void allocate_attack_power_budget( sim_t* );
   };
   gear_t gear;
-  
-  struct consumable_t
-  {
-    int8_t arcane_elixir;
-    int8_t brilliant_mana_oil;
-    int8_t brilliant_wizard_oil;
-    int8_t elixir_of_major_shadow_power;
-    int8_t elixir_of_shadow_power;
-    int8_t flask_of_supreme_power;
-    int8_t greater_arcane_elixir;
-    int8_t mageblood_potion;
-    int8_t nightfin_soup;
-    
-    consumable_t() { memset( (void*) this, 0x00, sizeof( consumable_t ) ); }
-  };
-  consumable_t consumables;
   
   struct buff_t
   {
@@ -620,6 +605,7 @@ struct player_t
   virtual void init_attack();
   virtual void init_weapon( weapon_t*, std::string& );
   virtual void init_resources( bool force = false );
+  virtual void init_consumables();
   virtual void init_actions();
   virtual void init_rating();
   virtual void init_stats();
@@ -1108,6 +1094,10 @@ struct enchant_t
 
 struct consumable_t
 {
+  static void init_flask  ( player_t* );
+  static void init_elixirs( player_t* );
+  static void init_food   ( player_t* );
+
   static action_t* create_action( player_t*, const std::string& name, const std::string& options );
 };
 

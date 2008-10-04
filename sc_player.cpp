@@ -213,6 +213,7 @@ void player_t::init()
   init_weapon(  &off_hand_weapon,  off_hand_str ); off_hand_weapon.main = false;
   init_weapon(    &ranged_weapon,    ranged_str );
   init_resources();
+  init_consumables();
   init_actions();
   init_stats();
 }
@@ -436,6 +437,15 @@ void player_t::init_resources( bool force )
   resource_constrained_count = 0;
   resource_constrained_total_dmg = 0;
   resource_constrained_total_time = 0;
+}
+
+// player_t::init_consumables ==============================================
+
+void player_t::init_consumables()
+{
+  consumable_t::init_flask  ( this );
+  consumable_t::init_elixirs( this );
+  consumable_t::init_food   ( this );
 }
 
 // player_t::init_actions ==================================================
@@ -1679,15 +1689,9 @@ bool player_t::parse_option( const std::string& name,
     { "tier6_2pc",                            OPT_INT8,   &( gear.tier6_2pc                                 ) },
     { "tier6_4pc",                            OPT_INT8,   &( gear.tier6_4pc                                 ) },
     // Player - Consumables									            
-    { "arcane_elixir",                        OPT_INT8,   &( consumables.arcane_elixir                      ) },
-    { "brilliant_mana_oil",                   OPT_INT8,   &( consumables.brilliant_mana_oil                 ) },
-    { "brilliant_wizard_oil",                 OPT_INT8,   &( consumables.brilliant_wizard_oil               ) },
-    { "elixir_of_major_shadow_power",         OPT_INT8,   &( consumables.elixir_of_major_shadow_power       ) },
-    { "elixir_of_shadow_power",               OPT_INT8,   &( consumables.elixir_of_shadow_power             ) },
-    { "flask_of_supreme_power",               OPT_INT8,   &( consumables.flask_of_supreme_power             ) },
-    { "greater_arcane_elixir",                OPT_INT8,   &( consumables.greater_arcane_elixir              ) },
-    { "mageblood_potion",                     OPT_INT8,   &( consumables.mageblood_potion                   ) },
-    { "nightfin_soup",                        OPT_INT8,   &( consumables.nightfin_soup                      ) },
+    { "flask",                                OPT_STRING, &( flask_str                                      ) },
+    { "elixirs",                              OPT_STRING, &( elixirs_str                                    ) },
+    { "food",                                 OPT_STRING, &( food_str                                       ) },
     // Player - Buffs
     // FIXME! These will go away eventually, and be converted into player actions.
     { "battle_shout",                         OPT_INT8,   &( buffs.battle_shout                             ) },
