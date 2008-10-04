@@ -869,9 +869,23 @@ static void trigger_tier4_2pc( spell_t* s )
   }
 }
 
-// trigger_improved_shadow_bolt =============================================
+// decrement_shadow_vulnerability ===========================================
 
-static void trigger_improved_shadow_bolt( spell_t* s )
+static void decrement_shadow_vulnerability( warlock_t* p )
+{
+  if( p -> buffs_shadow_vulnerability_charges > 0 )
+  {
+    p -> buffs_shadow_vulnerability_charges--;
+    if( p -> buffs_shadow_vulnerability_charges == 0 )
+    {
+      event_t::early( p -> expirations_shadow_vulnerability );
+    }
+  }
+}
+
+// trigger_shadow_vulnerability =============================================
+
+static void trigger_shadow_vulnerability( spell_t* s )
 {
   struct expiration_t : public event_t
   {
@@ -1957,28 +1971,14 @@ struct shadow_bolt_t : public warlock_spell_t
   virtual void execute()
   {
     warlock_t* p = player -> cast_warlock();
-
     warlock_spell_t::execute(); 
-
     if( result_is_hit() )
     {
       stack_shadow_embrace( this );
       trigger_soul_leech( this );
       trigger_tier5_4pc( this, p -> active_corruption );
-
-      if( result == RESULT_CRIT ) 
-      {
-	trigger_improved_shadow_bolt( this );
-      }
-
-      if( p -> buffs_shadow_vulnerability_charges > 0 )
-      {
-	p -> buffs_shadow_vulnerability_charges--;
-	if( p -> buffs_shadow_vulnerability_charges == 0 )
-	{
-	  event_t::early( p -> expirations_shadow_vulnerability );
-	}
-      }
+      decrement_shadow_vulnerability( p );
+      if( result == RESULT_CRIT ) trigger_shadow_vulnerability( this );
     }
   }
 
@@ -2021,14 +2021,19 @@ struct shadow_bolt_t : public warlock_spell_t
 
 struct chaos_bolt_t : public warlock_spell_t
 {
+  int8_t backdraft;
+  int8_t molten_core;
+
   chaos_bolt_t( player_t* player, const std::string& options_str ) : 
-    warlock_spell_t( "chaos_bolt", player, SCHOOL_FIRE, TREE_DESTRUCTION )
+    warlock_spell_t( "chaos_bolt", player, SCHOOL_FIRE, TREE_DESTRUCTION ), backdraft(0), molten_core(0)
   {
     warlock_t* p = player -> cast_warlock();
 
     option_t options[] =
     {
-      { "rank",     OPT_INT8, &rank_index },
+      { "rank",        OPT_INT8, &rank_index  },
+      { "backdraft",   OPT_INT8, &backdraft   },
+      { "molten_core", OPT_INT8, &molten_core },
       { NULL }
     };
     parse_options( options, options_str );
@@ -2068,6 +2073,24 @@ struct chaos_bolt_t : public warlock_spell_t
     {
       trigger_soul_leech( this );
     }
+  }
+
+  virtual bool ready()
+  {
+    warlock_t* p = player -> cast_warlock();
+
+    if( ! warlock_spell_t::ready() )
+      return false;
+
+    if( backdraft )
+      if( ! p -> buffs_backdraft )
+	return false;
+
+    if( molten_core )
+      if( ! sim -> time_to_think( p -> buffs_molten_core ) )
+	return false;
+	  
+    return true;
   }
 };
 
@@ -2114,7 +2137,19 @@ struct death_coil_t : public warlock_spell_t
   virtual void execute() 
   {
     warlock_spell_t::execute();
-    player -> resource_gain( RESOURCE_HEALTH, direct_dmg );
+    if( result_is_hit() )
+    {
+      player -> resource_gain( RESOURCE_HEALTH, direct_dmg );
+      decrement_shadow_vulnerability( player -> cast_warlock() );
+    }
+  }
+
+  virtual void player_buff()
+  {
+    warlock_t* p = player -> cast_warlock();
+    warlock_spell_t::player_buff();
+    if( p -> buffs_shadow_vulnerability ) player_multiplier *= 1.0 + p -> talents.improved_shadow_bolt * 0.02;
+    p -> uptimes_shadow_vulnerability -> update( p -> buffs_shadow_vulnerability != 0 );
   }
 };
 
@@ -2165,6 +2200,7 @@ struct shadow_burn_t : public warlock_spell_t
     if( result_is_hit() )
     {
       trigger_soul_leech( this );
+      decrement_shadow_vulnerability( player -> cast_warlock() );
     }
   }
 
@@ -2172,6 +2208,8 @@ struct shadow_burn_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::player_buff();
+    if( p -> buffs_shadow_vulnerability ) player_multiplier *= 1.0 + p -> talents.improved_shadow_bolt * 0.02;
+    p -> uptimes_shadow_vulnerability -> update( p -> buffs_shadow_vulnerability != 0 );
     if( p -> glyphs.shadow_burn )
     {
       target_t* t = sim -> target;
@@ -2654,7 +2692,16 @@ struct haunt_t : public warlock_spell_t
       trigger_haunted( this );
       trigger_everlasting_affliction( this );
       stack_shadow_embrace( this );
+      decrement_shadow_vulnerability( player -> cast_warlock() );
     }
+  }
+
+  virtual void player_buff()
+  {
+    warlock_t* p = player -> cast_warlock();
+    warlock_spell_t::player_buff();
+    if( p -> buffs_shadow_vulnerability ) player_multiplier *= 1.0 + p -> talents.improved_shadow_bolt * 0.02;
+    p -> uptimes_shadow_vulnerability -> update( p -> buffs_shadow_vulnerability != 0 );
   }
 };
 
