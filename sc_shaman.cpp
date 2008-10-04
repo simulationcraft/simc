@@ -218,7 +218,7 @@ struct shaman_attack_t : public attack_t
     shaman_t* p = player -> cast_shaman();
     base_multiplier *= 1.0 + p -> talents.weapon_mastery * 0.1/3;
     base_crit += p -> talents.thundering_strikes * 0.01;
-    if( p -> dual_wield() ) base_hit += p -> talents.dual_wield_specialization * 0.01;
+    if( p -> dual_wield() ) base_hit += p -> talents.dual_wield_specialization * 0.02;
   }
 
   virtual void execute();
@@ -419,7 +419,7 @@ static void stack_maelstrom_weapon( attack_t* a )
     }
   };
 
-  if( rand_t::roll( p -> talents.maelstrom_weapon * 0.03 ) )
+  if( rand_t::roll( p -> talents.maelstrom_weapon * 0.20 ) )
   {
     if( p -> buffs_maelstrom_weapon < 5 ) 
     {
@@ -753,7 +753,7 @@ struct melee_t : public shaman_attack_t
     shaman_t* p = player -> cast_shaman();
     if( p -> buffs_flurry > 0 ) 
     {
-      t *= 1.0 / ( 1.0 + 0.05 * p -> talents.flurry );
+      t *= 1.0 / ( 1.0 + 0.05 * ( 1 + p -> talents.flurry ) );
     }
     p -> uptimes_flurry -> update( p -> buffs_flurry > 0 );
     return t;

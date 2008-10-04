@@ -956,11 +956,6 @@ void mage_spell_t::player_buff()
 
   if( p -> buffs_arcane_power ) player_multiplier *= 1.30;
 
-  if( p -> talents.torment_the_weak && sim -> target -> debuffs.snared() )
-  {
-    player_multiplier *= 1.0 + p -> talents.torment_the_weak * 0.02;
-  }
-
   if( p -> talents.playing_with_fire )
   {
     player_multiplier *= 1.0 + p -> talents.playing_with_fire * 0.01;
@@ -1031,6 +1026,16 @@ struct arcane_barrage_t : public mage_spell_t
     base_hit         += p -> talents.arcane_focus * 0.01;
     base_crit_bonus  *= 1.0 + p -> talents.spell_power * 0.25;
   }
+
+  virtual void player_buff()
+  {
+    mage_t* p = player -> cast_mage();
+    mage_spell_t::player_buff();
+
+    int snared = sim -> target -> debuffs.snared() ? 1 : 0;
+    player_multiplier *= 1.0 + snared * p -> talents.torment_the_weak * 0.04;
+  }
+
   virtual void execute()
   {
     mage_spell_t::execute();
@@ -1227,6 +1232,15 @@ struct arcane_missiles_t : public mage_spell_t
     base_crit_bonus  *= 1.0 + p -> talents.spell_power * 0.25;
 
     if( p -> gear.tier6_4pc ) base_multiplier *= 1.05;
+  }
+
+  virtual void player_buff()
+  {
+    mage_t* p = player -> cast_mage();
+    mage_spell_t::player_buff();
+
+    int snared = sim -> target -> debuffs.snared() ? 1 : 0;
+    player_multiplier *= 1.0 + snared * p -> talents.torment_the_weak * 0.04;
   }
 
   // Odd things to handle:
@@ -1583,6 +1597,15 @@ struct fire_ball_t : public mage_spell_t
 
     if( p -> gear.tier6_4pc   ) base_multiplier *= 1.05;
     if( p -> glyphs.fire_ball ) base_crit += 0.05;
+  }
+
+  virtual void player_buff()
+  {
+    mage_t* p = player -> cast_mage();
+    mage_spell_t::player_buff();
+
+    int snared = sim -> target -> debuffs.snared() ? 1 : 0;
+    player_multiplier *= 1.0 + snared * p -> talents.torment_the_weak * 0.04;
   }
 
   virtual double cost()
@@ -2068,7 +2091,7 @@ struct ice_lance_t : public mage_spell_t
 
     if( p -> buffs_shatter_combo       ||
         p -> buffs_fingers_of_frost    ||
-	sim -> target -> debuffs.frozen ) 
+        sim -> target -> debuffs.frozen ) 
     {
       player_multiplier *= 3.0;
     }
@@ -2167,6 +2190,15 @@ struct frostfire_bolt_t : public mage_spell_t
       base_multiplier *= 1.02;
       base_crit += 0.02;
     }
+  }
+
+  virtual void player_buff()
+  {
+    mage_t* p = player -> cast_mage();
+    mage_spell_t::player_buff();
+
+    int snared = sim -> target -> debuffs.snared() ? 1 : 0;
+    player_multiplier *= 1.0 + snared * p -> talents.torment_the_weak * 0.04;
   }
 
   virtual void execute()
