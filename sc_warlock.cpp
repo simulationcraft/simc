@@ -61,6 +61,7 @@ struct warlock_t : public player_t
 
   // Procs
   proc_t* procs_life_tap;
+  proc_t* procs_shadow_trance;
 
   // Up-Times
   uptime_t* uptimes_backdraft;
@@ -216,7 +217,8 @@ struct warlock_t : public player_t
     gains_soul_leech = get_gain( "soul_leech" );
 
     // Procs
-    procs_life_tap = get_proc( "life_tap" );
+    procs_life_tap      = get_proc( "life_tap" );
+    procs_shadow_trance = get_proc( "shadow_trance" );
 
     // Up-Times
     uptimes_backdraft            = get_uptime( "backdraft"            );
@@ -977,6 +979,7 @@ static void trigger_nightfall( spell_t* s )
   {
     if( rand_t::roll( 0.02 * p -> talents.nightfall ) )
     {
+      p -> procs_shadow_trance -> occur();
       p -> aura_gain( "Shadow Trance" );
       p -> buffs_shadow_trance = 1;
     }
@@ -993,6 +996,7 @@ static void trigger_corruption_glyph( spell_t* s )
   {
     if( rand_t::roll( 0.04 ) )
     {
+      p -> procs_shadow_trance -> occur();
       p -> aura_gain( "Shadow Trance" );
       p -> buffs_shadow_trance = 1;
     }
@@ -1130,7 +1134,7 @@ static void trigger_molten_core( spell_t* s )
 
     if( e )
     {
-      e -> reschedule( 6.0 );
+      e -> reschedule( 12.0 );
     }
     else
     {
