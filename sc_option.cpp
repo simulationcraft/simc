@@ -11,7 +11,7 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 
 static bool is_white_space( char c )
 {
-  return( c == ' ' || c == '\t' || c == '\n' );
+  return( c == ' ' || c == '\t' || c == '\n' || c == '\r' );
 }
 
 // only_white_space =========================================================
