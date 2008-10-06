@@ -507,6 +507,9 @@ void action_t::refresh_duration()
 {
   if( sim -> debug ) report_t::log( sim, "%s refreshes duration of %s", player -> name(), name() );
 
+  // Recalculate state of current player buffs.
+  player_buff();
+
   current_tick = 0;
   duration_ready += base_tick_time * num_ticks;
 }
