@@ -1601,11 +1601,17 @@ void warlock_spell_t::target_debuff( int8_t dmg_type )
       target_multiplier *= 1.20;
     }
 
-    if( p -> main_hand_weapon.buff == SPELL_STONE ) target_multiplier *= 1.01;
+    if( p -> main_hand_weapon.buff == SPELL_STONE ) 
+    {
+      target_multiplier *= 1.01 * ( 1.0 + p -> talents.master_conjuror * 0.15 );
+    }
   }
   else
   {
-    if( p -> main_hand_weapon.buff == FIRE_STONE ) target_multiplier *= 1.01;
+    if( p -> main_hand_weapon.buff == FIRE_STONE ) 
+    {
+      target_multiplier *= 1.01 * ( 1.0 + p -> talents.master_conjuror * 0.15 );
+    }
   }
 }
 
@@ -3114,28 +3120,22 @@ struct life_tap_t : public warlock_spell_t
   life_tap_t( player_t* player, const std::string& options_str ) : 
     warlock_spell_t( "life_tap", player, SCHOOL_SHADOW, TREE_AFFLICTION ), trigger(1000)
   {
-    warlock_t* p = player -> cast_warlock();
-
     option_t options[] =
     {
-      { "trigger", OPT_INT16,  &trigger },
+      { "trigger", OPT_INT16, &trigger },
       { NULL }
     };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
     {
-      { 80, 8, 580, 580, 1490, 0 },
-      { 68, 7, 580, 580,  710, 0 },
-      { 56, 6, 420, 420,  500, 0 },
+      { 80, 8, 0, 0, 1490, 0 },
+      { 68, 7, 0, 0,  710, 0 },
+      { 56, 6, 0, 0,  500, 0 },
       { 0, 0 }
     };
     player -> init_mana_costs( ranks );
     rank = choose_rank( ranks );
-    
-    base_execute_time = 0.0; 
-    direct_power_mod  = 0.80;
-    base_multiplier  *= 1.0 + p -> talents.shadow_mastery * 0.02;
   }
 
   virtual void execute() 
@@ -3143,7 +3143,7 @@ struct life_tap_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
     p -> procs_life_tap -> occur();
-    double dmg = rank -> tick + 0.30 * p -> spirit();
+    double dmg = rank -> tick + 3.0 * p -> spirit();
     p -> resource_loss( RESOURCE_HEALTH, dmg );
     p -> resource_gain( RESOURCE_MANA, dmg * ( 1.0 + p -> talents.improved_life_tap * 0.10 ), p -> gains_life_tap );
   }
@@ -3217,7 +3217,7 @@ struct fel_armor_t : public warlock_spell_t
     if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
     p -> buffs_fel_armor = bonus_spell_power;
     p -> buffs_demon_armor = 0;
-    p -> spell_power_per_spirit += 0.30;
+    p -> spell_power_per_spirit += 0.30 * ( 1.0 + p -> talents.demonic_aegis * 0.10 );
   }
 
   virtual bool ready()
@@ -3559,7 +3559,7 @@ void warlock_t::init_base()
   attribute_base[ ATTR_INTELLECT ] = 130;
   attribute_base[ ATTR_SPIRIT    ] = 142;
 
-  attribute_multiplier_initial[ ATTR_STAMINA ] *= 1.0 + talents.demonic_embrace * 0.03;
+  attribute_multiplier_initial[ ATTR_STAMINA ] *= 1.0 + talents.demonic_embrace * 0.02;
 
   base_spell_crit = 0.0170;
   initial_spell_crit_per_intellect = rating_t::interpolate( level, 0.01/60.0, 0.01/80.0, 0.01/166.6 );
