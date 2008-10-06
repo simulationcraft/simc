@@ -171,7 +171,7 @@ struct treants_pet_t : public pet_t
   struct melee_t : public attack_t
   {
     melee_t( player_t* player ) : 
-      attack_t( "melee", player )
+      attack_t( "treant_melee", player )
     {
       druid_t* o = player -> cast_pet() -> owner -> cast_druid();
 

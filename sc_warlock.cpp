@@ -384,8 +384,8 @@ struct warlock_pet_t : public pet_t
 
 struct warlock_pet_melee_t : public attack_t
 {
-  warlock_pet_melee_t( player_t* player ) : 
-    attack_t( "melee", player, RESOURCE_NONE, SCHOOL_PHYSICAL )
+  warlock_pet_melee_t( player_t* player, const char* name ) : 
+    attack_t( name, player, RESOURCE_NONE, SCHOOL_PHYSICAL )
   {
     warlock_pet_t* p = (warlock_pet_t*) player -> cast_pet();
 
@@ -601,7 +601,7 @@ struct felguard_pet_t : public warlock_pet_t
   struct melee_t : public warlock_pet_melee_t
   {
     melee_t( player_t* player ) : 
-      warlock_pet_melee_t( player )
+      warlock_pet_melee_t( player, "felguard_melee" )
     {
       felguard_pet_t* p = (felguard_pet_t*) player -> cast_pet();
       warlock_t*      o = p -> owner -> cast_warlock();
@@ -722,7 +722,7 @@ struct felhunter_pet_t : public warlock_pet_t
     resource_base[ RESOURCE_HEALTH ] = 947;
     resource_base[ RESOURCE_MANA   ] = 940;
 
-    melee = new warlock_pet_melee_t( this );
+    melee = new warlock_pet_melee_t( this, "felhunter_melee" );
   }
   virtual void summon()
   {
@@ -779,7 +779,7 @@ struct succubus_pet_t : public warlock_pet_t
     resource_base[ RESOURCE_HEALTH ] = 721;
     resource_base[ RESOURCE_MANA   ] = 940;
 
-    melee = new warlock_pet_melee_t( this );
+    melee = new warlock_pet_melee_t( this, "succubus_melee" );
   }
   virtual void summon()
   {
