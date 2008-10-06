@@ -45,6 +45,9 @@ SRC =\
 simcraft opt:
 	g++ -I. $(PG) $(MCP) $(OPTS) $(MM) $(SFMT) -Wall $(SRC) -o simcraft
 
+universal:
+	g++ -arch ppc -arch i386 -I. -O3 $(MM) $(SFMT) -Wall $(SRC) -o simcraft
+
 debug:
 	g++ -g -I. $(PG) $(SFMT) -Wall $(SRC) -o simcraft
 
