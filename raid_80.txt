@@ -570,8 +570,8 @@ swift_retribution=1
 #
 warlock=Warlock_Destruction
 level=80
-talents=http://talent.mmo-champion.com/?warlock=550332050000310513352303510350020000000000000000000000030000000000000000000000000
-actions=flask,type=pure_death/fire_stone/fel_armor/summon_pet,imp/curse_of_doom/chaos_bolt/corruption/immolate/conflagrate/incinerate,molten_core=1/shadow_bolt/life_tap
+talents=http://talent.mmo-champion.com/?warlock=050332052100310513352303512350020000000000000000000000030000000000000000000000000
+actions=flask,type=pure_death/fire_stone/fel_armor/summon_pet,imp/shadow_bolt,shadow_trance=1/curse_of_agony/chaos_bolt/immolate/conflagrate/incinerate/life_tap
 gear_stamina=708
 gear_intellect=777
 gear_spirit=411
@@ -583,7 +583,7 @@ chaotic_skyfire=1
 # Glyphs
 glyph_corruption=1
 glyph_imp=1
-glyph_shadow_bolt=1
+glyph_curse_of_agony=1
 # Pets
 pet=imp
 actions=fire_bolt
