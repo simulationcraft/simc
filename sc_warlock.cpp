@@ -60,6 +60,7 @@ struct warlock_t : public player_t
   gain_t* gains_soul_leech;
 
   // Procs
+  proc_t* procs_dark_pact;
   proc_t* procs_life_tap;
   proc_t* procs_shadow_trance;
 
@@ -218,6 +219,7 @@ struct warlock_t : public player_t
     gains_soul_leech = get_gain( "soul_leech" );
 
     // Procs
+    procs_dark_pact     = get_proc( "dark_pact" );
     procs_life_tap      = get_proc( "life_tap" );
     procs_shadow_trance = get_proc( "shadow_trance" );
 
@@ -3182,6 +3184,7 @@ struct dark_pact_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    p -> procs_dark_pact -> occur();
     player_buff();
     double mana = ( rank -> dd_max + ( direct_power_mod * p -> composite_spell_power( SCHOOL_SHADOW ) ) ) * base_multiplier * player_multiplier;
     p -> resource_gain( RESOURCE_MANA, mana, p -> gains_dark_pact );

@@ -1087,7 +1087,7 @@ const char* report_t::chart_uptimes_and_procs( player_t* p )
   for( int i=0; i < num_uptimes; i++ )
   {
     if( i ) s += ",";
-    s += "0FF00";
+    s += "00FF00";
   }
   for( int i=0; i < num_procs; i++ )
   {
