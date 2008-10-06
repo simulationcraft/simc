@@ -1053,7 +1053,7 @@ struct chain_lightning_t : public shaman_spell_t
     base_execute_time  = 2.0; 
     may_crit           = true;
     cooldown           = 6.0;
-    direct_power_mod   = 0.7143;
+    direct_power_mod   = ( base_execute_time / 3.5 );
 
     base_cost          = rank -> cost;
     cooldown          -= p -> talents.storm_earth_and_fire * 0.5;
@@ -1566,11 +1566,18 @@ struct flame_shock_t : public shaman_spell_t
     base_cost       *= 1.0 - p -> talents.convection * 0.02;
     base_cost       *= 1.0 - p -> talents.mental_quickness * 0.02;
     base_tick_dmg    = rank -> tick * ( 1.0 + p -> talents.storm_earth_and_fire * 0.10 );
-    tick_power_mod  *= ( 1.0 + p -> talents.storm_earth_and_fire * 0.10 );
     cooldown        -= ( p -> talents.reverberation * 0.2 );
     base_multiplier *= 1.0 + p -> talents.concussion * 0.01;
     base_hit        += p -> talents.elemental_precision * 0.01;
     base_crit_bonus *= 1.0 + p -> talents.elemental_fury * 0.20;
+  }
+
+  virtual double calculate_tick_damage()
+  {
+    shaman_t* p = player -> cast_shaman();
+    spell_t::calculate_tick_damage();
+    tick_dmg *= 1.0 + p -> talents.storm_earth_and_fire * 0.10;
+    return tick_dmg;
   }
 
   virtual double cost()
@@ -1823,7 +1830,7 @@ struct flametongue_totem_t : public shaman_spell_t
 	  p -> aura_gain( "Flametongue Totem" );
 	  p -> buffs.flametongue_totem = t -> bonus;
         }
-        sim -> add_event( this, 120.0 );
+        sim -> add_event( this, 300.0 );
       }
 
       virtual void execute()
@@ -1892,7 +1899,7 @@ struct windfury_totem_t : public shaman_spell_t
 	  p -> aura_gain( "Windfury Totem" );
 	  p -> buffs.windfury_totem = t -> bonus;
 	}
-	sim -> add_event( this, 120.0 );
+	sim -> add_event( this, 300.0 );
       }
       virtual void execute()
       {
@@ -2135,7 +2142,7 @@ struct strength_of_earth_totem_t : public shaman_spell_t
 	  p -> buffs.strength_of_earth = t -> attr_bonus;
 	  p -> buffs.strength_of_earth_crit = t -> crit_bonus;
 	}
-	sim -> add_event( this, 120.0 );
+	sim -> add_event( this, 300.0 );
       }
       virtual void execute()
       {
@@ -2206,7 +2213,7 @@ struct wrath_of_air_totem_t : public shaman_spell_t
 	  p -> aura_gain( "Wrath of Air Totem" );
 	  p -> buffs.wrath_of_air = 1;
 	}
-	sim -> add_event( this, 120.0 );
+	sim -> add_event( this, 300.0 );
       }
       virtual void execute()
       {
@@ -2679,6 +2686,8 @@ void shaman_t::init_base()
   attribute_base[ ATTR_INTELLECT ] = 123;
   attribute_base[ ATTR_SPIRIT    ] = 140;
 
+  attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.0 + talents.ancestral_knowledge * 0.02;
+
   base_spell_crit = 0.0225;
   initial_spell_crit_per_intellect = rating_t::interpolate( level, 0.01/60.0, 0.01/80.0, 0.01/166.6 );
   initial_spell_power_per_intellect = talents.natures_blessing * 0.10;
@@ -2694,8 +2703,6 @@ void shaman_t::init_base()
 
   health_per_stamina = 10;
   mana_per_intellect = 15;
-
-  mana_per_intellect *= 1.0 + talents.ancestral_knowledge * 0.01;
 
   mp5_per_intellect = talents.unrelenting_storm * 0.02;
 

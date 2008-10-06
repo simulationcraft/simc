@@ -2091,8 +2091,13 @@ struct chaos_bolt_t : public warlock_spell_t
 	return false;
 
     if( molten_core )
+    {
       if( ! sim -> time_to_think( p -> buffs_molten_core ) )
 	return false;
+
+      if( sim -> current_time + execute_time() > p -> expirations_molten_core -> occurs() )
+	return false;
+    }
 	  
     return true;
   }
@@ -2837,6 +2842,7 @@ struct conflagrate_t : public warlock_spell_t
     base_execute_time = 0; 
     may_crit          = true;
     direct_power_mod  = (1.5/3.5);
+    cooldown          = 10;
 
     base_cost         = rank -> cost;
     base_cost        *= 1.0 -  p -> talents.cataclysm * 0.01;
@@ -2977,8 +2983,13 @@ struct incinerate_t : public warlock_spell_t
 	return false;
 
     if( molten_core )
+    {
       if( ! sim -> time_to_think( p -> buffs_molten_core ) )
 	return false;
+
+      if( sim -> current_time + execute_time() > p -> expirations_molten_core -> occurs() )
+	return false;
+    }
 	  
     return true;
   }
@@ -3095,10 +3106,19 @@ struct soul_fire_t : public warlock_spell_t
 
 struct life_tap_t : public warlock_spell_t
 {
+  int16_t trigger;
+
   life_tap_t( player_t* player, const std::string& options_str ) : 
-    warlock_spell_t( "life_tap", player, SCHOOL_SHADOW, TREE_AFFLICTION )
+    warlock_spell_t( "life_tap", player, SCHOOL_SHADOW, TREE_AFFLICTION ), trigger(1000)
   {
     warlock_t* p = player -> cast_warlock();
+
+    option_t options[] =
+    {
+      { "trigger", OPT_INT16,  &trigger },
+      { NULL }
+    };
+    parse_options( options, options_str );
 
     static rank_t ranks[] =
     {
@@ -3127,7 +3147,7 @@ struct life_tap_t : public warlock_spell_t
 
   virtual bool ready()
   {
-    return( player -> resource_current[ RESOURCE_MANA ] < 1000 );
+    return( player -> resource_current[ RESOURCE_MANA ] < trigger );
   }
 };
 
