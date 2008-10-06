@@ -154,6 +154,7 @@ struct warlock_t : public player_t
 
   struct glyphs_t
   {
+    int8_t conflagrate;
     int8_t corruption;
     int8_t curse_of_agony;
     int8_t felguard;
@@ -2757,8 +2758,8 @@ struct immolate_t : public warlock_spell_t
     base_crit         += p -> talents.backlash * 0.01;
     base_crit_bonus   *= 1.0 + p -> talents.ruin * 0.20;
     base_hit          += p -> talents.cataclysm * 0.01;
-    direct_power_mod  += (2.0/3.0) * p -> talents.fire_and_brimstone * 0.03;
-    tick_power_mod    += (1.0/3.0) * p -> talents.fire_and_brimstone * 0.03 / num_ticks;
+    direct_power_mod  += (1.0/3.0) * p -> talents.fire_and_brimstone * 0.03;
+    tick_power_mod    += (2.0/3.0) * p -> talents.fire_and_brimstone * 0.03 / num_ticks;
 
     if( p -> gear.tier4_4pc ) num_ticks++;
   }
@@ -2851,6 +2852,8 @@ struct conflagrate_t : public warlock_spell_t
     base_crit        += p -> talents.backlash * 0.01;
     base_crit_bonus  *= 1.0 + p -> talents.ruin * 0.20;
     base_hit         += p -> talents.cataclysm * 0.01;
+
+    if( p -> glyphs.conflagrate ) base_cost *= 0.80;
   }
 
   virtual void execute()
@@ -3885,6 +3888,7 @@ bool warlock_t::parse_option( const std::string& name,
     { "unholy_power",             OPT_INT8,  &( talents.unholy_power             ) },
     { "unstable_affliction",      OPT_INT8,  &( talents.unstable_affliction      ) },
     // Glyphs
+    { "glyph_conflagrate",        OPT_INT8,  &( glyphs.conflagrate               ) },
     { "glyph_corruption",         OPT_INT8,  &( glyphs.corruption                ) },
     { "glyph_curse_of_agony",     OPT_INT8,  &( glyphs.curse_of_agony            ) },
     { "glyph_felguard",           OPT_INT8,  &( glyphs.felguard                  ) },

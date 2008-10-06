@@ -398,6 +398,7 @@ sanctified_retribution=1
 swift_retribution=1
 
 # Supported Warlock Glyphs
+# glyph_conflagrate=1
 # glyph_corruption=1
 # glyph_curse_of_agony=1
 # glyph_felguard=1
