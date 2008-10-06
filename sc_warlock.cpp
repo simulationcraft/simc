@@ -1014,7 +1014,7 @@ static void trigger_soul_leech( spell_t* s )
   {
     if( rand_t::roll( 0.10 * p -> talents.soul_leech ) )
     {
-      p -> resource_gain( RESOURCE_HEALTH, s -> direct_dmg * 0.30 );
+      p -> resource_gain( RESOURCE_HEALTH, s -> direct_dmg * 0.20 );
 
       if( p -> talents.improved_soul_leech )
       {
