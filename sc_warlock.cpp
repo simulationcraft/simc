@@ -419,7 +419,6 @@ struct warlock_pet_attack_t : public attack_t
   {
     warlock_pet_t* p = (warlock_pet_t*) player -> cast_pet();
     p -> adjust_base_modifiers( this );
-    may_glance = false;
   }
 
   virtual void execute()
@@ -941,7 +940,7 @@ static void stack_shadow_embrace( spell_t* s )
       name = "Shadow Embrace Expiration";
       p -> aura_gain( "Shadow Embrace" );
       sim -> target -> debuffs.affliction_effects++;
-      sim -> add_event( this, 15.0 );
+      sim -> add_event( this, 12.0 );
     }
     virtual void execute()
     {
@@ -963,7 +962,7 @@ static void stack_shadow_embrace( spell_t* s )
 
     if( e )
     {
-      e -> reschedule( 15.0 );
+      e -> reschedule( 12.0 );
     }
     else
     {
@@ -1020,7 +1019,9 @@ static void trigger_soul_leech( spell_t* s )
 
       if( p -> talents.improved_soul_leech )
       {
-	p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.02, p -> gains_soul_leech );
+	double amount = p -> resource_max[ RESOURCE_MANA ] * p -> talents.improved_soul_leech * 0.01;
+
+	p -> resource_gain( RESOURCE_MANA, amount, p -> gains_soul_leech );
       }
     }
   }
@@ -1057,7 +1058,7 @@ static void trigger_backdraft( spell_t* s )
 
     if( e )
     {
-      e -> reschedule( 12.0 );
+      e -> reschedule( 15.0 );
     }
     else
     {
@@ -1605,14 +1606,14 @@ void warlock_spell_t::target_debuff( int8_t dmg_type )
 
     if( p -> main_hand_weapon.buff == SPELL_STONE ) 
     {
-      target_multiplier *= 1.0 + ( 0.01 * ( 1.0 + p -> talents.master_conjuror * 0.15 ) );
+      target_multiplier *= 1.01;
     }
   }
   else
   {
     if( p -> main_hand_weapon.buff == FIRE_STONE ) 
     {
-      target_multiplier *= 1.0 + ( 0.01 * ( 1.0 + p -> talents.master_conjuror * 0.15 ) );
+      target_multiplier *= 1.01;
     }
   }
 }
@@ -2117,7 +2118,7 @@ struct chaos_bolt_t : public warlock_spell_t
 struct death_coil_t : public warlock_spell_t
 {
   death_coil_t( player_t* player, const std::string& options_str ) : 
-    warlock_spell_t( "death_coil", player, SCHOOL_SHADOW, TREE_DESTRUCTION )
+    warlock_spell_t( "death_coil", player, SCHOOL_SHADOW, TREE_AFFLICTION )
   {
     warlock_t* p = player -> cast_warlock();
     
@@ -2146,10 +2147,10 @@ struct death_coil_t : public warlock_spell_t
     direct_power_mod  = ( 1.5 / 3.5 ) / 2.0; 
       
     base_cost        = rank -> cost;
-    base_cost       *= 1.0 -  p -> talents.cataclysm * 0.01;
+    base_cost       *= 1.0 -  p -> talents.suppression * 0.02;
     base_multiplier *= 1.0 + p -> talents.shadow_mastery * 0.02;
     base_crit_bonus *= 1.0 + p -> talents.ruin * 0.20;
-    base_hit        += p -> talents.cataclysm * 0.01;
+    base_hit        += p -> talents.suppression * 0.01;
   }
 
   virtual void execute() 
@@ -2497,7 +2498,7 @@ struct drain_soul_t : public warlock_spell_t
 
     player_multiplier *= 1.0 + multiplier;
 
-    if( t -> initial_health > 0 )
+    if( rank -> index >= 6 && t -> initial_health > 0 )
     {
       if( ( t -> current_health / t -> initial_health ) < 0.25 )
       {
@@ -2625,7 +2626,7 @@ struct unstable_affliction_t : public warlock_spell_t
     
     base_execute_time = 1.5; 
     base_tick_time    = 3.0; 
-    num_ticks         = 6;
+    num_ticks         = 5;
     tick_power_mod    = base_tick_time / 15.0; 
     
     base_cost         = rank -> cost;
@@ -2699,7 +2700,7 @@ struct haunt_t : public warlock_spell_t
     base_cost        *= 1.0 - p -> talents.suppression * 0.02;
     base_hit         +=       p -> talents.suppression * 0.01;
     base_multiplier  *= 1.0 + p -> talents.shadow_mastery * 0.02;
-    base_crit_bonus  *= 2.0;
+    base_crit_bonus  *= 1.0 + p -> talents.ruin * 0.20;
   }
 
   virtual void execute()
@@ -3090,8 +3091,7 @@ struct soul_fire_t : public warlock_spell_t
      
     base_execute_time = 6.0; 
     may_crit          = true; 
-    cooldown          = 60;
-    direct_power_mod  = base_execute_time / 3.5; 
+    direct_power_mod  = 1.15; 
 
     base_cost          = rank -> cost;
     base_cost         *= 1.0 -  p -> talents.cataclysm * 0.01;
@@ -3164,6 +3164,7 @@ struct dark_pact_t : public warlock_spell_t
     warlock_spell_t( "dark_pact", player, SCHOOL_SHADOW, TREE_AFFLICTION )
   {
     warlock_t* p = player -> cast_warlock();
+    assert( p -> talents.dark_pact );
 
     static rank_t ranks[] =
     {
@@ -3177,7 +3178,6 @@ struct dark_pact_t : public warlock_spell_t
 
     base_execute_time = 0.0; 
     direct_power_mod  = 0.96;
-    base_multiplier  *= 1.0 + p -> talents.shadow_mastery * 0.02;
   }
 
   virtual void execute() 
@@ -3301,8 +3301,9 @@ struct metamorphosis_t : public warlock_spell_t
     };
     parse_options( options, options_str );
       
-    base_cost = 0;
-    cooldown = 180;
+    base_cost   = 0;
+    trigger_gcd = 0;
+    cooldown    = 180;
   }
 
   virtual void execute()
@@ -3372,11 +3373,13 @@ struct demonic_empowerment_t : public warlock_spell_t
   {
     struct expiration_t : public event_t
     {
-      expiration_t( sim_t* sim, warlock_pet_t* pet, double duration ) : event_t( sim, pet )
+      expiration_t( sim_t* sim, warlock_pet_t* pet ) : event_t( sim, pet )
       {
 	name = "Demonic Empowerment Expiration";
 	pet -> aura_gain( "Demonic Empowerment" );
 	pet -> buffs_demonic_empowerment = 1;
+	double duration = ( pet -> pet_type == PET_FELGUARD ? 15.0 :
+			    pet -> pet_type == PET_IMP      ? 30.0 : 0.01 );
 	sim -> add_event( this, duration );
       }
       virtual void execute()
@@ -3391,7 +3394,7 @@ struct demonic_empowerment_t : public warlock_spell_t
     if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
     update_ready();
     p -> action_finish( this );
-    new expiration_t( sim, p -> active_pet, 15.0 );
+    new expiration_t( sim, p -> active_pet );
   }
 
   virtual bool ready()
