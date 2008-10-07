@@ -445,7 +445,7 @@ struct player_t
     double    flametongue_totem;
     player_t* focus_magic;
     int8_t    focus_magic_feedback;
-    int8_t    improved_divine_spirit;
+    double    improved_divine_spirit;
     int8_t    improved_moonkin_aura;
     int8_t    innervate;
     int8_t    lightning_capacitor;

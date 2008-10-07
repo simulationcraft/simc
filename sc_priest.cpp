@@ -1404,8 +1404,7 @@ struct divine_spirit_t : public priest_spell_t
       {
         if( improved > 0 )
         {
-          p -> buffs.improved_divine_spirit = improved;
-	  p -> spell_power[ SCHOOL_MAX ] += bonus_spirit * improved / 2.0;
+          p -> buffs.improved_divine_spirit = bonus_spirit * improved / 2.0;
         }
       }
     }

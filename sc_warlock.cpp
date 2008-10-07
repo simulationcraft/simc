@@ -511,7 +511,7 @@ struct imp_pet_t : public warlock_pet_t
 
       base_multiplier *= 1.0 + ( o -> talents.improved_imp  * 0.10 +
 				 o -> talents.empowered_imp * 0.05 +
-				 o -> glyphs.imp            * 0.20 );
+				 o -> glyphs.imp            * 0.10 );
     }
     virtual void player_buff()
     {
@@ -1540,7 +1540,7 @@ void warlock_spell_t::player_buff()
     if( p -> buffs_shadow_flame ) player_power += 135;
     p -> uptimes_shadow_flame -> update( p -> buffs_shadow_flame );
 
-    if( p -> buffs_molten_core ) player_multiplier *= 1.0 + p -> talents.molten_core * 0.05;
+    if( p -> buffs_molten_core ) player_multiplier *= 1.10;
     p -> uptimes_molten_core -> update( p -> buffs_molten_core );
   }
 
@@ -1605,14 +1605,14 @@ void warlock_spell_t::target_debuff( int8_t dmg_type )
 
     if( p -> main_hand_weapon.buff == SPELL_STONE ) 
     {
-      target_multiplier *= 1.01 * ( 1.0 + p -> talents.master_conjuror * 0.15 );
+      target_multiplier *= 1.0 + ( 0.01 * ( 1.0 + p -> talents.master_conjuror * 0.15 ) );
     }
   }
   else
   {
     if( p -> main_hand_weapon.buff == FIRE_STONE ) 
     {
-      target_multiplier *= 1.01 * ( 1.0 + p -> talents.master_conjuror * 0.15 );
+      target_multiplier *= 1.0 + ( 0.01 * ( 1.0 + p -> talents.master_conjuror * 0.15 ) );
     }
   }
 }

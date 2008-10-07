@@ -341,7 +341,8 @@ talents=http://talent.mmo-champion.com/?shaman=353005150021535102501350000000000
 actions=flametongue_weapon,weapon=main/mana_potion,trigger=3500/mana_spring_totem/totem_of_wrath/wrath_of_air_totem/elemental_mastery/flame_shock/lava_burst,flame_shock=1,max_ticks_consumed=1/bloodlust,target_pct=35/chain_lightning/lightning_bolt
 gear_stamina=708
 gear_intellect=777
-gear_spirit=411
+gear_spirit=311
+gear_mp5=50
 gear_spell_power=2200
 gear_crit_rating=461
 gear_hit_rating=250
@@ -571,7 +572,7 @@ swift_retribution=1
 warlock=Warlock_Destruction
 level=80
 talents=http://talent.mmo-champion.com/?warlock=050332052100310513352303512350020000000000000000000000030000000000000000000000000
-actions=flask,type=pure_death/fire_stone/fel_armor/summon_pet,imp/shadow_bolt,shadow_trance=1/curse_of_agony/chaos_bolt/immolate/conflagrate/incinerate/life_tap
+actions=flask,type=pure_death/fire_stone/fel_armor/summon_pet,imp/shadow_bolt,shadow_trance=1/curse_of_agony/chaos_bolt/immolate/conflagrate/corruption/incinerate/life_tap
 gear_stamina=708
 gear_intellect=777
 gear_spirit=411

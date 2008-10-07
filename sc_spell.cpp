@@ -111,6 +111,10 @@ void spell_t::player_buff()
     double demonic_pact_buff = player_power * 0.10;
     if( best_buff < demonic_pact_buff ) best_buff = demonic_pact_buff;
   }
+  if( p -> buffs.improved_divine_spirit )
+  {
+    if( best_buff < p -> buffs.improved_divine_spirit ) best_buff = p -> buffs.improved_divine_spirit;
+  }
   player_power += best_buff;
   
   if( p -> buffs.totem_of_wrath ) player_crit += 0.03;

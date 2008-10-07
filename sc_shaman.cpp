@@ -1305,16 +1305,17 @@ struct lava_burst_t : public shaman_spell_t
       if( ! p -> active_flame_shock ) 
 	return false;
 
-      double fs_time_remaining = p -> active_flame_shock -> duration_ready - ( sim -> current_time + execute_time() );
+      double lvb_finish = sim -> current_time + execute_time();
+      double fs_finish  = p -> active_flame_shock -> duration_ready;
 
-      if( fs_time_remaining < 0 )
+      if( lvb_finish > fs_finish )
 	return false;
 
       if( max_ticks_consumed > 0 )
       {
-	int8_t fs_tick_remaining = (int8_t) floor( fs_time_remaining / 2.0 );
+	double earliest_finish = fs_finish - max_ticks_consumed * 3.0;
 
-	if( fs_tick_remaining > max_ticks_consumed )
+	if( lvb_finish < earliest_finish )
 	  return false;
       }
     }
@@ -1551,8 +1552,8 @@ struct flame_shock_t : public shaman_spell_t
     rank = choose_rank( ranks );
     
     base_execute_time = 0; 
-    base_tick_time    = 2.0;
-    num_ticks         = 6;
+    base_tick_time    = 3.0;
+    num_ticks         = 4;
     direct_power_mod  = 0.21;
     tick_power_mod    = 0.39 / num_ticks;
     may_crit          = true;
