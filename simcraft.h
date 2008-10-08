@@ -363,6 +363,7 @@ struct player_t
   uptime_t* uptime_list;
   std::vector<double> timeline_dmg;
   std::vector<double> timeline_dps;
+  std::vector<double> iteration_dps;
 
   struct gear_t
   {

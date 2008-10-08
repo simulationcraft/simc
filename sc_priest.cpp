@@ -873,7 +873,7 @@ struct devouring_plague_t : public priest_spell_t
     num_ticks         = 8;  
     cooldown          = 24.0;
     binary            = true;
-    tick_power_mod   = ( base_tick_time / 15.0 ) / 2.0; 
+    tick_power_mod    = base_tick_time / 15.0;
 
     base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.mental_agility * 0.02 - p -> talents.shadow_focus * 0.02;

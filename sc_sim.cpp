@@ -151,7 +151,13 @@ bool sim_t::execute()
 
   for( player_t* p = player_list; p; p = p -> next )
   {
-    p -> total_seconds += p -> last_action;
+    double iteration_seconds = p -> last_action;
+
+    if( iteration_seconds > 0 )
+    {
+      p -> total_seconds += iteration_seconds;
+      p -> iteration_dps.push_back( p -> iteration_dmg / iteration_seconds );
+    }
   }
 
   return true;
