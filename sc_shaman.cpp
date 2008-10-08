@@ -121,6 +121,7 @@ struct shaman_t : public player_t
 
   struct glyphs_t
   {
+    int8_t chain_lightning;
     int8_t earth_shock;
     int8_t flametongue_weapon;
     int8_t lightning_bolt;
@@ -557,7 +558,7 @@ static void trigger_lightning_overload( spell_t* s,
 
   if( p -> talents.lightning_overload == 0 ) return;
 
-  if( rand_t::roll( p -> talents.lightning_overload * 0.04 ) )
+  if( ! s -> proc && rand_t::roll( p -> talents.lightning_overload * 0.04 ) )
   {
     p -> procs_lightning_overload -> occur();
 
@@ -565,6 +566,7 @@ static void trigger_lightning_overload( spell_t* s,
     double   multiplier  = s -> base_multiplier;
     stats_t* stats       = s -> stats;
 
+    s -> proc             = true;
     s -> base_cost        = 0;
     s -> base_multiplier /= 2.0;
     s -> stats            = lightning_overload_stats;
@@ -572,6 +574,7 @@ static void trigger_lightning_overload( spell_t* s,
     s -> time_to_execute = 0;
     s -> execute();
 
+    s -> proc            = false;
     s -> base_cost       = cost;
     s -> base_multiplier = multiplier;
     s -> stats           = stats;
@@ -1063,6 +1066,8 @@ struct chain_lightning_t : public shaman_spell_t
     base_crit         += p -> talents.call_of_thunder * 0.05;
     base_crit         += p -> talents.tidal_mastery * 0.01;
     base_crit_bonus   *= 1.0 + p -> talents.elemental_fury * 0.20;
+
+    if( p -> glyphs.chain_lightning ) base_multiplier *= 2.10;
 
     lightning_overload_stats = p -> get_stats( "lightning_overload" );
     lightning_overload_stats -> school = SCHOOL_NATURE;
@@ -2980,6 +2985,7 @@ bool shaman_t::parse_option( const std::string& name,
     { "unleashed_rage",            OPT_INT8,  &( talents.unleashed_rage            ) },
     { "weapon_mastery",            OPT_INT8,  &( talents.weapon_mastery            ) },
     // Glyphs
+    { "glyph_chain_lightning",     OPT_INT8,  &( glyphs.chain_lightning            ) },
     { "glyph_earth_shock",         OPT_INT8,  &( glyphs.earth_shock                ) },
     { "glyph_flametongue_weapon",  OPT_INT8,  &( glyphs.flametongue_weapon         ) },
     { "glyph_lightning_bolt",      OPT_INT8,  &( glyphs.lightning_bolt             ) },
