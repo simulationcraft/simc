@@ -149,17 +149,6 @@ bool sim_t::execute()
   total_seconds += current_time;
   total_events_processed += events_processed;
 
-  for( player_t* p = player_list; p; p = p -> next )
-  {
-    double iteration_seconds = p -> last_action;
-
-    if( iteration_seconds > 0 )
-    {
-      p -> total_seconds += iteration_seconds;
-      p -> iteration_dps.push_back( p -> iteration_dmg / iteration_seconds );
-    }
-  }
-
   return true;
 }
 
@@ -370,12 +359,56 @@ void sim_t::analyze()
 
       p -> timeline_dps[ i ] = window_dmg / window_size;
     }
+
+    assert( p -> iteration_dps.size() == (size_t) iterations );
+
+    p -> dps_std_dev = 0;
+    for( int i=0; i < iterations; i++ )
+    {
+      double delta = p -> iteration_dps[ i ] - p -> dps;
+      p -> dps_std_dev += delta * delta;
+    }
+    p -> dps_std_dev /= iterations;
+    p -> dps_std_dev = sqrt( p -> dps_std_dev );
   }
 
   std::sort( players_by_rank.begin(), players_by_rank.end(), compare_dps()  );
   std::sort( players_by_name.begin(), players_by_name.end(), compare_name() );
 
   raid_dps = total_dmg / total_seconds;
+}
+
+// sim_t::analyze ============================================================
+
+void sim_t::analyze( int current_iteration )
+{
+  int convergence_iteration = (int) ( 0.90 * iterations );
+
+  for( player_t* p = player_list; p; p = p -> next )
+  {
+    double iteration_seconds = p -> last_action;
+
+    if( iteration_seconds > 0 )
+    {
+      p -> total_seconds += iteration_seconds;
+      for( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet ) p -> iteration_dmg += pet -> iteration_dmg;
+      p -> iteration_dps.push_back( p -> iteration_dmg / iteration_seconds );
+    }
+
+    if( ! p -> quiet && ( current_iteration == convergence_iteration ) )
+    {
+      double total_dmg=0;
+
+      for( stats_t* s = p -> stats_list; s; s = s -> next )
+	total_dmg += s -> total_dmg;
+
+      for( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
+	for( stats_t* s = pet -> stats_list; s; s = s -> next )
+	  total_dmg += s -> total_dmg;
+
+      p -> dps_convergence = total_dmg / p -> total_seconds;
+    }
+  }
 }
 
 // sim_t::get_uptime ========================================================
@@ -509,6 +542,7 @@ int main( int argc, char **argv )
     sim_signal_handler_t::iteration = i;
     sim.reset();
     sim.execute();
+    sim.analyze( i );
   }
   sim.elapsed_cpu_seconds = time(0) - start_time;
   

@@ -226,6 +226,7 @@ struct sim_t
   void      reset();
   bool      init();
   void      analyze();
+  void      analyze( int iteration );
   uptime_t* get_uptime( const std::string& name );
   bool      parse_option( const std::string& name, const std::string& value );
   void      print_options();
@@ -356,7 +357,7 @@ struct player_t
   double    iteration_dmg, total_dmg;
   double    resource_lost  [ RESOURCE_MAX ];
   double    resource_gained[ RESOURCE_MAX ];
-  double    dps, dpr, rps_gain, rps_loss;
+  double    dps, dps_std_dev, dps_convergence, dpr, rps_gain, rps_loss;
   proc_t*   proc_list;
   gain_t*   gain_list;
   stats_t*  stats_list;
@@ -1159,6 +1160,7 @@ struct report_t
   int8_t report_procs;
   int8_t report_raid_dps;
   int8_t report_spell_stats;
+  int8_t report_statistics;
   int8_t report_tag;
   int8_t report_uptime;
   int8_t report_waiting;

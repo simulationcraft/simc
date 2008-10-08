@@ -109,6 +109,7 @@ report_t::report_t( sim_t* s ) :
   report_procs(1),
   report_raid_dps(1),
   report_spell_stats(1),
+  report_statistics(1),
   report_tag(1),
   report_uptime(1),
   report_waiting(1)
@@ -136,6 +137,7 @@ bool report_t::parse_option( const std::string& name,
     { "report_procs",            OPT_INT8,   &( report_procs            ) },
     { "report_raid_dps",         OPT_INT8,   &( report_raid_dps         ) },
     { "report_spell_stats",      OPT_INT8,   &( report_spell_stats      ) },
+    { "report_statistics",       OPT_INT8,   &( report_statistics       ) },
     { "report_tag",              OPT_INT8,   &( report_tag              ) },
     { "report_uptime",           OPT_INT8,   &( report_uptime           ) },
     { NULL, OPT_UNKNOWN }
@@ -454,8 +456,14 @@ void report_t::print()
     player_t* p = sim -> players_by_name[ i ];
 
     if( report_tag  ) fprintf( sim -> output_file, "\n" );
-    if( report_name ) fprintf( sim -> output_file, "%s%s",     report_tag ? "Player=" : "", p -> name() );
-    if( report_dps  ) fprintf( sim -> output_file, "  %s%.1f", report_tag ? "DPS="    : "", p -> dps );
+    if( report_name ) fprintf( sim -> output_file, "%s%s",     report_tag ? "Player="  : "", p -> name() );
+    if( report_dps  ) fprintf( sim -> output_file, "  %s%.1f", report_tag ? "DPS="     : "", p -> dps );
+
+    if( report_statistics ) 
+    {
+      fprintf( sim -> output_file, "  %s%.1f%%", report_tag ? "SD="  : "", 100.0 * p -> dps_std_dev / p -> dps );
+      fprintf( sim -> output_file, "  %s%.3f%%", report_tag ? "CON=" : "", 100.0 * fabs( p -> dps_convergence - p -> dps ) / p -> dps );
+    }
 
     if( p -> rps_loss > 0 )
     {
