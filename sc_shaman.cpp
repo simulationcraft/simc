@@ -2587,7 +2587,6 @@ struct thunderstorm_t : public shaman_spell_t
   {
     shaman_t* p = player -> cast_shaman();
     assert( p -> talents.thunderstorm );
-
     cooldown = 45.0;
   }
 

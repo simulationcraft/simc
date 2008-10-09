@@ -457,12 +457,18 @@ void report_t::print()
 
     if( report_tag  ) fprintf( sim -> output_file, "\n" );
     if( report_name ) fprintf( sim -> output_file, "%s%s",     report_tag ? "Player="  : "", p -> name() );
-    if( report_dps  ) fprintf( sim -> output_file, "  %s%.1f", report_tag ? "DPS="     : "", p -> dps );
-
-    if( report_statistics ) 
+    if( report_dps  ) 
     {
-      fprintf( sim -> output_file, "  %s%.1f%%", report_tag ? "SD="  : "", 100.0 * p -> dps_std_dev / p -> dps );
-      fprintf( sim -> output_file, "  %s%.3f%%", report_tag ? "CON=" : "", 100.0 * fabs( p -> dps_convergence - p -> dps ) / p -> dps );
+      fprintf( sim -> output_file, "  %s%.1f", report_tag ? "DPS="     : "", p -> dps );
+
+      if( report_statistics ) 
+      {
+	int sigma = -1;
+	double convergence = fabs( p -> dps_convergence - p -> dps ) / p -> dps;
+	while( convergence < 1 ) { convergence *= 10.0; sigma++; }
+
+	fprintf( sim -> output_file, " (+-%.1f)  CS=%d", p -> dps_std_dev / sqrt( sim -> iterations ), sigma );
+      }
     }
 
     if( p -> rps_loss > 0 )
