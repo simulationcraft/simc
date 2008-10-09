@@ -516,11 +516,7 @@ struct imp_pet_t : public warlock_pet_t
     {
       imp_pet_t* p = (imp_pet_t*) player -> cast_pet();
       warlock_pet_spell_t::player_buff();
-      if( p -> buffs_demonic_empowerment )
-      {
-	player_multiplier *= 1.20;
-	player_crit       += 0.20;
-      }
+      if( p -> buffs_demonic_empowerment ) player_crit += 0.20;
     }
   };
 

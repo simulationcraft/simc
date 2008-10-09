@@ -46,6 +46,7 @@ struct shaman_t : public player_t
 
   // Gains
   gain_t* gains_shamanistic_rage;
+  gain_t* gains_thunderstorm;
 
   // Procs
   proc_t* procs_lightning_overload;
@@ -173,6 +174,7 @@ struct shaman_t : public player_t
   
     // Gains
     gains_shamanistic_rage = get_gain( "shamanistic_rage" );
+    gains_thunderstorm     = get_gain( "thunderstorm"     );
 
     // Procs
     procs_lightning_overload = get_proc( "lightning_overload" );
@@ -1436,7 +1438,11 @@ struct earth_shock_t : public shaman_spell_t
     base_hit        += p -> talents.elemental_precision * 0.01;
     base_crit_bonus *= 1.0 + p -> talents.elemental_fury * 0.20;
 
-    if( p -> glyphs.earth_shock ) trigger_gcd -= 1.0;
+    if( p -> glyphs.earth_shock ) 
+    {
+      trigger_gcd = 0.5;
+      min_gcd     = 0.5;
+    }
   }
 
   virtual double cost()
@@ -2572,6 +2578,36 @@ struct lightning_shield_t : public shaman_spell_t
   }
 };
 
+// Thunderstorm Spell ==========================================================
+
+struct thunderstorm_t : public shaman_spell_t
+{
+  thunderstorm_t( player_t* player, const std::string& options_str ) : 
+    shaman_spell_t( "thunderstorm", player, SCHOOL_NATURE, TREE_ELEMENTAL )
+  {
+    shaman_t* p = player -> cast_shaman();
+    assert( p -> talents.thunderstorm );
+
+    cooldown = 45.0;
+  }
+
+  virtual void execute() 
+  {
+    shaman_t* p = player -> cast_shaman();
+    update_ready();
+    p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.08, p -> gains_thunderstorm );
+    p -> action_finish( this );
+  }
+
+  virtual bool ready()
+  {
+    if( ! shaman_spell_t::ready() )
+      return false;
+
+    return player -> resource_current[ RESOURCE_MANA ] < ( 0.92 * player -> resource_max[ RESOURCE_MANA ] );
+  }
+};
+
 // Spirit Wolf Spell ==========================================================
 
 struct spirit_wolf_spell_t : public shaman_spell_t
@@ -2663,7 +2699,7 @@ action_t* shaman_t::create_action( const std::string& name,
   if( name == "spirit_wolf"             ) return new        spirit_wolf_spell_t( this, options_str );
   if( name == "stormstrike"             ) return new              stormstrike_t( this, options_str );
   if( name == "strength_of_earth_totem" ) return new  strength_of_earth_totem_t( this, options_str );
-//if( name == "thunderstorm"            ) return new             thunderstorm_t( this, options_str );
+  if( name == "thunderstorm"            ) return new             thunderstorm_t( this, options_str );
   if( name == "totem_of_wrath"          ) return new           totem_of_wrath_t( this, options_str );
   if( name == "windfury_totem"          ) return new           windfury_totem_t( this, options_str );
   if( name == "windfury_weapon"         ) return new          windfury_weapon_t( this, options_str );
