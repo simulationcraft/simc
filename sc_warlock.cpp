@@ -577,15 +577,10 @@ struct felguard_pet_t : public warlock_pet_t
       warlock_pet_attack_t( "cleave", player, RESOURCE_MANA, SCHOOL_PHYSICAL )
     {
       felguard_pet_t* p = (felguard_pet_t*) player -> cast_pet();
-      warlock_t*      o = p -> owner -> cast_warlock();
-
       weapon   = &( p -> main_hand_weapon );
       cooldown = 6.0;
-
       base_direct_dmg = ( p -> level < 68 ? 50 :
 			  p -> level < 80 ? 78 : 124 );
-
-      if( o -> glyphs.felguard ) base_multiplier *= 1.20;
     }
     virtual void player_buff()
     {
@@ -594,6 +589,7 @@ struct felguard_pet_t : public warlock_pet_t
 
       warlock_pet_attack_t::player_buff();
       player_power *= 1.0 + p -> buffs_demonic_frenzy * ( 0.05 + o -> talents.demonic_brutality * 0.01 );
+      if( o -> glyphs.felguard ) player_power *= 1.10;
     }
   };
 
@@ -685,14 +681,9 @@ struct felhunter_pet_t : public warlock_pet_t
       warlock_pet_attack_t( "shadow_bite", player, RESOURCE_MANA, SCHOOL_SHADOW )
     {
       felguard_pet_t* p = (felguard_pet_t*) player -> cast_pet();
-      warlock_t*      o = p -> owner -> cast_warlock();
-
       cooldown = 6.0;
-
       base_direct_dmg = ( p -> level < 66 ?  88 :
 			  p -> level < 74 ? 101 : 118 );
-
-      if( o -> glyphs.felhunter ) base_multiplier *= 1.20;
     }
     virtual void player_buff()
     {
@@ -700,6 +691,7 @@ struct felhunter_pet_t : public warlock_pet_t
       warlock_t*      o = p -> owner -> cast_warlock();
       warlock_pet_attack_t::player_buff();
       player_multiplier *= 1.0 + o -> active_dots * 0.05;;
+      if( o -> glyphs.felhunter ) player_crit += 0.06;
     }
   };
 
