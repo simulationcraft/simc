@@ -20,6 +20,7 @@ struct shaman_t : public player_t
   // Active
   spell_t* active_flame_shock;
   spell_t* active_lightning_charge;
+  spell_t* active_shield;
 
   // Buffs
   int8_t buffs_elemental_devastation;
@@ -33,6 +34,7 @@ struct shaman_t : public player_t
   int8_t buffs_natures_swiftness;
   int8_t buffs_shamanistic_focus;
   int8_t buffs_shamanistic_rage;
+  double buffs_water_shield;
 
   // Cooldowns
   double cooldowns_windfury_weapon;
@@ -47,6 +49,7 @@ struct shaman_t : public player_t
   // Gains
   gain_t* gains_shamanistic_rage;
   gain_t* gains_thunderstorm;
+  gain_t* gains_water_shield;
 
   // Procs
   proc_t* procs_lightning_overload;
@@ -148,6 +151,7 @@ struct shaman_t : public player_t
     // Active
     active_flame_shock      = 0;
     active_lightning_charge = 0;
+    active_shield           = 0;
 
     // Buffs
     buffs_elemental_devastation        = 0;
@@ -161,6 +165,7 @@ struct shaman_t : public player_t
     buffs_natures_swiftness            = 0;
     buffs_shamanistic_focus            = 0;
     buffs_shamanistic_rage             = 0;
+    buffs_water_shield                 = 0;
 
     // Cooldowns
     cooldowns_windfury_weapon = 0;
@@ -175,6 +180,7 @@ struct shaman_t : public player_t
     // Gains
     gains_shamanistic_rage = get_gain( "shamanistic_rage" );
     gains_thunderstorm     = get_gain( "thunderstorm"     );
+    gains_water_shield     = get_gain( "water_shield"     );
 
     // Procs
     procs_lightning_overload = get_proc( "lightning_overload" );
@@ -205,6 +211,9 @@ struct shaman_t : public player_t
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
   virtual int       primary_resource() { return RESOURCE_MANA; }
+
+  // Event Tracking
+  virtual void regen( double periodicity );
 };
 
 // ==========================================================================
@@ -1014,6 +1023,7 @@ void shaman_spell_t::assess_damage( double amount,
     {
       p -> buffs_lightning_charges--;
       p -> active_lightning_charge -> execute();
+      if( p -> buffs_lightning_charges == 0 ) p -> active_shield = 0;
     }
   }
 }
@@ -2540,8 +2550,8 @@ struct lightning_shield_t : public shaman_spell_t
 
     static rank_t ranks[] =
     {
-      { 80, 5, 380, 380, 0, 0 },
-      { 75, 5, 325, 325, 0, 0 },
+      { 80, 7, 380, 380, 0, 0 },
+      { 75, 6, 325, 325, 0, 0 },
       { 70, 5, 287, 287, 0, 0 },
       { 63, 4, 232, 232, 0, 0 },
       { 56, 3, 198, 198, 0, 0 },
@@ -2563,6 +2573,7 @@ struct lightning_shield_t : public shaman_spell_t
     shaman_t* p = player -> cast_shaman();
     if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
     p -> buffs_lightning_charges = 3 + 2 * p -> talents.static_shock;
+    p -> active_shield = this;
     consume_resource();
     update_ready();
     direct_dmg = 0;
@@ -2574,7 +2585,48 @@ struct lightning_shield_t : public shaman_spell_t
     if( ! shaman_spell_t::ready() )
       return false;
 
-    return( player -> cast_shaman() -> buffs_lightning_charges == 0 );
+    return( player -> cast_shaman() -> active_shield == 0 );
+  }
+};
+
+// Water Shield Spell =========================================================
+
+struct water_shield_t : public shaman_spell_t
+{
+  water_shield_t( player_t* player, const std::string& options_str ) : 
+    shaman_spell_t( "water_shield", player, SCHOOL_NATURE, TREE_ENHANCEMENT )
+  {
+    option_t options[] =
+    {
+      { "rank", OPT_INT8, &rank_index },
+      { NULL }
+    };
+    parse_options( options, options_str );
+
+    static rank_t ranks[] =
+    {
+      { 76, 9, 0, 0, 0, 100 },
+      { 69, 8, 0, 0, 0,  50 },
+      { 62, 7, 0, 0, 0,  43 },
+      { 55, 6, 0, 0, 0,  38 },
+      { 0, 0 }
+    };
+    rank = choose_rank( ranks );
+
+    trigger_gcd = 0;
+  }
+
+  virtual void execute()
+  {
+    shaman_t* p = player -> cast_shaman();
+    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    p -> buffs_water_shield = rank -> cost;
+    p -> active_shield = this;
+  }
+
+  virtual bool ready()
+  {
+    return( player -> cast_shaman() -> active_shield == 0 );
   }
 };
 
@@ -2700,6 +2752,7 @@ action_t* shaman_t::create_action( const std::string& name,
   if( name == "strength_of_earth_totem" ) return new  strength_of_earth_totem_t( this, options_str );
   if( name == "thunderstorm"            ) return new             thunderstorm_t( this, options_str );
   if( name == "totem_of_wrath"          ) return new           totem_of_wrath_t( this, options_str );
+  if( name == "water_shield"            ) return new             water_shield_t( this, options_str );
   if( name == "windfury_totem"          ) return new           windfury_totem_t( this, options_str );
   if( name == "windfury_weapon"         ) return new          windfury_weapon_t( this, options_str );
   if( name == "wrath_of_air_totem"      ) return new       wrath_of_air_totem_t( this, options_str );
@@ -2770,29 +2823,31 @@ void shaman_t::reset()
 
   // Active
   active_flame_shock = 0;
+  active_shield      = 0;
 
   // Buffs
-  buffs_elemental_devastation           = 0;
-  buffs_elemental_focus                 = 0;
-  buffs_elemental_mastery               = 0;
-  buffs_flurry                          = 0;
-  buffs_lightning_charges               = 0;
-  buffs_maelstrom_weapon                = 0;
+  buffs_elemental_devastation        = 0;
+  buffs_elemental_focus              = 0;
+  buffs_elemental_mastery            = 0;
+  buffs_flurry                       = 0;
+  buffs_lightning_charges            = 0;
+  buffs_maelstrom_weapon             = 0;
   buffs_nature_vulnerability         = 0;
   buffs_nature_vulnerability_charges = 0;
-  buffs_natures_swiftness               = 0;
-  buffs_shamanistic_focus               = 0;
-  buffs_shamanistic_rage                = 0;
+  buffs_natures_swiftness            = 0;
+  buffs_shamanistic_focus            = 0;
+  buffs_shamanistic_rage             = 0;
+  buffs_water_shield                 = 0;
 
   // Cooldowns
   cooldowns_windfury_weapon = 0;
 
   // Expirations
-  expirations_elemental_devastation    = 0;
-  expirations_elemental_oath           = 0;
-  expirations_maelstrom_weapon         = 0;
+  expirations_elemental_devastation = 0;
+  expirations_elemental_oath        = 0;
+  expirations_maelstrom_weapon      = 0;
   expirations_nature_vulnerability  = 0;
-  expirations_unleashed_rage           = 0;
+  expirations_unleashed_rage        = 0;
 }
 
 // shaman_t::composite_attack_power ==========================================
@@ -2830,6 +2885,20 @@ double shaman_t::composite_spell_power( int8_t school )
   }
 
   return sp;
+}
+
+// shaman_t::regen  =======================================================
+
+void shaman_t::regen( double periodicity )
+{
+  player_t::regen( periodicity );
+
+  if( buffs_water_shield )
+  {
+    double water_shield_regen = periodicity * buffs_water_shield / 5.0;
+
+    resource_gain( RESOURCE_MANA, water_shield_regen, gains_water_shield );
+  }
 }
 
 // shaman_t::parse_talents ===============================================
