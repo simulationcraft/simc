@@ -396,7 +396,7 @@ static void trigger_windfury_weapon( attack_t* a )
     {
       p -> windfury_weapon_attack = new windfury_weapon_attack_t( p );
     }
-    p -> cooldowns_windfury_weapon = a -> sim -> current_time;
+    p -> cooldowns_windfury_weapon = a -> sim -> current_time + 3.0;
 
     p -> procs.windfury -> occur();
     p -> windfury_weapon_attack -> weapon = a -> weapon;
@@ -1650,10 +1650,11 @@ struct searing_totem_t : public shaman_spell_t
 
     static rank_t ranks[] =
     {
-      { 69, 7, 58, 58, 0, 205 },
-      { 60, 6, 47, 47, 0, 170 },
-      { 50, 5, 39, 39, 0, 145 },
-      { 40, 4, 30, 30, 0, 110 },
+      { 80, 10, 90, 120, 0, 0.07 },
+      { 75,  9, 77, 103, 0, 0.07 },
+      { 71,  8, 68,  92, 0, 0.07 },
+      { 69,  7, 56,  74, 0, 0.07 },
+      { 60,  6, 40,  54, 0, 0.09 },
       { 0, 0 }
     };
     player -> init_mana_costs( ranks );
@@ -1684,6 +1685,7 @@ struct searing_totem_t : public shaman_spell_t
   {
     if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
+    player_buff();
     schedule_tick();
     update_ready();
     direct_dmg = 0;
@@ -2506,7 +2508,7 @@ struct shamanistic_rage_t : public shaman_spell_t
     if( ! shaman_spell_t::ready() )
       return false;
 
-    return( player -> resource_current[ RESOURCE_MANA ] < ( 0.90 * player -> resource_max[ RESOURCE_MANA ] ) );
+    return( player -> resource_current[ RESOURCE_MANA ] < ( 0.10 * player -> resource_max[ RESOURCE_MANA ] ) );
   }
 };
 
