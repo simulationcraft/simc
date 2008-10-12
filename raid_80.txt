@@ -376,7 +376,7 @@ talents=http://talent.mmo-champion.com/?shaman=052030150000000000000000000000000
 actions=flask,type=relentless_assault/windfury_weapon,weapon=main/flametongue_weapon,weapon=off/auto_attack/lightning_bolt,maelstrom=5/stormstrike/strength_of_earth_totem/windfury_totem/shamanistic_rage/spirit_wolf/flame_shock/earth_shock/lava_lash/searing_totem/water_shield/bloodlust,target_pct=35
 gear_agility=386
 gear_stamina=800
-gear_intellect=280
+gear_intellect=410
 gear_attack_power=2000
 gear_attack_expertise_rating=185
 gear_attack_penetration=0
