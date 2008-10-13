@@ -2304,6 +2304,7 @@ struct corruption_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::last_tick(); 
     p -> active_dots--;
+    p -> active_corruption = 0;
     sim -> target -> debuffs.affliction_effects--;
   }
 
