@@ -511,7 +511,7 @@ void action_t::refresh_duration()
   player_buff();
 
   current_tick = 0;
-  duration_ready += base_tick_time * num_ticks;
+  duration_ready = sim -> current_time + base_tick_time * num_ticks;
 }
 
 // action_t::extend_duration =================================================
