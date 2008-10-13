@@ -838,7 +838,7 @@ struct starfire_t : public druid_spell_t
     p -> uptimes_eclipse_starfire -> update( p -> buffs_eclipse_starfire );
     if( p -> buffs_eclipse_starfire )
     {
-      player_crit += 0.15;
+      player_crit += 0.30;
     }
     if( p -> active_moonfire )
     {
@@ -972,7 +972,7 @@ struct wrath_t : public druid_spell_t
     p -> uptimes_eclipse_wrath -> update( p -> buffs_eclipse_wrath );
     if( p -> buffs_eclipse_wrath )
     {
-      player_multiplier *= 1.10;
+      player_multiplier *= 1.20;
     }
     if( p -> active_insect_swarm )
     {
