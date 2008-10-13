@@ -54,3 +54,16 @@ double weapon_t::normalized_weapon_speed()
   assert(0);
   return 0;
 }
+
+// weapon_t::proc_per_minute_on_swing =======================================
+
+int8_t weapon_t::proc_per_minute_on_swing( double PPM,
+					   double adjusted_swing_time )
+{
+  if( adjusted_swing_time == 0 ) adjusted_swing_time = swing_time;
+
+  double time_to_proc = 60.0 / PPM;
+  double proc_chance = adjusted_swing_time / time_to_proc;
+  
+  return rand_t::roll( proc_chance );
+}

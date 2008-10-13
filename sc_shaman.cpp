@@ -430,7 +430,7 @@ static void stack_maelstrom_weapon( attack_t* a )
     }
   };
 
-  if( rand_t::roll( p -> talents.maelstrom_weapon * 0.20 ) )
+  if( a -> weapon -> proc_per_minute_on_swing( 10.0 ) )
   {
     if( p -> buffs_maelstrom_weapon < 5 ) 
     {

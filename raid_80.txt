@@ -387,14 +387,15 @@ gear_haste_rating=75
 chaotic_skyfire=1
 # Hateful Gladiator Weapons
 main_hand=mace,damage=373,speed=2.6,enchant=mongoose
-off_hand=dagger,damage=258,speed=1.8,enchant=executioner
-#off_hand=mace,damage=373,speed=2.6,enchant=executioner
+#off_hand=dagger,damage=258,speed=1.8,enchant=executioner
+off_hand=mace,damage=373,speed=2.6,enchant=executioner
 # Glyphs
 glyph_earth_shock=0
+glyph_flame_shock=1
 glyph_strength_of_earth=1
 glyph_windfury_weapon=1
 glyph_stormstrike=1
-glyph_lightning_shield=1
+glyph_lightning_shield=0
 # Pets
 pet=spirit_wolf
 blessing_of_kings=1

@@ -258,8 +258,9 @@ struct weapon_t
   double buff_bonus;
   bool   main;
 
-  int group();
+  int    group();
   double normalized_weapon_speed();
+  int8_t proc_per_minute_on_swing( double PPM, double adjusted_swing_time=0 );
 
   weapon_t( int t=WEAPON_NONE, double d=0, double st=2.0, int s=SCHOOL_PHYSICAL ) : 
     type(t), school(s), damage(d), swing_time(st), enchant(WEAPON_ENCHANT_NONE), buff(WEAPON_BUFF_NONE), buff_bonus(0), main(true) {}

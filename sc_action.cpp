@@ -507,11 +507,18 @@ void action_t::refresh_duration()
 {
   if( sim -> debug ) report_t::log( sim, "%s refreshes duration of %s", player -> name(), name() );
 
+  // Make sure this DoT is still ticking......
+  assert( event );
+
   // Recalculate state of current player buffs.
   player_buff();
 
+  // Refreshing a DoT does not interfere with the next tick event.  Ticks will stil occur
+  // every "base_tick_time" seconds.  To determine the new finish time for the DoT, start 
+  // from the time of the next tick and add the time for the remaining ticks to that event.
+  duration_ready = event -> time + base_tick_time * ( num_ticks - 1 );
+
   current_tick = 0;
-  duration_ready = sim -> current_time + base_tick_time * num_ticks;
 }
 
 // action_t::extend_duration =================================================

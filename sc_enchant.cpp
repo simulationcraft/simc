@@ -105,16 +105,14 @@ static void trigger_mongoose( attack_t* a )
   // the hasted swing time which is represented in the "time_to_execute" field.  When this field
   // is zero, we are dealing with a "special" attack in which case the base swing time is used.
 
-  double swing_time = a -> time_to_execute;
-  if( a -> time_to_execute == 0 ) swing_time = w -> swing_time;
-
-  double proc_chance = 1.0 / ( 50.0 / swing_time );
-
   int8_t&    b = w -> main ? p ->       buffs.mongoose_mh : p ->       buffs.mongoose_oh;
   event_t*&  e = w -> main ? p -> expirations.mongoose_mh : p -> expirations.mongoose_oh;
   uptime_t*& u = w -> main ? p ->     uptimes.mongoose_mh : p ->     uptimes.mongoose_oh;
 
-  if( rand_t::roll( proc_chance ) )
+  double PPM = 1.2;
+  double swing_time = a -> time_to_execute;
+
+  if( w -> proc_per_minute_on_swing( PPM, swing_time ) )
   {
     if( e )
     {
@@ -162,12 +160,10 @@ static void trigger_executioner( attack_t* a )
   // the hasted swing time which is represented in the "time_to_execute" field.  When this field
   // is zero, we are dealing with a "special" attack in which case the base swing time is used.
 
+  double PPM = 1.2;
   double swing_time = a -> time_to_execute;
-  if( a -> time_to_execute == 0 ) swing_time = w -> swing_time;
 
-  double proc_chance = 1.0 / ( 50.0 / swing_time );
-
-  if( rand_t::roll( proc_chance ) )
+  if( w -> proc_per_minute_on_swing( PPM, swing_time ) )
   {
     event_t*& e = p -> expirations.executioner;
 
