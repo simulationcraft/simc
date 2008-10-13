@@ -1015,14 +1015,19 @@ struct mind_blast_t : public priest_spell_t
 
 struct shadow_word_death_t : public priest_spell_t
 {
+  double mb_wait;
+  int8_t mb_priority;
+
   shadow_word_death_t( player_t* player, const std::string& options_str ) : 
-    priest_spell_t( "shadow_word_death", player, SCHOOL_SHADOW, TREE_SHADOW )
+    priest_spell_t( "shadow_word_death", player, SCHOOL_SHADOW, TREE_SHADOW ), mb_wait(0), mb_priority(0)
   {
     priest_t* p = player -> cast_priest();
 
     option_t options[] =
     {
-      { "rank", OPT_INT8, &rank_index },
+      { "rank",        OPT_INT8, &rank_index  },
+      { "mb_wait",     OPT_FLT,  &mb_wait     },
+      { "mb_priority", OPT_INT8, &mb_priority },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1084,16 +1089,45 @@ struct shadow_word_death_t : public priest_spell_t
       }
     }
   }
+
+  virtual bool ready()
+  {
+    priest_t* p = player -> cast_priest();
+    
+    if( ! priest_spell_t::ready() )
+      return false;
+
+    if( mb_wait )
+    {
+      if( ! p -> active_mind_blast )
+	return false;
+
+      if( ( p -> active_mind_blast -> cooldown_ready - sim -> current_time ) < mb_wait )
+	return false;
+    }
+
+    if( mb_priority )
+    {
+      if( ! p -> active_mind_blast )
+	return false;
+
+      if( ( p -> active_mind_blast -> cooldown_ready - sim -> current_time ) > ( haste() * 1.5 + sim -> lag + mb_wait ) )
+	return false;
+    }
+
+    return true;
+  }
 };
 
 // Mind Flay Spell ============================================================
 
 struct mind_flay_t : public priest_spell_t
 {
+  double mb_wait;
   int8_t swp_refresh;
 
   mind_flay_t( player_t* player, const std::string& options_str ) : 
-    priest_spell_t( "mind_flay", player, SCHOOL_SHADOW, TREE_SHADOW ), swp_refresh(0)
+    priest_spell_t( "mind_flay", player, SCHOOL_SHADOW, TREE_SHADOW ), mb_wait(0), swp_refresh(0)
   {
     priest_t* p = player -> cast_priest();
     assert( p -> talents.mind_flay );
@@ -1102,6 +1136,7 @@ struct mind_flay_t : public priest_spell_t
     {
       { "rank",        OPT_INT8, &rank_index  },
       { "swp_refresh", OPT_INT8, &swp_refresh },
+      { "mb_wait",     OPT_FLT,  &mb_wait     },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1232,6 +1267,15 @@ struct mind_flay_t : public priest_spell_t
 
       if( ( p -> active_shadow_word_pain -> num_ticks -
 	    p -> active_shadow_word_pain -> current_tick ) > 2 )
+	return false;
+    }
+
+    if( mb_wait )
+    {
+      if( ! p -> active_mind_blast )
+	return false;
+
+      if( ( p -> active_mind_blast -> cooldown_ready - sim -> current_time ) < mb_wait )
 	return false;
     }
 

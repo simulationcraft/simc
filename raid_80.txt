@@ -60,7 +60,7 @@ judgement_of_wisdom=1
 priest=Priest_Shadow
 level=80
 talents=http://wotlk.wowhead.com/?talent=bVcbzhZZG0fVRfzfiqfzAo
-actions=flask,type=pure_death/wizard_oil/inner_fire/shadow_form/mana_potion,trigger=3500/shadow_fiend,trigger=6000/dispersion/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/shadow_word_death/mind_flay
+actions=flask,type=pure_death/wizard_oil/inner_fire/shadow_form/mana_potion,trigger=3500/shadow_fiend,trigger=6000/dispersion/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/shadow_word_death,mb_wait=0,mb_priority=0/mind_flay,mb_wait=0
 gear_stamina=708
 gear_intellect=777
 gear_spirit=411
@@ -390,8 +390,6 @@ main_hand=mace,damage=373,speed=2.6,enchant=mongoose
 #off_hand=dagger,damage=258,speed=1.8,enchant=executioner
 off_hand=mace,damage=373,speed=2.6,enchant=executioner
 # Glyphs
-glyph_earth_shock=0
-glyph_flame_shock=0
 glyph_strength_of_earth=1
 glyph_windfury_weapon=1
 glyph_stormstrike=1
