@@ -1181,8 +1181,8 @@ struct mind_flay_t : public priest_spell_t
       p -> action_hit( this );
       if( direct_dmg > 0 )
       {
-	tick_dmg = direct_dmg;
-	assess_damage( tick_dmg, DMG_OVER_TIME );
+        tick_dmg = direct_dmg;
+        assess_damage( tick_dmg, DMG_OVER_TIME );
       }
     }
     else
@@ -1193,23 +1193,27 @@ struct mind_flay_t : public priest_spell_t
 
     update_stats( DMG_OVER_TIME );
 
-    if( result_is_hit() )
+    if( result_is_hit() && this -> current_tick == 1)
     {
       action_t* swp = p -> active_shadow_word_pain;
       if( swp && rand_t::roll( p -> talents.pain_and_suffering * (1.0/3.0) ) )
       {
-	swp -> refresh_duration();
+        swp -> refresh_duration();
       }
+    }
+
+    if( result_is_hit() )
+    {
       if( p -> talents.creeping_shadows )
       {
-	if( p -> active_mind_blast )
-        {
-	  p -> active_mind_blast -> cooldown_ready -= 0.1 * p -> talents.creeping_shadows;
-	}
-	if( p -> active_shadow_word_death )
-        {
-	  p -> active_shadow_word_death -> cooldown_ready -= 0.1 * p -> talents.creeping_shadows;
-	}
+        if( p -> active_mind_blast )
+              {
+          p -> active_mind_blast -> cooldown_ready -= 0.1 * p -> talents.creeping_shadows;
+        }
+        if( p -> active_shadow_word_death )
+              {
+          p -> active_shadow_word_death -> cooldown_ready -= 0.1 * p -> talents.creeping_shadows;
+        }
       }
     }
   }
