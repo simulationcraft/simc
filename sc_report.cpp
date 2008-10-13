@@ -467,7 +467,7 @@ void report_t::print()
 	double convergence = fabs( p -> dps_convergence - p -> dps ) / p -> dps;
 	while( convergence < 1 ) { convergence *= 10.0; sigma++; }
 
-	fprintf( sim -> output_file, " (+-%.1f)  CS=%d", p -> dps_std_dev / sqrt( sim -> iterations ), sigma );
+	fprintf( sim -> output_file, " (+/-%.1f, 95% prob.)  CS=%d", p -> dps_std_dev / sqrt( sim -> iterations ), sigma );
       }
     }
 
