@@ -249,7 +249,7 @@ double action_t::resistance()
     }
   }
 
-  if( sim -> debug ) report_t::log( sim, "%s queries resistance for %s: %.1f", player -> name(), name(), resist );
+  if( sim -> debug ) report_t::log( sim, "%s queries resistance for %s: %.2f", player -> name(), name(), resist );
 
   return resist;
 }

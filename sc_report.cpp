@@ -855,7 +855,7 @@ const char* report_t::chart_action_dpet( player_t* p )
   {
     if( st -> total_dmg <= 0 ) continue;
     if( ! st -> channeled && st -> total_execute_time <= 0 ) continue;
-    if( st -> dpet > ( 10 * p -> dps ) ) continue;
+    if( st -> dpet > ( 5 * p -> dps ) ) continue;
 
     stats_list.push_back( st );
   }

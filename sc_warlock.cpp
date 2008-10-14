@@ -18,6 +18,7 @@ struct warlock_t : public player_t
   spell_t*       active_corruption;
   spell_t*       active_curse;
   spell_t*       active_immolate;
+  spell_t*       active_pandemic;
   int8_t         active_dots;
 
   // Buffs
@@ -177,6 +178,7 @@ struct warlock_t : public player_t
     active_corruption = 0;
     active_curse      = 0;
     active_immolate   = 0;
+    active_pandemic   = 0;
     active_dots       = 0;
 
     // Buffs
@@ -1212,9 +1214,32 @@ static void trigger_pandemic( spell_t* s )
 
   if( ! p -> talents.pandemic ) return;
 
+  struct pandemic_t : public spell_t
+  {
+    pandemic_t( player_t* player ) : 
+      spell_t( "pandemic", player, RESOURCE_MANA, SCHOOL_SHADOW, TREE_AFFLICTION )
+    {
+      proc = true;
+      trigger_gcd = 0;
+    }
+    virtual void target_debuff( int8_t dmg_type ) 
+    {
+      spell_t::target_debuff( dmg_type );
+      target_multiplier = 1.0;
+    }
+    virtual void player_buff()
+    {
+      spell_t::player_buff();
+      player_multiplier = 1.0;
+    }
+  };
+
   if( rand_t::roll( s -> player_crit ) )
   {
-    s -> tick_dmg *= 1.0 + p -> talents.pandemic / 3.0;
+    if( ! p -> active_pandemic ) p -> active_pandemic = new pandemic_t( p );
+
+    p -> active_pandemic -> base_direct_dmg = s -> tick_dmg * p -> talents.pandemic / 3.0;
+    p -> active_pandemic -> execute();
   }
 }
 
@@ -2292,6 +2317,7 @@ struct corruption_t : public warlock_spell_t
   virtual void tick()
   {
     warlock_spell_t::tick(); 
+    trigger_pandemic( this );
     trigger_eradication( this );
     trigger_nightfall( this );
     trigger_corruption_glyph( this );
@@ -2306,13 +2332,6 @@ struct corruption_t : public warlock_spell_t
     p -> active_dots--;
     p -> active_corruption = 0;
     sim -> target -> debuffs.affliction_effects--;
-  }
-
-  virtual double calculate_tick_damage()
-  {
-    warlock_spell_t::calculate_tick_damage();
-    trigger_pandemic( this );
-    return tick_dmg;
   }
 };
 
@@ -2636,19 +2655,18 @@ struct unstable_affliction_t : public warlock_spell_t
     }
   }
 
+  virtual void tick()
+  {
+    warlock_spell_t::tick(); 
+    trigger_pandemic( this );
+  }
+
   virtual void last_tick()
   {
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::last_tick(); 
     p -> active_dots--;;
     sim -> target -> debuffs.affliction_effects--;
-  }
-
-  virtual double calculate_tick_damage()
-  {
-    warlock_spell_t::calculate_tick_damage();
-    trigger_pandemic( this );
-    return tick_dmg;
   }
 };
 

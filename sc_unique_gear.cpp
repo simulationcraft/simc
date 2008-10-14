@@ -661,10 +661,10 @@ void unique_gear_t::spell_finish_event( spell_t* s )
 
 struct attack_power_trinket_t : public action_t
 {
-  double attack_power, length, cooldown;
+  double attack_power, length;
   
   attack_power_trinket_t( player_t* p, const std::string& options_str ) : 
-    action_t( ACTION_USE, "attack_power_trinket", p )
+    action_t( ACTION_USE, "attack_power_trinket", p ), attack_power(0), length(0)
   {
     option_t options[] =
     {
@@ -720,10 +720,10 @@ struct attack_power_trinket_t : public action_t
 
 struct spell_power_trinket_t : public action_t
 {
-  double spell_power, length, cooldown;
+  double spell_power, length;
   
   spell_power_trinket_t( player_t* p, const std::string& options_str ) : 
-    action_t( ACTION_USE, "spell_power_trinket", p )
+    action_t( ACTION_USE, "spell_power_trinket", p ), spell_power(0), length(0)
   {
     option_t options[] =
     {
@@ -739,7 +739,7 @@ struct spell_power_trinket_t : public action_t
 	cooldown    <= 0 )
     {
       fprintf( sim -> output_file, "Expected format: spell_power_trinket,power=X,length=Y,cooldown=Z\n" );
-      assert(0);
+      exit(0);
     }
     trigger_gcd = 0;
     harmful = false;
@@ -780,10 +780,10 @@ struct spell_power_trinket_t : public action_t
 struct haste_trinket_t : public action_t
 {
   int16_t haste_rating;
-  double length, cooldown;
+  double length;
   
   haste_trinket_t( player_t* p, const std::string& options_str ) : 
-    action_t( ACTION_USE, "haste_trinket", p )
+    action_t( ACTION_USE, "haste_trinket", p ), haste_rating(0), length(0)
   {
     option_t options[] =
     {

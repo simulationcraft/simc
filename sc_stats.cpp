@@ -71,7 +71,6 @@ void stats_t::add( double amount,
     r.total_dmg += amount;
     if( amount < r.min_dmg ) r.min_dmg = amount;
     if( amount > r.max_dmg ) r.max_dmg = amount;
-    // Keep track of last execute to adjust 'execute_time' for GCD and Lag
   }
   else
   {
