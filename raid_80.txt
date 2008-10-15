@@ -109,65 +109,6 @@ sanctified_retribution=1
 swift_retribution=1
 
 #
-# Shadow Priest
-#
-# (1) The "trigger=3500" option to mana_potion represents the mana gained and the amount below max required to trigger
-# (2) The "trigger=6000" option to shadow_fiend represents the amount below max mana required to trigger
-#
-priest=Priest_Shadow_Promises
-level=80
-talents=http://wotlk.wowhead.com/?talent=bVcbzhZZG0fVRfzfiqfzAo
-actions=flask,type=pure_death/wizard_oil/inner_fire/shadow_form/mana_potion,trigger=3500/shadow_fiend,trigger=6000/dispersion/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/shadow_word_death,mb_wait=0,mb_priority=0/mind_flay,mb_wait=0
-gear_stamina=708
-gear_intellect=777
-gear_spirit=411
-gear_spell_power=2200
-gear_crit_rating=461
-gear_hit_rating=250
-gear_haste_rating=492
-chaotic_skyfire=1
-glyph_shadow_word_death=1
-glyph_blue_promises=1
-pet=shadow_fiend
-main_hand=beast,damage=110,speed=1.5,school=shadow
-quiet=1
-active=owner
-# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
-blessing_of_kings=1
-blessing_of_wisdom=1
-sanctified_retribution=1
-swift_retribution=1
-
-#
-# Shadow Priest_NoSWD
-#
-# (1) The "trigger=3500" option to mana_potion represents the mana gained and the amount below max required to trigger
-# (2) The "trigger=6000" option to shadow_fiend represents the amount below max mana required to trigger
-#
-priest=Priest_Shadow_Promises_NoSWD
-level=80
-talents=http://wotlk.wowhead.com/?talent=bVcbzhZZG0fVRfzfiqfzAo
-actions=flask,type=pure_death/wizard_oil/inner_fire/shadow_form/mana_potion,trigger=3500/shadow_fiend,trigger=6000/dispersion/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/mind_flay
-gear_stamina=708
-gear_intellect=777
-gear_spirit=411
-gear_spell_power=2200
-gear_crit_rating=461
-gear_hit_rating=250
-gear_haste_rating=492
-chaotic_skyfire=1
-glyph_blue_promises=1
-pet=shadow_fiend
-main_hand=beast,damage=110,speed=1.5,school=shadow
-quiet=1
-active=owner
-# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
-blessing_of_kings=1
-blessing_of_wisdom=1
-sanctified_retribution=1
-swift_retribution=1
-
-#
 # Shadow Priest Blue Promises
 #
 # (1) The "trigger=3500" option to mana_potion represents the mana gained and the amount below max required to trigger
