@@ -928,7 +928,6 @@ struct action_t
   virtual bool   result_is_miss();
   virtual double calculate_direct_damage(); 
   virtual double calculate_tick_damage(); 
-  virtual double dot_crit_damage_boost();
   virtual double resistance();
   virtual void   consume_resource();
   virtual void   execute();
@@ -945,6 +944,12 @@ struct action_t
   virtual void   reset();
   virtual void   cancel() { event_t::cancel( event ); reset(); }
   virtual const char* name() { return name_str.c_str(); }
+
+  virtual double total_multiplier() { return base_multiplier * player_multiplier * target_multiplier; }
+  virtual double total_power()      { return base_power      + player_power      + target_power;      }
+  virtual double total_hit()        { return base_hit        + player_hit        + target_hit;        }
+  virtual double total_crit()       { return base_crit       + player_crit       + target_crit;       }
+  virtual double total_crit_bonus() { return base_crit_bonus * player_crit_bonus * target_crit_bonus; }
 
   static action_t* create_action( player_t*, const std::string& name, const std::string& options );
 };
@@ -972,7 +977,6 @@ struct attack_t : public action_t
   virtual double tick_time()                         { return action_t::tick_time();               }
   virtual double calculate_direct_damage()           { return action_t::calculate_direct_damage(); }
   virtual double calculate_tick_damage()             { return action_t::calculate_tick_damage();   }
-  virtual double dot_crit_damage_boost()             { return action_t::dot_crit_damage_boost();   }
   virtual double resistance()                        { return action_t::resistance();              }
   virtual void   consume_resource()                  { action_t::consume_resource();               }
   virtual void   execute()                           { action_t::execute();                        }
@@ -983,6 +987,8 @@ struct attack_t : public action_t
   virtual void   schedule_tick()                     { action_t::schedule_tick();                  }
   virtual bool   ready()                             { return action_t::ready();                   }
   virtual void   reset()                             { action_t::reset();                          }
+
+  virtual double total_expertise() { return base_expertise + player_expertise + target_expertise; }
 };
 
 // Spell =====================================================================
@@ -1006,7 +1012,6 @@ struct spell_t : public action_t
   virtual double cost()                              { return action_t::cost();                    }
   virtual double calculate_direct_damage()           { return action_t::calculate_direct_damage(); }
   virtual double calculate_tick_damage()             { return action_t::calculate_tick_damage();   }
-  virtual double dot_crit_damage_boost()             { return action_t::dot_crit_damage_boost();   }
   virtual double resistance()                        { return action_t::resistance();              }
   virtual void   consume_resource()                  { action_t::consume_resource();               }
   virtual void   execute()                           { action_t::execute();                        }

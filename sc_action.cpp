@@ -254,13 +254,6 @@ double action_t::resistance()
   return resist;
 }
 
-// action_t::dot_crit_damage_boost ===========================================
-
-double action_t::dot_crit_damage_boost()
-{
-  return 1.0;       
-}
-
 // action_t::calculate_tick_damage ===========================================
 
 double action_t::calculate_tick_damage()
@@ -269,15 +262,11 @@ double action_t::calculate_tick_damage()
 
   if( base_tick_dmg == 0 ) return 0;
 
-  double power = base_power + player_power + target_power;
-
   // FIXME! Are there DoT effects that include weapon damage/modifiers?
 
-  tick_dmg  = base_tick_dmg + power * tick_power_mod;
-  tick_dmg *= base_multiplier * player_multiplier * target_multiplier;
+  tick_dmg  = base_tick_dmg + total_power() * tick_power_mod;
+  tick_dmg *= total_multiplier();
   
-  tick_dmg *= dot_crit_damage_boost();
-
   double init_tick_dmg = tick_dmg;
 
   if( ! binary ) tick_dmg *= 1.0 - resistance();
@@ -314,21 +303,19 @@ double action_t::calculate_direct_damage()
 
   if( base_direct_dmg == 0 ) return 0;
 
-  double power = base_power + player_power + target_power;
-
   if( weapon )
   {
     double weapon_damage = weapon -> damage;
     double weapon_speed  = normalize_weapon_speed ? weapon -> normalized_weapon_speed() : weapon -> swing_time;
 
-    direct_dmg  = base_direct_dmg + weapon_speed * ( weapon_damage + ( power * direct_power_mod ) );
-    direct_dmg *= base_multiplier * player_multiplier * target_multiplier;
+    direct_dmg  = base_direct_dmg + weapon_speed * ( weapon_damage + ( total_power() * direct_power_mod ) );
+    direct_dmg *= total_multiplier();
     if( ! weapon -> main ) direct_dmg *= 0.5;
   }
   else
   {
-    direct_dmg  = base_direct_dmg + power * direct_power_mod;
-    direct_dmg *= base_multiplier * player_multiplier * target_multiplier;
+    direct_dmg  = base_direct_dmg + total_power() * direct_power_mod;
+    direct_dmg *= total_multiplier();
   }
   
   double init_direct_dmg = direct_dmg;
@@ -339,9 +326,7 @@ double action_t::calculate_direct_damage()
   }
   else if( result == RESULT_CRIT )
   {
-    double bonus = base_crit_bonus * player_crit_bonus * target_crit_bonus;
-    
-    direct_dmg *= 1.0 + bonus;
+    direct_dmg *= 1.0 + total_crit_bonus();
   }
 
   if( ! binary ) direct_dmg *= 1.0 - resistance();

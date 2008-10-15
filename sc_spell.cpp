@@ -180,7 +180,7 @@ void spell_t::calculate_result()
   {
     double miss_chance = level_based_miss_chance( player -> level, sim -> target -> level );
 
-    miss_chance -= base_hit + player_hit + target_hit;
+    miss_chance -= total_hit();
 
     if( rand_t::roll( miss_chance ) )
     {
@@ -205,9 +205,7 @@ void spell_t::calculate_result()
 
     if( may_crit )
     {
-      double crit_chance = base_crit + player_crit + target_crit;
-
-      if( rand_t::roll( crit_chance ) )
+      if( rand_t::roll( total_crit() ) )
       {
 	result = RESULT_CRIT;
       }

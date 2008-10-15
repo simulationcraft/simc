@@ -272,7 +272,6 @@ struct warlock_spell_t : public spell_t
 
   // Passthru Methods
   virtual double cost()                              { return spell_t::cost();                  }
-  virtual double calculate_tick_damage()             { return spell_t::calculate_tick_damage(); }
   virtual void   last_tick()                         { spell_t::last_tick();                    }
   virtual void   assess_damage( double a, int8_t d ) { spell_t::assess_damage( a, d );          }
   virtual bool   ready()                             { return spell_t::ready();                 }
@@ -1234,7 +1233,7 @@ static void trigger_pandemic( spell_t* s )
     }
   };
 
-  if( rand_t::roll( s -> player_crit ) )
+  if( rand_t::roll( s -> total_crit() ) )
   {
     if( ! p -> active_pandemic ) p -> active_pandemic = new pandemic_t( p );
 
@@ -2791,7 +2790,6 @@ struct immolate_t : public warlock_spell_t
   virtual double calculate_tick_damage()
   {
     warlock_t* p = player -> cast_warlock();
-    spell_t::calculate_tick_damage();
     if( p -> glyphs.immolate ) direct_dmg *= 1.20;
     return tick_dmg;
   }

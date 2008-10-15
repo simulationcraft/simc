@@ -91,7 +91,7 @@ void attack_t::build_table( std::vector<double>& chances,
 
   double miss=0, dodge=0, parry=0, glance=0, block=0, crit=0;
 
-  double expertise = base_expertise + player_expertise + target_expertise;
+  double expertise = total_expertise();
 
   int delta_level = sim -> target -> level - player -> level;
 
@@ -105,7 +105,7 @@ void attack_t::build_table( std::vector<double>& chances,
     {
       miss = 0.05 + delta_level * 0.005;
     }
-    miss -= base_hit + player_hit + target_hit;
+    miss -= total_hit();
   }
 
   if( may_dodge ) 
@@ -139,7 +139,7 @@ void attack_t::build_table( std::vector<double>& chances,
 
   if( may_crit )
   {
-    crit = base_crit + player_crit + target_crit;
+    crit = total_crit();
   }
 
   if( sim -> debug ) report_t::log( sim, "attack_t::build_table: %s miss=%.3f dodge=%.3f parry=%.3f glance=%.3f block=%.3f crit=%.3f",

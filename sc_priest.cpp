@@ -773,16 +773,15 @@ struct shadow_word_pain_t : public priest_spell_t
     return true;
   }
   
-  virtual double dot_crit_damage_boost()
+  virtual double calculate_tick_damage()
   {
     priest_t* p = player -> cast_priest();
-
-    if( ( p -> buffs.shadow_form > 0 ) && ( p -> glyphs.blue_promises > 0 ) )
+    spell_t::calculate_tick_damage();
+    if( p -> buffs.shadow_form && p -> glyphs.blue_promises )
     {
-      double crit_chance = base_crit + player_crit + target_crit;
-  	  return (1.0 + crit_chance);
+      tick_dmg *= 1.0 + total_crit();
     }
-    return 1.0;
+    return tick_dmg;
   }    
 };
 
@@ -861,16 +860,15 @@ struct vampiric_touch_t : public priest_spell_t
     }
   }
   
-  virtual double dot_crit_damage_boost()
+  virtual double calculate_tick_damage()
   {
     priest_t* p = player -> cast_priest();
-
-    if( ( p -> buffs.shadow_form > 0 ) && ( p -> glyphs.blue_promises > 0 ) )
+    spell_t::calculate_tick_damage();
+    if( p -> buffs.shadow_form && p -> glyphs.blue_promises )
     {
-      double crit_chance = base_crit + player_crit + target_crit;
-  	  return (1.0 + crit_chance);
+      tick_dmg *= 1.0 + total_crit();
     }
-    return 1.0;
+    return tick_dmg;
   }    
 };
 
@@ -940,17 +938,16 @@ struct devouring_plague_t : public priest_spell_t
     pop_misery( this );
   }
   
-  virtual double dot_crit_damage_boost()
+  virtual double calculate_tick_damage()
   {
     priest_t* p = player -> cast_priest();
-
-    if( ( p -> buffs.shadow_form > 0 ) && ( p -> glyphs.blue_promises > 0 ) )
+    spell_t::calculate_tick_damage();
+    if( p -> buffs.shadow_form && p -> glyphs.blue_promises )
     {
-      double crit_chance = base_crit + player_crit + target_crit;
-  	  return (1.0 + crit_chance);
+      tick_dmg *= 1.0 + total_crit();
     }
-    return 1.0;
-  }  
+    return tick_dmg;
+  }    
 };
 
 // Vampiric Embrace Spell ======================================================
