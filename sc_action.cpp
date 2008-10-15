@@ -254,6 +254,13 @@ double action_t::resistance()
   return resist;
 }
 
+// action_t::dot_crit_damage_boost ===========================================
+
+double action_t::dot_crit_damage_boost()
+{
+  return 1.0;       
+}
+
 // action_t::calculate_tick_damage ===========================================
 
 double action_t::calculate_tick_damage()
@@ -268,6 +275,8 @@ double action_t::calculate_tick_damage()
 
   tick_dmg  = base_tick_dmg + power * tick_power_mod;
   tick_dmg *= base_multiplier * player_multiplier * target_multiplier;
+  
+  tick_dmg *= dot_crit_damage_boost();
 
   double init_tick_dmg = tick_dmg;
 

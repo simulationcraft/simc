@@ -730,6 +730,7 @@ struct shadow_word_pain_t : public priest_spell_t
     base_multiplier *= 1.0 + ( p -> talents.darkness                  * 0.02 +
              			       p -> talents.twin_disciplines          * 0.01 +
 			                   p -> talents.improved_shadow_word_pain * 0.03 );
+			                   
     base_hit += p -> talents.shadow_focus * 0.01;
 
     if( p -> gear.tier6_2pc ) num_ticks++;
@@ -771,6 +772,18 @@ struct shadow_word_pain_t : public priest_spell_t
 
     return true;
   }
+  
+  virtual double dot_crit_damage_boost()
+  {
+    priest_t* p = player -> cast_priest();
+
+    if( ( p -> buffs.shadow_form > 0 ) && ( p -> glyphs.blue_promises > 0 ) )
+    {
+      double crit_chance = base_crit + player_crit + target_crit;
+  	  return (1.0 + crit_chance);
+    }
+    return 1.0;
+  }    
 };
 
 // Vampiric Touch Spell ======================================================
@@ -805,13 +818,21 @@ struct vampiric_touch_t : public priest_spell_t
     base_execute_time = 1.5; 
     base_tick_time    = 3.0; 
     num_ticks         = 5;
-    tick_power_mod    = base_tick_time / 15.0;
+    if ( p -> glyphs.blue_promises > 0 )
+    {
+      tick_power_mod    = 2 * base_tick_time / 15.0;
+    }
+    else
+    {
+      tick_power_mod    = base_tick_time / 15.0;        
+    }
 
     base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.shadow_focus * 0.02;
     base_cost        = floor(base_cost);
     
     base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
+
     base_hit        += p -> talents.shadow_focus * 0.01;
 
     observer = &( p -> active_vampiric_touch );
@@ -839,6 +860,18 @@ struct vampiric_touch_t : public priest_spell_t
       p -> buffs.replenishment--;
     }
   }
+  
+  virtual double dot_crit_damage_boost()
+  {
+    priest_t* p = player -> cast_priest();
+
+    if( ( p -> buffs.shadow_form > 0 ) && ( p -> glyphs.blue_promises > 0 ) )
+    {
+      double crit_chance = base_crit + player_crit + target_crit;
+  	  return (1.0 + crit_chance);
+    }
+    return 1.0;
+  }    
 };
 
 // Devouring Plague Spell ======================================================
@@ -880,6 +913,7 @@ struct devouring_plague_t : public priest_spell_t
     base_cost        = floor(base_cost);
 
     base_multiplier *= 1.0 + p -> talents.darkness * 0.02 + p -> talents.twin_disciplines * 0.01;
+        
     base_hit        += p -> talents.shadow_focus * 0.01;
 
     observer = &( p -> active_devouring_plague );
@@ -905,6 +939,18 @@ struct devouring_plague_t : public priest_spell_t
     priest_spell_t::last_tick(); 
     pop_misery( this );
   }
+  
+  virtual double dot_crit_damage_boost()
+  {
+    priest_t* p = player -> cast_priest();
+
+    if( ( p -> buffs.shadow_form > 0 ) && ( p -> glyphs.blue_promises > 0 ) )
+    {
+      double crit_chance = base_crit + player_crit + target_crit;
+  	  return (1.0 + crit_chance);
+    }
+    return 1.0;
+  }  
 };
 
 // Vampiric Embrace Spell ======================================================

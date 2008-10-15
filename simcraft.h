@@ -928,6 +928,7 @@ struct action_t
   virtual bool   result_is_miss();
   virtual double calculate_direct_damage(); 
   virtual double calculate_tick_damage(); 
+  virtual double dot_crit_damage_boost();
   virtual double resistance();
   virtual void   consume_resource();
   virtual void   execute();
@@ -971,6 +972,7 @@ struct attack_t : public action_t
   virtual double tick_time()                         { return action_t::tick_time();               }
   virtual double calculate_direct_damage()           { return action_t::calculate_direct_damage(); }
   virtual double calculate_tick_damage()             { return action_t::calculate_tick_damage();   }
+  virtual double dot_crit_damage_boost()             { return action_t::dot_crit_damage_boost();   }
   virtual double resistance()                        { return action_t::resistance();              }
   virtual void   consume_resource()                  { action_t::consume_resource();               }
   virtual void   execute()                           { action_t::execute();                        }
@@ -1004,6 +1006,7 @@ struct spell_t : public action_t
   virtual double cost()                              { return action_t::cost();                    }
   virtual double calculate_direct_damage()           { return action_t::calculate_direct_damage(); }
   virtual double calculate_tick_damage()             { return action_t::calculate_tick_damage();   }
+  virtual double dot_crit_damage_boost()             { return action_t::dot_crit_damage_boost();   }
   virtual double resistance()                        { return action_t::resistance();              }
   virtual void   consume_resource()                  { action_t::consume_resource();               }
   virtual void   execute()                           { action_t::execute();                        }
