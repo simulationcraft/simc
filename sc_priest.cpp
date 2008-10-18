@@ -1841,10 +1841,12 @@ void priest_t::reset()
   buffs_inner_fire          = 0;
   buffs_shadow_weaving      = 0;
   buffs_surge_of_light      = 0;
+  buffs_glyph_of_shadow     = 0;
 
   // Expirations
   expirations_improved_spirit_tap = 0;
   expirations_shadow_weaving      = 0;
+  expirations_glyph_of_shadow     = 0;
 }
 
 // priest_t::regen  ==========================================================
