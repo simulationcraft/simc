@@ -144,7 +144,7 @@ void action_t::player_buff()
     }
   }
 
-  if( p -> buffs.sanctified_retribution ) player_multiplier *= 1.02;
+  if( p -> buffs.sanctified_retribution ) player_multiplier *= 1.03;
 
   if( sim -> debug ) 
     report_t::log( sim, "action_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f", 
