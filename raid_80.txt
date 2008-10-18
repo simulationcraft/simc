@@ -133,6 +133,7 @@ gear_haste_rating=492
 chaotic_skyfire=1
 glyph_shadow_word_death=1
 glyph_shadow_word_pain=1
+glyph_shadow=1
 pet=shadow_fiend
 main_hand=beast,damage=110,speed=1.5,school=shadow
 quiet=1
@@ -297,6 +298,11 @@ blessing_of_wisdom=1
 sanctified_retribution=1
 swift_retribution=1
 
+# Supported Moonkin Glyphs
+# glyph_moonfire=1
+# glyph_starfire=1
+# glyph_insect_swarm=1
+
 #
 # Balance Druid
 #
@@ -319,7 +325,6 @@ gear_crit_rating=461
 gear_hit_rating=250
 gear_haste_rating=492
 chaotic_skyfire=1
-# The starfire glyph is coded with starfire refreshing moonfire, not starfall.
 glyph_moonfire=1
 glyph_starfire=1
 glyph_insect_swarm=1
@@ -332,6 +337,16 @@ blessing_of_kings=1
 blessing_of_wisdom=1
 sanctified_retribution=1
 swift_retribution=1
+
+# Supported Eleshaman Glyphs
+# glyph_chain_lightning=1
+# glyph_earth_shock=1
+# glyph_flametongue_weapon=1
+# glyph_lightning_bolt=1
+# glyph_totem_of_wrath=1
+# glyph_flame_shock=1
+# glyph_lava=1
+# glyph_elemental_mastery=1
 
 #
 # Elemental Shaman
@@ -351,19 +366,15 @@ gear_crit_rating=461
 gear_hit_rating=250
 gear_haste_rating=492
 chaotic_skyfire=1
-glyph_flametongue_weapon=1
+# Glyphs
 glyph_totem_of_wrath=1
-glyph_lightning_bolt=1
-glyph_earth_shock=1
 glyph_flame_shock=1
 glyph_lava=1
-glyph_elemental_mastery=1
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
 blessing_of_kings=1
 blessing_of_wisdom=1
 sanctified_retribution=1
 swift_retribution=1
-
 
 #
 # Enhancement Shaman

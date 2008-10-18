@@ -468,7 +468,7 @@ void report_t::print()
         while( convergence < 1 ) { convergence *= 10.0; sigma++; }
 
 #ifndef VISUAL_STUDIO
-        fprintf( sim -> output_file, " (+/-%.1f, 95%% prob.)  CS=%d", p -> 2 * dps_std_dev / sqrt( sim -> iterations ), sigma );
+        fprintf( sim -> output_file, " (+/-%.1f, 95%% prob.)  CS=%d", 2.0 * p -> dps_std_dev / sqrt( sim -> iterations ), sigma );
 #endif
       }
     }

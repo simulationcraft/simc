@@ -254,7 +254,7 @@ static void trigger_earth_and_moon( spell_t* s )
     {
       name = "Earth and Moon Expiration";
       if( sim -> log ) report_t::log( sim, "%s gains Earth and Moon", sim -> target -> name() );
-      sim -> target -> debuffs.earth_and_moon = std::min(p -> talents.earth_and_moon, (int8_t)3) * 13.0/3;
+      sim -> target -> debuffs.earth_and_moon = (int8_t) std::min(p -> talents.earth_and_moon, (int8_t)3) * 13.0/3;
       sim -> add_event( this, 12.0 );
     }
     virtual void execute()
@@ -1436,7 +1436,6 @@ bool druid_t::parse_option( const std::string& name,
     { "wrath_of_cenarius",         OPT_INT8,  &( talents.wrath_of_cenarius         ) },
     // Glyphs
     { "glyph_blue_promises",       OPT_INT8,  &( glyphs.blue_promises              ) },
-    { "glyph_innervate",           OPT_INT8,  &( glyphs.innervate                  ) },
     { "glyph_insect_swarm",        OPT_INT8,  &( glyphs.insect_swarm               ) },
     { "glyph_moonfire",            OPT_INT8,  &( glyphs.moonfire                   ) },
     { "glyph_starfire",            OPT_INT8,  &( glyphs.starfire                   ) },
