@@ -232,23 +232,23 @@ bool option_t::parse( sim_t* sim,
 
       if( address_string.find( "worldofwarcraft" ) != value.npos )
       {
-	if( address_string.find( "talents2" ) != value.npos )
-	{
-	  encoding = ENCODING_BLIZZARD;
-	}
-	else
-	{
-	  printf( "%s: Only Beta-level talent strings are supported.\n", sim -> active_player -> name() );
-	  exit(0);
-	}
+        if( address_string.find( "talents2" ) != value.npos )
+        {
+          encoding = ENCODING_BLIZZARD;
+        }
+        else
+        {
+          printf( "%s: Only Beta-level talent strings are supported.\n", sim -> active_player -> name() );
+          exit(0);
+        }
       }
       else if( address_string.find( "mmo-champion" ) != value.npos )
       {
-	encoding = ENCODING_MMO;
+        encoding = ENCODING_MMO;
       }
       else if( address_string.find( "wowhead" ) != value.npos )
       {
-	encoding = ENCODING_WOWHEAD;
+        encoding = ENCODING_WOWHEAD;
       }
     }
 

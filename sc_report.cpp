@@ -463,11 +463,13 @@ void report_t::print()
 
       if( report_statistics ) 
       {
-	int sigma = -1;
-	double convergence = fabs( p -> dps_convergence - p -> dps ) / p -> dps;
-	while( convergence < 1 ) { convergence *= 10.0; sigma++; }
+        int sigma = -1;
+        double convergence = fabs( p -> dps_convergence - p -> dps ) / p -> dps;
+        while( convergence < 1 ) { convergence *= 10.0; sigma++; }
 
-	fprintf( sim -> output_file, " (+/-%.1f, 95%% prob.)  CS=%d", p -> dps_std_dev / sqrt( sim -> iterations ), sigma );
+#ifndef VISUAL_STUDIO
+        fprintf( sim -> output_file, " (+/-%.1f, 95%% prob.)  CS=%d", p -> 2 * dps_std_dev / sqrt( sim -> iterations ), sigma );
+#endif
       }
     }
 
@@ -477,7 +479,7 @@ void report_t::print()
       if( report_rps  ) fprintf( sim -> output_file, "  %s%.1f/%.1f", report_tag ? "RPS="    : "", p -> rps_loss, p -> rps_gain );
 
       if( report_dpr || report_rps )
-	fprintf( sim -> output_file, "  (%s)", util_t::resource_type_string( p -> primary_resource() ) );
+      fprintf( sim -> output_file, "  (%s)", util_t::resource_type_string( p -> primary_resource() ) );
     }
 
     if( report_name ) fprintf( sim -> output_file, "\n" );

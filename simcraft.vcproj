@@ -42,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="D:\SimCraft\vs;D:\SimCraft\sfmt;D:\SimCraft"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;USE_SFMT;EVENT_MM"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;USE_SFMT;EVENT_MM;VISUAL_STUDIO"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
