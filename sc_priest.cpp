@@ -491,7 +491,7 @@ static void trigger_glyph_of_shadow( spell_t* s )
 
   priest_t* p = s -> player -> cast_priest();
 
-  if( p -> glyphs.shadow )
+  if( p -> glyphs.shadow && p -> buffs.shadow_form )
   {
     event_t*& e = p -> expirations_glyph_of_shadow;
 
