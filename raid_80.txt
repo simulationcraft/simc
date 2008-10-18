@@ -445,7 +445,7 @@ swift_retribution=1
 warlock=Warlock_Affliction
 level=80
 talents=http://talent.mmo-champion.com/?warlock=550000050000000000000000002350022001023510053510331351000000000000000000000000000
-actions=flask,type=pure_death/spell_stone/fel_armor/summon_pet,felhunter/haunt/curse_of_agony/corruption/unstable_affliction/siphon_life/shadow_bolt,shadow_trance=1/drain_soul,target_pct=20/immolate/shadow_bolt/dark_pact
+actions=flask,type=pure_death/spell_stone/fel_armor/summon_pet,felhunter/haunt,only_for_debuff=1/curse_of_agony/corruption/unstable_affliction/siphon_life/shadow_bolt,shadow_trance=1/drain_soul,target_pct=20/immolate/shadow_bolt/dark_pact
 gear_stamina=708
 gear_intellect=777
 gear_spirit=411
@@ -479,7 +479,7 @@ swift_retribution=1
 warlock=Warlock_Affliction_CoE
 level=80
 talents=http://talent.mmo-champion.com/?warlock=550000050000000000000000002350022001023510053510331351000000000000000000000000000
-actions=flask,type=pure_death/spell_stone/fel_armor/summon_pet,felhunter/haunt/curse_of_elements/corruption/unstable_affliction/siphon_life/shadow_bolt,shadow_trance=1/drain_soul,target_pct=20/immolate/shadow_bolt/dark_pact
+actions=flask,type=pure_death/spell_stone/fel_armor/summon_pet,felhunter/haunt,only_for_debuff=1/curse_of_elements/corruption/unstable_affliction/siphon_life/shadow_bolt,shadow_trance=1/drain_soul,target_pct=20/immolate/shadow_bolt/dark_pact
 gear_stamina=708
 gear_intellect=777
 gear_spirit=411
@@ -513,7 +513,7 @@ swift_retribution=1
 warlock=Warlock_Affliction_NoDS
 level=80
 talents=http://talent.mmo-champion.com/?warlock=550000050000000000000000002350220001023510053510331351000000000000000000000000000
-actions=flask,type=pure_death/spell_stone/fel_armor/summon_pet,felhunter/haunt/curse_of_agony/corruption/unstable_affliction/siphon_life/immolate/shadow_bolt/dark_pact
+actions=flask,type=pure_death/spell_stone/fel_armor/summon_pet,felhunter/haunt,only_for_debuff=1/curse_of_agony/corruption/unstable_affliction/siphon_life/immolate/shadow_bolt/dark_pact
 gear_stamina=708
 gear_intellect=777
 gear_spirit=411

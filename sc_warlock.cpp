@@ -2673,6 +2673,8 @@ struct unstable_affliction_t : public warlock_spell_t
 
 struct haunt_t : public warlock_spell_t
 {
+  int8_t only_for_debuff;
+
   haunt_t( player_t* player, const std::string& options_str ) : 
     warlock_spell_t( "haunt", player, SCHOOL_SHADOW, TREE_AFFLICTION )
   {
@@ -2681,9 +2683,12 @@ struct haunt_t : public warlock_spell_t
 
     option_t options[] =
     {
-      { "rank",     OPT_INT8, &rank_index },
+      { "rank",                OPT_INT8, &rank_index },
+      { "only_for_debuff",     OPT_INT8, &only_for_debuff },
       { NULL }
     };
+
+    only_for_debuff = 0;
     parse_options( options, options_str );
       
     static rank_t ranks[] =
@@ -2727,6 +2732,21 @@ struct haunt_t : public warlock_spell_t
     warlock_spell_t::player_buff();
     if( p -> buffs_shadow_vulnerability ) player_multiplier *= 1.0 + p -> talents.improved_shadow_bolt * 0.02;
     p -> uptimes_shadow_vulnerability -> update( p -> buffs_shadow_vulnerability != 0 );
+  }
+
+  virtual bool ready()
+  {
+    if( ! spell_t::ready() )
+      return false;
+
+    if( ! only_for_debuff )
+      return true;
+
+    warlock_t* p = player -> cast_warlock();
+    double haunt_finish = sim -> current_time + execute_time();
+    double debuff_finish  = p -> expirations_haunted ? p -> expirations_haunted -> time : 0.0;
+
+    return haunt_finish >= debuff_finish;
   }
 };
 
