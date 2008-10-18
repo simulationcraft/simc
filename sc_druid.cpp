@@ -688,6 +688,7 @@ struct moonfire_t : public druid_spell_t
   {
     druid_t* p = player -> cast_druid();
     num_ticks = 4;
+    added_ticks = 0;
     if( p -> talents.natures_splendor ) num_ticks++;
     if( p -> gear.tier6_2pc           ) num_ticks++;
     druid_spell_t::execute();
@@ -863,7 +864,8 @@ struct starfire_t : public druid_spell_t
 
       if( p -> glyphs.starfire && p -> active_moonfire )
       {
-        p -> active_moonfire -> extend_duration( 1 );
+        if ( p -> active_moonfire -> added_ticks < 3 )
+          p -> active_moonfire -> extend_duration( 1 );
       }
     }
   }
