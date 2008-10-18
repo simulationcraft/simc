@@ -250,11 +250,11 @@ static void trigger_earth_and_moon( spell_t* s )
 
   struct earth_and_moon_expiration_t : public event_t
   {
-    earth_and_moon_expiration_t( sim_t* sim ) : event_t( sim )
+    earth_and_moon_expiration_t( sim_t* sim, druid_t* p ) : event_t( sim )
     {
       name = "Earth and Moon Expiration";
       if( sim -> log ) report_t::log( sim, "%s gains Earth and Moon", sim -> target -> name() );
-      sim -> target -> debuffs.earth_and_moon = 13;
+      sim -> target -> debuffs.earth_and_moon = std::min(p -> talents.earth_and_moon, (int8_t)3) * 13.0/3;
       sim -> add_event( this, 12.0 );
     }
     virtual void execute()
@@ -265,18 +265,15 @@ static void trigger_earth_and_moon( spell_t* s )
     }
   };
 
-  if( rand_t::roll( p -> talents.earth_and_moon * 0.20 ) )
+  event_t*& e = s -> sim -> target -> expirations.earth_and_moon;
+  
+  if( e )
   {
-    event_t*& e = s -> sim -> target -> expirations.earth_and_moon;
-    
-    if( e )
-    {
-      e -> reschedule( 12.0 );
-    }
-    else
-    {
-      e = new earth_and_moon_expiration_t( s -> sim );
-    }
+    e -> reschedule( 12.0 );
+  }
+  else
+  {
+    e = new earth_and_moon_expiration_t( s -> sim, p );
   }
 }
 
@@ -449,7 +446,7 @@ void druid_spell_t::player_buff()
     player_multiplier *= 1.0 + p -> talents.master_shapeshifter * 0.02;
   }
 
-  player_multiplier *= 1.0 + p -> talents.earth_and_moon * 0.01;
+  player_multiplier *= 1.0 + std::min(p -> talents.earth_and_moon, (int8_t) 3) * 0.01;
 }
 
 // druid_spell_t::target_debuff ============================================
@@ -678,9 +675,9 @@ struct moonfire_t : public druid_spell_t
 
     base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.moonglow * 0.03;
-    base_multiplier *= 1.0 + ( p -> talents.moonfury          * 0.02 +
-			       p -> talents.improved_moonfire * 0.05 +
-			       p -> talents.genesis           * 0.01 );
+    base_multiplier *= 1.0 + ( std::min(p -> talents.moonfury, (int8_t) 3) * 0.10/3 +
+                               p -> talents.improved_moonfire              * 0.05 +
+                               p -> talents.genesis                        * 0.01 );
     base_crit       += p -> talents.improved_moonfire * 0.05;
     base_crit_bonus *= 1.0 + p -> talents.vengeance * 0.20;
 
@@ -822,7 +819,7 @@ struct starfire_t : public druid_spell_t
     base_cost          = rank -> cost;
     base_cost         *= 1.0 - p -> talents.moonglow * 0.03;
     base_execute_time -= p -> talents.starlight_wrath * 0.1;
-    base_multiplier   *= 1.0 + p -> talents.moonfury * 0.02;
+    base_multiplier   *= 1.0 + std::min(p -> talents.moonfury, (int8_t) 3) * 0.10/3;
     base_crit         += p -> talents.focused_starlight * 0.02;
     base_crit         += p -> talents.natures_majesty * 0.02;
     base_crit_bonus   *= 1.0 + p -> talents.vengeance * 0.20;
@@ -847,9 +844,9 @@ struct starfire_t : public druid_spell_t
     if( p -> gear.tier5_4pc )
     {
       if( p -> active_moonfire     ||
-	  p -> active_insect_swarm )
+          p -> active_insect_swarm )
       {
-	player_multiplier *= 1.10;
+        player_multiplier *= 1.10;
       }
     }
   }
@@ -880,15 +877,15 @@ struct starfire_t : public druid_spell_t
 
     if( eclipse_benefit )
       if( ! sim -> time_to_think( p -> buffs_eclipse_starfire ) )
-	return false;
+        return false;
 
     if( eclipse_trigger )
     {
       if( p -> talents.eclipse == 0 )
-	return false;
+        return false;
 
       if( sim -> current_time + 1.5 < p -> cooldowns_eclipse )
-	  return false;
+        return false;
     }
 
     return true;
@@ -940,7 +937,7 @@ struct wrath_t : public druid_spell_t
     base_cost          = rank -> cost;
     base_cost         *= 1.0 - p -> talents.moonglow * 0.03;
     base_execute_time -= p -> talents.starlight_wrath * 0.1;
-    base_multiplier   *= 1.0 + p -> talents.moonfury * 0.02;
+    base_multiplier   *= 1.0 + std::min(p -> talents.moonfury, (int8_t) 3) * 0.10/3;
     base_crit         += p -> talents.focused_starlight * 0.02;
     base_crit         += p -> talents.natures_majesty * 0.02;
     base_crit_bonus   *= 1.0 + p -> talents.vengeance * 0.20;
