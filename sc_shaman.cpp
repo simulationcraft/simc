@@ -136,6 +136,9 @@ struct shaman_t : public player_t
     int8_t totem_of_wrath;
     int8_t windfury_weapon;
     int8_t flame_shock;
+    int8_t lava_lash;
+    int8_t lava;
+    int8_t elemental_mastery;
     glyphs_t() { memset( (void*) this, 0x0, sizeof( glyphs_t ) ); }
   };
   glyphs_t glyphs;
@@ -835,7 +838,11 @@ struct lava_lash_t : public shaman_attack_t
   virtual void player_buff()
   {
     shaman_attack_t::player_buff();
-    if( weapon -> buff == FLAMETONGUE ) player_multiplier *= 1.25;
+    if( weapon -> buff == FLAMETONGUE ) 
+    {
+      shaman_t* p = player -> cast_shaman();
+      player_multiplier *= ( 1.25 + p -> glyphs.lava_lash ? 0.10 : 0.00);
+    }
   }
 };
 
@@ -976,7 +983,7 @@ void shaman_spell_t::execute()
 
       if( p -> gear.tier4_4pc )
       {
-	p -> buffs.tier4_4pc = rand_t::roll( 0.11 ) ;
+        p -> buffs.tier4_4pc = rand_t::roll( 0.11 ) ;
       }
     }
   }
@@ -1248,8 +1255,8 @@ struct lava_burst_t : public shaman_spell_t
 
     static rank_t ranks[] =
     {
-      { 80, 2, 1082, 1378, 0, 0.10 },
-      { 75, 1,  920, 1172, 0, 0.10 },
+      { 80, 2, 1192, 1518, 0, 0.10 },
+      { 75, 1, 1012, 1290, 0, 0.10 },
       { 0, 0 }
     };
     player -> init_mana_costs( ranks );
@@ -1257,6 +1264,7 @@ struct lava_burst_t : public shaman_spell_t
 
     base_execute_time  = 2.0; 
     direct_power_mod   = base_execute_time / 3.5;
+    direct_power_mod  += p -> glyphs.lava ? 0.10 : 0.00;
     may_crit           = true;
     cooldown           = 8.0;
 
@@ -1277,10 +1285,10 @@ struct lava_burst_t : public shaman_spell_t
     if( result_is_hit() )
     {
       shaman_t* p = player -> cast_shaman();
-      if( p -> active_flame_shock )
+      if( p -> active_flame_shock && !p -> glyphs.flame_shock )
       {
-	p -> active_flame_shock -> cancel();
-	p -> active_flame_shock = 0;
+        p -> active_flame_shock -> cancel();
+        p -> active_flame_shock = 0;
       }
     }
   }
@@ -1293,11 +1301,11 @@ struct lava_burst_t : public shaman_spell_t
     {
       if( p -> buffs_maelstrom_weapon == 5 )
       {
-	t = 0;
+        t = 0;
       }
       else
       {
-	t *= ( 1.0 - p -> buffs_maelstrom_weapon * 0.20 );
+        t *= ( 1.0 - p -> buffs_maelstrom_weapon * 0.20 );
       }
     }
     return t;
@@ -1320,25 +1328,32 @@ struct lava_burst_t : public shaman_spell_t
       shaman_t* p = player -> cast_shaman();
 
       if( ! p -> active_flame_shock ) 
-	return false;
+        return false;
 
       double lvb_finish = sim -> current_time + execute_time();
       double fs_finish  = p -> active_flame_shock -> duration_ready;
 
       if( lvb_finish > fs_finish )
-	return false;
+        return false;
 
-      if( max_ticks_consumed > 0 )
+      if ( ! p -> glyphs.flame_shock )
       {
-	double earliest_finish = fs_finish - max_ticks_consumed * 3.0;
+        if( max_ticks_consumed > 0 )
+        {
+          double earliest_finish = fs_finish - max_ticks_consumed * 3.0;
 
-	if( lvb_finish < earliest_finish )
-	  return false;
+          if( lvb_finish < earliest_finish )
+            return false;
+        }
+      }
+      else
+      {
+        return true;
       }
     }
 
     if( maelstrom > 0 && 
-	maelstrom > player -> cast_shaman() -> buffs_maelstrom_weapon )
+        maelstrom > player -> cast_shaman() -> buffs_maelstrom_weapon )
       return false;
 
     return true;
@@ -1354,7 +1369,10 @@ struct elemental_mastery_t : public shaman_spell_t
   {
     shaman_t* p = player -> cast_shaman();
     assert( p -> talents.elemental_mastery );
-    cooldown = 180.0;
+
+    cooldown  = 180.0;
+    cooldown -= p -> glyphs.elemental_mastery ? 30.0 : 0.0;
+
     trigger_gcd = 0;  
     if( ! options_str.empty() )
     {
@@ -1581,7 +1599,7 @@ struct flame_shock_t : public shaman_spell_t
     cooldown          = 6.0;
     cooldown_group    = "shock";
 
-    if ( p -> glyphs.flame_shock ) num_ticks++;
+    if ( p -> glyphs.flame_shock ) num_ticks += 2;
       
     base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.convection * 0.02;
@@ -1916,25 +1934,25 @@ struct windfury_totem_t : public shaman_spell_t
 
       expiration_t( sim_t* sim, player_t* player, windfury_totem_t* t ) : event_t( sim, player ), totem(t)
       {
-	name = "Windfury Totem Expiration";
-	for( player_t* p = sim -> player_list; p; p = p -> next )
-	{
-	  p -> aura_gain( "Windfury Totem" );
-	  p -> buffs.windfury_totem = t -> bonus;
-	}
-	sim -> add_event( this, 300.0 );
+        name = "Windfury Totem Expiration";
+        for( player_t* p = sim -> player_list; p; p = p -> next )
+        {
+          p -> aura_gain( "Windfury Totem" );
+          p -> buffs.windfury_totem = t -> bonus;
+        }
+        sim -> add_event( this, 300.0 );
       }
       virtual void execute()
       {
-	for( player_t* p = sim -> player_list; p; p = p -> next )
-	{
-	  // Make sure it hasn't already been overriden by a more powerful totem.
-	  if( totem -> bonus < p -> buffs.windfury_totem )
-	    continue;
+        for( player_t* p = sim -> player_list; p; p = p -> next )
+        {
+          // Make sure it hasn't already been overriden by a more powerful totem.
+          if( totem -> bonus < p -> buffs.windfury_totem )
+            continue;
 
-	  p -> aura_loss( "Windfury Totem" );
-	  p -> buffs.windfury_totem = 0;
-	}
+          p -> aura_loss( "Windfury Totem" );
+          p -> buffs.windfury_totem = 0;
+        }
       }
     };
 
@@ -2075,8 +2093,9 @@ struct windfury_weapon_t : public shaman_spell_t
     trigger_gcd = 0;
 
     bonus_power = ( ( p -> level < 68 ) ? 333  : 
-		    ( p -> level < 72 ) ? 445  :
-	            ( p -> level < 76 ) ? 835  : 1250 );
+                    ( p -> level < 72 ) ? 445  :
+                    ( p -> level < 76 ) ? 835  : 
+                                          1250 );
 
     if( p -> glyphs.windfury_weapon ) bonus_power *= 1.40;
   }
@@ -3102,6 +3121,9 @@ bool shaman_t::parse_option( const std::string& name,
     { "glyph_totem_of_wrath",      OPT_INT8,  &( glyphs.totem_of_wrath             ) },
     { "glyph_windfury_weapon",     OPT_INT8,  &( glyphs.windfury_weapon            ) },
     { "glyph_flame_shock",         OPT_INT8,  &( glyphs.flame_shock                ) },
+    { "glyph_lava_lash",           OPT_INT8,  &( glyphs.lava_lash                  ) },
+    { "glyph_lava",                OPT_INT8,  &( glyphs.lava                       ) },
+    { "glyph_elemental_mastery",   OPT_INT8,  &( glyphs.elemental_mastery          ) },
     { NULL, OPT_UNKNOWN }
   };
 

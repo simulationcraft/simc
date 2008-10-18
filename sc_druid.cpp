@@ -863,7 +863,7 @@ struct starfire_t : public druid_spell_t
 
       if( p -> glyphs.starfire && p -> active_moonfire )
       {
-	p -> active_moonfire -> extend_duration( 1 );
+        p -> active_moonfire -> extend_duration( 1 );
       }
     }
   }
