@@ -23,10 +23,12 @@ struct priest_t : public player_t
   int8_t buffs_improved_spirit_tap;
   int8_t buffs_shadow_weaving;
   int8_t buffs_surge_of_light;
+  int8_t buffs_glyph_of_shadow;
 
   // Expirations
   event_t* expirations_improved_spirit_tap;
   event_t* expirations_shadow_weaving;
+  event_t* expirations_glyph_of_shadow;
 
   // Gains
   gain_t* gains_shadow_fiend;
@@ -34,6 +36,7 @@ struct priest_t : public player_t
 
   // Up-Times
   uptime_t* uptimes_improved_spirit_tap;
+  uptime_t* uptimes_glyph_of_shadow;
 
   struct talents_t
   {
@@ -89,6 +92,7 @@ struct priest_t : public player_t
     int8_t shadow_word_death;
     int8_t shadow_word_pain;
     int8_t plus_10pct_swd_crit;
+    int8_t shadow;
     glyphs_t() { memset( (void*) this, 0x0, sizeof( glyphs_t ) ); }
   };
   glyphs_t glyphs;
@@ -108,10 +112,12 @@ struct priest_t : public player_t
     buffs_inner_fire          = 0;
     buffs_shadow_weaving      = 0;
     buffs_surge_of_light      = 0;
+    buffs_glyph_of_shadow     = 0;
 
     // Expirations
     expirations_improved_spirit_tap = 0;
     expirations_shadow_weaving      = 0;
+    expirations_glyph_of_shadow     = 0;
 
     // Gains
     gains_dispersion   = get_gain( "dispersion" );
@@ -119,6 +125,7 @@ struct priest_t : public player_t
 
     // Up-Times
     uptimes_improved_spirit_tap = get_uptime( "improved_spirit_tap" );
+    uptimes_glyph_of_shadow = get_uptime( "glyph_of_shadow" );
   }
 
   // Character Definition
@@ -413,7 +420,7 @@ static void trigger_surge_of_light( spell_t* s )
       p -> buffs_surge_of_light = 1;
 }
 
-// trigger_improved_spirit_tap =================================================
+// trigger_improved_spirit_tap ================================================
 
 static void trigger_improved_spirit_tap( spell_t* s )
 {
@@ -448,6 +455,49 @@ static void trigger_improved_spirit_tap( spell_t* s )
     if( e )
     {
       e -> reschedule( 8.0 );
+    }
+    else
+    {
+      e = new expiration_t( s -> sim, p );
+    }
+  }
+}
+
+// trigger_glyph_of_shadow ====================================================
+
+static void trigger_glyph_of_shadow( spell_t* s )
+{
+  struct expiration_t : public event_t
+  {
+    double spellpower_bonus;
+    expiration_t( sim_t* sim, priest_t* p ) : event_t( sim, p )
+    {
+      name = "Glyph of Shadow Expiration";
+      p -> buffs_glyph_of_shadow = 1;
+      p -> aura_gain( "glyph_of_shadow" );
+      spellpower_bonus = p -> attribute[ ATTR_SPIRIT ] * 0.1;
+      p -> spell_power[ SCHOOL_MAX ] += spellpower_bonus;
+      sim -> add_event( this, 10.0 );
+    }
+    virtual void execute()
+    {
+      priest_t* p = player -> cast_priest();
+      p -> buffs_glyph_of_shadow = 0;
+      p -> aura_loss( "glyph_of_shadow" );
+      p -> spell_power[ SCHOOL_MAX ] -= spellpower_bonus;
+      p -> expirations_glyph_of_shadow = 0;
+    }
+  };
+
+  priest_t* p = s -> player -> cast_priest();
+
+  if( p -> glyphs.shadow )
+  {
+    event_t*& e = p -> expirations_glyph_of_shadow;
+
+    if( e )
+    {
+      e -> reschedule( 10.0 );
     }
     else
     {
@@ -723,14 +773,13 @@ struct shadow_word_pain_t : public priest_spell_t
     tick_power_mod    = base_tick_time / 15.0;
     tick_power_mod   *= 0.91666667;  // Nerf Bat!
     base_cost         = rank -> cost;
-    base_cost        *= 1.0 - p -> talents.mental_agility * 0.02 - p -> talents.shadow_focus * 0.02 -
-                        ((p -> glyphs.shadow_word_pain) ? 0.2 : 0.0);
+    base_cost        *= 1.0 - p -> talents.mental_agility * 0.02 - p -> talents.shadow_focus * 0.02;
     base_cost         = floor(base_cost);
     
     base_multiplier *= 1.0 + ( p -> talents.darkness                  * 0.02 +
-             			       p -> talents.twin_disciplines          * 0.01 +
-			                   p -> talents.improved_shadow_word_pain * 0.03 );
-			                   
+                               p -> talents.twin_disciplines          * 0.01 +
+                               p -> talents.improved_shadow_word_pain * 0.03 );
+
     base_hit += p -> talents.shadow_focus * 0.01;
 
     if( p -> gear.tier6_2pc ) num_ticks++;
@@ -777,7 +826,7 @@ struct shadow_word_pain_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
     spell_t::calculate_tick_damage();
-    if( p -> buffs.shadow_form && p -> glyphs.blue_promises )
+    if( p -> buffs.shadow_form )
     {
       tick_dmg *= 1.0 + total_crit();
     }
@@ -817,14 +866,7 @@ struct vampiric_touch_t : public priest_spell_t
     base_execute_time = 1.5; 
     base_tick_time    = 3.0; 
     num_ticks         = 5;
-    if ( p -> glyphs.blue_promises > 0 )
-    {
-      tick_power_mod    = 2 * base_tick_time / 15.0;
-    }
-    else
-    {
-      tick_power_mod    = base_tick_time / 15.0;        
-    }
+    tick_power_mod    = 2 * base_tick_time / 15.0;
 
     base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.shadow_focus * 0.02;
@@ -864,7 +906,7 @@ struct vampiric_touch_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
     spell_t::calculate_tick_damage();
-    if( p -> buffs.shadow_form && p -> glyphs.blue_promises )
+    if( p -> buffs.shadow_form )
     {
       tick_dmg *= 1.0 + total_crit();
     }
@@ -890,9 +932,9 @@ struct devouring_plague_t : public priest_spell_t
 
     static rank_t ranks[] =
     {
-      { 79, 9, 0, 0, 215, 0.25 },
-      { 73, 8, 0, 0, 177, 0.25 },
-      { 68, 7, 0, 0, 152, 0.25 },
+      { 79, 9, 0, 0, 172, 0.25 },
+      { 73, 8, 0, 0, 143, 0.25 },
+      { 68, 7, 0, 0, 136, 0.25 },
       { 60, 6, 0, 0, 113, 0.28 },
       { 0, 0 }
     };
@@ -904,7 +946,9 @@ struct devouring_plague_t : public priest_spell_t
     num_ticks         = 8;  
     cooldown          = 24.0;
     binary            = true;
+
     tick_power_mod    = base_tick_time / 15.0;
+    tick_power_mod   *= 0.92;
 
     base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.mental_agility * 0.02 - p -> talents.shadow_focus * 0.02;
@@ -942,7 +986,7 @@ struct devouring_plague_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
     spell_t::calculate_tick_damage();
-    if( p -> buffs.shadow_form && p -> glyphs.blue_promises )
+    if( p -> buffs.shadow_form )
     {
       tick_dmg *= 1.0 + total_crit();
     }
@@ -1201,6 +1245,7 @@ struct mind_flay_t : public priest_spell_t
     channeled         = true; 
     binary            = false;
     may_crit          = true;
+
     direct_power_mod  = base_tick_time / 3.5;
     direct_power_mod *= 0.9;  // Nerf Bat!
 
@@ -1238,7 +1283,11 @@ struct mind_flay_t : public priest_spell_t
     priest_spell_t::player_buff();
     if( p -> talents.twisted_faith )
     {
-      if( p -> active_shadow_word_pain ) player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.02;
+      if( p -> active_shadow_word_pain ) 
+      {
+        player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.02;
+        if ( p -> glyphs.shadow_word_pain ) player_multiplier *= 1.10;
+      }
     }
   }
 
@@ -1270,15 +1319,6 @@ struct mind_flay_t : public priest_spell_t
     }
 
     update_stats( DMG_OVER_TIME );
-
-    if( result_is_hit() && this -> current_tick == 1)
-    {
-      action_t* swp = p -> active_shadow_word_pain;
-      if( swp && rand_t::roll( p -> talents.pain_and_suffering * (1.0/3.0) ) )
-      {
-        swp -> refresh_duration();
-      }
-    }
 
     if( result_is_hit() )
     {
@@ -1646,9 +1686,19 @@ void priest_t::spell_hit_event( spell_t* s )
     if( s -> num_ticks && ! s -> channeled ) push_misery( s );
   }
 
+  if (!strcmp(s -> name(), "mind_flay"))
+  {
+      action_t* swp = this -> active_shadow_word_pain;
+      if( swp && rand_t::roll( this -> talents.pain_and_suffering * (1.0/3.0) ) )
+      {
+        swp -> refresh_duration();
+      }
+  }
+
   if( s -> result == RESULT_CRIT )
   {
     trigger_surge_of_light( s );
+    trigger_glyph_of_shadow( s );
   }
 }
 
@@ -1666,6 +1716,7 @@ void priest_t::spell_finish_event( spell_t* s )
   pop_tier5_4pc( s );
 
   uptimes_improved_spirit_tap -> update( buffs_improved_spirit_tap );
+  uptimes_glyph_of_shadow -> update( buffs_glyph_of_shadow );
 }
 
 // priest_t::spell_damage_event ==============================================
@@ -1680,15 +1731,17 @@ void priest_t::spell_damage_event( spell_t* s,
   {
     if( active_vampiric_embrace )
     {
-      double adjust = 0.15 + talents.improved_vampiric_embrace * 0.05;
-      double health = amount * adjust;
+      double self_healing = 0.15 * ( 1.0 + talents.improved_vampiric_embrace * 1.0/3 );
+      double party_healing = 0.03 * ( 1.0 + talents.improved_vampiric_embrace * 1.0/3 );
+
+      this -> resource_gain( RESOURCE_HEALTH, amount * self_healing );
 
       for( player_t* p = sim -> player_list; p; p = p -> next )
       {
-	if( p -> party == party )
+        if( p -> party == party && p != this )
         {
-	  p -> resource_gain( RESOURCE_HEALTH, health );
-	}
+          p -> resource_gain( RESOURCE_HEALTH, amount * party_healing );
+        }
       }
     }
   }
@@ -2011,6 +2064,7 @@ bool priest_t::parse_option( const std::string& name,
     { "glyph_shadow_word_death",   OPT_INT8,  &( glyphs.shadow_word_death          ) },
     { "glyph_shadow_word_pain",    OPT_INT8,  &( glyphs.shadow_word_pain           ) },
     { "glyph_+10%_swd_crit",       OPT_INT8,  &( glyphs.plus_10pct_swd_crit        ) },
+    { "glyph_shadow",              OPT_INT8,  &( glyphs.shadow                     ) },
     { NULL, OPT_UNKNOWN }
   };
 
