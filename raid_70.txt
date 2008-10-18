@@ -1,0 +1,548 @@
+#======================================================================================================
+# WARNING!  When making changes to this file in an editor, make sure it is saved in "plain text" format.
+#======================================================================================================
+
+# TO EXECUTE THIS PARAMETER FILE:  simcraft  output=results.txt  input=raid_70.txt 
+# TO GENERATE CHARTS IN HTML:      simcraft  output=results.txt  input=raid_70.txt  html=chart.html  report_chart=1
+
+#
+# Globals
+#
+
+# patch level of 3.0.0 or later implies Wrath of the Lich King
+patch=3.0.0
+
+# Lag is a random value centered on the value below with a range of +/- 0.05 seconds
+lag=0.2
+
+# Boss Level
+target_level=73
+
+# One of "max_time" (fight time in seconds) or "target_health" must be specified.
+# When "max_time" is used, the health of the target will be infered half-way through simulation.
+max_time=300
+
+# While min/max damage effects (such as weapons and direct damage spells) are averaged out, spell event
+# and attack table mechanics are still random.  In order to get a trustworthy answer from the simulator,
+# one must have a very long fight or iterate a short fight many, many times.  Given the constraints of
+# mana, iterating a short fight is often more realistic.
+iterations=1000
+
+# For convenience it is possible to tell the simulator that a specific resource (mana, rage, etc)
+# will never run out if you do not wish to configure raid/consumable buff scenarios to ensure sufficient
+# resource replenishment.
+infinite_mana=0
+
+# WotLK has regen ticks occuring every 0.1sec.  Modeling this exactly produces a ton of churn in the
+# event list and tons of unnecessary calculations.  A value of 1.0 is not perfect, but the performance
+# improvement is worth the slight inaccuracy.
+regen_periodicity=1.0
+
+# Some WotLK beta patches have included a Potion Sickness debuff that only lows one potion consumed per combat.
+potion_sickness=1
+
+# Since support for the Warrior class does not yet exist, one can infer a Sunder Armor debuff by 
+# artificially setting a low target armor value.
+target_armor=7700
+sunder_armor=2600
+
+# Since support for the Paladin class does not yet exist, one can specify target debuffs (such as
+# Judgement of Wisdom) and player buffs (such as Blessing of Wisdom and Sanctified Retribution) as parameters.
+# Both blessing_of_wisdom=1 and sanctified_retribution=1 would be included in each player section as appropriate.
+judgement_of_wisdom=1
+
+#
+# Shadow Priest
+#
+# (1) The "trigger=2500" option to mana_potion represents the mana gained and the amount below max required to trigger
+# (2) The "trigger=6000" option to shadow_fiend represents the amount below max mana required to trigger
+#
+priest=Priest_Shadow
+level=70
+talents=http://talent.mmo-champion.com/?priest=050300000000000000000000000000000000000000000000000000320023051223010325150301351
+actions=flask,type=pure_death/wizard_oil/inner_fire/shadow_form/mana_potion,trigger=2500/shadow_fiend,trigger=6000/dispersion/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/shadow_word_death/mind_flay
+gear_stamina=360
+gear_intellect=360
+gear_spirit=140
+gear_spell_power=1300
+gear_crit_rating=275
+gear_hit_rating=135
+gear_haste_rating=100
+gear_mp5=50
+chaotic_skyfire=1
+glyph_shadow_word_death=1
+pet=shadow_fiend
+main_hand=beast,damage=110,speed=1.5,school=shadow
+quiet=1
+active=owner
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_wisdom=1
+sanctified_retribution=1
+swift_retribution=1
+
+#
+# Shadow Priest Blue Promises
+#
+# (1) The "trigger=2500" option to mana_potion represents the mana gained and the amount below max required to trigger
+# (2) The "trigger=6000" option to shadow_fiend represents the amount below max mana required to trigger
+#
+priest=Priest_Shadow_Promised
+level=70
+talents=http://talent.mmo-champion.com/?priest=050300000000000000000000000000000000000000000000000000320023051223010325150301351
+actions=flask,type=pure_death/wizard_oil/inner_fire/shadow_form/mana_potion,trigger=2500/shadow_fiend,trigger=6000/dispersion/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/shadow_word_death/mind_flay
+gear_stamina=360
+gear_intellect=360
+gear_spirit=140
+gear_spell_power=1300
+gear_crit_rating=275
+gear_hit_rating=135
+gear_haste_rating=100
+gear_mp5=50
+chaotic_skyfire=1
+glyph_shadow_word_death=1
+glyph_blue_promises=1
+pet=shadow_fiend
+main_hand=beast,damage=110,speed=1.5,school=shadow
+quiet=1
+active=owner
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_wisdom=1
+sanctified_retribution=1
+swift_retribution=1
+
+#
+# Holy Priest
+#
+# (1) The "trigger=3500" option to mana_potion represents the mana gained and the amount below max required to trigger
+# (2) The "trigger=6000" option to shadow_fiend represents the amount below max mana required to trigger
+# (3) The "shadow_word_pain" option to the inner_focus action makes sure IF won't be used until SW:P needs to be refreshed.
+#
+priest=Priest_Holy
+level=70
+talents=http://talent.mmo-champion.com/?priest=050320113050510250100000000023505100202005200000000000000000000000000000000000000
+actions=flask,type=blinding_light/wizard_oil/inner_fire/divine_spirit/mana_potion,trigger=3500/shadow_fiend,trigger=6000/inner_focus,shadow_word_pain/shadow_word_pain/power_infusion/holy_fire/smite
+gear_stamina=360
+gear_intellect=360
+gear_spirit=140
+gear_spell_power=1300
+gear_crit_rating=275
+gear_hit_rating=135
+gear_haste_rating=100
+gear_mp5=50
+chaotic_skyfire=1
+glyph_shadow_word_death=1
+glyph_shadow_word_pain=1
+pet=shadow_fiend
+main_hand=beast,damage=110,speed=1.5,school=shadow
+quiet=1
+active=owner
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_wisdom=1
+sanctified_retribution=1
+swift_retribution=1
+
+# Supported Mage Glyphs
+# glyph_arcane_power=1
+# glyph_fire_ball=1
+# glyph_frost_bolt=1
+# glyph_improved_scorch=1
+# glyph_mage_armor=1
+# glyph_mana_gem=1
+# glyph_molten_armor=1
+# glyph_water_elemental=1
+# glyph_frostfire=1
+
+#
+# Mage_Arcane
+#
+# (1) The "trigger=3500" option to mana_gem and mana_potion represents the mana gained and the amount below max required to trigger
+# (2) The "trigger=10000" option to evocation represents the mana gained and the amount below max required to trigger
+# (3) The "barrage=1" option to arcane_missles means that it will only get executed when the "barrage" buff has been up 
+#     for at least 0.5sec (to account for lag and reaction time).
+#
+mage=Mage_51_10_0_Slow
+level=70
+talents=http://talent.mmo-champion.com/?mage=00550000000000000000000000000000000000000000000000000000230005033100330130323000514321
+actions=flask,type=blinding_light/wizard_oil/molten_armor/focus_magic,target=Mage_51_10_0/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/slow/arcane_missiles,barrage=1/presence_of_mind,fire_ball/arcane_barrage/fire_ball
+gear_stamina=360
+gear_intellect=360
+gear_spirit=140
+gear_spell_power=1300
+gear_crit_rating=275
+gear_hit_rating=135
+gear_haste_rating=100
+gear_mp5=50
+chaotic_skyfire=1
+# Glyphs
+glyph_fire_ball=1
+glyph_molten_armor=1
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_wisdom=1
+sanctified_retribution=1
+swift_retribution=1
+
+mage=Mage_51_10_0
+level=70
+talents=http://talent.mmo-champion.com/?mage=00550000000000000000000000000000000000000000000000000000230005033100330130323000505321
+actions=flask,type=blinding_light/wizard_oil/molten_armor/focus_magic,target=Mage_18_43_0/mana_gem,trigger=2500/mana_potion,trigger=2500/evocation,trigger=10000/arcane_missiles,barrage=1/presence_of_mind,fire_ball/arcane_barrage/fire_ball
+gear_stamina=360
+gear_intellect=360
+gear_spirit=140
+gear_spell_power=1300
+gear_crit_rating=275
+gear_hit_rating=135
+gear_haste_rating=100
+gear_mp5=50
+chaotic_skyfire=1
+# Glyphs
+glyph_fire_ball=1
+glyph_molten_armor=1
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_wisdom=1
+sanctified_retribution=1
+swift_retribution=1
+
+#
+# Mage_Fire
+#
+# (1) The "trigger=2500" option to mana_gem and mana_potion represents the mana gained and the amount below max required to trigger
+# (2) The "trigger=10000" option to evocation represents the mana gained and the amount below max required to trigger
+# (3) Focus Magic from raid dps standpoint is better than Icy Veins, but Fire Mages cannot live without Frost Channeling due to mana constraints.
+#
+mage=Mage_18_43_0
+level=70
+# We will let the poor Frost Mage raid-slave keep up the Improved Scorch debuff
+talents=http://talent.mmo-champion.com/?mage=00550200122033300531203003000000000000000000000000000000005005013100030000000000000000
+actions=flask,type=pure_death/wizard_oil/arcane_brilliance/molten_armor/focus_magic,target=Mage_18_0_43/mana_gem,trigger=2500/mana_potion,trigger=2500/evocation,trigger=10000/combustion/pyroblast,hot_streak=1/fire_ball
+gear_stamina=360
+gear_intellect=360
+gear_spirit=140
+gear_spell_power=1300
+gear_crit_rating=275
+gear_hit_rating=135
+gear_haste_rating=100
+gear_mp5=50
+chaotic_skyfire=1
+# Glyphs
+glyph_fire_ball=1
+glyph_molten_armor=1
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_wisdom=1
+sanctified_retribution=1
+swift_retribution=1
+
+mage=Mage_0_50_11
+level=70
+# We will let the poor Frost Mage raid-slave keep up the Improved Scorch debuff
+talents=http://talent.mmo-champion.com/?mage=00550300122033310531203003502030032010000000000000000000000000000000000000000000000000
+actions=flask,type=pure_death/wizard_oil/arcane_brilliance/molten_armor/mana_gem,trigger=2500/mana_potion,trigger=2500/evocation,trigger=10000/icy_veins/combustion/pyroblast,hot_streak=1/fire_ball
+gear_stamina=360
+gear_intellect=360
+gear_spirit=140
+gear_spell_power=1300
+gear_crit_rating=275
+gear_hit_rating=135
+gear_haste_rating=100
+gear_mp5=50
+chaotic_skyfire=1
+# Glyphs
+glyph_fire_ball=1
+glyph_molten_armor=1
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_wisdom=1
+sanctified_retribution=1
+swift_retribution=1
+
+#
+# Mage_Frost
+#
+# (1) The "trigger=2500" option to mana_gem and mana_potion represents the mana gained and the amount below max required to trigger
+# (2) The "trigger=10000" option to evocation represents the mana gained and the amount below max required to trigger
+# (3) The "frozen=1" option to ice_lance means that it will only be cast if the target is frozen (via winters_grasp) or virtually frozen (via fingers_of_frost)
+# (4) The "fb_priority=1" option to ice_lance means that it will only be cast if the frozen debuff/buff will end before a frost_bolt could be cast
+#
+mage=Mage_0_9_52
+level=70
+talents=http://talent.mmo-champion.com/?mage=23040000000000000000000000003503030310033100230152231350000000000000000000000000000000
+actions=flask,type=pure_death/wizard_oil/arcane_brilliance/molten_armor/mana_gem,trigger=2500/mana_potion,trigger=2500/ice_lance,frozen=1,fb_priority=1/evocation,trigger=10000/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/frost_bolt
+gear_stamina=360
+gear_intellect=360
+gear_spirit=140
+gear_spell_power=1300
+gear_crit_rating=275
+gear_hit_rating=135
+gear_haste_rating=100
+gear_mp5=50
+chaotic_skyfire=1
+# Glyphs
+glyph_molten_armor=1
+glyph_frost_bolt=1
+glyph_water_elemental=1
+pet=water_elemental
+actions=water_bolt
+quiet=1
+active=owner
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_wisdom=1
+sanctified_retribution=1
+swift_retribution=1
+
+mage=Mage_18_0_43
+level=70
+talents=http://talent.mmo-champion.com/?mage=00000000000000000000000000003503030310033100230152221000005005031100030000000000000000
+actions=flask,type=pure_death/wizard_oil/arcane_brilliance/molten_armor/focus_magic,target=Mage_51_10_0_Slow/mana_gem,trigger=2500/mana_potion,trigger=2500/ice_lance,frozen=1,fb_priority=1/evocation,trigger=10000/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/frost_bolt
+gear_stamina=360
+gear_intellect=360
+gear_spirit=140
+gear_spell_power=1300
+gear_crit_rating=275
+gear_hit_rating=135
+gear_haste_rating=100
+gear_mp5=50
+chaotic_skyfire=1
+# Glyphs
+glyph_molten_armor=1
+glyph_frost_bolt=1
+glyph_water_elemental=1
+pet=water_elemental
+actions=water_bolt
+quiet=1
+active=owner
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_wisdom=1
+sanctified_retribution=1
+swift_retribution=1
+
+#
+# Balance Druid
+#
+# (1) The "trigger=2500" option to mana_potion represents the mana gained and the amount below max required to trigger
+# (2) The "eclipse=trigger" option to wrath will make sure that it is only used to trigger the Eclipse talent
+#     which means it will only be used after the cooldown is ready and the effect has not yet proc'd.
+#
+druid=Druid_Balance
+level=70
+talents=http://talent.mmo-champion.com/?druid=00000000000000000000000000000000000000000000000000000005502203105331305213305301050
+actions=flask,type=blinding_light/wizard_oil/mark_of_the_wild/moonkin_form/mana_potion,trigger=2500/innervate/faerie_fire/treants/moonfire/insect_swarm/wrath,eclipse=trigger/starfire
+gear_stamina=360
+gear_intellect=360
+gear_spirit=140
+gear_spell_power=1300
+gear_crit_rating=275
+gear_hit_rating=135
+gear_haste_rating=100
+gear_mp5=50
+chaotic_skyfire=1
+# The starfire glyph is coded with starfire refreshing moonfire, not starfall.
+glyph_moonfire=1
+glyph_starfire=1
+glyph_insect_swarm=1
+# Three Treants modeled as one pet that hits 3x hard
+pet=treants
+quiet=1
+active=owner
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_wisdom=1
+sanctified_retribution=1
+swift_retribution=1
+
+#
+# Elemental Shaman
+#
+# (1) The "trigger=2500" option to mana_potion represents the mana gained and the amount below max required to trigger
+# (2) The "flame_shock=1,max_ticks_consumed=1" option to lava_burst will prevent it from being called until there is only one tick remaining on Flame Shock
+#
+shaman=Shaman_Elemental
+level=70
+talents=http://talent.mmo-champion.com/?shaman=550000151321535102501051000000000000000000000000000050500000000000000000000000
+actions=flask,type=blinding_light/flametongue_weapon,weapon=main/water_shield/mana_potion,trigger=2500/mana_spring_totem/totem_of_wrath/wrath_of_air_totem/elemental_mastery/flame_shock/bloodlust,target_pct=35/chain_lightning/earth_shock/lightning_bolt/thunderstorm
+gear_stamina=360
+gear_intellect=360
+gear_spirit=140
+gear_spell_power=1300
+gear_crit_rating=275
+gear_hit_rating=135
+gear_haste_rating=100
+gear_mp5=50
+chaotic_skyfire=1
+glyph_flametongue_weapon=1
+glyph_totem_of_wrath=1
+glyph_lightning_bolt=1
+glyph_earth_shock=1
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_wisdom=1
+sanctified_retribution=1
+swift_retribution=1
+
+
+# Supported Warlock Glyphs
+# glyph_conflagrate=1
+# glyph_corruption=1
+# glyph_curse_of_agony=1
+# glyph_felguard=1
+# glyph_felhunter=1
+# glyph_immolate=1
+# glyph_imp=1
+# glyph_searing_pain=1
+# glyph_shadow_bolt=1
+# glyph_shadow_burn=1
+# glyph_siphon_life=1
+
+#
+# Affliction Warlock
+#
+warlock=Warlock_Affliction
+level=70
+talents=http://talent.mmo-champion.com/?warlock=050000000000000000000000002350220001023510053510331351000000000000000000000000000
+actions=flask,type=pure_death/spell_stone/fel_armor/summon_pet,felhunter/haunt/curse_of_agony/corruption/unstable_affliction/siphon_life/shadow_bolt,shadow_trance=1/immolate/shadow_bolt/dark_pact
+gear_stamina=360
+gear_intellect=360
+gear_spirit=140
+gear_spell_power=1300
+gear_crit_rating=275
+gear_hit_rating=135
+gear_haste_rating=100
+gear_mp5=50
+chaotic_skyfire=1
+# Glyphs
+glyph_corruption=1
+glyph_curse_of_agony=1
+glyph_siphon_life=1
+# Pets
+pet=felhunter
+actions=shadow_bite/wait
+blessing_of_kings=1
+blessing_of_might=305
+sanctified_retribution=1
+swift_retribution=1
+quiet=1
+active=owner
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_wisdom=1
+sanctified_retribution=1
+swift_retribution=1
+
+#
+# Affliction Warlock (CoE instead of CoA)
+#
+warlock=Warlock_Affliction_CoE
+level=70
+talents=http://talent.mmo-champion.com/?warlock=050000000000000000000000002350220001023510053510331351000000000000000000000000000
+actions=flask,type=pure_death/spell_stone/fel_armor/summon_pet,felhunter/haunt/curse_of_elements/corruption/unstable_affliction/siphon_life/shadow_bolt,shadow_trance=1/immolate/shadow_bolt/dark_pact
+gear_stamina=360
+gear_intellect=360
+gear_spirit=140
+gear_spell_power=1300
+gear_crit_rating=275
+gear_hit_rating=135
+gear_haste_rating=100
+gear_mp5=50
+chaotic_skyfire=1
+# Glyphs
+glyph_corruption=1
+glyph_curse_of_agony=1
+glyph_siphon_life=1
+# Pets
+pet=felhunter
+actions=shadow_bite/wait
+blessing_of_kings=1
+blessing_of_might=305
+sanctified_retribution=1
+swift_retribution=1
+quiet=1
+active=owner
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_wisdom=1
+sanctified_retribution=1
+swift_retribution=1
+
+#
+# Demonology Warlock
+#
+warlock=Warlock_Demonology
+level=70
+talents=http://talent.mmo-champion.com/?warlock=550030000000000000000000000000000000000000000000000000033033011352101500135131300
+actions=flask,type=pure_death/fire_stone/fel_armor/summon_pet,felguard/curse_of_doom/demonic_empowerment/corruption/immolate/shadow_bolt/life_tap
+gear_stamina=360
+gear_intellect=360
+gear_spirit=140
+gear_spell_power=1300
+gear_crit_rating=275
+gear_hit_rating=135
+gear_haste_rating=100
+gear_mp5=50
+chaotic_skyfire=1
+# Glyphs
+glyph_corruption=1
+glyph_felguard=1
+glyph_shadow_bolt=1
+# Pets
+pet=felguard
+actions=cleave/wait
+blessing_of_kings=1
+blessing_of_might=305
+sanctified_retribution=1
+swift_retribution=1
+quiet=1
+active=owner
+pet=succubus
+actions=lash_of_pain/wait
+blessing_of_kings=1
+blessing_of_might=305
+sanctified_retribution=1
+swift_retribution=1
+quiet=1
+active=owner
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_wisdom=1
+sanctified_retribution=1
+swift_retribution=1
+
+#
+# Destruction Warlock
+#
+warlock=Warlock_Destruction
+level=70
+talents=http://talent.mmo-champion.com/?warlock=550330150000310510350303512050020000000000000000000000000000000000000000000000000
+actions=flask,type=pure_death/fire_stone/fel_armor/summon_pet,imp/shadow_bolt,shadow_trance=1/curse_of_agony/chaos_bolt/immolate/conflagrate/corruption/incinerate/life_tap
+gear_stamina=360
+gear_intellect=360
+gear_spirit=140
+gear_spell_power=1300
+gear_crit_rating=275
+gear_hit_rating=135
+gear_haste_rating=100
+gear_mp5=50
+chaotic_skyfire=1
+# Glyphs
+glyph_corruption=1
+glyph_imp=1
+glyph_curse_of_agony=1
+# Pets
+pet=imp
+actions=fire_bolt
+blessing_of_kings=1
+blessing_of_wisdom=1
+sanctified_retribution=1
+swift_retribution=1
+quiet=1
+active=owner
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_wisdom=1
+sanctified_retribution=1
+swift_retribution=1
