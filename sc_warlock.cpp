@@ -1712,20 +1712,20 @@ struct curse_of_elements_t : public warlock_spell_t
     {
       expiration_t( sim_t* sim, warlock_t* p ) : event_t( sim, p )
       {
-	name = "Cure of Elements Expiration";
-	target_t* t = sim -> target;
-	t -> debuffs.curse_of_elements = 10 + p -> talents.malediction;
-	t -> debuffs.affliction_effects++;
-	sim -> add_event( this, 300.0 );
+        name = "Cure of Elements Expiration";
+        target_t* t = sim -> target;
+        t -> debuffs.curse_of_elements = 10 + p -> talents.malediction;
+        t -> debuffs.affliction_effects++;
+        sim -> add_event( this, 300.0 );
       }
       virtual void execute()
       {
-	warlock_t* p = player -> cast_warlock();
-	target_t*  t = sim -> target;
-	p -> active_curse = 0;
-	t -> debuffs.curse_of_elements = 0;
-	t -> expirations.curse_of_elements = 0;
-	t -> debuffs.affliction_effects--;
+        warlock_t* p = player -> cast_warlock();
+        target_t*  t = sim -> target;
+        p -> active_curse = 0;
+        t -> debuffs.curse_of_elements = 0;
+        t -> expirations.curse_of_elements = 0;
+        t -> debuffs.affliction_effects--;
       }
     };
 
@@ -2699,7 +2699,7 @@ struct haunt_t : public warlock_spell_t
     
     base_execute_time = 1.5; 
     direct_power_mod  = base_execute_time / 3.5; 
-    cooldown          = 10.0;
+    cooldown          = 8.0;
     may_crit          = true;
       
     base_cost         = rank -> cost;
