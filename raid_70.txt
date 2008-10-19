@@ -70,6 +70,8 @@ gear_hit_rating=135
 gear_haste_rating=100
 gear_mp5=50
 chaotic_skyfire=1
+glyph_shadow_word_pain=1
+glyph_shadow=1
 glyph_shadow_word_death=1
 pet=shadow_fiend
 main_hand=beast,damage=110,speed=1.5,school=shadow
@@ -100,7 +102,8 @@ gear_hit_rating=135
 gear_haste_rating=100
 gear_mp5=50
 chaotic_skyfire=1
-glyph_shadow_word_death=1
+glyph_shadow_word_pain=1
+glyph_shadow=1
 pet=shadow_fiend
 main_hand=beast,damage=110,speed=1.5,school=shadow
 quiet=1
@@ -376,7 +379,6 @@ gear_mp5=50
 chaotic_skyfire=1
 glyph_flametongue_weapon=1
 glyph_totem_of_wrath=1
-glyph_lightning_bolt=1
 glyph_earth_shock=1
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
 blessing_of_kings=1
