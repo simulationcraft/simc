@@ -82,15 +82,15 @@ sanctified_retribution=1
 swift_retribution=1
 
 #
-# Shadow Priest Blue Promises
+# Shadow Priest
 #
 # (1) The "trigger=2500" option to mana_potion represents the mana gained and the amount below max required to trigger
 # (2) The "trigger=6000" option to shadow_fiend represents the amount below max mana required to trigger
 #
-priest=Priest_Shadow_Promised
+priest=Priest_Shadow_NoSWD
 level=70
 talents=http://talent.mmo-champion.com/?priest=050300000000000000000000000000000000000000000000000000320023051223010325150301351
-actions=flask,type=pure_death/wizard_oil/inner_fire/shadow_form/mana_potion,trigger=2500/shadow_fiend,trigger=6000/dispersion/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/shadow_word_death/mind_flay
+actions=flask,type=pure_death/wizard_oil/inner_fire/shadow_form/mana_potion,trigger=2500/shadow_fiend,trigger=6000/dispersion/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/mind_flay
 gear_stamina=360
 gear_intellect=360
 gear_spirit=140
@@ -101,7 +101,6 @@ gear_haste_rating=100
 gear_mp5=50
 chaotic_skyfire=1
 glyph_shadow_word_death=1
-glyph_blue_promises=1
 pet=shadow_fiend
 main_hand=beast,damage=110,speed=1.5,school=shadow
 quiet=1
