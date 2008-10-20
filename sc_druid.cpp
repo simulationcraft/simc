@@ -254,7 +254,7 @@ static void trigger_earth_and_moon( spell_t* s )
     {
       name = "Earth and Moon Expiration";
       if( sim -> log ) report_t::log( sim, "%s gains Earth and Moon", sim -> target -> name() );
-      sim -> target -> debuffs.earth_and_moon = (int8_t) std::min(p -> talents.earth_and_moon, (int8_t)3) * 13.0/3;
+      sim -> target -> debuffs.earth_and_moon = (int8_t) ( std::min(p -> talents.earth_and_moon, (int8_t)3) * 13.0/3.0 );
       sim -> add_event( this, 12.0 );
     }
     virtual void execute()
@@ -501,15 +501,13 @@ struct faerie_fire_t : public druid_spell_t
       expiration_t( sim_t* sim, player_t* p, faerie_fire_t* ff ) : event_t( sim, p ), faerie_fire( ff )
       {
 	target_t* t = sim -> target;
-	t -> armor -= faerie_fire -> armor_penetration;
-	t -> debuffs.faerie_fire = 1;
+	t -> debuffs.faerie_fire = faerie_fire -> armor_penetration;
 	t -> debuffs.improved_faerie_fire = faerie_fire -> bonus_hit;
 	sim -> add_event( this, 40.0 );
       }
       virtual void execute()
       {
 	target_t* t = sim -> target;
-	t -> armor += faerie_fire -> armor_penetration;
 	t -> debuffs.faerie_fire = 0;
 	t -> debuffs.improved_faerie_fire = 0;
 	t -> expirations.faerie_fire = 0;

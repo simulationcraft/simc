@@ -49,6 +49,20 @@ void target_t::recalculate_health()
   if( sim -> debug ) report_t::log( sim, "Target initial health calculated to be %.0f", initial_health );     
 }
 
+// target_t::composite_armor =================================================
+
+double target_t::composite_armor( player_t* p )
+{
+  double adjusted_armor = armor;
+
+  adjusted_armor -= debuffs.sunder_armor;
+  adjusted_armor -= debuffs.faerie_fire;
+
+  if( p -> buffs.executioner ) adjusted_armor -= 840;
+
+  return adjusted_armor;
+}
+
 // target_t::init ============================================================
 
 void target_t::init()
@@ -88,8 +102,9 @@ bool target_t::parse_option( const std::string& name,
     { "target_block",          OPT_INT16, &( block_value                       ) },
     { "target_health",         OPT_FLT,   &( initial_health                    ) },
     // FIXME! Once appropriate class implemented, these will be removed
-    { "snare",                 OPT_INT8,  &( debuffs.snare                     ) },
     { "judgement_of_wisdom",   OPT_FLT,   &( debuffs.judgement_of_wisdom       ) },
+    { "snare",                 OPT_INT8,  &( debuffs.snare                     ) },
+    { "sunder_armor",          OPT_FLT,   &( debuffs.sunder_armor              ) },
     { NULL, OPT_UNKNOWN }
   };
 

@@ -556,7 +556,7 @@ const char* report_t::chart_raid_gear()
   int num_players = sim -> players_by_rank.size();
   assert( num_players != 0 );
 
-  const int NUM_CATEGORIES = 10;
+  const int NUM_CATEGORIES = 11;
   std::vector<double> data_points[ NUM_CATEGORIES ];
 
   for( int i=0; i < NUM_CATEGORIES; i++ ) 
@@ -576,12 +576,13 @@ const char* report_t::chart_raid_gear()
     data_points[ 4 ][ i ] = ( p -> gear.attack_power              + p -> gear.attack_power_enchant              ) * 0.5;
     data_points[ 5 ][ i ] = ( p -> gear.spell_power[ SCHOOL_MAX ] + p -> gear.spell_power_enchant[ SCHOOL_MAX ] ) * 0.86;
 
-    data_points[ 6 ][ i ] = ( p -> gear.hit_rating   + p -> gear.hit_rating_enchant   );
-    data_points[ 7 ][ i ] = ( p -> gear.crit_rating  + p -> gear.crit_rating_enchant  );
-    data_points[ 8 ][ i ] = ( p -> gear.haste_rating + p -> gear.haste_rating_enchant );
+    data_points[ 6 ][ i ] = ( p -> gear.hit_rating       + p -> gear.hit_rating_enchant       );
+    data_points[ 7 ][ i ] = ( p -> gear.crit_rating      + p -> gear.crit_rating_enchant      );
+    data_points[ 8 ][ i ] = ( p -> gear.haste_rating     + p -> gear.haste_rating_enchant     );
+    data_points[ 9 ][ i ] = ( p -> gear.expertise_rating + p -> gear.expertise_rating_enchant );
 
-    data_points[ 9 ][ i ] = ( p -> gear.attack_penetration + p -> gear.attack_penetration_enchant ) * 0.14 +
-                            ( p -> gear.spell_penetration  + p -> gear.spell_penetration_enchant  ) * 0.80 ;
+    data_points[ 10 ][ i ] = ( p -> gear.armor_penetration_rating + p -> gear.armor_penetration_rating_enchant ) +
+                             ( p -> gear.spell_penetration        + p -> gear.spell_penetration_enchant        ) * 0.80 ;
   }
 
   double max_total=0;
@@ -596,8 +597,8 @@ const char* report_t::chart_raid_gear()
   }
 
   const char* colors[] = {
-    class_color( WARRIOR ), class_color( HUNTER  ), class_color( MAGE    ), class_color( DRUID   ), class_color( ROGUE        ), 
-    class_color( WARLOCK ), class_color( PRIEST  ), class_color( PALADIN ), class_color( SHAMAN  ), class_color( DEATH_KNIGHT )
+    class_color( WARRIOR ), class_color( HUNTER ), class_color( MAGE    ), class_color( DRUID  ), class_color( ROGUE        ), 
+    class_color( WARLOCK ), class_color( PRIEST ), class_color( PALADIN ), class_color( SHAMAN ), class_color( DEATH_KNIGHT ), "00FF00"
   };
 
   static std::string s;
@@ -638,7 +639,7 @@ const char* report_t::chart_raid_gear()
   s += "&";
   s += "chxs=0,000000,15";
   s += "&";
-  s += "chdl=Strength|Agility|Intellect|Spirit|Attack+Power|Spell+Power|Hit+Rating|Crit+Rating|Haste+Rating|Penetration";
+  s += "chdl=Strength|Agility|Intellect|Spirit|Attack+Power|Spell+Power|Hit+Rating|Crit+Rating|Haste+Rating|Expertise+Rating|Penetration";
   s += "&";
   s += "chtt=Gear+Overview";
   s += "&";

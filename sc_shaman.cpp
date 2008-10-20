@@ -1593,8 +1593,8 @@ struct flame_shock_t : public shaman_spell_t
     base_execute_time = 0; 
     base_tick_time    = 3.0;
     num_ticks         = 4;
-    direct_power_mod  = 0.21;
-    tick_power_mod    = 0.39 / num_ticks;
+    direct_power_mod  = 0.215;
+    tick_power_mod    = 0.155;
     may_crit          = true;
     cooldown          = 6.0;
     cooldown_group    = "shock";
@@ -2806,7 +2806,7 @@ void shaman_t::init_base()
   initial_spell_crit_per_intellect = rating_t::interpolate( level, 0.01/60.0, 0.01/80.0, 0.01/166.6 );
   initial_spell_power_per_intellect = talents.natures_blessing * 0.10;
 
-  base_attack_power = 120;
+  base_attack_power = ( level * 2 ) - 20;
   base_attack_crit  = 0.0167;
   initial_attack_power_per_strength = 1.0;
   initial_attack_power_per_agility  = 1.0;

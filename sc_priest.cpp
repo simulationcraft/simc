@@ -773,13 +773,12 @@ struct shadow_word_pain_t : public priest_spell_t
     tick_power_mod    = base_tick_time / 15.0;
     tick_power_mod   *= 0.91666667;  // Nerf Bat!
     base_cost         = rank -> cost;
-    base_cost        *= 1.0 - p -> talents.mental_agility * 0.02 - p -> talents.shadow_focus * 0.02;
-    base_cost         = floor(base_cost);
-    
+    base_cost        *= 1.0 - ( p -> talents.mental_agility  * 0.02 - 
+				p -> talents.shadow_focus    * 0.02 - 
+				p -> glyphs.shadow_word_pain * 0.20 );
     base_multiplier *= 1.0 + ( p -> talents.darkness                  * 0.02 +
-                               p -> talents.twin_disciplines          * 0.01 +
-                               p -> talents.improved_shadow_word_pain * 0.03 );
-
+			       p -> talents.twin_disciplines          * 0.01 +
+			       p -> talents.improved_shadow_word_pain * 0.03 );
     base_hit += p -> talents.shadow_focus * 0.01;
 
     if( p -> gear.tier6_2pc ) num_ticks++;

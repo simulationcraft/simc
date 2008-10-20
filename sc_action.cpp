@@ -217,11 +217,13 @@ double action_t::resistance()
 
   if( school == SCHOOL_PHYSICAL )
   {
-    double adjusted_armor = t -> armor - penetration;
+    double adjusted_armor = t -> composite_armor( player ) * ( 1.0 - penetration );
 
-    if( adjusted_armor < 0 ) adjusted_armor = 0;
+    if( adjusted_armor <= 0 ) return 0;
 
-    resist = adjusted_armor / ( ( 467.5 * player -> level ) + adjusted_armor - 22167.5 );
+    double adjusted_level = player -> level + 4.5 * ( player -> level - 59 );
+
+    resist = adjusted_armor / ( adjusted_armor + 400 + 85.0 * adjusted_level );
   }
   else
   {
@@ -308,13 +310,13 @@ double action_t::calculate_direct_damage()
     double weapon_damage = weapon -> damage;
     double weapon_speed  = normalize_weapon_speed ? weapon -> normalized_weapon_speed() : weapon -> swing_time;
 
-    direct_dmg  = base_direct_dmg + weapon_speed * ( weapon_damage + ( total_power() * direct_power_mod ) );
+    direct_dmg  = base_direct_dmg + weapon_damage + weapon_speed * direct_power_mod * total_power();
     direct_dmg *= total_multiplier();
     if( ! weapon -> main ) direct_dmg *= 0.5;
   }
   else
   {
-    direct_dmg  = base_direct_dmg + total_power() * direct_power_mod;
+    direct_dmg  = base_direct_dmg + direct_power_mod * total_power();
     direct_dmg *= total_multiplier();
   }
   

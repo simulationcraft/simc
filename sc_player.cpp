@@ -299,19 +299,20 @@ void player_t::init_attack()
     initial_attack_hit = base_attack_hit;
     initial_attack_hit += ( gear.hit_rating + gear.hit_rating_enchant ) / rating.attack_hit;
   }
-  if( initial_attack_expertise == 0 )
-  {
-    initial_attack_expertise = base_attack_expertise;
-    initial_attack_expertise += ( gear.attack_expertise_rating + gear.attack_expertise_rating_enchant ) / rating.attack_expertise;
-  }
   if( initial_attack_crit == 0 )
   {
     initial_attack_crit = base_attack_crit;
     initial_attack_crit += ( gear.crit_rating + gear.crit_rating_enchant ) / rating.attack_crit;
   }
+  if( initial_attack_expertise == 0 )
+  {
+    initial_attack_expertise = base_attack_expertise;
+    initial_attack_expertise += ( gear.expertise_rating + gear.expertise_rating_enchant ) / rating.expertise;
+  }
   if( initial_attack_penetration == 0 )
   {
-    initial_attack_penetration = base_attack_penetration + gear.attack_penetration + gear.attack_penetration_enchant;
+    initial_attack_penetration = base_attack_penetration;
+    initial_attack_penetration += ( gear.armor_penetration_rating + gear.armor_penetration_rating_enchant ) / rating.armor_penetration;
   }
 
 }
@@ -1633,11 +1634,11 @@ bool player_t::parse_option( const std::string& name,
     { "enchant_mp5",                          OPT_INT16,  &( gear.mp5_enchant                               ) },
     // Player - Gear - Attack									            
     { "gear_attack_power",                    OPT_INT16,  &( gear.attack_power                              ) },
-    { "gear_attack_expertise_rating",         OPT_INT16,  &( gear.attack_expertise_rating                   ) },
-    { "gear_attack_penetration",              OPT_INT16,  &( gear.attack_penetration                        ) },
+    { "gear_expertise_rating",                OPT_INT16,  &( gear.expertise_rating                          ) },
+    { "gear_armor_penetration_rating",        OPT_INT16,  &( gear.armor_penetration_rating                  ) },
     { "enchant_attack_power",                 OPT_INT16,  &( gear.attack_power_enchant                      ) },
-    { "enchant_attack_expertise_rating",      OPT_INT16,  &( gear.attack_expertise_rating_enchant           ) },
-    { "enchant_attack_penetration",           OPT_INT16,  &( gear.attack_penetration_enchant                ) },
+    { "enchant_attack_expertise_rating",      OPT_INT16,  &( gear.expertise_rating_enchant                  ) },
+    { "enchant_attack_penetration",           OPT_INT16,  &( gear.armor_penetration_rating_enchant          ) },
     // Player - Gear - Common									            
     { "gear_haste_rating",                    OPT_INT16,  &( gear.haste_rating                              ) },
     { "gear_hit_rating",                      OPT_INT16,  &( gear.hit_rating                                ) },
@@ -1692,8 +1693,7 @@ bool player_t::parse_option( const std::string& name,
     { "flask",                                OPT_STRING, &( flask_str                                      ) },
     { "elixirs",                              OPT_STRING, &( elixirs_str                                    ) },
     { "food",                                 OPT_STRING, &( food_str                                       ) },
-    // Player - Buffs
-    // FIXME! These will go away eventually, and be converted into player actions.
+    // Player - Buffs - FIXME! These will go away eventually, and be converted into player actions
     { "battle_shout",                         OPT_INT8,   &( buffs.battle_shout                             ) },
     { "blessing_of_kings",                    OPT_INT8,   &( buffs.blessing_of_kings                        ) },
     { "blessing_of_might",                    OPT_INT8,   &( buffs.blessing_of_might                        ) },
@@ -1702,6 +1702,11 @@ bool player_t::parse_option( const std::string& name,
     { "sanctity_aura",                        OPT_INT8,   &( buffs.sanctity_aura                            ) },
     { "sanctified_retribution",               OPT_INT8,   &( buffs.sanctified_retribution                   ) },
     { "swift_retribution",                    OPT_INT8,   &( buffs.swift_retribution                        ) },
+    // Deprecated options
+    { "gear_attack_expertise_rating",         OPT_DEPRECATED, (void*) "gear_expertise_rating"            },
+    { "enchant_attack_expertise_rating",      OPT_DEPRECATED, (void*) "enchant_expertise_rating"         },
+    { "gear_attack_penetration",              OPT_DEPRECATED, (void*) "gear_armor_penetration_rating"    },
+    { "enchant_attack_penetration",           OPT_DEPRECATED, (void*) "enchant_armor_penetration_rating" },
     { NULL, OPT_UNKNOWN }
   };
   

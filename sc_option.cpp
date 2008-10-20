@@ -93,6 +93,7 @@ bool option_t::parse( sim_t*             sim,
       case OPT_INT16:  *( (int16_t*)     o.address ) = atoi( value.c_str() );             break;
       case OPT_INT32:  *( (int32_t*)     o.address ) = atoi( value.c_str() );             break;
       case OPT_FLT:    *( (double*)      o.address ) = atof( value.c_str() );             break;
+      case OPT_DEPRECATED: printf( "simcraft: option '%s' has been deprecated, please use '%s' instead.\n", o.name, (char*) o.address ); exit(0);
       default: assert(0);
       }
       return true;

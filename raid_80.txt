@@ -41,10 +41,10 @@ regen_periodicity=1.0
 # Some WotLK beta patches have included a Potion Sickness debuff that only lows one potion consumed per combat.
 potion_sickness=1
 
-# Since support for the Warrior class does not yet exist, one can infer a Sunder Armor debuff by 
-# artificially setting a low target armor value.  I'm really not sure what to put here.  I imagine
-# that WotLK bosses will have armor close to 10k......  (5x Sunder is 3600 penetration in WotLK)
-target_armor=6400
+# I'm really not sure what to put here.  I imagine that WotLK bosses will have armor close to 10k......  
+# 5x Sunder Amor is 3925 penetration in WotLK.
+target_armor=10000
+sunder_armor=3925
 
 # Since support for the Paladin class does not yet exist, one can specify target debuffs (such as
 # Judgement of Wisdom) and player buffs (such as Blessing of Wisdom and Sanctified Retribution) as parameters.
@@ -384,9 +384,8 @@ swift_retribution=1
 # (1) The "weapon=main" option to windfury_weapon puts the enchant only on the main-hand weapon
 # (2) The "weapon=off" option to flametongue_weapon puts the enchant only on the off-hand weapon
 # (3) The "flame_shock=1,max_ticks_consumed=4" option to lava_burst will prevent it from being called until there are four or less ticks remaining on Flame Shock.
-# (4) The "maelstrom=5" option to lightning_bolt/lava_burst means that LB/LvB will only be executed when there is a 5-stack of Maelstrom Weapon,
+# (4) The "maelstrom=5" option to lightning_bolt means that LB will only be executed when there is a 5-stack of Maelstrom Weapon,
 #     making the LB/LvB cast instant which prevents auto_attack resets.
-# (5) The tool accepts separate value for hit/crit even though WotLK has merged them.
 #
 shaman=Shaman_Enhancement
 level=80
@@ -394,19 +393,19 @@ talents=http://talent.mmo-champion.com/?shaman=052030150000000000000000000000000
 actions=flask,type=relentless_assault/windfury_weapon,weapon=main/flametongue_weapon,weapon=off/auto_attack/lightning_bolt,maelstrom=5/stormstrike/strength_of_earth_totem/windfury_totem/shamanistic_rage/spirit_wolf/flame_shock/earth_shock/lava_lash/searing_totem/water_shield/bloodlust,target_pct=35
 gear_agility=386
 gear_stamina=800
-gear_intellect=410
-gear_attack_power=2000
-gear_attack_expertise_rating=185
-gear_attack_penetration=0
+gear_intellect=403
+gear_attack_power=2100
+gear_expertise_rating=185
+gear_armor_penetration_rating=160
 gear_spell_power=0
-gear_hit_rating=280
+gear_hit_rating=282
 gear_crit_rating=445
 gear_haste_rating=75
 chaotic_skyfire=1
 # Hateful Gladiator Weapons
 main_hand=mace,damage=373,speed=2.6,enchant=mongoose
-#off_hand=dagger,damage=258,speed=1.8,enchant=executioner
-off_hand=mace,damage=373,speed=2.6,enchant=executioner
+#off_hand=dagger,damage=258,speed=1.8,enchant=mongoose
+off_hand=mace,damage=373,speed=2.6,enchant=mongoose
 # Glyphs
 glyph_strength_of_earth=1
 glyph_windfury_weapon=1

@@ -140,14 +140,12 @@ static void trigger_executioner( attack_t* a )
       name = "Executioner Expiration";
       player -> aura_gain( "Executioner" );
       player -> buffs.executioner = 1;
-      player -> attack_penetration += 840;
       sim -> add_event( this, 15.0 );
     }
     virtual void execute()
     {
       player -> aura_loss( "Executioner" );
       player -> buffs.executioner = 0;
-      player -> attack_penetration -= 840;
       player -> expirations.executioner = 0;
     }
   };

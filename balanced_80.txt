@@ -2,8 +2,8 @@
 # WARNING!  When making changes to this file in an editor, make sure it is saved in "plain text" format.
 #======================================================================================================
 
-# TO EXECUTE THIS PARAMETER FILE:  simcraft  output=results.txt  input=raid_80.txt 
-# TO GENERATE CHARTS IN HTML:      simcraft  output=results.txt  input=raid_80.txt  html=chart.html  report_chart=1
+# TO EXECUTE THIS PARAMETER FILE:  simcraft  output=results.txt  input=balanced_80.txt 
+# TO GENERATE CHARTS IN HTML:      simcraft  output=results.txt  input=balanced_80.txt  html=chart.html  report_chart=1
 
 #
 # Globals
@@ -70,6 +70,36 @@ gear_hit_rating=250
 gear_haste_rating=492
 chaotic_skyfire=1
 glyph_shadow_word_death=1
+pet=shadow_fiend
+main_hand=beast,damage=110,speed=1.5,school=shadow
+quiet=1
+active=owner
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_wisdom=1
+sanctified_retribution=1
+swift_retribution=1
+
+#
+# Shadow Priest Blue Promises
+#
+# (1) The "trigger=3500" option to mana_potion represents the mana gained and the amount below max required to trigger
+# (2) The "trigger=6000" option to shadow_fiend represents the amount below max mana required to trigger
+#
+priest=Priest_Shadow_Promised
+level=80
+talents=http://wotlk.wowhead.com/?talent=bVcbzhZZG0fVRfzfiqfzAo
+actions=flask,type=pure_death/wizard_oil/inner_fire/shadow_form/mana_potion,trigger=3500/shadow_fiend,trigger=6000/dispersion/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/shadow_word_death,mb_wait=0,mb_priority=0/mind_flay,mb_wait=0
+gear_stamina=708
+gear_intellect=777
+gear_spirit=411
+gear_spell_power=2200
+gear_crit_rating=461
+gear_hit_rating=250
+gear_haste_rating=492
+chaotic_skyfire=1
+glyph_shadow_word_death=1
+glyph_blue_promises=1
 pet=shadow_fiend
 main_hand=beast,damage=110,speed=1.5,school=shadow
 quiet=1
@@ -278,9 +308,8 @@ swift_retribution=1
 # (1) The "weapon=main" option to windfury_weapon puts the enchant only on the main-hand weapon
 # (2) The "weapon=off" option to flametongue_weapon puts the enchant only on the off-hand weapon
 # (3) The "flame_shock=1,max_ticks_consumed=4" option to lava_burst will prevent it from being called until there are four or less ticks remaining on Flame Shock.
-# (4) The "maelstrom=5" option to lightning_bolt/lava_burst means that LB/LvB will only be executed when there is a 5-stack of Maelstrom Weapon,
+# (4) The "maelstrom=5" option to lightning_bolt means that LB will only be executed when there is a 5-stack of Maelstrom Weapon,
 #     making the LB/LvB cast instant which prevents auto_attack resets.
-# (5) The tool accepts separate value for hit/crit even though WotLK has merged them.
 #
 shaman=Shaman_Enhancement
 level=80
@@ -288,19 +317,19 @@ talents=http://talent.mmo-champion.com/?shaman=052030150000000000000000000000000
 actions=flask,type=relentless_assault/windfury_weapon,weapon=main/flametongue_weapon,weapon=off/auto_attack/lightning_bolt,maelstrom=5/stormstrike/strength_of_earth_totem/windfury_totem/shamanistic_rage/spirit_wolf/flame_shock/earth_shock/lava_lash/searing_totem/water_shield/bloodlust,target_pct=35
 gear_agility=386
 gear_stamina=800
-gear_intellect=410
-gear_attack_power=2000
-gear_attack_expertise_rating=185
-gear_attack_penetration=0
+gear_intellect=403
+gear_attack_power=2100
+gear_expertise_rating=185
+gear_armor_penetration_rating=160
 gear_spell_power=0
-gear_hit_rating=280
+gear_hit_rating=282
 gear_crit_rating=445
 gear_haste_rating=75
 chaotic_skyfire=1
 # Hateful Gladiator Weapons
 main_hand=mace,damage=373,speed=2.6,enchant=mongoose
-#off_hand=dagger,damage=258,speed=1.8,enchant=executioner
-off_hand=mace,damage=373,speed=2.6,enchant=executioner
+#off_hand=dagger,damage=258,speed=1.8,enchant=mongoose
+off_hand=mace,damage=373,speed=2.6,enchant=mongoose
 # Glyphs
 glyph_strength_of_earth=1
 glyph_windfury_weapon=1
@@ -319,6 +348,7 @@ blessing_of_kings=1
 blessing_of_might=550
 sanctified_retribution=1
 swift_retribution=1
+
 
 #
 # Affliction Warlock (no Drain Soul)

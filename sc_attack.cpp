@@ -110,14 +110,7 @@ void attack_t::build_table( std::vector<double>& chances,
 
   if( may_dodge ) 
   {
-    if( delta_level > 2 )
-    {
-      dodge = 0.07 + ( delta_level - 2 ) * 0.02;
-    }
-    else
-    {
-      dodge  = 0.05 + delta_level * 0.005;
-    }
+    dodge  = 0.05 + delta_level * 0.005;
     dodge -= expertise * 0.25;
   }
 

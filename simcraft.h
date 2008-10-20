@@ -241,7 +241,8 @@ struct rating_t
 {
   double haste;
   double spell_hit, spell_crit;
-  double attack_hit, attack_crit, attack_expertise;
+  double attack_hit, attack_crit;
+  double expertise, armor_penetration;
   rating_t() { memset( this, 0x00, sizeof(rating_t) ); }
   void init( int level );
   static double interpolate( int level, double val_60, double val_70, double val_80 );
@@ -377,9 +378,9 @@ struct player_t
     int16_t spell_penetration,           spell_penetration_enchant;
     int16_t mp5, mp5_enchant;
     // Attack Gear
-    int16_t attack_power,            attack_power_enchant;
-    int16_t attack_penetration,      attack_penetration_enchant;
-    int16_t attack_expertise_rating, attack_expertise_rating_enchant;
+    int16_t attack_power,             attack_power_enchant;
+    int16_t armor_penetration_rating, armor_penetration_rating_enchant;
+    int16_t expertise_rating,         expertise_rating_enchant;
     // Common Gear
     int16_t hit_rating, hit_rating_enchant;
     int16_t crit_rating, crit_rating_enchant;
@@ -759,13 +760,14 @@ struct target_t
   struct debuff_t
   {
     // Permanent De-Buffs (until appropriate player class implemented)
-    int8_t  snare;
-    double  judgement_of_wisdom;
+    double   judgement_of_wisdom;
+    int8_t   snare;
+    double   sunder_armor;
     // Temporary De-Buffs
     int8_t   temporary_debuffs;
     int8_t   affliction_effects;
     int8_t   curse_of_elements;
-    int8_t   faerie_fire;
+    double   faerie_fire;
     double   frozen;
     int8_t   improved_faerie_fire;
     int8_t   improved_scorch;
@@ -774,7 +776,6 @@ struct target_t
     int8_t   misery_stack;
     int8_t   earth_and_moon;
     int8_t   slow;
-    int8_t   sunder_armor;
     int8_t   winters_chill;
     int8_t   winters_grasp;
     debuff_t() { memset( (void*) this, 0x0, sizeof( debuff_t ) ); }
@@ -818,6 +819,7 @@ struct target_t
   void reset();
   void assess_damage( double amount, int8_t school, int8_t type );
   void recalculate_health();
+  double composite_armor( player_t* );
   bool parse_option( const std::string& name, const std::string& value );
   const char* name() { return name_str.c_str(); }
 };
@@ -1222,7 +1224,7 @@ struct talent_translation_t
 
 // Options ====================================================================
 
-enum option_type_t { OPT_STRING=0, OPT_CHAR_P, OPT_INT8, OPT_INT16, OPT_INT32, OPT_FLT, OPT_UNKNOWN };
+enum option_type_t { OPT_STRING=0, OPT_CHAR_P, OPT_INT8, OPT_INT16, OPT_INT32, OPT_FLT, OPT_DEPRECATED, OPT_UNKNOWN };
 
 struct option_t
 {
