@@ -89,6 +89,7 @@ struct priest_t : public player_t
   struct glyphs_t
   {
     int8_t blue_promises;
+    int8_t no_blue_promises;
     int8_t shadow_word_death;
     int8_t shadow_word_pain;
     int8_t plus_10pct_swd_crit;
@@ -491,7 +492,7 @@ static void trigger_glyph_of_shadow( spell_t* s )
 
   priest_t* p = s -> player -> cast_priest();
 
-  if( p -> glyphs.shadow && p -> buffs.shadow_form )
+  if( p -> glyphs.shadow && p -> buffs.shadow_form && ! p -> glyphs.no_blue_promises )
   {
     event_t*& e = p -> expirations_glyph_of_shadow;
 
@@ -825,7 +826,7 @@ struct shadow_word_pain_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
     spell_t::calculate_tick_damage();
-    if( p -> buffs.shadow_form )
+    if( p -> buffs.shadow_form && (! p -> glyphs.no_blue_promises))
     {
       tick_dmg *= 1.0 + total_crit();
     }
@@ -865,7 +866,9 @@ struct vampiric_touch_t : public priest_spell_t
     base_execute_time = 1.5; 
     base_tick_time    = 3.0; 
     num_ticks         = 5;
-    tick_power_mod    = 2 * base_tick_time / 15.0;
+
+    tick_power_mod    = base_tick_time / 15.0;
+    if ( ! p -> glyphs.no_blue_promises ) tick_power_mod *= 2.0;
 
     base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.shadow_focus * 0.02;
@@ -905,7 +908,7 @@ struct vampiric_touch_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
     spell_t::calculate_tick_damage();
-    if( p -> buffs.shadow_form )
+    if( p -> buffs.shadow_form && (! p -> glyphs.no_blue_promises))
     {
       tick_dmg *= 1.0 + total_crit();
     }
@@ -947,7 +950,14 @@ struct devouring_plague_t : public priest_spell_t
     binary            = true;
 
     tick_power_mod    = base_tick_time / 15.0;
-    tick_power_mod   *= 0.92;
+    if ( p -> glyphs.no_blue_promises )
+    {
+      tick_power_mod *= 0.5;
+    }
+    else
+    {
+      tick_power_mod   *= 0.92;
+    }
 
     base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.mental_agility * 0.02 - p -> talents.shadow_focus * 0.02;
@@ -985,7 +995,7 @@ struct devouring_plague_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
     spell_t::calculate_tick_damage();
-    if( p -> buffs.shadow_form )
+    if( p -> buffs.shadow_form && (! p -> glyphs.no_blue_promises))
     {
       tick_dmg *= 1.0 + total_crit();
     }
@@ -1285,7 +1295,7 @@ struct mind_flay_t : public priest_spell_t
       if( p -> active_shadow_word_pain ) 
       {
         player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.02;
-        if ( p -> glyphs.shadow_word_pain ) player_multiplier *= 1.10;
+        if ( p -> glyphs.shadow_word_pain && ! p -> glyphs.no_blue_promises ) player_multiplier *= 1.10;
       }
     }
   }
@@ -2062,6 +2072,7 @@ bool priest_t::parse_option( const std::string& name,
     { "veiled_shadows",            OPT_INT8,  &( talents.veiled_shadows            ) },
     // Glyphs
     { "glyph_blue_promises",       OPT_INT8,  &( glyphs.blue_promises              ) },
+    { "glyph_no_blue_promises",    OPT_INT8,  &( glyphs.no_blue_promises           ) },
     { "glyph_shadow_word_death",   OPT_INT8,  &( glyphs.shadow_word_death          ) },
     { "glyph_shadow_word_pain",    OPT_INT8,  &( glyphs.shadow_word_pain           ) },
     { "glyph_+10%_swd_crit",       OPT_INT8,  &( glyphs.plus_10pct_swd_crit        ) },
