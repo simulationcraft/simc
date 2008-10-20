@@ -166,7 +166,8 @@ swift_retribution=1
 mage=Mage_Arcane_Slow
 level=80
 talents=http://talent.mmo-champion.com/?mage=00550300120030000000000000000000000000000000000000000000230005031100330150323000515321
-actions=flask,type=blinding_light/wizard_oil/molten_armor/focus_magic,target=Mage_FrostFire/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/slow/arcane_missiles,barrage=1/presence_of_mind,pyroblast/arcane_barrage/fire_ball
+actions=flask,type=blinding_light/wizard_oil/molten_armor/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/slow/arcane_missiles,barrage=1/presence_of_mind,pyroblast/arcane_barrage/fire_ball
+# actions=flask,type=blinding_light/wizard_oil/molten_armor/focus_magic,target=Mage_FrostFire/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/slow/arcane_missiles,barrage=1/presence_of_mind,pyroblast/arcane_barrage/fire_ball
 gear_stamina=708
 gear_intellect=777
 gear_spirit=411
@@ -187,7 +188,8 @@ swift_retribution=1
 mage=Mage_Arcane
 level=80
 talents=http://talent.mmo-champion.com/?mage=00550300120030000000000000000000000000000000000000000000230005031100330150323000515321
-actions=flask,type=blinding_light/wizard_oil/molten_armor/focus_magic,target=Mage_Fire/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/arcane_missiles,barrage=1/presence_of_mind,pyroblast/arcane_barrage/fire_ball
+actions=flask,type=blinding_light/wizard_oil/molten_armor/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/arcane_missiles,barrage=1/presence_of_mind,pyroblast/arcane_barrage/fire_ball
+# actions=flask,type=blinding_light/wizard_oil/molten_armor/focus_magic,target=Mage_Fire/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/arcane_missiles,barrage=1/presence_of_mind,pyroblast/arcane_barrage/fire_ball
 gear_stamina=708
 gear_intellect=777
 gear_spirit=411
@@ -216,7 +218,8 @@ mage=Mage_Fire
 level=80
 # We will let the poor Frost Mage raid-slave keep up the Improved Scorch debuff
 talents=http://talent.mmo-champion.com/?mage=03550300120033300531203003500000000000000000000000000000230005031100330000000000000000
-actions=flask,type=pure_death/wizard_oil/arcane_brilliance/molten_armor/focus_magic,target=Mage_Frost/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/combustion/pyroblast,hot_streak=1/fire_ball
+actions=flask,type=pure_death/wizard_oil/arcane_brilliance/molten_armor/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/combustion/pyroblast,hot_streak=1/fire_ball
+# actions=flask,type=pure_death/wizard_oil/arcane_brilliance/molten_armor/focus_magic,target=Mage_Frost/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/combustion/pyroblast,hot_streak=1/fire_ball
 gear_stamina=708
 gear_intellect=777
 gear_spirit=411
@@ -245,7 +248,8 @@ swift_retribution=1
 mage=Mage_Frost
 level=80
 talents=http://talent.mmo-champion.com/?mage=00000000000000000000000000000533030310233100230052231350230005031100030000000000000000
-actions=flask,type=pure_death/wizard_oil/arcane_brilliance/molten_armor/focus_magic,target=Mage_Arcane/mana_gem,trigger=3500/mana_potion,trigger=2500/ice_lance,frozen=1,fb_priority=1/evocation,trigger=10000/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/frost_bolt
+actions=flask,type=pure_death/wizard_oil/arcane_brilliance/molten_armor/mana_gem,trigger=3500/mana_potion,trigger=2500/ice_lance,frozen=1,fb_priority=1/evocation,trigger=10000/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/frost_bolt
+# actions=flask,type=pure_death/wizard_oil/arcane_brilliance/molten_armor/focus_magic,target=Mage_Arcane/mana_gem,trigger=3500/mana_potion,trigger=2500/ice_lance,frozen=1,fb_priority=1/evocation,trigger=10000/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/frost_bolt
 gear_stamina=708
 gear_intellect=777
 gear_spirit=411
