@@ -132,8 +132,6 @@ struct shaman_t : public player_t
     int8_t lightning_shield;
     int8_t mana_tide;
     int8_t stormstrike;
-    int8_t strength_of_earth;
-    int8_t totem_of_wrath;
     int8_t windfury_weapon;
     int8_t flame_shock;
     int8_t lava_lash;
@@ -297,7 +295,7 @@ struct spirit_wolf_pet_t : public pet_t
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.damage     = 310;
-    main_hand_weapon.swing_time = 1.5;
+    main_hand_weapon.swing_time = 1.6;
   }
   virtual void init_base()
   {
@@ -1023,16 +1021,6 @@ void shaman_spell_t::assess_damage( double amount,
       event_t::early( p -> expirations_nature_vulnerability );
     }
   }
-
-  if( ! proc && num_ticks == 0 && p -> buffs_lightning_charges > 0 )
-  {
-    if( rand_t::roll( p -> talents.static_shock * 0.02 ) )
-    {
-      p -> buffs_lightning_charges--;
-      p -> active_lightning_charge -> execute();
-      if( p -> buffs_lightning_charges == 0 ) p -> active_shield = 0;
-    }
-  }
 }
 
 // =========================================================================
@@ -1085,8 +1073,6 @@ struct chain_lightning_t : public shaman_spell_t
     base_crit         += p -> talents.call_of_thunder * 0.05;
     base_crit         += p -> talents.tidal_mastery * 0.01;
     base_crit_bonus   *= 1.0 + p -> talents.elemental_fury * 0.20;
-
-    if( p -> glyphs.chain_lightning ) base_multiplier *= 2.10;
 
     lightning_overload_stats = p -> get_stats( "lightning_overload" );
     lightning_overload_stats -> school = SCHOOL_NATURE;
@@ -1739,11 +1725,10 @@ struct searing_totem_t : public shaman_spell_t
 
 struct totem_of_wrath_t : public shaman_spell_t
 {
-  int8_t haste;
   double bonus;
 
   totem_of_wrath_t( player_t* player, const std::string& options_str ) : 
-    shaman_spell_t( "totem_of_wrath", player, SCHOOL_NATURE, TREE_ELEMENTAL ), haste(0), bonus(1)
+    shaman_spell_t( "totem_of_wrath", player, SCHOOL_NATURE, TREE_ELEMENTAL ), bonus(1)
   {
     shaman_t* p = player -> cast_shaman();
     assert( p -> talents.totem_of_wrath );
@@ -1759,8 +1744,6 @@ struct totem_of_wrath_t : public shaman_spell_t
     base_cost     *= 1.0 - p -> talents.mental_quickness * 0.02;
     duration_group = "fire_totem";
     trigger_gcd    = 1.0;
-
-    if( p -> glyphs.totem_of_wrath ) haste = 1;
 
     bonus = ( p -> level <= 60 ? 120 :
 	      p -> level <= 70 ? 140 : 280 );
@@ -1778,8 +1761,7 @@ struct totem_of_wrath_t : public shaman_spell_t
 	for( player_t* p = sim -> player_list; p; p = p -> next )
 	{
 	  p -> aura_gain( "Totem of Wrath" );
-	  p -> buffs.totem_of_wrath       = totem -> bonus;
-	  p -> buffs.totem_of_wrath_haste = totem -> haste;
+	  p -> buffs.totem_of_wrath = totem -> bonus;
 	}
 	sim -> add_event( this, 300.0 );
       }
@@ -1788,14 +1770,11 @@ struct totem_of_wrath_t : public shaman_spell_t
 	for( player_t* p = sim -> player_list; p; p = p -> next )
 	{
 	  // Make sure it hasn't already been overriden by a more powerful totem.
-	  if( totem -> bonus < p -> buffs.totem_of_wrath ||
-	      totem -> haste < p -> buffs.totem_of_wrath_haste )
+	  if( totem -> bonus < p -> buffs.totem_of_wrath )
 	    continue;
 
 	  p -> aura_loss( "Totem of Wrath" );
-
 	  p -> buffs.totem_of_wrath = 0;
-	  p -> buffs.totem_of_wrath_haste = 0;
 	}
       }
     };
@@ -1812,8 +1791,7 @@ struct totem_of_wrath_t : public shaman_spell_t
     if( ! shaman_spell_t::ready() )
       return false;
 
-    return( player -> buffs.totem_of_wrath       < bonus ||
-	    player -> buffs.totem_of_wrath_haste < haste );
+    return( player -> buffs.totem_of_wrath < bonus );
   }
 };
 
@@ -2092,10 +2070,10 @@ struct windfury_weapon_t : public shaman_spell_t
     }
     trigger_gcd = 0;
 
-    bonus_power = ( ( p -> level < 68 ) ? 333  : 
-                    ( p -> level < 72 ) ? 445  :
-                    ( p -> level < 76 ) ? 835  : 
-                                          1250 );
+    bonus_power = ( ( p -> level <= 68 ) ?  445  : 
+                    ( p -> level <= 71 ) ?  835  :
+                    ( p -> level <= 76 ) ? 1090  : 
+                                           1250 );
 
     if( p -> glyphs.windfury_weapon ) bonus_power *= 1.40;
   }
@@ -2128,10 +2106,9 @@ struct windfury_weapon_t : public shaman_spell_t
 struct strength_of_earth_totem_t : public shaman_spell_t
 {
   double attr_bonus;
-  int8_t crit_bonus;
 
   strength_of_earth_totem_t( player_t* player, const std::string& options_str ) : 
-    shaman_spell_t( "strength_of_earth_totem", player, SCHOOL_NATURE, TREE_ENHANCEMENT )
+    shaman_spell_t( "strength_of_earth_totem", player, SCHOOL_NATURE, TREE_ENHANCEMENT ), attr_bonus(0)
   {
     shaman_t* p = player -> cast_shaman();
 
@@ -2159,8 +2136,6 @@ struct strength_of_earth_totem_t : public shaman_spell_t
 
     attr_bonus = rank -> tick;
     attr_bonus *= 1.0 + p -> talents.enhancing_totems * 0.05;
-
-    crit_bonus = p -> glyphs.strength_of_earth ? 1 : 0;
   }
 
   virtual void execute()
@@ -2182,7 +2157,6 @@ struct strength_of_earth_totem_t : public shaman_spell_t
 	  p -> attribute[ ATTR_AGILITY  ] += delta;
 
 	  p -> buffs.strength_of_earth = t -> attr_bonus;
-	  p -> buffs.strength_of_earth_crit = t -> crit_bonus;
 	}
 	sim -> add_event( this, 300.0 );
       }
@@ -2200,7 +2174,6 @@ struct strength_of_earth_totem_t : public shaman_spell_t
 	  p -> attribute[ ATTR_AGILITY  ] -= totem -> attr_bonus;
 
 	  p -> buffs.strength_of_earth      = 0;
-	  p -> buffs.strength_of_earth_crit = 0;
 	}
       }
     };
@@ -3110,15 +3083,12 @@ bool shaman_t::parse_option( const std::string& name,
     { "unleashed_rage",            OPT_INT8,  &( talents.unleashed_rage            ) },
     { "weapon_mastery",            OPT_INT8,  &( talents.weapon_mastery            ) },
     // Glyphs
-    { "glyph_chain_lightning",     OPT_INT8,  &( glyphs.chain_lightning            ) },
     { "glyph_earth_shock",         OPT_INT8,  &( glyphs.earth_shock                ) },
     { "glyph_flametongue_weapon",  OPT_INT8,  &( glyphs.flametongue_weapon         ) },
     { "glyph_lightning_bolt",      OPT_INT8,  &( glyphs.lightning_bolt             ) },
     { "glyph_lightning_shield",    OPT_INT8,  &( glyphs.lightning_shield           ) },
     { "glyph_mana_tide",           OPT_INT8,  &( glyphs.mana_tide                  ) },
     { "glyph_stormstrike",         OPT_INT8,  &( glyphs.stormstrike                ) },
-    { "glyph_strength_of_earth",   OPT_INT8,  &( glyphs.strength_of_earth          ) },
-    { "glyph_totem_of_wrath",      OPT_INT8,  &( glyphs.totem_of_wrath             ) },
     { "glyph_windfury_weapon",     OPT_INT8,  &( glyphs.windfury_weapon            ) },
     { "glyph_flame_shock",         OPT_INT8,  &( glyphs.flame_shock                ) },
     { "glyph_lava_lash",           OPT_INT8,  &( glyphs.lava_lash                  ) },

@@ -359,7 +359,7 @@ struct player_t
   double    iteration_dmg, total_dmg;
   double    resource_lost  [ RESOURCE_MAX ];
   double    resource_gained[ RESOURCE_MAX ];
-  double    dps, dps_std_dev, dps_convergence, dpr, rps_gain, rps_loss;
+  double    dps, dps_min, dps_max, dps_std_dev, dpr, rps_gain, rps_loss;
   proc_t*   proc_list;
   gain_t*   gain_list;
   stats_t*  stats_list;
@@ -461,10 +461,8 @@ struct player_t
     int8_t    replenishment;
     int8_t    shadow_form;
     double    strength_of_earth;
-    int8_t    strength_of_earth_crit;
     int16_t   talisman_of_ascendance;
     double    totem_of_wrath;
-    int8_t    totem_of_wrath_haste;
     int8_t    unleashed_rage;
     int8_t    violet_eye;
     double    windfury_totem;

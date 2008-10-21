@@ -463,12 +463,8 @@ void report_t::print()
 
       if( report_statistics ) 
       {
-        int sigma = -1;
-        double convergence = fabs( p -> dps_convergence - p -> dps ) / p -> dps;
-        while( convergence < 1 ) { convergence *= 10.0; sigma++; }
-
 #ifndef VISUAL_STUDIO
-        fprintf( sim -> output_file, " (+/-%.1f, 95%% prob.)  CS=%d", 2.0 * p -> dps_std_dev / sqrt( sim -> iterations ), sigma );
+        fprintf( sim -> output_file, " (Error=+/-%.1f Range=+/-%.0f)", 2.0 * p -> dps_std_dev / sqrt( sim -> iterations ), ( p -> dps_max - p -> dps_min ) / 2.0 );
 #endif
       }
     }

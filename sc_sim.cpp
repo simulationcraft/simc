@@ -362,10 +362,15 @@ void sim_t::analyze()
 
     assert( p -> iteration_dps.size() == (size_t) iterations );
 
+    p -> dps_min = 0;
+    p -> dps_max = 0;
     p -> dps_std_dev = 0;
     for( int i=0; i < iterations; i++ )
     {
-      double delta = p -> iteration_dps[ i ] - p -> dps;
+      double i_dps = p -> iteration_dps[ i ];
+      if( p -> dps_min == 0 || p -> dps_min > i_dps ) p -> dps_min = i_dps;
+      if( p -> dps_max == 0 || p -> dps_max < i_dps ) p -> dps_max = i_dps;
+      double delta = i_dps - p -> dps;
       p -> dps_std_dev += delta * delta;
     }
     p -> dps_std_dev /= iterations;
@@ -382,8 +387,6 @@ void sim_t::analyze()
 
 void sim_t::analyze( int current_iteration )
 {
-  int convergence_iteration = (int) ( 0.90 * iterations );
-
   for( player_t* p = player_list; p; p = p -> next )
   {
     double iteration_seconds = p -> last_action;
@@ -393,20 +396,6 @@ void sim_t::analyze( int current_iteration )
       p -> total_seconds += iteration_seconds;
       for( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet ) p -> iteration_dmg += pet -> iteration_dmg;
       p -> iteration_dps.push_back( p -> iteration_dmg / iteration_seconds );
-    }
-
-    if( ! p -> quiet && ( current_iteration == convergence_iteration ) )
-    {
-      double total_dmg=0;
-
-      for( stats_t* s = p -> stats_list; s; s = s -> next )
-	total_dmg += s -> total_dmg;
-
-      for( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
-	for( stats_t* s = pet -> stats_list; s; s = s -> next )
-	  total_dmg += s -> total_dmg;
-
-      p -> dps_convergence = total_dmg / p -> total_seconds;
     }
   }
 }

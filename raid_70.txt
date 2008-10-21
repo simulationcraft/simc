@@ -326,6 +326,29 @@ blessing_of_wisdom=1
 sanctified_retribution=1
 swift_retribution=1
 
+mage=Mage_0_53_8
+level=70
+# We will let the poor Frost Mage raid-slave keep up the Improved Scorch debuff
+talents=http://talent.mmo-champion.com/?mage=00550320122033310531203003512030030000000000000000000000000000000000000000000000000000
+actions=flask,type=pure_death/wizard_oil/arcane_brilliance/molten_armor/mana_gem,trigger=2500/mana_potion,trigger=2500/evocation,trigger=10000/combustion/pyroblast,hot_streak=1/fire_ball
+gear_stamina=360
+gear_intellect=360
+gear_spirit=140
+gear_spell_power=1300
+gear_crit_rating=275
+gear_hit_rating=135
+gear_haste_rating=100
+gear_mp5=50
+chaotic_skyfire=1
+# Glyphs
+glyph_fire_ball=1
+glyph_molten_armor=1
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_wisdom=1
+sanctified_retribution=1
+swift_retribution=1
+
 #
 # Mage_Frost
 #
@@ -396,9 +419,9 @@ swift_retribution=1
 # (2) The "eclipse=trigger" option to wrath will make sure that it is only used to trigger the Eclipse talent
 #     which means it will only be used after the cooldown is ready and the effect has not yet proc'd.
 #
-druid=Druid_Balance
+druid=Druid_61_0_0
 level=70
-talents=http://talent.mmo-champion.com/?druid=00000000000000000000000000000000000000000000000000000005502203105331305213305301050
+talents=http://talent.mmo-champion.com/?druid=00000000000000000000000000000000000000000000000000000005502203105331303213335311030
 actions=flask,type=blinding_light/wizard_oil/mark_of_the_wild/moonkin_form/mana_potion,trigger=2500/innervate/faerie_fire/treants/moonfire/insect_swarm/wrath,eclipse=trigger/starfire
 gear_stamina=360
 gear_intellect=360
@@ -409,7 +432,6 @@ gear_hit_rating=135
 gear_haste_rating=100
 gear_mp5=50
 chaotic_skyfire=1
-# The starfire glyph is coded with starfire refreshing moonfire, not starfall.
 glyph_moonfire=1
 glyph_starfire=1
 glyph_insect_swarm=1
@@ -429,7 +451,7 @@ swift_retribution=1
 # (1) The "trigger=2500" option to mana_potion represents the mana gained and the amount below max required to trigger
 # (2) The "flame_shock=1,max_ticks_consumed=1" option to lava_burst will prevent it from being called until there is only one tick remaining on Flame Shock
 #
-shaman=Shaman_Elemental
+shaman=Shaman_51_10_0
 level=70
 talents=http://talent.mmo-champion.com/?shaman=550000151321535102501051000000000000000000000000000050500000000000000000000000
 actions=flask,type=blinding_light/flametongue_weapon,weapon=main/water_shield/mana_potion,trigger=2500/mana_spring_totem/totem_of_wrath/wrath_of_air_totem/elemental_mastery/flame_shock/bloodlust,target_pct=35/chain_lightning/earth_shock/lightning_bolt/thunderstorm
@@ -443,7 +465,7 @@ gear_haste_rating=100
 gear_mp5=50
 chaotic_skyfire=1
 glyph_flametongue_weapon=1
-glyph_totem_of_wrath=1
+glyph_elemental_mastery=1
 glyph_earth_shock=1
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
 blessing_of_kings=1
@@ -468,7 +490,7 @@ swift_retribution=1
 #
 # Affliction Warlock
 #
-warlock=Warlock_Affliction
+warlock=Warlock_56_0_5
 level=70
 talents=http://talent.mmo-champion.com/?warlock=050000000000000000000000002350220001023510053510331351000000000000000000000000000
 actions=flask,type=pure_death/spell_stone/fel_armor/summon_pet,felhunter/haunt/curse_of_agony/corruption/unstable_affliction/siphon_life/shadow_bolt,shadow_trance=1/immolate/shadow_bolt/dark_pact
@@ -503,7 +525,7 @@ swift_retribution=1
 #
 # Affliction Warlock (CoE instead of CoA)
 #
-warlock=Warlock_Affliction_CoE
+warlock=Warlock_56_0_5_CoE
 level=70
 talents=http://talent.mmo-champion.com/?warlock=050000000000000000000000002350220001023510053510331351000000000000000000000000000
 actions=flask,type=pure_death/spell_stone/fel_armor/summon_pet,felhunter/haunt/curse_of_elements/corruption/unstable_affliction/siphon_life/shadow_bolt,shadow_trance=1/immolate/shadow_bolt/dark_pact
@@ -538,7 +560,7 @@ swift_retribution=1
 #
 # Demonology Warlock
 #
-warlock=Warlock_Demonology
+warlock=Warlock_0_48_13
 level=70
 talents=http://talent.mmo-champion.com/?warlock=550030000000000000000000000000000000000000000000000000033033011352101500135131300
 actions=flask,type=pure_death/fire_stone/fel_armor/summon_pet,felguard/curse_of_doom/demonic_empowerment/corruption/immolate/shadow_bolt/life_tap
@@ -581,9 +603,9 @@ swift_retribution=1
 #
 # Destruction Warlock
 #
-warlock=Warlock_Destruction
+warlock=Warlock_7_0_54
 level=70
-talents=http://talent.mmo-champion.com/?warlock=550330150000310510350303512050020000000000000000000000000000000000000000000000000
+talents=http://talent.mmo-champion.com/?warlock=050330152200310513350303510050020000000000000000000000000000000000000000000000000
 actions=flask,type=pure_death/fire_stone/fel_armor/summon_pet,imp/shadow_bolt,shadow_trance=1/curse_of_agony/chaos_bolt/immolate/conflagrate/corruption/incinerate/life_tap
 gear_stamina=360
 gear_intellect=360

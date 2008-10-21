@@ -1220,6 +1220,8 @@ static void trigger_pandemic( spell_t* s )
     {
       proc = true;
       trigger_gcd = 0;
+      base_hit += player -> cast_warlock() -> talents.suppression * 0.01;
+      
     }
     virtual void target_debuff( int8_t dmg_type ) 
     {
@@ -1233,7 +1235,9 @@ static void trigger_pandemic( spell_t* s )
     }
   };
 
-  if( rand_t::roll( s -> total_crit() ) )
+  // Currently, Pandemic takes player crit into account.
+
+  if( rand_t::roll( s -> player_crit ) )
   {
     if( ! p -> active_pandemic ) p -> active_pandemic = new pandemic_t( p );
 
@@ -2298,7 +2302,7 @@ struct corruption_t : public warlock_spell_t
 			       p -> talents.improved_corruption * 0.02 +
 			       p -> talents.malediction         * 0.01 );
     tick_power_mod  += p -> talents.empowered_corruption * 0.02;
-    tick_power_mod  += p -> talents.everlasting_affliction * 0.01;
+    tick_power_mod  += p -> talents.everlasting_affliction * 0.01 / num_ticks;
 
     if( p -> gear.tier4_4pc ) num_ticks++;
   }
@@ -2579,7 +2583,7 @@ struct siphon_life_t : public warlock_spell_t
     base_multiplier *= 1.0 + ( p -> talents.shadow_mastery * 0.02 +
 			       p -> talents.malediction    * 0.01 +
 			       p -> glyphs.siphon_life     * 0.20 );			
-    tick_power_mod  += p -> talents.everlasting_affliction * 0.01;
+    tick_power_mod  += p -> talents.everlasting_affliction * 0.01 / num_ticks;
   }
 
   virtual void execute()
@@ -2647,7 +2651,7 @@ struct unstable_affliction_t : public warlock_spell_t
     base_hit         +=       p -> talents.suppression * 0.01;
     base_multiplier  *= 1.0 + ( p -> talents.shadow_mastery * 0.02 +
 				p -> talents.malediction    * 0.01 );
-    tick_power_mod   += p -> talents.everlasting_affliction * 0.01;
+    tick_power_mod   += p -> talents.everlasting_affliction * 0.01 / num_ticks;
   }
 
   virtual void execute()
@@ -2744,17 +2748,16 @@ struct haunt_t : public warlock_spell_t
 
   virtual bool ready()
   {
-    if( ! spell_t::ready() )
+    warlock_t* p = player -> cast_warlock();
+
+    if( ! warlock_spell_t::ready() )
       return false;
 
-    if( ! only_for_debuff )
-      return true;
+    if( only_for_debuff && p -> expirations_haunted )
+      if( ( sim -> current_time + execute_time() ) < p -> expirations_haunted -> time )
+	return false;
 
-    warlock_t* p = player -> cast_warlock();
-    double haunt_finish = sim -> current_time + execute_time();
-    double debuff_finish  = p -> expirations_haunted ? p -> expirations_haunted -> time : 0.0;
-
-    return haunt_finish >= debuff_finish;
+    return true;
   }
 };
 

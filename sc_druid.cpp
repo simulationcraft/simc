@@ -200,15 +200,16 @@ struct treants_pet_t : public pet_t
     pet_t( sim, owner, pet_name ), melee(0)
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.damage     = 100;
-    main_hand_weapon.swing_time = 1.6;
+    main_hand_weapon.damage     = 340;
+    main_hand_weapon.swing_time = 1.8;
   }
   virtual void init_base()
   {
-    attribute_base[ ATTR_STRENGTH  ] = 153;
-    attribute_base[ ATTR_AGILITY   ] = 108;
-    attribute_base[ ATTR_STAMINA   ] = 280;
-    attribute_base[ ATTR_INTELLECT ] = 133;
+    attribute_base[ ATTR_STRENGTH  ] = 331;
+    attribute_base[ ATTR_AGILITY   ] = 113;
+    attribute_base[ ATTR_STAMINA   ] = 361;
+    attribute_base[ ATTR_INTELLECT ] = 65;
+    attribute_base[ ATTR_SPIRIT    ] = 109;
 
     base_attack_power = -20;
     initial_attack_power_per_strength = 2.0;

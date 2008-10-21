@@ -32,8 +32,6 @@ double spell_t::haste()
   if(      player -> buffs.swift_retribution     ) h *= 1.0 / ( 1.0 + 0.03 );
   else if( player -> buffs.improved_moonkin_aura ) h *= 1.0 / ( 1.0 + 0.02 );
 
-  if( player -> buffs.totem_of_wrath_haste ) h *= 1.0 / ( 1.0 + 0.01 );
-
   if( player -> buffs.wrath_of_air ) h *= 1.0 / ( 1.0 + 0.05 );
 
   return h;

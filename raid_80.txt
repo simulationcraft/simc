@@ -166,8 +166,7 @@ swift_retribution=1
 mage=Mage_Arcane_Slow
 level=80
 talents=http://talent.mmo-champion.com/?mage=00550300120030000000000000000000000000000000000000000000230005031100330150323000515321
-actions=flask,type=blinding_light/wizard_oil/molten_armor/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/slow/arcane_missiles,barrage=1/presence_of_mind,pyroblast/arcane_barrage/fire_ball
-# actions=flask,type=blinding_light/wizard_oil/molten_armor/focus_magic,target=Mage_FrostFire/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/slow/arcane_missiles,barrage=1/presence_of_mind,pyroblast/arcane_barrage/fire_ball
+actions=flask,type=blinding_light/wizard_oil/molten_armor/focus_magic,target=Mage_Fire/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/slow/arcane_missiles,barrage=1/presence_of_mind,pyroblast/arcane_barrage/fire_ball
 gear_stamina=708
 gear_intellect=777
 gear_spirit=411
@@ -188,8 +187,7 @@ swift_retribution=1
 mage=Mage_Arcane
 level=80
 talents=http://talent.mmo-champion.com/?mage=00550300120030000000000000000000000000000000000000000000230005031100330150323000515321
-actions=flask,type=blinding_light/wizard_oil/molten_armor/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/arcane_missiles,barrage=1/presence_of_mind,pyroblast/arcane_barrage/fire_ball
-# actions=flask,type=blinding_light/wizard_oil/molten_armor/focus_magic,target=Mage_Fire/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/arcane_missiles,barrage=1/presence_of_mind,pyroblast/arcane_barrage/fire_ball
+actions=flask,type=blinding_light/wizard_oil/molten_armor/focus_magic,target=Mage_Fire/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/arcane_missiles,barrage=1/presence_of_mind,pyroblast/arcane_barrage/fire_ball
 gear_stamina=708
 gear_intellect=777
 gear_spirit=411
@@ -217,9 +215,8 @@ swift_retribution=1
 mage=Mage_Fire
 level=80
 # We will let the poor Frost Mage raid-slave keep up the Improved Scorch debuff
-talents=http://talent.mmo-champion.com/?mage=03550300120033300531203003500000000000000000000000000000230005031100330000000000000000
-actions=flask,type=pure_death/wizard_oil/arcane_brilliance/molten_armor/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/combustion/pyroblast,hot_streak=1/fire_ball
-# actions=flask,type=pure_death/wizard_oil/arcane_brilliance/molten_armor/focus_magic,target=Mage_Frost/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/combustion/pyroblast,hot_streak=1/fire_ball
+talents=http://talent.mmo-champion.com/?mage=00550300123033300531203003510000000000000000000000000000230005031100230000000000000000
+actions=flask,type=pure_death/wizard_oil/arcane_brilliance/molten_armor/focus_magic,target=Mage_Frost/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/combustion/living_bomb/pyroblast,hot_streak=1/fire_ball
 gear_stamina=708
 gear_intellect=777
 gear_spirit=411
@@ -248,8 +245,7 @@ swift_retribution=1
 mage=Mage_Frost
 level=80
 talents=http://talent.mmo-champion.com/?mage=00000000000000000000000000000533030310233100230052231350230005031100030000000000000000
-actions=flask,type=pure_death/wizard_oil/arcane_brilliance/molten_armor/mana_gem,trigger=3500/mana_potion,trigger=2500/ice_lance,frozen=1,fb_priority=1/evocation,trigger=10000/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/frost_bolt
-# actions=flask,type=pure_death/wizard_oil/arcane_brilliance/molten_armor/focus_magic,target=Mage_Arcane/mana_gem,trigger=3500/mana_potion,trigger=2500/ice_lance,frozen=1,fb_priority=1/evocation,trigger=10000/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/frost_bolt
+actions=flask,type=pure_death/wizard_oil/arcane_brilliance/molten_armor/focus_magic,target=Mage_Arcane/mana_gem,trigger=3500/mana_potion,trigger=2500/ice_lance,frozen=1,fb_priority=1/evocation,trigger=10000/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/frost_bolt
 gear_stamina=708
 gear_intellect=777
 gear_spirit=411
@@ -282,7 +278,7 @@ swift_retribution=1
 mage=Mage_FrostFire
 level=80
 talents=http://talent.mmo-champion.com/?mage=23050300123033310531203013512033030310030000000000000000000000000000000000000000000000
-actions=flask,type=pure_death/wizard_oil/arcane_brilliance/molten_armor/mana_gem,trigger=3500/mana_potion,trigger=3500/scorch,debuff=1/evocation,trigger=10000/combustion/icy_veins/pyroblast,hot_streak=1/frostfire_bolt
+actions=flask,type=pure_death/wizard_oil/arcane_brilliance/molten_armor/mana_gem,trigger=3500/mana_potion,trigger=3500/scorch,debuff=1/evocation,trigger=10000/combustion/icy_veins/living_bomb/pyroblast,hot_streak=1/frostfire_bolt
 # We will let the poor Frost Mage raid-slave keep up the Improved Scorch debuff
 skip_actions=scorch
 gear_stamina=708
@@ -316,10 +312,7 @@ swift_retribution=1
 #
 druid=Druid_Balance
 level=80
-# Vanilla build, including Resto talents
-# talents=http://talent.mmo-champion.com/?druid=00000000000000000000000000000205003312000000000000000005032003025301305213305300051
-# Provided JoW is available and Treants are viable in the encounter
-talents=http://talent.mmo-champion.com/?druid=00000000000000000000000000000000000000000000000000000005532203125331333213305311031
+talents=http://talent.mmo-champion.com/?druid=00000000000000000000000000000205003012000000000000000005502203105331303213305311030
 actions=flask,type=blinding_light/wizard_oil/mark_of_the_wild/moonkin_form/mana_potion,trigger=3500/innervate/faerie_fire/treants/moonfire/insect_swarm/wrath,eclipse=trigger/starfire
 gear_stamina=708
 gear_intellect=777
@@ -343,13 +336,12 @@ sanctified_retribution=1
 swift_retribution=1
 
 # Supported Eleshaman Glyphs
-# glyph_chain_lightning=1
 # glyph_earth_shock=1
 # glyph_flametongue_weapon=1
 # glyph_lightning_bolt=1
-# glyph_totem_of_wrath=1
 # glyph_flame_shock=1
 # glyph_lava=1
+# glyph_lava_lash=1
 # glyph_elemental_mastery=1
 
 #
@@ -361,7 +353,7 @@ swift_retribution=1
 shaman=Shaman_Elemental
 level=80
 talents=http://talent.mmo-champion.com/?shaman=353004150021535102501351000000000000000000000000003050500300000000000000000000
-actions=flask,type=blinding_light/flametongue_weapon,weapon=main/water_shield/mana_potion,trigger=3500/mana_spring_totem/totem_of_wrath/wrath_of_air_totem/elemental_mastery/flame_shock/lava_burst,flame_shock=1,max_ticks_consumed=1/bloodlust,target_pct=35/chain_lightning/earth_shock/lightning_bolt/thunderstorm
+actions=flask,type=blinding_light/flametongue_weapon,weapon=main/water_shield/mana_potion,trigger=3500/mana_spring_totem/totem_of_wrath/wrath_of_air_totem/elemental_mastery/flame_shock/lava_burst,flame_shock=1/bloodlust,target_pct=35/chain_lightning/earth_shock/lightning_bolt/thunderstorm
 gear_stamina=708
 gear_intellect=777
 gear_mp5=100
@@ -371,7 +363,7 @@ gear_hit_rating=250
 gear_haste_rating=492
 chaotic_skyfire=1
 # Glyphs
-glyph_totem_of_wrath=1
+glyph_elemental_mastery=1
 glyph_flame_shock=1
 glyph_lava=1
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
@@ -411,10 +403,9 @@ main_hand=mace,damage=373,speed=2.6,enchant=mongoose
 #off_hand=dagger,damage=258,speed=1.8,enchant=mongoose
 off_hand=mace,damage=373,speed=2.6,enchant=mongoose
 # Glyphs
-glyph_strength_of_earth=1
 glyph_windfury_weapon=1
 glyph_stormstrike=1
-glyph_lightning_shield=0
+glyph_lava_lash=1
 # Pets
 pet=spirit_wolf
 blessing_of_kings=1

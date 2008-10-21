@@ -66,8 +66,6 @@ void attack_t::player_buff()
   player_crit      = p -> composite_attack_crit();
   player_power     = p -> composite_attack_power();
 
-  if( p -> buffs.strength_of_earth_crit ) player_crit += 0.01;
-
   if( sim -> debug ) 
     report_t::log( sim, "attack_t::player_buff: %s hit=%.2f expertise=%.2f crit=%.2f power=%.2f penetration=%.0f", 
 		   name(), player_hit, player_expertise, player_crit, player_power, player_penetration );
