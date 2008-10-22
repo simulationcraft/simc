@@ -110,7 +110,7 @@ bool option_t::parse( sim_t* sim,
 {
   if( sim -> debug ) report_t::log( sim, "option_t::parse: %s", line );
 
-  static std::string buffer, name, value;
+  std::string buffer, name, value;
 
   remove_white_space( buffer, line );
 

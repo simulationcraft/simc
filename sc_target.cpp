@@ -14,7 +14,7 @@
 target_t::target_t( sim_t* s ) :
   sim( s ), name_str( "Fluffy Pillow" ), level( 73 ), 
   initial_armor(6600), armor(0), block_value(0), shield(0), 
-  initial_health( 0 ), current_health(0), total_dmg(0)
+  initial_health( 0 ), current_health(0), total_dmg(0), uptime_list(0)
 {
   for( int i=0; i < SCHOOL_MAX; i++ ) spell_resistance[ i ] = 0;
 }
@@ -63,10 +63,40 @@ double target_t::composite_armor( player_t* p )
   return adjusted_armor;
 }
 
+// target_t::get_uptime =====================================================
+
+uptime_t* target_t::get_uptime( const std::string& name )
+{
+  uptime_t* u=0;
+
+  for( u = uptime_list; u; u = u -> next )
+  {
+    if( u -> name_str == name )
+      return u;
+  }
+
+  u = new uptime_t( name );
+
+  uptime_t** tail = &uptime_list;
+
+  while( *tail && name > ( (*tail) -> name_str ) )
+  {
+    tail = &( (*tail) -> next );
+  }
+
+  u -> next = *tail;
+  *tail = u;
+
+  return u;
+}
+
 // target_t::init ============================================================
 
 void target_t::init()
 {
+  uptimes.winters_grasp   = get_uptime( "winters_grasp"   );
+  uptimes.winters_chill   = get_uptime( "winters_chill"   );
+  uptimes.improved_scorch = get_uptime( "improved_scorch" );
 }
 
 // target_t::reset ===========================================================

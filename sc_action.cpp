@@ -56,8 +56,8 @@ void action_t::parse_options( option_t*          options,
 
   for( int i=0; i < size; i++ )
   {
-    static std::string n;
-    static std::string v;
+    std::string n;
+    std::string v;
 
     if( 2 != util_t::string_split( splits[ i ], "=", "S S", &n, &v ) )
     {
@@ -164,8 +164,6 @@ void action_t::target_debuff( int8_t dmg_type )
 
   // 'multiplier' and 'penetration' handled here, all others handled in attack_t/spell_t
 
-  static uptime_t* wg_uptime = sim -> get_uptime( "winters_grasp"        );
-  
   target_t* t = sim -> target;
 
   if( school == SCHOOL_PHYSICAL )
@@ -179,7 +177,7 @@ void action_t::target_debuff( int8_t dmg_type )
   }
 
   if( t -> debuffs.winters_grasp ) target_hit += 0.02;
-  wg_uptime -> update( t -> debuffs.winters_grasp != 0 );
+  t -> uptimes.winters_grasp -> update( t -> debuffs.winters_grasp != 0 );
 
   if( sim -> debug ) 
     report_t::log( sim, "action_t::target_debuff: %s multiplier=%.2f hit=%.2f crit=%.2f power=%.2f penetration=%.0f", 

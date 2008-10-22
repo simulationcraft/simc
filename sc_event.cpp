@@ -53,7 +53,7 @@ void event_t::operator delete( void* p )
 
 player_ready_event_t::player_ready_event_t( sim_t*    sim, 
                                             player_t* p, 
-                                            double     delta_time ) : 
+                                            double    delta_time ) : 
   event_t( sim, p ) 
 {
   name = "Player-Ready";

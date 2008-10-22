@@ -127,16 +127,13 @@ void spell_t::target_debuff( int8_t dmg_type )
 {
   action_t::target_debuff( dmg_type );
 
-  static uptime_t* wc_uptime = sim -> get_uptime( "winters_chill" );
-  static uptime_t* is_uptime = sim -> get_uptime( "improved_scorch" );
-
   target_t* t = sim -> target;
-   
+ 
   target_hit += std::max( t -> debuffs.improved_faerie_fire, t -> debuffs.misery ) * 0.01; 
 
   target_crit += ( std::max( t -> debuffs.winters_chill, t -> debuffs.improved_scorch ) * 0.02 );
-  wc_uptime -> update( t -> debuffs.winters_chill != 0 );
-  is_uptime -> update( t -> debuffs.improved_scorch != 0 );
+  t -> uptimes.winters_chill   -> update( t -> debuffs.winters_chill   != 0 );
+  t -> uptimes.improved_scorch -> update( t -> debuffs.improved_scorch != 0 );
 
   if( sim -> debug ) 
     report_t::log( sim, "spell_t::target_debuff: %s multiplier=%.2f hit=%.2f crit=%.2f power=%.2f penetration=%.0f", 

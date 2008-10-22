@@ -81,12 +81,9 @@ void attack_t::target_debuff( int8_t dmg_type )
 
 // attack_t::build_table ====================================================
 
-void attack_t::build_table( std::vector<double>& chances, 
-			    std::vector<int>&    results )
+int attack_t::build_table( double* chances, 
+			   int*    results )
 {
-  chances.clear();
-  results.clear();
-
   double miss=0, dodge=0, parry=0, glance=0, block=0, crit=0;
 
   double expertise = total_expertise();
@@ -137,48 +134,58 @@ void attack_t::build_table( std::vector<double>& chances,
 		   name(), miss, dodge, parry, glance, block, crit );
   
   double total = 0;
+  int num_results = 0;
 
   if( miss > 0 )
   {
     total += miss;
-    chances.push_back( total );
-    results.push_back( RESULT_MISS );
+    chances[ num_results ] = total;
+    results[ num_results ] = RESULT_MISS;
+    num_results++;
   }
   if( dodge > 0 )
   {
     total += dodge;
-    chances.push_back( total );
-    results.push_back( RESULT_DODGE );
+    chances[ num_results ] = total;
+    results[ num_results ] = RESULT_DODGE;
+    num_results++;
   }
   if( parry > 0 )
   {
     total += parry;
-    chances.push_back( total );
-    results.push_back( RESULT_PARRY );
+    chances[ num_results ] = total;
+    results[ num_results ] = RESULT_PARRY;
+    num_results++;
   }
   if( glance > 0 )
   {
     total += glance;
-    chances.push_back( total );
-    results.push_back( RESULT_GLANCE );
+    chances[ num_results ] = total;
+    results[ num_results ] = RESULT_GLANCE;
+    num_results++;
   }
   if( block > 0 )
   {
     total += block;
-    chances.push_back( total );
-    results.push_back( RESULT_BLOCK );
+    chances[ num_results ] = total;
+    results[ num_results ] = RESULT_BLOCK;
+    num_results++;
   }
   if( crit > 0 )
   {
     total += crit;
-    chances.push_back( total );
-    results.push_back( RESULT_CRIT );
+    chances[ num_results ] = total;
+    results[ num_results ] = RESULT_CRIT;
+    num_results++;
   }
   if( total < 1.0 )
   {
-    chances.push_back( 1.0 );
-    results.push_back( RESULT_HIT );
+    chances[ num_results ] = 1.0;
+    results[ num_results ] = RESULT_HIT;
+    num_results++;
   }
+
+  return num_results;
 }
 
 // attack_t::caclulate_result ===============================================
@@ -187,15 +194,14 @@ void attack_t::calculate_result()
 {
   direct_dmg = tick_dmg = 0;
 
-  static std::vector<double> chances;
-  static std::vector<int>    results;
+  double chances[ RESULT_MAX ];
+  int    results[ RESULT_MAX ];
 
   result = RESULT_NONE;
 
-  build_table( chances, results );
+  int num_results = build_table( chances, results );
 
   double random = rand_t::gen_float();
-  int num_results = results.size();
 
   for( int i=0; i < num_results; i++ )
   {

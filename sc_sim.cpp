@@ -6,40 +6,6 @@
 #include <simcraft.h>
 
 // ==========================================================================
-// Signal Handler
-// ==========================================================================
-
-#ifdef SIGACTION
-#include <signal.h>
-#endif
-
-struct sim_signal_handler_t
-{
-  static int seed;
-  static int iteration;
-  static void callback_func( int signal )
-  {
-    fprintf( stderr, "sim_signal_handler:  Seed=%d  Iteration=%d\n", seed, iteration );
-    fflush( stderr );
-    exit(0);
-  }
-  static void init( sim_t* sim )
-  {
-    seed = sim -> seed;
-#ifdef SIGACTION
-    struct sigaction sa;
-    sigemptyset( &sa.sa_mask );
-    sa.sa_flags = 0;
-    sa.sa_handler = callback_func;
-    sigaction( SIGSEGV|SIGABRT, &sa, 0 );
-#endif
-  }
-};
-
-int sim_signal_handler_t::seed = 0;
-int sim_signal_handler_t::iteration = 0;
-
-// ==========================================================================
 // Simulator
 // ==========================================================================
 
@@ -52,7 +18,7 @@ sim_t::sim_t() :
   events_processed(0), total_events_processed(0),
   seed(0), id(0), iterations(1),
   potion_sickness(0), average_dmg(1), log(0), debug(0), timestamp(1), 
-  uptime_list(0), output_file(stdout), html_file(0), wiki_file(0),
+  output_file(stdout), html_file(0), wiki_file(0),
   report(0), raid_dps(0), total_dmg(0), total_seconds(0), elapsed_cpu_seconds(0), merge_ignite(0)
 {
   for( int i=0; i < RESOURCE_MAX; i++ ) 
@@ -200,8 +166,6 @@ bool sim_t::init()
 
   if( seed == 0 ) seed = time( NULL );
   rand_t::init( seed );
-
-  sim_signal_handler_t::init( this );
 
   if( ! patch_str.empty() )
   {
@@ -400,33 +364,6 @@ void sim_t::analyze( int current_iteration )
   }
 }
 
-// sim_t::get_uptime ========================================================
-
-uptime_t* sim_t::get_uptime( const std::string& name )
-{
-  uptime_t* u=0;
-
-  for( u = uptime_list; u; u = u -> next )
-  {
-    if( u -> name_str == name )
-      return u;
-  }
-
-  u = new uptime_t( name );
-
-  uptime_t** tail = &uptime_list;
-
-  while( *tail && name > ( (*tail) -> name_str ) )
-  {
-    tail = &( (*tail) -> next );
-  }
-
-  u -> next = *tail;
-  *tail = u;
-
-  return u;
-}
-
 // sim_t::find_player =======================================================
 
 player_t* sim_t::find_player( const std::string& name )
@@ -528,7 +465,6 @@ int main( int argc, char **argv )
 
   for( int i=0; i < sim.iterations; i++ )
   {
-    sim_signal_handler_t::iteration = i;
     sim.reset();
     sim.execute();
     sim.analyze( i );

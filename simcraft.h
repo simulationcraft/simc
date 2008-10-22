@@ -203,7 +203,6 @@ struct sim_t
   int32_t     seed, id, iterations;
   int8_t      infinite_resource[ RESOURCE_MAX ];
   int8_t      potion_sickness, average_dmg, log, debug, timestamp;
-  uptime_t*   uptime_list;
   FILE*       output_file;
   FILE*       html_file;
   FILE*       wiki_file;
@@ -227,7 +226,6 @@ struct sim_t
   bool      init();
   void      analyze();
   void      analyze( int iteration );
-  uptime_t* get_uptime( const std::string& name );
   bool      parse_option( const std::string& name, const std::string& value );
   void      print_options();
   bool      time_to_think( double proc_time ) { if( proc_time == 0 ) return false; return current_time - proc_time > reaction_time; }
@@ -754,6 +752,15 @@ struct target_t
   int8_t      shield;
   double      initial_health, current_health;
   double      total_dmg;
+  uptime_t*   uptime_list;
+
+  struct cooldowns_t
+  {
+    double judgement_of_wisdom;
+    void reset() { memset( (void*) this, 0x00, sizeof( cooldowns_t ) ); }
+    cooldowns_t() { reset(); }
+  };
+  cooldowns_t cooldowns;
 
   struct debuff_t
   {
@@ -803,13 +810,15 @@ struct target_t
   };
   expirations_t expirations;
   
-  struct cooldowns_t
+  struct uptimes_t
   {
-    double judgement_of_wisdom;
-    void reset() { memset( (void*) this, 0x00, sizeof( cooldowns_t ) ); }
-    cooldowns_t() { reset(); }
+    uptime_t* winters_grasp;
+    uptime_t* winters_chill;
+    uptime_t* improved_scorch;
+    void reset() { memset( (void*) this, 0x00, sizeof( uptimes_t ) ); }
+    uptimes_t() { reset(); }
   };
-  cooldowns_t cooldowns;
+  uptimes_t uptimes;
 
   target_t( sim_t* s );
 
@@ -818,6 +827,7 @@ struct target_t
   void assess_damage( double amount, int8_t school, int8_t type );
   void recalculate_health();
   double composite_armor( player_t* );
+  uptime_t* get_uptime( const std::string& name );
   bool parse_option( const std::string& name, const std::string& value );
   const char* name() { return name_str.c_str(); }
 };
@@ -967,7 +977,7 @@ struct attack_t : public action_t
   virtual double haste();
   virtual void   player_buff();
   virtual void   target_debuff( int8_t dmg_type );
-  virtual void   build_table( std::vector<double>& chances, std::vector<int>& results );
+  virtual int    build_table( double* chances, int* results );
   virtual void   calculate_result();
 
   // Passthru Methods

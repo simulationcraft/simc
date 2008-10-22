@@ -75,7 +75,7 @@ static const char* extended_encoding( int number )
   int first  = number / 64;
   int second = number - ( first * 64 );
 
-  static std::string pair;
+  std::string pair;
 
   pair = "";
   pair += encoding[ first  ];
@@ -357,7 +357,7 @@ void report_t::print_uptime()
   fprintf( sim -> output_file, "\nUp-Times:\n" );
 
   bool first=true;
-  for( uptime_t* u = sim -> uptime_list; u; u = u -> next )
+  for( uptime_t* u = sim -> target -> uptime_list; u; u = u -> next )
   {
     if( u -> up > 0 ) 
     {
@@ -505,7 +505,7 @@ const char* report_t::chart_raid_dps()
   int num_players = sim -> players_by_rank.size();
   assert( num_players != 0 );
 
-  static std::string s;
+  std::string s;
   char buffer[ 1024 ];
 
   s = "http://chart.apis.google.com/chart?";
@@ -597,7 +597,7 @@ const char* report_t::chart_raid_gear()
     class_color( WARLOCK ), class_color( PRIEST ), class_color( PALADIN ), class_color( SHAMAN ), class_color( DEATH_KNIGHT ), "00FF00"
   };
 
-  static std::string s;
+  std::string s;
   char buffer[ 1024 ];
   
   s = "http://chart.apis.google.com/chart?";
@@ -665,7 +665,7 @@ const char* report_t::chart_raid_downtime()
   int num_waiting = waiting_list.size();
   if( num_waiting == 0 ) return 0;
 
-  static std::string s;
+  std::string s;
   char buffer[ 1024 ];
 
   s = "http://chart.apis.google.com/chart?";
@@ -712,7 +712,7 @@ const char* report_t::chart_raid_uptimes()
 {
   std::vector<uptime_t*> uptime_list;
 
-  for( uptime_t* u = sim -> uptime_list; u; u = u -> next )
+  for( uptime_t* u = sim -> target -> uptime_list; u; u = u -> next )
   {
     if( u -> up <= 0 ) continue;
     uptime_list.push_back( u );
@@ -721,7 +721,7 @@ const char* report_t::chart_raid_uptimes()
   int num_uptimes = uptime_list.size();
   if( num_uptimes == 0 ) return 0;
 
-  static std::string s;
+  std::string s;
   char buffer[ 1024 ];
 
   s = "http://chart.apis.google.com/chart?";
@@ -792,7 +792,7 @@ int report_t::chart_raid_dpet( std::vector<std::string>& images )
   int max_actions_per_chart = 25;
   int max_charts = 2;
 
-  static std::string s;
+  std::string s;
   char buffer[ 1024 ];
 
   for( int chart=0; chart < max_charts; chart++ )
@@ -876,7 +876,7 @@ const char* report_t::chart_action_dpet( player_t* p )
 
   std::sort( stats_list.begin(), stats_list.end(), compare_dpet() );
 
-  static std::string s;
+  std::string s;
   char buffer[ 1024 ];
 
   s = "http://chart.apis.google.com/chart?";
@@ -949,7 +949,7 @@ const char* report_t::chart_action_dmg( player_t* p )
 
   std::sort( stats_list.begin(), stats_list.end(), compare_dmg() );
 
-  static std::string s;
+  std::string s;
   char buffer[ 1024 ];
 
   s = "http://chart.apis.google.com/chart?";
@@ -1013,7 +1013,7 @@ const char* report_t::chart_gains( player_t* p )
 
   std::sort( gains_list.begin(), gains_list.end(), compare_gain() );
 
-  static std::string s;
+  std::string s;
   char buffer[ 1024 ];
 
   s = "http://chart.apis.google.com/chart?";
@@ -1074,7 +1074,7 @@ const char* report_t::chart_uptimes_and_procs( player_t* p )
 
   if( num_uptimes == 0 && num_procs == 0 ) return 0;
 
-  static std::string s;
+  std::string s;
   char buffer[ 1024 ];
 
   s = "http://chart.apis.google.com/chart?";
@@ -1156,7 +1156,7 @@ const char* report_t::chart_timeline( player_t* p )
   double dps_range  = 60.0;
   double dps_adjust = dps_range / dps_max;
 
-  static std::string s;
+  std::string s;
   char buffer[ 1024 ];
 
   s = "http://chart.apis.google.com/chart?";
