@@ -366,7 +366,7 @@ gear_hit_rating=250
 gear_haste_rating=492
 chaotic_skyfire=1
 # Glyphs
-glyph_elemental_mastery=1
+glyph_flametongue_weapon=1
 glyph_flame_shock=1
 glyph_lava=1
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
@@ -549,10 +549,10 @@ swift_retribution=1
 #
 # Destruction Warlock
 #
-warlock=Warlock_12_3_56
+warlock=Warlock_2_13_56
 level=80
-talents=http://talent.mmo-champion.com/?warlock=050332052100310513352303512350020000000000000000000000030000000000000000000000000
-actions=flask,type=pure_death/fire_stone/fel_armor/summon_pet,imp/shadow_bolt,shadow_trance=1/curse_of_agony/chaos_bolt/immolate/conflagrate/corruption/incinerate/life_tap
+talents=http://talent.mmo-champion.com/?warlock=050332052100310513352303512000000000000000000000000000034003000300000000000000000
+actions=flask,type=pure_death/fire_stone/fel_armor/summon_pet,imp/shadow_bolt,shadow_trance=1/chaos_bolt/curse_of_agony/immolate/conflagrate/incinerate/life_tap
 gear_stamina=708
 gear_intellect=777
 gear_spirit=411
