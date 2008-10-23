@@ -2832,7 +2832,8 @@ struct immolate_t : public warlock_spell_t
   virtual double calculate_tick_damage()
   {
     warlock_t* p = player -> cast_warlock();
-    if( p -> glyphs.immolate ) direct_dmg *= 1.20;
+    spell_t::calculate_tick_damage();
+    if( p -> glyphs.immolate ) tick_dmg *= 1.20;
     return tick_dmg;
   }
 
