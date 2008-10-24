@@ -442,7 +442,41 @@ swift_retribution=1
 warlock=Warlock_56_0_15
 level=80
 talents=http://talent.mmo-champion.com/?warlock=550000050000000000000000002350022001023510053510331351000000000000000000000000000
-actions=flask,type=pure_death/spell_stone/fel_armor/summon_pet,felhunter/haunt,only_for_debuff=1/curse_of_agony/corruption/unstable_affliction/siphon_life/shadow_bolt,shadow_trance=1/drain_soul,target_pct=20/immolate/shadow_bolt/dark_pact
+actions=flask,type=pure_death/spell_stone/fel_armor/summon_pet,felhunter/haunt,only_for_debuff=1/curse_of_agony/corruption/unstable_affliction/siphon_life/shadow_bolt,shadow_trance=1/drain_soul,target_pct=25/immolate/shadow_bolt/dark_pact
+gear_stamina=708
+gear_intellect=777
+gear_spirit=411
+gear_spell_power=2200
+gear_crit_rating=461
+gear_hit_rating=250
+gear_haste_rating=492
+chaotic_skyfire=1
+# Glyphs
+glyph_corruption=1
+glyph_curse_of_agony=1
+glyph_siphon_life=1
+# Pets
+pet=felhunter
+actions=shadow_bite/wait
+blessing_of_kings=1
+blessing_of_might=550
+sanctified_retribution=1
+swift_retribution=1
+quiet=1
+active=owner
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_wisdom=1
+sanctified_retribution=1
+swift_retribution=1
+
+#
+# Affliction Warlock (No Drain Soul)
+#
+warlock=Warlock_56_0_15_NoDS
+level=80
+talents=http://talent.mmo-champion.com/?warlock=550000050000000000000000002350022001023510053510331351000000000000000000000000000
+actions=flask,type=pure_death/spell_stone/fel_armor/summon_pet,felhunter/haunt,only_for_debuff=1/curse_of_agony/corruption/unstable_affliction/siphon_life/immolate/shadow_bolt/dark_pact
 gear_stamina=708
 gear_intellect=777
 gear_spirit=411
@@ -476,7 +510,7 @@ swift_retribution=1
 warlock=Warlock_56_0_15_CoE
 level=80
 talents=http://talent.mmo-champion.com/?warlock=550000050000000000000000002350022001023510053510331351000000000000000000000000000
-actions=flask,type=pure_death/spell_stone/fel_armor/summon_pet,felhunter/haunt,only_for_debuff=1/curse_of_elements/corruption/unstable_affliction/siphon_life/shadow_bolt,shadow_trance=1/drain_soul,target_pct=20/immolate/shadow_bolt/dark_pact
+actions=flask,type=pure_death/spell_stone/fel_armor/summon_pet,felhunter/haunt,only_for_debuff=1/curse_of_elements/corruption/unstable_affliction/siphon_life/shadow_bolt,shadow_trance=1/drain_soul,target_pct=25/immolate/shadow_bolt/dark_pact
 gear_stamina=708
 gear_intellect=777
 gear_spirit=411
