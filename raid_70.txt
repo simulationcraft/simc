@@ -57,7 +57,7 @@ judgement_of_wisdom=1
 # (1) The "trigger=2500" option to mana_potion represents the mana gained and the amount below max required to trigger
 # (2) The "trigger=6000" option to shadow_fiend represents the amount below max mana required to trigger
 #
-priest=Priest_Shadow_3_0_2
+priest=Priest_8_0_52_3.0.2
 level=70
 talents=http://talent.mmo-champion.com/?priest=050300000000000000000000000000000000000000000000000000320023051223010325150301351
 actions=flask,type=pure_death/wizard_oil/inner_fire/shadow_form/mana_potion,trigger=2500/shadow_fiend,trigger=6000/dispersion/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/shadow_word_death/mind_flay
@@ -88,7 +88,7 @@ swift_retribution=1
 # (1) The "trigger=2500" option to mana_potion represents the mana gained and the amount below max required to trigger
 # (2) The "trigger=6000" option to shadow_fiend represents the amount below max mana required to trigger
 #
-priest=Priest_Shadow_NoSWD_3_0_2
+priest=Priest_8_0_53_NoSWD_3.0.2
 level=70
 talents=http://talent.mmo-champion.com/?priest=050300000000000000000000000000000000000000000000000000320023051223010325150301351
 actions=flask,type=pure_death/wizard_oil/inner_fire/shadow_form/mana_potion,trigger=2500/shadow_fiend,trigger=6000/dispersion/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/mind_flay
@@ -118,7 +118,7 @@ swift_retribution=1
 # (1) The "trigger=2500" option to mana_potion represents the mana gained and the amount below max required to trigger
 # (2) The "trigger=6000" option to shadow_fiend represents the amount below max mana required to trigger
 #
-priest=Priest_Shadow_3_0_3
+priest=Priest_8_0_53_3.0.3
 level=70
 talents=http://talent.mmo-champion.com/?priest=050300000000000000000000000000000000000000000000000000320023051223010325150301351
 actions=flask,type=pure_death/wizard_oil/inner_fire/shadow_form/mana_potion,trigger=2500/shadow_fiend,trigger=6000/dispersion/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/shadow_word_death/mind_flay
@@ -150,7 +150,7 @@ swift_retribution=1
 # (1) The "trigger=2500" option to mana_potion represents the mana gained and the amount below max required to trigger
 # (2) The "trigger=6000" option to shadow_fiend represents the amount below max mana required to trigger
 #
-priest=Priest_Shadow_NoSWD_3_0_3
+priest=Priest_8_0_53_NoSWD_3.0.3
 level=70
 talents=http://talent.mmo-champion.com/?priest=050300000000000000000000000000000000000000000000000000320023051223010325150301351
 actions=flask,type=pure_death/wizard_oil/inner_fire/shadow_form/mana_potion,trigger=2500/shadow_fiend,trigger=6000/dispersion/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/mind_flay
@@ -182,7 +182,7 @@ swift_retribution=1
 # (2) The "trigger=6000" option to shadow_fiend represents the amount below max mana required to trigger
 # (3) The "shadow_word_pain" option to the inner_focus action makes sure IF won't be used until SW:P needs to be refreshed.
 #
-priest=Priest_Holy
+priest=Priest_34_0_27
 level=70
 talents=http://talent.mmo-champion.com/?priest=050320113050510250100000000023505100202005200000000000000000000000000000000000000
 actions=flask,type=blinding_light/wizard_oil/inner_fire/divine_spirit/mana_potion,trigger=3500/shadow_fiend,trigger=6000/inner_focus,shadow_word_pain/shadow_word_pain/power_infusion/holy_fire/smite
