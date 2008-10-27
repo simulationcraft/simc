@@ -341,7 +341,7 @@ struct warlock_pet_t : public pet_t
   {
     warlock_t* o = owner -> cast_warlock();
 
-    a -> base_crit        += o -> talents.demonic_tactics * 0.01;
+    a -> base_crit        += o -> talents.demonic_tactics * 0.02;
     a -> base_multiplier  *= 1.0 + o -> talents.unholy_power * 0.04;
 
     if( pet_type == PET_FELGUARD )
@@ -1591,7 +1591,7 @@ void warlock_spell_t::player_buff()
 
     if( p -> talents.demonic_tactics )
     {
-      player_crit += p -> talents.demonic_tactics * 0.01;
+      player_crit += p -> talents.demonic_tactics * 0.02;
     }
 
     if( p -> buffs_demonic_empathy ) player_multiplier *= 1.0 + p -> talents.demonic_empathy * 0.01;
@@ -1801,7 +1801,7 @@ struct curse_of_agony_t : public warlock_spell_t
     base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.suppression * 0.02;
     base_hit        +=       p -> talents.suppression * 0.01;
-    base_multiplier *= 1.0 + ( p -> talents.shadow_mastery          * 0.02 +
+    base_multiplier *= 1.0 + ( p -> talents.shadow_mastery          * 0.03 +
 			       p -> talents.contagion               * 0.01 +
 			       p -> talents.improved_curse_of_agony * 0.05 );
 
@@ -1972,7 +1972,7 @@ struct shadow_bolt_t : public warlock_spell_t
     base_cost         *= 1.0 - ( p -> talents.cataclysm  * 0.01 +
 				 p -> glyphs.shadow_bolt * 0.10 ); 
     base_execute_time -=  p -> talents.bane * 0.1;
-    base_multiplier   *= 1.0 + ( p -> talents.shadow_mastery * 0.02 +
+    base_multiplier   *= 1.0 + ( p -> talents.shadow_mastery * 0.03 +
 				 p -> gear.tier6_4pc         * 0.06 );
     base_crit         += p -> talents.devastation * 0.05;
     base_crit         += p -> talents.backlash * 0.01;
@@ -2090,7 +2090,7 @@ struct chaos_bolt_t : public warlock_spell_t
     base_cost          = rank -> cost;
     base_cost         *= 1.0 -  p -> talents.cataclysm * 0.01;
     base_execute_time -=  p -> talents.bane * 0.1;
-    base_multiplier   *= 1.0 + p -> talents.emberstorm  * 0.02;
+    base_multiplier   *= 1.0 + p -> talents.emberstorm  * 0.03;
     base_crit         += p -> talents.devastation * 0.05;
     base_crit         += p -> talents.backlash * 0.01;
     direct_power_mod  += p -> talents.shadow_and_flame * 0.04;
@@ -2166,7 +2166,7 @@ struct death_coil_t : public warlock_spell_t
       
     base_cost        = rank -> cost;
     base_cost       *= 1.0 -  p -> talents.suppression * 0.02;
-    base_multiplier *= 1.0 + p -> talents.shadow_mastery * 0.02;
+    base_multiplier *= 1.0 + p -> talents.shadow_mastery * 0.03;
     base_crit_bonus *= 1.0 + p -> talents.ruin * 0.20;
     base_hit        += p -> talents.suppression * 0.01;
   }
@@ -2226,7 +2226,7 @@ struct shadow_burn_t : public warlock_spell_t
       
     base_cost        = rank -> cost;
     base_cost       *= 1.0 -  p -> talents.cataclysm * 0.01;
-    base_multiplier *= 1.0 + p -> talents.shadow_mastery * 0.02;
+    base_multiplier *= 1.0 + p -> talents.shadow_mastery * 0.03;
     base_crit_bonus *= 1.0 + p -> talents.ruin * 0.20;
     base_hit        += p -> talents.cataclysm * 0.01;
    }
@@ -2297,7 +2297,7 @@ struct corruption_t : public warlock_spell_t
     base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.suppression * 0.02;
     base_hit        +=  p -> talents.suppression * 0.01;
-    base_multiplier *= 1.0 + ( p -> talents.shadow_mastery      * 0.02 +
+    base_multiplier *= 1.0 + ( p -> talents.shadow_mastery      * 0.03 +
 			       p -> talents.contagion           * 0.01 +
 			       p -> talents.improved_corruption * 0.02 );
     tick_power_mod  += p -> talents.empowered_corruption * 0.02;
@@ -2377,7 +2377,7 @@ struct drain_life_t : public warlock_spell_t
     base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.suppression * 0.02;
     base_hit        +=       p -> talents.suppression * 0.01;
-    base_multiplier *= 1.0 + p -> talents.shadow_mastery * 0.02;
+    base_multiplier *= 1.0 + p -> talents.shadow_mastery * 0.03;
   }
 
   virtual void execute()
@@ -2468,7 +2468,7 @@ struct drain_soul_t : public warlock_spell_t
     base_cost         = rank -> cost;
     base_cost        *= 1.0 - p -> talents.suppression * 0.02;
     base_hit         += p -> talents.suppression * 0.01;
-    base_multiplier  *= 1.0 + p -> talents.shadow_mastery * 0.02;
+    base_multiplier  *= 1.0 + p -> talents.shadow_mastery * 0.03;
   }
 
   virtual void execute()
@@ -2594,7 +2594,7 @@ struct siphon_life_t : public warlock_spell_t
     base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.suppression * 0.02;
     base_hit        +=       p -> talents.suppression * 0.01;
-    base_multiplier *= 1.0 + ( p -> talents.shadow_mastery * 0.02 +
+    base_multiplier *= 1.0 + ( p -> talents.shadow_mastery * 0.03 +
 			       p -> glyphs.siphon_life     * 0.20 );			
     tick_power_mod  += p -> talents.everlasting_affliction * 0.01;
   }
@@ -2662,7 +2662,7 @@ struct unstable_affliction_t : public warlock_spell_t
     base_cost         = rank -> cost;
     base_cost        *= 1.0 - p -> talents.suppression * 0.02;
     base_hit         +=       p -> talents.suppression * 0.01;
-    base_multiplier  *= 1.0 + p -> talents.shadow_mastery * 0.02;
+    base_multiplier  *= 1.0 + p -> talents.shadow_mastery * 0.03;
     tick_power_mod   += p -> talents.everlasting_affliction * 0.01;
   }
 
@@ -2733,7 +2733,7 @@ struct haunt_t : public warlock_spell_t
     base_cost         = rank -> cost;
     base_cost        *= 1.0 - p -> talents.suppression * 0.02;
     base_hit         +=       p -> talents.suppression * 0.01;
-    base_multiplier  *= 1.0 + p -> talents.shadow_mastery * 0.02;
+    base_multiplier  *= 1.0 + p -> talents.shadow_mastery * 0.03;
     base_crit_bonus  *= 1.0 + p -> talents.ruin * 0.20;
   }
 
@@ -2810,7 +2810,7 @@ struct immolate_t : public warlock_spell_t
     base_cost          = rank -> cost;
     base_cost         *= 1.0 -  p -> talents.cataclysm * 0.01;
     base_execute_time -= p -> talents.bane * 0.1;
-    base_multiplier   *= 1.0 + p -> talents.emberstorm  * 0.02;
+    base_multiplier   *= 1.0 + p -> talents.emberstorm  * 0.03;
     base_crit         += p -> talents.devastation * 0.05;
     base_crit         += p -> talents.backlash * 0.01;
     base_crit_bonus   *= 1.0 + p -> talents.ruin * 0.20;
@@ -2904,7 +2904,7 @@ struct conflagrate_t : public warlock_spell_t
 
     base_cost         = rank -> cost;
     base_cost        *= 1.0 -  p -> talents.cataclysm * 0.01;
-    base_multiplier  *= 1.0 + p -> talents.emberstorm  * 0.02;
+    base_multiplier  *= 1.0 + p -> talents.emberstorm  * 0.03;
     base_crit        += p -> talents.devastation * 0.05;
     base_crit        += p -> talents.backlash * 0.01;
     base_crit_bonus  *= 1.0 + p -> talents.ruin * 0.20;
@@ -2998,7 +2998,7 @@ struct incinerate_t : public warlock_spell_t
     base_cost          = rank -> cost;
     base_cost         *= 1.0 - p -> talents.cataclysm * 0.01;
     base_execute_time -= p -> talents.emberstorm * 0.05;
-    base_multiplier   *= 1.0 + ( p -> talents.emberstorm  * 0.02 +
+    base_multiplier   *= 1.0 + ( p -> talents.emberstorm  * 0.03 +
 				 p -> gear.tier6_4pc      * 0.06 );
     base_crit         += p -> talents.devastation * 0.05;
     base_crit         += p -> talents.backlash * 0.01;
@@ -3088,7 +3088,7 @@ struct searing_pain_t : public warlock_spell_t
 
     base_cost        = rank -> cost;
     base_cost       *= 1.0 -  p -> talents.cataclysm * 0.01;
-    base_multiplier *= 1.0 + p -> talents.emberstorm  * 0.02;
+    base_multiplier *= 1.0 + p -> talents.emberstorm  * 0.03;
     base_crit       += p -> talents.devastation * 0.05;
     base_crit       += p -> talents.backlash * 0.01;
     base_crit       += p -> talents.improved_searing_pain * 0.04;
@@ -3143,7 +3143,7 @@ struct soul_fire_t : public warlock_spell_t
     base_cost          = rank -> cost;
     base_cost         *= 1.0 -  p -> talents.cataclysm * 0.01;
     base_execute_time -= p -> talents.bane * 0.4;
-    base_multiplier   *= 1.0 + p -> talents.emberstorm  * 0.02;
+    base_multiplier   *= 1.0 + p -> talents.emberstorm  * 0.03;
     base_crit         += p -> talents.devastation * 0.05;
     base_crit         += p -> talents.backlash * 0.01;
     base_crit_bonus   *= 1.0 + p -> talents.ruin * 0.20;

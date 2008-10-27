@@ -601,6 +601,49 @@ sanctified_retribution=1
 swift_retribution=1
 
 #
+# Demonology Warlock
+#
+warlock=Warlock_0_46_15
+level=70
+talents=http://talent.mmo-champion.com/?warlock=550000050000000000000000000000000000000000000000000000023033011352121500035031200
+actions=flask,type=pure_death/fire_stone/fel_armor/summon_pet,felguard/curse_of_doom/corruption/shadow_bolt/life_tap
+gear_stamina=360
+gear_intellect=360
+gear_spirit=140
+gear_spell_power=1300
+gear_crit_rating=275
+gear_hit_rating=135
+gear_haste_rating=100
+gear_mp5=50
+chaotic_skyfire=1
+# Glyphs
+glyph_corruption=1
+glyph_felguard=1
+glyph_shadow_bolt=1
+# Pets
+pet=felguard
+actions=cleave/wait
+blessing_of_kings=1
+blessing_of_might=305
+sanctified_retribution=1
+swift_retribution=1
+quiet=1
+active=owner
+pet=succubus
+actions=lash_of_pain/wait
+blessing_of_kings=1
+blessing_of_might=305
+sanctified_retribution=1
+swift_retribution=1
+quiet=1
+active=owner
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_wisdom=1
+sanctified_retribution=1
+swift_retribution=1
+
+#
 # Destruction Warlock
 #
 warlock=Warlock_7_0_54

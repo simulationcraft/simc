@@ -21,7 +21,7 @@ static void trigger_judgement_of_wisdom( action_t* action )
   if( max_mana <= 0 )
     return;
 
-  double amount = max_mana * 0.02;
+  double amount = max_mana * 0.01;
 
   if( amount <= 0 )
     return;
