@@ -500,12 +500,11 @@ void report_t::print()
 
 // report_t::chart_raid_dps ==================================================
 
-const char* report_t::chart_raid_dps()
+const char* report_t::chart_raid_dps( std::string& s )
 {
   int num_players = sim -> players_by_rank.size();
   assert( num_players != 0 );
 
-  std::string s;
   char buffer[ 1024 ];
 
   s = "http://chart.apis.google.com/chart?";
@@ -547,7 +546,7 @@ const char* report_t::chart_raid_dps()
 
 // report_t::chart_raid_gear =================================================
 
-const char* report_t::chart_raid_gear()
+const char* report_t::chart_raid_gear( std::string& s )
 {
   int num_players = sim -> players_by_rank.size();
   assert( num_players != 0 );
@@ -597,7 +596,6 @@ const char* report_t::chart_raid_gear()
     class_color( WARLOCK ), class_color( PRIEST ), class_color( PALADIN ), class_color( SHAMAN ), class_color( DEATH_KNIGHT ), "00FF00"
   };
 
-  std::string s;
   char buffer[ 1024 ];
   
   s = "http://chart.apis.google.com/chart?";
@@ -646,7 +644,7 @@ const char* report_t::chart_raid_gear()
 
 // report_t::chart_raid_downtime ==============================================
 
-const char* report_t::chart_raid_downtime()
+const char* report_t::chart_raid_downtime( std::string& s )
 {
   int num_players = sim -> players_by_name.size();
   assert( num_players != 0 );
@@ -665,7 +663,6 @@ const char* report_t::chart_raid_downtime()
   int num_waiting = waiting_list.size();
   if( num_waiting == 0 ) return 0;
 
-  std::string s;
   char buffer[ 1024 ];
 
   s = "http://chart.apis.google.com/chart?";
@@ -708,7 +705,7 @@ const char* report_t::chart_raid_downtime()
 
 // report_t::chart_raid_uptimes =================================================
 
-const char* report_t::chart_raid_uptimes()
+const char* report_t::chart_raid_uptimes( std::string& s )
 {
   std::vector<uptime_t*> uptime_list;
 
@@ -721,7 +718,6 @@ const char* report_t::chart_raid_uptimes()
   int num_uptimes = uptime_list.size();
   if( num_uptimes == 0 ) return 0;
 
-  std::string s;
   char buffer[ 1024 ];
 
   s = "http://chart.apis.google.com/chart?";
@@ -761,7 +757,7 @@ struct compare_dpet {
   }
 };
 
-int report_t::chart_raid_dpet( std::vector<std::string>& images )
+int report_t::chart_raid_dpet( std::string& s, std::vector<std::string>& images )
 {
   int num_players = sim -> players_by_rank.size();
   assert( num_players != 0 );
@@ -792,7 +788,6 @@ int report_t::chart_raid_dpet( std::vector<std::string>& images )
   int max_actions_per_chart = 25;
   int max_charts = 2;
 
-  std::string s;
   char buffer[ 1024 ];
 
   for( int chart=0; chart < max_charts; chart++ )
@@ -846,7 +841,7 @@ int report_t::chart_raid_dpet( std::vector<std::string>& images )
 
 // report_t::chart_action_dpet ===============================================
 
-const char* report_t::chart_action_dpet( player_t* p )
+const char* report_t::chart_action_dpet( std::string& s, player_t* p )
 {
   std::vector<stats_t*> stats_list;
 
@@ -876,7 +871,6 @@ const char* report_t::chart_action_dpet( player_t* p )
 
   std::sort( stats_list.begin(), stats_list.end(), compare_dpet() );
 
-  std::string s;
   char buffer[ 1024 ];
 
   s = "http://chart.apis.google.com/chart?";
@@ -925,7 +919,7 @@ struct compare_dmg {
   }
 };
 
-const char* report_t::chart_action_dmg( player_t* p )
+const char* report_t::chart_action_dmg( std::string& s, player_t* p )
 {
   std::vector<stats_t*> stats_list;
 
@@ -949,7 +943,6 @@ const char* report_t::chart_action_dmg( player_t* p )
 
   std::sort( stats_list.begin(), stats_list.end(), compare_dmg() );
 
-  std::string s;
   char buffer[ 1024 ];
 
   s = "http://chart.apis.google.com/chart?";
@@ -996,7 +989,7 @@ struct compare_gain {
   }
 };
 
-const char* report_t::chart_gains( player_t* p )
+const char* report_t::chart_gains( std::string& s, player_t* p )
 {
   std::vector<gain_t*> gains_list;
 
@@ -1013,7 +1006,6 @@ const char* report_t::chart_gains( player_t* p )
 
   std::sort( gains_list.begin(), gains_list.end(), compare_gain() );
 
-  std::string s;
   char buffer[ 1024 ];
 
   s = "http://chart.apis.google.com/chart?";
@@ -1049,7 +1041,7 @@ const char* report_t::chart_gains( player_t* p )
 
 // report_t::chart_uptimes_and_procs ===========================================
 
-const char* report_t::chart_uptimes_and_procs( player_t* p )
+const char* report_t::chart_uptimes_and_procs( std::string& s, player_t* p )
 {
   std::vector<uptime_t*> uptime_list;
   std::vector<proc_t*>     proc_list;
@@ -1074,7 +1066,6 @@ const char* report_t::chart_uptimes_and_procs( player_t* p )
 
   if( num_uptimes == 0 && num_procs == 0 ) return 0;
 
-  std::string s;
   char buffer[ 1024 ];
 
   s = "http://chart.apis.google.com/chart?";
@@ -1130,7 +1121,7 @@ const char* report_t::chart_uptimes_and_procs( player_t* p )
 
 // report_t::chart_timeline ==================================================
 
-const char* report_t::chart_timeline( player_t* p )
+const char* report_t::chart_timeline( std::string& s, player_t* p )
 {
   int max_buckets = p -> timeline_dps.size();
   int max_points  = 600;
@@ -1156,7 +1147,6 @@ const char* report_t::chart_timeline( player_t* p )
   double dps_range  = 60.0;
   double dps_adjust = dps_range / dps_max;
 
-  std::string s;
   char buffer[ 1024 ];
 
   s = "http://chart.apis.google.com/chart?";
@@ -1190,24 +1180,25 @@ void report_t::chart_html()
   int num_players = sim -> players_by_name.size();
   assert( num_players != 0 );
 
+  std::string buffer;
   const char* img;
 
   fprintf( sim -> html_file, "<h1>Raid</h1>\n" );
 
   fprintf( sim -> html_file, "<! DPS Ranking>\n" );
-  fprintf( sim -> html_file, "<img src=\"%s\" />\n", chart_raid_dps() );
+  fprintf( sim -> html_file, "<img src=\"%s\" />\n", chart_raid_dps( buffer ) );
 
   fprintf( sim -> html_file, "<! Gear Overview>\n" );
-  fprintf( sim -> html_file, "<img src=\"%s\" />", chart_raid_gear() );
+  fprintf( sim -> html_file, "<img src=\"%s\" />", chart_raid_gear( buffer ) );
 
-  img = chart_raid_downtime();
+  img = chart_raid_downtime( buffer );
   if( img )
   {
     fprintf( sim -> html_file, "<! Raid Downtime>\n" );
     fprintf( sim -> html_file, "<img src=\"%s\" />", img );
   }
 
-  img = chart_raid_uptimes();
+  img = chart_raid_uptimes( buffer );
   if( img )
   {
     fprintf( sim -> html_file, "<! Global Up-Times>\n" );
@@ -1215,7 +1206,7 @@ void report_t::chart_html()
   }
 
   std::vector<std::string> images;
-  int count = chart_raid_dpet( images );
+  int count = chart_raid_dpet( buffer, images );
   for( int i=0; i < count; i++ )
   {
     fprintf( sim -> html_file, "<! Raid Damage Per Execute Time>\n" );
@@ -1230,14 +1221,14 @@ void report_t::chart_html()
 
     fprintf( sim -> html_file, "<h1>Player %s</h1>\n", p -> name() );
 
-    img = chart_action_dpet( p );
+    img = chart_action_dpet( buffer, p );
     if( img )
     {
       fprintf( sim -> html_file, "<! %s Damage Per Execute Time>\n", p -> name() );
       fprintf( sim -> html_file, "<img src=\"%s\" />", img );
     }
 
-    img = chart_uptimes_and_procs( p );
+    img = chart_uptimes_and_procs( buffer, p );
     if( img )
     {
       fprintf( sim -> html_file, "<! %s Up-Times and Procs>\n", p -> name() );
@@ -1246,14 +1237,14 @@ void report_t::chart_html()
 
     fprintf( sim -> html_file, "<br>\n" );
 
-    img = chart_action_dmg( p );
+    img = chart_action_dmg( buffer, p );
     if( img )
     {
       fprintf( sim -> html_file, "<! %s Damage Sources>\n", p -> name() );
       fprintf( sim -> html_file, "<img src=\"%s\" />", img );
     }
     
-    img = chart_gains( p );
+    img = chart_gains( buffer, p );
     if( img )
     {
       fprintf( sim -> html_file, "<! %s Resource Gains>\n", p -> name() );
@@ -1263,7 +1254,7 @@ void report_t::chart_html()
     fprintf( sim -> html_file, "<br>\n" );
 
     fprintf( sim -> html_file, "<! %s DPS Timeline>\n", p -> name() );
-    fprintf( sim -> html_file, "<img src=\"%s\" />", chart_timeline( p ) );
+    fprintf( sim -> html_file, "<img src=\"%s\" />", chart_timeline( buffer, p ) );
 
     fprintf( sim -> html_file, "<hr>\n" );
   }
@@ -1282,27 +1273,28 @@ void report_t::chart_wiki()
   std::string raid_uptimes  = "No chart for Raid Up-Times";
   std::string raid_dpet_1   = "No chart for Raid Damage Per Execute Time";
   std::string raid_dpet_2   = "No chart for Raid Damage Per Execute Time";
+  std::string buffer;
   const char* img;
 
-  img = chart_raid_dps();
+  img = chart_raid_dps( buffer );
   if( img )
   {
     raid_dps = img;
     raid_dps += "&dummy=dummy.png";
   }
-  img = chart_raid_gear();
+  img = chart_raid_gear( buffer );
   if( img )
   {
     raid_gear = img;
     raid_gear += "&dummy=dummy.png";
   }
-  img = chart_raid_downtime();
+  img = chart_raid_downtime( buffer );
   if( img )
   {
     raid_downtime = img;
     raid_downtime += "&dummy=dummy.png";
   }
-  img = chart_raid_uptimes();
+  img = chart_raid_uptimes( buffer );
   if( img )
   {
     raid_uptimes = img;
@@ -1310,7 +1302,7 @@ void report_t::chart_wiki()
   }
 
   std::vector<std::string> images;
-  int count = chart_raid_dpet( images );
+  int count = chart_raid_dpet( buffer, images );
   img = ( count >= 1 ? images[ 0 ].c_str() : 0 );
   if( img )
   {
@@ -1344,31 +1336,31 @@ void report_t::chart_wiki()
     std::string gains             = "No chart for Resource Gains";
     std::string timeline          = "No chart for DPS Timeline";
 
-    img = chart_action_dpet( p );
+    img = chart_action_dpet( buffer, p );
     if( img )
     {
       action_dpet = img;
       action_dpet += "&dummy=dummy.png";
     }
-    img = chart_uptimes_and_procs( p );
+    img = chart_uptimes_and_procs( buffer, p );
     if( img )
     {
       uptimes_and_procs = img;
       uptimes_and_procs += "&dummy=dummy.png";
     }
-    img = chart_action_dmg( p );
+    img = chart_action_dmg( buffer, p );
     if( img )
     {
       action_dmg = img;
       action_dmg += "&dummy=dummy.png";
     }
-    img = chart_gains( p );
+    img = chart_gains( buffer, p );
     if( img )
     {
       gains = img;
       gains += "&dummy=dummy.png";
     }
-    img = chart_timeline( p );
+    img = chart_timeline( buffer, p );
     if( img )
     {
       timeline = img;
