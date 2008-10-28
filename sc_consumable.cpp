@@ -120,7 +120,7 @@ struct destruction_potion_t : public action_t
     };
   
     player -> share_cooldown( cooldown_group, cooldown );
-    new expiration_t( sim, player );
+    new ( sim ) expiration_t( sim, player );
     used = sim -> potion_sickness;
   }
 

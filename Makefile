@@ -10,11 +10,8 @@ PG   =
 BITS = 32
 MCP  = -DHAVE_SSE2 -msse -msse2 -mfpmath=sse
 OPTS = -maccumulate-outgoing-args -O3 
-MM   = -DEVENT_MM
 SFMT = -DUSE_SFMT -I./sfmt 
-
-# For now, if you turn on MT, then you need to turn off MM
-#MT = -DMULTI_THREAD -lpthread
+#MT   = -DMULTI_THREAD -lpthread
 
 ifneq (64,${BITS})
 	OPTS += -malign-double 
@@ -46,10 +43,10 @@ SRC =\
 	sc_weapon.cpp
 
 simcraft opt:
-	g++ -I. $(PG) $(MCP) $(OPTS) $(MT) $(MM) $(SFMT) -Wall $(SRC) -o simcraft
+	g++ -I. $(PG) $(MCP) $(OPTS) $(MT) $(SFMT) -Wall $(SRC) -o simcraft
 
 universal:
-	g++ -arch ppc -arch i386 -I. -O3 $(MM) $(SFMT) -Wall $(SRC) -o simcraft
+	g++ -arch ppc -arch i386 -I. -O3 $(SFMT) -Wall $(SRC) -o simcraft
 
 debug:
 	g++ -g -I. $(PG) $(SFMT) $(MT) -Wall $(SRC) -o simcraft

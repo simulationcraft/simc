@@ -120,7 +120,7 @@ static void trigger_mongoose( attack_t* a )
     }
     else
     {
-      e = new mongoose_expiration_t( a -> sim, p, b, e );
+      e = new ( a -> sim ) mongoose_expiration_t( a -> sim, p, b, e );
     }
   }
 
@@ -171,7 +171,7 @@ static void trigger_executioner( attack_t* a )
     }
     else
     {
-      e = new executioner_expiration_t( a -> sim, p );
+      e = new ( a -> sim ) executioner_expiration_t( a -> sim, p );
     }
   }
 

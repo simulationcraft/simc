@@ -12,7 +12,7 @@
 // sim_t::sim_t =============================================================
 
 sim_t::sim_t() : 
-  event_list(0), player_list(0), active_player(0), target(0),
+  event_list(0), free_list(0), player_list(0), active_player(0), target(0),
   lag(0), pet_lag(0), channel_penalty(0), gcd_penalty(0), reaction_time(0.5), 
   regen_periodicity(1.0), current_time(0), max_time(0),
   events_remaining(0), max_events_remaining(0), 
@@ -154,7 +154,7 @@ void sim_t::reset()
   target -> reset();
   for( player_t* p = player_list; p; p = p -> next )
     p -> reset();
-  new regen_event_t( this );
+  new ( this ) regen_event_t( this );
 }
 
 // sim_t::init ==============================================================
@@ -362,6 +362,10 @@ void sim_t::analyze( int current_iteration )
       for( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet ) p -> iteration_dmg += pet -> iteration_dmg;
       p -> iteration_dps.push_back( p -> iteration_dmg / iteration_seconds );
     }
+    else
+    {
+      p -> iteration_dps.push_back( 0 );
+    }
   }
 }
 
@@ -385,7 +389,51 @@ void sim_t::iterate()
 
 void sim_t::merge( sim_t& other_sim )
 {
-  
+  iterations             += other_sim.iterations;
+  total_seconds          += other_sim.total_seconds;
+  total_events_processed += other_sim.total_events_processed;
+
+  if( max_events_remaining < other_sim.max_events_remaining ) max_events_remaining = other_sim.max_events_remaining;
+
+  for( player_t* p = player_list; p; p = p -> next )
+  {
+    player_t* other_p = other_sim.find_player( p -> name() );
+    assert( other_p );
+
+    p -> total_seconds += other_p -> total_seconds;
+    p -> total_waiting += other_p -> total_waiting;
+
+    for( int i=0; i < other_sim.iterations; i++ )
+    {
+      p -> iteration_dps.push_back( other_p -> iteration_dps[ i ] );
+    }
+
+    for( int i=0; i < RESOURCE_MAX; i++ )
+    {
+      p -> resource_lost  [ i ] += other_p -> resource_lost  [ i ];
+      p -> resource_gained[ i ] += other_p -> resource_gained[ i ];
+    }
+
+    for( proc_t* proc = p -> proc_list; proc; proc = proc -> next )
+    {
+      proc -> merge( other_p -> get_proc( proc -> name_str ) );
+    }    
+
+    for( gain_t* gain = p -> gain_list; gain; gain = gain -> next )
+    {
+      gain -> merge( other_p -> get_gain( gain -> name_str ) );
+    }    
+
+    for( stats_t* stats = p -> stats_list; stats; stats = stats -> next )
+    {
+      stats -> merge( other_p -> get_stats( stats -> name_str ) );
+    }    
+
+    for( uptime_t* uptime = p -> uptime_list; uptime; uptime = uptime -> next )
+    {
+      uptime -> merge( other_p -> get_uptime( uptime -> name_str ) );
+    }    
+  }  
 }
 
 // sim_t::find_player =======================================================
@@ -486,12 +534,16 @@ static void multi_thread_launch( std::vector<sim_t*>& sim_threads,
 				 int                  argc, 
 				 char**               argv )
 {
-  if( sim.threads > 1 ) sim_threads.resize( sim.threads-1 );
+  if( sim.threads <= 1 ) return;
+
+  sim.iterations /= sim.threads;
+  sim_threads.resize( sim.threads-1 );
 
   for( int i=0; i < ( sim.threads-1 ); i++ )
   {
     sim_t* sim_thread = sim_threads[ i ] = new sim_t();
     option_t::parse( sim_thread, argc, argv );
+    sim_thread -> iterations /= sim.threads;
     pthread_create( &( sim_thread -> pthread ), NULL, thread_execute, (void*) sim_thread );
   }
 }

@@ -38,7 +38,7 @@ static void trigger_mystical_skyfire( spell_t* s )
       rand_t::roll( 0.15 ) )
   {
     p -> procs.mystical_skyfire -> occur();
-    new mystical_skyfire_expiration_t( s -> sim, p );
+    new ( s -> sim ) mystical_skyfire_expiration_t( s -> sim, p );
   }
 }
 
@@ -79,7 +79,7 @@ static void trigger_spellstrike( spell_t* s )
     }
     else
     {
-      e = new spellstrike_expiration_t( s -> sim, p );
+      e = new ( s -> sim ) spellstrike_expiration_t( s -> sim, p );
     }
   }
 }
@@ -121,7 +121,7 @@ static void trigger_wrath_of_cenarius( spell_t* s )
     }
     else
     {
-      e = new wrath_of_cenarius_expiration_t( s -> sim, p );
+      e = new ( s -> sim ) wrath_of_cenarius_expiration_t( s -> sim, p );
     }
   }
 }
@@ -154,7 +154,7 @@ static void trigger_elder_scribes( spell_t* s )
        rand_t::roll( 0.05 ) )
   {
     p -> procs.elder_scribes -> occur();
-    new elder_scribes_expiration_t( s -> sim, p );
+    new ( s -> sim ) elder_scribes_expiration_t( s -> sim, p );
   }
 }
 
@@ -186,7 +186,7 @@ static void trigger_eternal_sage( spell_t* s )
        rand_t::roll( 0.10 ) )
   {
     p -> procs.eternal_sage -> occur();
-    new eternal_sage_expiration_t( s -> sim, p );
+    new ( s -> sim ) eternal_sage_expiration_t( s -> sim, p );
   }
 }
 
@@ -225,7 +225,7 @@ static void trigger_eye_of_magtheridon( spell_t* s )
     }
     else
     {
-      e = new eye_of_magtheridon_expiration_t( s -> sim, p );
+      e = new ( s -> sim ) eye_of_magtheridon_expiration_t( s -> sim, p );
     }
   }
 }
@@ -258,7 +258,7 @@ static void trigger_shiffars_nexus_horn( spell_t* s )
       rand_t::roll( 0.20 ) )
   {
     p -> procs.shiffars_nexus_horn -> occur();
-    new shiffars_nexus_horn_expiration_t( s -> sim, p );
+    new ( s -> sim ) shiffars_nexus_horn_expiration_t( s -> sim, p );
   }
 }
 
@@ -290,7 +290,7 @@ static void trigger_sextant_of_unstable_currents( spell_t* s )
       rand_t::roll( 0.20 ) )
   {
     p -> procs.sextant_of_unstable_currents -> occur();
-    new sextant_of_unstable_currents_expiration_t( s -> sim, p );
+    new ( s -> sim ) sextant_of_unstable_currents_expiration_t( s -> sim, p );
   }
 }
 
@@ -326,7 +326,7 @@ static void trigger_quagmirrans_eye( spell_t* s )
       rand_t::roll( 0.10 ) )
   {
     p -> procs.quagmirrans_eye -> occur();
-    new quagmirrans_eye_expiration_t( s -> sim, p );
+    new ( s -> sim ) quagmirrans_eye_expiration_t( s -> sim, p );
   }
 }
 
@@ -371,7 +371,7 @@ static void trigger_darkmoon_crusade( spell_t* s )
   }
   else
   {
-    e = new darkmoon_crusade_expiration_t( s -> sim, p );
+    e = new ( s -> sim ) darkmoon_crusade_expiration_t( s -> sim, p );
   }
 }
 
@@ -428,7 +428,7 @@ static void trigger_darkmoon_wrath( spell_t* s )
   }
   else
   {
-    e = new darkmoon_wrath_expiration_t( s -> sim, p );
+    e = new ( s -> sim ) darkmoon_wrath_expiration_t( s -> sim, p );
   }
 }
 
@@ -710,7 +710,7 @@ struct attack_power_trinket_t : public action_t
     cooldown_ready = player -> sim -> current_time + cooldown;
     // Trinket use may not overlap.....
     player -> share_cooldown( cooldown_group, length );
-    new expiration_t( sim, this );
+    new ( sim ) expiration_t( sim, this );
   }
 };
 
@@ -769,7 +769,7 @@ struct spell_power_trinket_t : public action_t
     cooldown_ready = player -> sim -> current_time + cooldown;
     // Trinket use may not overlap.....
     player -> share_cooldown( cooldown_group, length );
-    new expiration_t( sim, this );
+    new ( sim ) expiration_t( sim, this );
   }
 };
 
@@ -831,7 +831,7 @@ struct haste_trinket_t : public action_t
     cooldown_ready = player -> sim -> current_time + cooldown;
     // Trinket use may not overlap.....
     player -> share_cooldown( cooldown_group, length );
-    new expiration_t( sim, this );
+    new ( sim ) expiration_t( sim, this );
   }
 };
 
@@ -873,7 +873,7 @@ struct talisman_of_ascendance_t : public action_t
     cooldown_ready = sim -> current_time + 60.0;
     // Trinket use may not overlap.....
     player -> share_cooldown( cooldown_group, 20.0 );
-    new talisman_of_ascendance_expiration_t( sim, player );
+    new ( sim ) talisman_of_ascendance_expiration_t( sim, player );
   }
 };
 
@@ -915,7 +915,7 @@ struct zandalarian_hero_charm_t : public action_t
     cooldown_ready = sim -> current_time + 120.0;
     // Trinket use may not overlap.....
     player -> share_cooldown( cooldown_group, 20.0 );
-    new zandalarian_hero_charm_expiration_t( sim, player );
+    new ( sim ) zandalarian_hero_charm_expiration_t( sim, player );
   }
 };
 
@@ -975,7 +975,7 @@ struct hazzrahs_charm_t : public action_t
     cooldown_ready = sim -> current_time + 180.0;
     // Trinket use may not overlap.....
     player -> share_cooldown( cooldown_group, 20.0 );
-    new hazzrahs_charm_expiration_t( sim, player );
+    new ( sim ) hazzrahs_charm_expiration_t( sim, player );
   }
 };
 
@@ -1017,7 +1017,7 @@ struct violet_eye_t : public action_t
     cooldown_ready = sim -> current_time + 120.0;
     // Trinket use may not overlap.....
     player -> share_cooldown( cooldown_group, 20.0 );
-    new violet_eye_expiration_t( sim, player );
+    new ( sim ) violet_eye_expiration_t( sim, player );
   }
 };
 

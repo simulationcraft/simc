@@ -447,7 +447,7 @@ static void stack_maelstrom_weapon( attack_t* a )
     }
     else
     {
-      e = new maelstrom_weapon_expiration_t( a -> sim, p );
+      e = new ( a -> sim ) maelstrom_weapon_expiration_t( a -> sim, p );
     }
   }
 }
@@ -493,7 +493,7 @@ static void trigger_unleashed_rage( attack_t* a )
   }
   else
   {
-    e = new unleashed_rage_expiration_t( a -> sim, p );
+    e = new ( a -> sim ) unleashed_rage_expiration_t( a -> sim, p );
   }
 }
 
@@ -531,7 +531,7 @@ static void trigger_nature_vulnerability( attack_t* a )
   }
   else
   {
-    e = new nature_vulnerability_expiration_t( a -> sim, p );
+    e = new ( a -> sim ) nature_vulnerability_expiration_t( a -> sim, p );
   }
 }
 
@@ -627,7 +627,7 @@ static void trigger_elemental_devastation( spell_t* s )
   }
   else
   {
-    e = new elemental_devastation_expiration_t( s -> sim, p );
+    e = new ( s -> sim ) elemental_devastation_expiration_t( s -> sim, p );
   }
 }
 
@@ -672,7 +672,7 @@ static void trigger_elemental_oath( spell_t* s )
   }
   else
   {
-    e = new elemental_oath_expiration_t( s -> sim, p );
+    e = new ( s -> sim ) elemental_oath_expiration_t( s -> sim, p );
   }
 }
 
@@ -1783,7 +1783,7 @@ struct totem_of_wrath_t : public shaman_spell_t
     consume_resource();
     update_ready();
     player -> action_finish( this );
-    new expiration_t( sim, player, this );
+    new ( sim ) expiration_t( sim, player, this );
   }
 
   virtual bool ready()
@@ -1866,7 +1866,7 @@ struct flametongue_totem_t : public shaman_spell_t
     consume_resource();
     update_ready();
     player -> action_finish( this );
-    new expiration_t( sim, player, this );
+    new ( sim ) expiration_t( sim, player, this );
   }
 
   virtual bool ready()
@@ -1938,7 +1938,7 @@ struct windfury_totem_t : public shaman_spell_t
     consume_resource();
     update_ready();
     player -> action_finish( this );
-    new expiration_t( sim, player, this );
+    new ( sim ) expiration_t( sim, player, this );
   }
 
   virtual bool ready()
@@ -2182,7 +2182,7 @@ struct strength_of_earth_totem_t : public shaman_spell_t
     consume_resource();
     update_ready();
     player -> action_finish( this );
-    new expiration_t( sim, player, this );
+    new ( sim ) expiration_t( sim, player, this );
   }
 
   virtual bool ready()
@@ -2244,7 +2244,7 @@ struct wrath_of_air_totem_t : public shaman_spell_t
     consume_resource();
     update_ready();
     player -> action_finish( this );
-    new expiration_t( sim, player );
+    new ( sim ) expiration_t( sim, player );
   }
 
   virtual bool ready()
@@ -2427,7 +2427,7 @@ struct bloodlust_t : public shaman_spell_t
     consume_resource();
     update_ready();
     player -> action_finish( this );
-    new expiration_t( sim, player );
+    new ( sim ) expiration_t( sim, player );
   }
 
   virtual bool ready()
@@ -2492,7 +2492,7 @@ struct shamanistic_rage_t : public shaman_spell_t
     if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
     update_ready();
     player -> action_finish( this );
-    new expiration_t( sim, player );
+    new ( sim ) expiration_t( sim, player );
   }
 
   virtual bool ready()
@@ -2694,7 +2694,7 @@ struct spirit_wolf_spell_t : public shaman_spell_t
     update_ready();
     player -> summon_pet( "spirit_wolf" );
     player -> action_finish( this );
-    new spirit_wolf_expiration_t( sim, player );
+    new ( sim ) spirit_wolf_expiration_t( sim, player );
   }
 
   virtual bool ready()

@@ -471,7 +471,7 @@ void action_t::schedule_execute()
 
   time_to_execute = execute_time();
   
-  event = new action_execute_event_t( sim, this, time_to_execute );
+  event = new ( sim ) action_execute_event_t( sim, this, time_to_execute );
 
   if( observer ) *observer = this;
 
@@ -488,7 +488,7 @@ void action_t::schedule_tick()
 
   time_to_tick = tick_time();
 
-  event = new action_tick_event_t( sim, this, time_to_tick );
+  event = new ( sim ) action_tick_event_t( sim, this, time_to_tick );
 
   if( channeled ) player -> channeling = event;
 

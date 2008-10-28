@@ -87,11 +87,10 @@ struct event_t
   virtual ~event_t() {}
   static void cancel( event_t*& e ) { if( e ) { e -> canceled = 1;                 e=0; } }
   static void  early( event_t*& e ) { if( e ) { e -> canceled = 1; e -> execute(); e=0; } }
-#ifdef EVENT_MM
   // Simple free-list memory manager.
-  static void* operator new( size_t ); 
+  static void* operator new( size_t, sim_t* ); 
+  static void* operator new( size_t ); // DO NOT USE!
   static void  operator delete( void * );
-#endif
 };
 
 struct event_compare_t 
@@ -197,6 +196,7 @@ struct sim_t
   std::string patch_str;
   patch_t     patch;
   event_t*    event_list;
+  event_t*    free_list;
   player_t*   player_list;
   player_t*   active_player;
   target_t*   target;
@@ -876,6 +876,7 @@ struct stats_t
   void add( double amount, int8_t dmg_type, int8_t result, double time );
   void init();
   void analyze();
+  void merge( stats_t* other );
   stats_t( const std::string& name, player_t* );
 };
 
@@ -1140,7 +1141,8 @@ struct gain_t
   double amount;
   gain_t* next;
   gain_t( const std::string& n ) : name_str(n), amount(0) {}
-  void   add( double a ) { amount += a; }
+  void add( double a ) { amount += a; }
+  void merge( gain_t* other ) { amount += other -> amount; }
   const char* name() { return name_str.c_str(); }
 };
 
@@ -1153,7 +1155,8 @@ struct proc_t
   double frequency;
   proc_t* next;
   proc_t( const std::string& n ) : name_str(n), count(0), frequency(0) {}
-  void   occur() { count++; }
+  void occur() { count++; }
+  void merge( proc_t* other ) { count += other -> count; }
   const char* name() { return name_str.c_str(); }
 };
 
@@ -1167,6 +1170,7 @@ struct uptime_t
   uptime_t( const std::string& n ) : name_str(n), up(0), down(0) {}
   void   update( bool is_up ) { if( is_up ) up++; else down++; }
   double percentage() { return (up==0) ? 0 : (100.0*up/(up+down)); }
+  void   merge( uptime_t* other ) { up += other -> up; down += other -> down; }
   const char* name() { return name_str.c_str(); }
 };
 

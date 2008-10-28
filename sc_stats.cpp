@@ -174,3 +174,45 @@ void stats_t::analyze()
   }
 }
 
+// stats_t::merge ===========================================================
+
+void stats_t::merge( stats_t* other )
+{
+  resource_consumed  += other -> resource_consumed;
+  num_executes       += other -> num_executes;
+  num_ticks          += other -> num_ticks;
+  total_execute_time += other -> total_execute_time;
+  total_tick_time    += other -> total_tick_time;
+  total_dmg          += other -> total_dmg;
+  
+  for( int i=0; i < RESULT_MAX; i++ )
+  {
+    if( other -> execute_results[ i ].count != 0 )
+    {
+      stats_results_t& other_r = other -> execute_results[ i ];
+      stats_results_t&       r =          execute_results[ i ];
+
+      r.count     += other_r.count;
+      r.total_dmg += other_r.total_dmg;
+
+      if( other_r.min_dmg < r.min_dmg ) r.min_dmg = other_r.min_dmg;
+      if( other_r.max_dmg > r.max_dmg ) r.max_dmg = other_r.max_dmg;
+    }
+    if( other -> tick_results[ i ].count != 0 )
+    {
+      stats_results_t& other_r = other -> tick_results[ i ];
+      stats_results_t&       r =          tick_results[ i ];
+
+      r.count     += other_r.count;
+      r.total_dmg += other_r.total_dmg;
+
+      if( other_r.min_dmg < r.min_dmg ) r.min_dmg = other_r.min_dmg;
+      if( other_r.max_dmg > r.max_dmg ) r.max_dmg = other_r.max_dmg;
+    }
+  }
+
+  for( int i=0; i < num_buckets && i < other -> num_buckets; i++ )
+  {
+    timeline_dmg[ i ] += other -> timeline_dmg[ i ];
+  }
+}

@@ -274,7 +274,7 @@ static void trigger_earth_and_moon( spell_t* s )
   }
   else
   {
-    e = new earth_and_moon_expiration_t( s -> sim, p );
+    e = new ( s -> sim ) earth_and_moon_expiration_t( s -> sim, p );
   }
 }
 
@@ -307,7 +307,7 @@ static void trigger_eclipse_wrath( spell_t* s )
       s -> sim -> cooldown_ready( p -> cooldowns_eclipse ) &&
       rand_t::roll( p -> talents.eclipse * 0.20 ) )
   {
-    p -> expirations_eclipse = new expiration_t( s -> sim, p );
+    p -> expirations_eclipse = new ( s -> sim ) expiration_t( s -> sim, p );
   }
 }
 
@@ -340,7 +340,7 @@ static void trigger_eclipse_starfire( spell_t* s )
       s -> sim -> cooldown_ready( p -> cooldowns_eclipse ) &&
       rand_t::roll( p -> talents.eclipse * 1.0/3 ) )
   {
-    p -> expirations_eclipse = new expiration_t( s -> sim, p );
+    p -> expirations_eclipse = new ( s -> sim ) expiration_t( s -> sim, p );
   }
 }
 
@@ -379,7 +379,7 @@ static void trigger_ashtongue_talisman( spell_t* s )
     }
     else
     {
-      e = new expiration_t( s -> sim, p );
+      e = new ( s -> sim ) expiration_t( s -> sim, p );
     }
   }
 }
@@ -525,7 +525,7 @@ struct faerie_fire_t : public druid_spell_t
       t -> expirations.faerie_fire -> execute();
       t -> expirations.faerie_fire -> canceled = 1;
     }
-    t -> expirations.faerie_fire = new expiration_t( sim, player, this );
+    t -> expirations.faerie_fire = new ( sim ) expiration_t( sim, player, this );
   }
 
   virtual bool ready() 
@@ -583,7 +583,7 @@ struct innervate_t : public druid_spell_t
     update_ready();
     player -> buffs.innervate = 1;
     player -> action_finish( this );
-    new expiration_t( sim, player );
+    new ( sim ) expiration_t( sim, player );
   }
 
   virtual bool ready()
@@ -1086,7 +1086,7 @@ struct treants_spell_t : public druid_spell_t
     update_ready();
     player -> summon_pet( "treants" );
     player -> action_finish( this );
-    new treants_expiration_t( sim, player );
+    new ( sim ) treants_expiration_t( sim, player );
   }
 
   virtual bool ready()

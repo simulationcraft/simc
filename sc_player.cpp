@@ -69,7 +69,7 @@ static void trigger_focus_magic_feedback( spell_t* spell )
   }
   else
   {
-    e = new expiration_t( p -> sim, p );
+    e = new ( p -> sim ) expiration_t( p -> sim, p );
   }
 }
 
@@ -779,7 +779,7 @@ void player_t::schedule_ready( double delta_time,
     last_foreground_action -> stats -> total_execute_time += delta_time;
   }
   
-  new player_ready_event_t( sim, this, delta_time );
+  new ( sim ) player_ready_event_t( sim, this, delta_time );
 }
 
 // player_t::execute_action =================================================

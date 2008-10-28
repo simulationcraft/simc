@@ -278,7 +278,7 @@ static void stack_shadow_weaving( spell_t* s )
     }
     else
     {
-      e = new shadow_weaving_expiration_t( s -> sim, p );
+      e = new ( s -> sim ) shadow_weaving_expiration_t( s -> sim, p );
     }
   }
 }
@@ -405,7 +405,7 @@ static void trigger_ashtongue_talisman( spell_t* s )
     }
     else
     {
-      e = new expiration_t( s -> sim, p );
+      e = new ( s -> sim ) expiration_t( s -> sim, p );
     }
   }
 }
@@ -459,7 +459,7 @@ static void trigger_improved_spirit_tap( spell_t* s )
     }
     else
     {
-      e = new expiration_t( s -> sim, p );
+      e = new ( s -> sim ) expiration_t( s -> sim, p );
     }
   }
 }
@@ -502,7 +502,7 @@ static void trigger_glyph_of_shadow( spell_t* s )
     }
     else
     {
-      e = new expiration_t( s -> sim, p );
+      e = new ( s -> sim ) expiration_t( s -> sim, p );
     }
   }
 }
@@ -1446,7 +1446,7 @@ struct power_infusion_t : public priest_spell_t
     if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
-    new expiration_t( sim, player );
+    new ( sim ) expiration_t( sim, player );
   }
    
   virtual bool ready()
@@ -1666,7 +1666,7 @@ struct shadow_fiend_spell_t : public priest_spell_t
     update_ready();
     player -> summon_pet( "shadow_fiend" );
     player -> action_finish( this );
-    new shadow_fiend_expiration_t( sim, player );
+    new ( sim ) shadow_fiend_expiration_t( sim, player );
   }
 
   virtual bool ready()

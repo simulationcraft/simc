@@ -856,7 +856,7 @@ static void trigger_tier4_2pc( spell_t* s )
       }
       else
       {
-	e = new expiration_t( s -> sim, p, s );
+	e = new ( s -> sim ) expiration_t( s -> sim, p, s );
       }
     }
   }
@@ -913,7 +913,7 @@ static void trigger_shadow_vulnerability( spell_t* s )
     }
     else
     {
-      e = new expiration_t( s -> sim, p );
+      e = new ( s -> sim ) expiration_t( s -> sim, p );
     }
   }
 }
@@ -955,7 +955,7 @@ static void stack_shadow_embrace( spell_t* s )
     }
     else
     {
-      e = new expiration_t( s -> sim, p );
+      e = new ( s -> sim ) expiration_t( s -> sim, p );
     }
   }
 }
@@ -1051,7 +1051,7 @@ static void trigger_backdraft( spell_t* s )
     }
     else
     {
-      e = new expiration_t( s -> sim, p );
+      e = new ( s -> sim ) expiration_t( s -> sim, p );
     }
   }
 }
@@ -1089,7 +1089,7 @@ static void trigger_haunted( spell_t* s )
   }
   else
   {
-    e = new expiration_t( s -> sim, p );
+    e = new ( s -> sim ) expiration_t( s -> sim, p );
   }
 }
 
@@ -1131,7 +1131,7 @@ static void trigger_molten_core( spell_t* s )
     }
     else
     {
-      e = new expiration_t( s -> sim, p );
+      e = new ( s -> sim ) expiration_t( s -> sim, p );
     }
   }
 }
@@ -1166,7 +1166,7 @@ static void trigger_eradication( spell_t* s )
     if( rand_t::roll( p -> talents.eradication * 0.04 ) )
     {
       p -> cooldowns_eradication = s -> sim -> current_time + 30;
-      new expiration_t( s -> sim, p );
+      new ( s -> sim ) expiration_t( s -> sim, p );
     }
   }
 }
@@ -1285,7 +1285,7 @@ static void trigger_empowered_imp( spell_t* s )
     }
     else
     {
-      e = new expiration_t( s -> sim, o );
+      e = new ( s -> sim ) expiration_t( s -> sim, o );
     }
   }
 }
@@ -1326,7 +1326,7 @@ static void trigger_demonic_empathy_on_owner( action_t* a )
   }
   else
   {
-    e = new expiration_t( a -> sim, o );
+    e = new ( a -> sim ) expiration_t( a -> sim, o );
   }
 }
 
@@ -1366,7 +1366,7 @@ static void trigger_demonic_empathy_on_pet( spell_t* s )
   }
   else
   {
-    e = new expiration_t( s -> sim, p );
+    e = new ( s -> sim ) expiration_t( s -> sim, p );
   }
 }
 
@@ -1411,7 +1411,7 @@ static void trigger_demonic_pact( action_t* a )
   }
   else
   {
-    e = new expiration_t( a -> sim, p );
+    e = new ( a -> sim ) expiration_t( a -> sim, p );
   }
 }
 
@@ -1450,7 +1450,7 @@ static void trigger_ashtongue_talisman( spell_t* s )
     }
     else
     {
-      e = new expiration_t( s -> sim, p );
+      e = new ( s -> sim ) expiration_t( s -> sim, p );
     }
   }
 }
@@ -1744,7 +1744,7 @@ struct curse_of_elements_t : public warlock_spell_t
       warlock_t* p = player -> cast_warlock();
       target_t* t = sim -> target;
       event_t::early( t -> expirations.curse_of_elements );
-      t -> expirations.curse_of_elements = new expiration_t( sim, p );
+      t -> expirations.curse_of_elements = new ( sim ) expiration_t( sim, p );
       p -> active_curse = this;
     }
   }
@@ -3376,7 +3376,7 @@ struct metamorphosis_t : public warlock_spell_t
     if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
     update_ready();
     player -> action_finish( this );
-    new expiration_t( sim, player );
+    new ( sim ) expiration_t( sim, player );
   }
 
   virtual bool ready()
@@ -3441,7 +3441,7 @@ struct demonic_empowerment_t : public warlock_spell_t
     if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
     update_ready();
     p -> action_finish( this );
-    new expiration_t( sim, p -> active_pet );
+    new ( sim ) expiration_t( sim, p -> active_pet );
   }
 
   virtual bool ready()

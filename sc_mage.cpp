@@ -346,7 +346,7 @@ static void trigger_tier5_4pc( spell_t* s )
     }
     else
     {
-      e = new expiration_t( s -> sim, p );
+      e = new ( s -> sim ) expiration_t( s -> sim, p );
     }
   }
 }
@@ -559,7 +559,7 @@ static void stack_winters_chill( spell_t* s )
     }
     else
     {
-      e = new expiration_t( s -> sim );
+      e = new ( s -> sim ) expiration_t( s -> sim );
     }
   }
 }
@@ -604,7 +604,7 @@ static void trigger_frostbite( spell_t* s )
     }
     else
     {
-      e = new expiration_t( s -> sim );
+      e = new ( s -> sim ) expiration_t( s -> sim );
     }
   }
 }
@@ -647,7 +647,7 @@ static void trigger_winters_grasp( spell_t* s )
     }
     else
     {
-      e = new expiration_t( s -> sim );
+      e = new ( s -> sim ) expiration_t( s -> sim );
     }
   }
 }
@@ -783,7 +783,7 @@ static void stack_improved_scorch( spell_t* s )
     }
     else
     {
-      e = new expiration_t( s -> sim );
+      e = new ( s -> sim ) expiration_t( s -> sim );
     }
   }
 }
@@ -841,7 +841,7 @@ static void trigger_ashtongue_talisman( spell_t* s )
     }
     else
     {
-      e = new expiration_t( s -> sim, p );
+      e = new ( s -> sim ) expiration_t( s -> sim, p );
     }
   }
 }
@@ -1149,7 +1149,7 @@ struct arcane_blast_t : public mage_spell_t
     }
     else
     {
-      e = new expiration_t( sim, p );
+      e = new ( sim ) expiration_t( sim, p );
     }
   }
 
@@ -1367,7 +1367,7 @@ struct arcane_power_t : public mage_spell_t
     if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
-    new expiration_t( sim, player );
+    new ( sim ) expiration_t( sim, player );
   }
 };
 
@@ -1404,7 +1404,7 @@ struct slow_t : public mage_spell_t
     if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
-    new expiration_t( sim );
+    new ( sim ) expiration_t( sim );
   }
 
   virtual bool ready()
@@ -2248,7 +2248,7 @@ struct icy_veins_t : public mage_spell_t
     if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
-    new expiration_t( sim, player );
+    new ( sim ) expiration_t( sim, player );
   }
 
   virtual bool ready()
@@ -2402,7 +2402,7 @@ struct water_elemental_spell_t : public mage_spell_t
   {
     consume_resource();
     update_ready();
-    new water_elemental_expiration_t( sim, player );
+    new ( sim ) water_elemental_expiration_t( sim, player );
   }
 
   virtual bool ready()

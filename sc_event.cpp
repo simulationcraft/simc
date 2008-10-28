@@ -9,22 +9,21 @@
 // Event Memory Management
 // ==========================================================================
 
-#ifdef EVENT_MM
+// ::new ====================================================================
 
-static event_t* free_list = 0;
-
-// event_t::new =============================================================
-
-void* event_t::operator new( size_t size )
+void* event_t::operator new( size_t size, 
+			     sim_t* sim )
 {
+  // This override of ::new is ONLY for event_t memory management!
+
   static size_t SIZE = 2 * sizeof( event_t );
   assert( SIZE > size );
 
-  event_t* new_event = free_list;
+  event_t* new_event = sim -> free_list;
 
   if( new_event )
   {
-    free_list = free_list -> next;
+    sim -> free_list = sim -> free_list -> next;
   }
   else
   {
@@ -34,16 +33,24 @@ void* event_t::operator new( size_t size )
   return new_event;
 }
 
+// event_t::new =============================================================
+
+void* event_t::operator new( size_t size )
+{
+  fprintf( stderr, "All events must be allocated via: new (sim) event_class_name_t()\n" );
+  fflush( stderr );
+  assert( 0 );
+}
+
 // event_t::delete ==========================================================
 
 void event_t::operator delete( void* p )
 {
   event_t* e = (event_t*) p;
-  e -> next = free_list;
-  free_list = e;
+  sim_t* sim = e -> sim;
+  e -> next = sim -> free_list;
+  sim -> free_list = e;
 }
-
-#endif
 
 // ==========================================================================
 // Player Ready Event
@@ -166,7 +173,7 @@ void regen_event_t::execute()
     if( ! p -> sleeping ) p -> regen( sim -> regen_periodicity );
   }
   
-  new regen_event_t( sim );
+  new ( sim ) regen_event_t( sim );
 }   
 
 // ===============================================================================
