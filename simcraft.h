@@ -19,6 +19,10 @@
 #include <string.h>
 #include <math.h>
 
+#ifdef MULTI_THREAD
+#include <pthread.h>
+#endif
+
 // Patch Specific Modeling ==================================================
 
 struct patch_t
@@ -196,11 +200,11 @@ struct sim_t
   player_t*   player_list;
   player_t*   active_player;
   target_t*   target;
-  double      lag, pet_lag, reaction_time, regen_periodicity;
+  double      lag, pet_lag, channel_penalty, gcd_penalty, reaction_time, regen_periodicity;
   double      current_time, max_time;
   int32_t     events_remaining, max_events_remaining;
   int32_t     events_processed, total_events_processed;
-  int32_t     seed, id, iterations;
+  int32_t     seed, id, iterations, threads;
   int8_t      infinite_resource[ RESOURCE_MAX ];
   int8_t      potion_sickness, average_dmg, log, debug, timestamp;
   FILE*       output_file;
@@ -214,6 +218,10 @@ struct sim_t
   std::vector<player_t*> players_by_rank;
   std::vector<player_t*> players_by_name;
 
+#ifdef MULTI_THREAD
+  pthread_t pthread;
+#endif
+
   sim_t();
 
   void      add_event( event_t*, double delta_time );
@@ -226,6 +234,8 @@ struct sim_t
   bool      init();
   void      analyze();
   void      analyze( int iteration );
+  void      iterate();
+  void      merge( sim_t& other_sim );
   bool      parse_option( const std::string& name, const std::string& value );
   void      print_options();
   bool      time_to_think( double proc_time ) { if( proc_time == 0 ) return false; return current_time - proc_time > reaction_time; }

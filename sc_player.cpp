@@ -747,9 +747,30 @@ void player_t::schedule_ready( double delta_time,
   }
   else
   {
-    double lag = ( type == PLAYER_PET ? sim -> pet_lag :  sim -> lag );
+    double lag = 0;
+
+    if( type == PLAYER_PET )
+    {
+      lag = sim -> pet_lag;
+    }
+    else
+    {
+      lag = sim -> lag;
+
+      if( last_foreground_action && last_foreground_action -> channeled ) 
+      {
+	lag += sim -> channel_penalty;
+      }
+
+      if( gcd_adjust > 0 ) 
+      {
+	lag += sim -> gcd_penalty;
+      }
+    }
+
     if( lag > 0 ) lag += ( ( rand() % 11 ) - 5 ) * 0.01;
     if( lag < 0 ) lag = 0;
+
     delta_time += lag;
   }
 

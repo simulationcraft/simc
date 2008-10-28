@@ -13,10 +13,11 @@
 
 sim_t::sim_t() : 
   event_list(0), player_list(0), active_player(0), target(0),
-  lag(0), pet_lag(0), reaction_time(0.5), regen_periodicity(1.0), current_time(0), max_time(0),
+  lag(0), pet_lag(0), channel_penalty(0), gcd_penalty(0), reaction_time(0.5), 
+  regen_periodicity(1.0), current_time(0), max_time(0),
   events_remaining(0), max_events_remaining(0), 
   events_processed(0), total_events_processed(0),
-  seed(0), id(0), iterations(1),
+  seed(0), id(0), iterations(1), threads(0),
   potion_sickness(0), average_dmg(1), log(0), debug(0), timestamp(1), 
   output_file(stdout), html_file(0), wiki_file(0),
   report(0), raid_dps(0), total_dmg(0), total_seconds(0), elapsed_cpu_seconds(0), merge_ignite(0)
@@ -364,6 +365,29 @@ void sim_t::analyze( int current_iteration )
   }
 }
 
+// sim_t::iterate ===========================================================
+
+void sim_t::iterate()
+{
+  init();
+
+  for( int i=0; i < iterations; i++ )
+  {
+    reset();
+    execute();
+    analyze( i );
+  }
+
+  reset();
+}
+
+// sim_t::merge =============================================================
+
+void sim_t::merge( sim_t& other_sim )
+{
+  
+}
+
 // sim_t::find_player =======================================================
 
 player_t* sim_t::find_player( const std::string& name )
@@ -383,7 +407,9 @@ bool sim_t::parse_option( const std::string& name,
   option_t options[] =
   {
     { "average_dmg",             OPT_INT8,   &( average_dmg                          ) },
+    { "channel_penalty",         OPT_FLT,    &( channel_penalty                      ) },
     { "debug",                   OPT_INT8,   &( debug                                ) },
+    { "gcd_penalty",             OPT_FLT,    &( gcd_penalty                          ) },
     { "infinite_energy",         OPT_INT8,   &( infinite_resource[ RESOURCE_ENERGY ] ) },
     { "infinite_focus",          OPT_INT8,   &( infinite_resource[ RESOURCE_FOCUS  ] ) },
     { "infinite_health",         OPT_INT8,   &( infinite_resource[ RESOURCE_HEALTH ] ) },
@@ -397,6 +423,7 @@ bool sim_t::parse_option( const std::string& name,
     { "regen_periodicity",       OPT_FLT,    &( regen_periodicity                    ) },
     { "log",                     OPT_INT8,   &( log                                  ) },
     { "max_time",                OPT_FLT,    &( max_time                             ) },
+    { "threads",                 OPT_INT32,  &( threads                              ) },
     { "patch",                   OPT_STRING, &( patch_str                            ) },
     { "pet_lag",                 OPT_FLT,    &( pet_lag                              ) },
     { "potion_sickness",         OPT_INT8,   &( potion_sickness                      ) },
@@ -442,10 +469,56 @@ void sim_t::print_options()
 }
 
 // ==========================================================================
+// MULTI-THREAD SUPPORT
+// ==========================================================================
+
+#ifdef MULTI_THREAD
+
+static void* thread_execute( void* sim )
+{
+  ( (sim_t*) sim ) -> iterate();
+
+  return NULL;
+}
+
+static void multi_thread_launch( std::vector<sim_t*>& sim_threads, 
+				 sim_t&               sim, 
+				 int                  argc, 
+				 char**               argv )
+{
+  if( sim.threads > 1 ) sim_threads.resize( sim.threads-1 );
+
+  for( int i=0; i < ( sim.threads-1 ); i++ )
+  {
+    sim_t* sim_thread = sim_threads[ i ] = new sim_t();
+    option_t::parse( sim_thread, argc, argv );
+    pthread_create( &( sim_thread -> pthread ), NULL, thread_execute, (void*) sim_thread );
+  }
+}
+
+static void multi_thread_merge( std::vector<sim_t*>& sim_threads, 
+				sim_t&               sim ) 
+{
+  for( int i=0; i < ( sim.threads-1 ); i++ )
+  {
+    sim_t* sim_thread = sim_threads[ i ];
+    pthread_join( sim_thread -> pthread, NULL );
+    sim.merge( *sim_thread );
+  }
+}
+
+#else
+
+static void multi_thread_launch( std::vector<sim_t*>& sim_threads, sim_t& sim, int argc, char** argv ) {}
+static void multi_thread_merge ( std::vector<sim_t*>& sim_threads, sim_t& sim ) {}
+
+#endif
+
+// ==========================================================================
 // MAIN 
 // ==========================================================================
 
-int main( int argc, char **argv )
+int main( int argc, char** argv )
 {
   sim_t sim;
 
@@ -455,23 +528,16 @@ int main( int argc, char **argv )
     return -1;
   }
 
-  if( ! sim.init() )
-  {
-    fprintf( sim.output_file, "ERROR! Unable to initialize.\n" );
-    return -1;
-  }
-   
   time_t start_time = time(0);
 
-  for( int i=0; i < sim.iterations; i++ )
-  {
-    sim.reset();
-    sim.execute();
-    sim.analyze( i );
-  }
+  std::vector<sim_t*> sim_threads;
+  multi_thread_launch( sim_threads, sim, argc, argv );
+
+  sim.iterate();
+
+  multi_thread_merge( sim_threads, sim );
+
   sim.elapsed_cpu_seconds = time(0) - start_time;
-  
-  sim.reset();
   sim.analyze();
 
   sim.report -> print();

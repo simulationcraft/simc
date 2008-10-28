@@ -13,7 +13,11 @@
 patch=3.0.0
 
 # Lag is a random value centered on the value below with a range of +/- 0.05 seconds
-lag=0.2
+lag=0.150
+
+# Spells cannot be queue after channeled spells, nor when waiting for the GCD
+channel_penalty=0.300
+gcd_penalty=0.100
 
 # Boss Level
 target_level=73

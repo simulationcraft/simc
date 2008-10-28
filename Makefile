@@ -13,6 +13,9 @@ OPTS = -maccumulate-outgoing-args -O3
 MM   = -DEVENT_MM
 SFMT = -DUSE_SFMT -I./sfmt 
 
+# For now, if you turn on MT, then you need to turn off MM
+#MT = -DMULTI_THREAD -lpthread
+
 ifneq (64,${BITS})
 	OPTS += -malign-double 
 endif
@@ -43,13 +46,13 @@ SRC =\
 	sc_weapon.cpp
 
 simcraft opt:
-	g++ -I. $(PG) $(MCP) $(OPTS) $(MM) $(SFMT) -Wall $(SRC) -o simcraft
+	g++ -I. $(PG) $(MCP) $(OPTS) $(MT) $(MM) $(SFMT) -Wall $(SRC) -o simcraft
 
 universal:
 	g++ -arch ppc -arch i386 -I. -O3 $(MM) $(SFMT) -Wall $(SRC) -o simcraft
 
 debug:
-	g++ -g -I. $(PG) $(SFMT) -Wall $(SRC) -o simcraft
+	g++ -g -I. $(PG) $(SFMT) $(MT) -Wall $(SRC) -o simcraft
 
 REV=0
 tarball:

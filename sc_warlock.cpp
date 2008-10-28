@@ -1220,10 +1220,10 @@ static void trigger_pandemic( spell_t* s )
     pandemic_t( player_t* player ) : 
       spell_t( "pandemic", player, RESOURCE_MANA, SCHOOL_SHADOW, TREE_AFFLICTION )
     {
+      background = true;
       proc = true;
       trigger_gcd = 0;
       base_hit += player -> cast_warlock() -> talents.suppression * 0.01;
-      
     }
     virtual void target_debuff( int8_t dmg_type ) 
     {

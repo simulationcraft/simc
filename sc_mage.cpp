@@ -371,6 +371,7 @@ static void trigger_ignite( spell_t* s )
       num_ticks      = 2;
       trigger_gcd    = 0;
       background     = true;
+      proc           = true;
       may_resist     = false;
       reset();
     }
