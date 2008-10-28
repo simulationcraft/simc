@@ -13,8 +13,8 @@ OPTS = -maccumulate-outgoing-args -O3
 MM   = -DEVENT_MM
 SFMT = -DUSE_SFMT -I./sfmt 
 
-ifneq "BITS" "64"
-OPTS += -malign-double 
+ifneq (64,${BITS})
+	OPTS += -malign-double 
 endif
 
 SRC =\
