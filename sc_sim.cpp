@@ -520,7 +520,7 @@ void sim_t::print_options()
 // MULTI-THREAD SUPPORT
 // ==========================================================================
 
-#ifdef MULTI_THREAD
+#if defined( MULTI_THREAD )
 
 static void* thread_execute( void* sim )
 {
@@ -529,40 +529,60 @@ static void* thread_execute( void* sim )
   return NULL;
 }
 
-static void multi_thread_launch( std::vector<sim_t*>& sim_threads, 
-				 sim_t&               sim, 
+static void multi_thread_launch( std::vector<sim_t*>& sim_list, 
+				 sim_t&               sim_main, 
 				 int                  argc, 
 				 char**               argv )
 {
-  if( sim.threads <= 1 ) return;
+  if( sim_main.threads <= 1 ) return;
 
-  sim.iterations /= sim.threads;
-  sim_threads.resize( sim.threads-1 );
+  sim_main.iterations /= sim_main.threads;
+  sim_list.resize( sim_main.threads-1 );
 
-  for( int i=0; i < ( sim.threads-1 ); i++ )
+  for( int i=0; i < ( sim_main.threads-1 ); i++ )
   {
-    sim_t* sim_thread = sim_threads[ i ] = new sim_t();
-    option_t::parse( sim_thread, argc, argv );
-    sim_thread -> iterations /= sim.threads;
-    pthread_create( &( sim_thread -> pthread ), NULL, thread_execute, (void*) sim_thread );
+    sim_t* sim = sim_list[ i ] = new sim_t();
+    option_t::parse( sim, argc, argv );
+    sim -> iterations /= sim_main.threads;
+#if defined( UNIX )
+    pthread_create( &( sim -> thread_handle ), NULL, thread_execute, (void*) sim );
+#elif defined( WINDOWS )
+    sim -> thread_handle = CreateThread( NULL, 0, (DWORD(*)(LPVOID)) thread_execute, (void*) sim, 0, NULL );
+#elif defined( MAC )
+    printf( "simcraft: Multi-threading not supported for this platform.  Recompile without 'MULTI_THREAD' defined.\n" );
+    exit(0);
+#else
+    printf( "simcraft: Multi-threading not supported for this platform.  Recompile without 'MULTI_THREAD' defined.\n" );
+    exit(0);
+#endif
   }
 }
 
-static void multi_thread_merge( std::vector<sim_t*>& sim_threads, 
-				sim_t&               sim ) 
+static void multi_thread_merge( std::vector<sim_t*>& sim_list, 
+				sim_t&               sim_main ) 
 {
-  for( int i=0; i < ( sim.threads-1 ); i++ )
+  for( int i=0; i < ( sim_main.threads-1 ); i++ )
   {
-    sim_t* sim_thread = sim_threads[ i ];
-    pthread_join( sim_thread -> pthread, NULL );
-    sim.merge( *sim_thread );
+    sim_t* sim = sim_list[ i ];
+#if defined( UNIX )
+    pthread_join( sim -> thread_handle, NULL );
+#elif defined( WINDOWS )
+    WaitForSingleObject( sim -> thread_handle, INFINITE );
+#elif defined( MAC )
+    printf( "simcraft: Multi-threading not supported for this platform.  Recompile without 'MULTI_THREAD' defined.\n" );
+    exit(0);
+#else
+    printf( "simcraft: Multi-threading not supported for this platform.  Recompile without 'MULTI_THREAD' defined.\n" );
+    exit(0);
+#endif
+    sim_main.merge( *sim );
   }
 }
 
 #else
 
-static void multi_thread_launch( std::vector<sim_t*>& sim_threads, sim_t& sim, int argc, char** argv ) {}
-static void multi_thread_merge ( std::vector<sim_t*>& sim_threads, sim_t& sim ) {}
+static void multi_thread_launch( std::vector<sim_t*>& sim_list, sim_t& sim_main, int argc, char** argv ) {}
+static void multi_thread_merge ( std::vector<sim_t*>& sim_list, sim_t& sim_main ) {}
 
 #endif
 
@@ -582,12 +602,12 @@ int main( int argc, char** argv )
 
   time_t start_time = time(0);
 
-  std::vector<sim_t*> sim_threads;
-  multi_thread_launch( sim_threads, sim, argc, argv );
+  std::vector<sim_t*> sim_list;
+  multi_thread_launch( sim_list, sim, argc, argv );
 
   sim.iterate();
 
-  multi_thread_merge( sim_threads, sim );
+  multi_thread_merge( sim_list, sim );
 
   sim.elapsed_cpu_seconds = time(0) - start_time;
   sim.analyze();

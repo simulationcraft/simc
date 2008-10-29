@@ -19,8 +19,33 @@
 #include <string.h>
 #include <math.h>
 
-#ifdef MULTI_THREAD
-#include <pthread.h>
+// Platform Initialization ==================================================
+
+#if ! defined( UNIX ) && ! defined( WINDOWS ) && ! defined( MAC )
+#  if defined( VISUAL_STUDIO ) || defined( __MSVCRT__ ) || defined( __MINWG32__ )
+#    define WINDOWS
+#  else
+#    define UNIX
+#  endif
+#endif
+
+// Cross-Platform Support for Multi-Threading ===============================
+
+#if defined( MULTI_THREAD )
+#  if defined( UNIX )
+#    include <pthread.h>
+#    define THREAD_HANDLE_T pthread_t
+#  endif
+#  if defined( WINDOWS )
+#    define WIN32_LEAN_AND_MEAN
+#    define VC_EXTRALEAN
+#    include <windows.h>
+#    define THREAD_HANDLE_T HANDLE
+#  endif
+#endif
+
+#if ! defined( THREAD_HANDLE_T )
+#  define THREAD_HANDLE_T void*
 #endif
 
 // Patch Specific Modeling ==================================================
@@ -218,9 +243,8 @@ struct sim_t
   std::vector<player_t*> players_by_rank;
   std::vector<player_t*> players_by_name;
 
-#ifdef MULTI_THREAD
-  pthread_t pthread;
-#endif
+  // Multi-Threading
+  THREAD_HANDLE_T thread_handle;
 
   sim_t();
 

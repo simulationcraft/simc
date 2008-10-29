@@ -249,7 +249,7 @@ swift_retribution=1
 mage=Mage_18_0_53
 level=80
 talents=http://talent.mmo-champion.com/?mage=00000000000000000000000000000533030310233100230052231350230005031100030000000000000000
-actions=flask,type=pure_death/wizard_oil/arcane_brilliance/molten_armor/focus_magic,target=Mage_52_19_0/mana_gem,trigger=3500/mana_potion,trigger=2500/ice_lance,frozen=1,fb_priority=1/evocation,trigger=10000/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/frost_bolt
+actions=flask,type=pure_death/wizard_oil/arcane_brilliance/molten_armor/focus_magic,target=Mage_52_19_0_Slow/mana_gem,trigger=3500/mana_potion,trigger=2500/ice_lance,frozen=1,fb_priority=1/evocation,trigger=10000/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/frost_bolt
 gear_stamina=708
 gear_intellect=777
 gear_spirit=411

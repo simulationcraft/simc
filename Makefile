@@ -11,7 +11,6 @@ BITS = 32
 MCP  = -DHAVE_SSE2 -msse -msse2 -mfpmath=sse
 OPTS = -maccumulate-outgoing-args -O3 
 SFMT = -DUSE_SFMT -I./sfmt 
-#MT   = -DMULTI_THREAD -lpthread
 
 ifneq (64,${BITS})
 	OPTS += -malign-double 
@@ -42,14 +41,17 @@ SRC =\
 	sc_warlock.cpp		\
 	sc_weapon.cpp
 
-simcraft opt:
-	g++ -I. $(PG) $(MCP) $(OPTS) $(MT) $(SFMT) -Wall $(SRC) -o simcraft
-
-universal:
-	g++ -arch ppc -arch i386 -I. -O3 $(SFMT) -Wall $(SRC) -o simcraft
+unux opt:
+	g++ -DUNIX -I. $(PG) $(MCP) $(OPTS) $(SFMT) -DMULTI_THREAD -Wall $(SRC) -lpthread -o simcraft
 
 debug:
-	g++ -g -I. $(PG) $(SFMT) $(MT) -Wall $(SRC) -o simcraft
+	g++ -DUNIX -g -I. $(PG) $(SFMT) -DMULTI_THREAD -Wall $(SRC) -lpthread -o simcraft
+
+windows:
+	g++ -DWINDOWS -I. $(PG) $(MCP) $(OPTS) $(SFMT) -DMULTI_THREAD -Wall $(SRC) -o simcraft
+
+mac:
+	g++ -DMAC -arch ppc -arch i386 -I. -O3 $(SFMT) -Wall $(SRC) -o simcraft
 
 REV=0
 tarball:
