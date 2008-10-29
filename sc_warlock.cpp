@@ -1976,7 +1976,7 @@ struct shadow_bolt_t : public warlock_spell_t
 				 p -> gear.tier6_4pc         * 0.06 );
     base_crit         += p -> talents.devastation * 0.05;
     base_crit         += p -> talents.backlash * 0.01;
-    direct_power_mod  += p -> talents.shadow_and_flame * 0.04;
+    direct_power_mod  *= 1.0 + p -> talents.shadow_and_flame * 0.04;
     base_crit_bonus   *= 1.0 + p -> talents.ruin * 0.20;
     base_hit          += p -> talents.cataclysm * 0.01;
   }
@@ -2093,7 +2093,7 @@ struct chaos_bolt_t : public warlock_spell_t
     base_multiplier   *= 1.0 + p -> talents.emberstorm  * 0.03;
     base_crit         += p -> talents.devastation * 0.05;
     base_crit         += p -> talents.backlash * 0.01;
-    direct_power_mod  += p -> talents.shadow_and_flame * 0.04;
+    direct_power_mod  *= 1.0 + p -> talents.shadow_and_flame * 0.04;
     base_crit_bonus   *= 1.0 + p -> talents.ruin * 0.20;
     base_hit          += p -> talents.cataclysm * 0.01;
   }
@@ -3002,7 +3002,7 @@ struct incinerate_t : public warlock_spell_t
 				 p -> gear.tier6_4pc      * 0.06 );
     base_crit         += p -> talents.devastation * 0.05;
     base_crit         += p -> talents.backlash * 0.01;
-    direct_power_mod  += p -> talents.shadow_and_flame * 0.04;
+    direct_power_mod  *= 1.0 + p -> talents.shadow_and_flame * 0.04;
     base_crit_bonus   *= 1.0 + p -> talents.ruin * 0.20;
     base_hit          += p -> talents.cataclysm * 0.01;
   }
