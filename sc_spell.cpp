@@ -157,7 +157,7 @@ double spell_t::level_based_miss_chance( int8_t player,
     miss = 0.04 + delta_level * 0.01;
   }
 
-  if( miss < 0.01 ) miss = 0.01;
+  if( miss < 0.00 ) miss = 0.00;
   if( miss > 0.99 ) miss = 0.99;
 
   return miss;

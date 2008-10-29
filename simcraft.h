@@ -40,6 +40,7 @@
 #    define WIN32_LEAN_AND_MEAN
 #    define VC_EXTRALEAN
 #    include <windows.h>
+#    include <process.h>
 #    define THREAD_HANDLE_T HANDLE
 #  endif
 #endif
@@ -243,9 +244,6 @@ struct sim_t
   std::vector<player_t*> players_by_rank;
   std::vector<player_t*> players_by_name;
 
-  // Multi-Threading
-  THREAD_HANDLE_T thread_handle;
-
   sim_t();
 
   void      add_event( event_t*, double delta_time );
@@ -265,6 +263,14 @@ struct sim_t
   bool      time_to_think( double proc_time ) { if( proc_time == 0 ) return false; return current_time - proc_time > reaction_time; }
   bool      cooldown_ready( double cooldown_time ) { return cooldown_time <= current_time; }
   player_t* find_player( const std::string& name );
+
+  // Multi-Threading
+  std::vector<sim_t*> children;
+  THREAD_HANDLE_T thread_handle;
+  void partition( int argc, char** argv );
+  void merge();
+  void launch_child( sim_t* child );
+  void wait_on_child( sim_t* child );
 };
 
 // Gear Rating Conversions ===================================================

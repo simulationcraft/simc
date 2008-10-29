@@ -522,6 +522,8 @@ void sim_t::print_options()
 
 #if defined( MULTI_THREAD )
 
+#if defined( UNIX )
+
 static void* thread_execute( void* sim )
 {
   ( (sim_t*) sim ) -> iterate();
@@ -529,62 +531,103 @@ static void* thread_execute( void* sim )
   return NULL;
 }
 
-static void multi_thread_launch( std::vector<sim_t*>& sim_list, 
-				 sim_t&               sim_main, 
-				 int                  argc, 
-				 char**               argv )
+void sim_t::launch_child( sim_t* child )
 {
-  if( sim_main.threads <= 1 ) return;
-
-  sim_main.iterations /= sim_main.threads;
-  sim_list.resize( sim_main.threads-1 );
-
-  for( int i=0; i < ( sim_main.threads-1 ); i++ )
-  {
-    sim_t* sim = sim_list[ i ] = new sim_t();
-    option_t::parse( sim, argc, argv );
-    sim -> iterations /= sim_main.threads;
-#if defined( UNIX )
-    pthread_create( &( sim -> thread_handle ), NULL, thread_execute, (void*) sim );
-#elif defined( WINDOWS )
-    sim -> thread_handle = CreateThread( NULL, 0, (DWORD(*)(LPVOID)) thread_execute, (void*) sim, 0, NULL );
-#elif defined( MAC )
-    printf( "simcraft: Multi-threading not supported for this platform.  Recompile without 'MULTI_THREAD' defined.\n" );
-    exit(0);
-#else
-    printf( "simcraft: Multi-threading not supported for this platform.  Recompile without 'MULTI_THREAD' defined.\n" );
-    exit(0);
-#endif
-  }
+  pthread_create( &( child -> thread_handle ), NULL, thread_execute, (void*) child );
 }
 
-static void multi_thread_merge( std::vector<sim_t*>& sim_list, 
-				sim_t&               sim_main ) 
+void sim_t::wait_on_child( sim_t* child )
 {
-  for( int i=0; i < ( sim_main.threads-1 ); i++ )
-  {
-    sim_t* sim = sim_list[ i ];
-#if defined( UNIX )
-    pthread_join( sim -> thread_handle, NULL );
-#elif defined( WINDOWS )
-    WaitForSingleObject( sim -> thread_handle, INFINITE );
-#elif defined( MAC )
-    printf( "simcraft: Multi-threading not supported for this platform.  Recompile without 'MULTI_THREAD' defined.\n" );
-    exit(0);
-#else
-    printf( "simcraft: Multi-threading not supported for this platform.  Recompile without 'MULTI_THREAD' defined.\n" );
-    exit(0);
-#endif
-    sim_main.merge( *sim );
-  }
+  pthread_join( child -> thread_handle, NULL );
 }
 
-#else
+#elif defined( WINDOWS )
 
-static void multi_thread_launch( std::vector<sim_t*>& sim_list, sim_t& sim_main, int argc, char** argv ) {}
-static void multi_thread_merge ( std::vector<sim_t*>& sim_list, sim_t& sim_main ) {}
+static unsigned __stdcall thread_execute( void* sim )
+{
+  ( (sim_t*) sim ) -> iterate();
+
+  return 0;
+}
+
+void sim_t::launch_child( sim_t* child )
+{
+  printf( "simcraft: Multi-threading not working for this platform.  Please removed 'threads=N' from config file.\n" );
+  exit(0);
+
+  // FIXME!  This crashes under MINGW and I can't test under MSVC.  So confused..........
+  unsigned thread_id;
+  child -> thread_handle = (HANDLE) _beginthreadex( NULL, 0, thread_execute, (void*) child, 0, &thread_id );
+}
+
+void sim_t::wait_on_child( sim_t* child )
+{
+  printf( "simcraft: Multi-threading not working for this platform.  Please removed 'threads=N' from config file.\n" );
+  exit(0);
+
+  // FIXME!  So confused..........
+  WaitForSingleObject( child -> thread_handle, INFINITE );
+}
+
+#elif defined( MAC )
+
+void sim_t::launch_child( sim_t* child )
+{
+  printf( "simcraft: Multi-threading not supported for this platform.  Recompile without 'MULTI_THREAD' defined.\n" );
+  exit(0);
+}
+
+void sim_t::wait_on_child( sim_t* child )
+{
+  printf( "simcraft: Multi-threading not supported for this platform.  Recompile without 'MULTI_THREAD' defined.\n" );
+  exit(0);
+}
 
 #endif
+
+#endif
+
+// sim_t::partition =========================================================
+
+void sim_t::partition( int argc, char** argv )
+{
+#if defined( MULTI_THREAD )
+
+  int num_children = threads - 1;
+  if( num_children <= 0 ) return;
+
+  iterations /= threads;
+
+  children.resize( num_children );
+
+  for( int i=0; i < num_children; i++ )
+  {
+    sim_t* child = children[ i ] = new sim_t();
+    option_t::parse( child, argc, argv );
+    child -> iterations /= threads;
+    launch_child( child );
+  }
+  
+#endif
+}
+
+// sim_t::merge =============================================================
+
+void sim_t::merge()
+{
+#if defined( MULTI_THREAD )
+
+  int num_children = children.size();
+  
+  for( int i=0; i < num_children; i++ )
+  {
+    sim_t* child = children[ i ];
+    wait_on_child( child );
+    merge( *child );
+  }
+
+#endif
+}
 
 // ==========================================================================
 // MAIN 
@@ -602,22 +645,20 @@ int main( int argc, char** argv )
 
   time_t start_time = time(0);
 
-  std::vector<sim_t*> sim_list;
-  multi_thread_launch( sim_list, sim, argc, argv );
-
+  sim.partition( argc, argv );
   sim.iterate();
-
-  multi_thread_merge( sim_list, sim );
+  sim.merge();
 
   sim.elapsed_cpu_seconds = time(0) - start_time;
+
   sim.analyze();
 
   sim.report -> print();
   sim.report -> chart();
 
   if( sim.output_file != stdout ) fclose( sim.output_file );
-  if( sim.  html_file           ) fclose( sim.  html_file );
-  if( sim.  wiki_file           ) fclose( sim.  wiki_file );
+  if( sim.html_file ) fclose( sim.  html_file );
+  if( sim.wiki_file ) fclose( sim.  wiki_file );
   
   return 0;
 }
