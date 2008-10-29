@@ -424,13 +424,13 @@ static void trigger_burnout( spell_t* s )
 
 // trigger_master_of_elements ===============================================
 
-static void trigger_master_of_elements( spell_t* s )
+static void trigger_master_of_elements( spell_t* s, double adjust )
 {
   if( s -> resource_consumed == 0 ) return;
 
   mage_t* p = s -> player -> cast_mage();
 
-  p -> resource_gain( RESOURCE_MANA, s -> base_cost * p -> talents.master_of_elements * 0.10, p -> gains_master_of_elements );
+  p -> resource_gain( RESOURCE_MANA, adjust * s -> base_cost * p -> talents.master_of_elements * 0.10, p -> gains_master_of_elements );
 }
 
 // trigger_molten_fury ======================================================
@@ -895,7 +895,7 @@ void mage_spell_t::execute()
     {
       trigger_burnout( this );
       trigger_ignite( this );
-      trigger_master_of_elements( this );
+      trigger_master_of_elements( this, 1.0 );
       trigger_tier5_4pc( this );
       trigger_ashtongue_talisman( this );
     }
@@ -1284,6 +1284,7 @@ struct arcane_missiles_t : public mage_spell_t
       }
       if( result == RESULT_CRIT )
       {
+	trigger_master_of_elements( this, ( 1.0 / num_ticks ) );
 	trigger_tier5_4pc( this );
 	trigger_ashtongue_talisman( this );
       }
@@ -1768,7 +1769,12 @@ struct living_bomb_t : public mage_spell_t
       {
 	tick_dmg = direct_dmg;
 	assess_damage( tick_dmg, DMG_OVER_TIME );
-	if( result == RESULT_CRIT ) trigger_ignite( this );
+	if( result == RESULT_CRIT ) 
+	{
+	  trigger_burnout( this );
+	  trigger_ignite( this );
+	  trigger_master_of_elements( this, 1.0 );
+	}
       }
     }
     update_stats( DMG_OVER_TIME );
