@@ -112,8 +112,21 @@ report_t::report_t( sim_t* s ) :
   report_statistics(1),
   report_tag(1),
   report_uptime(1),
-  report_waiting(1)
+  report_waiting(1),
+  // Scaling Options
+  report_scaling(0),
+  report_delta_spell_power(0),
+  report_delta_attack_power(0),
+  report_delta_expertise_rating(0),
+  report_delta_armor_penetration_rating(0),
+  report_delta_hit_rating(0),
+  report_delta_crit_rating(0),
+  report_delta_haste_rating(0)
 {
+  for( int i=0; i < ATTRIBUTE_MAX; i++ )
+  {
+    report_delta_attribute[ i ] = 0;
+  }
 }
 
 // report_t::parse_option ===================================================
@@ -140,6 +153,21 @@ bool report_t::parse_option( const std::string& name,
     { "report_statistics",       OPT_INT8,   &( report_statistics       ) },
     { "report_tag",              OPT_INT8,   &( report_tag              ) },
     { "report_uptime",           OPT_INT8,   &( report_uptime           ) },
+    { "report_waiting",          OPT_INT8,   &( report_waiting          ) },
+    // Sacling Options
+    { "report_scaling",                        OPT_INT16,  &( report_scaling                           ) },
+    { "report_delta_strength",                 OPT_INT16,  &( report_delta_attribute[ ATTR_STRENGTH  ] ) },
+    { "report_delta_agility",                  OPT_INT16,  &( report_delta_attribute[ ATTR_AGILITY   ] ) },
+    { "report_delta_stamina",                  OPT_INT16,  &( report_delta_attribute[ ATTR_STAMINA   ] ) },
+    { "report_delta_intellect",                OPT_INT16,  &( report_delta_attribute[ ATTR_INTELLECT ] ) },
+    { "report_delta_spirit",                   OPT_INT16,  &( report_delta_attribute[ ATTR_SPIRIT    ] ) },
+    { "report_delta_spell_power",              OPT_INT16,  &( report_delta_spell_power                 ) },
+    { "report_delta_attack_power",             OPT_INT16,  &( report_delta_attack_power                ) },
+    { "report_delta_expertise_rating",         OPT_INT16,  &( report_delta_expertise_rating            ) },
+    { "report_delta_armor_penetration_rating", OPT_INT16,  &( report_delta_armor_penetration_rating    ) },
+    { "report_delta_hit_rating",               OPT_INT16,  &( report_delta_hit_rating                  ) },
+    { "report_delta_crit_rating",              OPT_INT16,  &( report_delta_crit_rating                 ) },
+    { "report_delta_haste_rating",             OPT_INT16,  &( report_delta_haste_rating                ) },
     { NULL, OPT_UNKNOWN }
   };
 
@@ -419,7 +447,7 @@ void report_t::print_waiting()
 void report_t::print_performance()
 {
   fprintf( sim -> output_file, 
-	   "\nPerformance:\n"
+	   "\nBaseline Performance:\n"
 	   "  TotalEvents   = %d\n"
 	   "  MaxEventQueue = %d\n"
 	   "  SimSeconds    = %.0f\n"
@@ -430,6 +458,39 @@ void report_t::print_performance()
 	   sim -> iterations * sim -> total_seconds,
 	   sim -> elapsed_cpu_seconds,
 	   sim -> iterations * sim -> total_seconds / sim -> elapsed_cpu_seconds );
+}
+
+// report_t::print_scale_factors ==============================================
+
+void report_t::print_scale_factors()
+{
+  fprintf( sim -> output_file, "\nScale Factors:\n" );
+
+  int num_players = sim -> players_by_name.size();
+
+  for( int i=0; i < num_players; i++ )
+  {
+    player_t* p = sim -> players_by_name[ i ];
+
+    fprintf( sim -> output_file, "  %-25s", p -> name() );
+
+    for( int j=0; j < ATTRIBUTE_MAX; j++ )
+    {
+      if( report_delta_attribute[ j ] ) 
+      {
+	fprintf( sim -> output_file, "  %s=%.2f", util_t::attribute_type_string( j ), p -> scaling.attribute[ j ] );
+      }
+    }
+    if( report_delta_spell_power              ) fprintf( sim -> output_file,              "  spell_power=%.2f", p -> scaling.spell_power              );
+    if( report_delta_attack_power             ) fprintf( sim -> output_file,       "  attack_power_power=%.2f", p -> scaling.attack_power             );
+    if( report_delta_expertise_rating         ) fprintf( sim -> output_file,         "  expertise_rating=%.2f", p -> scaling.expertise_rating         );
+    if( report_delta_armor_penetration_rating ) fprintf( sim -> output_file, "  armor_penetrating_rating=%.2f", p -> scaling.armor_penetration_rating );
+    if( report_delta_hit_rating               ) fprintf( sim -> output_file,               "  hit_rating=%.2f", p -> scaling.hit_rating               );
+    if( report_delta_crit_rating              ) fprintf( sim -> output_file,              "  crit_rating=%.2f", p -> scaling.crit_rating              );
+    if( report_delta_haste_rating             ) fprintf( sim -> output_file,             "  haste_rating=%.2f", p -> scaling.haste_rating             );
+
+    fprintf( sim -> output_file, "\n" );
+  }
 }
 
 // report_t::print ============================================================
@@ -494,6 +555,8 @@ void report_t::print()
   if( report_waiting ) print_waiting();
 
   if( report_performance ) print_performance();
+
+  if( report_scaling ) print_scale_factors();
 
   fprintf( sim -> output_file, "\n" );
 }
@@ -1420,6 +1483,165 @@ void report_t::chart()
 
 void report_t::scale()
 {
+  if( ! report_scaling ) return;
+
+  int num_players = sim -> players_by_name.size();
+  if( num_players == 0 ) return;
+
+  for( int i=0; i < ATTRIBUTE_MAX; i++ )
+  {
+    if( report_delta_attribute[ i ] != 0 )
+    {
+      fprintf( sim -> output_file, "\nGenerating scale factors for %s...\n", util_t::attribute_type_string( i ) );
+
+      sim_t* child_sim = new sim_t( sim );
+      child_sim -> gear_delta.attribute[ i ] = report_delta_attribute[ i ];
+      child_sim -> execute( sim -> argc, sim -> argv );
+
+      for( int j=0; j < num_players; j++ )
+      {
+	player_t* p = sim -> players_by_name[ j ];
+	player_t* child_p = child_sim -> find_player( p -> name() );
+	
+	p -> scaling.attribute[ i ] = ( child_p -> dps - p -> dps ) / report_delta_attribute[ i ];
+      }
+
+      delete child_sim;
+    }
+  }
+
+  if( report_delta_spell_power != 0 )
+  {
+    fprintf( sim -> output_file, "\nGenerating scale factors for spell power...\n" );
+
+    sim_t* child_sim = new sim_t( sim );
+    child_sim -> gear_delta.spell_power = report_delta_spell_power;
+    child_sim -> execute( sim -> argc, sim -> argv );
+
+    for( int i=0; i < num_players; i++ )
+    {
+      player_t* p = sim -> players_by_name[ i ];
+      player_t* child_p = child_sim -> find_player( p -> name() );
+	
+      p -> scaling.spell_power = ( child_p -> dps - p -> dps ) / report_delta_spell_power;
+    }
+
+    delete child_sim;
+  }
+
+  if( report_delta_attack_power != 0 )
+  {
+    fprintf( sim -> output_file, "\nGenerating scale factors for attack power...\n" );
+
+    sim_t* child_sim = new sim_t( sim );
+    child_sim -> gear_delta.attack_power = report_delta_attack_power;
+    child_sim -> execute( sim -> argc, sim -> argv );
+
+    for( int i=0; i < num_players; i++ )
+    {
+      player_t* p = sim -> players_by_name[ i ];
+      player_t* child_p = child_sim -> find_player( p -> name() );
+	
+      p -> scaling.attack_power = ( child_p -> dps - p -> dps ) / report_delta_attack_power;
+    }
+
+    delete child_sim;
+  }
+
+  if( report_delta_expertise_rating != 0 )
+  {
+    fprintf( sim -> output_file, "\nGenerating scale factors for expertise rating...\n" );
+
+    sim_t* child_sim = new sim_t( sim );
+    child_sim -> gear_delta.expertise_rating = report_delta_expertise_rating;
+    child_sim -> execute( sim -> argc, sim -> argv );
+
+    for( int i=0; i < num_players; i++ )
+    {
+      player_t* p = sim -> players_by_name[ i ];
+      player_t* child_p = child_sim -> find_player( p -> name() );
+	
+      p -> scaling.expertise_rating = ( child_p -> dps - p -> dps ) / report_delta_expertise_rating;
+    }
+
+    delete child_sim;
+  }
+
+  if( report_delta_armor_penetration_rating != 0 )
+  {
+    fprintf( sim -> output_file, "\nGenerating scale factors for armor penetration rating...\n" );
+
+    sim_t* child_sim = new sim_t( sim );
+    child_sim -> gear_delta.armor_penetration_rating = report_delta_armor_penetration_rating;
+    child_sim -> execute( sim -> argc, sim -> argv );
+
+    for( int i=0; i < num_players; i++ )
+    {
+      player_t* p = sim -> players_by_name[ i ];
+      player_t* child_p = child_sim -> find_player( p -> name() );
+	
+      p -> scaling.armor_penetration_rating = ( child_p -> dps - p -> dps ) / report_delta_armor_penetration_rating;
+    }
+
+    delete child_sim;
+  }
+
+  if( report_delta_hit_rating != 0 )
+  {
+    fprintf( sim -> output_file, "\nGenerating scale factors for hit rating...\n" );
+
+    sim_t* child_sim = new sim_t( sim );
+    child_sim -> gear_delta.hit_rating = report_delta_hit_rating;
+    child_sim -> execute( sim -> argc, sim -> argv );
+
+    for( int i=0; i < num_players; i++ )
+    {
+      player_t* p = sim -> players_by_name[ i ];
+      player_t* child_p = child_sim -> find_player( p -> name() );
+	
+      p -> scaling.hit_rating = ( child_p -> dps - p -> dps ) / report_delta_hit_rating;
+    }
+
+    delete child_sim;
+  }
+
+  if( report_delta_crit_rating != 0 )
+  {
+    fprintf( sim -> output_file, "\nGenerating scale factors for crit rating...\n" );
+
+    sim_t* child_sim = new sim_t( sim );
+    child_sim -> gear_delta.crit_rating = report_delta_crit_rating;
+    child_sim -> execute( sim -> argc, sim -> argv );
+
+    for( int i=0; i < num_players; i++ )
+    {
+      player_t* p = sim -> players_by_name[ i ];
+      player_t* child_p = child_sim -> find_player( p -> name() );
+	
+      p -> scaling.crit_rating = ( child_p -> dps - p -> dps ) / report_delta_crit_rating;
+    }
+
+    delete child_sim;
+  }
+
+  if( report_delta_haste_rating != 0 )
+  {
+    fprintf( sim -> output_file, "\nGenerating scale factors for haste rating...\n" );
+
+    sim_t* child_sim = new sim_t( sim );
+    child_sim -> gear_delta.haste_rating = report_delta_haste_rating;
+    child_sim -> execute( sim -> argc, sim -> argv );
+
+    for( int i=0; i < num_players; i++ )
+    {
+      player_t* p = sim -> players_by_name[ i ];
+      player_t* child_p = child_sim -> find_player( p -> name() );
+	
+      p -> scaling.haste_rating = ( child_p -> dps - p -> dps ) / report_delta_haste_rating;
+    }
+
+    delete child_sim;
+  }
 }
 
 // report_t::timestamp ======================================================

@@ -10,7 +10,7 @@
 #
 
 # patch level of 3.0.0 or later implies Wrath of the Lich King
-patch=3.0.0
+patch=3.0.3
 
 # Lag is a random value centered on the value below with a range of +/- 0.05 seconds
 lag=0.150

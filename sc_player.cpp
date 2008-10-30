@@ -254,7 +254,10 @@ void player_t::init_core()
   {
     if( attribute_initial[ i ] == 0 )
     {
-      attribute_initial[ i ] = attribute_base[ i ] + gear.attribute[ i ] + gear.attribute_enchant[ i ];
+      int16_t value = gear.attribute[ i ] + gear.attribute_enchant[ i ];
+      if( value == 0 ) value = sim -> gear_default.attribute[ i ];
+      value += sim -> gear_delta.attribute[ i ];
+      attribute_initial[ i ] = attribute_base[ i ] + value;
     }
     attribute[ i ] = attribute_initial[ i ];
   }
@@ -276,20 +279,27 @@ void player_t::init_spell()
     {
       initial_spell_power[ i ] = gear.spell_power[ i ] + gear.spell_power_enchant[ i ];
     }
+    if( initial_spell_power[ SCHOOL_MAX ] == 0 )
+    {
+      initial_spell_power[ SCHOOL_MAX ] = sim -> gear_default.spell_power;
+    }
+    initial_spell_power[ SCHOOL_MAX ] += sim -> gear_delta.spell_power;
     initial_spell_power[ SCHOOL_MAX ] += base_spell_power;
   }
 
   if( initial_spell_hit == 0 )
   {
-    initial_spell_hit = base_spell_hit;
-    initial_spell_hit += ( gear.hit_rating  + 
-			   gear.hit_rating_enchant  ) / rating.spell_hit;
+    int16_t value = gear.hit_rating + gear.hit_rating_enchant;
+    if( value == 0 ) value = sim -> gear_default.hit_rating;
+    value += sim -> gear_delta.hit_rating;
+    initial_spell_hit = base_spell_hit + value / rating.spell_hit;
   }
   if( initial_spell_crit == 0 )
   {
-    initial_spell_crit = base_spell_crit;
-    initial_spell_crit += ( gear.crit_rating + 
-			    gear.crit_rating_enchant ) / rating.spell_crit;
+    int16_t value = gear.crit_rating + gear.crit_rating_enchant;
+    if( value == 0 ) value = sim -> gear_default.crit_rating;
+    value += sim -> gear_delta.crit_rating;
+    initial_spell_crit = base_spell_crit + value / rating.spell_crit;
   }
   if( initial_spell_penetration == 0 )
   {
@@ -318,27 +328,38 @@ void player_t::init_attack()
 
   if( initial_attack_power == 0 )
   {
-    initial_attack_power = base_attack_power += gear.attack_power + gear.attack_power_enchant;
+    int16_t value = gear.attack_power + gear.attack_power_enchant;
+    if( value == 0 ) value = sim -> gear_default.attack_power;
+    value += sim -> gear_delta.attack_power;
+    initial_attack_power = base_attack_power + value;
   }
   if( initial_attack_hit == 0 )
   {
-    initial_attack_hit = base_attack_hit;
-    initial_attack_hit += ( gear.hit_rating + gear.hit_rating_enchant ) / rating.attack_hit;
+    int16_t value = gear.hit_rating + gear.hit_rating_enchant;
+    if( value == 0 ) value = sim -> gear_default.hit_rating;
+    value += sim -> gear_delta.hit_rating;
+    initial_attack_hit = base_attack_hit + value / rating.attack_hit;
   }
   if( initial_attack_crit == 0 )
   {
-    initial_attack_crit = base_attack_crit;
-    initial_attack_crit += ( gear.crit_rating + gear.crit_rating_enchant ) / rating.attack_crit;
+    int16_t value = gear.crit_rating + gear.crit_rating_enchant;
+    if( value == 0 ) value = sim -> gear_default.crit_rating;
+    value += sim -> gear_delta.crit_rating;
+    initial_attack_crit = base_attack_crit + value / rating.attack_crit;
   }
   if( initial_attack_expertise == 0 )
   {
-    initial_attack_expertise = base_attack_expertise;
-    initial_attack_expertise += ( gear.expertise_rating + gear.expertise_rating_enchant ) / rating.expertise;
+    int16_t value = gear.expertise_rating + gear.expertise_rating_enchant;
+    if( value == 0 ) value = sim -> gear_default.expertise_rating;
+    value += sim -> gear_delta.expertise_rating;
+    initial_attack_expertise = base_attack_expertise + value / rating.expertise;
   }
   if( initial_attack_penetration == 0 )
   {
-    initial_attack_penetration = base_attack_penetration;
-    initial_attack_penetration += ( gear.armor_penetration_rating + gear.armor_penetration_rating_enchant ) / rating.armor_penetration;
+    int16_t value = gear.armor_penetration_rating + gear.armor_penetration_rating_enchant;
+    if( value == 0 ) value = sim -> gear_default.armor_penetration_rating;
+    value += sim -> gear_delta.armor_penetration_rating;
+    initial_attack_penetration = base_attack_penetration + value / rating.armor_penetration;
   }
 
 }
@@ -1749,11 +1770,6 @@ bool player_t::parse_option( const std::string& name,
     { "sanctity_aura",                        OPT_INT8,   &( buffs.sanctity_aura                            ) },
     { "sanctified_retribution",               OPT_INT8,   &( buffs.sanctified_retribution                   ) },
     { "swift_retribution",                    OPT_INT8,   &( buffs.swift_retribution                        ) },
-    // Deprecated options
-    { "gear_attack_expertise_rating",         OPT_DEPRECATED, (void*) "gear_expertise_rating"            },
-    { "enchant_attack_expertise_rating",      OPT_DEPRECATED, (void*) "enchant_expertise_rating"         },
-    { "gear_attack_penetration",              OPT_DEPRECATED, (void*) "gear_armor_penetration_rating"    },
-    { "enchant_attack_penetration",           OPT_DEPRECATED, (void*) "enchant_armor_penetration_rating" },
     { NULL, OPT_UNKNOWN }
   };
   

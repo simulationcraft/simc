@@ -30,6 +30,19 @@ const char* util_t::player_type_string( int8_t type )
   return "unknown";
 }
 
+const char* util_t::attribute_type_string( int8_t type )
+{
+  switch( type )
+  {
+  case ATTR_STRENGTH:  return "strength";
+  case ATTR_AGILITY:   return "agility";
+  case ATTR_STAMINA:   return "stamina";
+  case ATTR_INTELLECT: return "intellect";
+  case ATTR_SPIRIT:    return "spirit";
+  }
+  return "unknown";
+}
+
 const char* util_t::dmg_type_string( int8_t type )
 {
   switch( type )

@@ -59,7 +59,7 @@ struct patch_t
    void set       ( int arch, int version, int revision ) {         mask = encode( arch, version, revision ); }
    bool before    ( int arch, int version, int revision ) { return mask <  encode( arch, version, revision ); }
    bool after     ( int arch, int version, int revision ) { return mask >= encode( arch, version, revision ); }
-   patch_t() { mask = encode( 2, 4, 0 ); }
+   patch_t() { mask = encode( 0, 0, 0 ); }
 };
 
 // Forward Declarations ======================================================
@@ -237,6 +237,38 @@ struct sim_t
   int32_t     seed, id, iterations, threads;
   int8_t      infinite_resource[ RESOURCE_MAX ];
   int8_t      potion_sickness, average_dmg, log, debug, timestamp;
+
+  // Gear Default
+  struct gear_default_t
+  {
+    int16_t attribute[ ATTRIBUTE_MAX ];
+    int16_t spell_power;
+    int16_t attack_power;
+    int16_t expertise_rating;
+    int16_t armor_penetration_rating;
+    int16_t hit_rating;
+    int16_t crit_rating;
+    int16_t haste_rating;
+    
+    gear_default_t() { memset( (void*) this, 0x00, sizeof( gear_default_t ) ); }
+  };
+  gear_default_t gear_default;
+
+  // Gear Delta (for scaling)
+  struct gear_delta_t
+  {
+    int16_t attribute[ ATTRIBUTE_MAX ];
+    int16_t spell_power;
+    int16_t attack_power;
+    int16_t expertise_rating;
+    int16_t armor_penetration_rating;
+    int16_t hit_rating;
+    int16_t crit_rating;
+    int16_t haste_rating;
+    
+    gear_delta_t() { memset( (void*) this, 0x00, sizeof( gear_delta_t ) ); }
+  };
+  gear_delta_t gear_delta;
 
   // Reporting
   report_t* report;
@@ -632,7 +664,6 @@ struct player_t
 
   struct actions_t
   {
-    action_t* flametongue_totem;
     action_t* lightning_discharge;
     action_t* timbals_discharge;
     void reset() { memset( (void*) this, 0x00, sizeof( actions_t ) ); }
@@ -640,6 +671,21 @@ struct player_t
   };
   actions_t actions;
 
+  struct scaling_t
+  {
+    double attribute[ ATTRIBUTE_MAX ];
+    double spell_power;
+    double attack_power;
+    double expertise_rating;
+    double armor_penetration_rating;
+    double hit_rating;
+    double crit_rating;
+    double haste_rating;
+    
+    scaling_t() { memset( (void*) this, 0x00, sizeof( scaling_t ) ); }
+  };
+  scaling_t scaling;
+  
   player_t( sim_t* sim, int8_t type, const std::string& name );
   
   virtual ~player_t();
@@ -1216,6 +1262,7 @@ struct uptime_t
 struct report_t
 {
   sim_t* sim;
+
   int8_t report_actions;
   int8_t report_attack_stats;
   int8_t report_chart;
@@ -1235,6 +1282,16 @@ struct report_t
   int8_t report_uptime;
   int8_t report_waiting;
 
+  int16_t report_scaling;
+  int16_t report_delta_attribute[ ATTRIBUTE_MAX ];
+  int16_t report_delta_spell_power;
+  int16_t report_delta_attack_power;
+  int16_t report_delta_expertise_rating;
+  int16_t report_delta_armor_penetration_rating;
+  int16_t report_delta_hit_rating;
+  int16_t report_delta_crit_rating;
+  int16_t report_delta_haste_rating;
+
   report_t( sim_t* s );
   bool parse_option( const std::string& name, const std::string& value );
   void print_action      ( stats_t* );
@@ -1247,6 +1304,7 @@ struct report_t
   void print_uptime();
   void print_waiting();
   void print_performance();
+  void print_scale_factors();
   void print();
   const char* chart_raid_dps( std::string& s );
   int         chart_raid_dpet( std::string& s , std::vector<std::string>& images );
@@ -1315,6 +1373,7 @@ struct util_t
   static char* dup( const char* );
 
   static const char* player_type_string        ( int8_t type );
+  static const char* attribute_type_string     ( int8_t type );
   static const char* dmg_type_string           ( int8_t type );
   static const char* result_type_string        ( int8_t type );
   static const char* resource_type_string      ( int8_t type );
