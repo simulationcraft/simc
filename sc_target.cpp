@@ -19,6 +19,17 @@ target_t::target_t( sim_t* s ) :
   for( int i=0; i < SCHOOL_MAX; i++ ) spell_resistance[ i ] = 0;
 }
 
+// target_t::~target_t ======================================================
+
+target_t::~target_t()
+{
+  while( uptime_t* u = uptime_list )
+  {
+    uptime_list = u -> next;
+    delete u;
+  }
+}
+
 // target_t::assess_damage ===================================================
 
 void target_t::assess_damage( double  amount, 

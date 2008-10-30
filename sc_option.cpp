@@ -127,13 +127,16 @@ bool option_t::parse( sim_t* sim,
 
   if( name == "output" )
   {
-    if( sim -> output_file != stdout ) fclose( sim -> output_file );
-
-    sim -> output_file = fopen( value.c_str(), "w" );
-    if( ! sim -> output_file )
+    if( ! sim -> is_child )
     {
-      fprintf( stderr, "simcraft: Unable to open output file '%s'\n", value.c_str() );
-      exit(0);
+      if( sim -> output_file != stdout ) fclose( sim -> output_file );
+
+      sim -> output_file = fopen( value.c_str(), "w" );
+      if( ! sim -> output_file )
+      {
+	fprintf( stderr, "simcraft: Unable to open output file '%s'\n", value.c_str() );
+	exit(0);
+      }
     }
   }
   else if( name == "input" )
@@ -153,28 +156,6 @@ bool option_t::parse( sim_t* sim,
       option_t::parse( sim, buffer );
     }
     fclose( file );      
-  }
-  else if( name == "html" )
-  {
-    if( sim -> html_file ) fclose( sim -> html_file );
-
-    sim -> html_file = fopen( value.c_str(), "w" );
-    if( ! sim -> html_file )
-    {
-      fprintf( stderr, "simcraft: Unable to open html file '%s'\n", value.c_str() );
-      exit(0);
-    }
-  }
-  else if( name == "wiki" )
-  {
-    if( sim -> wiki_file ) fclose( sim -> wiki_file );
-
-    sim -> wiki_file = fopen( value.c_str(), "w" );
-    if( ! sim -> wiki_file )
-    {
-      fprintf( stderr, "simcraft: Unable to open wiki file '%s'\n", value.c_str() );
-      exit(0);
-    }
   }
   else if( name == "druid" ) 
   { 
@@ -277,22 +258,39 @@ bool option_t::parse( sim_t* sim,
 		      int    argc, 
 		      char** argv )
 {
+  sim -> argc = argc;
+  sim -> argv = argv;
+
   if( argc <= 1 ) return false;
 
-   for( int i=1; i < argc; i++ )
-   {
-      if( ! option_t::parse( sim, argv[ i ] ) )
-	 return false;
-   }
+  for( int i=1; i < argc; i++ )
+  {
+    if( ! option_t::parse( sim, argv[ i ] ) )
+      return false;
+  }
 
-   if( sim -> max_time <= 0 && sim -> target -> initial_health <= 0 )
-   {
-     fprintf( sim -> output_file, "simcraft: One of -max_time or -target_health must be specified.\n" );
-     return false;
-   }
+  if( sim -> max_time <= 0 && sim -> target -> initial_health <= 0 )
+  {
+    fprintf( sim -> output_file, "simcraft: One of -max_time or -target_health must be specified.\n" );
+    return false;
+  }
 
-   if( sim -> debug ) sim -> print_options();
+  if( sim -> is_child ) 
+  {
+    sim -> debug = 0;
+    sim -> log = 0;
+  }
+  if( sim -> debug ) 
+  {
+    sim -> log = 1;
+    sim -> print_options();
+  }
+  if( sim -> log )
+  {
+    sim -> iterations = 1;
+    sim -> threads = 1;
+  }
 
-   return true;
+  return true;
 }
 

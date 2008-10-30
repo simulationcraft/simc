@@ -117,6 +117,7 @@ struct event_t
   static void* operator new( size_t, sim_t* ); 
   static void* operator new( size_t ); // DO NOT USE!
   static void  operator delete( void * );
+  static void deallocate( event_t* e );
 };
 
 struct event_compare_t 
@@ -219,6 +220,8 @@ enum encoding_type { ENCODING_NONE=0, ENCODING_BLIZZARD, ENCODING_MMO, ENCODING_
 
 struct sim_t
 {
+  int         argc;
+  char**      argv;
   std::string patch_str;
   patch_t     patch;
   event_t*    event_list;
@@ -233,9 +236,6 @@ struct sim_t
   int32_t     seed, id, iterations, threads;
   int8_t      infinite_resource[ RESOURCE_MAX ];
   int8_t      potion_sickness, average_dmg, log, debug, timestamp;
-  FILE*       output_file;
-  FILE*       html_file;
-  FILE*       wiki_file;
 
   // Reporting
   report_t* report;
@@ -243,9 +243,15 @@ struct sim_t
   int8_t    merge_ignite;
   std::vector<player_t*> players_by_rank;
   std::vector<player_t*> players_by_name;
+  std::string html_file_str, wiki_file_str;
+  FILE*       output_file;
+  FILE*       html_file;
+  FILE*       wiki_file;
 
   sim_t();
+ ~sim_t();
 
+  void      execute( int argc, char** argv );
   void      add_event( event_t*, double delta_time );
   void      reschedule_event( event_t* );
   void      flush_events();
@@ -266,8 +272,9 @@ struct sim_t
 
   // Multi-Threading
   std::vector<sim_t*> children;
+  bool is_child;
   THREAD_HANDLE_T thread_handle;
-  void partition( int argc, char** argv );
+  void partition();
   void merge();
   void launch_child( sim_t* child );
   void wait_on_child( sim_t* child );
@@ -390,7 +397,6 @@ struct player_t
 
   // Reporting
   int8_t    quiet;
-  report_t* report;
   action_t* last_foreground_action;
   double    last_action, total_seconds;
   double    total_waiting;
@@ -636,6 +642,8 @@ struct player_t
 
   player_t( sim_t* sim, int8_t type, const std::string& name );
   
+  virtual ~player_t();
+
   virtual const char* name() { return name_str.c_str(); }
 
   virtual void init();
@@ -718,8 +726,6 @@ struct player_t
   virtual bool      parse_option ( const std::string& name, const std::string& value );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name ) { return 0; }
-
-  virtual ~player_t(){}
 
   // Class-Specific Methods
 
@@ -861,6 +867,7 @@ struct target_t
   uptimes_t uptimes;
 
   target_t( sim_t* s );
+ ~target_t();
 
   void init();
   void reset();
@@ -1254,6 +1261,7 @@ struct report_t
   void chart_html();
   void chart_wiki();
   void chart();
+  void scale();
   static void timestamp( sim_t* sim );
   static void va_printf( sim_t*, const char* format, va_list );
   inline static void log( sim_t* sim, const char* format, ... )

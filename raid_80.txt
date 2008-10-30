@@ -319,7 +319,7 @@ swift_retribution=1
 #
 druid=Druid_58_0_13
 level=80
-talents=http://talent.mmo-champion.com/?druid=00000000000000000000000000000205003012000000000000000005502203105331303213305311030
+talents=http://talent.mmo-champion.com/?druid=00000000000000000000000000000205003012000000000000000005032003125321333213305311030
 actions=flask,type=blinding_light/wizard_oil/mark_of_the_wild/moonkin_form/mana_potion,trigger=3500/innervate/faerie_fire/treants/moonfire/insect_swarm/wrath,eclipse=trigger/starfire
 gear_stamina=708
 gear_intellect=777

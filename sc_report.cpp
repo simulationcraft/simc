@@ -1391,8 +1391,35 @@ void report_t::chart()
 
   if( sim -> total_seconds == 0 ) return;
 
-  if( sim -> html_file ) report_t::chart_html();
-  if( sim -> wiki_file ) report_t::chart_wiki();
+  if( ! sim -> html_file_str.empty() )
+  {
+    sim -> html_file = fopen( sim -> html_file_str.c_str(), "w" );
+    if( ! sim -> html_file )
+    {
+      fprintf( stderr, "simcraft: Unable to open html file '%s'\n", sim -> html_file_str.c_str() );
+      exit(0);
+    }
+    chart_html();
+    fclose( sim -> html_file );
+  }
+
+  if( ! sim -> wiki_file_str.empty() )
+  {
+    sim -> wiki_file = fopen( sim -> wiki_file_str.c_str(), "w" );
+    if( ! sim -> wiki_file )
+    {
+      fprintf( stderr, "simcraft: Unable to open wiki file '%s'\n", sim -> wiki_file_str.c_str() );
+      exit(0);
+    }
+    chart_wiki();
+    fclose( sim -> wiki_file );
+  }
+}
+
+// report_t::scale ===========================================================
+
+void report_t::scale()
+{
 }
 
 // report_t::timestamp ======================================================

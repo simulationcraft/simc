@@ -166,7 +166,7 @@ player_t::player_t( sim_t*             s,
   // Actions
   action_list(0),
   // Reporting
-  quiet(0), report(0), last_foreground_action(0),
+  quiet(0), last_foreground_action(0),
   last_action(0), total_seconds(0), total_waiting(0), iteration_dmg(0), total_dmg(0), 
   dps(0), dps_min(0), dps_max(0), dps_std_dev(0), dpr(0), rps_gain(0), rps_loss(0),
   proc_list(0), gain_list(0), stats_list(0), uptime_list(0)
@@ -190,6 +190,37 @@ player_t::player_t( sim_t*             s,
     resource_base[ i ] = resource_initial[ i ] = resource_max[ i ] = resource_current[ i ] = 0;
 
     resource_lost[ i ] = resource_gained[ i ] = 0;
+  }
+}
+
+// player_t::~player_t =====================================================
+
+player_t::~player_t() 
+{
+  while( action_t* a = action_list )
+  {
+    action_list = a -> next;
+    delete a;
+  }
+  while( proc_t* p = proc_list )
+  {
+    proc_list = p -> next;
+    delete p;
+  }
+  while( gain_t* g = gain_list )
+  {
+    gain_list = g -> next;
+    delete g;
+  }
+  while( stats_t* s = stats_list )
+  {
+    stats_list = s -> next;
+    delete s;
+  }
+  while( uptime_t* u = uptime_list )
+  {
+    uptime_list = u -> next;
+    delete u;
   }
 }
 

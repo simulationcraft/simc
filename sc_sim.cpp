@@ -12,15 +12,15 @@
 // sim_t::sim_t =============================================================
 
 sim_t::sim_t() : 
-  event_list(0), free_list(0), player_list(0), active_player(0), target(0),
+  event_list(0), free_list(0), player_list(0), active_player(0),
   lag(0), pet_lag(0), channel_penalty(0), gcd_penalty(0), reaction_time(0.5), 
   regen_periodicity(1.0), current_time(0), max_time(0),
   events_remaining(0), max_events_remaining(0), 
   events_processed(0), total_events_processed(0),
   seed(0), id(0), iterations(1), threads(0),
   potion_sickness(0), average_dmg(1), log(0), debug(0), timestamp(1), 
-  output_file(stdout), html_file(0), wiki_file(0),
-  report(0), raid_dps(0), total_dmg(0), total_seconds(0), elapsed_cpu_seconds(0), merge_ignite(0)
+  raid_dps(0), total_dmg(0), total_seconds(0), elapsed_cpu_seconds(0), merge_ignite(0),
+  output_file(stdout), html_file(0), wiki_file(0), is_child(false)
 {
   for( int i=0; i < RESOURCE_MAX; i++ ) 
   {
@@ -28,6 +28,34 @@ sim_t::sim_t() :
   }
   target = new target_t( this );
   report = new report_t( this );
+}
+
+// sim_t::~sim_t ============================================================
+
+sim_t::~sim_t()
+{
+  flush_events();
+
+  while( player_t* p = player_list )
+  {
+    player_list = p -> next;
+    delete p;
+  }
+
+  while( event_t* e = free_list )
+  {
+    free_list = e -> next;
+    event_t::deallocate( e );
+  }
+  
+  if( target ) delete target;
+  if( report ) delete report;
+
+  int num_children = children.size();
+  for( int i=0; i < num_children; i++ ) 
+  {
+    delete children[ i ];
+  }
 }
 
 // sim_t::add_event ==========================================================
@@ -161,8 +189,6 @@ void sim_t::reset()
 
 bool sim_t::init()
 {
-  if( debug ) log = 1;
-
   total_seconds = 0;
 
   if( seed == 0 ) seed = time( NULL );
@@ -458,6 +484,7 @@ bool sim_t::parse_option( const std::string& name,
     { "channel_penalty",         OPT_FLT,    &( channel_penalty                      ) },
     { "debug",                   OPT_INT8,   &( debug                                ) },
     { "gcd_penalty",             OPT_FLT,    &( gcd_penalty                          ) },
+    { "html_file",               OPT_STRING, &( html_file_str                        ) },
     { "infinite_energy",         OPT_INT8,   &( infinite_resource[ RESOURCE_ENERGY ] ) },
     { "infinite_focus",          OPT_INT8,   &( infinite_resource[ RESOURCE_FOCUS  ] ) },
     { "infinite_health",         OPT_INT8,   &( infinite_resource[ RESOURCE_HEALTH ] ) },
@@ -477,6 +504,7 @@ bool sim_t::parse_option( const std::string& name,
     { "potion_sickness",         OPT_INT8,   &( potion_sickness                      ) },
     { "seed",                    OPT_INT32,  &( seed                                 ) },
     { "timestamp",               OPT_INT8,   &( timestamp                            ) },
+    { "wiki_file",               OPT_STRING, &( wiki_file_str                        ) },
     { NULL, OPT_UNKNOWN }
   };
 
@@ -589,12 +617,13 @@ void sim_t::wait_on_child( sim_t* child )
 
 // sim_t::partition =========================================================
 
-void sim_t::partition( int argc, char** argv )
+void sim_t::partition()
 {
 #if defined( MULTI_THREAD )
 
   int num_children = threads - 1;
   if( num_children <= 0 ) return;
+  if( iterations < threads ) return;
 
   iterations /= threads;
 
@@ -603,6 +632,7 @@ void sim_t::partition( int argc, char** argv )
   for( int i=0; i < num_children; i++ )
   {
     sim_t* child = children[ i ] = new sim_t();
+    child -> is_child = true;
     option_t::parse( child, argc, argv );
     child -> iterations /= threads;
     launch_child( child );
@@ -624,9 +654,32 @@ void sim_t::merge()
     sim_t* child = children[ i ];
     wait_on_child( child );
     merge( *child );
+    delete child;
   }
 
+  children.clear();
+
 #endif
+}
+
+// sim_t::execute ===========================================================
+
+void sim_t::execute( int argc, char** argv )
+{
+  time_t start_time = time(0);
+
+  if( ! option_t::parse( this, argc, argv ) )
+  {
+    fprintf( output_file, "ERROR! Incorrect option format..\n" );
+    exit( 0 );
+  }
+
+  partition();
+  iterate();
+  merge();
+  analyze();
+
+  elapsed_cpu_seconds = time(0) - start_time;
 }
 
 // ==========================================================================
@@ -637,28 +690,13 @@ int main( int argc, char** argv )
 {
   sim_t sim;
 
-  if( ! option_t::parse( &sim, argc, argv ) )
-  {
-    fprintf( sim.output_file, "ERROR! Incorrect option format..\n" );
-    return -1;
-  }
-
-  time_t start_time = time(0);
-
-  sim.partition( argc, argv );
-  sim.iterate();
-  sim.merge();
-
-  sim.elapsed_cpu_seconds = time(0) - start_time;
-
-  sim.analyze();
+  sim.execute( argc, argv );
 
   sim.report -> print();
   sim.report -> chart();
+  sim.report -> scale();
 
   if( sim.output_file != stdout ) fclose( sim.output_file );
-  if( sim.html_file ) fclose( sim.  html_file );
-  if( sim.wiki_file ) fclose( sim.  wiki_file );
   
   return 0;
 }
