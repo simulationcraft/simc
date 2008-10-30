@@ -127,7 +127,7 @@ bool option_t::parse( sim_t* sim,
 
   if( name == "output" )
   {
-    if( ! sim -> is_child )
+    if( ! sim -> parent )
     {
       if( sim -> output_file != stdout ) fclose( sim -> output_file );
 
@@ -275,7 +275,7 @@ bool option_t::parse( sim_t* sim,
     return false;
   }
 
-  if( sim -> is_child ) 
+  if( sim -> parent ) 
   {
     sim -> debug = 0;
     sim -> log = 0;

@@ -222,6 +222,7 @@ struct sim_t
 {
   int         argc;
   char**      argv;
+  sim_t*      parent;
   std::string patch_str;
   patch_t     patch;
   event_t*    event_list;
@@ -248,7 +249,7 @@ struct sim_t
   FILE*       html_file;
   FILE*       wiki_file;
 
-  sim_t();
+  sim_t( sim_t* parent=0 );
  ~sim_t();
 
   void      execute( int argc, char** argv );
@@ -272,7 +273,6 @@ struct sim_t
 
   // Multi-Threading
   std::vector<sim_t*> children;
-  bool is_child;
   THREAD_HANDLE_T thread_handle;
   void partition();
   void merge();

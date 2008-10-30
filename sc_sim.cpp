@@ -11,8 +11,8 @@
 
 // sim_t::sim_t =============================================================
 
-sim_t::sim_t() : 
-  event_list(0), free_list(0), player_list(0), active_player(0),
+sim_t::sim_t( sim_t* p ) : 
+  parent(p), event_list(0), free_list(0), player_list(0), active_player(0),
   lag(0), pet_lag(0), channel_penalty(0), gcd_penalty(0), reaction_time(0.5), 
   regen_periodicity(1.0), current_time(0), max_time(0),
   events_remaining(0), max_events_remaining(0), 
@@ -20,7 +20,7 @@ sim_t::sim_t() :
   seed(0), id(0), iterations(1), threads(0),
   potion_sickness(0), average_dmg(1), log(0), debug(0), timestamp(1), 
   raid_dps(0), total_dmg(0), total_seconds(0), elapsed_cpu_seconds(0), merge_ignite(0),
-  output_file(stdout), html_file(0), wiki_file(0), is_child(false)
+  output_file(stdout), html_file(0), wiki_file(0)
 {
   for( int i=0; i < RESOURCE_MAX; i++ ) 
   {
@@ -631,8 +631,7 @@ void sim_t::partition()
 
   for( int i=0; i < num_children; i++ )
   {
-    sim_t* child = children[ i ] = new sim_t();
-    child -> is_child = true;
+    sim_t* child = children[ i ] = new sim_t( this );
     option_t::parse( child, argc, argv );
     child -> iterations /= threads;
     launch_child( child );
