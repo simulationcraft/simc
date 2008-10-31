@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="SimCraft_VS"
+	Name="simcraft"
 	ProjectGUID="{D963926C-4A85-4600-8626-51FA12FDF5C1}"
-	RootNamespace="SimCraft_VS"
+	RootNamespace="simcraft"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"
 	>
@@ -41,8 +41,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="D:\SimCraft\vs;D:\SimCraft\sfmt;D:\SimCraft"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;USE_SFMT;EVENT_MM;VISUAL_STUDIO"
+				AdditionalIncludeDirectories="c:\simulationcraft;c:\simulationcraft\vs;c:\simulationcraft\sfmt"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;WINDOWS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -114,8 +114,9 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
+				AdditionalIncludeDirectories="c:\simulationcraft;c:\simulationcraft\vs;c:\simulationcraft\sfmt"
 				EnableIntrinsicFunctions="true"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;WINDOWS"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
@@ -231,6 +232,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\sc_scaling.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\sc_spell.cpp"
 			>
 		</File>
@@ -240,6 +245,10 @@
 		</File>
 		<File
 			RelativePath=".\sc_target.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\sc_thread.cpp"
 			>
 		</File>
 		<File
