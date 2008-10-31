@@ -7,22 +7,15 @@
 
 // Cross-Platform Support for Multi-Threading ===============================
 
-#if defined( MULTI_THREAD )
-#  if defined( UNIX )
-#    include <pthread.h>
-#  endif
-#  if defined( WINDOWS )
-#    include <windows.h>
-#  endif
-#endif
-
-#if defined( MULTI_THREAD )
+#if ! defined( NO_THREADS )
 
 // ==========================================================================
 // MULTI_THREAD for UNIX
 // ==========================================================================
 
 #if defined( UNIX )
+
+#include <pthread.h>
 
 // thread_execute ===========================================================
 
@@ -55,6 +48,8 @@ void thread_t::wait( sim_t* sim )
 // ==========================================================================
 
 #elif defined( WINDOWS )
+
+#include <windows.h>
 
 // thread_execute ===========================================================
 

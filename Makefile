@@ -8,9 +8,9 @@
 
 PG   =
 BITS = 32
-MCP  = -DHAVE_SSE2 -msse -msse2 -mfpmath=sse
+MCP  = -msse -msse2 -mfpmath=sse
 OPTS = -maccumulate-outgoing-args -O3 
-SFMT = -DUSE_SFMT -I./sfmt 
+SFMT = -I./sfmt 
 
 ifneq (64,${BITS})
 	OPTS += -malign-double 
@@ -32,6 +32,7 @@ SRC =\
 	sc_rating.cpp		\
 	sc_report.cpp		\
 	sc_shaman.cpp		\
+	sc_scaling.cpp		\
 	sc_sim.cpp		\
 	sc_spell.cpp		\
 	sc_stats.cpp		\
@@ -43,13 +44,13 @@ SRC =\
 	sc_weapon.cpp
 
 unux opt:
-	g++ -DUNIX -I. $(PG) $(MCP) $(OPTS) $(SFMT) -DMULTI_THREAD -Wall $(SRC) -lpthread -o simcraft
+	g++ -DUNIX -I. $(PG) $(MCP) $(OPTS) $(SFMT) -Wall $(SRC) -lpthread -o simcraft
 
 debug:
-	g++ -DUNIX -g -I. $(PG) $(SFMT) -DMULTI_THREAD -Wall $(SRC) -lpthread -o simcraft
+	g++ -DUNIX -g -I. $(PG) $(SFMT) -Wall $(SRC) -lpthread -o simcraft
 
 windows:
-	g++ -DWINDOWS -I. $(PG) $(MCP) $(OPTS) $(SFMT) -DMULTI_THREAD -Wall $(SRC) -o simcraft
+	g++ -DWINDOWS -I. $(PG) $(MCP) $(OPTS) $(SFMT) -Wall $(SRC) -o simcraft
 
 mac:
 	g++ -DMAC -arch ppc -arch i386 -I. -O3 $(SFMT) -Wall $(SRC) -o simcraft

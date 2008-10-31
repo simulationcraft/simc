@@ -63,6 +63,7 @@ struct shaman_t;
 struct sim_t;
 struct rank_t;
 struct rating_t;
+struct scaling_t;
 struct stats_t;
 struct spell_t;
 struct talent_translation_t;
@@ -227,8 +228,8 @@ struct sim_t
   int8_t      infinite_resource[ RESOURCE_MAX ];
   int8_t      potion_sickness, average_dmg, log, debug, timestamp;
 
-  // Gear Default
-  struct gear_default_t
+  // Default Gear Profile
+  struct gear_t
   {
     int16_t attribute[ ATTRIBUTE_MAX ];
     int16_t spell_power;
@@ -239,36 +240,21 @@ struct sim_t
     int16_t crit_rating;
     int16_t haste_rating;
     
-    gear_default_t() { memset( (void*) this, 0x00, sizeof( gear_default_t ) ); }
+    gear_t() { memset( (void*) this, 0x00, sizeof( gear_t ) ); }
   };
-  gear_default_t gear_default;
-
-  // Gear Delta (for scaling)
-  struct gear_delta_t
-  {
-    int16_t attribute[ ATTRIBUTE_MAX ];
-    int16_t spell_power;
-    int16_t attack_power;
-    int16_t expertise_rating;
-    int16_t armor_penetration_rating;
-    int16_t hit_rating;
-    int16_t crit_rating;
-    int16_t haste_rating;
-    
-    gear_delta_t() { memset( (void*) this, 0x00, sizeof( gear_delta_t ) ); }
-  };
-  gear_delta_t gear_delta;
+  gear_t gear;
 
   // Reporting
-  report_t* report;
-  double    raid_dps, total_dmg, total_seconds, elapsed_cpu_seconds;
-  int8_t    merge_ignite;
+  report_t*  report;
+  scaling_t* scaling;
+  double     raid_dps, total_dmg, total_seconds, elapsed_cpu_seconds;
+  int8_t     merge_ignite;
   std::vector<player_t*> players_by_rank;
   std::vector<player_t*> players_by_name;
   std::string html_file_str, wiki_file_str;
-  FILE*       output_file;
-  FILE*       html_file;
-  FILE*       wiki_file;
+  FILE* output_file;
+  FILE* html_file;
+  FILE* wiki_file;
 
   // Multi-Threading
   std::vector<sim_t*> children;
@@ -297,6 +283,44 @@ struct sim_t
   bool      time_to_think( double proc_time ) { if( proc_time == 0 ) return false; return current_time - proc_time > reaction_time; }
   bool      cooldown_ready( double cooldown_time ) { return cooldown_time <= current_time; }
   player_t* find_player( const std::string& name );
+};
+
+// Scaling ===================================================================
+
+struct scaling_t
+{
+  sim_t* sim;
+  int8_t calculate_scale_factors;
+
+  // Gear delta for determining scale factors
+
+  struct gear_t
+  {
+    int16_t attribute[ ATTRIBUTE_MAX ];
+    int16_t spell_power;
+    int16_t attack_power;
+    int16_t expertise_rating;
+    int16_t armor_penetration_rating;
+    int16_t hit_rating;
+    int16_t crit_rating;
+    int16_t haste_rating;
+    
+    gear_t() { memset( (void*) this, 0x00, sizeof( gear_t ) ); }
+  };
+  gear_t gear;
+
+  scaling_t( sim_t* s );
+
+  void analyze();
+  void analyze_attributes();
+  void analyze_spell_power();
+  void analyze_attack_power();
+  void analyze_expertise();
+  void analyze_armor_penetration();
+  void analyze_hit();
+  void analyze_crit();
+  void analyze_haste();
+  bool parse_option( const std::string& name, const std::string& value );
 };
 
 // Gear Rating Conversions ===================================================
@@ -1263,21 +1287,12 @@ struct report_t
   int8_t report_performance;
   int8_t report_procs;
   int8_t report_raid_dps;
+  int8_t report_scaling;
   int8_t report_spell_stats;
   int8_t report_statistics;
   int8_t report_tag;
   int8_t report_uptime;
   int8_t report_waiting;
-
-  int16_t report_scaling;
-  int16_t report_delta_attribute[ ATTRIBUTE_MAX ];
-  int16_t report_delta_spell_power;
-  int16_t report_delta_attack_power;
-  int16_t report_delta_expertise_rating;
-  int16_t report_delta_armor_penetration_rating;
-  int16_t report_delta_hit_rating;
-  int16_t report_delta_crit_rating;
-  int16_t report_delta_haste_rating;
 
   report_t( sim_t* s );
   bool parse_option( const std::string& name, const std::string& value );
@@ -1306,7 +1321,6 @@ struct report_t
   void chart_html();
   void chart_wiki();
   void chart();
-  void scale();
   static void timestamp( sim_t* sim );
   static void va_printf( sim_t*, const char* format, va_list );
   inline static void log( sim_t* sim, const char* format, ... )

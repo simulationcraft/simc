@@ -5,8 +5,10 @@
 
 #include <simcraft.h>
 
-#ifdef USE_SFMT
+#if ! defined( NO_SFMT )
 #define MEXP 1279
+// If your math coprocessor does not support SSE2, then remove the following line
+#define HAVE_SSE2 
 #include <SFMT.c>
 #endif
 
@@ -14,7 +16,7 @@
 
 void rand_t::init( uint32_t seed )
 {
-#ifdef USE_SFMT
+#if ! defined( NO_SFMT )
   init_gen_rand( seed );
 #else
   srand( seed );
@@ -23,7 +25,7 @@ void rand_t::init( uint32_t seed )
 
 uint32_t rand_t::gen_uint32()
 {
-#ifdef USE_SFMT
+#if ! defined( NO_SFMT )
    return gen_rand32();
 #else
    return rand();
