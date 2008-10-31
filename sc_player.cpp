@@ -168,7 +168,7 @@ player_t::player_t( sim_t*             s,
   // Reporting
   quiet(0), last_foreground_action(0),
   last_action(0), total_seconds(0), total_waiting(0), iteration_dmg(0), total_dmg(0), 
-  dps(0), dps_min(0), dps_max(0), dps_std_dev(0), dpr(0), rps_gain(0), rps_loss(0),
+  dps(0), dps_min(0), dps_max(0), dps_std_dev(0), dps_error(0), dpr(0), rps_gain(0), rps_loss(0),
   proc_list(0), gain_list(0), stats_list(0), uptime_list(0)
 {
   if( sim -> debug ) report_t::log( sim, "Creating Player %s", name() );

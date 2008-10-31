@@ -58,7 +58,7 @@ void thread_t::wait( sim_t* sim )
 
 // thread_execute ===========================================================
 
-static unsigned __stdcall thread_execute( void* sim )
+static DWORD WINAPI thread_execute( __in LPVOID sim )
 {
   ( (sim_t*) sim ) -> iterate();
 

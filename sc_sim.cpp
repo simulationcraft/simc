@@ -369,6 +369,7 @@ void sim_t::analyze()
     }
     p -> dps_std_dev /= iterations;
     p -> dps_std_dev = sqrt( p -> dps_std_dev );
+    p -> dps_error = 2.0 * p -> dps_std_dev / sqrt( (float) iterations );
   }
 
   std::sort( players_by_rank.begin(), players_by_rank.end(), compare_dps()  );

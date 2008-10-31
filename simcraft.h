@@ -426,7 +426,7 @@ struct player_t
   double    iteration_dmg, total_dmg;
   double    resource_lost  [ RESOURCE_MAX ];
   double    resource_gained[ RESOURCE_MAX ];
-  double    dps, dps_min, dps_max, dps_std_dev, dpr, rps_gain, rps_loss;
+  double    dps, dps_min, dps_max, dps_std_dev, dps_error, dpr, rps_gain, rps_loss;
   proc_t*   proc_list;
   gain_t*   gain_list;
   stats_t*  stats_list;

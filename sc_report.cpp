@@ -524,9 +524,7 @@ void report_t::print()
 
       if( report_statistics ) 
       {
-#ifndef VISUAL_STUDIO
-        fprintf( sim -> output_file, " (Error=+/-%.1f Range=+/-%.0f)", 2.0 * p -> dps_std_dev / sqrt( sim -> iterations ), ( p -> dps_max - p -> dps_min ) / 2.0 );
-#endif
+        fprintf( sim -> output_file, " (Error=+/-%.1f Range=+/-%.0f)", p -> dps_error, ( p -> dps_max - p -> dps_min ) / 2.0 );
       }
     }
 
