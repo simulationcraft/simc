@@ -1496,7 +1496,7 @@ void report_t::scale()
 
       sim_t* child_sim = new sim_t( sim );
       child_sim -> gear_delta.attribute[ i ] = report_delta_attribute[ i ];
-      child_sim -> execute( sim -> argc, sim -> argv );
+      child_sim -> execute();
 
       for( int j=0; j < num_players; j++ )
       {
@@ -1516,7 +1516,7 @@ void report_t::scale()
 
     sim_t* child_sim = new sim_t( sim );
     child_sim -> gear_delta.spell_power = report_delta_spell_power;
-    child_sim -> execute( sim -> argc, sim -> argv );
+    child_sim -> execute();
 
     for( int i=0; i < num_players; i++ )
     {
@@ -1535,7 +1535,7 @@ void report_t::scale()
 
     sim_t* child_sim = new sim_t( sim );
     child_sim -> gear_delta.attack_power = report_delta_attack_power;
-    child_sim -> execute( sim -> argc, sim -> argv );
+    child_sim -> execute();
 
     for( int i=0; i < num_players; i++ )
     {
@@ -1554,7 +1554,7 @@ void report_t::scale()
 
     sim_t* child_sim = new sim_t( sim );
     child_sim -> gear_delta.expertise_rating = report_delta_expertise_rating;
-    child_sim -> execute( sim -> argc, sim -> argv );
+    child_sim -> execute();
 
     for( int i=0; i < num_players; i++ )
     {
@@ -1573,7 +1573,7 @@ void report_t::scale()
 
     sim_t* child_sim = new sim_t( sim );
     child_sim -> gear_delta.armor_penetration_rating = report_delta_armor_penetration_rating;
-    child_sim -> execute( sim -> argc, sim -> argv );
+    child_sim -> execute();
 
     for( int i=0; i < num_players; i++ )
     {
@@ -1592,7 +1592,7 @@ void report_t::scale()
 
     sim_t* child_sim = new sim_t( sim );
     child_sim -> gear_delta.hit_rating = report_delta_hit_rating;
-    child_sim -> execute( sim -> argc, sim -> argv );
+    child_sim -> execute();
 
     for( int i=0; i < num_players; i++ )
     {
@@ -1611,7 +1611,7 @@ void report_t::scale()
 
     sim_t* child_sim = new sim_t( sim );
     child_sim -> gear_delta.crit_rating = report_delta_crit_rating;
-    child_sim -> execute( sim -> argc, sim -> argv );
+    child_sim -> execute();
 
     for( int i=0; i < num_players; i++ )
     {
@@ -1630,7 +1630,7 @@ void report_t::scale()
 
     sim_t* child_sim = new sim_t( sim );
     child_sim -> gear_delta.haste_rating = report_delta_haste_rating;
-    child_sim -> execute( sim -> argc, sim -> argv );
+    child_sim -> execute();
 
     for( int i=0; i < num_players; i++ )
     {

@@ -20,15 +20,19 @@ sim_t::sim_t( sim_t* p ) :
   seed(0), id(0), iterations(1), threads(0),
   potion_sickness(0), average_dmg(1), log(0), debug(0), timestamp(1), 
   raid_dps(0), total_dmg(0), total_seconds(0), elapsed_cpu_seconds(0), merge_ignite(0),
-  output_file(stdout), html_file(0), wiki_file(0)
+  output_file(stdout), html_file(0), wiki_file(0), thread_handle(0)
 {
   patch_str = "3.0.3";
+
   for( int i=0; i < RESOURCE_MAX; i++ ) 
   {
     infinite_resource[ i ] = 0;
   }
+
   target = new target_t( this );
   report = new report_t( this );
+
+  if( parent ) option_t::parse( this, parent -> argc, parent -> argv );
 }
 
 // sim_t::~sim_t ============================================================
@@ -77,7 +81,7 @@ void sim_t::add_event( event_t* e,
   if( debug ) report_t::log( this, "Add Event: %s %.2f %d", e -> name, e -> time, e -> id );
 }
 
-// sim_t::reschedule_event ==========================================================
+// sim_t::reschedule_event ====================================================
 
 void sim_t::reschedule_event( event_t* e )
 {
@@ -86,7 +90,7 @@ void sim_t::reschedule_event( event_t* e )
    e -> reschedule_time = 0;
 }
 
-// sim_t::next_event ========================================================
+// sim_t::next_event ==========================================================
 
 event_t* sim_t::next_event()
 {
@@ -95,9 +99,9 @@ event_t* sim_t::next_event()
   return e;
 }
 
-// sim_t::execute ===========================================================
+// sim_t::simulate ============================================================
 
-bool sim_t::execute()
+void sim_t::simulate()
 {
   if( debug ) report_t::log( this, "Starting Simulator" );
 
@@ -144,8 +148,6 @@ bool sim_t::execute()
   }
   total_seconds += current_time;
   total_events_processed += events_processed;
-
-  return true;
 }
 
 // sim_t::flush_events ======================================================
@@ -405,7 +407,7 @@ void sim_t::iterate()
   for( int i=0; i < iterations; i++ )
   {
     reset();
-    execute();
+    simulate();
     analyze( i );
   }
 
@@ -461,6 +463,61 @@ void sim_t::merge( sim_t& other_sim )
       uptime -> merge( other_p -> get_uptime( uptime -> name_str ) );
     }    
   }  
+}
+
+// sim_t::merge =============================================================
+
+void sim_t::merge()
+{
+  int num_children = children.size();
+  
+  for( int i=0; i < num_children; i++ )
+  {
+    sim_t* child = children[ i ];
+    thread_t::wait( child );
+    merge( *child );
+    delete child;
+  }
+
+  children.clear();
+}
+
+// sim_t::partition =========================================================
+
+void sim_t::partition()
+{
+#if ! defined( MULTI_THREAD )
+  return;
+#endif
+
+  int num_children = threads - 1;
+  if( num_children <= 0 ) return;
+  if( iterations < threads ) return;
+
+  iterations /= threads;
+
+  children.resize( num_children );
+
+  for( int i=0; i < num_children; i++ )
+  {
+    sim_t* child = children[ i ] = new sim_t( this );
+    child -> iterations /= threads;
+    thread_t::launch( child );
+  }
+}
+
+// sim_t::execute ===========================================================
+
+void sim_t::execute()
+{
+  time_t start_time = time(0);
+
+  partition();
+  iterate();
+  merge();
+  analyze();
+
+  elapsed_cpu_seconds = time(0) - start_time;
 }
 
 // sim_t::find_player =======================================================
@@ -558,153 +615,6 @@ void sim_t::print_options()
 }
 
 // ==========================================================================
-// MULTI-THREAD SUPPORT
-// ==========================================================================
-
-#if defined( MULTI_THREAD )
-
-#if defined( UNIX )
-
-static void* thread_execute( void* sim )
-{
-  ( (sim_t*) sim ) -> iterate();
-
-  return NULL;
-}
-
-void sim_t::launch_child( sim_t* child )
-{
-  pthread_create( &( child -> thread_handle ), NULL, thread_execute, (void*) child );
-}
-
-void sim_t::wait_on_child( sim_t* child )
-{
-  pthread_join( child -> thread_handle, NULL );
-}
-
-#elif defined( WINDOWS )
-
-static unsigned __stdcall thread_execute( void* sim )
-{
-  ( (sim_t*) sim ) -> iterate();
-
-  return 0;
-}
-
-void sim_t::launch_child( sim_t* child )
-{
-  printf( "simcraft: Multi-threading not working for this platform.  Please removed 'threads=N' from config file.\n" );
-  exit(0);
-
-  // FIXME!  This crashes under MINGW and I can't test under MSVC.  So confused..........
-  unsigned thread_id;
-  child -> thread_handle = (HANDLE) _beginthreadex( NULL, 0, thread_execute, (void*) child, 0, &thread_id );
-}
-
-void sim_t::wait_on_child( sim_t* child )
-{
-  printf( "simcraft: Multi-threading not working for this platform.  Please removed 'threads=N' from config file.\n" );
-  exit(0);
-
-  // FIXME!  So confused..........
-  WaitForSingleObject( child -> thread_handle, INFINITE );
-}
-
-#elif defined( MAC )
-
-void sim_t::launch_child( sim_t* child )
-{
-  printf( "simcraft: Multi-threading not supported for this platform.  Recompile without 'MULTI_THREAD' defined.\n" );
-  exit(0);
-}
-
-void sim_t::wait_on_child( sim_t* child )
-{
-  printf( "simcraft: Multi-threading not supported for this platform.  Recompile without 'MULTI_THREAD' defined.\n" );
-  exit(0);
-}
-
-#endif
-
-#endif
-
-// sim_t::partition =========================================================
-
-void sim_t::partition()
-{
-#if defined( MULTI_THREAD )
-
-  int num_children = threads - 1;
-  if( num_children <= 0 ) return;
-  if( iterations < threads ) return;
-
-  iterations /= threads;
-
-  children.resize( num_children );
-
-  for( int i=0; i < num_children; i++ )
-  {
-    sim_t* child = children[ i ] = new sim_t( this );
-    option_t::parse( child, argc, argv );
-    child -> iterations /= threads;
-    launch_child( child );
-  }
-  
-#endif
-}
-
-// sim_t::merge =============================================================
-
-void sim_t::merge()
-{
-#if defined( MULTI_THREAD )
-
-  int num_children = children.size();
-  
-  for( int i=0; i < num_children; i++ )
-  {
-    sim_t* child = children[ i ];
-    wait_on_child( child );
-    merge( *child );
-    delete child;
-  }
-
-  children.clear();
-
-#endif
-}
-
-// sim_t::execute ===========================================================
-
-void sim_t::execute( int argc, char** argv )
-{
-  time_t start_time = time(0);
-
-  if( ! option_t::parse( this, argc, argv ) )
-  {
-    fprintf( output_file, "ERROR! Incorrect option format..\n" );
-    exit( 0 );
-  }
-
-  if( ! parent ) 
-  {
-    fprintf( output_file, 
-	     "\n"
-	     "SimulationCraft for World of Warcraft build %s\n"
-	     "\n"
-	     "Generating baseline... (iterations=%d, max_time=%.0f, target_health=%.0f)\n",
-	     patch_str.c_str(), iterations, max_time, target -> initial_health );
-  }
-
-  partition();
-  iterate();
-  merge();
-  analyze();
-
-  elapsed_cpu_seconds = time(0) - start_time;
-}
-
-// ==========================================================================
 // MAIN 
 // ==========================================================================
 
@@ -712,7 +622,20 @@ int main( int argc, char** argv )
 {
   sim_t sim;
 
-  sim.execute( argc, argv );
+  if( ! option_t::parse( &sim, argc, argv ) )
+  {
+    fprintf( sim.output_file, "ERROR! Incorrect option format..\n" );
+    exit( 0 );
+  }
+
+  fprintf( sim.output_file, 
+	   "\n"
+	   "SimulationCraft for World of Warcraft build %s\n"
+	   "\n"
+	   "Generating baseline... (iterations=%d, max_time=%.0f, target_health=%.0f)\n",
+	   sim.patch_str.c_str(), sim.iterations, sim.max_time, sim.target -> initial_health );
+
+  sim.execute();
 
   sim.report -> scale();
   sim.report -> print();

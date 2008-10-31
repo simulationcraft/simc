@@ -29,24 +29,10 @@
 #  endif
 #endif
 
-// Cross-Platform Support for Multi-Threading ===============================
-
-#if defined( MULTI_THREAD )
-#  if defined( UNIX )
-#    include <pthread.h>
-#    define THREAD_HANDLE_T pthread_t
-#  endif
-#  if defined( WINDOWS )
-#    define WIN32_LEAN_AND_MEAN
-#    define VC_EXTRALEAN
-#    include <windows.h>
-#    include <process.h>
-#    define THREAD_HANDLE_T HANDLE
-#  endif
-#endif
-
-#if ! defined( THREAD_HANDLE_T )
-#  define THREAD_HANDLE_T void*
+#if defined( WINDOWS )
+#  define WIN32_LEAN_AND_MEAN
+#  define VC_EXTRALEAN
+#  define _CRT_SECURE_NO_WARNINGS
 #endif
 
 // Patch Specific Modeling ==================================================
@@ -116,7 +102,8 @@ struct event_t
   // Simple free-list memory manager.
   static void* operator new( size_t, sim_t* ); 
   static void* operator new( size_t ); // DO NOT USE!
-  static void  operator delete( void * );
+  static void  operator delete( void* );
+  static void  operator delete( void*, sim_t* ) {}
   static void deallocate( event_t* e );
 };
 
@@ -218,6 +205,12 @@ enum position_type { POSITION_NONE=0, POSITION_FRONT, POSITION_BACK, POSITION_MA
 
 enum encoding_type { ENCODING_NONE=0, ENCODING_BLIZZARD, ENCODING_MMO, ENCODING_WOWHEAD, ENCODING_MAX };
 
+struct thread_t
+{
+  static void launch( sim_t* );
+  static void wait( sim_t* );
+};
+
 struct sim_t
 {
   int         argc;
@@ -281,35 +274,33 @@ struct sim_t
   FILE*       html_file;
   FILE*       wiki_file;
 
+  // Multi-Threading
+  std::vector<sim_t*> children;
+  void* thread_handle;
+
   sim_t( sim_t* parent=0 );
  ~sim_t();
 
-  void      execute( int argc, char** argv );
+  void      simulate();
   void      add_event( event_t*, double delta_time );
   void      reschedule_event( event_t* );
   void      flush_events();
   void      cancel_events( player_t* );
   event_t*  next_event();
-  bool      execute();
   void      reset();
   bool      init();
   void      analyze();
   void      analyze( int iteration );
-  void      iterate();
   void      merge( sim_t& other_sim );
+  void      merge();
+  void      iterate();
+  void      partition();
+  void      execute();
   bool      parse_option( const std::string& name, const std::string& value );
   void      print_options();
   bool      time_to_think( double proc_time ) { if( proc_time == 0 ) return false; return current_time - proc_time > reaction_time; }
   bool      cooldown_ready( double cooldown_time ) { return cooldown_time <= current_time; }
   player_t* find_player( const std::string& name );
-
-  // Multi-Threading
-  std::vector<sim_t*> children;
-  THREAD_HANDLE_T thread_handle;
-  void partition();
-  void merge();
-  void launch_child( sim_t* child );
-  void wait_on_child( sim_t* child );
 };
 
 // Gear Rating Conversions ===================================================
