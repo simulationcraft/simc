@@ -3,6 +3,18 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+// Platform Initialization ==================================================
+
+#if ! defined( UNIX ) && ! defined( WINDOWS ) && ! defined( MAC )
+ONE OF UNIX|WINDOWS|MAC MUST BE DEFINED
+#endif
+
+#if defined( WINDOWS )
+#  define WIN32_LEAN_AND_MEAN
+#  define VC_EXTRALEAN
+#  define _CRT_SECURE_NO_WARNINGS
+#endif
+
 #include <stdarg.h>
 #include <float.h>
 #include <time.h>
@@ -18,22 +30,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-
-// Platform Initialization ==================================================
-
-#if ! defined( UNIX ) && ! defined( WINDOWS ) && ! defined( MAC )
-#  if defined( VISUAL_STUDIO ) || defined( __MSVCRT__ ) || defined( __MINWG32__ )
-#    define WINDOWS
-#  else
-#    define UNIX
-#  endif
-#endif
-
-#if defined( WINDOWS )
-#  define WIN32_LEAN_AND_MEAN
-#  define VC_EXTRALEAN
-#  define _CRT_SECURE_NO_WARNINGS
-#endif
 
 // Patch Specific Modeling ==================================================
 
