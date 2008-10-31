@@ -107,8 +107,7 @@ struct druid_t : public player_t
     expirations_eclipse = 0;
 
     // Cooldowns
-    cooldowns_eclipse         = 0;
-    cooldowns_omen_of_clarity = 0;
+    cooldowns_eclipse = 0;
 
     // Gains
     gains_moonkin_form    = get_gain( "moonkin_form"    );
@@ -233,11 +232,18 @@ static void trigger_omen_of_clarity( action_t* a )
 
   if( p -> talents.omen_of_clarity == 0 ) return;
 
-  if( a -> sim -> cooldown_ready( p -> cooldowns_omen_of_clarity ) && rand_t::roll( 0.06 ) )
+  double execute_time = a -> time_to_execute;
+
+  if( execute_time == 0 ) execute_time = a -> gcd();
+
+  double PPM = 3.5;
+  double time_to_proc = 60.0 / PPM;
+  double proc_chance = execute_time / time_to_proc;
+
+  if( rand_t::roll( proc_chance ) )
   {
     p -> buffs_omen_of_clarity = 1;
     p -> procs_omen_of_clarity -> occur();
-    p -> cooldowns_omen_of_clarity = a -> sim -> current_time;
   }
 }
 
