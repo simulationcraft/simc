@@ -289,8 +289,8 @@ static void trigger_eclipse_wrath( spell_t* s )
       name = "Eclipse Wrath Expiration";
       p -> aura_gain( "Eclipse Wrath" );
       p -> buffs_eclipse_wrath = sim -> current_time;
-      p -> cooldowns_eclipse = sim -> current_time + 40;
-      sim -> add_event( this, 10.0 );
+      p -> cooldowns_eclipse = sim -> current_time + 30;
+      sim -> add_event( this, 15.0 );
     }
     virtual void execute()
     {
@@ -322,8 +322,8 @@ static void trigger_eclipse_starfire( spell_t* s )
       name = "Eclipse Starfire Expiration";
       p -> aura_gain( "Eclipse Starfire" );
       p -> buffs_eclipse_starfire = sim -> current_time;
-      p -> cooldowns_eclipse = sim -> current_time + 40;
-      sim -> add_event( this, 10.0 );
+      p -> cooldowns_eclipse = sim -> current_time + 30;
+      sim -> add_event( this, 15.0 );
     }
     virtual void execute()
     {
@@ -629,9 +629,10 @@ struct insect_swarm_t : public druid_spell_t
     num_ticks         = 6;
     tick_power_mod    = base_tick_time / 15.0;
 
-    base_multiplier *= 1.0 + p -> talents.genesis * 0.01;
+    base_multiplier *= 1.0 + ( p -> talents.genesis     * 0.01 +
+			       p -> glyphs.insect_swarm * 0.30 );
+
     if( p -> talents.natures_splendor ) num_ticks++;
-    if( p -> glyphs.insect_swarm ) base_multiplier *= 1.30;
 
     observer = &( p -> active_insect_swarm );
   }
@@ -668,7 +669,7 @@ struct moonfire_t : public druid_spell_t
     base_execute_time = 0; 
     base_tick_time    = 3.0; 
     num_ticks         = 4;
-    direct_power_mod  = 0.28; 
+    direct_power_mod  = 0.15; 
     tick_power_mod    = 0.13; 
     may_crit          = true;
 
@@ -813,7 +814,7 @@ struct starfire_t : public druid_spell_t
     rank = choose_rank( ranks );
     
     base_execute_time = 3.5; 
-    direct_power_mod  = 1.0; 
+    direct_power_mod  = ( base_execute_time / 3.5 ); 
     may_crit          = true;
       
     base_cost          = rank -> cost;
@@ -835,7 +836,7 @@ struct starfire_t : public druid_spell_t
     p -> uptimes_eclipse_starfire -> update( p -> buffs_eclipse_starfire );
     if( p -> buffs_eclipse_starfire )
     {
-      player_crit += 0.30;
+      player_crit += 0.15;
     }
     if( p -> active_moonfire )
     {
@@ -932,7 +933,7 @@ struct wrath_t : public druid_spell_t
     rank = choose_rank( ranks );
     
     base_execute_time = 2.0; 
-    direct_power_mod  = ( 1.5 / 3.5 ); 
+    direct_power_mod  = ( base_execute_time / 3.5 ); 
     may_crit          = true;
       
     base_cost          = rank -> cost;
@@ -970,7 +971,7 @@ struct wrath_t : public druid_spell_t
     p -> uptimes_eclipse_wrath -> update( p -> buffs_eclipse_wrath );
     if( p -> buffs_eclipse_wrath )
     {
-      player_multiplier *= 1.20;
+      player_multiplier *= 1.10;
     }
     if( p -> active_insect_swarm )
     {
