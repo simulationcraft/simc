@@ -831,7 +831,7 @@ struct shadow_word_pain_t : public priest_spell_t
       tick_dmg *= 1.0 + total_crit();
     }
     return tick_dmg;
-  }    
+  }
 };
 
 // Vampiric Touch Spell ======================================================
@@ -1620,7 +1620,7 @@ struct shadow_fiend_spell_t : public priest_spell_t
   {
     shadow_fiend_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
     {
-      double duration = 18.1;
+      double duration = 15.1;
       if( p -> gear.tier4_2pc ) duration += 3.0;
       sim -> add_event( this, duration );
     }

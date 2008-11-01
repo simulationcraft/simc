@@ -12,8 +12,6 @@
 #include <SFMT.c>
 #endif
 
-#define GRANULARITY 1000000
-
 void rand_t::init( uint32_t seed )
 {
 #if ! defined( NO_SFMT )
@@ -23,18 +21,13 @@ void rand_t::init( uint32_t seed )
 #endif
 }
 
-uint32_t rand_t::gen_uint32()
-{
-#if ! defined( NO_SFMT )
-   return gen_rand32();
-#else
-   return rand();
-#endif
-}
-
 double rand_t::gen_float()
 {
-  return ( gen_uint32() % GRANULARITY ) / (double) GRANULARITY;
+#if ! defined( NO_SFMT )
+  return genrand_real1();
+#else
+  return rand() / (double) ( RAND_MAX + 1 );
+#endif
 }
 
 int8_t rand_t::roll( double chance )
@@ -42,13 +35,10 @@ int8_t rand_t::roll( double chance )
   if( chance <= 0 ) return 0;
   if( chance >= 1 ) return 1;
 
-  if( ( gen_uint32() % GRANULARITY ) < ( chance * GRANULARITY ) )
-  {
-    return 1;
-  }
-  else
-  {
-    return 0;
-  }
+#if ! defined( NO_SFMT )
+  return ( genrand_real1() < chance ) ? 1 : 0;
+#else
+  return ( rand() < chance * ( RAND_MAX + 1 ) ) ? 1 : 0;
+#endif
 }
 

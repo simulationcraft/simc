@@ -261,7 +261,9 @@ static void trigger_earth_and_moon( spell_t* s )
     {
       name = "Earth and Moon Expiration";
       if( sim -> log ) report_t::log( sim, "%s gains Earth and Moon", sim -> target -> name() );
-      sim -> target -> debuffs.earth_and_moon = (int8_t) ( std::min(p -> talents.earth_and_moon, (int8_t)3) * 13.0/3.0 );
+      int count = p -> talents.earth_and_moon;
+      sim -> target -> debuffs.earth_and_moon = ( count == 1 ? 4 :
+						  count == 2 ? 9 : 13 );
       sim -> add_event( this, 12.0 );
     }
     virtual void execute()
@@ -633,7 +635,7 @@ struct insect_swarm_t : public druid_spell_t
     base_cost         = rank -> cost;
     base_tick_time    = 2.0;
     num_ticks         = 6;
-    tick_power_mod    = base_tick_time / 15.0;
+    tick_power_mod    = ( base_tick_time / 15.0 ) * 0.95;
 
     base_multiplier *= 1.0 + ( p -> talents.genesis     * 0.01 +
 			       p -> glyphs.insect_swarm * 0.30 );
