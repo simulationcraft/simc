@@ -26,7 +26,7 @@ double rand_t::gen_float()
 #if ! defined( NO_SFMT )
   return genrand_real1();
 #else
-  return rand() / (double) ( RAND_MAX + 1 );
+  return rand() / ( ( (double) RAND_MAX ) + 1 );
 #endif
 }
 
@@ -35,10 +35,5 @@ int8_t rand_t::roll( double chance )
   if( chance <= 0 ) return 0;
   if( chance >= 1 ) return 1;
 
-#if ! defined( NO_SFMT )
-  return ( genrand_real1() < chance ) ? 1 : 0;
-#else
-  return ( rand() < chance * ( RAND_MAX + 1 ) ) ? 1 : 0;
-#endif
+  return ( gen_float() < chance ) ? 1 : 0;
 }
-
