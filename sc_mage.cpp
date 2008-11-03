@@ -239,18 +239,18 @@ struct water_elemental_pet_t : public pet_t
       base_execute_time  = 2.5;
       base_direct_dmg    = ( 256 + 328 ) / 2;
       base_direct_dmg   +=( player -> level - 50 ) * 11.5;
-      direct_power_mod   = base_execute_time / 3.5;
+      direct_power_mod   = 0.825;
       may_crit           = true;
     }
     virtual void player_buff()
     {
       spell_t::player_buff();
-      player_power += 0.40 * player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_FROST );
+      player_power += 0.34 * player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_FROST );
     }
   };
 
-  water_elemental_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name ) :
-    pet_t( sim, owner, pet_name )
+  water_elemental_pet_t( sim_t* sim, player_t* owner ) :
+    pet_t( sim, owner, "water_elemental" )
   {
   }
   virtual void init_base()
@@ -305,7 +305,101 @@ struct water_elemental_pet_t : public pet_t
   {
     if( name == "water_bolt" ) return new water_bolt_t( this );
 
-    return player_t::create_action( name, options_str );
+    return pet_t::create_action( name, options_str );
+  }
+};
+
+// ==========================================================================
+// Pet Mirror Image
+// ==========================================================================
+
+struct mirror_image_pet_t : public pet_t
+{
+  int8_t num_images;
+  int8_t num_rotations;
+  std::vector<action_t*> sequences;
+
+  struct mirror_blast_t : public spell_t
+  {
+    mirror_blast_t( mirror_image_pet_t* mirror_image ):
+      spell_t( "mirror_blast", mirror_image, RESOURCE_MANA, SCHOOL_FIRE, TREE_FIRE ) 
+    {
+      base_cost         = 0;
+      base_execute_time = 0;
+      base_direct_dmg   = ( 92 + 103 ) / 2;
+      direct_power_mod  = 1.5 / 3.5;
+      may_crit          = true;
+      background        = true;
+    }
+    virtual void player_buff()
+    {
+      mirror_image_pet_t* p = (mirror_image_pet_t*) player;
+      spell_t::player_buff();
+      player_power += 0.37 * player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_FIRE ) / p -> num_images;
+    }
+  };
+
+  struct mirror_bolt_t : public spell_t
+  {
+    mirror_bolt_t( mirror_image_pet_t* mirror_image ):
+      spell_t( "mirror_bolt", mirror_image, RESOURCE_MANA, SCHOOL_FROST, TREE_FROST ) 
+    {
+      base_cost         = 0;
+      base_execute_time = 3.0;
+      base_direct_dmg   = ( 163 + 169 ) / 2;
+      direct_power_mod  = base_execute_time / 3.5;
+      base_crit_bonus  *= 2.0;
+      may_crit          = true;
+      background        = true;
+    }
+    virtual void player_buff()
+    {
+      mirror_image_pet_t* p = (mirror_image_pet_t*) player;
+      spell_t::player_buff();
+      player_power += 0.35 * player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_FROST ) / p -> num_images;
+    }
+  };
+
+  mirror_image_pet_t( sim_t* sim, player_t* owner ) :
+    pet_t( sim, owner, "mirror_image", true /*guardian*/ ), num_images(3), num_rotations(4)
+  {
+    for( int i=0; i < num_images; i++ )
+    {
+      action_t* first_action=0;
+      action_t** prev_action = &first_action;
+
+      for( int j=0; j < num_rotations; j++ )
+      {
+	spell_t* blast = new mirror_blast_t( this );
+	spell_t* bolt1 = new mirror_bolt_t ( this );
+	spell_t* bolt2 = new mirror_bolt_t ( this );
+
+	*prev_action = blast;
+	blast -> sequence = bolt1;
+	bolt1 -> sequence = bolt2;
+	prev_action = &( bolt2 -> sequence );
+      }
+      sequences.push_back( first_action );
+    }    
+  }
+  virtual void init_base()
+  {
+    // Stolen from Priest's Shadowfiend
+    attribute_base[ ATTR_STRENGTH  ] = 145;
+    attribute_base[ ATTR_AGILITY   ] =  38;
+    attribute_base[ ATTR_STAMINA   ] = 190;
+    attribute_base[ ATTR_INTELLECT ] = 133;
+
+    health_per_stamina = 7.5;
+    mana_per_intellect = 5;
+  }
+  virtual void summon()
+  {
+    pet_t::summon();
+    for( int i=0; i < num_images; i++ )
+    {
+      sequences[ i ] -> schedule_execute();
+    }
   }
 };
 
@@ -384,8 +478,8 @@ static void trigger_ignite( spell_t* s )
   if( s -> sim -> merge_ignite )
   {
     s -> result = RESULT_HIT;
-    s -> assess_damage( ( ignite_dmg / 2.0 ), DMG_OVER_TIME );
-    s -> assess_damage( ( ignite_dmg / 2.0 ), DMG_OVER_TIME );
+    s -> assess_damage( ( ignite_dmg ), DMG_OVER_TIME );
+    s -> update_stats( DMG_OVER_TIME );
     s -> result = RESULT_CRIT;
     return;
   }
@@ -2396,7 +2490,7 @@ struct water_elemental_spell_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
     assert( p -> talents.water_elemental );
     
-    base_cost  = 492;
+    base_cost   = p -> resource_base[ RESOURCE_MANA ] * 0.16;
     base_cost *= 1.0 - p -> talents.frost_channeling * (0.1/3);
     cooldown   = p -> glyphs.water_elemental ? 150 : 180;
     cooldown  *= 1.0 - p -> talents.cold_as_ice * 0.10;
@@ -2416,6 +2510,30 @@ struct water_elemental_spell_t : public mage_spell_t
       return false;
 
     return player -> cast_mage() -> active_water_elemental == 0;
+  }
+};
+
+// Mirror Image Spell ======================================================
+
+struct mirror_image_spell_t : public mage_spell_t
+{
+  mirror_image_spell_t( player_t* player, const std::string& options_str ) : 
+    mage_spell_t( "water_elemental", player, SCHOOL_ARCANE, TREE_ARCANE )
+  {
+    mage_t* p = player -> cast_mage();
+    
+    base_cost   = p -> resource_base[ RESOURCE_MANA ] * 0.10;
+    base_cost  *= 1.0 - p -> talents.frost_channeling * (0.1/3);
+    cooldown    = 180;
+    trigger_gcd = 0;
+    harmful     = false;
+  }
+
+  virtual void execute() 
+  {
+    consume_resource();
+    update_ready();
+    player -> summon_pet( "mirror_image" );
   }
 };
 
@@ -2441,6 +2559,7 @@ action_t* mage_t::create_action( const std::string& name,
   if( name == "icy_veins"         ) return new             icy_veins_t( this, options_str );
   if( name == "living_bomb"       ) return new           living_bomb_t( this, options_str );
   if( name == "mage_armor"        ) return new            mage_armor_t( this, options_str );
+  if( name == "mirror_image"      ) return new    mirror_image_spell_t( this, options_str );
   if( name == "molten_armor"      ) return new          molten_armor_t( this, options_str );
   if( name == "presence_of_mind"  ) return new      presence_of_mind_t( this, options_str );
   if( name == "pyroblast"         ) return new             pyroblast_t( this, options_str );
@@ -2455,7 +2574,8 @@ action_t* mage_t::create_action( const std::string& name,
 
 pet_t* mage_t::create_pet( const std::string& pet_name )
 {
-  if( pet_name == "water_elemental" ) return new water_elemental_pet_t( sim, this, pet_name );
+  if( pet_name == "water_elemental" ) return new water_elemental_pet_t( sim, this );
+  if( pet_name == "mirror_image"    ) return new mirror_image_pet_t   ( sim, this );
 
   return 0;
 }

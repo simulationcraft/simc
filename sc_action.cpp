@@ -32,7 +32,7 @@ action_t::action_t( int8_t      ty,
   num_ticks(0), current_tick(0), added_ticks(0), ticking(0), 
   cooldown_group(n), duration_group(n), cooldown(0), cooldown_ready(0), duration_ready(0),
   weapon( 0 ), normalize_weapon_speed( false ),
-  stats(0), rank(0), rank_index(-1), event(0), time_to_execute(0), time_to_tick(0), observer(0), next(0)
+  stats(0), rank(0), rank_index(-1), event(0), time_to_execute(0), time_to_tick(0), observer(0), next(0), sequence(0)
 {
   if( sim -> debug ) report_t::log( sim, "Player %s creates action %s", p -> name(), name() );
   action_t** last = &( p -> action_list );
@@ -409,6 +409,8 @@ void action_t::execute()
   player -> action_finish( this );
 
   if( repeating && ! proc ) schedule_execute();
+
+  if( sequence ) sequence -> schedule_execute();
 }
 
 // action_t::tick ===========================================================

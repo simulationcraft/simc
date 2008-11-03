@@ -93,7 +93,7 @@ default_haste_rating=452
 druid=Druid_58_0_13_SF
 level=80
 talents=http://talent.mmo-champion.com/?druid=00000000000000000000000000000205003012000000000000000005032003125321333213305311030
-actions=flask,type=blinding_light/wizard_oil/mark_of_the_wild/moonkin_form/mana_potion,trigger=3500/innervate/faerie_fire/treants/moonfire/insect_swarm/wrath,eclipse=trigger/starfire
+actions=flask,type=blinding_light/mark_of_the_wild/moonkin_form/mana_potion,trigger=3500/innervate/faerie_fire/treants/moonfire/insect_swarm/wrath,eclipse=trigger/starfire
 enchant_hit_rating=-25
 enchant_haste_rating=+25
 chaotic_skyfire=1
@@ -120,7 +120,7 @@ swift_retribution=1
 druid=Druid_58_0_13_W
 level=80
 talents=http://talent.mmo-champion.com/?druid=00000000000000000000000000000205003012000000000000000005032003125321333213305311030
-actions=flask,type=blinding_light/wizard_oil/mark_of_the_wild/moonkin_form/mana_potion,trigger=3500/innervate/faerie_fire/treants/moonfire/insect_swarm/starfire,eclipse=trigger/wrath
+actions=flask,type=blinding_light/mark_of_the_wild/moonkin_form/mana_potion,trigger=3500/innervate/faerie_fire/treants/moonfire/insect_swarm/starfire,eclipse=trigger/wrath
 enchant_hit_rating=-25
 enchant_haste_rating=+25
 chaotic_skyfire=1
@@ -163,11 +163,15 @@ swift_retribution=1
 mage=Mage_52_19_0_Slow
 level=80
 talents=http://talent.mmo-champion.com/?mage=00550300120030000000000000000000000000000000000000000000230005031100330150323000515321
-actions=flask,type=blinding_light/wizard_oil/molten_armor/focus_magic,target=Mage_52_19_0/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/slow/arcane_missiles,barrage=1/presence_of_mind,pyroblast/arcane_barrage/fire_ball
+actions=flask,type=blinding_light/molten_armor/focus_magic,target=Mage_52_19_0/mana_gem,trigger=3500/mana_potion,trigger=3500/mirror_image/evocation,trigger=10000/slow/arcane_missiles,barrage=1/presence_of_mind,pyroblast/arcane_barrage/fire_ball
 chaotic_skyfire=1
 # Glyphs
 glyph_fire_ball=1
 glyph_molten_armor=1
+# Pets
+pet=mirror_image
+quiet=1
+active=owner
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
 blessing_of_kings=1
 blessing_of_wisdom=1
@@ -177,11 +181,15 @@ swift_retribution=1
 mage=Mage_52_19_0
 level=80
 talents=http://talent.mmo-champion.com/?mage=00550300120030000000000000000000000000000000000000000000230005031100330150323000515321
-actions=flask,type=blinding_light/wizard_oil/molten_armor/focus_magic,target=Mage_20_51_0/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/arcane_missiles,barrage=1/presence_of_mind,pyroblast/arcane_barrage/fire_ball
+actions=flask,type=blinding_light/molten_armor/focus_magic,target=Mage_20_51_0/mana_gem,trigger=3500/mana_potion,trigger=3500/mirror_image/evocation,trigger=10000/arcane_missiles,barrage=1/presence_of_mind,pyroblast/arcane_barrage/fire_ball
 chaotic_skyfire=1
 # Glyphs
 glyph_fire_ball=1
 glyph_molten_armor=1
+# Pets
+pet=mirror_image
+quiet=1
+active=owner
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
 blessing_of_kings=1
 blessing_of_wisdom=1
@@ -199,7 +207,7 @@ mage=Mage_20_51_0
 level=80
 # We will let the poor Frost Mage raid-slave keep up the Improved Scorch debuff
 talents=http://talent.mmo-champion.com/?mage=00550300123033300531203003510000000000000000000000000000230005031100230000000000000000
-actions=flask,type=pure_death/wizard_oil/arcane_brilliance/molten_armor/focus_magic,target=Mage_18_0_53/mana_gem,trigger=3500/mana_potion,trigger=3500/scorch,debuff=1/evocation,trigger=10000/combustion/living_bomb/pyroblast,hot_streak=1/fire_ball
+actions=flask,type=pure_death/arcane_brilliance/molten_armor/focus_magic,target=Mage_18_0_53/mana_gem,trigger=3500/mana_potion,trigger=3500/scorch,debuff=1/mirror_image/evocation,trigger=10000/combustion/living_bomb/pyroblast,hot_streak=1/fire_ball
 # We will let the poor Frost Mage raid-slave keep up the Improved Scorch debuff
 skip_actions=scorch
 enchant_hit_rating=+75
@@ -208,6 +216,10 @@ chaotic_skyfire=1
 # Glyphs
 glyph_fire_ball=1
 glyph_molten_armor=1
+# Pets
+pet=mirror_image
+quiet=1
+active=owner
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
 blessing_of_kings=1
 blessing_of_wisdom=1
@@ -225,14 +237,18 @@ swift_retribution=1
 mage=Mage_18_0_53
 level=80
 talents=http://talent.mmo-champion.com/?mage=00000000000000000000000000000533030310233100230052231350230005031100030000000000000000
-actions=flask,type=pure_death/wizard_oil/arcane_brilliance/molten_armor/focus_magic,target=Mage_52_19_0_Slow/mana_gem,trigger=3500/mana_potion,trigger=2500/ice_lance,frozen=1,fb_priority=1/evocation,trigger=10000/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/frost_bolt
+actions=flask,type=pure_death/arcane_brilliance/molten_armor/focus_magic,target=Mage_52_19_0_Slow/mirror_image/mana_gem,trigger=3500/mana_potion,trigger=2500/ice_lance,frozen=1,fb_priority=1/evocation,trigger=10000/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/frost_bolt
 chaotic_skyfire=1
 # Glyphs
 glyph_molten_armor=1
 glyph_frost_bolt=1
 glyph_water_elemental=1
+# Pets
 pet=water_elemental
 actions=water_bolt
+quiet=1
+active=owner
+pet=mirror_image
 quiet=1
 active=owner
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
@@ -251,7 +267,7 @@ swift_retribution=1
 mage=Mage_0_53_18
 level=80
 talents=http://talent.mmo-champion.com/?mage=23050300123033310531203013512033030310030000000000000000000000000000000000000000000000
-actions=flask,type=pure_death/wizard_oil/arcane_brilliance/molten_armor/mana_gem,trigger=3500/mana_potion,trigger=3500/scorch,debuff=1/evocation,trigger=10000/combustion/icy_veins/living_bomb/pyroblast,hot_streak=1/frostfire_bolt
+actions=flask,type=pure_death/arcane_brilliance/molten_armor/mana_gem,trigger=3500/mana_potion,trigger=3500/scorch,debuff=1/mirror_image/evocation,trigger=10000/combustion/icy_veins/living_bomb/pyroblast,hot_streak=1/frostfire_bolt
 # We will let the poor Frost Mage raid-slave keep up the Improved Scorch debuff
 skip_actions=scorch
 chaotic_skyfire=1
@@ -261,6 +277,10 @@ enchant_haste_rating=-75
 # Glyphs
 glyph_molten_armor=1
 glyph_frostfire=1
+# Pets
+pet=mirror_image
+quiet=1
+active=owner
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
 blessing_of_kings=1
 blessing_of_wisdom=1
@@ -280,7 +300,7 @@ swift_retribution=1
 priest=Priest_14_0_57
 level=80
 talents=http://wotlk.wowhead.com/?talent=bVcbzhZZG0fVRfzfiqfzAo
-actions=flask,type=pure_death/wizard_oil/inner_fire/shadow_form/mana_potion,trigger=3500/shadow_fiend,trigger=6000/dispersion/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/shadow_word_death,mb_wait=0,mb_priority=0/mind_flay,mb_wait=0
+actions=flask,type=pure_death/inner_fire/shadow_form/mana_potion,trigger=3500/shadow_fiend,trigger=6000/dispersion/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/shadow_word_death,mb_wait=0,mb_priority=0/mind_flay,mb_wait=0
 chaotic_skyfire=1
 glyph_shadow_word_pain=1
 glyph_shadow=1
@@ -304,7 +324,7 @@ swift_retribution=1
 priest=Priest_14_0_57_NoSWD
 level=80
 talents=http://wotlk.wowhead.com/?talent=bVcbzhZZG0fVRfzfiqfzAo
-actions=flask,type=pure_death/wizard_oil/inner_fire/shadow_form/mana_potion,trigger=3500/shadow_fiend,trigger=6000/dispersion/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/mind_flay
+actions=flask,type=pure_death/inner_fire/shadow_form/mana_potion,trigger=3500/shadow_fiend,trigger=6000/dispersion/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/mind_flay
 chaotic_skyfire=1
 glyph_shadow_word_pain=1
 glyph_shadow=1
@@ -328,7 +348,7 @@ swift_retribution=1
 priest=Priest_38_28_5
 level=80
 talents=http://talent.mmo-champion.com/?priest=050320213040512250100020000000555100202015200000000000320000000000000000000000000
-actions=flask,type=blinding_light/wizard_oil/inner_fire/divine_spirit/mana_potion,trigger=3500/shadow_fiend,trigger=6000/inner_focus,shadow_word_pain/shadow_word_pain/power_infusion/holy_fire/mind_blast/smite
+actions=flask,type=blinding_light/inner_fire/divine_spirit/mana_potion,trigger=3500/shadow_fiend,trigger=6000/inner_focus,shadow_word_pain/shadow_word_pain/power_infusion/holy_fire/mind_blast/smite
 enchant_hit_rating=+75
 enchant_haste_rating=-75
 chaotic_skyfire=1
@@ -409,8 +429,8 @@ gear_haste_rating=75
 chaotic_skyfire=1
 # Hateful Gladiator Weapons
 main_hand=mace,damage=373,speed=2.6,enchant=mongoose
-#off_hand=dagger,damage=258,speed=1.8,enchant=mongoose
-off_hand=mace,damage=373,speed=2.6,enchant=mongoose
+off_hand=dagger,damage=200,speed=1.4,enchant=mongoose
+#off_hand=mace,damage=373,speed=2.6,enchant=mongoose
 # Glyphs
 glyph_windfury_weapon=1
 glyph_stormstrike=1

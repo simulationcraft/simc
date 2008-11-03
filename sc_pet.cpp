@@ -30,6 +30,14 @@ pet_t::pet_t( sim_t*             s,
   intellect_per_owner = 0.30;
 }
 
+// pet_t::create_action =====================================================
+
+action_t* pet_t::create_action( const std::string& name,
+				const std::string& options_str )
+{
+  return player_t::create_action( name, options_str );
+}
+
 // pet_t::stamina ===========================================================
 
 double pet_t::stamina()
@@ -50,6 +58,7 @@ void pet_t::reset()
 {
   player_t::reset();
   sleeping = 1;
+  summon_time = 0;
 }
 
 // pet_t::summon ============================================================
@@ -59,6 +68,7 @@ void pet_t::summon()
   if( sim -> log ) report_t::log( sim, "%s summons %s.", owner -> name(), name() );
   sleeping = 0;
   init_resources( true );
+  summon_time = sim -> current_time;
 }
 
 // pet_t::dismiss ===========================================================

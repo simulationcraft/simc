@@ -808,14 +808,15 @@ struct player_t
   static player_t * create_shaman ( sim_t* sim, std::string& name );
   static player_t * create_warlock( sim_t* sim, std::string& name );
 
+  bool is_pet() { return type == PLAYER_PET || type == PLAYER_GUARDIAN; }
+
   druid_t  * cast_druid  () { assert( type == DRUID      ); return (druid_t  *) this; }
   mage_t   * cast_mage   () { assert( type == MAGE       ); return (mage_t   *) this; }
   priest_t * cast_priest () { assert( type == PRIEST     ); return (priest_t *) this; }
   shaman_t * cast_shaman () { assert( type == SHAMAN     ); return (shaman_t *) this; }
   warlock_t* cast_warlock() { assert( type == WARLOCK    ); return (warlock_t*) this; }
-  pet_t*     cast_pet    () { assert( type == PLAYER_PET ); return (pet_t    *) this; }
+  pet_t*     cast_pet    () { assert( is_pet()           ); return (pet_t    *) this; }
 
-  bool      is_pet() { return type == PLAYER_PET || type == PLAYER_GUARDIAN; }
   bool      in_gcd() { return gcd_ready > sim -> current_time; }
   bool      recent_cast();
   action_t* find_action( const std::string& );
@@ -844,6 +845,8 @@ struct pet_t : public player_t
   double   stamina_per_owner;
   double intellect_per_owner;
 
+  double summon_time;
+
   pet_t( sim_t* sim, player_t* owner, const std::string& name, bool guardian=false );
 
   virtual double composite_attack_hit() { return owner -> composite_attack_hit(); }
@@ -856,6 +859,7 @@ struct pet_t : public player_t
   virtual void summon();
   virtual void dismiss();
 
+  virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual const char* name() { return full_name_str.c_str(); }
 };
 
@@ -1041,6 +1045,7 @@ struct action_t
   double time_to_execute, time_to_tick;
   action_t** observer;
   action_t* next;
+  action_t* sequence;
   std::vector<action_t*> same_list;
 
   action_t( int8_t type, const char* name, player_t* p=0, int8_t r=RESOURCE_NONE, int8_t s=SCHOOL_NONE, int8_t t=TREE_NONE );
