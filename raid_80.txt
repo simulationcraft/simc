@@ -9,8 +9,16 @@
 # Globals
 #
 
-# patch level of 3.0.0 or later implies Wrath of the Lich King
+# Patch level of 3.0.0 or later implies Wrath of the Lich King
 patch=3.0.3
+
+# To generate a combat log with just one iteration, simply set 'log=1'
+# Setting log to a non-zero value will force the simulator to execute just one iteration
+log=0
+
+# To get a detailed breakdown of contributions to attacks/spells as they occur, simply set 'debug=1'
+# Setting debug to a non-zero value will force the simulator to execute just one iteration
+debug=0
 
 # Lag is a random value centered on the value below with a range of +/- 0.05 seconds
 lag=0.150

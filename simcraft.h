@@ -264,7 +264,7 @@ struct sim_t
   report_t*  report;
   scaling_t* scaling;
   double     raid_dps, total_dmg, total_seconds, elapsed_cpu_seconds;
-  int8_t     merge_ignite;
+  bool       merge_ignite;
   std::vector<player_t*> players_by_rank;
   std::vector<player_t*> players_by_name;
   std::string html_file_str, wiki_file_str;
@@ -1360,7 +1360,7 @@ struct talent_translation_t
 
 // Options ====================================================================
 
-enum option_type_t { OPT_STRING=0, OPT_CHAR_P, OPT_INT8, OPT_INT16, OPT_INT32, OPT_FLT, OPT_DEPRECATED, OPT_UNKNOWN };
+enum option_type_t { OPT_STRING=0, OPT_CHAR_P, OPT_BOOL, OPT_INT8, OPT_INT16, OPT_INT32, OPT_FLT, OPT_DEPRECATED, OPT_UNKNOWN };
 
 struct option_t
 {

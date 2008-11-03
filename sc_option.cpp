@@ -63,6 +63,7 @@ void option_t::print( sim_t* sim, option_t* options )
     {
     case OPT_STRING: fprintf( f, "%s\n",    ( (std::string*) o.address ) -> c_str()         ); break;
     case OPT_CHAR_P: fprintf( f, "%s\n",   *( (char**)       o.address )                    ); break;
+    case OPT_BOOL:   fprintf( f, "%d\n",   *( (bool*)        o.address ) ? 1 : 0            ); break;
     case OPT_INT8:   fprintf( f, "%d\n",   *( (int8_t*)      o.address )                    ); break;
     case OPT_INT16:  fprintf( f, "%d\n",   *( (int16_t*)     o.address )                    ); break;
     case OPT_INT32:  fprintf( f, "%d\n",   *( (int32_t*)     o.address )                    ); break;
@@ -87,12 +88,13 @@ bool option_t::parse( sim_t*             sim,
     {
       switch( o.type )
       {
-      case OPT_STRING: *( (std::string*) o.address ) = value;                             break;
-      case OPT_CHAR_P: *( (char**)       o.address ) = util_t::dup( value.c_str() );      break;
-      case OPT_INT8:   *( (int8_t*)      o.address ) = atoi( value.c_str() );             break;
-      case OPT_INT16:  *( (int16_t*)     o.address ) = atoi( value.c_str() );             break;
-      case OPT_INT32:  *( (int32_t*)     o.address ) = atoi( value.c_str() );             break;
-      case OPT_FLT:    *( (double*)      o.address ) = atof( value.c_str() );             break;
+      case OPT_STRING: *( (std::string*) o.address ) = value;                                break;
+      case OPT_CHAR_P: *( (char**)       o.address ) = util_t::dup( value.c_str() );         break;
+      case OPT_BOOL:   *( (bool*)        o.address ) = atoi( value.c_str() ) ? true : false; break;
+      case OPT_INT8:   *( (int8_t*)      o.address ) = atoi( value.c_str() );                break;
+      case OPT_INT16:  *( (int16_t*)     o.address ) = atoi( value.c_str() );                break;
+      case OPT_INT32:  *( (int32_t*)     o.address ) = atoi( value.c_str() );                break;
+      case OPT_FLT:    *( (double*)      o.address ) = atof( value.c_str() );                break;
       case OPT_DEPRECATED: printf( "simcraft: option '%s' has been deprecated, please use '%s' instead.\n", o.name, (char*) o.address ); exit(0);
       default: assert(0);
       }

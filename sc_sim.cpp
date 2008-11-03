@@ -18,15 +18,15 @@ sim_t::sim_t( sim_t* p ) :
   events_remaining(0), max_events_remaining(0), 
   events_processed(0), total_events_processed(0),
   seed(0), id(0), iterations(1), threads(0),
-  potion_sickness(0), average_dmg(1), log(0), debug(0), timestamp(1), 
-  raid_dps(0), total_dmg(0), total_seconds(0), elapsed_cpu_seconds(0), merge_ignite(0),
+  potion_sickness(1), average_dmg(1), log(0), debug(0), timestamp(1), 
+  raid_dps(0), total_dmg(0), total_seconds(0), elapsed_cpu_seconds(0), merge_ignite(1),
   output_file(stdout), html_file(0), wiki_file(0), thread_handle(0)
 {
   patch_str = "3.0.3";
 
   for( int i=0; i < RESOURCE_MAX; i++ ) 
   {
-    infinite_resource[ i ] = 0;
+    infinite_resource[ i ] = false;
   }
 
   target  = new  target_t( this );

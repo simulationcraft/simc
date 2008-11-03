@@ -311,7 +311,7 @@ static void trigger_eclipse_wrath( spell_t* s )
 
   druid_t* p = s -> player -> cast_druid();
 
-  if( p -> talents.eclipse && 
+  if( p -> talents.eclipse != 0 && 
       s -> sim -> cooldown_ready( p -> cooldowns_eclipse ) &&
       rand_t::roll( p -> talents.eclipse * 0.20 ) )
   {
@@ -344,7 +344,7 @@ static void trigger_eclipse_starfire( spell_t* s )
 
   druid_t* p = s -> player -> cast_druid();
 
-  if( p -> talents.eclipse && 
+  if( p -> talents.eclipse != 0 && 
       s -> sim -> cooldown_ready( p -> cooldowns_eclipse ) &&
       rand_t::roll( p -> talents.eclipse * 1.0/3 ) )
   {
