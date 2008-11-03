@@ -168,11 +168,7 @@ void action_t::target_debuff( int8_t dmg_type )
 
   target_t* t = sim -> target;
 
-  if( school == SCHOOL_PHYSICAL )
-  {
-    target_penetration += t -> debuffs.sunder_armor * 520;
-  }
-  else 
+  if( school != SCHOOL_PHYSICAL )
   {
     target_multiplier *= 1.0 + ( std::max( t -> debuffs.curse_of_elements, t -> debuffs.earth_and_moon ) * 0.01 );
     if( t -> debuffs.curse_of_elements ) target_penetration += 88;
