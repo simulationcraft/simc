@@ -27,14 +27,10 @@ void scaling_t::analyze_attributes()
     if( gear.attribute[ i ] != 0 )
     {
       fprintf( sim -> output_file, "\nGenerating scale factors for %s...\n", util_t::attribute_type_string( i ) );
+      fflush( sim -> output_file );
 
       sim_t* child_sim = new sim_t( sim );
-
-      for( player_t* p = child_sim -> player_list; p; p = p -> next )
-      {
-	if( p -> type != PLAYER_PET ) p -> gear.attribute[ i ] += gear.attribute[ i ];
-      }
-
+      child_sim -> gear_delta.attribute[ i ] = gear.attribute[ i ];
       child_sim -> execute();
 
       for( int j=0; j < num_players; j++ )
@@ -60,14 +56,10 @@ void scaling_t::analyze_spell_power()
   if( gear.spell_power != 0 )
   {
     fprintf( sim -> output_file, "\nGenerating scale factors for spell power...\n" );
+    fflush( sim -> output_file );
 
     sim_t* child_sim = new sim_t( sim );
-
-    for( player_t* p = child_sim -> player_list; p; p = p -> next )
-    {
-      if( p -> type != PLAYER_PET ) p -> gear.spell_power[ SCHOOL_MAX ] += gear.spell_power;
-    }
-
+    child_sim -> gear_delta.spell_power = gear.spell_power;
     child_sim -> execute();
 
     for( int i=0; i < num_players; i++ )
@@ -93,14 +85,10 @@ void scaling_t::analyze_attack_power()
   if( gear.attack_power != 0 )
   {
     fprintf( sim -> output_file, "\nGenerating scale factors for attack power...\n" );
+    fflush( sim -> output_file );
 
     sim_t* child_sim = new sim_t( sim );
-
-    for( player_t* p = child_sim -> player_list; p; p = p -> next )
-    {
-      if( p -> type != PLAYER_PET ) p -> gear.attack_power += gear.attack_power;
-    }
-
+    child_sim -> gear_delta.attack_power = gear.attack_power;
     child_sim -> execute();
 
     for( int i=0; i < num_players; i++ )
@@ -125,14 +113,10 @@ void scaling_t::analyze_expertise()
   if( gear.expertise_rating != 0 )
   {
     fprintf( sim -> output_file, "\nGenerating scale factors for expertise rating...\n" );
+    fflush( sim -> output_file );
 
     sim_t* child_sim = new sim_t( sim );
-
-    for( player_t* p = child_sim -> player_list; p; p = p -> next )
-    {
-      if( p -> type != PLAYER_PET ) p -> gear.expertise_rating += gear.expertise_rating;
-    }
-
+    child_sim -> gear_delta.expertise_rating = gear.expertise_rating;
     child_sim -> execute();
 
     for( int i=0; i < num_players; i++ )
@@ -157,14 +141,10 @@ void scaling_t::analyze_armor_penetration()
   if( gear.armor_penetration_rating != 0 )
   {
     fprintf( sim -> output_file, "\nGenerating scale factors for armor penetration rating...\n" );
+    fflush( sim -> output_file );
 
     sim_t* child_sim = new sim_t( sim );
-
-    for( player_t* p = child_sim -> player_list; p; p = p -> next )
-    {
-      if( p -> type != PLAYER_PET ) p -> gear.armor_penetration_rating += gear.armor_penetration_rating;
-    }
-
+    child_sim -> gear_delta.armor_penetration_rating = gear.armor_penetration_rating;
     child_sim -> execute();
 
     for( int i=0; i < num_players; i++ )
@@ -189,14 +169,10 @@ void scaling_t::analyze_hit()
   if( gear.hit_rating != 0 )
   {
     fprintf( sim -> output_file, "\nGenerating scale factors for hit rating...\n" );
+    fflush( sim -> output_file );
 
     sim_t* child_sim = new sim_t( sim );
-
-    for( player_t* p = child_sim -> player_list; p; p = p -> next )
-    {
-      if( p -> type != PLAYER_PET ) p -> gear.hit_rating += gear.hit_rating;
-    }
-
+    child_sim -> gear_delta.hit_rating = gear.hit_rating;
     child_sim -> execute();
 
     for( int i=0; i < num_players; i++ )
@@ -222,14 +198,10 @@ void scaling_t::analyze_crit()
   if( gear.crit_rating != 0 )
   {
     fprintf( sim -> output_file, "\nGenerating scale factors for crit rating...\n" );
+    fflush( sim -> output_file );
 
     sim_t* child_sim = new sim_t( sim );
-
-    for( player_t* p = child_sim -> player_list; p; p = p -> next )
-    {
-      if( p -> type != PLAYER_PET ) p -> gear.crit_rating += gear.crit_rating;
-    }
-
+    child_sim -> gear_delta.crit_rating = gear.crit_rating;
     child_sim -> execute();
 
     for( int i=0; i < num_players; i++ )
@@ -254,14 +226,10 @@ void scaling_t::analyze_haste()
   if( gear.haste_rating != 0 )
   {
     fprintf( sim -> output_file, "\nGenerating scale factors for haste rating...\n" );
+    fflush( sim -> output_file );
 
     sim_t* child_sim = new sim_t( sim );
-
-    for( player_t* p = child_sim -> player_list; p; p = p -> next )
-    {
-      if( p -> type != PLAYER_PET ) p -> gear.haste_rating += gear.haste_rating;
-    }
-
+    child_sim -> gear_delta.haste_rating = gear.haste_rating;
     child_sim -> execute();
 
     for( int i=0; i < num_players; i++ )
@@ -300,18 +268,18 @@ bool scaling_t::parse_option( const std::string& name,
   option_t options[] =
   {
     { "calculate_scale_factors",        OPT_INT8,   &( calculate_scale_factors              ) },
-    { "delta_strength",                 OPT_INT16,  &( gear.attribute[ ATTR_STRENGTH  ]     ) },
-    { "delta_agility",                  OPT_INT16,  &( gear.attribute[ ATTR_AGILITY   ]     ) },
-    { "delta_stamina",                  OPT_INT16,  &( gear.attribute[ ATTR_STAMINA   ]     ) },
-    { "delta_intellect",                OPT_INT16,  &( gear.attribute[ ATTR_INTELLECT ]     ) },
-    { "delta_spirit",                   OPT_INT16,  &( gear.attribute[ ATTR_SPIRIT    ]     ) },
-    { "delta_spell_power",              OPT_INT16,  &( gear.spell_power                     ) },
-    { "delta_attack_power",             OPT_INT16,  &( gear.attack_power                    ) },
-    { "delta_expertise_rating",         OPT_INT16,  &( gear.expertise_rating                ) },
-    { "delta_armor_penetration_rating", OPT_INT16,  &( gear.armor_penetration_rating        ) },
-    { "delta_hit_rating",               OPT_INT16,  &( gear.hit_rating                      ) },
-    { "delta_crit_rating",              OPT_INT16,  &( gear.crit_rating                     ) },
-    { "delta_haste_rating",             OPT_INT16,  &( gear.haste_rating                    ) },
+    { "scale_strength",                 OPT_INT16,  &( gear.attribute[ ATTR_STRENGTH  ]     ) },
+    { "scale_agility",                  OPT_INT16,  &( gear.attribute[ ATTR_AGILITY   ]     ) },
+    { "scale_stamina",                  OPT_INT16,  &( gear.attribute[ ATTR_STAMINA   ]     ) },
+    { "scale_intellect",                OPT_INT16,  &( gear.attribute[ ATTR_INTELLECT ]     ) },
+    { "scale_spirit",                   OPT_INT16,  &( gear.attribute[ ATTR_SPIRIT    ]     ) },
+    { "scale_spell_power",              OPT_INT16,  &( gear.spell_power                     ) },
+    { "scale_attack_power",             OPT_INT16,  &( gear.attack_power                    ) },
+    { "scale_expertise_rating",         OPT_INT16,  &( gear.expertise_rating                ) },
+    { "scale_armor_penetration_rating", OPT_INT16,  &( gear.armor_penetration_rating        ) },
+    { "scale_hit_rating",               OPT_INT16,  &( gear.hit_rating                      ) },
+    { "scale_crit_rating",              OPT_INT16,  &( gear.crit_rating                     ) },
+    { "scale_haste_rating",             OPT_INT16,  &( gear.haste_rating                    ) },
     { NULL, OPT_UNKNOWN }
   };
 

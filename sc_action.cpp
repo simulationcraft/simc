@@ -130,18 +130,20 @@ void action_t::player_buff()
   else
   {
     player_penetration = p -> composite_spell_penetration();
+  }
 
-    if( school == SCHOOL_SHADOW )
+  if( p -> type == PLAYER_GUARDIAN ) return;  // Guardians do not benefit from auras
+
+  if( school == SCHOOL_SHADOW )
+  {
+    if( p -> buffs.shadow_form )
     {
-      if( p -> buffs.shadow_form )
-      {
-	player_multiplier *= 1.15;
-      }
+      player_multiplier *= 1.15;
     }
-    else if( school == SCHOOL_HOLY )
-    {
-      if( p -> buffs.sanctity_aura ) player_multiplier *= 1.10 + 0.01 * ( p -> buffs.sanctity_aura - 1 );
-    }
+  }
+  else if( school == SCHOOL_HOLY )
+  {
+    if( p -> buffs.sanctity_aura ) player_multiplier *= 1.10 + 0.01 * ( p -> buffs.sanctity_aura - 1 );
   }
 
   if( p -> buffs.sanctified_retribution ) player_multiplier *= 1.03;

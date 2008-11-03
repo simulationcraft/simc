@@ -194,19 +194,19 @@ player_t::player_t( sim_t*             s,
 
   // Setup default gear profiles
 
-  if( type != PLAYER_PET )
+  if( ! is_pet() )
   {
     for( int i=0; i < ATTRIBUTE_MAX; i++ )
     {
-      gear.attribute[ i ] = sim -> gear.attribute[ i ];
+      gear.attribute[ i ] = sim -> gear_default.attribute[ i ];
     }
-    gear.spell_power[ SCHOOL_MAX ] = sim -> gear.spell_power;
-    gear.attack_power              = sim -> gear.attack_power;
-    gear.expertise_rating          = sim -> gear.expertise_rating;
-    gear.armor_penetration_rating  = sim -> gear.armor_penetration_rating;
-    gear.hit_rating                = sim -> gear.hit_rating;
-    gear.crit_rating               = sim -> gear.crit_rating;
-    gear.haste_rating              = sim -> gear.haste_rating;
+    gear.spell_power[ SCHOOL_MAX ] = sim -> gear_default.spell_power;
+    gear.attack_power              = sim -> gear_default.attack_power;
+    gear.expertise_rating          = sim -> gear_default.expertise_rating;
+    gear.armor_penetration_rating  = sim -> gear_default.armor_penetration_rating;
+    gear.hit_rating                = sim -> gear_default.hit_rating;
+    gear.crit_rating               = sim -> gear_default.crit_rating;
+    gear.haste_rating              = sim -> gear_default.haste_rating;
   }
 }
 
@@ -265,13 +265,18 @@ void player_t::init()
 
 void player_t::init_core() 
 {
-  if( initial_haste_rating == 0 ) initial_haste_rating = base_haste_rating + gear.haste_rating + gear.haste_rating_enchant;
+  if( initial_haste_rating == 0 ) 
+  {
+    initial_haste_rating = base_haste_rating + gear.haste_rating + gear.haste_rating_enchant;
+    initial_haste_rating += sim -> gear_delta.haste_rating;
+  }
 
   for( int i=0; i < ATTRIBUTE_MAX; i++ )
   {
     if( attribute_initial[ i ] == 0 )
     {
       attribute_initial[ i ] = attribute_base[ i ] + gear.attribute[ i ] + gear.attribute_enchant[ i ];
+      attribute_initial[ i ] += sim -> gear_delta.attribute[ i ];
     }
     attribute[ i ] = attribute_initial[ i ];
   }
@@ -293,16 +298,20 @@ void player_t::init_spell()
     {
       initial_spell_power[ i ] = gear.spell_power[ i ] + gear.spell_power_enchant[ i ];
     }
-    initial_spell_power[ SCHOOL_MAX ] += base_spell_power;
+    initial_spell_power[ SCHOOL_MAX ] += base_spell_power + sim -> gear_delta.spell_power;
   }
 
   if( initial_spell_hit == 0 )
   {
-    initial_spell_hit = base_spell_hit + ( gear.hit_rating + gear.hit_rating_enchant ) / rating.spell_hit;
+    initial_spell_hit = base_spell_hit + ( gear.hit_rating + 
+					   gear.hit_rating_enchant +
+					   sim -> gear_delta.hit_rating ) / rating.spell_hit;
   }
   if( initial_spell_crit == 0 )
   {
-    initial_spell_crit = base_spell_crit + ( gear.crit_rating + gear.crit_rating_enchant ) / rating.spell_crit;
+    initial_spell_crit = base_spell_crit + ( gear.crit_rating + 
+					     gear.crit_rating_enchant +
+					     sim -> gear_delta.crit_rating ) / rating.spell_crit;
   }
   if( initial_spell_penetration == 0 )
   {
@@ -332,22 +341,31 @@ void player_t::init_attack()
   if( initial_attack_power == 0 )
   {
     initial_attack_power = base_attack_power + gear.attack_power + gear.attack_power_enchant;
+    initial_attack_power += sim -> gear_delta.attack_power;
   }
   if( initial_attack_hit == 0 )
   {
-    initial_attack_hit = base_attack_hit + ( gear.hit_rating + gear.hit_rating_enchant ) / rating.attack_hit;
+    initial_attack_hit = base_attack_hit + ( gear.hit_rating + 
+					     gear.hit_rating_enchant +
+					     sim -> gear_delta.hit_rating ) / rating.attack_hit;
   }
   if( initial_attack_crit == 0 )
   {
-    initial_attack_crit = base_attack_crit + ( gear.crit_rating + gear.crit_rating_enchant ) / rating.attack_crit;
+    initial_attack_crit = base_attack_crit + ( gear.crit_rating + 
+					       gear.crit_rating_enchant +
+					       sim -> gear_delta.crit_rating ) / rating.attack_crit;
   }
   if( initial_attack_expertise == 0 )
   {
-    initial_attack_expertise = base_attack_expertise + ( gear.expertise_rating + gear.expertise_rating_enchant ) / rating.expertise;
+    initial_attack_expertise = base_attack_expertise + ( gear.expertise_rating + 
+							 gear.expertise_rating_enchant +
+							 sim -> gear_delta.expertise_rating ) / rating.expertise;
   }
   if( initial_attack_penetration == 0 )
   {
-    initial_attack_penetration = base_attack_penetration + ( gear.armor_penetration_rating + gear.armor_penetration_rating_enchant ) / rating.armor_penetration;
+    initial_attack_penetration = base_attack_penetration + ( gear.armor_penetration_rating + 
+							     gear.armor_penetration_rating_enchant +
+							     sim -> gear_delta.armor_penetration_rating ) / rating.armor_penetration;
   }
 }
 
@@ -758,7 +776,7 @@ void player_t::reset()
     {
       a -> reset();
     }
-    if( type != PLAYER_PET && ! sleeping ) schedule_ready();
+    if( ! is_pet() && ! sleeping ) schedule_ready();
   }
 
   if( sleeping ) quiet = 1;
@@ -783,7 +801,11 @@ void player_t::schedule_ready( double delta_time,
   {
     double lag = 0;
 
-    if( type == PLAYER_PET )
+    if( type == PLAYER_GUARDIAN )
+    {
+      lag = 0;
+    }
+    else if( type == PLAYER_PET )
     {
       lag = sim -> pet_lag;
     }

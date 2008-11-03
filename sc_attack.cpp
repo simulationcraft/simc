@@ -35,20 +35,24 @@ attack_t::attack_t( const char* n, player_t* p, int8_t r, int8_t s, int8_t t ) :
 
 double attack_t::haste()
 {
-  double h = player -> haste;
+  player_t* p = player;
+  double h = p -> haste;
 
-  if( player -> buffs.bloodlust ) h *= 1.0 / ( 1.0 + 0.30 );
-
-  if(      player -> buffs.swift_retribution     ) h *= 1.0 / ( 1.0 + 0.03 );
-  else if( player -> buffs.improved_moonkin_aura ) h *= 1.0 / ( 1.0 + 0.02 );
-
-  if( player -> buffs.windfury_totem != 0 )
+  if( p -> type != PLAYER_GUARDIAN )
   {
-    h *= 1.0 / ( 1.0 + player -> buffs.windfury_totem );
-  }
+    if( p -> buffs.bloodlust ) h *= 1.0 / ( 1.0 + 0.30 );
 
-  if( player -> buffs.mongoose_mh ) h *= 1.0 / ( 1.0 + 0.02 );
-  if( player -> buffs.mongoose_oh ) h *= 1.0 / ( 1.0 + 0.02 );
+    if(      p -> buffs.swift_retribution     ) h *= 1.0 / ( 1.0 + 0.03 );
+    else if( p -> buffs.improved_moonkin_aura ) h *= 1.0 / ( 1.0 + 0.02 );
+
+    if( p -> buffs.windfury_totem != 0 )
+    {
+      h *= 1.0 / ( 1.0 + p -> buffs.windfury_totem );
+    }
+
+    if( p -> buffs.mongoose_mh ) h *= 1.0 / ( 1.0 + 0.02 );
+    if( p -> buffs.mongoose_oh ) h *= 1.0 / ( 1.0 + 0.02 );
+  }
 
   return h;
 }

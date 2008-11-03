@@ -14,18 +14,19 @@ const char* util_t::player_type_string( int8_t type )
 {
   switch( type )
   {
-  case PLAYER_NONE:  return "none";
-  case DEATH_KNIGHT: return "death_knight";
-  case DRUID:        return "druid";
-  case HUNTER:       return "hunter";
-  case MAGE:         return "mage";
-  case PALADIN:      return "paladin";
-  case PRIEST:       return "priest";
-  case ROGUE:        return "rogue";
-  case SHAMAN:       return "shaman";
-  case WARLOCK:      return "warlock";
-  case WARRIOR:      return "warrior";
-  case PLAYER_PET:   return "pet";
+  case PLAYER_NONE:     return "none";
+  case DEATH_KNIGHT:    return "death_knight";
+  case DRUID:           return "druid";
+  case HUNTER:          return "hunter";
+  case MAGE:            return "mage";
+  case PALADIN:         return "paladin";
+  case PRIEST:          return "priest";
+  case ROGUE:           return "rogue";
+  case SHAMAN:          return "shaman";
+  case WARLOCK:         return "warlock";
+  case WARRIOR:         return "warrior";
+  case PLAYER_PET:      return "pet";
+  case PLAYER_GUARDIAN: return "guardian";
   }
   return "unknown";
 }

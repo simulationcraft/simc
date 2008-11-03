@@ -47,7 +47,7 @@ static const char* school_color( int type )
 
 static const char* get_color( player_t* p )
 {
-  if( p -> type == PLAYER_PET ) 
+  if( p -> is_pet() ) 
   {
     return class_color( p -> cast_pet() -> owner -> type );
   }
@@ -163,7 +163,7 @@ void report_t::print_action( stats_t* s )
 
   double total_dmg;
 
-  if( s -> player -> type == PLAYER_PET )
+  if( s -> player -> is_pet() )
   {
     total_dmg = s -> player -> cast_pet() -> owner ->  total_dmg;
   }

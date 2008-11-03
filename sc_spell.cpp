@@ -24,15 +24,19 @@ spell_t::spell_t( const char* n, player_t* p, int8_t r, int8_t s, int8_t t ) :
 
 double spell_t::haste()
 {
-  double h = player -> haste;
+  player_t* p = player;
+  double h = p -> haste;
 
-  if(      player -> buffs.bloodlust      ) h *= 1.0 / ( 1.0 + 0.30 );
-  else if( player -> buffs.power_infusion ) h *= 1.0 / ( 1.0 + 0.20 );
+  if( p -> type != PLAYER_GUARDIAN )
+  {
+    if(      p -> buffs.bloodlust      ) h *= 1.0 / ( 1.0 + 0.30 );
+    else if( p -> buffs.power_infusion ) h *= 1.0 / ( 1.0 + 0.20 );
 
-  if(      player -> buffs.swift_retribution     ) h *= 1.0 / ( 1.0 + 0.03 );
-  else if( player -> buffs.improved_moonkin_aura ) h *= 1.0 / ( 1.0 + 0.02 );
+    if(      p -> buffs.swift_retribution     ) h *= 1.0 / ( 1.0 + 0.03 );
+    else if( p -> buffs.improved_moonkin_aura ) h *= 1.0 / ( 1.0 + 0.02 );
 
-  if( player -> buffs.wrath_of_air ) h *= 1.0 / ( 1.0 + 0.05 );
+    if( p -> buffs.wrath_of_air ) h *= 1.0 / ( 1.0 + 0.05 );
+  }
 
   return h;
 }
@@ -85,37 +89,41 @@ void spell_t::player_buff()
   player_crit  = p -> composite_spell_crit();
   player_power = p -> composite_spell_power( school );
 
-  if( p -> gear.chaotic_skyfire ) player_crit_bonus *= 1.09;
-
-  if( p -> buffs.elemental_oath ||
-      p -> buffs.moonkin_aura   )
-  {
-    player_crit += 0.05;
-  }
-
-  if( p -> buffs.focus_magic ) player_crit += 0.03;
-
-  double best_buff = 0;
-  if( p -> buffs.totem_of_wrath )
-  {
-    if( best_buff < p -> buffs.totem_of_wrath ) best_buff = p -> buffs.totem_of_wrath;
-  }
-  if( p -> buffs.flametongue_totem ) 
-  {
-    if( best_buff < p -> buffs.flametongue_totem ) best_buff = p -> buffs.flametongue_totem;
-  }
-  if( p -> buffs.demonic_pact )
-  {
-    double demonic_pact_buff = player_power * 0.10;
-    if( best_buff < demonic_pact_buff ) best_buff = demonic_pact_buff;
-  }
-  if( p -> buffs.improved_divine_spirit )
-  {
-    if( best_buff < p -> buffs.improved_divine_spirit ) best_buff = p -> buffs.improved_divine_spirit;
-  }
-  player_power += best_buff;
-  
+  // FIXME! This needs to be a target debuff
   if( p -> buffs.totem_of_wrath ) player_crit += 0.03;
+
+  if( p -> type != PLAYER_GUARDIAN )
+  {
+    if( p -> gear.chaotic_skyfire ) player_crit_bonus *= 1.09;
+
+    if( p -> buffs.focus_magic ) player_crit += 0.03;
+
+    if( p -> buffs.elemental_oath ||
+	p -> buffs.moonkin_aura   )
+    {
+      player_crit += 0.05;
+    }
+
+    double best_buff = 0;
+    if( p -> buffs.totem_of_wrath )
+    {
+      if( best_buff < p -> buffs.totem_of_wrath ) best_buff = p -> buffs.totem_of_wrath;
+    }
+    if( p -> buffs.flametongue_totem ) 
+    {
+      if( best_buff < p -> buffs.flametongue_totem ) best_buff = p -> buffs.flametongue_totem;
+    }
+    if( p -> buffs.demonic_pact )
+    {
+      double demonic_pact_buff = player_power * 0.10;
+      if( best_buff < demonic_pact_buff ) best_buff = demonic_pact_buff;
+    }
+    if( p -> buffs.improved_divine_spirit )
+    {
+      if( best_buff < p -> buffs.improved_divine_spirit ) best_buff = p -> buffs.improved_divine_spirit;
+    }
+    player_power += best_buff;
+  }
 
   if( sim -> debug ) report_t::log( sim, "spell_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f", 
 		   name(), player_hit, player_crit, player_power, player_penetration );

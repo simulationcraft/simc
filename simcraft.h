@@ -114,7 +114,7 @@ struct event_compare_t
 
 // Simulation Engine =========================================================
 
-enum player_type { PLAYER_NONE=0, DEATH_KNIGHT, DRUID, HUNTER, MAGE, PALADIN, PRIEST, ROGUE, SHAMAN, WARLOCK, WARRIOR, PLAYER_PET, PLAYER_TYPE_MAX };
+enum player_type { PLAYER_NONE=0, DEATH_KNIGHT, DRUID, HUNTER, MAGE, PALADIN, PRIEST, ROGUE, SHAMAN, WARLOCK, WARRIOR, PLAYER_PET, PLAYER_GUARDIAN, PLAYER_TYPE_MAX };
 
 enum dmg_type { DMG_DIRECT=0, DMG_OVER_TIME=1 };
 
@@ -229,7 +229,7 @@ struct sim_t
   int8_t      potion_sickness, average_dmg, log, debug, timestamp;
 
   // Default Gear Profile
-  struct gear_t
+  struct gear_default_t
   {
     int16_t attribute[ ATTRIBUTE_MAX ];
     int16_t spell_power;
@@ -240,9 +240,25 @@ struct sim_t
     int16_t crit_rating;
     int16_t haste_rating;
     
-    gear_t() { memset( (void*) this, 0x00, sizeof( gear_t ) ); }
+    gear_default_t() { memset( (void*) this, 0x00, sizeof( gear_default_t ) ); }
   };
-  gear_t gear;
+  gear_default_t gear_default;
+
+  // Delta Gear Profile
+  struct gear_delta_t
+  {
+    int16_t attribute[ ATTRIBUTE_MAX ];
+    int16_t spell_power;
+    int16_t attack_power;
+    int16_t expertise_rating;
+    int16_t armor_penetration_rating;
+    int16_t hit_rating;
+    int16_t crit_rating;
+    int16_t haste_rating;
+    
+    gear_delta_t() { memset( (void*) this, 0x00, sizeof( gear_delta_t ) ); }
+  };
+  gear_delta_t gear_delta;
 
   // Reporting
   report_t*  report;
@@ -799,6 +815,7 @@ struct player_t
   warlock_t* cast_warlock() { assert( type == WARLOCK    ); return (warlock_t*) this; }
   pet_t*     cast_pet    () { assert( type == PLAYER_PET ); return (pet_t    *) this; }
 
+  bool      is_pet() { return type == PLAYER_PET || type == PLAYER_GUARDIAN; }
   bool      in_gcd() { return gcd_ready > sim -> current_time; }
   bool      recent_cast();
   action_t* find_action( const std::string& );
@@ -827,7 +844,7 @@ struct pet_t : public player_t
   double   stamina_per_owner;
   double intellect_per_owner;
 
-  pet_t( sim_t* sim, player_t* owner, const std::string& name );
+  pet_t( sim_t* sim, player_t* owner, const std::string& name, bool guardian=false );
 
   virtual double composite_attack_hit() { return owner -> composite_attack_hit(); }
   virtual double composite_spell_hit()  { return owner -> composite_spell_hit();  }

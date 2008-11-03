@@ -33,7 +33,14 @@ sim_t::sim_t( sim_t* p ) :
   report  = new  report_t( this );
   scaling = new scaling_t( this );
 
-  if( parent ) option_t::parse( this, parent -> argc, parent -> argv );
+  if( parent ) 
+  {
+    // Import the config file
+    option_t::parse( this, parent -> argc, parent -> argv );
+
+    // Inherit 'delta_gear' settings from parent because these may be set outside of the config file
+    gear_delta = parent -> gear_delta;
+  }
 }
 
 // sim_t::~sim_t ============================================================
@@ -292,7 +299,7 @@ void sim_t::analyze()
     p -> dps = p -> total_dmg / p -> total_seconds;
 
     // Avoid double-counting of pet damage
-    if( p -> type != PLAYER_PET ) total_dmg += p -> total_dmg;
+    if( ! p -> is_pet() ) total_dmg += p -> total_dmg;
 
     for( int i=0; i < RESOURCE_MAX; i++ )
     {
@@ -542,43 +549,55 @@ bool sim_t::parse_option( const std::string& name,
 {
   option_t options[] =
   {
-    { "average_dmg",                      OPT_INT8,   &( average_dmg                          ) },
-    { "channel_penalty",                  OPT_FLT,    &( channel_penalty                      ) },
-    { "debug",                            OPT_INT8,   &( debug                                ) },
-    { "gcd_penalty",                      OPT_FLT,    &( gcd_penalty                          ) },
-    { "html_file",                        OPT_STRING, &( html_file_str                        ) },
-    { "default_strength",                 OPT_INT16,  &( gear.attribute[ ATTR_STRENGTH  ]     ) },
-    { "default_agility",                  OPT_INT16,  &( gear.attribute[ ATTR_AGILITY   ]     ) },
-    { "default_stamina",                  OPT_INT16,  &( gear.attribute[ ATTR_STAMINA   ]     ) },
-    { "default_intellect",                OPT_INT16,  &( gear.attribute[ ATTR_INTELLECT ]     ) },
-    { "default_spirit",                   OPT_INT16,  &( gear.attribute[ ATTR_SPIRIT    ]     ) },
-    { "default_spell_power",              OPT_INT16,  &( gear.spell_power                     ) },
-    { "default_attack_power",             OPT_INT16,  &( gear.attack_power                    ) },
-    { "default_expertise_rating",         OPT_INT16,  &( gear.expertise_rating                ) },
-    { "default_armor_penetration_rating", OPT_INT16,  &( gear.armor_penetration_rating        ) },
-    { "default_hit_rating",               OPT_INT16,  &( gear.hit_rating                      ) },
-    { "default_crit_rating",              OPT_INT16,  &( gear.crit_rating                     ) },
-    { "default_haste_rating",             OPT_INT16,  &( gear.haste_rating                    ) },
-    { "infinite_energy",                  OPT_INT8,   &( infinite_resource[ RESOURCE_ENERGY ] ) },
-    { "infinite_focus",                   OPT_INT8,   &( infinite_resource[ RESOURCE_FOCUS  ] ) },
-    { "infinite_health",                  OPT_INT8,   &( infinite_resource[ RESOURCE_HEALTH ] ) },
-    { "infinite_mana",                    OPT_INT8,   &( infinite_resource[ RESOURCE_MANA   ] ) },
-    { "infinite_rage",                    OPT_INT8,   &( infinite_resource[ RESOURCE_RAGE   ] ) },
-    { "infinite_runic",                   OPT_INT8,   &( infinite_resource[ RESOURCE_RUNIC  ] ) },
-    { "iterations",                       OPT_INT32,  &( iterations                           ) },
-    { "lag",                              OPT_FLT,    &( lag                                  ) },
-    { "merge_ignite",                     OPT_INT8,   &( merge_ignite                         ) },
-    { "reaction_time",                    OPT_FLT,    &( reaction_time                        ) },
-    { "regen_periodicity",                OPT_FLT,    &( regen_periodicity                    ) },
-    { "log",                              OPT_INT8,   &( log                                  ) },
-    { "max_time",                         OPT_FLT,    &( max_time                             ) },
-    { "threads",                          OPT_INT32,  &( threads                              ) },
-    { "patch",                            OPT_STRING, &( patch_str                            ) },
-    { "pet_lag",                          OPT_FLT,    &( pet_lag                              ) },
-    { "potion_sickness",                  OPT_INT8,   &( potion_sickness                      ) },
-    { "seed",                             OPT_INT32,  &( seed                                 ) },
-    { "timestamp",                        OPT_INT8,   &( timestamp                            ) },
-    { "wiki_file",                        OPT_STRING, &( wiki_file_str                        ) },
+    { "average_dmg",                      OPT_INT8,   &( average_dmg                              ) },
+    { "channel_penalty",                  OPT_FLT,    &( channel_penalty                          ) },
+    { "debug",                            OPT_INT8,   &( debug                                    ) },
+    { "gcd_penalty",                      OPT_FLT,    &( gcd_penalty                              ) },
+    { "html_file",                        OPT_STRING, &( html_file_str                            ) },
+    { "default_strength",                 OPT_INT16,  &( gear_default.attribute[ ATTR_STRENGTH  ] ) },
+    { "default_agility",                  OPT_INT16,  &( gear_default.attribute[ ATTR_AGILITY   ] ) },
+    { "default_stamina",                  OPT_INT16,  &( gear_default.attribute[ ATTR_STAMINA   ] ) },
+    { "default_intellect",                OPT_INT16,  &( gear_default.attribute[ ATTR_INTELLECT ] ) },
+    { "default_spirit",                   OPT_INT16,  &( gear_default.attribute[ ATTR_SPIRIT    ] ) },
+    { "default_spell_power",              OPT_INT16,  &( gear_default.spell_power                 ) },
+    { "default_attack_power",             OPT_INT16,  &( gear_default.attack_power                ) },
+    { "default_expertise_rating",         OPT_INT16,  &( gear_default.expertise_rating            ) },
+    { "default_armor_penetration_rating", OPT_INT16,  &( gear_default.armor_penetration_rating    ) },
+    { "default_hit_rating",               OPT_INT16,  &( gear_default.hit_rating                  ) },
+    { "default_crit_rating",              OPT_INT16,  &( gear_default.crit_rating                 ) },
+    { "default_haste_rating",             OPT_INT16,  &( gear_default.haste_rating                ) },
+    { "delta_strength",                   OPT_INT16,  &( gear_delta.attribute[ ATTR_STRENGTH  ]   ) },
+    { "delta_agility",                    OPT_INT16,  &( gear_delta.attribute[ ATTR_AGILITY   ]   ) },
+    { "delta_stamina",                    OPT_INT16,  &( gear_delta.attribute[ ATTR_STAMINA   ]   ) },
+    { "delta_intellect",                  OPT_INT16,  &( gear_delta.attribute[ ATTR_INTELLECT ]   ) },
+    { "delta_spirit",                     OPT_INT16,  &( gear_delta.attribute[ ATTR_SPIRIT    ]   ) },
+    { "delta_spell_power",                OPT_INT16,  &( gear_delta.spell_power                   ) },
+    { "delta_attack_power",               OPT_INT16,  &( gear_delta.attack_power                  ) },
+    { "delta_expertise_rating",           OPT_INT16,  &( gear_delta.expertise_rating              ) },
+    { "delta_armor_penetration_rating",   OPT_INT16,  &( gear_delta.armor_penetration_rating      ) },
+    { "delta_hit_rating",                 OPT_INT16,  &( gear_delta.hit_rating                    ) },
+    { "delta_crit_rating",                OPT_INT16,  &( gear_delta.crit_rating                   ) },
+    { "delta_haste_rating",               OPT_INT16,  &( gear_delta.haste_rating                  ) },
+    { "infinite_energy",                  OPT_INT8,   &( infinite_resource[ RESOURCE_ENERGY ]     ) },
+    { "infinite_focus",                   OPT_INT8,   &( infinite_resource[ RESOURCE_FOCUS  ]     ) },
+    { "infinite_health",                  OPT_INT8,   &( infinite_resource[ RESOURCE_HEALTH ]     ) },
+    { "infinite_mana",                    OPT_INT8,   &( infinite_resource[ RESOURCE_MANA   ]     ) },
+    { "infinite_rage",                    OPT_INT8,   &( infinite_resource[ RESOURCE_RAGE   ]     ) },
+    { "infinite_runic",                   OPT_INT8,   &( infinite_resource[ RESOURCE_RUNIC  ]     ) },
+    { "iterations",                       OPT_INT32,  &( iterations                               ) },
+    { "lag",                              OPT_FLT,    &( lag                                      ) },
+    { "merge_ignite",                     OPT_INT8,   &( merge_ignite                             ) },
+    { "reaction_time",                    OPT_FLT,    &( reaction_time                            ) },
+    { "regen_periodicity",                OPT_FLT,    &( regen_periodicity                        ) },
+    { "log",                              OPT_INT8,   &( log                                      ) },
+    { "max_time",                         OPT_FLT,    &( max_time                                 ) },
+    { "threads",                          OPT_INT32,  &( threads                                  ) },
+    { "patch",                            OPT_STRING, &( patch_str                                ) },
+    { "pet_lag",                          OPT_FLT,    &( pet_lag                                  ) },
+    { "potion_sickness",                  OPT_INT8,   &( potion_sickness                          ) },
+    { "seed",                             OPT_INT32,  &( seed                                     ) },
+    { "timestamp",                        OPT_INT8,   &( timestamp                                ) },
+    { "wiki_file",                        OPT_STRING, &( wiki_file_str                            ) },
     { NULL, OPT_UNKNOWN }
   };
 
