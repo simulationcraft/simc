@@ -2292,7 +2292,7 @@ struct corruption_t : public warlock_spell_t
     base_execute_time = 0.0; 
     base_tick_time    = 3.0; 
     num_ticks         = 6;
-    tick_power_mod    = 0.93 / num_ticks;
+    tick_power_mod    = base_tick_time / 15.0;
 
     base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.suppression * 0.02;
@@ -2805,7 +2805,7 @@ struct immolate_t : public warlock_spell_t
     base_tick_time    = 3.0; 
     num_ticks         = 5;
     direct_power_mod  = 0.20; 
-    tick_power_mod    = 0.65 / num_ticks; 
+    tick_power_mod    = 0.20;
 
     base_cost          = rank -> cost;
     base_cost         *= 1.0 -  p -> talents.cataclysm * 0.01;
