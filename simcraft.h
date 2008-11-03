@@ -264,7 +264,7 @@ struct sim_t
   report_t*  report;
   scaling_t* scaling;
   double     raid_dps, total_dmg, total_seconds, elapsed_cpu_seconds;
-  bool       merge_ignite;
+  int8_t     merge_ignite;
   std::vector<player_t*> players_by_rank;
   std::vector<player_t*> players_by_name;
   std::string html_file_str, wiki_file_str;
