@@ -1767,8 +1767,7 @@ struct living_bomb_t : public mage_spell_t
       direct_dmg = explosion;
       if( direct_dmg > 0 )
       {
-	tick_dmg = direct_dmg;
-	assess_damage( tick_dmg, DMG_OVER_TIME );
+	assess_damage( direct_dmg, DMG_DIRECT );
 	if( result == RESULT_CRIT ) 
 	{
 	  trigger_burnout( this );
@@ -1777,7 +1776,7 @@ struct living_bomb_t : public mage_spell_t
 	}
       }
     }
-    update_stats( DMG_OVER_TIME );
+    update_stats( DMG_DIRECT );
     mage_spell_t::last_tick();
   }
 
