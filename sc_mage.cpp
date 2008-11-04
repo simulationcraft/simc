@@ -327,7 +327,7 @@ struct mirror_image_pet_t : public pet_t
       base_cost         = 0;
       base_execute_time = 0;
       base_direct_dmg   = ( 92 + 103 ) / 2;
-      direct_power_mod  = 1.5 / 3.5;
+      direct_power_mod  = 0.15;
       may_crit          = true;
       background        = true;
     }
@@ -335,7 +335,7 @@ struct mirror_image_pet_t : public pet_t
     {
       mirror_image_pet_t* p = (mirror_image_pet_t*) player;
       spell_t::player_buff();
-      player_power += 0.37 * player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_FIRE ) / p -> num_images;
+      player_power += player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_FIRE ) / p -> num_images;
     }
   };
 
@@ -347,8 +347,7 @@ struct mirror_image_pet_t : public pet_t
       base_cost         = 0;
       base_execute_time = 3.0;
       base_direct_dmg   = ( 163 + 169 ) / 2;
-      direct_power_mod  = base_execute_time / 3.5;
-      base_crit_bonus  *= 2.0;
+      direct_power_mod  = 0.30;
       may_crit          = true;
       background        = true;
     }
@@ -356,7 +355,7 @@ struct mirror_image_pet_t : public pet_t
     {
       mirror_image_pet_t* p = (mirror_image_pet_t*) player;
       spell_t::player_buff();
-      player_power += 0.35 * player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_FROST ) / p -> num_images;
+      player_power += player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_FROST ) / p -> num_images;
     }
   };
 

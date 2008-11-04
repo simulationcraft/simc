@@ -43,7 +43,13 @@ SRC =\
 	sc_warlock.cpp		\
 	sc_weapon.cpp
 
-unux opt:
+# Multi-Platform Support
+#
+# if defined( __MINGW__ ) then assume Windows platform, MinGW compiler, no thread support
+# else if defined( _MSC_VER ) then assume Windows platform, MS Visual Studio
+# else assume POSIX compliant platform
+
+unix opt:
 	g++ -DUNIX -I. $(PG) $(MCP) $(OPTS) $(SFMT) -Wall $(SRC) -lpthread -o simcraft
 
 debug:
