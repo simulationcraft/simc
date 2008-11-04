@@ -578,6 +578,7 @@ bool sim_t::parse_option( const std::string& name,
     { "delta_hit_rating",                 OPT_INT16,  &( gear_delta.hit_rating                    ) },
     { "delta_crit_rating",                OPT_INT16,  &( gear_delta.crit_rating                   ) },
     { "delta_haste_rating",               OPT_INT16,  &( gear_delta.haste_rating                  ) },
+    { "html",                             OPT_STRING, &( html_file_str                            ) },
     { "infinite_energy",                  OPT_INT8,   &( infinite_resource[ RESOURCE_ENERGY ]     ) },
     { "infinite_focus",                   OPT_INT8,   &( infinite_resource[ RESOURCE_FOCUS  ]     ) },
     { "infinite_health",                  OPT_INT8,   &( infinite_resource[ RESOURCE_HEALTH ]     ) },
@@ -597,7 +598,7 @@ bool sim_t::parse_option( const std::string& name,
     { "potion_sickness",                  OPT_INT8,   &( potion_sickness                          ) },
     { "seed",                             OPT_INT32,  &( seed                                     ) },
     { "timestamp",                        OPT_INT8,   &( timestamp                                ) },
-    { "wiki_file",                        OPT_STRING, &( wiki_file_str                            ) },
+    { "wiki",                             OPT_STRING, &( wiki_file_str                            ) },
     { NULL, OPT_UNKNOWN }
   };
 
