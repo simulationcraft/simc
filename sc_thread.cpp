@@ -7,13 +7,63 @@
 
 // Cross-Platform Support for Multi-Threading ===============================
 
-#if ! defined( NO_THREADS )
+#if defined( NO_THREADS ) || defined( __MINGW__ )
 
 // ==========================================================================
-// MULTI_THREAD for UNIX
+// NO MULTI-THREADING SUPPORT
 // ==========================================================================
 
-#if defined( UNIX )
+// thread_t::launch =========================================================
+
+void thread_t::launch( sim_t* sim )
+{
+}
+
+// thread_t::wait ===========================================================
+
+void thread_t::wait( sim_t* sim )
+{
+}
+
+#elif defined( _MSC_VER )
+
+// ==========================================================================
+// MULTI-THREADING FOR WINDOWS (MS Visual C++ Only)
+// ==========================================================================
+
+#include <windows.h>
+
+// thread_execute ===========================================================
+
+static DWORD WINAPI thread_execute( __in LPVOID sim )
+{
+  ( (sim_t*) sim ) -> iterate();
+
+  return 0;
+}
+
+// thread_t::launch =========================================================
+
+void thread_t::launch( sim_t* sim )
+{
+  HANDLE* handle = new HANDLE();
+  sim -> thread_handle = (void*) handle;
+  *handle = CreateThread( NULL, 0, thread_execute, (void*) sim, 0, NULL );
+}
+
+// thread_t::wait ===========================================================
+
+void thread_t::wait( sim_t* sim )
+{
+  HANDLE* handle = (HANDLE*) ( sim -> thread_handle );
+  WaitForSingleObject( *handle, INFINITE );
+}
+
+#else
+
+// ==========================================================================
+// MULTI_THREADING FOR POSIX COMPLIANT PLATFORMS
+// ==========================================================================
 
 #include <pthread.h>
 
@@ -43,84 +93,4 @@ void thread_t::wait( sim_t* sim )
   pthread_join( *pthread, NULL );
 }
 
-// ==========================================================================
-// MULTI_THREAD for WINDOWS
-// ==========================================================================
-
-#elif defined( WINDOWS )
-
-#include <windows.h>
-
-// thread_execute ===========================================================
-
-static DWORD WINAPI thread_execute( __in LPVOID sim )
-{
-  ( (sim_t*) sim ) -> iterate();
-
-  return 0;
-}
-
-// thread_t::launch =========================================================
-
-void thread_t::launch( sim_t* sim )
-{
-#if defined( __MINWG32__ )
-  printf( "simcraft: Multi-threading not working for MINGW.  Please removed 'threads=N' from config file.\n" );
-  exit(0);
 #endif
-
-  HANDLE* handle = new HANDLE();
-  sim -> thread_handle = (void*) handle;
-  *handle = CreateThread( NULL, 0, thread_execute, (void*) sim, 0, NULL );
-}
-
-// thread_t::wait ===========================================================
-
-void thread_t::wait( sim_t* sim )
-{
-  HANDLE* handle = (HANDLE*) ( sim -> thread_handle );
-  WaitForSingleObject( *handle, INFINITE );
-}
-
-// ==========================================================================
-// MULTI_THREAD for MAC
-// ==========================================================================
-
-#elif defined( MAC )
-
-// thread_t::launch =========================================================
-
-void thread_t::launch( sim_t* sim )
-{
-  printf( "simcraft: Multi-threading not supported for this platform.  Recompile without 'MULTI_THREAD' defined.\n" );
-  exit(0);
-}
-
-// thread_t::wait ===========================================================
-
-void thread_t::wait( sim_t* sim )
-{
-}
-
-#endif
-
-// ==========================================================================
-// No MULTI_THREAD support
-// ==========================================================================
-
-#else
-
-// thread_t::launch =========================================================
-
-void thread_t::launch( sim_t* sim )
-{
-}
-
-// thread_t::wait ===========================================================
-
-void thread_t::wait( sim_t* sim )
-{
-}
-
-#endif
-

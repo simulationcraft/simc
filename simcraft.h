@@ -5,11 +5,7 @@
 
 // Platform Initialization ==================================================
 
-#if ! defined( UNIX ) && ! defined( WINDOWS ) && ! defined( MAC )
-ONE OF UNIX|WINDOWS|MAC MUST BE DEFINED
-#endif
-
-#if defined( WINDOWS )
+#if defined( _MSC_VER ) || defined( __MINGW__ ) || defined( _WINDOWS ) || defined( WIN32 )
 #  define WIN32_LEAN_AND_MEAN
 #  define VC_EXTRALEAN
 #  define _CRT_SECURE_NO_WARNINGS

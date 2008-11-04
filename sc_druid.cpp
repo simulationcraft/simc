@@ -83,7 +83,7 @@ struct druid_t : public player_t
   struct glyphs_t
   {
     int8_t blue_promises;
-    int8_t innervate;
+    int8_t innervate;  // FIXME! NYI!
     int8_t insect_swarm;
     int8_t moonfire;
     int8_t starfire;
@@ -454,8 +454,7 @@ void druid_spell_t::player_buff()
   {
     player_multiplier *= 1.0 + p -> talents.master_shapeshifter * 0.02;
   }
-
-  player_multiplier *= 1.0 + std::min(p -> talents.earth_and_moon, (int8_t) 3) * 0.01;
+  player_multiplier *= 1.0 + p -> talents.earth_and_moon * 0.01;
 }
 
 // druid_spell_t::target_debuff ============================================
@@ -683,9 +682,9 @@ struct moonfire_t : public druid_spell_t
 
     base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.moonglow * 0.03;
-    base_multiplier *= 1.0 + ( std::min(p -> talents.moonfury, (int8_t) 3) * 0.10/3 +
-                               p -> talents.improved_moonfire              * 0.05 +
-                               p -> talents.genesis                        * 0.01 );
+    base_multiplier *= 1.0 + ( p -> talents.moonfury          * 0.10/3 +
+                               p -> talents.improved_moonfire * 0.05   +
+                               p -> talents.genesis           * 0.01 );
     base_crit       += p -> talents.improved_moonfire * 0.05;
     base_crit_bonus *= 1.0 + p -> talents.vengeance * 0.20;
 
@@ -828,7 +827,7 @@ struct starfire_t : public druid_spell_t
     base_cost          = rank -> cost;
     base_cost         *= 1.0 - p -> talents.moonglow * 0.03;
     base_execute_time -= p -> talents.starlight_wrath * 0.1;
-    base_multiplier   *= 1.0 + std::min(p -> talents.moonfury, (int8_t) 3) * 0.10/3;
+    base_multiplier   *= 1.0 + p -> talents.moonfury * 0.10/3;
     base_crit         += p -> talents.focused_starlight * 0.02;
     base_crit         += p -> talents.natures_majesty * 0.02;
     base_crit_bonus   *= 1.0 + p -> talents.vengeance * 0.20;
@@ -844,7 +843,7 @@ struct starfire_t : public druid_spell_t
     p -> uptimes_eclipse_starfire -> update( p -> buffs_eclipse_starfire );
     if( p -> buffs_eclipse_starfire )
     {
-      player_crit += 0.15;
+      player_crit += 0.30;
     }
     if( p -> active_moonfire )
     {
@@ -947,7 +946,7 @@ struct wrath_t : public druid_spell_t
     base_cost          = rank -> cost;
     base_cost         *= 1.0 - p -> talents.moonglow * 0.03;
     base_execute_time -= p -> talents.starlight_wrath * 0.1;
-    base_multiplier   *= 1.0 + std::min(p -> talents.moonfury, (int8_t) 3) * 0.10/3;
+    base_multiplier   *= 1.0 + p -> talents.moonfury * 0.10/3;
     base_crit         += p -> talents.focused_starlight * 0.02;
     base_crit         += p -> talents.natures_majesty * 0.02;
     base_crit_bonus   *= 1.0 + p -> talents.vengeance * 0.20;
@@ -979,7 +978,7 @@ struct wrath_t : public druid_spell_t
     p -> uptimes_eclipse_wrath -> update( p -> buffs_eclipse_wrath );
     if( p -> buffs_eclipse_wrath )
     {
-      player_multiplier *= 1.10;
+      player_multiplier *= 1.20;
     }
     if( p -> active_insect_swarm )
     {

@@ -3414,6 +3414,7 @@ struct demonic_empowerment_t : public warlock_spell_t
       
     base_cost = player -> resource_base[ RESOURCE_MANA ] * 0.06;
     cooldown  = 60;
+    trigger_gcd = 0;
   }
 
   virtual void execute()

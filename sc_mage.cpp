@@ -239,13 +239,13 @@ struct water_elemental_pet_t : public pet_t
       base_execute_time  = 2.5;
       base_direct_dmg    = ( 256 + 328 ) / 2;
       base_direct_dmg   +=( player -> level - 50 ) * 11.5;
-      direct_power_mod   = 0.825;
+      direct_power_mod   = ( 5.0 / 6.0 );
       may_crit           = true;
     }
     virtual void player_buff()
     {
       spell_t::player_buff();
-      player_power += 0.34 * player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_FROST );
+      player_power += player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_FROST ) / 3.0;
     }
   };
 

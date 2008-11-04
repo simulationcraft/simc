@@ -10,11 +10,12 @@ PG   =
 BITS = 32
 MCP  = -msse -msse2 -mfpmath=sse
 OPTS = -maccumulate-outgoing-args -O3 
-SFMT = -I./sfmt 
 
 ifneq (64,${BITS})
 	OPTS += -malign-double 
 endif
+
+INC = -I. -I./sfmt
 
 SRC =\
 	sc_action.cpp		\
@@ -43,23 +44,29 @@ SRC =\
 	sc_warlock.cpp		\
 	sc_weapon.cpp
 
-# Multi-Platform Support
-#
-# if defined( __MINGW__ ) then assume Windows platform, MinGW compiler, no thread support
-# else if defined( _MSC_VER ) then assume Windows platform, MS Visual Studio
-# else assume POSIX compliant platform
+# For POSIX-compiant platforms...
 
-unix opt:
-	g++ -DUNIX -I. $(PG) $(MCP) $(OPTS) $(SFMT) -Wall $(SRC) -lpthread -o simcraft
+simcraft: $(SRC) Makefile
+	g++ $(PG) $(MCP) $(OPTS) -Wall $(INC) $(SRC) -lpthread -o simcraft
 
 debug:
-	g++ -DUNIX -g -I. $(PG) $(SFMT) -Wall $(SRC) -lpthread -o simcraft
+	g++ $(PG) -g -Wall $(INC) $(SRC) -lpthread -o simcraft
+
+# For Windows platform... (using MinGW)
 
 windows:
-	g++ -DWINDOWS -I. $(PG) $(MCP) $(OPTS) $(SFMT) -Wall $(SRC) -o simcraft
+	g++ $(MCP) $(OPTS) -Wall $(INC) $(SRC) -o simcraft
+
+windows-debug:
+	g++ -g -Wall $(INC) $(SRC) -o simcraft
+
+# For MAC platform...
 
 mac:
-	g++ -DMAC -arch ppc -arch i386 -I. -O3 $(SFMT) -Wall $(SRC) -o simcraft
+	g++ -arch ppc -arch i386 -O3 -Wall $(INC) $(SRC) -lpthread -o simcraft
+
+mac-debug:
+	g++ -arch ppc -arch i386 -g -Wall $(INC) $(SRC) -lpthread -o simcraft
 
 REV=0
 tarball:
