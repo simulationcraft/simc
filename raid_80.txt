@@ -92,8 +92,9 @@ default_haste_rating=452
 #
 druid=Druid_58_0_13_SF
 level=80
-talents=http://talent.mmo-champion.com/?druid=00000000000000000000000000000205003012000000000000000005032003125321333213305311030
-actions=flask,type=blinding_light/mark_of_the_wild/moonkin_form/mana_potion,trigger=3500/innervate/faerie_fire/treants/moonfire/insect_swarm/wrath,eclipse=trigger/starfire
+talents=http://wotlk.wowhead.com/?talent=0xG0uiGsIdIVhouZbxczb
+actions=flask,type=blinding_light/mark_of_the_wild/moonkin_form/mana_potion,trigger=3500/innervate
+actions+=/faerie_fire/treants/moonfire/insect_swarm/wrath,eclipse=trigger/starfire
 enchant_hit_rating=-25
 enchant_haste_rating=+25
 chaotic_skyfire=1
@@ -119,8 +120,9 @@ swift_retribution=1
 #
 druid=Druid_58_0_13_W
 level=80
-talents=http://talent.mmo-champion.com/?druid=00000000000000000000000000000205003012000000000000000005032003125321333213305311030
-actions=flask,type=blinding_light/mark_of_the_wild/moonkin_form/mana_potion,trigger=3500/innervate/faerie_fire/treants/moonfire/insect_swarm/starfire,eclipse=trigger/wrath
+talents=http://wotlk.wowhead.com/?talent=0xG0uiGsIdIVhouZbxczb
+actions=flask,type=blinding_light/mark_of_the_wild/moonkin_form/mana_potion,trigger=3500/innervate
+actions+=/faerie_fire/treants/moonfire/insect_swarm/starfire,eclipse=trigger/wrath
 enchant_hit_rating=-25
 enchant_haste_rating=+25
 chaotic_skyfire=1
@@ -162,8 +164,10 @@ swift_retribution=1
 #
 mage=Mage_52_19_0_Slow
 level=80
-talents=http://talent.mmo-champion.com/?mage=00550300120030000000000000000000000000000000000000000000230005031100330150323000515321
-actions=flask,type=blinding_light/molten_armor/focus_magic,target=Mage_52_19_0/mana_gem,trigger=3500/mana_potion,trigger=3500/mirror_image/evocation,trigger=10000/slow/arcane_missiles,barrage=1/presence_of_mind,pyroblast/arcane_barrage/fire_ball
+talents=http://wotlk.wowhead.com/?talent=of0Vck0IzxGh0ted0Ec0R0h
+actions=flask,type=blinding_light/molten_armor/focus_magic,target=Mage_52_19_0
+actions+=/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000
+actions+=/mirror_image/slow/arcane_missiles,barrage=1/presence_of_mind,pyroblast/arcane_barrage/fire_ball
 chaotic_skyfire=1
 # Glyphs
 glyph_fire_ball=1
@@ -180,8 +184,10 @@ swift_retribution=1
 
 mage=Mage_52_19_0
 level=80
-talents=http://talent.mmo-champion.com/?mage=00550300120030000000000000000000000000000000000000000000230005031100330150323000515321
-actions=flask,type=blinding_light/molten_armor/focus_magic,target=Mage_20_51_0/mana_gem,trigger=3500/mana_potion,trigger=3500/mirror_image/evocation,trigger=10000/arcane_missiles,barrage=1/presence_of_mind,pyroblast/arcane_barrage/fire_ball
+talents=http://wotlk.wowhead.com/?talent=of0Vck0IzxGh0ted0Ec0R0h
+actions=flask,type=blinding_light/molten_armor/focus_magic,target=Mage_20_51_0
+actions+=/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000
+actions+=/mirror_image/arcane_missiles,barrage=1/presence_of_mind,pyroblast/arcane_barrage/fire_ball
 chaotic_skyfire=1
 # Glyphs
 glyph_fire_ball=1
@@ -205,9 +211,11 @@ swift_retribution=1
 #
 mage=Mage_20_51_0
 level=80
-# We will let the poor Frost Mage raid-slave keep up the Improved Scorch debuff
-talents=http://talent.mmo-champion.com/?mage=00550300123033300531203003510000000000000000000000000000230005031100230000000000000000
-actions=flask,type=pure_death/arcane_brilliance/molten_armor/focus_magic,target=Mage_18_0_53/mana_gem,trigger=3500/mana_potion,trigger=3500/scorch,debuff=1/mirror_image/evocation,trigger=10000/combustion/living_bomb/pyroblast,hot_streak=1/fire_ball
+# We will let the poor Frost Mage raid-slave keep up the IS/WC debuff
+talents=http://wotlk.wowhead.com/?talent=of0Vck0fZ0Ec0RhIhVubhct
+actions=flask,type=pure_death/arcane_brilliance/molten_armor/focus_magic,target=Mage_18_0_53
+actions+=/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000
+actions+=/scorch,debuff=1/mirror_image/combustion/living_bomb/pyroblast,hot_streak=1/fire_ball
 # We will let the poor Frost Mage raid-slave keep up the Improved Scorch debuff
 skip_actions=scorch
 enchant_hit_rating=+75
@@ -236,8 +244,10 @@ swift_retribution=1
 #
 mage=Mage_18_0_53
 level=80
-talents=http://talent.mmo-champion.com/?mage=00000000000000000000000000000533030310233100230052231350230005031100030000000000000000
-actions=flask,type=pure_death/arcane_brilliance/molten_armor/focus_magic,target=Mage_52_19_0_Slow/mirror_image/mana_gem,trigger=3500/mana_potion,trigger=2500/ice_lance,frozen=1,fb_priority=1/evocation,trigger=10000/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/frost_bolt
+talents=http://wotlk.wowhead.com/?talent=of0Vck0cZZVIccRcu0f0gfsx
+actions=flask,type=pure_death/arcane_brilliance/molten_armor/focus_magic,target=Mage_52_19_0_Slow
+actions+=/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000
+actions+=/mirror_image/ice_lance,frozen=1,fb_priority=1/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/frost_bolt
 chaotic_skyfire=1
 # Glyphs
 glyph_molten_armor=1
@@ -266,9 +276,11 @@ swift_retribution=1
 #
 mage=Mage_0_53_18
 level=80
-talents=http://talent.mmo-champion.com/?mage=23050300123033310531203013512033030310030000000000000000000000000000000000000000000000
-actions=flask,type=pure_death/arcane_brilliance/molten_armor/mana_gem,trigger=3500/mana_potion,trigger=3500/scorch,debuff=1/mirror_image/evocation,trigger=10000/combustion/icy_veins/living_bomb/pyroblast,hot_streak=1/frostfire_bolt
-# We will let the poor Frost Mage raid-slave keep up the Improved Scorch debuff
+talents=http://wotlk.wowhead.com/?talent=oZfVc0RhIuVubhstbIccoc
+actions=flask,type=pure_death/arcane_brilliance/molten_armor
+actions+=/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000
+actions+=/scorch,debuff=1/mirror_image/combustion/icy_veins/living_bomb/pyroblast,hot_streak=1/frostfire_bolt
+# We will let the poor Frost Mage raid-slave keep up the IS/WC debuff
 skip_actions=scorch
 chaotic_skyfire=1
 # Make up for lack of Elemental Precision
@@ -300,7 +312,8 @@ swift_retribution=1
 priest=Priest_14_0_57
 level=80
 talents=http://wotlk.wowhead.com/?talent=bVcbzhZZG0fVRfzfiqfzAo
-actions=flask,type=pure_death/inner_fire/shadow_form/mana_potion,trigger=3500/shadow_fiend,trigger=6000/dispersion/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/shadow_word_death,mb_wait=0,mb_priority=0/mind_flay,mb_wait=0
+actions=flask,type=pure_death/inner_fire/shadow_form/mana_potion,trigger=3500/shadow_fiend,trigger=6000/dispersion
+actions+=/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/shadow_word_death,mb_wait=0,mb_priority=0/mind_flay,mb_wait=0
 chaotic_skyfire=1
 glyph_shadow_word_pain=1
 glyph_shadow=1
@@ -324,7 +337,8 @@ swift_retribution=1
 priest=Priest_14_0_57_NoSWD
 level=80
 talents=http://wotlk.wowhead.com/?talent=bVcbzhZZG0fVRfzfiqfzAo
-actions=flask,type=pure_death/inner_fire/shadow_form/mana_potion,trigger=3500/shadow_fiend,trigger=6000/dispersion/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/mind_flay
+actions=flask,type=pure_death/inner_fire/shadow_form/mana_potion,trigger=3500/shadow_fiend,trigger=6000/dispersion
+actions+=/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/mind_flay
 chaotic_skyfire=1
 glyph_shadow_word_pain=1
 glyph_shadow=1
@@ -347,8 +361,9 @@ swift_retribution=1
 #
 priest=Priest_38_28_5
 level=80
-talents=http://talent.mmo-champion.com/?priest=050320213040512250100020000000555100202015200000000000320000000000000000000000000
-actions=flask,type=blinding_light/inner_fire/divine_spirit/mana_potion,trigger=3500/shadow_fiend,trigger=6000/inner_focus,shadow_word_pain/shadow_word_pain/power_infusion/holy_fire/mind_blast/smite
+talents=http://wotlk.wowhead.com/?talent=bVcbkhxtrxo0bZ0Et0bbqbZG
+actions=flask,type=blinding_light/inner_fire/divine_spirit/mana_potion,trigger=3500/shadow_fiend,trigger=6000
+actions+=/inner_focus,shadow_word_pain/shadow_word_pain/power_infusion/holy_fire/mind_blast/smite
 enchant_hit_rating=+75
 enchant_haste_rating=-75
 chaotic_skyfire=1
@@ -384,10 +399,12 @@ swift_retribution=1
 # (1) The "trigger=3500" option to mana_potion represents the mana gained and the amount below max required to trigger
 # (2) The "flame_shock=1,max_ticks_consumed=1" option to lava_burst will prevent it from being called until there is only one tick remaining on Flame Shock
 #
-shaman=Shaman_55_16_0
+shaman=Shaman_54_17_0
 level=80
-talents=http://talent.mmo-champion.com/?shaman=353004150021535102501351000000000000000000000000003050500300000000000000000000
-actions=flask,type=blinding_light/flametongue_weapon,weapon=main/water_shield/mana_potion,trigger=3500/mana_spring_totem/totem_of_wrath/wrath_of_air_totem/elemental_mastery/flame_shock/lava_burst,flame_shock=1/bloodlust,target_pct=35/chain_lightning/lightning_bolt/thunderstorm
+talents=http://wotlk.wowhead.com/?talent=hEhzq0detMxsthxxco
+actions=flask,type=blinding_light/flametongue_weapon,weapon=main/water_shield/mana_potion,trigger=3500
+actions+=/mana_spring_totem/totem_of_wrath/wrath_of_air_totem/water_shield
+actions+=/elemental_mastery/flame_shock/lava_burst,flame_shock=1/bloodlust,target_pct=35/chain_lightning/lightning_bolt/thunderstorm
 gear_spirit=0
 gear_mp5=100
 chaotic_skyfire=1
@@ -414,8 +431,10 @@ swift_retribution=1
 #
 shaman=Shaman_16_55_0
 level=80
-talents=http://talent.mmo-champion.com/?shaman=052030150000000000000000000000000000000000000000003020502300502135331131231051
-actions=flask,type=relentless_assault/windfury_weapon,weapon=main/flametongue_weapon,weapon=off/auto_attack/lightning_bolt,maelstrom=5/stormstrike/strength_of_earth_totem/windfury_totem/shamanistic_rage/spirit_wolf/flame_shock/earth_shock/lava_lash/searing_totem/water_shield/bloodlust,target_pct=35
+talents=http://wotlk.wowhead.com/?talent=hVbhqZhbxsoxdAIkufot
+actions=flask,type=relentless_assault/windfury_weapon,weapon=main/flametongue_weapon,weapon=off
+actions+=/strength_of_earth_totem/windfury_totem/searing_totem/lightning_shield
+actions+=/auto_attack/lightning_bolt,maelstrom=5,ss_wait=1/shamanistic_rage/spirit_wolf/flame_shock/earth_shock,ss_wait=1/stormstrike/lava_lash/bloodlust,target_pct=35
 gear_agility=386
 gear_stamina=800
 gear_intellect=403
@@ -435,7 +454,7 @@ off_hand=dagger,damage=200,speed=1.4,enchant=mongoose
 glyph_windfury_weapon=1
 glyph_stormstrike=1
 glyph_lava_lash=1
-# Pets
+# Two wolves modeled as one pet that hits 2x hard
 pet=spirit_wolf
 blessing_of_kings=1
 blessing_of_might=550
@@ -471,35 +490,10 @@ swift_retribution=1
 #
 warlock=Warlock_56_0_15
 level=80
-talents=http://talent.mmo-champion.com/?warlock=550000050000000000000000002350022001023510053510331351000000000000000000000000000
-actions=flask,type=pure_death/spell_stone/fel_armor/summon_pet,felhunter/haunt,only_for_debuff=1/curse_of_agony/corruption/unstable_affliction/siphon_life/shadow_bolt,shadow_trance=1/drain_soul,target_pct=25/immolate/shadow_bolt/dark_pact
-chaotic_skyfire=1
-# Glyphs
-glyph_corruption=1
-glyph_curse_of_agony=1
-glyph_siphon_life=1
-# Pets
-pet=felhunter
-actions=shadow_bite/wait
-blessing_of_kings=1
-blessing_of_might=550
-sanctified_retribution=1
-swift_retribution=1
-quiet=1
-active=owner
-# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
-blessing_of_kings=1
-blessing_of_wisdom=1
-sanctified_retribution=1
-swift_retribution=1
-
-#
-# Affliction Warlock (No Drain Soul)
-#
-warlock=Warlock_56_0_15_NoDS
-level=80
-talents=http://talent.mmo-champion.com/?warlock=550000050000000000000000002350022001023510053510331351000000000000000000000000000
-actions=flask,type=pure_death/spell_stone/fel_armor/summon_pet,felhunter/haunt,only_for_debuff=1/curse_of_agony/corruption/unstable_affliction/siphon_life/immolate/shadow_bolt/dark_pact
+talents=http://wotlk.wowhead.com/?talent=IfxMbzMAoVAoIstZE00V
+actions=flask,type=pure_death/spell_stone/fel_armor/summon_pet,felhunter
+actions+=/haunt,debuff=1/curse_of_agony/corruption/unstable_affliction/siphon_life
+actions+=/shadow_bolt,shadow_trance=1/drain_soul,target_pct=25/immolate/shadow_bolt/dark_pact
 chaotic_skyfire=1
 # Glyphs
 glyph_corruption=1
@@ -525,8 +519,38 @@ swift_retribution=1
 #
 warlock=Warlock_56_0_15_CoE
 level=80
-talents=http://talent.mmo-champion.com/?warlock=550000050000000000000000002350022001023510053510331351000000000000000000000000000
-actions=flask,type=pure_death/spell_stone/fel_armor/summon_pet,felhunter/haunt,only_for_debuff=1/curse_of_elements/corruption/unstable_affliction/siphon_life/shadow_bolt,shadow_trance=1/drain_soul,target_pct=25/immolate/shadow_bolt/dark_pact
+talents=http://wotlk.wowhead.com/?talent=IfxMbzMAoVAoIstZE00V
+actions=flask,type=pure_death/spell_stone/fel_armor/summon_pet,felhunter/curse_of_elements
+actions+=/haunt,debuff=1/corruption/unstable_affliction/siphon_life
+actions+=/shadow_bolt,shadow_trance=1/drain_soul,target_pct=25/immolate/shadow_bolt/dark_pact
+chaotic_skyfire=1
+# Glyphs
+glyph_corruption=1
+glyph_curse_of_agony=1
+glyph_siphon_life=1
+# Pets
+pet=felhunter
+actions=shadow_bite/wait
+blessing_of_kings=1
+blessing_of_might=550
+sanctified_retribution=1
+swift_retribution=1
+quiet=1
+active=owner
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_wisdom=1
+sanctified_retribution=1
+swift_retribution=1
+
+#
+# Affliction Warlock (No Drain Soul)
+#
+warlock=Warlock_56_0_15_NoDS
+level=80
+talents=http://wotlk.wowhead.com/?talent=IfxMbzMAoVAoIstZE00V
+actions=flask,type=pure_death/spell_stone/fel_armor/summon_pet,felhunter
+actions+=/haunt,debuff=1/curse_of_agony/corruption/unstable_affliction/siphon_life/immolate/shadow_bolt/dark_pact
 chaotic_skyfire=1
 # Glyphs
 glyph_corruption=1
@@ -552,8 +576,9 @@ swift_retribution=1
 #
 warlock=Warlock_0_53_18
 level=80
-talents=http://talent.mmo-champion.com/?warlock=550030050000000000000000000000000000000000000000000000035033011350101500135031351
-actions=flask,type=pure_death/fire_stone/fel_armor/summon_pet,felguard/curse_of_doom/demonic_empowerment/metamorphosis/corruption/immolate/shadow_bolt/life_tap
+talents=http://wotlk.wowhead.com/?talent=IZcxIzsxoqcsguhoE0hV
+actions=flask,type=pure_death/fire_stone/fel_armor/summon_pet,felguard
+actions+=/curse_of_doom/demonic_empowerment/metamorphosis/corruption/immolate/shadow_bolt/life_tap
 chaotic_skyfire=1
 # Glyphs
 glyph_corruption=1
@@ -587,8 +612,9 @@ swift_retribution=1
 #
 warlock=Warlock_2_13_56
 level=80
-talents=http://talent.mmo-champion.com/?warlock=050332052100310513352303512000000000000000000000000000034003000300000000000000000
-actions=flask,type=pure_death/fire_stone/fel_armor/summon_pet,imp/shadow_bolt,shadow_trance=1/chaos_bolt/curse_of_agony/immolate/conflagrate/incinerate/life_tap
+talents=http://wotlk.wowhead.com/?talent=IbZcLc0cZVcGVd0uVsAfct
+actions=flask,type=pure_death/fire_stone/fel_armor/summon_pet,imp
+actions+=/shadow_bolt,shadow_trance=1/chaos_bolt/curse_of_agony/immolate/conflagrate/incinerate/life_tap
 chaotic_skyfire=1
 # Glyphs
 glyph_corruption=1

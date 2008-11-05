@@ -50,7 +50,7 @@ simcraft: $(SRC) Makefile
 	g++ $(PG) $(MCP) $(OPTS) -Wall $(INC) $(SRC) -lpthread -o simcraft
 
 debug:
-	g++ $(PG) -g -Wall $(INC) $(SRC) -lpthread -o simcraft
+	g++ $(PG) $(MCP) -g -Wall $(INC) $(SRC) -lpthread -o simcraft
 
 # For Windows platform... (using MinGW)
 
@@ -58,15 +58,15 @@ windows:
 	g++ $(MCP) $(OPTS) -Wall $(INC) $(SRC) -o simcraft
 
 windows-debug:
-	g++ -g -Wall $(INC) $(SRC) -o simcraft
+	g++ $(MCP) -g -Wall $(INC) $(SRC) -o simcraft
 
 # For MAC platform...
 
 mac:
-	g++ -arch ppc -arch i386 -O3 -Wall $(INC) $(SRC) -lpthread -o simcraft
+	g++ -arch ppc -arch i386 $(MCP) -O3 -Wall $(INC) $(SRC) -lpthread -o simcraft
 
 mac-debug:
-	g++ -arch ppc -arch i386 -g -Wall $(INC) $(SRC) -lpthread -o simcraft
+	g++ -arch ppc -arch i386 $(MCP) -g -Wall $(INC) $(SRC) -lpthread -o simcraft
 
 REV=0
 tarball:

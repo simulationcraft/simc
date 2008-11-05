@@ -68,6 +68,8 @@ void option_t::print( sim_t* sim, option_t* options )
     case OPT_INT16:  fprintf( f, "%d\n",   *( (int16_t*)     o.address )                    ); break;
     case OPT_INT32:  fprintf( f, "%d\n",   *( (int32_t*)     o.address )                    ); break;
     case OPT_FLT:    fprintf( f, "%.2f\n", *( (double*)      o.address )                    ); break;
+    case OPT_APPEND:     break;
+    case OPT_DEPRECATED: break;
     default: assert(0);
     }
   }
@@ -89,13 +91,17 @@ bool option_t::parse( sim_t*             sim,
       switch( o.type )
       {
       case OPT_STRING: *( (std::string*) o.address ) = value;                                break;
+      case OPT_APPEND: *( (std::string*) o.address ) += value;                               break;
       case OPT_CHAR_P: *( (char**)       o.address ) = util_t::dup( value.c_str() );         break;
       case OPT_BOOL:   *( (bool*)        o.address ) = atoi( value.c_str() ) ? true : false; break;
       case OPT_INT8:   *( (int8_t*)      o.address ) = atoi( value.c_str() );                break;
       case OPT_INT16:  *( (int16_t*)     o.address ) = atoi( value.c_str() );                break;
       case OPT_INT32:  *( (int32_t*)     o.address ) = atoi( value.c_str() );                break;
       case OPT_FLT:    *( (double*)      o.address ) = atof( value.c_str() );                break;
-      case OPT_DEPRECATED: printf( "simcraft: option '%s' has been deprecated, please use '%s' instead.\n", o.name, (char*) o.address ); exit(0);
+      case OPT_DEPRECATED: 
+	printf( "simcraft: option '%s' has been deprecated.\n", o.name );
+	if( o.address ) printf( "simcraft: please use '%s' instead.\n", (char*) o.address ); 
+	exit(0);
       default: assert(0);
       }
       return true;
@@ -205,6 +211,8 @@ bool option_t::parse( sim_t* sim,
   }
   else if( name == "talents" )
   {
+    sim -> active_player -> talents_str = value;
+
     std::string talent_string, address_string;
     int encoding = ENCODING_NONE;
 
@@ -216,15 +224,7 @@ bool option_t::parse( sim_t* sim,
 
       if( address_string.find( "worldofwarcraft" ) != value.npos )
       {
-        if( address_string.find( "talents2" ) != value.npos )
-        {
-          encoding = ENCODING_BLIZZARD;
-        }
-        else
-        {
-          printf( "%s: Only Beta-level talent strings are supported.\n", sim -> active_player -> name() );
-          exit(0);
-        }
+	encoding = ENCODING_BLIZZARD;
       }
       else if( address_string.find( "mmo-champion" ) != value.npos )
       {

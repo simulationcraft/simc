@@ -100,7 +100,6 @@ struct shaman_t : public player_t
     int8_t  mana_tide_totem;
     int8_t  mental_dexterity;
     int8_t  mental_quickness;
-    int8_t  natures_blessing;
     int8_t  natures_swiftness;
     int8_t  restorative_totems;
     int8_t  reverberation;
@@ -207,7 +206,8 @@ struct shaman_t : public player_t
   virtual void      reset();
   virtual double    composite_attack_power();
   virtual double    composite_spell_power( int8_t school );
-  virtual bool      parse_talents( const std::string& talent_string, int encoding );
+  virtual bool      get_talent_trees( std::vector<int8_t*>& elemental, std::vector<int8_t*>& enhancement, std::vector<int8_t*>& restoration );
+  virtual bool      parse_talents_mmo( const std::string& talent_string );
   virtual bool      parse_option( const std::string& name, const std::string& value );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
@@ -827,10 +827,11 @@ struct lava_lash_t : public shaman_attack_t
   {
     shaman_t* p = player -> cast_shaman();
 
-    weapon     = &( player -> off_hand_weapon );
-    may_glance = false;
-    cooldown   = 6;
-    base_cost  = p -> resource_base[ RESOURCE_MANA ] * 0.04;
+    weapon          = &( player -> off_hand_weapon );
+    base_direct_dmg = 1;
+    may_glance      = false;
+    cooldown        = 6;
+    base_cost       = p -> resource_base[ RESOURCE_MANA ] * 0.04;
   }
 
   virtual void player_buff()
@@ -839,7 +840,7 @@ struct lava_lash_t : public shaman_attack_t
     if( weapon -> buff == FLAMETONGUE ) 
     {
       shaman_t* p = player -> cast_shaman();
-      player_multiplier *= ( 1.25 + p -> glyphs.lava_lash ? 0.10 : 0.00);
+      player_multiplier *= 1.25 + p -> glyphs.lava_lash * 0.10;
     }
   }
 };
@@ -853,9 +854,9 @@ struct stormstrike_t : public shaman_attack_t
   {
     shaman_t* p = player -> cast_shaman();
 
-    may_glance       = false;
-    cooldown         = 10.0 - p -> talents.improved_stormstrike;
-    base_cost        = p -> resource_base[ RESOURCE_MANA ] * 0.08;
+    may_glance = false;
+    cooldown   = 10.0 - p -> talents.improved_stormstrike;
+    base_cost  = p -> resource_base[ RESOURCE_MANA ] * 0.08;
   }
 
   virtual void execute()
@@ -1124,10 +1125,12 @@ struct chain_lightning_t : public shaman_spell_t
 struct lightning_bolt_t : public shaman_spell_t
 {
   int8_t maelstrom;
+  int8_t ss_wait;
+
   stats_t* lightning_overload_stats;
 
   lightning_bolt_t( player_t* player, const std::string& options_str ) : 
-    shaman_spell_t( "lightning_bolt", player, SCHOOL_NATURE, TREE_ELEMENTAL ), maelstrom(0), lightning_overload_stats(0)
+    shaman_spell_t( "lightning_bolt", player, SCHOOL_NATURE, TREE_ELEMENTAL ), maelstrom(0), ss_wait(0), lightning_overload_stats(0)
   {
     shaman_t* p = player -> cast_shaman();
 
@@ -1135,6 +1138,7 @@ struct lightning_bolt_t : public shaman_spell_t
     {
       { "rank",      OPT_INT8, &rank_index },
       { "maelstrom", OPT_INT8, &maelstrom  },
+      { "ss_wait",   OPT_INT8, &ss_wait    },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1205,11 +1209,15 @@ struct lightning_bolt_t : public shaman_spell_t
 
   virtual bool ready()
   {
+    shaman_t* p = player -> cast_shaman();
+
     if( ! shaman_spell_t::ready() )
       return false;
 
-    if( maelstrom > 0 && 
-	maelstrom > player -> cast_shaman() -> buffs_maelstrom_weapon )
+    if( maelstrom > p -> buffs_maelstrom_weapon )
+      return false;
+
+    if( ss_wait && p -> buffs_nature_vulnerability <= 0 )
       return false;
 
     return true;
@@ -1411,17 +1419,17 @@ struct shamans_swiftness_t : public shaman_spell_t
 
 struct earth_shock_t : public shaman_spell_t
 {
-  int8_t sswait;
+  int8_t ss_wait;
 
   earth_shock_t( player_t* player, const std::string& options_str ) : 
-    shaman_spell_t( "earth_shock", player, SCHOOL_NATURE, TREE_ELEMENTAL ), sswait(0)
+    shaman_spell_t( "earth_shock", player, SCHOOL_NATURE, TREE_ELEMENTAL ), ss_wait(0)
   {
     shaman_t* p = player -> cast_shaman();
 
     option_t options[] =
     {
-      { "rank",   OPT_INT8, &rank_index },
-      { "sswait", OPT_INT8, &sswait     },
+      { "rank",    OPT_INT8, &rank_index },
+      { "ss_wait", OPT_INT8, &ss_wait     },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1481,7 +1489,7 @@ struct earth_shock_t : public shaman_spell_t
     if( ! shaman_spell_t::ready() )
       return false;
 
-    if( sswait && p -> buffs_nature_vulnerability <= 0 )
+    if( ss_wait && p -> buffs_nature_vulnerability <= 0 )
       return false;
 
     return true;
@@ -2777,7 +2785,6 @@ void shaman_t::init_base()
 
   base_spell_crit = 0.0225;
   initial_spell_crit_per_intellect = rating_t::interpolate( level, 0.01/60.0, 0.01/80.0, 0.01/166.6 );
-  initial_spell_power_per_intellect = talents.natures_blessing * 0.10;
 
   base_attack_power = ( level * 2 ) - 20;
   base_attack_crit  = 0.0167;
@@ -2895,137 +2902,62 @@ void shaman_t::regen( double periodicity )
   }
 }
 
-// shaman_t::parse_talents ===============================================
+// shaman_t::get_talent_trees ==============================================
 
-bool shaman_t::parse_talents( const std::string& talent_string,
-			      int                encoding )
+bool shaman_t::get_talent_trees( std::vector<int8_t*>& elemental,
+				 std::vector<int8_t*>& enhancement,
+				 std::vector<int8_t*>& restoration )
 {
-  if( encoding == ENCODING_BLIZZARD )
+  talent_translation_t translation[][3] =
   {
-    if( talent_string.size() != 77 ) return false;
+    { {  1, &( talents.convection            ) }, {  1, &( talents.enhancing_totems          ) }, {  1, NULL                                  } },
+    { {  2, &( talents.concussion            ) }, {  2, NULL                                   }, {  2, &( talents.totemic_focus            ) } },
+    { {  3, &( talents.call_of_flame         ) }, {  3, &( talents.ancestral_knowledge       ) }, {  3, NULL                                  } },
+    { {  4, NULL                               }, {  4, NULL                                   }, {  4, NULL                                  } },
+    { {  5, &( talents.elemental_devastation ) }, {  5, &( talents.thundering_strikes        ) }, {  5, NULL                                  } },
+    { {  6, &( talents.reverberation         ) }, {  6, NULL                                   }, {  6, NULL                                  } },
+    { {  7, &( talents.elemental_focus       ) }, {  7, &( talents.improved_shields          ) }, {  7, NULL                                  } },
+    { {  8, &( talents.elemental_fury        ) }, {  8, &( talents.elemental_weapons         ) }, {  8, NULL                                  } },
+    { {  9, NULL                               }, {  9, &( talents.shamanistic_focus         ) }, {  9, NULL                                  } },
+    { { 10, NULL                               }, { 10, NULL                                   }, { 10, &( talents.restorative_totems       ) } },
+    { { 11, NULL                               }, { 11, &( talents.flurry                    ) }, { 11, &( talents.tidal_mastery            ) } },
+    { { 12, &( talents.call_of_thunder       ) }, { 12, NULL                                   }, { 12, NULL                                  } },
+    { { 13, &( talents.unrelenting_storm     ) }, { 13, &( talents.improved_windfury_totem   ) }, { 13, &( talents.natures_swiftness        ) } },
+    { { 14, &( talents.elemental_precision   ) }, { 14, &( talents.spirit_weapons            ) }, { 14, NULL                                  } },
+    { { 15, &( talents.lightning_mastery     ) }, { 15, &( talents.mental_dexterity          ) }, { 15, NULL                                  } },
+    { { 16, &( talents.elemental_mastery     ) }, { 16, &( talents.unleashed_rage            ) }, { 16, NULL                                  } },
+    { { 17, NULL                               }, { 17, &( talents.weapon_mastery            ) }, { 17, &( talents.mana_tide_totem          ) } },
+    { { 18, &( talents.elemental_oath        ) }, { 18, &( talents.dual_wield_specialization ) }, { 18, NULL                                  } },
+    { { 19, &( talents.lightning_overload    ) }, { 19, &( talents.dual_wield                ) }, { 19, &( talents.blessing_of_the_eternals ) } },
+    { { 20, NULL                               }, { 20, &( talents.stormstrike               ) }, { 20, NULL                                  } },
+    { { 21, &( talents.totem_of_wrath        ) }, { 21, &( talents.mental_quickness          ) }, { 21, NULL                                  } },
+    { { 22, &( talents.lava_flows            ) }, { 22, &( talents.lava_lash                 ) }, { 22, NULL                                  } },
+    { { 23, &( talents.storm_earth_and_fire  ) }, { 23, &( talents.improved_stormstrike      ) }, { 23, NULL                                  } },
+    { { 24, &( talents.thunderstorm          ) }, { 24, &( talents.static_shock              ) }, { 24, NULL                                  } },
+    { {  0, NULL                               }, { 25, &( talents.shamanistic_rage          ) }, { 25, NULL                                  } },
+    { {  0, NULL                               }, { 26, NULL                                   }, { 26, NULL                                  } },
+    { {  0, NULL                               }, { 27, &( talents.maelstrom_weapon          ) }, {  0, NULL                                  } },
+    { {  0, NULL                               }, { 28, &( talents.feral_spirit              ) }, {  0, NULL                                  } },
+    { {  0, NULL                               }, {  0, NULL                                   }, {  0, NULL                                  } }
+  };
+  
+  return player_t::get_talent_trees( elemental, enhancement, restoration, translation );
+}
 
-    talent_translation_t translation[] =
-    {
-      // Elemental
-      {  1,  &( talents.convection                ) },
-      {  2,  &( talents.concussion                ) },
-      {  3,  &( talents.call_of_flame             ) },
-      {  5,  &( talents.elemental_devastation     ) },
-      {  6,  &( talents.reverberation             ) },
-      {  7,  &( talents.elemental_focus           ) },
-      {  8,  &( talents.call_of_thunder           ) },
-      { 12,  &( talents.elemental_fury            ) },
-      { 13,  &( talents.unrelenting_storm         ) },
-      { 14,  &( talents.elemental_precision       ) },
-      { 15,  &( talents.lightning_mastery         ) },
-      { 16,  &( talents.elemental_mastery         ) },
-      { 18,  &( talents.elemental_oath            ) },
-      { 19,  &( talents.lightning_overload        ) },
-      { 21,  &( talents.totem_of_wrath            ) },
-      { 22,  &( talents.lava_flows                ) },
-      { 23,  &( talents.storm_earth_and_fire      ) },
-      { 24,  &( talents.thunderstorm              ) },
-      // Enhancement
-      { 25,  &( talents.enhancing_totems          ) },
-      { 27,  &( talents.ancestral_knowledge       ) },
-      { 29,  &( talents.thundering_strikes        ) },
-      { 31,  &( talents.improved_shields          ) },
-      { 32,  &( talents.mental_dexterity          ) },
-      { 33,  &( talents.shamanistic_focus         ) },
-      { 35,  &( talents.flurry                    ) },
-      { 37,  &( talents.improved_windfury_totem   ) },
-      { 38,  &( talents.spirit_weapons            ) },
-      { 39,  &( talents.elemental_weapons         ) },
-      { 40,  &( talents.mental_quickness          ) },
-      { 41,  &( talents.weapon_mastery            ) },
-      { 42,  &( talents.dual_wield_specialization ) },
-      { 43,  &( talents.dual_wield                ) },
-      { 44,  &( talents.stormstrike               ) },
-      { 45,  &( talents.unleashed_rage            ) },
-      { 46,  &( talents.improved_stormstrike      ) },
-      { 47,  &( talents.static_shock              ) },
-      { 48,  &( talents.shamanistic_rage          ) },
-      { 50,  &( talents.maelstrom_weapon          ) },
-      { 51,  &( talents.feral_spirit              ) },
-      // Restoration
-      { 53,  &( talents.totemic_focus             ) },
-      { 61,  &( talents.restorative_totems        ) },
-      { 62,  &( talents.tidal_mastery             ) },
-      { 64,  &( talents.natures_swiftness         ) },
-      { 68,  &( talents.mana_tide_totem           ) },
-      { 70,  &( talents.blessing_of_the_eternals  ) },
-      { 72,  &( talents.natures_blessing          ) },
-      { 0, NULL }
-    };
-    player_t::parse_talents( translation, talent_string );
-  } 
-  else if( encoding == ENCODING_MMO )
-  {
-    if( talent_string.size() != 78 ) return false;
+// shaman_t::parse_talents_mmo =============================================
 
-    talent_translation_t translation[] =
-    {
-      // Elemental
-      {  1,  &( talents.convection                ) },
-      {  2,  &( talents.concussion                ) },
-      {  3,  &( talents.call_of_flame             ) },
-      {  5,  &( talents.elemental_devastation     ) },
-      {  6,  &( talents.reverberation             ) },
-      {  7,  &( talents.elemental_focus           ) },
-      {  8,  &( talents.elemental_fury            ) },
-      { 12,  &( talents.call_of_thunder           ) },
-      { 13,  &( talents.unrelenting_storm         ) },
-      { 14,  &( talents.elemental_precision       ) },
-      { 15,  &( talents.lightning_mastery         ) },
-      { 16,  &( talents.elemental_mastery         ) },
-      { 18,  &( talents.elemental_oath            ) },
-      { 19,  &( talents.lightning_overload        ) },
-      { 21,  &( talents.totem_of_wrath            ) },
-      { 22,  &( talents.lava_flows                ) },
-      { 23,  &( talents.storm_earth_and_fire      ) },
-      { 24,  &( talents.thunderstorm              ) },
-      // Restoration
-      { 26,  &( talents.totemic_focus             ) },
-      { 34,  &( talents.restorative_totems        ) },
-      { 35,  &( talents.tidal_mastery             ) },
-      { 37,  &( talents.natures_swiftness         ) },
-      { 69,  &( talents.mana_tide_totem           ) },
-      { 43,  &( talents.blessing_of_the_eternals  ) },
-      { 45,  &( talents.natures_blessing          ) },
-      // Enhancement
-      { 51,  &( talents.enhancing_totems          ) },
-      { 53,  &( talents.ancestral_knowledge       ) },
-      { 55,  &( talents.thundering_strikes        ) },
-      { 57,  &( talents.improved_shields          ) },
-      { 58,  &( talents.elemental_weapons         ) },
-      { 59,  &( talents.shamanistic_focus         ) },
-      { 61,  &( talents.flurry                    ) },
-      { 63,  &( talents.improved_windfury_totem   ) },
-      { 64,  &( talents.spirit_weapons            ) },
-      { 65,  &( talents.mental_dexterity          ) },
-      { 66,  &( talents.unleashed_rage            ) },
-      { 67,  &( talents.weapon_mastery            ) },
-      { 68,  &( talents.dual_wield_specialization ) },
-      { 69,  &( talents.dual_wield                ) },
-      { 70,  &( talents.stormstrike               ) },
-      { 71,  &( talents.mental_quickness          ) },
-      { 72,  &( talents.lava_lash                 ) },
-      { 73,  &( talents.improved_stormstrike      ) },
-      { 74,  &( talents.static_shock              ) },
-      { 75,  &( talents.shamanistic_rage          ) },
-      { 77,  &( talents.maelstrom_weapon          ) },
-      { 78,  &( talents.feral_spirit              ) },
-      { 0, NULL }
-    };
-    player_t::parse_talents( translation, talent_string );
-  }
-  else if( encoding == ENCODING_WOWHEAD )
-  {
-    return false;
-  }
-  else assert( 0 );
+bool shaman_t::parse_talents_mmo( const std::string& talent_string )
+{
+  // shaman mmo encoding: Elemental-Restoration-Enhancement
 
-  return true;
+  int size1 = 24;
+  int size2 = 26;
+
+  std::string   elemental_string( talent_string,     0,  size1 );
+  std::string restoration_string( talent_string, size1,  size2 );
+  std::string enhancement_string( talent_string, size1 + size2  );
+
+  return parse_talents( elemental_string + enhancement_string + restoration_string );
 }
 
 // shaman_t::parse_option  ==============================================
@@ -3064,7 +2996,6 @@ bool shaman_t::parse_option( const std::string& name,
     { "mana_tide_totem",           OPT_INT8,  &( talents.mana_tide_totem           ) },
     { "mental_dexterity",          OPT_INT8,  &( talents.mental_dexterity          ) },
     { "mental_quickness",          OPT_INT8,  &( talents.mental_quickness          ) },
-    { "natures_blessing",          OPT_INT8,  &( talents.natures_blessing          ) },
     { "natures_swiftness",         OPT_INT8,  &( talents.natures_swiftness         ) },
     { "restorative_totems",        OPT_INT8,  &( talents.restorative_totems        ) },
     { "reverberation",             OPT_INT8,  &( talents.reverberation             ) },

@@ -61,68 +61,7 @@ judgement_of_wisdom=1
 # (1) The "trigger=2500" option to mana_potion represents the mana gained and the amount below max required to trigger
 # (2) The "trigger=6000" option to shadow_fiend represents the amount below max mana required to trigger
 #
-priest=Priest_8_0_52_302
-level=70
-talents=http://talent.mmo-champion.com/?priest=050300000000000000000000000000000000000000000000000000320023051223010325150301351
-actions=flask,type=pure_death/inner_fire/shadow_form/mana_potion,trigger=2500/shadow_fiend,trigger=6000/dispersion/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/shadow_word_death/mind_flay
-gear_stamina=360
-gear_intellect=360
-gear_spirit=140
-gear_spell_power=1300
-gear_crit_rating=275
-gear_hit_rating=135
-gear_haste_rating=100
-gear_mp5=50
-chaotic_skyfire=1
-glyph_shadow_word_death=1
-glyph_no_blue_promises=1
-pet=shadow_fiend
-main_hand=beast,damage=110,speed=1.5,school=shadow
-quiet=1
-active=owner
-# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
-blessing_of_kings=1
-blessing_of_wisdom=1
-sanctified_retribution=1
-swift_retribution=1
-
-#
-# Shadow Priest
-#
-# (1) The "trigger=2500" option to mana_potion represents the mana gained and the amount below max required to trigger
-# (2) The "trigger=6000" option to shadow_fiend represents the amount below max mana required to trigger
-#
-priest=Priest_8_0_53_NoSWD_302
-level=70
-talents=http://talent.mmo-champion.com/?priest=050300000000000000000000000000000000000000000000000000320023051223010325150301351
-actions=flask,type=pure_death/inner_fire/shadow_form/mana_potion,trigger=2500/shadow_fiend,trigger=6000/dispersion/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/mind_flay
-gear_stamina=360
-gear_intellect=360
-gear_spirit=140
-gear_spell_power=1300
-gear_crit_rating=275
-gear_hit_rating=135
-gear_haste_rating=100
-gear_mp5=50
-chaotic_skyfire=1
-glyph_no_blue_promises=1
-pet=shadow_fiend
-main_hand=beast,damage=110,speed=1.5,school=shadow
-quiet=1
-active=owner
-# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
-blessing_of_kings=1
-blessing_of_wisdom=1
-sanctified_retribution=1
-swift_retribution=1
-
-#
-# Shadow Priest
-#
-# (1) The "trigger=2500" option to mana_potion represents the mana gained and the amount below max required to trigger
-# (2) The "trigger=6000" option to shadow_fiend represents the amount below max mana required to trigger
-#
-priest=Priest_8_0_53_303
+priest=Priest_8_0_53
 level=70
 talents=http://talent.mmo-champion.com/?priest=050300000000000000000000000000000000000000000000000000320023051223010325150301351
 actions=flask,type=pure_death/inner_fire/shadow_form/mana_potion,trigger=2500/shadow_fiend,trigger=6000/dispersion/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/shadow_word_death/mind_flay
@@ -136,7 +75,6 @@ gear_haste_rating=100
 gear_mp5=50
 chaotic_skyfire=1
 glyph_shadow_word_pain=1
-glyph_shadow=1
 glyph_shadow_word_death=1
 pet=shadow_fiend
 main_hand=beast,damage=110,speed=1.5,school=shadow
@@ -154,7 +92,7 @@ swift_retribution=1
 # (1) The "trigger=2500" option to mana_potion represents the mana gained and the amount below max required to trigger
 # (2) The "trigger=6000" option to shadow_fiend represents the amount below max mana required to trigger
 #
-priest=Priest_8_0_53_NoSWD_303
+priest=Priest_8_0_53_NoSWD
 level=70
 talents=http://talent.mmo-champion.com/?priest=050300000000000000000000000000000000000000000000000000320023051223010325150301351
 actions=flask,type=pure_death/inner_fire/shadow_form/mana_potion,trigger=2500/shadow_fiend,trigger=6000/dispersion/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/mind_flay
@@ -377,7 +315,6 @@ chaotic_skyfire=1
 # Glyphs
 glyph_molten_armor=1
 glyph_frost_bolt=1
-glyph_water_elemental=1
 pet=water_elemental
 actions=water_bolt
 quiet=1
@@ -405,7 +342,6 @@ chaotic_skyfire=1
 # Glyphs
 glyph_molten_armor=1
 glyph_frost_bolt=1
-glyph_water_elemental=1
 pet=water_elemental
 actions=water_bolt
 quiet=1
@@ -438,7 +374,6 @@ gear_mp5=50
 chaotic_skyfire=1
 glyph_moonfire=1
 glyph_starfire=1
-glyph_insect_swarm=1
 # Three Treants modeled as one pet that hits 3x hard
 pet=treants
 quiet=1
@@ -458,7 +393,7 @@ swift_retribution=1
 shaman=Shaman_51_10_0
 level=70
 talents=http://talent.mmo-champion.com/?shaman=550000151321535102501051000000000000000000000000000050500000000000000000000000
-actions=flask,type=blinding_light/flametongue_weapon,weapon=main/water_shield/mana_potion,trigger=2500/mana_spring_totem/totem_of_wrath/wrath_of_air_totem/elemental_mastery/flame_shock/bloodlust,target_pct=35/chain_lightning/earth_shock/lightning_bolt/thunderstorm
+actions=flask,type=blinding_light/flametongue_weapon,weapon=main/water_shield/mana_potion,trigger=2500/mana_spring_totem/totem_of_wrath/wrath_of_air_totem/elemental_mastery/flame_shock/bloodlust,target_pct=35/chain_lightning/lightning_bolt/thunderstorm
 gear_stamina=360
 gear_intellect=360
 gear_spirit=140
@@ -470,7 +405,6 @@ gear_mp5=50
 chaotic_skyfire=1
 glyph_flametongue_weapon=1
 glyph_elemental_mastery=1
-glyph_earth_shock=1
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
 blessing_of_kings=1
 blessing_of_wisdom=1
@@ -497,7 +431,7 @@ swift_retribution=1
 warlock=Warlock_56_0_5
 level=70
 talents=http://talent.mmo-champion.com/?warlock=050000000000000000000000002350220001023510053510331351000000000000000000000000000
-actions=flask,type=pure_death/spell_stone/fel_armor/summon_pet,felhunter/haunt/curse_of_agony/corruption/unstable_affliction/siphon_life/shadow_bolt,shadow_trance=1/immolate/shadow_bolt/dark_pact
+actions=flask,type=pure_death/spell_stone/fel_armor/summon_pet,felhunter/haunt,debuff=1/curse_of_agony/corruption/unstable_affliction/siphon_life/shadow_bolt,shadow_trance=1/immolate/shadow_bolt/dark_pact
 gear_stamina=360
 gear_intellect=360
 gear_spirit=140
@@ -510,7 +444,6 @@ chaotic_skyfire=1
 # Glyphs
 glyph_corruption=1
 glyph_curse_of_agony=1
-glyph_siphon_life=1
 # Pets
 pet=felhunter
 actions=shadow_bite/wait
@@ -532,7 +465,7 @@ swift_retribution=1
 warlock=Warlock_56_0_5_CoE
 level=70
 talents=http://talent.mmo-champion.com/?warlock=050000000000000000000000002350220001023510053510331351000000000000000000000000000
-actions=flask,type=pure_death/spell_stone/fel_armor/summon_pet,felhunter/haunt/curse_of_elements/corruption/unstable_affliction/siphon_life/shadow_bolt,shadow_trance=1/immolate/shadow_bolt/dark_pact
+actions=flask,type=pure_death/spell_stone/fel_armor/summon_pet,felhunter/haunt,debuff=1/curse_of_elements/corruption/unstable_affliction/siphon_life/shadow_bolt,shadow_trance=1/immolate/shadow_bolt/dark_pact
 gear_stamina=360
 gear_intellect=360
 gear_spirit=140
@@ -545,7 +478,6 @@ chaotic_skyfire=1
 # Glyphs
 glyph_corruption=1
 glyph_curse_of_agony=1
-glyph_siphon_life=1
 # Pets
 pet=felhunter
 actions=shadow_bite/wait
@@ -580,7 +512,6 @@ chaotic_skyfire=1
 # Glyphs
 glyph_corruption=1
 glyph_felguard=1
-glyph_shadow_bolt=1
 # Pets
 pet=felguard
 actions=cleave/wait
@@ -623,7 +554,6 @@ chaotic_skyfire=1
 # Glyphs
 glyph_corruption=1
 glyph_felguard=1
-glyph_shadow_bolt=1
 # Pets
 pet=felguard
 actions=cleave/wait
@@ -665,7 +595,6 @@ gear_mp5=50
 chaotic_skyfire=1
 # Glyphs
 glyph_corruption=1
-glyph_imp=1
 glyph_curse_of_agony=1
 # Pets
 pet=imp

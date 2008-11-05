@@ -1511,84 +1511,164 @@ action_t* player_t::create_action( const std::string& name,
   return 0;
 }
 
-// player_t::parse_wowhead ==================================================
+// player_t::get_talent_trees ===============================================
 
-const struct Initializer
+bool player_t::get_talent_trees( std::vector<int8_t*>& tree1,
+				 std::vector<int8_t*>& tree2,
+				 std::vector<int8_t*>& tree3,
+				 talent_translation_t translation[][3] )
 {
-  char key;
-  int first, second;
+  for( int i=0; translation[ i ][ 0 ].index > 0; i++ ) tree1.push_back( translation[ i ][ 0 ].address );
+  for( int i=0; translation[ i ][ 1 ].index > 0; i++ ) tree2.push_back( translation[ i ][ 1 ].address );
+  for( int i=0; translation[ i ][ 2 ].index > 0; i++ ) tree3.push_back( translation[ i ][ 2 ].address );
 
-  operator std::pair< const char, std::pair< int, int > >() const
-  {
-    return std::make_pair(key, std::make_pair(first, second));
-  }
-} initializers[] =
-{
-  { '0', 0, 0 },  { 'z', 0, 1 },  { 'M', 0, 2 },  { 'c', 0, 3 }, { 'm', 0, 4 },  { 'V', 0, 5 },
-  { 'o', 1, 0 },  { 'k', 1, 1 },  { 'R', 1, 2 },  { 's', 1, 3 }, { 'a', 1, 4 },  { 'q', 1, 5 },
-  { 'b', 2, 0 },  { 'd', 2, 1 },  { 'r', 2, 2 },  { 'f', 2, 3 }, { 'w', 2, 4 },  { 'i', 2, 5 },
-  { 'h', 3, 0 },  { 'u', 3, 1 },  { 'G', 3, 2 },  { 'I', 3, 3 }, { 'N', 3, 4 },  { 'A', 3, 5 },
-  { 'L', 4, 0 },  { 'p', 4, 1 },  { 'T', 4, 2 },  { 'j', 4, 3 }, { 'n', 4, 4 },  { 'y', 4, 5 },
-  { 'x', 5, 0 },  { 't', 5, 1 },  { 'g', 5, 2 },  { 'e', 5, 3 }, { 'v', 5, 4 },  { 'E', 5, 5 } 
-};
-const int num_initializers = sizeof(initializers) / sizeof(Initializer);
-
-void player_t::parse_wowhead( talent_translation_t translation[][3], const std::string& talent_string )
-{
-  std::map< char, std::pair< int, int > > wowhead_map(initializers, initializers + num_initializers);
-
-  int tree = 0;
-  int talent = 0;
-
-  for( unsigned int i=1; i<talent_string.length(); i++ )
-  {
-    if ( talent_string[i] == 'Z' )
-    {
-      if ( tree == 2 )
-      {
-        fprintf( sim -> output_file, "Malformed talent string. Too many trees specified.\n" );
-        assert(0);
-      }
-      tree++;
-      talent = 0;
-    }
-    else if ( wowhead_map.count(talent_string[i]) == 0 )
-    {
-      fprintf( sim -> output_file, "Malformed talent string. No mapping known for character: '%c'\n", talent_string[i] );
-      assert(0);
-    }
-    else
-    {
-      talent_translation_t& t = translation[talent  ][tree];
-      talent_translation_t& s = translation[talent+1][tree];
-      
-      if ( t.index < 1 )
-      {
-        fprintf( sim -> output_file, "Malformed talent string. Too many characters for tree: %d\n", tree+1 );
-        assert(0);
-      }
-      else
-      {
-        if ( t.address != NULL ) *( t.address ) = wowhead_map[talent_string[i]].first;
-        if ( s.address != NULL ) *( s.address ) = wowhead_map[talent_string[i]].second;
-      }
-
-      talent+=2;
-    }
-  }
+  return true;
 }
 
 // player_t::parse_talents ==================================================
 
-void player_t::parse_talents( talent_translation_t* translation,
-			      const std::string&    talent_string )
+bool player_t::parse_talents( std::vector<int8_t*>& talent_tree,
+			      const std::string&  talent_string )
 {
-  for( int i=0; translation[ i ].index != 0; i++ )
-  {
-    talent_translation_t& t = translation[ i ];
+  const char* s = talent_string.c_str();
 
-    *( t.address ) = talent_string[ t.index - 1 ] - '0';
+  unsigned int size = std::min( talent_tree.size(), talent_string.size() );
+
+  for( unsigned int i=0; i < size; i++ )
+  {
+    int8_t* address = talent_tree[ i ];
+    if( ! address ) continue;
+    *address = s[ i ] - '0';
   }
+  
+  return true;
+}
+
+// player_t::parse_talents ==================================================
+
+bool player_t::parse_talents( const std::string& talent_string )
+{
+  std::vector<int8_t*> talent_tree1, talent_tree2, talent_tree3;
+
+  if( ! get_talent_trees( talent_tree1, talent_tree2, talent_tree3 ) )
+    return false;
+
+  int size1 = talent_tree1.size();
+  int size2 = talent_tree2.size();
+
+  std::string talent_string1( talent_string,     0,  size1 );
+  std::string talent_string2( talent_string, size1,  size2 );
+  std::string talent_string3( talent_string, size1 + size2 );
+  
+  parse_talents( talent_tree1, talent_string1 );
+  parse_talents( talent_tree2, talent_string2 );
+  parse_talents( talent_tree3, talent_string3 );
+
+  return true;
+}
+
+// player_t::parse_talents_mmo ==============================================
+
+bool player_t::parse_talents_mmo( const std::string& talent_string )
+{
+  return parse_talents( talent_string );
+}
+
+// player_t::parse_talents_wowhead ==========================================
+
+bool player_t::parse_talents_wowhead( const std::string& talent_string )
+{
+  // wowhead format: [tree_1]Z[tree_2]Z[tree_3] where the trees are character encodings
+  // each character expands to a pair of numbers [0-5][0-5]
+  // unused deeper talents are simply left blank instead of filling up the string with zero-zero encodings
+
+  struct decode_t
+  {
+    char key, first, second;
+  } decoding[] = {
+    { '0', '0', '0' },  { 'z', '0', '1' },  { 'M', '0', '2' },  { 'c', '0', '3' }, { 'm', '0', '4' },  { 'V', '0', '5' },
+    { 'o', '1', '0' },  { 'k', '1', '1' },  { 'R', '1', '2' },  { 's', '1', '3' }, { 'a', '1', '4' },  { 'q', '1', '5' },
+    { 'b', '2', '0' },  { 'd', '2', '1' },  { 'r', '2', '2' },  { 'f', '2', '3' }, { 'w', '2', '4' },  { 'i', '2', '5' },
+    { 'h', '3', '0' },  { 'u', '3', '1' },  { 'G', '3', '2' },  { 'I', '3', '3' }, { 'N', '3', '4' },  { 'A', '3', '5' },
+    { 'L', '4', '0' },  { 'p', '4', '1' },  { 'T', '4', '2' },  { 'j', '4', '3' }, { 'n', '4', '4' },  { 'y', '4', '5' },
+    { 'x', '5', '0' },  { 't', '5', '1' },  { 'g', '5', '2' },  { 'e', '5', '3' }, { 'v', '5', '4' },  { 'E', '5', '5' },
+    { '\0', '\0', '\0' }
+  };
+
+  std::vector<int8_t*> talent_trees[ 3 ];
+  unsigned int tree_size[ 3 ];
+
+  if( ! get_talent_trees( talent_trees[ 0 ], talent_trees[ 1 ] , talent_trees[ 2 ] ) )
+    return false;
+
+  for( int i=0; i < 3; i++ ) 
+  {
+    tree_size[ i ] = talent_trees[ i ].size();
+  }
+
+  std::string talent_strings[ 3 ];
+  int tree=0;
+
+  for( unsigned int i=1; i < talent_string.length(); i++ )
+  {
+    if( tree > 2 )
+    {
+      fprintf( sim -> output_file, "Malformed wowhead talent string. Too many trees specified.\n" );
+      assert(0);
+    }
+
+    char c = talent_string[ i ];
+
+    if( c == 'Z' )
+    {
+      tree++;
+      continue;
+    }
+
+    decode_t* decode = 0;
+    for( int j=0; decoding[ j ].key != '\0' && ! decode; j++ )
+    {
+      if( decoding[ j ].key == c ) decode = decoding + j;
+    }
+
+    if( ! decode )
+    {
+      fprintf( sim -> output_file, "Malformed wowhead talent string. Translation for '%c' unknown.\n", c );
+      assert(0);
+    }
+
+    talent_strings[ tree ] += decode -> first;
+    talent_strings[ tree ] += decode -> second;
+
+    if( talent_strings[ tree ].size() >= tree_size[ tree ] ) 
+      tree++;
+  }
+
+  if( sim -> debug )
+  {
+    fprintf( sim -> output_file, "%s tree1: %s\n", name(), talent_strings[ 0 ].c_str() );
+    fprintf( sim -> output_file, "%s tree2: %s\n", name(), talent_strings[ 1 ].c_str() );
+    fprintf( sim -> output_file, "%s tree3: %s\n", name(), talent_strings[ 2 ].c_str() );
+  }
+
+  for( int i=0; i < 3; i++ ) 
+  {
+    parse_talents( talent_trees[ i ], talent_strings[ i ] );
+  }
+
+  return true;
+}
+
+// player_t::parse_talents ==================================================
+
+bool player_t::parse_talents( const std::string& talent_string,
+			      int                encoding )
+{
+  if( encoding == ENCODING_BLIZZARD ) return parse_talents        ( talent_string );
+  if( encoding == ENCODING_MMO      ) return parse_talents_mmo    ( talent_string );
+  if( encoding == ENCODING_WOWHEAD  ) return parse_talents_wowhead( talent_string );
+
+  return false;
 }
 
 // player_t::parse_option ===================================================
@@ -1675,6 +1755,7 @@ bool player_t::parse_option( const std::string& name,
     // Player - Action Priority List								        
     { "pre_actions",                          OPT_STRING, &( action_list_prefix                             ) },
     { "actions",                              OPT_STRING, &( action_list_str                                ) },
+    { "actions+",                             OPT_APPEND, &( action_list_str                                ) },
     { "post_actions",                         OPT_STRING, &( action_list_postfix                            ) },
     { "skip_actions",                         OPT_STRING, &( action_list_skip                               ) },
     // Player - Reporting
@@ -1776,6 +1857,7 @@ bool player_t::parse_option( const std::string& name,
     { "blessing_of_might",                    OPT_INT8,   &( buffs.blessing_of_might                        ) },
     { "blessing_of_salvation",                OPT_INT8,   &( buffs.blessing_of_salvation                    ) },
     { "blessing_of_wisdom",                   OPT_INT8,   &( buffs.blessing_of_wisdom                       ) },
+    { "leader_of_the_pact",                   OPT_INT8,   &( buffs.leader_of_the_pack                       ) },
     { "sanctity_aura",                        OPT_INT8,   &( buffs.sanctity_aura                            ) },
     { "sanctified_retribution",               OPT_INT8,   &( buffs.sanctified_retribution                   ) },
     { "swift_retribution",                    OPT_INT8,   &( buffs.swift_retribution                        ) },

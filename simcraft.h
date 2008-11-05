@@ -372,7 +372,7 @@ struct weapon_t
 struct player_t
 {
   sim_t*      sim;
-  std::string name_str;
+  std::string name_str, talents_str;
   player_t*   next;   
   int8_t      type, level, party;
   double      gcd_ready, base_gcd;
@@ -530,6 +530,7 @@ struct player_t
     int8_t    blessing_of_might;
     int8_t    blessing_of_salvation;
     int8_t    blessing_of_wisdom;
+    int8_t    leader_of_the_pack;
     int8_t    sanctity_aura;
     int8_t    sanctified_retribution;
     int8_t    swift_retribution;
@@ -788,10 +789,14 @@ struct player_t
   virtual void attack_damage_event( attack_t*, double amount, int8_t dmg_type );
   virtual void attack_finish_event( attack_t* );
 
-  void parse_talents( talent_translation_t*, const std::string& talent_string );
-  void parse_wowhead( talent_translation_t translation[][3], const std::string& talent_string );
+  virtual bool get_talent_trees( std::vector<int8_t*>& tree1, std::vector<int8_t*>& tree2, std::vector<int8_t*>& tree3, talent_translation_t translation[][3] );
+  virtual bool get_talent_trees( std::vector<int8_t*>& tree1, std::vector<int8_t*>& tree2, std::vector<int8_t*>& tree3 ) { return false; }
+  virtual bool parse_talents( std::vector<int8_t*>& talent_tree, const std::string& talent_string );
+  virtual bool parse_talents( const std::string& talent_string );
+  virtual bool parse_talents_mmo( const std::string& talent_string );
+  virtual bool parse_talents_wowhead( const std::string& talent_string );
+  virtual bool parse_talents( const std::string& talent_string, int encoding );
 
-  virtual bool      parse_talents( const std::string& talent_string, int encoding ) { return false; }
   virtual bool      parse_option ( const std::string& name, const std::string& value );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name ) { return 0; }
@@ -1355,13 +1360,11 @@ struct talent_translation_t
 {
   int8_t  index;
   int8_t* address;
-
-  static bool verify( player_t*, const std::string talent_string );
 };
 
 // Options ====================================================================
 
-enum option_type_t { OPT_STRING=0, OPT_CHAR_P, OPT_BOOL, OPT_INT8, OPT_INT16, OPT_INT32, OPT_FLT, OPT_DEPRECATED, OPT_UNKNOWN };
+enum option_type_t { OPT_STRING=0, OPT_APPEND, OPT_CHAR_P, OPT_BOOL, OPT_INT8, OPT_INT16, OPT_INT32, OPT_FLT, OPT_DEPRECATED, OPT_UNKNOWN };
 
 struct option_t
 {
