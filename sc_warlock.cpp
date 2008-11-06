@@ -1522,8 +1522,8 @@ double warlock_spell_t::execute_time()
   double t = spell_t::execute_time();
   if( t > 0 )
   {
-    p -> uptimes_backdraft   -> update( p -> buffs_backdraft   );
-    p -> uptimes_eradication -> update( p -> buffs_eradication );
+    p -> uptimes_backdraft   -> update( p -> buffs_backdraft   != 0 );
+    p -> uptimes_eradication -> update( p -> buffs_eradication != 0 );
 
     if( p -> buffs_backdraft && tree == TREE_DESTRUCTION ) t *= 1.0 - p -> talents.backdraft * 0.10;
   }
@@ -1550,7 +1550,7 @@ void warlock_spell_t::player_buff()
     if( p -> buffs_pet_sacrifice == PET_SUCCUBUS ) player_multiplier *= 1.0 + 0.10;
 
     if( p -> buffs_flame_shadow ) player_power += 135;
-    p -> uptimes_flame_shadow -> update( p -> buffs_flame_shadow );
+    p -> uptimes_flame_shadow -> update( p -> buffs_flame_shadow != 0 );
   }
   else if( school == SCHOOL_FIRE )
   {
@@ -1558,10 +1558,10 @@ void warlock_spell_t::player_buff()
     if( p -> buffs_pet_sacrifice == PET_IMP      ) player_multiplier *= 1.0 + 0.10;
 
     if( p -> buffs_shadow_flame ) player_power += 135;
-    p -> uptimes_shadow_flame -> update( p -> buffs_shadow_flame );
+    p -> uptimes_shadow_flame -> update( p -> buffs_shadow_flame != 0 );
 
     if( p -> buffs_molten_core ) player_multiplier *= 1.10;
-    p -> uptimes_molten_core -> update( p -> buffs_molten_core );
+    p -> uptimes_molten_core -> update( p -> buffs_molten_core != 0 );
   }
 
   if( p -> active_pet )
@@ -1596,12 +1596,12 @@ void warlock_spell_t::player_buff()
     }
 
     if( p -> buffs_demonic_empathy ) player_multiplier *= 1.0 + p -> talents.demonic_empathy * 0.01;
-    p -> uptimes_demonic_empathy -> update( p -> buffs_demonic_empathy );
+    p -> uptimes_demonic_empathy -> update( p -> buffs_demonic_empathy != 0 );
 
     if( may_crit )
     {
       if( p -> buffs_empowered_imp ) player_crit += 0.20;
-      p -> uptimes_empowered_imp -> update( p -> buffs_empowered_imp );
+      p -> uptimes_empowered_imp -> update( p -> buffs_empowered_imp != 0 );
     }
   }
 }
@@ -1983,7 +1983,7 @@ struct shadow_bolt_t : public warlock_spell_t
   virtual double execute_time()
   {
     warlock_t* p = player -> cast_warlock();
-    p -> uptimes_shadow_trance -> update( p -> buffs_shadow_trance );
+    p -> uptimes_shadow_trance -> update( p -> buffs_shadow_trance != 0 );
     if( p -> buffs_shadow_trance ) return 0;
     return warlock_spell_t::execute_time();
   }

@@ -840,7 +840,7 @@ struct starfire_t : public druid_spell_t
   {
     druid_spell_t::player_buff();
     druid_t* p = player -> cast_druid();
-    p -> uptimes_eclipse_starfire -> update( p -> buffs_eclipse_starfire );
+    p -> uptimes_eclipse_starfire -> update( p -> buffs_eclipse_starfire != 0 );
     if( p -> buffs_eclipse_starfire )
     {
       player_crit += 0.30;
@@ -975,7 +975,7 @@ struct wrath_t : public druid_spell_t
   {
     druid_spell_t::player_buff();
     druid_t* p = player -> cast_druid();
-    p -> uptimes_eclipse_wrath -> update( p -> buffs_eclipse_wrath );
+    p -> uptimes_eclipse_wrath -> update( p -> buffs_eclipse_wrath != 0 );
     if( p -> buffs_eclipse_wrath )
     {
       player_multiplier *= 1.20;

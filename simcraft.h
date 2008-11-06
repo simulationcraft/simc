@@ -583,7 +583,7 @@ struct player_t
   
   struct expirations_t
   {
-    float spellsurge;
+    double spellsurge;
     event_t* ashtongue_talisman;
     event_t* darkmoon_crusade;
     event_t* darkmoon_wrath;

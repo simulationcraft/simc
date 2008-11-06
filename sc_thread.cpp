@@ -7,7 +7,7 @@
 
 // Cross-Platform Support for Multi-Threading ===============================
 
-#if defined( NO_THREADS ) || defined( __MINGW__ )
+#if defined( NO_THREADS ) || defined( __MINGW32__ )
 
 // ==========================================================================
 // NO MULTI-THREADING SUPPORT

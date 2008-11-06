@@ -717,8 +717,8 @@ void shaman_attack_t::player_buff()
   {
     player_crit += p -> talents.elemental_devastation * 0.03;
   }
-  p -> uptimes_elemental_devastation -> update( p -> buffs_elemental_devastation );
-  p -> uptimes_unleashed_rage        -> update( p -> buffs.unleashed_rage        );
+  p -> uptimes_elemental_devastation -> update( p -> buffs_elemental_devastation != 0 );
+  p -> uptimes_unleashed_rage        -> update( p -> buffs.unleashed_rage        != 0 );
 }
 
 // shaman_attack_t::assess_damage ==========================================
@@ -951,7 +951,7 @@ void shaman_spell_t::player_buff()
   {
     player_multiplier *= 1.0 + p -> buffs_nature_vulnerability * 0.01;
   }
-  p -> uptimes_nature_vulnerability -> update( p -> buffs_nature_vulnerability );
+  p -> uptimes_nature_vulnerability -> update( p -> buffs_nature_vulnerability != 0 );
 
   if( p -> glyphs.flametongue_weapon )
   {
@@ -962,7 +962,7 @@ void shaman_spell_t::player_buff()
     }
   }
 
-  if( p -> talents.elemental_oath ) p -> uptimes_elemental_oath -> update( p -> buffs.elemental_oath );
+  if( p -> talents.elemental_oath ) p -> uptimes_elemental_oath -> update( p -> buffs.elemental_oath != 0 );
 }
 
 // shaman_spell_t::execute =================================================

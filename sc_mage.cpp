@@ -1044,7 +1044,7 @@ void mage_spell_t::player_buff()
       {
         player_crit += p -> talents.shatter * 0.5/3;
       }
-      p -> uptimes_fingers_of_frost -> update( p -> buffs_fingers_of_frost );
+      p -> uptimes_fingers_of_frost -> update( p -> buffs_fingers_of_frost != 0 );
     }
   }
 
@@ -1069,7 +1069,7 @@ void mage_spell_t::player_buff()
   {
     player_crit += 0.03;
   }
-  p -> uptimes_focus_magic_feedback -> update( p -> buffs.focus_magic_feedback );
+  p -> uptimes_focus_magic_feedback -> update( p -> buffs.focus_magic_feedback != 0 );
 
   if( sim -> debug ) 
     report_t::log( sim, "mage_spell_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f", 
@@ -2653,7 +2653,7 @@ void mage_t::regen( double periodicity )
 
   player_t::regen( periodicity );
 
-  uptimes_water_elemental -> update( active_water_elemental );
+  uptimes_water_elemental -> update( active_water_elemental != 0 );
 }
 
 // mage_t::get_talent_trees ================================================

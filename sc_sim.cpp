@@ -203,7 +203,7 @@ bool sim_t::init()
 {
   total_seconds = 0;
 
-  if( seed == 0 ) seed = time( NULL );
+  if( seed == 0 ) seed = (int32_t) time( NULL );
   rand_t::init( seed );
 
   if( ! patch_str.empty() )
@@ -528,7 +528,7 @@ void sim_t::execute()
   merge();
   analyze();
 
-  elapsed_cpu_seconds = time(0) - start_time;
+  elapsed_cpu_seconds = (double) ( time(0) - start_time );
 }
 
 // sim_t::find_player =======================================================

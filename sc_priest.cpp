@@ -1687,8 +1687,8 @@ void priest_t::spell_finish_event( spell_t* s )
   }
   pop_tier5_4pc( s );
 
-  uptimes_improved_spirit_tap -> update( buffs_improved_spirit_tap );
-  uptimes_glyph_of_shadow -> update( buffs_glyph_of_shadow );
+  uptimes_improved_spirit_tap -> update( buffs_improved_spirit_tap != 0 );
+  uptimes_glyph_of_shadow     -> update( buffs_glyph_of_shadow     != 0 );
 }
 
 // priest_t::spell_damage_event ==============================================
