@@ -513,7 +513,11 @@ void sim_t::partition()
   {
     sim_t* child = children[ i ] = new sim_t( this );
     child -> iterations /= threads;
-    thread_t::launch( child );
+  }
+
+  for( int i=0; i < num_children; i++ )
+  {
+    thread_t::launch( children[ i ] );
   }
 }
 

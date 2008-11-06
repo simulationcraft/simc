@@ -40,7 +40,7 @@ void* event_t::operator new( size_t size )
   fprintf( stderr, "All events must be allocated via: new (sim) event_class_name_t()\n" );
   fflush( stderr );
   assert( 0 );
-#if defined( WINDOWS )
+#if defined( _MSC_VER )
   return 0;
 #endif
 }
