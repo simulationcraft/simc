@@ -8,7 +8,6 @@
 #if ! defined( NO_SFMT )
 #define MEXP 1279
 // If your math coprocessor does not support SSE2, then remove the following line
-#define HAVE_SSE2 
 #include <SFMT.c>
 #endif
 

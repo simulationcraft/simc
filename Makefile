@@ -8,7 +8,7 @@
 
 PG   =
 BITS = 32
-MCP  = -msse -msse2 -mfpmath=sse
+MCP  = -DHAVE_SSE2 -msse -msse2 -mfpmath=sse
 OPTS = -maccumulate-outgoing-args -O3 
 
 ifneq (64,${BITS})
