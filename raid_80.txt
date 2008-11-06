@@ -12,6 +12,10 @@
 # Patch level of 3.0.0 or later implies Wrath of the Lich King
 patch=3.0.3
 
+# Multi-Threading: Performance can be significantly increased using multi-threading.
+# Most modern processors are dual-core allowing for threads=2 to be specified.
+threads=1
+
 # To generate a combat log with just one iteration, simply set 'log=1'
 # Setting log to a non-zero value will force the simulator to execute just one iteration
 log=0
