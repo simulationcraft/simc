@@ -74,6 +74,13 @@ default_crit_rating=461
 default_hit_rating=290
 default_haste_rating=452
 
+# To generate scale factors, set calculate_scale_factors=1
+calculate_scale_factors=0
+scale_spell_power=200
+scale_hit_rating=-200
+scale_crit_rating=200
+scale_haste_rating=200
+
 # ================================================================================================
 # Druids
 # ================================================================================================

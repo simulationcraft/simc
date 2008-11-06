@@ -97,7 +97,7 @@ report_t::report_t( sim_t* s ) :
   sim( s ),
   report_actions(1),
   report_attack_stats(1),
-  report_chart(0),
+  report_chart(1),
   report_core_stats(1),
   report_dpr(1),
   report_dps(1),
@@ -1298,6 +1298,62 @@ void report_t::chart_html()
   }
 }
 
+// report_t::wiki_scale_factors ===============================================
+
+void report_t::wiki_scale_factors()
+{
+  if( ! sim -> scaling -> calculate_scale_factors ) return;
+
+  fprintf( sim -> wiki_file, "----\n" );
+  fprintf( sim -> wiki_file, "----\n" );
+  fprintf( sim -> wiki_file, "== Scale Factors ==\n" );
+  fprintf( sim -> wiki_file, "----\n" );
+  fprintf( sim -> wiki_file, "----\n" );
+
+  fprintf( sim -> wiki_file, "|| ||" );
+  for( int j=0; j < ATTRIBUTE_MAX; j++ )
+  {
+    if( sim -> scaling -> gear.attribute[ j ] ) 
+    {
+      fprintf( sim -> wiki_file, "  %s ||", util_t::attribute_type_string( j ) );
+    }
+  }
+  if( sim -> scaling -> gear.spell_power              ) fprintf( sim -> wiki_file, " Spell Power  ||" );
+  if( sim -> scaling -> gear.attack_power             ) fprintf( sim -> wiki_file, " Attack Power ||" );
+  if( sim -> scaling -> gear.expertise_rating         ) fprintf( sim -> wiki_file, " Expertise    ||" );
+  if( sim -> scaling -> gear.armor_penetration_rating ) fprintf( sim -> wiki_file, " Armor Pen    ||" );
+  if( sim -> scaling -> gear.hit_rating               ) fprintf( sim -> wiki_file, " Hit          ||" );
+  if( sim -> scaling -> gear.crit_rating              ) fprintf( sim -> wiki_file, " Crit         ||" );
+  if( sim -> scaling -> gear.haste_rating             ) fprintf( sim -> wiki_file, " Haste        ||" );
+  fprintf( sim -> wiki_file, "\n" );
+
+  int num_players = sim -> players_by_name.size();
+
+  for( int i=0; i < num_players; i++ )
+  {
+    player_t* p = sim -> players_by_name[ i ];
+
+    fprintf( sim -> wiki_file, "|| %-25s ||", p -> name() );
+
+    for( int j=0; j < ATTRIBUTE_MAX; j++ )
+    {
+      if( sim -> scaling -> gear.attribute[ j ] ) 
+      {
+	fprintf( sim -> wiki_file, " %.2f ||", p -> scaling.attribute[ j ] );
+      }
+    }
+    if( sim -> scaling -> gear.spell_power              ) fprintf( sim -> wiki_file, " %.2f ||", p -> scaling.spell_power              );
+    if( sim -> scaling -> gear.attack_power             ) fprintf( sim -> wiki_file, " %.2f ||", p -> scaling.attack_power             );
+    if( sim -> scaling -> gear.expertise_rating         ) fprintf( sim -> wiki_file, " %.2f ||", p -> scaling.expertise_rating         );
+    if( sim -> scaling -> gear.armor_penetration_rating ) fprintf( sim -> wiki_file, " %.2f ||", p -> scaling.armor_penetration_rating );
+    if( sim -> scaling -> gear.hit_rating               ) fprintf( sim -> wiki_file, " %.2f ||", p -> scaling.hit_rating               );
+    if( sim -> scaling -> gear.crit_rating              ) fprintf( sim -> wiki_file, " %.2f ||", p -> scaling.crit_rating              );
+    if( sim -> scaling -> gear.haste_rating             ) fprintf( sim -> wiki_file, " %.2f ||", p -> scaling.haste_rating             );
+
+    fprintf( sim -> wiki_file, "\n" );
+  }
+}
+
 // report_t::chart_wiki ======================================================
 
 void report_t::chart_wiki()
@@ -1363,6 +1419,8 @@ void report_t::chart_wiki()
   fprintf( sim -> wiki_file, "|| %s || %s ||\n", raid_downtime.c_str(), raid_uptimes.c_str() );
   fprintf( sim -> wiki_file, "|| %s || %s ||\n", raid_dpet_1.c_str(),   raid_dpet_2.c_str() );
   fprintf( sim -> wiki_file, "\n" );
+
+  wiki_scale_factors();
 
   for( int i=0; i < num_players; i++ )
   {

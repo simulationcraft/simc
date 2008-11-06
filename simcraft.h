@@ -1341,7 +1341,9 @@ struct report_t
   const char* chart_gains            ( std::string& s, player_t* );
   const char* chart_uptimes_and_procs( std::string& s, player_t* );
   const char* chart_timeline         ( std::string& s, player_t* );
+  void html_scale_factors();
   void chart_html();
+  void wiki_scale_factors();
   void chart_wiki();
   void chart();
   static void timestamp( sim_t* sim );
