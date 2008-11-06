@@ -131,11 +131,6 @@ struct druid_t : public player_t
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
   virtual int       primary_resource() { return RESOURCE_MANA; }
-
-  // Event Tracking
-  virtual void spell_start_event ( spell_t* );
-  virtual void spell_hit_event   ( spell_t* );
-  virtual void spell_finish_event( spell_t* );
 };
 
 // ==========================================================================
@@ -150,13 +145,13 @@ struct druid_spell_t : public spell_t
   virtual double cost();
   virtual double haste();
   virtual double execute_time();
+  virtual void   execute();
+  virtual void   schedule_execute();
   virtual void   consume_resource();
   virtual void   player_buff();
   virtual void   target_debuff( int8_t dmg_type );
 
   // Passthru Methods
-  virtual void execute()          { spell_t::execute();          }
-  virtual void schedule_execute() { spell_t::schedule_execute(); }
   virtual void last_tick()        { spell_t::last_tick();        }
   virtual bool ready()            { return spell_t::ready();     }
 };
@@ -424,6 +419,63 @@ double druid_spell_t::execute_time()
   druid_t* p = player -> cast_druid();
   if( p -> buffs_natures_swiftness ) return 0;
   return spell_t::execute_time();
+}
+
+// druid_spell_t::schedule_execute =========================================
+
+void druid_spell_t::schedule_execute()
+{
+  druid_t* p = player -> cast_druid();
+
+  spell_t::schedule_execute();
+
+  if( base_execute_time > 0 )
+  {
+    if( p -> buffs_natures_swiftness )
+    {
+      p -> buffs_natures_swiftness = 0;
+    }
+    else if( p -> buffs_natures_grace )
+    {
+      p -> aura_loss( "Natures Grace" );
+      p -> buffs_natures_grace = 0;
+      p -> buffs.cast_time_reduction -= 0.5;
+    }
+  }
+}
+
+// druid_spell_t::execute ==================================================
+
+void druid_spell_t::execute()
+{
+  druid_t* p = player -> cast_druid();
+
+  spell_t::execute();
+
+  if( result == RESULT_CRIT )
+  {
+    if( p -> buffs.moonkin_aura )
+    {
+      p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.02, p -> gains_moonkin_form );
+    }
+    if( p -> buffs_natures_grace == 0 )
+    {
+      if( rand_t::roll( p -> talents.natures_grace / 3.0 ) )
+      {
+	p -> aura_gain( "Natures Grace" );
+	p -> buffs_natures_grace = 1;
+	p -> buffs.cast_time_reduction += 0.5;
+      }
+    }
+  }
+
+  trigger_omen_of_clarity( this );
+
+  if( p -> gear.tier4_2pc && rand_t::roll( 0.05 ) )
+  {
+    p -> resource_gain( RESOURCE_MANA, 120.0, p -> gains.tier4_2pc );
+  }
+
 }
 
 // druid_spell_t::consume_resource =========================================
@@ -965,10 +1017,9 @@ struct wrath_t : public druid_spell_t
 
   virtual void schedule_execute()
   {
-    if( player -> cast_druid() -> buffs_natures_grace ) 
-      trigger_gcd *= 0.5;
+    druid_t* p = player -> cast_druid();
+    trigger_gcd = ( p -> buffs_natures_grace ) ? p -> base_gcd - 0.5 : p -> base_gcd;
     druid_spell_t::schedule_execute();
-    trigger_gcd = player -> base_gcd;
   }
 
   virtual void player_buff()
@@ -1113,70 +1164,6 @@ struct treants_spell_t : public druid_spell_t
     return( ( t -> current_health / t -> initial_health ) < ( target_pct / 100.0 ) );
   }
 };
-
-// ============================================================================
-// Druid Event Tracking
-// ============================================================================
-
-// druid_t::spell_start_event =================================================
-
-void druid_t::spell_start_event( spell_t* s )
-{
-  player_t::spell_start_event( s );
-
-  if( s -> base_execute_time > 0 )
-  {
-    if( buffs_natures_swiftness )
-    {
-      buffs_natures_swiftness = 0;
-    }
-    else if( buffs_natures_grace )
-    {
-      aura_loss( "Natures Grace" );
-      buffs_natures_grace = 0;
-      buffs.cast_time_reduction -= 0.5;
-    }
-  }
-}
-
-// druid_t::spell_hit_event ===================================================
-
-void druid_t::spell_hit_event( spell_t* s )
-{
-  player_t::spell_hit_event( s );
-
-  if( s -> result == RESULT_CRIT )
-  {
-    if( buffs.moonkin_aura )
-    {
-      resource_gain( RESOURCE_MANA, resource_max[ RESOURCE_MANA ] * 0.02, gains_moonkin_form );
-    }
-    if( ! buffs_natures_grace )
-    {
-      if( rand_t::roll( talents.natures_grace / 3.0 ) )
-      {
-	aura_gain( "Natures Grace" );
-	buffs_natures_grace = 1;
-	buffs.cast_time_reduction += 0.5;
-      }
-    }
-  }
-}
-
-// druid_t::spell_finish_event ================================================
-
-void druid_t::spell_finish_event( spell_t* s )
-{
-  player_t::spell_finish_event( s );
-
-  trigger_omen_of_clarity( s );
-
-  if( gear.tier4_2pc && rand_t::roll( 0.05 ) )
-  {
-    resource_gain( RESOURCE_MANA, 120.0, gains.tier4_2pc );
-  }
-}
-
 
 // ==========================================================================
 // Druid Character Definition

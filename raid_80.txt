@@ -94,6 +94,7 @@ scale_haste_rating=200
 # glyph_starfire=1
 # glyph_insect_swarm=1
 
+
 #
 # Balance Druid (Starfire)
 #
@@ -105,7 +106,7 @@ druid=Druid_58_0_13_SF
 level=80
 talents=http://wotlk.wowhead.com/?talent=0xG0uiGsIdIVhouZbxczb
 actions=flask,type=blinding_light/mark_of_the_wild/moonkin_form/mana_potion,trigger=3500/innervate
-actions+=/faerie_fire/treants/moonfire/insect_swarm/wrath,eclipse=trigger/starfire
+actions+=/treants/moonfire/insect_swarm/wrath,eclipse=trigger/starfire
 enchant_hit_rating=-25
 enchant_haste_rating=+25
 chaotic_skyfire=1
@@ -126,10 +127,38 @@ swift_retribution=1
 # Balance Druid (Wrath)
 #
 # (1) The "trigger=3500" option to mana_potion represents the mana gained and the amount below max required to trigger
-# (2) The "eclipse=trigger" option to wrath will make sure that it is only used to trigger the Eclipse talent
+# (2) The "eclipse=trigger" option to starfire will make sure that it is only used to trigger the Eclipse talent
 #     which means it will only be used after the cooldown is ready and the effect has not yet proc'd.
 #
 druid=Druid_58_0_13_W
+level=80
+talents=http://wotlk.wowhead.com/?talent=0xG0uiGsIdIVhouZbxczb
+actions=flask,type=blinding_light/mark_of_the_wild/moonkin_form/mana_potion,trigger=3500/innervate
+actions+=/treants/moonfire/insect_swarm/starfire,eclipse=trigger/wrath
+enchant_hit_rating=-25
+enchant_haste_rating=+25
+chaotic_skyfire=1
+glyph_moonfire=1
+glyph_starfire=1
+glyph_insect_swarm=1
+# Three Treants modeled as one pet that hits 3x hard
+pet=treants
+quiet=1
+active=owner
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_wisdom=1
+sanctified_retribution=1
+swift_retribution=1
+
+#
+# Balance Druid (Wrath, Faerie Fire)
+#
+# (1) The "trigger=3500" option to mana_potion represents the mana gained and the amount below max required to trigger
+# (2) The "eclipse=trigger" option to starfire will make sure that it is only used to trigger the Eclipse talent
+#     which means it will only be used after the cooldown is ready and the effect has not yet proc'd.
+#
+druid=Druid_58_0_13_W_FF
 level=80
 talents=http://wotlk.wowhead.com/?talent=0xG0uiGsIdIVhouZbxczb
 actions=flask,type=blinding_light/mark_of_the_wild/moonkin_form/mana_potion,trigger=3500/innervate
