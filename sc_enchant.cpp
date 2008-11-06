@@ -126,7 +126,7 @@ static void trigger_mongoose( attack_t* a )
 
   if( ! u )  u = p -> get_uptime( w -> main ? "moongoose_mh" : "mongoose_oh" );
 
-  u -> update( b );
+  u -> update( b != 0 );
 }
 
 // Executioner Enchant =========================================================
@@ -180,7 +180,7 @@ static void trigger_executioner( attack_t* a )
     p -> uptimes.executioner = p -> get_uptime( "executioner" );
   }
 
-  p -> uptimes.executioner -> update( p -> buffs.executioner );
+  p -> uptimes.executioner -> update( p -> buffs.executioner != 0 );
 }
 
 } // ANONYMOUS NAMESPACE ====================================================

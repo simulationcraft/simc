@@ -1261,7 +1261,7 @@ struct arcane_blast_t : public mage_spell_t
       return false;
 
     if( ap_burn )
-      return( p -> buffs_arcane_power );
+      return( p -> buffs_arcane_power != 0 );
 
     if( max_buff > 0 )
       if( p -> buffs_arcane_blast >= max_buff )
