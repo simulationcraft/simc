@@ -108,7 +108,7 @@ double action_t::cost()
    return c;
 }
    
-// aaction_t::player_buff ====================================================
+// action_t::player_buff =====================================================
 
 void action_t::player_buff()
 {
