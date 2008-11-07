@@ -59,6 +59,9 @@ void thread_t::wait( sim_t* sim )
 {
   HANDLE* handle = (HANDLE*) ( sim -> thread_handle );
   WaitForSingleObject( *handle, INFINITE );
+  if( handle )
+    delete handle;
+  sim -> thread_handle = NULL;
 }
 
 #elif defined( _MSC_VER )
