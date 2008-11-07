@@ -53,12 +53,13 @@ debug:
 	g++ $(PG) $(MCP) -g -Wall $(INC) $(SRC) -lpthread -o simcraft
 
 # For Windows platform... (using MinGW)
+# No SSE currently, since it crashes simcraft with SFMT and multiple threads
 
 windows:
-	g++ $(MCP) $(OPTS) -Wall $(INC) $(SRC) -o simcraft
+	g++ $(OPTS) -Wall $(INC) $(SRC) -o simcraft
 
 windows-debug:
-	g++ $(MCP) -g -Wall $(INC) $(SRC) -o simcraft
+	g++ -g -Wall $(INC) $(SRC) -o simcraft
 
 # For MAC platform...
 

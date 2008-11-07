@@ -64,6 +64,8 @@ sim_t::~sim_t()
   if( target  ) delete target;
   if( report  ) delete report;
   if( scaling ) delete scaling;
+  
+  if( thread_handle ) delete thread_handle;
 
   int num_children = children.size();
   for( int i=0; i < num_children; i++ ) 

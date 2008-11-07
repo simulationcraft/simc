@@ -7,7 +7,7 @@
 
 // Cross-Platform Support for Multi-Threading ===============================
 
-#if defined( NO_THREADS ) || defined( __MINGW32__ )
+#if defined( NO_THREADS )
 
 // ==========================================================================
 // NO MULTI-THREADING SUPPORT
@@ -23,6 +23,42 @@ void thread_t::launch( sim_t* sim )
 
 void thread_t::wait( sim_t* sim )
 {
+}
+
+#elif defined( __MINGW32__ )
+
+// ==========================================================================
+// MULTI-THREADING FOR WINDOWS (MinGW Only)
+// ==========================================================================
+
+#include <windows.h>
+#include <process.h>
+
+// thread_execute ===========================================================
+
+static unsigned WINAPI thread_execute( LPVOID sim )
+{
+  ( (sim_t*) sim ) -> iterate();
+
+  return 0;
+}
+
+// thread_t::launch =========================================================
+
+void thread_t::launch( sim_t* sim )
+{
+  HANDLE* handle = new HANDLE();
+  sim -> thread_handle = (void*) handle;
+  //MinGW wiki suggests using _beginthreadex over CreateThread
+  *handle = (HANDLE)_beginthreadex( NULL, 0, thread_execute, (void*) sim, 0, NULL);
+}
+
+// thread_t::wait ===========================================================
+
+void thread_t::wait( sim_t* sim )
+{
+  HANDLE* handle = (HANDLE*) ( sim -> thread_handle );
+  WaitForSingleObject( *handle, INFINITE );
 }
 
 #elif defined( _MSC_VER )
