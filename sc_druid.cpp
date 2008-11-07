@@ -662,15 +662,19 @@ struct innervate_t : public druid_spell_t
 
 struct insect_swarm_t : public druid_spell_t
 {
+  int8_t wrath_ready;
+  action_t* active_wrath;
+
   insect_swarm_t( player_t* player, const std::string& options_str ) : 
-    druid_spell_t( "insect_swarm", player, SCHOOL_NATURE, TREE_BALANCE )
+    druid_spell_t( "insect_swarm", player, SCHOOL_NATURE, TREE_BALANCE ), wrath_ready(0), active_wrath(0)
   {
     druid_t* p = player -> cast_druid();
     assert( p -> talents.insect_swarm );
 
     option_t options[] =
     {
-      { "rank", OPT_INT8, &rank_index },
+      { "rank",        OPT_INT8, &rank_index  },
+      { "wrath_ready", OPT_INT8, &wrath_ready },
       { NULL }
     };
     parse_options( options, options_str );
@@ -697,6 +701,26 @@ struct insect_swarm_t : public druid_spell_t
     if( p -> talents.natures_splendor ) num_ticks++;
 
     observer = &( p -> active_insect_swarm );
+  }
+  virtual bool ready() 
+  {
+    if( ! druid_spell_t::ready() )
+      return false;
+
+    if( wrath_ready && ! active_wrath )
+    {
+      for( active_wrath = next; active_wrath; active_wrath = active_wrath -> next )
+	if( active_wrath -> name_str == "wrath" )
+	  break;
+
+      if( ! active_wrath ) wrath_ready = 0;
+    }
+
+    if( wrath_ready )
+      if( ! active_wrath -> ready() )
+	return false;
+
+    return true;
   }
 };
 
@@ -949,7 +973,8 @@ struct starfire_t : public druid_spell_t
         return false;
 
       if( sim -> current_time + 1.5 < p -> cooldowns_eclipse )
-        return false;
+	if( ! sim -> time_to_think( p -> buffs_eclipse_starfire ) )
+	  return false;
     }
 
     return true;
@@ -1057,6 +1082,7 @@ struct wrath_t : public druid_spell_t
 	return false;
 
       if( sim -> current_time + 3.0 < p -> cooldowns_eclipse )
+	if( ! sim -> time_to_think( p -> buffs_eclipse_wrath ) )
 	  return false;
     }
 
