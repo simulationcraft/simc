@@ -2517,7 +2517,7 @@ struct water_elemental_spell_t : public mage_spell_t
 struct mirror_image_spell_t : public mage_spell_t
 {
   mirror_image_spell_t( player_t* player, const std::string& options_str ) : 
-    mage_spell_t( "water_elemental", player, SCHOOL_ARCANE, TREE_ARCANE )
+    mage_spell_t( "mirror_image", player, SCHOOL_ARCANE, TREE_ARCANE )
   {
     mage_t* p = player -> cast_mage();
     

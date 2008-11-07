@@ -57,6 +57,14 @@ double attack_t::haste()
   return h;
 }
 
+// attack_t::execute_time ===================================================
+
+double attack_t::execute_time()
+{
+  if( base_execute_time == 0 ) return 0;
+  return base_execute_time * haste();
+}
+
 // attack_t::player_buff ====================================================
 
 void attack_t::player_buff()

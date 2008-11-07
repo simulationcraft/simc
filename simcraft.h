@@ -1103,6 +1103,7 @@ struct attack_t : public action_t
 
   // Attack Overrides
   virtual double haste();
+  virtual double execute_time();
   virtual void   player_buff();
   virtual void   target_debuff( int8_t dmg_type );
   virtual int    build_table( double* chances, int* results );
@@ -1111,7 +1112,6 @@ struct attack_t : public action_t
   // Passthru Methods
   virtual double cost()                              { return action_t::cost();                    }
   virtual double gcd()                               { return action_t::gcd();                     }
-  virtual double execute_time()                      { return action_t::execute_time();            }
   virtual double tick_time()                         { return action_t::tick_time();               }
   virtual double calculate_direct_damage()           { return action_t::calculate_direct_damage(); }
   virtual double calculate_tick_damage()             { return action_t::calculate_tick_damage();   }

@@ -507,6 +507,7 @@ blessing_of_kings=1
 blessing_of_might=550
 sanctified_retribution=1
 swift_retribution=1
+leader_of_the_pack=1
 
 # ================================================================================================
 # Warlocks
@@ -631,6 +632,7 @@ blessing_of_kings=1
 blessing_of_might=550
 sanctified_retribution=1
 swift_retribution=1
+leader_of_the_pack=1
 quiet=1
 active=owner
 pet=succubus

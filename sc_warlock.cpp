@@ -321,6 +321,7 @@ struct warlock_pet_t : public pet_t
     intellect_per_owner += o -> talents.fel_synergy * 0.05;
 
     initial_attack_power_per_strength = 2.0;
+    initial_attack_crit_per_agility   = rating_t::interpolate( level, 0.01/16.0, 0.01/24.9, 0.01/52.1 );
 
     health_per_stamina = 10;
     mana_per_intellect = 15;

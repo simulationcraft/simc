@@ -236,6 +236,10 @@ struct shaman_attack_t : public attack_t
   virtual void execute();
   virtual void player_buff();
   virtual void assess_damage( double amount, int8_t dmg_type );
+
+  // Passthru Methods
+  virtual double execute_time()     { return attack_t::execute_time(); }
+  virtual void   schedule_execute() { attack_t::schedule_execute();    }
 };
 
 // ==========================================================================
@@ -763,7 +767,7 @@ struct melee_t : public shaman_attack_t
 
   virtual double execute_time()
   {
-    double t = base_execute_time * haste();
+    double t = shaman_attack_t::execute_time();
     shaman_t* p = player -> cast_shaman();
     if( p -> buffs_flurry > 0 ) 
     {
@@ -775,7 +779,7 @@ struct melee_t : public shaman_attack_t
 
   void schedule_execute()
   {
-    attack_t::schedule_execute();
+    shaman_attack_t::schedule_execute();
     shaman_t* p = player -> cast_shaman();
     if( p -> buffs_flurry > 0 ) p -> buffs_flurry--;
   }
