@@ -500,8 +500,8 @@ void druid_spell_t::consume_resource()
 
 void druid_spell_t::player_buff()
 {
-  spell_t::player_buff();
   druid_t* p = player -> cast_druid();
+  spell_t::player_buff();
   if( p -> buffs.moonkin_aura )
   {
     player_multiplier *= 1.0 + p -> talents.master_shapeshifter * 0.02;
@@ -513,10 +513,13 @@ void druid_spell_t::player_buff()
 
 void druid_spell_t::target_debuff( int8_t dmg_type )
 {
+  druid_t* p = player -> cast_druid();
   spell_t::target_debuff( dmg_type );
-
   target_t* t = sim -> target;
-  target_crit += t -> debuffs.improved_faerie_fire * 0.01; 
+  if( t -> debuffs.faerie_fire )
+  {
+    target_crit += p -> talents.improved_faerie_fire * 0.01; 
+  }
 }
 
 // Faerie Fire Spell =======================================================
