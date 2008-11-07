@@ -871,6 +871,8 @@ action_t* player_t::execute_action()
 
 void player_t::regen( double periodicity )
 {
+  if( sim -> infinite_resource[ RESOURCE_MANA ] != 0 ) return;
+
   double spirit_regen = periodicity * spirit_regen_per_second();
 
   if( buffs.innervate )

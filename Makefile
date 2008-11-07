@@ -5,7 +5,7 @@
 
 # To build debuggable executable, add OPTS=-g to make invocation
 
-OPTS = -O3 
+OPTS = -O3
 BITS = 32
 
 ifneq (64,${BITS})
