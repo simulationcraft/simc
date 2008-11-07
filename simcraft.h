@@ -765,8 +765,8 @@ struct player_t
   virtual void check_resources();
   virtual int  primary_resource() { return RESOURCE_NONE; }
 
-  virtual void  summon_pet( const std::string& name );
-  virtual void dismiss_pet( const std::string& name );
+  virtual void  summon_pet( const char* name );
+  virtual void dismiss_pet( const char* name );
 
   // Managing action_xxx events:
   // (1) To "throw" an event, ALWAYS invoke the action_xxx function.

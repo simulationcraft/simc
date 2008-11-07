@@ -622,6 +622,9 @@ void player_t::init_stats()
   procs.tier5_4pc                    = get_proc( "tier5_4pc" );
   procs.tier6_2pc                    = get_proc( "tier6_2pc" );
   procs.tier6_4pc                    = get_proc( "tier6_4pc" );
+
+  iteration_dps.clear();
+  iteration_dps.insert( iteration_dps.begin(), sim -> iterations, 0 );
 }
 
 // player_t::composite_attack_power ========================================
@@ -995,7 +998,7 @@ void player_t::check_resources()
 
 // player_t::summon_pet =====================================================
 
-void player_t::summon_pet( const std::string& pet_name )
+void player_t::summon_pet( const char* pet_name )
 {
   for( pet_t* p = pet_list; p; p = p -> next_pet )
   {
@@ -1010,7 +1013,7 @@ void player_t::summon_pet( const std::string& pet_name )
 
 // player_t::dismiss_pet ====================================================
 
-void player_t::dismiss_pet( const std::string& pet_name )
+void player_t::dismiss_pet( const char* pet_name )
 {
   for( pet_t* p = pet_list; p; p = p -> next_pet )
   {

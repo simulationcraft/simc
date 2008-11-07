@@ -398,12 +398,12 @@ void sim_t::analyze( int current_iteration )
     if( iteration_seconds > 0 )
     {
       p -> total_seconds += iteration_seconds;
-      for( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet ) p -> iteration_dmg += pet -> iteration_dmg;
-      p -> iteration_dps.push_back( p -> iteration_dmg / iteration_seconds );
-    }
-    else
-    {
-      p -> iteration_dps.push_back( 0 );
+
+      for( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet ) 
+      {
+	p -> iteration_dmg += pet -> iteration_dmg;
+      }
+      p -> iteration_dps[ current_iteration ] = p -> iteration_dmg / iteration_seconds;
     }
   }
 }
@@ -675,3 +675,20 @@ int main( int argc, char** argv )
   
   return 0;
 }
+
+// ==========================================================================
+// Utility to make sure memory allocation not happening during iteration.
+// ==========================================================================
+
+#if 0
+void* operator new (size_t size)
+{
+  if( iterating ) assert(0);
+  return malloc(size); 
+}
+
+void operator delete (void *p)
+{
+ free(p); 
+}
+#endif
