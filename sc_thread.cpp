@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include <simcraft.h>
+#include "simcraft.h"
 
 // Cross-Platform Support for Multi-Threading ===============================
 
@@ -17,6 +17,7 @@
 
 void thread_t::launch( sim_t* sim )
 {
+  sim -> iterate();  // Run sequentially in foreground.
 }
 
 // thread_t::wait ===========================================================
@@ -96,6 +97,9 @@ void thread_t::wait( sim_t* sim )
 {
   HANDLE* handle = (HANDLE*) ( sim -> thread_handle );
   WaitForSingleObject( *handle, INFINITE );
+  if( handle )
+    delete handle;
+  sim -> thread_handle = NULL;
 }
 
 #else
@@ -130,6 +134,9 @@ void thread_t::wait( sim_t* sim )
 {
   pthread_t* pthread = (pthread_t*) ( sim -> thread_handle );
   pthread_join( *pthread, NULL );
+  if( pthread )
+    delete pthread;
+  sim -> thread_handle = NULL;
 }
 
 #endif

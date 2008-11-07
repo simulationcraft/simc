@@ -3,12 +3,12 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include <simcraft.h>
+#include "simcraft.h"
 
 #if ! defined( NO_SFMT )
 #define MEXP 1279
 // If your math coprocessor does not support SSE2, then remove the following line
-#include <SFMT.c>
+#include "./sfmt/SFMT.c"
 #endif
 
 void rand_t::init( uint32_t seed )

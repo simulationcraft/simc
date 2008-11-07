@@ -1,21 +1,16 @@
+# ==========================================================================
+# Dedmonwakeen's Raid DPS/TPS Simulator.
+# Send questions to natehieter@gmail.com
+# ==========================================================================
 
-# WARNING!  WARNING!  WARNING!
-#
-# THESE OPTIMIZATION FLAGS ARE VALID ONLY FOR SSE-ENABLED SYSTEMS!
-# MOST MODERN PROCESSORS SHOULD SUPPORT SSE.
-#
-# WARNING!  WARNING!  WARNING!
+# To build debuggable executable, add OPTS=-g to make invocation
 
-PG   =
+OPTS = -O3 
 BITS = 32
-MCP  = -DHAVE_SSE2 -msse -msse2 -mfpmath=sse
-OPTS = -maccumulate-outgoing-args -O3 
 
 ifneq (64,${BITS})
 	OPTS += -malign-double 
 endif
-
-INC = -I. -I./sfmt
 
 SRC =\
 	sc_action.cpp		\
@@ -46,28 +41,18 @@ SRC =\
 
 # For POSIX-compiant platforms...
 
-simcraft: $(SRC) Makefile
-	g++ $(PG) $(MCP) $(OPTS) -Wall $(INC) $(SRC) -lpthread -o simcraft
-
-debug:
-	g++ $(PG) $(MCP) -g -Wall $(INC) $(SRC) -lpthread -o simcraft
+simcraft unix: $(SRC) Makefile
+	g++ $(OPTS) -Wall $(SRC) -lpthread -o simcraft
 
 # For Windows platform... (using MinGW)
-# No SSE currently, since it crashes simcraft with SFMT and multiple threads
 
 windows:
-	g++ $(OPTS) -Wall $(INC) $(SRC) -o simcraft
-
-windows-debug:
-	g++ -g -Wall $(INC) $(SRC) -o simcraft
+	g++ $(OPTS) -Wall $(SRC) -o simcraft
 
 # For MAC platform...
 
 mac:
-	g++ -arch ppc -arch i386 $(MCP) -O3 -Wall $(INC) $(SRC) -lpthread -o simcraft
-
-mac-debug:
-	g++ -arch ppc -arch i386 $(MCP) -g -Wall $(INC) $(SRC) -lpthread -o simcraft
+	g++ -arch ppc -arch i386 $(OPTS) -Wall $(SRC) -lpthread -o simcraft
 
 REV=0
 tarball:
