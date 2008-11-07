@@ -11,6 +11,12 @@
 #  define _CRT_SECURE_NO_WARNINGS
 #endif
 
+#if defined( _MSC_VER )
+#include "./vs/stdint.h"
+#else
+#include <stdint.h>
+#endif
+
 #include <stdarg.h>
 #include <float.h>
 #include <time.h>
@@ -22,7 +28,6 @@
 #include <assert.h>
 #include <ctype.h>
 #include <stdio.h>
-#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
@@ -1047,7 +1052,6 @@ struct action_t
   action_t** observer;
   action_t* next;
   action_t* sequence;
-  std::vector<action_t*> same_list;
 
   action_t( int8_t type, const char* name, player_t* p=0, int8_t r=RESOURCE_NONE, int8_t s=SCHOOL_NONE, int8_t t=TREE_NONE );
   virtual ~action_t() {}

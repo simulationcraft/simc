@@ -41,7 +41,7 @@ SRC =\
 
 # For POSIX-compiant platforms...
 
-simcraft unix: $(SRC) Makefile
+simcraft unix: $(SRC) simcraft.h Makefile
 	g++ $(OPTS) -Wall $(SRC) -lpthread -o simcraft
 
 # For Windows platform... (using MinGW)
