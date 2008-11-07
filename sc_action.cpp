@@ -295,7 +295,7 @@ double action_t::calculate_direct_damage()
     else
     {
       double delta = rank -> dd_max - rank -> dd_min;
-      base_direct_dmg = rank -> dd_min + delta * rand_t::gen_float();
+      base_direct_dmg = rank -> dd_min + delta * sim -> rng -> real();
     }
   }
 

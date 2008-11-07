@@ -9,9 +9,9 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 
 // trigger_judgement_of_wisdom ==============================================
 
-static void trigger_judgement_of_wisdom( action_t* action )
+static void trigger_judgement_of_wisdom( action_t* a )
 {
-  player_t* p = action -> player;
+  player_t* p = a -> player;
 
   double jow = p -> sim -> target -> debuffs.judgement_of_wisdom;
   if( jow == 0 ) return;
@@ -21,7 +21,7 @@ static void trigger_judgement_of_wisdom( action_t* action )
   if( max_mana <= 0 )
     return;
 
-  if( ! rand_t::roll( 0.25 ) )
+  if( ! a -> sim -> roll( 0.25 ) )
     return;
 
   p -> procs.judgement_of_wisdom -> occur();

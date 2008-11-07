@@ -35,7 +35,7 @@ static void trigger_mystical_skyfire( spell_t* s )
 
   if( p -> gear.mystical_skyfire                                    &&
       s -> sim -> cooldown_ready( p -> cooldowns.mystical_skyfire ) &&
-      rand_t::roll( 0.15 ) )
+      s -> sim -> roll( 0.15 ) )
   {
     p -> procs.mystical_skyfire -> occur();
     new ( s -> sim ) mystical_skyfire_expiration_t( s -> sim, p );
@@ -67,7 +67,7 @@ static void trigger_spellstrike( spell_t* s )
 
   player_t* p = s -> player;
 
-  if( p -> gear.spellstrike && rand_t::roll( 0.05 ) )
+  if( p -> gear.spellstrike && s -> sim -> roll( 0.05 ) )
   {
     p -> procs.spellstrike -> occur();
 
@@ -109,7 +109,7 @@ static void trigger_wrath_of_cenarius( spell_t* s )
 
   player_t* p = s -> player;
 
-  if( p -> gear.wrath_of_cenarius && rand_t::roll( 0.05 ) )
+  if( p -> gear.wrath_of_cenarius && s -> sim -> roll( 0.05 ) )
   {
     p -> procs.wrath_of_cenarius -> occur();
 
@@ -151,7 +151,7 @@ static void trigger_elder_scribes( spell_t* s )
 
   if(  p -> gear.elder_scribes                                    && 
        s -> sim -> cooldown_ready( p -> cooldowns.elder_scribes ) &&
-       rand_t::roll( 0.05 ) )
+       s -> sim -> roll( 0.05 ) )
   {
     p -> procs.elder_scribes -> occur();
     new ( s -> sim ) elder_scribes_expiration_t( s -> sim, p );
@@ -183,7 +183,7 @@ static void trigger_eternal_sage( spell_t* s )
 
   if(  p -> gear.eternal_sage                                    && 
        s -> sim -> cooldown_ready( p -> cooldowns.eternal_sage ) &&
-       rand_t::roll( 0.10 ) )
+       s -> sim -> roll( 0.10 ) )
   {
     p -> procs.eternal_sage -> occur();
     new ( s -> sim ) eternal_sage_expiration_t( s -> sim, p );
@@ -255,7 +255,7 @@ static void trigger_shiffars_nexus_horn( spell_t* s )
 
   if( p ->        gear.shiffars_nexus_horn                             && 
       s -> sim -> cooldown_ready( p -> cooldowns.shiffars_nexus_horn ) &&
-      rand_t::roll( 0.20 ) )
+      s -> sim -> roll( 0.20 ) )
   {
     p -> procs.shiffars_nexus_horn -> occur();
     new ( s -> sim ) shiffars_nexus_horn_expiration_t( s -> sim, p );
@@ -287,7 +287,7 @@ static void trigger_sextant_of_unstable_currents( spell_t* s )
 
   if( p ->        gear.sextant_of_unstable_currents                             && 
       s -> sim -> cooldown_ready( p -> cooldowns.sextant_of_unstable_currents ) &&
-      rand_t::roll( 0.20 ) )
+      s -> sim -> roll( 0.20 ) )
   {
     p -> procs.sextant_of_unstable_currents -> occur();
     new ( s -> sim ) sextant_of_unstable_currents_expiration_t( s -> sim, p );
@@ -323,7 +323,7 @@ static void trigger_quagmirrans_eye( spell_t* s )
 
   if( p ->        gear.quagmirrans_eye                             && 
       s -> sim -> cooldown_ready( p -> cooldowns.quagmirrans_eye ) && 
-      rand_t::roll( 0.10 ) )
+      s -> sim -> roll( 0.10 ) )
   {
     p -> procs.quagmirrans_eye -> occur();
     new ( s -> sim ) quagmirrans_eye_expiration_t( s -> sim, p );
@@ -521,7 +521,7 @@ static void trigger_timbals_crystal( spell_t* s )
     }
 
     if( p -> actions.timbals_discharge -> ready() && 
-	rand_t::roll( 0.10 ) )
+	s -> sim -> roll( 0.10 ) )
     {
       p -> procs.timbals_crystal -> occur();
       p -> actions.timbals_discharge -> execute();
@@ -575,7 +575,7 @@ static void trigger_mark_of_defiance( spell_t* s )
 
   if( p -> gear.mark_of_defiance                                    && 
       s -> sim -> cooldown_ready( p -> cooldowns.mark_of_defiance ) && 
-      rand_t::roll( 0.15 ) )
+      s -> sim -> roll( 0.15 ) )
   {
     {
       p -> procs.mark_of_defiance -> occur();

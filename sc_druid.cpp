@@ -235,7 +235,7 @@ static void trigger_omen_of_clarity( action_t* a )
   double time_to_proc = 60.0 / PPM;
   double proc_chance = execute_time / time_to_proc;
 
-  if( rand_t::roll( proc_chance ) )
+  if( a -> sim -> rng -> roll( proc_chance ) )
   {
     p -> buffs_omen_of_clarity = 1;
     p -> procs_omen_of_clarity -> occur();
@@ -308,7 +308,7 @@ static void trigger_eclipse_wrath( spell_t* s )
 
   if( p -> talents.eclipse != 0 && 
       s -> sim -> cooldown_ready( p -> cooldowns_eclipse ) &&
-      rand_t::roll( p -> talents.eclipse * 0.20 ) )
+      s -> sim -> roll( p -> talents.eclipse * 0.20 ) )
   {
     p -> expirations_eclipse = new ( s -> sim ) expiration_t( s -> sim, p );
   }
@@ -341,7 +341,7 @@ static void trigger_eclipse_starfire( spell_t* s )
 
   if( p -> talents.eclipse != 0 && 
       s -> sim -> cooldown_ready( p -> cooldowns_eclipse ) &&
-      rand_t::roll( p -> talents.eclipse * 1.0/3 ) )
+      s -> sim -> roll( p -> talents.eclipse * 1.0/3 ) )
   {
     p -> expirations_eclipse = new ( s -> sim ) expiration_t( s -> sim, p );
   }
@@ -370,7 +370,7 @@ static void trigger_ashtongue_talisman( spell_t* s )
 
   player_t* p = s -> player;
 
-  if( p -> gear.ashtongue_talisman && rand_t::roll( 0.25 ) )
+  if( p -> gear.ashtongue_talisman && s -> sim -> roll( 0.25 ) )
   {
     p -> procs.ashtongue_talisman -> occur();
 
@@ -460,7 +460,7 @@ void druid_spell_t::execute()
     }
     if( p -> buffs_natures_grace == 0 )
     {
-      if( rand_t::roll( p -> talents.natures_grace / 3.0 ) )
+      if( sim -> roll( p -> talents.natures_grace / 3.0 ) )
       {
 	p -> aura_gain( "Natures Grace" );
 	p -> buffs_natures_grace = 1;
@@ -471,7 +471,7 @@ void druid_spell_t::execute()
 
   trigger_omen_of_clarity( this );
 
-  if( p -> gear.tier4_2pc && rand_t::roll( 0.05 ) )
+  if( p -> gear.tier4_2pc && sim -> roll( 0.05 ) )
   {
     p -> resource_gain( RESOURCE_MANA, 120.0, p -> gains.tier4_2pc );
   }

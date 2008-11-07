@@ -41,7 +41,7 @@ static void trigger_spellsurge( spell_t* s )
 
   if( s -> player -> gear.spellsurge && 
       s -> player -> expirations.spellsurge <= s -> sim -> current_time &&
-      rand_t::roll( 0.15 ) )
+      s -> sim -> roll( 0.15 ) )
   {
     for( player_t* p = s -> sim -> player_list; p; p = p -> next )
     {
@@ -112,7 +112,7 @@ static void trigger_mongoose( attack_t* a )
   double PPM = 1.2;
   double swing_time = a -> time_to_execute;
 
-  if( w -> proc_per_minute_on_swing( PPM, swing_time ) )
+  if( a -> sim -> roll( w -> proc_chance_on_swing( PPM, swing_time ) ) )
   {
     if( e )
     {
@@ -161,7 +161,7 @@ static void trigger_executioner( attack_t* a )
   double PPM = 1.2;
   double swing_time = a -> time_to_execute;
 
-  if( w -> proc_per_minute_on_swing( PPM, swing_time ) )
+  if( a -> sim -> roll( w -> proc_chance_on_swing( PPM, swing_time ) ) )
   {
     event_t*& e = p -> expirations.executioner;
 

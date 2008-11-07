@@ -24,9 +24,9 @@ SRC =\
 	sc_pet.cpp		\
 	sc_player.cpp		\
 	sc_priest.cpp		\
-	sc_rand.cpp		\
 	sc_rating.cpp		\
 	sc_report.cpp		\
+	sc_rng.cpp		\
 	sc_shaman.cpp		\
 	sc_scaling.cpp		\
 	sc_sim.cpp		\

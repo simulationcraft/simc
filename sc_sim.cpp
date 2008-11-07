@@ -12,13 +12,13 @@
 // sim_t::sim_t =============================================================
 
 sim_t::sim_t( sim_t* p ) : 
-  parent(p), event_list(0), free_list(0), player_list(0), active_player(0),
+  parent(p), rng(0), event_list(0), free_list(0), player_list(0), active_player(0),
   lag(0), pet_lag(0), channel_penalty(0), gcd_penalty(0), reaction_time(0.5), 
   regen_periodicity(1.0), current_time(0), max_time(0),
   events_remaining(0), max_events_remaining(0), 
   events_processed(0), total_events_processed(0),
   seed(0), id(0), iterations(1), threads(0),
-  potion_sickness(1), average_dmg(1), log(0), debug(0), timestamp(1), 
+  potion_sickness(1), average_dmg(1), log(0), debug(0), timestamp(1), sfmt(1),
   raid_dps(0), total_dmg(0), total_seconds(0), elapsed_cpu_seconds(0), merge_ignite(0),
   output_file(stdout), html_file(0), wiki_file(0), thread_handle(0)
 {
@@ -60,7 +60,8 @@ sim_t::~sim_t()
     free_list = e -> next;
     event_t::deallocate( e );
   }
-  
+
+  if( rng     ) delete rng;
   if( target  ) delete target;
   if( report  ) delete report;
   if( scaling ) delete scaling;
@@ -201,10 +202,9 @@ void sim_t::reset()
 
 bool sim_t::init()
 {
+  rng = rng_t::init( sfmt );
+  
   total_seconds = 0;
-
-  if( seed == 0 ) seed = (int32_t) time( NULL );
-  rand_t::init( seed );
 
   if( ! patch_str.empty() )
   {
@@ -601,6 +601,7 @@ bool sim_t::parse_option( const std::string& name,
     { "pet_lag",                          OPT_FLT,    &( pet_lag                                  ) },
     { "potion_sickness",                  OPT_INT8,   &( potion_sickness                          ) },
     { "seed",                             OPT_INT32,  &( seed                                     ) },
+    { "sfmt",                             OPT_INT8,   &( sfmt                                     ) },
     { "timestamp",                        OPT_INT8,   &( timestamp                                ) },
     { "wiki",                             OPT_STRING, &( wiki_file_str                            ) },
     { NULL, OPT_UNKNOWN }
@@ -656,6 +657,9 @@ int main( int argc, char** argv )
     fprintf( sim.output_file, "ERROR! Incorrect option format..\n" );
     exit( 0 );
   }
+
+  if( sim.seed == 0 ) sim.seed = (int32_t) time( NULL );
+  srand( sim.seed );
 
   fprintf( sim.output_file, 
 	   "\n"

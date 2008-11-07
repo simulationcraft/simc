@@ -5,6 +5,10 @@
 
 #include "simcraft.h"
 
+// ==========================================================================
+// SFMT Random Number Generator
+// ==========================================================================
+
 /** 
  * SIMD oriented Fast Mersenne Twister(SFMT) pseudorandom number generator
  *
@@ -50,21 +54,19 @@ struct w128_t
   uint32_t u[4];
 };
 
-struct rand_sfmt_t
+struct rng_sfmt_t : public rng_t
 {
-  // the 128-bit internal state array 
-  w128_t sfmt[N];
+  w128_t sfmt[N]; // the 128-bit internal state array 
 
-  // the 32bit integer pointer to the 128-bit internal state array 
-  uint32_t *psfmt32;
+  uint32_t *psfmt32; // the 32bit integer pointer to the 128-bit internal state array 
 
-  // index counter to the 32-bit internal state array 
-  int idx;
+  int idx; // index counter to the 32-bit internal state array 
+  
+  rng_sfmt_t();
 
-  rand_sfmt_t() { psfmt32 = &sfmt[0].u[0]; idx = N32; }
+  virtual ~rng_sfmt_t() {}
+  virtual double real();
 };
-
-static rand_sfmt_t rand_sfmt;
 
 inline static void period_certification( w128_t* sfmt, uint32_t* psfmt32 ) 
 {
@@ -94,10 +96,10 @@ inline static void period_certification( w128_t* sfmt, uint32_t* psfmt32 )
     }
 }
 
-inline static void init_gen_rand( rand_sfmt_t& r, uint32_t seed )
+inline static void init_gen_rand( rng_sfmt_t* r, uint32_t seed )
 {
-    w128_t*   sfmt    = r.sfmt;
-    uint32_t* psfmt32 = r.psfmt32;
+    w128_t*   sfmt    = r -> sfmt;
+    uint32_t* psfmt32 = r -> psfmt32;
 
     int i;
 
@@ -173,42 +175,75 @@ inline static void gen_rand_all( w128_t*   sfmt,
     }
 }
 
-inline static uint32_t gen_rand32(rand_sfmt_t& r)
+inline static uint32_t gen_rand32(rng_sfmt_t* r)
 {
-    if (r.idx >= N32) {
-        gen_rand_all(r.sfmt, r.psfmt32);
-	r.idx = 0;
+    if (r->idx >= N32) {
+        gen_rand_all(r->sfmt, r->psfmt32);
+	r->idx = 0;
     }
-    return r.psfmt32[r.idx++];
+    return r->psfmt32[r->idx++];
 }
 
-inline static double gen_rand_real(rand_sfmt_t& r)
+inline static double gen_rand_real(rng_sfmt_t* r)
 {
   return gen_rand32(r) * ( 1.0 / 4294967295.0 );  // divide by 2^32-1 
 }
 
-void rand_t::init( uint32_t seed )
-{
-#if defined( NO_SFMT )
-  srand( seed );
-#else
-  init_gen_rand( rand_sfmt, seed );
-#endif
+// ==========================================================================
+// SFMT Random Number Generator
+// ==========================================================================
+
+// rng_sfmt_t::rng_sfmt_t ===================================================
+
+rng_sfmt_t::rng_sfmt_t() 
+{ 
+  psfmt32 = &sfmt[0].u[0]; 
+  idx = N32; 
+
+  init_gen_rand( this, rand() );
 }
 
-double rand_t::gen_float()
+// rng_sfmt_t::real ==========================================================
+
+double rng_sfmt_t::real()
 {
-#if defined( NO_SFMT )
-  return rand() * ( 1.0 / ( ( (double) RAND_MAX ) + 1.0 ) )
-#else
-  return gen_rand_real( rand_sfmt );
-#endif
+  return gen_rand_real( this );
 }
 
-int8_t rand_t::roll( double chance )
+// ==========================================================================
+// Standard Random Number Generator
+// ==========================================================================
+
+// rng_t::real ==============================================================
+
+double rng_t::real()
+{
+  return rand() * ( 1.0 / ( ( (double) RAND_MAX ) + 1.0 ) );
+}
+
+// rng_t::roll ==============================================================
+
+int8_t rng_t::roll( double chance )
 {
   if( chance <= 0 ) return 0;
   if( chance >= 1 ) return 1;
 
-  return ( gen_float() < chance ) ? 1 : 0;
+  return ( real() < chance ) ? 1 : 0;
 }
+
+// ==========================================================================
+// Choosing the RNG package.........
+// ==========================================================================
+
+rng_t* rng_t::init( int8_t sfmt )
+{
+  if( sfmt )
+  {
+    return new rng_sfmt_t();
+  }
+  else
+  {
+    return new rng_t();
+  }
+}
+

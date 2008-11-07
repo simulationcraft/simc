@@ -64,6 +64,7 @@ struct shaman_t;
 struct sim_t;
 struct rank_t;
 struct rating_t;
+struct rng_t;
 struct scaling_t;
 struct stats_t;
 struct spell_t;
@@ -73,6 +74,16 @@ struct uptime_t;
 struct warlock_t;
 struct warrior_t;
 struct weapon_t;
+
+// Random Number Generation ==================================================
+
+struct rng_t
+{
+  static rng_t* init( int8_t sfmt );
+  virtual int8_t roll( double chance );
+  virtual double real();
+  virtual ~rng_t() {}
+};
 
 // Event =====================================================================
 
@@ -216,6 +227,7 @@ struct sim_t
   sim_t*      parent;
   std::string patch_str;
   patch_t     patch;
+  rng_t*      rng;
   event_t*    event_list;
   event_t*    free_list;
   player_t*   player_list;
@@ -227,7 +239,7 @@ struct sim_t
   int32_t     events_processed, total_events_processed;
   int32_t     seed, id, iterations, threads;
   int8_t      infinite_resource[ RESOURCE_MAX ];
-  int8_t      potion_sickness, average_dmg, log, debug, timestamp;
+  int8_t      potion_sickness, average_dmg, log, debug, timestamp, sfmt;
 
   // Default Gear Profile
   struct gear_default_t
@@ -299,6 +311,7 @@ struct sim_t
   void      print_options();
   bool      time_to_think( double proc_time ) { if( proc_time == 0 ) return false; return current_time - proc_time > reaction_time; }
   bool      cooldown_ready( double cooldown_time ) { return cooldown_time <= current_time; }
+  int8_t    roll( double chance ) { return rng -> roll( chance ); }
   player_t* find_player( const std::string& name );
 };
 
@@ -366,7 +379,7 @@ struct weapon_t
 
   int    group();
   double normalized_weapon_speed();
-  int8_t proc_per_minute_on_swing( double PPM, double adjusted_swing_time=0 );
+  double proc_chance_on_swing( double PPM, double adjusted_swing_time=0 );
 
   weapon_t( int t=WEAPON_NONE, double d=0, double st=2.0, int s=SCHOOL_PHYSICAL ) : 
     type(t), school(s), damage(d), swing_time(st), enchant(WEAPON_ENCHANT_NONE), buff(WEAPON_BUFF_NONE), buff_bonus(0), main(true) {}
@@ -1382,16 +1395,6 @@ struct option_t
   static bool parse( sim_t*, option_t*, const std::string& name, const std::string& value );
   static bool parse( sim_t*, char* line );
   static bool parse( sim_t*, int argc, char** argv );
-};
-
-// Random Number Generation ==================================================
-
-struct rand_t
-{
-  static void     init( uint32_t seed );
-  static uint32_t gen_uint32();
-  static double   gen_float();
-  static int8_t   roll( double chance );
 };
 
 // Utilities =================================================================

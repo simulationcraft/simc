@@ -848,7 +848,7 @@ static void trigger_tier4_2pc( spell_t* s )
 
   if( p -> gear.tier4_2pc )
   {
-    if( rand_t::roll( 0.05 ) )
+    if( s -> sim -> roll( 0.05 ) )
     {
       event_t*& e = ( s -> school == SCHOOL_SHADOW ) ? p -> expirations_shadow_flame : p -> expirations_flame_shadow;
 
@@ -970,7 +970,7 @@ static void trigger_nightfall( spell_t* s )
 
   if( p -> talents.nightfall && ! p -> buffs_shadow_trance )
   {
-    if( rand_t::roll( 0.02 * p -> talents.nightfall ) )
+    if( s -> sim -> roll( 0.02 * p -> talents.nightfall ) )
     {
       p -> procs_shadow_trance -> occur();
       p -> aura_gain( "Shadow Trance" );
@@ -987,7 +987,7 @@ static void trigger_corruption_glyph( spell_t* s )
 
   if( p -> glyphs.corruption && ! p -> buffs_shadow_trance )
   {
-    if( rand_t::roll( 0.04 ) )
+    if( s -> sim -> roll( 0.04 ) )
     {
       p -> procs_shadow_trance -> occur();
       p -> aura_gain( "Shadow Trance" );
@@ -1004,7 +1004,7 @@ static void trigger_soul_leech( spell_t* s )
 
   if( p -> talents.soul_leech )
   {
-    if( rand_t::roll( 0.10 * p -> talents.soul_leech ) )
+    if( s -> sim -> roll( 0.10 * p -> talents.soul_leech ) )
     {
       p -> resource_gain( RESOURCE_HEALTH, s -> direct_dmg * 0.20 );
 
@@ -1123,7 +1123,7 @@ static void trigger_molten_core( spell_t* s )
 
   if( ! p -> talents.molten_core ) return;
 
-  if( rand_t::roll( p -> talents.molten_core * 0.05 ) )
+  if( s -> sim -> roll( p -> talents.molten_core * 0.05 ) )
   {
     event_t*&  e = p -> expirations_molten_core;
 
@@ -1165,7 +1165,7 @@ static void trigger_eradication( spell_t* s )
 
   if( s -> sim -> cooldown_ready( p -> cooldowns_eradication ) )
   {
-    if( rand_t::roll( p -> talents.eradication * 0.04 ) )
+    if( s -> sim -> roll( p -> talents.eradication * 0.04 ) )
     {
       p -> cooldowns_eradication = s -> sim -> current_time + 30;
       new ( s -> sim ) expiration_t( s -> sim, p );
@@ -1203,7 +1203,7 @@ static void trigger_everlasting_affliction( spell_t* s )
 
   if( ! p -> active_corruption ) return;
 
-  if( rand_t::roll( p -> talents.everlasting_affliction * 0.20 ) )
+  if( s -> sim -> roll( p -> talents.everlasting_affliction * 0.20 ) )
   {
     p -> active_corruption -> refresh_duration();
   }
@@ -1241,7 +1241,7 @@ static void trigger_pandemic( spell_t* s )
 
   // Currently, Pandemic takes player crit into account.
 
-  if( rand_t::roll( s -> player_crit ) )
+  if( s -> sim -> roll( s -> player_crit ) )
   {
     if( ! p -> active_pandemic ) p -> active_pandemic = new pandemic_t( p );
 
@@ -1277,7 +1277,7 @@ static void trigger_empowered_imp( spell_t* s )
 
   if( ! o -> talents.empowered_imp ) return;
 
-  if( rand_t::roll( o -> talents.empowered_imp / 3.0 ) )
+  if( s -> sim -> roll( o -> talents.empowered_imp / 3.0 ) )
   {
     event_t*& e = o -> expirations_empowered_imp;
 
@@ -1440,7 +1440,7 @@ static void trigger_ashtongue_talisman( spell_t* s )
 
   player_t* p = s -> player;
 
-  if( p -> gear.ashtongue_talisman && rand_t::roll( 0.20 ) )
+  if( p -> gear.ashtongue_talisman && s -> sim -> roll( 0.20 ) )
   {
     p -> procs.ashtongue_talisman -> occur();
 

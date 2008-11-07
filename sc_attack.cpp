@@ -220,7 +220,7 @@ void attack_t::calculate_result()
 
   int num_results = build_table( chances, results );
 
-  double random = rand_t::gen_float();
+  double random = sim -> rng -> real();
 
   for( int i=0; i < num_results; i++ )
   {
@@ -234,7 +234,7 @@ void attack_t::calculate_result()
 
   if( binary && result_is_hit() )
   {
-    if( rand_t::roll( resistance() ) )
+    if( sim -> roll( resistance() ) )
     {
       result = RESULT_RESIST;
     }

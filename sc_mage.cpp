@@ -599,7 +599,7 @@ static void trigger_arcane_concentration( spell_t* s )
 
   if( ! p -> talents.arcane_concentration ) return;
 
-  if( rand_t::roll( p -> talents.arcane_concentration * 0.02 ) )
+  if( s -> sim -> roll( p -> talents.arcane_concentration * 0.02 ) )
   {
     p -> procs_clearcasting -> occur();
     p -> buffs_clearcasting = s -> sim -> current_time;
@@ -631,7 +631,7 @@ static void stack_winters_chill( spell_t* s )
 
   mage_t* p = s -> player -> cast_mage();
 
-  if( rand_t::roll( p -> talents.winters_chill / 3.0 ) )
+  if( s -> sim -> roll( p -> talents.winters_chill / 3.0 ) )
   {
     target_t* t = s -> sim -> target;
 
@@ -686,8 +686,7 @@ static void trigger_frostbite( spell_t* s )
 
   int level_diff = t -> level - p -> level;
 
-  if( ( level_diff <= 1 ) && 
-      rand_t::roll( p -> talents.frostbite * 0.05 ) )
+  if( ( level_diff <= 1 ) && s -> sim -> roll( p -> talents.frostbite * 0.05 ) )
   {
     event_t*& e = t -> expirations.frozen;
     
@@ -730,7 +729,7 @@ static void trigger_winters_grasp( spell_t* s )
 
   mage_t* p = s -> player -> cast_mage();
 
-  if( rand_t::roll( p -> talents.winters_grasp * 0.05 ) )
+  if( s -> sim -> roll( p -> talents.winters_grasp * 0.05 ) )
   {
     event_t*& e = s -> sim -> target -> expirations.winters_grasp;
     
@@ -778,7 +777,7 @@ static void trigger_fingers_of_frost( spell_t* s )
 
   mage_t* p = s -> player -> cast_mage();
 
-  if( rand_t::roll( p -> talents.fingers_of_frost * 0.15/2 ) )
+  if( s -> sim -> roll( p -> talents.fingers_of_frost * 0.15/2 ) )
   {
     p -> buffs_fingers_of_frost = 2;
     p -> buffs_shatter_combo = 0;
@@ -794,8 +793,7 @@ static void trigger_brain_freeze( spell_t* s )
 
   mage_t* p = s -> player -> cast_mage();
 
-  if( ! p -> buffs_brain_freeze &&
-      rand_t::roll( p -> talents.brain_freeze * 0.05 ) )
+  if( ! p -> buffs_brain_freeze && s -> sim -> roll( p -> talents.brain_freeze * 0.05 ) )
   {
     p -> buffs_brain_freeze = s -> sim -> current_time;
   }
@@ -810,7 +808,7 @@ static void trigger_hot_streak( spell_t* s )
   if( p -> talents.hot_streak )
   {
     if( s -> result == RESULT_CRIT && 
-	rand_t::roll( p -> talents.hot_streak * (1/3.0) ) )
+	s -> sim -> roll( p -> talents.hot_streak * (1/3.0) ) )
     {
       p -> buffs_hot_streak++;
 
@@ -850,7 +848,7 @@ static void stack_improved_scorch( spell_t* s )
     }
   };
 
-  if( rand_t::roll( p -> talents.improved_scorch / 3.0 ) )
+  if( s -> sim -> roll( p -> talents.improved_scorch / 3.0 ) )
   {
     target_t* t = s -> sim -> target;
 
@@ -890,7 +888,7 @@ static void trigger_missile_barrage( spell_t* s )
   if(   p -> talents.missile_barrage && 
       ! p ->   buffs_missile_barrage )
   {
-    if( rand_t::roll( p -> talents.missile_barrage * 0.04 ) )
+    if( s -> sim -> roll( p -> talents.missile_barrage * 0.04 ) )
     {
       p -> buffs_missile_barrage = s -> sim -> current_time;
     }
@@ -922,7 +920,7 @@ static void trigger_ashtongue_talisman( spell_t* s )
 
   player_t* p = s -> player;
 
-  if( p -> gear.ashtongue_talisman && rand_t::roll( 0.50 ) )
+  if( p -> gear.ashtongue_talisman && s -> sim -> roll( 0.50 ) )
   {
     p -> procs.ashtongue_talisman -> occur();
 

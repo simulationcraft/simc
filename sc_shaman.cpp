@@ -395,7 +395,7 @@ static void trigger_windfury_weapon( attack_t* a )
 
   if( ! a -> sim -> cooldown_ready( p -> cooldowns_windfury_weapon ) ) return;
 
-  if( rand_t::roll( 0.20 ) )
+  if( a -> sim -> roll( 0.20 ) )
   {
     if( ! p -> windfury_weapon_attack )
     {
@@ -435,7 +435,7 @@ static void stack_maelstrom_weapon( attack_t* a )
     }
   };
 
-  if( a -> weapon -> proc_per_minute_on_swing( 10.0 ) )
+  if( a -> sim -> roll( a -> weapon -> proc_chance_on_swing( 10.0 ) ) )
   {
     if( p -> buffs_maelstrom_weapon < 5 ) 
     {
@@ -547,7 +547,7 @@ static void trigger_tier5_4pc( spell_t* s )
 
   shaman_t* p = s -> player -> cast_shaman();
 
-  if( p -> gear.tier5_4pc && rand_t::roll( 0.25 ) )
+  if( p -> gear.tier5_4pc && s -> sim -> roll( 0.25 ) )
   {
     p -> resource_gain( RESOURCE_MANA, 120.0, p -> gains.tier5_4pc );
   }
@@ -559,7 +559,7 @@ static void trigger_ashtongue_talisman( spell_t* s )
 {
   shaman_t* p = s -> player -> cast_shaman();
 
-  if( p -> gear.ashtongue_talisman && rand_t::roll( 0.15 ) )
+  if( p -> gear.ashtongue_talisman && s -> sim -> roll( 0.15 ) )
   {
     p -> resource_gain( RESOURCE_MANA, 110.0, p -> gains.ashtongue_talisman );
   }
@@ -574,7 +574,7 @@ static void trigger_lightning_overload( spell_t* s,
 
   if( p -> talents.lightning_overload == 0 ) return;
 
-  if( ! s -> proc && rand_t::roll( p -> talents.lightning_overload * 0.04 ) )
+  if( ! s -> proc && s -> sim -> roll( p -> talents.lightning_overload * 0.04 ) )
   {
     p -> procs_lightning_overload -> occur();
 
@@ -736,7 +736,7 @@ void shaman_attack_t::assess_damage( double amount,
 
   if( ! proc && num_ticks == 0 && p -> buffs_lightning_charges > 0 )
   {
-    if( rand_t::roll( p -> talents.static_shock * 0.02 ) )
+    if( sim -> roll( p -> talents.static_shock * 0.02 ) )
     {
       p -> buffs_lightning_charges--;
       p -> active_lightning_charge -> execute();
@@ -986,7 +986,7 @@ void shaman_spell_t::execute()
 
       if( p -> gear.tier4_4pc )
       {
-        p -> buffs.tier4_4pc = rand_t::roll( 0.11 ) ;
+        p -> buffs.tier4_4pc = sim -> roll( 0.11 ) ;
       }
     }
   }

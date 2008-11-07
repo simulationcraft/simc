@@ -256,7 +256,7 @@ static void stack_shadow_weaving( spell_t* s )
     }
   };
 
-  if( rand_t::roll( p -> talents.shadow_weaving * (1.0/3) ) )
+  if( s -> sim -> roll( p -> talents.shadow_weaving * (1.0/3) ) )
   {
     sim_t* sim = s -> sim;
 
@@ -315,7 +315,7 @@ static void push_tier5_2pc( spell_t*s )
 
   assert( p -> buffs.tier5_2pc == 0 );
 
-  if( p -> gear.tier5_2pc && rand_t::roll( 0.06 ) )
+  if( p -> gear.tier5_2pc && s -> sim -> roll( 0.06 ) )
   {
     p -> buffs.tier5_2pc = 1;
     p -> buffs.mana_cost_reduction += 150;
@@ -345,7 +345,7 @@ static void push_tier5_4pc( spell_t*s )
 
   if(   p ->  gear.tier5_4pc && 
       ! p -> buffs.tier5_4pc &&
-	rand_t::roll( 0.40 ) )
+	s -> sim -> roll( 0.40 ) )
   {
     p -> buffs.tier5_4pc = 1;
     p -> spell_power[ SCHOOL_MAX ] += 100;
@@ -389,7 +389,7 @@ static void trigger_ashtongue_talisman( spell_t* s )
 
   player_t* p = s -> player;
 
-  if( p -> gear.ashtongue_talisman && rand_t::roll( 0.10 ) )
+  if( p -> gear.ashtongue_talisman && s -> sim -> roll( 0.10 ) )
   {
     p -> procs.ashtongue_talisman -> occur();
 
@@ -413,7 +413,7 @@ static void trigger_surge_of_light( spell_t* s )
   priest_t* p = s -> player -> cast_priest();
 
   if( p -> talents.surge_of_light )
-    if( rand_t::roll( p -> talents.surge_of_light * 0.25 ) )
+    if( s -> sim -> roll( p -> talents.surge_of_light * 0.25 ) )
       p -> buffs_surge_of_light = 1;
 }
 
@@ -1298,6 +1298,14 @@ struct mind_flay_t : public priest_spell_t
         tick_dmg = direct_dmg;
         assess_damage( tick_dmg, DMG_OVER_TIME );
       }
+
+      if( p -> active_shadow_word_pain )
+      {
+	if( sim -> roll( p -> talents.pain_and_suffering * (1.0/3.0) ) )
+        {
+	  p -> active_shadow_word_pain -> refresh_duration();
+	}
+      }
     }
     else
     {
@@ -1656,15 +1664,6 @@ void priest_t::spell_hit_event( spell_t* s )
   {
     stack_shadow_weaving( s );
     if( s -> num_ticks && ! s -> channeled ) push_misery( s );
-  }
-
-  if (!strcmp(s -> name(), "mind_flay"))
-  {
-      action_t* swp = this -> active_shadow_word_pain;
-      if( swp && rand_t::roll( this -> talents.pain_and_suffering * (1.0/3.0) ) )
-      {
-        swp -> refresh_duration();
-      }
   }
 
   if( s -> result == RESULT_CRIT )
