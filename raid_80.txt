@@ -54,7 +54,7 @@ infinite_mana=0
 # improvement is worth the slight inaccuracy.
 regen_periodicity=1.0
 
-# Some WotLK beta patches have included a Potion Sickness debuff that only lows one potion consumed per combat.
+# Some WotLK beta patches have included a Potion Sickness debuff that only allows one potion consumed per combat.
 potion_sickness=1
 
 # I'm really not sure what to put here.  I imagine that WotLK bosses will have armor close to 10k......  
@@ -86,6 +86,16 @@ scale_crit_rating=200
 scale_haste_rating=200
 
 # ================================================================================================
+# General Action Options
+# ================================================================================================
+
+# (1) The "min=1000,max=2000,trigger=3000" option to mana_potion and mana_gem represents
+#     the min/max mana gained and the amount below the player's maximum mana required to trigger the action.
+#     min/max or trigger can be left out:
+#     "trigger=3000" stands for "min=3000,max=3000,trigger=3000"
+#     "min=1000,max=2000" stands for "min=1000,max=2000,trigger=2000"
+
+# ================================================================================================
 # Druids
 # ================================================================================================
 
@@ -98,14 +108,14 @@ scale_haste_rating=200
 #
 # Balance Druid (Starfire)
 #
-# (1) The "trigger=3500" option to mana_potion represents the mana gained and the amount below max required to trigger
+# (1) The "trigger=4300" option to mana_potion represents the mana gained and the amount below max required to trigger
 # (2) The "eclipse=trigger" option to wrath will make sure that it is only used to trigger the Eclipse talent
 #     which means it will only be used after the cooldown is ready and the effect has not yet proc'd.
 #
 druid=Druid_58_0_13_SF
 level=80
 talents=http://wotlk.wowhead.com/?talent=0xG0uiGsIdIVhouZbxczb
-actions=flask,type=blinding_light/mark_of_the_wild/moonkin_form/mana_potion,trigger=3500/innervate
+actions=flask,type=blinding_light/mark_of_the_wild/moonkin_form/mana_potion,trigger=4300/innervate
 actions+=/treants/moonfire/insect_swarm/wrath,eclipse=trigger/starfire
 enchant_hit_rating=-25
 enchant_haste_rating=+25
@@ -126,14 +136,14 @@ swift_retribution=1
 #
 # Balance Druid (Wrath)
 #
-# (1) The "trigger=3500" option to mana_potion represents the mana gained and the amount below max required to trigger
+# (1) The "trigger=4300" option to mana_potion represents the mana gained and the amount below max required to trigger
 # (2) The "eclipse=trigger" option to starfire will make sure that it is only used to trigger the Eclipse talent
 #     which means it will only be used after the cooldown is ready and the effect has not yet proc'd.
 #
 druid=Druid_58_0_13_W
 level=80
 talents=http://wotlk.wowhead.com/?talent=0xG0uiGsIdIVhouZbxczb
-actions=flask,type=blinding_light/mark_of_the_wild/moonkin_form/mana_potion,trigger=3500/innervate
+actions=flask,type=blinding_light/mark_of_the_wild/moonkin_form/mana_potion,trigger=4300/innervate
 actions+=/treants/moonfire/insect_swarm/starfire,eclipse=trigger/wrath
 enchant_hit_rating=-25
 enchant_haste_rating=+25
@@ -154,14 +164,14 @@ swift_retribution=1
 #
 # Balance Druid (Wrath, Faerie Fire)
 #
-# (1) The "trigger=3500" option to mana_potion represents the mana gained and the amount below max required to trigger
+# (1) The "trigger=4300" option to mana_potion represents the mana gained and the amount below max required to trigger
 # (2) The "eclipse=trigger" option to starfire will make sure that it is only used to trigger the Eclipse talent
 #     which means it will only be used after the cooldown is ready and the effect has not yet proc'd.
 #
 druid=Druid_58_0_13_W_FF
 level=80
 talents=http://wotlk.wowhead.com/?talent=0xG0uiGsIdIVhouZbxczb
-actions=flask,type=blinding_light/mark_of_the_wild/moonkin_form/mana_potion,trigger=3500/innervate
+actions=flask,type=blinding_light/mark_of_the_wild/moonkin_form/mana_potion,trigger=4300/innervate
 actions+=/faerie_fire/treants/moonfire/insect_swarm/starfire,eclipse=trigger/wrath
 enchant_hit_rating=-25
 enchant_haste_rating=+25
@@ -206,7 +216,7 @@ mage=Mage_52_19_0_Slow
 level=80
 talents=http://wotlk.wowhead.com/?talent=of0Vck0IzxGh0ted0Ec0R0h
 actions=flask,type=blinding_light/molten_armor/focus_magic,target=Mage_52_19_0
-actions+=/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000
+actions+=/mana_gem,trigger=3500/mana_potion,trigger=4300/evocation,trigger=10000
 actions+=/mirror_image/slow/arcane_missiles,barrage=1/presence_of_mind,pyroblast/arcane_barrage/fire_ball
 chaotic_skyfire=1
 # Glyphs
@@ -226,7 +236,7 @@ mage=Mage_52_19_0
 level=80
 talents=http://wotlk.wowhead.com/?talent=of0Vck0IzxGh0ted0Ec0R0h
 actions=flask,type=blinding_light/molten_armor/focus_magic,target=Mage_20_51_0
-actions+=/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000
+actions+=/mana_gem,trigger=3500/mana_potion,trigger=4300/evocation,trigger=10000
 actions+=/mirror_image/arcane_missiles,barrage=1/presence_of_mind,pyroblast/arcane_barrage/fire_ball
 chaotic_skyfire=1
 # Glyphs
@@ -254,7 +264,7 @@ level=80
 # We will let the poor Frost Mage raid-slave keep up the IS/WC debuff
 talents=http://wotlk.wowhead.com/?talent=of0Vck0fZ0Ec0RhIhVubhct
 actions=flask,type=pure_death/arcane_brilliance/molten_armor/focus_magic,target=Mage_18_0_53
-actions+=/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000
+actions+=/mana_gem,trigger=3500/mana_potion,trigger=4300/evocation,trigger=10000
 actions+=/scorch,debuff=1/mirror_image/combustion/living_bomb/pyroblast,hot_streak=1/fire_ball
 # We will let the poor Frost Mage raid-slave keep up the Improved Scorch debuff
 skip_actions=scorch
@@ -286,7 +296,7 @@ mage=Mage_18_0_53
 level=80
 talents=http://wotlk.wowhead.com/?talent=of0Vck0cZZVIccRcu0f0gfsx
 actions=flask,type=pure_death/arcane_brilliance/molten_armor/focus_magic,target=Mage_52_19_0_Slow
-actions+=/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000
+actions+=/mana_gem,trigger=3500/mana_potion,trigger=4300/evocation,trigger=10000
 actions+=/mirror_image/ice_lance,frozen=1,fb_priority=1/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/frost_bolt
 chaotic_skyfire=1
 # Glyphs
@@ -318,7 +328,7 @@ mage=Mage_0_53_18
 level=80
 talents=http://wotlk.wowhead.com/?talent=oZfVc0RhIuVubhstbIccoc
 actions=flask,type=pure_death/arcane_brilliance/molten_armor
-actions+=/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000
+actions+=/mana_gem,trigger=3500/mana_potion,trigger=4300/evocation,trigger=10000
 actions+=/scorch,debuff=1/mirror_image/combustion/icy_veins/living_bomb/pyroblast,hot_streak=1/frostfire_bolt
 # We will let the poor Frost Mage raid-slave keep up the IS/WC debuff
 skip_actions=scorch
@@ -352,7 +362,7 @@ swift_retribution=1
 priest=Priest_14_0_57
 level=80
 talents=http://wotlk.wowhead.com/?talent=bVcbzhZZG0fVRfzfiqfzAo
-actions=flask,type=pure_death/inner_fire/shadow_form/mana_potion,trigger=3500/shadow_fiend,trigger=6000/dispersion
+actions=flask,type=pure_death/inner_fire/shadow_form/mana_potion,trigger=4300/shadow_fiend,trigger=6000/dispersion
 actions+=/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/shadow_word_death,mb_wait=0,mb_priority=0/mind_flay,mb_wait=0
 chaotic_skyfire=1
 glyph_shadow_word_pain=1
@@ -377,7 +387,7 @@ swift_retribution=1
 priest=Priest_14_0_57_NoSWD
 level=80
 talents=http://wotlk.wowhead.com/?talent=bVcbzhZZG0fVRfzfiqfzAo
-actions=flask,type=pure_death/inner_fire/shadow_form/mana_potion,trigger=3500/shadow_fiend,trigger=6000/dispersion
+actions=flask,type=pure_death/inner_fire/shadow_form/mana_potion,trigger=4300/shadow_fiend,trigger=6000/dispersion
 actions+=/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/mind_flay
 chaotic_skyfire=1
 glyph_shadow_word_pain=1
@@ -402,7 +412,7 @@ swift_retribution=1
 priest=Priest_38_28_5
 level=80
 talents=http://wotlk.wowhead.com/?talent=bVcbkhxtrxo0bZ0Et0bbqbZG
-actions=flask,type=blinding_light/inner_fire/divine_spirit/mana_potion,trigger=3500/shadow_fiend,trigger=6000
+actions=flask,type=blinding_light/inner_fire/divine_spirit/mana_potion,trigger=4300/shadow_fiend,trigger=6000
 actions+=/inner_focus,shadow_word_pain/shadow_word_pain/power_infusion/holy_fire/mind_blast/smite
 enchant_hit_rating=+75
 enchant_haste_rating=-75
@@ -442,7 +452,7 @@ swift_retribution=1
 shaman=Shaman_54_17_0
 level=80
 talents=http://wotlk.wowhead.com/?talent=hEhzq0detMxsthxxco
-actions=flask,type=blinding_light/flametongue_weapon,weapon=main/water_shield/mana_potion,trigger=3500
+actions=flask,type=blinding_light/flametongue_weapon,weapon=main/water_shield/mana_potion,trigger=4300
 actions+=/mana_spring_totem/totem_of_wrath/wrath_of_air_totem/water_shield
 actions+=/elemental_mastery/flame_shock/lava_burst,flame_shock=1/bloodlust,target_pct=35/chain_lightning/lightning_bolt/thunderstorm
 gear_spirit=0

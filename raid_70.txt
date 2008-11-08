@@ -42,7 +42,7 @@ infinite_mana=0
 # improvement is worth the slight inaccuracy.
 regen_periodicity=1.0
 
-# Some WotLK beta patches have included a Potion Sickness debuff that only lows one potion consumed per combat.
+# Some WotLK beta patches have included a Potion Sickness debuff that only allows one potion consumed per combat.
 potion_sickness=1
 
 # Since support for the Warrior class does not yet exist, one can infer a Sunder Armor debuff by 
@@ -54,6 +54,16 @@ sunder_armor=2600
 # Judgement of Wisdom) and player buffs (such as Blessing of Wisdom and Sanctified Retribution) as parameters.
 # Both blessing_of_wisdom=1 and sanctified_retribution=1 would be included in each player section as appropriate.
 judgement_of_wisdom=1
+
+# ================================================================================================
+# General Action Options
+# ================================================================================================
+
+# (1) The "min=1000,max=2000,trigger=3000" option to mana_potion and mana_gem represents
+#     the min/max mana gained and the amount below the player's maximum mana required to trigger the action.
+#     min/max or trigger can be left out:
+#     "trigger=3000" stands for "min=3000,max=3000,trigger=3000"
+#     "min=1000,max=2000" stands for "min=1000,max=2000,trigger=2000"
 
 #
 # Shadow Priest
@@ -127,7 +137,7 @@ swift_retribution=1
 priest=Priest_34_0_27
 level=70
 talents=http://talent.mmo-champion.com/?priest=050320113050510250100000000023505100202005200000000000000000000000000000000000000
-actions=flask,type=blinding_light/inner_fire/divine_spirit/mana_potion,trigger=3500/shadow_fiend,trigger=6000/inner_focus,shadow_word_pain/shadow_word_pain/power_infusion/holy_fire/smite
+actions=flask,type=blinding_light/inner_fire/divine_spirit/mana_potion,trigger=2500/shadow_fiend,trigger=6000/inner_focus,shadow_word_pain/shadow_word_pain/power_infusion/holy_fire/smite
 gear_stamina=360
 gear_intellect=360
 gear_spirit=140
@@ -171,8 +181,8 @@ swift_retribution=1
 mage=Mage_51_10_0_Slow
 level=70
 talents=http://talent.mmo-champion.com/?mage=00550000000000000000000000000000000000000000000000000000230005033100330130323000514321
-actions=flask,type=blinding_light/molten_armor/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/slow/arcane_missiles,barrage=1/presence_of_mind,fire_ball/arcane_barrage/fire_ball
-# actions=flask,type=blinding_light/molten_armor/focus_magic,target=Mage_51_10_0/mana_gem,trigger=3500/mana_potion,trigger=3500/evocation,trigger=10000/slow/arcane_missiles,barrage=1/presence_of_mind,fire_ball/arcane_barrage/fire_ball
+actions=flask,type=blinding_light/molten_armor/mana_gem,trigger=2500/mana_potion,trigger=2500/evocation,trigger=10000/slow/arcane_missiles,barrage=1/presence_of_mind,fire_ball/arcane_barrage/fire_ball
+# actions=flask,type=blinding_light/molten_armor/focus_magic,target=Mage_51_10_0/mana_gem,trigger=2500/mana_potion,trigger=2500/evocation,trigger=10000/slow/arcane_missiles,barrage=1/presence_of_mind,fire_ball/arcane_barrage/fire_ball
 gear_stamina=360
 gear_intellect=360
 gear_spirit=140

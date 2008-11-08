@@ -146,23 +146,29 @@ struct destruction_potion_t : public action_t
 struct mana_potion_t : public action_t
 {
   int16_t trigger;
-  int16_t mana;
+  int16_t min;
+  int16_t max;
   int8_t  used;
 
   mana_potion_t( player_t* p, const std::string& options_str ) : 
-    action_t( ACTION_USE, "mana_potion", p ), trigger(0), mana(0), used(0)
+    action_t( ACTION_USE, "mana_potion", p ), trigger(0), min(0), max(0), used(0)
   {
     option_t options[] =
     {
-      { "mana",    OPT_INT16, &mana    },
+      { "min",     OPT_INT16, &min     },
+      { "max",     OPT_INT16, &max     },
       { "trigger", OPT_INT16, &trigger },
       { NULL }
     };
     parse_options( options, options_str );
 
-    if( mana    == 0 ) mana = trigger;
-    if( trigger == 0 ) trigger = mana;
-    assert( mana > 0 && trigger > 0 );
+    if( min == 0 && max == 0) min = max = trigger;
+
+    if( min > max) { int16_t tmp = min; min = max; max = tmp;}    
+
+    if( max == 0 ) max = trigger;
+    if( trigger == 0 ) trigger = max;
+    assert( max > 0 && trigger > 0 );
 
     cooldown = 120.0;
     cooldown_group = "potion";
@@ -173,7 +179,10 @@ struct mana_potion_t : public action_t
   virtual void execute()
   {
     if( sim -> log ) report_t::log( sim, "%s uses Mana potion", player -> name() );
-    player -> resource_gain( RESOURCE_MANA, mana, player -> gains.mana_potion );
+    int16_t delta = max - min;
+    // FIXME! I hope the gain between min and max are distributed uniformly
+    double gain   = min + delta * player -> sim -> rng -> real();
+    player -> resource_gain( RESOURCE_MANA, gain, player -> gains.mana_potion );
     player -> share_cooldown( cooldown_group, cooldown );
     used = sim -> potion_sickness;
   }
@@ -199,27 +208,35 @@ struct mana_potion_t : public action_t
 
 // ==========================================================================
 // Mana Gem
+// FIXME! Mages can only have 3 charges (every 2 min) per unique gem, so we
+// might need introduce more than one gem type/option
 // ==========================================================================
 
 struct mana_gem_t : public action_t
 {
   int16_t trigger;
-  int16_t mana;
+  int16_t min;
+  int16_t max;
 
   mana_gem_t( player_t* p, const std::string& options_str ) : 
-    action_t( ACTION_USE, "mana_gem", p ), trigger(0), mana(0)
+    action_t( ACTION_USE, "mana_gem", p ), trigger(0), min(0), max(0)
   {
     option_t options[] =
     {
-      { "mana",    OPT_INT16, &mana    },
+      { "min",     OPT_INT16, &min     },
+      { "max",     OPT_INT16, &max     },
       { "trigger", OPT_INT16, &trigger },
       { NULL }
     };
     parse_options( options, options_str );
 
-    if( mana    == 0 ) mana = trigger;
-    if( trigger == 0 ) trigger = mana;
-    assert( mana > 0 && trigger > 0 );
+    if( min == 0 && max == 0) min = max = trigger;
+
+    if( min > max) { int16_t tmp = min; min = max; max = tmp;}    
+
+    if( max == 0 ) max = trigger;
+    if( trigger == 0 ) trigger = max;
+    assert( max > 0 && trigger > 0 );
 
     cooldown = 120.0;
     cooldown_group = "rune";
@@ -230,7 +247,10 @@ struct mana_gem_t : public action_t
   virtual void execute()
   {
     if( sim -> log ) report_t::log( sim, "%s uses Mana Gem", player -> name() );
-    player -> resource_gain( RESOURCE_MANA, mana, player -> gains.mana_gem );
+    int16_t delta = max - min;
+    // FIXME! I hope the gain between min and max are distributed uniformly
+    double gain   = min + delta * player -> sim -> rng -> real();
+    player -> resource_gain( RESOURCE_MANA, gain, player -> gains.mana_gem );
     player -> share_cooldown( cooldown_group, cooldown );
   }
 
