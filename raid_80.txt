@@ -333,9 +333,6 @@ actions+=/scorch,debuff=1/mirror_image/combustion/icy_veins/living_bomb/pyroblas
 # We will let the poor Frost Mage raid-slave keep up the IS/WC debuff
 skip_actions=scorch
 chaotic_skyfire=1
-# Make up for lack of Elemental Precision
-enchant_hit_rating=+75
-enchant_haste_rating=-75
 # Glyphs
 glyph_molten_armor=1
 glyph_frostfire=1
