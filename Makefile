@@ -56,7 +56,7 @@ mac:
 
 REV=0
 tarball:
-	tar -cvf simcraft-r$(REV).tar $(SRC) simcraft.h sfmt/* Makefile raid_70.txt raid_80.txt
+	tar -cvf simcraft-r$(REV).tar $(SRC) simcraft.h Makefile raid_70.txt raid_80.txt
 	gzip simcraft-r$(REV).tar
 
 clean:
