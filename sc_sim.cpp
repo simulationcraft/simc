@@ -667,6 +667,7 @@ int main( int argc, char** argv )
 	   "\n"
 	   "Generating baseline... (iterations=%d, max_time=%.0f, target_health=%.0f)\n",
 	   sim.patch_str.c_str(), sim.iterations, sim.max_time, sim.target -> initial_health );
+  fflush( sim.output_file );
 
   sim.execute();
 

@@ -498,8 +498,8 @@ gear_haste_rating=75
 chaotic_skyfire=1
 # Hateful Gladiator Weapons
 main_hand=mace,damage=373,speed=2.6,enchant=mongoose
-off_hand=dagger,damage=200,speed=1.4,enchant=mongoose
-#off_hand=mace,damage=373,speed=2.6,enchant=mongoose
+#off_hand=dagger,damage=200,speed=1.4,enchant=mongoose
+off_hand=mace,damage=373,speed=2.6,enchant=mongoose
 # Glyphs
 glyph_windfury_weapon=1
 glyph_stormstrike=1
@@ -510,6 +510,7 @@ blessing_of_kings=1
 blessing_of_might=550
 sanctified_retribution=1
 swift_retribution=1
+leader_of_the_pack=1
 quiet=1
 active=owner
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.

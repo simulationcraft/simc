@@ -311,6 +311,7 @@ struct spirit_wolf_pet_t : public pet_t
 
     base_attack_power = -20;
     initial_attack_power_per_strength = 2.0;
+    initial_attack_crit_per_agility = rating_t::interpolate( level, 0.01/25.0, 0.01/40.0, 0.01/83.3 );
 
     melee = new melee_t( this );
   }
@@ -734,7 +735,7 @@ void shaman_attack_t::assess_damage( double amount,
 
   attack_t::assess_damage( amount, dmg_type );
 
-  if( ! proc && num_ticks == 0 && p -> buffs_lightning_charges > 0 )
+  if( num_ticks == 0 && p -> buffs_lightning_charges > 0 )
   {
     if( sim -> roll( p -> talents.static_shock * 0.02 ) )
     {
@@ -1677,9 +1678,9 @@ struct searing_totem_t : public shaman_spell_t
     rank = choose_rank( ranks );
 
     base_execute_time = 0; 
-    base_tick_time    = 2.0;
-    direct_power_mod  = 0.08;
-    num_ticks         = 30;
+    base_tick_time    = 2.5;
+    direct_power_mod  = base_tick_time / 15.0;
+    num_ticks         = 24;
     may_crit          = true;
     duration_group    = "fire_totem";
     trigger_gcd       = 1.0;

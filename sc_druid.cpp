@@ -48,7 +48,6 @@ struct druid_t : public player_t
     int8_t  dreamstate;
     int8_t  earth_and_moon;
     int8_t  eclipse;
-    int8_t  focused_starlight;
     int8_t  force_of_nature;
     int8_t  furor;
     int8_t  genesis;
@@ -907,7 +906,6 @@ struct starfire_t : public druid_spell_t
     base_cost         *= 1.0 - p -> talents.moonglow * 0.03;
     base_execute_time -= p -> talents.starlight_wrath * 0.1;
     base_multiplier   *= 1.0 + p -> talents.moonfury * 0.10/3;
-    base_crit         += p -> talents.focused_starlight * 0.02;
     base_crit         += p -> talents.natures_majesty * 0.02;
     base_crit_bonus   *= 1.0 + p -> talents.vengeance * 0.20;
     direct_power_mod  += p -> talents.wrath_of_cenarius * 0.04;
@@ -1027,7 +1025,6 @@ struct wrath_t : public druid_spell_t
     base_cost         *= 1.0 - p -> talents.moonglow * 0.03;
     base_execute_time -= p -> talents.starlight_wrath * 0.1;
     base_multiplier   *= 1.0 + p -> talents.moonfury * 0.10/3;
-    base_crit         += p -> talents.focused_starlight * 0.02;
     base_crit         += p -> talents.natures_majesty * 0.02;
     base_crit_bonus   *= 1.0 + p -> talents.vengeance * 0.20;
     direct_power_mod  += p -> talents.wrath_of_cenarius * 0.02;
@@ -1387,7 +1384,6 @@ bool druid_t::parse_option( const std::string& name,
     { "dreamstate",                OPT_INT8,  &( talents.dreamstate                ) },
     { "earth_and_moon",            OPT_INT8,  &( talents.earth_and_moon            ) },
     { "eclipse",                   OPT_INT8,  &( talents.eclipse                   ) },
-    { "focused_starlight",         OPT_INT8,  &( talents.focused_starlight         ) },
     { "force_of_nature",           OPT_INT8,  &( talents.force_of_nature           ) },
     { "furor",                     OPT_INT8,  &( talents.furor                     ) },
     { "genesis",                   OPT_INT8,  &( talents.genesis                   ) },

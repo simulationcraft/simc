@@ -141,10 +141,6 @@ void action_t::player_buff()
       player_multiplier *= 1.15;
     }
   }
-  else if( school == SCHOOL_HOLY )
-  {
-    if( p -> buffs.sanctity_aura ) player_multiplier *= 1.10 + 0.01 * ( p -> buffs.sanctity_aura - 1 );
-  }
 
   if( p -> buffs.sanctified_retribution ) player_multiplier *= 1.03;
 
