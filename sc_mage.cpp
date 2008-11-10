@@ -1486,7 +1486,7 @@ struct slow_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
     assert( p -> talents.slow );
-    base_cost = p -> resource_base[ RESOURCE_MANA ] * 0.20;
+    base_cost = p -> resource_base[ RESOURCE_MANA ] * 0.12;
   }
    
   virtual void execute()
@@ -2120,6 +2120,15 @@ struct frost_bolt_t : public mage_spell_t
 
     if( p -> gear.tier6_4pc    ) base_multiplier *= 1.05;
     if( p -> glyphs.frost_bolt ) base_multiplier *= 1.05;
+  }
+
+  virtual void player_buff()
+  {
+    mage_t* p = player -> cast_mage();
+    mage_spell_t::player_buff();
+
+    int snared = sim -> target -> debuffs.snared() ? 1 : 0;
+    player_multiplier *= 1.0 + snared * p -> talents.torment_the_weak * 0.04;
   }
 
   virtual void execute()
