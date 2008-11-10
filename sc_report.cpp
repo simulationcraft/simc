@@ -604,7 +604,9 @@ const char* report_t::chart_raid_gear( std::string& s )
     data_points[ 0 ][ i ] = ( p -> gear.attribute[ ATTR_STRENGTH  ] + p -> gear.attribute_enchant[ ATTR_STRENGTH  ] );
     data_points[ 1 ][ i ] = ( p -> gear.attribute[ ATTR_AGILITY   ] + p -> gear.attribute_enchant[ ATTR_AGILITY   ] );
     data_points[ 2 ][ i ] = ( p -> gear.attribute[ ATTR_INTELLECT ] + p -> gear.attribute_enchant[ ATTR_INTELLECT ] );
-    data_points[ 3 ][ i ] = ( p -> gear.attribute[ ATTR_SPIRIT    ] + p -> gear.attribute_enchant[ ATTR_SPIRIT    ] );
+
+    data_points[ 3 ][ i ] = ( ( p -> gear.attribute[ ATTR_SPIRIT ] + p -> gear.attribute_enchant[ ATTR_SPIRIT ] ) +
+			      ( p -> gear.mp5 + p -> gear.mp5_enchant ) * 2.5 );
 
     data_points[ 4 ][ i ] = ( p -> gear.attack_power              + p -> gear.attack_power_enchant              ) * 0.5;
     data_points[ 5 ][ i ] = ( p -> gear.spell_power[ SCHOOL_MAX ] + p -> gear.spell_power_enchant[ SCHOOL_MAX ] ) * 0.86;
@@ -671,7 +673,7 @@ const char* report_t::chart_raid_gear( std::string& s )
   s += "&";
   s += "chxs=0,000000,15";
   s += "&";
-  s += "chdl=Strength|Agility|Intellect|Spirit|Attack+Power|Spell+Power|Hit+Rating|Crit+Rating|Haste+Rating|Expertise+Rating|Penetration";
+  s += "chdl=Strength|Agility|Intellect|Spirit/MP5|Attack+Power|Spell+Power|Hit+Rating|Crit+Rating|Haste+Rating|Expertise+Rating|Penetration";
   s += "&";
   s += "chtt=Gear+Overview";
   s += "&";

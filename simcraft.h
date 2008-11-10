@@ -237,7 +237,7 @@ struct sim_t
   double      current_time, max_time;
   int32_t     events_remaining, max_events_remaining;
   int32_t     events_processed, total_events_processed;
-  int32_t     seed, id, iterations, threads;
+  int32_t     seed, id, iterations, current_iteration, threads;
   int8_t      infinite_resource[ RESOURCE_MAX ];
   int8_t      potion_sickness, average_dmg, log, debug, timestamp, sfmt;
 
@@ -292,7 +292,9 @@ struct sim_t
   sim_t( sim_t* parent=0 );
  ~sim_t();
 
-  void      simulate();
+  void      combat( int iteration );
+  void      combat_begin();
+  void      combat_end();
   void      add_event( event_t*, double delta_time );
   void      reschedule_event( event_t* );
   void      flush_events();
@@ -301,7 +303,6 @@ struct sim_t
   void      reset();
   bool      init();
   void      analyze();
-  void      analyze( int iteration );
   void      merge( sim_t& other_sim );
   void      merge();
   void      iterate();
@@ -743,7 +744,10 @@ struct player_t
   virtual void init_actions();
   virtual void init_rating();
   virtual void init_stats();
+
   virtual void reset();
+  virtual void combat_begin();
+  virtual void combat_end();
 
   virtual double composite_attack_power();
   virtual double composite_attack_crit();

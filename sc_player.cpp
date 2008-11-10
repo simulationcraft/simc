@@ -702,6 +702,41 @@ double player_t::stamina()   { return composite_attribute_multiplier( ATTR_STAMI
 double player_t::intellect() { return composite_attribute_multiplier( ATTR_INTELLECT ) * attribute[ ATTR_INTELLECT ]; }
 double player_t::spirit()    { return composite_attribute_multiplier( ATTR_SPIRIT    ) * attribute[ ATTR_SPIRIT    ]; }
 
+// player_t::combat_begin ==================================================
+
+void player_t::combat_begin() 
+{
+  if( sim -> debug ) report_t::log( sim, "Combat begins for player %s", name() );   
+
+  if( action_list && ! is_pet() && ! sleeping ) 
+  {
+    schedule_ready();
+  }
+
+  double max_mana = resource_max[ RESOURCE_MANA ];
+  if( max_mana > 0 ) get_gain( "initial_mana" ) -> add( max_mana );
+}
+
+// player_t::combat_end ====================================================
+
+void player_t::combat_end() 
+{
+  if( sim -> debug ) report_t::log( sim, "Combat ends for player %s", name() );   
+
+  double iteration_seconds = last_action;
+
+  if( iteration_seconds > 0 )
+  {
+    total_seconds += iteration_seconds;
+
+    for( pet_t* pet = pet_list; pet; pet = pet -> next_pet ) 
+    {
+      iteration_dmg += pet -> iteration_dmg;
+    }
+    iteration_dps[ sim -> current_iteration ] = iteration_dmg / iteration_seconds;
+  }
+}
+
 // player_t::reset =========================================================
 
 void player_t::reset() 
@@ -773,13 +808,9 @@ void player_t::reset()
   expirations.reset();
   cooldowns.reset();
   
-  if( action_list )
+  for( action_t* a = action_list; a; a = a -> next ) 
   {
-    for( action_t* a = action_list; a; a = a -> next ) 
-    {
-      a -> reset();
-    }
-    if( ! is_pet() && ! sleeping ) schedule_ready();
+    a -> reset();
   }
 
   if( sleeping ) quiet = 1;
