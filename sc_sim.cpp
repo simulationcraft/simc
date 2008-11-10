@@ -415,6 +415,23 @@ void sim_t::analyze()
     p -> dps_std_dev /= iterations;
     p -> dps_std_dev = sqrt( p -> dps_std_dev );
     p -> dps_error = 2.0 * p -> dps_std_dev / sqrt( (float) iterations );
+
+    if( ( p -> dps_max - p -> dps_min ) > 0 )
+    {
+      int num_buckets = 50;
+      double min = p -> dps_min - 1;
+      double max = p -> dps_max + 1;
+      double range = max - min;
+
+      p -> dps_distribution.insert( p -> dps_distribution.begin(), num_buckets, 0 );
+
+      for( int i=0; i < iterations; i++ )
+      {
+	double i_dps = p -> iteration_dps[ i ];
+	int index = (int) ( num_buckets * ( i_dps - min ) / range );
+	p -> dps_distribution[ index ]++;
+      }
+    }
   }
 
   std::sort( players_by_rank.begin(), players_by_rank.end(), compare_dps()  );

@@ -1213,6 +1213,51 @@ const char* report_t::chart_timeline( std::string& s, player_t* p )
   return s.c_str();
 }
 
+// report_t::chart_distribution ===============================================
+
+const char* report_t::chart_distribution( std::string& s, player_t* p )
+{
+  int max_buckets = p -> dps_distribution.size();
+
+  int32_t count_max=0;
+  for( int i=0; i < max_buckets; i++ ) 
+  {
+    if( p -> dps_distribution[ i ] > count_max ) 
+    {
+      count_max = p -> dps_distribution[ i ];
+    }
+  }
+
+  char buffer[ 1024 ];
+
+  s = "http://chart.apis.google.com/chart?";
+  s += "chs=500x130";
+  s += "&";
+  s += "cht=bvs";
+  s += "&";
+  s += "chd=t:";
+  for( int i=0; i < max_buckets; i++ ) 
+  {
+    sprintf( buffer, "%s%d", (i?",":""), p -> dps_distribution[ i ] ); s += buffer;
+  }
+  s += "&";
+  sprintf( buffer, "chds=0,%d", count_max ); s += buffer;
+  s += "&";
+  s += "chbh=5";
+  s += "&";
+  s += "chxt=x";
+  s += "&";
+  sprintf( buffer, "chxl=0:|%.0f|%.0f|%.0f", p -> dps_min, p -> dps, p -> dps_max ); s += buffer;
+  s += "&";
+  sprintf( buffer, "chxp=0,%.0f,100", 100.0 * ( p -> dps - p -> dps_min ) / ( p -> dps_max - p -> dps_min ) ); s += buffer;
+  s += "&";
+  sprintf( buffer, "chtt=%s+DPS+Distribution", p -> name() ); s += buffer;
+  s += "&";
+  s += "chts=000000,20";
+
+  return s.c_str();
+}
+
 // report_t::chart_html ======================================================
 
 void report_t::chart_html()
@@ -1295,6 +1340,9 @@ void report_t::chart_html()
 
     fprintf( sim -> html_file, "<! %s DPS Timeline>\n", p -> name() );
     fprintf( sim -> html_file, "<img src=\"%s\" />", chart_timeline( buffer, p ) );
+
+    fprintf( sim -> html_file, "<! %s DPS Distribution>\n", p -> name() );
+    fprintf( sim -> html_file, "<img src=\"%s\" />", chart_distribution( buffer, p ) );
 
     fprintf( sim -> html_file, "<hr>\n" );
   }
@@ -1433,6 +1481,7 @@ void report_t::chart_wiki()
     std::string action_dmg        = "No chart for Damage Sources";
     std::string gains             = "No chart for Resource Gains";
     std::string timeline          = "No chart for DPS Timeline";
+    std::string distribution      = "No chart for DPS Distribution";
 
     img = chart_action_dpet( buffer, p );
     if( img )
@@ -1464,6 +1513,11 @@ void report_t::chart_wiki()
       timeline = img;
       timeline += "&dummy=dummy.png";
     }
+    if( img )
+    {
+      distribution = img;
+      distribution += "&dummy=dummy.png";
+    }
 
     fprintf( sim -> wiki_file, "\n" );
     fprintf( sim -> wiki_file, "----\n" );
@@ -1474,7 +1528,7 @@ void report_t::chart_wiki()
     fprintf( sim -> wiki_file, "\n" );
     fprintf( sim -> wiki_file, "|| %s || %s ||\n", action_dpet.c_str(), uptimes_and_procs.c_str() );
     fprintf( sim -> wiki_file, "|| %s || %s ||\n", action_dmg.c_str(),  gains.c_str() );
-    fprintf( sim -> wiki_file, "|| %s ||\n", timeline.c_str() );
+    fprintf( sim -> wiki_file, "|| %s || %s ||\n", timeline.c_str(), distribution.c_str() );
   }
 }
 

@@ -477,7 +477,8 @@ struct player_t
   double    iteration_dmg, total_dmg;
   double    resource_lost  [ RESOURCE_MAX ];
   double    resource_gained[ RESOURCE_MAX ];
-  double    dps, dps_min, dps_max, dps_std_dev, dps_error, dpr, rps_gain, rps_loss;
+  double    dps, dps_min, dps_max, dps_std_dev, dps_error;
+  double    dpr, rps_gain, rps_loss;
   proc_t*   proc_list;
   gain_t*   gain_list;
   stats_t*  stats_list;
@@ -485,6 +486,7 @@ struct player_t
   std::vector<double> timeline_dmg;
   std::vector<double> timeline_dps;
   std::vector<double> iteration_dps;
+  std::vector<int32_t> dps_distribution;
 
   struct gear_t
   {
@@ -1360,6 +1362,7 @@ struct report_t
   const char* chart_gains            ( std::string& s, player_t* );
   const char* chart_uptimes_and_procs( std::string& s, player_t* );
   const char* chart_timeline         ( std::string& s, player_t* );
+  const char* chart_distribution     ( std::string& s, player_t* );
   void html_scale_factors();
   void chart_html();
   void wiki_scale_factors();
