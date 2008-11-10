@@ -200,6 +200,8 @@ struct mage_t : public player_t
   virtual void regen( double periodicity );
 };
 
+namespace { // ANONYMOUS NAMESPACE ==========================================
+
 // ==========================================================================
 // Mage Spell
 // ==========================================================================
@@ -401,8 +403,6 @@ struct mirror_image_pet_t : public pet_t
     }
   }
 };
-
-namespace { // ANONYMOUS NAMESPACE ==========================================
 
 // trigger_tier5_4pc ========================================================
 
@@ -936,8 +936,6 @@ static void trigger_ashtongue_talisman( spell_t* s )
     }
   }
 }
-
-} // ANONYMOUS NAMESPACE ===================================================
 
 // =========================================================================
 // Mage Spell
@@ -2533,6 +2531,12 @@ struct mirror_image_spell_t : public mage_spell_t
     player -> summon_pet( "mirror_image" );
   }
 };
+
+} // ANONYMOUS NAMESPACE ===================================================
+
+// ==========================================================================
+// Mage Character Definition
+// ==========================================================================
 
 // mage_t::create_action ====================================================
 

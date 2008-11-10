@@ -141,6 +141,8 @@ struct priest_t : public player_t
   virtual void spell_damage_event( spell_t*, double amount, int8_t dmg_type );
 };
 
+namespace { // ANONYMOUS NAMESPACE ==========================================
+
 // ==========================================================================
 // Priest Spell
 // ==========================================================================
@@ -229,8 +231,6 @@ struct shadow_fiend_pet_t : public pet_t
     melee -> execute(); // Kick-off repeating attack
   }
 };
-
-namespace { // ANONYMOUS NAMESPACE ==========================================
 
 // stack_shadow_weaving =====================================================
 
@@ -502,8 +502,6 @@ static void trigger_glyph_of_shadow( spell_t* s )
     }
   }
 }
-
-} // ANONYMOUS NAMESPACE ====================================================
 
 // ==========================================================================
 // Priest Spell
@@ -1649,6 +1647,8 @@ struct shadow_fiend_spell_t : public priest_spell_t
 	    player -> resource_current[ RESOURCE_MANA ] ) > trigger;
   }
 };
+
+} // ANONYMOUS NAMESPACE ====================================================
 
 // ==========================================================================
 // Priest Event Tracking

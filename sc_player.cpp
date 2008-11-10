@@ -580,6 +580,7 @@ void player_t::init_stats()
 
   gains.ashtongue_talisman    = get_gain( "ashtongue_talisman" );
   gains.dark_rune             = get_gain( "dark_rune" );
+  gains.energy_regen          = get_gain( "energy_regen" );
   gains.innervate             = get_gain( "innervate" );
   gains.judgement_of_wisdom   = get_gain( "judgement_of_wisdom" );
   gains.mana_gem              = get_gain( "mana_gem" );
@@ -587,11 +588,11 @@ void player_t::init_stats()
   gains.mana_spring           = get_gain( "mana_spring" );
   gains.mana_tide             = get_gain( "mana_tide" );
   gains.mark_of_defiance      = get_gain( "mark_of_defiance" );
-  gains.mp5_regen             = get_gain( "mp5" );
+  gains.mp5_regen             = get_gain( "mp5_regen" );
   gains.replenishment         = get_gain( "replenishment" );
   gains.restore_mana          = get_gain( "restore_mana" );
   gains.spellsurge            = get_gain( "spellsurge" );
-  gains.spirit_regen          = get_gain( "spirit" );
+  gains.spirit_regen          = get_gain( "spirit_regen" );
   gains.vampiric_touch        = get_gain( "vampiric_touch" );
   gains.water_elemental_regen = get_gain( "water_elemental" );
   gains.tier4_2pc             = get_gain( "tier4_2pc" );
@@ -905,39 +906,47 @@ action_t* player_t::execute_action()
 
 void player_t::regen( double periodicity )
 {
-  if( sim -> infinite_resource[ RESOURCE_MANA ] != 0 ) return;
-
-  double spirit_regen = periodicity * spirit_regen_per_second();
-
-  if( buffs.innervate )
+  if( sim -> infinite_resource[ RESOURCE_ENERGY ] == 0 && resource_max[ RESOURCE_ENERGY ] > 0 )
   {
-    spirit_regen *= 4.0;
+    double energy_regen = periodicity * 20.0 / 2.0;
 
-    resource_gain( RESOURCE_MANA, spirit_regen, gains.innervate );
-  }
-  else if( recent_cast() )
-  {
-    spirit_regen *= spirit_regen_while_casting;
-
-    resource_gain( RESOURCE_MANA, spirit_regen, gains.spirit_regen );
+    resource_gain( RESOURCE_ENERGY, energy_regen, gains.energy_regen );
   }
 
-  double mp5_regen = periodicity * ( mp5 + intellect() * mp5_per_intellect ) / 5.0;
-
-  resource_gain( RESOURCE_MANA, mp5_regen, gains.mp5_regen );
-
-  if( buffs.replenishment )
+  if( sim -> infinite_resource[ RESOURCE_MANA ] == 0 && resource_max[ RESOURCE_MANA ] > 0 )
   {
-    double replenishment_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.0025 / 1.0;
+    double spirit_regen = periodicity * spirit_regen_per_second();
 
-    resource_gain( RESOURCE_MANA, replenishment_regen, gains.replenishment );
-  }
+    if( buffs.innervate )
+    {
+      spirit_regen *= 4.0;
 
-  if( buffs.water_elemental_regen )
-  {
-    double water_elemental_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.006 / 5.0;
+      resource_gain( RESOURCE_MANA, spirit_regen, gains.innervate );
+    }
+    else if( recent_cast() )
+    {
+      spirit_regen *= spirit_regen_while_casting;
 
-    resource_gain( RESOURCE_MANA, water_elemental_regen, gains.water_elemental_regen );
+      resource_gain( RESOURCE_MANA, spirit_regen, gains.spirit_regen );
+    }
+
+    double mp5_regen = periodicity * ( mp5 + intellect() * mp5_per_intellect ) / 5.0;
+
+    resource_gain( RESOURCE_MANA, mp5_regen, gains.mp5_regen );
+
+    if( buffs.replenishment )
+    {
+      double replenishment_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.0025 / 1.0;
+
+      resource_gain( RESOURCE_MANA, replenishment_regen, gains.replenishment );
+    }
+
+    if( buffs.water_elemental_regen )
+    {
+      double water_elemental_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.006 / 5.0;
+
+      resource_gain( RESOURCE_MANA, water_elemental_regen, gains.water_elemental_regen );
+    }
   }
 }
 

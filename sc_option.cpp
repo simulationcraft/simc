@@ -179,6 +179,11 @@ bool option_t::parse( sim_t* sim,
     sim -> active_player = player_t::create_priest( sim, value );
     assert( sim -> active_player );
   }
+  else if( name == "rogue" ) 
+  { 
+    sim -> active_player = player_t::create_rogue( sim, value );
+    assert( sim -> active_player );
+  }
   else if( name == "shaman" )
   {
     sim -> active_player = player_t::create_shaman( sim, value );

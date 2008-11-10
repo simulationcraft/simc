@@ -217,6 +217,8 @@ struct shaman_t : public player_t
   virtual void regen( double periodicity );
 };
 
+namespace { // ANONYMOUS NAMESPACE ==========================================
+
 // ==========================================================================
 // Shaman Attack
 // ==========================================================================
@@ -321,8 +323,6 @@ struct spirit_wolf_pet_t : public pet_t
     melee -> execute(); // Kick-off repeating attack
   }
 };
-
-namespace { // ANONYMOUS NAMESPACE ==========================================
 
 // trigger_flametongue_weapon ===============================================
 
@@ -680,8 +680,6 @@ static void trigger_elemental_oath( spell_t* s )
     e = new ( s -> sim ) elemental_oath_expiration_t( s -> sim, p );
   }
 }
-
-} // ANONYMOUS NAMESPACE ===================================================
 
 // =========================================================================
 // Shaman Attack
@@ -2726,6 +2724,8 @@ struct spirit_wolf_spell_t : public shaman_spell_t
     return( ( t -> current_health / t -> initial_health ) < ( target_pct / 100.0 ) );
   }
 };
+
+} // ANONYMOUS NAMESPACE ===================================================
 
 // ==========================================================================
 // Shaman Character Definition

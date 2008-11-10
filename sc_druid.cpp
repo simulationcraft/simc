@@ -132,6 +132,8 @@ struct druid_t : public player_t
   virtual int       primary_resource() { return RESOURCE_MANA; }
 };
 
+namespace { // ANONYMOUS NAMESPACE ==========================================
+
 // ==========================================================================
 // Druid Spell
 // ==========================================================================
@@ -215,8 +217,6 @@ struct treants_pet_t : public pet_t
     melee -> execute(); // Kick-off repeating attack
   }
 };
-
-namespace { // ANONYMOUS NAMESPACE ==========================================
 
 // trigger_omen_of_clarity ==================================================
 
@@ -385,8 +385,6 @@ static void trigger_ashtongue_talisman( spell_t* s )
     }
   }
 }
-
-} // ANONYMOUS NAMESPACE ===================================================
 
 // =========================================================================
 // Druid Spell
@@ -1190,6 +1188,8 @@ struct treants_spell_t : public druid_spell_t
     return( ( t -> current_health / t -> initial_health ) < ( target_pct / 100.0 ) );
   }
 };
+
+} // ANONYMOUS NAMESPACE ===================================================
 
 // ==========================================================================
 // Druid Character Definition

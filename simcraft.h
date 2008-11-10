@@ -60,6 +60,7 @@ struct player_t;
 struct priest_t;
 struct proc_t;
 struct report_t;
+struct rogue_t;
 struct shaman_t;
 struct sim_t;
 struct rank_t;
@@ -658,6 +659,7 @@ struct player_t
   {
     gain_t* ashtongue_talisman;
     gain_t* dark_rune;
+    gain_t* energy_regen;
     gain_t* innervate;
     gain_t* judgement_of_wisdom;
     gain_t* mana_gem;
@@ -828,6 +830,7 @@ struct player_t
   static player_t * create_druid  ( sim_t* sim, std::string& name );
   static player_t * create_mage   ( sim_t* sim, std::string& name );
   static player_t * create_priest ( sim_t* sim, std::string& name );
+  static player_t * create_rogue  ( sim_t* sim, std::string& name );
   static player_t * create_shaman ( sim_t* sim, std::string& name );
   static player_t * create_warlock( sim_t* sim, std::string& name );
 
@@ -836,6 +839,7 @@ struct player_t
   druid_t  * cast_druid  () { assert( type == DRUID      ); return (druid_t  *) this; }
   mage_t   * cast_mage   () { assert( type == MAGE       ); return (mage_t   *) this; }
   priest_t * cast_priest () { assert( type == PRIEST     ); return (priest_t *) this; }
+  rogue_t  * cast_rogue  () { assert( type == ROGUE      ); return (rogue_t  *) this; }
   shaman_t * cast_shaman () { assert( type == SHAMAN     ); return (shaman_t *) this; }
   warlock_t* cast_warlock() { assert( type == WARLOCK    ); return (warlock_t*) this; }
   pet_t*     cast_pet    () { assert( is_pet()           ); return (pet_t    *) this; }

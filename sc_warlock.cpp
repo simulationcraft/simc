@@ -253,32 +253,6 @@ struct warlock_t : public player_t
 };
 
 // ==========================================================================
-// Warlock Spell
-// ==========================================================================
-
-struct warlock_spell_t : public spell_t
-{
-  warlock_spell_t( const char* n, player_t* player, int8_t s, int8_t t ) : 
-    spell_t( n, player, RESOURCE_MANA, s, t ) 
-  {
-  }
-
-  // Overridden Methods
-  virtual double haste();
-  virtual double execute_time();
-  virtual void   player_buff();
-  virtual void   target_debuff( int8_t dmg_type );
-  virtual void   execute();
-  virtual void   tick();
-
-  // Passthru Methods
-  virtual double cost()                              { return spell_t::cost();                  }
-  virtual void   last_tick()                         { spell_t::last_tick();                    }
-  virtual void   assess_damage( double a, int8_t d ) { spell_t::assess_damage( a, d );          }
-  virtual bool   ready()                             { return spell_t::ready();                 }
-};
-
-// ==========================================================================
 // Warlock Pet
 // ==========================================================================
 
@@ -787,6 +761,32 @@ struct succubus_pet_t : public warlock_pet_t
 };
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
+
+// ==========================================================================
+// Warlock Spell
+// ==========================================================================
+
+struct warlock_spell_t : public spell_t
+{
+  warlock_spell_t( const char* n, player_t* player, int8_t s, int8_t t ) : 
+    spell_t( n, player, RESOURCE_MANA, s, t ) 
+  {
+  }
+
+  // Overridden Methods
+  virtual double haste();
+  virtual double execute_time();
+  virtual void   player_buff();
+  virtual void   target_debuff( int8_t dmg_type );
+  virtual void   execute();
+  virtual void   tick();
+
+  // Passthru Methods
+  virtual double cost()                              { return spell_t::cost();                  }
+  virtual void   last_tick()                         { spell_t::last_tick();                    }
+  virtual void   assess_damage( double a, int8_t d ) { spell_t::assess_damage( a, d );          }
+  virtual bool   ready()                             { return spell_t::ready();                 }
+};
 
 // trigger_tier5_4pc ========================================================
 
@@ -1454,50 +1454,6 @@ static void trigger_ashtongue_talisman( spell_t* s )
     {
       e = new ( s -> sim ) expiration_t( s -> sim, p );
     }
-  }
-}
-
-} // ANONYMOUS NAMESPACE ====================================================
-
-// ==========================================================================
-// Warlock Pet Events
-// ==========================================================================
-
-// warlock_pet_t::attack_hit_event ==========================================
-
-void warlock_pet_t::attack_hit_event( attack_t* a )
-{
-  player_t::attack_hit_event( a );
-
-  if( a -> result == RESULT_CRIT )
-  {
-    trigger_demonic_pact( a );
-    trigger_demonic_empathy_on_owner( a );
-  }
-}
-
-// warlock_pet_t::spell_hit_event ===========================================
-
-void warlock_pet_t::spell_hit_event( spell_t* s )
-{
-  player_t::spell_hit_event( s );
-
-  if( s -> result == RESULT_CRIT )
-  {
-    trigger_demonic_pact( s );
-    trigger_demonic_empathy_on_owner( s );
-  }
-}
-
-// imp_pet_t::spell_hit_event ===============================================
-
-void imp_pet_t::spell_hit_event( spell_t* s )
-{
-  warlock_pet_t::spell_hit_event( s );
-
-  if( s -> result == RESULT_CRIT )
-  {
-    trigger_empowered_imp( s );
   }
 }
 
@@ -3532,6 +3488,50 @@ struct spell_stone_t : public warlock_spell_t
     return( player -> main_hand_weapon.buff != SPELL_STONE );
   }
 };
+
+} // ANONYMOUS NAMESPACE ====================================================
+
+// ==========================================================================
+// Warlock Pet Events
+// ==========================================================================
+
+// warlock_pet_t::attack_hit_event ==========================================
+
+void warlock_pet_t::attack_hit_event( attack_t* a )
+{
+  player_t::attack_hit_event( a );
+
+  if( a -> result == RESULT_CRIT )
+  {
+    trigger_demonic_pact( a );
+    trigger_demonic_empathy_on_owner( a );
+  }
+}
+
+// warlock_pet_t::spell_hit_event ===========================================
+
+void warlock_pet_t::spell_hit_event( spell_t* s )
+{
+  player_t::spell_hit_event( s );
+
+  if( s -> result == RESULT_CRIT )
+  {
+    trigger_demonic_pact( s );
+    trigger_demonic_empathy_on_owner( s );
+  }
+}
+
+// imp_pet_t::spell_hit_event ===============================================
+
+void imp_pet_t::spell_hit_event( spell_t* s )
+{
+  warlock_pet_t::spell_hit_event( s );
+
+  if( s -> result == RESULT_CRIT )
+  {
+    trigger_empowered_imp( s );
+  }
+}
 
 // ==========================================================================
 // Warlock Character Definition
