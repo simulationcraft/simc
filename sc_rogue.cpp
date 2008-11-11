@@ -1,0 +1,536 @@
+// ==========================================================================
+// Dedmonwakeen's DPS-DPM Simulator.
+// Send questions to natehieter@gmail.com
+// ==========================================================================
+
+#include "simcraft.h"
+
+// ==========================================================================
+// Rogue
+// ==========================================================================
+
+struct rogue_t : public player_t
+{
+
+  // Active
+  spell_t* active_;
+
+  // Buffs
+  int8_t buffs_;
+
+  // Cooldowns
+  double cooldowns_;
+
+  // Expirations
+  event_t* expirations_;
+
+  // Gains
+  gain_t* gains_;
+
+  // Procs
+  proc_t* procs_;
+  
+  // Up-Times
+  uptime_t* uptimes_;
+  
+  // Auto-Attack
+  attack_t* main_hand_attack;
+  attack_t*  off_hand_attack;
+
+  struct talents_t
+  {
+    // Talents implemented..... (none!)
+
+    // Talents not yet implemented (all!)
+    int8_t adrenaline_rush;
+    int8_t aggression;
+    int8_t blade_flurry;
+    int8_t blood_spatter;
+    int8_t close_quarters_combat;
+    int8_t cold_blood;
+    int8_t combat_potency;
+    int8_t cut_to_the_chase;
+    int8_t deadliness;
+    int8_t deadly_brew;
+    int8_t dirty_deeds;
+    int8_t dirty_tricks;
+    int8_t dual_wield_specialization;
+    int8_t filthy_tricks;
+    int8_t find_weakness;
+    int8_t focused_attacks;
+    int8_t ghostly_strike;
+    int8_t hemorrhage;
+    int8_t honor_among_thieves;
+    int8_t hunger_for_blood;
+    int8_t improved_ambush;
+    int8_t improved_eviscerate;
+    int8_t improved_expose_armor;
+    int8_t improved_gouge;
+    int8_t improved_kidney_shot;
+    int8_t improved_poisons;
+    int8_t improved_sinister_strike;
+    int8_t improved_slice_and_dice;
+    int8_t initiative;
+    int8_t lethality;
+    int8_t mace_specialization;
+    int8_t malice;
+    int8_t master_of_subtlety;
+    int8_t master_poisoner;
+    int8_t murder;
+    int8_t murder_spree;
+    int8_t mutilate;
+    int8_t opportunity;
+    int8_t overkill;
+    int8_t precision;
+    int8_t premeditation;
+    int8_t preparation;
+    int8_t prey_on_the_weak;
+    int8_t puncturing_wounds;
+    int8_t quick_recovery;
+    int8_t relentless_strikes;
+    int8_t riposte;
+    int8_t ruthlessness;
+    int8_t savage_combat;
+    int8_t seal_fate;
+    int8_t serrated_blades;
+    int8_t shadow_dance;
+    int8_t shadowstep;
+    int8_t sinister_calling;
+    int8_t slaughter_from_the_shadows;
+    int8_t sleight_of_hand;
+    int8_t surprise_attacks;
+    int8_t sword_specialization;
+    int8_t turn_the_tables;
+    int8_t vigor;
+    int8_t vile_poisons;
+    int8_t vitality;
+    int8_t weapon_expertise;
+    talents_t() { memset( (void*) this, 0x0, sizeof( talents_t ) ); }
+  };
+  talents_t talents;
+
+  struct glyphs_t
+  {
+    int8_t dummy;
+    glyphs_t() { memset( (void*) this, 0x0, sizeof( glyphs_t ) ); }
+  };
+  glyphs_t glyphs;
+
+  rogue_t( sim_t* sim, std::string& name ) : player_t( sim, ROGUE, name )
+  {
+    // Active
+    active_ = 0;
+
+    // Buffs
+    buffs_ = 0;
+
+    // Cooldowns
+    cooldowns_ = 0;
+
+    // Expirations
+    expirations_ = 0;
+  
+    // Gains
+    gains_ = get_gain( "dummy" );
+
+    // Procs
+    procs_ = get_proc( "dummy" );
+
+    // Up-Times
+    uptimes_ = get_uptime( "dummy" );
+  
+    // Auto-Attack
+    main_hand_attack = 0;
+    off_hand_attack  = 0;
+  }
+
+  // Character Definition
+  virtual void      init_base();
+  virtual void      reset();
+  virtual bool      get_talent_trees( std::vector<int8_t*>& assassination, std::vector<int8_t*>& combat, std::vector<int8_t*>& subtlety );
+  virtual bool      parse_talents_mmo( const std::string& talent_string );
+  virtual bool      parse_option( const std::string& name, const std::string& value );
+  virtual action_t* create_action( const std::string& name, const std::string& options );
+  virtual int       primary_resource() { return RESOURCE_ENERGY; }
+};
+
+namespace { // ANONYMOUS NAMESPACE =========================================
+
+// ==========================================================================
+// Rogue Attack
+// ==========================================================================
+
+struct rogue_attack_t : public attack_t
+{
+  rogue_attack_t( const char* n, player_t* player, int8_t s=SCHOOL_PHYSICAL, int8_t t=TREE_NONE ) : 
+    attack_t( n, player, RESOURCE_ENERGY, s, t ) 
+  {
+    rogue_t* p = player -> cast_rogue();
+    base_direct_dmg = 1;
+  }
+
+  virtual double cost();
+  virtual double haste();
+  virtual double execute_time();
+  virtual void   execute();
+  virtual void   consume_resource();
+  virtual void   player_buff();
+  virtual void   target_debuff( int8_t dmg_type );
+
+  // Passthru Methods
+  virtual bool ready() { return attack_t::ready(); }
+};
+
+// trigger_ ================================================================
+
+static void trigger_( attack_t* a )
+{
+}
+
+// =========================================================================
+// Rogue Attack
+// =========================================================================
+
+// rogue_attack_t::cost ====================================================
+
+double rogue_attack_t::cost()
+{
+  rogue_t* p = player -> cast_rogue();
+  double c = attack_t::cost();
+
+  return c;
+}
+
+// rogue_attack_t::haste ===================================================
+
+double rogue_attack_t::haste()
+{
+  rogue_t* p = player -> cast_rogue();
+  double h = attack_t::haste();
+
+  return h;
+}
+
+// rogue_attack_t::execute_time ============================================
+
+double rogue_attack_t::execute_time()
+{
+  rogue_t* p = player -> cast_rogue();
+  double t = attack_t::execute_time();
+
+  return t;
+}
+
+// rogue_attack_t::execute =================================================
+
+void rogue_attack_t::execute()
+{
+  rogue_t* p = player -> cast_rogue();
+
+  attack_t::execute();
+
+  if( result_is_hit() )
+  {
+    if( result == RESULT_CRIT )
+    {
+    }
+  }
+}
+
+// rogue_attack_t::consume_resource =======================================
+
+void rogue_attack_t::consume_resource()
+{
+  rogue_t* p = player -> cast_rogue();
+  attack_t::consume_resource();
+
+}
+
+// rogue_attack_t::player_buff ============================================
+
+void rogue_attack_t::player_buff()
+{
+  rogue_t* p = player -> cast_rogue();
+  attack_t::player_buff();
+
+}
+
+// rogue_attack_t::target_debuff ==========================================
+
+void rogue_attack_t::target_debuff( int8_t dmg_type )
+{
+  rogue_t* p = player -> cast_rogue();
+  attack_t::target_debuff( dmg_type );
+
+}
+
+// =========================================================================
+// Rogue Attacks
+// =========================================================================
+
+// Melee Attack ============================================================
+
+struct melee_t : public rogue_attack_t
+{
+  melee_t( const char* name, player_t* player ) : 
+    rogue_attack_t( name, player )
+  {
+    rogue_t* p = player -> cast_rogue();
+
+    background  = true;
+    repeating   = true;
+    trigger_gcd = 0;
+    base_cost   = 0;
+
+    if( p -> dual_wield() ) base_hit -= 0.18;
+  }
+};
+
+// Auto Attack =============================================================
+
+struct auto_attack_t : public rogue_attack_t
+{
+  auto_attack_t( player_t* player, const std::string& options_str ) : 
+    rogue_attack_t( "auto_attack", player )
+  {
+    rogue_t* p = player -> cast_rogue();
+
+    assert( p -> main_hand_weapon.type != WEAPON_NONE );
+    p -> main_hand_attack = new melee_t( "melee_main_hand", player );
+    p -> main_hand_attack -> weapon = &( p -> main_hand_weapon );
+    p -> main_hand_attack -> base_execute_time = p -> main_hand_weapon.swing_time;
+
+    if( p -> off_hand_weapon.type != WEAPON_NONE )
+    {
+      p -> off_hand_attack = new melee_t( "melee_off_hand", player );
+      p -> off_hand_attack -> weapon = &( p -> off_hand_weapon );
+      p -> off_hand_attack -> base_execute_time = p -> off_hand_weapon.swing_time;
+    }
+  }
+
+  virtual void execute()
+  {
+    rogue_t* p = player -> cast_rogue();
+    p -> main_hand_attack -> schedule_execute();
+    if( p -> off_hand_attack ) p -> off_hand_attack -> schedule_execute();
+  }
+
+  virtual bool ready()
+  {
+    rogue_t* p = player -> cast_rogue();
+    return( p -> main_hand_attack -> event == 0 ); // not swinging
+  }
+};
+
+} // ANONYMOUS NAMESPACE ===================================================
+
+// ==========================================================================
+// Rogue Character Definition
+// ==========================================================================
+
+// rogue_t::create_action  =================================================
+
+action_t* rogue_t::create_action( const std::string& name,
+				  const std::string& options_str )
+{
+  if( name == "auto_attack" ) return new auto_attack_t( this, options_str );
+
+  return player_t::create_action( name, options_str );
+}
+
+// rogue_t::init_base ========================================================
+
+void rogue_t::init_base()
+{
+  // FIXME! These are level 70 values.
+  attribute_base[ ATTR_STRENGTH  ] =  94;
+  attribute_base[ ATTR_AGILITY   ] = 156;
+  attribute_base[ ATTR_STAMINA   ] =  90;
+  attribute_base[ ATTR_INTELLECT ] =  37;
+  attribute_base[ ATTR_SPIRIT    ] =  65;
+
+  base_attack_power = ( level * 2 ) - 20;
+  initial_attack_power_per_strength = 1.0;
+  initial_attack_power_per_agility  = 1.0;
+
+  base_attack_crit = -0.003;
+  initial_attack_crit_per_agility = rating_t::interpolate( level, 0.0355, 0.0250, 0.0120 );
+
+  resource_base[ RESOURCE_HEALTH ] = 3524;
+  resource_base[ RESOURCE_ENERGY ] = 100;
+
+  health_per_stamina = 10;
+}
+
+// rogue_t::reset ===========================================================
+
+void rogue_t::reset()
+{
+  player_t::reset();
+
+  // Active
+  active_ = 0;
+
+  // Buffs
+  buffs_ = 0;
+
+  // Cooldowns
+  cooldowns_ = 0;
+
+  // Expirations
+  expirations_ = 0;
+}
+
+// rogue_t::get_talent_trees ==============================================
+
+bool rogue_t::get_talent_trees( std::vector<int8_t*>& assassination,
+				std::vector<int8_t*>& combat,
+				std::vector<int8_t*>& subtlety )
+{
+  talent_translation_t translation[][3] =
+  {
+    { {  1, &( talents.improved_eviscerate   ) }, {  1, &( talents.improved_gouge            ) }, {  1, &( talents.relentless_strikes         ) } },
+    { {  2, NULL                               }, {  2, &( talents.improved_sinister_strike  ) }, {  2, NULL                                    } },
+    { {  3, &( talents.malice                ) }, {  3, &( talents.dual_wield_specialization ) }, {  3, &( talents.opportunity                ) } },
+    { {  4, &( talents.ruthlessness          ) }, {  4, &( talents.improved_slice_and_dice   ) }, {  4, &( talents.sleight_of_hand            ) } },
+    { {  5, &( talents.blood_spatter         ) }, {  5, NULL                                   }, {  5, &( talents.dirty_tricks               ) } },
+    { {  6, &( talents.puncturing_wounds     ) }, {  6, &( talents.precision                 ) }, {  6, NULL                                    } },
+    { {  7, &( talents.vigor                 ) }, {  7, NULL                                   }, {  7, NULL                                    } },
+    { {  8, &( talents.improved_expose_armor ) }, {  8, &( talents.riposte                   ) }, {  8, &( talents.ghostly_strike             ) } },
+    { {  9, &( talents.lethality             ) }, {  9, &( talents.close_quarters_combat     ) }, {  9, &( talents.serrated_blades            ) } },
+    { { 10, &( talents.vile_poisons          ) }, { 10, NULL                                   }, { 10, NULL                                    } },
+    { { 11, &( talents.improved_poisons      ) }, { 11, NULL                                   }, { 11, &( talents.initiative                 ) } },
+    { { 12, NULL                               }, { 12, NULL                                   }, { 12, &( talents.improved_ambush            ) } },
+    { { 13, &( talents.cold_blood            ) }, { 13, &( talents.mace_specialization       ) }, { 13, NULL                                    } },
+    { { 14, &( talents.improved_kidney_shot  ) }, { 14, &( talents.blade_flurry              ) }, { 14, &( talents.preparation                ) } },
+    { { 15, &( talents.quick_recovery        ) }, { 15, &( talents.sword_specialization      ) }, { 15, &( talents.dirty_deeds                ) } },
+    { { 16, &( talents.seal_fate             ) }, { 16, &( talents.aggression                ) }, { 16, &( talents.hemorrhage                 ) } },
+    { { 17, &( talents.murder                ) }, { 17, &( talents.weapon_expertise          ) }, { 17, &( talents.master_of_subtlety         ) } },
+    { { 18, &( talents.deadly_brew           ) }, { 18, NULL                                   }, { 18, &( talents.deadliness                 ) } },
+    { { 19, &( talents.overkill              ) }, { 19, &( talents.vitality                  ) }, { 19, NULL                                    } },
+    { { 20, NULL                               }, { 20, &( talents.adrenaline_rush           ) }, { 20, &( talents.premeditation              ) } },
+    { { 21, &( talents.focused_attacks       ) }, { 21, NULL                                   }, { 21, NULL                                    } },
+    { { 22, &( talents.find_weakness         ) }, { 22, NULL                                   }, { 22, &( talents.sinister_calling           ) } },
+    { { 23, &( talents.master_poisoner       ) }, { 23, &( talents.combat_potency            ) }, { 23, NULL                                    } },
+    { { 24, &( talents.mutilate              ) }, { 24, NULL                                   }, { 24, &( talents.honor_among_thieves        ) } },
+    { { 25, &( talents.turn_the_tables       ) }, { 25, &( talents.surprise_attacks          ) }, { 25, &( talents.shadowstep                 ) } },
+    { { 26, &( talents.cut_to_the_chase      ) }, { 26, &( talents.savage_combat             ) }, { 26, &( talents.filthy_tricks              ) } },
+    { { 27, &( talents.hunger_for_blood      ) }, { 27, &( talents.prey_on_the_weak          ) }, { 27, &( talents.slaughter_from_the_shadows ) } },
+    { {  0, NULL                               }, { 28, &( talents.murder_spree              ) }, { 28, &( talents.shadow_dance               ) } },
+    { {  0, NULL                               }, {  0, NULL                                   }, {  0, NULL                                    } }
+  };
+  
+  return player_t::get_talent_trees( assassination, combat, subtlety, translation );
+}
+
+// rogue_t::parse_talents_mmo =============================================
+
+bool rogue_t::parse_talents_mmo( const std::string& talent_string )
+{
+  // rogue mmo encoding: Combat-Assassination-Subtlety
+
+  int size1 = 28;
+  int size2 = 27;
+
+  std::string        combat_string( talent_string,     0,  size1 );
+  std::string assassination_string( talent_string, size1,  size2 );
+  std::string      subtlety_string( talent_string, size1 + size2  );
+
+  return parse_talents( assassination_string + combat_string + subtlety_string );
+}
+
+// rogue_t::parse_option  ==============================================
+
+bool rogue_t::parse_option( const std::string& name,
+			    const std::string& value )
+{
+  option_t options[] =
+  {
+    // Talents
+    { "adrenaline_rush",            OPT_INT8, &( talents.adrenaline_rush            ) },
+    { "aggression",                 OPT_INT8, &( talents.aggression                 ) },
+    { "blade_flurry",               OPT_INT8, &( talents.blade_flurry               ) },
+    { "blood_spatter",              OPT_INT8, &( talents.blood_spatter              ) },
+    { "close_quarters_combat",      OPT_INT8, &( talents.close_quarters_combat      ) },
+    { "cold_blood",                 OPT_INT8, &( talents.cold_blood                 ) },
+    { "combat_potency",             OPT_INT8, &( talents.combat_potency             ) },
+    { "cut_to_the_chase",           OPT_INT8, &( talents.cut_to_the_chase           ) },
+    { "deadliness",                 OPT_INT8, &( talents.deadliness                 ) },
+    { "deadly_brew",                OPT_INT8, &( talents.deadly_brew                ) },
+    { "dirty_deeds",                OPT_INT8, &( talents.dirty_deeds                ) },
+    { "dirty_tricks",               OPT_INT8, &( talents.dirty_tricks               ) },
+    { "dual_wield_specialization",  OPT_INT8, &( talents.dual_wield_specialization  ) },
+    { "filthy_tricks",              OPT_INT8, &( talents.filthy_tricks              ) },
+    { "find_weakness",              OPT_INT8, &( talents.find_weakness              ) },
+    { "focused_attacks",            OPT_INT8, &( talents.focused_attacks            ) },
+    { "ghostly_strike",             OPT_INT8, &( talents.ghostly_strike             ) },
+    { "hemorrhage",                 OPT_INT8, &( talents.hemorrhage                 ) },
+    { "honor_among_thieves",        OPT_INT8, &( talents.honor_among_thieves        ) },
+    { "hunger_for_blood",           OPT_INT8, &( talents.hunger_for_blood           ) },
+    { "improved_ambush",            OPT_INT8, &( talents.improved_ambush            ) },
+    { "improved_eviscerate",        OPT_INT8, &( talents.improved_eviscerate        ) },
+    { "improved_expose_armor",      OPT_INT8, &( talents.improved_expose_armor      ) },
+    { "improved_gouge",             OPT_INT8, &( talents.improved_gouge             ) },
+    { "improved_kidney_shot",       OPT_INT8, &( talents.improved_kidney_shot       ) },
+    { "improved_poisons",           OPT_INT8, &( talents.improved_poisons           ) },
+    { "improved_sinister_strike",   OPT_INT8, &( talents.improved_sinister_strike   ) },
+    { "improved_slice_and_dice",    OPT_INT8, &( talents.improved_slice_and_dice    ) },
+    { "initiative",                 OPT_INT8, &( talents.initiative                 ) },
+    { "lethality",                  OPT_INT8, &( talents.lethality                  ) },
+    { "mace_specialization",        OPT_INT8, &( talents.mace_specialization        ) },
+    { "malice",                     OPT_INT8, &( talents.malice                     ) },
+    { "master_of_subtlety",         OPT_INT8, &( talents.master_of_subtlety         ) },
+    { "master_poisoner",            OPT_INT8, &( talents.master_poisoner            ) },
+    { "murder",                     OPT_INT8, &( talents.murder                     ) },
+    { "murder_spree",               OPT_INT8, &( talents.murder_spree               ) },
+    { "mutilate",                   OPT_INT8, &( talents.mutilate                   ) },
+    { "opportunity",                OPT_INT8, &( talents.opportunity                ) },
+    { "overkill",                   OPT_INT8, &( talents.overkill                   ) },
+    { "precision",                  OPT_INT8, &( talents.precision                  ) },
+    { "premeditation",              OPT_INT8, &( talents.premeditation              ) },
+    { "preparation",                OPT_INT8, &( talents.preparation                ) },
+    { "prey_on_the_weak",           OPT_INT8, &( talents.prey_on_the_weak           ) },
+    { "puncturing_wounds",          OPT_INT8, &( talents.puncturing_wounds          ) },
+    { "quick_recovery",             OPT_INT8, &( talents.quick_recovery             ) },
+    { "relentless_strikes",         OPT_INT8, &( talents.relentless_strikes         ) },
+    { "riposte",                    OPT_INT8, &( talents.riposte                    ) },
+    { "ruthlessness",               OPT_INT8, &( talents.ruthlessness               ) },
+    { "savage_combat",              OPT_INT8, &( talents.savage_combat              ) },
+    { "seal_fate",                  OPT_INT8, &( talents.seal_fate                  ) },
+    { "serrated_blades",            OPT_INT8, &( talents.serrated_blades            ) },
+    { "shadow_dance",               OPT_INT8, &( talents.shadow_dance               ) },
+    { "shadowstep",                 OPT_INT8, &( talents.shadowstep                 ) },
+    { "sinister_calling",           OPT_INT8, &( talents.sinister_calling           ) },
+    { "slaughter_from_the_shadows", OPT_INT8, &( talents.slaughter_from_the_shadows ) },
+    { "sleight_of_hand",            OPT_INT8, &( talents.sleight_of_hand            ) },
+    { "surprise_attacks",           OPT_INT8, &( talents.surprise_attacks           ) },
+    { "sword_specialization",       OPT_INT8, &( talents.sword_specialization       ) },
+    { "turn_the_tables",            OPT_INT8, &( talents.turn_the_tables            ) },
+    { "vigor",                      OPT_INT8, &( talents.vigor                      ) },
+    { "vile_poisons",               OPT_INT8, &( talents.vile_poisons               ) },
+    { "vitality",                   OPT_INT8, &( talents.vitality                   ) },
+    { "weapon_expertise",           OPT_INT8, &( talents.weapon_expertise           ) },
+    // Glyphs
+    { "glyph_dummy",                OPT_INT8, &( glyphs.dummy                       ) },
+    { NULL, OPT_UNKNOWN }
+  };
+
+  if( name.empty() )
+  {
+    player_t::parse_option( std::string(), std::string() );
+    option_t::print( sim, options );
+    return false;
+  }
+
+  if( player_t::parse_option( name, value ) ) return true;
+
+  return option_t::parse( sim, options, name, value );
+}
+
+// player_t::create_rogue  =================================================
+
+player_t* player_t::create_rogue( sim_t*       sim, 
+				  std::string& name ) 
+{
+  return new rogue_t( sim, name );
+}
