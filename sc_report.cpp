@@ -1190,7 +1190,7 @@ const char* report_t::chart_timeline( std::string& s, player_t* p )
   char buffer[ 1024 ];
 
   s = "http://chart.apis.google.com/chart?";
-  s += "chs=400x130";
+  s += "chs=425x130";
   s += "&";
   s += "cht=lc";
   s += "&";
@@ -1204,7 +1204,9 @@ const char* report_t::chart_timeline( std::string& s, player_t* p )
   s += "&";
   s += "chxt=x,y";
   s += "&";
-  sprintf( buffer, "chxl=0:|0|%d|1:|0|%.0f", max_buckets, dps_max ); s += buffer;
+  sprintf( buffer, "chxl=0:|0|sec=%d|1:|0|avg=%.0f|max=%.0f", max_buckets, p -> dps, dps_max ); s += buffer;
+  s += "&";
+  sprintf( buffer, "chxp=1,1,%.0f,100", 100.0 * p -> dps / dps_max ); s += buffer;
   s += "&";
   sprintf( buffer, "chtt=%s+DPS+Timeline", p -> name() ); s += buffer;
   s += "&";
@@ -1231,7 +1233,7 @@ const char* report_t::chart_distribution( std::string& s, player_t* p )
   char buffer[ 1024 ];
 
   s = "http://chart.apis.google.com/chart?";
-  s += "chs=500x130";
+  s += "chs=525x130";
   s += "&";
   s += "cht=bvs";
   s += "&";
@@ -1247,9 +1249,9 @@ const char* report_t::chart_distribution( std::string& s, player_t* p )
   s += "&";
   s += "chxt=x";
   s += "&";
-  sprintf( buffer, "chxl=0:|%.0f|%.0f|%.0f", p -> dps_min, p -> dps, p -> dps_max ); s += buffer;
+  sprintf( buffer, "chxl=0:|min=%.0f|avg=%.0f|max=%.0f", p -> dps_min, p -> dps, p -> dps_max ); s += buffer;
   s += "&";
-  sprintf( buffer, "chxp=0,%.0f,100", 100.0 * ( p -> dps - p -> dps_min ) / ( p -> dps_max - p -> dps_min ) ); s += buffer;
+  sprintf( buffer, "chxp=0,1,%.0f,100", 100.0 * ( p -> dps - p -> dps_min ) / ( p -> dps_max - p -> dps_min ) ); s += buffer;
   s += "&";
   sprintf( buffer, "chtt=%s+DPS+Distribution", p -> name() ); s += buffer;
   s += "&";
@@ -1513,6 +1515,7 @@ void report_t::chart_wiki()
       timeline = img;
       timeline += "&dummy=dummy.png";
     }
+    img = chart_distribution( buffer, p );
     if( img )
     {
       distribution = img;
