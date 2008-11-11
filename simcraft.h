@@ -1396,7 +1396,7 @@ enum option_type_t { OPT_STRING=0, OPT_APPEND, OPT_CHAR_P, OPT_BOOL, OPT_INT8, O
 
 struct option_t
 {
-  char*  name; 
+  const char* name; 
   int8_t type; 
   void*  address;
 
