@@ -1290,24 +1290,6 @@ struct lava_burst_t : public shaman_spell_t
     }
   }
 
-  virtual double execute_time()
-  {
-    double t = shaman_spell_t::execute_time();
-    shaman_t* p = player -> cast_shaman();
-    if( p -> buffs_maelstrom_weapon )
-    {
-      if( p -> buffs_maelstrom_weapon == 5 )
-      {
-        t = 0;
-      }
-      else
-      {
-        t *= ( 1.0 - p -> buffs_maelstrom_weapon * 0.20 );
-      }
-    }
-    return t;
-  }
-
   virtual void player_buff()
   {
     shaman_spell_t::player_buff();
