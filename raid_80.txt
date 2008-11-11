@@ -84,6 +84,8 @@ scale_spell_power=200
 scale_hit_rating=-200
 scale_crit_rating=200
 scale_haste_rating=200
+scale_intellect=200
+scale_spirit=200
 
 # ================================================================================================
 # General Action Options

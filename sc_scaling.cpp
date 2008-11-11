@@ -38,7 +38,9 @@ void scaling_t::analyze_attributes()
 	player_t* p = sim -> players_by_name[ j ];
 	player_t* child_p = child_sim -> find_player( p -> name() );
 	
-	p -> scaling.attribute[ i ] = ( child_p -> dps - p -> dps ) / gear.attribute[ i ];
+	double f = ( child_p -> dps - p -> dps ) / gear.attribute[ i ];
+
+	if( f > 0.02 ) p -> scaling.attribute[ i ] = f;
       }
 
       delete child_sim;
@@ -67,7 +69,9 @@ void scaling_t::analyze_spell_power()
       player_t* p = sim -> players_by_name[ i ];
       player_t* child_p = child_sim -> find_player( p -> name() );
 	
-      p -> scaling.spell_power = ( child_p -> dps - p -> dps ) / gear.spell_power;
+      double f = ( child_p -> dps - p -> dps ) / gear.spell_power;
+
+      if( f > 0.02 ) p -> scaling.spell_power = f;
     }
 
     delete child_sim;
@@ -96,7 +100,9 @@ void scaling_t::analyze_attack_power()
       player_t* p = sim -> players_by_name[ i ];
       player_t* child_p = child_sim -> find_player( p -> name() );
 	
-      p -> scaling.attack_power = ( child_p -> dps - p -> dps ) / gear.attack_power;
+      double f = ( child_p -> dps - p -> dps ) / gear.attack_power;
+
+      if( f > 0.02 ) p -> scaling.attack_power = f;
     }
 
     delete child_sim;
@@ -124,7 +130,9 @@ void scaling_t::analyze_expertise()
       player_t* p = sim -> players_by_name[ i ];
       player_t* child_p = child_sim -> find_player( p -> name() );
 	
-      p -> scaling.expertise_rating = ( child_p -> dps - p -> dps ) / gear.expertise_rating;
+      double f = ( child_p -> dps - p -> dps ) / gear.expertise_rating;
+
+      if( f > 0.02 ) p -> scaling.expertise_rating = f;
     }
 
     delete child_sim;
@@ -152,7 +160,9 @@ void scaling_t::analyze_armor_penetration()
       player_t* p = sim -> players_by_name[ i ];
       player_t* child_p = child_sim -> find_player( p -> name() );
 	
-      p -> scaling.armor_penetration_rating = ( child_p -> dps - p -> dps ) / gear.armor_penetration_rating;
+      double f = ( child_p -> dps - p -> dps ) / gear.armor_penetration_rating;
+
+      if( f > 0.02 ) p -> scaling.armor_penetration_rating = f;
     }
 
     delete child_sim;
@@ -180,7 +190,9 @@ void scaling_t::analyze_hit()
       player_t* p = sim -> players_by_name[ i ];
       player_t* child_p = child_sim -> find_player( p -> name() );
 	
-      p -> scaling.hit_rating = ( child_p -> dps - p -> dps ) / gear.hit_rating;
+      double f = ( child_p -> dps - p -> dps ) / gear.hit_rating;
+
+      if( f > 0.02 ) p -> scaling.hit_rating = f;
     }
 
     delete child_sim;
@@ -209,7 +221,9 @@ void scaling_t::analyze_crit()
       player_t* p = sim -> players_by_name[ i ];
       player_t* child_p = child_sim -> find_player( p -> name() );
 	
-      p -> scaling.crit_rating = ( child_p -> dps - p -> dps ) / gear.crit_rating;
+      double f = ( child_p -> dps - p -> dps ) / gear.crit_rating;
+
+      if( f > 0.02 ) p -> scaling.crit_rating = f;
     }
 
     delete child_sim;
@@ -237,7 +251,9 @@ void scaling_t::analyze_haste()
       player_t* p = sim -> players_by_name[ i ];
       player_t* child_p = child_sim -> find_player( p -> name() );
 	
-      p -> scaling.haste_rating = ( child_p -> dps - p -> dps ) / gear.haste_rating;
+      double f = ( child_p -> dps - p -> dps ) / gear.haste_rating;
+
+      if( f > 0.02 ) p -> scaling.haste_rating = f;
     }
 
     delete child_sim;
