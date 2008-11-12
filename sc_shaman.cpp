@@ -1245,7 +1245,6 @@ struct lava_burst_t : public shaman_spell_t
       { "rank",               OPT_INT8, &rank_index         },
       { "flame_shock",        OPT_INT8, &flame_shock        },
       { "max_ticks_consumed", OPT_INT8, &max_ticks_consumed },
-      { "maelstrom",          OPT_INT8, &maelstrom          },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1330,10 +1329,6 @@ struct lava_burst_t : public shaman_spell_t
         return true;
       }
     }
-
-    if( maelstrom > 0 && 
-        maelstrom > player -> cast_shaman() -> buffs_maelstrom_weapon )
-      return false;
 
     return true;
   }

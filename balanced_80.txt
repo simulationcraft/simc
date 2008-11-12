@@ -308,8 +308,8 @@ swift_retribution=1
 # (1) The "weapon=main" option to windfury_weapon puts the enchant only on the main-hand weapon
 # (2) The "weapon=off" option to flametongue_weapon puts the enchant only on the off-hand weapon
 # (3) The "flame_shock=1,max_ticks_consumed=4" option to lava_burst will prevent it from being called until there are four or less ticks remaining on Flame Shock.
-# (4) The "maelstrom=5" option to lightning_bolt means that LB will only be executed when there is a 5-stack of Maelstrom Weapon,
-#     making the LB/LvB cast instant which prevents auto_attack resets.
+# (4) The "maelstrom=5" option to lightning_bolt or chain_lightning means that LB/CL will only be executed when there is a 5-stack of Maelstrom Weapon,
+#     making the LB/CL cast instant which prevents auto_attack resets.
 #
 shaman=Shaman_Enhancement
 level=80
