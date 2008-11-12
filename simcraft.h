@@ -484,10 +484,11 @@ struct player_t
   gain_t*   gain_list;
   stats_t*  stats_list;
   uptime_t* uptime_list;
+  std::vector<double> timeline_resource;
   std::vector<double> timeline_dmg;
   std::vector<double> timeline_dps;
   std::vector<double> iteration_dps;
-  std::vector<int32_t> dps_distribution;
+  std::vector<int32_t> distribution_dps;
 
   struct gear_t
   {
@@ -556,9 +557,9 @@ struct player_t
     int8_t    swift_retribution;
     // Temporary Buffs
     int8_t    temporary_buffs;
-    int8_t    arcane_brilliance;
+    double    arcane_brilliance;
     double    mark_of_the_wild;
-    int8_t    divine_spirit;
+    double    divine_spirit;
     int8_t    bloodlust;
     double    cast_time_reduction;
     int8_t    darkmoon_crusade;
@@ -569,6 +570,7 @@ struct player_t
     double    flametongue_totem;
     player_t* focus_magic;
     int8_t    focus_magic_feedback;
+    double    fortitude;
     double    improved_divine_spirit;
     int8_t    improved_moonkin_aura;
     int8_t    innervate;
@@ -1365,8 +1367,9 @@ struct report_t
   const char* chart_action_dmg       ( std::string& s, player_t* );
   const char* chart_gains            ( std::string& s, player_t* );
   const char* chart_uptimes_and_procs( std::string& s, player_t* );
-  const char* chart_timeline         ( std::string& s, player_t* );
-  const char* chart_distribution     ( std::string& s, player_t* );
+  const char* chart_timeline_resource( std::string& s, player_t* );
+  const char* chart_timeline_dps     ( std::string& s, player_t* );
+  const char* chart_distribution_dps ( std::string& s, player_t* );
   void html_scale_factors();
   void chart_html();
   void wiki_scale_factors();

@@ -337,6 +337,16 @@ void sim_t::analyze()
     // Avoid double-counting of pet damage
     if( ! p -> is_pet() ) total_dmg += p -> total_dmg;
 
+    int max_buckets = (int) p -> total_seconds;
+    int num_buckets = p -> timeline_resource.size();
+
+    if( num_buckets > max_buckets ) p -> timeline_resource.resize( max_buckets );
+
+    for( int i=0; i < max_buckets; i++ )
+    {
+      p -> timeline_resource[ i ] /= iterations;
+    }
+
     for( int i=0; i < RESOURCE_MAX; i++ )
     {
       p -> resource_lost  [ i ] /= iterations;
@@ -362,8 +372,6 @@ void sim_t::analyze()
       }
     }
 
-    int max_buckets = (int) p -> total_seconds;
-    
     p -> timeline_dmg.clear();
     p -> timeline_dps.clear();
 
@@ -423,13 +431,13 @@ void sim_t::analyze()
       double max = p -> dps_max + 1;
       double range = max - min;
 
-      p -> dps_distribution.insert( p -> dps_distribution.begin(), num_buckets, 0 );
+      p -> distribution_dps.insert( p -> distribution_dps.begin(), num_buckets, 0 );
 
       for( int i=0; i < iterations; i++ )
       {
 	double i_dps = p -> iteration_dps[ i ];
 	int index = (int) ( num_buckets * ( i_dps - min ) / range );
-	p -> dps_distribution[ index ]++;
+	p -> distribution_dps[ index ]++;
       }
     }
   }
@@ -473,6 +481,14 @@ void sim_t::merge( sim_t& other_sim )
     for( int i=0; i < other_sim.iterations; i++ )
     {
       p -> iteration_dps.push_back( other_p -> iteration_dps[ i ] );
+    }
+
+    int num_buckets = std::min(       p -> timeline_resource.size(), 
+				other_p -> timeline_resource.size() );
+
+    for( int i=0; i < num_buckets; i++ )
+    {
+      p -> timeline_resource[ i ] += other_p -> timeline_resource[ i ];
     }
 
     for( int i=0; i < RESOURCE_MAX; i++ )

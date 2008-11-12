@@ -1159,9 +1159,9 @@ const char* report_t::chart_uptimes_and_procs( std::string& s, player_t* p )
   return s.c_str();
 }
 
-// report_t::chart_timeline ==================================================
+// report_t::chart_timeline_dps ==============================================
 
-const char* report_t::chart_timeline( std::string& s, player_t* p )
+const char* report_t::chart_timeline_dps( std::string& s, player_t* p )
 {
   int max_buckets = p -> timeline_dps.size();
   int max_points  = 600;
@@ -1215,18 +1215,76 @@ const char* report_t::chart_timeline( std::string& s, player_t* p )
   return s.c_str();
 }
 
-// report_t::chart_distribution ===============================================
+// report_t::chart_timeline_resource =========================================
 
-const char* report_t::chart_distribution( std::string& s, player_t* p )
+const char* report_t::chart_timeline_resource( std::string& s, player_t* p )
 {
-  int max_buckets = p -> dps_distribution.size();
+  if( p -> primary_resource() == RESOURCE_NONE ) return 0;
+
+  int max_buckets = p -> timeline_resource.size();
+  int max_points  = 600;
+  int increment   = 1;
+
+  if( max_buckets <= 0 ) return 0;
+
+  if( max_buckets <= max_points )
+  {
+    max_points = max_buckets;
+  }
+  else
+  {
+    increment = ( (int) floor( max_buckets / (double) max_points ) ) + 1;
+  }
+
+  double resource_max=0;
+  for( int i=0; i < max_buckets; i++ ) 
+  {
+    if( p -> timeline_resource[ i ] > resource_max ) 
+    {
+      resource_max = p -> timeline_resource[ i ];
+    }
+  }
+  double resource_range  = 60.0;
+  double resource_adjust = resource_range / resource_max;
+
+  char buffer[ 1024 ];
+
+  s = "http://chart.apis.google.com/chart?";
+  s += "chs=425x150";
+  s += "&";
+  s += "cht=lc";
+  s += "&";
+  s += "chd=s:";
+  for( int i=0; i < max_buckets; i += increment ) 
+  {
+    s += simple_encoding( (int) ( p -> timeline_resource[ i ] * resource_adjust ) );
+  }
+  s += "&";
+  sprintf( buffer, "chds=0,%.0f", resource_range ); s += buffer;
+  s += "&";
+  s += "chxt=x,y";
+  s += "&";
+  sprintf( buffer, "chxl=0:|0|sec=%d|1:|0|max=%.0f", max_buckets, resource_max ); s += buffer;
+  s += "&";
+  sprintf( buffer, "chtt=%s|Resource+(%s)+Timeline", p -> name(), util_t::resource_type_string( p -> primary_resource() ) ); s += buffer;
+  s += "&";
+  s += "chts=000000,20";
+
+  return s.c_str();
+}
+
+// report_t::chart_distribution_dps ===========================================
+
+const char* report_t::chart_distribution_dps( std::string& s, player_t* p )
+{
+  int max_buckets = p -> distribution_dps.size();
 
   int32_t count_max=0;
   for( int i=0; i < max_buckets; i++ ) 
   {
-    if( p -> dps_distribution[ i ] > count_max ) 
+    if( p -> distribution_dps[ i ] > count_max ) 
     {
-      count_max = p -> dps_distribution[ i ];
+      count_max = p -> distribution_dps[ i ];
     }
   }
 
@@ -1240,7 +1298,7 @@ const char* report_t::chart_distribution( std::string& s, player_t* p )
   s += "chd=t:";
   for( int i=0; i < max_buckets; i++ ) 
   {
-    sprintf( buffer, "%s%d", (i?",":""), p -> dps_distribution[ i ] ); s += buffer;
+    sprintf( buffer, "%s%d", (i?",":""), p -> distribution_dps[ i ] ); s += buffer;
   }
   s += "&";
   sprintf( buffer, "chds=0,%d", count_max ); s += buffer;
@@ -1341,10 +1399,13 @@ void report_t::chart_html()
     fprintf( sim -> html_file, "<br>\n" );
 
     fprintf( sim -> html_file, "<! %s DPS Timeline>\n", p -> name() );
-    fprintf( sim -> html_file, "<img src=\"%s\" />", chart_timeline( buffer, p ) );
+    fprintf( sim -> html_file, "<img src=\"%s\" />", chart_timeline_dps( buffer, p ) );
 
     fprintf( sim -> html_file, "<! %s DPS Distribution>\n", p -> name() );
-    fprintf( sim -> html_file, "<img src=\"%s\" />", chart_distribution( buffer, p ) );
+    fprintf( sim -> html_file, "<img src=\"%s\" />", chart_distribution_dps( buffer, p ) );
+
+    fprintf( sim -> html_file, "<! %s Resource Timeline>\n", p -> name() );
+    fprintf( sim -> html_file, "<img src=\"%s\" />", chart_timeline_resource( buffer, p ) );
 
     fprintf( sim -> html_file, "<hr>\n" );
   }
@@ -1482,8 +1543,9 @@ void report_t::chart_wiki()
     std::string uptimes_and_procs = "No chart for Up-Times and Procs";
     std::string action_dmg        = "No chart for Damage Sources";
     std::string gains             = "No chart for Resource Gains";
-    std::string timeline          = "No chart for DPS Timeline";
-    std::string distribution      = "No chart for DPS Distribution";
+    std::string timeline_dps      = "No chart for DPS Timeline";
+    std::string distribution_dps  = "No chart for DPS Distribution";
+    std::string timeline_resource = "No chart for Resource Timeline";
 
     img = chart_action_dpet( buffer, p );
     if( img )
@@ -1509,17 +1571,23 @@ void report_t::chart_wiki()
       gains = img;
       gains += "&dummy=dummy.png";
     }
-    img = chart_timeline( buffer, p );
+    img = chart_timeline_dps( buffer, p );
     if( img )
     {
-      timeline = img;
-      timeline += "&dummy=dummy.png";
+      timeline_dps = img;
+      timeline_dps += "&dummy=dummy.png";
     }
-    img = chart_distribution( buffer, p );
+    img = chart_distribution_dps( buffer, p );
     if( img )
     {
-      distribution = img;
-      distribution += "&dummy=dummy.png";
+      distribution_dps = img;
+      distribution_dps += "&dummy=dummy.png";
+    }
+    img = chart_timeline_resource( buffer, p );
+    if( img )
+    {
+      timeline_resource = img;
+      timeline_resource += "&dummy=dummy.png";
     }
 
     fprintf( sim -> wiki_file, "\n" );
@@ -1531,7 +1599,8 @@ void report_t::chart_wiki()
     fprintf( sim -> wiki_file, "\n" );
     fprintf( sim -> wiki_file, "|| %s || %s ||\n", action_dpet.c_str(), uptimes_and_procs.c_str() );
     fprintf( sim -> wiki_file, "|| %s || %s ||\n", action_dmg.c_str(),  gains.c_str() );
-    fprintf( sim -> wiki_file, "|| %s || %s ||\n", timeline.c_str(), distribution.c_str() );
+    fprintf( sim -> wiki_file, "|| %s || %s ||\n", timeline_dps.c_str(), distribution_dps.c_str() );
+    fprintf( sim -> wiki_file, "|| %s || ||\n", timeline_resource.c_str() );
   }
 }
 

@@ -1609,17 +1609,18 @@ struct flame_shock_t : public shaman_spell_t
 
   virtual void consume_resource()
   {
-    shaman_spell_t::consume_resource();
     shaman_t* p = player -> cast_shaman();
+    shaman_spell_t::consume_resource();
     p -> buffs_shamanistic_focus = 0;
   }
 
   virtual void execute()
   {
+    shaman_t* p = player -> cast_shaman();
     shaman_spell_t::execute();
     if( result_is_hit() )
     {
-      player -> cast_shaman() -> active_flame_shock = this;
+      p -> active_flame_shock = this;
     }
   }
 
@@ -2099,10 +2100,10 @@ struct windfury_weapon_t : public shaman_spell_t
 
 struct strength_of_earth_totem_t : public shaman_spell_t
 {
-  double attr_bonus;
+  double bonus;
 
   strength_of_earth_totem_t( player_t* player, const std::string& options_str ) : 
-    shaman_spell_t( "strength_of_earth_totem", player, SCHOOL_NATURE, TREE_ENHANCEMENT ), attr_bonus(0)
+    shaman_spell_t( "strength_of_earth_totem", player, SCHOOL_NATURE, TREE_ENHANCEMENT ), bonus(0)
   {
     shaman_t* p = player -> cast_shaman();
 
@@ -2128,29 +2129,23 @@ struct strength_of_earth_totem_t : public shaman_spell_t
     duration_group = "earth_totem";
     trigger_gcd    = 1.0;
 
-    attr_bonus = rank -> tick;
-    attr_bonus *= 1.0 + p -> talents.enhancing_totems * 0.05;
+    bonus = rank -> tick;
+    bonus *= 1.0 + p -> talents.enhancing_totems * 0.05;
   }
 
   virtual void execute()
   {
     struct expiration_t : public event_t
     {
-      strength_of_earth_totem_t* totem;
+      double bonus;
 
-      expiration_t( sim_t* sim, player_t* player, strength_of_earth_totem_t* t ) : event_t( sim, player ), totem(t)
+      expiration_t( sim_t* sim, player_t* player, double b ) : event_t( sim, player ), bonus(b)
       {
 	name = "Strength of Earth Totem Expiration";
 	for( player_t* p = sim -> player_list; p; p = p -> next )
 	{
 	  p -> aura_gain( "Strength of Earth Totem" );
-
-	  double delta = t -> attr_bonus - p -> buffs.strength_of_earth;
-
-	  p -> attribute[ ATTR_STRENGTH ] += delta;
-	  p -> attribute[ ATTR_AGILITY  ] += delta;
-
-	  p -> buffs.strength_of_earth = t -> attr_bonus;
+	  p -> buffs.strength_of_earth = bonus;
 	}
 	sim -> add_event( this, 300.0 );
       }
@@ -2159,15 +2154,11 @@ struct strength_of_earth_totem_t : public shaman_spell_t
 	for( player_t* p = sim -> player_list; p; p = p -> next )
 	{
 	  // Make sure it hasn't already been overriden by a more powerful totem.
-	  if( totem -> attr_bonus < p -> buffs.strength_of_earth )
+	  if( bonus < p -> buffs.strength_of_earth )
 	    continue;
 
 	  p -> aura_loss( "Strength of Earth Totem" );
-
-	  p -> attribute[ ATTR_STRENGTH ] -= totem -> attr_bonus;
-	  p -> attribute[ ATTR_AGILITY  ] -= totem -> attr_bonus;
-
-	  p -> buffs.strength_of_earth      = 0;
+	  p -> buffs.strength_of_earth = 0;
 	}
       }
     };
@@ -2176,7 +2167,7 @@ struct strength_of_earth_totem_t : public shaman_spell_t
     consume_resource();
     update_ready();
     player -> action_finish( this );
-    new ( sim ) expiration_t( sim, player, this );
+    new ( sim ) expiration_t( sim, player, bonus );
   }
 
   virtual bool ready()
@@ -2184,7 +2175,7 @@ struct strength_of_earth_totem_t : public shaman_spell_t
     if( ! shaman_spell_t::ready() )
       return false;
 
-    return( player -> buffs.strength_of_earth < attr_bonus );
+    return( player -> buffs.strength_of_earth < bonus );
   }
 };
 

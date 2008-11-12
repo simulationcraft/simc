@@ -1091,32 +1091,24 @@ struct mark_of_the_wild_t : public druid_spell_t
   mark_of_the_wild_t( player_t* player, const std::string& options_str ) : 
     druid_spell_t( "mark_of_the_wild", player, SCHOOL_NATURE, TREE_RESTORATION ), bonus(0)
   {
+    druid_t* p = player -> cast_druid();
+
     trigger_gcd = 0;
 
     bonus = ( player -> level == 80 ) ? 37 :
             ( player -> level >= 70 ) ? 14 : 12;
 
-    int8_t improved = player -> cast_druid() -> talents.improved_mark_of_the_wild;
-
-    if( improved )
-    {
-      bonus *= 1.0 + improved * 0.20;
-    }
+    bonus *= 1.0 + p -> talents.improved_mark_of_the_wild * 0.20;
   }
    
   virtual void execute()
   {
     if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
 
-    double delta = bonus - player -> buffs.mark_of_the_wild;
-
     for( player_t* p = sim -> player_list; p; p = p -> next )
     {
-      for( int i=0; i < ATTRIBUTE_MAX; i++ )
-      {
-	p -> attribute[ i ] += delta;
-	p -> buffs.mark_of_the_wild = bonus;
-      }
+      p -> buffs.mark_of_the_wild = bonus;
+      p -> init_resources( true );
     }
   }
 

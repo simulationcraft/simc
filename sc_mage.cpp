@@ -2459,14 +2459,14 @@ struct arcane_brilliance_t : public mage_spell_t
 
     for( player_t* p = sim -> player_list; p; p = p -> next )
     {
-      p -> attribute[ ATTR_INTELLECT ] += bonus;
-      player -> buffs.arcane_brilliance = 1;
+      p -> buffs.arcane_brilliance = bonus;
+      p -> init_resources( true );      
     }
   }
 
   virtual bool ready()
   {
-    return( player -> buffs.arcane_brilliance == 0 );
+    return( player -> buffs.arcane_brilliance < bonus );
   }
 };
 

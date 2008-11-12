@@ -180,7 +180,10 @@ void regen_event_t::execute()
 {
   for( player_t* p = sim -> player_list; p; p = p -> next )
   {
-    if( ! p -> sleeping ) p -> regen( sim -> regen_periodicity );
+    if( p -> sleeping ) continue;
+    if( p -> primary_resource() == RESOURCE_NONE ) continue;
+
+    p -> regen( sim -> regen_periodicity );
   }
   
   new ( sim ) regen_event_t( sim );

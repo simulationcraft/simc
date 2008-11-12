@@ -468,20 +468,14 @@ void player_t::init_weapon( weapon_t*    w,
 
 void player_t::init_resources( bool force ) 
 {
-  double resource_bonus[ RESOURCE_MAX ];
-  for( int i=0; i < RESOURCE_MAX; i++ ) resource_bonus[ i ] = 0;
-
-  double ci = intellect();
-  double cs = stamina();
-
-  resource_bonus[ RESOURCE_MANA   ] = ( ci - 20 ) * mana_per_intellect + 20;
-  resource_bonus[ RESOURCE_HEALTH ] = ( cs - 20 ) * health_per_stamina + 20;
-  
   for( int i=0; i < RESOURCE_MAX; i++ )
   {
     if( force || resource_initial[ i ] == 0 )
     {
-      resource_initial[ i ] = resource_base[ i ] + resource_bonus[ i ] + gear.resource[ i ] + gear.resource_enchant[ i ];
+      resource_initial[ i ] = resource_base[ i ] + gear.resource[ i ] + gear.resource_enchant[ i ];
+
+      if( i == RESOURCE_MANA   ) resource_initial[ i ] += intellect() * mana_per_intellect;
+      if( i == RESOURCE_HEALTH ) resource_initial[ i ] +=   stamina() * health_per_stamina;
     }
     resource_current[ i ] = resource_max[ i ] = resource_initial[ i ];
   }
@@ -490,6 +484,14 @@ void player_t::init_resources( bool force )
   resource_constrained_count = 0;
   resource_constrained_total_dmg = 0;
   resource_constrained_total_time = 0;
+
+  if( timeline_resource.empty() )
+  {
+    int size = (int) sim -> max_time;
+    if( size == 0 ) size = 600; // Default to 10 minutes
+    size *= 2;
+    timeline_resource.insert( timeline_resource.begin(), size, 0 );
+  }
 }
 
 // player_t::init_consumables ==============================================
@@ -695,13 +697,65 @@ double player_t::composite_attribute_multiplier( int8_t attr )
   return m;
 }
 
-// player_t::attribute() ===================================================
+// player_t::strength() ====================================================
 
-double player_t::strength()  { return composite_attribute_multiplier( ATTR_STRENGTH  ) * attribute[ ATTR_STRENGTH  ]; }
-double player_t::agility()   { return composite_attribute_multiplier( ATTR_AGILITY   ) * attribute[ ATTR_AGILITY   ]; }
-double player_t::stamina()   { return composite_attribute_multiplier( ATTR_STAMINA   ) * attribute[ ATTR_STAMINA   ]; }
-double player_t::intellect() { return composite_attribute_multiplier( ATTR_INTELLECT ) * attribute[ ATTR_INTELLECT ]; }
-double player_t::spirit()    { return composite_attribute_multiplier( ATTR_SPIRIT    ) * attribute[ ATTR_SPIRIT    ]; }
+double player_t::strength()
+{ 
+  double a = attribute[ ATTR_STRENGTH ];
+
+  a += buffs.mark_of_the_wild;
+  a += buffs.strength_of_earth;
+
+  return a * composite_attribute_multiplier( ATTR_STRENGTH ); 
+}
+
+// player_t::agility() =====================================================
+
+double player_t::agility()   
+{
+  double a = attribute[ ATTR_AGILITY ];
+
+  a += buffs.mark_of_the_wild;
+  a += buffs.strength_of_earth;
+
+  return a * composite_attribute_multiplier( ATTR_AGILITY );
+}
+
+// player_t::stamina() =====================================================
+
+double player_t::stamina()
+{
+  double a = attribute[ ATTR_STAMINA ];
+ 
+  a += buffs.mark_of_the_wild;
+  a += buffs.fortitude;
+
+  return a * composite_attribute_multiplier( ATTR_STAMINA );
+}
+
+// player_t::intellect() ===================================================
+
+double player_t::intellect() 
+{ 
+  double a = attribute[ ATTR_INTELLECT ];
+
+  a += buffs.mark_of_the_wild;
+  a += buffs.arcane_brilliance;
+
+  return a * composite_attribute_multiplier( ATTR_INTELLECT );
+}
+
+// player_t::spirit() ======================================================
+
+double player_t::spirit()
+{ 
+  double a = attribute[ ATTR_SPIRIT ];
+
+  a += buffs.mark_of_the_wild;
+  a += buffs.divine_spirit;
+
+  return a * composite_attribute_multiplier( ATTR_SPIRIT );
+}
 
 // player_t::combat_begin ==================================================
 
@@ -783,11 +837,7 @@ void player_t::reset()
   last_foreground_action = 0;
   last_action = 0;
 
-  for( int i=0; i < RESOURCE_MAX; i++ )
-  {
-    resource_current[ i ] = resource_max[ i ] = resource_initial[ i ];
-  }
-  resource_constrained = 0;
+  init_resources( true );
 
   executing = 0;
   channeling = 0;
@@ -947,6 +997,18 @@ void player_t::regen( double periodicity )
 
       resource_gain( RESOURCE_MANA, water_elemental_regen, gains.water_elemental_regen );
     }
+  }
+
+  int8_t resource_type = primary_resource();
+
+  if( resource_type != RESOURCE_NONE )
+  {
+    int index = (int) sim -> current_time;
+    int size = timeline_resource.size();
+
+    if( index >= size ) timeline_resource.insert( timeline_resource.begin() + size, size, 0 );
+
+    timeline_resource[ index ] += resource_current[ resource_type ];
   }
 }
 
