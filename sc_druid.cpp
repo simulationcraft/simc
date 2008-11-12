@@ -255,9 +255,7 @@ static void trigger_earth_and_moon( spell_t* s )
     {
       name = "Earth and Moon Expiration";
       if( sim -> log ) report_t::log( sim, "%s gains Earth and Moon", sim -> target -> name() );
-      int count = p -> talents.earth_and_moon;
-      sim -> target -> debuffs.earth_and_moon = ( count == 1 ? 4 :
-						  count == 2 ? 9 : 13 );
+      sim -> target -> debuffs.earth_and_moon = util_t::rank( p -> talents.earth_and_moon, 3, 4, 9, 13 );
       sim -> add_event( this, 12.0 );
     }
     virtual void execute()
@@ -757,13 +755,12 @@ struct moonfire_t : public druid_spell_t
     may_crit          = true;
 
     base_cost        = rank -> cost;
-    base_cost       *= 1.0 - p -> talents.moonglow * 0.03;
-    base_multiplier *= 1.0 + ( p -> talents.moonfury          * 0.10/3 +
-                               p -> talents.improved_moonfire * 0.05   +
-                               p -> talents.genesis           * 0.01 );
-    base_crit       += p -> talents.improved_moonfire * 0.05;
-    base_crit_bonus *= 1.0 + p -> talents.vengeance * 0.20;
-
+    base_cost       *= 1.0 -   util_t::rank( p -> talents.moonglow,          3, 0.03 );
+    base_multiplier *= 1.0 + ( util_t::rank( p -> talents.moonfury,          3, 0.03, 0.06, 0.10 ) +
+                               util_t::rank( p -> talents.improved_moonfire, 2, 0.05 ) +
+                               util_t::rank( p -> talents.genesis,           5, 0.01 ) );
+    base_crit       +=         util_t::rank( p -> talents.improved_moonfire, 2, 0.05 );
+    base_crit_bonus *= 1.0 +   util_t::rank( p -> talents.vengeance,         5, 0.20 );
     observer = &( p -> active_moonfire );
   }
 
@@ -903,7 +900,7 @@ struct starfire_t : public druid_spell_t
     base_cost          = rank -> cost;
     base_cost         *= 1.0 - p -> talents.moonglow * 0.03;
     base_execute_time -= p -> talents.starlight_wrath * 0.1;
-    base_multiplier   *= 1.0 + p -> talents.moonfury * 0.10/3;
+    base_multiplier   *= 1.0 + util_t::rank( p -> talents.moonfury, 3, 0.03, 0.06, 0.10 );
     base_crit         += p -> talents.natures_majesty * 0.02;
     base_crit_bonus   *= 1.0 + p -> talents.vengeance * 0.20;
     direct_power_mod  += p -> talents.wrath_of_cenarius * 0.04;
@@ -1022,7 +1019,7 @@ struct wrath_t : public druid_spell_t
     base_cost          = rank -> cost;
     base_cost         *= 1.0 - p -> talents.moonglow * 0.03;
     base_execute_time -= p -> talents.starlight_wrath * 0.1;
-    base_multiplier   *= 1.0 + p -> talents.moonfury * 0.10/3;
+    base_multiplier   *= 1.0 + util_t::rank( p -> talents.moonfury, 3, 0.03, 0.06, 0.10 );
     base_crit         += p -> talents.natures_majesty * 0.02;
     base_crit_bonus   *= 1.0 + p -> talents.vengeance * 0.20;
     direct_power_mod  += p -> talents.wrath_of_cenarius * 0.02;

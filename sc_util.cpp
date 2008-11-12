@@ -5,6 +5,84 @@
 
 #include "simcraft.h"
 
+double util_t::rank( int8_t num, 
+		     int8_t max, 
+		     double increment )
+{
+  assert( num >= 0 );
+  assert( max > 0 );
+
+  if( num > max ) num = max;
+
+  return num * increment;
+}
+
+int8_t util_t::rank( int8_t num, 
+		     int8_t max, 
+		     int    increment )
+{
+  assert( num >= 0 );
+  assert( max > 0 );
+
+  if( num > max ) num = max;
+
+  return num * increment;
+}
+
+double util_t::rank( int8_t num, 
+		     int8_t max, 
+		     double first, 
+		     double second, ... )
+{
+  assert( num >= 0 );
+  assert( max > 0 );
+
+  if( num > max ) num = max;
+
+  if( num == 1 ) return first;
+  if( num == 2 ) return second;
+
+  va_list vap;
+  va_start( vap, second );
+
+  double value=0;
+
+  for( int i=3; i <= num; i++ );
+  {
+    value = (double) va_arg( vap, double );
+  }
+  va_end( vap );
+
+  return value;
+}
+
+int8_t util_t::rank( int8_t num, 
+		     int8_t max, 
+		     int    first, 
+		     int    second, ... )
+{
+  assert( num >= 0 );
+  assert( max > 0 );
+
+  if( num > max ) num = max;
+
+  if( num == 1 ) return first;
+  if( num == 2 ) return second;
+
+  va_list vap;
+  va_start( vap, second );
+
+  int8_t value=0;
+
+  for( int i=3; i <= num; i++ );
+  {
+    value = (int8_t) va_arg( vap, int );
+  }
+  va_end( vap );
+
+  return value;
+}
+
 char* util_t::dup( const char *value )
 {
    return strcpy( (char*) malloc( strlen( value ) + 1 ), value );

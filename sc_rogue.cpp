@@ -165,7 +165,7 @@ struct rogue_attack_t : public attack_t
   rogue_attack_t( const char* n, player_t* player, int8_t s=SCHOOL_PHYSICAL, int8_t t=TREE_NONE ) : 
     attack_t( n, player, RESOURCE_ENERGY, s, t ) 
   {
-    rogue_t* p = player -> cast_rogue();
+    //rogue_t* p = player -> cast_rogue();
     base_direct_dmg = 1;
   }
 
@@ -195,7 +195,7 @@ static void trigger_( attack_t* a )
 
 double rogue_attack_t::cost()
 {
-  rogue_t* p = player -> cast_rogue();
+  //rogue_t* p = player -> cast_rogue();
   double c = attack_t::cost();
 
   return c;
@@ -205,7 +205,7 @@ double rogue_attack_t::cost()
 
 double rogue_attack_t::haste()
 {
-  rogue_t* p = player -> cast_rogue();
+  //rogue_t* p = player -> cast_rogue();
   double h = attack_t::haste();
 
   return h;
@@ -215,7 +215,7 @@ double rogue_attack_t::haste()
 
 double rogue_attack_t::execute_time()
 {
-  rogue_t* p = player -> cast_rogue();
+  //rogue_t* p = player -> cast_rogue();
   double t = attack_t::execute_time();
 
   return t;
@@ -225,12 +225,14 @@ double rogue_attack_t::execute_time()
 
 void rogue_attack_t::execute()
 {
-  rogue_t* p = player -> cast_rogue();
+  //rogue_t* p = player -> cast_rogue();
 
   attack_t::execute();
 
   if( result_is_hit() )
   {
+    trigger_( this );
+
     if( result == RESULT_CRIT )
     {
     }
@@ -241,7 +243,7 @@ void rogue_attack_t::execute()
 
 void rogue_attack_t::consume_resource()
 {
-  rogue_t* p = player -> cast_rogue();
+  //rogue_t* p = player -> cast_rogue();
   attack_t::consume_resource();
 
 }
@@ -250,7 +252,7 @@ void rogue_attack_t::consume_resource()
 
 void rogue_attack_t::player_buff()
 {
-  rogue_t* p = player -> cast_rogue();
+  //rogue_t* p = player -> cast_rogue();
   attack_t::player_buff();
 
 }
@@ -259,7 +261,7 @@ void rogue_attack_t::player_buff()
 
 void rogue_attack_t::target_debuff( int8_t dmg_type )
 {
-  rogue_t* p = player -> cast_rogue();
+  //rogue_t* p = player -> cast_rogue();
   attack_t::target_debuff( dmg_type );
 
 }

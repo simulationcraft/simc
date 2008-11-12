@@ -1410,6 +1410,12 @@ struct option_t
 
 struct util_t
 {
+  static double rank( int8_t num, int8_t max, double increment );
+  static double rank( int8_t num, int8_t max, double first, double second, ... );
+
+  static int8_t rank( int8_t num, int8_t max, int increment );
+  static int8_t rank( int8_t num, int8_t max, int first, int second, ... );
+
   static char* dup( const char* );
 
   static const char* player_type_string        ( int8_t type );
