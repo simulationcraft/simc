@@ -739,6 +739,12 @@ void shaman_attack_t::assess_damage( double amount,
     {
       p -> buffs_lightning_charges--;
       p -> active_lightning_charge -> execute();
+
+      if( p -> buffs_lightning_charges == 0 )
+      {
+	p -> aura_loss( "Lightning Shield" );
+	p -> active_shield = 0;
+      }
     }
   }
 }
@@ -2556,6 +2562,7 @@ struct lightning_shield_t : public shaman_spell_t
     if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
     p -> buffs_lightning_charges = 3 + 2 * p -> talents.static_shock;
     p -> active_shield = this;
+    p -> aura_gain( "Lightning Shield" );
     consume_resource();
     update_ready();
     direct_dmg = 0;
