@@ -982,6 +982,13 @@ struct devouring_plague_t : public priest_spell_t
     }
     return tick_dmg;
   }    
+
+  virtual void target_debuff( int8_t dmg_type )
+  {
+    spell_t::target_debuff( dmg_type );
+
+    if( sim -> target -> debuffs.crypt_fever ) target_multiplier *= 1.30;
+  }
 };
 
 // Vampiric Embrace Spell ======================================================
@@ -1800,17 +1807,18 @@ void priest_t::init_base()
   static base_stats_t base_stats_70 = { 70, 3391, 2620, 41, 41, 61, 144, 150, 0.012375, 0.011726 };
   static base_stats_t base_stats_80 = { 80, 6960, 3863, 45, 47, 70, 173, 180, 0.012400, 0.011764 };
 
-  attribute_base[ ATTR_STRENGTH  ] = rating_t::interpolate( level, base_stats_60.strength, base_stats_70.strength, base_stats_80.strength );
-  attribute_base[ ATTR_AGILITY   ] = rating_t::interpolate( level, base_stats_60.agility, base_stats_70.agility, base_stats_80.agility );
-  attribute_base[ ATTR_STAMINA   ] = rating_t::interpolate( level, base_stats_60.stamina, base_stats_70.stamina, base_stats_80.stamina );
+  attribute_base[ ATTR_STRENGTH  ] = rating_t::interpolate( level, base_stats_60.strength,  base_stats_70.strength,  base_stats_80.strength  );
+  attribute_base[ ATTR_AGILITY   ] = rating_t::interpolate( level, base_stats_60.agility,   base_stats_70.agility,   base_stats_80.agility   );
+  attribute_base[ ATTR_STAMINA   ] = rating_t::interpolate( level, base_stats_60.stamina,   base_stats_70.stamina,   base_stats_80.stamina   );
   attribute_base[ ATTR_INTELLECT ] = rating_t::interpolate( level, base_stats_60.intellect, base_stats_70.intellect, base_stats_80.intellect );
-  attribute_base[ ATTR_SPIRIT    ] = rating_t::interpolate( level, base_stats_60.spirit, base_stats_70.spirit, base_stats_80.spirit );
+  attribute_base[ ATTR_SPIRIT    ] = rating_t::interpolate( level, base_stats_60.spirit,    base_stats_70.spirit,    base_stats_80.spirit    );
     
   attribute_multiplier_initial[ ATTR_STAMINA   ] *= 1.0 + talents.enlightenment * 0.01;
   attribute_multiplier_initial[ ATTR_SPIRIT    ] *= 1.0 + talents.enlightenment * 0.01;
   attribute_multiplier_initial[ ATTR_SPIRIT    ] *= 1.0 + talents.spirit_of_redemption * 0.05;
 
   base_spell_crit = rating_t::interpolate( level, base_stats_60.spell_crit, base_stats_70.spell_crit, base_stats_80.spell_crit );
+
   initial_spell_crit_per_intellect = rating_t::interpolate( level, 0.01/60.0, 0.01/80.0, 0.01/166.6666709 );
   initial_spell_power_per_spirit = ( talents.spiritual_guidance * 0.05 +
                                      talents.twisted_faith      * 0.02 );
@@ -1821,7 +1829,7 @@ void priest_t::init_base()
   initial_attack_crit_per_agility = rating_t::interpolate( level, 0.01/21.92982456, 0.01/24.93765586, 0.01/52.08333333 );
 
   resource_base[ RESOURCE_HEALTH ] = rating_t::interpolate( level, base_stats_60.health, base_stats_70.health, base_stats_80.health );
-  resource_base[ RESOURCE_MANA   ] = rating_t::interpolate( level, base_stats_60.mana, base_stats_70.mana, base_stats_80.mana );
+  resource_base[ RESOURCE_MANA   ] = rating_t::interpolate( level, base_stats_60.mana,   base_stats_70.mana,   base_stats_80.mana   );
 
   health_per_stamina = 10;
   mana_per_intellect = 15;

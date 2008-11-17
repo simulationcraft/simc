@@ -11,10 +11,9 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 
 static void trigger_judgement_of_wisdom( action_t* a )
 {
-  player_t* p = a -> player;
+  if( ! a -> sim -> target -> debuffs.judgement_of_wisdom ) return;
 
-  double jow = p -> sim -> target -> debuffs.judgement_of_wisdom;
-  if( jow == 0 ) return;
+  player_t* p = a -> player;
 
   double max_mana = p -> resource_max[ RESOURCE_MANA ];
 

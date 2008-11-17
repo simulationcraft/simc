@@ -513,10 +513,10 @@ struct imp_pet_t : public warlock_pet_t
     attribute_base[ ATTR_SPIRIT    ] = 357;
 
     resource_base[ RESOURCE_HEALTH ] = 2719;
-    resource_base[ RESOURCE_MANA   ] = 150;
+    resource_base[ RESOURCE_MANA   ] = 1000;
 
     health_per_stamina = 5;
-    mana_per_intellect = 7.5;
+    mana_per_intellect = 5;
   }
 
   virtual void summon()

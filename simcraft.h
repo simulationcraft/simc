@@ -629,7 +629,6 @@ struct player_t
     double bloodlust;
     double elder_scribes;
     double eternal_sage;
-    double judgement_of_wisdom;
     double mark_of_defiance;
     double mystical_skyfire;
     double quagmirrans_eye;
@@ -909,7 +908,7 @@ struct target_t
 
   struct cooldowns_t
   {
-    double judgement_of_wisdom;
+    double place_holder;
     void reset() { memset( (void*) this, 0x00, sizeof( cooldowns_t ) ); }
     cooldowns_t() { reset(); }
   };
@@ -918,7 +917,9 @@ struct target_t
   struct debuff_t
   {
     // Permanent De-Buffs (until appropriate player class implemented)
-    double   judgement_of_wisdom;
+    int8_t   crypt_fever;
+    int8_t   judgement_of_wisdom;
+    int8_t   razorice;
     int8_t   snare;
     double   sunder_armor;
     // Temporary De-Buffs

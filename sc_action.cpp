@@ -170,6 +170,15 @@ void action_t::target_debuff( int8_t dmg_type )
     if( t -> debuffs.curse_of_elements ) target_penetration += 88;
   }
 
+  if( t -> debuffs.razorice )
+  {
+    if( school == SCHOOL_FROST ||
+	school == SCHOOL_FROSTFIRE )
+    {
+      target_multiplier *= 1.10;
+    }
+  }
+
   if( t -> debuffs.winters_grasp ) target_hit += 0.02;
   t -> uptimes.winters_grasp -> update( t -> debuffs.winters_grasp != 0 );
 

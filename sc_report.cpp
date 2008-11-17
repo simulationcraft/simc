@@ -1399,13 +1399,13 @@ void report_t::chart_html()
     fprintf( sim -> html_file, "<br>\n" );
 
     fprintf( sim -> html_file, "<! %s DPS Timeline>\n", p -> name() );
-    fprintf( sim -> html_file, "<img src=\"%s\" />", chart_timeline_dps( buffer, p ) );
+    fprintf( sim -> html_file, "<img src=\"%s\" />\n", chart_timeline_dps( buffer, p ) );
 
     fprintf( sim -> html_file, "<! %s DPS Distribution>\n", p -> name() );
-    fprintf( sim -> html_file, "<img src=\"%s\" />", chart_distribution_dps( buffer, p ) );
+    fprintf( sim -> html_file, "<img src=\"%s\" />\n", chart_distribution_dps( buffer, p ) );
 
     fprintf( sim -> html_file, "<! %s Resource Timeline>\n", p -> name() );
-    fprintf( sim -> html_file, "<img src=\"%s\" />", chart_timeline_resource( buffer, p ) );
+    fprintf( sim -> html_file, "<img src=\"%s\" />\n", chart_timeline_resource( buffer, p ) );
 
     fprintf( sim -> html_file, "<hr>\n" );
   }

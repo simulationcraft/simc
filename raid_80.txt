@@ -67,6 +67,12 @@ sunder_armor=3925
 # Both blessing_of_wisdom=1 and sanctified_retribution=1 would be included in each player section as appropriate.
 judgement_of_wisdom=1
 
+# Support for Death Knights does not exist.  To mimic the Frost Vulnerability debuff (stacks to +10%) triggered
+# by the Rune of Razorice, simply set "razorice=1".  To mimic the Crypt Fever debuff (30% buff to disease damage),
+# simply set "crypt_fever=1"
+razorice=1
+crypt_fever=1
+
 # When comparing a variety of classes at the exact same gear point, it is more convenient to simply specify
 # a default gear point to use.  Please note that these values MUST be present in the config file BEFORE the
 # definition of the player profile.
@@ -116,7 +122,7 @@ scale_spirit=200
 #
 druid=Druid_58_0_13_SF
 level=80
-talents=http://wotlk.wowhead.com/?talent=0xG0uiGsIdIVhouZbxczb
+talents=http://www.wowhead.com/?talent=0xG0uiGsIdIVhouZbxczb
 actions=flask,type=blinding_light/mark_of_the_wild/moonkin_form/mana_potion,trigger=4300/innervate
 actions+=/treants/moonfire/insect_swarm/wrath,eclipse=trigger/starfire
 enchant_hit_rating=-25
@@ -144,7 +150,7 @@ swift_retribution=1
 #
 druid=Druid_58_0_13_W
 level=80
-talents=http://wotlk.wowhead.com/?talent=0xG0uiGsIdIVhouZbxczb
+talents=http://www.wowhead.com/?talent=0xG0uiGsIdIVhouZbxczb
 actions=flask,type=blinding_light/mark_of_the_wild/moonkin_form/mana_potion,trigger=4300/innervate
 actions+=/treants/moonfire/insect_swarm/starfire,eclipse=trigger/wrath
 enchant_hit_rating=-25
@@ -172,7 +178,7 @@ swift_retribution=1
 #
 druid=Druid_58_0_13_W_FF
 level=80
-talents=http://wotlk.wowhead.com/?talent=0xG0uiGsIdIVhouZbxczb
+talents=http://www.wowhead.com/?talent=0xG0uiGsIdIVhouZbxczb
 actions=flask,type=blinding_light/mark_of_the_wild/moonkin_form/mana_potion,trigger=4300/innervate
 actions+=/faerie_fire/treants/moonfire/insect_swarm/starfire,eclipse=trigger/wrath
 enchant_hit_rating=-25
@@ -216,7 +222,7 @@ swift_retribution=1
 #
 mage=Mage_52_19_0_Slow
 level=80
-talents=http://wotlk.wowhead.com/?talent=of0Vck0IzxGh0ted0Ec0R0h
+talents=http://www.wowhead.com/?talent=of0Vck0IzxGh0ted0Ec0R0h
 actions=flask,type=blinding_light/molten_armor/focus_magic,target=Mage_52_19_0
 actions+=/mana_gem,trigger=3500/mana_potion,trigger=4300/evocation,trigger=10000
 actions+=/mirror_image/slow/arcane_missiles,barrage=1/presence_of_mind,pyroblast/arcane_barrage/fire_ball
@@ -236,7 +242,7 @@ swift_retribution=1
 
 mage=Mage_52_19_0
 level=80
-talents=http://wotlk.wowhead.com/?talent=of0Vck0IzxGh0ted0Ec0R0h
+talents=http://www.wowhead.com/?talent=of0Vck0IzxGh0ted0Ec0R0h
 actions=flask,type=blinding_light/molten_armor/focus_magic,target=Mage_20_51_0
 actions+=/mana_gem,trigger=3500/mana_potion,trigger=4300/evocation,trigger=10000
 actions+=/mirror_image/arcane_missiles,barrage=1/presence_of_mind,pyroblast/arcane_barrage/fire_ball
@@ -259,16 +265,44 @@ swift_retribution=1
 #
 # (1) The "trigger=3500" option to mana_gem and mana_potion represents the mana gained and the amount below max required to trigger
 # (2) The "trigger=10000" option to evocation represents the mana gained and the amount below max required to trigger
-# (3) Focus Magic from raid dps standpoint is better than Icy Veins, but Fire Mages cannot live without Frost Channeling due to mana constraints.
 #
 mage=Mage_20_51_0
 level=80
 # We will let the poor Frost Mage raid-slave keep up the IS/WC debuff
-talents=http://wotlk.wowhead.com/?talent=of0Vck0fZ0Ec0RhIhVubhct
+talents=http://www.wowhead.com/?talent=of0Vck0fZ0Ec0RhIhVubhct
+actions=flask,type=pure_death/arcane_brilliance/molten_armor/focus_magic,target=Mage_20_51_0_NoTtW
+actions+=/mana_gem,trigger=3500/mana_potion,trigger=4300/evocation,trigger=10000
+actions+=/scorch,debuff=1/mirror_image/combustion/living_bomb/pyroblast,hot_streak=1/fire_ball
+skip_actions=scorch
+enchant_hit_rating=+75
+enchant_haste_rating=-75
+chaotic_skyfire=1
+# Glyphs
+glyph_fire_ball=1
+glyph_molten_armor=1
+# Pets
+pet=mirror_image
+quiet=1
+active=owner
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_wisdom=1
+sanctified_retribution=1
+swift_retribution=1
+
+#
+# Fire Mage (No Torment the Weak)
+#
+# (1) The "trigger=3500" option to mana_gem and mana_potion represents the mana gained and the amount below max required to trigger
+# (2) The "trigger=10000" option to evocation represents the mana gained and the amount below max required to trigger
+#
+mage=Mage_20_51_0_NoTtW
+level=80
+# We will let the poor Frost Mage raid-slave keep up the IS/WC debuff
+talents=http://www.wowhead.com/?talent=of0Vcu0hZ0Ec0RhIhVubhct
 actions=flask,type=pure_death/arcane_brilliance/molten_armor/focus_magic,target=Mage_18_0_53
 actions+=/mana_gem,trigger=3500/mana_potion,trigger=4300/evocation,trigger=10000
 actions+=/scorch,debuff=1/mirror_image/combustion/living_bomb/pyroblast,hot_streak=1/fire_ball
-# We will let the poor Frost Mage raid-slave keep up the Improved Scorch debuff
 skip_actions=scorch
 enchant_hit_rating=+75
 enchant_haste_rating=-75
@@ -296,7 +330,40 @@ swift_retribution=1
 #
 mage=Mage_18_0_53
 level=80
-talents=http://wotlk.wowhead.com/?talent=of0Vck0cZZVIccRcu0f0gfsx
+talents=http://www.wowhead.com/?talent=of0Vck0cZZVIccRcu0f0gfsx
+actions=flask,type=pure_death/arcane_brilliance/molten_armor/focus_magic,target=Mage_14_0_57_NoTtW
+actions+=/mana_gem,trigger=3500/mana_potion,trigger=4300/evocation,trigger=10000
+actions+=/mirror_image/ice_lance,frozen=1,fb_priority=1/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/frost_bolt
+chaotic_skyfire=1
+# Glyphs
+glyph_molten_armor=1
+glyph_frost_bolt=1
+glyph_water_elemental=1
+# Pets
+pet=water_elemental
+actions=water_bolt
+quiet=1
+active=owner
+pet=mirror_image
+quiet=1
+active=owner
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_wisdom=1
+sanctified_retribution=1
+swift_retribution=1
+
+#
+# Frost Mage (No Torment the Weak)
+#
+# (1) The "trigger=3500" option to mana_gem and mana_potion represents the mana gained and the amount below max required to trigger
+# (2) The "trigger=10000" option to evocation represents the mana gained and the amount below max required to trigger
+# (3) The "frozen=1" option to ice_lance means that it will only be cast if the target is frozen (via winters_grasp) or virtually frozen (via fingers_of_frost)
+# (4) The "fb_priority=1" option to ice_lance means that it will only be cast if the frozen debuff/buff will end before a frost_bolt could be cast
+#
+mage=Mage_14_0_57_NoTtW
+level=80
+talents=http://www.wowhead.com/?talent=of0VczZZAIccRcu0fzgfsx
 actions=flask,type=pure_death/arcane_brilliance/molten_armor/focus_magic,target=Mage_52_19_0_Slow
 actions+=/mana_gem,trigger=3500/mana_potion,trigger=4300/evocation,trigger=10000
 actions+=/mirror_image/ice_lance,frozen=1,fb_priority=1/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/frost_bolt
@@ -328,7 +395,7 @@ swift_retribution=1
 #
 mage=Mage_0_53_18
 level=80
-talents=http://wotlk.wowhead.com/?talent=oZfVc0RhIuVubhstbIccoc
+talents=http://www.wowhead.com/?talent=oZfVc0RhIuVubhstbIccoc
 actions=flask,type=pure_death/arcane_brilliance/molten_armor
 actions+=/mana_gem,trigger=3500/mana_potion,trigger=4300/evocation,trigger=10000
 actions+=/scorch,debuff=1/mirror_image/combustion/icy_veins/living_bomb/pyroblast,hot_streak=1/frostfire_bolt
@@ -360,7 +427,7 @@ swift_retribution=1
 #
 priest=Priest_14_0_57
 level=80
-talents=http://wotlk.wowhead.com/?talent=bVcbzhZZG0fVRfzfiqfzAo
+talents=http://www.wowhead.com/?talent=bVcbzhZZG0fVRfzfiqfzAo
 actions=flask,type=pure_death/inner_fire/shadow_form/mana_potion,trigger=4300/shadow_fiend,trigger=6000/dispersion
 actions+=/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/shadow_word_death,mb_wait=0,mb_priority=0/mind_flay,mb_wait=0
 chaotic_skyfire=1
@@ -385,7 +452,7 @@ swift_retribution=1
 #
 priest=Priest_14_0_57_NoSWD
 level=80
-talents=http://wotlk.wowhead.com/?talent=bVcbzhZZG0fVRfzfiqfzAo
+talents=http://www.wowhead.com/?talent=bVcbzhZZG0fVRfzfiqfzAo
 actions=flask,type=pure_death/inner_fire/shadow_form/mana_potion,trigger=4300/shadow_fiend,trigger=6000/dispersion
 actions+=/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/mind_flay
 chaotic_skyfire=1
@@ -410,7 +477,7 @@ swift_retribution=1
 #
 priest=Priest_38_28_5
 level=80
-talents=http://wotlk.wowhead.com/?talent=bVcbkhxtrxo0bZ0Et0bbqbZG
+talents=http://www.wowhead.com/?talent=bVcbkhxtrxo0bZ0Et0bbqbZG
 actions=flask,type=blinding_light/inner_fire/divine_spirit/mana_potion,trigger=4300/shadow_fiend,trigger=6000
 actions+=/inner_focus,shadow_word_pain/shadow_word_pain/power_infusion/holy_fire/mind_blast/smite
 enchant_hit_rating=+75
@@ -450,7 +517,7 @@ swift_retribution=1
 #
 shaman=Shaman_54_17_0
 level=80
-talents=http://wotlk.wowhead.com/?talent=hEhzq0detMxsthxxco
+talents=http://www.wowhead.com/?talent=hEhzq0detMxsthxxco
 actions=flask,type=blinding_light/flametongue_weapon,weapon=main/water_shield/mana_potion,trigger=4300
 actions+=/mana_spring_totem/totem_of_wrath/wrath_of_air_totem/water_shield
 actions+=/elemental_mastery/flame_shock/lava_burst,flame_shock=1/bloodlust,target_pct=35/chain_lightning/lightning_bolt/thunderstorm
@@ -480,7 +547,7 @@ swift_retribution=1
 #
 shaman=Shaman_16_55_0
 level=80
-talents=http://wotlk.wowhead.com/?talent=hVbhqZhbxsoxdAIkufot
+talents=http://www.wowhead.com/?talent=hVbhqZhbxsoxdAIkufot
 actions=flask,type=relentless_assault/windfury_weapon,weapon=main/flametongue_weapon,weapon=off
 actions+=/strength_of_earth_totem/windfury_totem/searing_totem/lightning_shield
 actions+=/auto_attack/lightning_bolt,maelstrom=5,ss_wait=1/shamanistic_rage/spirit_wolf/flame_shock/earth_shock,ss_wait=1/stormstrike/lava_lash/bloodlust,target_pct=35
@@ -541,7 +608,7 @@ leader_of_the_pack=1
 #
 warlock=Warlock_56_0_15
 level=80
-talents=http://wotlk.wowhead.com/?talent=IfxMbzMAoVAoIstZE00V
+talents=http://www.wowhead.com/?talent=IfxMbzMAoVAoIstZE00V
 actions=flask,type=pure_death/spell_stone/fel_armor/summon_pet,felhunter
 actions+=/haunt,debuff=1/curse_of_agony/corruption/unstable_affliction/siphon_life
 actions+=/shadow_bolt,shadow_trance=1/drain_soul,target_pct=25/immolate/shadow_bolt/dark_pact
@@ -570,7 +637,7 @@ swift_retribution=1
 #
 warlock=Warlock_56_0_15_CoE
 level=80
-talents=http://wotlk.wowhead.com/?talent=IfxMbzMAoVAoIstZE00V
+talents=http://www.wowhead.com/?talent=IfxMbzMAoVAoIstZE00V
 actions=flask,type=pure_death/spell_stone/fel_armor/summon_pet,felhunter/curse_of_elements
 actions+=/haunt,debuff=1/corruption/unstable_affliction/siphon_life
 actions+=/shadow_bolt,shadow_trance=1/drain_soul,target_pct=25/immolate/shadow_bolt/dark_pact
@@ -599,7 +666,7 @@ swift_retribution=1
 #
 warlock=Warlock_56_0_15_NoDS
 level=80
-talents=http://wotlk.wowhead.com/?talent=IfxMbzMAoVAoIstZE00V
+talents=http://www.wowhead.com/?talent=IfxMbzMAoVAoIstZE00V
 actions=flask,type=pure_death/spell_stone/fel_armor/summon_pet,felhunter
 actions+=/haunt,debuff=1/curse_of_agony/corruption/unstable_affliction/siphon_life/immolate/shadow_bolt/dark_pact
 chaotic_skyfire=1
@@ -627,7 +694,7 @@ swift_retribution=1
 #
 warlock=Warlock_0_53_18
 level=80
-talents=http://wotlk.wowhead.com/?talent=IZcxIzsxoqcsguhoE0hV
+talents=http://www.wowhead.com/?talent=IZcxIzsxoqcsguhoE0hV
 actions=flask,type=pure_death/fire_stone/fel_armor/summon_pet,felguard
 actions+=/curse_of_doom/demonic_empowerment/metamorphosis/corruption/immolate/shadow_bolt/life_tap
 chaotic_skyfire=1
@@ -664,7 +731,7 @@ swift_retribution=1
 #
 warlock=Warlock_2_13_56
 level=80
-talents=http://wotlk.wowhead.com/?talent=IbZcLc0cZVcGVd0uVsAfct
+talents=http://www.wowhead.com/?talent=IbZcLc0cZVcGVd0uVsAfct
 actions=flask,type=pure_death/fire_stone/fel_armor/summon_pet,imp
 actions+=/shadow_bolt,shadow_trance=1/chaos_bolt/curse_of_agony/immolate/conflagrate/incinerate/life_tap
 chaotic_skyfire=1
