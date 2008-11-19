@@ -908,7 +908,7 @@ void player_t::schedule_ready( double delta_time,
       }
     }
 
-    if( lag > 0 ) lag += ( ( rand() % 11 ) - 5 ) * 0.01;
+    if( lag > 0 ) lag += ( sim -> rng -> real() - 0.5 ) * 0.1;
     if( lag < 0 ) lag = 0;
 
     delta_time += lag;
