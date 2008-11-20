@@ -3,7 +3,8 @@
 #======================================================================================================
 
 # TO EXECUTE THIS PARAMETER FILE:  simcraft  output=results.txt  input=raid_80.txt 
-# TO GENERATE CHARTS IN HTML:      simcraft  output=results.txt  input=raid_80.txt  html=chart.html  report_chart=1
+# TO GENERATE CHARTS IN HTML:      simcraft  output=results.txt  input=raid_80.txt  html=chart.html
+# TO GENERATE SCALE FACTORS:       simcraft  output=results.txt  input=raid_80.txt  calculate_scale_factors=1
 
 #
 # Globals
