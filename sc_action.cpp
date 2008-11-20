@@ -175,7 +175,7 @@ void action_t::target_debuff( int8_t dmg_type )
     if( school == SCHOOL_FROST ||
 	school == SCHOOL_FROSTFIRE )
     {
-      target_multiplier *= 1.10;
+      target_multiplier *= 1.05;
     }
   }
 

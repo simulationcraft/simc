@@ -546,9 +546,11 @@ const char* report_t::chart_raid_dps( std::string& s )
   char buffer[ 1024 ];
 
   s = "http://chart.apis.google.com/chart?";
-  sprintf( buffer, "chs=500x%d", num_players * 30 + 30 ); s += buffer;
+  sprintf( buffer, "chs=450x%d", num_players * 20 + 30 ); s += buffer;
   s += "&";
   s += "cht=bhg";
+  s += "&";
+  s += "chbh=15";
   s += "&";
   s += "chd=t:";
   double max_dps=0;
@@ -639,9 +641,11 @@ const char* report_t::chart_raid_gear( std::string& s )
   char buffer[ 1024 ];
   
   s = "http://chart.apis.google.com/chart?";
-  sprintf( buffer, "chs=500x%d", num_players * 30 + 30 ); s += buffer;
+  sprintf( buffer, "chs=450x%d", num_players * 20 + 30 ); s += buffer;
   s += "&";
   s += "cht=bhs";
+  s += "&";
+  s += "chbh=15";
   s += "&";
   s += "chd=t:";
   for( int i=0; i < NUM_CATEGORIES; i++ )
