@@ -403,7 +403,7 @@ double druid_spell_t::haste()
 {
   druid_t* p = player -> cast_druid();
   double h = spell_t::haste();
-  if( p -> talents.celestial_focus ) h *= 1.0 / ( 1.0 + 0.03 );
+  if( p -> talents.celestial_focus ) h *= 1.0 / ( 1.0 + p -> talents.celestial_focus * 0.01 );
   return h;
 }
 
