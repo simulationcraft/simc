@@ -1068,6 +1068,7 @@ struct action_t
   double cooldown, cooldown_ready, duration_ready;
   weapon_t* weapon;
   bool normalize_weapon_speed;
+  bool normalize_weapon_damage;
   stats_t* stats;
   rank_t* rank;
   int8_t rank_index;

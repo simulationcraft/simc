@@ -1239,10 +1239,9 @@ struct lava_burst_t : public shaman_spell_t
 {
   int8_t flame_shock;
   int8_t max_ticks_consumed;
-  int8_t maelstrom;
 
   lava_burst_t( player_t* player, const std::string& options_str ) : 
-    shaman_spell_t( "lava_burst", player, SCHOOL_FIRE, TREE_ELEMENTAL ), flame_shock(0), max_ticks_consumed(0), maelstrom(0)
+    shaman_spell_t( "lava_burst", player, SCHOOL_FIRE, TREE_ELEMENTAL ), flame_shock(0), max_ticks_consumed(0)
   {
     shaman_t* p = player -> cast_shaman();
 
