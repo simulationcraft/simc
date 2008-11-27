@@ -308,7 +308,7 @@ double action_t::calculate_direct_damage()
 
   if( weapon )
   {
-    double weapon_damage = normalize_weapon_damage ? weapon -> damage / weapon -> speed * 2.8 : weapon -> damage;
+    double weapon_damage = normalize_weapon_damage ? weapon -> damage / weapon -> swing_time * 2.8 : weapon -> damage;
     double weapon_speed  = normalize_weapon_speed ? weapon -> normalized_weapon_speed() : weapon -> swing_time;
 
     direct_dmg  = base_direct_dmg + weapon_damage + weapon_speed * direct_power_mod * total_power();
