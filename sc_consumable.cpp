@@ -70,6 +70,9 @@ struct flask_t : public action_t
     case FLASK_SUPREME_POWER:
       player -> spell_power[ SCHOOL_MAX ] += 70;
       break;
+	case FLASK_FROST_WYRM:
+	  player -> spell_power[ SCHOOL_MAX ] += 125;
+	  break;
     default: assert(0);
     }
   }
@@ -79,6 +82,84 @@ struct flask_t : public action_t
     return( player -> flask           ==  FLASK_NONE &&
 	    player -> elixir_guardian == ELIXIR_NONE &&
 	    player -> elixir_battle   == ELIXIR_NONE );
+  }
+};
+
+// ==========================================================================
+// Flask
+// ==========================================================================
+
+struct food_t : public action_t
+{
+  int8_t type;
+
+  food_t( player_t* p, const std::string& options_str ) : 
+    action_t( ACTION_USE, "food", p ), type( FOOD_NONE )
+  {
+    std::string type_str;
+
+    option_t options[] =
+    {
+      { "type", OPT_STRING, &type_str },
+      { NULL }
+    };
+    parse_options( options, options_str );
+
+    trigger_gcd = 0;
+    harmful = false;
+    for( int i=0; i < FOOD_MAX; i++ )
+    {
+      if( type_str == util_t::food_type_string( i ) )
+      {
+	type = i;
+	break;
+      }
+    }
+    assert( type != FOOD_NONE );
+  }
+  
+  virtual void execute()
+  {
+    if( sim -> log ) report_t::log( sim, "%s uses Food %s", player -> name(), util_t::food_type_string( type ) );
+    player -> food = type;
+    switch( type )
+    {
+    case FOOD_TENDER_SHOVELTUSK_STEAK:     
+      player -> spell_power[ SCHOOL_MAX ] += 46;
+	  player -> attribute[ ATTR_STAMINA ] += 40;
+      break;
+    case FOOD_SNAPPER_EXTREME:     
+      player -> spell_hit += 40;
+	  player -> attribute[ ATTR_STAMINA ] += 40;
+      break;
+    case FOOD_POACHED_BLUEFISH:     
+      player -> spell_power[ SCHOOL_MAX ] += 23;
+	  player -> attribute[ ATTR_SPIRIT ]  += 20;
+      break;
+    case FOOD_BLACKENED_BASILISK:     
+      player -> spell_power[ SCHOOL_MAX ] += 23;
+	  player -> attribute[ ATTR_SPIRIT ]  += 20;
+      break;
+    case FOOD_GOLDEN_FISHSTICKS:     
+      player -> spell_power[ SCHOOL_MAX ] += 23;
+	  player -> attribute[ ATTR_SPIRIT ]  += 20;
+      break;
+    case FOOD_CRUNCHY_SERPENT:     
+      player -> spell_power[ SCHOOL_MAX ] += 23;
+	  player -> attribute[ ATTR_SPIRIT ]  += 20;
+      break;
+    case FOOD_GREAT_FEAST:     
+      player -> attack_power              += 60;
+      player -> spell_power[ SCHOOL_MAX ] += 35;
+	  player -> attribute[ ATTR_STAMINA ] += 30;
+      break;
+    default: assert(0);
+    }
+  }
+
+  virtual bool ready()
+  {
+    return( player -> food        ==  FOOD_NONE );
   }
 };
 
@@ -459,6 +540,7 @@ action_t* consumable_t::create_action( player_t*          p,
   if( name == "dark_rune"          ) return new          dark_rune_t( p, options_str );
   if( name == "destruction_potion" ) return new destruction_potion_t( p, options_str );
   if( name == "flask"              ) return new              flask_t( p, options_str );
+  if( name == "food"               ) return new               food_t( p, options_str );
   if( name == "health_stone"       ) return new       health_stone_t( p, options_str );
   if( name == "mana_potion"        ) return new        mana_potion_t( p, options_str );
   if( name == "mana_gem"           ) return new           mana_gem_t( p, options_str );

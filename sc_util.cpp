@@ -268,6 +268,23 @@ const char* util_t::flask_type_string( int8_t flask )
   case FLASK_PURE_DEATH:         return "pure_death";
   case FLASK_RELENTLESS_ASSAULT: return "relentless_assault";
   case FLASK_SUPREME_POWER:      return "supreme_power";
+  case FLASK_FROST_WYRM:         return "frost_wyrm";
+  }
+  return "unknown";
+}
+
+const char* util_t::food_type_string( int8_t food )
+{
+  switch( food )
+  {
+  case FOOD_NONE:                    return "none";
+  case FOOD_TENDER_SHOVELTUSK_STEAK: return "tender_shoveltusk_steak";
+  case FOOD_SNAPPER_EXTREME:         return "snapper_extreme";
+  case FOOD_POACHED_BLUEFISH:        return "poached_bluefish";
+  case FOOD_BLACKENED_BASILISK:      return "blackened_basilisk";
+  case FOOD_GOLDEN_FISHSTICKS:       return "golden_fishsticks";
+  case FOOD_CRUNCHY_SERPENT:         return "crunchy_serpent";
+  case FOOD_GREAT_FEAST:             return "great_feast";
   }
   return "unknown";
 }

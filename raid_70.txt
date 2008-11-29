@@ -74,7 +74,7 @@ judgement_of_wisdom=1
 priest=Priest_8_0_53
 level=70
 talents=http://talent.mmo-champion.com/?priest=050300000000000000000000000000000000000000000000000000320023051223010325150301351
-actions=flask,type=pure_death/inner_fire/shadow_form/mana_potion,trigger=2500/shadow_fiend,trigger=6000/dispersion/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/shadow_word_death/mind_flay
+actions=flask,type=pure_death/food,type=poached_bluefish/inner_fire/shadow_form/mana_potion,trigger=2500/shadow_fiend,trigger=6000/dispersion/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/shadow_word_death/mind_flay
 gear_stamina=360
 gear_intellect=360
 gear_spirit=140
@@ -137,7 +137,7 @@ swift_retribution=1
 priest=Priest_34_0_27
 level=70
 talents=http://talent.mmo-champion.com/?priest=050320113050510250100000000023505100202005200000000000000000000000000000000000000
-actions=flask,type=blinding_light/inner_fire/divine_spirit/mana_potion,trigger=2500/shadow_fiend,trigger=6000/inner_focus,shadow_word_pain/shadow_word_pain/power_infusion/holy_fire/smite
+actions=flask,type=blinding_light/food,type=poached_bluefish/inner_fire/divine_spirit/mana_potion,trigger=2500/shadow_fiend,trigger=6000/inner_focus,shadow_word_pain/shadow_word_pain/power_infusion/holy_fire/smite
 gear_stamina=360
 gear_intellect=360
 gear_spirit=140
@@ -181,8 +181,8 @@ swift_retribution=1
 mage=Mage_51_10_0_Slow
 level=70
 talents=http://talent.mmo-champion.com/?mage=00550000000000000000000000000000000000000000000000000000230005033100330130323000514321
-actions=flask,type=blinding_light/molten_armor/mana_gem,trigger=2500/mana_potion,trigger=2500/evocation,trigger=10000/slow/arcane_missiles,barrage=1/presence_of_mind,fire_ball/arcane_barrage/fire_ball
-# actions=flask,type=blinding_light/molten_armor/focus_magic,target=Mage_51_10_0/mana_gem,trigger=2500/mana_potion,trigger=2500/evocation,trigger=10000/slow/arcane_missiles,barrage=1/presence_of_mind,fire_ball/arcane_barrage/fire_ball
+actions=flask,type=blinding_light/food,type=poached_bluefish/molten_armor/mana_gem,trigger=2500/mana_potion,trigger=2500/evocation,trigger=10000/slow/arcane_missiles,barrage=1/presence_of_mind,fire_ball/arcane_barrage/fire_ball
+# actions=flask,type=blinding_light/food,type=poached_bluefish/molten_armor/focus_magic,target=Mage_51_10_0/mana_gem,trigger=2500/mana_potion,trigger=2500/evocation,trigger=10000/slow/arcane_missiles,barrage=1/presence_of_mind,fire_ball/arcane_barrage/fire_ball
 gear_stamina=360
 gear_intellect=360
 gear_spirit=140
@@ -204,8 +204,8 @@ swift_retribution=1
 mage=Mage_51_10_0
 level=70
 talents=http://talent.mmo-champion.com/?mage=00550000000000000000000000000000000000000000000000000000230005033100330130323000505321
-actions=flask,type=blinding_light/molten_armor/mana_gem,trigger=2500/mana_potion,trigger=2500/evocation,trigger=10000/arcane_missiles,barrage=1/presence_of_mind,fire_ball/arcane_barrage/fire_ball
-# actions=flask,type=blinding_light/molten_armor/focus_magic,target=Mage_18_43_0/mana_gem,trigger=2500/mana_potion,trigger=2500/evocation,trigger=10000/arcane_missiles,barrage=1/presence_of_mind,fire_ball/arcane_barrage/fire_ball
+actions=flask,type=blinding_light/food,type=poached_bluefish/molten_armor/mana_gem,trigger=2500/mana_potion,trigger=2500/evocation,trigger=10000/arcane_missiles,barrage=1/presence_of_mind,fire_ball/arcane_barrage/fire_ball
+# actions=flask,type=blinding_light/food,type=poached_bluefish/molten_armor/focus_magic,target=Mage_18_43_0/mana_gem,trigger=2500/mana_potion,trigger=2500/evocation,trigger=10000/arcane_missiles,barrage=1/presence_of_mind,fire_ball/arcane_barrage/fire_ball
 gear_stamina=360
 gear_intellect=360
 gear_spirit=140
@@ -235,8 +235,8 @@ mage=Mage_18_43_0
 level=70
 # We will let the poor Frost Mage raid-slave keep up the Improved Scorch debuff
 talents=http://talent.mmo-champion.com/?mage=00550200122033300531203003000000000000000000000000000000005005013100030000000000000000
-actions=flask,type=pure_death/arcane_brilliance/molten_armor/mana_gem,trigger=2500/mana_potion,trigger=2500/evocation,trigger=10000/combustion/pyroblast,hot_streak=1/fire_ball
-# actions=flask,type=pure_death/arcane_brilliance/molten_armor/focus_magic,target=Mage_18_0_43/mana_gem,trigger=2500/mana_potion,trigger=2500/evocation,trigger=10000/combustion/pyroblast,hot_streak=1/fire_ball
+actions=flask,type=pure_death/food,type=poached_bluefish/arcane_brilliance/molten_armor/mana_gem,trigger=2500/mana_potion,trigger=2500/evocation,trigger=10000/combustion/pyroblast,hot_streak=1/fire_ball
+# actions=flask,type=pure_death/food,type=poached_bluefish/arcane_brilliance/molten_armor/focus_magic,target=Mage_18_0_43/mana_gem,trigger=2500/mana_potion,trigger=2500/evocation,trigger=10000/combustion/pyroblast,hot_streak=1/fire_ball
 gear_stamina=360
 gear_intellect=360
 gear_spirit=140
@@ -259,7 +259,7 @@ mage=Mage_0_50_11
 level=70
 # We will let the poor Frost Mage raid-slave keep up the Improved Scorch debuff
 talents=http://talent.mmo-champion.com/?mage=00550300122033310531203003502030032010000000000000000000000000000000000000000000000000
-actions=flask,type=pure_death/arcane_brilliance/molten_armor/mana_gem,trigger=2500/mana_potion,trigger=2500/evocation,trigger=10000/icy_veins/combustion/pyroblast,hot_streak=1/fire_ball
+actions=flask,type=pure_death/food,type=poached_bluefish/arcane_brilliance/molten_armor/mana_gem,trigger=2500/mana_potion,trigger=2500/evocation,trigger=10000/icy_veins/combustion/pyroblast,hot_streak=1/fire_ball
 gear_stamina=360
 gear_intellect=360
 gear_spirit=140
@@ -282,7 +282,7 @@ mage=Mage_0_53_8
 level=70
 # We will let the poor Frost Mage raid-slave keep up the Improved Scorch debuff
 talents=http://talent.mmo-champion.com/?mage=00550320122033310531203003512030030000000000000000000000000000000000000000000000000000
-actions=flask,type=pure_death/arcane_brilliance/molten_armor/mana_gem,trigger=2500/mana_potion,trigger=2500/evocation,trigger=10000/combustion/pyroblast,hot_streak=1/fire_ball
+actions=flask,type=pure_death/food,type=poached_bluefish/arcane_brilliance/molten_armor/mana_gem,trigger=2500/mana_potion,trigger=2500/evocation,trigger=10000/combustion/pyroblast,hot_streak=1/fire_ball
 gear_stamina=360
 gear_intellect=360
 gear_spirit=140
@@ -312,7 +312,7 @@ swift_retribution=1
 mage=Mage_0_9_52
 level=70
 talents=http://talent.mmo-champion.com/?mage=23040000000000000000000000003503030310033100230152231350000000000000000000000000000000
-actions=flask,type=pure_death/arcane_brilliance/molten_armor/mana_gem,trigger=2500/mana_potion,trigger=2500/ice_lance,frozen=1,fb_priority=1/evocation,trigger=10000/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/frost_bolt
+actions=flask,type=pure_death/food,type=poached_bluefish/arcane_brilliance/molten_armor/mana_gem,trigger=2500/mana_potion,trigger=2500/ice_lance,frozen=1,fb_priority=1/evocation,trigger=10000/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/frost_bolt
 gear_stamina=360
 gear_intellect=360
 gear_spirit=140
@@ -338,8 +338,8 @@ swift_retribution=1
 mage=Mage_18_0_43
 level=70
 talents=http://talent.mmo-champion.com/?mage=00000000000000000000000000003503030310033100230152221000005005031100030000000000000000
-actions=flask,type=pure_death/arcane_brilliance/molten_armor/mana_gem,trigger=2500/mana_potion,trigger=2500/ice_lance,frozen=1,fb_priority=1/evocation,trigger=10000/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/frost_bolt
-# actions=flask,type=pure_death/arcane_brilliance/molten_armor/focus_magic,target=Mage_51_10_0_Slow/mana_gem,trigger=2500/mana_potion,trigger=2500/ice_lance,frozen=1,fb_priority=1/evocation,trigger=10000/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/frost_bolt
+actions=flask,type=pure_death/food,type=poached_bluefish/arcane_brilliance/molten_armor/mana_gem,trigger=2500/mana_potion,trigger=2500/ice_lance,frozen=1,fb_priority=1/evocation,trigger=10000/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/frost_bolt
+# actions=flask,type=pure_death/food,type=poached_bluefish/arcane_brilliance/molten_armor/focus_magic,target=Mage_51_10_0_Slow/mana_gem,trigger=2500/mana_potion,trigger=2500/ice_lance,frozen=1,fb_priority=1/evocation,trigger=10000/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/frost_bolt
 gear_stamina=360
 gear_intellect=360
 gear_spirit=140
@@ -372,7 +372,7 @@ swift_retribution=1
 druid=Druid_61_0_0
 level=70
 talents=http://talent.mmo-champion.com/?druid=00000000000000000000000000000000000000000000000000000005502203105331303213335311030
-actions=flask,type=blinding_light/mark_of_the_wild/moonkin_form/mana_potion,trigger=2500/innervate/faerie_fire/treants/moonfire/insect_swarm/wrath,eclipse=trigger/starfire
+actions=flask,type=blinding_light/food,type=poached_bluefish/mark_of_the_wild/moonkin_form/mana_potion,trigger=2500/innervate/faerie_fire/treants/moonfire/insect_swarm/wrath,eclipse=trigger/starfire
 gear_stamina=360
 gear_intellect=360
 gear_spirit=140
@@ -403,7 +403,7 @@ swift_retribution=1
 shaman=Shaman_51_10_0
 level=70
 talents=http://talent.mmo-champion.com/?shaman=550000151321535102501051000000000000000000000000000050500000000000000000000000
-actions=flask,type=blinding_light/flametongue_weapon,weapon=main/water_shield/mana_potion,trigger=2500/mana_spring_totem/totem_of_wrath/wrath_of_air_totem/elemental_mastery/flame_shock/bloodlust,target_pct=35/chain_lightning/lightning_bolt/thunderstorm
+actions=flask,type=blinding_light/food,type=poached_bluefish/flametongue_weapon,weapon=main/water_shield/mana_potion,trigger=2500/mana_spring_totem/totem_of_wrath/wrath_of_air_totem/elemental_mastery/flame_shock/bloodlust,target_pct=35/chain_lightning/lightning_bolt/thunderstorm
 gear_stamina=360
 gear_intellect=360
 gear_spirit=140
@@ -441,7 +441,7 @@ swift_retribution=1
 warlock=Warlock_56_0_5
 level=70
 talents=http://talent.mmo-champion.com/?warlock=050000000000000000000000002350220001023510053510331351000000000000000000000000000
-actions=flask,type=pure_death/spell_stone/fel_armor/summon_pet,felhunter/haunt,debuff=1/curse_of_agony/corruption/unstable_affliction/siphon_life/shadow_bolt,shadow_trance=1/immolate/shadow_bolt/dark_pact
+actions=flask,type=pure_death/food,type=poached_bluefish/spell_stone/fel_armor/summon_pet,felhunter/haunt,debuff=1/curse_of_agony/corruption/unstable_affliction/siphon_life/shadow_bolt,shadow_trance=1/immolate/shadow_bolt/dark_pact
 gear_stamina=360
 gear_intellect=360
 gear_spirit=140
@@ -475,7 +475,7 @@ swift_retribution=1
 warlock=Warlock_56_0_5_CoE
 level=70
 talents=http://talent.mmo-champion.com/?warlock=050000000000000000000000002350220001023510053510331351000000000000000000000000000
-actions=flask,type=pure_death/spell_stone/fel_armor/summon_pet,felhunter/haunt,debuff=1/curse_of_elements/corruption/unstable_affliction/siphon_life/shadow_bolt,shadow_trance=1/immolate/shadow_bolt/dark_pact
+actions=flask,type=pure_death/food,type=poached_bluefish/spell_stone/fel_armor/summon_pet,felhunter/haunt,debuff=1/curse_of_elements/corruption/unstable_affliction/siphon_life/shadow_bolt,shadow_trance=1/immolate/shadow_bolt/dark_pact
 gear_stamina=360
 gear_intellect=360
 gear_spirit=140
@@ -509,7 +509,7 @@ swift_retribution=1
 warlock=Warlock_0_48_13
 level=70
 talents=http://talent.mmo-champion.com/?warlock=550030000000000000000000000000000000000000000000000000033033011352101500135131300
-actions=flask,type=pure_death/fire_stone/fel_armor/summon_pet,felguard/curse_of_doom/demonic_empowerment/corruption/immolate/shadow_bolt/life_tap
+actions=flask,type=pure_death/food,type=poached_bluefish/fire_stone/fel_armor/summon_pet,felguard/curse_of_doom/demonic_empowerment/corruption/immolate/shadow_bolt/life_tap
 gear_stamina=360
 gear_intellect=360
 gear_spirit=140
@@ -551,7 +551,7 @@ swift_retribution=1
 warlock=Warlock_0_46_15
 level=70
 talents=http://talent.mmo-champion.com/?warlock=550000050000000000000000000000000000000000000000000000023033011352121500035031200
-actions=flask,type=pure_death/fire_stone/fel_armor/summon_pet,felguard/curse_of_doom/corruption/shadow_bolt/life_tap
+actions=flask,type=pure_death/food,type=poached_bluefish/fire_stone/fel_armor/summon_pet,felguard/curse_of_doom/corruption/shadow_bolt/life_tap
 gear_stamina=360
 gear_intellect=360
 gear_spirit=140
@@ -593,7 +593,7 @@ swift_retribution=1
 warlock=Warlock_7_0_54
 level=70
 talents=http://talent.mmo-champion.com/?warlock=050330152200310513350303510050020000000000000000000000000000000000000000000000000
-actions=flask,type=pure_death/fire_stone/fel_armor/summon_pet,imp/shadow_bolt,shadow_trance=1/curse_of_agony/chaos_bolt/immolate/conflagrate/corruption/incinerate/life_tap
+actions=flask,type=pure_death/food,type=poached_bluefish/fire_stone/fel_armor/summon_pet,imp/shadow_bolt,shadow_trance=1/curse_of_agony/chaos_bolt/immolate/conflagrate/corruption/incinerate/life_tap
 gear_stamina=360
 gear_intellect=360
 gear_spirit=140

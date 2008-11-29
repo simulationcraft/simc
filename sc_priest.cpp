@@ -1058,7 +1058,7 @@ struct mind_blast_t : public priest_spell_t
     direct_power_mod  = base_execute_time / 3.5; 
       
     base_cost         = rank -> cost;
-    base_cost        *= 1.0 - p -> talents.focused_mind * 0.05 - p -> talents.shadow_focus * 0.02;
+	base_cost        *= 1.0 - p -> talents.focused_mind * 0.05 - p -> talents.shadow_focus * 0.02 - ( p -> gear.tier7_2pc ? 0.1 : 0.0 ) ;
     base_cost         = floor(base_cost);
 
     base_multiplier  *= 1.0 + p -> talents.darkness * 0.02;
@@ -1138,6 +1138,11 @@ struct shadow_word_death_t : public priest_spell_t
     base_multiplier *= 1.0 + p -> talents.darkness * 0.02 + p -> talents.twin_disciplines * 0.01;
     base_hit        += p -> talents.shadow_focus * 0.01;
     base_crit_bonus *= 1.0 + p -> talents.shadow_power * 0.20;
+
+	if ( p -> gear.tier7_4pc )
+	{
+      base_crit     += 0.1;
+	}
 
     assert( p -> active_shadow_word_death == 0 );
     p -> active_shadow_word_death = this;

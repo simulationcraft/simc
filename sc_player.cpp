@@ -160,6 +160,7 @@ player_t::player_t( sim_t*             s,
   elixir_guardian( ELIXIR_NONE ),
   elixir_battle( ELIXIR_NONE ),
   flask( FLASK_NONE ),
+  food( FOOD_NONE ),
   // Events
   executing(0), channeling(0),
   // Actions
@@ -602,6 +603,8 @@ void player_t::init_stats()
   gains.tier5_4pc             = get_gain( "tier5_4pc" );
   gains.tier6_2pc             = get_gain( "tier6_2pc" );
   gains.tier6_4pc             = get_gain( "tier6_4pc" );
+  gains.tier7_2pc             = get_gain( "tier7_2pc" );
+  gains.tier7_4pc             = get_gain( "tier7_4pc" );
 
   procs.ashtongue_talisman           = get_proc( "ashtongue_talisman" );
   procs.elder_scribes                = get_proc( "elder_scribes" );
@@ -618,12 +621,16 @@ void player_t::init_stats()
   procs.timbals_crystal              = get_proc( "timbals_crystal" );
   procs.windfury                     = get_proc( "windfury" );
   procs.wrath_of_cenarius            = get_proc( "wrath_of_cenarius" );
+  procs.extract_of_necromatic_power  = get_proc( "extract_of_necromatic_power" );
+  procs.sundial_of_the_exiled        = get_proc( "sundial_of_the_exiled" );
   procs.tier4_2pc                    = get_proc( "tier4_2pc" );
   procs.tier4_4pc                    = get_proc( "tier4_4pc" );
   procs.tier5_2pc                    = get_proc( "tier5_2pc" );
   procs.tier5_4pc                    = get_proc( "tier5_4pc" );
   procs.tier6_2pc                    = get_proc( "tier6_2pc" );
   procs.tier6_4pc                    = get_proc( "tier6_4pc" );
+  procs.tier7_2pc                    = get_proc( "tier7_2pc" );
+  procs.tier7_4pc                    = get_proc( "tier7_4pc" );
 
   iteration_dps.clear();
   iteration_dps.insert( iteration_dps.begin(), sim -> iterations, 0 );
@@ -853,6 +860,7 @@ void player_t::reset()
   elixir_battle   = ELIXIR_NONE;
   elixir_guardian = ELIXIR_NONE;
   flask           = FLASK_NONE;
+  food			  = FOOD_NONE;
 
   buffs.reset();
   expirations.reset();
@@ -1947,12 +1955,16 @@ bool player_t::parse_option( const std::string& name,
     { "talisman_of_ascendance",               OPT_INT8,   &( gear.talisman_of_ascendance                    ) },
     { "timbals_crystal",                      OPT_INT8,   &( gear.timbals_crystal                           ) },
     { "zandalarian_hero_charm",               OPT_INT8,   &( gear.zandalarian_hero_charm                    ) },
+	{ "extract_of_necromatic_power",          OPT_INT8,   &( gear.extract_of_necromatic_power               ) },
+	{ "sundial_of_the_exiled",                OPT_INT8,   &( gear.sundial_of_the_exiled                      ) },
     { "tier4_2pc",                            OPT_INT8,   &( gear.tier4_2pc                                 ) },
     { "tier4_4pc",                            OPT_INT8,   &( gear.tier4_4pc                                 ) },
     { "tier5_2pc",                            OPT_INT8,   &( gear.tier5_2pc                                 ) },
     { "tier5_4pc",                            OPT_INT8,   &( gear.tier5_4pc                                 ) },
     { "tier6_2pc",                            OPT_INT8,   &( gear.tier6_2pc                                 ) },
     { "tier6_4pc",                            OPT_INT8,   &( gear.tier6_4pc                                 ) },
+	{ "tier7_2pc",                            OPT_INT8,   &( gear.tier7_2pc                                 ) },
+	{ "tier7_4pc",                            OPT_INT8,   &( gear.tier7_4pc                                 ) },
     // Player - Consumables									            
     { "flask",                                OPT_STRING, &( flask_str                                      ) },
     { "elixirs",                              OPT_STRING, &( elixirs_str                                    ) },

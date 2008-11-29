@@ -603,6 +603,84 @@ static void trigger_violet_eye( spell_t* s )
   if( p -> buffs.violet_eye == 1 ) p -> aura_gain( "Violet Eye" );
 }
 
+// Extract of Necromatic Power =================================================
+
+static void trigger_extract_of_necromatic_power( spell_t* s )
+{
+  struct extract_of_necromatic_power_discharge_t : public spell_t
+  {
+    extract_of_necromatic_power_discharge_t( player_t* player ) : 
+      spell_t( "extract_of_necromatic_power_discharge", player, RESOURCE_NONE, SCHOOL_SHADOW )
+    {
+      base_direct_dmg = 1050;
+      cooldown        = 15;
+      may_crit        = true;
+      trigger_gcd     = 0;
+      background      = true;
+      reset();
+    }
+    virtual void player_buff()
+    {
+      spell_t::player_buff();
+      player_power = 0;
+    }
+    virtual void assess_damage( double amount, int8_t dmg_type )
+    {
+      // Not considered a "direct-dmg" spell, so ISB charges not consumed.
+      spell_t::assess_damage( direct_dmg, DMG_OVER_TIME ); 
+    }
+  };
+
+  player_t* p = s -> player;
+
+  if( p -> gear.extract_of_necromatic_power )
+  {
+    if( ! p -> actions.extract_of_necromatic_power_discharge ) 
+    {
+      p -> actions.extract_of_necromatic_power_discharge = new extract_of_necromatic_power_discharge_t( p );
+    }
+
+    if( p -> actions.extract_of_necromatic_power_discharge -> ready() && 
+	s -> sim -> roll( 0.10 ) )
+    {
+      p -> procs.extract_of_necromatic_power -> occur();
+      p -> actions.extract_of_necromatic_power_discharge -> execute();
+    }
+  } 
+}
+
+// Sundial of the Exiled ============================================
+
+static void trigger_sundial_of_the_exiled( spell_t* s )
+{
+  struct sundial_of_the_exiled_expiration_t : public event_t
+  {
+    sundial_of_the_exiled_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
+    {
+      name = "Sundial of the Exiled Expiration";
+      player -> aura_gain( "Sundial of the Exiled" );
+      player -> spell_power[ SCHOOL_MAX ] += 590;
+      player -> cooldowns.sundial_of_the_exiled = sim -> current_time + 45;
+      sim -> add_event( this, 10.0 );
+    }
+    virtual void execute()
+    {
+      player -> aura_loss( "Sundial of the Exiled" );
+      player -> spell_power[ SCHOOL_MAX ] -= 590;
+    }
+  };
+
+  player_t* p = s -> player;
+
+  if( p ->        gear.sundial_of_the_exiled && 
+      s -> sim -> cooldown_ready( p -> cooldowns.sundial_of_the_exiled ) &&
+      s -> sim -> roll( 0.10 ) )
+  {
+    p -> procs.sundial_of_the_exiled -> occur();
+    new ( s -> sim ) sundial_of_the_exiled_expiration_t( s -> sim, p );
+  }
+}
+
 } // ANONYMOUS NAMESPACE ====================================================
 
 // ==========================================================================
@@ -620,16 +698,17 @@ void unique_gear_t::spell_miss_event( spell_t* s )
 
 void unique_gear_t::spell_hit_event( spell_t* s )
 {
-  trigger_darkmoon_crusade ( s );
-  trigger_darkmoon_wrath   ( s );
-  trigger_elder_scribes    ( s );
-  trigger_eternal_sage     ( s );
-  trigger_mark_of_defiance ( s );
-  trigger_mystical_skyfire ( s );
-  trigger_quagmirrans_eye  ( s );
-  trigger_spellstrike      ( s );
-  trigger_violet_eye       ( s );
-  trigger_wrath_of_cenarius( s );
+  trigger_darkmoon_crusade     ( s );
+  trigger_darkmoon_wrath       ( s );
+  trigger_elder_scribes        ( s );
+  trigger_eternal_sage         ( s );
+  trigger_mark_of_defiance     ( s );
+  trigger_mystical_skyfire     ( s );
+  trigger_quagmirrans_eye      ( s );
+  trigger_spellstrike          ( s );
+  trigger_violet_eye           ( s );
+  trigger_wrath_of_cenarius    ( s );
+  trigger_sundial_of_the_exiled( s );
 
   if( s -> result == RESULT_CRIT )
   {
@@ -644,7 +723,8 @@ void unique_gear_t::spell_hit_event( spell_t* s )
 
 void unique_gear_t::spell_tick_event( spell_t* s )
 {
-  trigger_timbals_crystal( s );
+  trigger_timbals_crystal            ( s );
+  trigger_extract_of_necromatic_power( s );
 }
 
 // unique_gear_t::spell_finish_event ========================================

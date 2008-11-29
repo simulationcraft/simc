@@ -209,7 +209,19 @@ enum flask_type { FLASK_NONE=0,
 		  FLASK_PURE_DEATH, 
 		  FLASK_RELENTLESS_ASSAULT, 
 		  FLASK_SUPREME_POWER,
+		  FLASK_FROST_WYRM,
 		  FLASK_MAX };
+
+enum food_type { FOOD_NONE=0,
+          FOOD_TENDER_SHOVELTUSK_STEAK,
+		  FOOD_SNAPPER_EXTREME,
+		  FOOD_POACHED_BLUEFISH,
+		  FOOD_BLACKENED_BASILISK,
+		  FOOD_GOLDEN_FISHSTICKS,
+		  FOOD_CRUNCHY_SERPENT,
+		  FOOD_GREAT_FEAST,
+		  FOOD_MAX };
+
 
 enum position_type { POSITION_NONE=0, POSITION_FRONT, POSITION_BACK, POSITION_MAX };
 
@@ -458,6 +470,7 @@ struct player_t
   int8_t elixir_guardian;
   int8_t elixir_battle;
   int8_t flask;
+  int8_t food;
 
   // Events
   event_t* executing;
@@ -534,9 +547,12 @@ struct player_t
     int8_t  timbals_crystal;
     int8_t  wrath_of_cenarius;
     int8_t  zandalarian_hero_charm;
+	int8_t  extract_of_necromatic_power;
+	int8_t  sundial_of_the_exiled;
     int8_t  tier4_2pc, tier4_4pc;
     int8_t  tier5_2pc, tier5_4pc;
     int8_t  tier6_2pc, tier6_4pc;
+	int8_t  tier7_2pc, tier7_4pc;
     
     gear_t() { memset( (void*) this, 0x00, sizeof( gear_t ) ); }
 
@@ -594,6 +610,7 @@ struct player_t
     int8_t    tier4_2pc, tier4_4pc;
     int8_t    tier5_2pc, tier5_4pc;
     int8_t    tier6_2pc, tier6_4pc;
+	int8_t    tier7_2pc, tier7_4pc;
     buff_t() { memset( (void*) this, 0x0, sizeof( buff_t ) ); }
     void reset()
     { 
@@ -619,6 +636,7 @@ struct player_t
     event_t *tier4_2pc, *tier4_4pc;
     event_t *tier5_2pc, *tier5_4pc;
     event_t *tier6_2pc, *tier6_4pc;
+	event_t *tier7_2pc, *tier7_4pc;
     void reset() { memset( (void*) this, 0x00, sizeof( expirations_t ) ); }
     expirations_t() { reset(); }
   };
@@ -635,9 +653,11 @@ struct player_t
     double sextant_of_unstable_currents;
     double shiffars_nexus_horn;
     double spellsurge;
+	double sundial_of_the_exiled;
     double tier4_2pc, tier4_4pc;
     double tier5_2pc, tier5_4pc;
     double tier6_2pc, tier6_4pc;
+	double tier7_2pc, tier7_4pc;
     void reset() { memset( (void*) this, 0x00, sizeof( cooldowns_t ) ); }
     cooldowns_t() { reset(); }
   };
@@ -651,6 +671,7 @@ struct player_t
     uptime_t *tier4_2pc, *tier4_4pc;
     uptime_t *tier5_2pc, *tier5_4pc;
     uptime_t *tier6_2pc, *tier6_4pc;
+	uptime_t *tier7_2pc, *tier7_4pc;
     void reset() { memset( (void*) this, 0x00, sizeof( uptimes_t ) ); }
     uptimes_t() { reset(); }
   };
@@ -678,6 +699,7 @@ struct player_t
     gain_t *tier4_2pc, *tier4_4pc;
     gain_t *tier5_2pc, *tier5_4pc;
     gain_t *tier6_2pc, *tier6_4pc;
+	gain_t *tier7_2pc, *tier7_4pc;
     void reset() { memset( (void*) this, 0x00, sizeof( gains_t ) ); }
     gains_t() { reset(); }
   };
@@ -700,9 +722,12 @@ struct player_t
     proc_t* timbals_crystal;
     proc_t* windfury;
     proc_t* wrath_of_cenarius;
+	proc_t* extract_of_necromatic_power;
+	proc_t* sundial_of_the_exiled;
     proc_t *tier4_2pc, *tier4_4pc;
     proc_t *tier5_2pc, *tier5_4pc;
     proc_t *tier6_2pc, *tier6_4pc;
+	proc_t *tier7_2pc, *tier7_4pc;
     void reset() { memset( (void*) this, 0x00, sizeof( procs_t ) ); }
     procs_t() { reset(); }
   };
@@ -712,6 +737,7 @@ struct player_t
   {
     action_t* lightning_discharge;
     action_t* timbals_discharge;
+	action_t* extract_of_necromatic_power_discharge;
     void reset() { memset( (void*) this, 0x00, sizeof( actions_t ) ); }
     actions_t() { reset(); }
   };
@@ -1435,6 +1461,7 @@ struct util_t
   static const char* weapon_buff_type_string   ( int8_t type );
   static const char* elixir_type_string        ( int8_t type );
   static const char* flask_type_string         ( int8_t type );
+  static const char* food_type_string          ( int8_t type );
 
   static int string_split( std::vector<std::string>& results, const std::string& str, const char* delim );
   static int string_split( const std::string& str, const char* delim, const char* format, ... );
