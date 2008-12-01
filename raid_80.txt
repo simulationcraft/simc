@@ -128,7 +128,7 @@ actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/mark_of_the_wild
 actions+=/treants/moonfire/insect_swarm/wrath,eclipse=trigger/starfire
 enchant_hit_rating=-25
 enchant_haste_rating=+25
-chaotic_skyfire=1
+chaotic_skyflare=1
 glyph_moonfire=1
 glyph_starfire=1
 glyph_insect_swarm=1
@@ -156,7 +156,7 @@ actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/mark_of_the_wild
 actions+=/treants/moonfire/insect_swarm/starfire,eclipse=trigger/wrath
 enchant_hit_rating=-25
 enchant_haste_rating=+25
-chaotic_skyfire=1
+chaotic_skyflare=1
 glyph_moonfire=1
 glyph_starfire=1
 glyph_insect_swarm=1
@@ -184,7 +184,7 @@ actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/mark_of_the_wild
 actions+=/faerie_fire/treants/moonfire/insect_swarm/starfire,eclipse=trigger/wrath
 enchant_hit_rating=-25
 enchant_haste_rating=+25
-chaotic_skyfire=1
+chaotic_skyflare=1
 glyph_moonfire=1
 glyph_starfire=1
 glyph_insect_swarm=1
@@ -227,7 +227,7 @@ talents=http://www.wowhead.com/?talent=of0Vck0IzxGh0ted0Ec0R0h
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/molten_armor/focus_magic,target=Mage_52_19_0
 actions+=/mana_gem,trigger=3500/mana_potion,trigger=4300/evocation,trigger=10000
 actions+=/mirror_image/slow/arcane_missiles,barrage=1/presence_of_mind,pyroblast/arcane_barrage/fire_ball
-chaotic_skyfire=1
+chaotic_skyflare=1
 # Glyphs
 glyph_fire_ball=1
 glyph_molten_armor=1
@@ -247,7 +247,7 @@ talents=http://www.wowhead.com/?talent=of0Vck0IzxGh0ted0Ec0R0h
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/molten_armor/focus_magic,target=Mage_20_51_0
 actions+=/mana_gem,trigger=3500/mana_potion,trigger=4300/evocation,trigger=10000
 actions+=/mirror_image/arcane_missiles,barrage=1/presence_of_mind,pyroblast/arcane_barrage/fire_ball
-chaotic_skyfire=1
+chaotic_skyflare=1
 # Glyphs
 glyph_fire_ball=1
 glyph_molten_armor=1
@@ -277,7 +277,7 @@ actions+=/scorch,debuff=1/mirror_image/combustion/living_bomb/pyroblast,hot_stre
 skip_actions=scorch
 enchant_hit_rating=+75
 enchant_haste_rating=-75
-chaotic_skyfire=1
+chaotic_skyflare=1
 # Glyphs
 glyph_fire_ball=1
 glyph_molten_armor=1
@@ -307,7 +307,7 @@ actions+=/scorch,debuff=1/mirror_image/combustion/living_bomb/pyroblast,hot_stre
 skip_actions=scorch
 enchant_hit_rating=+75
 enchant_haste_rating=-75
-chaotic_skyfire=1
+chaotic_skyflare=1
 # Glyphs
 glyph_fire_ball=1
 glyph_molten_armor=1
@@ -335,7 +335,7 @@ talents=http://www.wowhead.com/?talent=of0Vck0cZZVIccRcu0f0gfsx
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/arcane_brilliance/molten_armor/focus_magic,target=Mage_14_0_57_NoTtW
 actions+=/mana_gem,trigger=3500/mana_potion,trigger=4300/evocation,trigger=10000
 actions+=/mirror_image/ice_lance,frozen=1,fb_priority=1/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/frost_bolt
-chaotic_skyfire=1
+chaotic_skyflare=1
 # Glyphs
 glyph_molten_armor=1
 glyph_frost_bolt=1
@@ -368,7 +368,7 @@ talents=http://www.wowhead.com/?talent=of0VczZZAIccRcu0fzgfsx
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/arcane_brilliance/molten_armor/focus_magic,target=Mage_52_19_0_Slow
 actions+=/mana_gem,trigger=3500/mana_potion,trigger=4300/evocation,trigger=10000
 actions+=/mirror_image/ice_lance,frozen=1,fb_priority=1/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/frost_bolt
-chaotic_skyfire=1
+chaotic_skyflare=1
 # Glyphs
 glyph_molten_armor=1
 glyph_frost_bolt=1
@@ -402,7 +402,7 @@ actions+=/mana_gem,trigger=3500/mana_potion,trigger=4300/evocation,trigger=10000
 actions+=/scorch,debuff=1/mirror_image/combustion/icy_veins/living_bomb/pyroblast,hot_streak=1/frostfire_bolt
 # We will let the poor Frost Mage raid-slave keep up the IS/WC debuff
 skip_actions=scorch
-chaotic_skyfire=1
+chaotic_skyflare=1
 # Glyphs
 glyph_molten_armor=1
 glyph_frostfire=1
@@ -431,7 +431,7 @@ level=80
 talents=http://www.wowhead.com/?talent=bVcbzhZZG0fVRfzfiqfzAo
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/inner_fire/shadow_form/mana_potion,trigger=4300/shadow_fiend,trigger=6000/dispersion
 actions+=/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/shadow_word_death,mb_wait=0,mb_priority=0/mind_flay,mb_wait=0
-chaotic_skyfire=1
+chaotic_skyflare=1
 glyph_shadow_word_pain=1
 glyph_shadow=1
 glyph_shadow_word_death=1
@@ -456,7 +456,7 @@ level=80
 talents=http://www.wowhead.com/?talent=bVcbzhZZG0fVRfzfiqfzAo
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/inner_fire/shadow_form/mana_potion,trigger=4300/shadow_fiend,trigger=6000/dispersion
 actions+=/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/mind_flay
-chaotic_skyfire=1
+chaotic_skyflare=1
 glyph_shadow_word_pain=1
 glyph_shadow=1
 pet=shadow_fiend
@@ -483,7 +483,7 @@ actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/inner_fire/divin
 actions+=/inner_focus,shadow_word_pain/shadow_word_pain/power_infusion/holy_fire/mind_blast/smite
 enchant_hit_rating=+75
 enchant_haste_rating=-75
-chaotic_skyfire=1
+chaotic_skyflare=1
 glyph_shadow_word_death=1
 glyph_shadow_word_pain=1
 glyph_shadow=1
@@ -524,7 +524,7 @@ actions+=/mana_spring_totem/totem_of_wrath/wrath_of_air_totem/water_shield
 actions+=/elemental_mastery/flame_shock/lava_burst,flame_shock=1/bloodlust,target_pct=35/chain_lightning/lightning_bolt/thunderstorm
 gear_spirit=0
 gear_mp5=100
-chaotic_skyfire=1
+chaotic_skyflare=1
 # Glyphs
 glyph_flametongue_weapon=1
 glyph_flame_shock=1
@@ -562,7 +562,7 @@ gear_spell_power=0
 gear_hit_rating=282
 gear_crit_rating=445
 gear_haste_rating=75
-chaotic_skyfire=1
+chaotic_skyflare=1
 # Hateful Gladiator Weapons
 main_hand=mace,damage=373,speed=2.6,enchant=mongoose
 #off_hand=dagger,damage=200,speed=1.4,enchant=mongoose
@@ -613,7 +613,7 @@ talents=http://www.wowhead.com/?talent=IfxMbzMAoVAoIstZE00V
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/spell_stone/fel_armor/summon_pet,felhunter
 actions+=/haunt,debuff=1/curse_of_agony/corruption/unstable_affliction/siphon_life
 actions+=/shadow_bolt,shadow_trance=1/drain_soul,target_pct=25/immolate/shadow_bolt/dark_pact
-chaotic_skyfire=1
+chaotic_skyflare=1
 # Glyphs
 glyph_corruption=1
 glyph_curse_of_agony=1
@@ -642,7 +642,7 @@ talents=http://www.wowhead.com/?talent=IfxMbzMAoVAoIstZE00V
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/spell_stone/fel_armor/summon_pet,felhunter/curse_of_elements
 actions+=/haunt,debuff=1/corruption/unstable_affliction/siphon_life
 actions+=/shadow_bolt,shadow_trance=1/drain_soul,target_pct=25/immolate/shadow_bolt/dark_pact
-chaotic_skyfire=1
+chaotic_skyflare=1
 # Glyphs
 glyph_corruption=1
 glyph_curse_of_agony=1
@@ -670,7 +670,7 @@ level=80
 talents=http://www.wowhead.com/?talent=IfxMbzMAoVAoIstZE00V
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/spell_stone/fel_armor/summon_pet,felhunter
 actions+=/haunt,debuff=1/curse_of_agony/corruption/unstable_affliction/siphon_life/immolate/shadow_bolt/dark_pact
-chaotic_skyfire=1
+chaotic_skyflare=1
 # Glyphs
 glyph_corruption=1
 glyph_curse_of_agony=1
@@ -698,7 +698,7 @@ level=80
 talents=http://www.wowhead.com/?talent=IZcxIzsxoqcsguhoE0hV
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/fire_stone/fel_armor/summon_pet,felguard
 actions+=/curse_of_doom/demonic_empowerment/metamorphosis/corruption/immolate/shadow_bolt/life_tap
-chaotic_skyfire=1
+chaotic_skyflare=1
 # Glyphs
 glyph_corruption=1
 glyph_felguard=1
@@ -735,7 +735,7 @@ level=80
 talents=http://www.wowhead.com/?talent=IbZcLc0cZVcGVd0uVsAfct
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/fire_stone/fel_armor/summon_pet,imp
 actions+=/shadow_bolt,shadow_trance=1/chaos_bolt/curse_of_agony/immolate/conflagrate/incinerate/life_tap
-chaotic_skyfire=1
+chaotic_skyflare=1
 # Glyphs
 glyph_corruption=1
 glyph_imp=1

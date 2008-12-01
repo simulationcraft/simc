@@ -530,6 +530,7 @@ struct player_t
     // Unique Gear
     int8_t  ashtongue_talisman;
     int8_t  chaotic_skyfire;
+	int8_t  chaotic_skyflare;
     int8_t  darkmoon_crusade;
     int8_t  darkmoon_wrath;
     int8_t  elder_scribes;
@@ -549,6 +550,10 @@ struct player_t
     int8_t  zandalarian_hero_charm;
 	int8_t  extract_of_necromatic_power;
 	int8_t  sundial_of_the_exiled;
+	int8_t  dying_curse;
+	int8_t  illustration_of_the_dragon_soul;
+	int8_t  embrace_of_the_spider;
+	int8_t  forge_ember;
     int8_t  tier4_2pc, tier4_4pc;
     int8_t  tier5_2pc, tier5_4pc;
     int8_t  tier6_2pc, tier6_4pc;
@@ -607,6 +612,7 @@ struct player_t
     int8_t    water_elemental_regen;
     int8_t    wrath_of_air;
     int16_t   zandalarian_hero_charm;
+	int8_t    illustration_of_the_dragon_soul;
     int8_t    tier4_2pc, tier4_4pc;
     int8_t    tier5_2pc, tier5_4pc;
     int8_t    tier6_2pc, tier6_4pc;
@@ -633,6 +639,7 @@ struct player_t
     event_t* mongoose_oh;
     event_t* spellstrike;
     event_t* wrath_of_cenarius;
+	event_t* illustration_of_the_dragon_soul;
     event_t *tier4_2pc, *tier4_4pc;
     event_t *tier5_2pc, *tier5_4pc;
     event_t *tier6_2pc, *tier6_4pc;
@@ -654,6 +661,9 @@ struct player_t
     double shiffars_nexus_horn;
     double spellsurge;
 	double sundial_of_the_exiled;
+	double dying_curse;
+	double embrace_of_the_spider;
+	double forge_ember;
     double tier4_2pc, tier4_4pc;
     double tier5_2pc, tier5_4pc;
     double tier6_2pc, tier6_4pc;
@@ -724,6 +734,9 @@ struct player_t
     proc_t* wrath_of_cenarius;
 	proc_t* extract_of_necromatic_power;
 	proc_t* sundial_of_the_exiled;
+	proc_t* dying_curse;
+	proc_t* embrace_of_the_spider;
+	proc_t* forge_ember;
     proc_t *tier4_2pc, *tier4_4pc;
     proc_t *tier5_2pc, *tier5_4pc;
     proc_t *tier6_2pc, *tier6_4pc;

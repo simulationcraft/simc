@@ -330,6 +330,42 @@ static void trigger_quagmirrans_eye( spell_t* s )
   }
 }
 
+// Embrace of the Spider ========================================================
+
+static void trigger_embrace_of_the_spider( spell_t* s )
+{
+  struct embrace_of_the_spider_expiration_t : public event_t
+  {
+    embrace_of_the_spider_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
+    {
+      name = "Embrace of the Spider Expiration";
+      player -> aura_gain( "Embrace of the Spider" );
+      player -> haste_rating += 505;
+      player -> recalculate_haste();
+      player -> cooldowns.embrace_of_the_spider = sim -> current_time + 45;
+      sim -> add_event( this, 10.0 );
+    }
+    virtual void execute()
+    {
+      player -> aura_loss( "Embrace of the Spider" );
+      player -> haste_rating -= 505;
+      player -> recalculate_haste();
+    }
+  };
+
+  if( ! s -> harmful ) return;
+
+  player_t* p = s -> player;
+
+  if( p ->        gear.embrace_of_the_spider                             && 
+      s -> sim -> cooldown_ready( p -> cooldowns.embrace_of_the_spider ) && 
+      s -> sim -> roll( 0.10 ) )
+  {
+    p -> procs.embrace_of_the_spider -> occur();
+    new ( s -> sim ) embrace_of_the_spider_expiration_t( s -> sim, p );
+  }
+}
+
 // Darkmoon Crusade ========================================================
 
 static void trigger_darkmoon_crusade( spell_t* s )
@@ -372,6 +408,51 @@ static void trigger_darkmoon_crusade( spell_t* s )
   else
   {
     e = new ( s -> sim ) darkmoon_crusade_expiration_t( s -> sim, p );
+  }
+}
+
+// Illustration of the Dragon Soul ========================================================
+
+static void trigger_illustration_of_the_dragon_soul( spell_t* s )
+{
+  struct illustration_of_the_dragon_soul_expiration_t : public event_t
+  {
+    illustration_of_the_dragon_soul_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
+    {
+      name = "Illustration of the Dragon Soul";
+      sim -> add_event( this, 10.0 );
+    }
+    virtual void execute()
+    {
+      player -> aura_loss( "Illustration of the Dragon Soul" );
+      player -> spell_power[ SCHOOL_MAX ] -= player -> buffs.illustration_of_the_dragon_soul * 26;
+      player -> buffs.illustration_of_the_dragon_soul = 0;
+      player -> expirations.illustration_of_the_dragon_soul = 0;
+    }
+  };
+
+  if( ! s -> harmful ) return;
+
+  player_t* p = s -> player;
+
+  if( ! p ->  gear.illustration_of_the_dragon_soul ) return;
+
+  if( p -> buffs.illustration_of_the_dragon_soul < 10 )
+  {
+    p -> buffs.illustration_of_the_dragon_soul++;
+    p -> spell_power[ SCHOOL_MAX ] += 26;
+    if( p -> buffs.illustration_of_the_dragon_soul == 1 ) p -> aura_gain( "Illustration of the Dragon Soul" );
+  }
+  
+  event_t*& e = p -> expirations.illustration_of_the_dragon_soul;
+
+  if( e )
+  {
+    e -> reschedule( 10.0 );
+  }
+  else
+  {
+    e = new ( s -> sim ) illustration_of_the_dragon_soul_expiration_t( s -> sim, p );
   }
 }
 
@@ -681,6 +762,70 @@ static void trigger_sundial_of_the_exiled( spell_t* s )
   }
 }
 
+// Forge Ember ============================================
+
+static void trigger_forge_ember( spell_t* s )
+{
+  struct forge_ember_expiration_t : public event_t
+  {
+    forge_ember_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
+    {
+      name = "Forge Ember";
+      player -> aura_gain( "Forge Ember" );
+      player -> spell_power[ SCHOOL_MAX ] += 512;
+      player -> cooldowns.forge_ember = sim -> current_time + 45;
+      sim -> add_event( this, 10.0 );
+    }
+    virtual void execute()
+    {
+      player -> aura_loss( "Forge Ember" );
+      player -> spell_power[ SCHOOL_MAX ] -= 512;
+    }
+  };
+
+  player_t* p = s -> player;
+
+  if( p ->        gear.forge_ember && 
+      s -> sim -> cooldown_ready( p -> cooldowns.forge_ember ) &&
+      s -> sim -> roll( 0.10 ) )
+  {
+    p -> procs.forge_ember -> occur();
+    new ( s -> sim ) forge_ember_expiration_t( s -> sim, p );
+  }
+}
+
+// Dying Curse ============================================
+
+static void trigger_dying_curse( spell_t* s )
+{
+  struct dying_curse_expiration_t : public event_t
+  {
+    dying_curse_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
+    {
+      name = "Dying Curse";
+      player -> aura_gain( "Dying Curse" );
+      player -> spell_power[ SCHOOL_MAX ] += 765;
+      player -> cooldowns.dying_curse = sim -> current_time + 45;
+      sim -> add_event( this, 10.0 );
+    }
+    virtual void execute()
+    {
+      player -> aura_loss( "Dying Curse" );
+      player -> spell_power[ SCHOOL_MAX ] -= 765;
+    }
+  };
+
+  player_t* p = s -> player;
+
+  if( p ->        gear.dying_curse && 
+      s -> sim -> cooldown_ready( p -> cooldowns.dying_curse ) &&
+      s -> sim -> roll( 0.15 ) )
+  {
+    p -> procs.dying_curse -> occur();
+    new ( s -> sim ) dying_curse_expiration_t( s -> sim, p );
+  }
+}
+
 } // ANONYMOUS NAMESPACE ====================================================
 
 // ==========================================================================
@@ -709,7 +854,10 @@ void unique_gear_t::spell_hit_event( spell_t* s )
   trigger_violet_eye           ( s );
   trigger_wrath_of_cenarius    ( s );
   trigger_sundial_of_the_exiled( s );
-
+  trigger_embrace_of_the_spider( s );
+  trigger_illustration_of_the_dragon_soul( s );
+  trigger_dying_curse          ( s );
+  trigger_forge_ember          ( s );
   if( s -> result == RESULT_CRIT )
   {
     clear_darkmoon_wrath                ( s );

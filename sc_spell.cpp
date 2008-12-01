@@ -100,7 +100,7 @@ void spell_t::player_buff()
 
   if( p -> type != PLAYER_GUARDIAN )
   {
-    if( p -> gear.chaotic_skyfire ) player_crit_bonus *= 1.09;
+    if( p -> gear.chaotic_skyfire || p -> gear.chaotic_skyflare ) player_crit_bonus *= 1.09;
 
     if( p -> buffs.focus_magic ) player_crit += 0.03;
 

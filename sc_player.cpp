@@ -623,6 +623,9 @@ void player_t::init_stats()
   procs.wrath_of_cenarius            = get_proc( "wrath_of_cenarius" );
   procs.extract_of_necromatic_power  = get_proc( "extract_of_necromatic_power" );
   procs.sundial_of_the_exiled        = get_proc( "sundial_of_the_exiled" );
+  procs.embrace_of_the_spider        = get_proc( "embrace_of_the_spider" );
+  procs.dying_curse                  = get_proc( "dying_curse" );
+  procs.forge_ember					 = get_proc( "forge_ember" );
   procs.tier4_2pc                    = get_proc( "tier4_2pc" );
   procs.tier4_4pc                    = get_proc( "tier4_4pc" );
   procs.tier5_2pc                    = get_proc( "tier5_2pc" );
@@ -1938,6 +1941,7 @@ bool player_t::parse_option( const std::string& name,
     // Player - Gear - Unique									            
     { "ashtongue_talisman",                   OPT_INT8,   &( gear.ashtongue_talisman                        ) },
     { "chaotic_skyfire",                      OPT_INT8,   &( gear.chaotic_skyfire                           ) },
+    { "chaotic_skyflare",                     OPT_INT8,   &( gear.chaotic_skyflare                          ) },
     { "darkmoon_crusade",                     OPT_INT8,   &( gear.darkmoon_crusade                          ) },
     { "darkmoon_wrath",                       OPT_INT8,   &( gear.darkmoon_wrath                            ) },
     { "elder_scribes",                        OPT_INT8,   &( gear.elder_scribes                             ) },
@@ -1956,7 +1960,11 @@ bool player_t::parse_option( const std::string& name,
     { "timbals_crystal",                      OPT_INT8,   &( gear.timbals_crystal                           ) },
     { "zandalarian_hero_charm",               OPT_INT8,   &( gear.zandalarian_hero_charm                    ) },
 	{ "extract_of_necromatic_power",          OPT_INT8,   &( gear.extract_of_necromatic_power               ) },
-	{ "sundial_of_the_exiled",                OPT_INT8,   &( gear.sundial_of_the_exiled                      ) },
+	{ "sundial_of_the_exiled",                OPT_INT8,   &( gear.sundial_of_the_exiled                     ) },
+	{ "illustration_of_the_dragon_soul",      OPT_INT8,   &( gear.illustration_of_the_dragon_soul           ) },
+	{ "embrace_of_the_spider",                OPT_INT8,   &( gear.embrace_of_the_spider                     ) },
+	{ "dying_curse",			              OPT_INT8,   &( gear.dying_curse		                        ) },
+	{ "forge_ember",                          OPT_INT8,   &( gear.forge_ember								) },
     { "tier4_2pc",                            OPT_INT8,   &( gear.tier4_2pc                                 ) },
     { "tier4_4pc",                            OPT_INT8,   &( gear.tier4_4pc                                 ) },
     { "tier5_2pc",                            OPT_INT8,   &( gear.tier5_2pc                                 ) },

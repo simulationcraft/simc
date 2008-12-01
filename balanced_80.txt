@@ -97,7 +97,7 @@ gear_spell_power=2200
 gear_crit_rating=461
 gear_hit_rating=250
 gear_haste_rating=492
-chaotic_skyfire=1
+chaotic_skyflare=1
 glyph_shadow_word_death=1
 glyph_blue_promises=1
 pet=shadow_fiend
@@ -130,7 +130,7 @@ gear_spell_power=2200
 gear_crit_rating=461
 gear_hit_rating=250
 gear_haste_rating=492
-chaotic_skyfire=1
+chaotic_skyflare=1
 # Glyphs
 glyph_fire_ball=1
 glyph_molten_armor=1
@@ -159,7 +159,7 @@ gear_spell_power=2200
 gear_crit_rating=461
 gear_hit_rating=250
 gear_haste_rating=492
-chaotic_skyfire=1
+chaotic_skyflare=1
 # Glyphs
 glyph_fire_ball=1
 glyph_molten_armor=1
@@ -188,7 +188,7 @@ gear_spell_power=2200
 gear_crit_rating=461
 gear_hit_rating=250
 gear_haste_rating=492
-chaotic_skyfire=1
+chaotic_skyflare=1
 # Glyphs
 glyph_molten_armor=1
 glyph_frost_bolt=1
@@ -223,7 +223,7 @@ gear_spell_power=2200
 gear_crit_rating=461
 gear_hit_rating=250
 gear_haste_rating=492
-chaotic_skyfire=1
+chaotic_skyflare=1
 # Glyphs
 glyph_molten_armor=1
 glyph_frostfire=1
@@ -254,7 +254,7 @@ gear_spell_power=2200
 gear_crit_rating=461
 gear_hit_rating=250
 gear_haste_rating=492
-chaotic_skyfire=1
+chaotic_skyflare=1
 # The starfire glyph is coded with starfire refreshing moonfire, not starfall.
 glyph_moonfire=1
 glyph_starfire=1
@@ -288,7 +288,7 @@ gear_spell_power=2200
 gear_crit_rating=461
 gear_hit_rating=250
 gear_haste_rating=492
-chaotic_skyfire=1
+chaotic_skyflare=1
 glyph_flametongue_weapon=1
 glyph_totem_of_wrath=1
 glyph_lightning_bolt=1
@@ -325,7 +325,7 @@ gear_spell_power=0
 gear_hit_rating=282
 gear_crit_rating=445
 gear_haste_rating=75
-chaotic_skyfire=1
+chaotic_skyflare=1
 # Hateful Gladiator Weapons
 main_hand=mace,damage=373,speed=2.6,enchant=mongoose
 #off_hand=dagger,damage=258,speed=1.8,enchant=mongoose
@@ -364,7 +364,7 @@ gear_spell_power=2200
 gear_crit_rating=461
 gear_hit_rating=250
 gear_haste_rating=492
-chaotic_skyfire=1
+chaotic_skyflare=1
 # Glyphs
 glyph_corruption=1
 glyph_curse_of_agony=1
@@ -398,7 +398,7 @@ gear_spell_power=2200
 gear_crit_rating=461
 gear_hit_rating=250
 gear_haste_rating=492
-chaotic_skyfire=1
+chaotic_skyflare=1
 # Glyphs
 glyph_corruption=1
 glyph_felguard=1
@@ -440,7 +440,7 @@ gear_spell_power=2200
 gear_crit_rating=461
 gear_hit_rating=250
 gear_haste_rating=492
-chaotic_skyfire=1
+chaotic_skyflare=1
 # Glyphs
 glyph_corruption=1
 glyph_imp=1
