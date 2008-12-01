@@ -861,6 +861,7 @@ struct starfire_t : public druid_spell_t
 {
   int8_t eclipse_benefit;
   int8_t eclipse_trigger;
+  std::string prev_str;
 
   starfire_t( player_t* player, const std::string& options_str ) : 
     druid_spell_t( "starfire", player, SCHOOL_ARCANE, TREE_BALANCE ), eclipse_benefit(0), eclipse_trigger(0)
@@ -872,6 +873,7 @@ struct starfire_t : public druid_spell_t
     {
       { "rank",    OPT_INT8,   &rank_index  },
       { "eclipse", OPT_STRING, &eclipse_str },
+      { "prev",    OPT_STRING, &prev_str    },
       { NULL }
     };
     parse_options( options, options_str );
@@ -970,6 +972,15 @@ struct starfire_t : public druid_spell_t
 	  return false;
     }
 
+    if( ! prev_str.empty() )
+    {
+      if( ! p -> last_foreground_action )
+	return false;
+
+      if( p -> last_foreground_action -> name_str != prev_str )
+	return false;
+    }
+
     return true;
   }
 };
@@ -980,6 +991,7 @@ struct wrath_t : public druid_spell_t
 {
   int8_t eclipse_benefit;
   int8_t eclipse_trigger;
+  std::string prev_str;
 
   wrath_t( player_t* player, const std::string& options_str ) : 
     druid_spell_t( "wrath", player, SCHOOL_NATURE, TREE_BALANCE ), eclipse_benefit(0), eclipse_trigger(0)
@@ -991,6 +1003,7 @@ struct wrath_t : public druid_spell_t
     {
       { "rank",    OPT_INT8,   &rank_index  },
       { "eclipse", OPT_STRING, &eclipse_str },
+      { "prev",    OPT_STRING, &prev_str    },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1076,6 +1089,15 @@ struct wrath_t : public druid_spell_t
       if( sim -> current_time + 3.0 < p -> cooldowns_eclipse )
 	if( ! sim -> time_to_think( p -> buffs_eclipse_wrath ) )
 	  return false;
+    }
+
+    if( ! prev_str.empty() )
+    {
+      if( ! p -> last_foreground_action )
+	return false;
+
+      if( p -> last_foreground_action -> name_str != prev_str )
+	return false;
     }
 
     return true;

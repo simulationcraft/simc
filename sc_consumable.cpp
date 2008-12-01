@@ -56,6 +56,12 @@ struct flask_t : public action_t
     case FLASK_DISTILLED_WISDOM:
       player -> attribute[ ATTR_INTELLECT ] += 65;
       break;
+    case FLASK_ENDLESS_RAGE:
+      player -> attack_power += 180;
+      break;
+    case FLASK_FROST_WYRM:
+      player -> spell_power[ SCHOOL_MAX ] += 125;
+      break;
     case FLASK_MIGHTY_RESTORATION:
       player -> mp5 += 25;
       break;
@@ -70,9 +76,6 @@ struct flask_t : public action_t
     case FLASK_SUPREME_POWER:
       player -> spell_power[ SCHOOL_MAX ] += 70;
       break;
-	case FLASK_FROST_WYRM:
-	  player -> spell_power[ SCHOOL_MAX ] += 125;
-	  break;
     default: assert(0);
     }
   }
@@ -126,27 +129,27 @@ struct food_t : public action_t
     {
     case FOOD_TENDER_SHOVELTUSK_STEAK:     
       player -> spell_power[ SCHOOL_MAX ] += 46;
-	  player -> attribute[ ATTR_STAMINA ] += 40;
+      player -> attribute[ ATTR_STAMINA ] += 40;
       break;
     case FOOD_SNAPPER_EXTREME:     
       player -> spell_hit += 40;
-	  player -> attribute[ ATTR_STAMINA ] += 40;
+      player -> attribute[ ATTR_STAMINA ] += 40;
       break;
     case FOOD_POACHED_BLUEFISH:     
       player -> spell_power[ SCHOOL_MAX ] += 23;
-	  player -> attribute[ ATTR_SPIRIT ]  += 20;
+      player -> attribute[ ATTR_SPIRIT ]  += 20;
       break;
     case FOOD_BLACKENED_BASILISK:     
       player -> spell_power[ SCHOOL_MAX ] += 23;
-	  player -> attribute[ ATTR_SPIRIT ]  += 20;
+      player -> attribute[ ATTR_SPIRIT ]  += 20;
       break;
     case FOOD_GOLDEN_FISHSTICKS:     
       player -> spell_power[ SCHOOL_MAX ] += 23;
-	  player -> attribute[ ATTR_SPIRIT ]  += 20;
+      player -> attribute[ ATTR_SPIRIT ]  += 20;
       break;
     case FOOD_CRUNCHY_SERPENT:     
       player -> spell_power[ SCHOOL_MAX ] += 23;
-	  player -> attribute[ ATTR_SPIRIT ]  += 20;
+      player -> attribute[ ATTR_SPIRIT ]  += 20;
       break;
     case FOOD_GREAT_FEAST:     
       player -> attack_power              += 60;
@@ -511,6 +514,7 @@ struct wizard_oil_t : public action_t
 
 void consumable_t::init_flask( player_t* p )
 {
+  // Eventually, flask will be taken off the actions= directive.
 }
 
 // ==========================================================================
@@ -519,6 +523,7 @@ void consumable_t::init_flask( player_t* p )
 
 void consumable_t::init_elixirs( player_t* p )
 {
+  // Eventually, elixirs will be taken off the actions= directive.
 }
 
 // ==========================================================================
@@ -527,6 +532,7 @@ void consumable_t::init_elixirs( player_t* p )
 
 void consumable_t::init_food( player_t* p )
 {
+  // Eventually, food will be taken off the actions= directive.
 }
 
 // ==========================================================================

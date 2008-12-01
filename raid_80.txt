@@ -549,7 +549,7 @@ swift_retribution=1
 shaman=Shaman_16_55_0
 level=80
 talents=http://www.wowhead.com/?talent=hVbhqZhbxsoxdAIkufot
-actions=flask,type=relentless_assault/food,type=great_feast/windfury_weapon,weapon=main/flametongue_weapon,weapon=off
+actions=flask,type=endless_rage/food,type=great_feast/windfury_weapon,weapon=main/flametongue_weapon,weapon=off
 actions+=/strength_of_earth_totem/windfury_totem/searing_totem/lightning_shield
 actions+=/auto_attack/lightning_bolt,maelstrom=5,ss_wait=1/shamanistic_rage/spirit_wolf/flame_shock/earth_shock,ss_wait=1/stormstrike/lava_lash/bloodlust,target_pct=35
 gear_agility=386

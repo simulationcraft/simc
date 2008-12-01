@@ -156,7 +156,7 @@ void sim_t::combat( int iteration )
       if( debug ) report_t::log( this, "Executing event: %s", e -> name );     
       e -> execute();
       
-      if( e -> player ) e -> player -> last_action = current_time;
+      if( e -> player ) e -> player -> last_action_time = current_time;
     }
     delete e;
   }

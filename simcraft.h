@@ -205,11 +205,12 @@ enum elixir_type { ELIXIR_NONE=0,
 enum flask_type { FLASK_NONE=0,
 		  FLASK_BLINDING_LIGHT, 
 		  FLASK_DISTILLED_WISDOM,
+		  FLASK_ENDLESS_RAGE,
+		  FLASK_FROST_WYRM,
 		  FLASK_MIGHTY_RESTORATION, 
 		  FLASK_PURE_DEATH, 
 		  FLASK_RELENTLESS_ASSAULT, 
 		  FLASK_SUPREME_POWER,
-		  FLASK_FROST_WYRM,
 		  FLASK_MAX };
 
 enum food_type { FOOD_NONE=0,
@@ -486,7 +487,7 @@ struct player_t
   // Reporting
   int8_t    quiet;
   action_t* last_foreground_action;
-  double    last_action, total_seconds;
+  double    last_action_time, total_seconds;
   double    total_waiting;
   double    iteration_dmg, total_dmg;
   double    resource_lost  [ RESOURCE_MAX ];
