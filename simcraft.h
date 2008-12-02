@@ -242,7 +242,6 @@ struct sim_t
   std::string patch_str;
   patch_t     patch;
   rng_t*      rng;
-  event_t*    event_list;
   event_t*    free_list;
   player_t*   player_list;
   player_t*   active_player;
@@ -254,6 +253,11 @@ struct sim_t
   int32_t     seed, id, iterations, current_iteration, threads;
   int8_t      infinite_resource[ RESOURCE_MAX ];
   int8_t      potion_sickness, average_dmg, log, debug, timestamp, sfmt;
+
+  // Timing Wheel Event Management
+  std::vector<event_t*> timing_wheel;
+  int32_t wheel_seconds, wheel_size, wheel_mask, timing_slice;
+  double  wheel_granularity;
 
   // Default Gear Profile
   struct gear_default_t

@@ -12,13 +12,14 @@
 // sim_t::sim_t =============================================================
 
 sim_t::sim_t( sim_t* p ) : 
-  parent(p), rng(0), event_list(0), free_list(0), player_list(0), active_player(0),
+  parent(p), rng(0), free_list(0), player_list(0), active_player(0),
   lag(0), pet_lag(0), channel_penalty(0), gcd_penalty(0), reaction_time(0.5), 
   regen_periodicity(1.0), current_time(0), max_time(0),
   events_remaining(0), max_events_remaining(0), 
   events_processed(0), total_events_processed(0),
   seed(0), id(0), iterations(1), current_iteration(0), threads(0),
   potion_sickness(1), average_dmg(1), log(0), debug(0), timestamp(1), sfmt(1),
+  wheel_seconds(0), wheel_size(0), wheel_mask(0), timing_slice(0),
   raid_dps(0), total_dmg(0), total_seconds(0), elapsed_cpu_seconds(0), merge_ignite(0),
   output_file(stdout), html_file(0), wiki_file(0), thread_handle(0)
 {
@@ -79,15 +80,22 @@ void sim_t::add_event( event_t* e,
 		       double   delta_time )
 {
   assert( delta_time >= 0 );
+
   e -> time = current_time + delta_time;
   e -> id   = ++id;
+
+  int32_t slice = ( (int32_t) ( e -> time * wheel_granularity ) ) & wheel_mask;
   
-  event_t** prev = &event_list;
+  event_t** prev = &( timing_wheel[ slice ] );
+
   while( (*prev) && (*prev) -> time < e -> time ) prev = &( (*prev) -> next );
+
   e -> next = *prev;
   *prev = e;
+
   events_remaining++;
   if( events_remaining > max_events_remaining ) max_events_remaining = events_remaining;
+
   if( debug ) report_t::log( this, "Add Event: %s %.2f %d", e -> name, e -> time, e -> id );
 }
 
@@ -96,7 +104,9 @@ void sim_t::add_event( event_t* e,
 void sim_t::reschedule_event( event_t* e )
 {
    if( debug ) report_t::log( this, "Reschedule Event: %s %d", e -> name, e -> id );
+
    add_event( e, ( e -> reschedule_time - current_time ) );
+
    e -> reschedule_time = 0;
 }
 
@@ -104,9 +114,63 @@ void sim_t::reschedule_event( event_t* e )
 
 event_t* sim_t::next_event()
 {
-  event_t* e = event_list;
-  if( e ) event_list = e -> next;
-  return e;
+  if( events_remaining == 0 ) return 0;
+
+  while( 1 )
+  {
+    event_t*& event_list = timing_wheel[ timing_slice ];
+    
+    if( event_list )
+    {
+      event_t* e = event_list;
+      event_list = e -> next;
+      events_remaining--;
+      events_processed++;
+      return e;
+    }
+
+    timing_slice++;
+    if( timing_slice == wheel_size ) timing_slice = 0;
+  }
+
+  return 0;
+}
+
+// sim_t::flush_events ======================================================
+
+void sim_t::flush_events()
+{
+   if( debug ) report_t::log( this, "Flush Events" );
+
+   for( int i=0; i < wheel_size; i++ )
+   {
+     while( event_t* e = timing_wheel[ i ] )
+     {
+       timing_wheel[ i ] = e -> next;
+       delete e;
+     }
+   }
+
+   events_remaining = 0;
+   events_processed = 0;
+   timing_slice = 0;
+   id = 0;
+}
+
+// sim_t::cancel_events =====================================================
+
+void sim_t::cancel_events( player_t* p )
+{
+  for( int i=0; i < wheel_size; i++ )
+  {
+    for( event_t* e = timing_wheel[ i ]; e; e = e -> next )
+    {
+      if( e -> player == p ) 
+      {
+	e -> canceled = 1;
+      }
+    }
+  }
 }
 
 // sim_t::combat ==============================================================
@@ -121,9 +185,6 @@ void sim_t::combat( int iteration )
 
   while( event_t* e = next_event() )
   {
-    events_remaining--;
-    events_processed++;
-
     current_time = e -> time;
 
     if( max_time > 0 && current_time > max_time ) 
@@ -162,31 +223,6 @@ void sim_t::combat( int iteration )
   }
 
   combat_end();
-}
-
-// sim_t::flush_events ======================================================
-
-void sim_t::flush_events()
-{
-   if( debug ) report_t::log( this, "Flush Events" );
-   while( event_t* e = next_event() )
-     delete e;
-   events_remaining = 0;
-   events_processed = 0;
-   id = 0;
-}
-
-// sim_t::cancel_events =====================================================
-
-void sim_t::cancel_events( player_t* p )
-{
-  for( event_t* e = event_list; e; e = e -> next )
-  {
-    if( e -> player == p ) 
-    {
-      e -> canceled = 1;
-    }
-  }
 }
 
 // sim_t::reset =============================================================
@@ -239,7 +275,22 @@ void sim_t::combat_end()
 bool sim_t::init()
 {
   rng = rng_t::init( sfmt );
+
+  // Timing wheel depth defaults to 10 minutes with a granularity of 10 buckets per second.
+  if( wheel_seconds     <= 0 ) wheel_seconds     = 600;
+  if( wheel_granularity <= 0 ) wheel_granularity = 10;
   
+  wheel_size = (int32_t) ( wheel_seconds * wheel_granularity );
+
+  // Round up the wheel depth to the nearest power of 2 to enable a fast "mod" operation.
+  for( wheel_mask = 2; wheel_mask < wheel_size; wheel_mask *= 2 );
+  wheel_size = wheel_mask;
+  wheel_mask--;
+
+  // The timing wheel represents an array of event lists: Each time slice has an event list.
+  timing_wheel.clear();
+  timing_wheel.insert( timing_wheel.begin(), wheel_size, (event_t*) 0 );
+
   total_seconds = 0;
 
   if( ! patch_str.empty() )
@@ -647,6 +698,8 @@ bool sim_t::parse_option( const std::string& name,
     { "seed",                             OPT_INT32,  &( seed                                     ) },
     { "sfmt",                             OPT_INT8,   &( sfmt                                     ) },
     { "timestamp",                        OPT_INT8,   &( timestamp                                ) },
+    { "wheel_granularity",                OPT_FLT,    &( wheel_granularity                        ) },
+    { "wheel_seconds",                    OPT_INT32,  &( wheel_seconds                            ) },
     { "wiki",                             OPT_STRING, &( wiki_file_str                            ) },
     { NULL, OPT_UNKNOWN }
   };
