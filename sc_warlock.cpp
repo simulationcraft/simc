@@ -476,9 +476,9 @@ struct imp_pet_t : public warlock_pet_t
 	{ 58, 7,  83,  93, 0, 115 },
 	{ 0,  0 }
       };
-      rank = choose_rank( ranks );
+      init_rank( ranks );
 
-      base_cost         = 0;
+      base_cost         = 0; // FIXME! When pets no longer have infinite mana......
       base_execute_time = 2.5;
       direct_power_mod  = ( 2.0 / 3.5 );
       may_crit          = true;
@@ -1661,11 +1661,9 @@ struct curse_of_elements_t : public warlock_spell_t
       { 56, 2, 0, 0, 0, 200 },
       { 0,  0 }
     };
-    player -> init_mana_costs( ranks );
-    rank = choose_rank( ranks );
+    init_rank( ranks );
     
     base_execute_time = 0; 
-    base_cost         = rank -> cost;
     base_cost        *= 1.0 - p -> talents.suppression * 0.02;
     base_hit         +=       p -> talents.suppression * 0.01;
 
@@ -1747,8 +1745,7 @@ struct curse_of_agony_t : public warlock_spell_t
       { 58, 6, 0, 0,  87, 215  },
       { 0, 0 }
     };
-    player -> init_mana_costs( ranks );
-    rank = choose_rank( ranks );
+    init_rank( ranks );
       
     base_execute_time = 0; 
     base_tick_time    = 2.0; 
@@ -1756,7 +1753,6 @@ struct curse_of_agony_t : public warlock_spell_t
     tick_power_mod    = base_tick_time / 15.0;
     tick_power_mod    = 1.20 / num_ticks;  // Nerf Bat!
 
-    base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.suppression * 0.02;
     base_hit        +=       p -> talents.suppression * 0.01;
     base_multiplier *= 1.0 + ( p -> talents.shadow_mastery          * 0.03 +
@@ -1826,17 +1822,14 @@ struct curse_of_doom_t : public warlock_spell_t
       { 60, 1, 0, 0, 3200, 300  },
       { 0, 0 }
     };
-    player -> init_mana_costs( ranks );
-    rank = choose_rank( ranks );
+    init_rank( ranks );
       
     base_execute_time = 0; 
     base_tick_time    = 60.0; 
     num_ticks         = 1;
     tick_power_mod    = 2.0;
-
-    base_cost        = rank -> cost;
-    base_cost       *= 1.0 - p -> talents.suppression * 0.02;
-    base_hit        +=       p -> talents.suppression * 0.01;
+    base_cost        *= 1.0 - p -> talents.suppression * 0.02;
+    base_hit         +=       p -> talents.suppression * 0.01;
 
     if( p -> talents.amplify_curse ) trigger_gcd = 1.0;
   }
@@ -1917,14 +1910,12 @@ struct shadow_bolt_t : public warlock_spell_t
       { 60,  9, 455, 507, 0, 370  },
       { 0, 0 }
     };
-    player -> init_mana_costs( ranks );
-    rank = choose_rank( ranks );
+    init_rank( ranks );
     
     base_execute_time = 3.0; 
     may_crit          = true;
     direct_power_mod  = base_execute_time / 3.5;
       
-    base_cost          = rank -> cost;
     base_cost         *= 1.0 - ( p -> talents.cataclysm  * 0.01 +
 				 p -> glyphs.shadow_bolt * 0.10 ); 
     base_execute_time -=  p -> talents.bane * 0.1;
@@ -2034,8 +2025,7 @@ struct chaos_bolt_t : public warlock_spell_t
       { 60, 1,  607,  769, 0, 0.09 },
       { 0, 0 }
     };
-    player -> init_mana_costs( ranks );
-    rank = choose_rank( ranks );
+    init_rank( ranks );
     
     base_execute_time = 2.5; 
     direct_power_mod  = base_execute_time / 3.5; 
@@ -2043,7 +2033,6 @@ struct chaos_bolt_t : public warlock_spell_t
     may_crit          = true;
     may_resist        = false;
       
-    base_cost          = rank -> cost;
     base_cost         *= 1.0 -  p -> talents.cataclysm * 0.01;
     base_execute_time -=  p -> talents.bane * 0.1;
     base_multiplier   *= 1.0 + p -> talents.emberstorm  * 0.03;
@@ -2111,8 +2100,7 @@ struct death_coil_t : public warlock_spell_t
       { 58, 3, 400, 400, 0, 480  },
       { 0, 0 }
     };
-    player -> init_mana_costs( ranks );
-    rank = choose_rank( ranks );
+    init_rank( ranks );
       
     base_execute_time = 0; 
     may_crit          = true; 
@@ -2120,7 +2108,6 @@ struct death_coil_t : public warlock_spell_t
     cooldown          = 120;
     direct_power_mod  = ( 1.5 / 3.5 ) / 2.0; 
       
-    base_cost        = rank -> cost;
     base_cost       *= 1.0 -  p -> talents.suppression * 0.02;
     base_multiplier *= 1.0 + p -> talents.shadow_mastery * 0.03;
     base_crit_bonus *= 1.0 + p -> talents.ruin * 0.20;
@@ -2173,14 +2160,12 @@ struct shadow_burn_t : public warlock_spell_t
       { 56,  6, 450, 502, 0, 0.27 },
       { 0, 0 }
     };
-    player -> init_mana_costs( ranks );
-    rank = choose_rank( ranks );
+    init_rank( ranks );
       
     may_crit         = true; 
     cooldown         = 15;
     direct_power_mod = ( 1.5 / 3.5 ); 
       
-    base_cost        = rank -> cost;
     base_cost       *= 1.0 -  p -> talents.cataclysm * 0.01;
     base_multiplier *= 1.0 + p -> talents.shadow_mastery * 0.03;
     base_crit_bonus *= 1.0 + p -> talents.ruin * 0.20;
@@ -2242,15 +2227,13 @@ struct corruption_t : public warlock_spell_t
       { 60,  7, 0, 0, 137, 340  },
       { 0, 0 }
     };
-    player -> init_mana_costs( ranks );
-    rank = choose_rank( ranks );
+    init_rank( ranks );
 
     base_execute_time = 0.0; 
     base_tick_time    = 3.0; 
     num_ticks         = 6;
     tick_power_mod    = base_tick_time / 15.0;
 
-    base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.suppression * 0.02;
     base_hit        +=  p -> talents.suppression * 0.01;
     base_multiplier *= 1.0 + ( p -> talents.shadow_mastery      * 0.03 +
@@ -2267,7 +2250,7 @@ struct corruption_t : public warlock_spell_t
   virtual void execute()
   {
     warlock_t* p = player -> cast_warlock();
-    base_tick_dmg = rank -> tick;
+    base_tick_dmg = base_td_init;
     warlock_spell_t::execute();
     if( result_is_hit() )
     {
@@ -2320,8 +2303,7 @@ struct drain_life_t : public warlock_spell_t
       { 54, 6, 0, 0,  71, 300  },
       { 0, 0 }
     };
-    player -> init_mana_costs( ranks );
-    rank = choose_rank( ranks );
+    init_rank( ranks );
     
     base_execute_time = 0; 
     base_tick_time    = 1.0; 
@@ -2330,7 +2312,6 @@ struct drain_life_t : public warlock_spell_t
     binary            = true;
     tick_power_mod    = ( base_tick_time / 3.5 ) / 2.0; 
 
-    base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.suppression * 0.02;
     base_hit        +=       p -> talents.suppression * 0.01;
     base_multiplier *= 1.0 + p -> talents.shadow_mastery * 0.03;
@@ -2390,9 +2371,10 @@ struct drain_life_t : public warlock_spell_t
 struct drain_soul_t : public warlock_spell_t
 {
   int8_t target_pct;
+  int8_t health_multiplier;
 
   drain_soul_t( player_t* player, const std::string& options_str ) : 
-    warlock_spell_t( "drain_soul", player, SCHOOL_SHADOW, TREE_AFFLICTION ), target_pct(0)
+    warlock_spell_t( "drain_soul", player, SCHOOL_SHADOW, TREE_AFFLICTION ), target_pct(0), health_multiplier(0)
   {
     warlock_t* p = player -> cast_warlock();
 
@@ -2411,8 +2393,7 @@ struct drain_soul_t : public warlock_spell_t
       { 52, 4, 0, 0,  91, 290  },
       { 0, 0 }
     };
-    player -> init_mana_costs( ranks );
-    rank = choose_rank( ranks );
+    init_rank( ranks );
     
     base_execute_time = 0; 
     base_tick_time    = 3.0; 
@@ -2421,10 +2402,11 @@ struct drain_soul_t : public warlock_spell_t
     binary            = true;
     tick_power_mod    = ( base_tick_time / 3.5 ) / 2.0; 
 
-    base_cost         = rank -> cost;
     base_cost        *= 1.0 - p -> talents.suppression * 0.02;
     base_hit         += p -> talents.suppression * 0.01;
     base_multiplier  *= 1.0 + p -> talents.shadow_mastery * 0.03;
+
+    health_multiplier = p -> level >= 7 ? 1 : 0;
   }
 
   virtual void execute()
@@ -2473,14 +2455,13 @@ struct drain_soul_t : public warlock_spell_t
     int de_bonus = trigger_deaths_embrace( this );
     if( de_bonus ) player_multiplier /= 1.0 + de_bonus * 0.01;
 
-    if( rank -> index >= 6 && t -> initial_health > 0 )
+    if( health_multiplier && t -> initial_health > 0 )
     {
       if( ( t -> current_health / t -> initial_health ) < 0.25 )
       {
 	player_multiplier *= 4.0 + de_bonus * 0.01;
       }
     }
-    
   }
 
   virtual void target_debuff( int8_t dmg_type )
@@ -2538,8 +2519,7 @@ struct siphon_life_t : public warlock_spell_t
       { 58, 4, 0, 0, 45, 310  },
       { 0, 0 }
     };
-    player -> init_mana_costs( ranks );
-    rank = choose_rank( ranks );
+    init_rank( ranks );
      
     base_execute_time = 0; 
     base_tick_time    = 3.0; 
@@ -2547,7 +2527,6 @@ struct siphon_life_t : public warlock_spell_t
     binary            = true;
     tick_power_mod    = ( base_tick_time / 15.0 ) / 2.0; 
 
-    base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.suppression * 0.02;
     base_hit        +=       p -> talents.suppression * 0.01;
     base_multiplier *= 1.0 + ( p -> talents.shadow_mastery * 0.03 +
@@ -2607,15 +2586,13 @@ struct unstable_affliction_t : public warlock_spell_t
       { 60, 2,  0, 0, 155, 315  },
       { 0, 0 }
     };
-    player -> init_mana_costs( ranks );
-    rank = choose_rank( ranks );
+    init_rank( ranks );
     
     base_execute_time = 1.5; 
     base_tick_time    = 3.0; 
     num_ticks         = 5;
     tick_power_mod    = base_tick_time / 15.0; 
     
-    base_cost         = rank -> cost;
     base_cost        *= 1.0 - p -> talents.suppression * 0.02;
     base_hit         +=       p -> talents.suppression * 0.01;
     base_multiplier  *= 1.0 + p -> talents.shadow_mastery * 0.03;
@@ -2678,15 +2655,13 @@ struct haunt_t : public warlock_spell_t
       { 60, 1, 405, 473, 0, 0.12 },
       { 0, 0 }
     };
-    player -> init_mana_costs( ranks );
-    rank = choose_rank( ranks );
+    init_rank( ranks );
     
     base_execute_time = 1.5; 
     direct_power_mod  = base_execute_time / 3.5; 
     cooldown          = 8.0;
     may_crit          = true;
       
-    base_cost         = rank -> cost;
     base_cost        *= 1.0 - p -> talents.suppression * 0.02;
     base_hit         +=       p -> talents.suppression * 0.01;
     base_multiplier  *= 1.0 + p -> talents.shadow_mastery * 0.03;
@@ -2752,8 +2727,7 @@ struct immolate_t : public warlock_spell_t
       { 60,  7, 258, 258,  97, 370  },
       { 0, 0 }
     };
-    player -> init_mana_costs( ranks );
-    rank = choose_rank( ranks );
+    init_rank( ranks );
 
     base_execute_time = 2.0; 
     may_crit          = true;
@@ -2762,10 +2736,8 @@ struct immolate_t : public warlock_spell_t
     direct_power_mod  = 0.20; 
     tick_power_mod    = 0.20;
 
-    base_cost          = rank -> cost;
     base_cost         *= 1.0 -  p -> talents.cataclysm * 0.01;
     base_execute_time -= p -> talents.bane * 0.1;
-    base_multiplier   *= 1.0 + p -> talents.emberstorm  * 0.03;
     base_crit         += p -> talents.devastation * 0.05;
     base_crit         += p -> talents.backlash * 0.01;
     base_crit_bonus   *= 1.0 + p -> talents.ruin * 0.20;
@@ -2773,31 +2745,22 @@ struct immolate_t : public warlock_spell_t
     direct_power_mod  += (1.0/3.0) * p -> talents.fire_and_brimstone * 0.03;
     tick_power_mod    += (2.0/3.0) * p -> talents.fire_and_brimstone * 0.03 / num_ticks;
 
+    base_dd_multiplier *= 1.0 + ( p -> talents.emberstorm        * 0.03 +
+				  p -> talents.improved_immolate * 0.10 -
+				  p -> glyphs.immolate           * 0.10 );
+
+    base_td_multiplier *= 1.0 + ( p -> talents.emberstorm * 0.03 +
+				  p -> glyphs.immolate    * 0.20 );
+
     if( p -> gear.tier4_4pc ) num_ticks++;
 
     observer = &( p -> active_immolate );
   }
 
-  virtual double calculate_direct_damage()
-  {
-    warlock_t* p = player -> cast_warlock();
-    spell_t::calculate_direct_damage();
-    direct_dmg *= 1.0 + ( p -> talents.improved_immolate * 0.10 ) - ( p -> glyphs.immolate * 0.10 );
-    return direct_dmg;
-  }
-
-  virtual double calculate_tick_damage()
-  {
-    warlock_t* p = player -> cast_warlock();
-    spell_t::calculate_tick_damage();
-    if( p -> glyphs.immolate ) tick_dmg *= 1.20;
-    return tick_dmg;
-  }
-
   virtual void execute()
   {
     warlock_t* p = player -> cast_warlock();
-    base_tick_dmg = rank -> tick;
+    base_tick_dmg = base_td_init;
     warlock_spell_t::execute();
     if( result_is_hit() )
     {
@@ -2849,15 +2812,13 @@ struct conflagrate_t : public warlock_spell_t
       { 60, 4, 447, 557, 0, 255  },
       { 0, 0 }
     };
-    player -> init_mana_costs( ranks );
-    rank = choose_rank( ranks );
+    init_rank( ranks );
      
     base_execute_time = 0; 
     may_crit          = true;
     direct_power_mod  = (1.5/3.5);
     cooldown          = 10;
 
-    base_cost         = rank -> cost;
     base_cost        *= 1.0 -  p -> talents.cataclysm * 0.01;
     base_multiplier  *= 1.0 + p -> talents.emberstorm  * 0.03;
     base_crit        += p -> talents.devastation * 0.05;
@@ -2920,9 +2881,10 @@ struct incinerate_t : public warlock_spell_t
 {
   int8_t backdraft;
   int8_t molten_core;
+  double immolate_bonus;
 
   incinerate_t( player_t* player, const std::string& options_str ) : 
-    warlock_spell_t( "incinerate", player, SCHOOL_FIRE, TREE_DESTRUCTION ), backdraft(0), molten_core(0)
+    warlock_spell_t( "incinerate", player, SCHOOL_FIRE, TREE_DESTRUCTION ), backdraft(0), molten_core(0), immolate_bonus(0)
   {
     warlock_t* p = player -> cast_warlock();
 
@@ -2943,14 +2905,12 @@ struct incinerate_t : public warlock_spell_t
       { 64, 1, 357, 413, 0, 256  },
       { 0, 0 }
     };
-    player -> init_mana_costs( ranks );
-    rank = choose_rank( ranks );
+    init_rank( ranks );
      
     base_execute_time  = 2.5; 
     may_crit           = true;
     direct_power_mod   = (2.5/3.5); 
 
-    base_cost          = rank -> cost;
     base_cost         *= 1.0 - p -> talents.cataclysm * 0.01;
     base_execute_time -= p -> talents.emberstorm * 0.05;
     base_multiplier   *= 1.0 + ( p -> talents.emberstorm  * 0.03 +
@@ -2960,23 +2920,15 @@ struct incinerate_t : public warlock_spell_t
     direct_power_mod  *= 1.0 + p -> talents.shadow_and_flame * 0.04;
     base_crit_bonus   *= 1.0 + p -> talents.ruin * 0.20;
     base_hit          += p -> talents.cataclysm * 0.01;
+
+    immolate_bonus = util_t::ability_rank( p -> level,  157,80,  130,74,  120,70,  108,0 );
   }
 
   virtual void execute()
   {
     warlock_t* p = player -> cast_warlock();
-    base_direct_dmg = ( rank -> dd_min + rank -> dd_max ) / 2.0;
-    if( p -> active_immolate )
-    {
-      switch( rank -> index )
-      {
-      case 4: base_direct_dmg += 157; break;
-      case 3: base_direct_dmg += 130; break;
-      case 2: base_direct_dmg += 120; break;
-      case 1: base_direct_dmg += 108; break;
-      default: assert(0);
-      }
-    }
+    base_direct_dmg = ( base_dd_min + base_dd_max ) / 2.0;
+    if( p -> active_immolate ) base_direct_dmg += immolate_bonus;
     warlock_spell_t::execute(); 
     if( result_is_hit() )
     {
@@ -3034,14 +2986,12 @@ struct searing_pain_t : public warlock_spell_t
       { 58,  6, 204, 240, 0, 168  },
       { 0, 0 }
     };
-    player -> init_mana_costs( ranks );
-    rank = choose_rank( ranks );
+    init_rank( ranks );
      
     base_execute_time = 1.5; 
     may_crit          = true;
     direct_power_mod  = base_execute_time / 3.5; 
 
-    base_cost        = rank -> cost;
     base_cost       *= 1.0 -  p -> talents.cataclysm * 0.01;
     base_multiplier *= 1.0 + p -> talents.emberstorm  * 0.03;
     base_crit       += p -> talents.devastation * 0.05;
@@ -3088,14 +3038,12 @@ struct soul_fire_t : public warlock_spell_t
       { 56, 2,  703,  881, 0, 335  },
       { 0, 0 }
     };
-    player -> init_mana_costs( ranks );
-    rank = choose_rank( ranks );
+    init_rank( ranks );
      
     base_execute_time = 6.0; 
     may_crit          = true; 
     direct_power_mod  = 1.15; 
 
-    base_cost          = rank -> cost;
     base_cost         *= 1.0 -  p -> talents.cataclysm * 0.01;
     base_execute_time -= p -> talents.bane * 0.4;
     base_multiplier   *= 1.0 + p -> talents.emberstorm  * 0.03;
@@ -3120,9 +3068,10 @@ struct soul_fire_t : public warlock_spell_t
 struct life_tap_t : public warlock_spell_t
 {
   int16_t trigger;
+  double  base_tap;
 
   life_tap_t( player_t* player, const std::string& options_str ) : 
-    warlock_spell_t( "life_tap", player, SCHOOL_SHADOW, TREE_AFFLICTION ), trigger(1000)
+    warlock_spell_t( "life_tap", player, SCHOOL_SHADOW, TREE_AFFLICTION ), trigger(1000), base_tap(0)
   {
     option_t options[] =
     {
@@ -3131,15 +3080,7 @@ struct life_tap_t : public warlock_spell_t
     };
     parse_options( options, options_str );
 
-    static rank_t ranks[] =
-    {
-      { 80, 8, 0, 0, 1490, 0 },
-      { 68, 7, 0, 0,  710, 0 },
-      { 56, 6, 0, 0,  500, 0 },
-      { 0, 0 }
-    };
-    player -> init_mana_costs( ranks );
-    rank = choose_rank( ranks );
+    base_tap = util_t::ability_rank( player -> level,  1490,80,  710,68,  500,0 );
   }
 
   virtual void execute() 
@@ -3147,9 +3088,9 @@ struct life_tap_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
     p -> procs_life_tap -> occur();
-    double dmg = rank -> tick + 3.0 * p -> spirit();
-    p -> resource_loss( RESOURCE_HEALTH, dmg );
-    p -> resource_gain( RESOURCE_MANA, dmg * ( 1.0 + p -> talents.improved_life_tap * 0.10 ), p -> gains_life_tap );
+    double mana = base_tap + 3.0 * p -> spirit();
+    p -> resource_loss( RESOURCE_HEALTH, mana );
+    p -> resource_gain( RESOURCE_MANA, mana * ( 1.0 + p -> talents.improved_life_tap * 0.10 ), p -> gains_life_tap );
   }
 
   virtual bool ready()
@@ -3175,8 +3116,7 @@ struct dark_pact_t : public warlock_spell_t
       { 60, 2,  545,  545, 0, 0 },
 	{ 0, 0 }
     };
-    player -> init_mana_costs( ranks );
-    rank = choose_rank( ranks );
+    init_rank( ranks );
 
     base_execute_time = 0.0; 
     direct_power_mod  = 0.96;
@@ -3188,7 +3128,7 @@ struct dark_pact_t : public warlock_spell_t
     if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
     p -> procs_dark_pact -> occur();
     player_buff();
-    double mana = ( rank -> dd_max + ( direct_power_mod * p -> composite_spell_power( SCHOOL_SHADOW ) ) ) * base_multiplier * player_multiplier;
+    double mana = ( base_dd_max + ( direct_power_mod * p -> composite_spell_power( SCHOOL_SHADOW ) ) ) * base_multiplier * player_multiplier;
     p -> resource_gain( RESOURCE_MANA, mana, p -> gains_dark_pact );
   }
 

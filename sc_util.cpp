@@ -5,9 +5,9 @@
 
 #include "simcraft.h"
 
-double util_t::rank( int8_t num, 
-		     int8_t max, 
-		     double increment )
+double util_t::talent_rank( int8_t num, 
+			    int8_t max, 
+			    double increment )
 {
   assert( num >= 0 );
   assert( max > 0 );
@@ -17,9 +17,9 @@ double util_t::rank( int8_t num,
   return num * increment;
 }
 
-int8_t util_t::rank( int8_t num, 
-		     int8_t max, 
-		     int    increment )
+int util_t::talent_rank( int8_t num, 
+			 int8_t max, 
+			 int    increment )
 {
   assert( num >= 0 );
   assert( max > 0 );
@@ -29,10 +29,10 @@ int8_t util_t::rank( int8_t num,
   return num * increment;
 }
 
-double util_t::rank( int8_t num, 
-		     int8_t max, 
-		     double first, 
-		     double second, ... )
+double util_t::talent_rank( int8_t num, 
+			    int8_t max, 
+			    double first, 
+			    double second, ... )
 {
   assert( num >= 0 );
   assert( max > 0 );
@@ -56,10 +56,10 @@ double util_t::rank( int8_t num,
   return value;
 }
 
-int8_t util_t::rank( int8_t num, 
-		     int8_t max, 
-		     int    first, 
-		     int    second, ... )
+int util_t::talent_rank( int8_t num, 
+			 int8_t max, 
+			 int    first, 
+			 int    second, ... )
 {
   assert( num >= 0 );
   assert( max > 0 );
@@ -72,15 +72,51 @@ int8_t util_t::rank( int8_t num,
   va_list vap;
   va_start( vap, second );
 
-  int8_t value=0;
+  int value=0;
 
   for( int i=3; i <= num; i++ );
   {
-    value = (int8_t) va_arg( vap, int );
+    value = (int) va_arg( vap, int );
   }
   va_end( vap );
 
   return value;
+}
+
+double util_t::ability_rank( int8_t player_level, 
+			     double ability_value, 
+			     int8_t ability_level, ... )
+{
+  va_list vap;
+  va_start( vap, ability_level );
+
+  while( player_level < ability_level )
+  {
+    ability_value = (double) va_arg( vap, double );
+    ability_level = (int8_t) va_arg( vap, int );
+  }
+  
+  va_end( vap );
+
+  return ability_value;
+}
+
+int util_t::ability_rank( int8_t player_level, 
+			  int    ability_value, 
+			  int8_t ability_level, ... )
+{
+  va_list vap;
+  va_start( vap, ability_level );
+
+  while( player_level < ability_level )
+  {
+    ability_value = (int)    va_arg( vap, int );
+    ability_level = (int8_t) va_arg( vap, int );
+  }
+  
+  va_end( vap );
+
+  return ability_value;
 }
 
 char* util_t::dup( const char *value )

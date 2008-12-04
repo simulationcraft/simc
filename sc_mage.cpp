@@ -1100,15 +1100,13 @@ struct arcane_barrage_t : public mage_spell_t
       { 60, 1, 386,  470, 0, 0.18 },
       { 0, 0 }
     };
-    player -> init_mana_costs( ranks );
-    rank = choose_rank( ranks );
+    init_rank( ranks );
     
-    base_execute_time = 0; 
+    base_execute_time = 0;
     may_crit          = true;
     direct_power_mod  = (3.0/3.5); 
     cooldown          = 3.0;
 
-    base_cost         = rank -> cost;
     base_cost        *= 1.0 - p -> talents.frost_channeling * (0.1/3);
     base_cost        *= 1.0 - p -> talents.arcane_focus * 0.01;
     base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
@@ -1164,14 +1162,12 @@ struct arcane_blast_t : public mage_spell_t
       { 64, 1, 648,  752, 0, 195  },
       { 0, 0 }
     };
-    player -> init_mana_costs( ranks );
-    rank = choose_rank( ranks );
+    init_rank( ranks );
     
     base_execute_time = 2.5; 
     may_crit          = true;
     direct_power_mod  = (2.5/3.5); 
 
-    base_cost         = rank -> cost;
     base_cost        *= 1.0 - p -> talents.frost_channeling * (0.1/3);
     base_cost        *= 1.0 - p -> talents.arcane_focus * 0.01;
     base_multiplier  *= 1.0 + p -> talents.spell_impact * 0.02;
@@ -1201,6 +1197,8 @@ struct arcane_blast_t : public mage_spell_t
   virtual void execute()
   {
     mage_spell_t::execute(); 
+
+    if( result_is_hit() ) trigger_missile_barrage( this );
 
     struct expiration_t : public event_t
     {
@@ -1303,16 +1301,15 @@ struct arcane_missiles_t : public mage_spell_t
       { 60,  8, 230, 230, 0, 655  },
       { 0, 0 }
     };
-    player -> init_mana_costs( ranks );
-    rank = choose_rank( ranks );
+    init_rank( ranks );
 
+    base_execute_time = 0;
     base_tick_time    = 1.0; 
     num_ticks         = 5; 
     may_crit          = true; 
     channeled         = true;
     direct_power_mod  = base_tick_time / 3.5; // bonus per missle
 
-    base_cost         = rank -> cost;
     base_cost        *= 1.0 - p -> talents.frost_channeling * (0.1/3);
     base_cost        *= 1.0 - p -> talents.arcane_focus * 0.01;
     base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
@@ -1663,14 +1660,12 @@ struct fire_ball_t : public mage_spell_t
       { 60, 11, 561,  715, 0, 395  },
       { 0, 0 }
     };
-    player -> init_mana_costs( ranks );
-    rank = choose_rank( ranks );
+    init_rank( ranks );
     
     base_execute_time = 3.5; 
     may_crit          = true; 
     direct_power_mod  = base_execute_time / 3.5;
       
-    base_cost          = rank -> cost;
     base_cost         *= 1.0 - p -> talents.elemental_precision * 0.01;
     base_cost         *= 1.0 - p -> talents.pyromaniac * 0.01;
     base_cost         *= 1.0 - p -> talents.frost_channeling * (0.1/3);
@@ -1762,15 +1757,13 @@ struct fire_blast_t : public mage_spell_t
       { 54,  7, 431,  509, 0, 340  },
       { 0, 0 }
     };
-    player -> init_mana_costs( ranks );
-    rank = choose_rank( ranks );
+    init_rank( ranks );
     
     base_execute_time = 0; 
     may_crit          = true; 
     cooldown          = 8.0;
     direct_power_mod  = (1.5/3.5); 
       
-    base_cost         = rank -> cost;
     base_cost        *= 1.0 - p -> talents.elemental_precision * 0.01;
     base_cost        *= 1.0 - p -> talents.pyromaniac * 0.01;
     base_cost        *= 1.0 - p -> talents.frost_channeling * (0.1/3);
@@ -1819,17 +1812,15 @@ struct living_bomb_t : public mage_spell_t
       { 60, 1, 336, 336, 155, 0.22 },
       { 0, 0 }
     };
-    player -> init_mana_costs( ranks );
-    rank = choose_rank( ranks );
+    init_rank( ranks );
     
-    base_execute_time = 0; 
+    base_execute_time = 0;
     base_tick_time    = 3.0; 
     num_ticks         = 4; 
     direct_power_mod  = 0.40; 
     tick_power_mod    = base_tick_time / 15;
     may_crit          = true;
 
-    base_cost         = rank -> cost;
     base_cost        *= 1.0 - p -> talents.elemental_precision * 0.01;
     base_cost        *= 1.0 - p -> talents.pyromaniac * 0.01;
     base_cost        *= 1.0 - p -> talents.frost_channeling * (0.1/3);
@@ -1907,8 +1898,7 @@ struct pyroblast_t : public mage_spell_t
       { 60,  8,  708,  898, 45, 440  },
       { 0, 0 }
     };
-    player -> init_mana_costs( ranks );
-    rank = choose_rank( ranks );
+    init_rank( ranks );
     
     base_execute_time = 5.0;
     base_tick_time    = 3.0; 
@@ -1917,7 +1907,6 @@ struct pyroblast_t : public mage_spell_t
     direct_power_mod  = 1.15;
     tick_power_mod    = 0.20 / num_ticks;
 
-    base_cost         = rank -> cost;
     base_cost        *= 1.0 - p -> talents.elemental_precision * 0.01;
     base_cost        *= 1.0 - p -> talents.pyromaniac * 0.01;
     base_cost        *= 1.0 - p -> talents.frost_channeling * (0.1/3);
@@ -1990,14 +1979,12 @@ struct scorch_t : public mage_spell_t
       { 58,  7, 233, 275, 0, 150  },
       { 0, 0 }
     };
-    player -> init_mana_costs( ranks );
-    rank = choose_rank( ranks );
+    init_rank( ranks );
     
     base_execute_time = 1.5; 
     may_crit          = true;
     direct_power_mod  = (1.5/3.5); 
       
-    base_cost         = rank -> cost;
     base_cost        *= 1.0 - p -> talents.elemental_precision * 0.01;
     base_cost        *= 1.0 - p -> talents.pyromaniac * 0.01;
     base_cost        *= 1.0 - p -> talents.frost_channeling * (0.1/3);
@@ -2096,14 +2083,12 @@ struct frost_bolt_t : public mage_spell_t
       { 44, 8,  292, 316, 0, 195  },
       { 0, 0 }
     };
-    player -> init_mana_costs( ranks );
-    rank = choose_rank( ranks );
+    init_rank( ranks );
     
     base_execute_time = 3.0; 
     may_crit          = true; 
     direct_power_mod  = ( base_execute_time / 3.5 ) * 0.95; 
       
-    base_cost          = rank -> cost;
     base_cost         *= 1.0 - p -> talents.elemental_precision * 0.01;
     base_cost         *= 1.0 - p -> talents.frost_channeling * (0.1/3);
     base_execute_time -= p -> talents.improved_frost_bolt * 0.1;
@@ -2166,14 +2151,12 @@ struct ice_lance_t : public mage_spell_t
       { 66, 1, 161, 187, 0, 150  },
       { 0, 0 }
     };
-    player -> init_mana_costs( ranks );
-    rank = choose_rank( ranks );
+    init_rank( ranks );
     
     base_execute_time = 0.0; 
     may_crit          = true; 
     direct_power_mod  = (0.5/3.5); 
       
-    base_cost         = rank -> cost;
     base_cost        *= 1.0 - p -> talents.elemental_precision * 0.01;
     base_cost        *= 1.0 - p -> talents.frost_channeling * (0.1/3);
     base_multiplier  *= 1.0 + p -> talents.piercing_ice * 0.02;
@@ -2257,8 +2240,7 @@ struct frostfire_bolt_t : public mage_spell_t
       { 75, 1, 629, 731, 20, 0.14 },
       { 0, 0 }
     };
-    player -> init_mana_costs( ranks );
-    rank = choose_rank( ranks );
+    init_rank( ranks );
     
     base_execute_time = 3.0; 
     may_crit          = true; 
@@ -2271,7 +2253,6 @@ struct frostfire_bolt_t : public mage_spell_t
       tick_power_mod = 0.05 / 3.0;
     }
       
-    base_cost         = rank -> cost;
     base_cost         *= 1.0 - p -> talents.elemental_precision * 0.01;
     base_cost         *= 1.0 - p -> talents.pyromaniac * 0.01;
     base_cost         *= 1.0 - p -> talents.frost_channeling * (0.1/3);

@@ -564,8 +564,7 @@ struct holy_fire_t : public priest_spell_t
       { 60,  8, 355,  449, 29, 0.13  },
       { 0,   0 }
     };
-    player -> init_mana_costs( ranks );
-    rank = choose_rank( ranks );
+    init_rank( ranks );
 
     base_execute_time = 2.0; 
     base_tick_time    = 1.0;
@@ -575,7 +574,6 @@ struct holy_fire_t : public priest_spell_t
     tick_power_mod    = 0.1678 / 7;
     
     may_crit           = true;    
-    base_cost          = rank -> cost;
     base_execute_time -= p -> talents.divine_fury * 0.01;
     base_multiplier   *= 1.0 + p -> talents.searing_light * 0.05;
     base_crit         += p -> talents.holy_specialization * 0.01;
@@ -607,14 +605,12 @@ struct smite_t : public priest_spell_t
       { 54,  8, 371, 415, 0, 0.17 },
       { 0, 0 }
     };
-    player -> init_mana_costs( ranks );
-    rank = choose_rank( ranks );
+    init_rank( ranks );
     
     base_execute_time = 2.5; 
     direct_power_mod  = base_execute_time / 3.5;
     may_crit          = true;
       
-    base_cost          = rank -> cost;
     base_execute_time -= p -> talents.divine_fury * 0.1;
     base_multiplier   *= 1.0 + p -> talents.searing_light * 0.05;
     base_crit         += p -> talents.holy_specialization * 0.01;
@@ -672,8 +668,7 @@ struct penance_t : public priest_spell_t
       { 60, 1, 184, 184, 0, 0.16 },
       { 0, 0 }
     };
-    player -> init_mana_costs( ranks );
-    rank = choose_rank( ranks );
+    init_rank( ranks );
     
     // Fix-Me. Penance ticks instantly and then once a second for 2 seconds.
     base_execute_time = 0.0; 
@@ -684,7 +679,6 @@ struct penance_t : public priest_spell_t
     cooldown          = 10;
     direct_power_mod  = 0.8 / 3.5;
       
-    base_cost          = rank -> cost;
     cooldown          *= 1.0 - p -> talents.aspiration * 0.10;
     base_multiplier   *= 1.0 + p -> talents.searing_light * 0.05 + p -> talents.twin_disciplines * 0.01;
     base_crit         += p -> talents.holy_specialization * 0.01;
@@ -760,15 +754,13 @@ struct shadow_word_pain_t : public priest_spell_t
       { 58,  8, 0, 0, 128, 0.25  },
       { 0, 0 }
     };
-    player -> init_mana_costs( ranks );
-    rank = choose_rank( ranks );
+    init_rank( ranks );
       
     base_execute_time = 0; 
     base_tick_time    = 3.0; 
     num_ticks         = 6;
     tick_power_mod    = base_tick_time / 15.0;
     tick_power_mod   *= 0.91666667;  // Nerf Bat!
-    base_cost         = rank -> cost;
     base_cost        *= 1.0 - ( p -> talents.mental_agility  * 0.02 - 
 				p -> talents.shadow_focus    * 0.02 - 
 				p -> glyphs.shadow_word_pain * 0.20 );
@@ -855,8 +847,7 @@ struct vampiric_touch_t : public priest_spell_t
       { 60, 2, 0, 0, 120, 0.18  },
       { 0, 0 }
     };
-    player -> init_mana_costs( ranks );
-    rank = choose_rank( ranks );
+    init_rank( ranks );
 
     base_execute_time = 1.5; 
     base_tick_time    = 3.0; 
@@ -864,7 +855,6 @@ struct vampiric_touch_t : public priest_spell_t
     tick_power_mod    = base_tick_time / 15.0;
     tick_power_mod   *= 2.0;
 
-    base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.shadow_focus * 0.02;
     base_cost        = floor(base_cost);
     base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
@@ -932,8 +922,7 @@ struct devouring_plague_t : public priest_spell_t
       { 60, 6, 0, 0, 113, 0.28 },
       { 0, 0 }
     };
-    player -> init_mana_costs( ranks );
-    rank = choose_rank( ranks );
+    init_rank( ranks );
 
     base_execute_time = 0; 
     base_tick_time    = 3.0; 
@@ -942,7 +931,6 @@ struct devouring_plague_t : public priest_spell_t
     binary            = true;
     tick_power_mod    = base_tick_time / 15.0;
     tick_power_mod   *= 0.92;
-    base_cost         = rank -> cost;
     base_cost        *= 1.0 - p -> talents.mental_agility * 0.02 - p -> talents.shadow_focus * 0.02;
     base_cost         = floor(base_cost);
     base_multiplier  *= 1.0 + p -> talents.darkness * 0.02 + p -> talents.twin_disciplines * 0.01;
@@ -1007,14 +995,12 @@ struct vampiric_embrace_t : public priest_spell_t
       { 1, 1, 0, 0, 0, 0.02 },
       { 0, 0 }
     };
-    player -> init_mana_costs( ranks );
-    rank = choose_rank( ranks );    
+    init_rank( ranks );    
      
     base_execute_time = 0; 
     base_tick_time    = 60.0; 
     num_ticks         = 1;
     cooldown          = 10;
-    base_cost         = rank->cost;
     base_cost        *= 1.0 - p -> talents.mental_agility * 0.02 - p -> talents.shadow_focus * 0.02;
     base_cost         = floor(base_cost);
     base_multiplier   = 0;
@@ -1049,16 +1035,16 @@ struct mind_blast_t : public priest_spell_t
       { 58,  9, 503,  531, 0, 0.19 },
       { 0, 0 }
     };
-    player -> init_mana_costs( ranks );
-    rank = choose_rank( ranks );
+    init_rank( ranks );
     
     base_execute_time = 1.5; 
     cooldown          = 8.0;
     may_crit          = true; 
     direct_power_mod  = base_execute_time / 3.5; 
       
-    base_cost         = rank -> cost;
-	base_cost        *= 1.0 - p -> talents.focused_mind * 0.05 - p -> talents.shadow_focus * 0.02 - ( p -> gear.tier7_2pc ? 0.1 : 0.0 ) ;
+    base_cost        *= 1.0 - ( p -> talents.focused_mind * 0.05 +
+				p -> talents.shadow_focus * 0.02 +
+				p -> gear.tier7_2pc ? 0.1 : 0.0  );
     base_cost         = floor(base_cost);
 
     base_multiplier  *= 1.0 + p -> talents.darkness * 0.02;
@@ -1123,15 +1109,13 @@ struct shadow_word_death_t : public priest_spell_t
       { 62, 1, 450, 522, 0, 0.14 },
       { 0, 0 }
     };
-    player -> init_mana_costs( ranks );
-    rank = choose_rank( ranks );
+    init_rank( ranks );
     
     base_execute_time = 0; 
     may_crit          = true; 
     cooldown          = 12.0;
     direct_power_mod  = (1.5/3.5); 
 
-    base_cost        = rank -> cost;
     base_cost       *= 1.0 - p -> talents.mental_agility * 0.02 - p -> talents.shadow_focus * 0.02;
     base_cost        = floor(base_cost);
     
@@ -1235,8 +1219,7 @@ struct mind_flay_t : public priest_spell_t
       { 60, 6, 121, 121, 0, 0.10  },
       { 0, 0 }
     };
-    player -> init_mana_costs( ranks );
-    rank = choose_rank( ranks );
+    init_rank( ranks );
     
     base_execute_time = 0.0; 
     base_tick_time    = 1.0; 
@@ -1248,11 +1231,12 @@ struct mind_flay_t : public priest_spell_t
     direct_power_mod  = base_tick_time / 3.5;
     direct_power_mod *= 0.9;  // Nerf Bat!
 
-    base_cost         = rank -> cost;
-    base_cost        *= 1.0 - p -> talents.focused_mind * 0.05 - p -> talents.shadow_focus * 0.02;
+    base_cost        *= 1.0 - ( p -> talents.focused_mind * 0.05 + 
+				p -> talents.shadow_focus * 0.02 );
     base_cost         = floor(base_cost);
     base_hit         += p -> talents.shadow_focus * 0.01;
-    base_multiplier  *= 1.0 + p -> talents.darkness * 0.02 + p -> talents.twin_disciplines * 0.01;
+    base_multiplier  *= 1.0 + ( p -> talents.darkness         * 0.02 + 
+				p -> talents.twin_disciplines * 0.01 );
     base_crit        += p -> talents.mind_melt * 0.02;
     base_crit_bonus  *= 1.0 + p -> talents.shadow_power * 0.20;
     direct_power_mod *= 1.0 + p -> talents.misery * 0.05;
@@ -1663,14 +1647,13 @@ struct shadow_fiend_spell_t : public priest_spell_t
       { 1, 1, 0, 0, 0, 0.06 },
       { 0, 0 }
     };
-    player -> init_mana_costs( ranks );
-    rank = choose_rank( ranks );    
+    init_rank( ranks );    
 
     harmful    = false;
     cooldown   = 300.0;
     cooldown  -= 60.0 * p -> talents.veiled_shadows;
-    base_cost  = rank->cost;
-    base_cost *= 1.0 - p -> talents.mental_agility * 0.02 - p -> talents.shadow_focus * 0.02;
+    base_cost *= 1.0 - ( p -> talents.mental_agility * 0.02 +
+			 p -> talents.shadow_focus   * 0.02 );
     base_cost  = floor(base_cost);
   }
 

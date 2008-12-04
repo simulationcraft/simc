@@ -23,6 +23,8 @@ action_t::action_t( int8_t      ty,
   may_glance(false), may_block(false), may_crush(false), may_crit(false),
   min_gcd(0), trigger_gcd(0),
   base_execute_time(0), base_tick_time(0), base_cost(0),
+  base_dd_min(0), base_dd_max(0),
+  base_dd_multiplier(1), base_td_multiplier(1),
     base_multiplier(1),   base_hit(0),   base_crit(0),   base_crit_bonus(1.0),   base_power(0),   base_penetration(0),
   player_multiplier(1), player_hit(0), player_crit(0), player_crit_bonus(1.0), player_power(0), player_penetration(0),
   target_multiplier(1), target_hit(0), target_crit(0), target_crit_bonus(1.0), target_power(0), target_penetration(0),
@@ -32,7 +34,7 @@ action_t::action_t( int8_t      ty,
   num_ticks(0), current_tick(0), added_ticks(0), ticking(0), 
   cooldown_group(n), duration_group(n), cooldown(0), cooldown_ready(0), duration_ready(0),
   weapon( 0 ), normalize_weapon_speed( false ), normalize_weapon_damage( false ),
-  stats(0), rank(0), rank_index(-1), event(0), time_to_execute(0), time_to_tick(0), observer(0), next(0), sequence(0)
+  stats(0), rank_index(-1), event(0), time_to_execute(0), time_to_tick(0), observer(0), next(0), sequence(0)
 {
   if( sim -> debug ) report_t::log( sim, "Player %s creates action %s", p -> name(), name() );
   action_t** last = &( p -> action_list );
@@ -73,15 +75,38 @@ void action_t::parse_options( option_t*          options,
   }
 }
 
-// action_t::choose_rank ====================================================
+// action_t::init_rank ======================================================
 
-rank_t* action_t::choose_rank( rank_t* rank_list )
+rank_t* action_t::init_rank( rank_t* rank_list )
 {
+  if( resource == RESOURCE_MANA )
+  {
+    for( int i=0; rank_list[ i ].level; i++ )
+    {
+      rank_t& r = rank_list[ i ];
+
+      // Look for ranks in which the cost of an action is a percentage of base mana
+      if( r.cost > 0 && r.cost < 1 )
+      {
+	r.cost *= player -> resource_base[ RESOURCE_MANA ];
+      }
+    }
+  }
+
    for( int i=0; rank_list[ i ].level; i++ )
    {
      if( ( rank_index <= 0 && player -> level >= rank_list[ i ].level ) ||
          ( rank_index >  0 &&      rank_index == rank_list[ i ].index  ) )
-       return &( rank_list[ i ] );
+     {
+       rank_t* rank = &( rank_list[ i ] );
+
+       base_dd_min  = rank -> dd_min;
+       base_dd_max  = rank -> dd_max;
+       base_td_init = rank -> tick;
+       base_cost    = rank -> cost;
+
+       return rank;
+     }
    }
 
    fprintf( sim -> output_file, "%s unable to find valid rank for %s\n", player -> name(), name() );
@@ -261,14 +286,14 @@ double action_t::resistance()
 
 double action_t::calculate_tick_damage()
 {
-  if( rank && base_tick_dmg == 0 ) base_tick_dmg = rank -> tick;
+  if( base_tick_dmg == 0 ) base_tick_dmg = base_td_init;
 
   if( base_tick_dmg == 0 ) return 0;
 
   // FIXME! Are there DoT effects that include weapon damage/modifiers?
 
   tick_dmg  = base_tick_dmg + total_power() * tick_power_mod;
-  tick_dmg *= total_multiplier();
+  tick_dmg *= total_td_multiplier();
   
   double init_tick_dmg = tick_dmg;
 
@@ -278,7 +303,7 @@ double action_t::calculate_tick_damage()
   {
     report_t::log( sim, "%s dmg for %s: td=%.0f i_td=%.0f b_td=%.0f mod=%.2f b_power=%.0f p_power=%.0f t_power=%.0f b_mult=%.2f p_mult=%.2f t_mult=%.2f", 
 		   player -> name(), name(), tick_dmg, init_tick_dmg, base_tick_dmg, tick_power_mod, 
-		   base_power, player_power, target_power, base_multiplier, player_multiplier, target_multiplier );
+		   base_power, player_power, target_power, base_multiplier * base_td_multiplier, player_multiplier, target_multiplier );
   }
 
   return tick_dmg;
@@ -288,19 +313,19 @@ double action_t::calculate_tick_damage()
 
 double action_t::calculate_direct_damage()
 {
-  if( rank )
+  if( base_dd_max > 0 )
   {
     if( sim -> average_dmg )
     {
       if( base_direct_dmg == 0 )
       {
-	base_direct_dmg = ( rank -> dd_min + rank -> dd_max ) / 2.0;
+	base_direct_dmg = ( base_dd_min + base_dd_max ) / 2.0;
       }
     }
     else
     {
-      double delta = rank -> dd_max - rank -> dd_min;
-      base_direct_dmg = rank -> dd_min + delta * sim -> rng -> real();
+      double delta = base_dd_max - base_dd_min;
+      base_direct_dmg = base_dd_min + delta * sim -> rng -> real();
     }
   }
 
@@ -312,13 +337,13 @@ double action_t::calculate_direct_damage()
     double weapon_speed  = normalize_weapon_speed ? weapon -> normalized_weapon_speed() : weapon -> swing_time;
 
     direct_dmg  = base_direct_dmg + weapon_damage + weapon_speed * direct_power_mod * total_power();
-    direct_dmg *= total_multiplier();
+    direct_dmg *= total_dd_multiplier();
     if( ! weapon -> main ) direct_dmg *= 0.5;
   }
   else
   {
     direct_dmg  = base_direct_dmg + direct_power_mod * total_power();
-    direct_dmg *= total_multiplier();
+    direct_dmg *= total_dd_multiplier();
   }
   
   double init_direct_dmg = direct_dmg;
@@ -346,7 +371,7 @@ double action_t::calculate_direct_damage()
   {
     report_t::log( sim, "%s dmg for %s: dd=%.0f i_dd=%.0f b_dd=%.0f mod=%.2f b_power=%.0f p_power=%.0f t_power=%.0f b_mult=%.2f p_mult=%.2f t_mult=%.2f", 
 		   player -> name(), name(), direct_dmg, init_direct_dmg, base_direct_dmg, direct_power_mod, 
-		   base_power, player_power, target_power, base_multiplier, player_multiplier, target_multiplier );
+		   base_power, player_power, target_power, base_multiplier * base_dd_multiplier, player_multiplier, target_multiplier );
   }
 
   return direct_dmg;

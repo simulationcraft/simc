@@ -1429,22 +1429,6 @@ double player_t::spirit_regen_per_second()
   return mana_per_second;
 }
 
-// player_t::init_mana_costs ================================================
-
-void player_t::init_mana_costs( rank_t* rank_list )
-{
-   for( int i=0; rank_list[ i ].level; i++ )
-   {
-     rank_t& r = rank_list[ i ];
-
-     // Look for ranks in which the cost of an action is a percentage of base mana
-     if( r.cost > 0 && r.cost < 1 )
-     {
-       r.cost *= resource_base[ RESOURCE_MANA ];
-     }
-   }
-}
-
 // player_t::aura_gain ======================================================
 
 void player_t::aura_gain( const char* aura_name )

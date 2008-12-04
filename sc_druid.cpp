@@ -255,7 +255,7 @@ static void trigger_earth_and_moon( spell_t* s )
     {
       name = "Earth and Moon Expiration";
       if( sim -> log ) report_t::log( sim, "%s gains Earth and Moon", sim -> target -> name() );
-      sim -> target -> debuffs.earth_and_moon = util_t::rank( p -> talents.earth_and_moon, 3, 4, 9, 13 );
+      sim -> target -> debuffs.earth_and_moon = (int8_t) util_t::talent_rank( p -> talents.earth_and_moon, 3, 4, 9, 13 );
       sim -> add_event( this, 12.0 );
     }
     virtual void execute()
@@ -529,26 +529,10 @@ struct faerie_fire_t : public druid_spell_t
   {
     druid_t* p = player -> cast_druid();
 
-    option_t options[] =
-    {
-      { "rank", OPT_INT8, &rank_index },
-      { NULL }
-    };
-    parse_options( options, options_str );
-      
-    static rank_t ranks[] =
-    {
-      { 76, 6, 0, 0, 1260, 0.07 },
-      { 66, 5, 0, 0,  610, 145  },
-      { 54, 4, 0, 0,  505, 115  },
-      { 0, 0 }
-    };
-    player -> init_mana_costs( ranks );
-    rank = choose_rank( ranks );
-     
-    base_cost = rank -> cost;
-    armor_penetration = (int16_t) rank -> tick;
-    bonus_hit = p -> talents.improved_faerie_fire;
+    base_execute_time = 0;
+    base_cost         = p -> resource_base[ RESOURCE_MANA ] * 0.07;
+    armor_penetration = (int16_t) util_t::ability_rank( p -> level,  1260,76,  610,66,  505,0 );
+    bonus_hit         = p -> talents.improved_faerie_fire;
   }
 
   virtual void execute()
@@ -681,11 +665,9 @@ struct insect_swarm_t : public druid_spell_t
       { 60, 5, 0, 0, 124, 155  },
       { 0, 0 }
     };
-    player -> init_mana_costs( ranks );
-    rank = choose_rank( ranks );
+    init_rank( ranks );
      
-    base_execute_time = 0; 
-    base_cost         = rank -> cost;
+    base_execute_time = 0;
     base_tick_time    = 2.0;
     num_ticks         = 6;
     tick_power_mod    = ( base_tick_time / 15.0 ) * 0.95;
@@ -744,23 +726,33 @@ struct moonfire_t : public druid_spell_t
       { 58, 10, 189, 221,  96, 375  },
       { 0, 0 }
     };
-    player -> init_mana_costs( ranks );
-    rank = choose_rank( ranks );
+    init_rank( ranks );
      
-    base_execute_time = 0; 
+    base_execute_time = 0;
     base_tick_time    = 3.0; 
     num_ticks         = 4;
     direct_power_mod  = 0.15; 
     tick_power_mod    = 0.13; 
     may_crit          = true;
 
-    base_cost        = rank -> cost;
-    base_cost       *= 1.0 -   util_t::rank( p -> talents.moonglow,          3, 0.03 );
-    base_multiplier *= 1.0 + ( util_t::rank( p -> talents.moonfury,          3, 0.03, 0.06, 0.10 ) +
-                               util_t::rank( p -> talents.improved_moonfire, 2, 0.05 ) +
-                               util_t::rank( p -> talents.genesis,           5, 0.01 ) );
-    base_crit       +=         util_t::rank( p -> talents.improved_moonfire, 2, 0.05 );
-    base_crit_bonus *= 1.0 +   util_t::rank( p -> talents.vengeance,         5, 0.20 );
+    base_cost       *= 1.0 - util_t::talent_rank( p -> talents.moonglow,          3, 0.03 );
+    base_crit       += util_t::talent_rank( p -> talents.improved_moonfire, 2, 0.05 );
+    base_crit_bonus *= 1.0 + util_t::talent_rank( p -> talents.vengeance,         5, 0.20 );
+
+    double multiplier = ( util_t::talent_rank( p -> talents.moonfury,          3, 0.03, 0.06, 0.10 ) +
+			  util_t::talent_rank( p -> talents.improved_moonfire, 2, 0.05 ) +
+			  util_t::talent_rank( p -> talents.genesis,           5, 0.01 ) );
+
+    if( p -> glyphs.moonfire )
+    {
+      base_dd_multiplier *= 1.0 + multiplier - 0.90;
+      base_td_multiplier *= 1.0 + multiplier + 0.75;
+    }
+    else
+    {
+      base_multiplier *= 1.0 + multiplier;
+    }
+
     observer = &( p -> active_moonfire );
   }
 
@@ -772,22 +764,6 @@ struct moonfire_t : public druid_spell_t
     if( p -> talents.natures_splendor ) num_ticks++;
     if( p -> gear.tier6_2pc           ) num_ticks++;
     druid_spell_t::execute();
-  }
-
-  virtual double calculate_direct_damage()
-  {
-    druid_t* p = player -> cast_druid();
-    spell_t::calculate_direct_damage();
-    if( p -> glyphs.moonfire ) direct_dmg *= 0.10;
-    return direct_dmg;
-  }
-
-  virtual double calculate_tick_damage()
-  {
-    druid_t* p = player -> cast_druid();
-    spell_t::calculate_tick_damage();
-    if( p -> glyphs.moonfire ) tick_dmg *= 1.75;
-    return tick_dmg;
   }
 };
 
@@ -892,17 +868,15 @@ struct starfire_t : public druid_spell_t
       { 60,  7,  693,  817, 0, 340  },
       { 0, 0 }
     };
-    player -> init_mana_costs( ranks );
-    rank = choose_rank( ranks );
+    init_rank( ranks );
     
     base_execute_time = 3.5; 
     direct_power_mod  = ( base_execute_time / 3.5 ); 
     may_crit          = true;
       
-    base_cost          = rank -> cost;
     base_cost         *= 1.0 - p -> talents.moonglow * 0.03;
     base_execute_time -= p -> talents.starlight_wrath * 0.1;
-    base_multiplier   *= 1.0 + util_t::rank( p -> talents.moonfury, 3, 0.03, 0.06, 0.10 );
+    base_multiplier   *= 1.0 + util_t::talent_rank( p -> talents.moonfury, 3, 0.03, 0.06, 0.10 );
     base_crit         += p -> talents.natures_majesty * 0.02;
     base_crit_bonus   *= 1.0 + p -> talents.vengeance * 0.20;
     direct_power_mod  += p -> talents.wrath_of_cenarius * 0.04;
@@ -1022,17 +996,15 @@ struct wrath_t : public druid_spell_t
       { 61,  9, 397, 447, 0, 210  },
       { 0, 0 }
     };
-    player -> init_mana_costs( ranks );
-    rank = choose_rank( ranks );
+    init_rank( ranks );
     
     base_execute_time = 2.0; 
     direct_power_mod  = ( base_execute_time / 3.5 ); 
     may_crit          = true;
       
-    base_cost          = rank -> cost;
     base_cost         *= 1.0 - p -> talents.moonglow * 0.03;
     base_execute_time -= p -> talents.starlight_wrath * 0.1;
-    base_multiplier   *= 1.0 + util_t::rank( p -> talents.moonfury, 3, 0.03, 0.06, 0.10 );
+    base_multiplier   *= 1.0 + util_t::talent_rank( p -> talents.moonfury, 3, 0.03, 0.06, 0.10 );
     base_crit         += p -> talents.natures_majesty * 0.02;
     base_crit_bonus   *= 1.0 + p -> talents.vengeance * 0.20;
     direct_power_mod  += p -> talents.wrath_of_cenarius * 0.02;

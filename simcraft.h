@@ -896,7 +896,6 @@ struct player_t
   void      share_duration( const std::string& name, double ready );
   void      recalculate_haste()  {  haste = 1.0 / ( 1.0 + haste_rating / rating.haste ); }
   double    spirit_regen_per_second();
-  void      init_mana_costs( rank_t* );
   bool      dual_wield() { return main_hand_weapon.type != WEAPON_NONE && off_hand_weapon.type != WEAPON_NONE; }
   void      aura_gain( const char* name );
   void      aura_loss( const char* name );
@@ -1100,6 +1099,8 @@ struct action_t
   bool may_miss, may_resist, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
   double min_gcd, trigger_gcd;
   double base_execute_time, base_tick_time, base_cost;
+  double base_dd_min, base_dd_max, base_td_init;
+  double base_dd_multiplier, base_td_multiplier;
   double   base_multiplier,   base_hit,   base_crit,   base_crit_bonus,   base_power,   base_penetration;
   double player_multiplier, player_hit, player_crit, player_crit_bonus, player_power, player_penetration;
   double target_multiplier, target_hit, target_crit, target_crit_bonus, target_power, target_penetration;
@@ -1114,7 +1115,6 @@ struct action_t
   bool normalize_weapon_speed;
   bool normalize_weapon_damage;
   stats_t* stats;
-  rank_t* rank;
   int8_t rank_index;
   event_t* event;
   double time_to_execute, time_to_tick;
@@ -1126,7 +1126,7 @@ struct action_t
   virtual ~action_t() {}
 
   virtual void parse_options( option_t*, const std::string& options_str );
-  virtual rank_t* choose_rank( rank_t* rank_list );
+  virtual rank_t* init_rank( rank_t* rank_list );
   virtual double cost();
   virtual double haste()        { return 1.0;               }
   virtual double gcd()          { return trigger_gcd;       }
@@ -1161,6 +1161,11 @@ struct action_t
   virtual double total_hit()        { return base_hit        + player_hit        + target_hit;        }
   virtual double total_crit()       { return base_crit       + player_crit       + target_crit;       }
   virtual double total_crit_bonus() { return base_crit_bonus * player_crit_bonus * target_crit_bonus; }
+
+  // Some actions require different multipliers for the "direct" and "tick" portions.
+
+  virtual double total_dd_multiplier() { return total_multiplier() * base_dd_multiplier; }
+  virtual double total_td_multiplier() { return total_multiplier() * base_td_multiplier; }
 
   static action_t* create_action( player_t*, const std::string& name, const std::string& options );
 };
@@ -1459,11 +1464,14 @@ struct option_t
 
 struct util_t
 {
-  static double rank( int8_t num, int8_t max, double increment );
-  static double rank( int8_t num, int8_t max, double first, double second, ... );
+  static double talent_rank( int8_t num, int8_t max, double increment );
+  static double talent_rank( int8_t num, int8_t max, double value1, double value2, ... );
 
-  static int8_t rank( int8_t num, int8_t max, int increment );
-  static int8_t rank( int8_t num, int8_t max, int first, int second, ... );
+  static int talent_rank( int8_t num, int8_t max, int increment );
+  static int talent_rank( int8_t num, int8_t max, int value1, int value2, ... );
+
+  static double ability_rank( int8_t player_level, double ability_value, int8_t ability_level, ... );
+  static int    ability_rank( int8_t player_level, int    ability_value, int8_t ability_level, ... );
 
   static char* dup( const char* );
 
