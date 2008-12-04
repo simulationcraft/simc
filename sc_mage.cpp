@@ -1138,18 +1138,20 @@ struct arcane_blast_t : public mage_spell_t
   int8_t ap_burn;
   int8_t reset_buff;
   int8_t max_buff;
+  int8_t no_barrage;
 
   arcane_blast_t( player_t* player, const std::string& options_str ) : 
-    mage_spell_t( "arcane_blast", player, SCHOOL_ARCANE, TREE_ARCANE ), ap_burn(0), reset_buff(0), max_buff(0)
+    mage_spell_t( "arcane_blast", player, SCHOOL_ARCANE, TREE_ARCANE ), ap_burn(0), reset_buff(0), max_buff(0), no_barrage(0)
   {
     mage_t* p = player -> cast_mage();
 
     option_t options[] =
     {
-      { "rank",    OPT_INT8, &rank_index },
-      { "ap_burn", OPT_INT8, &ap_burn    },
-      { "reset",   OPT_INT8, &reset_buff },
-      { "max",     OPT_INT8, &max_buff   },
+      { "rank",       OPT_INT8, &rank_index },
+      { "ap_burn",    OPT_INT8, &ap_burn    },
+      { "reset",      OPT_INT8, &reset_buff },
+      { "max",        OPT_INT8, &max_buff   },
+      { "no_barrage", OPT_INT8, &no_barrage },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1265,6 +1267,10 @@ struct arcane_blast_t : public mage_spell_t
       if( p -> buffs_arcane_blast >= reset_buff )
 	if( p -> expirations_arcane_blast -> occurs() >= ( sim -> current_time + execute_time() ) )
 	  return false;
+
+    if( no_barrage )
+      if( p -> buffs_missile_barrage )
+	return false;
 
     return true;
   }
