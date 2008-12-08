@@ -19,7 +19,7 @@ sim_t::sim_t( sim_t* p ) :
   events_processed(0), total_events_processed(0),
   seed(0), id(0), iterations(1), current_iteration(0), threads(0),
   potion_sickness(1), average_dmg(1), log(0), debug(0), timestamp(1), sfmt(1),
-  wheel_seconds(0), wheel_size(0), wheel_mask(0), timing_slice(0),
+  wheel_seconds(0), wheel_size(0), wheel_mask(0), timing_slice(0), wheel_granularity(0.0),
   raid_dps(0), total_dmg(0), total_seconds(0), elapsed_cpu_seconds(0), merge_ignite(0),
   output_file(stdout), html_file(0), wiki_file(0), thread_handle(0)
 {
