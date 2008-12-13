@@ -9,14 +9,16 @@
 // Rogue
 // ==========================================================================
 
+#define MAX_COMBO_POINTS 5
+
 struct rogue_t : public player_t
 {
-
   // Active
   spell_t* active_;
 
   // Buffs
-  int8_t buffs_;
+  double buffs_combo_point_events[ MAX_COMBO_POINTS ];
+  int8_t buffs_combo_points;
 
   // Cooldowns
   double cooldowns_;
@@ -122,7 +124,11 @@ struct rogue_t : public player_t
     active_ = 0;
 
     // Buffs
-    buffs_ = 0;
+    for( int i=0; i < MAX_COMBO_POINTS; i++ ) 
+    {
+      buffs_combo_point_events[ i ] = 0;
+    }
+    buffs_combo_points = 0;
 
     // Cooldowns
     cooldowns_ = 0;
@@ -142,6 +148,7 @@ struct rogue_t : public player_t
     // Auto-Attack
     main_hand_attack = 0;
     off_hand_attack  = 0;
+
   }
 
   // Character Definition
@@ -162,8 +169,11 @@ namespace { // ANONYMOUS NAMESPACE =========================================
 
 struct rogue_attack_t : public attack_t
 {
+  int16_t min_energy, min_combo_points;
+  int16_t max_energy, max_combo_points;
+
   rogue_attack_t( const char* n, player_t* player, int8_t s=SCHOOL_PHYSICAL, int8_t t=TREE_NONE ) : 
-    attack_t( n, player, RESOURCE_ENERGY, s, t ) 
+    attack_t( n, player, RESOURCE_ENERGY, s, t ), min_energy(0), min_combo_points(0), max_energy(0), max_combo_points(0)
   {
     //rogue_t* p = player -> cast_rogue();
     base_direct_dmg = 1;
@@ -176,15 +186,28 @@ struct rogue_attack_t : public attack_t
   virtual void   consume_resource();
   virtual void   player_buff();
   virtual void   target_debuff( int8_t dmg_type );
-
-  // Passthru Methods
-  virtual bool ready() { return attack_t::ready(); }
+  virtual bool   ready();
 };
 
-// trigger_ ================================================================
+// trigger_something =======================================================
 
-static void trigger_( attack_t* a )
+static void trigger_something( attack_t* a )
 {
+  //rogue_t* p = a -> player -> cast_rogue();
+
+}
+  
+// trigger_combo_point =====================================================
+
+static void trigger_combo_point( attack_t* a )
+{
+  rogue_t* p = a -> player -> cast_rogue();
+
+  if( p -> buffs_combo_points < 5 )
+  {
+    p -> buffs_combo_point_events[ p -> buffs_combo_points ] = a -> sim -> current_time;
+    p -> buffs_combo_points++;
+  }
 }
 
 // =========================================================================
@@ -228,19 +251,20 @@ void rogue_attack_t::execute()
   //rogue_t* p = player -> cast_rogue();
 
   attack_t::execute();
-
+  
   if( result_is_hit() )
   {
-    trigger_( this );
+    trigger_something( this );
 
     if( result == RESULT_CRIT )
     {
+      trigger_something( this );
     }
   }
 }
 
 // rogue_attack_t::consume_resource =======================================
-
+  
 void rogue_attack_t::consume_resource()
 {
   //rogue_t* p = player -> cast_rogue();
@@ -264,6 +288,34 @@ void rogue_attack_t::target_debuff( int8_t dmg_type )
   //rogue_t* p = player -> cast_rogue();
   attack_t::target_debuff( dmg_type );
 
+}
+
+// rogue_attack_t::ready() ================================================
+
+bool rogue_attack_t::ready()
+{
+  if( ! attack_t::ready() )
+    return false;
+
+  rogue_t* p = player -> cast_rogue();
+
+  if( min_energy > 0 )
+    if( p -> resource_current[ RESOURCE_ENERGY ] < min_energy )
+      return false;
+
+  if( max_energy > 0 )
+    if( p -> resource_current[ RESOURCE_ENERGY ] > max_energy )
+      return false;
+
+  if( min_combo_points > 0 )
+    if( ! sim -> time_to_think( p -> buffs_combo_point_events[ min_combo_points-1 ] ) )
+      return false;
+
+  if( max_combo_points > 0 )
+    if( sim -> time_to_think( p -> buffs_combo_point_events[ max_combo_points-1 ] ) )
+      return false;
+
+  return true;
 }
 
 // =========================================================================
@@ -374,7 +426,11 @@ void rogue_t::reset()
   active_ = 0;
 
   // Buffs
-  buffs_ = 0;
+  for( int i=0; i < MAX_COMBO_POINTS; i++ ) 
+  {
+    buffs_combo_point_events[ i ] = 0;
+  }
+  buffs_combo_points = 0;
 
   // Cooldowns
   cooldowns_ = 0;

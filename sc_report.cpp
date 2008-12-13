@@ -1322,6 +1322,43 @@ const char* report_t::chart_distribution_dps( std::string& s, player_t* p )
   return s.c_str();
 }
 
+// report_t::gear_weights_lootrank ============================================
+
+const char* report_t::gear_weights_lootrank( std::string& buffer,
+					     player_t*    p )
+{
+  buffer = "http://www.lootrank.com/wow/wr.asp?";
+
+  switch( p -> type )
+  {
+  case DEATH_KNIGHT: buffer += "Cla=2048&";
+  case DRUID:        buffer += "Cla=1024&";
+  case HUNTER:       buffer += "Cla=4&";
+  case MAGE:         buffer += "Cla=128&";
+  case PALADIN:      buffer += "Cla=2&";
+  case PRIEST:       buffer += "Cla=16&";
+  case ROGUE:        buffer += "Cla=8&";
+  case SHAMAN:       buffer += "Cla=64&";
+  case WARLOCK:      buffer += "Cla=256&";
+  case WARRIOR:      buffer += "Cla=1&";
+  default: assert(0);
+  }
+
+  
+
+  return buffer.c_str();
+}
+
+// report_t::gear_weights_wowhead =============================================
+
+const char* report_t::gear_weights_wowhead( std::string& buffer,
+					    player_t*    p )
+{
+  buffer = "wowhead";
+
+  return buffer.c_str();
+}
+
 // report_t::html_scale_factors ===============================================
 
 void report_t::html_scale_factors()
@@ -1346,8 +1383,9 @@ void report_t::html_scale_factors()
   if( sim -> scaling -> gear.hit_rating               ) fprintf( sim -> html_file, " <TH>hit</TH>" );
   if( sim -> scaling -> gear.crit_rating              ) fprintf( sim -> html_file, " <TH>crit</TH>" );
   if( sim -> scaling -> gear.haste_rating             ) fprintf( sim -> html_file, " <TH>haste</TH>" );
-  fprintf( sim -> html_file, " </TR>\n" );
+  fprintf( sim -> html_file, " <TH>lootrank</TH> <TH>wowhead</TH> </TR>\n" );
 
+  std::string buffer;
   int num_players = sim -> players_by_name.size();
 
   for( int i=0; i < num_players; i++ )
@@ -1370,6 +1408,9 @@ void report_t::html_scale_factors()
     if( sim -> scaling -> gear.hit_rating               ) fprintf( sim -> html_file, " <TD>%.2f</TD>", p -> scaling.hit_rating               );
     if( sim -> scaling -> gear.crit_rating              ) fprintf( sim -> html_file, " <TD>%.2f</TD>", p -> scaling.crit_rating              );
     if( sim -> scaling -> gear.haste_rating             ) fprintf( sim -> html_file, " <TD>%.2f</TD>", p -> scaling.haste_rating             );
+
+    fprintf( sim -> html_file, " <TD>%s</TD>", gear_weights_lootrank( buffer, p ) );
+    fprintf( sim -> html_file, " <TD>%s</TD>", gear_weights_wowhead ( buffer, p ) );
 
     fprintf( sim -> html_file, " </TR>\n" );
   }
@@ -1498,8 +1539,9 @@ void report_t::wiki_scale_factors()
   if( sim -> scaling -> gear.hit_rating               ) fprintf( sim -> wiki_file, " hit          ||" );
   if( sim -> scaling -> gear.crit_rating              ) fprintf( sim -> wiki_file, " crit         ||" );
   if( sim -> scaling -> gear.haste_rating             ) fprintf( sim -> wiki_file, " haste        ||" );
-  fprintf( sim -> wiki_file, "\n" );
+  fprintf( sim -> wiki_file, " lootrank || wowhead ||\n" );
 
+  std::string buffer;
   int num_players = sim -> players_by_name.size();
 
   for( int i=0; i < num_players; i++ )
@@ -1522,6 +1564,9 @@ void report_t::wiki_scale_factors()
     if( sim -> scaling -> gear.hit_rating               ) fprintf( sim -> wiki_file, " %.2f ||", p -> scaling.hit_rating               );
     if( sim -> scaling -> gear.crit_rating              ) fprintf( sim -> wiki_file, " %.2f ||", p -> scaling.crit_rating              );
     if( sim -> scaling -> gear.haste_rating             ) fprintf( sim -> wiki_file, " %.2f ||", p -> scaling.haste_rating             );
+
+    fprintf( sim -> wiki_file, " %s ||", gear_weights_lootrank( buffer, p ) );
+    fprintf( sim -> wiki_file, " %s ||", gear_weights_wowhead ( buffer, p ) );
 
     fprintf( sim -> wiki_file, "\n" );
   }

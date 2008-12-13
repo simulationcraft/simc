@@ -1421,9 +1421,11 @@ struct report_t
   const char* chart_timeline_resource( std::string& s, player_t* );
   const char* chart_timeline_dps     ( std::string& s, player_t* );
   const char* chart_distribution_dps ( std::string& s, player_t* );
+  const char* gear_weights_lootrank( std::string& s, player_t* );
+  const char* gear_weights_wowhead ( std::string& s, player_t* );
   void html_scale_factors();
-  void chart_html();
   void wiki_scale_factors();
+  void chart_html();
   void chart_wiki();
   void chart();
   static void timestamp( sim_t* sim );
