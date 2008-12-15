@@ -315,6 +315,7 @@ const char* util_t::food_type_string( int8_t food )
   switch( food )
   {
   case FOOD_NONE:                    return "none";
+  case FOOD_SMOKED_SALMON:           return "smoked_salmon";
   case FOOD_TENDER_SHOVELTUSK_STEAK: return "tender_shoveltusk_steak";
   case FOOD_SNAPPER_EXTREME:         return "snapper_extreme";
   case FOOD_POACHED_BLUEFISH:        return "poached_bluefish";

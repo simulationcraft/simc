@@ -135,6 +135,10 @@ struct food_t : public action_t
       player -> spell_hit += 40;
       player -> attribute[ ATTR_STAMINA ] += 40;
       break;
+    case FOOD_SMOKED_SALMON:
+      player -> spell_power[ SCHOOL_MAX ] += 35;
+      player -> attribute[ ATTR_STAMINA ] += 40;
+      break;
     case FOOD_POACHED_BLUEFISH:     
       player -> spell_power[ SCHOOL_MAX ] += 23;
       player -> attribute[ ATTR_SPIRIT ]  += 20;
