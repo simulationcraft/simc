@@ -18,6 +18,7 @@ struct warlock_t : public player_t
   action_t*      active_corruption;
   action_t*      active_curse;
   action_t*      active_immolate;
+  action_t*      active_shadowflame;
   action_t*      active_pandemic;
   int8_t         active_dots;
 
@@ -179,6 +180,7 @@ struct warlock_t : public player_t
     active_corruption = 0;
     active_curse      = 0;
     active_immolate   = 0;
+    active_shadowflame = 0;
     active_pandemic   = 0;
     active_dots       = 0;
 
@@ -2789,14 +2791,88 @@ struct immolate_t : public warlock_spell_t
   }
 };
 
+// Shadowflame Spell =============================================================
+
+struct shadowflame_t : public warlock_spell_t
+{
+  shadowflame_t( player_t* player, const std::string& options_str ) : 
+    warlock_spell_t( "shadowflame", player, SCHOOL_SHADOW, TREE_DESTRUCTION )
+  {
+    warlock_t* p = player -> cast_warlock();
+
+    option_t options[] =
+    {
+      { "rank", OPT_INT8, &rank_index },
+      { NULL }
+    };
+    parse_options( options, options_str );
+      
+    static rank_t ranks[] =
+    {
+      { 80, 2, 615, 671, 128, 0.25 },
+      { 75, 1, 520, 568, 108, 0.25 },
+      { 0, 0 }
+    };
+    init_rank( ranks );
+
+    base_execute_time = 0; 
+    may_crit          = true;
+    base_tick_time    = 2.0; 
+    num_ticks         = 4;
+    direct_power_mod  = 0.1429; 
+    tick_power_mod    = 0.28;
+    cooldown          = 15.0;
+
+    base_cost         *= 1.0 -  p -> talents.cataclysm * 0.01;
+    base_crit         += p -> talents.devastation * 0.05;
+    base_crit         += p -> talents.backlash * 0.01;
+    base_crit_bonus   *= 1.0 + p -> talents.ruin * 0.20;
+    base_hit          += p -> talents.cataclysm * 0.01;
+
+    base_dd_multiplier *= 1.0 + ( p -> talents.shadow_mastery * 0.03 );
+
+    base_td_multiplier *= 1.0 + ( p -> talents.emberstorm * 0.03 );
+
+    observer = &( p -> active_shadowflame );
+  }
+
+  virtual void execute()
+  {
+    warlock_t* p = player -> cast_warlock();
+    base_tick_dmg = base_td_init;
+    // DD is shadow damage, DoT is fire damage
+    school = SCHOOL_SHADOW;
+    warlock_spell_t::execute();
+    if( result_is_hit() )
+    {
+      // DD was shadow, now DoT is fire, so reset school
+      school = SCHOOL_FIRE;
+      p -> active_dots++;
+    }
+  }
+
+  virtual void tick()
+  {
+    warlock_spell_t::tick(); 
+  }
+
+  virtual void last_tick()
+  {
+    warlock_t* p = player -> cast_warlock();
+    warlock_spell_t::last_tick(); 
+    p -> active_dots--;
+  }
+};
+
 // Conflagrate Spell =========================================================
 
 struct conflagrate_t : public warlock_spell_t
 {
   int8_t ticks_lost;
+  action_t**  cancel_which;
 
   conflagrate_t( player_t* player, const std::string& options_str ) : 
-    warlock_spell_t( "conflagrate", player, SCHOOL_FIRE, TREE_DESTRUCTION ), ticks_lost(1)
+    warlock_spell_t( "conflagrate", player, SCHOOL_FIRE, TREE_DESTRUCTION ), ticks_lost(1), cancel_which(0)
   {
     warlock_t* p = player -> cast_warlock();
 
@@ -2838,6 +2914,7 @@ struct conflagrate_t : public warlock_spell_t
 
   virtual void execute()
   {
+    assert(cancel_which != 0);
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::execute(); 
     if( result_is_hit() )
@@ -2845,7 +2922,7 @@ struct conflagrate_t : public warlock_spell_t
       trigger_soul_leech( this );
       trigger_backdraft( this );
     }
-    p -> active_immolate -> cancel();
+    (*cancel_which) -> cancel();
     p -> active_immolate = 0;
   }
 
@@ -2855,8 +2932,8 @@ struct conflagrate_t : public warlock_spell_t
     warlock_spell_t::player_buff(); 
     if( p -> talents.fire_and_brimstone )
     {
-      int ticks_remaining = ( p -> active_immolate -> num_ticks - 
-			      p -> active_immolate -> current_tick );
+      int ticks_remaining = ( (*cancel_which) -> num_ticks - 
+			      (*cancel_which) -> current_tick );
       
       if( ticks_remaining <= 2 )
       {
@@ -2872,11 +2949,27 @@ struct conflagrate_t : public warlock_spell_t
     if( ! spell_t::ready() ) 
       return false;
 
-    if( ! p -> active_immolate )
+    if( ! p -> active_immolate && ! p -> active_shadowflame )
       return false;
 
-    int ticks_remaining = ( p -> active_immolate -> num_ticks - 
-			    p -> active_immolate -> current_tick );
+    // Pick whether to remove the immolate or shadoflame if both are on
+    if ( p -> active_immolate && ! p -> active_shadowflame )
+    {
+      cancel_which = &(p -> active_immolate);
+    } else if ( p -> active_shadowflame && ! p -> active_immolate )
+    {
+      cancel_which = &(p -> active_shadowflame);
+    } else {
+      if(sim -> roll ( 0.5 ))
+      {
+        cancel_which = &(p -> active_shadowflame);
+      } else {
+        cancel_which = &(p -> active_immolate);
+      }
+    }
+
+    int ticks_remaining = ( (*cancel_which) -> num_ticks - 
+			    (*cancel_which) -> current_tick );
 
     return( ticks_remaining <= ticks_lost );
   }
@@ -3522,6 +3615,7 @@ action_t* warlock_t::create_action( const std::string& name,
   if( name == "spell_stone"         ) return new         spell_stone_t( this, options_str );
   if( name == "haunt"               ) return new               haunt_t( this, options_str );
   if( name == "immolate"            ) return new            immolate_t( this, options_str );
+  if( name == "shadowflame"         ) return new         shadowflame_t( this, options_str );
   if( name == "incinerate"          ) return new          incinerate_t( this, options_str );
   if( name == "life_tap"            ) return new            life_tap_t( this, options_str );
   if( name == "metamorphosis"       ) return new       metamorphosis_t( this, options_str );
@@ -3591,6 +3685,7 @@ void warlock_t::reset()
   active_corruption = 0;
   active_curse      = 0;
   active_immolate   = 0;
+  active_shadowflame= 0;
   active_dots       = 0;
 
   // Buffs
