@@ -24,7 +24,7 @@ action_t::action_t( int8_t      ty,
   min_gcd(0), trigger_gcd(0),
   base_execute_time(0), base_tick_time(0), base_cost(0),
   base_dd_min(0), base_dd_max(0),
-  base_dd_multiplier(1), base_td_multiplier(1),
+  base_dd_multiplier(1), base_td_multiplier(1), power_multiplier(1),
     base_multiplier(1),   base_hit(0),   base_crit(0),   base_crit_bonus(1.0),   base_power(0),   base_penetration(0),
   player_multiplier(1), player_hit(0), player_crit(0), player_crit_bonus(1.0), player_power(0), player_penetration(0),
   target_multiplier(1), target_hit(0), target_crit(0), target_crit_bonus(1.0), target_power(0), target_penetration(0),
@@ -143,6 +143,8 @@ void action_t::player_buff()
   player_crit_bonus  = 1.0;
   player_power       = 0;
   player_penetration = 0;
+
+  power_multiplier = 1.0;
 
   // 'multiplier' and 'penetration' handled here, all others handled in attack_t/spell_t
 
@@ -400,13 +402,13 @@ void action_t::execute()
 
   if( observer ) *observer = 0;
 
-  consume_resource();
-
   player_buff();
 
   target_debuff( DMG_DIRECT );
 
   calculate_result();
+
+  consume_resource();
 
   if( result_is_hit() )
   {

@@ -84,6 +84,8 @@ void attack_t::player_buff()
   player_crit      = p -> composite_attack_crit();
   player_power     = p -> composite_attack_power();
 
+  power_multiplier = p -> composite_attack_power_multiplier();
+
   if( p -> type != PLAYER_GUARDIAN )
   {
     if( p -> buffs.leader_of_the_pack ) player_crit += 0.05;

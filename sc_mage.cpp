@@ -1603,6 +1603,12 @@ struct presence_of_mind_t : public mage_spell_t
     cooldown -= p -> talents.arcane_flows * 30.0;
     if( p -> gear.tier4_4pc ) cooldown -= 24.0;
 
+    if( options_str.empty() )
+    {
+      report_t::log( sim, "simcraft: The presence_of_mind action must be coupled with a second action." );
+      exit(0);
+    }
+
     std::string spell_name    = options_str;
     std::string spell_options = "";
 

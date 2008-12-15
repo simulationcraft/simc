@@ -519,6 +519,9 @@ swift_retribution=1
 shaman=Shaman_54_17_0
 level=80
 talents=http://www.wowhead.com/?talent=hEhzq0detMxsthxxco
+unrelenting_storm=3
+storm_earth_and_fire=3
+shamanism=5
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/flametongue_weapon,weapon=main/water_shield/mana_potion,trigger=4300
 actions+=/mana_spring_totem/totem_of_wrath/wrath_of_air_totem/water_shield
 actions+=/elemental_mastery/flame_shock/lava_burst,flame_shock=1/bloodlust,target_pct=35/chain_lightning/lightning_bolt/thunderstorm

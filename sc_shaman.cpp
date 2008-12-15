@@ -56,6 +56,7 @@ struct shaman_t : public player_t
   
   // Up-Times
   uptime_t* uptimes_elemental_devastation;
+  uptime_t* uptimes_elemental_focus;
   uptime_t* uptimes_elemental_oath;
   uptime_t* uptimes_flurry;
   uptime_t* uptimes_nature_vulnerability;
@@ -103,6 +104,7 @@ struct shaman_t : public player_t
     int8_t  natures_swiftness;
     int8_t  restorative_totems;
     int8_t  reverberation;
+    int8_t  shamanism;
     int8_t  shamanistic_focus;
     int8_t  shamanistic_rage;
     int8_t  spirit_weapons;
@@ -187,9 +189,10 @@ struct shaman_t : public player_t
 
     // Up-Times
     uptimes_elemental_devastation = get_uptime( "elemental_devastation"    );
+    uptimes_elemental_focus       = get_uptime( "elemental_focus"          );
     uptimes_elemental_oath        = get_uptime( "elemental_oath"           );
     uptimes_flurry                = get_uptime( "flurry"                   );
-    uptimes_nature_vulnerability  = get_uptime( "nature_vulnerability"  );
+    uptimes_nature_vulnerability  = get_uptime( "nature_vulnerability"     );
     uptimes_unleashed_rage        = get_uptime( "unleashed_rage"           );
   
     // Auto-Attack
@@ -913,7 +916,6 @@ struct stormstrike_t : public shaman_attack_t
 double shaman_spell_t::cost()
 {
   shaman_t* p = player -> cast_shaman();
-  if( p -> buffs_elemental_mastery ) return 0;
   double c = spell_t::cost();
   if( p -> buffs_elemental_focus ) c *= 0.60;
   if( p -> buffs.tier4_4pc )
@@ -954,7 +956,7 @@ void shaman_spell_t::player_buff()
   spell_t::player_buff();
   if( p -> buffs_elemental_mastery )
   {
-    player_crit += 1.0;
+    player_crit += 0.20;
   }
   if( p -> buffs_nature_vulnerability && school == SCHOOL_NATURE )
   {
@@ -971,7 +973,17 @@ void shaman_spell_t::player_buff()
     }
   }
 
-  if( p -> talents.elemental_oath ) p -> uptimes_elemental_oath -> update( p -> buffs.elemental_oath != 0 );
+  if( p -> talents.elemental_oath ) 
+  {
+    if( p -> buffs.elemental_oath &&
+	p -> buffs_elemental_focus )
+    {
+      player_multiplier *= 1.0 + p -> talents.elemental_oath * 0.05;
+    }
+
+    p -> uptimes_elemental_focus -> update( p -> buffs_elemental_focus != 0 );
+    p -> uptimes_elemental_oath  -> update( p -> buffs.elemental_oath  != 0 );
+  }
 }
 
 // shaman_spell_t::execute =================================================
@@ -995,7 +1007,6 @@ void shaman_spell_t::execute()
       }
     }
   }
-  p -> buffs_elemental_mastery = 0;
 }
 
 // shaman_spell_t::schedule_execute ========================================
@@ -1073,7 +1084,7 @@ struct chain_lightning_t : public shaman_spell_t
     cooldown           = 6.0;
     direct_power_mod   = ( base_execute_time / 3.5 );
 
-    cooldown          -= p -> talents.storm_earth_and_fire * 0.5;
+    cooldown          -= util_t::talent_rank( p -> talents.storm_earth_and_fire, 3, 1 ) * 0.5;
     base_execute_time -= p -> talents.lightning_mastery * 0.1;
     base_cost         *= 1.0 - p -> talents.convection * 0.02;
     base_multiplier   *= 1.0 + p -> talents.concussion * 0.01;
@@ -1174,9 +1185,10 @@ struct lightning_bolt_t : public shaman_spell_t
     base_crit         += p -> talents.call_of_thunder * 0.05;
     base_crit         += p -> talents.tidal_mastery * 0.01;
     base_crit_bonus   *= 1.0 + p -> talents.elemental_fury * 0.20;
+    direct_power_mod  += p -> talents.shamanism * 0.02;
 
-    if( p -> gear.tier6_4pc ) base_multiplier *= 1.05;
-    if( p -> glyphs.lightning_bolt ) base_cost *= 0.90;
+    if( p -> gear.tier6_4pc        ) base_multiplier *= 1.05;
+    if( p -> glyphs.lightning_bolt ) base_multiplier *= 1.04;
 
     lightning_overload_stats = p -> get_stats( "lightning_overload" );
     lightning_overload_stats -> school = SCHOOL_NATURE;
@@ -1271,6 +1283,7 @@ struct lava_burst_t : public shaman_spell_t
     base_hit          += p -> talents.elemental_precision * 0.01;
     base_crit_bonus   *= 1.0 + p -> talents.elemental_fury * 0.20;
     base_crit_bonus   *= 1.0 + p -> talents.lava_flows * 0.06;
+    direct_power_mod  += p -> talents.shamanism * 0.04;
   }
 
   virtual void execute()
@@ -1347,6 +1360,7 @@ struct elemental_mastery_t : public shaman_spell_t
     cooldown -= p -> glyphs.elemental_mastery ? 30.0 : 0.0;
 
     trigger_gcd = 0;  
+
     if( ! options_str.empty() )
     {
       // This will prevent Elemental Mastery from being called before the desired "free spell" is ready to be cast.
@@ -1357,11 +1371,27 @@ struct elemental_mastery_t : public shaman_spell_t
    
   virtual void execute()
   {
+    struct expiration_t : public event_t
+    {
+      expiration_t( sim_t* sim, player_t* player ) : event_t( sim, player )
+      {
+	name = "Elemental Mastery Expiration";
+	shaman_t* p = player -> cast_shaman();
+	p -> aura_gain( "Elemental Mastery" );
+	p -> buffs_elemental_mastery = 1;
+	sim -> add_event( this, 30.0 );
+      }
+      virtual void execute()
+      {
+	shaman_t* p = player -> cast_shaman();
+	p -> aura_loss( "Elemental Mastery" );
+	p -> buffs_elemental_mastery = 0;
+      }
+    };
+
     if( sim -> log ) report_t::log( sim, "%s performs elemental_mastery", player -> name() );
     update_ready();
-    shaman_t* p = player -> cast_shaman();
-    p -> aura_gain( "Elemental Mastery" );
-    p -> buffs_elemental_mastery = 1;
+    new (sim) expiration_t( sim, player );
   }
 };
 
@@ -1571,7 +1601,7 @@ struct flame_shock_t : public shaman_spell_t
       
     base_cost       *= 1.0 - p -> talents.convection * 0.02;
     base_cost       *= 1.0 - p -> talents.mental_quickness * 0.02;
-    base_td_init    *= 1.0 + p -> talents.storm_earth_and_fire * 0.10;
+    base_td_init    *= 1.0 + util_t::talent_rank( p -> talents.storm_earth_and_fire, 3, 0.20 );
     cooldown        -= ( p -> talents.reverberation * 0.2 );
     base_hit        += p -> talents.elemental_precision * 0.01;
     base_crit_bonus *= 1.0 + p -> talents.elemental_fury * 0.20;
@@ -2739,7 +2769,7 @@ void shaman_t::init_base()
   health_per_stamina = 10;
   mana_per_intellect = 15;
 
-  mp5_per_intellect = talents.unrelenting_storm * 0.02;
+  mp5_per_intellect = util_t::talent_rank( talents.unrelenting_storm, 3, 0.04 );
 
   if( gear.tier6_2pc )
   {
@@ -2814,7 +2844,7 @@ double shaman_t::composite_spell_power( int8_t school )
 
   if( talents.mental_quickness )
   {
-    sp += composite_attack_power() * talents.mental_quickness * 0.10;
+    sp += agility() * 0.70 * talents.mental_quickness / 3.0;
   }
 
   if( main_hand_weapon.buff == FLAMETONGUE )
@@ -2940,6 +2970,7 @@ bool shaman_t::parse_option( const std::string& name,
     { "natures_swiftness",         OPT_INT8,  &( talents.natures_swiftness         ) },
     { "restorative_totems",        OPT_INT8,  &( talents.restorative_totems        ) },
     { "reverberation",             OPT_INT8,  &( talents.reverberation             ) },
+    { "shamanism",                 OPT_INT8,  &( talents.shamanism                 ) },
     { "shamanistic_focus",         OPT_INT8,  &( talents.shamanistic_focus         ) },
     { "shamanistic_rage",          OPT_INT8,  &( talents.shamanistic_rage          ) },
     { "spirit_weapons",            OPT_INT8,  &( talents.spirit_weapons            ) },

@@ -1100,7 +1100,7 @@ struct action_t
   double min_gcd, trigger_gcd;
   double base_execute_time, base_tick_time, base_cost;
   double base_dd_min, base_dd_max, base_td_init;
-  double base_dd_multiplier, base_td_multiplier;
+  double base_dd_multiplier, base_td_multiplier, power_multiplier;
   double   base_multiplier,   base_hit,   base_crit,   base_crit_bonus,   base_power,   base_penetration;
   double player_multiplier, player_hit, player_crit, player_crit_bonus, player_power, player_penetration;
   double target_multiplier, target_hit, target_crit, target_crit_bonus, target_power, target_penetration;
@@ -1156,11 +1156,11 @@ struct action_t
   virtual void   cancel() { event_t::cancel( event ); reset(); }
   virtual const char* name() { return name_str.c_str(); }
 
-  virtual double total_multiplier() { return base_multiplier * player_multiplier * target_multiplier; }
-  virtual double total_power()      { return base_power      + player_power      + target_power;      }
-  virtual double total_hit()        { return base_hit        + player_hit        + target_hit;        }
-  virtual double total_crit()       { return base_crit       + player_crit       + target_crit;       }
-  virtual double total_crit_bonus() { return base_crit_bonus * player_crit_bonus * target_crit_bonus; }
+  virtual double total_multiplier() { return   base_multiplier * player_multiplier * target_multiplier; }
+  virtual double total_power()      { return ( base_power      + player_power      + target_power       ) * power_multiplier; }
+  virtual double total_hit()        { return   base_hit        + player_hit        + target_hit;        }
+  virtual double total_crit()       { return   base_crit       + player_crit       + target_crit;       }
+  virtual double total_crit_bonus() { return   base_crit_bonus * player_crit_bonus * target_crit_bonus; }
 
   // Some actions require different multipliers for the "direct" and "tick" portions.
 
