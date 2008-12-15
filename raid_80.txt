@@ -134,6 +134,7 @@ chaotic_skyflare=1
 glyph_moonfire=1
 glyph_starfire=1
 glyph_insect_swarm=1
+idol_of_the_shooting_star=1
 # Three Treants modeled as one pet that hits 3x hard
 pet=treants
 quiet=1
@@ -161,6 +162,7 @@ chaotic_skyflare=1
 glyph_moonfire=1
 glyph_starfire=1
 glyph_insect_swarm=1
+idol_of_steadfast_renewal=1
 # Three Treants modeled as one pet that hits 3x hard
 pet=treants
 quiet=1
@@ -188,6 +190,7 @@ chaotic_skyflare=1
 glyph_moonfire=1
 glyph_starfire=1
 glyph_insect_swarm=1
+idol_of_steadfast_renewal=1
 # Three Treants modeled as one pet that hits 3x hard
 pet=treants
 quiet=1
