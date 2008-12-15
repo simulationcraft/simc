@@ -1981,9 +1981,6 @@ bool player_t::parse_option( const std::string& name,
     { "tier6_4pc",                            OPT_INT8,   &( gear.tier6_4pc                                 ) },
     { "tier7_2pc",                            OPT_INT8,   &( gear.tier7_2pc                                 ) },
     { "tier7_4pc",                            OPT_INT8,   &( gear.tier7_4pc                                 ) },
-    // Player - Gear - Druid Idols 
-    { "idol_of_the_shooting_star",            OPT_INT8,   &( gear.idol_of_the_shooting_star                 ) },
-    { "idol_of_steadfast_renewal",            OPT_INT8,   &( gear.idol_of_steadfast_renewal                 ) },
     // Player - Consumables									            
     { "flask",                                OPT_STRING, &( flask_str                                      ) },
     { "elixirs",                              OPT_STRING, &( elixirs_str                                    ) },

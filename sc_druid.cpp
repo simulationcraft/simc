@@ -89,6 +89,14 @@ struct druid_t : public player_t
   };
   glyphs_t glyphs;
 
+  struct idols_t
+  {
+    int8_t shooting_star;
+    int8_t steadfast_renewal;
+    idols_t() { memset( (void*) this, 0x0, sizeof( idols_t ) ); }
+  };
+  idols_t idols;
+
   druid_t( sim_t* sim, std::string& name ) : player_t( sim, DRUID, name ) 
   {
     active_moonfire = 0;
@@ -882,11 +890,11 @@ struct starfire_t : public druid_spell_t
     base_crit         += util_t::talent_rank(p -> talents.natures_majesty, 2, 0.02);
     base_crit_bonus   *= 1.0 + util_t::talent_rank(p -> talents.vengeance, 5, 0.20);
     direct_power_mod  += util_t::talent_rank(p -> talents.wrath_of_cenarius, 5, 0.04);
-    if ( p -> gear.idol_of_the_shooting_star )
+
+    if ( p -> idols.shooting_star )
     {
       // Equip: Increases the spell power of your Starfire spell by 165.
-      base_dd_min       += 165 * direct_power_mod;
-      base_dd_max       += 165 * direct_power_mod;
+      base_power += 165;
     }
     if( p -> gear.tier6_4pc ) base_crit += 0.05;
     if( p -> gear.tier7_4pc ) base_crit += 0.05;
@@ -1009,12 +1017,6 @@ struct wrath_t : public druid_spell_t
     base_execute_time = 2.0; 
     direct_power_mod  = ( base_execute_time / 3.5 ); 
     may_crit          = true;
-    if ( p -> gear.idol_of_steadfast_renewal )
-    {
-      // Equip: Increases the damage dealt by Wrath by 70. 
-      base_dd_min       += 70;
-      base_dd_max       += 70;
-    }
       
     base_cost         *= 1.0 - util_t::talent_rank(p -> talents.moonglow, 3, 0.03);
     base_execute_time -= util_t::talent_rank(p -> talents.starlight_wrath, 5, 0.1);
@@ -1024,6 +1026,13 @@ struct wrath_t : public druid_spell_t
     direct_power_mod  += util_t::talent_rank(p -> talents.wrath_of_cenarius, 5, 0.02);
 
     if( p -> gear.tier7_4pc ) base_crit += 0.05;
+
+    if ( p -> idols.steadfast_renewal )
+    {
+      // Equip: Increases the damage dealt by Wrath by 70. 
+      base_dd_min       += 70;
+      base_dd_max       += 70;
+    }
   }
 
   virtual void execute()
@@ -1413,6 +1422,9 @@ bool druid_t::parse_option( const std::string& name,
     { "glyph_insect_swarm",        OPT_INT8,  &( glyphs.insect_swarm               ) },
     { "glyph_moonfire",            OPT_INT8,  &( glyphs.moonfire                   ) },
     { "glyph_starfire",            OPT_INT8,  &( glyphs.starfire                   ) },
+    // Idols
+    { "idol_of_steadfast_renewal", OPT_INT8,  &( idols.steadfast_renewal           ) },
+    { "idol_of_the_shooting_star", OPT_INT8,  &( idols.shooting_star               ) },
     { NULL, OPT_UNKNOWN }
   };
 
