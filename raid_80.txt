@@ -74,6 +74,9 @@ judgement_of_wisdom=1
 razorice=1
 crypt_fever=1
 
+# The Mage talent "Torment the Weak" has been changed to work off of many "snare" debuffs.
+snare=1
+
 # When comparing a variety of classes at the exact same gear point, it is more convenient to simply specify
 # a default gear point to use.  Please note that these values MUST be present in the config file BEFORE the
 # definition of the player profile.
@@ -217,39 +220,19 @@ swift_retribution=1
 # Arcane Mage
 #
 # (1) The "trigger=3500" option to mana_gem and mana_potion represents the mana gained and the amount below max required to trigger
-# (2) The "trigger=10000" option to evocation represents the mana gained and the amount below max required to trigger
-# (3) The "barrage=1" option to arcane_missles means that it will only get executed when the "barrage" buff has been up 
+# (2) The "barrage=1" option to arcane_missles means that it will only get executed when the "barrage" buff has been up 
 #     for at least 0.5sec (to account for lag and reaction time).
 #
-mage=Mage_52_19_0_Slow
-level=80
-talents=http://www.wowhead.com/?talent=of0Vck0IzxGh0ted0Ec0R0h
-actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/molten_armor/focus_magic,target=Mage_52_19_0
-actions+=/mana_gem,trigger=3500/mana_potion,trigger=4300/evocation,trigger=10000
-actions+=/mirror_image/slow/arcane_missiles,barrage=1/presence_of_mind,pyroblast/arcane_barrage/fire_ball
-chaotic_skyflare=1
-# Glyphs
-glyph_fire_ball=1
-glyph_molten_armor=1
-# Pets
-pet=mirror_image
-quiet=1
-active=owner
-# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
-blessing_of_kings=1
-blessing_of_wisdom=1
-sanctified_retribution=1
-swift_retribution=1
-
 mage=Mage_52_19_0
 level=80
 talents=http://www.wowhead.com/?talent=of0Vck0IzxGh0ted0Ec0R0h
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/molten_armor/focus_magic,target=Mage_20_51_0
-actions+=/mana_gem,trigger=3500/mana_potion,trigger=4300/evocation,trigger=10000
-actions+=/mirror_image/arcane_missiles,barrage=1/presence_of_mind,pyroblast/arcane_barrage/fire_ball
+actions+=/mana_gem,trigger=3500/mana_potion,trigger=4300
+actions+=/mirror_image/arcane_missiles,barrage=1/presence_of_mind,pyroblast/arcane_blast,max=3/arcane_barrage
+actions+=/evocation
 chaotic_skyflare=1
 # Glyphs
-glyph_fire_ball=1
+glyph_arcane_blast=1
 glyph_molten_armor=1
 # Pets
 pet=mirror_image
@@ -265,45 +248,15 @@ swift_retribution=1
 # Fire Mage
 #
 # (1) The "trigger=3500" option to mana_gem and mana_potion represents the mana gained and the amount below max required to trigger
-# (2) The "trigger=10000" option to evocation represents the mana gained and the amount below max required to trigger
 #
 mage=Mage_20_51_0
 level=80
 # We will let the poor Frost Mage raid-slave keep up the IS/WC debuff
 talents=http://www.wowhead.com/?talent=of0Vck0fZ0Ec0RhIhVubhct
-actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/arcane_brilliance/molten_armor/focus_magic,target=Mage_20_51_0_NoTtW
-actions+=/mana_gem,trigger=3500/mana_potion,trigger=4300/evocation,trigger=10000
-actions+=/scorch,debuff=1/mirror_image/combustion/living_bomb/pyroblast,hot_streak=1/fire_ball
-skip_actions=scorch
-enchant_hit_rating=+75
-enchant_haste_rating=-75
-chaotic_skyflare=1
-# Glyphs
-glyph_fire_ball=1
-glyph_molten_armor=1
-# Pets
-pet=mirror_image
-quiet=1
-active=owner
-# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
-blessing_of_kings=1
-blessing_of_wisdom=1
-sanctified_retribution=1
-swift_retribution=1
-
-#
-# Fire Mage (No Torment the Weak)
-#
-# (1) The "trigger=3500" option to mana_gem and mana_potion represents the mana gained and the amount below max required to trigger
-# (2) The "trigger=10000" option to evocation represents the mana gained and the amount below max required to trigger
-#
-mage=Mage_20_51_0_NoTtW
-level=80
-# We will let the poor Frost Mage raid-slave keep up the IS/WC debuff
-talents=http://www.wowhead.com/?talent=of0Vcu0hZ0Ec0RhIhVubhct
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/arcane_brilliance/molten_armor/focus_magic,target=Mage_18_0_53
-actions+=/mana_gem,trigger=3500/mana_potion,trigger=4300/evocation,trigger=10000
+actions+=/mana_gem,trigger=3500/mana_potion,trigger=4300
 actions+=/scorch,debuff=1/mirror_image/combustion/living_bomb/pyroblast,hot_streak=1/fire_ball
+actions+=/evocation
 skip_actions=scorch
 enchant_hit_rating=+75
 enchant_haste_rating=-75
@@ -325,49 +278,16 @@ swift_retribution=1
 # Frost Mage
 #
 # (1) The "trigger=3500" option to mana_gem and mana_potion represents the mana gained and the amount below max required to trigger
-# (2) The "trigger=10000" option to evocation represents the mana gained and the amount below max required to trigger
-# (3) The "frozen=1" option to ice_lance means that it will only be cast if the target is frozen (via winters_grasp) or virtually frozen (via fingers_of_frost)
-# (4) The "fb_priority=1" option to ice_lance means that it will only be cast if the frozen debuff/buff will end before a frost_bolt could be cast
+# (2) The "frozen=1" option to ice_lance means that it will only be cast if the target is frozen (via winters_grasp) or virtually frozen (via fingers_of_frost)
+# (3) The "fb_priority=1" option to ice_lance means that it will only be cast if the frozen debuff/buff will end before a frost_bolt could be cast
 #
 mage=Mage_18_0_53
 level=80
 talents=http://www.wowhead.com/?talent=of0Vck0cZZVIccRcu0f0gfsx
-actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/arcane_brilliance/molten_armor/focus_magic,target=Mage_14_0_57_NoTtW
-actions+=/mana_gem,trigger=3500/mana_potion,trigger=4300/evocation,trigger=10000
+actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/arcane_brilliance/molten_armor/focus_magic,target=Mage_52_19_0
+actions+=/mana_gem,trigger=3500/mana_potion,trigger=4300
 actions+=/mirror_image/ice_lance,frozen=1,fb_priority=1/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/frost_bolt
-chaotic_skyflare=1
-# Glyphs
-glyph_molten_armor=1
-glyph_frost_bolt=1
-glyph_water_elemental=1
-# Pets
-pet=water_elemental
-actions=water_bolt
-quiet=1
-active=owner
-pet=mirror_image
-quiet=1
-active=owner
-# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
-blessing_of_kings=1
-blessing_of_wisdom=1
-sanctified_retribution=1
-swift_retribution=1
-
-#
-# Frost Mage (No Torment the Weak)
-#
-# (1) The "trigger=3500" option to mana_gem and mana_potion represents the mana gained and the amount below max required to trigger
-# (2) The "trigger=10000" option to evocation represents the mana gained and the amount below max required to trigger
-# (3) The "frozen=1" option to ice_lance means that it will only be cast if the target is frozen (via winters_grasp) or virtually frozen (via fingers_of_frost)
-# (4) The "fb_priority=1" option to ice_lance means that it will only be cast if the frozen debuff/buff will end before a frost_bolt could be cast
-#
-mage=Mage_14_0_57_NoTtW
-level=80
-talents=http://www.wowhead.com/?talent=of0VczZZAIccRcu0fzgfsx
-actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/arcane_brilliance/molten_armor/focus_magic,target=Mage_52_19_0_Slow
-actions+=/mana_gem,trigger=3500/mana_potion,trigger=4300/evocation,trigger=10000
-actions+=/mirror_image/ice_lance,frozen=1,fb_priority=1/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/frost_bolt
+actions+=/evocation
 chaotic_skyflare=1
 # Glyphs
 glyph_molten_armor=1
@@ -391,15 +311,15 @@ swift_retribution=1
 # FrostFire Mage
 #
 # (1) The "trigger=3500" option to mana_gem and mana_potion represents the mana gained and the amount below max required to trigger
-# (2) The "trigger=10000" option to evocation represents the mana gained and the amount below max required to trigger
-# (3) The "debuff=1" option to scorch prevents it from being executed unless the Improved Scorch debuff is going to expire in less than 6sec.
+# (2) The "debuff=1" option to scorch prevents it from being executed unless the Improved Scorch debuff is going to expire in less than 6sec.
 #
 mage=Mage_0_53_18
 level=80
 talents=http://www.wowhead.com/?talent=oZfVc0RhIuVubhstbIccoc
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/arcane_brilliance/molten_armor
-actions+=/mana_gem,trigger=3500/mana_potion,trigger=4300/evocation,trigger=10000
+actions+=/mana_gem,trigger=3500/mana_potion,trigger=4300
 actions+=/scorch,debuff=1/mirror_image/combustion/icy_veins/living_bomb/pyroblast,hot_streak=1/frostfire_bolt
+actions+=/evocation
 # We will let the poor Frost Mage raid-slave keep up the IS/WC debuff
 skip_actions=scorch
 chaotic_skyflare=1
