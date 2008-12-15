@@ -964,9 +964,11 @@ struct target_t
   struct debuff_t
   {
     // Permanent De-Buffs (until appropriate player class implemented)
+    int8_t   blood_frenzy;
     int8_t   crypt_fever;
     int8_t   judgement_of_wisdom;
     int8_t   razorice;
+    int8_t   savage_combat;
     int8_t   snare;
     double   sunder_armor;
     // Temporary De-Buffs

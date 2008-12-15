@@ -143,9 +143,11 @@ bool target_t::parse_option( const std::string& name,
     { "target_block",          OPT_INT16, &( block_value                       ) },
     { "target_health",         OPT_FLT,   &( initial_health                    ) },
     // FIXME! Once appropriate class implemented, these will be removed
+    { "blood_frenzy",          OPT_INT8,  &( debuffs.blood_frenzy              ) },
     { "crypt_fever",           OPT_INT8,  &( debuffs.crypt_fever               ) },
     { "judgement_of_wisdom",   OPT_INT8,  &( debuffs.judgement_of_wisdom       ) },
     { "razorice",              OPT_INT8,  &( debuffs.razorice                  ) },
+    { "savage_combat",         OPT_INT8,  &( debuffs.savage_combat             ) },
     { "snare",                 OPT_INT8,  &( debuffs.snare                     ) },
     { "sunder_armor",          OPT_FLT,   &( debuffs.sunder_armor              ) },
     { NULL, OPT_UNKNOWN }

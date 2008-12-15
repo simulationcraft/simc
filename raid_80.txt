@@ -58,9 +58,8 @@ regen_periodicity=1.0
 # Some WotLK beta patches have included a Potion Sickness debuff that only allows one potion consumed per combat.
 potion_sickness=1
 
-# I'm really not sure what to put here.  I imagine that WotLK bosses will have armor close to 10k......  
-# 5x Sunder Amor is 3925 penetration in WotLK.
-target_armor=10000
+# From the testing at http://elitistjerks.com/f15/t37584-wrath_boss_armor_testing it appears WotLK boss armor is 13k
+target_armor=13000
 sunder_armor=3925
 
 # Since support for the Paladin class does not yet exist, one can specify target debuffs (such as
@@ -461,8 +460,6 @@ swift_retribution=1
 #
 # Enhancement Shaman
 #
-# Gear based upon: http://elitistjerks.com/f31/t31667-enhancement_shaman_enhsim_dps_simulator/p15/#post910639
-#
 # (1) The "weapon=main" option to windfury_weapon puts the enchant only on the main-hand weapon
 # (2) The "weapon=off" option to flametongue_weapon puts the enchant only on the off-hand weapon
 # (3) The "flame_shock=1,max_ticks_consumed=4" option to lava_burst will prevent it from being called until there are four or less ticks remaining on Flame Shock.
@@ -475,21 +472,19 @@ talents=http://www.wowhead.com/?talent=hVbhqZhbxsoxdAIkufot
 actions=flask,type=endless_rage/food,type=great_feast/windfury_weapon,weapon=main/flametongue_weapon,weapon=off
 actions+=/strength_of_earth_totem/windfury_totem/searing_totem/lightning_shield
 actions+=/auto_attack/lightning_bolt,maelstrom=5,ss_wait=1/shamanistic_rage/spirit_wolf/flame_shock/earth_shock,ss_wait=1/stormstrike/lava_lash/bloodlust,target_pct=35
-gear_agility=386
-gear_stamina=800
-gear_intellect=403
-gear_attack_power=2100
-gear_expertise_rating=185
-gear_armor_penetration_rating=160
+gear_agility=700
+gear_stamina=1000
+gear_intellect=350
+gear_attack_power=2000
+gear_expertise_rating=180
+gear_armor_penetration_rating=0
 gear_spell_power=0
-gear_hit_rating=282
-gear_crit_rating=445
-gear_haste_rating=75
+gear_hit_rating=280
+gear_crit_rating=575
+gear_haste_rating=300
 chaotic_skyflare=1
-# Hateful Gladiator Weapons
 main_hand=mace,damage=373,speed=2.6,enchant=mongoose
-#off_hand=dagger,damage=200,speed=1.4,enchant=mongoose
-off_hand=mace,damage=373,speed=2.6,enchant=mongoose
+off_hand=mace,damage=359,speed=2.5,enchant=mongoose
 # Glyphs
 glyph_windfury_weapon=1
 glyph_stormstrike=1
