@@ -167,6 +167,7 @@ struct warlock_t : public player_t
     int8_t shadow_bolt;
     int8_t shadow_burn;
     int8_t siphon_life;
+    int8_t unstable_affliction;
     glyphs_t() { memset( (void*) this, 0x0, sizeof( glyphs_t ) ); }
   };
   glyphs_t glyphs;
@@ -2597,6 +2598,12 @@ struct unstable_affliction_t : public warlock_spell_t
     base_hit         +=       p -> talents.suppression * 0.01;
     base_multiplier  *= 1.0 + p -> talents.shadow_mastery * 0.03;
     tick_power_mod   += p -> talents.everlasting_affliction * 0.01;
+
+    if( p -> glyphs.unstable_affliction )
+    {
+      base_execute_time = 1.3;
+      trigger_gcd       = 1.3;
+    }
   }
 
   virtual void execute()
@@ -3775,17 +3782,18 @@ bool warlock_t::parse_option( const std::string& name,
     { "unholy_power",             OPT_INT8,  &( talents.unholy_power             ) },
     { "unstable_affliction",      OPT_INT8,  &( talents.unstable_affliction      ) },
     // Glyphs
-    { "glyph_conflagrate",        OPT_INT8,  &( glyphs.conflagrate               ) },
-    { "glyph_corruption",         OPT_INT8,  &( glyphs.corruption                ) },
-    { "glyph_curse_of_agony",     OPT_INT8,  &( glyphs.curse_of_agony            ) },
-    { "glyph_felguard",           OPT_INT8,  &( glyphs.felguard                  ) },
-    { "glyph_felhunter",          OPT_INT8,  &( glyphs.felhunter                 ) },
-    { "glyph_immolate",           OPT_INT8,  &( glyphs.immolate                  ) },
-    { "glyph_imp",                OPT_INT8,  &( glyphs.imp                       ) },
-    { "glyph_searing_pain",       OPT_INT8,  &( glyphs.searing_pain              ) },
-    { "glyph_shadow_bolt",        OPT_INT8,  &( glyphs.shadow_bolt               ) },
-    { "glyph_shadow_burn",        OPT_INT8,  &( glyphs.shadow_burn               ) },
-    { "glyph_siphon_life",        OPT_INT8,  &( glyphs.siphon_life               ) },
+    { "glyph_conflagrate",         OPT_INT8,  &( glyphs.conflagrate              ) },
+    { "glyph_corruption",          OPT_INT8,  &( glyphs.corruption               ) },
+    { "glyph_curse_of_agony",      OPT_INT8,  &( glyphs.curse_of_agony           ) },
+    { "glyph_felguard",            OPT_INT8,  &( glyphs.felguard                 ) },
+    { "glyph_felhunter",           OPT_INT8,  &( glyphs.felhunter                ) },
+    { "glyph_immolate",            OPT_INT8,  &( glyphs.immolate                 ) },
+    { "glyph_imp",                 OPT_INT8,  &( glyphs.imp                      ) },
+    { "glyph_searing_pain",        OPT_INT8,  &( glyphs.searing_pain             ) },
+    { "glyph_shadow_bolt",         OPT_INT8,  &( glyphs.shadow_bolt              ) },
+    { "glyph_shadow_burn",         OPT_INT8,  &( glyphs.shadow_burn              ) },
+    { "glyph_siphon_life",         OPT_INT8,  &( glyphs.siphon_life              ) },
+    { "glyph_unstable_affliction", OPT_INT8,  &( glyphs.unstable_affliction      ) },
     { NULL, OPT_UNKNOWN }
   };
 

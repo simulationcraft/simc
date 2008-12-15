@@ -546,19 +546,70 @@ static void trigger_lightning_capacitor( spell_t* s )
       p -> actions.lightning_discharge = new lightning_discharge_t( p );
     }
 
-    if( p -> buffs.lightning_capacitor < 2 )
+    if( p -> actions.lightning_discharge -> ready() )
     {
-      p -> buffs.lightning_capacitor++;
-      if( p -> buffs.lightning_capacitor == 1 ) p -> aura_gain( "Lightning Capacitor" );
-    }
-    else
-    {
-      if( p -> actions.lightning_discharge -> ready() )
+      if( p -> buffs.lightning_capacitor < 2 )
       {
-	p -> procs.lightning_capacitor -> occur();
-	p -> buffs.lightning_capacitor = 0;
-	p -> aura_loss( "Lightning Capacitor" );
-	p -> actions.lightning_discharge -> execute();
+	p -> buffs.lightning_capacitor++;
+	if( p -> buffs.lightning_capacitor == 1 ) p -> aura_gain( "Lightning Capacitor" );
+      }
+      else
+      {
+        p -> procs.lightning_capacitor -> occur();
+        p -> buffs.lightning_capacitor = 0;
+        p -> aura_loss( "Lightning Capacitor" );
+        p -> actions.lightning_discharge -> execute();
+      }
+    }
+  } 
+}
+
+// Thunder Capacitor =====================================================
+
+static void trigger_thunder_capacitor( spell_t* s )
+{
+  struct thunder_discharge_t : public spell_t
+  {
+    thunder_discharge_t( player_t* player ) : 
+      spell_t( "thunder_discharge", player, RESOURCE_NONE, SCHOOL_NATURE )
+    {
+      base_direct_dmg = 1276;
+      base_cost       = 0;
+      cooldown        = 2.5;
+      may_crit        = true;
+      trigger_gcd     = 0;
+      background      = true;
+      reset();
+    }
+    virtual void player_buff()
+    {
+      spell_t::player_buff();
+      player_power = 0;
+    }
+  };
+
+  player_t* p = s -> player;
+
+  if(  p -> gear.thunder_capacitor )
+  {
+    if( ! p -> actions.thunder_discharge ) 
+    {
+      p -> actions.thunder_discharge = new thunder_discharge_t( p );
+    }
+
+    if( p -> actions.thunder_discharge -> ready() )
+    {
+      if( p -> buffs.thunder_capacitor < 2 )
+      {
+	p -> buffs.thunder_capacitor++;
+	if( p -> buffs.thunder_capacitor == 1 ) p -> aura_gain( "Thunder Capacitor" );
+      }
+      else
+      {
+        p -> procs.thunder_capacitor -> occur();
+        p -> buffs.thunder_capacitor = 0;
+        p -> aura_loss( "Thunder Capacitor" );
+        p -> actions.thunder_discharge -> execute();
       }
     }
   } 
@@ -602,7 +653,7 @@ static void trigger_timbals_crystal( spell_t* s )
     }
 
     if( p -> actions.timbals_discharge -> ready() && 
-	s -> sim -> roll( 0.10 ) )
+        s -> sim -> roll( 0.10 ) )
     {
       p -> procs.timbals_crystal -> occur();
       p -> actions.timbals_discharge -> execute();
@@ -722,7 +773,7 @@ static void trigger_extract_of_necromatic_power( spell_t* s )
     }
 
     if( p -> actions.extract_of_necromatic_power_discharge -> ready() && 
-	s -> sim -> roll( 0.10 ) )
+        s -> sim -> roll( 0.10 ) )
     {
       p -> procs.extract_of_necromatic_power -> occur();
       p -> actions.extract_of_necromatic_power_discharge -> execute();
@@ -843,27 +894,29 @@ void unique_gear_t::spell_miss_event( spell_t* s )
 
 void unique_gear_t::spell_hit_event( spell_t* s )
 {
-  trigger_darkmoon_crusade     ( s );
-  trigger_darkmoon_wrath       ( s );
-  trigger_elder_scribes        ( s );
-  trigger_eternal_sage         ( s );
-  trigger_mark_of_defiance     ( s );
-  trigger_mystical_skyfire     ( s );
-  trigger_quagmirrans_eye      ( s );
-  trigger_spellstrike          ( s );
-  trigger_violet_eye           ( s );
-  trigger_wrath_of_cenarius    ( s );
-  trigger_sundial_of_the_exiled( s );
-  trigger_embrace_of_the_spider( s );
+  trigger_darkmoon_crusade               ( s );
+  trigger_darkmoon_wrath                 ( s );
+  trigger_elder_scribes                  ( s );
+  trigger_eternal_sage                   ( s );
+  trigger_mark_of_defiance               ( s );
+  trigger_mystical_skyfire               ( s );
+  trigger_quagmirrans_eye                ( s );
+  trigger_spellstrike                    ( s );
+  trigger_violet_eye                     ( s );
+  trigger_wrath_of_cenarius              ( s );
+  trigger_sundial_of_the_exiled          ( s );
+  trigger_embrace_of_the_spider          ( s );
   trigger_illustration_of_the_dragon_soul( s );
-  trigger_dying_curse          ( s );
-  trigger_forge_ember          ( s );
+  trigger_dying_curse                    ( s );
+  trigger_forge_ember                    ( s );
+
   if( s -> result == RESULT_CRIT )
   {
     clear_darkmoon_wrath                ( s );
     trigger_lightning_capacitor         ( s );
     trigger_sextant_of_unstable_currents( s );
     trigger_shiffars_nexus_horn         ( s );
+    trigger_thunder_capacitor           ( s );
   }
 }
 
@@ -904,8 +957,8 @@ struct attack_power_trinket_t : public action_t
     parse_options( options, options_str );
 
     if( attack_power <= 0 ||
-	length       <= 0 ||
-	cooldown     <= 0 )
+        length       <= 0 ||
+        cooldown     <= 0 )
     {
       fprintf( sim -> output_file, "Expected format: attack_power_trinket,power=X,length=Y,cooldown=Z\n" );
       assert(0);
@@ -922,15 +975,15 @@ struct attack_power_trinket_t : public action_t
 
       expiration_t( sim_t* sim, attack_power_trinket_t* t ) : event_t( sim, t -> player ), trinket( t )
       {
-	name = "Attack Power Trinket Expiration";
-	player -> aura_gain( "Attack Power Trinket" );
-	player -> attack_power += trinket -> attack_power;
-	sim -> add_event( this, trinket -> length );
+        name = "Attack Power Trinket Expiration";
+        player -> aura_gain( "Attack Power Trinket" );
+        player -> attack_power += trinket -> attack_power;
+        sim -> add_event( this, trinket -> length );
       }
       virtual void execute()
       {
-	player -> aura_loss( "Attack Power Trinket" );
-	player -> attack_power -= trinket -> attack_power;
+        player -> aura_loss( "Attack Power Trinket" );
+        player -> attack_power -= trinket -> attack_power;
       }
     };
   
@@ -963,8 +1016,8 @@ struct spell_power_trinket_t : public action_t
     parse_options( options, options_str );
 
     if( spell_power <= 0 ||
-	length      <= 0 ||
-	cooldown    <= 0 )
+        length      <= 0 ||
+        cooldown    <= 0 )
     {
       fprintf( sim -> output_file, "Expected format: spell_power_trinket,power=X,length=Y,cooldown=Z\n" );
       exit(0);
@@ -981,15 +1034,15 @@ struct spell_power_trinket_t : public action_t
 
       expiration_t( sim_t* sim, spell_power_trinket_t* t ) : event_t( sim, t -> player ), trinket( t )
       {
-	name = "Spell Power Trinket Expiration";
-	player -> aura_gain( "Spell Power Trinket" );
-	player -> spell_power[ SCHOOL_MAX ] += trinket -> spell_power;
-	sim -> add_event( this, trinket -> length );
+        name = "Spell Power Trinket Expiration";
+        player -> aura_gain( "Spell Power Trinket" );
+        player -> spell_power[ SCHOOL_MAX ] += trinket -> spell_power;
+        sim -> add_event( this, trinket -> length );
       }
       virtual void execute()
       {
-	player -> aura_loss( "Spell Power Trinket" );
-	player -> spell_power[ SCHOOL_MAX ] -= trinket -> spell_power;
+        player -> aura_loss( "Spell Power Trinket" );
+        player -> spell_power[ SCHOOL_MAX ] -= trinket -> spell_power;
       }
     };
   
@@ -1023,8 +1076,8 @@ struct haste_trinket_t : public action_t
     parse_options( options, options_str );
 
     if( haste_rating <= 0 ||
-	length       <= 0 ||
-	cooldown     <= 0 )
+        length       <= 0 ||
+        cooldown     <= 0 )
     {
       fprintf( sim -> output_file, "Expected format: haste_trinket,rating=X,length=Y,cooldown=Z\n" );
       assert(0);
@@ -1041,17 +1094,17 @@ struct haste_trinket_t : public action_t
 
       expiration_t( sim_t* sim, haste_trinket_t* t ) : event_t( sim, t -> player ), trinket( t )
       {
-	name = "Haste Trinket Expiration";
-	player -> aura_gain( "Haste Trinket" );
-	player -> haste_rating += trinket -> haste_rating;
-	player -> recalculate_haste();
-	sim -> add_event( this, trinket -> length );
+        name = "Haste Trinket Expiration";
+        player -> aura_gain( "Haste Trinket" );
+        player -> haste_rating += trinket -> haste_rating;
+        player -> recalculate_haste();
+        sim -> add_event( this, trinket -> length );
       }
       virtual void execute()
       {
-	player -> aura_loss( "Haste Trinket" );
-	player -> haste_rating -= trinket -> haste_rating;
-	player -> recalculate_haste();
+        player -> aura_loss( "Haste Trinket" );
+        player -> haste_rating -= trinket -> haste_rating;
+        player -> recalculate_haste();
       }
     };
   
@@ -1190,8 +1243,8 @@ struct hazzrahs_charm_t : public action_t
 
     // This trinket is only availables to Mages, Priests, and Warlocks.
     if( p -> type != MAGE    &&
-	p -> type != PRIEST  &&
-	p -> type != WARLOCK )
+        p -> type != PRIEST  &&
+        p -> type != WARLOCK )
     {
       assert( 0 );
     }
@@ -1254,8 +1307,8 @@ struct violet_eye_t : public action_t
 // ==========================================================================
 
 action_t* unique_gear_t::create_action( player_t*          p,
-					const std::string& name, 
-					const std::string& options_str )
+                                        const std::string& name, 
+                                        const std::string& options_str )
 {
   if( name == "attack_power_trinket"   ) return new attack_power_trinket_t  ( p, options_str );
   if( name == "haste_trinket"          ) return new haste_trinket_t         ( p, options_str );

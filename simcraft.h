@@ -535,12 +535,17 @@ struct player_t
     // Unique Gear
     int8_t  ashtongue_talisman;
     int8_t  chaotic_skyfire;
-	int8_t  chaotic_skyflare;
+    int8_t  chaotic_skyflare;
     int8_t  darkmoon_crusade;
     int8_t  darkmoon_wrath;
+    int8_t  dying_curse;
     int8_t  elder_scribes;
+    int8_t  embrace_of_the_spider;
     int8_t  eternal_sage;
+    int8_t  extract_of_necromatic_power;
     int8_t  eye_of_magtheridon;
+    int8_t  forge_ember;
+    int8_t  illustration_of_the_dragon_soul;
     int8_t  lightning_capacitor;
     int8_t  mark_of_defiance;
     int8_t  mystical_skyfire;
@@ -549,16 +554,12 @@ struct player_t
     int8_t  shiffars_nexus_horn;
     int8_t  spellstrike;
     int8_t  spellsurge;
+    int8_t  sundial_of_the_exiled;
     int8_t  talisman_of_ascendance;
+    int8_t  thunder_capacitor;
     int8_t  timbals_crystal;
     int8_t  wrath_of_cenarius;
     int8_t  zandalarian_hero_charm;
-	int8_t  extract_of_necromatic_power;
-	int8_t  sundial_of_the_exiled;
-	int8_t  dying_curse;
-	int8_t  illustration_of_the_dragon_soul;
-	int8_t  embrace_of_the_spider;
-	int8_t  forge_ember;
     int8_t  tier4_2pc, tier4_4pc;
     int8_t  tier5_2pc, tier5_4pc;
     int8_t  tier6_2pc, tier6_4pc;
@@ -597,6 +598,7 @@ struct player_t
     player_t* focus_magic;
     int8_t    focus_magic_feedback;
     double    fortitude;
+    int8_t    illustration_of_the_dragon_soul;
     double    improved_divine_spirit;
     int8_t    improved_moonkin_aura;
     int8_t    innervate;
@@ -610,6 +612,7 @@ struct player_t
     int8_t    shadow_form;
     double    strength_of_earth;
     int16_t   talisman_of_ascendance;
+    int8_t    thunder_capacitor;
     double    totem_of_wrath;
     int8_t    unleashed_rage;
     int8_t    violet_eye;
@@ -617,7 +620,6 @@ struct player_t
     int8_t    water_elemental_regen;
     int8_t    wrath_of_air;
     int16_t   zandalarian_hero_charm;
-	int8_t    illustration_of_the_dragon_soul;
     int8_t    tier4_2pc, tier4_4pc;
     int8_t    tier5_2pc, tier5_4pc;
     int8_t    tier6_2pc, tier6_4pc;
@@ -723,9 +725,13 @@ struct player_t
   struct procs_t
   {
     proc_t* ashtongue_talisman;
+    proc_t* dying_curse;
     proc_t* elder_scribes;
+    proc_t* embrace_of_the_spider;
     proc_t* eternal_sage;
+    proc_t* extract_of_necromatic_power;
     proc_t* eye_of_magtheridon;
+    proc_t* forge_ember;
     proc_t* judgement_of_wisdom;
     proc_t* lightning_capacitor;
     proc_t* mark_of_defiance;
@@ -734,14 +740,11 @@ struct player_t
     proc_t* sextant_of_unstable_currents;
     proc_t* shiffars_nexus_horn;
     proc_t* spellstrike;
+    proc_t* sundial_of_the_exiled;
+    proc_t* thunder_capacitor;
     proc_t* timbals_crystal;
     proc_t* windfury;
     proc_t* wrath_of_cenarius;
-	proc_t* extract_of_necromatic_power;
-	proc_t* sundial_of_the_exiled;
-	proc_t* dying_curse;
-	proc_t* embrace_of_the_spider;
-	proc_t* forge_ember;
     proc_t *tier4_2pc, *tier4_4pc;
     proc_t *tier5_2pc, *tier5_4pc;
     proc_t *tier6_2pc, *tier6_4pc;
@@ -753,9 +756,10 @@ struct player_t
 
   struct actions_t
   {
+    action_t* extract_of_necromatic_power_discharge;
     action_t* lightning_discharge;
+    action_t* thunder_discharge;
     action_t* timbals_discharge;
-	action_t* extract_of_necromatic_power_discharge;
     void reset() { memset( (void*) this, 0x00, sizeof( actions_t ) ); }
     actions_t() { reset(); }
   };
