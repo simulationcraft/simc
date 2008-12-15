@@ -672,8 +672,10 @@ struct insect_swarm_t : public druid_spell_t
     num_ticks         = 6;
     tick_power_mod    = ( base_tick_time / 15.0 ) * 0.95;
 
-    base_multiplier *= 1.0 + ( p -> talents.genesis     * 0.01 +
-			       p -> glyphs.insect_swarm * 0.30 );
+    base_multiplier *= 1.0 + util_t::talent_rank(p -> talents.genesis, 5, 0.01) +
+                            (p -> glyphs.insect_swarm ? 0.30 : 0.00 ) +
+                            (p -> gear.tier7_2pc      ? 0.10 : 0.00 );
+   
 
     if( p -> talents.natures_splendor ) num_ticks++;
 
@@ -736,22 +738,22 @@ struct moonfire_t : public druid_spell_t
     may_crit          = true;
 
     base_cost       *= 1.0 - util_t::talent_rank( p -> talents.moonglow,          3, 0.03 );
-    base_crit       += util_t::talent_rank( p -> talents.improved_moonfire, 2, 0.05 );
+    base_crit       += util_t::talent_rank( p -> talents.improved_moonfire,       2, 0.05 );
     base_crit_bonus *= 1.0 + util_t::talent_rank( p -> talents.vengeance,         5, 0.20 );
 
-    double multiplier = ( util_t::talent_rank( p -> talents.moonfury,          3, 0.03, 0.06, 0.10 ) +
-			  util_t::talent_rank( p -> talents.improved_moonfire, 2, 0.05 ) +
-			  util_t::talent_rank( p -> talents.genesis,           5, 0.01 ) );
+    double multiplier_td = ( util_t::talent_rank( p -> talents.moonfury,          3, 0.03, 0.06, 0.10 ) +
+			                 util_t::talent_rank( p -> talents.improved_moonfire, 2, 0.05 ) +
+			                 util_t::talent_rank( p -> talents.genesis,           5, 0.01 ) );
+    double multiplier_dd = ( util_t::talent_rank( p -> talents.moonfury,          3, 0.03, 0.06, 0.10 ) +
+			                 util_t::talent_rank( p -> talents.improved_moonfire, 2, 0.05 ) );
 
     if( p -> glyphs.moonfire )
     {
-      base_dd_multiplier *= 1.0 + multiplier - 0.90;
-      base_td_multiplier *= 1.0 + multiplier + 0.75;
+      multiplier_dd -= 0.90;
+      multiplier_td += 0.75;
     }
-    else
-    {
-      base_multiplier *= 1.0 + multiplier;
-    }
+    base_dd_multiplier *= 1.0 + multiplier_dd;
+    base_td_multiplier *= 1.0 + multiplier_td;
 
     observer = &( p -> active_moonfire );
   }
@@ -874,14 +876,20 @@ struct starfire_t : public druid_spell_t
     direct_power_mod  = ( base_execute_time / 3.5 ); 
     may_crit          = true;
       
-    base_cost         *= 1.0 - p -> talents.moonglow * 0.03;
-    base_execute_time -= p -> talents.starlight_wrath * 0.1;
+    base_cost         *= 1.0 - util_t::talent_rank(p -> talents.moonglow, 3, 0.03);
+    base_execute_time -= util_t::talent_rank(p -> talents.starlight_wrath, 5, 0.1);
     base_multiplier   *= 1.0 + util_t::talent_rank( p -> talents.moonfury, 3, 0.03, 0.06, 0.10 );
-    base_crit         += p -> talents.natures_majesty * 0.02;
-    base_crit_bonus   *= 1.0 + p -> talents.vengeance * 0.20;
-    direct_power_mod  += p -> talents.wrath_of_cenarius * 0.04;
-
+    base_crit         += util_t::talent_rank(p -> talents.natures_majesty, 2, 0.02);
+    base_crit_bonus   *= 1.0 + util_t::talent_rank(p -> talents.vengeance, 5, 0.20);
+    direct_power_mod  += util_t::talent_rank(p -> talents.wrath_of_cenarius, 5, 0.04);
+    if ( p -> gear.idol_of_the_shooting_star )
+    {
+      // Equip: Increases the spell power of your Starfire spell by 165.
+      base_dd_min       += 165 * direct_power_mod;
+      base_dd_max       += 165 * direct_power_mod;
+    }
     if( p -> gear.tier6_4pc ) base_crit += 0.05;
+    if( p -> gear.tier7_4pc ) base_crit += 0.05;
   }
 
   virtual void player_buff()
@@ -1001,13 +1009,21 @@ struct wrath_t : public druid_spell_t
     base_execute_time = 2.0; 
     direct_power_mod  = ( base_execute_time / 3.5 ); 
     may_crit          = true;
+    if ( p -> gear.idol_of_steadfast_renewal )
+    {
+      // Equip: Increases the damage dealt by Wrath by 70. 
+      base_dd_min       += 70;
+      base_dd_max       += 70;
+    }
       
-    base_cost         *= 1.0 - p -> talents.moonglow * 0.03;
-    base_execute_time -= p -> talents.starlight_wrath * 0.1;
-    base_multiplier   *= 1.0 + util_t::talent_rank( p -> talents.moonfury, 3, 0.03, 0.06, 0.10 );
-    base_crit         += p -> talents.natures_majesty * 0.02;
-    base_crit_bonus   *= 1.0 + p -> talents.vengeance * 0.20;
-    direct_power_mod  += p -> talents.wrath_of_cenarius * 0.02;
+    base_cost         *= 1.0 - util_t::talent_rank(p -> talents.moonglow, 3, 0.03);
+    base_execute_time -= util_t::talent_rank(p -> talents.starlight_wrath, 5, 0.1);
+    base_multiplier   *= 1.0 + util_t::talent_rank(p -> talents.moonfury, 3, 0.03, 0.06, 0.10 );
+    base_crit         += util_t::talent_rank(p -> talents.natures_majesty, 2, 0.02);
+    base_crit_bonus   *= 1.0 + util_t::talent_rank(p -> talents.vengeance, 5, 0.20);
+    direct_power_mod  += util_t::talent_rank(p -> talents.wrath_of_cenarius, 5, 0.02);
+
+    if( p -> gear.tier7_4pc ) base_crit += 0.05;
   }
 
   virtual void execute()

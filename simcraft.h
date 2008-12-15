@@ -564,7 +564,9 @@ struct player_t
     int8_t  tier5_2pc, tier5_4pc;
     int8_t  tier6_2pc, tier6_4pc;
 	int8_t  tier7_2pc, tier7_4pc;
-    
+    // Druid Idols
+    int8_t  idol_of_the_shooting_star;
+    int8_t  idol_of_steadfast_renewal;    
     gear_t() { memset( (void*) this, 0x00, sizeof( gear_t ) ); }
 
     void allocate_spell_power_budget( sim_t* );
