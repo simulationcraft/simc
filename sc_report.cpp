@@ -1327,24 +1327,25 @@ const char* report_t::chart_distribution_dps( std::string& s, player_t* p )
 const char* report_t::gear_weights_lootrank( std::string& buffer,
 					     player_t*    p )
 {
+  buffer = "http://www.lootrank.com";
+  return buffer.c_str();
+
   buffer = "http://www.lootrank.com/wow/wr.asp?";
 
   switch( p -> type )
   {
-  case DEATH_KNIGHT: buffer += "Cla=2048&";
-  case DRUID:        buffer += "Cla=1024&";
-  case HUNTER:       buffer += "Cla=4&";
-  case MAGE:         buffer += "Cla=128&";
-  case PALADIN:      buffer += "Cla=2&";
-  case PRIEST:       buffer += "Cla=16&";
-  case ROGUE:        buffer += "Cla=8&";
-  case SHAMAN:       buffer += "Cla=64&";
-  case WARLOCK:      buffer += "Cla=256&";
-  case WARRIOR:      buffer += "Cla=1&";
+  case DEATH_KNIGHT: buffer += "Cla=2048&"; break;
+  case DRUID:        buffer += "Cla=1024&"; break;
+  case HUNTER:       buffer += "Cla=4&";    break; 
+  case MAGE:         buffer += "Cla=128&";  break;
+  case PALADIN:      buffer += "Cla=2&";    break;
+  case PRIEST:       buffer += "Cla=16&";   break;
+  case ROGUE:        buffer += "Cla=8&";    break;
+  case SHAMAN:       buffer += "Cla=64&";   break;
+  case WARLOCK:      buffer += "Cla=256&";  break;
+  case WARRIOR:      buffer += "Cla=1&";    break;
   default: assert(0);
   }
-
-  
 
   return buffer.c_str();
 }
@@ -1354,8 +1355,7 @@ const char* report_t::gear_weights_lootrank( std::string& buffer,
 const char* report_t::gear_weights_wowhead( std::string& buffer,
 					    player_t*    p )
 {
-  buffer = "wowhead";
-
+  buffer = "http://www.wowhead.com";
   return buffer.c_str();
 }
 
