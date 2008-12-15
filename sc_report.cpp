@@ -1053,7 +1053,7 @@ const char* report_t::chart_gains( std::string& s, player_t* p )
   char buffer[ 1024 ];
 
   s = "http://chart.apis.google.com/chart?";
-  sprintf( buffer, "chs=500x%d", 200 + num_gains * 10 ); s += buffer;
+  sprintf( buffer, "chs=550x%d", 200 + num_gains * 10 ); s += buffer;
   s += "&";
   s += "cht=p";
   s += "&";
@@ -1409,8 +1409,8 @@ void report_t::html_scale_factors()
     if( sim -> scaling -> gear.crit_rating              ) fprintf( sim -> html_file, " <TD>%.2f</TD>", p -> scaling.crit_rating              );
     if( sim -> scaling -> gear.haste_rating             ) fprintf( sim -> html_file, " <TD>%.2f</TD>", p -> scaling.haste_rating             );
 
-    fprintf( sim -> html_file, " <TD>%s</TD>", gear_weights_lootrank( buffer, p ) );
-    fprintf( sim -> html_file, " <TD>%s</TD>", gear_weights_wowhead ( buffer, p ) );
+    fprintf( sim -> html_file, " <TD><a href=\"%s\"> lootrank</a></TD>", gear_weights_lootrank( buffer, p ) );
+    fprintf( sim -> html_file, " <TD><a href=\"%s\"> wowhead </a></TD>", gear_weights_wowhead ( buffer, p ) );
 
     fprintf( sim -> html_file, " </TR>\n" );
   }
@@ -1465,7 +1465,7 @@ void report_t::chart_html()
   {
     player_t* p = sim -> players_by_name[ i ];
 
-    fprintf( sim -> html_file, "<h1>Player %s</h1>\n", p -> name() );
+    fprintf( sim -> html_file, "<h1><a href=\"%s\">%s</a></h1>\n", p -> talents_str.c_str(), p -> name() );
 
     img = chart_action_dpet( buffer, p );
     if( img )
@@ -1565,8 +1565,8 @@ void report_t::wiki_scale_factors()
     if( sim -> scaling -> gear.crit_rating              ) fprintf( sim -> wiki_file, " %.2f ||", p -> scaling.crit_rating              );
     if( sim -> scaling -> gear.haste_rating             ) fprintf( sim -> wiki_file, " %.2f ||", p -> scaling.haste_rating             );
 
-    fprintf( sim -> wiki_file, " %s ||", gear_weights_lootrank( buffer, p ) );
-    fprintf( sim -> wiki_file, " %s ||", gear_weights_wowhead ( buffer, p ) );
+    fprintf( sim -> wiki_file, " [%s lootrank] ||", gear_weights_lootrank( buffer, p ) );
+    fprintf( sim -> wiki_file, " [%s wowhead ] ||", gear_weights_wowhead ( buffer, p ) );
 
     fprintf( sim -> wiki_file, "\n" );
   }
@@ -1698,7 +1698,7 @@ void report_t::chart_wiki()
     fprintf( sim -> wiki_file, "\n" );
     fprintf( sim -> wiki_file, "----\n" );
     fprintf( sim -> wiki_file, "----\n" );
-    fprintf( sim -> wiki_file, "== %s Charts ==\n", p -> name() );
+    fprintf( sim -> wiki_file, "== [%s %s] ==\n", p -> talents_str.c_str(), p -> name() );
     fprintf( sim -> wiki_file, "----\n" );
     fprintf( sim -> wiki_file, "----\n" );
     fprintf( sim -> wiki_file, "\n" );

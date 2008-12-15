@@ -425,7 +425,7 @@ static void trigger_illustration_of_the_dragon_soul( spell_t* s )
     virtual void execute()
     {
       player -> aura_loss( "Illustration of the Dragon Soul" );
-      player -> spell_power[ SCHOOL_MAX ] -= player -> buffs.illustration_of_the_dragon_soul * 26;
+      player -> spell_power[ SCHOOL_MAX ] -= player -> buffs.illustration_of_the_dragon_soul * 18;
       player -> buffs.illustration_of_the_dragon_soul = 0;
       player -> expirations.illustration_of_the_dragon_soul = 0;
     }
@@ -440,7 +440,7 @@ static void trigger_illustration_of_the_dragon_soul( spell_t* s )
   if( p -> buffs.illustration_of_the_dragon_soul < 10 )
   {
     p -> buffs.illustration_of_the_dragon_soul++;
-    p -> spell_power[ SCHOOL_MAX ] += 26;
+    p -> spell_power[ SCHOOL_MAX ] += 18;
     if( p -> buffs.illustration_of_the_dragon_soul == 1 ) p -> aura_gain( "Illustration of the Dragon Soul" );
   }
   

@@ -1122,13 +1122,15 @@ struct arcane_barrage_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
     mage_spell_t::player_buff();
-
     if( p -> buffs_arcane_blast )
     {
       player_multiplier *= 1.0 + ( p ->  buffs_arcane_blast * 0.15 +
 				   p -> glyphs.arcane_blast * 0.05 );
     }
-
+    for( int i=0; i < 4; i++ ) 
+    {
+      p -> uptimes_arcane_blast[ i ] -> update( i == p -> buffs_arcane_blast );
+    }
     int snared = sim -> target -> debuffs.snared() ? 1 : 0;
     player_multiplier *= 1.0 + snared * p -> talents.torment_the_weak * 0.04;
   }
@@ -1229,11 +1231,6 @@ struct arcane_blast_t : public mage_spell_t
 
     mage_t* p = player -> cast_mage();
 
-    for( int i=0; i < 4; i++ ) 
-    {
-      p -> uptimes_arcane_blast[ i ] -> update( i == p -> buffs_arcane_blast );
-    }
-
     if( p -> buffs_arcane_blast < 3 )
     {
       p -> buffs_arcane_blast++;
@@ -1259,6 +1256,10 @@ struct arcane_blast_t : public mage_spell_t
     {
       player_multiplier *= 1.0 + ( p ->  buffs_arcane_blast * 0.15 +
 				   p -> glyphs.arcane_blast * 0.05 );
+    }
+    for( int i=0; i < 4; i++ ) 
+    {
+      p -> uptimes_arcane_blast[ i ] -> update( i == p -> buffs_arcane_blast );
     }
     int snared = sim -> target -> debuffs.snared() ? 1 : 0;
     player_multiplier *= 1.0 + snared * p -> talents.torment_the_weak * 0.04;
@@ -1341,6 +1342,10 @@ struct arcane_missiles_t : public mage_spell_t
     {
       player_multiplier *= 1.0 + ( p ->  buffs_arcane_blast * 0.15 +
 				   p -> glyphs.arcane_blast * 0.05 );
+    }
+    for( int i=0; i < 4; i++ ) 
+    {
+      p -> uptimes_arcane_blast[ i ] -> update( i == p -> buffs_arcane_blast );
     }
     int snared = sim -> target -> debuffs.snared() ? 1 : 0;
     player_multiplier *= 1.0 + snared * p -> talents.torment_the_weak * 0.04;

@@ -142,7 +142,6 @@ active=owner
 blessing_of_kings=1
 blessing_of_wisdom=1
 sanctified_retribution=1
-swift_retribution=1
 
 #
 # Balance Druid (Wrath)
@@ -170,7 +169,6 @@ active=owner
 blessing_of_kings=1
 blessing_of_wisdom=1
 sanctified_retribution=1
-swift_retribution=1
 
 #
 # Balance Druid (Wrath, Faerie Fire)
@@ -198,7 +196,6 @@ active=owner
 blessing_of_kings=1
 blessing_of_wisdom=1
 sanctified_retribution=1
-swift_retribution=1
 
 # ================================================================================================
 # Mages
@@ -224,13 +221,14 @@ swift_retribution=1
 #
 mage=Mage_52_19_0
 level=80
-talents=http://www.wowhead.com/?talent=of0Vck0IzxGh0ted0Ec0R0h
+talents=http://www.wowhead.com/?talent=of0Vck0IzxGu0xedfVczo0h
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/molten_armor/focus_magic,target=Mage_20_51_0
 actions+=/mana_gem,trigger=3500/mana_potion,trigger=4300
-actions+=/mirror_image/arcane_missiles,barrage=1/presence_of_mind,pyroblast/arcane_blast,max=3/arcane_barrage
+actions+=/mirror_image/arcane_power/arcane_missiles,barrage=1/presence_of_mind,pyroblast/arcane_blast,max=3/arcane_barrage
 actions+=/evocation
 chaotic_skyflare=1
 # Glyphs
+glyph_arcane_power=1
 glyph_arcane_blast=1
 glyph_molten_armor=1
 # Pets
@@ -241,7 +239,6 @@ active=owner
 blessing_of_kings=1
 blessing_of_wisdom=1
 sanctified_retribution=1
-swift_retribution=1
 
 #
 # Fire Mage
@@ -271,7 +268,6 @@ active=owner
 blessing_of_kings=1
 blessing_of_wisdom=1
 sanctified_retribution=1
-swift_retribution=1
 
 #
 # Frost Mage
@@ -304,7 +300,6 @@ active=owner
 blessing_of_kings=1
 blessing_of_wisdom=1
 sanctified_retribution=1
-swift_retribution=1
 
 #
 # FrostFire Mage
@@ -333,7 +328,6 @@ active=owner
 blessing_of_kings=1
 blessing_of_wisdom=1
 sanctified_retribution=1
-swift_retribution=1
 
 # ================================================================================================
 # Priests
@@ -362,7 +356,6 @@ active=owner
 blessing_of_kings=1
 blessing_of_wisdom=1
 sanctified_retribution=1
-swift_retribution=1
 
 #
 # Shadow Priest (No Shadow Word: Death)
@@ -386,7 +379,6 @@ active=owner
 blessing_of_kings=1
 blessing_of_wisdom=1
 sanctified_retribution=1
-swift_retribution=1
 
 #
 # Holy Priest
@@ -414,7 +406,6 @@ active=owner
 blessing_of_kings=1
 blessing_of_wisdom=1
 sanctified_retribution=1
-swift_retribution=1
 
 # ================================================================================================
 # Shaman
@@ -455,7 +446,6 @@ glyph_lava=1
 blessing_of_kings=1
 blessing_of_wisdom=1
 sanctified_retribution=1
-swift_retribution=1
 
 #
 # Enhancement Shaman
@@ -494,7 +484,6 @@ pet=spirit_wolf
 blessing_of_kings=1
 blessing_of_might=550
 sanctified_retribution=1
-swift_retribution=1
 leader_of_the_pack=1
 quiet=1
 active=owner
@@ -502,7 +491,6 @@ active=owner
 blessing_of_kings=1
 blessing_of_might=550
 sanctified_retribution=1
-swift_retribution=1
 leader_of_the_pack=1
 
 # ================================================================================================
@@ -542,14 +530,12 @@ actions=shadow_bite/wait
 blessing_of_kings=1
 blessing_of_might=550
 sanctified_retribution=1
-swift_retribution=1
 quiet=1
 active=owner
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
 blessing_of_kings=1
 blessing_of_wisdom=1
 sanctified_retribution=1
-swift_retribution=1
 
 #
 # Affliction Warlock (CoE instead of CoA)
@@ -571,14 +557,12 @@ actions=shadow_bite/wait
 blessing_of_kings=1
 blessing_of_might=550
 sanctified_retribution=1
-swift_retribution=1
 quiet=1
 active=owner
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
 blessing_of_kings=1
 blessing_of_wisdom=1
 sanctified_retribution=1
-swift_retribution=1
 
 #
 # Affliction Warlock (No Drain Soul)
@@ -599,14 +583,12 @@ actions=shadow_bite/wait
 blessing_of_kings=1
 blessing_of_might=550
 sanctified_retribution=1
-swift_retribution=1
 quiet=1
 active=owner
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
 blessing_of_kings=1
 blessing_of_wisdom=1
 sanctified_retribution=1
-swift_retribution=1
 
 #
 # Demonology Warlock
@@ -627,7 +609,6 @@ actions=cleave/wait
 blessing_of_kings=1
 blessing_of_might=550
 sanctified_retribution=1
-swift_retribution=1
 leader_of_the_pack=1
 quiet=1
 active=owner
@@ -636,14 +617,12 @@ actions=lash_of_pain/wait
 blessing_of_kings=1
 blessing_of_might=550
 sanctified_retribution=1
-swift_retribution=1
 quiet=1
 active=owner
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
 blessing_of_kings=1
 blessing_of_wisdom=1
 sanctified_retribution=1
-swift_retribution=1
 
 #
 # Destruction Warlock
@@ -664,11 +643,9 @@ actions=fire_bolt
 blessing_of_kings=1
 blessing_of_wisdom=1
 sanctified_retribution=1
-swift_retribution=1
 quiet=1
 active=owner
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
 blessing_of_kings=1
 blessing_of_wisdom=1
 sanctified_retribution=1
-swift_retribution=1
