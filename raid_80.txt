@@ -126,7 +126,7 @@ scale_spirit=200
 druid=Druid_58_0_13_SF
 level=80
 talents=http://www.wowhead.com/?talent=0xG0uiGsIdIVhouZbxczb
-actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/mark_of_the_wild/moonkin_form/mana_potion,trigger=4300/innervate
+actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/mark_of_the_wild/moonkin_form/mana_potion,trigger=4300/innervate,trigger=12000
 actions+=/treants/moonfire/insect_swarm/wrath,eclipse=trigger/starfire
 enchant_hit_rating=-25
 enchant_haste_rating=+25
@@ -154,7 +154,7 @@ sanctified_retribution=1
 druid=Druid_58_0_13_W
 level=80
 talents=http://www.wowhead.com/?talent=0xG0uiGsIdIVhouZbxczb
-actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/mark_of_the_wild/moonkin_form/mana_potion,trigger=4300/innervate
+actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/mark_of_the_wild/moonkin_form/mana_potion,trigger=4300/innervate,trigger=12000
 actions+=/treants/moonfire/insect_swarm/starfire,eclipse=trigger/wrath
 enchant_hit_rating=-25
 enchant_haste_rating=+25
@@ -182,7 +182,7 @@ sanctified_retribution=1
 druid=Druid_58_0_13_W_FF
 level=80
 talents=http://www.wowhead.com/?talent=0xG0uiGsIdIVhouZbxczb
-actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/mark_of_the_wild/moonkin_form/mana_potion,trigger=4300/innervate
+actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/mark_of_the_wild/moonkin_form/mana_potion,trigger=4300/innervate,trigger=12000
 actions+=/faerie_fire/treants/moonfire/insect_swarm/starfire,eclipse=trigger/wrath
 enchant_hit_rating=-25
 enchant_haste_rating=+25
