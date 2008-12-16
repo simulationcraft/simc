@@ -3,17 +3,22 @@
 # Send questions to natehieter@gmail.com
 # ==========================================================================
 
+# To build on Unix: make 
+# To build on Windows with MinGW: c:\mingw\bin\mingw32-make OS=WINDOWS
+# To build on Mac: make OS=OSX
+
 # To build debuggable executable, add OPTS=-g to cmd-line invocation
 
-OS   = UNIX
-BITS = 32
+OS = UNIX
 
 # Any UNIX platform
 ifeq (UNIX,${OS})
 CXX        = g++
 CPP_FLAGS  = -Wall
-LINK_FLAGS = -lpthread
+LINK_FLAGS = 
+LINK_LIBS  = -lpthread
 OPTS       = -O3
+BITS       = 32
 ifeq (64,${BITS})
 OPTS += -m64
 else
@@ -21,11 +26,12 @@ OPTS += -malign-double
 endif
 endif
 
-# Windows platform with MinGW
+# Windows platform with MinGW32
 ifeq (WINDOWS,${OS})
 CXX        = g++
 CPP_FLAGS  = -Wall
 LINK_FLAGS = 
+LINK_LIBS  =
 OPTS       = -O3 -malign-double 
 endif
 
@@ -33,7 +39,8 @@ endif
 ifeq (OSX,${OS})
 CXX        = g++
 CPP_FLAGS  = -arch ppc -arch i386 -Wall
-LINK_FLAGS = -arch ppc -arch i386 -lpthread 
+LINK_FLAGS = -arch ppc -arch i386
+LINK_LIBS  = -lpthread
 OPTS       = -O
 endif
 
@@ -72,10 +79,12 @@ SRC_CPP := $(filter %.cpp, $(SRC))
 SRC_OBJ := $(SRC_CPP:.cpp=.o)
 
 simcraft: $(SRC_OBJ)
-	$(CXX) $(LINK_FLAGS) $(SRC_OBJ) -o simcraft
+	$(CXX) $(LINK_FLAGS) $(SRC_OBJ) $(LINK_LIBS) -o simcraft
 
 $(SRC_OBJ): %.o: %.cpp $(SRC_H) Makefile
 	$(CXX) $(CPP_FLAGS) $(OPTS) -c $< -o $@
+
+# Release targets (may use platform-specific cmds)
 
 REV=0
 tarball:
@@ -84,3 +93,8 @@ tarball:
 
 clean:
 	rm -f simcraft *.o
+
+# Deprecated targets
+
+unix windows mac:
+	$(error unix/windows/mac are no longer a valid targets, please read the docs at the top of Makefile)
