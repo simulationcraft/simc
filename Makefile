@@ -3,11 +3,12 @@
 # Send questions to natehieter@gmail.com
 # ==========================================================================
 
-# To build on Unix: make 
+# To build on Unix/Mac: make 
 # To build on Windows with MinGW: c:\mingw\bin\mingw32-make OS=WINDOWS
-# To build on Mac: make OS=OSX
 
 # To build debuggable executable, add OPTS=-g to cmd-line invocation
+# By default, 32-bit binary is built.  To build a 64-bit binary, add BITS=64 to the cmd-line invocation
+
 
 OS = UNIX
 
@@ -21,6 +22,7 @@ OPTS       = -O3
 BITS       = 32
 ifeq (64,${BITS})
 OPTS += -m64
+LINK_FLAGS += -m64
 else
 OPTS += -malign-double 
 endif
@@ -34,16 +36,6 @@ LINK_FLAGS =
 LINK_LIBS  =
 OPTS       = -O3 -malign-double 
 endif
-
-# Mac platform
-ifeq (OSX,${OS})
-CXX        = g++
-CPP_FLAGS  = -arch ppc -arch i386 -Wall
-LINK_FLAGS = -arch ppc -arch i386
-LINK_LIBS  = -lpthread
-OPTS       = -O
-endif
-
 
 SRC =\
 	simcraft.h		\
@@ -92,7 +84,7 @@ tarball:
 	gzip simcraft-r$(REV).tar
 
 clean:
-	rm -f simcraft *.o *~
+	rm -f simcraft *.o *.d *~
 
 # Deprecated targets
 
