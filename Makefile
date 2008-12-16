@@ -92,7 +92,7 @@ tarball:
 	gzip simcraft-r$(REV).tar
 
 clean:
-	rm -f simcraft *.o
+	rm -f simcraft *.o *~
 
 # Deprecated targets
 
