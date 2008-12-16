@@ -602,6 +602,7 @@ struct player_t
     double    improved_divine_spirit;
     int8_t    improved_moonkin_aura;
     int8_t    innervate;
+    int8_t    glyph_of_innervate;
     int8_t    lightning_capacitor;
     double    mana_cost_reduction;
     int8_t    moonkin_aura;
@@ -700,6 +701,7 @@ struct player_t
     gain_t* dark_rune;
     gain_t* energy_regen;
     gain_t* innervate;
+    gain_t* glyph_of_innervate;
     gain_t* judgement_of_wisdom;
     gain_t* mana_gem;
     gain_t* mana_potion;

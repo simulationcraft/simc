@@ -81,7 +81,7 @@ struct druid_t : public player_t
 
   struct glyphs_t
   {
-    int8_t innervate;  // FIXME! NYI!
+    int8_t innervate;
     int8_t insect_swarm;
     int8_t moonfire;
     int8_t starfire;
@@ -594,45 +594,55 @@ struct faerie_fire_t : public druid_spell_t
 struct innervate_t : public druid_spell_t
 {
   int16_t trigger;
-
+  
+  player_t* innervate_target;
+  
   innervate_t( player_t* player, const std::string& options_str ) : 
     druid_spell_t( "innervate", player, SCHOOL_NATURE, TREE_BALANCE ), trigger(0)
   {
+  	std::string target_str;
     option_t options[] =
     {
-      { "trigger", OPT_INT16, &trigger },
+      { "trigger", OPT_INT16,  &trigger    },
+      { "target",  OPT_STRING, &target_str },
       { NULL }
     };
     parse_options( options, options_str );
 
-    base_cost = 300;
+    base_cost = player -> resource_base[ RESOURCE_MANA ] * 0.04;
     cooldown  = 480;
     harmful   = false;
-    
     if( player -> gear.tier4_4pc ) cooldown -= 48.0;
 
-    // FIXME! Innervate cannot be currently cast on other players.
-    // FIXME! Glyph not supported.
+    // If no target is set, assume we have innervate for ourself
+    innervate_target = sim -> find_player(  (target_str.empty()) ? player -> name() : target_str);
+    assert ( innervate_target != 0 );    
   }
   virtual void execute()
   {
     struct expiration_t : public event_t
     {
-      expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
+      expiration_t( sim_t* sim, player_t* p) : event_t( sim, p)
       {
-	sim -> add_event( this, 20.0 );
+        sim -> add_event( this, 20.0 );
       }
       virtual void execute()
       {
-	player -> buffs.innervate = 0;
+        player -> buffs.innervate = 0;
+        player -> buffs.glyph_of_innervate = 0;
       }
     };
-
+    
     consume_resource();
     update_ready();
-    player -> buffs.innervate = 1;
+    innervate_target -> buffs.innervate = 1;
+    if (player -> cast_druid() -> glyphs.innervate)
+    {
+      player -> buffs.glyph_of_innervate = 1; 
+    }
     player -> action_finish( this );
-    new ( sim ) expiration_t( sim, player );
+    new ( sim ) expiration_t( sim, player);
+    new ( sim ) expiration_t( sim, innervate_target);
   }
 
   virtual bool ready()
@@ -801,7 +811,7 @@ struct moonkin_form_t : public druid_spell_t
 
       if( player -> cast_druid() -> talents.improved_moonkin_form )
       {
-	p -> buffs.improved_moonkin_aura = 1;
+	    p -> buffs.improved_moonkin_aura = 1;
       }
     }
   }
@@ -1420,6 +1430,7 @@ bool druid_t::parse_option( const std::string& name,
     { "wrath_of_cenarius",         OPT_INT8,  &( talents.wrath_of_cenarius         ) },
     // Glyphs
     { "glyph_insect_swarm",        OPT_INT8,  &( glyphs.insect_swarm               ) },
+    { "glyph_innervate",           OPT_INT8,  &( glyphs.innervate                  ) },
     { "glyph_moonfire",            OPT_INT8,  &( glyphs.moonfire                   ) },
     { "glyph_starfire",            OPT_INT8,  &( glyphs.starfire                   ) },
     // Idols

@@ -606,6 +606,7 @@ void player_t::init_stats()
   gains.dark_rune             = get_gain( "dark_rune" );
   gains.energy_regen          = get_gain( "energy_regen" );
   gains.innervate             = get_gain( "innervate" );
+  gains.glyph_of_innervate    = get_gain( "glyph_of_innervate" );
   gains.judgement_of_wisdom   = get_gain( "judgement_of_wisdom" );
   gains.mana_gem              = get_gain( "mana_gem" );
   gains.mana_potion           = get_gain( "mana_potion" );
@@ -635,7 +636,7 @@ void player_t::init_stats()
   procs.eternal_sage                 = get_proc( "eternal_sage" );
   procs.extract_of_necromatic_power  = get_proc( "extract_of_necromatic_power" );
   procs.eye_of_magtheridon           = get_proc( "eye_of_magtheridon" );
-  procs.forge_ember	             = get_proc( "forge_ember" );
+  procs.forge_ember	                 = get_proc( "forge_ember" );
   procs.judgement_of_wisdom          = get_proc( "judgement_of_wisdom" );
   procs.lightning_capacitor          = get_proc( "lightning_capacitor" );
   procs.mark_of_defiance             = get_proc( "mark_of_defiance" );
@@ -1002,15 +1003,24 @@ void player_t::regen( double periodicity )
 
     if( buffs.innervate )
     {
+      if( buffs.glyph_of_innervate ) 
+      {
+        resource_gain( RESOURCE_MANA, spirit_regen, gains.glyph_of_innervate );
+      }
+
       spirit_regen *= 4.0;
 
-      resource_gain( RESOURCE_MANA, spirit_regen, gains.innervate );
+      resource_gain( RESOURCE_MANA, spirit_regen, gains.innervate );      
+    }
+    else if( buffs.glyph_of_innervate )
+    {
+      resource_gain( RESOURCE_MANA, spirit_regen, gains.glyph_of_innervate );
     }
     else if( recent_cast() )
     {
       spirit_regen *= spirit_regen_while_casting;
 
-      resource_gain( RESOURCE_MANA, spirit_regen, gains.spirit_regen );
+      resource_gain( RESOURCE_MANA, spirit_regen, gains.spirit_regen );      
     }
 
     double mp5_regen = periodicity * ( mp5 + intellect() * mp5_per_intellect ) / 5.0;
