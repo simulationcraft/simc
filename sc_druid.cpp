@@ -71,6 +71,7 @@ struct druid_t : public player_t
     int8_t  natures_splendor;
     int8_t  natures_swiftness;
     int8_t  omen_of_clarity;
+    int8_t  starfall;
     int8_t  starlight_wrath;
     int8_t  vengeance;
     int8_t  wrath_of_cenarius;
@@ -85,6 +86,7 @@ struct druid_t : public player_t
     int8_t insect_swarm;
     int8_t moonfire;
     int8_t starfire;
+    int8_t starfall;
     glyphs_t() { memset( (void*) this, 0x0, sizeof( glyphs_t ) ); }
   };
   glyphs_t glyphs;
@@ -465,9 +467,9 @@ void druid_spell_t::execute()
     {
       if( sim -> roll( p -> talents.natures_grace / 3.0 ) )
       {
-	p -> aura_gain( "Natures Grace" );
-	p -> buffs_natures_grace = 1;
-	p -> buffs.cast_time_reduction += 0.5;
+        p -> aura_gain( "Natures Grace" );
+        p -> buffs_natures_grace = 1;
+        p -> buffs.cast_time_reduction += 0.5;
       }
     }
   }
@@ -940,8 +942,11 @@ struct starfire_t : public druid_spell_t
     if( result_is_hit() )
     {
       trigger_ashtongue_talisman( this );
-      trigger_eclipse_wrath( this );
       trigger_earth_and_moon( this );
+      if( result == RESULT_CRIT )
+      {
+        trigger_eclipse_wrath( this );
+      }
 
       if( p -> glyphs.starfire && p -> active_moonfire )
       {
@@ -1050,7 +1055,10 @@ struct wrath_t : public druid_spell_t
     druid_spell_t::execute();
     if( result_is_hit() )
     {
-      trigger_eclipse_starfire( this );
+      if( result == RESULT_CRIT )
+      {
+        trigger_eclipse_starfire( this );
+      }
       trigger_earth_and_moon( this );
     }
   }
