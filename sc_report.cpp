@@ -1417,6 +1417,51 @@ void report_t::html_scale_factors()
   fprintf( sim -> html_file, "</TABLE>\n" );
 }
 
+void report_t::html_trigger_menu()
+{
+  fprintf( sim -> html_file, "<a href=\"javascript:hideElement(document.getElementById('trigger_menu'));\">-</a> " );
+  fprintf( sim -> html_file, "<a href=\"javascript:showElement(document.getElementById('trigger_menu'));\">+</a> " );
+  fprintf( sim -> html_file, "Menu\n" );
+
+  fprintf( sim -> html_file, "<div id=\"trigger_menu\" style=\"display:none;\">" );
+  
+  fprintf( sim -> html_file, "<a href=\"javascript:hideElements(document.getElementById('players').getElementsByTagName('img'));\">-</a> " );
+  fprintf( sim -> html_file, "<a href=\"javascript:showElements(document.getElementById('players').getElementsByTagName('img'));\">+</a> " );
+  fprintf( sim -> html_file, "All Charts<br/>\n" );
+
+  fprintf( sim -> html_file, "<a href=\"javascript:hideElements(document.getElementsByName('chart_dpet'));\">-</a> " );
+  fprintf( sim -> html_file, "<a href=\"javascript:showElements(document.getElementsByName('chart_dpet'));\">+</a> " );
+  fprintf( sim -> html_file, "DamagePerExecutionTime<br/>\n" );
+
+  fprintf( sim -> html_file, "<a href=\"javascript:hideElements(document.getElementsByName('chart_uptimes'));\">-</a> " );
+  fprintf( sim -> html_file, "<a href=\"javascript:showElements(document.getElementsByName('chart_uptimes'));\">+</a> " );
+  fprintf( sim -> html_file, "Up-Times and Procs<br/>\n" );
+
+  fprintf( sim -> html_file, "<a href=\"javascript:hideElements(document.getElementsByName('chart_sources'));\">-</a> " );
+  fprintf( sim -> html_file, "<a href=\"javascript:showElements(document.getElementsByName('chart_sources'));\">+</a> " );
+  fprintf( sim -> html_file, "Damage Sources<br/>\n" );
+
+  fprintf( sim -> html_file, "<a href=\"javascript:hideElements(document.getElementsByName('chart_gains'));\">-</a> " );
+  fprintf( sim -> html_file, "<a href=\"javascript:showElements(document.getElementsByName('chart_gains'));\">+</a> " );
+  fprintf( sim -> html_file, "Resource Gains<br/>\n" );
+
+  fprintf( sim -> html_file, "<a href=\"javascript:hideElements(document.getElementsByName('chart_dps_timeline'));\">-</a> " );
+  fprintf( sim -> html_file, "<a href=\"javascript:showElements(document.getElementsByName('chart_dps_timeline'));\">+</a> " );
+  fprintf( sim -> html_file, "DPS Timeline<br/>\n" );
+
+  fprintf( sim -> html_file, "<a href=\"javascript:hideElements(document.getElementsByName('chart_dps_distribution'));\">-</a> " );
+  fprintf( sim -> html_file, "<a href=\"javascript:showElements(document.getElementsByName('chart_dps_distribution'));\">+</a> " );
+  fprintf( sim -> html_file, "DPS Distribution<br/>\n" );
+
+  fprintf( sim -> html_file, "<a href=\"javascript:hideElements(document.getElementsByName('chart_resource_timeline'));\">-</a> " );
+  fprintf( sim -> html_file, "<a href=\"javascript:showElements(document.getElementsByName('chart_resource_timeline'));\">+</a> " );
+  fprintf( sim -> html_file, "Resource Timeline<br/>\n" );
+  
+  fprintf( sim -> html_file, "</div>" );//trigger_menu
+  
+  fprintf( sim -> html_file, "<hr>\n" );
+}
+
 // report_t::chart_html ======================================================
 
 void report_t::chart_html()
@@ -1426,6 +1471,24 @@ void report_t::chart_html()
 
   std::string buffer;
   const char* img;
+
+  fprintf( sim -> html_file, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n" );
+  fprintf( sim -> html_file, "<html>\n" );
+
+  fprintf( sim -> html_file, "<head>\n" );
+  fprintf( sim -> html_file, "<title>Simulationcraft results</title>\n" );
+  fprintf( sim -> html_file, "<script type=\"text/javascript\">\n"
+      "function hideElement(el) {if (el) el.style.display='none';}\n"
+      "function showElement(el) {if (el) el.style.display='';}\n"
+      "function hideElements(els) {if (els) {"
+      "for (var i = 0; i < els.length; i++) hideElement(els[i]);"
+      "}}\n"
+      "function showElements(els) {if (els) {"
+      "for (var i = 0; i < els.length; i++) showElement(els[i]);"
+      "}}\n"
+      "</script>\n" );
+  fprintf( sim -> html_file, "</head>\n" );
+  fprintf( sim -> html_file, "<body>\n" );
 
   fprintf( sim -> html_file, "<h1>Raid</h1>\n" );
 
@@ -1461,6 +1524,10 @@ void report_t::chart_html()
   html_scale_factors();
   fprintf( sim -> html_file, "<hr>\n" );
 
+  html_trigger_menu();
+
+  fprintf( sim -> html_file, "<div id=\"players\">\n");
+  
   for( int i=0; i < num_players; i++ )
   {
     player_t* p = sim -> players_by_name[ i ];
@@ -1471,14 +1538,14 @@ void report_t::chart_html()
     if( img )
     {
       fprintf( sim -> html_file, "<! %s Damage Per Execute Time>\n", p -> name() );
-      fprintf( sim -> html_file, "<img src=\"%s\" />", img );
+      fprintf( sim -> html_file, "<img name=\"chart_dpet\" src=\"%s\" />", img );
     }
 
     img = chart_uptimes_and_procs( buffer, p );
     if( img )
     {
       fprintf( sim -> html_file, "<! %s Up-Times and Procs>\n", p -> name() );
-      fprintf( sim -> html_file, "<img src=\"%s\" />", img );
+      fprintf( sim -> html_file, "<img name=\"chart_uptimes\" src=\"%s\" />", img );
     }
 
     fprintf( sim -> html_file, "<br>\n" );
@@ -1487,29 +1554,34 @@ void report_t::chart_html()
     if( img )
     {
       fprintf( sim -> html_file, "<! %s Damage Sources>\n", p -> name() );
-      fprintf( sim -> html_file, "<img src=\"%s\" />", img );
+      fprintf( sim -> html_file, "<img name=\"chart_sources\" src=\"%s\" />", img );
     }
     
     img = chart_gains( buffer, p );
     if( img )
     {
       fprintf( sim -> html_file, "<! %s Resource Gains>\n", p -> name() );
-      fprintf( sim -> html_file, "<img src=\"%s\" />", img );
+      fprintf( sim -> html_file, "<img name=\"chart_gains\" src=\"%s\" />", img );
     }
     
     fprintf( sim -> html_file, "<br>\n" );
 
     fprintf( sim -> html_file, "<! %s DPS Timeline>\n", p -> name() );
-    fprintf( sim -> html_file, "<img src=\"%s\" />\n", chart_timeline_dps( buffer, p ) );
+    fprintf( sim -> html_file, "<img name=\"chart_dps_timeline\" src=\"%s\" />\n", chart_timeline_dps( buffer, p ) );
 
     fprintf( sim -> html_file, "<! %s DPS Distribution>\n", p -> name() );
-    fprintf( sim -> html_file, "<img src=\"%s\" />\n", chart_distribution_dps( buffer, p ) );
+    fprintf( sim -> html_file, "<img name=\"chart_dps_distribution\" src=\"%s\" />\n", chart_distribution_dps( buffer, p ) );
 
     fprintf( sim -> html_file, "<! %s Resource Timeline>\n", p -> name() );
-    fprintf( sim -> html_file, "<img src=\"%s\" />\n", chart_timeline_resource( buffer, p ) );
+    fprintf( sim -> html_file, "<img name=\"chart_resource_timeline\" src=\"%s\" />\n", chart_timeline_resource( buffer, p ) );
 
     fprintf( sim -> html_file, "<hr>\n" );
   }
+  
+  fprintf( sim -> html_file, "</div>\n" ); //players
+ 
+  fprintf( sim -> html_file, "</body>\n" );
+  fprintf( sim -> html_file, "</html>" );
 }
 
 // report_t::wiki_scale_factors ===============================================

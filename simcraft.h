@@ -1433,6 +1433,7 @@ struct report_t
   const char* gear_weights_wowhead ( std::string& s, player_t* );
   void html_scale_factors();
   void wiki_scale_factors();
+  void html_trigger_menu();
   void chart_html();
   void chart_wiki();
   void chart();
