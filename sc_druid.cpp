@@ -315,7 +315,7 @@ static void trigger_eclipse_wrath( spell_t* s )
 
   if( p -> talents.eclipse != 0 && 
       s -> sim -> cooldown_ready( p -> cooldowns_eclipse ) &&
-      s -> sim -> roll( p -> talents.eclipse * 0.20 ) )
+      s -> sim -> roll( p -> talents.eclipse * 1.0/3 ) )
   {
     p -> expirations_eclipse = new ( s -> sim ) expiration_t( s -> sim, p );
   }
@@ -348,7 +348,7 @@ static void trigger_eclipse_starfire( spell_t* s )
 
   if( p -> talents.eclipse != 0 && 
       s -> sim -> cooldown_ready( p -> cooldowns_eclipse ) &&
-      s -> sim -> roll( p -> talents.eclipse * 1.0/3 ) )
+      s -> sim -> roll( p -> talents.eclipse * 0.2 ) )
   {
     p -> expirations_eclipse = new ( s -> sim ) expiration_t( s -> sim, p );
   }
