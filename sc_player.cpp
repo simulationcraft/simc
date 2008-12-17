@@ -15,9 +15,9 @@ static void trigger_judgement_of_wisdom( action_t* a )
 
   player_t* p = a -> player;
 
-  double max_mana = p -> resource_max[ RESOURCE_MANA ];
+  double base_mana = p -> resource_base[ RESOURCE_MANA ];
 
-  if( max_mana <= 0 )
+  if( base_mana <= 0 )
     return;
 
   if( ! a -> sim -> roll( 0.25 ) )
@@ -25,7 +25,7 @@ static void trigger_judgement_of_wisdom( action_t* a )
 
   p -> procs.judgement_of_wisdom -> occur();
 
-  p -> resource_gain( RESOURCE_MANA, max_mana * 0.01, p -> gains.judgement_of_wisdom );
+  p -> resource_gain( RESOURCE_MANA, base_mana * 0.02, p -> gains.judgement_of_wisdom );
 }
 
 // trigger_focus_magic_feedback =============================================

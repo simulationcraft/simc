@@ -21,20 +21,21 @@ LINK_LIBS  = -lpthread
 OPTS       = -O3
 BITS       = 32
 ifeq (64,${BITS})
-OPTS += -m64
+CPP_FLAGS  += -m64
 LINK_FLAGS += -m64
 else
-OPTS += -malign-double 
+CPP_FLAGS  += -malign-double 
 endif
 endif
 
 # Windows platform with MinGW32
 ifeq (WINDOWS,${OS})
 CXX        = g++
-CPP_FLAGS  = -Wall
+CPP_FLAGS  = -Wall -malign-double
 LINK_FLAGS = 
 LINK_LIBS  =
-OPTS       = -O3 -malign-double 
+OPTS       = -O3
+BITS       = 32
 endif
 
 SRC =\
