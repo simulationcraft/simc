@@ -1356,14 +1356,41 @@ const char* report_t::gear_weights_lootrank( std::string& s,
       s += buffer;
     }
   }
-
-  if( sim -> scaling -> gear.spell_power              ) { sprintf( buffer, "&spd=%.2f",  p -> scaling.spell_power              ); s += buffer; }
-  if( sim -> scaling -> gear.attack_power             ) { sprintf( buffer, "&map=%.2f",  p -> scaling.attack_power             ); s += buffer; }
-  if( sim -> scaling -> gear.expertise_rating         ) { sprintf( buffer, "&Exp=%.2f",  p -> scaling.expertise_rating         ); s += buffer; }
-  if( sim -> scaling -> gear.armor_penetration_rating ) { sprintf( buffer, "&arp=%.2f",  p -> scaling.armor_penetration_rating ); s += buffer; }
-  if( sim -> scaling -> gear.hit_rating               ) { sprintf( buffer, "&mhit=%.2f", p -> scaling.hit_rating               ); s += buffer; }
-  if( sim -> scaling -> gear.crit_rating              ) { sprintf( buffer, "&mcr=%.2f",  p -> scaling.crit_rating              ); s += buffer; }
-  if( sim -> scaling -> gear.haste_rating             ) { sprintf( buffer, "&mh=%.2f",   p -> scaling.haste_rating             ); s += buffer; }
+  if( sim -> scaling -> gear.spell_power ) 
+  { 
+    sprintf( buffer, "&spd=%.2f", p -> scaling.spell_power ); 
+    s += buffer; 
+  }
+  if( sim -> scaling -> gear.attack_power ) 
+  { 
+    sprintf( buffer, "&map=%.2f", p -> scaling.attack_power );
+    s += buffer; 
+  }
+  if( sim -> scaling -> gear.expertise_rating ) 
+  {
+    sprintf( buffer, "&Exp=%.2f", p -> scaling.expertise_rating );
+    s += buffer; 
+  }
+  if( sim -> scaling -> gear.armor_penetration_rating )
+  {
+    sprintf( buffer, "&arp=%.2f", p -> scaling.armor_penetration_rating );
+    s += buffer;
+  }
+  if( sim -> scaling -> gear.hit_rating )
+  {
+    sprintf( buffer, "&mhit=%.2f", p -> scaling.hit_rating );
+    s += buffer;
+  }
+  if( sim -> scaling -> gear.crit_rating )
+  {
+    sprintf( buffer, "&mcr=%.2f", p -> scaling.crit_rating );
+    s += buffer;
+  }
+  if( sim -> scaling -> gear.haste_rating )
+  {
+    sprintf( buffer, "&mh=%.2f", p -> scaling.haste_rating );
+    s += buffer;
+  }
 
   s += "&Ver=6&usr=&ser=&grp=www";
 
@@ -1375,7 +1402,92 @@ const char* report_t::gear_weights_lootrank( std::string& s,
 const char* report_t::gear_weights_wowhead( std::string& s,
 					    player_t*    p )
 {
-  s = "http://www.wowhead.com";
+  char buffer[ 1024 ];
+
+  s = "http://www.wowhead.com/?items&filter=";
+
+  switch( p -> type )
+  {
+  case DEATH_KNIGHT: s += "ub=6;";  break;
+  case DRUID:        s += "ub=11;"; break;
+  case HUNTER:       s += "ub=3;";  break; 
+  case MAGE:         s += "ub=8;";  break;
+  case PALADIN:      s += "ub=2;";  break;
+  case PRIEST:       s += "ub=5;";  break;
+  case ROGUE:        s += "ub=4;";  break;
+  case SHAMAN:       s += "ub=7;";  break;
+  case WARLOCK:      s += "ub=9;";  break;
+  case WARRIOR:      s += "ub=1;";  break;
+  default: assert(0);
+  }
+
+  s += "gm=4;gb=1;";
+
+  std::vector<int> prefix_list;
+  std::vector<double> value_list;
+
+  int attr_prefix[] = { -1, 20, 21, 22, 23, 24 };
+
+  for( int j=0; j < ATTRIBUTE_MAX; j++ )
+  {
+    if( sim -> scaling -> gear.attribute[ j ] ) 
+    {
+      prefix_list.push_back( attr_prefix[ j ] );
+       value_list.push_back( p -> scaling.attribute[ j ] );
+    }
+  }
+  if( sim -> scaling -> gear.spell_power ) 
+  { 
+    prefix_list.push_back( 123 );
+     value_list.push_back( p -> scaling.spell_power ); 
+  }
+  if( sim -> scaling -> gear.attack_power ) 
+  { 
+    prefix_list.push_back( 77 );
+     value_list.push_back( p -> scaling.attack_power );
+  }
+  if( sim -> scaling -> gear.expertise_rating ) 
+  {
+    prefix_list.push_back( 117 );
+     value_list.push_back( p -> scaling.expertise_rating );
+  }
+  if( sim -> scaling -> gear.armor_penetration_rating )
+  {
+    prefix_list.push_back( 114 );
+     value_list.push_back( p -> scaling.armor_penetration_rating );
+  }
+  if( sim -> scaling -> gear.hit_rating )
+  {
+    prefix_list.push_back( 119 );
+     value_list.push_back( p -> scaling.hit_rating );
+  }
+  if( sim -> scaling -> gear.crit_rating )
+  {
+    prefix_list.push_back( 96 );
+     value_list.push_back( p -> scaling.crit_rating );
+  }
+  if( sim -> scaling -> gear.haste_rating )
+  {
+    prefix_list.push_back( 103 );
+     value_list.push_back( p -> scaling.haste_rating );
+  }
+
+  s += "wt=";
+  for( unsigned i=0; i < prefix_list.size(); i++ )
+  {
+    sprintf( buffer, "%s%d", ( i ? ":" : "" ), prefix_list[ i ] );
+    s += buffer;
+  }
+  s += ";";
+
+  s += "wtv=";
+  for( unsigned i=0; i < value_list.size(); i++ )
+  {
+    sprintf( buffer, "%s%.2f", ( i ? ":" : "" ), value_list[ i ] );
+    s += buffer;
+  }
+  s += ";";
+
   return s.c_str();
 }
 
