@@ -768,7 +768,11 @@ int main( int argc, char** argv )
 
   sim.execute();
 
+  fprintf( sim.output_file, "\nAnalyzing results...\n" );
+
   sim.scaling -> analyze();
+
+  fprintf( sim.output_file, "\nGenerating reports...\n" );
 
   sim.report -> print();
   sim.report -> chart();
