@@ -1324,39 +1324,59 @@ const char* report_t::chart_distribution_dps( std::string& s, player_t* p )
 
 // report_t::gear_weights_lootrank ============================================
 
-const char* report_t::gear_weights_lootrank( std::string& buffer,
+const char* report_t::gear_weights_lootrank( std::string& s,
 					     player_t*    p )
 {
-  buffer = "http://www.lootrank.com";
-  return buffer.c_str();
+  char buffer[ 1024 ];
 
-  buffer = "http://www.lootrank.com/wow/wr.asp?";
+  s = "http://www.lootrank.com/wow/wr.asp?";
 
   switch( p -> type )
   {
-  case DEATH_KNIGHT: buffer += "Cla=2048&"; break;
-  case DRUID:        buffer += "Cla=1024&"; break;
-  case HUNTER:       buffer += "Cla=4&";    break; 
-  case MAGE:         buffer += "Cla=128&";  break;
-  case PALADIN:      buffer += "Cla=2&";    break;
-  case PRIEST:       buffer += "Cla=16&";   break;
-  case ROGUE:        buffer += "Cla=8&";    break;
-  case SHAMAN:       buffer += "Cla=64&";   break;
-  case WARLOCK:      buffer += "Cla=256&";  break;
-  case WARRIOR:      buffer += "Cla=1&";    break;
+  case DEATH_KNIGHT: s += "Cla=2048"; break;
+  case DRUID:        s += "Cla=1024"; break;
+  case HUNTER:       s += "Cla=4";    break; 
+  case MAGE:         s += "Cla=128";  break;
+  case PALADIN:      s += "Cla=2";    break;
+  case PRIEST:       s += "Cla=16";   break;
+  case ROGUE:        s += "Cla=8";    break;
+  case SHAMAN:       s += "Cla=64";   break;
+  case WARLOCK:      s += "Cla=256";  break;
+  case WARRIOR:      s += "Cla=1";    break;
   default: assert(0);
   }
 
-  return buffer.c_str();
+  const char* attr_prefix[] = { "None", "Str", "Agi", "Sta", "Int", "Spi" };
+
+  for( int j=0; j < ATTRIBUTE_MAX; j++ )
+  {
+    if( sim -> scaling -> gear.attribute[ j ] ) 
+    {
+      sprintf( buffer, "&%s=%.2f", attr_prefix[ j ], p -> scaling.attribute[ j ] );
+      s += buffer;
+    }
+  }
+
+  if( sim -> scaling -> gear.spell_power              ) { sprintf( buffer, "&spd=%.2f",  p -> scaling.spell_power              ); s += buffer; }
+  if( sim -> scaling -> gear.attack_power             ) { sprintf( buffer, "&map=%.2f",  p -> scaling.attack_power             ); s += buffer; }
+  if( sim -> scaling -> gear.expertise_rating         ) { sprintf( buffer, "&Exp=%.2f",  p -> scaling.expertise_rating         ); s += buffer; }
+  if( sim -> scaling -> gear.armor_penetration_rating ) { sprintf( buffer, "&arp=%.2f",  p -> scaling.armor_penetration_rating ); s += buffer; }
+  if( sim -> scaling -> gear.hit_rating               ) { sprintf( buffer, "&mhit=%.2f", p -> scaling.hit_rating               ); s += buffer; }
+  if( sim -> scaling -> gear.crit_rating              ) { sprintf( buffer, "&mcr=%.2f",  p -> scaling.crit_rating              ); s += buffer; }
+  if( sim -> scaling -> gear.haste_rating             ) { sprintf( buffer, "&mh=%.2f",   p -> scaling.haste_rating             ); s += buffer; }
+
+  s += "&Ver=6&usr=&ser=&grp=www";
+
+  return s.c_str();
 }
 
 // report_t::gear_weights_wowhead =============================================
 
-const char* report_t::gear_weights_wowhead( std::string& buffer,
+const char* report_t::gear_weights_wowhead( std::string& s,
 					    player_t*    p )
 {
-  buffer = "http://www.wowhead.com";
-  return buffer.c_str();
+  s = "http://www.wowhead.com";
+  return s.c_str();
 }
 
 // report_t::html_scale_factors ===============================================
