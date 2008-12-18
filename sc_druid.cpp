@@ -612,6 +612,7 @@ struct innervate_t : public druid_spell_t
     parse_options( options, options_str );
 
     base_cost = player -> resource_base[ RESOURCE_MANA ] * 0.04;
+    base_execute_time = 0;
     cooldown  = 480;
     harmful   = false;
     if( player -> gear.tier4_4pc ) cooldown -= 48.0;
@@ -631,19 +632,35 @@ struct innervate_t : public druid_spell_t
       virtual void execute()
       {
         player -> buffs.innervate = 0;
+        player -> aura_loss("Innervate");
+      }
+    };
+    struct expiration_glyph_t : public event_t
+    {
+      expiration_glyph_t( sim_t* sim, player_t* p) : event_t( sim, p)
+      {
+        sim -> add_event( this, 20.0 );
+      }
+      virtual void execute()
+      {
         player -> buffs.glyph_of_innervate = 0;
+        player -> aura_loss("Glyph of Innervate");
       }
     };
     
     consume_resource();
     update_ready();
+    
     innervate_target -> buffs.innervate = 1;
-    if (player -> cast_druid() -> glyphs.innervate)
+    innervate_target -> aura_gain("Innervate");
+    
+    if( player -> cast_druid() -> glyphs.innervate )
     {
       player -> buffs.glyph_of_innervate = 1; 
+      player -> aura_gain("Glyph of Innervate");
+      new ( sim ) expiration_glyph_t( sim, player);
     }
     player -> action_finish( this );
-    new ( sim ) expiration_t( sim, player);
     new ( sim ) expiration_t( sim, innervate_target);
   }
 
@@ -1281,8 +1298,8 @@ void druid_t::init_base()
   health_per_stamina = 10;
   mana_per_intellect = 15;
 
-  spirit_regen_while_casting = talents.intensity  * 0.10;
-  mp5_per_intellect          = talents.dreamstate * 0.04;
+  spirit_regen_while_casting = util_t::talent_rank(talents.intensity,  3, 0.10);
+  mp5_per_intellect          = util_t::talent_rank(talents.dreamstate, 3, 0.04, 0.07, 0.10);
 }
 
 // druid_t::reset ===========================================================
@@ -1373,7 +1390,7 @@ bool druid_t::get_talent_trees( std::vector<int8_t*>& balance,
     { { 25, &( talents.force_of_nature       ) }, { 25, NULL }, { 25, NULL                                   } },
     { { 26, NULL                               }, { 26, NULL }, { 26, NULL                                   } },
     { { 27, &( talents.earth_and_moon        ) }, { 27, NULL }, {  0, NULL                                   } },
-    { { 28, NULL                               }, { 28, NULL }, {  0, NULL                                   } },
+    { { 28, &( talents.starfall              ) }, { 28, NULL }, {  0, NULL                                   } },
     { {  0, NULL                               }, { 29, NULL }, {  0, NULL                                   } },
     { {  0, NULL                               }, {  0, NULL }, {  0, NULL                                   } },
   };
@@ -1441,6 +1458,7 @@ bool druid_t::parse_option( const std::string& name,
     { "glyph_innervate",           OPT_INT8,  &( glyphs.innervate                  ) },
     { "glyph_moonfire",            OPT_INT8,  &( glyphs.moonfire                   ) },
     { "glyph_starfire",            OPT_INT8,  &( glyphs.starfire                   ) },
+    { "glyph_starfall",            OPT_INT8,  &( glyphs.starfall                   ) },
     // Idols
     { "idol_of_steadfast_renewal", OPT_INT8,  &( idols.steadfast_renewal           ) },
     { "idol_of_the_shooting_star", OPT_INT8,  &( idols.shooting_star               ) },
