@@ -77,6 +77,7 @@ struct warlock_t : public player_t
   uptime_t* uptimes_flame_shadow;
   uptime_t* uptimes_shadow_trance;
   uptime_t* uptimes_shadow_vulnerability;
+  uptime_t* uptimes_spirits_of_the_damned;
 
   struct talents_t
   {
@@ -230,16 +231,17 @@ struct warlock_t : public player_t
     procs_shadow_trance = get_proc( "shadow_trance" );
 
     // Up-Times
-    uptimes_backdraft            = get_uptime( "backdraft"            );
-    uptimes_demonic_empathy      = get_uptime( "demonic_empathy"      );
-    uptimes_demonic_soul         = get_uptime( "demonic_soul"         );
-    uptimes_empowered_imp        = get_uptime( "empowered_imp"        );
-    uptimes_eradication          = get_uptime( "eradication"          );
-    uptimes_flame_shadow         = get_uptime( "flame_shadow"         );
-    uptimes_molten_core          = get_uptime( "molten_core"          );
-    uptimes_shadow_flame         = get_uptime( "shadow_flame"         );
-    uptimes_shadow_trance        = get_uptime( "shadow_trance"        );
-    uptimes_shadow_vulnerability = get_uptime( "shadow_vulnerability" );
+    uptimes_backdraft             = get_uptime( "backdraft"             );
+    uptimes_demonic_empathy       = get_uptime( "demonic_empathy"       );
+    uptimes_demonic_soul          = get_uptime( "demonic_soul"          );
+    uptimes_empowered_imp         = get_uptime( "empowered_imp"         );
+    uptimes_eradication           = get_uptime( "eradication"           );
+    uptimes_flame_shadow          = get_uptime( "flame_shadow"          );
+    uptimes_molten_core           = get_uptime( "molten_core"           );
+    uptimes_shadow_flame          = get_uptime( "shadow_flame"          );
+    uptimes_shadow_trance         = get_uptime( "shadow_trance"         );
+    uptimes_shadow_vulnerability  = get_uptime( "shadow_vulnerability"  );
+	uptimes_spirits_of_the_damned = get_uptime( "spirits_of_the_damned" );
   }
 
   // Character Definition
@@ -1437,6 +1439,48 @@ static void trigger_demonic_pact( action_t* a )
   }
 }
 
+// trigger_tier7_4pc ===============================================
+
+static void trigger_tier7_4pc( spell_t* s )
+{
+  struct expiration_t : public event_t
+  {
+    expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
+    {
+      name = "Spirits of the Damned Expiration";
+      player -> aura_gain( "Spirits of the Damned" );
+      player -> attribute[ ATTR_SPIRIT ] += 300;
+	  player -> buffs.tier7_4pc = 1;
+      sim -> add_event( this, 10.0 );
+    }
+    virtual void execute()
+    {
+      player -> aura_loss( "Spirits of the Damned" );
+      player -> attribute[ ATTR_SPIRIT ] -= 300;
+      player -> expirations.tier7_4pc = 0;
+	  player -> buffs.tier7_4pc = 0;
+    }
+  };
+
+  player_t* p = s -> player;
+
+  if( p -> gear.tier7_4pc )
+  {
+    p -> procs.tier7_4pc -> occur();
+
+    event_t*& e = p -> expirations.tier7_4pc;
+
+    if( e )
+    {
+      e -> reschedule( 10.0 );
+    }
+    else
+    {
+      e = new ( s -> sim ) expiration_t( s -> sim, p );
+    }
+  }
+}
+
 // trigger_ashtongue_talisman ===============================================
 
 static void trigger_ashtongue_talisman( spell_t* s )
@@ -1540,6 +1584,8 @@ void warlock_spell_t::player_buff()
     if( p -> buffs_molten_core ) player_multiplier *= 1.10;
     p -> uptimes_molten_core -> update( p -> buffs_molten_core != 0 );
   }
+
+  p -> uptimes_spirits_of_the_damned -> update( p -> buffs.tier7_4pc != 0 );
 
   if( p -> active_pet )
   {
@@ -3057,7 +3103,7 @@ struct incinerate_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     base_direct_dmg = ( base_dd_min + base_dd_max ) / 2.0;
     if( p -> active_immolate ) base_direct_dmg += immolate_bonus;
-    warlock_spell_t::execute(); 
+    warlock_spell_t::execute();
     if( result_is_hit() )
     {
       trigger_soul_leech( this );
@@ -3232,6 +3278,7 @@ struct life_tap_t : public warlock_spell_t
     double mana = base_tap + 3.0 * p -> spirit();
     p -> resource_loss( RESOURCE_HEALTH, mana );
     p -> resource_gain( RESOURCE_MANA, mana * ( 1.0 + p -> talents.improved_life_tap * 0.10 ), p -> gains_life_tap );
+	trigger_tier7_4pc( this );
   }
 
   virtual bool ready()
