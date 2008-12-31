@@ -165,64 +165,64 @@ enum talent_tree_type {
 };
 
 enum weapon_type { WEAPON_NONE=0, 
-		   WEAPON_DAGGER,   WEAPON_FIST,                                                                    WEAPON_SMALL,
-		   WEAPON_BEAST,    WEAPON_SWORD,    WEAPON_MACE,     WEAPON_AXE,                                   WEAPON_1H,
-		   WEAPON_BEAST_2H, WEAPON_SWORD_2H, WEAPON_MACE_2H,  WEAPON_AXE_2H, WEAPON_STAFF,  WEAPON_POLEARM, WEAPON_2H,
-		   WEAPON_BOW,      WEAPON_CROSSBOW, WEAPON_GUN,      WEAPON_WAND,   WEAPON_THROWN,                 WEAPON_RANGED,
-		   WEAPON_MAX };
+                   WEAPON_DAGGER,   WEAPON_FIST,                                                                    WEAPON_SMALL,
+                   WEAPON_BEAST,    WEAPON_SWORD,    WEAPON_MACE,     WEAPON_AXE,                                   WEAPON_1H,
+                   WEAPON_BEAST_2H, WEAPON_SWORD_2H, WEAPON_MACE_2H,  WEAPON_AXE_2H, WEAPON_STAFF,  WEAPON_POLEARM, WEAPON_2H,
+                   WEAPON_BOW,      WEAPON_CROSSBOW, WEAPON_GUN,      WEAPON_WAND,   WEAPON_THROWN,                 WEAPON_RANGED,
+                   WEAPON_MAX };
 
 enum weapon_enchant_type { WEAPON_ENCHANT_NONE=0, MONGOOSE, EXECUTIONER, DEATH_FROST, WEAPON_ENCHANT_MAX };
 
 enum weapon_buff_type { WEAPON_BUFF_NONE=0, 
-			FIRE_STONE,
-			FLAMETONGUE, 
-			POISON,
-			SHARPENING_STONE, 
-			SPELL_STONE,
-			WINDFURY, 
-			WIZARD_OIL,
-			WEAPON_BUFF_MAX };
+                        FIRE_STONE,
+                        FLAMETONGUE, 
+                        POISON,
+                        SHARPENING_STONE, 
+                        SPELL_STONE,
+                        WINDFURY, 
+                        WIZARD_OIL,
+                        WEAPON_BUFF_MAX };
 
 enum elixir_type { ELIXIR_NONE=0,
-		   ELIXIR_DRAENIC_WISDOM,                          
-		   ELIXIR_MAJOR_MAGEBLOOD, 
-		   ELIXIR_GUARDIAN,
-		   ELIXIR_ADEPT,
-		   ELIXIR_FEL_STRENGTH,
-		   ELIXIR_GREATER_ARCANE,
-		   ELIXIR_MAJOR_AGILITY, 
-		   ELIXIR_MAJOR_FIRE_POWER, 
-		   ELIXIR_MAJOR_FROST_POWER, 
-		   ELIXIR_MAJOR_SHADOW_POWER, 
-		   ELIXIR_MAJOR_STRENGTH, 
-		   ELIXIR_MASTERY,
-		   ELIXIR_MONGOOSE,
-		   ELIXIR_ONSLAUGHT,
-		   ELIXIR_SAGES,
-		   ELIXIR_BATTLE,
-		   ELIXIR_MAX };
+                   ELIXIR_DRAENIC_WISDOM,                          
+                   ELIXIR_MAJOR_MAGEBLOOD, 
+                   ELIXIR_GUARDIAN,
+                   ELIXIR_ADEPT,
+                   ELIXIR_FEL_STRENGTH,
+                   ELIXIR_GREATER_ARCANE,
+                   ELIXIR_MAJOR_AGILITY, 
+                   ELIXIR_MAJOR_FIRE_POWER, 
+                   ELIXIR_MAJOR_FROST_POWER, 
+                   ELIXIR_MAJOR_SHADOW_POWER, 
+                   ELIXIR_MAJOR_STRENGTH, 
+                   ELIXIR_MASTERY,
+                   ELIXIR_MONGOOSE,
+                   ELIXIR_ONSLAUGHT,
+                   ELIXIR_SAGES,
+                   ELIXIR_BATTLE,
+                   ELIXIR_MAX };
 
 enum flask_type { FLASK_NONE=0,
-		  FLASK_BLINDING_LIGHT, 
-		  FLASK_DISTILLED_WISDOM,
-		  FLASK_ENDLESS_RAGE,
-		  FLASK_FROST_WYRM,
-		  FLASK_MIGHTY_RESTORATION, 
-		  FLASK_PURE_DEATH, 
-		  FLASK_RELENTLESS_ASSAULT, 
-		  FLASK_SUPREME_POWER,
-		  FLASK_MAX };
+                  FLASK_BLINDING_LIGHT, 
+                  FLASK_DISTILLED_WISDOM,
+                  FLASK_ENDLESS_RAGE,
+                  FLASK_FROST_WYRM,
+                  FLASK_MIGHTY_RESTORATION, 
+                  FLASK_PURE_DEATH, 
+                  FLASK_RELENTLESS_ASSAULT, 
+                  FLASK_SUPREME_POWER,
+                  FLASK_MAX };
 
 enum food_type { FOOD_NONE=0,
                  FOOD_TENDER_SHOVELTUSK_STEAK,
                  FOOD_SMOKED_SALMON,
-		 FOOD_SNAPPER_EXTREME,
-		 FOOD_POACHED_BLUEFISH,
-		 FOOD_BLACKENED_BASILISK,
-		 FOOD_GOLDEN_FISHSTICKS,
-		 FOOD_CRUNCHY_SERPENT,
-		 FOOD_GREAT_FEAST,
-		 FOOD_MAX };
+                 FOOD_SNAPPER_EXTREME,
+                 FOOD_POACHED_BLUEFISH,
+                 FOOD_BLACKENED_BASILISK,
+                 FOOD_GOLDEN_FISHSTICKS,
+                 FOOD_CRUNCHY_SERPENT,
+                 FOOD_GREAT_FEAST,
+                 FOOD_MAX };
 
 
 enum position_type { POSITION_NONE=0, POSITION_FRONT, POSITION_BACK, POSITION_MAX };
@@ -624,7 +624,7 @@ struct player_t
     int8_t    tier4_2pc, tier4_4pc;
     int8_t    tier5_2pc, tier5_4pc;
     int8_t    tier6_2pc, tier6_4pc;
-	int8_t    tier7_2pc, tier7_4pc;
+    int8_t    tier7_2pc, tier7_4pc;
     buff_t() { memset( (void*) this, 0x0, sizeof( buff_t ) ); }
     void reset()
     { 
@@ -647,11 +647,11 @@ struct player_t
     event_t* mongoose_oh;
     event_t* spellstrike;
     event_t* wrath_of_cenarius;
-	event_t* illustration_of_the_dragon_soul;
+    event_t* illustration_of_the_dragon_soul;
     event_t *tier4_2pc, *tier4_4pc;
     event_t *tier5_2pc, *tier5_4pc;
     event_t *tier6_2pc, *tier6_4pc;
-	event_t *tier7_2pc, *tier7_4pc;
+        event_t *tier7_2pc, *tier7_4pc;
     void reset() { memset( (void*) this, 0x00, sizeof( expirations_t ) ); }
     expirations_t() { reset(); }
   };
@@ -668,14 +668,14 @@ struct player_t
     double sextant_of_unstable_currents;
     double shiffars_nexus_horn;
     double spellsurge;
-	double sundial_of_the_exiled;
-	double dying_curse;
-	double embrace_of_the_spider;
-	double forge_ember;
+    double sundial_of_the_exiled;
+    double dying_curse;
+    double embrace_of_the_spider;
+    double forge_ember;
     double tier4_2pc, tier4_4pc;
     double tier5_2pc, tier5_4pc;
     double tier6_2pc, tier6_4pc;
-	double tier7_2pc, tier7_4pc;
+    double tier7_2pc, tier7_4pc;
     void reset() { memset( (void*) this, 0x00, sizeof( cooldowns_t ) ); }
     cooldowns_t() { reset(); }
   };
@@ -689,7 +689,7 @@ struct player_t
     uptime_t *tier4_2pc, *tier4_4pc;
     uptime_t *tier5_2pc, *tier5_4pc;
     uptime_t *tier6_2pc, *tier6_4pc;
-	uptime_t *tier7_2pc, *tier7_4pc;
+    uptime_t *tier7_2pc, *tier7_4pc;
     void reset() { memset( (void*) this, 0x00, sizeof( uptimes_t ) ); }
     uptimes_t() { reset(); }
   };
@@ -718,7 +718,7 @@ struct player_t
     gain_t *tier4_2pc, *tier4_4pc;
     gain_t *tier5_2pc, *tier5_4pc;
     gain_t *tier6_2pc, *tier6_4pc;
-	gain_t *tier7_2pc, *tier7_4pc;
+    gain_t *tier7_2pc, *tier7_4pc;
     void reset() { memset( (void*) this, 0x00, sizeof( gains_t ) ); }
     gains_t() { reset(); }
   };
@@ -750,7 +750,7 @@ struct player_t
     proc_t *tier4_2pc, *tier4_4pc;
     proc_t *tier5_2pc, *tier5_4pc;
     proc_t *tier6_2pc, *tier6_4pc;
-	proc_t *tier7_2pc, *tier7_4pc;
+    proc_t *tier7_2pc, *tier7_4pc;
     void reset() { memset( (void*) this, 0x00, sizeof( procs_t ) ); }
     procs_t() { reset(); }
   };
