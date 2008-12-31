@@ -1185,7 +1185,7 @@ static void trigger_eradication( spell_t* s )
 
   if( s -> sim -> cooldown_ready( p -> cooldowns_eradication ) )
   {
-    if( s -> sim -> roll( p -> talents.eradication * 0.04 ) )
+    if( s -> sim -> roll( 0.01 + p -> talents.eradication * 0.03 ) )
     {
       p -> cooldowns_eradication = s -> sim -> current_time + 30;
       new ( s -> sim ) expiration_t( s -> sim, p );
