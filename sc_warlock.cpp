@@ -49,6 +49,7 @@ struct warlock_t : public player_t
   event_t* expirations_empowered_imp;
   event_t* expirations_flame_shadow;
   event_t* expirations_haunted;
+  event_t* expirations_infernal;
   event_t* expirations_molten_core;
   event_t* expirations_shadow_embrace;
   event_t* expirations_shadow_flame;
@@ -241,7 +242,7 @@ struct warlock_t : public player_t
     uptimes_shadow_flame          = get_uptime( "shadow_flame"          );
     uptimes_shadow_trance         = get_uptime( "shadow_trance"         );
     uptimes_shadow_vulnerability  = get_uptime( "shadow_vulnerability"  );
-	uptimes_spirits_of_the_damned = get_uptime( "spirits_of_the_damned" );
+    uptimes_spirits_of_the_damned = get_uptime( "spirits_of_the_damned" );
   }
 
   // Character Definition
@@ -263,7 +264,7 @@ struct warlock_t : public player_t
 // Warlock Pet
 // ==========================================================================
 
-enum pet_type_t { PET_NONE=0, PET_FELGUARD, PET_FELHUNTER, PET_IMP, PET_VOIDWALKER, PET_SUCCUBUS };
+enum pet_type_t { PET_NONE=0, PET_FELGUARD, PET_FELHUNTER, PET_IMP, PET_VOIDWALKER, PET_SUCCUBUS, PET_INFERNAL };
 
 struct warlock_pet_t : public pet_t
 {
@@ -324,8 +325,11 @@ struct warlock_pet_t : public pet_t
   {
     warlock_t* o = owner -> cast_warlock();
 
-    a -> base_crit        += o -> talents.demonic_tactics * 0.02;
-    a -> base_multiplier  *= 1.0 + o -> talents.unholy_power * 0.04;
+    if ( pet_type != PET_INFERNAL )
+    {
+      a -> base_crit        += o -> talents.demonic_tactics * 0.02;
+      a -> base_multiplier  *= 1.0 + o -> talents.unholy_power * 0.04;
+    }
 
     if( pet_type == PET_FELGUARD )
     {
@@ -569,7 +573,7 @@ struct felguard_pet_t : public warlock_pet_t
 
       warlock_pet_attack_t::player_buff();
       player_power *= 1.0 + p -> buffs_demonic_frenzy * ( 0.05 + o -> talents.demonic_brutality * 0.01 );
-      if( o -> glyphs.felguard ) player_power *= 1.10;
+      if( o -> glyphs.felguard ) player_power *= 1.20;
     }
   };
 
@@ -625,7 +629,7 @@ struct felguard_pet_t : public warlock_pet_t
     resource_base[ RESOURCE_HEALTH ] = 1627;
     resource_base[ RESOURCE_MANA   ] = 3331;
 
-    base_attack_power = +20;
+    base_attack_power = -20;
 
     melee = new melee_t( this );
   }
@@ -660,7 +664,7 @@ struct felhunter_pet_t : public warlock_pet_t
     shadow_bite_t( player_t* player ) : 
       warlock_pet_attack_t( "shadow_bite", player, RESOURCE_MANA, SCHOOL_SHADOW )
     {
-      felguard_pet_t* p = (felguard_pet_t*) player -> cast_pet();
+      felhunter_pet_t* p = (felhunter_pet_t*) player -> cast_pet();
       cooldown = 6.0;
       base_direct_dmg = ( p -> level < 66 ?  88 :
                           p -> level < 74 ? 101 : 118 );
@@ -721,7 +725,7 @@ struct succubus_pet_t : public warlock_pet_t
     lash_of_pain_t( player_t* player ) : 
       warlock_pet_attack_t( "lash_of_pain", player, RESOURCE_MANA, SCHOOL_SHADOW )
     {
-      felguard_pet_t* p = (felguard_pet_t*) player -> cast_pet();
+      succubus_pet_t* p = (succubus_pet_t*) player -> cast_pet();
       warlock_t*      o = p -> owner -> cast_warlock();
 
       cooldown   = 12.0;
@@ -765,6 +769,82 @@ struct succubus_pet_t : public warlock_pet_t
 
     return player_t::create_action( name, options_str );
   }
+};
+
+// ==========================================================================
+// Pet Infernal
+// ==========================================================================
+
+struct infernal_pet_t : public warlock_pet_t
+{
+
+  struct immolation_t : public warlock_pet_spell_t
+  {
+    immolation_t( player_t* player ) : 
+      warlock_pet_spell_t( "immolation", player, RESOURCE_NONE, SCHOOL_FIRE )
+    {
+      base_direct_dmg   = 40;
+      direct_power_mod  = 2 / 1.5;
+      background        = true;
+      repeating         = true;
+    }
+
+    virtual void schedule_execute()
+    {
+      if( sim -> log ) report_t::log( sim, "%s schedules execute for %s", player -> name(), name() );
+      
+      time_to_execute = 2.0;
+
+      event = new ( sim ) action_execute_event_t( sim, this, time_to_execute );
+
+      if( observer ) *observer = this;
+
+      player -> action_start( this );
+    }
+  };
+
+  warlock_pet_melee_t* melee;
+  immolation_t*        immolation;
+
+  infernal_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name ) :
+    warlock_pet_t( sim, owner, pet_name, PET_INFERNAL ), melee(0)
+  {
+    main_hand_weapon.type       = WEAPON_BEAST;
+    main_hand_weapon.damage     = 1524;
+    main_hand_weapon.swing_time = 2.0;
+  }
+  virtual void init_base()
+  {
+    warlock_pet_t::init_base();
+
+    resource_base[ RESOURCE_HEALTH ] = 20600;
+    resource_base[ RESOURCE_MANA   ] = 0;
+
+    base_attack_power = -20;
+
+    melee      = new warlock_pet_melee_t( this, "infernal_melee" );
+    immolation = new immolation_t( this );
+  }
+  virtual void reset()
+  {
+    pet_t::reset();
+  }
+  virtual void summon()
+  {
+    warlock_pet_t::summon();
+    melee      -> execute();
+    immolation -> execute(); 
+    schedule_ready();
+  }
+  virtual action_t* create_action( const std::string& name,
+                                   const std::string& options_str )
+  {
+	if( name == "immolation" ) return new immolation_t( this );
+
+    return player_t::create_action( name, options_str );
+  }
+  virtual double composite_attack_hit() { return 0; }
+  virtual double composite_spell_hit()  { return 0;  }
 };
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
@@ -1112,6 +1192,39 @@ static void trigger_haunted( spell_t* s )
     e -> reschedule( 12.0 );
   }
   else
+  {
+    e = new ( s -> sim ) expiration_t( s -> sim, p );
+  }
+}
+
+// trigger_infernal ========================================================
+
+static void trigger_infernal( spell_t* s )
+{
+  struct expiration_t : public event_t
+  {
+    expiration_t( sim_t* sim, warlock_t* p ) : event_t( sim, p )
+    {
+      name = "Infernal Expiration";
+      if( p -> active_pet )
+      {
+        p -> active_pet -> dismiss();
+      }
+      p -> summon_pet( "infernal" );
+      sim -> add_event( this, 60.0 );
+    }
+    virtual void execute()
+    {
+      warlock_t* p = player -> cast_warlock();
+      p -> dismiss_pet( "infernal" );
+      p -> expirations_infernal = 0;
+    }
+  };
+  
+  warlock_t* p = s -> player -> cast_warlock();
+  event_t*&  e = p -> expirations_infernal;
+
+  if( !e )
   {
     e = new ( s -> sim ) expiration_t( s -> sim, p );
   }
@@ -3415,6 +3528,74 @@ struct summon_pet_t : public warlock_spell_t
   }
 };
 
+// Inferno Spell ==========================================================
+
+struct inferno_t : public warlock_spell_t
+{
+  int8_t target_pct;
+  int8_t time_remaining;
+
+  inferno_t( player_t* player, const std::string& options_str ) : 
+    warlock_spell_t( "infernal_effect", player, SCHOOL_FIRE, TREE_DEMONOLOGY )
+  {
+    option_t options[] =
+    {
+      { "target_pct",     OPT_INT8, &target_pct     },
+      { "time_remaining", OPT_INT8, &time_remaining },
+      { NULL }
+    };
+    parse_options( options, options_str );
+    if ( ! target_pct && ! time_remaining )
+    {
+      if ( sim -> max_time ) time_remaining = 60;
+    }
+
+    static rank_t ranks[] =
+    {
+      { 50, 1, 200, 200, 0, 0.80 },
+      { 0, 0 }
+    };
+    init_rank( ranks );
+    
+    cooldown          = 20 * 60;
+    base_execute_time = 1.5; 
+    may_crit          = true;
+    direct_power_mod  = 1;
+  }
+
+  virtual void execute()
+  {
+    warlock_spell_t::execute();
+    trigger_infernal( this );
+  }
+
+  virtual bool ready()
+  {
+    if ( time_remaining ) {  
+      if( sim -> max_time <= 0 )
+        return false;
+
+      if ( sim -> current_time >= ( sim -> max_time - time_remaining ) )
+      {
+        return warlock_spell_t::ready();
+      }
+    }
+    
+    if ( target_pct ) {
+      target_t* t = sim -> target;
+      if( t -> initial_health <= 0 )
+        return false;
+
+      if ( ( t -> current_health / t -> initial_health ) < ( target_pct / 100.0 ) )
+      {
+        return warlock_spell_t::ready();
+      }
+    }
+
+    return false;
+  }
+};
+
 // Metamorphosis Spell =======================================================
 
 struct metamorphosis_t : public warlock_spell_t
@@ -3705,6 +3886,7 @@ action_t* warlock_t::create_action( const std::string& name,
   if( name == "immolate"            ) return new            immolate_t( this, options_str );
   if( name == "shadowflame"         ) return new         shadowflame_t( this, options_str );
   if( name == "incinerate"          ) return new          incinerate_t( this, options_str );
+  if( name == "inferno"             ) return new             inferno_t( this, options_str );
   if( name == "life_tap"            ) return new            life_tap_t( this, options_str );
   if( name == "metamorphosis"       ) return new       metamorphosis_t( this, options_str );
   if( name == "sacrifice_pet"       ) return new       sacrifice_pet_t( this, options_str );
@@ -3727,6 +3909,7 @@ pet_t* warlock_t::create_pet( const std::string& pet_name )
   if( pet_name == "felhunter" ) return new felhunter_pet_t( sim, this, pet_name );
   if( pet_name == "imp"       ) return new       imp_pet_t( sim, this, pet_name );
   if( pet_name == "succubus"  ) return new  succubus_pet_t( sim, this, pet_name );
+  if( pet_name == "infernal"  ) return new  infernal_pet_t( sim, this, pet_name );
 
   return 0;
 }
@@ -3803,6 +3986,7 @@ void warlock_t::reset()
   expirations_empowered_imp          = 0;
   expirations_flame_shadow           = 0;
   expirations_haunted                = 0;
+  expirations_infernal               = 0;
   expirations_molten_core            = 0;
   expirations_shadow_embrace         = 0;
   expirations_shadow_flame           = 0;
