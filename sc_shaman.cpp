@@ -471,8 +471,9 @@ static void trigger_unleashed_rage( attack_t* a )
       name = "Unleashed Rage Expiration";
       for( player_t* p = sim -> player_list; p; p = p -> next )
       {
-	if( p -> buffs.unleashed_rage == 0 ) p -> aura_gain( "Unleashed Rage" );
-	p -> buffs.unleashed_rage++;
+        if ( p -> sleeping ) continue;
+        if( p -> buffs.unleashed_rage == 0 ) p -> aura_gain( "Unleashed Rage" );
+        p -> buffs.unleashed_rage++;
       }
       sim -> add_event( this, 10.0 );
     }
@@ -480,8 +481,11 @@ static void trigger_unleashed_rage( attack_t* a )
     {
       for( player_t* p = sim -> player_list; p; p = p -> next )
       {
-	p -> buffs.unleashed_rage--;
-	if( p -> buffs.unleashed_rage == 0 ) p -> aura_loss( "Unleashed Rage" );
+        if ( p -> buffs.unleashed_rage > 0 )
+        {
+          p -> buffs.unleashed_rage--;
+          if( p -> buffs.unleashed_rage == 0 ) p -> aura_loss( "Unleashed Rage" );
+        }
       }
       player -> cast_shaman() -> expirations_unleashed_rage = 0;
     }
@@ -650,8 +654,9 @@ static void trigger_elemental_oath( spell_t* s )
       name = "Elemental Oath Expiration";
       for( player_t* p = sim -> player_list; p; p = p -> next )
       {
-	if( p -> buffs.elemental_oath == 0 ) p -> aura_gain( "Elemental Oath" );
-	p -> buffs.elemental_oath++;
+        if ( p -> sleeping ) continue;
+        if( p -> buffs.elemental_oath == 0 ) p -> aura_gain( "Elemental Oath" );
+        p -> buffs.elemental_oath++;
       }
       sim -> add_event( this, 15.0 );
     }
@@ -659,8 +664,11 @@ static void trigger_elemental_oath( spell_t* s )
     {
       for( player_t* p = sim -> player_list; p; p = p -> next )
       {
-	p -> buffs.elemental_oath--;
-	if( p -> buffs.elemental_oath == 0 ) p -> aura_loss( "Elemental Oath" );
+        if( p -> buffs.elemental_oath > 0 )
+        {
+          p -> buffs.elemental_oath--;
+          if( p -> buffs.elemental_oath == 0 ) p -> aura_loss( "Elemental Oath" );
+        }
       }
       player -> cast_shaman() -> expirations_elemental_oath = 0;
     }
@@ -2380,25 +2388,29 @@ struct bloodlust_t : public shaman_spell_t
     {
       expiration_t( sim_t* sim, player_t* player ) : event_t( sim, player )
       {
-	name = "Bloodlust Expiration";
-	for( player_t* p = sim -> player_list; p; p = p -> next )
-	{
-	  if( sim -> cooldown_ready( p -> cooldowns.bloodlust ) )
-	  {
-	    p -> aura_gain( "Bloodlust" );
-	    p -> buffs.bloodlust = 1;
-	    p -> cooldowns.bloodlust = sim -> current_time + 300;
-	  }
-	}
-	sim -> add_event( this, 40.0 );
+        name = "Bloodlust Expiration";
+        for( player_t* p = sim -> player_list; p; p = p -> next )
+        {
+          if ( p -> sleeping ) continue;
+          if( sim -> cooldown_ready( p -> cooldowns.bloodlust ) )
+          {
+            p -> aura_gain( "Bloodlust" );
+            p -> buffs.bloodlust = 1;
+            p -> cooldowns.bloodlust = sim -> current_time + 300;
+          }
+        }
+        sim -> add_event( this, 40.0 );
       }
       virtual void execute()
       {
-	for( player_t* p = sim -> player_list; p; p = p -> next )
-	{
-	  p -> aura_loss( "Bloodlust" );
-	  p -> buffs.bloodlust = 0;
-	}
+        for( player_t* p = sim -> player_list; p; p = p -> next )
+        {
+          if (p -> buffs.bloodlust > 0 )
+          {
+            p -> aura_loss( "Bloodlust" );
+            p -> buffs.bloodlust = 0;
+          }
+        }
       }
     };
 
