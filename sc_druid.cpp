@@ -877,18 +877,20 @@ struct starfire_t : public druid_spell_t
   int8_t eclipse_benefit;
   int8_t eclipse_trigger;
   std::string prev_str;
+  int8_t extend_moonfire;
 
   starfire_t( player_t* player, const std::string& options_str ) : 
-    druid_spell_t( "starfire", player, SCHOOL_ARCANE, TREE_BALANCE ), eclipse_benefit(0), eclipse_trigger(0)
+    druid_spell_t( "starfire", player, SCHOOL_ARCANE, TREE_BALANCE ), eclipse_benefit(0), eclipse_trigger(0), extend_moonfire(0)
   {
     druid_t* p = player -> cast_druid();
 
     std::string eclipse_str;
     option_t options[] =
     {
-      { "rank",    OPT_INT8,   &rank_index  },
-      { "eclipse", OPT_STRING, &eclipse_str },
-      { "prev",    OPT_STRING, &prev_str    },
+      { "rank",     OPT_INT8,   &rank_index      },
+      { "extendmf", OPT_INT8,   &extend_moonfire },
+      { "eclipse",  OPT_STRING, &eclipse_str     },
+      { "prev",     OPT_STRING, &prev_str        },
       { NULL }
     };
     parse_options( options, options_str );
@@ -979,6 +981,10 @@ struct starfire_t : public druid_spell_t
       return false;
 
     druid_t* p = player -> cast_druid();
+ 
+    if ( extend_moonfire && p -> glyphs.starfire )
+      if ( p -> active_moonfire -> added_ticks > 2 )
+        return false;
 
     if( eclipse_benefit )
       if( ! sim -> time_to_think( p -> buffs_eclipse_starfire ) )
@@ -1116,20 +1122,20 @@ struct wrath_t : public druid_spell_t
     if( eclipse_trigger )
     {
       if( p -> talents.eclipse == 0 )
-	return false;
+	    return false;
 
       if( sim -> current_time + 3.0 < p -> cooldowns_eclipse )
-	if( ! sim -> time_to_think( p -> buffs_eclipse_wrath ) )
-	  return false;
+	    if( ! sim -> time_to_think( p -> buffs_eclipse_wrath ) )
+	      return false;
     }
 
     if( ! prev_str.empty() )
     {
       if( ! p -> last_foreground_action )
-	return false;
+	    return false;
 
       if( p -> last_foreground_action -> name_str != prev_str )
-	return false;
+	    return false;
     }
 
     return true;
