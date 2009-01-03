@@ -798,10 +798,10 @@ struct infernal_pet_t : public warlock_pet_t
     virtual void player_buff()
     {
       // immolation uses the master's spell power, not the infernal's
-      player_t* infernal = player;
-      player = infernal -> cast_pet() -> owner;
+      warlock_pet_t* p = (warlock_pet_t*) player -> cast_pet();
+      warlock_t* o = p -> owner -> cast_warlock();
       spell_t::player_buff();
-      player = infernal;
+      player_power += o -> composite_spell_power( school );
     }
   };
 
@@ -3837,7 +3837,7 @@ double warlock_t::composite_spell_power( int8_t school )
 
   sp += buffs_fel_armor;
 
-  if( active_pet && talents.demonic_knowledge )
+  if( active_pet && talents.demonic_knowledge && active_pet -> pet_type != PET_INFERNAL )
   {
     sp += ( active_pet -> stamina() + 
             active_pet -> intellect() ) * talents.demonic_knowledge * 0.04;
