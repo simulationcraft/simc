@@ -784,7 +784,7 @@ struct infernal_pet_t : public warlock_pet_t
       warlock_pet_spell_t( "immolation", player, RESOURCE_NONE, SCHOOL_FIRE )
     {
       base_direct_dmg   = 40;
-      direct_power_mod  = 2 / 1.5;
+      direct_power_mod  = 0.2;
       background        = true;
       repeating         = true;
     }
@@ -793,6 +793,15 @@ struct infernal_pet_t : public warlock_pet_t
     {
       // immolation is an aura that ticks every 2 seconds
       return 2.0;
+    }
+
+    virtual void player_buff()
+    {
+      // immolation uses the master's spell power, not the infernal's
+      player_t* infernal = player;
+      player = infernal -> cast_pet() -> owner;
+      spell_t::player_buff();
+      player = infernal;
     }
   };
 
