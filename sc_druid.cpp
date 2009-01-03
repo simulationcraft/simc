@@ -689,7 +689,6 @@ struct insect_swarm_t : public druid_spell_t
 
     option_t options[] =
     {
-      { "rank",        OPT_INT8, &rank_index  },
       { "wrath_ready", OPT_INT8, &wrath_ready },
       { NULL }
     };
@@ -751,7 +750,6 @@ struct moonfire_t : public druid_spell_t
 
     option_t options[] =
     {
-      { "rank", OPT_INT8, &rank_index },
       { NULL }
     };
     parse_options( options, options_str );
@@ -887,7 +885,6 @@ struct starfire_t : public druid_spell_t
     std::string eclipse_str;
     option_t options[] =
     {
-      { "rank",     OPT_INT8,   &rank_index      },
       { "extendmf", OPT_INT8,   &extend_moonfire },
       { "eclipse",  OPT_STRING, &eclipse_str     },
       { "prev",     OPT_STRING, &prev_str        },
@@ -1029,7 +1026,6 @@ struct wrath_t : public druid_spell_t
     std::string eclipse_str;
     option_t options[] =
     {
-      { "rank",    OPT_INT8,   &rank_index  },
       { "eclipse", OPT_STRING, &eclipse_str },
       { "prev",    OPT_STRING, &prev_str    },
       { NULL }

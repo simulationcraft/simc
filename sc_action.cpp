@@ -34,7 +34,7 @@ action_t::action_t( int8_t      ty,
   num_ticks(0), current_tick(0), added_ticks(0), ticking(0), 
   cooldown_group(n), duration_group(n), cooldown(0), cooldown_ready(0), duration_ready(0),
   weapon( 0 ), normalize_weapon_speed( false ), normalize_weapon_damage( false ),
-  stats(0), rank_index(-1), event(0), time_to_execute(0), time_to_tick(0), observer(0), next(0), sequence(0)
+  stats(0), rank_index(-1), event(0), time_to_execute(0), time_to_tick(0), sync_action(0), observer(0), next(0), sequence(0)
 {
   if( sim -> debug ) report_t::log( sim, "Player %s creates action %s", p -> name(), name() );
   action_t** last = &( p -> action_list );
@@ -73,6 +73,27 @@ void action_t::parse_options( option_t*          options,
       assert( false );
     }
   }
+}
+
+// action_t::merge_options ==================================================
+
+option_t* action_t::merge_options( std::vector<option_t>& merged_options,
+				   option_t*              options1, 
+				   option_t*              options2 )
+{
+  if( ! options1 ) return options2;
+  if( ! options2 ) return options1;
+
+  merged_options.clear();
+
+  for( int i=0; options1[ i ].name; i++ ) merged_options.push_back( options1[ i ] );
+  for( int i=0; options2[ i ].name; i++ ) merged_options.push_back( options2[ i ] );
+
+  option_t null_option;
+  null_option.name = 0;
+  merged_options.push_back( null_option );
+
+  return &( merged_options[ 0 ] );
 }
 
 // action_t::init_rank ======================================================
@@ -339,8 +360,8 @@ double action_t::calculate_direct_damage()
 
   if( weapon )
   {
-    double weapon_damage = normalize_weapon_damage ? weapon -> damage / weapon -> swing_time * 2.8 : weapon -> damage;
-    double weapon_speed  = normalize_weapon_speed ? weapon -> normalized_weapon_speed() : weapon -> swing_time;
+    double weapon_damage = normalize_weapon_damage ? weapon -> damage * 2.8 / weapon -> swing_time : weapon -> damage;
+    double weapon_speed  = normalize_weapon_speed  ? weapon -> normalized_weapon_speed() : weapon -> swing_time;
 
     direct_dmg  = base_direct_dmg + weapon_damage + weapon_speed * direct_power_mod * total_power();
     direct_dmg *= total_dd_multiplier();
@@ -609,6 +630,9 @@ bool action_t::ready()
   if( ! player -> resource_available( resource, cost() ) )
     return false;
 
+  if( sync_action && ! sync_action -> ready() )
+    return false;
+
   return true;
 }
 
@@ -616,6 +640,17 @@ bool action_t::ready()
 
 void action_t::reset()
 {
+  if( ! sync_str.empty() && ! sync_action )
+  {
+    sync_action = player -> find_action( sync_str );
+
+    if( ! sync_action )
+    {
+      printf( "simcraft: Unable to find sync action '%s' for primary action '%s'\n", sync_str.c_str(), name() );
+      exit(0);
+    }
+  }
+
   ticking = 0;
   current_tick = 0;
   cooldown_ready = 0;

@@ -20,6 +20,21 @@ spell_t::spell_t( const char* n, player_t* p, int8_t r, int8_t s, int8_t t ) :
   min_gcd = 1.0;
 }   
 
+// spell_t::parse_options ==================================================
+
+void spell_t::parse_options( option_t*          options,
+			     const std::string& options_str )
+{
+  option_t base_options[] =
+  {
+    { "rank", OPT_INT8,   &rank_index },
+    { "sync", OPT_STRING, &sync_str   },
+    { NULL }
+  };
+  static std::vector<option_t> merged_options;
+  action_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
+}
+
 // spell_t::haste ============================================================
 
 double spell_t::haste()
@@ -91,10 +106,9 @@ void spell_t::player_buff()
 
   player_t* p = player;
 
-  player_hit   = p -> composite_spell_hit();
-  player_crit  = p -> composite_spell_crit();
-  player_power = p -> composite_spell_power( school );
-
+  player_hit       = p -> composite_spell_hit();
+  player_crit      = p -> composite_spell_crit();
+  player_power     = p -> composite_spell_power( school );
   power_multiplier = p -> composite_spell_power_multiplier();
 
   // FIXME! This needs to be a target debuff

@@ -551,7 +551,6 @@ struct holy_fire_t : public priest_spell_t
     
     option_t options[] =
     {
-      { "rank", OPT_INT8, &rank_index },
       { NULL }
     };
     parse_options( options, options_str );
@@ -591,7 +590,6 @@ struct smite_t : public priest_spell_t
 
     option_t options[] =
     {
-      { "rank", OPT_INT8, &rank_index },
       { NULL }
     };
     parse_options( options, options_str );
@@ -655,7 +653,6 @@ struct penance_t : public priest_spell_t
 
     option_t options[] =
     {
-      { "rank", OPT_INT8, &rank_index },
       { NULL }
     };
     parse_options( options, options_str );
@@ -739,7 +736,6 @@ struct shadow_word_pain_t : public priest_spell_t
 
     option_t options[] =
     {
-      { "rank",                OPT_INT8, &rank_index          },
       { "shadow_weaving_wait", OPT_INT8, &shadow_weaving_wait },
       { NULL }
     };
@@ -834,7 +830,6 @@ struct vampiric_touch_t : public priest_spell_t
      
     option_t options[] =
     {
-      { "rank", OPT_INT8, &rank_index },
       { NULL }
     };
     parse_options( options, options_str );
@@ -909,7 +904,6 @@ struct devouring_plague_t : public priest_spell_t
 
     option_t options[] =
     {
-      { "rank", OPT_INT8, &rank_index },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1021,7 +1015,6 @@ struct mind_blast_t : public priest_spell_t
 
     option_t options[] =
     {
-      { "rank", OPT_INT8, &rank_index },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1094,7 +1087,6 @@ struct shadow_word_death_t : public priest_spell_t
 
     option_t options[] =
     {
-      { "rank",        OPT_INT8, &rank_index  },
       { "mb_wait",     OPT_FLT,  &mb_wait     },
       { "mb_priority", OPT_INT8, &mb_priority },
       { NULL }
@@ -1204,7 +1196,6 @@ struct mind_flay_t : public priest_spell_t
 
     option_t options[] =
     {
-      { "rank",        OPT_INT8, &rank_index  },
       { "swp_refresh", OPT_INT8, &swp_refresh },
       { "mb_wait",     OPT_FLT,  &mb_wait     },
       { NULL }

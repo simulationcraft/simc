@@ -155,12 +155,13 @@ enum school_type {
 
 enum talent_tree_type {
   TREE_NONE=0,
-  TREE_BALANCE,    TREE_FERAL,       TREE_RESTORATION, // DRUID
-  TREE_ARCANE,     TREE_FIRE,        TREE_FROST,       // MAGE
-  TREE_DISCIPLINE, TREE_HOLY,        TREE_SHADOW,      // PRIEST
-  TREE_ELEMENTAL,  TREE_ENHANCEMENT,                   // SHAMAN
-  TREE_AFFLICTION, TREE_DEMONOLOGY,  TREE_DESTRUCTION, // WARLOCK
-  TREE_ARMS,       TREE_PROTECTION,  TREE_FURY,        // WARRIOR
+  TREE_BALANCE,       TREE_FERAL,       TREE_RESTORATION, // DRUID
+  TREE_ARCANE,        TREE_FIRE,        TREE_FROST,       // MAGE
+  TREE_DISCIPLINE,    TREE_HOLY,        TREE_SHADOW,      // PRIEST
+  TREE_ASSASSINATION, TREE_COMBAT,      TREE_SUBTLETY,    // ROGUE
+  TREE_ELEMENTAL,     TREE_ENHANCEMENT,                   // SHAMAN
+  TREE_AFFLICTION,    TREE_DEMONOLOGY,  TREE_DESTRUCTION, // WARLOCK
+  TREE_ARMS,          TREE_PROTECTION,  TREE_FURY,        // WARRIOR
   TALENT_TREE_MAX
 };
 
@@ -816,7 +817,7 @@ struct player_t
   virtual double composite_spell_penetration() { return spell_penetration; }
 
   virtual double composite_attack_power_multiplier();
-  virtual double composite_spell_power_multiplier() { return 1.0; }
+  virtual double composite_spell_power_multiplier() { return spell_power_multiplier; }
   virtual double composite_attribute_multiplier( int8_t attr );
 
   virtual double strength();
@@ -1126,6 +1127,8 @@ struct action_t
   int8_t rank_index;
   event_t* event;
   double time_to_execute, time_to_tick;
+  std::string sync_str;
+  action_t*   sync_action;
   action_t** observer;
   action_t* next;
   action_t* sequence;
@@ -1133,8 +1136,10 @@ struct action_t
   action_t( int8_t type, const char* name, player_t* p=0, int8_t r=RESOURCE_NONE, int8_t s=SCHOOL_NONE, int8_t t=TREE_NONE );
   virtual ~action_t() {}
 
-  virtual void parse_options( option_t*, const std::string& options_str );
-  virtual rank_t* init_rank( rank_t* rank_list );
+  virtual void      parse_options( option_t*, const std::string& options_str );
+  virtual option_t* merge_options( std::vector<option_t>&, option_t*, option_t* );
+  virtual rank_t*   init_rank( rank_t* rank_list );
+
   virtual double cost();
   virtual double haste()        { return 1.0;               }
   virtual double gcd()          { return trigger_gcd;       }
@@ -1188,6 +1193,7 @@ struct attack_t : public action_t
   virtual ~attack_t() {}
 
   // Attack Overrides
+  virtual void   parse_options( option_t*, const std::string& options_str );
   virtual double haste();
   virtual double execute_time();
   virtual void   player_buff();
@@ -1223,6 +1229,7 @@ struct spell_t : public action_t
   virtual ~spell_t() {}
 
   // Spell Overrides
+  virtual void   parse_options( option_t*, const std::string& options_str );
   virtual double haste();
   virtual double gcd();
   virtual double execute_time();
@@ -1464,7 +1471,7 @@ struct option_t
   const char* name; 
   int8_t type; 
   void*  address;
-
+  
   static void print( sim_t*, option_t* );
   static bool parse( sim_t*, option_t*, const std::string& name, const std::string& value );
   static bool parse( sim_t*, char* line );

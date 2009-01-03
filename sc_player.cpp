@@ -137,6 +137,7 @@ player_t::player_t( sim_t*             s,
   base_spell_crit(0),        initial_spell_crit(0),        spell_crit(0),
   base_spell_penetration(0), initial_spell_penetration(0), spell_penetration(0),
   base_mp5(0),               initial_mp5(0),               mp5(0),
+  spell_power_multiplier(1.0),  initial_spell_power_multiplier(1.0),
   spell_power_per_intellect(0), initial_spell_power_per_intellect(0),
   spell_power_per_spirit(0),    initial_spell_power_per_spirit(0),
   spell_crit_per_intellect(0),  initial_spell_crit_per_intellect(0),
@@ -148,6 +149,7 @@ player_t::player_t( sim_t*             s,
   base_attack_expertise(0),   initial_attack_expertise(0),    attack_expertise(0),
   base_attack_crit(0),        initial_attack_crit(0),         attack_crit(0),
   base_attack_penetration(0), initial_attack_penetration(0),  attack_penetration(0),
+  attack_power_multiplier(1.0), initial_attack_power_multiplier(1.0),
   attack_power_per_strength(0), initial_attack_power_per_strength(0),
   attack_power_per_agility(0),  initial_attack_power_per_agility(0),
   attack_crit_per_agility(0),   initial_attack_crit_per_agility(0),
@@ -718,7 +720,9 @@ double player_t::composite_spell_crit()
 
 double player_t::composite_attack_power_multiplier()
 {
-  return buffs.unleashed_rage ? 1.10 : 1.0;
+  double m = attack_power_multiplier;
+  m *= buffs.unleashed_rage ? 1.10 : 1.0;
+  return m;
 }
 
 // player_t::composite_attribute_multiplier ================================
@@ -858,11 +862,13 @@ void player_t::reset()
   attack_expertise   = initial_attack_expertise;
   attack_crit        = initial_attack_crit;
   attack_penetration = initial_attack_penetration;
-  
+
+  spell_power_multiplier    = initial_spell_power_multiplier;
   spell_power_per_intellect = initial_spell_power_per_intellect;
   spell_power_per_spirit    = initial_spell_power_per_spirit;
   spell_crit_per_intellect  = initial_spell_crit_per_intellect;
   
+  attack_power_multiplier   = initial_attack_power_multiplier;
   attack_power_per_strength = initial_attack_power_per_strength;
   attack_power_per_agility  = initial_attack_power_per_agility;
   attack_crit_per_agility   = initial_attack_crit_per_agility;

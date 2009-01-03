@@ -1091,7 +1091,6 @@ struct arcane_barrage_t : public mage_spell_t
 
     option_t options[] =
     {
-      { "rank",    OPT_INT8, &rank_index },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1159,7 +1158,6 @@ struct arcane_blast_t : public mage_spell_t
 
     option_t options[] =
     {
-      { "rank",    OPT_INT8, &rank_index },
       { "ap_burn", OPT_INT8, &ap_burn    },
       { "max",     OPT_INT8, &max_buff   },
       { NULL }
@@ -1297,7 +1295,6 @@ struct arcane_missiles_t : public mage_spell_t
 
     option_t options[] =
     {
-      { "rank",      OPT_INT8, &rank_index },
       { "barrage",   OPT_INT8, &barrage    },
       { "clearcast", OPT_INT8, &clearcast  },
       { NULL }
@@ -1673,7 +1670,6 @@ struct fire_ball_t : public mage_spell_t
 
     option_t options[] =
     {
-      { "rank",         OPT_INT8, &rank_index   },
       { "brain_freeze", OPT_INT8, &brain_freeze },
       { NULL }
     };
@@ -1770,7 +1766,6 @@ struct fire_blast_t : public mage_spell_t
 
     option_t options[] =
     {
-      { "rank",      OPT_INT8, &rank_index },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1825,7 +1820,6 @@ struct living_bomb_t : public mage_spell_t
 
     option_t options[] =
     {
-      { "rank", OPT_INT8, &rank_index },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1906,7 +1900,6 @@ struct pyroblast_t : public mage_spell_t
 
     option_t options[] =
     {
-      { "rank",       OPT_INT8, &rank_index },
       { "hot_streak", OPT_INT8, &hot_streak },
       { NULL }
     };
@@ -1985,7 +1978,6 @@ struct scorch_t : public mage_spell_t
 
     option_t options[] =
     {
-      { "rank",      OPT_INT8, &rank_index },
       { "debuff",    OPT_INT8, &debuff     },
       { NULL }
     };
@@ -2084,7 +2076,6 @@ struct frost_bolt_t : public mage_spell_t
 
     option_t options[] =
     {
-      { "rank",      OPT_INT8, &rank_index },
       { NULL }
     };
     parse_options( options, options_str );
@@ -2155,7 +2146,6 @@ struct ice_lance_t : public mage_spell_t
 
     option_t options[] =
     {
-      { "rank",        OPT_INT8, &rank_index  },
       { "frozen",      OPT_INT8, &frozen      },
       { "fb_priority", OPT_INT8, &fb_priority },
       { NULL }
@@ -2245,7 +2235,6 @@ struct frostfire_bolt_t : public mage_spell_t
 
     option_t options[] =
     {
-      { "rank",     OPT_INT8, &rank_index },
       { "dot_wait", OPT_INT8, &dot_wait   },
       { NULL }
     };

@@ -31,6 +31,21 @@ attack_t::attack_t( const char* n, player_t* p, int8_t r, int8_t s, int8_t t ) :
   min_gcd = 1.0;
 }
   
+// attack_t::parse_options =================================================
+
+void attack_t::parse_options( option_t*          options,
+			      const std::string& options_str )
+{
+  option_t base_options[] =
+  {
+    { "rank", OPT_INT8,   &rank_index },
+    { "sync", OPT_STRING, &sync_str   },
+    { NULL }
+  };
+  static std::vector<option_t> merged_options;
+  action_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
+}
+
 // attack_t::haste ==========================================================
 
 double attack_t::haste()
@@ -83,7 +98,6 @@ void attack_t::player_buff()
   player_expertise = p -> composite_attack_expertise();
   player_crit      = p -> composite_attack_crit();
   player_power     = p -> composite_attack_power();
-
   power_multiplier = p -> composite_attack_power_multiplier();
 
   if( p -> type != PLAYER_GUARDIAN )

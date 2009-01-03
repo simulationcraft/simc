@@ -19,6 +19,7 @@ struct rogue_t : public player_t
   // Buffs
   double buffs_combo_point_events[ MAX_COMBO_POINTS ];
   int8_t buffs_combo_points;
+  int8_t buffs_poisons_applied;
 
   // Cooldowns
   double cooldowns_;
@@ -30,7 +31,7 @@ struct rogue_t : public player_t
   gain_t* gains_;
 
   // Procs
-  proc_t* procs_;
+  proc_t* procs_sword_specialization;
   
   // Up-Times
   uptime_t* uptimes_;
@@ -47,6 +48,7 @@ struct rogue_t : public player_t
     int8_t adrenaline_rush;
     int8_t aggression;
     int8_t blade_flurry;
+    int8_t blade_twisting;
     int8_t blood_spatter;
     int8_t close_quarters_combat;
     int8_t cold_blood;
@@ -129,6 +131,7 @@ struct rogue_t : public player_t
       buffs_combo_point_events[ i ] = 0;
     }
     buffs_combo_points = 0;
+    buffs_poisons_applied = 0;
 
     // Cooldowns
     cooldowns_ = 0;
@@ -140,7 +143,7 @@ struct rogue_t : public player_t
     gains_ = get_gain( "dummy" );
 
     // Procs
-    procs_ = get_proc( "dummy" );
+    procs_sword_specialization = get_proc( "sword_specialization" );
 
     // Up-Times
     uptimes_ = get_uptime( "dummy" );
@@ -169,16 +172,24 @@ namespace { // ANONYMOUS NAMESPACE =========================================
 
 struct rogue_attack_t : public attack_t
 {
+  bool    adds_combo_points;
   int16_t min_energy, min_combo_points;
   int16_t max_energy, max_combo_points;
 
   rogue_attack_t( const char* n, player_t* player, int8_t s=SCHOOL_PHYSICAL, int8_t t=TREE_NONE ) : 
-    attack_t( n, player, RESOURCE_ENERGY, s, t ), min_energy(0), min_combo_points(0), max_energy(0), max_combo_points(0)
+    attack_t( n, player, RESOURCE_ENERGY, s, t ), 
+    adds_combo_points(false),
+    min_energy(0), min_combo_points(0), 
+    max_energy(0), max_combo_points(0)
   {
-    //rogue_t* p = player -> cast_rogue();
-    base_direct_dmg = 1;
+    rogue_t* p = player -> cast_rogue();
+    base_direct_dmg  = 1;
+    base_multiplier *= 1.0 + p -> talents.find_weakness * 0.02;
+    base_crit       += p -> talents.malice * 0.01;
+    base_hit        += p -> talents.precision * 0.01;
   }
 
+  virtual void   parse_options( option_t*, const std::string& options_str );
   virtual double cost();
   virtual double haste();
   virtual double execute_time();
@@ -189,18 +200,38 @@ struct rogue_attack_t : public attack_t
   virtual bool   ready();
 };
 
-// trigger_something =======================================================
+// trigger_sword_specialization ============================================
 
-static void trigger_something( attack_t* a )
+static void trigger_sword_specialization( rogue_attack_t* a )
 {
-  //rogue_t* p = a -> player -> cast_rogue();
+  weapon_t* w = a -> weapon;
 
-}
+  if( ! w ) return;
+
+  if( w -> type != WEAPON_SWORD    &&
+      w -> type != WEAPON_SWORD_2H )
+    return;
   
-// trigger_combo_point =====================================================
+  rogue_t* p = a -> player -> cast_rogue();
 
-static void trigger_combo_point( attack_t* a )
+  if( ! p -> talents.sword_specialization )
+    return;
+
+  if( a -> sim -> roll( p -> talents.sword_specialization * 0.01 ) )
+  {
+    p -> main_hand_attack -> proc = true;
+    p -> main_hand_attack -> execute();
+    p -> main_hand_attack -> proc = false;
+    p -> procs_sword_specialization -> occur();
+  }
+}
+
+// trigger_combo_points ====================================================
+
+static void trigger_combo_points( rogue_attack_t* a )
 {
+  if( ! a -> adds_combo_points ) return;
+
   rogue_t* p = a -> player -> cast_rogue();
 
   if( p -> buffs_combo_points < 5 )
@@ -208,11 +239,37 @@ static void trigger_combo_point( attack_t* a )
     p -> buffs_combo_point_events[ p -> buffs_combo_points ] = a -> sim -> current_time;
     p -> buffs_combo_points++;
   }
+
+  if( p -> buffs_combo_points < 5 && p -> talents.seal_fate )
+  {
+    if( a -> sim -> roll( p -> talents.seal_fate * 0.20 ) )
+    {
+      p -> buffs_combo_point_events[ p -> buffs_combo_points ] = a -> sim -> current_time;
+      p -> buffs_combo_points++;
+    }
+  }
 }
 
 // =========================================================================
 // Rogue Attack
 // =========================================================================
+
+// rogue_attack_t::parse_options ===========================================
+
+void rogue_attack_t::parse_options( option_t*          options,
+				    const std::string& options_str )
+{
+  option_t base_options[] =
+  {
+    { "min_energy",       OPT_INT16, &min_energy        },
+    { "max_energy",       OPT_INT16, &max_energy        },
+    { "min_combo_points", OPT_INT16, &min_combo_points  },
+    { "max_combo_points", OPT_INT16, &max_combo_points  },
+    { NULL }
+  };
+  static std::vector<option_t> merged_options;
+  attack_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
+}
 
 // rogue_attack_t::cost ====================================================
 
@@ -254,11 +311,11 @@ void rogue_attack_t::execute()
   
   if( result_is_hit() )
   {
-    trigger_something( this );
+    trigger_sword_specialization( this );
+    trigger_combo_points( this );
 
     if( result == RESULT_CRIT )
     {
-      trigger_something( this );
     }
   }
 }
@@ -276,9 +333,20 @@ void rogue_attack_t::consume_resource()
 
 void rogue_attack_t::player_buff()
 {
-  //rogue_t* p = player -> cast_rogue();
+  rogue_t* p = player -> cast_rogue();
   attack_t::player_buff();
-
+  if( weapon )
+  {
+    if( p -> talents.mace_specialization )
+    {
+      if( weapon -> type == WEAPON_MACE    ||
+	  weapon -> type == WEAPON_MACE_2H )
+      {
+	player_penetration += p -> talents.mace_specialization * 0.03;
+      }
+    }
+  }
+  if( p -> buffs_poisons_applied ) player_multiplier *= 1.0 + p -> talents.savage_combat * 0.01;
 }
 
 // rogue_attack_t::target_debuff ==========================================
@@ -376,18 +444,67 @@ struct auto_attack_t : public rogue_attack_t
   }
 };
 
+// Sinister Strike ==========================================================
+
+struct sinister_strike_t : public rogue_attack_t
+{
+  sinister_strike_t( player_t* player, const std::string& options_str ) : 
+    rogue_attack_t( "sinister_strike", player, SCHOOL_PHYSICAL, TREE_COMBAT )
+  {
+    rogue_t* p = player -> cast_rogue();
+
+    option_t options[] =
+    {
+      { NULL }
+    };
+    parse_options( options, options_str );
+      
+    static rank_t ranks[] =
+    {
+      { 80, 12, 0, 0, 180, 45 },
+      { 76, 11, 0, 0, 150, 45 },
+      { 70, 10, 0, 0,  98, 45 },
+      { 62,  9, 0, 0,  80, 45 },
+      { 54,  8, 0, 0,  68, 45 },
+      { 0, 0 }
+    };
+    init_rank( ranks );
+
+    weapon = &( p -> main_hand_weapon );
+    normalize_weapon_speed = true;
+    adds_combo_points      = true;
+
+    base_cost -= util_t::talent_rank( p -> talents.improved_sinister_strike, 2, 3.0, 2.0 );
+
+    base_multiplier *= 1.0 + ( p -> talents.aggression       * 0.03 +
+			       p -> talents.blade_twisting   * 0.05 +
+			       p -> talents.surprise_attacks * 0.10 );
+
+    base_crit_bonus *= 1.0 + ( p -> talents.lethality        * 0.06 +
+			       p -> talents.prey_on_the_weak * 0.04 );
+  }
+
+  virtual void player_buff()
+  {
+    rogue_t* p = player -> cast_rogue();
+    rogue_attack_t::player_buff();
+    if( weapon -> type <= WEAPON_SMALL ) player_crit += p -> talents.close_quarters_combat * 0.01;
+  }
+};
+
 } // ANONYMOUS NAMESPACE ===================================================
 
-// ==========================================================================
+// =========================================================================
 // Rogue Character Definition
-// ==========================================================================
+// =========================================================================
 
 // rogue_t::create_action  =================================================
 
 action_t* rogue_t::create_action( const std::string& name,
 				  const std::string& options_str )
 {
-  if( name == "auto_attack" ) return new auto_attack_t( this, options_str );
+  if( name == "auto_attack"     ) return new auto_attack_t    ( this, options_str );
+  if( name == "sinister_strike" ) return new sinister_strike_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -404,6 +521,7 @@ void rogue_t::init_base()
   attribute_base[ ATTR_SPIRIT    ] =  65;
 
   base_attack_power = ( level * 2 ) - 20;
+  initial_attack_power_multiplier  *= 1.0 + talents.savage_combat * 0.02;
   initial_attack_power_per_strength = 1.0;
   initial_attack_power_per_agility  = 1.0;
 
@@ -431,6 +549,7 @@ void rogue_t::reset()
     buffs_combo_point_events[ i ] = 0;
   }
   buffs_combo_points = 0;
+  buffs_poisons_applied = 0;
 
   // Cooldowns
   cooldowns_ = 0;
@@ -508,6 +627,7 @@ bool rogue_t::parse_option( const std::string& name,
     { "adrenaline_rush",            OPT_INT8, &( talents.adrenaline_rush            ) },
     { "aggression",                 OPT_INT8, &( talents.aggression                 ) },
     { "blade_flurry",               OPT_INT8, &( talents.blade_flurry               ) },
+    { "blade_twisting",             OPT_INT8, &( talents.blade_twisting             ) },
     { "blood_spatter",              OPT_INT8, &( talents.blood_spatter              ) },
     { "close_quarters_combat",      OPT_INT8, &( talents.close_quarters_combat      ) },
     { "cold_blood",                 OPT_INT8, &( talents.cold_blood                 ) },

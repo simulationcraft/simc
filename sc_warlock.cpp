@@ -1823,7 +1823,6 @@ struct curse_of_elements_t : public warlock_spell_t
 
     option_t options[] =
     {
-      { "rank", OPT_INT8, &rank_index },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1905,7 +1904,6 @@ struct curse_of_agony_t : public warlock_spell_t
 
     option_t options[] =
     {
-      { "rank", OPT_INT8, &rank_index },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1983,7 +1981,6 @@ struct curse_of_doom_t : public warlock_spell_t
 
     option_t options[] =
     {
-      { "rank", OPT_INT8, &rank_index },
       { NULL }
     };
     parse_options( options, options_str );
@@ -2065,7 +2062,6 @@ struct shadow_bolt_t : public warlock_spell_t
 
     option_t options[] =
     {
-      { "rank",          OPT_INT8, &rank_index    },
       { "shadow_trance", OPT_INT8, &shadow_trance },
       { "backdraft",     OPT_INT8, &backdraft     },
       { "isb_benefit",   OPT_INT8, &isb_benefit   },
@@ -2193,7 +2189,6 @@ struct chaos_bolt_t : public warlock_spell_t
 
     option_t options[] =
     {
-      { "rank",        OPT_INT8, &rank_index  },
       { "backdraft",   OPT_INT8, &backdraft   },
       { "molten_core", OPT_INT8, &molten_core },
       { NULL }
@@ -2270,7 +2265,6 @@ struct death_coil_t : public warlock_spell_t
     
     option_t options[] =
     {
-      { "rank", OPT_INT8, &rank_index },
       { NULL }
     };
     parse_options( options, options_str );
@@ -2329,7 +2323,6 @@ struct shadow_burn_t : public warlock_spell_t
 
     option_t options[] =
     {
-      { "rank", OPT_INT8, &rank_index },
       { NULL }
     };
     parse_options( options, options_str );
@@ -2397,7 +2390,6 @@ struct corruption_t : public warlock_spell_t
 
     option_t options[] =
     {
-      { "rank", OPT_INT8, &rank_index },
       { NULL }
     };
     parse_options( options, options_str );
@@ -2473,7 +2465,6 @@ struct drain_life_t : public warlock_spell_t
 
     option_t options[] =
     {
-      { "rank", OPT_INT8, &rank_index },
       { NULL }
     };
     parse_options( options, options_str );
@@ -2563,7 +2554,6 @@ struct drain_soul_t : public warlock_spell_t
 
     option_t options[] =
     {
-      { "rank",       OPT_INT8, &rank_index },
       { "target_pct", OPT_INT8, &target_pct },
       { NULL }
     };
@@ -2688,7 +2678,6 @@ struct siphon_life_t : public warlock_spell_t
 
     option_t options[] =
     {
-      { "rank", OPT_INT8, &rank_index },
       { NULL }
     };
     parse_options( options, options_str );
@@ -2756,7 +2745,6 @@ struct unstable_affliction_t : public warlock_spell_t
     
     option_t options[] =
     {
-      { "rank", OPT_INT8, &rank_index },
       { NULL }
     };
     parse_options( options, options_str );
@@ -2828,7 +2816,6 @@ struct haunt_t : public warlock_spell_t
 
     option_t options[] =
     {
-      { "rank",   OPT_INT8, &rank_index },
       { "debuff", OPT_INT8, &debuff     },
       { "only_for_debuff", OPT_DEPRECATED, (void*) "debuff" },
       { NULL }
@@ -2902,7 +2889,6 @@ struct immolate_t : public warlock_spell_t
 
     option_t options[] =
     {
-      { "rank", OPT_INT8, &rank_index },
       { NULL }
     };
     parse_options( options, options_str );
@@ -2982,7 +2968,6 @@ struct shadowflame_t : public warlock_spell_t
 
     option_t options[] =
     {
-      { "rank", OPT_INT8, &rank_index },
       { NULL }
     };
     parse_options( options, options_str );
@@ -3060,7 +3045,6 @@ struct conflagrate_t : public warlock_spell_t
 
     option_t options[] =
     {
-      { "rank",       OPT_INT8, &rank_index },
       { "ticks_lost", OPT_INT8, &ticks_lost },
       { NULL }
     };
@@ -3170,7 +3154,6 @@ struct incinerate_t : public warlock_spell_t
 
     option_t options[] =
     {
-      { "rank",        OPT_INT8, &rank_index  },
       { "backdraft",   OPT_INT8, &backdraft   },
       { "molten_core", OPT_INT8, &molten_core },
       { NULL }
@@ -3265,7 +3248,6 @@ struct searing_pain_t : public warlock_spell_t
 
     option_t options[] =
     {
-      { "rank", OPT_INT8, &rank_index },
       { NULL }
     };
     parse_options( options, options_str );
@@ -3317,7 +3299,6 @@ struct soul_fire_t : public warlock_spell_t
 
     option_t options[] =
     {
-      { "rank", OPT_INT8, &rank_index },
       { NULL }
     };
     parse_options( options, options_str );

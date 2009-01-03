@@ -1070,7 +1070,6 @@ struct chain_lightning_t : public shaman_spell_t
 
     option_t options[] =
     {
-      { "rank",      OPT_INT8, &rank_index },
       { "maelstrom", OPT_INT8, &maelstrom  },
       { NULL }
     };
@@ -1092,7 +1091,7 @@ struct chain_lightning_t : public shaman_spell_t
     cooldown           = 6.0;
     direct_power_mod   = ( base_execute_time / 3.5 );
 
-    cooldown          -= util_t::talent_rank( p -> talents.storm_earth_and_fire, 3, 1 ) * 0.5;
+    cooldown          -= util_t::talent_rank( p -> talents.storm_earth_and_fire, 3, 0.5, 1.5, 2.5 );
     base_execute_time -= p -> talents.lightning_mastery * 0.1;
     base_cost         *= 1.0 - p -> talents.convection * 0.02;
     base_multiplier   *= 1.0 + p -> talents.concussion * 0.01;
@@ -1162,7 +1161,6 @@ struct lightning_bolt_t : public shaman_spell_t
 
     option_t options[] =
     {
-      { "rank",      OPT_INT8, &rank_index },
       { "maelstrom", OPT_INT8, &maelstrom  },
       { "ss_wait",   OPT_INT8, &ss_wait    },
       { NULL }
@@ -1263,7 +1261,6 @@ struct lava_burst_t : public shaman_spell_t
 
     option_t options[] =
     {
-      { "rank",               OPT_INT8, &rank_index         },
       { "flame_shock",        OPT_INT8, &flame_shock        },
       { "max_ticks_consumed", OPT_INT8, &max_ticks_consumed },
       { NULL }
@@ -1445,7 +1442,6 @@ struct earth_shock_t : public shaman_spell_t
 
     option_t options[] =
     {
-      { "rank",    OPT_INT8, &rank_index },
       { "ss_wait", OPT_INT8, &ss_wait     },
       { NULL }
     };
@@ -1522,7 +1518,6 @@ struct frost_shock_t : public shaman_spell_t
 
     option_t options[] =
     {
-      { "rank", OPT_INT8, &rank_index },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1579,7 +1574,6 @@ struct flame_shock_t : public shaman_spell_t
 
     option_t options[] =
     {
-      { "rank", OPT_INT8, &rank_index },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1607,17 +1601,13 @@ struct flame_shock_t : public shaman_spell_t
 
     if ( p -> glyphs.flame_shock ) num_ticks += 2;
       
-    base_cost       *= 1.0 - p -> talents.convection * 0.02;
-    base_cost       *= 1.0 - p -> talents.mental_quickness * 0.02;
-    base_td_init    *= 1.0 + util_t::talent_rank( p -> talents.storm_earth_and_fire, 3, 0.20 );
-    cooldown        -= ( p -> talents.reverberation * 0.2 );
-    base_hit        += p -> talents.elemental_precision * 0.01;
-    base_crit_bonus *= 1.0 + p -> talents.elemental_fury * 0.20;
-
-    base_dd_multiplier *= 1.0 + p -> talents.concussion * 0.01;
-
-    base_td_multiplier *= 1.0 + ( p -> talents.concussion           * 0.01 +
-				  p -> talents.storm_earth_and_fire * 0.10 );
+    base_cost          *= 1.0 - p -> talents.convection * 0.02;
+    base_cost          *= 1.0 - p -> talents.mental_quickness * 0.02;
+    cooldown           -= p -> talents.reverberation * 0.2;
+    base_hit           += p -> talents.elemental_precision * 0.01;
+    base_crit_bonus    *= 1.0 + p -> talents.elemental_fury * 0.20;
+    base_multiplier    *= 1.0 + p -> talents.concussion * 0.01;
+    base_td_multiplier *= 1.0 + util_t::talent_rank( p -> talents.storm_earth_and_fire, 3, 0.20 );
   }
 
   virtual double cost()
@@ -1663,7 +1653,6 @@ struct searing_totem_t : public shaman_spell_t
 
     option_t options[] =
     {
-      { "rank", OPT_INT8, &rank_index },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1822,7 +1811,6 @@ struct flametongue_totem_t : public shaman_spell_t
 
     option_t options[] =
     {
-      { "rank", OPT_INT8, &rank_index },
       { NULL }
     };
     parse_options( options, options_str );
@@ -2528,7 +2516,6 @@ struct lightning_shield_t : public shaman_spell_t
 
     option_t options[] =
     {
-      { "rank", OPT_INT8, &rank_index },
       { NULL }
     };
     parse_options( options, options_str );
@@ -2581,7 +2568,6 @@ struct water_shield_t : public shaman_spell_t
   {
     option_t options[] =
     {
-      { "rank", OPT_INT8, &rank_index },
       { NULL }
     };
     parse_options( options, options_str );
