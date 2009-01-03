@@ -789,17 +789,10 @@ struct infernal_pet_t : public warlock_pet_t
       repeating         = true;
     }
 
-    virtual void schedule_execute()
+    virtual double execute_time()
     {
-      if( sim -> log ) report_t::log( sim, "%s schedules execute for %s", player -> name(), name() );
-      
-      time_to_execute = 2.0;
-
-      event = new ( sim ) action_execute_event_t( sim, this, time_to_execute );
-
-      if( observer ) *observer = this;
-
-      player -> action_start( this );
+      // immolation is an aura that ticks every 2 seconds
+      return 2.0;
     }
   };
 
