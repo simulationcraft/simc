@@ -1363,7 +1363,6 @@ struct arcane_missiles_t : public mage_spell_t
     direct_dmg = 0;
     update_stats( DMG_DIRECT );
     trigger_arcane_concentration( this );
-    p -> buffs_arcane_blast = 0;
     p -> action_finish( this );
   }
 
@@ -1374,6 +1373,7 @@ struct arcane_missiles_t : public mage_spell_t
     if( sim -> debug ) report_t::log( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
 
     may_resist = false;
+    player_buff(); // this oddball spell requires player stat recalculation before each missile.
     target_debuff( DMG_DIRECT );
     calculate_result();
     may_resist = true;
@@ -1407,6 +1407,14 @@ struct arcane_missiles_t : public mage_spell_t
       clear_arcane_potency( this );
       p -> buffs_missile_barrage = 0;
     }
+  }
+
+  virtual void last_tick()
+  {
+    mage_t* p = player -> cast_mage();
+    mage_spell_t::last_tick();
+    p -> buffs_arcane_blast = 0;
+
   }
 
   virtual double tick_time()

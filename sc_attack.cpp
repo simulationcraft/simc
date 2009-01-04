@@ -42,7 +42,7 @@ void attack_t::parse_options( option_t*          options,
     { "sync", OPT_STRING, &sync_str   },
     { NULL }
   };
-  static std::vector<option_t> merged_options;
+  std::vector<option_t> merged_options;
   action_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
 }
 

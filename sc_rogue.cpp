@@ -267,7 +267,7 @@ void rogue_attack_t::parse_options( option_t*          options,
     { "max_combo_points", OPT_INT16, &max_combo_points  },
     { NULL }
   };
-  static std::vector<option_t> merged_options;
+  std::vector<option_t> merged_options;
   attack_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
 }
 
