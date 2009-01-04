@@ -264,7 +264,8 @@ struct warlock_t : public player_t
 // Warlock Pet
 // ==========================================================================
 
-enum pet_type_t { PET_NONE=0, PET_FELGUARD, PET_FELHUNTER, PET_IMP, PET_VOIDWALKER, PET_SUCCUBUS, PET_INFERNAL };
+enum pet_type_t { PET_NONE=0, PET_FELGUARD, PET_FELHUNTER, PET_IMP,
+                  PET_VOIDWALKER, PET_SUCCUBUS, PET_INFERNAL, PET_DOOMGUARD };
 
 struct warlock_pet_t : public pet_t
 {
@@ -325,7 +326,7 @@ struct warlock_pet_t : public pet_t
   {
     warlock_t* o = owner -> cast_warlock();
 
-    if ( pet_type != PET_INFERNAL )
+    if ( pet_type != PET_INFERNAL && pet_type != PET_DOOMGUARD )
     {
       a -> base_crit        += o -> talents.demonic_tactics * 0.02;
       a -> base_multiplier  *= 1.0 + o -> talents.unholy_power * 0.04;
@@ -843,6 +844,51 @@ struct infernal_pet_t : public warlock_pet_t
   {
 	if( name == "immolation" ) return new immolation_t( this );
 
+    return player_t::create_action( name, options_str );
+  }
+  virtual double composite_attack_hit() { return 0; }
+  virtual double composite_spell_hit()  { return 0;  }
+};
+
+// ==========================================================================
+// Pet Doomguard
+// ==========================================================================
+
+struct doomguard_pet_t : public warlock_pet_t
+{
+  warlock_pet_melee_t* melee;
+
+  doomguard_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name ) :
+    warlock_pet_t( sim, owner, pet_name, PET_DOOMGUARD ), melee(0)
+  {
+    main_hand_weapon.type       = WEAPON_BEAST;
+    main_hand_weapon.damage     = 1488;
+    main_hand_weapon.swing_time = 2.0;
+  }
+  virtual void init_base()
+  {
+    warlock_pet_t::init_base();
+
+    resource_base[ RESOURCE_HEALTH ] = 18000;
+    resource_base[ RESOURCE_MANA   ] = 3000;
+
+    base_attack_power = -20;
+
+    melee      = new warlock_pet_melee_t( this, "doomguard_melee" );
+  }
+  virtual void reset()
+  {
+    pet_t::reset();
+  }
+  virtual void summon()
+  {
+    warlock_pet_t::summon();
+    melee      -> schedule_execute();
+    schedule_ready();
+  }
+  virtual action_t* create_action( const std::string& name,
+                                   const std::string& options_str )
+  {
     return player_t::create_action( name, options_str );
   }
   virtual double composite_attack_hit() { return 0; }
@@ -3837,7 +3883,8 @@ double warlock_t::composite_spell_power( int8_t school )
 
   sp += buffs_fel_armor;
 
-  if( active_pet && talents.demonic_knowledge && active_pet -> pet_type != PET_INFERNAL )
+  if( active_pet && talents.demonic_knowledge && active_pet -> pet_type != PET_INFERNAL
+                                              && active_pet -> pet_type != PET_DOOMGUARD )
   {
     sp += ( active_pet -> stamina() + 
             active_pet -> intellect() ) * talents.demonic_knowledge * 0.04;
@@ -3893,6 +3940,7 @@ pet_t* warlock_t::create_pet( const std::string& pet_name )
   if( pet_name == "imp"       ) return new       imp_pet_t( sim, this, pet_name );
   if( pet_name == "succubus"  ) return new  succubus_pet_t( sim, this, pet_name );
   if( pet_name == "infernal"  ) return new  infernal_pet_t( sim, this, pet_name );
+  if( pet_name == "doomguard" ) return new doomguard_pet_t( sim, this, pet_name );
 
   return 0;
 }
