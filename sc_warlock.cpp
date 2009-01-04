@@ -574,7 +574,15 @@ struct felguard_pet_t : public warlock_pet_t
 
       warlock_pet_attack_t::player_buff();
       player_power *= 1.0 + p -> buffs_demonic_frenzy * ( 0.05 + o -> talents.demonic_brutality * 0.01 );
-      if( o -> glyphs.felguard ) player_power *= 1.20;
+      if( o -> glyphs.felguard ) 
+      {
+        if ( sim -> patch.before(3, 0, 8) ) {
+          player_power *= 1.10;
+        }
+        else {
+          player_power *= 1.20;
+        }
+      }
     }
   };
 
@@ -586,7 +594,15 @@ struct felguard_pet_t : public warlock_pet_t
       felguard_pet_t* p = (felguard_pet_t*) player -> cast_pet();
       warlock_t*      o = p -> owner -> cast_warlock();
 
-      if( o -> glyphs.felguard ) base_multiplier *= 1.20;
+      if( o -> glyphs.felguard ) 
+      {
+        if ( sim -> patch.before(3, 0, 8) ) {
+          base_multiplier *= 1.10;
+        }
+        else {
+          base_multiplier *= 1.20;
+        }
+      }
     }
     virtual double execute_time()
     {
