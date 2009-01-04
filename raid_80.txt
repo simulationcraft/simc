@@ -523,7 +523,7 @@ level=80
 talents=http://www.wowhead.com/?talent=IfxMbzMAoVAoIstZE00V
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/spell_stone/fel_armor/summon_pet,felhunter
 actions+=/haunt,debuff=1/curse_of_agony/corruption/unstable_affliction/siphon_life
-actions+=/shadow_bolt,shadow_trance=1/drain_soul,target_pct=25/immolate/shadow_bolt/dark_pact
+actions+=/shadow_bolt,shadow_trance=1/drain_soul,target_pct=25/immolate/shadow_bolt/life_tap
 chaotic_skyflare=1
 # Glyphs
 glyph_corruption=1
