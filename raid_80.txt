@@ -221,13 +221,15 @@ sanctified_retribution=1
 # (1) The "trigger=3500" option to mana_gem and mana_potion represents the mana gained and the amount below max required to trigger
 # (2) The "barrage=1" option to arcane_missles means that it will only get executed when the "barrage" buff has been up 
 #     for at least 0.5sec (to account for lag and reaction time).
+# (3) The "abar_combo=1" option will force an early cast of Arcane Barrage, clipping the last tick of Arcane Missiles in order
+#     to maintain the Arcane Blast buff for one more spell.
 #
 mage=Mage_52_19_0
 level=80
 talents=http://www.wowhead.com/?talent=of0Vck0IzxGu0xedfVczo0h
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/molten_armor/focus_magic,target=Mage_20_51_0
 actions+=/mana_gem,trigger=3500/mana_potion,trigger=4300
-actions+=/mirror_image/arcane_power/arcane_missiles,barrage=1/presence_of_mind,pyroblast/arcane_blast,max=3/arcane_barrage
+actions+=/mirror_image/arcane_power/presence_of_mind,pyroblast/arcane_blast,max=3/arcane_missiles,barrage=1,abar_combo=1/arcane_barrage
 actions+=/evocation
 chaotic_skyflare=1
 # Glyphs
@@ -447,6 +449,7 @@ chaotic_skyflare=1
 glyph_flametongue_weapon=1
 glyph_flame_shock=1
 glyph_lava=1
+totem_of_hex=1
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
 blessing_of_kings=1
 blessing_of_wisdom=1
@@ -484,6 +487,7 @@ off_hand=mace,damage=359,speed=2.5,enchant=mongoose
 glyph_windfury_weapon=1
 glyph_stormstrike=1
 glyph_lava_lash=1
+totem_of_hex=1
 # Two wolves modeled as one pet that hits 2x hard
 pet=spirit_wolf
 blessing_of_kings=1

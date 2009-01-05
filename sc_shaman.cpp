@@ -142,6 +142,13 @@ struct shaman_t : public player_t
   };
   glyphs_t glyphs;
 
+  struct totems_t
+  {
+    int8_t hex;
+    totems_t() { memset( (void*) this, 0x0, sizeof( totems_t ) ); }
+  };
+  totems_t totems;
+
   shaman_t( sim_t* sim, std::string& name ) : player_t( sim, SHAMAN, name )
   {
     // Totems
@@ -1100,6 +1107,8 @@ struct chain_lightning_t : public shaman_spell_t
     base_crit         += p -> talents.tidal_mastery * 0.01;
     base_crit_bonus   *= 1.0 + p -> talents.elemental_fury * 0.20;
 
+    if( p -> totems.hex ) base_power += 165;
+
     lightning_overload_stats = p -> get_stats( "lightning_overload" );
     lightning_overload_stats -> school = SCHOOL_NATURE;
   }
@@ -1195,6 +1204,7 @@ struct lightning_bolt_t : public shaman_spell_t
 
     if( p -> gear.tier6_4pc        ) base_multiplier *= 1.05;
     if( p -> glyphs.lightning_bolt ) base_multiplier *= 1.04;
+    if( p -> totems.hex            ) base_power      += 165;
 
     lightning_overload_stats = p -> get_stats( "lightning_overload" );
     lightning_overload_stats -> school = SCHOOL_NATURE;
@@ -2995,6 +3005,8 @@ bool shaman_t::parse_option( const std::string& name,
     { "glyph_lava_lash",           OPT_INT8,  &( glyphs.lava_lash                  ) },
     { "glyph_lava",                OPT_INT8,  &( glyphs.lava                       ) },
     { "glyph_elemental_mastery",   OPT_INT8,  &( glyphs.elemental_mastery          ) },
+    // Totems
+    { "totem_of_hex",              OPT_INT8,  &( totems.hex                        ) },
     { NULL, OPT_UNKNOWN }
   };
 

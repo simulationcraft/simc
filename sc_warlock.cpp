@@ -870,12 +870,12 @@ struct infernal_pet_t : public warlock_pet_t
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str )
   {
-	if( name == "immolation" ) return new immolation_t( this );
+    if( name == "immolation" ) return new immolation_t( this );
 
     return player_t::create_action( name, options_str );
   }
   virtual double composite_attack_hit() { return 0; }
-  virtual double composite_spell_hit()  { return 0;  }
+  virtual double composite_spell_hit()  { return 0; }
 };
 
 // ==========================================================================
@@ -922,7 +922,7 @@ struct doomguard_pet_t : public warlock_pet_t
     return player_t::create_action( name, options_str );
   }
   virtual double composite_attack_hit() { return 0; }
-  virtual double composite_spell_hit()  { return 0;  }
+  virtual double composite_spell_hit()  { return 0; }
 };
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
@@ -1641,7 +1641,7 @@ static void trigger_tier7_4pc( spell_t* s )
       name = "Spirits of the Damned Expiration";
       player -> aura_gain( "Spirits of the Damned" );
       player -> attribute[ ATTR_SPIRIT ] += 300;
-	  player -> buffs.tier7_4pc = 1;
+          player -> buffs.tier7_4pc = 1;
       sim -> add_event( this, 10.0 );
     }
     virtual void execute()
@@ -1649,7 +1649,7 @@ static void trigger_tier7_4pc( spell_t* s )
       player -> aura_loss( "Spirits of the Damned" );
       player -> attribute[ ATTR_SPIRIT ] -= 300;
       player -> expirations.tier7_4pc = 0;
-	  player -> buffs.tier7_4pc = 0;
+          player -> buffs.tier7_4pc = 0;
     }
   };
 
@@ -3450,7 +3450,7 @@ struct life_tap_t : public warlock_spell_t
     double mana = base_tap + 3.0 * p -> spirit();
     p -> resource_loss( RESOURCE_HEALTH, mana );
     p -> resource_gain( RESOURCE_MANA, mana * ( 1.0 + p -> talents.improved_life_tap * 0.10 ), p -> gains_life_tap );
-	trigger_tier7_4pc( this );
+        trigger_tier7_4pc( this );
   }
 
   virtual bool ready()

@@ -882,6 +882,19 @@ static void stack_improved_scorch( spell_t* s )
   }
 }
 
+// clear_missile_barrage ==========================================================
+
+static void clear_missile_barrage( spell_t* s )
+{
+  mage_t* p = s -> player -> cast_mage();
+
+  if(  p -> buffs_missile_barrage )
+  {
+    p -> aura_loss( "Missile Barrage" );
+    p -> buffs_missile_barrage = 0;
+  }
+}
+
 // trigger_missile_barrage =========================================================
 
 static void trigger_missile_barrage( spell_t* s )
@@ -893,6 +906,7 @@ static void trigger_missile_barrage( spell_t* s )
   {
     if( s -> sim -> roll( p -> talents.missile_barrage * 0.04 ) )
     {
+      p -> aura_gain( "Missile Barrage" );
       p -> buffs_missile_barrage = s -> sim -> current_time;
     }
   }
@@ -1139,7 +1153,7 @@ struct arcane_barrage_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
     mage_spell_t::execute();
     if( result_is_hit() ) trigger_missile_barrage( this );
-    p -> buffs_arcane_blast = 0;
+    event_t::early( p -> expirations_arcane_blast );
   }
 };
 
@@ -1285,6 +1299,8 @@ struct arcane_blast_t : public mage_spell_t
 
 struct arcane_missiles_t : public mage_spell_t
 {
+  spell_t* abar_spell;
+  int8_t abar_combo;
   int8_t barrage;
   int8_t clearcast;
 
@@ -1295,8 +1311,9 @@ struct arcane_missiles_t : public mage_spell_t
 
     option_t options[] =
     {
-      { "barrage",   OPT_INT8, &barrage    },
-      { "clearcast", OPT_INT8, &clearcast  },
+      { "abar_combo", OPT_INT8, &abar_combo },
+      { "barrage",    OPT_INT8, &barrage    },
+      { "clearcast",  OPT_INT8, &clearcast  },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1327,6 +1344,14 @@ struct arcane_missiles_t : public mage_spell_t
     base_hit         += p -> talents.arcane_focus * 0.01;
     direct_power_mod += p -> talents.arcane_empowerment * 0.03;        // bonus per missle
     base_crit_bonus  *= 1.0 + p -> talents.spell_power * 0.25;
+
+    if( abar_combo )
+    {
+      num_ticks--;
+      std::string abar_options;
+      abar_spell = new arcane_barrage_t( player, abar_options );
+      abar_spell -> proc = true;  // prevents scheduling of player_ready events
+    }
 
     if( p -> gear.tier6_4pc ) base_multiplier *= 1.05;
   }
@@ -1402,19 +1427,17 @@ struct arcane_missiles_t : public mage_spell_t
 
     update_stats( DMG_OVER_TIME );
 
-    if( current_tick == num_ticks ) 
-    {
-      clear_arcane_potency( this );
-      p -> buffs_missile_barrage = 0;
-    }
+    if( current_tick == num_ticks ) last_tick();
   }
 
   virtual void last_tick()
   {
     mage_t* p = player -> cast_mage();
     mage_spell_t::last_tick();
-    p -> buffs_arcane_blast = 0;
-
+    clear_missile_barrage( this );
+    if( abar_combo ) abar_spell -> execute();
+    clear_arcane_potency( this );
+    event_t::early( p -> expirations_arcane_blast );
   }
 
   virtual double tick_time()
