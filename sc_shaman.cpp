@@ -366,10 +366,7 @@ static void trigger_flametongue_weapon( attack_t* a )
       p -> flametongue_weapon_spell = new flametongue_weapon_spell_t( p );
     }
 
-    double fire_dmg  = ( ( p -> level < 64 ) ? 30 : 
-			 ( p -> level < 71 ) ? 35 : 
-			 ( p -> level < 76 ) ? 60 : 
-			 ( p -> level < 80 ) ? 70 : 80 );
+    double fire_dmg = util_t::ability_rank( p -> level,  70.0,80,  70.0,77,  60.0,72,  35.0,65,  30.0,0 );
 
     p -> flametongue_weapon_spell -> base_direct_dmg = fire_dmg * a -> weapon -> swing_time;
     p -> flametongue_weapon_spell -> execute();
@@ -1758,8 +1755,7 @@ struct totem_of_wrath_t : public shaman_spell_t
     duration_group = "fire_totem";
     trigger_gcd    = 1.0;
 
-    bonus = ( p -> level <= 60 ? 120 :
-	      p -> level <= 70 ? 140 : 280 );
+    bonus = util_t::ability_rank( p -> level,  280.0,80,  140.0,70,  120.0,0 );
   }
 
   virtual void execute()
@@ -2006,10 +2002,7 @@ struct flametongue_weapon_t : public shaman_spell_t
     }
     trigger_gcd = 0;
 
-    bonus_power = ( ( p -> level <  64 ) ?  45 : 
-		    ( p -> level <  71 ) ?  96 : 
-		    ( p -> level <  76 ) ? 157 : 
-		    ( p -> level <  80 ) ? 186 : 211 );
+    bonus_power = util_t::ability_rank( p -> level,  211.0,80,  186.0,77,  157.0,72,  96.0,65,  45.0,0  );
 
     bonus_power *= 1.0 + p -> talents.elemental_weapons * 0.10;
   }
@@ -2081,10 +2074,7 @@ struct windfury_weapon_t : public shaman_spell_t
     }
     trigger_gcd = 0;
 
-    bonus_power = ( ( p -> level <= 68 ) ?  445  : 
-                    ( p -> level <= 71 ) ?  835  :
-                    ( p -> level <= 76 ) ? 1090  : 
-                                           1250 );
+    bonus_power = util_t::ability_rank( p -> level,  1250.0,80,  1090.0,76,  835.0,71,  445.0,0  );
 
     if( p -> glyphs.windfury_weapon ) bonus_power *= 1.40;
   }

@@ -2465,8 +2465,7 @@ struct arcane_brilliance_t : public mage_spell_t
   {
     trigger_gcd = 0;
 
-    bonus = ( player -> level == 80 ) ? 60 :
-            ( player -> level >= 70 ) ? 40 : 31;
+    bonus = util_t::ability_rank( player -> level,  60,0,80,  40.0,70,  31.0,0 );
   }
    
   virtual void execute()

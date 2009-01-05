@@ -491,8 +491,7 @@ struct wizard_oil_t : public action_t
   {
     trigger_gcd = 0;
 
-    bonus_power = ( ( p -> level <= 55 ) ? 36 : 
-		    ( p -> level <= 68 ) ? 42 : 56 );
+    bonus_power = (int16_t) util_t::ability_rank( p -> level,  56,72,  42,68,  36,0 );
 
     bonus_crit = ( p -> level <= 55 ? 14 : 0 );
   }

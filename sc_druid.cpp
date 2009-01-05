@@ -1151,8 +1151,7 @@ struct mark_of_the_wild_t : public druid_spell_t
 
     trigger_gcd = 0;
 
-    bonus = ( player -> level == 80 ) ? 37 :
-            ( player -> level >= 70 ) ? 14 : 12;
+    bonus = util_t::ability_rank( player -> level,  37.0,80, 14.0,70,  12.0,0 );
 
     bonus *= 1.0 + p -> talents.improved_mark_of_the_wild * 0.20;
   }

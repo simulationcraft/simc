@@ -1483,8 +1483,7 @@ struct divine_spirit_t : public priest_spell_t
 
     improved = p -> talents.improved_divine_spirit;
 
-    bonus = ( player -> level <= 69 ) ? 40 :
-            ( player -> level <= 79 ) ? 50 : 80;
+    bonus = util_t::ability_rank( player -> level,  80.0,80,  50.0,70,  40.0,0 );
   }
    
   virtual void execute()
@@ -1523,8 +1522,7 @@ struct fortitude_t : public priest_spell_t
 
     trigger_gcd = 0;
 
-    bonus = ( player -> level <= 60 ) ? 54 :
-            ( player -> level <= 70 ) ? 79 : 165;
+    bonus = util_t::ability_rank( player -> level,  165.0,80,  79.0,70,  54.0,0 );
 
     bonus *= 1.0 + p -> talents.improved_power_word_fortitude * 0.15;
   }
@@ -1562,8 +1560,7 @@ struct inner_fire_t : public priest_spell_t
 
     if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
 
-    double bonus_power = ( p -> level >= 77 ) ? 120 : 
-                         ( p -> level >= 71 ) ?  95 : 0;
+    double bonus_power = util_t::ability_rank( p -> level,  120.0,77,  95.0,71,  0.0,0  );
 
     bonus_power *= 1.0 + p -> talents.improved_inner_fire * 0.15;
 

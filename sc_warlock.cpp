@@ -567,8 +567,7 @@ struct felguard_pet_t : public warlock_pet_t
       felguard_pet_t* p = (felguard_pet_t*) player -> cast_pet();
       weapon   = &( p -> main_hand_weapon );
       cooldown = 6.0;
-      base_direct_dmg = ( p -> level < 68 ? 50 :
-                          p -> level < 80 ? 78 : 124 );
+      base_direct_dmg = util_t::ability_rank( p -> level,  124.0,76,  78.0,68,  50.0,0 );
     }
     virtual void player_buff()
     {
@@ -686,8 +685,7 @@ struct felhunter_pet_t : public warlock_pet_t
     {
       felhunter_pet_t* p = (felhunter_pet_t*) player -> cast_pet();
       cooldown = 6.0;
-      base_direct_dmg = ( p -> level < 66 ?  88 :
-                          p -> level < 74 ? 101 : 118 );
+      base_direct_dmg = util_t::ability_rank( p -> level,  118.0,74,  101.0,66,  88.0,0 );
     }
     virtual void player_buff()
     {
@@ -749,9 +747,7 @@ struct succubus_pet_t : public warlock_pet_t
       warlock_t*      o = p -> owner -> cast_warlock();
 
       cooldown   = 12.0;
-      base_direct_dmg = ( p -> level < 68 ?  99 :
-                          p -> level < 74 ? 123 : 
-                          p -> level < 80 ? 193 : 237 );
+      base_direct_dmg = util_t::ability_rank( p -> level,  237.0,80,  193.0,74,  123.0,68,  99.0,0 );
       cooldown  -= 3.0 * ( o -> talents.improved_lash_of_pain + o -> talents.demonic_power );
     }
   };
@@ -2651,7 +2647,7 @@ struct drain_soul_t : public warlock_spell_t
       { 52, 4, 0, 0,  91, 290  },
       { 0, 0 }
     };
-    init_rank( ranks );
+    rank_t* rank = init_rank( ranks );
     
     base_execute_time = 0; 
     base_tick_time    = 3.0; 
@@ -2664,7 +2660,7 @@ struct drain_soul_t : public warlock_spell_t
     base_hit         += p -> talents.suppression * 0.01;
     base_multiplier  *= 1.0 + p -> talents.shadow_mastery * 0.03;
 
-    health_multiplier = p -> level >= 7 ? 1 : 0;
+    health_multiplier = ( rank -> level >= 6 ) ? 1 : 0;
   }
 
   virtual void execute()
@@ -3509,10 +3505,7 @@ struct fel_armor_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     trigger_gcd = 0;
-    bonus_spell_power = ( p -> level < 62 ?   0 :
-                          p -> level < 67 ?  50 :
-                          p -> level < 73 ? 100 :
-                          p -> level < 78 ? 150 : 180 );
+    bonus_spell_power = util_t::ability_rank( p -> level,  180.0,78,  150.0,73,  100.0,67,  50.0,62,  0.0,0 );
     bonus_spell_power *= 1.0 + p -> talents.demonic_aegis * 0.10;
   }
 
@@ -3802,9 +3795,7 @@ struct fire_stone_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     trigger_gcd = 0;
 
-    bonus_crit = ( ( p -> level <= 56 ) ? 28  : 
-                   ( p -> level <= 66 ) ? 35  :
-                   ( p -> level <= 74 ) ? 42  : 49 );
+    bonus_crit = (int16_t) util_t::ability_rank( p -> level,  49,80,  42,74,  35,66,  28,0 );
 
     bonus_crit = (int16_t) ( bonus_crit * ( 1.0 + p -> talents.master_conjuror * 0.15 ) );
   }
@@ -3835,9 +3826,7 @@ struct spell_stone_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     trigger_gcd = 0;
 
-    bonus_haste = ( ( p -> level <= 60 ) ? 30  : 
-                    ( p -> level <= 66 ) ? 40  :
-                    ( p -> level <= 72 ) ? 50  : 60 );
+    bonus_haste = (int16_t) util_t::ability_rank( p -> level,  60,80,  50,72,  40,66,  30,0 );
     
     bonus_haste = (int16_t) ( bonus_haste * ( 1.0 + p -> talents.master_conjuror * 0.15 ) );
   }
