@@ -1057,6 +1057,7 @@ struct stats_t
   double total_execute_time, total_tick_time;
   double total_dmg;
   double dps, dpe, dpet, dpr;
+  double total_intervals, num_intervals, last_execute;
 
   struct stats_results_t
   {
@@ -1072,6 +1073,7 @@ struct stats_t
   void consume_resource( double r ) { resource_consumed += r; }
   void add( double amount, int8_t dmg_type, int8_t result, double time );
   void init();
+  void reset( action_t* );
   void analyze();
   void merge( stats_t* other );
   stats_t( const std::string& name, player_t* );

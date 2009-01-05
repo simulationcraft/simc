@@ -50,6 +50,15 @@ void stats_t::init()
   total_execute_time = total_tick_time = 0;
   total_dmg = 0;
   dps = dpe = dpet = dpr = 0;
+  total_intervals = num_intervals = 0;
+}
+
+// stats_t::reset ===========================================================
+
+void stats_t::reset( action_t* a )
+{
+  channeled = a -> channeled;
+  last_execute = -1;
 }
 
 // stats_t::add =============================================================
@@ -71,6 +80,13 @@ void stats_t::add( double amount,
     r.total_dmg += amount;
     if( amount < r.min_dmg ) r.min_dmg = amount;
     if( amount > r.max_dmg ) r.max_dmg = amount;
+
+    if( last_execute > 0 )
+    {
+      num_intervals++;
+      total_intervals += sim -> current_time - last_execute;
+    }
+    last_execute = sim -> current_time;
   }
   else
   {
@@ -138,7 +154,7 @@ void stats_t::analyze()
   num_executes /= num_iterations;
   num_ticks    /= num_iterations;
 
-  frequency = num_executes ? ( player -> total_seconds / num_executes ) : 0;
+  frequency = num_intervals ? total_intervals / num_intervals : 0;
 
   total_execute_time /= num_iterations;
   total_tick_time    /= num_iterations;

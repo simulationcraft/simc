@@ -658,10 +658,7 @@ void action_t::reset()
   result = RESULT_NONE;
   event = 0;
 
-  // FIXME! stats gets initialized inside action_t constructor which occurs BEFORE the 
-  // spell_t/attack_t derivative constructor gets executed.  But the "channeled" and "background"
-  // fields are set in the derived sub-class which is too late.  So set them here.....
-  stats -> channeled = channeled;  
+  stats -> reset( this );
 }
 
 // ==========================================================================
