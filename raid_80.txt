@@ -549,7 +549,7 @@ sanctified_retribution=1
 #
 # Affliction Warlock (Doomguard + Infernal)
 #
-warlock=Warlock_56_0_15_doomguard_infernal
+warlock=Warlock_56_0_15_DGnI
 level=80
 talents=http://www.wowhead.com/?talent=IfxMbzMAoVAoIstZE00V
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/spell_stone/fel_armor/summon_pet,doomguard
