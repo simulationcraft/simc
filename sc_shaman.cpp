@@ -1294,7 +1294,7 @@ struct lava_burst_t : public shaman_spell_t
     base_multiplier   *= 1.0 + p -> talents.call_of_flame * 0.02;
     base_hit          += p -> talents.elemental_precision * 0.01;
     base_crit_bonus   *= 1.0 + p -> talents.elemental_fury * 0.20;
-    base_crit_bonus   *= 1.0 + p -> talents.lava_flows * 0.06;
+    base_crit_bonus   *= 1.0 + util_t::talent_rank( p -> talents.lava_flows, 3, 0.06, 0.12, 0.24 );
     direct_power_mod  += p -> talents.shamanism * 0.04;
   }
 
