@@ -2853,7 +2853,7 @@ struct unstable_affliction_t : public warlock_spell_t
     if( p -> glyphs.unstable_affliction )
     {
       base_execute_time = 1.3;
-      trigger_gcd       = 1.3;
+      //trigger_gcd     = 1.3; latest research seems to imply ti does not affect the gcd
     }
   }
 
