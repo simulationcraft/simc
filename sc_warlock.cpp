@@ -290,7 +290,7 @@ struct warlock_pet_t : public pet_t
 
     attribute_base[ ATTR_STRENGTH  ] = 314;
     attribute_base[ ATTR_AGILITY   ] =  90;
-    attribute_base[ ATTR_STAMINA   ] = 328;
+    attribute_base[ ATTR_STAMINA   ] = 377;
     attribute_base[ ATTR_INTELLECT ] = 150;
     attribute_base[ ATTR_SPIRIT    ] = 209;
 
@@ -392,8 +392,11 @@ struct warlock_pet_melee_t : public attack_t
     warlock_pet_t* p = (warlock_pet_t*) player -> cast_pet();
     warlock_t* o = p -> owner -> cast_warlock();
     attack_t::player_buff();
-    player_power += 0.57 * o -> composite_spell_power( SCHOOL_MAX );
-    p -> adjust_player_modifiers( this );
+    if ( p -> pet_type != PET_INFERNAL && p -> pet_type != PET_DOOMGUARD )
+    {
+      player_power += 0.57 * o -> composite_spell_power( SCHOOL_MAX );
+      p -> adjust_player_modifiers( this );
+    }
   }
 };
 
@@ -520,14 +523,14 @@ struct imp_pet_t : public warlock_pet_t
 
     attribute_base[ ATTR_STRENGTH  ] = 297;
     attribute_base[ ATTR_AGILITY   ] =  79;
-    attribute_base[ ATTR_STAMINA   ] = 118;
+    attribute_base[ ATTR_STAMINA   ] = 135;
     attribute_base[ ATTR_INTELLECT ] = 369;
-    attribute_base[ ATTR_SPIRIT    ] = 357;
+    attribute_base[ ATTR_SPIRIT    ] = 367;
 
-    resource_base[ RESOURCE_HEALTH ] = 2719;
-    resource_base[ RESOURCE_MANA   ] = 1000;
+    resource_base[ RESOURCE_HEALTH ] = 4011;
+    resource_base[ RESOURCE_MANA   ] = 1175;
 
-    health_per_stamina = 5;
+    health_per_stamina = 2;
     mana_per_intellect = 5;
   }
 
@@ -711,8 +714,8 @@ struct felhunter_pet_t : public warlock_pet_t
 
     base_attack_power = -20;
 
-    resource_base[ RESOURCE_HEALTH ] = 947;
-    resource_base[ RESOURCE_MANA   ] = 940;
+    resource_base[ RESOURCE_HEALTH ] = 1468;
+    resource_base[ RESOURCE_MANA   ] = 1559;
 
     melee = new warlock_pet_melee_t( this, "felhunter_melee" );
   }
@@ -768,8 +771,8 @@ struct succubus_pet_t : public warlock_pet_t
 
     base_attack_power = -20;
 
-    resource_base[ RESOURCE_HEALTH ] = 721;
-    resource_base[ RESOURCE_MANA   ] = 940;
+    resource_base[ RESOURCE_HEALTH ] = 1468;
+    resource_base[ RESOURCE_MANA   ] = 1559;
 
     melee = new warlock_pet_melee_t( this, "succubus_melee" );
   }
@@ -829,15 +832,24 @@ struct infernal_pet_t : public warlock_pet_t
     warlock_pet_t( sim, owner, pet_name, PET_INFERNAL ), melee(0)
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.damage     = 1524;
+    main_hand_weapon.damage     = 1521;
     main_hand_weapon.swing_time = 2.0;
   }
   virtual void init_base()
   {
     warlock_pet_t::init_base();
 
-    resource_base[ RESOURCE_HEALTH ] = 20600;
+    attribute_base[ ATTR_STRENGTH  ] = 331;
+    attribute_base[ ATTR_AGILITY   ] = 113;
+    attribute_base[ ATTR_STAMINA   ] = 361;
+    attribute_base[ ATTR_INTELLECT ] =  65;
+    attribute_base[ ATTR_SPIRIT    ] = 109;
+
+    resource_base[ RESOURCE_HEALTH ] = 20300;
     resource_base[ RESOURCE_MANA   ] = 0;
+
+      stamina_per_owner = owner -> cast_warlock() -> talents.fel_synergy * 0.05;
+    intellect_per_owner = owner -> cast_warlock() -> talents.fel_synergy * 0.05;
 
     base_attack_power = -20;
 
@@ -851,8 +863,8 @@ struct infernal_pet_t : public warlock_pet_t
   virtual void summon()
   {
     warlock_pet_t::summon();
-    melee      -> execute();
-    immolation -> execute(); 
+    melee      -> schedule_execute();
+    immolation -> schedule_execute(); 
     schedule_ready();
   }
   virtual action_t* create_action( const std::string& name,
@@ -878,19 +890,21 @@ struct doomguard_pet_t : public warlock_pet_t
     warlock_pet_t( sim, owner, pet_name, PET_DOOMGUARD ), melee(0)
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.damage     = 1488;
+    main_hand_weapon.damage     = 1400;
     main_hand_weapon.swing_time = 2.0;
   }
   virtual void init_base()
   {
     warlock_pet_t::init_base();
 
+    attribute_base[ ATTR_STAMINA   ] = 328;
+
     resource_base[ RESOURCE_HEALTH ] = 18000;
     resource_base[ RESOURCE_MANA   ] = 3000;
 
     base_attack_power = -20;
 
-    melee      = new warlock_pet_melee_t( this, "doomguard_melee" );
+    melee = new warlock_pet_melee_t( this, "doomguard_melee" );
   }
   virtual void reset()
   {
