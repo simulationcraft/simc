@@ -162,6 +162,18 @@ struct rogue_t : public player_t
   virtual bool      parse_option( const std::string& name, const std::string& value );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual int       primary_resource() { return RESOURCE_ENERGY; }
+
+  // Utilities 
+  double combo_point_rank( double* cp_list )
+  {
+    assert( buffs_combo_points > 0 );
+    return cp_list[ buffs_combo_points-1 ];
+  }
+  double combo_point_rank( double cp1, double cp2, double cp3, double cp4, double cp5 )
+  {
+    double cp_list[] = { cp1, cp2, cp3, cp4, cp5 };
+    return combo_point_rank( cp_list );
+  }
 };
 
 namespace { // ANONYMOUS NAMESPACE =========================================
@@ -184,7 +196,6 @@ struct rogue_attack_t : public attack_t
   {
     rogue_t* p = player -> cast_rogue();
     base_direct_dmg  = 1;
-    base_multiplier *= 1.0 + p -> talents.find_weakness * 0.02;
     base_crit       += p -> talents.malice * 0.01;
     base_hit        += p -> talents.precision * 0.01;
   }
@@ -257,7 +268,7 @@ static void trigger_combo_points( rogue_attack_t* a )
 // rogue_attack_t::parse_options ===========================================
 
 void rogue_attack_t::parse_options( option_t*          options,
-				    const std::string& options_str )
+                                    const std::string& options_str )
 {
   option_t base_options[] =
   {
@@ -340,9 +351,9 @@ void rogue_attack_t::player_buff()
     if( p -> talents.mace_specialization )
     {
       if( weapon -> type == WEAPON_MACE    ||
-	  weapon -> type == WEAPON_MACE_2H )
+          weapon -> type == WEAPON_MACE_2H )
       {
-	player_penetration += p -> talents.mace_specialization * 0.03;
+        player_penetration += p -> talents.mace_specialization * 0.03;
       }
     }
   }
@@ -474,14 +485,15 @@ struct sinister_strike_t : public rogue_attack_t
     normalize_weapon_speed = true;
     adds_combo_points      = true;
 
-    base_cost -= util_t::talent_rank( p -> talents.improved_sinister_strike, 2, 3.0, 2.0 );
+    base_cost -= util_t::talent_rank( p -> talents.improved_sinister_strike, 2, 3.0, 5.0 );
 
     base_multiplier *= 1.0 + ( p -> talents.aggression       * 0.03 +
-			       p -> talents.blade_twisting   * 0.05 +
-			       p -> talents.surprise_attacks * 0.10 );
+                               p -> talents.blade_twisting   * 0.05 +
+			       p -> talents.find_weakness    * 0.02 +
+                               p -> talents.surprise_attacks * 0.10 );
 
     base_crit_bonus *= 1.0 + ( p -> talents.lethality        * 0.06 +
-			       p -> talents.prey_on_the_weak * 0.04 );
+                               p -> talents.prey_on_the_weak * 0.04 );
   }
 
   virtual void player_buff()
@@ -489,6 +501,56 @@ struct sinister_strike_t : public rogue_attack_t
     rogue_t* p = player -> cast_rogue();
     rogue_attack_t::player_buff();
     if( weapon -> type <= WEAPON_SMALL ) player_crit += p -> talents.close_quarters_combat * 0.01;
+  }
+};
+
+// Rupture ==================================================================
+
+struct rupture_t : public rogue_attack_t
+{
+  double* combo_point_dmg;
+
+  rupture_t( player_t* player, const std::string& options_str ) : 
+    rogue_attack_t( "rupture", player, SCHOOL_BLEED, TREE_ASSASSINATION )
+  {
+    rogue_t* p = player -> cast_rogue();
+
+    min_combo_points = 1;
+
+    option_t options[] =
+    {
+      { NULL }
+    };
+    parse_options( options, options_str );
+      
+    weapon = &( p -> main_hand_weapon );
+
+    base_cost = 25;
+
+    static double dmg_79[] = { 145, 163, 181, 199, 217 };
+    static double dmg_74[] = { 122, 137, 152, 167, 182 };
+    static double dmg_68[] = {  81,  92, 103, 114, 125 };
+    static double dmg_60[] = {  68,  76,  84,  92, 100 };
+
+    combo_point_dmg = ( p -> level >= 79 ? dmg_79 :
+			p -> level >= 74 ? dmg_74 :
+			p -> level >= 68 ? dmg_68 : 
+			                   dmg_60 );
+  }
+
+  virtual void execute()
+  {
+    rogue_t* p = player -> cast_rogue();
+    num_ticks = 3 + p -> buffs_combo_points;
+    rogue_attack_t::execute();
+  }
+
+  virtual void player_buff()
+  {
+    rogue_t* p = player -> cast_rogue();
+    tick_power_mod = p -> combo_point_rank( 0.015, 0.024, 0.030, 0.03428571, 0.0375 );
+    base_td_init   = p -> combo_point_rank( combo_point_dmg );
+    rogue_attack_t::player_buff();
   }
 };
 
@@ -501,7 +563,7 @@ struct sinister_strike_t : public rogue_attack_t
 // rogue_t::create_action  =================================================
 
 action_t* rogue_t::create_action( const std::string& name,
-				  const std::string& options_str )
+                                  const std::string& options_str )
 {
   if( name == "auto_attack"     ) return new auto_attack_t    ( this, options_str );
   if( name == "sinister_strike" ) return new sinister_strike_t( this, options_str );
@@ -561,8 +623,8 @@ void rogue_t::reset()
 // rogue_t::get_talent_trees ==============================================
 
 bool rogue_t::get_talent_trees( std::vector<int8_t*>& assassination,
-				std::vector<int8_t*>& combat,
-				std::vector<int8_t*>& subtlety )
+                                std::vector<int8_t*>& combat,
+                                std::vector<int8_t*>& subtlety )
 {
   talent_translation_t translation[][3] =
   {
@@ -619,7 +681,7 @@ bool rogue_t::parse_talents_mmo( const std::string& talent_string )
 // rogue_t::parse_option  ==============================================
 
 bool rogue_t::parse_option( const std::string& name,
-			    const std::string& value )
+                            const std::string& value )
 {
   option_t options[] =
   {
@@ -708,7 +770,7 @@ bool rogue_t::parse_option( const std::string& name,
 // player_t::create_rogue  =================================================
 
 player_t* player_t::create_rogue( sim_t*       sim, 
-				  std::string& name ) 
+                                  std::string& name ) 
 {
   return new rogue_t( sim, name );
 }

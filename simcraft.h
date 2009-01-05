@@ -142,6 +142,7 @@ enum action_type { ACTION_USE=0, ACTION_SPELL, ACTION_ATTACK, ACTION_OTHER, ACTI
 enum school_type {
      SCHOOL_NONE=0, 
      SCHOOL_ARCANE, 
+     SCHOOL_BLEED,
      SCHOOL_CHAOS, 
      SCHOOL_FIRE, 
      SCHOOL_FROST, 
@@ -1106,7 +1107,7 @@ struct action_t
   std::string name_str;
   player_t* player;
   int8_t school, resource, tree, result;
-  bool bleed, binary, channeled, background, repeating, aoe, harmful, proc;
+  bool binary, channeled, background, repeating, aoe, harmful, proc;
   bool may_miss, may_resist, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
   double min_gcd, trigger_gcd;
   double base_execute_time, base_tick_time, base_cost;

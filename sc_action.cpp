@@ -212,14 +212,27 @@ void action_t::target_debuff( int8_t dmg_type )
 
   target_t* t = sim -> target;
 
-  if( school == SCHOOL_PHYSICAL )
+  if( school == SCHOOL_PHYSICAL || 
+      school == SCHOOL_BLEED    )
   {
-    if( t -> debuffs.blood_frenzy || t -> debuffs.savage_combat ) target_multiplier *= 1.02;
+    if( t -> debuffs.blood_frenzy  || 
+	t -> debuffs.savage_combat ) 
+    {
+      target_multiplier *= 1.02;
+    }
   }
   else
   {
     target_multiplier *= 1.0 + ( std::max( t -> debuffs.curse_of_elements, t -> debuffs.earth_and_moon ) * 0.01 );
     if( t -> debuffs.curse_of_elements ) target_penetration += 88;
+  }
+
+  if( t -> debuffs.mangle )
+  {
+    if( school == SCHOOL_BLEED ) 
+    {
+      target_multiplier *= 1.30;
+    }
   }
 
   if( t -> debuffs.razorice )
@@ -268,7 +281,11 @@ double action_t::resistance()
 
   double penetration = base_penetration + player_penetration + target_penetration;
 
-  if( school == SCHOOL_PHYSICAL )
+  if( school == SCHOOL_BLEED )
+  {
+    // Bleeds cannot be resisted
+  }
+  else if( school == SCHOOL_PHYSICAL )
   {
     double adjusted_armor = t -> composite_armor( player ) * ( 1.0 - penetration );
 
