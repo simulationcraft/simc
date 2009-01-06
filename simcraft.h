@@ -971,6 +971,7 @@ struct target_t
     int8_t   blood_frenzy;
     int8_t   crypt_fever;
     int8_t   judgement_of_wisdom;
+    int8_t   mangle;
     int8_t   razorice;
     int8_t   savage_combat;
     int8_t   snare;
@@ -983,7 +984,6 @@ struct target_t
     double   frozen;
     int8_t   improved_faerie_fire;
     int8_t   improved_scorch;
-    int8_t   mangle;
     int8_t   misery;
     int8_t   misery_stack;
     int8_t   earth_and_moon;

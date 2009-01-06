@@ -185,19 +185,19 @@ namespace { // ANONYMOUS NAMESPACE =========================================
 struct rogue_attack_t : public attack_t
 {
   bool    adds_combo_points;
+  bool    eats_combo_points;
   int16_t min_energy, min_combo_points;
   int16_t max_energy, max_combo_points;
 
   rogue_attack_t( const char* n, player_t* player, int8_t s=SCHOOL_PHYSICAL, int8_t t=TREE_NONE ) : 
     attack_t( n, player, RESOURCE_ENERGY, s, t ), 
-    adds_combo_points(false),
+    adds_combo_points(false), eats_combo_points(false),
     min_energy(0), min_combo_points(0), 
     max_energy(0), max_combo_points(0)
   {
     rogue_t* p = player -> cast_rogue();
-    base_direct_dmg  = 1;
-    base_crit       += p -> talents.malice * 0.01;
-    base_hit        += p -> talents.precision * 0.01;
+    base_crit += p -> talents.malice * 0.01;
+    base_hit  += p -> talents.precision * 0.01;
   }
 
   virtual void   parse_options( option_t*, const std::string& options_str );
@@ -241,22 +241,34 @@ static void trigger_sword_specialization( rogue_attack_t* a )
 
 static void trigger_combo_points( rogue_attack_t* a )
 {
-  if( ! a -> adds_combo_points ) return;
-
   rogue_t* p = a -> player -> cast_rogue();
 
-  if( p -> buffs_combo_points < 5 )
+  if( a -> eats_combo_points )
   {
-    p -> buffs_combo_point_events[ p -> buffs_combo_points ] = a -> sim -> current_time;
-    p -> buffs_combo_points++;
+    p -> buffs_combo_points = 0;
+    for( int i=0; i < MAX_COMBO_POINTS; i++ ) 
+    {
+      p -> buffs_combo_point_events[ i ] = 0;
+    }
+    p -> aura_loss( "Combo Points" );
   }
-
-  if( p -> buffs_combo_points < 5 && p -> talents.seal_fate )
+  if( a -> adds_combo_points )
   {
-    if( a -> sim -> roll( p -> talents.seal_fate * 0.20 ) )
+    if( p -> buffs_combo_points < 5 )
     {
       p -> buffs_combo_point_events[ p -> buffs_combo_points ] = a -> sim -> current_time;
       p -> buffs_combo_points++;
+      p -> aura_gain( "Combo Point" );
+    }
+
+    if( p -> buffs_combo_points < 5 && p -> talents.seal_fate )
+    {
+      if( a -> sim -> roll( p -> talents.seal_fate * 0.20 ) )
+      {
+	p -> buffs_combo_point_events[ p -> buffs_combo_points ] = a -> sim -> current_time;
+	p -> buffs_combo_points++;
+	p -> aura_gain( "Combo Point" );
+      }
     }
   }
 }
@@ -394,6 +406,9 @@ bool rogue_attack_t::ready()
     if( sim -> time_to_think( p -> buffs_combo_point_events[ max_combo_points-1 ] ) )
       return false;
 
+  if( eats_combo_points && ( p -> buffs_combo_points == 0 ) )
+    return false;
+
   return true;
 }
 
@@ -410,10 +425,11 @@ struct melee_t : public rogue_attack_t
   {
     rogue_t* p = player -> cast_rogue();
 
-    background  = true;
-    repeating   = true;
-    trigger_gcd = 0;
-    base_cost   = 0;
+    base_direct_dmg = 1;
+    background      = true;
+    repeating       = true;
+    trigger_gcd     = 0;
+    base_cost       = 0;
 
     if( p -> dual_wield() ) base_hit -= 0.18;
   }
@@ -472,11 +488,11 @@ struct sinister_strike_t : public rogue_attack_t
       
     static rank_t ranks[] =
     {
-      { 80, 12, 0, 0, 180, 45 },
-      { 76, 11, 0, 0, 150, 45 },
-      { 70, 10, 0, 0,  98, 45 },
-      { 62,  9, 0, 0,  80, 45 },
-      { 54,  8, 0, 0,  68, 45 },
+      { 80, 12, 180, 180, 0, 45 },
+      { 76, 11, 150, 150, 0, 45 },
+      { 70, 10,  98,  98, 0, 45 },
+      { 62,  9,  80,  80, 0, 45 },
+      { 54,  8,  68,  68, 0, 45 },
       { 0, 0 }
     };
     init_rank( ranks );
@@ -515,8 +531,6 @@ struct rupture_t : public rogue_attack_t
   {
     rogue_t* p = player -> cast_rogue();
 
-    min_combo_points = 1;
-
     option_t options[] =
     {
       { NULL }
@@ -524,8 +538,10 @@ struct rupture_t : public rogue_attack_t
     parse_options( options, options_str );
       
     weapon = &( p -> main_hand_weapon );
+    eats_combo_points = true;
 
-    base_cost = 25;
+    base_cost      = 25;
+    base_tick_time = 2.0; 
 
     static double dmg_79[] = { 145, 163, 181, 199, 217 };
     static double dmg_74[] = { 122, 137, 152, 167, 182 };
@@ -567,6 +583,7 @@ action_t* rogue_t::create_action( const std::string& name,
 {
   if( name == "auto_attack"     ) return new auto_attack_t    ( this, options_str );
   if( name == "sinister_strike" ) return new sinister_strike_t( this, options_str );
+  if( name == "rupture"         ) return new rupture_t        ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -594,6 +611,8 @@ void rogue_t::init_base()
   resource_base[ RESOURCE_ENERGY ] = 100;
 
   health_per_stamina = 10;
+
+  base_gcd = 1.0;
 }
 
 // rogue_t::reset ===========================================================

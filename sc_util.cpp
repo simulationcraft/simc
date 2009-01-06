@@ -206,6 +206,7 @@ const char* util_t::school_type_string( int8_t school )
   switch( school )
   {
   case SCHOOL_ARCANE:    return "arcane";
+  case SCHOOL_BLEED:     return "bleed";
   case SCHOOL_CHAOS:     return "chaos";
   case SCHOOL_FIRE:      return "fire";
   case SCHOOL_FROST:     return "frost";

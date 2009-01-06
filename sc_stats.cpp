@@ -8,7 +8,7 @@
 // stats_t::stats_t =========================================================
 
 stats_t::stats_t( const std::string& n, player_t* p ) :
-  name_str(n), sim(p->sim), player(p), next(0), school(SCHOOL_PHYSICAL),
+  name_str(n), sim(p->sim), player(p), next(0), school(SCHOOL_NONE),
   channeled(false), analyzed(false), initialized(false), 
   resource_consumed(0)
 {

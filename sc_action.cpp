@@ -171,7 +171,11 @@ void action_t::player_buff()
 
   player_t* p = player;
 
-  if( school == SCHOOL_PHYSICAL )
+  if( school == SCHOOL_BLEED )
+  {
+    // Not applicable
+  }
+  else if( school == SCHOOL_PHYSICAL )
   {
     player_penetration = p -> composite_attack_penetration();
   }
