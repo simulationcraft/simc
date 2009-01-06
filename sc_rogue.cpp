@@ -500,6 +500,7 @@ struct sinister_strike_t : public rogue_attack_t
     weapon = &( p -> main_hand_weapon );
     normalize_weapon_speed = true;
     adds_combo_points      = true;
+    may_glance             = false;
 
     base_cost -= util_t::talent_rank( p -> talents.improved_sinister_strike, 2, 3.0, 5.0 );
 
@@ -537,8 +538,9 @@ struct rupture_t : public rogue_attack_t
     };
     parse_options( options, options_str );
       
-    weapon = &( p -> main_hand_weapon );
+    weapon            = &( p -> main_hand_weapon );
     eats_combo_points = true;
+    may_glance        = false;
 
     base_cost      = 25;
     base_tick_time = 2.0; 
