@@ -574,17 +574,17 @@ struct faerie_fire_t : public druid_spell_t
       faerie_fire_t* faerie_fire;
       expiration_t( sim_t* sim, player_t* p, faerie_fire_t* ff ) : event_t( sim, p ), faerie_fire( ff )
       {
-	target_t* t = sim -> target;
-	t -> debuffs.faerie_fire = faerie_fire -> armor_penetration;
-	t -> debuffs.improved_faerie_fire = faerie_fire -> bonus_hit;
-	sim -> add_event( this, 40.0 );
+    target_t* t = sim -> target;
+    t -> debuffs.faerie_fire = faerie_fire -> armor_penetration;
+    t -> debuffs.improved_faerie_fire = faerie_fire -> bonus_hit;
+    sim -> add_event( this, 40.0 );
       }
       virtual void execute()
       {
-	target_t* t = sim -> target;
-	t -> debuffs.faerie_fire = 0;
-	t -> debuffs.improved_faerie_fire = 0;
-	t -> expirations.faerie_fire = 0;
+    target_t* t = sim -> target;
+    t -> debuffs.faerie_fire = 0;
+    t -> debuffs.improved_faerie_fire = 0;
+    t -> expirations.faerie_fire = 0;
       }
     };
 
@@ -693,7 +693,7 @@ struct innervate_t : public druid_spell_t
       return false;
 
     return( player -> resource_max    [ RESOURCE_MANA ] - 
-	    player -> resource_current[ RESOURCE_MANA ] ) > trigger;
+        player -> resource_current[ RESOURCE_MANA ] ) > trigger;
   }
 };
 
@@ -748,15 +748,15 @@ struct insect_swarm_t : public druid_spell_t
     if( wrath_ready && ! active_wrath )
     {
       for( active_wrath = next; active_wrath; active_wrath = active_wrath -> next )
-	if( active_wrath -> name_str == "wrath" )
-	  break;
+    if( active_wrath -> name_str == "wrath" )
+      break;
 
       if( ! active_wrath ) wrath_ready = 0;
     }
 
     if( wrath_ready )
       if( ! active_wrath -> ready() )
-	return false;
+    return false;
 
     return true;
   }
@@ -800,10 +800,10 @@ struct moonfire_t : public druid_spell_t
     base_crit_bonus *= 1.0 + util_t::talent_rank( p -> talents.vengeance,         5, 0.20 );
 
     double multiplier_td = ( util_t::talent_rank( p -> talents.moonfury,          3, 0.03, 0.06, 0.10 ) +
-			                 util_t::talent_rank( p -> talents.improved_moonfire, 2, 0.05 ) +
-			                 util_t::talent_rank( p -> talents.genesis,           5, 0.01 ) );
+                             util_t::talent_rank( p -> talents.improved_moonfire, 2, 0.05 ) +
+                             util_t::talent_rank( p -> talents.genesis,           5, 0.01 ) );
     double multiplier_dd = ( util_t::talent_rank( p -> talents.moonfury,          3, 0.03, 0.06, 0.10 ) +
-			                 util_t::talent_rank( p -> talents.improved_moonfire, 2, 0.05 ) );
+                            util_t::talent_rank( p -> talents.improved_moonfire, 2, 0.05 ) );
 
     if( p -> glyphs.moonfire )
     {
@@ -851,7 +851,7 @@ struct moonkin_form_t : public druid_spell_t
 
       if( player -> cast_druid() -> talents.improved_moonkin_form )
       {
-	    p -> buffs.improved_moonkin_aura = 1;
+        p -> buffs.improved_moonkin_aura = 1;
       }
     }
   }
@@ -1016,17 +1016,17 @@ struct starfire_t : public druid_spell_t
         return false;
 
       if( sim -> current_time + 1.5 < p -> cooldowns_eclipse )
-	if( ! sim -> time_to_think( p -> buffs_eclipse_starfire ) )
-	  return false;
+        if( ! sim -> time_to_think( p -> buffs_eclipse_starfire ) )
+          return false;
     }
 
     if( ! prev_str.empty() )
     {
       if( ! p -> last_foreground_action )
-	return false;
+        return false;
 
       if( p -> last_foreground_action -> name_str != prev_str )
-	return false;
+        return false;
     }
 
     return true;
@@ -1136,25 +1136,25 @@ struct wrath_t : public druid_spell_t
 
     if( eclipse_benefit )
       if( ! sim -> time_to_think( p -> buffs_eclipse_wrath ) )
-	return false;
+        return false;
 
     if( eclipse_trigger )
     {
       if( p -> talents.eclipse == 0 )
-	    return false;
+        return false;
 
       if( sim -> current_time + 3.0 < p -> cooldowns_eclipse )
-	    if( ! sim -> time_to_think( p -> buffs_eclipse_wrath ) )
-	      return false;
+        if( ! sim -> time_to_think( p -> buffs_eclipse_wrath ) )
+          return false;
     }
 
     if( ! prev_str.empty() )
     {
       if( ! p -> last_foreground_action )
-	    return false;
+        return false;
 
       if( p -> last_foreground_action -> name_str != prev_str )
-	    return false;
+        return false;
     }
 
     return true;
@@ -1265,7 +1265,7 @@ struct treants_spell_t : public druid_spell_t
 // druid_t::create_action  ==================================================
 
 action_t* druid_t::create_action( const std::string& name,
-				  const std::string& options_str )
+                  const std::string& options_str )
 {
   if( name == "faerie_fire"       ) return new      faerie_fire_t( this, options_str );
   if( name == "insect_swarm"      ) return new     insect_swarm_t( this, options_str );
@@ -1382,8 +1382,8 @@ double druid_t::composite_spell_crit()
 // druid_t::get_talent_trees ===============================================
 
 bool druid_t::get_talent_trees( std::vector<int8_t*>& balance,
-				std::vector<int8_t*>& feral,
-				std::vector<int8_t*>& restoration )
+                std::vector<int8_t*>& feral,
+                    std::vector<int8_t*>& restoration )
 {
   talent_translation_t translation[][3] =
   {
@@ -1441,7 +1441,7 @@ bool druid_t::parse_talents_mmo( const std::string& talent_string )
 // druid_t::parse_option  ==============================================
 
 bool druid_t::parse_option( const std::string& name,
-			    const std::string& value )
+                const std::string& value )
 {
   option_t options[] =
   {
@@ -1505,13 +1505,13 @@ bool druid_t::parse_option( const std::string& name,
     { "tier7_4pc_feral",         OPT_INT8,  &( tiers.t7_4pc_feral                  ) },
     // Deprecated
     { "tier4_2pc", OPT_DEPRECATED, (void*) "tier4_2pc_balance|tier4_2pc_feral" },
-    { "tier4_2pc", OPT_DEPRECATED, (void*) "tier4_2pc_balance|tier4_2pc_feral" },
+    { "tier4_4pc", OPT_DEPRECATED, (void*) "tier4_4pc_balance|tier4_4pc_feral" },
     { "tier5_2pc", OPT_DEPRECATED, (void*) "tier5_2pc_balance|tier5_2pc_feral" },
-    { "tier5_2pc", OPT_DEPRECATED, (void*) "tier5_2pc_balance|tier5_2pc_feral" },
+    { "tier5_4pc", OPT_DEPRECATED, (void*) "tier5_4pc_balance|tier5_4pc_feral" },
     { "tier6_2pc", OPT_DEPRECATED, (void*) "tier6_2pc_balance|tier6_2pc_feral" },
-    { "tier6_2pc", OPT_DEPRECATED, (void*) "tier6_2pc_balance|tier6_2pc_feral" },
+    { "tier6_4pc", OPT_DEPRECATED, (void*) "tier6_4pc_balance|tier6_4pc_feral" },
     { "tier7_2pc", OPT_DEPRECATED, (void*) "tier7_2pc_balance|tier7_2pc_feral" },
-    { "tier7_2pc", OPT_DEPRECATED, (void*) "tier7_2pc_balance|tier7_2pc_feral" },
+    { "tier7_4pc", OPT_DEPRECATED, (void*) "tier7_4pc_balance|tier7_4pc_feral" },
     { NULL, OPT_UNKNOWN }
   };
 
@@ -1530,7 +1530,7 @@ bool druid_t::parse_option( const std::string& name,
 // player_t::create_druid  ==================================================
 
 player_t* player_t::create_druid( sim_t*       sim, 
-				  std::string& name ) 
+                  std::string& name ) 
 {
   return new druid_t( sim, name );
 }
