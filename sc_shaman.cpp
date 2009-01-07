@@ -3041,13 +3041,13 @@ bool shaman_t::parse_option( const std::string& name,
     { "tier7_4pc_enhancement",     OPT_INT8,  &( tiers.t7_4pc_enhancement          ) },
     // Deprecated
     { "tier4_2pc", OPT_DEPRECATED, (void*) "tier4_2pc_elemental|tier4_2pc_enhancement" },
-    { "tier4_2pc", OPT_DEPRECATED, (void*) "tier4_2pc_elemental|tier4_2pc_enhancement" },
+    { "tier4_4pc", OPT_DEPRECATED, (void*) "tier4_4pc_elemental|tier4_4pc_enhancement" },
     { "tier5_2pc", OPT_DEPRECATED, (void*) "tier5_2pc_elemental|tier5_2pc_enhancement" },
-    { "tier5_2pc", OPT_DEPRECATED, (void*) "tier5_2pc_elemental|tier5_2pc_enhancement" },
+    { "tier5_4pc", OPT_DEPRECATED, (void*) "tier5_4pc_elemental|tier5_4pc_enhancement" },
     { "tier6_2pc", OPT_DEPRECATED, (void*) "tier6_2pc_elemental|tier6_2pc_enhancement" },
-    { "tier6_2pc", OPT_DEPRECATED, (void*) "tier6_2pc_elemental|tier6_2pc_enhancement" },
+    { "tier6_4pc", OPT_DEPRECATED, (void*) "tier6_4pc_elemental|tier6_4pc_enhancement" },
     { "tier7_2pc", OPT_DEPRECATED, (void*) "tier7_2pc_elemental|tier7_2pc_enhancement" },
-    { "tier7_2pc", OPT_DEPRECATED, (void*) "tier7_2pc_elemental|tier7_2pc_enhancement" },
+    { "tier7_4pc", OPT_DEPRECATED, (void*) "tier7_4pc_elemental|tier7_4pc_enhancement" },
     { NULL, OPT_UNKNOWN }
   };
 
