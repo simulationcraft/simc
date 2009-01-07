@@ -149,6 +149,28 @@ struct shaman_t : public player_t
   };
   totems_t totems;
 
+  struct tiers_t
+  {
+    int8_t t4_2pc_elemental;
+    int8_t t4_4pc_elemental;
+    int8_t t5_2pc_elemental;
+    int8_t t5_4pc_elemental;
+    int8_t t6_2pc_elemental;
+    int8_t t6_4pc_elemental;
+    int8_t t7_2pc_elemental;
+    int8_t t7_4pc_elemental;
+    int8_t t4_2pc_enhancement;
+    int8_t t4_4pc_enhancement;
+    int8_t t5_2pc_enhancement;
+    int8_t t5_4pc_enhancement;
+    int8_t t6_2pc_enhancement;
+    int8_t t6_4pc_enhancement;
+    int8_t t7_2pc_enhancement;
+    int8_t t7_4pc_enhancement;
+    tiers_t() { memset( (void*) this, 0x0, sizeof( tiers_t ) ); }
+  };
+  tiers_t tiers;
+
   shaman_t( sim_t* sim, std::string& name ) : player_t( sim, SHAMAN, name )
   {
     // Totems
@@ -551,15 +573,15 @@ static void trigger_nature_vulnerability( attack_t* a )
   }
 }
 
-// trigger_tier5_4pc ========================================================
+// trigger_tier5_4pc_elemental ===============================================
 
-static void trigger_tier5_4pc( spell_t* s )
+static void trigger_tier5_4pc_elemental( spell_t* s )
 {
   if( s -> result != RESULT_CRIT ) return;
 
   shaman_t* p = s -> player -> cast_shaman();
 
-  if( p -> gear.tier5_4pc && s -> sim -> roll( 0.25 ) )
+  if( p -> tiers.t5_4pc_elemental && s -> sim -> roll( 0.25 ) )
   {
     p -> resource_gain( RESOURCE_MANA, 120.0, p -> gains.tier5_4pc );
   }
@@ -1013,7 +1035,7 @@ void shaman_spell_t::execute()
 
       p -> buffs_elemental_focus = 2;
 
-      if( p -> gear.tier4_4pc )
+      if( p -> tiers.t4_4pc_elemental )
       {
         p -> buffs.tier4_4pc = sim -> roll( 0.11 ) ;
       }
@@ -1199,9 +1221,10 @@ struct lightning_bolt_t : public shaman_spell_t
     base_crit_bonus   *= 1.0 + p -> talents.elemental_fury * 0.20;
     direct_power_mod  += p -> talents.shamanism * 0.02;
 
-    if( p -> gear.tier6_4pc        ) base_multiplier *= 1.05;
-    if( p -> glyphs.lightning_bolt ) base_multiplier *= 1.04;
-    if( p -> totems.hex            ) base_power      += 165;
+    if( p -> tiers.t6_4pc_elemental ) base_multiplier *= 1.05;
+    if( p -> tiers.t7_2pc_elemental ) base_cost       *= 0.95;
+    if( p -> glyphs.lightning_bolt  ) base_multiplier *= 1.04;
+    if( p -> totems.hex             ) base_power      += 165;
 
     lightning_overload_stats = p -> get_stats( "lightning_overload" );
     lightning_overload_stats -> school = SCHOOL_NATURE;
@@ -1215,7 +1238,7 @@ struct lightning_bolt_t : public shaman_spell_t
     {
       trigger_ashtongue_talisman( this );
       trigger_lightning_overload( this, lightning_overload_stats );
-      trigger_tier5_4pc( this );
+      trigger_tier5_4pc_elemental( this );
     }
   }
 
@@ -1296,6 +1319,8 @@ struct lava_burst_t : public shaman_spell_t
     base_crit_bonus   *= 1.0 + p -> talents.elemental_fury * 0.20;
     base_crit_bonus   *= 1.0 + util_t::talent_rank( p -> talents.lava_flows, 3, 0.06, 0.12, 0.24 );
     direct_power_mod  += p -> talents.shamanism * 0.04;
+
+    if( p -> tiers.t7_4pc_elemental ) base_crit_bonus *= 1.10;
   }
 
   virtual void execute()
@@ -2769,7 +2794,7 @@ void shaman_t::init_base()
 
   mp5_per_intellect = util_t::talent_rank( talents.unrelenting_storm, 3, 0.04 );
 
-  if( gear.tier6_2pc )
+  if( tiers.t6_2pc_elemental )
   {
     // Simply assume the totems are out all the time.
 
@@ -2997,6 +3022,32 @@ bool shaman_t::parse_option( const std::string& name,
     { "glyph_elemental_mastery",   OPT_INT8,  &( glyphs.elemental_mastery          ) },
     // Totems
     { "totem_of_hex",              OPT_INT8,  &( totems.hex                        ) },
+    // Tier Bonuses
+    { "tier4_2pc_elemental",       OPT_INT8,  &( tiers.t4_2pc_elemental            ) },
+    { "tier4_4pc_elemental",       OPT_INT8,  &( tiers.t4_4pc_elemental            ) },
+    { "tier5_2pc_elemental",       OPT_INT8,  &( tiers.t5_2pc_elemental            ) },
+    { "tier5_4pc_elemental",       OPT_INT8,  &( tiers.t5_4pc_elemental            ) },
+    { "tier6_2pc_elemental",       OPT_INT8,  &( tiers.t6_2pc_elemental            ) },
+    { "tier6_4pc_elemental",       OPT_INT8,  &( tiers.t6_4pc_elemental            ) },
+    { "tier7_2pc_elemental",       OPT_INT8,  &( tiers.t7_2pc_elemental            ) },
+    { "tier7_4pc_elemental",       OPT_INT8,  &( tiers.t7_4pc_elemental            ) },
+    { "tier4_2pc_enhancement",     OPT_INT8,  &( tiers.t4_2pc_enhancement          ) },
+    { "tier4_4pc_enhancement",     OPT_INT8,  &( tiers.t4_4pc_enhancement          ) },
+    { "tier5_2pc_enhancement",     OPT_INT8,  &( tiers.t5_2pc_enhancement          ) },
+    { "tier5_4pc_enhancement",     OPT_INT8,  &( tiers.t5_4pc_enhancement          ) },
+    { "tier6_2pc_enhancement",     OPT_INT8,  &( tiers.t6_2pc_enhancement          ) },
+    { "tier6_4pc_enhancement",     OPT_INT8,  &( tiers.t6_4pc_enhancement          ) },
+    { "tier7_2pc_enhancement",     OPT_INT8,  &( tiers.t7_2pc_enhancement          ) },
+    { "tier7_4pc_enhancement",     OPT_INT8,  &( tiers.t7_4pc_enhancement          ) },
+    // Deprecated
+    { "tier4_2pc", OPT_DEPRECATED, (void*) "tier4_2pc_elemental|tier4_2pc_enhancement" },
+    { "tier4_2pc", OPT_DEPRECATED, (void*) "tier4_2pc_elemental|tier4_2pc_enhancement" },
+    { "tier5_2pc", OPT_DEPRECATED, (void*) "tier5_2pc_elemental|tier5_2pc_enhancement" },
+    { "tier5_2pc", OPT_DEPRECATED, (void*) "tier5_2pc_elemental|tier5_2pc_enhancement" },
+    { "tier6_2pc", OPT_DEPRECATED, (void*) "tier6_2pc_elemental|tier6_2pc_enhancement" },
+    { "tier6_2pc", OPT_DEPRECATED, (void*) "tier6_2pc_elemental|tier6_2pc_enhancement" },
+    { "tier7_2pc", OPT_DEPRECATED, (void*) "tier7_2pc_elemental|tier7_2pc_enhancement" },
+    { "tier7_2pc", OPT_DEPRECATED, (void*) "tier7_2pc_elemental|tier7_2pc_enhancement" },
     { NULL, OPT_UNKNOWN }
   };
 
@@ -3007,9 +3058,9 @@ bool shaman_t::parse_option( const std::string& name,
     return false;
   }
 
-  if( player_t::parse_option( name, value ) ) return true;
+  if( option_t::parse( sim, options, name, value ) ) return true;
 
-  return option_t::parse( sim, options, name, value );
+  return player_t::parse_option( name, value );
 }
 
 // player_t::create_shaman  =================================================

@@ -295,69 +295,6 @@ struct mana_potion_t : public action_t
 };
 
 // ==========================================================================
-// Mana Gem
-// FIXME! Mages can only have 3 charges (every 2 min) per unique gem, so we
-// might need introduce more than one gem type/option
-// ==========================================================================
-
-struct mana_gem_t : public action_t
-{
-  int16_t trigger;
-  int16_t min;
-  int16_t max;
-
-  mana_gem_t( player_t* p, const std::string& options_str ) : 
-    action_t( ACTION_USE, "mana_gem", p ), trigger(0), min(0), max(0)
-  {
-    option_t options[] =
-    {
-      { "min",     OPT_INT16, &min     },
-      { "max",     OPT_INT16, &max     },
-      { "trigger", OPT_INT16, &trigger },
-      { NULL }
-    };
-    parse_options( options, options_str );
-
-    if( min == 0 && max == 0) min = max = trigger;
-
-    if( min > max) { int16_t tmp = min; min = max; max = tmp;}    
-
-    if( max == 0 ) max = trigger;
-    if( trigger == 0 ) trigger = max;
-    assert( max > 0 && trigger > 0 );
-
-    cooldown = 120.0;
-    cooldown_group = "rune";
-    trigger_gcd = 0;
-    harmful = false;
-  }
-  
-  virtual void execute()
-  {
-    if( sim -> log ) report_t::log( sim, "%s uses Mana Gem", player -> name() );
-    int16_t delta = max - min;
-    // FIXME! I hope the gain between min and max are distributed uniformly
-    double gain   = min + delta * player -> sim -> rng -> real();
-    player -> resource_gain( RESOURCE_MANA, gain, player -> gains.mana_gem );
-    player -> share_cooldown( cooldown_group, cooldown );
-  }
-
-  virtual bool ready()
-  {
-    if( cooldown_ready > sim -> current_time ) 
-      return false;
-
-    return( player -> resource_max    [ RESOURCE_MANA ] - 
-	    player -> resource_current[ RESOURCE_MANA ] ) > trigger;
-  }
-
-  virtual void reset()
-  {
-    action_t::reset();
-  }
-};
-
-// ==========================================================================
 // Health Stone
 // ==========================================================================
 
@@ -552,7 +489,6 @@ action_t* consumable_t::create_action( player_t*          p,
   if( name == "food"               ) return new               food_t( p, options_str );
   if( name == "health_stone"       ) return new       health_stone_t( p, options_str );
   if( name == "mana_potion"        ) return new        mana_potion_t( p, options_str );
-  if( name == "mana_gem"           ) return new           mana_gem_t( p, options_str );
   if( name == "wizard_oil"         ) return new         wizard_oil_t( p, options_str );
 
   return 0;

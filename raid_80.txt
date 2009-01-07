@@ -128,6 +128,8 @@ level=80
 talents=http://www.wowhead.com/?talent=0xG0uiGsIdIVhouZbxczb
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/mark_of_the_wild/moonkin_form/mana_potion,trigger=4300/innervate,trigger=12000
 actions+=/treants/moonfire/insect_swarm/wrath,eclipse=trigger/starfire
+tier7_2pc_balance=1
+tier7_4pc_balance=1
 enchant_hit_rating=-25
 enchant_haste_rating=+25
 chaotic_skyflare=1
@@ -156,6 +158,8 @@ level=80
 talents=http://www.wowhead.com/?talent=0xG0uiGsIdIVhouZbxczb
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/mark_of_the_wild/moonkin_form/mana_potion,trigger=4300/innervate,trigger=12000
 actions+=/treants/moonfire/insect_swarm/starfire,eclipse=trigger/wrath
+tier7_2pc_balance=1
+tier7_4pc_balance=1
 enchant_hit_rating=-25
 enchant_haste_rating=+25
 chaotic_skyflare=1
@@ -184,6 +188,8 @@ level=80
 talents=http://www.wowhead.com/?talent=0xG0uiGsIdIVhouZbxczb
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/mark_of_the_wild/moonkin_form/mana_potion,trigger=4300/innervate,trigger=12000
 actions+=/faerie_fire/treants/moonfire/insect_swarm/starfire,eclipse=trigger/wrath
+tier7_2pc_balance=1
+tier7_4pc_balance=1
 enchant_hit_rating=-25
 enchant_haste_rating=+25
 chaotic_skyflare=1
@@ -231,6 +237,8 @@ actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/molten_armor/foc
 actions+=/mana_gem,trigger=3500/mana_potion,trigger=4300
 actions+=/mirror_image/arcane_power/presence_of_mind,pyroblast/arcane_blast,max=3/arcane_missiles,barrage=1,abar_combo=1/arcane_barrage
 actions+=/evocation
+tier7_2pc=1
+tier7_4pc=1
 chaotic_skyflare=1
 # Glyphs
 glyph_arcane_power=1
@@ -261,6 +269,8 @@ actions+=/mana_gem,trigger=3500/mana_potion,trigger=4300
 actions+=/scorch,debuff=1/mirror_image/combustion/living_bomb/pyroblast,hot_streak=1/fire_ball
 actions+=/evocation
 skip_actions=scorch
+tier7_2pc=1
+tier7_4pc=1
 enchant_hit_rating=+75
 enchant_haste_rating=-75
 chaotic_skyflare=1
@@ -290,6 +300,10 @@ actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/arcane_brillianc
 actions+=/mana_gem,trigger=3500/mana_potion,trigger=4300
 actions+=/mirror_image/ice_lance,frozen=1,fb_priority=1/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/frost_bolt
 actions+=/evocation
+tier7_2pc=1
+tier7_4pc=1
+enchant_crit_rating=+75
+enchant_haste_rating=-75
 chaotic_skyflare=1
 # Glyphs
 glyph_molten_armor=1
@@ -323,6 +337,8 @@ actions+=/scorch,debuff=1/mirror_image/combustion/icy_veins/living_bomb/pyroblas
 actions+=/evocation
 # We will let the poor Frost Mage raid-slave keep up the IS/WC debuff
 skip_actions=scorch
+tier7_2pc=1
+tier7_4pc=1
 chaotic_skyflare=1
 # Glyphs
 glyph_molten_armor=1
@@ -351,6 +367,8 @@ level=80
 talents=http://www.wowhead.com/?talent=bVcbzhZZG0fVRfzfiqfzAo
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/inner_fire/shadow_form/mana_potion,trigger=4300/shadow_fiend,trigger=6000/dispersion
 actions+=/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/shadow_word_death,mb_wait=0,mb_priority=0/mind_flay,mb_wait=0
+tier7_2pc=1
+tier7_4pc=1
 chaotic_skyflare=1
 glyph_shadow_word_pain=1
 glyph_shadow=1
@@ -375,6 +393,8 @@ level=80
 talents=http://www.wowhead.com/?talent=bVcbzhZZG0fVRfzfiqfzAo
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/inner_fire/shadow_form/mana_potion,trigger=4300/shadow_fiend,trigger=6000/dispersion
 actions+=/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/mind_flay
+tier7_2pc=1
+tier7_4pc=1
 chaotic_skyflare=1
 glyph_shadow_word_pain=1
 glyph_shadow=1
@@ -444,6 +464,8 @@ actions+=/mana_spring_totem/totem_of_wrath/wrath_of_air_totem/water_shield
 actions+=/elemental_mastery/flame_shock/lava_burst,flame_shock=1/bloodlust,target_pct=35/chain_lightning/lightning_bolt/thunderstorm
 gear_spirit=0
 gear_mp5=100
+tier7_2pc_elemental=1
+tier7_4pc_elemental=1
 chaotic_skyflare=1
 # Glyphs
 glyph_flametongue_weapon=1
@@ -528,6 +550,8 @@ talents=http://www.wowhead.com/?talent=IfxMbzMAoVAoIstZE00V
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/spell_stone/fel_armor/summon_pet,felhunter
 actions+=/haunt,debuff=1/curse_of_agony/corruption/unstable_affliction/siphon_life
 actions+=/shadow_bolt,shadow_trance=1/drain_soul,target_pct=25/immolate/shadow_bolt/life_tap
+tier7_2pc=1
+tier7_4pc=1
 chaotic_skyflare=1
 # Glyphs
 glyph_corruption=1
@@ -555,6 +579,8 @@ talents=http://www.wowhead.com/?talent=IfxMbzMAoVAoIstZE00V
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/spell_stone/fel_armor/summon_pet,doomguard
 actions+=/haunt,debuff=1/inferno,target_pct=36/curse_of_agony/corruption/unstable_affliction/siphon_life
 actions+=/shadow_bolt,shadow_trance=1/drain_soul,target_pct=25/immolate/life_tap,trigger=3100/shadow_bolt
+tier7_2pc=1
+tier7_4pc=1
 chaotic_skyflare=1
 # Glyphs
 glyph_corruption=1
@@ -585,6 +611,8 @@ talents=http://www.wowhead.com/?talent=IfxMbzMAoVAoIstZE00V
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/spell_stone/fel_armor/summon_pet,felhunter/curse_of_elements
 actions+=/haunt,debuff=1/corruption/unstable_affliction/siphon_life
 actions+=/shadow_bolt,shadow_trance=1/drain_soul,target_pct=25/immolate/shadow_bolt/dark_pact
+tier7_2pc=1
+tier7_4pc=1
 chaotic_skyflare=1
 # Glyphs
 glyph_corruption=1
@@ -611,6 +639,8 @@ level=80
 talents=http://www.wowhead.com/?talent=IfxMbzMAoVAoIstZE00V
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/spell_stone/fel_armor/summon_pet,felhunter
 actions+=/haunt,debuff=1/curse_of_agony/corruption/unstable_affliction/siphon_life/immolate/shadow_bolt/dark_pact
+tier7_2pc=1
+tier7_4pc=1
 chaotic_skyflare=1
 # Glyphs
 glyph_corruption=1
@@ -637,6 +667,8 @@ level=80
 talents=http://www.wowhead.com/?talent=IZcxIzsxoqcsguhoE0hV
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/fire_stone/fel_armor/summon_pet,felguard
 actions+=/curse_of_doom/demonic_empowerment/metamorphosis/corruption/immolate/shadow_bolt/life_tap
+tier7_2pc=1
+tier7_4pc=1
 chaotic_skyflare=1
 # Glyphs
 glyph_corruption=1
@@ -671,6 +703,8 @@ level=80
 talents=http://www.wowhead.com/?talent=IbZcLc0cZVcGVd0uVsAfct
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/fire_stone/fel_armor/summon_pet,imp
 actions+=/shadow_bolt,shadow_trance=1/chaos_bolt/curse_of_agony/immolate/conflagrate/incinerate/life_tap
+tier7_2pc=1
+tier7_4pc=1
 chaotic_skyflare=1
 # Glyphs
 glyph_corruption=1

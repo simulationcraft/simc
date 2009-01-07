@@ -4221,9 +4221,9 @@ bool warlock_t::parse_option( const std::string& name,
     return false;
   }
 
-  if( player_t::parse_option( name, value ) ) return true;
+  if( option_t::parse( sim, options, name, value ) ) return true;
 
-  return option_t::parse( sim, options, name, value );
+  return player_t::parse_option( name, value );
 }
 
 // player_t::create_warlock ================================================

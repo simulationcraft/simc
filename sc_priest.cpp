@@ -1115,10 +1115,7 @@ struct shadow_word_death_t : public priest_spell_t
     base_hit        += p -> talents.shadow_focus * 0.01;
     base_crit_bonus *= 1.0 + p -> talents.shadow_power * 0.20;
 
-	if ( p -> gear.tier7_4pc )
-	{
-      base_crit     += 0.1;
-	}
+    if ( p -> gear.tier7_4pc ) base_crit += 0.1;
 
     assert( p -> active_shadow_word_death == 0 );
     p -> active_shadow_word_death = this;
@@ -1959,9 +1956,9 @@ bool priest_t::parse_option( const std::string& name,
     return false;
   }
 
-  if( player_t::parse_option( name, value ) ) return true;
+  if( option_t::parse( sim, options, name, value ) ) return true;
 
-  return option_t::parse( sim, options, name, value );
+  return player_t::parse_option( name, value );
 }
 
 // player_t::create_priest  =================================================

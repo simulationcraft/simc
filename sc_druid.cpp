@@ -99,6 +99,28 @@ struct druid_t : public player_t
   };
   idols_t idols;
 
+  struct tiers_t
+  {
+    int8_t t4_2pc_balance;
+    int8_t t4_4pc_balance;
+    int8_t t5_2pc_balance;
+    int8_t t5_4pc_balance;
+    int8_t t6_2pc_balance;
+    int8_t t6_4pc_balance;
+    int8_t t7_2pc_balance;
+    int8_t t7_4pc_balance;
+    int8_t t4_2pc_feral;
+    int8_t t4_4pc_feral;
+    int8_t t5_2pc_feral;
+    int8_t t5_4pc_feral;
+    int8_t t6_2pc_feral;
+    int8_t t6_4pc_feral;
+    int8_t t7_2pc_feral;
+    int8_t t7_4pc_feral;
+    tiers_t() { memset( (void*) this, 0x0, sizeof( tiers_t ) ); }
+  };
+  tiers_t tiers;
+
   druid_t( sim_t* sim, std::string& name ) : player_t( sim, DRUID, name ) 
   {
     active_moonfire = 0;
@@ -476,7 +498,7 @@ void druid_spell_t::execute()
 
   trigger_omen_of_clarity( this );
 
-  if( p -> gear.tier4_2pc && sim -> roll( 0.05 ) )
+  if( p -> tiers.t4_2pc_balance && sim -> roll( 0.05 ) )
   {
     p -> resource_gain( RESOURCE_MANA, 120.0, p -> gains.tier4_2pc );
   }
@@ -596,13 +618,14 @@ struct faerie_fire_t : public druid_spell_t
 struct innervate_t : public druid_spell_t
 {
   int16_t trigger;
-  
   player_t* innervate_target;
   
   innervate_t( player_t* player, const std::string& options_str ) : 
     druid_spell_t( "innervate", player, SCHOOL_NATURE, TREE_BALANCE ), trigger(0)
   {
-  	std::string target_str;
+    druid_t* p = player -> cast_druid();
+
+    std::string target_str;
     option_t options[] =
     {
       { "trigger", OPT_INT16,  &trigger    },
@@ -611,14 +634,14 @@ struct innervate_t : public druid_spell_t
     };
     parse_options( options, options_str );
 
-    base_cost = player -> resource_base[ RESOURCE_MANA ] * 0.04;
+    base_cost = p -> resource_base[ RESOURCE_MANA ] * 0.04;
     base_execute_time = 0;
     cooldown  = 480;
     harmful   = false;
-    if( player -> gear.tier4_4pc ) cooldown -= 48.0;
+    if( p -> tiers.t4_4pc_balance ) cooldown -= 48.0;
 
     // If no target is set, assume we have innervate for ourself
-    innervate_target = sim -> find_player(  (target_str.empty()) ? player -> name() : target_str);
+    innervate_target = target_str.empty() ? p : sim -> find_player( target_str );
     assert ( innervate_target != 0 );    
   }
   virtual void execute()
@@ -709,8 +732,8 @@ struct insect_swarm_t : public druid_spell_t
     tick_power_mod    = ( base_tick_time / 15.0 ) * 0.95;
 
     base_multiplier *= 1.0 + util_t::talent_rank(p -> talents.genesis, 5, 0.01) +
-                            (p -> glyphs.insect_swarm ? 0.30 : 0.00 ) +
-                            (p -> gear.tier7_2pc      ? 0.10 : 0.00 );
+                            ( p -> glyphs.insect_swarm  ? 0.30 : 0.00 ) +
+                            ( p -> tiers.t7_2pc_balance ? 0.10 : 0.00 );
    
 
     if( p -> talents.natures_splendor ) num_ticks++;
@@ -799,7 +822,7 @@ struct moonfire_t : public druid_spell_t
     num_ticks = 4;
     added_ticks = 0;
     if( p -> talents.natures_splendor ) num_ticks++;
-    if( p -> gear.tier6_2pc           ) num_ticks++;
+    if( p -> tiers.t6_2pc_balance     ) num_ticks++;
     druid_spell_t::execute();
   }
 };
@@ -924,8 +947,8 @@ struct starfire_t : public druid_spell_t
       // Equip: Increases the spell power of your Starfire spell by 165.
       base_power += 165;
     }
-    if( p -> gear.tier6_4pc ) base_crit += 0.05;
-    if( p -> gear.tier7_4pc ) base_crit += 0.05;
+    if( p -> tiers.t6_4pc_balance ) base_crit += 0.05;
+    if( p -> tiers.t7_4pc_balance ) base_crit += 0.05;
   }
 
   virtual void player_buff()
@@ -941,7 +964,7 @@ struct starfire_t : public druid_spell_t
     {
       player_crit += 0.01 * p -> talents.improved_insect_swarm;
     }
-    if( p -> gear.tier5_4pc )
+    if( p -> tiers.t5_4pc_balance )
     {
       if( p -> active_moonfire     ||
           p -> active_insect_swarm )
@@ -1059,7 +1082,7 @@ struct wrath_t : public druid_spell_t
     base_crit_bonus   *= 1.0 + util_t::talent_rank(p -> talents.vengeance, 5, 0.20);
     direct_power_mod  += util_t::talent_rank(p -> talents.wrath_of_cenarius, 5, 0.02);
 
-    if( p -> gear.tier7_4pc ) base_crit += 0.05;
+    if( p -> tiers.t7_4pc_balance ) base_crit += 0.05;
 
     if ( p -> idols.steadfast_renewal )
     {
@@ -1463,6 +1486,32 @@ bool druid_t::parse_option( const std::string& name,
     // Idols
     { "idol_of_steadfast_renewal", OPT_INT8,  &( idols.steadfast_renewal           ) },
     { "idol_of_the_shooting_star", OPT_INT8,  &( idols.shooting_star               ) },
+    // Tier Bonuses
+    { "tier4_2pc_balance",       OPT_INT8,  &( tiers.t4_2pc_balance                ) },
+    { "tier4_4pc_balance",       OPT_INT8,  &( tiers.t4_4pc_balance                ) },
+    { "tier5_2pc_balance",       OPT_INT8,  &( tiers.t5_2pc_balance                ) },
+    { "tier5_4pc_balance",       OPT_INT8,  &( tiers.t5_4pc_balance                ) },
+    { "tier6_2pc_balance",       OPT_INT8,  &( tiers.t6_2pc_balance                ) },
+    { "tier6_4pc_balance",       OPT_INT8,  &( tiers.t6_4pc_balance                ) },
+    { "tier7_2pc_balance",       OPT_INT8,  &( tiers.t7_2pc_balance                ) },
+    { "tier7_4pc_balance",       OPT_INT8,  &( tiers.t7_4pc_balance                ) },
+    { "tier4_2pc_feral",         OPT_INT8,  &( tiers.t4_2pc_feral                  ) },
+    { "tier4_4pc_feral",         OPT_INT8,  &( tiers.t4_4pc_feral                  ) },
+    { "tier5_2pc_feral",         OPT_INT8,  &( tiers.t5_2pc_feral                  ) },
+    { "tier5_4pc_feral",         OPT_INT8,  &( tiers.t5_4pc_feral                  ) },
+    { "tier6_2pc_feral",         OPT_INT8,  &( tiers.t6_2pc_feral                  ) },
+    { "tier6_4pc_feral",         OPT_INT8,  &( tiers.t6_4pc_feral                  ) },
+    { "tier7_2pc_feral",         OPT_INT8,  &( tiers.t7_2pc_feral                  ) },
+    { "tier7_4pc_feral",         OPT_INT8,  &( tiers.t7_4pc_feral                  ) },
+    // Deprecated
+    { "tier4_2pc", OPT_DEPRECATED, (void*) "tier4_2pc_balance|tier4_2pc_feral" },
+    { "tier4_2pc", OPT_DEPRECATED, (void*) "tier4_2pc_balance|tier4_2pc_feral" },
+    { "tier5_2pc", OPT_DEPRECATED, (void*) "tier5_2pc_balance|tier5_2pc_feral" },
+    { "tier5_2pc", OPT_DEPRECATED, (void*) "tier5_2pc_balance|tier5_2pc_feral" },
+    { "tier6_2pc", OPT_DEPRECATED, (void*) "tier6_2pc_balance|tier6_2pc_feral" },
+    { "tier6_2pc", OPT_DEPRECATED, (void*) "tier6_2pc_balance|tier6_2pc_feral" },
+    { "tier7_2pc", OPT_DEPRECATED, (void*) "tier7_2pc_balance|tier7_2pc_feral" },
+    { "tier7_2pc", OPT_DEPRECATED, (void*) "tier7_2pc_balance|tier7_2pc_feral" },
     { NULL, OPT_UNKNOWN }
   };
 
@@ -1473,9 +1522,9 @@ bool druid_t::parse_option( const std::string& name,
     return false;
   }
 
-  if( player_t::parse_option( name, value ) ) return true;
+  if( option_t::parse( sim, options, name, value ) ) return true;
 
-  return option_t::parse( sim, options, name, value );
+  return player_t::parse_option( name, value );
 }
 
 // player_t::create_druid  ==================================================
