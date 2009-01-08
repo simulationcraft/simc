@@ -2953,6 +2953,8 @@ struct haunt_t : public warlock_spell_t
 
 struct immolate_t : public warlock_spell_t
 {
+  int8_t target_pct;
+
   immolate_t( player_t* player, const std::string& options_str ) : 
     warlock_spell_t( "immolate", player, SCHOOL_FIRE, TREE_DESTRUCTION )
   {
@@ -2960,6 +2962,8 @@ struct immolate_t : public warlock_spell_t
 
     option_t options[] =
     {
+      { "rank", OPT_INT8, &rank_index },
+      { "target_pct", OPT_INT8, &target_pct },
       { NULL }
     };
     parse_options( options, options_str );
@@ -3025,6 +3029,24 @@ struct immolate_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::last_tick(); 
     p -> active_dots--;
+  }
+
+  virtual bool ready()
+  {
+    if( ! warlock_spell_t::ready() )
+      return false;
+
+    target_t* t = sim -> target;
+
+    if( target_pct == 0 )
+      return true;
+
+    if( t -> initial_health <= 0 )
+      return false;
+
+    // This is flipped from the other target_pct args -- in the case of immolate, you want to stop casting it when death's embrace is active
+    // because DE only boosts damage for shadow spells
+    return( ( t -> current_health / t -> initial_health ) > ( target_pct / 100.0 ) );
   }
 };
 
