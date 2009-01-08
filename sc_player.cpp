@@ -648,6 +648,7 @@ void player_t::init_stats()
   procs.shiffars_nexus_horn          = get_proc( "shiffars_nexus_horn" );
   procs.spellstrike                  = get_proc( "spellstrike" );
   procs.sundial_of_the_exiled        = get_proc( "sundial_of_the_exiled" );
+  procs.egg_of_mortal_essence        = get_proc( "egg_of_mortal_essence" );
   procs.thunder_capacitor            = get_proc( "thunder_capacitor" );
   procs.timbals_crystal              = get_proc( "timbals_crystal" );
   procs.windfury                     = get_proc( "windfury" );
@@ -1984,6 +1985,7 @@ bool player_t::parse_option( const std::string& name,
     { "spellstrike",                          OPT_INT8,   &( gear.spellstrike                               ) },
     { "spellsurge",                           OPT_INT8,   &( gear.spellsurge                                ) },
     { "sundial_of_the_exiled",                OPT_INT8,   &( gear.sundial_of_the_exiled                     ) },
+    { "egg_of_mortal_essence",                OPT_INT8,   &( gear.egg_of_mortal_essence                     ) },
     { "talisman_of_ascendance",               OPT_INT8,   &( gear.talisman_of_ascendance                    ) },
     { "thunder_capacitor",                    OPT_INT8,   &( gear.thunder_capacitor                         ) },
     { "timbals_crystal",                      OPT_INT8,   &( gear.timbals_crystal                           ) },

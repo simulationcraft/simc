@@ -558,6 +558,7 @@ struct player_t
     int8_t  spellstrike;
     int8_t  spellsurge;
     int8_t  sundial_of_the_exiled;
+    int8_t  egg_of_mortal_essence;
     int8_t  talisman_of_ascendance;
     int8_t  thunder_capacitor;
     int8_t  timbals_crystal;
@@ -672,6 +673,7 @@ struct player_t
     double shiffars_nexus_horn;
     double spellsurge;
     double sundial_of_the_exiled;
+    double egg_of_mortal_essence;
     double dying_curse;
     double embrace_of_the_spider;
     double forge_ember;
@@ -746,6 +748,7 @@ struct player_t
     proc_t* shiffars_nexus_horn;
     proc_t* spellstrike;
     proc_t* sundial_of_the_exiled;
+    proc_t* egg_of_mortal_essence;
     proc_t* thunder_capacitor;
     proc_t* timbals_crystal;
     proc_t* windfury;
@@ -1108,7 +1111,7 @@ struct action_t
   std::string name_str;
   player_t* player;
   int8_t school, resource, tree, result;
-  bool binary, channeled, background, repeating, aoe, harmful, proc;
+  bool binary, channeled, background, repeating, aoe, harmful, proc, heal;
   bool may_miss, may_resist, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
   double min_gcd, trigger_gcd;
   double base_execute_time, base_tick_time, base_cost;

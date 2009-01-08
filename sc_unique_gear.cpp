@@ -781,6 +781,40 @@ static void trigger_extract_of_necromatic_power( spell_t* s )
   } 
 }
 
+// Egg of Mortal Essence ============================================
+static void trigger_egg_of_mortal_essence( spell_t* s )
+{
+  struct egg_of_mortal_essence_expiration_t : public event_t
+  {
+    egg_of_mortal_essence_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
+    {
+      name = "The Egg of Mortal Essence";
+      player -> aura_gain( "Egg of Mortal Essence" );
+      player -> haste_rating += 505;
+      player -> cooldowns.egg_of_mortal_essence = sim -> current_time + 45;
+      sim -> add_event( this, 10.0 );
+    }
+    virtual void execute()
+    {
+      player -> aura_loss( "Egg of Mortal Essence" );
+      player -> haste_rating -= 505;
+    }
+  };
+
+  if( ! s -> heal ) return;
+
+  player_t* p = s -> player;
+
+  if( p -> gear.egg_of_moral_essence &&
+      s -> sim -> cooldown_ready( p -> cooldowns.egg_of_mortal_essence ) &&
+      s -> sim -> roll( 0.10 ) )
+  {
+    p -> procs.egg_of_moral_essence -> occur();
+    new ( s -> sim ) egg_of_mortal_essence_expiration_t( s -> sim, p );
+  }
+}
+
+
 // Sundial of the Exiled ============================================
 
 static void trigger_sundial_of_the_exiled( spell_t* s )
@@ -801,6 +835,8 @@ static void trigger_sundial_of_the_exiled( spell_t* s )
       player -> spell_power[ SCHOOL_MAX ] -= 590;
     }
   };
+
+  if( ! s -> harmful ) return;
 
   player_t* p = s -> player;
 
@@ -909,6 +945,7 @@ void unique_gear_t::spell_hit_event( spell_t* s )
   trigger_illustration_of_the_dragon_soul( s );
   trigger_dying_curse                    ( s );
   trigger_forge_ember                    ( s );
+  trigger_egg_of_mortal_essence          ( s );
 
   if( s -> result == RESULT_CRIT )
   {
@@ -926,6 +963,7 @@ void unique_gear_t::spell_tick_event( spell_t* s )
 {
   trigger_timbals_crystal            ( s );
   trigger_extract_of_necromatic_power( s );
+  trigger_egg_of_mortal_essence      ( s );
 }
 
 // unique_gear_t::spell_finish_event ========================================
