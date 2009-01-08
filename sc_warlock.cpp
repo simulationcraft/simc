@@ -1271,39 +1271,6 @@ static void trigger_haunted( spell_t* s )
   }
 }
 
-// trigger_infernal ========================================================
-
-static void trigger_infernal( spell_t* s )
-{
-  struct expiration_t : public event_t
-  {
-    expiration_t( sim_t* sim, warlock_t* p ) : event_t( sim, p )
-    {
-      name = "Infernal Expiration";
-      if( p -> active_pet )
-      {
-        p -> active_pet -> dismiss();
-      }
-      p -> summon_pet( "infernal" );
-      sim -> add_event( this, 60.0 );
-    }
-    virtual void execute()
-    {
-      warlock_t* p = player -> cast_warlock();
-      p -> dismiss_pet( "infernal" );
-      p -> expirations_infernal = 0;
-    }
-  };
-  
-  warlock_t* p = s -> player -> cast_warlock();
-  event_t*&  e = p -> expirations_infernal;
-
-  if( !e )
-  {
-    e = new ( s -> sim ) expiration_t( s -> sim, p );
-  }
-}
-
 // trigger_molten_core =====================================================
 
 static void trigger_molten_core( spell_t* s )
@@ -1637,7 +1604,7 @@ static void trigger_tier7_4pc( spell_t* s )
       name = "Spirits of the Damned Expiration";
       player -> aura_gain( "Spirits of the Damned" );
       player -> attribute[ ATTR_SPIRIT ] += 300;
-          player -> buffs.tier7_4pc = 1;
+      player -> buffs.tier7_4pc = 1;
       sim -> add_event( this, 10.0 );
     }
     virtual void execute()
@@ -1645,7 +1612,7 @@ static void trigger_tier7_4pc( spell_t* s )
       player -> aura_loss( "Spirits of the Damned" );
       player -> attribute[ ATTR_SPIRIT ] -= 300;
       player -> expirations.tier7_4pc = 0;
-          player -> buffs.tier7_4pc = 0;
+      player -> buffs.tier7_4pc = 0;
     }
   };
 
@@ -3423,14 +3390,16 @@ struct soul_fire_t : public warlock_spell_t
 struct life_tap_t : public warlock_spell_t
 {
   int16_t trigger;
+  int16_t inferno;
   double  base_tap;
 
   life_tap_t( player_t* player, const std::string& options_str ) : 
-    warlock_spell_t( "life_tap", player, SCHOOL_SHADOW, TREE_AFFLICTION ), trigger(1000), base_tap(0)
+    warlock_spell_t( "life_tap", player, SCHOOL_SHADOW, TREE_AFFLICTION ), trigger(1000), inferno(0), base_tap(0)
   {
     option_t options[] =
     {
       { "trigger", OPT_INT16, &trigger },
+      { "inferno", OPT_INT16, &inferno },
       { NULL }
     };
     parse_options( options, options_str );
@@ -3446,12 +3415,24 @@ struct life_tap_t : public warlock_spell_t
     double mana = base_tap + 3.0 * p -> spirit();
     p -> resource_loss( RESOURCE_HEALTH, mana );
     p -> resource_gain( RESOURCE_MANA, mana * ( 1.0 + p -> talents.improved_life_tap * 0.10 ), p -> gains_life_tap );
-        trigger_tier7_4pc( this );
+    trigger_tier7_4pc( this );
   }
 
   virtual bool ready()
   {
-    return( player -> resource_current[ RESOURCE_MANA ] < trigger );
+    warlock_t* p = player -> cast_warlock();
+
+    if( inferno )
+    {
+      if( p -> active_pet == 0 ||
+	  p -> active_pet -> pet_type != PET_INFERNAL )
+      {
+	return( p -> resource_current[ RESOURCE_MANA ] < 
+		p -> resource_base   [ RESOURCE_MANA ] * 0.80 );
+      }
+    }
+
+    return( p -> resource_current[ RESOURCE_MANA ] < trigger );
   }
 };
 
@@ -3576,6 +3557,7 @@ struct summon_pet_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     if( p -> active_pet ) return false;
     if( p -> buffs_pet_sacrifice ) return false;
+    if( sim -> current_time > 10.0 ) return false;
     return true;
   }
 };
@@ -3588,7 +3570,7 @@ struct inferno_t : public warlock_spell_t
   int8_t time_remaining;
 
   inferno_t( player_t* player, const std::string& options_str ) : 
-    warlock_spell_t( "infernal_effect", player, SCHOOL_FIRE, TREE_DEMONOLOGY )
+    warlock_spell_t( "inferno", player, SCHOOL_FIRE, TREE_DEMONOLOGY )
   {
     option_t options[] =
     {
@@ -3618,7 +3600,36 @@ struct inferno_t : public warlock_spell_t
   virtual void execute()
   {
     warlock_spell_t::execute();
-    trigger_infernal( this );
+
+    struct expiration_t : public event_t
+    {
+      expiration_t( sim_t* sim, warlock_t* p ) : event_t( sim, p )
+      {
+	name = "Infernal Expiration";
+	if( p -> active_pet )
+        {
+	  p -> active_pet -> dismiss();
+	  p -> active_pet = 0;
+	}
+	p -> summon_pet( "infernal" );
+	sim -> add_event( this, 60.0 );
+      }
+      virtual void execute()
+      {
+	warlock_t* p = player -> cast_warlock();
+	p -> dismiss_pet( "infernal" );
+	p -> expirations_infernal = 0;
+	p -> active_pet = 0;
+      }
+    };
+  
+    warlock_t* p = player -> cast_warlock();
+    event_t*&  e = p -> expirations_infernal;
+
+    if( !e )
+    {
+      e = new ( sim ) expiration_t( sim, p );
+    }
   }
 
   virtual bool ready()

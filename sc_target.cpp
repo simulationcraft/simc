@@ -13,7 +13,7 @@
 
 target_t::target_t( sim_t* s ) :
   sim( s ), name_str( "Fluffy Pillow" ), level( 73 ), 
-  initial_armor(6600), armor(0), block_value(0), shield(0), 
+  initial_armor(10000), armor(0), block_value(0), shield(0), 
   initial_health( 0 ), current_health(0), total_dmg(0), uptime_list(0)
 {
   for( int i=0; i < SCHOOL_MAX; i++ ) spell_resistance[ i ] = 0;

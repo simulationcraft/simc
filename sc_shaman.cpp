@@ -813,7 +813,7 @@ struct melee_t : public shaman_attack_t
     shaman_t* p = player -> cast_shaman();
     if( p -> buffs_flurry > 0 ) 
     {
-      t *= 1.0 / ( 1.0 + 0.05 * ( 1 + p -> talents.flurry ) );
+      t *= 1.0 / ( 1.0 + 0.05 * ( 1 + p -> talents.flurry + p -> tiers.t7_4pc_enhancement ) );
     }
     p -> uptimes_flurry -> update( p -> buffs_flurry > 0 );
     return t;
@@ -1316,11 +1316,10 @@ struct lava_burst_t : public shaman_spell_t
     base_multiplier   *= 1.0 + p -> talents.concussion * 0.01;
     base_multiplier   *= 1.0 + p -> talents.call_of_flame * 0.02;
     base_hit          += p -> talents.elemental_precision * 0.01;
-    base_crit_bonus   *= 1.0 + p -> talents.elemental_fury * 0.20;
-    base_crit_bonus   *= 1.0 + util_t::talent_rank( p -> talents.lava_flows, 3, 0.06, 0.12, 0.24 );
+    base_crit_bonus   *= 1.0 + ( util_t::talent_rank( p -> talents.lava_flows,     3, 0.06, 0.12, 0.24 ) +
+				 util_t::talent_rank( p -> talents.elemental_fury, 5, 0.20 ) +
+				 ( p -> tiers.t7_4pc_elemental ? 0.10 : 0.00 ) );
     direct_power_mod  += p -> talents.shamanism * 0.04;
-
-    if( p -> tiers.t7_4pc_elemental ) base_crit_bonus *= 1.10;
   }
 
   virtual void execute()
@@ -2527,7 +2526,7 @@ struct lightning_shield_t : public shaman_spell_t
 
       base_direct_dmg  = base_dmg;
       base_hit        += p -> talents.elemental_precision * 0.01;
-      base_multiplier *= 1.0 + p -> talents.improved_shields * 0.05;
+      base_multiplier *= 1.0 + p -> talents.improved_shields * 0.05 + ( p -> tiers.t7_2pc_enhancement ? 0.10 : 0.00 );
       base_crit_bonus *= 1.0 + p -> talents.elemental_fury * 0.20;
 
       if( p -> glyphs.lightning_shield ) base_multiplier *= 1.20;
@@ -2867,7 +2866,7 @@ double shaman_t::composite_spell_power( int8_t school )
 
   if( talents.mental_quickness )
   {
-    sp += agility() * 0.70 * talents.mental_quickness / 3.0;
+    sp += composite_attack_power() * 0.30 * talents.mental_quickness / 3.0;
   }
 
   if( main_hand_weapon.buff == FLAMETONGUE )
