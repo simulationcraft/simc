@@ -392,7 +392,8 @@ struct warlock_pet_melee_t : public attack_t
     warlock_pet_t* p = (warlock_pet_t*) player -> cast_pet();
     warlock_t* o = p -> owner -> cast_warlock();
     attack_t::player_buff();
-    if ( p -> pet_type != PET_INFERNAL && p -> pet_type != PET_DOOMGUARD )
+    if ( p -> pet_type != PET_INFERNAL &&
+         ( p -> pet_type != PET_DOOMGUARD || sim -> patch.after(3, 0, 8) ) )
     {
       player_power += 0.57 * o -> composite_spell_power( SCHOOL_MAX );
       p -> adjust_player_modifiers( this );

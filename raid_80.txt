@@ -698,6 +698,77 @@ blessing_of_wisdom=1
 sanctified_retribution=1
 
 #
+# Demo/destro Warlock #1 (Felguard)
+#
+warlock=Warlock_0_41_30
+level=80
+talents=http://www.wowhead.com/?talent=IZ0xIzsgMq0sxzZVchqr0uV
+actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/fire_stone/fel_armor/summon_pet,felguard
+actions+=/curse_of_agony/corruption/immolate/incinerate/life_tap
+tier7_2pc=1
+tier7_4pc=1
+chaotic_skyflare=1
+# Glyphs
+glyph_immolate=1
+glyph_felguard=1
+glyph_curse_of_agony=1
+# Pets
+pet=felguard
+actions=cleave/wait
+blessing_of_kings=1
+blessing_of_might=550
+sanctified_retribution=1
+leader_of_the_pack=1
+quiet=1
+active=owner
+pet=succubus
+actions=lash_of_pain/wait
+blessing_of_kings=1
+blessing_of_might=550
+sanctified_retribution=1
+quiet=1
+active=owner
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_wisdom=1
+sanctified_retribution=1
+
+#
+# Demo/destro Warlock #2 (Imp)
+#
+warlock=Warlock_0_31_40
+level=80
+talents=http://www.wowhead.com/?talent=IZcxczsgMV0zZVcGqb0uVMA
+actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/fire_stone/fel_armor/summon_pet,imp
+actions+=/curse_of_agony/corruption/immolate/incinerate/life_tap
+tier7_2pc=1
+tier7_4pc=1
+chaotic_skyflare=1
+# Glyphs
+glyph_immolate=1
+glyph_imp=1
+glyph_curse_of_agony=1
+# Pets
+pet=imp
+actions=fire_bolt
+blessing_of_kings=1
+blessing_of_wisdom=1
+sanctified_retribution=1
+quiet=1
+active=owner
+pet=succubus
+actions=lash_of_pain/wait
+blessing_of_kings=1
+blessing_of_might=550
+sanctified_retribution=1
+quiet=1
+active=owner
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_wisdom=1
+sanctified_retribution=1
+
+#
 # Destruction Warlock
 #
 warlock=Warlock_2_13_56
