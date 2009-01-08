@@ -1906,6 +1906,7 @@ struct curse_of_elements_t : public warlock_spell_t
     };
     init_rank( ranks );
     
+    harmful = false;
     base_execute_time = 0; 
     base_cost        *= 1.0 - p -> talents.suppression * 0.02;
     base_hit         +=       p -> talents.suppression * 0.01;
@@ -3449,6 +3450,8 @@ struct life_tap_t : public warlock_spell_t
     };
     parse_options( options, options_str );
 
+    harmful = false;
+
     base_tap = util_t::ability_rank( player -> level,  1490,80,  710,68,  500,0 );
   }
 
@@ -3500,6 +3503,8 @@ struct dark_pact_t : public warlock_spell_t
     };
     init_rank( ranks );
 
+    harmful = false;
+
     base_execute_time = 0.0; 
     direct_power_mod  = 0.96;
   }
@@ -3530,6 +3535,7 @@ struct fel_armor_t : public warlock_spell_t
     warlock_spell_t( "fel_armor", player, SCHOOL_SHADOW, TREE_DEMONOLOGY ), bonus_spell_power(0)
   {
     warlock_t* p = player -> cast_warlock();
+    harmful = false;
     trigger_gcd = 0;
     bonus_spell_power = util_t::ability_rank( p -> level,  180.0,78,  150.0,73,  100.0,67,  50.0,62,  0.0,0 );
     bonus_spell_power *= 1.0 + p -> talents.demonic_aegis * 0.10;
@@ -3560,6 +3566,7 @@ struct sacrifice_pet_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     assert( p -> talents.demonic_sacrifice );
+    harmful = false;
     trigger_gcd = 0;
   }
 
@@ -3589,6 +3596,7 @@ struct summon_pet_t : public warlock_spell_t
     warlock_spell_t( "summon_pet", player, SCHOOL_SHADOW, TREE_DEMONOLOGY )
   {
     pet_name = options_str;
+    harmful = false;
     trigger_gcd = 0;
   }
 
@@ -3720,6 +3728,7 @@ struct metamorphosis_t : public warlock_spell_t
     };
     parse_options( options, options_str );
       
+    harmful = false;
     base_cost   = 0;
     trigger_gcd = 0;
     cooldown    = 180;
@@ -3784,6 +3793,7 @@ struct demonic_empowerment_t : public warlock_spell_t
     };
     parse_options( options, options_str );
       
+    harmful = false;
     base_cost = player -> resource_base[ RESOURCE_MANA ] * 0.06;
     cooldown  = 60;
     trigger_gcd = 0;
@@ -3851,6 +3861,8 @@ struct fire_stone_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     trigger_gcd = 0;
 
+    harmful = false;
+
     bonus_crit = (int16_t) util_t::ability_rank( p -> level,  49,80,  42,74,  35,66,  28,0 );
 
     bonus_crit = (int16_t) ( bonus_crit * ( 1.0 + p -> talents.master_conjuror * 0.15 ) );
@@ -3881,6 +3893,8 @@ struct spell_stone_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     trigger_gcd = 0;
+
+    harmful = false;
 
     bonus_haste = (int16_t) util_t::ability_rank( p -> level,  60,80,  50,72,  40,66,  30,0 );
     
