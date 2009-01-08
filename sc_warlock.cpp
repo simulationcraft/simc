@@ -693,7 +693,7 @@ struct felhunter_pet_t : public warlock_pet_t
       felhunter_pet_t* p = (felhunter_pet_t*) player -> cast_pet();
       warlock_t*      o = p -> owner -> cast_warlock();
       warlock_pet_attack_t::player_buff();
-      player_multiplier *= 1.0 + o -> active_dots * 0.05;;
+      player_multiplier *= 1.0 + o -> active_dots * 0.05;
       if( o -> glyphs.felhunter ) player_crit += 0.06;
     }
   };
