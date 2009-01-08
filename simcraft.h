@@ -593,7 +593,8 @@ struct player_t
     double    cast_time_reduction;
     int8_t    darkmoon_crusade;
     int8_t    darkmoon_wrath;
-    int8_t    demonic_pact;
+    double    demonic_pact;
+    pet_t*    demonic_pact_pet;
     int8_t    elemental_oath;
     int8_t    executioner;
     double    flametongue_totem;

@@ -1347,7 +1347,6 @@ struct arcane_missiles_t : public mage_spell_t
 
     if( abar_combo )
     {
-      num_ticks--;
       std::string abar_options;
       abar_spell = new arcane_barrage_t( player, abar_options );
       abar_spell -> proc = true;  // prevents scheduling of player_ready events
@@ -1395,6 +1394,13 @@ struct arcane_missiles_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
 
+    if( current_tick == num_ticks && abar_combo && abar_spell -> ready() )
+    {
+      if( sim -> debug ) report_t::log( sim, "Skipping last tick of %s to combo with %s", name(), abar_spell -> name() );
+      last_tick();
+      return;
+    }
+
     if( sim -> debug ) report_t::log( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
 
     may_resist = false;
@@ -1435,7 +1441,7 @@ struct arcane_missiles_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
     mage_spell_t::last_tick();
     clear_missile_barrage( this );
-    if( abar_combo ) abar_spell -> execute();
+    if( abar_combo && abar_spell -> ready() ) abar_spell -> execute();
     clear_arcane_potency( this );
     event_t::early( p -> expirations_arcane_blast );
   }
@@ -2577,7 +2583,7 @@ struct mana_gem_t : public action_t
   int16_t max;
 
   mana_gem_t( player_t* p, const std::string& options_str ) : 
-    action_t( ACTION_USE, "mana_gem", p ), trigger(0), min(0), max(0)
+    action_t( ACTION_USE, "mana_gem", p ), trigger(1), min(3330), max(3500)
   {
     option_t options[] =
     {

@@ -1555,13 +1555,14 @@ static void trigger_demonic_pact( action_t* a )
 {
   struct expiration_t : public event_t
   {
-    expiration_t( sim_t* sim, warlock_pet_t* pet ) : event_t( sim, pet )
+    expiration_t( sim_t* sim, warlock_pet_t* pet, double buff ) : event_t( sim, pet )
     {
       name = "Demonic Pact Expiration";
       for( player_t* p = sim -> player_list; p; p = p -> next )
       {
-        if( p -> buffs.demonic_pact == 0 ) p -> aura_gain( "Demonic Pact" );
-        p -> buffs.demonic_pact++;
+        p -> aura_gain( "Demonic Pact" );
+	p -> buffs.demonic_pact = buff;	
+	p -> buffs.demonic_pact_pet = pet;
       }
       sim -> add_event( this, 12.0 );
     }
@@ -1570,8 +1571,9 @@ static void trigger_demonic_pact( action_t* a )
       warlock_pet_t* pet = (warlock_pet_t*) player -> cast_pet();
       for( player_t* p = sim -> player_list; p; p = p -> next )
       {
-        p -> buffs.demonic_pact--;
-        if( p -> buffs.demonic_pact == 0 ) p -> aura_loss( "Demonic Pact" );
+        p -> aura_loss( "Demonic Pact" );
+	p -> buffs.demonic_pact = 0;	
+	p -> buffs.demonic_pact_pet = 0;
       }
       pet -> expirations_demonic_pact = 0;
     }
@@ -1582,6 +1584,23 @@ static void trigger_demonic_pact( action_t* a )
 
   if( ! o -> talents.demonic_pact ) return;
 
+  double buff = 0.10 * o -> composite_spell_power( SCHOOL_MAX );
+
+  if( buff < p -> buffs.demonic_pact ) return;
+
+  if( p -> buffs.demonic_pact_pet ) 
+  {
+    if( p -> buffs.demonic_pact == buff &&
+	p -> buffs.demonic_pact_pet == p )
+    {
+      // If the SAME pet is putting up the SAME buff, then just let it reschedule the one in place.
+    }
+    else
+    {
+      event_t::cancel( ( (warlock_pet_t*) p -> buffs.demonic_pact_pet ) -> expirations_demonic_pact );
+    }
+  }
+
   event_t*& e = p -> expirations_demonic_pact;
 
   if( e )
@@ -1590,7 +1609,7 @@ static void trigger_demonic_pact( action_t* a )
   }
   else
   {
-    e = new ( a -> sim ) expiration_t( a -> sim, p );
+    e = new ( a -> sim ) expiration_t( a -> sim, p, buff );
   }
 }
 

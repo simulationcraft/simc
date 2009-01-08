@@ -137,8 +137,7 @@ void spell_t::player_buff()
     }
     if( p -> buffs.demonic_pact )
     {
-      double demonic_pact_buff = player_power * 0.10;
-      if( best_buff < demonic_pact_buff ) best_buff = demonic_pact_buff;
+      if( best_buff < p -> buffs.demonic_pact ) best_buff = p -> buffs.demonic_pact;
     }
     if( p -> buffs.improved_divine_spirit )
     {
