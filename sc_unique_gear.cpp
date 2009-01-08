@@ -805,11 +805,11 @@ static void trigger_egg_of_mortal_essence( spell_t* s )
 
   player_t* p = s -> player;
 
-  if( p -> gear.egg_of_moral_essence &&
+  if( p -> gear.egg_of_mortal_essence &&
       s -> sim -> cooldown_ready( p -> cooldowns.egg_of_mortal_essence ) &&
       s -> sim -> roll( 0.10 ) )
   {
-    p -> procs.egg_of_moral_essence -> occur();
+    p -> procs.egg_of_mortal_essence -> occur();
     new ( s -> sim ) egg_of_mortal_essence_expiration_t( s -> sim, p );
   }
 }
