@@ -679,6 +679,9 @@ struct felguard_pet_t : public warlock_pet_t
 
 struct felhunter_pet_t : public warlock_pet_t
 {
+  // TODO: Need to add fel intelligence on the warlock while felhunter is out
+  // This is +48 int / + 64 spi at rank 5, plus 5%/10% if talented in the affliction tree
+  // These do NOT stack with Prayer of Spirit, or with Arcane Intellect/Arcane Brilliance
   struct shadow_bite_t : public warlock_pet_attack_t
   {
     shadow_bite_t( player_t* player ) : 
