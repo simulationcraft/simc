@@ -2267,7 +2267,7 @@ struct chaos_bolt_t : public warlock_spell_t
     };
     parse_options( options, options_str );
       
-    static rank_t ranks[] =
+    rank_t ranks[] =
     {
       { 80, 4, 1036, 1314, 0, 0.07 },
       { 75, 3,  882, 1120, 0, 0.07 },
@@ -2275,6 +2275,13 @@ struct chaos_bolt_t : public warlock_spell_t
       { 60, 1,  607,  769, 0, 0.09 },
       { 0, 0 }
     };
+
+    if( sim -> patch.after(3, 0, 8) ) 
+    {
+      ranks[0].dd_min = 1243;
+      ranks[0].dd_max = 1577;
+    }
+
     init_rank( ranks );
     
     base_execute_time = 2.5; 
@@ -3167,7 +3174,7 @@ struct conflagrate_t : public warlock_spell_t
     base_crit_bonus  *= 1.0 + p -> talents.ruin * 0.20;
     base_hit         += p -> talents.cataclysm * 0.01;
 
-    if( p -> glyphs.conflagrate ) base_cost *= 0.80;
+    if( p -> glyphs.conflagrate && sim -> patch.before(3, 0, 8) ) base_cost *= 0.80;
   }
 
   virtual void execute()
@@ -3180,8 +3187,11 @@ struct conflagrate_t : public warlock_spell_t
       trigger_soul_leech( this );
       trigger_backdraft( this );
     }
-    (*cancel_which) -> cancel();
-    p -> active_immolate = 0;
+    if ( sim -> patch.before(3, 0, 8) || ! p -> glyphs.conflagrate )
+    {
+      (*cancel_which) -> cancel();
+      p -> active_immolate = 0;
+    }
   }
 
   virtual void player_buff()
@@ -3386,13 +3396,16 @@ struct searing_pain_t : public warlock_spell_t
 
 struct soul_fire_t : public warlock_spell_t
 {
+  int8_t backdraft;
+
   soul_fire_t( player_t* player, const std::string& options_str ) : 
-    warlock_spell_t( "soul_fire", player, SCHOOL_FIRE, TREE_DESTRUCTION )
+    warlock_spell_t( "soul_fire", player, SCHOOL_FIRE, TREE_DESTRUCTION ), backdraft(0)
   {
     warlock_t* p = player -> cast_warlock();
 
     option_t options[] =
     {
+      { "backdraft",   OPT_INT8, &backdraft   },
       { NULL }
     };
     parse_options( options, options_str );
@@ -3428,6 +3441,20 @@ struct soul_fire_t : public warlock_spell_t
     {
       trigger_soul_leech( this );
     }
+  }
+    
+  virtual bool ready()
+  {
+    warlock_t* p = player -> cast_warlock();
+
+    if( ! warlock_spell_t::ready() )
+      return false;
+
+    if( backdraft )
+      if( ! p -> buffs_backdraft )
+        return false;
+          
+    return true;
   }
 };
 
