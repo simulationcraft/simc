@@ -3141,11 +3141,12 @@ struct shadowflame_t : public warlock_spell_t
 
 struct conflagrate_t : public warlock_spell_t
 {
+  int8_t no_backdraft;
   int8_t ticks_lost;
-  action_t**  cancel_which;
+  bool   cancel_dot;
 
   conflagrate_t( player_t* player, const std::string& options_str ) : 
-    warlock_spell_t( "conflagrate", player, SCHOOL_FIRE, TREE_DESTRUCTION ), ticks_lost(1), cancel_which(0)
+    warlock_spell_t( "conflagrate", player, SCHOOL_FIRE, TREE_DESTRUCTION ), no_backdraft(0), ticks_lost(0), cancel_dot(true)
   {
     warlock_t* p = player -> cast_warlock();
 
@@ -3153,7 +3154,8 @@ struct conflagrate_t : public warlock_spell_t
 
     option_t options[] =
     {
-      { "ticks_lost", OPT_INT8, &ticks_lost },
+      { "no_backdraft", OPT_INT8, &no_backdraft },
+      { "ticks_lost",   OPT_INT8, &ticks_lost   },
       { NULL }
     };
     parse_options( options, options_str );
@@ -3181,23 +3183,43 @@ struct conflagrate_t : public warlock_spell_t
     base_crit_bonus  *= 1.0 + p -> talents.ruin * 0.20;
     base_hit         += p -> talents.cataclysm * 0.01;
 
-    if( p -> glyphs.conflagrate && sim -> patch.before(3, 0, 8) ) base_cost *= 0.80;
+    cancel_dot = ( sim -> patch.before( 3, 0, 8 ) || ! p -> glyphs.conflagrate );
+
+    if( p -> glyphs.conflagrate && sim -> patch.before( 3, 0, 8 ) ) base_cost *= 0.80;
   }
 
   virtual void execute()
   {
-    assert(cancel_which != 0);
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::execute(); 
     if( result_is_hit() )
     {
       trigger_soul_leech( this );
       trigger_backdraft( this );
-    }
-    if ( sim -> patch.before(3, 0, 8) || ! p -> glyphs.conflagrate )
-    {
-      (*cancel_which) -> cancel();
-      p -> active_immolate = 0;
+
+      if( cancel_dot )
+      {
+	action_t** dot_spell = 0;
+
+	if( p -> active_immolate && ! p -> active_shadowflame )
+        {
+	  dot_spell = &( p -> active_immolate );
+	}
+	else if( ! p -> active_immolate && p -> active_shadowflame )
+	{
+	  dot_spell = &( p -> active_shadowflame );
+	}
+	else if( sim -> roll( 0.50 ) )
+        {
+	  dot_spell = &( p -> active_immolate );
+	}
+	else
+        {
+	  dot_spell = &( p -> active_shadowflame );
+	}
+	(*dot_spell) -> cancel();
+	*dot_spell = 0;
+      }
     }
   }
 
@@ -3205,10 +3227,11 @@ struct conflagrate_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::player_buff(); 
-    if( p -> talents.fire_and_brimstone )
+    if( p -> talents.fire_and_brimstone &&
+	p -> active_immolate )
     {
-      int ticks_remaining = ( (*cancel_which) -> num_ticks - 
-                              (*cancel_which) -> current_tick );
+      int ticks_remaining = ( p -> active_immolate -> num_ticks - 
+                              p -> active_immolate -> current_tick );
       
       if( ticks_remaining <= 2 )
       {
@@ -3227,26 +3250,27 @@ struct conflagrate_t : public warlock_spell_t
     if( ! p -> active_immolate && ! p -> active_shadowflame )
       return false;
 
-    // Pick whether to remove the immolate or shadoflame if both are on
-    if ( p -> active_immolate && ! p -> active_shadowflame )
+    if( ticks_lost > 0 )
     {
-      cancel_which = &(p -> active_immolate);
-    } else if ( p -> active_shadowflame && ! p -> active_immolate )
-    {
-      cancel_which = &(p -> active_shadowflame);
-    } else {
-      if(sim -> roll ( 0.5 ))
+      // The "ticks_lost" checking is a human decision and should not have any RNG.
+      // The priority will always be to preserve the Immolate spell if both are up.
+
+      int ticks_remaining = 0;
+
+      if( p -> active_immolate )
       {
-        cancel_which = &(p -> active_shadowflame);
-      } else {
-        cancel_which = &(p -> active_immolate);
+	ticks_remaining = ( p -> active_immolate -> num_ticks - 
+			    p -> active_immolate -> current_tick );
+      } 
+      else 
+      {
+	ticks_remaining = ( p -> active_shadowflame -> num_ticks - 
+			    p -> active_shadowflame -> current_tick );
       }
+      return( ticks_remaining <= ticks_lost );
     }
 
-    int ticks_remaining = ( (*cancel_which) -> num_ticks - 
-                            (*cancel_which) -> current_tick );
-
-    return( ticks_remaining <= ticks_lost );
+    return true;
   }
 };
 
