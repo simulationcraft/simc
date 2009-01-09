@@ -1131,6 +1131,7 @@ struct action_t
   std::string cooldown_group, duration_group;
   double cooldown, cooldown_ready, duration_ready;
   weapon_t* weapon;
+  double weapon_multiplier;
   bool normalize_weapon_speed;
   bool normalize_weapon_damage;
   stats_t* stats;

@@ -32,7 +32,6 @@ struct shaman_t : public player_t
   int8_t buffs_nature_vulnerability;
   int8_t buffs_nature_vulnerability_charges;
   int8_t buffs_natures_swiftness;
-  int8_t buffs_shamanistic_focus;
   int8_t buffs_shamanistic_rage;
   double buffs_water_shield;
 
@@ -127,17 +126,17 @@ struct shaman_t : public player_t
   struct glyphs_t
   {
     int8_t chain_lightning;
-    int8_t earth_shock;
+    int8_t elemental_mastery;
+    int8_t flame_shock;
     int8_t flametongue_weapon;
+    int8_t lava;
+    int8_t lava_lash;
     int8_t lightning_bolt;
     int8_t lightning_shield;
     int8_t mana_tide;
+    int8_t shocking;
     int8_t stormstrike;
     int8_t windfury_weapon;
-    int8_t flame_shock;
-    int8_t lava_lash;
-    int8_t lava;
-    int8_t elemental_mastery;
     glyphs_t() { memset( (void*) this, 0x0, sizeof( glyphs_t ) ); }
   };
   glyphs_t glyphs;
@@ -194,7 +193,6 @@ struct shaman_t : public player_t
     buffs_nature_vulnerability         = 0;
     buffs_nature_vulnerability_charges = 0;
     buffs_natures_swiftness            = 0;
-    buffs_shamanistic_focus            = 0;
     buffs_shamanistic_rage             = 0;
     buffs_water_shield                 = 0;
 
@@ -1117,7 +1115,7 @@ struct chain_lightning_t : public shaman_spell_t
     cooldown           = 6.0;
     direct_power_mod   = ( base_execute_time / 3.5 );
 
-    cooldown          -= util_t::talent_rank( p -> talents.storm_earth_and_fire, 3, 0.5, 1.5, 2.5 );
+    cooldown          -= util_t::talent_rank( p -> talents.storm_earth_and_fire, 3, 0.75, 1.5, 2.5 );
     base_execute_time -= p -> talents.lightning_mastery * 0.1;
     base_cost         *= 1.0 - p -> talents.convection * 0.02;
     base_multiplier   *= 1.0 + p -> talents.concussion * 0.01;
@@ -1497,31 +1495,17 @@ struct earth_shock_t : public shaman_spell_t
       
     base_cost       *= 1.0 - p -> talents.convection * 0.02;
     base_cost       *= 1.0 - p -> talents.mental_quickness * 0.02;
+    base_cost       *= 1.0 - p -> talents.shamanistic_focus * 0.45;
     cooldown        -= ( p -> talents.reverberation * 0.2 );
     base_multiplier *= 1.0 + p -> talents.concussion * 0.01;
     base_hit        += p -> talents.elemental_precision * 0.01;
     base_crit_bonus *= 1.0 + p -> talents.elemental_fury * 0.20;
 
-    if( p -> glyphs.earth_shock ) 
+    if( p -> glyphs.shocking ) 
     {
       trigger_gcd = 0.5;
       min_gcd     = 0.5;
     }
-  }
-
-  virtual double cost()
-  {
-    shaman_t* p = player -> cast_shaman();
-    double c = shaman_spell_t::cost();
-    if( p -> talents.shamanistic_focus ) c *= 0.55;
-    return c;
-  }
-
-  virtual void consume_resource()
-  {
-    shaman_t* p = player -> cast_shaman();
-    shaman_spell_t::consume_resource();
-    p -> buffs_shamanistic_focus = 0;
   }
 
   virtual bool ready()
@@ -1572,25 +1556,17 @@ struct frost_shock_t : public shaman_spell_t
       
     base_cost       *= 1.0 - p -> talents.convection * 0.02;
     base_cost       *= 1.0 - p -> talents.mental_quickness * 0.02;
+    base_cost       *= 1.0 - p -> talents.shamanistic_focus * 0.45;
     cooldown        -= ( p -> talents.reverberation * 0.2 );
     base_multiplier *= 1.0 + p -> talents.concussion * 0.01;
     base_hit        += p -> talents.elemental_precision * 0.01;
     base_crit_bonus *= 1.0 + p -> talents.elemental_fury * 0.20;
-  }
 
-  virtual double cost()
-  {
-    shaman_t* p = player -> cast_shaman();
-    double c = shaman_spell_t::cost();
-    if( p -> talents.shamanistic_focus ) c *= 0.55;
-    return c;
-  }
-
-  virtual void consume_resource()
-  {
-    shaman_spell_t::consume_resource();
-    shaman_t* p = player -> cast_shaman();
-    p -> buffs_shamanistic_focus = 0;
+    if( p -> glyphs.shocking ) 
+    {
+      trigger_gcd = 0.5;
+      min_gcd     = 0.5;
+    }
   }
 };
 
@@ -1634,26 +1610,18 @@ struct flame_shock_t : public shaman_spell_t
       
     base_cost          *= 1.0 - p -> talents.convection * 0.02;
     base_cost          *= 1.0 - p -> talents.mental_quickness * 0.02;
+    base_cost          *= 1.0 - p -> talents.shamanistic_focus * 0.45;
     cooldown           -= p -> talents.reverberation * 0.2;
     base_hit           += p -> talents.elemental_precision * 0.01;
     base_crit_bonus    *= 1.0 + p -> talents.elemental_fury * 0.20;
     base_multiplier    *= 1.0 + p -> talents.concussion * 0.01;
     base_td_multiplier *= 1.0 + util_t::talent_rank( p -> talents.storm_earth_and_fire, 3, 0.20 );
-  }
 
-  virtual double cost()
-  {
-    shaman_t* p = player -> cast_shaman();
-    double c = shaman_spell_t::cost();
-    if( p -> talents.shamanistic_focus ) c *= 0.55;
-    return c;
-  }
-
-  virtual void consume_resource()
-  {
-    shaman_t* p = player -> cast_shaman();
-    shaman_spell_t::consume_resource();
-    p -> buffs_shamanistic_focus = 0;
+    if( p -> glyphs.shocking ) 
+    {
+      trigger_gcd = 0.5;
+      min_gcd     = 0.5;
+    }
   }
 
   virtual void execute()
@@ -2829,7 +2797,6 @@ void shaman_t::reset()
   buffs_nature_vulnerability         = 0;
   buffs_nature_vulnerability_charges = 0;
   buffs_natures_swiftness            = 0;
-  buffs_shamanistic_focus            = 0;
   buffs_shamanistic_rage             = 0;
   buffs_water_shield                 = 0;
 
@@ -3008,17 +2975,17 @@ bool shaman_t::parse_option( const std::string& name,
     { "unleashed_rage",            OPT_INT8,  &( talents.unleashed_rage            ) },
     { "weapon_mastery",            OPT_INT8,  &( talents.weapon_mastery            ) },
     // Glyphs
-    { "glyph_earth_shock",         OPT_INT8,  &( glyphs.earth_shock                ) },
+    { "glyph_elemental_mastery",   OPT_INT8,  &( glyphs.elemental_mastery          ) },
+    { "glyph_flame_shock",         OPT_INT8,  &( glyphs.flame_shock                ) },
     { "glyph_flametongue_weapon",  OPT_INT8,  &( glyphs.flametongue_weapon         ) },
+    { "glyph_lava",                OPT_INT8,  &( glyphs.lava                       ) },
+    { "glyph_lava_lash",           OPT_INT8,  &( glyphs.lava_lash                  ) },
     { "glyph_lightning_bolt",      OPT_INT8,  &( glyphs.lightning_bolt             ) },
     { "glyph_lightning_shield",    OPT_INT8,  &( glyphs.lightning_shield           ) },
     { "glyph_mana_tide",           OPT_INT8,  &( glyphs.mana_tide                  ) },
+    { "glyph_shocking",            OPT_INT8,  &( glyphs.shocking                   ) },
     { "glyph_stormstrike",         OPT_INT8,  &( glyphs.stormstrike                ) },
     { "glyph_windfury_weapon",     OPT_INT8,  &( glyphs.windfury_weapon            ) },
-    { "glyph_flame_shock",         OPT_INT8,  &( glyphs.flame_shock                ) },
-    { "glyph_lava_lash",           OPT_INT8,  &( glyphs.lava_lash                  ) },
-    { "glyph_lava",                OPT_INT8,  &( glyphs.lava                       ) },
-    { "glyph_elemental_mastery",   OPT_INT8,  &( glyphs.elemental_mastery          ) },
     // Totems
     { "totem_of_hex",              OPT_INT8,  &( totems.hex                        ) },
     // Tier Bonuses
@@ -3039,14 +3006,15 @@ bool shaman_t::parse_option( const std::string& name,
     { "tier7_2pc_enhancement",     OPT_INT8,  &( tiers.t7_2pc_enhancement          ) },
     { "tier7_4pc_enhancement",     OPT_INT8,  &( tiers.t7_4pc_enhancement          ) },
     // Deprecated
-    { "tier4_2pc", OPT_DEPRECATED, (void*) "tier4_2pc_elemental|tier4_2pc_enhancement" },
-    { "tier4_4pc", OPT_DEPRECATED, (void*) "tier4_4pc_elemental|tier4_4pc_enhancement" },
-    { "tier5_2pc", OPT_DEPRECATED, (void*) "tier5_2pc_elemental|tier5_2pc_enhancement" },
-    { "tier5_4pc", OPT_DEPRECATED, (void*) "tier5_4pc_elemental|tier5_4pc_enhancement" },
-    { "tier6_2pc", OPT_DEPRECATED, (void*) "tier6_2pc_elemental|tier6_2pc_enhancement" },
-    { "tier6_4pc", OPT_DEPRECATED, (void*) "tier6_4pc_elemental|tier6_4pc_enhancement" },
-    { "tier7_2pc", OPT_DEPRECATED, (void*) "tier7_2pc_elemental|tier7_2pc_enhancement" },
-    { "tier7_4pc", OPT_DEPRECATED, (void*) "tier7_4pc_elemental|tier7_4pc_enhancement" },
+    { "glyph_earth_shock", OPT_DEPRECATED, (void*) "glyph_shocking"                            },
+    { "tier4_2pc",         OPT_DEPRECATED, (void*) "tier4_2pc_elemental|tier4_2pc_enhancement" },
+    { "tier4_4pc",         OPT_DEPRECATED, (void*) "tier4_4pc_elemental|tier4_4pc_enhancement" },
+    { "tier5_2pc",         OPT_DEPRECATED, (void*) "tier5_2pc_elemental|tier5_2pc_enhancement" },
+    { "tier5_4pc",         OPT_DEPRECATED, (void*) "tier5_4pc_elemental|tier5_4pc_enhancement" },
+    { "tier6_2pc",         OPT_DEPRECATED, (void*) "tier6_2pc_elemental|tier6_2pc_enhancement" },
+    { "tier6_4pc",         OPT_DEPRECATED, (void*) "tier6_4pc_elemental|tier6_4pc_enhancement" },
+    { "tier7_2pc",         OPT_DEPRECATED, (void*) "tier7_2pc_elemental|tier7_2pc_enhancement" },
+    { "tier7_4pc",         OPT_DEPRECATED, (void*) "tier7_4pc_elemental|tier7_4pc_enhancement" },
     { NULL, OPT_UNKNOWN }
   };
 
