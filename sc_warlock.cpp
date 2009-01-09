@@ -3525,6 +3525,11 @@ struct dark_pact_t : public warlock_spell_t
   }
 };
 
+// Fel Armor heal ticks =====================================================
+// TODO: fix this to be real.  Right now just treating it as an always-ticks-0-damage-0-heal HOT
+// which starts ticking when fel_armor is applied and continues for 30 minutes -- ie it assumes that
+// during the fight, you're never quite at full health, so fel armor will have a heal tick every 5 seconds
+
 // Fel Armor Spell ==========================================================
 
 struct fel_armor_t : public warlock_spell_t
@@ -3539,6 +3544,12 @@ struct fel_armor_t : public warlock_spell_t
     trigger_gcd = 0;
     bonus_spell_power = util_t::ability_rank( p -> level,  180.0,78,  150.0,73,  100.0,67,  50.0,62,  0.0,0 );
     bonus_spell_power *= 1.0 + p -> talents.demonic_aegis * 0.10;
+
+    // This is the fake ticking part
+    base_td_init       = 1; // There's a check for base_tick_dmg=0
+    base_td_multiplier = 0; // But it later multiplies by the power mode -- so make sure that's 0
+    base_tick_time     = 5.0; 
+    num_ticks          = 360;
   }
 
   virtual void execute() 
@@ -3548,6 +3559,10 @@ struct fel_armor_t : public warlock_spell_t
     p -> buffs_fel_armor = bonus_spell_power;
     p -> buffs_demon_armor = 0;
     p -> spell_power_per_spirit += 0.30 * ( 1.0 + p -> talents.demonic_aegis * 0.10 );
+    // Schedule fake ticks for heal procs
+    heal = true;
+    current_tick = 0;
+    schedule_tick();
   }
 
   virtual bool ready()
