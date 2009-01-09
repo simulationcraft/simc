@@ -2008,7 +2008,7 @@ struct curse_of_agony_t : public warlock_spell_t
     {
       num_ticks += 2;
       // after patch 3.0.8, the added ticks are double the base damage
-      if( sim -> patch.after(3.0.8) ) base_td_init = ( base_td_init * 12 + base_td_init * 4 ) / 14;
+      if( sim -> patch.after(3, 0, 8) ) base_td_init = ( base_td_init * 12 + base_td_init * 4 ) / 14;
     }
   }
 
