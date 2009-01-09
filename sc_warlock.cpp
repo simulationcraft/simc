@@ -2004,7 +2004,12 @@ struct curse_of_agony_t : public warlock_spell_t
 
     if( p -> talents.amplify_curse ) trigger_gcd = 1.0;
 
-    if( p -> glyphs.curse_of_agony ) num_ticks += 2;
+    if( p -> glyphs.curse_of_agony )
+    {
+      num_ticks += 2;
+      // after patch 3.0.8, the added ticks are double the base damage
+      if( sim -> patch.after(3.0.8) ) base_td_init = ( base_td_init * 12 + base_td_init * 4 ) / 14;
+    }
   }
 
   virtual void execute()
