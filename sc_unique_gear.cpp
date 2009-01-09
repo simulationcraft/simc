@@ -791,6 +791,7 @@ static void trigger_egg_of_mortal_essence( spell_t* s )
       name = "The Egg of Mortal Essence";
       player -> aura_gain( "Egg of Mortal Essence" );
       player -> haste_rating += 505;
+      player -> recalculate_haste();
       player -> cooldowns.egg_of_mortal_essence = sim -> current_time + 45;
       sim -> add_event( this, 10.0 );
     }
@@ -798,6 +799,7 @@ static void trigger_egg_of_mortal_essence( spell_t* s )
     {
       player -> aura_loss( "Egg of Mortal Essence" );
       player -> haste_rating -= 505;
+      player -> recalculate_haste();
     }
   };
 
