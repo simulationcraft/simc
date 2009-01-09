@@ -18,7 +18,7 @@ action_t::action_t( int8_t      ty,
 		    int8_t      s,
 		    int8_t      tr ) :
   sim(p->sim), type(ty), name_str(n), player(p), school(s), resource(r), tree(tr), result(RESULT_NONE),
-  binary(false), channeled(false), background(false), repeating(false), aoe(false), harmful(true), proc(false),
+  binary(false), channeled(false), background(false), repeating(false), aoe(false), harmful(true), proc(false), heal(false),
   may_miss(false), may_resist(false), may_dodge(false), may_parry(false), 
   may_glance(false), may_block(false), may_crush(false), may_crit(false),
   min_gcd(0), trigger_gcd(0),

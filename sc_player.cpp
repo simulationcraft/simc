@@ -1277,6 +1277,25 @@ void player_t::action_damage( action_t* action,
   }
 }
 
+// player_t::action_heal ====================================================
+
+void player_t::action_heal( action_t* action, 
+			    double    amount )
+{
+  if( action -> type == ACTION_SPELL )
+  {
+    unique_gear_t::spell_heal_event( (spell_t*) action, amount );
+        enchant_t::spell_heal_event( (spell_t*) action, amount );
+                   spell_heal_event( (spell_t*) action, amount );
+  }
+  else if( action -> type == ACTION_ATTACK )
+  {
+    unique_gear_t::attack_heal_event( (attack_t*) action, amount );
+        enchant_t::attack_heal_event( (attack_t*) action, amount );
+                   attack_heal_event( (attack_t*) action, amount );
+  }
+}
+
 // player_t::action_finish ==================================================
 
 void player_t::action_finish( action_t* action )
@@ -1333,6 +1352,13 @@ void player_t::spell_damage_event( spell_t* spell,
 {
 }
 
+// player_t::spell_heal_event ===============================================
+
+void player_t::spell_heal_event( spell_t* spell, 
+				 double   amount )
+{
+}
+
 // player_t::spell_finish_event =============================================
 
 void player_t::spell_finish_event( spell_t* spell )
@@ -1369,6 +1395,13 @@ void player_t::attack_tick_event( attack_t* attack )
 void player_t::attack_damage_event( attack_t* attack, 
 				    double   amount,
 				    int8_t   dmg_type )
+{
+}
+
+// player_t::attack_heal_event ==============================================
+
+void player_t::attack_heal_event( attack_t* attack, 
+				  double    amount )
 {
 }
 
@@ -1962,35 +1995,7 @@ bool player_t::parse_option( const std::string& name,
     { "spell_power_budget",                   OPT_INT16,  &( gear.spell_power_budget                        ) },
     { "attack_power_budget",                  OPT_INT16,  &( gear.attack_power_budget                       ) },
     { "budget_slots",                         OPT_INT16,  &( gear.budget_slots                              ) },
-    // Player - Gear - Unique									            
-    { "ashtongue_talisman",                   OPT_INT8,   &( gear.ashtongue_talisman                        ) },
-    { "chaotic_skyfire",                      OPT_INT8,   &( gear.chaotic_skyfire                           ) },
-    { "chaotic_skyflare",                     OPT_INT8,   &( gear.chaotic_skyflare                          ) },
-    { "darkmoon_crusade",                     OPT_INT8,   &( gear.darkmoon_crusade                          ) },
-    { "darkmoon_wrath",                       OPT_INT8,   &( gear.darkmoon_wrath                            ) },
-    { "dying_curse",			      OPT_INT8,   &( gear.dying_curse                               ) },
-    { "elder_scribes",                        OPT_INT8,   &( gear.elder_scribes                             ) },
-    { "embrace_of_the_spider",                OPT_INT8,   &( gear.embrace_of_the_spider                     ) },
-    { "eternal_sage",                         OPT_INT8,   &( gear.eternal_sage                              ) },
-    { "extract_of_necromatic_power",          OPT_INT8,   &( gear.extract_of_necromatic_power               ) },
-    { "eye_of_magtheridon",                   OPT_INT8,   &( gear.eye_of_magtheridon                        ) },
-    { "forge_ember",                          OPT_INT8,   &( gear.forge_ember	                            ) },
-    { "illustration_of_the_dragon_soul",      OPT_INT8,   &( gear.illustration_of_the_dragon_soul           ) },
-    { "lightning_capacitor",                  OPT_INT8,   &( gear.lightning_capacitor                       ) },
-    { "mark_of_defiance",                     OPT_INT8,   &( gear.mark_of_defiance                          ) },
-    { "mystical_skyfire",                     OPT_INT8,   &( gear.mystical_skyfire                          ) },
-    { "quagmirrans_eye",                      OPT_INT8,   &( gear.quagmirrans_eye                           ) },
-    { "sextant_of_unstable_currents",         OPT_INT8,   &( gear.sextant_of_unstable_currents              ) },
-    { "shiffars_nexus_horn",                  OPT_INT8,   &( gear.shiffars_nexus_horn                       ) },
-    { "spellstrike",                          OPT_INT8,   &( gear.spellstrike                               ) },
-    { "spellsurge",                           OPT_INT8,   &( gear.spellsurge                                ) },
-    { "sundial_of_the_exiled",                OPT_INT8,   &( gear.sundial_of_the_exiled                     ) },
-    { "egg_of_mortal_essence",                OPT_INT8,   &( gear.egg_of_mortal_essence                     ) },
-    { "talisman_of_ascendance",               OPT_INT8,   &( gear.talisman_of_ascendance                    ) },
-    { "thunder_capacitor",                    OPT_INT8,   &( gear.thunder_capacitor                         ) },
-    { "timbals_crystal",                      OPT_INT8,   &( gear.timbals_crystal                           ) },
-    { "wrath_of_cenarius",                    OPT_INT8,   &( gear.wrath_of_cenarius                         ) },
-    { "zandalarian_hero_charm",               OPT_INT8,   &( gear.zandalarian_hero_charm                    ) },
+    // Player - Tier Bonuses
     { "tier4_2pc",                            OPT_INT8,   &( gear.tier4_2pc                                 ) },
     { "tier4_4pc",                            OPT_INT8,   &( gear.tier4_4pc                                 ) },
     { "tier5_2pc",                            OPT_INT8,   &( gear.tier5_2pc                                 ) },
@@ -2013,12 +2018,15 @@ bool player_t::parse_option( const std::string& name,
     { "swift_retribution",                    OPT_INT8,   &( buffs.swift_retribution                        ) },
     { NULL, OPT_UNKNOWN }
   };
-  
+
   if( name.empty() )
   {
+    unique_gear_t::parse_option( this, name, value );
     option_t::print( sim, options );
     return false;
   }
 
+  if( unique_gear_t::parse_option( this, name, value ) ) return true;
+  
   return option_t::parse( sim, options, name, value );
 }

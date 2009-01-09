@@ -57,6 +57,7 @@ struct warlock_t : public player_t
 
   // Gains
   gain_t* gains_dark_pact;
+  gain_t* gains_fel_armor;
   gain_t* gains_felhunter;
   gain_t* gains_life_tap;
   gain_t* gains_sacrifice;
@@ -221,6 +222,7 @@ struct warlock_t : public player_t
 
     // Gains
     gains_dark_pact  = get_gain( "dark_pact"  );
+    gains_fel_armor  = get_gain( "fel_armor"  );
     gains_felhunter  = get_gain( "felhunter"  );
     gains_life_tap   = get_gain( "life_tap"   );
     gains_sacrifice  = get_gain( "sacrifice"  );
@@ -3557,11 +3559,6 @@ struct dark_pact_t : public warlock_spell_t
   }
 };
 
-// Fel Armor heal ticks =====================================================
-// TODO: fix this to be real.  Right now just treating it as an always-ticks-0-damage-0-heal HOT
-// which starts ticking when fel_armor is applied and continues for 30 minutes -- ie it assumes that
-// during the fight, you're never quite at full health, so fel armor will have a heal tick every 5 seconds
-
 // Fel Armor Spell ==========================================================
 
 struct fel_armor_t : public warlock_spell_t
@@ -3577,24 +3574,31 @@ struct fel_armor_t : public warlock_spell_t
     bonus_spell_power = util_t::ability_rank( p -> level,  180.0,78,  150.0,73,  100.0,67,  50.0,62,  0.0,0 );
     bonus_spell_power *= 1.0 + p -> talents.demonic_aegis * 0.10;
 
-    // This is the fake ticking part
-    base_td_init       = 1; // There's a check for base_tick_dmg=0
-    base_td_multiplier = 0; // But it later multiplies by the power mode -- so make sure that's 0
-    base_tick_time     = 5.0; 
-    num_ticks          = 360;
+    // Model the passive health tick.....
+    base_tick_time = 5.0; 
+    num_ticks      = 1;
+    heal           = true;
   }
 
   virtual void execute() 
   {
     warlock_t* p = player -> cast_warlock();
+
     if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+
     p -> buffs_fel_armor = bonus_spell_power;
     p -> buffs_demon_armor = 0;
     p -> spell_power_per_spirit += 0.30 * ( 1.0 + p -> talents.demonic_aegis * 0.10 );
-    // Schedule fake ticks for heal procs
-    heal = true;
-    current_tick = 0;
+
     schedule_tick();
+  }
+
+  virtual void tick()
+  {
+    warlock_t* p = player -> cast_warlock();
+    current_tick = 0; // ticks indefinitely
+    p -> resource_gain( RESOURCE_HEALTH, 0, p -> gains_fel_armor );
+    p -> action_heal( this, 0 );
   }
 
   virtual bool ready()

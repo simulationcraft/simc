@@ -542,6 +542,7 @@ struct player_t
     int8_t  darkmoon_crusade;
     int8_t  darkmoon_wrath;
     int8_t  dying_curse;
+    int8_t  egg_of_mortal_essence;
     int8_t  elder_scribes;
     int8_t  embrace_of_the_spider;
     int8_t  eternal_sage;
@@ -558,7 +559,6 @@ struct player_t
     int8_t  spellstrike;
     int8_t  spellsurge;
     int8_t  sundial_of_the_exiled;
-    int8_t  egg_of_mortal_essence;
     int8_t  talisman_of_ascendance;
     int8_t  thunder_capacitor;
     int8_t  timbals_crystal;
@@ -854,6 +854,7 @@ struct player_t
   virtual void action_hit   ( action_t* );
   virtual void action_tick  ( action_t* );
   virtual void action_damage( action_t*, double amount, int8_t dmg_type );
+  virtual void action_heal  ( action_t*, double amount );
   virtual void action_finish( action_t* );
 
   virtual void spell_start_event ( spell_t* );
@@ -861,6 +862,7 @@ struct player_t
   virtual void spell_hit_event   ( spell_t* );
   virtual void spell_tick_event  ( spell_t* );
   virtual void spell_damage_event( spell_t*, double amount, int8_t dmg_type );
+  virtual void spell_heal_event  ( spell_t*, double amount );
   virtual void spell_finish_event( spell_t* );
 
   virtual void attack_start_event ( attack_t* );
@@ -868,6 +870,7 @@ struct player_t
   virtual void attack_hit_event   ( attack_t* );
   virtual void attack_tick_event  ( attack_t* );
   virtual void attack_damage_event( attack_t*, double amount, int8_t dmg_type );
+  virtual void attack_heal_event  ( attack_t*, double amount );
   virtual void attack_finish_event( attack_t* );
 
   virtual bool get_talent_trees( std::vector<int8_t*>& tree1, std::vector<int8_t*>& tree2, std::vector<int8_t*>& tree3, talent_translation_t translation[][3] );
@@ -1305,6 +1308,7 @@ struct unique_gear_t
   static void spell_hit_event   ( spell_t* );
   static void spell_tick_event  ( spell_t* );
   static void spell_damage_event( spell_t*, double amount, int8_t dmg_type ) {}
+  static void spell_heal_event  ( spell_t*, double amount );
   static void spell_finish_event( spell_t* );
 
   static void attack_start_event ( attack_t* ) {}
@@ -1312,7 +1316,10 @@ struct unique_gear_t
   static void attack_hit_event   ( attack_t* ) {}
   static void attack_tick_event  ( attack_t* ) {}
   static void attack_damage_event( attack_t*, double amount, int8_t dmg_type ) {}
+  static void attack_heal_event  ( attack_t*, double amount ) {}
   static void attack_finish_event( attack_t* ) {}
+
+  static bool parse_option( player_t*, const std::string& name, const std::string& value );
 
   static action_t* create_action( player_t*, const std::string& name, const std::string& options );
 };
@@ -1326,6 +1333,7 @@ struct enchant_t
   static void spell_hit_event   ( spell_t* ) {}
   static void spell_tick_event  ( spell_t* ) {}
   static void spell_damage_event( spell_t*, double amount, int8_t dmg_type ) {}
+  static void spell_heal_event  ( spell_t*, double amount ) {}
   static void spell_finish_event( spell_t* );
 
   static void attack_start_event ( attack_t* ) {}
@@ -1333,6 +1341,7 @@ struct enchant_t
   static void attack_hit_event   ( attack_t* );
   static void attack_tick_event  ( attack_t* ) {}
   static void attack_damage_event( attack_t*, double amount, int8_t dmg_type ) {}
+  static void attack_heal_event  ( attack_t*, double amount ) {}
   static void attack_finish_event( attack_t* ) {}
 
   static void trigger_flametongue_totem( attack_t* );

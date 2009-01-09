@@ -550,8 +550,8 @@ static void trigger_lightning_capacitor( spell_t* s )
     {
       if( p -> buffs.lightning_capacitor < 2 )
       {
-	p -> buffs.lightning_capacitor++;
-	if( p -> buffs.lightning_capacitor == 1 ) p -> aura_gain( "Lightning Capacitor" );
+        p -> buffs.lightning_capacitor++;
+        if( p -> buffs.lightning_capacitor == 1 ) p -> aura_gain( "Lightning Capacitor" );
       }
       else
       {
@@ -601,8 +601,8 @@ static void trigger_thunder_capacitor( spell_t* s )
     {
       if( p -> buffs.thunder_capacitor < 2 )
       {
-	p -> buffs.thunder_capacitor++;
-	if( p -> buffs.thunder_capacitor == 1 ) p -> aura_gain( "Thunder Capacitor" );
+        p -> buffs.thunder_capacitor++;
+        if( p -> buffs.thunder_capacitor == 1 ) p -> aura_gain( "Thunder Capacitor" );
       }
       else
       {
@@ -782,8 +782,11 @@ static void trigger_extract_of_necromatic_power( spell_t* s )
 }
 
 // Egg of Mortal Essence ============================================
+
 static void trigger_egg_of_mortal_essence( spell_t* s )
 {
+  if( ! s -> heal ) return; // Does not work off damage spells with secondary heal effect
+
   struct egg_of_mortal_essence_expiration_t : public event_t
   {
     egg_of_mortal_essence_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
@@ -812,6 +815,7 @@ static void trigger_egg_of_mortal_essence( spell_t* s )
       s -> sim -> roll( 0.10 ) )
   {
     p -> procs.egg_of_mortal_essence -> occur();
+
     new ( s -> sim ) egg_of_mortal_essence_expiration_t( s -> sim, p );
   }
 }
@@ -947,7 +951,6 @@ void unique_gear_t::spell_hit_event( spell_t* s )
   trigger_illustration_of_the_dragon_soul( s );
   trigger_dying_curse                    ( s );
   trigger_forge_ember                    ( s );
-  trigger_egg_of_mortal_essence          ( s );
 
   if( s -> result == RESULT_CRIT )
   {
@@ -965,7 +968,13 @@ void unique_gear_t::spell_tick_event( spell_t* s )
 {
   trigger_timbals_crystal            ( s );
   trigger_extract_of_necromatic_power( s );
-  trigger_egg_of_mortal_essence      ( s );
+}
+
+// unique_gear_t::spell_heal_event ==========================================
+
+void unique_gear_t::spell_heal_event( spell_t* s, double amount )
+{
+  trigger_egg_of_mortal_essence( s );
 }
 
 // unique_gear_t::spell_finish_event ========================================
@@ -1341,6 +1350,56 @@ struct violet_eye_t : public action_t
     new ( sim ) violet_eye_expiration_t( sim, player );
   }
 };
+
+// ==========================================================================
+// unique_gear_t::parse_option
+// ==========================================================================
+
+bool unique_gear_t::parse_option( player_t*          p,
+                                  const std::string& name, 
+                                  const std::string& value )
+{
+  option_t options[] =
+  {
+    { "ashtongue_talisman",                   OPT_INT8,   &( p -> gear.ashtongue_talisman              ) },
+    { "chaotic_skyfire",                      OPT_INT8,   &( p -> gear.chaotic_skyfire                 ) },
+    { "chaotic_skyflare",                     OPT_INT8,   &( p -> gear.chaotic_skyflare                ) },
+    { "darkmoon_crusade",                     OPT_INT8,   &( p -> gear.darkmoon_crusade                ) },
+    { "darkmoon_wrath",                       OPT_INT8,   &( p -> gear.darkmoon_wrath                  ) },
+    { "dying_curse",                          OPT_INT8,   &( p -> gear.dying_curse                     ) },
+    { "egg_of_mortal_essence",                OPT_INT8,   &( p -> gear.egg_of_mortal_essence           ) },
+    { "elder_scribes",                        OPT_INT8,   &( p -> gear.elder_scribes                   ) },
+    { "embrace_of_the_spider",                OPT_INT8,   &( p -> gear.embrace_of_the_spider           ) },
+    { "eternal_sage",                         OPT_INT8,   &( p -> gear.eternal_sage                    ) },
+    { "extract_of_necromatic_power",          OPT_INT8,   &( p -> gear.extract_of_necromatic_power     ) },
+    { "eye_of_magtheridon",                   OPT_INT8,   &( p -> gear.eye_of_magtheridon              ) },
+    { "forge_ember",                          OPT_INT8,   &( p -> gear.forge_ember                     ) },
+    { "illustration_of_the_dragon_soul",      OPT_INT8,   &( p -> gear.illustration_of_the_dragon_soul ) },
+    { "lightning_capacitor",                  OPT_INT8,   &( p -> gear.lightning_capacitor             ) },
+    { "mark_of_defiance",                     OPT_INT8,   &( p -> gear.mark_of_defiance                ) },
+    { "mystical_skyfire",                     OPT_INT8,   &( p -> gear.mystical_skyfire                ) },
+    { "quagmirrans_eye",                      OPT_INT8,   &( p -> gear.quagmirrans_eye                 ) },
+    { "sextant_of_unstable_currents",         OPT_INT8,   &( p -> gear.sextant_of_unstable_currents    ) },
+    { "shiffars_nexus_horn",                  OPT_INT8,   &( p -> gear.shiffars_nexus_horn             ) },
+    { "spellstrike",                          OPT_INT8,   &( p -> gear.spellstrike                     ) },
+    { "spellsurge",                           OPT_INT8,   &( p -> gear.spellsurge                      ) },
+    { "sundial_of_the_exiled",                OPT_INT8,   &( p -> gear.sundial_of_the_exiled           ) },
+    { "talisman_of_ascendance",               OPT_INT8,   &( p -> gear.talisman_of_ascendance          ) },
+    { "thunder_capacitor",                    OPT_INT8,   &( p -> gear.thunder_capacitor               ) },
+    { "timbals_crystal",                      OPT_INT8,   &( p -> gear.timbals_crystal                 ) },
+    { "wrath_of_cenarius",                    OPT_INT8,   &( p -> gear.wrath_of_cenarius               ) },
+    { "zandalarian_hero_charm",               OPT_INT8,   &( p -> gear.zandalarian_hero_charm          ) },
+    { NULL, OPT_UNKNOWN }
+  };
+  
+  if( name.empty() )
+  {
+    option_t::print( p -> sim, options );
+    return false;
+  }
+
+  return option_t::parse( p -> sim, options, name, value );
+}
 
 // ==========================================================================
 // unique_gear_t::create_action
