@@ -709,7 +709,7 @@ struct felhunter_pet_t : public warlock_pet_t
     warlock_pet_t( sim, owner, pet_name, PET_FELHUNTER ), melee(0)
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.damage     = 70;
+    main_hand_weapon.damage     = 71;
     main_hand_weapon.swing_time = 2.0;
   }
   virtual void init_base()
@@ -764,7 +764,7 @@ struct succubus_pet_t : public warlock_pet_t
     warlock_pet_t( sim, owner, pet_name, PET_SUCCUBUS ), melee(0)
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.damage     = 120;
+    main_hand_weapon.damage     = 121;
     main_hand_weapon.swing_time = 2.0;
   }
   virtual void init_base()
@@ -894,6 +894,8 @@ struct doomguard_pet_t : public warlock_pet_t
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.damage     = 1400;
     main_hand_weapon.swing_time = 2.0;
+    // doomguard weapon damage was buffed in 3.0.8
+    if( sim -> patch.after(3, 0, 8) ) main_hand_weapon.damage = 1690;
   }
   virtual void init_base()
   {
@@ -915,7 +917,7 @@ struct doomguard_pet_t : public warlock_pet_t
   virtual void summon()
   {
     warlock_pet_t::summon();
-    melee      -> schedule_execute();
+    melee -> schedule_execute();
     schedule_ready();
   }
   virtual action_t* create_action( const std::string& name,
@@ -923,8 +925,17 @@ struct doomguard_pet_t : public warlock_pet_t
   {
     return player_t::create_action( name, options_str );
   }
-  virtual double composite_attack_hit() { return 0; }
-  virtual double composite_spell_hit()  { return 0; }
+  // after 3.0.8, doomguard inherits warlock's hit rating
+  virtual double composite_attack_hit()
+  {
+      if( sim -> patch.after(3, 0, 8) ) return owner -> composite_attack_hit();
+      return 0;
+  }
+  virtual double composite_spell_hit()
+  {
+      if( sim -> patch.after(3, 0, 8) ) return owner -> composite_spell_hit();
+      return 0;
+  }
 };
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
