@@ -585,7 +585,7 @@ tier7_2pc=1
 tier7_4pc=1
 chaotic_skyflare=1
 # Glyphs
-glyph_corruption=1
+glyph_immolate=1
 glyph_curse_of_agony=1
 glyph_siphon_life=1
 # Pets
@@ -614,7 +614,7 @@ tier7_2pc=1
 tier7_4pc=1
 chaotic_skyflare=1
 # Glyphs
-glyph_corruption=1
+glyph_immolate=1
 glyph_curse_of_agony=1
 glyph_siphon_life=1
 # Pets
