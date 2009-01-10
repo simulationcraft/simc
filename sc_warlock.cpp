@@ -642,6 +642,9 @@ struct felguard_pet_t : public warlock_pet_t
     main_hand_weapon.damage     = 130;
     main_hand_weapon.swing_time = 2.0;
 
+    // weapon damage was buffed in 3.0.8
+    if( sim -> patch.after(3, 0, 8) ) main_hand_weapon.damage = 412;
+
     buffs_demonic_frenzy = 0;
   }
   virtual void init_base()
@@ -711,6 +714,9 @@ struct felhunter_pet_t : public warlock_pet_t
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.damage     = 71;
     main_hand_weapon.swing_time = 2.0;
+
+    // weapon damage was buffed in 3.0.8
+    if( sim -> patch.after(3, 0, 8) ) main_hand_weapon.damage = 312.5;
   }
   virtual void init_base()
   {
@@ -766,6 +772,9 @@ struct succubus_pet_t : public warlock_pet_t
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.damage     = 121;
     main_hand_weapon.swing_time = 2.0;
+
+    // weapon damage was buffed in 3.0.8
+    if( sim -> patch.after(3, 0, 8) ) main_hand_weapon.damage = 440;
   }
   virtual void init_base()
   {
@@ -894,7 +903,8 @@ struct doomguard_pet_t : public warlock_pet_t
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.damage     = 1400;
     main_hand_weapon.swing_time = 2.0;
-    // doomguard weapon damage was buffed in 3.0.8
+
+    // weapon damage was buffed in 3.0.8
     if( sim -> patch.after(3, 0, 8) ) main_hand_weapon.damage = 1690;
   }
   virtual void init_base()
