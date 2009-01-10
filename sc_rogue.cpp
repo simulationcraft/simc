@@ -336,7 +336,7 @@ double rogue_attack_t::execute_time()
 
 void rogue_attack_t::execute()
 {
-  //rogue_t* p = player -> cast_rogue();
+  rogue_t* p = player -> cast_rogue();
 
   attack_t::execute();
   
@@ -349,6 +349,8 @@ void rogue_attack_t::execute()
     {
     }
   }
+
+  p -> buffs_stealthed = -1;  // In-Combat
 }
 
 // rogue_attack_t::consume_resource =======================================
@@ -565,6 +567,24 @@ struct backstab_t : public rogue_attack_t
   }
 };
 
+// Feint ====================================================================
+
+struct feint_t : public rogue_attack_t
+{
+  feint_t( player_t* player, const std::string& options_str ) : 
+    rogue_attack_t( "feint", player, SCHOOL_PHYSICAL, TREE_COMBAT )
+  {
+    base_cost = 20;
+    cooldown = 10;
+  }
+
+  virtual void execute()
+  {
+    consume_resource();
+    // model threat eventually......
+  }
+};
+
 // Rupture ==================================================================
 
 struct rupture_t : public rogue_attack_t
@@ -666,6 +686,51 @@ struct sinister_strike_t : public rogue_attack_t
   }
 };
 
+// Stealth ==================================================================
+
+struct stealth_t : public spell_t
+{
+  stealth_t( player_t* player, const std::string& options_str ) : 
+    spell_t( "stealth", player )
+  {
+  }
+
+  virtual void execute()
+  {
+    rogue_t* p = player -> cast_rogue();
+    p -> buffs_stealthed = 1;
+  }
+
+  virtual bool ready()
+  {
+    rogue_t* p = player -> cast_rogue();
+    return p -> buffs_stealthed == 0;
+  }
+};
+
+// Vanish ===================================================================
+
+struct vanish_t : public spell_t
+{
+  vanish_t( player_t* player, const std::string& options_str ) : 
+    spell_t( "vanish", player )
+  {
+    cooldown = 180;
+  }
+
+  virtual void execute()
+  {
+    rogue_t* p = player -> cast_rogue();
+    p -> buffs_stealthed = 1;
+  }
+
+  virtual bool ready()
+  {
+    rogue_t* p = player -> cast_rogue();
+    return p -> buffs_stealthed < 1;
+  }
+};
+
 } // ANONYMOUS NAMESPACE ===================================================
 
 // =========================================================================
@@ -680,21 +745,21 @@ action_t* rogue_t::create_action( const std::string& name,
   if( name == "auto_attack"         ) return new auto_attack_t        ( this, options_str );
   if( name == "ambush"              ) return new ambush_t             ( this, options_str );
   if( name == "backstab"            ) return new backstab_t           ( this, options_str );
+  if( name == "feint"               ) return new feint_t              ( this, options_str );
   if( name == "rupture"             ) return new rupture_t            ( this, options_str );
   if( name == "sinister_strike"     ) return new sinister_strike_t    ( this, options_str );
+  if( name == "stealth"             ) return new stealth_t            ( this, options_str );
+  if( name == "vanish"              ) return new vanish_t             ( this, options_str );
 #if 0
   if( name == "deadly_throw"        ) return new deadly_throw_t       ( this, options_str );
   if( name == "envenom"             ) return new envenom_t            ( this, options_str );
   if( name == "eviscerate"          ) return new eviscerate_t         ( this, options_str );
   if( name == "expose_armor"        ) return new expose_armor_t       ( this, options_str );
-  if( name == "feint"               ) return new feint_t              ( this, options_str );
   if( name == "hemorrhage"          ) return new hemorrhage_t         ( this, options_str );
   if( name == "mutilate"            ) return new mutilate_t           ( this, options_str );
   if( name == "shiv"                ) return new shiv_t               ( this, options_str );
   if( name == "slice_and_dice"      ) return new slice_and_dice_t     ( this, options_str );
-  if( name == "stealth"             ) return new stealth_t            ( this, options_str );
   if( name == "tricks_of_the_trade" ) return new tricks_of_the_trade_t( this, options_str );
-  if( name == "vanish"              ) return new vanish_t             ( this, options_str );
 #endif
   return player_t::create_action( name, options_str );
 }
