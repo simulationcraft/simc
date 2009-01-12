@@ -66,7 +66,8 @@ double target_t::composite_armor( player_t* p )
 {
   double adjusted_armor = armor;
 
-  adjusted_armor -= debuffs.sunder_armor;
+  adjusted_armor -= std::max( debuffs.sunder_armor, debuffs.expose_armor );
+
   adjusted_armor -= debuffs.faerie_fire;
 
   if( p -> buffs.executioner ) adjusted_armor -= 840;

@@ -20,13 +20,14 @@ struct rogue_t : public player_t
   double buffs_combo_point_events[ MAX_COMBO_POINTS ];
   int8_t buffs_combo_points;
   int8_t buffs_poisons_applied;
+  int8_t buffs_slice_and_dice;
   int8_t buffs_stealthed;
 
   // Cooldowns
   double cooldowns_;
 
   // Expirations
-  event_t* expirations_;
+  event_t* expirations_slice_and_dice;
 
   // Gains
   gain_t* gains_;
@@ -35,7 +36,7 @@ struct rogue_t : public player_t
   proc_t* procs_sword_specialization;
   
   // Up-Times
-  uptime_t* uptimes_;
+  uptime_t* uptimes_slice_and_dice;
   
   // Auto-Attack
   attack_t* main_hand_attack;
@@ -133,13 +134,14 @@ struct rogue_t : public player_t
     }
     buffs_combo_points = 0;
     buffs_poisons_applied = 0;
+    buffs_slice_and_dice = 0;
     buffs_stealthed = 0;
 
     // Cooldowns
     cooldowns_ = 0;
 
     // Expirations
-    expirations_ = 0;
+    expirations_slice_and_dice = 0;
   
     // Gains
     gains_ = get_gain( "dummy" );
@@ -148,7 +150,7 @@ struct rogue_t : public player_t
     procs_sword_specialization = get_proc( "sword_specialization" );
 
     // Up-Times
-    uptimes_ = get_uptime( "dummy" );
+    uptimes_slice_and_dice = get_uptime( "slice_and_dice" );
   
     // Auto-Attack
     main_hand_attack = 0;
@@ -176,6 +178,16 @@ struct rogue_t : public player_t
     double cp_list[] = { cp1, cp2, cp3, cp4, cp5 };
     return combo_point_rank( cp_list );
   }
+  void clear_combo_points()
+  {
+    if( buffs_combo_points <= 0 ) return;
+    buffs_combo_points = 0;
+    for( int i=0; i < MAX_COMBO_POINTS; i++ ) 
+    {
+      buffs_combo_point_events[ i ] = 0;
+    }
+    aura_loss( "Combo Points" );
+  }
 };
 
 namespace { // ANONYMOUS NAMESPACE =========================================
@@ -189,8 +201,8 @@ struct rogue_attack_t : public attack_t
   int8_t  requires_weapon;
   int8_t  requires_position;
   bool    requires_stealth;
+  bool    requires_combo_points;
   bool    adds_combo_points;
-  bool    eats_combo_points;
   int16_t min_energy, min_combo_points;
   int16_t max_energy, max_combo_points;
 
@@ -199,7 +211,8 @@ struct rogue_attack_t : public attack_t
     requires_weapon(WEAPON_NONE),
     requires_position(POSITION_NONE),
     requires_stealth(false),
-    adds_combo_points(false), eats_combo_points(false),
+    requires_combo_points(false),
+    adds_combo_points(false), 
     min_energy(0), min_combo_points(0), 
     max_energy(0), max_combo_points(0)
   {
@@ -251,15 +264,6 @@ static void trigger_combo_points( rogue_attack_t* a )
 {
   rogue_t* p = a -> player -> cast_rogue();
 
-  if( a -> eats_combo_points )
-  {
-    p -> buffs_combo_points = 0;
-    for( int i=0; i < MAX_COMBO_POINTS; i++ ) 
-    {
-      p -> buffs_combo_point_events[ i ] = 0;
-    }
-    p -> aura_loss( "Combo Points" );
-  }
   if( a -> adds_combo_points )
   {
     if( p -> buffs_combo_points < 5 )
@@ -357,9 +361,9 @@ void rogue_attack_t::execute()
   
 void rogue_attack_t::consume_resource()
 {
-  //rogue_t* p = player -> cast_rogue();
+  rogue_t* p = player -> cast_rogue();
   attack_t::consume_resource();
-
+  if( requires_combo_points ) p -> clear_combo_points();
 }
 
 // rogue_attack_t::player_buff ============================================
@@ -428,7 +432,7 @@ bool rogue_attack_t::ready()
     if( sim -> time_to_think( p -> buffs_combo_point_events[ max_combo_points-1 ] ) )
       return false;
 
-  if( eats_combo_points && ( p -> buffs_combo_points == 0 ) )
+  if( requires_combo_points && ( p -> buffs_combo_points == 0 ) )
     return false;
 
   return true;
@@ -454,6 +458,15 @@ struct melee_t : public rogue_attack_t
     base_cost       = 0;
 
     if( p -> dual_wield() ) base_hit -= 0.18;
+  }
+
+  virtual double execute_time()
+  {
+    double t = rogue_attack_t::execute_time();
+    rogue_t* p = player -> cast_rogue();
+    if( p -> buffs_slice_and_dice > 0 ) t *= 1.0 / 1.3;
+    p -> uptimes_slice_and_dice -> update( p -> buffs_slice_and_dice != 0 );
+    return t;
   }
 };
 
@@ -567,6 +580,98 @@ struct backstab_t : public rogue_attack_t
   }
 };
 
+// Expose Armor =============================================================
+
+struct expose_armor_t : public rogue_attack_t
+{
+  int8_t override_sunder;
+
+  expose_armor_t( player_t* player, const std::string& options_str ) : 
+    rogue_attack_t( "expose_armor", player, SCHOOL_PHYSICAL, TREE_ASSASSINATION ), override_sunder(0)
+  {
+    rogue_t* p = player -> cast_rogue();
+
+    option_t options[] =
+    {
+      { "override_sunder", OPT_INT8, &override_sunder },
+      { NULL }
+    };
+    parse_options( options, options_str );
+      
+    static rank_t ranks[] =
+    {
+      { 77, 7, 0, 0, 450, 25 },
+      { 66, 6, 0, 0, 520, 25 },
+      { 56, 5, 0, 0, 785, 25 },
+      { 0, 0 }
+    };
+    init_rank( ranks );
+
+    weapon = &( p -> main_hand_weapon );
+    requires_combo_points = true;
+    may_glance            = false;
+  }
+
+  virtual void execute()
+  {
+    rogue_t* p = player -> cast_rogue();
+    rogue_attack_t::execute();
+    if( result_is_hit() )
+    {
+      target_t* t = sim -> target;
+
+      double debuff = base_td_init * p -> buffs_combo_points;
+
+      if( debuff >= t -> debuffs.expose_armor )
+      {
+	struct expiration_t : public event_t
+        {
+	  expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
+	  {
+	    name = "Expose Armor Expiration";
+	    sim -> add_event( this, 30.0 );
+	  }
+	  virtual void execute()
+	  {
+	    sim -> target -> debuffs.expose_armor = 0;
+	    sim -> target -> expirations.expose_armor = 0;
+	  }
+	};
+
+	t -> debuffs.expose_armor = debuff;
+
+	event_t*& e = t -> expirations.expose_armor;
+
+	if( e )
+	{
+	  e -> reschedule( 30.0 );
+	}
+	else
+	{
+	  e = new ( sim ) expiration_t( sim, p );
+	}
+      }
+    }
+  };
+
+  virtual bool ready()
+  {
+    target_t* t = sim -> target;
+
+    if( override_sunder )
+    {
+      return ( t -> debuffs.expose_armor == 0 );
+    }
+    else
+    {
+      return ( t -> debuffs.expose_armor == 0 &&
+	       t -> debuffs.sunder_armor == 0 );
+    }
+
+    return rogue_attack_t::ready();
+  }
+};
+
 // Feint ====================================================================
 
 struct feint_t : public rogue_attack_t
@@ -602,12 +707,11 @@ struct rupture_t : public rogue_attack_t
     };
     parse_options( options, options_str );
       
-    weapon            = &( p -> main_hand_weapon );
-    eats_combo_points = true;
-    may_glance        = false;
-
-    base_cost      = 25;
-    base_tick_time = 2.0; 
+    weapon = &( p -> main_hand_weapon );
+    requires_combo_points = true;
+    may_glance            = false;
+    base_cost             = 25;
+    base_tick_time        = 2.0; 
 
     static double dmg_79[] = { 145, 163, 181, 199, 217 };
     static double dmg_74[] = { 122, 137, 152, 167, 182 };
@@ -686,6 +790,67 @@ struct sinister_strike_t : public rogue_attack_t
   }
 };
 
+// Slice and Dice ===========================================================
+
+struct slice_and_dice_t : public rogue_attack_t
+{
+  slice_and_dice_t( player_t* player, const std::string& options_str ) : 
+    rogue_attack_t( "slice_and_dice", player, SCHOOL_PHYSICAL, TREE_ASSASSINATION )
+  {
+    option_t options[] =
+    {
+      { NULL }
+    };
+    parse_options( options, options_str );
+
+    requires_combo_points = true;
+  }
+
+  virtual void execute()
+  {
+    struct expiration_t : public event_t
+    {
+      expiration_t( sim_t* sim, rogue_t* p, double duration ) : event_t( sim, p )
+      {
+	name = "Slice and Dice Expiration";
+	p -> aura_gain( "Slice and Dice" );
+	p -> buffs_slice_and_dice = 1;
+	sim -> add_event( this, duration );
+      }
+      virtual void execute()
+      {
+	rogue_t* p = player -> cast_rogue();
+	p -> aura_loss( "Slice and Dice" );
+	p ->       buffs_slice_and_dice = 0;
+	p -> expirations_slice_and_dice = 0;
+      }
+    };
+
+    rogue_t* p = player -> cast_rogue();
+
+    double duration = 6.0 + 3.0 * p -> buffs_combo_points;
+
+    consume_resource();
+
+    event_t*& e = p -> expirations_slice_and_dice;
+
+    if( e )
+    {
+      e -> reschedule( duration );
+    }
+    else
+    {
+      e = new ( sim ) expiration_t( sim, p, duration );
+    }
+  }
+
+  virtual bool ready()
+  {
+    rogue_t* p = player -> cast_rogue();
+    return p -> buffs_slice_and_dice == 0;
+  }
+};
+
 // Stealth ==================================================================
 
 struct stealth_t : public spell_t
@@ -745,21 +910,24 @@ action_t* rogue_t::create_action( const std::string& name,
   if( name == "auto_attack"         ) return new auto_attack_t        ( this, options_str );
   if( name == "ambush"              ) return new ambush_t             ( this, options_str );
   if( name == "backstab"            ) return new backstab_t           ( this, options_str );
+  if( name == "expose_armor"        ) return new expose_armor_t       ( this, options_str );
   if( name == "feint"               ) return new feint_t              ( this, options_str );
   if( name == "rupture"             ) return new rupture_t            ( this, options_str );
   if( name == "sinister_strike"     ) return new sinister_strike_t    ( this, options_str );
+  if( name == "slice_and_dice"      ) return new slice_and_dice_t     ( this, options_str );
   if( name == "stealth"             ) return new stealth_t            ( this, options_str );
   if( name == "vanish"              ) return new vanish_t             ( this, options_str );
 #if 0
+  if( name == "deadly_poson"        ) return new deadly_poison_t      ( this, options_str );
   if( name == "deadly_throw"        ) return new deadly_throw_t       ( this, options_str );
   if( name == "envenom"             ) return new envenom_t            ( this, options_str );
   if( name == "eviscerate"          ) return new eviscerate_t         ( this, options_str );
-  if( name == "expose_armor"        ) return new expose_armor_t       ( this, options_str );
   if( name == "hemorrhage"          ) return new hemorrhage_t         ( this, options_str );
+  if( name == "instant_poson"       ) return new instant_poison_t     ( this, options_str );
   if( name == "mutilate"            ) return new mutilate_t           ( this, options_str );
   if( name == "shiv"                ) return new shiv_t               ( this, options_str );
-  if( name == "slice_and_dice"      ) return new slice_and_dice_t     ( this, options_str );
   if( name == "tricks_of_the_trade" ) return new tricks_of_the_trade_t( this, options_str );
+  if( name == "wound_poson"         ) return new wound_poison_t       ( this, options_str );
 #endif
   return player_t::create_action( name, options_str );
 }
@@ -807,13 +975,14 @@ void rogue_t::reset()
   }
   buffs_combo_points = 0;
   buffs_poisons_applied = 0;
+  buffs_slice_and_dice = 0;
   buffs_stealthed = 0;
 
   // Cooldowns
   cooldowns_ = 0;
 
   // Expirations
-  expirations_ = 0;
+  expirations_slice_and_dice = 0;
 }
 
 // rogue_t::get_talent_trees ==============================================

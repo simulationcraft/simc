@@ -987,6 +987,7 @@ struct target_t
     int8_t   temporary_debuffs;
     int8_t   affliction_effects;
     int8_t   curse_of_elements;
+    double   expose_armor;
     double   faerie_fire;
     double   frozen;
     int8_t   improved_faerie_fire;
@@ -1010,6 +1011,7 @@ struct target_t
   struct expirations_t
   {
     event_t* curse_of_elements;
+    event_t* expose_armor;
     event_t* faerie_fire;
     event_t* frozen;
     event_t* earth_and_moon;
