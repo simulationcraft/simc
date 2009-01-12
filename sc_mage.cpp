@@ -1442,8 +1442,11 @@ struct arcane_missiles_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
     mage_spell_t::last_tick();
     clear_missile_barrage( this );
-    if( abar_combo && abar_spell -> ready() ) abar_spell -> execute();
     clear_arcane_potency( this );
+    if( abar_combo && abar_spell -> ready() ) 
+    {
+      abar_spell -> execute();
+    }
     event_t::early( p -> expirations_arcane_blast );
   }
 
