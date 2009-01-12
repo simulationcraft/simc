@@ -196,6 +196,8 @@ void action_t::player_buff()
 
   if( p -> buffs.sanctified_retribution ) player_multiplier *= 1.03;
 
+  if( p -> buffs.tricks_of_the_trade ) player_multiplier *= 1.15;
+
   if( sim -> debug ) 
     report_t::log( sim, "action_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f", 
 		   name(), player_hit, player_crit, player_power, player_penetration );

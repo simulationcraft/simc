@@ -176,13 +176,15 @@ enum weapon_type { WEAPON_NONE=0,
 enum weapon_enchant_type { WEAPON_ENCHANT_NONE=0, MONGOOSE, EXECUTIONER, DEATH_FROST, WEAPON_ENCHANT_MAX };
 
 enum weapon_buff_type { WEAPON_BUFF_NONE=0, 
+                        DEADLY_POISON,
                         FIRE_STONE,
                         FLAMETONGUE, 
-                        POISON,
+                        INSTANT_POISON,
                         SHARPENING_STONE, 
                         SPELL_STONE,
                         WINDFURY, 
                         WIZARD_OIL,
+                        WOUND_POISON,
                         WEAPON_BUFF_MAX };
 
 enum elixir_type { ELIXIR_NONE=0,
@@ -619,6 +621,7 @@ struct player_t
     int16_t   talisman_of_ascendance;
     int8_t    thunder_capacitor;
     double    totem_of_wrath;
+    int8_t    tricks_of_the_trade;
     int8_t    unleashed_rage;
     int8_t    violet_eye;
     double    windfury_totem;
@@ -650,6 +653,7 @@ struct player_t
     event_t* mongoose_mh;
     event_t* mongoose_oh;
     event_t* spellstrike;
+    event_t* tricks_of_the_trade;
     event_t* wrath_of_cenarius;
     event_t* illustration_of_the_dragon_soul;
     event_t *tier4_2pc, *tier4_4pc;

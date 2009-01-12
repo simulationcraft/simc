@@ -14,19 +14,26 @@
 struct rogue_t : public player_t
 {
   // Active
-  spell_t* active_;
+  action_t* active_deadly_poison;
+  action_t* active_instant_poison;
+  action_t* active_wound_poison;
 
   // Buffs
-  double buffs_combo_point_events[ MAX_COMBO_POINTS ];
-  int8_t buffs_combo_points;
-  int8_t buffs_poisons_applied;
-  int8_t buffs_slice_and_dice;
-  int8_t buffs_stealthed;
+  double    buffs_combo_point_events[ MAX_COMBO_POINTS ];
+  int8_t    buffs_combo_points;
+  int8_t    buffs_envenom;
+  int8_t    buffs_poison_doses;
+  int8_t    buffs_shiv;
+  int8_t    buffs_slice_and_dice;
+  int8_t    buffs_stealthed;
+  int8_t    buffs_tricks_ready;
+  player_t* buffs_tricks_target;
 
   // Cooldowns
   double cooldowns_;
 
   // Expirations
+  event_t* expirations_envenom;
   event_t* expirations_slice_and_dice;
 
   // Gains
@@ -36,6 +43,7 @@ struct rogue_t : public player_t
   proc_t* procs_sword_specialization;
   
   // Up-Times
+  uptime_t* uptimes_envenom;
   uptime_t* uptimes_slice_and_dice;
   
   // Auto-Attack
@@ -125,22 +133,29 @@ struct rogue_t : public player_t
   rogue_t( sim_t* sim, std::string& name ) : player_t( sim, ROGUE, name )
   {
     // Active
-    active_ = 0;
+    active_deadly_poison  = 0;
+    active_instant_poison = 0;
+    active_wound_poison   = 0;
 
     // Buffs
     for( int i=0; i < MAX_COMBO_POINTS; i++ ) 
     {
       buffs_combo_point_events[ i ] = 0;
     }
-    buffs_combo_points = 0;
-    buffs_poisons_applied = 0;
+    buffs_combo_points   = 0;
+    buffs_envenom        = 0;
+    buffs_poison_doses   = 0;
+    buffs_shiv           = 0;
     buffs_slice_and_dice = 0;
-    buffs_stealthed = 0;
+    buffs_stealthed      = 0;
+    buffs_tricks_ready   = 0;
+    buffs_tricks_target  = 0;
 
     // Cooldowns
     cooldowns_ = 0;
 
     // Expirations
+    expirations_envenom        = 0;
     expirations_slice_and_dice = 0;
   
     // Gains
@@ -150,6 +165,7 @@ struct rogue_t : public player_t
     procs_sword_specialization = get_proc( "sword_specialization" );
 
     // Up-Times
+    uptimes_envenom        = get_uptime( "envenom" );
     uptimes_slice_and_dice = get_uptime( "slice_and_dice" );
   
     // Auto-Attack
@@ -232,10 +248,36 @@ struct rogue_attack_t : public attack_t
   virtual bool   ready();
 };
 
+// trigger_poisons =========================================================
+
+static void trigger_poisons( rogue_attack_t* a )
+{
+  weapon_t* w = a -> weapon;
+
+  if( ! w ) return;
+
+  rogue_t* p = a -> player -> cast_rogue();
+
+  if( w -> buff == DEADLY_POISON )
+  {
+    p -> active_deadly_poison -> execute();
+  }
+  else if( w -> buff == INSTANT_POISON )
+  {
+    p -> active_instant_poison -> execute();
+  }
+  else if( w -> buff == WOUND_POISON )
+  {
+    p -> active_wound_poison -> execute();
+  }
+}
+
 // trigger_sword_specialization ============================================
 
 static void trigger_sword_specialization( rogue_attack_t* a )
 {
+  if( a -> proc ) return;
+
   weapon_t* w = a -> weapon;
 
   if( ! w ) return;
@@ -282,6 +324,48 @@ static void trigger_combo_points( rogue_attack_t* a )
 	p -> aura_gain( "Combo Point" );
       }
     }
+  }
+}
+
+// trigger_tricks_of_the_trade ==============================================
+
+static void trigger_tricks_of_the_trade( rogue_attack_t* a )
+{
+  rogue_t* p = a -> player -> cast_rogue();
+
+  if( p -> buffs_tricks_ready )
+  {
+    struct expiration_t : public event_t
+    {
+      expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
+      {
+	name = "Tricks of the Trade Expiration";
+	p -> aura_gain( "Tricks of the Trade" );
+	p -> buffs.tricks_of_the_trade = 1;
+	sim -> add_event( this, 6.0 );
+      }
+      virtual void execute()
+      {
+	player_t* p = player;
+	p -> aura_loss( "Tricks of the Trade" );
+	p -> buffs.tricks_of_the_trade = 0;
+	p -> expirations.tricks_of_the_trade = 0;
+      }
+    };
+
+    player_t* t = p -> buffs_tricks_target;
+    event_t*& e = t -> expirations.tricks_of_the_trade;
+
+    if( e )
+    {
+      e -> reschedule( 6.0 );
+    }
+    else
+    {
+      e = new ( a -> sim ) expiration_t( a -> sim, t );
+    }
+    
+    p -> buffs_tricks_ready = 0;
   }
 }
 
@@ -346,6 +430,7 @@ void rogue_attack_t::execute()
   
   if( result_is_hit() )
   {
+    trigger_poisons( this );
     trigger_sword_specialization( this );
     trigger_combo_points( this );
 
@@ -353,6 +438,8 @@ void rogue_attack_t::execute()
     {
     }
   }
+
+  trigger_tricks_of_the_trade( this );
 
   p -> buffs_stealthed = -1;  // In-Combat
 }
@@ -383,7 +470,7 @@ void rogue_attack_t::player_buff()
       }
     }
   }
-  if( p -> buffs_poisons_applied ) player_multiplier *= 1.0 + p -> talents.savage_combat * 0.01;
+  if( p -> buffs_poison_doses ) player_multiplier *= 1.0 + p -> talents.savage_combat * 0.01;
 }
 
 // rogue_attack_t::target_debuff ==========================================
@@ -506,6 +593,214 @@ struct auto_attack_t : public rogue_attack_t
   }
 };
 
+// Deadly Poison ============================================================
+
+struct deadly_poison_t : public rogue_attack_t
+{
+  deadly_poison_t( player_t* player ) : 
+    rogue_attack_t( "deadly_poison", player, SCHOOL_NATURE, TREE_ASSASSINATION )
+  {
+    rogue_t* p = player -> cast_rogue();
+    trigger_gcd    = 0;
+    background     = true;
+    proc           = true;
+    num_ticks      = 4;
+    base_tick_time = 3.0;
+    tick_power_mod = 0.08 / num_ticks;
+    base_td_init   = util_t::ability_rank( p -> level,  244,76,  204,70,  160,62,  96,0  ) / num_ticks;
+  }
+
+  virtual void execute()
+  {
+    rogue_t* p = player -> cast_rogue();
+
+    int8_t success = p -> buffs_shiv;
+
+    if( ! success )
+    {
+      double chance = 0.30;
+      if( p -> buffs_envenom ) chance += 0.15;
+      p -> uptimes_envenom -> update( p -> buffs_envenom != 0 );
+      success = sim -> rng -> roll( chance );
+    }
+
+    if( success )
+    {
+      if( p -> buffs_poison_doses < 5 ) p -> buffs_poison_doses++;
+
+      if( sim -> log ) report_t::log( sim, "%s performs %s (%d)", player -> name(), name(), p -> buffs_poison_doses );
+
+      if( ticking )
+      {
+	refresh_duration();
+      }
+      else
+      {
+	player_buff();
+	schedule_tick();
+      }
+    }
+  }
+
+  virtual void player_buff()
+  {
+    rogue_t* p = player -> cast_rogue();
+    rogue_attack_t::player_buff();
+    player_multiplier *= p -> buffs_poison_doses;
+  }
+
+  virtual void last_tick()
+  {
+    rogue_t* p = player -> cast_rogue();
+    rogue_attack_t::last_tick();
+    p -> buffs_poison_doses = 0;
+  }
+};
+
+// Instant Poison ===========================================================
+
+struct instant_poison_t : public rogue_attack_t
+{
+  instant_poison_t( player_t* player ) : 
+    rogue_attack_t( "instant_poison", player, SCHOOL_NATURE, TREE_ASSASSINATION )
+  {
+    rogue_t* p = player -> cast_rogue();
+    trigger_gcd      = 0;
+    background       = true;
+    proc             = true;
+    direct_power_mod = 0.10;
+    base_direct_dmg  = util_t::ability_rank( p -> level,  245,73,  161,68,  76,0 );
+  }
+
+  virtual void execute()
+  {
+    rogue_t* p = player -> cast_rogue();
+
+    int8_t success = p -> buffs_shiv;
+
+    if( ! success )
+    {
+      double chance = 0.20;
+      if( p -> buffs_envenom ) chance += 0.15;
+      p -> uptimes_envenom -> update( p -> buffs_envenom != 0 );
+      success = sim -> rng -> roll( chance );
+    }
+
+    if( success )
+    {
+      rogue_attack_t::execute();
+    }
+  }
+};
+
+// Wound Poison ============================================================
+
+struct wound_poison_t : public rogue_attack_t
+{
+  wound_poison_t( player_t* player ) : 
+    rogue_attack_t( "wound_poison", player, SCHOOL_NATURE, TREE_ASSASSINATION )
+  {
+    rogue_t* p = player -> cast_rogue();
+    trigger_gcd      = 0;
+    background       = true;
+    proc             = true;
+    direct_power_mod = 0.04;
+    base_direct_dmg  = util_t::ability_rank( p -> level,  231,78,  188,72,  112,64,  53,0 );
+  }
+
+  virtual void execute()
+  {
+    rogue_t* p = player -> cast_rogue();
+
+    int8_t success = p -> buffs_shiv;
+
+    if( ! success )
+    {
+      double chance = 0.50;
+      if( p -> buffs_envenom ) chance += 0.15;
+      p -> uptimes_envenom -> update( p -> buffs_envenom != 0 );
+      success = sim -> rng -> roll( chance );
+    }
+
+    if( success )
+    {
+      rogue_attack_t::execute();
+    }
+  }
+};
+
+// Apply Poison ===========================================================
+
+struct apply_poison_t : public spell_t
+{
+  int8_t main_hand_poison;
+  int8_t  off_hand_poison;
+
+  apply_poison_t( player_t* player, const std::string& options_str ) : 
+    spell_t( "apply_poison", player ), 
+    main_hand_poison( WEAPON_BUFF_NONE ), 
+     off_hand_poison( WEAPON_BUFF_NONE )
+  {
+    rogue_t* p = player -> cast_rogue();
+    
+    std::string main_hand_str;
+    std::string  off_hand_str;
+
+    option_t options[] =
+    {
+      { "main_hand", OPT_STRING, &main_hand_str },
+      {  "off_hand", OPT_STRING,  &off_hand_str },
+      { NULL }
+    };
+    parse_options( options, options_str );
+
+    if( main_hand_str.empty() &&
+	 off_hand_str.empty() ) 
+    {
+      printf( "simcraft: At least one of 'main_hand/off_hand' must be specified in 'apply_poison'.  Accepted values are 'deadly/instant/wound'.\n" );
+      exit( 0 );
+    }
+
+    if( main_hand_str == "deadly"  ) main_hand_poison =  DEADLY_POISON;
+    if( main_hand_str == "instant" ) main_hand_poison = INSTANT_POISON;
+    if( main_hand_str == "wound"   ) main_hand_poison =   WOUND_POISON;
+
+    if( off_hand_str == "deadly"  ) off_hand_poison =  DEADLY_POISON;
+    if( off_hand_str == "instant" ) off_hand_poison = INSTANT_POISON;
+    if( off_hand_str == "wound"   ) off_hand_poison =   WOUND_POISON;
+
+    if( main_hand_poison != WEAPON_BUFF_NONE ) assert( p -> main_hand_weapon.type != WEAPON_NONE );
+    if(  off_hand_poison != WEAPON_BUFF_NONE ) assert( p ->  off_hand_weapon.type != WEAPON_NONE );
+
+    if( ! p -> active_deadly_poison  ) p -> active_deadly_poison  = new  deadly_poison_t( p );
+    if( ! p -> active_instant_poison ) p -> active_instant_poison = new instant_poison_t( p );
+    if( ! p -> active_wound_poison   ) p -> active_wound_poison   = new   wound_poison_t( p );
+  }
+
+  virtual void execute()
+  {
+    rogue_t* p = player -> cast_rogue();
+
+    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
+
+    if( main_hand_poison != WEAPON_BUFF_NONE ) p -> main_hand_weapon.buff = main_hand_poison;
+    if(  off_hand_poison != WEAPON_BUFF_NONE ) p ->  off_hand_weapon.buff =  off_hand_poison;
+  };
+
+  virtual bool ready()
+  {
+    rogue_t* p = player -> cast_rogue();
+
+    if( main_hand_poison != WEAPON_BUFF_NONE ) 
+      return( main_hand_poison != p -> main_hand_weapon.buff );
+
+    if( off_hand_poison != WEAPON_BUFF_NONE ) 
+      return( off_hand_poison != p -> off_hand_weapon.buff );
+
+    return false;
+  }
+};
+
 // Ambush ==================================================================
 
 struct ambush_t : public rogue_attack_t
@@ -577,6 +872,134 @@ struct backstab_t : public rogue_attack_t
     may_glance             = false;
 
     weapon_multiplier *= 1.50;
+  }
+};
+
+// Envenom ==================================================================
+
+struct envenom_t : public rogue_attack_t
+{
+  int8_t min_doses;
+  int8_t max_doses;
+  int8_t no_buff;
+  double* combo_point_dmg;
+
+  envenom_t( player_t* player, const std::string& options_str ) : 
+    rogue_attack_t( "envenom", player, SCHOOL_NATURE, TREE_ASSASSINATION ), min_doses(0), max_doses(0), no_buff(0)
+  {
+    rogue_t* p = player -> cast_rogue();
+    assert( p -> level >= 62 );
+
+    option_t options[] =
+    {
+      { "min_doses", OPT_INT8, &min_doses },
+      { "max_doses", OPT_INT8, &max_doses },
+      { "no_buff",   OPT_INT8, &no_buff   },
+      { NULL }
+    };
+    parse_options( options, options_str );
+      
+    weapon = &( p -> main_hand_weapon );
+    requires_combo_points = true;
+    may_glance            = false;
+    base_cost             = 35;
+
+    static double dmg_80[] = { 216, 432, 648, 864, 1080 };
+    static double dmg_74[] = { 176, 352, 528, 704,  880 };
+    static double dmg_69[] = { 148, 296, 444, 492,  740 };
+    static double dmg_62[] = { 118, 236, 354, 472,  590 };
+
+    combo_point_dmg = ( p -> level >= 80 ? dmg_80 :
+			p -> level >= 74 ? dmg_74 :
+			p -> level >= 69 ? dmg_69 : 
+			                   dmg_62 );
+  }
+
+  virtual void execute()
+  {
+    struct expiration_t : public event_t
+    {
+      expiration_t( sim_t* sim, rogue_t* p, double duration ) : event_t( sim, p )
+      {
+	name = "Envenom Expiration";
+	p -> aura_gain( "Envenom" );
+	p -> buffs_envenom = 1;
+	sim -> add_event( this, duration );
+      }
+      virtual void execute()
+      {
+	rogue_t* p = player -> cast_rogue();
+	p -> aura_loss( "Envenom" );
+	p ->       buffs_envenom = 0;
+	p -> expirations_envenom = 0;
+      }
+    };
+
+    rogue_t* p = player -> cast_rogue();
+
+    double doses_consumed = std::min( p -> buffs_poison_doses, p -> buffs_combo_points );
+
+    double envenom_duration = 1.0 + p -> buffs_combo_points;
+
+    event_t*& e = p -> expirations_envenom;
+
+    if( e )
+    {
+      e -> reschedule( envenom_duration );
+    }
+    else
+    {
+      e = new ( sim ) expiration_t( sim, p, envenom_duration );
+    }
+
+    rogue_attack_t::execute();
+
+    if( result_is_hit() )
+    {
+      p -> buffs_poison_doses -= doses_consumed;
+
+      if( p -> buffs_poison_doses == 0 )
+      {
+	p -> active_deadly_poison -> cancel();
+      }
+    }
+  }
+
+  virtual void player_buff()
+  {
+    rogue_t* p = player -> cast_rogue();
+
+    int doses_consumed = std::min( p -> buffs_poison_doses, p -> buffs_combo_points );
+
+    if( doses_consumed == 0 )
+    {
+      rogue_attack_t::player_buff();
+      player_multiplier = 0;
+    }
+    else
+    {
+      tick_power_mod = doses_consumed * 0.07;
+      base_direct_dmg = combo_point_dmg[ doses_consumed-1 ];
+      rogue_attack_t::player_buff();
+    }
+  }
+
+  virtual bool ready()
+  {
+    rogue_t* p = player -> cast_rogue();
+
+    if( min_doses > 0 )
+      if( min_doses < p -> buffs_poison_doses )
+	return false;
+
+    if( max_doses > 0 )
+      if( max_doses > p -> buffs_poison_doses )
+	return false;
+
+    if( no_buff && p -> buffs_envenom )
+      return false;
+
+    return rogue_attack_t::ready();
   }
 };
 
@@ -751,6 +1174,7 @@ struct feint_t : public rogue_attack_t
   virtual void execute()
   {
     consume_resource();
+    update_ready();
     // model threat eventually......
   }
 };
@@ -836,7 +1260,7 @@ struct mutilate_t : public rogue_attack_t
   {
     rogue_t* p = player -> cast_rogue();
     rogue_attack_t::player_buff();
-    if( p -> buffs_poisons_applied > 0 ) player_multiplier *= 1.50;
+    if( p -> buffs_poison_doses > 0 ) player_multiplier *= 1.50;
   }
 
   virtual void update_stats( int8_t type ) { }
@@ -889,6 +1313,42 @@ struct rupture_t : public rogue_attack_t
     tick_power_mod = p -> combo_point_rank( 0.015, 0.024, 0.030, 0.03428571, 0.0375 );
     base_td_init   = p -> combo_point_rank( combo_point_dmg );
     rogue_attack_t::player_buff();
+  }
+};
+
+// Shiv =====================================================================
+
+struct shiv_t : public rogue_attack_t
+{
+  shiv_t( player_t* player, const std::string& options_str ) : 
+    rogue_attack_t( "shiv", player, SCHOOL_PHYSICAL, TREE_COMBAT )
+  {
+    rogue_t* p = player -> cast_rogue();
+
+    option_t options[] =
+    {
+      { NULL }
+    };
+    parse_options( options, options_str );
+      
+    weapon = &( p -> off_hand_weapon );
+    adds_combo_points = true;
+    may_glance        = false;
+    base_direct_dmg   = 1;
+  }
+
+  virtual void execute()
+  {
+    rogue_t* p = player -> cast_rogue();
+    p -> buffs_shiv = 1;
+    rogue_attack_t::execute();
+    p -> buffs_shiv = 0;
+  }
+
+  virtual double cost()
+  {
+    base_cost = 20 + weapon -> swing_time * 10.0;
+    return rogue_attack_t::cost();
   }
 };
 
@@ -983,6 +1443,7 @@ struct slice_and_dice_t : public rogue_attack_t
     double duration = 6.0 + 3.0 * p -> buffs_combo_points;
 
     consume_resource();
+    update_ready();
 
     event_t*& e = p -> expirations_slice_and_dice;
 
@@ -1000,6 +1461,54 @@ struct slice_and_dice_t : public rogue_attack_t
   {
     rogue_t* p = player -> cast_rogue();
     return p -> buffs_slice_and_dice == 0;
+  }
+};
+
+// Tricks of the Trade =======================================================
+
+struct tricks_of_the_trade_t : public rogue_attack_t
+{
+  player_t* tricks_target;
+
+  tricks_of_the_trade_t( player_t* player, const std::string& options_str ) : 
+    rogue_attack_t( "tricks_target", player, SCHOOL_PHYSICAL, TREE_SUBTLETY )
+  {
+    std::string target_str;
+    option_t options[] =
+    {
+      { "target", OPT_STRING, &target_str },
+      { NULL }
+    };
+    parse_options( options, options_str );
+
+    cooldown = 30.0;
+    
+    tricks_target = sim -> find_player( target_str );
+
+    assert ( tricks_target != 0 );
+    assert ( tricks_target != player );
+  }
+   
+  virtual void execute()
+  {
+    rogue_t* p = player -> cast_rogue();
+
+    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    if( sim -> log ) report_t::log( sim, "%s grants %s Tricks of the Trade", p -> name(), tricks_target -> name() );
+
+    consume_resource();
+    update_ready();
+    
+    p -> buffs_tricks_target = tricks_target;
+    p -> buffs_tricks_ready  = 1;
+  }
+
+  virtual bool ready()
+  {
+    if( tricks_target -> buffs.tricks_of_the_trade )
+      return false;
+
+    return rogue_attack_t::ready();
   }
 };
 
@@ -1067,25 +1576,22 @@ action_t* rogue_t::create_action( const std::string& name,
 {
   if( name == "auto_attack"         ) return new auto_attack_t        ( this, options_str );
   if( name == "ambush"              ) return new ambush_t             ( this, options_str );
+  if( name == "apply_poson"         ) return new apply_poison_t       ( this, options_str );
   if( name == "backstab"            ) return new backstab_t           ( this, options_str );
+  if( name == "envenom"             ) return new envenom_t            ( this, options_str );
   if( name == "eviscerate"          ) return new eviscerate_t         ( this, options_str );
   if( name == "expose_armor"        ) return new expose_armor_t       ( this, options_str );
   if( name == "feint"               ) return new feint_t              ( this, options_str );
   if( name == "hemorrhage"          ) return new hemorrhage_t         ( this, options_str );
   if( name == "mutilate"            ) return new mutilate_t           ( this, options_str );
   if( name == "rupture"             ) return new rupture_t            ( this, options_str );
+  if( name == "shiv"                ) return new shiv_t               ( this, options_str );
   if( name == "sinister_strike"     ) return new sinister_strike_t    ( this, options_str );
   if( name == "slice_and_dice"      ) return new slice_and_dice_t     ( this, options_str );
   if( name == "stealth"             ) return new stealth_t            ( this, options_str );
   if( name == "vanish"              ) return new vanish_t             ( this, options_str );
-#if 0
-  if( name == "deadly_poson"        ) return new deadly_poison_t      ( this, options_str );
-  if( name == "envenom"             ) return new envenom_t            ( this, options_str );
-  if( name == "instant_poson"       ) return new instant_poison_t     ( this, options_str );
-  if( name == "shiv"                ) return new shiv_t               ( this, options_str );
   if( name == "tricks_of_the_trade" ) return new tricks_of_the_trade_t( this, options_str );
-  if( name == "wound_poson"         ) return new wound_poison_t       ( this, options_str );
-#endif
+
   return player_t::create_action( name, options_str );
 }
 
@@ -1122,23 +1628,25 @@ void rogue_t::reset()
 {
   player_t::reset();
 
-  // Active
-  active_ = 0;
-
   // Buffs
   for( int i=0; i < MAX_COMBO_POINTS; i++ ) 
   {
     buffs_combo_point_events[ i ] = 0;
   }
-  buffs_combo_points = 0;
-  buffs_poisons_applied = 0;
+  buffs_combo_points   = 0;
+  buffs_poison_doses   = 0;
+  buffs_envenom        = 0;
+  buffs_shiv           = 0;
   buffs_slice_and_dice = 0;
-  buffs_stealthed = 0;
+  buffs_stealthed      = 0;
+  buffs_tricks_ready   = 0;
+  buffs_tricks_target  = 0;
 
   // Cooldowns
   cooldowns_ = 0;
 
   // Expirations
+  expirations_envenom        = 0;
   expirations_slice_and_dice = 0;
 }
 

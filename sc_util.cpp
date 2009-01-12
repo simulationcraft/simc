@@ -285,7 +285,9 @@ const char* util_t::weapon_buff_type_string( int8_t buff )
   case WEAPON_BUFF_NONE: return "none";
   case FIRE_STONE:       return "fire_stone";
   case FLAMETONGUE:      return "flametongue";
-  case POISON:           return "poison";
+  case DEADLY_POISON:    return "deadly_poison";
+  case INSTANT_POISON:   return "instant_poison";
+  case WOUND_POISON:     return "wound_poison";
   case SHARPENING_STONE: return "sharpening_stone";
   case SPELL_STONE:      return "spell_stone";
   case WINDFURY:         return "windfury";
