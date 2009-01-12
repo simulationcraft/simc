@@ -580,6 +580,65 @@ struct backstab_t : public rogue_attack_t
   }
 };
 
+// Eviscerate ================================================================
+
+struct eviscerate_t : public rogue_attack_t
+{
+  struct double_pair { double min, max; };
+
+  double_pair* combo_point_dmg;
+
+  eviscerate_t( player_t* player, const std::string& options_str ) : 
+    rogue_attack_t( "eviscerate", player, SCHOOL_PHYSICAL, TREE_ASSASSINATION )
+  {
+    rogue_t* p = player -> cast_rogue();
+
+    option_t options[] =
+    {
+      { NULL }
+    };
+    parse_options( options, options_str );
+      
+    weapon = &( p -> main_hand_weapon );
+    requires_combo_points = true;
+    may_glance            = false;
+    base_cost             = 35;
+
+    static double_pair dmg_79[] = { { 497, 751 }, { 867, 1121 }, { 1237, 1491 }, { 1607, 1861 }, { 1977, 2231 } };
+    static double_pair dmg_73[] = { { 405, 613 }, { 706,  914 }, { 1007, 1215 }, { 1308, 1516 }, { 1609, 1817 } };
+    static double_pair dmg_64[] = { { 245, 365 }, { 430,  550 }, {  615,  735 }, {   800, 920 }, {  985, 1105 } };
+    static double_pair dmg_60[] = { { 224, 332 }, { 394,  502 }, {  564,  762 }, {   734, 842 }, {  904, 1012 } };
+
+    combo_point_dmg = ( p -> level >= 79 ? dmg_79 :
+			p -> level >= 73 ? dmg_73 :
+			p -> level >= 64 ? dmg_64 : 
+			                   dmg_60 );
+  }
+
+  virtual void execute()
+  {
+    rogue_t* p = player -> cast_rogue();
+
+    base_dd_min = combo_point_dmg[ p -> buffs_combo_points - 1 ].min;
+    base_dd_max = combo_point_dmg[ p -> buffs_combo_points - 1 ].max;
+
+    direct_power_mod = 0.05 * p -> buffs_combo_points;
+
+    if( sim -> average_dmg ) 
+    {
+      base_direct_dmg = ( base_dd_min + base_dd_max ) / 2;
+    }
+    else
+    {
+      double range = 0.02 * p -> buffs_combo_points;
+
+      direct_power_mod += range * ( sim -> rng -> real() * 2.0 - 1.0 );
+    }
+
+    rogue_attack_t::execute();
+  }
+};
+
 // Expose Armor =============================================================
 
 struct expose_armor_t : public rogue_attack_t
@@ -679,6 +738,12 @@ struct feint_t : public rogue_attack_t
   feint_t( player_t* player, const std::string& options_str ) : 
     rogue_attack_t( "feint", player, SCHOOL_PHYSICAL, TREE_COMBAT )
   {
+    option_t options[] =
+    {
+      { NULL }
+    };
+    parse_options( options, options_str );
+      
     base_cost = 20;
     cooldown = 10;
   }
@@ -688,6 +753,93 @@ struct feint_t : public rogue_attack_t
     consume_resource();
     // model threat eventually......
   }
+};
+
+// Hemorrhage =============================================================
+
+struct hemorrhage_t : public rogue_attack_t
+{
+  hemorrhage_t( player_t* player, const std::string& options_str ) : 
+    rogue_attack_t( "hemorrhage", player, SCHOOL_PHYSICAL, TREE_SUBTLETY )
+  {
+    rogue_t* p = player -> cast_rogue();
+    assert( p -> talents.hemorrhage );
+
+    option_t options[] =
+    {
+      { NULL }
+    };
+    parse_options( options, options_str );
+      
+    weapon = &( p -> main_hand_weapon );
+    normalize_weapon_speed = true;
+    adds_combo_points      = true;
+    may_glance             = false;
+
+    weapon_multiplier *= 1.10;
+  }
+};
+
+// Mutilate =================================================================
+
+struct mutilate_t : public rogue_attack_t
+{
+  mutilate_t( player_t* player, const std::string& options_str ) : 
+    rogue_attack_t( "mutilate", player, SCHOOL_PHYSICAL, TREE_ASSASSINATION )
+  {
+    rogue_t* p = player -> cast_rogue();
+    assert( p -> talents.mutilate );
+
+    option_t options[] =
+    {
+      { NULL }
+    };
+    parse_options( options, options_str );
+      
+    may_glance = false;
+    base_cost  = 60;
+  }
+
+  virtual void execute()
+  {
+    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
+    consume_resource();
+    update_ready();
+
+    double mh_dd=0, oh_dd=0;
+    int8_t mh_result=RESULT_NONE, oh_result=RESULT_NONE;
+
+    weapon = &( player -> main_hand_weapon );
+    rogue_attack_t::execute();
+    mh_dd = direct_dmg;
+    mh_result = result;
+
+    if( result_is_hit() )
+    {
+      if( player -> off_hand_weapon.type != WEAPON_NONE )
+      {
+        weapon = &( player -> off_hand_weapon );
+        rogue_attack_t::execute();
+        oh_dd = direct_dmg;
+        oh_result = result;
+      }
+    }
+
+    direct_dmg = mh_dd + oh_dd;
+    result     = mh_result;
+    attack_t::update_stats( DMG_DIRECT );
+
+    player -> action_finish( this );
+  }
+
+  virtual void player_buff()
+  {
+    rogue_t* p = player -> cast_rogue();
+    rogue_attack_t::player_buff();
+    if( p -> buffs_poisons_applied > 0 ) player_multiplier *= 1.50;
+  }
+
+  virtual void update_stats( int8_t type ) { }
 };
 
 // Rupture ==================================================================
@@ -880,6 +1032,12 @@ struct vanish_t : public spell_t
   vanish_t( player_t* player, const std::string& options_str ) : 
     spell_t( "vanish", player )
   {
+    option_t options[] =
+    {
+      { NULL }
+    };
+    parse_options( options, options_str );
+      
     cooldown = 180;
   }
 
@@ -910,8 +1068,11 @@ action_t* rogue_t::create_action( const std::string& name,
   if( name == "auto_attack"         ) return new auto_attack_t        ( this, options_str );
   if( name == "ambush"              ) return new ambush_t             ( this, options_str );
   if( name == "backstab"            ) return new backstab_t           ( this, options_str );
+  if( name == "eviscerate"          ) return new eviscerate_t         ( this, options_str );
   if( name == "expose_armor"        ) return new expose_armor_t       ( this, options_str );
   if( name == "feint"               ) return new feint_t              ( this, options_str );
+  if( name == "hemorrhage"          ) return new hemorrhage_t         ( this, options_str );
+  if( name == "mutilate"            ) return new mutilate_t           ( this, options_str );
   if( name == "rupture"             ) return new rupture_t            ( this, options_str );
   if( name == "sinister_strike"     ) return new sinister_strike_t    ( this, options_str );
   if( name == "slice_and_dice"      ) return new slice_and_dice_t     ( this, options_str );
@@ -921,10 +1082,7 @@ action_t* rogue_t::create_action( const std::string& name,
   if( name == "deadly_poson"        ) return new deadly_poison_t      ( this, options_str );
   if( name == "deadly_throw"        ) return new deadly_throw_t       ( this, options_str );
   if( name == "envenom"             ) return new envenom_t            ( this, options_str );
-  if( name == "eviscerate"          ) return new eviscerate_t         ( this, options_str );
-  if( name == "hemorrhage"          ) return new hemorrhage_t         ( this, options_str );
   if( name == "instant_poson"       ) return new instant_poison_t     ( this, options_str );
-  if( name == "mutilate"            ) return new mutilate_t           ( this, options_str );
   if( name == "shiv"                ) return new shiv_t               ( this, options_str );
   if( name == "tricks_of_the_trade" ) return new tricks_of_the_trade_t( this, options_str );
   if( name == "wound_poson"         ) return new wound_poison_t       ( this, options_str );
