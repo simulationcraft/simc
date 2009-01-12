@@ -575,9 +575,9 @@ leader_of_the_pack=1
 #
 # Affliction Warlock
 #
-warlock=Warlock_56_0_15
+warlock=Warlock_55_0_16
 level=80
-talents=http://www.wowhead.com/?talent=IfxMbzMAoVAoIstZE00V
+talents=http://www.wowhead.com/?talent=IfxMbzMAoVA0IstZEz0V
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/spell_stone/fel_armor/summon_pet,felhunter
 actions+=/haunt,debuff=1/curse_of_agony/corruption/unstable_affliction/siphon_life
 actions+=/shadow_bolt,shadow_trance=1/drain_soul,target_pct=25/immolate/shadow_bolt/life_tap
@@ -602,13 +602,13 @@ blessing_of_wisdom=1
 sanctified_retribution=1
 
 #
-# Affliction Warlock (Doomguard + Infernal)
+# Affliction Warlock (Doomguard)
 #
-warlock=Warlock_56_0_15_DGnI
+warlock=Warlock_55_0_16_DG
 level=80
-talents=http://www.wowhead.com/?talent=IfxMbzMAoVAoIstZE00V
+talents=http://www.wowhead.com/?talent=IfxMbzMAoVA0IstZEz0V
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/spell_stone/fel_armor/summon_pet,doomguard
-actions+=/haunt,debuff=1/life_tap,inferno=1/inferno,target_pct=30/curse_of_agony/corruption/unstable_affliction/siphon_life
+actions+=/haunt,debuff=1/curse_of_agony/corruption/unstable_affliction/siphon_life
 actions+=/shadow_bolt,shadow_trance=1/drain_soul,target_pct=25/immolate/shadow_bolt/life_tap
 tier7_2pc=1
 tier7_4pc=1
@@ -619,6 +619,35 @@ glyph_curse_of_agony=1
 glyph_siphon_life=1
 # Pets
 pet=doomguard
+blessing_of_kings=1
+blessing_of_might=550
+sanctified_retribution=1
+quiet=1
+active=owner
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_wisdom=1
+sanctified_retribution=1
+
+#
+# Affliction Warlock (Infernal)
+#
+warlock=Warlock_56_0_15_Infernal
+level=80
+talents=http://www.wowhead.com/?talent=IfxMbzMAoVA0IstZEz0V
+actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/spell_stone/fel_armor/summon_pet,felhunter
+actions+=/haunt,debuff=1/life_tap,inferno=1/inferno,target_pct=30/curse_of_agony/corruption/unstable_affliction/siphon_life
+actions+=/shadow_bolt,shadow_trance=1/drain_soul,target_pct=25/immolate/shadow_bolt/life_tap
+tier7_2pc=1
+tier7_4pc=1
+chaotic_skyflare=1
+# Glyphs
+glyph_immolate=1
+glyph_curse_of_agony=1
+glyph_siphon_life=1
+# Pets
+pet=felhunter
+actions=shadow_bite/wait
 blessing_of_kings=1
 blessing_of_might=550
 sanctified_retribution=1
@@ -638,7 +667,7 @@ sanctified_retribution=1
 #
 warlock=Warlock_56_0_15_CoE
 level=80
-talents=http://www.wowhead.com/?talent=IfxMbzMAoVAoIstZE00V
+talents=http://www.wowhead.com/?talent=IfxMbzMAoVA0IstZEz0V
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/spell_stone/fel_armor/summon_pet,felhunter/curse_of_elements
 actions+=/haunt,debuff=1/corruption/unstable_affliction/siphon_life
 actions+=/shadow_bolt,shadow_trance=1/drain_soul,target_pct=25/immolate/shadow_bolt/life_tap
@@ -667,7 +696,7 @@ sanctified_retribution=1
 #
 warlock=Warlock_56_0_15_NoDS
 level=80
-talents=http://www.wowhead.com/?talent=IfxMbzMAoVAoIstZE00V
+talents=http://www.wowhead.com/?talent=IfxMbzMAoVA0IstZEz0V
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/spell_stone/fel_armor/summon_pet,felhunter
 actions+=/haunt,debuff=1/curse_of_agony/corruption/unstable_affliction/siphon_life/immolate/shadow_bolt/life_tap
 tier7_2pc=1
