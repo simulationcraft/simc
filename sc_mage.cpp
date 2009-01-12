@@ -213,7 +213,8 @@ struct mage_spell_t : public spell_t
     spell_t( n, player, RESOURCE_MANA, s, t ) 
   {
     mage_t* p = player -> cast_mage();
-    base_hit += p -> talents.precision * 0.01;
+    base_cost *= 1.0 - p -> talents.precision * 0.01;
+    base_hit  += p -> talents.precision * 0.01;
   }
 
   virtual double cost();
@@ -1728,7 +1729,6 @@ struct fire_ball_t : public mage_spell_t
     may_crit          = true; 
     direct_power_mod  = base_execute_time / 3.5;
       
-    base_cost         *= 1.0 - p -> talents.precision * 0.01;
     base_cost         *= 1.0 - p -> talents.frost_channeling * (0.1/3);
     base_execute_time -= p -> talents.improved_fire_ball * 0.1;
     base_multiplier   *= 1.0 + p -> talents.fire_power * 0.02;
@@ -1824,7 +1824,6 @@ struct fire_blast_t : public mage_spell_t
     cooldown          = 8.0;
     direct_power_mod  = (1.5/3.5); 
       
-    base_cost        *= 1.0 - p -> talents.precision * 0.01;
     base_cost        *= 1.0 - p -> talents.frost_channeling * (0.1/3);
     cooldown         -= p -> talents.improved_fire_blast * 0.5;
     base_multiplier  *= 1.0 + p -> talents.fire_power * 0.02;
@@ -1879,7 +1878,6 @@ struct living_bomb_t : public mage_spell_t
     tick_power_mod    = base_tick_time / 15;
     may_crit          = true;
 
-    base_cost        *= 1.0 - p -> talents.precision * 0.01;
     base_cost        *= 1.0 - p -> talents.frost_channeling * (0.1/3);
     base_multiplier  *= 1.0 + p -> talents.fire_power * 0.02;
     base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
@@ -1963,7 +1961,6 @@ struct pyroblast_t : public mage_spell_t
     direct_power_mod  = 1.15;
     tick_power_mod    = 0.20 / num_ticks;
 
-    base_cost        *= 1.0 - p -> talents.precision * 0.01;
     base_cost        *= 1.0 - p -> talents.frost_channeling * (0.1/3);
     base_multiplier  *= 1.0 + p -> talents.fire_power * 0.02;
     base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
@@ -2039,7 +2036,6 @@ struct scorch_t : public mage_spell_t
     may_crit          = true;
     direct_power_mod  = (1.5/3.5); 
       
-    base_cost        *= 1.0 - p -> talents.precision * 0.01;
     base_cost        *= 1.0 - p -> talents.frost_channeling * (0.1/3);
     base_multiplier  *= 1.0 + p -> talents.fire_power * 0.02;
     base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
@@ -2141,7 +2137,6 @@ struct frost_bolt_t : public mage_spell_t
     may_crit          = true; 
     direct_power_mod  = ( base_execute_time / 3.5 ) * 0.95; 
       
-    base_cost         *= 1.0 - p -> talents.precision * 0.01;
     base_cost         *= 1.0 - p -> talents.frost_channeling * (0.1/3);
     base_execute_time -= p -> talents.improved_frost_bolt * 0.1;
     base_multiplier   *= 1.0 + p -> talents.piercing_ice * 0.02;
@@ -2208,7 +2203,6 @@ struct ice_lance_t : public mage_spell_t
     may_crit          = true; 
     direct_power_mod  = (0.5/3.5); 
       
-    base_cost        *= 1.0 - p -> talents.precision * 0.01;
     base_cost        *= 1.0 - p -> talents.frost_channeling * (0.1/3);
     base_multiplier  *= 1.0 + p -> talents.piercing_ice * 0.02;
     base_multiplier  *= 1.0 + p -> talents.spell_impact * 0.02;
@@ -2303,7 +2297,6 @@ struct frostfire_bolt_t : public mage_spell_t
       tick_power_mod = 0.05 / 3.0;
     }
       
-    base_cost         *= 1.0 - p -> talents.precision * 0.01;
     base_cost         *= 1.0 - p -> talents.frost_channeling * (0.1/3);
     base_multiplier   *= 1.0 + p -> talents.fire_power * 0.02;
     base_multiplier   *= 1.0 + p -> talents.arcane_instability * 0.01;

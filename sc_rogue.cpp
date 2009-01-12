@@ -1080,7 +1080,6 @@ action_t* rogue_t::create_action( const std::string& name,
   if( name == "vanish"              ) return new vanish_t             ( this, options_str );
 #if 0
   if( name == "deadly_poson"        ) return new deadly_poison_t      ( this, options_str );
-  if( name == "deadly_throw"        ) return new deadly_throw_t       ( this, options_str );
   if( name == "envenom"             ) return new envenom_t            ( this, options_str );
   if( name == "instant_poson"       ) return new instant_poison_t     ( this, options_str );
   if( name == "shiv"                ) return new shiv_t               ( this, options_str );

@@ -89,18 +89,18 @@ default_haste_rating=452
 
 # To generate scale factors, set calculate_scale_factors=1
 calculate_scale_factors=0
-scale_spell_power=300
-scale_hit_rating=-300
-scale_crit_rating=300
-scale_haste_rating=300
-scale_intellect=300
-scale_spirit=300
+scale_spell_power=250
+scale_hit_rating=-250
+scale_crit_rating=250
+scale_haste_rating=250
+scale_intellect=250
+scale_spirit=250
 # Melee stats
-scale_attack_power=300
-scale_strength=300
-scale_agility=300
-scale_expertise_rating=-150
-scale_armor_penetration_rating=300
+# scale_attack_power=250
+# scale_strength=250
+# scale_agility=250
+# scale_expertise_rating=-150
+# scale_armor_penetration_rating=250
 
 # ================================================================================================
 # General Action Options
@@ -131,7 +131,7 @@ scale_armor_penetration_rating=300
 #
 druid=Druid_58_0_13_SF
 level=80
-talents=http://www.wowhead.com/?talent=0xG0uiGsIdIVhouZbxczb
+talents=http://www.wowhead.com/?talent=0xG0uiIsfdIVhouZbxczb
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/mark_of_the_wild/moonkin_form/mana_potion,trigger=4300/innervate,trigger=12000
 actions+=/treants/moonfire/insect_swarm/wrath,eclipse=trigger/starfire
 tier7_2pc_balance=1
@@ -161,7 +161,7 @@ sanctified_retribution=1
 #
 druid=Druid_58_0_13_W
 level=80
-talents=http://www.wowhead.com/?talent=0xG0uiGsIdIVhouZbxczb
+talents=http://www.wowhead.com/?talent=0xG0uiIsfdIVhouZbxczb
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/mark_of_the_wild/moonkin_form/mana_potion,trigger=4300/innervate,trigger=12000
 actions+=/treants/moonfire/insect_swarm/starfire,eclipse=trigger/wrath
 tier7_2pc_balance=1
@@ -191,7 +191,7 @@ sanctified_retribution=1
 #
 druid=Druid_58_0_13_W_FF
 level=80
-talents=http://www.wowhead.com/?talent=0xG0uiGsIdIVhouZbxczb
+talents=http://www.wowhead.com/?talent=0xG0uiIsfdIVhouZbxczb
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/mark_of_the_wild/moonkin_form/mana_potion,trigger=4300/innervate,trigger=12000
 actions+=/faerie_fire/treants/moonfire/insect_swarm/starfire,eclipse=trigger/wrath
 tier7_2pc_balance=1
@@ -261,13 +261,15 @@ sanctified_retribution=1
 
 mage=Mage_57_3_11
 level=80
-talents=http://www.wowhead.com/?talent=ofhVck0IzxGuMxedcZmh0ho
+talents=http://www.wowhead.com/?talent=of0Vcu0IzxGuMxedcZbGc0o
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/mage_armor/focus_magic,target=Mage_20_51_0
 actions+=/mana_gem,trigger=5000/mana_potion,trigger=4300
 actions+=/mirror_image/arcane_power/icy_veins/presence_of_mind,arcane_blast/arcane_blast,max=3/arcane_missiles,barrage=1,abar_combo=1/arcane_barrage
 actions+=/evocation
 tier7_2pc=1
 tier7_4pc=1
+enchant_hit_rating=-75
+enchant_spell_power=+90
 chaotic_skyflare=1
 # Glyphs
 glyph_arcane_power=1
@@ -520,7 +522,7 @@ level=80
 talents=http://www.wowhead.com/?talent=hVbhqZhbxsoxdAIkufot
 actions=flask,type=endless_rage/food,type=great_feast/windfury_weapon,weapon=main/flametongue_weapon,weapon=off
 actions+=/strength_of_earth_totem/windfury_totem/searing_totem/lightning_shield
-actions+=/auto_attack/lightning_bolt,maelstrom=5,ss_wait=1/shamanistic_rage/spirit_wolf/flame_shock/earth_shock,ss_wait=1/stormstrike/lava_lash/bloodlust,target_pct=25
+actions+=/auto_attack/lightning_bolt,maelstrom=5,ss_wait=1/shamanistic_rage/spirit_wolf/earth_shock,ss_wait=1/stormstrike/earth_shock/lava_lash/bloodlust,target_pct=25
 gear_agility=700
 gear_stamina=1000
 gear_intellect=350
@@ -539,7 +541,7 @@ off_hand=mace,damage=359,speed=2.5,enchant=mongoose
 # Glyphs
 glyph_windfury_weapon=1
 glyph_stormstrike=1
-glyph_shocking=1
+glyph_lightning_shield=1
 totem_of_hex=1
 # Two wolves modeled as one pet that hits 2x hard
 pet=spirit_wolf
@@ -632,7 +634,7 @@ sanctified_retribution=1
 #
 # Affliction Warlock (Infernal)
 #
-warlock=Warlock_56_0_15_Infernal
+warlock=Warlock_56_0_15_Inf
 level=80
 talents=http://www.wowhead.com/?talent=IfxMbzMAoVA0IstZEz0V
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/spell_stone/fel_armor/summon_pet,felhunter
