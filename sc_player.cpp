@@ -141,7 +141,7 @@ player_t::player_t( sim_t*             s,
   spell_power_per_intellect(0), initial_spell_power_per_intellect(0),
   spell_power_per_spirit(0),    initial_spell_power_per_spirit(0),
   spell_crit_per_intellect(0),  initial_spell_crit_per_intellect(0),
-  mp5_per_intellect(0), spirit_regen_while_casting(0), 
+  mp5_per_intellect(0), spirit_regen_while_casting(0), energy_regen_per_tick(0),
   last_cast(0),
   // Attack Mechanics
   base_attack_power(0),       initial_attack_power(0),        attack_power(0),
@@ -999,7 +999,7 @@ void player_t::regen( double periodicity )
 {
   if( sim -> infinite_resource[ RESOURCE_ENERGY ] == 0 && resource_max[ RESOURCE_ENERGY ] > 0 )
   {
-    double energy_regen = periodicity * 20.0 / 2.0;
+    double energy_regen = periodicity * energy_regen_per_tick / 2.0;
 
     resource_gain( RESOURCE_ENERGY, energy_regen, gains.energy_regen );
   }

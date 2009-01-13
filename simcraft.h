@@ -445,6 +445,7 @@ struct player_t
   double spell_crit_per_intellect,  initial_spell_crit_per_intellect;
   double mp5_per_intellect;
   double spirit_regen_while_casting;
+  double energy_regen_per_tick;
   double last_cast;
 
   // Attack Mechanics

@@ -19,7 +19,8 @@ struct rogue_t : public player_t
   action_t* active_wound_poison;
 
   // Buffs
-  double    buffs_combo_point_events[ MAX_COMBO_POINTS ];
+  int8_t    buffs_adrenaline_rush;
+  int8_t    buffs_blade_flurry;
   int8_t    buffs_combo_points;
   int8_t    buffs_envenom;
   int8_t    buffs_poison_doses;
@@ -52,13 +53,13 @@ struct rogue_t : public player_t
 
   struct talents_t
   {
-    // Talents implemented..... (none!)
-
-    // Talents not yet implemented (all!)
+    // Talents implemented
     int8_t adrenaline_rush;
     int8_t aggression;
     int8_t blade_flurry;
     int8_t blade_twisting;
+
+    // Talents not yet implemented
     int8_t blood_spatter;
     int8_t close_quarters_combat;
     int8_t cold_blood;
@@ -138,18 +139,16 @@ struct rogue_t : public player_t
     active_wound_poison   = 0;
 
     // Buffs
-    for( int i=0; i < MAX_COMBO_POINTS; i++ ) 
-    {
-      buffs_combo_point_events[ i ] = 0;
-    }
-    buffs_combo_points   = 0;
-    buffs_envenom        = 0;
-    buffs_poison_doses   = 0;
-    buffs_shiv           = 0;
-    buffs_slice_and_dice = 0;
-    buffs_stealthed      = 0;
-    buffs_tricks_ready   = 0;
-    buffs_tricks_target  = 0;
+    buffs_blade_flurry    = 0;
+    buffs_adrenaline_rush = 0;
+    buffs_combo_points    = 0;
+    buffs_envenom         = 0;
+    buffs_poison_doses    = 0;
+    buffs_shiv            = 0;
+    buffs_slice_and_dice  = 0;
+    buffs_stealthed       = 0;
+    buffs_tricks_ready    = 0;
+    buffs_tricks_target   = 0;
 
     // Cooldowns
     cooldowns_ = 0;
@@ -198,10 +197,6 @@ struct rogue_t : public player_t
   {
     if( buffs_combo_points <= 0 ) return;
     buffs_combo_points = 0;
-    for( int i=0; i < MAX_COMBO_POINTS; i++ ) 
-    {
-      buffs_combo_point_events[ i ] = 0;
-    }
     aura_loss( "Combo Points" );
   }
 };
@@ -310,7 +305,6 @@ static void trigger_combo_points( rogue_attack_t* a )
   {
     if( p -> buffs_combo_points < 5 )
     {
-      p -> buffs_combo_point_events[ p -> buffs_combo_points ] = a -> sim -> current_time;
       p -> buffs_combo_points++;
       p -> aura_gain( "Combo Point" );
     }
@@ -319,7 +313,6 @@ static void trigger_combo_points( rogue_attack_t* a )
     {
       if( a -> sim -> roll( p -> talents.seal_fate * 0.20 ) )
       {
-	p -> buffs_combo_point_events[ p -> buffs_combo_points ] = a -> sim -> current_time;
 	p -> buffs_combo_points++;
 	p -> aura_gain( "Combo Point" );
       }
@@ -512,11 +505,11 @@ bool rogue_attack_t::ready()
       return false;
 
   if( min_combo_points > 0 )
-    if( ! sim -> time_to_think( p -> buffs_combo_point_events[ min_combo_points-1 ] ) )
+    if( p -> buffs_combo_points < min_combo_points )
       return false;
 
   if( max_combo_points > 0 )
-    if( sim -> time_to_think( p -> buffs_combo_point_events[ max_combo_points-1 ] ) )
+    if( p -> buffs_combo_points > max_combo_points )
       return false;
 
   if( requires_combo_points && ( p -> buffs_combo_points == 0 ) )
@@ -549,10 +542,15 @@ struct melee_t : public rogue_attack_t
 
   virtual double execute_time()
   {
-    double t = rogue_attack_t::execute_time();
     rogue_t* p = player -> cast_rogue();
-    if( p -> buffs_slice_and_dice > 0 ) t *= 1.0 / 1.3;
+
+    double t = rogue_attack_t::execute_time();
+
+    if( p -> buffs_blade_flurry   ) t *= 1.0 / 1.20;
+    if( p -> buffs_slice_and_dice ) t *= 1.0 / 1.30;
+
     p -> uptimes_slice_and_dice -> update( p -> buffs_slice_and_dice != 0 );
+
     return t;
   }
 };
@@ -870,8 +868,9 @@ struct backstab_t : public rogue_attack_t
     requires_position      = POSITION_BACK;
     adds_combo_points      = true;
     may_glance             = false;
-
-    weapon_multiplier *= 1.50;
+    weapon_multiplier     *= 1.50;
+    base_multiplier       *= 1.0 + ( p -> talents.aggression     * 0.03 +
+				     p -> talents.blade_twisting * 0.05 );
   }
 };
 
@@ -1026,6 +1025,7 @@ struct eviscerate_t : public rogue_attack_t
     requires_combo_points = true;
     may_glance            = false;
     base_cost             = 35;
+    base_multiplier      *= 1.0 + p -> talents.aggression * 0.03;
 
     static double_pair dmg_79[] = { { 497, 751 }, { 867, 1121 }, { 1237, 1491 }, { 1607, 1861 }, { 1977, 2231 } };
     static double_pair dmg_73[] = { { 405, 613 }, { 706,  914 }, { 1007, 1215 }, { 1308, 1516 }, { 1609, 1817 } };
@@ -1416,6 +1416,7 @@ struct slice_and_dice_t : public rogue_attack_t
     parse_options( options, options_str );
 
     requires_combo_points = true;
+    base_cost = 25;
   }
 
   virtual void execute()
@@ -1464,14 +1465,131 @@ struct slice_and_dice_t : public rogue_attack_t
   }
 };
 
+// Adrenaline Rush ==========================================================
+
+struct adrenaline_rush_t : public spell_t
+{
+  adrenaline_rush_t( player_t* player, const std::string& options_str ) : 
+    spell_t( "adrenaline_rush", player )
+  {
+    rogue_t* p = player -> cast_rogue();
+    assert( p -> talents.adrenaline_rush );
+
+    option_t options[] =
+    {
+      { NULL }
+    };
+    parse_options( options, options_str );
+
+    cooldown = 300;
+  }
+
+  virtual void execute()
+  {
+    struct expiration_t : public event_t
+    {
+      expiration_t( sim_t* sim, rogue_t* p ) : event_t( sim, p )
+      {
+	name = "Adrenaline Rush Expiration";
+	p -> aura_gain( "Adrenaline Rush" );
+	p -> buffs_adrenaline_rush = 1;
+	p -> energy_regen_per_tick *= 2.0;
+	sim -> add_event( this, 15.0 );
+      }
+      virtual void execute()
+      {
+	rogue_t* p = player -> cast_rogue();
+	p -> aura_loss( "Adrenaline Rush" );
+	p -> buffs_adrenaline_rush = 0;
+	p -> energy_regen_per_tick /= 2.0;
+      }
+    };
+
+    rogue_t* p = player -> cast_rogue();
+
+    update_ready();
+
+    new ( sim ) expiration_t( sim, p );
+  }
+};
+
+// Blade Flurry ============================================================
+
+struct blade_flurry_t : public spell_t
+{
+  blade_flurry_t( player_t* player, const std::string& options_str ) : 
+    spell_t( "blade_flurry", player, RESOURCE_ENERGY )
+  {
+    rogue_t* p = player -> cast_rogue();
+    assert( p -> talents.blade_flurry );
+
+    option_t options[] =
+    {
+      { NULL }
+    };
+    parse_options( options, options_str );
+    
+    cooldown  = 120;
+    base_cost = 25;
+  }
+
+  virtual void execute()
+  {
+    struct expiration_t : public event_t
+    {
+      expiration_t( sim_t* sim, rogue_t* p ) : event_t( sim, p )
+      {
+	name = "Blade Flurry Expiration";
+	p -> aura_gain( "Blade Flurry" );
+	p -> buffs_blade_flurry = 1;
+	sim -> add_event( this, 15.0 );
+      }
+      virtual void execute()
+      {
+	rogue_t* p = player -> cast_rogue();
+	p -> aura_loss( "Blade Flurry" );
+	p -> buffs_blade_flurry = 0;
+      }
+    };
+
+    rogue_t* p = player -> cast_rogue();
+
+    update_ready();
+
+    new ( sim ) expiration_t( sim, p );
+  }
+};
+
+// Stealth ==================================================================
+
+struct stealth_t : public spell_t
+{
+  stealth_t( player_t* player, const std::string& options_str ) : 
+    spell_t( "stealth", player )
+  {
+  }
+
+  virtual void execute()
+  {
+    rogue_t* p = player -> cast_rogue();
+    p -> buffs_stealthed = 1;
+  }
+
+  virtual bool ready()
+  {
+    rogue_t* p = player -> cast_rogue();
+    return p -> buffs_stealthed == 0;
+  }
+};
+
 // Tricks of the Trade =======================================================
 
-struct tricks_of_the_trade_t : public rogue_attack_t
+struct tricks_of_the_trade_t : public spell_t
 {
   player_t* tricks_target;
 
   tricks_of_the_trade_t( player_t* player, const std::string& options_str ) : 
-    rogue_attack_t( "tricks_target", player, SCHOOL_PHYSICAL, TREE_SUBTLETY )
+    spell_t( "tricks_target", player )
   {
     std::string target_str;
     option_t options[] =
@@ -1508,29 +1626,7 @@ struct tricks_of_the_trade_t : public rogue_attack_t
     if( tricks_target -> buffs.tricks_of_the_trade )
       return false;
 
-    return rogue_attack_t::ready();
-  }
-};
-
-// Stealth ==================================================================
-
-struct stealth_t : public spell_t
-{
-  stealth_t( player_t* player, const std::string& options_str ) : 
-    spell_t( "stealth", player )
-  {
-  }
-
-  virtual void execute()
-  {
-    rogue_t* p = player -> cast_rogue();
-    p -> buffs_stealthed = 1;
-  }
-
-  virtual bool ready()
-  {
-    rogue_t* p = player -> cast_rogue();
-    return p -> buffs_stealthed == 0;
+    return spell_t::ready();
   }
 };
 
@@ -1575,6 +1671,7 @@ action_t* rogue_t::create_action( const std::string& name,
                                   const std::string& options_str )
 {
   if( name == "auto_attack"         ) return new auto_attack_t        ( this, options_str );
+  if( name == "adrenaline_rush"     ) return new adrenaline_rush_t    ( this, options_str );
   if( name == "ambush"              ) return new ambush_t             ( this, options_str );
   if( name == "apply_poson"         ) return new apply_poison_t       ( this, options_str );
   if( name == "backstab"            ) return new backstab_t           ( this, options_str );
@@ -1617,7 +1714,8 @@ void rogue_t::init_base()
   resource_base[ RESOURCE_HEALTH ] = 3524;
   resource_base[ RESOURCE_ENERGY ] = 100;
 
-  health_per_stamina = 10;
+  health_per_stamina    = 10;
+  energy_regen_per_tick = 20;
 
   base_gcd = 1.0;
 }
@@ -1629,18 +1727,16 @@ void rogue_t::reset()
   player_t::reset();
 
   // Buffs
-  for( int i=0; i < MAX_COMBO_POINTS; i++ ) 
-  {
-    buffs_combo_point_events[ i ] = 0;
-  }
-  buffs_combo_points   = 0;
-  buffs_poison_doses   = 0;
-  buffs_envenom        = 0;
-  buffs_shiv           = 0;
-  buffs_slice_and_dice = 0;
-  buffs_stealthed      = 0;
-  buffs_tricks_ready   = 0;
-  buffs_tricks_target  = 0;
+  buffs_adrenaline_rush = 0;
+  buffs_blade_flurry    = 0;
+  buffs_combo_points    = 0;
+  buffs_poison_doses    = 0;
+  buffs_envenom         = 0;
+  buffs_shiv            = 0;
+  buffs_slice_and_dice  = 0;
+  buffs_stealthed       = 0;
+  buffs_tricks_ready    = 0;
+  buffs_tricks_target   = 0;
 
   // Cooldowns
   cooldowns_ = 0;
