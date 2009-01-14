@@ -1326,7 +1326,7 @@ struct envenom_t : public rogue_attack_t
 
     rogue_t* p = player -> cast_rogue();
 
-    double doses_consumed = std::min( p -> buffs_poison_doses, p -> buffs_combo_points );
+    int doses_consumed = std::min( p -> buffs_poison_doses, p -> buffs_combo_points );
 
     double envenom_duration = 1.0 + p -> buffs_combo_points;
 
