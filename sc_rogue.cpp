@@ -12,6 +12,7 @@
 struct rogue_t : public player_t
 {
   // Active
+  action_t* active_anesthetic_poison;
   action_t* active_deadly_poison;
   action_t* active_instant_poison;
   action_t* active_wound_poison;
@@ -141,10 +142,11 @@ struct rogue_t : public player_t
   rogue_t( sim_t* sim, std::string& name ) : player_t( sim, ROGUE, name )
   {
     // Active
-    active_deadly_poison  = 0;
-    active_instant_poison = 0;
-    active_wound_poison   = 0;
-    active_slice_and_dice = 0;
+    active_anesthetic_poison = 0;
+    active_deadly_poison     = 0;
+    active_instant_poison    = 0;
+    active_wound_poison      = 0;
+    active_slice_and_dice    = 0;
 
     // Buffs
     buffs_blade_flurry       = 0;
@@ -253,6 +255,34 @@ struct rogue_attack_t : public attack_t
   virtual void   player_buff();
   virtual bool   ready();
 };
+
+// ==========================================================================
+// Rogue Poison
+// ==========================================================================
+
+struct rogue_poison_t : public spell_t
+{
+  rogue_poison_t( const char* n, player_t* player ) : 
+    spell_t( n, player, RESOURCE_NONE, SCHOOL_NATURE, TREE_ASSASSINATION )
+  {
+    rogue_t* p = player -> cast_rogue();
+
+    base_crit += p -> talents.malice * 0.01;
+    base_hit  += p -> talents.precision * 0.01;
+    base_hit  += p -> talents.improved_poisons * 0.01;
+
+    base_multiplier *= 1.0 + ( util_t::talent_rank( p -> talents.find_weakness, 3, 0.03 ) +
+                               util_t::talent_rank( p -> talents.vile_poisons,  3, 0.07, 0.14, 0.20 ) );
+
+    base_crit_bonus *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
+  }
+
+  virtual void player_buff();
+};
+
+// ==========================================================================
+// Static Functions
+// ==========================================================================
 
 // enter_stealth ===========================================================
 
@@ -428,7 +458,11 @@ static void trigger_poisons( rogue_attack_t* a )
 
   rogue_t* p = a -> player -> cast_rogue();
 
-  if( w -> buff == DEADLY_POISON )
+  if( w -> buff == ANESTHETIC_POISON )
+  {
+    p -> active_anesthetic_poison -> execute();
+  }
+  else if( w -> buff == DEADLY_POISON )
   {
     p -> active_deadly_poison -> execute();
   }
@@ -522,8 +556,7 @@ static void trigger_sword_specialization( rogue_attack_t* a )
 
   if( ! w ) return;
 
-  if( w -> type != WEAPON_SWORD    &&
-      w -> type != WEAPON_SWORD_2H )
+  if( w -> type != WEAPON_SWORD )
     return;
   
   rogue_t* p = a -> player -> cast_rogue();
@@ -583,7 +616,7 @@ static void trigger_tricks_of_the_trade( rogue_attack_t* a )
 }
 
 // =========================================================================
-// Rogue Attack
+// Rogue Attacks
 // =========================================================================
 
 // rogue_attack_t::parse_options ===========================================
@@ -626,10 +659,10 @@ void rogue_attack_t::execute()
   if( result_is_hit() )
   {
     if( requires_combo_points ) clear_combo_points( this );
-    if(     adds_combo_points ) add_combo_point( this );
+    if(     adds_combo_points )   add_combo_point ( this );
 
     trigger_poisons( this );
-    trigger_relentless_strikes( this ); // FIXME! Does this happen even if you miss?
+    trigger_relentless_strikes( this );
     trigger_ruthlessness( this );
     trigger_sword_specialization( this );
 
@@ -664,8 +697,7 @@ void rogue_attack_t::player_buff()
   {
     if( p -> talents.mace_specialization )
     {
-      if( weapon -> type == WEAPON_MACE    ||
-          weapon -> type == WEAPON_MACE_2H )
+      if( weapon -> type == WEAPON_MACE )
       {
         player_penetration += p -> talents.mace_specialization * 0.03;
       }
@@ -766,10 +798,6 @@ bool rogue_attack_t::ready()
   return true;
 }
 
-// =========================================================================
-// Rogue Attacks
-// =========================================================================
-
 // Melee Attack ============================================================
 
 struct melee_t : public rogue_attack_t
@@ -846,245 +874,6 @@ struct auto_attack_t : public rogue_attack_t
   {
     rogue_t* p = player -> cast_rogue();
     return( p -> main_hand_attack -> event == 0 ); // not swinging
-  }
-};
-
-// Deadly Poison ============================================================
-
-struct deadly_poison_t : public rogue_attack_t
-{
-  deadly_poison_t( player_t* player ) : 
-    rogue_attack_t( "deadly_poison", player, SCHOOL_NATURE, TREE_ASSASSINATION )
-  {
-    rogue_t* p = player -> cast_rogue();
-    trigger_gcd    = 0;
-    background     = true;
-    proc           = true;
-    num_ticks      = 4;
-    base_tick_time = 3.0;
-    tick_power_mod = 0.08 / num_ticks;
-
-    base_td_init = util_t::ability_rank( p -> level,  244,76,  204,70,  160,62,  96,0  ) / num_ticks;
-
-    base_multiplier *= 1.0 + ( p -> talents.find_weakness * 0.02 +
-                               util_t::talent_rank( p -> talents.vile_poisons, 3, 0.07, 0.14, 0.20 ) );
-
-    // FIXME! Do these poisons benefit from spell-power?
-    // FIXME! Is it necessary to perform a spell-hit roll?
-    // FIXME! Perhaps better to model this as a spell......
-    may_miss = may_dodge = may_parry = may_glance = may_block = false; 
-  }
-
-  virtual void execute()
-  {
-    rogue_t* p = player -> cast_rogue();
-
-    int8_t success = p -> buffs_shiv;
-
-    if( ! success )
-    {
-      double chance = 0.30;
-      chance += p -> talents.improved_poisons * 0.02;
-      if( p -> buffs_envenom ) chance += 0.15;
-      p -> uptimes_envenom -> update( p -> buffs_envenom != 0 );
-      success = sim -> rng -> roll( chance );
-    }
-
-    if( success )
-    {
-      if( p -> buffs_poison_doses < 5 ) p -> buffs_poison_doses++;
-
-      if( sim -> log ) report_t::log( sim, "%s performs %s (%d)", player -> name(), name(), p -> buffs_poison_doses );
-
-      if( ticking )
-      {
-        refresh_duration();
-      }
-      else
-      {
-        player_buff();
-        schedule_tick();
-      }
-    }
-  }
-
-  virtual void player_buff()
-  {
-    rogue_t* p = player -> cast_rogue();
-    rogue_attack_t::player_buff();
-    player_multiplier *= p -> buffs_poison_doses;
-  }
-
-  virtual void last_tick()
-  {
-    rogue_t* p = player -> cast_rogue();
-    rogue_attack_t::last_tick();
-    p -> buffs_poison_doses = 0;
-  }
-};
-
-// Instant Poison ===========================================================
-
-struct instant_poison_t : public rogue_attack_t
-{
-  instant_poison_t( player_t* player ) : 
-    rogue_attack_t( "instant_poison", player, SCHOOL_NATURE, TREE_ASSASSINATION )
-  {
-    rogue_t* p = player -> cast_rogue();
-    trigger_gcd      = 0;
-    background       = true;
-    proc             = true;
-    direct_power_mod = 0.10;
-
-    base_direct_dmg = util_t::ability_rank( p -> level,  245,73,  161,68,  76,0 );
-
-    base_multiplier *= 1.0 + ( p -> talents.find_weakness * 0.02 +
-                               util_t::talent_rank( p -> talents.vile_poisons, 3, 0.07, 0.14, 0.20 ) );
-
-    // FIXME! Do these poisons benefit from spell-power?
-    // FIXME! Is it necessary to perform a spell-hit roll?
-    // FIXME! Can this ability crit?  Are the crits +100% or +50%?
-    // FIXME! Perhaps better to model this as a spell......
-    may_miss = may_dodge = may_parry = may_glance = may_block = false; 
-  }
-
-  virtual void execute()
-  {
-    rogue_t* p = player -> cast_rogue();
-
-    int8_t success = p -> buffs_shiv;
-
-    if( ! success )
-    {
-      double chance = 0.20;
-      chance += p -> talents.improved_poisons * 0.02;
-      if( p -> buffs_envenom ) chance += 0.15;
-      p -> uptimes_envenom -> update( p -> buffs_envenom != 0 );
-      success = sim -> rng -> roll( chance );
-    }
-
-    if( success )
-    {
-      rogue_attack_t::execute();
-    }
-  }
-};
-
-// Wound Poison ============================================================
-
-struct wound_poison_t : public rogue_attack_t
-{
-  wound_poison_t( player_t* player ) : 
-    rogue_attack_t( "wound_poison", player, SCHOOL_NATURE, TREE_ASSASSINATION )
-  {
-    rogue_t* p = player -> cast_rogue();
-    trigger_gcd      = 0;
-    background       = true;
-    proc             = true;
-    direct_power_mod = 0.04;
-
-    base_direct_dmg = util_t::ability_rank( p -> level,  231,78,  188,72,  112,64,  53,0 );
-
-    base_multiplier *= 1.0 + ( p -> talents.find_weakness * 0.02 +
-                               util_t::talent_rank( p -> talents.vile_poisons, 3, 0.07, 0.14, 0.20 ) );
-
-    // FIXME! Do these poisons benefit from spell-power?
-    // FIXME! Is it necessary to perform a spell-hit roll?
-    // FIXME! Can this ability crit?  Are the crits +100% or +50%?
-    // FIXME! Perhaps better to model this as a spell......
-    may_miss = may_dodge = may_parry = may_glance = may_block = false; 
-  }
-
-  virtual void execute()
-  {
-    rogue_t* p = player -> cast_rogue();
-
-    int8_t success = p -> buffs_shiv;
-
-    if( ! success )
-    {
-      double chance = 0.50;
-      if( p -> buffs_envenom ) chance += 0.15;
-      p -> uptimes_envenom -> update( p -> buffs_envenom != 0 );
-      success = sim -> rng -> roll( chance );
-    }
-
-    if( success )
-    {
-      rogue_attack_t::execute();
-    }
-  }
-};
-
-// Apply Poison ===========================================================
-
-struct apply_poison_t : public spell_t
-{
-  int8_t main_hand_poison;
-  int8_t  off_hand_poison;
-
-  apply_poison_t( player_t* player, const std::string& options_str ) : 
-    spell_t( "apply_poison", player ), 
-    main_hand_poison( WEAPON_BUFF_NONE ), 
-     off_hand_poison( WEAPON_BUFF_NONE )
-  {
-    rogue_t* p = player -> cast_rogue();
-    
-    std::string main_hand_str;
-    std::string  off_hand_str;
-
-    option_t options[] =
-    {
-      { "main_hand", OPT_STRING, &main_hand_str },
-      {  "off_hand", OPT_STRING,  &off_hand_str },
-      { NULL }
-    };
-    parse_options( options, options_str );
-
-    if( main_hand_str.empty() &&
-         off_hand_str.empty() ) 
-    {
-      printf( "simcraft: At least one of 'main_hand/off_hand' must be specified in 'apply_poison'.  Accepted values are 'deadly/instant/wound'.\n" );
-      exit( 0 );
-    }
-
-    if( main_hand_str == "deadly"  ) main_hand_poison =  DEADLY_POISON;
-    if( main_hand_str == "instant" ) main_hand_poison = INSTANT_POISON;
-    if( main_hand_str == "wound"   ) main_hand_poison =   WOUND_POISON;
-
-    if( off_hand_str == "deadly"  ) off_hand_poison =  DEADLY_POISON;
-    if( off_hand_str == "instant" ) off_hand_poison = INSTANT_POISON;
-    if( off_hand_str == "wound"   ) off_hand_poison =   WOUND_POISON;
-
-    if( main_hand_poison != WEAPON_BUFF_NONE ) assert( p -> main_hand_weapon.type != WEAPON_NONE );
-    if(  off_hand_poison != WEAPON_BUFF_NONE ) assert( p ->  off_hand_weapon.type != WEAPON_NONE );
-
-    if( ! p -> active_deadly_poison  ) p -> active_deadly_poison  = new  deadly_poison_t( p );
-    if( ! p -> active_instant_poison ) p -> active_instant_poison = new instant_poison_t( p );
-    if( ! p -> active_wound_poison   ) p -> active_wound_poison   = new   wound_poison_t( p );
-  }
-
-  virtual void execute()
-  {
-    rogue_t* p = player -> cast_rogue();
-
-    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
-
-    if( main_hand_poison != WEAPON_BUFF_NONE ) p -> main_hand_weapon.buff = main_hand_poison;
-    if(  off_hand_poison != WEAPON_BUFF_NONE ) p ->  off_hand_weapon.buff =  off_hand_poison;
-  };
-
-  virtual bool ready()
-  {
-    rogue_t* p = player -> cast_rogue();
-
-    if( main_hand_poison != WEAPON_BUFF_NONE ) 
-      return( main_hand_poison != p -> main_hand_weapon.buff );
-
-    if( off_hand_poison != WEAPON_BUFF_NONE ) 
-      return( off_hand_poison != p -> off_hand_weapon.buff );
-
-    return false;
   }
 };
 
@@ -1761,7 +1550,7 @@ struct killing_spree_t : public rogue_attack_t
     channeled         = true;
     cooldown          = 120;
     num_ticks         = 5;
-    base_tick_time    = 0.5;  // FIXME! Are the frequency of attacks affected by haste?
+    base_tick_time    = 0.5;
     base_cost         = 0;
     base_multiplier  *= 1.0 + p -> talents.find_weakness * 0.02;
     base_crit_bonus  *= 1.0 + ( p -> talents.lethality        * 0.06 +
@@ -1780,6 +1569,12 @@ struct killing_spree_t : public rogue_attack_t
     p -> action_finish( this );
   }
 
+  virtual double tick_time() 
+  {
+    // Killing Spree not modified by haste effects
+    return base_tick_time;
+  }
+
   virtual void tick()
   {
     rogue_t* p = player -> cast_rogue();
@@ -1792,15 +1587,12 @@ struct killing_spree_t : public rogue_attack_t
     mh_dd = direct_dmg;
     mh_result = result;
 
-    if( result_is_hit() ) // FIXME! Does OH swing if MH misses?
+    if( p -> off_hand_weapon.type != WEAPON_NONE )
     {
-      if( p -> off_hand_weapon.type != WEAPON_NONE )
-      {
-        weapon = &( p -> off_hand_weapon );
-        rogue_attack_t::execute();
-        oh_dd = direct_dmg;
-        oh_result = result;
-      }
+      weapon = &( p -> off_hand_weapon );
+      rogue_attack_t::execute();
+      oh_dd = direct_dmg;
+      oh_result = result;
     }
 
     tick_dmg = mh_dd + oh_dd;
@@ -1857,7 +1649,7 @@ struct mutilate_t : public rogue_attack_t
     mh_dd = direct_dmg;
     mh_result = result;
 
-    if( result_is_hit() ) // FIXME! Does OH swing if MH misses?
+    if( result_is_hit() )
     {
       if( player -> off_hand_weapon.type != WEAPON_NONE )
       {
@@ -2013,7 +1805,7 @@ struct shadowstep_t : public rogue_attack_t
     };
     parse_options( options, options_str );
 
-    trigger_gcd = 0; // FIXME! Does this ability trigger the GCD?
+    trigger_gcd = 0;
     cooldown = 30;
     base_cost = 10;
   }
@@ -2197,6 +1989,294 @@ struct slice_and_dice_t : public rogue_attack_t
     return p -> buffs_slice_and_dice == 0;
   }
 };
+
+// =========================================================================
+// Rogue Poisons
+// =========================================================================
+
+// rogue_poison_t::player_buff =============================================
+
+void rogue_poison_t::player_buff()
+{
+  rogue_t* p = player -> cast_rogue();
+
+  spell_t::player_buff();
+
+  player_power     = p -> composite_attack_power();
+  power_multiplier = p -> composite_attack_power_multiplier();
+
+  if( p -> buffs_cold_blood )
+  {
+    player_crit += 1.0;
+  }
+  if( p -> buffs_hunger_for_blood )
+  {
+    player_multiplier *= 1.0 + p -> buffs_hunger_for_blood * 0.03;
+  }
+  if( p -> buffs_master_of_subtlety )
+  {
+    player_multiplier *= 1.0 + p -> buffs_master_of_subtlety * 0.01;
+  }
+  if( p -> buffs_poison_doses ) 
+  {
+    player_multiplier *= 1.0 + p -> talents.savage_combat * 0.01;
+    player_crit       += p -> talents.master_poisoner * 0.01;
+  }
+  if( p -> talents.murder )
+  {
+    int8_t target_race = sim -> target -> race;
+
+    if( target_race == RACE_BEAST     || 
+        target_race == RACE_DRAGONKIN ||
+        target_race == RACE_GIANT     ||
+        target_race == RACE_HUMANOID  )
+    {
+      player_multiplier *= 1.0 + p -> talents.murder * 0.02;
+    }
+  }
+  if( p -> buffs_shadowstep )
+  {
+    player_multiplier *= 1.2;
+  }
+
+  p -> uptimes_savage_combat    -> update( p -> buffs_poison_doses     != 0 );
+  p -> uptimes_hunger_for_blood -> update( p -> buffs_hunger_for_blood != 3 );
+}
+
+// Anesthetic Poison ========================================================
+
+struct anesthetic_poison_t : public rogue_poison_t
+{
+  anesthetic_poison_t( player_t* player ) : 
+    rogue_poison_t( "anesthetic_poison", player )
+  {
+    rogue_t* p = player -> cast_rogue();
+    trigger_gcd      = 0;
+    background       = true;
+    proc             = true;
+    direct_power_mod = 0;
+    base_direct_dmg  = util_t::ability_rank( p -> level,  249,77,  153,68,  0,0 );
+  }
+
+  virtual void execute()
+  {
+    rogue_t* p = player -> cast_rogue();
+
+    if( p -> buffs_shiv || sim -> rng -> roll( 0.50 ) )
+    {
+      rogue_poison_t::execute();
+    }
+  }
+};
+
+// Deadly Poison ============================================================
+
+struct deadly_poison_t : public rogue_poison_t
+{
+  deadly_poison_t( player_t* player ) : 
+    rogue_poison_t( "deadly_poison", player )
+  {
+    rogue_t* p = player -> cast_rogue();
+    trigger_gcd    = 0;
+    background     = true;
+    proc           = true;
+    num_ticks      = 4;
+    base_tick_time = 3.0;
+    tick_power_mod = 0.08 / num_ticks;
+    base_td_init   = util_t::ability_rank( p -> level,  244,76,  204,70,  160,62,  96,0  ) / num_ticks;
+  }
+
+  virtual void execute()
+  {
+    rogue_t* p = player -> cast_rogue();
+
+    int8_t success = p -> buffs_shiv;
+
+    if( ! success )
+    {
+      double chance = 0.30;
+      chance += p -> talents.improved_poisons * 0.02;
+      if( p -> buffs_envenom ) chance += 0.15;
+      p -> uptimes_envenom -> update( p -> buffs_envenom != 0 );
+      success = sim -> rng -> roll( chance );
+    }
+
+    if( success )
+    {
+      if( p -> buffs_poison_doses < 5 ) p -> buffs_poison_doses++;
+
+      if( sim -> log ) report_t::log( sim, "%s performs %s (%d)", player -> name(), name(), p -> buffs_poison_doses );
+
+      if( ticking )
+      {
+        refresh_duration();
+      }
+      else
+      {
+        player_buff();
+        schedule_tick();
+      }
+    }
+  }
+
+  virtual void player_buff()
+  {
+    rogue_t* p = player -> cast_rogue();
+    rogue_poison_t::player_buff();
+    player_multiplier *= p -> buffs_poison_doses;
+  }
+
+  virtual void last_tick()
+  {
+    rogue_t* p = player -> cast_rogue();
+    rogue_poison_t::last_tick();
+    p -> buffs_poison_doses = 0;
+  }
+};
+
+// Instant Poison ===========================================================
+
+struct instant_poison_t : public rogue_poison_t
+{
+  instant_poison_t( player_t* player ) : 
+    rogue_poison_t( "instant_poison", player )
+  {
+    rogue_t* p = player -> cast_rogue();
+    trigger_gcd      = 0;
+    background       = true;
+    proc             = true;
+    direct_power_mod = 0.10;
+    base_direct_dmg  = util_t::ability_rank( p -> level,  245,73,  161,68,  76,0 );
+  }
+
+  virtual void execute()
+  {
+    rogue_t* p = player -> cast_rogue();
+
+    int8_t success = p -> buffs_shiv;
+
+    if( ! success )
+    {
+      double chance = 0.20;
+      chance += p -> talents.improved_poisons * 0.02;
+      if( p -> buffs_envenom ) chance += 0.15;
+      p -> uptimes_envenom -> update( p -> buffs_envenom != 0 );
+      success = sim -> rng -> roll( chance );
+    }
+
+    if( success )
+    {
+      rogue_poison_t::execute();
+    }
+  }
+};
+
+// Wound Poison ============================================================
+
+struct wound_poison_t : public rogue_poison_t
+{
+  wound_poison_t( player_t* player ) : 
+    rogue_poison_t( "wound_poison", player )
+  {
+    rogue_t* p = player -> cast_rogue();
+    trigger_gcd      = 0;
+    background       = true;
+    proc             = true;
+    direct_power_mod = 0.04;
+    base_direct_dmg  = util_t::ability_rank( p -> level,  231,78,  188,72,  112,64,  53,0 );
+  }
+
+  virtual void execute()
+  {
+    rogue_t* p = player -> cast_rogue();
+
+    if( p -> buffs_shiv || sim -> rng -> roll( 0.50 ) )
+    {
+      rogue_poison_t::execute();
+    }
+  }
+};
+
+// Apply Poison ===========================================================
+
+struct apply_poison_t : public rogue_poison_t
+{
+  int8_t main_hand_poison;
+  int8_t  off_hand_poison;
+
+  apply_poison_t( player_t* player, const std::string& options_str ) : 
+    rogue_poison_t( "apply_poison", player ), 
+    main_hand_poison( WEAPON_BUFF_NONE ), 
+     off_hand_poison( WEAPON_BUFF_NONE )
+  {
+    rogue_t* p = player -> cast_rogue();
+    
+    std::string main_hand_str;
+    std::string  off_hand_str;
+
+    option_t options[] =
+    {
+      { "main_hand", OPT_STRING, &main_hand_str },
+      {  "off_hand", OPT_STRING,  &off_hand_str },
+      { NULL }
+    };
+    parse_options( options, options_str );
+
+    if( main_hand_str.empty() &&
+         off_hand_str.empty() ) 
+    {
+      printf( "simcraft: At least one of 'main_hand/off_hand' must be specified in 'apply_poison'.  Accepted values are 'anesthetic/deadly/instant/wound'.\n" );
+      exit( 0 );
+    }
+
+    trigger_gcd = 0;
+
+    if( main_hand_str == "anesthetic" ) main_hand_poison = ANESTHETIC_POISON;
+    if( main_hand_str == "deadly"     ) main_hand_poison =     DEADLY_POISON;
+    if( main_hand_str == "instant"    ) main_hand_poison =    INSTANT_POISON;
+    if( main_hand_str == "wound"      ) main_hand_poison =      WOUND_POISON;
+
+    if( off_hand_str == "anesthetic" ) off_hand_poison = ANESTHETIC_POISON;
+    if( off_hand_str == "deadly"     ) off_hand_poison =     DEADLY_POISON;
+    if( off_hand_str == "instant"    ) off_hand_poison =    INSTANT_POISON;
+    if( off_hand_str == "wound"      ) off_hand_poison =      WOUND_POISON;
+
+    if( main_hand_poison != WEAPON_BUFF_NONE ) assert( p -> main_hand_weapon.type != WEAPON_NONE );
+    if(  off_hand_poison != WEAPON_BUFF_NONE ) assert( p ->  off_hand_weapon.type != WEAPON_NONE );
+
+    if( ! p -> active_anesthetic_poison ) p -> active_anesthetic_poison = new anesthetic_poison_t( p );
+    if( ! p -> active_deadly_poison     ) p -> active_deadly_poison     = new     deadly_poison_t( p );
+    if( ! p -> active_instant_poison    ) p -> active_instant_poison    = new    instant_poison_t( p );
+    if( ! p -> active_wound_poison      ) p -> active_wound_poison      = new      wound_poison_t( p );
+  }
+
+  virtual void execute()
+  {
+    rogue_t* p = player -> cast_rogue();
+
+    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
+
+    if( main_hand_poison != WEAPON_BUFF_NONE ) p -> main_hand_weapon.buff = main_hand_poison;
+    if(  off_hand_poison != WEAPON_BUFF_NONE ) p ->  off_hand_weapon.buff =  off_hand_poison;
+  };
+
+  virtual bool ready()
+  {
+    rogue_t* p = player -> cast_rogue();
+
+    if( main_hand_poison != WEAPON_BUFF_NONE ) 
+      return( main_hand_poison != p -> main_hand_weapon.buff );
+
+    if( off_hand_poison != WEAPON_BUFF_NONE ) 
+      return( off_hand_poison != p -> off_hand_weapon.buff );
+
+    return false;
+  }
+};
+
+// =========================================================================
+// Rogue Spells
+// =========================================================================
 
 // Adrenaline Rush ==========================================================
 
@@ -2559,10 +2639,9 @@ action_t* rogue_t::create_action( const std::string& name,
 
 void rogue_t::init_base()
 {
-  // FIXME! These are level 70 values.
-  attribute_base[ ATTR_STRENGTH  ] =  94;
-  attribute_base[ ATTR_AGILITY   ] = 156;
-  attribute_base[ ATTR_STAMINA   ] =  90;
+  attribute_base[ ATTR_STRENGTH  ] = 113;
+  attribute_base[ ATTR_AGILITY   ] = 189;
+  attribute_base[ ATTR_STAMINA   ] = 105;
   attribute_base[ ATTR_INTELLECT ] =  37;
   attribute_base[ ATTR_SPIRIT    ] =  65;
 

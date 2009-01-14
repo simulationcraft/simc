@@ -178,6 +178,7 @@ enum weapon_type { WEAPON_NONE=0,
 enum weapon_enchant_type { WEAPON_ENCHANT_NONE=0, MONGOOSE, EXECUTIONER, DEATH_FROST, WEAPON_ENCHANT_MAX };
 
 enum weapon_buff_type { WEAPON_BUFF_NONE=0, 
+                        ANESTHETIC_POISON,
                         DEADLY_POISON,
                         FIRE_STONE,
                         FLAMETONGUE, 
