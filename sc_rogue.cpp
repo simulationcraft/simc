@@ -282,22 +282,22 @@ static void break_stealth( rogue_t* p )
     {
       expiration_t( sim_t* sim, rogue_t* p ) : event_t( sim, p )
       {
-	name = "Recent Stealth Expiration";
-	sim -> add_event( this, 6.0 );
+        name = "Recent Stealth Expiration";
+        sim -> add_event( this, 6.0 );
       }
       virtual void execute()
       {
-	rogue_t* p = player -> cast_rogue();
-	if( p -> buffs_master_of_subtlety )
-	{
-	  p -> aura_loss( "Master of Subtlety" );
-	  p -> buffs_master_of_subtlety = 0;
-	}
-	if( p -> buffs_overkill )
-	{
-	  p -> aura_loss( "Overkill" );
-	  p -> buffs_overkill = 0;
-	}
+        rogue_t* p = player -> cast_rogue();
+        if( p -> buffs_master_of_subtlety )
+        {
+          p -> aura_loss( "Master of Subtlety" );
+          p -> buffs_master_of_subtlety = 0;
+        }
+        if( p -> buffs_overkill )
+        {
+          p -> aura_loss( "Overkill" );
+          p -> buffs_overkill = 0;
+        }
       }
     };
 
@@ -314,10 +314,10 @@ static void clear_combo_points( rogue_attack_t* a )
   if( p -> buffs_combo_points <= 0 ) return;
 
   const char* name[] = { "Combo Points (1)",
-			 "Combo Points (2)",
-			 "Combo Points (3)",
-			 "Combo Points (4)",
-			 "Combo Points (5)" };
+                         "Combo Points (2)",
+                         "Combo Points (3)",
+                         "Combo Points (4)",
+                         "Combo Points (5)" };
 
   p -> aura_loss( name[ p -> buffs_combo_points - 1 ] );
 
@@ -333,10 +333,10 @@ static void add_combo_point( rogue_attack_t* a )
   if( p -> buffs_combo_points >= 5 ) return;
 
   const char* name[] = { "Combo Points (1)",
-			 "Combo Points (2)",
-			 "Combo Points (3)",
-			 "Combo Points (4)",
-			 "Combo Points (5)" };
+                         "Combo Points (2)",
+                         "Combo Points (3)",
+                         "Combo Points (4)",
+                         "Combo Points (5)" };
 
   p -> buffs_combo_points++;
 
@@ -552,17 +552,17 @@ static void trigger_tricks_of_the_trade( rogue_attack_t* a )
     {
       expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
       {
-	name = "Tricks of the Trade Expiration";
-	p -> aura_gain( "Tricks of the Trade" );
-	p -> buffs.tricks_of_the_trade = 1;
-	sim -> add_event( this, 6.0 );
+        name = "Tricks of the Trade Expiration";
+        p -> aura_gain( "Tricks of the Trade" );
+        p -> buffs.tricks_of_the_trade = 1;
+        sim -> add_event( this, 6.0 );
       }
       virtual void execute()
       {
-	player_t* p = player;
-	p -> aura_loss( "Tricks of the Trade" );
-	p -> buffs.tricks_of_the_trade = 0;
-	p -> expirations.tricks_of_the_trade = 0;
+        player_t* p = player;
+        p -> aura_loss( "Tricks of the Trade" );
+        p -> buffs.tricks_of_the_trade = 0;
+        p -> expirations.tricks_of_the_trade = 0;
       }
     };
 
@@ -674,14 +674,14 @@ void rogue_attack_t::player_buff()
     {
       if( weapon -> type <= WEAPON_SMALL )
       {
-	player_crit += p -> talents.close_quarters_combat * 0.01;
+        player_crit += p -> talents.close_quarters_combat * 0.01;
       }
     }
     if( p -> talents.dual_wield_specialization )
     {
       if( ! weapon -> main )
       {
-	player_multiplier *= 1.0 + p -> talents.dual_wield_specialization * 0.10;
+        player_multiplier *= 1.0 + p -> talents.dual_wield_specialization * 0.10;
       }
     }
   }
@@ -707,9 +707,9 @@ void rogue_attack_t::player_buff()
     int8_t target_race = sim -> target -> race;
 
     if( target_race == RACE_BEAST     || 
-	target_race == RACE_DRAGONKIN ||
-	target_race == RACE_GIANT     ||
-	target_race == RACE_HUMANOID  )
+        target_race == RACE_DRAGONKIN ||
+        target_race == RACE_GIANT     ||
+        target_race == RACE_HUMANOID  )
     {
       player_multiplier *= 1.0 + p -> talents.murder * 0.02;
     }
@@ -867,7 +867,7 @@ struct deadly_poison_t : public rogue_attack_t
     base_td_init = util_t::ability_rank( p -> level,  244,76,  204,70,  160,62,  96,0  ) / num_ticks;
 
     base_multiplier *= 1.0 + ( p -> talents.find_weakness * 0.02 +
-			       util_t::talent_rank( p -> talents.vile_poisons, 3, 0.07, 0.14, 0.20 ) );
+                               util_t::talent_rank( p -> talents.vile_poisons, 3, 0.07, 0.14, 0.20 ) );
 
     // FIXME! Do these poisons benefit from spell-power?
     // FIXME! Is it necessary to perform a spell-hit roll?
@@ -898,12 +898,12 @@ struct deadly_poison_t : public rogue_attack_t
 
       if( ticking )
       {
-	refresh_duration();
+        refresh_duration();
       }
       else
       {
-	player_buff();
-	schedule_tick();
+        player_buff();
+        schedule_tick();
       }
     }
   }
@@ -939,7 +939,7 @@ struct instant_poison_t : public rogue_attack_t
     base_direct_dmg = util_t::ability_rank( p -> level,  245,73,  161,68,  76,0 );
 
     base_multiplier *= 1.0 + ( p -> talents.find_weakness * 0.02 +
-			       util_t::talent_rank( p -> talents.vile_poisons, 3, 0.07, 0.14, 0.20 ) );
+                               util_t::talent_rank( p -> talents.vile_poisons, 3, 0.07, 0.14, 0.20 ) );
 
     // FIXME! Do these poisons benefit from spell-power?
     // FIXME! Is it necessary to perform a spell-hit roll?
@@ -986,7 +986,7 @@ struct wound_poison_t : public rogue_attack_t
     base_direct_dmg = util_t::ability_rank( p -> level,  231,78,  188,72,  112,64,  53,0 );
 
     base_multiplier *= 1.0 + ( p -> talents.find_weakness * 0.02 +
-			       util_t::talent_rank( p -> talents.vile_poisons, 3, 0.07, 0.14, 0.20 ) );
+                               util_t::talent_rank( p -> talents.vile_poisons, 3, 0.07, 0.14, 0.20 ) );
 
     // FIXME! Do these poisons benefit from spell-power?
     // FIXME! Is it necessary to perform a spell-hit roll?
@@ -1042,7 +1042,7 @@ struct apply_poison_t : public spell_t
     parse_options( options, options_str );
 
     if( main_hand_str.empty() &&
-	 off_hand_str.empty() ) 
+         off_hand_str.empty() ) 
     {
       printf( "simcraft: At least one of 'main_hand/off_hand' must be specified in 'apply_poison'.  Accepted values are 'deadly/instant/wound'.\n" );
       exit( 0 );
@@ -1124,10 +1124,10 @@ struct ambush_t : public rogue_attack_t
     weapon_multiplier     *= 2.75;
     base_cost             -= p -> talents.slaughter_from_the_shadows * 3;
     base_multiplier       *= 1.0 + ( p -> talents.find_weakness * 0.02 +
-				     p -> talents.opportunity   * 0.10 );
+                                     p -> talents.opportunity   * 0.10 );
     base_crit             += p -> talents.improved_ambush * 0.25;
     base_crit_bonus       *= 1.0 + ( p -> talents.lethality        * 0.06 +
-				     p -> talents.prey_on_the_weak * 0.04 );
+                                     p -> talents.prey_on_the_weak * 0.04 );
   }
 
   virtual void execute()
@@ -1140,7 +1140,7 @@ struct ambush_t : public rogue_attack_t
     {
       if( sim -> rng -> roll( p -> talents.initiative / 3.0 ) )
       {
-	add_combo_point( this );
+        add_combo_point( this );
       }
     }
   }
@@ -1195,13 +1195,13 @@ struct backstab_t : public rogue_attack_t
     base_cost             -= p -> talents.slaughter_from_the_shadows * 3;
     weapon_multiplier     *= 1.50 + p -> talents.sinister_calling * 0.01;
     base_multiplier       *= 1.0 + ( p -> talents.aggression       * 0.03 +
-				     p -> talents.blade_twisting   * 0.05 +
-				     p -> talents.find_weakness    * 0.02 +
-				     p -> talents.opportunity      * 0.10 +
-				     p -> talents.surprise_attacks * 0.10 );
+                                     p -> talents.blade_twisting   * 0.05 +
+                                     p -> talents.find_weakness    * 0.02 +
+                                     p -> talents.opportunity      * 0.10 +
+                                     p -> talents.surprise_attacks * 0.10 );
     base_crit             += p -> talents.puncturing_wounds * 0.10;
     base_crit_bonus       *= 1.0 + ( p -> talents.lethality        * 0.06 +
-				     p -> talents.prey_on_the_weak * 0.04 );
+                                     p -> talents.prey_on_the_weak * 0.04 );
   }
 
   virtual void player_buff()
@@ -1237,16 +1237,16 @@ struct blade_flurry_t : public rogue_attack_t
     {
       expiration_t( sim_t* sim, rogue_t* p ) : event_t( sim, p )
       {
-	name = "Blade Flurry Expiration";
-	p -> aura_gain( "Blade Flurry" );
-	p -> buffs_blade_flurry = 1;
-	sim -> add_event( this, 15.0 );
+        name = "Blade Flurry Expiration";
+        p -> aura_gain( "Blade Flurry" );
+        p -> buffs_blade_flurry = 1;
+        sim -> add_event( this, 15.0 );
       }
       virtual void execute()
       {
-	rogue_t* p = player -> cast_rogue();
-	p -> aura_loss( "Blade Flurry" );
-	p -> buffs_blade_flurry = 0;
+        rogue_t* p = player -> cast_rogue();
+        p -> aura_loss( "Blade Flurry" );
+        p -> buffs_blade_flurry = 0;
       }
     };
 
@@ -1287,7 +1287,7 @@ struct envenom_t : public rogue_attack_t
     base_cost             = 35;
 
     base_multiplier *= 1.0 + ( p -> talents.find_weakness * 0.02 + 
-			       util_t::talent_rank( p -> talents.vile_poisons, 3, 0.07, 0.14, 0.20 ) );
+                               util_t::talent_rank( p -> talents.vile_poisons, 3, 0.07, 0.14, 0.20 ) );
 
     base_crit_bonus *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
 
@@ -1299,9 +1299,9 @@ struct envenom_t : public rogue_attack_t
     static double dmg_62[] = { 118, 236, 354, 472,  590 };
 
     combo_point_dmg = ( p -> level >= 80 ? dmg_80 :
-			p -> level >= 74 ? dmg_74 :
-			p -> level >= 69 ? dmg_69 : 
-			                   dmg_62 );
+                        p -> level >= 74 ? dmg_74 :
+                        p -> level >= 69 ? dmg_69 : 
+                                           dmg_62 );
   }
 
   virtual void execute()
@@ -1310,17 +1310,17 @@ struct envenom_t : public rogue_attack_t
     {
       expiration_t( sim_t* sim, rogue_t* p, double duration ) : event_t( sim, p )
       {
-	name = "Envenom Expiration";
-	p -> aura_gain( "Envenom" );
-	p -> buffs_envenom = 1;
-	sim -> add_event( this, duration );
+        name = "Envenom Expiration";
+        p -> aura_gain( "Envenom" );
+        p -> buffs_envenom = 1;
+        sim -> add_event( this, duration );
       }
       virtual void execute()
       {
-	rogue_t* p = player -> cast_rogue();
-	p -> aura_loss( "Envenom" );
-	p ->       buffs_envenom = 0;
-	p -> expirations_envenom = 0;
+        rogue_t* p = player -> cast_rogue();
+        p -> aura_loss( "Envenom" );
+        p ->       buffs_envenom = 0;
+        p -> expirations_envenom = 0;
       }
     };
 
@@ -1349,7 +1349,7 @@ struct envenom_t : public rogue_attack_t
 
       if( p -> buffs_poison_doses == 0 )
       {
-	p -> active_deadly_poison -> cancel();
+        p -> active_deadly_poison -> cancel();
       }
       trigger_cut_to_the_chase( this );
     }
@@ -1382,11 +1382,11 @@ struct envenom_t : public rogue_attack_t
 
     if( min_doses > 0 )
       if( min_doses < p -> buffs_poison_doses )
-	return false;
+        return false;
 
     if( max_doses > 0 )
       if( max_doses > p -> buffs_poison_doses )
-	return false;
+        return false;
 
     if( no_buff && p -> buffs_envenom )
       return false;
@@ -1420,8 +1420,8 @@ struct eviscerate_t : public rogue_attack_t
     base_cost             = 35;
 
     base_multiplier *= 1.0 + ( p -> talents.aggression    * 0.03 +
-			       p -> talents.find_weakness * 0.02 +
-			       util_t::talent_rank( p -> talents.improved_eviscerate, 3, 0.07, 0.14, 0.20 ) );
+                               p -> talents.find_weakness * 0.02 +
+                               util_t::talent_rank( p -> talents.improved_eviscerate, 3, 0.07, 0.14, 0.20 ) );
 
     base_crit_bonus *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
 
@@ -1433,9 +1433,9 @@ struct eviscerate_t : public rogue_attack_t
     static double_pair dmg_60[] = { { 224, 332 }, { 394,  502 }, {  564,  762 }, {   734, 842 }, {  904, 1012 } };
 
     combo_point_dmg = ( p -> level >= 79 ? dmg_79 :
-			p -> level >= 73 ? dmg_73 :
-			p -> level >= 64 ? dmg_64 : 
-			                   dmg_60 );
+                        p -> level >= 73 ? dmg_73 :
+                        p -> level >= 64 ? dmg_64 : 
+                                           dmg_60 );
   }
 
   virtual void execute()
@@ -1520,32 +1520,32 @@ struct expose_armor_t : public rogue_attack_t
 
       if( debuff >= t -> debuffs.expose_armor )
       {
-	struct expiration_t : public event_t
+        struct expiration_t : public event_t
         {
-	  expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-	  {
-	    name = "Expose Armor Expiration";
-	    sim -> add_event( this, 30.0 );
-	  }
-	  virtual void execute()
-	  {
-	    sim -> target -> debuffs.expose_armor = 0;
-	    sim -> target -> expirations.expose_armor = 0;
-	  }
-	};
+          expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
+          {
+            name = "Expose Armor Expiration";
+            sim -> add_event( this, 30.0 );
+          }
+          virtual void execute()
+          {
+            sim -> target -> debuffs.expose_armor = 0;
+            sim -> target -> expirations.expose_armor = 0;
+          }
+        };
 
-	t -> debuffs.expose_armor = debuff;
+        t -> debuffs.expose_armor = debuff;
 
-	event_t*& e = t -> expirations.expose_armor;
+        event_t*& e = t -> expirations.expose_armor;
 
-	if( e )
-	{
-	  e -> reschedule( 30.0 );
-	}
-	else
-	{
-	  e = new ( sim ) expiration_t( sim, p );
-	}
+        if( e )
+        {
+          e -> reschedule( 30.0 );
+        }
+        else
+        {
+          e = new ( sim ) expiration_t( sim, p );
+        }
       }
     }
   };
@@ -1561,7 +1561,7 @@ struct expose_armor_t : public rogue_attack_t
     else
     {
       return ( t -> debuffs.expose_armor == 0 &&
-	       t -> debuffs.sunder_armor == 0 );
+               t -> debuffs.sunder_armor == 0 );
     }
 
     return rogue_attack_t::ready();
@@ -1617,7 +1617,7 @@ struct ghostly_strike_t : public rogue_attack_t
     weapon_multiplier     *= 1.25;
     base_multiplier       *= 1.0 + p -> talents.find_weakness * 0.02;
     base_crit_bonus       *= 1.0 + ( p -> talents.lethality        * 0.06 +
-				     p -> talents.prey_on_the_weak * 0.04 );
+                                     p -> talents.prey_on_the_weak * 0.04 );
   }
 
   virtual void player_buff()
@@ -1650,9 +1650,9 @@ struct hemorrhage_t : public rogue_attack_t
     base_cost              = 35 - p -> talents.slaughter_from_the_shadows;
     weapon_multiplier     *= 1.10 + p -> talents.sinister_calling * 0.01;
     base_multiplier       *= 1.0 + ( p -> talents.find_weakness    * 0.02 +
-				     p -> talents.surprise_attacks * 0.10 );
+                                     p -> talents.surprise_attacks * 0.10 );
     base_crit_bonus       *= 1.0 + ( p -> talents.lethality        * 0.06 +
-				     p -> talents.prey_on_the_weak * 0.04 );
+                                     p -> talents.prey_on_the_weak * 0.04 );
   }
 
   virtual void player_buff()
@@ -1689,17 +1689,17 @@ struct hunger_for_blood_t : public rogue_attack_t
     {
       expiration_t( sim_t* sim, rogue_t* p ) : event_t( sim, p )
       {
-	name = "Hunger For Blood Expiration";
-	p -> aura_gain( "Hunger For Blood" );
-	p -> buffs_hunger_for_blood = 1;
-	sim -> add_event( this, 30.0 );
+        name = "Hunger For Blood Expiration";
+        p -> aura_gain( "Hunger For Blood" );
+        p -> buffs_hunger_for_blood = 1;
+        sim -> add_event( this, 30.0 );
       }
       virtual void execute()
       {
-	rogue_t* p = player -> cast_rogue();
-	p -> aura_loss( "Hunger For Blood" );
-	p ->       buffs_hunger_for_blood = 0;
-	p -> expirations_hunger_for_blood = 0;
+        rogue_t* p = player -> cast_rogue();
+        p -> aura_loss( "Hunger For Blood" );
+        p ->       buffs_hunger_for_blood = 0;
+        p -> expirations_hunger_for_blood = 0;
       }
     };
 
@@ -1735,7 +1735,7 @@ struct hunger_for_blood_t : public rogue_attack_t
 
     if( p -> buffs_hunger_for_blood == 3 )
       if( ( p -> expirations_hunger_for_blood -> time - sim -> current_time ) > refresh_at )
-	return false;
+        return false;
 
     return true;
   }
@@ -1765,7 +1765,7 @@ struct killing_spree_t : public rogue_attack_t
     base_cost         = 0;
     base_multiplier  *= 1.0 + p -> talents.find_weakness * 0.02;
     base_crit_bonus  *= 1.0 + ( p -> talents.lethality        * 0.06 +
-				p -> talents.prey_on_the_weak * 0.04 );
+                                p -> talents.prey_on_the_weak * 0.04 );
   }
 
   virtual void execute()
@@ -1837,10 +1837,10 @@ struct mutilate_t : public rogue_attack_t
     may_glance        = false;
     base_cost         = 60;
     base_multiplier  *= 1.0 + ( p -> talents.find_weakness * 0.02 +
-				p -> talents.opportunity   * 0.10 );
+                                p -> talents.opportunity   * 0.10 );
     base_crit        += p -> talents.puncturing_wounds * 0.05;
     base_crit_bonus  *= 1.0 + ( p -> talents.lethality        * 0.06 +
-				p -> talents.prey_on_the_weak * 0.04 );
+                                p -> talents.prey_on_the_weak * 0.04 );
   }
 
   virtual void execute()
@@ -1952,8 +1952,8 @@ struct rupture_t : public rogue_attack_t
     base_cost             = 25;
     base_tick_time        = 2.0; 
     base_multiplier      *= 1.0 + ( p -> talents.blood_spatter   * 0.15 +
-				    p -> talents.find_weakness   * 0.02 +
-				    p -> talents.serrated_blades * 0.10 );
+                                    p -> talents.find_weakness   * 0.02 +
+                                    p -> talents.serrated_blades * 0.10 );
     base_crit_bonus      *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
 
     if( p -> talents.surprise_attacks ) may_dodge = false;
@@ -1964,9 +1964,9 @@ struct rupture_t : public rogue_attack_t
     static double dmg_60[] = {  68,  76,  84,  92, 100 };
 
     combo_point_dmg = ( p -> level >= 79 ? dmg_79 :
-			p -> level >= 74 ? dmg_74 :
-			p -> level >= 68 ? dmg_68 : 
-			                   dmg_60 );
+                        p -> level >= 74 ? dmg_74 :
+                        p -> level >= 68 ? dmg_68 : 
+                                           dmg_60 );
   }
 
   virtual void execute()
@@ -2047,9 +2047,9 @@ struct shiv_t : public rogue_attack_t
     may_glance        = false;
     base_direct_dmg   = 1;
     base_multiplier  *= 1.0 + ( p -> talents.find_weakness    * 0.02 +
-				p -> talents.surprise_attacks * 0.10 );
+                                p -> talents.surprise_attacks * 0.10 );
     base_crit_bonus  *= 1.0 + ( p -> talents.lethality        * 0.06 +
-				p -> talents.prey_on_the_weak * 0.04 );
+                                p -> talents.prey_on_the_weak * 0.04 );
   }
 
   virtual void execute()
@@ -2108,7 +2108,7 @@ struct sinister_strike_t : public rogue_attack_t
 
     base_multiplier *= 1.0 + ( p -> talents.aggression       * 0.03 +
                                p -> talents.blade_twisting   * 0.05 +
-			       p -> talents.find_weakness    * 0.02 +
+                               p -> talents.find_weakness    * 0.02 +
                                p -> talents.surprise_attacks * 0.10 );
 
     base_crit_bonus *= 1.0 + ( p -> talents.lethality        * 0.06 +
@@ -2159,17 +2159,17 @@ struct slice_and_dice_t : public rogue_attack_t
     {
       expiration_t( sim_t* sim, rogue_t* p, double duration ) : event_t( sim, p )
       {
-	name = "Slice and Dice Expiration";
-	p -> aura_gain( "Slice and Dice" );
-	p -> buffs_slice_and_dice = 1;
-	sim -> add_event( this, duration );
+        name = "Slice and Dice Expiration";
+        p -> aura_gain( "Slice and Dice" );
+        p -> buffs_slice_and_dice = 1;
+        sim -> add_event( this, duration );
       }
       virtual void execute()
       {
-	rogue_t* p = player -> cast_rogue();
-	p -> aura_loss( "Slice and Dice" );
-	p ->       buffs_slice_and_dice = 0;
-	p -> expirations_slice_and_dice = 0;
+        rogue_t* p = player -> cast_rogue();
+        p -> aura_loss( "Slice and Dice" );
+        p ->       buffs_slice_and_dice = 0;
+        p -> expirations_slice_and_dice = 0;
       }
     };
 
@@ -2224,18 +2224,18 @@ struct adrenaline_rush_t : public spell_t
     {
       expiration_t( sim_t* sim, rogue_t* p ) : event_t( sim, p )
       {
-	name = "Adrenaline Rush Expiration";
-	p -> aura_gain( "Adrenaline Rush" );
-	p -> buffs_adrenaline_rush = 1;
-	p -> energy_regen_per_tick *= 2.0;
-	sim -> add_event( this, 15.0 );
+        name = "Adrenaline Rush Expiration";
+        p -> aura_gain( "Adrenaline Rush" );
+        p -> buffs_adrenaline_rush = 1;
+        p -> energy_regen_per_tick *= 2.0;
+        sim -> add_event( this, 15.0 );
       }
       virtual void execute()
       {
-	rogue_t* p = player -> cast_rogue();
-	p -> aura_loss( "Adrenaline Rush" );
-	p -> buffs_adrenaline_rush = 0;
-	p -> energy_regen_per_tick /= 2.0;
+        rogue_t* p = player -> cast_rogue();
+        p -> aura_loss( "Adrenaline Rush" );
+        p -> buffs_adrenaline_rush = 0;
+        p -> energy_regen_per_tick /= 2.0;
       }
     };
 
@@ -2349,9 +2349,9 @@ struct preparation_t : public spell_t
     for( action_t* a = player -> action_list; a; a = a -> next )
     {
       if( a -> name_str == "vanish"     ||
-	  a -> name_str == "cold_blood" )
+          a -> name_str == "cold_blood" )
       {
-	a -> cooldown_ready = 0;
+        a -> cooldown_ready = 0;
       }
     }
     update_ready();
@@ -2384,16 +2384,16 @@ struct shadow_dance_t : public spell_t
     {
       expiration_t( sim_t* sim, rogue_t* p ) : event_t( sim, p )
       {
-	name = "Shadow Dance Expiration";
-	p -> aura_gain( "Shadow Dance" );
-	p -> buffs_shadow_dance = 1;
-	sim -> add_event( this, 10.0 );
+        name = "Shadow Dance Expiration";
+        p -> aura_gain( "Shadow Dance" );
+        p -> buffs_shadow_dance = 1;
+        sim -> add_event( this, 10.0 );
       }
       virtual void execute()
       {
-	rogue_t* p = player -> cast_rogue();
-	p -> aura_loss( "Shadow Dance" );
-	p -> buffs_shadow_dance = 0;
+        rogue_t* p = player -> cast_rogue();
+        p -> aura_loss( "Shadow Dance" );
+        p -> buffs_shadow_dance = 0;
       }
     };
 
@@ -2572,7 +2572,7 @@ void rogue_t::init_base()
   initial_attack_power_per_strength = 1.0;
   initial_attack_power_per_agility  = 1.0;
   initial_attack_power_multiplier  *= 1.0 + ( talents.savage_combat * 0.02 +
-					      talents.deadliness    * 0.02 );
+                                              talents.deadliness    * 0.02 );
 
   base_attack_crit = -0.003;
   initial_attack_crit_per_agility = rating_t::interpolate( level, 0.0355, 0.0250, 0.0120 );
