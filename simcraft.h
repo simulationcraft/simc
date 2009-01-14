@@ -127,7 +127,9 @@ struct event_compare_t
 
 // Simulation Engine =========================================================
 
-enum player_type { PLAYER_NONE=0, DEATH_KNIGHT, DRUID, HUNTER, MAGE, PALADIN, PRIEST, ROGUE, SHAMAN, WARLOCK, WARRIOR, PLAYER_PET, PLAYER_GUARDIAN, PLAYER_TYPE_MAX };
+enum race_type { RACE_NONE=0, RACE_BEAST, RACE_DRAGONKIN, RACE_GIANT, RACE_HUMANOID, RACE_MAX };
+
+enum player_type { PLAYER_NONE=0, DEATH_KNIGHT, DRUID, HUNTER, MAGE, PALADIN, PRIEST, ROGUE, SHAMAN, WARLOCK, WARRIOR, PLAYER_PET, PLAYER_GUARDIAN, PLAYER_MAX };
 
 enum dmg_type { DMG_DIRECT=0, DMG_OVER_TIME=1 };
 
@@ -959,7 +961,8 @@ struct pet_t : public player_t
 struct target_t
 {
   sim_t*      sim;
-  std::string name_str;
+  std::string name_str, race_str;
+  int8_t      race;
   int8_t      level;
   int16_t     spell_resistance[ SCHOOL_MAX ];
   int16_t     initial_armor, armor;
@@ -1048,7 +1051,7 @@ struct target_t
   void reset();
   void assess_damage( double amount, int8_t school, int8_t type );
   void recalculate_health();
-  double composite_armor( player_t* );
+  double composite_armor();
   uptime_t* get_uptime( const std::string& name );
   bool parse_option( const std::string& name, const std::string& value );
   const char* name() { return name_str.c_str(); }
@@ -1170,6 +1173,7 @@ struct action_t
   virtual bool   result_is_miss();
   virtual double calculate_direct_damage(); 
   virtual double calculate_tick_damage(); 
+  virtual double armor();
   virtual double resistance();
   virtual void   consume_resource();
   virtual void   execute();
@@ -1517,6 +1521,7 @@ struct util_t
 
   static char* dup( const char* );
 
+  static const char* race_type_string          ( int8_t type );
   static const char* player_type_string        ( int8_t type );
   static const char* attribute_type_string     ( int8_t type );
   static const char* dmg_type_string           ( int8_t type );

@@ -12,7 +12,7 @@
 // target_t::target_t =======================================================
 
 target_t::target_t( sim_t* s ) :
-  sim( s ), name_str( "Fluffy Pillow" ), level( 73 ), 
+  sim(s), name_str("Fluffy Pillow"), race(RACE_HUMANOID), level(73), 
   initial_armor(10000), armor(0), block_value(0), shield(0), 
   initial_health( 0 ), current_health(0), total_dmg(0), uptime_list(0)
 {
@@ -62,15 +62,13 @@ void target_t::recalculate_health()
 
 // target_t::composite_armor =================================================
 
-double target_t::composite_armor( player_t* p )
+double target_t::composite_armor()
 {
   double adjusted_armor = armor;
 
   adjusted_armor -= std::max( debuffs.sunder_armor, debuffs.expose_armor );
 
   adjusted_armor -= debuffs.faerie_fire;
-
-  if( p -> buffs.executioner ) adjusted_armor -= 840;
 
   return adjusted_armor;
 }
@@ -106,6 +104,19 @@ uptime_t* target_t::get_uptime( const std::string& name )
 
 void target_t::init()
 {
+  if( ! race_str.empty() )
+  {
+    for( race = RACE_NONE; race < RACE_MAX; race++ )
+      if( race_str == util_t::race_type_string( race ) )
+	break;
+
+    if( race == RACE_MAX )
+    {
+      printf( "simcraft: '%s' is not a valid value for 'target_race'\n", race_str.c_str() );
+      exit(0);
+    }
+  }
+
   uptimes.winters_grasp   = get_uptime( "winters_grasp"   );
   uptimes.winters_chill   = get_uptime( "winters_chill"   );
   uptimes.improved_scorch = get_uptime( "improved_scorch" );
@@ -132,26 +143,27 @@ bool target_t::parse_option( const std::string& name,
   option_t options[] =
   {
     // General
-    { "target_level",          OPT_INT8,  &( level                             ) },
-    { "target_resist_holy",    OPT_INT16, &( spell_resistance[ SCHOOL_HOLY   ] ) },
-    { "target_resist_shadow",  OPT_INT16, &( spell_resistance[ SCHOOL_SHADOW ] ) },
-    { "target_resist_arcane",  OPT_INT16, &( spell_resistance[ SCHOOL_ARCANE ] ) },
-    { "target_resist_frost",   OPT_INT16, &( spell_resistance[ SCHOOL_FROST  ] ) },
-    { "target_resist_fire",    OPT_INT16, &( spell_resistance[ SCHOOL_FIRE   ] ) },
-    { "target_resist_nature",  OPT_INT16, &( spell_resistance[ SCHOOL_NATURE ] ) },
-    { "target_armor",          OPT_INT16, &( initial_armor                     ) },
-    { "target_shield",         OPT_INT8,  &( shield                            ) },
-    { "target_block",          OPT_INT16, &( block_value                       ) },
-    { "target_health",         OPT_FLT,   &( initial_health                    ) },
+    { "target_race",           OPT_STRING, &( race_str                          ) },
+    { "target_level",          OPT_INT8,   &( level                             ) },
+    { "target_resist_holy",    OPT_INT16,  &( spell_resistance[ SCHOOL_HOLY   ] ) },
+    { "target_resist_shadow",  OPT_INT16,  &( spell_resistance[ SCHOOL_SHADOW ] ) },
+    { "target_resist_arcane",  OPT_INT16,  &( spell_resistance[ SCHOOL_ARCANE ] ) },
+    { "target_resist_frost",   OPT_INT16,  &( spell_resistance[ SCHOOL_FROST  ] ) },
+    { "target_resist_fire",    OPT_INT16,  &( spell_resistance[ SCHOOL_FIRE   ] ) },
+    { "target_resist_nature",  OPT_INT16,  &( spell_resistance[ SCHOOL_NATURE ] ) },
+    { "target_armor",          OPT_INT16,  &( initial_armor                     ) },
+    { "target_shield",         OPT_INT8,   &( shield                            ) },
+    { "target_block",          OPT_INT16,  &( block_value                       ) },
+    { "target_health",         OPT_FLT,    &( initial_health                    ) },
     // FIXME! Once appropriate class implemented, these will be removed
-    { "blood_frenzy",          OPT_INT8,  &( debuffs.blood_frenzy              ) },
-    { "crypt_fever",           OPT_INT8,  &( debuffs.crypt_fever               ) },
-    { "judgement_of_wisdom",   OPT_INT8,  &( debuffs.judgement_of_wisdom       ) },
-    { "mangle",                OPT_INT8,  &( debuffs.mangle                    ) },
-    { "razorice",              OPT_INT8,  &( debuffs.razorice                  ) },
-    { "savage_combat",         OPT_INT8,  &( debuffs.savage_combat             ) },
-    { "snare",                 OPT_INT8,  &( debuffs.snare                     ) },
-    { "sunder_armor",          OPT_FLT,   &( debuffs.sunder_armor              ) },
+    { "blood_frenzy",          OPT_INT8,   &( debuffs.blood_frenzy              ) },
+    { "crypt_fever",           OPT_INT8,   &( debuffs.crypt_fever               ) },
+    { "judgement_of_wisdom",   OPT_INT8,   &( debuffs.judgement_of_wisdom       ) },
+    { "mangle",                OPT_INT8,   &( debuffs.mangle                    ) },
+    { "razorice",              OPT_INT8,   &( debuffs.razorice                  ) },
+    { "savage_combat",         OPT_INT8,   &( debuffs.savage_combat             ) },
+    { "snare",                 OPT_INT8,   &( debuffs.snare                     ) },
+    { "sunder_armor",          OPT_FLT,    &( debuffs.sunder_armor              ) },
     { NULL, OPT_UNKNOWN }
   };
 

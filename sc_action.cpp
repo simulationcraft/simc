@@ -276,6 +276,17 @@ bool action_t::result_is_miss()
 	  result == RESULT_RESIST );
 }
 
+// action_t::armor ==========================================================
+
+double action_t::armor()
+{
+  double adjusted_armor = sim -> target -> composite_armor();
+
+  if( player -> buffs.executioner ) adjusted_armor -= 840;
+
+  return adjusted_armor;
+}
+
 // action_t::resistance =====================================================
 
 double action_t::resistance()
@@ -293,7 +304,7 @@ double action_t::resistance()
   }
   else if( school == SCHOOL_PHYSICAL )
   {
-    double adjusted_armor = t -> composite_armor( player ) * ( 1.0 - penetration );
+    double adjusted_armor = armor() * ( 1.0 - penetration );
 
     if( adjusted_armor <= 0 ) return 0;
 

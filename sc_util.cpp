@@ -124,6 +124,19 @@ char* util_t::dup( const char *value )
    return strcpy( (char*) malloc( strlen( value ) + 1 ), value );
 }
 
+const char* util_t::race_type_string( int8_t type )
+{
+  switch( type )
+  {
+  case RACE_NONE:      return "none";
+  case RACE_BEAST:     return "beast";
+  case RACE_DRAGONKIN: return "dragonkin";
+  case RACE_GIANT:     return "giant";
+  case RACE_HUMANOID:  return "humanoid";
+  }
+  return "unknown";
+}
+
 const char* util_t::player_type_string( int8_t type )
 {
   switch( type )
