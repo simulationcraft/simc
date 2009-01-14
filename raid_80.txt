@@ -293,8 +293,6 @@ mage=Mage_20_51_0
 level=80
 # We will let the poor Frost Mage raid-slave keep up the IS/WC debuff
 talents=http://www.wowhead.com/?talent=of0Vck0fZ0Ec0RhIhVubhct
-# Molten Fury still seems broken when taken in conjunction with Torment the Weak
-molten_fury=0
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/arcane_brilliance/molten_armor/focus_magic,target=Mage_18_0_53
 actions+=/mana_gem/mana_potion,trigger=4300
 actions+=/scorch,debuff=1/mirror_image/combustion/living_bomb/pyroblast,hot_streak=1/fire_ball
@@ -835,7 +833,7 @@ warlock=Warlock_2_13_56
 level=80
 talents=http://www.wowhead.com/?talent=IbZcLc0cZVcGVd0uVsAfct
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/fire_stone/fel_armor/summon_pet,imp
-actions+=/chaos_bolt,backdraft=1/soul_fire,backdraft=1/curse_of_agony/immolate/conflagrate/incinerate/life_tap
+actions+=/chaos_bolt,backdraft=1/soul_fire,bloodlust=1,backdraft=1/curse_of_agony/immolate/conflagrate/incinerate/life_tap
 tier7_2pc=1
 tier7_4pc=1
 chaotic_skyflare=1

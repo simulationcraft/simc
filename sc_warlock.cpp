@@ -3449,15 +3449,17 @@ struct searing_pain_t : public warlock_spell_t
 struct soul_fire_t : public warlock_spell_t
 {
   int8_t backdraft;
+  int8_t bloodlust;
 
   soul_fire_t( player_t* player, const std::string& options_str ) : 
-    warlock_spell_t( "soul_fire", player, SCHOOL_FIRE, TREE_DESTRUCTION ), backdraft(0)
+    warlock_spell_t( "soul_fire", player, SCHOOL_FIRE, TREE_DESTRUCTION ), backdraft(0), bloodlust(0)
   {
     warlock_t* p = player -> cast_warlock();
 
     option_t options[] =
     {
-      { "backdraft",   OPT_INT8, &backdraft   },
+      { "backdraft", OPT_INT8, &backdraft },
+      { "bloodlust", OPT_INT8, &bloodlust },
       { NULL }
     };
     parse_options( options, options_str );
@@ -3504,6 +3506,10 @@ struct soul_fire_t : public warlock_spell_t
 
     if( backdraft )
       if( ! p -> buffs_backdraft )
+        return false;
+          
+    if( bloodlust )
+      if( ! p -> buffs.bloodlust )
         return false;
           
     return true;
