@@ -1598,12 +1598,15 @@ struct killing_spree_t : public rogue_attack_t
     mh_dd = direct_dmg;
     mh_result = result;
 
-    if( p -> off_hand_weapon.type != WEAPON_NONE )
+    if( result_is_hit() )
     {
-      weapon = &( p -> off_hand_weapon );
-      rogue_attack_t::execute();
-      oh_dd = direct_dmg;
-      oh_result = result;
+      if( p -> off_hand_weapon.type != WEAPON_NONE )
+      {
+	weapon = &( p -> off_hand_weapon );
+	rogue_attack_t::execute();
+	oh_dd = direct_dmg;
+	oh_result = result;
+      }
     }
 
     tick_dmg = mh_dd + oh_dd;
