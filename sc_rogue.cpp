@@ -67,7 +67,6 @@ struct rogue_t : public player_t
 
   struct talents_t
   {
-    // Talents implemented
     int8_t adrenaline_rush;
     int8_t aggression;
     int8_t blade_flurry;
@@ -129,6 +128,7 @@ struct rogue_t : public player_t
     // Talents not yet implemented
     int8_t honor_among_thieves;
     int8_t turn_the_tables;
+
     talents_t() { memset( (void*) this, 0x0, sizeof( talents_t ) ); }
   };
   talents_t talents;
@@ -2094,7 +2094,7 @@ struct deadly_poison_t : public rogue_poison_t
     num_ticks      = 4;
     base_tick_time = 3.0;
     tick_power_mod = 0.08 / num_ticks;
-    base_td_init   = util_t::ability_rank( p -> level,  244,76,  204,70,  160,62,  96,0  ) / num_ticks;
+    base_td_init   = util_t::ability_rank( p -> level,  296,80,  244,76,  204,70,  160,62,  96,0  ) / num_ticks;
   }
 
   virtual void execute()
@@ -2157,7 +2157,7 @@ struct instant_poison_t : public rogue_poison_t
     background       = true;
     proc             = true;
     direct_power_mod = 0.10;
-    base_direct_dmg  = util_t::ability_rank( p -> level,  245,73,  161,68,  76,0 );
+    base_direct_dmg  = util_t::ability_rank( p -> level,  350,79,  286,73,  188,68,  88,0 );
   }
 
   virtual void execute()
