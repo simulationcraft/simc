@@ -190,6 +190,8 @@ enum weapon_buff_type { WEAPON_BUFF_NONE=0,
                         WOUND_POISON,
                         WEAPON_BUFF_MAX };
 
+enum slot_type { SLOT_NONE=0, SLOT_MAIN_HAND, SLOT_OFF_HAND, SLOT_RANGED, SLOT_MAX };
+
 enum elixir_type { ELIXIR_NONE=0,
                    ELIXIR_DRAENIC_WISDOM,                          
                    ELIXIR_MAJOR_MAGEBLOOD, 
@@ -402,14 +404,14 @@ struct weapon_t
   double swing_time;
   int8_t enchant, buff;
   double buff_bonus;
-  bool   main;
+  int8_t slot;
 
   int    group();
   double normalized_weapon_speed();
   double proc_chance_on_swing( double PPM, double adjusted_swing_time=0 );
 
   weapon_t( int t=WEAPON_NONE, double d=0, double st=2.0, int s=SCHOOL_PHYSICAL ) : 
-    type(t), school(s), damage(d), swing_time(st), enchant(WEAPON_ENCHANT_NONE), buff(WEAPON_BUFF_NONE), buff_bonus(0), main(true) {}
+    type(t), school(s), damage(d), swing_time(st), enchant(WEAPON_ENCHANT_NONE), buff(WEAPON_BUFF_NONE), buff_bonus(0), slot(SLOT_NONE) {}
 };
 
 // Player ====================================================================

@@ -381,8 +381,8 @@ static void trigger_combat_potency( rogue_attack_t* a )
 {
   weapon_t* w = a -> weapon;
 
-  if( ! w ) return;
-  if( w -> main ) return;
+  if( ! w || w -> slot != SLOT_OFF_HAND )
+    return;
 
   rogue_t* p = a -> player -> cast_rogue();
 
@@ -722,7 +722,7 @@ void rogue_attack_t::player_buff()
     }
     if( p -> talents.dual_wield_specialization )
     {
-      if( ! weapon -> main )
+      if( weapon -> slot == SLOT_OFF_HAND )
       {
         player_multiplier *= 1.0 + p -> talents.dual_wield_specialization * 0.10;
       }

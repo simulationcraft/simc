@@ -398,10 +398,11 @@ double action_t::calculate_direct_damage()
     double weapon_speed  = normalize_weapon_speed  ? weapon -> normalized_weapon_speed() : weapon -> swing_time;
 
     double power_damage = weapon_speed * direct_power_mod * total_power();
+    
+    double hand_multiplier = ( weapon -> slot == SLOT_OFF_HAND ) ? 0.5 : 1.0;
 
-    direct_dmg  = base_direct_dmg + ( weapon_damage + power_damage ) * weapon_multiplier;
+    direct_dmg  = base_direct_dmg + ( weapon_damage + power_damage ) * weapon_multiplier * hand_multiplier;
     direct_dmg *= total_dd_multiplier();
-    if( ! weapon -> main ) direct_dmg *= 0.5;
   }
   else
   {

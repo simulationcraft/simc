@@ -210,6 +210,10 @@ player_t::player_t( sim_t*             s,
     gear.crit_rating               = sim -> gear_default.crit_rating;
     gear.haste_rating              = sim -> gear_default.haste_rating;
   }
+
+  main_hand_weapon.slot = SLOT_MAIN_HAND;
+   off_hand_weapon.slot = SLOT_OFF_HAND;
+     ranged_weapon.slot = SLOT_RANGED;
 }
 
 // player_t::~player_t =====================================================
@@ -255,7 +259,7 @@ void player_t::init()
   init_spell();
   init_attack();
   init_weapon( &main_hand_weapon, main_hand_str );
-  init_weapon(  &off_hand_weapon,  off_hand_str ); off_hand_weapon.main = false;
+  init_weapon(  &off_hand_weapon,  off_hand_str );
   init_weapon(    &ranged_weapon,    ranged_str );
   init_resources();
   init_consumables();
@@ -483,9 +487,9 @@ void player_t::init_weapon( weapon_t*    w,
     }
   }
 
-  if( w == &main_hand_weapon ) assert( w -> type >= WEAPON_NONE && w -> type < WEAPON_2H );
-  if( w ==  &off_hand_weapon ) assert( w -> type >= WEAPON_NONE && w -> type < WEAPON_1H );
-  if( w ==    &ranged_weapon ) assert( w -> type == WEAPON_NONE || ( w -> type > WEAPON_2H && w -> type < WEAPON_RANGED ) );
+  if( w -> slot == SLOT_MAIN_HAND ) assert( w -> type >= WEAPON_NONE && w -> type < WEAPON_2H );
+  if( w -> slot == SLOT_OFF_HAND  ) assert( w -> type >= WEAPON_NONE && w -> type < WEAPON_2H );
+  if( w -> slot == SLOT_RANGED    ) assert( w -> type == WEAPON_NONE || ( w -> type > WEAPON_2H && w -> type < WEAPON_RANGED ) );
 }
 
 // player_t::init_resources ================================================
