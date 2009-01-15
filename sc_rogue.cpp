@@ -38,6 +38,7 @@ struct rogue_t : public player_t
 
   // Cooldowns
   double cooldowns_honor_among_thieves;
+  double cooldowns_seal_fate;
 
   // Expirations
   event_t* expirations_envenom;
@@ -168,6 +169,7 @@ struct rogue_t : public player_t
 
     // Cooldowns
     cooldowns_honor_among_thieves = 0;
+    cooldowns_seal_fate           = 0;
 
     // Expirations
     expirations_envenom          = 0;
@@ -535,13 +537,22 @@ static void trigger_seal_fate( rogue_attack_t* a )
 {
   rogue_t* p = a -> player -> cast_rogue();
 
-  if( ! a -> adds_combo_points ) return;
+  if( ! a -> adds_combo_points ) 
+    return;
+
+  // This is to prevent dual-weapon attacks from triggering a double-proc of Seal Fate
+  // Since we use double-precision floating point numbers to model time, it is highly 
+  // unlikely that this would prevent an auto_attack from triggering a proc.
+
+  if( a -> sim -> current_time <= p -> cooldowns_seal_fate )
+    return;
 
   if( p -> talents.seal_fate )
   {
     if( a -> sim -> roll( p -> talents.seal_fate * 0.20 ) )
     {
       add_combo_point( a );
+      p -> cooldowns_seal_fate = a -> sim -> current_time;
     }
   }
 }
@@ -2694,6 +2705,7 @@ void rogue_t::reset()
 
   // Cooldowns
   cooldowns_honor_among_thieves = 0;
+  cooldowns_seal_fate           = 0;
 
   // Expirations
   expirations_envenom          = 0;
