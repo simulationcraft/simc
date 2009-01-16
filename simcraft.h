@@ -1054,6 +1054,8 @@ struct target_t
   void reset();
   void assess_damage( double amount, int8_t school, int8_t type );
   void recalculate_health();
+  double time_to_die();
+  double health_percentage();
   double composite_armor();
   uptime_t* get_uptime( const std::string& name );
   bool parse_option( const std::string& name, const std::string& value );

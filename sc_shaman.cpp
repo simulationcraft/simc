@@ -2414,15 +2414,15 @@ struct bloodlust_t : public shaman_spell_t
     if( ! sim -> cooldown_ready( player -> cooldowns.bloodlust ) )
       return false;
 
-    target_t* t = sim -> target;
+    if( target_pct > 0 )
+    {
+      double health_pct = sim -> target -> health_percentage();
 
-    if( target_pct == 0 )
-      return true;
-
-    if( t -> initial_health <= 0 )
-      return false;
-
-    return( ( t -> current_health / t -> initial_health ) < ( target_pct / 100.0 ) );
+      if( health_pct <= 0 || health_pct > target_pct )
+	return false;
+    }
+    
+    return true;
   }
 };
 
@@ -2672,15 +2672,15 @@ struct spirit_wolf_spell_t : public shaman_spell_t
     if( ! shaman_spell_t::ready() )
       return false;
 
-    target_t* t = sim -> target;
+    if( target_pct > 0 )
+    {
+      double health_pct = sim -> target -> health_percentage();
 
-    if( target_pct == 0 )
-      return true;
+      if( health_pct <= 0 || health_pct > target_pct )
+	return false;
+    }
 
-    if( t -> initial_health <= 0 )
-      return false;
-
-    return( ( t -> current_health / t -> initial_health ) < ( target_pct / 100.0 ) );
+    return true;
   }
 };
 

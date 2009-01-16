@@ -60,6 +60,29 @@ void target_t::recalculate_health()
   if( sim -> debug ) report_t::log( sim, "Target initial health calculated to be %.0f", initial_health );     
 }
 
+// target_t::time_to_die =====================================================
+
+double target_t::time_to_die()
+{
+  if( initial_health > 0 )
+  {
+    return sim -> current_time * current_health / total_dmg;
+  }
+  else
+  {
+    return sim -> max_time - sim -> current_time;
+  }
+}
+
+// target_t::health_percentage ===============================================
+
+double target_t::health_percentage()
+{
+  if( initial_health <= 0 ) return 0;
+
+  return 100.0 * current_health / initial_health;
+}
+
 // target_t::composite_armor =================================================
 
 double target_t::composite_armor()

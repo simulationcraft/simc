@@ -535,13 +535,12 @@ static void trigger_master_of_elements( spell_t* s, double adjust )
 static void trigger_molten_fury( spell_t* s )
 {
   mage_t*   p = s -> player -> cast_mage();
-  target_t* t = s -> sim -> target;
 
   if( ! p -> talents.molten_fury ) return;
 
-  if( t -> initial_health <= 0 ) return;
+  double health_pct = s -> sim -> target -> health_percentage();
 
-  if( ( t -> current_health / t -> initial_health ) < 0.35 )
+  if( health_pct > 0 && health_pct < 35 )
   {
     s -> player_multiplier *= 1.0 + p -> talents.molten_fury * 0.06;
   }

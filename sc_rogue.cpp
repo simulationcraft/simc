@@ -421,16 +421,13 @@ static void trigger_cut_to_the_chase( rogue_attack_t* a )
 static void trigger_dirty_deeds( rogue_attack_t* a )
 {
   rogue_t*  p = a -> player -> cast_rogue();
-  target_t* t = a -> sim -> target;
 
   if( ! p -> talents.dirty_deeds ) 
     return;
 
-  // Target health recalculated halfway through fight duration.
-  if( t -> initial_health <= 0 ) 
-    return;
+  double health_pct = a -> sim -> target -> health_percentage();
 
-  if( ( t -> current_health / t -> initial_health ) < 0.35 )
+  if( health_pct > 0 && health_pct < 35 )
   {
     a -> player_multiplier *= 1.0 + p -> talents.dirty_deeds * 0.10;
   }

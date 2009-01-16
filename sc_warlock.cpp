@@ -1381,14 +1381,12 @@ static void trigger_eradication( spell_t* s )
 static int trigger_deaths_embrace( spell_t* s )
 {
   warlock_t* p = s -> player -> cast_warlock();
-  target_t*  t = s -> sim -> target;
 
   if( ! p -> talents.deaths_embrace ) return 0;
 
-  // Target health recalculated halfway through fight duration.
-  if( t -> initial_health <= 0 ) return 0;
+  double health_pct = s -> sim -> target -> health_percentage();
 
-  if( ( t -> current_health / t -> initial_health ) < 0.35 )
+  if( health_pct > 0 && health_pct < 35 )
   {
     return p -> talents.deaths_embrace * 4;
   }
@@ -2477,14 +2475,11 @@ struct shadow_burn_t : public warlock_spell_t
     p -> uptimes_shadow_vulnerability -> update( p -> buffs_shadow_vulnerability != 0 );
     if( p -> glyphs.shadow_burn )
     {
-      target_t* t = sim -> target;
-
-      if( t -> initial_health > 0 )
+      double health_pct = sim -> target -> health_percentage();
+      
+      if( health_pct > 0 && health_pct < 35 )
       {
-        if( ( t -> current_health / t -> initial_health ) < 0.35 )
-        {
-          player_crit += 0.20;
-        }
+	player_crit += 0.20;
       }
     }
   }
@@ -2739,9 +2734,11 @@ struct drain_soul_t : public warlock_spell_t
     int de_bonus = trigger_deaths_embrace( this );
     if( de_bonus ) player_multiplier /= 1.0 + de_bonus * 0.01;
 
-    if( health_multiplier && t -> initial_health > 0 )
+    if( health_multiplier )
     {
-      if( ( t -> current_health / t -> initial_health ) < 0.25 )
+      double health_pct = sim -> target -> health_percentage();
+
+      if( health_pct > 0 && health_pct < 25 )
       {
         player_multiplier *= 4.0 + de_bonus * 0.01;
       }
@@ -2764,15 +2761,15 @@ struct drain_soul_t : public warlock_spell_t
     if( ! warlock_spell_t::ready() )
       return false;
 
-    target_t* t = sim -> target;
+    if( target_pct > 0 )
+    {
+      double health_pct = sim -> target -> health_percentage();
 
-    if( target_pct == 0 )
-      return true;
-
-    if( t -> initial_health <= 0 )
-      return false;
-
-    return( ( t -> current_health / t -> initial_health ) < ( target_pct / 100.0 ) );
+      if( health_pct <= 0 || health_pct > target_pct )
+	return false;
+    }
+    
+    return true;
   }
 };
 
@@ -2996,13 +2993,13 @@ struct immolate_t : public warlock_spell_t
   int8_t target_pct;
 
   immolate_t( player_t* player, const std::string& options_str ) : 
-    warlock_spell_t( "immolate", player, SCHOOL_FIRE, TREE_DESTRUCTION )
+    warlock_spell_t( "immolate", player, SCHOOL_FIRE, TREE_DESTRUCTION ), target_pct(0)
   {
     warlock_t* p = player -> cast_warlock();
 
     option_t options[] =
     {
-      { "rank", OPT_INT8, &rank_index },
+      { "rank",       OPT_INT8, &rank_index },
       { "target_pct", OPT_INT8, &target_pct },
       { NULL }
     };
@@ -3077,17 +3074,18 @@ struct immolate_t : public warlock_spell_t
     if( ! warlock_spell_t::ready() )
       return false;
 
-    target_t* t = sim -> target;
+    if( target_pct > 0 )
+    {
+      double health_pct = sim -> target -> health_percentage();
 
-    if( target_pct == 0 )
-      return true;
+      // This is flipped from the other target_pct args because in the case of immolate, you want to 
+      // stop casting it when death's embrace is active because DE only boosts damage for shadow spells
 
-    if( t -> initial_health <= 0 )
-      return false;
+      if( health_pct > 0 && health_pct < target_pct )
+	return false;
+    }
 
-    // This is flipped from the other target_pct args -- in the case of immolate, you want to stop casting it when death's embrace is active
-    // because DE only boosts damage for shadow spells
-    return( ( t -> current_health / t -> initial_health ) > ( target_pct / 100.0 ) );
+    return true;
   }
 };
 
@@ -3798,28 +3796,24 @@ struct inferno_t : public warlock_spell_t
 
   virtual bool ready()
   {
-    if ( time_remaining ) {  
-      if( sim -> max_time <= 0 )
-        return false;
+    if( ! warlock_spell_t::ready() )
+      return false;
 
-      if ( sim -> current_time >= ( sim -> max_time - time_remaining ) )
-      {
-        return warlock_spell_t::ready();
-      }
+    if( target_pct > 0 )
+    {
+      double health_pct = sim -> target -> health_percentage();
+
+      if( health_pct <= 0 || health_pct > target_pct )
+	return false;
+    }
+
+    if( time_remaining > 0 ) 
+    {  
+      if( sim -> target -> time_to_die() > time_remaining )
+        return false;
     }
     
-    if ( target_pct ) {
-      target_t* t = sim -> target;
-      if( t -> initial_health <= 0 )
-        return false;
-
-      if ( ( t -> current_health / t -> initial_health ) < ( target_pct / 100.0 ) )
-      {
-        return warlock_spell_t::ready();
-      }
-    }
-
-    return false;
+    return true;
   }
 };
 
@@ -3876,15 +3870,15 @@ struct metamorphosis_t : public warlock_spell_t
     if( ! warlock_spell_t::ready() )
       return false;
 
-    target_t* t = sim -> target;
+    if( target_pct > 0 )
+    {
+      double health_pct = sim -> target -> health_percentage();
 
-    if( target_pct == 0 )
-      return true;
+      if( health_pct <= 0 || health_pct > target_pct )
+	return false;
+    }
 
-    if( t -> initial_health <= 0 )
-      return false;
-
-    return( ( t -> current_health / t -> initial_health ) < ( target_pct / 100.0 ) );
+    return true;
   }
 };
 
@@ -3948,15 +3942,15 @@ struct demonic_empowerment_t : public warlock_spell_t
     if( ! p -> active_pet )
       return false;
 
-    target_t* t = sim -> target;
+    if( target_pct > 0 )
+    {
+      double health_pct = sim -> target -> health_percentage();
 
-    if( target_pct == 0 )
-      return true;
+      if( health_pct <= 0 || health_pct > target_pct )
+	return false;
+    }
 
-    if( t -> initial_health <= 0 )
-      return false;
-
-    return( ( t -> current_health / t -> initial_health ) < ( target_pct / 100.0 ) );
+    return true;
   }
 };
 

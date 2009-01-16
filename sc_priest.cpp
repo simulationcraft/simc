@@ -1140,8 +1140,9 @@ struct shadow_word_death_t : public priest_spell_t
     priest_spell_t::player_buff();
     if( p -> glyphs.shadow_word_death )
     {
-      target_t* t = sim -> target;
-      if( t -> initial_health > 0 && ( t -> current_health / t -> initial_health ) < 0.35 )
+      double health_pct = sim -> target -> health_percentage();
+
+      if( health_pct > 0 && health_pct < 35 )
       {
         player_multiplier *= 1.1;
       }
