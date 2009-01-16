@@ -24,7 +24,7 @@ attack_t::attack_t( const char* n, player_t* p, int8_t r, int8_t s, int8_t t ) :
   }
 
   base_crit_bonus = 1.0;
-
+  
   direct_power_mod = tick_power_mod = 1.0 / 14;
 
   trigger_gcd = p -> base_gcd;
@@ -104,7 +104,11 @@ void attack_t::player_buff()
   {
     if( p -> buffs.leader_of_the_pack ) player_crit += 0.05;
 
-    if( p -> gear.chaotic_skyfire || p -> gear.chaotic_skyflare ) player_crit_bonus *= 1.06;
+    if( p -> gear.chaotic_skyflare      ||
+	p -> gear.relentless_earthstorm ) 
+    {
+      player_crit_multiplier *= 1.03;
+    }
   }
 
   if( sim -> debug ) 

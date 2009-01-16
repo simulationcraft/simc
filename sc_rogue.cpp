@@ -249,6 +249,7 @@ struct rogue_attack_t : public attack_t
     rogue_t* p = player -> cast_rogue();
     base_crit += p -> talents.malice * 0.01;
     base_hit  += p -> talents.precision * 0.01;
+    may_glance = false;
   }
 
   virtual void   parse_options( option_t*, const std::string& options_str );
@@ -276,7 +277,7 @@ struct rogue_poison_t : public spell_t
     base_multiplier *= 1.0 + ( util_t::talent_rank( p -> talents.find_weakness, 3, 0.03 ) +
                                util_t::talent_rank( p -> talents.vile_poisons,  3, 0.07, 0.14, 0.20 ) );
 
-    base_crit_bonus *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
+    base_crit_multiplier *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
   }
 
   virtual void player_buff();
@@ -754,7 +755,8 @@ void rogue_attack_t::player_buff()
         target_race == RACE_GIANT     ||
         target_race == RACE_HUMANOID  )
     {
-      player_multiplier *= 1.0 + p -> talents.murder * 0.02;
+      player_multiplier      *= 1.0 + p -> talents.murder * 0.02;
+      player_crit_multiplier *= 1.0 + p -> talents.murder * 0.02;
     }
   }
   if( p -> buffs_shadowstep )
@@ -819,6 +821,7 @@ struct melee_t : public rogue_attack_t
     rogue_t* p = player -> cast_rogue();
 
     base_direct_dmg = 1;
+    may_glance      = true;
     background      = true;
     repeating       = true;
     trigger_gcd     = 0;
@@ -920,14 +923,13 @@ struct ambush_t : public rogue_attack_t
     requires_position      = POSITION_BACK;
     requires_stealth       = true;
     adds_combo_points      = true;
-    may_glance             = false;
     weapon_multiplier     *= 2.75;
     base_cost             -= p -> talents.slaughter_from_the_shadows * 3;
     base_multiplier       *= 1.0 + ( p -> talents.find_weakness * 0.02 +
                                      p -> talents.opportunity   * 0.10 );
-    base_crit             += p -> talents.improved_ambush * 0.25;
-    base_crit_bonus       *= 1.0 + ( p -> talents.lethality        * 0.06 +
-                                     p -> talents.prey_on_the_weak * 0.04 );
+    base_crit                  += p -> talents.improved_ambush * 0.25;
+    base_crit_multiplier       *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
+    base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
   }
 
   virtual void execute()
@@ -991,7 +993,6 @@ struct backstab_t : public rogue_attack_t
     requires_weapon        = WEAPON_DAGGER;
     requires_position      = POSITION_BACK;
     adds_combo_points      = true;
-    may_glance             = false;
     base_cost             -= p -> talents.slaughter_from_the_shadows * 3;
     weapon_multiplier     *= 1.50 + p -> talents.sinister_calling * 0.01;
     base_multiplier       *= 1.0 + ( p -> talents.aggression       * 0.03 +
@@ -999,9 +1000,9 @@ struct backstab_t : public rogue_attack_t
                                      p -> talents.find_weakness    * 0.02 +
                                      p -> talents.opportunity      * 0.10 +
                                      p -> talents.surprise_attacks * 0.10 );
-    base_crit             += p -> talents.puncturing_wounds * 0.10;
-    base_crit_bonus       *= 1.0 + ( p -> talents.lethality        * 0.06 +
-                                     p -> talents.prey_on_the_weak * 0.04 );
+    base_crit                  += p -> talents.puncturing_wounds * 0.10;
+    base_crit_multiplier       *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
+    base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
   }
 
   virtual void player_buff()
@@ -1083,13 +1084,12 @@ struct envenom_t : public rogue_attack_t
       
     weapon = &( p -> main_hand_weapon );
     requires_combo_points = true;
-    may_glance            = false;
     base_cost             = 35;
 
     base_multiplier *= 1.0 + ( p -> talents.find_weakness * 0.02 + 
                                util_t::talent_rank( p -> talents.vile_poisons, 3, 0.07, 0.14, 0.20 ) );
 
-    base_crit_bonus *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
+    base_crit_multiplier *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
 
     if( p -> talents.surprise_attacks ) may_dodge = false;
 
@@ -1216,14 +1216,13 @@ struct eviscerate_t : public rogue_attack_t
       
     weapon = &( p -> main_hand_weapon );
     requires_combo_points = true;
-    may_glance            = false;
     base_cost             = 35;
 
     base_multiplier *= 1.0 + ( p -> talents.aggression    * 0.03 +
                                p -> talents.find_weakness * 0.02 +
                                util_t::talent_rank( p -> talents.improved_eviscerate, 3, 0.07, 0.14, 0.20 ) );
 
-    base_crit_bonus *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
+    base_crit_multiplier *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
 
     if( p -> talents.surprise_attacks ) may_dodge = false;
 
@@ -1302,7 +1301,6 @@ struct expose_armor_t : public rogue_attack_t
 
     weapon = &( p -> main_hand_weapon );
     requires_combo_points = true;
-    may_glance = false;
     base_cost -= p -> talents.improved_expose_armor * 5;
 
     if( p -> talents.surprise_attacks ) may_dodge = false;
@@ -1412,12 +1410,11 @@ struct ghostly_strike_t : public rogue_attack_t
     parse_options( options, options_str );
       
     weapon = &( p -> main_hand_weapon );
-    adds_combo_points      = true;
-    may_glance             = false;
-    weapon_multiplier     *= 1.25;
-    base_multiplier       *= 1.0 + p -> talents.find_weakness * 0.02;
-    base_crit_bonus       *= 1.0 + ( p -> talents.lethality        * 0.06 +
-                                     p -> talents.prey_on_the_weak * 0.04 );
+    adds_combo_points           = true;
+    weapon_multiplier          *= 1.25;
+    base_multiplier            *= 1.0 + p -> talents.find_weakness * 0.02;
+    base_crit_multiplier       *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
+    base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
   }
 
   virtual void player_buff()
@@ -1444,15 +1441,14 @@ struct hemorrhage_t : public rogue_attack_t
     parse_options( options, options_str );
       
     weapon = &( p -> main_hand_weapon );
-    normalize_weapon_speed = true;
-    adds_combo_points      = true;
-    may_glance             = false;
-    base_cost              = 35 - p -> talents.slaughter_from_the_shadows;
-    weapon_multiplier     *= 1.10 + p -> talents.sinister_calling * 0.01;
-    base_multiplier       *= 1.0 + ( p -> talents.find_weakness    * 0.02 +
-                                     p -> talents.surprise_attacks * 0.10 );
-    base_crit_bonus       *= 1.0 + ( p -> talents.lethality        * 0.06 +
-                                     p -> talents.prey_on_the_weak * 0.04 );
+    normalize_weapon_speed      = true;
+    adds_combo_points           = true;
+    base_cost                   = 35 - p -> talents.slaughter_from_the_shadows;
+    weapon_multiplier          *= 1.10 + p -> talents.sinister_calling * 0.01;
+    base_multiplier            *= 1.0 + ( p -> talents.find_weakness    * 0.02 +
+                                          p -> talents.surprise_attacks * 0.10 );
+    base_crit_multiplier       *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
+    base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
   }
 
   virtual void player_buff()
@@ -1557,15 +1553,14 @@ struct killing_spree_t : public rogue_attack_t
     };
     parse_options( options, options_str );
       
-    may_glance        = false;
-    channeled         = true;
-    cooldown          = 120;
-    num_ticks         = 5;
-    base_tick_time    = 0.5;
-    base_cost         = 0;
-    base_multiplier  *= 1.0 + p -> talents.find_weakness * 0.02;
-    base_crit_bonus  *= 1.0 + ( p -> talents.lethality        * 0.06 +
-                                p -> talents.prey_on_the_weak * 0.04 );
+    channeled       = true;
+    cooldown        = 120;
+    num_ticks       = 5;
+    base_tick_time  = 0.5;
+    base_cost       = 0;
+    base_multiplier *= 1.0 + p -> talents.find_weakness * 0.02;
+    base_crit_multiplier       *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
+    base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
   }
 
   virtual void execute()
@@ -1602,10 +1597,10 @@ struct killing_spree_t : public rogue_attack_t
     {
       if( p -> off_hand_weapon.type != WEAPON_NONE )
       {
-	weapon = &( p -> off_hand_weapon );
-	rogue_attack_t::execute();
-	oh_dd = direct_dmg;
-	oh_result = result;
+        weapon = &( p -> off_hand_weapon );
+        rogue_attack_t::execute();
+        oh_dd = direct_dmg;
+        oh_result = result;
       }
     }
 
@@ -1640,13 +1635,12 @@ struct mutilate_t : public rogue_attack_t
     parse_options( options, options_str );
       
     adds_combo_points = true;
-    may_glance        = false;
     base_cost         = 60;
     base_multiplier  *= 1.0 + ( p -> talents.find_weakness * 0.02 +
                                 p -> talents.opportunity   * 0.10 );
-    base_crit        += p -> talents.puncturing_wounds * 0.05;
-    base_crit_bonus  *= 1.0 + ( p -> talents.lethality        * 0.06 +
-                                p -> talents.prey_on_the_weak * 0.04 );
+    base_crit                  += p -> talents.puncturing_wounds * 0.05;
+    base_crit_multiplier       *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
+    base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
   }
 
   virtual void execute()
@@ -1754,13 +1748,13 @@ struct rupture_t : public rogue_attack_t
       
     weapon = &( p -> main_hand_weapon );
     requires_combo_points = true;
-    may_glance            = false;
     base_cost             = 25;
     base_tick_time        = 2.0; 
     base_multiplier      *= 1.0 + ( p -> talents.blood_spatter   * 0.15 +
                                     p -> talents.find_weakness   * 0.02 +
                                     p -> talents.serrated_blades * 0.10 );
-    base_crit_bonus      *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
+
+    base_crit_multiplier *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
 
     if( p -> talents.surprise_attacks ) may_dodge = false;
 
@@ -1850,12 +1844,11 @@ struct shiv_t : public rogue_attack_t
       
     weapon = &( p -> off_hand_weapon );
     adds_combo_points = true;
-    may_glance        = false;
     base_direct_dmg   = 1;
     base_multiplier  *= 1.0 + ( p -> talents.find_weakness    * 0.02 +
                                 p -> talents.surprise_attacks * 0.10 );
-    base_crit_bonus  *= 1.0 + ( p -> talents.lethality        * 0.06 +
-                                p -> talents.prey_on_the_weak * 0.04 );
+    base_crit_multiplier       *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
+    base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
   }
 
   virtual void execute()
@@ -1908,7 +1901,6 @@ struct sinister_strike_t : public rogue_attack_t
     weapon = &( p -> main_hand_weapon );
     normalize_weapon_speed = true;
     adds_combo_points      = true;
-    may_glance             = false;
 
     base_cost -= util_t::talent_rank( p -> talents.improved_sinister_strike, 2, 3.0, 5.0 );
 
@@ -1917,8 +1909,8 @@ struct sinister_strike_t : public rogue_attack_t
                                p -> talents.find_weakness    * 0.02 +
                                p -> talents.surprise_attacks * 0.10 );
 
-    base_crit_bonus *= 1.0 + ( p -> talents.lethality        * 0.06 +
-                               p -> talents.prey_on_the_weak * 0.04 );
+    base_crit_multiplier       *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
+    base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
   }
 
   virtual void player_buff()
@@ -2045,7 +2037,8 @@ void rogue_poison_t::player_buff()
         target_race == RACE_GIANT     ||
         target_race == RACE_HUMANOID  )
     {
-      player_multiplier *= 1.0 + p -> talents.murder * 0.02;
+      player_multiplier      *= 1.0 + p -> talents.murder * 0.02;
+      player_crit_multiplier *= 1.0 + p -> talents.murder * 0.02;
     }
   }
   if( p -> buffs_shadowstep )

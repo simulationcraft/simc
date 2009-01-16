@@ -25,9 +25,12 @@ action_t::action_t( int8_t      ty,
   base_execute_time(0), base_tick_time(0), base_cost(0),
   base_dd_min(0), base_dd_max(0), base_td_init(0),
   base_dd_multiplier(1), base_td_multiplier(1), power_multiplier(1),
-    base_multiplier(1),   base_hit(0),   base_crit(0),   base_crit_bonus(1.0),   base_power(0),   base_penetration(0),
-  player_multiplier(1), player_hit(0), player_crit(0), player_crit_bonus(1.0), player_power(0), player_penetration(0),
-  target_multiplier(1), target_hit(0), target_crit(0), target_crit_bonus(1.0), target_power(0), target_penetration(0),
+    base_multiplier(1),   base_hit(0),   base_crit(0),   base_power(0),   base_penetration(0),
+  player_multiplier(1), player_hit(0), player_crit(0), player_power(0), player_penetration(0),
+  target_multiplier(1), target_hit(0), target_crit(0), target_power(0), target_penetration(0),
+    base_crit_multiplier(1),   base_crit_bonus_multiplier(1),
+  player_crit_multiplier(1), player_crit_bonus_multiplier(1),
+  target_crit_multiplier(1), target_crit_bonus_multiplier(1),
   resource_consumed(0),
   direct_dmg(0), base_direct_dmg(0), direct_power_mod(0), 
   tick_dmg(0), base_tick_dmg(0), tick_power_mod(0),
@@ -158,14 +161,14 @@ double action_t::cost()
 
 void action_t::player_buff()
 {
-  player_multiplier  = 1.0;
-  player_hit         = 0;
-  player_crit        = 0;
-  player_crit_bonus  = 1.0;
-  player_power       = 0;
-  player_penetration = 0;
-
-  power_multiplier = 1.0;
+  player_multiplier            = 1.0;
+  player_hit                   = 0;
+  player_crit                  = 0;
+  player_crit_multiplier       = 1.0;
+  player_crit_bonus_multiplier = 1.0;
+  player_power                 = 0;
+  player_penetration           = 0;
+  power_multiplier             = 1.0;
 
   // 'multiplier' and 'penetration' handled here, all others handled in attack_t/spell_t
 
@@ -207,12 +210,13 @@ void action_t::player_buff()
 
 void action_t::target_debuff( int8_t dmg_type )
 {
-  target_multiplier  = 1.0;
-  target_hit         = 0;
-  target_crit        = 0;
-  target_crit_bonus  = 1.0;
-  target_power       = 0;
-  target_penetration = 0;
+  target_multiplier            = 1.0;
+  target_hit                   = 0;
+  target_crit                  = 0;
+  target_crit_multiplier       = 1.0;
+  target_crit_bonus_multiplier = 1.0;
+  target_power                 = 0;
+  target_penetration           = 0;
 
   // 'multiplier' and 'penetration' handled here, all others handled in attack_t/spell_t
 
@@ -343,6 +347,31 @@ double action_t::resistance()
   return resist;
 }
 
+// action_t::total_crit_bonus ================================================
+
+double action_t::total_crit_bonus()
+{
+  double crit_multiplier = (   base_crit_multiplier * 
+			     player_crit_multiplier * 
+			     target_crit_multiplier );
+  
+  double crit_bonus_multiplier = (   base_crit_bonus_multiplier * 
+				   player_crit_bonus_multiplier * 
+				   target_crit_bonus_multiplier );
+
+  double crit_bonus = ( ( 1.0 + base_crit_bonus ) * crit_multiplier - 1.0 ) * crit_bonus_multiplier;
+
+  if( sim -> debug ) 
+  {
+    report_t::log( sim, "%s crit_bonus for %s: cb=%.0f b_cb=%.2f b_cm=%.2f p_cm=%.2f t_cm=%.2f b_cbm=%.2f p_cbm=%.2f t_cbm=%.2f", 
+		   player -> name(), name(), crit_bonus, base_crit_bonus,
+		   base_crit_multiplier,       player_crit_multiplier,       target_crit_multiplier,
+		   base_crit_bonus_multiplier, player_crit_bonus_multiplier, target_crit_bonus_multiplier );
+  }
+
+  return crit_bonus;
+}
+
 // action_t::calculate_tick_damage ===========================================
 
 double action_t::calculate_tick_damage()
@@ -397,10 +426,10 @@ double action_t::calculate_direct_damage()
     double weapon_damage = normalize_weapon_damage ? weapon -> damage * 2.8 / weapon -> swing_time : weapon -> damage;
     double weapon_speed  = normalize_weapon_speed  ? weapon -> normalized_weapon_speed() : weapon -> swing_time;
 
-    double power_damage = weapon_speed * direct_power_mod * total_power();
-    
     double hand_multiplier = ( weapon -> slot == SLOT_OFF_HAND ) ? 0.5 : 1.0;
 
+    double power_damage = weapon_speed * direct_power_mod * total_power();
+    
     direct_dmg  = base_direct_dmg + ( weapon_damage + power_damage ) * weapon_multiplier * hand_multiplier;
     direct_dmg *= total_dd_multiplier();
   }

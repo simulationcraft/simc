@@ -346,7 +346,7 @@ static void push_tier5_4pc( spell_t*s )
 
   if(   p ->  gear.tier5_4pc && 
       ! p -> buffs.tier5_4pc &&
-	s -> sim -> roll( 0.40 ) )
+        s -> sim -> roll( 0.40 ) )
   {
     p -> buffs.tier5_4pc = 1;
     p -> spell_power[ SCHOOL_MAX ] += 100;
@@ -710,8 +710,8 @@ struct penance_t : public priest_spell_t
       player -> action_hit( this );
       if( direct_dmg > 0 )
       {
-	tick_dmg = direct_dmg;
-	assess_damage( tick_dmg, DMG_OVER_TIME );
+        tick_dmg = direct_dmg;
+        assess_damage( tick_dmg, DMG_OVER_TIME );
       }
     }
     else
@@ -758,11 +758,11 @@ struct shadow_word_pain_t : public priest_spell_t
     tick_power_mod    = base_tick_time / 15.0;
     tick_power_mod   *= 0.91666667;  // Nerf Bat!
     base_cost        *= 1.0 - ( p -> talents.mental_agility  * 0.02 - 
-				p -> talents.shadow_focus    * 0.02 - 
-				p -> glyphs.shadow_word_pain * 0.20 );
+                                p -> talents.shadow_focus    * 0.02 - 
+                                p -> glyphs.shadow_word_pain * 0.20 );
     base_multiplier *= 1.0 + ( p -> talents.darkness                  * 0.02 +
-			       p -> talents.twin_disciplines          * 0.01 +
-			       p -> talents.improved_shadow_word_pain * 0.03 );
+                               p -> talents.twin_disciplines          * 0.01 +
+                               p -> talents.improved_shadow_word_pain * 0.03 );
     base_hit += p -> talents.shadow_focus * 0.01;
 
     if( p -> gear.tier6_2pc ) num_ticks++;
@@ -866,7 +866,7 @@ struct vampiric_touch_t : public priest_spell_t
       push_misery( this );
       for( player_t* p = sim -> player_list; p; p = p -> next )
       {
-	p -> buffs.replenishment++;
+        p -> buffs.replenishment++;
       }
     }
   }
@@ -1036,17 +1036,17 @@ struct mind_blast_t : public priest_spell_t
     direct_power_mod  = base_execute_time / 3.5; 
       
     base_cost        *= 1.0 - ( p -> talents.focused_mind * 0.05 +
-				p -> talents.shadow_focus * 0.02 +
-				p -> gear.tier7_2pc ? 0.1 : 0.0  );
+                                p -> talents.shadow_focus * 0.02 +
+                                p -> gear.tier7_2pc ? 0.1 : 0.0  );
     base_cost         = floor(base_cost);
-
     base_multiplier  *= 1.0 + p -> talents.darkness * 0.02;
     base_hit         += p -> talents.shadow_focus * 0.01;
-    cooldown         -= p -> talents.improved_mind_blast * 0.5;
-    base_crit_bonus  *= 1.0 + p -> talents.shadow_power * 0.20;
-    direct_power_mod *= 1.0 + p -> talents.misery * 0.05;
     base_crit        += p -> talents.mind_melt * 0.02;
+    cooldown         -= p -> talents.improved_mind_blast * 0.5;
+    direct_power_mod *= 1.0 + p -> talents.misery * 0.05;
     
+    base_crit_bonus_multiplier *= 1.0 + p -> talents.shadow_power * 0.20;
+
     if( p -> gear.tier6_4pc ) base_multiplier *= 1.10;
 
     assert( p -> active_mind_blast == 0 );
@@ -1107,13 +1107,12 @@ struct shadow_word_death_t : public priest_spell_t
     may_crit          = true; 
     cooldown          = 12.0;
     direct_power_mod  = (1.5/3.5); 
+    base_cost        *= 1.0 - p -> talents.mental_agility * 0.02 - p -> talents.shadow_focus * 0.02;
+    base_cost         = floor(base_cost);
+    base_multiplier  *= 1.0 + p -> talents.darkness * 0.02 + p -> talents.twin_disciplines * 0.01;
+    base_hit         += p -> talents.shadow_focus * 0.01;
 
-    base_cost       *= 1.0 - p -> talents.mental_agility * 0.02 - p -> talents.shadow_focus * 0.02;
-    base_cost        = floor(base_cost);
-    
-    base_multiplier *= 1.0 + p -> talents.darkness * 0.02 + p -> talents.twin_disciplines * 0.01;
-    base_hit        += p -> talents.shadow_focus * 0.01;
-    base_crit_bonus *= 1.0 + p -> talents.shadow_power * 0.20;
+    base_crit_bonus_multiplier *= 1.0 + p -> talents.shadow_power * 0.20;
 
     if ( p -> gear.tier7_4pc ) base_crit += 0.1;
 
@@ -1130,7 +1129,7 @@ struct shadow_word_death_t : public priest_spell_t
       p -> resource_loss( RESOURCE_HEALTH, direct_dmg * ( 1.0 - p -> talents.pain_and_suffering * 0.20 ) );
       if( result == RESULT_CRIT )
       {
-	trigger_improved_spirit_tap( this );
+        trigger_improved_spirit_tap( this );
       }
     }
   }
@@ -1144,7 +1143,7 @@ struct shadow_word_death_t : public priest_spell_t
       target_t* t = sim -> target;
       if( t -> initial_health > 0 && ( t -> current_health / t -> initial_health ) < 0.35 )
       {
-	player_multiplier *= 1.1;
+        player_multiplier *= 1.1;
       }
     }
   }
@@ -1159,19 +1158,19 @@ struct shadow_word_death_t : public priest_spell_t
     if( mb_wait )
     {
       if( ! p -> active_mind_blast )
-	return false;
+        return false;
 
       if( ( p -> active_mind_blast -> cooldown_ready - sim -> current_time ) < mb_wait )
-	return false;
+        return false;
     }
 
     if( mb_priority )
     {
       if( ! p -> active_mind_blast )
-	return false;
+        return false;
 
       if( ( p -> active_mind_blast -> cooldown_ready - sim -> current_time ) > ( haste() * 1.5 + sim -> lag + mb_wait ) )
-	return false;
+        return false;
     }
 
     return true;
@@ -1215,19 +1214,18 @@ struct mind_flay_t : public priest_spell_t
     channeled         = true; 
     binary            = false;
     may_crit          = true;
-
     direct_power_mod  = base_tick_time / 3.5;
     direct_power_mod *= 0.9;  // Nerf Bat!
-
     base_cost        *= 1.0 - ( p -> talents.focused_mind * 0.05 + 
-				p -> talents.shadow_focus * 0.02 );
+                                p -> talents.shadow_focus * 0.02 );
     base_cost         = floor(base_cost);
     base_hit         += p -> talents.shadow_focus * 0.01;
     base_multiplier  *= 1.0 + ( p -> talents.darkness         * 0.02 + 
-				p -> talents.twin_disciplines * 0.01 );
+                                p -> talents.twin_disciplines * 0.01 );
     base_crit        += p -> talents.mind_melt * 0.02;
-    base_crit_bonus  *= 1.0 + p -> talents.shadow_power * 0.20;
     direct_power_mod *= 1.0 + p -> talents.misery * 0.05;
+
+    base_crit_bonus_multiplier *= 1.0 + p -> talents.shadow_power * 0.20;
     
     if( p -> gear.tier4_4pc ) base_multiplier *= 1.05;
   }
@@ -1284,10 +1282,10 @@ struct mind_flay_t : public priest_spell_t
 
       if( p -> active_shadow_word_pain )
       {
-	if( sim -> roll( p -> talents.pain_and_suffering * (1.0/3.0) ) )
+        if( sim -> roll( p -> talents.pain_and_suffering * (1.0/3.0) ) )
         {
-	  p -> active_shadow_word_pain -> refresh_duration();
-	}
+          p -> active_shadow_word_pain -> refresh_duration();
+        }
       }
     }
     else
@@ -1309,20 +1307,20 @@ struct mind_flay_t : public priest_spell_t
     if( swp_refresh )
     {
       if( ! p -> active_shadow_word_pain )
-	return false;
+        return false;
 
       if( ( p -> active_shadow_word_pain -> num_ticks -
-	    p -> active_shadow_word_pain -> current_tick ) > 2 )
-	return false;
+            p -> active_shadow_word_pain -> current_tick ) > 2 )
+        return false;
     }
 
     if( mb_wait )
     {
       if( ! p -> active_mind_blast )
-	return false;
+        return false;
 
       if( ( p -> active_mind_blast -> cooldown_ready - sim -> current_time ) < mb_wait )
-	return false;
+        return false;
     }
 
     return true;
@@ -1494,7 +1492,7 @@ struct divine_spirit_t : public priest_spell_t
 
       if( improved > 0 ) 
       {
-	p -> buffs.improved_divine_spirit = bonus * improved / 2.0;
+        p -> buffs.improved_divine_spirit = bonus * improved / 2.0;
       }
     }
   }
@@ -1638,7 +1636,7 @@ struct shadow_fiend_spell_t : public priest_spell_t
     cooldown   = 300.0;
     cooldown  -= 60.0 * p -> talents.veiled_shadows;
     base_cost *= 1.0 - ( p -> talents.mental_agility * 0.02 +
-			 p -> talents.shadow_focus   * 0.02 );
+                         p -> talents.shadow_focus   * 0.02 );
     base_cost  = floor(base_cost);
   }
 
@@ -1657,7 +1655,7 @@ struct shadow_fiend_spell_t : public priest_spell_t
       return false;
 
     return( player -> resource_max    [ RESOURCE_MANA ] - 
-	    player -> resource_current[ RESOURCE_MANA ] ) > trigger;
+            player -> resource_current[ RESOURCE_MANA ] ) > trigger;
   }
 };
 
@@ -1706,8 +1704,8 @@ void priest_t::spell_finish_event( spell_t* s )
 // priest_t::spell_damage_event ==============================================
 
 void priest_t::spell_damage_event( spell_t* s,
-				   double   amount,
-				   int8_t   dmg_type )
+                                   double   amount,
+                                   int8_t   dmg_type )
 {
   player_t::spell_damage_event( s, amount, dmg_type );
 
@@ -1738,7 +1736,7 @@ void priest_t::spell_damage_event( spell_t* s,
 // priest_t::create_action ===================================================
 
 action_t* priest_t::create_action( const std::string& name,
-				   const std::string& options_str )
+                                   const std::string& options_str )
 {
   if( name == "devouring_plague" ) return new devouring_plague_t  ( this, options_str );
   if( name == "dispersion"       ) return new dispersion_t        ( this, options_str );
@@ -1852,8 +1850,8 @@ void priest_t::regen( double periodicity )
 // priest_t::get_talent_trees ===============================================
 
 bool priest_t::get_talent_trees( std::vector<int8_t*>& discipline,
-				 std::vector<int8_t*>& holy,
-				 std::vector<int8_t*>& shadow )
+                                 std::vector<int8_t*>& holy,
+                                 std::vector<int8_t*>& shadow )
 {
   talent_translation_t translation[][3] =
   {
@@ -1894,7 +1892,7 @@ bool priest_t::get_talent_trees( std::vector<int8_t*>& discipline,
 // priest_t::parse_option  =================================================
 
 bool priest_t::parse_option( const std::string& name,
-			     const std::string& value )
+                             const std::string& value )
 {
   option_t options[] =
   {
@@ -1964,7 +1962,7 @@ bool priest_t::parse_option( const std::string& name,
 // player_t::create_priest  =================================================
 
 player_t* player_t::create_priest( sim_t*       sim, 
-				   std::string& name ) 
+                                   std::string& name ) 
 {
   return new priest_t( sim, name );
 }

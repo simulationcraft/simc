@@ -545,7 +545,6 @@ struct player_t
     int8_t  budget_slots;
     // Unique Gear
     int8_t  ashtongue_talisman;
-    int8_t  chaotic_skyfire;
     int8_t  chaotic_skyflare;
     int8_t  darkmoon_crusade;
     int8_t  darkmoon_wrath;
@@ -562,6 +561,7 @@ struct player_t
     int8_t  mark_of_defiance;
     int8_t  mystical_skyfire;
     int8_t  quagmirrans_eye;
+    int8_t  relentless_earthstorm;
     int8_t  sextant_of_unstable_currents;
     int8_t  shiffars_nexus_horn;
     int8_t  spellstrike;
@@ -1133,9 +1133,12 @@ struct action_t
   double base_execute_time, base_tick_time, base_cost;
   double base_dd_min, base_dd_max, base_td_init;
   double base_dd_multiplier, base_td_multiplier, power_multiplier;
-  double   base_multiplier,   base_hit,   base_crit,   base_crit_bonus,   base_power,   base_penetration;
-  double player_multiplier, player_hit, player_crit, player_crit_bonus, player_power, player_penetration;
-  double target_multiplier, target_hit, target_crit, target_crit_bonus, target_power, target_penetration;
+  double   base_multiplier,   base_hit,   base_crit,   base_power,   base_penetration;
+  double player_multiplier, player_hit, player_crit, player_power, player_penetration;
+  double target_multiplier, target_hit, target_crit, target_power, target_penetration;
+  double   base_crit_multiplier,   base_crit_bonus_multiplier, base_crit_bonus;
+  double player_crit_multiplier, player_crit_bonus_multiplier;
+  double target_crit_multiplier, target_crit_bonus_multiplier;
   double resource_consumed;
   double direct_dmg, base_direct_dmg, direct_power_mod;
   double   tick_dmg, base_tick_dmg,     tick_power_mod;
@@ -1198,7 +1201,7 @@ struct action_t
   virtual double total_power()      { return ( base_power      + player_power      + target_power       ) * power_multiplier; }
   virtual double total_hit()        { return   base_hit        + player_hit        + target_hit;        }
   virtual double total_crit()       { return   base_crit       + player_crit       + target_crit;       }
-  virtual double total_crit_bonus() { return   base_crit_bonus * player_crit_bonus * target_crit_bonus; }
+  virtual double total_crit_bonus();
 
   // Some actions require different multipliers for the "direct" and "tick" portions.
 

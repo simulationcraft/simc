@@ -1587,8 +1587,8 @@ static void trigger_demonic_pact( action_t* a )
       for( player_t* p = sim -> player_list; p; p = p -> next )
       {
         p -> aura_gain( "Demonic Pact" );
-	p -> buffs.demonic_pact = buff;	
-	p -> buffs.demonic_pact_pet = pet;
+        p -> buffs.demonic_pact = buff; 
+        p -> buffs.demonic_pact_pet = pet;
       }
       sim -> add_event( this, 12.0 );
     }
@@ -1598,8 +1598,8 @@ static void trigger_demonic_pact( action_t* a )
       for( player_t* p = sim -> player_list; p; p = p -> next )
       {
         p -> aura_loss( "Demonic Pact" );
-	p -> buffs.demonic_pact = 0;	
-	p -> buffs.demonic_pact_pet = 0;
+        p -> buffs.demonic_pact = 0;    
+        p -> buffs.demonic_pact_pet = 0;
       }
       pet -> expirations_demonic_pact = 0;
     }
@@ -1617,7 +1617,7 @@ static void trigger_demonic_pact( action_t* a )
   if( p -> buffs.demonic_pact_pet ) 
   {
     if( p -> buffs.demonic_pact == buff &&
-	p -> buffs.demonic_pact_pet == p )
+        p -> buffs.demonic_pact_pet == p )
     {
       // If the SAME pet is putting up the SAME buff, then just let it reschedule the one in place.
     }
@@ -2193,8 +2193,9 @@ struct shadow_bolt_t : public warlock_spell_t
     base_crit         += p -> talents.devastation * 0.05;
     base_crit         += p -> talents.backlash * 0.01;
     direct_power_mod  *= 1.0 + p -> talents.shadow_and_flame * 0.04;
-    base_crit_bonus   *= 1.0 + p -> talents.ruin * 0.20;
     base_hit          += p -> talents.cataclysm * 0.01;
+
+    base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
   }
 
   virtual double execute_time()
@@ -2324,8 +2325,9 @@ struct chaos_bolt_t : public warlock_spell_t
     base_crit         += p -> talents.devastation * 0.05;
     base_crit         += p -> talents.backlash * 0.01;
     direct_power_mod  *= 1.0 + p -> talents.shadow_and_flame * 0.04;
-    base_crit_bonus   *= 1.0 + p -> talents.ruin * 0.20;
     base_hit          += p -> talents.cataclysm * 0.01;
+
+    base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
   }
 
   virtual void execute()
@@ -2394,8 +2396,9 @@ struct death_coil_t : public warlock_spell_t
       
     base_cost       *= 1.0 -  p -> talents.suppression * 0.02;
     base_multiplier *= 1.0 + p -> talents.shadow_mastery * 0.03;
-    base_crit_bonus *= 1.0 + p -> talents.ruin * 0.20;
     base_hit        += p -> talents.suppression * 0.01;
+
+    base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
   }
 
   virtual void execute() 
@@ -2451,8 +2454,9 @@ struct shadow_burn_t : public warlock_spell_t
       
     base_cost       *= 1.0 -  p -> talents.cataclysm * 0.01;
     base_multiplier *= 1.0 + p -> talents.shadow_mastery * 0.03;
-    base_crit_bonus *= 1.0 + p -> talents.ruin * 0.20;
     base_hit        += p -> talents.cataclysm * 0.01;
+
+    base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
    }
 
   virtual void execute()
@@ -3026,10 +3030,11 @@ struct immolate_t : public warlock_spell_t
     base_execute_time -= p -> talents.bane * 0.1;
     base_crit         += p -> talents.devastation * 0.05;
     base_crit         += p -> talents.backlash * 0.01;
-    base_crit_bonus   *= 1.0 + p -> talents.ruin * 0.20;
     base_hit          += p -> talents.cataclysm * 0.01;
     direct_power_mod  += (1.0/3.0) * p -> talents.fire_and_brimstone * 0.03;
     tick_power_mod    += (2.0/3.0) * p -> talents.fire_and_brimstone * 0.03 / num_ticks;
+
+    base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
 
     base_dd_multiplier *= 1.0 + ( p -> talents.emberstorm        * 0.03 +
                                   p -> talents.improved_immolate * 0.10 -
@@ -3117,11 +3122,12 @@ struct shadowflame_t : public warlock_spell_t
     tick_power_mod    = 0.28;
     cooldown          = 15.0;
 
-    base_cost         *= 1.0 -  p -> talents.cataclysm * 0.01;
-    base_crit         += p -> talents.devastation * 0.05;
-    base_crit         += p -> talents.backlash * 0.01;
-    base_crit_bonus   *= 1.0 + p -> talents.ruin * 0.20;
-    base_hit          += p -> talents.cataclysm * 0.01;
+    base_cost *= 1.0 -  p -> talents.cataclysm * 0.01;
+    base_crit += p -> talents.devastation * 0.05;
+    base_crit += p -> talents.backlash * 0.01;
+    base_hit  += p -> talents.cataclysm * 0.01;
+
+    base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
 
     base_dd_multiplier *= 1.0 + ( p -> talents.shadow_mastery * 0.03 );
 
@@ -3201,8 +3207,9 @@ struct conflagrate_t : public warlock_spell_t
     base_multiplier  *= 1.0 + p -> talents.emberstorm  * 0.03;
     base_crit        += p -> talents.devastation * 0.05;
     base_crit        += p -> talents.backlash * 0.01;
-    base_crit_bonus  *= 1.0 + p -> talents.ruin * 0.20;
     base_hit         += p -> talents.cataclysm * 0.01;
+
+    base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
 
     cancel_dot = ( sim -> patch.before( 3, 0, 8 ) || ! p -> glyphs.conflagrate );
 
@@ -3220,26 +3227,26 @@ struct conflagrate_t : public warlock_spell_t
 
       if( cancel_dot )
       {
-	action_t** dot_spell = 0;
+        action_t** dot_spell = 0;
 
-	if( p -> active_immolate && ! p -> active_shadowflame )
+        if( p -> active_immolate && ! p -> active_shadowflame )
         {
-	  dot_spell = &( p -> active_immolate );
-	}
-	else if( ! p -> active_immolate && p -> active_shadowflame )
-	{
-	  dot_spell = &( p -> active_shadowflame );
-	}
-	else if( sim -> roll( 0.50 ) )
+          dot_spell = &( p -> active_immolate );
+        }
+        else if( ! p -> active_immolate && p -> active_shadowflame )
         {
-	  dot_spell = &( p -> active_immolate );
-	}
-	else
+          dot_spell = &( p -> active_shadowflame );
+        }
+        else if( sim -> roll( 0.50 ) )
         {
-	  dot_spell = &( p -> active_shadowflame );
-	}
-	(*dot_spell) -> cancel();
-	*dot_spell = 0;
+          dot_spell = &( p -> active_immolate );
+        }
+        else
+        {
+          dot_spell = &( p -> active_shadowflame );
+        }
+        (*dot_spell) -> cancel();
+        *dot_spell = 0;
       }
     }
   }
@@ -3249,7 +3256,7 @@ struct conflagrate_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::player_buff(); 
     if( p -> talents.fire_and_brimstone &&
-	p -> active_immolate )
+        p -> active_immolate )
     {
       int ticks_remaining = ( p -> active_immolate -> num_ticks - 
                               p -> active_immolate -> current_tick );
@@ -3280,13 +3287,13 @@ struct conflagrate_t : public warlock_spell_t
 
       if( p -> active_immolate )
       {
-	ticks_remaining = ( p -> active_immolate -> num_ticks - 
-			    p -> active_immolate -> current_tick );
+        ticks_remaining = ( p -> active_immolate -> num_ticks - 
+                            p -> active_immolate -> current_tick );
       } 
       else 
       {
-	ticks_remaining = ( p -> active_shadowflame -> num_ticks - 
-			    p -> active_shadowflame -> current_tick );
+        ticks_remaining = ( p -> active_shadowflame -> num_ticks - 
+                            p -> active_shadowflame -> current_tick );
       }
       return( ticks_remaining <= ticks_lost );
     }
@@ -3337,8 +3344,9 @@ struct incinerate_t : public warlock_spell_t
     base_crit         += p -> talents.devastation * 0.05;
     base_crit         += p -> talents.backlash * 0.01;
     direct_power_mod  *= 1.0 + p -> talents.shadow_and_flame * 0.04;
-    base_crit_bonus   *= 1.0 + p -> talents.ruin * 0.20;
     base_hit          += p -> talents.cataclysm * 0.01;
+
+    base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
 
     immolate_bonus = util_t::ability_rank( p -> level,  157,80,  130,74,  120,70,  108,0 );
   }
@@ -3428,10 +3436,10 @@ struct searing_pain_t : public warlock_spell_t
     base_crit       += p -> talents.devastation * 0.05;
     base_crit       += p -> talents.backlash * 0.01;
     base_crit       += p -> talents.improved_searing_pain * 0.04;
-    base_crit_bonus *= 1.0 + p -> talents.ruin * 0.20;
     base_hit        += p -> talents.cataclysm * 0.01;
 
-    if( p -> glyphs.searing_pain ) base_crit_bonus *= 1.20;
+    base_crit_bonus_multiplier *= 1.0 + ( p -> talents.ruin * 0.20 +
+                                          p -> glyphs.searing_pain * 0.20 );
   }
 
   virtual void execute()
@@ -3484,8 +3492,9 @@ struct soul_fire_t : public warlock_spell_t
     base_multiplier   *= 1.0 + p -> talents.emberstorm  * 0.03;
     base_crit         += p -> talents.devastation * 0.05;
     base_crit         += p -> talents.backlash * 0.01;
-    base_crit_bonus   *= 1.0 + p -> talents.ruin * 0.20;
     base_hit          += p -> talents.cataclysm * 0.01;
+
+    base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
   }
 
   virtual void execute()
@@ -3558,10 +3567,10 @@ struct life_tap_t : public warlock_spell_t
     if( inferno )
     {
       if( p -> active_pet == 0 ||
-	  p -> active_pet -> pet_type != PET_INFERNAL )
+          p -> active_pet -> pet_type != PET_INFERNAL )
       {
-	return( p -> resource_current[ RESOURCE_MANA ] < 
-		p -> resource_base   [ RESOURCE_MANA ] * 0.80 );
+        return( p -> resource_current[ RESOURCE_MANA ] < 
+                p -> resource_base   [ RESOURCE_MANA ] * 0.80 );
       }
     }
 
@@ -3760,21 +3769,21 @@ struct inferno_t : public warlock_spell_t
     {
       expiration_t( sim_t* sim, warlock_t* p ) : event_t( sim, p )
       {
-	name = "Infernal Expiration";
-	if( p -> active_pet )
+        name = "Infernal Expiration";
+        if( p -> active_pet )
         {
-	  p -> active_pet -> dismiss();
-	  p -> active_pet = 0;
-	}
-	p -> summon_pet( "infernal" );
-	sim -> add_event( this, 60.0 );
+          p -> active_pet -> dismiss();
+          p -> active_pet = 0;
+        }
+        p -> summon_pet( "infernal" );
+        sim -> add_event( this, 60.0 );
       }
       virtual void execute()
       {
-	warlock_t* p = player -> cast_warlock();
-	p -> dismiss_pet( "infernal" );
-	p -> expirations_infernal = 0;
-	p -> active_pet = 0;
+        warlock_t* p = player -> cast_warlock();
+        p -> dismiss_pet( "infernal" );
+        p -> expirations_infernal = 0;
+        p -> active_pet = 0;
       }
     };
   

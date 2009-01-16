@@ -533,7 +533,7 @@ gear_crit_rating=575
 gear_haste_rating=300
 tier7_2pc_enhancement=1
 tier7_4pc_enhancement=1
-chaotic_skyflare=1
+relentless_earthstorm=1
 main_hand=mace,damage=392,speed=2.5,enchant=mongoose
 off_hand=mace,damage=359,speed=2.5,enchant=mongoose
 # Glyphs

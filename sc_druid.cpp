@@ -795,15 +795,17 @@ struct moonfire_t : public druid_spell_t
     tick_power_mod    = 0.13; 
     may_crit          = true;
 
-    base_cost       *= 1.0 - util_t::talent_rank( p -> talents.moonglow,          3, 0.03 );
-    base_crit       += util_t::talent_rank( p -> talents.improved_moonfire,       2, 0.05 );
-    base_crit_bonus *= 1.0 + util_t::talent_rank( p -> talents.vengeance,         5, 0.20 );
+    base_cost *= 1.0 - util_t::talent_rank( p -> talents.moonglow,    3, 0.03 );
+    base_crit += util_t::talent_rank( p -> talents.improved_moonfire, 2, 0.05 );
+
+    base_crit_bonus_multiplier *= 1.0 + util_t::talent_rank( p -> talents.vengeance, 5, 0.20 );
 
     double multiplier_td = ( util_t::talent_rank( p -> talents.moonfury,          3, 0.03, 0.06, 0.10 ) +
                              util_t::talent_rank( p -> talents.improved_moonfire, 2, 0.05 ) +
                              util_t::talent_rank( p -> talents.genesis,           5, 0.01 ) );
+
     double multiplier_dd = ( util_t::talent_rank( p -> talents.moonfury,          3, 0.03, 0.06, 0.10 ) +
-                            util_t::talent_rank( p -> talents.improved_moonfire, 2, 0.05 ) );
+                             util_t::talent_rank( p -> talents.improved_moonfire, 2, 0.05 ) );
 
     if( p -> glyphs.moonfire )
     {
@@ -939,8 +941,8 @@ struct starfire_t : public druid_spell_t
     base_execute_time -= util_t::talent_rank(p -> talents.starlight_wrath, 5, 0.1);
     base_multiplier   *= 1.0 + util_t::talent_rank( p -> talents.moonfury, 3, 0.03, 0.06, 0.10 );
     base_crit         += util_t::talent_rank(p -> talents.natures_majesty, 2, 0.02);
-    base_crit_bonus   *= 1.0 + util_t::talent_rank(p -> talents.vengeance, 5, 0.20);
     direct_power_mod  += util_t::talent_rank(p -> talents.wrath_of_cenarius, 5, 0.04);
+    base_crit_bonus_multiplier *= 1.0 + util_t::talent_rank(p -> talents.vengeance, 5, 0.20);
 
     if ( p -> idols.shooting_star )
     {
@@ -1079,8 +1081,8 @@ struct wrath_t : public druid_spell_t
     base_execute_time -= util_t::talent_rank(p -> talents.starlight_wrath, 5, 0.1);
     base_multiplier   *= 1.0 + util_t::talent_rank(p -> talents.moonfury, 3, 0.03, 0.06, 0.10 );
     base_crit         += util_t::talent_rank(p -> talents.natures_majesty, 2, 0.02);
-    base_crit_bonus   *= 1.0 + util_t::talent_rank(p -> talents.vengeance, 5, 0.20);
     direct_power_mod  += util_t::talent_rank(p -> talents.wrath_of_cenarius, 5, 0.02);
+    base_crit_bonus_multiplier *= 1.0 + util_t::talent_rank(p -> talents.vengeance, 5, 0.20);
 
     if( p -> tiers.t7_4pc_balance ) base_crit += 0.05;
 

@@ -1725,9 +1725,8 @@ void report_t::wiki_scale_factors()
 
   fprintf( sim -> wiki_file, "----\n" );
   fprintf( sim -> wiki_file, "----\n" );
+  fprintf( sim -> wiki_file, "----\n" );
   fprintf( sim -> wiki_file, "== DPS Scale Factors (dps increase per unit stat) ==\n" );
-  fprintf( sim -> wiki_file, "----\n" );
-  fprintf( sim -> wiki_file, "----\n" );
 
   fprintf( sim -> wiki_file, "|| ||" );
   for( int j=0; j < ATTRIBUTE_MAX; j++ )
@@ -1835,9 +1834,8 @@ void report_t::chart_wiki()
 
   fprintf( sim -> wiki_file, "----\n" );
   fprintf( sim -> wiki_file, "----\n" );
-  fprintf( sim -> wiki_file, "== Raid Charts ==\n" );
   fprintf( sim -> wiki_file, "----\n" );
-  fprintf( sim -> wiki_file, "----\n" );
+  fprintf( sim -> wiki_file, "= Raid Charts =\n" );
   fprintf( sim -> wiki_file, "|| %s || %s ||\n", raid_dps.c_str(),      raid_gear.c_str() );
   fprintf( sim -> wiki_file, "|| %s || %s ||\n", raid_downtime.c_str(), raid_uptimes.c_str() );
   fprintf( sim -> wiki_file, "|| %s || %s ||\n", raid_dpet_1.c_str(),   raid_dpet_2.c_str() );
@@ -1903,9 +1901,9 @@ void report_t::chart_wiki()
     fprintf( sim -> wiki_file, "\n" );
     fprintf( sim -> wiki_file, "----\n" );
     fprintf( sim -> wiki_file, "----\n" );
-    fprintf( sim -> wiki_file, "== [%s %s] ==\n", p -> talents_str.c_str(), p -> name() );
     fprintf( sim -> wiki_file, "----\n" );
-    fprintf( sim -> wiki_file, "----\n" );
+    fprintf( sim -> wiki_file, "= %s =\n", p -> name() );
+    fprintf( sim -> wiki_file, "[%s Talents]\n", p -> talents_str.c_str() );
     fprintf( sim -> wiki_file, "\n" );
     fprintf( sim -> wiki_file, "|| %s || %s ||\n", action_dpet.c_str(), uptimes_and_procs.c_str() );
     fprintf( sim -> wiki_file, "|| %s || %s ||\n", action_dmg.c_str(),  gains.c_str() );
