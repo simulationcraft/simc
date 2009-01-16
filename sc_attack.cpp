@@ -104,7 +104,7 @@ void attack_t::player_buff()
   {
     if( p -> buffs.leader_of_the_pack ) player_crit += 0.05;
 
-    if( p -> gear.chaotic_skyfire || p -> gear.chaotic_skyflare ) player_crit_bonus *= 1.09;
+    if( p -> gear.chaotic_skyfire || p -> gear.chaotic_skyflare ) player_crit_bonus *= 1.06;
   }
 
   if( sim -> debug ) 
