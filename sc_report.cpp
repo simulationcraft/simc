@@ -547,7 +547,7 @@ const char* report_t::chart_raid_dps( std::string& s )
   char buffer[ 1024 ];
 
   s = "http://chart.apis.google.com/chart?";
-  sprintf( buffer, "chs=450x%d", num_players * 20 + 30 ); s += buffer;
+  snprintf( buffer, sizeof(buffer), "chs=450x%d", num_players * 20 + 30 ); s += buffer;
   s += "&";
   s += "cht=bhg";
   s += "&";
@@ -558,11 +558,11 @@ const char* report_t::chart_raid_dps( std::string& s )
   for( int i=0; i < num_players; i++ )
   {
     player_t* p = sim -> players_by_rank[ i ];
-    sprintf( buffer, "%s%.0f", (i?"|":""), p -> dps ); s += buffer;
+    snprintf( buffer, sizeof(buffer), "%s%.0f", (i?"|":""), p -> dps ); s += buffer;
     if( p -> dps > max_dps ) max_dps = p -> dps;
   }
   s += "&";
-  sprintf( buffer, "chds=0,%.0f", max_dps * 2 ); s += buffer;
+  snprintf( buffer, sizeof(buffer), "chds=0,%.0f", max_dps * 2 ); s += buffer;
   s += "&";
   s += "chco=";
   for( int i=0; i < num_players; i++ )
@@ -575,7 +575,7 @@ const char* report_t::chart_raid_dps( std::string& s )
   for( int i=0; i < num_players; i++ )
   {
     player_t* p = sim -> players_by_rank[ i ];
-    sprintf( buffer, "%st++%.0f++%s,%s,%d,0,15", (i?"|":""), p -> dps, p -> name(), get_color( p ), i ); s += buffer;
+    snprintf( buffer, sizeof(buffer), "%st++%.0f++%s,%s,%d,0,15", (i?"|":""), p -> dps, p -> name(), get_color( p ), i ); s += buffer;
   }
   s += "&";
   s += "chtt=DPS+Ranking";
@@ -642,7 +642,7 @@ const char* report_t::chart_raid_gear( std::string& s )
   char buffer[ 1024 ];
   
   s = "http://chart.apis.google.com/chart?";
-  sprintf( buffer, "chs=450x%d", num_players * 20 + 30 ); s += buffer;
+  snprintf( buffer, sizeof(buffer), "chs=450x%d", num_players * 20 + 30 ); s += buffer;
   s += "&";
   s += "cht=bhs";
   s += "&";
@@ -654,11 +654,11 @@ const char* report_t::chart_raid_gear( std::string& s )
     if( i ) s += "|";
     for( int j=0; j < num_players; j++ )
     {
-      sprintf( buffer, "%s%.0f", (j?",":""), data_points[ i ][ j ] ); s += buffer;
+      snprintf( buffer, sizeof(buffer), "%s%.0f", (j?",":""), data_points[ i ][ j ] ); s += buffer;
     }
   }
   s += "&";
-  sprintf( buffer, "chds=0,%.0f", max_total ); s += buffer;
+  snprintf( buffer, sizeof(buffer), "chds=0,%.0f", max_total ); s += buffer;
   s += "&";
   s += "chco=";
   for( int i=0; i < NUM_CATEGORIES; i++ )
@@ -711,7 +711,7 @@ const char* report_t::chart_raid_downtime( std::string& s )
   char buffer[ 1024 ];
 
   s = "http://chart.apis.google.com/chart?";
-  sprintf( buffer, "chs=500x%d", num_waiting * 30 + 30 ); s += buffer;
+  snprintf( buffer, sizeof(buffer), "chs=500x%d", num_waiting * 30 + 30 ); s += buffer;
   s += "&";
   s += "cht=bhg";
   s += "&";
@@ -722,10 +722,10 @@ const char* report_t::chart_raid_downtime( std::string& s )
     player_t* p = waiting_list[ i ];
     double waiting = 100.0 * p -> total_waiting / p -> total_seconds;
     if( waiting > max_waiting ) max_waiting = waiting;
-    sprintf( buffer, "%s%.0f", (i?"|":""), waiting ); s += buffer;
+    snprintf( buffer, sizeof(buffer), "%s%.0f", (i?"|":""), waiting ); s += buffer;
   }
   s += "&";
-  sprintf( buffer, "chds=0,%.0f", max_waiting * 2 ); s += buffer;
+  snprintf( buffer, sizeof(buffer), "chds=0,%.0f", max_waiting * 2 ); s += buffer;
   s += "&";
   s += "chco=";
   for( int i=0; i < num_waiting; i++ )
@@ -738,7 +738,7 @@ const char* report_t::chart_raid_downtime( std::string& s )
   for( int i=0; i < num_waiting; i++ )
   {
     player_t* p = waiting_list[ i ];
-    sprintf( buffer, "%st++%.0f%%++%s,%s,%d,0,15", (i?"|":""), 100.0 * p -> total_waiting / p -> total_seconds, p -> name(), get_color( p ), i ); s += buffer;
+    snprintf( buffer, sizeof(buffer), "%st++%.0f%%++%s,%s,%d,0,15", (i?"|":""), 100.0 * p -> total_waiting / p -> total_seconds, p -> name(), get_color( p ), i ); s += buffer;
   }
   s += "&";
   s += "chtt=Raid+Down-Time";
@@ -766,7 +766,7 @@ const char* report_t::chart_raid_uptimes( std::string& s )
   char buffer[ 1024 ];
 
   s = "http://chart.apis.google.com/chart?";
-  sprintf( buffer, "chs=500x%d", num_uptimes * 30 + 30 ); s += buffer;
+  snprintf( buffer, sizeof(buffer), "chs=500x%d", num_uptimes * 30 + 30 ); s += buffer;
   s += "&";
   s += "cht=bhs";
   s += "&";
@@ -774,7 +774,7 @@ const char* report_t::chart_raid_uptimes( std::string& s )
   for( int i=0; i < num_uptimes; i++ )
   {
     uptime_t* u = uptime_list[ i ];
-    sprintf( buffer, "%s%.0f", (i?",":""), u -> percentage() ); s += buffer;
+    snprintf( buffer, sizeof(buffer), "%s%.0f", (i?",":""), u -> percentage() ); s += buffer;
   }
   s += "&";
   s += "chds=0,200";
@@ -783,7 +783,7 @@ const char* report_t::chart_raid_uptimes( std::string& s )
   for( int i=0; i < num_uptimes; i++ )
   {
     uptime_t* u = uptime_list[ i ];
-    sprintf( buffer, "%st++%.0f%%++%s,000000,0,%d,15", (i?"|":""), u -> percentage(), u -> name(), i ); s += buffer;
+    snprintf( buffer, sizeof(buffer), "%st++%.0f%%++%s,000000,0,%d,15", (i?"|":""), u -> percentage(), u -> name(), i ); s += buffer;
   }
   s += "&";
   s += "chtt=Global+Up-Times";
@@ -840,7 +840,7 @@ int report_t::chart_raid_dpet( std::string& s, std::vector<std::string>& images 
     if( num_stats > max_actions_per_chart ) num_stats = max_actions_per_chart;
 
     s = "http://chart.apis.google.com/chart?";
-    sprintf( buffer, "chs=500x%d", num_stats * 15 + 30 ); s += buffer;
+    snprintf( buffer, sizeof(buffer), "chs=500x%d", num_stats * 15 + 30 ); s += buffer;
     s += "&";
     s += "cht=bhg";
     s += "&";
@@ -850,10 +850,10 @@ int report_t::chart_raid_dpet( std::string& s, std::vector<std::string>& images 
     for( int i=0; i < num_stats; i++ )
     {
       stats_t* st = stats_list[ i ];
-      sprintf( buffer, "%s%.0f", (i?"|":""), st -> dpet ); s += buffer;
+      snprintf( buffer, sizeof(buffer), "%s%.0f", (i?"|":""), st -> dpet ); s += buffer;
     }
     s += "&";
-    sprintf( buffer, "chds=0,%.0f", max_dpet * 2.5 ); s += buffer;
+    snprintf( buffer, sizeof(buffer), "chds=0,%.0f", max_dpet * 2.5 ); s += buffer;
     s += "&";
     s += "chco=";
     for( int i=0; i < num_stats; i++ )
@@ -866,7 +866,7 @@ int report_t::chart_raid_dpet( std::string& s, std::vector<std::string>& images 
     for( int i=0; i < num_stats; i++ )
     {
       stats_t* st = stats_list[ i ];
-      sprintf( buffer, "%st++%.0f++%s+(%s),%s,%d,0,10", (i?"|":""), 
+      snprintf( buffer, sizeof(buffer), "%st++%.0f++%s+(%s),%s,%d,0,10", (i?"|":""), 
 	       st -> dpet, st -> name_str.c_str(), st -> player -> name(), get_color( st -> player ), i ); s += buffer;
     }
     s += "&";
@@ -876,7 +876,7 @@ int report_t::chart_raid_dpet( std::string& s, std::vector<std::string>& images 
 
     images.push_back( s );
 
-    stats_list.erase( stats_list.begin(), stats_list.begin()+num_stats-1 );
+    stats_list.erase( stats_list.begin(), stats_list.begin()+num_stats );
     num_stats = stats_list.size();
     if( num_stats == 0 ) break;
   }
@@ -919,7 +919,7 @@ const char* report_t::chart_action_dpet( std::string& s, player_t* p )
   char buffer[ 1024 ];
 
   s = "http://chart.apis.google.com/chart?";
-  sprintf( buffer, "chs=500x%d", num_stats * 30 + 65 ); s += buffer;
+  snprintf( buffer, sizeof(buffer), "chs=500x%d", num_stats * 30 + 65 ); s += buffer;
   s += "&";
   s += "cht=bhg";
   s += "&";
@@ -928,11 +928,11 @@ const char* report_t::chart_action_dpet( std::string& s, player_t* p )
   for( int i=0; i < num_stats; i++ )
   {
     stats_t* st = stats_list[ i ];
-    sprintf( buffer, "%s%.0f", (i?"|":""), st -> dpet ); s += buffer;
+    snprintf( buffer, sizeof(buffer), "%s%.0f", (i?"|":""), st -> dpet ); s += buffer;
     if( st -> dpet > max_dpet ) max_dpet = st -> dpet;
   }
   s += "&";
-  sprintf( buffer, "chds=0,%.0f", max_dpet * 2 ); s += buffer;
+  snprintf( buffer, sizeof(buffer), "chds=0,%.0f", max_dpet * 2 ); s += buffer;
   s += "&";
   s += "chco=";
   for( int i=0; i < num_stats; i++ )
@@ -945,10 +945,10 @@ const char* report_t::chart_action_dpet( std::string& s, player_t* p )
   for( int i=0; i < num_stats; i++ )
   {
     stats_t* st = stats_list[ i ];
-    sprintf( buffer, "%st++%.0f++%s,%s,%d,0,15", (i?"|":""), st -> dpet, st -> name_str.c_str(), school_color( st -> school ), i ); s += buffer;
+    snprintf( buffer, sizeof(buffer), "%st++%.0f++%s,%s,%d,0,15", (i?"|":""), st -> dpet, st -> name_str.c_str(), school_color( st -> school ), i ); s += buffer;
   }
   s += "&";
-  sprintf( buffer, "chtt=%s|Damage+Per+Execute+Time", p -> name() ); s += buffer;
+  snprintf( buffer, sizeof(buffer), "chtt=%s|Damage+Per+Execute+Time", p -> name() ); s += buffer;
   s += "&";
   s += "chts=000000,20";
 
@@ -991,7 +991,7 @@ const char* report_t::chart_action_dmg( std::string& s, player_t* p )
   char buffer[ 1024 ];
 
   s = "http://chart.apis.google.com/chart?";
-  sprintf( buffer, "chs=500x%d", 200 + num_stats * 10 ); s += buffer;
+  snprintf( buffer, sizeof(buffer), "chs=500x%d", 200 + num_stats * 10 ); s += buffer;
   s += "&";
   s += "cht=p";
   s += "&";
@@ -999,7 +999,7 @@ const char* report_t::chart_action_dmg( std::string& s, player_t* p )
   for( int i=0; i < num_stats; i++ )
   {
     stats_t* st = stats_list[ i ];
-    sprintf( buffer, "%s%.0f", (i?",":""), 100.0 * st -> total_dmg / p -> total_dmg ); s += buffer;
+    snprintf( buffer, sizeof(buffer), "%s%.0f", (i?",":""), 100.0 * st -> total_dmg / p -> total_dmg ); s += buffer;
   }
   s += "&";
   s += "chds=0,100";
@@ -1018,7 +1018,7 @@ const char* report_t::chart_action_dmg( std::string& s, player_t* p )
     s += stats_list[ i ] -> name_str.c_str();
   }
   s += "&";
-  sprintf( buffer, "chtt=%s+Damage+Sources", p -> name() ); s += buffer;
+  snprintf( buffer, sizeof(buffer), "chtt=%s+Damage+Sources", p -> name() ); s += buffer;
   s += "&";
   s += "chts=000000,20";
 
@@ -1054,7 +1054,7 @@ const char* report_t::chart_gains( std::string& s, player_t* p )
   char buffer[ 1024 ];
 
   s = "http://chart.apis.google.com/chart?";
-  sprintf( buffer, "chs=550x%d", 200 + num_gains * 10 ); s += buffer;
+  snprintf( buffer, sizeof(buffer), "chs=550x%d", 200 + num_gains * 10 ); s += buffer;
   s += "&";
   s += "cht=p";
   s += "&";
@@ -1062,7 +1062,7 @@ const char* report_t::chart_gains( std::string& s, player_t* p )
   for( int i=0; i < num_gains; i++ )
   {
     gain_t* g = gains_list[ i ];
-    sprintf( buffer, "%s%.0f", (i?",":""), 100.0 * g -> amount / total_gain ); s += buffer;
+    snprintf( buffer, sizeof(buffer), "%s%.0f", (i?",":""), 100.0 * g -> amount / total_gain ); s += buffer;
   }
   s += "&";
   s += "chds=0,100";
@@ -1077,7 +1077,7 @@ const char* report_t::chart_gains( std::string& s, player_t* p )
     s += gains_list[ i ] -> name();
   }
   s += "&";
-  sprintf( buffer, "chtt=%s+Resource+Gains", p -> name() ); s += buffer;
+  snprintf( buffer, sizeof(buffer), "chtt=%s+Resource+Gains", p -> name() ); s += buffer;
   s += "&";
   s += "chts=000000,20";
 
@@ -1114,7 +1114,7 @@ const char* report_t::chart_uptimes_and_procs( std::string& s, player_t* p )
   char buffer[ 1024 ];
 
   s = "http://chart.apis.google.com/chart?";
-  sprintf( buffer, "chs=500x%d", ( num_uptimes + num_procs ) * 30 + 65 ); s += buffer;
+  snprintf( buffer, sizeof(buffer), "chs=500x%d", ( num_uptimes + num_procs ) * 30 + 65 ); s += buffer;
   s += "&";
   s += "cht=bhg";
   s += "&";
@@ -1122,12 +1122,12 @@ const char* report_t::chart_uptimes_and_procs( std::string& s, player_t* p )
   for( int i=0; i < num_uptimes; i++ )
   {
     uptime_t* u = uptime_list[ i ];
-    sprintf( buffer, "%s%.0f", (i?"|":""), u -> percentage() ); s += buffer;
+    snprintf( buffer, sizeof(buffer), "%s%.0f", (i?"|":""), u -> percentage() ); s += buffer;
   }
   for( int i=0; i < num_procs; i++ )
   {
     proc_t* proc = proc_list[ i ];
-    sprintf( buffer, "%s%.0f", ((num_uptimes+i)?"|":""), 100 * proc -> count / max_proc_count ); s += buffer;
+    snprintf( buffer, sizeof(buffer), "%s%.0f", ((num_uptimes+i)?"|":""), 100 * proc -> count / max_proc_count ); s += buffer;
   }
   s += "&";
   s += "chds=0,200";
@@ -1148,16 +1148,16 @@ const char* report_t::chart_uptimes_and_procs( std::string& s, player_t* p )
   for( int i=0; i < num_uptimes; i++ )
   {
     uptime_t* u = uptime_list[ i ];
-    sprintf( buffer, "%st++%.0f%%++%s,000000,%d,0,15", (i?"|":""), u -> percentage(), u -> name(), i ); s += buffer;
+    snprintf( buffer, sizeof(buffer), "%st++%.0f%%++%s,000000,%d,0,15", (i?"|":""), u -> percentage(), u -> name(), i ); s += buffer;
   }
   for( int i=0; i < num_procs; i++ )
   {
     proc_t* proc = proc_list[ i ];
-    sprintf( buffer, "%st++%.0f+(%.1fsec)++%s,000000,%d,0,15", ((num_uptimes+i)?"|":""), 
+    snprintf( buffer, sizeof(buffer), "%st++%.0f+(%.1fsec)++%s,000000,%d,0,15", ((num_uptimes+i)?"|":""), 
 	     proc -> count, proc -> frequency, proc -> name(), num_uptimes+i ); s += buffer;
   }
   s += "&";
-  sprintf( buffer, "chtt=%s|Up-Times+and+Procs+(%.0fsec)", p -> name(), sim -> total_seconds ); s += buffer;
+  snprintf( buffer, sizeof(buffer), "chtt=%s|Up-Times+and+Procs+(%.0fsec)", p -> name(), sim -> total_seconds ); s += buffer;
   s += "&";
   s += "chts=000000,20";
 
@@ -1205,15 +1205,15 @@ const char* report_t::chart_timeline_dps( std::string& s, player_t* p )
     s += simple_encoding( (int) ( p -> timeline_dps[ i ] * dps_adjust ) );
   }
   s += "&";
-  sprintf( buffer, "chds=0,%.0f", dps_range ); s += buffer;
+  snprintf( buffer, sizeof(buffer), "chds=0,%.0f", dps_range ); s += buffer;
   s += "&";
   s += "chxt=x,y";
   s += "&";
-  sprintf( buffer, "chxl=0:|0|sec=%d|1:|0|avg=%.0f|max=%.0f", max_buckets, p -> dps, dps_max ); s += buffer;
+  snprintf( buffer, sizeof(buffer), "chxl=0:|0|sec=%d|1:|0|avg=%.0f|max=%.0f", max_buckets, p -> dps, dps_max ); s += buffer;
   s += "&";
-  sprintf( buffer, "chxp=1,1,%.0f,100", 100.0 * p -> dps / dps_max ); s += buffer;
+  snprintf( buffer, sizeof(buffer), "chxp=1,1,%.0f,100", 100.0 * p -> dps / dps_max ); s += buffer;
   s += "&";
-  sprintf( buffer, "chtt=%s+DPS+Timeline", p -> name() ); s += buffer;
+  snprintf( buffer, sizeof(buffer), "chtt=%s+DPS+Timeline", p -> name() ); s += buffer;
   s += "&";
   s += "chts=000000,20";
 
@@ -1265,13 +1265,13 @@ const char* report_t::chart_timeline_resource( std::string& s, player_t* p )
     s += simple_encoding( (int) ( p -> timeline_resource[ i ] * resource_adjust ) );
   }
   s += "&";
-  sprintf( buffer, "chds=0,%.0f", resource_range ); s += buffer;
+  snprintf( buffer, sizeof(buffer), "chds=0,%.0f", resource_range ); s += buffer;
   s += "&";
   s += "chxt=x,y";
   s += "&";
-  sprintf( buffer, "chxl=0:|0|sec=%d|1:|0|max=%.0f", max_buckets, resource_max ); s += buffer;
+  snprintf( buffer, sizeof(buffer), "chxl=0:|0|sec=%d|1:|0|max=%.0f", max_buckets, resource_max ); s += buffer;
   s += "&";
-  sprintf( buffer, "chtt=%s|Resource+(%s)+Timeline", p -> name(), util_t::resource_type_string( p -> primary_resource() ) ); s += buffer;
+  snprintf( buffer, sizeof(buffer), "chtt=%s|Resource+(%s)+Timeline", p -> name(), util_t::resource_type_string( p -> primary_resource() ) ); s += buffer;
   s += "&";
   s += "chts=000000,20";
 
@@ -1303,20 +1303,20 @@ const char* report_t::chart_distribution_dps( std::string& s, player_t* p )
   s += "chd=t:";
   for( int i=0; i < max_buckets; i++ ) 
   {
-    sprintf( buffer, "%s%d", (i?",":""), p -> distribution_dps[ i ] ); s += buffer;
+    snprintf( buffer, sizeof(buffer), "%s%d", (i?",":""), p -> distribution_dps[ i ] ); s += buffer;
   }
   s += "&";
-  sprintf( buffer, "chds=0,%d", count_max ); s += buffer;
+  snprintf( buffer, sizeof(buffer), "chds=0,%d", count_max ); s += buffer;
   s += "&";
   s += "chbh=5";
   s += "&";
   s += "chxt=x";
   s += "&";
-  sprintf( buffer, "chxl=0:|min=%.0f|avg=%.0f|max=%.0f", p -> dps_min, p -> dps, p -> dps_max ); s += buffer;
+  snprintf( buffer, sizeof(buffer), "chxl=0:|min=%.0f|avg=%.0f|max=%.0f", p -> dps_min, p -> dps, p -> dps_max ); s += buffer;
   s += "&";
-  sprintf( buffer, "chxp=0,1,%.0f,100", 100.0 * ( p -> dps - p -> dps_min ) / ( p -> dps_max - p -> dps_min ) ); s += buffer;
+  snprintf( buffer, sizeof(buffer), "chxp=0,1,%.0f,100", 100.0 * ( p -> dps - p -> dps_min ) / ( p -> dps_max - p -> dps_min ) ); s += buffer;
   s += "&";
-  sprintf( buffer, "chtt=%s+DPS+Distribution", p -> name() ); s += buffer;
+  snprintf( buffer, sizeof(buffer), "chtt=%s+DPS+Distribution", p -> name() ); s += buffer;
   s += "&";
   s += "chts=000000,20";
 
@@ -1353,43 +1353,43 @@ const char* report_t::gear_weights_lootrank( std::string& s,
   {
     if( sim -> scaling -> gear.attribute[ j ] ) 
     {
-      sprintf( buffer, "&%s=%.2f", attr_prefix[ j ], p -> scaling.attribute[ j ] );
+      snprintf( buffer, sizeof(buffer), "&%s=%.2f", attr_prefix[ j ], p -> scaling.attribute[ j ] );
       s += buffer;
     }
   }
   if( sim -> scaling -> gear.spell_power ) 
   { 
-    sprintf( buffer, "&spd=%.2f", p -> scaling.spell_power ); 
+    snprintf( buffer, sizeof(buffer), "&spd=%.2f", p -> scaling.spell_power ); 
     s += buffer; 
   }
   if( sim -> scaling -> gear.attack_power ) 
   { 
-    sprintf( buffer, "&map=%.2f", p -> scaling.attack_power );
+    snprintf( buffer, sizeof(buffer), "&map=%.2f", p -> scaling.attack_power );
     s += buffer; 
   }
   if( sim -> scaling -> gear.expertise_rating ) 
   {
-    sprintf( buffer, "&Exp=%.2f", p -> scaling.expertise_rating );
+    snprintf( buffer, sizeof(buffer), "&Exp=%.2f", p -> scaling.expertise_rating );
     s += buffer; 
   }
   if( sim -> scaling -> gear.armor_penetration_rating )
   {
-    sprintf( buffer, "&arp=%.2f", p -> scaling.armor_penetration_rating );
+    snprintf( buffer, sizeof(buffer), "&arp=%.2f", p -> scaling.armor_penetration_rating );
     s += buffer;
   }
   if( sim -> scaling -> gear.hit_rating )
   {
-    sprintf( buffer, "&mhit=%.2f", p -> scaling.hit_rating );
+    snprintf( buffer, sizeof(buffer), "&mhit=%.2f", p -> scaling.hit_rating );
     s += buffer;
   }
   if( sim -> scaling -> gear.crit_rating )
   {
-    sprintf( buffer, "&mcr=%.2f", p -> scaling.crit_rating );
+    snprintf( buffer, sizeof(buffer), "&mcr=%.2f", p -> scaling.crit_rating );
     s += buffer;
   }
   if( sim -> scaling -> gear.haste_rating )
   {
-    sprintf( buffer, "&mh=%.2f", p -> scaling.haste_rating );
+    snprintf( buffer, sizeof(buffer), "&mh=%.2f", p -> scaling.haste_rating );
     s += buffer;
   }
 
@@ -1476,7 +1476,7 @@ const char* report_t::gear_weights_wowhead( std::string& s,
   s += "wt=";
   for( unsigned i=0; i < prefix_list.size(); i++ )
   {
-    sprintf( buffer, "%s%d", ( i ? ":" : "" ), prefix_list[ i ] );
+    snprintf( buffer, sizeof(buffer), "%s%d", ( i ? ":" : "" ), prefix_list[ i ] );
     s += buffer;
   }
   s += ";";
@@ -1484,7 +1484,7 @@ const char* report_t::gear_weights_wowhead( std::string& s,
   s += "wtv=";
   for( unsigned i=0; i < value_list.size(); i++ )
   {
-    sprintf( buffer, "%s%.2f", ( i ? ":" : "" ), value_list[ i ] );
+    snprintf( buffer, sizeof(buffer), "%s%.2f", ( i ? ":" : "" ), value_list[ i ] );
     s += buffer;
   }
   s += ";";
@@ -1625,23 +1625,23 @@ void report_t::chart_html()
 
   fprintf( sim -> html_file, "<h1>Raid</h1>\n" );
 
-  fprintf( sim -> html_file, "<! DPS Ranking>\n" );
+  fprintf( sim -> html_file, "\n<! DPS Ranking: >\n" );
   fprintf( sim -> html_file, "<img src=\"%s\" />\n", chart_raid_dps( buffer ) );
 
-  fprintf( sim -> html_file, "<! Gear Overview>\n" );
+  fprintf( sim -> html_file, "\n<! Gear Overview: >\n" );
   fprintf( sim -> html_file, "<img src=\"%s\" />", chart_raid_gear( buffer ) );
 
   img = chart_raid_downtime( buffer );
   if( img )
   {
-    fprintf( sim -> html_file, "<! Raid Downtime>\n" );
+    fprintf( sim -> html_file, "\n<! Raid Downtime: >\n" );
     fprintf( sim -> html_file, "<img src=\"%s\" />", img );
   }
 
   img = chart_raid_uptimes( buffer );
   if( img )
   {
-    fprintf( sim -> html_file, "<! Global Up-Times>\n" );
+    fprintf( sim -> html_file, "\n<! Global Up-Times: >\n" );
     fprintf( sim -> html_file, "<img src=\"%s\" />", img );
   }
 
@@ -1649,7 +1649,7 @@ void report_t::chart_html()
   int count = chart_raid_dpet( buffer, images );
   for( int i=0; i < count; i++ )
   {
-    fprintf( sim -> html_file, "<! Raid Damage Per Execute Time>\n" );
+    fprintf( sim -> html_file, "\n<! Raid Damage Per Execute Time: >\n" );
     fprintf( sim -> html_file, "<img src=\"%s\" />", images[ i ].c_str() );
   }
   fprintf( sim -> html_file, "<hr>\n" );
@@ -1670,14 +1670,14 @@ void report_t::chart_html()
     img = chart_action_dpet( buffer, p );
     if( img )
     {
-      fprintf( sim -> html_file, "<! %s Damage Per Execute Time>\n", p -> name() );
+      fprintf( sim -> html_file, "\n<! %s Damage Per Execute Time: >\n", p -> name() );
       fprintf( sim -> html_file, "<img name=\"chart_dpet\" src=\"%s\" />", img );
     }
 
     img = chart_uptimes_and_procs( buffer, p );
     if( img )
     {
-      fprintf( sim -> html_file, "<! %s Up-Times and Procs>\n", p -> name() );
+      fprintf( sim -> html_file, "\n<! %s Up-Times and Procs: >\n", p -> name() );
       fprintf( sim -> html_file, "<img name=\"chart_uptimes\" src=\"%s\" />", img );
     }
 
@@ -1686,26 +1686,26 @@ void report_t::chart_html()
     img = chart_action_dmg( buffer, p );
     if( img )
     {
-      fprintf( sim -> html_file, "<! %s Damage Sources>\n", p -> name() );
+      fprintf( sim -> html_file, "\n<! %s Damage Sources: >\n", p -> name() );
       fprintf( sim -> html_file, "<img name=\"chart_sources\" src=\"%s\" />", img );
     }
     
     img = chart_gains( buffer, p );
     if( img )
     {
-      fprintf( sim -> html_file, "<! %s Resource Gains>\n", p -> name() );
+      fprintf( sim -> html_file, "\n<! %s Resource Gains: >\n", p -> name() );
       fprintf( sim -> html_file, "<img name=\"chart_gains\" src=\"%s\" />", img );
     }
     
     fprintf( sim -> html_file, "<br>\n" );
 
-    fprintf( sim -> html_file, "<! %s DPS Timeline>\n", p -> name() );
+    fprintf( sim -> html_file, "\n<! %s DPS Timeline: >\n", p -> name() );
     fprintf( sim -> html_file, "<img name=\"chart_dps_timeline\" src=\"%s\" />\n", chart_timeline_dps( buffer, p ) );
 
-    fprintf( sim -> html_file, "<! %s DPS Distribution>\n", p -> name() );
+    fprintf( sim -> html_file, "\n<! %s DPS Distribution: >\n", p -> name() );
     fprintf( sim -> html_file, "<img name=\"chart_dps_distribution\" src=\"%s\" />\n", chart_distribution_dps( buffer, p ) );
 
-    fprintf( sim -> html_file, "<! %s Resource Timeline>\n", p -> name() );
+    fprintf( sim -> html_file, "\n<! %s Resource Timeline: >\n", p -> name() );
     fprintf( sim -> html_file, "<img name=\"chart_resource_timeline\" src=\"%s\" />\n", chart_timeline_resource( buffer, p ) );
 
     fprintf( sim -> html_file, "<hr>\n" );
