@@ -272,7 +272,6 @@ struct rogue_poison_t : public spell_t
 
     base_crit += p -> talents.malice * 0.01;
     base_hit  += p -> talents.precision * 0.01;
-    base_hit  += p -> talents.improved_poisons * 0.01;
 
     base_multiplier *= 1.0 + ( util_t::talent_rank( p -> talents.find_weakness, 3, 0.03 ) +
                                util_t::talent_rank( p -> talents.vile_poisons,  3, 0.07, 0.14, 0.20 ) );
@@ -505,7 +504,7 @@ static void trigger_relentless_strikes( rogue_attack_t* a )
   if( ! a -> requires_combo_points )
     return;
 
-  if( a -> sim -> rng -> roll( p -> talents.relentless_strikes * 0.20 ) )
+  if( a -> sim -> rng -> roll( p -> talents.relentless_strikes * p -> buffs_combo_points * 0.04 ) )
   {
     p -> resource_gain( RESOURCE_ENERGY, 25, p -> gains_relentless_strikes );
   }
@@ -538,9 +537,7 @@ static void trigger_seal_fate( rogue_attack_t* a )
   if( ! a -> adds_combo_points ) 
     return;
 
-  // This is to prevent dual-weapon attacks from triggering a double-proc of Seal Fate
-  // Since we use double-precision floating point numbers to model time, it is highly 
-  // unlikely that this would prevent an auto_attack from triggering a proc.
+  // This is to prevent dual-weapon special attacks from triggering a double-proc of Seal Fate
 
   if( a -> sim -> current_time <= p -> cooldowns_seal_fate )
     return;
@@ -1748,7 +1745,7 @@ struct rupture_t : public rogue_attack_t
     base_cost             = 25;
     base_tick_time        = 2.0; 
     base_multiplier      *= 1.0 + ( p -> talents.blood_spatter   * 0.15 +
-                                    p -> talents.find_weakness   * 0.02 +
+                                    p -> talents.find_weakness   * 0.03 +
                                     p -> talents.serrated_blades * 0.10 );
 
     base_crit_multiplier *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
