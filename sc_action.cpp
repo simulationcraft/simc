@@ -12,11 +12,11 @@
 // action_t::action_t =======================================================
 
 action_t::action_t( int8_t      ty,
-		    const char* n,
-		    player_t*   p,
-		    int8_t      r,
-		    int8_t      s,
-		    int8_t      tr ) :
+                    const char* n,
+                    player_t*   p,
+                    int8_t      r,
+                    int8_t      s,
+                    int8_t      tr ) :
   sim(p->sim), type(ty), name_str(n), player(p), school(s), resource(r), tree(tr), result(RESULT_NONE),
   binary(false), channeled(false), background(false), repeating(false), aoe(false), harmful(true), proc(false), heal(false),
   may_miss(false), may_resist(false), may_dodge(false), may_parry(false), 
@@ -50,7 +50,7 @@ action_t::action_t( int8_t      ty,
 // action_t::parse_options ==================================================
 
 void action_t::parse_options( option_t*          options, 
-			      const std::string& options_str )
+                              const std::string& options_str )
 {
   if( options_str.empty()     ) return;
   if( options_str.size() == 0 ) return;
@@ -81,8 +81,8 @@ void action_t::parse_options( option_t*          options,
 // action_t::merge_options ==================================================
 
 option_t* action_t::merge_options( std::vector<option_t>& merged_options,
-				   option_t*              options1, 
-				   option_t*              options2 )
+                                   option_t*              options1, 
+                                   option_t*              options2 )
 {
   if( ! options1 ) return options2;
   if( ! options2 ) return options1;
@@ -112,7 +112,7 @@ rank_t* action_t::init_rank( rank_t* rank_list )
       // Look for ranks in which the cost of an action is a percentage of base mana
       if( r.cost > 0 && r.cost < 1 )
       {
-	r.cost *= player -> resource_base[ RESOURCE_MANA ];
+        r.cost *= player -> resource_base[ RESOURCE_MANA ];
       }
     }
   }
@@ -203,7 +203,7 @@ void action_t::player_buff()
 
   if( sim -> debug ) 
     report_t::log( sim, "action_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f", 
-		   name(), player_hit, player_crit, player_power, player_penetration );
+                   name(), player_hit, player_crit, player_power, player_penetration );
 }
 
 // action_t::target_debuff ==================================================
@@ -226,7 +226,7 @@ void action_t::target_debuff( int8_t dmg_type )
       school == SCHOOL_BLEED    )
   {
     if( t -> debuffs.blood_frenzy  || 
-	t -> debuffs.savage_combat ) 
+        t -> debuffs.savage_combat ) 
     {
       target_multiplier *= 1.02;
     }
@@ -248,7 +248,7 @@ void action_t::target_debuff( int8_t dmg_type )
   if( t -> debuffs.razorice )
   {
     if( school == SCHOOL_FROST ||
-	school == SCHOOL_FROSTFIRE )
+        school == SCHOOL_FROSTFIRE )
     {
       target_multiplier *= 1.05;
     }
@@ -259,7 +259,7 @@ void action_t::target_debuff( int8_t dmg_type )
 
   if( sim -> debug ) 
     report_t::log( sim, "action_t::target_debuff: %s multiplier=%.2f hit=%.2f crit=%.2f power=%.2f penetration=%.0f", 
-		   name(), target_multiplier, target_hit, target_crit, target_power, target_penetration );
+                   name(), target_multiplier, target_hit, target_crit, target_power, target_penetration );
 }
 
 // action_t::result_is_hit ==================================================
@@ -267,9 +267,9 @@ void action_t::target_debuff( int8_t dmg_type )
 bool action_t::result_is_hit()
 {
   return( result == RESULT_HIT    || 
-	  result == RESULT_CRIT   || 
-	  result == RESULT_GLANCE || 
-	  result == RESULT_BLOCK  );
+          result == RESULT_CRIT   || 
+          result == RESULT_GLANCE || 
+          result == RESULT_BLOCK  );
 }
 
 // action_t::result_is_miss =================================================
@@ -277,7 +277,7 @@ bool action_t::result_is_hit()
 bool action_t::result_is_miss()
 {
   return( result == RESULT_MISS   || 
-	  result == RESULT_RESIST );
+          result == RESULT_RESIST );
 }
 
 // action_t::armor ==========================================================
@@ -323,7 +323,7 @@ double action_t::resistance()
     if( school == SCHOOL_FROSTFIRE )
     {
       resist_rating = std::min( t -> spell_resistance[ SCHOOL_FROST ],
-				t -> spell_resistance[ SCHOOL_FIRE  ] );
+                                t -> spell_resistance[ SCHOOL_FIRE  ] );
     }
 
     resist_rating -= penetration;
@@ -336,8 +336,8 @@ double action_t::resistance()
       int delta_level = t -> level - player -> level;
       if( delta_level > 0 )
       {
-	double level_resist = delta_level * 0.02;
-	if( level_resist > resist ) resist = level_resist;
+        double level_resist = delta_level * 0.02;
+        if( level_resist > resist ) resist = level_resist;
       }
     }
   }
@@ -352,21 +352,21 @@ double action_t::resistance()
 double action_t::total_crit_bonus()
 {
   double crit_multiplier = (   base_crit_multiplier * 
-			     player_crit_multiplier * 
-			     target_crit_multiplier );
+                             player_crit_multiplier * 
+                             target_crit_multiplier );
   
   double crit_bonus_multiplier = (   base_crit_bonus_multiplier * 
-				   player_crit_bonus_multiplier * 
-				   target_crit_bonus_multiplier );
+                                   player_crit_bonus_multiplier * 
+                                   target_crit_bonus_multiplier );
 
   double crit_bonus = ( ( 1.0 + base_crit_bonus ) * crit_multiplier - 1.0 ) * crit_bonus_multiplier;
 
   if( sim -> debug ) 
   {
     report_t::log( sim, "%s crit_bonus for %s: cb=%.0f b_cb=%.2f b_cm=%.2f p_cm=%.2f t_cm=%.2f b_cbm=%.2f p_cbm=%.2f t_cbm=%.2f", 
-		   player -> name(), name(), crit_bonus, base_crit_bonus,
-		   base_crit_multiplier,       player_crit_multiplier,       target_crit_multiplier,
-		   base_crit_bonus_multiplier, player_crit_bonus_multiplier, target_crit_bonus_multiplier );
+                   player -> name(), name(), crit_bonus, base_crit_bonus,
+                   base_crit_multiplier,       player_crit_multiplier,       target_crit_multiplier,
+                   base_crit_bonus_multiplier, player_crit_bonus_multiplier, target_crit_bonus_multiplier );
   }
 
   return crit_bonus;
@@ -392,8 +392,8 @@ double action_t::calculate_tick_damage()
   if( sim -> debug ) 
   {
     report_t::log( sim, "%s dmg for %s: td=%.0f i_td=%.0f b_td=%.0f mod=%.2f b_power=%.0f p_power=%.0f t_power=%.0f b_mult=%.2f p_mult=%.2f t_mult=%.2f", 
-		   player -> name(), name(), tick_dmg, init_tick_dmg, base_tick_dmg, tick_power_mod, 
-		   base_power, player_power, target_power, base_multiplier * base_td_multiplier, player_multiplier, target_multiplier );
+                   player -> name(), name(), tick_dmg, init_tick_dmg, base_tick_dmg, tick_power_mod, 
+                   base_power, player_power, target_power, base_multiplier * base_td_multiplier, player_multiplier, target_multiplier );
   }
 
   return tick_dmg;
@@ -409,7 +409,7 @@ double action_t::calculate_direct_damage()
     {
       if( base_direct_dmg == 0 )
       {
-	base_direct_dmg = ( base_dd_min + base_dd_max ) / 2.0;
+        base_direct_dmg = ( base_dd_min + base_dd_max ) / 2.0;
       }
     }
     else
@@ -463,8 +463,8 @@ double action_t::calculate_direct_damage()
   if( sim -> debug ) 
   {
     report_t::log( sim, "%s dmg for %s: dd=%.0f i_dd=%.0f b_dd=%.0f mod=%.2f b_power=%.0f p_power=%.0f t_power=%.0f b_mult=%.2f p_mult=%.2f t_mult=%.2f", 
-		   player -> name(), name(), direct_dmg, init_direct_dmg, base_direct_dmg, direct_power_mod, 
-		   base_power, player_power, target_power, base_multiplier * base_dd_multiplier, player_multiplier, target_multiplier );
+                   player -> name(), name(), direct_dmg, init_direct_dmg, base_direct_dmg, direct_power_mod, 
+                   base_power, player_power, target_power, base_multiplier * base_dd_multiplier, player_multiplier, target_multiplier );
   }
 
   return direct_dmg;
@@ -478,7 +478,7 @@ void action_t::consume_resource()
 
   if( sim -> debug ) 
     report_t::log( sim, "%s consumes %.1f %s for %s", player -> name(), 
-		   resource_consumed, util_t::resource_type_string( resource ), name() );
+                   resource_consumed, util_t::resource_type_string( resource ), name() );
 
   player -> resource_loss( resource, resource_consumed );
 
@@ -571,15 +571,15 @@ void action_t::last_tick()
 // action_t::assess_damage ==================================================
 
 void action_t::assess_damage( double amount, 
-			      int8_t dmg_type )
+                              int8_t dmg_type )
 {
    if( sim -> log )
      report_t::log( sim, "%s %s %ss %s for %.0f %s damage (%s)",
-		    player -> name(), name(), 
-		    util_t::dmg_type_string( dmg_type ),
-		    sim -> target -> name(), amount, 
-		    util_t::school_type_string( school ),
-		    util_t::result_type_string( result ) );
+                    player -> name(), name(), 
+                    util_t::dmg_type_string( dmg_type ),
+                    sim -> target -> name(), amount, 
+                    util_t::school_type_string( school ),
+                    util_t::result_type_string( result ) );
 
    sim -> target -> assess_damage( amount, school, dmg_type );
 
@@ -732,8 +732,8 @@ void action_t::reset()
 // ==========================================================================
 
 action_t* action_t::create_action( player_t*          p,
-				   const std::string& name, 
-				   const std::string& options )
+                                   const std::string& name, 
+                                   const std::string& options )
 {
   action_t*  a = p -> create_action( name, options );
 
