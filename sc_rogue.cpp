@@ -664,11 +664,12 @@ void rogue_attack_t::execute()
   
   if( result_is_hit() )
   {
+    trigger_relentless_strikes( this );
+
     if( requires_combo_points ) clear_combo_points( this );
     if(     adds_combo_points )   add_combo_point ( this );
 
     trigger_poisons( this );
-    trigger_relentless_strikes( this );
     trigger_ruthlessness( this );
     trigger_sword_specialization( this );
 
