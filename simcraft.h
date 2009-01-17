@@ -1002,6 +1002,8 @@ struct target_t
     double   expose_armor;
     double   faerie_fire;
     double   frozen;
+    double   hemorrhage;
+    int8_t   hemorrhage_charges;
     int8_t   improved_faerie_fire;
     int8_t   improved_scorch;
     int8_t   misery;
@@ -1027,6 +1029,7 @@ struct target_t
     event_t* faerie_fire;
     event_t* frozen;
     event_t* earth_and_moon;
+    event_t* hemorrhage;
     event_t* improved_scorch;
     event_t* nature_vulnerability;
     event_t* shadow_vulnerability;
@@ -1142,6 +1145,7 @@ struct action_t
   double   base_crit_multiplier,   base_crit_bonus_multiplier, base_crit_bonus;
   double player_crit_multiplier, player_crit_bonus_multiplier;
   double target_crit_multiplier, target_crit_bonus_multiplier;
+  double player_dd_adder, target_dd_adder;
   double resource_consumed;
   double direct_dmg, base_direct_dmg, direct_power_mod;
   double   tick_dmg, base_tick_dmg,     tick_power_mod;

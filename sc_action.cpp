@@ -31,6 +31,7 @@ action_t::action_t( int8_t      ty,
     base_crit_multiplier(1),   base_crit_bonus_multiplier(1),
   player_crit_multiplier(1), player_crit_bonus_multiplier(1),
   target_crit_multiplier(1), target_crit_bonus_multiplier(1),
+  player_dd_adder(0), target_dd_adder(0),
   resource_consumed(0),
   direct_dmg(0), base_direct_dmg(0), direct_power_mod(0), 
   tick_dmg(0), base_tick_dmg(0), tick_power_mod(0),
@@ -254,6 +255,11 @@ void action_t::target_debuff( int8_t dmg_type )
     }
   }
 
+  if( school == SCHOOL_PHYSICAL )
+  {
+    target_dd_adder += t -> debuffs.hemorrhage;
+  }
+
   if( t -> debuffs.winters_grasp ) target_hit += 0.02;
   t -> uptimes.winters_grasp -> update( t -> debuffs.winters_grasp != 0 );
 
@@ -450,6 +456,8 @@ double action_t::calculate_direct_damage()
     direct_dmg *= 1.0 + total_crit_bonus();
   }
 
+  direct_dmg += player_dd_adder + target_dd_adder;  // FIXME! Does this occur before/after crit adjustment?
+  
   if( ! binary ) direct_dmg *= 1.0 - resistance();
 
   if( result == RESULT_BLOCK )

@@ -48,6 +48,14 @@ void target_t::assess_damage( double  amount,
     }
     else if( sim -> debug ) report_t::log( sim, "Target %s has %.0f remaining health", name(), current_health );
   }
+
+  // FIXME! Someday create true "callbacks" for the various events to clean up crap like this.
+  
+  if( school == SCHOOL_PHYSICAL && dmg_type == DMG_DIRECT && debuffs.hemorrhage_charges > 0 )
+  {
+    debuffs.hemorrhage_charges--;
+    if( debuffs.hemorrhage_charges == 0 ) event_t::cancel( expirations.hemorrhage );
+  }
 }
    
 // target_t::recalculate_health ==============================================

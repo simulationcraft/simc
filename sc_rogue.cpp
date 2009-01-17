@@ -135,7 +135,19 @@ struct rogue_t : public player_t
 
   struct glyphs_t
   {
-    int8_t dummy;
+    int8_t adrenaline_rush;
+    int8_t blade_flurry;
+    int8_t eviscerate;
+    int8_t expose_armor;
+    int8_t feint;
+    int8_t ghostly_strike;
+    int8_t hemorrhage;
+    int8_t preparation;
+    int8_t rupture;
+    int8_t sinister_strike;
+    int8_t slice_and_dice;
+    int8_t vigor;
+
     glyphs_t() { memset( (void*) this, 0x0, sizeof( glyphs_t ) ); }
   };
   glyphs_t glyphs;
@@ -651,6 +663,8 @@ double rogue_attack_t::cost()
   if( c == 0 ) return 0;
   if( p -> buffs_overkill ) c -= 10;
   if( c < 0 ) c = 0;
+  // FIXME! In what order do Overkill, Slaughter From The Shadows, and Tier7-4pc get combined?
+  if( adds_combo_points && p -> gear.tier7_4pc ) c *= 0.95;  
   return c;
 }
 
@@ -832,7 +846,7 @@ struct melee_t : public rogue_attack_t
     double t = rogue_attack_t::execute_time();
 
     if( p -> buffs_blade_flurry   ) t *= 1.0 / 1.20;
-    if( p -> buffs_slice_and_dice ) t *= 1.0 / 1.30;
+    if( p -> buffs_slice_and_dice ) t *= 1.0 / ( 1.30 + ( p -> gear.tier6_2pc ? 0.05 : 0.00 ) );
 
     p -> uptimes_blade_flurry   -> update( p -> buffs_blade_flurry   != 0 );
     p -> uptimes_slice_and_dice -> update( p -> buffs_slice_and_dice != 0 );
@@ -994,7 +1008,8 @@ struct backstab_t : public rogue_attack_t
                                      p -> talents.blade_twisting   * 0.05 +
                                      p -> talents.find_weakness    * 0.02 +
                                      p -> talents.opportunity      * 0.10 +
-                                     p -> talents.surprise_attacks * 0.10 );
+                                     p -> talents.surprise_attacks * 0.10 +
+				     p -> gear.tier6_4pc           * 0.06 );
     base_crit                  += p -> talents.puncturing_wounds * 0.10;
     base_crit_multiplier       *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
@@ -1024,7 +1039,7 @@ struct blade_flurry_t : public rogue_attack_t
     parse_options( options, options_str );
     
     cooldown  = 120;
-    base_cost = 25;
+    base_cost = p -> glyphs.blade_flurry ? 0 : 25;
   }
 
   virtual void execute()
@@ -1219,6 +1234,8 @@ struct eviscerate_t : public rogue_attack_t
 
     base_crit_multiplier *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
 
+    if( p -> glyphs.eviscerate ) base_crit += 0.10;
+
     if( p -> talents.surprise_attacks ) may_dodge = false;
 
     static double_pair dmg_79[] = { { 497, 751 }, { 867, 1121 }, { 1237, 1491 }, { 1607, 1861 }, { 1977, 2231 } };
@@ -1315,10 +1332,10 @@ struct expose_armor_t : public rogue_attack_t
       {
         struct expiration_t : public event_t
         {
-          expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
+          expiration_t( sim_t* sim, player_t* p, double duration ) : event_t( sim, p )
           {
             name = "Expose Armor Expiration";
-            sim -> add_event( this, 30.0 );
+            sim -> add_event( this, duration );
           }
           virtual void execute()
           {
@@ -1327,17 +1344,19 @@ struct expose_armor_t : public rogue_attack_t
           }
         };
 
+	double duration = p -> glyphs.expose_armor ? 40 : 30;
+
         t -> debuffs.expose_armor = debuff;
 
         event_t*& e = t -> expirations.expose_armor;
 
         if( e )
         {
-          e -> reschedule( 30.0 );
+          e -> reschedule( duration );
         }
         else
         {
-          e = new ( sim ) expiration_t( sim, p );
+          e = new ( sim ) expiration_t( sim, p, duration );
         }
       }
     }
@@ -1368,13 +1387,15 @@ struct feint_t : public rogue_attack_t
   feint_t( player_t* player, const std::string& options_str ) : 
     rogue_attack_t( "feint", player, SCHOOL_PHYSICAL, TREE_COMBAT )
   {
+    rogue_t* p = player -> cast_rogue();
+
     option_t options[] =
     {
       { NULL }
     };
     parse_options( options, options_str );
       
-    base_cost = 20;
+    base_cost = p -> glyphs.feint ? 10 : 20;
     cooldown = 10;
   }
 
@@ -1406,7 +1427,9 @@ struct ghostly_strike_t : public rogue_attack_t
       
     weapon = &( p -> main_hand_weapon );
     adds_combo_points           = true;
-    weapon_multiplier          *= 1.25;
+    cooldown                    = p -> glyphs.ghostly_strike ? 30 : 20;
+    base_cost                   = 40;
+    weapon_multiplier          *= 1.25 + ( p -> glyphs.ghostly_strike ? 0.4 : 0.0 );
     base_multiplier            *= 1.0 + p -> talents.find_weakness * 0.02;
     base_crit_multiplier       *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
@@ -1423,8 +1446,10 @@ struct ghostly_strike_t : public rogue_attack_t
 
 struct hemorrhage_t : public rogue_attack_t
 {
+  double damage_adder;
+
   hemorrhage_t( player_t* player, const std::string& options_str ) : 
-    rogue_attack_t( "hemorrhage", player, SCHOOL_PHYSICAL, TREE_SUBTLETY )
+    rogue_attack_t( "hemorrhage", player, SCHOOL_PHYSICAL, TREE_SUBTLETY ), damage_adder(0)
   {
     rogue_t* p = player -> cast_rogue();
     assert( p -> talents.hemorrhage );
@@ -1441,9 +1466,56 @@ struct hemorrhage_t : public rogue_attack_t
     base_cost                   = 35 - p -> talents.slaughter_from_the_shadows;
     weapon_multiplier          *= 1.10 + p -> talents.sinister_calling * 0.01;
     base_multiplier            *= 1.0 + ( p -> talents.find_weakness    * 0.02 +
-                                          p -> talents.surprise_attacks * 0.10 );
+                                          p -> talents.surprise_attacks * 0.10 +
+					  p -> gear.tier6_4pc           * 0.06 );
     base_crit_multiplier       *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
+
+    damage_adder = util_t::ability_rank( p -> level,  75,80,  42,70,  29,0 );
+
+    if( p -> glyphs.hemorrhage ) damage_adder *= 1.40;
+  }
+
+  virtual void execute()
+  {
+    rogue_t* p = player -> cast_rogue();
+    rogue_attack_t::execute();
+    if( result_is_hit() )
+    {
+      target_t* t = sim -> target;
+
+      if( damage_adder >= t -> debuffs.hemorrhage )
+      {
+        struct expiration_t : public event_t
+        {
+          expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
+          {
+            name = "Hemorrhage Expiration";
+            sim -> add_event( this, 15.0 );
+          }
+          virtual void execute()
+          {
+            sim -> target -> debuffs.hemorrhage = 0;
+            sim -> target -> debuffs.hemorrhage_charges = 0;
+            sim -> target -> expirations.hemorrhage = 0;
+          }
+        };
+
+        t -> debuffs.hemorrhage = damage_adder;
+        t -> debuffs.hemorrhage_charges = 10;
+
+        event_t*& e = t -> expirations.hemorrhage;
+
+        if( e )
+        {
+          e -> reschedule( 15.0 );
+        }
+        else
+        {
+          e = new ( sim ) expiration_t( sim, p );
+        }
+      }
+    }
   }
 
   virtual void player_buff()
@@ -1638,7 +1710,8 @@ struct mutilate_t : public rogue_attack_t
     adds_combo_points = true;
     base_cost         = 60;
     base_multiplier  *= 1.0 + ( p -> talents.find_weakness * 0.02 +
-                                p -> talents.opportunity   * 0.10 );
+                                p -> talents.opportunity   * 0.10 +
+				p -> gear.tier6_4pc         * 0.06 );
     base_crit                  += p -> talents.puncturing_wounds * 0.05;
     base_crit_multiplier       *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
@@ -1753,7 +1826,8 @@ struct rupture_t : public rogue_attack_t
     base_tick_time        = 2.0; 
     base_multiplier      *= 1.0 + ( p -> talents.blood_spatter   * 0.15 +
                                     p -> talents.find_weakness   * 0.03 +
-                                    p -> talents.serrated_blades * 0.10 );
+                                    p -> talents.serrated_blades * 0.10 +
+				    p -> gear.tier7_2pc          * 0.10 );
 
     base_crit_multiplier *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
 
@@ -1774,6 +1848,7 @@ struct rupture_t : public rogue_attack_t
   {
     rogue_t* p = player -> cast_rogue();
     num_ticks = 3 + p -> buffs_combo_points;
+    if( p -> glyphs.rupture ) num_ticks += 2;
     rogue_attack_t::execute();
   }
 
@@ -1908,10 +1983,24 @@ struct sinister_strike_t : public rogue_attack_t
     base_multiplier *= 1.0 + ( p -> talents.aggression       * 0.03 +
                                p -> talents.blade_twisting   * 0.05 +
                                p -> talents.find_weakness    * 0.02 +
-                               p -> talents.surprise_attacks * 0.10 );
+                               p -> talents.surprise_attacks * 0.10 +
+			       p -> gear.tier6_4pc           * 0.06 );
 
     base_crit_multiplier       *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
+  }
+
+  virtual void execute()
+  {
+    rogue_t* p = player -> cast_rogue();
+    rogue_attack_t::execute();
+    if( result_is_hit() )
+    {
+      if( p -> glyphs.sinister_strike && sim -> rng -> roll( 0.50 ) )
+      {
+	add_combo_point( this );
+      }
+    }
   }
 
   virtual void player_buff()
@@ -1975,6 +2064,8 @@ struct slice_and_dice_t : public rogue_attack_t
     rogue_t* p = player -> cast_rogue();
 
     double duration = 6.0 + 3.0 * p -> buffs_combo_points;
+
+    if( p -> glyphs.slice_and_dice ) duration += 3.0;
 
     duration *= 1.0 + p -> talents.improved_slice_and_dice * 0.25;
 
@@ -2304,6 +2395,7 @@ struct adrenaline_rush_t : public spell_t
 
     trigger_gcd = 0;
     cooldown = 300;
+    if( p -> glyphs.adrenaline_rush ) cooldown -= 60;
   }
 
   virtual void execute()
@@ -2437,7 +2529,8 @@ struct preparation_t : public spell_t
     for( action_t* a = player -> action_list; a; a = a -> next )
     {
       if( a -> name_str == "vanish"     ||
-          a -> name_str == "cold_blood" )
+          a -> name_str == "cold_blood" ||
+          ( a -> name_str == "blade_flurry" && p -> glyphs.preparation ) )
       {
         a -> cooldown_ready = 0;
       }
@@ -2667,7 +2760,7 @@ void rogue_t::init_base()
   base_attack_expertise = talents.weapon_expertise * 0.05;
 
   resource_base[ RESOURCE_HEALTH ] = 3524;
-  resource_base[ RESOURCE_ENERGY ] = 100 + ( talents.vigor ? 10 : 0 );
+  resource_base[ RESOURCE_ENERGY ] = 100 + ( talents.vigor ? 10 : 0 ) + ( glyphs.vigor ? 10 : 0 );
 
   health_per_stamina     = 10;
   energy_regen_per_tick  = 20;
@@ -2836,7 +2929,18 @@ bool rogue_t::parse_option( const std::string& name,
     { "vitality",                   OPT_INT8, &( talents.vitality                   ) },
     { "weapon_expertise",           OPT_INT8, &( talents.weapon_expertise           ) },
     // Glyphs
-    { "glyph_dummy",                OPT_INT8, &( glyphs.dummy                       ) },
+    { "glyph_adrenaline_rush",      OPT_INT8, &( glyphs.adrenaline_rush             ) },
+    { "glyph_blade_flurry",         OPT_INT8, &( glyphs.blade_flurry                ) },
+    { "glyph_eviscerate",           OPT_INT8, &( glyphs.eviscerate                  ) },
+    { "glyph_expose_armor",         OPT_INT8, &( glyphs.expose_armor                ) },
+    { "glyph_feint",                OPT_INT8, &( glyphs.feint                       ) },
+    { "glyph_ghostly_strike",       OPT_INT8, &( glyphs.ghostly_strike              ) },
+    { "glyph_hemorrhage",           OPT_INT8, &( glyphs.hemorrhage                  ) },
+    { "glyph_preparation",          OPT_INT8, &( glyphs.preparation                 ) },
+    { "glyph_rupture",              OPT_INT8, &( glyphs.rupture                     ) },
+    { "glyph_sinister_strike",      OPT_INT8, &( glyphs.sinister_strike             ) },
+    { "glyph_slice_and_dice",       OPT_INT8, &( glyphs.slice_and_dice              ) },
+    { "glyph_vigor",                OPT_INT8, &( glyphs.vigor                       ) },
     { NULL, OPT_UNKNOWN }
   };
 
