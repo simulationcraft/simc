@@ -534,6 +534,8 @@ void action_t::execute()
   if( repeating && ! proc ) schedule_execute();
 
   if( sequence ) sequence -> schedule_execute();
+
+  player -> in_combat = true;
 }
 
 // action_t::tick ===========================================================

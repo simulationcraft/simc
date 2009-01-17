@@ -164,7 +164,7 @@ player_t::player_t( sim_t*             s,
   flask( FLASK_NONE ),
   food( FOOD_NONE ),
   // Events
-  executing(0), channeling(0),
+  executing(0), channeling(0), in_combat(false),
   // Actions
   action_list(0),
   // Reporting
@@ -885,6 +885,7 @@ void player_t::reset()
 
   executing = 0;
   channeling = 0;
+  in_combat = false;
   iteration_dmg = 0;
  
   main_hand_weapon.buff = WEAPON_BUFF_NONE;

@@ -491,6 +491,7 @@ struct player_t
   // Events
   event_t* executing;
   event_t* channeling;
+  bool     in_combat;
 
   // Action Priority List
   action_t*   action_list;
