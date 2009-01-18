@@ -447,6 +447,8 @@ double action_t::calculate_direct_damage()
   
   double init_direct_dmg = direct_dmg;
     
+  direct_dmg += player_dd_adder + target_dd_adder;  // FIXME! Does this occur before/after crit adjustment?
+  
   if( result == RESULT_GLANCE )
   {
     direct_dmg *= 0.75;
@@ -456,8 +458,6 @@ double action_t::calculate_direct_damage()
     direct_dmg *= 1.0 + total_crit_bonus();
   }
 
-  direct_dmg += player_dd_adder + target_dd_adder;  // FIXME! Does this occur before/after crit adjustment?
-  
   if( ! binary ) direct_dmg *= 1.0 - resistance();
 
   if( result == RESULT_BLOCK )
