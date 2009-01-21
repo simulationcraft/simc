@@ -170,6 +170,10 @@ bool option_t::parse( sim_t* sim,
     sim -> active_player = player_t::create_druid( sim, value ); 
     assert( sim -> active_player );
   }
+  else if( name == "hunter" ) 
+  { 
+    sim -> active_player = player_t::create_hunter( sim, value ); 
+  }
   else if( name == "mage" ) 
   { 
     sim -> active_player = player_t::create_mage( sim, value ); 

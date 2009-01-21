@@ -53,6 +53,7 @@ struct attack_t;
 struct druid_t;
 struct event_t;
 struct gain_t;
+struct hunter_t;
 struct mage_t;
 struct option_t;
 struct pet_t;
@@ -158,13 +159,14 @@ enum school_type {
 
 enum talent_tree_type {
   TREE_NONE=0,
-  TREE_BALANCE,       TREE_FERAL,       TREE_RESTORATION, // DRUID
-  TREE_ARCANE,        TREE_FIRE,        TREE_FROST,       // MAGE
-  TREE_DISCIPLINE,    TREE_HOLY,        TREE_SHADOW,      // PRIEST
-  TREE_ASSASSINATION, TREE_COMBAT,      TREE_SUBTLETY,    // ROGUE
-  TREE_ELEMENTAL,     TREE_ENHANCEMENT,                   // SHAMAN
-  TREE_AFFLICTION,    TREE_DEMONOLOGY,  TREE_DESTRUCTION, // WARLOCK
-  TREE_ARMS,          TREE_PROTECTION,  TREE_FURY,        // WARRIOR
+  TREE_BALANCE,       TREE_FERAL,        TREE_RESTORATION, // DRUID
+  TREE_BEAST_MASTERY, TREE_MARKSMANSHIP, TREE_SURVIVAL,    // HUNTER
+  TREE_ARCANE,        TREE_FIRE,         TREE_FROST,       // MAGE
+  TREE_DISCIPLINE,    TREE_HOLY,         TREE_SHADOW,      // PRIEST
+  TREE_ASSASSINATION, TREE_COMBAT,       TREE_SUBTLETY,    // ROGUE
+  TREE_ELEMENTAL,     TREE_ENHANCEMENT,                    // SHAMAN
+  TREE_AFFLICTION,    TREE_DEMONOLOGY,   TREE_DESTRUCTION, // WARLOCK
+  TREE_ARMS,          TREE_PROTECTION,   TREE_FURY,        // WARRIOR
   TALENT_TREE_MAX
 };
 
@@ -175,7 +177,7 @@ enum weapon_type { WEAPON_NONE=0,
                    WEAPON_BOW,      WEAPON_CROSSBOW, WEAPON_GUN,      WEAPON_WAND,   WEAPON_THROWN,                 WEAPON_RANGED,
                    WEAPON_MAX };
 
-enum weapon_enchant_type { WEAPON_ENCHANT_NONE=0, MONGOOSE, EXECUTIONER, DEATH_FROST, WEAPON_ENCHANT_MAX };
+enum weapon_enchant_type { WEAPON_ENCHANT_NONE=0, MONGOOSE, EXECUTIONER, DEATH_FROST, SCOPE, WEAPON_ENCHANT_MAX };
 
 enum weapon_buff_type { WEAPON_BUFF_NONE=0, 
                         ANESTHETIC_POISON,
@@ -234,7 +236,7 @@ enum food_type { FOOD_NONE=0,
                  FOOD_MAX };
 
 
-enum position_type { POSITION_NONE=0, POSITION_FRONT, POSITION_BACK, POSITION_MAX };
+enum position_type { POSITION_NONE=0, POSITION_FRONT, POSITION_BACK, POSITION_RANGED, POSITION_MAX };
 
 enum encoding_type { ENCODING_NONE=0, ENCODING_BLIZZARD, ENCODING_MMO, ENCODING_WOWHEAD, ENCODING_MAX };
 
@@ -403,7 +405,7 @@ struct weapon_t
   double damage;
   double swing_time;
   int8_t enchant, buff;
-  double buff_bonus;
+  double enchant_bonus, buff_bonus;
   int8_t slot;
 
   int    group();
@@ -411,7 +413,9 @@ struct weapon_t
   double proc_chance_on_swing( double PPM, double adjusted_swing_time=0 );
 
   weapon_t( int t=WEAPON_NONE, double d=0, double st=2.0, int s=SCHOOL_PHYSICAL ) : 
-    type(t), school(s), damage(d), swing_time(st), enchant(WEAPON_ENCHANT_NONE), buff(WEAPON_BUFF_NONE), buff_bonus(0), slot(SLOT_NONE) {}
+    type(t), school(s), damage(d), swing_time(st), 
+    enchant(WEAPON_ENCHANT_NONE), buff(WEAPON_BUFF_NONE), 
+    enchant_bonus(0), buff_bonus(0), slot(SLOT_NONE) {}
 };
 
 // Player ====================================================================
@@ -629,6 +633,7 @@ struct player_t
     int8_t    thunder_capacitor;
     double    totem_of_wrath;
     int8_t    tricks_of_the_trade;
+    int8_t    trueshot_aura;
     int8_t    unleashed_rage;
     int8_t    violet_eye;
     double    windfury_totem;
@@ -899,6 +904,7 @@ struct player_t
   // Class-Specific Methods
 
   static player_t * create_druid  ( sim_t* sim, std::string& name );
+  static player_t * create_hunter ( sim_t* sim, std::string& name );
   static player_t * create_mage   ( sim_t* sim, std::string& name );
   static player_t * create_priest ( sim_t* sim, std::string& name );
   static player_t * create_rogue  ( sim_t* sim, std::string& name );
@@ -908,6 +914,7 @@ struct player_t
   bool is_pet() { return type == PLAYER_PET || type == PLAYER_GUARDIAN; }
 
   druid_t  * cast_druid  () { assert( type == DRUID      ); return (druid_t  *) this; }
+  hunter_t * cast_hunter () { assert( type == HUNTER     ); return (hunter_t *) this; }
   mage_t   * cast_mage   () { assert( type == MAGE       ); return (mage_t   *) this; }
   priest_t * cast_priest () { assert( type == PRIEST     ); return (priest_t *) this; }
   rogue_t  * cast_rogue  () { assert( type == ROGUE      ); return (rogue_t  *) this; }
@@ -1004,6 +1011,7 @@ struct target_t
     double   frozen;
     double   hemorrhage;
     int8_t   hemorrhage_charges;
+    double   hunters_mark;
     int8_t   improved_faerie_fire;
     int8_t   improved_scorch;
     int8_t   misery;
@@ -1030,6 +1038,7 @@ struct target_t
     event_t* frozen;
     event_t* earth_and_moon;
     event_t* hemorrhage;
+    event_t* hunters_mark;
     event_t* improved_scorch;
     event_t* nature_vulnerability;
     event_t* shadow_vulnerability;
@@ -1156,7 +1165,6 @@ struct action_t
   weapon_t* weapon;
   double weapon_multiplier;
   bool normalize_weapon_speed;
-  bool normalize_weapon_damage;
   stats_t* stats;
   int8_t rank_index;
   event_t* event;

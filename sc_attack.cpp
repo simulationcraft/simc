@@ -19,8 +19,15 @@ attack_t::attack_t( const char* n, player_t* p, int8_t r, int8_t s, int8_t t ) :
 
   if( player -> position == POSITION_BACK )
   {
-    may_parry = false;
     may_block = false;
+    may_parry = false;
+  }
+  else if( player -> position == POSITION_RANGED )
+  {
+    may_block  = false;
+    may_dodge  = false;
+    may_glance = false;
+    may_parry  = false;
   }
 
   base_crit_bonus = 1.0;
@@ -120,8 +127,17 @@ void attack_t::player_buff()
 
 void attack_t::target_debuff( int8_t dmg_type )
 {
+  player_t* p = player;
+  target_t* t = sim -> target;
+
   action_t::target_debuff( dmg_type );
+
   target_expertise = 0;
+
+  if( p -> position == POSITION_RANGED )
+  {
+    player_power += t -> debuffs.hunters_mark;
+  }
 }
 
 // attack_t::build_table ====================================================

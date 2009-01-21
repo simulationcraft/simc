@@ -287,6 +287,7 @@ const char* util_t::weapon_enchant_type_string( int8_t enchant )
   case DEATH_FROST:         return "deathfrost";
   case EXECUTIONER:         return "executioner";
   case MONGOOSE:            return "mongoose";
+  case SCOPE:               return "scope";
   }
   return "unknown";
 }

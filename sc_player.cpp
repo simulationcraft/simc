@@ -404,6 +404,8 @@ void player_t::init_weapon( weapon_t*    w,
 {
   if( encoding.empty() ) return;
 
+  double weapon_dps = 0;
+
   std::vector<std::string> splits;
   int size = util_t::string_split( splits, encoding, "," );
 
@@ -435,6 +437,11 @@ void player_t::init_weapon( weapon_t*    w,
       {
 	w -> damage = atof( value.c_str() );
 	assert( w -> damage != 0 );
+      }
+      else if( parm == "dps" )
+      {
+	weapon_dps = atof( value.c_str() );
+	assert( weapon_dps != 0 );
       }
       else if( parm == "speed" )
       {
@@ -486,6 +493,8 @@ void player_t::init_weapon( weapon_t*    w,
       }
     }
   }
+
+  if( weapon_dps != 0 ) w -> damage = weapon_dps * w -> swing_time;
 
   if( w -> slot == SLOT_MAIN_HAND ) assert( w -> type >= WEAPON_NONE && w -> type < WEAPON_2H );
   if( w -> slot == SLOT_OFF_HAND  ) assert( w -> type >= WEAPON_NONE && w -> type < WEAPON_2H );
@@ -726,7 +735,13 @@ double player_t::composite_spell_crit()
 double player_t::composite_attack_power_multiplier()
 {
   double m = attack_power_multiplier;
-  m *= buffs.unleashed_rage ? 1.10 : 1.0;
+
+  if( buffs.unleashed_rage ||
+      buffs.trueshot_aura  )
+  {
+    m *= 1.10;
+  }
+
   return m;
 }
 

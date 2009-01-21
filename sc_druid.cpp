@@ -183,10 +183,6 @@ struct druid_spell_t : public spell_t
   virtual void   consume_resource();
   virtual void   player_buff();
   virtual void   target_debuff( int8_t dmg_type );
-
-  // Passthru Methods
-  virtual void last_tick()        { spell_t::last_tick();        }
-  virtual bool ready()            { return spell_t::ready();     }
 };
 
 // ==========================================================================

@@ -47,9 +47,10 @@ double weapon_t::normalized_weapon_speed()
 {
   int g = group();
 
-  if( g == WEAPON_SMALL ) return 1.7;
-  if( g == WEAPON_1H    ) return 2.4;
-  if( g == WEAPON_2H    ) return 3.3;
+  if( g == WEAPON_SMALL  ) return 1.7;
+  if( g == WEAPON_1H     ) return 2.4;
+  if( g == WEAPON_2H     ) return 3.3;
+  if( g == WEAPON_RANGED ) return 2.8;
 
   assert(0);
   return 0;

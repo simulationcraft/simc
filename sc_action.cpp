@@ -37,7 +37,7 @@ action_t::action_t( int8_t      ty,
   tick_dmg(0), base_tick_dmg(0), tick_power_mod(0),
   num_ticks(0), current_tick(0), added_ticks(0), ticking(0), 
   cooldown_group(n), duration_group(n), cooldown(0), cooldown_ready(0), duration_ready(0),
-  weapon(0), weapon_multiplier(1), normalize_weapon_speed( false ), normalize_weapon_damage( false ),
+  weapon(0), weapon_multiplier(1), normalize_weapon_speed( false ), 
   stats(0), rank_index(-1), event(0), time_to_execute(0), time_to_tick(0), sync_action(0), observer(0), next(0), sequence(0)
 {
   if( sim -> debug ) report_t::log( sim, "Player %s creates action %s", p -> name(), name() );
@@ -429,14 +429,13 @@ double action_t::calculate_direct_damage()
 
   if( weapon )
   {
-    double weapon_damage = normalize_weapon_damage ? weapon -> damage * 2.8 / weapon -> swing_time : weapon -> damage;
     double weapon_speed  = normalize_weapon_speed  ? weapon -> normalized_weapon_speed() : weapon -> swing_time;
 
     double hand_multiplier = ( weapon -> slot == SLOT_OFF_HAND ) ? 0.5 : 1.0;
 
     double power_damage = weapon_speed * direct_power_mod * total_power();
     
-    direct_dmg  = base_direct_dmg + ( weapon_damage + power_damage ) * weapon_multiplier * hand_multiplier;
+    direct_dmg  = base_direct_dmg + ( weapon -> damage + power_damage ) * weapon_multiplier * hand_multiplier;
     direct_dmg *= total_dd_multiplier();
   }
   else
@@ -520,7 +519,7 @@ void action_t::execute()
       assess_damage( direct_dmg, DMG_DIRECT );
     }
 
-    if( num_ticks > 0 )
+    if( num_ticks > 0 && ! ticking )
     {
       current_tick = 0;
       schedule_tick();
@@ -733,6 +732,7 @@ void action_t::reset()
   duration_ready = 0;
   result = RESULT_NONE;
   event = 0;
+  if( observer ) *observer = 0;
 
   stats -> reset( this );
 }

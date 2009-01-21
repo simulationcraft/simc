@@ -968,12 +968,6 @@ struct warlock_spell_t : public spell_t
   virtual void   target_debuff( int8_t dmg_type );
   virtual void   execute();
   virtual void   tick();
-
-  // Passthru Methods
-  virtual double cost()                              { return spell_t::cost();                  }
-  virtual void   last_tick()                         { spell_t::last_tick();                    }
-  virtual void   assess_damage( double a, int8_t d ) { spell_t::assess_damage( a, d );          }
-  virtual bool   ready()                             { return spell_t::ready();                 }
 };
 
 // trigger_tier7_2pc =======================================================

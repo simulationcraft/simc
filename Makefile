@@ -46,6 +46,7 @@ SRC =\
 	sc_druid.cpp		\
 	sc_enchant.cpp		\
 	sc_event.cpp		\
+	sc_hunter.cpp		\
 	sc_mage.cpp		\
 	sc_option.cpp		\
 	sc_pet.cpp		\

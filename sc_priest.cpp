@@ -158,17 +158,8 @@ struct priest_spell_t : public spell_t
     base_crit       += p -> talents.force_of_will * 0.01;
   }
 
-  // Overridden Methods
   virtual double haste();
   virtual void   player_buff();
-
-  // Passthru Methods
-  virtual double cost()         { return spell_t::cost();         }
-  virtual double execute_time() { return spell_t::execute_time(); }
-  virtual void   execute()      { spell_t::execute();             }
-  virtual void   tick()         { spell_t::tick();                }
-  virtual void   last_tick()    { spell_t::last_tick();           }
-  virtual bool   ready()        { return spell_t::ready();        }
 };
 
 // ==========================================================================
