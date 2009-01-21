@@ -269,10 +269,6 @@ struct shaman_attack_t : public attack_t
   virtual void execute();
   virtual void player_buff();
   virtual void assess_damage( double amount, int8_t dmg_type );
-
-  // Passthru Methods
-  virtual double execute_time()     { return attack_t::execute_time(); }
-  virtual void   schedule_execute() { attack_t::schedule_execute();    }
 };
 
 // ==========================================================================
@@ -296,11 +292,6 @@ struct shaman_spell_t : public spell_t
   virtual void   player_buff();
   virtual void   schedule_execute();
   virtual void   assess_damage( double amount, int8_t dmg_type );
-
-  // Passthru Methods
-  virtual double calculate_direct_damage() { return spell_t::calculate_direct_damage(); }
-  virtual void last_tick()                 { spell_t::last_tick();                      }
-  virtual bool ready()                     { return spell_t::ready();                   }
 };
 
 // ==========================================================================
@@ -423,7 +414,7 @@ static void trigger_windfury_weapon( attack_t* a )
 
   if( ! a -> sim -> cooldown_ready( p -> cooldowns_windfury_weapon ) ) return;
 
-  if( a -> sim -> roll( 0.20 ) )
+  if( a -> sim -> roll( 0.20 + ( p -> glyphs.windfury_weapon ? 0.05 : 0 ) ) )
   {
     if( ! p -> windfury_weapon_attack )
     {

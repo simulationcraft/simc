@@ -222,12 +222,6 @@ struct mage_spell_t : public spell_t
   virtual void   execute();
   virtual void   consume_resource();
   virtual void   player_buff();
-
-  // Passthru Methods
-  virtual double calculate_direct_damage() { return spell_t::calculate_direct_damage(); }
-  virtual void   last_tick()               { spell_t::last_tick();                      }
-  virtual double tick_time()               { return spell_t::tick_time();               }
-  virtual bool   ready()                   { return spell_t::ready();                   }
 };
 
 // ==========================================================================
@@ -1138,8 +1132,7 @@ struct arcane_barrage_t : public mage_spell_t
     mage_spell_t::player_buff();
     if( p -> buffs_arcane_blast )
     {
-      player_multiplier *= 1.0 + ( p ->  buffs_arcane_blast * 0.15 +
-                                   p -> glyphs.arcane_blast * 0.05 );
+      player_multiplier *= 1.0 + p ->  buffs_arcane_blast * ( 0.15 + ( p -> glyphs.arcane_blast ? 0.05 : 0.00 ) );
     }
     for( int i=0; i < 4; i++ ) 
     {
@@ -1268,8 +1261,7 @@ struct arcane_blast_t : public mage_spell_t
     mage_spell_t::player_buff();
     if( p -> buffs_arcane_blast )
     {
-      player_multiplier *= 1.0 + ( p ->  buffs_arcane_blast * 0.15 +
-                                   p -> glyphs.arcane_blast * 0.05 );
+      player_multiplier *= 1.0 + p ->  buffs_arcane_blast * ( 0.15 + ( p -> glyphs.arcane_blast ? 0.05 : 0.00 ) );
     }
     for( int i=0; i < 4; i++ ) 
     {
@@ -1364,8 +1356,7 @@ struct arcane_missiles_t : public mage_spell_t
     mage_spell_t::player_buff();
     if( p -> buffs_arcane_blast )
     {
-      player_multiplier *= 1.0 + ( p ->  buffs_arcane_blast * 0.15 +
-                                   p -> glyphs.arcane_blast * 0.05 );
+      player_multiplier *= 1.0 + p ->  buffs_arcane_blast * ( 0.15 + ( p -> glyphs.arcane_blast ? 0.05 : 0.00 ) );
     }
     for( int i=0; i < 4; i++ ) 
     {
