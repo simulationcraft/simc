@@ -44,6 +44,9 @@ struct hunter_t : public player_t
   event_t*  expirations_master_tactician;
   event_t*  expirations_rapid_fire;
 
+  // Cooldowns
+  double cooldowns_lock_and_load;
+
   // Gains
   gain_t* gains_chimera_viper;
   gain_t* gains_viper_aspect_passive;
@@ -178,6 +181,9 @@ struct hunter_t : public player_t
     expirations_lock_and_load               = 0;
     expirations_master_tactician            = 0;
     expirations_rapid_fire                  = 0;
+
+    // Cooldowns
+    cooldowns_lock_and_load = 0;
 
     // Gains
     gains_chimera_viper        = get_gain( "chimera_viper" );
@@ -501,8 +507,11 @@ static void trigger_lock_and_load( hunter_attack_t* a )
 
   if( ! p -> talents.lock_and_load )
     return;
+  if( ! a -> sim -> cooldown_ready( p -> cooldowns_lock_and_load ) )
+    return;
 
-  if ( ! a -> sim -> roll( p -> talents.lock_and_load * 0.02 ) ) 
+  // NB: talent calc says 3%,7%,10%, assuming it's really 10% * (1/3,2/3,3/3)
+  if ( ! a -> sim -> roll( p -> talents.lock_and_load * 0.1 / 3 ) ) 
     return;
 
   struct lock_and_load_expiration_t : public event_t
@@ -511,6 +520,7 @@ static void trigger_lock_and_load( hunter_attack_t* a )
     {
       name = "Lock and Load Expiration";
       p -> aura_gain( "Lock and Load" );
+      p -> cooldowns_lock_and_load = sim -> current_time + 30;
       sim -> add_event( this, 12.0 );
     }
     virtual void execute()
@@ -1287,10 +1297,10 @@ struct arcane_shot_t : public hunter_attack_t
 
     static rank_t ranks[] =
     {
-      { 79, 11, 492, 492, 0, 0.07 },
-      { 73, 10, 402, 402, 0, 0.07 },
-      { 69, 9,  273, 273, 0, 0.07 },
-      { 60, 8,  200, 200, 0, 0.10 },
+      { 79, 11, 492, 492, 0, 0.05 },
+      { 73, 10, 402, 402, 0, 0.05 },
+      { 69, 9,  273, 273, 0, 0.05 },
+      { 60, 8,  200, 200, 0, 0.07 },
       { 0, 0 }
     };
     init_rank( ranks );
@@ -1300,12 +1310,14 @@ struct arcane_shot_t : public hunter_attack_t
 
     direct_power_mod = 0.15;
 
-    base_multiplier *= 1.0 + ( p -> talents.improved_arcane_shot * 0.05 +
-			       p -> talents.improved_tracking    * 0.01 );
+    base_multiplier *= 1.0 + ( p -> talents.improved_arcane_shot  * 0.05 +
+			       p -> talents.improved_tracking     * 0.01 +
+                               p -> talents.ferocious_inspiration * 0.03 );
 
     base_crit += p -> talents.survival_instincts * 0.02;
 
-    base_crit_bonus_multiplier *= 1.0 + p -> talents.mortal_shots * 0.06;
+    base_crit_bonus_multiplier *= 1.0 + ( p -> talents.mortal_shots     * 0.06 +
+					  p -> talents.marked_for_death * 0.02 );
 
     // FIXME! Ranged Weapon Specialization excluded due to no weapon damage.  Correct?
   }
@@ -1499,10 +1511,10 @@ struct explosive_shot_t : public hunter_attack_t
 
     static rank_t ranks[] =
     {
-      { 80, 4,  0, 0, ( 238.0 + 286.0 ) / 2, 0.07 },
-      { 75, 3,  0, 0, ( 201.0 + 241.0 ) / 2, 0.07 },
-      { 70, 2,  0, 0, ( 136.0 + 164.0 ) / 2, 0.07 },
-      { 60, 1,  0, 0,  ( 89.0 + 107.0 ) / 2, 0.10 },
+      { 80, 4,  0, 0, ( 428.0 + 516.0 ) / 2, 0.07 },
+      { 75, 3,  0, 0, ( 361.0 + 435.0 ) / 2, 0.07 },
+      { 70, 2,  0, 0, ( 245.0 + 295.0 ) / 2, 0.07 },
+      { 60, 1,  0, 0, ( 160.0 + 192.0 ) / 2, 0.10 },
       { 0, 0 }
     };
     init_rank( ranks );
@@ -1512,7 +1524,7 @@ struct explosive_shot_t : public hunter_attack_t
 
     num_ticks      = 2;
     base_tick_time = 1.0;
-    tick_power_mod = 0.08;
+    tick_power_mod = 0.16;
     
     // FIXME! Since there is no weapon damage component, Ranged Weapon Specialization is excluded.
     // FIXME! Damage is "periodic", but it behaves like "direct" damage, so Improved Tracking is included.
@@ -1753,9 +1765,10 @@ struct serpent_sting_t : public hunter_attack_t
     init_rank( ranks );
 
     base_tick_time   = 3.0; 
-    num_ticks        = p -> glyphs.serpent_sting ? 6 : 5;
+    num_ticks        = p -> glyphs.serpent_sting ? 7 : 5;
     tick_power_mod   = 0.2 / 5.0;
     base_multiplier *= 1.0 + p -> talents.improved_stings * 0.1; 
+    base_multiplier *= 1.0 + p -> talents.improved_tracking * 0.01;
 
     observer = &( p -> active_serpent_sting );
   }
@@ -2329,6 +2342,9 @@ void hunter_t::reset()
   expirations_lock_and_load               = 0;
   expirations_master_tactician            = 0;
   expirations_rapid_fire                  = 0;
+
+  // Cooldowns
+  cooldowns_lock_and_load = 0;
 }
 
 // hunter_t::composite_attack_power ==========================================
