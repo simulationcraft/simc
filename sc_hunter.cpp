@@ -301,8 +301,6 @@ static void trigger_aspect_of_the_viper( hunter_attack_t* a )
   if( p -> active_aspect != ASPECT_VIPER )
     return;
 
-  // FIXME! What is the exact formula?
-
   double gain = p -> resource_max[ RESOURCE_MANA ] * p -> ranged_weapon.swing_time / 100.0;
 
   if( p -> glyphs.aspect_of_the_viper ) gain *= 1.10;
@@ -1106,7 +1104,7 @@ void hunter_attack_t::player_buff()
   {
     player_multiplier *= 1.0 + p -> talents.focused_fire * 0.01;
   }
-  player_crit += p -> talents.master_tactician;
+  player_crit += p -> buffs_master_tactician;
 
   p -> uptimes_master_tactician -> update( p -> buffs_master_tactician != 0 );
 }
@@ -1603,9 +1601,10 @@ struct kill_shot_t : public hunter_attack_t
 
     static rank_t ranks[] =
     {
-      { 80, 3, 410, 410, 0, 0.07 },
+      { 80, 3, 650, 650, 0, 0.07 },
       { 75, 2, 500, 500, 0, 0.07 },
-      { 71, 1, 650, 650, 0, 0.07 },
+      { 71, 1, 410, 410, 0, 0.07 },
+      { 0, 0 }
     };
     init_rank( ranks );
 
