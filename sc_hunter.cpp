@@ -84,6 +84,7 @@ struct hunter_t : public player_t
     int8_t  explosive_shot;
     int8_t  expose_weakness;
     int8_t  focused_aim;
+    int8_t  go_for_the_throat;
     int8_t  hunter_vs_wild;
     int8_t  hunting_party;
     int8_t  improved_arcane_shot;
@@ -125,7 +126,6 @@ struct hunter_t : public player_t
     int8_t  ferocity;
     int8_t  frenzy;
     int8_t  focused_fire;
-    int8_t  go_for_the_throat;
     int8_t  invigoration;
     int8_t  kindred_spirits;
     int8_t  piercing_shots;
@@ -294,7 +294,7 @@ struct hunter_pet_t : public pet_t
   event_t* expirations_placeholder;
 
   // Gains
-  gain_t* gains_placeholder;
+  gain_t* gains_go_for_the_throat;
 
   // Procs
   proc_t* procs_placeholder;
@@ -338,7 +338,7 @@ struct hunter_pet_t : public pet_t
     expirations_placeholder = 0;
 
     // Gains
-    gains_placeholder = get_gain( "placeholder" );
+    gains_go_for_the_throat = get_gain( "go_for_the_throat" );
 
     // Procs
     procs_placeholder = get_proc( "placeholder" );
@@ -576,6 +576,21 @@ static void trigger_feeding_frenzy( action_t* a )
       a -> player_multiplier *= 1.0 + p -> talents.feeding_frenzy * 0.06;
     }
   }
+}
+
+// trigger_go_for_the_throat ===============================================
+
+static void trigger_go_for_the_throat( attack_t* a )
+{
+  hunter_t* p = a -> player -> cast_hunter();
+
+  if ( ! p -> talents.go_for_the_throat ) return;
+  if ( ! p -> active_pet ) return;
+
+  double gain = std::min(p -> talents.go_for_the_throat * 25.0,
+                         100 - p -> active_pet -> resource_current[ RESOURCE_FOCUS ]);
+  p -> active_pet -> resource_gain( RESOURCE_FOCUS, gain,
+                                    p -> active_pet -> gains_go_for_the_throat );
 }
 
 // trigger_hunting_party ===================================================
@@ -1180,6 +1195,7 @@ void hunter_attack_t::execute()
     if( result == RESULT_CRIT )
     {
       trigger_expose_weakness( this );
+      trigger_go_for_the_throat( this );
       trigger_thrill_of_the_hunt( this );
     }
   }
