@@ -1266,8 +1266,8 @@ struct ranged_t : public hunter_attack_t
     base_dd_min = 1;
     base_dd_max = 1;
 
-    base_multiplier *= 1.0 + ( p -> talents.improved_tracking            * 0.01 +
-			       p -> talents.ranged_weapon_specialization * 0.01 );
+    base_multiplier *= 1.0 + p -> talents.ranged_weapon_specialization * 0.01;
+    base_multiplier *= 1.0 + p -> talents.improved_tracking * 0.01;
 
     add_ammunition();
     add_scope();
@@ -1352,8 +1352,8 @@ struct aimed_shot_t : public hunter_attack_t
     // FIXME! If just the weapon damage, then it needs to be applied against "weapon_multiplier".
 
     base_multiplier *= 1.0 + ( p -> talents.barrage                      * 0.04 +
-			       p -> talents.ranged_weapon_specialization * 0.01 +
-			       p -> talents.improved_tracking            * 0.01 );
+			       p -> talents.ranged_weapon_specialization * 0.01 );
+    base_multiplier *= 1.0 + p -> talents.improved_tracking * 0.01;
 
     base_crit += p -> talents.improved_barrage * 0.04;
 
@@ -1436,8 +1436,8 @@ struct arcane_shot_t : public hunter_attack_t
     direct_power_mod = 0.15;
 
     base_multiplier *= 1.0 + ( p -> talents.improved_arcane_shot  * 0.05 +
-			       p -> talents.improved_tracking     * 0.01 +
                                p -> talents.ferocious_inspiration * 0.03 );
+    base_multiplier *= 1.0 + p -> talents.improved_tracking * 0.01;
 
     base_crit += p -> talents.survival_instincts * 0.02;
 
@@ -1529,8 +1529,8 @@ struct chimera_shot_t : public hunter_attack_t
     direct_power_mod       = 1.0 / 14.0;
     cooldown               = 10;
 
-    base_multiplier *= 1.0 + ( p -> talents.ranged_weapon_specialization * 0.01 +
-			       p -> talents.improved_tracking            * 0.01 );
+    base_multiplier *= 1.0 + p -> talents.ranged_weapon_specialization * 0.01;
+    base_multiplier *= 1.0 + p -> talents.improved_tracking * 0.01;
 
     base_crit_bonus_multiplier *= 1.0 + ( p -> talents.mortal_shots     * 0.06 +
 					  p -> talents.marked_for_death * 0.02 );
@@ -1655,7 +1655,6 @@ struct explosive_shot_t : public hunter_attack_t
     tick_power_mod = 0.16;
     
     // FIXME! Since there is no weapon damage component, Ranged Weapon Specialization is excluded.
-    // FIXME! Damage is "periodic", but it behaves like "direct" damage, so Improved Tracking is included.
     
     base_multiplier *= 1.0 + p -> talents.improved_tracking * 0.01;
 
@@ -1755,8 +1754,8 @@ struct kill_shot_t : public hunter_attack_t
     weapon_multiplier      = 2.0;
     cooldown               = 15;
 
-    base_multiplier *= 1.0 + ( p -> talents.ranged_weapon_specialization * 0.01 +
-			       p -> talents.improved_tracking            * 0.01 );
+    base_multiplier *= 1.0 + p -> talents.ranged_weapon_specialization * 0.01;
+    base_multiplier *= 1.0 + p -> talents.improved_tracking * 0.01;
 
     base_crit += p -> talents.sniper_training * 0.05;
 
@@ -1807,8 +1806,8 @@ struct multi_shot_t : public hunter_attack_t
     cooldown_group         = "aimed_multi";
 
     base_multiplier *= 1.0 + ( p -> talents.barrage                      * 0.04 +
-			       p -> talents.ranged_weapon_specialization * 0.01 +
-			       p -> talents.improved_tracking            * 0.01 );
+			       p -> talents.ranged_weapon_specialization * 0.01 );
+    base_multiplier *= 1.0 + p -> talents.improved_tracking * 0.01;
 
     base_crit += p -> talents.improved_barrage * 0.04;
 
@@ -1843,8 +1842,8 @@ struct scatter_shot_t : public hunter_attack_t
     // FIXME! Is the contribution from Attack Power also reduced by 50%?
     weapon_multiplier *= 0.5;
 
-    base_multiplier *= 1.0 + ( p -> talents.ranged_weapon_specialization * 0.01 +
-			       p -> talents.improved_tracking            * 0.01 );
+    base_multiplier *= 1.0 + p -> talents.ranged_weapon_specialization * 0.01;
+    base_multiplier *= 1.0 + p -> talents.improved_tracking * 0.01;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.mortal_shots * 0.06;
 
@@ -1955,8 +1954,8 @@ struct silencing_shot_t : public hunter_attack_t
     // FIXME! Is the contribution from Attack Power also reduced by 50%?
     weapon_multiplier *= 0.5;
 
-    base_multiplier *= 1.0 + ( p -> talents.ranged_weapon_specialization * 0.01 +
-			       p -> talents.improved_tracking            * 0.01 );
+    base_multiplier *= 1.0 + p -> talents.ranged_weapon_specialization * 0.01;
+    base_multiplier *= 1.0 + p -> talents.improved_tracking * 0.01;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.mortal_shots * 0.06;
 
@@ -1993,8 +1992,8 @@ struct steady_shot_t : public hunter_attack_t
     
     base_cost *= 1.0 - p -> talents.master_marksman * 0.05;
 
-    base_multiplier *= 1.0 + ( p -> talents.ranged_weapon_specialization * 0.01 +
-			       p -> talents.improved_tracking            * 0.01 );
+    base_multiplier *= 1.0 + p -> talents.ranged_weapon_specialization * 0.01;
+    base_multiplier *= 1.0 + p -> talents.improved_tracking * 0.01;
 
     base_crit += p -> talents.survival_instincts * 0.02;
 
