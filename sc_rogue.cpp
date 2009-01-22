@@ -2407,7 +2407,7 @@ struct adrenaline_rush_t : public spell_t
         name = "Adrenaline Rush Expiration";
         p -> aura_gain( "Adrenaline Rush" );
         p -> buffs_adrenaline_rush = 1;
-        p -> energy_regen_per_tick *= 2.0;
+        p -> energy_regen_per_second *= 2.0;
         sim -> add_event( this, 15.0 );
       }
       virtual void execute()
@@ -2415,7 +2415,7 @@ struct adrenaline_rush_t : public spell_t
         rogue_t* p = player -> cast_rogue();
         p -> aura_loss( "Adrenaline Rush" );
         p -> buffs_adrenaline_rush = 0;
-        p -> energy_regen_per_tick /= 2.0;
+        p -> energy_regen_per_second /= 2.0;
       }
     };
 
@@ -2762,9 +2762,9 @@ void rogue_t::init_base()
   resource_base[ RESOURCE_HEALTH ] = 3524;
   resource_base[ RESOURCE_ENERGY ] = 100 + ( talents.vigor ? 10 : 0 ) + ( glyphs.vigor ? 10 : 0 );
 
-  health_per_stamina     = 10;
-  energy_regen_per_tick  = 20;
-  energy_regen_per_tick *= 1.0 + util_t::talent_rank( talents.vitality, 3, 0.08, 0.16, 0.25 );
+  health_per_stamina       = 10;
+  energy_regen_per_second  = 20;
+  energy_regen_per_second *= 1.0 + util_t::talent_rank( talents.vitality, 3, 0.08, 0.16, 0.25 );
 
   base_gcd = 1.0;
 }

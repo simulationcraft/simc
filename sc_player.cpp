@@ -141,7 +141,7 @@ player_t::player_t( sim_t*             s,
   spell_power_per_intellect(0), initial_spell_power_per_intellect(0),
   spell_power_per_spirit(0),    initial_spell_power_per_spirit(0),
   spell_crit_per_intellect(0),  initial_spell_crit_per_intellect(0),
-  mp5_per_intellect(0), spirit_regen_while_casting(0), energy_regen_per_tick(0),
+  mp5_per_intellect(0), spirit_regen_while_casting(0), energy_regen_per_second(0), focus_regen_per_second(0),
   last_cast(0),
   // Attack Mechanics
   base_attack_power(0),       initial_attack_power(0),        attack_power(0),
@@ -620,6 +620,7 @@ void player_t::init_stats()
   gains.ashtongue_talisman    = get_gain( "ashtongue_talisman" );
   gains.dark_rune             = get_gain( "dark_rune" );
   gains.energy_regen          = get_gain( "energy_regen" );
+  gains.focus_regen           = get_gain( "focus_regen" );
   gains.innervate             = get_gain( "innervate" );
   gains.glyph_of_innervate    = get_gain( "glyph_of_innervate" );
   gains.judgement_of_wisdom   = get_gain( "judgement_of_wisdom" );
@@ -1019,9 +1020,16 @@ void player_t::regen( double periodicity )
 {
   if( sim -> infinite_resource[ RESOURCE_ENERGY ] == 0 && resource_max[ RESOURCE_ENERGY ] > 0 )
   {
-    double energy_regen = periodicity * energy_regen_per_tick / 2.0;
+    double energy_regen = periodicity * energy_regen_per_second;
 
     resource_gain( RESOURCE_ENERGY, energy_regen, gains.energy_regen );
+  }
+
+  if( sim -> infinite_resource[ RESOURCE_FOCUS ] == 0 && resource_max[ RESOURCE_FOCUS ] > 0 )
+  {
+    double focus_regen = periodicity * focus_regen_per_second;
+
+    resource_gain( RESOURCE_FOCUS, focus_regen, gains.focus_regen );
   }
 
   if( sim -> infinite_resource[ RESOURCE_MANA ] == 0 && resource_max[ RESOURCE_MANA ] > 0 )

@@ -454,7 +454,8 @@ struct player_t
   double spell_crit_per_intellect,  initial_spell_crit_per_intellect;
   double mp5_per_intellect;
   double spirit_regen_while_casting;
-  double energy_regen_per_tick;
+  double energy_regen_per_second;
+  double focus_regen_per_second;
   double last_cast;
 
   // Attack Mechanics
@@ -721,6 +722,7 @@ struct player_t
     gain_t* ashtongue_talisman;
     gain_t* dark_rune;
     gain_t* energy_regen;
+    gain_t* focus_regen;
     gain_t* innervate;
     gain_t* glyph_of_innervate;
     gain_t* judgement_of_wisdom;
