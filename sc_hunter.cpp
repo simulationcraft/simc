@@ -2118,7 +2118,7 @@ struct rapid_fire_t : public hunter_spell_t
     base_cost = p -> resource_base[ RESOURCE_MANA ] * 0.03;
     cooldown  = 300;
     cooldown -= p -> talents.rapid_killing * 60; 
-    trigger_gcd = 1.0;
+    trigger_gcd = 0.0;
     harmful = false;
   }
 
