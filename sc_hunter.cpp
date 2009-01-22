@@ -32,7 +32,7 @@ struct hunter_t : public player_t
   int8_t buffs_improved_steady_shot;
   int8_t buffs_lock_and_load;
   double buffs_master_tactician;
-  int8_t buffs_rapid_fire;
+  double buffs_rapid_fire;
   int8_t buffs_trueshot_aura;
 
   // Expirations
@@ -205,6 +205,7 @@ struct hunter_t : public player_t
   virtual bool      parse_talents_mmo( const std::string& talent_string );
   virtual bool      parse_option( const std::string& name, const std::string& value );
   virtual action_t* create_action( const std::string& name, const std::string& options );
+  virtual pet_t*    create_pet( const std::string& name );
   virtual int       primary_resource() { return RESOURCE_MANA; }
 
   // Event Tracking
@@ -772,7 +773,7 @@ struct hunter_pet_t : public pet_t
 
   virtual void init_base()
   {
-    hunter_t* o = owner -> cast_hunter();
+    //hunter_t* o = owner -> cast_hunter();
 
     // FIXME! Need to find base stats
     attribute_base[ ATTR_STRENGTH  ] = 100;
@@ -780,6 +781,8 @@ struct hunter_pet_t : public pet_t
     attribute_base[ ATTR_STAMINA   ] = 100;
     attribute_base[ ATTR_INTELLECT ] = 100;
     attribute_base[ ATTR_SPIRIT    ] = 100;
+
+    // FIXME! Need stat-to-AP conversions here
 
     // FIXME! What is the max value of focus?
     resource_base[ RESOURCE_FOCUS ] = 100;
@@ -805,7 +808,7 @@ struct hunter_pet_attack_t : public attack_t
     attack_t( n, player, r, s )
   {
     hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
-    hunter_t*     o = p -> owner -> cast_hunter();
+  //hunter_t*     o = p -> owner -> cast_hunter();
 
     may_glance = false;
 
@@ -817,8 +820,8 @@ struct hunter_pet_attack_t : public attack_t
 
   virtual void execute()
   {
-    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
-    hunter_t*     o = p -> owner -> cast_hunter();
+    //hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    //hunter_t*     o = p -> owner -> cast_hunter();
 
     attack_t::execute();
 
@@ -835,10 +838,12 @@ struct hunter_pet_attack_t : public attack_t
 
   virtual void player_buff()
   {
-    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
-    hunter_t*     o = p -> owner -> cast_hunter();
+    //hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    //hunter_t*     o = p -> owner -> cast_hunter();
 
     attack_t::player_buff();
+
+    // FIXME! Need conversion from hunter stats to player stats here
 
     // FIXME! Pet dynamic buffs here
   }
@@ -852,7 +857,7 @@ struct hunter_pet_melee_t : public hunter_pet_attack_t
     hunter_pet_attack_t( "melee", player )
   {
     hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
-    hunter_t*     o = p -> owner -> cast_hunter();
+  //hunter_t*     o = p -> owner -> cast_hunter();
 
     weapon = &( p -> main_hand_weapon );
 
@@ -865,8 +870,8 @@ struct hunter_pet_melee_t : public hunter_pet_attack_t
 
   virtual void execute()
   {
-    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
-    hunter_t*     o = p -> owner -> cast_hunter();
+    //hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    //hunter_t*     o = p -> owner -> cast_hunter();
 
     hunter_pet_attack_t::execute();
 
@@ -911,7 +916,7 @@ struct cat_rake_t : public hunter_pet_attack_t
     hunter_pet_attack_t( "rake", player, RESOURCE_FOCUS, SCHOOL_BLEED )
   {
     hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
-    hunter_t*     o = p -> owner -> cast_hunter();
+  //hunter_t*     o = p -> owner -> cast_hunter();
 
     assert( p -> pet_type == PET_CAT );
 
@@ -1040,7 +1045,7 @@ void hunter_attack_t::player_buff()
 struct ranged_t : public hunter_attack_t
 {
   ranged_t( player_t* player ) : 
-    hunter_attack_t( "ranged_auto_attack", player )
+    hunter_attack_t( "ranged", player )
   {
     hunter_t* p = player -> cast_hunter();
 
@@ -1064,6 +1069,8 @@ struct ranged_t : public hunter_attack_t
 
   void execute()
   {
+    printf( "time_to_execute: %.2f\n", time_to_execute );
+
     hunter_attack_t::execute();
 
     if( result_is_hit() )
@@ -2019,14 +2026,15 @@ struct rapid_fire_t : public hunter_spell_t
 
     struct expiration_t : public event_t
     {
-      expiration_t( sim_t* sim, player_t* p ) :
-        event_t( sim, p )
+      expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
       {
 	name = "Rapid Fire Expiration";
+	p -> aura_gain( "Rapid Fire" );
         sim -> add_event( this, 15.0 );
       }
       virtual void execute()
       {
+	player -> aura_loss( "Rapid Fire" );
         player -> cast_hunter() -> buffs_rapid_fire = 0;
       }
     };
@@ -2140,6 +2148,51 @@ action_t* hunter_t::create_action( const std::string& name,
 //if( name == "viper_sting"           ) return new            viper_sting_t( this, options_str );
   
   return player_t::create_action( name, options_str );
+}
+
+// hunter_t::create_pet =======================================================
+
+pet_t* hunter_t::create_pet( const std::string& pet_name )
+{
+  // Ferocity
+  if( pet_name == "carrion_bird" ) return new hunter_pet_t( sim, this, pet_name, PET_CARRION_BIRD );
+  if( pet_name == "cat"          ) return new hunter_pet_t( sim, this, pet_name, PET_CAT          );
+  if( pet_name == "core_hound"   ) return new hunter_pet_t( sim, this, pet_name, PET_CORE_HOUND   );   
+  if( pet_name == "devilsaur"    ) return new hunter_pet_t( sim, this, pet_name, PET_DEVILSAUR    );
+  if( pet_name == "hyena"        ) return new hunter_pet_t( sim, this, pet_name, PET_HYENA        );
+  if( pet_name == "moth"         ) return new hunter_pet_t( sim, this, pet_name, PET_MOTH         );
+  if( pet_name == "raptor"       ) return new hunter_pet_t( sim, this, pet_name, PET_RAPTOR       );       
+  if( pet_name == "spirit_beast" ) return new hunter_pet_t( sim, this, pet_name, PET_SPIRIT_BEAST );
+  if( pet_name == "tallstrider"  ) return new hunter_pet_t( sim, this, pet_name, PET_TALLSTRIDER  );
+  if( pet_name == "wasp"         ) return new hunter_pet_t( sim, this, pet_name, PET_WASP         );        
+  if( pet_name == "wolf"         ) return new hunter_pet_t( sim, this, pet_name, PET_WOLF         );
+
+  // Tenacity
+  if( pet_name == "bear"         ) return new hunter_pet_t( sim, this, pet_name, PET_BEAR         );
+  if( pet_name == "boar"         ) return new hunter_pet_t( sim, this, pet_name, PET_BOAR         );
+  if( pet_name == "crab"         ) return new hunter_pet_t( sim, this, pet_name, PET_CRAB         );
+  if( pet_name == "crocolisk"    ) return new hunter_pet_t( sim, this, pet_name, PET_CROCOLISK    );
+  if( pet_name == "gorilla"      ) return new hunter_pet_t( sim, this, pet_name, PET_GORILLA      );
+  if( pet_name == "rhino"        ) return new hunter_pet_t( sim, this, pet_name, PET_RHINO        );
+  if( pet_name == "scorpid"      ) return new hunter_pet_t( sim, this, pet_name, PET_SCORPID      );
+  if( pet_name == "turtle"       ) return new hunter_pet_t( sim, this, pet_name, PET_TURTLE       );
+  if( pet_name == "warp_stalker" ) return new hunter_pet_t( sim, this, pet_name, PET_WARP_STALKER );
+  if( pet_name == "worm"         ) return new hunter_pet_t( sim, this, pet_name, PET_WORM         );
+
+  // Cunning
+  if( pet_name == "bat"          ) return new hunter_pet_t( sim, this, pet_name, PET_BAT          );
+  if( pet_name == "bird_of_prey" ) return new hunter_pet_t( sim, this, pet_name, PET_BIRD_OF_PREY );
+  if( pet_name == "chimera"      ) return new hunter_pet_t( sim, this, pet_name, PET_CHIMERA      );
+  if( pet_name == "dragonhawk"   ) return new hunter_pet_t( sim, this, pet_name, PET_DRAGONHAWK   );
+  if( pet_name == "nether_ray"   ) return new hunter_pet_t( sim, this, pet_name, PET_NETHER_RAY   );
+  if( pet_name == "ravager"      ) return new hunter_pet_t( sim, this, pet_name, PET_RAVAGER      );
+  if( pet_name == "serpent"      ) return new hunter_pet_t( sim, this, pet_name, PET_SERPENT      );
+  if( pet_name == "silithid"     ) return new hunter_pet_t( sim, this, pet_name, PET_SILITHID     );
+  if( pet_name == "spider"       ) return new hunter_pet_t( sim, this, pet_name, PET_SPIDER       );
+  if( pet_name == "sporebat"     ) return new hunter_pet_t( sim, this, pet_name, PET_SPOREBAT     );
+  if( pet_name == "wind_serpent" ) return new hunter_pet_t( sim, this, pet_name, PET_WIND_SERPENT );
+
+  return 0;
 }
 
 // hunter_t::init_base ========================================================
