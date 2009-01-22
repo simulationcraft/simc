@@ -1626,7 +1626,7 @@ struct kill_shot_t : public hunter_attack_t
     normalize_weapon_speed = true;
     weapon_multiplier      = 2.0;
     direct_power_mod       = 2.0/14.0;
-    cooldown               = 35;
+    cooldown               = 15;
 
     base_multiplier *= 1.0 + ( p -> talents.ranged_weapon_specialization * 0.01 +
 			       p -> talents.improved_tracking            * 0.01 );
