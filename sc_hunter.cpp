@@ -838,12 +838,12 @@ struct hunter_pet_attack_t : public attack_t
 
   virtual void player_buff()
   {
-    //hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
-    //hunter_t*     o = p -> owner -> cast_hunter();
+    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    hunter_t*     o = p -> owner -> cast_hunter();
 
     attack_t::player_buff();
 
-    // FIXME! Need conversion from hunter stats to player stats here
+    player_power += 0.22 * o -> composite_attack_power();
 
     // FIXME! Pet dynamic buffs here
   }
@@ -916,15 +916,17 @@ struct cat_rake_t : public hunter_pet_attack_t
     hunter_pet_attack_t( "rake", player, RESOURCE_FOCUS, SCHOOL_BLEED )
   {
     hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
-  //hunter_t*     o = p -> owner -> cast_hunter();
+    hunter_t*     o = p -> owner -> cast_hunter();
 
     assert( p -> pet_type == PET_CAT );
 
+    base_cost       = 20;
     base_direct_dmg = 57;
     base_td_init    = 21;
     num_ticks       = 3;
     base_tick_time  = 3;
     tick_power_mod  = 0.0175;
+    cooldown        = 10 * ( 1.0 - o -> talents.longevity * 0.10 );
   }
 
   virtual void execute()
@@ -935,13 +937,82 @@ struct cat_rake_t : public hunter_pet_attack_t
   }
 };
 
+// =========================================================================
+// Hunter Pet Spells
+// =========================================================================
+
+struct hunter_pet_spell_t : public spell_t
+{
+  hunter_pet_spell_t( const char* n, player_t* player, int8_t r=RESOURCE_FOCUS, int8_t s=SCHOOL_PHYSICAL ) : 
+    spell_t( n, player, r, s )
+  {
+    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+  //hunter_t*     o = p -> owner -> cast_hunter();
+
+    if( p -> group() == PET_FEROCITY ) base_multiplier *= 1.10;
+    if( p -> group() == PET_CUNNING  ) base_multiplier *= 1.05;
+
+    // FIXME! Pet static buffs here
+  }
+
+  virtual void execute()
+  {
+    //hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    //hunter_t*     o = p -> owner -> cast_hunter();
+
+    spell_t::execute();
+
+    if( result_is_hit() )
+    {
+      // FIXME! Pet "on-hit" triggers here.
+
+      if( result == RESULT_CRIT )
+      {
+	// FIXME! Pet "on-crit" triggers here.
+      }
+    }
+  }
+
+  virtual void player_buff()
+  {
+    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    hunter_t*     o = p -> owner -> cast_hunter();
+
+    spell_t::player_buff();
+
+    player_power += 0.125 * o -> composite_spell_power( SCHOOL_MAX );
+
+    // FIXME! Pet dynamic buffs here
+  }
+};
+
+// Chimera Froststorm Breath ================================================
+
+struct chimera_froststorm_breath_t : public hunter_pet_spell_t
+{
+  chimera_froststorm_breath_t( player_t* player, const std::string& options_str ) :
+    hunter_pet_spell_t( "froststorm_breath", player, RESOURCE_FOCUS, SCHOOL_NATURE )
+  {
+    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    hunter_t*     o = p -> owner -> cast_hunter();
+
+    assert( p -> pet_type == PET_CHIMERA );
+
+    base_cost        = 20;
+    base_direct_dmg  = 150;
+    direct_power_mod = 1.5 / 3.5;
+    cooldown         = 10 * ( 1.0 - o -> talents.longevity * 0.10 );
+  }
+};
+
 // hunter_pet_t::create_action =============================================
 
 action_t* hunter_pet_t::create_action( const std::string& name,
 				       const std::string& options_str )
 {
-  if( name == "auto_attack" ) return new pet_auto_attack_t( this, options_str );
-  if( name == "rake"        ) return new        cat_rake_t( this, options_str );
+  if( name == "auto_attack"       ) return new           pet_auto_attack_t( this, options_str );
+  if( name == "froststorm_breath" ) return new chimera_froststorm_breath_t( this, options_str );
+  if( name == "rake"              ) return new                  cat_rake_t( this, options_str );
 
   return 0;
 }
