@@ -76,6 +76,7 @@ struct hunter_t : public player_t
     int8_t  aspect_mastery;
     int8_t  barrage;
     int8_t  beast_within;
+    int8_t  bestial_discipline;
     int8_t  careful_aim;
     int8_t  chimera_shot;
     int8_t  combat_experience;
@@ -118,8 +119,7 @@ struct hunter_t : public player_t
     int8_t  wild_quiver;
 
     // Talents not yet fully implemented
-    int8_t  beastial_discipline;
-    int8_t  beastial_wrath;
+    int8_t  bestial_wrath;
     int8_t  cobra_strikes;
     int8_t  ferocious_inspiration;
     int8_t  ferocity;
@@ -235,435 +235,6 @@ struct hunter_t : public player_t
 };
 
 // ==========================================================================
-// Hunter Attack
-// ==========================================================================
-
-struct hunter_attack_t : public attack_t
-{
-  hunter_attack_t( const char* n, player_t* player, int8_t s=SCHOOL_PHYSICAL, int8_t t=TREE_NONE ) :
-    attack_t( n, player, RESOURCE_MANA, s, t )
-  {
-    hunter_t* p = player -> cast_hunter();
-
-    base_hit  += p -> talents.focused_aim * 0.01;
-    base_crit += p -> talents.master_marksman * 0.01;
-    base_crit += p -> talents.killer_instinct * 0.01;
-
-    if( p -> position == POSITION_RANGED )
-    {
-      base_crit += p -> talents.lethal_shots * 0.01;
-    }
-  }
-
-  virtual void add_ammunition()
-  {
-    hunter_t* p = player -> cast_hunter();
-
-    double weapon_speed = normalize_weapon_speed ? weapon -> normalized_weapon_speed() : weapon -> swing_time;
-    double bonus_damage = p -> ammo_dps * weapon_speed * weapon_multiplier;
-
-    base_dd_min += bonus_damage;
-    base_dd_max += bonus_damage;
-  }
-
-  virtual void add_scope()
-  {
-    if( weapon -> enchant == SCOPE )
-    {
-      double bonus_damage = weapon -> enchant_bonus * weapon_multiplier;
-
-      base_dd_min += bonus_damage;
-      base_dd_max += bonus_damage;
-    }
-  }
-
-  virtual double cost();
-  virtual void   execute();
-  virtual double execute_time();
-  virtual void   player_buff();
-};
-
-// ==========================================================================
-// Hunter Spell
-// ==========================================================================
-
-struct hunter_spell_t : public spell_t
-{
-  hunter_spell_t( const char* n, player_t* p, int8_t s, int8_t t ) : 
-    spell_t( n, p, RESOURCE_MANA, s, t ) 
-  {
-  }
-
-  virtual double cost();
-};
-
-namespace { // ANONYMOUS NAMESPACE ==========================================
-
-// trigger_aspect_of_the_viper ==============================================
-
-static void trigger_aspect_of_the_viper( hunter_attack_t* a )
-{
-  hunter_t* p = a -> player -> cast_hunter();
-
-  if( p -> active_aspect != ASPECT_VIPER )
-    return;
-
-  double gain = p -> resource_max[ RESOURCE_MANA ] * p -> ranged_weapon.swing_time / 100.0;
-
-  if( p -> glyphs.aspect_of_the_viper ) gain *= 1.10;
-
-  p -> resource_gain( RESOURCE_MANA, gain, p -> gains_viper_aspect_shot );
-}
-
-// trigger_expose_weakness =================================================
-
-static void trigger_expose_weakness( hunter_attack_t* a )
-{
-  hunter_t* p = a -> player -> cast_hunter();
-
-  if ( ! p -> talents.expose_weakness ) 
-    return;
-
-  if ( ! a -> sim -> roll( p -> talents.expose_weakness / 3.0 ) ) 
-    return;
-
-  struct expose_weakness_expiration_t : public event_t
-  {
-    expose_weakness_expiration_t( sim_t* sim, hunter_t* p ) : event_t( sim, p )
-    {
-      name = "Expose Weakness Expiration";
-      p -> aura_gain( "Expose Weakness" );
-      p -> buffs_expose_weakness = 1;
-      sim -> add_event( this, 7.0 );
-    }
-    virtual void execute()
-    {
-      hunter_t* p = player -> cast_hunter();
-      p -> aura_loss( "Expose Weakness" );
-      p -> buffs_expose_weakness = 0;
-      p -> expirations_expose_weakness = 0;
-    }
-  };
-
-  event_t*& e = p -> expirations_expose_weakness;
-
-  if ( e )
-  {
-    e -> reschedule( 7.0 );
-  }
-  else
-  {
-    e = new ( a -> sim ) expose_weakness_expiration_t( a -> sim, p );
-  }
-}
-
-// trigger_hunting_party ===================================================
-
-static void trigger_hunting_party( hunter_attack_t* a )
-{
-  hunter_t* p = a -> player -> cast_hunter();
-
-  if ( ! p -> talents.hunting_party ) 
-    return;
-
-  if ( ! a -> sim -> roll( p -> talents.hunting_party * 0.20 ) )
-    return;
-
-  struct hunting_party_expiration_t : public event_t
-  {
-    hunting_party_expiration_t( sim_t* sim, hunter_t* h ) : event_t( sim, h )
-    {
-      name = "Hunting Party Expiration";
-      for( player_t* p = sim -> player_list; p; p = p -> next )
-      {
-        p -> buffs.replenishment++;
-      }
-      sim -> add_event( this, 15.0 );
-    }
-    virtual void execute()
-    {
-      for( player_t* p = sim -> player_list; p; p = p -> next )
-      {
-        p -> buffs.replenishment--;
-      }
-      hunter_t* h = player -> cast_hunter();
-      h -> expirations_hunting_party = 0;
-    }
-  };
-
-  event_t*& e = p -> expirations_hunting_party;
-
-  if ( e )
-  {
-    e -> reschedule( 15.0 );
-  }
-  else
-  {
-    e = new ( a -> sim ) hunting_party_expiration_t( a -> sim, p );
-  }
-}
-
-// trigger_improved_aspect_of_the_hawk =====================================
-
-static void trigger_improved_aspect_of_the_hawk( hunter_attack_t* a )
-{
-  hunter_t* p = a -> player -> cast_hunter();
-
-  if ( ! p -> talents.improved_aspect_of_the_hawk ) 
-    return;
-
-  if ( p -> active_aspect != ASPECT_HAWK ) 
-    return;
-
-  if ( ! a -> sim -> roll( 0.10 ) ) 
-    return;
-
-  struct improved_aspect_of_the_hawk_expiration_t : public event_t
-  {
-    improved_aspect_of_the_hawk_expiration_t( sim_t* sim, hunter_t* p ) : event_t( sim, p )
-    {
-      name = "Improved Aspect of the Hawk Expiration";
-      sim -> add_event( this, 12.0 );
-    }
-    virtual void execute()
-    {
-      hunter_t* p = player -> cast_hunter();
-      p -> buffs_improved_aspect_of_the_hawk = 0;
-      p -> expirations_improved_aspect_of_the_hawk = 0;
-    }
-  };
-
-  p -> buffs_improved_aspect_of_the_hawk = 0.03 * p -> talents.improved_aspect_of_the_hawk;
-
-  if( p -> glyphs.improved_aspect_of_the_hawk )
-  {
-    p -> buffs_improved_aspect_of_the_hawk += 0.06;
-  }
-
-  event_t*& e = p -> expirations_improved_aspect_of_the_hawk;
-
-  if ( e )
-  {
-    e -> reschedule( 12.0 );
-  }
-  else
-  {
-    e = new ( a -> sim ) improved_aspect_of_the_hawk_expiration_t( a -> sim, p );
-  }
-}
-
-// trigger_improved_steady_shot =====================================
-
-static void trigger_improved_steady_shot( hunter_attack_t* a )
-{
-  hunter_t* p = a -> player -> cast_hunter();
-
-  if ( ! p -> talents.improved_steady_shot ) 
-    return;
-
-  if ( ! a -> sim -> roll( p -> talents.improved_steady_shot * 0.05 ) ) 
-    return;
-
-  struct improved_steady_shot_expiration_t : public event_t
-  {
-    improved_steady_shot_expiration_t( sim_t* sim, hunter_t* p ) : event_t( sim, p )
-    {
-      name = "Improved Steady Shot Expiration";
-      p -> buffs_improved_steady_shot = 1;
-      sim -> add_event( this, 12.0 );
-    }
-    virtual void execute()
-    {
-      hunter_t* p = player -> cast_hunter();
-      p -> buffs_improved_steady_shot = 0;
-      p -> expirations_improved_steady_shot = 0;
-    }
-  };
-
-  event_t*& e = p -> expirations_improved_steady_shot;
-
-  if ( e )
-  {
-    e -> reschedule( 12.0 );
-  }
-  else
-  {
-    e = new ( a -> sim ) improved_steady_shot_expiration_t( a -> sim, p );
-  }
-}
-
-// consume_improved_steady_shot ======================================
-
-static void consume_improved_steady_shot( hunter_attack_t* a )
-{
-  hunter_t* p = a -> player -> cast_hunter();
-  event_t::early( p -> expirations_improved_steady_shot );
-}
-
-// trigger_lock_and_load =============================================
-
-static void trigger_lock_and_load( hunter_attack_t* a )
-{
-  hunter_t* p = a -> player -> cast_hunter();
-
-  if( ! p -> talents.lock_and_load )
-    return;
-  if( ! a -> sim -> cooldown_ready( p -> cooldowns_lock_and_load ) )
-    return;
-
-  // NB: talent calc says 3%,7%,10%, assuming it's really 10% * (1/3,2/3,3/3)
-  if ( ! a -> sim -> roll( p -> talents.lock_and_load * 0.1 / 3 ) ) 
-    return;
-
-  struct lock_and_load_expiration_t : public event_t
-  {
-    lock_and_load_expiration_t( sim_t* sim, hunter_t* p ) : event_t( sim, p )
-    {
-      name = "Lock and Load Expiration";
-      p -> aura_gain( "Lock and Load" );
-      p -> cooldowns_lock_and_load = sim -> current_time + 30;
-      sim -> add_event( this, 12.0 );
-    }
-    virtual void execute()
-    {
-      hunter_t* p = player -> cast_hunter();
-      p -> aura_loss( "Lock and Load" );
-      p -> buffs_lock_and_load = 0;
-      p -> expirations_lock_and_load = 0;
-    }
-  };
-
-  p -> buffs_lock_and_load = 2;
-
-  event_t*& e = p -> expirations_lock_and_load;
-
-  if ( e )
-  {
-    e -> reschedule( 12.0 );
-  }
-  else
-  {
-    e = new ( a -> sim ) lock_and_load_expiration_t( a -> sim, p );
-  }
-}
-
-// consume_lock_and_load ==================================================
-
-static void consume_lock_and_load( hunter_attack_t* a )
-{
-  hunter_t* p = a -> player -> cast_hunter();
-
-  if( p -> buffs_lock_and_load > 0 )
-  {
-    p -> buffs_lock_and_load--;
-
-    if( p -> buffs_lock_and_load == 0 )
-    {
-      event_t::early( p -> expirations_lock_and_load );
-    }
-  }
-}
-
-// trigger_master_tactician ================================================
-
-static void trigger_master_tactician( hunter_attack_t* a )
-{
-  hunter_t* p = a -> player -> cast_hunter();
-
-  if ( ! p -> talents.master_tactician ) 
-    return;
-
-  if ( ! a -> sim -> roll( 0.10 ) ) 
-    return;
-
-  struct master_tactician_expiration_t : public event_t
-  {
-    master_tactician_expiration_t( sim_t* sim, hunter_t* p ) : event_t( sim, p )
-    {
-      name = "Master Tactician Expiration";
-      p -> aura_gain( "Master Tactician" );
-      sim -> add_event( this, 8.0 );
-    }
-    virtual void execute()
-    {
-      hunter_t* p = player -> cast_hunter();
-      p -> aura_loss( "Master Tactician" );
-      p -> buffs_master_tactician = 0;
-      p -> expirations_master_tactician = 0;
-    }
-  };
-
-  p -> buffs_master_tactician = p -> talents.master_tactician * 0.02;
-
-  event_t*& e = p -> expirations_master_tactician;
-
-  if ( e )
-  {
-    e -> reschedule( 8.0 );
-  }
-  else
-  {
-    e = new ( a -> sim ) master_tactician_expiration_t( a -> sim, p );
-  }
-}
-
-// trigger_thrill_of_the_hunt ========================================
-
-static void trigger_thrill_of_the_hunt( hunter_attack_t* a )
-{
-  hunter_t* p = a -> player -> cast_hunter();
-
-  if ( ! p -> talents.thrill_of_the_hunt ) 
-    return;
-
-  if ( ! a -> sim -> roll( p -> talents.thrill_of_the_hunt / 3.0 ) ) 
-    return;
-
-  p -> resource_gain( RESOURCE_MANA, a -> resource_consumed * 0.40, p -> gains_thrill_of_the_hunt );
-}
-
-// trigger_wild_quiver ===============================================
-
-static void trigger_wild_quiver( attack_t* a )
-{
-  hunter_t* p = a -> player -> cast_hunter();
-
-  if( a -> proc )
-    return;
-
-  if( ! p -> talents.wild_quiver ) 
-    return;
-
-  if(  a -> sim -> roll( util_t::talent_rank( p -> talents.wild_quiver, 3, 0.04, 0.07, 0.10 ) ) )
-  {
-    // FIXME! What hit/crit talents apply?
-    // FIXME! Which proc-related talents can it trigger?
-    // FIXME! Currently coded to benefit from all talents affecting ranged attacks.
-    // FIXME! Talents that do not affect it can filter on "proc=true".
-
-    struct wild_quiver_t : public attack_t 
-    {
-      wild_quiver_t( player_t* p ) : attack_t( "wild_quiver", p, RESOURCE_NONE, SCHOOL_NATURE )     
-      {
-	background  = true;
-	proc        = true;
-	trigger_gcd = 0;
-	base_cost   = 0;
-      }
-    };
-
-    if( ! p -> active_wild_quiver ) p -> active_wild_quiver = new wild_quiver_t( p );
-
-    p -> procs_wild_quiver -> occur();
-
-    p -> active_wild_quiver -> base_direct_dmg = 0.50 * a -> direct_dmg;
-    p -> active_wild_quiver -> execute();
-  }
-}
-
-} // ANONYMOUS NAMESPACE ===================================================
-
-// ==========================================================================
 // Hunter Pet
 // ==========================================================================
 
@@ -736,7 +307,17 @@ struct hunter_pet_t : public pet_t
 
   struct talents_t
   {
-    int8_t  placeholder;
+    int8_t cobra_reflexes;
+    int8_t feeding_frenzy;
+    int8_t spiked_collar;
+    int8_t spiders_bite;
+
+    // Talents not yet implemented
+    int8_t owls_focus;
+    int8_t roar_of_recovery;
+    int8_t wolverine_bite;
+    int8_t call_of_the_wild;
+    int8_t rabid;
 
     talents_t() { memset( (void*) this, 0x0, sizeof( talents_t ) ); }
   };
@@ -802,11 +383,14 @@ struct hunter_pet_t : public pet_t
 
     base_attack_expertise = o -> talents.animal_handler * 0.05;
 
+    base_attack_crit = 0.05 + talents.spiders_bite * 0.03;
+
     // FIXME! What is the base health?
     resource_base[ RESOURCE_HEALTH ] = 100;
     resource_base[ RESOURCE_FOCUS  ] = 100;
 
-    focus_regen_per_second = ( 24.5 / 4.0 );
+    focus_regen_per_second  = ( 24.5 / 4.0 );
+    focus_regen_per_second *= 1.0 + o -> talents.bestial_discipline * 0.50;
   }
 
   virtual void summon()
@@ -819,8 +403,484 @@ struct hunter_pet_t : public pet_t
 
   virtual int primary_resource() { return RESOURCE_FOCUS; }
 
+  virtual bool parse_option( const std::string& name,
+			     const std::string& value )
+  {
+    option_t options[] =
+    {
+      // Talents
+      { "cobra_reflexes",   OPT_INT8, &( talents.cobra_reflexes   ) },
+      { "owls_focus",       OPT_INT8, &( talents.owls_focus       ) },
+      { "spiked_collar",    OPT_INT8, &( talents.spiked_collar    ) },
+      { "feeding_frenzy",   OPT_INT8, &( talents.feeding_frenzy   ) },
+      { "roar_of_recovery", OPT_INT8, &( talents.roar_of_recovery ) },
+      { "wolverine_bite",   OPT_INT8, &( talents.wolverine_bite   ) },
+      { "spiders_bite",     OPT_INT8, &( talents.spiders_bite     ) },
+      { "call_of_the_wild", OPT_INT8, &( talents.call_of_the_wild ) },
+      { "rabid",            OPT_INT8, &( talents.rabid            ) },
+      { NULL, OPT_UNKNOWN }
+    };
+
+    if( name.empty() )
+    {
+      pet_t::parse_option( std::string(), std::string() );
+      option_t::print( sim, options );
+      return false;
+    }
+
+    if( pet_t::parse_option( name, value ) ) return true;
+
+    return option_t::parse( sim, options, name, value );
+  }
+
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
 };
+
+// ==========================================================================
+// Hunter Attack
+// ==========================================================================
+
+struct hunter_attack_t : public attack_t
+{
+  hunter_attack_t( const char* n, player_t* player, int8_t s=SCHOOL_PHYSICAL, int8_t t=TREE_NONE ) :
+    attack_t( n, player, RESOURCE_MANA, s, t )
+  {
+    hunter_t* p = player -> cast_hunter();
+
+    base_hit  += p -> talents.focused_aim * 0.01;
+    base_crit += p -> talents.master_marksman * 0.01;
+    base_crit += p -> talents.killer_instinct * 0.01;
+
+    if( p -> position == POSITION_RANGED )
+    {
+      base_crit += p -> talents.lethal_shots * 0.01;
+    }
+  }
+
+  virtual void add_ammunition()
+  {
+    hunter_t* p = player -> cast_hunter();
+
+    double weapon_speed = normalize_weapon_speed ? weapon -> normalized_weapon_speed() : weapon -> swing_time;
+    double bonus_damage = p -> ammo_dps * weapon_speed * weapon_multiplier;
+
+    base_dd_min += bonus_damage;
+    base_dd_max += bonus_damage;
+  }
+
+  virtual void add_scope()
+  {
+    if( weapon -> enchant == SCOPE )
+    {
+      double bonus_damage = weapon -> enchant_bonus * weapon_multiplier;
+
+      base_dd_min += bonus_damage;
+      base_dd_max += bonus_damage;
+    }
+  }
+
+  virtual double cost();
+  virtual void   execute();
+  virtual double execute_time();
+  virtual void   player_buff();
+};
+
+// ==========================================================================
+// Hunter Spell
+// ==========================================================================
+
+struct hunter_spell_t : public spell_t
+{
+  hunter_spell_t( const char* n, player_t* p, int8_t s, int8_t t ) : 
+    spell_t( n, p, RESOURCE_MANA, s, t ) 
+  {
+  }
+
+  virtual double cost();
+};
+
+namespace { // ANONYMOUS NAMESPACE ==========================================
+
+// trigger_aspect_of_the_viper ==============================================
+
+static void trigger_aspect_of_the_viper( attack_t* a )
+{
+  hunter_t* p = a -> player -> cast_hunter();
+
+  if( p -> active_aspect != ASPECT_VIPER )
+    return;
+
+  double gain = p -> resource_max[ RESOURCE_MANA ] * p -> ranged_weapon.swing_time / 100.0;
+
+  if( p -> glyphs.aspect_of_the_viper ) gain *= 1.10;
+
+  p -> resource_gain( RESOURCE_MANA, gain, p -> gains_viper_aspect_shot );
+}
+
+// trigger_expose_weakness =================================================
+
+static void trigger_expose_weakness( attack_t* a )
+{
+  hunter_t* p = a -> player -> cast_hunter();
+
+  if ( ! p -> talents.expose_weakness ) 
+    return;
+
+  if ( ! a -> sim -> roll( p -> talents.expose_weakness / 3.0 ) ) 
+    return;
+
+  struct expose_weakness_expiration_t : public event_t
+  {
+    expose_weakness_expiration_t( sim_t* sim, hunter_t* p ) : event_t( sim, p )
+    {
+      name = "Expose Weakness Expiration";
+      p -> aura_gain( "Expose Weakness" );
+      p -> buffs_expose_weakness = 1;
+      sim -> add_event( this, 7.0 );
+    }
+    virtual void execute()
+    {
+      hunter_t* p = player -> cast_hunter();
+      p -> aura_loss( "Expose Weakness" );
+      p -> buffs_expose_weakness = 0;
+      p -> expirations_expose_weakness = 0;
+    }
+  };
+
+  event_t*& e = p -> expirations_expose_weakness;
+
+  if ( e )
+  {
+    e -> reschedule( 7.0 );
+  }
+  else
+  {
+    e = new ( a -> sim ) expose_weakness_expiration_t( a -> sim, p );
+  }
+}
+
+// trigger_feeding_frenzy ==================================================
+
+static void trigger_feeding_frenzy( action_t* a )
+{
+  hunter_pet_t* p = (hunter_pet_t*) a -> player -> cast_pet();
+
+  if( p -> talents.feeding_frenzy )
+  {
+    double target_pct = a -> sim -> target -> health_percentage();
+
+    if( target_pct > 0 && target_pct < 35 ) 
+    {
+      a -> player_multiplier *= 1.0 + p -> talents.feeding_frenzy * 0.06;
+    }
+  }
+}
+
+// trigger_hunting_party ===================================================
+
+static void trigger_hunting_party( attack_t* a )
+{
+  hunter_t* p = a -> player -> cast_hunter();
+
+  if ( ! p -> talents.hunting_party ) 
+    return;
+
+  if ( ! a -> sim -> roll( p -> talents.hunting_party * 0.20 ) )
+    return;
+
+  struct hunting_party_expiration_t : public event_t
+  {
+    hunting_party_expiration_t( sim_t* sim, hunter_t* h ) : event_t( sim, h )
+    {
+      name = "Hunting Party Expiration";
+      for( player_t* p = sim -> player_list; p; p = p -> next )
+      {
+        p -> buffs.replenishment++;
+      }
+      sim -> add_event( this, 15.0 );
+    }
+    virtual void execute()
+    {
+      for( player_t* p = sim -> player_list; p; p = p -> next )
+      {
+        p -> buffs.replenishment--;
+      }
+      hunter_t* h = player -> cast_hunter();
+      h -> expirations_hunting_party = 0;
+    }
+  };
+
+  event_t*& e = p -> expirations_hunting_party;
+
+  if ( e )
+  {
+    e -> reschedule( 15.0 );
+  }
+  else
+  {
+    e = new ( a -> sim ) hunting_party_expiration_t( a -> sim, p );
+  }
+}
+
+// trigger_improved_aspect_of_the_hawk =====================================
+
+static void trigger_improved_aspect_of_the_hawk( attack_t* a )
+{
+  hunter_t* p = a -> player -> cast_hunter();
+
+  if ( ! p -> talents.improved_aspect_of_the_hawk ) 
+    return;
+
+  if ( p -> active_aspect != ASPECT_HAWK ) 
+    return;
+
+  if ( ! a -> sim -> roll( 0.10 ) ) 
+    return;
+
+  struct improved_aspect_of_the_hawk_expiration_t : public event_t
+  {
+    improved_aspect_of_the_hawk_expiration_t( sim_t* sim, hunter_t* p ) : event_t( sim, p )
+    {
+      name = "Improved Aspect of the Hawk Expiration";
+      sim -> add_event( this, 12.0 );
+    }
+    virtual void execute()
+    {
+      hunter_t* p = player -> cast_hunter();
+      p -> buffs_improved_aspect_of_the_hawk = 0;
+      p -> expirations_improved_aspect_of_the_hawk = 0;
+    }
+  };
+
+  p -> buffs_improved_aspect_of_the_hawk = 0.03 * p -> talents.improved_aspect_of_the_hawk;
+
+  if( p -> glyphs.improved_aspect_of_the_hawk )
+  {
+    p -> buffs_improved_aspect_of_the_hawk += 0.06;
+  }
+
+  event_t*& e = p -> expirations_improved_aspect_of_the_hawk;
+
+  if ( e )
+  {
+    e -> reschedule( 12.0 );
+  }
+  else
+  {
+    e = new ( a -> sim ) improved_aspect_of_the_hawk_expiration_t( a -> sim, p );
+  }
+}
+
+// trigger_improved_steady_shot =====================================
+
+static void trigger_improved_steady_shot( attack_t* a )
+{
+  hunter_t* p = a -> player -> cast_hunter();
+
+  if ( ! p -> talents.improved_steady_shot ) 
+    return;
+
+  if ( ! a -> sim -> roll( p -> talents.improved_steady_shot * 0.05 ) ) 
+    return;
+
+  struct improved_steady_shot_expiration_t : public event_t
+  {
+    improved_steady_shot_expiration_t( sim_t* sim, hunter_t* p ) : event_t( sim, p )
+    {
+      name = "Improved Steady Shot Expiration";
+      p -> buffs_improved_steady_shot = 1;
+      sim -> add_event( this, 12.0 );
+    }
+    virtual void execute()
+    {
+      hunter_t* p = player -> cast_hunter();
+      p -> buffs_improved_steady_shot = 0;
+      p -> expirations_improved_steady_shot = 0;
+    }
+  };
+
+  event_t*& e = p -> expirations_improved_steady_shot;
+
+  if ( e )
+  {
+    e -> reschedule( 12.0 );
+  }
+  else
+  {
+    e = new ( a -> sim ) improved_steady_shot_expiration_t( a -> sim, p );
+  }
+}
+
+// consume_improved_steady_shot ======================================
+
+static void consume_improved_steady_shot( attack_t* a )
+{
+  hunter_t* p = a -> player -> cast_hunter();
+  event_t::early( p -> expirations_improved_steady_shot );
+}
+
+// trigger_lock_and_load =============================================
+
+static void trigger_lock_and_load( attack_t* a )
+{
+  hunter_t* p = a -> player -> cast_hunter();
+
+  if( ! p -> talents.lock_and_load )
+    return;
+  if( ! a -> sim -> cooldown_ready( p -> cooldowns_lock_and_load ) )
+    return;
+
+  // NB: talent calc says 3%,7%,10%, assuming it's really 10% * (1/3,2/3,3/3)
+  if ( ! a -> sim -> roll( p -> talents.lock_and_load * 0.1 / 3 ) ) 
+    return;
+
+  struct lock_and_load_expiration_t : public event_t
+  {
+    lock_and_load_expiration_t( sim_t* sim, hunter_t* p ) : event_t( sim, p )
+    {
+      name = "Lock and Load Expiration";
+      p -> aura_gain( "Lock and Load" );
+      p -> cooldowns_lock_and_load = sim -> current_time + 30;
+      sim -> add_event( this, 12.0 );
+    }
+    virtual void execute()
+    {
+      hunter_t* p = player -> cast_hunter();
+      p -> aura_loss( "Lock and Load" );
+      p -> buffs_lock_and_load = 0;
+      p -> expirations_lock_and_load = 0;
+    }
+  };
+
+  p -> buffs_lock_and_load = 2;
+
+  event_t*& e = p -> expirations_lock_and_load;
+
+  if ( e )
+  {
+    e -> reschedule( 12.0 );
+  }
+  else
+  {
+    e = new ( a -> sim ) lock_and_load_expiration_t( a -> sim, p );
+  }
+}
+
+// consume_lock_and_load ==================================================
+
+static void consume_lock_and_load( attack_t* a )
+{
+  hunter_t* p = a -> player -> cast_hunter();
+
+  if( p -> buffs_lock_and_load > 0 )
+  {
+    p -> buffs_lock_and_load--;
+
+    if( p -> buffs_lock_and_load == 0 )
+    {
+      event_t::early( p -> expirations_lock_and_load );
+    }
+  }
+}
+
+// trigger_master_tactician ================================================
+
+static void trigger_master_tactician( attack_t* a )
+{
+  hunter_t* p = a -> player -> cast_hunter();
+
+  if ( ! p -> talents.master_tactician ) 
+    return;
+
+  if ( ! a -> sim -> roll( 0.10 ) ) 
+    return;
+
+  struct master_tactician_expiration_t : public event_t
+  {
+    master_tactician_expiration_t( sim_t* sim, hunter_t* p ) : event_t( sim, p )
+    {
+      name = "Master Tactician Expiration";
+      p -> aura_gain( "Master Tactician" );
+      sim -> add_event( this, 8.0 );
+    }
+    virtual void execute()
+    {
+      hunter_t* p = player -> cast_hunter();
+      p -> aura_loss( "Master Tactician" );
+      p -> buffs_master_tactician = 0;
+      p -> expirations_master_tactician = 0;
+    }
+  };
+
+  p -> buffs_master_tactician = p -> talents.master_tactician * 0.02;
+
+  event_t*& e = p -> expirations_master_tactician;
+
+  if ( e )
+  {
+    e -> reschedule( 8.0 );
+  }
+  else
+  {
+    e = new ( a -> sim ) master_tactician_expiration_t( a -> sim, p );
+  }
+}
+
+// trigger_thrill_of_the_hunt ========================================
+
+static void trigger_thrill_of_the_hunt( attack_t* a )
+{
+  hunter_t* p = a -> player -> cast_hunter();
+
+  if ( ! p -> talents.thrill_of_the_hunt ) 
+    return;
+
+  if ( ! a -> sim -> roll( p -> talents.thrill_of_the_hunt / 3.0 ) ) 
+    return;
+
+  p -> resource_gain( RESOURCE_MANA, a -> resource_consumed * 0.40, p -> gains_thrill_of_the_hunt );
+}
+
+// trigger_wild_quiver ===============================================
+
+static void trigger_wild_quiver( attack_t* a )
+{
+  hunter_t* p = a -> player -> cast_hunter();
+
+  if( a -> proc )
+    return;
+
+  if( ! p -> talents.wild_quiver ) 
+    return;
+
+  if(  a -> sim -> roll( util_t::talent_rank( p -> talents.wild_quiver, 3, 0.04, 0.07, 0.10 ) ) )
+  {
+    // FIXME! What hit/crit talents apply?
+    // FIXME! Which proc-related talents can it trigger?
+    // FIXME! Currently coded to benefit from all talents affecting ranged attacks.
+    // FIXME! Talents that do not affect it can filter on "proc=true".
+
+    struct wild_quiver_t : public attack_t 
+    {
+      wild_quiver_t( player_t* p ) : attack_t( "wild_quiver", p, RESOURCE_NONE, SCHOOL_NATURE )     
+      {
+	background  = true;
+	proc        = true;
+	trigger_gcd = 0;
+	base_cost   = 0;
+      }
+    };
+
+    if( ! p -> active_wild_quiver ) p -> active_wild_quiver = new wild_quiver_t( p );
+
+    p -> procs_wild_quiver -> occur();
+
+    p -> active_wild_quiver -> base_direct_dmg = 0.50 * a -> direct_dmg;
+    p -> active_wild_quiver -> execute();
+  }
+}
+
+} // ANONYMOUS NAMESPACE ===================================================
 
 // =========================================================================
 // Hunter Pet Attacks
@@ -839,7 +899,7 @@ struct hunter_pet_attack_t : public attack_t
     if( p -> group() == PET_FEROCITY ) base_multiplier *= 1.10;
     if( p -> group() == PET_CUNNING  ) base_multiplier *= 1.05;
 
-    // FIXME! Pet static buffs here
+    base_multiplier *= 1.0 + p -> talents.spiked_collar * 0.03;
   }
 
   virtual void execute()
@@ -869,7 +929,7 @@ struct hunter_pet_attack_t : public attack_t
 
     player_power += 0.22 * o -> composite_attack_power();
 
-    // FIXME! Pet dynamic buffs here
+    trigger_feeding_frenzy( this );
   }
 };
 
@@ -884,12 +944,18 @@ struct hunter_pet_melee_t : public hunter_pet_attack_t
   //hunter_t*     o = p -> owner -> cast_hunter();
 
     weapon = &( p -> main_hand_weapon );
+    base_execute_time  = weapon -> swing_time;
+    base_direct_dmg    = 1;
+    background         = true;
+    repeating          = true;
+    may_glance         = true;
 
-    base_execute_time = weapon -> swing_time;
-    base_direct_dmg   = 1;
-    background        = true;
-    repeating         = true;
-    may_glance        = true;
+    if( p -> talents.cobra_reflexes )
+    {
+      // FIXME! What is the exact damage reduction formula?
+      base_multiplier   *= 1.0 / ( 1.0 + p -> talents.cobra_reflexes * 0.15 );
+      base_execute_time *= 1.0 / ( 1.0 + p -> talents.cobra_reflexes * 0.15 );
+    }
   }
 
   virtual void execute()
@@ -1014,7 +1080,7 @@ struct hunter_pet_spell_t : public spell_t
     if( p -> group() == PET_FEROCITY ) base_multiplier *= 1.10;
     if( p -> group() == PET_CUNNING  ) base_multiplier *= 1.05;
 
-    // FIXME! Pet static buffs here
+    base_multiplier *= 1.0 + p -> talents.spiked_collar * 0.03;
   }
 
   virtual void execute()
@@ -1044,7 +1110,7 @@ struct hunter_pet_spell_t : public spell_t
 
     player_power += 0.125 * o -> composite_spell_power( SCHOOL_MAX );
 
-    // FIXME! Pet dynamic buffs here
+    trigger_feeding_frenzy( this );
   }
 };
 
@@ -2499,11 +2565,11 @@ bool hunter_t::get_talent_trees( std::vector<int8_t*>& beastmastery,
     { { 11, &( talents.ferocity                    ) }, { 11, &( talents.improved_stings              ) }, { 11, &( talents.survival_tactics         ) } },
     { { 12, NULL                                     }, { 12, &( talents.efficiency                   ) }, { 12, &( talents.tnt                      ) } },
     { { 13, NULL                                     }, { 13, NULL                                      }, { 13, &( talents.lock_and_load            ) } },
-    { { 14, &( talents.beastial_discipline         ) }, { 14, &( talents.readiness                    ) }, { 14, &( talents.hunter_vs_wild           ) } },
+    { { 14, &( talents.bestial_discipline          ) }, { 14, &( talents.readiness                    ) }, { 14, &( talents.hunter_vs_wild           ) } },
     { { 15, &( talents.animal_handler              ) }, { 15, &( talents.barrage                      ) }, { 15, &( talents.killer_instinct          ) } },
     { { 16, &( talents.frenzy                      ) }, { 16, &( talents.combat_experience            ) }, { 16, NULL                                  } },
     { { 17, &( talents.ferocious_inspiration       ) }, { 17, &( talents.ranged_weapon_specialization ) }, { 17, &( talents.lightning_reflexes       ) } },
-    { { 18, &( talents.beastial_wrath              ) }, { 18, &( talents.piercing_shots               ) }, { 18, &( talents.resourcefulness          ) } },
+    { { 18, &( talents.bestial_wrath               ) }, { 18, &( talents.piercing_shots               ) }, { 18, &( talents.resourcefulness          ) } },
     { { 19, NULL                                     }, { 19, &( talents.trueshot_aura                ) }, { 19, &( talents.expose_weakness          ) } },
     { { 20, &( talents.invigoration                ) }, { 20, &( talents.improved_barrage             ) }, { 20, NULL                                  } },
     { { 21, &( talents.serpents_swiftness          ) }, { 21, &( talents.master_marksman              ) }, { 21, &( talents.thrill_of_the_hunt       ) } },
@@ -2551,8 +2617,8 @@ bool hunter_t::parse_option( const std::string& name,
     { "aspect_mastery",                    OPT_INT8, &( talents.aspect_mastery               ) },
     { "barrage",                           OPT_INT8, &( talents.barrage                      ) },
     { "beast_within",                      OPT_INT8, &( talents.beast_within                 ) },
-    { "beastial_discipline",               OPT_INT8, &( talents.beastial_discipline          ) },
-    { "beastial_wrath",                    OPT_INT8, &( talents.beastial_wrath               ) },
+    { "bestial_discipline",                OPT_INT8, &( talents.bestial_discipline           ) },
+    { "bestial_wrath",                     OPT_INT8, &( talents.bestial_wrath                ) },
     { "careful_aim",                       OPT_INT8, &( talents.careful_aim                  ) },
     { "chimera_shot",                      OPT_INT8, &( talents.chimera_shot                 ) },
     { "cobra_strikes",                     OPT_INT8, &( talents.cobra_strikes                ) },
