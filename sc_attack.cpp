@@ -155,7 +155,9 @@ int attack_t::build_table( double* chances,
   {
     if( delta_level > 2 )
     {
-      miss  = 0.07 + ( delta_level - 2 ) * 0.02;
+      // 8% for delta_level=3
+      // FIXME: needs testing for delta_level > 3
+      miss  = 0.07 + ( delta_level - 2 ) * 0.01;
     }
     else
     {
