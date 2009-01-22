@@ -2063,7 +2063,7 @@ struct hunters_mark_t : public hunter_spell_t
     consume_resource();
 
     target_t* t = sim -> target;
-    event_t*& e = t -> expirations.winters_chill;
+    event_t*& e = t -> expirations.hunters_mark;
 
     t -> debuffs.hunters_mark = ap_bonus;
     
