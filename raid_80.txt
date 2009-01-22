@@ -29,7 +29,7 @@ debug=0
 lag=0.150
 
 # Spells cannot be queue after channeled spells, nor when waiting for the GCD
-channel_penalty=0.300
+channel_penalty=0.100
 gcd_penalty=0.100
 
 # Boss Level
