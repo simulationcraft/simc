@@ -27,6 +27,7 @@ struct hunter_t : public player_t
   // Buffs
   double buffs_aspect_of_the_hawk;
   double buffs_aspect_of_the_viper;
+  int8_t buffs_beast_within;
   int8_t buffs_expose_weakness;
   double buffs_improved_aspect_of_the_hawk;
   int8_t buffs_improved_steady_shot;
@@ -70,6 +71,7 @@ struct hunter_t : public player_t
 
   struct talents_t
   {
+    int8_t  animal_handler;
     int8_t  aimed_shot;
     int8_t  aspect_mastery;
     int8_t  barrage;
@@ -115,7 +117,6 @@ struct hunter_t : public player_t
     int8_t  wild_quiver;
 
     // Talents not yet fully implemented
-    int8_t  animal_handler;
     int8_t  beast_within;
     int8_t  beast_mastery;
     int8_t  beastial_discipline;
@@ -165,6 +166,7 @@ struct hunter_t : public player_t
     // Buffs
     buffs_aspect_of_the_hawk          = 0;
     buffs_aspect_of_the_viper         = 0;
+    buffs_beast_within                = 0;
     buffs_expose_weakness             = 0;
     buffs_improved_aspect_of_the_hawk = 0;
     buffs_improved_steady_shot        = 0;
@@ -781,7 +783,7 @@ struct hunter_pet_t : public pet_t
 
   virtual void init_base()
   {
-    //hunter_t* o = owner -> cast_hunter();
+    hunter_t* o = owner -> cast_hunter();
 
     // FIXME! Need to find base stats
     attribute_base[ ATTR_STRENGTH  ] = 100;
@@ -790,10 +792,15 @@ struct hunter_pet_t : public pet_t
     attribute_base[ ATTR_INTELLECT ] = 100;
     attribute_base[ ATTR_SPIRIT    ] = 100;
 
-    // FIXME! Need stat-to-AP conversions here
+    // FIXME! The crit_per_agility numbers stolen from Warlock pets
+    initial_attack_power_per_strength = 2.0;
+    initial_attack_crit_per_agility   = rating_t::interpolate( level, 0.01/16.0, 0.01/24.9, 0.01/52.1 );
 
-    // FIXME! What is the max value of focus?
-    resource_base[ RESOURCE_FOCUS ] = 100;
+    base_attack_expertise = o -> talents.animal_handler * 0.05;
+
+    // FIXME! What is the base health?
+    resource_base[ RESOURCE_HEALTH ] = 100;
+    resource_base[ RESOURCE_FOCUS  ] = 100;
   }
 
   virtual void summon()
@@ -939,9 +946,17 @@ struct cat_rake_t : public hunter_pet_attack_t
 
   virtual void execute()
   {
+    // FIXME! Assuming pets are not smart enough to wait for Rake to finish ticking
+    if( ticking ) cancel();
     school = SCHOOL_PHYSICAL;
     hunter_pet_attack_t::execute();
     school = SCHOOL_BLEED;
+  }
+
+  virtual void update_ready()
+  {
+    hunter_pet_attack_t::update_ready();
+    duration_ready = 0;
   }
 };
 
@@ -1037,7 +1052,8 @@ double hunter_attack_t::cost()
   double c = attack_t::cost();
   if( c == 0 ) return 0;
   c *= 1.0 - p -> talents.efficiency * 0.02;
-  if ( p -> buffs_rapid_fire ) c *= 1.0 - p -> talents.rapid_recuperation * 0.3;
+  if( p -> buffs_rapid_fire   ) c *= 1.0 - p -> talents.rapid_recuperation * 0.3;
+  if( p -> buffs_beast_within ) c *= 0.80;
   return c;
 }
 
@@ -1105,6 +1121,10 @@ void hunter_attack_t::player_buff()
   if( p -> buffs_aspect_of_the_viper )
   {
     player_multiplier *= p -> buffs_aspect_of_the_viper;
+  }
+  if( p -> buffs_beast_within )
+  {
+    player_multiplier *= 1.10;
   }
   if( p -> active_sting() && p -> talents.noxious_stings )
   {
@@ -1625,7 +1645,6 @@ struct kill_shot_t : public hunter_attack_t
 
     normalize_weapon_speed = true;
     weapon_multiplier      = 2.0;
-    direct_power_mod       = 2.0/14.0;
     cooldown               = 15;
 
     base_multiplier *= 1.0 + ( p -> talents.ranged_weapon_specialization * 0.01 +
@@ -1644,7 +1663,7 @@ struct kill_shot_t : public hunter_attack_t
   {
     double target_pct = sim -> target -> health_percentage();
 
-    if( target_pct > 20.0 )
+    if( target_pct > 0 && target_pct > 20.0 )
       return false;
 
     return hunter_attack_t::ready();
@@ -2326,6 +2345,7 @@ void hunter_t::reset()
   // Buffs
   buffs_aspect_of_the_hawk          = 0;
   buffs_aspect_of_the_viper         = 0;
+  buffs_beast_within                = 0;
   buffs_expose_weakness             = 0;
   buffs_improved_aspect_of_the_hawk = 0;
   buffs_improved_steady_shot        = 0;
