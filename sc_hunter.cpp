@@ -1709,13 +1709,6 @@ struct multi_shot_t : public hunter_attack_t
     add_ammunition();
     add_scope();
   }
-
-  virtual void consume_resource()
-  {
-    hunter_attack_t::consume_resource();
-    // Thrill of the Hunt proc reduced to 40% for each hit
-    resource_consumed *= 0.40; 
-  }
 };
 
 // Scatter Shot Attack =========================================================
