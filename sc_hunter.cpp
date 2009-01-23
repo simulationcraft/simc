@@ -587,8 +587,7 @@ static void trigger_go_for_the_throat( attack_t* a )
   if ( ! p -> talents.go_for_the_throat ) return;
   if ( ! p -> active_pet ) return;
 
-  double gain = std::min(p -> talents.go_for_the_throat * 25.0,
-                         100 - p -> active_pet -> resource_current[ RESOURCE_FOCUS ]);
+  double gain = p -> talents.go_for_the_throat * 25.0;
   p -> active_pet -> resource_gain( RESOURCE_FOCUS, gain,
                                     p -> active_pet -> gains_go_for_the_throat );
 }
