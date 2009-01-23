@@ -84,12 +84,14 @@ struct hunter_t : public player_t
     int8_t  bestial_discipline;
     int8_t  careful_aim;
     int8_t  chimera_shot;
+    int8_t  cobra_strikes;
     int8_t  combat_experience;
     int8_t  efficiency;
     int8_t  explosive_shot;
     int8_t  expose_weakness;
     int8_t  ferocity;
     int8_t  focused_aim;
+    int8_t  frenzy;
     int8_t  go_for_the_throat;
     int8_t  hunter_vs_wild;
     int8_t  hunting_party;
@@ -129,9 +131,7 @@ struct hunter_t : public player_t
 
     // Talents not yet fully implemented
     int8_t  bestial_wrath;
-    int8_t  cobra_strikes;
     int8_t  ferocious_inspiration;
-    int8_t  frenzy;
     int8_t  focused_fire;
     int8_t  invigoration;
     int8_t  piercing_shots;
@@ -299,11 +299,12 @@ struct hunter_pet_t : public pet_t
 
   // Buffs
   int8_t buffs_call_of_the_wild;
+  int8_t buffs_frenzy;
   int8_t buffs_rabid;
   int8_t buffs_rabid_power_stack;
 
   // Expirations
-  event_t* expirations_placeholder;
+  event_t* expirations_frenzy;
 
   // Gains
   gain_t* gains_go_for_the_throat;
@@ -312,7 +313,7 @@ struct hunter_pet_t : public pet_t
   proc_t* procs_placeholder;
   
   // Uptimes
-  uptime_t* uptimes_placeholder;
+  uptime_t* uptimes_frenzy;
 
   // Auto-Attack
   attack_t* main_hand_attack;
@@ -346,11 +347,12 @@ struct hunter_pet_t : public pet_t
 
     // Buffs
     buffs_call_of_the_wild  = 0;
+    buffs_frenzy            = 0;
     buffs_rabid             = 0;
     buffs_rabid_power_stack = 0;
 
     // Expirations
-    expirations_placeholder = 0;
+    expirations_frenzy = 0;
 
     // Gains
     gains_go_for_the_throat = get_gain( "go_for_the_throat" );
@@ -359,7 +361,7 @@ struct hunter_pet_t : public pet_t
     procs_placeholder = get_proc( "placeholder" );
   
     // Uptimes
-    uptimes_placeholder = get_uptime( "placeholder" );
+    uptimes_frenzy = get_uptime( "frenzy" );
   }
 
   virtual void reset()
@@ -368,11 +370,12 @@ struct hunter_pet_t : public pet_t
 
     // Buffs
     buffs_call_of_the_wild  = 0;
+    buffs_frenzy            = 0;
     buffs_rabid             = 0;
     buffs_rabid_power_stack = 0;
 
     // Expirations
-    expirations_placeholder = 0;
+    expirations_frenzy = 0;
   }
 
   virtual int8_t group()
@@ -654,6 +657,46 @@ static void trigger_feeding_frenzy( action_t* a )
     {
       a -> player_multiplier *= 1.0 + p -> talents.feeding_frenzy * 0.06;
     }
+  }
+}
+
+// trigger_frenzy ==================================================
+
+static void trigger_frenzy( action_t* a )
+{
+  hunter_pet_t* p = (hunter_pet_t*) a -> player -> cast_pet();
+  hunter_t*     o = p -> owner -> cast_hunter();
+
+  if ( ! o -> talents.frenzy ) return;
+  if ( ! a -> sim -> roll( o -> talents.frenzy * 0.2 ) ) return;
+
+  struct frenzy_expiration_t : public event_t
+  {
+    frenzy_expiration_t( sim_t* sim, hunter_pet_t* p ) : event_t( sim, p )
+    {
+      name = "Frenzy Expiration";
+      p -> aura_gain( "Frenzy" );
+      p -> buffs_frenzy = 1;
+      sim -> add_event( this, 8.0 );
+    }
+    virtual void execute()
+    {
+      hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+      p -> aura_loss( "Frenzy" );
+      p -> buffs_frenzy = 0;
+      p -> expirations_frenzy = 0;
+    }
+  };
+
+  event_t*& e = p -> expirations_frenzy;
+
+  if ( e )
+  {
+    e -> reschedule( 8.0 );
+  }
+  else
+  {
+    e = new ( a -> sim ) frenzy_expiration_t( a -> sim, p );
   }
 }
 
@@ -1018,6 +1061,24 @@ struct hunter_pet_attack_t : public attack_t
     base_multiplier *= 1.0 + o -> talents.kindred_spirits * 0.03;
   }
 
+  virtual double execute_time()
+  {
+    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    hunter_t*     o = p -> owner -> cast_hunter();
+
+    double t = attack_t::execute_time();
+    if( t == 0 ) return 0;
+
+    if( o -> talents.frenzy )
+    {
+      if( p -> buffs_frenzy )
+        t *= 1.0 / 1.3;
+      p -> uptimes_frenzy -> update( p -> buffs_frenzy );
+    }
+
+    return t;
+  }
+
   virtual void execute()
   {
     //hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
@@ -1031,7 +1092,7 @@ struct hunter_pet_attack_t : public attack_t
 
       if( result == RESULT_CRIT )
       {
-	// FIXME! Pet "on-crit" triggers here.
+        trigger_frenzy( this );
       }
     }
   }
