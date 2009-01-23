@@ -11,7 +11,7 @@
 
 struct hunter_pet_t;
 
-enum { ASPECT_NONE=0, ASPECT_HAWK, ASPECT_VIPER, ASPECT_MAX };
+enum { ASPECT_NONE=0, ASPECT_HAWK, ASPECT_VIPER, ASPECT_BEAST, ASPECT_MAX };
 
 struct hunter_t : public player_t
 {
@@ -83,6 +83,7 @@ struct hunter_t : public player_t
     int8_t  efficiency;
     int8_t  explosive_shot;
     int8_t  expose_weakness;
+    int8_t  ferocity;
     int8_t  focused_aim;
     int8_t  go_for_the_throat;
     int8_t  hunter_vs_wild;
@@ -95,6 +96,7 @@ struct hunter_t : public player_t
     int8_t  improved_stings;
     int8_t  improved_tracking;
     int8_t  killer_instinct;
+    int8_t  kindred_spirits;
     int8_t  lethal_shots;
     int8_t  lightning_reflexes;
     int8_t  lock_and_load;
@@ -117,22 +119,20 @@ struct hunter_t : public player_t
     int8_t  thrill_of_the_hunt;
     int8_t  tnt;
     int8_t  trueshot_aura;
+    int8_t  unleashed_fury;
     int8_t  wild_quiver;
 
     // Talents not yet fully implemented
     int8_t  bestial_wrath;
     int8_t  cobra_strikes;
     int8_t  ferocious_inspiration;
-    int8_t  ferocity;
     int8_t  frenzy;
     int8_t  focused_fire;
     int8_t  invigoration;
-    int8_t  kindred_spirits;
     int8_t  piercing_shots;
     int8_t  savage_strikes;
     int8_t  sniper_training;
     int8_t  survival_tactics;
-    int8_t  unleashed_fury;
 
     talents_t() { memset( (void*) this, 0x0, sizeof( talents_t ) ); }
   };
@@ -288,7 +288,8 @@ struct hunter_pet_t : public pet_t
   int8_t pet_type;
 
   // Buffs
-  double buffs_placeholder;
+  int8_t buffs_rabid;
+  int8_t buffs_rabid_power_stack;
 
   // Expirations
   event_t* expirations_placeholder;
@@ -326,13 +327,15 @@ struct hunter_pet_t : public pet_t
   hunter_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name, int8_t pt ) :
     pet_t( sim, owner, pet_name ), pet_type(pt), main_hand_attack(0)
   {
-    // FIXME! What is the default damage for Hunter pet natural weapons?
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.damage     = 100;
+    main_hand_weapon.damage     = (51.0+78.0)/2; // FIXME only level 80 value
     main_hand_weapon.swing_time = 2.0;
 
+    stamina_per_owner = 0.45;
+
     // Buffs
-    buffs_placeholder = 0;
+    buffs_rabid             = 0;
+    buffs_rabid_power_stack = 0;
 
     // Expirations
     expirations_placeholder = 0;
@@ -352,7 +355,8 @@ struct hunter_pet_t : public pet_t
     pet_t::reset();
 
     // Buffs
-    buffs_placeholder = 0;
+    buffs_rabid             = 0;
+    buffs_rabid_power_stack = 0;
 
     // Expirations
     expirations_placeholder = 0;
@@ -370,27 +374,45 @@ struct hunter_pet_t : public pet_t
   {
     hunter_t* o = owner -> cast_hunter();
 
-    // FIXME! Need to find base stats
-    attribute_base[ ATTR_STRENGTH  ] = 100;
-    attribute_base[ ATTR_AGILITY   ] = 100;
-    attribute_base[ ATTR_STAMINA   ] = 100;
-    attribute_base[ ATTR_INTELLECT ] = 100;
-    attribute_base[ ATTR_SPIRIT    ] = 100;
+    attribute_base[ ATTR_STRENGTH  ] = rating_t::interpolate( level, 0, 162, 331 );
+    attribute_base[ ATTR_AGILITY   ] = rating_t::interpolate( level, 0, 54, 113 );
+    attribute_base[ ATTR_STAMINA   ] = rating_t::interpolate( level, 0, 307, 361 );
+    attribute_base[ ATTR_INTELLECT ] = 100; // FIXME
+    attribute_base[ ATTR_SPIRIT    ] = 100; // FIXME
 
-    // FIXME! The crit_per_agility numbers stolen from Warlock pets
+    // AP = (str-10)*2
+    base_attack_power = -20;
+
     initial_attack_power_per_strength = 2.0;
-    initial_attack_crit_per_agility   = rating_t::interpolate( level, 0.01/16.0, 0.01/24.9, 0.01/52.1 );
+    // FIXME don't know level 60 value
+    initial_attack_crit_per_agility   = rating_t::interpolate( level, 0.01/16.0, 0.01/30.0, 0.01/62.5 );
 
     base_attack_expertise = o -> talents.animal_handler * 0.05;
 
-    base_attack_crit = 0.05 + talents.spiders_bite * 0.03;
+    base_attack_crit = 0.032 + talents.spiders_bite * 0.03;
+    base_attack_crit += o -> talents.ferocity * 0.02;
 
-    // FIXME! What is the base health?
-    resource_base[ RESOURCE_HEALTH ] = 100;
+    resource_base[ RESOURCE_HEALTH ] = rating_t::interpolate( level, 0, 4253, 6373 );
     resource_base[ RESOURCE_FOCUS  ] = 100;
 
     focus_regen_per_second  = ( 24.5 / 4.0 );
     focus_regen_per_second *= 1.0 + o -> talents.bestial_discipline * 0.50;
+  }
+
+  virtual double composite_attack_power()
+  {
+    hunter_t* o = owner -> cast_hunter();
+
+    double ap = player_t::composite_attack_power();
+    ap += o -> stamina() * o -> talents.hunter_vs_wild * 0.1;
+    ap += o -> composite_attack_power() * 0.22;
+
+    if( o -> active_aspect == ASPECT_BEAST )
+      ap *= 1.1;
+    if( buffs_rabid_power_stack )
+      ap *= 1.0 + buffs_rabid_power_stack * 0.05;
+
+    return ap;
   }
 
   virtual void summon()
@@ -842,6 +864,22 @@ static void trigger_master_tactician( attack_t* a )
   }
 }
 
+// trigger_rabid_power ===============================================
+
+static void trigger_rabid_power( attack_t* a )
+{
+  hunter_pet_t* p = (hunter_pet_t*) a -> player -> cast_pet();
+
+  if ( ! p -> talents.rabid )
+    return;
+  if ( ! p -> buffs_rabid )
+    return;
+  if ( p -> buffs_rabid_power_stack == 5 || ! a -> sim -> roll( 0.5 ) )
+    return;
+
+  p -> buffs_rabid_power_stack++;
+}
+
 // trigger_thrill_of_the_hunt ========================================
 
 static void trigger_thrill_of_the_hunt( attack_t* a )
@@ -908,14 +946,19 @@ struct hunter_pet_attack_t : public attack_t
     attack_t( n, player, r, s )
   {
     hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
-  //hunter_t*     o = p -> owner -> cast_hunter();
+    hunter_t*     o = p -> owner -> cast_hunter();
 
     may_glance = false;
 
     if( p -> group() == PET_FEROCITY ) base_multiplier *= 1.10;
     if( p -> group() == PET_CUNNING  ) base_multiplier *= 1.05;
 
+    // Assume happy pet
+    base_multiplier *= 1.25;
+
     base_multiplier *= 1.0 + p -> talents.spiked_collar * 0.03;
+    base_multiplier *= 1.0 + o -> talents.unleashed_fury * 0.03;
+    base_multiplier *= 1.0 + o -> talents.kindred_spirits * 0.03;
   }
 
   virtual void execute()
@@ -927,7 +970,7 @@ struct hunter_pet_attack_t : public attack_t
 
     if( result_is_hit() )
     {
-      // FIXME! Pet "on-hit" triggers here.
+      trigger_rabid_power( this );
 
       if( result == RESULT_CRIT )
       {
@@ -938,12 +981,7 @@ struct hunter_pet_attack_t : public attack_t
 
   virtual void player_buff()
   {
-    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
-    hunter_t*     o = p -> owner -> cast_hunter();
-
     attack_t::player_buff();
-
-    player_power += 0.22 * o -> composite_attack_power();
 
     trigger_feeding_frenzy( this );
   }
@@ -957,7 +995,7 @@ struct hunter_pet_melee_t : public hunter_pet_attack_t
     hunter_pet_attack_t( "melee", player )
   {
     hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
-  //hunter_t*     o = p -> owner -> cast_hunter();
+    hunter_t*     o = p -> owner -> cast_hunter();
 
     weapon = &( p -> main_hand_weapon );
     base_execute_time  = weapon -> swing_time;
@@ -968,10 +1006,12 @@ struct hunter_pet_melee_t : public hunter_pet_attack_t
 
     if( p -> talents.cobra_reflexes )
     {
-      // FIXME! What is the exact damage reduction formula?
-      base_multiplier   *= 1.0 / ( 1.0 + p -> talents.cobra_reflexes * 0.15 );
+      base_multiplier   *= ( 1.0 - p -> talents.cobra_reflexes * 0.075 );
       base_execute_time *= 1.0 / ( 1.0 + p -> talents.cobra_reflexes * 0.15 );
     }
+    base_execute_time *= 1.0 / ( 1.0 + 0.02 * o -> talents.serpents_swiftness );
+    if( o -> gear.tier7_2pc )
+      base_multiplier *= 1.05;
   }
 
   virtual void execute()
@@ -1014,42 +1054,98 @@ struct pet_auto_attack_t : public hunter_pet_attack_t
   }
 };
 
-// Pet Bite ===================================================================
+// Pet specials ===============================================================
 
-struct pet_bite_t : public hunter_pet_attack_t
+struct pet_special_attack_t : public hunter_pet_attack_t
 {
-  pet_bite_t( player_t* player, const std::string& options_str ) :
-    hunter_pet_attack_t( "bite", player, RESOURCE_FOCUS, SCHOOL_PHYSICAL )
+  pet_special_attack_t( const char* n, player_t* player, int8_t r=RESOURCE_FOCUS, int8_t s=SCHOOL_PHYSICAL ) : 
+    hunter_pet_attack_t( n, player, r, s )
+  {
+    direct_power_mod = 0.07;
+  }
+
+  virtual void execute()
   {
     //hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
     //hunter_t*     o = p -> owner -> cast_hunter();
 
+    hunter_pet_attack_t::execute();
+
+    if( result_is_hit() )
+    {
+      if( result == RESULT_CRIT )
+      {
+      }
+    }
+  }
+};
+
+// Pet focus dumps ============================================================
+struct pet_focus_dump_t : public pet_special_attack_t
+{
+  pet_focus_dump_t( const char* n, player_t* player ) :
+    pet_special_attack_t( n, player, RESOURCE_FOCUS, SCHOOL_PHYSICAL )
+  {
     base_cost       = 25;
     base_direct_dmg = 143;
   }
 };
 
-// Pet Claw ===================================================================
+// Pet Rabid ==================================================================
 
-struct pet_claw_t : public hunter_pet_attack_t
+struct pet_rabid_t : public hunter_pet_attack_t
 {
-  pet_claw_t( player_t* player, const std::string& options_str ) :
-    hunter_pet_attack_t( "claw", player, RESOURCE_FOCUS, SCHOOL_PHYSICAL )
+  pet_rabid_t( player_t* player, const std::string& options_str ) :
+    hunter_pet_attack_t( "rabid", player, RESOURCE_FOCUS )
   {
-    //hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
-    //hunter_t*     o = p -> owner -> cast_hunter();
+    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    hunter_t*     o = p -> owner -> cast_hunter();
 
-    base_cost       = 25;
-    base_direct_dmg = 143;
+    assert( p -> talents.rabid );
+
+    base_cost = 0;
+    cooldown  = 45 * ( 1.0 - o -> talents.longevity * 0.10 );
+    trigger_gcd = 0.0;
   }
+
+  virtual void execute()
+  {
+    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+
+    struct rabid_expiration_t : public event_t
+    {
+      rabid_expiration_t( sim_t* sim, hunter_pet_t* p ) : event_t( sim, p )
+      {
+        name = "Rabid Expiration";
+        p -> aura_gain( "Rabid" );
+        p -> buffs_rabid = 1;
+        assert( p -> buffs_rabid_power_stack == 0 );
+        sim -> add_event( this, 20.0 );
+      }
+      virtual void execute()
+      {
+        hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+        p -> aura_loss( "Rabid" );
+        p -> buffs_rabid = 0;
+        p -> buffs_rabid_power_stack = 0;
+      }
+    };
+
+    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    consume_resource();
+    update_ready();
+    player -> action_finish( this );
+    new ( sim ) rabid_expiration_t( sim, p );
+  }
+
 };
 
 // Cat Rake ===================================================================
 
-struct cat_rake_t : public hunter_pet_attack_t
+struct cat_rake_t : public pet_special_attack_t
 {
   cat_rake_t( player_t* player, const std::string& options_str ) :
-    hunter_pet_attack_t( "rake", player, RESOURCE_FOCUS, SCHOOL_BLEED )
+    pet_special_attack_t( "rake", player, RESOURCE_FOCUS, SCHOOL_BLEED )
   {
     hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
@@ -1070,13 +1166,13 @@ struct cat_rake_t : public hunter_pet_attack_t
     // FIXME! Assuming pets are not smart enough to wait for Rake to finish ticking
     if( ticking ) cancel();
     school = SCHOOL_PHYSICAL;
-    hunter_pet_attack_t::execute();
+    pet_special_attack_t::execute();
     school = SCHOOL_BLEED;
   }
 
   virtual void update_ready()
   {
-    hunter_pet_attack_t::update_ready();
+    pet_special_attack_t::update_ready();
     duration_ready = 0;
   }
 };
@@ -1155,10 +1251,12 @@ action_t* hunter_pet_t::create_action( const std::string& name,
 				       const std::string& options_str )
 {
   if( name == "auto_attack"       ) return new           pet_auto_attack_t( this, options_str );
-  if( name == "bite"              ) return new                  pet_bite_t( this, options_str );
-  if( name == "claw"              ) return new                  pet_claw_t( this, options_str );
+  if( name == "bite"              ) return new            pet_focus_dump_t( "bite", this );
+  if( name == "claw"              ) return new            pet_focus_dump_t( "claw", this );
   if( name == "froststorm_breath" ) return new chimera_froststorm_breath_t( this, options_str );
+  if( name == "rabid"             ) return new                 pet_rabid_t( this, options_str );
   if( name == "rake"              ) return new                  cat_rake_t( this, options_str );
+  if( name == "smack"             ) return new            pet_focus_dump_t( "smack", this );
 
   return 0;
 }
