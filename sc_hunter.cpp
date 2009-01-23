@@ -28,6 +28,7 @@ struct hunter_t : public player_t
   double buffs_aspect_of_the_hawk;
   double buffs_aspect_of_the_viper;
   int8_t buffs_beast_within;
+  int8_t buffs_call_of_the_wild;
   int8_t buffs_expose_weakness;
   double buffs_improved_aspect_of_the_hawk;
   int8_t buffs_improved_steady_shot;
@@ -168,6 +169,7 @@ struct hunter_t : public player_t
     buffs_aspect_of_the_hawk          = 0;
     buffs_aspect_of_the_viper         = 0;
     buffs_beast_within                = 0;
+    buffs_call_of_the_wild            = 0;
     buffs_expose_weakness             = 0;
     buffs_improved_aspect_of_the_hawk = 0;
     buffs_improved_steady_shot        = 0;
@@ -292,6 +294,7 @@ struct hunter_pet_t : public pet_t
   int8_t pet_type;
 
   // Buffs
+  int8_t buffs_call_of_the_wild;
   int8_t buffs_rabid;
   int8_t buffs_rabid_power_stack;
 
@@ -312,8 +315,10 @@ struct hunter_pet_t : public pet_t
 
   struct talents_t
   {
+    int8_t call_of_the_wild;
     int8_t cobra_reflexes;
     int8_t feeding_frenzy;
+    int8_t rabid;
     int8_t spiked_collar;
     int8_t spiders_bite;
 
@@ -321,8 +326,6 @@ struct hunter_pet_t : public pet_t
     int8_t owls_focus;
     int8_t roar_of_recovery;
     int8_t wolverine_bite;
-    int8_t call_of_the_wild;
-    int8_t rabid;
 
     talents_t() { memset( (void*) this, 0x0, sizeof( talents_t ) ); }
   };
@@ -338,6 +341,7 @@ struct hunter_pet_t : public pet_t
     stamina_per_owner = 0.45;
 
     // Buffs
+    buffs_call_of_the_wild  = 0;
     buffs_rabid             = 0;
     buffs_rabid_power_stack = 0;
 
@@ -359,6 +363,7 @@ struct hunter_pet_t : public pet_t
     pet_t::reset();
 
     // Buffs
+    buffs_call_of_the_wild  = 0;
     buffs_rabid             = 0;
     buffs_rabid_power_stack = 0;
 
@@ -415,6 +420,8 @@ struct hunter_pet_t : public pet_t
       ap *= 1.1;
     if( buffs_rabid_power_stack )
       ap *= 1.0 + buffs_rabid_power_stack * 0.05;
+    if( buffs_call_of_the_wild )
+      ap *= 1.1;
 
     return ap;
   }
@@ -1095,6 +1102,58 @@ struct pet_focus_dump_t : public pet_special_attack_t
   }
 };
 
+// Pet Call of the Wild =======================================================
+
+struct pet_call_of_the_wild_t : public hunter_pet_attack_t
+{
+  pet_call_of_the_wild_t( player_t* player, const std::string& options_str ) :
+    hunter_pet_attack_t( "call_of_the_wild", player, RESOURCE_FOCUS )
+  {
+    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    hunter_t*     o = p -> owner -> cast_hunter();
+
+    assert( p -> talents.call_of_the_wild );
+
+    base_cost = 0;
+    cooldown  = 5 * 60 * (1.0 - o -> talents.longevity * 0.10 );
+    trigger_gcd = 0.0;
+  }
+
+  virtual void execute()
+  {
+    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+
+    struct cotw_expiration_t : public event_t
+    {
+      cotw_expiration_t( sim_t* sim, hunter_pet_t* p ) : event_t( sim, p )
+      {
+        hunter_t*     o = p -> owner -> cast_hunter();
+        name = "Call of the Wild Expiration";
+        p -> aura_gain( "Call of the Wild" );
+        p -> buffs_call_of_the_wild = 1;
+        o -> aura_gain( "Call of the Wild" );
+        o -> buffs_call_of_the_wild = 1;
+        sim -> add_event( this, 20.0 );
+      }
+      virtual void execute()
+      {
+        hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+        hunter_t*     o = p -> owner -> cast_hunter();
+        p -> aura_loss( "Call of the Wild" );
+        p -> buffs_call_of_the_wild = 0;
+        o -> aura_loss( "Call of the Wild" );
+        o -> buffs_call_of_the_wild = 0;
+      }
+    };
+
+    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    consume_resource();
+    update_ready();
+    player -> action_finish( this );
+    new ( sim ) cotw_expiration_t( sim, p );
+  }
+};
+
 // Pet Rabid ==================================================================
 
 struct pet_rabid_t : public hunter_pet_attack_t
@@ -1256,6 +1315,7 @@ action_t* hunter_pet_t::create_action( const std::string& name,
 {
   if( name == "auto_attack"       ) return new           pet_auto_attack_t( this, options_str );
   if( name == "bite"              ) return new            pet_focus_dump_t( "bite", this );
+  if( name == "call_of_the_wild"  ) return new      pet_call_of_the_wild_t( this, options_str );
   if( name == "claw"              ) return new            pet_focus_dump_t( "claw", this );
   if( name == "froststorm_breath" ) return new chimera_froststorm_breath_t( this, options_str );
   if( name == "rabid"             ) return new                 pet_rabid_t( this, options_str );
@@ -2601,6 +2661,7 @@ void hunter_t::reset()
   buffs_aspect_of_the_hawk          = 0;
   buffs_aspect_of_the_viper         = 0;
   buffs_beast_within                = 0;
+  buffs_call_of_the_wild            = 0;
   buffs_expose_weakness             = 0;
   buffs_improved_aspect_of_the_hawk = 0;
   buffs_improved_steady_shot        = 0;
@@ -2634,6 +2695,9 @@ double hunter_t::composite_attack_power()
 
   if( buffs_expose_weakness ) ap += agility() * 0.25;
   uptimes_expose_weakness -> update( buffs_expose_weakness != 0 );
+
+  if( buffs_call_of_the_wild )
+    ap *= 1.1;
 
   return ap;
 }
