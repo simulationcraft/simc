@@ -69,6 +69,8 @@ struct hunter_t : public player_t
   // Ammunition
   double ammo_dps;
 
+  double quiver_haste;
+
   struct talents_t
   {
     int8_t  animal_handler;
@@ -202,6 +204,8 @@ struct hunter_t : public player_t
     uptimes_master_tactician            = get_uptime( "master_tactician" );
 
     ammo_dps = 0;
+
+    quiver_haste = 1.0;
   }
   
   // Character Definition
@@ -1311,6 +1315,8 @@ double hunter_attack_t::execute_time()
   {
     t *= 1.0 / ( 1.0 + p -> buffs_rapid_fire );
   }
+
+  t *= 1.0 / p -> quiver_haste;
 
   t *= 1.0 / ( 1.0 + 0.04 * p -> talents.serpents_swiftness );
 
@@ -2784,6 +2790,7 @@ bool hunter_t::parse_option( const std::string& name,
     { "glyph_trueshot_aura",               OPT_INT8, &( glyphs.trueshot_aura                 ) },
     // Custom
     { "ammo_dps",                          OPT_FLT,  &( ammo_dps                             ) },
+    { "quiver_haste",                      OPT_FLT,  &( quiver_haste                         ) },
     
     { NULL, OPT_UNKNOWN }
   };
