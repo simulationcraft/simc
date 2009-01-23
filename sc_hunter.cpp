@@ -29,6 +29,7 @@ struct hunter_t : public player_t
   double buffs_aspect_of_the_viper;
   int8_t buffs_beast_within;
   int8_t buffs_call_of_the_wild;
+  int8_t buffs_cobra_strikes;
   int8_t buffs_expose_weakness;
   double buffs_improved_aspect_of_the_hawk;
   int8_t buffs_improved_steady_shot;
@@ -38,6 +39,7 @@ struct hunter_t : public player_t
   int8_t buffs_trueshot_aura;
 
   // Expirations
+  event_t*  expirations_cobra_strikes;
   event_t*  expirations_expose_weakness;
   event_t*  expirations_hunting_party;
   event_t*  expirations_improved_aspect_of_the_hawk;
@@ -170,6 +172,7 @@ struct hunter_t : public player_t
     buffs_aspect_of_the_viper         = 0;
     buffs_beast_within                = 0;
     buffs_call_of_the_wild            = 0;
+    buffs_cobra_strikes               = 0;
     buffs_expose_weakness             = 0;
     buffs_improved_aspect_of_the_hawk = 0;
     buffs_improved_steady_shot        = 0;
@@ -179,6 +182,7 @@ struct hunter_t : public player_t
     buffs_trueshot_aura               = 0;
 
     // Expirations
+    expirations_cobra_strikes               = 0;
     expirations_expose_weakness             = 0;
     expirations_hunting_party               = 0;
     expirations_improved_aspect_of_the_hawk = 0;
@@ -550,6 +554,48 @@ static void trigger_aspect_of_the_viper( attack_t* a )
   if( p -> glyphs.aspect_of_the_viper ) gain *= 1.10;
 
   p -> resource_gain( RESOURCE_MANA, gain, p -> gains_viper_aspect_shot );
+}
+
+// trigger_cobra_strikes ===================================================
+
+static void trigger_cobra_strikes( attack_t* a )
+{
+  hunter_t* p = a -> player -> cast_hunter();
+
+  if ( ! p -> talents.cobra_strikes )
+    return;
+  if ( ! a -> sim -> roll( p -> talents.cobra_strikes * 0.2 ) )
+    return;
+
+  struct cobra_strikes_expiration_t : public event_t
+  {
+    cobra_strikes_expiration_t( sim_t* sim, hunter_t* p ) : event_t( sim, p )
+    {
+      name = "Cobra Strikes Expiration";
+      p -> aura_gain( "Cobra Strikes" );
+      p -> buffs_cobra_strikes = 2;
+      sim -> add_event( this, 10.0 );
+    }
+    virtual void execute()
+    {
+      hunter_t* p = player -> cast_hunter();
+      p -> aura_loss( "Cobra Strikes" );
+      p -> buffs_cobra_strikes = 0;
+      p -> expirations_cobra_strikes = 0;
+    }
+  };
+
+  event_t*& e = p -> expirations_cobra_strikes;
+
+  if ( e )
+  {
+    e -> reschedule( 10.0 );
+    p -> buffs_cobra_strikes = 2;
+  }
+  else
+  {
+    e = new ( a -> sim ) cobra_strikes_expiration_t( a -> sim, p );
+  }
 }
 
 // trigger_expose_weakness =================================================
@@ -1073,6 +1119,23 @@ struct pet_special_attack_t : public hunter_pet_attack_t
     hunter_pet_attack_t( n, player, r, s )
   {
     direct_power_mod = 0.07;
+  }
+
+  virtual void player_buff()
+  {
+    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    hunter_t*     o = p -> owner -> cast_hunter();
+
+    hunter_pet_attack_t::player_buff();
+
+    if( o -> buffs_cobra_strikes )
+    {
+      player_crit = 1;
+      // FIXME: does it consume charges if the attack misses?
+      o -> buffs_cobra_strikes--;
+      if( ! o -> buffs_cobra_strikes )
+        event_t::early( o -> expirations_cobra_strikes );
+    }
   }
 
   virtual void execute()
@@ -1645,7 +1708,11 @@ struct arcane_shot_t : public hunter_attack_t
   virtual void execute()
   {
     hunter_attack_t::execute();
-    if( result == RESULT_CRIT ) trigger_hunting_party( this );
+    if( result == RESULT_CRIT )
+    {
+      trigger_cobra_strikes( this );
+      trigger_hunting_party( this );
+    }
     consume_lock_and_load( this );
     consume_improved_steady_shot( this );
   }
@@ -1859,6 +1926,10 @@ struct explosive_shot_t : public hunter_attack_t
     may_miss = true;
     hunter_attack_t::execute();      
     consume_lock_and_load( this );
+    if( result == RESULT_CRIT )
+    {
+      trigger_hunting_party( this );
+    }
   }
 
   virtual void tick()
@@ -1867,6 +1938,10 @@ struct explosive_shot_t : public hunter_attack_t
     // FIXME! To handle this, each "tick" is modeled as an attack that cannot miss.
     may_miss = false;
     hunter_attack_t::execute();
+    if( result == RESULT_CRIT )
+    {
+      trigger_hunting_party( this );
+    }
     if( current_tick == num_ticks ) last_tick();
   }
 
@@ -1938,6 +2013,15 @@ struct kill_shot_t : public hunter_attack_t
 
     add_ammunition();
     add_scope();
+  }
+
+  virtual void execute()
+  {
+    hunter_attack_t::execute();
+    if( result == RESULT_CRIT )
+    {
+      trigger_cobra_strikes( this );
+    }
   }
 
   virtual bool ready()
@@ -2177,8 +2261,13 @@ struct steady_shot_t : public hunter_attack_t
     hunter_attack_t::execute();
     if( result_is_hit() )
     {
-      trigger_hunting_party( this );
       trigger_improved_steady_shot( this );
+
+      if( result == RESULT_CRIT )
+      {
+        trigger_cobra_strikes( this );
+        trigger_hunting_party( this );
+      }
     }
   }
 
@@ -2662,6 +2751,7 @@ void hunter_t::reset()
   buffs_aspect_of_the_viper         = 0;
   buffs_beast_within                = 0;
   buffs_call_of_the_wild            = 0;
+  buffs_cobra_strikes               = 0;
   buffs_expose_weakness             = 0;
   buffs_improved_aspect_of_the_hawk = 0;
   buffs_improved_steady_shot        = 0;
@@ -2671,6 +2761,7 @@ void hunter_t::reset()
   buffs_trueshot_aura               = 0;
   
   // Expirations
+  expirations_cobra_strikes               = 0;
   expirations_expose_weakness             = 0;
   expirations_hunting_party               = 0;
   expirations_improved_aspect_of_the_hawk = 0;
