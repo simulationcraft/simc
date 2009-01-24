@@ -896,7 +896,7 @@ struct stormstrike_t : public shaman_attack_t
   virtual void execute()
   {
     if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
-    consume_resource();
+    attack_t::consume_resource();
     update_ready();
 
     double mh_dd=0, oh_dd=0;
@@ -926,6 +926,7 @@ struct stormstrike_t : public shaman_attack_t
 
     player -> action_finish( this );
   }
+  virtual void consume_resource() { }
   virtual void update_stats( int8_t type ) { }
 };
 

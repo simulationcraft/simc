@@ -73,6 +73,9 @@ judgement_of_wisdom=1
 razorice=1
 crypt_fever=1
 
+# Support for Feral Druids does not exist.
+mangle=1
+
 # The Mage talent "Torment the Weak" has been changed to work off of many "snare" debuffs.
 snare=1
 
