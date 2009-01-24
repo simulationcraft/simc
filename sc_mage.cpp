@@ -1438,7 +1438,9 @@ struct arcane_missiles_t : public mage_spell_t
     clear_arcane_potency( this );
     if( abar_combo && abar_spell -> ready() ) 
     {
+      p -> action_start( abar_spell );
       abar_spell -> execute();
+      p -> last_foreground_action = abar_spell;
     }
     event_t::early( p -> expirations_arcane_blast );
   }
