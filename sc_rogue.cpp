@@ -53,6 +53,7 @@ struct rogue_t : public player_t
 
   // Procs
   proc_t* procs_sword_specialization;
+  proc_t* procs_combo_points;
   
   // Up-Times
   uptime_t* uptimes_blade_flurry;
@@ -196,6 +197,7 @@ struct rogue_t : public player_t
 
     // Procs
     procs_sword_specialization = get_proc( "sword_specialization" );
+    procs_combo_points         = get_proc( "combo_points" );
 
     // Up-Times
     uptimes_blade_flurry     = get_uptime( "blade_flurry" );
@@ -259,7 +261,6 @@ struct rogue_attack_t : public attack_t
     max_energy(0), max_combo_points(0)
   {
     rogue_t* p = player -> cast_rogue();
-    base_direct_dmg = 1;
     base_crit += p -> talents.malice * 0.01;
     base_hit  += p -> talents.precision * 0.01;
     may_glance = false;
@@ -387,6 +388,8 @@ static void add_combo_point( rogue_attack_t* a )
   p -> buffs_combo_points++;
 
   p -> aura_gain( name[ p -> buffs_combo_points - 1 ] );
+
+  p -> procs_combo_points -> occur();
 }
 
 // trigger_combat_potency ==================================================
@@ -547,6 +550,9 @@ static void trigger_ruthlessness( rogue_attack_t* a )
 static void trigger_seal_fate( rogue_attack_t* a )
 {
   rogue_t* p = a -> player -> cast_rogue();
+
+  if( ! p -> talents.seal_fate )
+    return;
 
   if( ! a -> adds_combo_points ) 
     return;
@@ -1028,7 +1034,7 @@ struct backstab_t : public rogue_attack_t
                                      p -> talents.find_weakness    * 0.02 +
                                      p -> talents.opportunity      * 0.10 +
                                      p -> talents.surprise_attacks * 0.10 +
-				     p -> gear.tier6_4pc           * 0.06 );
+                                     p -> gear.tier6_4pc           * 0.06 );
     base_crit                  += p -> talents.puncturing_wounds * 0.10;
     base_crit_multiplier       *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
@@ -1197,7 +1203,7 @@ struct envenom_t : public rogue_attack_t
     }
     else
     {
-      tick_power_mod = doses_consumed * 0.07;
+      direct_power_mod = doses_consumed * 0.07;
       base_direct_dmg = combo_point_dmg[ doses_consumed-1 ];
       rogue_attack_t::player_buff();
     }
@@ -1363,7 +1369,7 @@ struct expose_armor_t : public rogue_attack_t
           }
         };
 
-	double duration = p -> glyphs.expose_armor ? 40 : 30;
+        double duration = p -> glyphs.expose_armor ? 40 : 30;
 
         t -> debuffs.expose_armor = debuff;
 
@@ -1479,6 +1485,7 @@ struct hemorrhage_t : public rogue_attack_t
     };
     parse_options( options, options_str );
       
+    base_direct_dmg = 1;
     weapon = &( p -> main_hand_weapon );
     normalize_weapon_speed      = true;
     adds_combo_points           = true;
@@ -1486,7 +1493,7 @@ struct hemorrhage_t : public rogue_attack_t
     weapon_multiplier          *= 1.10 + p -> talents.sinister_calling * 0.01;
     base_multiplier            *= 1.0 + ( p -> talents.find_weakness    * 0.02 +
                                           p -> talents.surprise_attacks * 0.10 +
-					  p -> gear.tier6_4pc           * 0.06 );
+                                          p -> gear.tier6_4pc           * 0.06 );
     base_crit_multiplier       *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
 
@@ -1727,11 +1734,12 @@ struct mutilate_t : public rogue_attack_t
     };
     parse_options( options, options_str );
       
+    base_direct_dmg   = 1;
     adds_combo_points = true;
     base_cost         = 60;
     base_multiplier  *= 1.0 + ( p -> talents.find_weakness * 0.02 +
                                 p -> talents.opportunity   * 0.10 +
-				p -> gear.tier6_4pc         * 0.06 );
+                                p -> gear.tier6_4pc         * 0.06 );
     base_crit                  += p -> talents.puncturing_wounds * 0.05;
     base_crit_multiplier       *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
@@ -1848,7 +1856,7 @@ struct rupture_t : public rogue_attack_t
     base_multiplier      *= 1.0 + ( p -> talents.blood_spatter   * 0.15 +
                                     p -> talents.find_weakness   * 0.03 +
                                     p -> talents.serrated_blades * 0.10 +
-				    p -> gear.tier7_2pc          * 0.10 );
+                                    p -> gear.tier7_2pc          * 0.10 );
 
     base_crit_multiplier *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
 
@@ -1991,7 +1999,7 @@ struct sinister_strike_t : public rogue_attack_t
                                p -> talents.blade_twisting   * 0.05 +
                                p -> talents.find_weakness    * 0.02 +
                                p -> talents.surprise_attacks * 0.10 +
-			       p -> gear.tier6_4pc           * 0.06 );
+                               p -> gear.tier6_4pc           * 0.06 );
 
     base_crit_multiplier       *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
@@ -2005,7 +2013,7 @@ struct sinister_strike_t : public rogue_attack_t
     {
       if( p -> glyphs.sinister_strike && sim -> rng -> roll( 0.50 ) )
       {
-	add_combo_point( this );
+        add_combo_point( this );
       }
     }
   }

@@ -382,6 +382,8 @@ double action_t::total_crit_bonus()
 
 double action_t::calculate_tick_damage()
 {
+  tick_dmg = 0;
+
   if( base_tick_dmg == 0 ) base_tick_dmg = base_td_init;
 
   if( base_tick_dmg == 0 ) return 0;
@@ -409,6 +411,8 @@ double action_t::calculate_tick_damage()
 
 double action_t::calculate_direct_damage()
 {
+  direct_dmg = 0;
+
   if( base_dd_max > 0 )
   {
     if( sim -> average_dmg )

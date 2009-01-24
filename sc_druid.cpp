@@ -570,17 +570,17 @@ struct faerie_fire_t : public druid_spell_t
       faerie_fire_t* faerie_fire;
       expiration_t( sim_t* sim, player_t* p, faerie_fire_t* ff ) : event_t( sim, p ), faerie_fire( ff )
       {
-    target_t* t = sim -> target;
-    t -> debuffs.faerie_fire = faerie_fire -> armor_penetration;
-    t -> debuffs.improved_faerie_fire = faerie_fire -> bonus_hit;
-    sim -> add_event( this, 40.0 );
+        target_t* t = sim -> target;
+        t -> debuffs.faerie_fire = faerie_fire -> armor_penetration;
+        t -> debuffs.improved_faerie_fire = faerie_fire -> bonus_hit;
+        sim -> add_event( this, 40.0 );
       }
       virtual void execute()
       {
-    target_t* t = sim -> target;
-    t -> debuffs.faerie_fire = 0;
-    t -> debuffs.improved_faerie_fire = 0;
-    t -> expirations.faerie_fire = 0;
+        target_t* t = sim -> target;
+        t -> debuffs.faerie_fire = 0;
+        t -> debuffs.improved_faerie_fire = 0;
+        t -> expirations.faerie_fire = 0;
       }
     };
 
@@ -1247,7 +1247,7 @@ struct treants_spell_t : public druid_spell_t
       double health_pct = sim -> target -> health_percentage();
 
       if( health_pct <= 0 || health_pct > target_pct )
-	return false;
+        return false;
     }
 
     return true;
