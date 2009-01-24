@@ -1878,7 +1878,7 @@ struct chimera_shot_t : public hunter_attack_t
       {
 	struct chimera_serpent_t : public hunter_attack_t 
 	{
-	  chimera_serpent_t( player_t* p ) : hunter_attack_t( "chimera_serpent", p, RESOURCE_NONE, SCHOOL_NATURE )     
+	  chimera_serpent_t( player_t* p ) : hunter_attack_t( "chimera_serpent", p, SCHOOL_NATURE, TREE_MARKSMANSHIP )     
 	  {
 	    // FIXME! Which talents benefit this attack?
 	    // FIXME! Which procs can be triggered by this attack?
