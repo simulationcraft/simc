@@ -2000,6 +2000,9 @@ struct explosive_shot_t : public hunter_attack_t
 
   virtual double cost()
   {
+    // FIXME: ugly workaround to avoid paying triple
+    if ( !may_miss ) return 0;
+
     hunter_t* p = player -> cast_hunter();
     if ( p -> buffs_lock_and_load ) return 0;
     return hunter_attack_t::cost();
@@ -2015,7 +2018,6 @@ struct explosive_shot_t : public hunter_attack_t
   virtual void execute()
   {
     // FIXME! Bypass hunter_attack_t procs and just schedule ticks.  Only initial shot can miss.
-    may_miss = true;
     hunter_attack_t::execute();      
     consume_lock_and_load( this );
     if( result == RESULT_CRIT )
@@ -2035,6 +2037,7 @@ struct explosive_shot_t : public hunter_attack_t
       trigger_hunting_party( this );
     }
     if( current_tick == num_ticks ) last_tick();
+    may_miss = true;
   }
 
   virtual void update_ready()
