@@ -601,6 +601,21 @@ static void trigger_cobra_strikes( attack_t* a )
   }
 }
 
+// consume_cobra_strikes ===================================================
+
+static void consume_cobra_strikes( action_t* a )
+{
+  hunter_pet_t* p = (hunter_pet_t*) a -> player -> cast_pet();
+  hunter_t*     o = p -> owner -> cast_hunter();
+
+  if( o -> buffs_cobra_strikes )
+  {
+    o -> buffs_cobra_strikes--;
+    if( ! o -> buffs_cobra_strikes )
+      event_t::early( o -> expirations_cobra_strikes );
+  }
+}
+
 // trigger_expose_weakness =================================================
 
 static void trigger_expose_weakness( attack_t* a )
@@ -1190,13 +1205,7 @@ struct pet_special_attack_t : public hunter_pet_attack_t
     hunter_pet_attack_t::player_buff();
 
     if( o -> buffs_cobra_strikes )
-    {
       player_crit = 1;
-      // FIXME: does it consume charges if the attack misses?
-      o -> buffs_cobra_strikes--;
-      if( ! o -> buffs_cobra_strikes )
-        event_t::early( o -> expirations_cobra_strikes );
-    }
   }
 
   virtual void execute()
@@ -1212,6 +1221,8 @@ struct pet_special_attack_t : public hunter_pet_attack_t
       {
       }
     }
+
+    consume_cobra_strikes( this );
   }
 };
 
@@ -1398,6 +1409,8 @@ struct hunter_pet_spell_t : public spell_t
 	// FIXME! Pet "on-crit" triggers here.
       }
     }
+
+    consume_cobra_strikes( this );
   }
 
   virtual void player_buff()
@@ -1408,6 +1421,9 @@ struct hunter_pet_spell_t : public spell_t
     spell_t::player_buff();
 
     player_power += 0.125 * o -> composite_spell_power( SCHOOL_MAX );
+
+    if( o -> buffs_cobra_strikes )
+      player_crit = 1;
 
     trigger_feeding_frenzy( this );
   }
