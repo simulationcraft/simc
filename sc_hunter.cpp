@@ -392,6 +392,7 @@ struct hunter_pet_t : public pet_t
 
     attribute_base[ ATTR_STRENGTH  ] = rating_t::interpolate( level, 0, 162, 331 );
     attribute_base[ ATTR_AGILITY   ] = rating_t::interpolate( level, 0, 54, 113 );
+    //stamina is different for every pet type (at least tenacity have more)
     attribute_base[ ATTR_STAMINA   ] = rating_t::interpolate( level, 0, 307, 361 );
     attribute_base[ ATTR_INTELLECT ] = 100; // FIXME
     attribute_base[ ATTR_SPIRIT    ] = 100; // FIXME
@@ -503,6 +504,9 @@ struct hunter_attack_t : public attack_t
   {
     hunter_t* p = player -> cast_hunter();
 
+    //Spreadsheet says, it is weapon -> swing_time,
+    //even if the ap contribution is normalized (only steady is the exception)
+    //But I think that's illogical, dunno if somebody tested it sufficiently
     double weapon_speed = normalize_weapon_speed ? weapon -> normalized_weapon_speed() : weapon -> swing_time;
     double bonus_damage = p -> ammo_dps * weapon_speed * weapon_multiplier;
 
@@ -2320,7 +2324,7 @@ struct steady_shot_t : public hunter_attack_t
     normalize_weapon_speed = true;
     direct_power_mod       = 0.5/14.0;
     base_execute_time      = 2.0;
-    
+
     base_cost *= 1.0 - p -> talents.master_marksman * 0.05;
 
     base_multiplier *= 1.0 + p -> talents.ranged_weapon_specialization * 0.01;
