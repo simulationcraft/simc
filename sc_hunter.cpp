@@ -81,6 +81,7 @@ struct hunter_t : public player_t
     int8_t  aspect_mastery;
     int8_t  barrage;
     int8_t  beast_within;
+    int8_t  bestial_wrath;
     int8_t  bestial_discipline;
     int8_t  careful_aim;
     int8_t  chimera_shot;
@@ -130,7 +131,6 @@ struct hunter_t : public player_t
     int8_t  wild_quiver;
 
     // Talents not yet fully implemented
-    int8_t  bestial_wrath;
     int8_t  ferocious_inspiration;
     int8_t  focused_fire;
     int8_t  invigoration;
@@ -146,6 +146,7 @@ struct hunter_t : public player_t
   struct glyphs_t
   {
     int8_t  aspect_of_the_viper;
+    int8_t  bestial_wrath;
     int8_t  hunters_mark;
     int8_t  improved_aspect_of_the_hawk;
     int8_t  rapid_fire;
@@ -298,6 +299,7 @@ struct hunter_pet_t : public pet_t
   int8_t pet_type;
 
   // Buffs
+  int8_t buffs_bestial_wrath;
   int8_t buffs_call_of_the_wild;
   int8_t buffs_frenzy;
   int8_t buffs_rabid;
@@ -346,6 +348,7 @@ struct hunter_pet_t : public pet_t
     stamina_per_owner = 0.45;
 
     // Buffs
+    buffs_bestial_wrath     = 0;
     buffs_call_of_the_wild  = 0;
     buffs_frenzy            = 0;
     buffs_rabid             = 0;
@@ -369,6 +372,7 @@ struct hunter_pet_t : public pet_t
     pet_t::reset();
 
     // Buffs
+    buffs_bestial_wrath     = 0;
     buffs_call_of_the_wild  = 0;
     buffs_frenzy            = 0;
     buffs_rabid             = 0;
@@ -1120,6 +1124,10 @@ struct hunter_pet_attack_t : public attack_t
   {
     attack_t::player_buff();
 
+    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    if( p -> buffs_bestial_wrath )
+      player_multiplier *= 1.5;
+
     trigger_feeding_frenzy( this );
   }
 };
@@ -1425,6 +1433,9 @@ struct hunter_pet_spell_t : public spell_t
     spell_t::player_buff();
 
     player_power += 0.125 * o -> composite_spell_power( SCHOOL_MAX );
+
+    if( p -> buffs_bestial_wrath )
+      player_multiplier *= 1.5;
 
     if( o -> buffs_cobra_strikes )
       player_crit = 1;
@@ -2381,6 +2392,7 @@ double hunter_spell_t::cost()
 
 struct aspect_t : public hunter_spell_t
 {
+  int8_t beast_during_bw;
   int8_t hawk_always;
   int8_t viper_start;
   int8_t viper_stop;
@@ -2389,16 +2401,17 @@ struct aspect_t : public hunter_spell_t
   
   aspect_t( player_t* player, const std::string& options_str ) : 
     hunter_spell_t( "aspect", player, SCHOOL_NATURE, TREE_BEAST_MASTERY ), 
-    hawk_always(0), viper_start(10), viper_stop(90),
+    beast_during_bw(0), hawk_always(0), viper_start(10), viper_stop(90),
     hawk_bonus(0), viper_multiplier(0)
   {
     hunter_t* p = player -> cast_hunter();
 
     option_t options[] =
     {
-      { "hawk_always", OPT_INT8, &hawk_always },
-      { "viper_start", OPT_INT8, &viper_start },
-      { "viper_stop",  OPT_INT8, &viper_stop  },
+      { "beast_during_bw", OPT_INT8, &beast_during_bw },
+      { "hawk_always",     OPT_INT8, &hawk_always },
+      { "viper_start",     OPT_INT8, &viper_start },
+      { "viper_stop",      OPT_INT8, &viper_stop  },
       { NULL }
     };
     parse_options( options, options_str );
@@ -2422,26 +2435,22 @@ struct aspect_t : public hunter_spell_t
 
     if( hawk_always ) return ASPECT_HAWK;
 
-    if( p -> active_aspect == ASPECT_NONE ) return ASPECT_HAWK;
-
     double mana_pct = p -> resource_current[ RESOURCE_MANA ] * 100.0 / p -> resource_max[ RESOURCE_MANA ];
 
-    if( p -> active_aspect == ASPECT_HAWK )
+    if( p -> active_aspect != ASPECT_VIPER && mana_pct < viper_start )
     {
-      if( mana_pct < viper_start )
-      {
-        return ASPECT_VIPER;
-      }
+      return ASPECT_VIPER;
     }
-    else if( p -> active_aspect == ASPECT_VIPER )
+    if( p -> active_aspect == ASPECT_VIPER && mana_pct <= viper_stop )
     {
-      if( mana_pct > viper_stop )
-      {
-        return ASPECT_HAWK;
-      }
+      return ASPECT_VIPER;
     }
-
-    return p -> active_aspect;
+    if( beast_during_bw && p -> active_pet )
+    {
+      hunter_pet_t* pet = (hunter_pet_t*) p -> active_pet -> cast_pet();
+      if( pet -> buffs_bestial_wrath ) return ASPECT_BEAST;
+    }
+    return ASPECT_HAWK;
   }
 
   virtual void execute()
@@ -2466,6 +2475,13 @@ struct aspect_t : public hunter_spell_t
         p -> buffs_aspect_of_the_hawk = 0;
         p -> buffs_aspect_of_the_viper = viper_multiplier;
       }
+      else if( aspect == ASPECT_BEAST )
+      {
+        if( sim -> log ) report_t::log( sim, "%s performs Aspect of the Beast", p -> name() );
+        p -> active_aspect = ASPECT_BEAST;
+        p -> buffs_aspect_of_the_hawk = 0;
+        p -> buffs_aspect_of_the_viper = 0;
+      }
       else
       {
         p -> active_aspect = ASPECT_NONE;
@@ -2480,6 +2496,54 @@ struct aspect_t : public hunter_spell_t
     hunter_t* p = player -> cast_hunter();
 
     return choose_aspect() != p -> active_aspect;
+  }
+};
+
+// Bestial Wrath =========================================================
+
+struct bestial_wrath_t : public hunter_spell_t
+{
+  bestial_wrath_t( player_t* player, const std::string& options_str ) :
+    hunter_spell_t( "bestial_wrath", player, SCHOOL_PHYSICAL, TREE_BEAST_MASTERY )
+  {
+    hunter_t* p = player -> cast_hunter();
+    assert( p -> talents.bestial_wrath );
+    
+    base_cost = 0.10 * p -> resource_base[ RESOURCE_MANA ];
+    cooldown = (120 - p -> glyphs.bestial_wrath * 20) * (1 - p -> talents.longevity * 0.1);
+  }
+
+  virtual void execute()
+  {
+    hunter_t* p = player -> cast_hunter();
+    assert( p -> active_pet );
+
+    struct expiration_t : public event_t
+    {
+      expiration_t( sim_t* sim, player_t* player ) : event_t( sim, player )
+      {
+        hunter_t* p = player -> cast_hunter();
+        hunter_pet_t* pet = p -> active_pet;
+        name = "Bestial Wrath Expiration";
+        if( p -> talents.beast_within )
+          p -> buffs_beast_within = 1;
+        pet -> buffs_bestial_wrath = 1;
+        sim -> add_event( this, 18.0 );
+      }
+      virtual void execute()
+      {
+        hunter_t* p = player -> cast_hunter();
+        hunter_pet_t* pet = p -> active_pet;
+        p -> buffs_beast_within = 0;
+        pet -> buffs_bestial_wrath = 0;
+      }
+    };
+
+    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
+    consume_resource();
+    update_ready();
+    player -> action_finish( this );
+    new ( sim ) expiration_t( sim, player );
   }
 };
 
@@ -2716,6 +2780,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if( name == "aimed_shot"            ) return new             aimed_shot_t( this, options_str );
   if( name == "arcane_shot"           ) return new            arcane_shot_t( this, options_str );
   if( name == "aspect"                ) return new                 aspect_t( this, options_str );
+  if( name == "bestial_wrath"         ) return new          bestial_wrath_t( this, options_str );
   if( name == "chimera_shot"          ) return new           chimera_shot_t( this, options_str );
   if( name == "explosive_shot"        ) return new         explosive_shot_t( this, options_str );
   if( name == "hunters_mark"          ) return new           hunters_mark_t( this, options_str );
@@ -3018,6 +3083,7 @@ bool hunter_t::parse_option( const std::string& name,
     { "wild_quiver",                       OPT_INT8, &( talents.wild_quiver                  ) },
     // Glyphs
     { "glyph_aspect_of_the_viper",         OPT_INT8, &( glyphs.aspect_of_the_viper           ) },
+    { "glyph_bestial_wrath",               OPT_INT8, &( glyphs.bestial_wrath                 ) },
     { "glyph_hunters_mark",                OPT_INT8, &( glyphs.hunters_mark                  ) },
     { "glyph_improved_aspect_of_the_hawk", OPT_INT8, &( glyphs.improved_aspect_of_the_hawk   ) },
     { "glyph_rapid_fire",                  OPT_INT8, &( glyphs.rapid_fire                    ) },
