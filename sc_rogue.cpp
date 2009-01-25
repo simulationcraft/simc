@@ -52,8 +52,10 @@ struct rogue_t : public player_t
   gain_t* gains_relentless_strikes;
 
   // Procs
-  proc_t* procs_sword_specialization;
   proc_t* procs_combo_points;
+  proc_t* procs_ruthlessness;
+  proc_t* procs_seal_fate;
+  proc_t* procs_sword_specialization;
   
   // Up-Times
   uptime_t* uptimes_blade_flurry;
@@ -196,8 +198,10 @@ struct rogue_t : public player_t
     gains_relentless_strikes = get_gain( "relentless_strikes" );
 
     // Procs
-    procs_sword_specialization = get_proc( "sword_specialization" );
     procs_combo_points         = get_proc( "combo_points" );
+    procs_ruthlessness         = get_proc( "ruthlessness" );
+    procs_seal_fate            = get_proc( "seal_fate" );
+    procs_sword_specialization = get_proc( "sword_specialization" );
 
     // Up-Times
     uptimes_blade_flurry     = get_uptime( "blade_flurry" );
@@ -541,6 +545,7 @@ static void trigger_ruthlessness( rogue_attack_t* a )
 
   if( a -> sim -> rng -> roll( p -> talents.ruthlessness * 0.20 ) )
   {
+    p -> procs_ruthlessness -> occur();
     add_combo_point( a );
   }
 }
@@ -566,8 +571,9 @@ static void trigger_seal_fate( rogue_attack_t* a )
   {
     if( a -> sim -> roll( p -> talents.seal_fate * 0.20 ) )
     {
-      add_combo_point( a );
       p -> cooldowns_seal_fate = a -> sim -> current_time;
+      p -> procs_seal_fate -> occur();
+      add_combo_point( a );
     }
   }
 }
@@ -2783,7 +2789,7 @@ void rogue_t::init_base()
   resource_base[ RESOURCE_ENERGY ] = 100 + ( talents.vigor ? 10 : 0 ) + ( glyphs.vigor ? 10 : 0 );
 
   health_per_stamina       = 10;
-  energy_regen_per_second  = 20;
+  energy_regen_per_second  = 10;
   energy_regen_per_second *= 1.0 + util_t::talent_rank( talents.vitality, 3, 0.08, 0.16, 0.25 );
 
   base_gcd = 1.0;

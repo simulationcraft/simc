@@ -126,7 +126,7 @@ static void trigger_mongoose( attack_t* a )
     }
   }
 
-  if( ! u )  u = p -> get_uptime( mh ? "moongoose_mh" : "mongoose_oh" );
+  if( ! u )  u = p -> get_uptime( mh ? "mongoose_mh" : "mongoose_oh" );
 
   u -> update( b != 0 );
 }
