@@ -613,6 +613,7 @@ struct player_t
     pet_t*    demonic_pact_pet;
     int8_t    elemental_oath;
     int8_t    executioner;
+    int8_t    ferocious_inspiration;
     double    flametongue_totem;
     player_t* focus_magic;
     int8_t    focus_magic_feedback;
@@ -666,6 +667,7 @@ struct player_t
     event_t* darkmoon_wrath;
     event_t* executioner;
     event_t* eye_of_magtheridon;
+    event_t* ferocious_inspiration;
     event_t* focus_magic_feedback;
     event_t* mongoose_mh;
     event_t* mongoose_oh;
@@ -1172,6 +1174,7 @@ struct action_t
   double cooldown, cooldown_ready, duration_ready;
   weapon_t* weapon;
   double weapon_multiplier;
+  bool normalize_weapon_damage;
   bool normalize_weapon_speed;
   stats_t* stats;
   int8_t rank_index;
