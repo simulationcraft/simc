@@ -123,6 +123,7 @@ struct rogue_t : public player_t
     int8_t sleight_of_hand;
     int8_t surprise_attacks;
     int8_t sword_specialization;
+    int8_t turn_the_tables;
     int8_t vigor;
     int8_t vile_poisons;
     int8_t vitality;
@@ -130,7 +131,6 @@ struct rogue_t : public player_t
 
     // Talents not yet implemented
     int8_t honor_among_thieves;
-    int8_t turn_the_tables;
 
     talents_t() { memset( (void*) this, 0x0, sizeof( talents_t ) ); }
   };
@@ -787,8 +787,14 @@ void rogue_attack_t::player_buff()
     player_multiplier *= 1.2;
   }
 
-  p -> uptimes_savage_combat    -> update( p -> buffs_poison_doses     != 0 );
-  p -> uptimes_hunger_for_blood -> update( p -> buffs_hunger_for_blood == 3 );
+  if( p -> talents.hunger_for_blood )
+  {
+    p -> uptimes_hunger_for_blood -> update( p -> buffs_hunger_for_blood == 3 );
+  }
+  if( p -> talents.savage_combat )
+  {
+    p -> uptimes_savage_combat -> update( p -> buffs_poison_doses != 0 );
+  }
 }
 
 
@@ -1035,13 +1041,17 @@ struct backstab_t : public rogue_attack_t
     adds_combo_points      = true;
     base_cost             -= p -> talents.slaughter_from_the_shadows * 3;
     weapon_multiplier     *= 1.50 + p -> talents.sinister_calling * 0.01;
-    base_multiplier       *= 1.0 + ( p -> talents.aggression       * 0.03 +
-                                     p -> talents.blade_twisting   * 0.05 +
-                                     p -> talents.find_weakness    * 0.02 +
-                                     p -> talents.opportunity      * 0.10 +
-                                     p -> talents.surprise_attacks * 0.10 +
-                                     p -> gear.tier6_4pc           * 0.06 );
-    base_crit                  += p -> talents.puncturing_wounds * 0.10;
+
+    base_multiplier *= 1.0 + ( p -> talents.aggression       * 0.03 +
+			       p -> talents.blade_twisting   * 0.05 +
+			       p -> talents.find_weakness    * 0.02 +
+			       p -> talents.opportunity      * 0.10 +
+			       p -> talents.surprise_attacks * 0.10 +
+			       p -> gear.tier6_4pc           * 0.06 );
+
+    base_crit += ( p -> talents.puncturing_wounds * 0.10 +
+		   p -> talents.turn_the_tables   * 0.02 );
+
     base_crit_multiplier       *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
   }
@@ -1462,6 +1472,7 @@ struct ghostly_strike_t : public rogue_attack_t
     base_cost                   = 40;
     weapon_multiplier          *= 1.25 + ( p -> glyphs.ghostly_strike ? 0.4 : 0.0 );
     base_multiplier            *= 1.0 + p -> talents.find_weakness * 0.02;
+    base_crit                  += p -> talents.turn_the_tables * 0.02;
     base_crit_multiplier       *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
   }
@@ -1500,6 +1511,7 @@ struct hemorrhage_t : public rogue_attack_t
     base_multiplier            *= 1.0 + ( p -> talents.find_weakness    * 0.02 +
                                           p -> talents.surprise_attacks * 0.10 +
                                           p -> gear.tier6_4pc           * 0.06 );
+    base_crit                  += p -> talents.turn_the_tables * 0.02;
     base_crit_multiplier       *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
 
@@ -1564,7 +1576,8 @@ struct hunger_for_blood_t : public rogue_attack_t
   double refresh_at;
   
   hunger_for_blood_t( player_t* player, const std::string& options_str ) : 
-    rogue_attack_t( "hunger_for_blood", player, SCHOOL_PHYSICAL, TREE_ASSASSINATION ), refresh_at(5)
+    rogue_attack_t( "hunger_for_blood", player, SCHOOL_PHYSICAL, TREE_ASSASSINATION ), 
+    refresh_at(5)
   {
     rogue_t* p = player -> cast_rogue();
     assert( p -> talents.hunger_for_blood );
@@ -1743,10 +1756,14 @@ struct mutilate_t : public rogue_attack_t
     base_direct_dmg   = 1;
     adds_combo_points = true;
     base_cost         = 60;
+
     base_multiplier  *= 1.0 + ( p -> talents.find_weakness * 0.02 +
                                 p -> talents.opportunity   * 0.10 +
                                 p -> gear.tier6_4pc         * 0.06 );
-    base_crit                  += p -> talents.puncturing_wounds * 0.05;
+
+    base_crit += ( p -> talents.puncturing_wounds * 0.05 +
+		   p -> talents.turn_the_tables   * 0.02 );
+
     base_crit_multiplier       *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
   }
@@ -1944,6 +1961,7 @@ struct shiv_t : public rogue_attack_t
     base_direct_dmg   = 1;
     base_multiplier  *= 1.0 + ( p -> talents.find_weakness    * 0.02 +
                                 p -> talents.surprise_attacks * 0.10 );
+    base_crit                  += p -> talents.turn_the_tables * 0.02;
     base_crit_multiplier       *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
   }
@@ -2007,6 +2025,8 @@ struct sinister_strike_t : public rogue_attack_t
                                p -> talents.surprise_attacks * 0.10 +
                                p -> gear.tier6_4pc           * 0.06 );
 
+    base_crit += p -> talents.turn_the_tables * 0.02;
+
     base_crit_multiplier       *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
   }
@@ -2037,13 +2057,17 @@ struct sinister_strike_t : public rogue_attack_t
 
 struct slice_and_dice_t : public rogue_attack_t
 {
+  double refresh_at;
+  
   slice_and_dice_t( player_t* player, const std::string& options_str ) : 
-    rogue_attack_t( "slice_and_dice", player, SCHOOL_PHYSICAL, TREE_ASSASSINATION )
+    rogue_attack_t( "slice_and_dice", player, SCHOOL_PHYSICAL, TREE_ASSASSINATION ),
+    refresh_at(0)
   {
     rogue_t* p = player -> cast_rogue();
 
     option_t options[] =
     {
+      { "refresh_at", OPT_FLT, &refresh_at },
       { NULL }
     };
     parse_options( options, options_str );
@@ -2108,7 +2132,8 @@ struct slice_and_dice_t : public rogue_attack_t
     rogue_t* p = player -> cast_rogue();
 
     if( p -> buffs_slice_and_dice )
-      return false;
+      if( ( p -> expirations_slice_and_dice -> time - sim -> current_time ) > refresh_at )
+	return false;
 
     return rogue_attack_t::ready();
   }
@@ -2164,8 +2189,14 @@ void rogue_poison_t::player_buff()
     player_multiplier *= 1.2;
   }
 
-  p -> uptimes_savage_combat    -> update( p -> buffs_poison_doses     != 0 );
-  p -> uptimes_hunger_for_blood -> update( p -> buffs_hunger_for_blood == 3 );
+  if( p -> talents.hunger_for_blood )
+  {
+    p -> uptimes_hunger_for_blood -> update( p -> buffs_hunger_for_blood == 3 );
+  }
+  if( p -> talents.savage_combat )
+  {
+    p -> uptimes_savage_combat -> update( p -> buffs_poison_doses != 0 );
+  }
 }
 
 // Anesthetic Poison ========================================================

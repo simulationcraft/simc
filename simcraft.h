@@ -177,7 +177,7 @@ enum weapon_type { WEAPON_NONE=0,
                    WEAPON_BOW,      WEAPON_CROSSBOW, WEAPON_GUN,      WEAPON_WAND,   WEAPON_THROWN,                 WEAPON_RANGED,
                    WEAPON_MAX };
 
-enum weapon_enchant_type { WEAPON_ENCHANT_NONE=0, MONGOOSE, EXECUTIONER, DEATH_FROST, SCOPE, WEAPON_ENCHANT_MAX };
+enum weapon_enchant_type { WEAPON_ENCHANT_NONE=0, BERSERKING, MONGOOSE, EXECUTIONER, DEATH_FROST, SCOPE, WEAPON_ENCHANT_MAX };
 
 enum weapon_buff_type { WEAPON_BUFF_NONE=0, 
                         ANESTHETIC_POISON,
@@ -602,7 +602,8 @@ struct player_t
     // Temporary Buffs
     int8_t    temporary_buffs;
     double    arcane_brilliance;
-    double    mark_of_the_wild;
+    int8_t    berserking_mh;
+    int8_t    berserking_oh;
     double    divine_spirit;
     int8_t    bloodlust;
     double    cast_time_reduction;
@@ -623,6 +624,7 @@ struct player_t
     int8_t    glyph_of_innervate;
     int8_t    lightning_capacitor;
     double    mana_cost_reduction;
+    double    mark_of_the_wild;
     int8_t    moonkin_aura;
     int8_t    mongoose_mh;
     int8_t    mongoose_oh;
@@ -658,6 +660,8 @@ struct player_t
   {
     double spellsurge;
     event_t* ashtongue_talisman;
+    event_t* berserking_mh;
+    event_t* berserking_oh;
     event_t* darkmoon_crusade;
     event_t* darkmoon_wrath;
     event_t* executioner;
@@ -705,6 +709,8 @@ struct player_t
   
   struct uptimes_t
   {
+    uptime_t* berserking_mh;
+    uptime_t* berserking_oh;
     uptime_t* executioner;
     uptime_t* mongoose_mh;
     uptime_t* mongoose_oh;

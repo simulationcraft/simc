@@ -69,6 +69,68 @@ static void trigger_spellsurge( spell_t* s )
   }
 }
 
+// Berserking Enchant =========================================================
+
+static void trigger_berserking( attack_t* a )
+{
+
+  struct berserking_expiration_t : public event_t
+  {
+    int8_t&   buffs_berserking;
+    event_t*& expirations_berserking;
+
+    berserking_expiration_t( sim_t* sim, player_t* player, int8_t& b_m, event_t*& e_m ) : 
+      event_t( sim, player ), buffs_berserking( b_m ), expirations_berserking( e_m )
+    {
+      name = "Berserking Expiration";
+      player -> aura_gain( "Berserking" );
+      player -> attack_power += 400;
+      buffs_berserking = 1;
+      sim -> add_event( this, 15.0 );
+    }
+    virtual void execute()
+    {
+      player -> aura_loss( "Berserking" );
+      player -> attack_power -= 400;
+      buffs_berserking = 0;
+      expirations_berserking = 0;
+    }
+  };
+
+  player_t* p = a -> player;
+  weapon_t* w = a -> weapon;
+  bool mh = ( w -> slot == SLOT_MAIN_HAND );
+
+  // Berserking has a 1.2 PPM (proc per minute) which translates into 1 proc every 50sec on average
+  // We cannot use the base swing time because that would over-value haste.  Instead, we use
+  // the hasted swing time which is represented in the "time_to_execute" field.  When this field
+  // is zero, we are dealing with a "special" attack in which case the base swing time is used.
+
+
+  int8_t&    b = mh ? p ->       buffs.berserking_mh : p ->       buffs.berserking_oh;
+  event_t*&  e = mh ? p -> expirations.berserking_mh : p -> expirations.berserking_oh;
+  uptime_t*& u = mh ? p ->     uptimes.berserking_mh : p ->     uptimes.berserking_oh;
+
+  double PPM = 1.2;
+  double swing_time = a -> time_to_execute;
+
+  if( a -> sim -> roll( w -> proc_chance_on_swing( PPM, swing_time ) ) )
+  {
+    if( e )
+    {
+      e -> reschedule( 15.0 );
+    }
+    else
+    {
+      e = new ( a -> sim ) berserking_expiration_t( a -> sim, p, b, e );
+    }
+  }
+
+  if( ! u )  u = p -> get_uptime( mh ? "berserking_mh" : "berserking_oh" );
+
+  u -> update( b != 0 );
+}
+
 // Mongoose Enchant =========================================================
 
 static void trigger_mongoose( attack_t* a )
@@ -206,6 +268,7 @@ void enchant_t::attack_hit_event( attack_t* a )
   {
     switch( a -> weapon -> enchant )
     {
+    case BERSERKING:  trigger_berserking ( a ); break;
     case MONGOOSE:    trigger_mongoose   ( a ); break;
     case EXECUTIONER: trigger_executioner( a ); break;
     }

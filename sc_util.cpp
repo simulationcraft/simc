@@ -284,6 +284,7 @@ const char* util_t::weapon_enchant_type_string( int8_t enchant )
   switch( enchant )
   {
   case WEAPON_ENCHANT_NONE: return "none";
+  case BERSERKING:          return "berserking";
   case DEATH_FROST:         return "deathfrost";
   case EXECUTIONER:         return "executioner";
   case MONGOOSE:            return "mongoose";
