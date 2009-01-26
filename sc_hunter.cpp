@@ -2297,7 +2297,7 @@ struct kill_shot_t : public hunter_attack_t
   {
     double target_pct = sim -> target -> health_percentage();
 
-    if( target_pct > 0 && target_pct > 20.0 )
+    if( target_pct == 0 || target_pct > 20.0 )
       return false;
 
     return hunter_attack_t::ready();
