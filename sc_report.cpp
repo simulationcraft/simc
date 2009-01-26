@@ -192,7 +192,7 @@ void report_t::print_action( stats_t* s )
   if( s -> execute_results[ RESULT_CRIT ].avg_dmg > 0 )
   {
     fprintf( sim -> output_file, 
-	     "  CritHit=%4.0f|%4.0f|%.1f%%", 
+	     "  Crit=%4.0f|%4.0f|%.1f%%", 
 	     s -> execute_results[ RESULT_CRIT ].avg_dmg, 
 	     s -> execute_results[ RESULT_CRIT ].max_dmg, 
 	     s -> execute_results[ RESULT_CRIT ].count * 100.0 / s -> num_executes );
@@ -200,7 +200,7 @@ void report_t::print_action( stats_t* s )
   if( s -> execute_results[ RESULT_GLANCE ].avg_dmg > 0 )
   {
     fprintf( sim -> output_file, 
-	     "  GlanceHit=%4.0f|%.1f%%", 
+	     "  Glance=%4.0f|%.1f%%", 
 	     s -> execute_results[ RESULT_GLANCE ].avg_dmg, 
 	     s -> execute_results[ RESULT_GLANCE ].count * 100.0 / s -> num_executes );
   }

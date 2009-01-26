@@ -1391,7 +1391,6 @@ struct arcane_missiles_t : public mage_spell_t
     if( current_tick == num_ticks && abar_combo && abar_spell -> ready() )
     {
       if( sim -> debug ) report_t::log( sim, "Skipping last tick of %s to combo with %s", name(), abar_spell -> name() );
-      last_tick();
       return;
     }
 
@@ -1426,8 +1425,6 @@ struct arcane_missiles_t : public mage_spell_t
     }
 
     update_stats( DMG_OVER_TIME );
-
-    if( current_tick == num_ticks ) last_tick();
   }
 
   virtual void last_tick()

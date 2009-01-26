@@ -933,7 +933,7 @@ struct auto_attack_t : public rogue_attack_t
   virtual bool ready()
   {
     rogue_t* p = player -> cast_rogue();
-    return( p -> main_hand_attack -> event == 0 ); // not swinging
+    return( p -> main_hand_attack -> execute_event == 0 ); // not swinging
   }
 };
 
@@ -2814,7 +2814,7 @@ void rogue_t::init_base()
   base_attack_crit = -0.003;
   initial_attack_crit_per_agility = rating_t::interpolate( level, 0.000355, 0.000250, 0.000120 );
 
-  base_attack_expertise = talents.weapon_expertise * 0.05;
+  base_attack_expertise = 0.25 * talents.weapon_expertise * 0.05;
 
   resource_base[ RESOURCE_HEALTH ] = 3524;
   resource_base[ RESOURCE_ENERGY ] = 100 + ( talents.vigor ? 10 : 0 ) + ( glyphs.vigor ? 10 : 0 );

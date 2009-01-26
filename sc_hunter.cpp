@@ -63,6 +63,7 @@ struct hunter_t : public player_t
   proc_t* procs_wild_quiver;
   
   // Uptimes
+  uptime_t* uptimes_aspect_of_the_viper;
   uptime_t* uptimes_expose_weakness;
   uptime_t* uptimes_improved_aspect_of_the_hawk;
   uptime_t* uptimes_improved_steady_shot;
@@ -209,6 +210,7 @@ struct hunter_t : public player_t
     procs_wild_quiver = get_proc( "wild_quiver" );
 
     // Up-Times
+    uptimes_aspect_of_the_viper         = get_uptime( "aspect_of_the_viper" );
     uptimes_expose_weakness             = get_uptime( "expose_weakness" );
     uptimes_improved_aspect_of_the_hawk = get_uptime( "improved_aspect_of_the_hawk" );
     uptimes_improved_steady_shot        = get_uptime( "improved_steady_shot" );
@@ -386,11 +388,13 @@ struct hunter_pet_t : public pet_t
     buffs_call_of_the_wild  = 0;
     buffs_frenzy            = 0;
     buffs_kill_command      = 0;
+    buffs_owls_focus        = 0;
     buffs_rabid             = 0;
     buffs_rabid_power_stack = 0;
 
     // Expirations
-    expirations_frenzy = 0;
+    expirations_frenzy     = 0;
+    expirations_owls_focus = 0;
   }
 
   virtual int8_t group()
@@ -419,7 +423,7 @@ struct hunter_pet_t : public pet_t
     // FIXME don't know level 60 value
     initial_attack_crit_per_agility   = rating_t::interpolate( level, 0.01/16.0, 0.01/30.0, 0.01/62.5 );
 
-    base_attack_expertise = o -> talents.animal_handler * 0.05;
+    base_attack_expertise = 0.25 * o -> talents.animal_handler * 0.05;
 
     base_attack_crit = 0.032 + talents.spiders_bite * 0.03;
     base_attack_crit += o -> talents.ferocity * 0.02;
@@ -702,38 +706,36 @@ static void trigger_ferocious_inspiration( action_t* a )
 
   if ( ! o -> talents.ferocious_inspiration ) return;
 
+  // FIXME! Pretending FI is a target debuff helps performance.
+  // FIXME! It also bypasses the issue with properly updating pet expirations when they are dismissed.
+
   struct ferocious_inspiration_expiration_t : public event_t
   {
-    ferocious_inspiration_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
+    ferocious_inspiration_expiration_t( sim_t* sim ) : event_t( sim )
     {
       name = "Ferocious Inspiration Expiration";
-      p -> aura_gain( "Ferocious Inspiration" );
-      p -> buffs.ferocious_inspiration = 1;
+      if( sim -> log ) report_t::log( sim, "Everyone gains Ferocious Inspiration." );
+      sim -> target -> debuffs.ferocious_inspiration = 1;
       sim -> add_event( this, 10.0 );
     }
     virtual void execute()
     {
-      player -> aura_loss( "Ferocious Inspiration" );
-      player -> buffs.ferocious_inspiration = 0;
-      player -> expirations.ferocious_inspiration = 0;
+      if( sim -> log ) report_t::log( sim, "Everyone loses Ferocious Inspiration." );
+      sim -> target -> debuffs.ferocious_inspiration = 0;
+      sim -> target -> expirations.ferocious_inspiration = 0;
     }
   };
 
-  for( player_t* p = a -> sim -> player_list; p; p = p -> next )
+  target_t* t = a -> sim -> target;
+  event_t*& e = t -> expirations.ferocious_inspiration;
+
+  if ( e )
   {
-    if( p -> sleeping ) 
-      continue;
-
-    event_t*& e = p -> expirations.ferocious_inspiration;
-
-    if ( e )
-    {
-      e -> reschedule( 10.0 );
-    }
-    else
-    {
-      e = new ( a -> sim ) ferocious_inspiration_expiration_t( a -> sim, p );
-    }
+    e -> reschedule( 10.0 );
+  }
+  else
+  {
+    e = new ( a -> sim ) ferocious_inspiration_expiration_t( a -> sim );
   }
 
 }
@@ -1345,7 +1347,7 @@ struct pet_auto_attack_t : public hunter_pet_attack_t
   virtual bool ready()
   {
     hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
-    return( p -> main_hand_attack -> event == 0 ); // not swinging
+    return( p -> main_hand_attack -> execute_event == 0 ); // not swinging
   }
 };
 
@@ -1613,8 +1615,6 @@ struct pet_roar_of_recovery_t : public hunter_pet_spell_t
     hunter_t*     o = p -> owner -> cast_hunter();
 
     o -> resource_gain( RESOURCE_MANA, 0.10 * o -> resource_max[ RESOURCE_MANA ], o -> gains_roar_of_recovery );
-
-    if( current_tick == num_ticks ) last_tick();
   }
 
   virtual bool ready()
@@ -1747,7 +1747,8 @@ void hunter_attack_t::player_buff()
   }
   player_crit += p -> buffs_master_tactician;
 
-  p -> uptimes_master_tactician -> update( p -> buffs_master_tactician != 0 );
+  p -> uptimes_aspect_of_the_viper -> update( p -> buffs_aspect_of_the_viper != 0 );
+  p -> uptimes_master_tactician    -> update( p -> buffs_master_tactician    != 0 );
 }
 
 // Ranged Attack ===========================================================
@@ -1808,7 +1809,7 @@ struct auto_shot_t : public hunter_attack_t
   virtual bool ready()
   {
     hunter_t* p = player -> cast_hunter();
-    return( p -> ranged_attack -> event == 0 ); // not swinging
+    return( p -> ranged_attack -> execute_event == 0 ); // not swinging
   }
 };
 
@@ -2210,7 +2211,6 @@ struct explosive_shot_t : public hunter_attack_t
     {
       trigger_hunting_party( this );
     }
-    if( current_tick == num_ticks ) last_tick();
     may_miss = true;
   }
 

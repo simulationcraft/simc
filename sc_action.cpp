@@ -38,7 +38,8 @@ action_t::action_t( int8_t      ty,
   num_ticks(0), current_tick(0), added_ticks(0), ticking(0), 
   cooldown_group(n), duration_group(n), cooldown(0), cooldown_ready(0), duration_ready(0),
   weapon(0), weapon_multiplier(1), normalize_weapon_damage( false ), normalize_weapon_speed( false ), 
-  stats(0), rank_index(-1), event(0), time_to_execute(0), time_to_tick(0), sync_action(0), observer(0), next(0), sequence(0)
+  stats(0), rank_index(-1), execute_event(0), tick_event(0), time_to_execute(0), time_to_tick(0), 
+  sync_action(0), observer(0), next(0), sequence(0)
 {
   if( sim -> debug ) report_t::log( sim, "Player %s creates action %s", p -> name(), name() );
   action_t** last = &( p -> action_list );
@@ -174,6 +175,7 @@ void action_t::player_buff()
   // 'multiplier' and 'penetration' handled here, all others handled in attack_t/spell_t
 
   player_t* p = player;
+  target_t* t = sim -> target;
 
   if( school == SCHOOL_BLEED )
   {
@@ -198,8 +200,7 @@ void action_t::player_buff()
     }
   }
 
-  if( p -> buffs.sanctified_retribution ||
-      p -> buffs.ferocious_inspiration  ) 
+  if( p -> buffs.sanctified_retribution || t -> debuffs.ferocious_inspiration  ) 
   {
     player_multiplier *= 1.03;
   }
@@ -570,8 +571,6 @@ void action_t::tick()
 
   update_stats( DMG_OVER_TIME );
 
-  if( current_tick == num_ticks ) last_tick();
-
   player -> action_tick( this );
 }
 
@@ -612,7 +611,7 @@ void action_t::schedule_execute()
 
   time_to_execute = execute_time();
   
-  event = new ( sim ) action_execute_event_t( sim, this, time_to_execute );
+  execute_event = new ( sim ) action_execute_event_t( sim, this, time_to_execute );
 
   if( observer ) *observer = this;
 
@@ -629,9 +628,9 @@ void action_t::schedule_tick()
 
   time_to_tick = tick_time();
 
-  event = new ( sim ) action_tick_event_t( sim, this, time_to_tick );
+  tick_event = new ( sim ) action_tick_event_t( sim, this, time_to_tick );
 
-  if( channeled ) player -> channeling = event;
+  if( channeled ) player -> channeling = tick_event;
 
   if( observer ) *observer = this;
 }
@@ -643,7 +642,7 @@ void action_t::refresh_duration()
   if( sim -> debug ) report_t::log( sim, "%s refreshes duration of %s", player -> name(), name() );
 
   // Make sure this DoT is still ticking......
-  assert( event );
+  assert( tick_event );
 
   // Recalculate state of current player buffs.
   player_buff();
@@ -651,7 +650,7 @@ void action_t::refresh_duration()
   // Refreshing a DoT does not interfere with the next tick event.  Ticks will stil occur
   // every "base_tick_time" seconds.  To determine the new finish time for the DoT, start 
   // from the time of the next tick and add the time for the remaining ticks to that event.
-  duration_ready = event -> time + base_tick_time * ( num_ticks - 1 );
+  duration_ready = tick_event -> time + base_tick_time * ( num_ticks - 1 );
 
   current_tick = 0;
 }
@@ -740,10 +739,20 @@ void action_t::reset()
   cooldown_ready = 0;
   duration_ready = 0;
   result = RESULT_NONE;
-  event = 0;
+  execute_event = 0;
+  tick_event = 0;
   if( observer ) *observer = 0;
 
   stats -> reset( this );
+}
+
+// action_t::cancel =========================================================
+
+void action_t::cancel()
+{
+  event_t::cancel( execute_event );
+  event_t::cancel(    tick_event );
+  reset();
 }
 
 // ==========================================================================

@@ -613,7 +613,6 @@ struct player_t
     pet_t*    demonic_pact_pet;
     int8_t    elemental_oath;
     int8_t    executioner;
-    int8_t    ferocious_inspiration;
     double    flametongue_totem;
     player_t* focus_magic;
     int8_t    focus_magic_feedback;
@@ -667,7 +666,6 @@ struct player_t
     event_t* darkmoon_wrath;
     event_t* executioner;
     event_t* eye_of_magtheridon;
-    event_t* ferocious_inspiration;
     event_t* focus_magic_feedback;
     event_t* mongoose_mh;
     event_t* mongoose_oh;
@@ -678,7 +676,7 @@ struct player_t
     event_t *tier4_2pc, *tier4_4pc;
     event_t *tier5_2pc, *tier5_4pc;
     event_t *tier6_2pc, *tier6_4pc;
-        event_t *tier7_2pc, *tier7_4pc;
+    event_t *tier7_2pc, *tier7_4pc;
     void reset() { memset( (void*) this, 0x00, sizeof( expirations_t ) ); }
     expirations_t() { reset(); }
   };
@@ -1006,6 +1004,7 @@ struct target_t
     // Permanent De-Buffs (until appropriate player class implemented)
     int8_t   blood_frenzy;
     int8_t   crypt_fever;
+    int8_t   ferocious_inspiration;
     int8_t   judgement_of_wisdom;
     int8_t   mangle;
     int8_t   razorice;
@@ -1045,6 +1044,7 @@ struct target_t
     event_t* curse_of_elements;
     event_t* expose_armor;
     event_t* faerie_fire;
+    event_t* ferocious_inspiration;
     event_t* frozen;
     event_t* earth_and_moon;
     event_t* hemorrhage;
@@ -1178,7 +1178,8 @@ struct action_t
   bool normalize_weapon_speed;
   stats_t* stats;
   int8_t rank_index;
-  event_t* event;
+  event_t* execute_event;
+  event_t* tick_event;
   double time_to_execute, time_to_tick;
   std::string sync_str;
   action_t*   sync_action;
@@ -1220,7 +1221,7 @@ struct action_t
   virtual void   update_stats( int8_t type );
   virtual bool   ready();
   virtual void   reset();
-  virtual void   cancel() { event_t::cancel( event ); reset(); }
+  virtual void   cancel();
   virtual const char* name() { return name_str.c_str(); }
 
   virtual double total_multiplier() { return   base_multiplier * player_multiplier * target_multiplier; }

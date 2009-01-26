@@ -155,7 +155,6 @@ int attack_t::build_table( double* chances,
   {
     if( delta_level > 2 )
     {
-      // 8% for delta_level=3
       // FIXME: needs testing for delta_level > 3
       miss  = 0.07 + ( delta_level - 2 ) * 0.01;
     }
@@ -169,13 +168,13 @@ int attack_t::build_table( double* chances,
   if( may_dodge ) 
   {
     dodge  = 0.05 + delta_level * 0.005;
-    dodge -= expertise * 0.25;
+    dodge -= expertise;
   }
 
   if( may_parry ) 
   {
     parry  = 0.05 + delta_level * 0.005;
-    parry -= expertise * 0.25;
+    parry -= expertise;
   }
 
   if( may_glance ) 

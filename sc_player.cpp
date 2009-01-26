@@ -928,7 +928,7 @@ void player_t::reset()
   elixir_battle   = ELIXIR_NONE;
   elixir_guardian = ELIXIR_NONE;
   flask           = FLASK_NONE;
-  food			  = FOOD_NONE;
+  food            = FOOD_NONE;
 
   buffs.reset();
   expirations.reset();
@@ -1227,7 +1227,7 @@ void player_t::action_start( action_t* action )
 
   if( ! action -> background )
   {
-    executing = action -> event;
+    executing = action -> execute_event;
   }
 
   if( action -> type == ACTION_SPELL )

@@ -108,7 +108,7 @@ action_execute_event_t::action_execute_event_t( sim_t*    sim,
 
 void action_execute_event_t::execute()
 {
-  action -> event = 0;
+  action -> execute_event = 0;
   action -> execute();
 
   if( ! action -> background && 
@@ -144,12 +144,13 @@ void action_tick_event_t::execute()
 {
   assert( action -> current_tick < action -> num_ticks );
 
-  action -> event = 0;
+  action -> tick_event = 0;
   action -> current_tick++;
   action -> tick();
 
   if( action -> current_tick == action -> num_ticks )
   {
+    action -> last_tick();
     action -> ticking = 0;
     action -> current_tick = 0;
 
