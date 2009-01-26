@@ -47,7 +47,7 @@ double util_t::talent_rank( int8_t num,
 
   double value=0;
 
-  for( int i=3; i <= num; i++ );
+  for( int i=3; i <= num; i++ )
   {
     value = (double) va_arg( vap, double );
   }
@@ -74,7 +74,7 @@ int util_t::talent_rank( int8_t num,
 
   int value=0;
 
-  for( int i=3; i <= num; i++ );
+  for( int i=3; i <= num; i++ )
   {
     value = (int) va_arg( vap, int );
   }

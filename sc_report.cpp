@@ -197,6 +197,19 @@ void report_t::print_action( stats_t* s )
 	     s -> execute_results[ RESULT_CRIT ].max_dmg, 
 	     s -> execute_results[ RESULT_CRIT ].count * 100.0 / s -> num_executes );
   }
+  if( s -> execute_results[ RESULT_GLANCE ].avg_dmg > 0 )
+  {
+    fprintf( sim -> output_file, 
+	     "  GlanceHit=%4.0f|%.1f%%", 
+	     s -> execute_results[ RESULT_GLANCE ].avg_dmg, 
+	     s -> execute_results[ RESULT_GLANCE ].count * 100.0 / s -> num_executes );
+  }
+  if( s -> execute_results[ RESULT_DODGE ].count > 0 )
+  {
+    fprintf( sim -> output_file, 
+	     "  Dodge=%.1f%%", 
+	     s -> execute_results[ RESULT_DODGE ].count * 100.0 / s -> num_executes );
+  }
 
   if( s -> tick_results[ RESULT_HIT ].avg_dmg > 0 )
   {
