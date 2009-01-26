@@ -484,6 +484,14 @@ void player_t::init_weapon( weapon_t*    w,
 	  }
 	}
       }
+      else if( parm == "enchant_bonus" )
+      {
+	w -> enchant_bonus = atoi( value.c_str() );
+      }
+      else if( parm == "buff_bonus" )
+      {
+	w -> buff_bonus = atoi( value.c_str() );
+      }
       else invalid = true;
 
       if( invalid )
@@ -492,6 +500,11 @@ void player_t::init_weapon( weapon_t*    w,
 	assert(0);
       }
     }
+  }
+
+  if( w -> enchant == SCOPE && w -> enchant_bonus == 0 )
+  {
+    w -> enchant_bonus = util_t::ability_rank( level, 15.0,72,  12.0,67,  7.0,0 );
   }
 
   if( weapon_dps != 0 ) w -> damage = weapon_dps * w -> swing_time;
