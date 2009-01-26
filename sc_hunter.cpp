@@ -2159,6 +2159,7 @@ struct explosive_shot_t : public hunter_attack_t
 
     num_ticks      = 2;
     base_tick_time = 1.0;
+    direct_power_mod = 0.16;
     tick_power_mod = 0.16;
     
     // FIXME! Since there is no weapon damage component, Ranged Weapon Specialization is excluded.
