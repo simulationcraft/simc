@@ -54,9 +54,10 @@ struct hunter_t : public player_t
   // Gains
   gain_t* gains_chimera_viper;
   gain_t* gains_invigoration;
+  gain_t* gains_roar_of_recovery;
+  gain_t* gains_thrill_of_the_hunt;
   gain_t* gains_viper_aspect_passive;
   gain_t* gains_viper_aspect_shot;
-  gain_t* gains_thrill_of_the_hunt;
 
   // Procs
   proc_t* procs_wild_quiver;
@@ -199,9 +200,10 @@ struct hunter_t : public player_t
     // Gains
     gains_chimera_viper        = get_gain( "chimera_viper" );
     gains_invigoration         = get_gain( "invigoration" );
+    gains_roar_of_recovery     = get_gain( "roar_of_recovery" );
+    gains_thrill_of_the_hunt   = get_gain( "thrill_of_the_hunt" );
     gains_viper_aspect_passive = get_gain( "viper_aspect_passive" );
     gains_viper_aspect_shot    = get_gain( "viper_aspect_shot" );
-    gains_thrill_of_the_hunt   = get_gain( "thrill_of_the_hunt" );
 
     // Procs
     procs_wild_quiver = get_proc( "wild_quiver" );
@@ -305,11 +307,13 @@ struct hunter_pet_t : public pet_t
   int8_t buffs_call_of_the_wild;
   int8_t buffs_frenzy;
   int8_t buffs_kill_command;
+  int8_t buffs_owls_focus;
   int8_t buffs_rabid;
   int8_t buffs_rabid_power_stack;
 
   // Expirations
   event_t* expirations_frenzy;
+  event_t* expirations_owls_focus;
 
   // Gains
   gain_t* gains_go_for_the_throat;
@@ -329,12 +333,12 @@ struct hunter_pet_t : public pet_t
     int8_t cobra_reflexes;
     int8_t feeding_frenzy;
     int8_t rabid;
+    int8_t roar_of_recovery;
     int8_t spiked_collar;
     int8_t spiders_bite;
+    int8_t owls_focus;
 
     // Talents not yet implemented
-    int8_t owls_focus;
-    int8_t roar_of_recovery;
     int8_t wolverine_bite;
 
     talents_t() { memset( (void*) this, 0x0, sizeof( talents_t ) ); }
@@ -355,11 +359,13 @@ struct hunter_pet_t : public pet_t
     buffs_call_of_the_wild  = 0;
     buffs_frenzy            = 0;
     buffs_kill_command      = 0;
+    buffs_owls_focus        = 0;
     buffs_rabid             = 0;
     buffs_rabid_power_stack = 0;
 
     // Expirations
-    expirations_frenzy = 0;
+    expirations_frenzy     = 0;
+    expirations_owls_focus = 0;
 
     // Gains
     gains_go_for_the_throat = get_gain( "go_for_the_throat" );
@@ -939,7 +945,7 @@ static void trigger_invigoration( action_t* a )
   if( ! o -> talents.invigoration )
     return;
 
-  if( ! a -> sim -> rng -> roll( o -> talents.invigoration * 0.50 ) )
+  if( ! a -> sim -> roll( o -> talents.invigoration * 0.50 ) )
     return;
 
   o -> resource_gain( RESOURCE_MANA, 0.01 * o -> resource_max[ RESOURCE_MANA ], o -> gains_invigoration );
@@ -1069,6 +1075,49 @@ static void trigger_master_tactician( attack_t* a )
   }
 }
 
+// trigger_owls_focus ================================================
+
+static void trigger_owls_focus( action_t* a )
+{
+  hunter_pet_t* p = (hunter_pet_t*) a -> player -> cast_pet();
+
+  assert( p -> buffs_owls_focus == 0 );
+
+  if( ! p -> talents.owls_focus )
+    return;
+
+  if( ! a -> sim -> roll( p -> talents.owls_focus * 0.15 ) )
+    return;
+
+  struct owls_focus_expiration_t : public event_t
+  {
+    owls_focus_expiration_t( sim_t* sim, hunter_pet_t* p ) : event_t( sim, p )
+    {
+      name = "Owls Focus Expiration";
+      p -> aura_gain( "Owls Focus" );
+      p -> buffs_owls_focus = 1;
+      sim -> add_event( this, 8.0 );
+    }
+    virtual void execute()
+    {
+      hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+      p -> aura_loss( "Owls Focus" );
+      p -> buffs_owls_focus = 0;
+      p -> expirations_owls_focus = 0;
+    }
+  };
+
+  p -> expirations_owls_focus = new ( a -> sim ) owls_focus_expiration_t( a -> sim, p );
+}
+
+// consume_owls_focus ================================================
+
+static void consume_owls_focus( action_t* a )
+{
+  hunter_pet_t* p = (hunter_pet_t*) a -> player -> cast_pet();
+  event_t::early( p -> expirations_owls_focus );
+}
+
 // trigger_rabid_power ===============================================
 
 static void trigger_rabid_power( attack_t* a )
@@ -1186,6 +1235,22 @@ struct hunter_pet_attack_t : public attack_t
     return t;
   }
 
+  virtual double cost()
+  {
+    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    if( p -> buffs_owls_focus ) return 0;
+    return attack_t::cost();
+  }
+
+  virtual void consume_resource()
+  {
+    attack_t::consume_resource();
+    if( special && base_cost > 0 ) 
+    {
+      consume_owls_focus( this );
+    }
+  }
+
   virtual void execute()
   {
     attack_t::execute();
@@ -1204,6 +1269,7 @@ struct hunter_pet_attack_t : public attack_t
     {
       consume_cobra_strikes( this );
       consume_kill_command( this );
+      trigger_owls_focus( this );
     }
   }
 
@@ -1349,6 +1415,22 @@ struct hunter_pet_spell_t : public spell_t
     base_multiplier *= 1.0 + p -> talents.spiked_collar * 0.03;
   }
 
+  virtual double cost()
+  {
+    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    if( p -> buffs_owls_focus ) return 0;
+    return spell_t::cost();
+  }
+
+  virtual void consume_resource()
+  {
+    spell_t::consume_resource();
+    if( base_cost > 0 ) 
+    {
+      consume_owls_focus( this );
+    }
+  }
+
   virtual void execute()
   {
     spell_t::execute();
@@ -1361,6 +1443,7 @@ struct hunter_pet_spell_t : public spell_t
     }
     consume_cobra_strikes( this );
     consume_kill_command( this );
+    trigger_owls_focus( this );
   }
 
   virtual void player_buff()
@@ -1505,6 +1588,48 @@ struct pet_rabid_t : public hunter_pet_spell_t
   }
 };
 
+// Pet Roar of Recovery =======================================================
+
+struct pet_roar_of_recovery_t : public hunter_pet_spell_t
+{
+  pet_roar_of_recovery_t( player_t* player, const std::string& options_str ) :
+    hunter_pet_spell_t( "roar_of_recovery", player, RESOURCE_FOCUS )
+  {
+    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    hunter_t*     o = p -> owner -> cast_hunter();
+
+    assert( p -> talents.roar_of_recovery );
+
+    trigger_gcd    = 0.0;
+    base_cost      = 0;
+    num_ticks      = 3;
+    base_tick_time = 3;
+    cooldown       = 360 * ( 1.0 - o -> talents.longevity * 0.10 );
+  }
+
+  virtual void tick()
+  {
+    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    hunter_t*     o = p -> owner -> cast_hunter();
+
+    o -> resource_gain( RESOURCE_MANA, 0.10 * o -> resource_max[ RESOURCE_MANA ], o -> gains_roar_of_recovery );
+
+    if( current_tick == num_ticks ) last_tick();
+  }
+
+  virtual bool ready()
+  {
+    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    hunter_t*     o = p -> owner -> cast_hunter();
+
+    if( ( o -> resource_current[ RESOURCE_MANA ] /
+	  o -> resource_max    [ RESOURCE_MANA ] ) > 0.50 )
+      return false;
+
+    return hunter_pet_spell_t::ready();
+  }
+};
+
 // hunter_pet_t::create_action =============================================
 
 action_t* hunter_pet_t::create_action( const std::string& name,
@@ -1517,6 +1642,7 @@ action_t* hunter_pet_t::create_action( const std::string& name,
   if( name == "froststorm_breath" ) return new chimera_froststorm_breath_t( this, options_str );
   if( name == "rabid"             ) return new                 pet_rabid_t( this, options_str );
   if( name == "rake"              ) return new                  cat_rake_t( this, options_str );
+  if( name == "roar_of_recovery"  ) return new      pet_roar_of_recovery_t( this, options_str );
   if( name == "smack"             ) return new            pet_focus_dump_t( "smack", this );
 
   return 0;

@@ -262,7 +262,7 @@ static void trigger_omen_of_clarity( action_t* a )
   double time_to_proc = 60.0 / PPM;
   double proc_chance = execute_time / time_to_proc;
 
-  if( a -> sim -> rng -> roll( proc_chance ) )
+  if( a -> sim -> roll( proc_chance ) )
   {
     p -> buffs_omen_of_clarity = 1;
     p -> procs_omen_of_clarity -> occur();
