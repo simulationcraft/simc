@@ -2599,7 +2599,7 @@ struct aspect_t : public hunter_spell_t
     cooldown         = 1.0;
     trigger_gcd      = 0.0;
     harmful          = false;
-    hawk_bonus       = util_t::ability_rank( p -> level,  155,68,  120,0 );
+    hawk_bonus       = util_t::ability_rank( p -> level, 300,80, 230,74, 155,68,  120,0 );
     viper_multiplier = 0.50;
     
     if( p -> talents.aspect_mastery )
@@ -2811,6 +2811,7 @@ struct kill_command_t : public hunter_spell_t
 
     base_cost = p -> resource_base[ RESOURCE_MANA ] * 0.03;
     cooldown  = 60;
+    trigger_gcd = 0;
   }
 
   virtual void execute()
