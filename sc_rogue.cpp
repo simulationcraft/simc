@@ -53,6 +53,7 @@ struct rogue_t : public player_t
 
   // Procs
   proc_t* procs_combo_points;
+  proc_t* procs_honor_among_thieves;
   proc_t* procs_ruthlessness;
   proc_t* procs_seal_fate;
   proc_t* procs_sword_specialization;
@@ -63,6 +64,7 @@ struct rogue_t : public player_t
   uptime_t* uptimes_slice_and_dice;
   uptime_t* uptimes_hunger_for_blood;
   uptime_t* uptimes_savage_combat;
+  uptime_t* uptimes_tricks_of_the_trade;
   
   // Auto-Attack
   attack_t* main_hand_attack;
@@ -199,16 +201,18 @@ struct rogue_t : public player_t
 
     // Procs
     procs_combo_points         = get_proc( "combo_points" );
+    procs_honor_among_thieves  = get_proc( "honor_among_thieves" );
     procs_ruthlessness         = get_proc( "ruthlessness" );
     procs_seal_fate            = get_proc( "seal_fate" );
     procs_sword_specialization = get_proc( "sword_specialization" );
 
     // Up-Times
-    uptimes_blade_flurry     = get_uptime( "blade_flurry" );
-    uptimes_envenom          = get_uptime( "envenom" );
-    uptimes_slice_and_dice   = get_uptime( "slice_and_dice" );
-    uptimes_hunger_for_blood = get_uptime( "hunger_for_blood" );
-    uptimes_savage_combat    = get_uptime( "savage_combat" );
+    uptimes_blade_flurry        = get_uptime( "blade_flurry" );
+    uptimes_envenom             = get_uptime( "envenom" );
+    uptimes_slice_and_dice      = get_uptime( "slice_and_dice" );
+    uptimes_hunger_for_blood    = get_uptime( "hunger_for_blood" );
+    uptimes_savage_combat       = get_uptime( "savage_combat" );
+    uptimes_tricks_of_the_trade = get_uptime( "tricks_of_the_trade" );
   
     // Auto-Attack
     main_hand_attack = 0;
@@ -219,6 +223,7 @@ struct rogue_t : public player_t
   // Character Definition
   virtual void      init_base();
   virtual void      reset();
+  virtual void      raid_event( action_t* );
   virtual bool      get_talent_trees( std::vector<int8_t*>& assassination, std::vector<int8_t*>& combat, std::vector<int8_t*>& subtlety );
   virtual bool      parse_talents_mmo( const std::string& talent_string );
   virtual bool      parse_option( const std::string& name, const std::string& value );
@@ -358,10 +363,8 @@ static void break_stealth( rogue_t* p )
 
 // clear_combo_points ======================================================
 
-static void clear_combo_points( rogue_attack_t* a )
+static void clear_combo_points( rogue_t* p )
 {
-  rogue_t* p = a -> player -> cast_rogue();
-
   if( p -> buffs_combo_points <= 0 ) return;
 
   const char* name[] = { "Combo Points (1)",
@@ -377,10 +380,8 @@ static void clear_combo_points( rogue_attack_t* a )
 
 // add_combo_point =========================================================
 
-static void add_combo_point( rogue_attack_t* a )
+static void add_combo_point( rogue_t* p )
 {
-  rogue_t* p = a -> player -> cast_rogue();
-
   if( p -> buffs_combo_points >= 5 ) return;
 
   const char* name[] = { "Combo Points (1)",
@@ -546,7 +547,7 @@ static void trigger_ruthlessness( rogue_attack_t* a )
   if( a -> sim -> roll( p -> talents.ruthlessness * 0.20 ) )
   {
     p -> procs_ruthlessness -> occur();
-    add_combo_point( a );
+    add_combo_point( p );
   }
 }
 
@@ -573,7 +574,7 @@ static void trigger_seal_fate( rogue_attack_t* a )
     {
       p -> cooldowns_seal_fate = a -> sim -> current_time;
       p -> procs_seal_fate -> occur();
-      add_combo_point( a );
+      add_combo_point( p );
     }
   }
 }
@@ -694,8 +695,8 @@ void rogue_attack_t::execute()
   {
     trigger_relentless_strikes( this );
 
-    if( requires_combo_points ) clear_combo_points( this );
-    if(     adds_combo_points )   add_combo_point ( this );
+    if( requires_combo_points ) clear_combo_points( p );
+    if(     adds_combo_points )   add_combo_point ( p );
 
     trigger_poisons( this );
     trigger_ruthlessness( this );
@@ -988,7 +989,7 @@ struct ambush_t : public rogue_attack_t
     {
       if( sim -> roll( p -> talents.initiative / 3.0 ) )
       {
-        add_combo_point( this );
+        add_combo_point( p );
       }
     }
   }
@@ -1515,7 +1516,7 @@ struct hemorrhage_t : public rogue_attack_t
     base_crit_multiplier       *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
 
-    damage_adder = util_t::ability_rank( p -> level,  75,80,  42,70,  29,0 );
+    damage_adder = util_t::ability_rank( p -> level,  75.0,80,  42.0,70,  29.0,0 );
 
     if( p -> glyphs.hemorrhage ) damage_adder *= 1.40;
   }
@@ -1834,8 +1835,8 @@ struct premeditation_t : public rogue_attack_t
   {
     rogue_t* p = player -> cast_rogue();
     if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
-    add_combo_point( this );
-    add_combo_point( this );
+    add_combo_point( p );
+    add_combo_point( p );
     update_ready();
   }
 
@@ -2039,7 +2040,7 @@ struct sinister_strike_t : public rogue_attack_t
     {
       if( p -> glyphs.sinister_strike && sim -> roll( 0.50 ) )
       {
-        add_combo_point( this );
+        add_combo_point( p );
       }
     }
   }
@@ -2084,7 +2085,7 @@ struct slice_and_dice_t : public rogue_attack_t
     if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
     refresh_duration();
     consume_resource();
-    clear_combo_points( this );
+    clear_combo_points( p );
   }
 
   virtual void refresh_duration()
@@ -2197,6 +2198,7 @@ void rogue_poison_t::player_buff()
   {
     p -> uptimes_savage_combat -> update( p -> buffs_poison_doses != 0 );
   }
+  p -> uptimes_tricks_of_the_trade -> update( p -> buffs.tricks_of_the_trade != 0 );
 }
 
 // Anesthetic Poison ========================================================
@@ -2858,6 +2860,28 @@ void rogue_t::reset()
   expirations_envenom          = 0;
   expirations_slice_and_dice   = 0;
   expirations_hunger_for_blood = 0;
+}
+
+// rogue_t::raid_event ====================================================
+
+void rogue_t::raid_event( action_t* a )
+{
+  if( talents.honor_among_thieves )
+  {
+    player_t* p = a -> player;
+
+    if( p -> party == party  &&
+	a -> result == RESULT_CRIT && 
+	sim -> roll( talents.honor_among_thieves / 3.0 ) )
+    {
+      if( sim -> current_time > p -> cooldowns.honor_among_thieves )
+      {
+	add_combo_point( this );
+	procs_honor_among_thieves -> occur();
+	p -> cooldowns.honor_among_thieves = sim -> current_time + 1.0;
+      }
+    }
+  }
 }
 
 // rogue_t::get_talent_trees ==============================================

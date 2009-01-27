@@ -240,6 +240,11 @@ void spell_t::calculate_result()
     }
   }
 
+  for( player_t* p = sim -> player_list; p; p = p -> next )
+  {
+    if( ! p -> sleeping) p -> raid_event( this );
+  }
+
   if( sim -> debug ) report_t::log( sim, "%s result for %s is %s", player -> name(), name(), util_t::result_type_string( result ) );
 }
 

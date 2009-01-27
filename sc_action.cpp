@@ -170,6 +170,7 @@ void action_t::player_buff()
   player_crit_bonus_multiplier = 1.0;
   player_power                 = 0;
   player_penetration           = 0;
+  player_dd_adder              = 0;
   power_multiplier             = 1.0;
 
   // 'multiplier' and 'penetration' handled here, all others handled in attack_t/spell_t
@@ -223,6 +224,7 @@ void action_t::target_debuff( int8_t dmg_type )
   target_crit_bonus_multiplier = 1.0;
   target_power                 = 0;
   target_penetration           = 0;
+  target_dd_adder              = 0;
 
   // 'multiplier' and 'penetration' handled here, all others handled in attack_t/spell_t
 

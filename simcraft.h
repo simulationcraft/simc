@@ -687,6 +687,7 @@ struct player_t
     double bloodlust;
     double elder_scribes;
     double eternal_sage;
+    double honor_among_thieves;
     double mark_of_defiance;
     double mystical_skyfire;
     double quagmirrans_eye;
@@ -858,6 +859,7 @@ struct player_t
   virtual void      schedule_ready( double delta_time=0, bool waiting=false );
   virtual action_t* execute_action();
 
+  virtual void raid_event( action_t* ) {}
   virtual void regen( double periodicity=2.0 );
   virtual void resource_gain( int8_t resource, double amount, gain_t* g=0 );
   virtual void resource_loss( int8_t resource, double amount );
