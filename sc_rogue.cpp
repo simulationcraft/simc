@@ -1776,6 +1776,7 @@ struct mutilate_t : public rogue_attack_t
     };
     parse_options( options, options_str );
       
+    requires_weapon   = WEAPON_DAGGER;
     base_direct_dmg   = 1;
     adds_combo_points = true;
     base_cost         = 60;

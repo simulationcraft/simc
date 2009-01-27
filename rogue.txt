@@ -4,7 +4,8 @@ party=2
 level=80
 talents=http://www.wowhead.com/?talent=f0ef0exoVboIzAo0xV0hZxb
 actions=flask,type=endless_rage/food,type=great_feast/apply_poison,main_hand=instant,off_hand=deadly
-actions+=/auto_attack/pool_energy/hunger_for_blood,refresh_at=2/slice_and_dice,min_combo_points=3/tricks_of_the_trade,target=Rogue_15_51_5/rupture,min_combo_points=4/envenom,min_combo_points=4/mutilate
+actions+=/auto_attack/pool_energy/hunger_for_blood,refresh_at=2/slice_and_dice,min_combo_points=3/tricks_of_the_trade,target=Rogue_15_51_5
+actions+=/rupture,min_combo_points=4/envenom,min_combo_points=4/mutilate
 gear_strength=0
 gear_agility=1030
 gear_stamina=950
@@ -33,7 +34,8 @@ party=2
 level=80
 talents=http://www.wowhead.com/?talent=f0eb0xZMgibx0xoru0xRtx
 actions=flask,type=endless_rage/food,type=great_feast/apply_poison,main_hand=wound,off_hand=deadly
-actions+=/auto_attack/pool_energy/slice_and_dice,min_combo_points=4,refresh_at=5/tricks_of_the_trade,target=Rogue_7_21_43/killing_spree/blade_flurry/rupture,min_combo_points=4/eviscerate,min_combo_points=4/sinister_strike
+actions+=/auto_attack/pool_energy/slice_and_dice,min_combo_points=4,refresh_at=5/tricks_of_the_trade,target=Rogue_7_21_43/killing_spree/blade_flurry
+actions+=/rupture,min_combo_points=4/eviscerate,min_combo_points=4/sinister_strike/adrenaline_rush
 gear_strength=0
 gear_agility=1030
 gear_stamina=950
@@ -64,8 +66,9 @@ rogue=Rogue_7_21_43
 party=2
 level=80
 talents=http://www.wowhead.com/?talent=fhLZ0xV0x0xoZxbrbhGzdAzqc
-actions=flask,type=endless_rage/food,type=great_feast/apply_poison,main_hand=wound,off_hand=deadly
-actions+=/auto_attack/pool_energy/slice_and_dice,min_combo_points=4,refresh_at=5/tricks_of_the_trade,target=Rogue_51_13_7/blade_flurry/rupture,min_combo_points=5/eviscerate,min_combo_points=5
+actions=flask,type=endless_rage/food,type=great_feast/apply_poison,main_hand=wound,off_hand=wound
+actions+=/auto_attack/pool_energy/slice_and_dice,min_combo_points=4,refresh_at=5/tricks_of_the_trade,target=Rogue_51_13_7/blade_flurry
+actions+=/rupture,min_combo_points=5/eviscerate,min_combo_points=5
 gear_strength=0
 gear_agility=1030
 gear_stamina=950

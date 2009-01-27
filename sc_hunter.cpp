@@ -1264,7 +1264,7 @@ struct hunter_pet_attack_t : public attack_t
       {
         trigger_ferocious_inspiration( this );
         trigger_frenzy( this );
-	trigger_invigoration( this );
+	if( special ) trigger_invigoration( this );
       }
     }
     if( special )

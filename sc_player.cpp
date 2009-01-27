@@ -1652,14 +1652,22 @@ uptime_t* player_t::get_uptime( const std::string& name )
 
 struct wait_until_ready_t : public action_t
 {
+  double sec;
+
   wait_until_ready_t( player_t* player, const std::string& options_str ) : 
-    action_t( ACTION_OTHER, "wait", player )
+    action_t( ACTION_OTHER, "wait", player ), sec(0.1)
   {
+    option_t options[] =
+    {
+      { "sec", OPT_FLT, &sec },
+      { NULL }
+    };
+    parse_options( options, options_str );
   }
 
   virtual void execute() 
   {
-    trigger_gcd = 0.1;
+    trigger_gcd = sec;
     
     for( action_t* a = player -> action_list; a; a = a -> next )
     {
