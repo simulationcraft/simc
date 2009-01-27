@@ -151,6 +151,10 @@ void target_t::init()
   uptimes.winters_grasp   = get_uptime( "winters_grasp"   );
   uptimes.winters_chill   = get_uptime( "winters_chill"   );
   uptimes.improved_scorch = get_uptime( "improved_scorch" );
+  uptimes.blood_frenzy    = get_uptime( "blood_frenzy"    );
+  uptimes.savage_combat   = get_uptime( "savage_combat"   );
+  uptimes.totem_of_wrath  = get_uptime( "totem_of_wrath"  );
+  uptimes.master_poisoner = get_uptime( "master_poisoner" );
 }
 
 // target_t::reset ===========================================================
@@ -192,7 +196,6 @@ bool target_t::parse_option( const std::string& name,
     { "judgement_of_wisdom",   OPT_INT8,   &( debuffs.judgement_of_wisdom       ) },
     { "mangle",                OPT_INT8,   &( debuffs.mangle                    ) },
     { "razorice",              OPT_INT8,   &( debuffs.razorice                  ) },
-    { "savage_combat",         OPT_INT8,   &( debuffs.savage_combat             ) },
     { "snare",                 OPT_INT8,   &( debuffs.snare                     ) },
     { "sunder_armor",          OPT_FLT,    &( debuffs.sunder_armor              ) },
     { NULL, OPT_UNKNOWN }

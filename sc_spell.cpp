@@ -111,9 +111,6 @@ void spell_t::player_buff()
   player_power     = p -> composite_spell_power( school );
   power_multiplier = p -> composite_spell_power_multiplier();
 
-  // FIXME! This needs to be a target debuff
-  if( p -> buffs.totem_of_wrath ) player_crit += 0.03;
-
   if( p -> type != PLAYER_GUARDIAN )
   {
     if( p -> gear.chaotic_skyflare      ||

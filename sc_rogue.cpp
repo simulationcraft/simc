@@ -63,7 +63,6 @@ struct rogue_t : public player_t
   uptime_t* uptimes_envenom;
   uptime_t* uptimes_slice_and_dice;
   uptime_t* uptimes_hunger_for_blood;
-  uptime_t* uptimes_savage_combat;
   uptime_t* uptimes_tricks_of_the_trade;
   
   // Auto-Attack
@@ -211,7 +210,6 @@ struct rogue_t : public player_t
     uptimes_envenom             = get_uptime( "envenom" );
     uptimes_slice_and_dice      = get_uptime( "slice_and_dice" );
     uptimes_hunger_for_blood    = get_uptime( "hunger_for_blood" );
-    uptimes_savage_combat       = get_uptime( "savage_combat" );
     uptimes_tricks_of_the_trade = get_uptime( "tricks_of_the_trade" );
   
     // Auto-Attack
@@ -648,6 +646,36 @@ static void trigger_tricks_of_the_trade( rogue_attack_t* a )
   }
 }
 
+// trigger_poison ===========================================================
+
+static void trigger_poison( rogue_t* p )
+{
+  if( p -> buffs_poison_doses == 0 )
+  {
+    // Target about to become poisoned.
+
+    target_t* t = p -> sim -> target;
+
+    if( p -> talents.master_poisoner ) t -> debuffs.master_poisoner++;
+    if( p -> talents.savage_combat   ) t -> debuffs.savage_combat++;
+  }
+}
+
+// consume_poison ===========================================================
+
+static void consume_poison( rogue_t* p )
+{
+  if( p -> buffs_poison_doses == 0 )
+  {
+    // Target no longer poisoned.
+
+    target_t* t = p -> sim -> target;
+
+    if( p -> talents.master_poisoner ) t -> debuffs.master_poisoner--;
+    if( p -> talents.savage_combat   ) t -> debuffs.savage_combat--;
+  }
+}
+
 // =========================================================================
 // Rogue Attacks
 // =========================================================================
@@ -765,11 +793,6 @@ void rogue_attack_t::player_buff()
   {
     player_multiplier *= 1.0 + p -> buffs_master_of_subtlety * 0.01;
   }
-  if( p -> buffs_poison_doses ) 
-  {
-    player_multiplier *= 1.0 + p -> talents.savage_combat * 0.01;
-    player_crit       += p -> talents.master_poisoner * 0.01;
-  }
   if( p -> talents.murder )
   {
     int8_t target_race = sim -> target -> race;
@@ -792,10 +815,7 @@ void rogue_attack_t::player_buff()
   {
     p -> uptimes_hunger_for_blood -> update( p -> buffs_hunger_for_blood == 3 );
   }
-  if( p -> talents.savage_combat )
-  {
-    p -> uptimes_savage_combat -> update( p -> buffs_poison_doses != 0 );
-  }
+  p -> uptimes_tricks_of_the_trade -> update( p -> buffs.tricks_of_the_trade != 0 );
 }
 
 
@@ -1196,11 +1216,15 @@ struct envenom_t : public rogue_attack_t
 
     if( result_is_hit() )
     {
-      p -> buffs_poison_doses -= doses_consumed;
-
-      if( p -> buffs_poison_doses == 0 )
+      if( doses_consumed > 0 )
       {
-        p -> active_deadly_poison -> cancel();
+	p -> buffs_poison_doses -= doses_consumed;
+
+	if( p -> buffs_poison_doses == 0 )
+        {
+	  p -> active_deadly_poison -> cancel();
+	}
+	consume_poison( p );
       }
       trigger_cut_to_the_chase( this );
     }
@@ -2164,11 +2188,6 @@ void rogue_poison_t::player_buff()
   {
     player_multiplier *= 1.0 + p -> buffs_master_of_subtlety * 0.01;
   }
-  if( p -> buffs_poison_doses ) 
-  {
-    player_multiplier *= 1.0 + p -> talents.savage_combat * 0.01;
-    player_crit       += p -> talents.master_poisoner * 0.01;
-  }
   if( p -> talents.murder )
   {
     int8_t target_race = sim -> target -> race;
@@ -2191,10 +2210,6 @@ void rogue_poison_t::player_buff()
   {
     p -> uptimes_hunger_for_blood -> update( p -> buffs_hunger_for_blood == 3 );
   }
-  if( p -> talents.savage_combat )
-  {
-    p -> uptimes_savage_combat -> update( p -> buffs_poison_doses != 0 );
-  }
   p -> uptimes_tricks_of_the_trade -> update( p -> buffs.tricks_of_the_trade != 0 );
 }
 
@@ -2209,6 +2224,7 @@ struct anesthetic_poison_t : public rogue_poison_t
     trigger_gcd      = 0;
     background       = true;
     proc             = true;
+    may_crit         = true;
     direct_power_mod = 0;
     base_direct_dmg  = util_t::ability_rank( p -> level,  249,77,  153,68,  0,0 );
   }
@@ -2258,6 +2274,8 @@ struct deadly_poison_t : public rogue_poison_t
 
     if( success )
     {
+      trigger_poison( p );
+
       if( p -> buffs_poison_doses < 5 ) p -> buffs_poison_doses++;
 
       if( sim -> log ) report_t::log( sim, "%s performs %s (%d)", player -> name(), name(), p -> buffs_poison_doses );
@@ -2286,6 +2304,7 @@ struct deadly_poison_t : public rogue_poison_t
     rogue_t* p = player -> cast_rogue();
     rogue_poison_t::last_tick();
     p -> buffs_poison_doses = 0;
+    consume_poison( p );
   }
 };
 
@@ -2300,6 +2319,7 @@ struct instant_poison_t : public rogue_poison_t
     trigger_gcd      = 0;
     background       = true;
     proc             = true;
+    may_crit         = true;
     direct_power_mod = 0.10;
     base_direct_dmg  = util_t::ability_rank( p -> level,  350,79,  286,73,  188,68,  88,0 );
   }
@@ -2337,6 +2357,7 @@ struct wound_poison_t : public rogue_poison_t
     trigger_gcd      = 0;
     background       = true;
     proc             = true;
+    may_crit         = true;
     direct_power_mod = 0.04;
     base_direct_dmg  = util_t::ability_rank( p -> level,  231,78,  188,72,  112,64,  53,0 );
   }

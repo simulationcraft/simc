@@ -173,8 +173,6 @@ void action_t::player_buff()
   player_dd_adder              = 0;
   power_multiplier             = 1.0;
 
-  // 'multiplier' and 'penetration' handled here, all others handled in attack_t/spell_t
-
   player_t* p = player;
   target_t* t = sim -> target;
 
@@ -226,8 +224,6 @@ void action_t::target_debuff( int8_t dmg_type )
   target_penetration           = 0;
   target_dd_adder              = 0;
 
-  // 'multiplier' and 'penetration' handled here, all others handled in attack_t/spell_t
-
   target_t* t = sim -> target;
 
   if( school == SCHOOL_PHYSICAL || 
@@ -238,6 +234,8 @@ void action_t::target_debuff( int8_t dmg_type )
     {
       target_multiplier *= 1.02;
     }
+    t -> uptimes.blood_frenzy  -> update( t -> debuffs.blood_frenzy  != 0 );
+    t -> uptimes.savage_combat -> update( t -> debuffs.savage_combat != 0 );
   }
   else
   {
@@ -266,6 +264,14 @@ void action_t::target_debuff( int8_t dmg_type )
   {
     target_dd_adder += t -> debuffs.hemorrhage;
   }
+
+  if( t -> debuffs.totem_of_wrath  ||
+      t -> debuffs.master_poisoner ) 
+  {
+    target_crit += 0.03;
+  }
+  t -> uptimes.totem_of_wrath  -> update( t -> debuffs.totem_of_wrath  != 0 );
+  t -> uptimes.master_poisoner -> update( t -> debuffs.master_poisoner != 0 );
 
   if( t -> debuffs.winters_grasp ) target_hit += 0.02;
   t -> uptimes.winters_grasp -> update( t -> debuffs.winters_grasp != 0 );

@@ -1010,7 +1010,6 @@ struct target_t
     int8_t   judgement_of_wisdom;
     int8_t   mangle;
     int8_t   razorice;
-    int8_t   savage_combat;
     int8_t   snare;
     double   sunder_armor;
     // Temporary De-Buffs
@@ -1025,10 +1024,13 @@ struct target_t
     double   hunters_mark;
     int8_t   improved_faerie_fire;
     int8_t   improved_scorch;
+    int8_t   master_poisoner;
     int8_t   misery;
     int8_t   misery_stack;
     int8_t   earth_and_moon;
+    int8_t   savage_combat;
     int8_t   slow;
+    int8_t   totem_of_wrath;
     int8_t   winters_chill;
     int8_t   winters_grasp;
     debuff_t() { memset( (void*) this, 0x0, sizeof( debuff_t ) ); }
@@ -1064,9 +1066,13 @@ struct target_t
   
   struct uptimes_t
   {
-    uptime_t* winters_grasp;
-    uptime_t* winters_chill;
+    uptime_t* blood_frenzy;
     uptime_t* improved_scorch;
+    uptime_t* master_poisoner;
+    uptime_t* savage_combat;
+    uptime_t* totem_of_wrath;
+    uptime_t* winters_chill;
+    uptime_t* winters_grasp;
     void reset() { memset( (void*) this, 0x00, sizeof( uptimes_t ) ); }
     uptimes_t() { reset(); }
   };

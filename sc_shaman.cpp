@@ -1753,6 +1753,7 @@ struct totem_of_wrath_t : public shaman_spell_t
       expiration_t( sim_t* sim, player_t* player, totem_of_wrath_t* t ) : event_t( sim, player ), totem(t)
       {
         name = "Totem of Wrath Expiration";
+	sim -> target -> debuffs.totem_of_wrath++;
         for( player_t* p = sim -> player_list; p; p = p -> next )
         {
           p -> aura_gain( "Totem of Wrath" );
@@ -1762,6 +1763,7 @@ struct totem_of_wrath_t : public shaman_spell_t
       }
       virtual void execute()
       {
+	sim -> target -> debuffs.totem_of_wrath--;
         for( player_t* p = sim -> player_list; p; p = p -> next )
         {
           // Make sure it hasn't already been overriden by a more powerful totem.
