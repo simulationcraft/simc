@@ -1134,9 +1134,8 @@ struct envenom_t : public rogue_attack_t
     };
     parse_options( options, options_str );
       
-    weapon = &( p -> main_hand_weapon );
     requires_combo_points = true;
-    base_cost             = 35;
+    base_cost = 35;
 
     base_multiplier *= 1.0 + ( p -> talents.find_weakness * 0.02 + 
                                util_t::talent_rank( p -> talents.vile_poisons, 3, 0.07, 0.14, 0.20 ) );
@@ -1266,9 +1265,8 @@ struct eviscerate_t : public rogue_attack_t
     };
     parse_options( options, options_str );
       
-    weapon = &( p -> main_hand_weapon );
     requires_combo_points = true;
-    base_cost             = 35;
+    base_cost = 35;
 
     base_multiplier *= 1.0 + ( p -> talents.aggression    * 0.03 +
                                p -> talents.find_weakness * 0.02 +
@@ -1873,7 +1871,6 @@ struct rupture_t : public rogue_attack_t
     };
     parse_options( options, options_str );
       
-    weapon = &( p -> main_hand_weapon );
     requires_combo_points = true;
     base_cost             = 25;
     base_tick_time        = 2.0; 
