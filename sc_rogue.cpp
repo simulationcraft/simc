@@ -224,6 +224,7 @@ struct rogue_t : public player_t
   virtual void      init_base();
   virtual void      reset();
   virtual void      raid_event( action_t* );
+  virtual void      regen( double periodicity );
   virtual bool      get_talent_trees( std::vector<int8_t*>& assassination, std::vector<int8_t*>& combat, std::vector<int8_t*>& subtlety );
   virtual bool      parse_talents_mmo( const std::string& talent_string );
   virtual bool      parse_option( const std::string& name, const std::string& value );
@@ -2914,7 +2915,7 @@ void rogue_t::regen( double periodicity )
   {
     double energy_regen = periodicity * energy_regen_per_second;
 
-    resource_gain( RESOURCE_ENERGY, energy_regen, gains.adrenaline_rush );
+    resource_gain( RESOURCE_ENERGY, energy_regen, gains_adrenaline_rush );
   }
 }
 
