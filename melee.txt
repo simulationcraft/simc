@@ -2,9 +2,9 @@
 # WARNING!  When making changes to this file in an editor, make sure it is saved in "plain text" format.
 #======================================================================================================
 
-# TO EXECUTE THIS PARAMETER FILE:  simcraft  output=results.txt  input=raid_80.txt 
-# TO GENERATE CHARTS IN HTML:      simcraft  output=results.txt  input=raid_80.txt  html=chart.html
-# TO GENERATE SCALE FACTORS:       simcraft  output=results.txt  input=raid_80.txt  calculate_scale_factors=1
+# TO EXECUTE THIS PARAMETER FILE:  simcraft  output=results.txt  input=melee.txt 
+# TO GENERATE CHARTS IN HTML:      simcraft  output=results.txt  input=melee.txt  html=chart.html
+# TO GENERATE SCALE FACTORS:       simcraft  output=results.txt  input=melee.txt  calculate_scale_factors=1
 
 #
 # Globals
