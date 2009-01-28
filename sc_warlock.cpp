@@ -2973,7 +2973,7 @@ struct haunt_t : public warlock_spell_t
       return false;
 
     if( debuff && p -> expirations_haunted )
-      if( ( sim -> current_time + execute_time() ) < p -> expirations_haunted -> time )
+      if( ( sim -> current_time + execute_time() ) < p -> expirations_haunted -> occurs() )
         return false;
 
     return true;

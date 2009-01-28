@@ -1669,7 +1669,7 @@ struct hunger_for_blood_t : public rogue_attack_t
       return false;
 
     if( p -> buffs_hunger_for_blood == 3 )
-      if( ( p -> expirations_hunger_for_blood -> time - sim -> current_time ) > refresh_at )
+      if( ( p -> expirations_hunger_for_blood -> occurs() - sim -> current_time ) > refresh_at )
         return false;
 
     return true;
@@ -2157,7 +2157,7 @@ struct slice_and_dice_t : public rogue_attack_t
     rogue_t* p = player -> cast_rogue();
 
     if( p -> buffs_slice_and_dice )
-      if( ( p -> expirations_slice_and_dice -> time - sim -> current_time ) > refresh_at )
+      if( ( p -> expirations_slice_and_dice -> occurs() - sim -> current_time ) > refresh_at )
 	return false;
 
     return rogue_attack_t::ready();
@@ -2911,11 +2911,14 @@ void rogue_t::regen( double periodicity )
 {
   player_t::regen( periodicity );
 
-  if( sim -> infinite_resource[ RESOURCE_ENERGY ] == 0 && resource_max[ RESOURCE_ENERGY ] > 0 )
+  if( buffs_adrenaline_rush )
   {
-    double energy_regen = periodicity * energy_regen_per_second;
+    if( sim -> infinite_resource[ RESOURCE_ENERGY ] == 0 && resource_max[ RESOURCE_ENERGY ] > 0 )
+    {
+      double energy_regen = periodicity * energy_regen_per_second;
 
-    resource_gain( RESOURCE_ENERGY, energy_regen, gains_adrenaline_rush );
+      resource_gain( RESOURCE_ENERGY, energy_regen, gains_adrenaline_rush );
+    }
   }
 }
 
