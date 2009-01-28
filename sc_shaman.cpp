@@ -889,23 +889,17 @@ struct stormstrike_t : public shaman_attack_t
   {
     shaman_t* p = player -> cast_shaman();
 
-    cooldown   = 10.0 - p -> talents.improved_stormstrike;
-    base_cost  = p -> resource_base[ RESOURCE_MANA ] * 0.08;
+    cooldown  = 10.0 - p -> talents.improved_stormstrike;
+    base_cost = p -> resource_base[ RESOURCE_MANA ] * 0.08;
   }
 
   virtual void execute()
   {
-    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
     attack_t::consume_resource();
     update_ready();
 
-    double mh_dd=0, oh_dd=0;
-    int8_t mh_result=RESULT_NONE, oh_result=RESULT_NONE;
-
     weapon = &( player -> main_hand_weapon );
     shaman_attack_t::execute();
-    mh_dd = direct_dmg;
-    mh_result = result;
 
     if( result_is_hit() )
     {
@@ -915,19 +909,12 @@ struct stormstrike_t : public shaman_attack_t
       {
         weapon = &( player -> off_hand_weapon );
         shaman_attack_t::execute();
-        oh_dd = direct_dmg;
-        oh_result = result;
       }
     }
-
-    direct_dmg = mh_dd + oh_dd;
-    result     = mh_result;
-    attack_t::update_stats( DMG_DIRECT );
 
     player -> action_finish( this );
   }
   virtual void consume_resource() { }
-  virtual void update_stats( int8_t type ) { }
 };
 
 // =========================================================================

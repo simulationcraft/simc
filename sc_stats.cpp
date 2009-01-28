@@ -81,7 +81,8 @@ void stats_t::add( double amount,
     if( amount < r.min_dmg ) r.min_dmg = amount;
     if( amount > r.max_dmg ) r.max_dmg = amount;
 
-    if( last_execute > 0 )
+    if( last_execute > 0 &&
+	last_execute != sim -> current_time )
     {
       num_intervals++;
       total_intervals += sim -> current_time - last_execute;

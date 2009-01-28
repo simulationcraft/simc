@@ -1796,17 +1796,10 @@ struct mutilate_t : public rogue_attack_t
 
   virtual void execute()
   {
-    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
-
     attack_t::consume_resource();
-
-    double mh_dd=0, oh_dd=0;
-    int8_t mh_result=RESULT_NONE, oh_result=RESULT_NONE;
 
     weapon = &( player -> main_hand_weapon );
     rogue_attack_t::execute();
-    mh_dd = direct_dmg;
-    mh_result = result;
 
     if( result_is_hit() )
     {
@@ -1814,14 +1807,8 @@ struct mutilate_t : public rogue_attack_t
       {
         weapon = &( player -> off_hand_weapon );
         rogue_attack_t::execute();
-        oh_dd = direct_dmg;
-        oh_result = result;
       }
     }
-
-    direct_dmg = mh_dd + oh_dd;
-    result     = mh_result;
-    attack_t::update_stats( DMG_DIRECT );
 
     player -> action_finish( this );
   }
@@ -1835,7 +1822,6 @@ struct mutilate_t : public rogue_attack_t
   }
 
   virtual void consume_resource() { }
-  virtual void update_stats( int8_t type ) { }
 };
 
 // Premeditation =============================================================
