@@ -2693,7 +2693,7 @@ struct tricks_of_the_trade_t : public spell_t
   player_t* tricks_target;
 
   tricks_of_the_trade_t( player_t* player, const std::string& options_str ) : 
-    spell_t( "tricks_target", player )
+    spell_t( "tricks_target", player, RESOURCE_ENERGY )
   {
     rogue_t* p = player -> cast_rogue();
 
@@ -2706,7 +2706,8 @@ struct tricks_of_the_trade_t : public spell_t
     parse_options( options, options_str );
 
     trigger_gcd = 0;
-
+    
+    base_cost = 15;
     cooldown  = 30.0;
     cooldown -= p -> talents.filthy_tricks * 5.0;
     
