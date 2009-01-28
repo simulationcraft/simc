@@ -244,7 +244,7 @@ level=80
 talents=http://www.wowhead.com/?talent=of0Vck0IzxGu0xedfVczo0h
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/mage_armor/focus_magic,target=Mage_57_3_11
 actions+=/mana_gem,trigger=5000/mana_potion,trigger=4300
-actions+=/mirror_image/arcane_power/presence_of_mind,pyroblast/arcane_blast,max=3/arcane_missiles,barrage=0,abar_combo=1/arcane_barrage
+actions+=/mirror_image/arcane_power/presence_of_mind,pyroblast/arcane_blast,max=3/arcane_missiles,barrage=1,abar_combo=0/arcane_barrage
 actions+=/evocation
 tier7_2pc=1
 tier7_4pc=1
@@ -267,7 +267,7 @@ level=80
 talents=http://www.wowhead.com/?talent=of0Vcu0IzxGuMxedcZbGc0o
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/mage_armor/focus_magic,target=Mage_20_51_0
 actions+=/mana_gem,trigger=5000/mana_potion,trigger=4300
-actions+=/mirror_image/arcane_power/icy_veins/presence_of_mind,arcane_blast/arcane_blast,max=3/arcane_missiles,barrage=0,abar_combo=1/arcane_barrage
+actions+=/mirror_image/arcane_power/icy_veins/presence_of_mind,arcane_blast/arcane_blast,max=3/arcane_missiles,barrage=1,abar_combo=0/arcane_barrage
 actions+=/evocation
 tier7_2pc=1
 tier7_4pc=1

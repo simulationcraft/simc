@@ -1132,7 +1132,7 @@ struct arcane_barrage_t : public mage_spell_t
     mage_spell_t::player_buff();
     if( p -> buffs_arcane_blast )
     {
-      player_multiplier *= 1.0 + p ->  buffs_arcane_blast * ( 0.15 + ( p -> glyphs.arcane_blast ? 0.05 : 0.00 ) );
+      player_multiplier *= 1.0 + p ->  buffs_arcane_blast * ( 0.15 + ( p -> glyphs.arcane_blast ? 0.03 : 0.00 ) );
     }
     for( int i=0; i < 4; i++ ) 
     {
@@ -1261,7 +1261,7 @@ struct arcane_blast_t : public mage_spell_t
     mage_spell_t::player_buff();
     if( p -> buffs_arcane_blast )
     {
-      player_multiplier *= 1.0 + p ->  buffs_arcane_blast * ( 0.15 + ( p -> glyphs.arcane_blast ? 0.05 : 0.00 ) );
+      player_multiplier *= 1.0 + p ->  buffs_arcane_blast * ( 0.15 + ( p -> glyphs.arcane_blast ? 0.03 : 0.00 ) );
     }
     for( int i=0; i < 4; i++ ) 
     {
@@ -1356,7 +1356,7 @@ struct arcane_missiles_t : public mage_spell_t
     mage_spell_t::player_buff();
     if( p -> buffs_arcane_blast )
     {
-      player_multiplier *= 1.0 + p ->  buffs_arcane_blast * ( 0.15 + ( p -> glyphs.arcane_blast ? 0.05 : 0.00 ) );
+      player_multiplier *= 1.0 + p ->  buffs_arcane_blast * ( 0.15 + ( p -> glyphs.arcane_blast ? 0.03 : 0.00 ) );
     }
     for( int i=0; i < 4; i++ ) 
     {

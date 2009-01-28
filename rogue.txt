@@ -17,6 +17,7 @@ gear_expertise_rating=215
 gear_hit_rating=215
 gear_crit_rating=675
 gear_haste_rating=280
+gear_spell_power=0
 relentless_earthstorm=1
 tier7_2pc=1
 tier7_4pc=1
@@ -47,6 +48,7 @@ gear_expertise_rating=215
 gear_hit_rating=215
 gear_crit_rating=675
 gear_haste_rating=280
+gear_spell_power=0
 # Not fair to use the same stats since Combat Rogue needs less expertise.
 # Trade expertise for ivalue-equal amount of attack power
 enchant_attack_power=160
@@ -80,6 +82,7 @@ gear_expertise_rating=215
 gear_hit_rating=215
 gear_crit_rating=675
 gear_haste_rating=280
+gear_spell_power=0
 relentless_earthstorm=1
 tier7_2pc=1
 tier7_4pc=1
