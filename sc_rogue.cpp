@@ -46,6 +46,7 @@ struct rogue_t : public player_t
   event_t* expirations_hunger_for_blood;
 
   // Gains
+  gain_t* gains_adrenaline_rush;
   gain_t* gains_combat_potency;
   gain_t* gains_focused_attacks;
   gain_t* gains_quick_recovery;
@@ -166,8 +167,8 @@ struct rogue_t : public player_t
     active_slice_and_dice    = 0;
 
     // Buffs
-    buffs_blade_flurry       = 0;
     buffs_adrenaline_rush    = 0;
+    buffs_blade_flurry       = 0;
     buffs_cold_blood         = 0;
     buffs_combo_points       = 0;
     buffs_envenom            = 0;
@@ -193,6 +194,7 @@ struct rogue_t : public player_t
     expirations_hunger_for_blood = 0;
   
     // Gains
+    gains_adrenaline_rush    = get_gain( "adrenaline_rush" );
     gains_combat_potency     = get_gain( "combat_potency" );
     gains_focused_attacks    = get_gain( "focused_attacks" );
     gains_quick_recovery     = get_gain( "quick_recovery" );
@@ -2484,7 +2486,6 @@ struct adrenaline_rush_t : public spell_t
         name = "Adrenaline Rush Expiration";
         p -> aura_gain( "Adrenaline Rush" );
         p -> buffs_adrenaline_rush = 1;
-        p -> energy_regen_per_second *= 2.0;
         sim -> add_event( this, 15.0 );
       }
       virtual void execute()
@@ -2492,7 +2493,6 @@ struct adrenaline_rush_t : public spell_t
         rogue_t* p = player -> cast_rogue();
         p -> aura_loss( "Adrenaline Rush" );
         p -> buffs_adrenaline_rush = 0;
-        p -> energy_regen_per_second /= 2.0;
       }
     };
 
@@ -2901,6 +2901,20 @@ void rogue_t::raid_event( action_t* a )
 	p -> cooldowns.honor_among_thieves = sim -> current_time + 1.0;
       }
     }
+  }
+}
+
+// rogue_t::regen ==========================================================
+
+void rogue_t::regen( double periodicity )
+{
+  player_t::regen( periodicity );
+
+  if( sim -> infinite_resource[ RESOURCE_ENERGY ] == 0 && resource_max[ RESOURCE_ENERGY ] > 0 )
+  {
+    double energy_regen = periodicity * energy_regen_per_second;
+
+    resource_gain( RESOURCE_ENERGY, energy_regen, gains.adrenaline_rush );
   }
 }
 

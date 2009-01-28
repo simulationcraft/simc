@@ -1,0 +1,624 @@
+#======================================================================================================
+# WARNING!  When making changes to this file in an editor, make sure it is saved in "plain text" format.
+#======================================================================================================
+
+# TO EXECUTE THIS PARAMETER FILE:  simcraft  output=results.txt  input=raid_80.txt 
+# TO GENERATE CHARTS IN HTML:      simcraft  output=results.txt  input=raid_80.txt  html=chart.html
+# TO GENERATE SCALE FACTORS:       simcraft  output=results.txt  input=raid_80.txt  calculate_scale_factors=1
+
+#
+# Globals
+#
+
+# Patch level of 3.0.0 or later implies Wrath of the Lich King
+patch=3.0.8
+
+# Multi-Threading: Performance can be significantly increased using multi-threading.
+# Most modern processors are dual-core allowing for threads=2 to be specified.
+threads=1
+
+# To generate a combat log with just one iteration, simply set 'log=1'
+# Setting log to a non-zero value will force the simulator to execute just one iteration
+log=0
+
+# To get a detailed breakdown of contributions to attacks/spells as they occur, simply set 'debug=1'
+# Setting debug to a non-zero value will force the simulator to execute just one iteration
+debug=0
+
+# Lag is a random value centered on the value below with a range of +/- 0.05 seconds
+lag=0.150
+
+# Spells cannot be queue after channeled spells, nor when waiting for the GCD
+channel_penalty=0.100
+gcd_penalty=0.100
+
+# Boss Level
+target_level=83
+
+# One of "max_time" (fight time in seconds) or "target_health" must be specified.
+# When "max_time" is used, the health of the target will be infered half-way through simulation.
+max_time=300
+
+# While min/max damage effects (such as weapons and direct damage spells) are averaged out, spell event
+# and attack table mechanics are still random.  In order to get a trustworthy answer from the simulator,
+# one must have a very long fight or iterate a short fight many, many times.  Given the constraints of
+# mana, iterating a short fight is often more realistic.
+iterations=1000
+
+# For convenience it is possible to tell the simulator that a specific resource (mana, rage, etc)
+# will never run out if you do not wish to configure raid/consumable buff scenarios to ensure sufficient
+# resource replenishment.
+infinite_mana=0
+
+# WotLK has regen ticks occuring every 0.1sec.  Modeling this exactly produces a ton of churn in the
+# event list and tons of unnecessary calculations.  A value of 1.0 is not perfect, but the performance
+# improvement is worth the slight inaccuracy.
+regen_periodicity=1.0
+
+# Some WotLK beta patches have included a Potion Sickness debuff that only allows one potion consumed per combat.
+potion_sickness=1
+
+# From the testing at http://elitistjerks.com/f15/t37584-wrath_boss_armor_testing it appears WotLK boss armor is 13k
+target_armor=13000
+sunder_armor=3925
+
+# Since support for the Paladin class does not yet exist, one can specify target debuffs (such as
+# Judgement of Wisdom) and player buffs (such as Blessing of Wisdom and Sanctified Retribution) as parameters.
+# Both blessing_of_wisdom=1 and sanctified_retribution=1 would be included in each player section as appropriate.
+judgement_of_wisdom=1
+
+# Support for Death Knights does not exist.  To mimic the Frost Vulnerability debuff (stacks to +10%) triggered
+# by the Rune of Razorice, simply set "razorice=1".  To mimic the Crypt Fever debuff (30% buff to disease damage),
+# simply set "crypt_fever=1"
+razorice=1
+crypt_fever=1
+
+# Support for Feral Druids does not exist.
+mangle=1
+
+# The Mage talent "Torment the Weak" has been changed to work off of many "snare" debuffs.
+snare=1
+
+# To generate scale factors, set calculate_scale_factors=1
+calculate_scale_factors=0
+scale_spell_power=250
+scale_hit_rating=-250
+scale_crit_rating=250
+scale_haste_rating=250
+scale_intellect=250
+scale_spirit=250
+scale_attack_power=250
+scale_strength=250
+scale_agility=250
+scale_expertise_rating=-150
+scale_armor_penetration_rating=250
+
+# ================================================================================================
+# General Action Options
+# ================================================================================================
+
+# (1) The "min=1000,max=2000,trigger=3000" option to mana_potion and mana_gem represents
+#     the min/max mana gained and the amount below the player's maximum mana required to trigger the action.
+#     min/max or trigger can be left out:
+#     "trigger=3000" stands for "min=3000,max=3000,trigger=3000"
+#     "min=1000,max=2000" stands for "min=1000,max=2000,trigger=2000"
+
+# ================================================================================================
+# Druids
+# ================================================================================================
+
+# Supported Moonkin Glyphs
+# glyph_moonfire=1
+# glyph_starfire=1
+# glyph_insect_swarm=1
+
+
+#
+# Balance Druid (Wrath, Faerie Fire)
+#
+# (1) The "trigger=4300" option to mana_potion represents the mana gained and the amount below max required to trigger
+# (2) The "eclipse=trigger" option to starfire will make sure that it is only used to trigger the Eclipse talent
+#     which means it will only be used after the cooldown is ready and the effect has not yet proc'd.
+#
+druid=Druid_58_0_13_W_FF
+party=0
+level=80
+talents=http://www.wowhead.com/?talent=0xG0uiIsfdIVhouZbxczb
+actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/mark_of_the_wild/moonkin_form/mana_potion,trigger=4300/innervate,trigger=12000
+actions+=/faerie_fire/treants/moonfire/insect_swarm/starfire,eclipse=trigger/wrath
+tier7_2pc_balance=1
+tier7_4pc_balance=1
+enchant_hit_rating=-25
+enchant_haste_rating=+25
+chaotic_skyflare=1
+glyph_moonfire=1
+glyph_starfire=1
+glyph_insect_swarm=1
+idol_of_steadfast_renewal=1
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_wisdom=1
+# Three Treants modeled as one pet that hits 3x hard
+pet=treants
+quiet=1
+active=owner
+
+# ================================================================================================
+# Mages
+# ================================================================================================
+
+# Supported Mage Glyphs
+# glyph_arcane_power=1
+# glyph_fire_ball=1
+# glyph_frost_bolt=1
+# glyph_improved_scorch=1
+# glyph_mage_armor=1
+# glyph_mana_gem=1
+# glyph_molten_armor=1
+# glyph_water_elemental=1
+# glyph_frostfire=1
+
+#
+# Frost Mage
+#
+# (1) The "trigger=3500" option to mana_gem and mana_potion represents the mana gained and the amount below max required to trigger
+# (2) The "frozen=1" option to ice_lance means that it will only be cast if the target is frozen (via winters_grasp) or virtually frozen (via fingers_of_frost)
+# (3) The "fb_priority=1" option to ice_lance means that it will only be cast if the frozen debuff/buff will end before a frost_bolt could be cast
+#
+mage=Mage_18_0_53
+party=0
+level=80
+talents=http://www.wowhead.com/?talent=of0Vck0cZZVIccRcu0f0gfsx
+actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/arcane_brilliance/molten_armor
+actions+=/mana_gem/mana_potion,trigger=4300
+actions+=/mirror_image/ice_lance,frozen=1,fb_priority=1/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/frost_bolt
+actions+=/evocation
+tier7_2pc=1
+tier7_4pc=1
+enchant_crit_rating=-75
+enchant_haste_rating=+75
+chaotic_skyflare=1
+# Glyphs
+glyph_molten_armor=1
+glyph_frost_bolt=1
+glyph_water_elemental=1
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_wisdom=1
+# Pets
+pet=water_elemental
+actions=water_bolt
+quiet=1
+active=owner
+pet=mirror_image
+quiet=1
+active=owner
+
+# ================================================================================================
+# Priests
+# ================================================================================================
+
+#
+# Shadow Priest
+#
+# (1) The "trigger=3500" option to mana_potion represents the mana gained and the amount below max required to trigger
+# (2) The "trigger=6000" option to shadow_fiend represents the amount below max mana required to trigger
+#
+priest=Priest_14_0_57
+party=0
+level=80
+talents=http://www.wowhead.com/?talent=bVcbzhZZG0fVRfzfiqfzAo
+actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/inner_fire/shadow_form/mana_potion,trigger=4300/shadow_fiend,trigger=6000/dispersion
+actions+=/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/shadow_word_death,mb_wait=0,mb_priority=0/mind_flay,mb_wait=0
+tier7_2pc=1
+tier7_4pc=1
+chaotic_skyflare=1
+glyph_shadow_word_pain=1
+glyph_shadow=1
+glyph_shadow_word_death=1
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_wisdom=1
+pet=shadow_fiend
+main_hand=beast,damage=110,speed=1.5,school=shadow
+quiet=1
+active=owner
+
+# ================================================================================================
+# Shaman
+# ================================================================================================
+
+# Supported Shaman Glyphs
+# glyph_shocking=1
+# glyph_flametongue_weapon=1
+# glyph_lightning_bolt=1
+# glyph_flame_shock=1
+# glyph_lava=1
+# glyph_lava_lash=1
+# glyph_elemental_mastery=1
+
+#
+# Elemental Shaman
+#
+# (1) The "trigger=3500" option to mana_potion represents the mana gained and the amount below max required to trigger
+# (2) The "flame_shock=1,max_ticks_consumed=1" option to lava_burst will prevent it from being called until there is only one tick remaining on Flame Shock
+#
+shaman=Shaman_57_14_0
+party=1
+level=80
+talents=http://www.wowhead.com/?talent=hEhcq0dItGxst0xxco
+actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/flametongue_weapon,weapon=main/water_shield/mana_potion,trigger=4300
+actions+=/mana_spring_totem/totem_of_wrath/wrath_of_air_totem/water_shield
+actions+=/elemental_mastery/flame_shock/lava_burst,flame_shock=1/bloodlust,target_pct=25/chain_lightning/lightning_bolt/thunderstorm
+gear_spirit=0
+gear_mp5=100
+tier7_2pc_elemental=1
+tier7_4pc_elemental=1
+chaotic_skyflare=1
+# Glyphs
+glyph_flametongue_weapon=1
+glyph_flame_shock=1
+glyph_lava=1
+totem_of_hex=1
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_wisdom=1
+
+#
+# Enhancement Shaman
+#
+# (1) The "weapon=main" option to windfury_weapon puts the enchant only on the main-hand weapon
+# (2) The "weapon=off" option to flametongue_weapon puts the enchant only on the off-hand weapon
+# (3) The "flame_shock=1,max_ticks_consumed=4" option to lava_burst will prevent it from being called until there are four or less ticks remaining on Flame Shock.
+# (4) The "maelstrom=5" option to lightning_bolt or chain_lightning means that LB/CL will only be executed when there is a 5-stack of Maelstrom Weapon,
+#     making the LB/CL cast instant which prevents auto_attack resets.
+#
+shaman=Shaman_16_55_0
+party=1
+level=80
+talents=http://www.wowhead.com/?talent=hVbhqZhbxsoxdAIkufot
+actions=flask,type=endless_rage/food,type=great_feast/windfury_weapon,weapon=main/flametongue_weapon,weapon=off
+actions+=/strength_of_earth_totem/windfury_totem/searing_totem/lightning_shield
+actions+=/auto_attack/lightning_bolt,maelstrom=5,ss_wait=1/shamanistic_rage/spirit_wolf/earth_shock,ss_wait=1/stormstrike/earth_shock/lava_lash/bloodlust,target_pct=25
+gear_agility=700
+gear_stamina=1000
+gear_intellect=350
+gear_attack_power=2000
+gear_expertise_rating=180
+gear_armor_penetration_rating=0
+gear_spell_power=0
+gear_hit_rating=350
+gear_crit_rating=575
+gear_haste_rating=300
+tier7_2pc_enhancement=1
+tier7_4pc_enhancement=1
+relentless_earthstorm=1
+main_hand=mace,damage=392,speed=2.5,enchant=berserking
+off_hand=mace,damage=359,speed=2.5,enchant=berserking
+# Glyphs
+glyph_windfury_weapon=1
+glyph_stormstrike=1
+glyph_lightning_shield=1
+totem_of_hex=1
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_might=688
+sanctified_retribution=1
+leader_of_the_pack=1
+# Two wolves modeled as one pet that hits 2x hard
+pet=spirit_wolf
+blessing_of_kings=1
+blessing_of_might=688
+leader_of_the_pack=1
+sanctified_retribution=1
+quiet=1
+active=owner
+
+# ================================================================================================
+# Hunter
+# ================================================================================================
+
+#
+# Survival Hunter
+#
+hunter=Hunter_4_15_52
+party=2
+level=80
+talents=http://www.wowhead.com/?talent=cLZ0eVooZe00i0cIhxdAhcd
+actions=flask,type=endless_rage/food,type=great_feast/summon_pet,cat/hunters_mark
+actions+=/auto_shot/aspect/rapid_fire/explosive_shot/kill_shot/serpent_sting/aimed_shot/steady_shot
+gear_agility=1200
+gear_stamina=1000
+gear_intellect=350
+gear_attack_power=2400
+gear_armor_penetration_rating=0
+gear_spell_power=0
+gear_hit_rating=265
+gear_crit_rating=575
+gear_haste_rating=350
+relentless_earthstorm=1
+tier7_2pc=1
+tier7_4pc=1
+glyph_improved_aspect_of_the_hawk=1
+glyph_serpent_sting=1
+glyph_steady_shot=1
+ranged=bow,dps=145,speed=2.9
+ammo_dps=67.5
+quiver_haste=1.15
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_might=688
+sanctified_retribution=1
+leader_of_the_pack=1
+pet=cat
+call_of_the_wild=1
+cobra_reflexes=2
+feeding_frenzy=2
+rabid=1
+spiders_bite=3
+spiked_collar=3
+actions=auto_attack/call_of_the_wild/rabid/rake/claw
+blessing_of_kings=1
+blessing_of_might=688
+leader_of_the_pack=1
+sanctified_retribution=1
+quiet=1
+active=owner
+
+#
+# Marksmanship Hunter
+#
+hunter=Hunter_13_51_7
+party=2
+level=80
+talents=http://www.wowhead.com/?talent=ctbM0hZ0eVfRhzMgoxhiox00b
+actions=flask,type=endless_rage/food,type=great_feast/summon_pet,cat/hunters_mark
+actions+=/auto_shot/aspect/serpent_sting/rapid_fire/chimera_shot/kill_shot/readiness/arcane_shot/aimed_shot/steady_shot
+gear_agility=1200
+gear_stamina=1000
+gear_intellect=350
+gear_attack_power=2400
+gear_armor_penetration_rating=0
+gear_spell_power=0
+gear_hit_rating=265
+gear_crit_rating=575
+gear_haste_rating=350
+relentless_earthstorm=1
+tier7_2pc=1
+tier7_4pc=1
+glyph_improved_aspect_of_the_hawk=1
+glyph_serpent_sting=1
+glyph_steady_shot=1
+ranged=bow,dps=145,speed=2.9
+ammo_dps=67.5
+quiver_haste=1.15
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_might=688
+sanctified_retribution=1
+leader_of_the_pack=1
+pet=cat
+call_of_the_wild=1
+cobra_reflexes=2
+feeding_frenzy=2
+rabid=1
+spiders_bite=3
+spiked_collar=3
+actions=auto_attack/call_of_the_wild/rabid/rake/claw
+blessing_of_kings=1
+blessing_of_might=688
+leader_of_the_pack=1
+sanctified_retribution=1
+quiet=1
+active=owner
+
+#
+# Beast Mastery Hunter
+#
+hunter=Hunter_52_12_7
+party=2
+level=80
+talents=http://www.wowhead.com/?talent=ctbMzxtRwuMtsx0ecoZx00b
+actions=flask,type=endless_rage/food,type=great_feast/summon_pet,cat/hunters_mark
+actions+=/auto_shot/kill_command,sync=bestial_wrath/bestial_wrath/aspect/rapid_fire
+actions+=/kill_shot/arcane_shot/serpent_sting/steady_shot
+gear_agility=1200
+gear_stamina=1000
+gear_intellect=350
+gear_attack_power=2400
+gear_armor_penetration_rating=0
+gear_spell_power=0
+gear_hit_rating=265
+gear_crit_rating=575
+gear_haste_rating=350
+relentless_earthstorm=1
+tier7_2pc=1
+tier7_4pc=1
+glyph_bestial_wrath=1
+glyph_steady_shot=1
+glyph_improved_aspect_of_the_hawk=1
+ranged=bow,dps=145,speed=2.9
+ammo_dps=67.5
+quiver_haste=1.15
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_might=688
+sanctified_retribution=1
+leader_of_the_pack=1
+pet=cat
+call_of_the_wild=1
+cobra_reflexes=2
+feeding_frenzy=2
+rabid=1
+spiders_bite=3
+spiked_collar=3
+actions=auto_attack/call_of_the_wild/rabid/rake/claw
+blessing_of_kings=1
+blessing_of_might=688
+leader_of_the_pack=1
+sanctified_retribution=1
+quiet=1
+active=owner
+
+
+# ================================================================================================
+# Rogue
+# ================================================================================================
+
+#
+# Assassination Rogue
+#
+rogue=Rogue_51_13_7
+party=3
+level=80
+talents=http://www.wowhead.com/?talent=f0ef0exoVboIzAo0xV0hZxb
+actions=flask,type=endless_rage/food,type=great_feast/apply_poison,main_hand=instant,off_hand=deadly
+actions+=/auto_attack/pool_energy/hunger_for_blood,refresh_at=2/slice_and_dice,min_combo_points=3/tricks_of_the_trade,target=Rogue_18_51_2
+actions+=/rupture,min_combo_points=4/envenom,min_combo_points=4/mutilate
+gear_strength=0
+gear_agility=1030
+gear_stamina=950
+gear_intellect=0
+gear_spirit=0
+gear_attack_power=2500
+gear_armor_penetration_rating=0
+gear_expertise_rating=215
+gear_hit_rating=215
+gear_crit_rating=675
+gear_haste_rating=280
+gear_spell_power=0
+glyph_rupture=1
+glyph_slice_and_dice=1
+relentless_earthstorm=1
+tier7_2pc=1
+tier7_4pc=1
+main_hand=dagger,dps=156,speed=1.4,enchant=berserking
+off_hand=dagger,dps=156,speed=1.4,enchant=berserking
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_might=688
+sanctified_retribution=1
+sanctified_retribution=1
+leader_of_the_pack=1
+
+
+#
+# Combat Rogue
+#
+rogue=Rogue_15_51_5
+party=3
+level=80
+talents=http://www.wowhead.com/?talent=f0eb0xZMgibx0xoru0xRtx
+actions=flask,type=endless_rage/food,type=great_feast/apply_poison,main_hand=wound,off_hand=deadly
+actions+=/auto_attack/pool_energy/slice_and_dice,min_combo_points=4,refresh_at=5/tricks_of_the_trade,target=Rogue_7_21_43/killing_spree/blade_flurry
+actions+=/rupture,min_combo_points=4/eviscerate,min_combo_points=4/sinister_strike/adrenaline_rush
+gear_strength=0
+gear_agility=1030
+gear_stamina=950
+gear_intellect=0
+gear_spirit=0
+gear_attack_power=2500
+gear_armor_penetration_rating=0
+gear_expertise_rating=215
+gear_hit_rating=215
+gear_crit_rating=675
+gear_haste_rating=280
+gear_spell_power=0
+# Not fair to use the same stats since Combat Rogue needs less expertise.
+# Trade expertise for ivalue-equal amount of attack power
+enchant_attack_power=160
+enchant_attack_expertise_rating=-80
+glyph_rupture=1
+glyph_slice_and_dice=1
+glyph_sinister_strike=1
+relentless_earthstorm=1
+tier7_2pc=1
+tier7_4pc=1
+main_hand=fist,dps=156,speed=2.6,enchant=berserking
+off_hand=dagger,dps=156,speed=1.4,enchant=berserking
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_might=688
+sanctified_retribution=1
+sanctified_retribution=1
+leader_of_the_pack=1
+
+
+#
+# Combat Rogue (daggers)
+#
+rogue=Rogue_18_51_2
+party=3
+level=80
+talents=http://www.wowhead.com/?talent=f0xf0eZ0gVox0xqru0xRt0b
+actions=flask,type=endless_rage/food,type=great_feast/apply_poison,main_hand=wound,off_hand=deadly
+actions+=/auto_attack/pool_energy/slice_and_dice,min_combo_points=5,refresh_at=5
+actions+=/tricks_of_the_trade,target=Rogue_15_51_5/killing_spree/blade_flurry
+actions+=/rupture,min_combo_points=4/backstab
+gear_strength=0
+gear_agility=1030
+gear_stamina=950
+gear_intellect=0
+gear_spirit=0
+gear_attack_power=2500
+gear_armor_penetration_rating=0
+gear_expertise_rating=215
+gear_hit_rating=215
+gear_crit_rating=675
+gear_haste_rating=280
+# Not fair to use the same stats since Combat Rogue needs less expertise.
+# Trade expertise for ivalue-equal amount of attack power
+enchant_attack_power=160
+enchant_attack_expertise_rating=-80
+glyph_rupture=1
+glyph_slice_and_dice=1
+glyph_blade_flurry=1
+relentless_earthstorm=1
+tier7_2pc=1
+tier7_4pc=1
+main_hand=dagger,dps=156,speed=1.8,enchant=berserking
+off_hand=dagger,dps=156,speed=1.4,enchant=berserking
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_might=688
+sanctified_retribution=1
+leader_of_the_pack=1
+
+
+#
+# Subtlety Rogue
+#
+rogue=Rogue_7_21_43
+party=3
+level=80
+talents=http://www.wowhead.com/?talent=fhLZ0xV0x0xoZxbrbhGzdAzqc
+actions=flask,type=endless_rage/food,type=great_feast/apply_poison,main_hand=wound,off_hand=wound
+actions+=/auto_attack/pool_energy/slice_and_dice,min_combo_points=4,refresh_at=5/tricks_of_the_trade,target=Rogue_51_13_7/blade_flurry
+actions+=/rupture,min_combo_points=5/eviscerate,min_combo_points=5
+gear_strength=0
+gear_agility=1030
+gear_stamina=950
+gear_intellect=0
+gear_spirit=0
+gear_attack_power=2500
+gear_armor_penetration_rating=0
+gear_expertise_rating=215
+gear_hit_rating=215
+gear_crit_rating=675
+gear_haste_rating=280
+gear_spell_power=0
+glyph_rupture=1
+glyph_slice_and_dice=1
+glyph_eviscerate=1
+relentless_earthstorm=1
+tier7_2pc=1
+tier7_4pc=1
+main_hand=dagger,dps=156,speed=1.4,enchant=berserking
+off_hand=dagger,dps=156,speed=1.4,enchant=berserking
+# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
+blessing_of_kings=1
+blessing_of_might=688
+sanctified_retribution=1
+leader_of_the_pack=1
+
+
