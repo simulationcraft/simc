@@ -1776,7 +1776,6 @@ struct mutilate_t : public rogue_attack_t
     };
     parse_options( options, options_str );
       
-    requires_weapon   = WEAPON_DAGGER;
     base_direct_dmg   = 1;
     adds_combo_points = true;
     base_cost         = 60;
@@ -2889,7 +2888,8 @@ void rogue_t::raid_event( action_t* a )
   {
     player_t* p = a -> player;
 
-    if( p -> party == party  &&
+    if( p != this &&
+        p -> party == party  &&
 	a -> result == RESULT_CRIT && 
 	sim -> roll( talents.honor_among_thieves / 3.0 ) )
     {

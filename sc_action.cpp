@@ -537,8 +537,9 @@ void action_t::execute()
       assess_damage( direct_dmg, DMG_DIRECT );
     }
 
-    if( num_ticks > 0 && ! ticking )
+    if( num_ticks > 0 && ! ticking ) 
     {
+      // FIXME! This should just cancel existing tick......
       current_tick = 0;
       schedule_tick();
     }
@@ -560,7 +561,7 @@ void action_t::execute()
 
   if( sequence ) sequence -> schedule_execute();
 
-  player -> in_combat = true;
+  if( harmful ) player -> in_combat = true;
 }
 
 // action_t::tick ===========================================================
