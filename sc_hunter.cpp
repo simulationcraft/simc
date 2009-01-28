@@ -562,6 +562,7 @@ struct hunter_spell_t : public spell_t
   }
 
   virtual double cost();
+  virtual double gcd();
 };
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
@@ -2567,6 +2568,14 @@ double hunter_spell_t::cost()
   double c = spell_t::cost();
   if ( p -> buffs_rapid_fire ) c *= 1.0 - p -> talents.rapid_recuperation * 0.3;
   return c;
+}
+
+// hunter_spell_t::gcd()
+
+double hunter_spell_t::gcd()
+{
+  // Hunter gcd unaffected by haste
+  return trigger_gcd;
 }
 
 // Aspect ==================================================================
