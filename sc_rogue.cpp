@@ -2554,11 +2554,11 @@ struct pool_energy_t : public spell_t
     // If the next action in the list would be "ready" if it was not constrained by energy,
     // then this command will pool energy until we have enough.
 
-    double current_energy = player -> resource_current[ RESOURCE_ENERGY ];
+    player -> resource_current[ RESOURCE_ENERGY ] += 100;
 
-    player -> resource_current[ RESOURCE_ENERGY ] = 100;
     bool energy_limited = next -> ready();
-    player -> resource_current[ RESOURCE_ENERGY ] = current_energy;
+
+    player -> resource_current[ RESOURCE_ENERGY ] -= 100;
 
     return energy_limited;
   }
