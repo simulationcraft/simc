@@ -399,7 +399,7 @@ hunter=Hunter_13_51_7
 party=2
 level=80
 talents=http://www.wowhead.com/?talent=ctbM0hZ0eVfRhzMgoxhiox00b
-actions=flask,type=endless_rage/food,type=great_feast/summon_pet,cat/hunters_mark
+actions=flask,type=endless_rage/food,type=great_feast/summon_pet,cat/hunters_mark/trueshot_aura
 actions+=/auto_shot/aspect/serpent_sting/rapid_fire/chimera_shot/kill_shot/readiness/arcane_shot/aimed_shot/steady_shot
 gear_agility=1100
 gear_stamina=900
