@@ -190,6 +190,16 @@ int attack_t::build_table( double* chances,
   if( may_crit )
   {
     crit = total_crit();
+    if( sim -> target -> level == 83 )
+    {
+      crit -= delta_level * 0.006;
+      if( delta_level > 2 )
+        crit -= 0.03;
+    }
+    else
+    {
+      crit -= delta_level * 0.002;
+    }
   }
 
   if( sim -> debug ) report_t::log( sim, "attack_t::build_table: %s miss=%.3f dodge=%.3f parry=%.3f glance=%.3f block=%.3f crit=%.3f",
