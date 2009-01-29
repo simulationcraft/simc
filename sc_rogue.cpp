@@ -1701,6 +1701,7 @@ struct killing_spree_t : public rogue_attack_t
     channeled       = true;
     cooldown        = 120;
     num_ticks       = 5;
+    base_direct_dmg = 1;
     base_tick_time  = 0.5;
     base_cost       = 0;
     base_multiplier *= 1.0 + p -> talents.find_weakness * 0.02;
