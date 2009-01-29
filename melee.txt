@@ -353,11 +353,11 @@ level=80
 talents=http://www.wowhead.com/?talent=cLZ0eVooZe00i0cIhxdAhcd
 actions=flask,type=endless_rage/food,type=great_feast/summon_pet,cat/hunters_mark
 actions+=/auto_shot/aspect/rapid_fire/explosive_shot/kill_shot/serpent_sting/aimed_shot/steady_shot
-gear_agility=1200
-gear_stamina=1000
+gear_agility=1100
+gear_stamina=900
 gear_intellect=350
-gear_attack_power=2400
-gear_armor_penetration_rating=0
+gear_attack_power=2300
+gear_armor_penetration_rating=100
 gear_spell_power=0
 gear_hit_rating=265
 gear_crit_rating=575
@@ -373,9 +373,10 @@ ammo_dps=67.5
 quiver_haste=1.15
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
 blessing_of_kings=1
-blessing_of_might=688
+blessing_of_wisdom=1
 sanctified_retribution=1
 leader_of_the_pack=1
+battle_shout=685
 pet=cat
 call_of_the_wild=1
 cobra_reflexes=2
@@ -400,11 +401,11 @@ level=80
 talents=http://www.wowhead.com/?talent=ctbM0hZ0eVfRhzMgoxhiox00b
 actions=flask,type=endless_rage/food,type=great_feast/summon_pet,cat/hunters_mark
 actions+=/auto_shot/aspect/serpent_sting/rapid_fire/chimera_shot/kill_shot/readiness/arcane_shot/aimed_shot/steady_shot
-gear_agility=1200
-gear_stamina=1000
+gear_agility=1100
+gear_stamina=900
 gear_intellect=350
-gear_attack_power=2400
-gear_armor_penetration_rating=0
+gear_attack_power=2300
+gear_armor_penetration_rating=100
 gear_spell_power=0
 gear_hit_rating=265
 gear_crit_rating=575
@@ -420,9 +421,10 @@ ammo_dps=67.5
 quiver_haste=1.15
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
 blessing_of_kings=1
-blessing_of_might=688
+blessing_of_wisdom=1
 sanctified_retribution=1
 leader_of_the_pack=1
+battle_shout=685
 pet=cat
 call_of_the_wild=1
 cobra_reflexes=2
@@ -448,11 +450,11 @@ talents=http://www.wowhead.com/?talent=ctbMzxtRwuMtsx0ecoZx00b
 actions=flask,type=endless_rage/food,type=great_feast/summon_pet,cat/hunters_mark
 actions+=/auto_shot/kill_command,sync=bestial_wrath/bestial_wrath/aspect/rapid_fire
 actions+=/kill_shot/arcane_shot/serpent_sting/steady_shot
-gear_agility=1200
-gear_stamina=1000
+gear_agility=1100
+gear_stamina=900
 gear_intellect=350
-gear_attack_power=2400
-gear_armor_penetration_rating=0
+gear_attack_power=2300
+gear_armor_penetration_rating=100
 gear_spell_power=0
 gear_hit_rating=265
 gear_crit_rating=575
@@ -468,9 +470,10 @@ ammo_dps=67.5
 quiver_haste=1.15
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
 blessing_of_kings=1
-blessing_of_might=688
+blessing_of_wisdom=1
 sanctified_retribution=1
 leader_of_the_pack=1
+battle_shout=685
 pet=cat
 call_of_the_wild=1
 cobra_reflexes=2
