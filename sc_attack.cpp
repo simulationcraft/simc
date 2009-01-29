@@ -136,7 +136,7 @@ void attack_t::target_debuff( int8_t dmg_type )
 
   if( p -> position == POSITION_RANGED )
   {
-    player_power += t -> debuffs.hunters_mark;
+    target_power += t -> debuffs.hunters_mark;
   }
 }
 
