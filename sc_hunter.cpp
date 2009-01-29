@@ -1724,10 +1724,8 @@ void hunter_attack_t::player_buff()
   {
     if( weapon && weapon -> group() == WEAPON_RANGED )
     {
+      // FIXME: This should be all shots, not just weapon-based shots
       player_multiplier *= 1.0 + p -> talents.marked_for_death * 0.01;
-
-      // FIXME! Does the Hunters Mark glyph only help the player with the glyph?
-      if( p -> glyphs.hunters_mark ) player_power += t -> debuffs.hunters_mark * 0.20;
     }
   }
   if( p -> buffs_aspect_of_the_viper )
@@ -1852,13 +1850,9 @@ struct aimed_shot_t : public hunter_attack_t
     cooldown = 10;
     cooldown_group = "aimed_multi";
 
-    // FIXME! Ranged Weapon Specialization is described as increasing ranged weapon damage.
-    // FIXME! Does it affect BOTH the weapon portion AND the added damage bonus?
-    // FIXME! If just the weapon damage, then it needs to be applied against "weapon_multiplier".
-
-    base_multiplier *= 1.0 + ( p -> talents.barrage                      * 0.04 +
-                               p -> talents.ranged_weapon_specialization * 0.01 +
-			       p -> talents.sniper_training              * 0.02 );
+    base_multiplier *= 1.0 + p -> talents.barrage                      * 0.04;
+    base_multiplier *= 1.0 + p -> talents.sniper_training              * 0.02;
+    base_multiplier *= 1.0 + p -> talents.ranged_weapon_specialization * 0.01;
 
     base_crit += p -> talents.improved_barrage * 0.04;
 
@@ -1944,6 +1938,7 @@ struct arcane_shot_t : public hunter_attack_t
 
     base_multiplier *= 1.0 + ( p -> talents.improved_arcane_shot  * 0.05 +
                                p -> talents.ferocious_inspiration * 0.03 );
+    base_multiplier *= 1.0 + p -> talents.ranged_weapon_specialization * 0.01;
 
     base_crit += p -> talents.survival_instincts * 0.02;
 
@@ -2036,7 +2031,6 @@ struct chimera_shot_t : public hunter_attack_t
 
     normalize_weapon_speed = true;
     weapon_multiplier      = 1.25;
-    direct_power_mod       = 1.0 / 14.0;
     cooldown               = 10;
 
     base_multiplier *= 1.0 + p -> talents.ranged_weapon_specialization * 0.01;
@@ -2165,9 +2159,8 @@ struct explosive_shot_t : public hunter_attack_t
     direct_power_mod = 0.16;
     tick_power_mod = 0.16;
     
-    // FIXME! Since there is no weapon damage component, Ranged Weapon Specialization is excluded.
-
     base_multiplier *= 1.0 + p -> talents.sniper_training * 0.02;
+    base_multiplier *= 1.0 + p -> talents.ranged_weapon_specialization * 0.01;
     
     base_crit += p -> talents.survival_instincts * 0.02;
     base_crit += p -> talents.tnt * 0.03;
@@ -2330,12 +2323,11 @@ struct multi_shot_t : public hunter_attack_t
     assert( weapon -> group() == WEAPON_RANGED );
 
     normalize_weapon_speed = true;
-    direct_power_mod       = 1.0/14.0;
     cooldown               = 10;
     cooldown_group         = "aimed_multi";
 
-    base_multiplier *= 1.0 + ( p -> talents.barrage                      * 0.04 +
-                               p -> talents.ranged_weapon_specialization * 0.01 );
+    base_multiplier *= 1.0 + p -> talents.barrage                      * 0.04;
+    base_multiplier *= 1.0 + p -> talents.ranged_weapon_specialization * 0.01;
 
     base_crit += p -> talents.improved_barrage * 0.04;
 
@@ -2364,10 +2356,8 @@ struct scatter_shot_t : public hunter_attack_t
     assert( weapon -> group() == WEAPON_RANGED );
 
     normalize_weapon_speed = true;
-    direct_power_mod       = 1.0/14.0;
     cooldown               = 30;
 
-    // FIXME! Is the contribution from Attack Power also reduced by 50%?
     weapon_multiplier *= 0.5;
 
     base_multiplier *= 1.0 + p -> talents.ranged_weapon_specialization * 0.01;
@@ -2474,10 +2464,8 @@ struct silencing_shot_t : public hunter_attack_t
     assert( weapon -> group() == WEAPON_RANGED );
 
     normalize_weapon_speed = true;
-    direct_power_mod       = 1.0/14.0;
     cooldown               = 20;
 
-    // FIXME! Is the contribution from Attack Power also reduced by 50%?
     weapon_multiplier *= 0.5;
 
     base_multiplier *= 1.0 + p -> talents.ranged_weapon_specialization * 0.01;
@@ -2518,8 +2506,8 @@ struct steady_shot_t : public hunter_attack_t
 
     base_cost *= 1.0 - p -> talents.master_marksman * 0.05;
 
-    base_multiplier *= 1.0 + ( p -> talents.ranged_weapon_specialization * 0.01 +
-			       p -> talents.sniper_training              * 0.02 );
+    base_multiplier *= 1.0 + p -> talents.sniper_training              * 0.02;
+    base_multiplier *= 1.0 + p -> talents.ranged_weapon_specialization * 0.01;
 
     base_crit += p -> talents.survival_instincts * 0.02;
 
@@ -2754,7 +2742,8 @@ struct hunters_mark_t : public hunter_spell_t
 
     ap_bonus = util_t::ability_rank( p -> level,  300,76,  110,0 );
     
-    ap_bonus *= 1.0 + p -> talents.improved_hunters_mark * 0.10;
+    ap_bonus += 1.0 + p -> talents.improved_hunters_mark * 0.10
+                  + ( p -> glyphs.hunters_mark ? 0.20 : 0 );
   }
 
   virtual void execute()
