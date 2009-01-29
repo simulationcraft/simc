@@ -578,7 +578,7 @@ party=3
 level=80
 talents=http://www.wowhead.com/?talent=f0xf0eZ0gVox0xqru0xRt0b
 actions=flask,type=endless_rage/food,type=great_feast/apply_poison,main_hand=wound,off_hand=deadly
-actions+=/auto_attack/pool_energy/slice_and_dice,min_combo_points=5,refresh_at=5
+actions+=/auto_attack/pool_energy/slice_and_dice,min_combo_points=4,refresh_at=5
 actions+=/tricks_of_the_trade,target=Rogue_15_51_5/killing_spree/blade_flurry
 actions+=/rupture,min_combo_points=4/backstab
 gear_strength=0
