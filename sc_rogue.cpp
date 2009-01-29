@@ -295,6 +295,8 @@ struct rogue_poison_t : public spell_t
   {
     rogue_t* p = player -> cast_rogue();
 
+    proc = true;
+
     base_crit += p -> talents.malice * 0.01;
     base_hit  += p -> talents.precision * 0.01;
 
@@ -2880,6 +2882,8 @@ void rogue_t::raid_event( action_t* a )
     if( p != this &&
         p -> party == party  &&
 	a -> result == RESULT_CRIT && 
+	! a -> proc &&
+	! a -> may_glance &&
 	sim -> roll( talents.honor_among_thieves / 3.0 ) )
     {
       if( sim -> current_time > p -> cooldowns.honor_among_thieves )

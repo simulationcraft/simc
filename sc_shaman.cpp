@@ -591,13 +591,14 @@ static void trigger_ashtongue_talisman( spell_t* s )
 // trigger_lightning_overload ===============================================
 
 static void trigger_lightning_overload( spell_t* s,
-                                        stats_t* lightning_overload_stats )
+                                        stats_t* lightning_overload_stats,
+					double   lightning_overload_chance )
 {
   shaman_t* p = s -> player -> cast_shaman();
 
-  if( p -> talents.lightning_overload == 0 ) return;
+  if( lightning_overload_chance == 0 ) return;
 
-  if( ! s -> proc && s -> sim -> roll( p -> talents.lightning_overload * 0.04 ) )
+  if( ! s -> proc && s -> sim -> roll( lightning_overload_chance ) )
   {
     p -> procs_lightning_overload -> occur();
 
@@ -1062,11 +1063,13 @@ void shaman_spell_t::assess_damage( double amount,
 
 struct chain_lightning_t : public shaman_spell_t
 {
-  int8_t maelstrom;
+  int8_t   maelstrom;
   stats_t* lightning_overload_stats;
+  double   lightning_overload_chance;
 
   chain_lightning_t( player_t* player, const std::string& options_str ) : 
-    shaman_spell_t( "chain_lightning", player, SCHOOL_NATURE, TREE_ELEMENTAL ), maelstrom(0), lightning_overload_stats(0)
+    shaman_spell_t( "chain_lightning", player, SCHOOL_NATURE, TREE_ELEMENTAL ), 
+    maelstrom(0), lightning_overload_stats(0), lightning_overload_chance(0)
   {
     shaman_t* p = player -> cast_shaman();
 
@@ -1106,6 +1109,7 @@ struct chain_lightning_t : public shaman_spell_t
 
     lightning_overload_stats = p -> get_stats( "lightning_overload" );
     lightning_overload_stats -> school = SCHOOL_NATURE;
+    lightning_overload_chance = p -> talents.lightning_overload * 0.04 / 3.0;
   }
 
   virtual void execute()
@@ -1114,7 +1118,7 @@ struct chain_lightning_t : public shaman_spell_t
     event_t::early( player -> cast_shaman() -> expirations_maelstrom_weapon );
     if( result_is_hit() )
     {
-      trigger_lightning_overload( this, lightning_overload_stats );
+      trigger_lightning_overload( this, lightning_overload_stats, lightning_overload_chance );
     }
   }
 
@@ -1153,13 +1157,14 @@ struct chain_lightning_t : public shaman_spell_t
 
 struct lightning_bolt_t : public shaman_spell_t
 {
-  int8_t maelstrom;
-  int8_t ss_wait;
-
+  int8_t   maelstrom;
+  int8_t   ss_wait;
   stats_t* lightning_overload_stats;
+  double   lightning_overload_chance;
 
   lightning_bolt_t( player_t* player, const std::string& options_str ) : 
-    shaman_spell_t( "lightning_bolt", player, SCHOOL_NATURE, TREE_ELEMENTAL ), maelstrom(0), ss_wait(0), lightning_overload_stats(0)
+    shaman_spell_t( "lightning_bolt", player, SCHOOL_NATURE, TREE_ELEMENTAL ), 
+    maelstrom(0), ss_wait(0), lightning_overload_stats(0), lightning_overload_chance(0)
   {
     shaman_t* p = player -> cast_shaman();
 
@@ -1204,6 +1209,7 @@ struct lightning_bolt_t : public shaman_spell_t
 
     lightning_overload_stats = p -> get_stats( "lightning_overload" );
     lightning_overload_stats -> school = SCHOOL_NATURE;
+    lightning_overload_chance = p -> talents.lightning_overload * 0.04;
   }
 
   virtual void execute()
@@ -1213,7 +1219,7 @@ struct lightning_bolt_t : public shaman_spell_t
     if( result_is_hit() )
     {
       trigger_ashtongue_talisman( this );
-      trigger_lightning_overload( this, lightning_overload_stats );
+      trigger_lightning_overload( this, lightning_overload_stats, lightning_overload_chance );
       trigger_tier5_4pc_elemental( this );
     }
   }
