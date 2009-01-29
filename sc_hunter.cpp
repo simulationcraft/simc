@@ -2090,6 +2090,7 @@ struct chimera_shot_t : public hunter_attack_t
             proc        = true;
             trigger_gcd = 0;
             base_cost   = 0;
+            direct_power_mod = 0;
             // FIXME! Assuming this proc cannot miss.
             may_miss = false;
             may_crit = true;
@@ -2591,7 +2592,7 @@ struct aspect_t : public hunter_spell_t
   
   aspect_t( player_t* player, const std::string& options_str ) : 
     hunter_spell_t( "aspect", player, SCHOOL_NATURE, TREE_BEAST_MASTERY ), 
-    beast_during_bw(0), hawk_always(0), viper_start(10), viper_stop(90),
+    beast_during_bw(0), hawk_always(0), viper_start(5), viper_stop(25),
     hawk_bonus(0), viper_multiplier(0)
   {
     hunter_t* p = player -> cast_hunter();
