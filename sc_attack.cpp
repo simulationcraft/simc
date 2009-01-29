@@ -73,7 +73,7 @@ double attack_t::haste()
       h *= 1.0 / ( 1.0 + 0.02 );
     }
 
-    if( p -> buffs.windfury_totem != 0 )
+    if( p -> position != POSITION_RANGED && p -> buffs.windfury_totem != 0 )
     {
       h *= 1.0 / ( 1.0 + p -> buffs.windfury_totem );
     }
