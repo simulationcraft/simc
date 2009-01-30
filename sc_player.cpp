@@ -1223,10 +1223,9 @@ void player_t::dismiss_pet( const char* pet_name )
 
 void player_t::action_start( action_t* action )
 {
-  gcd_ready = sim -> current_time + action -> gcd();
-
   if( ! action -> background )
   {
+    gcd_ready = sim -> current_time + action -> gcd();
     executing = action -> execute_event;
   }
 
