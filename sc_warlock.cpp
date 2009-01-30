@@ -20,7 +20,10 @@ struct warlock_t : public player_t
   action_t*      active_immolate;
   action_t*      active_shadowflame;
   action_t*      active_pandemic;
+  action_t*      active_drain_soul;
   int8_t         active_dots;
+
+  bool interrupt_ds;
 
   // Buffs
   int8_t buffs_backdraft;
@@ -187,6 +190,8 @@ struct warlock_t : public player_t
     active_shadowflame = 0;
     active_pandemic   = 0;
     active_dots       = 0;
+
+    interrupt_ds = 0;
 
     // Buffs
     buffs_backdraft                    = 0;
@@ -1860,6 +1865,9 @@ void warlock_spell_t::execute()
 {
   warlock_t* p = player -> cast_warlock();
 
+  if( p -> active_drain_soul && p -> active_drain_soul -> ticking )
+    p -> active_drain_soul -> cancel();
+
   if( time_to_execute > 0 && tree == TREE_DESTRUCTION )
   {
     if( p -> buffs_backdraft > 0 ) p -> buffs_backdraft--;
@@ -2647,14 +2655,17 @@ struct drain_soul_t : public warlock_spell_t
   int8_t target_pct;
   int8_t health_multiplier;
 
+  int8_t interrupt;
+
   drain_soul_t( player_t* player, const std::string& options_str ) : 
-    warlock_spell_t( "drain_soul", player, SCHOOL_SHADOW, TREE_AFFLICTION ), target_pct(0), health_multiplier(0)
+    warlock_spell_t( "drain_soul", player, SCHOOL_SHADOW, TREE_AFFLICTION ), target_pct(0), interrupt(0), health_multiplier(0)
   {
     warlock_t* p = player -> cast_warlock();
 
     option_t options[] =
     {
       { "target_pct", OPT_INT8, &target_pct },
+      { "interrupt",  OPT_INT8, &interrupt  },
       { NULL }
     };
     parse_options( options, options_str );
@@ -2680,12 +2691,17 @@ struct drain_soul_t : public warlock_spell_t
     base_multiplier  *= 1.0 + p -> talents.shadow_mastery * 0.03;
 
     health_multiplier = ( rank -> level >= 6 ) ? 1 : 0;
+
+    observer = &( p -> active_drain_soul );
   }
 
   virtual void execute()
   {
+    if ( ticking ) return;
+
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::execute();
+
     if( result_is_hit() )
     {
       p -> active_dots++;
@@ -2699,6 +2715,13 @@ struct drain_soul_t : public warlock_spell_t
     warlock_spell_t::last_tick(); 
     p -> active_dots--;
     sim -> target -> debuffs.affliction_effects--;
+  }
+
+  virtual void tick()
+  {
+    warlock_t* p = player -> cast_warlock();
+    warlock_spell_t::tick();
+    if( interrupt && current_tick != num_ticks ) p -> schedule_ready();
   }
 
   virtual void player_buff()
@@ -2752,6 +2775,8 @@ struct drain_soul_t : public warlock_spell_t
 
   virtual bool ready()
   {
+    if( ticking ) return true;
+
     if( ! warlock_spell_t::ready() )
       return false;
 
@@ -2762,9 +2787,10 @@ struct drain_soul_t : public warlock_spell_t
       if( health_pct <= 0 || health_pct > target_pct )
 	return false;
     }
-    
+
     return true;
   }
+
 };
 
 // Siphon Life Spell ===========================================================
@@ -4176,6 +4202,7 @@ void warlock_t::reset()
   active_curse      = 0;
   active_immolate   = 0;
   active_shadowflame= 0;
+  active_drain_soul = 0;
   active_dots       = 0;
 
   // Buffs

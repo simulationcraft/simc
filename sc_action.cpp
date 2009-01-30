@@ -759,6 +759,7 @@ void action_t::reset()
 
 void action_t::cancel()
 {
+  if( player -> channeling == tick_event ) player -> channeling = 0;
   event_t::cancel( execute_event );
   event_t::cancel(    tick_event );
   reset();
