@@ -2401,12 +2401,17 @@ struct bloodlust_t : public shaman_spell_t
     if( ! sim -> cooldown_ready( player -> cooldowns.bloodlust ) )
       return false;
 
-    if( target_pct > 0 )
-    {
-      double health_pct = sim -> target -> health_percentage();
+    target_t* t = sim -> target;
 
-      if( health_pct <= 0 || health_pct > target_pct )
-	return false;
+    if( t -> time_to_die() > 60 )
+    {
+      if( target_pct > 0 )
+      {
+	double health_pct = t -> health_percentage();
+
+	if( health_pct <= 0 || health_pct > target_pct )
+	  return false;
+      }
     }
     
     return true;

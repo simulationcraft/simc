@@ -1028,6 +1028,7 @@ struct target_t
     int8_t   misery;
     int8_t   misery_stack;
     int8_t   earth_and_moon;
+    int8_t   poisoned;
     int8_t   savage_combat;
     int8_t   slow;
     int8_t   totem_of_wrath;

@@ -70,7 +70,7 @@ double attack_t::haste()
     if( p -> buffs.swift_retribution     ||
 	p -> buffs.improved_moonkin_aura ) 
     {
-      h *= 1.0 / ( 1.0 + 0.02 );
+      h *= 1.0 / ( 1.0 + 0.03 );
     }
 
     if( p -> position != POSITION_RANGED && p -> buffs.windfury_totem != 0 )

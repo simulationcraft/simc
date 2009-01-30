@@ -54,6 +54,7 @@ struct rogue_t : public player_t
 
   // Procs
   proc_t* procs_combo_points;
+  proc_t* procs_deadly_poison;
   proc_t* procs_honor_among_thieves;
   proc_t* procs_ruthlessness;
   proc_t* procs_seal_fate;
@@ -62,8 +63,9 @@ struct rogue_t : public player_t
   // Up-Times
   uptime_t* uptimes_blade_flurry;
   uptime_t* uptimes_envenom;
-  uptime_t* uptimes_slice_and_dice;
   uptime_t* uptimes_hunger_for_blood;
+  uptime_t* uptimes_poisoned;
+  uptime_t* uptimes_slice_and_dice;
   uptime_t* uptimes_tricks_of_the_trade;
   
   // Auto-Attack
@@ -202,6 +204,7 @@ struct rogue_t : public player_t
 
     // Procs
     procs_combo_points         = get_proc( "combo_points" );
+    procs_deadly_poison        = get_proc( "deadly_poisons" );
     procs_honor_among_thieves  = get_proc( "honor_among_thieves" );
     procs_ruthlessness         = get_proc( "ruthlessness" );
     procs_seal_fate            = get_proc( "seal_fate" );
@@ -210,8 +213,9 @@ struct rogue_t : public player_t
     // Up-Times
     uptimes_blade_flurry        = get_uptime( "blade_flurry" );
     uptimes_envenom             = get_uptime( "envenom" );
-    uptimes_slice_and_dice      = get_uptime( "slice_and_dice" );
     uptimes_hunger_for_blood    = get_uptime( "hunger_for_blood" );
+    uptimes_poisoned            = get_uptime( "poisoned" );
+    uptimes_slice_and_dice      = get_uptime( "slice_and_dice" );
     uptimes_tricks_of_the_trade = get_uptime( "tricks_of_the_trade" );
   
     // Auto-Attack
@@ -472,9 +476,9 @@ static void trigger_focused_attacks( rogue_attack_t* a )
   }
 }
 
-// trigger_poisons =========================================================
+// trigger_apply_poisons ===================================================
 
-static void trigger_poisons( rogue_attack_t* a )
+static void trigger_apply_poisons( rogue_attack_t* a )
 {
   weapon_t* w = a -> weapon;
 
@@ -651,10 +655,12 @@ static void trigger_tricks_of_the_trade( rogue_attack_t* a )
   }
 }
 
-// trigger_poison ===========================================================
+// trigger_deadly_poison ====================================================
 
-static void trigger_poison( rogue_t* p )
+static void trigger_deadly_poison( rogue_t* p )
 {
+  p -> procs_deadly_poison -> occur();
+
   if( p -> buffs_poison_doses == 0 )
   {
     // Target about to become poisoned.
@@ -663,12 +669,14 @@ static void trigger_poison( rogue_t* p )
 
     if( p -> talents.master_poisoner ) t -> debuffs.master_poisoner++;
     if( p -> talents.savage_combat   ) t -> debuffs.savage_combat++;
+
+    t -> debuffs.poisoned++;
   }
 }
 
-// consume_poison ===========================================================
+// consume_deadly_poison ====================================================
 
-static void consume_poison( rogue_t* p )
+static void consume_deadly_poison( rogue_t* p )
 {
   if( p -> buffs_poison_doses == 0 )
   {
@@ -678,6 +686,8 @@ static void consume_poison( rogue_t* p )
 
     if( p -> talents.master_poisoner ) t -> debuffs.master_poisoner--;
     if( p -> talents.savage_combat   ) t -> debuffs.savage_combat--;
+
+    t -> debuffs.poisoned--;
   }
 }
 
@@ -731,7 +741,7 @@ void rogue_attack_t::execute()
     if( requires_combo_points ) clear_combo_points( p );
     if(     adds_combo_points )   add_combo_point ( p );
 
-    trigger_poisons( this );
+    trigger_apply_poisons( this );
     trigger_ruthlessness( this );
     trigger_sword_specialization( this );
 
@@ -1140,12 +1150,11 @@ struct blade_flurry_t : public rogue_attack_t
 struct envenom_t : public rogue_attack_t
 {
   int8_t min_doses;
-  int8_t max_doses;
   int8_t no_buff;
-  double* combo_point_dmg;
+  double* dose_dmg;
 
   envenom_t( player_t* player, const std::string& options_str ) : 
-    rogue_attack_t( "envenom", player, SCHOOL_NATURE, TREE_ASSASSINATION ), min_doses(0), max_doses(0), no_buff(0)
+    rogue_attack_t( "envenom", player, SCHOOL_NATURE, TREE_ASSASSINATION ), min_doses(1), no_buff(0)
   {
     rogue_t* p = player -> cast_rogue();
     assert( p -> level >= 62 );
@@ -1153,7 +1162,6 @@ struct envenom_t : public rogue_attack_t
     option_t options[] =
     {
       { "min_doses", OPT_INT8, &min_doses },
-      { "max_doses", OPT_INT8, &max_doses },
       { "no_buff",   OPT_INT8, &no_buff   },
       { NULL }
     };
@@ -1174,10 +1182,10 @@ struct envenom_t : public rogue_attack_t
     static double dmg_69[] = { 148, 296, 444, 492,  740 };
     static double dmg_62[] = { 118, 236, 354, 472,  590 };
 
-    combo_point_dmg = ( p -> level >= 80 ? dmg_80 :
-                        p -> level >= 74 ? dmg_74 :
-                        p -> level >= 69 ? dmg_69 : 
-                                           dmg_62 );
+    dose_dmg = ( p -> level >= 80 ? dmg_80 :
+		 p -> level >= 74 ? dmg_74 :
+		 p -> level >= 69 ? dmg_69 : 
+		                    dmg_62 );
   }
 
   virtual void execute()
@@ -1229,7 +1237,7 @@ struct envenom_t : public rogue_attack_t
         {
 	  p -> active_deadly_poison -> cancel();
 	}
-	consume_poison( p );
+	consume_deadly_poison( p );
       }
       trigger_cut_to_the_chase( this );
     }
@@ -1248,8 +1256,8 @@ struct envenom_t : public rogue_attack_t
     }
     else
     {
-      direct_power_mod = doses_consumed * 0.07;
-      base_direct_dmg = combo_point_dmg[ doses_consumed-1 ];
+      direct_power_mod = p -> buffs_combo_points * 0.07;
+      base_direct_dmg = dose_dmg[ doses_consumed-1 ];
       rogue_attack_t::player_buff();
     }
 
@@ -1261,11 +1269,7 @@ struct envenom_t : public rogue_attack_t
     rogue_t* p = player -> cast_rogue();
 
     if( min_doses > 0 )
-      if( min_doses < p -> buffs_poison_doses )
-        return false;
-
-    if( max_doses > 0 )
-      if( max_doses > p -> buffs_poison_doses )
+      if( min_doses > p -> buffs_poison_doses )
         return false;
 
     if( no_buff && p -> buffs_envenom )
@@ -1495,6 +1499,7 @@ struct ghostly_strike_t : public rogue_attack_t
     parse_options( options, options_str );
       
     weapon = &( p -> main_hand_weapon );
+    normalize_weapon_speed      = true;
     adds_combo_points           = true;
     cooldown                    = p -> glyphs.ghostly_strike ? 30 : 20;
     base_cost                   = 40;
@@ -1782,13 +1787,22 @@ struct mutilate_t : public rogue_attack_t
     };
     parse_options( options, options_str );
       
-    base_direct_dmg   = 1;
-    adds_combo_points = true;
-    base_cost         = 60;
+    static rank_t ranks[] =
+    {
+      { 80, 6, 181, 181, 0, 60 },
+      { 75, 5, 153, 153, 0, 60 },
+      { 70, 4, 101, 101, 0, 60 },
+      { 60, 3,  88,  88, 0, 60 },
+      { 0, 0 }
+    };
+    init_rank( ranks );
+
+    adds_combo_points      = true;
+    normalize_weapon_speed = true;
 
     base_multiplier  *= 1.0 + ( p -> talents.find_weakness * 0.02 +
                                 p -> talents.opportunity   * 0.10 +
-                                p -> gear.tier6_4pc         * 0.06 );
+                                p -> gear.tier6_4pc        * 0.06 );
 
     base_crit += ( p -> talents.puncturing_wounds * 0.05 +
 		   p -> talents.turn_the_tables   * 0.02 );
@@ -1820,7 +1834,8 @@ struct mutilate_t : public rogue_attack_t
   {
     rogue_t* p = player -> cast_rogue();
     rogue_attack_t::player_buff();
-    if( p -> buffs_poison_doses > 0 ) player_multiplier *= 1.50;
+    if( sim -> target -> debuffs.poisoned ) player_multiplier *= 1.50;
+    p -> uptimes_poisoned -> update( sim -> target -> debuffs.poisoned > 0 );
     trigger_dirty_deeds( this );
   }
 
@@ -2098,6 +2113,7 @@ struct slice_and_dice_t : public rogue_attack_t
     if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
     refresh_duration();
     consume_resource();
+    trigger_relentless_strikes( this );
     clear_combo_points( p );
   }
 
@@ -2266,7 +2282,7 @@ struct deadly_poison_t : public rogue_poison_t
 
     if( success )
     {
-      trigger_poison( p );
+      trigger_deadly_poison( p );
 
       if( p -> buffs_poison_doses < 5 ) p -> buffs_poison_doses++;
 
@@ -2296,7 +2312,7 @@ struct deadly_poison_t : public rogue_poison_t
     rogue_t* p = player -> cast_rogue();
     rogue_poison_t::last_tick();
     p -> buffs_poison_doses = 0;
-    consume_poison( p );
+    consume_deadly_poison( p );
   }
 };
 
