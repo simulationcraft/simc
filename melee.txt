@@ -611,7 +611,7 @@ glyph_blade_flurry=1
 relentless_earthstorm=1
 tier7_2pc=1
 tier7_4pc=1
-main_hand=fist,dps=156,speed=2.6,enchant=berserking
+main_hand=fist,dps=171,speed=2.6,enchant=berserking
 off_hand=dagger,dps=156,speed=1.4,enchant=berserking
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
 blessing_of_kings=1
@@ -652,7 +652,7 @@ glyph_sinister_strike=1
 relentless_earthstorm=1
 tier7_2pc=1
 tier7_4pc=1
-main_hand=fist,dps=156,speed=2.6,enchant=berserking
+main_hand=fist,dps=171,speed=2.6,enchant=berserking
 off_hand=dagger,dps=156,speed=1.4,enchant=berserking
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
 blessing_of_kings=1
@@ -734,7 +734,6 @@ off_hand=dagger,dps=156,speed=1.4,enchant=berserking
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
 blessing_of_kings=1
 blessing_of_might=688
-sanctified_retribution=1
 sanctified_retribution=1
 leader_of_the_pack=1
 
