@@ -632,6 +632,7 @@ void player_t::init_stats()
 
   gains.ashtongue_talisman    = get_gain( "ashtongue_talisman" );
   gains.dark_rune             = get_gain( "dark_rune" );
+  gains.darkmoon_greatness	  = get_gain( "darkmoon_greatness" );
   gains.energy_regen          = get_gain( "energy_regen" );
   gains.focus_regen           = get_gain( "focus_regen" );
   gains.innervate             = get_gain( "innervate" );
@@ -642,6 +643,7 @@ void player_t::init_stats()
   gains.mana_spring           = get_gain( "mana_spring" );
   gains.mana_tide             = get_gain( "mana_tide" );
   gains.mark_of_defiance      = get_gain( "mark_of_defiance" );
+  gains.mirror_of_truth       = get_gain( "mirror_of_truth" );
   gains.mp5_regen             = get_gain( "mp5_regen" );
   gains.replenishment         = get_gain( "replenishment" );
   gains.restore_mana          = get_gain( "restore_mana" );
@@ -659,16 +661,18 @@ void player_t::init_stats()
   gains.tier7_4pc             = get_gain( "tier7_4pc" );
 
   procs.ashtongue_talisman           = get_proc( "ashtongue_talisman" );
+  procs.darkmoon_greatness           = get_proc( "darkmoon_greatness" );
   procs.dying_curse                  = get_proc( "dying_curse" );
   procs.elder_scribes                = get_proc( "elder_scribes" );
   procs.embrace_of_the_spider        = get_proc( "embrace_of_the_spider" );
   procs.eternal_sage                 = get_proc( "eternal_sage" );
   procs.extract_of_necromatic_power  = get_proc( "extract_of_necromatic_power" );
   procs.eye_of_magtheridon           = get_proc( "eye_of_magtheridon" );
-  procs.forge_ember	             = get_proc( "forge_ember" );
+  procs.forge_ember                  = get_proc( "forge_ember" );
   procs.judgement_of_wisdom          = get_proc( "judgement_of_wisdom" );
   procs.lightning_capacitor          = get_proc( "lightning_capacitor" );
   procs.mark_of_defiance             = get_proc( "mark_of_defiance" );
+  procs.mirror_of_truth              = get_proc( "mirror_of_truth" );
   procs.mystical_skyfire             = get_proc( "mystical_skyfire" );
   procs.quagmirrans_eye              = get_proc( "quagmirrans_eye" );
   procs.sextant_of_unstable_currents = get_proc( "sextant_of_unstable_currents" );

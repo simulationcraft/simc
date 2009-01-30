@@ -553,6 +553,7 @@ struct player_t
     int8_t  ashtongue_talisman;
     int8_t  chaotic_skyflare;
     int8_t  darkmoon_crusade;
+    int8_t  darkmoon_greatness;
     int8_t  darkmoon_wrath;
     int8_t  dying_curse;
     int8_t  egg_of_mortal_essence;
@@ -565,6 +566,7 @@ struct player_t
     int8_t  illustration_of_the_dragon_soul;
     int8_t  lightning_capacitor;
     int8_t  mark_of_defiance;
+    int8_t  mirror_of_truth;
     int8_t  mystical_skyfire;
     int8_t  quagmirrans_eye;
     int8_t  relentless_earthstorm;
@@ -685,10 +687,12 @@ struct player_t
   struct cooldowns_t
   {
     double bloodlust;
+    double darkmoon_greatness;
     double elder_scribes;
     double eternal_sage;
     double honor_among_thieves;
     double mark_of_defiance;
+    double mirror_of_truth;
     double mystical_skyfire;
     double quagmirrans_eye;
     double sextant_of_unstable_currents;
@@ -728,6 +732,7 @@ struct player_t
   {
     gain_t* ashtongue_talisman;
     gain_t* dark_rune;
+    gain_t* darkmoon_greatness;
     gain_t* energy_regen;
     gain_t* focus_regen;
     gain_t* innervate;
@@ -738,6 +743,7 @@ struct player_t
     gain_t* mana_spring;
     gain_t* mana_tide;
     gain_t* mark_of_defiance;
+    gain_t* mirror_of_truth;
     gain_t* mp5_regen;
     gain_t* replenishment;
     gain_t* restore_mana;
@@ -757,6 +763,7 @@ struct player_t
   struct procs_t
   {
     proc_t* ashtongue_talisman;
+	proc_t* darkmoon_greatness;
     proc_t* dying_curse;
     proc_t* elder_scribes;
     proc_t* embrace_of_the_spider;
@@ -767,6 +774,7 @@ struct player_t
     proc_t* judgement_of_wisdom;
     proc_t* lightning_capacitor;
     proc_t* mark_of_defiance;
+    proc_t* mirror_of_truth;
     proc_t* mystical_skyfire;
     proc_t* quagmirrans_eye;
     proc_t* sextant_of_unstable_currents;

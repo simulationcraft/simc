@@ -806,8 +806,6 @@ static void trigger_egg_of_mortal_essence( spell_t* s )
     }
   };
 
-  if( ! s -> heal ) return;
-
   player_t* p = s -> player;
 
   if( p -> gear.egg_of_mortal_essence &&
@@ -919,6 +917,91 @@ static void trigger_dying_curse( spell_t* s )
   }
 }
 
+// Mirror of Truth ============================================
+
+static void trigger_mirror_of_truth( action_t* a )
+{
+	if( ! a -> result == RESULT_CRIT ) return; // Only procs on crit
+
+  struct mirror_of_truth_expiration_t : public event_t
+  {
+    mirror_of_truth_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
+    {
+      name = "Mirror of Truth";
+      player -> aura_gain( "Reflection of Torment" );
+      player -> attack_power += 1000;
+      player -> cooldowns.mirror_of_truth = sim -> current_time + 50;
+      sim -> add_event( this, 10.0 );
+    }
+    virtual void execute()
+    {
+      player -> aura_loss( "Reflection of Torment" );
+      player -> attack_power -= 1000;
+    }
+  };
+
+  player_t* p = a -> player;
+
+  if( p -> gear.mirror_of_truth &&
+      a -> sim -> cooldown_ready( p -> cooldowns.mirror_of_truth ) &&
+      a -> sim -> roll( 0.10 ) )
+  {
+    p -> procs.mirror_of_truth -> occur();
+
+    new ( a -> sim ) mirror_of_truth_expiration_t( a -> sim, p );
+  }
+}
+
+
+// Darkmoon:Greatness ============================================
+
+static void trigger_darkmoon_greatness( action_t* a )
+{
+	if( ! a -> result_is_hit() ) return; // Only procs on landed attacks
+	
+  struct darkmoon_greatness_expiration_t : public event_t
+  {
+    int8_t type;
+    darkmoon_greatness_expiration_t( sim_t* sim, player_t* p, int8_t t ) : event_t( sim, p )
+    {
+      name = "Darkmoon Greatness";
+      type = t;
+      player -> aura_gain( "Greatness" );
+      player -> attribute [ type ] += 300;
+      player -> cooldowns.darkmoon_greatness = sim -> current_time + 45;
+      sim -> add_event( this, 15.0 );
+    }
+    virtual void execute()
+    {
+      player -> aura_loss( "Greatness" );
+      player -> attribute [ type ] -= 300;
+    }
+  };
+
+  player_t* p = a -> player;
+  
+  if( p -> gear.darkmoon_greatness &&
+      a -> sim -> cooldown_ready( p -> cooldowns.darkmoon_greatness ) &&
+      a -> sim -> roll( 0.35 ) )
+  {
+    p -> procs.darkmoon_greatness -> occur();
+
+    int8_t typet;
+    double amt = 0;
+    for (int i = ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; i++)
+    {
+      if (p -> attribute [ i ] > amt && i != ATTR_STAMINA)
+      {
+	      amt = p -> attribute [ i ];
+	      typet = (int8_t)i;
+      }
+    }
+    
+    new ( a -> sim ) darkmoon_greatness_expiration_t( a -> sim, p, typet );
+  }
+}
+
+
 } // ANONYMOUS NAMESPACE ====================================================
 
 // ==========================================================================
@@ -929,6 +1012,12 @@ static void trigger_dying_curse( spell_t* s )
 
 void unique_gear_t::attack_hit_event( attack_t* a )
 {
+  trigger_darkmoon_greatness          ( a );
+  
+  if ( a -> result == RESULT_CRIT )
+  {
+    trigger_mirror_of_truth           ( a );
+  }
 }
 
 // unique_gear_t::spell_miss_event ==========================================
@@ -1371,6 +1460,7 @@ bool unique_gear_t::parse_option( player_t*          p,
     { "chaotic_skyfire",                      OPT_INT8,   &( p -> gear.chaotic_skyflare                ) },
     { "chaotic_skyflare",                     OPT_INT8,   &( p -> gear.chaotic_skyflare                ) },
     { "darkmoon_crusade",                     OPT_INT8,   &( p -> gear.darkmoon_crusade                ) },
+    { "darkmoon_greatness",                   OPT_INT8,   &( p -> gear.darkmoon_greatness              ) },
     { "darkmoon_wrath",                       OPT_INT8,   &( p -> gear.darkmoon_wrath                  ) },
     { "dying_curse",                          OPT_INT8,   &( p -> gear.dying_curse                     ) },
     { "egg_of_mortal_essence",                OPT_INT8,   &( p -> gear.egg_of_mortal_essence           ) },
@@ -1382,6 +1472,7 @@ bool unique_gear_t::parse_option( player_t*          p,
     { "forge_ember",                          OPT_INT8,   &( p -> gear.forge_ember                     ) },
     { "illustration_of_the_dragon_soul",      OPT_INT8,   &( p -> gear.illustration_of_the_dragon_soul ) },
     { "lightning_capacitor",                  OPT_INT8,   &( p -> gear.lightning_capacitor             ) },
+    { "mirror_of_truth",                      OPT_INT8,   &( p -> gear.mirror_of_truth                 ) },
     { "mark_of_defiance",                     OPT_INT8,   &( p -> gear.mark_of_defiance                ) },
     { "mystical_skyfire",                     OPT_INT8,   &( p -> gear.mystical_skyfire                ) },
     { "quagmirrans_eye",                      OPT_INT8,   &( p -> gear.quagmirrans_eye                 ) },
