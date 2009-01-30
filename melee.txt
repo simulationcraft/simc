@@ -589,7 +589,7 @@ level=80
 talents=http://www.wowhead.com/?talent=f0xbZMgVbxbxoru0xRtxbc0h
 actions=flask,type=endless_rage/food,type=great_feast/apply_poison,main_hand=wound,off_hand=deadly
 actions+=/auto_attack/pool_energy/slice_and_dice,min_combo_points=4,refresh_at=5/tricks_of_the_trade,target=Rogue_15_51_05
-actions+=/killing_spree/blade_flurry/rupture,min_combo_points=5/sinister_strike
+actions+=/killing_spree/blade_flurry/rupture,min_combo_points=5/sinister_strike/adrenaline_rush
 gear_strength=0
 gear_agility=1100
 gear_stamina=950
@@ -671,7 +671,7 @@ level=80
 talents=http://www.wowhead.com/?talent=f0xf0eZ0gVox0xqru0xRt0b
 actions=flask,type=endless_rage/food,type=great_feast/apply_poison,main_hand=wound,off_hand=deadly
 actions+=/auto_attack/pool_energy/slice_and_dice,min_combo_points=4,refresh_at=4/tricks_of_the_trade,target=Rogue_51_13_07
-actions+=/killing_spree/blade_flurry/rupture,min_combo_points=5/backstab
+actions+=/killing_spree/blade_flurry/rupture,min_combo_points=5/backstab/adrenaline_rush
 gear_strength=0
 gear_agility=1100
 gear_stamina=950
