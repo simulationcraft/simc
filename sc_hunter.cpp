@@ -2375,11 +2375,10 @@ struct scatter_shot_t : public hunter_attack_t
 struct serpent_sting_t : public hunter_attack_t
 {
   int8_t force;
-  bool   refreshing;
 
   serpent_sting_t( player_t* player, const std::string& options_str ) :
     hunter_attack_t( "serpent_sting", player, SCHOOL_NATURE, TREE_MARKSMANSHIP ),
-    force(0), refreshing(false)
+    force(0)
   {
     hunter_t* p = player -> cast_hunter();
 
@@ -2421,19 +2420,6 @@ struct serpent_sting_t : public hunter_attack_t
     trigger_lock_and_load( this );
   }
 
-  virtual void refresh_duration()
-  {
-    refreshing = true;
-    hunter_attack_t::refresh_duration();
-    refreshing = false;
-  }
-
-  virtual void player_buff()
-  {
-    // FIXME! Apparently, refreshing the the duration does not recalculate player buffs for this DoT.
-    if( ! refreshing ) hunter_attack_t::player_buff();
-  }
-  
   virtual bool ready()
   {
     hunter_t* p = player -> cast_hunter();
