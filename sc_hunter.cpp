@@ -2742,7 +2742,7 @@ struct hunters_mark_t : public hunter_spell_t
 
     ap_bonus = util_t::ability_rank( p -> level,  300,76,  110,0 );
     
-    ap_bonus += 1.0 + p -> talents.improved_hunters_mark * 0.10
+    ap_bonus *= 1.0 + p -> talents.improved_hunters_mark * 0.10
                   + ( p -> glyphs.hunters_mark ? 0.20 : 0 );
   }
 
