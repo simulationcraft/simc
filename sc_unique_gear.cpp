@@ -921,7 +921,7 @@ static void trigger_dying_curse( spell_t* s )
 
 static void trigger_mirror_of_truth( action_t* a )
 {
-	if( ! a -> result == RESULT_CRIT ) return; // Only procs on crit
+  if( a -> result != RESULT_CRIT ) return; // Only procs on crit
 
   struct mirror_of_truth_expiration_t : public event_t
   {
