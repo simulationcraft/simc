@@ -192,6 +192,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\sc_hunter.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\sc_mage.cpp"
 			>
 		</File>
@@ -212,15 +216,19 @@
 			>
 		</File>
 		<File
-			RelativePath=".\sc_rand.cpp"
-			>
-		</File>
-		<File
 			RelativePath=".\sc_rating.cpp"
 			>
 		</File>
 		<File
 			RelativePath=".\sc_report.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\sc_rng.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\sc_rogue.cpp"
 			>
 		</File>
 		<File
@@ -265,66 +273,6 @@
 		</File>
 		<File
 			RelativePath=".\sc_weapon.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\sfmt\SFMT-alti.h"
-			>
-		</File>
-		<File
-			RelativePath=".\sfmt\SFMT-params.h"
-			>
-		</File>
-		<File
-			RelativePath=".\sfmt\SFMT-params11213.h"
-			>
-		</File>
-		<File
-			RelativePath=".\sfmt\SFMT-params1279.h"
-			>
-		</File>
-		<File
-			RelativePath=".\sfmt\SFMT-params132049.h"
-			>
-		</File>
-		<File
-			RelativePath=".\sfmt\SFMT-params19937.h"
-			>
-		</File>
-		<File
-			RelativePath=".\sfmt\SFMT-params216091.h"
-			>
-		</File>
-		<File
-			RelativePath=".\sfmt\SFMT-params2281.h"
-			>
-		</File>
-		<File
-			RelativePath=".\sfmt\SFMT-params4253.h"
-			>
-		</File>
-		<File
-			RelativePath=".\sfmt\SFMT-params44497.h"
-			>
-		</File>
-		<File
-			RelativePath=".\sfmt\SFMT-params607.h"
-			>
-		</File>
-		<File
-			RelativePath=".\sfmt\SFMT-params86243.h"
-			>
-		</File>
-		<File
-			RelativePath=".\sfmt\SFMT-sse2.h"
-			>
-		</File>
-		<File
-			RelativePath=".\sfmt\SFMT.c"
-			>
-		</File>
-		<File
-			RelativePath=".\sfmt\SFMT.h"
 			>
 		</File>
 		<File
