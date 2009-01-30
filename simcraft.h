@@ -1372,7 +1372,7 @@ struct unique_gear_t
   static void spell_miss_event  ( spell_t* );
   static void spell_hit_event   ( spell_t* );
   static void spell_tick_event  ( spell_t* );
-  static void spell_damage_event( spell_t*, double amount, int8_t dmg_type ) {}
+  static void spell_damage_event( spell_t*, double amount, int8_t dmg_type );
   static void spell_heal_event  ( spell_t*, double amount );
   static void spell_finish_event( spell_t* );
 
@@ -1380,7 +1380,7 @@ struct unique_gear_t
   static void attack_miss_event  ( attack_t* ) {}
   static void attack_hit_event   ( attack_t* );
   static void attack_tick_event  ( attack_t* ) {}
-  static void attack_damage_event( attack_t*, double amount, int8_t dmg_type ) {}
+  static void attack_damage_event( attack_t*, double amount, int8_t dmg_type );
   static void attack_heal_event  ( attack_t*, double amount ) {}
   static void attack_finish_event( attack_t* ) {}
 

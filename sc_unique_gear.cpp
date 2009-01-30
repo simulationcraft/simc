@@ -921,7 +921,6 @@ static void trigger_dying_curse( spell_t* s )
 
 static void trigger_mirror_of_truth( action_t* a )
 {
-
   struct mirror_of_truth_expiration_t : public event_t
   {
     mirror_of_truth_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
@@ -999,24 +998,22 @@ static void trigger_fury_of_the_five_flights( action_t* a )
 
 static void trigger_darkmoon_greatness( action_t* a )
 {
-	if( ! a -> result_is_hit() ) return; // Only procs on landed attacks
-	
   struct darkmoon_greatness_expiration_t : public event_t
   {
-    int8_t type;
-    darkmoon_greatness_expiration_t( sim_t* sim, player_t* p, int8_t t ) : event_t( sim, p )
+    int8_t attr_type;
+
+    darkmoon_greatness_expiration_t( sim_t* sim, player_t* p, int8_t t ) : event_t( sim, p ), attr_type(t)
     {
       name = "Darkmoon Greatness";
-      type = t;
       player -> aura_gain( "Greatness" );
-      player -> attribute [ type ] += 300;
+      player -> attribute [ attr_type ] += 300;
       player -> cooldowns.darkmoon_greatness = sim -> current_time + 45;
       sim -> add_event( this, 15.0 );
     }
     virtual void execute()
     {
       player -> aura_loss( "Greatness" );
-      player -> attribute [ type ] -= 300;
+      player -> attribute [ attr_type ] -= 300;
     }
   };
 
@@ -1028,18 +1025,21 @@ static void trigger_darkmoon_greatness( action_t* a )
   {
     p -> procs.darkmoon_greatness -> occur();
 
-    int8_t typet;
-    double amt = 0;
-    for (int i = ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; i++)
+    int8_t attr_type = ATTRIBUTE_NONE;
+    double max = 0;
+
+    for( int8_t i=ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; i++ )
     {
-      if (p -> attribute [ i ] > amt && i != ATTR_STAMINA)
+      if( i == ATTR_STAMINA ) continue;
+
+      if( p -> attribute[ i ] > max )
       {
-	      amt = p -> attribute [ i ];
-	      typet = (int8_t)i;
+	max = p -> attribute [ i ];
+	attr_type = i;
       }
     }
     
-    new ( a -> sim ) darkmoon_greatness_expiration_t( a -> sim, p, typet );
+    new ( a -> sim ) darkmoon_greatness_expiration_t( a -> sim, p, attr_type );
   }
 }
 
@@ -1054,13 +1054,19 @@ static void trigger_darkmoon_greatness( action_t* a )
 
 void unique_gear_t::attack_hit_event( attack_t* a )
 {
-  trigger_darkmoon_greatness          ( a );
-  trigger_fury_of_the_five_flights    ( a );
+  trigger_fury_of_the_five_flights( a );
   
   if ( a -> result == RESULT_CRIT )
   {
-    trigger_mirror_of_truth           ( a );
+    trigger_mirror_of_truth( a );
   }
+}
+
+// unique_gear_t::attack_damage_event =======================================
+
+void unique_gear_t::attack_damage_event( attack_t* a, double amount, int8_t dmg_type )
+{
+  trigger_darkmoon_greatness( a );
 }
 
 // unique_gear_t::spell_miss_event ==========================================
@@ -1108,10 +1114,18 @@ void unique_gear_t::spell_tick_event( spell_t* s )
   trigger_extract_of_necromatic_power( s );
 }
 
+// unique_gear_t::spell_damage_event ========================================
+
+void unique_gear_t::spell_damage_event( spell_t* s, double amount, int8_t dmg_type )
+{
+  trigger_darkmoon_greatness( s );
+}
+
 // unique_gear_t::spell_heal_event ==========================================
 
 void unique_gear_t::spell_heal_event( spell_t* s, double amount )
 {
+  trigger_darkmoon_greatness( s );
   trigger_egg_of_mortal_essence( s );
 }
 

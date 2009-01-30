@@ -589,7 +589,7 @@ level=80
 talents=http://www.wowhead.com/?talent=f0xbZMgVbxbxoru0xRtxbc0h
 actions=flask,type=endless_rage/food,type=great_feast/apply_poison,main_hand=wound,off_hand=deadly
 actions+=/auto_attack/pool_energy/slice_and_dice,min_combo_points=4,refresh_at=5/tricks_of_the_trade,target=Rogue_15_51_05
-actions+=/killing_spree/blade_flurry/rupture,min_combo_points=5/sinister_strike/adrenaline_rush
+actions+=/killing_spree/blade_flurry/rupture,min_combo_points=5/eviscerate,min_combo_points=4/sinister_strike/adrenaline_rush
 gear_strength=0
 gear_agility=1100
 gear_stamina=950
@@ -607,7 +607,7 @@ enchant_attack_power=160
 enchant_attack_expertise_rating=-80
 glyph_rupture=1
 glyph_slice_and_dice=1
-glyph_blade_flurry=1
+glyph_sinister_strike=1
 relentless_earthstorm=1
 tier7_2pc=1
 tier7_4pc=1
@@ -657,7 +657,6 @@ off_hand=dagger,dps=156,speed=1.4,enchant=berserking
 # Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
 blessing_of_kings=1
 blessing_of_might=688
-sanctified_retribution=1
 sanctified_retribution=1
 leader_of_the_pack=1
 

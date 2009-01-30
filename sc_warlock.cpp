@@ -20,7 +20,6 @@ struct warlock_t : public player_t
   action_t*      active_immolate;
   action_t*      active_shadowflame;
   action_t*      active_pandemic;
-  action_t*      active_drain_soul;
   int8_t         active_dots;
 
   // Buffs
@@ -1861,9 +1860,6 @@ void warlock_spell_t::execute()
 {
   warlock_t* p = player -> cast_warlock();
 
-  if( p -> active_drain_soul && p -> active_drain_soul -> ticking )
-    p -> active_drain_soul -> cancel();
-
   if( time_to_execute > 0 && tree == TREE_DESTRUCTION )
   {
     if( p -> buffs_backdraft > 0 ) p -> buffs_backdraft--;
@@ -2477,7 +2473,7 @@ struct shadow_burn_t : public warlock_spell_t
       
       if( health_pct > 0 && health_pct < 35 )
       {
-	player_crit += 0.20;
+        player_crit += 0.20;
       }
     }
   }
@@ -2649,9 +2645,8 @@ struct drain_life_t : public warlock_spell_t
 struct drain_soul_t : public warlock_spell_t
 {
   int8_t target_pct;
-  int8_t health_multiplier;
-
   int8_t interrupt;
+  int8_t health_multiplier;
 
   drain_soul_t( player_t* player, const std::string& options_str ) : 
     warlock_spell_t( "drain_soul", player, SCHOOL_SHADOW, TREE_AFFLICTION ), target_pct(0), interrupt(0), health_multiplier(0)
@@ -2687,8 +2682,6 @@ struct drain_soul_t : public warlock_spell_t
     base_multiplier  *= 1.0 + p -> talents.shadow_mastery * 0.03;
 
     health_multiplier = ( rank -> level >= 6 ) ? 1 : 0;
-
-    observer = &( p -> active_drain_soul );
   }
 
   virtual void execute()
@@ -2717,7 +2710,18 @@ struct drain_soul_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::tick();
-    if( interrupt && current_tick != num_ticks ) p -> schedule_ready();
+    if( interrupt && ( current_tick != num_ticks ) )
+    {
+      // If any spell ahead of DS in the action list is "ready", then cancel the DS channel
+      for( action_t* action = p -> action_list; action != this; action = action -> next )
+      {
+        if( action -> ready() )
+        {
+          current_tick = num_ticks;
+          break;
+        }
+      }
+    }
   }
 
   virtual void player_buff()
@@ -2771,8 +2775,6 @@ struct drain_soul_t : public warlock_spell_t
 
   virtual bool ready()
   {
-    if( ticking ) return true;
-
     if( ! warlock_spell_t::ready() )
       return false;
 
@@ -2781,7 +2783,7 @@ struct drain_soul_t : public warlock_spell_t
       double health_pct = sim -> target -> health_percentage();
 
       if( health_pct <= 0 || health_pct > target_pct )
-	return false;
+        return false;
     }
 
     return true;
@@ -3098,7 +3100,7 @@ struct immolate_t : public warlock_spell_t
       // stop casting it when death's embrace is active because DE only boosts damage for shadow spells
 
       if( health_pct > 0 && health_pct < target_pct )
-	return false;
+        return false;
     }
 
     return true;
@@ -3820,7 +3822,7 @@ struct inferno_t : public warlock_spell_t
       double health_pct = sim -> target -> health_percentage();
 
       if( health_pct <= 0 || health_pct > target_pct )
-	return false;
+        return false;
     }
 
     if( time_remaining > 0 ) 
@@ -3891,7 +3893,7 @@ struct metamorphosis_t : public warlock_spell_t
       double health_pct = sim -> target -> health_percentage();
 
       if( health_pct <= 0 || health_pct > target_pct )
-	return false;
+        return false;
     }
 
     return true;
@@ -3963,7 +3965,7 @@ struct demonic_empowerment_t : public warlock_spell_t
       double health_pct = sim -> target -> health_percentage();
 
       if( health_pct <= 0 || health_pct > target_pct )
-	return false;
+        return false;
     }
 
     return true;
@@ -4198,7 +4200,6 @@ void warlock_t::reset()
   active_curse      = 0;
   active_immolate   = 0;
   active_shadowflame= 0;
-  active_drain_soul = 0;
   active_dots       = 0;
 
   // Buffs
