@@ -128,7 +128,7 @@ void player_t::gear_t::allocate_attack_power_budget( sim_t* sim )
 player_t::player_t( sim_t*             s, 
                     int8_t             t,
 		    const std::string& n ) :
-  sim(s), name_str(n), next(0), type(t), level(70), party(0), gcd_ready(0), base_gcd(1.5), sleeping(0), pet_list(0),
+  sim(s), name_str(n), next(0), type(t), level(80), party(0), gcd_ready(0), base_gcd(1.5), sleeping(0), pet_list(0),
   // Haste
   base_haste_rating(0), initial_haste_rating(0), haste_rating(0), haste(1.0),
   // Spell Mechanics
@@ -339,9 +339,6 @@ void player_t::init_spell()
   if( initial_mp5 == 0 ) 
   {
     initial_mp5 = base_mp5 + gear.mp5 + gear.mp5_enchant;
-
-    // FIXME! All these static buffs will go away as class support comes along.
-    if( buffs.blessing_of_wisdom ) initial_mp5 += ( level <= 70 ) ? 49 : 91;
   }
 
   if( ! is_pet() )
@@ -630,35 +627,35 @@ void player_t::init_stats()
     resource_lost[ i ] = resource_gained[ i ] = 0;
   }
 
-  gains.ashtongue_talisman    = get_gain( "ashtongue_talisman" );
-  gains.dark_rune             = get_gain( "dark_rune" );
-  gains.darkmoon_greatness	  = get_gain( "darkmoon_greatness" );
-  gains.energy_regen          = get_gain( "energy_regen" );
-  gains.focus_regen           = get_gain( "focus_regen" );
-  gains.innervate             = get_gain( "innervate" );
-  gains.glyph_of_innervate    = get_gain( "glyph_of_innervate" );
-  gains.judgement_of_wisdom   = get_gain( "judgement_of_wisdom" );
-  gains.mana_gem              = get_gain( "mana_gem" );
-  gains.mana_potion           = get_gain( "mana_potion" );
-  gains.mana_spring           = get_gain( "mana_spring" );
-  gains.mana_tide             = get_gain( "mana_tide" );
-  gains.mark_of_defiance      = get_gain( "mark_of_defiance" );
-  gains.mirror_of_truth       = get_gain( "mirror_of_truth" );
-  gains.mp5_regen             = get_gain( "mp5_regen" );
-  gains.replenishment         = get_gain( "replenishment" );
-  gains.restore_mana          = get_gain( "restore_mana" );
-  gains.spellsurge            = get_gain( "spellsurge" );
-  gains.spirit_regen          = get_gain( "spirit_regen" );
-  gains.vampiric_touch        = get_gain( "vampiric_touch" );
-  gains.water_elemental_regen = get_gain( "water_elemental" );
-  gains.tier4_2pc             = get_gain( "tier4_2pc" );
-  gains.tier4_4pc             = get_gain( "tier4_4pc" );
-  gains.tier5_2pc             = get_gain( "tier5_2pc" );
-  gains.tier5_4pc             = get_gain( "tier5_4pc" );
-  gains.tier6_2pc             = get_gain( "tier6_2pc" );
-  gains.tier6_4pc             = get_gain( "tier6_4pc" );
-  gains.tier7_2pc             = get_gain( "tier7_2pc" );
-  gains.tier7_4pc             = get_gain( "tier7_4pc" );
+  gains.ashtongue_talisman  = get_gain( "ashtongue_talisman" );
+  gains.blessing_of_wisdom  = get_gain( "blessing_of_wisdom" );
+  gains.dark_rune           = get_gain( "dark_rune" );
+  gains.energy_regen        = get_gain( "energy_regen" );
+  gains.focus_regen         = get_gain( "focus_regen" );
+  gains.innervate           = get_gain( "innervate" );
+  gains.glyph_of_innervate  = get_gain( "glyph_of_innervate" );
+  gains.judgement_of_wisdom = get_gain( "judgement_of_wisdom" );
+  gains.mana_gem            = get_gain( "mana_gem" );
+  gains.mana_potion         = get_gain( "mana_potion" );
+  gains.mana_spring         = get_gain( "mana_spring" );
+  gains.mana_tide           = get_gain( "mana_tide" );
+  gains.mark_of_defiance    = get_gain( "mark_of_defiance" );
+  gains.mirror_of_truth     = get_gain( "mirror_of_truth" );
+  gains.mp5_regen           = get_gain( "mp5_regen" );
+  gains.replenishment       = get_gain( "replenishment" );
+  gains.restore_mana        = get_gain( "restore_mana" );
+  gains.spellsurge          = get_gain( "spellsurge" );
+  gains.spirit_regen        = get_gain( "spirit_regen" );
+  gains.vampiric_touch      = get_gain( "vampiric_touch" );
+  gains.water_elemental     = get_gain( "water_elemental" );
+  gains.tier4_2pc           = get_gain( "tier4_2pc" );
+  gains.tier4_4pc           = get_gain( "tier4_4pc" );
+  gains.tier5_2pc           = get_gain( "tier5_2pc" );
+  gains.tier5_4pc           = get_gain( "tier5_4pc" );
+  gains.tier6_2pc           = get_gain( "tier6_2pc" );
+  gains.tier6_4pc           = get_gain( "tier6_4pc" );
+  gains.tier7_2pc           = get_gain( "tier7_2pc" );
+  gains.tier7_4pc           = get_gain( "tier7_4pc" );
 
   procs.ashtongue_talisman           = get_proc( "ashtongue_talisman" );
   procs.darkmoon_greatness           = get_proc( "darkmoon_greatness" );
@@ -706,10 +703,7 @@ double player_t::composite_attack_power()
   ap += attack_power_per_strength * strength();
   ap += attack_power_per_agility  * agility();
 
-  double best_buff=0;
-  if( buffs.blessing_of_might > best_buff ) best_buff = buffs.blessing_of_might;
-  if( buffs.battle_shout      > best_buff ) best_buff = buffs.battle_shout;
-  ap += best_buff;
+  ap += std::max( buffs.blessing_of_might, buffs.battle_shout );
 
   return ap;
 }
@@ -845,6 +839,33 @@ void player_t::combat_begin()
 
   double max_mana = resource_max[ RESOURCE_MANA ];
   if( max_mana > 0 ) get_gain( "initial_mana" ) -> add( max_mana );
+
+  if( sim -> optimal_raid )
+  {
+    // Static Buffs
+    buffs.battle_shout = 548;
+    buffs.blessing_of_kings = 1;
+    buffs.blessing_of_might = 688;
+    buffs.blessing_of_wisdom = 1;
+    buffs.leader_of_the_pack = 1;
+    buffs.sanctified_retribution = 1;
+    buffs.swift_retribution = 1;
+    // Dynamic Buffs
+    buffs.arcane_brilliance = 60;
+    buffs.divine_spirit = 80;
+    buffs.fortitude = 215;
+    buffs.improved_divine_spirit = 80;
+    buffs.improved_moonkin_aura = 1;
+    buffs.mark_of_the_wild = 52;
+    buffs.moonkin_aura = 1;
+    buffs.replenishment = 1;
+    buffs.strength_of_earth = 99;
+    buffs.totem_of_wrath = 280;
+    buffs.trueshot_aura = 1;
+    buffs.unleashed_rage = 1;
+    buffs.windfury_totem = 0.20;
+    buffs.wrath_of_air = 1;
+  }
 }
 
 // player_t::combat_end ====================================================
@@ -1086,11 +1107,18 @@ void player_t::regen( double periodicity )
       resource_gain( RESOURCE_MANA, replenishment_regen, gains.replenishment );
     }
 
-    if( buffs.water_elemental_regen )
+    if( buffs.water_elemental )
     {
       double water_elemental_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.006 / 5.0;
 
-      resource_gain( RESOURCE_MANA, water_elemental_regen, gains.water_elemental_regen );
+      resource_gain( RESOURCE_MANA, water_elemental_regen, gains.water_elemental );
+    }
+
+    if( buffs.blessing_of_wisdom )
+    {
+      double wisdom_regen = periodicity * ( ( level <= 70 ) ? 49 : 91 ) / 5.0;
+
+      resource_gain( RESOURCE_MANA, wisdom_regen, gains.blessing_of_wisdom );
     }
   }
 

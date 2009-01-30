@@ -12,8 +12,8 @@
 // target_t::target_t =======================================================
 
 target_t::target_t( sim_t* s ) :
-  sim(s), name_str("Fluffy Pillow"), race(RACE_HUMANOID), level(73), 
-  initial_armor(10000), armor(0), block_value(0), shield(0), 
+  sim(s), name_str("Fluffy Pillow"), race(RACE_HUMANOID), level(83), 
+  initial_armor(13000), armor(0), block_value(0), shield(0), 
   initial_health( 0 ), current_health(0), total_dmg(0), uptime_list(0)
 {
   for( int i=0; i < SCHOOL_MAX; i++ ) spell_resistance[ i ] = 0;
@@ -168,6 +168,44 @@ void target_t::reset()
   debuffs.reset();
   expirations.reset();
   cooldowns.reset();
+}
+
+// target_t::combat_begin ====================================================
+
+void target_t::combat_begin()
+{
+  if( sim -> optimal_raid )
+  {
+    // Static De-Buffs
+    debuffs.blood_frenzy = 1;
+    debuffs.crypt_fever = 1;
+    debuffs.judgement_of_wisdom = 1;
+    debuffs.mangle = 1;
+    debuffs.razorice = 1;
+    debuffs.snare = 1;
+    debuffs.sunder_armor = 3925;
+    // Dynamic De-Buffs
+    debuffs.curse_of_elements = 13;
+    debuffs.faerie_fire = 1260;
+    debuffs.ferocious_inspiration = 1;
+    debuffs.hunters_mark = 450;
+    debuffs.improved_faerie_fire = 3;
+    debuffs.improved_scorch = 5;
+    debuffs.master_poisoner = 1;
+    debuffs.misery = 3;
+    debuffs.misery_stack = 1;
+    debuffs.earth_and_moon = 13;
+    debuffs.poisoned = 1;
+    debuffs.savage_combat = 1;
+    debuffs.totem_of_wrath = 1;
+    debuffs.winters_chill = 5;
+  }
+}
+
+// target_t::combat_end ======================================================
+
+void target_t::combat_end()
+{
 }
 
 // target_t::parse_option ======================================================

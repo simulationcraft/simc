@@ -276,8 +276,8 @@ struct water_elemental_pet_t : public pet_t
     {
       for( player_t* p = sim -> player_list; p; p = p -> next )
       {
-        if( p -> buffs.water_elemental_regen == 0 ) p -> aura_gain( "Water Elemental Regen" );
-        p -> buffs.water_elemental_regen++;
+        if( p -> buffs.water_elemental == 0 ) p -> aura_gain( "Water Elemental Regen" );
+        p -> buffs.water_elemental++;
       }
     }
 
@@ -293,8 +293,8 @@ struct water_elemental_pet_t : public pet_t
     {
       for( player_t* p = sim -> player_list; p; p = p -> next )
       {
-        p -> buffs.water_elemental_regen--;
-        if( p -> buffs.water_elemental_regen == 0 ) p -> aura_loss( "Water Elemental Regen" );
+        p -> buffs.water_elemental--;
+        if( p -> buffs.water_elemental == 0 ) p -> aura_loss( "Water Elemental Regen" );
       }
     }
 
@@ -2475,7 +2475,7 @@ struct arcane_brilliance_t : public mage_spell_t
   {
     trigger_gcd = 0;
 
-    bonus = util_t::ability_rank( player -> level,  60,0,80,  40.0,70,  31.0,0 );
+    bonus = util_t::ability_rank( player -> level,  60.0,80,  40.0,70,  31.0,0 );
   }
    
   virtual void execute()

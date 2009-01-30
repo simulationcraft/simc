@@ -13,6 +13,17 @@
 
 scaling_t::scaling_t( sim_t* s ) : sim(s), calculate_scale_factors(0) 
 {
+  for( int i=ATTRIBUTE_NONE+1; i < ATTRIBUTE_MAX; i++ )
+  {
+    gear.attribute[ i ] = 250;
+  }
+  gear.armor_penetration_rating = 250;
+  gear.attack_power             = 250;
+  gear.crit_rating              = 250;
+  gear.expertise_rating         = -150;
+  gear.haste_rating             = 250;
+  gear.hit_rating               = -200;
+  gear.spell_power              = 250;
 }
 
 // scaling_t::analyze_attributes ============================================

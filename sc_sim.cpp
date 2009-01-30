@@ -13,12 +13,12 @@
 
 sim_t::sim_t( sim_t* p ) : 
   parent(p), rng(0), free_list(0), player_list(0), active_player(0),
-  lag(0), pet_lag(0), channel_penalty(0), gcd_penalty(0), reaction_time(0.5), 
+  lag(0.150), pet_lag(0), channel_penalty(0.100), gcd_penalty(0.100), reaction_time(0.5), 
   regen_periodicity(1.0), current_time(0), max_time(0),
   events_remaining(0), max_events_remaining(0), 
   events_processed(0), total_events_processed(0),
-  seed(0), id(0), iterations(1), current_iteration(0), threads(0),
-  potion_sickness(1), average_dmg(1), log(0), debug(0), timestamp(1), sfmt(1),
+  seed(0), id(0), iterations(1000), current_iteration(0), threads(0),
+  optimal_raid(0), potion_sickness(1), average_dmg(1), log(0), debug(0), timestamp(1), sfmt(1),
   wheel_seconds(0), wheel_size(0), wheel_mask(0), timing_slice(0), wheel_granularity(0.0),
   raid_dps(0), total_dmg(0), total_seconds(0), elapsed_cpu_seconds(0), merge_ignite(0),
   output_file(stdout), html_file(0), wiki_file(0), thread_handle(0)
@@ -246,6 +246,8 @@ void sim_t::combat_begin()
 
   reset();
 
+  target -> combat_begin();
+
   for( player_t* p = player_list; p; p = p -> next )
   {
     p -> combat_begin();
@@ -263,6 +265,8 @@ void sim_t::combat_end()
   total_events_processed += events_processed;
 
   flush_events();
+
+  target -> combat_end();
 
   for( player_t* p = player_list; p; p = p -> next )
   {
@@ -692,6 +696,7 @@ bool sim_t::parse_option( const std::string& name,
     { "log",                              OPT_INT8,   &( log                                      ) },
     { "max_time",                         OPT_FLT,    &( max_time                                 ) },
     { "threads",                          OPT_INT32,  &( threads                                  ) },
+    { "optimal_raid",                     OPT_INT8,   &( optimal_raid                             ) },
     { "patch",                            OPT_STRING, &( patch_str                                ) },
     { "pet_lag",                          OPT_FLT,    &( pet_lag                                  ) },
     { "potion_sickness",                  OPT_INT8,   &( potion_sickness                          ) },

@@ -264,7 +264,7 @@ struct sim_t
   int32_t     events_processed, total_events_processed;
   int32_t     seed, id, iterations, current_iteration, threads;
   int8_t      infinite_resource[ RESOURCE_MAX ];
-  int8_t      potion_sickness, average_dmg, log, debug, timestamp, sfmt;
+  int8_t      optimal_raid, potion_sickness, average_dmg, log, debug, timestamp, sfmt;
 
   // Timing Wheel Event Management
   std::vector<event_t*> timing_wheel;
@@ -594,7 +594,7 @@ struct player_t
   
   struct buff_t
   {
-    // Permanent Buffs
+    // Static Buffs (until appropriate player class implemented)
     int16_t   battle_shout;
     int8_t    blessing_of_kings;
     int16_t   blessing_of_might;
@@ -602,7 +602,7 @@ struct player_t
     int8_t    leader_of_the_pack;
     int8_t    sanctified_retribution;
     int8_t    swift_retribution;
-    // Temporary Buffs
+    // Dynamic Buffs
     int8_t    temporary_buffs;
     double    arcane_brilliance;
     int8_t    berserking_mh;
@@ -644,7 +644,7 @@ struct player_t
     int8_t    unleashed_rage;
     int8_t    violet_eye;
     double    windfury_totem;
-    int8_t    water_elemental_regen;
+    int8_t    water_elemental;
     int8_t    wrath_of_air;
     int16_t   zandalarian_hero_charm;
     int8_t    tier4_2pc, tier4_4pc;
@@ -734,8 +734,8 @@ struct player_t
   struct gains_t
   {
     gain_t* ashtongue_talisman;
+    gain_t* blessing_of_wisdom;
     gain_t* dark_rune;
-    gain_t* darkmoon_greatness;
     gain_t* energy_regen;
     gain_t* focus_regen;
     gain_t* innervate;
@@ -753,7 +753,7 @@ struct player_t
     gain_t* spellsurge;
     gain_t* spirit_regen;
     gain_t* vampiric_touch;
-    gain_t* water_elemental_regen;
+    gain_t* water_elemental;
     gain_t *tier4_2pc, *tier4_4pc;
     gain_t *tier5_2pc, *tier5_4pc;
     gain_t *tier6_2pc, *tier6_4pc;
@@ -1014,21 +1014,21 @@ struct target_t
 
   struct debuff_t
   {
-    // Permanent De-Buffs (until appropriate player class implemented)
+    // Static De-Buffs (until appropriate player class implemented)
     int8_t   blood_frenzy;
     int8_t   crypt_fever;
-    int8_t   ferocious_inspiration;
     int8_t   judgement_of_wisdom;
     int8_t   mangle;
     int8_t   razorice;
     int8_t   snare;
     double   sunder_armor;
-    // Temporary De-Buffs
+    // Dynamic De-Buffs
     int8_t   temporary_debuffs;
     int8_t   affliction_effects;
     int8_t   curse_of_elements;
     double   expose_armor;
     double   faerie_fire;
+    int8_t   ferocious_inspiration;
     double   frozen;
     double   hemorrhage;
     int8_t   hemorrhage_charges;
@@ -1095,6 +1095,8 @@ struct target_t
 
   void init();
   void reset();
+  void combat_begin();
+  void combat_end();
   void assess_damage( double amount, int8_t school, int8_t type );
   void recalculate_health();
   double time_to_die();
