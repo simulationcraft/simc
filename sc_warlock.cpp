@@ -23,8 +23,6 @@ struct warlock_t : public player_t
   action_t*      active_drain_soul;
   int8_t         active_dots;
 
-  bool interrupt_ds;
-
   // Buffs
   int8_t buffs_backdraft;
   int8_t buffs_demon_armor;
@@ -190,8 +188,6 @@ struct warlock_t : public player_t
     active_shadowflame = 0;
     active_pandemic   = 0;
     active_dots       = 0;
-
-    interrupt_ds = 0;
 
     // Buffs
     buffs_backdraft                    = 0;
