@@ -563,6 +563,7 @@ struct player_t
     int8_t  extract_of_necromatic_power;
     int8_t  eye_of_magtheridon;
     int8_t  forge_ember;
+    int8_t  fury_of_the_five_flights;
     int8_t  illustration_of_the_dragon_soul;
     int8_t  lightning_capacitor;
     int8_t  mark_of_defiance;
@@ -619,6 +620,7 @@ struct player_t
     player_t* focus_magic;
     int8_t    focus_magic_feedback;
     double    fortitude;
+    int8_t    fury_of_the_five_flights;
     int8_t    illustration_of_the_dragon_soul;
     double    improved_divine_spirit;
     int8_t    improved_moonkin_aura;
@@ -674,6 +676,7 @@ struct player_t
     event_t* spellstrike;
     event_t* tricks_of_the_trade;
     event_t* wrath_of_cenarius;
+    event_t* fury_of_the_five_flights;
     event_t* illustration_of_the_dragon_soul;
     event_t *tier4_2pc, *tier4_4pc;
     event_t *tier5_2pc, *tier5_4pc;

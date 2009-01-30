@@ -921,7 +921,6 @@ static void trigger_dying_curse( spell_t* s )
 
 static void trigger_mirror_of_truth( action_t* a )
 {
-  if( a -> result != RESULT_CRIT ) return; // Only procs on crit
 
   struct mirror_of_truth_expiration_t : public event_t
   {
@@ -952,6 +951,49 @@ static void trigger_mirror_of_truth( action_t* a )
   }
 }
 
+// Fury of the Five Flights ======================================
+
+static void trigger_fury_of_the_five_flights( action_t* a )
+{
+  struct fury_of_the_five_flights_expiration_t : public event_t
+  {
+    fury_of_the_five_flights_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
+    {
+      name = "Fury of the Five Flights";
+      sim -> add_event( this, 10.0 );
+    }
+    virtual void execute()
+    {
+      player -> aura_loss( "Fury of the Five Flights" );
+      player -> attack_power -= player -> buffs.fury_of_the_five_flights * 16;
+      player -> buffs.fury_of_the_five_flights = 0;
+      player -> expirations.fury_of_the_five_flights = 0;
+    }
+  };
+
+
+  player_t* p = a -> player;
+
+  if( ! p ->  gear.fury_of_the_five_flights ) return;
+
+  if( p -> buffs.fury_of_the_five_flights < 20 )
+  {
+    p -> buffs.fury_of_the_five_flights++;
+    p -> attack_power += 16;
+    if( p -> buffs.fury_of_the_five_flights == 1 ) p -> aura_gain( "Fury of the Five Flights" );
+  }
+  
+  event_t*& e = p -> expirations.fury_of_the_five_flights;
+
+  if( e )
+  {
+    e -> reschedule( 10.0 );
+  }
+  else
+  {
+    e = new ( a -> sim ) fury_of_the_five_flights_expiration_t( a -> sim, p );
+  }
+}
 
 // Darkmoon:Greatness ============================================
 
@@ -1013,6 +1055,7 @@ static void trigger_darkmoon_greatness( action_t* a )
 void unique_gear_t::attack_hit_event( attack_t* a )
 {
   trigger_darkmoon_greatness          ( a );
+  trigger_fury_of_the_five_flights    ( a );
   
   if ( a -> result == RESULT_CRIT )
   {
@@ -1470,6 +1513,7 @@ bool unique_gear_t::parse_option( player_t*          p,
     { "extract_of_necromatic_power",          OPT_INT8,   &( p -> gear.extract_of_necromatic_power     ) },
     { "eye_of_magtheridon",                   OPT_INT8,   &( p -> gear.eye_of_magtheridon              ) },
     { "forge_ember",                          OPT_INT8,   &( p -> gear.forge_ember                     ) },
+    { "fury_of_the_five_flights",             OPT_INT8,   &( p -> gear.fury_of_the_five_flights        ) },
     { "illustration_of_the_dragon_soul",      OPT_INT8,   &( p -> gear.illustration_of_the_dragon_soul ) },
     { "lightning_capacitor",                  OPT_INT8,   &( p -> gear.lightning_capacitor             ) },
     { "mirror_of_truth",                      OPT_INT8,   &( p -> gear.mirror_of_truth                 ) },
