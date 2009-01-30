@@ -2267,6 +2267,7 @@ struct kill_shot_t : public hunter_attack_t
     normalize_weapon_speed = true;
     weapon_multiplier      = 2.0;
     cooldown               = 15;
+    trigger_gcd            = 0.0;
 
     base_multiplier *= 1.0 + p -> talents.ranged_weapon_specialization * 0.01;
 
