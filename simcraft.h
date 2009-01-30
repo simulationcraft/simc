@@ -1367,7 +1367,7 @@ struct unique_gear_t
 
   static void attack_start_event ( attack_t* ) {}
   static void attack_miss_event  ( attack_t* ) {}
-  static void attack_hit_event   ( attack_t* ) {}
+  static void attack_hit_event   ( attack_t* );
   static void attack_tick_event  ( attack_t* ) {}
   static void attack_damage_event( attack_t*, double amount, int8_t dmg_type ) {}
   static void attack_heal_event  ( attack_t*, double amount ) {}

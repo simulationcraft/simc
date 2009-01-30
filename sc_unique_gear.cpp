@@ -925,6 +925,12 @@ static void trigger_dying_curse( spell_t* s )
 // Gear
 // ==========================================================================
 
+// unique_gear_t::attack_hit_event ==========================================
+
+void unique_gear_t::attack_hit_event( attack_t* a )
+{
+}
+
 // unique_gear_t::spell_miss_event ==========================================
 
 void unique_gear_t::spell_miss_event( spell_t* s )
