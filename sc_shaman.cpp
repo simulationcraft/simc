@@ -2006,8 +2006,13 @@ struct flametongue_weapon_t : public shaman_spell_t
 
   virtual bool ready()
   {
-    return( main && player -> main_hand_weapon.buff != FLAMETONGUE ||
-             off && player ->  off_hand_weapon.buff != FLAMETONGUE );
+    if( main && ( player -> main_hand_weapon.buff != FLAMETONGUE ) )
+      return true;
+
+    if( off && ( player -> off_hand_weapon.buff != FLAMETONGUE ) )
+      return true;
+
+    return false;
   }
 };
 
@@ -2078,8 +2083,13 @@ struct windfury_weapon_t : public shaman_spell_t
 
   virtual bool ready()
   {
-    return( main && player -> main_hand_weapon.buff != WINDFURY ||
-             off && player ->  off_hand_weapon.buff != WINDFURY );
+    if( main && ( player -> main_hand_weapon.buff != WINDFURY ) )
+      return true;
+
+    if( off && ( player -> off_hand_weapon.buff != WINDFURY ) )
+      return true;
+
+    return false;
   }
 };
 

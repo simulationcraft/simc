@@ -1557,6 +1557,7 @@ struct option_t
   
   static void print( sim_t*, option_t* );
   static bool parse( sim_t*, option_t*, const std::string& name, const std::string& value );
+  static bool parse( sim_t*, FILE* file );
   static bool parse( sim_t*, char* line );
   static bool parse( sim_t*, int argc, char** argv );
 };

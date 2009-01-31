@@ -72,6 +72,9 @@ struct rogue_t : public player_t
   attack_t* main_hand_attack;
   attack_t*  off_hand_attack;
 
+  // Options
+  std::string tricks_of_the_trade_target_str;
+
   struct talents_t
   {
     int8_t adrenaline_rush;
@@ -226,6 +229,7 @@ struct rogue_t : public player_t
 
   // Character Definition
   virtual void      init_base();
+  virtual void      combat_begin();
   virtual void      reset();
   virtual void      raid_event( action_t* );
   virtual void      regen( double periodicity );
@@ -2703,7 +2707,8 @@ struct tricks_of_the_trade_t : public spell_t
   {
     rogue_t* p = player -> cast_rogue();
 
-    std::string target_str;
+    std::string target_str = p -> tricks_of_the_trade_target_str;
+
     option_t options[] =
     {
       { "target", OPT_STRING, &target_str },
@@ -2716,11 +2721,18 @@ struct tricks_of_the_trade_t : public spell_t
     base_cost = 15;
     cooldown  = 30.0;
     cooldown -= p -> talents.filthy_tricks * 5.0;
-    
-    tricks_target = sim -> find_player( target_str );
 
-    assert ( tricks_target != 0 );
-    assert ( tricks_target != player );
+    if( target_str.empty() )
+    {
+      tricks_target = p;
+    }
+    else
+    {
+      tricks_target = sim -> find_player( target_str );
+
+      assert ( tricks_target != 0 );
+      assert ( tricks_target != player );
+    }
   }
    
   virtual void execute()
@@ -2851,6 +2863,23 @@ void rogue_t::init_base()
   energy_regen_per_second *= 1.0 + util_t::talent_rank( talents.vitality, 3, 0.08, 0.16, 0.25 );
 
   base_gcd = 1.0;
+}
+
+// rogue_t::combat_begin ===================================================
+
+void rogue_t::combat_begin() 
+{
+  player_t::combat_begin();
+
+  if( sim -> optimal_raid )
+  {
+    // Tricks of the Trade: In "single-player" mode, give the buff to yourself.
+
+    if( talents.honor_among_thieves )
+    {
+      
+    }
+  }
 }
 
 // rogue_t::reset ===========================================================
@@ -3067,6 +3096,8 @@ bool rogue_t::parse_option( const std::string& name,
     { "glyph_sinister_strike",      OPT_INT8, &( glyphs.sinister_strike             ) },
     { "glyph_slice_and_dice",       OPT_INT8, &( glyphs.slice_and_dice              ) },
     { "glyph_vigor",                OPT_INT8, &( glyphs.vigor                       ) },
+    // Options
+    { "tricks_of_the_trade_target", OPT_STRING, &( tricks_of_the_trade_target_str   ) },
     { NULL, OPT_UNKNOWN }
   };
 

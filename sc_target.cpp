@@ -185,6 +185,7 @@ void target_t::combat_begin()
     debuffs.snare = 1;
     debuffs.sunder_armor = 3925;
     // Dynamic De-Buffs
+    debuffs.affliction_effects = 12;
     debuffs.curse_of_elements = 13;
     debuffs.faerie_fire = 1260;
     debuffs.ferocious_inspiration = 1;

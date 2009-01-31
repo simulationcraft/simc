@@ -114,6 +114,21 @@ bool option_t::parse( sim_t*             sim,
 // option_t::parse ==========================================================
 
 bool option_t::parse( sim_t* sim,
+		      FILE*  file )
+{
+  char buffer[ 1024 ];
+  while( fgets( buffer, 1024, file ) )
+  {
+    if( *buffer == '#' ) continue;
+    if( only_white_space( buffer ) ) continue;
+    option_t::parse( sim, buffer );
+  }
+  return true;
+}
+
+// option_t::parse ==========================================================
+
+bool option_t::parse( sim_t* sim,
 		      char*  line )
 {
   if( sim -> debug ) report_t::log( sim, "option_t::parse: %s", line );
@@ -122,12 +137,25 @@ bool option_t::parse( sim_t* sim,
 
   remove_white_space( buffer, line );
 
+  if( buffer == "-" )
+  {
+    parse( sim, stdin );
+    return true;
+  }
+
   std::string::size_type cut_pt = buffer.find_first_of( "=" );
 
   if( cut_pt == buffer.npos )
   {
-    fprintf( sim -> output_file, "simcraft: Unexpected parameter '%s'.  Expected format: name=value\n", line );
-    return false;
+    FILE* file = fopen( buffer.c_str(), "r" );
+    if( ! file )
+    {
+      fprintf( sim -> output_file, "simcraft: Unexpected parameter '%s'.  Expected format: name=value\n", line );
+      return false;
+    }
+    parse( sim, file );
+    fclose( file );      
+    return true;
   }
   
   name  = buffer.substr( 0, cut_pt );
@@ -155,14 +183,7 @@ bool option_t::parse( sim_t* sim,
       fprintf( sim -> output_file, "simcraft: Unable to open input parameter file '%s'\n", value.c_str() );
       exit(0);
     }
-
-    char buffer[ 1024 ];
-    while( fgets( buffer, 1024, file ) )
-    {
-      if( *buffer == '#' ) continue;
-      if( only_white_space( buffer ) ) continue;
-      option_t::parse( sim, buffer );
-    }
+    parse( sim, file );
     fclose( file );      
   }
   else if( name == "druid" ) 

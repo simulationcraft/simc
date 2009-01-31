@@ -53,6 +53,9 @@ struct mage_t : public player_t
   uptime_t* uptimes_focus_magic_feedback;
   uptime_t* uptimes_water_elemental;
 
+  // Options
+  std::string focus_magic_target_str;
+
   struct talents_t
   {
     int8_t  arcane_barrage;
@@ -1567,7 +1570,7 @@ struct focus_magic_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
     assert( p -> talents.focus_magic );
 
-    std::string target_str;
+    std::string target_str = p -> focus_magic_target_str;
     option_t options[] =
     {
       { "target", OPT_STRING, &target_str },
@@ -1575,23 +1578,48 @@ struct focus_magic_t : public mage_spell_t
     };
     parse_options( options, options_str );
 
-    focus_magic_target = sim -> find_player( target_str );
+    if( target_str.empty() )
+    {
+      // If no target specified, assume 100% up-time by forcing "buffs.focus_magic_feedback = 1"
+      focus_magic_target = p;
+    }
+    else
+    {
+      focus_magic_target = sim -> find_player( target_str );
 
-    assert ( focus_magic_target != 0 );
-    assert ( focus_magic_target != p );
+      assert ( focus_magic_target != 0 );
+      assert ( focus_magic_target != p );
+    }
   }
    
   virtual void execute()
   {
     mage_t* p = player -> cast_mage();
     if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
-    if( sim -> log ) report_t::log( sim, "%s grants %s Focus Magic", p -> name(), focus_magic_target -> name() );
-    focus_magic_target -> buffs.focus_magic = p;
+    if( focus_magic_target == p )
+    {
+      if( sim -> log ) report_t::log( sim, "%s grants SomebodySomewhere Focus Magic", p -> name() );
+      p -> buffs.focus_magic_feedback = 1;
+    }
+    else
+    {
+      if( sim -> log ) report_t::log( sim, "%s grants %s Focus Magic", p -> name(), focus_magic_target -> name() );
+      focus_magic_target -> buffs.focus_magic = p;
+    }
   }
 
   virtual bool ready()
   {
-    return focus_magic_target -> buffs.focus_magic == 0;
+    mage_t* p = player -> cast_mage();
+
+    if( focus_magic_target == p )
+    {
+      return p -> buffs.focus_magic_feedback == 0;
+    }
+    else
+    {
+      return focus_magic_target -> buffs.focus_magic == 0;
+    }
   }
 };
 
@@ -2843,80 +2871,82 @@ bool mage_t::parse_option( const std::string& name,
 {
   option_t options[] =
   {
-    { "arcane_barrage",            OPT_INT8,  &( talents.arcane_barrage            ) },
-    { "arcane_concentration",      OPT_INT8,  &( talents.arcane_concentration      ) },
-    { "arcane_empowerment",        OPT_INT8,  &( talents.arcane_empowerment        ) },
-    { "arcane_flows",              OPT_INT8,  &( talents.arcane_flows              ) },
-    { "arcane_focus",              OPT_INT8,  &( talents.arcane_focus              ) },
-    { "arcane_impact",             OPT_INT8,  &( talents.arcane_impact             ) },
-    { "arcane_instability",        OPT_INT8,  &( talents.arcane_instability        ) },
-    { "arcane_meditation",         OPT_INT8,  &( talents.arcane_meditation         ) },
-    { "arcane_mind",               OPT_INT8,  &( talents.arcane_mind               ) },
-    { "arcane_potency",            OPT_INT8,  &( talents.arcane_potency            ) },
-    { "arcane_power",              OPT_INT8,  &( talents.arcane_power              ) },
-    { "arcane_subtlety",           OPT_INT8,  &( talents.arcane_subtlety           ) },
-    { "arctic_winds",              OPT_INT8,  &( talents.arctic_winds              ) },
-    { "brain_freeze",              OPT_INT8,  &( talents.brain_freeze              ) },
-    { "burning_soul",              OPT_INT8,  &( talents.burning_soul              ) },
-    { "burnout",                   OPT_INT8,  &( talents.burnout                   ) },
-    { "chilled_to_the_bone",       OPT_INT8,  &( talents.chilled_to_the_bone       ) },
-    { "cold_as_ice",               OPT_INT8,  &( talents.cold_as_ice               ) },
-    { "cold_snap",                 OPT_INT8,  &( talents.cold_snap                 ) },
-    { "combustion",                OPT_INT8,  &( talents.combustion                ) },
-    { "critical_mass",             OPT_INT8,  &( talents.critical_mass             ) },
-    { "deep_freeze",               OPT_INT8,  &( talents.deep_freeze               ) },
-    { "elemental_precision",       OPT_INT8,  &( talents.precision                 ) }, // deprecated
-    { "empowered_arcane_missiles", OPT_INT8,  &( talents.empowered_arcane_missiles ) },
-    { "empowered_fire",            OPT_INT8,  &( talents.empowered_fire            ) },
-    { "empowered_frost_bolt",      OPT_INT8,  &( talents.empowered_frost_bolt      ) },
-    { "fingers_of_frost",          OPT_INT8,  &( talents.fingers_of_frost          ) },
-    { "fire_power",                OPT_INT8,  &( talents.fire_power                ) },
-    { "focus_magic",               OPT_INT8,  &( talents.focus_magic               ) },
-    { "frost_channeling",          OPT_INT8,  &( talents.frost_channeling          ) },
-    { "frostbite",                 OPT_INT8,  &( talents.frostbite                 ) },
-    { "hot_streak",                OPT_INT8,  &( talents.hot_streak                ) },
-    { "ice_floes",                 OPT_INT8,  &( talents.ice_floes                 ) },
-    { "ice_shards",                OPT_INT8,  &( talents.ice_shards                ) },
-    { "ignite",                    OPT_INT8,  &( talents.ignite                    ) },
-    { "improved_fire_ball",        OPT_INT8,  &( talents.improved_fire_ball        ) },
-    { "improved_fire_blast",       OPT_INT8,  &( talents.improved_fire_blast       ) },
-    { "improved_frost_bolt",       OPT_INT8,  &( talents.improved_frost_bolt       ) },
-    { "improved_scorch",           OPT_INT8,  &( talents.improved_scorch           ) },
-    { "improved_water_elemental",  OPT_INT8,  &( talents.improved_water_elemental  ) },
-    { "incineration",              OPT_INT8,  &( talents.incineration              ) },
-    { "living_bomb",               OPT_INT8,  &( talents.living_bomb               ) },
-    { "master_of_elements",        OPT_INT8,  &( talents.master_of_elements        ) },
-    { "mind_mastery",              OPT_INT8,  &( talents.mind_mastery              ) },
-    { "missile_barrage",           OPT_INT8,  &( talents.missile_barrage           ) },
-    { "molten_fury",               OPT_INT8,  &( talents.molten_fury               ) },
-    { "netherwind_presence",       OPT_INT8,  &( talents.netherwind_presence       ) },
-    { "piercing_ice",              OPT_INT8,  &( talents.piercing_ice              ) },
-    { "playing_with_fire",         OPT_INT8,  &( talents.playing_with_fire         ) },
-    { "precision",                 OPT_INT8,  &( talents.precision                 ) },
-    { "presence_of_mind",          OPT_INT8,  &( talents.presence_of_mind          ) },
-    { "pyroblast",                 OPT_INT8,  &( talents.pyroblast                 ) },
-    { "pyromaniac",                OPT_INT8,  &( talents.pyromaniac                ) },
-    { "shatter",                   OPT_INT8,  &( talents.shatter                   ) },
-    { "slow",                      OPT_INT8,  &( talents.slow                      ) },
-    { "spell_impact",              OPT_INT8,  &( talents.spell_impact              ) },
-    { "spell_power",               OPT_INT8,  &( talents.spell_power               ) },
-    { "student_of_the_mind",       OPT_INT8,  &( talents.student_of_the_mind       ) },
-    { "torment_the_weak",          OPT_INT8,  &( talents.torment_the_weak          ) },
-    { "water_elemental",           OPT_INT8,  &( talents.summon_water_elemental    ) },
-    { "winters_chill",             OPT_INT8,  &( talents.winters_chill             ) },
-    { "winters_grasp",             OPT_INT8,  &( talents.winters_grasp             ) },
-    { "world_in_flames",           OPT_INT8,  &( talents.world_in_flames           ) },
+    { "arcane_barrage",            OPT_INT8,   &( talents.arcane_barrage            ) },
+    { "arcane_concentration",      OPT_INT8,   &( talents.arcane_concentration      ) },
+    { "arcane_empowerment",        OPT_INT8,   &( talents.arcane_empowerment        ) },
+    { "arcane_flows",              OPT_INT8,   &( talents.arcane_flows              ) },
+    { "arcane_focus",              OPT_INT8,   &( talents.arcane_focus              ) },
+    { "arcane_impact",             OPT_INT8,   &( talents.arcane_impact             ) },
+    { "arcane_instability",        OPT_INT8,   &( talents.arcane_instability        ) },
+    { "arcane_meditation",         OPT_INT8,   &( talents.arcane_meditation         ) },
+    { "arcane_mind",               OPT_INT8,   &( talents.arcane_mind               ) },
+    { "arcane_potency",            OPT_INT8,   &( talents.arcane_potency            ) },
+    { "arcane_power",              OPT_INT8,   &( talents.arcane_power              ) },
+    { "arcane_subtlety",           OPT_INT8,   &( talents.arcane_subtlety           ) },
+    { "arctic_winds",              OPT_INT8,   &( talents.arctic_winds              ) },
+    { "brain_freeze",              OPT_INT8,   &( talents.brain_freeze              ) },
+    { "burning_soul",              OPT_INT8,   &( talents.burning_soul              ) },
+    { "burnout",                   OPT_INT8,   &( talents.burnout                   ) },
+    { "chilled_to_the_bone",       OPT_INT8,   &( talents.chilled_to_the_bone       ) },
+    { "cold_as_ice",               OPT_INT8,   &( talents.cold_as_ice               ) },
+    { "cold_snap",                 OPT_INT8,   &( talents.cold_snap                 ) },
+    { "combustion",                OPT_INT8,   &( talents.combustion                ) },
+    { "critical_mass",             OPT_INT8,   &( talents.critical_mass             ) },
+    { "deep_freeze",               OPT_INT8,   &( talents.deep_freeze               ) },
+    { "elemental_precision",       OPT_INT8,   &( talents.precision                 ) }, // deprecated
+    { "empowered_arcane_missiles", OPT_INT8,   &( talents.empowered_arcane_missiles ) },
+    { "empowered_fire",            OPT_INT8,   &( talents.empowered_fire            ) },
+    { "empowered_frost_bolt",      OPT_INT8,   &( talents.empowered_frost_bolt      ) },
+    { "fingers_of_frost",          OPT_INT8,   &( talents.fingers_of_frost          ) },
+    { "fire_power",                OPT_INT8,   &( talents.fire_power                ) },
+    { "focus_magic",               OPT_INT8,   &( talents.focus_magic               ) },
+    { "frost_channeling",          OPT_INT8,   &( talents.frost_channeling          ) },
+    { "frostbite",                 OPT_INT8,   &( talents.frostbite                 ) },
+    { "hot_streak",                OPT_INT8,   &( talents.hot_streak                ) },
+    { "ice_floes",                 OPT_INT8,   &( talents.ice_floes                 ) },
+    { "ice_shards",                OPT_INT8,   &( talents.ice_shards                ) },
+    { "ignite",                    OPT_INT8,   &( talents.ignite                    ) },
+    { "improved_fire_ball",        OPT_INT8,   &( talents.improved_fire_ball        ) },
+    { "improved_fire_blast",       OPT_INT8,   &( talents.improved_fire_blast       ) },
+    { "improved_frost_bolt",       OPT_INT8,   &( talents.improved_frost_bolt       ) },
+    { "improved_scorch",           OPT_INT8,   &( talents.improved_scorch           ) },
+    { "improved_water_elemental",  OPT_INT8,   &( talents.improved_water_elemental  ) },
+    { "incineration",              OPT_INT8,   &( talents.incineration              ) },
+    { "living_bomb",               OPT_INT8,   &( talents.living_bomb               ) },
+    { "master_of_elements",        OPT_INT8,   &( talents.master_of_elements        ) },
+    { "mind_mastery",              OPT_INT8,   &( talents.mind_mastery              ) },
+    { "missile_barrage",           OPT_INT8,   &( talents.missile_barrage           ) },
+    { "molten_fury",               OPT_INT8,   &( talents.molten_fury               ) },
+    { "netherwind_presence",       OPT_INT8,   &( talents.netherwind_presence       ) },
+    { "piercing_ice",              OPT_INT8,   &( talents.piercing_ice              ) },
+    { "playing_with_fire",         OPT_INT8,   &( talents.playing_with_fire         ) },
+    { "precision",                 OPT_INT8,   &( talents.precision                 ) },
+    { "presence_of_mind",          OPT_INT8,   &( talents.presence_of_mind          ) },
+    { "pyroblast",                 OPT_INT8,   &( talents.pyroblast                 ) },
+    { "pyromaniac",                OPT_INT8,   &( talents.pyromaniac                ) },
+    { "shatter",                   OPT_INT8,   &( talents.shatter                   ) },
+    { "slow",                      OPT_INT8,   &( talents.slow                      ) },
+    { "spell_impact",              OPT_INT8,   &( talents.spell_impact              ) },
+    { "spell_power",               OPT_INT8,   &( talents.spell_power               ) },
+    { "student_of_the_mind",       OPT_INT8,   &( talents.student_of_the_mind       ) },
+    { "torment_the_weak",          OPT_INT8,   &( talents.torment_the_weak          ) },
+    { "water_elemental",           OPT_INT8,   &( talents.summon_water_elemental    ) },
+    { "winters_chill",             OPT_INT8,   &( talents.winters_chill             ) },
+    { "winters_grasp",             OPT_INT8,   &( talents.winters_grasp             ) },
+    { "world_in_flames",           OPT_INT8,   &( talents.world_in_flames           ) },
     // Glyphs
-    { "glyph_arcane_blast",        OPT_INT8,  &( glyphs.arcane_blast               ) },
-    { "glyph_arcane_power",        OPT_INT8,  &( glyphs.arcane_power               ) },
-    { "glyph_fire_ball",           OPT_INT8,  &( glyphs.fire_ball                  ) },
-    { "glyph_frost_bolt",          OPT_INT8,  &( glyphs.frost_bolt                 ) },
-    { "glyph_improved_scorch",     OPT_INT8,  &( glyphs.improved_scorch            ) },
-    { "glyph_mage_armor",          OPT_INT8,  &( glyphs.mage_armor                 ) },
-    { "glyph_mana_gem",            OPT_INT8,  &( glyphs.mana_gem                   ) },
-    { "glyph_molten_armor",        OPT_INT8,  &( glyphs.molten_armor               ) },
-    { "glyph_water_elemental",     OPT_INT8,  &( glyphs.water_elemental            ) },
-    { "glyph_frostfire",           OPT_INT8,  &( glyphs.frostfire                  ) },
+    { "glyph_arcane_blast",        OPT_INT8,   &( glyphs.arcane_blast               ) },
+    { "glyph_arcane_power",        OPT_INT8,   &( glyphs.arcane_power               ) },
+    { "glyph_fire_ball",           OPT_INT8,   &( glyphs.fire_ball                  ) },
+    { "glyph_frost_bolt",          OPT_INT8,   &( glyphs.frost_bolt                 ) },
+    { "glyph_improved_scorch",     OPT_INT8,   &( glyphs.improved_scorch            ) },
+    { "glyph_mage_armor",          OPT_INT8,   &( glyphs.mage_armor                 ) },
+    { "glyph_mana_gem",            OPT_INT8,   &( glyphs.mana_gem                   ) },
+    { "glyph_molten_armor",        OPT_INT8,   &( glyphs.molten_armor               ) },
+    { "glyph_water_elemental",     OPT_INT8,   &( glyphs.water_elemental            ) },
+    { "glyph_frostfire",           OPT_INT8,   &( glyphs.frostfire                  ) },
+    // Options
+    { "focus_magic_target",        OPT_STRING, &( focus_magic_target_str            ) },
     { NULL, OPT_UNKNOWN }
   };
   
