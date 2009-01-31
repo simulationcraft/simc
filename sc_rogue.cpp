@@ -16,6 +16,7 @@ struct rogue_t : public player_t
   action_t* active_deadly_poison;
   action_t* active_instant_poison;
   action_t* active_wound_poison;
+  action_t* active_rupture;
   action_t* active_slice_and_dice;
 
   // Buffs
@@ -169,6 +170,7 @@ struct rogue_t : public player_t
     active_deadly_poison     = 0;
     active_instant_poison    = 0;
     active_wound_poison      = 0;
+    active_rupture           = 0;
     active_slice_and_dice    = 0;
 
     // Buffs
@@ -260,13 +262,17 @@ namespace { // ANONYMOUS NAMESPACE =========================================
 
 struct rogue_attack_t : public attack_t
 {
-  int8_t  requires_weapon;
-  int8_t  requires_position;
-  bool    requires_stealth;
-  bool    requires_combo_points;
-  bool    adds_combo_points;
-  int16_t min_energy, min_combo_points;
-  int16_t max_energy, max_combo_points;
+  int8_t requires_weapon;
+  int8_t requires_position;
+  bool   requires_stealth;
+  bool   requires_combo_points;
+  bool   adds_combo_points;
+  int8_t min_combo_points, max_combo_points;
+  double min_energy, max_energy;
+  double min_hfb_expire, max_hfb_expire;
+  double min_snd_expire, max_snd_expire;
+  double min_rup_expire, max_rup_expire;
+  double min_env_expire, max_env_expire;
 
   rogue_attack_t( const char* n, player_t* player, int8_t s=SCHOOL_PHYSICAL, int8_t t=TREE_NONE ) : 
     attack_t( n, player, RESOURCE_ENERGY, s, t ), 
@@ -275,8 +281,12 @@ struct rogue_attack_t : public attack_t
     requires_stealth(false),
     requires_combo_points(false),
     adds_combo_points(false), 
-    min_energy(0), min_combo_points(0), 
-    max_energy(0), max_combo_points(0)
+    min_combo_points(0), max_combo_points(0),
+    min_energy(0), max_energy(0), 
+    min_hfb_expire(0), max_hfb_expire(0), 
+    min_snd_expire(0), max_snd_expire(0), 
+    min_rup_expire(0), max_rup_expire(0), 
+    min_env_expire(0), max_env_expire(0)
   {
     rogue_t* p = player -> cast_rogue();
     base_crit += p -> talents.malice * 0.01;
@@ -443,7 +453,10 @@ static void trigger_cut_to_the_chase( rogue_attack_t* a )
   if( a -> sim -> roll( p -> talents.cut_to_the_chase * 0.20 ) )
   {
     p -> buffs_combo_points = 5;
-    p -> active_slice_and_dice -> refresh_duration();
+    if( p -> active_slice_and_dice )
+    {
+      p -> active_slice_and_dice -> refresh_duration();
+    }
     p -> buffs_combo_points = 0;
   }
 }
@@ -706,10 +719,22 @@ void rogue_attack_t::parse_options( option_t*          options,
 {
   option_t base_options[] =
   {
-    { "min_energy",       OPT_INT16, &min_energy        },
-    { "max_energy",       OPT_INT16, &max_energy        },
-    { "min_combo_points", OPT_INT16, &min_combo_points  },
-    { "max_combo_points", OPT_INT16, &max_combo_points  },
+    { "min_combo_points", OPT_INT8,  &min_combo_points  },
+    { "max_combo_points", OPT_INT8,  &max_combo_points  },
+    { "cp>",              OPT_INT8,  &min_combo_points  },
+    { "cp<",              OPT_INT8 , &max_combo_points  },
+    { "min_energy",       OPT_FLT,   &min_energy        },
+    { "max_energy",       OPT_FLT,   &max_energy        },
+    { "energy>",          OPT_FLT,   &min_energy        },
+    { "energy<",          OPT_FLT,   &max_energy        },
+    { "hfb>",             OPT_FLT,   &min_hfb_expire    },
+    { "hfb<",             OPT_FLT,   &max_hfb_expire    },
+    { "snd>",             OPT_FLT,   &min_snd_expire    },
+    { "snd<",             OPT_FLT,   &max_snd_expire    },
+    { "env>",             OPT_FLT,   &min_env_expire    },
+    { "env<",             OPT_FLT,   &max_env_expire    },
+    { "rup>",             OPT_FLT,   &min_rup_expire    },
+    { "rup<",             OPT_FLT,   &max_rup_expire    },
     { NULL }
   };
   std::vector<option_t> merged_options;
@@ -838,7 +863,7 @@ void rogue_attack_t::player_buff()
 }
 
 
-// rogue_attack_t::ready() ================================================
+// rogue_attack_t::armor() ================================================
 
 double rogue_attack_t::armor()
 {
@@ -875,13 +900,8 @@ bool rogue_attack_t::ready()
     if( p -> buffs_stealthed <= 0 )
       return false;
 
-  if( min_energy > 0 )
-    if( p -> resource_current[ RESOURCE_ENERGY ] < min_energy )
-      return false;
-
-  if( max_energy > 0 )
-    if( p -> resource_current[ RESOURCE_ENERGY ] > max_energy )
-      return false;
+  if( requires_combo_points && ( p -> buffs_combo_points == 0 ) )
+    return false;
 
   if( min_combo_points > 0 )
     if( p -> buffs_combo_points < min_combo_points )
@@ -891,8 +911,47 @@ bool rogue_attack_t::ready()
     if( p -> buffs_combo_points > max_combo_points )
       return false;
 
-  if( requires_combo_points && ( p -> buffs_combo_points == 0 ) )
-    return false;
+  if( min_energy > 0 )
+    if( p -> resource_current[ RESOURCE_ENERGY ] < min_energy )
+      return false;
+
+  if( max_energy > 0 )
+    if( p -> resource_current[ RESOURCE_ENERGY ] > max_energy )
+      return false;
+
+  double ct = sim -> current_time;
+
+  if( min_hfb_expire > 0 )
+    if( ! p -> expirations_hunger_for_blood || ( ( p -> expirations_hunger_for_blood -> occurs() - ct ) < min_hfb_expire ) )
+      return false;
+
+  if( max_hfb_expire > 0 )
+    if( ! p -> expirations_hunger_for_blood || ( ( p -> expirations_hunger_for_blood -> occurs() - ct ) > max_hfb_expire ) )
+      return false;
+
+  if( min_snd_expire > 0 )
+    if( ! p -> expirations_slice_and_dice || ( ( p -> expirations_slice_and_dice -> occurs() - ct ) < min_snd_expire ) )
+      return false;
+
+  if( max_snd_expire > 0 )
+    if( ! p -> expirations_slice_and_dice || ( ( p -> expirations_slice_and_dice -> occurs() - ct ) > max_snd_expire ) )
+      return false;
+
+  if( min_env_expire > 0 )
+    if( ! p -> expirations_envenom || ( ( p -> expirations_envenom -> occurs() - ct ) < min_env_expire ) )
+      return false;
+
+  if( max_env_expire > 0 )
+    if( ! p -> expirations_envenom || ( ( p -> expirations_envenom -> occurs() - ct ) > max_env_expire ) )
+      return false;
+
+  if( min_rup_expire > 0 )
+    if( ! p -> active_rupture || ( ( p -> active_rupture -> duration_ready - ct ) < min_rup_expire ) )
+      return false;
+
+  if( max_rup_expire > 0 )
+    if( ! p -> active_rupture || ( ( p -> active_rupture -> duration_ready - ct ) > max_rup_expire ) )
+      return false;
 
   return true;
 }
@@ -1927,6 +1986,8 @@ struct rupture_t : public rogue_attack_t
                         p -> level >= 74 ? dmg_74 :
                         p -> level >= 68 ? dmg_68 : 
                                            dmg_60 );
+
+    observer = &( p -> active_rupture );    
   }
 
   virtual void execute()
@@ -2096,8 +2157,6 @@ struct slice_and_dice_t : public rogue_attack_t
     rogue_attack_t( "slice_and_dice", player, SCHOOL_PHYSICAL, TREE_ASSASSINATION ),
     refresh_at(0)
   {
-    rogue_t* p = player -> cast_rogue();
-
     option_t options[] =
     {
       { "refresh_at", OPT_FLT, &refresh_at },
@@ -2107,8 +2166,6 @@ struct slice_and_dice_t : public rogue_attack_t
 
     requires_combo_points = true;
     base_cost = 25;
-
-    p -> active_slice_and_dice = this;
   }
 
   virtual void execute()
@@ -2119,6 +2176,7 @@ struct slice_and_dice_t : public rogue_attack_t
     consume_resource();
     trigger_relentless_strikes( this );
     clear_combo_points( p );
+    p -> active_slice_and_dice = this;
   }
 
   virtual void refresh_duration()
@@ -2138,6 +2196,7 @@ struct slice_and_dice_t : public rogue_attack_t
         p -> aura_loss( "Slice and Dice" );
         p ->       buffs_slice_and_dice = 0;
         p -> expirations_slice_and_dice = 0;
+	p ->      active_slice_and_dice = 0;
       }
     };
 
@@ -2873,8 +2932,6 @@ void rogue_t::combat_begin()
 
   if( sim -> optimal_raid )
   {
-    // Tricks of the Trade: In "single-player" mode, give the buff to yourself.
-
     if( talents.honor_among_thieves )
     {
       
@@ -2887,6 +2944,10 @@ void rogue_t::combat_begin()
 void rogue_t::reset()
 {
   player_t::reset();
+
+  // Active
+  active_rupture        = 0;
+  active_slice_and_dice = 0;
 
   // Buffs
   buffs_adrenaline_rush    = 0;
