@@ -60,6 +60,7 @@ void pet_t::reset()
   player_t::reset();
   sleeping = 1;
   summon_time = 0;
+  party = owner -> party;
 }
 
 // pet_t::summon ============================================================
