@@ -1243,12 +1243,8 @@ struct treants_spell_t : public druid_spell_t
       return false;
 
     if( target_pct > 0 )
-    {
-      double health_pct = sim -> target -> health_percentage();
-
-      if( health_pct <= 0 || health_pct > target_pct )
+      if( sim -> target -> health_percentage() > target_pct )
         return false;
-    }
 
     return true;
   }

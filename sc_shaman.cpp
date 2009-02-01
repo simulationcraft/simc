@@ -2417,9 +2417,7 @@ struct bloodlust_t : public shaman_spell_t
     {
       if( target_pct > 0 )
       {
-	double health_pct = t -> health_percentage();
-
-	if( health_pct <= 0 || health_pct > target_pct )
+	if( t -> health_percentage() > target_pct )
 	  return false;
       }
     }
@@ -2674,12 +2672,15 @@ struct spirit_wolf_spell_t : public shaman_spell_t
     if( ! shaman_spell_t::ready() )
       return false;
 
-    if( target_pct > 0 )
-    {
-      double health_pct = sim -> target -> health_percentage();
+    target_t* t = sim -> target;
 
-      if( health_pct <= 0 || health_pct > target_pct )
-	return false;
+    if( t -> time_to_die() > 60 )
+    {
+      if( target_pct > 0 )
+      {
+	if( t -> health_percentage() > target_pct )
+	  return false;
+      }
     }
 
     return true;

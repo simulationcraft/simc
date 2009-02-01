@@ -86,7 +86,7 @@ double target_t::time_to_die()
 
 double target_t::health_percentage()
 {
-  if( initial_health <= 0 ) return 0;
+  if( initial_health <= 0 ) return 100;
 
   return 100.0 * current_health / initial_health;
 }
@@ -184,6 +184,7 @@ void target_t::combat_begin()
     debuffs.razorice = 1;
     debuffs.snare = 1;
     debuffs.sunder_armor = 3925;
+
     // Dynamic De-Buffs
     debuffs.affliction_effects = 12;
     debuffs.curse_of_elements = 13;
@@ -200,6 +201,61 @@ void target_t::combat_begin()
     debuffs.savage_combat = 1;
     debuffs.totem_of_wrath = 1;
     debuffs.winters_chill = 5;
+
+    // Setup a periodic check for Bloodlust
+
+    struct bloodlust_proc_t : public event_t
+    {
+      bloodlust_proc_t( sim_t* sim ) : event_t( sim, 0 )
+      {
+	name = "Bloodlust Proc";
+        for( player_t* p = sim -> player_list; p; p = p -> next )
+        {
+          if( p -> sleeping ) continue;
+          if( sim -> cooldown_ready( p -> cooldowns.bloodlust ) )
+          {
+            p -> aura_gain( "Bloodlust" );
+            p -> buffs.bloodlust = 1;
+            p -> cooldowns.bloodlust = sim -> current_time + 300;
+          }
+        }
+	sim -> add_event( this, 40.0 );
+      }
+      virtual void execute()
+      {
+        for( player_t* p = sim -> player_list; p; p = p -> next )
+        {
+          if( p -> buffs.bloodlust > 0 )
+          {
+            p -> aura_loss( "Bloodlust" );
+            p -> buffs.bloodlust = 0;
+          }
+        }
+      }
+    };
+    struct bloodlust_check_t : public event_t
+    {
+      bloodlust_check_t( sim_t* sim ) : event_t( sim, 0 )
+      {
+	name = "Bloodlust Check";
+	sim -> add_event( this, 1.0 );
+      }
+      virtual void execute()
+      {
+	target_t* t = sim -> target;
+	if( ( t -> health_percentage() < 25 ) || 
+	    ( t -> time_to_die()       < 60 ) )
+	{
+	  new ( sim ) bloodlust_proc_t( sim );
+	}
+	else
+	{
+	  new ( sim ) bloodlust_check_t( sim );
+	}
+      }
+    };
+
+    new ( sim ) bloodlust_check_t( sim );
   }
 }
 

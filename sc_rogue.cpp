@@ -473,9 +473,7 @@ static void trigger_dirty_deeds( rogue_attack_t* a )
   if( ! p -> talents.dirty_deeds ) 
     return;
 
-  double health_pct = a -> sim -> target -> health_percentage();
-
-  if( health_pct > 0 && health_pct < 35 )
+  if( a -> sim -> target -> health_percentage() < 35 )
   {
     a -> player_multiplier *= 1.0 + p -> talents.dirty_deeds * 0.10;
   }

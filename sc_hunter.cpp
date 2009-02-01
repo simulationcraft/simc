@@ -692,7 +692,7 @@ static void trigger_feeding_frenzy( action_t* a )
   {
     double target_pct = a -> sim -> target -> health_percentage();
 
-    if( target_pct > 0 && target_pct < 35 ) 
+    if( target_pct < 35 ) 
     {
       a -> player_multiplier *= 1.0 + p -> talents.feeding_frenzy * 0.06;
     }
@@ -2291,9 +2291,7 @@ struct kill_shot_t : public hunter_attack_t
 
   virtual bool ready()
   {
-    double target_pct = sim -> target -> health_percentage();
-
-    if( target_pct == 0 || target_pct > 20.0 )
+    if( sim -> target -> health_percentage() > 20 )
       return false;
 
     return hunter_attack_t::ready();

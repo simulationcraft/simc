@@ -535,9 +535,7 @@ static void trigger_molten_fury( spell_t* s )
 
   if( ! p -> talents.molten_fury ) return;
 
-  double health_pct = s -> sim -> target -> health_percentage();
-
-  if( health_pct > 0 && health_pct < 35 )
+  if( s -> sim -> target -> health_percentage() < 35 )
   {
     s -> player_multiplier *= 1.0 + p -> talents.molten_fury * 0.06;
   }
