@@ -35,8 +35,8 @@ struct flask_t : public action_t
     {
       if( type_str == util_t::flask_type_string( i ) )
       {
-	type = i;
-	break;
+        type = i;
+        break;
       }
     }
     assert( type != FLASK_NONE );
@@ -83,8 +83,8 @@ struct flask_t : public action_t
   virtual bool ready()
   {
     return( player -> flask           ==  FLASK_NONE &&
-	    player -> elixir_guardian == ELIXIR_NONE &&
-	    player -> elixir_battle   == ELIXIR_NONE );
+            player -> elixir_guardian == ELIXIR_NONE &&
+            player -> elixir_battle   == ELIXIR_NONE );
   }
 };
 
@@ -114,8 +114,8 @@ struct food_t : public action_t
     {
       if( type_str == util_t::food_type_string( i ) )
       {
-	type = i;
-	break;
+        type = i;
+        break;
       }
     }
     assert( type != FOOD_NONE );
@@ -158,7 +158,7 @@ struct food_t : public action_t
     case FOOD_GREAT_FEAST:     
       player -> attack_power              += 60;
       player -> spell_power[ SCHOOL_MAX ] += 35;
-	  player -> attribute[ ATTR_STAMINA ] += 30;
+          player -> attribute[ ATTR_STAMINA ] += 30;
       break;
     default: assert(0);
     }
@@ -181,6 +181,78 @@ struct destruction_potion_t : public action_t
   destruction_potion_t( player_t* p, const std::string& options_str ) : 
     action_t( ACTION_USE, "destruction_potion", p ), used( 0 )
   {
+    option_t options[] =
+    {
+      { "sync", OPT_STRING, &sync_str },
+      { NULL }
+    };
+    parse_options( options, options_str );
+
+    cooldown = 60.0;
+    cooldown_group = "potion";
+    trigger_gcd = 0;
+    harmful = false;
+  }
+  
+  virtual void execute()
+  {
+    struct expiration_t : public event_t
+    {
+      expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
+      {
+        name = "Destruction Potion Expiration";
+        p -> aura_gain( "Destruction Potion Buff" );
+        p -> spell_power[ SCHOOL_MAX ] += 120;
+        p -> spell_crit += 0.02;
+        sim -> add_event( this, 15.0 );
+      }
+      virtual void execute()
+      {
+        player_t* p = player;
+        p -> aura_loss( "Destruction Potion Buff" );
+        p -> spell_power[ SCHOOL_MAX ] -= 120;
+        p -> spell_crit -= 0.02;
+      }
+    };
+  
+    player -> share_cooldown( cooldown_group, cooldown );
+    new ( sim ) expiration_t( sim, player );
+    used = sim -> potion_sickness;
+  }
+
+  virtual bool ready()
+  {
+    if( used )
+      return false;
+
+    return( cooldown_ready > sim -> current_time );
+  }
+
+  virtual void reset()
+  {
+    action_t::reset();
+    used = 0;
+  }
+};
+
+// ==========================================================================
+// Speed Potion
+// ==========================================================================
+
+struct speed_potion_t : public action_t
+{
+  int8_t used;
+
+  speed_potion_t( player_t* p, const std::string& options_str ) : 
+    action_t( ACTION_USE, "speed_potion", p ), used( 0 )
+  {
+    option_t options[] =
+    {
+      { "sync", OPT_STRING, &sync_str },
+      { NULL }
+    };
+    parse_options( options, options_str );
+
     cooldown = 120.0;
     cooldown_group = "potion";
     trigger_gcd = 0;
@@ -193,17 +265,85 @@ struct destruction_potion_t : public action_t
     {
       expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
       {
-	name = "Destruction Potion Expiration";
-	player -> aura_gain( "Destruction Potion Buff" );
-	player -> spell_power[ SCHOOL_MAX ] += 120;
-	player -> spell_crit += 0.02;
-	sim -> add_event( this, 15.0 );
+        name = "Speed Potion Expiration";
+        p -> aura_gain( "Speed Potion Buff" );
+        p -> haste_rating += 500;
+        p -> recalculate_haste();
+        sim -> add_event( this, 15.0 );
       }
       virtual void execute()
       {
-	player -> aura_loss( "Destruction Potion Buff" );
-	player -> spell_power[ SCHOOL_MAX ] -= 120;
-	player -> spell_crit -= 0.02;
+        player_t* p = player;
+        p -> aura_loss( "Speed Potion Buff" );
+        p -> haste_rating -= 500;
+        p -> recalculate_haste();
+      }
+    };
+  
+    player -> share_cooldown( cooldown_group, cooldown );
+    new ( sim ) expiration_t( sim, player );
+    used = sim -> potion_sickness;
+  }
+
+  virtual bool ready()
+  {
+    if( used )
+      return false;
+
+    return( cooldown_ready > sim -> current_time );
+  }
+
+  virtual void reset()
+  {
+    action_t::reset();
+    used = 0;
+  }
+};
+
+// ==========================================================================
+// Wild Magic Potion
+// ==========================================================================
+
+struct wild_magic_potion_t : public action_t
+{
+  int8_t used;
+
+  wild_magic_potion_t( player_t* p, const std::string& options_str ) : 
+    action_t( ACTION_USE, "wild_magic_potion", p ), used( 0 )
+  {
+    option_t options[] =
+    {
+      { "sync", OPT_STRING, &sync_str },
+      { NULL }
+    };
+    parse_options( options, options_str );
+
+    cooldown = 60.0;
+    cooldown_group = "potion";
+    trigger_gcd = 0;
+    harmful = false;
+  }
+  
+  virtual void execute()
+  {
+    struct expiration_t : public event_t
+    {
+      expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
+      {
+        name = "Wild Magic Potion Expiration";
+        p -> aura_gain( "Wild Magic Potion Buff" );
+        p -> attack_crit += 200 / p -> rating.attack_crit;
+        p ->  spell_crit += 200 / p -> rating.spell_crit;
+        p -> spell_power[ SCHOOL_MAX ] += 200;
+        sim -> add_event( this, 15.0 );
+      }
+      virtual void execute()
+      {
+        player_t* p = player;
+        p -> aura_loss( "Wild Magic Potion Buff" );
+        p -> attack_crit -= 200 / p -> rating.attack_crit;
+        p ->  spell_crit -= 200 / p -> rating.spell_crit;
+        p -> spell_power[ SCHOOL_MAX ] -= 200;
       }
     };
   
@@ -284,7 +424,7 @@ struct mana_potion_t : public action_t
       return false;
 
     return( player -> resource_max    [ RESOURCE_MANA ] - 
-	    player -> resource_current[ RESOURCE_MANA ] ) > trigger;
+            player -> resource_current[ RESOURCE_MANA ] ) > trigger;
   }
 
   virtual void reset()
@@ -342,7 +482,7 @@ struct health_stone_t : public action_t
       return false;
 
     return( player -> resource_max    [ RESOURCE_HEALTH ] - 
-	    player -> resource_current[ RESOURCE_HEALTH ] ) > trigger;
+            player -> resource_current[ RESOURCE_HEALTH ] ) > trigger;
   }
 
   virtual void reset()
@@ -406,7 +546,7 @@ struct dark_rune_t : public action_t
       return false;
 
     return( player -> resource_max    [ RESOURCE_MANA ] - 
-	    player -> resource_current[ RESOURCE_MANA ] ) > trigger;
+            player -> resource_current[ RESOURCE_MANA ] ) > trigger;
   }
 
   virtual void reset()
@@ -480,8 +620,8 @@ void consumable_t::init_food( player_t* p )
 // ==========================================================================
 
 action_t* consumable_t::create_action( player_t*          p,
-				       const std::string& name, 
-				       const std::string& options_str )
+                                       const std::string& name, 
+                                       const std::string& options_str )
 {
   if( name == "dark_rune"          ) return new          dark_rune_t( p, options_str );
   if( name == "destruction_potion" ) return new destruction_potion_t( p, options_str );
@@ -489,6 +629,8 @@ action_t* consumable_t::create_action( player_t*          p,
   if( name == "food"               ) return new               food_t( p, options_str );
   if( name == "health_stone"       ) return new       health_stone_t( p, options_str );
   if( name == "mana_potion"        ) return new        mana_potion_t( p, options_str );
+  if( name == "speed_potion"       ) return new       speed_potion_t( p, options_str );
+  if( name == "wild_magic_potion"  ) return new  wild_magic_potion_t( p, options_str );
   if( name == "wizard_oil"         ) return new         wizard_oil_t( p, options_str );
 
   return 0;

@@ -74,6 +74,7 @@ struct rogue_t : public player_t
   attack_t*  off_hand_attack;
 
   // Options
+  double      honor_among_thieves_interval;
   std::string tricks_of_the_trade_target_str;
 
   struct talents_t
@@ -227,6 +228,8 @@ struct rogue_t : public player_t
     main_hand_attack = 0;
     off_hand_attack  = 0;
 
+    // Options
+    honor_among_thieves_interval = 0;
   }
 
   // Character Definition
@@ -2930,11 +2933,36 @@ void rogue_t::combat_begin()
 {
   player_t::combat_begin();
 
-  if( sim -> optimal_raid )
+  if( talents.honor_among_thieves )
   {
-    if( talents.honor_among_thieves )
+    if( honor_among_thieves_interval > 0 )
     {
+      struct honor_among_thieves_proc_t : public event_t
+      {
+	honor_among_thieves_proc_t( sim_t* sim, rogue_t* p, double interval ) : event_t( sim, p )
+	{
+	  name = "Honor Among Thieves Proc";
+	  sim -> add_event( this, interval );
+	}
+	virtual void execute()
+	{
+	  rogue_t* p = player -> cast_rogue();
+	  add_combo_point( p );
+	  p -> procs_honor_among_thieves -> occur();
+	  // Next proc comes in +/- 50% random range centered on 'honor_among_thieves_interval'
+	  double interval = p -> honor_among_thieves_interval;
+	  interval += ( sim -> rng -> real() - 0.5 ) * interval;
+	  new ( sim ) honor_among_thieves_proc_t( sim, p, interval );
+	}
+      };
       
+      // First proc comes 1.0 seconds into combat.
+      new ( sim ) honor_among_thieves_proc_t( sim, this, 1.0 );
+    }
+    else if( party == 0 )
+    {
+      printf( "simcraft: %s must have a party specification or 'honor_among_thieves_interval' must be set.\n", name() );
+      exit(0);
     }
   }
 }
@@ -2981,11 +3009,12 @@ void rogue_t::reset()
 
 void rogue_t::raid_event( action_t* a )
 {
-  if( talents.honor_among_thieves )
+  if( talents.honor_among_thieves && ( honor_among_thieves_interval == 0 ) )
   {
     player_t* p = a -> player;
 
     if( p != this &&
+	p -> party != 0 &&
         p -> party == party  &&
 	a -> result == RESULT_CRIT && 
 	! a -> proc &&
@@ -3158,7 +3187,8 @@ bool rogue_t::parse_option( const std::string& name,
     { "glyph_slice_and_dice",       OPT_INT8, &( glyphs.slice_and_dice              ) },
     { "glyph_vigor",                OPT_INT8, &( glyphs.vigor                       ) },
     // Options
-    { "tricks_of_the_trade_target", OPT_STRING, &( tricks_of_the_trade_target_str   ) },
+    { "honor_among_thieves_interval", OPT_FLT,    &( honor_among_thieves_interval   ) },
+    { "tricks_of_the_trade_target",   OPT_STRING, &( tricks_of_the_trade_target_str ) },
     { NULL, OPT_UNKNOWN }
   };
 

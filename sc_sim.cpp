@@ -754,6 +754,11 @@ int main( int argc, char** argv )
 {
   sim_t sim;
 
+  for( int i=0; i < argc; i++ )
+  {
+    printf( "%s\n", argv[ i ] );
+  }
+
   if( ! option_t::parse( &sim, argc, argv ) )
   {
     fprintf( sim.output_file, "ERROR! Incorrect option format..\n" );

@@ -133,24 +133,42 @@ bool option_t::parse( sim_t* sim,
 {
   if( sim -> debug ) report_t::log( sim, "option_t::parse: %s", line );
 
-  std::string buffer, name, value;
+  std::string buffer;
 
   remove_white_space( buffer, line );
 
-  if( buffer == "-" )
+  std::vector<std::string> tokens;
+
+  int num_tokens = util_t::string_split( tokens, buffer, " " );
+
+  for( int i=0; i < num_tokens; i++ )
+    if( ! parse( sim, tokens[ i ] ) )
+      return false;
+
+  return true;
+}
+
+// option_t::parse ==========================================================
+
+bool option_t::parse( sim_t*       sim,
+		      std::string& token )
+{
+  if( sim -> debug ) report_t::log( sim, "option_t::parse: %s", token.c_str() );
+
+  if( token == "-" )
   {
     parse( sim, stdin );
     return true;
   }
 
-  std::string::size_type cut_pt = buffer.find_first_of( "=" );
+  std::string::size_type cut_pt = token.find_first_of( "=" );
 
-  if( cut_pt == buffer.npos )
+  if( cut_pt == token.npos )
   {
-    FILE* file = fopen( buffer.c_str(), "r" );
+    FILE* file = fopen( token.c_str(), "r" );
     if( ! file )
     {
-      fprintf( sim -> output_file, "simcraft: Unexpected parameter '%s'.  Expected format: name=value\n", line );
+      fprintf( sim -> output_file, "simcraft: Unexpected parameter '%s'.  Expected format: name=value\n", token.c_str() );
       return false;
     }
     parse( sim, file );
@@ -158,8 +176,10 @@ bool option_t::parse( sim_t* sim,
     return true;
   }
   
-  name  = buffer.substr( 0, cut_pt );
-  value = buffer.substr( cut_pt + 1 );
+  std::string name, value;
+
+  name  = token.substr( 0, cut_pt );
+  value = token.substr( cut_pt + 1 );
 
   if( name == "output" )
   {
