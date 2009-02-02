@@ -246,6 +246,18 @@ void sim_t::combat_begin()
 
   reset();
 
+  if( optimal_raid )
+  {
+    // Static buffs until appropriate player class/spec is implemented
+    buffs.battle_shout = 548;
+    buffs.blessing_of_kings = 1;
+    buffs.blessing_of_might = 688;
+    buffs.blessing_of_wisdom = 1;
+    buffs.leader_of_the_pack = 1;
+    buffs.sanctified_retribution = 1;
+    buffs.swift_retribution = 1;
+  }
+
   target -> combat_begin();
 
   for( player_t* p = player_list; p; p = p -> next )
@@ -706,6 +718,15 @@ bool sim_t::parse_option( const std::string& name,
     { "wheel_granularity",                OPT_FLT,    &( wheel_granularity                        ) },
     { "wheel_seconds",                    OPT_INT32,  &( wheel_seconds                            ) },
     { "wiki",                             OPT_STRING, &( wiki_file_str                            ) },
+    // FIXME! Once appropriate class implemented, these will be removed
+    // FIXME! Modeling them as target "debuffs" so they do not need to be added to every profile
+    { "battle_shout",           OPT_INT16,  &( buffs.battle_shout           ) },
+    { "blessing_of_kings",      OPT_INT8,   &( buffs.blessing_of_kings      ) },
+    { "blessing_of_might",      OPT_INT16,  &( buffs.blessing_of_might      ) },
+    { "blessing_of_wisdom",     OPT_INT16,  &( buffs.blessing_of_wisdom     ) },
+    { "leader_of_the_pack",     OPT_INT8,   &( buffs.leader_of_the_pack     ) },
+    { "sanctified_retribution", OPT_INT8,   &( buffs.sanctified_retribution ) },
+    { "swift_retribution",      OPT_INT8,   &( buffs.swift_retribution      ) },
     { NULL, OPT_UNKNOWN }
   };
 

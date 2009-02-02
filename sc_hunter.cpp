@@ -1646,7 +1646,7 @@ action_t* hunter_pet_t::create_action( const std::string& name,
   if( name == "roar_of_recovery"  ) return new      pet_roar_of_recovery_t( this, options_str );
   if( name == "smack"             ) return new            pet_focus_dump_t( "smack", this );
 
-  return 0;
+  return pet_t::create_action( name, options_str );
 }
 
 // =========================================================================

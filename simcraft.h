@@ -48,8 +48,9 @@ struct patch_t
 // Forward Declarations ======================================================
 
 struct action_t;
-struct base_stats_t;
 struct attack_t;
+struct base_stats_t;
+struct callback_t;
 struct druid_t;
 struct event_t;
 struct gain_t;
@@ -60,16 +61,16 @@ struct pet_t;
 struct player_t;
 struct priest_t;
 struct proc_t;
-struct report_t;
-struct rogue_t;
-struct shaman_t;
-struct sim_t;
 struct rank_t;
 struct rating_t;
+struct report_t;
 struct rng_t;
+struct rogue_t;
 struct scaling_t;
-struct stats_t;
+struct shaman_t;
+struct sim_t;
 struct spell_t;
+struct stats_t;
 struct talent_translation_t;
 struct target_t;
 struct uptime_t;
@@ -130,31 +131,36 @@ struct event_compare_t
 
 enum race_type { RACE_NONE=0, RACE_BEAST, RACE_DRAGONKIN, RACE_GIANT, RACE_HUMANOID, RACE_MAX };
 
-enum player_type { PLAYER_NONE=0, DEATH_KNIGHT, DRUID, HUNTER, MAGE, PALADIN, PRIEST, ROGUE, SHAMAN, WARLOCK, WARRIOR, PLAYER_PET, PLAYER_GUARDIAN, PLAYER_MAX };
+enum player_type { 
+  PLAYER_NONE=0, 
+  DEATH_KNIGHT, DRUID, HUNTER, MAGE, PALADIN, PRIEST, ROGUE, SHAMAN, WARLOCK, WARRIOR, 
+  PLAYER_PET, PLAYER_GUARDIAN, 
+  PLAYER_MAX 
+};
 
 enum dmg_type { DMG_DIRECT=0, DMG_OVER_TIME=1 };
 
 enum attribute_type { ATTRIBUTE_NONE=0, ATTR_STRENGTH, ATTR_AGILITY, ATTR_STAMINA, ATTR_INTELLECT, ATTR_SPIRIT, ATTRIBUTE_MAX };
 
-enum resource_type { RESOURCE_NONE=0, RESOURCE_HEALTH, RESOURCE_MANA, RESOURCE_RAGE, RESOURCE_ENERGY, RESOURCE_FOCUS, RESOURCE_RUNIC, RESOURCE_MAX };
+enum resource_type { 
+  RESOURCE_NONE=0, 
+  RESOURCE_HEALTH, RESOURCE_MANA,  RESOURCE_RAGE, RESOURCE_ENERGY, RESOURCE_FOCUS, RESOURCE_RUNIC, 
+  RESOURCE_MAX };
 
-enum result_type { RESULT_NONE=0, RESULT_MISS, RESULT_RESIST, RESULT_DODGE, RESULT_PARRY, RESULT_BLOCK, RESULT_GLANCE, RESULT_CRUSH, RESULT_CRIT, RESULT_HIT, RESULT_MAX };
+enum result_type { 
+  RESULT_NONE=0, 
+  RESULT_MISS,   RESULT_RESIST, RESULT_DODGE, RESULT_PARRY, RESULT_BLOCK, 
+  RESULT_GLANCE, RESULT_CRUSH,  RESULT_CRIT,  RESULT_HIT,   RESULT_TICK, 
+  RESULT_MAX 
+};
 
 enum action_type { ACTION_USE=0, ACTION_SPELL, ACTION_ATTACK, ACTION_OTHER, ACTION_MAX };
 
 enum school_type {
-     SCHOOL_NONE=0, 
-     SCHOOL_ARCANE, 
-     SCHOOL_BLEED,
-     SCHOOL_CHAOS, 
-     SCHOOL_FIRE, 
-     SCHOOL_FROST, 
-     SCHOOL_FROSTFIRE, 
-     SCHOOL_HOLY, 
-     SCHOOL_NATURE, 
-     SCHOOL_PHYSICAL,
-     SCHOOL_SHADOW, 
-     SCHOOL_MAX 
+  SCHOOL_NONE=0, 
+  SCHOOL_ARCANE,    SCHOOL_BLEED,  SCHOOL_CHAOS,  SCHOOL_FIRE,     SCHOOL_FROST, 
+  SCHOOL_FROSTFIRE, SCHOOL_HOLY,   SCHOOL_NATURE, SCHOOL_PHYSICAL, SCHOOL_SHADOW, 
+  SCHOOL_MAX 
 };
 
 enum talent_tree_type {
@@ -170,71 +176,72 @@ enum talent_tree_type {
   TALENT_TREE_MAX
 };
 
-enum weapon_type { WEAPON_NONE=0, 
-                   WEAPON_DAGGER,   WEAPON_FIST,                                                                    WEAPON_SMALL,
-                   WEAPON_BEAST,    WEAPON_SWORD,    WEAPON_MACE,     WEAPON_AXE,                                   WEAPON_1H,
-                   WEAPON_BEAST_2H, WEAPON_SWORD_2H, WEAPON_MACE_2H,  WEAPON_AXE_2H, WEAPON_STAFF,  WEAPON_POLEARM, WEAPON_2H,
-                   WEAPON_BOW,      WEAPON_CROSSBOW, WEAPON_GUN,      WEAPON_WAND,   WEAPON_THROWN,                 WEAPON_RANGED,
-                   WEAPON_MAX };
+enum weapon_type { 
+  WEAPON_NONE=0, 
+  WEAPON_DAGGER,   WEAPON_FIST,                                                                    WEAPON_SMALL,
+  WEAPON_BEAST,    WEAPON_SWORD,    WEAPON_MACE,     WEAPON_AXE,                                   WEAPON_1H,
+  WEAPON_BEAST_2H, WEAPON_SWORD_2H, WEAPON_MACE_2H,  WEAPON_AXE_2H, WEAPON_STAFF,  WEAPON_POLEARM, WEAPON_2H,
+  WEAPON_BOW,      WEAPON_CROSSBOW, WEAPON_GUN,      WEAPON_WAND,   WEAPON_THROWN,                 WEAPON_RANGED,
+  WEAPON_MAX 
+};
 
 enum weapon_enchant_type { WEAPON_ENCHANT_NONE=0, BERSERKING, MONGOOSE, EXECUTIONER, DEATH_FROST, SCOPE, WEAPON_ENCHANT_MAX };
 
-enum weapon_buff_type { WEAPON_BUFF_NONE=0, 
-                        ANESTHETIC_POISON,
-                        DEADLY_POISON,
-                        FIRE_STONE,
-                        FLAMETONGUE, 
-                        INSTANT_POISON,
-                        SHARPENING_STONE, 
-                        SPELL_STONE,
-                        WINDFURY, 
-                        WIZARD_OIL,
-                        WOUND_POISON,
-                        WEAPON_BUFF_MAX };
+enum weapon_buff_type { 
+  WEAPON_BUFF_NONE=0, 
+  ANESTHETIC_POISON, DEADLY_POISON, FIRE_STONE, FLAMETONGUE, INSTANT_POISON, 
+  SHARPENING_STONE,  SPELL_STONE,   WINDFURY,   WIZARD_OIL,  WOUND_POISON,
+  WEAPON_BUFF_MAX 
+};
 
 enum slot_type { SLOT_NONE=0, SLOT_MAIN_HAND, SLOT_OFF_HAND, SLOT_RANGED, SLOT_MAX };
 
-enum elixir_type { ELIXIR_NONE=0,
-                   ELIXIR_DRAENIC_WISDOM,                          
-                   ELIXIR_MAJOR_MAGEBLOOD, 
-                   ELIXIR_GUARDIAN,
-                   ELIXIR_ADEPT,
-                   ELIXIR_FEL_STRENGTH,
-                   ELIXIR_GREATER_ARCANE,
-                   ELIXIR_MAJOR_AGILITY, 
-                   ELIXIR_MAJOR_FIRE_POWER, 
-                   ELIXIR_MAJOR_FROST_POWER, 
-                   ELIXIR_MAJOR_SHADOW_POWER, 
-                   ELIXIR_MAJOR_STRENGTH, 
-                   ELIXIR_MASTERY,
-                   ELIXIR_MONGOOSE,
-                   ELIXIR_ONSLAUGHT,
-                   ELIXIR_SAGES,
-                   ELIXIR_BATTLE,
-                   ELIXIR_MAX };
+enum elixir_type {
+  ELIXIR_NONE=0,
+  ELIXIR_DRAENIC_WISDOM,                          
+  ELIXIR_MAJOR_MAGEBLOOD, 
+  ELIXIR_GUARDIAN,
+  ELIXIR_ADEPT,
+  ELIXIR_FEL_STRENGTH,
+  ELIXIR_GREATER_ARCANE,
+  ELIXIR_MAJOR_AGILITY, 
+  ELIXIR_MAJOR_FIRE_POWER, 
+  ELIXIR_MAJOR_FROST_POWER, 
+  ELIXIR_MAJOR_SHADOW_POWER, 
+  ELIXIR_MAJOR_STRENGTH, 
+  ELIXIR_MASTERY,
+  ELIXIR_MONGOOSE,
+  ELIXIR_ONSLAUGHT,
+  ELIXIR_SAGES,
+  ELIXIR_BATTLE,
+  ELIXIR_MAX 
+};
 
-enum flask_type { FLASK_NONE=0,
-                  FLASK_BLINDING_LIGHT, 
-                  FLASK_DISTILLED_WISDOM,
-                  FLASK_ENDLESS_RAGE,
-                  FLASK_FROST_WYRM,
-                  FLASK_MIGHTY_RESTORATION, 
-                  FLASK_PURE_DEATH, 
-                  FLASK_RELENTLESS_ASSAULT, 
-                  FLASK_SUPREME_POWER,
-                  FLASK_MAX };
+enum flask_type { 
+  FLASK_NONE=0,
+  FLASK_BLINDING_LIGHT, 
+  FLASK_DISTILLED_WISDOM,
+  FLASK_ENDLESS_RAGE,
+  FLASK_FROST_WYRM,
+  FLASK_MIGHTY_RESTORATION, 
+  FLASK_PURE_DEATH, 
+  FLASK_RELENTLESS_ASSAULT, 
+  FLASK_SUPREME_POWER,
+  FLASK_MAX 
+};
 
-enum food_type { FOOD_NONE=0,
-                 FOOD_TENDER_SHOVELTUSK_STEAK,
-                 FOOD_SMOKED_SALMON,
-                 FOOD_SNAPPER_EXTREME,
-                 FOOD_POACHED_BLUEFISH,
-                 FOOD_BLACKENED_BASILISK,
-                 FOOD_GOLDEN_FISHSTICKS,
-                 FOOD_CRUNCHY_SERPENT,
-                 FOOD_GREAT_FEAST,
-                 FOOD_MAX };
-
+enum food_type { 
+  FOOD_NONE=0,
+  FOOD_TENDER_SHOVELTUSK_STEAK,
+  FOOD_SMOKED_SALMON,
+  FOOD_SNAPPER_EXTREME,
+  FOOD_POACHED_BLUEFISH,
+  FOOD_BLACKENED_BASILISK,
+  FOOD_GOLDEN_FISHSTICKS,
+  FOOD_CRUNCHY_SERPENT,
+  FOOD_GREAT_FEAST,
+  FOOD_MAX 
+};
 
 enum position_type { POSITION_NONE=0, POSITION_FRONT, POSITION_BACK, POSITION_RANGED, POSITION_MAX };
 
@@ -302,6 +309,20 @@ struct sim_t
     gear_delta_t() { memset( (void*) this, 0x00, sizeof( gear_delta_t ) ); }
   };
   gear_delta_t gear_delta;
+
+  // Static Buffs (until appropriate player class implemented)
+  struct buff_t
+  {
+    int16_t battle_shout;
+    int8_t  blessing_of_kings;
+    int16_t blessing_of_might;
+    int16_t blessing_of_wisdom;
+    int8_t  leader_of_the_pack;
+    int8_t  sanctified_retribution;
+    int8_t  swift_retribution;
+    buff_t() { memset( (void*) this, 0x0, sizeof( buff_t ) ); }
+  };
+  buff_t buffs;
 
   // Reporting
   report_t*  report;
@@ -594,14 +615,6 @@ struct player_t
   
   struct buff_t
   {
-    // Static Buffs (until appropriate player class implemented)
-    int16_t   battle_shout;
-    int8_t    blessing_of_kings;
-    int16_t   blessing_of_might;
-    int16_t   blessing_of_wisdom;
-    int8_t    leader_of_the_pack;
-    int8_t    sanctified_retribution;
-    int8_t    swift_retribution;
     // Dynamic Buffs
     int8_t    temporary_buffs;
     double    arcane_brilliance;
@@ -921,6 +934,7 @@ struct player_t
   virtual bool      parse_option ( const std::string& name, const std::string& value );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name ) { return 0; }
+  virtual pet_t*    find_pet     ( const std::string& name );
 
   // Class-Specific Methods
 
@@ -980,6 +994,7 @@ struct pet_t : public player_t
   virtual double stamina();
   virtual double intellect();
 
+  virtual void init();
   virtual void reset();
   virtual void summon();
   virtual void dismiss();
@@ -1022,6 +1037,7 @@ struct target_t
     int8_t   razorice;
     int8_t   snare;
     double   sunder_armor;
+    int8_t   thunder_clap;
     // Dynamic De-Buffs
     int8_t   temporary_debuffs;
     int8_t   affliction_effects;
@@ -1051,7 +1067,7 @@ struct target_t
       size_t delta = ( (uintptr_t) &temporary_debuffs ) - ( (uintptr_t) this );
       memset( (void*) &temporary_debuffs, 0x0, sizeof( debuff_t ) - delta );
     }
-    bool snared() { return snare || slow || frozen; }
+    bool snared() { return frozen || slow || snare || thunder_clap; }
   };
   debuff_t debuffs;
   

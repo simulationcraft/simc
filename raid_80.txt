@@ -55,29 +55,29 @@ infinite_mana=0
 # improvement is worth the slight inaccuracy.
 regen_periodicity=1.0
 
-# Some WotLK beta patches have included a Potion Sickness debuff that only allows one potion consumed per combat.
-potion_sickness=1
-
 # From the testing at http://elitistjerks.com/f15/t37584-wrath_boss_armor_testing it appears WotLK boss armor is 13k
 target_armor=13000
+
+# Support for Warrior class does not yet exist
+battle_shout=685
 sunder_armor=3925
+thunder_clap=1
 
-# Since support for the Paladin class does not yet exist, one can specify target debuffs (such as
-# Judgement of Wisdom) and player buffs (such as Blessing of Wisdom and Sanctified Retribution) as parameters.
-# Both blessing_of_wisdom=1 and sanctified_retribution=1 would be included in each player section as appropriate.
+# Support for the Paladin class does not yet exist
+blessing_of_kings=1
+blessing_of_wisdom=1
+blessing_of_might=688
 judgement_of_wisdom=1
+sanctified_retribution=1
+swift_retribution=1
 
-# Support for Death Knights does not exist.  To mimic the Frost Vulnerability debuff (stacks to +10%) triggered
-# by the Rune of Razorice, simply set "razorice=1".  To mimic the Crypt Fever debuff (30% buff to disease damage),
-# simply set "crypt_fever=1"
+# Support for Death Knights does not yet exist.
 razorice=1
 crypt_fever=1
 
 # Support for Feral Druids does not exist.
+leader_of_the_pack=1
 mangle=1
-
-# The Mage talent "Torment the Weak" has been changed to work off of many "snare" debuffs.
-snare=1
 
 # When comparing a variety of classes at the exact same gear point, it is more convenient to simply specify
 # a default gear point to use.  Please note that these values MUST be present in the config file BEFORE the
@@ -92,18 +92,6 @@ default_haste_rating=452
 
 # To generate scale factors, set calculate_scale_factors=1
 calculate_scale_factors=0
-scale_spell_power=250
-scale_hit_rating=-250
-scale_crit_rating=250
-scale_haste_rating=250
-scale_intellect=250
-scale_spirit=250
-# Melee stats
-# scale_attack_power=250
-# scale_strength=250
-# scale_agility=250
-# scale_expertise_rating=-150
-# scale_armor_penetration_rating=250
 
 # ================================================================================================
 # General Action Options
@@ -146,14 +134,6 @@ glyph_moonfire=1
 glyph_starfire=1
 glyph_insect_swarm=1
 idol_of_the_shooting_star=1
-# Three Treants modeled as one pet that hits 3x hard
-pet=treants
-quiet=1
-active=owner
-# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
-blessing_of_kings=1
-blessing_of_wisdom=1
-sanctified_retribution=1
 
 #
 # Balance Druid (Wrath)
@@ -176,14 +156,6 @@ glyph_moonfire=1
 glyph_starfire=1
 glyph_insect_swarm=1
 idol_of_steadfast_renewal=1
-# Three Treants modeled as one pet that hits 3x hard
-pet=treants
-quiet=1
-active=owner
-# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
-blessing_of_kings=1
-blessing_of_wisdom=1
-sanctified_retribution=1
 
 #
 # Balance Druid (Wrath, Faerie Fire)
@@ -206,14 +178,6 @@ glyph_moonfire=1
 glyph_starfire=1
 glyph_insect_swarm=1
 idol_of_steadfast_renewal=1
-# Three Treants modeled as one pet that hits 3x hard
-pet=treants
-quiet=1
-active=owner
-# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
-blessing_of_kings=1
-blessing_of_wisdom=1
-sanctified_retribution=1
 
 # ================================================================================================
 # Mages
@@ -253,14 +217,6 @@ chaotic_skyflare=1
 glyph_arcane_power=1
 glyph_arcane_blast=1
 glyph_mage_armor=1
-# Pets
-pet=mirror_image
-quiet=1
-active=owner
-# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
-blessing_of_kings=1
-blessing_of_wisdom=1
-sanctified_retribution=1
 
 mage=Mage_57_3_11
 level=80
@@ -278,14 +234,6 @@ chaotic_skyflare=1
 glyph_arcane_power=1
 glyph_arcane_blast=1
 glyph_mage_armor=1
-# Pets
-pet=mirror_image
-quiet=1
-active=owner
-# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
-blessing_of_kings=1
-blessing_of_wisdom=1
-sanctified_retribution=1
 
 #
 # Fire Mage
@@ -309,14 +257,6 @@ chaotic_skyflare=1
 # Glyphs
 glyph_fire_ball=1
 glyph_molten_armor=1
-# Pets
-pet=mirror_image
-quiet=1
-active=owner
-# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
-blessing_of_kings=1
-blessing_of_wisdom=1
-sanctified_retribution=1
 
 #
 # Frost Mage
@@ -341,18 +281,6 @@ chaotic_skyflare=1
 glyph_molten_armor=1
 glyph_frost_bolt=1
 glyph_water_elemental=1
-# Pets
-pet=water_elemental
-actions=water_bolt
-quiet=1
-active=owner
-pet=mirror_image
-quiet=1
-active=owner
-# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
-blessing_of_kings=1
-blessing_of_wisdom=1
-sanctified_retribution=1
 
 #
 # FrostFire Mage
@@ -375,14 +303,6 @@ chaotic_skyflare=1
 # Glyphs
 glyph_molten_armor=1
 glyph_frostfire=1
-# Pets
-pet=mirror_image
-quiet=1
-active=owner
-# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
-blessing_of_kings=1
-blessing_of_wisdom=1
-sanctified_retribution=1
 
 # ================================================================================================
 # Priests
@@ -405,14 +325,6 @@ chaotic_skyflare=1
 glyph_shadow_word_pain=1
 glyph_shadow=1
 glyph_shadow_word_death=1
-pet=shadow_fiend
-main_hand=beast,damage=110,speed=1.5,school=shadow
-quiet=1
-active=owner
-# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
-blessing_of_kings=1
-blessing_of_wisdom=1
-sanctified_retribution=1
 
 #
 # Shadow Priest (No Shadow Word: Death)
@@ -430,14 +342,6 @@ tier7_4pc=1
 chaotic_skyflare=1
 glyph_shadow_word_pain=1
 glyph_shadow=1
-pet=shadow_fiend
-main_hand=beast,damage=110,speed=1.5,school=shadow
-quiet=1
-active=owner
-# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
-blessing_of_kings=1
-blessing_of_wisdom=1
-sanctified_retribution=1
 
 #
 # Holy Priest
@@ -457,14 +361,6 @@ chaotic_skyflare=1
 glyph_shadow_word_death=1
 glyph_shadow_word_pain=1
 glyph_shadow=1
-pet=shadow_fiend
-main_hand=beast,damage=110,speed=1.5,school=shadow
-quiet=1
-active=owner
-# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
-blessing_of_kings=1
-blessing_of_wisdom=1
-sanctified_retribution=1
 
 # ================================================================================================
 # Shaman
@@ -502,10 +398,6 @@ glyph_flametongue_weapon=1
 glyph_flame_shock=1
 glyph_lava=1
 totem_of_hex=1
-# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
-blessing_of_kings=1
-blessing_of_wisdom=1
-sanctified_retribution=1
 
 #
 # Enhancement Shaman
@@ -543,19 +435,6 @@ glyph_windfury_weapon=1
 glyph_stormstrike=1
 glyph_lightning_shield=1
 totem_of_hex=1
-# Two wolves modeled as one pet that hits 2x hard
-pet=spirit_wolf
-blessing_of_kings=1
-blessing_of_might=688
-sanctified_retribution=1
-leader_of_the_pack=1
-quiet=1
-active=owner
-# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
-blessing_of_kings=1
-blessing_of_might=688
-sanctified_retribution=1
-leader_of_the_pack=1
 
 # ================================================================================================
 # Warlocks
@@ -590,18 +469,6 @@ chaotic_skyflare=1
 glyph_immolate=1
 glyph_curse_of_agony=1
 glyph_siphon_life=1
-# Pets
-pet=felhunter
-actions=shadow_bite/wait
-blessing_of_kings=1
-blessing_of_might=688
-sanctified_retribution=1
-quiet=1
-active=owner
-# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
-blessing_of_kings=1
-blessing_of_wisdom=1
-sanctified_retribution=1
 
 #
 # Affliction Warlock (Doomguard)
@@ -619,17 +486,6 @@ chaotic_skyflare=1
 glyph_immolate=1
 glyph_curse_of_agony=1
 glyph_siphon_life=1
-# Pets
-pet=doomguard
-blessing_of_kings=1
-blessing_of_might=688
-sanctified_retribution=1
-quiet=1
-active=owner
-# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
-blessing_of_kings=1
-blessing_of_wisdom=1
-sanctified_retribution=1
 
 #
 # Affliction Warlock (Infernal)
@@ -647,22 +503,6 @@ chaotic_skyflare=1
 glyph_immolate=1
 glyph_curse_of_agony=1
 glyph_siphon_life=1
-# Pets
-pet=felhunter
-actions=shadow_bite/wait
-blessing_of_kings=1
-blessing_of_might=688
-sanctified_retribution=1
-quiet=1
-active=owner
-pet=infernal
-sanctified_retribution=1
-quiet=1
-active=owner
-# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
-blessing_of_kings=1
-blessing_of_wisdom=1
-sanctified_retribution=1
 
 #
 # Affliction Warlock (CoE instead of CoA)
@@ -680,18 +520,6 @@ chaotic_skyflare=1
 glyph_corruption=1
 glyph_curse_of_agony=1
 glyph_siphon_life=1
-# Pets
-pet=felhunter
-actions=shadow_bite/wait
-blessing_of_kings=1
-blessing_of_might=688
-sanctified_retribution=1
-quiet=1
-active=owner
-# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
-blessing_of_kings=1
-blessing_of_wisdom=1
-sanctified_retribution=1
 
 #
 # Affliction Warlock (No Drain Soul)
@@ -708,18 +536,6 @@ chaotic_skyflare=1
 glyph_corruption=1
 glyph_curse_of_agony=1
 glyph_siphon_life=1
-# Pets
-pet=felhunter
-actions=shadow_bite/wait
-blessing_of_kings=1
-blessing_of_might=688
-sanctified_retribution=1
-quiet=1
-active=owner
-# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
-blessing_of_kings=1
-blessing_of_wisdom=1
-sanctified_retribution=1
 
 #
 # Demonology Warlock
@@ -736,26 +552,6 @@ chaotic_skyflare=1
 glyph_corruption=1
 glyph_felguard=1
 glyph_shadow_bolt=1
-# Pets
-pet=felguard
-actions=cleave/wait
-blessing_of_kings=1
-blessing_of_might=688
-sanctified_retribution=1
-leader_of_the_pack=1
-quiet=1
-active=owner
-pet=succubus
-actions=lash_of_pain/wait
-blessing_of_kings=1
-blessing_of_might=688
-sanctified_retribution=1
-quiet=1
-active=owner
-# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
-blessing_of_kings=1
-blessing_of_wisdom=1
-sanctified_retribution=1
 
 #
 # Demo/destro Warlock #1 (Felguard)
@@ -772,26 +568,6 @@ chaotic_skyflare=1
 glyph_immolate=1
 glyph_felguard=1
 glyph_curse_of_agony=1
-# Pets
-pet=felguard
-actions=cleave/wait
-blessing_of_kings=1
-blessing_of_might=688
-sanctified_retribution=1
-leader_of_the_pack=1
-quiet=1
-active=owner
-pet=succubus
-actions=lash_of_pain/wait
-blessing_of_kings=1
-blessing_of_might=688
-sanctified_retribution=1
-quiet=1
-active=owner
-# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
-blessing_of_kings=1
-blessing_of_wisdom=1
-sanctified_retribution=1
 
 #
 # Demo/destro Warlock #2 (Imp)
@@ -808,25 +584,6 @@ chaotic_skyflare=1
 glyph_immolate=1
 glyph_imp=1
 glyph_curse_of_agony=1
-# Pets
-pet=imp
-actions=fire_bolt
-blessing_of_kings=1
-blessing_of_wisdom=1
-sanctified_retribution=1
-quiet=1
-active=owner
-pet=succubus
-actions=lash_of_pain/wait
-blessing_of_kings=1
-blessing_of_might=688
-sanctified_retribution=1
-quiet=1
-active=owner
-# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
-blessing_of_kings=1
-blessing_of_wisdom=1
-sanctified_retribution=1
 
 #
 # Destruction Warlock
@@ -843,15 +600,3 @@ chaotic_skyflare=1
 glyph_conflagrate=1
 glyph_imp=1
 glyph_curse_of_agony=1
-# Pets
-pet=imp
-actions=fire_bolt
-blessing_of_kings=1
-blessing_of_wisdom=1
-sanctified_retribution=1
-quiet=1
-active=owner
-# Throw in a pair of Paladins.......  Eventually these static parms will be replaced with real actors.
-blessing_of_kings=1
-blessing_of_wisdom=1
-sanctified_retribution=1

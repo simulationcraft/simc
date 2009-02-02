@@ -515,9 +515,10 @@ struct imp_pet_t : public warlock_pet_t
     }
   };
 
-  imp_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name ) :
-    warlock_pet_t( sim, owner, pet_name, PET_IMP )
+  imp_pet_t( sim_t* sim, player_t* owner ) :
+    warlock_pet_t( sim, owner, "imp", PET_IMP )
   {
+    action_list_str = "fire_bolt";
   }
 
   virtual void init_base()
@@ -635,8 +636,8 @@ struct felguard_pet_t : public warlock_pet_t
 
   melee_t* melee;
 
-  felguard_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name ) :
-    warlock_pet_t( sim, owner, pet_name, PET_FELGUARD ), melee(0)
+  felguard_pet_t( sim_t* sim, player_t* owner ) :
+    warlock_pet_t( sim, owner, "felguard", PET_FELGUARD ), melee(0)
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.damage     = 130;
@@ -646,6 +647,8 @@ struct felguard_pet_t : public warlock_pet_t
     if( sim -> patch.after(3, 0, 8) ) main_hand_weapon.damage = 412;
 
     buffs_demonic_frenzy = 0;
+
+    action_list_str = "cleave/wait";
   }
   virtual void init_base()
   {
@@ -708,8 +711,8 @@ struct felhunter_pet_t : public warlock_pet_t
 
   warlock_pet_melee_t* melee;
 
-  felhunter_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name ) :
-    warlock_pet_t( sim, owner, pet_name, PET_FELHUNTER ), melee(0)
+  felhunter_pet_t( sim_t* sim, player_t* owner ) :
+    warlock_pet_t( sim, owner, "felhunter", PET_FELHUNTER ), melee(0)
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.damage     = 71;
@@ -717,6 +720,8 @@ struct felhunter_pet_t : public warlock_pet_t
 
     // weapon damage was buffed in 3.0.8
     if( sim -> patch.after(3, 0, 8) ) main_hand_weapon.damage = 312.5;
+
+    action_list_str = "shadow_bite/wait";
   }
   virtual void init_base()
   {
@@ -766,8 +771,8 @@ struct succubus_pet_t : public warlock_pet_t
 
   warlock_pet_melee_t* melee;
 
-  succubus_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name ) :
-    warlock_pet_t( sim, owner, pet_name, PET_SUCCUBUS ), melee(0)
+  succubus_pet_t( sim_t* sim, player_t* owner ) :
+    warlock_pet_t( sim, owner, "succubus", PET_SUCCUBUS ), melee(0)
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.damage     = 121;
@@ -775,6 +780,8 @@ struct succubus_pet_t : public warlock_pet_t
 
     // weapon damage was buffed in 3.0.8
     if( sim -> patch.after(3, 0, 8) ) main_hand_weapon.damage = 440;
+
+    action_list_str = "lash_of_pain/wait";
   }
   virtual void init_base()
   {
@@ -839,8 +846,8 @@ struct infernal_pet_t : public warlock_pet_t
   warlock_pet_melee_t* melee;
   immolation_t*        immolation;
 
-  infernal_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name ) :
-    warlock_pet_t( sim, owner, pet_name, PET_INFERNAL ), melee(0)
+  infernal_pet_t( sim_t* sim, player_t* owner ) :
+    warlock_pet_t( sim, owner, "infernal", PET_INFERNAL ), melee(0)
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.damage     = 1521;
@@ -897,8 +904,8 @@ struct doomguard_pet_t : public warlock_pet_t
 {
   warlock_pet_melee_t* melee;
 
-  doomguard_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name ) :
-    warlock_pet_t( sim, owner, pet_name, PET_DOOMGUARD ), melee(0)
+  doomguard_pet_t( sim_t* sim, player_t* owner ) :
+    warlock_pet_t( sim, owner, "doomguard", PET_DOOMGUARD ), melee(0)
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.damage     = 1400;
@@ -4125,12 +4132,16 @@ action_t* warlock_t::create_action( const std::string& name,
 
 pet_t* warlock_t::create_pet( const std::string& pet_name )
 {
-  if( pet_name == "felguard"  ) return new  felguard_pet_t( sim, this, pet_name );
-  if( pet_name == "felhunter" ) return new felhunter_pet_t( sim, this, pet_name );
-  if( pet_name == "imp"       ) return new       imp_pet_t( sim, this, pet_name );
-  if( pet_name == "succubus"  ) return new  succubus_pet_t( sim, this, pet_name );
-  if( pet_name == "infernal"  ) return new  infernal_pet_t( sim, this, pet_name );
-  if( pet_name == "doomguard" ) return new doomguard_pet_t( sim, this, pet_name );
+  pet_t* p = find_pet( pet_name );
+
+  if( p ) return p;
+
+  if( pet_name == "felguard"  ) return new  felguard_pet_t( sim, this );
+  if( pet_name == "felhunter" ) return new felhunter_pet_t( sim, this );
+  if( pet_name == "imp"       ) return new       imp_pet_t( sim, this );
+  if( pet_name == "succubus"  ) return new  succubus_pet_t( sim, this );
+  if( pet_name == "infernal"  ) return new  infernal_pet_t( sim, this );
+  if( pet_name == "doomguard" ) return new doomguard_pet_t( sim, this );
 
   return 0;
 }
@@ -4402,7 +4413,16 @@ bool warlock_t::parse_option( const std::string& name,
 player_t* player_t::create_warlock( sim_t*       sim, 
                                     std::string& name ) 
 {
-  return new warlock_t( sim, name );
+  warlock_t* p = new warlock_t( sim, name );
+
+  new  felguard_pet_t( sim, p );
+  new felhunter_pet_t( sim, p );
+  new       imp_pet_t( sim, p );
+  new  succubus_pet_t( sim, p );
+  new  infernal_pet_t( sim, p );
+  new doomguard_pet_t( sim, p );
+
+  return p;
 }
 
 

@@ -29,6 +29,9 @@ pet_t::pet_t( sim_t*             s,
 
     stamina_per_owner = 0.30;
   intellect_per_owner = 0.30;
+
+  // By default, only report statistics in the context of the owner
+  quiet = 1;
 }
 
 // pet_t::create_action =====================================================
@@ -53,6 +56,15 @@ double pet_t::intellect()
   return composite_attribute_multiplier( ATTR_INTELLECT ) * ( attribute[ ATTR_INTELLECT ] + intellect_per_owner * owner -> intellect() );
 }
 
+// pet_t::init ==============================================================
+
+void pet_t::init()
+{
+  player_t::init();
+  party = owner -> party;
+  level = owner -> level;
+}
+
 // pet_t::reset =============================================================
 
 void pet_t::reset()
@@ -60,7 +72,6 @@ void pet_t::reset()
   player_t::reset();
   sleeping = 1;
   summon_time = 0;
-  party = owner -> party;
 }
 
 // pet_t::summon ============================================================

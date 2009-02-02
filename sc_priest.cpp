@@ -195,8 +195,8 @@ struct shadow_fiend_pet_t : public pet_t
 
   melee_t* melee;
 
-  shadow_fiend_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name ) :
-    pet_t( sim, owner, pet_name ), melee(0)
+  shadow_fiend_pet_t( sim_t* sim, player_t* owner ) :
+    pet_t( sim, owner, "shadow_fiend" ), melee(0)
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.damage     = 110;
@@ -1754,7 +1754,11 @@ action_t* priest_t::create_action( const std::string& name,
 
 pet_t* priest_t::create_pet( const std::string& pet_name )
 {
-  if( pet_name == "shadow_fiend" ) return new shadow_fiend_pet_t( sim, this, pet_name );
+  pet_t* p = find_pet( pet_name );
+
+  if( p ) return p;
+
+  if( pet_name == "shadow_fiend" ) return new shadow_fiend_pet_t( sim, this );
 
   return 0;
 }
@@ -1954,7 +1958,11 @@ bool priest_t::parse_option( const std::string& name,
 player_t* player_t::create_priest( sim_t*       sim, 
                                    std::string& name ) 
 {
-  return new priest_t( sim, name );
+  priest_t* p =  new priest_t( sim, name );
+
+  new shadow_fiend_pet_t( sim, p );
+
+ return p;
 }
 
 

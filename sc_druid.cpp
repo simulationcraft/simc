@@ -1279,6 +1279,10 @@ action_t* druid_t::create_action( const std::string& name,
 
 pet_t* druid_t::create_pet( const std::string& pet_name )
 {
+  pet_t* p = find_pet( pet_name );
+
+  if( p ) return p;
+
   if( pet_name == "treants" ) return new treants_pet_t( sim, this, pet_name );
 
   return 0;
@@ -1524,8 +1528,12 @@ bool druid_t::parse_option( const std::string& name,
 // player_t::create_druid  ==================================================
 
 player_t* player_t::create_druid( sim_t*       sim, 
-                  std::string& name ) 
+				  std::string& name ) 
 {
-  return new druid_t( sim, name );
+  druid_t* p = new druid_t( sim, name );
+
+  new treants_pet_t( sim, p, "treants" );
+
+  return p;
 }
 

@@ -199,7 +199,7 @@ void action_t::player_buff()
     }
   }
 
-  if( p -> buffs.sanctified_retribution || t -> debuffs.ferocious_inspiration  ) 
+  if( sim -> buffs.sanctified_retribution || t -> debuffs.ferocious_inspiration  ) 
   {
     player_multiplier *= 1.03;
   }

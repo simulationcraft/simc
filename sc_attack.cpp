@@ -67,8 +67,7 @@ double attack_t::haste()
       h *= 1.0 / ( 1.0 + 0.30 );
     }
 
-    if( p -> buffs.swift_retribution     ||
-	p -> buffs.improved_moonkin_aura ) 
+    if( sim -> buffs.swift_retribution || p -> buffs.improved_moonkin_aura ) 
     {
       h *= 1.0 / ( 1.0 + 0.03 );
     }
@@ -109,7 +108,7 @@ void attack_t::player_buff()
 
   if( p -> type != PLAYER_GUARDIAN )
   {
-    if( p -> buffs.leader_of_the_pack ) player_crit += 0.05;
+    if( sim -> buffs.leader_of_the_pack ) player_crit += 0.05;
 
     if( p -> gear.chaotic_skyflare      ||
 	p -> gear.relentless_earthstorm ) 

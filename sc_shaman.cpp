@@ -318,8 +318,8 @@ struct spirit_wolf_pet_t : public pet_t
 
   melee_t* melee;
 
-  spirit_wolf_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name ) :
-    pet_t( sim, owner, pet_name ), melee(0)
+  spirit_wolf_pet_t( sim_t* sim, player_t* owner ) :
+    pet_t( sim, owner, "spirit_wolf" ), melee(0)
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.damage     = 310;
@@ -2733,7 +2733,7 @@ action_t* shaman_t::create_action( const std::string& name,
 
 pet_t* shaman_t::create_pet( const std::string& pet_name )
 {
-  if( pet_name == "spirit_wolf" ) return new spirit_wolf_pet_t( sim, this, pet_name );
+  if( pet_name == "spirit_wolf" ) return new spirit_wolf_pet_t( sim, this );
 
   return 0;
 }
@@ -3041,5 +3041,9 @@ bool shaman_t::parse_option( const std::string& name,
 player_t* player_t::create_shaman( sim_t*       sim, 
                                    std::string& name ) 
 {
-  return new shaman_t( sim, name );
+  shaman_t* p = new shaman_t( sim, name );
+
+  new spirit_wolf_pet_t( sim, p );
+
+ return p;
 }

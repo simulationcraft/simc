@@ -184,6 +184,7 @@ void target_t::combat_begin()
     debuffs.razorice = 1;
     debuffs.snare = 1;
     debuffs.sunder_armor = 3925;
+    debuffs.thunder_clap = 1;
 
     // Dynamic De-Buffs
     debuffs.affliction_effects = 12;
@@ -293,6 +294,7 @@ bool target_t::parse_option( const std::string& name,
     { "razorice",              OPT_INT8,   &( debuffs.razorice                  ) },
     { "snare",                 OPT_INT8,   &( debuffs.snare                     ) },
     { "sunder_armor",          OPT_FLT,    &( debuffs.sunder_armor              ) },
+    { "thunder_clap",          OPT_INT8,   &( debuffs.thunder_clap              ) },
     { NULL, OPT_UNKNOWN }
   };
 

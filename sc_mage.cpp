@@ -255,6 +255,7 @@ struct water_elemental_pet_t : public pet_t
   water_elemental_pet_t( sim_t* sim, player_t* owner ) :
     pet_t( sim, owner, "water_elemental" )
   {
+    action_list_str = "water_bolt";
   }
   virtual void init_base()
   {
@@ -2718,6 +2719,10 @@ action_t* mage_t::create_action( const std::string& name,
 
 pet_t* mage_t::create_pet( const std::string& pet_name )
 {
+  pet_t* p = find_pet( pet_name );
+
+  if( p ) return p;
+
   if( pet_name == "water_elemental" ) return new water_elemental_pet_t( sim, this );
   if( pet_name == "mirror_image"    ) return new mirror_image_pet_t   ( sim, this );
 
@@ -2965,5 +2970,10 @@ bool mage_t::parse_option( const std::string& name,
 player_t* player_t::create_mage( sim_t*       sim, 
                                  std::string& name ) 
 {
-  return new mage_t( sim, name );
+  mage_t* p = new mage_t( sim, name );
+
+  new    mirror_image_pet_t( sim, p );
+  new water_elemental_pet_t( sim, p );
+  
+  return p;
 }

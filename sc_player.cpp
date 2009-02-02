@@ -703,7 +703,7 @@ double player_t::composite_attack_power()
   ap += attack_power_per_strength * strength();
   ap += attack_power_per_agility  * agility();
 
-  ap += std::max( buffs.blessing_of_might, buffs.battle_shout );
+  ap += std::max( sim -> buffs.blessing_of_might, sim -> buffs.battle_shout );
 
   return ap;
 }
@@ -762,7 +762,7 @@ double player_t::composite_attack_power_multiplier()
 double player_t::composite_attribute_multiplier( int8_t attr )
 {
   double m = attribute_multiplier[ attr ]; 
-  if( buffs.blessing_of_kings ) m *= 1.10; 
+  if( sim -> buffs.blessing_of_kings ) m *= 1.10; 
   return m;
 }
 
@@ -842,14 +842,6 @@ void player_t::combat_begin()
 
   if( sim -> optimal_raid )
   {
-    // Static Buffs
-    buffs.battle_shout = 548;
-    buffs.blessing_of_kings = 1;
-    buffs.blessing_of_might = 688;
-    buffs.blessing_of_wisdom = 1;
-    buffs.leader_of_the_pack = 1;
-    buffs.sanctified_retribution = 1;
-    buffs.swift_retribution = 1;
     // Dynamic Buffs
     buffs.arcane_brilliance = 60;
     buffs.divine_spirit = 80;
@@ -1114,7 +1106,7 @@ void player_t::regen( double periodicity )
       resource_gain( RESOURCE_MANA, water_elemental_regen, gains.water_elemental );
     }
 
-    if( buffs.blessing_of_wisdom )
+    if( sim -> buffs.blessing_of_wisdom )
     {
       double wisdom_regen = periodicity * ( ( level <= 70 ) ? 49 : 91 ) / 5.0;
 
@@ -1765,6 +1757,17 @@ action_t* player_t::create_action( const std::string& name,
   return 0;
 }
 
+// player_t::find_pet =======================================================
+
+pet_t* player_t::find_pet( const std::string& pet_name )
+{
+  for( pet_t* p = pet_list; p; p = p -> next_pet )
+    if( p -> name_str == pet_name )
+      return p;
+
+  return 0;
+}
+
 // player_t::get_talent_trees ===============================================
 
 bool player_t::get_talent_trees( std::vector<int8_t*>& tree1,
@@ -2088,14 +2091,6 @@ bool player_t::parse_option( const std::string& name,
     { "flask",                                OPT_STRING, &( flask_str                                      ) },
     { "elixirs",                              OPT_STRING, &( elixirs_str                                    ) },
     { "food",                                 OPT_STRING, &( food_str                                       ) },
-    // Player - Buffs - FIXME! These will go away eventually, and be converted into player actions
-    { "battle_shout",                         OPT_INT16,  &( buffs.battle_shout                             ) },
-    { "blessing_of_kings",                    OPT_INT8,   &( buffs.blessing_of_kings                        ) },
-    { "blessing_of_might",                    OPT_INT16,  &( buffs.blessing_of_might                        ) },
-    { "blessing_of_wisdom",                   OPT_INT16,  &( buffs.blessing_of_wisdom                       ) },
-    { "leader_of_the_pack",                   OPT_INT8,   &( buffs.leader_of_the_pack                       ) },
-    { "sanctified_retribution",               OPT_INT8,   &( buffs.sanctified_retribution                   ) },
-    { "swift_retribution",                    OPT_INT8,   &( buffs.swift_retribution                        ) },
     { NULL, OPT_UNKNOWN }
   };
 
