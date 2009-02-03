@@ -735,6 +735,7 @@ struct player_t
     uptime_t* executioner;
     uptime_t* mongoose_mh;
     uptime_t* mongoose_oh;
+    uptime_t* replenishment;
     uptime_t *tier4_2pc, *tier4_4pc;
     uptime_t *tier5_2pc, *tier5_4pc;
     uptime_t *tier6_2pc, *tier6_4pc;

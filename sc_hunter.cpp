@@ -1084,8 +1084,6 @@ static void trigger_owls_focus( action_t* a )
 {
   hunter_pet_t* p = (hunter_pet_t*) a -> player -> cast_pet();
 
-  assert( p -> buffs_owls_focus == 0 );
-
   if( ! p -> talents.owls_focus )
     return;
 
@@ -1109,8 +1107,17 @@ static void trigger_owls_focus( action_t* a )
       p -> expirations_owls_focus = 0;
     }
   };
+  
+  event_t*& e = p -> expirations_owls_focus;
 
-  p -> expirations_owls_focus = new ( a -> sim ) owls_focus_expiration_t( a -> sim, p );
+  if( e )
+  {
+    e -> reschedule( 8.0 );
+  }
+  else
+  {
+    e = new ( a -> sim ) owls_focus_expiration_t( a -> sim, p );
+  }
 }
 
 // consume_owls_focus ================================================
@@ -1300,11 +1307,11 @@ struct hunter_pet_attack_t : public attack_t
   }
 };
 
-// Hunter Pet Melee ===========================================================
+// Pet Melee =================================================================
 
-struct hunter_pet_melee_t : public hunter_pet_attack_t
+struct pet_melee_t : public hunter_pet_attack_t
 {
-  hunter_pet_melee_t( player_t* player ) :
+  pet_melee_t( player_t* player ) :
     hunter_pet_attack_t( "melee", player, RESOURCE_NONE, SCHOOL_PHYSICAL, false )
   {
     hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
@@ -1336,7 +1343,7 @@ struct pet_auto_attack_t : public hunter_pet_attack_t
     hunter_pet_attack_t( "auto_attack", player )
   {
     hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
-    p -> main_hand_attack = new hunter_pet_melee_t( player );
+    p -> main_hand_attack = new pet_melee_t( player );
   }
 
   virtual void execute()
@@ -1352,13 +1359,14 @@ struct pet_auto_attack_t : public hunter_pet_attack_t
   }
 };
 
-// Pet Focus Dump ============================================================
+// Focus Dump ================================================================
 
-struct pet_focus_dump_t : public hunter_pet_attack_t
+struct focus_dump_t : public hunter_pet_attack_t
 {
-  pet_focus_dump_t( const char* n, player_t* player ) :
+  focus_dump_t( player_t* player, const std::string& options_str, const char* n ) :
     hunter_pet_attack_t( n, player, RESOURCE_FOCUS, SCHOOL_PHYSICAL )
   {
+    parse_options( 0, options_str );
     base_cost       = 25;
     base_direct_dmg = 143;
   }
@@ -1366,15 +1374,17 @@ struct pet_focus_dump_t : public hunter_pet_attack_t
 
 // Cat Rake ===================================================================
 
-struct cat_rake_t : public hunter_pet_attack_t
+struct rake_t : public hunter_pet_attack_t
 {
-  cat_rake_t( player_t* player, const std::string& options_str ) :
+  rake_t( player_t* player, const std::string& options_str ) :
     hunter_pet_attack_t( "rake", player, RESOURCE_FOCUS, SCHOOL_BLEED )
   {
     hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
 
     assert( p -> pet_type == PET_CAT );
+
+    parse_options( 0, options_str );
 
     base_cost       = 20;
     base_direct_dmg = 57;
@@ -1474,15 +1484,17 @@ struct hunter_pet_spell_t : public spell_t
 
 // Chimera Froststorm Breath ================================================
 
-struct chimera_froststorm_breath_t : public hunter_pet_spell_t
+struct froststorm_breath_t : public hunter_pet_spell_t
 {
-  chimera_froststorm_breath_t( player_t* player, const std::string& options_str ) :
+  froststorm_breath_t( player_t* player, const std::string& options_str ) :
     hunter_pet_spell_t( "froststorm_breath", player, RESOURCE_FOCUS, SCHOOL_NATURE )
   {
     hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
 
     assert( p -> pet_type == PET_CHIMERA );
+
+    parse_options( 0, options_str );
 
     base_cost        = 20;
     base_direct_dmg  = 150;
@@ -1493,15 +1505,17 @@ struct chimera_froststorm_breath_t : public hunter_pet_spell_t
 
 // Wind Serpent Lightning Breath ================================================
 
-struct pet_lightning_breath_t : public hunter_pet_spell_t
+struct lightning_breath_t : public hunter_pet_spell_t
 {
-  pet_lightning_breath_t( player_t* player, const std::string& options_str ) :
+  lightning_breath_t( player_t* player, const std::string& options_str ) :
     hunter_pet_spell_t( "lightning_breath", player, RESOURCE_FOCUS, SCHOOL_NATURE )
   {
     hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
 
     assert( p -> pet_type == PET_WIND_SERPENT );
+
+    parse_options( 0, options_str );
 
     base_cost        = 20;
     base_direct_dmg  = 100;
@@ -1510,17 +1524,19 @@ struct pet_lightning_breath_t : public hunter_pet_spell_t
   }
 };
 
-// Pet Call of the Wild =======================================================
+// Call of the Wild ===========================================================
 
-struct pet_call_of_the_wild_t : public hunter_pet_spell_t
+struct call_of_the_wild_t : public hunter_pet_spell_t
 {
-  pet_call_of_the_wild_t( player_t* player, const std::string& options_str ) :
+  call_of_the_wild_t( player_t* player, const std::string& options_str ) :
     hunter_pet_spell_t( "call_of_the_wild", player, RESOURCE_FOCUS )
   {
     hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
 
     assert( p -> talents.call_of_the_wild );
+
+    parse_options( 0, options_str );
 
     base_cost = 0;
     cooldown  = 5 * 60 * ( 1.0 - o -> talents.longevity * 0.10 );
@@ -1562,17 +1578,19 @@ struct pet_call_of_the_wild_t : public hunter_pet_spell_t
   }
 };
 
-// Pet Rabid ==================================================================
+// Rabid ======================================================================
 
-struct pet_rabid_t : public hunter_pet_spell_t
+struct rabid_t : public hunter_pet_spell_t
 {
-  pet_rabid_t( player_t* player, const std::string& options_str ) :
+  rabid_t( player_t* player, const std::string& options_str ) :
     hunter_pet_spell_t( "rabid", player, RESOURCE_FOCUS )
   {
     hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
 
     assert( p -> talents.rabid );
+
+    parse_options( 0, options_str );
 
     base_cost = 0;
     cooldown  = 45 * ( 1.0 - o -> talents.longevity * 0.10 );
@@ -1610,17 +1628,19 @@ struct pet_rabid_t : public hunter_pet_spell_t
   }
 };
 
-// Pet Roar of Recovery =======================================================
+// Roar of Recovery ===========================================================
 
-struct pet_roar_of_recovery_t : public hunter_pet_spell_t
+struct roar_of_recovery_t : public hunter_pet_spell_t
 {
-  pet_roar_of_recovery_t( player_t* player, const std::string& options_str ) :
+  roar_of_recovery_t( player_t* player, const std::string& options_str ) :
     hunter_pet_spell_t( "roar_of_recovery", player, RESOURCE_FOCUS )
   {
     hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
 
     assert( p -> talents.roar_of_recovery );
+
+    parse_options( 0, options_str );
 
     trigger_gcd    = 0.0;
     base_cost      = 0;
@@ -1655,16 +1675,16 @@ struct pet_roar_of_recovery_t : public hunter_pet_spell_t
 action_t* hunter_pet_t::create_action( const std::string& name,
                                        const std::string& options_str )
 {
-  if( name == "auto_attack"       ) return new           pet_auto_attack_t( this, options_str );
-  if( name == "bite"              ) return new            pet_focus_dump_t( "bite", this );
-  if( name == "call_of_the_wild"  ) return new      pet_call_of_the_wild_t( this, options_str );
-  if( name == "claw"              ) return new            pet_focus_dump_t( "claw", this );
-  if( name == "froststorm_breath" ) return new chimera_froststorm_breath_t( this, options_str );
-  if( name == "lightning_breath"  ) return new      pet_lightning_breath_t( this, options_str );
-  if( name == "rabid"             ) return new                 pet_rabid_t( this, options_str );
-  if( name == "rake"              ) return new                  cat_rake_t( this, options_str );
-  if( name == "roar_of_recovery"  ) return new      pet_roar_of_recovery_t( this, options_str );
-  if( name == "smack"             ) return new            pet_focus_dump_t( "smack", this );
+  if( name == "auto_attack"       ) return new   pet_auto_attack_t( this, options_str );
+  if( name == "bite"              ) return new        focus_dump_t( this, options_str, "bite" );
+  if( name == "call_of_the_wild"  ) return new  call_of_the_wild_t( this, options_str );
+  if( name == "claw"              ) return new        focus_dump_t( this, options_str, "claw" );
+  if( name == "froststorm_breath" ) return new froststorm_breath_t( this, options_str );
+  if( name == "lightning_breath"  ) return new  lightning_breath_t( this, options_str );
+  if( name == "rabid"             ) return new             rabid_t( this, options_str );
+  if( name == "rake"              ) return new              rake_t( this, options_str );
+  if( name == "roar_of_recovery"  ) return new  roar_of_recovery_t( this, options_str );
+  if( name == "smack"             ) return new        focus_dump_t( this, options_str, "smack" );
 
   return pet_t::create_action( name, options_str );
 }
@@ -2281,6 +2301,8 @@ struct kill_shot_t : public hunter_attack_t
     };
     init_rank( ranks );
 
+    parse_options( 0, options_str );
+
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );
 
@@ -2337,6 +2359,8 @@ struct multi_shot_t : public hunter_attack_t
       { 0, 0 }
     };
     init_rank( ranks );
+
+    parse_options( 0, options_str );
 
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );

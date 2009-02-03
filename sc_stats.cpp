@@ -61,6 +61,10 @@ void stats_t::reset( action_t* a )
   last_execute = -1;
 }
 
+// stats_t::track_execute ===================================================
+
+// stats_t::track_damage ====================================================
+
 // stats_t::add =============================================================
 
 void stats_t::add( double amount,

@@ -147,7 +147,7 @@ void spell_t::player_buff()
   }
 
   if( sim -> debug ) report_t::log( sim, "spell_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f", 
-		   name(), player_hit, player_crit, player_power, player_penetration );
+				    name(), player_hit, player_crit, player_power, player_penetration );
 }
 
 // spell_t::target_debuff =====================================================

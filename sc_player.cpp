@@ -690,6 +690,8 @@ void player_t::init_stats()
   procs.tier7_2pc                    = get_proc( "tier7_2pc" );
   procs.tier7_4pc                    = get_proc( "tier7_4pc" );
 
+  uptimes.replenishment = get_uptime( "replenishment" );
+
   iteration_dps.clear();
   iteration_dps.insert( iteration_dps.begin(), sim -> iterations, 0 );
 }
@@ -1098,6 +1100,7 @@ void player_t::regen( double periodicity )
 
       resource_gain( RESOURCE_MANA, replenishment_regen, gains.replenishment );
     }
+    uptimes.replenishment -> update( buffs.replenishment != 0 );
 
     if( buffs.water_elemental )
     {
