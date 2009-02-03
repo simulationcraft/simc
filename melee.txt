@@ -325,7 +325,7 @@ cobra_reflexes=2
 rabid=1
 spiders_bite=3
 spiked_collar=3
-actions=auto_attack/call_of_the_wild/rabid/rake/claw/wait,sec=1.0
+actions=auto_attack/call_of_the_wild/rabid/rake/claw
 active=owner
 
 #
@@ -361,7 +361,7 @@ cobra_reflexes=2
 rabid=1
 spiders_bite=3
 spiked_collar=3
-actions=auto_attack/call_of_the_wild/rabid/rake/claw/wait,sec=1.0
+actions=auto_attack/call_of_the_wild/rabid/rake/claw
 active=owner
 
 #
@@ -397,7 +397,7 @@ cobra_reflexes=2
 rabid=1
 spiders_bite=3
 spiked_collar=3
-actions=auto_attack/call_of_the_wild/rabid/rake/claw/wait,sec=1.0
+actions=auto_attack/call_of_the_wild/rabid/rake/claw
 active=owner
 
 #
@@ -434,7 +434,7 @@ cobra_reflexes=2
 rabid=1
 spiders_bite=3
 spiked_collar=3
-actions=auto_attack/call_of_the_wild/rabid/rake/claw/wait,sec=1.0
+actions=auto_attack/call_of_the_wild/rabid/rake/claw
 active=owner
 
 
