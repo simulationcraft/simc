@@ -18,9 +18,9 @@ struct druid_t : public player_t
   // Buffs
   double buffs_eclipse_starfire;
   double buffs_eclipse_wrath;
-  int8_t buffs_natures_grace;
-  int8_t buffs_natures_swiftness;
-  int8_t buffs_omen_of_clarity;
+  int    buffs_natures_grace;
+  int    buffs_natures_swiftness;
+  int    buffs_omen_of_clarity;
 
   // Expirations
   event_t* expirations_eclipse;
@@ -42,39 +42,39 @@ struct druid_t : public player_t
 
   struct talents_t
   {
-    int8_t  balance_of_power;
-    int8_t  brambles;
-    int8_t  celestial_focus;
-    int8_t  dreamstate;
-    int8_t  earth_and_moon;
-    int8_t  eclipse;
-    int8_t  force_of_nature;
-    int8_t  furor;
-    int8_t  genesis;
-    int8_t  improved_faerie_fire;
-    int8_t  improved_insect_swarm;
-    int8_t  improved_mark_of_the_wild;
-    int8_t  improved_moonfire;
-    int8_t  improved_moonkin_form;
-    int8_t  insect_swarm;
-    int8_t  intensity;
-    int8_t  living_spirit;
-    int8_t  lunar_guidance;
-    int8_t  master_shapeshifter;
-    int8_t  moonfury;
-    int8_t  moonglow;
-    int8_t  moonkin_form;
-    int8_t  natural_perfection;
-    int8_t  natures_grace;
-    int8_t  natures_majesty;
-    int8_t  natures_reach;
-    int8_t  natures_splendor;
-    int8_t  natures_swiftness;
-    int8_t  omen_of_clarity;
-    int8_t  starfall;
-    int8_t  starlight_wrath;
-    int8_t  vengeance;
-    int8_t  wrath_of_cenarius;
+    int  balance_of_power;
+    int  brambles;
+    int  celestial_focus;
+    int  dreamstate;
+    int  earth_and_moon;
+    int  eclipse;
+    int  force_of_nature;
+    int  furor;
+    int  genesis;
+    int  improved_faerie_fire;
+    int  improved_insect_swarm;
+    int  improved_mark_of_the_wild;
+    int  improved_moonfire;
+    int  improved_moonkin_form;
+    int  insect_swarm;
+    int  intensity;
+    int  living_spirit;
+    int  lunar_guidance;
+    int  master_shapeshifter;
+    int  moonfury;
+    int  moonglow;
+    int  moonkin_form;
+    int  natural_perfection;
+    int  natures_grace;
+    int  natures_majesty;
+    int  natures_reach;
+    int  natures_splendor;
+    int  natures_swiftness;
+    int  omen_of_clarity;
+    int  starfall;
+    int  starlight_wrath;
+    int  vengeance;
+    int  wrath_of_cenarius;
     
     talents_t() { memset( (void*) this, 0x0, sizeof( talents_t ) ); }
   };
@@ -82,41 +82,41 @@ struct druid_t : public player_t
 
   struct glyphs_t
   {
-    int8_t innervate;
-    int8_t insect_swarm;
-    int8_t moonfire;
-    int8_t starfire;
-    int8_t starfall;
+    int innervate;
+    int insect_swarm;
+    int moonfire;
+    int starfire;
+    int starfall;
     glyphs_t() { memset( (void*) this, 0x0, sizeof( glyphs_t ) ); }
   };
   glyphs_t glyphs;
 
   struct idols_t
   {
-    int8_t shooting_star;
-    int8_t steadfast_renewal;
+    int shooting_star;
+    int steadfast_renewal;
     idols_t() { memset( (void*) this, 0x0, sizeof( idols_t ) ); }
   };
   idols_t idols;
 
   struct tiers_t
   {
-    int8_t t4_2pc_balance;
-    int8_t t4_4pc_balance;
-    int8_t t5_2pc_balance;
-    int8_t t5_4pc_balance;
-    int8_t t6_2pc_balance;
-    int8_t t6_4pc_balance;
-    int8_t t7_2pc_balance;
-    int8_t t7_4pc_balance;
-    int8_t t4_2pc_feral;
-    int8_t t4_4pc_feral;
-    int8_t t5_2pc_feral;
-    int8_t t5_4pc_feral;
-    int8_t t6_2pc_feral;
-    int8_t t6_4pc_feral;
-    int8_t t7_2pc_feral;
-    int8_t t7_4pc_feral;
+    int t4_2pc_balance;
+    int t4_4pc_balance;
+    int t5_2pc_balance;
+    int t5_4pc_balance;
+    int t6_2pc_balance;
+    int t6_4pc_balance;
+    int t7_2pc_balance;
+    int t7_4pc_balance;
+    int t4_2pc_feral;
+    int t4_4pc_feral;
+    int t5_2pc_feral;
+    int t5_4pc_feral;
+    int t6_2pc_feral;
+    int t6_4pc_feral;
+    int t7_2pc_feral;
+    int t7_4pc_feral;
     tiers_t() { memset( (void*) this, 0x0, sizeof( tiers_t ) ); }
   };
   tiers_t tiers;
@@ -156,7 +156,7 @@ struct druid_t : public player_t
   virtual void      reset();
   virtual double    composite_spell_hit();
   virtual double    composite_spell_crit();
-  virtual bool      get_talent_trees( std::vector<int8_t*>& balance, std::vector<int8_t*>& feral, std::vector<int8_t*>& restoration );
+  virtual bool      get_talent_trees( std::vector<int*>& balance, std::vector<int*>& feral, std::vector<int*>& restoration );
   virtual bool      parse_talents_mmo( const std::string& talent_string );
   virtual bool      parse_option ( const std::string& name, const std::string& value );
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -172,7 +172,7 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 
 struct druid_spell_t : public spell_t
 {
-  druid_spell_t( const char* n, player_t* p, int8_t s, int8_t t ) : 
+  druid_spell_t( const char* n, player_t* p, int s, int t ) : 
     spell_t( n, p, RESOURCE_MANA, s, t ) {}
 
   virtual double cost();
@@ -182,7 +182,7 @@ struct druid_spell_t : public spell_t
   virtual void   schedule_execute();
   virtual void   consume_resource();
   virtual void   player_buff();
-  virtual void   target_debuff( int8_t dmg_type );
+  virtual void   target_debuff( int dmg_type );
 };
 
 // ==========================================================================
@@ -283,7 +283,7 @@ static void trigger_earth_and_moon( spell_t* s )
     {
       name = "Earth and Moon Expiration";
       if( sim -> log ) report_t::log( sim, "%s gains Earth and Moon", sim -> target -> name() );
-      sim -> target -> debuffs.earth_and_moon = (int8_t) util_t::talent_rank( p -> talents.earth_and_moon, 3, 4, 9, 13 );
+      sim -> target -> debuffs.earth_and_moon = (int) util_t::talent_rank( p -> talents.earth_and_moon, 3, 4, 9, 13 );
       sim -> add_event( this, 12.0 );
     }
     virtual void execute()
@@ -534,7 +534,7 @@ void druid_spell_t::player_buff()
 
 // druid_spell_t::target_debuff ============================================
 
-void druid_spell_t::target_debuff( int8_t dmg_type )
+void druid_spell_t::target_debuff( int dmg_type )
 {
   druid_t* p = player -> cast_druid();
   spell_t::target_debuff( dmg_type );
@@ -549,8 +549,8 @@ void druid_spell_t::target_debuff( int8_t dmg_type )
 
 struct faerie_fire_t : public druid_spell_t
 {
-  int16_t armor_penetration;
-  int8_t  bonus_hit;
+  int armor_penetration;
+  int  bonus_hit;
 
   faerie_fire_t( player_t* player, const std::string& options_str ) : 
     druid_spell_t( "faerie_fire", player, SCHOOL_NATURE, TREE_BALANCE )
@@ -559,7 +559,7 @@ struct faerie_fire_t : public druid_spell_t
 
     base_execute_time = 0;
     base_cost         = p -> resource_base[ RESOURCE_MANA ] * 0.07;
-    armor_penetration = (int16_t) util_t::ability_rank( p -> level,  1260,76,  610,66,  505,0 );
+    armor_penetration = (int) util_t::ability_rank( p -> level,  1260,76,  610,66,  505,0 );
     bonus_hit         = p -> talents.improved_faerie_fire;
   }
 
@@ -613,7 +613,7 @@ struct faerie_fire_t : public druid_spell_t
 
 struct innervate_t : public druid_spell_t
 {
-  int16_t trigger;
+  int trigger;
   player_t* innervate_target;
   
   innervate_t( player_t* player, const std::string& options_str ) : 
@@ -624,7 +624,7 @@ struct innervate_t : public druid_spell_t
     std::string target_str;
     option_t options[] =
     {
-      { "trigger", OPT_INT16,  &trigger    },
+      { "trigger", OPT_INT,    &trigger    },
       { "target",  OPT_STRING, &target_str },
       { NULL }
     };
@@ -697,7 +697,7 @@ struct innervate_t : public druid_spell_t
 
 struct insect_swarm_t : public druid_spell_t
 {
-  int8_t wrath_ready;
+  int wrath_ready;
   action_t* active_wrath;
 
   insect_swarm_t( player_t* player, const std::string& options_str ) : 
@@ -708,7 +708,7 @@ struct insect_swarm_t : public druid_spell_t
 
     option_t options[] =
     {
-      { "wrath_ready", OPT_INT8, &wrath_ready },
+      { "wrath_ready", OPT_INT, &wrath_ready },
       { NULL }
     };
     parse_options( options, options_str );
@@ -893,10 +893,10 @@ struct druids_swiftness_t : public druid_spell_t
 
 struct starfire_t : public druid_spell_t
 {
-  int8_t eclipse_benefit;
-  int8_t eclipse_trigger;
+  int eclipse_benefit;
+  int eclipse_trigger;
   std::string prev_str;
-  int8_t extend_moonfire;
+  int extend_moonfire;
 
   starfire_t( player_t* player, const std::string& options_str ) : 
     druid_spell_t( "starfire", player, SCHOOL_ARCANE, TREE_BALANCE ), eclipse_benefit(0), eclipse_trigger(0), extend_moonfire(0)
@@ -906,7 +906,7 @@ struct starfire_t : public druid_spell_t
     std::string eclipse_str;
     option_t options[] =
     {
-      { "extendmf", OPT_INT8,   &extend_moonfire },
+      { "extendmf", OPT_INT,   &extend_moonfire },
       { "eclipse",  OPT_STRING, &eclipse_str     },
       { "prev",     OPT_STRING, &prev_str        },
       { NULL }
@@ -1035,8 +1035,8 @@ struct starfire_t : public druid_spell_t
 
 struct wrath_t : public druid_spell_t
 {
-  int8_t eclipse_benefit;
-  int8_t eclipse_trigger;
+  int eclipse_benefit;
+  int eclipse_trigger;
   std::string prev_str;
 
   wrath_t( player_t* player, const std::string& options_str ) : 
@@ -1198,19 +1198,7 @@ struct mark_of_the_wild_t : public druid_spell_t
 
 struct treants_spell_t : public druid_spell_t
 {
-  struct treants_expiration_t : public event_t
-  {
-    treants_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      sim -> add_event( this, 30.0 );
-    }
-    virtual void execute()
-    {
-      player -> dismiss_pet( "treants" );
-    }
-  };
-
-  int8_t target_pct;
+  int target_pct;
 
   treants_spell_t( player_t* player, const std::string& options_str ) : 
     druid_spell_t( "treants", player, SCHOOL_NATURE, TREE_BALANCE ), target_pct(0)
@@ -1220,7 +1208,7 @@ struct treants_spell_t : public druid_spell_t
 
     option_t options[] =
     {
-      { "target_pct", OPT_INT8, &target_pct },
+      { "target_pct", OPT_INT, &target_pct },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1230,6 +1218,18 @@ struct treants_spell_t : public druid_spell_t
 
   virtual void execute() 
   {
+    struct treants_expiration_t : public event_t
+    {
+      treants_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
+      {
+	sim -> add_event( this, 30.0 );
+      }
+      virtual void execute()
+      {
+	player -> dismiss_pet( "treants" );
+      }
+    };
+
     consume_resource();
     update_ready();
     player -> summon_pet( "treants" );
@@ -1379,9 +1379,9 @@ double druid_t::composite_spell_crit()
 
 // druid_t::get_talent_trees ===============================================
 
-bool druid_t::get_talent_trees( std::vector<int8_t*>& balance,
-                std::vector<int8_t*>& feral,
-                    std::vector<int8_t*>& restoration )
+bool druid_t::get_talent_trees( std::vector<int*>& balance,
+				std::vector<int*>& feral,
+				std::vector<int*>& restoration )
 {
   talent_translation_t translation[][3] =
   {
@@ -1443,64 +1443,64 @@ bool druid_t::parse_option( const std::string& name,
 {
   option_t options[] =
   {
-    { "balance_of_power",          OPT_INT8,  &( talents.balance_of_power          ) },
-    { "brambles",                  OPT_INT8,  &( talents.brambles                  ) },
-    { "celestial_focus",           OPT_INT8,  &( talents.celestial_focus           ) },
-    { "dreamstate",                OPT_INT8,  &( talents.dreamstate                ) },
-    { "earth_and_moon",            OPT_INT8,  &( talents.earth_and_moon            ) },
-    { "eclipse",                   OPT_INT8,  &( talents.eclipse                   ) },
-    { "force_of_nature",           OPT_INT8,  &( talents.force_of_nature           ) },
-    { "furor",                     OPT_INT8,  &( talents.furor                     ) },
-    { "genesis",                   OPT_INT8,  &( talents.genesis                   ) },
-    { "improved_faerie_fire",      OPT_INT8,  &( talents.improved_faerie_fire      ) },
-    { "improved_insect_swarm",     OPT_INT8,  &( talents.improved_insect_swarm     ) },
-    { "improved_mark_of_the_wild", OPT_INT8,  &( talents.improved_mark_of_the_wild ) },
-    { "improved_moonfire",         OPT_INT8,  &( talents.improved_moonfire         ) },
-    { "improved_moonkin_form",     OPT_INT8,  &( talents.improved_moonkin_form     ) },
-    { "insect_swarm",              OPT_INT8,  &( talents.insect_swarm              ) },
-    { "intensity",                 OPT_INT8,  &( talents.intensity                 ) },
-    { "living_spirit",             OPT_INT8,  &( talents.living_spirit             ) },
-    { "lunar_guidance",            OPT_INT8,  &( talents.lunar_guidance            ) },
-    { "master_shapeshifter",       OPT_INT8,  &( talents.master_shapeshifter       ) },
-    { "moonfury",                  OPT_INT8,  &( talents.moonfury                  ) },
-    { "moonglow",                  OPT_INT8,  &( talents.moonglow                  ) },
-    { "moonkin_form",              OPT_INT8,  &( talents.moonkin_form              ) },
-    { "natural_perfection",        OPT_INT8,  &( talents.natural_perfection        ) },
-    { "natures_grace",             OPT_INT8,  &( talents.natures_grace             ) },
-    { "natures_majesty",           OPT_INT8,  &( talents.natures_majesty           ) },
-    { "natures_reach",             OPT_INT8,  &( talents.natures_reach             ) },
-    { "natures_splendor",          OPT_INT8,  &( talents.natures_splendor          ) },
-    { "natures_swiftness",         OPT_INT8,  &( talents.natures_swiftness         ) },
-    { "omen_of_clarity",           OPT_INT8,  &( talents.omen_of_clarity           ) },
-    { "starlight_wrath",           OPT_INT8,  &( talents.starlight_wrath           ) },
-    { "vengeance",                 OPT_INT8,  &( talents.vengeance                 ) },
-    { "wrath_of_cenarius",         OPT_INT8,  &( talents.wrath_of_cenarius         ) },
+    { "balance_of_power",          OPT_INT,  &( talents.balance_of_power          ) },
+    { "brambles",                  OPT_INT,  &( talents.brambles                  ) },
+    { "celestial_focus",           OPT_INT,  &( talents.celestial_focus           ) },
+    { "dreamstate",                OPT_INT,  &( talents.dreamstate                ) },
+    { "earth_and_moon",            OPT_INT,  &( talents.earth_and_moon            ) },
+    { "eclipse",                   OPT_INT,  &( talents.eclipse                   ) },
+    { "force_of_nature",           OPT_INT,  &( talents.force_of_nature           ) },
+    { "furor",                     OPT_INT,  &( talents.furor                     ) },
+    { "genesis",                   OPT_INT,  &( talents.genesis                   ) },
+    { "improved_faerie_fire",      OPT_INT,  &( talents.improved_faerie_fire      ) },
+    { "improved_insect_swarm",     OPT_INT,  &( talents.improved_insect_swarm     ) },
+    { "improved_mark_of_the_wild", OPT_INT,  &( talents.improved_mark_of_the_wild ) },
+    { "improved_moonfire",         OPT_INT,  &( talents.improved_moonfire         ) },
+    { "improved_moonkin_form",     OPT_INT,  &( talents.improved_moonkin_form     ) },
+    { "insect_swarm",              OPT_INT,  &( talents.insect_swarm              ) },
+    { "intensity",                 OPT_INT,  &( talents.intensity                 ) },
+    { "living_spirit",             OPT_INT,  &( talents.living_spirit             ) },
+    { "lunar_guidance",            OPT_INT,  &( talents.lunar_guidance            ) },
+    { "master_shapeshifter",       OPT_INT,  &( talents.master_shapeshifter       ) },
+    { "moonfury",                  OPT_INT,  &( talents.moonfury                  ) },
+    { "moonglow",                  OPT_INT,  &( talents.moonglow                  ) },
+    { "moonkin_form",              OPT_INT,  &( talents.moonkin_form              ) },
+    { "natural_perfection",        OPT_INT,  &( talents.natural_perfection        ) },
+    { "natures_grace",             OPT_INT,  &( talents.natures_grace             ) },
+    { "natures_majesty",           OPT_INT,  &( talents.natures_majesty           ) },
+    { "natures_reach",             OPT_INT,  &( talents.natures_reach             ) },
+    { "natures_splendor",          OPT_INT,  &( talents.natures_splendor          ) },
+    { "natures_swiftness",         OPT_INT,  &( talents.natures_swiftness         ) },
+    { "omen_of_clarity",           OPT_INT,  &( talents.omen_of_clarity           ) },
+    { "starlight_wrath",           OPT_INT,  &( talents.starlight_wrath           ) },
+    { "vengeance",                 OPT_INT,  &( talents.vengeance                 ) },
+    { "wrath_of_cenarius",         OPT_INT,  &( talents.wrath_of_cenarius         ) },
     // Glyphs
-    { "glyph_insect_swarm",        OPT_INT8,  &( glyphs.insect_swarm               ) },
-    { "glyph_innervate",           OPT_INT8,  &( glyphs.innervate                  ) },
-    { "glyph_moonfire",            OPT_INT8,  &( glyphs.moonfire                   ) },
-    { "glyph_starfire",            OPT_INT8,  &( glyphs.starfire                   ) },
-    { "glyph_starfall",            OPT_INT8,  &( glyphs.starfall                   ) },
+    { "glyph_insect_swarm",        OPT_INT,  &( glyphs.insect_swarm               ) },
+    { "glyph_innervate",           OPT_INT,  &( glyphs.innervate                  ) },
+    { "glyph_moonfire",            OPT_INT,  &( glyphs.moonfire                   ) },
+    { "glyph_starfire",            OPT_INT,  &( glyphs.starfire                   ) },
+    { "glyph_starfall",            OPT_INT,  &( glyphs.starfall                   ) },
     // Idols
-    { "idol_of_steadfast_renewal", OPT_INT8,  &( idols.steadfast_renewal           ) },
-    { "idol_of_the_shooting_star", OPT_INT8,  &( idols.shooting_star               ) },
+    { "idol_of_steadfast_renewal", OPT_INT,  &( idols.steadfast_renewal           ) },
+    { "idol_of_the_shooting_star", OPT_INT,  &( idols.shooting_star               ) },
     // Tier Bonuses
-    { "tier4_2pc_balance",       OPT_INT8,  &( tiers.t4_2pc_balance                ) },
-    { "tier4_4pc_balance",       OPT_INT8,  &( tiers.t4_4pc_balance                ) },
-    { "tier5_2pc_balance",       OPT_INT8,  &( tiers.t5_2pc_balance                ) },
-    { "tier5_4pc_balance",       OPT_INT8,  &( tiers.t5_4pc_balance                ) },
-    { "tier6_2pc_balance",       OPT_INT8,  &( tiers.t6_2pc_balance                ) },
-    { "tier6_4pc_balance",       OPT_INT8,  &( tiers.t6_4pc_balance                ) },
-    { "tier7_2pc_balance",       OPT_INT8,  &( tiers.t7_2pc_balance                ) },
-    { "tier7_4pc_balance",       OPT_INT8,  &( tiers.t7_4pc_balance                ) },
-    { "tier4_2pc_feral",         OPT_INT8,  &( tiers.t4_2pc_feral                  ) },
-    { "tier4_4pc_feral",         OPT_INT8,  &( tiers.t4_4pc_feral                  ) },
-    { "tier5_2pc_feral",         OPT_INT8,  &( tiers.t5_2pc_feral                  ) },
-    { "tier5_4pc_feral",         OPT_INT8,  &( tiers.t5_4pc_feral                  ) },
-    { "tier6_2pc_feral",         OPT_INT8,  &( tiers.t6_2pc_feral                  ) },
-    { "tier6_4pc_feral",         OPT_INT8,  &( tiers.t6_4pc_feral                  ) },
-    { "tier7_2pc_feral",         OPT_INT8,  &( tiers.t7_2pc_feral                  ) },
-    { "tier7_4pc_feral",         OPT_INT8,  &( tiers.t7_4pc_feral                  ) },
+    { "tier4_2pc_balance",       OPT_INT,  &( tiers.t4_2pc_balance                ) },
+    { "tier4_4pc_balance",       OPT_INT,  &( tiers.t4_4pc_balance                ) },
+    { "tier5_2pc_balance",       OPT_INT,  &( tiers.t5_2pc_balance                ) },
+    { "tier5_4pc_balance",       OPT_INT,  &( tiers.t5_4pc_balance                ) },
+    { "tier6_2pc_balance",       OPT_INT,  &( tiers.t6_2pc_balance                ) },
+    { "tier6_4pc_balance",       OPT_INT,  &( tiers.t6_4pc_balance                ) },
+    { "tier7_2pc_balance",       OPT_INT,  &( tiers.t7_2pc_balance                ) },
+    { "tier7_4pc_balance",       OPT_INT,  &( tiers.t7_4pc_balance                ) },
+    { "tier4_2pc_feral",         OPT_INT,  &( tiers.t4_2pc_feral                  ) },
+    { "tier4_4pc_feral",         OPT_INT,  &( tiers.t4_4pc_feral                  ) },
+    { "tier5_2pc_feral",         OPT_INT,  &( tiers.t5_2pc_feral                  ) },
+    { "tier5_4pc_feral",         OPT_INT,  &( tiers.t5_4pc_feral                  ) },
+    { "tier6_2pc_feral",         OPT_INT,  &( tiers.t6_2pc_feral                  ) },
+    { "tier6_4pc_feral",         OPT_INT,  &( tiers.t6_4pc_feral                  ) },
+    { "tier7_2pc_feral",         OPT_INT,  &( tiers.t7_2pc_feral                  ) },
+    { "tier7_4pc_feral",         OPT_INT,  &( tiers.t7_4pc_feral                  ) },
     // Deprecated
     { "tier4_2pc", OPT_DEPRECATED, (void*) "tier4_2pc_balance|tier4_2pc_feral" },
     { "tier4_4pc", OPT_DEPRECATED, (void*) "tier4_4pc_balance|tier4_4pc_feral" },

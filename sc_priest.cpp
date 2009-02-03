@@ -19,11 +19,11 @@ struct priest_t : public player_t
   action_t* active_shadow_word_death;
 
   // Buffs
-  int8_t buffs_inner_fire;
-  int8_t buffs_improved_spirit_tap;
-  int8_t buffs_shadow_weaving;
-  int8_t buffs_surge_of_light;
-  int8_t buffs_glyph_of_shadow;
+  int buffs_inner_fire;
+  int buffs_improved_spirit_tap;
+  int buffs_shadow_weaving;
+  int buffs_surge_of_light;
+  int buffs_glyph_of_shadow;
 
   // Expirations
   event_t* expirations_improved_spirit_tap;
@@ -40,47 +40,47 @@ struct priest_t : public player_t
 
   struct talents_t
   {
-    int8_t  aspiration;
-    int8_t  darkness;
-    int8_t  dispersion;
-    int8_t  divine_fury;
-    int8_t  divine_spirit;
-    int8_t  enlightenment;
-    int8_t  focused_mind;
-    int8_t  focused_power;
-    int8_t  force_of_will;
-    int8_t  holy_specialization;
-    int8_t  improved_divine_spirit;
-    int8_t  improved_inner_fire;
-    int8_t  improved_mind_blast;
-    int8_t  improved_power_word_fortitude;
-    int8_t  improved_shadow_word_pain;
-    int8_t  improved_spirit_tap;
-    int8_t  improved_vampiric_embrace;
-    int8_t  inner_focus;
-    int8_t  meditation;
-    int8_t  mental_agility;
-    int8_t  mental_strength;
-    int8_t  mind_flay;
-    int8_t  mind_melt;
-    int8_t  misery;
-    int8_t  pain_and_suffering;
-    int8_t  penance;
-    int8_t  power_infusion;
-    int8_t  searing_light;
-    int8_t  shadow_affinity;
-    int8_t  shadow_focus;
-    int8_t  shadow_form;
-    int8_t  shadow_power;
-    int8_t  shadow_weaving;
-    int8_t  spirit_of_redemption;
-    int8_t  spiritual_guidance;
-    int8_t  surge_of_light;
-    int8_t  twin_disciplines;
-    int8_t  twisted_faith;
-    int8_t  vampiric_embrace;
-    int8_t  vampiric_touch;
-    int8_t  veiled_shadows;
+    int  aspiration;
+    int  darkness;
+    int  dispersion;
+    int  divine_fury;
+    int  divine_spirit;
+    int  enlightenment;
+    int  focused_mind;
+    int  focused_power;
+    int  force_of_will;
+    int  holy_specialization;
+    int  improved_divine_spirit;
+    int  improved_inner_fire;
+    int  improved_mind_blast;
+    int  improved_power_word_fortitude;
+    int  improved_shadow_word_pain;
+    int  improved_spirit_tap;
+    int  improved_vampiric_embrace;
+    int  inner_focus;
+    int  meditation;
+    int  mental_agility;
+    int  mental_strength;
+    int  mind_flay;
+    int  mind_melt;
+    int  misery;
+    int  pain_and_suffering;
+    int  penance;
+    int  power_infusion;
+    int  searing_light;
+    int  shadow_affinity;
+    int  shadow_focus;
+    int  shadow_form;
+    int  shadow_power;
+    int  shadow_weaving;
+    int  spirit_of_redemption;
+    int  spiritual_guidance;
+    int  surge_of_light;
+    int  twin_disciplines;
+    int  twisted_faith;
+    int  vampiric_embrace;
+    int  vampiric_touch;
+    int  veiled_shadows;
     
     talents_t() { memset( (void*) this, 0x0, sizeof( talents_t ) ); }
   };
@@ -88,9 +88,9 @@ struct priest_t : public player_t
 
   struct glyphs_t
   {
-    int8_t shadow_word_death;
-    int8_t shadow_word_pain;
-    int8_t shadow;
+    int shadow_word_death;
+    int shadow_word_pain;
+    int shadow;
     glyphs_t() { memset( (void*) this, 0x0, sizeof( glyphs_t ) ); }
   };
   glyphs_t glyphs;
@@ -129,7 +129,7 @@ struct priest_t : public player_t
   // Character Definition
   virtual void      init_base();
   virtual void      reset();
-  virtual bool      get_talent_trees( std::vector<int8_t*>& discipline, std::vector<int8_t*>& holy, std::vector<int8_t*>& shadow );
+  virtual bool      get_talent_trees( std::vector<int*>& discipline, std::vector<int*>& holy, std::vector<int*>& shadow );
   virtual bool      parse_option ( const std::string& name, const std::string& value );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
@@ -139,7 +139,7 @@ struct priest_t : public player_t
   virtual void regen( double periodicity );
   virtual void spell_hit_event   ( spell_t* );
   virtual void spell_finish_event( spell_t* );
-  virtual void spell_damage_event( spell_t*, double amount, int8_t dmg_type );
+  virtual void spell_damage_event( spell_t*, double amount, int dmg_type );
 };
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
@@ -150,7 +150,7 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 
 struct priest_spell_t : public spell_t
 {
-  priest_spell_t( const char* n, player_t* player, int8_t s, int8_t t ) : 
+  priest_spell_t( const char* n, player_t* player, int s, int t ) : 
     spell_t( n, player, RESOURCE_MANA, s, t ) 
   {
     priest_t* p = player -> cast_priest();
@@ -185,7 +185,7 @@ struct shadow_fiend_pet_t : public pet_t
       player_t* o = player -> cast_pet() -> owner;
       player_power += 0.57 * o -> composite_spell_power( SCHOOL_SHADOW );
     }
-    void assess_damage( double amount, int8_t dmg_type )
+    void assess_damage( double amount, int dmg_type )
     {
       attack_t::assess_damage( amount, dmg_type );
       priest_t* p = player -> cast_pet() -> owner -> cast_priest();
@@ -718,7 +718,7 @@ struct penance_t : public priest_spell_t
 
 struct shadow_word_pain_t : public priest_spell_t
 {
-  int8_t shadow_weaving_wait;
+  int shadow_weaving_wait;
 
   shadow_word_pain_t( player_t* player, const std::string& options_str ) : 
     priest_spell_t( "shadow_word_pain", player, SCHOOL_SHADOW, TREE_SHADOW ), shadow_weaving_wait(0)
@@ -727,7 +727,7 @@ struct shadow_word_pain_t : public priest_spell_t
 
     option_t options[] =
     {
-      { "shadow_weaving_wait", OPT_INT8, &shadow_weaving_wait },
+      { "shadow_weaving_wait", OPT_INT, &shadow_weaving_wait },
       { NULL }
     };
     parse_options( options, options_str );
@@ -956,7 +956,7 @@ struct devouring_plague_t : public priest_spell_t
     return tick_dmg;
   }    
 
-  virtual void target_debuff( int8_t dmg_type )
+  virtual void target_debuff( int dmg_type )
   {
     spell_t::target_debuff( dmg_type );
 
@@ -1069,7 +1069,7 @@ struct mind_blast_t : public priest_spell_t
 struct shadow_word_death_t : public priest_spell_t
 {
   double mb_wait;
-  int8_t mb_priority;
+  int    mb_priority;
 
   shadow_word_death_t( player_t* player, const std::string& options_str ) : 
     priest_spell_t( "shadow_word_death", player, SCHOOL_SHADOW, TREE_SHADOW ), mb_wait(0), mb_priority(0)
@@ -1079,7 +1079,7 @@ struct shadow_word_death_t : public priest_spell_t
     option_t options[] =
     {
       { "mb_wait",     OPT_FLT,  &mb_wait     },
-      { "mb_priority", OPT_INT8, &mb_priority },
+      { "mb_priority", OPT_INT, &mb_priority },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1172,7 +1172,7 @@ struct shadow_word_death_t : public priest_spell_t
 struct mind_flay_t : public priest_spell_t
 {
   double mb_wait;
-  int8_t swp_refresh;
+  int    swp_refresh;
 
   mind_flay_t( player_t* player, const std::string& options_str ) : 
     priest_spell_t( "mind_flay", player, SCHOOL_SHADOW, TREE_SHADOW ), mb_wait(0), swp_refresh(0)
@@ -1182,7 +1182,7 @@ struct mind_flay_t : public priest_spell_t
 
     option_t options[] =
     {
-      { "swp_refresh", OPT_INT8, &swp_refresh },
+      { "swp_refresh", OPT_INT, &swp_refresh },
       { "mb_wait",     OPT_FLT,  &mb_wait     },
       { NULL }
     };
@@ -1455,7 +1455,7 @@ struct inner_focus_t : public priest_spell_t
 
 struct divine_spirit_t : public priest_spell_t
 {
-  int8_t improved;
+  int    improved;
   double bonus;
 
   divine_spirit_t( player_t* player, const std::string& options_str ) : 
@@ -1601,7 +1601,7 @@ struct shadow_fiend_spell_t : public priest_spell_t
     }
   };
 
-  int16_t trigger;
+  int trigger;
 
   shadow_fiend_spell_t( player_t* player, const std::string& options_str ) : 
     priest_spell_t( "shadow_fiend", player, SCHOOL_SHADOW, TREE_SHADOW ), trigger(0)
@@ -1610,7 +1610,7 @@ struct shadow_fiend_spell_t : public priest_spell_t
 
     option_t options[] =
     {
-      { "trigger", OPT_INT16, &trigger },
+      { "trigger", OPT_INT, &trigger },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1695,7 +1695,7 @@ void priest_t::spell_finish_event( spell_t* s )
 
 void priest_t::spell_damage_event( spell_t* s,
                                    double   amount,
-                                   int8_t   dmg_type )
+                                   int      dmg_type )
 {
   player_t::spell_damage_event( s, amount, dmg_type );
 
@@ -1843,9 +1843,9 @@ void priest_t::regen( double periodicity )
 
 // priest_t::get_talent_trees ===============================================
 
-bool priest_t::get_talent_trees( std::vector<int8_t*>& discipline,
-                                 std::vector<int8_t*>& holy,
-                                 std::vector<int8_t*>& shadow )
+bool priest_t::get_talent_trees( std::vector<int*>& discipline,
+                                 std::vector<int*>& holy,
+                                 std::vector<int*>& shadow )
 {
   talent_translation_t translation[][3] =
   {
@@ -1890,51 +1890,51 @@ bool priest_t::parse_option( const std::string& name,
 {
   option_t options[] =
   {
-    { "aspiration",                    OPT_INT8,  &( talents.aspiration                    ) },
-    { "darkness",                      OPT_INT8,  &( talents.darkness                      ) },
-    { "dispersion",                    OPT_INT8,  &( talents.dispersion                    ) },
-    { "divine_fury",                   OPT_INT8,  &( talents.divine_fury                   ) },
-    { "enlightenment",                 OPT_INT8,  &( talents.enlightenment                 ) },
-    { "focused_mind",                  OPT_INT8,  &( talents.focused_mind                  ) },
-    { "focused_power",                 OPT_INT8,  &( talents.focused_power                 ) },
-    { "force_of_will",                 OPT_INT8,  &( talents.force_of_will                 ) },
-    { "holy_specialization",           OPT_INT8,  &( talents.holy_specialization           ) },
-    { "divine_spirit",                 OPT_INT8,  &( talents.divine_spirit                 ) },
-    { "improved_divine_spirit",        OPT_INT8,  &( talents.improved_divine_spirit        ) },
-    { "improved_inner_fire",           OPT_INT8,  &( talents.improved_inner_fire           ) },
-    { "improved_mind_blast",           OPT_INT8,  &( talents.improved_mind_blast           ) },
-    { "improved_power_word_fortitude", OPT_INT8,  &( talents.improved_power_word_fortitude ) },
-    { "improved_shadow_word_pain",     OPT_INT8,  &( talents.improved_shadow_word_pain     ) },
-    { "improved_spirit_tap",           OPT_INT8,  &( talents.improved_spirit_tap           ) },
-    { "improved_vampiric_embrace",     OPT_INT8,  &( talents.improved_vampiric_embrace     ) },
-    { "inner_focus",                   OPT_INT8,  &( talents.inner_focus                   ) },
-    { "meditation",                    OPT_INT8,  &( talents.meditation                    ) },
-    { "mental_agility",                OPT_INT8,  &( talents.mental_agility                ) },
-    { "mental_strength",               OPT_INT8,  &( talents.mental_strength               ) },
-    { "mind_flay",                     OPT_INT8,  &( talents.mind_flay                     ) },
-    { "mind_melt",                     OPT_INT8,  &( talents.mind_melt                     ) },
-    { "misery",                        OPT_INT8,  &( talents.misery                        ) },
-    { "pain_and_suffering",            OPT_INT8,  &( talents.pain_and_suffering            ) },
-    { "penance",                       OPT_INT8,  &( talents.penance                       ) },
-    { "power_infusion",                OPT_INT8,  &( talents.power_infusion                ) },
-    { "searing_light",                 OPT_INT8,  &( talents.searing_light                 ) },
-    { "shadow_affinity",               OPT_INT8,  &( talents.shadow_affinity               ) },
-    { "shadow_focus",                  OPT_INT8,  &( talents.shadow_focus                  ) },
-    { "shadow_form",                   OPT_INT8,  &( talents.shadow_form                   ) },
-    { "shadow_power",                  OPT_INT8,  &( talents.shadow_power                  ) },
-    { "shadow_weaving",                OPT_INT8,  &( talents.shadow_weaving                ) },
-    { "spirit_of_redemption",          OPT_INT8,  &( talents.spirit_of_redemption          ) },
-    { "spiritual_guidance",            OPT_INT8,  &( talents.spiritual_guidance            ) },
-    { "surge_of_light",                OPT_INT8,  &( talents.surge_of_light                ) },
-    { "twin_disciplines",              OPT_INT8,  &( talents.twin_disciplines              ) },
-    { "twisted_faith",                 OPT_INT8,  &( talents.twisted_faith                 ) },
-    { "vampiric_embrace",              OPT_INT8,  &( talents.vampiric_embrace              ) },
-    { "vampiric_touch",                OPT_INT8,  &( talents.vampiric_touch                ) },
-    { "veiled_shadows",                OPT_INT8,  &( talents.veiled_shadows                ) },
+    { "aspiration",                    OPT_INT,  &( talents.aspiration                    ) },
+    { "darkness",                      OPT_INT,  &( talents.darkness                      ) },
+    { "dispersion",                    OPT_INT,  &( talents.dispersion                    ) },
+    { "divine_fury",                   OPT_INT,  &( talents.divine_fury                   ) },
+    { "enlightenment",                 OPT_INT,  &( talents.enlightenment                 ) },
+    { "focused_mind",                  OPT_INT,  &( talents.focused_mind                  ) },
+    { "focused_power",                 OPT_INT,  &( talents.focused_power                 ) },
+    { "force_of_will",                 OPT_INT,  &( talents.force_of_will                 ) },
+    { "holy_specialization",           OPT_INT,  &( talents.holy_specialization           ) },
+    { "divine_spirit",                 OPT_INT,  &( talents.divine_spirit                 ) },
+    { "improved_divine_spirit",        OPT_INT,  &( talents.improved_divine_spirit        ) },
+    { "improved_inner_fire",           OPT_INT,  &( talents.improved_inner_fire           ) },
+    { "improved_mind_blast",           OPT_INT,  &( talents.improved_mind_blast           ) },
+    { "improved_power_word_fortitude", OPT_INT,  &( talents.improved_power_word_fortitude ) },
+    { "improved_shadow_word_pain",     OPT_INT,  &( talents.improved_shadow_word_pain     ) },
+    { "improved_spirit_tap",           OPT_INT,  &( talents.improved_spirit_tap           ) },
+    { "improved_vampiric_embrace",     OPT_INT,  &( talents.improved_vampiric_embrace     ) },
+    { "inner_focus",                   OPT_INT,  &( talents.inner_focus                   ) },
+    { "meditation",                    OPT_INT,  &( talents.meditation                    ) },
+    { "mental_agility",                OPT_INT,  &( talents.mental_agility                ) },
+    { "mental_strength",               OPT_INT,  &( talents.mental_strength               ) },
+    { "mind_flay",                     OPT_INT,  &( talents.mind_flay                     ) },
+    { "mind_melt",                     OPT_INT,  &( talents.mind_melt                     ) },
+    { "misery",                        OPT_INT,  &( talents.misery                        ) },
+    { "pain_and_suffering",            OPT_INT,  &( talents.pain_and_suffering            ) },
+    { "penance",                       OPT_INT,  &( talents.penance                       ) },
+    { "power_infusion",                OPT_INT,  &( talents.power_infusion                ) },
+    { "searing_light",                 OPT_INT,  &( talents.searing_light                 ) },
+    { "shadow_affinity",               OPT_INT,  &( talents.shadow_affinity               ) },
+    { "shadow_focus",                  OPT_INT,  &( talents.shadow_focus                  ) },
+    { "shadow_form",                   OPT_INT,  &( talents.shadow_form                   ) },
+    { "shadow_power",                  OPT_INT,  &( talents.shadow_power                  ) },
+    { "shadow_weaving",                OPT_INT,  &( talents.shadow_weaving                ) },
+    { "spirit_of_redemption",          OPT_INT,  &( talents.spirit_of_redemption          ) },
+    { "spiritual_guidance",            OPT_INT,  &( talents.spiritual_guidance            ) },
+    { "surge_of_light",                OPT_INT,  &( talents.surge_of_light                ) },
+    { "twin_disciplines",              OPT_INT,  &( talents.twin_disciplines              ) },
+    { "twisted_faith",                 OPT_INT,  &( talents.twisted_faith                 ) },
+    { "vampiric_embrace",              OPT_INT,  &( talents.vampiric_embrace              ) },
+    { "vampiric_touch",                OPT_INT,  &( talents.vampiric_touch                ) },
+    { "veiled_shadows",                OPT_INT,  &( talents.veiled_shadows                ) },
     // Glyphs
-    { "glyph_shadow_word_death",       OPT_INT8,  &( glyphs.shadow_word_death              ) },
-    { "glyph_shadow_word_pain",        OPT_INT8,  &( glyphs.shadow_word_pain               ) },
-    { "glyph_shadow",                  OPT_INT8,  &( glyphs.shadow                         ) },
+    { "glyph_shadow_word_death",       OPT_INT,  &( glyphs.shadow_word_death              ) },
+    { "glyph_shadow_word_pain",        OPT_INT,  &( glyphs.shadow_word_pain               ) },
+    { "glyph_shadow",                  OPT_INT,  &( glyphs.shadow                         ) },
     // Deprecated 
     { "glyph_blue_promises",    OPT_DEPRECATED, NULL },
     { "glyph_no_blue_promises", OPT_DEPRECATED, NULL },

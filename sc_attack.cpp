@@ -11,7 +11,7 @@
 
 // attack_t::attack_t =======================================================
 
-attack_t::attack_t( const char* n, player_t* p, int8_t r, int8_t s, int8_t t ) :
+attack_t::attack_t( const char* n, player_t* p, int r, int s, int t ) :
   action_t( ACTION_ATTACK, n, p, r, s, t ),
   base_expertise(0), player_expertise(0), target_expertise(0)
 {
@@ -45,7 +45,7 @@ void attack_t::parse_options( option_t*          options,
 {
   option_t base_options[] =
   {
-    { "rank", OPT_INT8,   &rank_index },
+    { "rank", OPT_INT,    &rank_index },
     { "sync", OPT_STRING, &sync_str   },
     { NULL }
   };
@@ -124,7 +124,7 @@ void attack_t::player_buff()
 
 // attack_t::target_debuff ==================================================
 
-void attack_t::target_debuff( int8_t dmg_type )
+void attack_t::target_debuff( int dmg_type )
 {
   player_t* p = player;
   target_t* t = sim -> target;

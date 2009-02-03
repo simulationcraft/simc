@@ -11,7 +11,7 @@
 
 // spell_t::spell_t ==========================================================
 
-spell_t::spell_t( const char* n, player_t* p, int8_t r, int8_t s, int8_t t ) :
+spell_t::spell_t( const char* n, player_t* p, int r, int s, int t ) :
   action_t( ACTION_SPELL, n, p, r, s, t )
 {
   may_miss = may_resist = true;
@@ -27,7 +27,7 @@ void spell_t::parse_options( option_t*          options,
 {
   option_t base_options[] =
   {
-    { "rank", OPT_INT8,   &rank_index },
+    { "rank", OPT_INT,    &rank_index },
     { "sync", OPT_STRING, &sync_str   },
     { NULL }
   };
@@ -152,7 +152,7 @@ void spell_t::player_buff()
 
 // spell_t::target_debuff =====================================================
 
-void spell_t::target_debuff( int8_t dmg_type )
+void spell_t::target_debuff( int dmg_type )
 {
   action_t::target_debuff( dmg_type );
 
@@ -171,10 +171,10 @@ void spell_t::target_debuff( int8_t dmg_type )
    
 // spell_t::level_based_miss_chance ==========================================
 
-double spell_t::level_based_miss_chance( int8_t player, 
-					 int8_t target )
+double spell_t::level_based_miss_chance( int player, 
+					 int target )
 {
-  int8_t delta_level = target - player;
+  int delta_level = target - player;
   double miss=0;
 
   if( delta_level > 2 )

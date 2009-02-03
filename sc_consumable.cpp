@@ -15,7 +15,7 @@
 
 struct flask_t : public action_t
 {
-  int8_t type;
+  int type;
 
   flask_t( player_t* p, const std::string& options_str ) : 
     action_t( ACTION_USE, "flask", p ), type( FLASK_NONE )
@@ -94,7 +94,7 @@ struct flask_t : public action_t
 
 struct food_t : public action_t
 {
-  int8_t type;
+  int type;
 
   food_t( player_t* p, const std::string& options_str ) : 
     action_t( ACTION_USE, "food", p ), type( FOOD_NONE )
@@ -176,7 +176,7 @@ struct food_t : public action_t
 
 struct destruction_potion_t : public action_t
 {
-  int8_t used;
+  int used;
 
   destruction_potion_t( player_t* p, const std::string& options_str ) : 
     action_t( ACTION_USE, "destruction_potion", p ), used( 0 )
@@ -215,6 +215,7 @@ struct destruction_potion_t : public action_t
       }
     };
   
+    if( sim -> log ) report_t::log( sim, "%s uses %s", player -> name(), name() );
     player -> share_cooldown( cooldown_group, cooldown );
     new ( sim ) expiration_t( sim, player );
     used = sim -> potion_sickness;
@@ -225,7 +226,7 @@ struct destruction_potion_t : public action_t
     if( used )
       return false;
 
-    return( cooldown_ready > sim -> current_time );
+    return( cooldown_ready <= sim -> current_time );
   }
 
   virtual void reset()
@@ -241,7 +242,7 @@ struct destruction_potion_t : public action_t
 
 struct speed_potion_t : public action_t
 {
-  int8_t used;
+  int used;
 
   speed_potion_t( player_t* p, const std::string& options_str ) : 
     action_t( ACTION_USE, "speed_potion", p ), used( 0 )
@@ -280,6 +281,7 @@ struct speed_potion_t : public action_t
       }
     };
   
+    if( sim -> log ) report_t::log( sim, "%s uses %s", player -> name(), name() );
     player -> share_cooldown( cooldown_group, cooldown );
     new ( sim ) expiration_t( sim, player );
     used = sim -> potion_sickness;
@@ -290,7 +292,7 @@ struct speed_potion_t : public action_t
     if( used )
       return false;
 
-    return( cooldown_ready > sim -> current_time );
+    return( cooldown_ready <= sim -> current_time );
   }
 
   virtual void reset()
@@ -306,7 +308,7 @@ struct speed_potion_t : public action_t
 
 struct wild_magic_potion_t : public action_t
 {
-  int8_t used;
+  int used;
 
   wild_magic_potion_t( player_t* p, const std::string& options_str ) : 
     action_t( ACTION_USE, "wild_magic_potion", p ), used( 0 )
@@ -347,6 +349,7 @@ struct wild_magic_potion_t : public action_t
       }
     };
   
+    if( sim -> log ) report_t::log( sim, "%s uses %s", player -> name(), name() );
     player -> share_cooldown( cooldown_group, cooldown );
     new ( sim ) expiration_t( sim, player );
     used = sim -> potion_sickness;
@@ -357,7 +360,7 @@ struct wild_magic_potion_t : public action_t
     if( used )
       return false;
 
-    return( cooldown_ready > sim -> current_time );
+    return( cooldown_ready <= sim -> current_time );
   }
 
   virtual void reset()
@@ -373,26 +376,26 @@ struct wild_magic_potion_t : public action_t
 
 struct mana_potion_t : public action_t
 {
-  int16_t trigger;
-  int16_t min;
-  int16_t max;
-  int8_t  used;
+  int trigger;
+  int min;
+  int max;
+  int  used;
 
   mana_potion_t( player_t* p, const std::string& options_str ) : 
     action_t( ACTION_USE, "mana_potion", p ), trigger(0), min(0), max(0), used(0)
   {
     option_t options[] =
     {
-      { "min",     OPT_INT16, &min     },
-      { "max",     OPT_INT16, &max     },
-      { "trigger", OPT_INT16, &trigger },
+      { "min",     OPT_INT, &min     },
+      { "max",     OPT_INT, &max     },
+      { "trigger", OPT_INT, &trigger },
       { NULL }
     };
     parse_options( options, options_str );
 
     if( min == 0 && max == 0) min = max = trigger;
 
-    if( min > max) { int16_t tmp = min; min = max; max = tmp;}    
+    if( min > max) { int tmp = min; min = max; max = tmp;}    
 
     if( max == 0 ) max = trigger;
     if( trigger == 0 ) trigger = max;
@@ -407,7 +410,7 @@ struct mana_potion_t : public action_t
   virtual void execute()
   {
     if( sim -> log ) report_t::log( sim, "%s uses Mana potion", player -> name() );
-    int16_t delta = max - min;
+    int delta = max - min;
     // FIXME! I hope the gain between min and max are distributed uniformly
     double gain   = min + delta * player -> sim -> rng -> real();
     player -> resource_gain( RESOURCE_MANA, gain, player -> gains.mana_potion );
@@ -440,17 +443,17 @@ struct mana_potion_t : public action_t
 
 struct health_stone_t : public action_t
 {
-  int16_t trigger;
-  int16_t health;
-  int8_t  used;
+  int trigger;
+  int health;
+  int used;
 
   health_stone_t( player_t* p, const std::string& options_str ) : 
     action_t( ACTION_USE, "health_stone", p ), trigger(0), health(0), used(0)
   {
     option_t options[] =
     {
-      { "health",  OPT_INT16, &health  },
-      { "trigger", OPT_INT16, &trigger },
+      { "health",  OPT_INT, &health  },
+      { "trigger", OPT_INT, &trigger },
       { NULL }
     };
     parse_options( options, options_str );
@@ -498,19 +501,19 @@ struct health_stone_t : public action_t
 
 struct dark_rune_t : public action_t
 {
-  int16_t trigger;
-  int16_t health;
-  int16_t mana;
-  int8_t  used;
+  int trigger;
+  int health;
+  int mana;
+  int used;
 
   dark_rune_t( player_t* p, const std::string& options_str ) : 
     action_t( ACTION_USE, "dark_rune", p ), trigger(0), health(0), mana(0), used(0)
   {
     option_t options[] =
     {
-      { "trigger", OPT_INT16,  &trigger },
-      { "mana",    OPT_INT16,  &mana    },
-      { "health",  OPT_INT16,  &health  },
+      { "trigger", OPT_INT,  &trigger },
+      { "mana",    OPT_INT,  &mana    },
+      { "health",  OPT_INT,  &health  },
       { NULL }
     };
     parse_options( options, options_str );
@@ -560,15 +563,15 @@ struct dark_rune_t : public action_t
 
 struct wizard_oil_t : public action_t
 {
-  int16_t bonus_power;
-  int16_t bonus_crit;
+  int bonus_power;
+  int bonus_crit;
 
   wizard_oil_t( player_t* p, const std::string& options_str ) : 
     action_t( ACTION_USE, "wizard_oil", p )
   {
     trigger_gcd = 0;
 
-    bonus_power = (int16_t) util_t::ability_rank( p -> level,  56,72,  42,68,  36,0 );
+    bonus_power = util_t::ability_rank( p -> level,  56,72,  42,68,  36,0 );
 
     bonus_crit = ( p -> level <= 55 ? 14 : 0 );
   }

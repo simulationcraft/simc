@@ -102,7 +102,7 @@ void player_t::gear_t::allocate_spell_power_budget( sim_t* sim )
                 pow( slot_crit,  1.5 ) +
                 pow( slot_haste, 1.5 );
 
-  spell_power[ SCHOOL_MAX ] = (int16_t) ( budget_slots * pow( target - cost, 1.0 / 1.5 ) / spell_power_statmod );
+  spell_power[ SCHOOL_MAX ] = (int) ( budget_slots * pow( target - cost, 1.0 / 1.5 ) / spell_power_statmod );
   
   if( sim -> debug ) report_t::log( sim, "slot_power=%.1f  slot_hit=%.1f  slot_crit=%.1f  slot_haste=%.1f  target=%.1f  cost=%.1f  spell_power=%d\n",
                    slot_power, slot_hit, slot_crit, slot_haste, target, cost, spell_power[ SCHOOL_MAX ] );
@@ -126,7 +126,7 @@ void player_t::gear_t::allocate_attack_power_budget( sim_t* sim )
 // player_t::player_t =======================================================
 
 player_t::player_t( sim_t*             s, 
-                    int8_t             t,
+                    int                t,
 		    const std::string& n ) :
   sim(s), name_str(n), next(0), type(t), level(80), party(0), gcd_ready(0), base_gcd(1.5), sleeping(0), pet_list(0),
   // Haste
@@ -155,8 +155,6 @@ player_t::player_t( sim_t*             s,
   attack_crit_per_agility(0),   initial_attack_crit_per_agility(0),
   position( POSITION_BACK ),
   // Resources 
-  resource_constrained(0),           resource_constrained_count(0),
-  resource_constrained_total_dmg(0), resource_constrained_total_time(0),
   mana_per_intellect(0), health_per_stamina(0),
   // Consumables
   elixir_guardian( ELIXIR_NONE ),
@@ -527,11 +525,6 @@ void player_t::init_resources( bool force )
     resource_current[ i ] = resource_max[ i ] = resource_initial[ i ];
   }
 
-  resource_constrained = 0;
-  resource_constrained_count = 0;
-  resource_constrained_total_dmg = 0;
-  resource_constrained_total_time = 0;
-
   if( timeline_resource.empty() )
   {
     int size = (int) sim -> max_time;
@@ -719,7 +712,7 @@ double player_t::composite_attack_crit()
 
 // player_t::composite_spell_power ========================================
 
-double player_t::composite_spell_power( int8_t school ) 
+double player_t::composite_spell_power( int school ) 
 {
   double sp = spell_power[ school ];
 
@@ -761,7 +754,7 @@ double player_t::composite_attack_power_multiplier()
 
 // player_t::composite_attribute_multiplier ================================
 
-double player_t::composite_attribute_multiplier( int8_t attr )
+double player_t::composite_attribute_multiplier( int attr )
 {
   double m = attribute_multiplier[ attr ]; 
   if( sim -> buffs.blessing_of_kings ) m *= 1.10; 
@@ -1036,10 +1029,6 @@ action_t* player_t::execute_action()
   {
     action -> schedule_execute();
   }
-  else
-  {
-    check_resources();
-  }
 
   last_foreground_action = action;
 
@@ -1117,7 +1106,7 @@ void player_t::regen( double periodicity )
     }
   }
 
-  int8_t resource_type = primary_resource();
+  int resource_type = primary_resource();
 
   if( resource_type != RESOURCE_NONE )
   {
@@ -1132,7 +1121,7 @@ void player_t::regen( double periodicity )
 
 // player_t::resource_loss =================================================
 
-void player_t::resource_loss( int8_t resource,
+void player_t::resource_loss( int resource,
                               double amount )
 {
   if( amount == 0 ) return;
@@ -1154,7 +1143,7 @@ void player_t::resource_loss( int8_t resource,
 
 // player_t::resource_gain =================================================
 
-void player_t::resource_gain( int8_t  resource,
+void player_t::resource_gain( int     resource,
                               double  amount,
                               gain_t* source )
 {
@@ -1176,7 +1165,7 @@ void player_t::resource_gain( int8_t  resource,
 
 // player_t::resource_available ============================================
 
-bool player_t::resource_available( int8_t resource,
+bool player_t::resource_available( int    resource,
 				   double cost )
 {
   if( resource == RESOURCE_NONE || cost == 0 )
@@ -1185,35 +1174,6 @@ bool player_t::resource_available( int8_t resource,
   }
 
   return resource_current[ resource ] >= cost;
-}
-
-// player_t::check_resources ===============================================
-
-void player_t::check_resources()
-{
-  return; // FIXME! Work on this later.
-
-  if( ! resource_constrained )
-  {
-    for( action_t* a = action_list; a; a = a -> next )
-    {
-      if( ! a -> background && a -> harmful )
-      {
-	if( resource_available( a -> resource, a -> cost() ) )
-	{
-	  // Not resource constrained.
-	  return;
-	}
-      }
-    }
-
-    resource_constrained = 1;
-    resource_constrained_count++;
-    resource_constrained_total_time += sim -> current_time;
-    resource_constrained_total_dmg  += iteration_dmg;
-
-    if( sim -> debug ) report_t::log( sim, "Player %s is resource constrained.", name() );
-  }
 }
 
 // player_t::summon_pet =====================================================
@@ -1328,7 +1288,7 @@ void player_t::action_tick( action_t* action )
 
 void player_t::action_damage( action_t* action, 
 			      double    amount,
-			      int8_t    dmg_type )
+			      int       dmg_type )
 {
   if( action -> type == ACTION_SPELL )
   {
@@ -1415,7 +1375,7 @@ void player_t::spell_tick_event( spell_t* spell )
 
 void player_t::spell_damage_event( spell_t* spell, 
 				   double   amount,
-				   int8_t   dmg_type )
+				   int      dmg_type )
 {
 }
 
@@ -1460,8 +1420,8 @@ void player_t::attack_tick_event( attack_t* attack )
 // player_t::attack_damage_event ============================================
 
 void player_t::attack_damage_event( attack_t* attack, 
-				    double   amount,
-				    int8_t   dmg_type )
+				    double    amount,
+				    int       dmg_type )
 {
 }
 
@@ -1773,9 +1733,9 @@ pet_t* player_t::find_pet( const std::string& pet_name )
 
 // player_t::get_talent_trees ===============================================
 
-bool player_t::get_talent_trees( std::vector<int8_t*>& tree1,
-				 std::vector<int8_t*>& tree2,
-				 std::vector<int8_t*>& tree3,
+bool player_t::get_talent_trees( std::vector<int*>& tree1,
+				 std::vector<int*>& tree2,
+				 std::vector<int*>& tree3,
 				 talent_translation_t translation[][3] )
 {
   for( int i=0; translation[ i ][ 0 ].index > 0; i++ ) tree1.push_back( translation[ i ][ 0 ].address );
@@ -1787,8 +1747,8 @@ bool player_t::get_talent_trees( std::vector<int8_t*>& tree1,
 
 // player_t::parse_talents ==================================================
 
-bool player_t::parse_talents( std::vector<int8_t*>& talent_tree,
-			      const std::string&  talent_string )
+bool player_t::parse_talents( std::vector<int*>& talent_tree,
+			      const std::string& talent_string )
 {
   const char* s = talent_string.c_str();
 
@@ -1796,7 +1756,7 @@ bool player_t::parse_talents( std::vector<int8_t*>& talent_tree,
 
   for( unsigned int i=0; i < size; i++ )
   {
-    int8_t* address = talent_tree[ i ];
+    int* address = talent_tree[ i ];
     if( ! address ) continue;
     *address = s[ i ] - '0';
   }
@@ -1808,7 +1768,7 @@ bool player_t::parse_talents( std::vector<int8_t*>& talent_tree,
 
 bool player_t::parse_talents( const std::string& talent_string )
 {
-  std::vector<int8_t*> talent_tree1, talent_tree2, talent_tree3;
+  std::vector<int*> talent_tree1, talent_tree2, talent_tree3;
 
   if( ! get_talent_trees( talent_tree1, talent_tree2, talent_tree3 ) )
     return false;
@@ -1855,7 +1815,7 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
     { '\0', '\0', '\0' }
   };
 
-  std::vector<int8_t*> talent_trees[ 3 ];
+  std::vector<int*> talent_trees[ 3 ];
   unsigned int tree_size[ 3 ];
 
   if( ! get_talent_trees( talent_trees[ 0 ], talent_trees[ 1 ] , talent_trees[ 2 ] ) )
@@ -1939,12 +1899,12 @@ bool player_t::parse_option( const std::string& name,
   option_t options[] =
   {
     // Player - General
-    { "level",                                OPT_INT8,   &( level                                          ) },
-    { "party",                                OPT_INT8,   &( party                                          ) },
+    { "level",                                OPT_INT,   &( level                                          ) },
+    { "party",                                OPT_INT,   &( party                                          ) },
     { "gcd",                                  OPT_FLT,    &( base_gcd                                       ) },
-    { "sleeping",                             OPT_INT8,   &( sleeping                                       ) },
+    { "sleeping",                             OPT_INT,   &( sleeping                                       ) },
     // Player - Haste										          
-    { "haste_rating",                         OPT_INT16,  &( initial_haste_rating                           ) },
+    { "haste_rating",                         OPT_INT,  &( initial_haste_rating                           ) },
     // Player - Attributes									          
     { "strength",                             OPT_FLT,    &( attribute_initial[ ATTR_STRENGTH  ]            ) },
     { "agility",                              OPT_FLT,    &( attribute_initial[ ATTR_AGILITY   ]            ) },
@@ -2019,81 +1979,81 @@ bool player_t::parse_option( const std::string& name,
     { "post_actions",                         OPT_STRING, &( action_list_postfix                            ) },
     { "skip_actions",                         OPT_STRING, &( action_list_skip                               ) },
     // Player - Reporting
-    { "quiet",                                OPT_INT8,   &( quiet                                          ) },
+    { "quiet",                                OPT_INT,   &( quiet                                          ) },
     // Player - Gear - Attributes								            
-    { "gear_strength",                        OPT_INT16,  &( gear.attribute        [ ATTR_STRENGTH  ]       ) },
-    { "gear_agility",                         OPT_INT16,  &( gear.attribute        [ ATTR_AGILITY   ]       ) },
-    { "gear_stamina",                         OPT_INT16,  &( gear.attribute        [ ATTR_STAMINA   ]       ) },
-    { "gear_intellect",                       OPT_INT16,  &( gear.attribute        [ ATTR_INTELLECT ]       ) },
-    { "gear_spirit",                          OPT_INT16,  &( gear.attribute        [ ATTR_SPIRIT    ]       ) },
-    { "enchant_strength",                     OPT_INT16,  &( gear.attribute_enchant[ ATTR_STRENGTH  ]       ) },
-    { "enchant_agility",                      OPT_INT16,  &( gear.attribute_enchant[ ATTR_AGILITY   ]       ) },
-    { "enchant_stamina",                      OPT_INT16,  &( gear.attribute_enchant[ ATTR_STAMINA   ]       ) },
-    { "enchant_intellect",                    OPT_INT16,  &( gear.attribute_enchant[ ATTR_INTELLECT ]       ) },
-    { "enchant_spirit",                       OPT_INT16,  &( gear.attribute_enchant[ ATTR_SPIRIT    ]       ) },
+    { "gear_strength",                        OPT_INT,  &( gear.attribute        [ ATTR_STRENGTH  ]       ) },
+    { "gear_agility",                         OPT_INT,  &( gear.attribute        [ ATTR_AGILITY   ]       ) },
+    { "gear_stamina",                         OPT_INT,  &( gear.attribute        [ ATTR_STAMINA   ]       ) },
+    { "gear_intellect",                       OPT_INT,  &( gear.attribute        [ ATTR_INTELLECT ]       ) },
+    { "gear_spirit",                          OPT_INT,  &( gear.attribute        [ ATTR_SPIRIT    ]       ) },
+    { "enchant_strength",                     OPT_INT,  &( gear.attribute_enchant[ ATTR_STRENGTH  ]       ) },
+    { "enchant_agility",                      OPT_INT,  &( gear.attribute_enchant[ ATTR_AGILITY   ]       ) },
+    { "enchant_stamina",                      OPT_INT,  &( gear.attribute_enchant[ ATTR_STAMINA   ]       ) },
+    { "enchant_intellect",                    OPT_INT,  &( gear.attribute_enchant[ ATTR_INTELLECT ]       ) },
+    { "enchant_spirit",                       OPT_INT,  &( gear.attribute_enchant[ ATTR_SPIRIT    ]       ) },
     // Player - Gear - Spell									            
-    { "gear_spell_power",                     OPT_INT16,  &( gear.spell_power[ SCHOOL_MAX    ]              ) },
-    { "gear_spell_power_arcane",              OPT_INT16,  &( gear.spell_power[ SCHOOL_ARCANE ]              ) },
-    { "gear_spell_power_fire",                OPT_INT16,  &( gear.spell_power[ SCHOOL_FIRE   ]              ) },
-    { "gear_spell_power_frost",               OPT_INT16,  &( gear.spell_power[ SCHOOL_FROST  ]              ) },
-    { "gear_spell_power_holy",                OPT_INT16,  &( gear.spell_power[ SCHOOL_HOLY   ]              ) },
-    { "gear_spell_power_nature",              OPT_INT16,  &( gear.spell_power[ SCHOOL_NATURE ]              ) },
-    { "gear_spell_power_shadow",              OPT_INT16,  &( gear.spell_power[ SCHOOL_SHADOW ]              ) },
-    { "gear_spell_penetration",               OPT_INT16,  &( gear.spell_penetration                         ) },
-    { "gear_mp5",                             OPT_INT16,  &( gear.mp5                                       ) },
-    { "enchant_spell_power",                  OPT_INT16,  &( gear.spell_power_enchant[ SCHOOL_MAX    ]      ) },
-    { "enchant_spell_power_arcane",           OPT_INT16,  &( gear.spell_power_enchant[ SCHOOL_ARCANE ]      ) },
-    { "enchant_spell_power_fire",             OPT_INT16,  &( gear.spell_power_enchant[ SCHOOL_FIRE   ]      ) },
-    { "enchant_spell_power_frost",            OPT_INT16,  &( gear.spell_power_enchant[ SCHOOL_FROST  ]      ) },
-    { "enchant_spell_power_holy",             OPT_INT16,  &( gear.spell_power_enchant[ SCHOOL_HOLY   ]      ) },
-    { "enchant_spell_power_nature",           OPT_INT16,  &( gear.spell_power_enchant[ SCHOOL_NATURE ]      ) },
-    { "enchant_spell_power_shadow",           OPT_INT16,  &( gear.spell_power_enchant[ SCHOOL_SHADOW ]      ) },
-    { "enchant_spell_penetration",            OPT_INT16,  &( gear.spell_penetration_enchant                 ) },
-    { "enchant_mp5",                          OPT_INT16,  &( gear.mp5_enchant                               ) },
+    { "gear_spell_power",                     OPT_INT,  &( gear.spell_power[ SCHOOL_MAX    ]              ) },
+    { "gear_spell_power_arcane",              OPT_INT,  &( gear.spell_power[ SCHOOL_ARCANE ]              ) },
+    { "gear_spell_power_fire",                OPT_INT,  &( gear.spell_power[ SCHOOL_FIRE   ]              ) },
+    { "gear_spell_power_frost",               OPT_INT,  &( gear.spell_power[ SCHOOL_FROST  ]              ) },
+    { "gear_spell_power_holy",                OPT_INT,  &( gear.spell_power[ SCHOOL_HOLY   ]              ) },
+    { "gear_spell_power_nature",              OPT_INT,  &( gear.spell_power[ SCHOOL_NATURE ]              ) },
+    { "gear_spell_power_shadow",              OPT_INT,  &( gear.spell_power[ SCHOOL_SHADOW ]              ) },
+    { "gear_spell_penetration",               OPT_INT,  &( gear.spell_penetration                         ) },
+    { "gear_mp5",                             OPT_INT,  &( gear.mp5                                       ) },
+    { "enchant_spell_power",                  OPT_INT,  &( gear.spell_power_enchant[ SCHOOL_MAX    ]      ) },
+    { "enchant_spell_power_arcane",           OPT_INT,  &( gear.spell_power_enchant[ SCHOOL_ARCANE ]      ) },
+    { "enchant_spell_power_fire",             OPT_INT,  &( gear.spell_power_enchant[ SCHOOL_FIRE   ]      ) },
+    { "enchant_spell_power_frost",            OPT_INT,  &( gear.spell_power_enchant[ SCHOOL_FROST  ]      ) },
+    { "enchant_spell_power_holy",             OPT_INT,  &( gear.spell_power_enchant[ SCHOOL_HOLY   ]      ) },
+    { "enchant_spell_power_nature",           OPT_INT,  &( gear.spell_power_enchant[ SCHOOL_NATURE ]      ) },
+    { "enchant_spell_power_shadow",           OPT_INT,  &( gear.spell_power_enchant[ SCHOOL_SHADOW ]      ) },
+    { "enchant_spell_penetration",            OPT_INT,  &( gear.spell_penetration_enchant                 ) },
+    { "enchant_mp5",                          OPT_INT,  &( gear.mp5_enchant                               ) },
     // Player - Gear - Attack									            
-    { "gear_attack_power",                    OPT_INT16,  &( gear.attack_power                              ) },
-    { "gear_expertise_rating",                OPT_INT16,  &( gear.expertise_rating                          ) },
-    { "gear_armor_penetration_rating",        OPT_INT16,  &( gear.armor_penetration_rating                  ) },
-    { "enchant_attack_power",                 OPT_INT16,  &( gear.attack_power_enchant                      ) },
-    { "enchant_attack_expertise_rating",      OPT_INT16,  &( gear.expertise_rating_enchant                  ) },
-    { "enchant_attack_penetration",           OPT_INT16,  &( gear.armor_penetration_rating_enchant          ) },
+    { "gear_attack_power",                    OPT_INT,  &( gear.attack_power                              ) },
+    { "gear_expertise_rating",                OPT_INT,  &( gear.expertise_rating                          ) },
+    { "gear_armor_penetration_rating",        OPT_INT,  &( gear.armor_penetration_rating                  ) },
+    { "enchant_attack_power",                 OPT_INT,  &( gear.attack_power_enchant                      ) },
+    { "enchant_attack_expertise_rating",      OPT_INT,  &( gear.expertise_rating_enchant                  ) },
+    { "enchant_attack_penetration",           OPT_INT,  &( gear.armor_penetration_rating_enchant          ) },
     // Player - Gear - Common									            
-    { "gear_haste_rating",                    OPT_INT16,  &( gear.haste_rating                              ) },
-    { "gear_hit_rating",                      OPT_INT16,  &( gear.hit_rating                                ) },
-    { "gear_crit_rating",                     OPT_INT16,  &( gear.crit_rating                               ) },
-    { "enchant_haste_rating",                 OPT_INT16,  &( gear.haste_rating_enchant                      ) },
-    { "enchant_hit_rating",                   OPT_INT16,  &( gear.hit_rating_enchant                        ) },
-    { "enchant_crit_rating",                  OPT_INT16,  &( gear.crit_rating_enchant                       ) },
+    { "gear_haste_rating",                    OPT_INT,  &( gear.haste_rating                              ) },
+    { "gear_hit_rating",                      OPT_INT,  &( gear.hit_rating                                ) },
+    { "gear_crit_rating",                     OPT_INT,  &( gear.crit_rating                               ) },
+    { "enchant_haste_rating",                 OPT_INT,  &( gear.haste_rating_enchant                      ) },
+    { "enchant_hit_rating",                   OPT_INT,  &( gear.hit_rating_enchant                        ) },
+    { "enchant_crit_rating",                  OPT_INT,  &( gear.crit_rating_enchant                       ) },
     // Player - Gear - Resource									            
-    { "gear_health",                          OPT_INT16,  &( gear.resource        [ RESOURCE_HEALTH ]       ) },
-    { "gear_mana",                            OPT_INT16,  &( gear.resource        [ RESOURCE_MANA   ]       ) },
-    { "gear_rage",                            OPT_INT16,  &( gear.resource        [ RESOURCE_RAGE   ]       ) },
-    { "gear_energy",                          OPT_INT16,  &( gear.resource        [ RESOURCE_ENERGY ]       ) },
-    { "gear_focus",                           OPT_INT16,  &( gear.resource        [ RESOURCE_FOCUS  ]       ) },
-    { "gear_runic",                           OPT_INT16,  &( gear.resource        [ RESOURCE_RUNIC  ]       ) },
-    { "enchant_health",                       OPT_INT16,  &( gear.resource_enchant[ RESOURCE_HEALTH ]       ) },
-    { "enchant_mana",                         OPT_INT16,  &( gear.resource_enchant[ RESOURCE_MANA   ]       ) },
-    { "enchant_rage",                         OPT_INT16,  &( gear.resource_enchant[ RESOURCE_RAGE   ]       ) },
-    { "enchant_energy",                       OPT_INT16,  &( gear.resource_enchant[ RESOURCE_ENERGY ]       ) },
-    { "enchant_focus",                        OPT_INT16,  &( gear.resource_enchant[ RESOURCE_FOCUS  ]       ) },
-    { "enchant_runic",                        OPT_INT16,  &( gear.resource_enchant[ RESOURCE_RUNIC  ]       ) },
+    { "gear_health",                          OPT_INT,  &( gear.resource        [ RESOURCE_HEALTH ]       ) },
+    { "gear_mana",                            OPT_INT,  &( gear.resource        [ RESOURCE_MANA   ]       ) },
+    { "gear_rage",                            OPT_INT,  &( gear.resource        [ RESOURCE_RAGE   ]       ) },
+    { "gear_energy",                          OPT_INT,  &( gear.resource        [ RESOURCE_ENERGY ]       ) },
+    { "gear_focus",                           OPT_INT,  &( gear.resource        [ RESOURCE_FOCUS  ]       ) },
+    { "gear_runic",                           OPT_INT,  &( gear.resource        [ RESOURCE_RUNIC  ]       ) },
+    { "enchant_health",                       OPT_INT,  &( gear.resource_enchant[ RESOURCE_HEALTH ]       ) },
+    { "enchant_mana",                         OPT_INT,  &( gear.resource_enchant[ RESOURCE_MANA   ]       ) },
+    { "enchant_rage",                         OPT_INT,  &( gear.resource_enchant[ RESOURCE_RAGE   ]       ) },
+    { "enchant_energy",                       OPT_INT,  &( gear.resource_enchant[ RESOURCE_ENERGY ]       ) },
+    { "enchant_focus",                        OPT_INT,  &( gear.resource_enchant[ RESOURCE_FOCUS  ]       ) },
+    { "enchant_runic",                        OPT_INT,  &( gear.resource_enchant[ RESOURCE_RUNIC  ]       ) },
     // Player - Gear - Budgeting								            
-    { "spell_power_budget",                   OPT_INT16,  &( gear.spell_power_budget                        ) },
-    { "attack_power_budget",                  OPT_INT16,  &( gear.attack_power_budget                       ) },
-    { "budget_slots",                         OPT_INT16,  &( gear.budget_slots                              ) },
+    { "spell_power_budget",                   OPT_INT,  &( gear.spell_power_budget                        ) },
+    { "attack_power_budget",                  OPT_INT,  &( gear.attack_power_budget                       ) },
+    { "budget_slots",                         OPT_INT,  &( gear.budget_slots                              ) },
     // Player - Tier Bonuses
-    { "tier4_2pc",                            OPT_INT8,   &( gear.tier4_2pc                                 ) },
-    { "tier4_4pc",                            OPT_INT8,   &( gear.tier4_4pc                                 ) },
-    { "tier5_2pc",                            OPT_INT8,   &( gear.tier5_2pc                                 ) },
-    { "tier5_4pc",                            OPT_INT8,   &( gear.tier5_4pc                                 ) },
-    { "tier6_2pc",                            OPT_INT8,   &( gear.tier6_2pc                                 ) },
-    { "tier6_4pc",                            OPT_INT8,   &( gear.tier6_4pc                                 ) },
-    { "tier7_2pc",                            OPT_INT8,   &( gear.tier7_2pc                                 ) },
-    { "tier7_4pc",                            OPT_INT8,   &( gear.tier7_4pc                                 ) },
+    { "tier4_2pc",                            OPT_INT,  &( gear.tier4_2pc                                 ) },
+    { "tier4_4pc",                            OPT_INT,  &( gear.tier4_4pc                                 ) },
+    { "tier5_2pc",                            OPT_INT,  &( gear.tier5_2pc                                 ) },
+    { "tier5_4pc",                            OPT_INT,  &( gear.tier5_4pc                                 ) },
+    { "tier6_2pc",                            OPT_INT,  &( gear.tier6_2pc                                 ) },
+    { "tier6_4pc",                            OPT_INT,  &( gear.tier6_4pc                                 ) },
+    { "tier7_2pc",                            OPT_INT,  &( gear.tier7_2pc                                 ) },
+    { "tier7_4pc",                            OPT_INT,  &( gear.tier7_4pc                                 ) },
     // Player - Consumables									            
-    { "flask",                                OPT_STRING, &( flask_str                                      ) },
-    { "elixirs",                              OPT_STRING, &( elixirs_str                                    ) },
-    { "food",                                 OPT_STRING, &( food_str                                       ) },
+    { "flask",                                OPT_STRING, &( flask_str                                    ) },
+    { "elixirs",                              OPT_STRING, &( elixirs_str                                  ) },
+    { "food",                                 OPT_STRING, &( food_str                                     ) },
     { NULL, OPT_UNKNOWN }
   };
 

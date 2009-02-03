@@ -68,8 +68,8 @@ void stats_t::reset( action_t* a )
 // stats_t::add =============================================================
 
 void stats_t::add( double amount,
-		   int8_t dmg_type,
-		   int8_t result,
+		   int    dmg_type,
+		   int    result,
 		   double time )
 {
   player -> iteration_dmg += amount;

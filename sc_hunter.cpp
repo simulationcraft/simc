@@ -17,7 +17,7 @@ struct hunter_t : public player_t
 {
   // Active
   hunter_pet_t* active_pet;
-  int8_t        active_aspect;
+  int           active_aspect;
   action_t*     active_chimera_serpent;
   action_t*     active_wild_quiver;
   action_t*     active_scorpid_sting;
@@ -27,16 +27,16 @@ struct hunter_t : public player_t
   // Buffs
   double buffs_aspect_of_the_hawk;
   double buffs_aspect_of_the_viper;
-  int8_t buffs_beast_within;
-  int8_t buffs_call_of_the_wild;
-  int8_t buffs_cobra_strikes;
-  int8_t buffs_expose_weakness;
+  int    buffs_beast_within;
+  int    buffs_call_of_the_wild;
+  int    buffs_cobra_strikes;
+  int    buffs_expose_weakness;
   double buffs_improved_aspect_of_the_hawk;
-  int8_t buffs_improved_steady_shot;
-  int8_t buffs_lock_and_load;
+  int    buffs_improved_steady_shot;
+  int    buffs_lock_and_load;
   double buffs_master_tactician;
   double buffs_rapid_fire;
-  int8_t buffs_trueshot_aura;
+  int    buffs_trueshot_aura;
 
   // Expirations
   event_t*  expirations_cobra_strikes;
@@ -79,68 +79,68 @@ struct hunter_t : public player_t
 
   struct talents_t
   {
-    int8_t  animal_handler;
-    int8_t  aimed_shot;
-    int8_t  aspect_mastery;
-    int8_t  barrage;
-    int8_t  beast_within;
-    int8_t  bestial_wrath;
-    int8_t  bestial_discipline;
-    int8_t  careful_aim;
-    int8_t  chimera_shot;
-    int8_t  cobra_strikes;
-    int8_t  combat_experience;
-    int8_t  efficiency;
-    int8_t  explosive_shot;
-    int8_t  expose_weakness;
-    int8_t  ferocious_inspiration;
-    int8_t  ferocity;
-    int8_t  focused_aim;
-    int8_t  focused_fire;
-    int8_t  frenzy;
-    int8_t  go_for_the_throat;
-    int8_t  hunter_vs_wild;
-    int8_t  hunting_party;
-    int8_t  improved_arcane_shot;
-    int8_t  improved_aspect_of_the_hawk;
-    int8_t  improved_barrage;
-    int8_t  improved_hunters_mark;
-    int8_t  improved_steady_shot;
-    int8_t  improved_stings;
-    int8_t  improved_tracking;
-    int8_t  invigoration;
-    int8_t  killer_instinct;
-    int8_t  kindred_spirits;
-    int8_t  lethal_shots;
-    int8_t  lightning_reflexes;
-    int8_t  lock_and_load;
-    int8_t  longevity;
-    int8_t  marked_for_death;
-    int8_t  master_marksman;
-    int8_t  master_tactician;
-    int8_t  mortal_shots;
-    int8_t  noxious_stings;
-    int8_t  piercing_shots;
-    int8_t  ranged_weapon_specialization;
-    int8_t  rapid_killing;
-    int8_t  rapid_recuperation;
-    int8_t  readiness;
-    int8_t  resourcefulness;
-    int8_t  scatter_shot;
-    int8_t  serpents_swiftness;
-    int8_t  silencing_shot;
-    int8_t  sniper_training;
-    int8_t  survivalist;
-    int8_t  survival_instincts;
-    int8_t  thrill_of_the_hunt;
-    int8_t  tnt;
-    int8_t  trueshot_aura;
-    int8_t  unleashed_fury;
-    int8_t  wild_quiver;
+    int  animal_handler;
+    int  aimed_shot;
+    int  aspect_mastery;
+    int  barrage;
+    int  beast_within;
+    int  bestial_wrath;
+    int  bestial_discipline;
+    int  careful_aim;
+    int  chimera_shot;
+    int  cobra_strikes;
+    int  combat_experience;
+    int  efficiency;
+    int  explosive_shot;
+    int  expose_weakness;
+    int  ferocious_inspiration;
+    int  ferocity;
+    int  focused_aim;
+    int  focused_fire;
+    int  frenzy;
+    int  go_for_the_throat;
+    int  hunter_vs_wild;
+    int  hunting_party;
+    int  improved_arcane_shot;
+    int  improved_aspect_of_the_hawk;
+    int  improved_barrage;
+    int  improved_hunters_mark;
+    int  improved_steady_shot;
+    int  improved_stings;
+    int  improved_tracking;
+    int  invigoration;
+    int  killer_instinct;
+    int  kindred_spirits;
+    int  lethal_shots;
+    int  lightning_reflexes;
+    int  lock_and_load;
+    int  longevity;
+    int  marked_for_death;
+    int  master_marksman;
+    int  master_tactician;
+    int  mortal_shots;
+    int  noxious_stings;
+    int  piercing_shots;
+    int  ranged_weapon_specialization;
+    int  rapid_killing;
+    int  rapid_recuperation;
+    int  readiness;
+    int  resourcefulness;
+    int  scatter_shot;
+    int  serpents_swiftness;
+    int  silencing_shot;
+    int  sniper_training;
+    int  survivalist;
+    int  survival_instincts;
+    int  thrill_of_the_hunt;
+    int  tnt;
+    int  trueshot_aura;
+    int  unleashed_fury;
+    int  wild_quiver;
 
     // Talents not yet fully implemented
-    int8_t  savage_strikes;
-    int8_t  survival_tactics;
+    int  savage_strikes;
+    int  survival_tactics;
 
     talents_t() { memset( (void*) this, 0x0, sizeof( talents_t ) ); }
   };
@@ -148,14 +148,14 @@ struct hunter_t : public player_t
 
   struct glyphs_t
   {
-    int8_t  aspect_of_the_viper;
-    int8_t  bestial_wrath;
-    int8_t  hunters_mark;
-    int8_t  improved_aspect_of_the_hawk;
-    int8_t  rapid_fire;
-    int8_t  serpent_sting;
-    int8_t  steady_shot;
-    int8_t  trueshot_aura;
+    int  aspect_of_the_viper;
+    int  bestial_wrath;
+    int  hunters_mark;
+    int  improved_aspect_of_the_hawk;
+    int  rapid_fire;
+    int  serpent_sting;
+    int  steady_shot;
+    int  trueshot_aura;
     glyphs_t() { memset( (void*) this, 0x0, sizeof( glyphs_t ) ); }
   };
   glyphs_t glyphs;
@@ -225,7 +225,7 @@ struct hunter_t : public player_t
   virtual void      init_base();
   virtual void      reset();
   virtual double    composite_attack_power();
-  virtual bool      get_talent_trees( std::vector<int8_t*>& beastmastery, std::vector<int8_t*>& marksmanship, std::vector<int8_t*>& survival );
+  virtual bool      get_talent_trees( std::vector<int*>& beastmastery, std::vector<int*>& marksmanship, std::vector<int*>& survival );
   virtual bool      parse_talents_mmo( const std::string& talent_string );
   virtual bool      parse_option( const std::string& name, const std::string& value );
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -302,16 +302,16 @@ enum pet_type_t
 
 struct hunter_pet_t : public pet_t
 {
-  int8_t pet_type;
+  int pet_type;
 
   // Buffs
-  int8_t buffs_bestial_wrath;
-  int8_t buffs_call_of_the_wild;
-  int8_t buffs_frenzy;
-  int8_t buffs_kill_command;
-  int8_t buffs_owls_focus;
-  int8_t buffs_rabid;
-  int8_t buffs_rabid_power_stack;
+  int buffs_bestial_wrath;
+  int buffs_call_of_the_wild;
+  int buffs_frenzy;
+  int buffs_kill_command;
+  int buffs_owls_focus;
+  int buffs_rabid;
+  int buffs_rabid_power_stack;
 
   // Expirations
   event_t* expirations_frenzy;
@@ -331,23 +331,23 @@ struct hunter_pet_t : public pet_t
 
   struct talents_t
   {
-    int8_t call_of_the_wild;
-    int8_t cobra_reflexes;
-    int8_t feeding_frenzy;
-    int8_t rabid;
-    int8_t roar_of_recovery;
-    int8_t spiked_collar;
-    int8_t spiders_bite;
-    int8_t owls_focus;
+    int call_of_the_wild;
+    int cobra_reflexes;
+    int feeding_frenzy;
+    int rabid;
+    int roar_of_recovery;
+    int spiked_collar;
+    int spiders_bite;
+    int owls_focus;
 
     // Talents not yet implemented
-    int8_t wolverine_bite;
+    int wolverine_bite;
 
     talents_t() { memset( (void*) this, 0x0, sizeof( talents_t ) ); }
   };
   talents_t talents;
 
-  hunter_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name, int8_t pt ) :
+  hunter_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name, int pt ) :
     pet_t( sim, owner, pet_name ), pet_type(pt), main_hand_attack(0)
   {
     main_hand_weapon.type       = WEAPON_BEAST;
@@ -397,7 +397,7 @@ struct hunter_pet_t : public pet_t
     expirations_owls_focus = 0;
   }
 
-  virtual int8_t group()
+  virtual int group()
   {
     if( pet_type < PET_FEROCITY ) return PET_FEROCITY;
     if( pet_type < PET_TENACITY ) return PET_TENACITY;
@@ -469,15 +469,15 @@ struct hunter_pet_t : public pet_t
     option_t options[] =
     {
       // Talents
-      { "cobra_reflexes",   OPT_INT8, &( talents.cobra_reflexes   ) },
-      { "owls_focus",       OPT_INT8, &( talents.owls_focus       ) },
-      { "spiked_collar",    OPT_INT8, &( talents.spiked_collar    ) },
-      { "feeding_frenzy",   OPT_INT8, &( talents.feeding_frenzy   ) },
-      { "roar_of_recovery", OPT_INT8, &( talents.roar_of_recovery ) },
-      { "wolverine_bite",   OPT_INT8, &( talents.wolverine_bite   ) },
-      { "spiders_bite",     OPT_INT8, &( talents.spiders_bite     ) },
-      { "call_of_the_wild", OPT_INT8, &( talents.call_of_the_wild ) },
-      { "rabid",            OPT_INT8, &( talents.rabid            ) },
+      { "cobra_reflexes",   OPT_INT, &( talents.cobra_reflexes   ) },
+      { "owls_focus",       OPT_INT, &( talents.owls_focus       ) },
+      { "spiked_collar",    OPT_INT, &( talents.spiked_collar    ) },
+      { "feeding_frenzy",   OPT_INT, &( talents.feeding_frenzy   ) },
+      { "roar_of_recovery", OPT_INT, &( talents.roar_of_recovery ) },
+      { "wolverine_bite",   OPT_INT, &( talents.wolverine_bite   ) },
+      { "spiders_bite",     OPT_INT, &( talents.spiders_bite     ) },
+      { "call_of_the_wild", OPT_INT, &( talents.call_of_the_wild ) },
+      { "rabid",            OPT_INT, &( talents.rabid            ) },
       { NULL, OPT_UNKNOWN }
     };
 
@@ -502,7 +502,7 @@ struct hunter_pet_t : public pet_t
 
 struct hunter_attack_t : public attack_t
 {
-  hunter_attack_t( const char* n, player_t* player, int8_t s=SCHOOL_PHYSICAL, int8_t t=TREE_NONE ) :
+  hunter_attack_t( const char* n, player_t* player, int s=SCHOOL_PHYSICAL, int t=TREE_NONE ) :
     attack_t( n, player, RESOURCE_MANA, s, t )
   {
     hunter_t* p = player -> cast_hunter();
@@ -556,7 +556,7 @@ struct hunter_attack_t : public attack_t
 
 struct hunter_spell_t : public spell_t
 {
-  hunter_spell_t( const char* n, player_t* p, int8_t s, int8_t t ) :
+  hunter_spell_t( const char* n, player_t* p, int s, int t ) :
     spell_t( n, p, RESOURCE_MANA, s, t )
   {
   }
@@ -1208,7 +1208,7 @@ struct hunter_pet_attack_t : public attack_t
 {
   bool special;
 
-  hunter_pet_attack_t( const char* n, player_t* player, int8_t r=RESOURCE_FOCUS, int8_t sc=SCHOOL_PHYSICAL, bool sp=true ) :
+  hunter_pet_attack_t( const char* n, player_t* player, int r=RESOURCE_FOCUS, int sc=SCHOOL_PHYSICAL, bool sp=true ) :
     attack_t( n, player, r, sc, TREE_BEAST_MASTERY ), special(sp)
   {
     hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
@@ -1417,7 +1417,7 @@ struct rake_t : public hunter_pet_attack_t
 
 struct hunter_pet_spell_t : public spell_t
 {
-  hunter_pet_spell_t( const char* n, player_t* player, int8_t r=RESOURCE_FOCUS, int8_t s=SCHOOL_PHYSICAL ) :
+  hunter_pet_spell_t( const char* n, player_t* player, int r=RESOURCE_FOCUS, int s=SCHOOL_PHYSICAL ) :
     spell_t( n, player, r, s )
   {
     hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
@@ -1856,7 +1856,7 @@ struct auto_shot_t : public hunter_attack_t
 
 struct aimed_shot_t : public hunter_attack_t
 {
-  int8_t improved_steady_shot;
+  int improved_steady_shot;
 
   aimed_shot_t( player_t* player, const std::string& options_str ) :
     hunter_attack_t( "aimed_shot", player, SCHOOL_PHYSICAL, TREE_MARKSMANSHIP ),
@@ -1867,7 +1867,7 @@ struct aimed_shot_t : public hunter_attack_t
 
     option_t options[] =
     {
-      { "improved_steady_shot", OPT_INT8, &improved_steady_shot },
+      { "improved_steady_shot", OPT_INT, &improved_steady_shot },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1944,8 +1944,8 @@ struct aimed_shot_t : public hunter_attack_t
 
 struct arcane_shot_t : public hunter_attack_t
 {
-  int8_t improved_steady_shot;
-  int8_t lock_and_load;
+  int improved_steady_shot;
+  int lock_and_load;
 
   arcane_shot_t(player_t* player, const std::string& options_str ) :
     hunter_attack_t( "arcane_shot", player, SCHOOL_ARCANE, TREE_MARKSMANSHIP ),
@@ -1955,8 +1955,8 @@ struct arcane_shot_t : public hunter_attack_t
 
     option_t options[] =
     {
-      { "improved_steady_shot", OPT_INT8, &improved_steady_shot },
-      { "lock_and_load",        OPT_INT8, &lock_and_load        },
+      { "improved_steady_shot", OPT_INT, &improved_steady_shot },
+      { "lock_and_load",        OPT_INT, &lock_and_load        },
       { NULL }
     };
     parse_options( options, options_str );
@@ -2044,8 +2044,8 @@ struct arcane_shot_t : public hunter_attack_t
 
 struct chimera_shot_t : public hunter_attack_t
 {
-  int8_t active_sting;
-  int8_t improved_steady_shot;
+  int active_sting;
+  int improved_steady_shot;
 
   chimera_shot_t( player_t* player, const std::string& options_str ) :
     hunter_attack_t( "chimera_shot", player, SCHOOL_NATURE, TREE_MARKSMANSHIP ),
@@ -2056,8 +2056,8 @@ struct chimera_shot_t : public hunter_attack_t
 
     option_t options[] =
     {
-      { "active_sting",         OPT_INT8, &active_sting         },
-      { "improved_steady_shot", OPT_INT8, &improved_steady_shot },
+      { "active_sting",         OPT_INT, &active_sting         },
+      { "improved_steady_shot", OPT_INT, &improved_steady_shot },
       { NULL }
     };
     parse_options( options, options_str );
@@ -2165,7 +2165,7 @@ struct chimera_shot_t : public hunter_attack_t
 
 struct explosive_shot_t : public hunter_attack_t
 {
-  int8_t lock_and_load;
+  int lock_and_load;
 
   explosive_shot_t( player_t* player, const std::string& options_str ) :
     hunter_attack_t( "explosive_shot", player, SCHOOL_FIRE, TREE_SURVIVAL ),
@@ -2176,7 +2176,7 @@ struct explosive_shot_t : public hunter_attack_t
 
     option_t options[] =
     {
-      { "lock_and_load", OPT_INT8, &lock_and_load },
+      { "lock_and_load", OPT_INT, &lock_and_load },
       { NULL }
     };
     parse_options( options, options_str );
@@ -2259,7 +2259,7 @@ struct explosive_shot_t : public hunter_attack_t
     }
   }
 
-  virtual void update_stats( int8_t type )
+  virtual void update_stats( int type )
   {
       tick_dmg = direct_dmg;
     direct_dmg = 0;
@@ -2417,7 +2417,7 @@ struct scatter_shot_t : public hunter_attack_t
 
 struct serpent_sting_t : public hunter_attack_t
 {
-  int8_t force;
+  int force;
 
   serpent_sting_t( player_t* player, const std::string& options_str ) :
     hunter_attack_t( "serpent_sting", player, SCHOOL_NATURE, TREE_MARKSMANSHIP ),
@@ -2427,7 +2427,7 @@ struct serpent_sting_t : public hunter_attack_t
 
     option_t options[] =
     {
-      { "force", OPT_INT8, &force },
+      { "force", OPT_INT, &force },
       { NULL }
     };
     parse_options( options, options_str );
@@ -2613,10 +2613,10 @@ double hunter_spell_t::gcd()
 
 struct aspect_t : public hunter_spell_t
 {
-  int8_t beast_during_bw;
-  int8_t hawk_always;
-  int8_t viper_start;
-  int8_t viper_stop;
+  int    beast_during_bw;
+  int    hawk_always;
+  int    viper_start;
+  int    viper_stop;
   double hawk_bonus;
   double viper_multiplier;
 
@@ -2629,10 +2629,10 @@ struct aspect_t : public hunter_spell_t
 
     option_t options[] =
     {
-      { "beast_during_bw", OPT_INT8, &beast_during_bw },
-      { "hawk_always",     OPT_INT8, &hawk_always },
-      { "viper_start",     OPT_INT8, &viper_start },
-      { "viper_stop",      OPT_INT8, &viper_stop  },
+      { "beast_during_bw", OPT_INT, &beast_during_bw },
+      { "hawk_always",     OPT_INT, &hawk_always },
+      { "viper_start",     OPT_INT, &viper_start },
+      { "viper_stop",      OPT_INT, &viper_stop  },
       { NULL }
     };
     parse_options( options, options_str );
@@ -2650,7 +2650,7 @@ struct aspect_t : public hunter_spell_t
     }
   }
 
-  int8_t choose_aspect()
+  int choose_aspect()
   {
     hunter_t* p = player -> cast_hunter();
 
@@ -2678,7 +2678,7 @@ struct aspect_t : public hunter_spell_t
   {
     hunter_t* p = player -> cast_hunter();
 
-    int8_t aspect = choose_aspect();
+    int aspect = choose_aspect();
 
     if( aspect != p -> active_aspect )
     {
@@ -2883,7 +2883,7 @@ struct kill_command_t : public hunter_spell_t
 
 struct rapid_fire_t : public hunter_spell_t
 {
-  int8_t viper;
+  int viper;
 
   rapid_fire_t( player_t* player, const std::string& options_str ) :
     hunter_spell_t( "rapid_fire", player, SCHOOL_PHYSICAL, TREE_MARKSMANSHIP ), viper(0)
@@ -2892,7 +2892,7 @@ struct rapid_fire_t : public hunter_spell_t
 
     option_t options[] =
     {
-      { "viper", OPT_INT8, &viper },
+      { "viper", OPT_INT, &viper },
       { NULL }
     };
     parse_options( options, options_str );
@@ -3221,9 +3221,9 @@ void hunter_t::regen( double periodicity )
 
 // hunter_t::get_talent_trees ==============================================
 
-bool hunter_t::get_talent_trees( std::vector<int8_t*>& beastmastery,
-                                 std::vector<int8_t*>& marksmanship,
-                                 std::vector<int8_t*>& survival )
+bool hunter_t::get_talent_trees( std::vector<int*>& beastmastery,
+                                 std::vector<int*>& marksmanship,
+                                 std::vector<int*>& survival )
 {
   talent_translation_t translation[][3] =
   {
@@ -3287,75 +3287,75 @@ bool hunter_t::parse_option( const std::string& name,
   option_t options[] =
   {
     // Talents
-    { "aimed_shot",                        OPT_INT8, &( talents.aimed_shot                   ) },
-    { "animal_handler",                    OPT_INT8, &( talents.animal_handler               ) },
-    { "aspect_mastery",                    OPT_INT8, &( talents.aspect_mastery               ) },
-    { "barrage",                           OPT_INT8, &( talents.barrage                      ) },
-    { "beast_within",                      OPT_INT8, &( talents.beast_within                 ) },
-    { "bestial_discipline",                OPT_INT8, &( talents.bestial_discipline           ) },
-    { "bestial_wrath",                     OPT_INT8, &( talents.bestial_wrath                ) },
-    { "careful_aim",                       OPT_INT8, &( talents.careful_aim                  ) },
-    { "chimera_shot",                      OPT_INT8, &( talents.chimera_shot                 ) },
-    { "cobra_strikes",                     OPT_INT8, &( talents.cobra_strikes                ) },
-    { "combat_experience",                 OPT_INT8, &( talents.combat_experience            ) },
-    { "efficiency",                        OPT_INT8, &( talents.efficiency                   ) },
-    { "explosive_shot",                    OPT_INT8, &( talents.explosive_shot               ) },
-    { "expose_weakness",                   OPT_INT8, &( talents.expose_weakness              ) },
-    { "ferocious_inspiration",             OPT_INT8, &( talents.ferocious_inspiration        ) },
-    { "ferocity",                          OPT_INT8, &( talents.ferocity                     ) },
-    { "focused_aim",                       OPT_INT8, &( talents.focused_aim                  ) },
-    { "focused_fire",                      OPT_INT8, &( talents.focused_fire                 ) },
-    { "frenzy",                            OPT_INT8, &( talents.frenzy                       ) },
-    { "go_for_the_throat",                 OPT_INT8, &( talents.go_for_the_throat            ) },
-    { "hunter_vs_wild",                    OPT_INT8, &( talents.hunter_vs_wild               ) },
-    { "hunting_party",                     OPT_INT8, &( talents.hunting_party                ) },
-    { "improved_arcane_shot",              OPT_INT8, &( talents.improved_arcane_shot         ) },
-    { "improved_aspect_of_the_hawk",       OPT_INT8, &( talents.improved_aspect_of_the_hawk  ) },
-    { "improved_barrage",                  OPT_INT8, &( talents.improved_barrage             ) },
-    { "improved_hunters_mark",             OPT_INT8, &( talents.improved_hunters_mark        ) },
-    { "improved_steady_shot",              OPT_INT8, &( talents.improved_steady_shot         ) },
-    { "improved_stings",                   OPT_INT8, &( talents.improved_stings              ) },
-    { "improved_tracking",                 OPT_INT8, &( talents.improved_tracking            ) },
-    { "invigoration",                      OPT_INT8, &( talents.invigoration                 ) },
-    { "killer_instinct",                   OPT_INT8, &( talents.killer_instinct              ) },
-    { "kindred_spirits",                   OPT_INT8, &( talents.kindred_spirits              ) },
-    { "lethal_shots",                      OPT_INT8, &( talents.lethal_shots                 ) },
-    { "lightning_reflexes",                OPT_INT8, &( talents.lightning_reflexes           ) },
-    { "lock_and_load",                     OPT_INT8, &( talents.lock_and_load                ) },
-    { "longevity",                         OPT_INT8, &( talents.longevity                    ) },
-    { "marked_for_death",                  OPT_INT8, &( talents.marked_for_death             ) },
-    { "master_marksman",                   OPT_INT8, &( talents.master_marksman              ) },
-    { "master_tactician",                  OPT_INT8, &( talents.master_tactician             ) },
-    { "mortal_shots",                      OPT_INT8, &( talents.mortal_shots                 ) },
-    { "noxious_stings",                    OPT_INT8, &( talents.noxious_stings               ) },
-    { "piercing_shots",                    OPT_INT8, &( talents.piercing_shots               ) },
-    { "ranged_weapon_specialization",      OPT_INT8, &( talents.ranged_weapon_specialization ) },
-    { "rapid_killing",                     OPT_INT8, &( talents.rapid_killing                ) },
-    { "rapid_recuperation",                OPT_INT8, &( talents.rapid_recuperation           ) },
-    { "readiness",                         OPT_INT8, &( talents.readiness                    ) },
-    { "resourcefulness",                   OPT_INT8, &( talents.resourcefulness              ) },
-    { "savage_strikes",                    OPT_INT8, &( talents.savage_strikes               ) },
-    { "scatter_shot",                      OPT_INT8, &( talents.scatter_shot                 ) },
-    { "serpents_swiftness",                OPT_INT8, &( talents.serpents_swiftness           ) },
-    { "silencing_shot",                    OPT_INT8, &( talents.silencing_shot               ) },
-    { "sniper_training",                   OPT_INT8, &( talents.sniper_training              ) },
-    { "survival_instincts",                OPT_INT8, &( talents.survival_instincts           ) },
-    { "survival_tactics",                  OPT_INT8, &( talents.survival_tactics             ) },
-    { "survivalist",                       OPT_INT8, &( talents.survivalist                  ) },
-    { "thrill_of_the_hunt",                OPT_INT8, &( talents.thrill_of_the_hunt           ) },
-    { "tnt",                               OPT_INT8, &( talents.tnt                          ) },
-    { "trueshot_aura",                     OPT_INT8, &( talents.trueshot_aura                ) },
-    { "unleashed_fury",                    OPT_INT8, &( talents.unleashed_fury               ) },
-    { "wild_quiver",                       OPT_INT8, &( talents.wild_quiver                  ) },
+    { "aimed_shot",                        OPT_INT, &( talents.aimed_shot                   ) },
+    { "animal_handler",                    OPT_INT, &( talents.animal_handler               ) },
+    { "aspect_mastery",                    OPT_INT, &( talents.aspect_mastery               ) },
+    { "barrage",                           OPT_INT, &( talents.barrage                      ) },
+    { "beast_within",                      OPT_INT, &( talents.beast_within                 ) },
+    { "bestial_discipline",                OPT_INT, &( talents.bestial_discipline           ) },
+    { "bestial_wrath",                     OPT_INT, &( talents.bestial_wrath                ) },
+    { "careful_aim",                       OPT_INT, &( talents.careful_aim                  ) },
+    { "chimera_shot",                      OPT_INT, &( talents.chimera_shot                 ) },
+    { "cobra_strikes",                     OPT_INT, &( talents.cobra_strikes                ) },
+    { "combat_experience",                 OPT_INT, &( talents.combat_experience            ) },
+    { "efficiency",                        OPT_INT, &( talents.efficiency                   ) },
+    { "explosive_shot",                    OPT_INT, &( talents.explosive_shot               ) },
+    { "expose_weakness",                   OPT_INT, &( talents.expose_weakness              ) },
+    { "ferocious_inspiration",             OPT_INT, &( talents.ferocious_inspiration        ) },
+    { "ferocity",                          OPT_INT, &( talents.ferocity                     ) },
+    { "focused_aim",                       OPT_INT, &( talents.focused_aim                  ) },
+    { "focused_fire",                      OPT_INT, &( talents.focused_fire                 ) },
+    { "frenzy",                            OPT_INT, &( talents.frenzy                       ) },
+    { "go_for_the_throat",                 OPT_INT, &( talents.go_for_the_throat            ) },
+    { "hunter_vs_wild",                    OPT_INT, &( talents.hunter_vs_wild               ) },
+    { "hunting_party",                     OPT_INT, &( talents.hunting_party                ) },
+    { "improved_arcane_shot",              OPT_INT, &( talents.improved_arcane_shot         ) },
+    { "improved_aspect_of_the_hawk",       OPT_INT, &( talents.improved_aspect_of_the_hawk  ) },
+    { "improved_barrage",                  OPT_INT, &( talents.improved_barrage             ) },
+    { "improved_hunters_mark",             OPT_INT, &( talents.improved_hunters_mark        ) },
+    { "improved_steady_shot",              OPT_INT, &( talents.improved_steady_shot         ) },
+    { "improved_stings",                   OPT_INT, &( talents.improved_stings              ) },
+    { "improved_tracking",                 OPT_INT, &( talents.improved_tracking            ) },
+    { "invigoration",                      OPT_INT, &( talents.invigoration                 ) },
+    { "killer_instinct",                   OPT_INT, &( talents.killer_instinct              ) },
+    { "kindred_spirits",                   OPT_INT, &( talents.kindred_spirits              ) },
+    { "lethal_shots",                      OPT_INT, &( talents.lethal_shots                 ) },
+    { "lightning_reflexes",                OPT_INT, &( talents.lightning_reflexes           ) },
+    { "lock_and_load",                     OPT_INT, &( talents.lock_and_load                ) },
+    { "longevity",                         OPT_INT, &( talents.longevity                    ) },
+    { "marked_for_death",                  OPT_INT, &( talents.marked_for_death             ) },
+    { "master_marksman",                   OPT_INT, &( talents.master_marksman              ) },
+    { "master_tactician",                  OPT_INT, &( talents.master_tactician             ) },
+    { "mortal_shots",                      OPT_INT, &( talents.mortal_shots                 ) },
+    { "noxious_stings",                    OPT_INT, &( talents.noxious_stings               ) },
+    { "piercing_shots",                    OPT_INT, &( talents.piercing_shots               ) },
+    { "ranged_weapon_specialization",      OPT_INT, &( talents.ranged_weapon_specialization ) },
+    { "rapid_killing",                     OPT_INT, &( talents.rapid_killing                ) },
+    { "rapid_recuperation",                OPT_INT, &( talents.rapid_recuperation           ) },
+    { "readiness",                         OPT_INT, &( talents.readiness                    ) },
+    { "resourcefulness",                   OPT_INT, &( talents.resourcefulness              ) },
+    { "savage_strikes",                    OPT_INT, &( talents.savage_strikes               ) },
+    { "scatter_shot",                      OPT_INT, &( talents.scatter_shot                 ) },
+    { "serpents_swiftness",                OPT_INT, &( talents.serpents_swiftness           ) },
+    { "silencing_shot",                    OPT_INT, &( talents.silencing_shot               ) },
+    { "sniper_training",                   OPT_INT, &( talents.sniper_training              ) },
+    { "survival_instincts",                OPT_INT, &( talents.survival_instincts           ) },
+    { "survival_tactics",                  OPT_INT, &( talents.survival_tactics             ) },
+    { "survivalist",                       OPT_INT, &( talents.survivalist                  ) },
+    { "thrill_of_the_hunt",                OPT_INT, &( talents.thrill_of_the_hunt           ) },
+    { "tnt",                               OPT_INT, &( talents.tnt                          ) },
+    { "trueshot_aura",                     OPT_INT, &( talents.trueshot_aura                ) },
+    { "unleashed_fury",                    OPT_INT, &( talents.unleashed_fury               ) },
+    { "wild_quiver",                       OPT_INT, &( talents.wild_quiver                  ) },
     // Glyphs
-    { "glyph_aspect_of_the_viper",         OPT_INT8, &( glyphs.aspect_of_the_viper           ) },
-    { "glyph_bestial_wrath",               OPT_INT8, &( glyphs.bestial_wrath                 ) },
-    { "glyph_hunters_mark",                OPT_INT8, &( glyphs.hunters_mark                  ) },
-    { "glyph_improved_aspect_of_the_hawk", OPT_INT8, &( glyphs.improved_aspect_of_the_hawk   ) },
-    { "glyph_rapid_fire",                  OPT_INT8, &( glyphs.rapid_fire                    ) },
-    { "glyph_serpent_sting",               OPT_INT8, &( glyphs.serpent_sting                 ) },
-    { "glyph_steady_shot",                 OPT_INT8, &( glyphs.steady_shot                   ) },
-    { "glyph_trueshot_aura",               OPT_INT8, &( glyphs.trueshot_aura                 ) },
+    { "glyph_aspect_of_the_viper",         OPT_INT, &( glyphs.aspect_of_the_viper           ) },
+    { "glyph_bestial_wrath",               OPT_INT, &( glyphs.bestial_wrath                 ) },
+    { "glyph_hunters_mark",                OPT_INT, &( glyphs.hunters_mark                  ) },
+    { "glyph_improved_aspect_of_the_hawk", OPT_INT, &( glyphs.improved_aspect_of_the_hawk   ) },
+    { "glyph_rapid_fire",                  OPT_INT, &( glyphs.rapid_fire                    ) },
+    { "glyph_serpent_sting",               OPT_INT, &( glyphs.serpent_sting                 ) },
+    { "glyph_steady_shot",                 OPT_INT, &( glyphs.steady_shot                   ) },
+    { "glyph_trueshot_aura",               OPT_INT, &( glyphs.trueshot_aura                 ) },
     // Custom
     { "ammo_dps",                          OPT_FLT,  &( ammo_dps                             ) },
     { "quiver_haste",                      OPT_FLT,  &( quiver_haste                         ) },

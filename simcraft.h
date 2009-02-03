@@ -82,8 +82,8 @@ struct weapon_t;
 
 struct rng_t
 {
-  static rng_t* init( int8_t sfmt );
-  virtual int8_t roll( double chance );
+  static rng_t* init( int sfmt );
+  virtual int roll( double chance );
   virtual double real();
   virtual ~rng_t() {}
 };
@@ -98,7 +98,7 @@ struct event_t
   uint32_t  id;
   double    time;
   double    reschedule_time;
-  int8_t    canceled;
+  int       canceled;
   const char* name;
   event_t( sim_t* s, player_t* p=0, const char* n=0 ) : 
     next(0), sim(s), player(p), reschedule_time(0), canceled(0), name(n) 
@@ -267,28 +267,28 @@ struct sim_t
   target_t*   target;
   double      lag, pet_lag, channel_penalty, gcd_penalty, reaction_time, regen_periodicity;
   double      current_time, max_time;
-  int32_t     events_remaining, max_events_remaining;
-  int32_t     events_processed, total_events_processed;
-  int32_t     seed, id, iterations, current_iteration, threads;
-  int8_t      infinite_resource[ RESOURCE_MAX ];
-  int8_t      optimal_raid, potion_sickness, average_dmg, log, debug, timestamp, sfmt;
+  int         events_remaining, max_events_remaining;
+  int         events_processed, total_events_processed;
+  int         seed, id, iterations, current_iteration, threads;
+  int         infinite_resource[ RESOURCE_MAX ];
+  int         optimal_raid, potion_sickness, average_dmg, log, debug, timestamp, sfmt;
 
   // Timing Wheel Event Management
   std::vector<event_t*> timing_wheel;
-  int32_t wheel_seconds, wheel_size, wheel_mask, timing_slice;
-  double  wheel_granularity;
+  int    wheel_seconds, wheel_size, wheel_mask, timing_slice;
+  double wheel_granularity;
 
   // Default Gear Profile
   struct gear_default_t
   {
-    int16_t attribute[ ATTRIBUTE_MAX ];
-    int16_t spell_power;
-    int16_t attack_power;
-    int16_t expertise_rating;
-    int16_t armor_penetration_rating;
-    int16_t hit_rating;
-    int16_t crit_rating;
-    int16_t haste_rating;
+    int attribute[ ATTRIBUTE_MAX ];
+    int spell_power;
+    int attack_power;
+    int expertise_rating;
+    int armor_penetration_rating;
+    int hit_rating;
+    int crit_rating;
+    int haste_rating;
     
     gear_default_t() { memset( (void*) this, 0x00, sizeof( gear_default_t ) ); }
   };
@@ -297,14 +297,14 @@ struct sim_t
   // Delta Gear Profile
   struct gear_delta_t
   {
-    int16_t attribute[ ATTRIBUTE_MAX ];
-    int16_t spell_power;
-    int16_t attack_power;
-    int16_t expertise_rating;
-    int16_t armor_penetration_rating;
-    int16_t hit_rating;
-    int16_t crit_rating;
-    int16_t haste_rating;
+    int attribute[ ATTRIBUTE_MAX ];
+    int spell_power;
+    int attack_power;
+    int expertise_rating;
+    int armor_penetration_rating;
+    int hit_rating;
+    int crit_rating;
+    int haste_rating;
     
     gear_delta_t() { memset( (void*) this, 0x00, sizeof( gear_delta_t ) ); }
   };
@@ -313,13 +313,13 @@ struct sim_t
   // Static Buffs (until appropriate player class implemented)
   struct buff_t
   {
-    int16_t battle_shout;
-    int8_t  blessing_of_kings;
-    int16_t blessing_of_might;
-    int16_t blessing_of_wisdom;
-    int8_t  leader_of_the_pack;
-    int8_t  sanctified_retribution;
-    int8_t  swift_retribution;
+    int battle_shout;
+    int blessing_of_kings;
+    int blessing_of_might;
+    int blessing_of_wisdom;
+    int leader_of_the_pack;
+    int sanctified_retribution;
+    int swift_retribution;
     buff_t() { memset( (void*) this, 0x0, sizeof( buff_t ) ); }
   };
   buff_t buffs;
@@ -328,7 +328,7 @@ struct sim_t
   report_t*  report;
   scaling_t* scaling;
   double     raid_dps, total_dmg, total_seconds, elapsed_cpu_seconds;
-  int8_t     merge_ignite;
+  int        merge_ignite;
   std::vector<player_t*> players_by_rank;
   std::vector<player_t*> players_by_name;
   std::string html_file_str, wiki_file_str;
@@ -363,7 +363,7 @@ struct sim_t
   void      print_options();
   bool      time_to_think( double proc_time ) { if( proc_time == 0 ) return false; return current_time - proc_time > reaction_time; }
   bool      cooldown_ready( double cooldown_time ) { return cooldown_time <= current_time; }
-  int8_t    roll( double chance ) { return rng -> roll( chance ); }
+  int       roll( double chance ) { return rng -> roll( chance ); }
   player_t* find_player( const std::string& name );
 };
 
@@ -372,20 +372,20 @@ struct sim_t
 struct scaling_t
 {
   sim_t* sim;
-  int8_t calculate_scale_factors;
+  int calculate_scale_factors;
 
   // Gear delta for determining scale factors
 
   struct gear_t
   {
-    int16_t attribute[ ATTRIBUTE_MAX ];
-    int16_t spell_power;
-    int16_t attack_power;
-    int16_t expertise_rating;
-    int16_t armor_penetration_rating;
-    int16_t hit_rating;
-    int16_t crit_rating;
-    int16_t haste_rating;
+    int attribute[ ATTRIBUTE_MAX ];
+    int spell_power;
+    int attack_power;
+    int expertise_rating;
+    int armor_penetration_rating;
+    int hit_rating;
+    int crit_rating;
+    int haste_rating;
     
     gear_t() { memset( (void*) this, 0x00, sizeof( gear_t ) ); }
   };
@@ -422,12 +422,12 @@ struct rating_t
 
 struct weapon_t
 {
-  int8_t type, school;
+  int    type, school;
   double damage;
   double swing_time;
-  int8_t enchant, buff;
+  int    enchant, buff;
   double enchant_bonus, buff_bonus;
-  int8_t slot;
+  int    slot;
 
   int    group();
   double normalized_weapon_speed();
@@ -446,15 +446,15 @@ struct player_t
   sim_t*      sim;
   std::string name_str, talents_str;
   player_t*   next;   
-  int8_t      type, level, party;
+  int         type, level, party;
   double      gcd_ready, base_gcd;
-  int8_t      sleeping;
+  int         sleeping;
   rating_t    rating;
   pet_t*      pet_list;
 
   // Haste
-  int16_t base_haste_rating, initial_haste_rating, haste_rating;
-  double  haste;
+  int    base_haste_rating, initial_haste_rating, haste_rating;
+  double haste;
 
   // Attributes
   double attribute                   [ ATTRIBUTE_MAX ];
@@ -480,16 +480,16 @@ struct player_t
   double last_cast;
 
   // Attack Mechanics
-  double    base_attack_power,       initial_attack_power,        attack_power;
-  double    base_attack_hit,         initial_attack_hit,          attack_hit;
-  double    base_attack_expertise,   initial_attack_expertise,    attack_expertise;
-  double    base_attack_crit,        initial_attack_crit,         attack_crit;
-  double    base_attack_penetration, initial_attack_penetration,  attack_penetration;
-  double    attack_power_multiplier,   initial_attack_power_multiplier;
-  double    attack_power_per_strength, initial_attack_power_per_strength;
-  double    attack_power_per_agility,  initial_attack_power_per_agility;
-  double    attack_crit_per_agility,   initial_attack_crit_per_agility;
-  int8_t    position;
+  double base_attack_power,       initial_attack_power,        attack_power;
+  double base_attack_hit,         initial_attack_hit,          attack_hit;
+  double base_attack_expertise,   initial_attack_expertise,    attack_expertise;
+  double base_attack_crit,        initial_attack_crit,         attack_crit;
+  double base_attack_penetration, initial_attack_penetration,  attack_penetration;
+  double attack_power_multiplier,   initial_attack_power_multiplier;
+  double attack_power_per_strength, initial_attack_power_per_strength;
+  double attack_power_per_agility,  initial_attack_power_per_agility;
+  double attack_crit_per_agility,   initial_attack_crit_per_agility;
+  int    position;
 
   // Weapons
   std::string main_hand_str,    off_hand_str,    ranged_str;
@@ -500,19 +500,15 @@ struct player_t
   double  resource_initial[ RESOURCE_MAX ];
   double  resource_max    [ RESOURCE_MAX ];
   double  resource_current[ RESOURCE_MAX ];
-  int8_t  resource_constrained;
-  int16_t resource_constrained_count;
-  double  resource_constrained_total_dmg;
-  double  resource_constrained_total_time;
   double  mana_per_intellect;
   double  health_per_stamina;
 
   // Consumables
   std::string flask_str, elixirs_str, food_str;
-  int8_t elixir_guardian;
-  int8_t elixir_battle;
-  int8_t flask;
-  int8_t food;
+  int elixir_guardian;
+  int elixir_battle;
+  int flask;
+  int food;
 
   // Events
   event_t* executing;
@@ -527,7 +523,7 @@ struct player_t
   std::string action_list_skip;
 
   // Reporting
-  int8_t    quiet;
+  int    quiet;
   action_t* last_foreground_action;
   double    last_action_time, total_seconds;
   double    total_waiting;
@@ -544,68 +540,68 @@ struct player_t
   std::vector<double> timeline_dmg;
   std::vector<double> timeline_dps;
   std::vector<double> iteration_dps;
-  std::vector<int32_t> distribution_dps;
+  std::vector<int> distribution_dps;
 
   struct gear_t
   {
     // Attributes
-    int16_t attribute        [ ATTRIBUTE_MAX ];
-    int16_t attribute_enchant[ ATTRIBUTE_MAX ];
+    int attribute        [ ATTRIBUTE_MAX ];
+    int attribute_enchant[ ATTRIBUTE_MAX ];
     // Spell Gear
-    int16_t spell_power[ SCHOOL_MAX+1 ], spell_power_enchant[ SCHOOL_MAX+1 ];
-    int16_t spell_penetration,           spell_penetration_enchant;
-    int16_t mp5, mp5_enchant;
+    int spell_power[ SCHOOL_MAX+1 ], spell_power_enchant[ SCHOOL_MAX+1 ];
+    int spell_penetration,           spell_penetration_enchant;
+    int mp5, mp5_enchant;
     // Attack Gear
-    int16_t attack_power,             attack_power_enchant;
-    int16_t armor_penetration_rating, armor_penetration_rating_enchant;
-    int16_t expertise_rating,         expertise_rating_enchant;
+    int attack_power,             attack_power_enchant;
+    int armor_penetration_rating, armor_penetration_rating_enchant;
+    int expertise_rating,         expertise_rating_enchant;
     // Common Gear
-    int16_t hit_rating, hit_rating_enchant;
-    int16_t crit_rating, crit_rating_enchant;
-    int16_t haste_rating, haste_rating_enchant;
+    int hit_rating, hit_rating_enchant;
+    int crit_rating, crit_rating_enchant;
+    int haste_rating, haste_rating_enchant;
     // Resource Gear
-    int16_t resource        [ RESOURCE_MAX ];
-    int16_t resource_enchant[ RESOURCE_MAX ];
+    int resource        [ RESOURCE_MAX ];
+    int resource_enchant[ RESOURCE_MAX ];
     // Budgeting
-    int16_t spell_power_budget;
-    int16_t attack_power_budget;
-    int8_t  budget_slots;
+    int spell_power_budget;
+    int attack_power_budget;
+    int  budget_slots;
     // Unique Gear
-    int8_t  ashtongue_talisman;
-    int8_t  chaotic_skyflare;
-    int8_t  darkmoon_crusade;
-    int8_t  darkmoon_greatness;
-    int8_t  darkmoon_wrath;
-    int8_t  dying_curse;
-    int8_t  egg_of_mortal_essence;
-    int8_t  elder_scribes;
-    int8_t  embrace_of_the_spider;
-    int8_t  eternal_sage;
-    int8_t  extract_of_necromatic_power;
-    int8_t  eye_of_magtheridon;
-    int8_t  forge_ember;
-    int8_t  fury_of_the_five_flights;
-    int8_t  illustration_of_the_dragon_soul;
-    int8_t  lightning_capacitor;
-    int8_t  mark_of_defiance;
-    int8_t  mirror_of_truth;
-    int8_t  mystical_skyfire;
-    int8_t  quagmirrans_eye;
-    int8_t  relentless_earthstorm;
-    int8_t  sextant_of_unstable_currents;
-    int8_t  shiffars_nexus_horn;
-    int8_t  spellstrike;
-    int8_t  spellsurge;
-    int8_t  sundial_of_the_exiled;
-    int8_t  talisman_of_ascendance;
-    int8_t  thunder_capacitor;
-    int8_t  timbals_crystal;
-    int8_t  wrath_of_cenarius;
-    int8_t  zandalarian_hero_charm;
-    int8_t  tier4_2pc, tier4_4pc;
-    int8_t  tier5_2pc, tier5_4pc;
-    int8_t  tier6_2pc, tier6_4pc;
-    int8_t  tier7_2pc, tier7_4pc;
+    int  ashtongue_talisman;
+    int  chaotic_skyflare;
+    int  darkmoon_crusade;
+    int  darkmoon_greatness;
+    int  darkmoon_wrath;
+    int  dying_curse;
+    int  egg_of_mortal_essence;
+    int  elder_scribes;
+    int  embrace_of_the_spider;
+    int  eternal_sage;
+    int  extract_of_necromatic_power;
+    int  eye_of_magtheridon;
+    int  forge_ember;
+    int  fury_of_the_five_flights;
+    int  illustration_of_the_dragon_soul;
+    int  lightning_capacitor;
+    int  mark_of_defiance;
+    int  mirror_of_truth;
+    int  mystical_skyfire;
+    int  quagmirrans_eye;
+    int  relentless_earthstorm;
+    int  sextant_of_unstable_currents;
+    int  shiffars_nexus_horn;
+    int  spellstrike;
+    int  spellsurge;
+    int  sundial_of_the_exiled;
+    int  talisman_of_ascendance;
+    int  thunder_capacitor;
+    int  timbals_crystal;
+    int  wrath_of_cenarius;
+    int  zandalarian_hero_charm;
+    int  tier4_2pc, tier4_4pc;
+    int  tier5_2pc, tier5_4pc;
+    int  tier6_2pc, tier6_4pc;
+    int  tier7_2pc, tier7_4pc;
     gear_t() { memset( (void*) this, 0x00, sizeof( gear_t ) ); }
 
     void allocate_spell_power_budget( sim_t* );
@@ -616,54 +612,54 @@ struct player_t
   struct buff_t
   {
     // Dynamic Buffs
-    int8_t    temporary_buffs;
+    int    temporary_buffs;
     double    arcane_brilliance;
-    int8_t    berserking_mh;
-    int8_t    berserking_oh;
+    int    berserking_mh;
+    int    berserking_oh;
     double    divine_spirit;
-    int8_t    bloodlust;
+    int    bloodlust;
     double    cast_time_reduction;
-    int8_t    darkmoon_crusade;
-    int8_t    darkmoon_wrath;
+    int    darkmoon_crusade;
+    int    darkmoon_wrath;
     double    demonic_pact;
     pet_t*    demonic_pact_pet;
-    int8_t    elemental_oath;
-    int8_t    executioner;
+    int    elemental_oath;
+    int    executioner;
     double    flametongue_totem;
     player_t* focus_magic;
-    int8_t    focus_magic_feedback;
+    int    focus_magic_feedback;
     double    fortitude;
-    int8_t    fury_of_the_five_flights;
-    int8_t    illustration_of_the_dragon_soul;
+    int    fury_of_the_five_flights;
+    int    illustration_of_the_dragon_soul;
     double    improved_divine_spirit;
-    int8_t    improved_moonkin_aura;
-    int8_t    innervate;
-    int8_t    glyph_of_innervate;
-    int8_t    lightning_capacitor;
+    int    improved_moonkin_aura;
+    int    innervate;
+    int    glyph_of_innervate;
+    int    lightning_capacitor;
     double    mana_cost_reduction;
     double    mark_of_the_wild;
-    int8_t    moonkin_aura;
-    int8_t    mongoose_mh;
-    int8_t    mongoose_oh;
-    int8_t    power_infusion;
-    int8_t    replenishment;
-    int8_t    shadow_form;
+    int    moonkin_aura;
+    int    mongoose_mh;
+    int    mongoose_oh;
+    int    power_infusion;
+    int    replenishment;
+    int    shadow_form;
     double    strength_of_earth;
-    int16_t   talisman_of_ascendance;
-    int8_t    thunder_capacitor;
+    int   talisman_of_ascendance;
+    int    thunder_capacitor;
     double    totem_of_wrath;
-    int8_t    tricks_of_the_trade;
-    int8_t    trueshot_aura;
-    int8_t    unleashed_rage;
-    int8_t    violet_eye;
+    int    tricks_of_the_trade;
+    int    trueshot_aura;
+    int    unleashed_rage;
+    int    violet_eye;
     double    windfury_totem;
-    int8_t    water_elemental;
-    int8_t    wrath_of_air;
-    int16_t   zandalarian_hero_charm;
-    int8_t    tier4_2pc, tier4_4pc;
-    int8_t    tier5_2pc, tier5_4pc;
-    int8_t    tier6_2pc, tier6_4pc;
-    int8_t    tier7_2pc, tier7_4pc;
+    int    water_elemental;
+    int    wrath_of_air;
+    int   zandalarian_hero_charm;
+    int    tier4_2pc, tier4_4pc;
+    int    tier5_2pc, tier5_4pc;
+    int    tier6_2pc, tier6_4pc;
+    int    tier7_2pc, tier7_4pc;
     buff_t() { memset( (void*) this, 0x0, sizeof( buff_t ) ); }
     void reset()
     { 
@@ -838,7 +834,7 @@ struct player_t
   };
   scaling_t scaling;
   
-  player_t( sim_t* sim, int8_t type, const std::string& name );
+  player_t( sim_t* sim, int type, const std::string& name );
   
   virtual ~player_t();
 
@@ -866,14 +862,14 @@ struct player_t
   virtual double composite_attack_hit()         { return attack_hit;         }
   virtual double composite_attack_penetration() { return attack_penetration; }
 
-  virtual double composite_spell_power( int8_t school );
+  virtual double composite_spell_power( int school );
   virtual double composite_spell_crit();
   virtual double composite_spell_hit()         { return spell_hit;         }
   virtual double composite_spell_penetration() { return spell_penetration; }
 
   virtual double composite_attack_power_multiplier();
   virtual double composite_spell_power_multiplier() { return spell_power_multiplier; }
-  virtual double composite_attribute_multiplier( int8_t attr );
+  virtual double composite_attribute_multiplier( int attr );
 
   virtual double strength();
   virtual double agility();
@@ -886,10 +882,9 @@ struct player_t
 
   virtual void raid_event( action_t* ) {}
   virtual void regen( double periodicity=2.0 );
-  virtual void resource_gain( int8_t resource, double amount, gain_t* g=0 );
-  virtual void resource_loss( int8_t resource, double amount );
-  virtual bool resource_available( int8_t resource, double cost );
-  virtual void check_resources();
+  virtual void resource_gain( int resource, double amount, gain_t* g=0 );
+  virtual void resource_loss( int resource, double amount );
+  virtual bool resource_available( int resource, double cost );
   virtual int  primary_resource() { return RESOURCE_NONE; }
 
   virtual void  summon_pet( const char* name );
@@ -904,7 +899,7 @@ struct player_t
   virtual void action_miss  ( action_t* );
   virtual void action_hit   ( action_t* );
   virtual void action_tick  ( action_t* );
-  virtual void action_damage( action_t*, double amount, int8_t dmg_type );
+  virtual void action_damage( action_t*, double amount, int dmg_type );
   virtual void action_heal  ( action_t*, double amount );
   virtual void action_finish( action_t* );
 
@@ -912,7 +907,7 @@ struct player_t
   virtual void spell_miss_event  ( spell_t* );
   virtual void spell_hit_event   ( spell_t* );
   virtual void spell_tick_event  ( spell_t* );
-  virtual void spell_damage_event( spell_t*, double amount, int8_t dmg_type );
+  virtual void spell_damage_event( spell_t*, double amount, int dmg_type );
   virtual void spell_heal_event  ( spell_t*, double amount );
   virtual void spell_finish_event( spell_t* );
 
@@ -920,13 +915,13 @@ struct player_t
   virtual void attack_miss_event  ( attack_t* );
   virtual void attack_hit_event   ( attack_t* );
   virtual void attack_tick_event  ( attack_t* );
-  virtual void attack_damage_event( attack_t*, double amount, int8_t dmg_type );
+  virtual void attack_damage_event( attack_t*, double amount, int dmg_type );
   virtual void attack_heal_event  ( attack_t*, double amount );
   virtual void attack_finish_event( attack_t* );
 
-  virtual bool get_talent_trees( std::vector<int8_t*>& tree1, std::vector<int8_t*>& tree2, std::vector<int8_t*>& tree3, talent_translation_t translation[][3] );
-  virtual bool get_talent_trees( std::vector<int8_t*>& tree1, std::vector<int8_t*>& tree2, std::vector<int8_t*>& tree3 ) { return false; }
-  virtual bool parse_talents( std::vector<int8_t*>& talent_tree, const std::string& talent_string );
+  virtual bool get_talent_trees( std::vector<int*>& tree1, std::vector<int*>& tree2, std::vector<int*>& tree3, talent_translation_t translation[][3] );
+  virtual bool get_talent_trees( std::vector<int*>& tree1, std::vector<int*>& tree2, std::vector<int*>& tree3 ) { return false; }
+  virtual bool parse_talents( std::vector<int*>& talent_tree, const std::string& talent_string );
   virtual bool parse_talents( const std::string& talent_string );
   virtual bool parse_talents_mmo( const std::string& talent_string );
   virtual bool parse_talents_wowhead( const std::string& talent_string );
@@ -1010,12 +1005,12 @@ struct target_t
 {
   sim_t*      sim;
   std::string name_str, race_str;
-  int8_t      race;
-  int8_t      level;
-  int16_t     spell_resistance[ SCHOOL_MAX ];
-  int16_t     initial_armor, armor;
-  int16_t     block_value;
-  int8_t      shield;
+  int      race;
+  int      level;
+  int     spell_resistance[ SCHOOL_MAX ];
+  int     initial_armor, armor;
+  int     block_value;
+  int      shield;
   double      initial_health, current_health;
   double      total_dmg;
   uptime_t*   uptime_list;
@@ -1031,37 +1026,37 @@ struct target_t
   struct debuff_t
   {
     // Static De-Buffs (until appropriate player class implemented)
-    int8_t   blood_frenzy;
-    int8_t   crypt_fever;
-    int8_t   judgement_of_wisdom;
-    int8_t   mangle;
-    int8_t   razorice;
-    int8_t   snare;
+    int   blood_frenzy;
+    int   crypt_fever;
+    int   judgement_of_wisdom;
+    int   mangle;
+    int   razorice;
+    int   snare;
     double   sunder_armor;
-    int8_t   thunder_clap;
+    int   thunder_clap;
     // Dynamic De-Buffs
-    int8_t   temporary_debuffs;
-    int8_t   affliction_effects;
-    int8_t   curse_of_elements;
+    int   temporary_debuffs;
+    int   affliction_effects;
+    int   curse_of_elements;
     double   expose_armor;
     double   faerie_fire;
-    int8_t   ferocious_inspiration;
+    int   ferocious_inspiration;
     double   frozen;
     double   hemorrhage;
-    int8_t   hemorrhage_charges;
+    int   hemorrhage_charges;
     double   hunters_mark;
-    int8_t   improved_faerie_fire;
-    int8_t   improved_scorch;
-    int8_t   master_poisoner;
-    int8_t   misery;
-    int8_t   misery_stack;
-    int8_t   earth_and_moon;
-    int8_t   poisoned;
-    int8_t   savage_combat;
-    int8_t   slow;
-    int8_t   totem_of_wrath;
-    int8_t   winters_chill;
-    int8_t   winters_grasp;
+    int   improved_faerie_fire;
+    int   improved_scorch;
+    int   master_poisoner;
+    int   misery;
+    int   misery_stack;
+    int   earth_and_moon;
+    int   poisoned;
+    int   savage_combat;
+    int   slow;
+    int   totem_of_wrath;
+    int   winters_chill;
+    int   winters_grasp;
     debuff_t() { memset( (void*) this, 0x0, sizeof( debuff_t ) ); }
     void reset()
     { 
@@ -1114,7 +1109,7 @@ struct target_t
   void reset();
   void combat_begin();
   void combat_end();
-  void assess_damage( double amount, int8_t school, int8_t type );
+  void assess_damage( double amount, int school, int type );
   void recalculate_health();
   double time_to_die();
   double health_percentage();
@@ -1132,7 +1127,7 @@ struct stats_t
   sim_t* sim;
   player_t* player;
   stats_t* next;
-  int8_t school;
+  int school;
   bool channeled;
   bool analyzed;
   bool initialized;
@@ -1156,7 +1151,7 @@ struct stats_t
   std::vector<double> timeline_dps;
 
   void consume_resource( double r ) { resource_consumed += r; }
-  void add( double amount, int8_t dmg_type, int8_t result, double time );
+  void add( double amount, int dmg_type, int result, double time );
   void init();
   void reset( action_t* );
   void analyze();
@@ -1168,7 +1163,7 @@ struct stats_t
 
 struct rank_t
 {
-  int8_t level, index;
+  int level, index;
   double dd_min, dd_max, tick, cost;
 };
 
@@ -1176,7 +1171,7 @@ struct rank_t
 
 struct base_stats_t
 {
-  int8_t level;
+  int level;
   double health, mana;
   double strength, agility, stamina, intellect, spirit;
   double spell_crit, melee_crit;
@@ -1187,10 +1182,10 @@ struct base_stats_t
 struct action_t
 {
   sim_t* sim;
-  int8_t type;
+  int type;
   std::string name_str;
   player_t* player;
-  int8_t school, resource, tree, result;
+  int school, resource, tree, result;
   bool binary, channeled, background, repeating, aoe, harmful, proc, heal;
   bool may_miss, may_resist, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
   double min_gcd, trigger_gcd;
@@ -1207,8 +1202,8 @@ struct action_t
   double resource_consumed;
   double direct_dmg, base_direct_dmg, direct_power_mod;
   double   tick_dmg, base_tick_dmg,     tick_power_mod;
-  int16_t num_ticks, current_tick, added_ticks;
-  int8_t ticking;
+  int num_ticks, current_tick, added_ticks;
+  int ticking;
   std::string cooldown_group, duration_group;
   double cooldown, cooldown_ready, duration_ready;
   weapon_t* weapon;
@@ -1216,7 +1211,7 @@ struct action_t
   bool normalize_weapon_damage;
   bool normalize_weapon_speed;
   stats_t* stats;
-  int8_t rank_index;
+  int rank_index;
   event_t* execute_event;
   event_t* tick_event;
   double time_to_execute, time_to_tick;
@@ -1226,7 +1221,7 @@ struct action_t
   action_t* next;
   action_t* sequence;
 
-  action_t( int8_t type, const char* name, player_t* p=0, int8_t r=RESOURCE_NONE, int8_t s=SCHOOL_NONE, int8_t t=TREE_NONE );
+  action_t( int type, const char* name, player_t* p=0, int r=RESOURCE_NONE, int s=SCHOOL_NONE, int t=TREE_NONE );
   virtual ~action_t() {}
 
   virtual void      parse_options( option_t*, const std::string& options_str );
@@ -1239,7 +1234,7 @@ struct action_t
   virtual double execute_time() { return base_execute_time; }
   virtual double tick_time()    { return base_tick_time;    }
   virtual void   player_buff();
-  virtual void   target_debuff( int8_t dmg_type );
+  virtual void   target_debuff( int dmg_type );
   virtual void   calculate_result() { assert(0); }
   virtual bool   result_is_hit();
   virtual bool   result_is_miss();
@@ -1251,13 +1246,13 @@ struct action_t
   virtual void   execute();
   virtual void   tick();
   virtual void   last_tick();
-  virtual void   assess_damage( double amount, int8_t dmg_type );
+  virtual void   assess_damage( double amount, int dmg_type );
   virtual void   schedule_execute();
   virtual void   schedule_tick();
   virtual void   refresh_duration();
-  virtual void   extend_duration( int8_t extra_ticks );
+  virtual void   extend_duration( int extra_ticks );
   virtual void   update_ready();
-  virtual void   update_stats( int8_t type );
+  virtual void   update_stats( int type );
   virtual bool   ready();
   virtual void   reset();
   virtual void   cancel();
@@ -1283,7 +1278,7 @@ struct attack_t : public action_t
 {
   double base_expertise, player_expertise, target_expertise;
 
-  attack_t( const char* n=0, player_t* p=0, int8_t r=RESOURCE_NONE, int8_t s=SCHOOL_PHYSICAL, int8_t t=TREE_NONE );
+  attack_t( const char* n=0, player_t* p=0, int r=RESOURCE_NONE, int s=SCHOOL_PHYSICAL, int t=TREE_NONE );
   virtual ~attack_t() {}
 
   // Attack Overrides
@@ -1291,7 +1286,7 @@ struct attack_t : public action_t
   virtual double haste();
   virtual double execute_time();
   virtual void   player_buff();
-  virtual void   target_debuff( int8_t dmg_type );
+  virtual void   target_debuff( int dmg_type );
   virtual int    build_table( double* chances, int* results );
   virtual void   calculate_result();
 
@@ -1306,7 +1301,7 @@ struct attack_t : public action_t
   virtual void   execute()                           { action_t::execute();                        }
   virtual void   tick()                              { action_t::tick();                           }
   virtual void   last_tick()                         { action_t::last_tick();                      }
-  virtual void   assess_damage( double a, int8_t t ) { action_t::assess_damage( a, t );            }
+  virtual void   assess_damage( double a, int t ) { action_t::assess_damage( a, t );            }
   virtual void   schedule_execute()                  { action_t::schedule_execute();               }
   virtual void   schedule_tick()                     { action_t::schedule_tick();                  }
   virtual bool   ready()                             { return action_t::ready();                   }
@@ -1319,7 +1314,7 @@ struct attack_t : public action_t
 
 struct spell_t : public action_t
 {
-  spell_t( const char* n=0, player_t* p=0, int8_t r=RESOURCE_NONE, int8_t s=SCHOOL_PHYSICAL, int8_t t=TREE_NONE );
+  spell_t( const char* n=0, player_t* p=0, int r=RESOURCE_NONE, int s=SCHOOL_PHYSICAL, int t=TREE_NONE );
   virtual ~spell_t() {}
 
   // Spell Overrides
@@ -1329,8 +1324,8 @@ struct spell_t : public action_t
   virtual double execute_time();
   virtual double tick_time();
   virtual void   player_buff();
-  virtual void   target_debuff( int8_t dmg_type );
-  virtual double level_based_miss_chance( int8_t player, int8_t target );
+  virtual void   target_debuff( int dmg_type );
+  virtual double level_based_miss_chance( int player, int target );
   virtual void   calculate_result();
    
   // Passthru Methods
@@ -1342,7 +1337,7 @@ struct spell_t : public action_t
   virtual void   execute()                           { action_t::execute();                        }
   virtual void   tick()                              { action_t::tick();                           }
   virtual void   last_tick()                         { action_t::last_tick();                      }
-  virtual void   assess_damage( double a, int8_t t ) { action_t::assess_damage( a, t );            }
+  virtual void   assess_damage( double a, int t ) { action_t::assess_damage( a, t );            }
   virtual void   schedule_execute()                  { action_t::schedule_execute();               }
   virtual void   schedule_tick()                     { action_t::schedule_tick();                  }
   virtual bool   ready()                             { return action_t::ready();                   }
@@ -1391,7 +1386,7 @@ struct unique_gear_t
   static void spell_miss_event  ( spell_t* );
   static void spell_hit_event   ( spell_t* );
   static void spell_tick_event  ( spell_t* );
-  static void spell_damage_event( spell_t*, double amount, int8_t dmg_type );
+  static void spell_damage_event( spell_t*, double amount, int dmg_type );
   static void spell_heal_event  ( spell_t*, double amount );
   static void spell_finish_event( spell_t* );
 
@@ -1399,7 +1394,7 @@ struct unique_gear_t
   static void attack_miss_event  ( attack_t* ) {}
   static void attack_hit_event   ( attack_t* );
   static void attack_tick_event  ( attack_t* ) {}
-  static void attack_damage_event( attack_t*, double amount, int8_t dmg_type );
+  static void attack_damage_event( attack_t*, double amount, int dmg_type );
   static void attack_heal_event  ( attack_t*, double amount ) {}
   static void attack_finish_event( attack_t* ) {}
 
@@ -1416,7 +1411,7 @@ struct enchant_t
   static void spell_miss_event  ( spell_t* ) {}
   static void spell_hit_event   ( spell_t* ) {}
   static void spell_tick_event  ( spell_t* ) {}
-  static void spell_damage_event( spell_t*, double amount, int8_t dmg_type ) {}
+  static void spell_damage_event( spell_t*, double amount, int dmg_type ) {}
   static void spell_heal_event  ( spell_t*, double amount ) {}
   static void spell_finish_event( spell_t* );
 
@@ -1424,7 +1419,7 @@ struct enchant_t
   static void attack_miss_event  ( attack_t* ) {}
   static void attack_hit_event   ( attack_t* );
   static void attack_tick_event  ( attack_t* ) {}
-  static void attack_damage_event( attack_t*, double amount, int8_t dmg_type ) {}
+  static void attack_damage_event( attack_t*, double amount, int dmg_type ) {}
   static void attack_heal_event  ( attack_t*, double amount ) {}
   static void attack_finish_event( attack_t* ) {}
 
@@ -1475,7 +1470,7 @@ struct proc_t
 struct uptime_t
 {
   std::string name_str;
-  int32_t up, down;
+  int up, down;
   uptime_t* next;
   uptime_t( const std::string& n ) : name_str(n), up(0), down(0) {}
   void   update( bool is_up ) { if( is_up ) up++; else down++; }
@@ -1490,25 +1485,25 @@ struct report_t
 {
   sim_t* sim;
 
-  int8_t report_actions;
-  int8_t report_attack_stats;
-  int8_t report_chart;
-  int8_t report_core_stats;
-  int8_t report_dpr;
-  int8_t report_dps;
-  int8_t report_gains;
-  int8_t report_miss;
-  int8_t report_rps;
-  int8_t report_name;
-  int8_t report_performance;
-  int8_t report_procs;
-  int8_t report_raid_dps;
-  int8_t report_scaling;
-  int8_t report_spell_stats;
-  int8_t report_statistics;
-  int8_t report_tag;
-  int8_t report_uptime;
-  int8_t report_waiting;
+  int report_actions;
+  int report_attack_stats;
+  int report_chart;
+  int report_core_stats;
+  int report_dpr;
+  int report_dps;
+  int report_gains;
+  int report_miss;
+  int report_rps;
+  int report_name;
+  int report_performance;
+  int report_procs;
+  int report_raid_dps;
+  int report_scaling;
+  int report_spell_stats;
+  int report_statistics;
+  int report_tag;
+  int report_uptime;
+  int report_waiting;
 
   report_t( sim_t* s );
   bool parse_option( const std::string& name, const std::string& value );
@@ -1558,18 +1553,18 @@ struct report_t
 
 struct talent_translation_t
 {
-  int8_t  index;
-  int8_t* address;
+  int  index;
+  int* address;
 };
 
 // Options ====================================================================
 
-enum option_type_t { OPT_STRING=0, OPT_APPEND, OPT_CHAR_P, OPT_BOOL, OPT_INT8, OPT_INT16, OPT_INT32, OPT_FLT, OPT_DEPRECATED, OPT_UNKNOWN };
+enum option_type_t { OPT_STRING=0, OPT_APPEND, OPT_CHAR_P, OPT_BOOL, OPT_INT, OPT_FLT, OPT_DEPRECATED, OPT_UNKNOWN };
 
 struct option_t
 {
   const char* name; 
-  int8_t type; 
+  int type; 
   void*  address;
   
   static void print( sim_t*, option_t* );
@@ -1584,31 +1579,31 @@ struct option_t
 
 struct util_t
 {
-  static double talent_rank( int8_t num, int8_t max, double increment );
-  static double talent_rank( int8_t num, int8_t max, double value1, double value2, ... );
+  static double talent_rank( int num, int max, double increment );
+  static double talent_rank( int num, int max, double value1, double value2, ... );
 
-  static int talent_rank( int8_t num, int8_t max, int increment );
-  static int talent_rank( int8_t num, int8_t max, int value1, int value2, ... );
+  static int talent_rank( int num, int max, int increment );
+  static int talent_rank( int num, int max, int value1, int value2, ... );
 
-  static double ability_rank( int8_t player_level, double ability_value, int8_t ability_level, ... );
-  static int    ability_rank( int8_t player_level, int    ability_value, int8_t ability_level, ... );
+  static double ability_rank( int player_level, double ability_value, int ability_level, ... );
+  static int    ability_rank( int player_level, int    ability_value, int ability_level, ... );
 
   static char* dup( const char* );
 
-  static const char* race_type_string          ( int8_t type );
-  static const char* player_type_string        ( int8_t type );
-  static const char* attribute_type_string     ( int8_t type );
-  static const char* dmg_type_string           ( int8_t type );
-  static const char* result_type_string        ( int8_t type );
-  static const char* resource_type_string      ( int8_t type );
-  static const char* school_type_string        ( int8_t type );
-  static const char* talent_tree_string        ( int8_t tree );
-  static const char* weapon_type_string        ( int8_t type );
-  static const char* weapon_enchant_type_string( int8_t type );
-  static const char* weapon_buff_type_string   ( int8_t type );
-  static const char* elixir_type_string        ( int8_t type );
-  static const char* flask_type_string         ( int8_t type );
-  static const char* food_type_string          ( int8_t type );
+  static const char* race_type_string          ( int type );
+  static const char* player_type_string        ( int type );
+  static const char* attribute_type_string     ( int type );
+  static const char* dmg_type_string           ( int type );
+  static const char* result_type_string        ( int type );
+  static const char* resource_type_string      ( int type );
+  static const char* school_type_string        ( int type );
+  static const char* talent_tree_string        ( int tree );
+  static const char* weapon_type_string        ( int type );
+  static const char* weapon_enchant_type_string( int type );
+  static const char* weapon_buff_type_string   ( int type );
+  static const char* elixir_type_string        ( int type );
+  static const char* flask_type_string         ( int type );
+  static const char* food_type_string          ( int type );
 
   static int string_split( std::vector<std::string>& results, const std::string& str, const char* delim );
   static int string_split( const std::string& str, const char* delim, const char* format, ... );

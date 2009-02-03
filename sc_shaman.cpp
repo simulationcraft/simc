@@ -19,20 +19,21 @@ struct shaman_t : public player_t
 
   // Active
   spell_t* active_flame_shock;
+  spell_t* active_lava_burst;
   spell_t* active_lightning_charge;
   spell_t* active_shield;
 
   // Buffs
-  int8_t buffs_elemental_devastation;
-  int8_t buffs_elemental_focus;
-  int8_t buffs_elemental_mastery;
-  int8_t buffs_flurry;
-  int8_t buffs_lightning_charges;
-  int8_t buffs_maelstrom_weapon;
-  int8_t buffs_nature_vulnerability;
-  int8_t buffs_nature_vulnerability_charges;
-  int8_t buffs_natures_swiftness;
-  int8_t buffs_shamanistic_rage;
+  int    buffs_elemental_devastation;
+  int    buffs_elemental_focus;
+  int    buffs_elemental_mastery;
+  int    buffs_flurry;
+  int    buffs_lightning_charges;
+  int    buffs_maelstrom_weapon;
+  int    buffs_nature_vulnerability;
+  int    buffs_nature_vulnerability_charges;
+  int    buffs_natures_swiftness;
+  int    buffs_shamanistic_rage;
   double buffs_water_shield;
 
   // Cooldowns
@@ -71,53 +72,53 @@ struct shaman_t : public player_t
 
   struct talents_t
   {
-    int8_t  ancestral_knowledge;
-    int8_t  blessing_of_the_eternals;
-    int8_t  call_of_flame;
-    int8_t  call_of_thunder;
-    int8_t  concussion;
-    int8_t  convection;
-    int8_t  dual_wield;
-    int8_t  dual_wield_specialization;
-    int8_t  elemental_devastation;
-    int8_t  elemental_focus;
-    int8_t  elemental_fury;
-    int8_t  elemental_mastery;
-    int8_t  elemental_oath;
-    int8_t  elemental_precision;
-    int8_t  elemental_weapons;
-    int8_t  enhancing_totems;
-    int8_t  feral_spirit;
-    int8_t  flurry;
-    int8_t  improved_shields;
-    int8_t  improved_stormstrike;
-    int8_t  improved_windfury_totem;
-    int8_t  lava_flows;
-    int8_t  lava_lash;
-    int8_t  lightning_mastery;
-    int8_t  lightning_overload;
-    int8_t  maelstrom_weapon;
-    int8_t  mana_tide_totem;
-    int8_t  mental_dexterity;
-    int8_t  mental_quickness;
-    int8_t  natures_swiftness;
-    int8_t  restorative_totems;
-    int8_t  reverberation;
-    int8_t  shamanism;
-    int8_t  shamanistic_focus;
-    int8_t  shamanistic_rage;
-    int8_t  spirit_weapons;
-    int8_t  static_shock;
-    int8_t  stormstrike;
-    int8_t  storm_earth_and_fire;
-    int8_t  thundering_strikes;
-    int8_t  thunderstorm;
-    int8_t  tidal_mastery;
-    int8_t  totem_of_wrath;
-    int8_t  totemic_focus;
-    int8_t  unrelenting_storm;
-    int8_t  unleashed_rage;
-    int8_t  weapon_mastery;
+    int  ancestral_knowledge;
+    int  blessing_of_the_eternals;
+    int  call_of_flame;
+    int  call_of_thunder;
+    int  concussion;
+    int  convection;
+    int  dual_wield;
+    int  dual_wield_specialization;
+    int  elemental_devastation;
+    int  elemental_focus;
+    int  elemental_fury;
+    int  elemental_mastery;
+    int  elemental_oath;
+    int  elemental_precision;
+    int  elemental_weapons;
+    int  enhancing_totems;
+    int  feral_spirit;
+    int  flurry;
+    int  improved_shields;
+    int  improved_stormstrike;
+    int  improved_windfury_totem;
+    int  lava_flows;
+    int  lava_lash;
+    int  lightning_mastery;
+    int  lightning_overload;
+    int  maelstrom_weapon;
+    int  mana_tide_totem;
+    int  mental_dexterity;
+    int  mental_quickness;
+    int  natures_swiftness;
+    int  restorative_totems;
+    int  reverberation;
+    int  shamanism;
+    int  shamanistic_focus;
+    int  shamanistic_rage;
+    int  spirit_weapons;
+    int  static_shock;
+    int  stormstrike;
+    int  storm_earth_and_fire;
+    int  thundering_strikes;
+    int  thunderstorm;
+    int  tidal_mastery;
+    int  totem_of_wrath;
+    int  totemic_focus;
+    int  unrelenting_storm;
+    int  unleashed_rage;
+    int  weapon_mastery;
     
     talents_t() { memset( (void*) this, 0x0, sizeof( talents_t ) ); }
   };
@@ -125,47 +126,47 @@ struct shaman_t : public player_t
 
   struct glyphs_t
   {
-    int8_t chain_lightning;
-    int8_t elemental_mastery;
-    int8_t flame_shock;
-    int8_t flametongue_weapon;
-    int8_t lava;
-    int8_t lava_lash;
-    int8_t lightning_bolt;
-    int8_t lightning_shield;
-    int8_t mana_tide;
-    int8_t shocking;
-    int8_t stormstrike;
-    int8_t windfury_weapon;
+    int chain_lightning;
+    int elemental_mastery;
+    int flame_shock;
+    int flametongue_weapon;
+    int lava;
+    int lava_lash;
+    int lightning_bolt;
+    int lightning_shield;
+    int mana_tide;
+    int shocking;
+    int stormstrike;
+    int windfury_weapon;
     glyphs_t() { memset( (void*) this, 0x0, sizeof( glyphs_t ) ); }
   };
   glyphs_t glyphs;
 
   struct totems_t
   {
-    int8_t hex;
+    int hex;
     totems_t() { memset( (void*) this, 0x0, sizeof( totems_t ) ); }
   };
   totems_t totems;
 
   struct tiers_t
   {
-    int8_t t4_2pc_elemental;
-    int8_t t4_4pc_elemental;
-    int8_t t5_2pc_elemental;
-    int8_t t5_4pc_elemental;
-    int8_t t6_2pc_elemental;
-    int8_t t6_4pc_elemental;
-    int8_t t7_2pc_elemental;
-    int8_t t7_4pc_elemental;
-    int8_t t4_2pc_enhancement;
-    int8_t t4_4pc_enhancement;
-    int8_t t5_2pc_enhancement;
-    int8_t t5_4pc_enhancement;
-    int8_t t6_2pc_enhancement;
-    int8_t t6_4pc_enhancement;
-    int8_t t7_2pc_enhancement;
-    int8_t t7_4pc_enhancement;
+    int t4_2pc_elemental;
+    int t4_4pc_elemental;
+    int t5_2pc_elemental;
+    int t5_4pc_elemental;
+    int t6_2pc_elemental;
+    int t6_4pc_elemental;
+    int t7_2pc_elemental;
+    int t7_4pc_elemental;
+    int t4_2pc_enhancement;
+    int t4_4pc_enhancement;
+    int t5_2pc_enhancement;
+    int t5_4pc_enhancement;
+    int t6_2pc_enhancement;
+    int t6_4pc_enhancement;
+    int t7_2pc_enhancement;
+    int t7_4pc_enhancement;
     tiers_t() { memset( (void*) this, 0x0, sizeof( tiers_t ) ); }
   };
   tiers_t tiers;
@@ -180,6 +181,7 @@ struct shaman_t : public player_t
 
     // Active
     active_flame_shock      = 0;
+    active_lava_burst       = 0;
     active_lightning_charge = 0;
     active_shield           = 0;
 
@@ -235,8 +237,8 @@ struct shaman_t : public player_t
   virtual void      init_base();
   virtual void      reset();
   virtual double    composite_attack_power();
-  virtual double    composite_spell_power( int8_t school );
-  virtual bool      get_talent_trees( std::vector<int8_t*>& elemental, std::vector<int8_t*>& enhancement, std::vector<int8_t*>& restoration );
+  virtual double    composite_spell_power( int school );
+  virtual bool      get_talent_trees( std::vector<int*>& elemental, std::vector<int*>& enhancement, std::vector<int*>& restoration );
   virtual bool      parse_talents_mmo( const std::string& talent_string );
   virtual bool      parse_option( const std::string& name, const std::string& value );
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -255,7 +257,7 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 
 struct shaman_attack_t : public attack_t
 {
-  shaman_attack_t( const char* n, player_t* player, int8_t s=SCHOOL_PHYSICAL, int8_t t=TREE_NONE ) : 
+  shaman_attack_t( const char* n, player_t* player, int s=SCHOOL_PHYSICAL, int t=TREE_NONE ) : 
     attack_t( n, player, RESOURCE_MANA, s, t ) 
   {
     may_glance = false;
@@ -268,7 +270,7 @@ struct shaman_attack_t : public attack_t
 
   virtual void execute();
   virtual void player_buff();
-  virtual void assess_damage( double amount, int8_t dmg_type );
+  virtual void assess_damage( double amount, int dmg_type );
 };
 
 // ==========================================================================
@@ -277,7 +279,7 @@ struct shaman_attack_t : public attack_t
 
 struct shaman_spell_t : public spell_t
 {
-  shaman_spell_t( const char* n, player_t* p, int8_t s, int8_t t ) : 
+  shaman_spell_t( const char* n, player_t* p, int s, int t ) : 
     spell_t( n, p, RESOURCE_MANA, s, t ) 
   {
     shaman_t* shaman = p -> cast_shaman();
@@ -291,7 +293,7 @@ struct shaman_spell_t : public spell_t
   virtual void   execute();
   virtual void   player_buff();
   virtual void   schedule_execute();
-  virtual void   assess_damage( double amount, int8_t dmg_type );
+  virtual void   assess_damage( double amount, int dmg_type );
 };
 
 // ==========================================================================
@@ -754,7 +756,7 @@ void shaman_attack_t::player_buff()
 // shaman_attack_t::assess_damage ==========================================
 
 void shaman_attack_t::assess_damage( double amount, 
-                                     int8_t dmg_type )
+                                     int    dmg_type )
 {
   shaman_t* p = player -> cast_shaman();
 
@@ -1037,7 +1039,7 @@ void shaman_spell_t::schedule_execute()
 // shaman_spell_t::assess_damage ============================================
 
 void shaman_spell_t::assess_damage( double amount, 
-                                    int8_t dmg_type )
+                                    int    dmg_type )
 {
   shaman_t* p = player -> cast_shaman();
 
@@ -1063,19 +1065,21 @@ void shaman_spell_t::assess_damage( double amount,
 
 struct chain_lightning_t : public shaman_spell_t
 {
-  int8_t   maelstrom;
+  double   max_lvb_cd;
+  int      maelstrom;
   stats_t* lightning_overload_stats;
   double   lightning_overload_chance;
 
   chain_lightning_t( player_t* player, const std::string& options_str ) : 
     shaman_spell_t( "chain_lightning", player, SCHOOL_NATURE, TREE_ELEMENTAL ), 
-    maelstrom(0), lightning_overload_stats(0), lightning_overload_chance(0)
+    max_lvb_cd(0), maelstrom(0), lightning_overload_stats(0), lightning_overload_chance(0)
   {
     shaman_t* p = player -> cast_shaman();
 
     option_t options[] =
     {
-      { "maelstrom", OPT_INT8, &maelstrom  },
+      { "lvb_cd<",   OPT_FLT, &max_lvb_cd },
+      { "maelstrom", OPT_INT, &maelstrom  },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1142,12 +1146,18 @@ struct chain_lightning_t : public shaman_spell_t
 
   virtual bool ready()
   {
+    shaman_t* p = player -> cast_shaman();
+
     if( ! shaman_spell_t::ready() )
       return false;
 
-    if( maelstrom > 0 && 
-        maelstrom > player -> cast_shaman() -> buffs_maelstrom_weapon )
+    if( maelstrom > 0 ) 
+      if( maelstrom > p -> buffs_maelstrom_weapon )
       return false;
+
+    if( max_lvb_cd > 0 && p -> active_lava_burst )
+      if( ( p -> active_lava_burst -> cooldown_ready - sim -> current_time ) > max_lvb_cd )
+	return false;
 
     return true;
   }
@@ -1157,8 +1167,8 @@ struct chain_lightning_t : public shaman_spell_t
 
 struct lightning_bolt_t : public shaman_spell_t
 {
-  int8_t   maelstrom;
-  int8_t   ss_wait;
+  int      maelstrom;
+  int      ss_wait;
   stats_t* lightning_overload_stats;
   double   lightning_overload_chance;
 
@@ -1170,8 +1180,8 @@ struct lightning_bolt_t : public shaman_spell_t
 
     option_t options[] =
     {
-      { "maelstrom", OPT_INT8, &maelstrom  },
-      { "ss_wait",   OPT_INT8, &ss_wait    },
+      { "maelstrom", OPT_INT, &maelstrom  },
+      { "ss_wait",   OPT_INT, &ss_wait    },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1263,8 +1273,8 @@ struct lightning_bolt_t : public shaman_spell_t
 
 struct lava_burst_t : public shaman_spell_t
 {
-  int8_t flame_shock;
-  int8_t max_ticks_consumed;
+  int flame_shock;
+  int max_ticks_consumed;
 
   lava_burst_t( player_t* player, const std::string& options_str ) : 
     shaman_spell_t( "lava_burst", player, SCHOOL_FIRE, TREE_ELEMENTAL ), flame_shock(0), max_ticks_consumed(0)
@@ -1273,8 +1283,8 @@ struct lava_burst_t : public shaman_spell_t
 
     option_t options[] =
     {
-      { "flame_shock",        OPT_INT8, &flame_shock        },
-      { "max_ticks_consumed", OPT_INT8, &max_ticks_consumed },
+      { "flame_shock",        OPT_INT, &flame_shock        },
+      { "max_ticks_consumed", OPT_INT, &max_ticks_consumed },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1302,6 +1312,8 @@ struct lava_burst_t : public shaman_spell_t
     base_crit_bonus_multiplier *= 1.0 + ( util_t::talent_rank( p -> talents.lava_flows,     3, 0.06, 0.12, 0.24 ) +
                                           util_t::talent_rank( p -> talents.elemental_fury, 5, 0.20 ) +
                                           ( p -> tiers.t7_4pc_elemental ? 0.10 : 0.00 ) );
+
+    p -> active_lava_burst = this;
   }
 
   virtual void execute()
@@ -1446,7 +1458,7 @@ struct shamans_swiftness_t : public shaman_spell_t
 
 struct earth_shock_t : public shaman_spell_t
 {
-  int8_t ss_wait;
+  int ss_wait;
 
   earth_shock_t( player_t* player, const std::string& options_str ) : 
     shaman_spell_t( "earth_shock", player, SCHOOL_NATURE, TREE_ELEMENTAL ), ss_wait(0)
@@ -1455,7 +1467,7 @@ struct earth_shock_t : public shaman_spell_t
 
     option_t options[] =
     {
-      { "ss_wait", OPT_INT8, &ss_wait     },
+      { "ss_wait", OPT_INT, &ss_wait     },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1572,12 +1584,10 @@ struct flame_shock_t : public shaman_spell_t
 
     static rank_t ranks[] =
     {
-      { 80, 9, 500, 500, 93, 0.17 },
-      { 75, 8, 425, 425, 71, 0.17 },
-      { 70, 7, 377, 377, 70, 500  },
-      { 60, 6, 309, 309, 57, 450  },
-      { 52, 5, 230, 230, 43, 345  },
-      { 40, 4, 152, 152, 28, 250  },
+      { 80, 9, 500, 500, 139, 0.17 },
+      { 75, 8, 425, 425, 119, 0.17 },
+      { 70, 7, 377, 377, 105, 500  },
+      { 60, 6, 309, 309,  86, 450  },
       { 0, 0 }
     };
     init_rank( ranks );
@@ -1586,7 +1596,7 @@ struct flame_shock_t : public shaman_spell_t
     base_tick_time    = 3.0;
     num_ticks         = 4;
     direct_power_mod  = 0.215;
-    tick_power_mod    = 0.155;
+    tick_power_mod    = 0.100;
     may_crit          = true;
     cooldown          = 6.0;
     cooldown_group    = "shock";
@@ -1708,6 +1718,8 @@ struct searing_totem_t : public shaman_spell_t
     }
     update_stats( DMG_OVER_TIME );
   }
+
+  virtual double gcd() { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
 };
 
 // Totem of Wrath Spell =====================================================
@@ -1783,6 +1795,8 @@ struct totem_of_wrath_t : public shaman_spell_t
 
     return( player -> buffs.totem_of_wrath < bonus );
   }
+
+  virtual double gcd() { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
 };
 
 // Flametongue Totem Spell ====================================================
@@ -1864,6 +1878,8 @@ struct flametongue_totem_t : public shaman_spell_t
 
     return( player -> buffs.flametongue_totem == 0 );
   }
+
+  virtual double gcd() { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
 };
 
 // Windfury Totem Spell =====================================================
@@ -1936,6 +1952,8 @@ struct windfury_totem_t : public shaman_spell_t
 
     return( player -> buffs.windfury_totem < bonus );
   }
+
+  virtual double gcd() { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
 };
 
 // Flametongue Weapon Spell ===================================================
@@ -1943,7 +1961,7 @@ struct windfury_totem_t : public shaman_spell_t
 struct flametongue_weapon_t : public shaman_spell_t
 {
   double bonus_power;
-  int8_t main, off;
+  int    main, off;
 
   flametongue_weapon_t( player_t* player, const std::string& options_str ) : 
     shaman_spell_t( "flametongue_weapon", player, SCHOOL_NATURE, TREE_ENHANCEMENT ), bonus_power(0), main(0), off(0)
@@ -2021,7 +2039,7 @@ struct flametongue_weapon_t : public shaman_spell_t
 struct windfury_weapon_t : public shaman_spell_t
 {
   double bonus_power;
-  int8_t main, off;
+  int    main, off;
 
   windfury_weapon_t( player_t* player, const std::string& options_str ) : 
     shaman_spell_t( "windfury_weapon", player, SCHOOL_NATURE, TREE_ENHANCEMENT ), bonus_power(0), main(0), off(0)
@@ -2158,6 +2176,8 @@ struct strength_of_earth_totem_t : public shaman_spell_t
 
     return( player -> buffs.strength_of_earth < bonus );
   }
+
+  virtual double gcd() { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
 };
 
 // Wrath of Air Totem Spell =================================================
@@ -2220,6 +2240,8 @@ struct wrath_of_air_totem_t : public shaman_spell_t
 
     return( player -> buffs.wrath_of_air == 0 );
   }
+
+  virtual double gcd() { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
 };
 
 // Mana Tide Totem Spell ==================================================
@@ -2281,6 +2303,8 @@ struct mana_tide_totem_t : public shaman_spell_t
 
     return( player -> resource_current[ RESOURCE_MANA ] < ( 0.75 * player -> resource_max[ RESOURCE_MANA ] ) );
   }
+
+  virtual double gcd() { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
 };
 
 // Mana Spring Totem Spell ================================================
@@ -2338,20 +2362,22 @@ struct mana_spring_totem_t : public shaman_spell_t
 
     return( player -> resource_current[ RESOURCE_MANA ] < ( 0.95 * player -> resource_max[ RESOURCE_MANA ] ) );
   }
+
+  virtual double gcd() { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
 };
 
 // Bloodlust Spell ===========================================================
 
 struct bloodlust_t : public shaman_spell_t
 {
-  int8_t target_pct;
+  int target_pct;
 
   bloodlust_t( player_t* player, const std::string& options_str ) : 
     shaman_spell_t( "bloodlust", player, SCHOOL_NATURE, TREE_ENHANCEMENT ), target_pct(0)
   {
     option_t options[] =
     {
-      { "target_pct", OPT_INT8, &target_pct },
+      { "target_pct", OPT_INT, &target_pct },
       { NULL }
     };
     parse_options( options, options_str );
@@ -2639,7 +2665,7 @@ struct spirit_wolf_spell_t : public shaman_spell_t
     }
   };
 
-  int8_t target_pct;
+  int target_pct;
 
   spirit_wolf_spell_t( player_t* player, const std::string& options_str ) : 
     shaman_spell_t( "spirit_wolf", player, SCHOOL_NATURE, TREE_ENHANCEMENT ), target_pct(0)
@@ -2649,7 +2675,7 @@ struct spirit_wolf_spell_t : public shaman_spell_t
 
     option_t options[] =
     {
-      { "trigger", OPT_INT8, &target_pct },
+      { "trigger", OPT_INT, &target_pct },
       { NULL }
     };
     parse_options( options, options_str );
@@ -2833,7 +2859,7 @@ double shaman_t::composite_attack_power()
 
 // shaman_t::composite_spell_power ==========================================
 
-double shaman_t::composite_spell_power( int8_t school )
+double shaman_t::composite_spell_power( int school )
 {
   double sp = player_t::composite_spell_power( school );
 
@@ -2870,9 +2896,9 @@ void shaman_t::regen( double periodicity )
 
 // shaman_t::get_talent_trees ==============================================
 
-bool shaman_t::get_talent_trees( std::vector<int8_t*>& elemental,
-                                 std::vector<int8_t*>& enhancement,
-                                 std::vector<int8_t*>& restoration )
+bool shaman_t::get_talent_trees( std::vector<int*>& elemental,
+                                 std::vector<int*>& enhancement,
+                                 std::vector<int*>& restoration )
 {
   talent_translation_t translation[][3] =
   {
@@ -2933,84 +2959,84 @@ bool shaman_t::parse_option( const std::string& name,
 {
   option_t options[] =
   {
-    { "ancestral_knowledge",       OPT_INT8,  &( talents.ancestral_knowledge       ) },
-    { "blessing_of_the_eternals",  OPT_INT8,  &( talents.blessing_of_the_eternals  ) },
-    { "call_of_flame",             OPT_INT8,  &( talents.call_of_flame             ) },
-    { "call_of_thunder",           OPT_INT8,  &( talents.call_of_thunder           ) },
-    { "concussion",                OPT_INT8,  &( talents.concussion                ) },
-    { "convection",                OPT_INT8,  &( talents.convection                ) },
-    { "dual_wield",                OPT_INT8,  &( talents.dual_wield                ) },
-    { "dual_wield_specialization", OPT_INT8,  &( talents.dual_wield_specialization ) },
-    { "elemental_devastation",     OPT_INT8,  &( talents.elemental_devastation     ) },
-    { "elemental_focus",           OPT_INT8,  &( talents.elemental_focus           ) },
-    { "elemental_fury",            OPT_INT8,  &( talents.elemental_fury            ) },
-    { "elemental_mastery",         OPT_INT8,  &( talents.elemental_mastery         ) },
-    { "elemental_oath",            OPT_INT8,  &( talents.elemental_oath            ) },
-    { "elemental_precision",       OPT_INT8,  &( talents.elemental_precision       ) },
-    { "elemental_weapons",         OPT_INT8,  &( talents.elemental_weapons         ) },
-    { "enhancing_totems",          OPT_INT8,  &( talents.enhancing_totems          ) },
-    { "feral_spirit",              OPT_INT8,  &( talents.feral_spirit              ) },
-    { "flurry",                    OPT_INT8,  &( talents.flurry                    ) },
-    { "improved_shields",          OPT_INT8,  &( talents.improved_shields          ) },
-    { "improved_stormstrike",      OPT_INT8,  &( talents.improved_stormstrike      ) },
-    { "improved_windfury_totem",   OPT_INT8,  &( talents.improved_windfury_totem   ) },
-    { "lava_flows",                OPT_INT8,  &( talents.lava_flows                ) },
-    { "lava_lash",                 OPT_INT8,  &( talents.lava_lash                 ) },
-    { "lightning_mastery",         OPT_INT8,  &( talents.lightning_mastery         ) },
-    { "lightning_overload",        OPT_INT8,  &( talents.lightning_overload        ) },
-    { "maelstrom_weapon",          OPT_INT8,  &( talents.maelstrom_weapon          ) },
-    { "mana_tide_totem",           OPT_INT8,  &( talents.mana_tide_totem           ) },
-    { "mental_dexterity",          OPT_INT8,  &( talents.mental_dexterity          ) },
-    { "mental_quickness",          OPT_INT8,  &( talents.mental_quickness          ) },
-    { "natures_swiftness",         OPT_INT8,  &( talents.natures_swiftness         ) },
-    { "restorative_totems",        OPT_INT8,  &( talents.restorative_totems        ) },
-    { "reverberation",             OPT_INT8,  &( talents.reverberation             ) },
-    { "shamanism",                 OPT_INT8,  &( talents.shamanism                 ) },
-    { "shamanistic_focus",         OPT_INT8,  &( talents.shamanistic_focus         ) },
-    { "shamanistic_rage",          OPT_INT8,  &( talents.shamanistic_rage          ) },
-    { "spirit_weapons",            OPT_INT8,  &( talents.spirit_weapons            ) },
-    { "static_shock",              OPT_INT8,  &( talents.static_shock              ) },
-    { "stormstrike",               OPT_INT8,  &( talents.stormstrike               ) },
-    { "storm_earth_and_fire",      OPT_INT8,  &( talents.storm_earth_and_fire      ) },
-    { "thundering_strikes",        OPT_INT8,  &( talents.thundering_strikes        ) },
-    { "thunderstorm",              OPT_INT8,  &( talents.thunderstorm              ) },
-    { "tidal_mastery",             OPT_INT8,  &( talents.tidal_mastery             ) },
-    { "totem_of_wrath",            OPT_INT8,  &( talents.totem_of_wrath            ) },
-    { "totemic_focus",             OPT_INT8,  &( talents.totemic_focus             ) },
-    { "unrelenting_storm",         OPT_INT8,  &( talents.unrelenting_storm         ) },
-    { "unleashed_rage",            OPT_INT8,  &( talents.unleashed_rage            ) },
-    { "weapon_mastery",            OPT_INT8,  &( talents.weapon_mastery            ) },
+    { "ancestral_knowledge",       OPT_INT,  &( talents.ancestral_knowledge       ) },
+    { "blessing_of_the_eternals",  OPT_INT,  &( talents.blessing_of_the_eternals  ) },
+    { "call_of_flame",             OPT_INT,  &( talents.call_of_flame             ) },
+    { "call_of_thunder",           OPT_INT,  &( talents.call_of_thunder           ) },
+    { "concussion",                OPT_INT,  &( talents.concussion                ) },
+    { "convection",                OPT_INT,  &( talents.convection                ) },
+    { "dual_wield",                OPT_INT,  &( talents.dual_wield                ) },
+    { "dual_wield_specialization", OPT_INT,  &( talents.dual_wield_specialization ) },
+    { "elemental_devastation",     OPT_INT,  &( talents.elemental_devastation     ) },
+    { "elemental_focus",           OPT_INT,  &( talents.elemental_focus           ) },
+    { "elemental_fury",            OPT_INT,  &( talents.elemental_fury            ) },
+    { "elemental_mastery",         OPT_INT,  &( talents.elemental_mastery         ) },
+    { "elemental_oath",            OPT_INT,  &( talents.elemental_oath            ) },
+    { "elemental_precision",       OPT_INT,  &( talents.elemental_precision       ) },
+    { "elemental_weapons",         OPT_INT,  &( talents.elemental_weapons         ) },
+    { "enhancing_totems",          OPT_INT,  &( talents.enhancing_totems          ) },
+    { "feral_spirit",              OPT_INT,  &( talents.feral_spirit              ) },
+    { "flurry",                    OPT_INT,  &( talents.flurry                    ) },
+    { "improved_shields",          OPT_INT,  &( talents.improved_shields          ) },
+    { "improved_stormstrike",      OPT_INT,  &( talents.improved_stormstrike      ) },
+    { "improved_windfury_totem",   OPT_INT,  &( talents.improved_windfury_totem   ) },
+    { "lava_flows",                OPT_INT,  &( talents.lava_flows                ) },
+    { "lava_lash",                 OPT_INT,  &( talents.lava_lash                 ) },
+    { "lightning_mastery",         OPT_INT,  &( talents.lightning_mastery         ) },
+    { "lightning_overload",        OPT_INT,  &( talents.lightning_overload        ) },
+    { "maelstrom_weapon",          OPT_INT,  &( talents.maelstrom_weapon          ) },
+    { "mana_tide_totem",           OPT_INT,  &( talents.mana_tide_totem           ) },
+    { "mental_dexterity",          OPT_INT,  &( talents.mental_dexterity          ) },
+    { "mental_quickness",          OPT_INT,  &( talents.mental_quickness          ) },
+    { "natures_swiftness",         OPT_INT,  &( talents.natures_swiftness         ) },
+    { "restorative_totems",        OPT_INT,  &( talents.restorative_totems        ) },
+    { "reverberation",             OPT_INT,  &( talents.reverberation             ) },
+    { "shamanism",                 OPT_INT,  &( talents.shamanism                 ) },
+    { "shamanistic_focus",         OPT_INT,  &( talents.shamanistic_focus         ) },
+    { "shamanistic_rage",          OPT_INT,  &( talents.shamanistic_rage          ) },
+    { "spirit_weapons",            OPT_INT,  &( talents.spirit_weapons            ) },
+    { "static_shock",              OPT_INT,  &( talents.static_shock              ) },
+    { "stormstrike",               OPT_INT,  &( talents.stormstrike               ) },
+    { "storm_earth_and_fire",      OPT_INT,  &( talents.storm_earth_and_fire      ) },
+    { "thundering_strikes",        OPT_INT,  &( talents.thundering_strikes        ) },
+    { "thunderstorm",              OPT_INT,  &( talents.thunderstorm              ) },
+    { "tidal_mastery",             OPT_INT,  &( talents.tidal_mastery             ) },
+    { "totem_of_wrath",            OPT_INT,  &( talents.totem_of_wrath            ) },
+    { "totemic_focus",             OPT_INT,  &( talents.totemic_focus             ) },
+    { "unrelenting_storm",         OPT_INT,  &( talents.unrelenting_storm         ) },
+    { "unleashed_rage",            OPT_INT,  &( talents.unleashed_rage            ) },
+    { "weapon_mastery",            OPT_INT,  &( talents.weapon_mastery            ) },
     // Glyphs
-    { "glyph_elemental_mastery",   OPT_INT8,  &( glyphs.elemental_mastery          ) },
-    { "glyph_flame_shock",         OPT_INT8,  &( glyphs.flame_shock                ) },
-    { "glyph_flametongue_weapon",  OPT_INT8,  &( glyphs.flametongue_weapon         ) },
-    { "glyph_lava",                OPT_INT8,  &( glyphs.lava                       ) },
-    { "glyph_lava_lash",           OPT_INT8,  &( glyphs.lava_lash                  ) },
-    { "glyph_lightning_bolt",      OPT_INT8,  &( glyphs.lightning_bolt             ) },
-    { "glyph_lightning_shield",    OPT_INT8,  &( glyphs.lightning_shield           ) },
-    { "glyph_mana_tide",           OPT_INT8,  &( glyphs.mana_tide                  ) },
-    { "glyph_shocking",            OPT_INT8,  &( glyphs.shocking                   ) },
-    { "glyph_stormstrike",         OPT_INT8,  &( glyphs.stormstrike                ) },
-    { "glyph_windfury_weapon",     OPT_INT8,  &( glyphs.windfury_weapon            ) },
+    { "glyph_elemental_mastery",   OPT_INT,  &( glyphs.elemental_mastery          ) },
+    { "glyph_flame_shock",         OPT_INT,  &( glyphs.flame_shock                ) },
+    { "glyph_flametongue_weapon",  OPT_INT,  &( glyphs.flametongue_weapon         ) },
+    { "glyph_lava",                OPT_INT,  &( glyphs.lava                       ) },
+    { "glyph_lava_lash",           OPT_INT,  &( glyphs.lava_lash                  ) },
+    { "glyph_lightning_bolt",      OPT_INT,  &( glyphs.lightning_bolt             ) },
+    { "glyph_lightning_shield",    OPT_INT,  &( glyphs.lightning_shield           ) },
+    { "glyph_mana_tide",           OPT_INT,  &( glyphs.mana_tide                  ) },
+    { "glyph_shocking",            OPT_INT,  &( glyphs.shocking                   ) },
+    { "glyph_stormstrike",         OPT_INT,  &( glyphs.stormstrike                ) },
+    { "glyph_windfury_weapon",     OPT_INT,  &( glyphs.windfury_weapon            ) },
     // Totems
-    { "totem_of_hex",              OPT_INT8,  &( totems.hex                        ) },
+    { "totem_of_hex",              OPT_INT,  &( totems.hex                        ) },
     // Tier Bonuses
-    { "tier4_2pc_elemental",       OPT_INT8,  &( tiers.t4_2pc_elemental            ) },
-    { "tier4_4pc_elemental",       OPT_INT8,  &( tiers.t4_4pc_elemental            ) },
-    { "tier5_2pc_elemental",       OPT_INT8,  &( tiers.t5_2pc_elemental            ) },
-    { "tier5_4pc_elemental",       OPT_INT8,  &( tiers.t5_4pc_elemental            ) },
-    { "tier6_2pc_elemental",       OPT_INT8,  &( tiers.t6_2pc_elemental            ) },
-    { "tier6_4pc_elemental",       OPT_INT8,  &( tiers.t6_4pc_elemental            ) },
-    { "tier7_2pc_elemental",       OPT_INT8,  &( tiers.t7_2pc_elemental            ) },
-    { "tier7_4pc_elemental",       OPT_INT8,  &( tiers.t7_4pc_elemental            ) },
-    { "tier4_2pc_enhancement",     OPT_INT8,  &( tiers.t4_2pc_enhancement          ) },
-    { "tier4_4pc_enhancement",     OPT_INT8,  &( tiers.t4_4pc_enhancement          ) },
-    { "tier5_2pc_enhancement",     OPT_INT8,  &( tiers.t5_2pc_enhancement          ) },
-    { "tier5_4pc_enhancement",     OPT_INT8,  &( tiers.t5_4pc_enhancement          ) },
-    { "tier6_2pc_enhancement",     OPT_INT8,  &( tiers.t6_2pc_enhancement          ) },
-    { "tier6_4pc_enhancement",     OPT_INT8,  &( tiers.t6_4pc_enhancement          ) },
-    { "tier7_2pc_enhancement",     OPT_INT8,  &( tiers.t7_2pc_enhancement          ) },
-    { "tier7_4pc_enhancement",     OPT_INT8,  &( tiers.t7_4pc_enhancement          ) },
+    { "tier4_2pc_elemental",       OPT_INT,  &( tiers.t4_2pc_elemental            ) },
+    { "tier4_4pc_elemental",       OPT_INT,  &( tiers.t4_4pc_elemental            ) },
+    { "tier5_2pc_elemental",       OPT_INT,  &( tiers.t5_2pc_elemental            ) },
+    { "tier5_4pc_elemental",       OPT_INT,  &( tiers.t5_4pc_elemental            ) },
+    { "tier6_2pc_elemental",       OPT_INT,  &( tiers.t6_2pc_elemental            ) },
+    { "tier6_4pc_elemental",       OPT_INT,  &( tiers.t6_4pc_elemental            ) },
+    { "tier7_2pc_elemental",       OPT_INT,  &( tiers.t7_2pc_elemental            ) },
+    { "tier7_4pc_elemental",       OPT_INT,  &( tiers.t7_4pc_elemental            ) },
+    { "tier4_2pc_enhancement",     OPT_INT,  &( tiers.t4_2pc_enhancement          ) },
+    { "tier4_4pc_enhancement",     OPT_INT,  &( tiers.t4_4pc_enhancement          ) },
+    { "tier5_2pc_enhancement",     OPT_INT,  &( tiers.t5_2pc_enhancement          ) },
+    { "tier5_4pc_enhancement",     OPT_INT,  &( tiers.t5_4pc_enhancement          ) },
+    { "tier6_2pc_enhancement",     OPT_INT,  &( tiers.t6_2pc_enhancement          ) },
+    { "tier6_4pc_enhancement",     OPT_INT,  &( tiers.t6_4pc_enhancement          ) },
+    { "tier7_2pc_enhancement",     OPT_INT,  &( tiers.t7_2pc_enhancement          ) },
+    { "tier7_4pc_enhancement",     OPT_INT,  &( tiers.t7_4pc_enhancement          ) },
     // Deprecated
     { "glyph_earth_shock", OPT_DEPRECATED, (void*) "glyph_shocking"                            },
     { "tier4_2pc",         OPT_DEPRECATED, (void*) "tier4_2pc_elemental|tier4_2pc_enhancement" },

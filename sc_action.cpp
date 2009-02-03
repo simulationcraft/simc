@@ -11,12 +11,12 @@
 
 // action_t::action_t =======================================================
 
-action_t::action_t( int8_t      ty,
+action_t::action_t( int         ty,
                     const char* n,
                     player_t*   p,
-                    int8_t      r,
-                    int8_t      s,
-                    int8_t      tr ) :
+                    int         r,
+                    int         s,
+                    int         tr ) :
   sim(p->sim), type(ty), name_str(n), player(p), school(s), resource(r), tree(tr), result(RESULT_NONE),
   binary(false), channeled(false), background(false), repeating(false), aoe(false), harmful(true), proc(false), heal(false),
   may_miss(false), may_resist(false), may_dodge(false), may_parry(false), 
@@ -213,7 +213,7 @@ void action_t::player_buff()
 
 // action_t::target_debuff ==================================================
 
-void action_t::target_debuff( int8_t dmg_type )
+void action_t::target_debuff( int dmg_type )
 {
   target_multiplier            = 1.0;
   target_hit                   = 0;
@@ -597,7 +597,7 @@ void action_t::last_tick()
 // action_t::assess_damage ==================================================
 
 void action_t::assess_damage( double amount, 
-                              int8_t dmg_type )
+                              int    dmg_type )
 {
    if( sim -> log )
      report_t::log( sim, "%s %s %ss %s for %.0f %s damage (%s)",
@@ -666,7 +666,7 @@ void action_t::refresh_duration()
 
 // action_t::extend_duration =================================================
 
-void action_t::extend_duration( int8_t extra_ticks )
+void action_t::extend_duration( int extra_ticks )
 {
   if( sim -> debug ) report_t::log( sim, "%s extends duration of %s", player -> name(), name() );
 
@@ -695,7 +695,7 @@ void action_t::update_ready()
 
 // action_t::update_stats ===================================================
 
-void action_t::update_stats( int8_t type )
+void action_t::update_stats( int type )
 {
   if( type == DMG_DIRECT )
   {

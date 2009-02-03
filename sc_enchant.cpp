@@ -76,10 +76,10 @@ static void trigger_berserking( attack_t* a )
 
   struct berserking_expiration_t : public event_t
   {
-    int8_t&   buffs_berserking;
+    int&   buffs_berserking;
     event_t*& expirations_berserking;
 
-    berserking_expiration_t( sim_t* sim, player_t* player, int8_t& b_m, event_t*& e_m ) : 
+    berserking_expiration_t( sim_t* sim, player_t* player, int& b_m, event_t*& e_m ) : 
       event_t( sim, player ), buffs_berserking( b_m ), expirations_berserking( e_m )
     {
       name = "Berserking Expiration";
@@ -107,11 +107,11 @@ static void trigger_berserking( attack_t* a )
   // is zero, we are dealing with a "special" attack in which case the base swing time is used.
 
 
-  int8_t&    b = mh ? p ->       buffs.berserking_mh : p ->       buffs.berserking_oh;
+  int&    b = mh ? p ->       buffs.berserking_mh : p ->       buffs.berserking_oh;
   event_t*&  e = mh ? p -> expirations.berserking_mh : p -> expirations.berserking_oh;
   uptime_t*& u = mh ? p ->     uptimes.berserking_mh : p ->     uptimes.berserking_oh;
 
-  double PPM = 1.2 - ((std::max(p->level, (int8_t)80) - 80) * 0.02);
+  double PPM = 1.2 - ((std::max(p->level, (int)80) - 80) * 0.02);
   double swing_time = a -> time_to_execute;
 
   if( a -> sim -> roll( w -> proc_chance_on_swing( PPM, swing_time ) ) )
@@ -138,10 +138,10 @@ static void trigger_mongoose( attack_t* a )
 
   struct mongoose_expiration_t : public event_t
   {
-    int8_t& buffs_mongoose;
+    int& buffs_mongoose;
     event_t*& expirations_mongoose;
 
-    mongoose_expiration_t( sim_t* sim, player_t* player, int8_t& b_m, event_t*& e_m ) : 
+    mongoose_expiration_t( sim_t* sim, player_t* player, int& b_m, event_t*& e_m ) : 
       event_t( sim, player ), buffs_mongoose( b_m ), expirations_mongoose( e_m )
     {
       name = "Mongoose Expiration";
@@ -169,11 +169,11 @@ static void trigger_mongoose( attack_t* a )
   // is zero, we are dealing with a "special" attack in which case the base swing time is used.
 
 
-  int8_t&    b = mh ? p ->       buffs.mongoose_mh : p ->       buffs.mongoose_oh;
+  int&    b = mh ? p ->       buffs.mongoose_mh : p ->       buffs.mongoose_oh;
   event_t*&  e = mh ? p -> expirations.mongoose_mh : p -> expirations.mongoose_oh;
   uptime_t*& u = mh ? p ->     uptimes.mongoose_mh : p ->     uptimes.mongoose_oh;
 
-  double PPM = 1.2 - ((std::max(p->level, (int8_t)70) - 70) * 0.02);
+  double PPM = 1.2 - ( ( std::max( p -> level, 70 ) - 70 ) * 0.02 );
   double swing_time = a -> time_to_execute;
 
   if( a -> sim -> roll( w -> proc_chance_on_swing( PPM, swing_time ) ) )

@@ -223,7 +223,7 @@ double rng_t::real()
 
 // rng_t::roll ==============================================================
 
-int8_t rng_t::roll( double chance )
+int rng_t::roll( double chance )
 {
   if( chance <= 0 ) return 0;
   if( chance >= 1 ) return 1;
@@ -235,7 +235,7 @@ int8_t rng_t::roll( double chance )
 // Choosing the RNG package.........
 // ==========================================================================
 
-rng_t* rng_t::init( int8_t sfmt )
+rng_t* rng_t::init( int sfmt )
 {
   if( sfmt )
   {

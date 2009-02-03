@@ -32,9 +32,9 @@ target_t::~target_t()
 
 // target_t::assess_damage ===================================================
 
-void target_t::assess_damage( double  amount, 
-                              int8_t  school, 
-                              int8_t  dmg_type )
+void target_t::assess_damage( double amount, 
+                              int    school, 
+                              int    dmg_type )
 {
   total_dmg += amount;
 
@@ -275,26 +275,26 @@ bool target_t::parse_option( const std::string& name,
   {
     // General
     { "target_race",           OPT_STRING, &( race_str                          ) },
-    { "target_level",          OPT_INT8,   &( level                             ) },
-    { "target_resist_holy",    OPT_INT16,  &( spell_resistance[ SCHOOL_HOLY   ] ) },
-    { "target_resist_shadow",  OPT_INT16,  &( spell_resistance[ SCHOOL_SHADOW ] ) },
-    { "target_resist_arcane",  OPT_INT16,  &( spell_resistance[ SCHOOL_ARCANE ] ) },
-    { "target_resist_frost",   OPT_INT16,  &( spell_resistance[ SCHOOL_FROST  ] ) },
-    { "target_resist_fire",    OPT_INT16,  &( spell_resistance[ SCHOOL_FIRE   ] ) },
-    { "target_resist_nature",  OPT_INT16,  &( spell_resistance[ SCHOOL_NATURE ] ) },
-    { "target_armor",          OPT_INT16,  &( initial_armor                     ) },
-    { "target_shield",         OPT_INT8,   &( shield                            ) },
-    { "target_block",          OPT_INT16,  &( block_value                       ) },
+    { "target_level",          OPT_INT,    &( level                             ) },
+    { "target_resist_holy",    OPT_INT,    &( spell_resistance[ SCHOOL_HOLY   ] ) },
+    { "target_resist_shadow",  OPT_INT,    &( spell_resistance[ SCHOOL_SHADOW ] ) },
+    { "target_resist_arcane",  OPT_INT,    &( spell_resistance[ SCHOOL_ARCANE ] ) },
+    { "target_resist_frost",   OPT_INT,    &( spell_resistance[ SCHOOL_FROST  ] ) },
+    { "target_resist_fire",    OPT_INT,    &( spell_resistance[ SCHOOL_FIRE   ] ) },
+    { "target_resist_nature",  OPT_INT,    &( spell_resistance[ SCHOOL_NATURE ] ) },
+    { "target_armor",          OPT_INT,    &( initial_armor                     ) },
+    { "target_shield",         OPT_INT,    &( shield                            ) },
+    { "target_block",          OPT_INT,    &( block_value                       ) },
     { "target_health",         OPT_FLT,    &( initial_health                    ) },
     // FIXME! Once appropriate class implemented, these will be removed
-    { "blood_frenzy",          OPT_INT8,   &( debuffs.blood_frenzy              ) },
-    { "crypt_fever",           OPT_INT8,   &( debuffs.crypt_fever               ) },
-    { "judgement_of_wisdom",   OPT_INT8,   &( debuffs.judgement_of_wisdom       ) },
-    { "mangle",                OPT_INT8,   &( debuffs.mangle                    ) },
-    { "razorice",              OPT_INT8,   &( debuffs.razorice                  ) },
-    { "snare",                 OPT_INT8,   &( debuffs.snare                     ) },
+    { "blood_frenzy",          OPT_INT,    &( debuffs.blood_frenzy              ) },
+    { "crypt_fever",           OPT_INT,    &( debuffs.crypt_fever               ) },
+    { "judgement_of_wisdom",   OPT_INT,    &( debuffs.judgement_of_wisdom       ) },
+    { "mangle",                OPT_INT,    &( debuffs.mangle                    ) },
+    { "razorice",              OPT_INT,    &( debuffs.razorice                  ) },
+    { "snare",                 OPT_INT,    &( debuffs.snare                     ) },
     { "sunder_armor",          OPT_FLT,    &( debuffs.sunder_armor              ) },
-    { "thunder_clap",          OPT_INT8,   &( debuffs.thunder_clap              ) },
+    { "thunder_clap",          OPT_INT,    &( debuffs.thunder_clap              ) },
     { NULL, OPT_UNKNOWN }
   };
 

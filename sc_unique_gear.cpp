@@ -636,7 +636,7 @@ static void trigger_timbals_crystal( spell_t* s )
       spell_t::player_buff();
       player_power = 0;
     }
-    virtual void assess_damage( double amount, int8_t dmg_type )
+    virtual void assess_damage( double amount, int dmg_type )
     {
       // Not considered a "direct-dmg" spell, so ISB charges not consumed.
       spell_t::assess_damage( direct_dmg, DMG_OVER_TIME ); 
@@ -667,7 +667,7 @@ static void trigger_talisman_of_ascendance( spell_t* s )
 {
   if( ! s -> harmful ) return;
 
-  int16_t& buff = s -> player -> buffs.talisman_of_ascendance;
+  int& buff = s -> player -> buffs.talisman_of_ascendance;
 
   if( buff != 0 )
   {
@@ -756,7 +756,7 @@ static void trigger_extract_of_necromatic_power( spell_t* s )
       spell_t::player_buff();
       player_power = 0;
     }
-    virtual void assess_damage( double amount, int8_t dmg_type )
+    virtual void assess_damage( double amount, int dmg_type )
     {
       // Not considered a "direct-dmg" spell, so ISB charges not consumed.
       spell_t::assess_damage( direct_dmg, DMG_OVER_TIME ); 
@@ -1000,9 +1000,9 @@ static void trigger_darkmoon_greatness( action_t* a )
 {
   struct darkmoon_greatness_expiration_t : public event_t
   {
-    int8_t attr_type;
+    int attr_type;
 
-    darkmoon_greatness_expiration_t( sim_t* sim, player_t* p, int8_t t ) : event_t( sim, p ), attr_type(t)
+    darkmoon_greatness_expiration_t( sim_t* sim, player_t* p, int t ) : event_t( sim, p ), attr_type(t)
     {
       name = "Darkmoon Greatness";
       player -> aura_gain( "Greatness" );
@@ -1025,10 +1025,10 @@ static void trigger_darkmoon_greatness( action_t* a )
   {
     p -> procs.darkmoon_greatness -> occur();
 
-    int8_t attr_type = ATTRIBUTE_NONE;
+    int attr_type = ATTRIBUTE_NONE;
     double max = 0;
 
-    for( int8_t i=ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; i++ )
+    for( int i=ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; i++ )
     {
       if( i == ATTR_STAMINA ) continue;
 
@@ -1064,7 +1064,7 @@ void unique_gear_t::attack_hit_event( attack_t* a )
 
 // unique_gear_t::attack_damage_event =======================================
 
-void unique_gear_t::attack_damage_event( attack_t* a, double amount, int8_t dmg_type )
+void unique_gear_t::attack_damage_event( attack_t* a, double amount, int dmg_type )
 {
   trigger_darkmoon_greatness( a );
 }
@@ -1116,7 +1116,7 @@ void unique_gear_t::spell_tick_event( spell_t* s )
 
 // unique_gear_t::spell_damage_event ========================================
 
-void unique_gear_t::spell_damage_event( spell_t* s, double amount, int8_t dmg_type )
+void unique_gear_t::spell_damage_event( spell_t* s, double amount, int dmg_type )
 {
   trigger_darkmoon_greatness( s );
 }
@@ -1261,7 +1261,7 @@ struct spell_power_trinket_t : public action_t
 
 struct haste_trinket_t : public action_t
 {
-  int16_t haste_rating;
+  int    haste_rating;
   double length;
   
   haste_trinket_t( player_t* p, const std::string& options_str ) : 
@@ -1269,9 +1269,9 @@ struct haste_trinket_t : public action_t
   {
     option_t options[] =
     {
-      { "rating",   OPT_INT16, &haste_rating },
-      { "length",   OPT_FLT,   &length       },
-      { "cooldown", OPT_FLT,   &cooldown     },
+      { "rating",   OPT_INT, &haste_rating },
+      { "length",   OPT_FLT, &length       },
+      { "cooldown", OPT_FLT, &cooldown     },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1333,7 +1333,7 @@ struct talisman_of_ascendance_t : public action_t
     virtual void execute()
     {
       player -> aura_loss( "Talisman of Ascendance" );
-      int16_t& buff = player -> buffs.talisman_of_ascendance;
+      int& buff = player -> buffs.talisman_of_ascendance;
       if( buff > 0 ) player -> spell_power[ SCHOOL_MAX ] -= buff;
       buff = 0;
     }
@@ -1513,38 +1513,38 @@ bool unique_gear_t::parse_option( player_t*          p,
 {
   option_t options[] =
   {
-    { "ashtongue_talisman",                   OPT_INT8,   &( p -> gear.ashtongue_talisman              ) },
-    { "chaotic_skyfire",                      OPT_INT8,   &( p -> gear.chaotic_skyflare                ) },
-    { "chaotic_skyflare",                     OPT_INT8,   &( p -> gear.chaotic_skyflare                ) },
-    { "darkmoon_crusade",                     OPT_INT8,   &( p -> gear.darkmoon_crusade                ) },
-    { "darkmoon_greatness",                   OPT_INT8,   &( p -> gear.darkmoon_greatness              ) },
-    { "darkmoon_wrath",                       OPT_INT8,   &( p -> gear.darkmoon_wrath                  ) },
-    { "dying_curse",                          OPT_INT8,   &( p -> gear.dying_curse                     ) },
-    { "egg_of_mortal_essence",                OPT_INT8,   &( p -> gear.egg_of_mortal_essence           ) },
-    { "elder_scribes",                        OPT_INT8,   &( p -> gear.elder_scribes                   ) },
-    { "embrace_of_the_spider",                OPT_INT8,   &( p -> gear.embrace_of_the_spider           ) },
-    { "eternal_sage",                         OPT_INT8,   &( p -> gear.eternal_sage                    ) },
-    { "extract_of_necromatic_power",          OPT_INT8,   &( p -> gear.extract_of_necromatic_power     ) },
-    { "eye_of_magtheridon",                   OPT_INT8,   &( p -> gear.eye_of_magtheridon              ) },
-    { "forge_ember",                          OPT_INT8,   &( p -> gear.forge_ember                     ) },
-    { "fury_of_the_five_flights",             OPT_INT8,   &( p -> gear.fury_of_the_five_flights        ) },
-    { "illustration_of_the_dragon_soul",      OPT_INT8,   &( p -> gear.illustration_of_the_dragon_soul ) },
-    { "lightning_capacitor",                  OPT_INT8,   &( p -> gear.lightning_capacitor             ) },
-    { "mirror_of_truth",                      OPT_INT8,   &( p -> gear.mirror_of_truth                 ) },
-    { "mark_of_defiance",                     OPT_INT8,   &( p -> gear.mark_of_defiance                ) },
-    { "mystical_skyfire",                     OPT_INT8,   &( p -> gear.mystical_skyfire                ) },
-    { "quagmirrans_eye",                      OPT_INT8,   &( p -> gear.quagmirrans_eye                 ) },
-    { "relentless_earthstorm",                OPT_INT8,   &( p -> gear.relentless_earthstorm           ) },
-    { "sextant_of_unstable_currents",         OPT_INT8,   &( p -> gear.sextant_of_unstable_currents    ) },
-    { "shiffars_nexus_horn",                  OPT_INT8,   &( p -> gear.shiffars_nexus_horn             ) },
-    { "spellstrike",                          OPT_INT8,   &( p -> gear.spellstrike                     ) },
-    { "spellsurge",                           OPT_INT8,   &( p -> gear.spellsurge                      ) },
-    { "sundial_of_the_exiled",                OPT_INT8,   &( p -> gear.sundial_of_the_exiled           ) },
-    { "talisman_of_ascendance",               OPT_INT8,   &( p -> gear.talisman_of_ascendance          ) },
-    { "thunder_capacitor",                    OPT_INT8,   &( p -> gear.thunder_capacitor               ) },
-    { "timbals_crystal",                      OPT_INT8,   &( p -> gear.timbals_crystal                 ) },
-    { "wrath_of_cenarius",                    OPT_INT8,   &( p -> gear.wrath_of_cenarius               ) },
-    { "zandalarian_hero_charm",               OPT_INT8,   &( p -> gear.zandalarian_hero_charm          ) },
+    { "ashtongue_talisman",                   OPT_INT,   &( p -> gear.ashtongue_talisman              ) },
+    { "chaotic_skyfire",                      OPT_INT,   &( p -> gear.chaotic_skyflare                ) },
+    { "chaotic_skyflare",                     OPT_INT,   &( p -> gear.chaotic_skyflare                ) },
+    { "darkmoon_crusade",                     OPT_INT,   &( p -> gear.darkmoon_crusade                ) },
+    { "darkmoon_greatness",                   OPT_INT,   &( p -> gear.darkmoon_greatness              ) },
+    { "darkmoon_wrath",                       OPT_INT,   &( p -> gear.darkmoon_wrath                  ) },
+    { "dying_curse",                          OPT_INT,   &( p -> gear.dying_curse                     ) },
+    { "egg_of_mortal_essence",                OPT_INT,   &( p -> gear.egg_of_mortal_essence           ) },
+    { "elder_scribes",                        OPT_INT,   &( p -> gear.elder_scribes                   ) },
+    { "embrace_of_the_spider",                OPT_INT,   &( p -> gear.embrace_of_the_spider           ) },
+    { "eternal_sage",                         OPT_INT,   &( p -> gear.eternal_sage                    ) },
+    { "extract_of_necromatic_power",          OPT_INT,   &( p -> gear.extract_of_necromatic_power     ) },
+    { "eye_of_magtheridon",                   OPT_INT,   &( p -> gear.eye_of_magtheridon              ) },
+    { "forge_ember",                          OPT_INT,   &( p -> gear.forge_ember                     ) },
+    { "fury_of_the_five_flights",             OPT_INT,   &( p -> gear.fury_of_the_five_flights        ) },
+    { "illustration_of_the_dragon_soul",      OPT_INT,   &( p -> gear.illustration_of_the_dragon_soul ) },
+    { "lightning_capacitor",                  OPT_INT,   &( p -> gear.lightning_capacitor             ) },
+    { "mirror_of_truth",                      OPT_INT,   &( p -> gear.mirror_of_truth                 ) },
+    { "mark_of_defiance",                     OPT_INT,   &( p -> gear.mark_of_defiance                ) },
+    { "mystical_skyfire",                     OPT_INT,   &( p -> gear.mystical_skyfire                ) },
+    { "quagmirrans_eye",                      OPT_INT,   &( p -> gear.quagmirrans_eye                 ) },
+    { "relentless_earthstorm",                OPT_INT,   &( p -> gear.relentless_earthstorm           ) },
+    { "sextant_of_unstable_currents",         OPT_INT,   &( p -> gear.sextant_of_unstable_currents    ) },
+    { "shiffars_nexus_horn",                  OPT_INT,   &( p -> gear.shiffars_nexus_horn             ) },
+    { "spellstrike",                          OPT_INT,   &( p -> gear.spellstrike                     ) },
+    { "spellsurge",                           OPT_INT,   &( p -> gear.spellsurge                      ) },
+    { "sundial_of_the_exiled",                OPT_INT,   &( p -> gear.sundial_of_the_exiled           ) },
+    { "talisman_of_ascendance",               OPT_INT,   &( p -> gear.talisman_of_ascendance          ) },
+    { "thunder_capacitor",                    OPT_INT,   &( p -> gear.thunder_capacitor               ) },
+    { "timbals_crystal",                      OPT_INT,   &( p -> gear.timbals_crystal                 ) },
+    { "wrath_of_cenarius",                    OPT_INT,   &( p -> gear.wrath_of_cenarius               ) },
+    { "zandalarian_hero_charm",               OPT_INT,   &( p -> gear.zandalarian_hero_charm          ) },
     { NULL, OPT_UNKNOWN }
   };
   

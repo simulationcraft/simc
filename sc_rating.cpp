@@ -92,7 +92,7 @@ void rating_t::init( int level )
 
 // rating_t::interpolate ======================================================
 
-double rating_t::interpolate( int level,
+double rating_t::interpolate( int    level,
 			      double val_60,
 			      double val_70,
 			      double val_80 )

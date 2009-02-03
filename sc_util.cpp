@@ -5,8 +5,8 @@
 
 #include "simcraft.h"
 
-double util_t::talent_rank( int8_t num, 
-			    int8_t max, 
+double util_t::talent_rank( int    num, 
+			    int    max, 
 			    double increment )
 {
   assert( num >= 0 );
@@ -17,9 +17,9 @@ double util_t::talent_rank( int8_t num,
   return num * increment;
 }
 
-int util_t::talent_rank( int8_t num, 
-			 int8_t max, 
-			 int    increment )
+int util_t::talent_rank( int num, 
+			 int max, 
+			 int increment )
 {
   assert( num >= 0 );
   assert( max > 0 );
@@ -29,8 +29,8 @@ int util_t::talent_rank( int8_t num,
   return num * increment;
 }
 
-double util_t::talent_rank( int8_t num, 
-			    int8_t max, 
+double util_t::talent_rank( int    num, 
+			    int    max, 
 			    double first, 
 			    double second, ... )
 {
@@ -56,10 +56,10 @@ double util_t::talent_rank( int8_t num,
   return value;
 }
 
-int util_t::talent_rank( int8_t num, 
-			 int8_t max, 
-			 int    first, 
-			 int    second, ... )
+int util_t::talent_rank( int num, 
+			 int max, 
+			 int first, 
+			 int second, ... )
 {
   assert( num >= 0 );
   assert( max > 0 );
@@ -83,9 +83,9 @@ int util_t::talent_rank( int8_t num,
   return value;
 }
 
-double util_t::ability_rank( int8_t player_level, 
+double util_t::ability_rank( int    player_level, 
 			     double ability_value, 
-			     int8_t ability_level, ... )
+			     int    ability_level, ... )
 {
   va_list vap;
   va_start( vap, ability_level );
@@ -93,7 +93,7 @@ double util_t::ability_rank( int8_t player_level,
   while( player_level < ability_level )
   {
     ability_value = (double) va_arg( vap, double );
-    ability_level = (int8_t) va_arg( vap, int );
+    ability_level = (int) va_arg( vap, int );
   }
   
   va_end( vap );
@@ -101,9 +101,9 @@ double util_t::ability_rank( int8_t player_level,
   return ability_value;
 }
 
-int util_t::ability_rank( int8_t player_level, 
-			  int    ability_value, 
-			  int8_t ability_level, ... )
+int util_t::ability_rank( int player_level, 
+			  int ability_value, 
+			  int ability_level, ... )
 {
   va_list vap;
   va_start( vap, ability_level );
@@ -111,7 +111,7 @@ int util_t::ability_rank( int8_t player_level,
   while( player_level < ability_level )
   {
     ability_value = (int)    va_arg( vap, int );
-    ability_level = (int8_t) va_arg( vap, int );
+    ability_level = (int) va_arg( vap, int );
   }
   
   va_end( vap );
@@ -124,7 +124,7 @@ char* util_t::dup( const char *value )
    return strcpy( (char*) malloc( strlen( value ) + 1 ), value );
 }
 
-const char* util_t::race_type_string( int8_t type )
+const char* util_t::race_type_string( int type )
 {
   switch( type )
   {
@@ -137,7 +137,7 @@ const char* util_t::race_type_string( int8_t type )
   return "unknown";
 }
 
-const char* util_t::player_type_string( int8_t type )
+const char* util_t::player_type_string( int type )
 {
   switch( type )
   {
@@ -158,7 +158,7 @@ const char* util_t::player_type_string( int8_t type )
   return "unknown";
 }
 
-const char* util_t::attribute_type_string( int8_t type )
+const char* util_t::attribute_type_string( int type )
 {
   switch( type )
   {
@@ -171,7 +171,7 @@ const char* util_t::attribute_type_string( int8_t type )
   return "unknown";
 }
 
-const char* util_t::dmg_type_string( int8_t type )
+const char* util_t::dmg_type_string( int type )
 {
   switch( type )
   {
@@ -181,7 +181,7 @@ const char* util_t::dmg_type_string( int8_t type )
   return "unknown";
 }
 
-const char* util_t::result_type_string( int8_t type )
+const char* util_t::result_type_string( int type )
 {
   switch( type )
   {
@@ -199,7 +199,7 @@ const char* util_t::result_type_string( int8_t type )
   return "unknown";
 }
 
-const char* util_t::resource_type_string( int8_t type )
+const char* util_t::resource_type_string( int type )
 {
   switch( type )
   {
@@ -214,7 +214,7 @@ const char* util_t::resource_type_string( int8_t type )
   return "unknown";
 }
 
-const char* util_t::school_type_string( int8_t school )
+const char* util_t::school_type_string( int school )
 {
   switch( school )
   {
@@ -232,7 +232,7 @@ const char* util_t::school_type_string( int8_t school )
   return "unknown";
 }
 
-const char* util_t::talent_tree_string( int8_t tree )
+const char* util_t::talent_tree_string( int tree )
 {
   switch( tree )
   {
@@ -254,7 +254,7 @@ const char* util_t::talent_tree_string( int8_t tree )
   return "unknown";
 }
 
-const char* util_t::weapon_type_string( int8_t weapon )
+const char* util_t::weapon_type_string( int weapon )
 {
   switch( weapon )
   {
@@ -279,7 +279,7 @@ const char* util_t::weapon_type_string( int8_t weapon )
   return "unknown";
 }
 
-const char* util_t::weapon_enchant_type_string( int8_t enchant )
+const char* util_t::weapon_enchant_type_string( int enchant )
 {
   switch( enchant )
   {
@@ -293,7 +293,7 @@ const char* util_t::weapon_enchant_type_string( int8_t enchant )
   return "unknown";
 }
 
-const char* util_t::weapon_buff_type_string( int8_t buff )
+const char* util_t::weapon_buff_type_string( int buff )
 {
   switch( buff )
   {
@@ -312,7 +312,7 @@ const char* util_t::weapon_buff_type_string( int8_t buff )
   return "unknown";
 }
 
-const char* util_t::flask_type_string( int8_t flask )
+const char* util_t::flask_type_string( int flask )
 {
   switch( flask )
   {
@@ -329,7 +329,7 @@ const char* util_t::flask_type_string( int8_t flask )
   return "unknown";
 }
 
-const char* util_t::food_type_string( int8_t food )
+const char* util_t::food_type_string( int food )
 {
   switch( food )
   {
@@ -389,13 +389,11 @@ int util_t::string_split( const std::string& str,
       std::string& f = format_splits[ i ];
       const char*  s =    str_splits[ i ].c_str();
 
-      if     ( f == "i8"  ) *( (int8_t*)      va_arg( vap, int8_t*  ) ) = atoi( s );
-      else if( f == "i16" ) *( (int16_t*)     va_arg( vap, int16_t* ) ) = atoi( s );
-      else if( f == "i32" ) *( (int32_t*)     va_arg( vap, int32_t* ) ) = atoi( s );
-      else if( f == "f" )   *( (double*)      va_arg( vap, double*  ) ) = atof( s );
-      else if( f == "d" )   *( (double*)      va_arg( vap, double*  ) ) = atof( s );
-      else if( f == "s" )   strcpy( (char*)   va_arg( vap, char* ), s );
-      else if( f == "S" )   *( (std::string*) va_arg( vap, std::string* ) ) = s;
+      if     ( f == "i" ) *( (int*)         va_arg( vap, int*    ) ) = atoi( s );
+      else if( f == "f" ) *( (double*)      va_arg( vap, double* ) ) = atof( s );
+      else if( f == "d" ) *( (double*)      va_arg( vap, double* ) ) = atof( s );
+      else if( f == "s" ) strcpy( (char*)   va_arg( vap, char* ), s );
+      else if( f == "S" ) *( (std::string*) va_arg( vap, std::string* ) ) = s;
       else assert( 0 );
     }
     va_end( vap );

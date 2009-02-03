@@ -125,25 +125,25 @@ bool report_t::parse_option( const std::string& name,
 {
   option_t options[] =
   {
-    { "report_actions",          OPT_INT8,   &( report_actions          ) },
-    { "report_attack_stats",     OPT_INT8,   &( report_attack_stats     ) },
-    { "report_chart",            OPT_INT8,   &( report_chart            ) },
-    { "report_core_stats",       OPT_INT8,   &( report_core_stats       ) },
-    { "report_dpr",              OPT_INT8,   &( report_dpr              ) },
-    { "report_dps",              OPT_INT8,   &( report_dps              ) },
-    { "report_gains",            OPT_INT8,   &( report_gains            ) },
-    { "report_miss",             OPT_INT8,   &( report_miss             ) },
-    { "report_rps",              OPT_INT8,   &( report_rps              ) },
-    { "report_name",             OPT_INT8,   &( report_name             ) },
-    { "report_performance",      OPT_INT8,   &( report_performance      ) },
-    { "report_procs",            OPT_INT8,   &( report_procs            ) },
-    { "report_raid_dps",         OPT_INT8,   &( report_raid_dps         ) },
-    { "report_scaling",          OPT_INT8,   &( report_scaling          ) },
-    { "report_spell_stats",      OPT_INT8,   &( report_spell_stats      ) },
-    { "report_statistics",       OPT_INT8,   &( report_statistics       ) },
-    { "report_tag",              OPT_INT8,   &( report_tag              ) },
-    { "report_uptime",           OPT_INT8,   &( report_uptime           ) },
-    { "report_waiting",          OPT_INT8,   &( report_waiting          ) },
+    { "report_actions",      OPT_INT, &( report_actions          ) },
+    { "report_attack_stats", OPT_INT, &( report_attack_stats     ) },
+    { "report_chart",        OPT_INT, &( report_chart            ) },
+    { "report_core_stats",   OPT_INT, &( report_core_stats       ) },
+    { "report_dpr",          OPT_INT, &( report_dpr              ) },
+    { "report_dps",          OPT_INT, &( report_dps              ) },
+    { "report_gains",        OPT_INT, &( report_gains            ) },
+    { "report_miss",         OPT_INT, &( report_miss             ) },
+    { "report_rps",          OPT_INT, &( report_rps              ) },
+    { "report_name",         OPT_INT, &( report_name             ) },
+    { "report_performance",  OPT_INT, &( report_performance      ) },
+    { "report_procs",        OPT_INT, &( report_procs            ) },
+    { "report_raid_dps",     OPT_INT, &( report_raid_dps         ) },
+    { "report_scaling",      OPT_INT, &( report_scaling          ) },
+    { "report_spell_stats",  OPT_INT, &( report_spell_stats      ) },
+    { "report_statistics",   OPT_INT, &( report_statistics       ) },
+    { "report_tag",          OPT_INT, &( report_tag              ) },
+    { "report_uptime",       OPT_INT, &( report_uptime           ) },
+    { "report_waiting",      OPT_INT, &( report_waiting          ) },
     { NULL, OPT_UNKNOWN }
   };
 
@@ -1297,7 +1297,7 @@ const char* report_t::chart_distribution_dps( std::string& s, player_t* p )
 {
   int max_buckets = p -> distribution_dps.size();
 
-  int32_t count_max=0;
+  int count_max=0;
   for( int i=0; i < max_buckets; i++ ) 
   {
     if( p -> distribution_dps[ i ] > count_max ) 

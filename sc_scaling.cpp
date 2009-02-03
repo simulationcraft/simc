@@ -294,19 +294,19 @@ bool scaling_t::parse_option( const std::string& name,
 {
   option_t options[] =
   {
-    { "calculate_scale_factors",        OPT_INT8,   &( calculate_scale_factors              ) },
-    { "scale_strength",                 OPT_INT16,  &( gear.attribute[ ATTR_STRENGTH  ]     ) },
-    { "scale_agility",                  OPT_INT16,  &( gear.attribute[ ATTR_AGILITY   ]     ) },
-    { "scale_stamina",                  OPT_INT16,  &( gear.attribute[ ATTR_STAMINA   ]     ) },
-    { "scale_intellect",                OPT_INT16,  &( gear.attribute[ ATTR_INTELLECT ]     ) },
-    { "scale_spirit",                   OPT_INT16,  &( gear.attribute[ ATTR_SPIRIT    ]     ) },
-    { "scale_spell_power",              OPT_INT16,  &( gear.spell_power                     ) },
-    { "scale_attack_power",             OPT_INT16,  &( gear.attack_power                    ) },
-    { "scale_expertise_rating",         OPT_INT16,  &( gear.expertise_rating                ) },
-    { "scale_armor_penetration_rating", OPT_INT16,  &( gear.armor_penetration_rating        ) },
-    { "scale_hit_rating",               OPT_INT16,  &( gear.hit_rating                      ) },
-    { "scale_crit_rating",              OPT_INT16,  &( gear.crit_rating                     ) },
-    { "scale_haste_rating",             OPT_INT16,  &( gear.haste_rating                    ) },
+    { "calculate_scale_factors",        OPT_INT, &( calculate_scale_factors              ) },
+    { "scale_strength",                 OPT_INT, &( gear.attribute[ ATTR_STRENGTH  ]     ) },
+    { "scale_agility",                  OPT_INT, &( gear.attribute[ ATTR_AGILITY   ]     ) },
+    { "scale_stamina",                  OPT_INT, &( gear.attribute[ ATTR_STAMINA   ]     ) },
+    { "scale_intellect",                OPT_INT, &( gear.attribute[ ATTR_INTELLECT ]     ) },
+    { "scale_spirit",                   OPT_INT, &( gear.attribute[ ATTR_SPIRIT    ]     ) },
+    { "scale_spell_power",              OPT_INT, &( gear.spell_power                     ) },
+    { "scale_attack_power",             OPT_INT, &( gear.attack_power                    ) },
+    { "scale_expertise_rating",         OPT_INT, &( gear.expertise_rating                ) },
+    { "scale_armor_penetration_rating", OPT_INT, &( gear.armor_penetration_rating        ) },
+    { "scale_hit_rating",               OPT_INT, &( gear.hit_rating                      ) },
+    { "scale_crit_rating",              OPT_INT, &( gear.crit_rating                     ) },
+    { "scale_haste_rating",             OPT_INT, &( gear.haste_rating                    ) },
     { NULL, OPT_UNKNOWN }
   };
 

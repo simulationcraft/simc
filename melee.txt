@@ -271,7 +271,7 @@ level=80
 talents=http://www.wowhead.com/?talent=hEhcq0dItGxst0xxco
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/flametongue_weapon,weapon=main/water_shield/mana_potion,trigger=4300
 actions+=/mana_spring_totem/totem_of_wrath/wrath_of_air_totem/water_shield
-actions+=/elemental_mastery/flame_shock/lava_burst,flame_shock=1/bloodlust,target_pct=25/chain_lightning/lightning_bolt/thunderstorm
+actions+=/elemental_mastery/flame_shock/lava_burst,flame_shock=1/bloodlust,target_pct=25/chain_lightning,lvb_cd<=1.5/lightning_bolt/thunderstorm
 gear_stamina=1000
 gear_intellect=775
 gear_mp5=100
@@ -283,7 +283,7 @@ tier7_2pc_elemental=1
 tier7_4pc_elemental=1
 chaotic_skyflare=1
 # Glyphs
-glyph_flametongue_weapon=1
+glyph_lightning_bolt=1
 glyph_flame_shock=1
 glyph_lava=1
 totem_of_hex=1
