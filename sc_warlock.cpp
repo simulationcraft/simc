@@ -634,7 +634,7 @@ struct felguard_pet_t : public warlock_pet_t
     warlock_pet_t( sim, owner, "felguard", PET_FELGUARD ), melee(0)
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.damage     = 412.25;
+    main_hand_weapon.damage     = 412.5;
     main_hand_weapon.swing_time = 2.0;
 
     buffs_demonic_frenzy = 0;
@@ -706,7 +706,7 @@ struct felhunter_pet_t : public warlock_pet_t
     warlock_pet_t( sim, owner, "felhunter", PET_FELHUNTER ), melee(0)
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.damage     = 412.25;
+    main_hand_weapon.damage     = 412.5;
     main_hand_weapon.swing_time = 2.0;
 
     action_list_str = "shadow_bite/wait";
@@ -763,7 +763,7 @@ struct succubus_pet_t : public warlock_pet_t
     warlock_pet_t( sim, owner, "succubus", PET_SUCCUBUS ), melee(0)
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.damage     = 412.25;
+    main_hand_weapon.damage     = 412.5;
     main_hand_weapon.swing_time = 2.0;
 
     action_list_str = "lash_of_pain/wait";
