@@ -378,8 +378,7 @@ glyph_shadow=1
 # (1) The "trigger=3500" option to mana_potion represents the mana gained and the amount below max required to trigger
 # (2) The "flame_shock=1,max_ticks_consumed=1" option to lava_burst will prevent it from being called until there is only one tick remaining on Flame Shock
 #
-shaman=Shaman_57_14_0
-party=1
+shaman=Shaman_57_14_00
 level=80
 talents=http://www.wowhead.com/?talent=hEhcq0dItGxst0xxco
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/flametongue_weapon,weapon=main/water_shield/mana_potion,trigger=4300
@@ -405,8 +404,7 @@ totem_of_hex=1
 # (4) The "maelstrom=5" option to lightning_bolt or chain_lightning means that LB/CL will only be executed when there is a 5-stack of Maelstrom Weapon,
 #     making the LB/CL cast instant which prevents auto_attack resets.
 #
-shaman=Shaman_16_55_0
-party=1
+shaman=Shaman_16_55_00
 level=80
 talents=http://www.wowhead.com/?talent=hVbhqZhbxsoxdAIkufot
 actions=flask,type=endless_rage/food,type=great_feast/windfury_weapon,weapon=main/flametongue_weapon,weapon=off
