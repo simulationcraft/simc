@@ -798,7 +798,6 @@ struct succubus_pet_t : public warlock_pet_t
 
 struct infernal_pet_t : public warlock_pet_t
 {
-
   struct immolation_t : public warlock_pet_spell_t
   {
     immolation_t( player_t* player ) : 
@@ -3795,50 +3794,24 @@ struct inferno_t : public warlock_spell_t
   }
 };
 
-struct immolation_t : public warlock_spell_t
-{
-
-  immolation_t( player_t* player ) : 
-    warlock_spell_t( "immolation", player, SCHOOL_FIRE, TREE_DEMONOLOGY )
-  {
-    static rank_t ranks[] =
-    {
-      { 60, 1, 0, 0, 481, 0.64 },
-      { 0, 0 }
-    };
-    init_rank( ranks );
-
-    base_execute_time = 0; 
-    base_tick_time    = 1.0; 
-    num_ticks         = 15;
-    tick_power_mod    = 0.143;
-    cooldown          = 30;
-  }
-
-  virtual double tick_time()
-  {
-    double t = base_tick_time;
-    t *= haste();
-    return t;
-  }
-
-};
-
 // Metamorphosis Spell =======================================================
 
 struct metamorphosis_t : public warlock_spell_t
 {
   int target_pct;
-  int do_immo;
-  immolation_t* immolation;
+  int immolation;
+  warlock_spell_t* immolation_spell;
 
   metamorphosis_t( player_t* player, const std::string& options_str ) : 
-    warlock_spell_t( "metamorphosis", player, SCHOOL_SHADOW, TREE_DEMONOLOGY ), target_pct(0), do_immo(0)
+    warlock_spell_t( "metamorphosis", player, SCHOOL_SHADOW, TREE_DEMONOLOGY ), target_pct(0), immolation(0)
   {
+    warlock_t* p = player -> cast_warlock();
+    assert( p -> talents.metamorphosis );
+
     option_t options[] =
     {
       { "target_pct", OPT_INT, &target_pct },
-      { "immolation", OPT_INT, &do_immo    },
+      { "immolation", OPT_INT, &immolation },
       { NULL }
     };
     parse_options( options, options_str );
@@ -3847,6 +3820,28 @@ struct metamorphosis_t : public warlock_spell_t
     base_cost   = 0;
     trigger_gcd = 0;
     cooldown    = 180;
+
+    if( immolation )
+    {
+      struct immolation_t : public warlock_spell_t
+      {
+	immolation_t( player_t* player ) : 
+	  warlock_spell_t( "immolation", player, SCHOOL_FIRE, TREE_DEMONOLOGY )
+	{
+	  background     = true;
+	  base_cost      = 0.64 * player -> resource_base[ RESOURCE_MANA ];
+	  base_td_init   = 481; 
+	  base_tick_time = 1.0; 
+	  num_ticks      = 15;
+	  tick_power_mod = 0.143;
+	  cooldown       = 30;
+	}
+	virtual double tick_time() { return base_tick_time * haste(); }
+      };
+
+      immolation_spell = new immolation_t( p );
+      trigger_gcd = 3.0; // cost of casting Immolation+Teleport
+    }
   }
 
   virtual void execute()
@@ -3873,12 +3868,7 @@ struct metamorphosis_t : public warlock_spell_t
     update_ready();
     player -> action_finish( this );
     new ( sim ) expiration_t( sim, player );
-
-    if( do_immo )
-    {
-      immolation = new immolation_t( player );
-      immolation -> execute();
-    }
+    if( immolation ) immolation_spell -> execute();
   }
 
   virtual bool ready()
