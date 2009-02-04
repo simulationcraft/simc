@@ -3834,13 +3834,12 @@ struct metamorphosis_t : public warlock_spell_t
 	  base_tick_time = 1.0; 
 	  num_ticks      = 15;
 	  tick_power_mod = 0.143;
-	  cooldown       = 30;
 	}
 	virtual double tick_time() { return base_tick_time * haste(); }
       };
 
       immolation_spell = new immolation_t( p );
-      trigger_gcd = 3.0; // cost of casting Immolation+Teleport
+      trigger_gcd = 1.5; // cost of casting Immolation
     }
   }
 
@@ -3864,11 +3863,16 @@ struct metamorphosis_t : public warlock_spell_t
       }
     };
 
-    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
+    warlock_t* p = player -> cast_warlock();
+    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
     update_ready();
-    player -> action_finish( this );
-    new ( sim ) expiration_t( sim, player );
-    if( immolation ) immolation_spell -> execute();
+    p -> action_finish( this );
+    new ( sim ) expiration_t( sim, p );
+    if( immolation ) 
+    {
+      immolation_spell -> execute();
+      immolation_spell -> stats -> total_execute_time += gcd();
+    }
   }
 
   virtual bool ready()

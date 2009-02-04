@@ -452,7 +452,7 @@ double action_t::calculate_direct_damage()
     double hand_multiplier = ( weapon -> slot == SLOT_OFF_HAND ) ? 0.5 : 1.0;
 
     double power_damage = weapon_speed * direct_power_mod * total_power();
-    
+
     direct_dmg  = base_direct_dmg + ( weapon_damage + power_damage ) * weapon_multiplier * hand_multiplier;
     direct_dmg *= total_dd_multiplier();
   }
