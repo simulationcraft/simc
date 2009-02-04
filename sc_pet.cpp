@@ -27,7 +27,7 @@ pet_t::pet_t( sim_t*             s,
   base_spell_crit  = 0.05;
   base_attack_crit = 0.05;
 
-    stamina_per_owner = 0.30;
+    stamina_per_owner = 0.75;
   intellect_per_owner = 0.30;
 
   // By default, only report statistics in the context of the owner

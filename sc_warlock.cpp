@@ -337,6 +337,8 @@ struct warlock_pet_t : public pet_t
     if( pet_type == PET_FELGUARD )
     {
       a -> base_multiplier *= 1.0 + o -> talents.master_demonologist * 0.01;
+      // testing shows there's a hidden 5% multiplier
+      a -> base_multiplier *= 1.05;
     }
     else if( pet_type == PET_IMP )
     {
@@ -353,6 +355,13 @@ struct warlock_pet_t : public pet_t
         a -> base_multiplier *= 1.0 + o -> talents.master_demonologist * 0.01;
         a -> base_crit       +=       o -> talents.master_demonologist * 0.01;
       }
+      // testing shows there's a hidden 5% multiplier
+      a -> base_multiplier *= 1.05;
+    }
+    else if( pet_type == PET_FELHUNTER )
+    {
+      // testing shows there's a hidden -20% multiplier
+      a -> base_multiplier *= 0.8;
     }
   }
 
@@ -489,7 +498,7 @@ struct imp_pet_t : public warlock_pet_t
 
       static rank_t ranks[] =
       {
-        { 78, 8, 212, 212, 0, 180 },
+        { 78, 8, 203, 227, 0, 180 },
         { 68, 8, 110, 124, 0, 145 },
         { 58, 7,  83,  93, 0, 115 },
         { 0,  0 }
@@ -580,15 +589,7 @@ struct felguard_pet_t : public warlock_pet_t
 
       warlock_pet_attack_t::player_buff();
       player_power *= 1.0 + p -> buffs_demonic_frenzy * ( 0.05 + o -> talents.demonic_brutality * 0.01 );
-      if( o -> glyphs.felguard ) 
-      {
-        if ( sim -> patch.before(3, 0, 8) ) {
-          player_power *= 1.10;
-        }
-        else {
-          player_power *= 1.20;
-        }
-      }
+      if( o -> glyphs.felguard ) player_power *= 1.20;
     }
   };
 
@@ -599,16 +600,6 @@ struct felguard_pet_t : public warlock_pet_t
     {
       felguard_pet_t* p = (felguard_pet_t*) player -> cast_pet();
       warlock_t*      o = p -> owner -> cast_warlock();
-
-      if( o -> glyphs.felguard ) 
-      {
-        if ( sim -> patch.before(3, 0, 8) ) {
-          base_multiplier *= 1.10;
-        }
-        else {
-          base_multiplier *= 1.20;
-        }
-      }
     }
     virtual double execute_time()
     {
@@ -617,6 +608,7 @@ struct felguard_pet_t : public warlock_pet_t
       if( p -> buffs_demonic_empowerment ) t *= 1.0 / 1.20;
       return t;
     }
+
     virtual void player_buff()
     {
       felguard_pet_t* p = (felguard_pet_t*) player -> cast_pet();
@@ -624,6 +616,8 @@ struct felguard_pet_t : public warlock_pet_t
 
       warlock_pet_melee_t::player_buff();
       player_power *= 1.0 + p -> buffs_demonic_frenzy * ( 0.05 + o -> talents.demonic_brutality * 0.01 );
+
+      if( o -> glyphs.felguard ) player_power *= 1.20;
     }
     virtual void assess_damage( double amount, int dmg_type )
     {
@@ -640,11 +634,8 @@ struct felguard_pet_t : public warlock_pet_t
     warlock_pet_t( sim, owner, "felguard", PET_FELGUARD ), melee(0)
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.damage     = 130;
+    main_hand_weapon.damage     = 412.25;
     main_hand_weapon.swing_time = 2.0;
-
-    // weapon damage was buffed in 3.0.8
-    if( sim -> patch.after(3, 0, 8) ) main_hand_weapon.damage = 412;
 
     buffs_demonic_frenzy = 0;
 
@@ -715,11 +706,8 @@ struct felhunter_pet_t : public warlock_pet_t
     warlock_pet_t( sim, owner, "felhunter", PET_FELHUNTER ), melee(0)
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.damage     = 71;
+    main_hand_weapon.damage     = 395.5;
     main_hand_weapon.swing_time = 2.0;
-
-    // weapon damage was buffed in 3.0.8
-    if( sim -> patch.after(3, 0, 8) ) main_hand_weapon.damage = 312.5;
 
     action_list_str = "shadow_bite/wait";
   }
@@ -775,11 +763,8 @@ struct succubus_pet_t : public warlock_pet_t
     warlock_pet_t( sim, owner, "succubus", PET_SUCCUBUS ), melee(0)
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.damage     = 121;
+    main_hand_weapon.damage     = 412.25;
     main_hand_weapon.swing_time = 2.0;
-
-    // weapon damage was buffed in 3.0.8
-    if( sim -> patch.after(3, 0, 8) ) main_hand_weapon.damage = 440;
 
     action_list_str = "lash_of_pain/wait";
   }
@@ -850,7 +835,7 @@ struct infernal_pet_t : public warlock_pet_t
     warlock_pet_t( sim, owner, "infernal", PET_INFERNAL ), melee(0)
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.damage     = 1521;
+    main_hand_weapon.damage     = 1497.5;
     main_hand_weapon.swing_time = 2.0;
   }
   virtual void init_base()
@@ -908,12 +893,10 @@ struct doomguard_pet_t : public warlock_pet_t
     warlock_pet_t( sim, owner, "doomguard", PET_DOOMGUARD ), melee(0)
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.damage     = 1400;
+    main_hand_weapon.damage     = 1690;
     main_hand_weapon.swing_time = 2.0;
-
-    // weapon damage was buffed in 3.0.8
-    if( sim -> patch.after(3, 0, 8) ) main_hand_weapon.damage = 1690;
   }
+
   virtual void init_base()
   {
     warlock_pet_t::init_base();
@@ -941,17 +924,6 @@ struct doomguard_pet_t : public warlock_pet_t
                                    const std::string& options_str )
   {
     return player_t::create_action( name, options_str );
-  }
-  // after 3.0.8, doomguard inherits warlock's hit rating
-  virtual double composite_attack_hit()
-  {
-      if( sim -> patch.after(3, 0, 8) ) return owner -> composite_attack_hit();
-      return 0;
-  }
-  virtual double composite_spell_hit()
-  {
-      if( sim -> patch.after(3, 0, 8) ) return owner -> composite_spell_hit();
-      return 0;
   }
 };
 
@@ -2295,18 +2267,12 @@ struct chaos_bolt_t : public warlock_spell_t
       
     rank_t ranks[] =
     {
-      { 80, 4, 1036, 1314, 0, 0.07 },
+      { 80, 4, 1243, 1577, 0, 0.07 },
       { 75, 3,  882, 1120, 0, 0.07 },
       { 70, 2,  781,  991, 0, 0.07 },
       { 60, 1,  607,  769, 0, 0.09 },
       { 0, 0 }
     };
-
-    if( sim -> patch.after(3, 0, 8) ) 
-    {
-      ranks[0].dd_min = 1243;
-      ranks[0].dd_max = 1577;
-    }
 
     init_rank( ranks );
     
@@ -3828,18 +3794,50 @@ struct inferno_t : public warlock_spell_t
   }
 };
 
+struct immolation_t : public warlock_spell_t
+{
+
+  immolation_t( player_t* player ) : 
+    warlock_spell_t( "immolation", player, SCHOOL_FIRE, TREE_DEMONOLOGY )
+  {
+    static rank_t ranks[] =
+    {
+      { 60, 1, 0, 0, 481, 0.64 },
+      { 0, 0 }
+    };
+    init_rank( ranks );
+
+    base_execute_time = 0; 
+    base_tick_time    = 1.0; 
+    num_ticks         = 15;
+    tick_power_mod    = 0.143;
+    cooldown          = 30;
+  }
+
+  virtual double tick_time()
+  {
+    double t = base_tick_time;
+    t *= haste();
+    return t;
+  }
+
+};
+
 // Metamorphosis Spell =======================================================
 
 struct metamorphosis_t : public warlock_spell_t
 {
   int target_pct;
+  int do_immo;
+  immolation_t* immolation;
 
   metamorphosis_t( player_t* player, const std::string& options_str ) : 
-    warlock_spell_t( "metamorphosis", player, SCHOOL_SHADOW, TREE_DEMONOLOGY ), target_pct(0)
+    warlock_spell_t( "metamorphosis", player, SCHOOL_SHADOW, TREE_DEMONOLOGY ), target_pct(0), do_immo(0)
   {
     option_t options[] =
     {
       { "target_pct", OPT_INT, &target_pct },
+      { "immolation", OPT_INT, &do_immo    },
       { NULL }
     };
     parse_options( options, options_str );
@@ -3874,6 +3872,12 @@ struct metamorphosis_t : public warlock_spell_t
     update_ready();
     player -> action_finish( this );
     new ( sim ) expiration_t( sim, player );
+
+    if( do_immo )
+    {
+      immolation = new immolation_t( player );
+      immolation -> execute();
+    }
   }
 
   virtual bool ready()
