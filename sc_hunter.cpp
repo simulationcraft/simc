@@ -340,8 +340,6 @@ struct hunter_pet_t : public pet_t
     int spiked_collar;
     int spiders_bite;
     int owls_focus;
-
-    // Talents not yet implemented
     int wolverine_bite;
 
     talents_t() { memset( (void*) this, 0x0, sizeof( talents_t ) ); }
@@ -1562,6 +1560,8 @@ struct wolverine_bite_t : public hunter_pet_spell_t
     base_cost        = 0;
     base_direct_dmg  = 5 * p -> level;
     cooldown         = 10 * ( 1.0 - o -> talents.longevity * 0.10 );
+
+    may_dodge = may_parry = may_block = 0;
   }
 
   virtual bool ready()
@@ -1576,9 +1576,6 @@ struct wolverine_bite_t : public hunter_pet_spell_t
 
     return hunter_pet_spell_t::ready();
   }
-
-  // FIXME Need to consider that it 'cannot be dodged, blocked or parried'.
-  //       Possibly add a subtype of SCHOOL_PHYSICAL.
 };
 
 // Call of the Wild ===========================================================
