@@ -1428,6 +1428,46 @@ struct rake_t : public hunter_pet_attack_t
   }
 };
 
+// Wolverine Bite =============================================================
+
+struct wolverine_bite_t : public hunter_pet_attack_t
+{
+  wolverine_bite_t( player_t* player, const std::string& options_str ) :
+    hunter_pet_attack_t( "wolverine_bite", player, RESOURCE_FOCUS, SCHOOL_PHYSICAL )
+  {
+    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    hunter_t*     o = p -> owner -> cast_hunter();
+
+    assert( p -> talents.wolverine_bite );
+
+    parse_options( 0, options_str );
+
+    base_cost        = 0;
+    base_direct_dmg  = 5 * p -> level;
+    cooldown         = 10 * ( 1.0 - o -> talents.longevity * 0.10 );
+
+    may_dodge = may_block = may_parry = false;
+  }
+
+  virtual void execute()
+  {
+    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    p -> buffs_wolverine_bite = 0;
+    hunter_pet_attack_t::execute();
+  }
+
+  virtual bool ready()
+  {
+    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+
+    // This attack is only available after the target dodges
+    if ( ! p -> buffs_wolverine_bite )
+      return false;
+
+    return hunter_pet_attack_t::ready();
+  }
+};
+
 // =========================================================================
 // Hunter Pet Spells
 // =========================================================================
@@ -1538,43 +1578,6 @@ struct lightning_breath_t : public hunter_pet_spell_t
     base_direct_dmg  = 100;
     direct_power_mod = 1.5 / 3.5;
     cooldown         = 10 * ( 1.0 - o -> talents.longevity * 0.10 );
-  }
-};
-
-// Wolverine Bite =============================================================
-
-// A fierce attack causing 5 damage, modified by pet level, that your pet
-// can use after its target dodges.  Cannot be dodged, blocked or parried.
-struct wolverine_bite_t : public hunter_pet_spell_t
-{
-  wolverine_bite_t( player_t* player, const std::string& options_str ) :
-    hunter_pet_spell_t( "wolverine_bite", player, RESOURCE_FOCUS, SCHOOL_PHYSICAL )
-  {
-    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
-    hunter_t*     o = p -> owner -> cast_hunter();
-
-    assert( p -> talents.wolverine_bite );
-
-    parse_options( 0, options_str );
-
-    base_cost        = 0;
-    base_direct_dmg  = 5 * p -> level;
-    cooldown         = 10 * ( 1.0 - o -> talents.longevity * 0.10 );
-
-    may_dodge = may_parry = may_block = 0;
-  }
-
-  virtual bool ready()
-  {
-    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
-
-    if ( ! p -> buffs_wolverine_bite )
-      return false;
-
-    // Reset buff flag here since its a 'use it or lose it' ability.
-    p -> buffs_wolverine_bite = 0;
-
-    return hunter_pet_spell_t::ready();
   }
 };
 

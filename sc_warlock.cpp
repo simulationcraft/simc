@@ -598,8 +598,6 @@ struct felguard_pet_t : public warlock_pet_t
     melee_t( player_t* player ) : 
       warlock_pet_melee_t( player, "felguard_melee" )
     {
-      felguard_pet_t* p = (felguard_pet_t*) player -> cast_pet();
-      warlock_t*      o = p -> owner -> cast_warlock();
     }
     virtual double execute_time()
     {
