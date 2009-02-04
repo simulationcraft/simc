@@ -313,6 +313,7 @@ struct hunter_pet_t : public pet_t
   int buffs_wolverine_bite;
   int buffs_rabid;
   int buffs_rabid_power_stack;
+  int buffs_savage_rend;
 
   // Expirations
   event_t* expirations_frenzy;
@@ -364,6 +365,7 @@ struct hunter_pet_t : public pet_t
     buffs_wolverine_bite    = 0;
     buffs_rabid             = 0;
     buffs_rabid_power_stack = 0;
+    buffs_savage_rend       = 0;
 
     // Expirations
     expirations_frenzy     = 0;
@@ -392,6 +394,7 @@ struct hunter_pet_t : public pet_t
     buffs_wolverine_bite    = 0;
     buffs_rabid             = 0;
     buffs_rabid_power_stack = 0;
+    buffs_savage_rend       = 0;
 
     // Expirations
     expirations_frenzy     = 0;
@@ -1129,18 +1132,6 @@ static void consume_owls_focus( action_t* a )
   event_t::early( p -> expirations_owls_focus );
 }
 
-// trigger_wolverine_bite ===================================
-
-static void trigger_wolverine_bite( attack_t* a )
-{
-  hunter_pet_t* p = (hunter_pet_t*) a -> player -> cast_pet();
-
-  if ( ! p -> talents.wolverine_bite )
-    return;
-
-  p -> buffs_wolverine_bite = 1;
-}
-
 // trigger_rabid_power ===============================================
 
 static void trigger_rabid_power( attack_t* a )
@@ -1209,6 +1200,18 @@ static void trigger_wild_quiver( attack_t* a )
     p -> active_wild_quiver -> base_direct_dmg = 0.50 * a -> direct_dmg;
     p -> active_wild_quiver -> execute();
   }
+}
+
+// trigger_wolverine_bite ===================================
+
+static void trigger_wolverine_bite( attack_t* a )
+{
+  hunter_pet_t* p = (hunter_pet_t*) a -> player -> cast_pet();
+
+  if ( ! p -> talents.wolverine_bite )
+    return;
+
+  p -> buffs_wolverine_bite = 1;
 }
 
 } // ANONYMOUS NAMESPACE ===================================================
@@ -1419,6 +1422,54 @@ struct rake_t : public hunter_pet_attack_t
     school = SCHOOL_PHYSICAL;
     hunter_pet_attack_t::execute();
     school = SCHOOL_BLEED;
+  }
+
+  virtual void update_ready()
+  {
+    hunter_pet_attack_t::update_ready();
+    duration_ready = 0;
+  }
+};
+
+// Raptor Savage Rend =========================================================
+
+struct savage_rend_t : public hunter_pet_attack_t
+{
+  savage_rend_t( player_t* player, const std::string& options_str ) :
+    hunter_pet_attack_t( "savage_rend", player, RESOURCE_FOCUS, SCHOOL_BLEED )
+  {
+    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    hunter_t*     o = p -> owner -> cast_hunter();
+
+    assert( p -> pet_type == PET_RAPTOR );
+
+    parse_options( 0, options_str );
+
+    base_cost       = 20;
+    base_direct_dmg = 71;
+    base_td_init    = 24;
+    num_ticks       = 3;
+    base_tick_time  = 5;
+    tick_power_mod  = 0.0175; // FIXME Check
+    cooldown        = 60 * ( 1.0 - o -> talents.longevity * 0.10 );
+  }
+
+  virtual void execute()
+  {
+    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+
+    school = SCHOOL_PHYSICAL;
+    hunter_pet_attack_t::execute();
+    school = SCHOOL_BLEED;
+
+    if ( result == RESULT_CRIT )
+    {
+      p -> buffs_savage_rend = 1;      
+
+      // FIXME also need to set up handler for buff triggered on crit.
+    }
+    // For first pass, we'll just pretend that's happened and clear flag.
+    p -> buffs_savage_rend = 0;
   }
 
   virtual void update_ready()
@@ -1741,6 +1792,7 @@ action_t* hunter_pet_t::create_action( const std::string& name,
   if( name == "rabid"             ) return new             rabid_t( this, options_str );
   if( name == "rake"              ) return new              rake_t( this, options_str );
   if( name == "roar_of_recovery"  ) return new  roar_of_recovery_t( this, options_str );
+  if( name == "savage_rend"       ) return new       savage_rend_t( this, options_str );
   if( name == "smack"             ) return new        focus_dump_t( this, options_str, "smack" );
   if( name == "wolverine_bite"    ) return new    wolverine_bite_t( this, options_str );
 
