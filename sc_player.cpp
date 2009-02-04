@@ -1907,12 +1907,11 @@ bool player_t::parse_option( const std::string& name,
   option_t options[] =
   {
     // Player - General
-    { "level",                                OPT_INT,   &( level                                          ) },
-    { "party",                                OPT_INT,   &( party                                          ) },
+    { "level",                                OPT_INT,    &( level                                          ) },
     { "gcd",                                  OPT_FLT,    &( base_gcd                                       ) },
-    { "sleeping",                             OPT_INT,   &( sleeping                                       ) },
+    { "sleeping",                             OPT_INT,    &( sleeping                                       ) },
     // Player - Haste										          
-    { "haste_rating",                         OPT_INT,  &( initial_haste_rating                           ) },
+    { "haste_rating",                         OPT_INT,    &( initial_haste_rating                           ) },
     // Player - Attributes									          
     { "strength",                             OPT_FLT,    &( attribute_initial[ ATTR_STRENGTH  ]            ) },
     { "agility",                              OPT_FLT,    &( attribute_initial[ ATTR_AGILITY   ]            ) },

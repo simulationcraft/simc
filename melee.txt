@@ -83,14 +83,12 @@ mangle=1
 calculate_scale_factors=0
 
 # ================================================================================================
-# General Action Options
+# Party Specifications
 # ================================================================================================
 
-# (1) The "min=1000,max=2000,trigger=3000" option to mana_potion and mana_gem represents
-#     the min/max mana gained and the amount below the player's maximum mana required to trigger the action.
-#     min/max or trigger can be left out:
-#     "trigger=3000" stands for "min=3000,max=3000,trigger=3000"
-#     "min=1000,max=2000" stands for "min=1000,max=2000,trigger=2000"
+party=reset
+party=Shaman_16_55_00/Shaman_57_14_00
+party=Hunter_01_18_52/Hunter_04_15_52/Hunter_13_51_07/Hunter_52_12_07/Rogue_07_21_43
 
 # ================================================================================================
 # Druids
@@ -110,7 +108,6 @@ calculate_scale_factors=0
 #     which means it will only be used after the cooldown is ready and the effect has not yet proc'd.
 #
 druid=Druid_58_00_13_W_FF
-party=0
 level=80
 talents=http://www.wowhead.com/?talent=0xG0uiIsfdIVhouZbxczb
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/mark_of_the_wild/moonkin_form/mana_potion,trigger=4300/innervate,trigger=12000
@@ -155,7 +152,6 @@ idol_of_steadfast_renewal=1
 # (3) The "fb_priority=1" option to ice_lance means that it will only be cast if the frozen debuff/buff will end before a frost_bolt could be cast
 #
 mage=Mage_18_00_53
-party=0
 level=80
 talents=http://www.wowhead.com/?talent=of0Vck0cZZVIccRcu0f0gfsx
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/arcane_brilliance/molten_armor
@@ -190,7 +186,6 @@ glyph_water_elemental=1
 # (2) The "trigger=6000" option to shadow_fiend represents the amount below max mana required to trigger
 #
 priest=Priest_14_00_57
-party=0
 level=80
 talents=http://www.wowhead.com/?talent=bVcbzhZZG0fVRfzfiqfzAo
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/inner_fire/shadow_form/mana_potion,trigger=4300/shadow_fiend,trigger=6000/dispersion
@@ -232,7 +227,6 @@ glyph_shadow_word_death=1
 #     making the LB/CL cast instant which prevents auto_attack resets.
 #
 shaman=Shaman_16_55_00
-party=1
 level=80
 talents=http://www.wowhead.com/?talent=hVbhqZhbxsoxdAIkufot
 actions=flask,type=endless_rage/food,type=great_feast/windfury_weapon,weapon=main/flametongue_weapon,weapon=off
@@ -266,7 +260,6 @@ totem_of_hex=1
 # (2) The "flame_shock=1,max_ticks_consumed=1" option to lava_burst will prevent it from being called until there is only one tick remaining on Flame Shock
 #
 shaman=Shaman_57_14_00
-party=1
 level=80
 talents=http://www.wowhead.com/?talent=hEhcq0dItGxst0xxco
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/flametongue_weapon,weapon=main/water_shield/mana_potion,trigger=4300
@@ -296,7 +289,6 @@ totem_of_hex=1
 # Survival Hunter (Improved Stings)
 #
 hunter=Hunter_01_18_52
-party=2
 level=80
 talents=http://www.wowhead.com/?talent=coZ0eVoohZe00i0cIhxdAhcd
 actions=flask,type=endless_rage/food,type=great_feast/summon_pet,cat/hunters_mark
@@ -332,7 +324,6 @@ active=owner
 # Survival Hunter (Improved Aspect of the Hawk)
 #
 hunter=Hunter_04_15_52
-party=2
 level=80
 talents=http://www.wowhead.com/?talent=cLZ0eVooZe00i0cIhxdAhcd
 actions=flask,type=endless_rage/food,type=great_feast/summon_pet,cat/hunters_mark
@@ -368,7 +359,6 @@ active=owner
 # Marksmanship Hunter
 #
 hunter=Hunter_13_51_07
-party=2
 level=80
 talents=http://www.wowhead.com/?talent=ctbM0hZ0eVfRhzMgoxhiox00b
 actions=flask,type=endless_rage/food,type=great_feast/summon_pet,cat/hunters_mark/trueshot_aura
@@ -404,7 +394,6 @@ active=owner
 # Beast Mastery Hunter
 #
 hunter=Hunter_52_12_07
-party=2
 level=80
 talents=http://www.wowhead.com/?talent=ctbMzxtRwuMtsx0ecoZx00b
 actions=flask,type=endless_rage/food,type=great_feast/summon_pet,cat/hunters_mark
@@ -446,8 +435,6 @@ active=owner
 # Subtlety Rogue
 #
 rogue=Rogue_07_21_43
-# Party up with the Hunters to proc HAT
-party=2
 level=80
 talents=http://www.wowhead.com/?talent=fhLZ0xV0x0xoZxbrbhGzdAzqc
 actions=flask,type=endless_rage/food,type=great_feast/apply_poison,main_hand=wound,off_hand=wound
@@ -479,7 +466,6 @@ off_hand=dagger,dps=156,speed=1.4,enchant=berserking
 # Combat Rogue (Fist, Serrated Blades)
 #
 rogue=Rogue_07_51_13
-party=3
 level=80
 talents=http://www.wowhead.com/?talent=f0xbZMgVbxbxoru0xRtxbc0h
 actions=flask,type=endless_rage/food,type=great_feast/apply_poison,main_hand=wound,off_hand=deadly
@@ -514,7 +500,6 @@ off_hand=dagger,dps=156,speed=1.4,enchant=berserking
 # Combat Rogue
 #
 rogue=Rogue_15_51_05
-party=3
 level=80
 talents=http://www.wowhead.com/?talent=f0eb0xZMgibx0xoru0xRtx
 actions=flask,type=endless_rage/food,type=great_feast/apply_poison,main_hand=wound,off_hand=deadly
@@ -550,7 +535,6 @@ off_hand=dagger,dps=156,speed=1.4,enchant=berserking
 # Combat Rogue (Daggers, Vile Poisons)
 #
 rogue=Rogue_18_51_02
-party=3
 level=80
 talents=http://www.wowhead.com/?talent=f0xf0eZ0gVox0xqru0xRt0b
 actions=flask,type=endless_rage/food,type=great_feast/apply_poison,main_hand=wound,off_hand=deadly
@@ -585,7 +569,6 @@ off_hand=dagger,dps=156,speed=1.4,enchant=berserking
 # Assassination Rogue
 #
 rogue=Rogue_51_13_07
-party=3
 level=80
 talents=http://www.wowhead.com/?talent=f0ef0exoVboIzAo0xV0hZxb
 actions=flask,type=endless_rage/food,type=great_feast/apply_poison,main_hand=instant,off_hand=deadly

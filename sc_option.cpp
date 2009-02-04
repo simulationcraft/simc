@@ -64,8 +64,15 @@ void option_t::print( sim_t* sim, option_t* options )
     case OPT_STRING: fprintf( f, "%s\n",    ( (std::string*) o.address ) -> c_str()         ); break;
     case OPT_CHAR_P: fprintf( f, "%s\n",   *( (char**)       o.address )                    ); break;
     case OPT_BOOL:   fprintf( f, "%d\n",   *( (bool*)        o.address ) ? 1 : 0            ); break;
-    case OPT_INT:    fprintf( f, "%d\n",   *( (int*)      o.address )                    ); break;
+    case OPT_INT:    fprintf( f, "%d\n",   *( (int*)         o.address )                    ); break;
     case OPT_FLT:    fprintf( f, "%.2f\n", *( (double*)      o.address )                    ); break;
+    case OPT_LIST:     
+      {
+	std::vector<std::string>& v = *( (std::vector<std::string>*) o.address );
+	for( unsigned i=0; i < v.size(); i++ ) fprintf( f, "%s%s", (i?" ":""), v[ i ].c_str() );
+	fprintf( f, "\n" );
+      }
+      break;
     case OPT_APPEND:     break;
     case OPT_DEPRECATED: break;
     default: assert(0);
@@ -94,6 +101,7 @@ bool option_t::parse( sim_t*             sim,
       case OPT_BOOL:   *( (bool*)        o.address ) = atoi( value.c_str() ) ? true : false; break;
       case OPT_INT:    *( (int*)         o.address ) = atoi( value.c_str() );                break;
       case OPT_FLT:    *( (double*)      o.address ) = atof( value.c_str() );                break;
+      case OPT_LIST:   ( (std::vector<std::string>*) o.address ) -> push_back( value );      break;
       case OPT_DEPRECATED: 
 	printf( "simcraft: option '%s' has been deprecated.\n", o.name );
 	if( o.address ) printf( "simcraft: please use '%s' instead.\n", (char*) o.address ); 
@@ -135,7 +143,7 @@ bool option_t::parse( sim_t* sim,
 
   std::vector<std::string> tokens;
 
-  int num_tokens = util_t::string_split( tokens, buffer, " " );
+  int num_tokens = util_t::string_split( tokens, buffer, " \t\n" );
 
   for( int i=0; i < num_tokens; i++ )
     if( ! parse( sim, tokens[ i ] ) )

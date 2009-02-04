@@ -273,6 +273,8 @@ struct sim_t
   int         infinite_resource[ RESOURCE_MAX ];
   int         optimal_raid, potion_sickness, average_dmg, log, debug, timestamp, sfmt;
 
+  std::vector<std::string> party_encoding;
+
   // Timing Wheel Event Management
   std::vector<event_t*> timing_wheel;
   int    wheel_seconds, wheel_size, wheel_mask, timing_slice;
@@ -1562,7 +1564,7 @@ struct talent_translation_t
 
 // Options ====================================================================
 
-enum option_type_t { OPT_STRING=0, OPT_APPEND, OPT_CHAR_P, OPT_BOOL, OPT_INT, OPT_FLT, OPT_DEPRECATED, OPT_UNKNOWN };
+enum option_type_t { OPT_STRING=0, OPT_APPEND, OPT_CHAR_P, OPT_BOOL, OPT_INT, OPT_FLT, OPT_LIST, OPT_DEPRECATED, OPT_UNKNOWN };
 
 struct option_t
 {

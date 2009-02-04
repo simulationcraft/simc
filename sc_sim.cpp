@@ -322,6 +322,31 @@ bool sim_t::init()
 
   if( pet_lag == 0 ) pet_lag = lag;
 
+  int party_index=0;
+  for( unsigned i=0; i < party_encoding.size(); i++ )
+  {
+    std::string& party_str = party_encoding[ i ];
+
+    if( party_str == "reset" )
+    {
+      party_index = 0;
+      for( player_t* p = player_list; p; p = p -> next ) p -> party = 0;
+    }
+    else
+    {
+      std::vector<std::string> player_names;
+      int num_players = util_t::string_split( player_names, party_str, ",;/" );
+      party_index++;
+      for( int j=0; j < num_players; j++ )
+      {
+	player_t* p = find_player( player_names[ j ] );
+	if( ! p ) printf( "simcraft: ERROR! Unable to find player %s\n", player_names[ j ].c_str() );
+	assert( p );
+	p -> party = party_index;
+      }
+    }
+  }
+
   target -> init();
 
   bool too_quiet = true;
@@ -710,6 +735,7 @@ bool sim_t::parse_option( const std::string& name,
     { "threads",                          OPT_INT,    &( threads                                  ) },
     { "optimal_raid",                     OPT_INT,    &( optimal_raid                             ) },
     { "patch",                            OPT_STRING, &( patch_str                                ) },
+    { "party",                            OPT_LIST,   &( party_encoding                           ) },
     { "pet_lag",                          OPT_FLT,    &( pet_lag                                  ) },
     { "potion_sickness",                  OPT_INT,    &( potion_sickness                          ) },
     { "seed",                             OPT_INT,    &( seed                                     ) },

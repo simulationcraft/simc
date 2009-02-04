@@ -94,14 +94,11 @@ default_haste_rating=452
 calculate_scale_factors=0
 
 # ================================================================================================
-# General Action Options
+# Party Specifications
 # ================================================================================================
 
-# (1) The "min=1000,max=2000,trigger=3000" option to mana_potion and mana_gem represents
-#     the min/max mana gained and the amount below the player's maximum mana required to trigger the action.
-#     min/max or trigger can be left out:
-#     "trigger=3000" stands for "min=3000,max=3000,trigger=3000"
-#     "min=1000,max=2000" stands for "min=1000,max=2000,trigger=2000"
+party=reset
+party=Shaman_16_55_00/Shaman_57_14_00
 
 # ================================================================================================
 # Druids
