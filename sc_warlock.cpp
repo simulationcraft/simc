@@ -706,7 +706,7 @@ struct felhunter_pet_t : public warlock_pet_t
     warlock_pet_t( sim, owner, "felhunter", PET_FELHUNTER ), melee(0)
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.damage     = 395.5;
+    main_hand_weapon.damage     = 412.25;
     main_hand_weapon.swing_time = 2.0;
 
     action_list_str = "shadow_bite/wait";
@@ -1489,6 +1489,9 @@ static void trigger_demonic_empathy_on_owner( action_t* a )
   warlock_t* o = p -> owner -> cast_warlock();
 
   if( ! o -> talents.demonic_empathy ) return;
+
+  // demonic empathy only triggers on spells and abilities, not melee
+  if( ! a -> resource != RESOURCE_MANA ) return;
 
   o -> buffs_demonic_empathy = 3;
 
