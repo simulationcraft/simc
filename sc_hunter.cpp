@@ -310,6 +310,7 @@ struct hunter_pet_t : public pet_t
   int buffs_frenzy;
   int buffs_kill_command;
   int buffs_owls_focus;
+  int buffs_wolverine_bite;
   int buffs_rabid;
   int buffs_rabid_power_stack;
 
@@ -362,6 +363,7 @@ struct hunter_pet_t : public pet_t
     buffs_frenzy            = 0;
     buffs_kill_command      = 0;
     buffs_owls_focus        = 0;
+    buffs_wolverine_bite    = 0;
     buffs_rabid             = 0;
     buffs_rabid_power_stack = 0;
 
@@ -389,6 +391,7 @@ struct hunter_pet_t : public pet_t
     buffs_frenzy            = 0;
     buffs_kill_command      = 0;
     buffs_owls_focus        = 0;
+    buffs_wolverine_bite    = 0;
     buffs_rabid             = 0;
     buffs_rabid_power_stack = 0;
 
@@ -1107,7 +1110,7 @@ static void trigger_owls_focus( action_t* a )
       p -> expirations_owls_focus = 0;
     }
   };
-  
+
   event_t*& e = p -> expirations_owls_focus;
 
   if( e )
@@ -1126,6 +1129,18 @@ static void consume_owls_focus( action_t* a )
 {
   hunter_pet_t* p = (hunter_pet_t*) a -> player -> cast_pet();
   event_t::early( p -> expirations_owls_focus );
+}
+
+// trigger_wolverine_bite ===================================
+
+static void trigger_wolverine_bite( attack_t* a )
+{
+  hunter_pet_t* p = (hunter_pet_t*) a -> player -> cast_pet();
+
+  if ( ! p -> talents.wolverine_bite )
+    return;
+
+  p -> buffs_wolverine_bite = 1;
 }
 
 // trigger_rabid_power ===============================================
@@ -1272,8 +1287,12 @@ struct hunter_pet_attack_t : public attack_t
       {
         trigger_ferocious_inspiration( this );
         trigger_frenzy( this );
-	if( special ) trigger_invigoration( this );
+        if( special ) trigger_invigoration( this );
       }
+    }
+    else if ( result == RESULT_DODGE )
+    {
+      trigger_wolverine_bite( this );
     }
     if( special )
     {
@@ -1524,6 +1543,44 @@ struct lightning_breath_t : public hunter_pet_spell_t
   }
 };
 
+// Wolverine Bite =============================================================
+
+// A fierce attack causing 5 damage, modified by pet level, that your pet
+// can use after its target dodges.  Cannot be dodged, blocked or parried.
+struct wolverine_bite_t : public hunter_pet_spell_t
+{
+  wolverine_bite_t( player_t* player, const std::string& options_str ) :
+    hunter_pet_spell_t( "wolverine_bite", player, RESOURCE_FOCUS, SCHOOL_PHYSICAL )
+  {
+    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    hunter_t*     o = p -> owner -> cast_hunter();
+
+    assert( p -> talents.wolverine_bite );
+
+    parse_options( 0, options_str );
+
+    base_cost        = 0;
+    base_direct_dmg  = 5 * p -> level;
+    cooldown         = 10 * ( 1.0 - o -> talents.longevity * 0.10 );
+  }
+
+  virtual bool ready()
+  {
+    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+
+    if ( ! p -> buffs_wolverine_bite )
+      return false;
+
+    // Reset buff flag here since its a 'use it or lose it' ability.
+    p -> buffs_wolverine_bite = 0;
+
+    return hunter_pet_spell_t::ready();
+  }
+
+  // FIXME Need to consider that it 'cannot be dodged, blocked or parried'.
+  //       Possibly add a subtype of SCHOOL_PHYSICAL.
+};
+
 // Call of the Wild ===========================================================
 
 struct call_of_the_wild_t : public hunter_pet_spell_t
@@ -1685,6 +1742,7 @@ action_t* hunter_pet_t::create_action( const std::string& name,
   if( name == "rake"              ) return new              rake_t( this, options_str );
   if( name == "roar_of_recovery"  ) return new  roar_of_recovery_t( this, options_str );
   if( name == "smack"             ) return new        focus_dump_t( this, options_str, "smack" );
+  if( name == "wolverine_bite"    ) return new    wolverine_bite_t( this, options_str );
 
   return pet_t::create_action( name, options_str );
 }
