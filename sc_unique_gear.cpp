@@ -1522,6 +1522,7 @@ bool unique_gear_t::parse_option( player_t*          p,
     { "dying_curse",                          OPT_INT,   &( p -> gear.dying_curse                     ) },
     { "egg_of_mortal_essence",                OPT_INT,   &( p -> gear.egg_of_mortal_essence           ) },
     { "elder_scribes",                        OPT_INT,   &( p -> gear.elder_scribes                   ) },
+    { "ember_skyflare",                       OPT_INT,   &( p -> gear.ember_skyflare                  ) },
     { "embrace_of_the_spider",                OPT_INT,   &( p -> gear.embrace_of_the_spider           ) },
     { "eternal_sage",                         OPT_INT,   &( p -> gear.eternal_sage                    ) },
     { "extract_of_necromatic_power",          OPT_INT,   &( p -> gear.extract_of_necromatic_power     ) },
@@ -1574,4 +1575,16 @@ action_t* unique_gear_t::create_action( player_t*          p,
   if( name == "zandalarian_hero_charm" ) return new zandalarian_hero_charm_t( p, options_str );
 
   return 0;
+}
+
+// ==========================================================================
+// unique_gear_t::init
+// ==========================================================================
+
+void unique_gear_t::init( player_t* p )
+{
+  if( p -> gear.ember_skyflare )
+  {
+    p -> attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.02;    
+  }
 }

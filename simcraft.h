@@ -575,6 +575,7 @@ struct player_t
     int  dying_curse;
     int  egg_of_mortal_essence;
     int  elder_scribes;
+    int  ember_skyflare;
     int  embrace_of_the_spider;
     int  eternal_sage;
     int  extract_of_necromatic_power;
@@ -846,6 +847,7 @@ struct player_t
   virtual void init_spell();
   virtual void init_attack();
   virtual void init_weapon( weapon_t*, std::string& );
+  virtual void init_unique_gear();
   virtual void init_resources( bool force = false );
   virtual void init_consumables();
   virtual void init_actions();
@@ -1401,6 +1403,7 @@ struct unique_gear_t
   static bool parse_option( player_t*, const std::string& name, const std::string& value );
 
   static action_t* create_action( player_t*, const std::string& name, const std::string& options );
+  static void init( player_t* );
 };
 
 // Enchants ===================================================================

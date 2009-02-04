@@ -259,6 +259,7 @@ void player_t::init()
   init_weapon( &main_hand_weapon, main_hand_str );
   init_weapon(  &off_hand_weapon,  off_hand_str );
   init_weapon(    &ranged_weapon,    ranged_str );
+  init_unique_gear();
   init_resources();
   init_consumables();
   init_actions();
@@ -507,6 +508,13 @@ void player_t::init_weapon( weapon_t*    w,
   if( w -> slot == SLOT_MAIN_HAND ) assert( w -> type >= WEAPON_NONE && w -> type < WEAPON_2H );
   if( w -> slot == SLOT_OFF_HAND  ) assert( w -> type >= WEAPON_NONE && w -> type < WEAPON_2H );
   if( w -> slot == SLOT_RANGED    ) assert( w -> type == WEAPON_NONE || ( w -> type > WEAPON_2H && w -> type < WEAPON_RANGED ) );
+}
+
+// player_t::init_unique_gear ==============================================
+
+void player_t::init_unique_gear()
+{
+  unique_gear_t::init( this );
 }
 
 // player_t::init_resources ================================================
