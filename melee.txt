@@ -88,7 +88,7 @@ calculate_scale_factors=0
 
 party=reset
 party=Shaman_16_55_00/Shaman_57_14_00
-party=Hunter_01_18_52/Hunter_04_15_52/Hunter_13_51_07/Hunter_52_12_07/Rogue_07_21_43
+party=Hunter_01_18_52/Hunter_06_14_51/Hunter_13_51_07/Hunter_52_12_07/Rogue_07_21_43
 
 # ================================================================================================
 # Druids
@@ -229,7 +229,7 @@ glyph_shadow_word_death=1
 shaman=Shaman_16_55_00
 level=80
 talents=http://www.wowhead.com/?talent=hVbhqZhbxsoxdAIkufot
-actions=flask,type=endless_rage/food,type=great_feast/windfury_weapon,weapon=main/flametongue_weapon,weapon=off
+actions=flask,type=endless_rage/food,type=fish_feast/windfury_weapon,weapon=main/flametongue_weapon,weapon=off
 actions+=/strength_of_earth_totem/windfury_totem/searing_totem/lightning_shield
 actions+=/auto_attack/lightning_bolt,maelstrom=5,ss_wait=1/shamanistic_rage/spirit_wolf/earth_shock,ss_wait=1/stormstrike/earth_shock/lava_lash/bloodlust,target_pct=25
 gear_agility=700
@@ -291,7 +291,7 @@ totem_of_hex=1
 hunter=Hunter_01_18_52
 level=80
 talents=http://www.wowhead.com/?talent=coZ0eVoohZe00i0cIhxdAhcd
-actions=flask,type=endless_rage/food,type=great_feast/summon_pet,cat/hunters_mark
+actions=flask,type=endless_rage/food,type=fish_feast/summon_pet,cat/hunters_mark
 actions+=/auto_shot/aspect/rapid_fire/explosive_shot/kill_shot/serpent_sting/aimed_shot/steady_shot
 gear_agility=1100
 gear_stamina=900
@@ -323,11 +323,11 @@ active=owner
 #
 # Survival Hunter (Improved Aspect of the Hawk)
 #
-hunter=Hunter_04_15_52
+hunter=Hunter_06_14_51
 level=80
-talents=http://www.wowhead.com/?talent=cLZ0eVooZe00i0cIhxdAhcd
-actions=flask,type=endless_rage/food,type=great_feast/summon_pet,cat/hunters_mark
-actions+=/auto_shot/aspect/rapid_fire/explosive_shot/kill_shot/serpent_sting/aimed_shot/steady_shot
+talents=http://www.wowhead.com/?talent=cxoZ0eVoZe00i0cIhxdAhck
+actions=flask,type=endless_rage/food,type=fish_feast/summon_pet,cat/hunters_mark
+actions+=/auto_shot/aspect/rapid_fire/explosive_shot/kill_shot/serpent_sting/steady_shot
 gear_agility=1100
 gear_stamina=900
 gear_intellect=350
@@ -361,7 +361,7 @@ active=owner
 hunter=Hunter_13_51_07
 level=80
 talents=http://www.wowhead.com/?talent=ctbM0hZ0eVfRhzMgoxhiox00b
-actions=flask,type=endless_rage/food,type=great_feast/summon_pet,cat/hunters_mark/trueshot_aura
+actions=flask,type=endless_rage/food,type=fish_feast/summon_pet,cat/hunters_mark/trueshot_aura
 actions+=/auto_shot/aspect/serpent_sting/rapid_fire/chimera_shot/kill_shot/readiness/arcane_shot/aimed_shot/steady_shot
 gear_agility=1100
 gear_stamina=900
@@ -396,7 +396,7 @@ active=owner
 hunter=Hunter_52_12_07
 level=80
 talents=http://www.wowhead.com/?talent=ctbMzxtRwuMtsx0ecoZx00b
-actions=flask,type=endless_rage/food,type=great_feast/summon_pet,cat/hunters_mark
+actions=flask,type=endless_rage/food,type=fish_feast/summon_pet,cat/hunters_mark
 actions+=/auto_shot/kill_command,sync=bestial_wrath/bestial_wrath/aspect/rapid_fire
 actions+=/kill_shot/arcane_shot/serpent_sting/steady_shot
 gear_agility=1100
@@ -437,7 +437,7 @@ active=owner
 rogue=Rogue_07_21_43
 level=80
 talents=http://www.wowhead.com/?talent=fhLZ0xV0x0xoZxbrbhGzdAzqc
-actions=flask,type=endless_rage/food,type=great_feast/apply_poison,main_hand=wound,off_hand=wound
+actions=flask,type=endless_rage/food,type=fish_feast/apply_poison,main_hand=wound,off_hand=wound
 actions+=/auto_attack/pool_energy/slice_and_dice,min_combo_points=4,refresh_at=5/tricks_of_the_trade,target=Rogue_07_51_13
 actions+=/blade_flurry/rupture,min_combo_points=5/eviscerate,min_combo_points=5
 gear_strength=0
@@ -468,7 +468,7 @@ off_hand=dagger,dps=156,speed=1.4,enchant=berserking
 rogue=Rogue_07_51_13
 level=80
 talents=http://www.wowhead.com/?talent=f0xbZMgVbxbxoru0xRtxbc0h
-actions=flask,type=endless_rage/food,type=great_feast/apply_poison,main_hand=wound,off_hand=deadly
+actions=flask,type=endless_rage/food,type=fish_feast/apply_poison,main_hand=wound,off_hand=deadly
 actions+=/auto_attack/pool_energy/slice_and_dice,min_combo_points=4,refresh_at=5/tricks_of_the_trade,target=Rogue_15_51_05
 actions+=/killing_spree/blade_flurry/rupture,min_combo_points=5/eviscerate,min_combo_points=4/sinister_strike/adrenaline_rush
 gear_strength=0
@@ -502,7 +502,7 @@ off_hand=dagger,dps=156,speed=1.4,enchant=berserking
 rogue=Rogue_15_51_05
 level=80
 talents=http://www.wowhead.com/?talent=f0eb0xZMgibx0xoru0xRtx
-actions=flask,type=endless_rage/food,type=great_feast/apply_poison,main_hand=wound,off_hand=deadly
+actions=flask,type=endless_rage/food,type=fish_feast/apply_poison,main_hand=wound,off_hand=deadly
 actions+=/auto_attack/pool_energy/slice_and_dice,min_combo_points=4,refresh_at=5/tricks_of_the_trade,target=Rogue_18_51_02
 actions+=/killing_spree/blade_flurry/rupture,min_combo_points=4/eviscerate,min_combo_points=4/sinister_strike/adrenaline_rush
 gear_strength=0
@@ -537,7 +537,7 @@ off_hand=dagger,dps=156,speed=1.4,enchant=berserking
 rogue=Rogue_18_51_02
 level=80
 talents=http://www.wowhead.com/?talent=f0xf0eZ0gVox0xqru0xRt0b
-actions=flask,type=endless_rage/food,type=great_feast/apply_poison,main_hand=wound,off_hand=deadly
+actions=flask,type=endless_rage/food,type=fish_feast/apply_poison,main_hand=wound,off_hand=deadly
 actions+=/auto_attack/pool_energy/slice_and_dice,min_combo_points=4,refresh_at=4/tricks_of_the_trade,target=Rogue_51_13_07
 actions+=/killing_spree/blade_flurry/rupture,min_combo_points=5/backstab/adrenaline_rush
 gear_strength=0
@@ -571,7 +571,7 @@ off_hand=dagger,dps=156,speed=1.4,enchant=berserking
 rogue=Rogue_51_13_07
 level=80
 talents=http://www.wowhead.com/?talent=f0ef0exoVboIzAo0xV0hZxb
-actions=flask,type=endless_rage/food,type=great_feast/apply_poison,main_hand=instant,off_hand=deadly
+actions=flask,type=endless_rage/food,type=fish_feast/apply_poison,main_hand=instant,off_hand=deadly
 actions+=/auto_attack/pool_energy/hunger_for_blood,refresh_at=2/slice_and_dice,min_combo_points=2/tricks_of_the_trade,target=Rogue_07_21_43
 actions+=/rupture,min_combo_points=4/cold_blood,sync=envenom/envenom,min_combo_points=4,no_buff=1/mutilate,max_combo_points=5
 gear_strength=0
