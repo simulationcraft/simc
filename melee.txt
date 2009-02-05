@@ -327,7 +327,7 @@ hunter=Hunter_06_14_51
 level=80
 talents=http://www.wowhead.com/?talent=cxoZ0eVoZe00i0cIhxdAhck
 actions=flask,type=endless_rage/food,type=fish_feast/summon_pet,cat/hunters_mark
-actions+=/auto_shot/aspect/rapid_fire/explosive_shot/kill_shot/serpent_sting/steady_shot
+actions+=/auto_shot/aspect/rapid_fire/explosive_shot/kill_shot/serpent_sting/multi_shot/steady_shot
 gear_agility=1100
 gear_stamina=900
 gear_intellect=350
