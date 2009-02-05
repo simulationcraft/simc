@@ -2304,8 +2304,8 @@ struct explosive_shot_t : public hunter_attack_t
 
     num_ticks      = 2;
     base_tick_time = 1.0;
-    direct_power_mod = 0.16;
-    tick_power_mod = 0.16;
+    direct_power_mod = 0.14;
+    tick_power_mod = 0.14;
 
     base_multiplier *= 1.0 + p -> talents.sniper_training * 0.02;
     base_multiplier *= 1.0 + p -> talents.ranged_weapon_specialization * 0.01;
