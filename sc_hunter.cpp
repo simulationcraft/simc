@@ -1933,7 +1933,7 @@ struct ranged_t : public hunter_attack_t
     if( result_is_hit() )
     {
       trigger_wild_quiver( this );
-      trigger_improved_aspect_of_the_hawk( this ); // FIXME! Only procs on auto-shot?
+      trigger_improved_aspect_of_the_hawk( this );
     }
   }
 };
@@ -2094,8 +2094,6 @@ struct arcane_shot_t : public hunter_attack_t
 
     base_crit_bonus_multiplier *= 1.0 + ( p -> talents.mortal_shots     * 0.06 +
                                           p -> talents.marked_for_death * 0.02 );
-
-    // FIXME! Ranged Weapon Specialization excluded due to no weapon damage.  Correct?
   }
 
   virtual double cost()
@@ -2331,7 +2329,6 @@ struct explosive_shot_t : public hunter_attack_t
   virtual void consume_resource()
   {
     hunter_attack_t::consume_resource();
-    // FIXME! Thrill of the Hunt proc reduced to 33% for each tick
     resource_consumed /= 3.0;
   }
 
