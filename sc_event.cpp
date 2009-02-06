@@ -11,7 +11,7 @@
 
 // ::new ====================================================================
 
-void* event_t::operator new( size_t size, 
+void* event_t::operator new( size_t size,
 			     sim_t* sim )
 {
   // This override of ::new is ONLY for event_t memory management!
@@ -35,14 +35,12 @@ void* event_t::operator new( size_t size,
 
 // event_t::new =============================================================
 
-void* event_t::operator new( size_t size )
+void* event_t::operator new( size_t size ) throw()
 {
   fprintf( stderr, "All events must be allocated via: new (sim) event_class_name_t()\n" );
   fflush( stderr );
   assert( 0 );
-#if defined( _MSC_VER )
-  return 0;
-#endif
+  return NULL;
 }
 
 // event_t::delete ==========================================================
@@ -68,10 +66,10 @@ void event_t::deallocate( event_t* e )
 
 // player_ready_event_t::player_ready_event_t ===============================
 
-player_ready_event_t::player_ready_event_t( sim_t*    sim, 
-                                            player_t* p, 
-                                            double    delta_time ) : 
-  event_t( sim, p ) 
+player_ready_event_t::player_ready_event_t( sim_t*    sim,
+                                            player_t* p,
+                                            double    delta_time ) :
+  event_t( sim, p )
 {
   name = "Player-Ready";
   if( sim -> debug ) report_t::log( sim, "New Player-Ready Event: %s", p -> name() );
@@ -86,7 +84,7 @@ void player_ready_event_t::execute()
   {
     player -> schedule_ready( 0.1, true );
   }
-}   
+}
 
 // ==========================================================================
 // Action Execute Event
@@ -94,10 +92,10 @@ void player_ready_event_t::execute()
 
 // action_execute_event_t::action_execute_event_t ===========================
 
-action_execute_event_t::action_execute_event_t( sim_t*    sim, 
+action_execute_event_t::action_execute_event_t( sim_t*    sim,
 						action_t* a,
-						double    time_to_execute ) : 
-  event_t( sim, a -> player ), action( a ) 
+						double    time_to_execute ) :
+  event_t( sim, a -> player ), action( a )
 {
   name = "Action-Execute";
   if( sim -> debug ) report_t::log( sim, "New Action Execute Event: %s %s %.1f", player -> name(), a -> name(), time_to_execute );
@@ -111,12 +109,12 @@ void action_execute_event_t::execute()
   action -> execute_event = 0;
   action -> execute();
 
-  if( ! action -> background && 
-      ! player -> channeling ) 
+  if( ! action -> background &&
+      ! player -> channeling )
   {
     player -> schedule_ready( 0 );
   }
-}   
+}
 
 // ==========================================================================
 // Action Tick Event
@@ -124,19 +122,19 @@ void action_execute_event_t::execute()
 
 // action_tick_event_t::action_tick_event_t =================================
 
-action_tick_event_t::action_tick_event_t( sim_t*    sim, 
+action_tick_event_t::action_tick_event_t( sim_t*    sim,
 					  action_t* a,
-					  double    time_to_tick ) : 
+					  double    time_to_tick ) :
   event_t( sim, a -> player ), action( a )
 {
   name = "Action Tick";
 
-  if( sim -> debug ) 
-    report_t::log( sim, "New Action Tick Event: %s %s %d-of-%d %.2f", 
+  if( sim -> debug )
+    report_t::log( sim, "New Action Tick Event: %s %s %d-of-%d %.2f",
 		   player -> name(), a -> name(), a -> current_tick, a -> num_ticks, time_to_tick );
-  
+
   sim -> add_event( this, time_to_tick );
-}   
+}
 
 // action_tick_event_t::execute ==============================================
 
@@ -186,9 +184,9 @@ void regen_event_t::execute()
 
     p -> regen( sim -> regen_periodicity );
   }
-  
+
   new ( sim ) regen_event_t( sim );
-}   
+}
 
 // ===============================================================================
 // Event

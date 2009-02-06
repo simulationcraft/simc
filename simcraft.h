@@ -100,8 +100,8 @@ struct event_t
   double    reschedule_time;
   int       canceled;
   const char* name;
-  event_t( sim_t* s, player_t* p=0, const char* n=0 ) : 
-    next(0), sim(s), player(p), reschedule_time(0), canceled(0), name(n) 
+  event_t( sim_t* s, player_t* p=0, const char* n=0 ) :
+    next(0), sim(s), player(p), reschedule_time(0), canceled(0), name(n)
   {
     if( ! name ) name = "unknown";
   }
@@ -112,14 +112,14 @@ struct event_t
   static void cancel( event_t*& e ) { if( e ) { e -> canceled = 1;                 e=0; } }
   static void  early( event_t*& e ) { if( e ) { e -> canceled = 1; e -> execute(); e=0; } }
   // Simple free-list memory manager.
-  static void* operator new( size_t, sim_t* ); 
-  static void* operator new( size_t ); // DO NOT USE!
+  static void* operator new( size_t, sim_t* );
+  static void* operator new( size_t ) throw();  // DO NOT USE!
   static void  operator delete( void* );
   static void  operator delete( void*, sim_t* ) {}
   static void deallocate( event_t* e );
 };
 
-struct event_compare_t 
+struct event_compare_t
 {
   bool operator () (event_t* lhs, event_t* rhs ) const
   {
@@ -131,36 +131,36 @@ struct event_compare_t
 
 enum race_type { RACE_NONE=0, RACE_BEAST, RACE_DRAGONKIN, RACE_GIANT, RACE_HUMANOID, RACE_MAX };
 
-enum player_type { 
-  PLAYER_NONE=0, 
-  DEATH_KNIGHT, DRUID, HUNTER, MAGE, PALADIN, PRIEST, ROGUE, SHAMAN, WARLOCK, WARRIOR, 
-  PLAYER_PET, PLAYER_GUARDIAN, 
-  PLAYER_MAX 
+enum player_type {
+  PLAYER_NONE=0,
+  DEATH_KNIGHT, DRUID, HUNTER, MAGE, PALADIN, PRIEST, ROGUE, SHAMAN, WARLOCK, WARRIOR,
+  PLAYER_PET, PLAYER_GUARDIAN,
+  PLAYER_MAX
 };
 
 enum dmg_type { DMG_DIRECT=0, DMG_OVER_TIME=1 };
 
 enum attribute_type { ATTRIBUTE_NONE=0, ATTR_STRENGTH, ATTR_AGILITY, ATTR_STAMINA, ATTR_INTELLECT, ATTR_SPIRIT, ATTRIBUTE_MAX };
 
-enum resource_type { 
-  RESOURCE_NONE=0, 
-  RESOURCE_HEALTH, RESOURCE_MANA,  RESOURCE_RAGE, RESOURCE_ENERGY, RESOURCE_FOCUS, RESOURCE_RUNIC, 
+enum resource_type {
+  RESOURCE_NONE=0,
+  RESOURCE_HEALTH, RESOURCE_MANA,  RESOURCE_RAGE, RESOURCE_ENERGY, RESOURCE_FOCUS, RESOURCE_RUNIC,
   RESOURCE_MAX };
 
-enum result_type { 
-  RESULT_NONE=0, 
-  RESULT_MISS,   RESULT_RESIST, RESULT_DODGE, RESULT_PARRY, RESULT_BLOCK, 
-  RESULT_GLANCE, RESULT_CRUSH,  RESULT_CRIT,  RESULT_HIT,   RESULT_TICK, 
-  RESULT_MAX 
+enum result_type {
+  RESULT_NONE=0,
+  RESULT_MISS,   RESULT_RESIST, RESULT_DODGE, RESULT_PARRY, RESULT_BLOCK,
+  RESULT_GLANCE, RESULT_CRUSH,  RESULT_CRIT,  RESULT_HIT,   RESULT_TICK,
+  RESULT_MAX
 };
 
 enum action_type { ACTION_USE=0, ACTION_SPELL, ACTION_ATTACK, ACTION_OTHER, ACTION_MAX };
 
 enum school_type {
-  SCHOOL_NONE=0, 
-  SCHOOL_ARCANE,    SCHOOL_BLEED,  SCHOOL_CHAOS,  SCHOOL_FIRE,     SCHOOL_FROST, 
-  SCHOOL_FROSTFIRE, SCHOOL_HOLY,   SCHOOL_NATURE, SCHOOL_PHYSICAL, SCHOOL_SHADOW, 
-  SCHOOL_MAX 
+  SCHOOL_NONE=0,
+  SCHOOL_ARCANE,    SCHOOL_BLEED,  SCHOOL_CHAOS,  SCHOOL_FIRE,     SCHOOL_FROST,
+  SCHOOL_FROSTFIRE, SCHOOL_HOLY,   SCHOOL_NATURE, SCHOOL_PHYSICAL, SCHOOL_SHADOW,
+  SCHOOL_MAX
 };
 
 enum talent_tree_type {
@@ -176,61 +176,61 @@ enum talent_tree_type {
   TALENT_TREE_MAX
 };
 
-enum weapon_type { 
-  WEAPON_NONE=0, 
+enum weapon_type {
+  WEAPON_NONE=0,
   WEAPON_DAGGER,   WEAPON_FIST,                                                                    WEAPON_SMALL,
   WEAPON_BEAST,    WEAPON_SWORD,    WEAPON_MACE,     WEAPON_AXE,                                   WEAPON_1H,
   WEAPON_BEAST_2H, WEAPON_SWORD_2H, WEAPON_MACE_2H,  WEAPON_AXE_2H, WEAPON_STAFF,  WEAPON_POLEARM, WEAPON_2H,
   WEAPON_BOW,      WEAPON_CROSSBOW, WEAPON_GUN,      WEAPON_WAND,   WEAPON_THROWN,                 WEAPON_RANGED,
-  WEAPON_MAX 
+  WEAPON_MAX
 };
 
 enum weapon_enchant_type { WEAPON_ENCHANT_NONE=0, BERSERKING, MONGOOSE, EXECUTIONER, DEATH_FROST, SCOPE, WEAPON_ENCHANT_MAX };
 
-enum weapon_buff_type { 
-  WEAPON_BUFF_NONE=0, 
-  ANESTHETIC_POISON, DEADLY_POISON, FIRE_STONE, FLAMETONGUE, INSTANT_POISON, 
+enum weapon_buff_type {
+  WEAPON_BUFF_NONE=0,
+  ANESTHETIC_POISON, DEADLY_POISON, FIRE_STONE, FLAMETONGUE, INSTANT_POISON,
   SHARPENING_STONE,  SPELL_STONE,   WINDFURY,   WIZARD_OIL,  WOUND_POISON,
-  WEAPON_BUFF_MAX 
+  WEAPON_BUFF_MAX
 };
 
 enum slot_type { SLOT_NONE=0, SLOT_MAIN_HAND, SLOT_OFF_HAND, SLOT_RANGED, SLOT_MAX };
 
 enum elixir_type {
   ELIXIR_NONE=0,
-  ELIXIR_DRAENIC_WISDOM,                          
-  ELIXIR_MAJOR_MAGEBLOOD, 
+  ELIXIR_DRAENIC_WISDOM,
+  ELIXIR_MAJOR_MAGEBLOOD,
   ELIXIR_GUARDIAN,
   ELIXIR_ADEPT,
   ELIXIR_FEL_STRENGTH,
   ELIXIR_GREATER_ARCANE,
-  ELIXIR_MAJOR_AGILITY, 
-  ELIXIR_MAJOR_FIRE_POWER, 
-  ELIXIR_MAJOR_FROST_POWER, 
-  ELIXIR_MAJOR_SHADOW_POWER, 
-  ELIXIR_MAJOR_STRENGTH, 
+  ELIXIR_MAJOR_AGILITY,
+  ELIXIR_MAJOR_FIRE_POWER,
+  ELIXIR_MAJOR_FROST_POWER,
+  ELIXIR_MAJOR_SHADOW_POWER,
+  ELIXIR_MAJOR_STRENGTH,
   ELIXIR_MASTERY,
   ELIXIR_MONGOOSE,
   ELIXIR_ONSLAUGHT,
   ELIXIR_SAGES,
   ELIXIR_BATTLE,
-  ELIXIR_MAX 
+  ELIXIR_MAX
 };
 
-enum flask_type { 
+enum flask_type {
   FLASK_NONE=0,
-  FLASK_BLINDING_LIGHT, 
+  FLASK_BLINDING_LIGHT,
   FLASK_DISTILLED_WISDOM,
   FLASK_ENDLESS_RAGE,
   FLASK_FROST_WYRM,
-  FLASK_MIGHTY_RESTORATION, 
-  FLASK_PURE_DEATH, 
-  FLASK_RELENTLESS_ASSAULT, 
+  FLASK_MIGHTY_RESTORATION,
+  FLASK_PURE_DEATH,
+  FLASK_RELENTLESS_ASSAULT,
   FLASK_SUPREME_POWER,
-  FLASK_MAX 
+  FLASK_MAX
 };
 
-enum food_type { 
+enum food_type {
   FOOD_NONE=0,
   FOOD_TENDER_SHOVELTUSK_STEAK,
   FOOD_SMOKED_SALMON,
@@ -242,7 +242,7 @@ enum food_type {
   FOOD_BLACKENED_DRAGONFIN,
   FOOD_GREAT_FEAST,
   FOOD_FISH_FEAST,
-  FOOD_MAX 
+  FOOD_MAX
 };
 
 enum position_type { POSITION_NONE=0, POSITION_FRONT, POSITION_BACK, POSITION_RANGED, POSITION_MAX };
@@ -293,7 +293,7 @@ struct sim_t
     int hit_rating;
     int crit_rating;
     int haste_rating;
-    
+
     gear_default_t() { memset( (void*) this, 0x00, sizeof( gear_default_t ) ); }
   };
   gear_default_t gear_default;
@@ -309,7 +309,7 @@ struct sim_t
     int hit_rating;
     int crit_rating;
     int haste_rating;
-    
+
     gear_delta_t() { memset( (void*) this, 0x00, sizeof( gear_delta_t ) ); }
   };
   gear_delta_t gear_delta;
@@ -390,7 +390,7 @@ struct scaling_t
     int hit_rating;
     int crit_rating;
     int haste_rating;
-    
+
     gear_t() { memset( (void*) this, 0x00, sizeof( gear_t ) ); }
   };
   gear_t gear;
@@ -437,9 +437,9 @@ struct weapon_t
   double normalized_weapon_speed();
   double proc_chance_on_swing( double PPM, double adjusted_swing_time=0 );
 
-  weapon_t( int t=WEAPON_NONE, double d=0, double st=2.0, int s=SCHOOL_PHYSICAL ) : 
-    type(t), school(s), damage(d), swing_time(st), 
-    enchant(WEAPON_ENCHANT_NONE), buff(WEAPON_BUFF_NONE), 
+  weapon_t( int t=WEAPON_NONE, double d=0, double st=2.0, int s=SCHOOL_PHYSICAL ) :
+    type(t), school(s), damage(d), swing_time(st),
+    enchant(WEAPON_ENCHANT_NONE), buff(WEAPON_BUFF_NONE),
     enchant_bonus(0), buff_bonus(0), slot(SLOT_NONE) {}
 };
 
@@ -449,7 +449,7 @@ struct player_t
 {
   sim_t*      sim;
   std::string name_str, talents_str;
-  player_t*   next;   
+  player_t*   next;
   int         type, level, party;
   double      gcd_ready, base_gcd;
   int         sleeping;
@@ -613,7 +613,7 @@ struct player_t
     void allocate_attack_power_budget( sim_t* );
   };
   gear_t gear;
-  
+
   struct buff_t
   {
     // Dynamic Buffs
@@ -667,13 +667,13 @@ struct player_t
     int    tier7_2pc, tier7_4pc;
     buff_t() { memset( (void*) this, 0x0, sizeof( buff_t ) ); }
     void reset()
-    { 
+    {
       size_t delta = ( (uintptr_t) &temporary_buffs ) - ( (uintptr_t) this );
       memset( (void*) &temporary_buffs, 0x0, sizeof( buff_t ) - delta );
     }
   };
   buff_t buffs;
-  
+
   struct expirations_t
   {
     double spellsurge;
@@ -700,7 +700,7 @@ struct player_t
     expirations_t() { reset(); }
   };
   expirations_t expirations;
-  
+
   struct cooldowns_t
   {
     double bloodlust;
@@ -728,7 +728,7 @@ struct player_t
     cooldowns_t() { reset(); }
   };
   cooldowns_t cooldowns;
-  
+
   struct uptimes_t
   {
     uptime_t* berserking_mh;
@@ -777,7 +777,7 @@ struct player_t
     gains_t() { reset(); }
   };
   gains_t gains;
-  
+
   struct procs_t
   {
     proc_t* ashtongue_talisman;
@@ -834,13 +834,13 @@ struct player_t
     double hit_rating;
     double crit_rating;
     double haste_rating;
-    
+
     scaling_t() { memset( (void*) this, 0x00, sizeof( scaling_t ) ); }
   };
   scaling_t scaling;
-  
+
   player_t( sim_t* sim, int type, const std::string& name );
-  
+
   virtual ~player_t();
 
   virtual const char* name() { return name_str.c_str(); }
@@ -882,7 +882,7 @@ struct player_t
   virtual double stamina();
   virtual double intellect();
   virtual double spirit();
-  
+
   virtual void      schedule_ready( double delta_time=0, bool waiting=false );
   virtual action_t* execute_action();
 
@@ -1065,14 +1065,14 @@ struct target_t
     int   winters_grasp;
     debuff_t() { memset( (void*) this, 0x0, sizeof( debuff_t ) ); }
     void reset()
-    { 
+    {
       size_t delta = ( (uintptr_t) &temporary_debuffs ) - ( (uintptr_t) this );
       memset( (void*) &temporary_debuffs, 0x0, sizeof( debuff_t ) - delta );
     }
     bool snared() { return frozen || slow || snare || thunder_clap; }
   };
   debuff_t debuffs;
-  
+
   struct expirations_t
   {
     event_t* curse_of_elements;
@@ -1093,7 +1093,7 @@ struct target_t
     expirations_t() { reset(); }
   };
   expirations_t expirations;
-  
+
   struct uptimes_t
   {
     uptime_t* blood_frenzy;
@@ -1244,8 +1244,8 @@ struct action_t
   virtual void   calculate_result() { assert(0); }
   virtual bool   result_is_hit();
   virtual bool   result_is_miss();
-  virtual double calculate_direct_damage(); 
-  virtual double calculate_tick_damage(); 
+  virtual double calculate_direct_damage();
+  virtual double calculate_tick_damage();
   virtual double armor();
   virtual double resistance();
   virtual void   consume_resource();
@@ -1333,7 +1333,7 @@ struct spell_t : public action_t
   virtual void   target_debuff( int dmg_type );
   virtual double level_based_miss_chance( int player, int target );
   virtual void   calculate_result();
-   
+
   // Passthru Methods
   virtual double cost()                              { return action_t::cost();                    }
   virtual double calculate_direct_damage()           { return action_t::calculate_direct_damage(); }
@@ -1570,10 +1570,10 @@ enum option_type_t { OPT_STRING=0, OPT_APPEND, OPT_CHAR_P, OPT_BOOL, OPT_INT, OP
 
 struct option_t
 {
-  const char* name; 
-  int type; 
+  const char* name;
+  int type;
   void*  address;
-  
+
   static void print( sim_t*, option_t* );
   static bool parse( sim_t*, option_t*, const std::string& name, const std::string& value );
   static bool parse( sim_t*, FILE* file );
