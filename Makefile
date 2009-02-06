@@ -73,7 +73,7 @@ SRC_CPP := $(filter %.cpp, $(SRC))
 SRC_OBJ := $(SRC_CPP:.cpp=.o)
 
 simcraft: $(SRC_OBJ)
-	$(CXX) $(LINK_FLAGS) $(SRC_OBJ) $(LINK_LIBS) -o simcraft
+	$(CXX) $(OPTS) $(LINK_FLAGS) $(SRC_OBJ) $(LINK_LIBS) -o simcraft
 
 $(SRC_OBJ): %.o: %.cpp $(SRC_H) Makefile
 	$(CXX) $(CPP_FLAGS) $(OPTS) -c $< -o $@

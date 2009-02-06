@@ -13,7 +13,7 @@
 
 sim_t::sim_t( sim_t* p ) : 
   parent(p), rng(0), free_list(0), player_list(0), active_player(0),
-  lag(0.150), pet_lag(0), channel_penalty(0.100), gcd_penalty(0.100), reaction_time(0.5), 
+  lag(0.150), pet_lag(0), channel_penalty(0.0), gcd_penalty(0.0), reaction_time(0.5), 
   regen_periodicity(1.0), current_time(0), max_time(0),
   events_remaining(0), max_events_remaining(0), 
   events_processed(0), total_events_processed(0),

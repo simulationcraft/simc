@@ -144,6 +144,7 @@ struct shaman_t : public player_t
 
   struct totems_t
   {
+    int dueling;
     int hex;
     totems_t() { memset( (void*) this, 0x0, sizeof( totems_t ) ); }
   };
@@ -710,6 +711,38 @@ static void trigger_elemental_oath( spell_t* s )
   }
 }
 
+// trigger_totem_of_dueling ================================================
+
+static void trigger_totem_of_dueling( attack_t* a )
+{
+  shaman_t* p = a -> player -> cast_shaman();
+
+  if( p -> totems.dueling )
+  {
+    struct totem_of_dueling_expiration_t : public event_t
+    {
+      totem_of_dueling_expiration_t( sim_t* sim, player_t* player ) : event_t( sim, player )
+      {
+	name = "Totem of Dueling Expiration";
+	player -> aura_gain( "Totem of Dueling" );
+	player -> haste_rating += 60;
+	player -> recalculate_haste();
+	sim -> add_event( this, 6.0 );
+      }
+      virtual void execute()
+      {
+	player -> aura_loss( "Totem of Dueling" );
+	player -> haste_rating -= 60;
+	player -> recalculate_haste();
+      }
+    };
+
+    assert( a -> cooldown > 6.0 );  // Make sure we don't have to perform refreshes
+  
+    new ( a -> sim ) totem_of_dueling_expiration_t( a -> sim, p );
+  }
+}
+
 // =========================================================================
 // Shaman Attack
 // =========================================================================
@@ -914,6 +947,8 @@ struct stormstrike_t : public shaman_attack_t
         shaman_attack_t::execute();
       }
     }
+
+    trigger_totem_of_dueling( this );
 
     player -> action_finish( this );
   }
@@ -3019,6 +3054,7 @@ bool shaman_t::parse_option( const std::string& name,
     { "glyph_stormstrike",         OPT_INT,  &( glyphs.stormstrike                ) },
     { "glyph_windfury_weapon",     OPT_INT,  &( glyphs.windfury_weapon            ) },
     // Totems
+    { "totem_of_dueling",          OPT_INT,  &( totems.dueling                    ) },
     { "totem_of_hex",              OPT_INT,  &( totems.hex                        ) },
     // Tier Bonuses
     { "tier4_2pc_elemental",       OPT_INT,  &( tiers.t4_2pc_elemental            ) },

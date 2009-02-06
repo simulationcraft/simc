@@ -3009,8 +3009,7 @@ void rogue_t::raid_event( action_t* a )
   {
     player_t* p = a -> player;
 
-    if( p != this &&
-	p -> party != 0 &&
+    if( p -> party != 0 &&
         p -> party == party  &&
 	a -> result == RESULT_CRIT && 
 	! a -> proc &&
