@@ -1,6 +1,8 @@
-#!simcraft max_time=300 
+#!simcraft
 
 optimal_raid=1
+
+input=Globals.txt
 
 # Default Gear Profile
 default_stamina=1000

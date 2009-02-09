@@ -1,4 +1,4 @@
-#!simcraft max_time=300
+#!simcraft
 
 optimal_raid=1
 
