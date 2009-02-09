@@ -545,10 +545,21 @@ void sim_t::analyze()
 void sim_t::iterate()
 {
   init();
+
+  int message_interval = iterations/10;
+  int message_index = 10;
+
   for( int i=0; i < iterations; i++ )
   {
+    if( i % message_interval == 0 ) 
+    {
+      fprintf( output_file, "%d... ", message_index-- );
+      fflush( output_file );
+    }
     combat( i );
   }
+  fprintf( output_file, "\n" );
+
   reset();
 }
 
