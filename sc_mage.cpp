@@ -129,12 +129,13 @@ struct mage_t : public player_t
   struct glyphs_t
   {
     int arcane_blast;
+    int arcane_missiles;
     int arcane_power;
     int fire_ball;
     int frost_bolt;
     int improved_scorch;
     int mage_armor;
-    int mana_gem;  // FIXME!  Not supported yet.
+    int mana_gem;
     int molten_armor;
     int water_elemental;
     int frostfire;
@@ -961,7 +962,7 @@ double mage_spell_t::cost()
   mage_t* p = player -> cast_mage();
   if( p -> buffs_clearcasting ) return 0;
   double c = spell_t::cost();
-  if( p -> buffs_arcane_power ) c += base_cost * 1.30;
+  if( p -> buffs_arcane_power ) c += base_cost * 1.10;
   return c;
 }
 
@@ -1057,7 +1058,7 @@ void mage_spell_t::player_buff()
     }
   }
 
-  if( p -> buffs_arcane_power ) player_multiplier *= 1.30;
+  if( p -> buffs_arcane_power ) player_multiplier *= 1.10;
 
   if( p -> talents.playing_with_fire )
   {
@@ -1340,7 +1341,9 @@ struct arcane_missiles_t : public mage_spell_t
     base_hit         += p -> talents.arcane_focus * 0.01;
     direct_power_mod += p -> talents.arcane_empowerment * 0.03;        // bonus per missle
 
-    base_crit_bonus_multiplier *= 1.0 + p -> talents.spell_power * 0.25 + ( p -> gear.tier7_4pc ? 0.05 : 0.00 );
+    base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25   ) + 
+					  ( p -> glyphs.arcane_missiles ? 0.25 : 0.00 ) +
+					  ( p -> gear.tier7_4pc         ? 0.05 : 0.00 ) );
 
     if( abar_combo )
     {
@@ -1499,8 +1502,8 @@ struct arcane_power_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
     assert( p -> talents.arcane_power );
     trigger_gcd = 0;  
-    cooldown = 180.0;
-    cooldown -= p -> talents.arcane_flows * 30.0;
+    cooldown = 60.0;
+    cooldown *= 1.0 - p -> talents.arcane_flows * 0.15;
   }
    
   virtual void execute()
@@ -1673,9 +1676,9 @@ struct presence_of_mind_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
     assert( p -> talents.presence_of_mind );
 
-    cooldown = 180.0;
-    cooldown -= p -> talents.arcane_flows * 30.0;
+    cooldown = 120.0;
     if( p -> gear.tier4_4pc ) cooldown -= 24.0;
+    cooldown *= 1.0 - p -> talents.arcane_flows * 0.15;
 
     if( options_str.empty() )
     {
@@ -2639,6 +2642,8 @@ struct mana_gem_t : public action_t
 
     double gain = min + ( max - min ) * sim -> rng -> real();
 
+    if( p -> glyphs.mana_gem ) gain *= 1.40;
+
     if( p -> gear.tier7_2pc ) 
     {
       struct expiration_t : public event_t
@@ -2939,6 +2944,7 @@ bool mage_t::parse_option( const std::string& name,
     { "world_in_flames",           OPT_INT,   &( talents.world_in_flames           ) },
     // Glyphs
     { "glyph_arcane_blast",        OPT_INT,   &( glyphs.arcane_blast               ) },
+    { "glyph_arcane_missiles",     OPT_INT,   &( glyphs.arcane_missiles            ) },
     { "glyph_arcane_power",        OPT_INT,   &( glyphs.arcane_power               ) },
     { "glyph_fire_ball",           OPT_INT,   &( glyphs.fire_ball                  ) },
     { "glyph_frost_bolt",          OPT_INT,   &( glyphs.frost_bolt                 ) },

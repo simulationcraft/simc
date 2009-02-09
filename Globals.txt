@@ -1,6 +1,6 @@
 
 # Patch level of 3.0.0 or later implies Wrath of the Lich King
-patch=3.0.8
+patch=3.0.9
 
 # Multi-Threading: Performance can be significantly increased using multi-threading.
 # Most modern processors are dual-core allowing for threads=2 to be specified.

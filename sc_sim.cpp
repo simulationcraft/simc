@@ -23,7 +23,7 @@ sim_t::sim_t( sim_t* p ) :
   raid_dps(0), total_dmg(0), total_seconds(0), elapsed_cpu_seconds(0), merge_ignite(0),
   output_file(stdout), html_file(0), wiki_file(0), thread_handle(0)
 {
-  patch_str = "3.0.8";
+  patch_str = "3.0.9";
 
   for( int i=0; i < RESOURCE_MAX; i++ ) 
   {
