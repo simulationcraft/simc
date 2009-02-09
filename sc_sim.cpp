@@ -551,7 +551,7 @@ void sim_t::iterate()
 
   for( int i=0; i < iterations; i++ )
   {
-    if( ! log && ( i % message_interval == 0 ) )
+    if( ( message_interval > 0 ) && ( i % message_interval == 0 ) )
     {
       fprintf( output_file, "%d... ", message_index-- );
       fflush( output_file );

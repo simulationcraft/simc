@@ -14,11 +14,11 @@ static const char* class_color( int type )
   case PLAYER_NONE:  return "FFFFFF";
   case DEATH_KNIGHT: return "C41F3B";
   case DRUID:        return "FF7D0A";
-  case HUNTER:       return "ABD473";
+  case HUNTER:       return "9BB453";
   case MAGE:         return "69CCF0";
   case PALADIN:      return "F58CBA";
   case PRIEST:       return "333333";
-  case ROGUE:        return "FFF569";
+  case ROGUE:        return "E09000";
   case SHAMAN:       return "2459FF";
   case WARLOCK:      return "9482CA";
   case WARRIOR:      return "C79C6E";

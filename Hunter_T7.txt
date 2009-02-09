@@ -5,10 +5,13 @@ optimal_raid=1
 input=Globals.txt
 
 # Default Gear Profile
-default_agility=1100
 default_stamina=900
+default_strength=0
+default_agility=1100
 default_intellect=350
+default_spirit=0
 default_attack_power=2300
+default_attack_expertise=0
 default_armor_penetration_rating=100
 default_spell_power=0
 default_hit_rating=265
