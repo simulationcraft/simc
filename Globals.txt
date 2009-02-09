@@ -1,0 +1,73 @@
+
+# Patch level of 3.0.0 or later implies Wrath of the Lich King
+patch=3.0.8
+
+# Multi-Threading: Performance can be significantly increased using multi-threading.
+# Most modern processors are dual-core allowing for threads=2 to be specified.
+threads=1
+
+# To generate a combat log with just one iteration, simply set 'log=1'
+# Setting log to a non-zero value will force the simulator to execute just one iteration
+log=0
+
+# To get a detailed breakdown of contributions to attacks/spells as they occur, simply set 'debug=1'
+# Setting debug to a non-zero value will force the simulator to execute just one iteration
+debug=0
+
+# Lag is a random value centered on the value below with a range of +/- 0.05 seconds
+lag=0.150
+
+# Spells cannot be queue after channeled spells, nor when waiting for the GCD
+channel_penalty=0.100
+gcd_penalty=0.100
+
+# Boss Level
+target_level=83
+
+# One of "max_time" (fight time in seconds) or "target_health" must be specified.
+# When "max_time" is used, the health of the target will be infered half-way through simulation.
+max_time=300
+
+# While min/max damage effects (such as weapons and direct damage spells) are averaged out, spell event
+# and attack table mechanics are still random.  In order to get a trustworthy answer from the simulator,
+# one must have a very long fight or iterate a short fight many, many times.  Given the constraints of
+# mana, iterating a short fight is often more realistic.
+iterations=1000
+
+# For convenience it is possible to tell the simulator that a specific resource (mana, rage, etc)
+# will never run out if you do not wish to configure raid/consumable buff scenarios to ensure sufficient
+# resource replenishment.
+infinite_mana=0
+
+# WotLK has regen ticks occuring every 0.1sec.  Modeling this exactly produces a ton of churn in the
+# event list and tons of unnecessary calculations.  A value of 1.0 is not perfect, but the performance
+# improvement is worth the slight inaccuracy.
+regen_periodicity=1.0
+
+# From the testing at http://elitistjerks.com/f15/t37584-wrath_boss_armor_testing it appears WotLK boss armor is 13k
+target_armor=13000
+
+# Support for Warrior class does not yet exist
+battle_shout=685
+sunder_armor=3925
+thunder_clap=1
+
+# Support for the Paladin class does not yet exist
+blessing_of_kings=1
+blessing_of_wisdom=1
+blessing_of_might=688
+judgement_of_wisdom=1
+sanctified_retribution=1
+swift_retribution=1
+
+# Support for Death Knights does not yet exist.
+razorice=1
+crypt_fever=1
+
+# Support for Feral Druids does not exist.
+leader_of_the_pack=1
+mangle=1
+
+# To generate scale factors, set calculate_scale_factors=1
+calculate_scale_factors=0
+
