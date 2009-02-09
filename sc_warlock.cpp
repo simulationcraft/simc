@@ -1488,7 +1488,7 @@ static void trigger_demonic_empathy_on_owner( action_t* a )
   if( ! o -> talents.demonic_empathy ) return;
 
   // demonic empathy only triggers on spells and abilities, not melee
-  if( ! a -> resource != RESOURCE_MANA ) return;
+  if( a -> resource != RESOURCE_MANA ) return;
 
   o -> buffs_demonic_empathy = 3;
 
