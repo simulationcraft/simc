@@ -1,3 +1,4 @@
+
 Welcome to SimulationCraft!
 
 There have been some changes to the interface, so please read carefully.
@@ -29,8 +30,8 @@ Windows users may take advantage of the SIMCRAFT.BAT and SCALE_FACTORS.BAT scrip
 drag-n-dropping config files onto these icons.  They will generate output of the
 form: confg_name_out.txt and config_name.html
 
-The following Wiki pages offer a more detailed resource on how to use the tool:
+The following Wiki page offers a more detailed resource on how to use the tool:
 
 http://code.google.com/p/simulationcraft/wiki/HowToRun
-http://code.google.com/p/simulationcraft/wiki/PlayerOptions
+
 
