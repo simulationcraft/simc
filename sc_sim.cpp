@@ -77,7 +77,7 @@ sim_t::~sim_t()
 // sim_t::add_event ==========================================================
 
 void sim_t::add_event( event_t* e,
-		       double   delta_time )
+                       double   delta_time )
 {
   assert( delta_time >= 0 );
 
@@ -167,7 +167,7 @@ void sim_t::cancel_events( player_t* p )
     {
       if( e -> player == p ) 
       {
-	e -> canceled = 1;
+        e -> canceled = 1;
       }
     }
   }
@@ -339,10 +339,10 @@ bool sim_t::init()
       party_index++;
       for( int j=0; j < num_players; j++ )
       {
-	player_t* p = find_player( player_names[ j ] );
-	if( ! p ) printf( "simcraft: ERROR! Unable to find player %s\n", player_names[ j ].c_str() );
-	assert( p );
-	p -> party = party_index;
+        player_t* p = find_player( player_names[ j ] );
+        if( ! p ) printf( "simcraft: ERROR! Unable to find player %s\n", player_names[ j ].c_str() );
+        assert( p );
+        p -> party = party_index;
       }
     }
   }
@@ -410,7 +410,7 @@ void sim_t::analyze()
     {
       for( stats_t* s = pet -> stats_list; s; s = s -> next )
       {
-	stats_list.push_back( s );
+        stats_list.push_back( s );
       }
     }
 
@@ -459,8 +459,8 @@ void sim_t::analyze()
     {
       if( proc -> count > 0 ) 
       {
-	proc -> count /= iterations;
-	proc -> frequency = p -> total_seconds / proc -> count;
+        proc -> count /= iterations;
+        proc -> frequency = p -> total_seconds / proc -> count;
       }
     }
 
@@ -476,7 +476,7 @@ void sim_t::analyze()
 
       for( int j=0; ( j < max_buckets ) && ( j < s -> num_buckets ); j++ )
       {
-	p -> timeline_dmg[ j ] += s -> timeline_dmg[ j ];
+        p -> timeline_dmg[ j ] += s -> timeline_dmg[ j ];
       }
     }
 
@@ -487,13 +487,13 @@ void sim_t::analyze()
 
       for( int j=1; ( j <= 10 ) && ( (i-j) >=0 ); j++ )
       {
-	window_dmg += p -> timeline_dmg[ i-j ];
-	window_size++;
+        window_dmg += p -> timeline_dmg[ i-j ];
+        window_size++;
       }
       for( int j=1; ( j <= 10 ) && ( (i+j) < max_buckets ); j++ )
       {
-	window_dmg += p -> timeline_dmg[ i+j ];
-	window_size++;
+        window_dmg += p -> timeline_dmg[ i+j ];
+        window_size++;
       }
 
       p -> timeline_dps[ i ] = window_dmg / window_size;
@@ -527,9 +527,9 @@ void sim_t::analyze()
 
       for( int i=0; i < iterations; i++ )
       {
-	double i_dps = p -> iteration_dps[ i ];
-	int index = (int) ( num_buckets * ( i_dps - min ) / range );
-	p -> distribution_dps[ index ]++;
+        double i_dps = p -> iteration_dps[ i ];
+        int index = (int) ( num_buckets * ( i_dps - min ) / range );
+        p -> distribution_dps[ index ]++;
       }
     }
   }
@@ -551,7 +551,7 @@ void sim_t::iterate()
 
   for( int i=0; i < iterations; i++ )
   {
-    if( i % message_interval == 0 ) 
+    if( ! log && ( i % message_interval == 0 ) )
     {
       fprintf( output_file, "%d... ", message_index-- );
       fflush( output_file );
@@ -587,7 +587,7 @@ void sim_t::merge( sim_t& other_sim )
     }
 
     int num_buckets = std::min(       p -> timeline_resource.size(), 
-				other_p -> timeline_resource.size() );
+                                other_p -> timeline_resource.size() );
 
     for( int i=0; i < num_buckets; i++ )
     {
@@ -696,7 +696,7 @@ player_t* sim_t::find_player( const std::string& name )
 // sim_t::parse_option ======================================================
 
 bool sim_t::parse_option( const std::string& name,
-			  const std::string& value )
+                          const std::string& value )
 {
   option_t options[] =
   {
@@ -822,11 +822,11 @@ int main( int argc, char** argv )
   srand( sim.seed );
 
   fprintf( sim.output_file, 
-	   "\n"
-	   "SimulationCraft for World of Warcraft build %s\n"
-	   "\n"
-	   "Generating baseline... (iterations=%d, max_time=%.0f, target_health=%.0f)\n",
-	   sim.patch_str.c_str(), sim.iterations, sim.max_time, sim.target -> initial_health );
+           "\n"
+           "SimulationCraft for World of Warcraft build %s\n"
+           "\n"
+           "Generating baseline... (iterations=%d, max_time=%.0f, target_health=%.0f)\n",
+           sim.patch_str.c_str(), sim.iterations, sim.max_time, sim.target -> initial_health );
   fflush( sim.output_file );
 
   sim.execute();

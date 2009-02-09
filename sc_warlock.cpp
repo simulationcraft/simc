@@ -20,7 +20,7 @@ struct warlock_t : public player_t
   action_t*      active_immolate;
   action_t*      active_shadowflame;
   action_t*      active_pandemic;
-  int         active_dots;
+  int            active_dots;
 
   // Buffs
   int    buffs_backdraft;
@@ -3825,17 +3825,17 @@ struct metamorphosis_t : public warlock_spell_t
     {
       struct immolation_t : public warlock_spell_t
       {
-	immolation_t( player_t* player ) : 
-	  warlock_spell_t( "immolation", player, SCHOOL_FIRE, TREE_DEMONOLOGY )
-	{
-	  background     = true;
-	  base_cost      = 0.64 * player -> resource_base[ RESOURCE_MANA ];
-	  base_td_init   = 481; 
-	  base_tick_time = 1.0; 
-	  num_ticks      = 15;
-	  tick_power_mod = 0.143;
-	}
-	virtual double tick_time() { return base_tick_time * haste(); }
+        immolation_t( player_t* player ) : 
+          warlock_spell_t( "immolation", player, SCHOOL_FIRE, TREE_DEMONOLOGY )
+        {
+          background     = true;
+          base_cost      = 0.64 * player -> resource_base[ RESOURCE_MANA ];
+          base_td_init   = 481; 
+          base_tick_time = 1.0; 
+          num_ticks      = 15;
+          tick_power_mod = 0.143;
+        }
+        virtual double tick_time() { return base_tick_time * haste(); }
       };
 
       immolation_spell = new immolation_t( p );
