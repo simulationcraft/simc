@@ -1240,7 +1240,7 @@ struct hunter_pet_attack_t : public attack_t
 
     base_multiplier *= 1.0 + p -> talents.spiked_collar * 0.03;
     base_multiplier *= 1.0 + o -> talents.unleashed_fury * 0.03;
-    base_multiplier *= 1.0 + o -> talents.kindred_spirits * 0.03;
+    base_multiplier *= 1.0 + o -> talents.kindred_spirits * 0.04;
   }
 
   virtual double execute_time()
@@ -1349,7 +1349,7 @@ struct pet_melee_t : public hunter_pet_attack_t
       base_multiplier   *= ( 1.0 - p -> talents.cobra_reflexes * 0.075 );
       base_execute_time *= 1.0 / ( 1.0 + p -> talents.cobra_reflexes * 0.15 );
     }
-    base_execute_time *= 1.0 / ( 1.0 + 0.02 * o -> talents.serpents_swiftness );
+    base_execute_time *= 1.0 / ( 1.0 + 0.04 * o -> talents.serpents_swiftness );
 
     if( o -> gear.tier7_2pc ) base_multiplier *= 1.05;
   }
