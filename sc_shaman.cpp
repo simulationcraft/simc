@@ -417,7 +417,7 @@ static void trigger_windfury_weapon( attack_t* a )
 
   if( ! a -> sim -> cooldown_ready( p -> cooldowns_windfury_weapon ) ) return;
 
-  if( a -> sim -> roll( 0.20 + ( p -> glyphs.windfury_weapon ? 0.05 : 0 ) ) )
+  if( a -> sim -> roll( 0.20 + ( p -> glyphs.windfury_weapon ? 0.02 : 0 ) ) )
   {
     if( ! p -> windfury_weapon_attack )
     {

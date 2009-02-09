@@ -830,7 +830,7 @@ void rogue_attack_t::player_buff()
   }
   if( p -> buffs_hunger_for_blood )
   {
-    player_multiplier *= 1.0 + p -> buffs_hunger_for_blood * 0.03;
+    player_multiplier *= 1.0 + p -> buffs_hunger_for_blood * 0.05;
   }
   if( p -> buffs_master_of_subtlety )
   {
@@ -981,7 +981,7 @@ struct melee_t : public rogue_attack_t
     double t = rogue_attack_t::execute_time();
 
     if( p -> buffs_blade_flurry   ) t *= 1.0 / 1.20;
-    if( p -> buffs_slice_and_dice ) t *= 1.0 / ( 1.30 + ( p -> gear.tier6_2pc ? 0.05 : 0.00 ) );
+    if( p -> buffs_slice_and_dice ) t *= 1.0 / ( 1.40 + ( p -> gear.tier6_2pc ? 0.05 : 0.00 ) );
 
     p -> uptimes_blade_flurry   -> update( p -> buffs_blade_flurry   != 0 );
     p -> uptimes_slice_and_dice -> update( p -> buffs_slice_and_dice != 0 );
@@ -1896,7 +1896,7 @@ struct mutilate_t : public rogue_attack_t
   {
     rogue_t* p = player -> cast_rogue();
     rogue_attack_t::player_buff();
-    if( sim -> target -> debuffs.poisoned ) player_multiplier *= 1.50;
+    if( sim -> target -> debuffs.poisoned ) player_multiplier *= 1.20;
     p -> uptimes_poisoned -> update( sim -> target -> debuffs.poisoned > 0 );
     trigger_dirty_deeds( this );
   }
