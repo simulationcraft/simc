@@ -251,13 +251,15 @@ struct destruction_potion_t : public action_t
 struct speed_potion_t : public action_t
 {
   int used;
+  int target_pct;
 
   speed_potion_t( player_t* p, const std::string& options_str ) : 
-    action_t( ACTION_USE, "speed_potion", p ), used( 0 )
+    action_t( ACTION_USE, "speed_potion", p ), used( 0 ), target_pct( 0 )
   {
     option_t options[] =
     {
-      { "sync", OPT_STRING, &sync_str },
+      { "sync",       OPT_STRING, &sync_str   },
+      { "target_pct", OPT_INT,    &target_pct },
       { NULL }
     };
     parse_options( options, options_str );
@@ -300,6 +302,10 @@ struct speed_potion_t : public action_t
     if( used )
       return false;
 
+    if( target_pct > 0 )
+      if( sim -> target -> health_percentage() > target_pct )
+        return false;
+
     return( cooldown_ready <= sim -> current_time );
   }
 
@@ -317,13 +323,15 @@ struct speed_potion_t : public action_t
 struct wild_magic_potion_t : public action_t
 {
   int used;
+  int target_pct;
 
   wild_magic_potion_t( player_t* p, const std::string& options_str ) : 
-    action_t( ACTION_USE, "wild_magic_potion", p ), used( 0 )
+    action_t( ACTION_USE, "wild_magic_potion", p ), used( 0 ), target_pct( 0 )
   {
     option_t options[] =
     {
-      { "sync", OPT_STRING, &sync_str },
+      { "sync",       OPT_STRING, &sync_str   },
+      { "target_pct", OPT_INT,    &target_pct },
       { NULL }
     };
     parse_options( options, options_str );
@@ -367,6 +375,10 @@ struct wild_magic_potion_t : public action_t
   {
     if( used )
       return false;
+
+    if( target_pct > 0 )
+      if( sim -> target -> health_percentage() > target_pct )
+        return false;
 
     return( cooldown_ready <= sim -> current_time );
   }
