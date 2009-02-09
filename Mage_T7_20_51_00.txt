@@ -18,9 +18,9 @@ tier7_2pc=1
 tier7_4pc=1
 chaotic_skyflare=1
 # Glyphs
-glyph_arcane_power=1
-glyph_arcane_blast=1
-glyph_mage_armor=1
+glyph_fire_ball=1
+glyph_molten_armor=1
+glyph_mana_gem=1
 # Trinkets
 illustration_of_the_dragon_soul=1
 dying_curse=1

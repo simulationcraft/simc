@@ -4,8 +4,9 @@ mage=Mage_T7_52_19_00
 level=80
 talents=http://www.wowhead.com/?talent=of0Vck0IzxGu0xedfVczo0h
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/arcane_brilliance/mage_armor/focus_magic
+actions+=/mana_gem,trigger=3500
 actions+=/mirror_image/arcane_power/presence_of_mind,pyroblast/arcane_blast,max=3/arcane_missiles,barrage=1/arcane_barrage
-actions+=/evocation/mana_gem,trigger=5000/mana_potion,trigger=4300
+actions+=/evocation/mana_potion,trigger=4300
 gear_stamina=1000
 gear_intellect=750
 gear_spirit=400
@@ -17,7 +18,7 @@ tier7_2pc=1
 tier7_4pc=1
 chaotic_skyflare=1
 # Glyphs
-glyph_arcane_power=1
+glyph_arcane_missiles=1
 glyph_arcane_blast=1
 glyph_mage_armor=1
 # Trinkets
