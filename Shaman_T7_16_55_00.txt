@@ -1,0 +1,31 @@
+#!simcraft optimal_raid=1 max_time=300
+
+shaman=Shaman_T7_16_55_00
+level=80
+talents=http://www.wowhead.com/?talent=hVbhqZhbxsoxdAIkufot
+actions=flask,type=endless_rage/food,type=great_feast/windfury_weapon,weapon=main/flametongue_weapon,weapon=off
+actions+=/strength_of_earth_totem/windfury_totem/searing_totem/lightning_shield
+actions+=/auto_attack/lightning_bolt,maelstrom=5,ss_wait=1/shamanistic_rage/spirit_wolf/earth_shock,ss_wait=1/stormstrike/earth_shock/lava_lash/bloodlust,target_pct=25
+gear_agility=725
+gear_stamina=1000
+gear_intellect=400
+gear_attack_power=2050
+gear_expertise_rating=190
+gear_armor_penetration_rating=0
+gear_spell_power=0
+gear_hit_rating=340
+gear_crit_rating=725
+gear_haste_rating=225
+tier7_2pc_enhancement=1
+tier7_4pc_enhancement=1
+relentless_earthstorm=1
+main_hand=mace,dps=171,speed=2.6,enchant=berserking
+off_hand=mace,dps=156,speed=2.5,enchant=berserking
+totem_of_hex=1
+# Glyphs
+glyph_windfury_weapon=1
+glyph_stormstrike=1
+glyph_lightning_shield=1
+# Trinkets
+darkmoon_greatness=1
+fury_of_the_five_flights=1

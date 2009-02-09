@@ -218,7 +218,7 @@ struct hunter_t : public player_t
 
     ammo_dps = 0;
 
-    quiver_haste = 1.0;
+    quiver_haste = 0.0;
   }
 
   // Character Definition
@@ -1850,7 +1850,7 @@ double hunter_attack_t::execute_time()
     t *= 1.0 / ( 1.0 + p -> buffs_rapid_fire );
   }
 
-  t *= 1.0 / p -> quiver_haste;
+  t *= 1.0 / ( 1.0 + 0.01 * p -> quiver_haste );
 
   t *= 1.0 / ( 1.0 + 0.04 * p -> talents.serpents_swiftness );
 

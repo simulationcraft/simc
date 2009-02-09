@@ -1,0 +1,37 @@
+#!simcraft max_time=300 optimal_raid=1 
+
+# When using this profile in the context of a raid:
+# set honor_among_thieves_interval=0
+# set tricks_of_the_trade=a_player_name
+
+rogue=Rogue_T7_07_21_43
+level=80
+talents=http://www.wowhead.com/?talent=fhLZ0xV0x0xoZxbrbhGzdAzqc
+actions=flask,type=endless_rage/food,type=great_feast/apply_poison,main_hand=wound,off_hand=wound
+actions+=/auto_attack/pool_energy/slice_and_dice,min_combo_points=4,refresh_at=5/tricks_of_the_trade
+actions+=/blade_flurry/rupture,min_combo_points=5/eviscerate,min_combo_points=5
+gear_strength=0
+gear_agility=1100
+gear_stamina=950
+gear_intellect=0
+gear_spirit=0
+gear_attack_power=2350
+gear_armor_penetration_rating=0
+gear_expertise_rating=215
+gear_hit_rating=250
+gear_crit_rating=675
+gear_haste_rating=280
+gear_spell_power=0
+glyph_rupture=1
+glyph_slice_and_dice=1
+glyph_eviscerate=1
+relentless_earthstorm=1
+tier7_2pc=1
+tier7_4pc=1
+main_hand=dagger,dps=156,speed=1.4,enchant=berserking
+off_hand=dagger,dps=156,speed=1.4,enchant=berserking
+# Trinkets
+darkmoon_greatness=1
+fury_of_the_five_flights=1
+# When using this profile with a real raid AND party setups, override this value to zero.
+honor_among_thieves_interval=0.5

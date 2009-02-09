@@ -1,0 +1,104 @@
+#!simcraft max_time=300 
+
+optimal_raid=1
+
+# Default Gear Profile
+default_stamina=1000
+default_intellect=750
+default_spirit=400
+default_spell_power=2200
+default_crit_rating=535
+default_hit_rating=290
+default_haste_rating=575
+
+mage=Mage_T7_00_53_18
+level=80
+talents=http://www.wowhead.com/?talent=oZfVc0RhIuVubhstbIccoc
+actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/arcane_brilliance/molten_armor
+actions+=/mana_gem,trigger=1000/speed_potion
+actions+=/scorch,debuff=1/mirror_image/combustion/icy_veins/living_bomb/pyroblast,hot_streak=1/frostfire_bolt
+actions+=/evocation
+tier7_2pc=1
+tier7_4pc=1
+chaotic_skyflare=1
+# Glyphs
+glyph_arcane_power=1
+glyph_arcane_blast=1
+glyph_mage_armor=1
+# Trinkets
+illustration_of_the_dragon_soul=1
+dying_curse=1
+
+mage=Mage_T7_18_00_53
+level=80
+talents=http://www.wowhead.com/?talent=of0Vck0cZZVIccRcu0f0gfsx
+actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/arcane_brilliance/molten_armor/focus_magic
+actions+=/mana_gem,trigger=1000/speed_potion
+actions+=/mirror_image/ice_lance,frozen=1,fb_priority=1/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/frost_bolt
+actions+=/evocation
+tier7_2pc=1
+tier7_4pc=1
+chaotic_skyflare=1
+# Glyphs
+glyph_arcane_power=1
+glyph_arcane_blast=1
+glyph_mage_armor=1
+# Trinkets
+illustration_of_the_dragon_soul=1
+dying_curse=1
+
+mage=Mage_T7_20_51_00
+level=80
+talents=http://www.wowhead.com/?talent=of0Vck0fZ0Ec0RhIhVubhct
+actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/arcane_brilliance/molten_armor/focus_magic
+actions+=/mana_gem,trigger=1000/speed_potion
+actions+=/scorch,debuff=1/mirror_image/combustion/living_bomb/pyroblast,hot_streak=1/fire_ball
+actions+=/evocation
+enchant_hit_rating=+75
+enchant_haste_rating=-75
+tier7_2pc=1
+tier7_4pc=1
+chaotic_skyflare=1
+# Glyphs
+glyph_arcane_power=1
+glyph_arcane_blast=1
+glyph_mage_armor=1
+# Trinkets
+illustration_of_the_dragon_soul=1
+dying_curse=1
+
+mage=Mage_T7_52_19_00
+level=80
+talents=http://www.wowhead.com/?talent=of0Vck0IzxGu0xedfVczo0h
+actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/arcane_brilliance/mage_armor/focus_magic
+actions+=/mirror_image/arcane_power/presence_of_mind,pyroblast/arcane_blast,max=3/arcane_missiles,barrage=1/arcane_barrage
+actions+=/evocation/mana_gem,trigger=5000/mana_potion,trigger=4300
+tier7_2pc=1
+tier7_4pc=1
+chaotic_skyflare=1
+# Glyphs
+glyph_arcane_power=1
+glyph_arcane_blast=1
+glyph_mage_armor=1
+# Trinkets
+illustration_of_the_dragon_soul=1
+dying_curse=1
+
+mage=Mage_T7_57_03_11
+level=80
+talents=http://www.wowhead.com/?talent=of0Vcu0IzxGuMxedcZbGc0o
+actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/arcane_brilliance/mage_armor/focus_magic
+actions+=/mirror_image/arcane_power/icy_veins/presence_of_mind,arcane_blast/arcane_blast,max=3/arcane_missiles,barrage=1/arcane_barrage
+actions+=/evocation/mana_gem,trigger=5000/mana_potion,trigger=4300
+enchant_hit_rating=-75
+enchant_haste_rating=+75
+tier7_2pc=1
+tier7_4pc=1
+chaotic_skyflare=1
+# Glyphs
+glyph_arcane_power=1
+glyph_arcane_blast=1
+glyph_mage_armor=1
+# Trinkets
+illustration_of_the_dragon_soul=1
+dying_curse=1

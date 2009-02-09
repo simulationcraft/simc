@@ -575,7 +575,7 @@ const char* report_t::chart_raid_dps( std::string& s )
     if( p -> dps > max_dps ) max_dps = p -> dps;
   }
   s += "&";
-  snprintf( buffer, sizeof(buffer), "chds=0,%.0f", max_dps * 2 ); s += buffer;
+  snprintf( buffer, sizeof(buffer), "chds=0,%.0f", max_dps * 2.5 ); s += buffer;
   s += "&";
   s += "chco=";
   for( int i=0; i < num_players; i++ )
@@ -844,7 +844,7 @@ int report_t::chart_raid_dpet( std::string& s, std::vector<std::string>& images 
   double max_dpet = stats_list[ 0 ] -> dpet;
 
   int max_actions_per_chart = 25;
-  int max_charts = 2;
+  int max_charts = 4;
 
   char buffer[ 1024 ];
 

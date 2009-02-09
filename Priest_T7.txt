@@ -1,0 +1,58 @@
+#!simcraft max_time=300 
+
+optimal_raid=1
+
+# Default Gear Profile
+default_stamina=1000
+default_intellect=750
+default_spirit=400
+default_spell_power=2200
+default_crit_rating=535
+default_hit_rating=290
+default_haste_rating=575
+
+priest=Priest_T7_14_00_57_SWD
+level=80
+talents=http://www.wowhead.com/?talent=bVcbzhZZG0fVRfzfiqfzAo
+actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/inner_fire/shadow_form/mana_potion,trigger=4300/shadow_fiend,trigger=6000/dispersion
+actions+=/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/shadow_word_death,mb_wait=0,mb_priority=0/mind_flay
+tier7_2pc=1
+tier7_4pc=1
+chaotic_skyflare=1
+glyph_shadow_word_pain=1
+glyph_shadow=1
+glyph_shadow_word_death=1
+# Trinkets
+illustration_of_the_dragon_soul=1
+dying_curse=1
+
+priest=Priest_T7_14_00_57
+level=80
+talents=http://www.wowhead.com/?talent=bVcbzhZZG0fVRfzfiqfzAo
+actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/inner_fire/shadow_form/mana_potion,trigger=4300/shadow_fiend,trigger=6000/dispersion
+actions+=/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/mind_flay
+tier7_2pc=1
+tier7_4pc=1
+chaotic_skyflare=1
+glyph_shadow_word_pain=1
+glyph_shadow=1
+glyph_shadow_word_death=1
+# Trinkets
+illustration_of_the_dragon_soul=1
+dying_curse=1
+
+priest=Priest_T7_38_28_05
+level=80
+talents=http://www.wowhead.com/?talent=bVcbkhxtrxo0bZ0Et0bbqbZG
+actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/inner_fire/divine_spirit/mana_potion,trigger=4300/shadow_fiend,trigger=6000
+actions+=/inner_focus,shadow_word_pain/shadow_word_pain/power_infusion/holy_fire/mind_blast/smite
+enchant_crit_rating=+100
+enchant_hit_rating=+75
+enchant_haste_rating=-175
+chaotic_skyflare=1
+glyph_shadow_word_death=1
+glyph_shadow_word_pain=1
+glyph_shadow=1
+# Trinkets
+illustration_of_the_dragon_soul=1
+dying_curse=1

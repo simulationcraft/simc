@@ -1,0 +1,24 @@
+#!simcraft max_time=300 optimal_raid=1
+
+warlock=Warlock_T7_00_31_40
+level=80
+talents=http://www.wowhead.com/?talent=IZcxczsgMV0zZVcGqb0uVMA
+actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/fire_stone/fel_armor/summon_pet,imp
+actions+=/curse_of_agony/corruption/immolate/incinerate/life_tap
+gear_stamina=1000
+gear_intellect=750
+gear_spirit=400
+gear_spell_power=2200
+gear_crit_rating=535
+gear_hit_rating=290
+gear_haste_rating=575
+tier7_2pc=1
+tier7_4pc=1
+chaotic_skyflare=1
+# Glyphs
+glyph_immolate=1
+glyph_imp=1
+glyph_curse_of_agony=1
+# Trinkets
+illustration_of_the_dragon_soul=1
+dying_curse=1

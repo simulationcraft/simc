@@ -2933,6 +2933,12 @@ void rogue_t::combat_begin()
   {
     if( honor_among_thieves_interval > 0 )
     {
+      if( party != 0 )
+      {
+	printf( "simcraft: %s cannot have both a party specification and a non-zero 'honor_among_thieves_interval' value.\n", name() );
+	exit(0);
+      }
+
       struct honor_among_thieves_proc_t : public event_t
       {
 	honor_among_thieves_proc_t( sim_t* sim, rogue_t* p, double interval ) : event_t( sim, p )
