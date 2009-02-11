@@ -357,8 +357,6 @@ struct warlock_pet_t : public pet_t
         a -> base_crit       +=       o -> talents.master_demonologist * 0.01;
       }
     }
-
-    a -> base_multiplier *= damage_modifier;
   }
 
   void adjust_player_modifiers( action_t* a )
@@ -392,6 +390,8 @@ struct warlock_pet_melee_t : public attack_t
     repeating         = true;
 
     p -> adjust_base_modifiers( this );
+
+    base_multiplier *= p -> damage_modifier;
   }
 
   virtual void player_buff()
