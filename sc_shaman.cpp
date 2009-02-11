@@ -1999,7 +1999,7 @@ struct flametongue_weapon_t : public shaman_spell_t
   int    main, off;
 
   flametongue_weapon_t( player_t* player, const std::string& options_str ) : 
-    shaman_spell_t( "flametongue_weapon", player, SCHOOL_NATURE, TREE_ENHANCEMENT ), bonus_power(0), main(0), off(0)
+    shaman_spell_t( "flametongue_weapon", player, SCHOOL_FIRE, TREE_ENHANCEMENT ), bonus_power(0), main(0), off(0)
   {
     shaman_t* p = player -> cast_shaman();
     
