@@ -82,7 +82,7 @@ $(SRC_OBJ): %.o: %.cpp $(SRC_H) Makefile
 
 REV=0
 tarball:
-	tar -cvf simcraft-r$(REV).tar $(SRC) Makefile raid_70.txt raid_80.txt
+	tar -cvf simcraft-r$(REV).tar $(SRC) Makefile *.txt
 	gzip simcraft-r$(REV).tar
 
 clean:

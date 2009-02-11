@@ -1,3 +1,3 @@
 cd /d "%~d1%~p1"
-simcraft.exe max_time=300 optimal_raid=1 input=%~n1%~x1 output=%~n1_out.txt html=%~n1.html calculate_scale_factors=1 iterations=10000
-notepad %~n1_out.txt
+simcraft.exe max_time=300 optimal_raid=1 input=%~n1%~x1 output=%~n1.txt html=%~n1.html calculate_scale_factors=1 iterations=10000
+notepad %~n1.txt

@@ -2,7 +2,7 @@
 
 optimal_raid=1 
 
-input=Globals.txt
+Globals.simcraft
 
 # Default Gear Profile
 default_strength=0
@@ -45,7 +45,7 @@ actions=flask,type=endless_rage/food,type=fish_feast/apply_poison,main_hand=woun
 actions+=/auto_attack/pool_energy/slice_and_dice,min_combo_points=4,refresh_at=5/tricks_of_the_trade
 actions+=/killing_spree/blade_flurry/rupture,min_combo_points=5/eviscerate,min_combo_points=4/sinister_strike/adrenaline_rush
 enchant_attack_power=160
-enchant_attack_expertise_rating=-80
+enchant_expertise_rating=-80
 glyph_rupture=1
 glyph_slice_and_dice=1
 glyph_sinister_strike=1
@@ -65,7 +65,7 @@ actions=flask,type=endless_rage/food,type=fish_feast/apply_poison,main_hand=woun
 actions+=/auto_attack/pool_energy/slice_and_dice,min_combo_points=4,refresh_at=5/tricks_of_the_trade
 actions+=/killing_spree/blade_flurry/rupture,min_combo_points=4/eviscerate,min_combo_points=4/sinister_strike/adrenaline_rush
 enchant_attack_power=160
-enchant_attack_expertise_rating=-80
+enchant_expertise_rating=-80
 glyph_rupture=1
 glyph_slice_and_dice=1
 glyph_sinister_strike=1
@@ -85,7 +85,7 @@ actions=flask,type=endless_rage/food,type=fish_feast/apply_poison,main_hand=woun
 actions+=/auto_attack/pool_energy/slice_and_dice,min_combo_points=4,refresh_at=4/tricks_of_the_trade
 actions+=/killing_spree/blade_flurry/rupture,min_combo_points=5/backstab/adrenaline_rush
 enchant_attack_power=160
-enchant_attack_expertise_rating=-80
+enchant_expertise_rating=-80
 glyph_rupture=1
 glyph_slice_and_dice=1
 glyph_blade_flurry=1

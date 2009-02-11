@@ -10,10 +10,10 @@ melee.txt
 CLICK_ME_TO_RUN.BAT
 
 The standard config files have been unpacked into a hierarchy of individual files.
-Raid_T7.txt
-Globals_T7.txt
-Caster_T7.txt
-Melee_T7.txt
+Raid_T7.simcraft
+Globals_T7.simcraft
+Caster_T7.simcraft
+Melee_T7.simcraft
 
 Each class/talents/actions combination now has its own config file.  
 
@@ -28,7 +28,7 @@ Unix users will find that each config file is now an executable that can be simp
 
 Windows users may take advantage of the SIMCRAFT.BAT and SCALE_FACTORS.BAT scripts by
 drag-n-dropping config files onto these icons.  They will generate output of the
-form: confg_name_out.txt and config_name.html
+form: confg_name.txt and config_name.html
 
 The following Wiki page offers a more detailed resource on how to use the tool:
 

@@ -192,7 +192,6 @@ void target_t::combat_begin()
     debuffs.faerie_fire = 1260;
     debuffs.ferocious_inspiration = 1;
     debuffs.hunters_mark = 450;
-    debuffs.improved_faerie_fire = 3;
     debuffs.improved_scorch = 5;
     debuffs.master_poisoner = 1;
     debuffs.misery = 3;

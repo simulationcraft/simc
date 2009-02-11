@@ -71,6 +71,7 @@ struct warlock_t : public player_t
   // Up-Times
   uptime_t* uptimes_backdraft;
   uptime_t* uptimes_demonic_empathy;
+  uptime_t* uptimes_demonic_pact;
   uptime_t* uptimes_demonic_soul;
   uptime_t* uptimes_empowered_imp;
   uptime_t* uptimes_eradication;
@@ -236,6 +237,7 @@ struct warlock_t : public player_t
     // Up-Times
     uptimes_backdraft             = get_uptime( "backdraft"             );
     uptimes_demonic_empathy       = get_uptime( "demonic_empathy"       );
+    uptimes_demonic_pact          = get_uptime( "demonic_pact"          );
     uptimes_demonic_soul          = get_uptime( "demonic_soul"          );
     uptimes_empowered_imp         = get_uptime( "empowered_imp"         );
     uptimes_eradication           = get_uptime( "eradication"           );
@@ -1795,6 +1797,11 @@ void warlock_spell_t::player_buff()
       if( p -> buffs_empowered_imp ) player_crit += 0.20;
       p -> uptimes_empowered_imp -> update( p -> buffs_empowered_imp != 0 );
     }
+
+    if( p -> talents.demonic_pact )
+    {
+      p -> uptimes_demonic_pact -> update( p -> buffs.demonic_pact != 0 );
+    }
   }
 }
 
@@ -2687,6 +2694,7 @@ struct drain_soul_t : public warlock_spell_t
         if( action -> ready() )
         {
           current_tick = num_ticks;
+	  p -> gcd_ready = sim -> current_time + 0.250;  // 250ms penalty for ending DS early
           break;
         }
       }

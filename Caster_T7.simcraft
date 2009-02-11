@@ -1,0 +1,32 @@
+#!simcraft
+
+optimal_raid=1
+
+Globals.simcraft
+
+Druid_T7_58_00_13_SF.simcraft
+Druid_T7_58_00_13_W.simcraft
+Druid_T7_58_00_13_W_FF.simcraft
+
+Mage_T7_00_53_18.simcraft
+Mage_T7_18_00_53.simcraft   focus_magic_target=Mage_T7_20_51_00
+Mage_T7_20_51_00.simcraft   focus_magic_target=Mage_T7_52_19_00
+Mage_T7_52_19_00.simcraft   focus_magic_target=Mage_T7_57_03_11
+Mage_T7_57_03_11.simcraft   focus_magic_target=Mage_T7_18_00_53
+
+Priest_T7_14_00_57.simcraft
+Priest_T7_14_00_57_SWD.simcraft
+Priest_T7_38_28_05.simcraft
+
+Shaman_T7_57_14_00.simcraft
+
+Warlock_T7_00_31_40.simcraft
+Warlock_T7_00_41_30.simcraft
+Warlock_T7_00_53_18.simcraft
+Warlock_T7_02_13_56.simcraft
+Warlock_T7_55_00_16.simcraft
+Warlock_T7_55_00_16_CoE.simcraft
+Warlock_T7_55_00_16_DG.simcraft
+Warlock_T7_55_00_16_Inf.simcraft
+Warlock_T7_55_00_16_NoDS.simcraft
+

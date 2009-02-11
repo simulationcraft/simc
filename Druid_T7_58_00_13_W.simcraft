@@ -1,13 +1,13 @@
 #!simcraft max_time=300 optimal_raid=1
 
-druid=Druid_T7_58_00_13_W_FF
+druid=Druid_T7_58_00_13_W
 level=80
 talents=http://www.wowhead.com/?talent=0xG0uiIsfdIVhouZbxczb
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/mark_of_the_wild/moonkin_form/mana_potion,trigger=4300/innervate,trigger=12000
-actions+=/faerie_fire/treants/moonfire/insect_swarm/starfire,eclipse=trigger/wrath
+actions+=/treants/moonfire/insect_swarm/starfire,eclipse=trigger/wrath
 gear_stamina=1000
 gear_intellect=750
-gear_spirit=300
+gear_spirit=400
 gear_spell_power=2200
 gear_crit_rating=535
 gear_hit_rating=265

@@ -962,7 +962,7 @@ double mage_spell_t::cost()
   mage_t* p = player -> cast_mage();
   if( p -> buffs_clearcasting ) return 0;
   double c = spell_t::cost();
-  if( p -> buffs_arcane_power ) c += base_cost * 1.10;
+  if( p -> buffs_arcane_power ) c += base_cost * 1.20;
   return c;
 }
 
@@ -1058,7 +1058,7 @@ void mage_spell_t::player_buff()
     }
   }
 
-  if( p -> buffs_arcane_power ) player_multiplier *= 1.10;
+  if( p -> buffs_arcane_power ) player_multiplier *= 1.20;
 
   if( p -> talents.playing_with_fire )
   {

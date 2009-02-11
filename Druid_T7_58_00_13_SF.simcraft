@@ -7,7 +7,7 @@ actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/mark_of_the_wild
 actions+=/treants/moonfire/insect_swarm/wrath,eclipse=trigger/starfire
 gear_stamina=1000
 gear_intellect=750
-gear_spirit=300
+gear_spirit=400
 gear_spell_power=2200
 gear_crit_rating=535
 gear_hit_rating=265

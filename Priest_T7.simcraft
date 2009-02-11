@@ -2,7 +2,7 @@
 
 optimal_raid=1
 
-input=Globals.txt
+Globals.simcraft
 
 # Default Gear Profile
 default_stamina=1000
@@ -11,7 +11,7 @@ default_agility=0
 default_intellect=750
 default_spirit=400
 default_attack_power=0
-default_attack_expertise=0
+default_expertise_rating=0
 default_armor_penetration_rating=0
 default_spell_power=2200
 default_crit_rating=535

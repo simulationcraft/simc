@@ -1,10 +1,10 @@
 #!simcraft max_time=300 optimal_raid=1
 
-hunter=Hunter_T7_01_18_52
+hunter=Hunter_T7_06_14_51
 level=80
-talents=http://www.wowhead.com/?talent=coZ0eVoohZe00i0cIhxdAhcd
-actions=flask,type=endless_rage/food,type=great_feast/summon_pet,cat/hunters_mark
-actions+=/auto_shot/aspect/rapid_fire/explosive_shot/kill_shot/serpent_sting/aimed_shot/steady_shot
+talents=http://www.wowhead.com/?talent=cxoZ0eVoZe00i0cIhxdAhck
+actions=flask,type=endless_rage/food,type=fish_feast/summon_pet,cat/hunters_mark
+actions+=/auto_shot/aspect/rapid_fire/explosive_shot/kill_shot/serpent_sting/multi_shot/steady_shot
 gear_agility=1100
 gear_stamina=900
 gear_intellect=350
@@ -23,7 +23,8 @@ glyph_steady_shot=1
 ranged=bow,dps=145,speed=2.9
 ammo_dps=67.5
 quiver_haste=15
-input=Hunter_T7_Cat.txt
 # Trinkets
 darkmoon_greatness=1
 fury_of_the_five_flights=1
+# Pet
+Hunter_T7_Cat.simcraft

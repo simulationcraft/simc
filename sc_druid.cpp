@@ -588,7 +588,8 @@ struct faerie_fire_t : public druid_spell_t
     consume_resource();
 
     target_t* t = sim -> target;
-    if( t -> debuffs.faerie_fire )
+    if( t -> debuffs.faerie_fire &&
+	t -> expirations.faerie_fire )
     {
       // We are overriding an existing debuff......
       t -> expirations.faerie_fire -> execute();

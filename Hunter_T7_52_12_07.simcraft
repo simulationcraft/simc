@@ -24,7 +24,8 @@ glyph_improved_aspect_of_the_hawk=1
 ranged=bow,dps=145,speed=2.9
 ammo_dps=67.5
 quiver_haste=15
-input=Hunter_T7_Cat.txt
 # Trinkets
 darkmoon_greatness=1
 fury_of_the_five_flights=1
+# Pet
+Hunter_T7_Cat.simcraft

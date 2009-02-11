@@ -2022,8 +2022,8 @@ bool player_t::parse_option( const std::string& name,
     { "gear_expertise_rating",                OPT_INT,  &( gear.expertise_rating                          ) },
     { "gear_armor_penetration_rating",        OPT_INT,  &( gear.armor_penetration_rating                  ) },
     { "enchant_attack_power",                 OPT_INT,  &( gear.attack_power_enchant                      ) },
-    { "enchant_attack_expertise_rating",      OPT_INT,  &( gear.expertise_rating_enchant                  ) },
-    { "enchant_attack_penetration",           OPT_INT,  &( gear.armor_penetration_rating_enchant          ) },
+    { "enchant_expertise_rating",             OPT_INT,  &( gear.expertise_rating_enchant                  ) },
+    { "enchant_armor_penetration",            OPT_INT,  &( gear.armor_penetration_rating_enchant          ) },
     // Player - Gear - Common									            
     { "gear_haste_rating",                    OPT_INT,  &( gear.haste_rating                              ) },
     { "gear_hit_rating",                      OPT_INT,  &( gear.hit_rating                                ) },
@@ -2061,6 +2061,9 @@ bool player_t::parse_option( const std::string& name,
     { "flask",                                OPT_STRING, &( flask_str                                    ) },
     { "elixirs",                              OPT_STRING, &( elixirs_str                                  ) },
     { "food",                                 OPT_STRING, &( food_str                                     ) },
+    // Deprecated
+    { "enchant_attack_expertise_rating", OPT_DEPRECATED,  (void*) "enchant_expertise_rating"  },
+    { "enchant_attack_penetration",      OPT_DEPRECATED,  (void*) "enchant_armor_penetration" },
     { NULL, OPT_UNKNOWN }
   };
 
