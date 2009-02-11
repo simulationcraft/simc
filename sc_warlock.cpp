@@ -274,13 +274,14 @@ enum pet_type_t { PET_NONE=0, PET_FELGUARD, PET_FELHUNTER, PET_IMP,
 struct warlock_pet_t : public pet_t
 {
   int pet_type;
+  double damage_modifier;
   int buffs_demonic_empathy;
   int buffs_demonic_empowerment;
   event_t* expirations_demonic_empathy;
   event_t* expirations_demonic_pact;
 
   warlock_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name, int pt ) :
-    pet_t( sim, owner, pet_name ), pet_type(pt)
+    pet_t( sim, owner, pet_name ), pet_type(pt), damage_modifier(1.0)
   {
     buffs_demonic_empathy = 0;
     buffs_demonic_empowerment = 0;
@@ -339,8 +340,6 @@ struct warlock_pet_t : public pet_t
     if( pet_type == PET_FELGUARD )
     {
       a -> base_multiplier *= 1.0 + o -> talents.master_demonologist * 0.01;
-      // testing shows there's a hidden 5% multiplier
-      a -> base_multiplier *= 1.05;
     }
     else if( pet_type == PET_IMP )
     {
@@ -357,14 +356,9 @@ struct warlock_pet_t : public pet_t
         a -> base_multiplier *= 1.0 + o -> talents.master_demonologist * 0.01;
         a -> base_crit       +=       o -> talents.master_demonologist * 0.01;
       }
-      // testing shows there's a hidden 5% multiplier
-      a -> base_multiplier *= 1.05;
     }
-    else if( pet_type == PET_FELHUNTER )
-    {
-      // testing shows there's a hidden -20% multiplier
-      a -> base_multiplier *= 0.8;
-    }
+
+    a -> base_multiplier *= damage_modifier;
   }
 
   void adjust_player_modifiers( action_t* a )
@@ -405,8 +399,7 @@ struct warlock_pet_melee_t : public attack_t
     warlock_pet_t* p = (warlock_pet_t*) player -> cast_pet();
     warlock_t* o = p -> owner -> cast_warlock();
     attack_t::player_buff();
-    if ( p -> pet_type != PET_INFERNAL &&
-         ( p -> pet_type != PET_DOOMGUARD || sim -> patch.after(3, 0, 8) ) )
+    if( p -> pet_type != PET_INFERNAL )
     {
       player_power += 0.57 * o -> composite_spell_power( SCHOOL_MAX );
       p -> adjust_player_modifiers( this );
@@ -637,6 +630,8 @@ struct felguard_pet_t : public warlock_pet_t
     main_hand_weapon.damage     = 412.5;
     main_hand_weapon.swing_time = 2.0;
 
+    damage_modifier = 1.05;
+
     buffs_demonic_frenzy = 0;
 
     action_list_str = "cleave/wait";
@@ -709,6 +704,8 @@ struct felhunter_pet_t : public warlock_pet_t
     main_hand_weapon.damage     = 412.5;
     main_hand_weapon.swing_time = 2.0;
 
+    damage_modifier = 0.8;
+
     action_list_str = "shadow_bite/wait";
   }
   virtual void init_base()
@@ -765,6 +762,8 @@ struct succubus_pet_t : public warlock_pet_t
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.damage     = 412.5;
     main_hand_weapon.swing_time = 2.0;
+
+    damage_modifier = 1.05;
 
     action_list_str = "lash_of_pain/wait";
   }
@@ -834,8 +833,10 @@ struct infernal_pet_t : public warlock_pet_t
     warlock_pet_t( sim, owner, "infernal", PET_INFERNAL ), melee(0)
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.damage     = 1497.5;
+    main_hand_weapon.damage     = 412.5;
     main_hand_weapon.swing_time = 2.0;
+
+    damage_modifier = 3.20;
   }
   virtual void init_base()
   {
@@ -892,15 +893,15 @@ struct doomguard_pet_t : public warlock_pet_t
     warlock_pet_t( sim, owner, "doomguard", PET_DOOMGUARD ), melee(0)
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.damage     = 1690;
+    main_hand_weapon.damage     = 412.5;
     main_hand_weapon.swing_time = 2.0;
+
+    damage_modifier = 2.978;
   }
 
   virtual void init_base()
   {
     warlock_pet_t::init_base();
-
-    attribute_base[ ATTR_STAMINA   ] = 328;
 
     resource_base[ RESOURCE_HEALTH ] = 18000;
     resource_base[ RESOURCE_MANA   ] = 3000;
