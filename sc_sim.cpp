@@ -553,8 +553,8 @@ void sim_t::iterate()
   {
     if( ( message_interval > 0 ) && ( i % message_interval == 0 ) )
     {
-      fprintf( output_file, "%d... ", message_index-- );
-      fflush( output_file );
+      fprintf( stdout, "%d... ", message_index-- );
+      fflush( stdout );
     }
     combat( i );
   }
@@ -822,18 +822,17 @@ int main( int argc, char** argv )
   srand( sim.seed );
 
   fprintf( sim.output_file, 
-           "\n"
-           "SimulationCraft for World of Warcraft build %s\n"
-           "\n"
-           "Generating baseline... (iterations=%d, max_time=%.0f, target_health=%.0f)\n",
-           sim.patch_str.c_str(), sim.iterations, sim.max_time, sim.target -> initial_health );
+           "\nSimulationCraft for World of Warcraft build %s (iterations=%d, max_time=%.0f, optimal_raid=%d)\n",
+           sim.patch_str.c_str(), sim.iterations, sim.max_time, sim.optimal_raid );
   fflush( sim.output_file );
+
+  fprintf( stdout, "\nGenerating baseline... \n" ); fflush( stdout );
 
   sim.execute();
 
   sim.scaling -> analyze();
 
-  fprintf( sim.output_file, "\nGenerating reports...\n" );
+  fprintf( stdout, "\nGenerating reports...\n" );
 
   sim.report -> print();
   sim.report -> chart();

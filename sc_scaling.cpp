@@ -37,8 +37,8 @@ void scaling_t::analyze_attributes()
   {
     if( gear.attribute[ i ] != 0 )
     {
-      fprintf( sim -> output_file, "\nGenerating scale factors for %s...\n", util_t::attribute_type_string( i ) );
-      fflush( sim -> output_file );
+      fprintf( stdout, "\nGenerating scale factors for %s...\n", util_t::attribute_type_string( i ) );
+      fflush( stdout );
 
       sim_t* child_sim = new sim_t( sim );
       child_sim -> gear_delta.attribute[ i ] = gear.attribute[ i ];
@@ -68,8 +68,8 @@ void scaling_t::analyze_spell_power()
 
   if( gear.spell_power != 0 )
   {
-    fprintf( sim -> output_file, "\nGenerating scale factors for spell power...\n" );
-    fflush( sim -> output_file );
+    fprintf( stdout, "\nGenerating scale factors for spell power...\n" );
+    fflush( stdout );
 
     sim_t* child_sim = new sim_t( sim );
     child_sim -> gear_delta.spell_power = gear.spell_power;
@@ -99,8 +99,8 @@ void scaling_t::analyze_attack_power()
 
   if( gear.attack_power != 0 )
   {
-    fprintf( sim -> output_file, "\nGenerating scale factors for attack power...\n" );
-    fflush( sim -> output_file );
+    fprintf( stdout, "\nGenerating scale factors for attack power...\n" );
+    fflush( stdout );
 
     sim_t* child_sim = new sim_t( sim );
     child_sim -> gear_delta.attack_power = gear.attack_power;
@@ -129,8 +129,8 @@ void scaling_t::analyze_expertise()
 
   if( gear.expertise_rating != 0 )
   {
-    fprintf( sim -> output_file, "\nGenerating scale factors for expertise rating...\n" );
-    fflush( sim -> output_file );
+    fprintf( stdout, "\nGenerating scale factors for expertise rating...\n" );
+    fflush( stdout );
 
     sim_t* child_sim = new sim_t( sim );
     child_sim -> gear_delta.expertise_rating = gear.expertise_rating;
@@ -159,8 +159,8 @@ void scaling_t::analyze_armor_penetration()
 
   if( gear.armor_penetration_rating != 0 )
   {
-    fprintf( sim -> output_file, "\nGenerating scale factors for armor penetration rating...\n" );
-    fflush( sim -> output_file );
+    fprintf( stdout, "\nGenerating scale factors for armor penetration rating...\n" );
+    fflush( stdout );
 
     sim_t* child_sim = new sim_t( sim );
     child_sim -> gear_delta.armor_penetration_rating = gear.armor_penetration_rating;
@@ -189,8 +189,8 @@ void scaling_t::analyze_hit()
 
   if( gear.hit_rating != 0 )
   {
-    fprintf( sim -> output_file, "\nGenerating scale factors for hit rating...\n" );
-    fflush( sim -> output_file );
+    fprintf( stdout, "\nGenerating scale factors for hit rating...\n" );
+    fflush( stdout );
 
     sim_t* child_sim = new sim_t( sim );
     child_sim -> gear_delta.hit_rating = gear.hit_rating;
@@ -220,8 +220,8 @@ void scaling_t::analyze_crit()
 
   if( gear.crit_rating != 0 )
   {
-    fprintf( sim -> output_file, "\nGenerating scale factors for crit rating...\n" );
-    fflush( sim -> output_file );
+    fprintf( stdout, "\nGenerating scale factors for crit rating...\n" );
+    fflush( stdout );
 
     sim_t* child_sim = new sim_t( sim );
     child_sim -> gear_delta.crit_rating = gear.crit_rating;
@@ -250,8 +250,8 @@ void scaling_t::analyze_haste()
 
   if( gear.haste_rating != 0 )
   {
-    fprintf( sim -> output_file, "\nGenerating scale factors for haste rating...\n" );
-    fflush( sim -> output_file );
+    fprintf( stdout, "\nGenerating scale factors for haste rating...\n" );
+    fflush( stdout );
 
     sim_t* child_sim = new sim_t( sim );
     child_sim -> gear_delta.haste_rating = gear.haste_rating;
