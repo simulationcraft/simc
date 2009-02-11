@@ -17,7 +17,7 @@ struct flask_t : public action_t
 {
   int type;
 
-  flask_t( player_t* p, const std::string& options_str ) : 
+  flask_t( player_t* p, const std::string& options_str ) :
     action_t( ACTION_USE, "flask", p ), type( FLASK_NONE )
   {
     std::string type_str;
@@ -41,14 +41,14 @@ struct flask_t : public action_t
     }
     assert( type != FLASK_NONE );
   }
-  
+
   virtual void execute()
   {
     if( sim -> log ) report_t::log( sim, "%s uses Flask %s", player -> name(), util_t::flask_type_string( type ) );
     player -> flask = type;
     switch( type )
     {
-    case FLASK_BLINDING_LIGHT:     
+    case FLASK_BLINDING_LIGHT:
       player -> spell_power[ SCHOOL_ARCANE ] += 80;
       player -> spell_power[ SCHOOL_HOLY   ] += 80;
       player -> spell_power[ SCHOOL_NATURE ] += 80;
@@ -96,7 +96,7 @@ struct food_t : public action_t
 {
   int type;
 
-  food_t( player_t* p, const std::string& options_str ) : 
+  food_t( player_t* p, const std::string& options_str ) :
     action_t( ACTION_USE, "food", p ), type( FOOD_NONE )
   {
     std::string type_str;
@@ -120,18 +120,18 @@ struct food_t : public action_t
     }
     assert( type != FOOD_NONE );
   }
-  
+
   virtual void execute()
   {
     if( sim -> log ) report_t::log( sim, "%s uses Food %s", player -> name(), util_t::food_type_string( type ) );
     player -> food = type;
     switch( type )
     {
-    case FOOD_TENDER_SHOVELTUSK_STEAK:     
+    case FOOD_TENDER_SHOVELTUSK_STEAK:
       player -> spell_power[ SCHOOL_MAX ] += 46;
       player -> attribute[ ATTR_STAMINA ] += 40;
       break;
-    case FOOD_SNAPPER_EXTREME:     
+    case FOOD_SNAPPER_EXTREME:
       player -> spell_hit += 40;
       player -> attribute[ ATTR_STAMINA ] += 40;
       break;
@@ -139,31 +139,32 @@ struct food_t : public action_t
       player -> spell_power[ SCHOOL_MAX ] += 35;
       player -> attribute[ ATTR_STAMINA ] += 40;
       break;
-    case FOOD_POACHED_BLUEFISH:     
+    case FOOD_POACHED_BLUEFISH:
       player -> spell_power[ SCHOOL_MAX ] += 23;
       player -> attribute[ ATTR_SPIRIT ]  += 20;
       break;
-    case FOOD_BLACKENED_BASILISK:     
+    case FOOD_BLACKENED_BASILISK:
       player -> spell_power[ SCHOOL_MAX ] += 23;
       player -> attribute[ ATTR_SPIRIT ]  += 20;
       break;
-    case FOOD_GOLDEN_FISHSTICKS:     
+    case FOOD_GOLDEN_FISHSTICKS:
       player -> spell_power[ SCHOOL_MAX ] += 23;
       player -> attribute[ ATTR_SPIRIT ]  += 20;
       break;
-    case FOOD_CRUNCHY_SERPENT:     
+    case FOOD_CRUNCHY_SERPENT:
       player -> spell_power[ SCHOOL_MAX ] += 23;
       player -> attribute[ ATTR_SPIRIT ]  += 20;
       break;
-    case FOOD_BLACKENED_DRAGONFIN:     
+    case FOOD_BLACKENED_DRAGONFIN:
       player -> attribute[ ATTR_AGILITY ] += 40;
       player -> attribute[ ATTR_STAMINA ] += 40;
       break;
-    case FOOD_GREAT_FEAST:     
+    case FOOD_GREAT_FEAST:
       player -> attack_power              += 60;
       player -> spell_power[ SCHOOL_MAX ] += 35;
       player -> attribute[ ATTR_STAMINA ] += 30;
-    case FOOD_FISH_FEAST:     
+      break;
+    case FOOD_FISH_FEAST:
       player -> attack_power              += 80;
       player -> spell_power[ SCHOOL_MAX ] += 46;
       player -> attribute[ ATTR_STAMINA ] += 40;
@@ -186,7 +187,7 @@ struct destruction_potion_t : public action_t
 {
   int used;
 
-  destruction_potion_t( player_t* p, const std::string& options_str ) : 
+  destruction_potion_t( player_t* p, const std::string& options_str ) :
     action_t( ACTION_USE, "destruction_potion", p ), used( 0 )
   {
     option_t options[] =
@@ -201,7 +202,7 @@ struct destruction_potion_t : public action_t
     trigger_gcd = 0;
     harmful = false;
   }
-  
+
   virtual void execute()
   {
     struct expiration_t : public event_t
@@ -222,7 +223,7 @@ struct destruction_potion_t : public action_t
         p -> spell_crit -= 0.02;
       }
     };
-  
+
     if( sim -> log ) report_t::log( sim, "%s uses %s", player -> name(), name() );
     player -> share_cooldown( cooldown_group, cooldown );
     new ( sim ) expiration_t( sim, player );
@@ -253,7 +254,7 @@ struct speed_potion_t : public action_t
   int used;
   int target_pct;
 
-  speed_potion_t( player_t* p, const std::string& options_str ) : 
+  speed_potion_t( player_t* p, const std::string& options_str ) :
     action_t( ACTION_USE, "speed_potion", p ), used( 0 ), target_pct( 0 )
   {
     option_t options[] =
@@ -269,7 +270,7 @@ struct speed_potion_t : public action_t
     trigger_gcd = 0;
     harmful = false;
   }
-  
+
   virtual void execute()
   {
     struct expiration_t : public event_t
@@ -290,7 +291,7 @@ struct speed_potion_t : public action_t
         p -> recalculate_haste();
       }
     };
-  
+
     if( sim -> log ) report_t::log( sim, "%s uses %s", player -> name(), name() );
     player -> share_cooldown( cooldown_group, cooldown );
     new ( sim ) expiration_t( sim, player );
@@ -325,7 +326,7 @@ struct wild_magic_potion_t : public action_t
   int used;
   int target_pct;
 
-  wild_magic_potion_t( player_t* p, const std::string& options_str ) : 
+  wild_magic_potion_t( player_t* p, const std::string& options_str ) :
     action_t( ACTION_USE, "wild_magic_potion", p ), used( 0 ), target_pct( 0 )
   {
     option_t options[] =
@@ -341,7 +342,7 @@ struct wild_magic_potion_t : public action_t
     trigger_gcd = 0;
     harmful = false;
   }
-  
+
   virtual void execute()
   {
     struct expiration_t : public event_t
@@ -364,7 +365,7 @@ struct wild_magic_potion_t : public action_t
         p -> spell_power[ SCHOOL_MAX ] -= 200;
       }
     };
-  
+
     if( sim -> log ) report_t::log( sim, "%s uses %s", player -> name(), name() );
     player -> share_cooldown( cooldown_group, cooldown );
     new ( sim ) expiration_t( sim, player );
@@ -401,7 +402,7 @@ struct mana_potion_t : public action_t
   int max;
   int  used;
 
-  mana_potion_t( player_t* p, const std::string& options_str ) : 
+  mana_potion_t( player_t* p, const std::string& options_str ) :
     action_t( ACTION_USE, "mana_potion", p ), trigger(0), min(0), max(0), used(0)
   {
     option_t options[] =
@@ -415,7 +416,7 @@ struct mana_potion_t : public action_t
 
     if( min == 0 && max == 0) min = max = trigger;
 
-    if( min > max) { int tmp = min; min = max; max = tmp;}    
+    if( min > max) { int tmp = min; min = max; max = tmp;}
 
     if( max == 0 ) max = trigger;
     if( trigger == 0 ) trigger = max;
@@ -426,7 +427,7 @@ struct mana_potion_t : public action_t
     trigger_gcd = 0;
     harmful = false;
   }
-  
+
   virtual void execute()
   {
     if( sim -> log ) report_t::log( sim, "%s uses Mana potion", player -> name() );
@@ -443,10 +444,10 @@ struct mana_potion_t : public action_t
     if( used )
       return false;
 
-    if( cooldown_ready > sim -> current_time ) 
+    if( cooldown_ready > sim -> current_time )
       return false;
 
-    return( player -> resource_max    [ RESOURCE_MANA ] - 
+    return( player -> resource_max    [ RESOURCE_MANA ] -
             player -> resource_current[ RESOURCE_MANA ] ) > trigger;
   }
 
@@ -467,7 +468,7 @@ struct health_stone_t : public action_t
   int health;
   int used;
 
-  health_stone_t( player_t* p, const std::string& options_str ) : 
+  health_stone_t( player_t* p, const std::string& options_str ) :
     action_t( ACTION_USE, "health_stone", p ), trigger(0), health(0), used(0)
   {
     option_t options[] =
@@ -487,7 +488,7 @@ struct health_stone_t : public action_t
     trigger_gcd = 0;
     harmful = false;
   }
-  
+
   virtual void execute()
   {
     if( sim -> log ) report_t::log( sim, "%s uses Health Stone", player -> name() );
@@ -501,10 +502,10 @@ struct health_stone_t : public action_t
     if( used )
       return false;
 
-    if( cooldown_ready > sim -> current_time ) 
+    if( cooldown_ready > sim -> current_time )
       return false;
 
-    return( player -> resource_max    [ RESOURCE_HEALTH ] - 
+    return( player -> resource_max    [ RESOURCE_HEALTH ] -
             player -> resource_current[ RESOURCE_HEALTH ] ) > trigger;
   }
 
@@ -526,7 +527,7 @@ struct dark_rune_t : public action_t
   int mana;
   int used;
 
-  dark_rune_t( player_t* p, const std::string& options_str ) : 
+  dark_rune_t( player_t* p, const std::string& options_str ) :
     action_t( ACTION_USE, "dark_rune", p ), trigger(0), health(0), mana(0), used(0)
   {
     option_t options[] =
@@ -547,7 +548,7 @@ struct dark_rune_t : public action_t
     trigger_gcd = 0;
     harmful = false;
   }
-  
+
   virtual void execute()
   {
     if( sim -> log ) report_t::log( sim, "%s uses Dark Rune", player -> name() );
@@ -562,13 +563,13 @@ struct dark_rune_t : public action_t
     if( used )
       return false;
 
-    if( cooldown_ready > sim -> current_time ) 
+    if( cooldown_ready > sim -> current_time )
       return false;
 
     if( player -> resource_current[ RESOURCE_HEALTH ] <= health )
       return false;
 
-    return( player -> resource_max    [ RESOURCE_MANA ] - 
+    return( player -> resource_max    [ RESOURCE_MANA ] -
             player -> resource_current[ RESOURCE_MANA ] ) > trigger;
   }
 
@@ -586,7 +587,7 @@ struct wizard_oil_t : public action_t
   int bonus_power;
   int bonus_crit;
 
-  wizard_oil_t( player_t* p, const std::string& options_str ) : 
+  wizard_oil_t( player_t* p, const std::string& options_str ) :
     action_t( ACTION_USE, "wizard_oil", p )
   {
     trigger_gcd = 0;
@@ -643,7 +644,7 @@ void consumable_t::init_food( player_t* p )
 // ==========================================================================
 
 action_t* consumable_t::create_action( player_t*          p,
-                                       const std::string& name, 
+                                       const std::string& name,
                                        const std::string& options_str )
 {
   if( name == "dark_rune"          ) return new          dark_rune_t( p, options_str );
