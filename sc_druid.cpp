@@ -1302,6 +1302,7 @@ action_t* druid_t::create_action( const std::string& name,
   if( name == "ferocious_bite"    ) return new    ferocious_bite_t( this, options_str );
   if( name == "maim"              ) return new              maim_t( this, options_str );
   if( name == "mangle_cat"        ) return new        mangle_cat_t( this, options_str );
+  if( name == "prowl"             ) return new             prowl_t( this, options_str );
   if( name == "rake"              ) return new              rake_t( this, options_str );
   if( name == "ravage"            ) return new            ravage_t( this, options_str );
   if( name == "rip"               ) return new               rip_t( this, options_str );
