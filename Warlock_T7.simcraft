@@ -50,11 +50,11 @@ glyph_curse_of_agony=1
 illustration_of_the_dragon_soul=1
 dying_curse=1
 
-warlock=Warlock_T7_00_53_18
+warlock=Warlock_T7_00_55_16
 level=80
-talents=http://www.wowhead.com/?talent=IZcxIzsxoqcsguhoE0hV
+talents=http://www.wowhead.com/?talent=IZcxIzsxoq0sguAoEz0V
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/fire_stone/fel_armor/summon_pet,felguard
-actions+=/curse_of_doom/demonic_empowerment/metamorphosis,immolation=1/corruption/immolate/shadow_bolt/life_tap
+actions+=/curse_of_doom/demonic_empowerment/metamorphosis,immolation=1,target_pct=30/corruption/immolate/shadow_bolt/life_tap
 tier7_2pc=1
 tier7_4pc=1
 chaotic_skyflare=1
