@@ -21,7 +21,7 @@ default_spell_power=0
 rogue=Rogue_T7_07_21_43
 level=80
 talents=http://www.wowhead.com/?talent=fhLZ0xV0x0xoZxbrbhGzdAzqc
-actions=flask,type=endless_rage/food,type=great_feast/apply_poison,main_hand=wound,off_hand=wound
+actions=flask,type=endless_rage/food,type=fish_feast/apply_poison,main_hand=wound,off_hand=wound
 actions+=/auto_attack/pool_energy/slice_and_dice,min_combo_points=4,refresh_at=5/tricks_of_the_trade
 actions+=/blade_flurry/rupture,min_combo_points=5/eviscerate,min_combo_points=5
 glyph_rupture=1
@@ -101,7 +101,7 @@ fury_of_the_five_flights=1
 rogue=Rogue_T7_51_13_07
 level=80
 talents=http://www.wowhead.com/?talent=f0ef0exoVboIzAo0xV0hZxb
-actions=flask,type=endless_rage/food,type=great_feast/apply_poison,main_hand=instant,off_hand=deadly
+actions=flask,type=endless_rage/food,type=fish_feast/apply_poison,main_hand=instant,off_hand=deadly
 actions+=/auto_attack/pool_energy/hunger_for_blood,refresh_at=2/slice_and_dice,min_combo_points=2/tricks_of_the_trade
 actions+=/rupture,min_combo_points=4/cold_blood,sync=envenom/envenom,min_combo_points=4,no_buff=1/mutilate,max_combo_points=5
 glyph_rupture=1
