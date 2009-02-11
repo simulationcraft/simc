@@ -1117,7 +1117,7 @@ struct arcane_barrage_t : public mage_spell_t
     
     base_execute_time = 0;
     may_crit          = true;
-    direct_power_mod  = (3.0/3.5); 
+    direct_power_mod  = (2.5/3.5); 
     cooldown          = 3.0;
 
     base_cost        *= 1.0 - p -> talents.frost_channeling * (0.1/3);
