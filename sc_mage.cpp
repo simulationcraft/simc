@@ -1502,7 +1502,7 @@ struct arcane_power_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
     assert( p -> talents.arcane_power );
     trigger_gcd = 0;  
-    cooldown = 60.0;
+    cooldown = 120.0;
     cooldown *= 1.0 - p -> talents.arcane_flows * 0.15;
   }
    
