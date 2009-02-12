@@ -1,0 +1,28 @@
+
+# This is a default gear profile for Tier-7 melee/ranged.
+# The enchant_xxx options are used in the player config to implement gear specialization.
+
+# Standard Gear Attributes
+gear_stamina=1000
+gear_strength=0
+gear_agility=1100
+gear_intellect=0
+gear_spirit=0
+gear_attack_power=2200
+gear_expertise_rating=0
+gear_armor_penetration_rating=0
+gear_spell_power=0
+gear_hit_rating=265
+gear_crit_rating=650
+gear_haste_rating=350
+
+# Set Bonuses
+tier7_2pc=1
+tier7_4pc=1
+
+# Meta Gem
+relentless_earthstorm=1
+
+# Item Procs
+darkmoon_greatness=1
+fury_of_the_five_flights=1

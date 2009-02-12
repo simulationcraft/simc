@@ -1,0 +1,29 @@
+
+# This is a default gear profile for Tier-7 casters.
+# The enchant_xxx options are used in the player config to implement gear specialization.
+
+# Standard Gear Attributes
+gear_stamina=1000
+gear_strength=0
+gear_agility=0
+gear_intellect=750
+gear_spirit=350
+gear_attack_power=0
+gear_expertise_rating=0
+gear_armor_penetration_rating=0
+gear_spell_power=2000
+gear_hit_rating=290
+gear_crit_rating=500
+gear_haste_rating=500
+
+# Set Bonuses
+tier7_2pc=1
+tier7_4pc=1
+
+# Meta Gem
+chaotic_skyflare=1
+
+# Item Procs
+illustration_of_the_dragon_soul=1
+dying_curse=1
+
