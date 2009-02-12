@@ -2233,8 +2233,8 @@ struct chimera_shot_t : public hunter_attack_t
             trigger_gcd = 0;
             base_cost   = 0;
             direct_power_mod = 0;
-            // FIXME! Assuming this proc cannot miss.
-            may_miss = false;
+            // This proc can miss.
+            may_miss = true;
             may_crit = true;
           }
         };
