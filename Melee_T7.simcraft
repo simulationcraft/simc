@@ -19,5 +19,4 @@ Shaman_T7_16_55_00.simcraft
 
 # Since honor_among_thieves_interval=0 the HAT Rogue must be in a party
 
-party=Rogue_T7_07_21_43/Hunter_T7_01_18_52/Hunter_T7_06_14_51/Hunter_T7_13_51_07/Hunter_T7_52_12_07
-
+party=Rogue_T7_07_21_43/Rogue_T7_51_13_07/Hunter_T7_01_18_52/Hunter_T7_52_12_07/Shaman_T7_16_55_00
