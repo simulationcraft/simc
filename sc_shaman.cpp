@@ -236,6 +236,7 @@ struct shaman_t : public player_t
 
   // Character Definition
   virtual void      init_base();
+  virtual void      init_unique_gear();
   virtual void      reset();
   virtual double    composite_attack_power();
   virtual double    composite_spell_power( int school );
@@ -1191,7 +1192,7 @@ struct chain_lightning_t : public shaman_spell_t
       return false;
 
     if( max_lvb_cd > 0 && p -> active_lava_burst )
-      if( ( p -> active_lava_burst -> cooldown_ready - sim -> current_time ) > max_lvb_cd )
+      if( ( p -> active_lava_burst -> cooldown_ready - sim -> current_time ) > ( max_lvb_cd * haste() ) )
 	return false;
 
     return true;
@@ -2838,6 +2839,36 @@ void shaman_t::init_base()
   }
 }
 
+// shaman_t::init_unique_gear ===============================================
+
+void shaman_t::init_unique_gear()
+{
+  player_t::init_unique_gear();
+
+  if( talents.dual_wield )
+  {
+    if( gear.tier4_2pc ) tiers.t4_2pc_enhancement = 1;
+    if( gear.tier4_4pc ) tiers.t4_4pc_enhancement = 1;
+    if( gear.tier5_2pc ) tiers.t5_2pc_enhancement = 1;
+    if( gear.tier5_4pc ) tiers.t5_4pc_enhancement = 1;
+    if( gear.tier6_2pc ) tiers.t6_2pc_enhancement = 1;
+    if( gear.tier6_4pc ) tiers.t6_4pc_enhancement = 1;
+    if( gear.tier7_2pc ) tiers.t7_2pc_enhancement = 1;
+    if( gear.tier7_4pc ) tiers.t7_4pc_enhancement = 1;
+  }
+  else
+  {
+    if( gear.tier4_2pc ) tiers.t4_2pc_elemental = 1;
+    if( gear.tier4_4pc ) tiers.t4_4pc_elemental = 1;
+    if( gear.tier5_2pc ) tiers.t5_2pc_elemental = 1;
+    if( gear.tier5_4pc ) tiers.t5_4pc_elemental = 1;
+    if( gear.tier6_2pc ) tiers.t6_2pc_elemental = 1;
+    if( gear.tier6_4pc ) tiers.t6_4pc_elemental = 1;
+    if( gear.tier7_2pc ) tiers.t7_2pc_elemental = 1;
+    if( gear.tier7_4pc ) tiers.t7_4pc_elemental = 1;
+  }
+}
+
 // shaman_t::reset ===========================================================
 
 void shaman_t::reset()
@@ -3073,16 +3104,6 @@ bool shaman_t::parse_option( const std::string& name,
     { "tier6_4pc_enhancement",     OPT_INT,  &( tiers.t6_4pc_enhancement          ) },
     { "tier7_2pc_enhancement",     OPT_INT,  &( tiers.t7_2pc_enhancement          ) },
     { "tier7_4pc_enhancement",     OPT_INT,  &( tiers.t7_4pc_enhancement          ) },
-    // Deprecated
-    { "glyph_earth_shock", OPT_DEPRECATED, (void*) "glyph_shocking"                            },
-    { "tier4_2pc",         OPT_DEPRECATED, (void*) "tier4_2pc_elemental|tier4_2pc_enhancement" },
-    { "tier4_4pc",         OPT_DEPRECATED, (void*) "tier4_4pc_elemental|tier4_4pc_enhancement" },
-    { "tier5_2pc",         OPT_DEPRECATED, (void*) "tier5_2pc_elemental|tier5_2pc_enhancement" },
-    { "tier5_4pc",         OPT_DEPRECATED, (void*) "tier5_4pc_elemental|tier5_4pc_enhancement" },
-    { "tier6_2pc",         OPT_DEPRECATED, (void*) "tier6_2pc_elemental|tier6_2pc_enhancement" },
-    { "tier6_4pc",         OPT_DEPRECATED, (void*) "tier6_4pc_elemental|tier6_4pc_enhancement" },
-    { "tier7_2pc",         OPT_DEPRECATED, (void*) "tier7_2pc_elemental|tier7_2pc_enhancement" },
-    { "tier7_4pc",         OPT_DEPRECATED, (void*) "tier7_4pc_elemental|tier7_4pc_enhancement" },
     { NULL, OPT_UNKNOWN }
   };
 

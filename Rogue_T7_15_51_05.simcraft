@@ -9,30 +9,14 @@ talents=http://www.wowhead.com/?talent=f0eb0xZMgibx0xoru0xRtx
 actions=flask,type=endless_rage/food,type=fish_feast/apply_poison,main_hand=wound,off_hand=deadly
 actions+=/auto_attack/pool_energy/slice_and_dice,min_combo_points=4,refresh_at=5/tricks_of_the_trade
 actions+=/killing_spree/blade_flurry/rupture,min_combo_points=4/eviscerate,min_combo_points=4/sinister_strike/adrenaline_rush
-gear_strength=0
-gear_agility=1100
-gear_stamina=950
-gear_intellect=0
-gear_spirit=0
-gear_attack_power=2350
-gear_armor_penetration_rating=0
-gear_expertise_rating=215
-gear_hit_rating=250
-gear_crit_rating=675
-gear_haste_rating=280
-gear_spell_power=0
-# Not fair to use the same stats since Combat Rogue needs less expertise.
+Melee_T7_Base_Gear.simcraft
+gear_expertise_rating=200
+# Not fair to use the same stats for all Rogues since Combat Rogue needs less expertise.
 # Trade expertise for ivalue-equal amount of attack power
-enchant_attack_power=160
+enchant_attack_power=+160
 enchant_expertise_rating=-80
 glyph_rupture=1
 glyph_slice_and_dice=1
 glyph_sinister_strike=1
-relentless_earthstorm=1
-tier7_2pc=1
-tier7_4pc=1
 main_hand=fist,dps=171,speed=2.6,enchant=berserking
 off_hand=dagger,dps=156,speed=1.4,enchant=berserking
-# Trinkets
-darkmoon_greatness=1
-fury_of_the_five_flights=1

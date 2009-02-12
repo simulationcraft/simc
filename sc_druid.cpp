@@ -175,6 +175,7 @@ struct druid_t : public player_t
 
   // Character Definition
   virtual void      init_base();
+  virtual void      init_unique_gear();
   virtual void      reset();
   virtual double    composite_spell_hit();
   virtual double    composite_spell_crit();
@@ -183,7 +184,7 @@ struct druid_t : public player_t
   virtual bool      parse_option ( const std::string& name, const std::string& value );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
-  virtual int       primary_resource() { return RESOURCE_MANA; }
+  virtual int       primary_resource() { return talents.moonkin_form ? RESOURCE_MANA : RESOURCE_ENERGY; }
 };
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
@@ -1363,6 +1364,36 @@ void druid_t::init_base()
   mp5_per_intellect          = util_t::talent_rank(talents.dreamstate, 3, 0.04, 0.07, 0.10);
 }
 
+// druid_t::init_unique_gear ================================================
+
+void druid_t::init_unique_gear()
+{
+  player_t::init_unique_gear();
+
+  if( talents.moonkin_form )
+  {
+    if( gear.tier4_2pc ) tiers.t4_2pc_balance = 1;
+    if( gear.tier4_4pc ) tiers.t4_4pc_balance = 1;
+    if( gear.tier5_2pc ) tiers.t5_2pc_balance = 1;
+    if( gear.tier5_4pc ) tiers.t5_4pc_balance = 1;
+    if( gear.tier6_2pc ) tiers.t6_2pc_balance = 1;
+    if( gear.tier6_4pc ) tiers.t6_4pc_balance = 1;
+    if( gear.tier7_2pc ) tiers.t7_2pc_balance = 1;
+    if( gear.tier7_4pc ) tiers.t7_4pc_balance = 1;
+  }
+  else
+  {
+    if( gear.tier4_2pc ) tiers.t4_2pc_feral = 1;
+    if( gear.tier4_4pc ) tiers.t4_4pc_feral = 1;
+    if( gear.tier5_2pc ) tiers.t5_2pc_feral = 1;
+    if( gear.tier5_4pc ) tiers.t5_4pc_feral = 1;
+    if( gear.tier6_2pc ) tiers.t6_2pc_feral = 1;
+    if( gear.tier6_4pc ) tiers.t6_4pc_feral = 1;
+    if( gear.tier7_2pc ) tiers.t7_2pc_feral = 1;
+    if( gear.tier7_4pc ) tiers.t7_4pc_feral = 1;
+  }
+}
+
 // druid_t::reset ===========================================================
 
 void druid_t::reset()
@@ -1560,15 +1591,6 @@ bool druid_t::parse_option( const std::string& name,
     { "tier6_4pc_feral",         OPT_INT,  &( tiers.t6_4pc_feral                  ) },
     { "tier7_2pc_feral",         OPT_INT,  &( tiers.t7_2pc_feral                  ) },
     { "tier7_4pc_feral",         OPT_INT,  &( tiers.t7_4pc_feral                  ) },
-    // Deprecated
-    { "tier4_2pc", OPT_DEPRECATED, (void*) "tier4_2pc_balance|tier4_2pc_feral" },
-    { "tier4_4pc", OPT_DEPRECATED, (void*) "tier4_4pc_balance|tier4_4pc_feral" },
-    { "tier5_2pc", OPT_DEPRECATED, (void*) "tier5_2pc_balance|tier5_2pc_feral" },
-    { "tier5_4pc", OPT_DEPRECATED, (void*) "tier5_4pc_balance|tier5_4pc_feral" },
-    { "tier6_2pc", OPT_DEPRECATED, (void*) "tier6_2pc_balance|tier6_2pc_feral" },
-    { "tier6_4pc", OPT_DEPRECATED, (void*) "tier6_4pc_balance|tier6_4pc_feral" },
-    { "tier7_2pc", OPT_DEPRECATED, (void*) "tier7_2pc_balance|tier7_2pc_feral" },
-    { "tier7_4pc", OPT_DEPRECATED, (void*) "tier7_4pc_balance|tier7_4pc_feral" },
     { NULL, OPT_UNKNOWN }
   };
 

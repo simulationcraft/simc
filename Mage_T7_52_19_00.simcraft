@@ -7,20 +7,7 @@ actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/arcane_brillianc
 actions+=/mana_gem,trigger=3500
 actions+=/mirror_image/arcane_power/presence_of_mind,pyroblast/arcane_blast,max=3/arcane_missiles,barrage=1/arcane_barrage
 actions+=/evocation/mana_potion,trigger=4300
-gear_stamina=1000
-gear_intellect=750
-gear_spirit=400
-gear_spell_power=2200
-gear_crit_rating=535
-gear_hit_rating=290
-gear_haste_rating=575
-tier7_2pc=1
-tier7_4pc=1
-chaotic_skyflare=1
-# Glyphs
+Caster_T7_Base_Gear.simcraft
 glyph_arcane_missiles=1
 glyph_arcane_blast=1
 glyph_mage_armor=1
-# Trinkets
-illustration_of_the_dragon_soul=1
-dying_curse=1

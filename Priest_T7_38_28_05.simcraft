@@ -5,17 +5,10 @@ level=80
 talents=http://www.wowhead.com/?talent=bVcbkhxtrxo0bZ0Et0bbqbZG
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/inner_fire/divine_spirit/mana_potion,trigger=4300/shadow_fiend,trigger=6000
 actions+=/inner_focus,shadow_word_pain/shadow_word_pain/power_infusion/holy_fire/mind_blast/smite
-gear_stamina=1000
-gear_intellect=750
-gear_spirit=400
-gear_spell_power=2200
-gear_crit_rating=635
-gear_hit_rating=365
-gear_haste_rating=400
-chaotic_skyflare=1
+Caster_T7_Base_Gear.simcraft
+enchant_crit_rating=+100
+enchant_hit_rating=+75
+enchant_haste_rating=-175
 glyph_shadow_word_death=1
 glyph_shadow_word_pain=1
 glyph_shadow=1
-# Trinkets
-illustration_of_the_dragon_soul=1
-dying_curse=1

@@ -7,20 +7,7 @@ actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/arcane_brillianc
 actions+=/mana_gem,trigger=1000/speed_potion
 actions+=/mirror_image/ice_lance,frozen=1,fb_priority=1/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/frost_bolt
 actions+=/evocation
-gear_stamina=1000
-gear_intellect=750
-gear_spirit=400
-gear_spell_power=2200
-gear_crit_rating=460
-gear_hit_rating=290
-gear_haste_rating=650
-tier7_2pc=1
-tier7_4pc=1
-chaotic_skyflare=1
-# Glyphs
+Caster_T7_Base_Gear.simcraft
 glyph_molten_armor=1
 glyph_frost_bolt=1
 glyph_water_elemental=1
-# Trinkets
-illustration_of_the_dragon_soul=1
-dying_curse=1
