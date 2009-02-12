@@ -274,6 +274,7 @@ struct rogue_attack_t : public attack_t
   double min_snd_expire, max_snd_expire;
   double min_rup_expire, max_rup_expire;
   double min_env_expire, max_env_expire;
+  double min_time_to_die, max_time_to_die;
 
   rogue_attack_t( const char* n, player_t* player, int s=SCHOOL_PHYSICAL, int t=TREE_NONE ) : 
     attack_t( n, player, RESOURCE_ENERGY, s, t ), 
@@ -287,7 +288,8 @@ struct rogue_attack_t : public attack_t
     min_hfb_expire(0), max_hfb_expire(0), 
     min_snd_expire(0), max_snd_expire(0), 
     min_rup_expire(0), max_rup_expire(0), 
-    min_env_expire(0), max_env_expire(0)
+    min_env_expire(0), max_env_expire(0),
+    min_time_to_die(0), max_time_to_die(0)
   {
     rogue_t* p = player -> cast_rogue();
     base_crit += p -> talents.malice * 0.01;
@@ -734,6 +736,8 @@ void rogue_attack_t::parse_options( option_t*          options,
     { "env<",             OPT_FLT, &max_env_expire   },
     { "rup>",             OPT_FLT, &min_rup_expire   },
     { "rup<",             OPT_FLT, &max_rup_expire   },
+    { "time_to_die>",     OPT_FLT, &min_time_to_die  },
+    { "time_to_die<",     OPT_FLT, &max_time_to_die  },
     { NULL }
   };
   std::vector<option_t> merged_options;
@@ -950,6 +954,14 @@ bool rogue_attack_t::ready()
 
   if( max_rup_expire > 0 )
     if( ! p -> active_rupture || ( ( p -> active_rupture -> duration_ready - ct ) > max_rup_expire ) )
+      return false;
+
+  if( min_time_to_die > 0 )
+    if( sim -> target -> time_to_die() < min_time_to_die )
+      return false;
+
+  if( max_time_to_die > 0 )
+    if( sim -> target -> time_to_die() > max_time_to_die )
       return false;
 
   return true;

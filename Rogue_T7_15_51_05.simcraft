@@ -8,7 +8,13 @@ level=80
 talents=http://www.wowhead.com/?talent=f0eb0xZMgibx0xoru0xRtx
 actions=flask,type=endless_rage/food,type=fish_feast/apply_poison,main_hand=wound,off_hand=deadly
 actions+=/auto_attack/pool_energy/slice_and_dice,min_combo_points=4,refresh_at=5/tricks_of_the_trade
-actions+=/killing_spree/blade_flurry/rupture,min_combo_points=5/eviscerate,min_combo_points=5,rup>=5/sinister_strike,max_combo_points=4/adrenaline_rush
+actions+=/killing_spree/blade_flurry
+actions+=/rupture,min_combo_points=5,time_to_die>=10
+actions+=/eviscerate,min_combo_points=5,rup>=5
+actions+=/eviscerate,min_combo_points=5,time_to_die<=10
+actions+=/eviscerate,min_combo_points=1,time_to_die<=2
+actions+=/sinister_strike,max_combo_points=4
+actions+=/adrenaline_rush
 Melee_T7_Base_Gear.simcraft
 gear_expertise_rating=200
 # Not fair to use the same stats for all Rogues since Combat Rogue needs less expertise.
