@@ -2214,7 +2214,7 @@ struct chimera_shot_t : public hunter_attack_t
 
     action_t* sting = p -> active_sting();
 
-    if( sting )
+    if( result_is_hit() && sting )
     {
       sting -> refresh_duration();
 
