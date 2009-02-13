@@ -2696,7 +2696,6 @@ struct drain_soul_t : public warlock_spell_t
         if( action -> ready() )
         {
           current_tick = num_ticks;
-	  p -> gcd_ready = sim -> current_time + 0.500;  // penalty for ending DS early
           break;
         }
       }
