@@ -2264,7 +2264,7 @@ void rogue_poison_t::player_buff()
   }
   if( p -> buffs_hunger_for_blood )
   {
-    player_multiplier *= 1.0 + p -> buffs_hunger_for_blood * 0.03;
+    player_multiplier *= 1.0 + p -> buffs_hunger_for_blood * 0.05;
   }
   if( p -> buffs_master_of_subtlety )
   {

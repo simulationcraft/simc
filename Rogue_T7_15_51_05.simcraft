@@ -6,7 +6,7 @@
 rogue=Rogue_T7_15_51_05
 level=80
 talents=http://www.wowhead.com/?talent=f0eb0xZMgibx0xoru0xRtx
-actions=flask,type=endless_rage/food,type=fish_feast/apply_poison,main_hand=wound,off_hand=deadly
+actions=flask,type=endless_rage/food,type=fish_feast/apply_poison,main_hand=wound,off_hand=wound
 actions+=/auto_attack/pool_energy/slice_and_dice,min_combo_points=4,refresh_at=5/tricks_of_the_trade
 actions+=/killing_spree/blade_flurry
 actions+=/rupture,min_combo_points=5,time_to_die>=10
