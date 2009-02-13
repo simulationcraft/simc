@@ -82,7 +82,7 @@ $(SRC_OBJ): %.o: %.cpp $(SRC_H) Makefile
 
 REV=0
 tarball:
-	tar -cvf simcraft-r$(REV).tar $(SRC) Makefile *.txt
+	tar -cvf simcraft-r$(REV).tar $(SRC) Makefile *.simcraft
 	gzip simcraft-r$(REV).tar
 
 clean:

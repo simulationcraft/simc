@@ -1623,54 +1623,62 @@ void report_t::chart_html()
 
   fprintf( sim -> html_file, "<head>\n" );
   fprintf( sim -> html_file, "<title>Simulationcraft results</title>\n" );
-  fprintf( sim -> html_file, "<script type=\"text/javascript\">\n"
-      "function hideElement(el) {if (el) el.style.display='none';}\n"
-      "function showElement(el) {if (el) el.style.display='';}\n"
-      "function hideElements(els) {if (els) {"
-      "for (var i = 0; i < els.length; i++) hideElement(els[i]);"
-      "}}\n"
-      "function showElements(els) {if (els) {"
-      "for (var i = 0; i < els.length; i++) showElement(els[i]);"
-      "}}\n"
-      "</script>\n" );
+
+  if( num_players > 1 )
+  {
+    fprintf( sim -> html_file, "<script type=\"text/javascript\">\n"
+	     "function hideElement(el) {if (el) el.style.display='none';}\n"
+	     "function showElement(el) {if (el) el.style.display='';}\n"
+	     "function hideElements(els) {if (els) {"
+	     "for (var i = 0; i < els.length; i++) hideElement(els[i]);"
+	     "}}\n"
+	     "function showElements(els) {if (els) {"
+	     "for (var i = 0; i < els.length; i++) showElement(els[i]);"
+	     "}}\n"
+	     "</script>\n" );
+  }
+
   fprintf( sim -> html_file, "</head>\n" );
   fprintf( sim -> html_file, "<body>\n" );
 
-  fprintf( sim -> html_file, "<h1>Raid</h1>\n" );
-
-  fprintf( sim -> html_file, "\n<! DPS Ranking: >\n" );
-  fprintf( sim -> html_file, "<img src=\"%s\" />\n", chart_raid_dps( buffer ) );
-
-  fprintf( sim -> html_file, "\n<! Gear Overview: >\n" );
-  fprintf( sim -> html_file, "<img src=\"%s\" />", chart_raid_gear( buffer ) );
-
-  img = chart_raid_downtime( buffer );
-  if( img )
+  if( num_players > 1 )
   {
-    fprintf( sim -> html_file, "\n<! Raid Downtime: >\n" );
-    fprintf( sim -> html_file, "<img src=\"%s\" />", img );
-  }
+    fprintf( sim -> html_file, "<h1>Raid</h1>\n" );
 
-  img = chart_raid_uptimes( buffer );
-  if( img )
-  {
-    fprintf( sim -> html_file, "\n<! Global Up-Times: >\n" );
-    fprintf( sim -> html_file, "<img src=\"%s\" />", img );
-  }
+    fprintf( sim -> html_file, "\n<! DPS Ranking: >\n" );
+    fprintf( sim -> html_file, "<img src=\"%s\" />\n", chart_raid_dps( buffer ) );
 
-  std::vector<std::string> images;
-  int count = chart_raid_dpet( buffer, images );
-  for( int i=0; i < count; i++ )
-  {
-    fprintf( sim -> html_file, "\n<! Raid Damage Per Execute Time: >\n" );
-    fprintf( sim -> html_file, "<img src=\"%s\" />", images[ i ].c_str() );
+    fprintf( sim -> html_file, "\n<! Gear Overview: >\n" );
+    fprintf( sim -> html_file, "<img src=\"%s\" />", chart_raid_gear( buffer ) );
+
+    img = chart_raid_downtime( buffer );
+    if( img )
+    {
+      fprintf( sim -> html_file, "\n<! Raid Downtime: >\n" );
+      fprintf( sim -> html_file, "<img src=\"%s\" />", img );
+    }
+
+    img = chart_raid_uptimes( buffer );
+    if( img )
+    {
+      fprintf( sim -> html_file, "\n<! Global Up-Times: >\n" );
+      fprintf( sim -> html_file, "<img src=\"%s\" />", img );
+    }
+
+    std::vector<std::string> images;
+    int count = chart_raid_dpet( buffer, images );
+    for( int i=0; i < count; i++ )
+    {
+      fprintf( sim -> html_file, "\n<! Raid Damage Per Execute Time: >\n" );
+      fprintf( sim -> html_file, "<img src=\"%s\" />", images[ i ].c_str() );
+    }
+    fprintf( sim -> html_file, "<hr>\n" );
   }
-  fprintf( sim -> html_file, "<hr>\n" );
 
   html_scale_factors();
   fprintf( sim -> html_file, "<hr>\n" );
 
-  html_trigger_menu();
+  if( num_players > 1 ) html_trigger_menu();
 
   fprintf( sim -> html_file, "<div id=\"players\">\n");
   
@@ -1796,63 +1804,67 @@ void report_t::chart_wiki()
   int num_players = sim -> players_by_name.size();
   assert( num_players != 0 );
 
-  std::string raid_dps      = "No chart for Raid DPS";
-  std::string raid_gear     = "No chart for Raid Gear Overview";
-  std::string raid_downtime = "No chart for Raid Down-Time";
-  std::string raid_uptimes  = "No chart for Raid Up-Times";
-  std::string raid_dpet_1   = "No chart for Raid Damage Per Execute Time";
-  std::string raid_dpet_2   = "No chart for Raid Damage Per Execute Time";
   std::string buffer;
   const char* img;
 
-  img = chart_raid_dps( buffer );
-  if( img )
+  if( num_players > 1 )
   {
-    raid_dps = img;
-    raid_dps += "&dummy=dummy.png";
-  }
-  img = chart_raid_gear( buffer );
-  if( img )
-  {
-    raid_gear = img;
-    raid_gear += "&dummy=dummy.png";
-  }
-  img = chart_raid_downtime( buffer );
-  if( img )
-  {
-    raid_downtime = img;
-    raid_downtime += "&dummy=dummy.png";
-  }
-  img = chart_raid_uptimes( buffer );
-  if( img )
-  {
-    raid_uptimes = img;
-    raid_uptimes += "&dummy=dummy.png";
-  }
+    std::string raid_dps      = "No chart for Raid DPS";
+    std::string raid_gear     = "No chart for Raid Gear Overview";
+    std::string raid_downtime = "No chart for Raid Down-Time";
+    std::string raid_uptimes  = "No chart for Raid Up-Times";
+    std::string raid_dpet_1   = "No chart for Raid Damage Per Execute Time";
+    std::string raid_dpet_2   = "No chart for Raid Damage Per Execute Time";
 
-  std::vector<std::string> images;
-  int count = chart_raid_dpet( buffer, images );
-  img = ( count >= 1 ? images[ 0 ].c_str() : 0 );
-  if( img )
-  {
-    raid_dpet_1 = img;
-    raid_dpet_1 += "&dummy=dummy.png";
-  }
-  img = ( count >= 2 ? images[ 1 ].c_str() : 0 );
-  if( img )
-  {
-    raid_dpet_2 = img;
-    raid_dpet_2 += "&dummy=dummy.png";
-  }
+    img = chart_raid_dps( buffer );
+    if( img )
+    {
+      raid_dps = img;
+      raid_dps += "&dummy=dummy.png";
+    }
+    img = chart_raid_gear( buffer );
+    if( img )
+    {
+      raid_gear = img;
+      raid_gear += "&dummy=dummy.png";
+    }
+    img = chart_raid_downtime( buffer );
+    if( img )
+    {
+      raid_downtime = img;
+      raid_downtime += "&dummy=dummy.png";
+    }
+    img = chart_raid_uptimes( buffer );
+    if( img )
+    {
+      raid_uptimes = img;
+      raid_uptimes += "&dummy=dummy.png";
+    }
 
-  fprintf( sim -> wiki_file, "----\n" );
-  fprintf( sim -> wiki_file, "----\n" );
-  fprintf( sim -> wiki_file, "----\n" );
-  fprintf( sim -> wiki_file, "= Raid Charts =\n" );
-  fprintf( sim -> wiki_file, "|| %s || %s ||\n", raid_dps.c_str(),      raid_gear.c_str() );
-  fprintf( sim -> wiki_file, "|| %s || %s ||\n", raid_downtime.c_str(), raid_uptimes.c_str() );
-  fprintf( sim -> wiki_file, "|| %s || %s ||\n", raid_dpet_1.c_str(),   raid_dpet_2.c_str() );
-  fprintf( sim -> wiki_file, "\n" );
+    std::vector<std::string> images;
+    int count = chart_raid_dpet( buffer, images );
+    img = ( count >= 1 ? images[ 0 ].c_str() : 0 );
+    if( img )
+    {
+      raid_dpet_1 = img;
+      raid_dpet_1 += "&dummy=dummy.png";
+    }
+    img = ( count >= 2 ? images[ 1 ].c_str() : 0 );
+    if( img )
+    {
+      raid_dpet_2 = img;
+      raid_dpet_2 += "&dummy=dummy.png";
+    }
+
+    fprintf( sim -> wiki_file, "----\n" );
+    fprintf( sim -> wiki_file, "----\n" );
+    fprintf( sim -> wiki_file, "----\n" );
+    fprintf( sim -> wiki_file, "= Raid Charts =\n" );
+    fprintf( sim -> wiki_file, "|| %s || %s ||\n", raid_dps.c_str(),      raid_gear.c_str() );
+    fprintf( sim -> wiki_file, "|| %s || %s ||\n", raid_downtime.c_str(), raid_uptimes.c_str() );
+    fprintf( sim -> wiki_file, "|| %s || %s ||\n", raid_dpet_1.c_str(),   raid_dpet_2.c_str() );
+    fprintf( sim -> wiki_file, "\n" );
+  }
 
   wiki_scale_factors();
 
