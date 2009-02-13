@@ -1264,8 +1264,16 @@ struct hunter_pet_attack_t : public attack_t
   virtual double cost()
   {
     hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    hunter_t*     o = p -> owner -> cast_hunter();
+
     if( p -> buffs_owls_focus ) return 0;
-    return attack_t::cost();
+
+    double c = attack_t::cost();
+    if( c == 0 ) return 0;
+
+    if( o -> buffs_rapid_fire ) c *= 1.0 - o -> talents.rapid_recuperation * 0.3;
+    
+    return c;
   }
 
   virtual void consume_resource()
@@ -1539,8 +1547,16 @@ struct hunter_pet_spell_t : public spell_t
   virtual double cost()
   {
     hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    hunter_t*     o = p -> owner -> cast_hunter();
+
     if( p -> buffs_owls_focus ) return 0;
-    return spell_t::cost();
+
+    double c = spell_t::cost();
+    if( c == 0 ) return 0;
+
+    if( o -> buffs_rapid_fire ) c *= 1.0 - o -> talents.rapid_recuperation * 0.3;
+    
+    return c;
   }
 
   virtual void consume_resource()
