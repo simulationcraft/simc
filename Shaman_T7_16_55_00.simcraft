@@ -4,8 +4,8 @@ shaman=Shaman_T7_16_55_00
 level=80
 talents=http://www.wowhead.com/?talent=hVbhqZhbxsoxdAIkufot
 actions=flask,type=endless_rage/food,type=fish_feast/windfury_weapon,weapon=main/flametongue_weapon,weapon=off
-actions+=/strength_of_earth_totem/windfury_totem/searing_totem/lightning_shield
-actions+=/auto_attack/lightning_bolt,maelstrom=5,ss_wait=1/shamanistic_rage/spirit_wolf/earth_shock,ss_wait=1/stormstrike/earth_shock/lava_lash/bloodlust,target_pct=25
+actions+=/strength_of_earth_totem/windfury_totem/searing_totem/lightning_shield/bloodlust,time_to_die<=60
+actions+=/auto_attack/lightning_bolt,maelstrom=5,ss_wait=1/shamanistic_rage/spirit_wolf/earth_shock,ss_wait=1/stormstrike/earth_shock/lava_lash
 Melee_T7_Base_Gear.simcraft
 gear_expertise_rating=200
 main_hand=mace,dps=171,speed=2.6,enchant=berserking

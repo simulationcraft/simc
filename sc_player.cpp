@@ -1167,8 +1167,10 @@ void player_t::resource_gain( int     resource,
   if( source ) source -> add( actual_amount );
 
   if( sim -> log ) 
-    report_t::log( sim, "%s gains %.0f (%.0f) %s from %s", 
-                   name(), actual_amount, amount, util_t::resource_type_string( resource ), source ? source -> name() : "unknown" );
+    report_t::log( sim, "%s gains %.0f (%.0f) %s from %s (%.0f)", 
+                   name(), actual_amount, amount, 
+		   util_t::resource_type_string( resource ), source ? source -> name() : "unknown", 
+		   resource_current[ resource ] );
 }
 
 // player_t::resource_available ============================================

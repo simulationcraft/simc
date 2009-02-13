@@ -1232,7 +1232,7 @@ struct treants_spell_t : public druid_spell_t
 
     option_t options[] =
     {
-      { "target_pct", OPT_INT, &target_pct },
+      { "target_pct", OPT_DEPRECATED, (void*) "health_percentage<" },
       { NULL }
     };
     parse_options( options, options_str );

@@ -27,8 +27,13 @@ void spell_t::parse_options( option_t*          options,
 {
   option_t base_options[] =
   {
-    { "rank", OPT_INT,    &rank_index },
-    { "sync", OPT_STRING, &sync_str   },
+    { "rank",               OPT_INT,    &rank_index            },
+    { "sync",               OPT_STRING, &sync_str              },
+    { "time_to_die>",       OPT_FLT,    &min_time_to_die       },
+    { "time_to_die<",       OPT_FLT,    &max_time_to_die       },
+    { "health_percentage>", OPT_FLT,    &min_health_percentage },
+    { "health_percentage<", OPT_FLT,    &max_health_percentage },
+    { "bloodlust",          OPT_INT,    &bloodlust_active      },
     { NULL }
   };
   std::vector<option_t> merged_options;

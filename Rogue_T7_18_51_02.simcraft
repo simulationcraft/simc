@@ -7,8 +7,8 @@ rogue=Rogue_T7_18_51_02
 level=80
 talents=http://www.wowhead.com/?talent=f0xf0eZ0gVox0xqru0xRt0b
 actions=flask,type=endless_rage/food,type=fish_feast/apply_poison,main_hand=wound,off_hand=wound
-actions+=/auto_attack/pool_energy/slice_and_dice,min_combo_points=4,refresh_at=4/tricks_of_the_trade
-actions+=/killing_spree/blade_flurry/rupture,min_combo_points=5/backstab/adrenaline_rush
+actions+=/auto_attack/pool_energy,for_next=1/slice_and_dice,min_combo_points=3,snd<=3/tricks_of_the_trade
+actions+=/killing_spree,energy<=30/blade_flurry/rupture,min_combo_points=5/backstab/adrenaline_rush
 Melee_T7_Base_Gear.simcraft
 gear_expertise_rating=200
 # Not fair to use the same stats for all Rogues since Combat Rogue needs less expertise.

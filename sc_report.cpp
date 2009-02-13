@@ -1813,8 +1813,6 @@ void report_t::chart_wiki()
     std::string raid_gear     = "No chart for Raid Gear Overview";
     std::string raid_downtime = "No chart for Raid Down-Time";
     std::string raid_uptimes  = "No chart for Raid Up-Times";
-    std::string raid_dpet_1   = "No chart for Raid Damage Per Execute Time";
-    std::string raid_dpet_2   = "No chart for Raid Damage Per Execute Time";
 
     img = chart_raid_dps( buffer );
     if( img )
@@ -1841,28 +1839,27 @@ void report_t::chart_wiki()
       raid_uptimes += "&dummy=dummy.png";
     }
 
-    std::vector<std::string> images;
-    int count = chart_raid_dpet( buffer, images );
-    img = ( count >= 1 ? images[ 0 ].c_str() : 0 );
-    if( img )
-    {
-      raid_dpet_1 = img;
-      raid_dpet_1 += "&dummy=dummy.png";
-    }
-    img = ( count >= 2 ? images[ 1 ].c_str() : 0 );
-    if( img )
-    {
-      raid_dpet_2 = img;
-      raid_dpet_2 += "&dummy=dummy.png";
-    }
-
     fprintf( sim -> wiki_file, "----\n" );
     fprintf( sim -> wiki_file, "----\n" );
     fprintf( sim -> wiki_file, "----\n" );
     fprintf( sim -> wiki_file, "= Raid Charts =\n" );
     fprintf( sim -> wiki_file, "|| %s || %s ||\n", raid_dps.c_str(),      raid_gear.c_str() );
     fprintf( sim -> wiki_file, "|| %s || %s ||\n", raid_downtime.c_str(), raid_uptimes.c_str() );
-    fprintf( sim -> wiki_file, "|| %s || %s ||\n", raid_dpet_1.c_str(),   raid_dpet_2.c_str() );
+
+    std::vector<std::string> images;
+    int count = chart_raid_dpet( buffer, images );
+
+    for( int i=0; i < count; i++ )
+    {
+      std::string raid_dpet = images[ i ] + "&dummy=dummy.png";
+      fprintf( sim -> wiki_file, "|| %s ", raid_dpet.c_str() );
+      if( ++i < count )
+      {
+	raid_dpet = images[ i ] + "&dummy=dummy.png";
+	fprintf( sim -> wiki_file, "|| %s ", raid_dpet.c_str() );
+      }
+      fprintf( sim -> wiki_file, "||\n" );
+    }
     fprintf( sim -> wiki_file, "\n" );
   }
 

@@ -2413,11 +2413,11 @@ struct bloodlust_t : public shaman_spell_t
   {
     option_t options[] =
     {
-      { "target_pct", OPT_INT, &target_pct },
+      { "target_pct", OPT_DEPRECATED, (void*) "health_percentage<" },
       { NULL }
     };
     parse_options( options, options_str );
-      
+
     harmful   = false;
     base_cost = ( 0.26 * player -> resource_base[ RESOURCE_MANA ] );
     cooldown  = 600;
@@ -2464,27 +2464,13 @@ struct bloodlust_t : public shaman_spell_t
 
   virtual bool ready()
   {
-    if( ! shaman_spell_t::ready() )
-      return false;
-
     if( player -> buffs.bloodlust )
       return false;
 
     if( ! sim -> cooldown_ready( player -> cooldowns.bloodlust ) )
       return false;
 
-    target_t* t = sim -> target;
-
-    if( t -> time_to_die() > 60 )
-    {
-      if( target_pct > 0 )
-      {
-	if( t -> health_percentage() > target_pct )
-	  return false;
-      }
-    }
-    
-    return true;
+    return shaman_spell_t::ready();
   }
 };
 

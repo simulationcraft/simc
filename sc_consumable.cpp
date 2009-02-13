@@ -252,15 +252,15 @@ struct destruction_potion_t : public action_t
 struct speed_potion_t : public action_t
 {
   int used;
-  int target_pct;
 
   speed_potion_t( player_t* p, const std::string& options_str ) :
-    action_t( ACTION_USE, "speed_potion", p ), used( 0 ), target_pct( 0 )
+    action_t( ACTION_USE, "speed_potion", p ), used( 0 )
   {
     option_t options[] =
     {
-      { "sync",       OPT_STRING, &sync_str   },
-      { "target_pct", OPT_INT,    &target_pct },
+      { "sync",               OPT_STRING,     &sync_str                    },
+      { "health_percentage<", OPT_FLT,        &max_health_percentage       },
+      { "target_pct",         OPT_DEPRECATED, (void*) "health_percentage<" },
       { NULL }
     };
     parse_options( options, options_str );
@@ -303,8 +303,8 @@ struct speed_potion_t : public action_t
     if( used )
       return false;
 
-    if( target_pct > 0 )
-      if( sim -> target -> health_percentage() > target_pct )
+    if( max_health_percentage > 0 )
+      if( sim -> target -> health_percentage() > max_health_percentage )
         return false;
 
     return( cooldown_ready <= sim -> current_time );
@@ -324,15 +324,15 @@ struct speed_potion_t : public action_t
 struct wild_magic_potion_t : public action_t
 {
   int used;
-  int target_pct;
 
   wild_magic_potion_t( player_t* p, const std::string& options_str ) :
-    action_t( ACTION_USE, "wild_magic_potion", p ), used( 0 ), target_pct( 0 )
+    action_t( ACTION_USE, "wild_magic_potion", p ), used( 0 )
   {
     option_t options[] =
     {
-      { "sync",       OPT_STRING, &sync_str   },
-      { "target_pct", OPT_INT,    &target_pct },
+      { "sync",               OPT_STRING,     &sync_str                    },
+      { "health_percentage<", OPT_FLT,        &max_health_percentage       },
+      { "target_pct",         OPT_DEPRECATED, (void*) "health_percentage<" },
       { NULL }
     };
     parse_options( options, options_str );
@@ -377,8 +377,8 @@ struct wild_magic_potion_t : public action_t
     if( used )
       return false;
 
-    if( target_pct > 0 )
-      if( sim -> target -> health_percentage() > target_pct )
+    if( max_health_percentage > 0 )
+      if( sim -> target -> health_percentage() > max_health_percentage )
         return false;
 
     return( cooldown_ready <= sim -> current_time );

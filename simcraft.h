@@ -1217,10 +1217,12 @@ struct action_t
   bool normalize_weapon_damage;
   bool normalize_weapon_speed;
   stats_t* stats;
-  int rank_index;
   event_t* execute_event;
   event_t* tick_event;
   double time_to_execute, time_to_tick;
+  int rank_index, bloodlust_active;
+  double min_time_to_die, max_time_to_die;
+  double min_health_percentage, max_health_percentage;
   std::string sync_str;
   action_t*   sync_action;
   action_t** observer;

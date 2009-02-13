@@ -2622,19 +2622,18 @@ struct drain_life_t : public warlock_spell_t
 
 struct drain_soul_t : public warlock_spell_t
 {
-  int target_pct;
   int interrupt;
   int health_multiplier;
 
   drain_soul_t( player_t* player, const std::string& options_str ) : 
-    warlock_spell_t( "drain_soul", player, SCHOOL_SHADOW, TREE_AFFLICTION ), target_pct(0), interrupt(0), health_multiplier(0)
+    warlock_spell_t( "drain_soul", player, SCHOOL_SHADOW, TREE_AFFLICTION ), interrupt(0), health_multiplier(0)
   {
     warlock_t* p = player -> cast_warlock();
 
     option_t options[] =
     {
-      { "target_pct", OPT_INT, &target_pct },
-      { "interrupt",  OPT_INT, &interrupt  },
+      { "interrupt", OPT_INT, &interrupt },
+      { "target_pct", OPT_DEPRECATED, (void*) "health_percentage<" },
       { NULL }
     };
     parse_options( options, options_str );
@@ -2748,19 +2747,6 @@ struct drain_soul_t : public warlock_spell_t
       target_multiplier /= 1.20;
     }
   }
-
-  virtual bool ready()
-  {
-    if( ! warlock_spell_t::ready() )
-      return false;
-
-    if( target_pct > 0 )
-      if( sim -> target -> health_percentage() > target_pct )
-        return false;
-
-    return true;
-  }
-
 };
 
 // Siphon Life Spell ===========================================================
@@ -2980,17 +2966,14 @@ struct haunt_t : public warlock_spell_t
 
 struct immolate_t : public warlock_spell_t
 {
-  int target_pct;
-
   immolate_t( player_t* player, const std::string& options_str ) : 
-    warlock_spell_t( "immolate", player, SCHOOL_FIRE, TREE_DESTRUCTION ), target_pct(0)
+    warlock_spell_t( "immolate", player, SCHOOL_FIRE, TREE_DESTRUCTION )
   {
     warlock_t* p = player -> cast_warlock();
 
     option_t options[] =
     {
-      { "rank",       OPT_INT, &rank_index },
-      { "target_pct", OPT_INT, &target_pct },
+      { "target_pct", OPT_DEPRECATED, (void*) "health_percentage>" },
       { NULL }
     };
     parse_options( options, options_str );
@@ -3057,23 +3040,6 @@ struct immolate_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::last_tick(); 
     p -> active_dots--;
-  }
-
-  virtual bool ready()
-  {
-    if( ! warlock_spell_t::ready() )
-      return false;
-
-    if( target_pct > 0 )
-    {
-      // This is flipped from the other target_pct args because in the case of immolate, you want to 
-      // stop casting it when death's embrace is active because DE only boosts damage for shadow spells
-
-      if( sim -> target -> health_percentage() < target_pct )
-        return false;
-    }
-
-    return true;
   }
 };
 
@@ -3443,17 +3409,15 @@ struct searing_pain_t : public warlock_spell_t
 struct soul_fire_t : public warlock_spell_t
 {
   int backdraft;
-  int bloodlust;
 
   soul_fire_t( player_t* player, const std::string& options_str ) : 
-    warlock_spell_t( "soul_fire", player, SCHOOL_FIRE, TREE_DESTRUCTION ), backdraft(0), bloodlust(0)
+    warlock_spell_t( "soul_fire", player, SCHOOL_FIRE, TREE_DESTRUCTION ), backdraft(0)
   {
     warlock_t* p = player -> cast_warlock();
 
     option_t options[] =
     {
       { "backdraft", OPT_INT, &backdraft },
-      { "bloodlust", OPT_INT, &bloodlust },
       { NULL }
     };
     parse_options( options, options_str );
@@ -3501,10 +3465,6 @@ struct soul_fire_t : public warlock_spell_t
 
     if( backdraft )
       if( ! p -> buffs_backdraft )
-        return false;
-          
-    if( bloodlust )
-      if( ! p -> buffs.bloodlust )
         return false;
           
     return true;
@@ -3716,22 +3676,21 @@ struct summon_pet_t : public warlock_spell_t
 
 struct inferno_t : public warlock_spell_t
 {
-  int target_pct;
-  int time_remaining;
-
   inferno_t( player_t* player, const std::string& options_str ) : 
     warlock_spell_t( "inferno", player, SCHOOL_FIRE, TREE_DEMONOLOGY )
   {
     option_t options[] =
     {
-      { "target_pct",     OPT_INT, &target_pct     },
-      { "time_remaining", OPT_INT, &time_remaining },
+      { "target_pct",     OPT_DEPRECATED, (void*) "health_percentage<" },
+      { "time_remaining", OPT_DEPRECATED, (void*) "time_to_die<"       },
       { NULL }
     };
     parse_options( options, options_str );
-    if ( ! target_pct && ! time_remaining )
+
+    if( max_health_percentage == 0 && 
+	max_time_to_die       == 0 )
     {
-      if ( sim -> max_time ) time_remaining = 60;
+      max_time_to_die = 60;
     }
 
     static rank_t ranks[] =
@@ -3781,46 +3740,25 @@ struct inferno_t : public warlock_spell_t
       e = new ( sim ) expiration_t( sim, p );
     }
   }
-
-  virtual bool ready()
-  {
-    if( ! warlock_spell_t::ready() )
-      return false;
-
-    if( target_pct > 0 )
-    {
-      if( sim -> target -> health_percentage() > target_pct )
-        return false;
-    }
-
-    if( time_remaining > 0 ) 
-    {  
-      if( sim -> target -> time_to_die() > time_remaining )
-        return false;
-    }
-    
-    return true;
-  }
 };
 
 // Metamorphosis Spell =======================================================
 
 struct metamorphosis_t : public warlock_spell_t
 {
-  int target_pct;
   int immolation;
   warlock_spell_t* immolation_spell;
 
   metamorphosis_t( player_t* player, const std::string& options_str ) : 
-    warlock_spell_t( "metamorphosis", player, SCHOOL_SHADOW, TREE_DEMONOLOGY ), target_pct(0), immolation(0)
+    warlock_spell_t( "metamorphosis", player, SCHOOL_SHADOW, TREE_DEMONOLOGY ), immolation(0)
   {
     warlock_t* p = player -> cast_warlock();
     assert( p -> talents.metamorphosis );
 
     option_t options[] =
     {
-      { "target_pct", OPT_INT, &target_pct },
       { "immolation", OPT_INT, &immolation },
+      { "target_pct", OPT_DEPRECATED, (void*) "health_percentage<" },
       { NULL }
     };
     parse_options( options, options_str );
@@ -3883,32 +3821,18 @@ struct metamorphosis_t : public warlock_spell_t
       immolation_spell -> stats -> total_execute_time += gcd();
     }
   }
-
-  virtual bool ready()
-  {
-    if( ! warlock_spell_t::ready() )
-      return false;
-
-    if( target_pct > 0 )
-      if( sim -> target -> health_percentage() > target_pct )
-        return false;
-
-    return true;
-  }
 };
 
 // Demonic Empowerment Spell ================================================
 
 struct demonic_empowerment_t : public warlock_spell_t
 {
-  int target_pct;
-
   demonic_empowerment_t( player_t* player, const std::string& options_str ) : 
-    warlock_spell_t( "demonic_empowerment", player, SCHOOL_SHADOW, TREE_DEMONOLOGY ), target_pct(0)
+    warlock_spell_t( "demonic_empowerment", player, SCHOOL_SHADOW, TREE_DEMONOLOGY )
   {
     option_t options[] =
     {
-      { "target_pct", OPT_INT, &target_pct },
+      { "target_pct", OPT_DEPRECATED, (void*) "health_percentage<" },
       { NULL }
     };
     parse_options( options, options_str );
@@ -3951,17 +3875,10 @@ struct demonic_empowerment_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
 
-    if( ! warlock_spell_t::ready() )
-      return false;
-
     if( ! p -> active_pet )
       return false;
 
-    if( target_pct > 0 )
-      if( sim -> target -> health_percentage() > target_pct )
-        return false;
-
-    return true;
+    return warlock_spell_t::ready();
   }
 };
 

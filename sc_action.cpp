@@ -38,7 +38,8 @@ action_t::action_t( int         ty,
   num_ticks(0), current_tick(0), added_ticks(0), ticking(0), 
   cooldown_group(n), duration_group(n), cooldown(0), cooldown_ready(0), duration_ready(0),
   weapon(0), weapon_multiplier(1), normalize_weapon_damage( false ), normalize_weapon_speed( false ), 
-  stats(0), rank_index(-1), execute_event(0), tick_event(0), time_to_execute(0), time_to_tick(0), 
+  stats(0), execute_event(0), tick_event(0), time_to_execute(0), time_to_tick(0), 
+  rank_index(-1), bloodlust_active(0), min_time_to_die(0), max_time_to_die(0), min_health_percentage(0), max_health_percentage(0), 
   sync_action(0), observer(0), next(0), sequence(0)
 {
   if( sim -> debug ) report_t::log( sim, "Player %s creates action %s", p -> name(), name() );
@@ -721,6 +722,26 @@ bool action_t::ready()
 
   if( ! player -> resource_available( resource, cost() ) )
     return false;
+
+  if( min_time_to_die > 0 )
+    if( sim -> target -> time_to_die() < min_time_to_die )
+      return false;
+
+  if( max_time_to_die > 0 )
+    if( sim -> target -> time_to_die() > max_time_to_die )
+      return false;
+
+  if( min_health_percentage > 0 )
+    if( sim -> target -> health_percentage() < min_health_percentage )
+      return false;
+
+  if( max_health_percentage > 0 )
+    if( sim -> target -> health_percentage() > max_health_percentage )
+      return false;
+
+  if( bloodlust_active )
+    if( ! player -> buffs.bloodlust )
+      return false;
 
   if( sync_action && ! sync_action -> ready() )
     return false;

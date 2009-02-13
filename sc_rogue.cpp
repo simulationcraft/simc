@@ -63,6 +63,7 @@ struct rogue_t : public player_t
   
   // Up-Times
   uptime_t* uptimes_blade_flurry;
+  uptime_t* uptimes_energy_cap;
   uptime_t* uptimes_envenom;
   uptime_t* uptimes_hunger_for_blood;
   uptime_t* uptimes_poisoned;
@@ -216,6 +217,7 @@ struct rogue_t : public player_t
 
     // Up-Times
     uptimes_blade_flurry        = get_uptime( "blade_flurry" );
+    uptimes_energy_cap          = get_uptime( "energy_cap" );
     uptimes_envenom             = get_uptime( "envenom" );
     uptimes_hunger_for_blood    = get_uptime( "hunger_for_blood" );
     uptimes_poisoned            = get_uptime( "poisoned" );
@@ -274,7 +276,6 @@ struct rogue_attack_t : public attack_t
   double min_snd_expire, max_snd_expire;
   double min_rup_expire, max_rup_expire;
   double min_env_expire, max_env_expire;
-  double min_time_to_die, max_time_to_die;
 
   rogue_attack_t( const char* n, player_t* player, int s=SCHOOL_PHYSICAL, int t=TREE_NONE ) : 
     attack_t( n, player, RESOURCE_ENERGY, s, t ), 
@@ -288,8 +289,7 @@ struct rogue_attack_t : public attack_t
     min_hfb_expire(0), max_hfb_expire(0), 
     min_snd_expire(0), max_snd_expire(0), 
     min_rup_expire(0), max_rup_expire(0), 
-    min_env_expire(0), max_env_expire(0),
-    min_time_to_die(0), max_time_to_die(0)
+    min_env_expire(0), max_env_expire(0)
   {
     rogue_t* p = player -> cast_rogue();
     base_crit += p -> talents.malice * 0.01;
@@ -736,8 +736,6 @@ void rogue_attack_t::parse_options( option_t*          options,
     { "env<",             OPT_FLT, &max_env_expire   },
     { "rup>",             OPT_FLT, &min_rup_expire   },
     { "rup<",             OPT_FLT, &max_rup_expire   },
-    { "time_to_die>",     OPT_FLT, &min_time_to_die  },
-    { "time_to_die<",     OPT_FLT, &max_time_to_die  },
     { NULL }
   };
   std::vector<option_t> merged_options;
@@ -929,7 +927,7 @@ bool rogue_attack_t::ready()
       return false;
 
   if( max_hfb_expire > 0 )
-    if( ! p -> expirations_hunger_for_blood || ( ( p -> expirations_hunger_for_blood -> occurs() - ct ) > max_hfb_expire ) )
+    if( p -> expirations_hunger_for_blood && ( ( p -> expirations_hunger_for_blood -> occurs() - ct ) > max_hfb_expire ) )
       return false;
 
   if( min_snd_expire > 0 )
@@ -937,7 +935,7 @@ bool rogue_attack_t::ready()
       return false;
 
   if( max_snd_expire > 0 )
-    if( ! p -> expirations_slice_and_dice || ( ( p -> expirations_slice_and_dice -> occurs() - ct ) > max_snd_expire ) )
+    if( p -> expirations_slice_and_dice && ( ( p -> expirations_slice_and_dice -> occurs() - ct ) > max_snd_expire ) )
       return false;
 
   if( min_env_expire > 0 )
@@ -945,7 +943,7 @@ bool rogue_attack_t::ready()
       return false;
 
   if( max_env_expire > 0 )
-    if( ! p -> expirations_envenom || ( ( p -> expirations_envenom -> occurs() - ct ) > max_env_expire ) )
+    if( p -> expirations_envenom && ( ( p -> expirations_envenom -> occurs() - ct ) > max_env_expire ) )
       return false;
 
   if( min_rup_expire > 0 )
@@ -953,15 +951,7 @@ bool rogue_attack_t::ready()
       return false;
 
   if( max_rup_expire > 0 )
-    if( ! p -> active_rupture || ( ( p -> active_rupture -> duration_ready - ct ) > max_rup_expire ) )
-      return false;
-
-  if( min_time_to_die > 0 )
-    if( sim -> target -> time_to_die() < min_time_to_die )
-      return false;
-
-  if( max_time_to_die > 0 )
-    if( sim -> target -> time_to_die() > max_time_to_die )
+    if( p -> active_rupture && ( ( p -> active_rupture -> duration_ready - ct ) > max_rup_expire ) )
       return false;
 
   return true;
@@ -2162,15 +2152,11 @@ struct sinister_strike_t : public rogue_attack_t
 
 struct slice_and_dice_t : public rogue_attack_t
 {
-  double refresh_at;
-  
   slice_and_dice_t( player_t* player, const std::string& options_str ) : 
-    rogue_attack_t( "slice_and_dice", player, SCHOOL_PHYSICAL, TREE_ASSASSINATION ),
-    refresh_at(0)
+    rogue_attack_t( "slice_and_dice", player, SCHOOL_PHYSICAL, TREE_ASSASSINATION )
   {
     option_t options[] =
     {
-      { "refresh_at", OPT_FLT, &refresh_at },
       { NULL }
     };
     parse_options( options, options_str );
@@ -2230,14 +2216,55 @@ struct slice_and_dice_t : public rogue_attack_t
       e = new ( sim ) expiration_t( sim, p, duration );
     }
   }
+};
+
+// Pool Energy ==============================================================
+
+struct pool_energy_t : public rogue_attack_t
+{
+  double wait;
+  int for_next;
+
+  pool_energy_t( player_t* player, const std::string& options_str ) : 
+    rogue_attack_t( "pool_energy", player ), wait(0.5), for_next(0)
+  {
+    option_t options[] =
+    {
+      { "wait",     OPT_FLT, &wait     },
+      { "for_next", OPT_INT, &for_next },
+      { NULL }
+    };
+    parse_options( options, options_str );
+  }
+
+  virtual void execute()
+  {
+    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
+  }
+
+  virtual double gcd()
+  {
+    return wait;
+  }
 
   virtual bool ready()
   {
-    rogue_t* p = player -> cast_rogue();
-
-    if( p -> buffs_slice_and_dice )
-      if( ( p -> expirations_slice_and_dice -> occurs() - sim -> current_time ) > refresh_at )
+    if( for_next )
+    {
+      if( next -> ready() )
 	return false;
+
+      // If the next action in the list would be "ready" if it was not constrained by energy,
+      // then this command will pool energy until we have enough.
+
+      player -> resource_current[ RESOURCE_ENERGY ] += 100;
+
+      bool energy_limited = next -> ready();
+      
+      player -> resource_current[ RESOURCE_ENERGY ] -= 100;
+
+      if( ! energy_limited ) return false;
+    }
 
     return rogue_attack_t::ready();
   }
@@ -2609,51 +2636,6 @@ struct cold_blood_t : public spell_t
     if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
     p -> buffs_cold_blood = 1;
     update_ready();
-  }
-};
-
-// Pool Energy ==============================================================
-
-struct pool_energy_t : public spell_t
-{
-  double wait;
-
-  pool_energy_t( player_t* player, const std::string& options_str ) : 
-    spell_t( "pool_energy", player ), wait(0.5)
-  {
-    option_t options[] =
-    {
-      { "wait", OPT_FLT, &wait },
-      { NULL }
-    };
-    parse_options( options, options_str );
-  }
-
-  virtual void execute()
-  {
-    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
-  }
-
-  virtual double gcd()
-  {
-    return wait;
-  }
-
-  virtual bool ready()
-  {
-    if( next -> ready() )
-      return false;
-
-    // If the next action in the list would be "ready" if it was not constrained by energy,
-    // then this command will pool energy until we have enough.
-
-    player -> resource_current[ RESOURCE_ENERGY ] += 100;
-
-    bool energy_limited = next -> ready();
-
-    player -> resource_current[ RESOURCE_ENERGY ] -= 100;
-
-    return energy_limited;
   }
 };
 
@@ -3059,6 +3041,9 @@ void rogue_t::regen( double periodicity )
       resource_gain( RESOURCE_ENERGY, energy_regen, gains_adrenaline_rush );
     }
   }
+  
+  uptimes_energy_cap -> update( resource_current[ RESOURCE_ENERGY ] == 
+				resource_max    [ RESOURCE_ENERGY ] );
 }
 
 // rogue_t::get_talent_trees ==============================================
