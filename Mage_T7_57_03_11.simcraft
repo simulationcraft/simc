@@ -8,6 +8,8 @@ actions+=/mana_gem,trigger=3500
 actions+=/mirror_image/arcane_power/icy_veins/presence_of_mind,arcane_blast/arcane_blast,max=3/arcane_missiles,barrage=1/arcane_barrage
 actions+=/evocation/mana_potion,trigger=4300
 Caster_T7_Base_Gear.simcraft
+enchant_hit_rating=-75
+enchant_crit_rating=+75
 glyph_arcane_missiles=1
 glyph_arcane_blast=1
 glyph_mage_armor=1
