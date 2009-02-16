@@ -208,6 +208,18 @@ struct druid_t : public player_t
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
   virtual int       primary_resource() { return talents.moonkin_form ? RESOURCE_MANA : RESOURCE_ENERGY; }
+
+  // Utilities 
+  double combo_point_rank( double* cp_list )
+  {
+    assert( buffs_combo_points > 0 );
+    return cp_list[ buffs_combo_points-1 ];
+  }
+  double combo_point_rank( double cp1, double cp2, double cp3, double cp4, double cp5 )
+  {
+    double cp_list[] = { cp1, cp2, cp3, cp4, cp5 };
+    return combo_point_rank( cp_list );
+  }
 };
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
@@ -241,6 +253,7 @@ struct druid_attack_t : public attack_t
     may_glance = false;
   }
 
+  virtual void   parse_options( option_t*, const std::string& options_str );
   virtual double cost();
   virtual void   execute();
   virtual void   consume_resource();
@@ -582,6 +595,31 @@ static void trigger_ashtongue_talisman( spell_t* s )
 // Druid Attack
 // =========================================================================
 
+// druid_attack_t::parse_options ===========================================
+
+void druid_attack_t::parse_options( option_t*          options,
+                                    const std::string& options_str )
+{
+  option_t base_options[] =
+  {
+    { "min_combo_points", OPT_INT, &min_combo_points  },
+    { "max_combo_points", OPT_INT, &max_combo_points  },
+    { "cp>",              OPT_INT, &min_combo_points  },
+    { "cp<",              OPT_INT, &max_combo_points  },
+    { "min_energy",       OPT_FLT, &min_energy        },
+    { "max_energy",       OPT_FLT, &max_energy        },
+    { "energy>",          OPT_FLT, &min_energy        },
+    { "energy<",          OPT_FLT, &max_energy        },
+    { "rip>",             OPT_FLT, &min_rip_expire    },
+    { "rip<",             OPT_FLT, &max_rip_expire    },
+    { "mangle>",          OPT_FLT, &min_mangle_expire },
+    { "mangle<",          OPT_FLT, &max_mangle_expire },
+    { NULL }
+  };
+  std::vector<option_t> merged_options;
+  attack_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
+}
+
 // druid_attack_t::cost ====================================================
 
 double druid_attack_t::cost()
@@ -759,6 +797,9 @@ struct mangle_cat_t : public druid_attack_t
   {
     druid_t* p = player -> cast_druid();
 
+    // By default, do not overwrite Mangle
+    max_mangle_expire = 0.001;
+
     option_t options[] =
     {
       { NULL }
@@ -780,9 +821,6 @@ struct mangle_cat_t : public druid_attack_t
 
     adds_combo_points = true;
     may_crit          = true;
-
-    // By default, do not overwrite Mangle
-    max_mangle_expire = 0.001;
   }
 
   virtual void execute()
@@ -795,6 +833,50 @@ struct mangle_cat_t : public druid_attack_t
   }
 };
 
+// Rip ======================================================================
+
+struct rip_t : public druid_attack_t
+{
+  double* combo_point_dmg;
+
+  rip_t( player_t* player, const std::string& options_str ) : 
+    druid_attack_t( "rip", player, SCHOOL_BLEED, TREE_FERAL )
+  {
+    druid_t* p = player -> cast_druid();
+
+    option_t options[] =
+    {
+      { NULL }
+    };
+    parse_options( options, options_str );
+      
+    requires_combo_points = true;
+    base_cost             = 30;
+    base_tick_time        = 2.0; 
+
+    num_ticks = 6 + ( p -> glyphs.rip ? 2 : 0 );
+
+    static double dmg_80[] = { 39+99*1, 39+99*2, 39+99*3, 39+99*4, 39+99*5 };
+    static double dmg_71[] = { 32+72*1, 32+72*2, 32+72*3, 32+72*4, 32+72*5 };
+    static double dmg_67[] = { 24+48*1, 24+48*2, 24+48*3, 24+48*4, 24+48*5 };
+    static double dmg_60[] = { 17+28*1, 17+28*2, 17+28*3, 17+28*4, 17+28*5 };
+
+    combo_point_dmg = ( p -> level >= 80 ? dmg_80 :
+                        p -> level >= 71 ? dmg_71 :
+                        p -> level >= 67 ? dmg_67 : 
+                                           dmg_60 );
+
+    observer = &( p -> active_rip );    
+  }
+
+  virtual void player_buff()
+  {
+    druid_t* p = player -> cast_druid();
+    tick_power_mod = p -> buffs_combo_points * 0.01;
+    base_td_init   = p -> combo_point_rank( combo_point_dmg );
+    druid_attack_t::player_buff();
+  }
+};
 
 // =========================================================================
 // Druid Spell
@@ -1734,6 +1816,7 @@ action_t* druid_t::create_action( const std::string& name,
   if( name == "moonfire"          ) return new          moonfire_t( this, options_str );
   if( name == "moonkin_form"      ) return new      moonkin_form_t( this, options_str );
   if( name == "natures_swiftness" ) return new  druids_swiftness_t( this, options_str );
+  if( name == "rip"               ) return new               rip_t( this, options_str );
   if( name == "starfire"          ) return new          starfire_t( this, options_str );
   if( name == "stealth"           ) return new           stealth_t( this, options_str );
   if( name == "treants"           ) return new     treants_spell_t( this, options_str );
@@ -1747,7 +1830,6 @@ action_t* druid_t::create_action( const std::string& name,
   if( name == "prowl"             ) return new             prowl_t( this, options_str );
   if( name == "rake"              ) return new              rake_t( this, options_str );
   if( name == "ravage"            ) return new            ravage_t( this, options_str );
-  if( name == "rip"               ) return new               rip_t( this, options_str );
   if( name == "shred"             ) return new             shred_t( this, options_str );
   if( name == "swipe_cat"         ) return new         swipe_cat_t( this, options_str );
   if( name == "tigers_fury"       ) return new       tigers_fury_t( this, options_str );

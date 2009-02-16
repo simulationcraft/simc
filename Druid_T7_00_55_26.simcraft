@@ -4,7 +4,7 @@ druid=Druid_T7_00_55_26
 level=80
 talents=http://www.wowhead.com/?talent=0ZEG0cfrz0eR0huAo0Eczb
 actions=flask,type=endless_rage/food,type=fish_feast
-actions+=/auto_attack/cat_form/mangle_cat
+actions+=/auto_attack/cat_form/rip,cp>=4/mangle_cat,mangle<=0
 Melee_T7_Base_Gear.simcraft
 glyph_rip=1
 glyph_mangle=1
