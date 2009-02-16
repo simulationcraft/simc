@@ -442,12 +442,12 @@ static void trigger_mangle( attack_t* a )
 
   event_t*& e = a -> sim -> target -> expirations.mangle;
 
-  if( e -> occurs() > ( a -> sim -> current_time + duration ) )
-    return;
-  
   if( e )
   {
-    e -> reschedule( duration );
+    if( e -> occurs() < ( a -> sim -> current_time + duration ) )
+    {
+      e -> reschedule( duration );
+    }
   }
   else
   {
@@ -882,6 +882,46 @@ struct rip_t : public druid_attack_t
     tick_power_mod = p -> buffs_combo_points * 0.01;
     base_td_init   = p -> combo_point_rank( combo_point_dmg );
     druid_attack_t::player_buff();
+  }
+};
+
+// Shred ===================================================================
+
+struct shred_t : public druid_attack_t
+{
+  shred_t( player_t* player, const std::string& options_str ) :
+    druid_attack_t( "shred", player, SCHOOL_PHYSICAL, TREE_FERAL )
+  {
+    druid_t* p = player -> cast_druid();
+
+    option_t options[] =
+    {
+      { NULL }
+    };
+    parse_options( options, options_str );
+     
+    static rank_t ranks[] =
+    {
+      { 80, 9, 742, 742, 0, 60 },
+      { 75, 8, 630, 630, 0, 60 },
+      { 70, 7, 405, 405, 0, 60 },
+      { 61, 6, 236, 236, 0, 60 },
+      { 54, 5, 180, 180, 0, 60 },
+      { 0, 0 }
+    };
+    init_rank( ranks );
+
+    weapon = &( p -> main_hand_weapon );
+    weapon_multiplier *= 2.25;
+
+    adds_combo_points = true;
+    may_crit          = true;
+  }
+
+  virtual void player_buff()
+  {
+    druid_attack_t::player_buff();
+    if( sim -> target -> debuffs.mangle ) player_multiplier *= 1.30;
   }
 };
 
@@ -1824,6 +1864,7 @@ action_t* druid_t::create_action( const std::string& name,
   if( name == "moonkin_form"      ) return new      moonkin_form_t( this, options_str );
   if( name == "natures_swiftness" ) return new  druids_swiftness_t( this, options_str );
   if( name == "rip"               ) return new               rip_t( this, options_str );
+  if( name == "shred"             ) return new             shred_t( this, options_str );
   if( name == "starfire"          ) return new          starfire_t( this, options_str );
   if( name == "stealth"           ) return new           stealth_t( this, options_str );
   if( name == "treants"           ) return new     treants_spell_t( this, options_str );
@@ -1837,7 +1878,6 @@ action_t* druid_t::create_action( const std::string& name,
   if( name == "prowl"             ) return new             prowl_t( this, options_str );
   if( name == "rake"              ) return new              rake_t( this, options_str );
   if( name == "ravage"            ) return new            ravage_t( this, options_str );
-  if( name == "shred"             ) return new             shred_t( this, options_str );
   if( name == "swipe_cat"         ) return new         swipe_cat_t( this, options_str );
   if( name == "tigers_fury"       ) return new       tigers_fury_t( this, options_str );
 #endif
