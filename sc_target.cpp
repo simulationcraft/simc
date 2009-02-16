@@ -180,7 +180,6 @@ void target_t::combat_begin()
     debuffs.blood_frenzy = 1;
     debuffs.crypt_fever = 1;
     debuffs.judgement_of_wisdom = 1;
-    debuffs.mangle = 1;
     debuffs.razorice = 1;
     debuffs.snare = 1;
     debuffs.sunder_armor = 3925;
@@ -193,6 +192,7 @@ void target_t::combat_begin()
     debuffs.ferocious_inspiration = 1;
     debuffs.hunters_mark = 450;
     debuffs.improved_scorch = 5;
+    debuffs.mangle = 1;
     debuffs.master_poisoner = 1;
     debuffs.misery = 3;
     debuffs.misery_stack = 1;

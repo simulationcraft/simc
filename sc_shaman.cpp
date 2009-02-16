@@ -875,6 +875,8 @@ struct auto_attack_t : public shaman_attack_t
       p -> off_hand_attack -> weapon = &( p -> off_hand_weapon );
       p -> off_hand_attack -> base_execute_time = p -> off_hand_weapon.swing_time;
     }
+
+    trigger_gcd = 0;
   }
 
   virtual void execute()

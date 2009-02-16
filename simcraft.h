@@ -617,60 +617,56 @@ struct player_t
   struct buff_t
   {
     // Dynamic Buffs
-    int    temporary_buffs;
     double    arcane_brilliance;
-    int    berserking_mh;
-    int    berserking_oh;
+    int       berserking_mh;
+    int       berserking_oh;
     double    divine_spirit;
-    int    bloodlust;
+    int       bloodlust;
     double    cast_time_reduction;
-    int    darkmoon_crusade;
-    int    darkmoon_wrath;
+    int       darkmoon_crusade;
+    int       darkmoon_wrath;
     double    demonic_pact;
     pet_t*    demonic_pact_pet;
-    int    elemental_oath;
-    int    executioner;
+    int       elemental_oath;
+    int       executioner;
     double    flametongue_totem;
     player_t* focus_magic;
-    int    focus_magic_feedback;
+    int       focus_magic_feedback;
     double    fortitude;
-    int    fury_of_the_five_flights;
-    int    illustration_of_the_dragon_soul;
+    int       fury_of_the_five_flights;
+    int       illustration_of_the_dragon_soul;
     double    improved_divine_spirit;
-    int    improved_moonkin_aura;
-    int    innervate;
-    int    glyph_of_innervate;
-    int    lightning_capacitor;
+    int       improved_moonkin_aura;
+    int       innervate;
+    int       glyph_of_innervate;
+    int       leader_of_the_pack;
+    int       lightning_capacitor;
     double    mana_cost_reduction;
     double    mark_of_the_wild;
-    int    moonkin_aura;
-    int    mongoose_mh;
-    int    mongoose_oh;
-    int    power_infusion;
-    int    replenishment;
-    int    shadow_form;
+    int       moonkin_aura;
+    int       mongoose_mh;
+    int       mongoose_oh;
+    int       power_infusion;
+    int       replenishment;
+    int       shadow_form;
     double    strength_of_earth;
-    int   talisman_of_ascendance;
-    int    thunder_capacitor;
+    int       talisman_of_ascendance;
+    int       thunder_capacitor;
     double    totem_of_wrath;
-    int    tricks_of_the_trade;
-    int    trueshot_aura;
-    int    unleashed_rage;
-    int    violet_eye;
+    int       tricks_of_the_trade;
+    int       trueshot_aura;
+    int       unleashed_rage;
+    int       violet_eye;
     double    windfury_totem;
-    int    water_elemental;
-    int    wrath_of_air;
-    int   zandalarian_hero_charm;
-    int    tier4_2pc, tier4_4pc;
-    int    tier5_2pc, tier5_4pc;
-    int    tier6_2pc, tier6_4pc;
-    int    tier7_2pc, tier7_4pc;
-    buff_t() { memset( (void*) this, 0x0, sizeof( buff_t ) ); }
-    void reset()
-    {
-      size_t delta = ( (uintptr_t) &temporary_buffs ) - ( (uintptr_t) this );
-      memset( (void*) &temporary_buffs, 0x0, sizeof( buff_t ) - delta );
-    }
+    int       water_elemental;
+    int       wrath_of_air;
+    int       zandalarian_hero_charm;
+    int       tier4_2pc, tier4_4pc;
+    int       tier5_2pc, tier5_4pc;
+    int       tier6_2pc, tier6_4pc;
+    int       tier7_2pc, tier7_4pc;
+    void reset() { memset( (void*) this, 0x0, sizeof( buff_t ) ); }
+    buff_t() { reset(); }
   };
   buff_t buffs;
 
@@ -1032,37 +1028,37 @@ struct target_t
   struct debuff_t
   {
     // Static De-Buffs (until appropriate player class implemented)
-    int   blood_frenzy;
-    int   crypt_fever;
-    int   judgement_of_wisdom;
-    int   mangle;
-    int   razorice;
-    int   snare;
-    double   sunder_armor;
-    int   thunder_clap;
+    int    blood_frenzy;
+    int    crypt_fever;
+    int    judgement_of_wisdom;
+    int    razorice;
+    int    snare;
+    double sunder_armor;
+    int    thunder_clap;
     // Dynamic De-Buffs
-    int   temporary_debuffs;
-    int   affliction_effects;
-    int   curse_of_elements;
-    double   expose_armor;
-    double   faerie_fire;
-    int   ferocious_inspiration;
-    double   frozen;
-    double   hemorrhage;
-    int   hemorrhage_charges;
-    double   hunters_mark;
-    int   improved_faerie_fire;
-    int   improved_scorch;
-    int   master_poisoner;
-    int   misery;
-    int   misery_stack;
-    int   earth_and_moon;
-    int   poisoned;
-    int   savage_combat;
-    int   slow;
-    int   totem_of_wrath;
-    int   winters_chill;
-    int   winters_grasp;
+    int    temporary_debuffs;
+    int    affliction_effects;
+    int    curse_of_elements;
+    double expose_armor;
+    double faerie_fire;
+    int    ferocious_inspiration;
+    double frozen;
+    double hemorrhage;
+    int    hemorrhage_charges;
+    double hunters_mark;
+    int    improved_faerie_fire;
+    int    improved_scorch;
+    int    mangle;
+    int    master_poisoner;
+    int    misery;
+    int    misery_stack;
+    int    earth_and_moon;
+    int    poisoned;
+    int    savage_combat;
+    int    slow;
+    int    totem_of_wrath;
+    int    winters_chill;
+    int    winters_grasp;
     debuff_t() { memset( (void*) this, 0x0, sizeof( debuff_t ) ); }
     void reset()
     {
@@ -1084,6 +1080,7 @@ struct target_t
     event_t* hemorrhage;
     event_t* hunters_mark;
     event_t* improved_scorch;
+    event_t* mangle;
     event_t* nature_vulnerability;
     event_t* shadow_vulnerability;
     event_t* shadow_weaving;

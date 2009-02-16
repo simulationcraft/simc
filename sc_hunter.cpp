@@ -1372,6 +1372,7 @@ struct pet_auto_attack_t : public hunter_pet_attack_t
   {
     hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
     p -> main_hand_attack = new pet_melee_t( player );
+    trigger_gcd = 0;
   }
 
   virtual void execute()
@@ -1963,6 +1964,7 @@ struct auto_shot_t : public hunter_attack_t
   {
     hunter_t* p = player -> cast_hunter();
     p -> ranged_attack = new ranged_t( player );
+    trigger_gcd = 0;
   }
 
   virtual void execute()
