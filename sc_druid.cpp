@@ -424,10 +424,10 @@ static void trigger_mangle( attack_t* a )
 {
   struct mangle_expiration_t : public event_t
   {
-    mangle_expiration_t( sim_t* sim ): event_t( sim, 0 )
+    mangle_expiration_t( sim_t* sim, double duration ): event_t( sim, 0 )
     {
       sim -> target -> debuffs.mangle = 1;
-      sim -> add_event( this, 12.0 );
+      sim -> add_event( this, duration );
     }
     virtual void execute()
     {
@@ -435,16 +435,23 @@ static void trigger_mangle( attack_t* a )
       sim -> target -> expirations.mangle = 0;
     }
   };
+
+  druid_t* p = a -> player -> cast_druid();
       
+  double duration = 12.0 + ( p -> glyphs.mangle ? 6.0 : 0.0 );
+
   event_t*& e = a -> sim -> target -> expirations.mangle;
-      
+
+  if( e -> occurs() > ( a -> sim -> current_time + duration ) )
+    return;
+  
   if( e )
   {
-    e -> reschedule( 12.0 );
+    e -> reschedule( duration );
   }
   else
   {
-    e = new ( a -> sim ) mangle_expiration_t( a -> sim );
+    e = new ( a -> sim ) mangle_expiration_t( a -> sim, duration );
   }
 }
 
