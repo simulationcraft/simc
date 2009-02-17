@@ -5,6 +5,7 @@ level=80
 talents=http://www.wowhead.com/?talent=0ZEG0cfrz0eR0huAo0Eczb
 actions=flask,type=endless_rage/food,type=fish_feast
 actions+=/auto_attack/cat_form
+actions+=/tigers_fury
 actions+=/savage_roar,cp>=5,savage_roar<=2
 actions+=/rip,cp>=5,savage_roar>=5
 actions+=/mangle_cat/rake/shred

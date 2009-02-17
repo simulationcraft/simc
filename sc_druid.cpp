@@ -28,6 +28,7 @@ struct druid_t : public player_t
   int    buffs_omen_of_clarity;
   int    buffs_savage_roar;
   int    buffs_stealthed;
+  double buffs_tigers_fury;
 
   // Expirations
   event_t* expirations_eclipse;
@@ -178,6 +179,7 @@ struct druid_t : public player_t
     buffs_omen_of_clarity   = 0;
     buffs_savage_roar       = 0;
     buffs_stealthed         = 0;
+    buffs_tigers_fury       = 0;
 
     // Expirations
     expirations_eclipse     = 0;
@@ -750,6 +752,7 @@ void druid_attack_t::execute()
 
     if( result == RESULT_CRIT )
     {
+
     }
   }
 
@@ -763,6 +766,8 @@ void druid_attack_t::player_buff()
   druid_t* p = player -> cast_druid();
 
   attack_t::player_buff();
+
+  player_dd_adder += p -> buffs_tigers_fury;
 
   p -> uptimes_savage_roar -> update( p -> buffs_savage_roar != 0 );
 }
@@ -885,6 +890,37 @@ struct auto_attack_t : public druid_attack_t
   }
 };
 
+// Claw ====================================================================
+
+struct claw_t : public druid_attack_t
+{
+  claw_t( player_t* player, const std::string& options_str ) :
+    druid_attack_t( "claw", player, SCHOOL_PHYSICAL, TREE_FERAL )
+  {
+    druid_t* p = player -> cast_druid();
+
+    option_t options[] =
+    {
+      { NULL }
+    };
+    parse_options( options, options_str );
+     
+    static rank_t ranks[] =
+    {
+      { 79, 8, 370, 370, 0, 45 },
+      { 73, 7, 300, 300, 0, 45 },
+      { 67, 6, 190, 190, 0, 45 },
+      { 58, 7, 115, 115, 0, 45 },
+      { 0, 0 }
+    };
+    init_rank( ranks );
+
+    weapon = &( p -> main_hand_weapon );
+    adds_combo_points = true;
+    may_crit          = true;
+  }
+};
+
 // Faerie Fire (Feral) ======================================================
 
 struct faerie_fire_feral_t : public druid_attack_t
@@ -913,6 +949,7 @@ struct faerie_fire_feral_t : public druid_attack_t
     if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
     if( p -> buffs_bear_form ) druid_attack_t::execute();
     trigger_faerie_fire( this );
+    update_ready();
   }
 
   virtual bool ready() 
@@ -1071,9 +1108,9 @@ struct savage_roar_t : public druid_attack_t
 
   virtual void execute()
   {
-    struct savage_roar_expiration_t : public event_t
+    struct expiration_t : public event_t
     {
-      savage_roar_expiration_t( sim_t* sim, druid_t* p, double duration ): event_t( sim, p )
+      expiration_t( sim_t* sim, druid_t* p, double duration ): event_t( sim, p )
       {
 	p -> aura_gain( "Savage Roar" );
 	p -> buffs_savage_roar = 1;
@@ -1102,7 +1139,7 @@ struct savage_roar_t : public druid_attack_t
     }
     else
     {
-      e = new ( sim ) savage_roar_expiration_t( sim, p, duration );
+      e = new ( sim ) expiration_t( sim, p, duration );
     }
   }
 };
@@ -1144,6 +1181,50 @@ struct shred_t : public druid_attack_t
   {
     druid_attack_t::player_buff();
     if( sim -> target -> debuffs.mangle ) player_multiplier *= 1.30;
+  }
+};
+
+// Tigers Fury =============================================================
+
+struct tigers_fury_t : public druid_attack_t
+{
+  tigers_fury_t( player_t* player, const std::string& options_str ) :
+    druid_attack_t( "tigers_fury", player, SCHOOL_PHYSICAL, TREE_FERAL )
+  {
+    option_t options[] =
+    {
+      { NULL }
+    };
+    parse_options( options, options_str );
+
+    cooldown = 30.0;
+    trigger_gcd = 0;
+  }
+
+  virtual void execute()
+  {
+    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
+
+    struct expiration_t : public event_t
+    {
+      expiration_t( sim_t* sim, player_t* player ): event_t( sim, player )
+      {
+	druid_t* p = player -> cast_druid();
+	p -> aura_gain( "Tigers Fury" );
+	p -> buffs_tigers_fury = util_t::ability_rank( p -> level,  80.0,79, 60.0,71,  40.0,0 );
+	sim -> add_event( this, 6.0 );
+      }
+      virtual void execute()
+      {
+	druid_t* p = player -> cast_druid();
+	p -> aura_loss( "Tigers Fury" );
+	p -> buffs_tigers_fury = 0;
+      }
+    };
+
+    new ( sim ) expiration_t( sim, player );
+
+    update_ready();
   }
 };
 
@@ -2049,6 +2130,7 @@ action_t* druid_t::create_action( const std::string& name,
 {
   if( name == "auto_attack"       ) return new       auto_attack_t( this, options_str );
   if( name == "cat_form"          ) return new          cat_form_t( this, options_str );
+  if( name == "claw"              ) return new              claw_t( this, options_str );
   if( name == "faerie_fire"       ) return new       faerie_fire_t( this, options_str );
   if( name == "faerie_fire_feral" ) return new faerie_fire_feral_t( this, options_str );
   if( name == "insect_swarm"      ) return new      insect_swarm_t( this, options_str );
@@ -2064,17 +2146,16 @@ action_t* druid_t::create_action( const std::string& name,
   if( name == "shred"             ) return new             shred_t( this, options_str );
   if( name == "starfire"          ) return new          starfire_t( this, options_str );
   if( name == "stealth"           ) return new           stealth_t( this, options_str );
+  if( name == "tigers_fury"       ) return new       tigers_fury_t( this, options_str );
   if( name == "treants"           ) return new     treants_spell_t( this, options_str );
   if( name == "wrath"             ) return new             wrath_t( this, options_str );
 #if 0
-  if( name == "claw"              ) return new              claw_t( this, options_str );
   if( name == "cower"             ) return new             cower_t( this, options_str );
   if( name == "ferocious_bite"    ) return new    ferocious_bite_t( this, options_str );
   if( name == "maim"              ) return new              maim_t( this, options_str );
   if( name == "prowl"             ) return new             prowl_t( this, options_str );
   if( name == "ravage"            ) return new            ravage_t( this, options_str );
   if( name == "swipe_cat"         ) return new         swipe_cat_t( this, options_str );
-  if( name == "tigers_fury"       ) return new       tigers_fury_t( this, options_str );
 #endif
 
   return player_t::create_action( name, options_str );
@@ -2184,6 +2265,7 @@ void druid_t::reset()
   buffs_omen_of_clarity   = 0;
   buffs_savage_roar       = 0;
   buffs_stealthed         = 0;
+  buffs_tigers_fury       = 0;
 
   // Expirations
   expirations_eclipse     = 0;
