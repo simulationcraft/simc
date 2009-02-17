@@ -840,6 +840,40 @@ struct mangle_cat_t : public druid_attack_t
   }
 };
 
+// Rake ====================================================================
+
+struct rake_t : public druid_attack_t
+{
+  rake_t( player_t* player, const std::string& options_str ) :
+    druid_attack_t( "rake", player, SCHOOL_BLEED, TREE_FERAL )
+  {
+    //druid_t* p = player -> cast_druid();
+
+    option_t options[] =
+    {
+      { NULL }
+    };
+    parse_options( options, options_str );
+     
+    static rank_t ranks[] =
+    {
+      { 78, 7, 190, 190, 387, 40 },
+      { 72, 6, 150, 150, 321, 40 },
+      { 64, 5,  90,  90, 138, 40 },
+      { 54, 4,  64,  90,  99, 40 },
+      { 0, 0 }
+    };
+    init_rank( ranks );
+
+    adds_combo_points = true;
+    may_crit          = true;
+    base_tick_time    = 3.0;
+    num_ticks         = 3;
+    direct_power_mod  = 0.01;
+    tick_power_mod    = 0.06;
+  }
+};
+
 // Rip ======================================================================
 
 struct rip_t : public druid_attack_t
@@ -913,7 +947,7 @@ struct shred_t : public druid_attack_t
 
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier *= 2.25;
-
+    requires_position = POSITION_BACK;
     adds_combo_points = true;
     may_crit          = true;
   }
@@ -1863,6 +1897,7 @@ action_t* druid_t::create_action( const std::string& name,
   if( name == "moonfire"          ) return new          moonfire_t( this, options_str );
   if( name == "moonkin_form"      ) return new      moonkin_form_t( this, options_str );
   if( name == "natures_swiftness" ) return new  druids_swiftness_t( this, options_str );
+  if( name == "rake"              ) return new              rake_t( this, options_str );
   if( name == "rip"               ) return new               rip_t( this, options_str );
   if( name == "shred"             ) return new             shred_t( this, options_str );
   if( name == "starfire"          ) return new          starfire_t( this, options_str );
@@ -1876,7 +1911,6 @@ action_t* druid_t::create_action( const std::string& name,
   if( name == "ferocious_bite"    ) return new    ferocious_bite_t( this, options_str );
   if( name == "maim"              ) return new              maim_t( this, options_str );
   if( name == "prowl"             ) return new             prowl_t( this, options_str );
-  if( name == "rake"              ) return new              rake_t( this, options_str );
   if( name == "ravage"            ) return new            ravage_t( this, options_str );
   if( name == "swipe_cat"         ) return new         swipe_cat_t( this, options_str );
   if( name == "tigers_fury"       ) return new       tigers_fury_t( this, options_str );
