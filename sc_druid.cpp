@@ -2217,9 +2217,10 @@ void druid_t::init_base()
   initial_spell_power_per_intellect = talents.lunar_guidance * 0.04;
   initial_spell_power_per_spirit = ( talents.improved_moonkin_form * 0.05 );
 
-  base_attack_power = -20;
+  base_attack_power = ( level * 2 ) - 20;
   base_attack_crit  = 0.01;
-  initial_attack_power_per_strength = 2.0;
+  initial_attack_power_per_agility  = 1.0;
+  initial_attack_power_per_strength = 1.0;
   initial_attack_crit_per_agility = rating_t::interpolate( level, 0.01/25.0, 0.01/40.0, 0.01/83.3 );
 
   // FIXME! Make this level-specific.
