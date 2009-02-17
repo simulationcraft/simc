@@ -89,6 +89,15 @@ struct druid_t : public player_t
     int  vengeance;
     int  wrath_of_cenarius;
 
+    int  leader_of_the_pack;
+    int  sharpened_claws;
+    int  shredding_attacks;
+    int  survival_of_the_fittest;
+
+    // partially implemented
+    int  primal_precision; // energy reduction on miss NYI
+    int  rend_and_tear;    // fb crit chance NYI
+
     // Not Yet Implemented
     int  beserk;
     int  feral_aggression;
@@ -98,19 +107,13 @@ struct druid_t : public player_t
     int  improved_mangle;
     int  infected_wounds;
     int  king_of_the_jungle;
-    int  leader_of_the_pack;
     int  mangle;
     int  naturalist;
     int  predatory_instincts;
     int  predatory_strikes;
     int  primal_fury;
-    int  primal_precision;
     int  protector_of_the_pack;
-    int  rend_and_tear;
     int  savage_fury;
-    int  sharpened_claws;
-    int  shredding_attacks;
-    int  survival_of_the_fittest;
     
     talents_t() { memset( (void*) this, 0x0, sizeof( talents_t ) ); }
   };
@@ -217,6 +220,8 @@ struct druid_t : public player_t
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
   virtual int       primary_resource() { return talents.moonkin_form ? RESOURCE_MANA : RESOURCE_ENERGY; }
+  virtual double    composite_attribute_multiplier( int attr );
+  virtual double    composite_attack_crit();
 
   // Utilities 
   double combo_point_rank( double* cp_list )
@@ -1087,7 +1092,7 @@ struct rip_t : public druid_attack_t
     base_cost             = 30;
     base_tick_time        = 2.0; 
 
-    num_ticks = 6 + ( p -> glyphs.rip ? 2 : 0 );
+    num_ticks = 6 + ( p -> glyphs.rip ? 2 : 0 ) + ( p -> tiers.t7_2pc_feral ? 2 : 0 );
 
     static double dmg_80[] = { 39+99*1, 39+99*2, 39+99*3, 39+99*4, 39+99*5 };
     static double dmg_71[] = { 32+72*1, 32+72*2, 32+72*3, 32+72*4, 32+72*5 };
@@ -1204,6 +1209,26 @@ struct shred_t : public druid_attack_t
   {
     druid_attack_t::player_buff();
     if( sim -> target -> debuffs.mangle ) player_multiplier *= 1.30;
+    
+    // FIXME: Need bleed detection (rogues, warrs, hunter pets, other ferals, etc?)
+    //if( talents.rend_and_tear && sim -> target -> bleeding )
+    //{
+    //  player_multiplier *= 0.04 * talents.rend_and_tear;
+    //} 
+  }
+
+  virtual double cost()
+  {
+    double c = attack_t::cost();
+    
+    druid_t* p = player -> cast_druid();
+
+    if ( p -> talents.shredding_attacks )
+    {
+      c -= 9 * p -> talents.shredding_attacks;
+    }
+
+    return c;
   }
 };
 
@@ -2197,6 +2222,7 @@ pet_t* druid_t::create_pet( const std::string& pet_name )
   return 0;
 }
 
+
 // druid_t::init_base =======================================================
 
 void druid_t::init_base()
@@ -2220,7 +2246,7 @@ void druid_t::init_base()
   base_attack_power = ( level * 2 ) - 20;
   base_attack_crit  = 0.01;
   initial_attack_power_per_agility  = 1.0;
-  initial_attack_power_per_strength = 1.0;
+  initial_attack_power_per_strength = 2.0;
   initial_attack_crit_per_agility = rating_t::interpolate( level, 0.01/25.0, 0.01/40.0, 0.01/83.3 );
 
   // FIXME! Make this level-specific.
@@ -2234,6 +2260,16 @@ void druid_t::init_base()
 
   spirit_regen_while_casting = util_t::talent_rank(talents.intensity,  3, 0.10);
   mp5_per_intellect          = util_t::talent_rank(talents.dreamstate, 3, 0.04, 0.07, 0.10);
+
+  if ( talents.primal_precision )
+  {
+    base_attack_expertise += talents.primal_precision * 0.05;
+  }
+
+  if ( talents.heart_of_the_wild )
+  {
+    attack_power_multiplier *= 1 + 0.02 * talents.heart_of_the_wild;
+  }
 }
 
 // druid_t::init_unique_gear ================================================
@@ -2337,6 +2373,40 @@ double druid_t::composite_spell_crit()
   }
 
   return crit;
+}
+
+double druid_t::composite_attribute_multiplier( int attr )
+{
+  double a = player_t::composite_attribute_multiplier( attr );
+  
+  if ( talents.survival_of_the_fittest )
+  {
+    a *= 0.02 * talents.survival_of_the_fittest;
+  }
+
+  return a;
+}
+
+double druid_t::composite_attack_crit()
+{
+  double c = player_t::composite_attack_crit();
+
+  if ( talents.sharpened_claws ) 
+  {
+    c += 0.02 * talents.sharpened_claws;
+  }
+
+  if ( talents.leader_of_the_pack )
+  {
+    c += 0.05;
+  }
+
+  if ( talents.master_shapeshifter )
+  {
+    c += 0.02 * talents.master_shapeshifter;
+  }
+
+  return c;
 }
 
 // druid_t::get_talent_trees ===============================================
