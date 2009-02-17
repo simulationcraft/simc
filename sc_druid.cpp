@@ -30,6 +30,7 @@ struct druid_t : public player_t
 
   // Expirations
   event_t* expirations_eclipse;
+  event_t* expirations_savage_roar;
 
   // Cooldowns
   double cooldowns_eclipse;
@@ -176,7 +177,8 @@ struct druid_t : public player_t
     buffs_stealthed         = 0;
 
     // Expirations
-    expirations_eclipse = 0;
+    expirations_eclipse     = 0;
+    expirations_savage_roar = 0;
 
     // Cooldowns
     cooldowns_eclipse = 0;
@@ -200,6 +202,7 @@ struct druid_t : public player_t
   virtual void      init_base();
   virtual void      init_unique_gear();
   virtual void      reset();
+  virtual double    composite_attack_power();
   virtual double    composite_spell_hit();
   virtual double    composite_spell_crit();
   virtual bool      get_talent_trees( std::vector<int*>& balance, std::vector<int*>& feral, std::vector<int*>& restoration );
@@ -237,6 +240,7 @@ struct druid_attack_t : public attack_t
   int  min_combo_points, max_combo_points;
   double min_energy, max_energy;
   double min_mangle_expire, max_mangle_expire;
+  double min_savage_roar_expire, max_savage_roar_expire;
   double min_rip_expire, max_rip_expire;
 
   druid_attack_t( const char* n, player_t* player, int s=SCHOOL_PHYSICAL, int t=TREE_NONE ) :
@@ -245,10 +249,11 @@ struct druid_attack_t : public attack_t
     requires_position(POSITION_NONE),
     requires_combo_points(false),
     adds_combo_points(false),
-    min_combo_points(0),  max_combo_points(0),
-    min_energy(0),        max_energy(0),
+    min_combo_points(0), max_combo_points(0),
+    min_energy(0), max_energy(0),
     min_mangle_expire(0), max_mangle_expire(0),
-    min_rip_expire(0),    max_rip_expire(0)
+    min_savage_roar_expire(0), max_savage_roar_expire(0),
+    min_rip_expire(0), max_rip_expire(0)
   {
     may_glance = false;
   }
@@ -609,18 +614,20 @@ void druid_attack_t::parse_options( option_t*          options,
 {
   option_t base_options[] =
   {
-    { "min_combo_points", OPT_INT, &min_combo_points  },
-    { "max_combo_points", OPT_INT, &max_combo_points  },
-    { "cp>",              OPT_INT, &min_combo_points  },
-    { "cp<",              OPT_INT, &max_combo_points  },
-    { "min_energy",       OPT_FLT, &min_energy        },
-    { "max_energy",       OPT_FLT, &max_energy        },
-    { "energy>",          OPT_FLT, &min_energy        },
-    { "energy<",          OPT_FLT, &max_energy        },
-    { "rip>",             OPT_FLT, &min_rip_expire    },
-    { "rip<",             OPT_FLT, &max_rip_expire    },
-    { "mangle>",          OPT_FLT, &min_mangle_expire },
-    { "mangle<",          OPT_FLT, &max_mangle_expire },
+    { "min_combo_points", OPT_INT, &min_combo_points       },
+    { "max_combo_points", OPT_INT, &max_combo_points       },
+    { "cp>",              OPT_INT, &min_combo_points       },
+    { "cp<",              OPT_INT, &max_combo_points       },
+    { "min_energy",       OPT_FLT, &min_energy             },
+    { "max_energy",       OPT_FLT, &max_energy             },
+    { "energy>",          OPT_FLT, &min_energy             },
+    { "energy<",          OPT_FLT, &max_energy             },
+    { "rip>",             OPT_FLT, &min_rip_expire         },
+    { "rip<",             OPT_FLT, &max_rip_expire         },
+    { "mangle>",          OPT_FLT, &min_mangle_expire      },
+    { "mangle<",          OPT_FLT, &max_mangle_expire      },
+    { "savage_roar>",     OPT_FLT, &min_savage_roar_expire },
+    { "savage_roar<",     OPT_FLT, &max_savage_roar_expire },
     { NULL }
   };
   std::vector<option_t> merged_options;
@@ -730,6 +737,14 @@ bool druid_attack_t::ready()
 
   if( max_mangle_expire > 0 )
     if( t -> expirations.mangle && ( ( t -> expirations.mangle -> occurs() - ct ) > max_mangle_expire ) )
+      return false;
+
+  if( min_savage_roar_expire > 0 )
+    if( ! p -> expirations_savage_roar || ( ( p -> expirations_savage_roar -> occurs() - ct ) < min_savage_roar_expire ) )
+      return false;
+
+  if( max_savage_roar_expire > 0 )
+    if( p -> expirations_savage_roar && ( ( p -> expirations_savage_roar -> occurs() - ct ) > max_savage_roar_expire ) )
       return false;
 
   if( min_rip_expire > 0 )
@@ -916,6 +931,62 @@ struct rip_t : public druid_attack_t
     tick_power_mod = p -> buffs_combo_points * 0.01;
     base_td_init   = p -> combo_point_rank( combo_point_dmg );
     druid_attack_t::player_buff();
+  }
+};
+
+// Savage Roar =============================================================
+
+struct savage_roar_t : public druid_attack_t
+{
+  savage_roar_t( player_t* player, const std::string& options_str ) :
+    druid_attack_t( "savage_roar", player, SCHOOL_PHYSICAL, TREE_FERAL )
+  {
+    //druid_t* p = player -> cast_druid();
+
+    option_t options[] =
+    {
+      { NULL }
+    };
+    parse_options( options, options_str );
+    requires_combo_points = true;
+    base_cost = 25;
+  }
+
+  virtual void execute()
+  {
+    struct savage_roar_expiration_t : public event_t
+    {
+      savage_roar_expiration_t( sim_t* sim, druid_t* p, double duration ): event_t( sim, p )
+      {
+	p -> aura_gain( "Savage Roar" );
+	p -> buffs_savage_roar = 1;
+	sim -> add_event( this, duration );
+      }
+      virtual void execute()
+      {
+	druid_t* p = player -> cast_druid();
+	p -> aura_loss( "Savage Roar" );
+	p -> buffs_savage_roar = 0;
+	p -> expirations_savage_roar = 0;
+      }
+    };
+
+    druid_t* p = player -> cast_druid();
+      
+    double duration = 9.0 + p -> buffs_combo_points * 5.0;
+
+    clear_combo_points( p );    
+
+    event_t*& e = p -> expirations_savage_roar;
+
+    if( e )
+    {
+      e -> reschedule( duration );
+    }
+    else
+    {
+      e = new ( sim ) savage_roar_expiration_t( sim, p, duration );
+    }
   }
 };
 
@@ -1899,6 +1970,7 @@ action_t* druid_t::create_action( const std::string& name,
   if( name == "natures_swiftness" ) return new  druids_swiftness_t( this, options_str );
   if( name == "rake"              ) return new              rake_t( this, options_str );
   if( name == "rip"               ) return new               rip_t( this, options_str );
+  if( name == "savage_roar"       ) return new       savage_roar_t( this, options_str );
   if( name == "shred"             ) return new             shred_t( this, options_str );
   if( name == "starfire"          ) return new          starfire_t( this, options_str );
   if( name == "stealth"           ) return new           stealth_t( this, options_str );
@@ -2024,11 +2096,23 @@ void druid_t::reset()
   buffs_stealthed         = 0;
 
   // Expirations
-  expirations_eclipse = 0;
+  expirations_eclipse     = 0;
+  expirations_savage_roar = 0;
 
   // Cooldowns
   cooldowns_eclipse         = 0;
   cooldowns_omen_of_clarity = 0;
+}
+
+// druid_t::composite_attack_power ==========================================
+
+double druid_t::composite_attack_power()
+{
+  double ap = player_t::composite_attack_power();
+
+  if( buffs_savage_roar ) ap *= 1.40;
+
+  return ap;
 }
 
 // druid_t::composite_spell_hit =============================================
