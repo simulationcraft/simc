@@ -17,6 +17,7 @@ struct druid_t : public player_t
   action_t* active_rip;
 
   // Buffs
+  int    buffs_bear_form;
   int    buffs_cat_form;
   int    buffs_combo_points;
   double buffs_eclipse_starfire;
@@ -47,6 +48,7 @@ struct druid_t : public player_t
   // Up-Times
   uptime_t* uptimes_eclipse_starfire;
   uptime_t* uptimes_eclipse_wrath;
+  uptime_t* uptimes_savage_roar;
 
   attack_t* melee_attack;
 
@@ -165,6 +167,7 @@ struct druid_t : public player_t
     active_rip          = 0;
 
     // Buffs
+    buffs_bear_form         = 0;
     buffs_cat_form          = 0;
     buffs_combo_points      = 0;
     buffs_eclipse_starfire  = 0;
@@ -194,6 +197,7 @@ struct druid_t : public player_t
     // Up-Times
     uptimes_eclipse_starfire = get_uptime( "eclipse_starfire" );
     uptimes_eclipse_wrath    = get_uptime( "eclipse_wrath"    );
+    uptimes_savage_roar      = get_uptime( "savage_roar"      );
 
     melee_attack = 0;
   }
@@ -423,6 +427,74 @@ static void trigger_omen_of_clarity( action_t* a )
   }
 }
 
+// trigger_faerie_fire =======================================================
+
+static void trigger_faerie_fire( action_t* a )
+{
+  struct expiration_t : public event_t
+  {
+    expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
+    {
+      target_t* t = sim -> target;
+      t -> debuffs.faerie_fire = util_t::ability_rank( p -> level,  1260,76,  610,66,  505,0 );
+      sim -> add_event( this, 40.0 );
+    }
+
+    virtual void execute()
+    {
+      target_t* t = sim -> target;
+      t -> debuffs.faerie_fire = 0;
+      t -> expirations.faerie_fire = 0;
+    }
+  };
+  
+  event_t*& e = a -> sim -> target -> expirations.faerie_fire;
+
+  if( e )
+  {
+    e -> reschedule( 40.0 );
+  }
+  else
+  {
+    e = new ( a -> sim ) expiration_t( a -> sim, a -> player );
+  }
+}
+
+// trigger_improved_faerie_fire ==============================================
+
+static void trigger_improved_faerie_fire( action_t* a )
+{
+  druid_t* p = a -> player -> cast_druid();
+
+  if( ! p -> talents.improved_faerie_fire )
+    return;
+  
+  struct expiration_t : public event_t
+  {
+    expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
+    {
+      sim -> target -> debuffs.improved_faerie_fire = 3;
+      sim -> add_event( this, 40.0 );
+    }
+    virtual void execute()
+    {
+      sim -> target -> debuffs.improved_faerie_fire = 0;
+      sim -> target -> expirations.improved_faerie_fire = 0;
+    }
+  };
+  
+  event_t*& e = a -> sim -> target -> expirations.improved_faerie_fire;
+
+  if( e )
+  {
+    e -> reschedule( 40.0 );
+  }
+  else
+  {
+    e = new ( a -> sim ) expiration_t( a -> sim, a -> player );
+  }
+}
+
 // trigger_mangle ============================================================
 
 static void trigger_mangle( attack_t* a )
@@ -431,12 +503,12 @@ static void trigger_mangle( attack_t* a )
   {
     mangle_expiration_t( sim_t* sim, double duration ): event_t( sim, 0 )
     {
-      sim -> target -> debuffs.mangle = 1;
+      sim -> target -> debuffs.mangle++;
       sim -> add_event( this, duration );
     }
     virtual void execute()
     {
-      sim -> target -> debuffs.mangle = 0;
+      sim -> target -> debuffs.mangle--;
       sim -> target -> expirations.mangle = 0;
     }
   };
@@ -688,8 +760,11 @@ void druid_attack_t::execute()
 
 void druid_attack_t::player_buff()
 {
+  druid_t* p = player -> cast_druid();
+
   attack_t::player_buff();
 
+  p -> uptimes_savage_roar -> update( p -> buffs_savage_roar != 0 );
 }
 
 // druid_attack_t::ready ===================================================
@@ -807,6 +882,48 @@ struct auto_attack_t : public druid_attack_t
   {
     druid_t* p = player -> cast_druid();
     return( p -> melee_attack -> execute_event == 0 ); // not swinging
+  }
+};
+
+// Faerie Fire (Feral) ======================================================
+
+struct faerie_fire_feral_t : public druid_attack_t
+{
+  int debuff_only;
+
+  faerie_fire_feral_t( player_t* player, const std::string& options_str ) :
+    druid_attack_t( "faerie_fire_feral", player, SCHOOL_PHYSICAL, TREE_FERAL ), debuff_only(0)
+  {
+    option_t options[] =
+    {
+      { "debuff_only", OPT_INT, &debuff_only },
+      { NULL }
+    };
+    parse_options( options, options_str );
+
+    base_direct_dmg = 1;
+    direct_power_mod = 0.05;
+    cooldown = 6.0;
+    may_crit = true;
+  }
+
+  virtual void execute()
+  {
+    druid_t* p = player -> cast_druid();
+    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    if( p -> buffs_bear_form ) druid_attack_t::execute();
+    trigger_faerie_fire( this );
+  }
+
+  virtual bool ready() 
+  {
+    if( ! druid_attack_t::ready() )
+      return false;
+
+    if( debuff_only && sim -> target -> debuffs.faerie_fire )
+      return false;
+
+    return true;
   }
 };
 
@@ -1167,64 +1284,36 @@ void druid_spell_t::target_debuff( int dmg_type )
 
 struct faerie_fire_t : public druid_spell_t
 {
-  int armor_penetration;
-  int  bonus_hit;
-
   faerie_fire_t( player_t* player, const std::string& options_str ) : 
     druid_spell_t( "faerie_fire", player, SCHOOL_NATURE, TREE_BALANCE )
   {
     druid_t* p = player -> cast_druid();
 
-    base_execute_time = 0;
-    base_cost         = p -> resource_base[ RESOURCE_MANA ] * 0.07;
-    armor_penetration = (int) util_t::ability_rank( p -> level,  1260,76,  610,66,  505,0 );
-    bonus_hit         = p -> talents.improved_faerie_fire;
+    base_cost = p -> resource_base[ RESOURCE_MANA ] * 0.07;
   }
 
   virtual void execute()
   {
-    struct expiration_t : public event_t
-    {
-      faerie_fire_t* faerie_fire;
-      expiration_t( sim_t* sim, player_t* p, faerie_fire_t* ff ) : event_t( sim, p ), faerie_fire( ff )
-      {
-        target_t* t = sim -> target;
-        t -> debuffs.faerie_fire = faerie_fire -> armor_penetration;
-        t -> debuffs.improved_faerie_fire = faerie_fire -> bonus_hit;
-        sim -> add_event( this, 40.0 );
-      }
-      virtual void execute()
-      {
-        target_t* t = sim -> target;
-        t -> debuffs.faerie_fire = 0;
-        t -> debuffs.improved_faerie_fire = 0;
-        t -> expirations.faerie_fire = 0;
-      }
-    };
-
     if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
-
-    target_t* t = sim -> target;
-    if( t -> debuffs.faerie_fire &&
-        t -> expirations.faerie_fire )
-    {
-      // We are overriding an existing debuff......
-      t -> expirations.faerie_fire -> execute();
-      t -> expirations.faerie_fire -> canceled = 1;
-    }
-    t -> expirations.faerie_fire = new ( sim ) expiration_t( sim, player, this );
+    trigger_faerie_fire( this );
+    trigger_improved_faerie_fire( this );
   }
 
   virtual bool ready() 
   {
+    druid_t* p = player -> cast_druid();
+
     if( ! druid_spell_t::ready() )
       return false;
 
     if( ! sim -> target -> debuffs.faerie_fire )
       return true;
 
-    return bonus_hit > sim -> target -> debuffs.improved_faerie_fire;
+    if( ! sim -> target -> debuffs.improved_faerie_fire && p -> talents.improved_faerie_fire )
+      return true;
+
+    return false;
   }
 };
 
@@ -1961,6 +2050,7 @@ action_t* druid_t::create_action( const std::string& name,
   if( name == "auto_attack"       ) return new       auto_attack_t( this, options_str );
   if( name == "cat_form"          ) return new          cat_form_t( this, options_str );
   if( name == "faerie_fire"       ) return new       faerie_fire_t( this, options_str );
+  if( name == "faerie_fire_feral" ) return new faerie_fire_feral_t( this, options_str );
   if( name == "insect_swarm"      ) return new      insect_swarm_t( this, options_str );
   if( name == "innervate"         ) return new         innervate_t( this, options_str );
   if( name == "mangle_cat"        ) return new        mangle_cat_t( this, options_str );
@@ -1979,7 +2069,6 @@ action_t* druid_t::create_action( const std::string& name,
 #if 0
   if( name == "claw"              ) return new              claw_t( this, options_str );
   if( name == "cower"             ) return new             cower_t( this, options_str );
-  if( name == "faerie_fire_feral" ) return new faerie_fire_feral_t( this, options_str );
   if( name == "ferocious_bite"    ) return new    ferocious_bite_t( this, options_str );
   if( name == "maim"              ) return new              maim_t( this, options_str );
   if( name == "prowl"             ) return new             prowl_t( this, options_str );
@@ -2084,6 +2173,7 @@ void druid_t::reset()
   active_rip          = 0;
 
   // Buffs
+  buffs_bear_form         = 0;
   buffs_cat_form          = 0;
   buffs_combo_points      = 0;
   buffs_eclipse_starfire  = 0;

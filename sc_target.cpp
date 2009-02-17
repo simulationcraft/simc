@@ -148,13 +148,14 @@ void target_t::init()
     }
   }
 
-  uptimes.winters_grasp   = get_uptime( "winters_grasp"   );
-  uptimes.winters_chill   = get_uptime( "winters_chill"   );
-  uptimes.improved_scorch = get_uptime( "improved_scorch" );
   uptimes.blood_frenzy    = get_uptime( "blood_frenzy"    );
+  uptimes.improved_scorch = get_uptime( "improved_scorch" );
+  uptimes.mangle          = get_uptime( "mangle"          );
+  uptimes.master_poisoner = get_uptime( "master_poisoner" );
   uptimes.savage_combat   = get_uptime( "savage_combat"   );
   uptimes.totem_of_wrath  = get_uptime( "totem_of_wrath"  );
-  uptimes.master_poisoner = get_uptime( "master_poisoner" );
+  uptimes.winters_chill   = get_uptime( "winters_chill"   );
+  uptimes.winters_grasp   = get_uptime( "winters_grasp"   );
 }
 
 // target_t::reset ===========================================================

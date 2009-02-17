@@ -1078,7 +1078,8 @@ struct target_t
     event_t* frozen;
     event_t* earth_and_moon;
     event_t* hemorrhage;
-    event_t* hunters_mark;
+    event_t* hunters_mark; 
+    event_t* improved_faerie_fire;
     event_t* improved_scorch;
     event_t* mangle;
     event_t* nature_vulnerability;
@@ -1095,6 +1096,7 @@ struct target_t
   {
     uptime_t* blood_frenzy;
     uptime_t* improved_scorch;
+    uptime_t* mangle;
     uptime_t* master_poisoner;
     uptime_t* savage_combat;
     uptime_t* totem_of_wrath;

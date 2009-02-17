@@ -244,12 +244,13 @@ void action_t::target_debuff( int dmg_type )
     if( t -> debuffs.curse_of_elements ) target_penetration += 88;
   }
 
-  if( t -> debuffs.mangle )
+  if( school == SCHOOL_BLEED ) 
   {
-    if( school == SCHOOL_BLEED ) 
+    if( t -> debuffs.mangle )
     {
       target_multiplier *= 1.30;
     }
+    t -> uptimes.mangle -> update( t -> debuffs.mangle != 0 );
   }
 
   if( t -> debuffs.razorice )
