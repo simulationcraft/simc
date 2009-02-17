@@ -268,6 +268,7 @@ struct druid_attack_t : public attack_t
   virtual double cost();
   virtual void   execute();
   virtual void   consume_resource();
+  virtual double calculate_direct_damage();
   virtual void   player_buff();
   virtual bool   ready();
 };
@@ -306,7 +307,7 @@ struct treants_pet_t : public pet_t
 
       weapon = &( player -> main_hand_weapon );
       base_execute_time = weapon -> swing_time;
-      base_direct_dmg = 1;
+      base_dd_min = base_dd_max = 1;
       background = true;
       repeating = true;
       
@@ -759,6 +760,30 @@ void druid_attack_t::execute()
   break_stealth( p );
 }
 
+// druid_attack_t::calculate_direct_damage =================================
+
+double druid_attack_t::calculate_direct_damage()
+{
+  druid_t* p = player -> cast_druid();
+
+  if( base_dd_min > 0 && base_dd_max > 0 )
+  {
+    if( sim -> average_dmg )
+    {
+      base_direct_dmg = ( base_dd_min + base_dd_max ) / 2.0;
+    }
+    else
+    {
+      double delta = base_dd_max - base_dd_min;
+      base_direct_dmg = base_dd_min + delta * sim -> rng -> real();
+    }
+
+    base_direct_dmg += p -> buffs_tigers_fury;
+  }
+
+  return attack_t::calculate_direct_damage();
+}
+
 // druid_attack_t::player_buff =============================================
 
 void druid_attack_t::player_buff()
@@ -766,8 +791,6 @@ void druid_attack_t::player_buff()
   druid_t* p = player -> cast_druid();
 
   attack_t::player_buff();
-
-  player_dd_adder += p -> buffs_tigers_fury;
 
   p -> uptimes_savage_roar -> update( p -> buffs_savage_roar != 0 );
 }
@@ -845,12 +868,12 @@ struct melee_t : public druid_attack_t
   melee_t( const char* name, player_t* player ) :
     druid_attack_t( name, player )
   {
-    base_direct_dmg = 1;
-    may_glance      = true;
-    background      = true;
-    repeating       = true;
-    trigger_gcd     = 0;
-    base_cost       = 0;
+    base_dd_min = base_dd_max = 1;
+    may_glance  = true;
+    background  = true;
+    repeating   = true;
+    trigger_gcd = 0;
+    base_cost   = 0;
   }
 
   virtual void execute()
@@ -937,7 +960,7 @@ struct faerie_fire_feral_t : public druid_attack_t
     };
     parse_options( options, options_str );
 
-    base_direct_dmg = 1;
+    base_dd_min = base_dd_max = 1;
     direct_power_mod = 0.05;
     cooldown = 6.0;
     may_crit = true;
