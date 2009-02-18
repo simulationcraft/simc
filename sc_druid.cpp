@@ -90,33 +90,33 @@ struct druid_t : public player_t
     int  vengeance;
     int  wrath_of_cenarius;
 
+    int  ferocity;
+    int  improved_mangle;
     int  leader_of_the_pack;
+    int  mangle;
+    int  naturalist;
+    int  primal_fury;
+    int  savage_fury;
     int  sharpened_claws;
     int  shredding_attacks;
     int  survival_of_the_fittest;
+    int  heart_of_the_wild;
 
     // partially implemented
-    int  primal_precision; // energy reduction on miss NYI
-    int  rend_and_tear;    // fb crit chance NYI
+    int  primal_precision; // FIXME energy reduction on miss NYI
+    int  rend_and_tear;    // FIXME fb crit chance NYI
 
-    // has no effect
+    // has no effect on dps
     int  infected_wounds;
     int  protector_of_the_pack;
 
     // Not Yet Implemented
     int  beserk;
-    int  feral_aggression;
-    int  feral_instinct;
-    int  ferocity;
-    int  heart_of_the_wild;
-    int  improved_mangle;
+    int  feral_aggression; // FIXME fb implementation missing
+    int  feral_instinct;   // FIXME swipe (cat) implementation missing
     int  king_of_the_jungle;
-    int  mangle;
-    int  naturalist;
     int  predatory_instincts;
     int  predatory_strikes;
-    int  primal_fury;
-    int  savage_fury;
     
     talents_t() { memset( (void*) this, 0x0, sizeof( talents_t ) ); }
   };
@@ -819,6 +819,11 @@ void druid_attack_t::player_buff()
   attack_t::player_buff();
 
   p -> uptimes_savage_roar -> update( p -> buffs_savage_roar != 0 );
+
+  if( p -> talents.naturalist )
+  {
+    player_multiplier *= 1 + p -> talents.naturalist * 0.02;
+  }
 }
 
 // druid_attack_t::ready ===================================================
@@ -968,6 +973,17 @@ struct claw_t : public druid_attack_t
     adds_combo_points = true;
     may_crit          = true;
   }
+
+  virtual void player_buff()
+  {
+    druid_t* p = player -> cast_druid();
+    
+    if( p -> talents.savage_fury )
+    {
+      player_multiplier *= 1 + p -> talents.savage_fury * 0.1;
+    }
+  }
+
 };
 
 // Faerie Fire (Feral) ======================================================
@@ -1021,6 +1037,7 @@ struct mangle_cat_t : public druid_attack_t
     druid_attack_t( "mangle_cat", player, SCHOOL_PHYSICAL, TREE_FERAL )
   {
     druid_t* p = player -> cast_druid();
+    assert( p -> talents.mangle );
 
     // By default, do not overwrite Mangle
     max_mangle_expire = 0.001;
@@ -1056,6 +1073,35 @@ struct mangle_cat_t : public druid_attack_t
       trigger_mangle( this );
     }
   }
+
+  virtual double cost()
+  {
+    double c = attack_t::cost();
+
+    druid_t* p = player -> cast_druid();
+
+    if( p -> talents.ferocity )
+    {
+      c -= p -> talents.ferocity;
+    }
+
+    if( p -> talents.improved_mangle )
+    {
+      c -= p -> talents.improved_mangle * 2;
+    }
+
+    return c;
+  }
+
+  virtual void player_buff()
+  {
+    druid_t* p = player -> cast_druid();
+    
+    if( p -> talents.savage_fury )
+    {
+      player_multiplier *= 1 + p -> talents.savage_fury * 0.1;
+    }
+  }
 };
 
 // Rake ====================================================================
@@ -1089,6 +1135,30 @@ struct rake_t : public druid_attack_t
     num_ticks         = 3;
     direct_power_mod  = 0.01;
     tick_power_mod    = 0.06;
+  }
+
+  virtual double cost()
+  {
+    double c = attack_t::cost();
+
+    druid_t* p = player -> cast_druid();
+
+    if( p -> talents.ferocity )
+    {
+      c -= p -> talents.ferocity;
+    }
+
+    return c;
+  }
+
+  virtual void player_buff()
+  {
+    druid_t* p = player -> cast_druid();
+    
+    if( p -> talents.savage_fury )
+    {
+      player_multiplier *= 1 + p -> talents.savage_fury * 0.1;
+    }
   }
 };
 
@@ -2417,6 +2487,7 @@ double druid_t::composite_attack_crit()
     c += 0.02 * talents.sharpened_claws;
   }
 
+  // FIXME should probably be based on the buff... otoh, making a viable build without this talent isn't going to happen
   if ( talents.leader_of_the_pack )
   {
     c += 0.05;
