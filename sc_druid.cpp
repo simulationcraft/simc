@@ -45,6 +45,7 @@ struct druid_t : public player_t
   // Procs
   proc_t* procs_combo_points;
   proc_t* procs_omen_of_clarity;
+  proc_t* procs_primal_fury;
 
   // Up-Times
   uptime_t* uptimes_eclipse_starfire;
@@ -98,6 +99,10 @@ struct druid_t : public player_t
     int  primal_precision; // energy reduction on miss NYI
     int  rend_and_tear;    // fb crit chance NYI
 
+    // has no effect
+    int  infected_wounds;
+    int  protector_of_the_pack;
+
     // Not Yet Implemented
     int  beserk;
     int  feral_aggression;
@@ -105,14 +110,12 @@ struct druid_t : public player_t
     int  ferocity;
     int  heart_of_the_wild;
     int  improved_mangle;
-    int  infected_wounds;
     int  king_of_the_jungle;
     int  mangle;
     int  naturalist;
     int  predatory_instincts;
     int  predatory_strikes;
     int  primal_fury;
-    int  protector_of_the_pack;
     int  savage_fury;
     
     talents_t() { memset( (void*) this, 0x0, sizeof( talents_t ) ); }
@@ -198,6 +201,7 @@ struct druid_t : public player_t
     // Procs
     procs_combo_points    = get_proc( "combo_points" );
     procs_omen_of_clarity = get_proc( "omen_of_clarity" );
+    procs_primal_fury     = get_proc( "primal_fury" );
 
     // Up-Times
     uptimes_eclipse_starfire = get_uptime( "eclipse_starfire" );
@@ -683,6 +687,23 @@ static void trigger_ashtongue_talisman( spell_t* s )
   }
 }
 
+static void trigger_primal_fury( druid_attack_t* a )
+{
+  druid_t* p = a -> player -> cast_druid();
+  
+  if ( ! p -> talents.primal_fury )
+    return;
+
+  if ( ! a -> adds_combo_points )
+    return;
+
+  if ( a -> sim -> roll( p -> talents.primal_fury * 0.5 ) )
+  {
+    add_combo_point( p );
+    p -> procs_primal_fury -> occur();
+  } 
+}
+
 // =========================================================================
 // Druid Attack
 // =========================================================================
@@ -758,7 +779,7 @@ void druid_attack_t::execute()
 
     if( result == RESULT_CRIT )
     {
-
+	trigger_primal_fury( this );
     }
   }
 
