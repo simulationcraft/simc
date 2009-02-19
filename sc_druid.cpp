@@ -34,6 +34,7 @@ struct druid_t : public player_t
   // Expirations
   event_t* expirations_eclipse;
   event_t* expirations_savage_roar;
+  event_t* expirations_unseen_moon;
 
   // Cooldowns
   double cooldowns_eclipse;
@@ -47,7 +48,8 @@ struct druid_t : public player_t
   proc_t* procs_combo_points;
   proc_t* procs_omen_of_clarity;
   proc_t* procs_primal_fury;
-
+  proc_t* procs_unseen_moon;
+  
   // Up-Times
   uptime_t* uptimes_eclipse_starfire;
   uptime_t* uptimes_eclipse_wrath;
@@ -141,6 +143,7 @@ struct druid_t : public player_t
     int ravenous_beast;
     int shooting_star;
     int steadfast_renewal;
+    int unseen_moon;
     int worship;
     idols_t() { memset( (void*) this, 0x0, sizeof( idols_t ) ); }
   };
@@ -204,6 +207,7 @@ struct druid_t : public player_t
     procs_combo_points    = get_proc( "combo_points" );
     procs_omen_of_clarity = get_proc( "omen_of_clarity" );
     procs_primal_fury     = get_proc( "primal_fury" );
+    procs_unseen_moon     = get_proc( "unseen_moon" );
 
     // Up-Times
     uptimes_eclipse_starfire = get_uptime( "eclipse_starfire" );
@@ -681,6 +685,47 @@ static void trigger_ashtongue_talisman( spell_t* s )
     if( e )
     {
       e -> reschedule( 8.0 );
+    }
+    else
+    {
+      e = new ( s -> sim ) expiration_t( s -> sim, p );
+    }
+  }
+}
+
+// trigger_unseen_moon ========================================================
+
+static void trigger_unseen_moon( spell_t* s )
+{
+  struct expiration_t : public event_t
+  {
+    expiration_t( sim_t* sim, druid_t* p ) : event_t( sim, p )
+    {
+      name = "Idol of the Unseen Moon";
+      p -> aura_gain( "Idol of the Unseen Moon" );
+      p -> spell_power[ SCHOOL_MAX ] += 140;
+      sim -> add_event( this, 10.0 );
+    }
+    virtual void execute()
+    {
+      druid_t* p = player -> cast_druid();
+      p -> aura_loss( "Idol of the Unseen Moon" );
+      p -> spell_power[ SCHOOL_MAX ] -= 140;
+      p -> expirations_unseen_moon = 0;
+    }
+  };
+
+  druid_t* p = s -> player -> cast_druid();
+
+  if( s -> sim -> roll( 0.5 ) )
+  {
+    p -> procs_unseen_moon -> occur();
+
+    event_t*& e = p -> expirations_unseen_moon;
+
+    if( e )
+    {
+      e -> reschedule( 10.0 );
     }
     else
     {
@@ -1813,6 +1858,8 @@ struct moonfire_t : public druid_spell_t
     if( p -> talents.natures_splendor ) num_ticks++;
     if( p -> tiers.t6_2pc_balance     ) num_ticks++;
     druid_spell_t::execute();
+    if( p -> idols.unseen_moon )
+      trigger_unseen_moon( this );
   }
 };
 
@@ -2690,6 +2737,7 @@ bool druid_t::parse_option( const std::string& name,
     { "idol_of_the_ravenous_beast", OPT_INT,  &( idols.ravenous_beast             ) },
     { "idol_of_steadfast_renewal",  OPT_INT,  &( idols.steadfast_renewal          ) },
     { "idol_of_the_shooting_star",  OPT_INT,  &( idols.shooting_star              ) },
+    { "idol_of_the_unseen_moon",    OPT_INT,  &( idols.unseen_moon                ) },
     { "idol_of_worship",            OPT_INT,  &( idols.worship                    ) },
     // Tier Bonuses
     { "tier4_2pc_balance",       OPT_INT,  &( tiers.t4_2pc_balance                ) },
