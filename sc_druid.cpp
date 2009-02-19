@@ -92,10 +92,6 @@ struct druid_t : public player_t
     int  vengeance;
     int  wrath_of_cenarius;
 
-    // Not Yet Implemented
-    int  feral_aggression;
-    int  feral_instinct;
-
     int  ferocity;
     int  improved_mangle;
     int  leader_of_the_pack;
@@ -117,7 +113,6 @@ struct druid_t : public player_t
     int  protector_of_the_pack;
 
     // Not Yet Implemented
-    int  beserk;
     int  feral_aggression; // FIXME fb implementation missing
     int  feral_instinct;   // FIXME swipe (cat) implementation missing
     int  king_of_the_jungle;
@@ -1425,9 +1420,13 @@ struct tigers_fury_t : public druid_attack_t
   virtual bool ready() 
   {
     druid_t* p = player -> cast_druid();
-
-    if( p -> buffs_berserk == 1 )
+    if( ! druid_attack_t::ready() )
       return false;
+      
+    if( p -> buffs_berserk == 1)
+      return false;
+
+    return true;
   }
 };
 
