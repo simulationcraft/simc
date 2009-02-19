@@ -17,6 +17,7 @@ struct druid_t : public player_t
   action_t* active_rip;
 
   // Buffs
+  int    buffs_berserk;
   int    buffs_bear_form;
   int    buffs_cat_form;
   int    buffs_combo_points;
@@ -57,6 +58,7 @@ struct druid_t : public player_t
   struct talents_t
   {
     int  balance_of_power;
+    int  berserk;
     int  brambles;
     int  celestial_focus;
     int  dreamstate;
@@ -89,6 +91,10 @@ struct druid_t : public player_t
     int  starlight_wrath;
     int  vengeance;
     int  wrath_of_cenarius;
+
+    // Not Yet Implemented
+    int  feral_aggression;
+    int  feral_instinct;
 
     int  ferocity;
     int  improved_mangle;
@@ -174,6 +180,7 @@ struct druid_t : public player_t
     active_rip          = 0;
 
     // Buffs
+    buffs_berserk           = 0;
     buffs_bear_form         = 0;
     buffs_cat_form          = 0;
     buffs_combo_points      = 0;
@@ -743,6 +750,7 @@ double druid_attack_t::cost()
   double c = attack_t::cost();
   if ( c == 0 ) return 0;
   if ( p -> buffs_omen_of_clarity ) return 0;
+  if ( p -> buffs_berserk) c *= 0.5;
   return c;
 }
 
@@ -1323,6 +1331,55 @@ struct shred_t : public druid_attack_t
   }
 };
 
+// Berserk =================================================================
+
+struct berserk_t : public druid_attack_t
+{
+   berserk_t( player_t* player, const std::string& options_str ) : 
+    druid_attack_t( "berserk", player )
+  {
+    druid_t* p = player -> cast_druid();
+    assert( p -> talents.berserk );
+
+    option_t options[] =
+    {
+      { NULL }
+    };
+    
+    parse_options( options, options_str );
+    
+    
+    base_cost   = 0;
+    trigger_gcd = 0;
+    cooldown    = 180;
+  }
+
+  virtual void execute()
+  {
+    struct expiration_t : public event_t
+    {
+      expiration_t( sim_t* sim, druid_t* p ) : event_t( sim, p )
+      {
+        name = "Berserk Expiration";
+        p -> aura_gain( "Berserk" );
+        p -> buffs_berserk = 1;
+        sim -> add_event( this, 15.0 );
+      }
+      virtual void execute()
+      {
+        druid_t* p = player -> cast_druid();
+        p -> aura_loss( "Berserk" );
+        p -> buffs_berserk = 0;
+      }
+    };
+
+    druid_t* p = player -> cast_druid();
+    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    update_ready();
+    new ( sim ) expiration_t( sim, p );
+  }
+};
+
 // Tigers Fury =============================================================
 
 struct tigers_fury_t : public druid_attack_t
@@ -1336,8 +1393,8 @@ struct tigers_fury_t : public druid_attack_t
     };
     parse_options( options, options_str );
 
-    cooldown = 30.0;
-    trigger_gcd = 0;
+    cooldown       = 30.0;
+    trigger_gcd    = 0;
   }
 
   virtual void execute()
@@ -1348,22 +1405,29 @@ struct tigers_fury_t : public druid_attack_t
     {
       expiration_t( sim_t* sim, player_t* player ): event_t( sim, player )
       {
-	druid_t* p = player -> cast_druid();
-	p -> aura_gain( "Tigers Fury" );
-	p -> buffs_tigers_fury = util_t::ability_rank( p -> level,  80.0,79, 60.0,71,  40.0,0 );
-	sim -> add_event( this, 6.0 );
+        druid_t* p = player -> cast_druid();
+        p -> aura_gain( "Tigers Fury" );
+        p -> buffs_tigers_fury = util_t::ability_rank( p -> level,  80.0,79, 60.0,71,  40.0,0 );
+        sim -> add_event( this, 6.0 );
       }
       virtual void execute()
       {
-	druid_t* p = player -> cast_druid();
-	p -> aura_loss( "Tigers Fury" );
-	p -> buffs_tigers_fury = 0;
+        druid_t* p = player -> cast_druid();
+        p -> aura_loss( "Tigers Fury" );
+        p -> buffs_tigers_fury = 0;
       }
     };
 
     new ( sim ) expiration_t( sim, player );
 
     update_ready();
+  }
+  virtual bool ready() 
+  {
+    druid_t* p = player -> cast_druid();
+
+    if( p -> buffs_berserk == 1 )
+      return false;
   }
 };
 
@@ -1672,15 +1736,15 @@ struct insect_swarm_t : public druid_spell_t
     if( wrath_ready && ! active_wrath )
     {
       for( active_wrath = next; active_wrath; active_wrath = active_wrath -> next )
-    if( active_wrath -> name_str == "wrath" )
-      break;
+        if( active_wrath -> name_str == "wrath" )
+          break;
 
       if( ! active_wrath ) wrath_ready = 0;
     }
 
     if( wrath_ready )
       if( ! active_wrath -> ready() )
-    return false;
+        return false;
 
     return true;
   }
@@ -2268,6 +2332,7 @@ action_t* druid_t::create_action( const std::string& name,
                                   const std::string& options_str )
 {
   if( name == "auto_attack"       ) return new       auto_attack_t( this, options_str );
+  if( name == "berserk"           ) return new           berserk_t( this, options_str );
   if( name == "cat_form"          ) return new          cat_form_t( this, options_str );
   if( name == "claw"              ) return new              claw_t( this, options_str );
   if( name == "faerie_fire"       ) return new       faerie_fire_t( this, options_str );
@@ -2487,12 +2552,6 @@ double druid_t::composite_attack_crit()
     c += 0.02 * talents.sharpened_claws;
   }
 
-  // FIXME should probably be based on the buff... otoh, making a viable build without this talent isn't going to happen
-  if ( talents.leader_of_the_pack )
-  {
-    c += 0.05;
-  }
-
   if ( talents.master_shapeshifter )
   {
     c += 0.02 * talents.master_shapeshifter;
@@ -2537,7 +2596,7 @@ bool druid_t::get_talent_trees( std::vector<int*>& balance,
     { { 26, NULL                               }, { 26, &( talents.mangle                  ) }, { 26, NULL                                   } },
     { { 27, &( talents.earth_and_moon        ) }, { 27, &( talents.improved_mangle         ) }, {  0, NULL                                   } },
     { { 28, &( talents.starfall              ) }, { 28, &( talents.rend_and_tear           ) }, {  0, NULL                                   } },
-    { {  0, NULL                               }, { 29, &( talents.beserk                  ) }, {  0, NULL                                   } },
+    { {  0, NULL                               }, { 29, &( talents.berserk                 ) }, {  0, NULL                                   } },
     { {  0, NULL                               }, {  0, NULL                                 }, {  0, NULL                                   } },
   };
   
@@ -2568,7 +2627,7 @@ bool druid_t::parse_option( const std::string& name,
   option_t options[] =
   {
     { "balance_of_power",          OPT_INT,  &( talents.balance_of_power          ) },
-    { "beserk",                    OPT_INT,  &( talents.beserk                    ) },
+    { "berserk",                   OPT_INT,  &( talents.berserk                   ) },
     { "brambles",                  OPT_INT,  &( talents.brambles                  ) },
     { "celestial_focus",           OPT_INT,  &( talents.celestial_focus           ) },
     { "dreamstate",                OPT_INT,  &( talents.dreamstate                ) },
