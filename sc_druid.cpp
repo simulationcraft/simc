@@ -15,6 +15,7 @@ struct druid_t : public player_t
   action_t* active_insect_swarm;
   action_t* active_moonfire;
   action_t* active_rip;
+  action_t* active_starfall_stars;
 
   // Buffs
   int    buffs_berserk;
@@ -28,6 +29,7 @@ struct druid_t : public player_t
   int    buffs_natures_swiftness;
   int    buffs_omen_of_clarity;
   int    buffs_savage_roar;
+  int    buffs_starfall;
   int    buffs_stealthed;
   double buffs_tigers_fury;
 
@@ -127,6 +129,7 @@ struct druid_t : public player_t
 
   struct glyphs_t
   {
+    int focus;
     int innervate;
     int insect_swarm;
     int mangle;
@@ -173,10 +176,11 @@ struct druid_t : public player_t
 
   druid_t( sim_t* sim, std::string& name ) : player_t( sim, DRUID, name ) 
   {
-    active_insect_swarm = 0;
-    active_moonfire     = 0;
-    active_rip          = 0;
-
+    active_insect_swarm   = 0;
+    active_moonfire       = 0;
+    active_rip            = 0;
+    active_starfall_stars = 0;
+    
     // Buffs
     buffs_berserk           = 0;
     buffs_bear_form         = 0;
@@ -189,6 +193,7 @@ struct druid_t : public player_t
     buffs_natures_swiftness = 0;
     buffs_omen_of_clarity   = 0;
     buffs_savage_roar       = 0;
+    buffs_starfall          = 0;
     buffs_stealthed         = 0;
     buffs_tigers_fury       = 0;
 
@@ -294,9 +299,9 @@ struct druid_attack_t : public attack_t
 
 struct druid_spell_t : public spell_t
 {
+  bool is_aoe;
   druid_spell_t( const char* n, player_t* p, int s, int t ) : 
-    spell_t( n, p, RESOURCE_MANA, s, t ) {}
-
+    spell_t( n, p, RESOURCE_MANA, s, t ), is_aoe(false) {}
   virtual double cost();
   virtual double haste();
   virtual double execute_time();
@@ -1540,7 +1545,7 @@ void druid_spell_t::execute()
 
   if( result == RESULT_CRIT )
   {
-    if( p -> buffs_moonkin_form )
+    if( p -> buffs_moonkin_form && ! is_aoe )
     {
       p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.02, p -> gains_moonkin_form );
     }
@@ -1554,8 +1559,9 @@ void druid_spell_t::execute()
       }
     }
   }
-
-  trigger_omen_of_clarity( this );
+  
+  if( ! is_aoe ) 
+  	trigger_omen_of_clarity( this );
 
   if( p -> tiers.t4_2pc_balance && sim -> roll( 0.05 ) )
   {
@@ -2251,6 +2257,110 @@ struct wrath_t : public druid_spell_t
   }
 };
 
+// Wrath Spell ==============================================================
+
+
+struct starfall_t : public druid_spell_t
+{
+  starfall_t( player_t* player, const std::string& options_str ) : 
+    druid_spell_t( "starfall", player, SCHOOL_ARCANE, TREE_BALANCE )
+  {
+    druid_t* p = player -> cast_druid();
+
+
+    option_t options[] =
+    {
+      { NULL }
+    };
+    parse_options( options, options_str );
+    
+    cooldown          = 180;
+    base_execute_time = 0;
+    static rank_t ranks[] =
+    {
+      { 80, 4, 433, 503, 0, 0.39 },
+      { 75, 3, 366, 424, 0, 0.39 },
+      { 70, 2, 250, 290, 0, 0.39 },
+      { 60, 1, 111, 129, 0, 0.39 },
+      { 0, 0 }
+    };
+    init_rank( ranks );
+
+    struct starfall_star_t : public druid_spell_t
+    {
+      starfall_star_t( player_t* player) : druid_spell_t( "starfall_star", player, SCHOOL_ARCANE, TREE_BALANCE )
+      {
+      	druid_t* p = player -> cast_druid();
+
+        direct_power_mod  = 0.05; // FIX ME! Did not really test this by myself, took it from the ticket.
+        may_crit          = true;
+        may_miss          = true;
+        may_resist        = true;
+        background        = true;
+        is_aoe            = true; // This prevents stars from procing Omen or Moonkin Form mana gains.
+                
+        base_execute_time          = 0;
+        base_dd_min = base_dd_max  = 0;
+        base_cost                  *= 1.0 - util_t::talent_rank(p -> talents.moonglow, 3, 0.03);
+        base_crit                  += util_t::talent_rank(p -> talents.natures_majesty, 2, 0.02);
+        base_crit_bonus_multiplier *= 1.0 + util_t::talent_rank(p -> talents.vengeance, 5, 0.20);
+      }
+
+      virtual void execute()
+      {
+        druid_spell_t::execute();
+        druid_t* p = player -> cast_druid();
+
+        p -> buffs_starfall--;
+
+        // If there are no pending stars, lose the buff, so there is no need to setup an extra expiration event
+        if( p -> buffs_starfall == 0)
+          p -> aura_loss( "Starfall" );
+      }
+    };
+    
+    p -> active_starfall_stars = new starfall_star_t( p	 );
+    p -> active_starfall_stars -> base_dd_max = base_dd_max;
+    p -> active_starfall_stars -> base_dd_min = base_dd_min;
+    base_dd_min = base_dd_max = 0;
+
+    if( p -> glyphs.focus )
+      p -> active_starfall_stars -> base_multiplier *= 1.2;
+   
+   
+  }
+
+  virtual void execute()
+  {
+    druid_t* p = player -> cast_druid();
+    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    consume_resource();
+    update_ready();
+    player -> action_finish( this );
+    p -> aura_gain( "Starfall" );
+    p -> buffs_starfall = 5 + (p -> glyphs.starfall ? 1 : 0); // The number of stars that are pending do drop.
+    struct event_starfall_star_t : public event_t
+    {
+      event_starfall_star_t( sim_t* sim, player_t* player) : event_t( sim, player)
+      { 
+      	name = "Starfall Star";
+        sim -> add_event( this, 2.0 );
+      }
+      virtual void execute()
+      {
+      	druid_t* p = player -> cast_druid();
+      	p -> active_starfall_stars -> execute();
+      	if( p -> buffs_starfall > 0)
+        {
+      	  new ( sim ) event_starfall_star_t( sim, p );
+      	}
+      }
+    };
+    new ( sim ) event_starfall_star_t( sim, p );
+  }
+  
+};
+
 // Mark of the Wild Spell =====================================================
 
 struct mark_of_the_wild_t : public druid_spell_t
@@ -2395,6 +2505,7 @@ action_t* druid_t::create_action( const std::string& name,
   if( name == "savage_roar"       ) return new       savage_roar_t( this, options_str );
   if( name == "shred"             ) return new             shred_t( this, options_str );
   if( name == "starfire"          ) return new          starfire_t( this, options_str );
+  if( name == "starfall"          ) return new          starfall_t( this, options_str );
   if( name == "stealth"           ) return new           stealth_t( this, options_str );
   if( name == "tigers_fury"       ) return new       tigers_fury_t( this, options_str );
   if( name == "treants"           ) return new     treants_spell_t( this, options_str );
