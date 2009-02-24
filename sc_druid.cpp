@@ -45,6 +45,7 @@ struct druid_t : public player_t
   // Gains
   gain_t* gains_moonkin_form;
   gain_t* gains_omen_of_clarity;
+  gain_t* gains_tigers_fury;
 
   // Procs
   proc_t* procs_combo_points;
@@ -1395,7 +1396,7 @@ struct berserk_t : public druid_attack_t
     
     
     base_cost   = 0;
-    trigger_gcd = 0;
+    trigger_gcd = 1;
     cooldown    = 180;
   }
 
@@ -1455,11 +1456,17 @@ struct tigers_fury_t : public druid_attack_t
         p -> buffs_tigers_fury = util_t::ability_rank( p -> level,  80.0,79, 60.0,71,  40.0,0 );
         sim -> add_event( this, 6.0 );
       }
+
       virtual void execute()
       {
         druid_t* p = player -> cast_druid();
         p -> aura_loss( "Tigers Fury" );
         p -> buffs_tigers_fury = 0;
+        
+        if( p -> talents.king_of_the_jungle )
+        {
+          p -> resource_gain( RESOURCE_ENERGY, p -> talents.king_of_the_jungle * 20, p -> gains_tigers_fury );
+        }
       }
     };
 
@@ -2564,8 +2571,13 @@ void druid_t::init_base()
 
   // FIXME! Make this level-specific.
   resource_base[ RESOURCE_HEALTH ] = 3600;
-  resource_base[ RESOURCE_MANA   ] = rating_t::interpolate( level, 1103, 2090, 3796 );
-  resource_base[ RESOURCE_ENERGY ] = 100;
+  if( talents.moonkin_form )
+  {
+    resource_base[ RESOURCE_MANA   ] = rating_t::interpolate( level, 1103, 2090, 3796 );
+  }
+  else {
+    resource_base[ RESOURCE_ENERGY ] = 100;
+  }
 
   health_per_stamina      = 10;
   mana_per_intellect      = 15;
@@ -2573,6 +2585,8 @@ void druid_t::init_base()
 
   spirit_regen_while_casting = util_t::talent_rank(talents.intensity,  3, 0.10);
   mp5_per_intellect          = util_t::talent_rank(talents.dreamstate, 3, 0.04, 0.07, 0.10);
+
+  base_gcd = ( talents.moonkin_form ) ? 1.5 : 1.0;
 
   if ( talents.primal_precision )
   {
