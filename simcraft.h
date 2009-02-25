@@ -1037,6 +1037,7 @@ struct target_t
     // Dynamic De-Buffs
     int    temporary_debuffs;
     int    affliction_effects;
+    int    bleeding;
     int    curse_of_elements;
     double expose_armor;
     double faerie_fire;

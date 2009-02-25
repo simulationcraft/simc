@@ -69,60 +69,55 @@ struct druid_t : public player_t
     int  dreamstate;
     int  earth_and_moon;
     int  eclipse;
+    int  ferocity;
     int  force_of_nature;
     int  furor;
     int  genesis;
+    int  heart_of_the_wild;
     int  improved_faerie_fire;
     int  improved_insect_swarm;
+    int  improved_mangle;
     int  improved_mark_of_the_wild;
     int  improved_moonfire;
     int  improved_moonkin_form;
     int  insect_swarm;
     int  intensity;
+    int  leader_of_the_pack;
     int  living_spirit;
     int  lunar_guidance;
+    int  mangle;
     int  master_shapeshifter;
     int  moonfury;
     int  moonglow;
     int  moonkin_form;
     int  natural_perfection;
+    int  naturalist;
     int  natures_grace;
     int  natures_majesty;
     int  natures_reach;
     int  natures_splendor;
     int  natures_swiftness;
     int  omen_of_clarity;
-    int  starfall;
-    int  starlight_wrath;
-    int  vengeance;
-    int  wrath_of_cenarius;
-
-    int  ferocity;
-    int  improved_mangle;
-    int  leader_of_the_pack;
-    int  mangle;
-    int  naturalist;
     int  primal_fury;
+    int  rend_and_tear;
     int  savage_fury;
     int  sharpened_claws;
     int  shredding_attacks;
+    int  starfall;
+    int  starlight_wrath;
     int  survival_of_the_fittest;
-    int  heart_of_the_wild;
-
-    // partially implemented
-    int  primal_precision; // FIXME energy reduction on miss NYI
-    int  rend_and_tear;    // FIXME fb crit chance NYI
-
-    // has no effect on dps
-    int  infected_wounds;
-    int  protector_of_the_pack;
+    int  vengeance;
+    int  wrath_of_cenarius;
 
     // Not Yet Implemented
     int  feral_aggression; // FIXME fb implementation missing
     int  feral_instinct;   // FIXME swipe (cat) implementation missing
+    int  primal_precision; // FIXME energy reduction on miss NYI
+    int  infected_wounds;
     int  king_of_the_jungle;
     int  predatory_instincts;
     int  predatory_strikes;
+    int  protector_of_the_pack;
     
     talents_t() { memset( (void*) this, 0x0, sizeof( talents_t ) ); }
   };
@@ -1032,6 +1027,8 @@ struct claw_t : public druid_attack_t
   {
     druid_t* p = player -> cast_druid();
     
+    druid_attack_t::player_buff();
+    
     if( p -> talents.savage_fury )
     {
       player_multiplier *= 1 + p -> talents.savage_fury * 0.1;
@@ -1151,6 +1148,8 @@ struct mangle_cat_t : public druid_attack_t
   {
     druid_t* p = player -> cast_druid();
     
+    druid_attack_t::player_buff();
+    
     if( p -> talents.savage_fury )
     {
       player_multiplier *= 1 + p -> talents.savage_fury * 0.1;
@@ -1208,6 +1207,8 @@ struct rake_t : public druid_attack_t
   virtual void player_buff()
   {
     druid_t* p = player -> cast_druid();
+
+    druid_attack_t::player_buff();
     
     if( p -> talents.savage_fury )
     {
@@ -1345,35 +1346,25 @@ struct shred_t : public druid_attack_t
 
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier *= 2.25;
-    requires_position = POSITION_BACK;
-    adds_combo_points = true;
-    may_crit          = true;
+    requires_position  = POSITION_BACK;
+    adds_combo_points  = true;
+    may_crit           = true;
+    base_cost         -= 9 * p -> talents.shredding_attacks;
   }
 
   virtual void player_buff()
   {
+    druid_t*  p = player -> cast_druid();
+    target_t* t = sim -> target;
+
     druid_attack_t::player_buff();
-    if( sim -> target -> debuffs.mangle ) player_multiplier *= 1.30;
-    
-    // FIXME: Need bleed detection (rogues, warrs, hunter pets, other ferals, etc?)
-    //if( talents.rend_and_tear && sim -> target -> bleeding )
-    //{
-    //  player_multiplier *= 0.04 * talents.rend_and_tear;
-    //} 
-  }
 
-  virtual double cost()
-  {
-    double c = attack_t::cost();
+    if( t -> debuffs.mangle ) player_multiplier *= 1.30;
     
-    druid_t* p = player -> cast_druid();
-
-    if ( p -> talents.shredding_attacks )
+    if( t -> debuffs.bleeding )
     {
-      c -= 9 * p -> talents.shredding_attacks;
-    }
-
-    return c;
+      player_multiplier *= 0.04 * p -> talents.rend_and_tear;
+    } 
   }
 };
 
@@ -1393,9 +1384,7 @@ struct berserk_t : public druid_attack_t
     };
     
     parse_options( options, options_str );
-    
-    
-    base_cost   = 0;
+
     trigger_gcd = 1;
     cooldown    = 180;
   }
@@ -1530,12 +1519,15 @@ struct ferocious_bite_t : public druid_attack_t
   {
     druid_t* p = player -> cast_druid();
 
+    base_direct_dmg = 0; // Force recalculation based upon new base_dd min/max values.
+
     base_dd_min = combo_point_dmg[ p -> buffs_combo_points - 1 ].min;
     base_dd_max = combo_point_dmg[ p -> buffs_combo_points - 1 ].max;
     
     direct_power_mod = 0.07 * p -> buffs_combo_points;
     
     excess_energy = ( p -> resource_current[ RESOURCE_ENERGY ] - druid_attack_t::cost() );
+
     if( excess_energy > 0)
     {
       // There will be energy left after the Ferocious Bite of which up to 30 will also be converted into damage.
@@ -1553,36 +1545,34 @@ struct ferocious_bite_t : public druid_attack_t
     }
     
     druid_attack_t::execute();
-
   }
   
   virtual void consume_resource()
   {
-  	// Ferocious Bite consumes 35+x energy, with 0 <= x <= 30.
+    // Ferocious Bite consumes 35+x energy, with 0 <= x <= 30.
     // Consumes the base_cost and handles Omen of Clarity
-  	druid_attack_t::consume_resource();
+    druid_attack_t::consume_resource();
   	
-  	// Let the additional energy consumption create it's own debug log entries.
+    // Let the additional energy consumption create it's own debug log entries.
     if( sim -> debug ) 
       report_t::log( sim, "%s consumes an additional %.1f %s for %s", player -> name(), 
                      excess_energy, util_t::resource_type_string( resource ), name() );
+
     player -> resource_loss( resource, excess_energy );
   	
   }
-  /**
-  FIXME: Need bleed detection (rogues, warrs, hunter pets, other ferals, etc?)
   
   virtual void player_buff()
   {
+    druid_t* p = player -> cast_druid();
+
     druid_attack_t::player_buff();
     
-    if( talents.rend_and_tear && sim -> target -> bleeding )
+    if( sim -> target -> debuffs.bleeding )
     {
       base_crit += 0.10 * p -> talents.rend_and_tear;
     } 
   }
-  **/
-
 };
 
 // =========================================================================

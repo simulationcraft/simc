@@ -411,9 +411,14 @@ double action_t::calculate_tick_damage()
   double init_tick_dmg = tick_dmg;
 
   if( result == RESULT_CRIT )
+  {
     tick_dmg *= 1.0 + total_crit_bonus();
+  }
 
-  if( ! binary ) tick_dmg *= 1.0 - resistance();
+  if( ! binary ) 
+  {
+    tick_dmg *= 1.0 - resistance();
+  }
 
   if( sim -> debug ) 
   {
@@ -442,8 +447,9 @@ double action_t::calculate_direct_damage()
     }
     else
     {
-      double delta = base_dd_max - base_dd_min;
-      base_direct_dmg = base_dd_min + delta * sim -> rng -> real();
+      double range = base_dd_max - base_dd_min;
+
+      base_direct_dmg = base_dd_min + range * sim -> rng -> real();
     }
   }
 
@@ -547,6 +553,8 @@ void action_t::execute()
       // FIXME! This should just cancel existing tick......
       current_tick = 0;
       schedule_tick();
+
+      if( school == SCHOOL_BLEED ) sim -> target -> debuffs.bleeding++;
     }
   }
   else
@@ -603,6 +611,8 @@ void action_t::last_tick()
   if( sim -> debug ) report_t::log( sim, "%s fades from %s", name(), sim -> target -> name() );
 
   ticking = 0;
+
+  if( school == SCHOOL_BLEED ) sim -> target -> debuffs.bleeding--;
 
   if( observer ) *observer = 0;
 }
@@ -792,9 +802,13 @@ void action_t::reset()
 
 void action_t::cancel()
 {
+  if( ticking && school == SCHOOL_BLEED ) sim -> target -> debuffs.bleeding--;
+
   if( player -> channeling == tick_event ) player -> channeling = 0;
+
   event_t::cancel( execute_event );
   event_t::cancel(    tick_event );
+
   reset();
 }
 
