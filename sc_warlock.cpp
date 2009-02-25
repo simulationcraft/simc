@@ -84,6 +84,7 @@ struct warlock_t : public player_t
 
   struct talents_t
   {
+    int  aftermath;
     int  amplify_curse;
     int  backdraft;
     int  backlash;
@@ -94,6 +95,7 @@ struct warlock_t : public player_t
     int  contagion;
     int  dark_pact;
     int  deaths_embrace;
+    int  decimation;
     int  demonic_aegis;
     int  demonic_brutality;
     int  demonic_embrace;
@@ -140,8 +142,10 @@ struct warlock_t : public player_t
     int  master_summoner;
     int  metamorphosis;
     int  molten_core;
+    int  nemesis;
     int  nightfall;
     int  pandemic;
+    int  pyroclasm;
     int  ruin;
     int  shadow_and_flame;
     int  shadow_burn;
@@ -4170,40 +4174,78 @@ bool warlock_t::get_talent_trees( std::vector<int*>& affliction,
                                   std::vector<int*>& demonology,
                                   std::vector<int*>& destruction )
 {
-  talent_translation_t translation[][3] =
+  if( sim -> patch.before(3, 1, 0) )
   {
-    { {  1, &( talents.improved_curse_of_agony ) }, {  1, NULL                                  }, {  1, &( talents.improved_shadow_bolt  ) } },
-    { {  2, &( talents.suppression             ) }, {  2, &( talents.improved_imp             ) }, {  2, &( talents.bane                  ) } },
-    { {  3, &( talents.improved_corruption     ) }, {  3, &( talents.demonic_embrace          ) }, {  3, NULL                               } },
-    { {  4, NULL                                 }, {  4, NULL                                  }, {  4, &( talents.molten_core           ) } },
-    { {  5, &( talents.improved_drain_soul     ) }, {  5, &( talents.demonic_brutality        ) }, {  5, &( talents.cataclysm             ) } },
-    { {  6, &( talents.improved_life_tap       ) }, {  6, &( talents.fel_vitality             ) }, {  6, &( talents.demonic_power         ) } },
-    { {  7, &( talents.soul_siphon             ) }, {  7, NULL                                  }, {  7, &( talents.shadow_burn           ) } },
-    { {  8, NULL                                 }, {  8, NULL                                  }, {  8, &( talents.ruin                  ) } },
-    { {  9, NULL                                 }, {  9, &( talents.fel_domination           ) }, {  9, NULL                               } },
-    { { 10, &( talents.amplify_curse           ) }, { 10, &( talents.demonic_aegis            ) }, { 10, &( talents.destructive_reach     ) } },
-    { { 11, NULL                                 }, { 11, &( talents.unholy_power             ) }, { 11, &( talents.improved_searing_pain ) } },
-    { { 12, &( talents.nightfall               ) }, { 12, &( talents.master_summoner          ) }, { 12, NULL                               } },
-    { { 13, &( talents.empowered_corruption    ) }, { 13, &( talents.demonic_sacrifice        ) }, { 13, &( talents.improved_immolate     ) } },
-    { { 14, &( talents.shadow_embrace          ) }, { 14, &( talents.master_conjuror          ) }, { 14, &( talents.devastation           ) } },
-    { { 15, &( talents.siphon_life             ) }, { 15, &( talents.mana_feed                ) }, { 15, NULL                               } },
-    { { 16, NULL                                 }, { 16, &( talents.master_demonologist      ) }, { 16, &( talents.emberstorm            ) } },
-    { { 17, &( talents.improved_felhunter      ) }, { 17, NULL                                  }, { 17, &( talents.conflagrate           ) } },
-    { { 18, &( talents.shadow_mastery          ) }, { 18, NULL                                  }, { 18, &( talents.soul_leech            ) } },
-    { { 19, &( talents.eradication             ) }, { 19, &( talents.demonic_empowerment      ) }, { 19, &( talents.backlash              ) } },
-    { { 20, &( talents.contagion               ) }, { 20, &( talents.demonic_knowledge        ) }, { 20, &( talents.shadow_and_flame      ) } },
-    { { 21, &( talents.dark_pact               ) }, { 21, &( talents.demonic_tactics          ) }, { 21, &( talents.improved_soul_leech   ) } },
-    { { 22, NULL                                 }, { 22, &( talents.fel_synergy              ) }, { 22, &( talents.backdraft             ) } },
-    { { 23, &( talents.malediction             ) }, { 23, &( talents.improved_demonic_tactics ) }, { 23, NULL                               } },
-    { { 24, &( talents.deaths_embrace          ) }, { 24, &( talents.summon_felguard          ) }, { 24, &( talents.empowered_imp         ) } },
-    { { 25, &( talents.unstable_affliction     ) }, { 25, &( talents.demonic_empathy          ) }, { 25, &( talents.fire_and_brimstone    ) } },
-    { { 26, &( talents.pandemic                ) }, { 26, &( talents.demonic_pact             ) }, { 26, &( talents.chaos_bolt            ) } },
-    { { 27, &( talents.everlasting_affliction  ) }, { 27, &( talents.metamorphosis            ) }, {  0, NULL                               } },
-    { { 28, &( talents.haunt                   ) }, {  0, NULL                                  }, {  0, NULL                               } },
-    { {  0, NULL                                 }, {  0, NULL                                  }, {  0, NULL                               } }
-  };
-  
-  return player_t::get_talent_trees( affliction, demonology, destruction, translation );
+    talent_translation_t translation[][3] =
+    {
+      { {  1, &( talents.improved_curse_of_agony ) }, {  1, NULL                                  }, {  1, &( talents.improved_shadow_bolt  ) } },
+      { {  2, &( talents.suppression             ) }, {  2, &( talents.improved_imp             ) }, {  2, &( talents.bane                  ) } },
+      { {  3, &( talents.improved_corruption     ) }, {  3, &( talents.demonic_embrace          ) }, {  3, &( talents.aftermath             ) } },
+      { {  4, NULL                                 }, {  4, NULL                                  }, {  4, NULL                               } },
+      { {  5, &( talents.improved_drain_soul     ) }, {  5, &( talents.demonic_brutality        ) }, {  5, &( talents.cataclysm             ) } },
+      { {  6, &( talents.improved_life_tap       ) }, {  6, &( talents.fel_vitality             ) }, {  6, &( talents.demonic_power         ) } },
+      { {  7, &( talents.soul_siphon             ) }, {  7, NULL                                  }, {  7, &( talents.shadow_burn           ) } },
+      { {  8, NULL                                 }, {  8, NULL                                  }, {  8, &( talents.ruin                  ) } },
+      { {  9, NULL                                 }, {  9, &( talents.fel_domination           ) }, {  9, NULL                               } },
+      { { 10, &( talents.amplify_curse           ) }, { 10, &( talents.demonic_aegis            ) }, { 10, &( talents.destructive_reach     ) } },
+      { { 11, NULL                                 }, { 11, &( talents.unholy_power             ) }, { 11, &( talents.improved_searing_pain ) } },
+      { { 12, &( talents.nightfall               ) }, { 12, &( talents.master_summoner          ) }, { 12, NULL                               } },
+      { { 13, &( talents.empowered_corruption    ) }, { 13, &( talents.demonic_sacrifice        ) }, { 13, &( talents.improved_immolate     ) } },
+      { { 14, &( talents.shadow_embrace          ) }, { 14, &( talents.master_conjuror          ) }, { 14, &( talents.devastation           ) } },
+      { { 15, &( talents.siphon_life             ) }, { 15, &( talents.mana_feed                ) }, { 15, NULL                               } },
+      { { 16, NULL                                 }, { 16, &( talents.master_demonologist      ) }, { 16, &( talents.emberstorm            ) } },
+      { { 17, &( talents.improved_felhunter      ) }, { 17, NULL                                  }, { 17, &( talents.conflagrate           ) } },
+      { { 18, &( talents.shadow_mastery          ) }, { 18, NULL                                  }, { 18, &( talents.soul_leech            ) } },
+      { { 19, &( talents.eradication             ) }, { 19, &( talents.demonic_empowerment      ) }, { 19, &( talents.backlash              ) } },
+      { { 20, &( talents.contagion               ) }, { 20, &( talents.demonic_knowledge        ) }, { 20, &( talents.shadow_and_flame      ) } },
+      { { 21, &( talents.dark_pact               ) }, { 21, &( talents.demonic_tactics          ) }, { 21, &( talents.improved_soul_leech   ) } },
+      { { 22, NULL                                 }, { 22, &( talents.fel_synergy              ) }, { 22, &( talents.backdraft             ) } },
+      { { 23, &( talents.malediction             ) }, { 23, &( talents.improved_demonic_tactics ) }, { 23, NULL                               } },
+      { { 24, &( talents.deaths_embrace          ) }, { 24, &( talents.summon_felguard          ) }, { 24, &( talents.empowered_imp         ) } },
+      { { 25, &( talents.unstable_affliction     ) }, { 25, &( talents.demonic_empathy          ) }, { 25, &( talents.fire_and_brimstone    ) } },
+      { { 26, &( talents.pandemic                ) }, { 26, &( talents.demonic_pact             ) }, { 26, &( talents.chaos_bolt            ) } },
+      { { 27, &( talents.everlasting_affliction  ) }, { 27, &( talents.metamorphosis            ) }, {  0, NULL                               } },
+      { { 28, &( talents.haunt                   ) }, {  0, NULL                                  }, {  0, NULL                               } },
+      { {  0, NULL                                 }, {  0, NULL                                  }, {  0, NULL                               } }
+    };
+    return player_t::get_talent_trees( affliction, demonology, destruction, translation );
+  }
+  else
+  {
+    talent_translation_t translation[][3] =
+    {
+      { {  1, &( talents.improved_curse_of_agony ) }, {  1, NULL                                  }, {  1, &( talents.improved_shadow_bolt  ) } },
+      { {  2, &( talents.suppression             ) }, {  2, &( talents.improved_imp             ) }, {  2, &( talents.bane                  ) } },
+      { {  3, &( talents.improved_corruption     ) }, {  3, &( talents.demonic_embrace          ) }, {  3, &( talents.aftermath             ) } },
+      { {  4, NULL                                 }, {  4, &( talents.fel_synergy              ) }, {  4, NULL                               } },
+      { {  5, &( talents.improved_drain_soul     ) }, {  5, NULL                                  }, {  5, &( talents.cataclysm             ) } },
+      { {  6, &( talents.improved_life_tap       ) }, {  6, &( talents.demonic_brutality        ) }, {  6, &( talents.demonic_power         ) } },
+      { {  7, &( talents.soul_siphon             ) }, {  7, &( talents.fel_vitality             ) }, {  7, &( talents.shadow_burn           ) } },
+      { {  8, NULL                                 }, {  8, NULL                                  }, {  8, &( talents.ruin                  ) } },
+      { {  9, NULL                                 }, {  9, NULL                                  }, {  9, NULL                               } },
+      { { 10, &( talents.amplify_curse           ) }, { 10, &( talents.fel_domination           ) }, { 10, &( talents.destructive_reach     ) } },
+      { { 11, NULL                                 }, { 11, &( talents.demonic_aegis            ) }, { 11, &( talents.improved_searing_pain ) } },
+      { { 12, &( talents.nightfall               ) }, { 12, &( talents.unholy_power             ) }, { 12, &( talents.backlash              ) } },
+      { { 13, &( talents.empowered_corruption    ) }, { 13, &( talents.master_summoner          ) }, { 13, &( talents.improved_immolate     ) } },
+      { { 14, &( talents.shadow_embrace          ) }, { 14, &( talents.mana_feed                ) }, { 14, &( talents.devastation           ) } },
+      { { 15, &( talents.siphon_life             ) }, { 15, &( talents.master_conjuror          ) }, { 15, NULL                               } },
+      { { 16, NULL                                 }, { 16, &( talents.master_demonologist      ) }, { 16, &( talents.emberstorm            ) } },
+      { { 17, &( talents.improved_felhunter      ) }, { 17, &( talents.molten_core              ) }, { 17, &( talents.conflagrate           ) } },
+      { { 18, &( talents.shadow_mastery          ) }, { 18, NULL                                  }, { 18, &( talents.soul_leech            ) } },
+      { { 19, &( talents.eradication             ) }, { 19, &( talents.demonic_empowerment      ) }, { 19, } },
+      { { 20, &( talents.contagion               ) }, { 20, &( talents.demonic_knowledge        ) }, { 20, &( talents.shadow_and_flame      ) } },
+      { { 21, &( talents.dark_pact               ) }, { 21, &( talents.demonic_tactics          ) }, { 21, &( talents.improved_soul_leech   ) } },
+      { { 22, NULL                                 }, { 22, &( talents.decimation               ) }, { 22, &( talents.pyroclasm             ) } },
+      { { 23, &( talents.malediction             ) }, { 23, &( talents.improved_demonic_tactics ) }, { 23, NULL                               } },
+      { { 24, &( talents.deaths_embrace          ) }, { 24, &( talents.summon_felguard          ) }, { 24, &( talents.empowered_imp         ) } },
+      { { 25, &( talents.unstable_affliction     ) }, { 25, &( talents.nemesis                  ) }, { 25, &( talents.fire_and_brimstone    ) } },
+      { { 26, &( talents.pandemic                ) }, { 26, &( talents.demonic_pact             ) }, { 26, &( talents.chaos_bolt            ) } },
+      { { 27, &( talents.everlasting_affliction  ) }, { 27, &( talents.metamorphosis            ) }, {  0, NULL                               } },
+      { { 28, &( talents.haunt                   ) }, {  0, NULL                                  }, {  0, NULL                               } },
+      { {  0, NULL                                 }, {  0, NULL                                  }, {  0, NULL                               } }
+    };
+    return player_t::get_talent_trees( affliction, demonology, destruction, translation );
+  }
 }
 
 // warlock_t::parse_talents_mmo ============================================
@@ -4236,6 +4278,7 @@ bool warlock_t::parse_option( const std::string& name,
 {
   option_t options[] =
   {
+    { "aftermath",                OPT_INT,  &( talents.aftermath                ) },
     { "amplify_curse",            OPT_INT,  &( talents.amplify_curse            ) },
     { "backdraft",                OPT_INT,  &( talents.backdraft                ) },
     { "backlash",                 OPT_INT,  &( talents.backlash                 ) },
@@ -4246,9 +4289,10 @@ bool warlock_t::parse_option( const std::string& name,
     { "contagion",                OPT_INT,  &( talents.contagion                ) },
     { "dark_pact",                OPT_INT,  &( talents.dark_pact                ) },
     { "deaths_embrace",           OPT_INT,  &( talents.deaths_embrace           ) },
+    { "decimation",               OPT_INT,  &( talents.decimation               ) },
     { "demonic_aegis",            OPT_INT,  &( talents.demonic_aegis            ) },
+    { "demonic_brutality",        OPT_INT,  &( talents.demonic_brutality        ) },
     { "demonic_embrace",          OPT_INT,  &( talents.demonic_embrace          ) },
-    { "demonic_empathy",          OPT_INT,  &( talents.demonic_empathy          ) },
     { "demonic_empowerment",      OPT_INT,  &( talents.demonic_empowerment      ) },
     { "demonic_knowledge",        OPT_INT,  &( talents.demonic_knowledge        ) },
     { "demonic_pact",             OPT_INT,  &( talents.demonic_pact             ) },
@@ -4291,8 +4335,10 @@ bool warlock_t::parse_option( const std::string& name,
     { "master_summoner",          OPT_INT,  &( talents.master_summoner          ) },
     { "metamorphosis",            OPT_INT,  &( talents.metamorphosis            ) },
     { "molten_core",              OPT_INT,  &( talents.molten_core              ) },
+    { "nemesis",                  OPT_INT,  &( talents.nemesis                  ) },
     { "nightfall",                OPT_INT,  &( talents.nightfall                ) },
     { "pandemic",                 OPT_INT,  &( talents.pandemic                 ) },
+    { "pyroclasm",                OPT_INT,  &( talents.pyroclasm                ) },
     { "ruin",                     OPT_INT,  &( talents.ruin                     ) },
     { "shadow_and_flame",         OPT_INT,  &( talents.shadow_and_flame         ) },
     { "shadow_burn",              OPT_INT,  &( talents.shadow_burn              ) },
