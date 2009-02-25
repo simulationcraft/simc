@@ -1894,7 +1894,7 @@ void warlock_spell_t::target_debuff( int dmg_type )
     {
       target_multiplier *= 1.0 + p -> buffs_shadow_embrace * p -> talents.shadow_embrace * 0.01;
     }
-    if( p -> buffs_haunted )
+    if( p -> buffs_haunted && ( school == SCHOOL_SHADOW || sim -> patch.before( 3, 1, 0 ) ) )
     {
       target_multiplier *= 1.20;
     }
