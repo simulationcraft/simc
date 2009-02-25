@@ -1328,8 +1328,16 @@ static void trigger_eradication( spell_t* s )
     {
       name = "Eradication Expiration";
       p -> aura_gain( "Eradication" );
-      p -> buffs_eradication = 1;
-      sim -> add_event( this, 12.0 );
+      if ( sim -> patch.before( 3, 1, 0 ) )
+      {
+        p -> buffs_eradication = 1;
+        sim -> add_event( this, 12.0 );
+      }
+      else
+      {
+        p -> buffs_eradication = 3;
+        sim -> add_event( this, 30.0 );
+      }
     }
     virtual void execute()
     {
@@ -1391,7 +1399,7 @@ static void trigger_pandemic( spell_t* s )
 {
   warlock_t* p = s -> player -> cast_warlock();
 
-  if( ! p -> talents.pandemic ) return;
+  if( s -> sim -> patch.after( 3, 1, 0 ) || ! p -> talents.pandemic ) return;
 
   struct pandemic_t : public spell_t
   {
@@ -1708,7 +1716,7 @@ double warlock_spell_t::haste()
 {
   warlock_t* p = player -> cast_warlock();
   double h = spell_t::haste();
-  if( p -> buffs_eradication ) h *= ( 1.0 / 1.20 );
+  if( p -> buffs_eradication && sim -> patch.before( 3, 1, 0 ) ) h *= ( 1.0 / 1.20 );
   return h;
 }
 
@@ -1721,7 +1729,8 @@ double warlock_spell_t::execute_time()
   if( t > 0 )
   {
     p -> uptimes_backdraft   -> update( p -> buffs_backdraft   != 0 );
-    p -> uptimes_eradication -> update( p -> buffs_eradication != 0 );
+    if( sim -> patch.before( 3, 1, 0 ) )
+      p -> uptimes_eradication -> update( p -> buffs_eradication != 0 );
 
     if( p -> buffs_backdraft && tree == TREE_DESTRUCTION ) t *= 1.0 - p -> talents.backdraft * 0.10;
   }
@@ -1802,6 +1811,13 @@ void warlock_spell_t::player_buff()
     {
       if( p -> buffs_empowered_imp ) player_crit += 0.20;
       p -> uptimes_empowered_imp -> update( p -> buffs_empowered_imp != 0 );
+
+      if( p -> buffs_eradication && sim -> patch.after( 3, 1, 0 ) )
+      {
+        player_crit += 0.1 * p -> buffs_eradication;
+        p -> buffs_eradication--;
+        p -> uptimes_eradication -> update( p -> buffs_eradication != 0 );
+      }
     }
 
     if( p -> talents.demonic_pact )
@@ -1821,7 +1837,7 @@ void warlock_spell_t::target_debuff( int dmg_type )
 
   if( dmg_type == DMG_OVER_TIME )
   {
-    if( p -> buffs_shadow_embrace )
+    if( p -> buffs_shadow_embrace && ( school == SCHOOL_SHADOW || sim -> patch.before( 3, 1, 0 ) ) )
     {
       target_multiplier *= 1.0 + p -> buffs_shadow_embrace * p -> talents.shadow_embrace * 0.01;
     }
@@ -1927,7 +1943,10 @@ struct curse_of_elements_t : public warlock_spell_t
       {
         name = "Cure of Elements Expiration";
         target_t* t = sim -> target;
-        t -> debuffs.curse_of_elements = 10 + p -> talents.malediction;
+        if( sim -> patch.before( 3, 1, 0 ) )
+          t -> debuffs.curse_of_elements = 10 + p -> talents.malediction;
+        else
+          t -> debuffs.curse_of_elements = 13;
         t -> debuffs.affliction_effects++;
         sim -> add_event( this, 300.0 );
       }
@@ -1966,7 +1985,10 @@ struct curse_of_elements_t : public warlock_spell_t
 
     target_t* t = sim -> target;
 
-    return std::max( t -> debuffs.curse_of_elements, t -> debuffs.earth_and_moon ) < 10 + p -> talents.malediction;
+    if( sim -> patch.before( 3, 1, 0 ) )
+      return std::max( t -> debuffs.curse_of_elements, t -> debuffs.earth_and_moon ) < 10 + p -> talents.malediction;
+    else
+      return std::max( t -> debuffs.curse_of_elements, t -> debuffs.earth_and_moon ) < 13;
   }
 };
 
@@ -2166,16 +2188,26 @@ struct shadow_bolt_t : public warlock_spell_t
     base_execute_time = 3.0; 
     may_crit          = true;
     direct_power_mod  = base_execute_time / 3.5;
-      
-    base_cost         *= 1.0 - ( p -> talents.cataclysm  * 0.01 +
-                                 p -> glyphs.shadow_bolt * 0.10 ); 
+    
+    if( sim -> patch.before( 3, 1, 0 ) )
+    {
+      base_hit        += p -> talents.cataclysm * 0.01;
+      base_cost       *= 1.0 - ( p -> talents.cataclysm  * 0.01 +
+                                 p -> glyphs.shadow_bolt * 0.10 );
+    }
+    else
+    {
+      base_hit        += p -> talents.suppression * 0.01;
+      base_cost       *= 1.0 - ( p -> talents.cataclysm  * 0.03 +
+                               ( p -> talents.cataclysm ) ? 0.01 : 0 +
+                                 p -> glyphs.shadow_bolt * 0.10 );
+    }
     base_execute_time -=  p -> talents.bane * 0.1;
     base_multiplier   *= 1.0 + ( p -> talents.shadow_mastery * 0.03 +
                                  p -> gear.tier6_4pc         * 0.06 );
     base_crit         += p -> talents.devastation * 0.05;
     base_crit         += p -> talents.backlash * 0.01;
     direct_power_mod  *= 1.0 + p -> talents.shadow_and_flame * 0.04;
-    base_hit          += p -> talents.cataclysm * 0.01;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
   }
@@ -2294,14 +2326,23 @@ struct chaos_bolt_t : public warlock_spell_t
     cooldown          = 12.0;
     may_crit          = true;
     may_resist        = false;
-      
-    base_cost         *= 1.0 -  p -> talents.cataclysm * 0.01;
+    
+    if( sim -> patch.before( 3, 1, 0 ) )
+    {
+      base_hit        += p -> talents.cataclysm * 0.01;
+      base_cost       *= 1.0 - p -> talents.cataclysm * 0.01;
+    }
+    else
+    {
+      base_hit        += p -> talents.suppression * 0.01;
+      base_cost       *= 1.0 - ( p -> talents.cataclysm * 0.03
+                               + ( p -> talents.cataclysm ) ? 0.01 : 0 );
+    }
     base_execute_time -=  p -> talents.bane * 0.1;
     base_multiplier   *= 1.0 + p -> talents.emberstorm  * 0.03;
     base_crit         += p -> talents.devastation * 0.05;
     base_crit         += p -> talents.backlash * 0.01;
     direct_power_mod  *= 1.0 + p -> talents.shadow_and_flame * 0.04;
-    base_hit          += p -> talents.cataclysm * 0.01;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
   }
@@ -2428,9 +2469,18 @@ struct shadow_burn_t : public warlock_spell_t
     cooldown         = 15;
     direct_power_mod = ( 1.5 / 3.5 ); 
       
-    base_cost       *= 1.0 -  p -> talents.cataclysm * 0.01;
+    if( sim -> patch.before( 3, 1, 0 ) )
+    {
+      base_hit        += p -> talents.cataclysm * 0.01;
+      base_cost       *= 1.0 - p -> talents.cataclysm * 0.01;
+    }
+    else
+    {
+      base_hit        += p -> talents.suppression * 0.01;
+      base_cost       *= 1.0 - ( p -> talents.cataclysm * 0.03
+                               + ( p -> talents.cataclysm ) ? 0.01 : 0 );
+    }
     base_multiplier *= 1.0 + p -> talents.shadow_mastery * 0.03;
-    base_hit        += p -> talents.cataclysm * 0.01;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
    }
@@ -2498,6 +2548,8 @@ struct corruption_t : public warlock_spell_t
                                p -> talents.improved_corruption * 0.02 );
     tick_power_mod  += p -> talents.empowered_corruption * 0.02;
     tick_power_mod  += p -> talents.everlasting_affliction * 0.01;
+
+    if( sim -> patch.after( 3, 1, 0 ) && p -> talents.pandemic ) may_crit = true;
 
     if( p -> gear.tier4_4pc ) num_ticks++;
 
@@ -2763,6 +2815,7 @@ struct siphon_life_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
 
     assert( p -> talents.siphon_life );
+    assert( sim -> patch.before( 3, 1, 0 ) );
 
     option_t options[] =
     {
@@ -2848,7 +2901,7 @@ struct unstable_affliction_t : public warlock_spell_t
     init_rank( ranks );
     
     base_execute_time = 1.5; 
-    base_tick_time    = 3.0; 
+    base_tick_time    = 3.0;
     num_ticks         = 5;
     tick_power_mod    = base_tick_time / 15.0; 
     
@@ -2857,10 +2910,12 @@ struct unstable_affliction_t : public warlock_spell_t
     base_multiplier  *= 1.0 + p -> talents.shadow_mastery * 0.03;
     tick_power_mod   += p -> talents.everlasting_affliction * 0.01;
 
+    if( sim -> patch.after( 3, 1, 0 ) && p -> talents.pandemic ) may_crit = true;
+
     if( p -> glyphs.unstable_affliction )
     {
       base_execute_time = 1.3;
-      //trigger_gcd     = 1.3; latest research seems to imply ti does not affect the gcd
+      //trigger_gcd     = 1.3; latest research seems to imply it does not affect the gcd
     }
   }
 
@@ -3000,11 +3055,20 @@ struct immolate_t : public warlock_spell_t
     direct_power_mod  = 0.20; 
     tick_power_mod    = 0.20;
 
-    base_cost         *= 1.0 -  p -> talents.cataclysm * 0.01;
+    if( sim -> patch.before( 3, 1, 0 ) )
+    {
+      base_hit        += p -> talents.cataclysm * 0.01;
+      base_cost       *= 1.0 - p -> talents.cataclysm * 0.01;
+    }
+    else
+    {
+      base_hit        += p -> talents.suppression * 0.01;
+      base_cost       *= 1.0 - ( p -> talents.cataclysm * 0.03
+                               + ( p -> talents.cataclysm ) ? 0.01 : 0 );
+    }
     base_execute_time -= p -> talents.bane * 0.1;
     base_crit         += p -> talents.devastation * 0.05;
     base_crit         += p -> talents.backlash * 0.01;
-    base_hit          += p -> talents.cataclysm * 0.01;
     direct_power_mod  += (1.0/3.0) * p -> talents.fire_and_brimstone * 0.03;
     tick_power_mod    += (2.0/3.0) * p -> talents.fire_and_brimstone * 0.03 / num_ticks;
 
@@ -3078,10 +3142,19 @@ struct shadowflame_t : public warlock_spell_t
     tick_power_mod    = 0.28;
     cooldown          = 15.0;
 
-    base_cost *= 1.0 -  p -> talents.cataclysm * 0.01;
+    if( sim -> patch.before( 3, 1, 0 ) )
+    {
+      base_hit        += p -> talents.cataclysm * 0.01;
+      base_cost       *= 1.0 - p -> talents.cataclysm * 0.01;
+    }
+    else
+    {
+      base_hit        += p -> talents.suppression * 0.01;
+      base_cost       *= 1.0 - ( p -> talents.cataclysm * 0.03
+                               + ( p -> talents.cataclysm ) ? 0.01 : 0 );
+    }
     base_crit += p -> talents.devastation * 0.05;
     base_crit += p -> talents.backlash * 0.01;
-    base_hit  += p -> talents.cataclysm * 0.01;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
 
@@ -3159,11 +3232,20 @@ struct conflagrate_t : public warlock_spell_t
     direct_power_mod  = (1.5/3.5);
     cooldown          = 10;
 
-    base_cost        *= 1.0 -  p -> talents.cataclysm * 0.01;
+    if( sim -> patch.before( 3, 1, 0 ) )
+    {
+      base_hit        += p -> talents.cataclysm * 0.01;
+      base_cost       *= 1.0 - p -> talents.cataclysm * 0.01;
+    }
+    else
+    {
+      base_hit        += p -> talents.suppression * 0.01;
+      base_cost       *= 1.0 - ( p -> talents.cataclysm * 0.03
+                               + ( p -> talents.cataclysm ) ? 0.01 : 0 );
+    }
     base_multiplier  *= 1.0 + p -> talents.emberstorm  * 0.03;
     base_crit        += p -> talents.devastation * 0.05;
     base_crit        += p -> talents.backlash * 0.01;
-    base_hit         += p -> talents.cataclysm * 0.01;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
 
@@ -3293,14 +3375,23 @@ struct incinerate_t : public warlock_spell_t
     may_crit           = true;
     direct_power_mod   = (2.5/3.5); 
 
-    base_cost         *= 1.0 - p -> talents.cataclysm * 0.01;
+    if( sim -> patch.before( 3, 1, 0 ) )
+    {
+      base_hit        += p -> talents.cataclysm * 0.01;
+      base_cost       *= 1.0 - p -> talents.cataclysm * 0.01;
+    }
+    else
+    {
+      base_hit        += p -> talents.suppression * 0.01;
+      base_cost       *= 1.0 - ( p -> talents.cataclysm * 0.03
+                               + ( p -> talents.cataclysm ) ? 0.01 : 0 );
+    }
     base_execute_time -= p -> talents.emberstorm * 0.05;
     base_multiplier   *= 1.0 + ( p -> talents.emberstorm  * 0.03 +
                                  p -> gear.tier6_4pc      * 0.06 );
     base_crit         += p -> talents.devastation * 0.05;
     base_crit         += p -> talents.backlash * 0.01;
     direct_power_mod  *= 1.0 + p -> talents.shadow_and_flame * 0.04;
-    base_hit          += p -> talents.cataclysm * 0.01;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
 
@@ -3387,12 +3478,21 @@ struct searing_pain_t : public warlock_spell_t
     may_crit          = true;
     direct_power_mod  = base_execute_time / 3.5; 
 
-    base_cost       *= 1.0 -  p -> talents.cataclysm * 0.01;
+    if( sim -> patch.before( 3, 1, 0 ) )
+    {
+      base_hit        += p -> talents.cataclysm * 0.01;
+      base_cost       *= 1.0 - p -> talents.cataclysm * 0.01;
+    }
+    else
+    {
+      base_hit        += p -> talents.suppression * 0.01;
+      base_cost       *= 1.0 - ( p -> talents.cataclysm * 0.03
+                               + ( p -> talents.cataclysm ) ? 0.01 : 0 );
+    }
     base_multiplier *= 1.0 + p -> talents.emberstorm  * 0.03;
     base_crit       += p -> talents.devastation * 0.05;
     base_crit       += p -> talents.backlash * 0.01;
     base_crit       += p -> talents.improved_searing_pain * 0.04;
-    base_hit        += p -> talents.cataclysm * 0.01;
 
     base_crit_bonus_multiplier *= 1.0 + ( p -> talents.ruin * 0.20 +
                                           p -> glyphs.searing_pain * 0.20 );
@@ -3441,12 +3541,21 @@ struct soul_fire_t : public warlock_spell_t
     may_crit          = true; 
     direct_power_mod  = 1.15; 
 
-    base_cost         *= 1.0 -  p -> talents.cataclysm * 0.01;
+    if( sim -> patch.before( 3, 1, 0 ) )
+    {
+      base_hit        += p -> talents.cataclysm * 0.01;
+      base_cost       *= 1.0 - p -> talents.cataclysm * 0.01;
+    }
+    else
+    {
+      base_hit        += p -> talents.suppression * 0.01;
+      base_cost       *= 1.0 - ( p -> talents.cataclysm * 0.03
+                               + ( p -> talents.cataclysm ) ? 0.01 : 0 );
+    }
     base_execute_time -= p -> talents.bane * 0.4;
     base_multiplier   *= 1.0 + p -> talents.emberstorm  * 0.03;
     base_crit         += p -> talents.devastation * 0.05;
     base_crit         += p -> talents.backlash * 0.01;
-    base_hit          += p -> talents.cataclysm * 0.01;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
   }
