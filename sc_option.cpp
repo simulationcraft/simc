@@ -199,6 +199,16 @@ bool option_t::parse( sim_t*       sim,
       }
     }
   }
+  else if( name == "patch" )
+  {
+    int arch, version, revision;
+    if( 3 != util_t::string_split( value, ".", "i i i", &arch, &version, &revision ) )
+    {
+      fprintf( sim -> output_file, "simcraft: Expected format: -patch=#.#.#\n" );
+      return false;
+    }
+    sim -> patch.set( arch, version, revision );
+  }
   else if( name == "input" )
   {
     FILE* file = fopen( value.c_str(), "r" );
@@ -270,6 +280,9 @@ bool option_t::parse( sim_t*       sim,
     std::string talent_string, address_string;
     int encoding = ENCODING_NONE;
 
+    std::vector<std::string> parts;
+    int part_count;
+
     std::string::size_type cut_pt; 
     if( ( cut_pt = value.find_first_of( "=" ) ) != value.npos ) 
     {
@@ -278,11 +291,32 @@ bool option_t::parse( sim_t*       sim,
 
       if( address_string.find( "worldofwarcraft" ) != value.npos )
       {
-	encoding = ENCODING_BLIZZARD;
+        encoding = ENCODING_BLIZZARD;
       }
       else if( address_string.find( "mmo-champion" ) != value.npos )
       {
         encoding = ENCODING_MMO;
+        part_count = util_t::string_split(parts, talent_string, "&");
+        talent_string = parts[0];
+        for( int i = 1; i < part_count; i++ )
+        {
+          char *name, *value;
+          name = (char*) malloc(parts[i].length());
+          value = (char*) malloc(parts[i].length());
+          if( 2 == util_t::string_split( parts[i], "=", "s s", name, value ) )
+          {
+            if( strcmp( name, "glyph" ) == 0 )
+            {
+              //FIXME: ADD GLYPH SUPPORT?
+            }
+            else if( strcmp( name, "version" ) == 0 )
+            {
+              //FIXME: WHAT TO DO WITH VERSION NUMBER?
+            }
+          }
+          free(value);
+          free(name);
+        }
       }
       else if( address_string.find( "wowhead" ) != value.npos )
       {

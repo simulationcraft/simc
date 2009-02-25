@@ -42,7 +42,7 @@ struct patch_t
    void set       ( int arch, int version, int revision ) {         mask = encode( arch, version, revision ); }
    bool before    ( int arch, int version, int revision ) { return mask <  encode( arch, version, revision ); }
    bool after     ( int arch, int version, int revision ) { return mask >= encode( arch, version, revision ); }
-   patch_t() { mask = encode( 0, 0, 0 ); }
+   patch_t() { mask = encode( 3, 0, 9 ); }
 };
 
 // Forward Declarations ======================================================
@@ -260,7 +260,6 @@ struct sim_t
   int         argc;
   char**      argv;
   sim_t*      parent;
-  std::string patch_str;
   patch_t     patch;
   rng_t*      rng;
   event_t*    free_list;

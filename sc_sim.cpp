@@ -23,7 +23,6 @@ sim_t::sim_t( sim_t* p ) :
   raid_dps(0), total_dmg(0), total_seconds(0), elapsed_cpu_seconds(0), merge_ignite(0),
   output_file(stdout), html_file(0), wiki_file(0), thread_handle(0)
 {
-  patch_str = "3.0.9";
 
   for( int i=0; i < RESOURCE_MAX; i++ ) 
   {
@@ -308,17 +307,6 @@ bool sim_t::init()
   timing_wheel.insert( timing_wheel.begin(), wheel_size, (event_t*) 0 );
 
   total_seconds = 0;
-
-  if( ! patch_str.empty() )
-  {
-    int arch, version, revision;
-    if( 3 != util_t::string_split( patch_str, ".", "i i i", &arch, &version, &revision ) )
-    {
-      fprintf( output_file, "simcraft: Expected format: -patch=#.#.#\n" );
-      return false;
-    }
-    patch.set( arch, version, revision );
-  }
 
   if( pet_lag == 0 ) pet_lag = lag;
 
@@ -745,7 +733,6 @@ bool sim_t::parse_option( const std::string& name,
     { "max_time",                         OPT_FLT,    &( max_time                                 ) },
     { "threads",                          OPT_INT,    &( threads                                  ) },
     { "optimal_raid",                     OPT_INT,    &( optimal_raid                             ) },
-    { "patch",                            OPT_STRING, &( patch_str                                ) },
     { "party",                            OPT_LIST,   &( party_encoding                           ) },
     { "pet_lag",                          OPT_FLT,    &( pet_lag                                  ) },
     { "potion_sickness",                  OPT_INT,    &( potion_sickness                          ) },
@@ -821,9 +808,16 @@ int main( int argc, char** argv )
   if( sim.seed == 0 ) sim.seed = (int32_t) time( NULL );
   srand( sim.seed );
 
+  int arch, version, revision;
+  uint64_t mask = sim.patch.mask;
+  revision = (int) mask % 100;
+  mask /= 100;
+  version  = (int) mask % 100;
+  mask /= 100;
+  arch     = (int) mask % 100;
   fprintf( sim.output_file, 
-           "\nSimulationCraft for World of Warcraft build %s (iterations=%d, max_time=%.0f, optimal_raid=%d)\n",
-           sim.patch_str.c_str(), sim.iterations, sim.max_time, sim.optimal_raid );
+           "\nSimulationCraft for World of Warcraft build %d.%d.%d (iterations=%d, max_time=%.0f, optimal_raid=%d)\n",
+           arch, version, revision, sim.iterations, sim.max_time, sim.optimal_raid );
   fflush( sim.output_file );
 
   fprintf( stdout, "\nGenerating baseline... \n" ); fflush( stdout );
