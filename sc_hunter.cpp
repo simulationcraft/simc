@@ -155,10 +155,14 @@ struct hunter_t : public player_t
 
   struct glyphs_t
   {
+    int  aimed_shot;
     int  aspect_of_the_viper;
     int  bestial_wrath;
+    int  chimera_shot;
+    int  explosive_shot;
     int  hunters_mark;
     int  improved_aspect_of_the_hawk;
+    int  kill_shot;
     int  rapid_fire;
     int  serpent_sting;
     int  steady_shot;
@@ -2063,6 +2067,14 @@ struct aimed_shot_t : public hunter_attack_t
 
     add_ammunition();
     add_scope();
+
+    if( p -> glyphs.aimed_shot )
+    {
+      if( p -> sim -> patch.before(3, 1, 0) )
+        base_cost *= 0.8;
+      else
+        cooldown -= 2;
+    }
   }
 
   virtual double cost()
@@ -2290,6 +2302,12 @@ struct chimera_shot_t : public hunter_attack_t
 
     add_ammunition();
     add_scope();
+
+    if( p -> glyphs.chimera_shot )
+    {
+      assert( p -> sim -> patch.after(3, 1, 0) );
+      cooldown -= 1;
+    }
   }
 
   virtual double cost()
@@ -2417,6 +2435,12 @@ struct explosive_shot_t : public hunter_attack_t
     if( sim -> patch.before(3, 1, 0) ) base_crit += p -> talents.tnt * 0.03;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.mortal_shots * 0.06;
+
+    if( p -> glyphs.explosive_shot )
+    {
+      assert( p -> sim -> patch.after(3, 1, 0) );
+      base_crit += 0.04;
+    }
   }
 
   virtual double cost()
@@ -2519,7 +2543,7 @@ struct kill_shot_t : public hunter_attack_t
     normalize_weapon_speed = true;
     weapon_multiplier      = 2.0;
     cooldown               = 15;
-    trigger_gcd            = 0.0;
+    if( p -> sim -> patch.before(3, 1, 0) ) trigger_gcd = 0.0;
 
     base_multiplier *= p -> ranged_weapon_specialization_multiplier();
 
@@ -2530,6 +2554,12 @@ struct kill_shot_t : public hunter_attack_t
 
     add_ammunition();
     add_scope();
+
+    if( p -> glyphs.kill_shot )
+    {
+      assert( p -> sim -> patch.after(3, 1, 0) );
+      cooldown -= 6;
+    }
   }
 
   virtual void execute()
@@ -3603,10 +3633,14 @@ bool hunter_t::parse_option( const std::string& name,
     { "unleashed_fury",                    OPT_INT, &( talents.unleashed_fury               ) },
     { "wild_quiver",                       OPT_INT, &( talents.wild_quiver                  ) },
     // Glyphs
+    { "glyph_aimed_shot",                  OPT_INT, &( glyphs.aimed_shot                    ) },
     { "glyph_aspect_of_the_viper",         OPT_INT, &( glyphs.aspect_of_the_viper           ) },
     { "glyph_bestial_wrath",               OPT_INT, &( glyphs.bestial_wrath                 ) },
+    { "glyph_chimera_shot",                OPT_INT, &( glyphs.chimera_shot                  ) },
+    { "glyph_explosive_shot",              OPT_INT, &( glyphs.explosive_shot                ) },
     { "glyph_hunters_mark",                OPT_INT, &( glyphs.hunters_mark                  ) },
     { "glyph_improved_aspect_of_the_hawk", OPT_INT, &( glyphs.improved_aspect_of_the_hawk   ) },
+    { "glyph_kill_shot",                   OPT_INT, &( glyphs.kill_shot                     ) },
     { "glyph_rapid_fire",                  OPT_INT, &( glyphs.rapid_fire                    ) },
     { "glyph_serpent_sting",               OPT_INT, &( glyphs.serpent_sting                 ) },
     { "glyph_steady_shot",                 OPT_INT, &( glyphs.steady_shot                   ) },
