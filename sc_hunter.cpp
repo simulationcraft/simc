@@ -9,6 +9,10 @@
 // Hunter
 // ==========================================================================
 
+// 3.1 TODO list
+// * New pet talents
+// * Piercing Shots
+
 struct hunter_pet_t;
 
 enum { ASPECT_NONE=0, ASPECT_HAWK, ASPECT_VIPER, ASPECT_BEAST, ASPECT_MAX };
@@ -18,6 +22,7 @@ struct hunter_t : public player_t
   // Active
   hunter_pet_t* active_pet;
   int           active_aspect;
+  int           active_black_arrow;
   action_t*     active_chimera_serpent;
   action_t*     active_wild_quiver;
   action_t*     active_scorpid_sting;
@@ -86,6 +91,7 @@ struct hunter_t : public player_t
     int  beast_within;
     int  bestial_wrath;
     int  bestial_discipline;
+    int  black_arrow;
     int  careful_aim;
     int  chimera_shot;
     int  cobra_strikes;
@@ -141,6 +147,7 @@ struct hunter_t : public player_t
     // Talents not yet fully implemented
     int  savage_strikes;
     int  survival_tactics;
+    int  trap_mastery;
 
     talents_t() { memset( (void*) this, 0x0, sizeof( talents_t ) ); }
   };
@@ -165,6 +172,7 @@ struct hunter_t : public player_t
     // Active
     active_pet             = 0;
     active_aspect          = ASPECT_NONE;
+    active_black_arrow     = 0;
     active_chimera_serpent = 0;
     active_wild_quiver     = 0;
     active_scorpid_sting   = 0;
@@ -248,6 +256,14 @@ struct hunter_t : public player_t
     if( active_serpent_sting ) return active_serpent_sting;
     if( active_viper_sting   ) return active_viper_sting;
     return 0;
+  }
+  double ranged_weapon_specialization_multiplier()
+  {
+    if( sim -> patch.before(3, 1, 0) )
+      return 1.0 + talents.ranged_weapon_specialization * 0.01;
+    else {
+      return util_t::talent_rank( talents.ranged_weapon_specialization, 3, 1.01, 1.03, 1.05 );
+    }
   }
 };
 
@@ -808,7 +824,13 @@ static void trigger_hunting_party( attack_t* a )
   if ( ! p -> talents.hunting_party )
     return;
 
-  if ( ! a -> sim -> roll( p -> talents.hunting_party * 0.20 ) )
+  double chance = 0;
+  if( a -> sim -> patch.before(3, 1, 0) )
+    chance = p -> talents.hunting_party * 0.20;
+  else
+    chance = p -> talents.hunting_party / 3;
+
+  if ( ! a -> sim -> roll( chance ) )
     return;
 
   struct hunting_party_expiration_t : public event_t
@@ -1175,7 +1197,13 @@ static void trigger_wild_quiver( attack_t* a )
   if( ! p -> talents.wild_quiver )
     return;
 
-  if(  a -> sim -> roll( util_t::talent_rank( p -> talents.wild_quiver, 3, 0.04, 0.07, 0.10 ) ) )
+  double chance = 0;
+  if( a -> sim -> patch.before(3, 1, 0) )
+    chance = util_t::talent_rank( p -> talents.wild_quiver, 3, 0.04, 0.07, 0.10 );
+  else
+    chance = p -> talents.wild_quiver * 0.04;
+
+  if(  a -> sim -> roll( chance ) )
   {
     // FIXME! What hit/crit talents apply?
     // FIXME! Which proc-related talents can it trigger?
@@ -1197,7 +1225,10 @@ static void trigger_wild_quiver( attack_t* a )
 
     p -> procs_wild_quiver -> occur();
 
-    p -> active_wild_quiver -> base_direct_dmg = 0.50 * a -> direct_dmg;
+    if( a -> sim -> patch.before(3, 1, 0) )
+      p -> active_wild_quiver -> base_direct_dmg = 0.50 * a -> direct_dmg;
+    else
+      p -> active_wild_quiver -> base_direct_dmg = 0.80 * a -> direct_dmg;
     p -> active_wild_quiver -> execute();
   }
 }
@@ -1911,6 +1942,7 @@ void hunter_attack_t::player_buff()
   {
     player_multiplier *= 1.0 + p -> talents.focused_fire * 0.01;
   }
+  player_multiplier *= 1.0 + p -> active_black_arrow * 0.06;
   player_crit += p -> buffs_master_tactician;
 
   p -> uptimes_aspect_of_the_viper -> update( p -> buffs_aspect_of_the_viper != 0 );
@@ -1937,7 +1969,7 @@ struct ranged_t : public hunter_attack_t
     base_dd_min = 1;
     base_dd_max = 1;
 
-    base_multiplier *= 1.0 + p -> talents.ranged_weapon_specialization * 0.01;
+    base_multiplier *= p -> ranged_weapon_specialization_multiplier();
 
     add_ammunition();
     add_scope();
@@ -2020,7 +2052,7 @@ struct aimed_shot_t : public hunter_attack_t
 
     base_multiplier *= 1.0 + p -> talents.barrage                      * 0.04;
     base_multiplier *= 1.0 + p -> talents.sniper_training              * 0.02;
-    base_multiplier *= 1.0 + p -> talents.ranged_weapon_specialization * 0.01;
+    base_multiplier *= p -> ranged_weapon_specialization_multiplier();
 
     base_crit += p -> talents.improved_barrage * 0.04;
 
@@ -2106,7 +2138,7 @@ struct arcane_shot_t : public hunter_attack_t
 
     base_multiplier *= 1.0 + ( p -> talents.improved_arcane_shot  * 0.05 +
                                p -> talents.ferocious_inspiration * 0.03 );
-    base_multiplier *= 1.0 + p -> talents.ranged_weapon_specialization * 0.01;
+    base_multiplier *= p -> ranged_weapon_specialization_multiplier();
 
     base_crit += p -> talents.survival_instincts * 0.02;
 
@@ -2166,6 +2198,58 @@ struct arcane_shot_t : public hunter_attack_t
   }
 };
 
+// Black Arrow =================================================================
+
+struct black_arrow_t : public hunter_attack_t
+{
+  black_arrow_t( player_t* player, const std::string& options_str ) :
+    hunter_attack_t( "black_arrow", player, SCHOOL_SHADOW, TREE_SURVIVAL )
+  {
+    hunter_t* p = player -> cast_hunter();
+    assert( p -> talents.black_arrow );
+    assert( p -> sim -> patch.after(3, 1, 0) );
+
+    static rank_t ranks[] =
+    {
+      { 80, 6, 0, 0, 2765/5.0, 0.06 },
+      { 75, 5, 0, 0, 2240/5.0, 0.06 },
+      { 69, 4, 0, 0, 1480/5.0, 0.06 },
+      { 63, 3, 0, 0, 1250/5.0, 0.06 },
+      { 57, 2, 0, 0,  940/5.0, 0.06 },
+      { 50, 1, 0, 0,  785/5.0, 0.06 },
+      { 0, 0 }
+    };
+    init_rank( ranks );
+
+    base_tick_time   = 3.0;
+    num_ticks        = 5;
+    tick_power_mod   = 0.1 / 5.0;
+    cooldown         = 30;
+    cooldown_group   = "traps";
+  }
+
+  virtual void execute()
+  {
+    hunter_t* p = player -> cast_hunter();
+    hunter_attack_t::execute();
+    if( result_is_hit() )
+      p -> active_black_arrow = 1;
+  }
+
+  virtual void tick()
+  {
+    hunter_attack_t::tick();
+    trigger_lock_and_load( this );
+  }
+
+  virtual void last_tick()
+  {
+    hunter_t* p = player -> cast_hunter();
+    hunter_attack_t::last_tick();
+    p -> active_black_arrow = 0;
+  }
+};
+
 // Chimera Shot ================================================================
 
 struct chimera_shot_t : public hunter_attack_t
@@ -2199,7 +2283,7 @@ struct chimera_shot_t : public hunter_attack_t
     weapon_multiplier      = 1.25;
     cooldown               = 10;
 
-    base_multiplier *= 1.0 + p -> talents.ranged_weapon_specialization * 0.01;
+    base_multiplier *= p -> ranged_weapon_specialization_multiplier();
 
     base_crit_bonus_multiplier *= 1.0 + ( p -> talents.mortal_shots     * 0.06 +
                                           p -> talents.marked_for_death * 0.02 );
@@ -2326,10 +2410,11 @@ struct explosive_shot_t : public hunter_attack_t
     tick_power_mod = 0.14;
 
     base_multiplier *= 1.0 + p -> talents.sniper_training * 0.02;
-    base_multiplier *= 1.0 + p -> talents.ranged_weapon_specialization * 0.01;
+    base_multiplier *= p -> ranged_weapon_specialization_multiplier();
+    if( sim -> patch.after(3, 1, 0) ) base_multiplier *= 1.0 + p -> talents.tnt * 0.02;
 
     base_crit += p -> talents.survival_instincts * 0.02;
-    base_crit += p -> talents.tnt * 0.03;
+    if( sim -> patch.before(3, 1, 0) ) base_crit += p -> talents.tnt * 0.03;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.mortal_shots * 0.06;
   }
@@ -2436,7 +2521,7 @@ struct kill_shot_t : public hunter_attack_t
     cooldown               = 15;
     trigger_gcd            = 0.0;
 
-    base_multiplier *= 1.0 + p -> talents.ranged_weapon_specialization * 0.01;
+    base_multiplier *= p -> ranged_weapon_specialization_multiplier();
 
     base_crit += p -> talents.sniper_training * 0.05;
 
@@ -2495,7 +2580,7 @@ struct multi_shot_t : public hunter_attack_t
     cooldown_group         = "aimed_multi";
 
     base_multiplier *= 1.0 + p -> talents.barrage                      * 0.04;
-    base_multiplier *= 1.0 + p -> talents.ranged_weapon_specialization * 0.01;
+    base_multiplier *= p -> ranged_weapon_specialization_multiplier();
 
     base_crit += p -> talents.improved_barrage * 0.04;
 
@@ -2528,7 +2613,7 @@ struct scatter_shot_t : public hunter_attack_t
 
     weapon_multiplier *= 0.5;
 
-    base_multiplier *= 1.0 + p -> talents.ranged_weapon_specialization * 0.01;
+    base_multiplier *= p -> ranged_weapon_specialization_multiplier();
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.mortal_shots * 0.06;
 
@@ -2586,7 +2671,8 @@ struct serpent_sting_t : public hunter_attack_t
   virtual void tick()
   {
     hunter_attack_t::tick();
-    trigger_lock_and_load( this );
+    if( player -> sim -> patch.before(3, 1, 0) )
+      trigger_lock_and_load( this );
   }
 
   virtual void last_tick()
@@ -2635,7 +2721,7 @@ struct silencing_shot_t : public hunter_attack_t
 
     weapon_multiplier *= 0.5;
 
-    base_multiplier *= 1.0 + p -> talents.ranged_weapon_specialization * 0.01;
+    base_multiplier *= p -> ranged_weapon_specialization_multiplier();
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.mortal_shots * 0.06;
 
@@ -2674,7 +2760,7 @@ struct steady_shot_t : public hunter_attack_t
     base_cost *= 1.0 - p -> talents.master_marksman * 0.05;
 
     base_multiplier *= 1.0 + p -> talents.sniper_training              * 0.02;
-    base_multiplier *= 1.0 + p -> talents.ranged_weapon_specialization * 0.01;
+    base_multiplier *= p -> ranged_weapon_specialization_multiplier();
 
     base_crit += p -> talents.survival_instincts * 0.02;
 
@@ -3171,6 +3257,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if( name == "arcane_shot"           ) return new            arcane_shot_t( this, options_str );
   if( name == "aspect"                ) return new                 aspect_t( this, options_str );
   if( name == "bestial_wrath"         ) return new          bestial_wrath_t( this, options_str );
+  if( name == "black_arrow"           ) return new            black_arrow_t( this, options_str );
   if( name == "chimera_shot"          ) return new           chimera_shot_t( this, options_str );
   if( name == "explosive_shot"        ) return new         explosive_shot_t( this, options_str );
   if( name == "hunters_mark"          ) return new           hunters_mark_t( this, options_str );
@@ -3251,6 +3338,8 @@ void hunter_t::init_base()
 
   attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.0 + talents.combat_experience * 0.02;
   attribute_multiplier_initial[ ATTR_AGILITY ]   *= 1.0 + talents.combat_experience * 0.02;
+  if( sim -> patch.after(3, 1, 0) )
+    attribute_multiplier_initial[ ATTR_AGILITY ]   *= 1.0 + talents.hunting_party * 0.01;
   attribute_multiplier_initial[ ATTR_AGILITY ]   *= 1.0 + talents.lightning_reflexes * 0.03;
   attribute_multiplier_initial[ ATTR_STAMINA ]   *= 1.0 + talents.survivalist * 0.02;
 
@@ -3279,6 +3368,7 @@ void hunter_t::reset()
   // Active
   active_pet           = 0;
   active_aspect        = ASPECT_NONE;
+  active_black_arrow   = 0;
   active_scorpid_sting = 0;
   active_serpent_sting = 0;
   active_viper_sting   = 0;
@@ -3350,40 +3440,80 @@ bool hunter_t::get_talent_trees( std::vector<int*>& beastmastery,
                                  std::vector<int*>& marksmanship,
                                  std::vector<int*>& survival )
 {
-  talent_translation_t translation[][3] =
+  if( sim -> patch.before(3, 1, 0) )
   {
-    { {  1, &( talents.improved_aspect_of_the_hawk ) }, {  1, NULL                                      }, {  1, &( talents.improved_tracking        ) } },
-    { {  2, NULL                                     }, {  2, &( talents.focused_aim                  ) }, {  2, NULL                                  } },
-    { {  3, &( talents.focused_fire                ) }, {  3, &( talents.lethal_shots                 ) }, {  3, &( talents.savage_strikes           ) } },
-    { {  4, NULL                                     }, {  4, &( talents.careful_aim                  ) }, {  4, NULL                                  } },
-    { {  5, NULL                                     }, {  5, &( talents.improved_hunters_mark        ) }, {  5, NULL                                  } },
-    { {  6, NULL                                     }, {  6, &( talents.mortal_shots                 ) }, {  6, NULL                                  } },
-    { {  7, NULL                                     }, {  7, &( talents.go_for_the_throat            ) }, {  7, &( talents.survival_instincts       ) } },
-    { {  8, &( talents.aspect_mastery              ) }, {  8, &( talents.improved_arcane_shot         ) }, {  8, &( talents.survivalist              ) } },
-    { {  9, &( talents.unleashed_fury              ) }, {  9, &( talents.aimed_shot                   ) }, {  9, &( talents.scatter_shot             ) } },
-    { { 10, NULL                                     }, { 10, &( talents.rapid_killing                ) }, { 10, NULL                                  } },
-    { { 11, &( talents.ferocity                    ) }, { 11, &( talents.improved_stings              ) }, { 11, &( talents.survival_tactics         ) } },
-    { { 12, NULL                                     }, { 12, &( talents.efficiency                   ) }, { 12, &( talents.tnt                      ) } },
-    { { 13, NULL                                     }, { 13, NULL                                      }, { 13, &( talents.lock_and_load            ) } },
-    { { 14, &( talents.bestial_discipline          ) }, { 14, &( talents.readiness                    ) }, { 14, &( talents.hunter_vs_wild           ) } },
-    { { 15, &( talents.animal_handler              ) }, { 15, &( talents.barrage                      ) }, { 15, &( talents.killer_instinct          ) } },
-    { { 16, &( talents.frenzy                      ) }, { 16, &( talents.combat_experience            ) }, { 16, NULL                                  } },
-    { { 17, &( talents.ferocious_inspiration       ) }, { 17, &( talents.ranged_weapon_specialization ) }, { 17, &( talents.lightning_reflexes       ) } },
-    { { 18, &( talents.bestial_wrath               ) }, { 18, &( talents.piercing_shots               ) }, { 18, &( talents.resourcefulness          ) } },
-    { { 19, NULL                                     }, { 19, &( talents.trueshot_aura                ) }, { 19, &( talents.expose_weakness          ) } },
-    { { 20, &( talents.invigoration                ) }, { 20, &( talents.improved_barrage             ) }, { 20, NULL                                  } },
-    { { 21, &( talents.serpents_swiftness          ) }, { 21, &( talents.master_marksman              ) }, { 21, &( talents.thrill_of_the_hunt       ) } },
-    { { 22, &( talents.longevity                   ) }, { 22, &( talents.rapid_recuperation           ) }, { 22, &( talents.master_tactician         ) } },
-    { { 23, &( talents.beast_within                ) }, { 23, &( talents.wild_quiver                  ) }, { 23, &( talents.noxious_stings           ) } },
-    { { 24, &( talents.cobra_strikes               ) }, { 24, &( talents.silencing_shot               ) }, { 24, NULL                                  } },
-    { { 25, &( talents.kindred_spirits             ) }, { 25, &( talents.improved_steady_shot         ) }, { 25, NULL                                  } },
-    { { 26, NULL                                     }, { 26, &( talents.marked_for_death             ) }, { 26, &( talents.sniper_training          ) } },
-    { {  0, NULL                                     }, { 27, &( talents.chimera_shot                 ) }, { 27, &( talents.hunting_party            ) } },
-    { {  0, NULL                                     }, {  0, NULL                                      }, { 28, &( talents.explosive_shot           ) } },
-    { {  0, NULL                                     }, {  0, NULL                                      }, {  0, NULL                                  } }
-  };
+    talent_translation_t translation[][3] =
+    {
+      { {  1, &( talents.improved_aspect_of_the_hawk ) }, {  1, NULL                                      }, {  1, &( talents.improved_tracking        ) } },
+      { {  2, NULL                                     }, {  2, &( talents.focused_aim                  ) }, {  2, NULL                                  } },
+      { {  3, &( talents.focused_fire                ) }, {  3, &( talents.lethal_shots                 ) }, {  3, &( talents.savage_strikes           ) } },
+      { {  4, NULL                                     }, {  4, &( talents.careful_aim                  ) }, {  4, NULL                                  } },
+      { {  5, NULL                                     }, {  5, &( talents.improved_hunters_mark        ) }, {  5, NULL                                  } },
+      { {  6, NULL                                     }, {  6, &( talents.mortal_shots                 ) }, {  6, NULL                                  } },
+      { {  7, NULL                                     }, {  7, &( talents.go_for_the_throat            ) }, {  7, &( talents.survival_instincts       ) } },
+      { {  8, &( talents.aspect_mastery              ) }, {  8, &( talents.improved_arcane_shot         ) }, {  8, &( talents.survivalist              ) } },
+      { {  9, &( talents.unleashed_fury              ) }, {  9, &( talents.aimed_shot                   ) }, {  9, &( talents.scatter_shot             ) } },
+      { { 10, NULL                                     }, { 10, &( talents.rapid_killing                ) }, { 10, NULL                                  } },
+      { { 11, &( talents.ferocity                    ) }, { 11, &( talents.improved_stings              ) }, { 11, &( talents.survival_tactics         ) } },
+      { { 12, NULL                                     }, { 12, &( talents.efficiency                   ) }, { 12, &( talents.tnt                      ) } },
+      { { 13, NULL                                     }, { 13, NULL                                      }, { 13, &( talents.lock_and_load            ) } },
+      { { 14, &( talents.bestial_discipline          ) }, { 14, &( talents.readiness                    ) }, { 14, &( talents.hunter_vs_wild           ) } },
+      { { 15, &( talents.animal_handler              ) }, { 15, &( talents.barrage                      ) }, { 15, &( talents.killer_instinct          ) } },
+      { { 16, &( talents.frenzy                      ) }, { 16, &( talents.combat_experience            ) }, { 16, NULL                                  } },
+      { { 17, &( talents.ferocious_inspiration       ) }, { 17, &( talents.ranged_weapon_specialization ) }, { 17, &( talents.lightning_reflexes       ) } },
+      { { 18, &( talents.bestial_wrath               ) }, { 18, &( talents.piercing_shots               ) }, { 18, &( talents.resourcefulness          ) } },
+      { { 19, NULL                                     }, { 19, &( talents.trueshot_aura                ) }, { 19, &( talents.expose_weakness          ) } },
+      { { 20, &( talents.invigoration                ) }, { 20, &( talents.improved_barrage             ) }, { 20, NULL                                  } },
+      { { 21, &( talents.serpents_swiftness          ) }, { 21, &( talents.master_marksman              ) }, { 21, &( talents.thrill_of_the_hunt       ) } },
+      { { 22, &( talents.longevity                   ) }, { 22, &( talents.rapid_recuperation           ) }, { 22, &( talents.master_tactician         ) } },
+      { { 23, &( talents.beast_within                ) }, { 23, &( talents.wild_quiver                  ) }, { 23, &( talents.noxious_stings           ) } },
+      { { 24, &( talents.cobra_strikes               ) }, { 24, &( talents.silencing_shot               ) }, { 24, NULL                                  } },
+      { { 25, &( talents.kindred_spirits             ) }, { 25, &( talents.improved_steady_shot         ) }, { 25, NULL                                  } },
+      { { 26, NULL                                     }, { 26, &( talents.marked_for_death             ) }, { 26, &( talents.sniper_training          ) } },
+      { {  0, NULL                                     }, { 27, &( talents.chimera_shot                 ) }, { 27, &( talents.hunting_party            ) } },
+      { {  0, NULL                                     }, {  0, NULL                                      }, { 28, &( talents.explosive_shot           ) } },
+      { {  0, NULL                                     }, {  0, NULL                                      }, {  0, NULL                                  } }
+    };
 
-  return player_t::get_talent_trees( beastmastery, marksmanship, survival, translation );
+    return player_t::get_talent_trees( beastmastery, marksmanship, survival, translation );
+  }
+  else
+  {
+    talent_translation_t translation[][3] =
+    {
+      { {  1, &( talents.improved_aspect_of_the_hawk ) }, {  1, NULL                                      }, {  1, &( talents.improved_tracking        ) } },
+      { {  2, NULL                                     }, {  2, &( talents.focused_aim                  ) }, {  2, NULL                                  } },
+      { {  3, &( talents.focused_fire                ) }, {  3, &( talents.lethal_shots                 ) }, {  3, &( talents.savage_strikes           ) } },
+      { {  4, NULL                                     }, {  4, &( talents.careful_aim                  ) }, {  4, NULL                                  } },
+      { {  5, NULL                                     }, {  5, &( talents.improved_hunters_mark        ) }, {  5, NULL                                  } },
+      { {  6, NULL                                     }, {  6, &( talents.mortal_shots                 ) }, {  6, &( talents.trap_mastery             ) } },
+      { {  7, NULL                                     }, {  7, &( talents.go_for_the_throat            ) }, {  7, &( talents.survival_instincts       ) } },
+      { {  8, &( talents.aspect_mastery              ) }, {  8, &( talents.improved_arcane_shot         ) }, {  8, &( talents.survivalist              ) } },
+      { {  9, &( talents.unleashed_fury              ) }, {  9, &( talents.aimed_shot                   ) }, {  9, &( talents.scatter_shot             ) } },
+      { { 10, NULL                                     }, { 10, &( talents.rapid_killing                ) }, { 10, NULL                                  } },
+      { { 11, &( talents.ferocity                    ) }, { 11, &( talents.improved_stings              ) }, { 11, &( talents.survival_tactics         ) } },
+      { { 12, NULL                                     }, { 12, &( talents.efficiency                   ) }, { 12, &( talents.tnt                      ) } },
+      { { 13, NULL                                     }, { 13, NULL                                      }, { 13, &( talents.lock_and_load            ) } },
+      { { 14, &( talents.bestial_discipline          ) }, { 14, &( talents.readiness                    ) }, { 14, &( talents.hunter_vs_wild           ) } },
+      { { 15, &( talents.animal_handler              ) }, { 15, &( talents.barrage                      ) }, { 15, &( talents.killer_instinct          ) } },
+      { { 16, &( talents.frenzy                      ) }, { 16, &( talents.combat_experience            ) }, { 16, NULL                                  } },
+      { { 17, &( talents.ferocious_inspiration       ) }, { 17, &( talents.ranged_weapon_specialization ) }, { 17, &( talents.lightning_reflexes       ) } },
+      { { 18, &( talents.bestial_wrath               ) }, { 18, &( talents.piercing_shots               ) }, { 18, &( talents.resourcefulness          ) } },
+      { { 19, NULL                                     }, { 19, &( talents.trueshot_aura                ) }, { 19, &( talents.expose_weakness          ) } },
+      { { 20, &( talents.invigoration                ) }, { 20, &( talents.improved_barrage             ) }, { 20, NULL                                  } },
+      { { 21, &( talents.serpents_swiftness          ) }, { 21, &( talents.master_marksman              ) }, { 21, &( talents.thrill_of_the_hunt       ) } },
+      { { 22, &( talents.longevity                   ) }, { 22, &( talents.rapid_recuperation           ) }, { 22, &( talents.master_tactician         ) } },
+      { { 23, &( talents.beast_within                ) }, { 23, &( talents.wild_quiver                  ) }, { 23, &( talents.noxious_stings           ) } },
+      { { 24, &( talents.cobra_strikes               ) }, { 24, &( talents.silencing_shot               ) }, { 24, NULL                                  } },
+      { { 25, &( talents.kindred_spirits             ) }, { 25, &( talents.improved_steady_shot         ) }, { 25, &( talents.black_arrow              ) } },
+      { { 26, NULL                                     }, { 26, &( talents.marked_for_death             ) }, { 26, &( talents.sniper_training          ) } },
+      { {  0, NULL                                     }, { 27, &( talents.chimera_shot                 ) }, { 27, &( talents.hunting_party            ) } },
+      { {  0, NULL                                     }, {  0, NULL                                      }, { 28, &( talents.explosive_shot           ) } },
+      { {  0, NULL                                     }, {  0, NULL                                      }, {  0, NULL                                  } }
+    };
+
+    return player_t::get_talent_trees( beastmastery, marksmanship, survival, translation );
+  }
 }
 
 
