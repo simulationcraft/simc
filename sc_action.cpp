@@ -20,7 +20,7 @@ action_t::action_t( int         ty,
   sim(p->sim), type(ty), name_str(n), player(p), school(s), resource(r), tree(tr), result(RESULT_NONE),
   binary(false), channeled(false), background(false), repeating(false), aoe(false), harmful(true), proc(false), heal(false),
   may_miss(false), may_resist(false), may_dodge(false), may_parry(false), 
-  may_glance(false), may_block(false), may_crush(false), may_crit(false),
+  may_glance(false), may_block(false), may_crush(false), may_crit(false), tick_may_crit(false),
   min_gcd(0), trigger_gcd(0),
   base_execute_time(0), base_tick_time(0), base_cost(0),
   base_dd_min(0), base_dd_max(0), base_td_init(0),
@@ -410,6 +410,9 @@ double action_t::calculate_tick_damage()
   
   double init_tick_dmg = tick_dmg;
 
+  if( result == RESULT_CRIT )
+    tick_dmg *= 1.0 + total_crit_bonus();
+
   if( ! binary ) tick_dmg *= 1.0 - resistance();
 
   if( sim -> debug ) 
@@ -572,7 +575,15 @@ void action_t::tick()
 {
   if( sim -> debug ) report_t::log( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
 
-  result = RESULT_HIT; // Normal DoT ticks can only "hit"
+  result = RESULT_HIT;
+
+  if( tick_may_crit )
+  {
+    if( sim -> roll( total_crit() ) )
+    {
+      result = RESULT_CRIT;
+    }
+  }
 
   target_debuff( DMG_OVER_TIME );
 
