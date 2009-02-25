@@ -1487,6 +1487,95 @@ struct tigers_fury_t : public druid_attack_t
   }
 };
 
+// Ferocious Bite ============================================================
+
+struct ferocious_bite_t : public druid_attack_t
+{
+  struct double_pair { double min, max; };
+  double excess_engery_mod;
+  double_pair* combo_point_dmg;
+
+  ferocious_bite_t( player_t* player, const std::string& options_str ) : 
+    druid_attack_t( "ferocious_bite", player, SCHOOL_PHYSICAL, TREE_FERAL )
+  {
+    druid_t* p = player -> cast_druid();
+
+    option_t options[] =
+    {
+      { NULL }
+    };
+    parse_options( options, options_str );
+      
+    requires_combo_points = true;
+    base_cost = 35;
+
+    base_multiplier *= 1.0 + ( p -> talents.feral_aggression * 0.03 );
+
+    static double_pair dmg_78[] = { { 410, 550 }, { 700, 840 }, { 990, 1130 }, { 1280, 1420 }, { 1570, 1710 } };
+    static double_pair dmg_72[] = { { 334, 682 }, { 570, 682 }, { 806,  918 }, { 1042, 1154 }, { 1278, 1390 } };
+    static double_pair dmg_63[] = { { 226, 292 }, { 395, 461 }, { 564,  630 }, {  733,  799 }, {  902,  968 } };
+    static double_pair dmg_60[] = { { 199, 259 }, { 346, 406 }, { 493,  533 }, {  640,  700 }, {  787,  847 } };
+
+    combo_point_dmg   = ( p -> level >= 78 ? dmg_78 :
+                          p -> level >= 72 ? dmg_72 :
+                          p -> level >= 63 ? dmg_63 : 
+                                             dmg_60 );
+    excess_engery_mod = ( p -> level >= 78 ? 9.4 :
+                          p -> level >= 72 ? 7.7 :
+                          p -> level >= 63 ? 3.4 : 
+                                             2.1 );  // Up to 30 additional energy is converted into damage
+  }
+
+  virtual void execute()
+  {
+    druid_t* p = player -> cast_druid();
+
+    base_dd_min = combo_point_dmg[ p -> buffs_combo_points - 1 ].min;
+    base_dd_max = combo_point_dmg[ p -> buffs_combo_points - 1 ].max;
+    
+    direct_power_mod = 0.07 * p -> buffs_combo_points;
+    
+    double excess_energy = ( p -> resource_current[ RESOURCE_ENERGY ] - druid_attack_t::cost() );
+    if( excess_energy > 0)
+    {
+      // There will be energy left after the Ferocious Bite of which up to 30 will also be converted into damage.
+      // Additional damage AND additinal scaling from AP.
+      // druid_attack_t::cost() takes care of OoC handling.
+      
+      excess_energy = ( excess_energy > 30 ? 30 : excess_energy);
+      direct_power_mod += excess_energy / 410;
+      base_dd_max      += excess_engery_mod * excess_energy;
+      base_dd_min      += excess_engery_mod * excess_energy;
+    }
+    else
+    {
+      excess_energy = 0;
+    }
+    
+    base_cost += excess_energy;
+
+    druid_attack_t::execute();
+
+    base_cost -= excess_energy;
+    
+
+  }
+  /**
+  FIXME: Need bleed detection (rogues, warrs, hunter pets, other ferals, etc?)
+  
+  virtual void player_buff()
+  {
+    druid_attack_t::player_buff();
+    
+    if( talents.rend_and_tear && sim -> target -> bleeding )
+    {
+      base_crit += 0.10 * p -> talents.rend_and_tear;
+    } 
+  }
+  **/
+
+};
+
 // =========================================================================
 // Druid Spell
 // =========================================================================
