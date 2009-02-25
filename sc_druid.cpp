@@ -1492,7 +1492,7 @@ struct tigers_fury_t : public druid_attack_t
 struct ferocious_bite_t : public druid_attack_t
 {
   struct double_pair { double min, max; };
-  double excess_engery_mod;
+  double excess_engery_mod, excess_energy;
   double_pair* combo_point_dmg;
 
   ferocious_bite_t( player_t* player, const std::string& options_str ) : 
@@ -1535,7 +1535,7 @@ struct ferocious_bite_t : public druid_attack_t
     
     direct_power_mod = 0.07 * p -> buffs_combo_points;
     
-    double excess_energy = ( p -> resource_current[ RESOURCE_ENERGY ] - druid_attack_t::cost() );
+    excess_energy = ( p -> resource_current[ RESOURCE_ENERGY ] - druid_attack_t::cost() );
     if( excess_energy > 0)
     {
       // There will be energy left after the Ferocious Bite of which up to 30 will also be converted into damage.
@@ -1552,13 +1552,22 @@ struct ferocious_bite_t : public druid_attack_t
       excess_energy = 0;
     }
     
-    base_cost += excess_energy;
-
     druid_attack_t::execute();
 
-    base_cost -= excess_energy;
-    
-
+  }
+  
+  virtual void consume_resource()
+  {
+  	// Ferocious Bite consumes 35+x energy, with 0 <= x <= 30.
+    // Consumes the base_cost and handles Omen of Clarity
+  	druid_attack_t::consume_resource();
+  	
+  	// Let the additional energy consumption create it's own debug log entries.
+    if( sim -> debug ) 
+      report_t::log( sim, "%s consumes an additional %.1f %s for %s", player -> name(), 
+                     excess_energy, util_t::resource_type_string( resource ), name() );
+    player -> resource_loss( resource, excess_energy );
+  	
   }
   /**
   FIXME: Need bleed detection (rogues, warrs, hunter pets, other ferals, etc?)
@@ -2589,6 +2598,7 @@ action_t* druid_t::create_action( const std::string& name,
   if( name == "claw"              ) return new              claw_t( this, options_str );
   if( name == "faerie_fire"       ) return new       faerie_fire_t( this, options_str );
   if( name == "faerie_fire_feral" ) return new faerie_fire_feral_t( this, options_str );
+  if( name == "ferocious_bite"    ) return new    ferocious_bite_t( this, options_str );
   if( name == "insect_swarm"      ) return new      insect_swarm_t( this, options_str );
   if( name == "innervate"         ) return new         innervate_t( this, options_str );
   if( name == "mangle_cat"        ) return new        mangle_cat_t( this, options_str );
@@ -2608,7 +2618,6 @@ action_t* druid_t::create_action( const std::string& name,
   if( name == "wrath"             ) return new             wrath_t( this, options_str );
 #if 0
   if( name == "cower"             ) return new             cower_t( this, options_str );
-  if( name == "ferocious_bite"    ) return new    ferocious_bite_t( this, options_str );
   if( name == "maim"              ) return new              maim_t( this, options_str );
   if( name == "prowl"             ) return new             prowl_t( this, options_str );
   if( name == "ravage"            ) return new            ravage_t( this, options_str );
