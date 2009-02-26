@@ -756,8 +756,12 @@ bool action_t::ready()
     if( sim -> target -> health_percentage() > max_health_percentage )
       return false;
 
-  if( bloodlust_active )
+  if( bloodlust_active > 0 )
     if( ! player -> buffs.bloodlust )
+      return false;
+
+  if( bloodlust_active < 0 )
+    if( player -> buffs.bloodlust )
       return false;
 
   if( sync_action && ! sync_action -> ready() )
