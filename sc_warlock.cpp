@@ -32,6 +32,7 @@ struct warlock_t : public player_t
   double buffs_fel_armor;
   int    buffs_flame_shadow;
   int    buffs_haunted;
+  double buffs_life_tap_glyph;
   int    buffs_metamorphosis;
   double buffs_molten_core;
   int    buffs_pet_sacrifice;
@@ -53,6 +54,7 @@ struct warlock_t : public player_t
   event_t* expirations_flame_shadow;
   event_t* expirations_haunted;
   event_t* expirations_infernal;
+  event_t* expirations_life_tap_glyph;
   event_t* expirations_molten_core;
   event_t* expirations_pyroclasm;
   event_t* expirations_shadow_embrace;
@@ -213,6 +215,7 @@ struct warlock_t : public player_t
     buffs_fel_armor                    = 0;
     buffs_flame_shadow                 = 0;
     buffs_haunted                      = 0;
+    buffs_life_tap_glyph               = 0;
     buffs_metamorphosis                = 0;
     buffs_molten_core                  = 0;
     buffs_pet_sacrifice                = 0;
@@ -1753,6 +1756,48 @@ static void trigger_tier7_4pc( spell_t* s )
     if( e )
     {
       e -> reschedule( 10.0 );
+    }
+    else
+    {
+      e = new ( s -> sim ) expiration_t( s -> sim, p );
+    }
+  }
+}
+
+// trigger_life_tap_glyph ===============================================
+
+static void trigger_life_tap_glyph( spell_t* s )
+{
+  struct expiration_t : public event_t
+  {
+    expiration_t( sim_t* sim, warlock_t* p ) : event_t( sim, p )
+    {
+      p = player -> cast_warlock();
+      name = "Life Tap Glyph Expiration";
+      p -> aura_gain( "Life Tap Glyph" );
+      p -> buffs_life_tap_glyph = p -> spirit() * 0.20;
+      p -> spell_power[ SCHOOL_MAX ] += p -> buffs_life_tap_glyph;
+      sim -> add_event( this, 20.0 );
+    }
+    virtual void execute()
+    {
+      warlock_t* p = player -> cast_warlock();
+      p -> aura_loss( "Spirits of the Damned" );
+      p -> spell_power[ SCHOOL_MAX ] -= p -> buffs_life_tap_glyph;
+      p -> expirations_life_tap_glyph = 0;
+      p -> buffs_life_tap_glyph = 0;
+    }
+  };
+
+  warlock_t* p = s -> player -> cast_warlock();
+
+  if( p -> glyphs.life_tap )
+  {
+    event_t*& e = p -> expirations_life_tap_glyph;
+
+    if( e )
+    {
+      e -> reschedule( 20.0 );
     }
     else
     {
@@ -4419,6 +4464,7 @@ void warlock_t::reset()
   expirations_flame_shadow           = 0;
   expirations_haunted                = 0;
   expirations_infernal               = 0;
+  expirations_life_tap_glyph         = 0;
   expirations_molten_core            = 0;
   expirations_shadow_embrace         = 0;
   expirations_shadow_flame           = 0;
