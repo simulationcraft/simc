@@ -1831,11 +1831,11 @@ void priest_t::reset()
 
 void priest_t::regen( double periodicity )
 {
-  spirit_regen_while_casting = talents.meditation * 0.10;
+  mana_regen_while_casting = talents.meditation * 0.10;
 
   if( buffs_improved_spirit_tap )
   {
-    spirit_regen_while_casting += talents.improved_spirit_tap * 0.10;
+    mana_regen_while_casting += talents.improved_spirit_tap * 0.10;
   }
 
   player_t::regen( periodicity );

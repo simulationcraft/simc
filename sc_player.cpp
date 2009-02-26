@@ -141,7 +141,9 @@ player_t::player_t( sim_t*             s,
   spell_power_per_intellect(0), initial_spell_power_per_intellect(0),
   spell_power_per_spirit(0),    initial_spell_power_per_spirit(0),
   spell_crit_per_intellect(0),  initial_spell_crit_per_intellect(0),
-  mp5_per_intellect(0), spirit_regen_while_casting(0), energy_regen_per_second(0), focus_regen_per_second(0),
+  mp5_per_intellect(0), 
+  mana_regen_base(0), mana_regen_while_casting(0), 
+  energy_regen_per_second(0), focus_regen_per_second(0),
   last_cast(0),
   // Attack Mechanics
   base_attack_power(0),       initial_attack_power(0),        attack_power(0),
@@ -346,6 +348,23 @@ void player_t::init_spell()
     initial_spell_hit  += sim -> gear_delta. hit_rating / rating.spell_hit;
     initial_spell_crit += sim -> gear_delta.crit_rating / rating.spell_crit;
   }
+
+  double base_60, base_70, base_80;
+
+  if( sim -> patch.after( 3, 1, 0 ) )
+  {
+    base_60 = 0.006600;
+    base_70 = 0.005596;
+    base_80 = 0.003345;
+  }
+  else
+  {
+    base_60 = 0.011000;
+    base_70 = 0.009327;
+    base_80 = 0.005575;
+  }
+
+  mana_regen_base = rating_t::interpolate( level, base_60, base_70, base_80 );
 }
 
 // player_t::init_attack ====================================================
@@ -628,35 +647,35 @@ void player_t::init_stats()
     resource_lost[ i ] = resource_gained[ i ] = 0;
   }
 
-  gains.ashtongue_talisman  = get_gain( "ashtongue_talisman" );
-  gains.blessing_of_wisdom  = get_gain( "blessing_of_wisdom" );
-  gains.dark_rune           = get_gain( "dark_rune" );
-  gains.energy_regen        = get_gain( "energy_regen" );
-  gains.focus_regen         = get_gain( "focus_regen" );
-  gains.innervate           = get_gain( "innervate" );
-  gains.glyph_of_innervate  = get_gain( "glyph_of_innervate" );
-  gains.judgement_of_wisdom = get_gain( "judgement_of_wisdom" );
-  gains.mana_gem            = get_gain( "mana_gem" );
-  gains.mana_potion         = get_gain( "mana_potion" );
-  gains.mana_spring         = get_gain( "mana_spring" );
-  gains.mana_tide           = get_gain( "mana_tide" );
-  gains.mark_of_defiance    = get_gain( "mark_of_defiance" );
-  gains.mirror_of_truth     = get_gain( "mirror_of_truth" );
-  gains.mp5_regen           = get_gain( "mp5_regen" );
-  gains.replenishment       = get_gain( "replenishment" );
-  gains.restore_mana        = get_gain( "restore_mana" );
-  gains.spellsurge          = get_gain( "spellsurge" );
-  gains.spirit_regen        = get_gain( "spirit_regen" );
-  gains.vampiric_touch      = get_gain( "vampiric_touch" );
-  gains.water_elemental     = get_gain( "water_elemental" );
-  gains.tier4_2pc           = get_gain( "tier4_2pc" );
-  gains.tier4_4pc           = get_gain( "tier4_4pc" );
-  gains.tier5_2pc           = get_gain( "tier5_2pc" );
-  gains.tier5_4pc           = get_gain( "tier5_4pc" );
-  gains.tier6_2pc           = get_gain( "tier6_2pc" );
-  gains.tier6_4pc           = get_gain( "tier6_4pc" );
-  gains.tier7_2pc           = get_gain( "tier7_2pc" );
-  gains.tier7_4pc           = get_gain( "tier7_4pc" );
+  gains.ashtongue_talisman     = get_gain( "ashtongue_talisman" );
+  gains.blessing_of_wisdom     = get_gain( "blessing_of_wisdom" );
+  gains.dark_rune              = get_gain( "dark_rune" );
+  gains.energy_regen           = get_gain( "energy_regen" );
+  gains.focus_regen            = get_gain( "focus_regen" );
+  gains.innervate              = get_gain( "innervate" );
+  gains.glyph_of_innervate     = get_gain( "glyph_of_innervate" );
+  gains.judgement_of_wisdom    = get_gain( "judgement_of_wisdom" );
+  gains.mana_gem               = get_gain( "mana_gem" );
+  gains.mana_potion            = get_gain( "mana_potion" );
+  gains.mana_spring            = get_gain( "mana_spring" );
+  gains.mana_tide              = get_gain( "mana_tide" );
+  gains.mark_of_defiance       = get_gain( "mark_of_defiance" );
+  gains.mirror_of_truth        = get_gain( "mirror_of_truth" );
+  gains.mp5_regen              = get_gain( "mp5_regen" );
+  gains.replenishment          = get_gain( "replenishment" );
+  gains.restore_mana           = get_gain( "restore_mana" );
+  gains.spellsurge             = get_gain( "spellsurge" );
+  gains.spirit_intellect_regen = get_gain( "spirit_intellect_regen" );
+  gains.vampiric_touch         = get_gain( "vampiric_touch" );
+  gains.water_elemental        = get_gain( "water_elemental" );
+  gains.tier4_2pc              = get_gain( "tier4_2pc" );
+  gains.tier4_4pc              = get_gain( "tier4_4pc" );
+  gains.tier5_2pc              = get_gain( "tier5_2pc" );
+  gains.tier5_4pc              = get_gain( "tier5_4pc" );
+  gains.tier6_2pc              = get_gain( "tier6_2pc" );
+  gains.tier6_4pc              = get_gain( "tier6_4pc" );
+  gains.tier7_2pc              = get_gain( "tier7_2pc" );
+  gains.tier7_4pc              = get_gain( "tier7_4pc" );
 
   procs.ashtongue_talisman           = get_proc( "ashtongue_talisman" );
   procs.darkmoon_greatness           = get_proc( "darkmoon_greatness" );
@@ -1063,7 +1082,7 @@ void player_t::regen( double periodicity )
 
   if( sim -> infinite_resource[ RESOURCE_MANA ] == 0 && resource_max[ RESOURCE_MANA ] > 0 )
   {
-    double spirit_regen = periodicity * spirit_regen_per_second();
+    double spirit_regen = periodicity * sqrt( intellect() ) * spirit() * mana_regen_base;
 
     if( buffs.innervate )
     {
@@ -1072,7 +1091,7 @@ void player_t::regen( double periodicity )
         resource_gain( RESOURCE_MANA, spirit_regen, gains.glyph_of_innervate );
       }
 
-      spirit_regen *= 4.0;
+      spirit_regen *= 5.0;
 
       resource_gain( RESOURCE_MANA, spirit_regen, gains.innervate );      
     }
@@ -1082,9 +1101,12 @@ void player_t::regen( double periodicity )
     }
     else if( recent_cast() )
     {
-      spirit_regen *= spirit_regen_while_casting;
+      if( mana_regen_while_casting < 1.0 )
+      {
+	spirit_regen *= mana_regen_while_casting;
+      }
 
-      resource_gain( RESOURCE_MANA, spirit_regen, gains.spirit_regen );      
+      resource_gain( RESOURCE_MANA, spirit_regen, gains.spirit_intellect_regen );      
     }
 
     double mp5_regen = periodicity * ( mp5 + intellect() * mp5_per_intellect ) / 5.0;
@@ -1500,21 +1522,6 @@ action_t* player_t::find_action( const std::string& str )
       return a;
 
   return 0;
-}
-
-// player_t::calculate_spirit_regen =========================================
-
-double player_t::spirit_regen_per_second()
-{
-  double base_60 = 0.011000;
-  double base_70 = 0.009327;
-  double base_80 = 0.005575;
-
-  double base_regen = rating_t::interpolate( level, base_60, base_70, base_80 );
-
-  double mana_per_second  = sqrt( intellect() ) * spirit() * base_regen;
-
-  return mana_per_second;
 }
 
 // player_t::aura_gain ======================================================

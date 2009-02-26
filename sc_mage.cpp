@@ -2799,12 +2799,12 @@ void mage_t::reset()
 
 void mage_t::regen( double periodicity )
 {
-  spirit_regen_while_casting = ( talents.arcane_meditation * 0.10 +
-                                 talents.pyromaniac        * 0.10 );
+  mana_regen_while_casting = ( talents.arcane_meditation * 0.10 +
+			       talents.pyromaniac        * 0.10 );
 
   if( buffs_mage_armor )
   {
-    spirit_regen_while_casting += glyphs.mage_armor ? 0.50 : 0.30;
+    mana_regen_while_casting += glyphs.mage_armor ? 0.50 : 0.30;
   }
 
   player_t::regen( periodicity );

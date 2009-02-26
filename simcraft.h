@@ -477,7 +477,8 @@ struct player_t
   double spell_power_per_spirit,    initial_spell_power_per_spirit;
   double spell_crit_per_intellect,  initial_spell_crit_per_intellect;
   double mp5_per_intellect;
-  double spirit_regen_while_casting;
+  double mana_regen_base;
+  double mana_regen_while_casting;
   double energy_regen_per_second;
   double focus_regen_per_second;
   double last_cast;
@@ -761,7 +762,7 @@ struct player_t
     gain_t* replenishment;
     gain_t* restore_mana;
     gain_t* spellsurge;
-    gain_t* spirit_regen;
+    gain_t* spirit_intellect_regen;
     gain_t* vampiric_touch;
     gain_t* water_elemental;
     gain_t *tier4_2pc, *tier4_4pc;
@@ -960,7 +961,7 @@ struct player_t
   void      share_cooldown( const std::string& name, double ready );
   void      share_duration( const std::string& name, double ready );
   void      recalculate_haste()  {  haste = 1.0 / ( 1.0 + haste_rating / rating.haste ); }
-  double    spirit_regen_per_second();
+  double    mana_regen_per_second();
   bool      dual_wield() { return main_hand_weapon.type != WEAPON_NONE && off_hand_weapon.type != WEAPON_NONE; }
   void      aura_gain( const char* name );
   void      aura_loss( const char* name );
