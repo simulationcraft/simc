@@ -1782,7 +1782,7 @@ static void trigger_life_tap_glyph( spell_t* s )
     virtual void execute()
     {
       warlock_t* p = player -> cast_warlock();
-      p -> aura_loss( "Spirits of the Damned" );
+      p -> aura_loss( "Life Tap Glyph" );
       p -> spell_power[ SCHOOL_MAX ] -= p -> buffs_life_tap_glyph;
       p -> expirations_life_tap_glyph = 0;
       p -> buffs_life_tap_glyph = 0;
