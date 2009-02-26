@@ -171,13 +171,18 @@ struct warlock_t : public player_t
 
   struct glyphs_t
   {
+    int chaos_bolt;
     int conflagrate;
     int corruption;
     int curse_of_agony;
     int felguard;
     int felhunter;
+    int haunt;
     int immolate;
     int imp;
+    int incinerate;
+    int life_tap;
+    int metamorphosis;
     int searing_pain;
     int shadow_bolt;
     int shadow_burn;
@@ -523,7 +528,7 @@ struct imp_pet_t : public warlock_pet_t
 
       base_multiplier *= 1.0 + ( o -> talents.improved_imp  * 0.10 +
                                  o -> talents.empowered_imp * 0.05 +
-                                 o -> glyphs.imp            * 0.10 );
+                                 o -> glyphs.imp * ( sim -> patch.before( 3, 1, 0 ) ) ? 0.10 : 0.20 );
     }
     virtual void player_buff()
     {
@@ -1943,7 +1948,7 @@ void warlock_spell_t::target_debuff( int dmg_type )
     }
     if( p -> buffs_haunted && ( school == SCHOOL_SHADOW || sim -> patch.before( 3, 1, 0 ) ) )
     {
-      target_multiplier *= 1.20;
+      target_multiplier *= ( p -> glyphs.haunt ) ? 1.20 : 1.23;
     }
 
     if( p -> main_hand_weapon.buff == SPELL_STONE ) 
@@ -2425,6 +2430,7 @@ struct chaos_bolt_t : public warlock_spell_t
     base_execute_time = 2.5; 
     direct_power_mod  = base_execute_time / 3.5; 
     cooldown          = 12.0;
+    if ( p -> glyphs.chaos_bolt ) cooldown -= 2;
     may_crit          = true;
     may_resist        = false;
     
@@ -3518,7 +3524,8 @@ struct incinerate_t : public warlock_spell_t
     }
     base_execute_time -= p -> talents.emberstorm * 0.05;
     base_multiplier   *= 1.0 + ( p -> talents.emberstorm  * 0.03 +
-                                 p -> gear.tier6_4pc      * 0.06 );
+                                 p -> gear.tier6_4pc      * 0.06 +
+                                 p -> glyphs.incinerate   * 0.05 );
     base_crit         += p -> talents.devastation * 0.05;
     base_crit         += p -> talents.backlash * 0.01;
     direct_power_mod  *= 1.0 + p -> talents.shadow_and_flame * 0.04;
@@ -4031,6 +4038,7 @@ struct metamorphosis_t : public warlock_spell_t
     base_cost   = 0;
     trigger_gcd = 0;
     cooldown    = 180 * ( 1.0 - p -> talents.nemesis * 0.1 );
+    if ( p -> glyphs.metamorphosis ) cooldown -= 6;
 
     if( immolation )
     {
@@ -4615,13 +4623,18 @@ bool warlock_t::parse_option( const std::string& name,
     { "unholy_power",             OPT_INT,  &( talents.unholy_power             ) },
     { "unstable_affliction",      OPT_INT,  &( talents.unstable_affliction      ) },
     // Glyphs
+    { "glyph_chaos_bolt",          OPT_INT,  &( glyphs.chaos_bolt               ) },
     { "glyph_conflagrate",         OPT_INT,  &( glyphs.conflagrate              ) },
     { "glyph_corruption",          OPT_INT,  &( glyphs.corruption               ) },
     { "glyph_curse_of_agony",      OPT_INT,  &( glyphs.curse_of_agony           ) },
     { "glyph_felguard",            OPT_INT,  &( glyphs.felguard                 ) },
     { "glyph_felhunter",           OPT_INT,  &( glyphs.felhunter                ) },
+    { "glyph_haunt",               OPT_INT,  &( glyphs.haunt                    ) },
     { "glyph_immolate",            OPT_INT,  &( glyphs.immolate                 ) },
     { "glyph_imp",                 OPT_INT,  &( glyphs.imp                      ) },
+    { "glyph_incinerate",          OPT_INT,  &( glyphs.incinerate               ) },
+    { "glyph_life_tap",            OPT_INT,  &( glyphs.life_tap                 ) },
+    { "glyph_metamorphosis",       OPT_INT,  &( glyphs.metamorphosis            ) },
     { "glyph_searing_pain",        OPT_INT,  &( glyphs.searing_pain             ) },
     { "glyph_shadow_bolt",         OPT_INT,  &( glyphs.shadow_bolt              ) },
     { "glyph_shadow_burn",         OPT_INT,  &( glyphs.shadow_burn              ) },
