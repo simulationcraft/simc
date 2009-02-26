@@ -3264,6 +3264,8 @@ struct conflagrate_t : public warlock_spell_t
   int  ticks_lost;
   bool cancel_dot;
 
+  action_t** dot_spell;
+
   conflagrate_t( player_t* player, const std::string& options_str ) : 
     warlock_spell_t( "conflagrate", player, SCHOOL_FIRE, TREE_DESTRUCTION ), no_backdraft(0), ticks_lost(0), cancel_dot(true)
   {
@@ -3316,6 +3318,37 @@ struct conflagrate_t : public warlock_spell_t
 
     if( p -> glyphs.conflagrate && sim -> patch.before( 3, 0, 8 ) ) base_cost *= 0.80;
   }
+    
+  virtual double calculate_direct_damage()
+  {
+    warlock_t* p = player -> cast_warlock();
+    if( p -> active_immolate && ! p -> active_shadowflame )
+    {
+      dot_spell = &( p -> active_immolate );
+    }
+    else if( ! p -> active_immolate && p -> active_shadowflame )
+    {
+      dot_spell = &( p -> active_shadowflame );
+    }
+    else if( sim -> roll( 0.50 ) )
+    {
+      dot_spell = &( p -> active_immolate );
+    }
+    else
+    {
+      dot_spell = &( p -> active_shadowflame );
+    }
+    if( sim -> patch.before( 3, 1, 0 ) )
+    {
+      warlock_spell_t::calculate_direct_damage();
+    }
+    else
+    {
+      direct_dmg = ( (*dot_spell) -> calculate_tick_damage() )
+                 * ( (*dot_spell) -> num_ticks               );
+    }
+    return direct_dmg;
+  }
 
   virtual void execute()
   {
@@ -3329,24 +3362,6 @@ struct conflagrate_t : public warlock_spell_t
 
       if( cancel_dot )
       {
-        action_t** dot_spell = 0;
-
-        if( p -> active_immolate && ! p -> active_shadowflame )
-        {
-          dot_spell = &( p -> active_immolate );
-        }
-        else if( ! p -> active_immolate && p -> active_shadowflame )
-        {
-          dot_spell = &( p -> active_shadowflame );
-        }
-        else if( sim -> roll( 0.50 ) )
-        {
-          dot_spell = &( p -> active_immolate );
-        }
-        else
-        {
-          dot_spell = &( p -> active_shadowflame );
-        }
         (*dot_spell) -> cancel();
         *dot_spell = 0;
       }
