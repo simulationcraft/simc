@@ -24,6 +24,7 @@ struct warlock_t : public player_t
 
   // Buffs
   int    buffs_backdraft;
+  double buffs_decimation;
   int    buffs_demon_armor;
   int    buffs_demonic_empathy;
   int    buffs_empowered_imp;
@@ -46,6 +47,7 @@ struct warlock_t : public player_t
 
   // Expirations
   event_t* expirations_backdraft;
+  event_t* expirations_decimation;
   event_t* expirations_demonic_empathy;
   event_t* expirations_empowered_imp;
   event_t* expirations_flame_shadow;
@@ -198,6 +200,7 @@ struct warlock_t : public player_t
 
     // Buffs
     buffs_backdraft                    = 0;
+    buffs_decimation                   = 0;
     buffs_demon_armor                  = 0;
     buffs_demonic_empathy              = 0;
     buffs_empowered_imp                = 0;
@@ -220,6 +223,7 @@ struct warlock_t : public player_t
 
     // Expirations
     expirations_backdraft              = 0;
+    expirations_decimation             = 0;
     expirations_demonic_empathy        = 0;
     expirations_empowered_imp          = 0;
     expirations_flame_shadow           = 0;
@@ -1324,6 +1328,45 @@ static void trigger_molten_core( spell_t* s )
   }
 }
 
+// trigger_decimation =====================================================
+
+static void trigger_decimation( spell_t* s )
+{
+  struct expiration_t : public event_t
+  {
+    expiration_t( sim_t* sim, warlock_t* p ) : event_t( sim, p )
+    {
+      name = "Decimation Expiration";
+      p -> aura_gain( "Decimation" );
+      // FIXME: This assumes a 1-second travel time on the triggering spell
+      p -> buffs_decimation = sim -> current_time + 1;
+      sim -> add_event( this, 11.0 );
+    }
+    virtual void execute()
+    {
+      warlock_t* p = player -> cast_warlock();
+      p -> aura_loss( "Decimation" );
+      p -> buffs_decimation = 0;
+      p -> expirations_decimation = 0;
+    }
+  };
+
+  warlock_t* p = s -> player -> cast_warlock();
+
+  if( ! p -> talents.decimation ) return;
+
+  event_t*&  e = p -> expirations_decimation;
+
+  if( e )
+  {
+    e -> reschedule( 11.0 );
+  }
+  else
+  {
+    e = new ( s -> sim ) expiration_t( s -> sim, p );
+  }
+}
+
 // trigger_eradication =====================================================
 
 static void trigger_eradication( spell_t* s )
@@ -1865,11 +1908,15 @@ void warlock_spell_t::player_buff()
       if( p -> buffs_empowered_imp ) player_crit += 0.20;
       p -> uptimes_empowered_imp -> update( p -> buffs_empowered_imp != 0 );
 
-      if( p -> buffs_eradication && sim -> patch.after( 3, 1, 0 ) )
+      if ( sim -> patch.after( 3, 1, 0 ) && p -> talents.eradication )
       {
-        player_crit += 0.1 * p -> buffs_eradication;
-        p -> buffs_eradication--;
-        p -> uptimes_eradication -> update( p -> buffs_eradication != 0 );
+        p -> uptimes_eradication -> update( p -> buffs_eradication > 0 );
+        if( p -> buffs_eradication > 0 )
+        {
+          player_crit += 0.1 * p -> buffs_eradication;
+          p -> buffs_eradication--;
+          if ( p -> buffs_eradication == 0 ) p -> aura_loss( "Eradication" );
+        }
       }
     }
 
@@ -3597,6 +3644,7 @@ struct searing_pain_t : public warlock_spell_t
 struct soul_fire_t : public warlock_spell_t
 {
   int backdraft;
+  int decimation;
 
   soul_fire_t( player_t* player, const std::string& options_str ) : 
     warlock_spell_t( "soul_fire", player, SCHOOL_FIRE, TREE_DESTRUCTION ), backdraft(0)
@@ -3605,7 +3653,8 @@ struct soul_fire_t : public warlock_spell_t
 
     option_t options[] =
     {
-      { "backdraft", OPT_INT, &backdraft },
+      { "backdraft",  OPT_INT, &backdraft  },
+      { "decimation", OPT_INT, &decimation },
       { NULL }
     };
     parse_options( options, options_str );
@@ -3652,6 +3701,20 @@ struct soul_fire_t : public warlock_spell_t
       trigger_soul_leech( this );
     }
   }
+
+  virtual double execute_time()
+  {
+    warlock_t* p = player -> cast_warlock();
+    double t = warlock_spell_t::execute_time();
+    if( p -> buffs_decimation >= sim -> current_time )
+    {
+      t *= 0.4;
+      p -> aura_loss( "Decimation" );
+      p -> buffs_decimation = 0;
+      if( p -> expirations_decimation ) event_t::cancel( p -> expirations_decimation );
+    }
+    return t;
+  }
     
   virtual bool ready()
   {
@@ -3662,6 +3725,10 @@ struct soul_fire_t : public warlock_spell_t
 
     if( backdraft )
       if( ! p -> buffs_backdraft )
+        return false;
+
+    if( decimation )
+      if( p -> buffs_decimation < sim -> current_time )
         return false;
           
     return true;
