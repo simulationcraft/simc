@@ -2446,7 +2446,7 @@ struct starfall_t : public druid_spell_t
 
         druid_t* p = player -> cast_druid();
 
-        if( restul_is_hit() )
+        if( result_is_hit() )
         {
           // FIXME! Just an assumption that the splash damage only occurs if the star did not miss. (
           starfall_star_splash -> execute();
