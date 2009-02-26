@@ -1340,41 +1340,13 @@ static void trigger_molten_core( spell_t* s )
 
 static void trigger_decimation( spell_t* s )
 {
-  struct expiration_t : public event_t
-  {
-    expiration_t( sim_t* sim, warlock_t* p ) : event_t( sim, p )
-    {
-      name = "Decimation Expiration";
-      p -> aura_gain( "Decimation" );
-      // FIXME: This assumes a 1-second travel time on the triggering spell
-      p -> buffs_decimation = sim -> current_time + 1;
-      sim -> add_event( this, 11.0 );
-    }
-    virtual void execute()
-    {
-      warlock_t* p = player -> cast_warlock();
-      p -> aura_loss( "Decimation" );
-      p -> buffs_decimation = 0;
-      p -> expirations_decimation = 0;
-    }
-  };
-
   if( s -> sim -> target -> health_percentage() > 35 ) return;
-
   warlock_t* p = s -> player -> cast_warlock();
-
   if( ! p -> talents.decimation ) return;
 
-  event_t*&  e = p -> expirations_decimation;
-
-  if( e )
-  {
-    e -> reschedule( 11.0 );
-  }
-  else
-  {
-    e = new ( s -> sim ) expiration_t( s -> sim, p );
-  }
+  p -> aura_gain( "Decimation" );
+  // FIXME: This assumes a 1-second travel time on the triggering spell
+  p -> buffs_decimation = s -> sim -> current_time + 1;
 }
 
 // trigger_eradication =====================================================
@@ -3762,12 +3734,11 @@ struct soul_fire_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     double t = warlock_spell_t::execute_time();
-    if( p -> buffs_decimation >= sim -> current_time )
+    if( p -> buffs_decimation <= sim -> current_time && sim -> current_time < p -> buffs_decimation + 10 )
     {
       t *= 0.4;
       p -> aura_loss( "Decimation" );
       p -> buffs_decimation = 0;
-      if( p -> expirations_decimation ) event_t::cancel( p -> expirations_decimation );
     }
     return t;
   }
@@ -3784,7 +3755,7 @@ struct soul_fire_t : public warlock_spell_t
         return false;
 
     if( decimation )
-      if( p -> buffs_decimation < sim -> current_time )
+      if( ! ( p -> buffs_decimation <= sim -> current_time && sim -> current_time < p -> buffs_decimation + 10 ) )
         return false;
           
     return true;
