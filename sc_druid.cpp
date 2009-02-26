@@ -60,6 +60,8 @@ struct druid_t : public player_t
 
   attack_t* melee_attack;
 
+  int equipped_weapon_dps;
+
   struct talents_t
   {
     int  balance_of_power;
@@ -82,6 +84,7 @@ struct druid_t : public player_t
     int  improved_moonkin_form;
     int  insect_swarm;
     int  intensity;
+    int  king_of_the_jungle;
     int  leader_of_the_pack;
     int  living_spirit;
     int  lunar_guidance;
@@ -98,6 +101,7 @@ struct druid_t : public player_t
     int  natures_splendor;
     int  natures_swiftness;
     int  omen_of_clarity;
+    int  predatory_strikes;
     int  primal_fury;
     int  rend_and_tear;
     int  savage_fury;
@@ -114,9 +118,7 @@ struct druid_t : public player_t
     int  feral_instinct;   // FIXME swipe (cat) implementation missing
     int  primal_precision; // FIXME energy reduction on miss NYI
     int  infected_wounds;
-    int  king_of_the_jungle;
     int  predatory_instincts;
-    int  predatory_strikes;
     int  protector_of_the_pack;
     
     talents_t() { memset( (void*) this, 0x0, sizeof( talents_t ) ); }
@@ -216,6 +218,8 @@ struct druid_t : public player_t
     uptimes_savage_roar      = get_uptime( "savage_roar"      );
 
     melee_attack = 0;
+
+    equipped_weapon_dps = 0;
   }
 
   // Character Definition
@@ -223,6 +227,7 @@ struct druid_t : public player_t
   virtual void      init_unique_gear();
   virtual void      reset();
   virtual double    composite_attack_power();
+  virtual double    composite_attack_power_multiplier();
   virtual double    composite_spell_hit();
   virtual double    composite_spell_crit();
   virtual bool      get_talent_trees( std::vector<int*>& balance, std::vector<int*>& feral, std::vector<int*>& restoration );
@@ -233,6 +238,7 @@ struct druid_t : public player_t
   virtual int       primary_resource() { return talents.moonkin_form ? RESOURCE_MANA : RESOURCE_ENERGY; }
   virtual double    composite_attribute_multiplier( int attr );
   virtual double    composite_attack_crit();
+  virtual double    composite_attack_expertise();
 
   // Utilities 
   double combo_point_rank( double* cp_list )
@@ -1322,6 +1328,8 @@ struct savage_roar_t : public druid_attack_t
 
 struct shred_t : public druid_attack_t
 {
+  int omen_of_clarity;
+
   shred_t( player_t* player, const std::string& options_str ) :
     druid_attack_t( "shred", player, SCHOOL_PHYSICAL, TREE_FERAL )
   {
@@ -1329,6 +1337,7 @@ struct shred_t : public druid_attack_t
 
     option_t options[] =
     {
+      { "omen_of_clarity",     OPT_INT, &omen_of_clarity },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1352,6 +1361,19 @@ struct shred_t : public druid_attack_t
     base_cost         -= 9 * p -> talents.shredding_attacks;
   }
 
+  virtual bool ready()
+  {
+    if( ! druid_attack_t::ready() )
+      return false;
+
+    druid_t* p = player -> cast_druid();
+
+    if( omen_of_clarity && ! p -> buffs_omen_of_clarity )
+      return false;
+
+    return true;
+  }
+
   virtual void player_buff()
   {
     druid_t*  p = player -> cast_druid();
@@ -1363,7 +1385,7 @@ struct shred_t : public druid_attack_t
     
     if( t -> debuffs.bleeding )
     {
-      player_multiplier *= 0.04 * p -> talents.rend_and_tear;
+      player_multiplier *= 1 + 0.04 * p -> talents.rend_and_tear;
     } 
   }
 };
@@ -2726,15 +2748,7 @@ void druid_t::init_base()
 
   base_gcd = ( talents.moonkin_form ) ? 1.5 : 1.0;
 
-  if ( talents.primal_precision )
-  {
-    base_attack_expertise += talents.primal_precision * 0.05;
-  }
 
-  if ( talents.heart_of_the_wild )
-  {
-    attack_power_multiplier *= 1 + 0.02 * talents.heart_of_the_wild;
-  }
 }
 
 // druid_t::init_unique_gear ================================================
@@ -2764,6 +2778,8 @@ void druid_t::init_unique_gear()
     if( gear.tier6_4pc ) tiers.t6_4pc_feral = 1;
     if( gear.tier7_2pc ) tiers.t7_2pc_feral = 1;
     if( gear.tier7_4pc ) tiers.t7_4pc_feral = 1;
+  
+    equipped_weapon_dps = main_hand_weapon.damage;
   }
 }
 
@@ -2807,9 +2823,45 @@ double druid_t::composite_attack_power()
 {
   double ap = player_t::composite_attack_power();
 
-  if( buffs_savage_roar ) ap *= 1.40;
+  double weapon_ap = ( equipped_weapon_dps - 54.8 ) * 14;
+ 
+  if ( talents.predatory_strikes )
+  {
+    ap += level * talents.predatory_strikes * 0.5;
+    weapon_ap *= 1 + ( talents.predatory_strikes > 2 ) ? 0.2 : talents.predatory_strikes * 0.07;
+  }
+
+  ap += weapon_ap;
 
   return ap;
+}
+
+// druid_t::composite_attack_power_multiplier ===============================
+
+double druid_t::composite_attack_power_multiplier()
+{
+  double multiplier = player_t::composite_attack_power_multiplier();
+
+  if( buffs_savage_roar ) multiplier *= 1.40;
+  
+  if ( talents.heart_of_the_wild )
+  {
+    multiplier *= 1 + talents.heart_of_the_wild * 0.02;
+  }
+
+  return multiplier;
+}
+
+double druid_t::composite_attack_expertise()
+{
+  double expertise = player_t::composite_attack_expertise();
+
+  if ( talents.primal_precision )
+  {
+    expertise += talents.primal_precision * 0.05;
+  }
+
+  return expertise;
 }
 
 // druid_t::composite_spell_hit =============================================
