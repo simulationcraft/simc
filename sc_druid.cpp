@@ -828,7 +828,7 @@ void druid_attack_t::execute()
 
     if( result == RESULT_CRIT )
     {
-	trigger_primal_fury( this );
+      trigger_primal_fury( this );
     }
   }
 
@@ -1286,16 +1286,16 @@ struct savage_roar_t : public druid_attack_t
     {
       expiration_t( sim_t* sim, druid_t* p, double duration ): event_t( sim, p )
       {
-	p -> aura_gain( "Savage Roar" );
-	p -> buffs_savage_roar = 1;
-	sim -> add_event( this, duration );
+        p -> aura_gain( "Savage Roar" );
+        p -> buffs_savage_roar = 1;
+        sim -> add_event( this, duration );
       }
       virtual void execute()
       {
-	druid_t* p = player -> cast_druid();
-	p -> aura_loss( "Savage Roar" );
-	p -> buffs_savage_roar = 0;
-	p -> expirations_savage_roar = 0;
+        druid_t* p = player -> cast_druid();
+        p -> aura_loss( "Savage Roar" );
+        p -> buffs_savage_roar = 0;
+        p -> expirations_savage_roar = 0;
       }
     };
 
@@ -1552,14 +1552,14 @@ struct ferocious_bite_t : public druid_attack_t
     // Ferocious Bite consumes 35+x energy, with 0 <= x <= 30.
     // Consumes the base_cost and handles Omen of Clarity
     druid_attack_t::consume_resource();
-  	
+
     // Let the additional energy consumption create it's own debug log entries.
     if( sim -> debug ) 
       report_t::log( sim, "%s consumes an additional %.1f %s for %s", player -> name(), 
                      excess_energy, util_t::resource_type_string( resource ), name() );
 
     player -> resource_loss( resource, excess_energy );
-  	
+
   }
   
   virtual void player_buff()
@@ -1568,10 +1568,11 @@ struct ferocious_bite_t : public druid_attack_t
 
     druid_attack_t::player_buff();
     
-    if( sim -> target -> debuffs.bleeding )
+    if( sim -> target -> debuffs.bleeding > 0 )
     {
-      base_crit += 0.10 * p -> talents.rend_and_tear;
+      player_crit += 0.10 * p -> talents.rend_and_tear;
     } 
+
   }
 };
 
@@ -1656,7 +1657,9 @@ void druid_spell_t::execute()
   }
   
   if( ! is_aoe ) 
-  	trigger_omen_of_clarity( this );
+  {
+    trigger_omen_of_clarity( this );
+  }
 
   if( p -> tiers.t4_2pc_balance && sim -> roll( 0.05 ) )
   {
@@ -2385,7 +2388,7 @@ struct starfall_t : public druid_spell_t
     {
       starfall_star_t( player_t* player) : druid_spell_t( "starfall", player, SCHOOL_ARCANE, TREE_BALANCE )
       {
-      	druid_t* p = player -> cast_druid();
+        druid_t* p = player -> cast_druid();
 
         direct_power_mod  = 0.05; // FIX ME! Did not really test this by myself, took it from the ticket.
         may_crit          = true;
@@ -2414,7 +2417,7 @@ struct starfall_t : public druid_spell_t
       }
     };
     
-    p -> active_starfall_stars = new starfall_star_t( p	 );
+    p -> active_starfall_stars = new starfall_star_t( p );
     p -> active_starfall_stars -> base_dd_max = base_dd_max;
     p -> active_starfall_stars -> base_dd_min = base_dd_min;
     base_dd_min = base_dd_max = 0;
@@ -2438,17 +2441,17 @@ struct starfall_t : public druid_spell_t
     {
       event_starfall_star_t( sim_t* sim, player_t* player) : event_t( sim, player)
       { 
-      	name = "Starfall Star";
+        name = "Starfall Star";
         sim -> add_event( this, 2.0 );
       }
       virtual void execute()
       {
-      	druid_t* p = player -> cast_druid();
-      	p -> active_starfall_stars -> execute();
-      	if( p -> buffs_starfall > 0)
+        druid_t* p = player -> cast_druid();
+        p -> active_starfall_stars -> execute();
+        if( p -> buffs_starfall > 0)
         {
-      	  new ( sim ) event_starfall_star_t( sim, p );
-      	}
+          new ( sim ) event_starfall_star_t( sim, p );
+        }
       }
     };
     new ( sim ) event_starfall_star_t( sim, p );
