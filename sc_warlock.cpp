@@ -1359,6 +1359,8 @@ static void trigger_decimation( spell_t* s )
     }
   };
 
+  if( s -> sim -> target -> health_percentage() > 35 ) return;
+
   warlock_t* p = s -> player -> cast_warlock();
 
   if( ! p -> talents.decimation ) return;
@@ -2391,6 +2393,7 @@ struct shadow_bolt_t : public warlock_spell_t
       stack_shadow_embrace( this );
       trigger_soul_leech( this );
       trigger_tier5_4pc( this, p -> active_corruption );
+      trigger_decimation( this );
       decrement_shadow_vulnerability( p );
       if( result == RESULT_CRIT ) trigger_shadow_vulnerability( this );
     }
@@ -3590,6 +3593,7 @@ struct incinerate_t : public warlock_spell_t
     {
       trigger_soul_leech( this );
       trigger_tier5_4pc( this, p -> active_immolate );
+      trigger_decimation( this );
     }
     if( p -> buffs.tier7_2pc )
     {
