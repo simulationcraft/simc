@@ -3346,6 +3346,10 @@ struct conflagrate_t : public warlock_spell_t
     {
       direct_dmg = ( (*dot_spell) -> calculate_tick_damage() )
                  * ( (*dot_spell) -> num_ticks               );
+      if( result == RESULT_CRIT )
+      {
+        direct_dmg *= 1.0 + total_crit_bonus();
+      }
     }
     return direct_dmg;
   }

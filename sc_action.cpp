@@ -410,9 +410,12 @@ double action_t::calculate_tick_damage()
   
   double init_tick_dmg = tick_dmg;
 
-  if( result == RESULT_CRIT )
+  if( tick_may_crit )
   {
-    tick_dmg *= 1.0 + total_crit_bonus();
+    if( sim -> roll( total_crit() ) )
+    {
+      tick_dmg *= 1.0 + total_crit_bonus();
+    }
   }
 
   if( ! binary ) 
@@ -584,14 +587,6 @@ void action_t::tick()
   if( sim -> debug ) report_t::log( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
 
   result = RESULT_HIT;
-
-  if( tick_may_crit )
-  {
-    if( sim -> roll( total_crit() ) )
-    {
-      result = RESULT_CRIT;
-    }
-  }
 
   target_debuff( DMG_OVER_TIME );
 
