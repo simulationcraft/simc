@@ -1929,17 +1929,17 @@ struct insect_swarm_t : public druid_spell_t
 
     if( skip_on_eclipse > 0)
       if( p -> buffs_eclipse_starfire || p -> buffs_eclipse_wrath )
-      	return false
+      	return false;
 
     if( skip_on_eclipse < 0 )
       if( p -> buffs_eclipse_starfire )
-      	return false
+      	return false;
 
     // p  -> buffs_eclipse_starfire the time eclipse proced, but 0 if eclipse is not up.
     if( min_eclipse_left > 0 && p  -> buffs_eclipse_wrath)
       //                     ( 15   -   time elapsed on eclipse  ) = time left on eclipse buff
       if( min_eclipse_left > ( 15.0 - (p  -> buffs_eclipse_wrath - sim -> current_time) ) )
-        return false
+        return false;
 
     return true;
   }
@@ -2026,17 +2026,17 @@ struct moonfire_t : public druid_spell_t
 
     if( skip_on_eclipse > 0)
       if( p -> buffs_eclipse_starfire || p -> buffs_eclipse_wrath )
-      	return false
+      	return false;
 
     if( skip_on_eclipse < 0 )
       if( p -> buffs_eclipse_wrath )
-      	return false
+      	return false;
 
     // p  -> buffs_eclipse_starfire the time eclipse proced, but 0 if eclipse is not up.
     if( min_eclipse_left > 0 && p  -> buffs_eclipse_starfire)
       //                     ( 15   -   time elapsed on eclipse  ) = time left on eclipse buff
       if( min_eclipse_left > ( 15.0 - (p  -> buffs_eclipse_starfire - sim -> current_time) ) )
-        return false
+        return false;
 
     return true;
   }
