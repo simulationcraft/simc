@@ -51,6 +51,7 @@ struct warlock_t : public player_t
   event_t* expirations_decimation;
   event_t* expirations_demonic_empathy;
   event_t* expirations_empowered_imp;
+  event_t* expirations_eradication;
   event_t* expirations_flame_shadow;
   event_t* expirations_haunted;
   event_t* expirations_infernal;
@@ -234,6 +235,7 @@ struct warlock_t : public player_t
     expirations_decimation             = 0;
     expirations_demonic_empathy        = 0;
     expirations_empowered_imp          = 0;
+    expirations_eradication            = 0;
     expirations_flame_shadow           = 0;
     expirations_haunted                = 0;
     expirations_molten_core            = 0;
@@ -1370,6 +1372,7 @@ static void trigger_eradication( spell_t* s )
       warlock_t* p = player -> cast_warlock();
       p -> aura_loss( "Eradication" );
       p -> buffs_eradication = 0;
+      p -> expirations_eradication = 0;
     }
   };
   
@@ -1377,12 +1380,31 @@ static void trigger_eradication( spell_t* s )
 
   if( ! p -> talents.eradication ) return;
 
-  if( s -> sim -> cooldown_ready( p -> cooldowns_eradication ) )
+  if( s -> sim -> patch.before( 3, 1, 0 ) )
   {
-    if( s -> sim -> roll( 0.01 + p -> talents.eradication * 0.03 ) )
+    if( s -> sim -> cooldown_ready( p -> cooldowns_eradication ) )
     {
-      p -> cooldowns_eradication = s -> sim -> current_time + 30;
-      new ( s -> sim ) expiration_t( s -> sim, p );
+      if( s -> sim -> roll( 0.01 + p -> talents.eradication * 0.03 ) )
+      {
+        p -> cooldowns_eradication = s -> sim -> current_time + 30;
+        new ( s -> sim ) expiration_t( s -> sim, p );
+      }
+    }
+  }
+  else
+  {
+    if( s -> sim -> roll( p -> talents.eradication * 0.02 ) )
+    {
+      p -> buffs_eradication = 3;
+      event_t*&  e = p -> expirations_eradication;
+      if( e )
+      {
+        e -> reschedule( 30.0 );
+      }
+      else
+      {
+        e = new ( s -> sim ) expiration_t( s -> sim, p );
+      }
     }
   }
 }
@@ -1934,7 +1956,10 @@ void warlock_spell_t::player_buff()
         {
           player_crit += 0.1 * p -> buffs_eradication;
           p -> buffs_eradication--;
-          if ( p -> buffs_eradication == 0 ) p -> aura_loss( "Eradication" );
+          if ( p -> buffs_eradication == 0 ) {
+            p -> aura_loss( "Eradication" );
+            event_t::early( p -> expirations_eradication );
+          }
         }
       }
     }
@@ -4424,6 +4449,7 @@ void warlock_t::reset()
   expirations_backdraft              = 0;
   expirations_demonic_empathy        = 0;
   expirations_empowered_imp          = 0;
+  expirations_eradication            = 0;
   expirations_flame_shadow           = 0;
   expirations_haunted                = 0;
   expirations_infernal               = 0;
