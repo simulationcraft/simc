@@ -9,13 +9,3 @@ Caster_T7_Base_Gear.simcraft
 glyph_conflagrate=1
 glyph_incinerate=1
 glyph_imp=1
-
-warlock=Warlock_T8_07_13_51
-level=80
-talents=http://talent.mmo-champion.com/?warlock=052032052103310510350303312300002000000000000000000000033200200030000000000000000
-actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/spell_stone/fel_armor/summon_pet,imp
-actions+=/immolate/conflagrate/drain_soul,health_percentage<=25,interrupt=1/chaos_bolt/curse_of_agony/incinerate/life_tap
-Caster_T7_Base_Gear.simcraft
-glyph_conflagrate=1
-glyph_incinerate=1
-glyph_imp=1
