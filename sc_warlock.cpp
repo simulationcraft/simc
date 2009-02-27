@@ -1342,8 +1342,39 @@ static void trigger_molten_core( spell_t* s )
 
 static void trigger_decimation( spell_t* s )
 {
-  warlock_t* p = s -> player -> cast_warlock();
-  if( p -> talents.decimation && s -> sim -> target -> health_percentage() <= 35 ) p -> buffs_decimation++;
+ struct expiration_t : public event_t
+ {
+   expiration_t( sim_t* sim, warlock_t* p ) : event_t( sim, p )
+   {
+     name = "Decimation Expiration";
+     p -> aura_gain( "Decimation" );
+     // FIXME: This assumes a 1-second travel time on the triggering spell
+     p -> buffs_decimation = sim -> current_time + 1;
+     sim -> add_event( this, 11.0 );
+   }
+   virtual void execute()
+   {
+     warlock_t* p = player -> cast_warlock();
+     p -> aura_loss( "Decimation" );
+     p -> buffs_decimation = 0;
+     p -> expirations_decimation = 0;
+   }
+ };
+
+ warlock_t* p = s -> player -> cast_warlock();
+
+ if( ! ( p -> talents.decimation ) || s -> sim -> target -> health_percentage() > 35 ) return;
+
+ event_t*&  e = p -> expirations_decimation;
+
+ if( e )
+ {
+   e -> reschedule( 11.0 );
+ }
+ else
+ {
+   e = new ( s -> sim ) expiration_t( s -> sim, p );
+ }
 }
 
 // trigger_eradication =====================================================
@@ -1957,7 +1988,6 @@ void warlock_spell_t::player_buff()
           player_crit += 0.1 * p -> buffs_eradication;
           p -> buffs_eradication--;
           if ( p -> buffs_eradication == 0 ) {
-            p -> aura_loss( "Eradication" );
             event_t::early( p -> expirations_eradication );
           }
         }
@@ -3748,10 +3778,10 @@ struct soul_fire_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     double t = warlock_spell_t::execute_time();
-    if( p -> buffs_decimation > 1 )
+    if( p -> buffs_decimation > 0 && p -> buffs_decimation <= sim -> current_time )
     {
       t *= 0.4;
-      p -> buffs_decimation = 0;
+      event_t::early( p -> expirations_decimation );
     }
     return t;
   }
@@ -3768,7 +3798,7 @@ struct soul_fire_t : public warlock_spell_t
         return false;
 
     if( decimation )
-      if( p -> buffs_decimation < 2 )
+      if( p -> buffs_decimation == 0 || p -> buffs_decimation > sim -> current_time )
         return false;
           
     return true;
@@ -4462,6 +4492,7 @@ void warlock_t::reset()
 
   // Expirations
   expirations_backdraft              = 0;
+  expirations_decimation             = 0;
   expirations_demonic_empathy        = 0;
   expirations_empowered_imp          = 0;
   expirations_eradication            = 0;
