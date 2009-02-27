@@ -1743,6 +1743,12 @@ struct faerie_fire_t : public druid_spell_t
   {
     druid_t* p = player -> cast_druid();
 
+    option_t options[] =
+    {
+      { NULL }
+    };
+    parse_options( options, options_str );
+
     base_cost = p -> resource_base[ RESOURCE_MANA ] * 0.07;
   }
 
@@ -1859,7 +1865,8 @@ struct innervate_t : public druid_spell_t
 
 struct insect_swarm_t : public druid_spell_t
 {
-  int wrath_ready;
+  double min_eclipse_left;
+  int skip_on_eclipse, wrath_ready;
   action_t* active_wrath;
 
   insect_swarm_t( player_t* player, const std::string& options_str ) : 
@@ -1870,8 +1877,10 @@ struct insect_swarm_t : public druid_spell_t
 
     option_t options[] =
     {
-      { "wrath_ready", OPT_INT, &wrath_ready },
-      { NULL }
+      { "wrath_ready",     OPT_INT, &wrath_ready      },
+      { "eclipse_left>",   OPT_FLT, &min_eclipse_left },
+      { "skip_on_eclipse", OPT_INT, &skip_on_eclipse  },
+     { NULL }
     };
     parse_options( options, options_str );
       
@@ -1916,6 +1925,22 @@ struct insect_swarm_t : public druid_spell_t
       if( ! active_wrath -> ready() )
         return false;
 
+    druid_t* p = player -> cast_druid();
+
+    if( skip_on_eclipse > 0)
+      if( p -> buffs_eclipse_starfire || p -> buffs_eclipse_wrath )
+      	return false
+
+    if( skip_on_eclipse < 0 )
+      if( p -> buffs_eclipse_starfire )
+      	return false
+
+    // p  -> buffs_eclipse_starfire the time eclipse proced, but 0 if eclipse is not up.
+    if( min_eclipse_left > 0 && p  -> buffs_eclipse_wrath)
+      //                     ( 15   -   time elapsed on eclipse  ) = time left on eclipse buff
+      if( min_eclipse_left > ( 15.0 - (p  -> buffs_eclipse_wrath - sim -> current_time) ) )
+        return false
+
     return true;
   }
 };
@@ -1924,6 +1949,8 @@ struct insect_swarm_t : public druid_spell_t
 
 struct moonfire_t : public druid_spell_t
 {
+  double min_eclipse_left;
+  int skip_on_eclipse;
   moonfire_t( player_t* player, const std::string& options_str ) : 
     druid_spell_t( "moonfire", player, SCHOOL_ARCANE, TREE_BALANCE )
   {
@@ -1931,6 +1958,8 @@ struct moonfire_t : public druid_spell_t
 
     option_t options[] =
     {
+      { "eclipse_left>",   OPT_FLT, &min_eclipse_left },
+      { "skip_on_eclipse", OPT_INT, &skip_on_eclipse  },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1986,6 +2015,30 @@ struct moonfire_t : public druid_spell_t
     druid_spell_t::execute();
     if( p -> idols.unseen_moon )
       trigger_unseen_moon( this );
+  }
+  
+  virtual bool ready() 
+  {
+    if( ! druid_spell_t::ready() )
+      return false;
+      
+    druid_t* p = player -> cast_druid();
+
+    if( skip_on_eclipse > 0)
+      if( p -> buffs_eclipse_starfire || p -> buffs_eclipse_wrath )
+      	return false
+
+    if( skip_on_eclipse < 0 )
+      if( p -> buffs_eclipse_wrath )
+      	return false
+
+    // p  -> buffs_eclipse_starfire the time eclipse proced, but 0 if eclipse is not up.
+    if( min_eclipse_left > 0 && p  -> buffs_eclipse_starfire)
+      //                     ( 15   -   time elapsed on eclipse  ) = time left on eclipse buff
+      if( min_eclipse_left > ( 15.0 - (p  -> buffs_eclipse_starfire - sim -> current_time) ) )
+        return false
+
+    return true;
   }
 };
 
