@@ -1,0 +1,13 @@
+#!simcraft max_time=300 optimal_raid=1
+patch=3.1.0
+warlock=Warlock_T8_00_41_30
+level=80
+talents=http://talent.mmo-champion.com/?warlock=052030152201310500000000000000000000000000000000000000003203301135202530131201000
+actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/spell_stone/fel_armor/summon_pet,felguard
+actions+=/demonic_empowerment/soul_fire,decimation=1/curse_of_agony/corruption/immolate/incinerate/life_tap
+Caster_T7_Base_Gear.simcraft
+enchant_crit_rating=-75
+enchant_hit_rating=+75
+glyph_immolate=1
+glyph_felguard=1
+glyph_incinerate=1
