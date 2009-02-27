@@ -4132,6 +4132,7 @@ struct metamorphosis_t : public warlock_spell_t
 
 struct demonic_empowerment_t : public warlock_spell_t
 {
+  int demonic_frenzy;
   demonic_empowerment_t( player_t* player, const std::string& options_str ) : 
     warlock_spell_t( "demonic_empowerment", player, SCHOOL_SHADOW, TREE_DEMONOLOGY )
   {
@@ -4140,7 +4141,8 @@ struct demonic_empowerment_t : public warlock_spell_t
 
     option_t options[] =
     {
-      { "target_pct", OPT_DEPRECATED, (void*) "health_percentage<" },
+      { "target_pct",     OPT_DEPRECATED, (void*) "health_percentage<" },
+      { "demonic_frenzy", OPT_INT,        &demonic_frenzy              },
       { NULL }
     };
     parse_options( options, options_str );
@@ -4185,6 +4187,19 @@ struct demonic_empowerment_t : public warlock_spell_t
 
     if( ! p -> active_pet )
       return false;
+
+    if( demonic_frenzy )
+    {
+      if( p -> active_pet -> pet_type == PET_FELGUARD )
+      {
+        felguard_pet_t* f = (felguard_pet_t*) p -> active_pet;
+        if( f -> buffs_demonic_frenzy < demonic_frenzy ) return false;
+      }
+      else
+      { 
+        return false;
+      }
+    }
 
     return warlock_spell_t::ready();
   }
