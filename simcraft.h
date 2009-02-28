@@ -273,6 +273,7 @@ struct sim_t
   int         seed, id, iterations, current_iteration, threads;
   int         infinite_resource[ RESOURCE_MAX ];
   int         optimal_raid, potion_sickness, average_dmg, log, debug, timestamp, sfmt;
+  double      jow_chance, jow_ppm;
 
   std::vector<std::string> party_encoding;
 

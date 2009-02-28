@@ -20,7 +20,16 @@ static void trigger_judgement_of_wisdom( action_t* a )
   if( base_mana <= 0 )
     return;
 
-  if( ! a -> sim -> roll( 0.25 ) )
+  if( a -> sim -> jow_ppm && a -> weapon ) {
+    double proc_chance = a -> weapon -> swing_time * a -> sim -> jow_ppm / 60;
+    if( a -> sim -> debug )
+      report_t::log( a -> sim, "JoW ppm %f, swing time %f, chance %f\n",
+                     a -> sim -> jow_ppm, a -> weapon -> swing_time,
+                     proc_chance );
+    if( ! a -> sim -> roll( proc_chance ) )
+      return;
+  }
+  else if( ! a -> sim -> roll( a -> sim -> jow_chance ) )
     return;
 
   p -> procs.judgement_of_wisdom -> occur();
