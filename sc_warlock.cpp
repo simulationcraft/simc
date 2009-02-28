@@ -24,7 +24,7 @@ struct warlock_t : public player_t
 
   // Buffs
   int    buffs_backdraft;
-  double buffs_decimation;
+  int    buffs_decimation;
   int    buffs_demon_armor;
   int    buffs_demonic_empathy;
   int    buffs_empowered_imp;
@@ -1342,39 +1342,29 @@ static void trigger_molten_core( spell_t* s )
 
 static void trigger_decimation( spell_t* s )
 {
- struct expiration_t : public event_t
- {
-   expiration_t( sim_t* sim, warlock_t* p ) : event_t( sim, p )
-   {
-     name = "Decimation Expiration";
-     p -> aura_gain( "Decimation" );
-     // FIXME: This assumes a 1-second travel time on the triggering spell
-     p -> buffs_decimation = sim -> current_time + 1;
-     sim -> add_event( this, 11.0 );
-   }
-   virtual void execute()
-   {
-     warlock_t* p = player -> cast_warlock();
-     p -> aura_loss( "Decimation" );
-     p -> buffs_decimation = 0;
-     p -> expirations_decimation = 0;
-   }
- };
+  warlock_t* p = s -> player -> cast_warlock();
 
- warlock_t* p = s -> player -> cast_warlock();
+  if( ( ! p -> talents.decimation ) || ( s -> sim -> target -> health_percentage() > 35 ) ) return;
 
- if( ! ( p -> talents.decimation ) || s -> sim -> target -> health_percentage() > 35 ) return;
-
- event_t*&  e = p -> expirations_decimation;
-
- if( e )
- {
-   e -> reschedule( 11.0 );
- }
- else
- {
-   e = new ( s -> sim ) expiration_t( s -> sim, p );
- }
+  switch( p -> buffs_decimation )
+  {
+  case 0:
+    if( ( s -> name_str == "incinerate" || s -> name_str == "shadow_bolt" ) && s -> result_is_hit() )
+      p -> buffs_decimation = 1;
+    break;
+  case 1:
+      p -> buffs_decimation = 2;
+    break;
+  case 2:
+    if( s -> name_str == "soul_fire" ) p -> buffs_decimation = 3;
+    break;
+  case 3:
+    if( ( s -> name_str == "incinerate" || s -> name_str == "shadow_bolt" ) && s -> result_is_hit() )
+      p -> buffs_decimation = 2;
+    else
+      p -> buffs_decimation = 0;
+    break;
+  }
 }
 
 // trigger_eradication =====================================================
@@ -2067,6 +2057,8 @@ void warlock_spell_t::execute()
   {
     event_t::early( p -> expirations_empowered_imp );
   }
+
+  trigger_decimation( this );
 }
 
 // warlock_spell_t::tick =====================================================
@@ -2415,7 +2407,6 @@ struct shadow_bolt_t : public warlock_spell_t
       stack_shadow_embrace( this );
       trigger_soul_leech( this );
       trigger_tier5_4pc( this, p -> active_corruption );
-      trigger_decimation( this );
       decrement_shadow_vulnerability( p );
       if( result == RESULT_CRIT ) trigger_shadow_vulnerability( this );
     }
@@ -3609,7 +3600,6 @@ struct incinerate_t : public warlock_spell_t
     {
       trigger_soul_leech( this );
       trigger_tier5_4pc( this, p -> active_immolate );
-      trigger_decimation( this );
     }
     if( p -> buffs.tier7_2pc )
     {
@@ -3719,7 +3709,7 @@ struct soul_fire_t : public warlock_spell_t
   int decimation;
 
   soul_fire_t( player_t* player, const std::string& options_str ) : 
-    warlock_spell_t( "soul_fire", player, SCHOOL_FIRE, TREE_DESTRUCTION ), backdraft(0)
+    warlock_spell_t( "soul_fire", player, SCHOOL_FIRE, TREE_DESTRUCTION ), backdraft(0), decimation(0)
   {
     warlock_t* p = player -> cast_warlock();
 
@@ -3778,10 +3768,9 @@ struct soul_fire_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     double t = warlock_spell_t::execute_time();
-    if( p -> buffs_decimation > 0 && p -> buffs_decimation <= sim -> current_time )
+    if( p -> buffs_decimation == 2 )
     {
       t *= 0.4;
-      event_t::early( p -> expirations_decimation );
     }
     return t;
   }
@@ -3798,7 +3787,7 @@ struct soul_fire_t : public warlock_spell_t
         return false;
 
     if( decimation )
-      if( p -> buffs_decimation == 0 || p -> buffs_decimation > sim -> current_time )
+      if( p -> buffs_decimation != 2 )
         return false;
           
     return true;
@@ -4471,6 +4460,7 @@ void warlock_t::reset()
 
   // Buffs
   buffs_backdraft                    = 0;
+  buffs_decimation                   = 0;
   buffs_demon_armor                  = 0;
   buffs_demonic_empathy              = 0;
   buffs_empowered_imp                = 0;
