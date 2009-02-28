@@ -2012,14 +2012,14 @@ void warlock_spell_t::target_debuff( int dmg_type )
 
     if( p -> main_hand_weapon.buff == SPELL_STONE ) 
     {
-      target_multiplier *= 1.01;
+      target_multiplier *= 1.01 + p -> talents.master_conjuror * 0.01;
     }
   }
   else
   {
     if( p -> main_hand_weapon.buff == FIRE_STONE ) 
     {
-      target_multiplier *= 1.01;
+      target_multiplier *= 1.01 + p -> talents.master_conjuror * 0.01;
     }
   }
 }
