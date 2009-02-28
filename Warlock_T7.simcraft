@@ -4,10 +4,16 @@ optimal_raid=1
 
 Globals.simcraft
 
+threads=2
+
+iterations=30000
+
+calculate_scale_factors=0
+
+target_health=8100000
+
 Warlock_T7_00_31_40.simcraft
 Warlock_T7_00_41_30.simcraft
 Warlock_T7_00_55_16.simcraft
 Warlock_T7_02_13_56.simcraft
 Warlock_T7_55_00_16.simcraft
-Warlock_T7_55_00_16_CoE.simcraft
-Warlock_T7_55_00_16_DG.simcraft

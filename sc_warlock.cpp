@@ -823,9 +823,9 @@ struct succubus_pet_t : public warlock_pet_t
 
 struct infernal_pet_t : public warlock_pet_t
 {
-  struct immolation_t : public warlock_pet_spell_t
+  struct infernal_immolation_t : public warlock_pet_spell_t
   {
-    immolation_t( player_t* player ) : 
+    infernal_immolation_t( player_t* player ) : 
       warlock_pet_spell_t( "immolation", player, RESOURCE_NONE, SCHOOL_FIRE )
     {
       base_direct_dmg   = 40;
@@ -850,8 +850,8 @@ struct infernal_pet_t : public warlock_pet_t
     }
   };
 
-  warlock_pet_melee_t* melee;
-  immolation_t*        immolation;
+  warlock_pet_melee_t*   melee;
+  infernal_immolation_t* immolation;
 
   infernal_pet_t( sim_t* sim, player_t* owner ) :
     warlock_pet_t( sim, owner, "infernal", PET_INFERNAL ), melee(0)
@@ -881,7 +881,7 @@ struct infernal_pet_t : public warlock_pet_t
     base_attack_power = -20;
 
     melee      = new warlock_pet_melee_t( this, "infernal_melee" );
-    immolation = new immolation_t( this );
+    immolation = new infernal_immolation_t( this );
   }
   virtual void reset()
   {
@@ -897,7 +897,7 @@ struct infernal_pet_t : public warlock_pet_t
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str )
   {
-    if( name == "immolation" ) return new immolation_t( this );
+    if( name == "immolation" ) return new infernal_immolation_t( this );
 
     return player_t::create_action( name, options_str );
   }
@@ -4065,22 +4065,69 @@ struct inferno_t : public warlock_spell_t
   }
 };
 
+// Immolation Spell =======================================================
+
+struct immolation_t : public warlock_spell_t
+{
+  immolation_t( player_t* player, const std::string& options_str ) :  
+    warlock_spell_t( "immolation", player, SCHOOL_FIRE, TREE_DEMONOLOGY )
+  {
+    option_t options[] =
+    {
+      { NULL }
+    };
+    parse_options( options, options_str );
+
+    warlock_t* p   = player -> cast_warlock();
+    base_cost      = 0.64 * p -> resource_base[ RESOURCE_MANA ];
+    base_hit      += p -> talents.suppression * 0.01;
+    base_td_init   = 481;
+    base_tick_time = 1.0; 
+    num_ticks      = 15;
+    tick_power_mod = 0.143;
+    cooldown       = 30;
+  }
+  
+  virtual double tick_time()
+  {
+    return base_tick_time * haste();
+  }
+
+  virtual void tick()
+  {
+    warlock_t* p = player -> cast_warlock();
+    if( p -> buffs_metamorphosis )
+      warlock_spell_t::tick();
+    else
+      current_tick = num_ticks;
+  }
+
+  virtual bool ready()
+  {
+    warlock_t* p = player -> cast_warlock();
+
+    if( ! warlock_spell_t::ready() )
+      return false;
+
+    if( ! p -> buffs_metamorphosis )
+      return false;
+
+    return true;
+  }
+};
+
 // Metamorphosis Spell =======================================================
 
 struct metamorphosis_t : public warlock_spell_t
 {
-  int immolation;
-  warlock_spell_t* immolation_spell;
-
   metamorphosis_t( player_t* player, const std::string& options_str ) : 
-    warlock_spell_t( "metamorphosis", player, SCHOOL_SHADOW, TREE_DEMONOLOGY ), immolation(0)
+    warlock_spell_t( "metamorphosis", player, SCHOOL_SHADOW, TREE_DEMONOLOGY )
   {
     warlock_t* p = player -> cast_warlock();
     assert( p -> talents.metamorphosis );
 
     option_t options[] =
     {
-      { "immolation", OPT_INT, &immolation },
       { "target_pct", OPT_DEPRECATED, (void*) "health_percentage<" },
       { NULL }
     };
@@ -4090,28 +4137,6 @@ struct metamorphosis_t : public warlock_spell_t
     base_cost   = 0;
     trigger_gcd = 0;
     cooldown    = 180 * ( 1.0 - p -> talents.nemesis * 0.1 );
-    if ( p -> glyphs.metamorphosis ) cooldown -= 6;
-
-    if( immolation )
-    {
-      struct immolation_t : public warlock_spell_t
-      {
-        immolation_t( player_t* player ) : 
-          warlock_spell_t( "immolation", player, SCHOOL_FIRE, TREE_DEMONOLOGY )
-        {
-          background     = true;
-          base_cost      = 0.64 * player -> resource_base[ RESOURCE_MANA ];
-          base_td_init   = 481; 
-          base_tick_time = 1.0; 
-          num_ticks      = 15;
-          tick_power_mod = 0.143;
-        }
-        virtual double tick_time() { return base_tick_time * haste(); }
-      };
-
-      immolation_spell = new immolation_t( p );
-      trigger_gcd = 1.5; // cost of casting Immolation
-    }
   }
 
   virtual void execute()
@@ -4124,7 +4149,7 @@ struct metamorphosis_t : public warlock_spell_t
         warlock_t* p = player -> cast_warlock();
         p -> aura_gain( "Metamorphosis" );
         p -> buffs_metamorphosis = 1;
-        sim -> add_event( this, 30.0 );
+        sim -> add_event( this, 30.0 + p -> glyphs.metamorphosis * 6.0 );
       }
       virtual void execute()
       {
@@ -4139,11 +4164,6 @@ struct metamorphosis_t : public warlock_spell_t
     update_ready();
     p -> action_finish( this );
     new ( sim ) expiration_t( sim, p );
-    if( immolation ) 
-    {
-      immolation_spell -> execute();
-      immolation_spell -> stats -> total_execute_time += gcd();
-    }
   }
 };
 
@@ -4378,6 +4398,7 @@ action_t* warlock_t::create_action( const std::string& name,
   if( name == "spell_stone"         ) return new         spell_stone_t( this, options_str );
   if( name == "haunt"               ) return new               haunt_t( this, options_str );
   if( name == "immolate"            ) return new            immolate_t( this, options_str );
+  if( name == "immolation"          ) return new          immolation_t( this, options_str );
   if( name == "shadowflame"         ) return new         shadowflame_t( this, options_str );
   if( name == "incinerate"          ) return new          incinerate_t( this, options_str );
   if( name == "inferno"             ) return new             inferno_t( this, options_str );
