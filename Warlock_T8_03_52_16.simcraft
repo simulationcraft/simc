@@ -4,7 +4,7 @@ warlock=Warlock_T8_03_52_16
 level=80
 talents=http://talent.mmo-champion.com/?warlock=550010050000000000000000000300000000000000000000000000003203301135202530135231301
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/spell_stone/fel_armor/summon_pet,felguard
-actions+=/curse_of_doom,time_to_die>=60/demonic_empowerment/metamorphosis/immolation/soul_fire,decimation=1
+actions+=/curse_of_doom,time_to_die>=60/demonic_empowerment/life_tap,trigger=2500/metamorphosis/immolation/soul_fire,decimation=1
 actions+=/corruption,health_percentage>=35/immolate,health_percentage>=35/shadow_bolt/life_tap
 Caster_T7_Base_Gear.simcraft
 glyph_metamorphosis=1
