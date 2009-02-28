@@ -2278,15 +2278,23 @@ struct starfire_t : public druid_spell_t
     if( eclipse_benefit )
       if( ! sim -> time_to_think( p -> buffs_eclipse_starfire ) )
         return false;
-
+	
     if( eclipse_trigger )
     {
       if( p -> talents.eclipse == 0 )
         return false;
 
       if( sim -> current_time + 1.5 < p -> cooldowns_eclipse )
-        if( ! sim -> time_to_think( p -> buffs_eclipse_starfire ) )
+      {
+      	// Did the player have enough time by now to realise he procced eclipse?
+      	// If so, return false as we only want to cast to procc
+        if( sim -> time_to_think( p -> buffs_eclipse_wrath ) )
           return false;
+        
+        // This is for the time when eclipse buff faded, but it is still on cd.
+        if( ! p -> buffs_eclipse_wrath )
+          return false;
+      }
     }
 
     if( ! prev_str.empty() )
@@ -2413,8 +2421,16 @@ struct wrath_t : public druid_spell_t
         return false;
 
       if( sim -> current_time + 3.0 < p -> cooldowns_eclipse )
-        if( ! sim -> time_to_think( p -> buffs_eclipse_wrath ) )
+      {
+      	// Did the player have enough time by now to realise he procced eclipse?
+      	// If so, return false as we only want to cast to procc
+        if( sim -> time_to_think( p -> buffs_eclipse_starfire ) )
           return false;
+
+        // This is for the time when eclipse buff faded, but it is still on cd.
+        if( ! p -> buffs_eclipse_starfire )
+          return false;
+      }
     }
 
     if( ! prev_str.empty() )
