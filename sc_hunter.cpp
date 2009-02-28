@@ -1009,7 +1009,7 @@ static void trigger_lock_and_load( attack_t* a )
 
   if( ! p -> talents.lock_and_load )
     return;
-  if( ! a -> sim -> cooldown_ready( p -> cooldowns_lock_and_load ) )
+  if( a -> sim -> patch.before(3, 1, 0) && ! a -> sim -> cooldown_ready( p -> cooldowns_lock_and_load ) )
     return;
 
   // NB: talent calc says 3%,7%,10%, assuming it's really 10% * (1/3,2/3,3/3)
