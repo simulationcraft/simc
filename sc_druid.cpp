@@ -1644,12 +1644,6 @@ void druid_spell_t::schedule_execute()
     {
       p -> buffs_natures_swiftness = 0;
     }
-    else if( p -> buffs_natures_grace )
-    {
-      p -> aura_loss( "Natures Grace" );
-      p -> buffs_natures_grace = 0;
-      p -> buffs.cast_time_reduction -= 0.5;
-    }
   }
 }
 
@@ -1659,6 +1653,14 @@ void druid_spell_t::execute()
 {
   druid_t* p = player -> cast_druid();
 
+  if( p -> buffs_natures_grace && execute_time() )
+  {
+    // Losing Nature's Grace buff at the end of the spellcast, followed by another gain if crit, is the actual ingame behaviour 
+    p -> aura_loss( "Nature's Grace" );
+    p -> buffs_natures_grace = 0;
+    p -> buffs.cast_time_reduction -= 0.5;
+  }
+  
   spell_t::execute();
 
   if( result == RESULT_CRIT )
@@ -1671,7 +1673,7 @@ void druid_spell_t::execute()
     {
       if( sim -> roll( p -> talents.natures_grace / 3.0 ) )
       {
-        p -> aura_gain( "Natures Grace" );
+        p -> aura_gain( "Nature's Grace" );
         p -> buffs_natures_grace = 1;
         p -> buffs.cast_time_reduction += 0.5;
       }
