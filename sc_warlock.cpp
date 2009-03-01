@@ -959,14 +959,17 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 
 struct warlock_spell_t : public spell_t
 {
+  bool decimation_trigger, decimation_consumer;
+
   warlock_spell_t( const char* n, player_t* player, int s, int t ) : 
-    spell_t( n, player, RESOURCE_MANA, s, t ) 
+    spell_t( n, player, RESOURCE_MANA, s, t ), decimation_trigger(false), decimation_consumer(false)
   {
   }
 
   // Overridden Methods
   virtual double haste();
   virtual double execute_time();
+  virtual double gcd();
   virtual void   player_buff();
   virtual void   target_debuff( int dmg_type );
   virtual void   execute();
@@ -1340,7 +1343,7 @@ static void trigger_molten_core( spell_t* s )
 
 // trigger_decimation =====================================================
 
-static void trigger_decimation( spell_t* s )
+static void trigger_decimation( warlock_spell_t* s )
 {
   warlock_t* p = s -> player -> cast_warlock();
 
@@ -1349,17 +1352,17 @@ static void trigger_decimation( spell_t* s )
   switch( p -> buffs_decimation )
   {
   case 0:
-    if( ( s -> name_str == "incinerate" || s -> name_str == "shadow_bolt" ) && s -> result_is_hit() )
+    if( s -> decimation_trigger && s -> result_is_hit() )
       p -> buffs_decimation = 1;
     break;
   case 1:
       p -> buffs_decimation = 2;
     break;
   case 2:
-    if( s -> name_str == "soul_fire" ) p -> buffs_decimation = 3;
+    if( s -> decimation_consumer ) p -> buffs_decimation = 3;
     break;
   case 3:
-    if( ( s -> name_str == "incinerate" || s -> name_str == "shadow_bolt" ) && s -> result_is_hit() )
+    if( s -> decimation_trigger && s -> result_is_hit() )
       p -> buffs_decimation = 2;
     else
       p -> buffs_decimation = 0;
@@ -1889,6 +1892,15 @@ double warlock_spell_t::execute_time()
   return t;
 }
 
+// warlock_spell_t::gcd ============================================
+
+double warlock_spell_t::gcd() {
+  double t = spell_t::gcd();
+  warlock_t* p = player -> cast_warlock();
+  if( p -> buffs_backdraft && tree == TREE_DESTRUCTION ) t *= 1.0 - p -> talents.backdraft * 0.10;
+  return t;
+}
+
 // warlock_spell_t::player_buff =============================================
 
 void warlock_spell_t::player_buff()
@@ -2377,6 +2389,8 @@ struct shadow_bolt_t : public warlock_spell_t
     direct_power_mod  *= 1.0 + p -> talents.shadow_and_flame * 0.04;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
+
+    decimation_trigger = true;
   }
 
   virtual double execute_time()
@@ -3588,6 +3602,8 @@ struct incinerate_t : public warlock_spell_t
     base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
 
     immolate_bonus = util_t::ability_rank( p -> level,  157,80,  130,74,  120,70,  108,0 );
+
+    decimation_trigger = true;
   }
 
   virtual void execute()
@@ -3753,6 +3769,8 @@ struct soul_fire_t : public warlock_spell_t
     base_crit         += p -> talents.backlash * 0.01;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
+
+    decimation_consumer = true;
   }
 
   virtual void execute()
