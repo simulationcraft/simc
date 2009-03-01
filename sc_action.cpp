@@ -455,7 +455,7 @@ double action_t::calculate_direct_damage()
 
   if( base_direct_dmg == 0 ) return 0;
 
-  if( weapon )
+  if( weapon && weapon_multiplier > 0 )
   {
     double weapon_damage = normalize_weapon_damage ? weapon -> damage * 2.8 / weapon -> swing_time : weapon -> damage;
     double weapon_speed  = normalize_weapon_speed  ? weapon -> normalized_weapon_speed() : weapon -> swing_time;
