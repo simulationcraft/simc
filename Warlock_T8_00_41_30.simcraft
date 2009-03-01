@@ -8,6 +8,6 @@ actions+=/soul_fire,decimation=1/curse_of_agony/corruption,health_percentage>=35
 Caster_T7_Base_Gear.simcraft
 enchant_crit_rating=-75
 enchant_hit_rating=+75
-glyph_immolate=1
+glyph_curse_of_agony=1
 glyph_felguard=1
 glyph_incinerate=1
