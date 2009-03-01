@@ -2452,32 +2452,10 @@ struct wrath_t : public druid_spell_t
 
 struct starfall_t : public druid_spell_t
 {
+  int stars, skip_on_eclipse;
   starfall_t( player_t* player, const std::string& options_str ) : 
     druid_spell_t( "starfall", player, SCHOOL_ARCANE, TREE_BALANCE )
   {
-    druid_t* p = player -> cast_druid();
-
-
-    option_t options[] =
-    {
-      { NULL }
-    };
-    parse_options( options, options_str );
-    
-    cooldown          = 180;
-    base_execute_time = 0;
-    is_aoe            = 1;
-    
-    static rank_t ranks[] =
-    {
-      { 80, 4, 433, 503, 0, 0.39 },
-      { 75, 3, 366, 424, 0, 0.39 },
-      { 70, 2, 250, 290, 0, 0.39 },
-      { 60, 1, 111, 129, 0, 0.39 },
-      { 0, 0 }
-    };
-    init_rank( ranks );
-
     struct starfall_star_splash_t : public druid_spell_t
     {
       starfall_star_splash_t( player_t* player) : druid_spell_t( "starfall_splash", player, SCHOOL_ARCANE, TREE_BALANCE )
@@ -2553,18 +2531,47 @@ struct starfall_t : public druid_spell_t
         }
       }
     };
+    druid_t* p = player -> cast_druid();
+
+    option_t options[] =
+    {
+      { "skip_on_eclipse", OPT_INT, &skip_on_eclipse  },
+      { NULL }
+    };
+    parse_options( options, options_str );
+    
+    cooldown          = 180;
+    base_execute_time = 0;
+    is_aoe            = true;
+    stars             = 10;
+    
+    static rank_t ranks[] =
+    {
+      { 80, 4, 433, 503, 0, 0.39 },
+      { 75, 3, 366, 424, 0, 0.39 },
+      { 70, 2, 250, 290, 0, 0.39 },
+      { 60, 1, 111, 129, 0, 0.39 },
+      { 0, 0 }
+    };
+    init_rank( ranks );
+
 
     p -> active_starfall_stars = new starfall_star_t( p );
     p -> active_starfall_stars -> base_dd_max = base_dd_max;
     p -> active_starfall_stars -> base_dd_min = base_dd_min;
     base_dd_min = base_dd_max = 0;
-
+    
     if( p -> glyphs.focus )
     {
       p -> active_starfall_stars -> base_multiplier *= 1.2;
     }
-   
-   
+    if( p -> glyphs.starfall )
+    {
+      if( sim -> patch.before(3, 1, 0) )
+        stars    += 2;
+      else 
+        cooldown -= 90;
+    }
   }
 
   virtual void execute()
@@ -2575,7 +2582,7 @@ struct starfall_t : public druid_spell_t
     update_ready();
     player -> action_finish( this );
     p -> aura_gain( "Starfall" );
-    p -> buffs_starfall = 10 + (p -> glyphs.starfall ? 2 : 0); // The number of stars that are pending do drop.
+    p -> buffs_starfall = stars; // The number of stars that are pending do drop.
 
     struct event_starfall_star_t : public event_t
     {
@@ -2596,7 +2603,19 @@ struct starfall_t : public druid_spell_t
     };
     new ( sim ) event_starfall_star_t( sim, p );
   }
-  
+
+  virtual bool ready() 
+  {
+    if( ! druid_spell_t::ready() )
+      return false;
+
+    druid_t* p = player -> cast_druid();
+    
+    if( skip_on_eclipse && ( p -> buffs_eclipse_starfire || p -> buffs_eclipse_wrath ) )
+      return false;
+
+    return true;
+  }
 };
 
 // Mark of the Wild Spell =====================================================
@@ -2899,7 +2918,7 @@ double druid_t::composite_attack_power()
   if ( talents.predatory_strikes )
   {
     ap += level * talents.predatory_strikes * 0.5;
-    weapon_ap *= 1 + ( talents.predatory_strikes > 2 ) ? 0.2 : talents.predatory_strikes * 0.07;
+    weapon_ap *= 1 + util_t::talent_rank( talents.predatory_strikes, 3, 0.07, 0.14, 0.20);
   }
 
   ap += weapon_ap;
