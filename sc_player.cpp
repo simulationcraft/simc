@@ -21,7 +21,8 @@ static void trigger_judgement_of_wisdom( action_t* a )
     return;
 
   if( a -> sim -> jow_ppm && a -> weapon ) {
-    double proc_chance = a -> weapon -> swing_time * a -> sim -> jow_ppm / 60;
+    double proc_chance = a -> weapon -> proc_chance_on_swing( a -> sim -> jow_ppm,
+                                                              a -> execute_time() );
     if( a -> sim -> debug )
       report_t::log( a -> sim, "JoW ppm %f, swing time %f, chance %f\n",
                      a -> sim -> jow_ppm, a -> weapon -> swing_time,
