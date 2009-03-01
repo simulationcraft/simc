@@ -60,7 +60,7 @@ struct druid_t : public player_t
 
   attack_t* melee_attack;
 
-  int equipped_weapon_dps;
+  double equipped_weapon_dps;
 
   struct talents_t
   {
@@ -1931,13 +1931,13 @@ struct insect_swarm_t : public druid_spell_t
 
     if( skip_on_eclipse > 0)
       if( p -> buffs_eclipse_starfire || p -> buffs_eclipse_wrath )
-      	return false;
+        return false;
 
     if( skip_on_eclipse < 0 )
       if( p -> buffs_eclipse_starfire )
-      	return false;
+        return false;
 
-    // p  -> buffs_eclipse_starfire the time eclipse proced, but 0 if eclipse is not up.
+    // p  -> buffs_eclipse_wrath: the time eclipse proced, but 0 if eclipse is not up.
     if( min_eclipse_left > 0 && p  -> buffs_eclipse_wrath)
       //                     ( 15   -   time elapsed on eclipse  ) = time left on eclipse buff
       if( min_eclipse_left > ( 15.0 - (p  -> buffs_eclipse_wrath - sim -> current_time) ) )
@@ -2028,11 +2028,11 @@ struct moonfire_t : public druid_spell_t
 
     if( skip_on_eclipse > 0)
       if( p -> buffs_eclipse_starfire || p -> buffs_eclipse_wrath )
-      	return false;
+        return false;
 
     if( skip_on_eclipse < 0 )
       if( p -> buffs_eclipse_wrath )
-      	return false;
+        return false;
 
     // p  -> buffs_eclipse_starfire the time eclipse proced, but 0 if eclipse is not up.
     if( min_eclipse_left > 0 && p  -> buffs_eclipse_starfire)
@@ -2280,7 +2280,7 @@ struct starfire_t : public druid_spell_t
     if( eclipse_benefit )
       if( ! sim -> time_to_think( p -> buffs_eclipse_starfire ) )
         return false;
-	
+
     if( eclipse_trigger )
     {
       if( p -> talents.eclipse == 0 )
@@ -2288,8 +2288,8 @@ struct starfire_t : public druid_spell_t
 
       if( sim -> current_time + 1.5 < p -> cooldowns_eclipse )
       {
-      	// Did the player have enough time by now to realise he procced eclipse?
-      	// If so, return false as we only want to cast to procc
+        // Did the player have enough time by now to realise he procced eclipse?
+        // If so, return false as we only want to cast to procc
         if( sim -> time_to_think( p -> buffs_eclipse_wrath ) )
           return false;
         
@@ -2424,8 +2424,8 @@ struct wrath_t : public druid_spell_t
 
       if( sim -> current_time + 3.0 < p -> cooldowns_eclipse )
       {
-      	// Did the player have enough time by now to realise he procced eclipse?
-      	// If so, return false as we only want to cast to procc
+        // Did the player have enough time by now to realise he procced eclipse?
+        // If so, return false as we only want to cast to procc
         if( sim -> time_to_think( p -> buffs_eclipse_starfire ) )
           return false;
 
