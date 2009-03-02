@@ -934,7 +934,7 @@ static void trigger_replenishment( spell_t* s )
 {
   mage_t* p = s -> player -> cast_mage();
 
-  if( ! s -> sim -> P31 )
+  if( s -> sim -> P309 )
     return;
 
   if( ! p -> talents.improved_water_elemental )
@@ -2896,20 +2896,20 @@ void mage_t::regen( double periodicity )
 {
   mana_regen_while_casting = 0;
 
-  if( sim -> P31 )
-  {
-    mana_regen_while_casting += util_t::talent_rank( talents.arcane_meditation, 3, 0.17, 0.33, 0.50 );
-    mana_regen_while_casting += util_t::talent_rank( talents.pyromaniac,        3, 0.17, 0.33, 0.50 );
-  }
-  else
+  if( sim -> P309 )
   {
     mana_regen_while_casting += ( talents.arcane_meditation * 0.10 +
 				  talents.pyromaniac        * 0.10 );
   }
+  else
+  {
+    mana_regen_while_casting += util_t::talent_rank( talents.arcane_meditation, 3, 0.17, 0.33, 0.50 );
+    mana_regen_while_casting += util_t::talent_rank( talents.pyromaniac,        3, 0.17, 0.33, 0.50 );
+  }
 
   if( buffs_mage_armor )
   {
-    mana_regen_while_casting += ( sim -> P31 ? 0.50 : 0.30 ) + ( glyphs.mage_armor ? 0.20 : 0.00 );
+    mana_regen_while_casting += ( sim -> P309 ? 0.30 : 0.50 ) + ( glyphs.mage_armor ? 0.20 : 0.00 );
   }
 
   player_t::regen( periodicity );

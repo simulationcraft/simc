@@ -281,8 +281,10 @@ struct shaman_attack_t : public attack_t
 
 struct shaman_spell_t : public spell_t
 {
+  double base_cost_reduction;
+
   shaman_spell_t( const char* n, player_t* p, int s, int t ) : 
-    spell_t( n, p, RESOURCE_MANA, s, t ) 
+    spell_t( n, p, RESOURCE_MANA, s, t ), base_cost_reduction(0)
   {
     shaman_t* shaman = p -> cast_shaman();
     base_crit += shaman -> talents.thundering_strikes * 0.01;
@@ -290,6 +292,7 @@ struct shaman_spell_t : public spell_t
   }
 
   virtual double cost();
+  virtual double cost_reduction() { return base_cost_reduction; }
   virtual void   consume_resource();
   virtual double execute_time();
   virtual void   execute();
@@ -968,12 +971,13 @@ double shaman_spell_t::cost()
 {
   shaman_t* p = player -> cast_shaman();
   double c = spell_t::cost();
-  if( p -> buffs_elemental_focus ) c *= 0.60;
-  if( p -> buffs.tier4_4pc )
-  {
-    c -= 270;
-    if( c < 0 ) c = 0;
-  }
+  if( c == 0 ) return 0;
+  double cr = cost_reduction();
+  if( p -> buffs_elemental_focus   ) cr += 0.40;
+  if( p -> buffs_elemental_mastery ) cr += 0.20;
+  c *= 1.0 - cr;
+  if( p -> buffs.tier4_4pc ) c -= 270;
+  if( c < 0 ) c = 0;
   return c;
 }
 
@@ -1133,17 +1137,17 @@ struct chain_lightning_t : public shaman_spell_t
     };
     init_rank( ranks );
 
-    base_execute_time  = 2.0; 
-    may_crit           = true;
-    cooldown           = 6.0;
-    direct_power_mod   = ( base_execute_time / 3.5 );
-    cooldown          -= util_t::talent_rank( p -> talents.storm_earth_and_fire, 3, 0.75, 1.5, 2.5 );
-    base_execute_time -= p -> talents.lightning_mastery * 0.1;
-    base_cost         *= 1.0 - p -> talents.convection * 0.02;
-    base_multiplier   *= 1.0 + p -> talents.concussion * 0.01;
-    base_hit          += p -> talents.elemental_precision * 0.01;
-    base_crit         += p -> talents.call_of_thunder * 0.05;
-    base_crit         += p -> talents.tidal_mastery * 0.01;
+    base_execute_time    = 2.0; 
+    may_crit             = true;
+    cooldown             = 6.0;
+    direct_power_mod     = ( base_execute_time / 3.5 );
+    cooldown            -= util_t::talent_rank( p -> talents.storm_earth_and_fire, 3, 0.75, 1.5, 2.5 );
+    base_execute_time   -= p -> talents.lightning_mastery * 0.1;
+    base_cost_reduction += p -> talents.convection * 0.02;
+    base_multiplier     *= 1.0 + p -> talents.concussion * 0.01;
+    base_hit            += p -> talents.elemental_precision * 0.01;
+    base_crit           += p -> talents.call_of_thunder * 0.05;
+    base_crit           += p -> talents.tidal_mastery * 0.01;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.elemental_fury * 0.20;
 
@@ -1237,23 +1241,23 @@ struct lightning_bolt_t : public shaman_spell_t
     };
     init_rank( ranks );
 
-    base_execute_time  = 2.5; 
-    may_crit           = true;
-    direct_power_mod   = ( base_execute_time / 3.5 );
-    base_execute_time -= p -> talents.lightning_mastery * 0.1;
-    base_cost         *= 1.0 - p -> talents.convection * 0.02;
-    base_multiplier   *= 1.0 + p -> talents.concussion * 0.01;
-    base_hit          += p -> talents.elemental_precision * 0.01;
-    base_crit         += p -> talents.call_of_thunder * 0.05;
-    base_crit         += p -> talents.tidal_mastery * 0.01;
-    direct_power_mod  += p -> talents.shamanism * 0.02;
+    base_execute_time    = 2.5; 
+    may_crit             = true;
+    direct_power_mod     = ( base_execute_time / 3.5 );
+    base_execute_time   -= p -> talents.lightning_mastery * 0.1;
+    base_cost_reduction += p -> talents.convection * 0.02;
+    base_multiplier     *= 1.0 + p -> talents.concussion * 0.01;
+    base_hit            += p -> talents.elemental_precision * 0.01;
+    base_crit           += p -> talents.call_of_thunder * 0.05;
+    base_crit           += p -> talents.tidal_mastery * 0.01;
+    direct_power_mod    += p -> talents.shamanism * 0.02;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.elemental_fury * 0.20;
 
-    if( p -> tiers.t6_4pc_elemental ) base_multiplier *= 1.05;
-    if( p -> tiers.t7_2pc_elemental ) base_cost       *= 0.95;
-    if( p -> glyphs.lightning_bolt  ) base_multiplier *= 1.04;
-    if( p -> totems.hex             ) base_power      += 165;
+    if( p -> tiers.t6_4pc_elemental ) base_multiplier     *= 1.05;
+    if( p -> tiers.t7_2pc_elemental ) base_cost_reduction += 0.05;
+    if( p -> glyphs.lightning_bolt  ) base_multiplier     *= 1.04;
+    if( p -> totems.hex             ) base_power          += 165;
 
     lightning_overload_stats = p -> get_stats( "lightning_overload" );
     lightning_overload_stats -> school = SCHOOL_NATURE;
@@ -1335,17 +1339,17 @@ struct lava_burst_t : public shaman_spell_t
     };
     init_rank( ranks );
 
-    base_execute_time  = 2.0; 
-    direct_power_mod   = base_execute_time / 3.5;
-    direct_power_mod  += p -> glyphs.lava ? 0.10 : 0.00;
-    may_crit           = true;
-    cooldown           = 8.0;
-    base_cost         *= 1.0 - p -> talents.convection * 0.02;
-    base_execute_time -= p -> talents.lightning_mastery * 0.1;
-    base_multiplier   *= 1.0 + p -> talents.concussion * 0.01;
-    base_multiplier   *= 1.0 + p -> talents.call_of_flame * 0.02;
-    base_hit          += p -> talents.elemental_precision * 0.01;
-    direct_power_mod  += p -> talents.shamanism * 0.04;
+    base_execute_time    = 2.0; 
+    direct_power_mod     = base_execute_time / 3.5;
+    direct_power_mod    += p -> glyphs.lava ? 0.10 : 0.00;
+    may_crit             = true;
+    cooldown             = 8.0;
+    base_cost_reduction += p -> talents.convection * 0.02;
+    base_execute_time   -= p -> talents.lightning_mastery * 0.1;
+    base_multiplier     *= 1.0 + p -> talents.concussion * 0.01;
+    base_multiplier     *= 1.0 + p -> talents.call_of_flame * 0.02;
+    base_hit            += p -> talents.elemental_precision * 0.01;
+    direct_power_mod    += p -> talents.shamanism * 0.04;
 
     base_crit_bonus_multiplier *= 1.0 + ( util_t::talent_rank( p -> talents.lava_flows,     3, 0.06, 0.12, 0.24 ) +
                                           util_t::talent_rank( p -> talents.elemental_fury, 5, 0.20 ) +
@@ -1428,13 +1432,6 @@ struct elemental_mastery_t : public shaman_spell_t
     cooldown -= p -> glyphs.elemental_mastery ? 30.0 : 0.0;
 
     trigger_gcd = 0;  
-
-    if( ! options_str.empty() )
-    {
-      // This will prevent Elemental Mastery from being called before the desired "free spell" is ready to be cast.
-      cooldown_group = options_str;
-      duration_group = options_str;
-    }
   }
    
   virtual void execute()
@@ -1526,13 +1523,13 @@ struct earth_shock_t : public shaman_spell_t
     may_crit          = true;
     cooldown          = 6.0;
     cooldown_group    = "shock";
-   
-    base_cost       *= 1.0 - p -> talents.convection * 0.02;
-    base_cost       *= 1.0 - p -> talents.mental_quickness * 0.02;
-    base_cost       *= 1.0 - p -> talents.shamanistic_focus * 0.45;
-    cooldown        -= ( p -> talents.reverberation * 0.2 );
-    base_multiplier *= 1.0 + p -> talents.concussion * 0.01;
-    base_hit        += p -> talents.elemental_precision * 0.01;
+    cooldown         -= ( p -> talents.reverberation * 0.2 );
+    base_multiplier  *= 1.0 + p -> talents.concussion * 0.01;
+    base_hit         += p -> talents.elemental_precision * 0.01;
+
+    base_cost_reduction  += ( p -> talents.convection        * 0.02 +
+			      p -> talents.mental_quickness  * 0.02 +
+			      p -> talents.shamanistic_focus * 0.45 );
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.elemental_fury * 0.20;
 
@@ -1588,12 +1585,13 @@ struct frost_shock_t : public shaman_spell_t
     may_crit          = true;
     cooldown          = 6.0;
     cooldown_group    = "shock";
-    base_cost        *= 1.0 - p -> talents.convection * 0.02;
-    base_cost        *= 1.0 - p -> talents.mental_quickness * 0.02;
-    base_cost        *= 1.0 - p -> talents.shamanistic_focus * 0.45;
     cooldown         -= ( p -> talents.reverberation * 0.2 );
     base_multiplier  *= 1.0 + p -> talents.concussion * 0.01;
     base_hit         += p -> talents.elemental_precision * 0.01;
+
+    base_cost_reduction  += ( p -> talents.convection        * 0.02 +
+			      p -> talents.mental_quickness  * 0.02 +
+			      p -> talents.shamanistic_focus * 0.45 );
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.elemental_fury * 0.20;
 
@@ -1641,13 +1639,14 @@ struct flame_shock_t : public shaman_spell_t
 
     if ( p -> glyphs.flame_shock ) num_ticks += 2;
       
-    base_cost          *= 1.0 - p -> talents.convection * 0.02;
-    base_cost          *= 1.0 - p -> talents.mental_quickness * 0.02;
-    base_cost          *= 1.0 - p -> talents.shamanistic_focus * 0.45;
     cooldown           -= p -> talents.reverberation * 0.2;
     base_hit           += p -> talents.elemental_precision * 0.01;
     base_multiplier    *= 1.0 + p -> talents.concussion * 0.01;
     base_td_multiplier *= 1.0 + util_t::talent_rank( p -> talents.storm_earth_and_fire, 3, 0.20 );
+
+    base_cost_reduction  += ( p -> talents.convection        * 0.02 +
+			      p -> talents.mental_quickness  * 0.02 +
+			      p -> talents.shamanistic_focus * 0.45 );
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.elemental_fury * 0.20;
 
@@ -1708,11 +1707,11 @@ struct searing_totem_t : public shaman_spell_t
     may_crit          = true;
     duration_group    = "fire_totem";
     trigger_gcd       = 1.0;
-      
-    base_cost       *= 1.0 - p -> talents.totemic_focus * 0.05;
-    base_cost       *= 1.0 - p -> talents.mental_quickness * 0.02;
-    base_multiplier *= 1.0 + p -> talents.call_of_flame * 0.05;
-    base_hit        += p -> talents.elemental_precision * 0.01;
+    base_multiplier  *= 1.0 + p -> talents.call_of_flame * 0.05;
+    base_hit         += p -> talents.elemental_precision * 0.01;
+
+    base_cost_reduction += ( p -> talents.totemic_focus    * 0.05 +
+			     p -> talents.mental_quickness * 0.02 );
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.elemental_fury * 0.20;
   }
@@ -1779,10 +1778,11 @@ struct totem_of_wrath_t : public shaman_spell_t
     parse_options( options, options_str );
       
     base_cost      = 400;
-    base_cost     *= 1.0 - p -> talents.totemic_focus * 0.05;
-    base_cost     *= 1.0 - p -> talents.mental_quickness * 0.02;
     duration_group = "fire_totem";
     trigger_gcd    = 1.0;
+
+    base_cost_reduction += ( p -> talents.totemic_focus    * 0.05 +
+			     p -> talents.mental_quickness * 0.02 );
 
     bonus = util_t::ability_rank( p -> level,  280.0,80,  140.0,70,  120.0,0 );
   }
@@ -1865,11 +1865,12 @@ struct flametongue_totem_t : public shaman_spell_t
     };
     init_rank( ranks );
 
-    base_cost        = p -> resource_base[ RESOURCE_MANA ] * 0.11;
-    base_cost       *= 1.0 - p -> talents.totemic_focus * 0.05;
-    base_cost       *= 1.0 - p -> talents.mental_quickness * 0.02;
-    duration_group   = "fire_totem";
-    trigger_gcd      = 1.0;
+    base_cost      = p -> resource_base[ RESOURCE_MANA ] * 0.11;
+    duration_group = "fire_totem";
+    trigger_gcd    = 1.0;
+
+    base_cost_reduction += ( p -> talents.totemic_focus    * 0.05 +
+			     p -> talents.mental_quickness * 0.02 );
 
     bonus = util_t::ability_rank( p -> level,  144,80,  122,76,  106,72,  73,67,  62,0 );
     bonus *= p -> talents.enhancing_totems * 0.05;
@@ -1938,10 +1939,11 @@ struct windfury_totem_t : public shaman_spell_t
     parse_options( options, options_str );
       
     base_cost      = 275;
-    base_cost     *= 1.0 - p -> talents.totemic_focus * 0.05;
-    base_cost     *= 1.0 - p -> talents.mental_quickness * 0.02;
     duration_group = "air_totem";
     trigger_gcd    = 1.0;
+
+    base_cost_reduction += ( p -> talents.totemic_focus    * 0.05 +
+			     p -> talents.mental_quickness * 0.02 );
 
     bonus = 0.16 + p -> talents.improved_windfury_totem * 0.02;
   }
@@ -2161,10 +2163,11 @@ struct strength_of_earth_totem_t : public shaman_spell_t
     shaman_t* p = player -> cast_shaman();
 
     base_cost      = util_t::ability_rank( p -> level,  300,65,  275,0 );
-    base_cost     *= 1.0 - p -> talents.totemic_focus * 0.05;
-    base_cost     *= 1.0 - p -> talents.mental_quickness * 0.02;
     duration_group = "earth_totem";
     trigger_gcd    = 1.0;
+
+    base_cost_reduction += ( p -> talents.totemic_focus    * 0.05 +
+			     p -> talents.mental_quickness * 0.02 );
 
     bonus  = util_t::ability_rank( p -> level,  86,65,  77,0 );
     bonus *= 1.0 + p -> talents.enhancing_totems * 0.05;
@@ -2234,10 +2237,11 @@ struct wrath_of_air_totem_t : public shaman_spell_t
     parse_options( options, options_str );
       
     base_cost      = 320;
-    base_cost     *= 1.0 - p -> talents.totemic_focus * 0.05;
-    base_cost     *= 1.0 - p -> talents.mental_quickness * 0.02;
     duration_group = "air_totem";
     trigger_gcd    = 1.0;
+
+    base_cost_reduction += ( p -> talents.totemic_focus    * 0.05 +
+			     p -> talents.mental_quickness * 0.02 );
   }
 
   virtual void execute()
@@ -2304,9 +2308,10 @@ struct mana_tide_totem_t : public shaman_spell_t
     cooldown       = 300.0;
     duration_group = "water_totem";
     base_cost      = 320;
-    base_cost      *= 1.0 - p -> talents.totemic_focus * 0.05;
-    base_cost      *= 1.0 - p -> talents.mental_quickness * 0.02;
     trigger_gcd     = 1.0;
+
+    base_cost_reduction += ( p -> talents.totemic_focus    * 0.05 +
+			     p -> talents.mental_quickness * 0.02 );
   }
 
   virtual void execute() 
@@ -2365,10 +2370,11 @@ struct mana_spring_totem_t : public shaman_spell_t
     num_ticks       = 150;
     duration_group  = "water_totem";
     base_cost       = 120;
-    base_cost      *= 1.0 - p -> talents.totemic_focus * 0.05;
-    base_cost      *= 1.0 - p -> talents.mental_quickness * 0.02;
     base_multiplier = 1.0 + p -> talents.restorative_totems * 0.05;
     trigger_gcd     = 1.0;
+
+    base_cost_reduction += ( p -> talents.totemic_focus    * 0.05 +
+			     p -> talents.mental_quickness * 0.02 );
   }
 
   virtual void execute() 
@@ -2413,6 +2419,8 @@ struct bloodlust_t : public shaman_spell_t
   bloodlust_t( player_t* player, const std::string& options_str ) : 
     shaman_spell_t( "bloodlust", player, SCHOOL_NATURE, TREE_ENHANCEMENT ), target_pct(0)
   {
+    shaman_t* p = player -> cast_shaman();
+
     option_t options[] =
     {
       { "target_pct", OPT_DEPRECATED, (void*) "health_percentage<" },
@@ -2420,9 +2428,10 @@ struct bloodlust_t : public shaman_spell_t
     };
     parse_options( options, options_str );
 
-    harmful   = false;
+    harmful = false;
     base_cost = ( 0.26 * player -> resource_base[ RESOURCE_MANA ] );
-    cooldown  = 600;
+    base_cost_reduction += p -> talents.mental_quickness * 0.02;
+    cooldown = 600;
   }
 
   virtual void execute()

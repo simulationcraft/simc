@@ -268,7 +268,7 @@ struct sim_t
   char**      argv;
   sim_t*      parent;
   patch_t     patch;
-  int         P31;
+  bool        P309;
   rng_t*      rng;
   event_t*    free_list;
   player_t*   player_list;
