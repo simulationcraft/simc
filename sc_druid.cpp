@@ -236,7 +236,6 @@ struct druid_t : public player_t
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
   virtual int       primary_resource() { return talents.moonkin_form ? RESOURCE_MANA : RESOURCE_ENERGY; }
-  virtual double    composite_attribute_multiplier( int attr );
   virtual double    composite_attack_crit();
   virtual double    composite_attack_expertise();
 
@@ -1032,13 +1031,8 @@ struct claw_t : public druid_attack_t
   virtual void player_buff()
   {
     druid_t* p = player -> cast_druid();
-    
     druid_attack_t::player_buff();
-    
-    if( p -> talents.savage_fury )
-    {
-      player_multiplier *= 1 + p -> talents.savage_fury * 0.1;
-    }
+    player_multiplier *= 1 + p -> talents.savage_fury * 0.1;
   }
 
 };
@@ -1153,13 +1147,8 @@ struct mangle_cat_t : public druid_attack_t
   virtual void player_buff()
   {
     druid_t* p = player -> cast_druid();
-    
     druid_attack_t::player_buff();
-    
-    if( p -> talents.savage_fury )
-    {
-      player_multiplier *= 1 + p -> talents.savage_fury * 0.1;
-    }
+    player_multiplier *= 1 + p -> talents.savage_fury * 0.1;
   }
 };
 
@@ -1213,13 +1202,8 @@ struct rake_t : public druid_attack_t
   virtual void player_buff()
   {
     druid_t* p = player -> cast_druid();
-
     druid_attack_t::player_buff();
-    
-    if( p -> talents.savage_fury )
-    {
-      player_multiplier *= 1 + p -> talents.savage_fury * 0.1;
-    }
+    player_multiplier *= 1 + p -> talents.savage_fury * 0.1;
   }
 };
 
@@ -1407,7 +1391,6 @@ struct berserk_t : public druid_attack_t
     
     parse_options( options, options_str );
 
-    trigger_gcd = 1;
     cooldown    = 180;
   }
 
@@ -2838,7 +2821,13 @@ void druid_t::init_base()
 
   base_gcd = ( talents.moonkin_form ) ? 1.5 : 1.0;
 
-
+  if( talents.survival_of_the_fittest )
+  {
+    for( int i=0; i < ATTRIBUTE_MAX; i++ )
+    {
+      attribute_multiplier[ i ]  *= 1 + 0.02 * talents.survival_of_the_fittest;
+    }
+  }
 }
 
 // druid_t::init_unique_gear ================================================
@@ -2982,31 +2971,12 @@ double druid_t::composite_spell_crit()
   return crit;
 }
 
-double druid_t::composite_attribute_multiplier( int attr )
-{
-  double a = player_t::composite_attribute_multiplier( attr );
-  
-  if ( talents.survival_of_the_fittest )
-  {
-    a *= 0.02 * talents.survival_of_the_fittest;
-  }
-
-  return a;
-}
-
 double druid_t::composite_attack_crit()
 {
   double c = player_t::composite_attack_crit();
 
-  if ( talents.sharpened_claws ) 
-  {
-    c += 0.02 * talents.sharpened_claws;
-  }
-
-  if ( talents.master_shapeshifter )
-  {
-    c += 0.02 * talents.master_shapeshifter;
-  }
+  c += 0.02 * talents.sharpened_claws;
+  c += 0.02 * talents.master_shapeshifter;
 
   return c;
 }
