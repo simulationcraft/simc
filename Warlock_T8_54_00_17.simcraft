@@ -8,5 +8,5 @@ actions+=/haunt,debuff=1/curse_of_agony/corruption/unstable_affliction
 actions+=/drain_soul,health_percentage<=25,interrupt=1/immolate/shadow_bolt/life_tap
 Caster_T7_Base_Gear.simcraft
 glyph_haunt=1
-glyph_immolate=1
+glyph_curse_of_agony=1
 glyph_life_tap=1
