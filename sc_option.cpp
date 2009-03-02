@@ -280,9 +280,6 @@ bool option_t::parse( sim_t*       sim,
     std::string talent_string, address_string;
     int encoding = ENCODING_NONE;
 
-    std::vector<std::string> parts;
-    int part_count;
-
     std::string::size_type cut_pt; 
     if( ( cut_pt = value.find_first_of( "=" ) ) != value.npos ) 
     {
@@ -296,26 +293,25 @@ bool option_t::parse( sim_t*       sim,
       else if( address_string.find( "mmo-champion" ) != value.npos )
       {
         encoding = ENCODING_MMO;
-        part_count = util_t::string_split(parts, talent_string, "&");
-        talent_string = parts[0];
+
+	std::vector<std::string> parts;
+	int part_count = util_t::string_split(parts, talent_string, "&");
+
+        talent_string = parts[ 0 ];
         for( int i = 1; i < part_count; i++ )
         {
-          char *name, *value;
-          name = (char*) malloc(parts[i].length());
-          value = (char*) malloc(parts[i].length());
-          if( 2 == util_t::string_split( parts[i], "=", "s s", name, value ) )
+	  std::string part_name, part_value;
+          if( 2 == util_t::string_split( parts[i], "=", "S S", &part_name, &part_value ) )
           {
-            if( strcmp( name, "glyph" ) == 0 )
+            if( part_name == "glyph" )
             {
               //FIXME: ADD GLYPH SUPPORT?
             }
-            else if( strcmp( name, "version" ) == 0 )
+            else if( part_name == "version" )
             {
               //FIXME: WHAT TO DO WITH VERSION NUMBER?
             }
           }
-          free(value);
-          free(name);
         }
       }
       else if( address_string.find( "wowhead" ) != value.npos )

@@ -1,0 +1,17 @@
+#!simcraft optimal_raid=1 max_time=300
+patch=3.1.0
+shaman=Shaman_T8_57_14_00
+level=80
+talents=http://ptr.wowhead.com/?talent=hAh0qcdItGizAo0xxco
+actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/flametongue_weapon,weapon=main/water_shield
+actions+=/mana_spring_totem/totem_of_wrath/wrath_of_air_totem/water_shield/speed_potion
+actions+=/elemental_mastery/flame_shock/lava_burst,flame_shock=1/chain_lightning,lvb_cd<=1.5/lightning_bolt/thunderstorm
+Caster_T7_Base_Gear.simcraft
+# Remove all Spirit and replace with MP5 and Crit Rating
+gear_spirit=0
+enchant_mp5=+100
+enchant_crit_rating=+150
+totem_of_hex=1
+glyph_lightning_bolt=1
+glyph_flame_shock=1
+glyph_lava=1
