@@ -2441,7 +2441,7 @@ struct starfall_t : public druid_spell_t
   {
     struct starfall_star_splash_t : public druid_spell_t
     {
-      starfall_star_splash_t( player_t* player) : druid_spell_t( "starfall_splash", player, SCHOOL_ARCANE, TREE_BALANCE )
+      starfall_star_splash_t( player_t* player) : druid_spell_t( "starfall", player, SCHOOL_ARCANE, TREE_BALANCE )
       {
         druid_t* p = player -> cast_druid();
 

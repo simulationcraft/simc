@@ -3475,7 +3475,6 @@ struct conflagrate_t : public warlock_spell_t
 
   virtual void execute()
   {
-    warlock_t* p = player -> cast_warlock();
     warlock_spell_t::execute(); 
     if( result_is_hit() )
     {
