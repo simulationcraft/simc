@@ -211,6 +211,8 @@ void report_t::print_action( stats_t* s )
 	     s -> execute_results[ RESULT_DODGE ].count * 100.0 / s -> num_executes );
   }
 
+  if( s -> num_ticks > 0 ) fprintf( sim -> output_file, "  TickCount=%.0f", s -> num_ticks );
+
   if( s -> tick_results[ RESULT_HIT ].avg_dmg > 0 )
   {
     fprintf( sim -> output_file, 

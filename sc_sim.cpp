@@ -12,7 +12,7 @@
 // sim_t::sim_t =============================================================
 
 sim_t::sim_t( sim_t* p ) : 
-  parent(p), rng(0), free_list(0), player_list(0), active_player(0),
+  parent(p), P31(0), rng(0), free_list(0), player_list(0), active_player(0),
   lag(0.150), pet_lag(0), channel_penalty(0.1), gcd_penalty(0.1), reaction_time(0.5), 
   regen_periodicity(1.0), current_time(0), max_time(0),
   events_remaining(0), max_events_remaining(0), 
@@ -290,6 +290,8 @@ void sim_t::combat_end()
 
 bool sim_t::init()
 {
+  P31 = patch.after( 3, 1, 0 );
+
   rng = rng_t::init( sfmt );
 
   // Timing wheel depth defaults to 10 minutes with a granularity of 10 buckets per second.
@@ -812,12 +814,8 @@ int main( int argc, char** argv )
   srand( sim.seed );
 
   int arch, version, revision;
-  uint64_t mask = sim.patch.mask;
-  revision = (int) mask % 100;
-  mask /= 100;
-  version  = (int) mask % 100;
-  mask /= 100;
-  arch     = (int) mask % 100;
+  sim.patch.decode( &arch, &version, &revision );
+
   fprintf( sim.output_file, 
            "\nSimulationCraft for World of Warcraft build %d.%d.%d (iterations=%d, max_time=%.0f, optimal_raid=%d)\n",
            arch, version, revision, sim.iterations, sim.max_time, sim.optimal_raid );

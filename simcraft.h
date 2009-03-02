@@ -36,13 +36,20 @@
 
 struct patch_t
 {
-   uint64_t mask;
-   uint64_t encode( int arch, int version, int revision ) { return arch*10000 + version*100 + revision; }
-   patch_t        ( int arch, int version, int revision ) {         mask = encode( arch, version, revision ); }
-   void set       ( int arch, int version, int revision ) {         mask = encode( arch, version, revision ); }
-   bool before    ( int arch, int version, int revision ) { return mask <  encode( arch, version, revision ); }
-   bool after     ( int arch, int version, int revision ) { return mask >= encode( arch, version, revision ); }
-   patch_t() { mask = encode( 3, 0, 9 ); }
+  uint64_t mask;
+  uint64_t encode( int arch, int version, int revision ) { return arch*10000 + version*100 + revision; }
+  patch_t        ( int arch, int version, int revision ) {         mask = encode( arch, version, revision ); }
+  void set       ( int arch, int version, int revision ) {         mask = encode( arch, version, revision ); }
+  bool before    ( int arch, int version, int revision ) { return mask <  encode( arch, version, revision ); }
+  bool after     ( int arch, int version, int revision ) { return mask >= encode( arch, version, revision ); }
+  void decode( int* arch, int* version, int* revision ) 
+  { 
+    uint64_t m = mask;
+    *revision = (int) m % 100; m /= 100;
+    *version  = (int) m % 100; m /= 100;
+    *arch     = (int) m % 100;
+  }
+  patch_t() { mask = encode( 3, 0, 9 ); }
 };
 
 // Forward Declarations ======================================================
@@ -261,6 +268,7 @@ struct sim_t
   char**      argv;
   sim_t*      parent;
   patch_t     patch;
+  int         P31;
   rng_t*      rng;
   event_t*    free_list;
   player_t*   player_list;

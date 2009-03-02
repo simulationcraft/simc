@@ -35,6 +35,7 @@ struct mage_t : public player_t
 
   // Expirations
   event_t* expirations_arcane_blast;
+  event_t* expirations_replenishment;
 
   // Gains
   gain_t* gains_clearcasting;
@@ -128,14 +129,18 @@ struct mage_t : public player_t
 
   struct glyphs_t
   {
+    int arcane_barrage;
     int arcane_blast;
     int arcane_missiles;
     int arcane_power;
     int fire_ball;
     int frost_bolt;
+    int ice_lance;
     int improved_scorch;
+    int living_bomb;
     int mage_armor;
     int mana_gem;
+    int mirror_image;
     int molten_armor;
     int water_elemental;
     int frostfire;
@@ -168,7 +173,8 @@ struct mage_t : public player_t
     buffs_shatter_combo            = 0;
 
     // Expirations
-    expirations_arcane_blast = 0;
+    expirations_arcane_blast  = 0;
+    expirations_replenishment = 0;
 
     // Gains
     gains_clearcasting       = get_gain( "clearcasting" );
@@ -206,6 +212,55 @@ struct mage_t : public player_t
 };
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
+
+// stack_winters_chill =====================================================
+
+static void stack_winters_chill( spell_t* s,
+				 double   chance )
+{
+  if( s -> school != SCHOOL_FROST &&
+      s -> school != SCHOOL_FROSTFIRE ) return;
+
+  struct expiration_t : public event_t
+  {
+    expiration_t( sim_t* sim ) : event_t( sim )
+    {
+      name = "Winters Chill Expiration";
+      sim -> add_event( this, 15.0 );
+    }
+    virtual void execute()
+    {
+      if( sim -> log ) report_t::log( sim, "Target %s loses Winters Chill", sim -> target -> name() );
+      sim -> target -> debuffs.winters_chill = 0;
+      sim -> target -> expirations.winters_chill = 0;
+    }
+  };
+
+  if( s -> sim -> roll( chance ) )
+  {
+    target_t* t = s -> sim -> target;
+
+    if( t -> debuffs.winters_chill < 5 ) 
+    {
+      t -> debuffs.winters_chill += 1;
+
+      if( s -> sim -> log ) 
+        report_t::log( s -> sim, "Target %s gains Winters Chill %d", 
+                       t -> name(), t -> debuffs.winters_chill );
+    }
+
+    event_t*& e = t -> expirations.winters_chill;
+    
+    if( e )
+    {
+      e -> reschedule( 15.0 );
+    }
+    else
+    {
+      e = new ( s -> sim ) expiration_t( s -> sim );
+    }
+  }
+}
 
 // ==========================================================================
 // Mage Spell
@@ -342,6 +397,16 @@ struct mirror_image_pet_t : public pet_t
       spell_t::player_buff();
       player_power += player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_FIRE ) / p -> num_images;
     }
+    virtual void execute()
+    {
+      mirror_image_pet_t* p = (mirror_image_pet_t*) player;
+      mage_t* o = p -> owner -> cast_mage();
+      spell_t::execute();
+      if( o -> glyphs.mirror_image && result_is_hit() ) 
+      {
+	stack_winters_chill( this, 1.00 );
+      }
+    }
   };
 
   struct mirror_bolt_t : public spell_t
@@ -449,7 +514,8 @@ static void trigger_tier5_4pc( spell_t* s )
 
 // trigger_ignite ===========================================================
 
-static void trigger_ignite( spell_t* s )
+static void trigger_ignite( spell_t* s,
+			    double   dmg )
 {
   if( s -> school != SCHOOL_FIRE &&
       s -> school != SCHOOL_FROSTFIRE ) return;
@@ -475,7 +541,7 @@ static void trigger_ignite( spell_t* s )
     virtual void player_buff() {}
   };
   
-  double ignite_dmg = s -> direct_dmg * p -> talents.ignite * 0.08;
+  double ignite_dmg = dmg * p -> talents.ignite * 0.08;
 
   if( s -> sim -> merge_ignite )
   {
@@ -512,10 +578,17 @@ static void trigger_burnout( spell_t* s )
 {
   mage_t* p = s -> player -> cast_mage();
 
-  if( p -> talents.burnout && s -> resource_consumed )
-  {
-    p -> resource_loss( RESOURCE_MANA, s -> resource_consumed * p -> talents.burnout * 0.01 );
-  }
+  if( ! p -> talents.burnout )
+    return;
+
+  if( ! s -> resource_consumed )
+    return;
+
+  if( s -> school != SCHOOL_FIRE &&
+      s -> school != SCHOOL_FROSTFIRE )
+    return;
+
+  p -> resource_loss( RESOURCE_MANA, s -> resource_consumed * p -> talents.burnout * 0.01 );
 }
 
 // trigger_master_of_elements ===============================================
@@ -604,56 +677,6 @@ static void trigger_arcane_concentration( spell_t* s )
     p -> procs_clearcasting -> occur();
     p -> buffs_clearcasting = s -> sim -> current_time;
     trigger_arcane_potency( s );
-  }
-}
-
-// stack_winters_chill =====================================================
-
-static void stack_winters_chill( spell_t* s )
-{
-  if( s -> school != SCHOOL_FROST &&
-      s -> school != SCHOOL_FROSTFIRE ) return;
-
-  struct expiration_t : public event_t
-  {
-    expiration_t( sim_t* sim ) : event_t( sim )
-    {
-      name = "Winters Chill Expiration";
-      sim -> add_event( this, 15.0 );
-    }
-    virtual void execute()
-    {
-      if( sim -> log ) report_t::log( sim, "Target %s loses Winters Chill", sim -> target -> name() );
-      sim -> target -> debuffs.winters_chill = 0;
-      sim -> target -> expirations.winters_chill = 0;
-    }
-  };
-
-  mage_t* p = s -> player -> cast_mage();
-
-  if( s -> sim -> roll( p -> talents.winters_chill / 3.0 ) )
-  {
-    target_t* t = s -> sim -> target;
-
-    if( t -> debuffs.winters_chill < 5 ) 
-    {
-      t -> debuffs.winters_chill += 1;
-
-      if( s -> sim -> log ) 
-        report_t::log( s -> sim, "Target %s gains Winters Chill %d", 
-                       t -> name(), t -> debuffs.winters_chill );
-    }
-
-    event_t*& e = t -> expirations.winters_chill;
-    
-    if( e )
-    {
-      e -> reschedule( 15.0 );
-    }
-    else
-    {
-      e = new ( s -> sim ) expiration_t( s -> sim );
-    }
   }
 }
 
@@ -909,6 +932,54 @@ static void trigger_missile_barrage( spell_t* s )
   }
 }
 
+// trigger_replenishment ===========================================================
+
+static void trigger_replenishment( spell_t* s )
+{
+  mage_t* p = s -> player -> cast_mage();
+
+  if( ! s -> sim -> P31 )
+    return;
+
+  if( ! p -> talents.improved_water_elemental )
+    return;
+
+  if( s -> sim -> roll( p -> talents.improved_water_elemental / 3.0 ) )
+    return;
+
+  struct replenishment_expiration_t : public event_t
+  {
+    replenishment_expiration_t( sim_t* sim, mage_t* m ) : event_t( sim, m )
+    {
+      name = "Replenishment Expiration";
+      for( player_t* p = sim -> player_list; p; p = p -> next )
+      {
+        p -> buffs.replenishment++;
+      }
+      sim -> add_event( this, 15.0 );
+    }
+    virtual void execute()
+    {
+      for( player_t* p = sim -> player_list; p; p = p -> next )
+      {
+        p -> buffs.replenishment--;
+      }
+      player -> cast_mage() -> expirations_replenishment = 0;
+    }
+  };
+
+  event_t*& e = p -> expirations_replenishment;
+
+  if( e )
+  {
+    e -> reschedule( 15.0 );
+  }
+  else
+  {
+    e = new ( s -> sim ) replenishment_expiration_t( s -> sim, p );
+  }
+}
+
 // trigger_ashtongue_talisman ======================================================
 
 static void trigger_ashtongue_talisman( spell_t* s )
@@ -984,6 +1055,7 @@ double mage_spell_t::haste()
 
 void mage_spell_t::execute()
 {
+  mage_t* p = player -> cast_mage();
   spell_t::execute();
   clear_fingers_of_frost( this );
   if( result_is_hit() )
@@ -992,12 +1064,12 @@ void mage_spell_t::execute()
     trigger_frostbite( this );
     trigger_winters_grasp( this );
     trigger_fingers_of_frost( this );
-    stack_winters_chill( this );
+    stack_winters_chill( this, p -> talents.winters_chill / 3.0 );
 
     if( result == RESULT_CRIT )
     {
       trigger_burnout( this );
-      trigger_ignite( this );
+      trigger_ignite( this, direct_dmg );
       trigger_master_of_elements( this, 1.0 );
       trigger_tier5_4pc( this );
       trigger_ashtongue_talisman( this );
@@ -1119,9 +1191,9 @@ struct arcane_barrage_t : public mage_spell_t
     may_crit          = true;
     direct_power_mod  = (2.5/3.5); 
     cooldown          = 3.0;
-
-    base_cost        *= 1.0 - p -> talents.frost_channeling * (0.1/3);
-    base_cost        *= 1.0 - p -> talents.arcane_focus * 0.01;
+    base_cost        *= 1.0 - ( p -> talents.frost_channeling * (0.1/3) +
+				p -> talents.arcane_focus     * 0.01    +
+				p -> glyphs.arcane_barrage    * 0.20    );
     base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
     base_crit        += p -> talents.arcane_instability * 0.01;
     base_hit         += p -> talents.arcane_focus * 0.01;
@@ -1904,6 +1976,7 @@ struct living_bomb_t : public mage_spell_t
     direct_power_mod  = 0.40; 
     tick_power_mod    = base_tick_time / 15;
     may_crit          = true;
+    tick_may_crit     = p -> glyphs.living_bomb != 0;
 
     base_cost        *= 1.0 - p -> talents.frost_channeling * (0.1/3);
     base_multiplier  *= 1.0 + p -> talents.fire_power * 0.02;
@@ -1920,6 +1993,12 @@ struct living_bomb_t : public mage_spell_t
 
   // Odd thing to handle: The direct-damage comes at the last tick instead of the beginning of the spell.
 
+  virtual void tick()
+  {
+    mage_spell_t::tick();
+    if( result == RESULT_CRIT ) trigger_ignite( this, tick_dmg );
+  }
+
   virtual void last_tick()
   {
     target_debuff( DMG_DIRECT );
@@ -1934,7 +2013,7 @@ struct living_bomb_t : public mage_spell_t
         if( result == RESULT_CRIT ) 
         {
           trigger_burnout( this );
-          trigger_ignite( this );
+          trigger_ignite( this, direct_dmg );
           trigger_master_of_elements( this, 1.0 );
         }
       }
@@ -2197,7 +2276,11 @@ struct frost_bolt_t : public mage_spell_t
   virtual void execute()
   {
     mage_spell_t::execute();
-    if( result_is_hit() ) trigger_missile_barrage( this );
+    if( result_is_hit() ) 
+    {
+      trigger_missile_barrage( this );
+      trigger_replenishment( this );
+    }
   }
 };
 
@@ -2249,15 +2332,23 @@ struct ice_lance_t : public mage_spell_t
 
   virtual void player_buff()
   {
-    mage_t* p = player -> cast_mage();
+    mage_t*   p = player -> cast_mage();
+    target_t* t = sim -> target;
 
     mage_spell_t::player_buff();
 
-    if( p -> buffs_shatter_combo       ||
-        p -> buffs_fingers_of_frost    ||
-        sim -> target -> debuffs.frozen ) 
+    if( p -> buffs_shatter_combo    ||
+        p -> buffs_fingers_of_frost ||
+        t -> debuffs.frozen         ) 
     {
-      player_multiplier *= 3.0;
+      if( p -> glyphs.ice_lance && t -> level > p -> level )
+      {
+	player_multiplier *= 4.0;
+      }
+      else
+      {
+	player_multiplier *= 3.0;
+      }
     }
   }
 
@@ -2792,19 +2883,30 @@ void mage_t::reset()
   buffs_shatter_combo          = 0;
   
   // Expirations
-  expirations_arcane_blast = 0;
+  expirations_arcane_blast  = 0;
+  expirations_replenishment = 0;
 }
 
 // mage_t::regen  ==========================================================
 
 void mage_t::regen( double periodicity )
 {
-  mana_regen_while_casting = ( talents.arcane_meditation * 0.10 +
-			       talents.pyromaniac        * 0.10 );
+  mana_regen_while_casting = 0;
+
+  if( sim -> P31 )
+  {
+    mana_regen_while_casting += util_t::talent_rank( talents.arcane_meditation, 3, 0.17, 0.33, 0.50 );
+    mana_regen_while_casting += util_t::talent_rank( talents.pyromaniac,        3, 0.17, 0.33, 0.50 );
+  }
+  else
+  {
+    mana_regen_while_casting += ( talents.arcane_meditation * 0.10 +
+				  talents.pyromaniac        * 0.10 );
+  }
 
   if( buffs_mage_armor )
   {
-    mana_regen_while_casting += glyphs.mage_armor ? 0.50 : 0.30;
+    mana_regen_while_casting += ( sim -> P31 ? 0.50 : 0.30 ) + ( glyphs.mage_armor ? 0.20 : 0.00 );
   }
 
   player_t::regen( periodicity );
@@ -2943,19 +3045,23 @@ bool mage_t::parse_option( const std::string& name,
     { "winters_grasp",             OPT_INT,   &( talents.winters_grasp             ) },
     { "world_in_flames",           OPT_INT,   &( talents.world_in_flames           ) },
     // Glyphs
+    { "glyph_arcane_barrage",      OPT_INT,   &( glyphs.arcane_barrage             ) },
     { "glyph_arcane_blast",        OPT_INT,   &( glyphs.arcane_blast               ) },
     { "glyph_arcane_missiles",     OPT_INT,   &( glyphs.arcane_missiles            ) },
     { "glyph_arcane_power",        OPT_INT,   &( glyphs.arcane_power               ) },
     { "glyph_fire_ball",           OPT_INT,   &( glyphs.fire_ball                  ) },
     { "glyph_frost_bolt",          OPT_INT,   &( glyphs.frost_bolt                 ) },
+    { "glyph_ice_lance",           OPT_INT,   &( glyphs.ice_lance                  ) },
     { "glyph_improved_scorch",     OPT_INT,   &( glyphs.improved_scorch            ) },
+    { "glyph_living_bomb",         OPT_INT,   &( glyphs.living_bomb                ) },
     { "glyph_mage_armor",          OPT_INT,   &( glyphs.mage_armor                 ) },
     { "glyph_mana_gem",            OPT_INT,   &( glyphs.mana_gem                   ) },
+    { "glyph_mirror_image",        OPT_INT,   &( glyphs.mirror_image               ) },
     { "glyph_molten_armor",        OPT_INT,   &( glyphs.molten_armor               ) },
     { "glyph_water_elemental",     OPT_INT,   &( glyphs.water_elemental            ) },
     { "glyph_frostfire",           OPT_INT,   &( glyphs.frostfire                  ) },
     // Options
-    { "focus_magic_target",        OPT_STRING, &( focus_magic_target_str            ) },
+    { "focus_magic_target",        OPT_STRING, &( focus_magic_target_str           ) },
     { NULL, OPT_UNKNOWN }
   };
   

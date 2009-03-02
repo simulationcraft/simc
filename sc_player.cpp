@@ -1131,7 +1131,7 @@ void player_t::regen( double periodicity )
     }
     uptimes.replenishment -> update( buffs.replenishment != 0 );
 
-    if( buffs.water_elemental )
+    if( buffs.water_elemental && ! sim -> P31 )
     {
       double water_elemental_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.006 / 5.0;
 
