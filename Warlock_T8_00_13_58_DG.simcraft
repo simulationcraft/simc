@@ -3,8 +3,8 @@ patch=3.1.0
 warlock=Warlock_T8_00_13_58_DG
 level=80
 talents=http://talent.mmo-champion.com/?warlock=052032152003310513352303510000000000000000000000000000032200300030000000000000000
-actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/spell_stone/fel_armor/summon_pet,doomguard
-actions+=/curse_of_doom/immolate/conflagrate/chaos_bolt/incinerate/life_tap
+actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/fire_stone/fel_armor/summon_pet,imp
+actions+=/curse_of_doom,time_to_die>=60/immolate/conflagrate/chaos_bolt/incinerate/life_tap
 Caster_T7_Base_Gear.simcraft
 enchant_crit_rating=-75
 enchant_hit_rating=+75
