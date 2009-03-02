@@ -4,11 +4,25 @@ optimal_raid=1
 
 Globals.simcraft
 
+threads=2
+iterations=30000
+
+calculate_scale_factors=0
+
+target_health=15000000
+
+scale_stamina=0
+scale_attack_power=0
+scale_strength=0
+scale_agility=0
+scale_expertise_rating=0
+scale_armor_penetration_rating=0
+
 Warlock_T8_00_40_31.simcraft
 Warlock_T8_00_41_30.simcraft
 Warlock_T8_03_52_16.simcraft
 Warlock_T8_00_56_15.simcraft
 Warlock_T8_00_13_58.simcraft
-Warlock_T8_54_00_17.simcraft
+Warlock_T8_53_00_18.simcraft
 Warlock_T8_00_13_58_DG.simcraft
-Warlock_T8_54_00_17_DG.simcraft
+Warlock_T8_53_00_18_DG.simcraft

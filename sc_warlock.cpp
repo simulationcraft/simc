@@ -1516,7 +1516,7 @@ static void trigger_pyroclasm( spell_t* s )
     {
       name = "Pyroclasm Expiration";
       p -> aura_gain( "Pyroclasm" );
-      p -> buffs_pyroclasm = sim -> current_time;
+      p -> buffs_pyroclasm = 1;
       sim -> add_event( this, 10.0 );
     }
     virtual void execute()
@@ -1532,18 +1532,15 @@ static void trigger_pyroclasm( spell_t* s )
 
   if( ! p -> talents.pyroclasm ) return;
 
-  if( s -> sim -> roll( p -> talents.pyroclasm * 0.02 ) )
-  {
-    event_t*&  e = p -> expirations_pyroclasm;
+  event_t*&  e = p -> expirations_pyroclasm;
 
-    if( e )
-    {
-      e -> reschedule( 10.0 );
-    }
-    else
-    {
-      e = new ( s -> sim ) expiration_t( s -> sim, p );
-    }
+  if( e )
+  {
+    e -> reschedule( 10.0 );
+  }
+  else
+  {
+    e = new ( s -> sim ) expiration_t( s -> sim, p );
   }
 }
 
@@ -3848,8 +3845,8 @@ struct life_tap_t : public warlock_spell_t
     double mana = base_tap + 3.0 * p -> spirit();
     p -> resource_loss( RESOURCE_HEALTH, mana );
     p -> resource_gain( RESOURCE_MANA, mana * ( 1.0 + p -> talents.improved_life_tap * 0.10 ), p -> gains_life_tap );
-    trigger_tier7_4pc( this );
     trigger_life_tap_glyph( this );
+    trigger_tier7_4pc( this );
   }
 
   virtual bool ready()
@@ -4518,9 +4515,11 @@ void warlock_t::reset()
   buffs_fel_armor                    = 0;
   buffs_flame_shadow                 = 0;
   buffs_haunted                      = 0;
+  buffs_life_tap_glyph               = 0;
   buffs_metamorphosis                = 0;
   buffs_molten_core                  = 0;
   buffs_pet_sacrifice                = 0;
+  buffs_pyroclasm                    = 0;
   buffs_shadow_embrace               = 0;
   buffs_shadow_flame                 = 0;
   buffs_shadow_trance                = 0;
@@ -4541,6 +4540,7 @@ void warlock_t::reset()
   expirations_infernal               = 0;
   expirations_life_tap_glyph         = 0;
   expirations_molten_core            = 0;
+  expirations_pyroclasm              = 0;
   expirations_shadow_embrace         = 0;
   expirations_shadow_flame           = 0;
   expirations_shadow_vulnerability   = 0;
