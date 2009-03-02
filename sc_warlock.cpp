@@ -3719,9 +3719,10 @@ struct soul_fire_t : public warlock_spell_t
 {
   int backdraft;
   int decimation;
+  int noweave;
 
   soul_fire_t( player_t* player, const std::string& options_str ) : 
-    warlock_spell_t( "soul_fire", player, SCHOOL_FIRE, TREE_DESTRUCTION ), backdraft(0), decimation(0)
+    warlock_spell_t( "soul_fire", player, SCHOOL_FIRE, TREE_DESTRUCTION ), backdraft(0), decimation(0), noweave(0)
   {
     warlock_t* p = player -> cast_warlock();
 
@@ -3729,6 +3730,7 @@ struct soul_fire_t : public warlock_spell_t
     {
       { "backdraft",  OPT_INT, &backdraft  },
       { "decimation", OPT_INT, &decimation },
+      { "noweave"   , OPT_INT, &noweave    },
       { NULL }
     };
     parse_options( options, options_str );
@@ -3771,7 +3773,9 @@ struct soul_fire_t : public warlock_spell_t
 
   virtual void execute()
   {
-    warlock_spell_t::execute(); 
+    warlock_t* p = player -> cast_warlock();
+    warlock_spell_t::execute();
+    if( noweave ) p -> buffs_decimation = 0;
     if( result_is_hit() )
     {
       trigger_soul_leech( this );
