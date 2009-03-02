@@ -2179,7 +2179,7 @@ struct starfire_t : public druid_spell_t
     std::string eclipse_str;
     option_t options[] =
     {
-      { "extendmf", OPT_INT,   &extend_moonfire },
+      { "extendmf", OPT_INT,    &extend_moonfire },
       { "eclipse",  OPT_STRING, &eclipse_str     },
       { "prev",     OPT_STRING, &prev_str        },
       { NULL }
@@ -2869,7 +2869,7 @@ void druid_t::init_unique_gear()
     if( gear.tier7_2pc ) tiers.t7_2pc_feral = 1;
     if( gear.tier7_4pc ) tiers.t7_4pc_feral = 1;
   
-    equipped_weapon_dps = main_hand_weapon.damage;
+    equipped_weapon_dps = main_hand_weapon.damage / main_hand_weapon.swing_time;
   }
 }
 
