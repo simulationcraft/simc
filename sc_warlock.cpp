@@ -3818,15 +3818,19 @@ struct life_tap_t : public warlock_spell_t
 {
   int    trigger;
   int    inferno;
+  int    glyph;
+  int    tier7_4pc;
   double base_tap;
 
   life_tap_t( player_t* player, const std::string& options_str ) : 
-    warlock_spell_t( "life_tap", player, SCHOOL_SHADOW, TREE_AFFLICTION ), trigger(1000), inferno(0), base_tap(0)
+    warlock_spell_t( "life_tap", player, SCHOOL_SHADOW, TREE_AFFLICTION ), trigger(1000), inferno(0), glyph(0), tier7_4pc(0), base_tap(0)
   {
     option_t options[] =
     {
-      { "trigger", OPT_INT, &trigger },
-      { "inferno", OPT_INT, &inferno },
+      { "trigger",   OPT_INT, &trigger   },
+      { "inferno",   OPT_INT, &inferno   },
+      { "glyph",     OPT_INT, &glyph     },
+      { "tier7_4pc", OPT_INT, &tier7_4pc },
       { NULL }
     };
     parse_options( options, options_str );
@@ -3845,6 +3849,7 @@ struct life_tap_t : public warlock_spell_t
     p -> resource_loss( RESOURCE_HEALTH, mana );
     p -> resource_gain( RESOURCE_MANA, mana * ( 1.0 + p -> talents.improved_life_tap * 0.10 ), p -> gains_life_tap );
     trigger_tier7_4pc( this );
+    trigger_life_tap_glyph( this );
   }
 
   virtual bool ready()
@@ -3860,6 +3865,12 @@ struct life_tap_t : public warlock_spell_t
                 p -> resource_base   [ RESOURCE_MANA ] * 0.80 );
       }
     }
+
+    if( tier7_4pc )
+      return( ! p -> buffs.tier7_4pc );
+
+    if( glyph )
+      return( ! p -> buffs_life_tap_glyph );
 
     return( p -> resource_current[ RESOURCE_MANA ] < trigger );
   }
