@@ -584,10 +584,6 @@ static void trigger_burnout( spell_t* s )
   if( ! s -> resource_consumed )
     return;
 
-  if( s -> school != SCHOOL_FIRE &&
-      s -> school != SCHOOL_FROSTFIRE )
-    return;
-
   p -> resource_loss( RESOURCE_MANA, s -> resource_consumed * p -> talents.burnout * 0.01 );
 }
 
@@ -1198,7 +1194,9 @@ struct arcane_barrage_t : public mage_spell_t
     base_crit        += p -> talents.arcane_instability * 0.01;
     base_hit         += p -> talents.arcane_focus * 0.01;
 
-    base_crit_bonus_multiplier *= 1.0 + p -> talents.spell_power * 0.25 + ( p -> gear.tier7_4pc ? 0.05 : 0.00 );
+    base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) + 
+					  ( p -> talents.burnout     * 0.10 ) +
+					  ( p -> gear.tier7_4pc ? 0.05 : 0.00 ) );
   }
 
   virtual void player_buff()
@@ -1271,7 +1269,9 @@ struct arcane_blast_t : public mage_spell_t
     base_hit         += p -> talents.arcane_focus * 0.01;
     direct_power_mod += p -> talents.arcane_empowerment * 0.03;
 
-    base_crit_bonus_multiplier *= 1.0 + p -> talents.spell_power * 0.25 + ( p -> gear.tier7_4pc ? 0.05 : 0.00 );
+    base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25   ) + 
+                                          ( p -> talents.burnout     * 0.10   ) +
+					  ( p -> gear.tier7_4pc ? 0.05 : 0.00 ) );
 
     if( p -> gear.tier5_2pc ) base_multiplier *= 1.05;
   }
@@ -1413,7 +1413,8 @@ struct arcane_missiles_t : public mage_spell_t
     base_hit         += p -> talents.arcane_focus * 0.01;
     direct_power_mod += p -> talents.arcane_empowerment * 0.03;        // bonus per missle
 
-    base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25   ) + 
+    base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) + 
+                                          ( p -> talents.burnout     * 0.10 ) +
 					  ( p -> glyphs.arcane_missiles ? 0.25 : 0.00 ) +
 					  ( p -> gear.tier7_4pc         ? 0.05 : 0.00 ) );
 
@@ -1836,9 +1837,9 @@ struct fire_ball_t : public mage_spell_t
     base_crit         += p -> talents.pyromaniac * 0.01;
     direct_power_mod  += p -> talents.empowered_fire * 0.05;
 
-    base_crit_bonus_multiplier *= 1.0 + ( p -> talents.spell_power * 0.25 +
-                                          p -> talents.burnout     * 0.10 + 
-                                        ( p -> gear.tier7_4pc ? 0.05 : 0.00 ) );
+    base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) +
+                                          ( p -> talents.burnout     * 0.10 ) + 
+					  ( p -> gear.tier7_4pc ? 0.05 : 0.00 ) );
 
     if( p -> gear.tier6_4pc   ) base_multiplier *= 1.05;
     if( p -> glyphs.fire_ball ) base_crit += 0.05;
@@ -1932,9 +1933,9 @@ struct fire_blast_t : public mage_spell_t
     base_crit        += p -> talents.critical_mass * 0.02;
     base_crit        += p -> talents.pyromaniac * 0.01;
 
-    base_crit_bonus_multiplier *= 1.0 + ( p -> talents.spell_power * 0.25 +
-                                          p -> talents.burnout     * 0.10 +
-                                        ( p -> gear.tier7_4pc ? 0.05 : 0.00 ) );
+    base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) +
+                                          ( p -> talents.burnout     * 0.10 ) +
+					  ( p -> gear.tier7_4pc ? 0.05 : 0.00 ) );
   }
   virtual void execute()
   {
@@ -1986,9 +1987,9 @@ struct living_bomb_t : public mage_spell_t
     base_crit        += p -> talents.pyromaniac * 0.01;
     base_crit        += p -> talents.world_in_flames * 0.02;
 
-    base_crit_bonus_multiplier *= 1.0 + ( p -> talents.spell_power * 0.25 +
-                                          p -> talents.burnout     * 0.10 + 
-                                        ( p -> gear.tier7_4pc ? 0.05 : 0.00 ) );
+    base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) +
+                                          ( p -> talents.burnout     * 0.10 ) + 
+					  ( p -> gear.tier7_4pc ? 0.05 : 0.00 ) );
   }
 
   // Odd thing to handle: The direct-damage comes at the last tick instead of the beginning of the spell.
@@ -2076,9 +2077,9 @@ struct pyroblast_t : public mage_spell_t
     base_crit        += p -> talents.pyromaniac * 0.01;
     base_crit        += p -> talents.world_in_flames * 0.02;
 
-    base_crit_bonus_multiplier *= 1.0 + ( p -> talents.spell_power * 0.25 +
-                                          p -> talents.burnout     * 0.10 + 
-                                        ( p -> gear.tier7_4pc ? 0.05 : 0.00 ) );
+    base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) +
+                                          ( p -> talents.burnout     * 0.10 ) + 
+					  ( p -> gear.tier7_4pc ? 0.05 : 0.00 ) );
   }
 
   virtual void execute()
@@ -2153,9 +2154,9 @@ struct scorch_t : public mage_spell_t
     base_crit        += p -> talents.critical_mass * 0.02;
     base_crit        += p -> talents.pyromaniac * 0.01;
 
-    base_crit_bonus_multiplier *= 1.0 + ( p -> talents.spell_power * 0.25 +
-					  p -> talents.burnout     * 0.10 +
-					( p -> gear.tier7_4pc ? 0.05 : 0.00 ) );
+    base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) +
+					  ( p -> talents.burnout     * 0.10 ) +
+					  ( p -> gear.tier7_4pc ? 0.05 : 0.00 ) );
 
     if( debuff ) assert( p -> talents.improved_scorch );
   }
@@ -2256,9 +2257,10 @@ struct frost_bolt_t : public mage_spell_t
     base_crit         += p -> talents.empowered_frost_bolt * 0.02;
     direct_power_mod  += p -> talents.empowered_frost_bolt * 0.05;
 
-    base_crit_bonus_multiplier *= 1.0 + ( p -> talents.ice_shards  * 1.0/3 +
-                                          p -> talents.spell_power * 0.25  + 
-                                        ( p -> gear.tier7_4pc ? 0.05 : 0.00 ) );
+    base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.ice_shards  * 1.0/3 ) +
+					  ( p -> talents.spell_power * 0.25  ) + 
+                                          ( p -> talents.burnout     * 0.10  ) +
+					  ( p -> gear.tier7_4pc ? 0.05 : 0.00 ) );
 
     if( p -> gear.tier6_4pc    ) base_multiplier *= 1.05;
     if( p -> glyphs.frost_bolt ) base_multiplier *= 1.05;
@@ -2325,9 +2327,10 @@ struct ice_lance_t : public mage_spell_t
     base_multiplier  *= 1.0 + p -> talents.chilled_to_the_bone * 0.01;
     base_crit        += p -> talents.arcane_instability * 0.01;
 
-    base_crit_bonus_multiplier *= 1.0 + ( p -> talents.ice_shards  * 1.0/3 +
-                                          p -> talents.spell_power * 0.25  +
-                                        ( p -> gear.tier7_4pc ? 0.05 : 0.00 ) );
+    base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.ice_shards  * 1.0/3 ) +
+                                          ( p -> talents.spell_power * 0.25  ) +
+                                          ( p -> talents.burnout     * 0.10  ) +
+					  ( p -> gear.tier7_4pc ? 0.05 : 0.00 ) );
   }
 
   virtual void player_buff()
@@ -2431,10 +2434,10 @@ struct frostfire_bolt_t : public mage_spell_t
     base_crit         += p -> talents.pyromaniac * 0.01;
     direct_power_mod  += p -> talents.empowered_fire * 0.05;
 
-    base_crit_bonus_multiplier *= 1.0 + ( p -> talents.spell_power * 0.25  +
-                                          p -> talents.burnout     * 0.10  +
-                                          p -> talents.ice_shards  * 1.0/3 +
-                                        ( p -> gear.tier7_4pc ? 0.05 : 0.00 ) );
+    base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.ice_shards  * 1.0/3 ) +
+					  ( p -> talents.spell_power * 0.25  ) +
+                                          ( p -> talents.burnout     * 0.10  ) +
+                                          ( p -> gear.tier7_4pc ? 0.05 : 0.00 ) );
 
     if ( p -> glyphs.frostfire )
     {
