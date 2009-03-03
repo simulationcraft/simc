@@ -950,6 +950,39 @@ static void trigger_mirror_of_truth( action_t* a )
   }
 }
 
+// Grim Toll ====================================================
+
+static void trigger_grim_toll( action_t* a )
+{
+  struct grim_toll_expiration_t : public event_t
+  {
+    grim_toll_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
+    {
+      name = "Grim Toll";
+      player -> aura_gain( "Grim Toll" );
+      player -> attack_penetration += 612 / player -> rating.armor_penetration;
+      player -> cooldowns.grim_toll = sim -> current_time + 45;
+      sim -> add_event( this, 10.0 );
+    }
+    virtual void execute()
+    {
+      player -> aura_loss( "Grim Toll" ); 
+      player -> attack_penetration -= 612 / player -> rating.armor_penetration;
+    }
+  };
+
+  player_t* p = a -> player;
+
+  if( p -> gear.grim_toll &&
+      a -> sim -> cooldown_ready( p -> cooldowns.grim_toll ) &&
+      a -> sim -> roll( 0.15 ) )
+  {
+    p -> procs.grim_toll -> occur();
+
+    new ( a -> sim ) grim_toll_expiration_t( a -> sim, p );
+  }
+}
+
 // Fury of the Five Flights ======================================
 
 static void trigger_fury_of_the_five_flights( action_t* a )
@@ -1055,6 +1088,7 @@ static void trigger_darkmoon_greatness( action_t* a )
 void unique_gear_t::attack_hit_event( attack_t* a )
 {
   trigger_fury_of_the_five_flights( a );
+  trigger_grim_toll( a );
   
   if ( a -> result == RESULT_CRIT )
   {
@@ -1529,6 +1563,7 @@ bool unique_gear_t::parse_option( player_t*          p,
     { "eye_of_magtheridon",                   OPT_INT,   &( p -> gear.eye_of_magtheridon              ) },
     { "forge_ember",                          OPT_INT,   &( p -> gear.forge_ember                     ) },
     { "fury_of_the_five_flights",             OPT_INT,   &( p -> gear.fury_of_the_five_flights        ) },
+    { "grim_toll",                            OPT_INT,   &( p -> gear.grim_toll                       ) },
     { "illustration_of_the_dragon_soul",      OPT_INT,   &( p -> gear.illustration_of_the_dragon_soul ) },
     { "lightning_capacitor",                  OPT_INT,   &( p -> gear.lightning_capacitor             ) },
     { "mirror_of_truth",                      OPT_INT,   &( p -> gear.mirror_of_truth                 ) },

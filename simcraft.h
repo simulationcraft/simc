@@ -595,6 +595,7 @@ struct player_t
     int  eye_of_magtheridon;
     int  forge_ember;
     int  fury_of_the_five_flights;
+    int  grim_toll;
     int  illustration_of_the_dragon_soul;
     int  lightning_capacitor;
     int  mark_of_defiance;
@@ -712,6 +713,7 @@ struct player_t
     double darkmoon_greatness;
     double elder_scribes;
     double eternal_sage;
+    double grim_toll;
     double honor_among_thieves;
     double mark_of_defiance;
     double mirror_of_truth;
@@ -786,7 +788,7 @@ struct player_t
   struct procs_t
   {
     proc_t* ashtongue_talisman;
-	proc_t* darkmoon_greatness;
+    proc_t* darkmoon_greatness;
     proc_t* dying_curse;
     proc_t* elder_scribes;
     proc_t* embrace_of_the_spider;
@@ -794,6 +796,7 @@ struct player_t
     proc_t* extract_of_necromatic_power;
     proc_t* eye_of_magtheridon;
     proc_t* forge_ember;
+    proc_t* grim_toll;
     proc_t* judgement_of_wisdom;
     proc_t* lightning_capacitor;
     proc_t* mark_of_defiance;
