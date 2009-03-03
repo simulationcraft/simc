@@ -205,7 +205,10 @@ void action_t::player_buff()
     player_multiplier *= 1.03;
   }
 
-  if( p -> buffs.tricks_of_the_trade ) player_multiplier *= 1.15;
+  if( p -> buffs.tricks_of_the_trade ) 
+  {
+    player_multiplier *= 1.0 + p -> buffs.tricks_of_the_trade * 0.01;
+  }
 
   if( sim -> debug ) 
     report_t::log( sim, "action_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f", 
@@ -233,7 +236,7 @@ void action_t::target_debuff( int dmg_type )
     if( t -> debuffs.blood_frenzy  || 
         t -> debuffs.savage_combat ) 
     {
-      target_multiplier *= 1.02;
+      target_multiplier *= sim -> P309 ? 1.02 : 1.04;
     }
     t -> uptimes.blood_frenzy  -> update( t -> debuffs.blood_frenzy  != 0 );
     t -> uptimes.savage_combat -> update( t -> debuffs.savage_combat != 0 );
@@ -552,6 +555,7 @@ void action_t::execute()
     {
       // FIXME! This should just cancel existing tick......
       current_tick = 0;
+      added_ticks = 0;
       schedule_tick();
 
       if( school == SCHOOL_BLEED ) sim -> target -> debuffs.bleeding++;
@@ -792,6 +796,7 @@ void action_t::reset()
 
   ticking = 0;
   current_tick = 0;
+  added_ticks = 0;
   cooldown_ready = 0;
   duration_ready = 0;
   result = RESULT_NONE;
