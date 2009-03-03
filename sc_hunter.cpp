@@ -11,7 +11,6 @@
 
 // 3.1 TODO list
 // * New pet talents
-// * Piercing Shots
 
 struct hunter_pet_t;
 
@@ -25,6 +24,7 @@ struct hunter_t : public player_t
   int           active_black_arrow;
   action_t*     active_chimera_serpent;
   action_t*     active_wild_quiver;
+  action_t*     active_piercing_shots;
   action_t*     active_scorpid_sting;
   action_t*     active_serpent_sting;
   action_t*     active_viper_sting;
@@ -179,6 +179,7 @@ struct hunter_t : public player_t
     active_black_arrow     = 0;
     active_chimera_serpent = 0;
     active_wild_quiver     = 0;
+    active_piercing_shots  = 0;
     active_scorpid_sting   = 0;
     active_serpent_sting   = 0;
     active_viper_sting     = 0;
@@ -1158,6 +1159,52 @@ static void consume_owls_focus( action_t* a )
   event_t::early( p -> expirations_owls_focus );
 }
 
+// trigger_piercing_shots
+
+static void trigger_piercing_shots( action_t* a )
+{
+  hunter_t* p = a -> player -> cast_hunter();
+
+  if( ! p -> talents.piercing_shots )
+    return;
+
+  struct piercing_shots_t : public attack_t
+  {
+    piercing_shots_t( player_t* p ) : attack_t("piercing_shots", p, RESOURCE_NONE, SCHOOL_BLEED )
+    {
+      may_miss    = false;
+      background  = true;
+      proc        = true;
+      trigger_gcd = 0;
+      base_cost   = 0;
+
+      base_multiplier = 1.0;
+      base_tick_time = 1.0;
+      num_ticks      = 8;
+      tick_power_mod = 0;
+    }
+    void player_buff()
+    {
+      player_multiplier = 1.0;
+    }
+// FIXME: which debuffs apply?
+//    void target_debuff()
+//    {
+//      target_multiplier = 1.0;
+//    }
+  };
+
+  if( ! p -> active_piercing_shots )
+    p -> active_piercing_shots = new piercing_shots_t( p );
+  // new crits overwrite the old debuff even if the new damage is lower :(
+  else if( p -> active_piercing_shots -> ticking )
+    p -> active_piercing_shots -> cancel();
+
+  double dmg = p -> talents.piercing_shots * 0.1 * a -> direct_dmg;
+  p -> active_piercing_shots -> base_tick_dmg = dmg / 8;
+  p -> active_piercing_shots -> execute();
+}
+
 // trigger_rabid_power ===============================================
 
 static void trigger_rabid_power( attack_t* a )
@@ -2098,6 +2145,11 @@ struct aimed_shot_t : public hunter_attack_t
   {
     hunter_attack_t::execute();
     consume_improved_steady_shot( this );
+    if( result == RESULT_CRIT )
+    {
+      if( sim -> patch.after(3, 1, 0) )
+        trigger_piercing_shots( this );
+    }
   }
 
   virtual bool ready()
@@ -2371,6 +2423,11 @@ struct chimera_shot_t : public hunter_attack_t
       }
     }
     consume_improved_steady_shot( this );
+    if( result == RESULT_CRIT )
+    {
+      if( sim -> patch.after(3, 1, 0) )
+        trigger_piercing_shots( this );
+    }
   }
 
   virtual bool ready()
@@ -2813,6 +2870,8 @@ struct steady_shot_t : public hunter_attack_t
       {
         trigger_cobra_strikes( this );
         trigger_hunting_party( this );
+        if( sim -> patch.after(3, 1, 0) )
+          trigger_piercing_shots( this );
       }
     }
   }
@@ -3399,6 +3458,7 @@ void hunter_t::reset()
   active_pet           = 0;
   active_aspect        = ASPECT_NONE;
   active_black_arrow   = 0;
+  active_piercing_shots = 0;
   active_scorpid_sting = 0;
   active_serpent_sting = 0;
   active_viper_sting   = 0;
