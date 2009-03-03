@@ -266,7 +266,7 @@ struct hunter_t : public player_t
     if( sim -> patch.before(3, 1, 0) )
       return 1.0 + talents.ranged_weapon_specialization * 0.01;
     else {
-      return util_t::talent_rank( talents.ranged_weapon_specialization, 3, 1.01, 1.03, 1.05 );
+      return 1.0 + util_t::talent_rank( talents.ranged_weapon_specialization, 3, 0.01, 0.03, 0.05 );
     }
   }
 };
