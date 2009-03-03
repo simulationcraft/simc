@@ -1358,7 +1358,10 @@ static void trigger_decimation( warlock_spell_t* s )
     {
       warlock_t* p = player -> cast_warlock();
       p -> aura_loss( "Decimation" );
-      p -> buffs_decimation = 0;
+      if( p -> buffs_decimation == 2 )
+        p -> buffs_decimation = 1;
+      else if( p -> buffs_decimation != 1 )
+        p -> buffs_decimation = 0;
       p -> expirations_decimation = 0;
     }
   };
