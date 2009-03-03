@@ -72,6 +72,10 @@ SRC_H   := $(filter %.h,   $(SRC))
 SRC_CPP := $(filter %.cpp, $(SRC))
 SRC_OBJ := $(SRC_CPP:.cpp=.o)
 
+.PHONY:		all mostlyclean clean
+
+all: simcraft
+
 simcraft: $(SRC_OBJ)
 	$(CXX) $(OPTS) $(LINK_FLAGS) $(SRC_OBJ) $(LINK_LIBS) -o simcraft
 
@@ -85,8 +89,11 @@ tarball:
 	tar -cvf simcraft-r$(REV).tar $(SRC) Makefile *.simcraft
 	gzip simcraft-r$(REV).tar
 
-clean:
-	rm -f simcraft *.o *.d *~
+mostlyclean:
+	rm -f *.o *.d *~
+
+clean: mostlyclean
+	rm -f simcraft
 
 # Deprecated targets
 
