@@ -6,8 +6,8 @@ talents=http://talent.mmo-champion.com/?warlock=05203015220131050000000000000000
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/spell_stone/fel_armor/summon_pet,felguard
 actions+=/soul_fire,decimation=1/curse_of_agony/corruption,health_percentage>=35/immolate/incinerate/life_tap
 Caster_T7_Base_Gear.simcraft
-enchant_crit_rating=-75
-enchant_hit_rating=+75
+enchant_crit_rating=-80
+enchant_hit_rating=+80
 glyph_curse_of_agony=1
 glyph_felguard=1
 glyph_incinerate=1
