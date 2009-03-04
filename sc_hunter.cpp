@@ -1314,8 +1314,13 @@ struct hunter_pet_attack_t : public attack_t
 
     may_glance = ! special;
 
-    if( p -> group() == PET_FEROCITY ) base_multiplier *= 1.10;
-    if( p -> group() == PET_CUNNING  ) base_multiplier *= 1.05;
+    if( p -> sim -> patch.after(3, 1, 0) )
+      base_multiplier *= 1.05;
+    else
+    {
+      if( p -> group() == PET_FEROCITY ) base_multiplier *= 1.10;
+      if( p -> group() == PET_CUNNING  ) base_multiplier *= 1.05;
+    }
 
     // Assume happy pet
     base_multiplier *= 1.25;
@@ -1621,8 +1626,13 @@ struct hunter_pet_spell_t : public spell_t
   {
     hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
 
-    if( p -> group() == PET_FEROCITY ) base_multiplier *= 1.10;
-    if( p -> group() == PET_CUNNING  ) base_multiplier *= 1.05;
+    if( p -> sim -> patch.after(3, 1, 0) )
+      base_multiplier *= 1.05;
+    else
+    {
+      if( p -> group() == PET_FEROCITY ) base_multiplier *= 1.10;
+      if( p -> group() == PET_CUNNING  ) base_multiplier *= 1.05;
+    }
 
     base_multiplier *= 1.0 + p -> talents.spiked_collar * 0.03;
   }
