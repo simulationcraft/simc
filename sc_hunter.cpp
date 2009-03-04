@@ -2288,7 +2288,7 @@ struct black_arrow_t : public hunter_attack_t
     base_tick_time   = 3.0;
     num_ticks        = 5;
     tick_power_mod   = 0.1 / 5.0;
-    cooldown         = 30;
+    cooldown         = 30 - p -> talents.resourcefulness * 2;
     cooldown_group   = "traps";
   }
 
