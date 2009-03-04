@@ -329,8 +329,11 @@ struct warlock_pet_t : public pet_t
     attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.0 + ( o -> talents.fel_intellect * 0.03 +
                                                               o -> talents.fel_vitality  * 0.05 );
 
-      stamina_per_owner += o -> talents.fel_synergy * 0.05;
-    intellect_per_owner += o -> talents.fel_synergy * 0.05;
+    if( sim -> patch.before( 3, 1, 0 ) )
+    {
+        stamina_per_owner += o -> talents.fel_synergy * 0.05;
+      intellect_per_owner += o -> talents.fel_synergy * 0.05;
+    }
 
     initial_attack_power_per_strength = 2.0;
     initial_attack_crit_per_agility   = rating_t::interpolate( level, 0.01/16.0, 0.01/24.9, 0.01/52.1 );
@@ -874,9 +877,6 @@ struct infernal_pet_t : public warlock_pet_t
 
     resource_base[ RESOURCE_HEALTH ] = 20300;
     resource_base[ RESOURCE_MANA   ] = 0;
-
-      stamina_per_owner = owner -> cast_warlock() -> talents.fel_synergy * 0.05;
-    intellect_per_owner = owner -> cast_warlock() -> talents.fel_synergy * 0.05;
 
     base_attack_power = -20;
 
