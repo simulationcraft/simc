@@ -8,8 +8,13 @@ rogue=Rogue_T7_07_21_43
 level=80
 talents=http://www.wowhead.com/?talent=fhLZ0xV0x0xoZxbrbhGzdAzqc
 actions=flask,type=endless_rage/food,type=fish_feast/apply_poison,main_hand=wound,off_hand=wound
-actions+=/auto_attack/pool_energy,for_next=1/slice_and_dice,min_combo_points=4,snd<=3/tricks_of_the_trade
-actions+=/blade_flurry/rupture,min_combo_points=5/eviscerate,min_combo_points=5
+actions+=/auto_attack
+actions+=/pool_energy,for_next=1/slice_and_dice,min_combo_points=4,snd<=3
+actions+=/tricks_of_the_trade
+actions+=/blade_flurry
+actions+=/rupture,min_combo_points=5
+actions+=/eviscerate,min_combo_points=5
+actions+=/backstab,max_combo_points=4,energy>=80
 Melee_T7_Base_Gear.simcraft
 gear_expertise_rating=200
 glyph_rupture=1

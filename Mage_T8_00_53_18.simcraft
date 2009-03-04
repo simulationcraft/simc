@@ -1,0 +1,14 @@
+#!simcraft max_time=300 optimal_raid=1
+
+patch=3.1.0
+mage=Mage_T8_00_53_18
+level=80
+talents=http://ptr.wowhead.com/?talent=oZfVc0RhIuVubhstbIccoc
+actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/arcane_brilliance/molten_armor
+actions+=/mana_gem,trigger=1000/speed_potion
+actions+=/scorch,debuff=1/mirror_image/combustion/icy_veins/living_bomb/pyroblast,hot_streak=1/frostfire_bolt
+actions+=/evocation
+Caster_T7_Base_Gear.simcraft
+glyph_molten_armor=1
+glyph_frostfire=1
+glyph_living_bomb=1

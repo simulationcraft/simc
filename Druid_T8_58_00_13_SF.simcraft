@@ -1,0 +1,20 @@
+#!simcraft max_time=300 optimal_raid=1
+
+# The "eclipse=trigger" option to wrath/starfire will make sure that it is only used to trigger the Eclipse 
+# talent which means it will only be used after the cooldown is ready and the effect has not yet proc'd.
+
+patch=3.1.0
+druid=Druid_T8_58_00_13_SF
+level=80
+talents=http://www.wowhead.com/?talent=0xRbuiIsfdIVhouZbxczb
+actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/mark_of_the_wild/moonkin_form/mana_potion,trigger=4300/innervate,trigger=12000
+actions+=/treants/starfall,skip_on_eclipse=1
+actions+=/moonfire,eclipse_left>=10/insect_swarm,skip_on_eclipse=1
+actions+=/wrath,eclipse=trigger/starfire
+Caster_T7_Base_Gear.simcraft
+enchant_spell_power=+30
+enchant_hit_rating=-25
+glyph_moonfire=1
+glyph_starfire=1
+glyph_insect_swarm=1
+idol_of_the_shooting_star=1

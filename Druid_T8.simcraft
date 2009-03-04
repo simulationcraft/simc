@@ -1,0 +1,11 @@
+#!simcraft
+
+optimal_raid=1
+
+Globals.simcraft
+
+patch=3.0.1
+
+Druid_T8_58_00_13_SF.simcraft
+Druid_T8_58_00_13_W.simcraft
+Druid_T8_58_00_13_W_FF.simcraft

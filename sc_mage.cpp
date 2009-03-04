@@ -1229,7 +1229,6 @@ struct arcane_barrage_t : public mage_spell_t
 struct arcane_blast_t : public mage_spell_t
 {
   int ap_burn;
-  int reset_buff;
   int max_buff;
 
   arcane_blast_t( player_t* player, const std::string& options_str ) : 
