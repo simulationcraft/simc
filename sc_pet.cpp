@@ -17,7 +17,6 @@ pet_t::pet_t( sim_t*             s,
 	      bool               g ) :
   player_t( s, g ? PLAYER_GUARDIAN : PLAYER_PET, n ), owner(o), next_pet(0)
 {
-  party = owner -> party;
   level = owner -> level;
   full_name_str = owner -> name_str + "_" + name_str;
   next_pet = owner -> pet_list;
@@ -61,7 +60,6 @@ double pet_t::intellect()
 void pet_t::init()
 {
   player_t::init();
-  party = owner -> party;
   level = owner -> level;
 }
 

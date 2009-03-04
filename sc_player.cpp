@@ -138,7 +138,7 @@ void player_t::gear_t::allocate_attack_power_budget( sim_t* sim )
 player_t::player_t( sim_t*             s, 
                     int                t,
 		    const std::string& n ) :
-  sim(s), name_str(n), next(0), type(t), level(80), party(0), gcd_ready(0), base_gcd(1.5), sleeping(0), pet_list(0),
+  sim(s), name_str(n), next(0), type(t), level(80), party(0), member(0), gcd_ready(0), base_gcd(1.5), sleeping(0), pet_list(0),
   // Haste
   base_haste_rating(0), initial_haste_rating(0), haste_rating(0), haste(1.0),
   // Spell Mechanics
@@ -1927,6 +1927,7 @@ bool player_t::parse_option( const std::string& name,
   option_t options[] =
   {
     // Player - General
+    { "name",                                 OPT_STRING, &( name_str                                       ) },
     { "level",                                OPT_INT,    &( level                                          ) },
     { "gcd",                                  OPT_FLT,    &( base_gcd                                       ) },
     { "sleeping",                             OPT_INT,    &( sleeping                                       ) },

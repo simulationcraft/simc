@@ -458,7 +458,7 @@ struct player_t
   sim_t*      sim;
   std::string name_str, talents_str;
   player_t*   next;
-  int         type, level, party;
+  int         type, level, party, member;
   double      gcd_ready, base_gcd;
   int         sleeping;
   rating_t    rating;
@@ -714,7 +714,6 @@ struct player_t
     double elder_scribes;
     double eternal_sage;
     double grim_toll;
-    double honor_among_thieves;
     double mark_of_defiance;
     double mirror_of_truth;
     double mystical_skyfire;

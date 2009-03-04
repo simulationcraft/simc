@@ -325,15 +325,24 @@ bool sim_t::init()
     }
     else
     {
+      party_index++;
+
       std::vector<std::string> player_names;
       int num_players = util_t::string_split( player_names, party_str, ",;/" );
-      party_index++;
+      int member_index=0;
+
       for( int j=0; j < num_players; j++ )
       {
         player_t* p = find_player( player_names[ j ] );
         if( ! p ) printf( "simcraft: ERROR! Unable to find player %s\n", player_names[ j ].c_str() );
         assert( p );
         p -> party = party_index;
+	p -> member = member_index++;
+	for( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet ) 
+	{
+	  pet -> party = party_index;
+	  pet -> member = member_index++;
+	}
       }
     }
   }

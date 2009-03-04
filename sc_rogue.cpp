@@ -39,8 +39,8 @@ struct rogue_t : public player_t
   player_t* buffs_tricks_target;
 
   // Cooldowns
-  double cooldowns_honor_among_thieves;
-  double cooldowns_seal_fate;
+  std::vector<double> cooldowns_honor_among_thieves;
+  double              cooldowns_seal_fate;
 
   // Expirations
   event_t* expirations_envenom;
@@ -201,8 +201,7 @@ struct rogue_t : public player_t
     buffs_tricks_target      = 0;
 
     // Cooldowns
-    cooldowns_honor_among_thieves = 0;
-    cooldowns_seal_fate           = 0;
+    cooldowns_seal_fate = 0;
 
     // Expirations
     expirations_envenom          = 0;
@@ -3116,8 +3115,11 @@ void rogue_t::reset()
   buffs_tricks_target      = 0;
 
   // Cooldowns
-  cooldowns_honor_among_thieves = 0;
-  cooldowns_seal_fate           = 0;
+  cooldowns_seal_fate = 0;
+  cooldowns_honor_among_thieves.clear();
+  for( player_t* p = sim -> player_list; p; p = p -> next )
+    if( p -> party != 0 && p -> party == party )
+      cooldowns_honor_among_thieves.push_back( 0.0 );
 
   // Expirations
   expirations_envenom          = 0;
@@ -3140,11 +3142,11 @@ void rogue_t::raid_event( action_t* a )
 	! a -> may_glance &&
 	sim -> roll( talents.honor_among_thieves / 3.0 ) )
     {
-      if( sim -> current_time > p -> cooldowns.honor_among_thieves )
+      if( sim -> current_time > cooldowns_honor_among_thieves[ p -> member ] )
       {
 	add_combo_point( this );
 	procs_honor_among_thieves -> occur();
-	p -> cooldowns.honor_among_thieves = sim -> current_time + 1.0;
+	cooldowns_honor_among_thieves[ p -> member ] = sim -> current_time + 1.0;
       }
     }
   }
