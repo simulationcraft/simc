@@ -359,9 +359,11 @@ struct hunter_pet_t : public pet_t
     int feeding_frenzy;
     int rabid;
     int roar_of_recovery;
+    int shark_attack;
     int spiked_collar;
     int spiders_bite;
     int owls_focus;
+    int wild_hunt;
     int wolverine_bite;
 
     talents_t() { memset( (void*) this, 0x0, sizeof( talents_t ) ); }
@@ -466,7 +468,7 @@ struct hunter_pet_t : public pet_t
 
     double ap = player_t::composite_attack_power();
     ap += o -> stamina() * o -> talents.hunter_vs_wild * 0.1;
-    ap += o -> composite_attack_power() * 0.22;
+    ap += o -> composite_attack_power() * 0.22 * (1 + talents.wild_hunt * 0.20);
 
     if( o -> active_aspect == ASPECT_BEAST )
       ap *= 1.1;
@@ -496,9 +498,11 @@ struct hunter_pet_t : public pet_t
       // Talents
       { "cobra_reflexes",   OPT_INT, &( talents.cobra_reflexes   ) },
       { "owls_focus",       OPT_INT, &( talents.owls_focus       ) },
+      { "shark_attack",     OPT_INT, &( talents.shark_attack     ) },
       { "spiked_collar",    OPT_INT, &( talents.spiked_collar    ) },
       { "feeding_frenzy",   OPT_INT, &( talents.feeding_frenzy   ) },
       { "roar_of_recovery", OPT_INT, &( talents.roar_of_recovery ) },
+      { "wild_hunt",        OPT_INT, &( talents.wild_hunt        ) },
       { "wolverine_bite",   OPT_INT, &( talents.wolverine_bite   ) },
       { "spiders_bite",     OPT_INT, &( talents.spiders_bite     ) },
       { "call_of_the_wild", OPT_INT, &( talents.call_of_the_wild ) },
@@ -1326,6 +1330,7 @@ struct hunter_pet_attack_t : public attack_t
     base_multiplier *= 1.25;
 
     base_multiplier *= 1.0 + p -> talents.spiked_collar * 0.03;
+    base_multiplier *= 1.0 + p -> talents.shark_attack * 0.03;
     base_multiplier *= 1.0 + o -> talents.unleashed_fury * 0.03;
     base_multiplier *= 1.0 + o -> talents.kindred_spirits * 0.04;
   }
