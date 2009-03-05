@@ -2843,7 +2843,8 @@ void druid_t::init_base()
   {
     for( int i=0; i < ATTRIBUTE_MAX; i++ )
     {
-      attribute_multiplier[ i ]  *= 1 + 0.02 * talents.survival_of_the_fittest;
+      attribute_multiplier[ i ]  *= 1.0 + 0.02 * talents.survival_of_the_fittest;
+      attribute_multiplier[ i ]  *= 1.0 + 0.01 * talents.improved_mark_of_the_wild;
     }
   }
 }
