@@ -1392,10 +1392,8 @@ static void trigger_decimation( warlock_spell_t* s )
     break;
   case 1:
     // No decimation buff, trigger in air
-    if( s -> decimation_trigger && s -> result_is_hit() )
-      p -> buffs_decimation = 2;
-    else
-      p -> buffs_decimation = 3;
+    if( s -> decimation_trigger )
+      p -> buffs_decimation = ( s -> result_is_hit() ) ? 2 : 3;
     break;
   case 2:
     // Decimation buff, trigger in air
