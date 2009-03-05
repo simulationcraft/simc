@@ -1173,7 +1173,7 @@ static void trigger_piercing_shots( action_t* a )
 
   struct piercing_shots_t : public attack_t
   {
-    piercing_shots_t( player_t* p ) : attack_t("piercing_shots", p, RESOURCE_NONE, SCHOOL_BLEED )
+    piercing_shots_t( player_t* p ) : attack_t( "piercing_shots", p, RESOURCE_NONE, SCHOOL_BLEED )
     {
       may_miss    = false;
       background  = true;
@@ -1197,11 +1197,13 @@ static void trigger_piercing_shots( action_t* a )
 //    }
   };
 
-  if( ! p -> active_piercing_shots )
-    p -> active_piercing_shots = new piercing_shots_t( p );
+  if( ! p -> active_piercing_shots ) p -> active_piercing_shots = new piercing_shots_t( p );
+
   // new crits overwrite the old debuff even if the new damage is lower :(
-  else if( p -> active_piercing_shots -> ticking )
+  if( p -> active_piercing_shots -> ticking )
+  {
     p -> active_piercing_shots -> cancel();
+  }
 
   double dmg = p -> talents.piercing_shots * 0.1 * a -> direct_dmg;
   p -> active_piercing_shots -> base_tick_dmg = dmg / 8;
@@ -3474,7 +3476,6 @@ void hunter_t::reset()
   active_pet           = 0;
   active_aspect        = ASPECT_NONE;
   active_black_arrow   = 0;
-  active_piercing_shots = 0;
   active_scorpid_sting = 0;
   active_serpent_sting = 0;
   active_viper_sting   = 0;

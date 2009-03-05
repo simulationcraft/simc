@@ -870,8 +870,10 @@ void player_t::combat_begin()
     schedule_ready();
   }
 
-  double max_mana = resource_max[ RESOURCE_MANA ];
-  if( max_mana > 0 ) get_gain( "initial_mana" ) -> add( max_mana );
+  if( primary_resource() == RESOURCE_MANA )
+  {
+    get_gain( "initial_mana" ) -> add( resource_max[ RESOURCE_MANA ] );
+  }
 
   if( sim -> optimal_raid )
   {
