@@ -1,0 +1,21 @@
+#!simcraft max_time=300 optimal_raid=1
+
+patch=3.1.0
+hunter=Hunter_T8_53_11_07
+level=80
+talents=http://talent.mmo-champion.com/?hunter=512002015051122431025113510053021000000000000000000005000002000000000000000000000&version=9637
+actions=flask,type=endless_rage/food,type=fish_feast/summon_pet,cat/hunters_mark
+actions+=/auto_shot/kill_command,sync=bestial_wrath/bestial_wrath/aspect/rapid_fire
+actions+=/kill_shot/arcane_shot/serpent_sting/steady_shot
+Melee_T7_Base_Gear.simcraft
+gear_intellect=300
+glyph_bestial_wrath=1
+glyph_steady_shot=1
+glyph_improved_aspect_of_the_hawk=1
+ranged=bow,dps=145,speed=2.9
+ammo_dps=67.5
+quiver_haste=15
+Hunter_T8_Cat.simcraft
+active=Hunter_T8_53_11_07_cat
+wild_hunt=2
+shark_attack=2
