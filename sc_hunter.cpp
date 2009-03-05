@@ -2126,7 +2126,8 @@ struct aimed_shot_t : public hunter_attack_t
     base_crit_bonus_multiplier *= 1.0 + ( p -> talents.mortal_shots     * 0.06 +
                                           p -> talents.marked_for_death * 0.02 );
 
-    base_penetration += p -> talents.piercing_shots * 0.02;
+    if( p -> sim -> patch.before(3, 1, 0) )
+      base_penetration += p -> talents.piercing_shots * 0.02;
 
     add_ammunition();
     add_scope();
@@ -2872,7 +2873,8 @@ struct steady_shot_t : public hunter_attack_t
     base_crit_bonus_multiplier *= 1.0 + ( p -> talents.mortal_shots     * 0.06 +
                                           p -> talents.marked_for_death * 0.02 );
 
-    base_penetration += p -> talents.piercing_shots * 0.02;
+    if( p -> sim -> patch.before(3, 1, 0) )
+      base_penetration += p -> talents.piercing_shots * 0.02;
 
     add_ammunition();
   }
