@@ -2304,6 +2304,8 @@ struct black_arrow_t : public hunter_attack_t
     tick_power_mod   = 0.1 / 5.0;
     cooldown         = 30 - p -> talents.resourcefulness * 2;
     cooldown_group   = "traps";
+
+    base_multiplier *= 1.0 + p -> talents.sniper_training * 0.02;
   }
 
   virtual void execute()
