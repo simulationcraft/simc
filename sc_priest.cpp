@@ -50,6 +50,7 @@ struct priest_t : public player_t
     int  focused_power;
     int  force_of_will;
     int  holy_specialization;
+    int  improved_devouring_plague;
     int  improved_divine_spirit;
     int  improved_inner_fire;
     int  improved_mind_blast;
@@ -756,6 +757,8 @@ struct shadow_word_pain_t : public priest_spell_t
                                p -> talents.improved_shadow_word_pain * 0.03 );
     base_hit += p -> talents.shadow_focus * 0.01;
 
+    tick_may_crit = ! sim -> P309;
+
     if( p -> gear.tier6_2pc ) num_ticks++;
 
     observer = &( p -> active_shadow_word_pain );
@@ -800,7 +803,7 @@ struct shadow_word_pain_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
     spell_t::calculate_tick_damage();
-    if( p -> buffs.shadow_form )
+    if( sim -> P309 && p -> buffs.shadow_form )
     {
       tick_dmg *= 1.0 + total_crit();
     }
@@ -846,6 +849,8 @@ struct vampiric_touch_t : public priest_spell_t
     base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
     base_hit        += p -> talents.shadow_focus * 0.01;
 
+    tick_may_crit = ! sim -> P309;
+
     observer = &( p -> active_vampiric_touch );
   }
 
@@ -876,7 +881,7 @@ struct vampiric_touch_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
     spell_t::calculate_tick_damage();
-    if( p -> buffs.shadow_form )
+    if( sim -> P309 && p -> buffs.shadow_form )
     {
       tick_dmg *= 1.0 + total_crit();
     }
@@ -918,8 +923,12 @@ struct devouring_plague_t : public priest_spell_t
     tick_power_mod   *= 0.92;
     base_cost        *= 1.0 - p -> talents.mental_agility * 0.02 - p -> talents.shadow_focus * 0.02;
     base_cost         = floor(base_cost);
-    base_multiplier  *= 1.0 + p -> talents.darkness * 0.02 + p -> talents.twin_disciplines * 0.01;
+    base_multiplier  *= 1.0 + ( p -> talents.darkness                  * 0.02 + 
+				p -> talents.twin_disciplines          * 0.01 +
+				p -> talents.improved_devouring_plague * 0.05 );
     base_hit         += p -> talents.shadow_focus * 0.01;
+
+    tick_may_crit = ! sim -> P309;
 
     observer = &( p -> active_devouring_plague );
   }
@@ -945,11 +954,22 @@ struct devouring_plague_t : public priest_spell_t
     pop_misery( this );
   }
   
+  virtual double calculate_direct_damage()
+  {
+    priest_t* p = player -> cast_priest();
+    direct_dmg = 0;
+    if( p -> talents.improved_devouring_plague )
+    {
+      direct_dmg = calculate_tick_damage() * num_ticks * p -> talents.improved_devouring_plague * 0.05;
+    }
+    return direct_dmg;
+  }
+
   virtual double calculate_tick_damage()
   {
     priest_t* p = player -> cast_priest();
     spell_t::calculate_tick_damage();
-    if( p -> buffs.shadow_form )
+    if( sim -> P309 && p -> buffs.shadow_form )
     {
       tick_dmg *= 1.0 + total_crit();
     }
@@ -1462,7 +1482,6 @@ struct divine_spirit_t : public priest_spell_t
     priest_spell_t( "divine_spirit", player, SCHOOL_HOLY, TREE_DISCIPLINE ), improved(0), bonus(0)
   {
     priest_t* p = player -> cast_priest();
-    assert( p -> talents.divine_spirit );
 
     trigger_gcd = 0;
 
@@ -1847,40 +1866,80 @@ bool priest_t::get_talent_trees( std::vector<int*>& discipline,
                                  std::vector<int*>& holy,
                                  std::vector<int*>& shadow )
 {
-  talent_translation_t translation[][3] =
+  if( sim -> patch.after( 3, 1, 0 ) )
   {
-    { {  1, NULL                                       }, {  1, NULL                              }, {  1, NULL                                   } },
-    { {  2, &( talents.twin_disciplines )              }, {  2, NULL                              }, {  2, &( talents.improved_spirit_tap )       } },
-    { {  3, NULL                                       }, {  3, &( talents.holy_specialization )  }, {  3, NULL                                   } },
-    { {  4, &( talents.improved_inner_fire )           }, {  4, NULL                              }, {  4, &( talents.shadow_affinity )           } },
-    { {  5, &( talents.improved_power_word_fortitude ) }, {  5, &( talents.divine_fury )          }, {  5, &( talents.improved_shadow_word_pain ) } },
-    { {  6, NULL                                       }, {  6, NULL                              }, {  6, &( talents.shadow_focus )              } },
-    { {  7, NULL                                       }, {  7, NULL                              }, {  7, NULL                                   } },
-    { {  8, &( talents.inner_focus )                   }, {  8, NULL                              }, {  8, &( talents.improved_mind_blast )       } },
-    { {  9, &( talents.meditation )                    }, {  9, NULL                              }, {  9, &( talents.mind_flay )                 } },
-    { { 10, NULL                                       }, { 10, NULL                              }, { 10, &( talents.veiled_shadows )            } },
-    { { 11, &( talents.mental_agility )                }, { 11, &( talents.searing_light )        }, { 11, NULL                                   } },
-    { { 12, NULL                                       }, { 12, NULL                              }, { 12, &( talents.shadow_weaving )            } },
-    { { 13, &( talents.mental_strength )               }, { 13, &( talents.spirit_of_redemption ) }, { 13, NULL                                   } },
-    { { 14, &( talents.divine_spirit )                 }, { 14, &( talents.spiritual_guidance )   }, { 14, &( talents.vampiric_embrace )          } },
-    { { 15, &( talents.improved_divine_spirit )        }, { 15, &( talents.surge_of_light )       }, { 15, &( talents.improved_vampiric_embrace ) } },
-    { { 16, &( talents.focused_power )                 }, { 16, NULL                              }, { 16, &( talents.focused_mind )              } },
-    { { 17, &( talents.enlightenment )                 }, { 17, NULL                              }, { 17, &( talents.mind_melt )                 } },
-    { { 18, NULL                                       }, { 18, NULL                              }, { 18, &( talents.darkness )                  } },
-    { { 19, &( talents.power_infusion )                }, { 19, NULL                              }, { 19, &( talents.shadow_form )               } },
-    { { 20, NULL                                       }, { 20, NULL                              }, { 20, &( talents.shadow_power )              } },
-    { { 21, NULL                                       }, { 21, NULL                              }, { 21, NULL                                   } },
-    { { 22, NULL                                       }, { 22, NULL                              }, { 22, &( talents.misery )                    } },
-    { { 23, &( talents.aspiration )                    }, { 23, NULL                              }, { 23, NULL                                   } },
-    { { 24, NULL                                       }, { 24, NULL                              }, { 24, &( talents.vampiric_touch )            } },
-    { { 25, NULL                                       }, { 25, NULL                              }, { 25, &( talents.pain_and_suffering )        } },
-    { { 26, NULL                                       }, { 26, NULL                              }, { 26, &( talents.twisted_faith )             } },
-    { { 27, NULL                                       }, {  0, NULL                              }, { 27, &( talents.dispersion )                } },
-    { { 28, &( talents.penance )                       }, {  0, NULL                              }, {  0, NULL                                   } },
-    { {  0, NULL                                       }, {  0, NULL                              }, {  0, NULL                                   } }
-  };
-  
-  return player_t::get_talent_trees( discipline, holy, shadow, translation );
+    talent_translation_t translation[][3] =
+    {
+      { {  1, NULL                                       }, {  1, NULL                              }, {  1, NULL                                   } },
+      { {  2, &( talents.twin_disciplines )              }, {  2, NULL                              }, {  2, &( talents.improved_spirit_tap )       } },
+      { {  3, NULL                                       }, {  3, &( talents.holy_specialization )  }, {  3, &( talents.darkness )                  } },
+      { {  4, &( talents.improved_inner_fire )           }, {  4, NULL                              }, {  4, &( talents.shadow_affinity )           } },
+      { {  5, &( talents.improved_power_word_fortitude ) }, {  5, &( talents.divine_fury )          }, {  5, &( talents.improved_shadow_word_pain ) } },
+      { {  6, NULL                                       }, {  6, NULL                              }, {  6, &( talents.shadow_focus )              } },
+      { {  7, NULL                                       }, {  7, NULL                              }, {  7, NULL                                   } },
+      { {  8, &( talents.inner_focus )                   }, {  8, NULL                              }, {  8, &( talents.improved_mind_blast )       } },
+      { {  9, &( talents.meditation )                    }, {  9, NULL                              }, {  9, &( talents.mind_flay )                 } },
+      { { 10, NULL                                       }, { 10, NULL                              }, { 10, &( talents.veiled_shadows )            } },
+      { { 11, &( talents.mental_agility )                }, { 11, &( talents.searing_light )        }, { 11, NULL                                   } },
+      { { 12, NULL                                       }, { 12, NULL                              }, { 12, &( talents.shadow_weaving )            } },
+      { { 13, NULL                                       }, { 13, &( talents.spirit_of_redemption ) }, { 13, NULL                                   } },
+      { { 14, &( talents.mental_strength )               }, { 14, &( talents.spiritual_guidance )   }, { 14, &( talents.vampiric_embrace )          } },
+      { { 15, NULL                                       }, { 15, &( talents.surge_of_light )       }, { 15, &( talents.improved_vampiric_embrace ) } },
+      { { 16, &( talents.focused_power )                 }, { 16, NULL                              }, { 16, &( talents.focused_mind )              } },
+      { { 17, &( talents.enlightenment )                 }, { 17, NULL                              }, { 17, &( talents.mind_melt )                 } },
+      { { 18, NULL                                       }, { 18, NULL                              }, { 18, &( talents.improved_devouring_plague ) } },
+      { { 19, &( talents.power_infusion )                }, { 19, NULL                              }, { 19, &( talents.shadow_form )               } },
+      { { 20, NULL                                       }, { 20, NULL                              }, { 20, &( talents.shadow_power )              } },
+      { { 21, NULL                                       }, { 21, NULL                              }, { 21, NULL                                   } },
+      { { 22, NULL                                       }, { 22, NULL                              }, { 22, &( talents.misery )                    } },
+      { { 23, &( talents.aspiration )                    }, { 23, NULL                              }, { 23, NULL                                   } },
+      { { 24, NULL                                       }, { 24, NULL                              }, { 24, &( talents.vampiric_touch )            } },
+      { { 25, NULL                                       }, { 25, NULL                              }, { 25, &( talents.pain_and_suffering )        } },
+      { { 26, NULL                                       }, { 26, NULL                              }, { 26, &( talents.twisted_faith )             } },
+      { { 27, NULL                                       }, {  0, NULL                              }, { 27, &( talents.dispersion )                } },
+      { { 28, &( talents.penance )                       }, {  0, NULL                              }, {  0, NULL                                   } },
+      { {  0, NULL                                       }, {  0, NULL                              }, {  0, NULL                                   } }
+    };
+    
+    return player_t::get_talent_trees( discipline, holy, shadow, translation );
+  }
+  else
+  {
+    talent_translation_t translation[][3] =
+    {
+      { {  1, NULL                                       }, {  1, NULL                              }, {  1, NULL                                   } },
+      { {  2, &( talents.twin_disciplines )              }, {  2, NULL                              }, {  2, &( talents.improved_spirit_tap )       } },
+      { {  3, NULL                                       }, {  3, &( talents.holy_specialization )  }, {  3, NULL                                   } },
+      { {  4, &( talents.improved_inner_fire )           }, {  4, NULL                              }, {  4, &( talents.shadow_affinity )           } },
+      { {  5, &( talents.improved_power_word_fortitude ) }, {  5, &( talents.divine_fury )          }, {  5, &( talents.improved_shadow_word_pain ) } },
+      { {  6, NULL                                       }, {  6, NULL                              }, {  6, &( talents.shadow_focus )              } },
+      { {  7, NULL                                       }, {  7, NULL                              }, {  7, NULL                                   } },
+      { {  8, &( talents.inner_focus )                   }, {  8, NULL                              }, {  8, &( talents.improved_mind_blast )       } },
+      { {  9, &( talents.meditation )                    }, {  9, NULL                              }, {  9, &( talents.mind_flay )                 } },
+      { { 10, NULL                                       }, { 10, NULL                              }, { 10, &( talents.veiled_shadows )            } },
+      { { 11, &( talents.mental_agility )                }, { 11, &( talents.searing_light )        }, { 11, NULL                                   } },
+      { { 12, NULL                                       }, { 12, NULL                              }, { 12, &( talents.shadow_weaving )            } },
+      { { 13, &( talents.mental_strength )               }, { 13, &( talents.spirit_of_redemption ) }, { 13, NULL                                   } },
+      { { 14, &( talents.divine_spirit )                 }, { 14, &( talents.spiritual_guidance )   }, { 14, &( talents.vampiric_embrace )          } },
+      { { 15, &( talents.improved_divine_spirit )        }, { 15, &( talents.surge_of_light )       }, { 15, &( talents.improved_vampiric_embrace ) } },
+      { { 16, &( talents.focused_power )                 }, { 16, NULL                              }, { 16, &( talents.focused_mind )              } },
+      { { 17, &( talents.enlightenment )                 }, { 17, NULL                              }, { 17, &( talents.mind_melt )                 } },
+      { { 18, NULL                                       }, { 18, NULL                              }, { 18, &( talents.darkness )                  } },
+      { { 19, &( talents.power_infusion )                }, { 19, NULL                              }, { 19, &( talents.shadow_form )               } },
+      { { 20, NULL                                       }, { 20, NULL                              }, { 20, &( talents.shadow_power )              } },
+      { { 21, NULL                                       }, { 21, NULL                              }, { 21, NULL                                   } },
+      { { 22, NULL                                       }, { 22, NULL                              }, { 22, &( talents.misery )                    } },
+      { { 23, &( talents.aspiration )                    }, { 23, NULL                              }, { 23, NULL                                   } },
+      { { 24, NULL                                       }, { 24, NULL                              }, { 24, &( talents.vampiric_touch )            } },
+      { { 25, NULL                                       }, { 25, NULL                              }, { 25, &( talents.pain_and_suffering )        } },
+      { { 26, NULL                                       }, { 26, NULL                              }, { 26, &( talents.twisted_faith )             } },
+      { { 27, NULL                                       }, {  0, NULL                              }, { 27, &( talents.dispersion )                } },
+      { { 28, &( talents.penance )                       }, {  0, NULL                              }, {  0, NULL                                   } },
+      { {  0, NULL                                       }, {  0, NULL                              }, {  0, NULL                                   } }
+    };
+    
+    return player_t::get_talent_trees( discipline, holy, shadow, translation );
+  }
 }
 
 // priest_t::parse_option  =================================================
@@ -1900,6 +1959,7 @@ bool priest_t::parse_option( const std::string& name,
     { "force_of_will",                 OPT_INT,  &( talents.force_of_will                 ) },
     { "holy_specialization",           OPT_INT,  &( talents.holy_specialization           ) },
     { "divine_spirit",                 OPT_INT,  &( talents.divine_spirit                 ) },
+    { "improved_devouring_plague",     OPT_INT,  &( talents.improved_devouring_plague     ) },
     { "improved_divine_spirit",        OPT_INT,  &( talents.improved_divine_spirit        ) },
     { "improved_inner_fire",           OPT_INT,  &( talents.improved_inner_fire           ) },
     { "improved_mind_blast",           OPT_INT,  &( talents.improved_mind_blast           ) },
