@@ -16,6 +16,11 @@ actions+=/rake,cp<=4
 actions+=/shred
 actions+=/faerie_fire_feral
 Melee_T7_Base_Gear.simcraft
+gear_expertise_rating=200
+# Not fair to use the same stats for all melee since Feral Druid needs less expertise.
+# Trade expertise for ivalue-equal amount of attack power
+enchant_attack_power=+160
+enchant_expertise_rating=-80
 glyph_shred=1
 glyph_mangle=1
 glyph_savage_roar=1
