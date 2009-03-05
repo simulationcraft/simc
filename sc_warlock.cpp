@@ -277,7 +277,6 @@ struct warlock_t : public player_t
   virtual void      init_base();
   virtual void      reset();
   virtual bool      get_talent_trees( std::vector<int*>& affliction, std::vector<int*>& demonology, std::vector<int*>& destruction );
-  virtual bool      parse_talents_mmo( const std::string& talent_string );
   virtual bool      parse_option ( const std::string& name, const std::string& value );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
@@ -4686,29 +4685,6 @@ bool warlock_t::get_talent_trees( std::vector<int*>& affliction,
     };
     return player_t::get_talent_trees( affliction, demonology, destruction, translation );
   }
-}
-
-// warlock_t::parse_talents_mmo ============================================
-
-bool warlock_t::parse_talents_mmo( const std::string& talent_string )
-{
-  // warlock mmo encoding: Destruction-Affliction-Demonology
-
-  int size1 = 26;
-  int size2 = 28;
-
-  std::string destruction_string( talent_string,     0,  size1 );
-  std::string  affliction_string( talent_string, size1,  size2 );
-  std::string  demonology_string( talent_string, size1 + size2 );
-
-  if( sim -> debug )
-  {
-    fprintf( sim -> output_file, "%s affliction:  %s\n", name(),  affliction_string.c_str() );
-    fprintf( sim -> output_file, "%s demonology:  %s\n", name(),  demonology_string.c_str() );
-    fprintf( sim -> output_file, "%s destruction: %s\n", name(), destruction_string.c_str() );
-  }
-
-  return parse_talents( affliction_string + demonology_string + destruction_string );
 }
 
 // warlock_t::parse_option =================================================

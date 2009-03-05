@@ -2,7 +2,7 @@
 patch=3.1.0
 warlock=Warlock_T8_03_52_16
 level=80
-talents=http://talent.mmo-champion.com/?warlock=550010050000000000000000000300000000000000000000000000003203301135202530135231301
+talents=http://talent.mmo-champion.com/?warlock=030000000000000000000000000000320330113520253013523130155001005000000000000000000
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/spell_stone/fel_armor/summon_pet,felguard
 actions+=/curse_of_doom,time_to_die>=60/demonic_empowerment/metamorphosis/immolation/soul_fire,decimation=1
 actions+=/corruption,health_percentage>=35/immolate,health_percentage>=35/shadow_bolt/life_tap
