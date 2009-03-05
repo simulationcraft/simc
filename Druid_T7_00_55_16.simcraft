@@ -13,7 +13,7 @@ actions+=/rip,cp>=5,rip<=6
 actions+=/mangle_cat,cp<=4,mangle<=2
 actions+=/rake,cp<=4
 actions+=/shred
-actions+=/faerie_fire
+actions+=/faerie_fire_feral
 Melee_T7_Base_Gear.simcraft
 glyph_rip=1
 glyph_mangle=1
