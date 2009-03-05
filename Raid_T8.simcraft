@@ -11,10 +11,9 @@ Druid_T8_58_00_13_W.simcraft
 Druid_T8_58_00_13_W_FF.simcraft
 Druid_T8_00_55_16.simcraft
 
-Hunter_T7_01_18_52.simcraft
-Hunter_T7_06_14_51.simcraft
-Hunter_T7_13_51_07.simcraft
-Hunter_T7_52_12_07.simcraft
+Hunter_T8_53_11_07.simcraft
+Hunter_T8_13_51_07.simcraft
+Hunter_T8_06_14_51.simcraft
 
 Mage_T8_00_53_18.simcraft
 Mage_T8_18_00_53.simcraft   focus_magic_target=Mage_T8_20_51_00
@@ -41,4 +40,4 @@ Warlock_T8_00_13_58.simcraft
 Warlock_T8_53_00_18.simcraft
 
 # Since honor_among_thieves_interval=0 the HAT Rogue must be in a party
-party=Rogue_T8_07_21_43/Hunter_T7_52_12_07/Hunter_T7_01_18_52/Shaman_T8_16_55_00/Shaman_T8_57_14_00
+party=Rogue_T8_07_21_43/Hunter_T8_53_11_07/Hunter_T8_06_14_51/Shaman_T8_16_55_00/Shaman_T8_57_14_00
