@@ -45,6 +45,7 @@ struct druid_t : public player_t
   // Gains
   gain_t* gains_moonkin_form;
   gain_t* gains_omen_of_clarity;
+  gain_t* gains_primal_precision;
   gain_t* gains_tigers_fury;
 
   // Procs
@@ -71,6 +72,7 @@ struct druid_t : public player_t
     int  dreamstate;
     int  earth_and_moon;
     int  eclipse;
+    int  feral_aggression;
     int  ferocity;
     int  force_of_nature;
     int  furor;
@@ -101,9 +103,11 @@ struct druid_t : public player_t
     int  natures_splendor;
     int  natures_swiftness;
     int  omen_of_clarity;
+    int  predatory_instincts;
     int  predatory_strikes;
     int  primal_fury;
     int  primal_gore;
+    int  primal_precision;
     int  rend_and_tear;
     int  savage_fury;
     int  sharpened_claws;
@@ -115,11 +119,8 @@ struct druid_t : public player_t
     int  wrath_of_cenarius;
 
     // Not Yet Implemented
-    int  feral_aggression; // FIXME fb implementation missing
-    int  feral_instinct;   // FIXME swipe (cat) implementation missing
-    int  primal_precision; // FIXME energy reduction on miss NYI
+    int  feral_instinct;
     int  infected_wounds;
-    int  predatory_instincts;
     int  protector_of_the_pack;
     
     talents_t() { memset( (void*) this, 0x0, sizeof( talents_t ) ); }
@@ -207,8 +208,10 @@ struct druid_t : public player_t
     cooldowns_eclipse = 0;
 
     // Gains
-    gains_moonkin_form    = get_gain( "moonkin_form"    );
-    gains_omen_of_clarity = get_gain( "omen_of_clarity" );
+    gains_moonkin_form     = get_gain( "moonkin_form"    );
+    gains_omen_of_clarity  = get_gain( "omen_of_clarity" );
+    gains_primal_precision = get_gain( "primal_precision" );
+    gains_tigers_fury      = get_gain( "tigers_fury" );
 
     // Procs
     procs_combo_points    = get_proc( "combo_points" );
@@ -743,6 +746,8 @@ static void trigger_unseen_moon( spell_t* s )
   }
 }
 
+// trigger_primal_fury =====================================================
+
 static void trigger_primal_fury( druid_attack_t* a )
 {
   druid_t* p = a -> player -> cast_druid();
@@ -758,6 +763,26 @@ static void trigger_primal_fury( druid_attack_t* a )
     add_combo_point( p );
     p -> procs_primal_fury -> occur();
   } 
+}
+
+// trigger_primal_precision ================================================
+
+static void trigger_primal_precision( druid_attack_t* a )
+{
+  druid_t* p = a -> player -> cast_druid();
+  
+  if ( ! p -> talents.primal_precision )
+    return;
+
+  if ( ! a -> requires_combo_points )
+    return;
+
+  if( a -> result_is_hit() )
+    return;
+
+  double energy_restored = a -> resource_consumed * p -> talents.primal_precision * 0.40;
+
+  p -> resource_gain( RESOURCE_ENERGY, energy_restored, p -> gains_primal_precision );
 }
 
 // =========================================================================
@@ -839,6 +864,8 @@ void druid_attack_t::execute()
       trigger_primal_fury( this );
     }
   }
+
+  trigger_primal_precision( this );
 
   break_stealth( p );
 }
