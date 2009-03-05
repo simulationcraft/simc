@@ -239,7 +239,6 @@ struct hunter_t : public player_t
   virtual void      reset();
   virtual double    composite_attack_power();
   virtual bool      get_talent_trees( std::vector<int*>& beastmastery, std::vector<int*>& marksmanship, std::vector<int*>& survival );
-  virtual bool      parse_talents_mmo( const std::string& talent_string );
   virtual bool      parse_option( const std::string& name, const std::string& value );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet( const std::string& name );
@@ -3621,23 +3620,6 @@ bool hunter_t::get_talent_trees( std::vector<int*>& beastmastery,
   }
 }
 
-
-// hunter_t::parse_talents ===============================================
-
-bool hunter_t::parse_talents_mmo( const std::string& talent_string )
-{
-
-  // hunter mmo encoding: Beastmastery-Survival-Marksmanship
-
-  int size1 = 26;
-  int size2 = 28;
-
-  std::string beastmastery_string( talent_string,     0,  size1 );
-  std::string     survival_string( talent_string, size1,  size2 );
-  std::string marksmanship_string( talent_string, size1 + size2 );
-
-  return parse_talents( beastmastery_string + marksmanship_string + survival_string );
-}
 
 // hunter_t::parse_option  ==================================================
 
