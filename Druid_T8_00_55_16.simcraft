@@ -1,8 +1,9 @@
 #!simcraft max_time=300 optimal_raid=1
 
-druid=Druid_T7_0_55_16
+patch=3.1.0
+druid=Druid_T8_0_55_16
 level=80
-talents=http://www.wowhead.com/?talent=0ZEG0cfrz0eR0huAo0Eczb
+talents=http://ptr.wowhead.com/?talent=0ZvG0cfrz0eR0huAk0Eczb
 actions=flask,type=endless_rage/food,type=fish_feast
 actions+=/cat_form
 actions+=/auto_attack
@@ -13,9 +14,10 @@ actions+=/rip,cp>=5,rip<=6
 actions+=/mangle_cat,cp<=4,mangle<=2
 actions+=/rake,cp<=4
 actions+=/shred
-actions+=/faerie_fire
+actions+=/faerie_fire_feral
 Melee_T7_Base_Gear.simcraft
-glyph_rip=1
+glyph_shred=1
 glyph_mangle=1
+glyph_savage_roar=1
 main_hand=staff,dps=222.9,speed=2.4,enchant=berserking
 
