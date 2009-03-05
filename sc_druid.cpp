@@ -2058,6 +2058,7 @@ struct cat_form_t : public druid_spell_t
   virtual void execute()
   {
     druid_t* d = player -> cast_druid();
+
     if( sim -> log ) report_t::log( sim, "%s performs %s", d -> name(),name() );
 
     weapon_t* w = &( d -> main_hand_weapon );
@@ -2073,6 +2074,7 @@ struct cat_form_t : public druid_spell_t
     }
 
     d -> buffs_cat_form = 1;
+    d -> base_gcd = 1.0;
 
     for( player_t* p = sim -> player_list; p; p = p -> next )
     {
@@ -2806,6 +2808,15 @@ void druid_t::init_base()
   {
     attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.0 + talents.furor * 0.02;
   }
+  for( int i=0; i < ATTRIBUTE_MAX; i++ )
+  {
+    attribute_multiplier[ i ] *= 1.0 + 0.02 * talents.survival_of_the_fittest;
+
+    if( ! sim -> P309 )
+    {
+      attribute_multiplier[ i ] *= 1.0 + 0.01 * talents.improved_mark_of_the_wild;
+    }
+  }
 
   base_spell_crit = 0.0185;
   initial_spell_crit_per_intellect = rating_t::interpolate( level, 0.01/60.0, 0.01/80.0, 0.01/166.6 );
@@ -2824,9 +2835,10 @@ void druid_t::init_base()
   resource_base[ RESOURCE_HEALTH ] = 3600;
   if( talents.moonkin_form )
   {
-    resource_base[ RESOURCE_MANA   ] = rating_t::interpolate( level, 1103, 2090, 3796 );
+    resource_base[ RESOURCE_MANA ] = rating_t::interpolate( level, 1103, 2090, 3796 );
   }
-  else {
+  else 
+  {
     resource_base[ RESOURCE_ENERGY ] = 100;
   }
 
@@ -2837,16 +2849,7 @@ void druid_t::init_base()
   mana_regen_while_casting = util_t::talent_rank(talents.intensity,  3, 0.10);
   mp5_per_intellect        = util_t::talent_rank(talents.dreamstate, 3, 0.04, 0.07, 0.10);
 
-  base_gcd = ( talents.moonkin_form ) ? 1.5 : 1.0;
-
-  if( talents.survival_of_the_fittest )
-  {
-    for( int i=0; i < ATTRIBUTE_MAX; i++ )
-    {
-      attribute_multiplier[ i ]  *= 1.0 + 0.02 * talents.survival_of_the_fittest;
-      attribute_multiplier[ i ]  *= 1.0 + 0.01 * talents.improved_mark_of_the_wild;
-    }
-  }
+  base_gcd = 1.5;
 }
 
 // druid_t::init_unique_gear ================================================
@@ -2913,6 +2916,8 @@ void druid_t::reset()
   // Cooldowns
   cooldowns_eclipse         = 0;
   cooldowns_omen_of_clarity = 0;
+
+  base_gcd = 1.5;
 }
 
 // druid_t::composite_attack_power ==========================================
