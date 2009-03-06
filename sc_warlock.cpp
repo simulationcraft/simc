@@ -21,6 +21,7 @@ struct warlock_t : public player_t
   action_t*      active_shadowflame;
   action_t*      active_pandemic;
   int            active_dots;
+  int            affliction_effects;
 
   // Buffs
   int    buffs_backdraft;
@@ -198,13 +199,14 @@ struct warlock_t : public player_t
   warlock_t( sim_t* sim, std::string& name ) : player_t( sim, WARLOCK, name ) 
   {
     // Active
-    active_pet        = 0;
-    active_corruption = 0;
-    active_curse      = 0;
-    active_immolate   = 0;
+    active_pet         = 0;
+    active_corruption  = 0;
+    active_curse       = 0;
+    active_immolate    = 0;
     active_shadowflame = 0;
-    active_pandemic   = 0;
-    active_dots       = 0;
+    active_pandemic    = 0;
+    active_dots        = 0;
+    affliction_effects = 0;
 
     // Buffs
     buffs_backdraft                    = 0;
@@ -1132,7 +1134,10 @@ static void stack_shadow_embrace( spell_t* s )
     {
       name = "Shadow Embrace Expiration";
       p -> aura_gain( "Shadow Embrace" );
-      sim -> target -> debuffs.affliction_effects++;
+      if( sim -> patch.before( 3, 1, 0 ) )
+        sim -> target -> debuffs.affliction_effects++;
+      else
+        p -> affliction_effects++;
       sim -> add_event( this, 12.0 );
     }
     virtual void execute()
@@ -1141,7 +1146,10 @@ static void stack_shadow_embrace( spell_t* s )
       p -> aura_loss( "Shadow Embrace" );
       p -> buffs_shadow_embrace = 0;
       p -> expirations_shadow_embrace = 0;
-      sim -> target -> debuffs.affliction_effects--;
+      if( sim -> patch.before( 3, 1, 0 ) )
+        sim -> target -> debuffs.affliction_effects--;
+      else
+        p -> affliction_effects--;
     }
   };
   
@@ -1271,7 +1279,10 @@ static void trigger_haunted( spell_t* s )
       name = "Haunt Expiration";
       p -> aura_gain( "Haunted" );
       p -> buffs_haunted = 1;
-      sim -> target -> debuffs.affliction_effects++;
+      if( sim -> patch.before( 3, 1, 0 ) )
+        sim -> target -> debuffs.affliction_effects++;
+      else
+        p -> affliction_effects++;
       sim -> add_event( this, 12.0 );
     }
     virtual void execute()
@@ -1279,7 +1290,10 @@ static void trigger_haunted( spell_t* s )
       warlock_t* p = player -> cast_warlock();
       p -> aura_loss( "Haunted" );
       p -> buffs_haunted = 0;
-      sim -> target -> debuffs.affliction_effects--;
+      if( sim -> patch.before( 3, 1, 0 ) )
+        sim -> target -> debuffs.affliction_effects--;
+      else
+        p -> affliction_effects--;
       p -> expirations_haunted = 0;
     }
   };
@@ -1429,8 +1443,8 @@ static void trigger_eradication( spell_t* s )
       }
       else
       {
-        p -> buffs_eradication = 3;
-        sim -> add_event( this, 30.0 );
+        p -> buffs_eradication = 1;
+        sim -> add_event( this, 10.0 );
       }
     }
     virtual void execute()
@@ -1459,13 +1473,13 @@ static void trigger_eradication( spell_t* s )
   }
   else
   {
-    if( s -> sim -> roll( p -> talents.eradication * 0.02 ) )
+    if( s -> sim -> roll( 0.06 ) )
     {
-      p -> buffs_eradication = 3;
+      p -> buffs_eradication = 1;
       event_t*&  e = p -> expirations_eradication;
       if( e )
       {
-        e -> reschedule( 30.0 );
+        e -> reschedule( 10.0 );
       }
       else
       {
@@ -1910,7 +1924,19 @@ double warlock_spell_t::haste()
 {
   warlock_t* p = player -> cast_warlock();
   double h = spell_t::haste();
-  if( p -> buffs_eradication && sim -> patch.before( 3, 1, 0 ) ) h *= ( 1.0 / 1.20 );
+  if( p -> buffs_eradication )
+  {
+    if( sim -> patch.before( 3, 1, 0 ) )
+    {
+      h *= ( 1.0 / 1.20 );
+    }
+    else
+    {
+      double mod = 1 + p -> talents.eradication * 0.06;
+      if( p -> talents.eradication == 3 ) mod += 0.02;
+      h *= ( 1.0 / mod );
+    }   
+  }
   return h;
 }
 
@@ -2161,10 +2187,15 @@ struct curse_of_elements_t : public warlock_spell_t
         name = "Cure of Elements Expiration";
         target_t* t = sim -> target;
         if( sim -> patch.before( 3, 1, 0 ) )
+        {
+          t -> debuffs.affliction_effects++;
           t -> debuffs.curse_of_elements = 10 + p -> talents.malediction;
+        }
         else
+        {
+          p -> affliction_effects++;
           t -> debuffs.curse_of_elements = 13;
-        t -> debuffs.affliction_effects++;
+        }
         sim -> add_event( this, 300.0 );
       }
       virtual void execute()
@@ -2174,7 +2205,10 @@ struct curse_of_elements_t : public warlock_spell_t
         p -> active_curse = 0;
         t -> debuffs.curse_of_elements = 0;
         t -> expirations.curse_of_elements = 0;
-        t -> debuffs.affliction_effects--;
+        if( sim -> patch.before( 3, 1, 0 ) )
+          t -> debuffs.affliction_effects--;
+        else
+          p -> affliction_effects--;
       }
     };
 
@@ -2264,7 +2298,10 @@ struct curse_of_agony_t : public warlock_spell_t
     {
       p -> active_dots++;
       p -> active_curse = this;
-      sim -> target -> debuffs.affliction_effects++;
+      if( sim -> patch.before( 3, 1, 0 ) )
+        sim -> target -> debuffs.affliction_effects++;
+      else
+        p -> affliction_effects++;
     }
   }
 
@@ -2274,7 +2311,10 @@ struct curse_of_agony_t : public warlock_spell_t
     warlock_spell_t::last_tick(); 
     p -> active_dots--;
     p -> active_curse = 0;
-    sim -> target -> debuffs.affliction_effects--;
+    if( sim -> patch.before( 3, 1, 0 ) )
+        sim -> target -> debuffs.affliction_effects--;
+      else
+        p -> affliction_effects--;
   }
   
   virtual bool ready()
@@ -2333,7 +2373,10 @@ struct curse_of_doom_t : public warlock_spell_t
     {
       p -> active_curse = this;
       p -> active_dots++;
-      sim -> target -> debuffs.affliction_effects++;
+      if( sim -> patch.before( 3, 1, 0 ) )
+        sim -> target -> debuffs.affliction_effects++;
+      else
+        p -> affliction_effects++;
     }
   }
 
@@ -2349,7 +2392,10 @@ struct curse_of_doom_t : public warlock_spell_t
     warlock_spell_t::last_tick(); 
     p -> active_curse = 0;
     p -> active_dots--;
-    sim -> target -> debuffs.affliction_effects--;
+    if( sim -> patch.before( 3, 1, 0 ) )
+        sim -> target -> debuffs.affliction_effects--;
+      else
+        p -> affliction_effects--;
   }
   
   virtual bool ready()
@@ -2766,11 +2812,17 @@ struct corruption_t : public warlock_spell_t
     base_hit        +=  p -> talents.suppression * 0.01;
     base_multiplier *= 1.0 + ( p -> talents.shadow_mastery      * 0.03 +
                                p -> talents.contagion           * 0.01 +
-                               p -> talents.improved_corruption * 0.02 );
+                               p -> talents.improved_corruption * 0.02 +
+                           ( ( p -> talents.siphon_life && sim -> patch.after( 3, 1, 0 ) ) ? 0.05 : 0 ) );
     tick_power_mod  += p -> talents.empowered_corruption * 0.02;
     tick_power_mod  += p -> talents.everlasting_affliction * 0.01;
 
-    if( sim -> patch.after( 3, 1, 0 ) && p -> talents.pandemic ) tick_may_crit = true;
+    if( sim -> patch.after( 3, 1, 0 ) && p -> talents.pandemic )
+    {
+      base_crit_bonus_multiplier = 2;
+      tick_may_crit = true;
+      base_crit += p -> talents.malediction * 0.03;
+    }
 
     if( p -> gear.tier4_4pc ) num_ticks++;
 
@@ -2786,7 +2838,10 @@ struct corruption_t : public warlock_spell_t
     if( result_is_hit() )
     {
       p -> active_dots++;
-      sim -> target -> debuffs.affliction_effects++;
+      if( sim -> patch.before( 3, 1, 0 ) )
+        sim -> target -> debuffs.affliction_effects++;
+      else
+        p -> affliction_effects++;
     }
   }
 
@@ -2806,7 +2861,10 @@ struct corruption_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::last_tick(); 
     p -> active_dots--;
-    sim -> target -> debuffs.affliction_effects--;
+    if( sim -> patch.before( 3, 1, 0 ) )
+        sim -> target -> debuffs.affliction_effects--;
+      else
+        p -> affliction_effects--;
   }
 };
 
@@ -2855,7 +2913,10 @@ struct drain_life_t : public warlock_spell_t
     {
       trigger_everlasting_affliction( this );
       p -> active_dots++;
-      sim -> target -> debuffs.affliction_effects++;
+      if( sim -> patch.before( 3, 1, 0 ) )
+        sim -> target -> debuffs.affliction_effects++;
+      else
+        p -> affliction_effects++;
     }
   }
 
@@ -2864,7 +2925,10 @@ struct drain_life_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::last_tick(); 
     p -> active_dots--;
-    sim -> target -> debuffs.affliction_effects--;
+    if( sim -> patch.before( 3, 1, 0 ) )
+        sim -> target -> debuffs.affliction_effects--;
+      else
+        p -> affliction_effects--;
   }
 
   virtual void player_buff()
@@ -2877,13 +2941,26 @@ struct drain_life_t : public warlock_spell_t
     double min_multiplier[] = { 0, 0.02, 0.04 };
     double max_multiplier[] = { 0, 0.24, 0.60 };
 
+    if( sim -> patch.after( 3, 1, 0 ) )
+    {
+      min_multiplier[1] = 0.03;
+      min_multiplier[2] = 0.06;
+      max_multiplier[1] = 0.09;
+      max_multiplier[2] = 0.18;
+    }
+
     assert( p -> talents.soul_siphon >= 0 &&
             p -> talents.soul_siphon <= 2 );
 
     double min = min_multiplier[ p -> talents.soul_siphon ];
     double max = max_multiplier[ p -> talents.soul_siphon ];
 
-    double multiplier = t -> debuffs.affliction_effects * min;
+    double multiplier;
+    if( sim -> patch.before( 3, 1, 0 ) )
+      multiplier = t -> debuffs.affliction_effects * min;
+    else
+      multiplier = p -> affliction_effects * min;
+
     if( multiplier > max ) multiplier = max;
 
     player_multiplier *= 1.0 + multiplier;    
@@ -2949,7 +3026,10 @@ struct drain_soul_t : public warlock_spell_t
     if( result_is_hit() )
     {
       p -> active_dots++;
-      sim -> target -> debuffs.affliction_effects++;
+      if( sim -> patch.before( 3, 1, 0 ) )
+        sim -> target -> debuffs.affliction_effects++;
+      else
+        p -> affliction_effects++;
     }
   }
 
@@ -2958,7 +3038,10 @@ struct drain_soul_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::last_tick(); 
     p -> active_dots--;
-    sim -> target -> debuffs.affliction_effects--;
+    if( sim -> patch.before( 3, 1, 0 ) )
+        sim -> target -> debuffs.affliction_effects--;
+      else
+        p -> affliction_effects--;
   }
 
   virtual void tick()
@@ -2989,13 +3072,26 @@ struct drain_soul_t : public warlock_spell_t
     double min_multiplier[] = { 0, 0.02, 0.04 };
     double max_multiplier[] = { 0, 0.24, 0.60 };
 
+    if( sim -> patch.after( 3, 1, 0 ) )
+    {
+      min_multiplier[1] = 0.03;
+      min_multiplier[2] = 0.06;
+      max_multiplier[1] = 0.09;
+      max_multiplier[2] = 0.18;
+    }
+
     assert( p -> talents.soul_siphon >= 0 &&
             p -> talents.soul_siphon <= 2 );
 
     double min = min_multiplier[ p -> talents.soul_siphon ];
     double max = max_multiplier[ p -> talents.soul_siphon ];
 
-    double multiplier = t -> debuffs.affliction_effects * min;
+    double multiplier;
+    if( sim -> patch.before( 3, 1, 0 ) )
+      multiplier = t -> debuffs.affliction_effects * min;
+    else
+      multiplier = p -> affliction_effects * min;
+
     if( multiplier > max ) multiplier = max;
 
     player_multiplier *= 1.0 + multiplier;
@@ -3075,7 +3171,10 @@ struct siphon_life_t : public warlock_spell_t
     if( result_is_hit() )
     {
       p -> active_dots++;
-      sim -> target -> debuffs.affliction_effects++;
+      if( sim -> patch.before( 3, 1, 0 ) )
+        sim -> target -> debuffs.affliction_effects++;
+      else
+        p -> affliction_effects++;
     }
   }
 
@@ -3084,7 +3183,10 @@ struct siphon_life_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::last_tick(); 
     p -> active_dots--;
-    sim -> target -> debuffs.affliction_effects--;
+    if( sim -> patch.before( 3, 1, 0 ) )
+      sim -> target -> debuffs.affliction_effects--;
+    else
+      p -> affliction_effects--;
   }
 
   virtual void tick()
@@ -3136,10 +3238,15 @@ struct unstable_affliction_t : public warlock_spell_t
     
     base_cost        *= 1.0 - p -> talents.suppression * 0.02;
     base_hit         +=       p -> talents.suppression * 0.01;
-    base_multiplier  *= 1.0 + p -> talents.shadow_mastery * 0.03;
+    base_multiplier  *= 1.0 + ( p -> talents.shadow_mastery * 0.03 +
+                            ( ( p -> talents.siphon_life && sim -> patch.after( 3, 1, 0 ) ) ? 0.05 : 0 ) );
     tick_power_mod   += p -> talents.everlasting_affliction * 0.01;
 
-    if( sim -> patch.after( 3, 1, 0 ) && p -> talents.pandemic ) tick_may_crit = true;
+    if( sim -> patch.after( 3, 1, 0 ) && p -> talents.pandemic )
+    {
+      base_crit_bonus_multiplier = 2;
+      tick_may_crit = true;
+    }
 
     if( p -> glyphs.unstable_affliction )
     {
@@ -3155,7 +3262,10 @@ struct unstable_affliction_t : public warlock_spell_t
     if( result_is_hit() )
     {
       p -> active_dots++;;
-      sim -> target -> debuffs.affliction_effects++;
+      if( sim -> patch.before( 3, 1, 0 ) )
+        sim -> target -> debuffs.affliction_effects++;
+      else
+        p -> affliction_effects++;
     }
   }
 
@@ -3170,7 +3280,10 @@ struct unstable_affliction_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::last_tick(); 
     p -> active_dots--;;
-    sim -> target -> debuffs.affliction_effects--;
+    if( sim -> patch.before( 3, 1, 0 ) )
+      sim -> target -> debuffs.affliction_effects--;
+    else
+      p -> affliction_effects--;
   }
 };
 
@@ -4556,12 +4669,13 @@ void warlock_t::reset()
   player_t::reset();
 
   // Active
-  active_pet        = 0;
-  active_corruption = 0;
-  active_curse      = 0;
-  active_immolate   = 0;
-  active_shadowflame= 0;
-  active_dots       = 0;
+  active_pet         = 0;
+  active_corruption  = 0;
+  active_curse       = 0;
+  active_immolate    = 0;
+  active_shadowflame = 0;
+  active_dots        = 0;
+  affliction_effects = 0;
 
   // Buffs
   buffs_backdraft                    = 0;
