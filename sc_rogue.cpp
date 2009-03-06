@@ -1398,6 +1398,9 @@ struct eviscerate_t : public rogue_attack_t
     };
     parse_options( options, options_str );
       
+    weapon = &( p -> main_hand_weapon );
+    weapon_multiplier = 0;
+
     requires_combo_points = true;
     base_cost = 35;
 
@@ -2023,6 +2026,9 @@ struct rupture_t : public rogue_attack_t
     };
     parse_options( options, options_str );
       
+    weapon = &( p -> main_hand_weapon );
+    weapon_multiplier = 0;
+
     requires_combo_points = true;
     base_cost             = 25;
     base_tick_time        = 2.0; 
@@ -2420,7 +2426,7 @@ struct anesthetic_poison_t : public rogue_poison_t
       }
       else
       {
-	double PPM = 20.0;
+	double PPM = 21.43;
 	chance = weapon -> proc_chance_on_swing( PPM );
 	may_crit = true;
       }
@@ -2536,7 +2542,7 @@ struct instant_poison_t : public rogue_poison_t
       }
       else
       {
-	double PPM = 8.0;
+	double PPM = 8.57;
 	PPM *= 1.0 + p -> talents.improved_poisons * 0.10;
 	if( p -> buffs_envenom ) PPM *= 1.75;
 	chance = weapon -> proc_chance_on_swing( PPM );
@@ -2585,7 +2591,7 @@ struct wound_poison_t : public rogue_poison_t
       }
       else
       {
-	double PPM = 20.0;
+	double PPM = 21.43;
 	chance = weapon -> proc_chance_on_swing( PPM );
 	may_crit = true;
       }
