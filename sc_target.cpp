@@ -184,7 +184,9 @@ void target_t::reset()
 
 void target_t::combat_begin()
 {
-  if( sim -> optimal_raid || sim -> overrides.affliction_effects    ) debuffs.affliction_effects = sim -> overrides.affliction_effects;
+  if( sim -> overrides.affliction_effects ) debuffs.affliction_effects = sim -> overrides.affliction_effects;
+  else if( sim -> optimal_raid ) debuffs.affliction_effects = 12;
+
   if( sim -> optimal_raid || sim -> overrides.blood_frenzy          ) debuffs.blood_frenzy = 1;
   if( sim -> optimal_raid || sim -> overrides.crypt_fever           ) debuffs.crypt_fever = 1;
   if( sim -> optimal_raid || sim -> overrides.curse_of_elements     ) debuffs.curse_of_elements = 13;
