@@ -7,5 +7,5 @@ Globals.simcraft
 Mage_T8_00_53_18.simcraft
 Mage_T8_18_00_53.simcraft   focus_magic_target=Mage_T8_20_51_00
 Mage_T8_20_51_00.simcraft   focus_magic_target=Mage_T8_52_19_00
-Mage_T8_52_19_00.simcraft   focus_magic_target=Mage_T8_57_03_11  glyph_mage_armor=1
-Mage_T8_57_03_11.simcraft   focus_magic_target=Mage_T8_18_00_53  glyph_mage_armor=1
+Mage_T8_52_19_00.simcraft   focus_magic_target=Mage_T8_57_03_11
+Mage_T8_57_03_11.simcraft   focus_magic_target=Mage_T8_18_00_53

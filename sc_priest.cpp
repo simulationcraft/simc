@@ -190,7 +190,8 @@ struct shadow_fiend_pet_t : public pet_t
     {
       attack_t::assess_damage( amount, dmg_type );
       priest_t* p = player -> cast_pet() -> owner -> cast_priest();
-      p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.04, p -> gains_shadow_fiend );
+      double gain = sim -> P309 ? 0.04 : 0.05;
+      p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * gain, p -> gains_shadow_fiend );
     }
   };
 
@@ -1850,11 +1851,25 @@ void priest_t::reset()
 
 void priest_t::regen( double periodicity )
 {
-  mana_regen_while_casting = talents.meditation * 0.10;
+  mana_regen_while_casting = 0;
 
-  if( buffs_improved_spirit_tap )
+  if( sim -> P309 )
   {
-    mana_regen_while_casting += talents.improved_spirit_tap * 0.10;
+    mana_regen_while_casting += talents.meditation * 0.10;
+
+    if( buffs_improved_spirit_tap )
+    {
+      mana_regen_while_casting += talents.improved_spirit_tap * 0.10;
+    }
+  }
+  else
+  {
+    mana_regen_while_casting += util_t::talent_rank( talents.meditation, 3, 0.17, 0.33, 0.50 );
+
+    if( buffs_improved_spirit_tap )
+    {
+      mana_regen_while_casting += util_t::talent_rank( talents.improved_spirit_tap, 2, 0.17, 0.33 );
+    }
   }
 
   player_t::regen( periodicity );
