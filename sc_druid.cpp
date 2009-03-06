@@ -2399,7 +2399,7 @@ struct wrath_t : public druid_spell_t
     p -> uptimes_eclipse_wrath -> update( p -> buffs_eclipse_wrath != 0 );
     if( p -> buffs_eclipse_wrath )
     {
-      player_multiplier *= 1.20;
+      player_multiplier *= 1 + ( ( sim -> P309 ) ? 0.20 : 0.30 );
     }
     if( p -> active_insect_swarm )
     {
@@ -2541,7 +2541,7 @@ struct starfall_t : public druid_spell_t
     };
     parse_options( options, options_str );
     
-    cooldown          = 180;
+    cooldown          = sim -> P309 ? 180 : 90;
     base_execute_time = 0;
     is_aoe            = true;
     stars             = 10;
@@ -2568,10 +2568,10 @@ struct starfall_t : public druid_spell_t
     }
     if( p -> glyphs.starfall )
     {
-      if( sim -> patch.before(3, 1, 0) )
+      if( sim -> P309 )
         stars    += 2;
       else 
-        cooldown -= 90;
+        cooldown -= 30;
     }
   }
 
