@@ -183,7 +183,7 @@ int attack_t::build_table( double* chances,
 
   if( may_glance ) 
   {
-    glance = 0.24;
+    glance = (delta_level + 1) * 0.06;
   }
 
   if( may_block && sim -> target -> shield ) 
