@@ -2058,7 +2058,7 @@ void warlock_spell_t::target_debuff( int dmg_type )
     }
     if( p -> buffs_haunted && ( school == SCHOOL_SHADOW || sim -> patch.before( 3, 1, 0 ) ) )
     {
-      target_multiplier *= ( p -> glyphs.haunt ) ? 1.20 : 1.23;
+      target_multiplier *= ( p -> glyphs.haunt ) ? 1.23 : 1.20;
     }
 
     if( p -> main_hand_weapon.buff == SPELL_STONE ) 
@@ -2775,6 +2775,7 @@ struct corruption_t : public warlock_spell_t
     if( p -> gear.tier4_4pc ) num_ticks++;
 
     observer = &( p -> active_corruption );
+
   }
 
   virtual void execute()
