@@ -206,9 +206,8 @@ void target_t::combat_begin()
   if( sim -> optimal_raid || sim -> overrides.totem_of_wrath        ) debuffs.totem_of_wrath = 1;
   if( sim -> optimal_raid || sim -> overrides.winters_chill         ) debuffs.winters_chill = 5;
 
-  if( sim -> optimal_raid )
+  if( sim -> optimal_raid || sim -> overrides.bloodlust )
   {
-
     // Setup a periodic check for Bloodlust
 
     struct bloodlust_proc_t : public event_t

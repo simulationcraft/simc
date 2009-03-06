@@ -342,6 +342,7 @@ struct sim_t
     // Overrides for supported classes
     int affliction_effects;
     int arcane_brilliance;
+    int bloodlust;
     int curse_of_elements;
     int divine_spirit;
     int earth_and_moon;
