@@ -2,9 +2,7 @@
 
 optimal_raid=1
 
-Globals.simcraft
-
-patch=3.0.1
+Globals_T8.simcraft
 
 Druid_T8_58_00_13_SF.simcraft
 Druid_T8_58_00_13_W.simcraft

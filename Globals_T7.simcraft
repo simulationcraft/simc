@@ -48,14 +48,14 @@ regen_periodicity=1.0
 target_armor=13000
 
 # Support for Warrior class does not yet exist
-battle_shout=685
-sunder_armor=3925
+battle_shout=1
+sunder_armor=1
 thunder_clap=1
 
 # Support for the Paladin class does not yet exist
 blessing_of_kings=1
 blessing_of_wisdom=1
-blessing_of_might=688
+blessing_of_might=1
 judgement_of_wisdom=1
 sanctified_retribution=1
 swift_retribution=1
@@ -63,10 +63,6 @@ swift_retribution=1
 # Support for Death Knights does not yet exist.
 razorice=1
 crypt_fever=1
-
-# Support for Feral Druids does not exist.
-leader_of_the_pack=1
-mangle=1
 
 # To generate scale factors, set calculate_scale_factors=1
 calculate_scale_factors=0

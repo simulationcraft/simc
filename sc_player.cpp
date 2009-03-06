@@ -736,7 +736,7 @@ double player_t::composite_attack_power()
   ap += attack_power_per_strength * strength();
   ap += attack_power_per_agility  * agility();
 
-  ap += std::max( sim -> buffs.blessing_of_might, sim -> buffs.battle_shout );
+  ap += std::max( buffs.blessing_of_might, buffs.battle_shout );
 
   return ap;
 }
@@ -795,7 +795,7 @@ double player_t::composite_attack_power_multiplier()
 double player_t::composite_attribute_multiplier( int attr )
 {
   double m = attribute_multiplier[ attr ]; 
-  if( sim -> buffs.blessing_of_kings ) m *= 1.10; 
+  if( buffs.blessing_of_kings ) m *= 1.10; 
   return m;
 }
 
@@ -875,24 +875,27 @@ void player_t::combat_begin()
     get_gain( "initial_mana" ) -> add( resource_max[ RESOURCE_MANA ] );
   }
 
-  if( sim -> optimal_raid )
-  {
-    // Dynamic Buffs
-    buffs.arcane_brilliance = 60;
-    buffs.divine_spirit = 80;
-    buffs.fortitude = 215;
-    buffs.improved_divine_spirit = 80;
-    buffs.improved_moonkin_aura = 1;
-    buffs.mark_of_the_wild = 52;
-    buffs.moonkin_aura = 1;
-    buffs.replenishment = 1;
-    buffs.strength_of_earth = 99;
-    buffs.totem_of_wrath = 280;
-    buffs.trueshot_aura = 1;
-    buffs.unleashed_rage = 1;
-    buffs.windfury_totem = 0.20;
-    buffs.wrath_of_air = 1;
-  }
+  if( sim -> optimal_raid || sim -> overrides.battle_shout           ) buffs.battle_shout = 548;
+  if( sim -> optimal_raid || sim -> overrides.blessing_of_kings      ) buffs.blessing_of_kings = 1;
+  if( sim -> optimal_raid || sim -> overrides.blessing_of_might      ) buffs.blessing_of_might = 688;
+  if( sim -> optimal_raid || sim -> overrides.blessing_of_wisdom     ) buffs.blessing_of_wisdom = 1;
+  if( sim -> optimal_raid || sim -> overrides.sanctified_retribution ) buffs.sanctified_retribution = 1;
+  if( sim -> optimal_raid || sim -> overrides.swift_retribution      ) buffs.swift_retribution = 1;
+  if( sim -> optimal_raid || sim -> overrides.arcane_brilliance      ) buffs.arcane_brilliance = 60;
+  if( sim -> optimal_raid || sim -> overrides.divine_spirit          ) buffs.divine_spirit = 80;
+  if( sim -> optimal_raid || sim -> overrides.fortitude              ) buffs.fortitude = 215;
+  if( sim -> optimal_raid || sim -> overrides.improved_divine_spirit ) buffs.improved_divine_spirit = 80;
+  if( sim -> optimal_raid || sim -> overrides.improved_moonkin_aura  ) buffs.improved_moonkin_aura = 1;
+  if( sim -> optimal_raid || sim -> overrides.leader_of_the_pack     ) buffs.leader_of_the_pack = 1;
+  if( sim -> optimal_raid || sim -> overrides.mark_of_the_wild       ) buffs.mark_of_the_wild = 52;
+  if( sim -> optimal_raid || sim -> overrides.moonkin_aura           ) buffs.moonkin_aura = 1;
+  if( sim -> optimal_raid || sim -> overrides.replenishment          ) buffs.replenishment = 1;
+  if( sim -> optimal_raid || sim -> overrides.strength_of_earth      ) buffs.strength_of_earth = 99;
+  if( sim -> optimal_raid || sim -> overrides.totem_of_wrath         ) buffs.totem_of_wrath = 280;
+  if( sim -> optimal_raid || sim -> overrides.trueshot_aura          ) buffs.trueshot_aura = 1;
+  if( sim -> optimal_raid || sim -> overrides.unleashed_rage         ) buffs.unleashed_rage = 1;
+  if( sim -> optimal_raid || sim -> overrides.windfury_totem         ) buffs.windfury_totem = 0.20;
+  if( sim -> optimal_raid || sim -> overrides.wrath_of_air           ) buffs.wrath_of_air = 1;
 }
 
 // player_t::combat_end ====================================================
@@ -1141,7 +1144,7 @@ void player_t::regen( double periodicity )
       resource_gain( RESOURCE_MANA, water_elemental_regen, gains.water_elemental );
     }
 
-    if( sim -> buffs.blessing_of_wisdom )
+    if( buffs.blessing_of_wisdom )
     {
       double wisdom_regen = periodicity * ( ( level <= 70 ) ? 49 : 91 ) / 5.0;
 

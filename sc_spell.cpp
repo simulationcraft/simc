@@ -52,7 +52,7 @@ double spell_t::haste()
     if(      p -> buffs.bloodlust      ) h *= 1.0 / ( 1.0 + 0.30 );
     else if( p -> buffs.power_infusion ) h *= 1.0 / ( 1.0 + 0.20 );
 
-    if( sim -> buffs.swift_retribution || p -> buffs.improved_moonkin_aura ) 
+    if( p -> buffs.swift_retribution || p -> buffs.improved_moonkin_aura ) 
     {
       h *= 1.0 / ( 1.0 + 0.03 );
     }

@@ -175,33 +175,30 @@ void target_t::reset()
 
 void target_t::combat_begin()
 {
+  if( sim -> optimal_raid || sim -> overrides.affliction_effects    ) debuffs.affliction_effects = sim -> overrides.affliction_effects;
+  if( sim -> optimal_raid || sim -> overrides.blood_frenzy          ) debuffs.blood_frenzy = 1;
+  if( sim -> optimal_raid || sim -> overrides.crypt_fever           ) debuffs.crypt_fever = 1;
+  if( sim -> optimal_raid || sim -> overrides.curse_of_elements     ) debuffs.curse_of_elements = 13;
+  if( sim -> optimal_raid || sim -> overrides.earth_and_moon        ) debuffs.earth_and_moon = 13;
+  if( sim -> optimal_raid || sim -> overrides.faerie_fire           ) debuffs.faerie_fire = 1260;
+  if( sim -> optimal_raid || sim -> overrides.ferocious_inspiration ) debuffs.ferocious_inspiration = 1;
+  if( sim -> optimal_raid || sim -> overrides.hunters_mark          ) debuffs.hunters_mark = 450;
+  if( sim -> optimal_raid || sim -> overrides.improved_scorch       ) debuffs.improved_scorch = 5;
+  if( sim -> optimal_raid || sim -> overrides.judgement_of_wisdom   ) debuffs.judgement_of_wisdom = 1;
+  if( sim -> optimal_raid || sim -> overrides.mangle                ) debuffs.mangle = 1;
+  if( sim -> optimal_raid || sim -> overrides.master_poisoner       ) debuffs.master_poisoner = 1;
+  if( sim -> optimal_raid || sim -> overrides.misery                ) { debuffs.misery = 3; debuffs.misery_stack = 1; }
+  if( sim -> optimal_raid || sim -> overrides.poisoned              ) debuffs.poisoned = 1;
+  if( sim -> optimal_raid || sim -> overrides.razorice              ) debuffs.razorice = 1;
+  if( sim -> optimal_raid || sim -> overrides.savage_combat         ) debuffs.savage_combat = 1;
+  if( sim -> optimal_raid || sim -> overrides.snare                 ) debuffs.snare = 1;
+  if( sim -> optimal_raid || sim -> overrides.sunder_armor          ) debuffs.sunder_armor = 3925;
+  if( sim -> optimal_raid || sim -> overrides.thunder_clap          ) debuffs.thunder_clap = 1;
+  if( sim -> optimal_raid || sim -> overrides.totem_of_wrath        ) debuffs.totem_of_wrath = 1;
+  if( sim -> optimal_raid || sim -> overrides.winters_chill         ) debuffs.winters_chill = 5;
+
   if( sim -> optimal_raid )
   {
-    // Static De-Buffs
-    debuffs.blood_frenzy = 1;
-    debuffs.crypt_fever = 1;
-    debuffs.judgement_of_wisdom = 1;
-    debuffs.razorice = 1;
-    debuffs.snare = 1;
-    debuffs.sunder_armor = 3925;
-    debuffs.thunder_clap = 1;
-
-    // Dynamic De-Buffs
-    debuffs.affliction_effects = 12;
-    debuffs.curse_of_elements = 13;
-    debuffs.faerie_fire = 1260;
-    debuffs.ferocious_inspiration = 1;
-    debuffs.hunters_mark = 450;
-    debuffs.improved_scorch = 5;
-    debuffs.mangle = 1;
-    debuffs.master_poisoner = 1;
-    debuffs.misery = 3;
-    debuffs.misery_stack = 1;
-    debuffs.earth_and_moon = 13;
-    debuffs.poisoned = 1;
-    debuffs.savage_combat = 1;
-    debuffs.totem_of_wrath = 1;
-    debuffs.winters_chill = 5;
 
     // Setup a periodic check for Bloodlust
 
@@ -286,15 +283,6 @@ bool target_t::parse_option( const std::string& name,
     { "target_shield",         OPT_INT,    &( shield                            ) },
     { "target_block",          OPT_INT,    &( block_value                       ) },
     { "target_health",         OPT_FLT,    &( initial_health                    ) },
-    // FIXME! Once appropriate class implemented, these will be removed
-    { "blood_frenzy",          OPT_INT,    &( debuffs.blood_frenzy              ) },
-    { "crypt_fever",           OPT_INT,    &( debuffs.crypt_fever               ) },
-    { "judgement_of_wisdom",   OPT_INT,    &( debuffs.judgement_of_wisdom       ) },
-    { "mangle",                OPT_INT,    &( debuffs.mangle                    ) },
-    { "razorice",              OPT_INT,    &( debuffs.razorice                  ) },
-    { "snare",                 OPT_INT,    &( debuffs.snare                     ) },
-    { "sunder_armor",          OPT_FLT,    &( debuffs.sunder_armor              ) },
-    { "thunder_clap",          OPT_INT,    &( debuffs.thunder_clap              ) },
     { NULL, OPT_UNKNOWN }
   };
 

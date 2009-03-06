@@ -246,18 +246,6 @@ void sim_t::combat_begin()
 
   reset();
 
-  if( optimal_raid )
-  {
-    // Static buffs until appropriate player class/spec is implemented
-    buffs.battle_shout = 548;
-    buffs.blessing_of_kings = 1;
-    buffs.blessing_of_might = 688;
-    buffs.blessing_of_wisdom = 1;
-    buffs.leader_of_the_pack = 1;
-    buffs.sanctified_retribution = 1;
-    buffs.swift_retribution = 1;
-  }
-
   target -> combat_begin();
 
   for( player_t* p = player_list; p; p = p -> next )
@@ -756,15 +744,49 @@ bool sim_t::parse_option( const std::string& name,
     { "wheel_granularity",                OPT_FLT,    &( wheel_granularity                        ) },
     { "wheel_seconds",                    OPT_INT,    &( wheel_seconds                            ) },
     { "wiki",                             OPT_STRING, &( wiki_file_str                            ) },
-    // FIXME! Once appropriate class implemented, these will be removed
-    // FIXME! Modeling them as target "debuffs" so they do not need to be added to every profile
-    { "battle_shout",           OPT_INT, &( buffs.battle_shout           ) },
-    { "blessing_of_kings",      OPT_INT, &( buffs.blessing_of_kings      ) },
-    { "blessing_of_might",      OPT_INT, &( buffs.blessing_of_might      ) },
-    { "blessing_of_wisdom",     OPT_INT, &( buffs.blessing_of_wisdom     ) },
-    { "leader_of_the_pack",     OPT_INT, &( buffs.leader_of_the_pack     ) },
-    { "sanctified_retribution", OPT_INT, &( buffs.sanctified_retribution ) },
-    { "swift_retribution",      OPT_INT, &( buffs.swift_retribution      ) },
+    // Overrides - Buffs/Debuffs
+    { "affliction_effects",     OPT_INT, &( overrides.affliction_effects      ) },
+    { "arcane_brilliance",      OPT_INT, &( overrides.arcane_brilliance       ) },
+    { "battle_shout",           OPT_INT, &( overrides.battle_shout            ) },
+    { "blessing_of_kings",      OPT_INT, &( overrides.blessing_of_kings       ) },
+    { "blessing_of_might",      OPT_INT, &( overrides.blessing_of_might       ) },
+    { "blessing_of_wisdom",     OPT_INT, &( overrides.blessing_of_wisdom      ) },
+    { "blood_frenzy",           OPT_INT, &( overrides.blood_frenzy            ) },
+    { "crypt_fever",            OPT_INT, &( overrides.crypt_fever             ) },
+    { "curse_of_elements",      OPT_INT, &( overrides.curse_of_elements       ) },
+    { "divine_spirit",          OPT_INT, &( overrides.divine_spirit           ) },
+    { "earth_and_moon",         OPT_INT, &( overrides.earth_and_moon          ) },
+    { "faerie_fire",            OPT_INT, &( overrides.faerie_fire             ) },
+    { "ferocious_inspiration",  OPT_INT, &( overrides.ferocious_inspiration   ) },
+    { "fortitude",              OPT_INT, &( overrides.fortitude               ) },
+    { "hunters_mark",           OPT_INT, &( overrides.hunters_mark            ) },
+    { "improved_divine_spirit", OPT_INT, &( overrides.improved_divine_spirit  ) },
+    { "improved_moonkin_aura",  OPT_INT, &( overrides.improved_moonkin_aura   ) },
+    { "improved_scorch",        OPT_INT, &( overrides.improved_scorch         ) },
+    { "judgement_of_wisdom",    OPT_INT, &( overrides.judgement_of_wisdom     ) },
+    { "leader_of_the_pack",     OPT_INT, &( overrides.leader_of_the_pack      ) },
+    { "mangle",                 OPT_INT, &( overrides.mangle                  ) },
+    { "mark_of_the_wild",       OPT_INT, &( overrides.mark_of_the_wild        ) },
+    { "master_poisoner",        OPT_INT, &( overrides.master_poisoner         ) },
+    { "misery",                 OPT_INT, &( overrides.misery                  ) },
+    { "moonkin_aura",           OPT_INT, &( overrides.moonkin_aura            ) },
+    { "poisoned",               OPT_INT, &( overrides.poisoned                ) },
+    { "razorice",               OPT_INT, &( overrides.razorice                ) },
+    { "replenishment",          OPT_INT, &( overrides.replenishment           ) },
+    { "sanctified_retribution", OPT_INT, &( overrides.sanctified_retribution  ) },
+    { "savage_combat",          OPT_INT, &( overrides.savage_combat           ) },
+    { "snare",                  OPT_INT, &( overrides.snare                   ) },
+    { "strength_of_earth",      OPT_INT, &( overrides.strength_of_earth       ) },
+    { "sunder_armor",           OPT_INT, &( overrides.sunder_armor            ) },
+    { "swift_retribution",      OPT_INT, &( overrides.swift_retribution       ) },
+    { "thunder_clap",           OPT_INT, &( overrides.thunder_clap            ) },
+    { "totem_of_wrath",         OPT_INT, &( overrides.totem_of_wrath          ) },
+    { "totem_of_wrath",         OPT_INT, &( overrides.totem_of_wrath          ) },
+    { "trueshot_aura",          OPT_INT, &( overrides.trueshot_aura           ) },
+    { "unleashed_rage",         OPT_INT, &( overrides.unleashed_rage          ) },
+    { "windfury_totem",         OPT_INT, &( overrides.windfury_totem          ) },
+    { "winters_chill",          OPT_INT, &( overrides.winters_chill           ) },
+    { "wrath_of_air",           OPT_INT, &( overrides.wrath_of_air            ) },
     { NULL, OPT_UNKNOWN }
   };
 

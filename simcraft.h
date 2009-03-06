@@ -322,19 +322,55 @@ struct sim_t
   };
   gear_delta_t gear_delta;
 
-  // Static Buffs (until appropriate player class implemented)
-  struct buff_t
+  // Buffs and Debuffs Overrides
+  struct overrides_t
   {
+    // Overrides for NYI classes
     int battle_shout;
     int blessing_of_kings;
     int blessing_of_might;
     int blessing_of_wisdom;
-    int leader_of_the_pack;
+    int blood_frenzy;
+    int crypt_fever;
+    int judgement_of_wisdom;
+    int razorice;
     int sanctified_retribution;
+    int snare;
+    int sunder_armor;
     int swift_retribution;
-    buff_t() { memset( (void*) this, 0x0, sizeof( buff_t ) ); }
+    int thunder_clap;
+    // Overrides for supported classes
+    int affliction_effects;
+    int arcane_brilliance;
+    int curse_of_elements;
+    int divine_spirit;
+    int earth_and_moon;
+    int faerie_fire;
+    int ferocious_inspiration;
+    int fortitude;
+    int hunters_mark;
+    int improved_divine_spirit;
+    int improved_moonkin_aura;
+    int improved_scorch;
+    int leader_of_the_pack;
+    int mangle;
+    int mark_of_the_wild;
+    int master_poisoner;
+    int misery;
+    int moonkin_aura;
+    int poisoned;
+    int replenishment;
+    int savage_combat;
+    int strength_of_earth;
+    int totem_of_wrath;
+    int trueshot_aura;
+    int unleashed_rage;
+    int windfury_totem;
+    int winters_chill;
+    int wrath_of_air;
+    overrides_t() { memset( (void*) this, 0x0, sizeof( overrides_t ) ); }
   };
-  buff_t buffs;
+  overrides_t overrides;
 
   // Reporting
   report_t*  report;
@@ -626,10 +662,13 @@ struct player_t
 
   struct buff_t
   {
-    // Dynamic Buffs
     double    arcane_brilliance;
+    int       battle_shout;
     int       berserking_mh;
     int       berserking_oh;
+    int       blessing_of_kings;
+    int       blessing_of_might;
+    int       blessing_of_wisdom;
     double    divine_spirit;
     int       bloodlust;
     double    cast_time_reduction;
@@ -658,8 +697,10 @@ struct player_t
     int       mongoose_oh;
     int       power_infusion;
     int       replenishment;
+    int       sanctified_retribution;
     int       shadow_form;
     double    strength_of_earth;
+    int       swift_retribution;
     int       talisman_of_ascendance;
     int       thunder_capacitor;
     double    totem_of_wrath;
@@ -1038,18 +1079,10 @@ struct target_t
 
   struct debuff_t
   {
-    // Static De-Buffs (until appropriate player class implemented)
-    int    blood_frenzy;
-    int    crypt_fever;
-    int    judgement_of_wisdom;
-    int    razorice;
-    int    snare;
-    double sunder_armor;
-    int    thunder_clap;
-    // Dynamic De-Buffs
-    int    temporary_debuffs;
     int    affliction_effects;
     int    bleeding;
+    int    blood_frenzy;
+    int    crypt_fever;
     int    curse_of_elements;
     double expose_armor;
     double faerie_fire;
@@ -1060,23 +1093,24 @@ struct target_t
     double hunters_mark;
     int    improved_faerie_fire;
     int    improved_scorch;
+    int    judgement_of_wisdom;
     int    mangle;
     int    master_poisoner;
     int    misery;
     int    misery_stack;
     int    earth_and_moon;
     int    poisoned;
+    int    razorice;
     int    savage_combat;
     int    slow;
+    int    snare;
+    double sunder_armor;
+    int    thunder_clap;
     int    totem_of_wrath;
     int    winters_chill;
     int    winters_grasp;
-    debuff_t() { memset( (void*) this, 0x0, sizeof( debuff_t ) ); }
-    void reset()
-    {
-      size_t delta = ( (uintptr_t) &temporary_debuffs ) - ( (uintptr_t) this );
-      memset( (void*) &temporary_debuffs, 0x0, sizeof( debuff_t ) - delta );
-    }
+    void reset() { memset( (void*) this, 0x0, sizeof( debuff_t ) ); }
+    debuff_t() { reset(); }
     bool snared() { return frozen || slow || snare || thunder_clap; }
   };
   debuff_t debuffs;

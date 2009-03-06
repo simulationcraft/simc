@@ -2076,12 +2076,12 @@ struct cat_form_t : public druid_spell_t
     d -> buffs_cat_form = 1;
     d -> base_gcd = 1.0;
 
-    for( player_t* p = sim -> player_list; p; p = p -> next )
+    if( d -> talents.leader_of_the_pack )
     {
-      if( d -> talents.leader_of_the_pack )
+      for( player_t* p = sim -> player_list; p; p = p -> next )
       {
         if( ! p -> sleeping ) p -> aura_gain( "Leader of the Pack" );
-        p -> buffs.leader_of_the_pack = 1;
+	p -> buffs.leader_of_the_pack = 1;
       }
     }
   }

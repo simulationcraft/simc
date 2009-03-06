@@ -200,7 +200,7 @@ void action_t::player_buff()
     }
   }
 
-  if( sim -> buffs.sanctified_retribution || t -> debuffs.ferocious_inspiration  ) 
+  if( p -> buffs.sanctified_retribution || t -> debuffs.ferocious_inspiration  ) 
   {
     player_multiplier *= 1.03;
   }
@@ -256,7 +256,7 @@ void action_t::target_debuff( int dmg_type )
     t -> uptimes.mangle -> update( t -> debuffs.mangle != 0 );
   }
 
-  if( t -> debuffs.razorice )
+  if( sim -> P309 && t -> debuffs.razorice )
   {
     if( school == SCHOOL_FROST ||
         school == SCHOOL_FROSTFIRE )
