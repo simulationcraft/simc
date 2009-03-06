@@ -758,7 +758,11 @@ struct shadow_word_pain_t : public priest_spell_t
                                p -> talents.improved_shadow_word_pain * 0.03 );
     base_hit += p -> talents.shadow_focus * 0.01;
 
-    tick_may_crit = ! sim -> P309;
+	if (! sim -> P309 )
+	{
+		tick_may_crit = true;
+		base_crit_bonus = 1.0;
+	}
 
     if( p -> gear.tier6_2pc ) num_ticks++;
 
@@ -850,7 +854,11 @@ struct vampiric_touch_t : public priest_spell_t
     base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
     base_hit        += p -> talents.shadow_focus * 0.01;
 
-    tick_may_crit = ! sim -> P309;
+	if (! sim -> P309 )
+	{
+		tick_may_crit = true;
+		base_crit_bonus = 1.0;
+	}
 
     observer = &( p -> active_vampiric_touch );
   }
@@ -929,7 +937,11 @@ struct devouring_plague_t : public priest_spell_t
 				p -> talents.improved_devouring_plague * 0.05 );
     base_hit         += p -> talents.shadow_focus * 0.01;
 
-    tick_may_crit = ! sim -> P309;
+	if (! sim -> P309 )
+	{
+		tick_may_crit = true;
+		base_crit_bonus = 1.0;
+	}
 
     observer = &( p -> active_devouring_plague );
   }
@@ -1891,9 +1903,9 @@ bool priest_t::get_talent_trees( std::vector<int*>& discipline,
       { {  4, &( talents.improved_inner_fire )           }, {  4, NULL                              }, {  4, &( talents.shadow_affinity )           } },
       { {  5, &( talents.improved_power_word_fortitude ) }, {  5, &( talents.divine_fury )          }, {  5, &( talents.improved_shadow_word_pain ) } },
       { {  6, NULL                                       }, {  6, NULL                              }, {  6, &( talents.shadow_focus )              } },
-      { {  7, NULL                                       }, {  7, NULL                              }, {  7, NULL                                   } },
+      { {  7, &( talents.meditation )                    }, {  7, NULL                              }, {  7, NULL                                   } },
       { {  8, &( talents.inner_focus )                   }, {  8, NULL                              }, {  8, &( talents.improved_mind_blast )       } },
-      { {  9, &( talents.meditation )                    }, {  9, NULL                              }, {  9, &( talents.mind_flay )                 } },
+      { {  9, NULL										 }, {  9, NULL                              }, {  9, &( talents.mind_flay )                 } },
       { { 10, NULL                                       }, { 10, NULL                              }, { 10, &( talents.veiled_shadows )            } },
       { { 11, &( talents.mental_agility )                }, { 11, &( talents.searing_light )        }, { 11, NULL                                   } },
       { { 12, NULL                                       }, { 12, NULL                              }, { 12, &( talents.shadow_weaving )            } },
