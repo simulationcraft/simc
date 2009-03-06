@@ -15,14 +15,14 @@ actions+=/tricks_of_the_trade
 actions+=/blade_flurry
 actions+=/rupture,min_combo_points=5
 actions+=/eviscerate,min_combo_points=5
-actions+=/backstab,max_combo_points=4,energy>=80
+actions+=/sinister_strike,max_combo_points=4,energy>=80
 Melee_T7_Base_Gear.simcraft
 gear_expertise_rating=200
 glyph_rupture=1
 glyph_slice_and_dice=1
 glyph_eviscerate=1
 relentless_earthstorm=1
-main_hand=dagger,dps=156,speed=1.8,enchant=berserking
-off_hand=dagger,dps=156,speed=1.4,enchant=berserking
+main_hand=fist,dps=156,speed=2.6,enchant=berserking
+off_hand=dagger,dps=156,speed=1.8,enchant=berserking
 # When using this profile with a real raid AND party setups, override this value to zero.
 honor_among_thieves_interval=0.5
