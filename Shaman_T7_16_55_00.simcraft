@@ -8,7 +8,7 @@ actions+=/strength_of_earth_totem/windfury_totem/searing_totem/lightning_shield/
 actions+=/auto_attack/lightning_bolt,maelstrom=5/shamanistic_rage/spirit_wolf/earth_shock,ss_wait=1/stormstrike/earth_shock/lava_lash
 Melee_T7_Base_Gear.simcraft
 gear_expertise_rating=200
-main_hand=mace,dps=171,speed=2.6,enchant=berserking
+main_hand=mace,dps=156,speed=2.6,enchant=berserking
 off_hand=mace,dps=156,speed=2.5,enchant=berserking
 totem_of_hex=1
 glyph_windfury_weapon=1
