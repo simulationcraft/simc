@@ -3448,18 +3448,30 @@ struct conflagrate_t : public warlock_spell_t
       { NULL }
     };
     parse_options( options, options_str );
-      
-    static rank_t ranks[] =
+ 
+    if( sim -> patch.before( 3, 1, 0 ) )
     {
-      { 80, 8, 766, 954, 0, 0.12 },
-      { 75, 7, 650, 810, 0, 0.12 },
-      { 70, 6, 579, 721, 0, 305  },
-      { 65, 5, 512, 638, 0, 280  },
-      { 60, 4, 447, 557, 0, 255  },
-      { 0, 0 }
-    };
-    init_rank( ranks );
-     
+      static rank_t ranks[] =
+      {
+        { 80, 8, 766, 954, 0, 0.12 },
+        { 75, 7, 650, 810, 0, 0.12 },
+        { 70, 6, 579, 721, 0, 305  },
+        { 65, 5, 512, 638, 0, 280  },
+        { 60, 4, 447, 557, 0, 255  },
+        { 0, 0 }
+      };
+      init_rank( ranks );
+    }
+    else
+    {
+      static rank_t ranks[] =
+      {
+        { 40, 1, 0, 0, 0, 0.16 },
+        { 0, 0 }
+      };
+      init_rank( ranks );
+    }
+
     base_execute_time = 0; 
     may_crit          = true;
     direct_power_mod  = (1.5/3.5);
