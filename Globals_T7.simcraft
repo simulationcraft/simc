@@ -44,7 +44,7 @@ infinite_mana=0
 # improvement is worth the slight inaccuracy.
 regen_periodicity=1.0
 
-# From the testing at http://elitistjerks.com/f15/t37584-wrath_boss_armor_testing it appears WotLK boss armor is 13k
+# Patch 3.0.x WotLK boss armor
 target_armor=13000
 
 # Support for Warrior class does not yet exist

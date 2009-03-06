@@ -466,7 +466,7 @@ static void trigger_faerie_fire( action_t* a )
     expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
     {
       target_t* t = sim -> target;
-      t -> debuffs.faerie_fire = util_t::ability_rank( p -> level,  1260,76,  610,66,  505,0 );
+      t -> debuffs.faerie_fire = sim -> P309 ? util_t::ability_rank( p -> level,  1260,76,  610,66,  505,0 ) : 0.05;
       sim -> add_event( this, 40.0 );
     }
 

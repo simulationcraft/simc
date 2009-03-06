@@ -1499,7 +1499,7 @@ struct expose_armor_t : public rogue_attack_t
     {
       target_t* t = sim -> target;
 
-      double debuff = base_td_init * p -> buffs_combo_points;
+      double debuff = ( sim -> P309 ? base_td_init : 0.04 ) * p -> buffs_combo_points;
 
       if( debuff >= t -> debuffs.expose_armor )
       {
