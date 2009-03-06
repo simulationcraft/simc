@@ -466,8 +466,16 @@ static void trigger_faerie_fire( action_t* a )
     expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
     {
       target_t* t = sim -> target;
-      t -> debuffs.faerie_fire = sim -> P309 ? util_t::ability_rank( p -> level,  1260,76,  610,66,  505,0 ) : 0.05;
-      sim -> add_event( this, 40.0 );
+      if( sim -> P309 )
+      {
+        t -> debuffs.faerie_fire = util_t::ability_rank( p -> level,  1260,76,  610,66,  505,0 );
+        sim -> add_event( this, 40.0 );
+      }
+      else
+      {
+        t -> debuffs.faerie_fire = 0.05;
+        sim -> add_event( this, 300.0 );
+      }
     }
 
     virtual void execute()
@@ -482,7 +490,10 @@ static void trigger_faerie_fire( action_t* a )
 
   if( e )
   {
-    e -> reschedule( 40.0 );
+    if( a -> sim -> P309 )
+      e -> reschedule( 40.0 );
+    else
+      e -> reschedule( 300.0 );
   }
   else
   {
@@ -504,7 +515,10 @@ static void trigger_improved_faerie_fire( action_t* a )
     expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
     {
       sim -> target -> debuffs.improved_faerie_fire = 3;
-      sim -> add_event( this, 40.0 );
+      if( sim -> P309 )
+        sim -> add_event( this, 40.0 );
+      else
+        sim -> add_event( this, 300.0 );
     }
     virtual void execute()
     {
@@ -517,7 +531,10 @@ static void trigger_improved_faerie_fire( action_t* a )
 
   if( e )
   {
-    e -> reschedule( 40.0 );
+    if( a -> sim -> P309 )
+      e -> reschedule( 40.0 );
+    else
+      e -> reschedule( 300.0 );
   }
   else
   {
