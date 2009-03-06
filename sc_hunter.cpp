@@ -59,6 +59,7 @@ struct hunter_t : public player_t
   // Gains
   gain_t* gains_chimera_viper;
   gain_t* gains_invigoration;
+  gain_t* gains_rapid_recuperation;
   gain_t* gains_roar_of_recovery;
   gain_t* gains_thrill_of_the_hunt;
   gain_t* gains_viper_aspect_passive;
@@ -214,6 +215,7 @@ struct hunter_t : public player_t
     // Gains
     gains_chimera_viper        = get_gain( "chimera_viper" );
     gains_invigoration         = get_gain( "invigoration" );
+    gains_rapid_recuperation   = get_gain( "rapid_recuperation" );
     gains_roar_of_recovery     = get_gain( "roar_of_recovery" );
     gains_thrill_of_the_hunt   = get_gain( "thrill_of_the_hunt" );
     gains_viper_aspect_passive = get_gain( "viper_aspect_passive" );
@@ -1364,7 +1366,7 @@ struct hunter_pet_attack_t : public attack_t
     double c = attack_t::cost();
     if( c == 0 ) return 0;
 
-    if( o -> buffs_rapid_fire ) c *= 1.0 - o -> talents.rapid_recuperation * 0.3;
+    if( o -> buffs_rapid_fire && p -> sim -> P309 ) c *= 1.0 - o -> talents.rapid_recuperation * 0.3;
     
     return c;
   }
@@ -1653,7 +1655,7 @@ struct hunter_pet_spell_t : public spell_t
     double c = spell_t::cost();
     if( c == 0 ) return 0;
 
-    if( o -> buffs_rapid_fire ) c *= 1.0 - o -> talents.rapid_recuperation * 0.3;
+    if( o -> buffs_rapid_fire && p -> sim -> P309 ) c *= 1.0 - o -> talents.rapid_recuperation * 0.3;
     
     return c;
   }
@@ -1926,7 +1928,7 @@ double hunter_attack_t::cost()
   double c = attack_t::cost();
   if( c == 0 ) return 0;
   c *= 1.0 - p -> talents.efficiency * 0.02;
-  if( p -> buffs_rapid_fire   ) c *= 1.0 - p -> talents.rapid_recuperation * 0.3;
+  if( p -> buffs_rapid_fire && p -> sim -> P309 ) c *= 1.0 - p -> talents.rapid_recuperation * 0.3;
   if( p -> buffs_beast_within ) c *= 0.80;
   return c;
 }
@@ -2309,6 +2311,8 @@ struct black_arrow_t : public hunter_attack_t
     cooldown_group   = "traps";
 
     base_multiplier *= 1.0 + p -> talents.sniper_training * 0.02;
+    base_multiplier *= 1.0 + p -> talents.tnt * 0.02;
+    base_multiplier *= 1.0 + p -> talents.trap_mastery * 0.10;
   }
 
   virtual void execute()
@@ -2360,7 +2364,7 @@ struct chimera_shot_t : public hunter_attack_t
 
     base_dd_min = 1;
     base_dd_max = 1;
-    base_cost   = p -> resource_base[ RESOURCE_MANA ] * 0.16;
+    base_cost   = p -> resource_base[ RESOURCE_MANA ] * ( p -> sim -> P309 ? 0.16 : 0.12 );
 
     normalize_weapon_speed = true;
     weapon_multiplier      = 1.25;
@@ -2917,7 +2921,7 @@ double hunter_spell_t::cost()
 {
   hunter_t* p = player -> cast_hunter();
   double c = spell_t::cost();
-  if ( p -> buffs_rapid_fire ) c *= 1.0 - p -> talents.rapid_recuperation * 0.3;
+  if ( p -> buffs_rapid_fire && p -> sim -> P309 ) c *= 1.0 - p -> talents.rapid_recuperation * 0.3;
   return c;
 }
 
@@ -3540,6 +3544,12 @@ void hunter_t::regen( double periodicity )
     double aspect_of_the_viper_regen = periodicity * 0.04 * resource_max[ RESOURCE_MANA ] / 3.0;
 
     resource_gain( RESOURCE_MANA, aspect_of_the_viper_regen, gains_viper_aspect_passive );
+  }
+  if( buffs_rapid_fire && talents.rapid_recuperation && ! sim -> P309 )
+  {
+    double rr_regen = periodicity * 0.02 * talents.rapid_recuperation * resource_max[ RESOURCE_MANA ] / 3.0;
+
+    resource_gain( RESOURCE_MANA, rr_regen, gains_rapid_recuperation );
   }
 }
 
