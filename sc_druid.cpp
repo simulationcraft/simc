@@ -1915,7 +1915,7 @@ struct insect_swarm_t : public druid_spell_t
     base_execute_time = 0;
     base_tick_time    = 2.0;
     num_ticks         = 6;
-    tick_power_mod    = ( base_tick_time / 15.0 ) * 0.95;
+    tick_power_mod    = (( sim -> P309 ) ? ( base_tick_time / 15.0 ) * 0.95 : 0.2);
 
     base_multiplier *= 1.0 + util_t::talent_rank(p -> talents.genesis, 5, 0.01) +
                             ( p -> glyphs.insect_swarm  ? 0.30 : 0.00 ) +
