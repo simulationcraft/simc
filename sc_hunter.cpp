@@ -1192,22 +1192,26 @@ static void trigger_piercing_shots( action_t* a )
     {
       player_multiplier = 1.0;
     }
-// FIXME: which debuffs apply?
-//    void target_debuff()
-//    {
-//      target_multiplier = 1.0;
-//    }
+    void target_debuff()
+    {
+      target_multiplier = 1.0;
+    }
   };
+
+  double dmg = p -> talents.piercing_shots * 0.1 * a -> direct_dmg;
 
   if( ! p -> active_piercing_shots ) p -> active_piercing_shots = new piercing_shots_t( p );
 
-  // new crits overwrite the old debuff even if the new damage is lower :(
   if( p -> active_piercing_shots -> ticking )
   {
+    int num_ticks = p -> active_piercing_shots -> num_ticks;
+    int remaining_ticks = num_ticks - p -> active_piercing_shots -> current_tick;
+
+    dmg += p -> active_piercing_shots -> base_tick_dmg * remaining_ticks;
+
     p -> active_piercing_shots -> cancel();
   }
 
-  double dmg = p -> talents.piercing_shots * 0.1 * a -> direct_dmg;
   p -> active_piercing_shots -> base_tick_dmg = dmg / 8;
   p -> active_piercing_shots -> execute();
 }
