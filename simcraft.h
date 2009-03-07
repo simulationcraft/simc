@@ -459,9 +459,8 @@ struct scaling_t
 
 struct rating_t
 {
-  double haste;
-  double spell_hit, spell_crit;
-  double attack_hit, attack_crit;
+  double  spell_haste,  spell_hit,  spell_crit;
+  double attack_haste, attack_hit, attack_crit;
   double expertise, armor_penetration;
   rating_t() { memset( this, 0x00, sizeof(rating_t) ); }
   void init( int level );
@@ -504,7 +503,7 @@ struct player_t
 
   // Haste
   int    base_haste_rating, initial_haste_rating, haste_rating;
-  double haste;
+  double spell_haste, attack_haste;
 
   // Attributes
   double attribute                   [ ATTRIBUTE_MAX ];
@@ -1014,7 +1013,7 @@ struct player_t
   action_t* find_action( const std::string& );
   void      share_cooldown( const std::string& name, double ready );
   void      share_duration( const std::string& name, double ready );
-  void      recalculate_haste()  {  haste = 1.0 / ( 1.0 + haste_rating / rating.haste ); }
+  void      recalculate_haste();
   double    mana_regen_per_second();
   bool      dual_wield() { return main_hand_weapon.type != WEAPON_NONE && off_hand_weapon.type != WEAPON_NONE; }
   void      aura_gain( const char* name );

@@ -296,7 +296,7 @@ void report_t::print_spell_stats( player_t* p )
 	   report_tag ? "hit="         : "", p -> composite_spell_hit()  * 100.0, 
 	   report_tag ? "crit="        : "", p -> composite_spell_crit() * 100.0,
 	   report_tag ? "penetration=" : "", p -> composite_spell_penetration(),
-	   report_tag ? "haste="       : "", ( 1.0 / p -> haste - 1 ) * 100.0,
+	   report_tag ? "haste="       : "", ( 1.0 / p -> spell_haste - 1 ) * 100.0,
 	   report_tag ? "mp5="         : "", p -> initial_mp5 );
 }
 
@@ -312,7 +312,7 @@ void report_t::print_attack_stats( player_t* p )
 	   report_tag ? "crit="        : "", p -> composite_attack_crit()      * 100.0, 
 	   report_tag ? "expertise="   : "", p -> composite_attack_expertise() * 100.0,
 	   report_tag ? "penetration=" : "", p -> composite_attack_penetration(),
-	   report_tag ? "haste="       : "", ( 1.0 / p -> haste - 1 ) * 100.0 );
+	   report_tag ? "haste="       : "", ( 1.0 / p -> attack_haste - 1 ) * 100.0 );
 }
 
 // report_t::print_gains =====================================================

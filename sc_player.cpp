@@ -140,7 +140,7 @@ player_t::player_t( sim_t*             s,
 		    const std::string& n ) :
   sim(s), name_str(n), next(0), type(t), level(80), party(0), member(0), gcd_ready(0), base_gcd(1.5), sleeping(0), pet_list(0),
   // Haste
-  base_haste_rating(0), initial_haste_rating(0), haste_rating(0), haste(1.0),
+  base_haste_rating(0), initial_haste_rating(0), haste_rating(0), spell_haste(1.0), attack_haste(1.0),
   // Spell Mechanics
   base_spell_power(0),
   base_spell_hit(0),         initial_spell_hit(0),         spell_hit(0),
@@ -1520,6 +1520,14 @@ void player_t::share_duration( const std::string& group,
       }
     }
   }
+}
+
+// player_t::recalculate_haste ==============================================
+
+void player_t::recalculate_haste()
+{
+   spell_haste = 1.0 / ( 1.0 + haste_rating / rating. spell_haste );
+  attack_haste = 1.0 / ( 1.0 + haste_rating / rating.attack_haste );
 }
 
 // player_t::recent_cast ====================================================

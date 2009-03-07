@@ -45,7 +45,7 @@ void spell_t::parse_options( option_t*          options,
 double spell_t::haste()
 {
   player_t* p = player;
-  double h = p -> haste;
+  double h = p -> spell_haste;
 
   if( p -> type != PLAYER_GUARDIAN )
   {

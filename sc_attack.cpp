@@ -63,7 +63,7 @@ void attack_t::parse_options( option_t*          options,
 double attack_t::haste()
 {
   player_t* p = player;
-  double h = p -> haste;
+  double h = p -> attack_haste;
 
   if( p -> type != PLAYER_GUARDIAN )
   {

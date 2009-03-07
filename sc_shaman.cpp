@@ -245,6 +245,7 @@ struct shaman_t : public player_t
   }
 
   // Character Definition
+  virtual void      init_rating();
   virtual void      init_base();
   virtual void      init_unique_gear();
   virtual void      reset();
@@ -2886,6 +2887,15 @@ pet_t* shaman_t::create_pet( const std::string& pet_name )
   if( pet_name == "spirit_wolf" ) return new spirit_wolf_pet_t( sim, this );
 
   return 0;
+}
+
+// shaman_t::init_rating ======================================================
+
+void shaman_t::init_rating()
+{
+  player_t::init_rating();
+
+  rating.attack_haste *= 1.0 / 1.30;
 }
 
 // shaman_t::init_base ========================================================
