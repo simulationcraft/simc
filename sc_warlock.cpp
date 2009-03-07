@@ -921,7 +921,7 @@ struct doomguard_pet_t : public warlock_pet_t
     main_hand_weapon.damage     = 412.5;
     main_hand_weapon.swing_time = 2.0;
 
-    damage_modifier = 2.978;
+    damage_modifier = ( sim -> patch.before( 3, 1, 0 ) ) ? 2.978 : 1.98;
   }
 
   virtual void init_base()
@@ -3241,6 +3241,8 @@ struct unstable_affliction_t : public warlock_spell_t
     base_multiplier  *= 1.0 + ( p -> talents.shadow_mastery * 0.03 +
                             ( ( p -> talents.siphon_life && sim -> patch.after( 3, 1, 0 ) ) ? 0.05 : 0 ) );
     tick_power_mod   += p -> talents.everlasting_affliction * 0.01;
+
+    if( sim -> patch.after( 3, 1, 0 ) ) duration_group = "immolate";
 
     if( sim -> patch.after( 3, 1, 0 ) && p -> talents.pandemic )
     {
