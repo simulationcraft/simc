@@ -2916,7 +2916,6 @@ void shaman_t::init_base()
   {
     attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.0 + talents.ancestral_knowledge * 0.02;
     attribute_multiplier_initial[ ATTR_STAMINA   ] *= 1.0 + talents.toughness           * 0.02;
-    attribute_multiplier_initial[ ATTR_AGILITY   ] *= 1.0 + talents.unleashed_rage      * 0.01;
   }
 
   base_spell_crit = 0.0225;
@@ -2927,6 +2926,8 @@ void shaman_t::init_base()
   initial_attack_power_per_strength = 1.0;
   initial_attack_power_per_agility  = 1.0;
   initial_attack_crit_per_agility = rating_t::interpolate( level, 0.01/25.0, 0.01/40.0, 0.01/83.3 );
+
+  base_attack_expertise = 0.25 * talents.unleashed_rage * 0.03;
 
   resource_base[ RESOURCE_HEALTH ] = 3185;
   resource_base[ RESOURCE_MANA   ] = rating_t::interpolate( level, 1415, 2680, 4396 );
