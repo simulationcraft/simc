@@ -27,5 +27,5 @@ enchant_expertise_rating=-80
 glyph_rupture=1
 glyph_slice_and_dice=1
 glyph_sinister_strike=1
-main_hand=fist,dps=157,speed=2.6,enchant=berserking
+main_hand=fist,dps=171,speed=2.6,enchant=berserking
 off_hand=dagger,dps=157,speed=1.4,enchant=berserking

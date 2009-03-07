@@ -22,7 +22,7 @@ glyph_rupture=1
 glyph_slice_and_dice=1
 glyph_eviscerate=1
 relentless_earthstorm=1
-main_hand=fist,dps=156,speed=2.6,enchant=berserking
+main_hand=fist,dps=171,speed=2.6,enchant=berserking
 off_hand=dagger,dps=156,speed=1.8,enchant=berserking
 # When using this profile with a real raid AND party setups, override this value to zero.
 honor_among_thieves_interval=0.5
