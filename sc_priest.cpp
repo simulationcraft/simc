@@ -750,19 +750,14 @@ struct shadow_word_pain_t : public priest_spell_t
     num_ticks         = 6;
     tick_power_mod    = base_tick_time / 15.0;
     tick_power_mod   *= 0.91666667;  // Nerf Bat!
-    base_cost        *= 1.0 - ( p -> talents.mental_agility  * 0.02 - 
-                                p -> talents.shadow_focus    * 0.02 - 
-                                p -> glyphs.shadow_word_pain * 0.20 );
+    base_cost        *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility, 3, 0.04, 0.07, 0.10 ) +
+                                p -> talents.shadow_focus    * 0.02 );
+
     base_multiplier *= 1.0 + ( p -> talents.darkness                  * 0.02 +
                                p -> talents.twin_disciplines          * 0.01 +
                                p -> talents.improved_shadow_word_pain * 0.03 );
-    base_hit += p -> talents.shadow_focus * 0.01;
-
-	if (! sim -> P309 )
-	{
-		tick_may_crit = true;
-		base_crit_bonus = 1.0;
-	}
+    base_hit  += p -> talents.shadow_focus * 0.01;
+    base_crit += p -> talents.mind_melt * 0.03;
 
     if( p -> gear.tier6_2pc ) num_ticks++;
 
@@ -771,6 +766,14 @@ struct shadow_word_pain_t : public priest_spell_t
 
   virtual void execute() 
   {
+    priest_t* p = player -> cast_priest();
+
+	if ( ! sim -> P309 && p -> buffs.shadow_form )
+	{
+		tick_may_crit = true;
+		base_crit_bonus = 1.0;
+	}
+
     priest_spell_t::execute(); 
     if( result_is_hit() ) 
     {
@@ -853,18 +856,21 @@ struct vampiric_touch_t : public priest_spell_t
     base_cost        = floor(base_cost);
     base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
     base_hit        += p -> talents.shadow_focus * 0.01;
-
-	if (! sim -> P309 )
-	{
-		tick_may_crit = true;
-		base_crit_bonus = 1.0;
-	}
+    base_crit       += p -> talents.mind_melt * 0.03;
 
     observer = &( p -> active_vampiric_touch );
   }
 
   virtual void execute() 
   {
+    priest_t* p = player -> cast_priest();
+
+	if ( ! sim -> P309 && p -> buffs.shadow_form )
+	{
+		tick_may_crit = true;
+		base_crit_bonus = 1.0;
+	}
+
     priest_spell_t::execute(); 
     if( result_is_hit() ) 
     {
@@ -930,24 +936,28 @@ struct devouring_plague_t : public priest_spell_t
     binary            = true;
     tick_power_mod    = base_tick_time / 15.0;
     tick_power_mod   *= 0.92;
-    base_cost        *= 1.0 - p -> talents.mental_agility * 0.02 - p -> talents.shadow_focus * 0.02;
+    base_cost        *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility, 3, 0.04, 0.07, 0.10 ) +
+								p -> talents.shadow_focus * 0.02 );
     base_cost         = floor(base_cost);
     base_multiplier  *= 1.0 + ( p -> talents.darkness                  * 0.02 + 
-				p -> talents.twin_disciplines          * 0.01 +
-				p -> talents.improved_devouring_plague * 0.05 );
+								p -> talents.twin_disciplines          * 0.01 +
+								p -> talents.improved_devouring_plague * 0.05 );
     base_hit         += p -> talents.shadow_focus * 0.01;
-
-	if (! sim -> P309 )
-	{
-		tick_may_crit = true;
-		base_crit_bonus = 1.0;
-	}
+    base_crit        += p -> talents.mind_melt * 0.03;
 
     observer = &( p -> active_devouring_plague );
   }
 
   virtual void execute() 
   {
+    priest_t* p = player -> cast_priest();
+
+	if ( ! sim -> P309 && p -> buffs.shadow_form )
+	{
+		tick_may_crit = true;
+		base_crit_bonus = 1.0;
+	}
+
     priest_spell_t::execute(); 
     if( result_is_hit() ) 
     {
@@ -1016,10 +1026,10 @@ struct vampiric_embrace_t : public priest_spell_t
     init_rank( ranks );    
      
     base_execute_time = 0; 
-    base_tick_time    = 60.0; 
+    base_tick_time    = 300.0; 
     num_ticks         = 1;
-    cooldown          = 10;
-    base_cost        *= 1.0 - p -> talents.mental_agility * 0.02 - p -> talents.shadow_focus * 0.02;
+    cooldown          = 0;
+    base_cost         = 0.0;
     base_cost         = floor(base_cost);
     base_multiplier   = 0;
     base_hit          = p -> talents.shadow_focus * 0.01;
@@ -1131,7 +1141,8 @@ struct shadow_word_death_t : public priest_spell_t
     may_crit          = true; 
     cooldown          = 12.0;
     direct_power_mod  = (1.5/3.5); 
-    base_cost        *= 1.0 - p -> talents.mental_agility * 0.02 - p -> talents.shadow_focus * 0.02;
+    base_cost        *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility, 3, 0.04, 0.07, 0.10 ) +
+							    p -> talents.shadow_focus * 0.02 );
     base_cost         = floor(base_cost);
     base_multiplier  *= 1.0 + p -> talents.darkness * 0.02 + p -> talents.twin_disciplines * 0.01;
     base_hit         += p -> talents.shadow_focus * 0.01;
@@ -1379,10 +1390,26 @@ struct dispersion_t : public priest_spell_t
 
   virtual bool ready()
   {
+    double consumption_rate, time_to_oom;
+	double fudge_factor = 1.1;
+
     if( ! priest_spell_t::ready() )
       return false;
 
-    return player -> resource_current[ RESOURCE_MANA ] < 0.60 * player -> resource_max[ RESOURCE_MANA ];
+	consumption_rate  = ( player -> resource_initial[ RESOURCE_MANA ] - 
+					  	  player -> resource_current[ RESOURCE_MANA ] ) / 
+					 	  sim -> current_time;
+	consumption_rate *= fudge_factor;
+
+	time_to_oom = player -> resource_current[ RESOURCE_MANA ] / consumption_rate;
+
+	if ( sim -> target -> time_to_die() < time_to_oom ) 
+		return false;
+
+    if( player -> buffs.bloodlust && ( time_to_oom > 45.0 ) )
+      return false;
+
+    return player -> resource_current[ RESOURCE_MANA ] < 0.50 * player -> resource_max[ RESOURCE_MANA ];
   }
 };
 
@@ -1657,8 +1684,8 @@ struct shadow_fiend_spell_t : public priest_spell_t
     harmful    = false;
     cooldown   = 300.0;
     cooldown  -= 60.0 * p -> talents.veiled_shadows;
-    base_cost *= 1.0 - ( p -> talents.mental_agility * 0.02 +
-                         p -> talents.shadow_focus   * 0.02 );
+    base_cost *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility, 3, 0.04, 0.07, 0.10 ) +
+                         p -> talents.shadow_focus * 0.02 );
     base_cost  = floor(base_cost);
   }
 
