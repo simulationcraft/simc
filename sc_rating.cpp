@@ -25,7 +25,7 @@ static rating_t& rating_60()
     r.attack_haste      = 1000;
     r.attack_hit        = 1000;
     r.attack_crit       = 1400;
-    r.expertise         = 1000;
+    r.expertise         =  800;
     r.armor_penetration =  376;
   }
 
@@ -46,7 +46,7 @@ static rating_t& rating_70()
     r.attack_haste      = 1576;
     r.attack_hit        = 1576;
     r.attack_crit       = 2208;
-    r.expertise         = 1576;
+    r.expertise         = 1261;
     r.armor_penetration =  592;
   }
 
@@ -67,7 +67,7 @@ static rating_t& rating_80()
     r.attack_haste      = 3279;
     r.attack_hit        = 3279;
     r.attack_crit       = 4591;
-    r.expertise         = 3279;
+    r.expertise         = 2623;
     r.armor_penetration = 1232;
   }
 
