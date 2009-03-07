@@ -25,7 +25,7 @@ struct druid_t : public player_t
   double buffs_eclipse_starfire;
   double buffs_eclipse_wrath;
   int    buffs_moonkin_form;
-  int    buffs_natures_grace;
+  double buffs_natures_grace;
   int    buffs_natures_swiftness;
   int    buffs_omen_of_clarity;
   int    buffs_savage_roar;
@@ -35,6 +35,7 @@ struct druid_t : public player_t
 
   // Expirations
   event_t* expirations_eclipse;
+  event_t* expirations_natures_grace;
   event_t* expirations_savage_roar;
   event_t* expirations_unseen_moon;
 
@@ -57,6 +58,7 @@ struct druid_t : public player_t
   // Up-Times
   uptime_t* uptimes_eclipse_starfire;
   uptime_t* uptimes_eclipse_wrath;
+  uptime_t* uptimes_natures_grace;
   uptime_t* uptimes_savage_roar;
 
   attack_t* melee_attack;
@@ -201,8 +203,10 @@ struct druid_t : public player_t
     buffs_tigers_fury       = 0;
 
     // Expirations
-    expirations_eclipse     = 0;
-    expirations_savage_roar = 0;
+    expirations_eclipse       = 0;
+    expirations_natures_grace = 0;
+    expirations_savage_roar   = 0;
+    expirations_unseen_moon   = 0;
 
     // Cooldowns
     cooldowns_eclipse = 0;
@@ -222,6 +226,7 @@ struct druid_t : public player_t
     // Up-Times
     uptimes_eclipse_starfire = get_uptime( "eclipse_starfire" );
     uptimes_eclipse_wrath    = get_uptime( "eclipse_wrath"    );
+    uptimes_natures_grace    = get_uptime( "natures_grace"    );
     uptimes_savage_roar      = get_uptime( "savage_roar"      );
 
     melee_attack = 0;
@@ -618,6 +623,42 @@ static void trigger_earth_and_moon( spell_t* s )
   else
   {
     e = new ( s -> sim ) earth_and_moon_expiration_t( s -> sim, p );
+  }
+}
+
+// trigger_natures_grace ====================================================
+
+static void trigger_natures_grace( spell_t* s )
+{
+  druid_t* p = s -> player -> cast_druid();
+
+  struct natures_grace_expiration_t : public event_t
+  {
+    natures_grace_expiration_t( sim_t* sim, druid_t* p ) : event_t( sim, p )
+    {
+      name = "Nature's Grace Expiration";
+      p -> aura_gain( "Nature's Grace" );
+      p -> buffs_natures_grace = 0.20;
+      sim -> add_event( this, 3.0 );
+    }
+    virtual void execute()
+    {
+      druid_t* p = player -> cast_druid();
+      p -> buffs_natures_grace       = 0;
+      p -> expirations_natures_grace = 0;
+      p -> aura_loss( "Nature's Grace" );
+    }
+  };
+  
+  event_t*& e = p -> expirations_natures_grace;
+  
+  if( e )
+  {
+    e -> reschedule( 3.0 );
+  }
+  else
+  {
+    e = new ( s -> sim ) natures_grace_expiration_t(s -> sim, p );
   }
 }
 
@@ -1374,8 +1415,8 @@ struct shred_t : public druid_attack_t
     druid_t* p = player -> cast_druid();
     druid_attack_t::execute();
     if( p -> glyphs.shred && 
-	p -> active_rip  &&
-	p -> active_rip -> added_ticks < 3 )
+        p -> active_rip  &&
+        p -> active_rip -> added_ticks < 3 )
     {
       p -> active_rip -> extend_duration( 1 );
     }
@@ -1637,6 +1678,10 @@ double druid_spell_t::haste()
   druid_t* p = player -> cast_druid();
   double h = spell_t::haste();
   if( p -> talents.celestial_focus ) h *= 1.0 / ( 1.0 + p -> talents.celestial_focus * 0.01 );
+  if( ! sim -> P309 && p -> buffs_natures_grace ) 
+  {
+    h *= 1.0 / ( 1.0 + p -> buffs_natures_grace );
+  }
   return h;
 }
 
@@ -1664,6 +1709,12 @@ void druid_spell_t::schedule_execute()
       p -> buffs_natures_swiftness = 0;
     }
   }
+
+  if( ! p -> sim -> P309 )
+  {
+    // As Nature's Grace is a haste buff, it matters if the buff was up on schedule_execute, not on execute.
+    p -> uptimes_natures_grace -> update( p -> buffs_natures_grace != 0 );
+  }
 }
 
 // druid_spell_t::execute ==================================================
@@ -1672,7 +1723,7 @@ void druid_spell_t::execute()
 {
   druid_t* p = player -> cast_druid();
 
-  if( p -> buffs_natures_grace && execute_time() )
+  if( p -> buffs_natures_grace && execute_time() && p -> sim -> P309 )
   {
     // Losing Nature's Grace buff at the end of the spellcast, followed by another gain if crit, is the actual ingame behaviour 
     p -> aura_loss( "Nature's Grace" );
@@ -1688,13 +1739,23 @@ void druid_spell_t::execute()
     {
       p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.02, p -> gains_moonkin_form );
     }
-    if( p -> buffs_natures_grace == 0 )
+    
+    if( p -> buffs_natures_grace == 0 && p -> sim -> P309 )
     {
+      // Nature's Grace on 3.0.9 realms
       if( sim -> roll( p -> talents.natures_grace / 3.0 ) )
       {
         p -> aura_gain( "Nature's Grace" );
         p -> buffs_natures_grace = 1;
         p -> buffs.cast_time_reduction += 0.5;
+      }
+    } 
+    else if( ! p -> sim -> P309 )
+    {
+      // PTR Nature's Grace, 20% spellhaste for 3sec. NOT consumed by spells!
+      if( sim -> roll( p -> talents.natures_grace / 3.0 ) )
+      {
+        // trigger_natures_grace( this );
       }
     }
   }
@@ -2101,7 +2162,7 @@ struct cat_form_t : public druid_spell_t
       for( player_t* p = sim -> player_list; p; p = p -> next )
       {
         if( ! p -> sleeping ) p -> aura_gain( "Leader of the Pack" );
-	p -> buffs.leader_of_the_pack = 1;
+        p -> buffs.leader_of_the_pack = 1;
       }
     }
   }
@@ -2408,7 +2469,7 @@ struct wrath_t : public druid_spell_t
   virtual void schedule_execute()
   {
     druid_t* p = player -> cast_druid();
-    trigger_gcd = ( p -> buffs_natures_grace ) ? p -> base_gcd - 0.5 : p -> base_gcd;
+    trigger_gcd = ( p -> buffs_natures_grace && p -> sim -> P309 ) ? p -> base_gcd - 0.5 : p -> base_gcd;
     druid_spell_t::schedule_execute();
   }
 
@@ -2561,7 +2622,7 @@ struct starfall_t : public druid_spell_t
     };
     parse_options( options, options_str );
     
-    cooldown          = sim -> P309 ? 180 : 90;
+    cooldown          = p -> sim -> P309 ? 180 : 90;
     base_execute_time = 0;
     is_aoe            = true;
     stars             = 10;
@@ -2588,7 +2649,7 @@ struct starfall_t : public druid_spell_t
     }
     if( p -> glyphs.starfall )
     {
-      if( sim -> P309 )
+      if( p -> sim -> P309 )
         stars    += 2;
       else 
         cooldown -= 30;
