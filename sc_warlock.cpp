@@ -1475,7 +1475,6 @@ static void trigger_eradication( spell_t* s )
   {
     if( s -> sim -> roll( 0.06 ) )
     {
-      p -> buffs_eradication = 1;
       event_t*&  e = p -> expirations_eradication;
       if( e )
       {
@@ -1949,9 +1948,7 @@ double warlock_spell_t::execute_time()
   if( t > 0 )
   {
     p -> uptimes_backdraft   -> update( p -> buffs_backdraft   != 0 );
-    if( sim -> patch.before( 3, 1, 0 ) )
-      p -> uptimes_eradication -> update( p -> buffs_eradication != 0 );
-
+    p -> uptimes_eradication -> update( p -> buffs_eradication != 0 );
     if( p -> buffs_backdraft && tree == TREE_DESTRUCTION ) t *= 1.0 - p -> talents.backdraft * 0.10;
   }
   return t;
@@ -2046,19 +2043,6 @@ void warlock_spell_t::player_buff()
     {
       if( p -> buffs_empowered_imp ) player_crit += 0.20;
       p -> uptimes_empowered_imp -> update( p -> buffs_empowered_imp != 0 );
-
-      if ( sim -> patch.after( 3, 1, 0 ) && p -> talents.eradication )
-      {
-        p -> uptimes_eradication -> update( p -> buffs_eradication > 0 );
-        if( p -> buffs_eradication > 0 )
-        {
-          player_crit += 0.1 * p -> buffs_eradication;
-          p -> buffs_eradication--;
-          if ( p -> buffs_eradication == 0 ) {
-            event_t::early( p -> expirations_eradication );
-          }
-        }
-      }
     }
 
     if( p -> talents.demonic_pact )
