@@ -290,6 +290,10 @@ struct druid_attack_t : public attack_t
     min_rip_expire(0), max_rip_expire(0)
   {
     may_glance = false;
+
+    druid_t* p = player -> cast_druid();
+
+    base_crit_bonus_multiplier *= 1.0 + util_t::talent_rank( p -> talents.predatory_instincts, 3, 0.03, 0.07, 0.10 );
   }
 
   virtual void   parse_options( option_t*, const std::string& options_str );
@@ -920,9 +924,10 @@ void druid_attack_t::player_buff()
 
   attack_t::player_buff();
 
-  if( p -> buffs_savage_roar && p -> glyphs.savage_roar )
+  if( ! sim -> P309 && p -> buffs_savage_roar )
   {
-    player_multiplier *= 1.06;
+    // sr glyph seems to be additive
+    player_multiplier *= 1.3 + 0.06 * p -> glyphs.savage_roar;
   }
 
   if( p -> talents.naturalist )
@@ -1006,8 +1011,6 @@ struct melee_t : public druid_attack_t
   melee_t( const char* name, player_t* player ) :
     druid_attack_t( name, player )
   {
-    druid_t* p = player -> cast_druid();
-
     base_dd_min = base_dd_max = 1;
     may_glance  = true;
     background  = true;
@@ -1015,7 +1018,6 @@ struct melee_t : public druid_attack_t
     trigger_gcd = 0;
     base_cost   = 0;
 
-    base_crit_bonus_multiplier *= 1.0 + util_t::talent_rank( p -> talents.predatory_instincts, 3, 0.03, 0.07, 0.10 );
   }
 
   virtual void execute()
@@ -2954,7 +2956,7 @@ double druid_t::composite_attack_power()
   double ap = player_t::composite_attack_power();
 
   double weapon_ap = ( equipped_weapon_dps - 54.8 ) * 14;
- 
+
   if ( talents.predatory_strikes )
   {
     ap += level * talents.predatory_strikes * 0.5;
@@ -2972,7 +2974,7 @@ double druid_t::composite_attack_power_multiplier()
 {
   double multiplier = player_t::composite_attack_power_multiplier();
 
-  if( buffs_savage_roar ) multiplier *= 1.40;
+  if( sim -> P309 && buffs_savage_roar ) multiplier *= 1.40;
   
   if ( buffs_cat_form && talents.heart_of_the_wild )
   {
