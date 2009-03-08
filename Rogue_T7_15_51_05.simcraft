@@ -5,10 +5,7 @@
 
 rogue=Rogue_T7_15_51_05
 level=80
-# CQC Spec
-# talents=http://www.wowhead.com/?talent=f0eb0xZMgibx0xoru0xRtx
-# Sword Spec
-talents=http://www.wowhead.com/?talent=f0eb0xZMgib00xqru0xRtx
+talents=http://www.wowhead.com/?talent=f0eb0xZMgibx0xoru0xRtx
 actions=flask,type=endless_rage/food,type=fish_feast/apply_poison,main_hand=wound,off_hand=wound
 actions+=/auto_attack
 actions+=/pool_energy,energy<=60,snd<=5/slice_and_dice,min_combo_points=3,snd<=2
@@ -29,5 +26,5 @@ enchant_expertise_rating=-80
 glyph_rupture=1
 glyph_slice_and_dice=1
 glyph_sinister_strike=1
-main_hand=sword,dps=157,speed=2.6,enchant=berserking
-off_hand=sword,dps=157,speed=1.5,enchant=berserking
+main_hand=fist,dps=171,speed=2.6,enchant=berserking
+off_hand=dagger,dps=157,speed=1.4,enchant=berserking
