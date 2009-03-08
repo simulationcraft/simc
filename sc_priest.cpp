@@ -19,16 +19,30 @@ struct priest_t : public player_t
   action_t* active_shadow_word_death;
 
   // Buffs
-  int buffs_inner_fire;
-  int buffs_improved_spirit_tap;
-  int buffs_shadow_weaving;
-  int buffs_surge_of_light;
-  int buffs_glyph_of_shadow;
+  struct _buffs_t
+  {
+    int inner_fire;
+    int improved_spirit_tap;
+    int shadow_weaving;
+    int surge_of_light;
+    int glyph_of_shadow;
+
+    void reset() { memset( (void*) this, 0x00, sizeof( _buffs_t ) ); }
+    _buffs_t() { reset(); }
+  };
+  _buffs_t _buffs;
 
   // Expirations
-  event_t* expirations_improved_spirit_tap;
-  event_t* expirations_shadow_weaving;
-  event_t* expirations_glyph_of_shadow;
+  struct _expirations_t
+  {
+    event_t* improved_spirit_tap;
+    event_t* shadow_weaving;
+    event_t* glyph_of_shadow;
+
+    void reset() { memset( (void*) this, 0x00, sizeof( _expirations_t ) ); }
+    _expirations_t() { reset(); }
+  };
+  _expirations_t _expirations;
 
   // Gains
   gain_t* gains_shadow_fiend;
@@ -105,18 +119,6 @@ struct priest_t : public player_t
     active_vampiric_embrace  = 0;
     active_mind_blast        = 0;
     active_shadow_word_death = 0;
-
-    // Buffs
-    buffs_improved_spirit_tap = 0;
-    buffs_inner_fire          = 0;
-    buffs_shadow_weaving      = 0;
-    buffs_surge_of_light      = 0;
-    buffs_glyph_of_shadow     = 0;
-
-    // Expirations
-    expirations_improved_spirit_tap = 0;
-    expirations_shadow_weaving      = 0;
-    expirations_glyph_of_shadow     = 0;
 
     // Gains
     gains_dispersion   = get_gain( "dispersion" );
@@ -245,8 +247,8 @@ static void stack_shadow_weaving( spell_t* s )
     {
       if( sim -> log ) report_t::log( sim, "%s loses Shadow Weaving", sim -> target -> name() );
       priest_t* p = player -> cast_priest();
-      p -> buffs_shadow_weaving = 0;
-      p -> expirations_shadow_weaving = 0;
+      p -> _buffs.shadow_weaving = 0;
+      p -> _expirations.shadow_weaving = 0;
     }
   };
 
@@ -254,13 +256,13 @@ static void stack_shadow_weaving( spell_t* s )
   {
     sim_t* sim = s -> sim;
 
-    if( p -> buffs_shadow_weaving < 5 ) 
+    if( p -> _buffs.shadow_weaving < 5 ) 
     {
-      p -> buffs_shadow_weaving++;
-      if( sim -> log ) report_t::log( sim, "%s gains Shadow Weaving %d", p -> name(), p -> buffs_shadow_weaving );
+      p -> _buffs.shadow_weaving++;
+      if( sim -> log ) report_t::log( sim, "%s gains Shadow Weaving %d", p -> name(), p -> _buffs.shadow_weaving );
     }
 
-    event_t*& e = p -> expirations_shadow_weaving;
+    event_t*& e = p -> _expirations.shadow_weaving;
     
     if( e )
     {
@@ -408,7 +410,7 @@ static void trigger_surge_of_light( spell_t* s )
 
   if( p -> talents.surge_of_light )
     if( s -> sim -> roll( p -> talents.surge_of_light * 0.25 ) )
-      p -> buffs_surge_of_light = 1;
+      p -> _buffs.surge_of_light = 1;
 }
 
 // trigger_improved_spirit_tap ================================================
@@ -421,7 +423,7 @@ static void trigger_improved_spirit_tap( spell_t* s )
     expiration_t( sim_t* sim, priest_t* p ) : event_t( sim, p )
     {
       name = "Improved Spirit Tap Expiration";
-      p -> buffs_improved_spirit_tap = 1;
+      p -> _buffs.improved_spirit_tap = 1;
       p -> aura_gain( "improved_spirit_tap" );
       spirit_bonus = p -> attribute[ ATTR_SPIRIT ] * p -> talents.improved_spirit_tap * 0.05;
       p -> attribute[ ATTR_SPIRIT ] += spirit_bonus;
@@ -430,10 +432,10 @@ static void trigger_improved_spirit_tap( spell_t* s )
     virtual void execute()
     {
       priest_t* p = player -> cast_priest();
-      p -> buffs_improved_spirit_tap = 0;
+      p -> _buffs.improved_spirit_tap = 0;
       p -> aura_loss( "improved_spirit_tap" );
       p -> attribute[ ATTR_SPIRIT ] -= spirit_bonus;
-      p -> expirations_improved_spirit_tap = 0;
+      p -> _expirations.improved_spirit_tap = 0;
     }
   };
 
@@ -441,7 +443,7 @@ static void trigger_improved_spirit_tap( spell_t* s )
 
   if( p -> talents.improved_spirit_tap )
   {
-    event_t*& e = p -> expirations_improved_spirit_tap;
+    event_t*& e = p -> _expirations.improved_spirit_tap;
 
     if( e )
     {
@@ -464,7 +466,7 @@ static void trigger_glyph_of_shadow( spell_t* s )
     expiration_t( sim_t* sim, priest_t* p ) : event_t( sim, p )
     {
       name = "Glyph of Shadow Expiration";
-      p -> buffs_glyph_of_shadow = 1;
+      p -> _buffs.glyph_of_shadow = 1;
       p -> aura_gain( "glyph_of_shadow" );
       spellpower_bonus = p -> attribute[ ATTR_SPIRIT ] * 0.1;
       p -> spell_power[ SCHOOL_MAX ] += spellpower_bonus;
@@ -473,10 +475,10 @@ static void trigger_glyph_of_shadow( spell_t* s )
     virtual void execute()
     {
       priest_t* p = player -> cast_priest();
-      p -> buffs_glyph_of_shadow = 0;
+      p -> _buffs.glyph_of_shadow = 0;
       p -> aura_loss( "glyph_of_shadow" );
       p -> spell_power[ SCHOOL_MAX ] -= spellpower_bonus;
-      p -> expirations_glyph_of_shadow = 0;
+      p -> _expirations.glyph_of_shadow = 0;
     }
   };
 
@@ -484,7 +486,7 @@ static void trigger_glyph_of_shadow( spell_t* s )
 
   if( p -> glyphs.shadow && p -> buffs.shadow_form )
   {
-    event_t*& e = p -> expirations_glyph_of_shadow;
+    event_t*& e = p -> _expirations.glyph_of_shadow;
 
     if( e )
     {
@@ -522,9 +524,9 @@ void priest_spell_t::player_buff()
   spell_t::player_buff();
   if( school == SCHOOL_SHADOW )
   {
-    if( p -> buffs_shadow_weaving )
+    if( p -> _buffs.shadow_weaving )
     {
-      player_multiplier *= 1.0 + p -> buffs_shadow_weaving * 0.02;
+      player_multiplier *= 1.0 + p -> _buffs.shadow_weaving * 0.02;
     }
   }
   if( p -> talents.focused_power )
@@ -612,25 +614,25 @@ struct smite_t : public priest_spell_t
   virtual void execute()
   {
     priest_spell_t::execute();
-    player -> cast_priest() -> buffs_surge_of_light = 0;
+    player -> cast_priest() -> _buffs.surge_of_light = 0;
   }
   virtual double execute_time()
   {
     priest_t* p = player -> cast_priest();
-    return p -> buffs_surge_of_light ? 0 : priest_spell_t::execute_time();
+    return p -> _buffs.surge_of_light ? 0 : priest_spell_t::execute_time();
   }
 
   virtual double cost()
   {
     priest_t* p = player -> cast_priest();
-    return p -> buffs_surge_of_light ? 0 : priest_spell_t::cost();
+    return p -> _buffs.surge_of_light ? 0 : priest_spell_t::cost();
   }
 
   virtual void player_buff()
   {
     priest_spell_t::player_buff();
     priest_t* p = player -> cast_priest();
-    may_crit = ! ( p -> buffs_surge_of_light );
+    may_crit = ! ( p -> _buffs.surge_of_light );
   }
 };
 
@@ -801,7 +803,7 @@ struct shadow_word_pain_t : public priest_spell_t
     if( ! priest_spell_t::ready() )
       return false;
 
-    if( shadow_weaving_wait && p -> buffs_shadow_weaving < 5 )
+    if( shadow_weaving_wait && p -> _buffs.shadow_weaving < 5 )
       return false;
 
     return true;
@@ -1609,12 +1611,12 @@ struct inner_fire_t : public priest_spell_t
     bonus_power *= 1.0 + p -> talents.improved_inner_fire * 0.15;
 
     p -> spell_power[ SCHOOL_MAX ] += bonus_power;
-    p -> buffs_inner_fire = 1;
+    p -> _buffs.inner_fire = 1;
   }
 
   virtual bool ready()
   {
-    return ! player -> cast_priest() -> buffs_inner_fire;
+    return ! player -> cast_priest() -> _buffs.inner_fire;
   }
 };
 
@@ -1746,8 +1748,8 @@ void priest_t::spell_finish_event( spell_t* s )
   }
   pop_tier5_4pc( s );
 
-  uptimes_improved_spirit_tap -> update( buffs_improved_spirit_tap != 0 );
-  uptimes_glyph_of_shadow     -> update( buffs_glyph_of_shadow     != 0 );
+  uptimes_improved_spirit_tap -> update( _buffs.improved_spirit_tap != 0 );
+  uptimes_glyph_of_shadow     -> update( _buffs.glyph_of_shadow     != 0 );
 }
 
 // priest_t::spell_damage_event ==============================================
@@ -1873,17 +1875,8 @@ void priest_t::reset()
   active_vampiric_touch   = 0;
   active_vampiric_embrace = 0;
 
-  // Buffs
-  buffs_improved_spirit_tap = 0;
-  buffs_inner_fire          = 0;
-  buffs_shadow_weaving      = 0;
-  buffs_surge_of_light      = 0;
-  buffs_glyph_of_shadow     = 0;
-
-  // Expirations
-  expirations_improved_spirit_tap = 0;
-  expirations_shadow_weaving      = 0;
-  expirations_glyph_of_shadow     = 0;
+  _buffs.reset();
+  _expirations.reset();
 }
 
 // priest_t::regen  ==========================================================
@@ -1896,7 +1889,7 @@ void priest_t::regen( double periodicity )
   {
     mana_regen_while_casting += talents.meditation * 0.10;
 
-    if( buffs_improved_spirit_tap )
+    if( _buffs.improved_spirit_tap )
     {
       mana_regen_while_casting += talents.improved_spirit_tap * 0.10;
     }
@@ -1905,7 +1898,7 @@ void priest_t::regen( double periodicity )
   {
     mana_regen_while_casting += util_t::talent_rank( talents.meditation, 3, 0.17, 0.33, 0.50 );
 
-    if( buffs_improved_spirit_tap )
+    if( _buffs.improved_spirit_tap )
     {
       mana_regen_while_casting += util_t::talent_rank( talents.improved_spirit_tap, 2, 0.17, 0.33 );
     }
