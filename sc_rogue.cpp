@@ -20,32 +20,57 @@ struct rogue_t : public player_t
   action_t* active_slice_and_dice;
 
   // Buffs
-  int buffs_adrenaline_rush;
-  int buffs_blade_flurry;
-  int buffs_cold_blood;
-  int buffs_combo_points;
-  int buffs_envenom;
-  int buffs_hunger_for_blood;
-  int buffs_killing_spree;
-  int buffs_master_of_subtlety;
-  int buffs_overkill;
-  int buffs_poison_doses;
-  int buffs_shadow_dance;
-  int buffs_shadowstep;
-  int buffs_shiv;
-  int buffs_slice_and_dice;
-  int buffs_stealthed;
-  int buffs_tricks_ready;
-  player_t* buffs_tricks_target;
+  struct _buffs_t
+  {
+    int adrenaline_rush;
+    int blade_flurry;
+    int cold_blood;
+    int combo_points;
+    int envenom;
+    int hunger_for_blood;
+    int killing_spree;
+    int master_of_subtlety;
+    int overkill;
+    int poison_doses;
+    int shadow_dance;
+    int shadowstep;
+    int shiv;
+    int slice_and_dice;
+    int stealthed;
+    int tricks_ready;
+    player_t* tricks_target;
+
+    void reset() { memset( (void*) this, 0x00, sizeof( _buffs_t ) ); }
+    _buffs_t() { reset(); }
+  };
+  _buffs_t _buffs;
 
   // Cooldowns
-  std::vector<double> cooldowns_honor_among_thieves;
-  double              cooldowns_seal_fate;
+  struct _cooldowns_t
+  {
+    std::vector<double> honor_among_thieves;
+    double              seal_fate;
+
+    void reset() 
+    { 
+      honor_among_thieves.clear(); 
+      seal_fate=0; 
+    }
+    _cooldowns_t() { reset(); }
+  };
+  _cooldowns_t _cooldowns;
 
   // Expirations
-  event_t* expirations_envenom;
-  event_t* expirations_slice_and_dice;
-  event_t* expirations_hunger_for_blood;
+  struct _expirations_t
+  {
+    event_t* envenom;
+    event_t* slice_and_dice;
+    event_t* hunger_for_blood;
+
+    void reset() { memset( (void*) this, 0x00, sizeof( _expirations_t ) ); }
+    _expirations_t() { reset(); }
+  };
+  _expirations_t _expirations;
 
   // Gains
   gain_t* gains_adrenaline_rush;
@@ -182,33 +207,6 @@ struct rogue_t : public player_t
     active_rupture           = 0;
     active_slice_and_dice    = 0;
 
-    // Buffs
-    buffs_adrenaline_rush    = 0;
-    buffs_blade_flurry       = 0;
-    buffs_cold_blood         = 0;
-    buffs_combo_points       = 0;
-    buffs_envenom            = 0;
-    buffs_hunger_for_blood   = 0;
-    buffs_killing_spree      = 0;
-    buffs_master_of_subtlety = 0;
-    buffs_overkill           = 0;
-    buffs_poison_doses       = 0;
-    buffs_shadow_dance       = 0;
-    buffs_shadowstep         = 0;
-    buffs_shiv               = 0;
-    buffs_slice_and_dice     = 0;
-    buffs_stealthed          = 0;
-    buffs_tricks_ready       = 0;
-    buffs_tricks_target      = 0;
-
-    // Cooldowns
-    cooldowns_seal_fate = 0;
-
-    // Expirations
-    expirations_envenom          = 0;
-    expirations_slice_and_dice   = 0;
-    expirations_hunger_for_blood = 0;
-  
     // Gains
     gains_adrenaline_rush    = get_gain( "adrenaline_rush" );
     gains_combat_potency     = get_gain( "combat_potency" );
@@ -256,8 +254,8 @@ struct rogue_t : public player_t
   // Utilities 
   double combo_point_rank( double* cp_list )
   {
-    assert( buffs_combo_points > 0 );
-    return cp_list[ buffs_combo_points-1 ];
+    assert( _buffs.combo_points > 0 );
+    return cp_list[ _buffs.combo_points-1 ];
   }
   double combo_point_rank( double cp1, double cp2, double cp3, double cp4, double cp5 )
   {
@@ -349,15 +347,15 @@ struct rogue_poison_t : public spell_t
 
 static void enter_stealth( rogue_t* p )
 {
-  p -> buffs_stealthed = 1;
+  p -> _buffs.stealthed = 1;
 
   if( p -> talents.master_of_subtlety )
   {
-    p -> buffs_master_of_subtlety = util_t::talent_rank( p -> talents.master_of_subtlety, 3, 4, 7, 10 );
+    p -> _buffs.master_of_subtlety = util_t::talent_rank( p -> talents.master_of_subtlety, 3, 4, 7, 10 );
   }
   if( p -> talents.overkill )
   {
-    p -> buffs_overkill = 1;
+    p -> _buffs.overkill = 1;
   }
 }
 
@@ -365,9 +363,9 @@ static void enter_stealth( rogue_t* p )
 
 static void break_stealth( rogue_t* p )
 {
-  if( p -> buffs_stealthed == 1 )
+  if( p -> _buffs.stealthed == 1 )
   {
-    p -> buffs_stealthed = -1;
+    p -> _buffs.stealthed = -1;
 
     struct expiration_t : public event_t
     {
@@ -379,15 +377,15 @@ static void break_stealth( rogue_t* p )
       virtual void execute()
       {
         rogue_t* p = player -> cast_rogue();
-        if( p -> buffs_master_of_subtlety )
+        if( p -> _buffs.master_of_subtlety )
         {
           p -> aura_loss( "Master of Subtlety" );
-          p -> buffs_master_of_subtlety = 0;
+          p -> _buffs.master_of_subtlety = 0;
         }
-        if( p -> buffs_overkill )
+        if( p -> _buffs.overkill )
         {
           p -> aura_loss( "Overkill" );
-          p -> buffs_overkill = 0;
+          p -> _buffs.overkill = 0;
         }
       }
     };
@@ -400,7 +398,7 @@ static void break_stealth( rogue_t* p )
 
 static void clear_combo_points( rogue_t* p )
 {
-  if( p -> buffs_combo_points <= 0 ) return;
+  if( p -> _buffs.combo_points <= 0 ) return;
 
   const char* name[] = { "Combo Points (1)",
                          "Combo Points (2)",
@@ -408,16 +406,16 @@ static void clear_combo_points( rogue_t* p )
                          "Combo Points (4)",
                          "Combo Points (5)" };
 
-  p -> aura_loss( name[ p -> buffs_combo_points - 1 ] );
+  p -> aura_loss( name[ p -> _buffs.combo_points - 1 ] );
 
-  p -> buffs_combo_points = 0;
+  p -> _buffs.combo_points = 0;
 }
 
 // add_combo_point =========================================================
 
 static void add_combo_point( rogue_t* p )
 {
-  if( p -> buffs_combo_points >= 5 ) return;
+  if( p -> _buffs.combo_points >= 5 ) return;
 
   const char* name[] = { "Combo Points (1)",
                          "Combo Points (2)",
@@ -425,9 +423,9 @@ static void add_combo_point( rogue_t* p )
                          "Combo Points (4)",
                          "Combo Points (5)" };
 
-  p -> buffs_combo_points++;
+  p -> _buffs.combo_points++;
 
-  p -> aura_gain( name[ p -> buffs_combo_points - 1 ] );
+  p -> aura_gain( name[ p -> _buffs.combo_points - 1 ] );
 
   p -> procs_combo_points -> occur();
 }
@@ -461,17 +459,17 @@ static void trigger_cut_to_the_chase( rogue_attack_t* a )
   if( ! p -> talents.cut_to_the_chase ) 
     return;
 
-  if( ! p -> buffs_slice_and_dice ) 
+  if( ! p -> _buffs.slice_and_dice ) 
     return;
 
   if( a -> sim -> roll( p -> talents.cut_to_the_chase * 0.20 ) )
   {
-    p -> buffs_combo_points = 5;
+    p -> _buffs.combo_points = 5;
     if( p -> active_slice_and_dice )
     {
       p -> active_slice_and_dice -> refresh_duration();
     }
-    p -> buffs_combo_points = 0;
+    p -> _buffs.combo_points = 0;
   }
 }
 
@@ -566,7 +564,7 @@ static void trigger_relentless_strikes( rogue_attack_t* a )
   if( ! a -> requires_combo_points )
     return;
 
-  if( a -> sim -> roll( p -> talents.relentless_strikes * p -> buffs_combo_points * 0.04 ) )
+  if( a -> sim -> roll( p -> talents.relentless_strikes * p -> _buffs.combo_points * 0.04 ) )
   {
     p -> resource_gain( RESOURCE_ENERGY, 25, p -> gains_relentless_strikes );
   }
@@ -605,14 +603,14 @@ static void trigger_seal_fate( rogue_attack_t* a )
 
   // This is to prevent dual-weapon special attacks from triggering a double-proc of Seal Fate
 
-  if( a -> sim -> current_time <= p -> cooldowns_seal_fate )
+  if( a -> sim -> current_time <= p -> _cooldowns.seal_fate )
     return;
 
   if( p -> talents.seal_fate )
   {
     if( a -> sim -> roll( p -> talents.seal_fate * 0.20 ) )
     {
-      p -> cooldowns_seal_fate = a -> sim -> current_time;
+      p -> _cooldowns.seal_fate = a -> sim -> current_time;
       p -> procs_seal_fate -> occur();
       add_combo_point( p );
     }
@@ -652,7 +650,7 @@ static void trigger_tricks_of_the_trade( rogue_attack_t* a )
 {
   rogue_t* p = a -> player -> cast_rogue();
 
-  if( p -> buffs_tricks_ready )
+  if( p -> _buffs.tricks_ready )
   {
     struct expiration_t : public event_t
     {
@@ -672,7 +670,7 @@ static void trigger_tricks_of_the_trade( rogue_attack_t* a )
       }
     };
 
-    player_t* t = p -> buffs_tricks_target;
+    player_t* t = p -> _buffs.tricks_target;
     event_t*& e = t -> expirations.tricks_of_the_trade;
 
     if( e )
@@ -684,7 +682,7 @@ static void trigger_tricks_of_the_trade( rogue_attack_t* a )
       e = new ( a -> sim ) expiration_t( a -> sim, p, t );
     }
     
-    p -> buffs_tricks_ready = 0;
+    p -> _buffs.tricks_ready = 0;
   }
 }
 
@@ -694,7 +692,7 @@ static void trigger_deadly_poison( rogue_t* p )
 {
   p -> procs_deadly_poison -> occur();
 
-  if( p -> buffs_poison_doses == 0 )
+  if( p -> _buffs.poison_doses == 0 )
   {
     // Target about to become poisoned.
 
@@ -711,7 +709,7 @@ static void trigger_deadly_poison( rogue_t* p )
 
 static void consume_deadly_poison( rogue_t* p )
 {
-  if( p -> buffs_poison_doses == 0 )
+  if( p -> _buffs.poison_doses == 0 )
   {
     // Target no longer poisoned.
 
@@ -764,7 +762,7 @@ double rogue_attack_t::cost()
   rogue_t* p = player -> cast_rogue();
   double c = attack_t::cost();
   if( c == 0 ) return 0;
-  if( p -> buffs_overkill ) c -= 10;
+  if( p -> _buffs.overkill ) c -= 10;
   if( c < 0 ) c = 0;
   // FIXME! In what order do Overkill, Slaughter From The Shadows, and Tier7-4pc get combined?
   if( adds_combo_points && p -> gear.tier7_4pc ) c *= 0.95;  
@@ -805,8 +803,8 @@ void rogue_attack_t::execute()
 
   break_stealth( p );
 
-  p -> buffs_cold_blood = 0;
-  p -> buffs_shadowstep = 0;
+  p -> _buffs.cold_blood = 0;
+  p -> _buffs.shadowstep = 0;
 }
 
 // rogue_attack_t::player_buff ============================================
@@ -828,7 +826,8 @@ void rogue_attack_t::player_buff()
     }
     if( p -> talents.close_quarters_combat )
     {
-      if( weapon -> type <= WEAPON_SMALL )
+      if( weapon -> type == WEAPON_DAGGER ||
+	  weapon -> type == WEAPON_FIST   )
       {
         player_crit += p -> talents.close_quarters_combat * 0.01;
       }
@@ -841,17 +840,17 @@ void rogue_attack_t::player_buff()
       }
     }
   }
-  if( p -> buffs_cold_blood )
+  if( p -> _buffs.cold_blood )
   {
     player_crit += 1.0;
   }
-  if( p -> buffs_hunger_for_blood )
+  if( p -> _buffs.hunger_for_blood )
   {
-    player_multiplier *= 1.0 + p -> buffs_hunger_for_blood * 0.01 + p -> glyphs.hunger_for_blood * 0.03;
+    player_multiplier *= 1.0 + p -> _buffs.hunger_for_blood * 0.01 + p -> glyphs.hunger_for_blood * 0.03;
   }
-  if( p -> buffs_master_of_subtlety )
+  if( p -> _buffs.master_of_subtlety )
   {
-    player_multiplier *= 1.0 + p -> buffs_master_of_subtlety * 0.01;
+    player_multiplier *= 1.0 + p -> _buffs.master_of_subtlety * 0.01;
   }
   if( p -> talents.murder )
   {
@@ -866,17 +865,17 @@ void rogue_attack_t::player_buff()
       player_crit_multiplier *= 1.0 + p -> talents.murder * 0.02;
     }
   }
-  if( p -> buffs_shadowstep )
+  if( p -> _buffs.shadowstep )
   {
     player_multiplier *= 1.20;
   }
-  if( p -> buffs_killing_spree && ! sim -> P309 )
+  if( p -> _buffs.killing_spree && ! sim -> P309 )
   {
     player_multiplier *= 1.20;
   }
   if( p -> talents.hunger_for_blood )
   {
-    p -> uptimes_hunger_for_blood -> update( p -> buffs_hunger_for_blood == 15 );
+    p -> uptimes_hunger_for_blood -> update( p -> _buffs.hunger_for_blood == 15 );
   }
   p -> uptimes_tricks_of_the_trade -> update( p -> buffs.tricks_of_the_trade != 0 );
 }
@@ -916,18 +915,18 @@ bool rogue_attack_t::ready()
       return false;
 
   if( requires_stealth )
-    if( p -> buffs_stealthed <= 0 )
+    if( p -> _buffs.stealthed <= 0 )
       return false;
 
-  if( requires_combo_points && ( p -> buffs_combo_points == 0 ) )
+  if( requires_combo_points && ( p -> _buffs.combo_points == 0 ) )
     return false;
 
   if( min_combo_points > 0 )
-    if( p -> buffs_combo_points < min_combo_points )
+    if( p -> _buffs.combo_points < min_combo_points )
       return false;
 
   if( max_combo_points > 0 )
-    if( p -> buffs_combo_points > max_combo_points )
+    if( p -> _buffs.combo_points > max_combo_points )
       return false;
 
   if( min_energy > 0 )
@@ -941,27 +940,27 @@ bool rogue_attack_t::ready()
   double ct = sim -> current_time;
 
   if( min_hfb_expire > 0 )
-    if( ! p -> expirations_hunger_for_blood || ( ( p -> expirations_hunger_for_blood -> occurs() - ct ) < min_hfb_expire ) )
+    if( ! p -> _expirations.hunger_for_blood || ( ( p -> _expirations.hunger_for_blood -> occurs() - ct ) < min_hfb_expire ) )
       return false;
 
   if( max_hfb_expire > 0 )
-    if( p -> expirations_hunger_for_blood && ( ( p -> expirations_hunger_for_blood -> occurs() - ct ) > max_hfb_expire ) )
+    if( p -> _expirations.hunger_for_blood && ( ( p -> _expirations.hunger_for_blood -> occurs() - ct ) > max_hfb_expire ) )
       return false;
 
   if( min_snd_expire > 0 )
-    if( ! p -> expirations_slice_and_dice || ( ( p -> expirations_slice_and_dice -> occurs() - ct ) < min_snd_expire ) )
+    if( ! p -> _expirations.slice_and_dice || ( ( p -> _expirations.slice_and_dice -> occurs() - ct ) < min_snd_expire ) )
       return false;
 
   if( max_snd_expire > 0 )
-    if( p -> expirations_slice_and_dice && ( ( p -> expirations_slice_and_dice -> occurs() - ct ) > max_snd_expire ) )
+    if( p -> _expirations.slice_and_dice && ( ( p -> _expirations.slice_and_dice -> occurs() - ct ) > max_snd_expire ) )
       return false;
 
   if( min_env_expire > 0 )
-    if( ! p -> expirations_envenom || ( ( p -> expirations_envenom -> occurs() - ct ) < min_env_expire ) )
+    if( ! p -> _expirations.envenom || ( ( p -> _expirations.envenom -> occurs() - ct ) < min_env_expire ) )
       return false;
 
   if( max_env_expire > 0 )
-    if( p -> expirations_envenom && ( ( p -> expirations_envenom -> occurs() - ct ) > max_env_expire ) )
+    if( p -> _expirations.envenom && ( ( p -> _expirations.envenom -> occurs() - ct ) > max_env_expire ) )
       return false;
 
   if( min_rup_expire > 0 )
@@ -1005,11 +1004,11 @@ struct melee_t : public rogue_attack_t
       h *= 1.0 / ( 1.0 + util_t::talent_rank( p -> talents.lightning_reflexes, 3, 0.04, 0.07, 0.10 ) );
     }
 
-    if( p -> buffs_blade_flurry   ) h *= 1.0 / ( 1.0 + 0.20 );
-    if( p -> buffs_slice_and_dice ) h *= 1.0 / ( 1.0 + 0.40 + ( p -> gear.tier6_2pc ? 0.05 : 0.00 ) );
+    if( p -> _buffs.blade_flurry   ) h *= 1.0 / ( 1.0 + 0.20 );
+    if( p -> _buffs.slice_and_dice ) h *= 1.0 / ( 1.0 + 0.40 + ( p -> gear.tier6_2pc ? 0.05 : 0.00 ) );
 
-    p -> uptimes_blade_flurry   -> update( p -> buffs_blade_flurry   != 0 );
-    p -> uptimes_slice_and_dice -> update( p -> buffs_slice_and_dice != 0 );
+    p -> uptimes_blade_flurry   -> update( p -> _buffs.blade_flurry   != 0 );
+    p -> uptimes_slice_and_dice -> update( p -> _buffs.slice_and_dice != 0 );
 
     return h;
   }
@@ -1122,7 +1121,7 @@ struct ambush_t : public rogue_attack_t
   {
     rogue_t* p = player -> cast_rogue();
 
-    if( p -> buffs_shadow_dance )
+    if( p -> _buffs.shadow_dance )
     {
       requires_stealth = false;
       bool success = rogue_attack_t::ready();
@@ -1228,14 +1227,14 @@ struct blade_flurry_t : public rogue_attack_t
       {
         name = "Blade Flurry Expiration";
         p -> aura_gain( "Blade Flurry" );
-        p -> buffs_blade_flurry = 1;
+        p -> _buffs.blade_flurry = 1;
         sim -> add_event( this, 15.0 );
       }
       virtual void execute()
       {
         rogue_t* p = player -> cast_rogue();
         p -> aura_loss( "Blade Flurry" );
-        p -> buffs_blade_flurry = 0;
+        p -> _buffs.blade_flurry = 0;
       }
     };
 
@@ -1297,15 +1296,15 @@ struct envenom_t : public rogue_attack_t
       {
         name = "Envenom Expiration";
         p -> aura_gain( "Envenom" );
-        p -> buffs_envenom = 1;
+        p -> _buffs.envenom = 1;
         sim -> add_event( this, duration );
       }
       virtual void execute()
       {
         rogue_t* p = player -> cast_rogue();
         p -> aura_loss( "Envenom" );
-        p ->       buffs_envenom = 0;
-        p -> expirations_envenom = 0;
+        p ->       _buffs.envenom = 0;
+        p -> _expirations.envenom = 0;
       }
     };
 
@@ -1315,12 +1314,12 @@ struct envenom_t : public rogue_attack_t
 
     if( ! p -> glyphs.envenom ) 
     {
-      doses_consumed = std::min( p -> buffs_poison_doses, p -> buffs_combo_points );
+      doses_consumed = std::min( p -> _buffs.poison_doses, p -> _buffs.combo_points );
     }
 
-    double envenom_duration = 1.0 + p -> buffs_combo_points;
+    double envenom_duration = 1.0 + p -> _buffs.combo_points;
 
-    event_t*& e = p -> expirations_envenom;
+    event_t*& e = p -> _expirations.envenom;
 
     if( e )
     {
@@ -1337,9 +1336,9 @@ struct envenom_t : public rogue_attack_t
     {
       if( doses_consumed > 0 )
       {
-	p -> buffs_poison_doses -= doses_consumed;
+	p -> _buffs.poison_doses -= doses_consumed;
 
-	if( p -> buffs_poison_doses == 0 )
+	if( p -> _buffs.poison_doses == 0 )
         {
 	  p -> active_deadly_poison -> cancel();
 	}
@@ -1353,7 +1352,7 @@ struct envenom_t : public rogue_attack_t
   {
     rogue_t* p = player -> cast_rogue();
 
-    int doses_consumed = std::min( p -> buffs_poison_doses, p -> buffs_combo_points );
+    int doses_consumed = std::min( p -> _buffs.poison_doses, p -> _buffs.combo_points );
 
     if( doses_consumed == 0 )
     {
@@ -1362,7 +1361,7 @@ struct envenom_t : public rogue_attack_t
     }
     else
     {
-      direct_power_mod = p -> buffs_combo_points * 0.07;
+      direct_power_mod = p -> _buffs.combo_points * 0.07;
       base_direct_dmg = dose_dmg[ doses_consumed-1 ];
       rogue_attack_t::player_buff();
     }
@@ -1375,10 +1374,10 @@ struct envenom_t : public rogue_attack_t
     rogue_t* p = player -> cast_rogue();
 
     if( min_doses > 0 )
-      if( min_doses > p -> buffs_poison_doses )
+      if( min_doses > p -> _buffs.poison_doses )
         return false;
 
-    if( no_buff && p -> buffs_envenom )
+    if( no_buff && p -> _buffs.envenom )
       return false;
 
     return rogue_attack_t::ready();
@@ -1435,10 +1434,10 @@ struct eviscerate_t : public rogue_attack_t
   {
     rogue_t* p = player -> cast_rogue();
 
-    base_dd_min = combo_point_dmg[ p -> buffs_combo_points - 1 ].min;
-    base_dd_max = combo_point_dmg[ p -> buffs_combo_points - 1 ].max;
+    base_dd_min = combo_point_dmg[ p -> _buffs.combo_points - 1 ].min;
+    base_dd_max = combo_point_dmg[ p -> _buffs.combo_points - 1 ].max;
 
-    direct_power_mod = 0.05 * p -> buffs_combo_points;
+    direct_power_mod = 0.05 * p -> _buffs.combo_points;
 
     if( sim -> average_dmg ) 
     {
@@ -1446,7 +1445,7 @@ struct eviscerate_t : public rogue_attack_t
     }
     else
     {
-      double range = 0.02 * p -> buffs_combo_points;
+      double range = 0.02 * p -> _buffs.combo_points;
 
       direct_power_mod += range * ( sim -> rng -> real() * 2.0 - 1.0 );
     }
@@ -1508,7 +1507,7 @@ struct expose_armor_t : public rogue_attack_t
     {
       target_t* t = sim -> target;
 
-      double debuff = ( sim -> P309 ? base_td_init : 0.04 ) * p -> buffs_combo_points;
+      double debuff = ( sim -> P309 ? base_td_init : 0.04 ) * p -> _buffs.combo_points;
 
       if( debuff >= t -> debuffs.expose_armor )
       {
@@ -1747,8 +1746,8 @@ struct hunger_for_blood_t : public rogue_attack_t
       {
         rogue_t* p = player -> cast_rogue();
         p -> aura_loss( "Hunger For Blood" );
-        p ->       buffs_hunger_for_blood = 0;
-        p -> expirations_hunger_for_blood = 0;
+        p ->       _buffs.hunger_for_blood = 0;
+        p -> _expirations.hunger_for_blood = 0;
       }
     };
 
@@ -1756,22 +1755,22 @@ struct hunger_for_blood_t : public rogue_attack_t
 
     if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
 
-    if( p -> buffs_hunger_for_blood < 15 )
+    if( p -> _buffs.hunger_for_blood < 15 )
     {
       if( sim -> P309 )
       {
-	p -> buffs_hunger_for_blood += 5;
+	p -> _buffs.hunger_for_blood += 5;
       }
       else
       {
-	p -> buffs_hunger_for_blood = 15;
+	p -> _buffs.hunger_for_blood = 15;
       }
       p -> aura_gain( "Hunger For Blood" );
     }
     
     consume_resource();
 
-    event_t*& e = p -> expirations_hunger_for_blood;
+    event_t*& e = p -> _expirations.hunger_for_blood;
 
     if( e )
     {
@@ -1793,8 +1792,8 @@ struct hunger_for_blood_t : public rogue_attack_t
     if( ! sim -> P309 && ! sim -> target -> debuffs.bleeding )
       return false;
 
-    if( p -> buffs_hunger_for_blood == 15 )
-      if( ( p -> expirations_hunger_for_blood -> occurs() - sim -> current_time ) > refresh_at )
+    if( p -> _buffs.hunger_for_blood == 15 )
+      if( ( p -> _expirations.hunger_for_blood -> occurs() - sim -> current_time ) > refresh_at )
         return false;
 
     return true;
@@ -1840,7 +1839,7 @@ struct killing_spree_t : public rogue_attack_t
   {
     rogue_t* p = player -> cast_rogue();
     if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
-    p -> buffs_killing_spree = 1;
+    p -> _buffs.killing_spree = 1;
     schedule_tick();
     update_ready();
     // For cleaner statistics gathering we register the damage as a DoT
@@ -1893,7 +1892,7 @@ struct killing_spree_t : public rogue_attack_t
   {
     rogue_t* p = player -> cast_rogue();
     rogue_attack_t::last_tick();
-    p -> buffs_killing_spree = 0;
+    p -> _buffs.killing_spree = 0;
   }
 
   virtual void update_stats( int type ) { }
@@ -2003,7 +2002,7 @@ struct premeditation_t : public rogue_attack_t
   {
     rogue_t* p = player -> cast_rogue();
 
-    if( p -> buffs_shadow_dance )
+    if( p -> _buffs.shadow_dance )
     {
       requires_stealth = false;
       bool success = rogue_attack_t::ready();
@@ -2064,7 +2063,7 @@ struct rupture_t : public rogue_attack_t
   {
     rogue_t* p = player -> cast_rogue();
     added_ticks = 0;
-    num_ticks = 3 + p -> buffs_combo_points;
+    num_ticks = 3 + p -> _buffs.combo_points;
     if( p -> glyphs.rupture ) num_ticks += 2;
     rogue_attack_t::execute();
   }
@@ -2101,7 +2100,7 @@ struct shadowstep_t : public rogue_attack_t
   {
     rogue_t* p = player -> cast_rogue();
     if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
-    p -> buffs_shadowstep = 1;
+    p -> _buffs.shadowstep = 1;
     update_ready();
   }
 };
@@ -2136,9 +2135,9 @@ struct shiv_t : public rogue_attack_t
   virtual void execute()
   {
     rogue_t* p = player -> cast_rogue();
-    p -> buffs_shiv = 1;
+    p -> _buffs.shiv = 1;
     rogue_attack_t::execute();
-    p -> buffs_shiv = 0;
+    p -> _buffs.shiv = 0;
   }
 
   virtual double cost()
@@ -2256,28 +2255,28 @@ struct slice_and_dice_t : public rogue_attack_t
       {
         name = "Slice and Dice Expiration";
         p -> aura_gain( "Slice and Dice" );
-        p -> buffs_slice_and_dice = 1;
+        p -> _buffs.slice_and_dice = 1;
         sim -> add_event( this, duration );
       }
       virtual void execute()
       {
         rogue_t* p = player -> cast_rogue();
         p -> aura_loss( "Slice and Dice" );
-        p ->       buffs_slice_and_dice = 0;
-        p -> expirations_slice_and_dice = 0;
+        p ->       _buffs.slice_and_dice = 0;
+        p -> _expirations.slice_and_dice = 0;
 	p ->      active_slice_and_dice = 0;
       }
     };
 
     rogue_t* p = player -> cast_rogue();
 
-    double duration = 6.0 + 3.0 * p -> buffs_combo_points;
+    double duration = 6.0 + 3.0 * p -> _buffs.combo_points;
 
     if( p -> glyphs.slice_and_dice ) duration += 3.0;
 
     duration *= 1.0 + p -> talents.improved_slice_and_dice * 0.25;
 
-    event_t*& e = p -> expirations_slice_and_dice;
+    event_t*& e = p -> _expirations.slice_and_dice;
 
     if( e )
     {
@@ -2357,17 +2356,17 @@ void rogue_poison_t::player_buff()
   player_power     = p -> composite_attack_power();
   power_multiplier = p -> composite_attack_power_multiplier();
 
-  if( p -> buffs_cold_blood )
+  if( p -> _buffs.cold_blood )
   {
     player_crit += 1.0;
   }
-  if( p -> buffs_hunger_for_blood )
+  if( p -> _buffs.hunger_for_blood )
   {
-    player_multiplier *= 1.0 + p -> buffs_hunger_for_blood * 0.01 + p -> glyphs.hunger_for_blood * 0.03;
+    player_multiplier *= 1.0 + p -> _buffs.hunger_for_blood * 0.01 + p -> glyphs.hunger_for_blood * 0.03;
   }
-  if( p -> buffs_master_of_subtlety )
+  if( p -> _buffs.master_of_subtlety )
   {
-    player_multiplier *= 1.0 + p -> buffs_master_of_subtlety * 0.01;
+    player_multiplier *= 1.0 + p -> _buffs.master_of_subtlety * 0.01;
   }
   if( p -> talents.murder )
   {
@@ -2382,18 +2381,18 @@ void rogue_poison_t::player_buff()
       player_crit_multiplier *= 1.0 + p -> talents.murder * 0.02;
     }
   }
-  if( p -> buffs_shadowstep )
+  if( p -> _buffs.shadowstep )
   {
     player_multiplier *= 1.2;
   }
-  if( p -> buffs_killing_spree && ! sim -> P309 )
+  if( p -> _buffs.killing_spree && ! sim -> P309 )
   {
     player_multiplier *= 1.20;
   }
 
   if( p -> talents.hunger_for_blood )
   {
-    p -> uptimes_hunger_for_blood -> update( p -> buffs_hunger_for_blood == 15 );
+    p -> uptimes_hunger_for_blood -> update( p -> _buffs.hunger_for_blood == 15 );
   }
   p -> uptimes_tricks_of_the_trade -> update( p -> buffs.tricks_of_the_trade != 0 );
 }
@@ -2420,12 +2419,12 @@ struct anesthetic_poison_t : public rogue_poison_t
     double chance;
     if( sim -> P309 )
     {
-      chance = p -> buffs_shiv ? 1.00 : 0.50;
+      chance = p -> _buffs.shiv ? 1.00 : 0.50;
       may_crit = true;
     }
     else // P31+
     {
-      if( p -> buffs_shiv )
+      if( p -> _buffs.shiv )
       {
 	chance = 1.0;
 	may_crit = false;
@@ -2465,14 +2464,14 @@ struct deadly_poison_t : public rogue_poison_t
   {
     rogue_t* p = player -> cast_rogue();
 
-    int success = p -> buffs_shiv;
+    int success = p -> _buffs.shiv;
 
     if( ! success )
     {
       double chance = 0.30;
       chance += p -> talents.improved_poisons * 0.02;
-      if( p -> buffs_envenom ) chance += 0.15;
-      p -> uptimes_envenom -> update( p -> buffs_envenom != 0 );
+      if( p -> _buffs.envenom ) chance += 0.15;
+      p -> uptimes_envenom -> update( p -> _buffs.envenom != 0 );
       success = sim -> roll( chance );
     }
 
@@ -2480,9 +2479,9 @@ struct deadly_poison_t : public rogue_poison_t
     {
       trigger_deadly_poison( p );
 
-      if( p -> buffs_poison_doses < 5 ) p -> buffs_poison_doses++;
+      if( p -> _buffs.poison_doses < 5 ) p -> _buffs.poison_doses++;
 
-      if( sim -> log ) report_t::log( sim, "%s performs %s (%d)", player -> name(), name(), p -> buffs_poison_doses );
+      if( sim -> log ) report_t::log( sim, "%s performs %s (%d)", player -> name(), name(), p -> _buffs.poison_doses );
 
       if( ticking )
       {
@@ -2500,14 +2499,14 @@ struct deadly_poison_t : public rogue_poison_t
   {
     rogue_t* p = player -> cast_rogue();
     rogue_poison_t::player_buff();
-    player_multiplier *= p -> buffs_poison_doses;
+    player_multiplier *= p -> _buffs.poison_doses;
   }
 
   virtual void last_tick()
   {
     rogue_t* p = player -> cast_rogue();
     rogue_poison_t::last_tick();
-    p -> buffs_poison_doses = 0;
+    p -> _buffs.poison_doses = 0;
     consume_deadly_poison( p );
   }
 };
@@ -2534,14 +2533,14 @@ struct instant_poison_t : public rogue_poison_t
     double chance;
     if( sim -> P309 )
     {
-      chance = p -> buffs_shiv ? 1.00 : 0.20;
+      chance = p -> _buffs.shiv ? 1.00 : 0.20;
       chance += p -> talents.improved_poisons * 0.02;
-      if( p -> buffs_envenom ) chance += 0.15;
+      if( p -> _buffs.envenom ) chance += 0.15;
       may_crit = true;
     }
     else // P31+
     {
-      if( p -> buffs_shiv )
+      if( p -> _buffs.shiv )
       {
 	chance = 1.0;
 	may_crit = false;
@@ -2550,7 +2549,7 @@ struct instant_poison_t : public rogue_poison_t
       {
 	double PPM = 8.57;
 	PPM *= 1.0 + p -> talents.improved_poisons * 0.10;
-	if( p -> buffs_envenom ) PPM *= 1.75;
+	if( p -> _buffs.envenom ) PPM *= 1.75;
 	chance = weapon -> proc_chance_on_swing( PPM );
 	may_crit = true;
       }
@@ -2559,7 +2558,7 @@ struct instant_poison_t : public rogue_poison_t
     {
       rogue_poison_t::execute();
     }
-    p -> uptimes_envenom -> update( p -> buffs_envenom != 0 );
+    p -> uptimes_envenom -> update( p -> _buffs.envenom != 0 );
   }
 };
 
@@ -2585,12 +2584,12 @@ struct wound_poison_t : public rogue_poison_t
     double chance;
     if( sim -> P309 )
     {
-      chance = p -> buffs_shiv ? 1.00 : 0.50;
+      chance = p -> _buffs.shiv ? 1.00 : 0.50;
       may_crit = true;
     }
     else // P31+
     {
-      if( p -> buffs_shiv )
+      if( p -> _buffs.shiv )
       {
 	chance = 1.0;
 	may_crit = false;
@@ -2726,14 +2725,14 @@ struct adrenaline_rush_t : public spell_t
       {
         name = "Adrenaline Rush Expiration";
         p -> aura_gain( "Adrenaline Rush" );
-        p -> buffs_adrenaline_rush = 1;
+        p -> _buffs.adrenaline_rush = 1;
         sim -> add_event( this, ( sim -> P309 || ! p -> glyphs.adrenaline_rush ) ? 15.0 : 20.0 );
       }
       virtual void execute()
       {
         rogue_t* p = player -> cast_rogue();
         p -> aura_loss( "Adrenaline Rush" );
-        p -> buffs_adrenaline_rush = 0;
+        p -> _buffs.adrenaline_rush = 0;
       }
     };
 
@@ -2768,7 +2767,7 @@ struct cold_blood_t : public spell_t
   {
     rogue_t* p = player -> cast_rogue();
     if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
-    p -> buffs_cold_blood = 1;
+    p -> _buffs.cold_blood = 1;
     update_ready();
   }
 };
@@ -2840,14 +2839,14 @@ struct shadow_dance_t : public spell_t
       {
         name = "Shadow Dance Expiration";
         p -> aura_gain( "Shadow Dance" );
-        p -> buffs_shadow_dance = 1;
+        p -> _buffs.shadow_dance = 1;
         sim -> add_event( this, p -> glyphs.shadow_dance ? 14.0 : 10.0 );
       }
       virtual void execute()
       {
         rogue_t* p = player -> cast_rogue();
         p -> aura_loss( "Shadow Dance" );
-        p -> buffs_shadow_dance = 0;
+        p -> _buffs.shadow_dance = 0;
       }
     };
 
@@ -2878,7 +2877,7 @@ struct stealth_t : public spell_t
   virtual bool ready()
   {
     rogue_t* p = player -> cast_rogue();
-    return p -> buffs_stealthed == 0;
+    return p -> _buffs.stealthed == 0;
   }
 };
 
@@ -2931,8 +2930,8 @@ struct tricks_of_the_trade_t : public spell_t
     consume_resource();
     update_ready();
     
-    p -> buffs_tricks_target = tricks_target;
-    p -> buffs_tricks_ready  = 1;
+    p -> _buffs.tricks_target = tricks_target;
+    p -> _buffs.tricks_ready  = 1;
   }
 
   virtual bool ready()
@@ -2971,7 +2970,7 @@ struct vanish_t : public spell_t
   virtual bool ready()
   {
     rogue_t* p = player -> cast_rogue();
-    return p -> buffs_stealthed < 1;
+    return p -> _buffs.stealthed < 1;
   }
 };
 
@@ -3107,36 +3106,13 @@ void rogue_t::reset()
   active_rupture        = 0;
   active_slice_and_dice = 0;
 
-  // Buffs
-  buffs_adrenaline_rush    = 0;
-  buffs_blade_flurry       = 0;
-  buffs_cold_blood         = 0;
-  buffs_combo_points       = 0;
-  buffs_poison_doses       = 0;
-  buffs_envenom            = 0;
-  buffs_hunger_for_blood   = 0;
-  buffs_killing_spree      = 0;
-  buffs_master_of_subtlety = 0;
-  buffs_overkill           = 0;
-  buffs_shadow_dance       = 0;
-  buffs_shadowstep         = 0;
-  buffs_shiv               = 0;
-  buffs_slice_and_dice     = 0;
-  buffs_stealthed          = 0;
-  buffs_tricks_ready       = 0;
-  buffs_tricks_target      = 0;
+  _buffs.reset();
+  _cooldowns.reset();
+  _expirations.reset();
 
-  // Cooldowns
-  cooldowns_seal_fate = 0;
-  cooldowns_honor_among_thieves.clear();
   for( player_t* p = sim -> player_list; p; p = p -> next )
     if( p -> party != 0 && p -> party == party )
-      cooldowns_honor_among_thieves.push_back( 0.0 );
-
-  // Expirations
-  expirations_envenom          = 0;
-  expirations_slice_and_dice   = 0;
-  expirations_hunger_for_blood = 0;
+      _cooldowns.honor_among_thieves.push_back( 0.0 );
 }
 
 // rogue_t::raid_event ====================================================
@@ -3154,11 +3130,11 @@ void rogue_t::raid_event( action_t* a )
 	! a -> may_glance &&
 	sim -> roll( talents.honor_among_thieves / 3.0 ) )
     {
-      if( sim -> current_time > cooldowns_honor_among_thieves[ p -> member ] )
+      if( sim -> current_time > _cooldowns.honor_among_thieves[ p -> member ] )
       {
 	add_combo_point( this );
 	procs_honor_among_thieves -> occur();
-	cooldowns_honor_among_thieves[ p -> member ] = sim -> current_time + 1.0;
+	_cooldowns.honor_among_thieves[ p -> member ] = sim -> current_time + 1.0;
       }
     }
   }
@@ -3170,7 +3146,7 @@ void rogue_t::regen( double periodicity )
 {
   player_t::regen( periodicity );
 
-  if( buffs_adrenaline_rush )
+  if( _buffs.adrenaline_rush )
   {
     if( sim -> infinite_resource[ RESOURCE_ENERGY ] == 0 && resource_max[ RESOURCE_ENERGY ] > 0 )
     {

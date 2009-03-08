@@ -186,8 +186,8 @@ enum talent_tree_type {
 
 enum weapon_type {
   WEAPON_NONE=0,
-  WEAPON_DAGGER,   WEAPON_FIST,                                                                    WEAPON_SMALL,
-  WEAPON_BEAST,    WEAPON_SWORD,    WEAPON_MACE,     WEAPON_AXE,                                   WEAPON_1H,
+  WEAPON_DAGGER,                                                                                   WEAPON_SMALL,
+  WEAPON_BEAST,    WEAPON_SWORD,    WEAPON_MACE,     WEAPON_AXE,   WEAPON_FIST,                    WEAPON_1H,
   WEAPON_BEAST_2H, WEAPON_SWORD_2H, WEAPON_MACE_2H,  WEAPON_AXE_2H, WEAPON_STAFF,  WEAPON_POLEARM, WEAPON_2H,
   WEAPON_BOW,      WEAPON_CROSSBOW, WEAPON_GUN,      WEAPON_WAND,   WEAPON_THROWN,                 WEAPON_RANGED,
   WEAPON_MAX
