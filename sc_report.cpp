@@ -174,7 +174,7 @@ void report_t::print_action( stats_t* s )
   }
 
   fprintf( sim -> output_file, 
-	   "    %-20s  Count=%5.1f|%4.1fsec  DPE=%4.0f|%2.0f%%  DPET=%4.0f  DPR=%4.1f", 
+	   "    %-20s  Count=%5.1f|%4.1fsec  DPE=%5.0f|%2.0f%%  DPET=%5.0f  DPR=%4.1f", 
 	   s -> name_str.c_str(),
 	   s -> num_executes,
 	   s -> frequency,
@@ -192,7 +192,7 @@ void report_t::print_action( stats_t* s )
   if( s -> execute_results[ RESULT_CRIT ].avg_dmg > 0 )
   {
     fprintf( sim -> output_file, 
-	     "  Crit=%4.0f|%4.0f|%.1f%%", 
+	     "  Crit=%5.0f|%5.0f|%.1f%%", 
 	     s -> execute_results[ RESULT_CRIT ].avg_dmg, 
 	     s -> execute_results[ RESULT_CRIT ].max_dmg, 
 	     s -> execute_results[ RESULT_CRIT ].count * 100.0 / s -> num_executes );
