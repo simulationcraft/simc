@@ -452,15 +452,9 @@ static void trigger_omen_of_clarity( action_t* a )
 
   if( p -> talents.omen_of_clarity == 0 ) return;
 
-  double execute_time = a -> time_to_execute;
+  // Convert to fixed ~6% proc rate
 
-  if( execute_time == 0 ) execute_time = a -> gcd();
-
-  double PPM = 3.5;
-  double time_to_proc = 60.0 / PPM;
-  double proc_chance = execute_time / time_to_proc;
-
-  if( a -> sim -> roll( proc_chance ) )
+  if( a -> sim -> roll( 3.5 / 60.0 ) )
   {
     p -> buffs_omen_of_clarity = 1;
     p -> procs_omen_of_clarity -> occur();
@@ -632,33 +626,68 @@ static void trigger_natures_grace( spell_t* s )
 {
   druid_t* p = s -> player -> cast_druid();
 
-  struct natures_grace_expiration_t : public event_t
+  if( ! s -> sim -> roll( p -> talents.natures_grace / 3.0 ) )
+    return;
+
+  if( s -> sim -> P309 )
   {
-    natures_grace_expiration_t( sim_t* sim, druid_t* p ) : event_t( sim, p )
+    if( ! p -> buffs_natures_grace )
     {
-      name = "Nature's Grace Expiration";
       p -> aura_gain( "Nature's Grace" );
-      p -> buffs_natures_grace = 0.20;
-      sim -> add_event( this, 3.0 );
+      p -> buffs_natures_grace = 1;
+      p -> buffs.cast_time_reduction += 0.5;
     }
-    virtual void execute()
-    {
-      druid_t* p = player -> cast_druid();
-      p -> buffs_natures_grace       = 0;
-      p -> expirations_natures_grace = 0;
-      p -> aura_loss( "Nature's Grace" );
-    }
-  };
-  
-  event_t*& e = p -> expirations_natures_grace;
-  
-  if( e )
-  {
-    e -> reschedule( 3.0 );
   }
   else
   {
-    e = new ( s -> sim ) natures_grace_expiration_t(s -> sim, p );
+    struct natures_grace_expiration_t : public event_t
+    {
+      natures_grace_expiration_t( sim_t* sim, druid_t* p ) : event_t( sim, p )
+      {
+	name = "Nature's Grace Expiration";
+	p -> aura_gain( "Nature's Grace" );
+	p -> buffs_natures_grace = 0.20;
+	sim -> add_event( this, 3.0 );
+      }
+      virtual void execute()
+      {
+	druid_t* p = player -> cast_druid();
+	p -> buffs_natures_grace       = 0;
+	p -> expirations_natures_grace = 0;
+	p -> aura_loss( "Nature's Grace" );
+      }
+    };
+  
+    event_t*& e = p -> expirations_natures_grace;
+  
+    if( e )
+    {
+      e -> reschedule( 3.0 );
+    }
+    else
+    {
+      e = new ( s -> sim ) natures_grace_expiration_t(s -> sim, p );
+    }
+  }
+}
+
+// consume_natures_grace ===================================================
+
+static void consume_natures_grace( spell_t* s )
+{
+  druid_t* p = s -> player -> cast_druid();
+
+  if( ! p -> buffs_natures_grace )
+    return;
+
+  if( s -> sim -> P309 )
+  {
+    if( s -> time_to_execute > 0 )
+    {
+      p -> aura_loss( "Nature's Grace" );
+      p -> buffs_natures_grace = 0;
+      p -> buffs.cast_time_reduction -= 0.5;
+    }
   }
 }
 
@@ -1710,11 +1739,7 @@ void druid_spell_t::schedule_execute()
     }
   }
 
-  if( ! p -> sim -> P309 )
-  {
-    // As Nature's Grace is a haste buff, it matters if the buff was up on schedule_execute, not on execute.
-    p -> uptimes_natures_grace -> update( p -> buffs_natures_grace != 0 );
-  }
+  p -> uptimes_natures_grace -> update( p -> buffs_natures_grace != 0 );
 }
 
 // druid_spell_t::execute ==================================================
@@ -1723,13 +1748,7 @@ void druid_spell_t::execute()
 {
   druid_t* p = player -> cast_druid();
 
-  if( p -> buffs_natures_grace && execute_time() && p -> sim -> P309 )
-  {
-    // Losing Nature's Grace buff at the end of the spellcast, followed by another gain if crit, is the actual ingame behaviour 
-    p -> aura_loss( "Nature's Grace" );
-    p -> buffs_natures_grace = 0;
-    p -> buffs.cast_time_reduction -= 0.5;
-  }
+  consume_natures_grace( this );
   
   spell_t::execute();
 
@@ -1739,25 +1758,8 @@ void druid_spell_t::execute()
     {
       p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.02, p -> gains_moonkin_form );
     }
-    
-    if( p -> buffs_natures_grace == 0 && p -> sim -> P309 )
-    {
-      // Nature's Grace on 3.0.9 realms
-      if( sim -> roll( p -> talents.natures_grace / 3.0 ) )
-      {
-        p -> aura_gain( "Nature's Grace" );
-        p -> buffs_natures_grace = 1;
-        p -> buffs.cast_time_reduction += 0.5;
-      }
-    } 
-    else if( ! p -> sim -> P309 )
-    {
-      // PTR Nature's Grace, 20% spellhaste for 3sec. NOT consumed by spells!
-      if( sim -> roll( p -> talents.natures_grace / 3.0 ) )
-      {
-        // trigger_natures_grace( this );
-      }
-    }
+
+    trigger_natures_grace( this );
   }
   
   if( ! is_aoe ) 
@@ -2986,6 +2988,7 @@ void druid_t::reset()
   active_rip          = 0;
 
   // Buffs
+  buffs_berserk           = 0;
   buffs_bear_form         = 0;
   buffs_cat_form          = 0;
   buffs_combo_points      = 0;
@@ -2996,12 +2999,15 @@ void druid_t::reset()
   buffs_natures_swiftness = 0;
   buffs_omen_of_clarity   = 0;
   buffs_savage_roar       = 0;
+  buffs_starfall          = 0;
   buffs_stealthed         = 0;
   buffs_tigers_fury       = 0;
 
   // Expirations
-  expirations_eclipse     = 0;
-  expirations_savage_roar = 0;
+  expirations_eclipse       = 0;
+  expirations_natures_grace = 0;
+  expirations_savage_roar   = 0;
+  expirations_unseen_moon   = 0;
 
   // Cooldowns
   cooldowns_eclipse         = 0;
