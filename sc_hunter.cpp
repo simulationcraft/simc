@@ -30,31 +30,52 @@ struct hunter_t : public player_t
   action_t*     active_viper_sting;
 
   // Buffs
-  double buffs_aspect_of_the_hawk;
-  double buffs_aspect_of_the_viper;
-  int    buffs_beast_within;
-  int    buffs_call_of_the_wild;
-  int    buffs_cobra_strikes;
-  int    buffs_expose_weakness;
-  double buffs_improved_aspect_of_the_hawk;
-  int    buffs_improved_steady_shot;
-  int    buffs_lock_and_load;
-  double buffs_master_tactician;
-  double buffs_rapid_fire;
-  int    buffs_trueshot_aura;
+  struct _buffs_t
+  {
+    double aspect_of_the_hawk;
+    double aspect_of_the_viper;
+    int    beast_within;
+    int    call_of_the_wild;
+    int    cobra_strikes;
+    int    expose_weakness;
+    double improved_aspect_of_the_hawk;
+    int    improved_steady_shot;
+    int    lock_and_load;
+    double master_tactician;
+    double rapid_fire;
+    int    trueshot_aura;
 
-  // Expirations
-  event_t*  expirations_cobra_strikes;
-  event_t*  expirations_expose_weakness;
-  event_t*  expirations_hunting_party;
-  event_t*  expirations_improved_aspect_of_the_hawk;
-  event_t*  expirations_improved_steady_shot;
-  event_t*  expirations_lock_and_load;
-  event_t*  expirations_master_tactician;
-  event_t*  expirations_rapid_fire;
+    void reset() { memset( (void*) this, 0x00, sizeof( _buffs_t ) ); }
+    _buffs_t() { reset(); }
+  };
+  _buffs_t _buffs;
 
   // Cooldowns
-  double cooldowns_lock_and_load;
+  struct _cooldowns_t
+  {
+    double lock_and_load;
+
+    void reset() { memset( (void*) this, 0x00, sizeof( _cooldowns_t ) ); }
+    _cooldowns_t() { reset(); }
+  };
+  _cooldowns_t _cooldowns;
+
+  // Expirations
+  struct _expirations_t
+  {
+    event_t* cobra_strikes;
+    event_t* expose_weakness;
+    event_t* hunting_party;
+    event_t* improved_aspect_of_the_hawk;
+    event_t* improved_steady_shot;
+    event_t* lock_and_load;
+    event_t* master_tactician;
+    event_t* rapid_fire;
+    
+    void reset() { memset( (void*) this, 0x00, sizeof( _expirations_t ) ); }
+    _expirations_t() { reset(); }
+  };
+  _expirations_t _expirations;
 
   // Gains
   gain_t* gains_chimera_viper;
@@ -185,33 +206,6 @@ struct hunter_t : public player_t
     active_serpent_sting   = 0;
     active_viper_sting     = 0;
 
-    // Buffs
-    buffs_aspect_of_the_hawk          = 0;
-    buffs_aspect_of_the_viper         = 0;
-    buffs_beast_within                = 0;
-    buffs_call_of_the_wild            = 0;
-    buffs_cobra_strikes               = 0;
-    buffs_expose_weakness             = 0;
-    buffs_improved_aspect_of_the_hawk = 0;
-    buffs_improved_steady_shot        = 0;
-    buffs_lock_and_load               = 0;
-    buffs_master_tactician            = 0;
-    buffs_rapid_fire                  = 0;
-    buffs_trueshot_aura               = 0;
-
-    // Expirations
-    expirations_cobra_strikes               = 0;
-    expirations_expose_weakness             = 0;
-    expirations_hunting_party               = 0;
-    expirations_improved_aspect_of_the_hawk = 0;
-    expirations_improved_steady_shot        = 0;
-    expirations_lock_and_load               = 0;
-    expirations_master_tactician            = 0;
-    expirations_rapid_fire                  = 0;
-
-    // Cooldowns
-    cooldowns_lock_and_load = 0;
-
     // Gains
     gains_chimera_viper        = get_gain( "chimera_viper" );
     gains_invigoration         = get_gain( "invigoration" );
@@ -327,19 +321,33 @@ struct hunter_pet_t : public pet_t
   int pet_type;
 
   // Buffs
-  int buffs_bestial_wrath;
-  int buffs_call_of_the_wild;
-  int buffs_frenzy;
-  int buffs_kill_command;
-  int buffs_owls_focus;
-  int buffs_wolverine_bite;
-  int buffs_rabid;
-  int buffs_rabid_power_stack;
-  int buffs_savage_rend;
+  struct _buffs_t
+  {
+    int bestial_wrath;
+    int call_of_the_wild;
+    int frenzy;
+    int kill_command;
+    int owls_focus;
+    int wolverine_bite;
+    int rabid;
+    int rabid_power_stack;
+    int savage_rend;
+    
+    void reset() { memset( (void*) this, 0x00, sizeof( _buffs_t ) ); }
+    _buffs_t() { reset(); }
+  };
+  _buffs_t _buffs;
 
   // Expirations
-  event_t* expirations_frenzy;
-  event_t* expirations_owls_focus;
+  struct _expirations_t
+  {
+    event_t* frenzy;
+    event_t* owls_focus;
+
+    void reset() { memset( (void*) this, 0x00, sizeof( _expirations_t ) ); }
+    _expirations_t() { reset(); }
+  };
+  _expirations_t _expirations;
 
   // Gains
   gain_t* gains_go_for_the_throat;
@@ -380,21 +388,6 @@ struct hunter_pet_t : public pet_t
 
     stamina_per_owner = 0.45;
 
-    // Buffs
-    buffs_bestial_wrath     = 0;
-    buffs_call_of_the_wild  = 0;
-    buffs_frenzy            = 0;
-    buffs_kill_command      = 0;
-    buffs_owls_focus        = 0;
-    buffs_wolverine_bite    = 0;
-    buffs_rabid             = 0;
-    buffs_rabid_power_stack = 0;
-    buffs_savage_rend       = 0;
-
-    // Expirations
-    expirations_frenzy     = 0;
-    expirations_owls_focus = 0;
-
     // Gains
     gains_go_for_the_throat = get_gain( "go_for_the_throat" );
 
@@ -409,20 +402,8 @@ struct hunter_pet_t : public pet_t
   {
     pet_t::reset();
 
-    // Buffs
-    buffs_bestial_wrath     = 0;
-    buffs_call_of_the_wild  = 0;
-    buffs_frenzy            = 0;
-    buffs_kill_command      = 0;
-    buffs_owls_focus        = 0;
-    buffs_wolverine_bite    = 0;
-    buffs_rabid             = 0;
-    buffs_rabid_power_stack = 0;
-    buffs_savage_rend       = 0;
-
-    // Expirations
-    expirations_frenzy     = 0;
-    expirations_owls_focus = 0;
+    _buffs.reset();
+    _expirations.reset();
   }
 
   virtual int group()
@@ -473,9 +454,9 @@ struct hunter_pet_t : public pet_t
 
     if( o -> active_aspect == ASPECT_BEAST )
       ap *= 1.1;
-    if( buffs_rabid_power_stack )
-      ap *= 1.0 + buffs_rabid_power_stack * 0.05;
-    if( buffs_call_of_the_wild )
+    if( _buffs.rabid_power_stack )
+      ap *= 1.0 + _buffs.rabid_power_stack * 0.05;
+    if( _buffs.call_of_the_wild )
       ap *= 1.1;
 
     return ap;
@@ -630,24 +611,24 @@ static void trigger_cobra_strikes( attack_t* a )
     {
       name = "Cobra Strikes Expiration";
       p -> aura_gain( "Cobra Strikes" );
-      p -> buffs_cobra_strikes = 2;
+      p -> _buffs.cobra_strikes = 2;
       sim -> add_event( this, 10.0 );
     }
     virtual void execute()
     {
       hunter_t* p = player -> cast_hunter();
       p -> aura_loss( "Cobra Strikes" );
-      p -> buffs_cobra_strikes = 0;
-      p -> expirations_cobra_strikes = 0;
+      p -> _buffs.cobra_strikes = 0;
+      p -> _expirations.cobra_strikes = 0;
     }
   };
 
-  event_t*& e = p -> expirations_cobra_strikes;
+  event_t*& e = p -> _expirations.cobra_strikes;
 
   if ( e )
   {
     e -> reschedule( 10.0 );
-    p -> buffs_cobra_strikes = 2;
+    p -> _buffs.cobra_strikes = 2;
   }
   else
   {
@@ -662,11 +643,11 @@ static void consume_cobra_strikes( action_t* a )
   hunter_pet_t* p = (hunter_pet_t*) a -> player -> cast_pet();
   hunter_t*     o = p -> owner -> cast_hunter();
 
-  if( o -> buffs_cobra_strikes )
+  if( o -> _buffs.cobra_strikes )
   {
-    o -> buffs_cobra_strikes--;
-    if( ! o -> buffs_cobra_strikes )
-      event_t::early( o -> expirations_cobra_strikes );
+    o -> _buffs.cobra_strikes--;
+    if( ! o -> _buffs.cobra_strikes )
+      event_t::early( o -> _expirations.cobra_strikes );
   }
 }
 
@@ -688,19 +669,19 @@ static void trigger_expose_weakness( attack_t* a )
     {
       name = "Expose Weakness Expiration";
       p -> aura_gain( "Expose Weakness" );
-      p -> buffs_expose_weakness = 1;
+      p -> _buffs.expose_weakness = 1;
       sim -> add_event( this, 7.0 );
     }
     virtual void execute()
     {
       hunter_t* p = player -> cast_hunter();
       p -> aura_loss( "Expose Weakness" );
-      p -> buffs_expose_weakness = 0;
-      p -> expirations_expose_weakness = 0;
+      p -> _buffs.expose_weakness = 0;
+      p -> _expirations.expose_weakness = 0;
     }
   };
 
-  event_t*& e = p -> expirations_expose_weakness;
+  event_t*& e = p -> _expirations.expose_weakness;
 
   if ( e )
   {
@@ -787,19 +768,19 @@ static void trigger_frenzy( action_t* a )
     {
       name = "Frenzy Expiration";
       p -> aura_gain( "Frenzy" );
-      p -> buffs_frenzy = 1;
+      p -> _buffs.frenzy = 1;
       sim -> add_event( this, 8.0 );
     }
     virtual void execute()
     {
       hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
       p -> aura_loss( "Frenzy" );
-      p -> buffs_frenzy = 0;
-      p -> expirations_frenzy = 0;
+      p -> _buffs.frenzy = 0;
+      p -> _expirations.frenzy = 0;
     }
   };
 
-  event_t*& e = p -> expirations_frenzy;
+  event_t*& e = p -> _expirations.frenzy;
 
   if ( e )
   {
@@ -861,11 +842,11 @@ static void trigger_hunting_party( attack_t* a )
         p -> buffs.replenishment--;
       }
       hunter_t* h = player -> cast_hunter();
-      h -> expirations_hunting_party = 0;
+      h -> _expirations.hunting_party = 0;
     }
   };
 
-  event_t*& e = p -> expirations_hunting_party;
+  event_t*& e = p -> _expirations.hunting_party;
 
   if ( e )
   {
@@ -902,19 +883,19 @@ static void trigger_improved_aspect_of_the_hawk( attack_t* a )
     virtual void execute()
     {
       hunter_t* p = player -> cast_hunter();
-      p -> buffs_improved_aspect_of_the_hawk = 0;
-      p -> expirations_improved_aspect_of_the_hawk = 0;
+      p -> _buffs.improved_aspect_of_the_hawk = 0;
+      p -> _expirations.improved_aspect_of_the_hawk = 0;
     }
   };
 
-  p -> buffs_improved_aspect_of_the_hawk = 0.03 * p -> talents.improved_aspect_of_the_hawk;
+  p -> _buffs.improved_aspect_of_the_hawk = 0.03 * p -> talents.improved_aspect_of_the_hawk;
 
   if( p -> glyphs.improved_aspect_of_the_hawk )
   {
-    p -> buffs_improved_aspect_of_the_hawk += 0.06;
+    p -> _buffs.improved_aspect_of_the_hawk += 0.06;
   }
 
-  event_t*& e = p -> expirations_improved_aspect_of_the_hawk;
+  event_t*& e = p -> _expirations.improved_aspect_of_the_hawk;
 
   if ( e )
   {
@@ -943,18 +924,18 @@ static void trigger_improved_steady_shot( attack_t* a )
     improved_steady_shot_expiration_t( sim_t* sim, hunter_t* p ) : event_t( sim, p )
     {
       name = "Improved Steady Shot Expiration";
-      p -> buffs_improved_steady_shot = 1;
+      p -> _buffs.improved_steady_shot = 1;
       sim -> add_event( this, 12.0 );
     }
     virtual void execute()
     {
       hunter_t* p = player -> cast_hunter();
-      p -> buffs_improved_steady_shot = 0;
-      p -> expirations_improved_steady_shot = 0;
+      p -> _buffs.improved_steady_shot = 0;
+      p -> _expirations.improved_steady_shot = 0;
     }
   };
 
-  event_t*& e = p -> expirations_improved_steady_shot;
+  event_t*& e = p -> _expirations.improved_steady_shot;
 
   if ( e )
   {
@@ -971,7 +952,7 @@ static void trigger_improved_steady_shot( attack_t* a )
 static void consume_improved_steady_shot( attack_t* a )
 {
   hunter_t* p = a -> player -> cast_hunter();
-  event_t::early( p -> expirations_improved_steady_shot );
+  event_t::early( p -> _expirations.improved_steady_shot );
 }
 
 // trigger_invigoration ==============================================
@@ -996,11 +977,11 @@ static void consume_kill_command( action_t* a )
 {
   hunter_pet_t* p = (hunter_pet_t*) a -> player -> cast_pet();
 
-  if( p -> buffs_kill_command > 0 )
+  if( p -> _buffs.kill_command > 0 )
   {
-    p -> buffs_kill_command--;
+    p -> _buffs.kill_command--;
 
-    if( p -> buffs_kill_command == 0 )
+    if( p -> _buffs.kill_command == 0 )
     {
       p -> aura_loss( "Kill Command" );
     }
@@ -1015,7 +996,7 @@ static void trigger_lock_and_load( attack_t* a )
 
   if( ! p -> talents.lock_and_load )
     return;
-  if( a -> sim -> patch.before(3, 1, 0) && ! a -> sim -> cooldown_ready( p -> cooldowns_lock_and_load ) )
+  if( a -> sim -> patch.before(3, 1, 0) && ! a -> sim -> cooldown_ready( p -> _cooldowns.lock_and_load ) )
     return;
 
   // NB: talent calc says 3%,7%,10%, assuming it's really 10% * (1/3,2/3,3/3)
@@ -1028,21 +1009,21 @@ static void trigger_lock_and_load( attack_t* a )
     {
       name = "Lock and Load Expiration";
       p -> aura_gain( "Lock and Load" );
-      p -> cooldowns_lock_and_load = sim -> current_time + 30;
+      p -> _cooldowns.lock_and_load = sim -> current_time + 30;
       sim -> add_event( this, 12.0 );
     }
     virtual void execute()
     {
       hunter_t* p = player -> cast_hunter();
       p -> aura_loss( "Lock and Load" );
-      p -> buffs_lock_and_load = 0;
-      p -> expirations_lock_and_load = 0;
+      p -> _buffs.lock_and_load = 0;
+      p -> _expirations.lock_and_load = 0;
     }
   };
 
-  p -> buffs_lock_and_load = 2;
+  p -> _buffs.lock_and_load = 2;
 
-  event_t*& e = p -> expirations_lock_and_load;
+  event_t*& e = p -> _expirations.lock_and_load;
 
   if ( e )
   {
@@ -1060,13 +1041,13 @@ static void consume_lock_and_load( attack_t* a )
 {
   hunter_t* p = a -> player -> cast_hunter();
 
-  if( p -> buffs_lock_and_load > 0 )
+  if( p -> _buffs.lock_and_load > 0 )
   {
-    p -> buffs_lock_and_load--;
+    p -> _buffs.lock_and_load--;
 
-    if( p -> buffs_lock_and_load == 0 )
+    if( p -> _buffs.lock_and_load == 0 )
     {
-      event_t::early( p -> expirations_lock_and_load );
+      event_t::early( p -> _expirations.lock_and_load );
     }
   }
 }
@@ -1095,14 +1076,14 @@ static void trigger_master_tactician( attack_t* a )
     {
       hunter_t* p = player -> cast_hunter();
       p -> aura_loss( "Master Tactician" );
-      p -> buffs_master_tactician = 0;
-      p -> expirations_master_tactician = 0;
+      p -> _buffs.master_tactician = 0;
+      p -> _expirations.master_tactician = 0;
     }
   };
 
-  p -> buffs_master_tactician = p -> talents.master_tactician * 0.02;
+  p -> _buffs.master_tactician = p -> talents.master_tactician * 0.02;
 
-  event_t*& e = p -> expirations_master_tactician;
+  event_t*& e = p -> _expirations.master_tactician;
 
   if ( e )
   {
@@ -1132,19 +1113,19 @@ static void trigger_owls_focus( action_t* a )
     {
       name = "Owls Focus Expiration";
       p -> aura_gain( "Owls Focus" );
-      p -> buffs_owls_focus = 1;
+      p -> _buffs.owls_focus = 1;
       sim -> add_event( this, 8.0 );
     }
     virtual void execute()
     {
       hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
       p -> aura_loss( "Owls Focus" );
-      p -> buffs_owls_focus = 0;
-      p -> expirations_owls_focus = 0;
+      p -> _buffs.owls_focus = 0;
+      p -> _expirations.owls_focus = 0;
     }
   };
 
-  event_t*& e = p -> expirations_owls_focus;
+  event_t*& e = p -> _expirations.owls_focus;
 
   if( e )
   {
@@ -1161,7 +1142,7 @@ static void trigger_owls_focus( action_t* a )
 static void consume_owls_focus( action_t* a )
 {
   hunter_pet_t* p = (hunter_pet_t*) a -> player -> cast_pet();
-  event_t::early( p -> expirations_owls_focus );
+  event_t::early( p -> _expirations.owls_focus );
 }
 
 // trigger_piercing_shots
@@ -1224,12 +1205,12 @@ static void trigger_rabid_power( attack_t* a )
 
   if ( ! p -> talents.rabid )
     return;
-  if ( ! p -> buffs_rabid )
+  if ( ! p -> _buffs.rabid )
     return;
-  if ( p -> buffs_rabid_power_stack == 5 || ! a -> sim -> roll( 0.5 ) )
+  if ( p -> _buffs.rabid_power_stack == 5 || ! a -> sim -> roll( 0.5 ) )
     return;
 
-  p -> buffs_rabid_power_stack++;
+  p -> _buffs.rabid_power_stack++;
 }
 
 // trigger_thrill_of_the_hunt ========================================
@@ -1304,7 +1285,7 @@ static void trigger_wolverine_bite( attack_t* a )
   if ( ! p -> talents.wolverine_bite )
     return;
 
-  p -> buffs_wolverine_bite = 1;
+  p -> _buffs.wolverine_bite = 1;
 }
 
 } // ANONYMOUS NAMESPACE ===================================================
@@ -1352,9 +1333,9 @@ struct hunter_pet_attack_t : public attack_t
 
     if( o -> talents.frenzy )
     {
-      if( p -> buffs_frenzy ) t *= 1.0 / 1.3;
+      if( p -> _buffs.frenzy ) t *= 1.0 / 1.3;
 
-      p -> uptimes_frenzy -> update( p -> buffs_frenzy );
+      p -> uptimes_frenzy -> update( p -> _buffs.frenzy );
     }
 
     return t;
@@ -1365,12 +1346,12 @@ struct hunter_pet_attack_t : public attack_t
     hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
 
-    if( p -> buffs_owls_focus ) return 0;
+    if( p -> _buffs.owls_focus ) return 0;
 
     double c = attack_t::cost();
     if( c == 0 ) return 0;
 
-    if( o -> buffs_rapid_fire && p -> sim -> P309 ) c *= 1.0 - o -> talents.rapid_recuperation * 0.3;
+    if( o -> _buffs.rapid_fire && p -> sim -> P309 ) c *= 1.0 - o -> talents.rapid_recuperation * 0.3;
     
     return c;
   }
@@ -1417,17 +1398,17 @@ struct hunter_pet_attack_t : public attack_t
 
     attack_t::player_buff();
 
-    if( p -> buffs_bestial_wrath ) player_multiplier *= 1.5;
+    if( p -> _buffs.bestial_wrath ) player_multiplier *= 1.5;
 
     trigger_feeding_frenzy( this );
 
     if( special )
     {
-      if( o -> buffs_cobra_strikes ) player_crit += 1.0;
+      if( o -> _buffs.cobra_strikes ) player_crit += 1.0;
 
-      if( p -> buffs_kill_command )
+      if( p -> _buffs.kill_command )
       {
-	player_multiplier *= 1.0 + p -> buffs_kill_command * 0.20;
+	player_multiplier *= 1.0 + p -> _buffs.kill_command * 0.20;
 	player_crit       += o -> talents.focused_fire * 0.10;
       }
     }
@@ -1572,12 +1553,12 @@ struct savage_rend_t : public hunter_pet_attack_t
 
     if ( result == RESULT_CRIT )
     {
-      p -> buffs_savage_rend = 1;      
+      p -> _buffs.savage_rend = 1;      
 
       // FIXME also need to set up handler for buff triggered on crit.
     }
     // For first pass, we'll just pretend that's happened and clear flag.
-    p -> buffs_savage_rend = 0;
+    p -> _buffs.savage_rend = 0;
   }
 
   virtual void update_ready()
@@ -1611,7 +1592,7 @@ struct wolverine_bite_t : public hunter_pet_attack_t
   virtual void execute()
   {
     hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
-    p -> buffs_wolverine_bite = 0;
+    p -> _buffs.wolverine_bite = 0;
     hunter_pet_attack_t::execute();
   }
 
@@ -1620,7 +1601,7 @@ struct wolverine_bite_t : public hunter_pet_attack_t
     hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
 
     // This attack is only available after the target dodges
-    if ( ! p -> buffs_wolverine_bite )
+    if ( ! p -> _buffs.wolverine_bite )
       return false;
 
     return hunter_pet_attack_t::ready();
@@ -1654,12 +1635,12 @@ struct hunter_pet_spell_t : public spell_t
     hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
 
-    if( p -> buffs_owls_focus ) return 0;
+    if( p -> _buffs.owls_focus ) return 0;
 
     double c = spell_t::cost();
     if( c == 0 ) return 0;
 
-    if( o -> buffs_rapid_fire && p -> sim -> P309 ) c *= 1.0 - o -> talents.rapid_recuperation * 0.3;
+    if( o -> _buffs.rapid_fire && p -> sim -> P309 ) c *= 1.0 - o -> talents.rapid_recuperation * 0.3;
     
     return c;
   }
@@ -1697,13 +1678,13 @@ struct hunter_pet_spell_t : public spell_t
 
     player_power += 0.125 * o -> composite_spell_power( SCHOOL_MAX );
 
-    if( p -> buffs_bestial_wrath ) player_multiplier *= 1.5;
+    if( p -> _buffs.bestial_wrath ) player_multiplier *= 1.5;
 
-    if( o -> buffs_cobra_strikes ) player_crit += 1.0;
+    if( o -> _buffs.cobra_strikes ) player_crit += 1.0;
 
-    if( p -> buffs_kill_command )
+    if( p -> _buffs.kill_command )
     {
-      player_multiplier *= 1.0 + p -> buffs_kill_command * 0.20;
+      player_multiplier *= 1.0 + p -> _buffs.kill_command * 0.20;
       player_crit       += o -> talents.focused_fire * 0.10;
     }
 
@@ -1783,9 +1764,9 @@ struct call_of_the_wild_t : public hunter_pet_spell_t
         hunter_t*     o = p -> owner -> cast_hunter();
         name = "Call of the Wild Expiration";
         p -> aura_gain( "Call of the Wild" );
-        p -> buffs_call_of_the_wild = 1;
+        p -> _buffs.call_of_the_wild = 1;
         o -> aura_gain( "Call of the Wild" );
-        o -> buffs_call_of_the_wild = 1;
+        o -> _buffs.call_of_the_wild = 1;
         sim -> add_event( this, 20.0 );
       }
       virtual void execute()
@@ -1793,9 +1774,9 @@ struct call_of_the_wild_t : public hunter_pet_spell_t
         hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
         hunter_t*     o = p -> owner -> cast_hunter();
         p -> aura_loss( "Call of the Wild" );
-        p -> buffs_call_of_the_wild = 0;
+        p -> _buffs.call_of_the_wild = 0;
         o -> aura_loss( "Call of the Wild" );
-        o -> buffs_call_of_the_wild = 0;
+        o -> _buffs.call_of_the_wild = 0;
       }
     };
 
@@ -1836,16 +1817,16 @@ struct rabid_t : public hunter_pet_spell_t
       {
         name = "Rabid Expiration";
         p -> aura_gain( "Rabid" );
-        p -> buffs_rabid = 1;
-        assert( p -> buffs_rabid_power_stack == 0 );
+        p -> _buffs.rabid = 1;
+        assert( p -> _buffs.rabid_power_stack == 0 );
         sim -> add_event( this, 20.0 );
       }
       virtual void execute()
       {
         hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
         p -> aura_loss( "Rabid" );
-        p -> buffs_rabid = 0;
-        p -> buffs_rabid_power_stack = 0;
+        p -> _buffs.rabid = 0;
+        p -> _buffs.rabid_power_stack = 0;
       }
     };
 
@@ -1932,8 +1913,8 @@ double hunter_attack_t::cost()
   double c = attack_t::cost();
   if( c == 0 ) return 0;
   c *= 1.0 - p -> talents.efficiency * 0.02;
-  if( p -> buffs_rapid_fire && p -> sim -> P309 ) c *= 1.0 - p -> talents.rapid_recuperation * 0.3;
-  if( p -> buffs_beast_within ) c *= 0.80;
+  if( p -> _buffs.rapid_fire && p -> sim -> P309 ) c *= 1.0 - p -> talents.rapid_recuperation * 0.3;
+  if( p -> _buffs.beast_within ) c *= 0.80;
   return c;
 }
 
@@ -1966,18 +1947,18 @@ double hunter_attack_t::execute_time()
   double t = attack_t::execute_time();
   if( t == 0 ) return 0;
 
-  if( p -> buffs_rapid_fire )
+  if( p -> _buffs.rapid_fire )
   {
-    t *= 1.0 / ( 1.0 + p -> buffs_rapid_fire );
+    t *= 1.0 / ( 1.0 + p -> _buffs.rapid_fire );
   }
 
   t *= 1.0 / ( 1.0 + 0.01 * p -> quiver_haste );
 
   t *= 1.0 / ( 1.0 + 0.04 * p -> talents.serpents_swiftness );
 
-  t *= 1.0 / ( 1.0 + p -> buffs_improved_aspect_of_the_hawk );
+  t *= 1.0 / ( 1.0 + p -> _buffs.improved_aspect_of_the_hawk );
 
-  p -> uptimes_improved_aspect_of_the_hawk -> update( p -> buffs_improved_aspect_of_the_hawk != 0 );
+  p -> uptimes_improved_aspect_of_the_hawk -> update( p -> _buffs.improved_aspect_of_the_hawk != 0 );
 
   return t;
 }
@@ -1999,11 +1980,11 @@ void hunter_attack_t::player_buff()
       player_multiplier *= 1.0 + p -> talents.marked_for_death * 0.01;
     }
   }
-  if( p -> buffs_aspect_of_the_viper )
+  if( p -> _buffs.aspect_of_the_viper )
   {
-    player_multiplier *= p -> buffs_aspect_of_the_viper;
+    player_multiplier *= p -> _buffs.aspect_of_the_viper;
   }
-  if( p -> buffs_beast_within )
+  if( p -> _buffs.beast_within )
   {
     player_multiplier *= 1.10;
   }
@@ -2016,10 +1997,10 @@ void hunter_attack_t::player_buff()
     player_multiplier *= 1.0 + p -> talents.focused_fire * 0.01;
   }
   player_multiplier *= 1.0 + p -> active_black_arrow * 0.06;
-  player_crit += p -> buffs_master_tactician;
+  player_crit += p -> _buffs.master_tactician;
 
-  p -> uptimes_aspect_of_the_viper -> update( p -> buffs_aspect_of_the_viper != 0 );
-  p -> uptimes_master_tactician    -> update( p -> buffs_master_tactician    != 0 );
+  p -> uptimes_aspect_of_the_viper -> update( p -> _buffs.aspect_of_the_viper != 0 );
+  p -> uptimes_master_tactician    -> update( p -> _buffs.master_tactician    != 0 );
 }
 
 // Ranged Attack ===========================================================
@@ -2151,7 +2132,7 @@ struct aimed_shot_t : public hunter_attack_t
   {
     hunter_t* p = player -> cast_hunter();
     double c = hunter_attack_t::cost();
-    if( p -> buffs_improved_steady_shot ) c *= 0.80;
+    if( p -> _buffs.improved_steady_shot ) c *= 0.80;
     return c;
   }
 
@@ -2159,9 +2140,9 @@ struct aimed_shot_t : public hunter_attack_t
   {
     hunter_t* p = player -> cast_hunter();
     hunter_attack_t::player_buff();
-    if( p -> buffs_trueshot_aura && p -> glyphs.trueshot_aura ) player_crit += 0.10;
-    if( p -> buffs_improved_steady_shot ) player_multiplier *= 1.15;
-    p -> uptimes_improved_steady_shot -> update( p -> buffs_improved_steady_shot != 0 );
+    if( p -> _buffs.trueshot_aura && p -> glyphs.trueshot_aura ) player_crit += 0.10;
+    if( p -> _buffs.improved_steady_shot ) player_multiplier *= 1.15;
+    p -> uptimes_improved_steady_shot -> update( p -> _buffs.improved_steady_shot != 0 );
   }
 
   virtual void execute()
@@ -2180,7 +2161,7 @@ struct aimed_shot_t : public hunter_attack_t
     hunter_t* p = player -> cast_hunter();
 
     if( improved_steady_shot )
-      if( ! p -> buffs_improved_steady_shot )
+      if( ! p -> _buffs.improved_steady_shot )
         return false;
 
     return hunter_attack_t::ready();
@@ -2236,9 +2217,9 @@ struct arcane_shot_t : public hunter_attack_t
   virtual double cost()
   {
     hunter_t* p = player -> cast_hunter();
-    if ( p -> buffs_lock_and_load ) return 0;
+    if ( p -> _buffs.lock_and_load ) return 0;
     double c = hunter_attack_t::cost();
-    if( p -> buffs_improved_steady_shot ) c *= 0.80;
+    if( p -> _buffs.improved_steady_shot ) c *= 0.80;
     return c;
   }
 
@@ -2246,8 +2227,8 @@ struct arcane_shot_t : public hunter_attack_t
   {
     hunter_t* p = player -> cast_hunter();
     hunter_attack_t::player_buff();
-    if( p -> buffs_improved_steady_shot ) player_multiplier *= 1.15;
-    p -> uptimes_improved_steady_shot -> update( p -> buffs_improved_steady_shot );
+    if( p -> _buffs.improved_steady_shot ) player_multiplier *= 1.15;
+    p -> uptimes_improved_steady_shot -> update( p -> _buffs.improved_steady_shot );
   }
 
   virtual void execute()
@@ -2265,7 +2246,7 @@ struct arcane_shot_t : public hunter_attack_t
   virtual void update_ready()
   {
     hunter_t* p = player -> cast_hunter();
-    cooldown = p -> buffs_lock_and_load ? 0.0 : 6.0;
+    cooldown = p -> _buffs.lock_and_load ? 0.0 : 6.0;
     hunter_attack_t::update_ready();
   }
 
@@ -2274,11 +2255,11 @@ struct arcane_shot_t : public hunter_attack_t
     hunter_t* p = player -> cast_hunter();
 
     if( improved_steady_shot )
-      if( ! p -> buffs_improved_steady_shot )
+      if( ! p -> _buffs.improved_steady_shot )
         return false;
 
     if( lock_and_load )
-      if( ! p -> buffs_lock_and_load )
+      if( ! p -> _buffs.lock_and_load )
         return false;
 
     return hunter_attack_t::ready();
@@ -2393,7 +2374,7 @@ struct chimera_shot_t : public hunter_attack_t
   {
     hunter_t* p = player -> cast_hunter();
     double c = hunter_attack_t::cost();
-    if( p -> buffs_improved_steady_shot ) c *= 0.80;
+    if( p -> _buffs.improved_steady_shot ) c *= 0.80;
     return c;
   }
 
@@ -2401,8 +2382,8 @@ struct chimera_shot_t : public hunter_attack_t
   {
     hunter_t* p = player -> cast_hunter();
     hunter_attack_t::player_buff();
-    if( p -> buffs_improved_steady_shot ) player_multiplier *= 1.0 + 0.15;
-    p -> uptimes_improved_steady_shot -> update( p -> buffs_improved_steady_shot );
+    if( p -> _buffs.improved_steady_shot ) player_multiplier *= 1.0 + 0.15;
+    p -> uptimes_improved_steady_shot -> update( p -> _buffs.improved_steady_shot );
   }
 
   virtual void execute()
@@ -2466,7 +2447,7 @@ struct chimera_shot_t : public hunter_attack_t
         return false;
 
     if( improved_steady_shot )
-      if( ! p -> buffs_improved_steady_shot )
+      if( ! p -> _buffs.improved_steady_shot )
         return false;
 
     return hunter_attack_t::ready();
@@ -2533,7 +2514,7 @@ struct explosive_shot_t : public hunter_attack_t
     if ( !may_miss ) return 0;
 
     hunter_t* p = player -> cast_hunter();
-    if ( p -> buffs_lock_and_load ) return 0;
+    if ( p -> _buffs.lock_and_load ) return 0;
     return hunter_attack_t::cost();
   }
 
@@ -2572,7 +2553,7 @@ struct explosive_shot_t : public hunter_attack_t
     if( may_miss ) // Explosive charge was just fired
     {
       hunter_t* p = player -> cast_hunter();
-      cooldown = p -> buffs_lock_and_load ? 0.0 : 6.0;
+      cooldown = p -> _buffs.lock_and_load ? 0.0 : 6.0;
       hunter_attack_t::update_ready();
     }
   }
@@ -2594,7 +2575,7 @@ struct explosive_shot_t : public hunter_attack_t
     hunter_t* p = player -> cast_hunter();
 
     if( lock_and_load )
-      if( ! p -> buffs_lock_and_load )
+      if( ! p -> _buffs.lock_and_load )
         return false;
 
     return hunter_attack_t::ready();
@@ -2925,7 +2906,7 @@ double hunter_spell_t::cost()
 {
   hunter_t* p = player -> cast_hunter();
   double c = spell_t::cost();
-  if ( p -> buffs_rapid_fire && p -> sim -> P309 ) c *= 1.0 - p -> talents.rapid_recuperation * 0.3;
+  if ( p -> _buffs.rapid_fire && p -> sim -> P309 ) c *= 1.0 - p -> talents.rapid_recuperation * 0.3;
   return c;
 }
 
@@ -2997,7 +2978,7 @@ struct aspect_t : public hunter_spell_t
     if( beast_during_bw && p -> active_pet )
     {
       hunter_pet_t* pet = (hunter_pet_t*) p -> active_pet -> cast_pet();
-      if( pet -> buffs_bestial_wrath ) return ASPECT_BEAST;
+      if( pet -> _buffs.bestial_wrath ) return ASPECT_BEAST;
     }
     return ASPECT_HAWK;
   }
@@ -3014,28 +2995,28 @@ struct aspect_t : public hunter_spell_t
       {
         if( sim -> log ) report_t::log( sim, "%s performs Aspect of the Hawk", p -> name() );
         p -> active_aspect = ASPECT_HAWK;
-        p -> buffs_aspect_of_the_hawk = hawk_bonus;
-        p -> buffs_aspect_of_the_viper = 0;
+        p -> _buffs.aspect_of_the_hawk = hawk_bonus;
+        p -> _buffs.aspect_of_the_viper = 0;
       }
       else if( aspect == ASPECT_VIPER )
       {
         if( sim -> log ) report_t::log( sim, "%s performs Aspect of the Viper", p -> name() );
         p -> active_aspect = ASPECT_VIPER;
-        p -> buffs_aspect_of_the_hawk = 0;
-        p -> buffs_aspect_of_the_viper = viper_multiplier;
+        p -> _buffs.aspect_of_the_hawk = 0;
+        p -> _buffs.aspect_of_the_viper = viper_multiplier;
       }
       else if( aspect == ASPECT_BEAST )
       {
         if( sim -> log ) report_t::log( sim, "%s performs Aspect of the Beast", p -> name() );
         p -> active_aspect = ASPECT_BEAST;
-        p -> buffs_aspect_of_the_hawk = 0;
-        p -> buffs_aspect_of_the_viper = 0;
+        p -> _buffs.aspect_of_the_hawk = 0;
+        p -> _buffs.aspect_of_the_viper = 0;
       }
       else
       {
         p -> active_aspect = ASPECT_NONE;
-        p -> buffs_aspect_of_the_hawk = 0;
-        p -> buffs_aspect_of_the_viper = 0;
+        p -> _buffs.aspect_of_the_hawk = 0;
+        p -> _buffs.aspect_of_the_viper = 0;
       }
     }
   }
@@ -3075,16 +3056,16 @@ struct bestial_wrath_t : public hunter_spell_t
         hunter_pet_t* pet = p -> active_pet;
         name = "Bestial Wrath Expiration";
         if( p -> talents.beast_within )
-          p -> buffs_beast_within = 1;
-        pet -> buffs_bestial_wrath = 1;
+          p -> _buffs.beast_within = 1;
+        pet -> _buffs.bestial_wrath = 1;
         sim -> add_event( this, 18.0 );
       }
       virtual void execute()
       {
         hunter_t* p = player -> cast_hunter();
         hunter_pet_t* pet = p -> active_pet;
-        p -> buffs_beast_within = 0;
-        pet -> buffs_bestial_wrath = 0;
+        p -> _buffs.beast_within = 0;
+        pet -> _buffs.bestial_wrath = 0;
       }
     };
 
@@ -3188,9 +3169,9 @@ struct kill_command_t : public hunter_spell_t
   {
     hunter_t* p = player -> cast_hunter();
     if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
-    assert( p -> active_pet -> buffs_kill_command == 0 );
+    assert( p -> active_pet -> _buffs.kill_command == 0 );
     p -> active_pet -> aura_gain( "Kill Command" );
-    p -> active_pet -> buffs_kill_command = 3;
+    p -> active_pet -> _buffs.kill_command = 3;
     consume_resource();
     update_ready();
     player -> action_finish( this );
@@ -3247,12 +3228,12 @@ struct rapid_fire_t : public hunter_spell_t
       virtual void execute()
       {
         player -> aura_loss( "Rapid Fire" );
-        player -> cast_hunter() -> buffs_rapid_fire = 0;
+        player -> cast_hunter() -> _buffs.rapid_fire = 0;
       }
     };
 
     if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
-    p -> buffs_rapid_fire = p -> glyphs.rapid_fire ? 0.48 : 0.40;
+    p -> _buffs.rapid_fire = p -> glyphs.rapid_fire ? 0.48 : 0.40;
     consume_resource();
     update_ready();
     player -> action_finish( this );
@@ -3263,7 +3244,7 @@ struct rapid_fire_t : public hunter_spell_t
   {
     hunter_t* p = player -> cast_hunter();
 
-    if( p -> buffs_rapid_fire )
+    if( p -> _buffs.rapid_fire )
       return false;
 
     if( viper )
@@ -3345,7 +3326,7 @@ struct trueshot_aura_t : public hunter_spell_t
   {
     if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
 
-    player -> cast_hunter() -> buffs_trueshot_aura = 1;
+    player -> cast_hunter() -> _buffs.trueshot_aura = 1;
 
     for( player_t* p = sim -> player_list; p; p = p -> next )
     {
@@ -3360,7 +3341,7 @@ struct trueshot_aura_t : public hunter_spell_t
   virtual bool ready()
   {
     hunter_t* p = player -> cast_hunter();
-    return( ! p -> buffs_trueshot_aura );
+    return( ! p -> _buffs.trueshot_aura );
   }
 };
 
@@ -3490,32 +3471,9 @@ void hunter_t::reset()
   active_serpent_sting = 0;
   active_viper_sting   = 0;
 
-  // Buffs
-  buffs_aspect_of_the_hawk          = 0;
-  buffs_aspect_of_the_viper         = 0;
-  buffs_beast_within                = 0;
-  buffs_call_of_the_wild            = 0;
-  buffs_cobra_strikes               = 0;
-  buffs_expose_weakness             = 0;
-  buffs_improved_aspect_of_the_hawk = 0;
-  buffs_improved_steady_shot        = 0;
-  buffs_lock_and_load               = 0;
-  buffs_master_tactician            = 0;
-  buffs_rapid_fire                  = 0;
-  buffs_trueshot_aura               = 0;
-
-  // Expirations
-  expirations_cobra_strikes               = 0;
-  expirations_expose_weakness             = 0;
-  expirations_hunting_party               = 0;
-  expirations_improved_aspect_of_the_hawk = 0;
-  expirations_improved_steady_shot        = 0;
-  expirations_lock_and_load               = 0;
-  expirations_master_tactician            = 0;
-  expirations_rapid_fire                  = 0;
-
-  // Cooldowns
-  cooldowns_lock_and_load = 0;
+  _buffs.reset();
+  _cooldowns.reset();
+  _expirations.reset();
 }
 
 // hunter_t::composite_attack_power ==========================================
@@ -3524,14 +3482,14 @@ double hunter_t::composite_attack_power()
 {
   double ap = player_t::composite_attack_power();
 
-  ap += buffs_aspect_of_the_hawk;
+  ap += _buffs.aspect_of_the_hawk;
   ap += intellect() * talents.careful_aim / 3.0;
   ap += stamina() * talents.hunter_vs_wild * 0.1;
 
-  if( buffs_expose_weakness ) ap += agility() * 0.25;
-  uptimes_expose_weakness -> update( buffs_expose_weakness != 0 );
+  if( _buffs.expose_weakness ) ap += agility() * 0.25;
+  uptimes_expose_weakness -> update( _buffs.expose_weakness != 0 );
 
-  if( buffs_call_of_the_wild )
+  if( _buffs.call_of_the_wild )
     ap *= 1.1;
 
   return ap;
@@ -3543,13 +3501,13 @@ void hunter_t::regen( double periodicity )
 {
   player_t::regen( periodicity );
 
-  if( buffs_aspect_of_the_viper )
+  if( _buffs.aspect_of_the_viper )
   {
     double aspect_of_the_viper_regen = periodicity * 0.04 * resource_max[ RESOURCE_MANA ] / 3.0;
 
     resource_gain( RESOURCE_MANA, aspect_of_the_viper_regen, gains_viper_aspect_passive );
   }
-  if( buffs_rapid_fire && talents.rapid_recuperation && ! sim -> P309 )
+  if( _buffs.rapid_fire && talents.rapid_recuperation && ! sim -> P309 )
   {
     double rr_regen = periodicity * 0.02 * talents.rapid_recuperation * resource_max[ RESOURCE_MANA ] / 3.0;
 
