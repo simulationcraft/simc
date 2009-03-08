@@ -151,6 +151,7 @@ struct rogue_t : public player_t
     int adrenaline_rush;
     int backstab;
     int blade_flurry;
+    int envenom;
     int eviscerate;
     int expose_armor;
     int feint;
@@ -1310,7 +1311,12 @@ struct envenom_t : public rogue_attack_t
 
     rogue_t* p = player -> cast_rogue();
 
-    int doses_consumed = std::min( p -> buffs_poison_doses, p -> buffs_combo_points );
+    int doses_consumed = 0;
+
+    if( ! p -> glyphs.envenom ) 
+    {
+      doses_consumed = std::min( p -> buffs_poison_doses, p -> buffs_combo_points );
+    }
 
     double envenom_duration = 1.0 + p -> buffs_combo_points;
 
@@ -2451,7 +2457,7 @@ struct deadly_poison_t : public rogue_poison_t
     proc           = true;
     num_ticks      = 4;
     base_tick_time = 3.0;
-    tick_power_mod = 0.08 / num_ticks;
+    tick_power_mod = ( sim -> P309 ? 0.08 : 0.12 ) / num_ticks;
     base_td_init   = util_t::ability_rank( p -> level,  296,80,  244,76,  204,70,  160,62,  96,0  ) / num_ticks;
   }
 
@@ -3308,6 +3314,7 @@ bool rogue_t::parse_option( const std::string& name,
     { "glyph_adrenaline_rush",      OPT_INT, &( glyphs.adrenaline_rush             ) },
     { "glyph_backstab",             OPT_INT, &( glyphs.backstab                    ) },
     { "glyph_blade_flurry",         OPT_INT, &( glyphs.blade_flurry                ) },
+    { "glyph_envenom",              OPT_INT, &( glyphs.envenom                     ) },
     { "glyph_eviscerate",           OPT_INT, &( glyphs.eviscerate                  ) },
     { "glyph_expose_armor",         OPT_INT, &( glyphs.expose_armor                ) },
     { "glyph_feint",                OPT_INT, &( glyphs.feint                       ) },

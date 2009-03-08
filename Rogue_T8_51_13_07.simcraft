@@ -19,7 +19,7 @@ actions+=/envenom,min_combo_points=4,no_buff=1
 actions+=/mutilate,max_combo_points=3
 Melee_T7_Base_Gear.simcraft
 gear_expertise_rating=200
-glyph_rupture=1
+glyph_envenom=1
 glyph_hunger_for_blood=1
 glyph_mutilate=1
 main_hand=dagger,dps=156,speed=1.4,enchant=berserking
