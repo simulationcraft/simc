@@ -446,6 +446,8 @@ struct warlock_pet_attack_t : public attack_t
   warlock_pet_attack_t( const char* n, player_t* player, int r=RESOURCE_MANA, int s=SCHOOL_PHYSICAL ) : 
     attack_t( n, player, r, s )
   {
+    background = true;
+    repeating  = true;
     warlock_pet_t* p = (warlock_pet_t*) player -> cast_pet();
     p -> adjust_base_modifiers( this );
   }
@@ -470,6 +472,12 @@ struct warlock_pet_attack_t : public attack_t
     if( p -> _buffs.demonic_empathy ) player_multiplier *= 1.0 + o -> talents.demonic_empathy * 0.01;
     p -> adjust_player_modifiers( this );
   }
+
+  virtual double execute_time()
+  {
+    return cooldown;
+  }
+
 };
 
 // ==========================================================================
@@ -649,7 +657,8 @@ struct felguard_pet_t : public warlock_pet_t
     }    
   };
 
-  melee_t* melee;
+  cleave_t* cleave;
+  melee_t*  melee;
 
   felguard_pet_t( sim_t* sim, player_t* owner ) :
     warlock_pet_t( sim, owner, "felguard", PET_FELGUARD ), melee(0)
@@ -659,8 +668,6 @@ struct felguard_pet_t : public warlock_pet_t
     main_hand_weapon.swing_time = 2.0;
 
     damage_modifier = 1.05;
-
-    action_list_str = "cleave";
   }
   virtual void init_base()
   {
@@ -671,20 +678,14 @@ struct felguard_pet_t : public warlock_pet_t
 
     base_attack_power = -20;
 
-    melee = new melee_t( this );
+    melee  = new  melee_t( this );
+    cleave = new cleave_t( this );
   }
   virtual void summon()
   {
     warlock_pet_t::summon();
-    melee -> schedule_execute(); 
-    schedule_ready();
-  }
-  virtual action_t* create_action( const std::string& name,
-                                   const std::string& options_str )
-  {
-    if( name == "cleave" ) return new cleave_t( this );
-
-    return player_t::create_action( name, options_str );
+    melee  -> schedule_execute(); 
+    cleave -> schedule_execute();
   }
 };
 
@@ -717,6 +718,7 @@ struct felhunter_pet_t : public warlock_pet_t
   };
 
   warlock_pet_melee_t* melee;
+  shadow_bite_t* shadow_bite;
 
   felhunter_pet_t( sim_t* sim, player_t* owner ) :
     warlock_pet_t( sim, owner, "felhunter", PET_FELHUNTER ), melee(0)
@@ -726,8 +728,6 @@ struct felhunter_pet_t : public warlock_pet_t
     main_hand_weapon.swing_time = 2.0;
 
     damage_modifier = 0.8;
-
-    action_list_str = "shadow_bite";
   }
   virtual void init_base()
   {
@@ -738,20 +738,14 @@ struct felhunter_pet_t : public warlock_pet_t
     resource_base[ RESOURCE_HEALTH ] = 1468;
     resource_base[ RESOURCE_MANA   ] = 1559;
 
-    melee = new warlock_pet_melee_t( this, "felhunter_melee" );
+    melee       = new warlock_pet_melee_t( this, "felhunter_melee" );
+    shadow_bite = new       shadow_bite_t( this );
   }
   virtual void summon()
   {
     warlock_pet_t::summon();
-    melee -> schedule_execute();
-    schedule_ready();
-  }
-  virtual action_t* create_action( const std::string& name,
-                                   const std::string& options_str )
-  {
-    if( name == "shadow_bite" ) return new shadow_bite_t( this );
-
-    return player_t::create_action( name, options_str );
+    melee       -> schedule_execute();
+    shadow_bite -> schedule_execute();
   }
 };
 
@@ -776,6 +770,7 @@ struct succubus_pet_t : public warlock_pet_t
   };
 
   warlock_pet_melee_t* melee;
+  lash_of_pain_t*      lash_of_pain;
 
   succubus_pet_t( sim_t* sim, player_t* owner ) :
     warlock_pet_t( sim, owner, "succubus", PET_SUCCUBUS ), melee(0)
@@ -785,8 +780,6 @@ struct succubus_pet_t : public warlock_pet_t
     main_hand_weapon.swing_time = 2.0;
 
     damage_modifier = 1.05;
-
-    action_list_str = "lash_of_pain";
   }
   virtual void init_base()
   {
@@ -797,20 +790,14 @@ struct succubus_pet_t : public warlock_pet_t
     resource_base[ RESOURCE_HEALTH ] = 1468;
     resource_base[ RESOURCE_MANA   ] = 1559;
 
-    melee = new warlock_pet_melee_t( this, "succubus_melee" );
+    melee        = new warlock_pet_melee_t( this, "succubus_melee" );
+    lash_of_pain = new      lash_of_pain_t( this );
   }
   virtual void summon()
   {
     warlock_pet_t::summon();
-    melee -> schedule_execute();
-    schedule_ready();
-  }
-  virtual action_t* create_action( const std::string& name,
-                                   const std::string& options_str )
-  {
-    if( name == "lash_of_pain" ) return new lash_of_pain_t( this );
-
-    return player_t::create_action( name, options_str );
+    melee        -> schedule_execute();
+    lash_of_pain -> schedule_execute();
   }
 };
 
@@ -874,7 +861,7 @@ struct infernal_pet_t : public warlock_pet_t
 
     base_attack_power = -20;
 
-    melee      = new warlock_pet_melee_t( this, "infernal_melee" );
+    melee      = new   warlock_pet_melee_t( this, "infernal_melee" );
     immolation = new infernal_immolation_t( this );
   }
   virtual void reset()
@@ -885,15 +872,7 @@ struct infernal_pet_t : public warlock_pet_t
   {
     warlock_pet_t::summon();
     melee      -> schedule_execute();
-    immolation -> schedule_execute(); 
-    schedule_ready();
-  }
-  virtual action_t* create_action( const std::string& name,
-                                   const std::string& options_str )
-  {
-    if( name == "immolation" ) return new infernal_immolation_t( this );
-
-    return player_t::create_action( name, options_str );
+    immolation -> schedule_execute();
   }
   virtual double composite_attack_hit() { return 0; }
   virtual double composite_spell_hit()  { return 0; }
