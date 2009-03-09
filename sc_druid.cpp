@@ -53,6 +53,7 @@ struct druid_t : public player_t
   // Expirations
   struct _expirations_t
   {
+    event_t* berserk;
     event_t* eclipse;
     event_t* natures_grace;
     event_t* savage_roar;
@@ -271,7 +272,7 @@ struct druid_attack_t : public attack_t
   int requires_position;
   bool requires_combo_points;
   bool adds_combo_points;
-  int  min_combo_points, max_combo_points;
+  int berserk, min_combo_points, max_combo_points;
   double min_energy, max_energy;
   double min_mangle_expire, max_mangle_expire;
   double min_savage_roar_expire, max_savage_roar_expire;
@@ -283,6 +284,7 @@ struct druid_attack_t : public attack_t
     requires_position(POSITION_NONE),
     requires_combo_points(false),
     adds_combo_points(false),
+    berserk(0), 
     min_combo_points(0), max_combo_points(0),
     min_energy(0), max_energy(0),
     min_mangle_expire(0), max_mangle_expire(0),
@@ -884,6 +886,7 @@ void druid_attack_t::parse_options( option_t*          options,
 {
   option_t base_options[] =
   {
+    { "berserk",          OPT_INT, &berserk                },
     { "min_combo_points", OPT_INT, &min_combo_points       },
     { "max_combo_points", OPT_INT, &max_combo_points       },
     { "cp>",              OPT_INT, &min_combo_points       },
@@ -1024,6 +1027,9 @@ bool druid_attack_t::ready()
       return false;
 
   if( requires_combo_points && ( p -> _buffs.combo_points == 0 ) )
+    return false;
+
+  if( berserk && ! p -> _buffs.berserk )
     return false;
 
   if( min_combo_points > 0 )
@@ -1483,8 +1489,9 @@ struct shred_t : public druid_attack_t
 
 struct berserk_t : public druid_attack_t
 {
-  int under_tigers_fury;
-   berserk_t( player_t* player, const std::string& options_str ) : 
+  int tigers_fury;
+  
+berserk_t( player_t* player, const std::string& options_str ) : 
     druid_attack_t( "berserk", player )
   {
     druid_t* p = player -> cast_druid();
@@ -1492,13 +1499,13 @@ struct berserk_t : public druid_attack_t
 
     option_t options[] =
     {
-      { "tigers_fury", OPT_INT, &under_tigers_fury },
+      { "tigers_fury", OPT_INT, &tigers_fury },
       { NULL }
     };
     
     parse_options( options, options_str );
 
-    cooldown    = 180;
+    cooldown = 180;
   }
 
   virtual void execute()
@@ -1517,13 +1524,14 @@ struct berserk_t : public druid_attack_t
         druid_t* p = player -> cast_druid();
         p -> aura_loss( "Berserk" );
         p -> _buffs.berserk = 0;
+	p -> _expirations.berserk = 0;
       }
     };
 
     druid_t* p = player -> cast_druid();
     if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
     update_ready();
-    new ( sim ) expiration_t( sim, p );
+    p -> _expirations.berserk = new ( sim ) expiration_t( sim, p );
   }
   
   virtual bool ready()
@@ -1533,7 +1541,7 @@ struct berserk_t : public druid_attack_t
 
     druid_t* p = player -> cast_druid();
 
-    if( under_tigers_fury && ! p -> _buffs.tigers_fury )
+    if( tigers_fury && ! p -> _buffs.tigers_fury )
       return false;
 
     return true;
@@ -1590,16 +1598,15 @@ struct tigers_fury_t : public druid_attack_t
 
     update_ready();
   }
+
   virtual bool ready() 
   {
     druid_t* p = player -> cast_druid();
-    if( ! druid_attack_t::ready() )
-      return false;
-      
-    if( p -> _buffs.berserk == 1)
+
+    if( p -> _buffs.berserk )
       return false;
 
-    return true;
+    return druid_attack_t::ready();
   }
 };
 
