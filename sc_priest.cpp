@@ -180,7 +180,13 @@ struct shadow_fiend_pet_t : public pet_t
       base_execute_time = weapon -> swing_time;
       base_direct_dmg = 1;
       background = true;
-      repeating = true;
+      repeating  = true;
+	  if ( ! sim -> P309 )
+	  {
+	    may_dodge  = false;
+        may_miss   = false;
+        may_parry  = false;
+	  }
     }
     void player_buff()
     {
