@@ -19,7 +19,7 @@ Melee_T7_Base_Gear.simcraft
 gear_expertise_rating=200
 glyph_rupture=1
 glyph_envenom=1
-glyph_backstab=1
+glyph_slice_and_dice=1
 relentless_earthstorm=1
 main_hand=fist,dps=171,speed=2.6,enchant=berserking
 off_hand=dagger,dps=156,speed=1.8,enchant=berserking
