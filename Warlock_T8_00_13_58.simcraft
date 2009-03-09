@@ -11,3 +11,15 @@ enchant_hit_rating=+80
 glyph_conflagrate=1
 glyph_incinerate=1
 glyph_imp=1
+
+warlock=Warlock_T8_00_13_58_ltglyph
+level=80
+talents=http://talent.mmo-champion.com/?warlock=000000000000000000000000000003220030003000000000000000005203215200331051335230351
+actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/fire_stone/fel_armor/summon_pet,imp
+actions+=/curse_of_doom,time_to_die>=60/immolate/conflagrate/chaos_bolt/incinerate/life_tap
+Caster_T7_Base_Gear.simcraft
+enchant_crit_rating=-80
+enchant_hit_rating=+80
+glyph_conflagrate=1
+glyph_incinerate=1
+glyph_life_tap=1
