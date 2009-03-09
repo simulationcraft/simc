@@ -17,5 +17,6 @@ actions+=/faerie_fire_feral
 Melee_T7_Base_Gear.simcraft
 glyph_rip=1
 glyph_mangle=1
+idol_of_worship=1
 main_hand=staff,dps=222.9,speed=2.4,enchant=berserking
 
