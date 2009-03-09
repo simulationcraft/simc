@@ -174,7 +174,7 @@ void report_t::print_action( stats_t* s )
   }
 
   fprintf( sim -> output_file, 
-	   "    %-20s  Count=%5.1f|%4.1fsec  DPE=%5.0f|%2.0f%%  DPET=%5.0f  DPR=%4.1f", 
+	   "    %-20s  Count=%5.1f|%4.1fsec  DPE=%5.0f|%2.0f%%  DPET=%5.0f  DPR=%6.1f", 
 	   s -> name_str.c_str(),
 	   s -> num_executes,
 	   s -> frequency,

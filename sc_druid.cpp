@@ -1693,6 +1693,7 @@ struct ferocious_bite_t : public druid_attack_t
                      excess_energy, util_t::resource_type_string( resource ), name() );
 
     player -> resource_loss( resource, excess_energy );
+    stats -> consume_resource( resource_consumed );
 
   }
   
