@@ -224,7 +224,7 @@ void target_t::combat_begin()
           {
             p -> aura_gain( "Bloodlust" );
             p -> buffs.bloodlust = 1;
-            p -> cooldowns.bloodlust = sim -> current_time + 300;
+			p -> cooldowns.bloodlust = sim -> current_time + (sim -> P309 ? 300 : 600);
           }
         }
 	sim -> add_event( this, 40.0 );
