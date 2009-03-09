@@ -79,6 +79,7 @@ struct druid_t : public player_t
   // Up-Times
   uptime_t* uptimes_eclipse_starfire;
   uptime_t* uptimes_eclipse_wrath;
+  uptime_t* uptimes_energy_cap;
   uptime_t* uptimes_natures_grace;
   uptime_t* uptimes_savage_roar;
 
@@ -222,6 +223,7 @@ struct druid_t : public player_t
     // Up-Times
     uptimes_eclipse_starfire = get_uptime( "eclipse_starfire" );
     uptimes_eclipse_wrath    = get_uptime( "eclipse_wrath"    );
+    uptimes_energy_cap       = get_uptime( "energy_cap" );
     uptimes_natures_grace    = get_uptime( "natures_grace"    );
     uptimes_savage_roar      = get_uptime( "savage_roar"      );
 
@@ -235,6 +237,7 @@ struct druid_t : public player_t
   virtual void      init_base();
   virtual void      init_unique_gear();
   virtual void      reset();
+  virtual void      regen( double periodicity );
   virtual double    composite_attack_power();
   virtual double    composite_attack_power_multiplier();
   virtual double    composite_attack_crit();
@@ -3016,6 +3019,16 @@ void druid_t::reset()
   _expirations.reset();
 
   base_gcd = 1.5;
+}
+
+// druid_t::reset ===========================================================
+
+void druid_t::regen( double periodicity )
+{
+  player_t::regen( periodicity );
+
+  uptimes_energy_cap -> update( resource_current[ RESOURCE_ENERGY ] == 
+				resource_max    [ RESOURCE_ENERGY ] );
 }
 
 // druid_t::composite_attack_power ==========================================
