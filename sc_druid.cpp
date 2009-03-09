@@ -298,7 +298,7 @@ struct druid_attack_t : public attack_t
 
     druid_t* p = player -> cast_druid();
 
-    base_crit_bonus_multiplier *= 1.0 + util_t::talent_rank( p -> talents.predatory_instincts, 3, 0.03, 0.07, 0.10 );
+    base_crit_multiplier *= 1.0 + util_t::talent_rank( p -> talents.predatory_instincts, 3, 0.03, 0.07, 0.10 );
   }
 
   virtual void   parse_options( option_t*, const std::string& options_str );
