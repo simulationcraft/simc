@@ -770,10 +770,10 @@ struct shadow_word_pain_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
 
-	if ( ! sim -> P309 && p -> buffs.shadow_form )
+	if ( ! sim -> P309 )
 	{
-		tick_may_crit = true;
-		base_crit_bonus = 1.0;
+      tick_may_crit              = p -> buffs.shadow_form != 0;
+      base_crit_bonus_multiplier = 1.0 + ( p -> buffs.shadow_form != 0 );
 	}
 
     priest_spell_t::execute(); 
@@ -867,10 +867,10 @@ struct vampiric_touch_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
 
-	if ( ! sim -> P309 && p -> buffs.shadow_form )
+	if ( ! sim -> P309 )
 	{
-		tick_may_crit = true;
-		base_crit_bonus = 1.0;
+      tick_may_crit              = p -> buffs.shadow_form != 0;
+      base_crit_bonus_multiplier = 1.0 + ( p -> buffs.shadow_form != 0 );
 	}
 
     priest_spell_t::execute(); 
@@ -937,7 +937,7 @@ struct devouring_plague_t : public priest_spell_t
     cooldown          = 24.0;
     binary            = true;
     tick_power_mod    = base_tick_time / 15.0;
-    tick_power_mod   *= 0.92;
+    tick_power_mod   *= 0.925;
     base_cost        *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility, 3, 0.04, 0.07, 0.10 ) +
 								p -> talents.shadow_focus * 0.02 );
     base_cost         = floor(base_cost);
@@ -945,7 +945,12 @@ struct devouring_plague_t : public priest_spell_t
 								p -> talents.twin_disciplines          * 0.01 +
 								p -> talents.improved_devouring_plague * 0.05 );
     base_hit         += p -> talents.shadow_focus * 0.01;
-    base_crit        += p -> talents.mind_melt * 0.03;
+
+	if ( p -> talents.improved_devouring_plague )
+	{
+	  may_crit		  = 1;
+	}
+	base_crit += p -> talents.mind_melt * 0.03;
 
     observer = &( p -> active_devouring_plague );
   }
@@ -954,13 +959,20 @@ struct devouring_plague_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
 
-	if ( ! sim -> P309 && p -> buffs.shadow_form )
+	if ( ! sim -> P309 )
 	{
-		tick_may_crit = true;
-		base_crit_bonus = 1.0;
+      tick_may_crit              = p -> buffs.shadow_form != 0;
+      base_crit_bonus_multiplier = 1.0 + ( p -> buffs.shadow_form != 0 );
 	}
-
+	if ( p -> talents.improved_devouring_plague )
+	{
+	  base_crit -= p -> talents.mind_melt * 0.03;
+	}
     priest_spell_t::execute(); 
+	if ( p -> talents.improved_devouring_plague )
+	{
+	  base_crit += p -> talents.mind_melt * 0.03;
+	}
     if( result_is_hit() ) 
     {
       push_misery( this );
@@ -985,7 +997,20 @@ struct devouring_plague_t : public priest_spell_t
     direct_dmg = 0;
     if( p -> talents.improved_devouring_plague )
     {
+	  int saved_result = result;
+	  result = RESULT_HIT;
       direct_dmg = calculate_tick_damage() * num_ticks * p -> talents.improved_devouring_plague * 0.05;
+	  result = saved_result;
+	  if ( result == RESULT_CRIT )
+	  {
+	    double saved_base_crit_bonus_multiplier = base_crit_bonus_multiplier;
+		if ( p -> buffs.shadow_form )
+		{
+		  base_crit_bonus_multiplier *= 0.5;
+		}
+		direct_dmg *= 1.0 + total_crit_bonus();
+		base_crit_bonus_multiplier = saved_base_crit_bonus_multiplier;
+	  }
     }
     return direct_dmg;
   }
