@@ -7,7 +7,7 @@
 patch=3.1.0
 rogue=Rogue_T8_23_05_43
 level=80
-talents=http://ptr.wowhead.com/?talent=f0xf0exZ0xZxbrbhGzdAzqc
+talents=http://ptr.wowhead.com/?talent=f0eb0exZ0xZxbrbhGzdAzqc
 actions=flask,type=endless_rage/food,type=fish_feast/apply_poison,main_hand=instant,off_hand=deadly
 actions+=/auto_attack/pool_energy,for_next=1
 actions+=/slice_and_dice,min_combo_points=4,snd<=3
