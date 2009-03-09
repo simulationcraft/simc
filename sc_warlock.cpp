@@ -660,7 +660,7 @@ struct felguard_pet_t : public warlock_pet_t
 
     damage_modifier = 1.05;
 
-    action_list_str = "cleave/wait";
+    action_list_str = "cleave";
   }
   virtual void init_base()
   {
@@ -727,7 +727,7 @@ struct felhunter_pet_t : public warlock_pet_t
 
     damage_modifier = 0.8;
 
-    action_list_str = "shadow_bite/wait";
+    action_list_str = "shadow_bite";
   }
   virtual void init_base()
   {
@@ -786,7 +786,7 @@ struct succubus_pet_t : public warlock_pet_t
 
     damage_modifier = 1.05;
 
-    action_list_str = "lash_of_pain/wait";
+    action_list_str = "lash_of_pain";
   }
   virtual void init_base()
   {
@@ -2066,14 +2066,20 @@ void warlock_spell_t::target_debuff( int dmg_type )
 
     if( p -> main_hand_weapon.buff == SPELL_STONE ) 
     {
-      target_multiplier *= 1.01 + p -> talents.master_conjuror * 0.01;
+      double bonus = 1.01;
+      if( sim -> patch.after( 3, 1, 0 ) && p -> talents.master_conjuror > 0 )
+        bonus = 1.00 + p -> talents.master_conjuror * 0.02;
+      target_multiplier *= bonus;
     }
   }
   else
   {
     if( p -> main_hand_weapon.buff == FIRE_STONE ) 
     {
-      target_multiplier *= 1.01 + p -> talents.master_conjuror * 0.01;
+      double bonus = 1.01;
+      if( sim -> patch.after( 3, 1, 0 ) && p -> talents.master_conjuror > 0 )
+        bonus = 1.00 + p -> talents.master_conjuror * 0.02;
+      target_multiplier *= bonus;
     }
   }
 }
@@ -3390,8 +3396,8 @@ struct immolate_t : public warlock_spell_t
     base_execute_time -= p -> talents.bane * 0.1;
     base_crit         += p -> talents.devastation * 0.05;
     base_crit         += p -> talents.backlash * 0.01;
-    direct_power_mod  += (1.0/3.0) * p -> talents.fire_and_brimstone * 0.01;
-    tick_power_mod    += (2.0/3.0) * p -> talents.fire_and_brimstone * 0.02 / num_ticks;
+    direct_power_mod  += p -> talents.fire_and_brimstone * 0.01;
+    tick_power_mod    += p -> talents.fire_and_brimstone * 0.02 / num_ticks;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
 
@@ -3843,7 +3849,8 @@ struct searing_pain_t : public warlock_spell_t
     base_multiplier *= 1.0 + p -> talents.emberstorm  * 0.03;
     base_crit       += p -> talents.devastation * 0.05;
     base_crit       += p -> talents.backlash * 0.01;
-    base_crit       += p -> talents.improved_searing_pain * 0.04;
+    base_crit       += p -> talents.improved_searing_pain * 0.03
+                    + ( ( p -> talents.improved_searing_pain ) ? 0.01 : 0 );
 
     base_crit_bonus_multiplier *= 1.0 + ( p -> talents.ruin * 0.20 +
                                           p -> glyphs.searing_pain * 0.20 );
@@ -4436,7 +4443,10 @@ struct fire_stone_t : public warlock_spell_t
 
     bonus_crit = (int) util_t::ability_rank( p -> level,  49,80,  42,74,  35,66,  28,0 );
 
-    bonus_crit = (int) ( bonus_crit * ( 1.0 + p -> talents.master_conjuror * 1.50 ) );
+    if( sim -> patch.before( 3, 1, 0 ) )
+      bonus_crit = (int) ( bonus_crit * ( 1.0 + p -> talents.master_conjuror * 0.15 ) );
+    else
+      bonus_crit = (int) ( bonus_crit * ( 1.0 + p -> talents.master_conjuror * 1.50 ) );
   }
 
   virtual void execute()
@@ -4620,7 +4630,15 @@ void warlock_t::init_base()
   attribute_base[ ATTR_INTELLECT ] = 130;
   attribute_base[ ATTR_SPIRIT    ] = 142;
 
-  attribute_multiplier_initial[ ATTR_STAMINA ] *= 1.0 + talents.demonic_embrace * 0.02;
+  if( sim -> patch.before( 3, 1, 0 ) )
+  {
+    attribute_multiplier_initial[ ATTR_STAMINA ] *= 1.0 + talents.demonic_embrace * 0.02;
+  }
+  else
+  {
+    attribute_multiplier_initial[ ATTR_STAMINA ] *= 1.0 + talents.demonic_embrace * 0.03
+                                                  + ( ( talents.demonic_embrace ) ? 0.01 : 0 );
+  }
 
   base_spell_crit = 0.0170;
   initial_spell_crit_per_intellect = rating_t::interpolate( level, 0.01/60.0, 0.01/80.0, 0.01/166.6 );

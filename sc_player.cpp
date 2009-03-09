@@ -1702,14 +1702,14 @@ struct wait_until_ready_t : public action_t
       
       if( a -> cooldown_ready > sim -> current_time )
       {
-	double delta_time = a -> cooldown_ready - sim -> current_time;
-	if( delta_time > trigger_gcd ) trigger_gcd = delta_time;
+	      double delta_time = a -> cooldown_ready - sim -> current_time;
+	      if( delta_time > trigger_gcd ) trigger_gcd = delta_time;
       }
 
       if( a -> duration_ready > sim -> current_time )
       {
-	double delta_time = a -> duration_ready - ( sim -> current_time + a -> execute_time() );
-	if( delta_time > trigger_gcd ) trigger_gcd = delta_time;
+	      double delta_time = a -> duration_ready - ( sim -> current_time + a -> execute_time() );
+	      if( delta_time > trigger_gcd ) trigger_gcd = delta_time;
       }
     }
 
