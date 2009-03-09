@@ -3,7 +3,7 @@
 patch=3.1.0
 druid=Druid_T8_00_55_16
 level=80
-talents=http://ptr.wowhead.com/?talent=0ZvG0cfrz0eR0huAkbAcz
+talents=http://ptr.wowhead.com/?talent=0ZEMMcfrz0eR0huAkbAczb
 actions=flask,type=endless_rage/food,type=blackened_dragonfin
 actions+=/cat_form
 actions+=/auto_attack
