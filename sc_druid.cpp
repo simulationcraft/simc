@@ -2373,8 +2373,8 @@ struct starfire_t : public druid_spell_t
 
     druid_t* p = player -> cast_druid();
  
-    if ( extend_moonfire && p -> glyphs.starfire )
-      if ( p -> active_moonfire -> added_ticks > 2 )
+    if( extend_moonfire && p -> glyphs.starfire )
+      if( p -> active_moonfire && p -> active_moonfire -> added_ticks > 2 )
         return false;
 
     if( eclipse_benefit )
