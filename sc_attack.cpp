@@ -194,11 +194,10 @@ int attack_t::build_table( double* chances,
   if( may_crit )
   {
     crit = total_crit();
-    if( sim -> target -> level == 83 )
+
+    if( delta_level > 2 )
     {
-      crit -= delta_level * 0.006;
-      if( delta_level > 2 )
-        crit -= 0.03;
+      crit -= 0.03 + delta_level * 0.006;
     }
     else
     {
