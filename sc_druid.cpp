@@ -451,6 +451,7 @@ static void trigger_omen_of_clarity( action_t* a )
 
   if( a -> sim -> roll( 3.5 / 60.0 ) )
   {
+    p -> aura_gain( "Omen of Clarity" );
     p -> _buffs.omen_of_clarity = 1;
     p -> procs_omen_of_clarity -> occur();
   }
@@ -929,6 +930,7 @@ void druid_attack_t::consume_resource()
     {
       p -> gains_omen_of_clarity -> add( amount );
       p -> _buffs.omen_of_clarity = 0;
+      p -> aura_loss( "Omen of Clarity" );
     }
   }
 }
@@ -2164,7 +2166,7 @@ struct cat_form_t : public druid_spell_t
     {
       w -> type = WEAPON_BEAST;
       w -> school = SCHOOL_PHYSICAL;
-      w -> damage = 55.0;
+      w -> damage = 54.8;
       w -> swing_time = 1.0;
 
       d -> melee_attack -> cancel(); // Force melee swing to restart if necessary
@@ -3021,7 +3023,9 @@ double druid_t::composite_attack_power()
     ap += level * talents.predatory_strikes * 0.5;
     weapon_ap *= 1 + util_t::talent_rank( talents.predatory_strikes, 3, 0.07, 0.14, 0.20);
   }
-
+  
+  if( _buffs.cat_form ) ap += 160;
+  
   ap += weapon_ap;
 
   return ap;
@@ -3194,6 +3198,7 @@ bool druid_t::parse_option( const std::string& name,
 {
   option_t options[] =
   {
+    // Talents
     { "balance_of_power",          OPT_INT,  &( talents.balance_of_power          ) },
     { "berserk",                   OPT_INT,  &( talents.berserk                   ) },
     { "brambles",                  OPT_INT,  &( talents.brambles                  ) },

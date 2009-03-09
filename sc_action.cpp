@@ -695,11 +695,12 @@ void action_t::refresh_duration()
 
 void action_t::extend_duration( int extra_ticks )
 {
-  if( sim -> debug ) report_t::log( sim, "%s extends duration of %s", player -> name(), name() );
 
   num_ticks += extra_ticks;
   added_ticks += extra_ticks;
   duration_ready += tick_time() * extra_ticks;
+
+  if( sim -> debug ) report_t::log( sim, "%s extends duration of %s, adding %d tick(s), totalling %d ticks", player -> name(), name(), extra_ticks, num_ticks );
 }
 
 // action_t::update_ready ====================================================
