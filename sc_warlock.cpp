@@ -3231,6 +3231,7 @@ struct unstable_affliction_t : public warlock_spell_t
     {
       base_crit_bonus_multiplier = 2;
       tick_may_crit = true;
+      base_crit += p -> talents.malediction * 0.03;
     }
 
     if( p -> glyphs.unstable_affliction )
