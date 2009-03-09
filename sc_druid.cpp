@@ -639,17 +639,17 @@ static void trigger_natures_grace( spell_t* s )
     {
       natures_grace_expiration_t( sim_t* sim, druid_t* p ) : event_t( sim, p )
       {
-	name = "Nature's Grace Expiration";
-	p -> aura_gain( "Nature's Grace" );
-	p -> _buffs.natures_grace = 0.20;
-	sim -> add_event( this, 3.0 );
+        name = "Nature's Grace Expiration";
+        p -> aura_gain( "Nature's Grace" );
+        p -> _buffs.natures_grace = 0.20;
+        sim -> add_event( this, 3.0 );
       }
       virtual void execute()
       {
-	druid_t* p = player -> cast_druid();
-	p -> _buffs.natures_grace       = 0;
-	p -> _expirations.natures_grace = 0;
-	p -> aura_loss( "Nature's Grace" );
+        druid_t* p = player -> cast_druid();
+        p -> _buffs.natures_grace       = 0;
+        p -> _expirations.natures_grace = 0;
+        p -> aura_loss( "Nature's Grace" );
       }
     };
   
@@ -923,7 +923,7 @@ void druid_attack_t::consume_resource()
   attack_t::consume_resource();
   if( p -> _buffs.omen_of_clarity )
   {
-    // Treat the savings like a mana gain.
+    // Treat the savings like a energy gain.
     double amount = attack_t::cost();
     if( amount > 0 )
     {
@@ -1337,6 +1337,8 @@ struct rip_t : public druid_attack_t
     druid_t* p = player -> cast_druid();
     tick_power_mod = p -> _buffs.combo_points * 0.01;
     base_td_init   = p -> combo_point_rank( combo_point_dmg );
+    if( p -> idols.worship)
+      base_td_init += p -> _buffs.combo_points * 21;
     druid_attack_t::player_buff();
   }
 };
@@ -1479,6 +1481,7 @@ struct shred_t : public druid_attack_t
 
 struct berserk_t : public druid_attack_t
 {
+  int under_tigers_fury;
    berserk_t( player_t* player, const std::string& options_str ) : 
     druid_attack_t( "berserk", player )
   {
@@ -1487,6 +1490,7 @@ struct berserk_t : public druid_attack_t
 
     option_t options[] =
     {
+      { "tigers_fury", OPT_INT, &under_tigers_fury },
       { NULL }
     };
     
@@ -1519,6 +1523,19 @@ struct berserk_t : public druid_attack_t
     update_ready();
     new ( sim ) expiration_t( sim, p );
   }
+  
+  virtual bool ready()
+  {
+    if( ! druid_attack_t::ready() )
+      return false;
+
+    druid_t* p = player -> cast_druid();
+
+    if( under_tigers_fury && ! p -> _buffs.tigers_fury )
+      return false;
+
+    return true;
+  }
 };
 
 // Tigers Fury =============================================================
@@ -1541,7 +1558,13 @@ struct tigers_fury_t : public druid_attack_t
   virtual void execute()
   {
     if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
-
+    
+    druid_t* p = player -> cast_druid();
+    
+    if( p -> talents.king_of_the_jungle )
+    {
+      p -> resource_gain( RESOURCE_ENERGY, p -> talents.king_of_the_jungle * 20, p -> gains_tigers_fury );
+    }
     struct expiration_t : public event_t
     {
       expiration_t( sim_t* sim, player_t* player ): event_t( sim, player )
@@ -1558,10 +1581,6 @@ struct tigers_fury_t : public druid_attack_t
         p -> aura_loss( "Tigers Fury" );
         p -> _buffs.tigers_fury = 0;
         
-        if( p -> talents.king_of_the_jungle )
-        {
-          p -> resource_gain( RESOURCE_ENERGY, p -> talents.king_of_the_jungle * 20, p -> gains_tigers_fury );
-        }
       }
     };
 
