@@ -387,7 +387,7 @@ double action_t::total_crit_bonus()
 
   if( sim -> debug ) 
   {
-    report_t::log( sim, "%s crit_bonus for %s: cb=%.0f b_cb=%.2f b_cm=%.2f p_cm=%.2f t_cm=%.2f b_cbm=%.2f p_cbm=%.2f t_cbm=%.2f", 
+    report_t::log( sim, "%s crit_bonus for %s: cb=%.2f b_cb=%.2f b_cm=%.2f p_cm=%.2f t_cm=%.2f b_cbm=%.2f p_cbm=%.2f t_cbm=%.2f", 
                    player -> name(), name(), crit_bonus, base_crit_bonus,
                    base_crit_multiplier,       player_crit_multiplier,       target_crit_multiplier,
                    base_crit_bonus_multiplier, player_crit_bonus_multiplier, target_crit_bonus_multiplier );
