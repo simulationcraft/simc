@@ -1444,6 +1444,12 @@ struct shred_t : public druid_attack_t
     adds_combo_points  = true;
     may_crit           = true;
     base_cost         -= 9 * p -> talents.shredding_attacks;
+    
+    if( p -> idols.ravenous_beast )
+    {
+      base_dd_min += 203;
+      base_dd_max += 203;
+    }
   }
 
   virtual void execute()
@@ -1471,6 +1477,7 @@ struct shred_t : public druid_attack_t
     {
       player_multiplier *= 1 + 0.04 * p -> talents.rend_and_tear;
     } 
+
   }
 
   virtual bool ready()
