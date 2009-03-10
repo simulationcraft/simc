@@ -1447,7 +1447,7 @@ struct eviscerate_t : public rogue_attack_t
     {
       double range = 0.02 * p -> _buffs.combo_points;
 
-      direct_power_mod += range * ( sim -> rng -> real() * 2.0 - 1.0 );
+      direct_power_mod += sim -> rng -> range( -range, +range );
     }
 
     rogue_attack_t::execute();
@@ -3079,8 +3079,8 @@ void rogue_t::combat_begin()
 	  add_combo_point( p );
 	  p -> procs_honor_among_thieves -> occur();
 	  // Next proc comes in +/- 50% random range centered on 'honor_among_thieves_interval'
-	  double interval = p -> honor_among_thieves_interval;
-	  interval += ( sim -> rng -> real() - 0.5 ) * interval;
+	  double interval = sim -> rng -> range( 0.5 * p -> honor_among_thieves_interval,
+						 1.5 * p -> honor_among_thieves_interval );
 	  new ( sim ) honor_among_thieves_proc_t( sim, p, interval );
 	}
       };

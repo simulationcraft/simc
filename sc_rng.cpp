@@ -231,6 +231,16 @@ int rng_t::roll( double chance )
   return ( real() < chance ) ? 1 : 0;
 }
 
+// rng_t::range =============================================================
+
+double rng_t::range( double min,
+		     double max )
+{
+  assert( min <= max );
+
+  return min + real() * ( max - min );
+}
+
 // ==========================================================================
 // Choosing the RNG package.........
 // ==========================================================================

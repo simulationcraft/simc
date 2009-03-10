@@ -450,9 +450,7 @@ double action_t::calculate_direct_damage()
     }
     else
     {
-      double range = base_dd_max - base_dd_min;
-
-      base_direct_dmg = base_dd_min + range * sim -> rng -> real();
+      base_direct_dmg = sim -> rng -> range( base_dd_min, base_dd_max );
     }
   }
 

@@ -2726,7 +2726,7 @@ struct mana_gem_t : public action_t
 
     if( sim -> log ) report_t::log( sim, "%s uses Mana Gem", p -> name() );
 
-    double gain = min + ( max - min ) * sim -> rng -> real();
+    double gain = sim -> rng -> range( min, max );
 
     if( p -> glyphs.mana_gem ) gain *= 1.40;
 

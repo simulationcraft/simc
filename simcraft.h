@@ -93,6 +93,7 @@ struct rng_t
   static rng_t* init( int sfmt );
   virtual int roll( double chance );
   virtual double real();
+  virtual double range( double min, double max );
   virtual ~rng_t() {}
 };
 

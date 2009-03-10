@@ -979,8 +979,7 @@ double druid_attack_t::calculate_direct_damage()
     }
     else
     {
-      double delta = base_dd_max - base_dd_min;
-      base_direct_dmg = base_dd_min + delta * sim -> rng -> real();
+      base_direct_dmg = sim -> rng -> range( base_dd_min, base_dd_max );
     }
 
     base_direct_dmg += p -> _buffs.tigers_fury;

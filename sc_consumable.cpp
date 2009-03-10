@@ -431,9 +431,7 @@ struct mana_potion_t : public action_t
   virtual void execute()
   {
     if( sim -> log ) report_t::log( sim, "%s uses Mana potion", player -> name() );
-    int delta = max - min;
-    // FIXME! I hope the gain between min and max are distributed uniformly
-    double gain   = min + delta * player -> sim -> rng -> real();
+    double gain = sim -> rng -> range( min, max );
     player -> resource_gain( RESOURCE_MANA, gain, player -> gains.mana_potion );
     player -> share_cooldown( cooldown_group, cooldown );
     used = sim -> potion_sickness;
