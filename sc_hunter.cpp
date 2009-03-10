@@ -2605,8 +2605,11 @@ struct kill_shot_t : public hunter_attack_t
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );
 
+    // kill shot actually gets 2 x ap-modified damage + 40% ap, which is the same as
+    // 2 x (weapon + 2.8*ap*2/14)
     normalize_weapon_speed = true;
     weapon_multiplier      = 2.0;
+    direct_power_mod       = 2.0/14;
     cooldown               = 15;
     if( p -> sim -> patch.before(3, 1, 0) ) trigger_gcd = 0.0;
 
