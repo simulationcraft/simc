@@ -1,12 +1,19 @@
 #!simcraft max_time=300 optimal_raid=1
 
-hunter=Hunter_T7_13_51_07
+hunter=Hunter_T7_15_51_05
 level=80
-talents=http://www.wowhead.com/?talent=ctbM0hZ0eVfRhzMgoxhiox00b
+talents=http://www.wowhead.com/?talent=ctbMzLZ0eVfRhzMgoxhiox
 actions=flask,type=endless_rage/food,type=fish_feast/summon_pet,cat/hunters_mark/trueshot_aura
 actions+=/auto_shot/aspect/serpent_sting/rapid_fire/chimera_shot/kill_shot/readiness/arcane_shot/aimed_shot/steady_shot
 Melee_T7_Base_Gear.simcraft
-gear_intellect=300
+gear_agility=1313
+gear_stamina=1032
+gear_intellect=436
+gear_attack_power=2239
+gear_crit_rating=728
+gear_hit_rating=263
+gear_armor_penetration_rating=105
+gear_haste_rating=295
 glyph_improved_aspect_of_the_hawk=1
 glyph_serpent_sting=1
 glyph_steady_shot=1

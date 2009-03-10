@@ -6,7 +6,14 @@ talents=http://www.wowhead.com/?talent=cxoZ0eVoZe00i0cIhxdAhck
 actions=flask,type=endless_rage/food,type=fish_feast/summon_pet,cat/hunters_mark
 actions+=/auto_shot/aspect/rapid_fire/explosive_shot/kill_shot/serpent_sting/multi_shot/steady_shot
 Melee_T7_Base_Gear.simcraft
-gear_intellect=300
+gear_agility=1417
+gear_stamina=1076
+gear_intellect=349
+gear_attack_power=2177
+gear_crit_rating=665
+gear_hit_rating=276
+gear_armor_penetration_rating=68
+gear_haste_rating=290
 glyph_improved_aspect_of_the_hawk=1
 glyph_serpent_sting=1
 glyph_steady_shot=1

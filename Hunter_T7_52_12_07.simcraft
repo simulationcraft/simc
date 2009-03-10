@@ -7,7 +7,14 @@ actions=flask,type=endless_rage/food,type=fish_feast/summon_pet,cat/hunters_mark
 actions+=/auto_shot/kill_command,sync=bestial_wrath/bestial_wrath/aspect/rapid_fire
 actions+=/kill_shot/arcane_shot/serpent_sting/steady_shot
 Melee_T7_Base_Gear.simcraft
-gear_intellect=300
+gear_agility=1149
+gear_stamina=1043
+gear_intellect=427
+gear_attack_power=2637
+gear_crit_rating=662
+gear_hit_rating=263
+gear_armor_penetration_rating=68
+gear_haste_rating=301
 glyph_bestial_wrath=1
 glyph_steady_shot=1
 glyph_improved_aspect_of_the_hawk=1
