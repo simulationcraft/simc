@@ -261,6 +261,13 @@ struct druid_t : public player_t
     double cp_list[] = { cp1, cp2, cp3, cp4, cp5 };
     return combo_point_rank( cp_list );
   }
+  void reset_gcd()
+  {
+    for( action_t* a=action_list; a; a = a -> next )
+    {
+      if( a -> trigger_gcd != 0 ) a -> trigger_gcd = base_gcd;
+    }
+  }
 };
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
@@ -2191,6 +2198,7 @@ struct cat_form_t : public druid_spell_t
 
     d -> _buffs.cat_form = 1;
     d -> base_gcd = 1.0;
+    d -> reset_gcd();
 
     if( d -> talents.leader_of_the_pack )
     {
