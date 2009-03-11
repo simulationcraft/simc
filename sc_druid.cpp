@@ -2192,8 +2192,8 @@ struct cat_form_t : public druid_spell_t
       w -> school = SCHOOL_PHYSICAL;
       w -> damage = 54.8;
       w -> swing_time = 1.0;
-
-      d -> melee_attack -> cancel(); // Force melee swing to restart if necessary
+      if( d -> melee_attack )
+        d -> melee_attack -> cancel(); // Force melee swing to restart if necessary
     }
 
     d -> _buffs.cat_form = 1;
