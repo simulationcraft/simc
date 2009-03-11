@@ -22,5 +22,5 @@ gear_expertise_rating=200
 glyph_envenom=1
 glyph_hunger_for_blood=1
 glyph_mutilate=1
-main_hand=dagger,dps=156,speed=1.4,enchant=berserking
+main_hand=dagger,dps=171,speed=1.8,enchant=berserking
 off_hand=dagger,dps=156,speed=1.4,enchant=berserking
