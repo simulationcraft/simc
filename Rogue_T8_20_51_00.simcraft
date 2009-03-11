@@ -9,11 +9,10 @@ level=80
 talents=http://ptr.wowhead.com/?talent=f0eb0ebZMgVo0cxqru0xRt
 actions=flask,type=endless_rage/food,type=fish_feast/apply_poison,main_hand=instant,off_hand=deadly
 actions+=/auto_attack
-actions+=/pool_energy,energy<=60,snd<=5/slice_and_dice,min_combo_points=3,snd<=2
+actions+=/slice_and_dice,min_combo_points=3,snd<=2
 actions+=/tricks_of_the_trade
 actions+=/killing_spree,energy<=30/blade_flurry
-actions+=/envenom,min_combo_points=5,snd>=6,energy>=60
-actions+=/envenom,min_combo_points=4,snd>=4,energy>=40
+actions+=/envenom,min_combo_points=5,snd>=4,energy>=60
 actions+=/sinister_strike,max_combo_points=4
 actions+=/adrenaline_rush
 Melee_T7_Base_Gear.simcraft
