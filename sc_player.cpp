@@ -11,7 +11,9 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 
 static void trigger_judgement_of_wisdom( action_t* a )
 {
-  if( ! a -> sim -> target -> debuffs.judgement_of_wisdom ) return;
+  sim_t* sim = a -> sim;
+  
+  if( ! sim -> target -> debuffs.judgement_of_wisdom ) return;
 
   player_t* p = a -> player;
 
@@ -20,17 +22,30 @@ static void trigger_judgement_of_wisdom( action_t* a )
   if( base_mana <= 0 )
     return;
 
-  if( a -> sim -> jow_ppm && a -> weapon ) {
-    double proc_chance = a -> weapon -> proc_chance_on_swing( a -> sim -> jow_ppm,
-                                                              a -> execute_time() );
-    if( a -> sim -> debug )
-      report_t::log( a -> sim, "JoW ppm %f, swing time %f, chance %f\n",
-                     a -> sim -> jow_ppm, a -> weapon -> swing_time,
-                     proc_chance );
-    if( ! a -> sim -> roll( proc_chance ) )
-      return;
+  double proc_chance = sim -> jow_chance;
+
+  if( sim -> jow_ppm )
+  { 
+    if( a -> weapon ) 
+    {
+      proc_chance = a -> weapon -> proc_chance_on_swing( sim -> jow_ppm,a -> time_to_execute );
+
+      if( sim -> debug )
+	report_t::log( sim, "JoW ppm %f, swing time %f, chance %f\n",
+		       sim -> jow_ppm, a -> weapon -> swing_time,
+		       proc_chance );
+    }
+    else
+    {
+      double time_to_execute = a -> channeled ? a -> time_to_tick : a -> time_to_execute;
+
+      if( time_to_execute == 0 ) time_to_execute = p -> base_gcd;
+
+      proc_chance = sim -> jow_ppm * time_to_execute / 60.0;
+    }
   }
-  else if( ! a -> sim -> roll( a -> sim -> jow_chance ) )
+
+  if( ! sim -> roll( proc_chance ) )
     return;
 
   p -> procs.judgement_of_wisdom -> occur();

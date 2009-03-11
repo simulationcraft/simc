@@ -1268,6 +1268,7 @@ struct action_t
   event_t* tick_event;
   double time_to_execute, time_to_tick;
   int rank_index, bloodlust_active;
+  double min_current_time, max_current_time;
   double min_time_to_die, max_time_to_die;
   double min_health_percentage, max_health_percentage;
   std::string sync_str;
