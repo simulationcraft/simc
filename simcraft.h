@@ -276,7 +276,10 @@ struct sim_t
   player_t*   player_list;
   player_t*   active_player;
   target_t*   target;
-  double      lag, pet_lag, channel_penalty, gcd_penalty, reaction_time, regen_periodicity;
+  double      queue_lag, queue_lag_range;
+  double      gcd_lag, gcd_lag_range;
+  double      channel_lag, channel_lag_range;
+  double      reaction_time, regen_periodicity;
   double      current_time, max_time;
   int         events_remaining, max_events_remaining;
   int         events_processed, total_events_processed;

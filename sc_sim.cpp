@@ -13,8 +13,11 @@
 
 sim_t::sim_t( sim_t* p ) : 
   parent(p), P309(true), rng(0), free_list(0), player_list(0), active_player(0),
-  lag(0.150), pet_lag(0), channel_penalty(0.1), gcd_penalty(0.1), reaction_time(0.5), 
-  regen_periodicity(1.0), current_time(0), max_time(0),
+  queue_lag(0.075), queue_lag_range(0), 
+  gcd_lag(0.150), gcd_lag_range(0), 
+  channel_lag(0.250), channel_lag_range(0),
+  reaction_time(0.5), regen_periodicity(1.0), 
+  current_time(0), max_time(0),
   events_remaining(0), max_events_remaining(0), 
   events_processed(0), total_events_processed(0),
   seed(0), id(0), iterations(1000), current_iteration(0), threads(0),
@@ -299,7 +302,9 @@ bool sim_t::init()
 
   total_seconds = 0;
 
-  if( pet_lag == 0 ) pet_lag = lag;
+  if(   queue_lag_range == 0 )   queue_lag_range =   queue_lag * 0.5;
+  if(     gcd_lag_range == 0 )     gcd_lag_range =     gcd_lag * 0.5;
+  if( channel_lag_range == 0 ) channel_lag_range = channel_lag * 0.5;
 
   int party_index=0;
   for( unsigned i=0; i < party_encoding.size(); i++ )
@@ -689,10 +694,9 @@ bool sim_t::parse_option( const std::string& name,
   option_t options[] =
   {
     { "average_dmg",                      OPT_INT,    &( average_dmg                              ) },
-    { "channel_penalty",                  OPT_FLT,    &( channel_penalty                          ) },
     { "debug",                            OPT_INT,    &( debug                                    ) },
-    { "gcd_penalty",                      OPT_FLT,    &( gcd_penalty                              ) },
-    { "html_file",                        OPT_STRING, &( html_file_str                            ) },
+    { "channel_lag",                      OPT_FLT,    &( channel_lag                              ) },
+    { "channel_lag_range",                OPT_FLT,    &( channel_lag_range                        ) },
     { "default_strength",                 OPT_INT,    &( gear_default.attribute[ ATTR_STRENGTH  ] ) },
     { "default_agility",                  OPT_INT,    &( gear_default.attribute[ ATTR_AGILITY   ] ) },
     { "default_stamina",                  OPT_INT,    &( gear_default.attribute[ ATTR_STAMINA   ] ) },
@@ -717,6 +721,8 @@ bool sim_t::parse_option( const std::string& name,
     { "delta_hit_rating",                 OPT_INT,    &( gear_delta.hit_rating                    ) },
     { "delta_crit_rating",                OPT_INT,    &( gear_delta.crit_rating                   ) },
     { "delta_haste_rating",               OPT_INT,    &( gear_delta.haste_rating                  ) },
+    { "gcd_lag",                          OPT_FLT,    &( gcd_lag                                  ) },
+    { "gcd_lag_range",                    OPT_FLT,    &( gcd_lag_range                            ) },
     { "html",                             OPT_STRING, &( html_file_str                            ) },
     { "infinite_energy",                  OPT_INT,    &( infinite_resource[ RESOURCE_ENERGY ]     ) },
     { "infinite_focus",                   OPT_INT,    &( infinite_resource[ RESOURCE_FOCUS  ]     ) },
@@ -727,8 +733,9 @@ bool sim_t::parse_option( const std::string& name,
     { "iterations",                       OPT_INT,    &( iterations                               ) },
     { "jow_chance",                       OPT_FLT,    &( jow_chance                               ) },
     { "jow_ppm",                          OPT_FLT,    &( jow_ppm                                  ) },
-    { "lag",                              OPT_FLT,    &( lag                                      ) },
     { "merge_ignite",                     OPT_INT,    &( merge_ignite                             ) },
+    { "queue_lag",                        OPT_FLT,    &( queue_lag                                ) },
+    { "queue_lag_range",                  OPT_FLT,    &( queue_lag_range                          ) },
     { "reaction_time",                    OPT_FLT,    &( reaction_time                            ) },
     { "regen_periodicity",                OPT_FLT,    &( regen_periodicity                        ) },
     { "log",                              OPT_INT,    &( log                                      ) },
@@ -736,7 +743,6 @@ bool sim_t::parse_option( const std::string& name,
     { "threads",                          OPT_INT,    &( threads                                  ) },
     { "optimal_raid",                     OPT_INT,    &( optimal_raid                             ) },
     { "party",                            OPT_LIST,   &( party_encoding                           ) },
-    { "pet_lag",                          OPT_FLT,    &( pet_lag                                  ) },
     { "potion_sickness",                  OPT_INT,    &( potion_sickness                          ) },
     { "seed",                             OPT_INT,    &( seed                                     ) },
     { "sfmt",                             OPT_INT,    &( sfmt                                     ) },

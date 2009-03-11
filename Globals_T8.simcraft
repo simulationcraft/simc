@@ -14,12 +14,13 @@ log=0
 # Setting debug to a non-zero value will force the simulator to execute just one iteration
 debug=0
 
-# Lag is a random value centered on the value below with a range of +/- 0.05 seconds
-lag=0.050
-
-# Spells cannot be queue after channeled spells, nor when waiting for the GCD
-channel_penalty=0.200
-gcd_penalty=0.100
+# Lag is a random value centered on the value below with a range of +/- 50%
+# The type of lag is dependent upon the previous action and whether or not the player is
+# able to take advantage of the spell queuing system, has to time a multi-tap on GCD, or
+# has to wait for a channel to finish.
+queue_lag=0.075
+gcd_lag=0.150
+channel_lag=0.250
 
 # Boss Level
 target_level=83

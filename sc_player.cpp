@@ -1031,30 +1031,25 @@ void player_t::schedule_ready( double delta_time,
   {
     double lag = 0;
 
-    if( type == PLAYER_GUARDIAN )
+    if( last_foreground_action )
     {
-      lag = 0;
-    }
-    else if( type == PLAYER_PET )
-    {
-      lag = sim -> pet_lag;
-    }
-    else
-    {
-      lag = sim -> lag;
-
-      if( last_foreground_action && last_foreground_action -> channeled ) 
+      if( last_foreground_action -> channeled ) 
       {
-	lag += sim -> channel_penalty;
+	lag = sim -> rng -> range( sim -> channel_lag - sim -> channel_lag_range,
+				   sim -> channel_lag + sim -> channel_lag_range );
       }
-
-      if( gcd_adjust > 0 ) 
+      else if( gcd_adjust > 0 ) 
       {
-	lag += sim -> gcd_penalty;
+	lag = sim -> rng -> range( sim -> gcd_lag - sim -> gcd_lag_range,
+				   sim -> gcd_lag + sim -> gcd_lag_range );
+      }
+      else // queued cast
+      {
+	lag = sim -> rng -> range( sim -> queue_lag - sim -> queue_lag_range,
+				   sim -> queue_lag + sim -> queue_lag_range );
       }
     }
 
-    if( lag > 0 ) lag += ( sim -> rng -> real() - 0.5 ) * 0.1;
     if( lag < 0 ) lag = 0;
 
     delta_time += lag;

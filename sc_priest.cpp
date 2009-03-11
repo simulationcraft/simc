@@ -1236,7 +1236,7 @@ struct shadow_word_death_t : public priest_spell_t
       if( ! p -> active_mind_blast )
         return false;
 
-      if( ( p -> active_mind_blast -> cooldown_ready - sim -> current_time ) > ( haste() * 1.5 + sim -> lag + mb_wait ) )
+      if( ( p -> active_mind_blast -> cooldown_ready - sim -> current_time ) > ( haste() * 1.5 + sim -> gcd_lag + mb_wait ) )
         return false;
     }
 
