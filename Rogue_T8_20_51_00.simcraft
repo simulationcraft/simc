@@ -10,6 +10,7 @@ talents=http://ptr.wowhead.com/?talent=f0eb0ebZMgVo0cxqru0xRt
 actions=flask,type=endless_rage/food,type=fish_feast/apply_poison,main_hand=instant,off_hand=deadly
 actions+=/auto_attack
 actions+=/slice_and_dice,min_combo_points=3,snd<=2
+actions+=/slice_and_dice,min_combo_points=1,snd<=0.1
 actions+=/tricks_of_the_trade
 actions+=/killing_spree,energy<=30/blade_flurry
 actions+=/envenom,min_combo_points=5,snd>=4,energy>=60
