@@ -1266,7 +1266,9 @@ struct envenom_t : public rogue_attack_t
       { NULL }
     };
     parse_options( options, options_str );
-      
+
+    weapon = &( p -> main_hand_weapon );
+    weapon_multiplier = 0;      
     requires_combo_points = true;
     base_cost = 35;
 
