@@ -299,8 +299,9 @@ struct rogue_attack_t : public attack_t
     min_env_expire(0), max_env_expire(0)
   {
     rogue_t* p = player -> cast_rogue();
-    base_crit += p -> talents.malice * 0.01;
-    base_hit  += p -> talents.precision * 0.01;
+    base_crit            += p -> talents.malice * 0.01;
+    base_hit             += p -> talents.precision * 0.01;
+    base_crit_multiplier *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
     may_glance = false;
   }
 
@@ -1098,7 +1099,6 @@ struct ambush_t : public rogue_attack_t
     base_multiplier       *= 1.0 + ( p -> talents.find_weakness * 0.02 +
                                      p -> talents.opportunity   * 0.10 );
     base_crit                  += p -> talents.improved_ambush * 0.25;
-    base_crit_multiplier       *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
   }
 
@@ -1174,9 +1174,8 @@ struct backstab_t : public rogue_attack_t
 			       p -> gear.tier6_4pc           * 0.06 );
 
     base_crit += ( p -> talents.puncturing_wounds * 0.10 +
-		   p -> talents.turn_the_tables   * 0.02 );
+                   p -> talents.turn_the_tables   * 0.02 );
 
-    base_crit_multiplier       *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
   }
 
@@ -1275,7 +1274,6 @@ struct envenom_t : public rogue_attack_t
     base_multiplier *= 1.0 + ( p -> talents.find_weakness * 0.02 + 
                                util_t::talent_rank( p -> talents.vile_poisons, 3, 0.07, 0.14, 0.20 ) );
 
-    base_crit_multiplier *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
 
     if( p -> talents.surprise_attacks ) may_dodge = false;
 
@@ -1414,8 +1412,6 @@ struct eviscerate_t : public rogue_attack_t
     base_multiplier *= 1.0 + ( p -> talents.aggression    * 0.03 +
                                p -> talents.find_weakness * 0.02 +
                                util_t::talent_rank( p -> talents.improved_eviscerate, 3, 0.07, 0.14, 0.20 ) );
-
-    base_crit_multiplier *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
 
     if( p -> glyphs.eviscerate ) base_crit += 0.10;
 
@@ -1616,7 +1612,6 @@ struct ghostly_strike_t : public rogue_attack_t
     weapon_multiplier          *= 1.25 + ( p -> glyphs.ghostly_strike ? 0.4 : 0.0 );
     base_multiplier            *= 1.0 + p -> talents.find_weakness * 0.02;
     base_crit                  += p -> talents.turn_the_tables * 0.02;
-    base_crit_multiplier       *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
   }
 
@@ -1655,7 +1650,6 @@ struct hemorrhage_t : public rogue_attack_t
                                           p -> talents.surprise_attacks * 0.10 +
                                           p -> gear.tier6_4pc           * 0.06 );
     base_crit                  += p -> talents.turn_the_tables * 0.02;
-    base_crit_multiplier       *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
 
     damage_adder = util_t::ability_rank( p -> level,  75.0,80,  42.0,70,  29.0,0 );
@@ -1831,7 +1825,6 @@ struct killing_spree_t : public rogue_attack_t
     base_tick_time  = 0.5;
     base_cost       = 0;
     base_multiplier *= 1.0 + p -> talents.find_weakness * 0.02;
-    base_crit_multiplier       *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
 
     if( p -> glyphs.killing_spree ) cooldown -= 45;
@@ -1936,9 +1929,8 @@ struct mutilate_t : public rogue_attack_t
                                 p -> gear.tier6_4pc        * 0.06 );
 
     base_crit += ( p -> talents.puncturing_wounds * 0.05 +
-		   p -> talents.turn_the_tables   * 0.02 );
+                   p -> talents.turn_the_tables   * 0.02 );
 
-    base_crit_multiplier       *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
 
     if( p -> glyphs.mutilate ) base_cost -= 5;
@@ -2052,8 +2044,6 @@ struct rupture_t : public rogue_attack_t
                                     p -> talents.serrated_blades * 0.10 +
                                     p -> gear.tier7_2pc          * 0.10 );
 
-    base_crit_multiplier *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
-
     if( p -> talents.surprise_attacks ) may_dodge = false;
 
     static double dmg_79[] = { 145, 163, 181, 199, 217 };
@@ -2136,7 +2126,6 @@ struct shiv_t : public rogue_attack_t
     base_multiplier  *= 1.0 + ( p -> talents.find_weakness    * 0.02 +
                                 p -> talents.surprise_attacks * 0.10 );
     base_crit                  += p -> talents.turn_the_tables * 0.02;
-    base_crit_multiplier       *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
 
     may_crit = sim -> P309;
@@ -2202,8 +2191,6 @@ struct sinister_strike_t : public rogue_attack_t
                                p -> gear.tier6_4pc           * 0.06 );
 
     base_crit += p -> talents.turn_the_tables * 0.02;
-
-    base_crit_multiplier       *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
   }
 
