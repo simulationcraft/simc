@@ -2198,7 +2198,7 @@ struct sinister_strike_t : public rogue_attack_t
   {
     rogue_t* p = player -> cast_rogue();
     rogue_attack_t::execute();
-    if( result_is_hit() )
+    if( result == RESULT_CRIT )
     {
       if( p -> glyphs.sinister_strike && sim -> roll( 0.50 ) )
       {
