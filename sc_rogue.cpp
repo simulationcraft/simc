@@ -1926,9 +1926,11 @@ struct mutilate_t : public rogue_attack_t
     };
     init_rank( ranks );
 
+    requires_weapon        = WEAPON_DAGGER;
+    weapon                 = &( p -> main_hand_weapon );
     adds_combo_points      = true;
     normalize_weapon_speed = true;
-
+    
     base_multiplier  *= 1.0 + ( p -> talents.find_weakness * 0.02 +
                                 p -> talents.opportunity   * 0.10 +
                                 p -> gear.tier6_4pc        * 0.06 );
@@ -1951,11 +1953,8 @@ struct mutilate_t : public rogue_attack_t
 
     if( result_is_hit() )
     {
-      if( player -> off_hand_weapon.type != WEAPON_NONE )
-      {
-        weapon = &( player -> off_hand_weapon );
-        rogue_attack_t::execute();
-      }
+      weapon = &( player -> off_hand_weapon );
+      rogue_attack_t::execute();
     }
 
     player -> action_finish( this );
@@ -1971,6 +1970,15 @@ struct mutilate_t : public rogue_attack_t
   }
 
   virtual void consume_resource() { }
+  
+  virtual bool ready() 
+  {
+    // Mutilate NEEDS a dagger in the off-hand!
+    if( player -> off_hand_weapon.type != WEAPON_DAGGER )
+      return false;
+      
+    return rogue_attack_t::ready();    
+  }
 };
 
 // Premeditation =============================================================
