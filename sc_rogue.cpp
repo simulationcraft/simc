@@ -1726,17 +1726,17 @@ struct hunger_for_blood_t : public rogue_attack_t
     };
     parse_options( options, options_str );
 
-    base_cost = 30;
+    base_cost = ( sim -> P309 ) ? 30.0 : 15.0;
   }
 
   virtual void execute()
   {
     struct expiration_t : public event_t
     {
-      expiration_t( sim_t* sim, rogue_t* p ) : event_t( sim, p )
+      expiration_t( sim_t* sim, rogue_t* p, double duration ) : event_t( sim, p )
       {
         name = "Hunger For Blood Expiration";
-        sim -> add_event( this, 30.0 );
+        sim -> add_event( this, duration );
       }
       virtual void execute()
       {
@@ -1748,6 +1748,8 @@ struct hunger_for_blood_t : public rogue_attack_t
     };
 
     rogue_t* p = player -> cast_rogue();
+
+    double hfb_duration = ( sim -> P309 ) ? 30.0 : 60.0;
 
     if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
 
@@ -1770,11 +1772,11 @@ struct hunger_for_blood_t : public rogue_attack_t
 
     if( e )
     {
-      e -> reschedule( 30.0 );
+      e -> reschedule( hfb_duration );
     }
     else
     {
-      e = new ( sim ) expiration_t( sim, p );
+      e = new ( sim ) expiration_t( sim, p, hfb_duration );
     }
   }
 
