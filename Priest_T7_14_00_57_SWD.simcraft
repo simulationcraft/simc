@@ -3,7 +3,7 @@
 priest=Priest_T7_14_00_57_SWD
 level=80
 talents=http://www.wowhead.com/?talent=bVcbzhZZG0fVRfzfiqfzAo
-actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/inner_fire/shadow_form/mana_potion,trigger=4300/shadow_fiend,trigger=6000/dispersion
+actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/inner_fire/shadow_form/mana_potion/shadow_fiend,trigger=6000/dispersion
 actions+=/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/shadow_word_death,mb_wait=0,mb_priority=0/mind_flay
 Caster_T7_Base_Gear.simcraft
 glyph_shadow_word_pain=1

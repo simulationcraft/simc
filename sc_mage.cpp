@@ -66,6 +66,7 @@ struct mage_t : public player_t
   uptime_t* uptimes_arcane_blast[ 4 ];
   uptime_t* uptimes_fingers_of_frost;
   uptime_t* uptimes_focus_magic_feedback;
+  uptime_t* uptimes_icy_veins;
   uptime_t* uptimes_water_elemental;
 
   // Options
@@ -186,6 +187,7 @@ struct mage_t : public player_t
     uptimes_arcane_blast[ 2 ]    = get_uptime( "arcane_blast_2" );
     uptimes_arcane_blast[ 3 ]    = get_uptime( "arcane_blast_3" );
     uptimes_fingers_of_frost     = get_uptime( "fingers_of_frost" );
+    uptimes_icy_veins            = get_uptime( "icy_veins" );
     uptimes_water_elemental      = get_uptime( "water_elemental" );
     uptimes_focus_magic_feedback = get_uptime( "focus_magic_feedback" );
   }
@@ -1037,6 +1039,7 @@ double mage_spell_t::haste()
   {
     h *= 1.0 / ( 1.0 + p -> talents.netherwind_presence * 0.02 );
   }
+  p -> uptimes_icy_veins -> update( p -> _buffs.icy_veins != 0 );
   return h;
 }
 

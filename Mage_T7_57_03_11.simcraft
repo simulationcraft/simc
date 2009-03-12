@@ -6,7 +6,7 @@ talents=http://www.wowhead.com/?talent=of0Vcu0IzxGuMxedcZbGc0o
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/arcane_brilliance/mage_armor/focus_magic
 actions+=/mana_gem,trigger=3500
 actions+=/mirror_image/arcane_power/icy_veins/presence_of_mind,arcane_blast/arcane_blast,max=3/arcane_missiles,barrage=1/arcane_barrage
-actions+=/evocation/mana_potion,trigger=4300
+actions+=/evocation/mana_potion
 Caster_T7_Base_Gear.simcraft
 enchant_hit_rating=-75
 enchant_crit_rating=+75

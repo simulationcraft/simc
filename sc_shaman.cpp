@@ -2442,8 +2442,10 @@ struct mana_tide_totem_t : public shaman_spell_t
 
 struct mana_spring_totem_t : public shaman_spell_t
 {
+  double regen;
+
   mana_spring_totem_t( player_t* player, const std::string& options_str ) : 
-    shaman_spell_t( "mana_spring_totem", player, SCHOOL_NATURE, TREE_RESTORATION )
+    shaman_spell_t( "mana_spring_totem", player, SCHOOL_NATURE, TREE_RESTORATION ), regen(0)
   {
     shaman_t* p = player -> cast_shaman();
 
@@ -2454,45 +2456,36 @@ struct mana_spring_totem_t : public shaman_spell_t
     parse_options( options, options_str );
 
     harmful         = false;
-    base_tick_time  = 2.0; 
-    num_ticks       = 150;
     duration_group  = "water_totem";
     base_cost       = 120;
-    base_multiplier = 1.0 + p -> talents.restorative_totems * 0.05;
     trigger_gcd     = 1.0;
 
     base_cost_reduction += ( p -> talents.totemic_focus    * 0.05 +
 			     p -> talents.mental_quickness * 0.02 );
+
+    regen = util_t::ability_rank( p -> level,  34.0,80,  30.0,76,  25.0,71,  20.0,65,  17.0,0 );
+
+    regen *= 1.0 + p -> talents.restorative_totems * 0.05;
   }
 
   virtual void execute() 
   {
     if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
-    schedule_tick();
+    for( player_t* p = sim -> player_list; p; p = p -> next )
+    {
+      p -> buffs.mana_spring = regen;
+    }
     update_ready();
     player -> action_finish( this );
   }
 
-  virtual void tick() 
-  {
-    if( sim -> debug ) report_t::log( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
-
-    for( player_t* p = sim -> player_list; p; p = p -> next )
-    {
-      if( p -> party == player -> party )
-      {
-        p -> resource_gain( RESOURCE_MANA, base_multiplier * 30.0, p -> gains.mana_spring );
-      }
-    }
-  }
-
   virtual bool ready()
   {
-    if( ! shaman_spell_t::ready() )
+    if( player -> buffs.mana_spring >= regen )
       return false;
 
-    return( player -> resource_current[ RESOURCE_MANA ] < ( 0.95 * player -> resource_max[ RESOURCE_MANA ] ) );
+    return shaman_spell_t::ready();
   }
 
   virtual double gcd() { return player -> in_combat ? shaman_spell_t::gcd() : 0; }

@@ -6,7 +6,7 @@
 druid=Druid_T7_58_00_13_W_FF
 level=80
 talents=http://www.wowhead.com/?talent=0xRbuiIsfdIVhouZbxczb
-actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/mark_of_the_wild/moonkin_form/mana_potion,trigger=4300/innervate,trigger=12000
+actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/mark_of_the_wild/moonkin_form/mana_potion/innervate,trigger=12000
 actions+=/faerie_fire/treants/starfall,skip_on_eclipse=1
 actions+=/moonfire,skip_on_eclipse=-1/insect_swarm,eclipse_left>=10
 actions+=/starfire,eclipse=trigger/wrath

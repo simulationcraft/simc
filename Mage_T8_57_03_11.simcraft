@@ -11,7 +11,7 @@ actions+=/arcane_blast,max=3
 actions+=/arcane_missiles,barrage=1
 actions+=/arcane_barrage
 actions+=/evocation
-actions+=/mana_potion,trigger=4300
+actions+=/mana_potion
 Caster_T7_Base_Gear.simcraft
 enchant_hit_rating=-75
 enchant_crit_rating=+75

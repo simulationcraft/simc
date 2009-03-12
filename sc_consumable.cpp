@@ -400,7 +400,7 @@ struct mana_potion_t : public action_t
   int trigger;
   int min;
   int max;
-  int  used;
+  int used;
 
   mana_potion_t( player_t* p, const std::string& options_str ) :
     action_t( ACTION_USE, "mana_potion", p ), trigger(0), min(0), max(0), used(0)
@@ -414,9 +414,12 @@ struct mana_potion_t : public action_t
     };
     parse_options( options, options_str );
 
-    if( min == 0 && max == 0) min = max = trigger;
+    if( min == 0 && max == 0 ) 
+    {
+      min = max = util_t::ability_rank( player -> level,  4300,80,  2400,68,  1800,0 );
+    }
 
-    if( min > max) { int tmp = min; min = max; max = tmp;}
+    if( min > max ) std::swap( min, max );
 
     if( max == 0 ) max = trigger;
     if( trigger == 0 ) trigger = max;

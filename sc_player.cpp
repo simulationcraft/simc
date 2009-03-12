@@ -893,7 +893,7 @@ void player_t::combat_begin()
   if( sim -> optimal_raid || sim -> overrides.battle_shout           ) buffs.battle_shout = 548;
   if( sim -> optimal_raid || sim -> overrides.blessing_of_kings      ) buffs.blessing_of_kings = 1;
   if( sim -> optimal_raid || sim -> overrides.blessing_of_might      ) buffs.blessing_of_might = 688;
-  if( sim -> optimal_raid || sim -> overrides.blessing_of_wisdom     ) buffs.blessing_of_wisdom = 1;
+  if( sim -> optimal_raid || sim -> overrides.blessing_of_wisdom     ) buffs.blessing_of_wisdom = 91;
   if( sim -> optimal_raid || sim -> overrides.sanctified_retribution ) buffs.sanctified_retribution = 1;
   if( sim -> optimal_raid || sim -> overrides.swift_retribution      ) buffs.swift_retribution = 1;
   if( sim -> optimal_raid || sim -> overrides.arcane_brilliance      ) buffs.arcane_brilliance = 60;
@@ -902,6 +902,7 @@ void player_t::combat_begin()
   if( sim -> optimal_raid || sim -> overrides.improved_divine_spirit ) buffs.improved_divine_spirit = 80;
   if( sim -> optimal_raid || sim -> overrides.improved_moonkin_aura  ) buffs.improved_moonkin_aura = 1;
   if( sim -> optimal_raid || sim -> overrides.leader_of_the_pack     ) buffs.leader_of_the_pack = 1;
+  if( sim -> optimal_raid || sim -> overrides.mana_spring            ) buffs.mana_spring = 42.5;
   if( sim -> optimal_raid || sim -> overrides.mark_of_the_wild       ) buffs.mark_of_the_wild = 52;
   if( sim -> optimal_raid || sim -> overrides.moonkin_aura           ) buffs.moonkin_aura = 1;
   if( sim -> optimal_raid || sim -> overrides.replenishment          ) buffs.replenishment = 1;
@@ -1147,18 +1148,25 @@ void player_t::regen( double periodicity )
     }
     uptimes.replenishment -> update( buffs.replenishment != 0 );
 
-    if( buffs.water_elemental && sim -> P309 )
+    if( sim -> P309 && buffs.water_elemental )
     {
-      double water_elemental_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.006 / 5.0;
+	double water_elemental_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.006 / 5.0;
 
-      resource_gain( RESOURCE_MANA, water_elemental_regen, gains.water_elemental );
+	resource_gain( RESOURCE_MANA, water_elemental_regen, gains.water_elemental );
     }
 
-    if( buffs.blessing_of_wisdom )
+    if( sim -> P309 || ( buffs.blessing_of_wisdom >= buffs.mana_spring ) )
     {
-      double wisdom_regen = periodicity * ( ( level <= 70 ) ? 49 : 91 ) / 5.0;
+      double wisdom_regen = periodicity * buffs.blessing_of_wisdom / 5.0;
 
       resource_gain( RESOURCE_MANA, wisdom_regen, gains.blessing_of_wisdom );
+    }
+
+    if( sim -> P309 || ( buffs.mana_spring > buffs.blessing_of_wisdom ) )
+    {
+      double mana_spring_regen = periodicity * buffs.mana_spring / 2.0;
+
+      resource_gain( RESOURCE_MANA, mana_spring_regen, gains.mana_spring );
     }
   }
 

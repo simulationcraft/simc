@@ -7,7 +7,7 @@ talents=http://ptr.wowhead.com/?talent=bVcbhZZGxfVRfzcfqfzAo
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/divine_spirit/inner_fire/shadow_form
 actions+=/shadow_fiend,trigger=6000/dispersion
 actions+=/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/mind_flay
-actions+=/mana_potion,trigger=4300
+actions+=/mana_potion
 Caster_T7_Base_Gear.simcraft
 glyph_shadow_word_pain=1
 glyph_shadow=1

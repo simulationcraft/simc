@@ -359,6 +359,7 @@ struct sim_t
     int improved_moonkin_aura;
     int improved_scorch;
     int leader_of_the_pack;
+    int mana_spring;
     int mangle;
     int mark_of_the_wild;
     int master_poisoner;
@@ -673,7 +674,7 @@ struct player_t
     int       berserking_oh;
     int       blessing_of_kings;
     int       blessing_of_might;
-    int       blessing_of_wisdom;
+    double    blessing_of_wisdom;
     double    divine_spirit;
     int       bloodlust;
     double    cast_time_reduction;
@@ -696,6 +697,7 @@ struct player_t
     int       leader_of_the_pack;
     int       lightning_capacitor;
     double    mana_cost_reduction;
+    double    mana_spring;
     double    mark_of_the_wild;
     int       moonkin_aura;
     int       mongoose_mh;
