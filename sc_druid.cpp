@@ -14,6 +14,7 @@ struct druid_t : public player_t
   // Active
   action_t* active_insect_swarm;
   action_t* active_moonfire;
+  action_t* active_rake;
   action_t* active_rip;
   action_t* active_starfall_stars;
 
@@ -205,6 +206,7 @@ struct druid_t : public player_t
   {
     active_insect_swarm   = 0;
     active_moonfire       = 0;
+    active_rake           = 0;
     active_rip            = 0;
     active_starfall_stars = 0;
     
@@ -287,6 +289,7 @@ struct druid_attack_t : public attack_t
   double min_mangle_expire, max_mangle_expire;
   double min_savage_roar_expire, max_savage_roar_expire;
   double min_rip_expire, max_rip_expire;
+  double min_rake_expire, max_rake_expire;
 
   druid_attack_t( const char* n, player_t* player, int s=SCHOOL_PHYSICAL, int t=TREE_NONE ) :
     attack_t( n, player, RESOURCE_ENERGY, s, t ),
@@ -299,7 +302,8 @@ struct druid_attack_t : public attack_t
     min_energy(0), max_energy(0),
     min_mangle_expire(0), max_mangle_expire(0),
     min_savage_roar_expire(0), max_savage_roar_expire(0),
-    min_rip_expire(0), max_rip_expire(0)
+    min_rip_expire(0), max_rip_expire(0),
+    min_rake_expire(0), max_rake_expire(0)
   {
     may_glance = false;
 
@@ -907,6 +911,8 @@ void druid_attack_t::parse_options( option_t*          options,
     { "energy<",          OPT_FLT, &max_energy             },
     { "rip>",             OPT_FLT, &min_rip_expire         },
     { "rip<",             OPT_FLT, &max_rip_expire         },
+    { "rake>",            OPT_FLT, &min_rake_expire        },
+    { "rake<",            OPT_FLT, &max_rake_expire        },
     { "mangle>",          OPT_FLT, &min_mangle_expire      },
     { "mangle<",          OPT_FLT, &max_mangle_expire      },
     { "savage_roar>",     OPT_FLT, &min_savage_roar_expire },
@@ -1081,6 +1087,14 @@ bool druid_attack_t::ready()
 
   if( max_rip_expire > 0 )
     if( p -> active_rip && ( ( p -> active_rip -> duration_ready - ct ) > max_rip_expire ) )
+      return false;
+
+  if( min_rake_expire > 0 )
+    if( ! p -> active_rake || ( ( p -> active_rake -> duration_ready - ct ) < min_rake_expire ) )
+      return false;
+
+  if( max_rake_expire > 0 )
+    if( p -> active_rake && ( ( p -> active_rake -> duration_ready - ct ) > max_rake_expire ) )
       return false;
 
   return true;
@@ -1300,6 +1314,8 @@ struct rake_t : public druid_attack_t
     base_multiplier  *= 1.0 + p -> talents.savage_fury * 0.1;
 
     tick_may_crit = ( p -> talents.primal_gore != 0 );
+    
+    observer = &( p -> active_rake );
   }
 };
 
@@ -3026,6 +3042,7 @@ void druid_t::reset()
   // Spells
   active_insect_swarm = 0;
   active_moonfire     = 0;
+  active_rake         = 0;
   active_rip          = 0;
 
   _buffs.reset();
