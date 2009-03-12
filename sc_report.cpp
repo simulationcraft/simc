@@ -305,14 +305,14 @@ void report_t::print_spell_stats( player_t* p )
 void report_t::print_attack_stats( player_t* p )
 {
   fprintf( sim -> output_file, 
-	   "%s  %s%.0f  %s%.1f%%  %s%.1f%%  %s%.1f  %s%.0f  %s%.1f%%\n", 
+	   "%s  %s%.0f  %s%.1f%%  %s%.1f%%  %s%.1f  %s%.1f  %s%.1f%%\n", 
 	   report_tag ? "  Attack Stats:" : "",
 	   report_tag ? "power="       : "", p -> composite_attack_power() * p -> composite_attack_power_multiplier(),
-	   report_tag ? "hit="         : "", p -> composite_attack_hit()       * 100.0, 
-	   report_tag ? "crit="        : "", p -> composite_attack_crit()      * 100.0, 
-	   report_tag ? "expertise="   : "", p -> composite_attack_expertise() * 100.0,
-	   report_tag ? "penetration=" : "", p -> composite_attack_penetration(),
-	   report_tag ? "haste="       : "", ( 1.0 / p -> attack_haste - 1 ) * 100.0 );
+	   report_tag ? "hit="         : "", p -> composite_attack_hit()         * 100.0, 
+	   report_tag ? "crit="        : "", p -> composite_attack_crit()        * 100.0, 
+	   report_tag ? "expertise="   : "", p -> composite_attack_expertise()   * 100.0,
+	   report_tag ? "penetration=" : "", p -> composite_attack_penetration() * 100.0,
+	   report_tag ? "haste="       : "", ( 1.0 / p -> attack_haste - 1 )     * 100.0 );
 }
 
 // report_t::print_gains =====================================================

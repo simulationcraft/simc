@@ -7,6 +7,8 @@ patch=3.1.0
 rogue=Rogue_T8_18_51_02_FD
 level=80
 talents=http://ptr.wowhead.com/?talent=f0eb0eZMgVoxcxoru0xRtb
+
+# Action queue
 actions=flask,type=endless_rage/food,type=fish_feast/apply_poison,main_hand=wound,off_hand=wound
 actions+=/auto_attack
 actions+=/pool_energy,energy<=60,snd<=5/slice_and_dice,min_combo_points=3,snd<=2
@@ -18,14 +20,36 @@ actions+=/eviscerate,min_combo_points=4,rup>=5,snd>=3,energy>=40
 actions+=/eviscerate,min_combo_points=5,time_to_die<=10
 actions+=/sinister_strike,max_combo_points=4
 actions+=/adrenaline_rush
-Melee_T7_Base_Gear.simcraft
-gear_expertise_rating=200
-# Not fair to use the same stats for all Rogues since Combat Rogue needs less expertise.
-# Trade expertise for ivalue-equal amount of attack power
-enchant_attack_power=+160
-enchant_expertise_rating=-80
+
+# Gear
+gear_stamina=924
+gear_strength=10
+gear_agility=1099
+gear_intellect=10
+gear_spirit=10
+gear_attack_power=2135
+gear_expertise_rating=125
+gear_armor_penetration_rating=94
+gear_hit_rating=255
+gear_crit_rating=628
+gear_haste_rating=257
+
+# Set Bonuses
+tier7_2pc=1
+tier7_4pc=1
+
+# Meta Gem
+relentless_earthstorm=1
+
+# Weapons
+main_hand=fist,dps=171,speed=2.6,enchant=berserking
+off_hand=dagger,dps=157,speed=1.4,enchant=berserking
+
+# Item Procs
+darkmoon_greatness=1
+fury_of_the_five_flights=1
+
+# Glyphs
 glyph_rupture=1
 glyph_slice_and_dice=1
 glyph_sinister_strike=1
-main_hand=fist,dps=171,speed=2.6,enchant=berserking
-off_hand=dagger,dps=157,speed=1.4,enchant=berserking
