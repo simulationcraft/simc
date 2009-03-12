@@ -190,6 +190,8 @@ struct druid_t : public player_t
     int t6_4pc_balance;
     int t7_2pc_balance;
     int t7_4pc_balance;
+    int t8_2pc_balance;
+    int t8_4pc_balance;
     int t4_2pc_feral;
     int t4_4pc_feral;
     int t5_2pc_feral;
@@ -198,6 +200,8 @@ struct druid_t : public player_t
     int t6_4pc_feral;
     int t7_2pc_feral;
     int t7_4pc_feral;
+    int t8_2pc_feral;
+    int t8_4pc_feral;
     tiers_t() { memset( (void*) this, 0x0, sizeof( tiers_t ) ); }
   };
   tiers_t tiers;
@@ -319,6 +323,7 @@ struct druid_attack_t : public attack_t
   virtual double calculate_direct_damage();
   virtual void   player_buff();
   virtual bool   ready();
+  virtual void   tick();
 };
 
 // ==========================================================================
@@ -1100,6 +1105,14 @@ bool druid_attack_t::ready()
   return true;
 }
 
+// druid_attack_t::tick ====================================================
+
+void druid_attack_t::tick()
+{
+  attack_t::tick();
+  // FIX ME! Get info on t8_2pc_feral and implement the procc, could be as easy as trigger_omen_of_clarity?
+}
+
 // Melee Attack ============================================================
 
 struct melee_t : public druid_attack_t
@@ -1416,6 +1429,7 @@ struct savage_roar_t : public druid_attack_t
     druid_t* p = player -> cast_druid();
       
     double duration = 9.0 + p -> _buffs.combo_points * 5.0;
+    if( p -> tiers.t8_4pc_feral ) duration += 8.0;
 
     clear_combo_points( p );    
 
@@ -3017,6 +3031,8 @@ void druid_t::init_unique_gear()
     if( gear.tier6_4pc ) tiers.t6_4pc_balance = 1;
     if( gear.tier7_2pc ) tiers.t7_2pc_balance = 1;
     if( gear.tier7_4pc ) tiers.t7_4pc_balance = 1;
+    if( gear.tier8_2pc ) tiers.t8_2pc_balance = 1;
+    if( gear.tier8_4pc ) tiers.t8_4pc_balance = 1;
   }
   else
   {
@@ -3028,6 +3044,8 @@ void druid_t::init_unique_gear()
     if( gear.tier6_4pc ) tiers.t6_4pc_feral = 1;
     if( gear.tier7_2pc ) tiers.t7_2pc_feral = 1;
     if( gear.tier7_4pc ) tiers.t7_4pc_feral = 1;
+    if( gear.tier8_2pc ) tiers.t8_2pc_feral = 1;
+    if( gear.tier8_4pc ) tiers.t8_4pc_feral = 1;
   
     equipped_weapon_dps = main_hand_weapon.damage / main_hand_weapon.swing_time;
   }

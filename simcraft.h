@@ -659,6 +659,7 @@ struct player_t
     int  tier5_2pc, tier5_4pc;
     int  tier6_2pc, tier6_4pc;
     int  tier7_2pc, tier7_4pc;
+    int  tier8_2pc, tier8_4pc;
     gear_t() { memset( (void*) this, 0x00, sizeof( gear_t ) ); }
 
     void allocate_spell_power_budget( sim_t* );
@@ -723,6 +724,7 @@ struct player_t
     int       tier5_2pc, tier5_4pc;
     int       tier6_2pc, tier6_4pc;
     int       tier7_2pc, tier7_4pc;
+    int       tier8_2pc, tier8_4pc;
     void reset() { memset( (void*) this, 0x0, sizeof( buff_t ) ); }
     buff_t() { reset(); }
   };
@@ -750,6 +752,7 @@ struct player_t
     event_t *tier5_2pc, *tier5_4pc;
     event_t *tier6_2pc, *tier6_4pc;
     event_t *tier7_2pc, *tier7_4pc;
+    event_t *tier8_2pc, *tier8_4pc;
     void reset() { memset( (void*) this, 0x00, sizeof( expirations_t ) ); }
     expirations_t() { reset(); }
   };
@@ -778,6 +781,7 @@ struct player_t
     double tier5_2pc, tier5_4pc;
     double tier6_2pc, tier6_4pc;
     double tier7_2pc, tier7_4pc;
+    double tier8_2pc, tier8_4pc;
     void reset() { memset( (void*) this, 0x00, sizeof( cooldowns_t ) ); }
     cooldowns_t() { reset(); }
   };
@@ -795,6 +799,7 @@ struct player_t
     uptime_t *tier5_2pc, *tier5_4pc;
     uptime_t *tier6_2pc, *tier6_4pc;
     uptime_t *tier7_2pc, *tier7_4pc;
+    uptime_t *tier8_2pc, *tier8_4pc;
     void reset() { memset( (void*) this, 0x00, sizeof( uptimes_t ) ); }
     uptimes_t() { reset(); }
   };
@@ -827,6 +832,7 @@ struct player_t
     gain_t *tier5_2pc, *tier5_4pc;
     gain_t *tier6_2pc, *tier6_4pc;
     gain_t *tier7_2pc, *tier7_4pc;
+    gain_t *tier8_2pc, *tier8_4pc;
     void reset() { memset( (void*) this, 0x00, sizeof( gains_t ) ); }
     gains_t() { reset(); }
   };
@@ -863,6 +869,7 @@ struct player_t
     proc_t *tier5_2pc, *tier5_4pc;
     proc_t *tier6_2pc, *tier6_4pc;
     proc_t *tier7_2pc, *tier7_4pc;
+    proc_t *tier8_2pc, *tier8_4pc;
     void reset() { memset( (void*) this, 0x00, sizeof( procs_t ) ); }
     procs_t() { reset(); }
   };

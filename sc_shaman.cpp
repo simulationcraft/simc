@@ -189,6 +189,8 @@ struct shaman_t : public player_t
     int t6_4pc_elemental;
     int t7_2pc_elemental;
     int t7_4pc_elemental;
+    int t8_2pc_elemental;
+    int t8_4pc_elemental;
     int t4_2pc_enhancement;
     int t4_4pc_enhancement;
     int t5_2pc_enhancement;
@@ -197,6 +199,8 @@ struct shaman_t : public player_t
     int t6_4pc_enhancement;
     int t7_2pc_enhancement;
     int t7_4pc_enhancement;
+    int t8_2pc_enhancement;
+    int t8_4pc_enhancement;
     tiers_t() { memset( (void*) this, 0x0, sizeof( tiers_t ) ); }
   };
   tiers_t tiers;
@@ -2953,6 +2957,8 @@ void shaman_t::init_unique_gear()
     if( gear.tier6_4pc ) tiers.t6_4pc_enhancement = 1;
     if( gear.tier7_2pc ) tiers.t7_2pc_enhancement = 1;
     if( gear.tier7_4pc ) tiers.t7_4pc_enhancement = 1;
+    if( gear.tier8_2pc ) tiers.t8_2pc_enhancement = 1;
+    if( gear.tier8_4pc ) tiers.t8_4pc_enhancement = 1;
   }
   else
   {
@@ -2964,6 +2970,8 @@ void shaman_t::init_unique_gear()
     if( gear.tier6_4pc ) tiers.t6_4pc_elemental = 1;
     if( gear.tier7_2pc ) tiers.t7_2pc_elemental = 1;
     if( gear.tier7_4pc ) tiers.t7_4pc_elemental = 1;
+    if( gear.tier8_2pc ) tiers.t8_2pc_elemental = 1;
+    if( gear.tier8_4pc ) tiers.t8_4pc_elemental = 1;
   }
 }
 

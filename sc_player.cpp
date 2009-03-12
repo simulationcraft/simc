@@ -701,6 +701,8 @@ void player_t::init_stats()
   gains.tier6_4pc              = get_gain( "tier6_4pc" );
   gains.tier7_2pc              = get_gain( "tier7_2pc" );
   gains.tier7_4pc              = get_gain( "tier7_4pc" );
+  gains.tier8_2pc              = get_gain( "tier8_2pc" );
+  gains.tier8_4pc              = get_gain( "tier8_4pc" );
 
   procs.ashtongue_talisman           = get_proc( "ashtongue_talisman" );
   procs.darkmoon_greatness           = get_proc( "darkmoon_greatness" );
@@ -735,6 +737,8 @@ void player_t::init_stats()
   procs.tier6_4pc                    = get_proc( "tier6_4pc" );
   procs.tier7_2pc                    = get_proc( "tier7_2pc" );
   procs.tier7_4pc                    = get_proc( "tier7_4pc" );
+  procs.tier8_2pc                    = get_proc( "tier8_2pc" );
+  procs.tier8_4pc                    = get_proc( "tier8_4pc" );
 
   uptimes.replenishment = get_uptime( "replenishment" );
 
@@ -2109,6 +2113,8 @@ bool player_t::parse_option( const std::string& name,
     { "tier6_4pc",                            OPT_INT,  &( gear.tier6_4pc                                 ) },
     { "tier7_2pc",                            OPT_INT,  &( gear.tier7_2pc                                 ) },
     { "tier7_4pc",                            OPT_INT,  &( gear.tier7_4pc                                 ) },
+    { "tier8_2pc",                            OPT_INT,  &( gear.tier8_2pc                                 ) },
+    { "tier8_4pc",                            OPT_INT,  &( gear.tier8_4pc                                 ) },
     // Player - Consumables									            
     { "flask",                                OPT_STRING, &( flask_str                                    ) },
     { "elixirs",                              OPT_STRING, &( elixirs_str                                  ) },
