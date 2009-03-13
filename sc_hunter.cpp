@@ -1346,7 +1346,7 @@ struct hunter_pet_attack_t : public attack_t
     {
       if( p -> _buffs.frenzy ) t *= 1.0 / 1.3;
 
-      p -> uptimes_frenzy -> update( p -> _buffs.frenzy );
+      p -> uptimes_frenzy -> update( p -> _buffs.frenzy > 0 );
     }
 
     return t;
@@ -2357,7 +2357,7 @@ struct arcane_shot_t : public hunter_attack_t
     hunter_t* p = player -> cast_hunter();
     hunter_attack_t::player_buff();
     if( p -> _buffs.improved_steady_shot ) player_multiplier *= 1.15;
-    p -> uptimes_improved_steady_shot -> update( p -> _buffs.improved_steady_shot );
+    p -> uptimes_improved_steady_shot -> update( p -> _buffs.improved_steady_shot > 0 );
   }
 
   virtual void execute()
@@ -2512,7 +2512,7 @@ struct chimera_shot_t : public hunter_attack_t
     hunter_t* p = player -> cast_hunter();
     hunter_attack_t::player_buff();
     if( p -> _buffs.improved_steady_shot ) player_multiplier *= 1.0 + 0.15;
-    p -> uptimes_improved_steady_shot -> update( p -> _buffs.improved_steady_shot );
+    p -> uptimes_improved_steady_shot -> update( p -> _buffs.improved_steady_shot > 0 );
   }
 
   virtual void execute()
