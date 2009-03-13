@@ -20,6 +20,7 @@ Mage_T8_52_19_00.simcraft   focus_magic_target=Mage_T8_57_03_11
 Mage_T8_57_03_11.simcraft   focus_magic_target=Mage_T8_18_00_53
 
 Priest_T8_13_00_58.simcraft
+Priest_T8_13_00_58_SWD.simcraft
 
 Rogue_T8_07_21_43.simcraft     tricks_of_the_trade_target=Rogue_T8_07_51_13    honor_among_thieves_interval=0
 Rogue_T8_07_51_13.simcraft     tricks_of_the_trade_target=Rogue_T8_18_51_02_FD
