@@ -6,7 +6,7 @@ talents=http://talent.mmo-champion.com/?warlock=03000000000000000000000000000032
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/spell_stone/fel_armor/summon_pet,felguard
 actions+=/curse_of_doom,time_to_die>=60/demonic_empowerment/metamorphosis/immolation/soul_fire,decimation=1
 actions+=/corruption,health_percentage>=35/immolate,health_percentage>=35/shadow_bolt/life_tap
-Caster_T7_Base_Gear.simcraft
+Warlock_T7_Gear.simcraft
 glyph_life_tap=1
 glyph_felguard=1
 glyph_immolate=1

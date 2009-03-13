@@ -6,9 +6,7 @@ talents=http://www.wowhead.com/?talent=IfxMbzMAoVA0IstZEz0V
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/spell_stone/fel_armor/summon_pet,succubus
 actions+=/haunt,debuff=1/curse_of_agony/corruption/unstable_affliction/siphon_life
 actions+=/shadow_bolt,shadow_trance=1/drain_soul,health_percentage<=25,interrupt=1/immolate/shadow_bolt/life_tap
-Caster_T7_Base_Gear.simcraft
-enchant_crit_rating=-80
-enchant_hit_rating=+80
+Warlock_T7_Hit_Gear.simcraft
 glyph_immolate=1
 glyph_curse_of_agony=1
 glyph_siphon_life=1

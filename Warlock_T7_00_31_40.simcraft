@@ -5,7 +5,7 @@ level=80
 talents=http://www.wowhead.com/?talent=IZcxczsgMV0zZVcGqb0uVMA
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/fire_stone/fel_armor/summon_pet,imp
 actions+=/curse_of_agony/corruption/immolate/incinerate/life_tap
-Caster_T7_Base_Gear.simcraft
+Warlock_T7_Gear.simcraft
 glyph_immolate=1
 glyph_imp=1
 glyph_curse_of_agony=1

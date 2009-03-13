@@ -5,9 +5,7 @@ level=80
 talents=http://talent.mmo-champion.com/?warlock=000000000000000000000000000003320030113520252003320000005203205210131051000000000
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/fire_stone/fel_armor/summon_pet,imp
 actions+=/soul_fire,decimation=1/immolate/conflagrate/curse_of_agony/corruption,health_percentage>=35/incinerate/life_tap
-Caster_T7_Base_Gear.simcraft
-enchant_crit_rating=-80
-enchant_hit_rating=+80
+Warlock_T7_Hit_Gear.simcraft
 glyph_life_tap=1
 glyph_conflagrate=1
 glyph_incinerate=1
