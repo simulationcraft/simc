@@ -18,7 +18,7 @@ actions+=/cold_blood,sync=envenom
 actions+=/envenom,min_combo_points=4,no_buff=1
 actions+=/mutilate,max_combo_points=3
 
-# Gear
+# Gear: http://www.chardev.org/?template=147364
 gear_stamina=951
 gear_strength=10
 gear_agility=1075
