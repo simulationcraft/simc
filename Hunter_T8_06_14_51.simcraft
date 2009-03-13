@@ -4,7 +4,8 @@ patch=3.1.0
 hunter=Hunter_T8_06_14_51
 level=80
 talents=http://talent.mmo-champion.com/?hunter=501000000000000000000000000053051000000000000000000005000032500033330502135301301&version=9637
-actions=flask,type=endless_rage/food,type=fish_feast/summon_pet,wolf/hunters_mark
+#talents=http://talent.mmo-champion.com/?hunter=502000000000000000000000000053041000000000000000000005000032500033330532135301001&glyph=000000000000&version=9637
+actions=flask,type=endless_rage/food,type=blackened_dragonfin/summon_pet,wolf/hunters_mark
 actions+=/auto_shot/aspect/rapid_fire/black_arrow/explosive_shot/kill_shot/serpent_sting/multi_shot/steady_shot
 Melee_T7_Base_Gear.simcraft
 gear_agility=1417
