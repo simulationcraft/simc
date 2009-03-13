@@ -1570,7 +1570,7 @@ berserk_t( player_t* player, const std::string& options_str ) :
         druid_t* p = player -> cast_druid();
         p -> aura_loss( "Berserk" );
         p -> _buffs.berserk = 0;
-	p -> _expirations.berserk = 0;
+        p -> _expirations.berserk = 0;
       }
     };
 
@@ -2434,8 +2434,15 @@ struct starfire_t : public druid_spell_t
         return false;
 
     if( eclipse_benefit )
+    {
       if( ! sim -> time_to_think( p -> _buffs.eclipse_starfire ) )
         return false;
+      
+      // Don't cast starfire if eclipse will fade before the cast finished
+      if( p -> _expirations.eclipse )
+        if( execute_time() > p -> _expirations.eclipse -> occurs() - sim -> current_time )
+          return false;
+    }
 
     if( eclipse_trigger )
     {
@@ -2570,8 +2577,16 @@ struct wrath_t : public druid_spell_t
     druid_t* p = player -> cast_druid();
 
     if( eclipse_benefit )
+    {
       if( ! sim -> time_to_think( p -> _buffs.eclipse_wrath ) )
         return false;
+
+      // Don't cast wrath if eclipse will fade before the cast finished.
+      if( p -> _expirations.eclipse )
+        if( execute_time() > p -> _expirations.eclipse -> occurs() - sim -> current_time )
+          return false;
+    }
+        
 
     if( eclipse_trigger )
     {
@@ -3078,7 +3093,7 @@ void druid_t::regen( double periodicity )
   player_t::regen( periodicity );
 
   uptimes_energy_cap -> update( resource_current[ RESOURCE_ENERGY ] == 
-				resource_max    [ RESOURCE_ENERGY ] );
+                                resource_max    [ RESOURCE_ENERGY ] );
 }
 
 // druid_t::composite_attack_power ==========================================
