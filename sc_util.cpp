@@ -133,6 +133,36 @@ const char* util_t::race_type_string( int type )
   case RACE_DRAGONKIN: return "dragonkin";
   case RACE_GIANT:     return "giant";
   case RACE_HUMANOID:  return "humanoid";
+  case HUMAN:          return "human";
+  case NIGHT_ELF:      return "night_elf";
+  case DWARF:          return "dwarf";
+  case GNOME:          return "gnome";
+  case DRAENEI:        return "draenei";
+  case ORC:            return "orc";
+  case TROLL:          return "troll";
+  case UNDEAD:         return "undead";
+  case TAUREN:         return "tauren";
+  case BLOOD_ELF:      return "blood_elf";
+  }
+  return "unknown";
+}
+
+const char* util_t::profession_type_string( int type )
+{
+  switch( type )
+  {
+  case PROF_NONE:           return "none";
+  case PROF_ALCHEMY:        return "alchemy";
+  case PROF_BLACKSMITHING:  return "blacksmithing";
+  case PROF_ENCHANTING:     return "enchanting";
+  case PROF_ENGINEERING:    return "engineering";
+  case PROF_HERBALISM:      return "herbalism";
+  case PROF_INSCRIPTION:    return "inscription";
+  case PROF_JEWELCRAFTING:  return "jewelcrafting";
+  case PROF_LEATHERWORKING: return "leatherworking";
+  case PROF_MINING:         return "mining";
+  case PROF_SKINNING:       return "skinning";
+  case PROF_TAILORING:      return "tailoring";  
   }
   return "unknown";
 }

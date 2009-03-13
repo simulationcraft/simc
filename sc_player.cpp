@@ -287,6 +287,8 @@ void player_t::init()
   init_weapon(  &off_hand_weapon,  off_hand_str );
   init_weapon(    &ranged_weapon,    ranged_str );
   init_unique_gear();
+  init_profession( &prof1, prof1_str );
+  init_profession( &prof2, prof2_str );
   init_resources();
   init_consumables();
   init_actions();
@@ -593,6 +595,69 @@ void player_t::init_consumables()
   consumable_t::init_flask  ( this );
   consumable_t::init_elixirs( this );
   consumable_t::init_food   ( this );
+}
+
+// player_t::init_professions ==============================================
+
+void player_t::init_profession( profession_t*    p, 
+			    std::string& encoding 	)			 
+{
+  if( encoding.empty() ) return;
+  
+  bool invalid = false;
+  
+  std::vector<std::string> splits;
+  int size = util_t::string_split( splits, encoding, "," );
+
+  if( 2!=size ) invalid = true;
+  else
+  {
+	std::string& s = splits[ 0 ];
+	int t;
+
+    for( t=0; t < PROF_MAX; t++ )
+    {
+      const char* name = util_t::profession_type_string( t );
+      if( s == name ) break;
+    }
+
+	if( t < PROF_MAX )
+    {
+      p-> type = t;
+    }
+
+	s = splits[ 1 ];
+	std::string parm, value;
+    
+	if( 2 != util_t::string_split( s, "=", "S S", &parm, &value ) ) invalid = true;
+    if( parm == "skill" ) p -> skill = atoi( value.c_str() ); 
+	else invalid = true;
+  }
+  
+  if( invalid )
+  {
+	printf( "Invalid profession encoding: %s\n", encoding.c_str() );
+	assert(0);
+  }	
+  
+  if ( p -> type == PROF_MINING ) // Miners gain additional stamina (assumed 450 skill)
+  {
+	if      ( p -> skill >= 450 ) attribute_initial[ ATTR_STAMINA ] += 50;
+	else if ( p -> skill >= 375 ) attribute_initial[ ATTR_STAMINA ] += 30;
+	else if ( p -> skill >= 300 ) attribute_initial[ ATTR_STAMINA ] += 10;
+	else if ( p -> skill >= 225 ) attribute_initial[ ATTR_STAMINA ] +=  7;
+	else if ( p -> skill >= 150 ) attribute_initial[ ATTR_STAMINA ] +=  5;
+	else if ( p -> skill >=  75 ) attribute_initial[ ATTR_STAMINA ] +=  3;	
+  }
+  else if ( p -> type == PROF_SKINNING ) // Skinners gain additional crit (assumed 450 skill)
+  {
+	if      ( p -> skill >= 450 ) initial_attack_crit += 32;
+	else if ( p -> skill >= 375 ) initial_attack_crit += 20;
+	else if ( p -> skill >= 300 ) initial_attack_crit += 12;
+	else if ( p -> skill >= 225 ) initial_attack_crit +=  9;
+	else if ( p -> skill >= 150 ) initial_attack_crit +=  6;
+	else if ( p -> skill >=  75 ) initial_attack_crit +=  3;	
+  }
 }
 
 // player_t::init_actions ==================================================
@@ -1963,9 +2028,13 @@ bool player_t::parse_option( const std::string& name,
   {
     // Player - General
     { "name",                                 OPT_STRING, &( name_str                                       ) },
+	{ "race",                                 OPT_STRING, &( race_str                                       ) },
     { "level",                                OPT_INT,    &( level                                          ) },
     { "gcd",                                  OPT_FLT,    &( base_gcd                                       ) },
     { "sleeping",                             OPT_INT,    &( sleeping                                       ) },
+	// Player - Profs
+	{ "prof1",                                OPT_STRING, &( prof1_str                                      ) },
+	{ "prof2",                                OPT_STRING, &( prof2_str                                      ) },
     // Player - Haste										          
     { "haste_rating",                         OPT_INT,    &( initial_haste_rating                           ) },
     // Player - Attributes									          

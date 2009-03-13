@@ -138,7 +138,11 @@ struct event_compare_t
 
 // Simulation Engine =========================================================
 
-enum race_type { RACE_NONE=0, RACE_BEAST, RACE_DRAGONKIN, RACE_GIANT, RACE_HUMANOID, RACE_MAX };
+enum race_type {
+  RACE_NONE=0, RACE_BEAST, RACE_DRAGONKIN, RACE_GIANT, RACE_HUMANOID,
+  NIGHT_ELF, HUMAN, GNOME, DWARF, DRAENEI, ORC, TROLL, UNDEAD, BLOOD_ELF, TAUREN,
+  RACE_MAX
+};
 
 enum player_type {
   PLAYER_NONE=0,
@@ -257,6 +261,22 @@ enum food_type {
 enum position_type { POSITION_NONE=0, POSITION_FRONT, POSITION_BACK, POSITION_RANGED, POSITION_MAX };
 
 enum encoding_type { ENCODING_NONE=0, ENCODING_BLIZZARD, ENCODING_MMO, ENCODING_WOWHEAD, ENCODING_MAX };
+
+enum profession_type {
+   PROF_NONE=0,
+   PROF_ALCHEMY,
+   PROF_MINING,
+   PROF_HERBALISM,
+   PROF_LEATHERWORKING,
+   PROF_ENGINEERING,
+   PROF_BLACKSMITHING,
+   PROF_INSCRIPTION,
+   PROF_SKINNING,
+   PROF_TAILORING,
+   PROF_JEWELCRAFTING,
+   PROF_ENCHANTING,
+   PROF_MAX
+}; 
 
 struct thread_t
 {
@@ -493,18 +513,32 @@ struct weapon_t
     enchant_bonus(0), buff_bonus(0), slot(SLOT_NONE) {}
 };
 
+// Profession ================================================================
+
+struct profession_t
+{
+	int type, skill;
+
+	profession_t( int t=PROF_NONE, int v=0 ) :
+    type(t), skill(v) {}
+};
+
 // Player ====================================================================
 
 struct player_t
 {
   sim_t*      sim;
-  std::string name_str, talents_str;
+  std::string name_str, race_str, talents_str;
   player_t*   next;
   int         type, level, party, member;
   double      gcd_ready, base_gcd;
   int         sleeping;
   rating_t    rating;
   pet_t*      pet_list;
+
+  // Profs
+  std::string   prof1_str, prof2_str;
+  profession_t  prof1,     prof2;
 
   // Haste
   int    base_haste_rating, initial_haste_rating, haste_rating;
@@ -906,6 +940,7 @@ struct player_t
   virtual ~player_t();
 
   virtual const char* name() { return name_str.c_str(); }
+  virtual const char* race() { return race_str.c_str(); }
 
   virtual void init();
   virtual void init_base() = 0;
@@ -916,6 +951,7 @@ struct player_t
   virtual void init_unique_gear();
   virtual void init_resources( bool force = false );
   virtual void init_consumables();
+  virtual void init_profession( profession_t*, std::string& );
   virtual void init_actions();
   virtual void init_rating();
   virtual void init_stats();
@@ -1660,6 +1696,7 @@ struct util_t
   static char* dup( const char* );
 
   static const char* race_type_string          ( int type );
+  static const char* profession_type_string    ( int type );
   static const char* player_type_string        ( int type );
   static const char* attribute_type_string     ( int type );
   static const char* dmg_type_string           ( int type );
