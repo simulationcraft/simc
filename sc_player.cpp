@@ -207,6 +207,12 @@ player_t::player_t( sim_t*             s,
     attribute[ i ] = attribute_base[ i ] = attribute_initial[ i ] = 0;
     attribute_multiplier[ i ] = attribute_multiplier_initial[ i ] = 1.0;
   }
+
+  for( int i=0; i < PROF_MAX; i++ )
+  {
+	profession[ i ] = 0;    
+  }
+
   for( int i=0; i <= SCHOOL_MAX; i++ )
   {
     initial_spell_power[ i ] = spell_power[ i ] = 0;
@@ -288,8 +294,7 @@ void player_t::init()
   init_weapon(  &off_hand_weapon,  off_hand_str );
   init_weapon(    &ranged_weapon,    ranged_str );
   init_unique_gear();
-  init_profession( &prof1, prof1_str );
-  init_profession( &prof2, prof2_str );
+  init_professions();
   init_resources();
   init_consumables();
   init_actions();
@@ -617,65 +622,53 @@ void player_t::init_consumables()
 
 // player_t::init_professions ==============================================
 
-void player_t::init_profession( profession_t*    p, 
-			    std::string& encoding 	)			 
+void player_t::init_professions()			 
 {
-  if( encoding.empty() ) return;
+  if( professions_str.empty() ) return;
   
   bool invalid = false;
   
   std::vector<std::string> splits;
-  int size = util_t::string_split( splits, encoding, "," );
+  int size = util_t::string_split( splits, professions_str, "," );
 
-  if( 2!=size ) invalid = true;
-  else
+  for( int i=0; i<size; i++)
   {
-	std::string& s = splits[ 0 ];
-	int t;
-
-    for( t=0; t < PROF_MAX; t++ )
-    {
-      const char* name = util_t::profession_type_string( t );
-      if( s == name ) break;
-    }
-
-	if( t < PROF_MAX )
-    {
-      p-> type = t;
-    }
-
-	s = splits[ 1 ];
+	std::string& s = splits[ i ];
 	std::string parm, value;
-    
 	if( 2 != util_t::string_split( s, "=", "S S", &parm, &value ) ) invalid = true;
-    if( parm == "skill" ) p -> skill = atoi( value.c_str() ); 
-	else invalid = true;
+	
+	int p;
+    for( p=0; p < PROF_MAX; p++ )
+    {
+      const char* name = util_t::profession_type_string( p );
+      if( parm == name ) break;
+    }
+
+	if( p < PROF_MAX ) profession[ p ] = atoi( value.c_str() );
+    else invalid = true;
   }
   
   if( invalid )
   {
-	printf( "Invalid profession encoding: %s\n", encoding.c_str() );
+	printf( "Invalid profession encoding: %s\n", professions_str.c_str() );
 	assert(0);
   }	
   
-  if ( p -> type == PROF_MINING ) // Miners gain additional stamina (assumed 450 skill)
-  {
-	if      ( p -> skill >= 450 ) attribute_initial[ ATTR_STAMINA ] += 50;
-	else if ( p -> skill >= 375 ) attribute_initial[ ATTR_STAMINA ] += 30;
-	else if ( p -> skill >= 300 ) attribute_initial[ ATTR_STAMINA ] += 10;
-	else if ( p -> skill >= 225 ) attribute_initial[ ATTR_STAMINA ] +=  7;
-	else if ( p -> skill >= 150 ) attribute_initial[ ATTR_STAMINA ] +=  5;
-	else if ( p -> skill >=  75 ) attribute_initial[ ATTR_STAMINA ] +=  3;	
-  }
-  else if ( p -> type == PROF_SKINNING ) // Skinners gain additional crit (assumed 450 skill)
-  {
-	if      ( p -> skill >= 450 ) initial_attack_crit += 32;
-	else if ( p -> skill >= 375 ) initial_attack_crit += 20;
-	else if ( p -> skill >= 300 ) initial_attack_crit += 12;
-	else if ( p -> skill >= 225 ) initial_attack_crit +=  9;
-	else if ( p -> skill >= 150 ) initial_attack_crit +=  6;
-	else if ( p -> skill >=  75 ) initial_attack_crit +=  3;	
-  }
+  // Miners gain additional stamina 
+  if      ( profession[ PROF_MINING ] >= 450 ) attribute_initial[ ATTR_STAMINA ] += 50.0;
+  else if ( profession[ PROF_MINING ] >= 375 ) attribute_initial[ ATTR_STAMINA ] += 30.0;
+  else if ( profession[ PROF_MINING ] >= 300 ) attribute_initial[ ATTR_STAMINA ] += 10.0;
+  else if ( profession[ PROF_MINING ] >= 225 ) attribute_initial[ ATTR_STAMINA ] +=  7.0;
+  else if ( profession[ PROF_MINING ] >= 150 ) attribute_initial[ ATTR_STAMINA ] +=  5.0;
+  else if ( profession[ PROF_MINING ] >=  75 ) attribute_initial[ ATTR_STAMINA ] +=  3.0;	
+  
+  // Skinners gain additional crit rating
+  if      ( profession[ PROF_SKINNING ] >= 450 ) initial_attack_crit += 32.0 / rating.attack_crit;
+  else if ( profession[ PROF_SKINNING ] >= 375 ) initial_attack_crit += 20.0 / rating.attack_crit;
+  else if ( profession[ PROF_SKINNING ] >= 300 ) initial_attack_crit += 12.0 / rating.attack_crit;
+  else if ( profession[ PROF_SKINNING ] >= 225 ) initial_attack_crit +=  9.0 / rating.attack_crit;
+  else if ( profession[ PROF_SKINNING ] >= 150 ) initial_attack_crit +=  6.0 / rating.attack_crit;
+  else if ( profession[ PROF_SKINNING ] >=  75 ) initial_attack_crit +=  3.0 / rating.attack_crit;	  
 }
 
 // player_t::init_actions ==================================================
@@ -2050,9 +2043,8 @@ bool player_t::parse_option( const std::string& name,
     { "level",                                OPT_INT,    &( level                                          ) },
     { "gcd",                                  OPT_FLT,    &( base_gcd                                       ) },
     { "sleeping",                             OPT_INT,    &( sleeping                                       ) },
-	// Player - Profs
-	{ "prof1",                                OPT_STRING, &( prof1_str                                      ) },
-	{ "prof2",                                OPT_STRING, &( prof2_str                                      ) },
+	// Player - Professions
+	{ "professions",                          OPT_STRING, &( professions_str                                ) },
     // Player - Haste										          
     { "haste_rating",                         OPT_INT,    &( initial_haste_rating                           ) },
     // Player - Attributes									          
