@@ -327,25 +327,6 @@ struct druid_attack_t : public attack_t
 };
 
 // ==========================================================================
-// Druid Spell
-// ==========================================================================
-
-struct druid_spell_t : public spell_t
-{
-  bool is_aoe;
-  druid_spell_t( const char* n, player_t* p, int s, int t ) : 
-    spell_t( n, p, RESOURCE_MANA, s, t ), is_aoe(false) {}
-  virtual double cost();
-  virtual double haste();
-  virtual double execute_time();
-  virtual void   execute();
-  virtual void   schedule_execute();
-  virtual void   consume_resource();
-  virtual void   player_buff();
-  virtual void   target_debuff( int dmg_type );
-};
-
-// ==========================================================================
 // Pet Treants
 // ==========================================================================
 
@@ -1758,9 +1739,59 @@ struct ferocious_bite_t : public druid_attack_t
   }
 };
 
-// =========================================================================
+
+// ==========================================================================
 // Druid Spell
-// =========================================================================
+// ==========================================================================
+
+struct druid_spell_t : public spell_t
+{
+  bool is_aoe;
+  int skip_on_eclipse;
+  druid_spell_t( const char* n, player_t* p, int s, int t ) : 
+    spell_t( n, p, RESOURCE_MANA, s, t ), is_aoe(false), skip_on_eclipse(0) {}
+  virtual void   consume_resource();
+  virtual double cost();
+  virtual void   execute();
+  virtual double execute_time();
+  virtual double haste();
+  virtual void   parse_options( option_t*, const std::string& options_str );
+  virtual void   player_buff();
+  virtual bool   ready();
+  virtual void   schedule_execute();
+  virtual void   target_debuff( int dmg_type );
+
+};
+
+// druid_spell_t::parse_options ============================================
+
+void druid_spell_t::parse_options( option_t*          options,
+                                    const std::string& options_str )
+{
+  option_t base_options[] =
+  {
+    { "skip_on_eclipse",  OPT_INT, &skip_on_eclipse        },
+    { NULL }
+  };
+  std::vector<option_t> merged_options;
+  spell_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
+}
+
+// druid_spell_t::ready ====================================================
+
+bool druid_spell_t::ready()
+{
+  if( ! spell_t::ready() )
+    return false;
+
+  druid_t*  p = player -> cast_druid();
+  
+  if( skip_on_eclipse > 0)
+    if( p -> _buffs.eclipse_starfire || p -> _buffs.eclipse_wrath )
+      return false;
+  
+  return true;
+}
 
 // druid_spell_t::cost =====================================================
 
@@ -2021,7 +2052,7 @@ struct innervate_t : public druid_spell_t
 struct insect_swarm_t : public druid_spell_t
 {
   double min_eclipse_left;
-  int skip_on_eclipse, wrath_ready;
+  int wrath_ready;
   action_t* active_wrath;
 
   insect_swarm_t( player_t* player, const std::string& options_str ) : 
@@ -2034,7 +2065,6 @@ struct insect_swarm_t : public druid_spell_t
     {
       { "wrath_ready",     OPT_INT, &wrath_ready      },
       { "eclipse_left>",   OPT_FLT, &min_eclipse_left },
-      { "skip_on_eclipse", OPT_INT, &skip_on_eclipse  },
      { NULL }
     };
     parse_options( options, options_str );
@@ -2082,10 +2112,6 @@ struct insect_swarm_t : public druid_spell_t
 
     druid_t* p = player -> cast_druid();
 
-    if( skip_on_eclipse > 0)
-      if( p -> _buffs.eclipse_starfire || p -> _buffs.eclipse_wrath )
-        return false;
-
     if( skip_on_eclipse < 0 )
       if( p -> _buffs.eclipse_starfire )
         return false;
@@ -2105,7 +2131,6 @@ struct insect_swarm_t : public druid_spell_t
 struct moonfire_t : public druid_spell_t
 {
   double min_eclipse_left;
-  int skip_on_eclipse;
   moonfire_t( player_t* player, const std::string& options_str ) : 
     druid_spell_t( "moonfire", player, SCHOOL_ARCANE, TREE_BALANCE )
   {
@@ -2114,7 +2139,6 @@ struct moonfire_t : public druid_spell_t
     option_t options[] =
     {
       { "eclipse_left>",   OPT_FLT, &min_eclipse_left },
-      { "skip_on_eclipse", OPT_INT, &skip_on_eclipse  },
       { NULL }
     };
     parse_options( options, options_str );
@@ -2178,10 +2202,6 @@ struct moonfire_t : public druid_spell_t
       return false;
       
     druid_t* p = player -> cast_druid();
-
-    if( skip_on_eclipse > 0)
-      if( p -> _buffs.eclipse_starfire || p -> _buffs.eclipse_wrath )
-        return false;
 
     if( skip_on_eclipse < 0 )
       if( p -> _buffs.eclipse_wrath )
@@ -2623,7 +2643,7 @@ struct wrath_t : public druid_spell_t
 
 struct starfall_t : public druid_spell_t
 {
-  int stars, skip_on_eclipse;
+  int stars;
   starfall_t( player_t* player, const std::string& options_str ) : 
     druid_spell_t( "starfall", player, SCHOOL_ARCANE, TREE_BALANCE )
   {
@@ -2706,7 +2726,6 @@ struct starfall_t : public druid_spell_t
 
     option_t options[] =
     {
-      { "skip_on_eclipse", OPT_INT, &skip_on_eclipse  },
       { NULL }
     };
     parse_options( options, options_str );
@@ -2775,18 +2794,6 @@ struct starfall_t : public druid_spell_t
     new ( sim ) event_starfall_star_t( sim, p );
   }
 
-  virtual bool ready() 
-  {
-    if( ! druid_spell_t::ready() )
-      return false;
-
-    druid_t* p = player -> cast_druid();
-    
-    if( skip_on_eclipse && ( p -> _buffs.eclipse_starfire || p -> _buffs.eclipse_wrath ) )
-      return false;
-
-    return true;
-  }
 };
 
 // Mark of the Wild Spell =====================================================
