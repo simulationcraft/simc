@@ -71,4 +71,16 @@ crypt_fever=1
 
 # To generate scale factors, set calculate_scale_factors=1
 calculate_scale_factors=0
-
+# Default amount to change each stat when calculating
+# scale factors
+#scale_strength=+250
+#scale_agility=+250
+#scale_intellect=+250
+#scale_spirit=+250
+#scale_spell_power=+250
+#scale_attack_power=+250
+#scale_expertise_rating=-150
+#scale_armor_penetration_rating=+250
+#scale_hit_rating=-200
+#scale_crit_rating=+250
+#scale_haste_rating=+250
