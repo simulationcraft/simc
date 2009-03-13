@@ -8,30 +8,7 @@ actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/divine_spirit/in
 actions+=/shadow_fiend,trigger=6000/dispersion
 actions+=/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/mind_flay
 actions+=/mana_potion
-
-# Gearset: http://www.chardev.org/?template=147140
-Caster_T7_Base_Gear.simcraft
-gear_stamina=966
-gear_intellect=972
-gear_spirit=585
-gear_crit_rating=449
-gear_hit_rating=288
-gear_haste_rating=463
-gear_spell_power=2041
-gear_mp5=15
-# Include 2 Professions.
-enchant_spell_power=+76
-tier7_2pc=0
-tier7_4pc=0
-
-# Glyphs
+Priest_T8_Shadow_Gear.simcraft
 glyph_shadow_word_pain=1
 glyph_shadow=1
 glyph_shadow_word_death=1
-
-# Meta Gem
-chaotic_skyflare=1
-
-# Item Procs
-illustration_of_the_dragon_soul=1
-dying_curse=1
