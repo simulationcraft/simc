@@ -128,10 +128,10 @@ action_tick_event_t::action_tick_event_t( sim_t*    sim,
   event_t( sim, a -> player ), action( a )
 {
   name = "Action Tick";
-
+  
   if( sim -> debug )
     report_t::log( sim, "New Action Tick Event: %s %s %d-of-%d %.2f",
-		   player -> name(), a -> name(), a -> current_tick, a -> num_ticks, time_to_tick );
+		   player -> name(), a -> name(), a -> current_tick + 1, a -> num_ticks, time_to_tick );
 
   sim -> add_event( this, time_to_tick );
 }

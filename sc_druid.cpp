@@ -1625,6 +1625,7 @@ struct tigers_fury_t : public druid_attack_t
     {
       expiration_t( sim_t* sim, player_t* player ): event_t( sim, player )
       {
+        name = "Tigers Fury Expiration";
         druid_t* p = player -> cast_druid();
         p -> aura_gain( "Tigers Fury" );
         p -> _buffs.tigers_fury = util_t::ability_rank( p -> level,  80.0,79, 60.0,71,  40.0,0 );
