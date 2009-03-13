@@ -17,7 +17,7 @@ actions+=/tricks_of_the_trade
 actions+=/blade_flurry
 actions+=/rupture,min_combo_points=5
 actions+=/eviscerate,min_combo_points=5
-actions+=/sinister_strike,max_combo_points=4,energy>=80
+actions+=/hemorrhage,max_combo_points=3,energy>=80
 
 # Gear
 gear_stamina=953
