@@ -9,9 +9,6 @@
 // Hunter
 // ==========================================================================
 
-// 3.1 TODO list
-// * New pet talents
-
 struct hunter_pet_t;
 
 enum { ASPECT_NONE=0, ASPECT_HAWK, ASPECT_VIPER, ASPECT_BEAST, ASPECT_MAX };
@@ -38,6 +35,7 @@ struct hunter_t : public player_t
     int    call_of_the_wild;
     int    cobra_strikes;
     int    expose_weakness;
+    int    furious_howl;
     double improved_aspect_of_the_hawk;
     int    improved_steady_shot;
     int    lock_and_load;
@@ -92,6 +90,7 @@ struct hunter_t : public player_t
   // Uptimes
   uptime_t* uptimes_aspect_of_the_viper;
   uptime_t* uptimes_expose_weakness;
+  uptime_t* uptimes_furious_howl;
   uptime_t* uptimes_improved_aspect_of_the_hawk;
   uptime_t* uptimes_improved_steady_shot;
   uptime_t* uptimes_master_tactician;
@@ -221,6 +220,7 @@ struct hunter_t : public player_t
     // Up-Times
     uptimes_aspect_of_the_viper         = get_uptime( "aspect_of_the_viper" );
     uptimes_expose_weakness             = get_uptime( "expose_weakness" );
+    uptimes_furious_howl                = get_uptime( "furious_howl" );
     uptimes_improved_aspect_of_the_hawk = get_uptime( "improved_aspect_of_the_hawk" );
     uptimes_improved_steady_shot        = get_uptime( "improved_steady_shot" );
     uptimes_master_tactician            = get_uptime( "master_tactician" );
@@ -326,6 +326,7 @@ struct hunter_pet_t : public pet_t
     int bestial_wrath;
     int call_of_the_wild;
     int frenzy;
+    int furious_howl;
     int kill_command;
     int owls_focus;
     int wolverine_bite;
@@ -449,13 +450,17 @@ struct hunter_pet_t : public pet_t
     hunter_t* o = owner -> cast_hunter();
 
     double ap = player_t::composite_attack_power();
+
     ap += o -> stamina() * o -> talents.hunter_vs_wild * 0.1;
     ap += o -> composite_attack_power() * 0.22 * (1 + talents.wild_hunt * 0.20);
+    ap += _buffs.furious_howl;
 
     if( o -> active_aspect == ASPECT_BEAST )
       ap *= 1.1;
+
     if( _buffs.rabid_power_stack )
       ap *= 1.0 + _buffs.rabid_power_stack * 0.05;
+
     if( _buffs.call_of_the_wild )
       ap *= 1.1;
 
@@ -1757,15 +1762,15 @@ struct call_of_the_wild_t : public hunter_pet_spell_t
   {
     hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
 
-    struct cotw_expiration_t : public event_t
+    struct expiration_t : public event_t
     {
-      cotw_expiration_t( sim_t* sim, hunter_pet_t* p ) : event_t( sim, p )
+      expiration_t( sim_t* sim, hunter_pet_t* p ) : event_t( sim, p )
       {
         hunter_t*     o = p -> owner -> cast_hunter();
         name = "Call of the Wild Expiration";
         p -> aura_gain( "Call of the Wild" );
-        p -> _buffs.call_of_the_wild = 1;
         o -> aura_gain( "Call of the Wild" );
+        p -> _buffs.call_of_the_wild = 1;
         o -> _buffs.call_of_the_wild = 1;
         sim -> add_event( this, 20.0 );
       }
@@ -1774,8 +1779,8 @@ struct call_of_the_wild_t : public hunter_pet_spell_t
         hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
         hunter_t*     o = p -> owner -> cast_hunter();
         p -> aura_loss( "Call of the Wild" );
-        p -> _buffs.call_of_the_wild = 0;
         o -> aura_loss( "Call of the Wild" );
+        p -> _buffs.call_of_the_wild = 0;
         o -> _buffs.call_of_the_wild = 0;
       }
     };
@@ -1784,7 +1789,61 @@ struct call_of_the_wild_t : public hunter_pet_spell_t
     consume_resource();
     update_ready();
     player -> action_finish( this );
-    new ( sim ) cotw_expiration_t( sim, p );
+    new ( sim ) expiration_t( sim, p );
+  }
+};
+
+// Furious Howl ===============================================================
+
+struct furious_howl_t : public hunter_pet_spell_t
+{
+  furious_howl_t( player_t* player, const std::string& options_str ) :
+    hunter_pet_spell_t( "furious_howl", player, RESOURCE_FOCUS )
+  {
+    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    hunter_t*     o = p -> owner -> cast_hunter();
+
+    assert( p -> pet_type == PET_WOLF );
+
+    parse_options( 0, options_str );
+
+    base_cost = 20;
+    cooldown  = 40 * ( 1.0 - o -> talents.longevity * 0.10 );
+    trigger_gcd = 0.0;
+  }
+
+  virtual void execute()
+  {
+    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+
+    struct expiration_t : public event_t
+    {
+      expiration_t( sim_t* sim, hunter_pet_t* p ) : event_t( sim, p )
+      {
+        hunter_t*     o = p -> owner -> cast_hunter();
+        name = "Call of the Wild Expiration";
+        p -> aura_gain( "Furious Howl" );
+        o -> aura_gain( "Furious Howl" );
+        p -> _buffs.furious_howl = 4 * p -> level;
+        o -> _buffs.furious_howl = 4 * p -> level;
+        sim -> add_event( this, 20.0 );
+      }
+      virtual void execute()
+      {
+        hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+        hunter_t*     o = p -> owner -> cast_hunter();
+        p -> aura_loss( "Furious Howl" );
+        o -> aura_loss( "Furious Howl" );
+        p -> _buffs.furious_howl = 0;
+        o -> _buffs.furious_howl = 0;
+      }
+    };
+
+    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    consume_resource();
+    update_ready();
+    player -> action_finish( this );
+    new ( sim ) expiration_t( sim, p );
   }
 };
 
@@ -1890,6 +1949,7 @@ action_t* hunter_pet_t::create_action( const std::string& name,
   if( name == "call_of_the_wild"  ) return new  call_of_the_wild_t( this, options_str );
   if( name == "claw"              ) return new        focus_dump_t( this, options_str, "claw" );
   if( name == "froststorm_breath" ) return new froststorm_breath_t( this, options_str );
+  if( name == "furious_howl"      ) return new      furious_howl_t( this, options_str );
   if( name == "lightning_breath"  ) return new  lightning_breath_t( this, options_str );
   if( name == "rabid"             ) return new             rabid_t( this, options_str );
   if( name == "rake"              ) return new              rake_t( this, options_str );
@@ -3488,6 +3548,9 @@ double hunter_t::composite_attack_power()
   ap += _buffs.aspect_of_the_hawk;
   ap += intellect() * talents.careful_aim / 3.0;
   ap += stamina() * talents.hunter_vs_wild * 0.1;
+
+  ap += _buffs.furious_howl;
+  uptimes_furious_howl -> update( _buffs.furious_howl != 0 );
 
   if( _buffs.expose_weakness ) ap += agility() * 0.25;
   uptimes_expose_weakness -> update( _buffs.expose_weakness != 0 );

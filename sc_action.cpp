@@ -689,6 +689,7 @@ void action_t::refresh_duration()
   // every "base_tick_time" seconds.  To determine the new finish time for the DoT, start 
   // from the time of the next tick and add the time for the remaining ticks to that event.
   duration_ready = tick_event -> time + base_tick_time * ( num_ticks - 1 );
+  player -> share_duration( duration_group, duration_ready );
 
   current_tick = 0;
 }
@@ -698,9 +699,11 @@ void action_t::refresh_duration()
 void action_t::extend_duration( int extra_ticks )
 {
 
-  num_ticks += extra_ticks;
+    num_ticks += extra_ticks;
   added_ticks += extra_ticks;
+
   duration_ready += tick_time() * extra_ticks;
+  player -> share_duration( duration_group, duration_ready );
 
   if( sim -> debug ) report_t::log( sim, "%s extends duration of %s, adding %d tick(s), totalling %d ticks", player -> name(), name(), extra_ticks, num_ticks );
 }
