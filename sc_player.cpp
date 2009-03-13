@@ -281,6 +281,7 @@ void player_t::init()
   init_rating();
   init_base();
   init_core();
+  init_race();
   init_spell();
   init_attack();
   init_weapon( &main_hand_weapon, main_hand_str );
@@ -326,6 +327,23 @@ void player_t::init_core()
   for( int i=0; i < ATTRIBUTE_MAX; i++ )
   {
     attribute[ i ] = attribute_initial[ i ];
+  }  
+}
+
+// player_t::init_race ======================================================
+
+void player_t::init_race()
+{
+  int r;  
+  for( r=0; r < RACE_MAX; r++ )
+  {
+    const char* name = util_t::race_type_string( r );
+    if( race_str == name ) break;
+  }
+
+  if( r < PROF_MAX )
+  {
+    race = r;
   }
 }
 

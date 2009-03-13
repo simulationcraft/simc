@@ -528,7 +528,7 @@ struct profession_t
 struct player_t
 {
   sim_t*      sim;
-  std::string name_str, race_str, talents_str;
+  std::string name_str, talents_str;
   player_t*   next;
   int         type, level, party, member;
   double      gcd_ready, base_gcd;
@@ -539,6 +539,10 @@ struct player_t
   // Profs
   std::string   prof1_str, prof2_str;
   profession_t  prof1,     prof2;
+
+  // Race
+  std::string race_str;
+  int         race;
 
   // Haste
   int    base_haste_rating, initial_haste_rating, haste_rating;
@@ -940,11 +944,11 @@ struct player_t
   virtual ~player_t();
 
   virtual const char* name() { return name_str.c_str(); }
-  virtual const char* race() { return race_str.c_str(); }
-
+  
   virtual void init();
   virtual void init_base() = 0;
   virtual void init_core();
+  virtual void init_race();
   virtual void init_spell();
   virtual void init_attack();
   virtual void init_weapon( weapon_t*, std::string& );
