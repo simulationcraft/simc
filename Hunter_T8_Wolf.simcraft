@@ -1,0 +1,9 @@
+pet=wolf
+call_of_the_wild=1
+cobra_reflexes=2
+rabid=1
+spiders_bite=3
+spiked_collar=3
+wild_hunt=1
+actions=auto_attack/furious_howl/call_of_the_wild/rabid/bite
+active=owner
