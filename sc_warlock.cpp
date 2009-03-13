@@ -3077,9 +3077,9 @@ struct drain_soul_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::target_debuff( dmg_type );
-    if( p -> _buffs.haunted )
+    if( p -> _buffs.haunted && sim -> patch.before( 3, 1, 0 ) )
     {
-      // Haunt currently does not affect Drain Soul
+      // Haunt did not affect Drain Soul prior to 3.1
       target_multiplier /= 1.20;
     }
   }
@@ -3566,7 +3566,9 @@ struct conflagrate_t : public warlock_spell_t
       base_cost       *= 1.0 - ( p -> talents.cataclysm * 0.03
                              + ( ( p -> talents.cataclysm ) ? 0.01 : 0 ) );
     }
-    base_multiplier  *= 1.0 + p -> talents.emberstorm  * 0.03;
+    base_multiplier  *= 1.0 + p -> talents.emberstorm        * 0.03
+                            + p -> talents.aftermath         * 0.03
+                            + p -> talents.improved_immolate * 0.10;
     base_crit        += p -> talents.devastation * 0.05;
     base_crit        += p -> talents.backlash * 0.01;
 
