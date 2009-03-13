@@ -1525,6 +1525,7 @@ struct inner_focus_t : public priest_spell_t
     free_action = p -> create_action( spell_name.c_str(), spell_options.c_str() );
     free_action -> base_cost = 0;
     free_action -> background = true;
+	free_action -> base_crit += 0.25;
   }
    
   virtual void execute()
