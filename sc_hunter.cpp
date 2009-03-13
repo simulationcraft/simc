@@ -328,6 +328,7 @@ struct hunter_pet_t : public pet_t
     int frenzy;
     int furious_howl;
     int kill_command;
+    int monstrous_bite;
     int owls_focus;
     int wolverine_bite;
     int rabid;
@@ -343,6 +344,7 @@ struct hunter_pet_t : public pet_t
   struct _expirations_t
   {
     event_t* frenzy;
+    event_t* monstrous_bite;
     event_t* owls_focus;
 
     void reset() { memset( (void*) this, 0x00, sizeof( _expirations_t ) ); }
@@ -358,6 +360,7 @@ struct hunter_pet_t : public pet_t
 
   // Uptimes
   uptime_t* uptimes_frenzy;
+  uptime_t* uptimes_monstrous_bite;
 
   // Auto-Attack
   attack_t* main_hand_attack;
@@ -383,6 +386,8 @@ struct hunter_pet_t : public pet_t
   hunter_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name, int pt ) :
     pet_t( sim, owner, pet_name ), pet_type(pt), main_hand_attack(0)
   {
+    hunter_t* o = owner -> cast_hunter();
+
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.damage     = (51.0+78.0)/2; // FIXME only level 80 value
     main_hand_weapon.swing_time = 2.0;
@@ -396,7 +401,8 @@ struct hunter_pet_t : public pet_t
     procs_placeholder = get_proc( "placeholder" );
 
     // Uptimes
-    uptimes_frenzy = get_uptime( "frenzy" );
+    uptimes_frenzy         = o -> get_uptime( "frenzy" );
+    uptimes_monstrous_bite = o -> get_uptime( "monstrous_bite" );
   }
 
   virtual void reset()
@@ -1405,6 +1411,9 @@ struct hunter_pet_attack_t : public attack_t
 
     if( p -> _buffs.bestial_wrath ) player_multiplier *= 1.5;
 
+    player_multiplier *= 1.0 + p -> _buffs.monstrous_bite * 0.03;
+    p -> uptimes_monstrous_bite -> update( p -> _buffs.monstrous_bite == 3 );
+
     trigger_feeding_frenzy( this );
 
     if( special )
@@ -1522,6 +1531,65 @@ struct rake_t : public hunter_pet_attack_t
   {
     hunter_pet_attack_t::update_ready();
     duration_ready = 0;
+  }
+};
+
+// Devilsaur Monstrous Bite ===================================================
+
+struct monstrous_bite_t : public hunter_pet_attack_t
+{
+  monstrous_bite_t( player_t* player, const std::string& options_str ) :
+    hunter_pet_attack_t( "monstrous_bite", player, RESOURCE_FOCUS, SCHOOL_PHYSICAL )
+  {
+    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    hunter_t*     o = p -> owner -> cast_hunter();
+
+    assert( p -> pet_type == PET_DEVILSAUR );
+
+    parse_options( 0, options_str );
+
+    base_cost        = 20;
+    base_direct_dmg  = 107;
+    cooldown         = 10 * ( 1.0 - o -> talents.longevity * 0.10 );
+  }
+
+  virtual void execute()
+  {
+    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+
+    hunter_pet_attack_t::execute();
+
+    struct expiration_t : public event_t
+    {
+      expiration_t( sim_t* sim, hunter_pet_t* p ) : event_t( sim, p )
+      {
+        name = "Monstrous Bite Expiration";
+        p -> aura_gain( "Monstrous Bite" );
+        sim -> add_event( this, 12.0 );
+      }
+      virtual void execute()
+      {
+        hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+        p -> aura_loss( "Monstrous Bite" );
+        p -> _buffs.monstrous_bite = 0;
+      }
+    };
+
+    if( p -> _buffs.monstrous_bite < 3 )
+    {
+      p -> _buffs.monstrous_bite++;
+    }
+
+    event_t*& e = p -> _expirations.monstrous_bite;
+
+    if( e )
+    {
+      e -> reschedule( 12.0 );
+    }
+    else
+    {
+      e = new ( sim ) expiration_t( sim, p );
+    }
   }
 };
 
@@ -1951,6 +2019,7 @@ action_t* hunter_pet_t::create_action( const std::string& name,
   if( name == "froststorm_breath" ) return new froststorm_breath_t( this, options_str );
   if( name == "furious_howl"      ) return new      furious_howl_t( this, options_str );
   if( name == "lightning_breath"  ) return new  lightning_breath_t( this, options_str );
+  if( name == "monstrous_bite"    ) return new    monstrous_bite_t( this, options_str );
   if( name == "rabid"             ) return new             rabid_t( this, options_str );
   if( name == "rake"              ) return new              rake_t( this, options_str );
   if( name == "roar_of_recovery"  ) return new  roar_of_recovery_t( this, options_str );

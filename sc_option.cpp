@@ -265,12 +265,19 @@ bool option_t::parse( sim_t*       sim,
     }
     else
     {
-      for( sim -> active_player = sim -> player_list; sim -> active_player; sim -> active_player = sim -> active_player -> next )
+      if( sim -> active_player )
       {
-	if( value == sim -> active_player -> name() )
-	  break;
+	sim -> active_player = sim -> active_player -> find_pet( value );
       }
-      assert( sim -> active_player );
+      if( ! sim -> active_player )
+      {
+	sim -> active_player = sim -> find_player( value );
+      }
+      if( ! sim -> active_player )
+      {
+	printf( "simcraft: Unable to find player %s\n", value.c_str() );
+	exit(0);
+      }
     }
   }
   else if( name == "talents" )
