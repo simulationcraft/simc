@@ -465,12 +465,13 @@ static void trigger_cut_to_the_chase( rogue_attack_t* a )
 
   if( a -> sim -> roll( p -> talents.cut_to_the_chase * 0.20 ) )
   {
+    int combo_points = p -> _buffs.combo_points;
     p -> _buffs.combo_points = 5;
     if( p -> active_slice_and_dice )
     {
       p -> active_slice_and_dice -> refresh_duration();
     }
-    p -> _buffs.combo_points = 0;
+    p -> _buffs.combo_points = combo_points;
   }
 }
 
