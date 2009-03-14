@@ -1311,13 +1311,7 @@ struct envenom_t : public rogue_attack_t
 
     rogue_t* p = player -> cast_rogue();
 
-    int doses_consumed = 0;
-
-    if( ! p -> glyphs.envenom ) 
-    {
-      doses_consumed = std::min( p -> _buffs.poison_doses, p -> _buffs.combo_points );
-    }
-
+    int doses_consumed = std::min( p -> _buffs.poison_doses, p -> _buffs.combo_points );
     double envenom_duration = 1.0 + p -> _buffs.combo_points;
 
     event_t*& e = p -> _expirations.envenom;
@@ -2470,7 +2464,7 @@ struct deadly_poison_t : public rogue_poison_t
     {
       double chance = 0.30;
       chance += p -> talents.improved_poisons * 0.02;
-      if( p -> _buffs.envenom ) chance += 0.15;
+      if( p -> _buffs.envenom ) chance += 0.15 + p -> talents.master_poisoner * .15;
       p -> uptimes_envenom -> update( p -> _buffs.envenom != 0 );
       success = sim -> roll( chance );
     }
@@ -3290,7 +3284,6 @@ bool rogue_t::parse_option( const std::string& name,
     { "glyph_adrenaline_rush",      OPT_INT, &( glyphs.adrenaline_rush             ) },
     { "glyph_backstab",             OPT_INT, &( glyphs.backstab                    ) },
     { "glyph_blade_flurry",         OPT_INT, &( glyphs.blade_flurry                ) },
-    { "glyph_envenom",              OPT_INT, &( glyphs.envenom                     ) },
     { "glyph_eviscerate",           OPT_INT, &( glyphs.eviscerate                  ) },
     { "glyph_expose_armor",         OPT_INT, &( glyphs.expose_armor                ) },
     { "glyph_feint",                OPT_INT, &( glyphs.feint                       ) },
