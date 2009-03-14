@@ -326,11 +326,9 @@ struct rogue_poison_t : public spell_t
 
     proc = true;
 
-    base_crit += p -> talents.malice * 0.01;
     base_hit  += p -> talents.precision * 0.01;
-
-    base_multiplier *= 1.0 + ( util_t::talent_rank( p -> talents.find_weakness, 3, 0.03 ) +
-                               util_t::talent_rank( p -> talents.vile_poisons,  3, 0.07, 0.14, 0.20 ) );
+	
+	base_multiplier *= 1.0 + util_t::talent_rank( p -> talents.vile_poisons,  3, 0.07, 0.14, 0.20 );
 
     base_crit_multiplier *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
 
@@ -1099,8 +1097,7 @@ struct ambush_t : public rogue_attack_t
     base_cost             -= p -> talents.slaughter_from_the_shadows * 3;
     base_multiplier       *= 1.0 + ( p -> talents.find_weakness * 0.02 +
                                      p -> talents.opportunity   * 0.10 );
-    base_crit                  += p -> talents.improved_ambush * 0.25;
-    base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
+    base_crit             += p -> talents.improved_ambush * 0.25;
   }
 
   virtual void execute()
@@ -1478,9 +1475,9 @@ struct expose_armor_t : public rogue_attack_t
       
     static rank_t ranks[] =
     {
-      { 77, 7, 0, 0, 450, 25 },
+      { 77, 7, 0, 0, 785, 25 },
       { 66, 6, 0, 0, 520, 25 },
-      { 56, 5, 0, 0, 785, 25 },
+      { 56, 5, 0, 0, 450, 25 },
       { 0, 0 }
     };
     init_rank( ranks );
@@ -1500,7 +1497,7 @@ struct expose_armor_t : public rogue_attack_t
     {
       target_t* t = sim -> target;
 
-      double debuff = ( sim -> P309 ? base_td_init : 0.04 ) * p -> _buffs.combo_points;
+      double debuff = ( sim -> P309 ) ? ( base_td_init * p -> _buffs.combo_points ) : 0.2;
 
       if( debuff >= t -> debuffs.expose_armor )
       {
@@ -1518,7 +1515,8 @@ struct expose_armor_t : public rogue_attack_t
           }
         };
 
-        double duration = p -> glyphs.expose_armor ? 40 : 30;
+        double duration = ( sim -> P309 ) ? 30 : 6 * p -> _buffs.combo_points; 
+		if(p -> glyphs.expose_armor) duration += 10;
 
         t -> debuffs.expose_armor = debuff;
 
@@ -1822,7 +1820,6 @@ struct killing_spree_t : public rogue_attack_t
     base_tick_time  = 0.5;
     base_cost       = 0;
     base_multiplier *= 1.0 + p -> talents.find_weakness * 0.02;
-    base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
 
     if( p -> glyphs.killing_spree ) cooldown -= 45;
   }
@@ -2037,7 +2034,7 @@ struct rupture_t : public rogue_attack_t
     base_cost             = 25;
     base_tick_time        = 2.0; 
     base_multiplier      *= 1.0 + ( p -> talents.blood_spatter   * 0.15 +
-                                    p -> talents.find_weakness   * 0.03 +
+                                    p -> talents.find_weakness   * 0.02 +
                                     p -> talents.serrated_blades * 0.10 +
                                     p -> gear.tier7_2pc          * 0.10 );
 
@@ -2238,6 +2235,7 @@ struct slice_and_dice_t : public rogue_attack_t
     consume_resource();
     trigger_relentless_strikes( this );
     clear_combo_points( p );
+	trigger_ruthlessness( this );
     p -> active_slice_and_dice = this;
   }
 
@@ -2350,10 +2348,11 @@ void rogue_poison_t::player_buff()
   player_power     = p -> composite_attack_power();
   power_multiplier = p -> composite_attack_power_multiplier();
 
+  /* Poisons are not affected by Cold Blood
   if( p -> _buffs.cold_blood )
   {
     player_crit += 1.0;
-  }
+  }*/
   if( p -> _buffs.hunger_for_blood )
   {
     player_multiplier *= 1.0 + p -> _buffs.hunger_for_blood * 0.01 + p -> glyphs.hunger_for_blood * 0.03;
@@ -2374,11 +2373,12 @@ void rogue_poison_t::player_buff()
       player_multiplier      *= 1.0 + p -> talents.murder * 0.02;
       player_crit_multiplier *= 1.0 + p -> talents.murder * 0.02;
     }
-  }
+  } 
+  /* ShS works only on the ability itself.
   if( p -> _buffs.shadowstep )
   {
     player_multiplier *= 1.2;
-  }
+  }*/
   if( p -> _buffs.killing_spree && ! sim -> P309 )
   {
     player_multiplier *= 1.20;
@@ -2409,27 +2409,15 @@ struct anesthetic_poison_t : public rogue_poison_t
 
   virtual void execute()
   {
-    rogue_t* p = player -> cast_rogue();
-    double chance;
-    if( sim -> P309 )
-    {
-      chance = p -> _buffs.shiv ? 1.00 : 0.50;
-      may_crit = true;
-    }
-    else // P31+
-    {
-      if( p -> _buffs.shiv )
-      {
-	chance = 1.0;
-	may_crit = false;
-      }
-      else
-      {
-	double PPM = 21.43;
-	chance = weapon -> proc_chance_on_swing( PPM );
-	may_crit = true;
-      }
-    }
+	rogue_t* p = player -> cast_rogue();
+	// Anesthtic is not on PPM on PTR
+    double chance = p -> _buffs.shiv ? 1.00 : 0.50;
+	if( sim -> P309 ) may_crit = true;
+	else {
+		if( p -> _buffs.shiv ) may_crit = false;
+		else may_crit = true;
+	}
+	
     if( sim -> roll( chance ) )
     {
       rogue_poison_t::execute();
@@ -2464,8 +2452,13 @@ struct deadly_poison_t : public rogue_poison_t
     {
       double chance = 0.30;
       chance += p -> talents.improved_poisons * 0.02;
-      if( p -> _buffs.envenom ) chance += 0.15 + p -> talents.master_poisoner * .15;
-      p -> uptimes_envenom -> update( p -> _buffs.envenom != 0 );
+      if( p -> _buffs.envenom )
+	  {
+	    chance += 0.15;
+		// Master Poisoner gives DP app rate to Envenom only on PTR
+	    if( ! sim -> P309 ) chance += p -> talents.master_poisoner * .15;
+	  }
+	  p -> uptimes_envenom -> update( p -> _buffs.envenom != 0 );
       success = sim -> roll( chance );
     }
 
