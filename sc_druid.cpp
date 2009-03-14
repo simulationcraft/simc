@@ -3099,8 +3099,11 @@ void druid_t::regen( double periodicity )
 {
   player_t::regen( periodicity );
 
-  uptimes_energy_cap -> update( resource_current[ RESOURCE_ENERGY ] == 
-                                resource_max    [ RESOURCE_ENERGY ] );
+  if( resource_max[ RESOURCE_ENERGY ] > 0 )
+  {
+    uptimes_energy_cap -> update( resource_current[ RESOURCE_ENERGY ] == 
+				  resource_max    [ RESOURCE_ENERGY ] );
+  }
 }
 
 // druid_t::composite_attack_power ==========================================

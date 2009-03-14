@@ -2041,7 +2041,7 @@ double hunter_attack_t::cost()
   hunter_t* p = player -> cast_hunter();
   double c = attack_t::cost();
   if( c == 0 ) return 0;
-  c *= 1.0 - p -> talents.efficiency * 0.02;
+  c *= 1.0 - p -> talents.efficiency * ( sim -> P309 ? 0.02 : 0.03 );
   if( p -> _buffs.rapid_fire && p -> sim -> P309 ) c *= 1.0 - p -> talents.rapid_recuperation * 0.3;
   if( p -> _buffs.beast_within ) c *= 0.80;
   return c;
