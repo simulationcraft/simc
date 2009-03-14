@@ -157,14 +157,15 @@ void target_t::init()
     }
   }
 
-  uptimes.blood_frenzy    = get_uptime( "blood_frenzy"    );
-  uptimes.improved_scorch = get_uptime( "improved_scorch" );
-  uptimes.mangle          = get_uptime( "mangle"          );
-  uptimes.master_poisoner = get_uptime( "master_poisoner" );
-  uptimes.savage_combat   = get_uptime( "savage_combat"   );
-  uptimes.totem_of_wrath  = get_uptime( "totem_of_wrath"  );
-  uptimes.winters_chill   = get_uptime( "winters_chill"   );
-  uptimes.winters_grasp   = get_uptime( "winters_grasp"   );
+  uptimes.blood_frenzy         = get_uptime( "blood_frenzy"         );
+  uptimes.improved_scorch      = get_uptime( "improved_scorch"      );
+  uptimes.improved_shadow_bolt = get_uptime( "improved_shadow_bolt" );
+  uptimes.mangle               = get_uptime( "mangle"               );
+  uptimes.master_poisoner      = get_uptime( "master_poisoner"      );
+  uptimes.savage_combat        = get_uptime( "savage_combat"        );
+  uptimes.totem_of_wrath       = get_uptime( "totem_of_wrath"       );
+  uptimes.winters_chill        = get_uptime( "winters_chill"        );
+  uptimes.winters_grasp        = get_uptime( "winters_grasp"        );
 }
 
 // target_t::reset ===========================================================
@@ -195,6 +196,7 @@ void target_t::combat_begin()
   if( sim -> optimal_raid || sim -> overrides.ferocious_inspiration ) debuffs.ferocious_inspiration = 1;
   if( sim -> optimal_raid || sim -> overrides.hunters_mark          ) debuffs.hunters_mark = 450;
   if( sim -> optimal_raid || sim -> overrides.improved_scorch       ) debuffs.improved_scorch = 5;
+  if( sim -> optimal_raid || sim -> overrides.improved_shadow_bolt  ) debuffs.improved_shadow_bolt = 5;
   if( sim -> optimal_raid || sim -> overrides.judgement_of_wisdom   ) debuffs.judgement_of_wisdom = 1;
   if( sim -> optimal_raid || sim -> overrides.mangle                ) debuffs.mangle = 1;
   if( sim -> optimal_raid || sim -> overrides.master_poisoner       ) debuffs.master_poisoner = 1;

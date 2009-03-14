@@ -1054,6 +1054,44 @@ static void decrement_shadow_vulnerability( warlock_t* p )
   }
 }
 
+// trigger_improved_shadow_bolt ===========================================
+static void trigger_improved_shadow_bolt( spell_t* s )
+{
+  warlock_t* p = s -> player -> cast_warlock();
+
+  if( ! p -> talents.improved_shadow_bolt ) return;
+
+  struct expiration_t : public event_t
+  {
+    expiration_t( sim_t* sim, warlock_t* p ) : event_t( sim )
+    {
+      if( sim -> log ) report_t::log( sim, "%s gains Improved Shadow Bolt %d", sim -> target -> name(), sim -> target -> debuffs.improved_shadow_bolt );
+      name = "Improved Shadow Bolt Expiration";
+      sim -> add_event( this, 30.0 );
+      sim -> target -> debuffs.improved_shadow_bolt = p -> talents.improved_shadow_bolt;
+    }
+    virtual void execute()
+    {
+      if( sim -> log ) report_t::log( sim, "%s loses Improved Shadow Bolt", sim -> target -> name() );
+      sim -> target -> debuffs.improved_shadow_bolt = 0;
+      sim -> target -> expirations.improved_shadow_bolt = 0;
+    }
+  };
+    
+  target_t* t = s -> sim -> target;
+
+  event_t*& e = t -> expirations.improved_shadow_bolt;
+        
+  if( e )
+  {
+    e -> reschedule( 30.0 );
+  }
+  else
+  {
+    e = new ( s -> sim ) expiration_t( s -> sim, p );
+  }
+}
+
 // trigger_shadow_vulnerability =============================================
 
 static void trigger_shadow_vulnerability( spell_t* s )
@@ -2466,8 +2504,15 @@ struct shadow_bolt_t : public warlock_spell_t
       stack_shadow_embrace( this );
       trigger_soul_leech( this );
       trigger_tier5_4pc( this, p -> active_corruption );
-      decrement_shadow_vulnerability( p );
-      if( result == RESULT_CRIT ) trigger_shadow_vulnerability( this );
+      if( sim -> patch.before( 3, 1, 0 ) )
+      {
+        decrement_shadow_vulnerability( p );
+        if( result == RESULT_CRIT ) trigger_shadow_vulnerability( this );
+      }
+      else
+      {
+        trigger_improved_shadow_bolt( this );
+      }
     }
     if( p -> buffs.tier7_2pc )
     {
@@ -2482,8 +2527,11 @@ struct shadow_bolt_t : public warlock_spell_t
 
     warlock_spell_t::player_buff();
 
-    if( p -> _buffs.shadow_vulnerability ) player_multiplier *= 1.0 + p -> talents.improved_shadow_bolt * 0.02;
-    p -> uptimes_shadow_vulnerability -> update( p -> _buffs.shadow_vulnerability != 0 );
+    if( sim -> patch.before( 3, 1, 0 ) )
+    {
+      if( p -> _buffs.shadow_vulnerability ) player_multiplier *= 1.0 + p -> talents.improved_shadow_bolt * 0.02;
+      p -> uptimes_shadow_vulnerability -> update( p -> _buffs.shadow_vulnerability != 0 );
+    }
 
     if( p -> buffs.tier7_2pc ) player_crit += 0.10;
     p -> uptimes_demonic_soul -> update( p -> buffs.tier7_2pc != 0 );

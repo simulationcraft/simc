@@ -378,6 +378,7 @@ struct sim_t
     int improved_divine_spirit;
     int improved_moonkin_aura;
     int improved_scorch;
+    int improved_shadow_bolt;
     int leader_of_the_pack;
     int mana_spring;
     int mangle;
@@ -1137,6 +1138,7 @@ struct target_t
     double hunters_mark;
     int    improved_faerie_fire;
     int    improved_scorch;
+    int    improved_shadow_bolt;
     int    judgement_of_wisdom;
     int    mangle;
     int    master_poisoner;
@@ -1171,6 +1173,7 @@ struct target_t
     event_t* hunters_mark; 
     event_t* improved_faerie_fire;
     event_t* improved_scorch;
+    event_t* improved_shadow_bolt;
     event_t* mangle;
     event_t* nature_vulnerability;
     event_t* shadow_vulnerability;
@@ -1186,6 +1189,7 @@ struct target_t
   {
     uptime_t* blood_frenzy;
     uptime_t* improved_scorch;
+    uptime_t* improved_shadow_bolt;
     uptime_t* mangle;
     uptime_t* master_poisoner;
     uptime_t* savage_combat;
