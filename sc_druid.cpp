@@ -1204,6 +1204,12 @@ struct faerie_fire_feral_t : public druid_attack_t
   virtual void execute()
   {
     druid_t* p = player -> cast_druid();
+    if( p -> _buffs.cat_form )
+    {
+      // The damage component is only active in (Dire) Bear Form
+      direct_power_mod = 0;
+      base_dd_min = base_dd_max = 0;
+    }
     if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
     if( p -> _buffs.bear_form ) druid_attack_t::execute();
     trigger_faerie_fire( this );
@@ -1214,7 +1220,7 @@ struct faerie_fire_feral_t : public druid_attack_t
   {
     if( ! druid_attack_t::ready() )
       return false;
-
+    
     if( debuff_only && sim -> target -> debuffs.faerie_fire )
       return false;
 
@@ -1984,7 +1990,7 @@ struct innervate_t : public druid_spell_t
     };
     parse_options( options, options_str );
 
-    base_cost = p -> resource_base[ RESOURCE_MANA ] * 0.04;
+    base_cost = ( sim -> P309 ?  p -> resource_base[ RESOURCE_MANA ] * 0.04 : 0 );
     base_execute_time = 0;
     cooldown  = 480;
     harmful   = false;
