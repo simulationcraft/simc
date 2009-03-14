@@ -15,6 +15,7 @@ actions+=/slice_and_dice,min_combo_points=3,snd<=2
 actions+=/slice_and_dice,min_combo_points=1,snd<=0.1
 actions+=/tricks_of_the_trade
 actions+=/killing_spree,energy<=30/blade_flurry
+actions+=/rupture,min_combo_points=5
 actions+=/envenom,min_combo_points=5,snd>=4,energy>=60
 actions+=/sinister_strike,max_combo_points=4
 actions+=/adrenaline_rush
@@ -48,6 +49,6 @@ darkmoon_greatness=1
 fury_of_the_five_flights=1
 
 # Glyphs
-glyph_envenom=1
+glyph_rupture=1
 glyph_slice_and_dice=1
 glyph_sinister_strike=1
