@@ -223,14 +223,11 @@ void spell_t::calculate_result()
     }
   }
 
-  if( ( result == RESULT_NONE ) && may_resist )
+  if( ( result == RESULT_NONE ) && may_resist && binary )
   {
-    if( binary || num_ticks )
+    if( sim -> roll( resistance() ) )
     {
-      if( sim -> roll( resistance() ) )
-      {
-	result = RESULT_RESIST;
-      }
+      result = RESULT_RESIST;
     }
   }
 
