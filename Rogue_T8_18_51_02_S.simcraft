@@ -10,7 +10,8 @@ talents=http://ptr.wowhead.com/?talent=f0eb0eZMgVo0cxqru0xRtb
 
 # Action queue
 actions=flask,type=endless_rage/food,type=fish_feast/apply_poison,main_hand=wound,off_hand=wound
-actions+=/auto_attack 
+actions+=/auto_attack
+actions+=/slice_and_dice,min_combo_points=1,snd<=2,time<=4
 actions+=/pool_energy,energy<=60,snd<=5/slice_and_dice,min_combo_points=3,snd<=2
 actions+=/tricks_of_the_trade
 actions+=/killing_spree,energy<=30/blade_flurry
@@ -42,7 +43,7 @@ tier7_4pc=1
 relentless_earthstorm=1
 
 # Weapons
-main_hand=sword,dps=157,speed=2.6,enchant=berserking
+main_hand=sword,dps=157,speed=2.5,enchant=berserking
 off_hand=sword,dps=157,speed=1.5,enchant=berserking
 
 # Item Procs

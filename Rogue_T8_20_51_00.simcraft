@@ -11,11 +11,10 @@ talents=http://ptr.wowhead.com/?talent=f0eb0ebZMgVo0cxqru0xRt
 # Action queue
 actions=flask,type=endless_rage/food,type=fish_feast/apply_poison,main_hand=instant,off_hand=deadly
 actions+=/auto_attack
+actions+=/slice_and_dice,min_combo_points=1,snd<=2,time<=4
 actions+=/slice_and_dice,min_combo_points=3,snd<=2
-actions+=/slice_and_dice,min_combo_points=1,snd<=0.1
 actions+=/tricks_of_the_trade
 actions+=/killing_spree,energy<=30/blade_flurry
-actions+=/rupture,min_combo_points=5
 actions+=/envenom,min_combo_points=5,snd>=4,energy>=60
 actions+=/sinister_strike,max_combo_points=4
 actions+=/adrenaline_rush
@@ -41,7 +40,7 @@ tier7_4pc=1
 relentless_earthstorm=1
 
 # Weapons
-main_hand=sword,dps=157,speed=2.6,enchant=berserking
+main_hand=sword,dps=157,speed=2.5,enchant=berserking
 off_hand=sword,dps=157,speed=1.5,enchant=berserking
 
 # Item Procs
@@ -49,6 +48,6 @@ darkmoon_greatness=1
 fury_of_the_five_flights=1
 
 # Glyphs
-glyph_rupture=1
+glyph_adrenaline_rush=1
 glyph_slice_and_dice=1
 glyph_sinister_strike=1
