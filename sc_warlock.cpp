@@ -1814,15 +1814,13 @@ static void trigger_life_tap_glyph( spell_t* s )
       p = player -> cast_warlock();
       name = "Life Tap Glyph Expiration";
       p -> aura_gain( "Life Tap Glyph" );
-      p -> _buffs.life_tap_glyph = p -> spirit() * 0.20;
-      p -> spell_power[ SCHOOL_MAX ] += p -> _buffs.life_tap_glyph;
+      p -> _buffs.life_tap_glyph = 1;
       sim -> add_event( this, 20.0 );
     }
     virtual void execute()
     {
       warlock_t* p = player -> cast_warlock();
       p -> aura_loss( "Life Tap Glyph" );
-      p -> spell_power[ SCHOOL_MAX ] -= p -> _buffs.life_tap_glyph;
       p -> _expirations.life_tap_glyph = 0;
       p -> _buffs.life_tap_glyph = 0;
     }
@@ -4534,6 +4532,11 @@ double warlock_t::composite_spell_power( int school )
   double sp = player_t::composite_spell_power( school );
 
   sp += _buffs.fel_armor;
+
+  if( _buffs.life_tap_glyph )
+  {
+    sp += ( spirit() - 2 ) * 0.4;
+  }
 
   if( active_pet && talents.demonic_knowledge && active_pet -> pet_type != PET_INFERNAL
                                               && active_pet -> pet_type != PET_DOOMGUARD )
