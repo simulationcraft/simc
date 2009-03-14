@@ -167,7 +167,7 @@ void spell_t::target_debuff( int dmg_type )
  
   target_hit += std::max( t -> debuffs.improved_faerie_fire, t -> debuffs.misery ) * 0.01; 
 
-  target_crit += std::max( t -> debuffs.winters_chill, t -> debuffs.improved_scorch ) * 0.02; // ( sim -> P309 ? 0.02 : 0.01 );
+  target_crit += std::max( t -> debuffs.winters_chill, t -> debuffs.improved_scorch ) * ( sim -> P309 ? 0.02 : 0.01 );
   t -> uptimes.winters_chill   -> update( t -> debuffs.winters_chill   != 0 );
   t -> uptimes.improved_scorch -> update( t -> debuffs.improved_scorch != 0 );
 
