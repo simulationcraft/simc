@@ -9,27 +9,28 @@ rogue=Rogue_T8_23_05_43
 level=80
 talents=http://ptr.wowhead.com/?talent=f0eb0exZ0xZxbrbhGzdAzqc
 
-#Action queue
+# Action queue
 actions=flask,type=endless_rage/food,type=fish_feast/apply_poison,main_hand=instant,off_hand=deadly
 actions+=/auto_attack/pool_energy,for_next=1
 actions+=/slice_and_dice,min_combo_points=4,snd<=3
 actions+=/tricks_of_the_trade
 actions+=/rupture,min_combo_points=5
-actions+=/envenom,min_combo_points=5
+actions+=/envenom,min_combo_points=5,no_buff=1
+actions+=/eviscerate,min_combo_points=5
 actions+=/hemorrhage,max_combo_points=3,energy>=80
 
-# Gear
-gear_stamina=953
+# Gear: http://www.chardev.org/?template=147412
+gear_stamina=968
 gear_strength=10
-gear_agility=1073
+gear_agility=1076
 gear_intellect=10
 gear_spirit=10
-gear_attack_power=2261
-gear_expertise_rating=125
+gear_attack_power=2213
+gear_expertise_rating=217
 gear_armor_penetration_rating=94
-gear_hit_rating=315
-gear_crit_rating=584
-gear_haste_rating=288
+gear_hit_rating=309
+gear_crit_rating=486
+gear_haste_rating=313
 
 # Set Bonuses
 tier7_2pc=1
@@ -48,7 +49,7 @@ fury_of_the_five_flights=1
 
 # Glyphs
 glyph_rupture=1
-glyph_envenom=1
+glyph_eviscerate=1
 glyph_slice_and_dice=1
 
 # When using this profile with a real raid AND party setups, override this value to zero.
