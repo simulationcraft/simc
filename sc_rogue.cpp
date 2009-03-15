@@ -93,6 +93,7 @@ struct rogue_t : public player_t
   uptime_t* uptimes_envenom;
   uptime_t* uptimes_hunger_for_blood;
   uptime_t* uptimes_poisoned;
+  uptime_t* uptimes_rupture;
   uptime_t* uptimes_slice_and_dice;
   uptime_t* uptimes_tricks_of_the_trade;
   
@@ -228,6 +229,7 @@ struct rogue_t : public player_t
     uptimes_envenom             = get_uptime( "envenom" );
     uptimes_hunger_for_blood    = get_uptime( "hunger_for_blood" );
     uptimes_poisoned            = get_uptime( "poisoned" );
+    uptimes_rupture             = get_uptime( "rupture" );
     uptimes_slice_and_dice      = get_uptime( "slice_and_dice" );
     uptimes_tricks_of_the_trade = get_uptime( "tricks_of_the_trade" );
   
@@ -3145,6 +3147,8 @@ void rogue_t::regen( double periodicity )
   
   uptimes_energy_cap -> update( resource_current[ RESOURCE_ENERGY ] == 
 				resource_max    [ RESOURCE_ENERGY ] );
+
+  uptimes_rupture -> update( active_rupture != 0 );
 }
 
 // rogue_t::get_talent_trees ==============================================
