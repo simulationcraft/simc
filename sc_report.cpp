@@ -475,7 +475,7 @@ void report_t::print_scale_factors()
       }
     }
     if( sim -> scaling -> gear.spell_power              ) fprintf( sim -> output_file,              "  spell_power=%.2f", p -> scaling.spell_power              );
-    if( sim -> scaling -> gear.attack_power             ) fprintf( sim -> output_file,       "  attack_power_power=%.2f", p -> scaling.attack_power             );
+    if( sim -> scaling -> gear.attack_power             ) fprintf( sim -> output_file,             "  attack_power=%.2f", p -> scaling.attack_power             );
     if( sim -> scaling -> gear.expertise_rating         ) fprintf( sim -> output_file,         "  expertise_rating=%.2f", p -> scaling.expertise_rating         );
     if( sim -> scaling -> gear.armor_penetration_rating ) fprintf( sim -> output_file, "  armor_penetrating_rating=%.2f", p -> scaling.armor_penetration_rating );
     if( sim -> scaling -> gear.hit_rating               ) fprintf( sim -> output_file,               "  hit_rating=%.2f", p -> scaling.hit_rating               );
