@@ -177,7 +177,6 @@ struct rogue_t : public player_t
     int adrenaline_rush;
     int backstab;
     int blade_flurry;
-    int envenom;
     int eviscerate;
     int expose_armor;
     int feint;
@@ -688,40 +687,46 @@ static void trigger_tricks_of_the_trade( rogue_attack_t* a )
   }
 }
 
+// apply_poison_debuff ======================================================
+
+static void apply_poison_debuff( rogue_t* p)
+{
+	target_t* t = p -> sim -> target;
+
+	if( p -> talents.master_poisoner ) t -> debuffs.master_poisoner++;
+	if( p -> talents.savage_combat   ) t -> debuffs.savage_combat++;
+
+	t -> debuffs.poisoned++;
+}
+
+// remove_poison_debuff =====================================================
+
+static void remove_poison_debuff( rogue_t* p)
+{
+	target_t* t = p -> sim -> target;
+
+	if( p -> talents.master_poisoner ) t -> debuffs.master_poisoner--;
+	if( p -> talents.savage_combat   ) t -> debuffs.savage_combat--;
+
+	t -> debuffs.poisoned--;
+}
+
 // trigger_deadly_poison ====================================================
 
 static void trigger_deadly_poison( rogue_t* p )
 {
-  p -> procs_deadly_poison -> occur();
+	p -> procs_deadly_poison -> occur();
 
-  if( p -> _buffs.poison_doses == 0 )
-  {
-    // Target about to become poisoned.
-
-    target_t* t = p -> sim -> target;
-
-    if( p -> talents.master_poisoner ) t -> debuffs.master_poisoner++;
-    if( p -> talents.savage_combat   ) t -> debuffs.savage_combat++;
-
-    t -> debuffs.poisoned++;
-  }
+	// Target is about to get Dedly poisoned.
+	if( p -> _buffs.poison_doses == 0 ) apply_poison_debuff( p );
 }
 
 // consume_deadly_poison ====================================================
 
 static void consume_deadly_poison( rogue_t* p )
 {
-  if( p -> _buffs.poison_doses == 0 )
-  {
-    // Target no longer poisoned.
-
-    target_t* t = p -> sim -> target;
-
-    if( p -> talents.master_poisoner ) t -> debuffs.master_poisoner--;
-    if( p -> talents.savage_combat   ) t -> debuffs.savage_combat--;
-
-    t -> debuffs.poisoned--;
-  }
+	// Target no longer deadly poisoned.
+	if( p -> _buffs.poison_doses == 0 ) remove_poison_debuff( p );
 }
 
 // =========================================================================
@@ -789,6 +794,7 @@ void rogue_attack_t::execute()
     trigger_apply_poisons( this );
     trigger_ruthlessness( this );
     trigger_sword_specialization( this );
+	 if( ! p -> sim -> P309) trigger_tricks_of_the_trade( this );
 
     if( result == RESULT_CRIT )
     {
@@ -801,7 +807,7 @@ void rogue_attack_t::execute()
     trigger_quick_recovery( this );
   }
 
-  trigger_tricks_of_the_trade( this );
+  if( p -> sim -> P309) trigger_tricks_of_the_trade( this );
 
   break_stealth( p );
 
@@ -2397,34 +2403,29 @@ void rogue_poison_t::player_buff()
 
 struct anesthetic_poison_t : public rogue_poison_t
 {
-  anesthetic_poison_t( player_t* player ) : 
-    rogue_poison_t( "anesthetic_poison", player )
-  {
-    rogue_t* p = player -> cast_rogue();
-    trigger_gcd      = 0;
-    background       = true;
-    proc             = true;
-    may_crit         = true;
-    direct_power_mod = 0;
-    base_direct_dmg  = util_t::ability_rank( p -> level,  249,77,  153,68,  0,0 );
-  }
-
-  virtual void execute()
-  {
-	rogue_t* p = player -> cast_rogue();
-	// Anesthtic is not on PPM on PTR
-    double chance = p -> _buffs.shiv ? 1.00 : 0.50;
-	if( sim -> P309 ) may_crit = true;
-	else {
-		if( p -> _buffs.shiv ) may_crit = false;
-		else may_crit = true;
+	anesthetic_poison_t( player_t* player ) : rogue_poison_t( "anesthetic_poison", player )
+	{
+		rogue_t* p = player -> cast_rogue();
+		trigger_gcd      = 0;
+		background       = true;
+		proc             = true;
+		may_crit         = true;
+		direct_power_mod = 0;
+		base_direct_dmg  = util_t::ability_rank( p -> level,  249,77,  153,68,  0,0 );
 	}
-	
-    if( sim -> roll( chance ) )
-    {
-      rogue_poison_t::execute();
-    }
-  }
+
+	virtual void execute()
+	{
+		rogue_t* p = player -> cast_rogue();
+		// Anesthtic is not on PPM on PTR
+		double chance = p -> _buffs.shiv ? 1.0 : .5;
+		may_crit = ( sim -> P309 ) ? true : ( ( p -> _buffs.shiv ) ? false : true );
+		
+		if( sim -> roll( chance ) )
+		{
+			rogue_poison_t::execute();
+		}
+	}
 };
 
 // Deadly Poison ============================================================
@@ -2555,46 +2556,57 @@ struct instant_poison_t : public rogue_poison_t
 
 struct wound_poison_t : public rogue_poison_t
 {
-  wound_poison_t( player_t* player ) : 
-    rogue_poison_t( "wound_poison", player )
-  {
-    rogue_t* p = player -> cast_rogue();
-    trigger_gcd      = 0;
-    background       = true;
-    proc             = true;
-    may_crit         = true;
-    direct_power_mod = 0.04;
-    base_direct_dmg  = util_t::ability_rank( p -> level,  231,78,  188,72,  112,64,  53,0 );
-  }
+	wound_poison_t( player_t* player ) : rogue_poison_t( "wound_poison", player )
+	{
+		rogue_t* p = player -> cast_rogue();
+		trigger_gcd      = 0;
+		background       = true;
+		proc             = true;
+		may_crit         = true;
+		direct_power_mod = .04;
+		base_direct_dmg  = util_t::ability_rank( p -> level,  231,78,  188,72,  112,64,  53,0 );
+		
+		num_ticks        = 1;
+		base_tick_time   = 15;
+		tick_power_mod   = 0;
+		base_td_init     = 0;
+	}
 
-  virtual void execute()
-  {
-    rogue_t* p = player -> cast_rogue();
-    double chance;
-    if( sim -> P309 )
-    {
-      chance = p -> _buffs.shiv ? 1.00 : 0.50;
-      may_crit = true;
-    }
-    else // P31+
-    {
-      if( p -> _buffs.shiv )
-      {
-	chance = 1.0;
-	may_crit = false;
-      }
-      else
-      {
-	double PPM = 21.43;
-	chance = weapon -> proc_chance_on_swing( PPM );
-	may_crit = true;
-      }
-    }
-    if( sim -> roll( chance ) )
-    {
-      rogue_poison_t::execute();
-    }
-  }
+	virtual void execute()
+	{
+		rogue_t* p = player -> cast_rogue();
+		double chance;
+		may_crit = ( sim -> P309 ) ? true : ( ( p -> _buffs.shiv ) ? false : true );
+		if( sim -> P309 )
+			chance = p -> _buffs.shiv ? 1.00 : 0.50;
+		else // P31+
+		{
+			if( p -> _buffs.shiv )
+				chance = 1.0;
+			else
+				chance = weapon -> proc_chance_on_swing( 21.43 );
+		}
+		
+		if( sim -> roll( chance ) )
+		{
+			bool initial_application = ! ticking;
+			rogue_poison_t::execute();
+			if( result_is_hit() )
+			{
+				if( initial_application ) apply_poison_debuff( p );
+				else if( tick_event ) tick_event -> reschedule( base_tick_time );
+			}
+		}
+	}
+
+	virtual void last_tick()
+	{
+		rogue_t* p = player -> cast_rogue();
+		rogue_poison_t::last_tick();
+		remove_poison_debuff( p );
+	}
+	
+	virtual void tick() { /* it does not actually 'tick' */ }
 };
 
 // Apply Poison ===========================================================
