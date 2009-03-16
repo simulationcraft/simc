@@ -9,14 +9,14 @@ talents=http://talent.mmo-champion.com/?hunter=512002014000000000000000000053051
 actions=flask,type=endless_rage/food,type=blackened_dragonfin/summon_pet,wolf/hunters_mark/trueshot_aura
 actions+=/auto_shot/aspect/serpent_sting/rapid_fire/chimera_shot/kill_shot/readiness/arcane_shot/aimed_shot/steady_shot
 
-# Gear: 
+# Gear: http://www.chardev.org/?template=148672
 gear_stamina=901
 gear_strength=10
 gear_agility=1116
 gear_intellect=347
 gear_spirit=10
 gear_attack_power=2239
-gear_crit_rating=728
+gear_crit_rating=648
 gear_hit_rating=263
 gear_armor_penetration_rating=105
 gear_haste_rating=295
