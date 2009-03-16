@@ -369,6 +369,7 @@ struct sim_t
     int arcane_brilliance;
     int bleeding;
     int bloodlust;
+    int bloodlust_early;
     int curse_of_elements;
     int divine_spirit;
     int earth_and_moon;
