@@ -1589,6 +1589,82 @@ struct feint_t : public rogue_attack_t
   }
 };
 
+// Garrote ==================================================================
+
+struct garrote_t : public rogue_attack_t
+{
+	garrote_t( player_t* player, const std::string& options_str ) : 
+		rogue_attack_t( "garrote", player, SCHOOL_BLEED, TREE_ASSASSINATION )
+	{
+		rogue_t* p = player -> cast_rogue();
+
+		option_t options[] =
+		{
+			{ NULL }
+		};
+		parse_options( options, options_str );
+		
+		static rank_t ranks[] =
+		{
+			{ 80, 10, 0, 0, 119, 50 },
+			{ 75,  9, 0, 0, 110, 50 },
+			{ 70,  8, 0, 0, 102, 50 },
+			{ 0, 0 }
+		};
+		init_rank( ranks );
+
+		// it uses a weapon (for poison app)
+		weapon = &( p -> main_hand_weapon );
+		weapon_multiplier = 0;
+		// to stop seal fate procs
+		may_crit          = false; 
+		
+		requires_position = POSITION_BACK;
+		requires_stealth  = true;
+		adds_combo_points = true;
+		
+		num_ticks         = 6;
+		base_tick_time    = 3.0;
+		tick_power_mod    = .07;
+		
+		base_cost        -= p -> talents.dirty_deeds * 10;
+		base_multiplier  *= 1.0 + ( p -> talents.find_weakness * .02 +
+											p -> talents.opportunity   * .1 +
+											p -> talents.blood_spatter * .15 );
+	}
+
+	virtual void execute()
+	{
+		rogue_t* p = player -> cast_rogue();
+
+		rogue_attack_t::execute();
+
+		if( result_is_hit() && sim -> roll( p -> talents.initiative / 3.0 ) )
+			add_combo_point( p );
+	}
+
+	virtual bool ready()
+	{
+		rogue_t* p = player -> cast_rogue();
+
+		if( p -> _buffs.shadow_dance )
+		{
+			requires_stealth = false;
+			bool success = rogue_attack_t::ready();
+			requires_stealth = true;
+			return success;
+		}
+
+		return rogue_attack_t::ready();
+	}
+	
+	virtual void player_buff()
+	{
+		rogue_attack_t::player_buff();
+		trigger_dirty_deeds( this );
+	}
+};
+
 // Ghostly Strike ==========================================================
 
 struct ghostly_strike_t : public rogue_attack_t
@@ -2422,9 +2498,7 @@ struct anesthetic_poison_t : public rogue_poison_t
 		may_crit = ( sim -> P309 ) ? true : ( ( p -> _buffs.shiv ) ? false : true );
 		
 		if( sim -> roll( chance ) )
-		{
 			rogue_poison_t::execute();
-		}
 	}
 };
 
@@ -2997,6 +3071,7 @@ action_t* rogue_t::create_action( const std::string& name,
   if( name == "eviscerate"          ) return new eviscerate_t         ( this, options_str );
   if( name == "expose_armor"        ) return new expose_armor_t       ( this, options_str );
   if( name == "feint"               ) return new feint_t              ( this, options_str );
+  if( name == "garrote"             ) return new garrote_t            ( this, options_str );
   if( name == "ghostly_strike"      ) return new ghostly_strike_t     ( this, options_str );
   if( name == "hemorrhage"          ) return new hemorrhage_t         ( this, options_str );
   if( name == "hunger_for_blood"    ) return new hunger_for_blood_t   ( this, options_str );
