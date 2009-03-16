@@ -83,6 +83,8 @@ struct druid_t : public player_t
   uptime_t* uptimes_energy_cap;
   uptime_t* uptimes_natures_grace;
   uptime_t* uptimes_savage_roar;
+  uptime_t* uptimes_rip;
+  uptime_t* uptimes_rake;
 
   attack_t* melee_attack;
 
@@ -229,9 +231,11 @@ struct druid_t : public player_t
     // Up-Times
     uptimes_eclipse_starfire = get_uptime( "eclipse_starfire" );
     uptimes_eclipse_wrath    = get_uptime( "eclipse_wrath"    );
-    uptimes_energy_cap       = get_uptime( "energy_cap" );
+    uptimes_energy_cap       = get_uptime( "energy_cap"       );
     uptimes_natures_grace    = get_uptime( "natures_grace"    );
     uptimes_savage_roar      = get_uptime( "savage_roar"      );
+    uptimes_rip              = get_uptime( "rip"              );
+    uptimes_rake             = get_uptime( "rake"             );
 
     melee_attack = 0;
 
@@ -1007,6 +1011,8 @@ void druid_attack_t::player_buff()
   }
 
   p -> uptimes_savage_roar -> update( p -> _buffs.savage_roar != 0 );
+  p -> uptimes_rip -> update( p -> active_rip != 0 );
+  p -> uptimes_rake -> update( p -> active_rake != 0 );
 }
 
 // druid_attack_t::ready ===================================================
