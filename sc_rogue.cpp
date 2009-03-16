@@ -66,6 +66,7 @@ struct rogue_t : public player_t
     event_t* envenom;
     event_t* slice_and_dice;
     event_t* hunger_for_blood;
+	 event_t* wound_poison;
 
     void reset() { memset( (void*) this, 0x00, sizeof( _expirations_t ) ); }
     _expirations_t() { reset(); }
@@ -2639,15 +2640,26 @@ struct wound_poison_t : public rogue_poison_t
 		may_crit         = true;
 		direct_power_mod = .04;
 		base_direct_dmg  = util_t::ability_rank( p -> level,  231,78,  188,72,  112,64,  53,0 );
-		
-		num_ticks        = 1;
-		base_tick_time   = 15;
-		tick_power_mod   = 0;
-		base_td_init     = 0;
 	}
 
 	virtual void execute()
 	{
+		struct expiration_t : public event_t
+		{
+			expiration_t( sim_t* sim, rogue_t* p ) : event_t( sim, p )
+			{
+				name = "Wound Poison Expiration";
+				apply_poison_debuff( p );
+				sim -> add_event( this, 15.0 );
+			}
+			virtual void execute()
+			{
+				rogue_t* p = player -> cast_rogue();
+				p -> _expirations.wound_poison = 0;
+				remove_poison_debuff( p );
+			}
+		};
+		
 		rogue_t* p = player -> cast_rogue();
 		double chance;
 		may_crit = ( sim -> P309 ) ? true : ( ( p -> _buffs.shiv ) ? false : true );
@@ -2663,24 +2675,17 @@ struct wound_poison_t : public rogue_poison_t
 		
 		if( sim -> roll( chance ) )
 		{
-			bool initial_application = ! ticking;
 			rogue_poison_t::execute();
 			if( result_is_hit() )
 			{
-				if( initial_application ) apply_poison_debuff( p );
-				else if( tick_event ) tick_event -> reschedule( base_tick_time );
+				event_t*& e = p -> _expirations.wound_poison;
+				if( e )
+					e -> reschedule( 15.0 );
+				else
+					e = new ( sim ) expiration_t( sim, p );
 			}
 		}
 	}
-
-	virtual void last_tick()
-	{
-		rogue_t* p = player -> cast_rogue();
-		rogue_poison_t::last_tick();
-		remove_poison_debuff( p );
-	}
-	
-	virtual void tick() { /* it does not actually 'tick' */ }
 };
 
 // Apply Poison ===========================================================
