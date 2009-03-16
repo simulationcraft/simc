@@ -1989,12 +1989,6 @@ struct living_bomb_t : public mage_spell_t
 
   // Odd thing to handle: The direct-damage comes at the last tick instead of the beginning of the spell.
 
-  virtual void tick()
-  {
-    mage_spell_t::tick();
-    if( result == RESULT_CRIT ) trigger_ignite( this, tick_dmg );
-  }
-
   virtual void last_tick()
   {
     target_debuff( DMG_DIRECT );

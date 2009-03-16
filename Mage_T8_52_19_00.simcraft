@@ -3,12 +3,38 @@
 patch=3.1.0
 mage=Mage_T8_52_19_00
 level=80
-talents=http://ptr.wowhead.com/?talent=of0Vck0IzxGu0xedfVczo0h
+talents=http://ptr.wowhead.com/?talent=of0Vcd0IzxGu0xedfVczo0h
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/arcane_brilliance/mage_armor/focus_magic
 actions+=/mana_gem,trigger=3500
 actions+=/mirror_image/arcane_power/presence_of_mind,pyroblast/arcane_blast,max=3/arcane_missiles,barrage=1/arcane_barrage
 actions+=/evocation/mana_potion
-Caster_T7_Base_Gear.simcraft
+
+# Gear: http://www.chardev.org/?template=148539
+gear_strength=10
+gear_agility=10
+gear_stamina=873
+gear_intellect=805
+gear_spirit=144
+gear_attack_power=0
+gear_expertise_rating=0
+gear_armor_penetration_rating=0
+gear_spell_power=2147
+gear_hit_rating=290
+gear_crit_rating=430
+gear_haste_rating=597
+
+# Set Bonuses
+tier7_2pc=1
+tier7_4pc=1
+
+# Meta Gem
+chaotic_skyflare=1
+
+# Item Procs
+embrace_of_the_spider=1
+illustration_of_the_dragon_soul=1
+
+# Glyphs
 glyph_arcane_missiles=1
 glyph_arcane_blast=1
 glyph_arcane_barrage=1

@@ -7,9 +7,33 @@ actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/arcane_brillianc
 actions+=/mana_gem,trigger=1000/speed_potion
 actions+=/scorch,debuff=1/mirror_image/combustion/living_bomb/pyroblast,hot_streak=1/fire_ball
 actions+=/evocation
-Caster_T7_Base_Gear.simcraft
-enchant_hit_rating=+75
-enchant_crit_rating=-75
+
+# Gear: http://www.chardev.org/?template=148452
+gear_strength=10
+gear_agility=10
+gear_stamina=903
+gear_intellect=805
+gear_spirit=124
+gear_attack_power=0
+gear_expertise_rating=0
+gear_armor_penetration_rating=0
+gear_spell_power=2049
+gear_hit_rating=369
+gear_crit_rating=430
+gear_haste_rating=589
+
+# Set Bonuses
+tier7_2pc=1
+tier7_4pc=1
+
+# Meta Gem
+chaotic_skyflare=1
+
+# Item Procs
+dying_curse=1
+illustration_of_the_dragon_soul=1
+
+# Glyphs
 glyph_fire_ball=1
 glyph_molten_armor=1
 glyph_mana_gem=1
