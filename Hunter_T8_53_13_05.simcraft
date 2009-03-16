@@ -3,26 +3,43 @@
 patch=3.1.0
 hunter=Hunter_T8_53_13_05
 level=80
-
 talents=http://talent.mmo-champion.com/?hunter=512002015051122431005313510053041000000000000000000005000000000000000000000000000&glyph=000000000000&version=9637
+
+# Action queue
 actions=flask,type=endless_rage/food,type=fish_feast/summon_pet,devilsaur/hunters_mark
 actions+=/auto_shot/kill_command,sync=bestial_wrath/bestial_wrath/aspect/rapid_fire
 actions+=/kill_shot/arcane_shot/multi_shot/serpent_sting/steady_shot
-Melee_T7_Base_Gear.simcraft
-gear_agility=1149
-gear_stamina=1043
-gear_intellect=427
+
+# Gear:
+gear_stamina=913
+gear_strength=10
+gear_agility=971
+gear_intellect=340
+gear_spirit=10
 gear_attack_power=2637
 gear_crit_rating=662
 gear_hit_rating=263
 gear_armor_penetration_rating=68
 gear_haste_rating=301
+
+# Set Bonuses
+tier7_2pc=1
+
+# Procs
+darkmoon_greatness=1
+fury_of_the_five_flights=1
+
+# Glyphs
 glyph_bestial_wrath=1
 glyph_steady_shot=1
 glyph_improved_aspect_of_the_hawk=1
+
+# Weapons
 ranged=bow,dps=154.8,speed=2.9
 ammo_dps=67.5
 quiver_haste=15
+
+# Pet
 Hunter_T8_Devilsaur.simcraft
 active=devilsaur
 wild_hunt=2
