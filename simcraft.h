@@ -407,6 +407,7 @@ struct sim_t
   scaling_t* scaling;
   double     raid_dps, total_dmg, total_seconds, elapsed_cpu_seconds;
   int        merge_ignite;
+  int        report_progress;
   std::vector<player_t*> players_by_rank;
   std::vector<player_t*> players_by_name;
   std::string html_file_str, wiki_file_str;

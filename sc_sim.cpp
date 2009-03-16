@@ -24,7 +24,7 @@ sim_t::sim_t( sim_t* p ) :
   optimal_raid(0), potion_sickness(1), average_dmg(1), log(0), debug(0), timestamp(1), sfmt(1),
   jow_chance(0), jow_ppm(15.0),
   wheel_seconds(0), wheel_size(0), wheel_mask(0), timing_slice(0), wheel_granularity(0.0),
-  raid_dps(0), total_dmg(0), total_seconds(0), elapsed_cpu_seconds(0), merge_ignite(0),
+  raid_dps(0), total_dmg(0), total_seconds(0), elapsed_cpu_seconds(0), merge_ignite(0), report_progress(1),
   output_file(stdout), html_file(0), wiki_file(0), thread_handle(0)
 {
 
@@ -544,14 +544,14 @@ void sim_t::iterate()
 
   for( int i=0; i < iterations; i++ )
   {
-    if( ( message_interval > 0 ) && ( i % message_interval == 0 ) )
+    if( report_progress && ( message_interval > 0 ) && ( i % message_interval == 0 ) )
     {
       fprintf( stdout, "%d... ", message_index-- );
       fflush( stdout );
     }
     combat( i );
   }
-  fprintf( output_file, "\n" );
+  if( report_progress ) fprintf( stdout, "\n" );
 
   reset();
 }
@@ -653,6 +653,7 @@ void sim_t::partition()
   {
     sim_t* child = children[ i ] = new sim_t( this );
     child -> iterations /= threads;
+    child -> report_progress = 0;
   }
 
   for( int i=0; i < num_children; i++ )
