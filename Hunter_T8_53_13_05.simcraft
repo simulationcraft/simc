@@ -10,7 +10,7 @@ actions=flask,type=endless_rage/food,type=fish_feast/summon_pet,devilsaur/hunter
 actions+=/auto_shot/kill_command,sync=bestial_wrath/bestial_wrath/aspect/rapid_fire
 actions+=/kill_shot/arcane_shot/multi_shot/serpent_sting/steady_shot
 
-# Gear:
+# Gear: http://www.chardev.org/?template=148665
 gear_stamina=913
 gear_strength=10
 gear_agility=971
