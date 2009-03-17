@@ -4583,7 +4583,7 @@ double warlock_t::composite_spell_power( int school )
 
   if( _buffs.life_tap_glyph )
   {
-    sp += ( spirit() - 2 ) * 0.4;
+    sp += spirit() * 0.2;
   }
 
   if( active_pet && talents.demonic_knowledge && active_pet -> pet_type != PET_INFERNAL
