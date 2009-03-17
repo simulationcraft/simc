@@ -2593,6 +2593,12 @@ struct chaos_bolt_t : public warlock_spell_t
       { 0, 0 }
     };
 
+    if( sim -> patch.after( 3, 1, 0 ) )
+    {
+      ranks[0].dd_min = 1429;
+      ranks[0].dd_max = 1814;
+    }
+
     init_rank( ranks );
     
     base_execute_time = 2.5; 
