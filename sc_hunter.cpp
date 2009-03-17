@@ -348,6 +348,7 @@ struct hunter_pet_t : public pet_t
     event_t* frenzy;
     event_t* monstrous_bite;
     event_t* owls_focus;
+    event_t* savage_rend;
 
     void reset() { memset( (void*) this, 0x00, sizeof( _expirations_t ) ); }
     _expirations_t() { reset(); }
@@ -363,6 +364,7 @@ struct hunter_pet_t : public pet_t
   // Uptimes
   uptime_t* uptimes_frenzy;
   uptime_t* uptimes_monstrous_bite;
+  uptime_t* uptimes_savage_rend;
 
   // Auto-Attack
   attack_t* main_hand_attack;
@@ -405,6 +407,7 @@ struct hunter_pet_t : public pet_t
     // Uptimes
     uptimes_frenzy         = o -> get_uptime( "frenzy" );
     uptimes_monstrous_bite = o -> get_uptime( "monstrous_bite" );
+    uptimes_savage_rend    = o -> get_uptime( "savage_rend" );
   }
 
   virtual void reset()
@@ -1411,7 +1414,10 @@ struct hunter_pet_attack_t : public attack_t
 
     attack_t::player_buff();
 
-    if( p -> _buffs.bestial_wrath ) player_multiplier *= 1.5;
+    if( p -> _buffs.bestial_wrath ) player_multiplier *= 1.50;
+
+    if( p -> _buffs.savage_rend   ) player_multiplier *= 1.10;
+    p -> uptimes_savage_rend -> update( p -> _buffs.savage_rend != 0 );
 
     player_multiplier *= 1.0 + p -> _buffs.monstrous_bite * 0.03;
     p -> uptimes_monstrous_bite -> update( p -> _buffs.monstrous_bite == 3 );
@@ -1628,12 +1634,35 @@ struct savage_rend_t : public hunter_pet_attack_t
 
     if ( result == RESULT_CRIT )
     {
-      p -> _buffs.savage_rend = 1;      
+      struct expiration_t : public event_t
+      {
+	expiration_t( sim_t* sim, hunter_pet_t* p ) : event_t( sim, p )
+	{
+	  name = "Savage Rend Expiration";
+	  p -> aura_gain( "Savage Rend" );
+	  p -> _buffs.savage_rend = 1;
+	  sim -> add_event( this, 30.0 );
+	}
+	virtual void execute()
+	{
+	  hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+	  p -> aura_loss( "Savage Rend" );
+	  p -> _buffs.savage_rend = 0;
+	  p -> _expirations.savage_rend = 0;
+	}
+      };
 
-      // FIXME also need to set up handler for buff triggered on crit.
+      event_t*& e = p -> _expirations.savage_rend;
+
+      if ( e )
+      {
+	e -> reschedule( 30.0 );
+      }
+      else
+      {
+	e = new ( sim ) expiration_t( sim, p );
+      }
     }
-    // For first pass, we'll just pretend that's happened and clear flag.
-    p -> _buffs.savage_rend = 0;
   }
 
   virtual void update_ready()
@@ -1753,7 +1782,7 @@ struct hunter_pet_spell_t : public spell_t
 
     player_power += 0.125 * o -> composite_spell_power( SCHOOL_MAX );
 
-    if( p -> _buffs.bestial_wrath ) player_multiplier *= 1.5;
+    if( p -> _buffs.bestial_wrath ) player_multiplier *= 1.50;
 
     if( o -> _buffs.cobra_strikes ) player_crit += 1.0;
 
