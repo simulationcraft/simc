@@ -3,21 +3,42 @@
 hunter=Hunter_T7_06_14_51
 level=80
 talents=http://www.wowhead.com/?talent=cxoZ0eVoZe00i0cIhxdAhck
+
+# Action queue
 actions=flask,type=endless_rage/food,type=fish_feast/summon_pet,cat/hunters_mark
 actions+=/auto_shot/aspect/rapid_fire/explosive_shot/kill_shot/serpent_sting/multi_shot/steady_shot
-Melee_T7_Base_Gear.simcraft
-gear_agility=1417
-gear_stamina=1076
-gear_intellect=349
+
+# Gear: http://www.chardev.org/?template=148656
+gear_stamina=946
+gear_strength=10
+gear_agility=1239
+gear_intellect=262
+gear_spirit=10
 gear_attack_power=2177
 gear_crit_rating=665
 gear_hit_rating=276
 gear_armor_penetration_rating=68
 gear_haste_rating=290
-glyph_improved_aspect_of_the_hawk=1
-glyph_serpent_sting=1
+
+# Set Bonuses
+tier7_2pc=1
+
+# Meta Gem
+relentless_earthstorm=1
+
+# Procs
+darkmoon_greatness=1
+fury_of_the_five_flights=1
+
+# Glyphs
 glyph_steady_shot=1
+glyph_serpent_sting=1
+glyph_improved_aspect_of_the_hawk=1
+
+# Weapons
 ranged=bow,dps=154.8,speed=2.9
 ammo_dps=67.5
 quiver_haste=15
+
+# Pet
 Hunter_T7_Cat.simcraft
