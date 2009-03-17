@@ -6,12 +6,36 @@ talents=http://www.wowhead.com/?talent=hEhcq0dItGxst0xxco
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/flametongue_weapon,weapon=main/water_shield
 actions+=/mana_spring_totem/totem_of_wrath/wrath_of_air_totem/water_shield/speed_potion
 actions+=/elemental_mastery/flame_shock/lava_burst,flame_shock=1/chain_lightning,lvb_cd<=1.5/lightning_bolt/thunderstorm
-Caster_T7_Base_Gear.simcraft
-# Remove all Spirit and replace with MP5 and Crit Rating
-gear_spirit=0
-enchant_mp5=+100
-enchant_crit_rating=+150
-totem_of_hex=1
+
+# Gear: http://www.chardev.org/?template=148758
+gear_strength=10
+gear_agility=10
+gear_stamina=909
+gear_intellect=780
+gear_spirit=42
+gear_attack_power=0
+gear_expertise_rating=0
+gear_armor_penetration_rating=0
+gear_spell_power=1936
+gear_hit_rating=282
+gear_crit_rating=579
+gear_haste_rating=526
+
+# Set Bonuses
+tier7_2pc=1
+tier7_4pc=1
+
+# Meta Gem
+chaotic_skyflare=1
+
+# Item Procs
+dying_curse=1
+illustration_of_the_dragon_soul=1
+
+# Glyphs
 glyph_lightning_bolt=1
 glyph_flame_shock=1
 glyph_lava=1
+
+# Totem
+totem_of_hex=1
