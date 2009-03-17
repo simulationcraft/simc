@@ -24,6 +24,9 @@ gear_haste_rating=290
 # Set Bonuses
 tier7_2pc=1
 
+# Meta Gem
+relentless_earthstorm=1
+
 # Procs
 darkmoon_greatness=1
 fury_of_the_five_flights=1

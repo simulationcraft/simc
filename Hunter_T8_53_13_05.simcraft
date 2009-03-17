@@ -3,7 +3,7 @@
 patch=3.1.0
 hunter=Hunter_T8_53_13_05
 level=80
-talents=http://talent.mmo-champion.com/?hunter=512002015051122431005313510053041000000000000000000005000000000000000000000000000&glyph=000000000000&version=9637
+talents=http://talent.mmo-champion.com/?hunter=512002015051122431005313510053041000000000000000000005000000000000000000000000000&version=9637
 
 # Action queue
 actions=flask,type=endless_rage/food,type=fish_feast/summon_pet,devilsaur/hunters_mark
@@ -24,6 +24,9 @@ gear_haste_rating=301
 
 # Set Bonuses
 tier7_2pc=1
+
+# Meta Gem
+relentless_earthstorm=1
 
 # Procs
 darkmoon_greatness=1
