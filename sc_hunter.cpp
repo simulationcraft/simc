@@ -94,6 +94,7 @@ struct hunter_t : public player_t
   uptime_t* uptimes_improved_aspect_of_the_hawk;
   uptime_t* uptimes_improved_steady_shot;
   uptime_t* uptimes_master_tactician;
+  uptime_t* uptimes_rapid_fire;
 
   // Auto-Attack
   attack_t* ranged_attack;
@@ -224,6 +225,7 @@ struct hunter_t : public player_t
     uptimes_improved_aspect_of_the_hawk = get_uptime( "improved_aspect_of_the_hawk" );
     uptimes_improved_steady_shot        = get_uptime( "improved_steady_shot" );
     uptimes_master_tactician            = get_uptime( "master_tactician" );
+    uptimes_rapid_fire                  = get_uptime( "rapid_fire" );
 
     ammo_dps = 0;
 
@@ -2088,6 +2090,7 @@ double hunter_attack_t::execute_time()
   t *= 1.0 / ( 1.0 + p -> _buffs.improved_aspect_of_the_hawk );
 
   p -> uptimes_improved_aspect_of_the_hawk -> update( p -> _buffs.improved_aspect_of_the_hawk != 0 );
+  p -> uptimes_rapid_fire -> update( p -> _buffs.rapid_fire != 0 );
 
   return t;
 }
