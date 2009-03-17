@@ -7,7 +7,7 @@ talents=http://talent.mmo-champion.com/?hunter=501000000000000000000000000053051
 
 # Action queue
 actions=flask,type=endless_rage/food,type=blackened_dragonfin/summon_pet,wolf/hunters_mark
-actions+=/auto_shot/aspect/rapid_fire/black_arrow/explosive_shot/kill_shot/serpent_sting/multi_shot/steady_shot
+actions+=/auto_shot/aspect/rapid_fire/black_arrow/kill_shot/explosive_shot/serpent_sting/multi_shot/steady_shot
 
 # Gear: http://www.chardev.org/?template=148656
 gear_stamina=946
