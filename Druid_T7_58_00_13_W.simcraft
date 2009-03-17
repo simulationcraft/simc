@@ -1,19 +1,40 @@
 #!simcraft max_time=300 optimal_raid=1
 
-# The "eclipse=trigger" option to wrath/starfire will make sure that it is only used to trigger the Eclipse 
-# talent which means it will only be used after the cooldown is ready and the effect has not yet proc'd.
-
 druid=Druid_T7_58_00_13_W
 level=80
 talents=http://www.wowhead.com/?talent=0xRbuiIsfdIVhouZbxczb
-actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/mark_of_the_wild/moonkin_form/mana_potion/innervate,trigger=12000
+actions=flask,type=frost_wyrm/food,type=fish_feast/mark_of_the_wild/moonkin_form/mana_potion/innervate,trigger=19000
 actions+=/treants/starfall,skip_on_eclipse=1
-actions+=/moonfire,skip_on_eclipse=-1/insect_swarm,eclipse_left>=10
+actions+=/moonfire,skip_on_eclipse=-1
+actions+=/insect_swarm,eclipse_left>=10
 actions+=/starfire,eclipse=trigger/wrath
-Caster_T7_Base_Gear.simcraft
-enchant_spell_power=+30
-enchant_hit_rating=-25
+
+# Standard Gear Attributes http://www.chardev.org/?template=148722
+gear_stamina=800
+gear_intellect=802
+gear_spirit=234
+gear_spell_power=2079
+gear_hit_rating=263
+#gear_hit_rating=275 Actual rating from profile, would distort hit-rating-scale.
+gear_crit_rating=364
+gear_haste_rating=607
+gear_mp5=15
+
+# Set Bonuses
+tier7_2pc=1
+tier7_4pc=1
+
+# Meta Gem
+chaotic_skyflare=1
+
+# Item Procs
+illustration_of_the_dragon_soul=1
+dying_curse=1
+
+# Glyphs
 glyph_moonfire=1
 glyph_starfire=1
 glyph_insect_swarm=1
+
+# Relic
 idol_of_steadfast_renewal=1
