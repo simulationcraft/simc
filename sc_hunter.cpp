@@ -3394,11 +3394,24 @@ struct rapid_fire_t : public hunter_spell_t
 
 struct readiness_t : public hunter_spell_t
 {
+  bool wait_for_rf;
+
   readiness_t( player_t* player, const std::string& options_str ) :
-    hunter_spell_t( "readiness", player, SCHOOL_PHYSICAL, TREE_MARKSMANSHIP )
+    hunter_spell_t( "readiness", player, SCHOOL_PHYSICAL, TREE_MARKSMANSHIP ),
+    wait_for_rf(false)
   {
     hunter_t* p = player -> cast_hunter();
     assert( p -> talents.readiness );
+
+    option_t options[] =
+    {
+      // Only perform Readiness while Rapid Fire is up, allows the sequence
+      // Rapid Fire, Readiness, Rapid Fire, for better RF uptime
+      { "wait_for_rapid_fire", OPT_INT, &wait_for_rf },
+      { NULL }
+    };
+    parse_options( options, options_str );
+
     cooldown = 180;
     trigger_gcd = 1.0;
     harmful = false;
@@ -3414,6 +3427,18 @@ struct readiness_t : public hunter_spell_t
     }
 
     update_ready();
+  }
+
+  virtual bool ready()
+  {
+    if( ! hunter_spell_t::ready() )
+      return false;
+
+    hunter_t* p = player -> cast_hunter();
+    if( wait_for_rf && ! p -> _buffs.rapid_fire )
+      return false;
+
+    return true;
   }
 };
 
