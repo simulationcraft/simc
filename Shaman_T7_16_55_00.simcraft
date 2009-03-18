@@ -6,11 +6,39 @@ talents=http://www.wowhead.com/?talent=hVhhVZhbxsoxdAIkufot
 actions=flask,type=endless_rage/food,type=fish_feast/windfury_weapon,weapon=main/flametongue_weapon,weapon=off
 actions+=/strength_of_earth_totem/windfury_totem/searing_totem/lightning_shield/bloodlust,time_to_die<=60
 actions+=/auto_attack/lightning_bolt,maelstrom=5/shamanistic_rage/spirit_wolf/earth_shock,ss_wait=1/stormstrike/earth_shock/lava_lash
-Melee_T7_Base_Gear.simcraft
-gear_expertise_rating=200
+
+# Gear: http://www.chardev.org/?template=149566
+gear_stamina=853
+gear_strength=10
+gear_agility=772
+gear_intellect=380
+gear_spirit=10
+gear_attack_power=2139
+gear_expertise_rating=194
+gear_armor_penetration_rating=68
+gear_hit_rating=343
+gear_crit_rating=600
+gear_haste_rating=201
+
+# Set Bonuses
+tier7_2pc=1
+tier7_4pc=1
+
+# Meta Gem
+relentless_earthstorm=1
+
+# Weapons
 main_hand=fist,dps=171,speed=2.6,enchant=berserking
-off_hand=mace,dps=156,speed=2.5,enchant=berserking
-totem_of_hex=1
+off_hand=dagger,dps=157,speed=1.4,enchant=berserking
+
+# Item Procs
+grim_toll=1
+fury_of_the_five_flights=1
+
+# Glyphs
 glyph_windfury_weapon=1
 glyph_stormstrike=1
 glyph_lightning_shield=1
+
+# Totem
+totem_of_hex=1
