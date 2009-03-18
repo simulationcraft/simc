@@ -17,16 +17,16 @@ actions+=/mangle_cat,mangle<=2
 actions+=/rake
 actions+=/shred
 
-# Gear http://www.chardev.org/?template=149272
-gear_stamina=1044
-gear_strength=269
-gear_agility=799
-gear_attack_power=2719
+# Gear http://www.chardev.org/?template=149559
+gear_stamina=1032
+gear_strength=10
+gear_agility=1073
+gear_attack_power=2177
 gear_expertise_rating=129
 gear_armor_penetration_rating=236
-gear_hit_rating=201
-gear_crit_rating=512
-gear_haste_rating=334
+gear_hit_rating=259
+gear_crit_rating=515
+gear_haste_rating=297
 tier7_2pc=1
 relentless_earthstorm=1
 
