@@ -3652,12 +3652,33 @@ struct conflagrate_t : public warlock_spell_t
     }
     if( sim -> patch.after( 3, 1, 0 ) )
     {
-      base_dd_min = base_dd_max = ( (*dot_spell) -> base_td_init  )
-                                * ( (*dot_spell) -> num_ticks     );
-      direct_power_mod          = ( (*dot_spell) -> tick_power_mod )
-                                * ( (*dot_spell) -> num_ticks     );
+      int dot_result = (*dot_spell) -> result;
+      (*dot_spell) -> result = RESULT_HIT;
+      direct_dmg = (*dot_spell) -> calculate_tick_damage();
+      (*dot_spell) -> result = dot_result;
+      if( dot_spell == &( p -> active_immolate ) )
+      {
+        //Does not benefit from immolate glyph, and emberstorm is multiplicative
+        direct_dmg /= 1.0 + ( p -> talents.emberstorm        * 0.03 +
+                              p -> talents.improved_immolate * 0.10 +
+                              p -> glyphs.immolate           * 0.20 +
+                              p -> talents.aftermath         * 0.03 );
+        direct_dmg *= 1.0 + ( p -> talents.improved_immolate * 0.10 +
+                              p -> talents.aftermath         * 0.03 );
+        direct_dmg *= 1.0 + ( p -> talents.emberstorm        * 0.03 );
+      }
+      direct_dmg *= (*dot_spell) -> num_ticks;
+      if( result == RESULT_CRIT )
+      {
+        direct_dmg *= 1.0 + total_crit_bonus();
+      }
+      direct_dmg *= 1.0 - resistance();
+      return direct_dmg;
     }
-    return warlock_spell_t::calculate_direct_damage();
+    else
+    {
+      return warlock_spell_t::calculate_direct_damage();
+    }
   }
 
   virtual void execute()
