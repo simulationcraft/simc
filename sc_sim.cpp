@@ -306,6 +306,20 @@ bool sim_t::init()
   if(     gcd_lag_range == 0 )     gcd_lag_range =     gcd_lag * 0.5;
   if( channel_lag_range == 0 ) channel_lag_range = channel_lag * 0.5;
 
+  target -> init();
+
+  bool too_quiet = true;
+
+  for( player_t* p = player_list; p; p = p -> next )
+  {
+    p -> init();
+    if( ! p -> quiet ) too_quiet = false;
+  }
+
+  if( too_quiet && ! debug ) exit(0);
+
+  // Defer party creation after player_t::init() calls to handle any pets created there.
+
   int party_index=0;
   for( unsigned i=0; i < party_encoding.size(); i++ )
   {
@@ -339,18 +353,6 @@ bool sim_t::init()
       }
     }
   }
-
-  target -> init();
-
-  bool too_quiet = true;
-
-  for( player_t* p = player_list; p; p = p -> next )
-  {
-    p -> init();
-    if( ! p -> quiet ) too_quiet = false;
-  }
-
-  if( too_quiet && ! debug ) exit(0);
 
   return true;
 }
