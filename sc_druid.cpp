@@ -2380,8 +2380,11 @@ struct starfire_t : public druid_spell_t
       eclipse_trigger = ( eclipse_str == "trigger" );
     }
 
+    // Starfire is leanred at level 78, but gains 5 damage per level
+    // so the actual damage range at 80 is: 1038 to 1222
     static rank_t ranks[] =
     {
+      { 80, 11, 1038, 1222, 0, 0.16 },
       { 78, 10, 1028, 1212, 0, 0.16 },
       { 72,  9,  854, 1006, 0, 0.16 },
       { 67,  8,  818,  964, 0, 370  },
@@ -2535,8 +2538,11 @@ struct wrath_t : public druid_spell_t
       eclipse_trigger = ( eclipse_str == "trigger" );
     }
 
+    // Wrath is leanred at level 79, but gains 4 damage per level
+    // so the actual damage range at 80 is: 557 to 627
     static rank_t ranks[] =
     {
+      { 80, 13, 557, 627, 0, 0.11 },
       { 79, 12, 553, 623, 0, 0.11 },
       { 74, 11, 504, 568, 0, 0.11 },
       { 69, 10, 431, 485, 0, 255  },
