@@ -6,17 +6,16 @@
 
 rogue=Rogue_T7_08_20_43
 level=80
-talents=http://www.wowhead.com/?talent=fhLZ0xV0x0xoZxbrbhGzdAzqc
+talents=http://www.wowhead.com/?talent=fhfZ0gc0x0xZxbcbGGzdAzVc
 
 # Action queue
 actions=flask,type=endless_rage/food,type=fish_feast/apply_poison,main_hand=wound,off_hand=wound
-actions+=/auto_attack
-actions+=/pool_energy,for_next=1/slice_and_dice,min_combo_points=4,snd<=3
+actions+=/auto_attack/pool_energy,for_next=1
+actions+=/slice_and_dice,min_combo_points=4,snd<=3
 actions+=/tricks_of_the_trade
-actions+=/blade_flurry
 actions+=/rupture,min_combo_points=5
 actions+=/eviscerate,min_combo_points=5
-actions+=/backstab,max_combo_points=4,energy>=80
+actions+=/hemorrhage,max_combo_points=3,energy>=80
 
 # Gear: http://www.chardev.org/?template=147412
 gear_stamina=968

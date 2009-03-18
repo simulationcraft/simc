@@ -1,17 +1,13 @@
 #!simcraft optimal_raid=1 max_time=300
-patch=3.1.0
-shaman=Shaman_T8_16_55_00
+
+shaman=Shaman_T7_16_55_00
 level=80
-talents=http://ptr.wowhead.com/?talent=hVbhqZhbxIoxdIhusRuVo
+talents=http://www.wowhead.com/?talent=hVhhVZhbxsoxdAIkufot
 actions=flask,type=endless_rage/food,type=fish_feast/windfury_weapon,weapon=main/flametongue_weapon,weapon=off
 actions+=/strength_of_earth_totem/windfury_totem/searing_totem/lightning_shield/bloodlust,time_to_die<=60
 actions+=/auto_attack/lightning_bolt,maelstrom=5/shamanistic_rage/spirit_wolf/earth_shock,ss_wait=1/stormstrike/earth_shock/lava_lash
 Melee_T7_Base_Gear.simcraft
 gear_expertise_rating=200
-# Not fair to use the same stats for all Melee since Enhancement Shaman needs less expertise.
-# Trade expertise for ivalue-equal amount of attack power
-enchant_attack_power=+150
-enchant_expertise_rating=-75
 main_hand=fist,dps=171,speed=2.6,enchant=berserking
 off_hand=mace,dps=156,speed=2.5,enchant=berserking
 totem_of_hex=1

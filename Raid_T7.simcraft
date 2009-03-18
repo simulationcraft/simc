@@ -22,13 +22,13 @@ Mage_T7_57_03_11.simcraft   focus_magic_target=Mage_T7_18_00_53
 Priest_T7_14_00_57.simcraft
 Priest_T7_38_28_05.simcraft
 
-Rogue_T7_07_21_43.simcraft   tricks_of_the_trade_target=Rogue_T7_07_51_13   honor_among_thieves_interval=0
-Rogue_T7_07_51_13.simcraft   tricks_of_the_trade_target=Rogue_T7_15_51_05
-Rogue_T7_15_51_05.simcraft   tricks_of_the_trade_target=Rogue_T7_18_51_02
-Rogue_T7_18_51_02.simcraft   tricks_of_the_trade_target=Rogue_T7_51_13_07
-Rogue_T7_51_13_07.simcraft   tricks_of_the_trade_target=Rogue_T7_07_21_43
+Rogue_T7_07_51_13.simcraft   tricks_of_the_trade_target=Rogue_T7_08_20_43
+Rogue_T7_08_20_43.simcraft   tricks_of_the_trade_target=Rogue_T7_15_51_05   honor_among_thieves_interval=0
+Rogue_T7_15_51_05.simcraft   tricks_of_the_trade_target=Rogue_T7_23_05_43
+Rogue_T7_23_05_43.simcraft   tricks_of_the_trade_target=Rogue_T7_51_13_07   honor_among_thieves_interval=0
+Rogue_T7_51_13_07.simcraft   tricks_of_the_trade_target=Rogue_T7_07_51_13
 
-Shaman_T7_15_56_00.simcraft
+Shaman_T7_16_55_00.simcraft
 Shaman_T7_57_14_00.simcraft
 
 Warlock_T7_00_31_40.simcraft
@@ -40,4 +40,4 @@ Warlock_T7_55_00_16_CoE.simcraft
 Warlock_T7_55_00_16_DG.simcraft
 
 # Since honor_among_thieves_interval=0 the HAT Rogue must be in a party
-party=Rogue_T7_07_21_43/Hunter_T7_06_14_51/Hunter_T7_52_12_07/Shaman_T7_16_55_00/Shaman_T7_57_14_00
+party=Rogue_T7_08_20_43/Rogue_T7_23_05_43/Hunter_T7_06_14_51/Hunter_T7_52_12_07/Shaman_T7_16_55_00
