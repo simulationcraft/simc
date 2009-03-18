@@ -30,6 +30,10 @@ gear_haste_rating=297
 tier7_2pc=1
 relentless_earthstorm=1
 
+# Trinkets
+darkmoon_greatness=1
+grim_toll=1
+
 # Weapon
 main_hand=staff,dps=222.9,speed=2.4,enchant=berserking
 
