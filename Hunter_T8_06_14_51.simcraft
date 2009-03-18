@@ -3,10 +3,10 @@
 patch=3.1.0
 hunter=Hunter_T8_06_14_51
 level=80
-talents=http://talent.mmo-champion.com/?hunter=501000000000000000000000000053051000000000000000000005000032500033330502135301301&version=9637
+talents=http://ptr.wowhead.com/?talent=cxoZ0eVoZx0ci0cIhxdAhsz
 
 # Action queue
-actions=flask,type=endless_rage/food,type=blackened_dragonfin/summon_pet,wolf/hunters_mark
+actions=flask,type=endless_rage/food,type=blackened_dragonfin/summon_pet/hunters_mark
 actions+=/auto_shot/aspect/rapid_fire/black_arrow/kill_shot/explosive_shot/serpent_sting/multi_shot/steady_shot
 
 # Gear: http://www.chardev.org/?template=148656
@@ -41,5 +41,5 @@ ranged=bow,dps=154.8,speed=2.9
 ammo_dps=67.5
 quiver_haste=15
 
-# Pet
-Hunter_T8_Wolf.simcraft
+# Pet (cat|devilsaur|raptor|wind_serpent|wolf)
+summon_pet=wolf

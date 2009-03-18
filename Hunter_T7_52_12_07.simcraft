@@ -5,7 +5,7 @@ level=80
 talents=http://www.wowhead.com/?talent=ctbMzxtRwuMtsx0ecoZx00b
 
 # Action queue
-actions=flask,type=endless_rage/food,type=fish_feast/summon_pet,cat/hunters_mark
+actions=flask,type=endless_rage/food,type=fish_feast/summon_pet/hunters_mark
 actions+=/auto_shot/kill_command,sync=bestial_wrath/bestial_wrath/aspect/rapid_fire
 actions+=/kill_shot/arcane_shot/serpent_sting/multi_shot/steady_shot
 
@@ -41,5 +41,5 @@ ranged=bow,dps=154.8,speed=2.9
 ammo_dps=67.5
 quiver_haste=15
 
-# Pet
-Hunter_T7_Cat.simcraft
+# Pet (cat|devilsaur|raptor|wind_serpent|wolf)
+summon_pet=cat

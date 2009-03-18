@@ -199,8 +199,10 @@ player_t::player_t( sim_t*             s,
   proc_list(0), gain_list(0), stats_list(0), uptime_list(0)
 {
   if( sim -> debug ) report_t::log( sim, "Creating Player %s", name() );
-  next = sim -> player_list;
-  sim -> player_list = this;
+  player_t** last = &( sim -> player_list );
+  while( *last ) last = &( (*last) -> next );
+  *last = this;
+  next = 0;
 
   for( int i=0; i < ATTRIBUTE_MAX; i++ )
   {

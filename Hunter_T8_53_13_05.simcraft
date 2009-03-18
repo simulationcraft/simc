@@ -3,10 +3,10 @@
 patch=3.1.0
 hunter=Hunter_T8_53_13_05
 level=80
-talents=http://talent.mmo-champion.com/?hunter=512002015051122431005313510053041000000000000000000005000000000000000000000000000&version=9637
+talents=http://ptr.wowhead.com/?talent=ctbMzxtRwu0est0emoZx
 
 # Action queue
-actions=flask,type=endless_rage/food,type=fish_feast/summon_pet,devilsaur/hunters_mark
+actions=flask,type=endless_rage/food,type=fish_feast/summon_pet/hunters_mark
 actions+=/auto_shot/kill_command,sync=bestial_wrath/bestial_wrath/aspect/rapid_fire
 actions+=/kill_shot/arcane_shot/serpent_sting/multi_shot/steady_shot
 
@@ -42,9 +42,5 @@ ranged=bow,dps=154.8,speed=2.9
 ammo_dps=67.5
 quiver_haste=15
 
-# Pet
-Hunter_T8_Devilsaur.simcraft
-active=devilsaur
-wild_hunt=2
-shark_attack=2
-active=owner
+# Pet (cat|devilsaur|raptor|wind_serpent|wolf)
+summon_pet=devilsaur

@@ -99,10 +99,10 @@ struct hunter_t : public player_t
   // Auto-Attack
   attack_t* ranged_attack;
 
-  // Ammunition
+  // Custom Parameters
   double ammo_dps;
-
   double quiver_haste;
+  std::string summon_pet_str;
 
   struct talents_t
   {
@@ -110,6 +110,7 @@ struct hunter_t : public player_t
     int  aimed_shot;
     int  aspect_mastery;
     int  barrage;
+    int  beast_mastery;
     int  beast_within;
     int  bestial_wrath;
     int  bestial_discipline;
@@ -228,11 +229,12 @@ struct hunter_t : public player_t
     uptimes_rapid_fire                  = get_uptime( "rapid_fire" );
 
     ammo_dps = 0;
-
     quiver_haste = 0.0;
+    summon_pet_str = "cat";
   }
 
   // Character Definition
+  virtual void      init();
   virtual void      init_base();
   virtual void      reset();
   virtual double    composite_attack_power();
@@ -408,6 +410,71 @@ struct hunter_pet_t : public pet_t
     uptimes_frenzy         = o -> get_uptime( "frenzy" );
     uptimes_monstrous_bite = o -> get_uptime( "monstrous_bite" );
     uptimes_savage_rend    = o -> get_uptime( "savage_rend" );
+
+    bool unsupported = false;
+
+    if( group() == PET_FEROCITY )
+    {
+      talents.call_of_the_wild = 1;
+      talents.cobra_reflexes   = 2;
+      talents.rabid            = 1;
+      talents.spiders_bite     = 3;
+      talents.spiked_collar    = 3;
+
+      if( sim -> patch.after( 3, 1, 0 ) )
+      {
+	talents.shark_attack = ( o -> talents.beast_mastery ) ? 2 : 0;
+	talents.wild_hunt    = ( o -> talents.beast_mastery ) ? 2 : 1;
+      }
+
+      if( pet_type == PET_CAT )
+      {
+	action_list_str = "auto_attack/call_of_the_wild/rabid/rake/claw";
+      }
+      else if( pet_type == PET_DEVILSAUR )
+      {
+	action_list_str = "auto_attack/monstrous_bite/call_of_the_wild/rabid/bite";
+      }
+      else if( pet_type == PET_RAPTOR )
+      {
+	action_list_str = "auto_attack/savage_rend/call_of_the_wild/rabid/claw";
+      }
+      else if( pet_type == PET_WOLF )
+      {
+	action_list_str = "auto_attack/furious_howl/call_of_the_wild/rabid/bite";
+      }
+      else unsupported = true;
+    }
+    else if( group() == PET_CUNNING )
+    {
+      talents.cobra_reflexes   = 2;
+      talents.feeding_frenzy   = 2;
+      talents.owls_focus       = 2;
+      talents.roar_of_recovery = 1;
+      talents.spiked_collar    = 3;
+      talents.wolverine_bite   = 1;
+
+      if( sim -> patch.after( 3, 1, 0 ) )
+      {
+	talents.wild_hunt = ( o -> talents.beast_mastery ) ? 2 : 1;
+      }
+
+      if( pet_type == PET_WIND_SERPENT )
+      {
+	action_list_str = "auto_attack/roar_of_recovery/wolverine_bite/lightning_breath/bite";
+      }
+      else unsupported = true;
+    }
+    else // TENACITY
+    {
+      unsupported = true;
+    }
+
+    if( unsupported )
+    {
+      fprintf( stdout, "simcraft: Pet %s is not yet supported.\n", pet_name.c_str() );
+      exit( 0 );
+    }
   }
 
   virtual void reset()
@@ -1322,8 +1389,10 @@ struct hunter_pet_attack_t : public attack_t
 
     may_glance = ! special;
 
-    if( p -> sim -> patch.after(3, 1, 0) )
+    if( p -> sim -> patch.after( 3, 1, 0 ) )
+    {
       base_multiplier *= 1.05;
+    }
     else
     {
       if( p -> group() == PET_FEROCITY ) base_multiplier *= 1.10;
@@ -3480,7 +3549,8 @@ struct summon_pet_t : public hunter_spell_t
   summon_pet_t( player_t* player, const std::string& options_str ) :
     hunter_spell_t( "summon_pet", player, SCHOOL_PHYSICAL, TREE_BEAST_MASTERY )
   {
-    pet_name = options_str;
+    hunter_t* p = player -> cast_hunter();
+    pet_name = ( options_str.size() > 0 ) ? options_str : p -> summon_pet_str;
     harmful = false;
     trigger_gcd = 0;
   }
@@ -3610,6 +3680,22 @@ pet_t* hunter_t::create_pet( const std::string& pet_name )
   if( pet_name == "wind_serpent" ) return new hunter_pet_t( sim, this, pet_name, PET_WIND_SERPENT );
 
   return 0;
+}
+
+// hunter_t::init =============================================================
+
+void hunter_t::init()
+{
+  player_t::init();
+
+  if( ! pet_list )
+  {
+    create_pet( "cat" );
+    create_pet( "devilsaur" );
+    create_pet( "raptor" );
+    create_pet( "wind_serpent" );
+    create_pet( "wolf" );
+  }
 }
 
 // hunter_t::init_base ========================================================
@@ -3742,7 +3828,7 @@ bool hunter_t::get_talent_trees( std::vector<int*>& beastmastery,
       { { 23, &( talents.beast_within                ) }, { 23, &( talents.wild_quiver                  ) }, { 23, &( talents.noxious_stings           ) } },
       { { 24, &( talents.cobra_strikes               ) }, { 24, &( talents.silencing_shot               ) }, { 24, NULL                                  } },
       { { 25, &( talents.kindred_spirits             ) }, { 25, &( talents.improved_steady_shot         ) }, { 25, NULL                                  } },
-      { { 26, NULL                                     }, { 26, &( talents.marked_for_death             ) }, { 26, &( talents.sniper_training          ) } },
+      { { 26, &( talents.beast_mastery               ) }, { 26, &( talents.marked_for_death             ) }, { 26, &( talents.sniper_training          ) } },
       { {  0, NULL                                     }, { 27, &( talents.chimera_shot                 ) }, { 27, &( talents.hunting_party            ) } },
       { {  0, NULL                                     }, {  0, NULL                                      }, { 28, &( talents.explosive_shot           ) } },
       { {  0, NULL                                     }, {  0, NULL                                      }, {  0, NULL                                  } }
@@ -3779,7 +3865,7 @@ bool hunter_t::get_talent_trees( std::vector<int*>& beastmastery,
       { { 23, &( talents.beast_within                ) }, { 23, &( talents.wild_quiver                  ) }, { 23, &( talents.noxious_stings           ) } },
       { { 24, &( talents.cobra_strikes               ) }, { 24, &( talents.silencing_shot               ) }, { 24, NULL                                  } },
       { { 25, &( talents.kindred_spirits             ) }, { 25, &( talents.improved_steady_shot         ) }, { 25, &( talents.black_arrow              ) } },
-      { { 26, NULL                                     }, { 26, &( talents.marked_for_death             ) }, { 26, &( talents.sniper_training          ) } },
+      { { 26, &( talents.beast_mastery               ) }, { 26, &( talents.marked_for_death             ) }, { 26, &( talents.sniper_training          ) } },
       { {  0, NULL                                     }, { 27, &( talents.chimera_shot                 ) }, { 27, &( talents.hunting_party            ) } },
       { {  0, NULL                                     }, {  0, NULL                                      }, { 28, &( talents.explosive_shot           ) } },
       { {  0, NULL                                     }, {  0, NULL                                      }, {  0, NULL                                  } }
@@ -3802,6 +3888,7 @@ bool hunter_t::parse_option( const std::string& name,
     { "animal_handler",                    OPT_INT, &( talents.animal_handler               ) },
     { "aspect_mastery",                    OPT_INT, &( talents.aspect_mastery               ) },
     { "barrage",                           OPT_INT, &( talents.barrage                      ) },
+    { "beast_mastery",                     OPT_INT, &( talents.beast_mastery                ) },
     { "beast_within",                      OPT_INT, &( talents.beast_within                 ) },
     { "bestial_discipline",                OPT_INT, &( talents.bestial_discipline           ) },
     { "bestial_wrath",                     OPT_INT, &( talents.bestial_wrath                ) },
@@ -3872,8 +3959,9 @@ bool hunter_t::parse_option( const std::string& name,
     { "glyph_steady_shot",                 OPT_INT, &( glyphs.steady_shot                   ) },
     { "glyph_trueshot_aura",               OPT_INT, &( glyphs.trueshot_aura                 ) },
     // Custom
-    { "ammo_dps",                          OPT_FLT,  &( ammo_dps                             ) },
-    { "quiver_haste",                      OPT_FLT,  &( quiver_haste                         ) },
+    { "ammo_dps",                          OPT_FLT,    &( ammo_dps                          ) },
+    { "quiver_haste",                      OPT_FLT,    &( quiver_haste                      ) },
+    { "summon_pet",                        OPT_STRING, &( summon_pet_str                    ) },
 
     { NULL, OPT_UNKNOWN }
   };
