@@ -1,9 +1,9 @@
 #!simcraft max_time=300 optimal_raid=1
 
-patch=3.1.0
-druid=Druid_T8_00_55_16_M
+patch=3.0.9
+druid=Druid_T7_00_55_16_T
 level=80
-talents=http://ptr.wowhead.com/?talent=0ZEMMcfrz0eR0huAkbAczb
+talents=http://www.wowhead.com/?talent=0ZEG0cfrz0eR0huAo0Eczb
 actions=flask,type=endless_rage/food,type=blackened_dragonfin
 actions+=/cat_form
 actions+=/auto_attack
@@ -35,8 +35,7 @@ main_hand=staff,dps=222.9,speed=2.4,enchant=berserking
 
 # Glyphs
 glyph_rip=1
-glyph_savage_roar=1
-glyph_shred=1
+glyph_mangle=1
 
 # Relic
-idol_of_worship=1
+idol_of_the_ravenous_beast=1

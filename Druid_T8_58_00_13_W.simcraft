@@ -1,5 +1,6 @@
 #!simcraft max_time=300 optimal_raid=1
 
+patch=3.1.0
 druid=Druid_T8_58_00_13_W
 level=80
 talents=http://ptr.wowhead.com/?talent=0xRbuiIsfdIVhouZbxczb

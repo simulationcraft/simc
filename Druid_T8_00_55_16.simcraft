@@ -15,15 +15,27 @@ actions+=/rip,cp>=5,time_to_die>=10
 actions+=/ferocious_bite,cp>=5,rip>=5,savage_roar>=6
 actions+=/rake
 actions+=/shred
-Melee_T7_Base_Gear.simcraft
-gear_expertise_rating=200
-# Not fair to use the same stats for all melee since Feral Druid needs less expertise.
-# Trade expertise for ivalue-equal amount of attack power
-enchant_attack_power=+160
-enchant_expertise_rating=-80
+
+# Gear http://www.chardev.org/?template=149272
+gear_stamina=1044
+gear_strength=269
+gear_agility=799
+gear_attack_power=2719
+gear_expertise_rating=129
+gear_armor_penetration_rating=236
+gear_hit_rating=201
+gear_crit_rating=512
+gear_haste_rating=334
+tier7_2pc=1
+relentless_earthstorm=1
+
+# Weapon
+main_hand=staff,dps=222.9,speed=2.4,enchant=berserking
+
+# Glyphs
 glyph_rip=1
 glyph_savage_roar=1
 glyph_shred=1
-idol_of_worship=1
-main_hand=staff,dps=222.9,speed=2.4,enchant=berserking
 
+# Relic
+idol_of_worship=1
