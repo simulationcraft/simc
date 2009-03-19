@@ -996,6 +996,39 @@ static void trigger_mirror_of_truth( action_t* a )
   }
 }
 
+// Pyrite Infuser =============================================
+
+static void trigger_pyrite_infuser( action_t* a )
+{
+  struct mirror_of_truth_expiration_t : public event_t
+  {
+    pyrite_infuser_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
+    {
+      name = "Pyrite Infusion Expiration";
+      player -> aura_gain( "Pyrite Infusion" );
+      player -> attack_power += 1234;
+      player -> cooldowns.pyrite_infuser = sim -> current_time + 45;
+      sim -> add_event( this, 10.0 );
+    }
+    virtual void execute()
+    {
+      player -> aura_loss( "Pyrite Infusion" );
+      player -> attack_power -= 1234;
+    }
+  };
+
+  player_t* p = a -> player;
+
+  if( p -> gear.pyrite_infuser &&
+      a -> sim -> cooldown_ready( p -> cooldowns.pyrite_infuser ) &&
+      a -> sim -> roll( 0.10 ) )
+  {
+    p -> procs.pyrite_infuser -> occur();
+
+    new ( a -> sim ) pyrite_infuser_expiration_t( a -> sim, p );
+  }
+}
+
 // Grim Toll ====================================================
 
 static void trigger_grim_toll( action_t* a )
@@ -1139,6 +1172,7 @@ void unique_gear_t::attack_hit_event( attack_t* a )
   if ( a -> result == RESULT_CRIT )
   {
     trigger_mirror_of_truth( a );
+    trigger_pyrite_infuser ( a );
   }
 }
 
@@ -1617,6 +1651,7 @@ bool unique_gear_t::parse_option( player_t*          p,
     { "mirror_of_truth",                      OPT_INT,   &( p -> gear.mirror_of_truth                 ) },
     { "mark_of_defiance",                     OPT_INT,   &( p -> gear.mark_of_defiance                ) },
     { "mystical_skyfire",                     OPT_INT,   &( p -> gear.mystical_skyfire                ) },
+    { "pyrite_infuser",                       OPT_INT,   &( p -> gear.pyrite_infuser                  ) },
     { "quagmirrans_eye",                      OPT_INT,   &( p -> gear.quagmirrans_eye                 ) },
     { "relentless_earthstorm",                OPT_INT,   &( p -> gear.relentless_earthstorm           ) },
     { "sextant_of_unstable_currents",         OPT_INT,   &( p -> gear.sextant_of_unstable_currents    ) },

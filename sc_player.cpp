@@ -797,6 +797,7 @@ void player_t::init_stats()
   procs.mark_of_defiance             = get_proc( "mark_of_defiance" );
   procs.mirror_of_truth              = get_proc( "mirror_of_truth" );
   procs.mystical_skyfire             = get_proc( "mystical_skyfire" );
+  procs.pyrite_infuser               = get_proc( "pyrite_infuser" );
   procs.quagmirrans_eye              = get_proc( "quagmirrans_eye" );
   procs.sextant_of_unstable_currents = get_proc( "sextant_of_unstable_currents" );
   procs.shiffars_nexus_horn          = get_proc( "shiffars_nexus_horn" );

@@ -676,6 +676,7 @@ struct player_t
     int  mark_of_defiance;
     int  mirror_of_truth;
     int  mystical_skyfire;
+    int  pyrite_infuser;
     int  quagmirrans_eye;
     int  relentless_earthstorm;
     int  sextant_of_unstable_currents;
@@ -803,6 +804,7 @@ struct player_t
     double mark_of_defiance;
     double mirror_of_truth;
     double mystical_skyfire;
+    double pyrite_infuser;
     double quagmirrans_eye;
     double sextant_of_unstable_currents;
     double shiffars_nexus_horn;
@@ -890,6 +892,7 @@ struct player_t
     proc_t* mark_of_defiance;
     proc_t* mirror_of_truth;
     proc_t* mystical_skyfire;
+    proc_t* pyrite_infuser;
     proc_t* quagmirrans_eye;
     proc_t* sextant_of_unstable_currents;
     proc_t* shiffars_nexus_horn;
