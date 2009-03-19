@@ -79,7 +79,6 @@ struct rogue_t : public player_t
   gain_t* gains_focused_attacks;
   gain_t* gains_quick_recovery;
   gain_t* gains_relentless_strikes;
-  gain_t* gains_tier8_2pc;
 
   // Procs
   proc_t* procs_combo_points;
@@ -215,7 +214,6 @@ struct rogue_t : public player_t
     gains_focused_attacks    = get_gain( "focused_attacks" );
     gains_quick_recovery     = get_gain( "quick_recovery" );
     gains_relentless_strikes = get_gain( "relentless_strikes" );
-	gains_tier8_2pc          = get_gain( "tier8_2pc" );
 
     // Procs
     procs_combo_points         = get_proc( "combo_points" );
@@ -2555,7 +2553,7 @@ struct deadly_poison_t : public rogue_poison_t
 	rogue_t* p = player -> cast_rogue();
 	rogue_poison_t::tick();
 	if( p -> gear.tier8_2pc )
-		p -> resource_gain( RESOURCE_ENERGY, 1, p -> gains_tier8_2pc );
+		p -> resource_gain( RESOURCE_ENERGY, 1, p -> gains.tier8_2pc );
   }
 
   virtual void last_tick()
