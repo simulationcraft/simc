@@ -3256,7 +3256,7 @@ struct unstable_affliction_t : public warlock_spell_t
     base_hit         +=       p -> talents.suppression * 0.01;
     base_multiplier  *= 1.0 + p -> talents.shadow_mastery * 0.03
                             + p -> gear.tier8_2pc         * 0.20 + //FIXME assuming additive
-                            ( p -> talents.siphon_life && sim -> patch.after( 3, 1, 0 ) ) ? 0.05 : 0;
+                          ( ( p -> talents.siphon_life && sim -> patch.after( 3, 1, 0 ) ) ? 0.05 : 0 );
 
     tick_power_mod   += p -> talents.everlasting_affliction * 0.01;
 
