@@ -949,7 +949,8 @@ struct devouring_plague_t : public priest_spell_t
     base_cost         = floor(base_cost);
     base_multiplier  *= 1.0 + ( p -> talents.darkness                  * 0.02 + 
 								p -> talents.twin_disciplines          * 0.01 +
-								p -> talents.improved_devouring_plague * 0.05 );
+								p -> talents.improved_devouring_plague * 0.05 +
+								p -> gear.tier8_2pc                    * 0.15 ); // FIX ME! Is tier8_2pc additive or multiplicative?
     base_hit         += p -> talents.shadow_focus * 0.01;
 
 	if ( p -> talents.improved_devouring_plague )
