@@ -26,6 +26,7 @@ struct priest_t : public player_t
     int shadow_weaving;
     int surge_of_light;
     int glyph_of_shadow;
+	int devious_mind;
 
     void reset() { memset( (void*) this, 0x00, sizeof( _buffs_t ) ); }
     _buffs_t() { reset(); }
@@ -38,6 +39,7 @@ struct priest_t : public player_t
     event_t* improved_spirit_tap;
     event_t* shadow_weaving;
     event_t* glyph_of_shadow;
+	event_t* devious_mind;
 
     void reset() { memset( (void*) this, 0x00, sizeof( _expirations_t ) ); }
     _expirations_t() { reset(); }
@@ -51,6 +53,7 @@ struct priest_t : public player_t
   // Up-Times
   uptime_t* uptimes_improved_spirit_tap;
   uptime_t* uptimes_glyph_of_shadow;
+  uptime_t* uptimes_devious_mind;
 
   struct talents_t
   {
@@ -127,6 +130,7 @@ struct priest_t : public player_t
     // Up-Times
     uptimes_improved_spirit_tap = get_uptime( "improved_spirit_tap" );
     uptimes_glyph_of_shadow = get_uptime( "glyph_of_shadow" );
+	uptimes_devious_mind = get_uptime( "devious_mind" );
   }
 
   // Character Definition
@@ -497,6 +501,51 @@ static void trigger_glyph_of_shadow( spell_t* s )
     if( e )
     {
       e -> reschedule( 10.0 );
+    }
+    else
+    {
+      e = new ( s -> sim ) expiration_t( s -> sim, p );
+    }
+  }
+}
+
+// trigger_devious_mind ====================================================
+
+static void trigger_devious_mind( spell_t* s )
+{
+  struct expiration_t : public event_t
+  {
+    int haste_bonus;
+    expiration_t( sim_t* sim, priest_t* p ) : event_t( sim, p )
+    {
+      name = "Devious Mind Expiration";
+      p -> _buffs.devious_mind = 1;
+      p -> aura_gain( "devious_mind" );
+      haste_bonus = 240;
+      p -> haste_rating += haste_bonus;
+	  p -> recalculate_haste();
+      sim -> add_event( this, 4.0 );
+    }
+    virtual void execute()
+    {
+      priest_t* p = player -> cast_priest();
+      p -> _buffs.devious_mind = 0;
+      p -> aura_loss( "devious_mind" );
+      p -> haste_rating -= haste_bonus;
+	  p -> recalculate_haste();
+      p -> _expirations.devious_mind = 0;
+    }
+  };
+
+  priest_t* p = s -> player -> cast_priest();
+
+  if( p -> gear.tier8_4pc )
+  {
+    event_t*& e = p -> _expirations.devious_mind;
+
+    if( e )
+    {
+      e -> reschedule( 4.0 );
     }
     else
     {
@@ -1124,6 +1173,11 @@ struct mind_blast_t : public priest_spell_t
   virtual void execute()
   {
     priest_spell_t::execute();
+	priest_t* p = player -> cast_priest();
+	if ( p -> gear.tier8_4pc && result_is_hit() )
+	{
+	  trigger_devious_mind( this );
+	}
     if( result == RESULT_CRIT )
     {
       trigger_improved_spirit_tap( this );
@@ -1783,6 +1837,7 @@ void priest_t::spell_finish_event( spell_t* s )
 
   uptimes_improved_spirit_tap -> update( _buffs.improved_spirit_tap != 0 );
   uptimes_glyph_of_shadow     -> update( _buffs.glyph_of_shadow     != 0 );
+  uptimes_devious_mind		  -> update( _buffs.devious_mind        != 0 );
 }
 
 // priest_t::spell_damage_event ==============================================
