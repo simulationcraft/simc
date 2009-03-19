@@ -3745,13 +3745,14 @@ void hunter_t::reset()
   player_t::reset();
 
   // Active
-  active_pet           = 0;
-  active_aspect        = ASPECT_NONE;
-  active_black_arrow   = 0;
-  active_scorpid_sting = 0;
-  active_serpent_sting = 0;
-  active_viper_sting   = 0;
-
+  active_pet            = 0;
+  active_aspect         = ASPECT_NONE;
+  active_black_arrow    = 0;
+  active_piercing_shots = 0;
+  active_scorpid_sting  = 0;
+  active_serpent_sting  = 0;
+  active_viper_sting    = 0;
+  
   _buffs.reset();
   _cooldowns.reset();
   _expirations.reset();

@@ -22,6 +22,7 @@ struct shaman_t : public player_t
   spell_t* active_lava_burst;
   spell_t* active_lightning_charge;
   spell_t* active_shield;
+  spell_t* active_lightning_bolt_dot;
 
   // Buffs
   struct _buffs_t
@@ -175,6 +176,9 @@ struct shaman_t : public player_t
   {
     int dueling;
     int hex;
+    int dancing_flame;
+    int thunderfall;
+
     totems_t() { memset( (void*) this, 0x0, sizeof( totems_t ) ); }
   };
   totems_t totems;
@@ -214,10 +218,11 @@ struct shaman_t : public player_t
     earth_totem = 0;;
 
     // Active
-    active_flame_shock      = 0;
-    active_lava_burst       = 0;
-    active_lightning_charge = 0;
-    active_shield           = 0;
+    active_flame_shock        = 0;
+    active_lava_burst         = 0;
+    active_lightning_charge   = 0;
+    active_shield             = 0;
+    active_lightning_bolt_dot = 0;
 
     // Gains
     gains_improved_stormstrike = get_gain( "improved_stormstrike" );
@@ -481,8 +486,11 @@ static void stack_maelstrom_weapon( attack_t* a )
       p -> _expirations.maelstrom_weapon = 0;
     }
   };
-
-  if( a -> sim -> roll( a -> weapon -> proc_chance_on_swing( p -> talents.maelstrom_weapon * 2.0 ) ) )
+  double chance = a -> weapon -> proc_chance_on_swing( p -> talents.maelstrom_weapon * 2.0 );
+  if( p -> tiers.t8_4pc_enhancement )
+    chance *= 1.0 + 0.20;
+    
+  if( a -> sim -> roll( chance ) )
   {
     if( p -> _buffs.maelstrom_weapon < 5 ) 
     {
@@ -628,6 +636,56 @@ static void trigger_tier5_4pc_elemental( spell_t* s )
   {
     p -> resource_gain( RESOURCE_MANA, 120.0, p -> gains.tier5_4pc );
   }
+}
+
+// trigger_tier8_4pc_elemental ===============================================
+
+static void trigger_tier8_4pc_elemental( spell_t* s )
+{
+  shaman_t* p = s -> player -> cast_shaman();
+
+  struct lightning_bolt_dot_t : public shaman_spell_t
+  {
+    lightning_bolt_dot_t( player_t* player ) : shaman_spell_t( "tier8_4pc_elemental", player, SCHOOL_NATURE, TREE_ELEMENTAL )
+    {
+      may_miss        = false;
+      background      = true;
+      proc            = true;
+      trigger_gcd     = 0;
+      base_cost       = 0;
+      base_multiplier = 1.0;
+      tick_power_mod  = 0;
+      // FIX ME! I shamelessly copied from the hunters piercing shots and currently there is no information about those values.
+      base_tick_time  = 1.0;
+      num_ticks       = 8;
+
+    }
+    void player_buff()
+    {
+      player_multiplier = 1.0;
+    }
+    void target_debuff()
+    {
+      target_multiplier = 1.0;
+    }
+  };
+
+  double dmg = s -> direct_dmg * 0.08;
+
+  if( ! p -> active_lightning_bolt_dot ) p -> active_lightning_bolt_dot = new lightning_bolt_dot_t( p );
+
+  if( p -> active_lightning_bolt_dot -> ticking )
+  {
+    int num_ticks = p -> active_lightning_bolt_dot -> num_ticks;
+    int remaining_ticks = num_ticks - p -> active_lightning_bolt_dot -> current_tick;
+
+    dmg += p -> active_lightning_bolt_dot -> base_tick_dmg * remaining_ticks;
+
+    p -> active_lightning_bolt_dot -> cancel();
+  }
+
+  p -> active_lightning_bolt_dot -> base_tick_dmg = dmg / 8;
+  p -> active_lightning_bolt_dot -> execute();
 }
 
 // trigger_ashtongue_talisman ===============================================
@@ -956,6 +1014,8 @@ struct lava_lash_t : public shaman_attack_t
     base_direct_dmg = 1;
     cooldown        = 6;
     base_cost       = p -> resource_base[ RESOURCE_MANA ] * 0.04;
+    if( p -> tiers.t8_2pc_enhancement )
+      base_multiplier *= 1.0 + 0.20;
   }
 
   virtual void player_buff()
@@ -980,7 +1040,15 @@ struct stormstrike_t : public shaman_attack_t
 
     base_cost = p -> resource_base[ RESOURCE_MANA ] * 0.08;
     cooldown  = 10.0;
+    if( p -> tiers.t8_2pc_enhancement )
+      base_multiplier *= 1.0 + 0.20;
 
+    // Shaman T8 Enhancement Relic -- Increases weapon damage when you use Stormstrike by 155.
+    if( p -> totems.dancing_flame )
+    {
+      base_dd_max += 155;
+      base_dd_min += 155;
+    }
     if( sim -> P309 ) cooldown -= p -> talents.improved_stormstrike;
   }
 
@@ -1273,10 +1341,10 @@ struct lightning_bolt_t : public shaman_spell_t
   int      ss_wait;
   stats_t* lightning_overload_stats;
   double   lightning_overload_chance;
-
+  bool     tier8_4pc_elemental;
   lightning_bolt_t( player_t* player, const std::string& options_str ) : 
     shaman_spell_t( "lightning_bolt", player, SCHOOL_NATURE, TREE_ELEMENTAL ), 
-    maelstrom(0), ss_wait(0), lightning_overload_stats(0), lightning_overload_chance(0)
+    maelstrom(0), ss_wait(0), lightning_overload_stats(0), lightning_overload_chance(0), tier8_4pc_elemental(false)
   {
     shaman_t* p = player -> cast_shaman();
 
@@ -1330,6 +1398,7 @@ struct lightning_bolt_t : public shaman_spell_t
     {
       lightning_overload_chance = util_t::talent_rank( p -> talents.lightning_overload, 3, 0.07, 0.14, 0.20 );
     }
+    tier8_4pc_elemental = (p -> tiers.t8_4pc_elemental == 1);
   }
 
   virtual void execute()
@@ -1341,6 +1410,9 @@ struct lightning_bolt_t : public shaman_spell_t
       trigger_ashtongue_talisman( this );
       trigger_lightning_overload( this, lightning_overload_stats, lightning_overload_chance );
       trigger_tier5_4pc_elemental( this );
+      if( result == RESULT_CRIT && tier8_4pc_elemental )
+        trigger_tier8_4pc_elemental( this );
+
     }
   }
 
@@ -1422,6 +1494,12 @@ struct lava_burst_t : public shaman_spell_t
     base_crit_bonus_multiplier *= 1.0 + ( util_t::talent_rank( p -> talents.lava_flows,     3, 0.06, 0.12, 0.24 ) +
                                           util_t::talent_rank( p -> talents.elemental_fury, 5, 0.20 ) +
                                           ( p -> tiers.t7_4pc_elemental ? 0.10 : 0.00 ) );
+    if(  p -> totems.thunderfall )
+    {
+      // Shaman T8 Elemental Relic -- Increases the base damage of your Lavaburst by 215. 
+      base_dd_min       += 215;
+      base_dd_max       += 215;
+    }
 
     p -> active_lava_burst = this;
   }
@@ -1706,6 +1784,7 @@ struct flame_shock_t : public shaman_spell_t
     may_crit          = true;
     cooldown          = 6.0;
     cooldown_group    = "shock";
+    tick_may_crit     = ( p -> tiers.t8_2pc_elemental != 0 );
 
     if ( p -> glyphs.flame_shock ) num_ticks += 2;
       
@@ -3004,8 +3083,9 @@ void shaman_t::reset()
   earth_totem = 0;;
 
   // Active
-  active_flame_shock = 0;
-  active_shield      = 0;
+  active_flame_shock        = 0;
+  active_shield             = 0;
+  active_lightning_bolt_dot = 0;
 
   _buffs.reset();
   _cooldowns.reset();
@@ -3237,6 +3317,8 @@ bool shaman_t::parse_option( const std::string& name,
     // Totems
     { "totem_of_dueling",          OPT_INT,  &( totems.dueling                    ) },
     { "totem_of_hex",              OPT_INT,  &( totems.hex                        ) },
+    { "totem_of_the_dancing_flame",OPT_INT,  &( totems.dancing_flame              ) },
+    { "thunderfall_totem",         OPT_INT,  &( totems.thunderfall                ) },
     // Tier Bonuses
     { "tier4_2pc_elemental",       OPT_INT,  &( tiers.t4_2pc_elemental            ) },
     { "tier4_4pc_elemental",       OPT_INT,  &( tiers.t4_4pc_elemental            ) },
