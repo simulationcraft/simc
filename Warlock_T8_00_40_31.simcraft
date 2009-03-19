@@ -9,4 +9,4 @@ actions+=/curse_of_agony/corruption,health_percentage>=35/incinerate/life_tap
 Warlock_T7_Hit_Gear.simcraft
 glyph_life_tap=1
 glyph_conflagrate=1
-glyph_incinerate=1
+glyph_immolate=1

@@ -7,5 +7,5 @@ actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/fire_stone/fel_a
 actions+=/life_tap,glyph=1/curse_of_doom,time_to_die>=90/immolate/conflagrate/incinerate/life_tap
 Warlock_T7_Hit_Gear.simcraft
 glyph_conflagrate=1
-glyph_incinerate=1
+glyph_immolate=1
 glyph_life_tap=1
