@@ -79,7 +79,7 @@ struct rogue_t : public player_t
   gain_t* gains_focused_attacks;
   gain_t* gains_quick_recovery;
   gain_t* gains_relentless_strikes;
-  gain_t* tier8_2pc;
+  gain_t* gains_tier8_2pc;
 
   // Procs
   proc_t* procs_combo_points;
@@ -215,6 +215,7 @@ struct rogue_t : public player_t
     gains_focused_attacks    = get_gain( "focused_attacks" );
     gains_quick_recovery     = get_gain( "quick_recovery" );
     gains_relentless_strikes = get_gain( "relentless_strikes" );
+	gains_tier8_2pc          = get_gain( "tier8_2pc" );
 
     // Procs
     procs_combo_points         = get_proc( "combo_points" );
