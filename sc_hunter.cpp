@@ -1392,6 +1392,7 @@ struct hunter_pet_attack_t : public attack_t
     if( p -> sim -> patch.after( 3, 1, 0 ) )
     {
       base_multiplier *= 1.05;
+      base_hit  += p -> owner -> cast_hunter() -> talents.focused_aim * 0.01;
     }
     else
     {
@@ -1785,6 +1786,8 @@ struct wolverine_bite_t : public hunter_pet_attack_t
 // Hunter Pet Spells
 // =========================================================================
 
+// FIXME: 3.1 is supposed to give pets more spell hit, need to figure out
+// the exact mechanics
 struct hunter_pet_spell_t : public spell_t
 {
   hunter_pet_spell_t( const char* n, player_t* player, int r=RESOURCE_FOCUS, int s=SCHOOL_PHYSICAL ) :
@@ -1793,7 +1796,10 @@ struct hunter_pet_spell_t : public spell_t
     hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
 
     if( p -> sim -> patch.after(3, 1, 0) )
+    {
       base_multiplier *= 1.05;
+      base_hit  += p -> owner -> cast_hunter() -> talents.focused_aim * 0.01;
+    }
     else
     {
       if( p -> group() == PET_FEROCITY ) base_multiplier *= 1.10;
