@@ -145,6 +145,7 @@ struct priest_t : public player_t
   // Event Tracking
   virtual void regen( double periodicity );
   virtual void spell_hit_event   ( spell_t* );
+  virtual void spell_start_event ( spell_t* );
   virtual void spell_finish_event( spell_t* );
   virtual void spell_damage_event( spell_t*, double amount, int dmg_type );
 };
@@ -1822,6 +1823,15 @@ void priest_t::spell_hit_event( spell_t* s )
   }
 }
 
+// priest_t::spell_start_event ==============================================
+
+void priest_t::spell_start_event( spell_t* s )
+{
+  player_t::spell_start_event( s );
+
+  uptimes_devious_mind		  -> update( _buffs.devious_mind        != 0 );
+}
+
 // priest_t::spell_finish_event ==============================================
 
 void priest_t::spell_finish_event( spell_t* s )
@@ -1837,7 +1847,6 @@ void priest_t::spell_finish_event( spell_t* s )
 
   uptimes_improved_spirit_tap -> update( _buffs.improved_spirit_tap != 0 );
   uptimes_glyph_of_shadow     -> update( _buffs.glyph_of_shadow     != 0 );
-  uptimes_devious_mind		  -> update( _buffs.devious_mind        != 0 );
 }
 
 // priest_t::spell_damage_event ==============================================
