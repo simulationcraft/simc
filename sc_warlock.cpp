@@ -3453,7 +3453,7 @@ struct immolate_t : public warlock_spell_t
     if( p -> gear.tier8_2pc )
     {
       // FIX ME! Multiplicative or additive? 
-      base_multiplie *= 1 + 0.20;
+      base_multiplier *= 1 + 0.20;
       
     }
 
