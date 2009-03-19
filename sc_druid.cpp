@@ -2195,9 +2195,9 @@ struct insect_swarm_t : public druid_spell_t
   {
     druid_spell_t::tick();
     druid_t* p = player -> cast_druid();
-    if( p -> tiers.t8_4pc_balance && sim -> roll( 0.15 ) )
+    if( p -> tiers.t8_4pc_balance && sim -> roll( 0.03 ) )
     {
-      // FIX ME! Proc chance? 
+      // http://thottbot.com/test/s64824 3%
       p -> procs.tier8_4pc -> occur();
       trigger_t8_4pc_balance( this );
     }
