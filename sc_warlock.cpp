@@ -3981,7 +3981,10 @@ struct soul_fire_t : public warlock_spell_t
     double t = warlock_spell_t::execute_time();
     if( p -> _buffs.decimation >= 2 )
     {
-      t *= 0.4;
+      if( p -> talents.decimation == 1 )
+        t *= 0.65;
+      else
+        t *= 0.40;
     }
     return t;
   }
