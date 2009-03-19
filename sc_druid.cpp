@@ -34,7 +34,9 @@ struct druid_t : public player_t
     int    savage_roar;
     int    starfall;
     int    stealthed;
+    int    t8_4pc_balance;
     double tigers_fury;
+    
 
     void reset() { memset( (void*) this, 0x00, sizeof( _buffs_t ) ); }
     _buffs_t() { reset(); }
@@ -59,6 +61,7 @@ struct druid_t : public player_t
     event_t* idol_of_the_corruptor;
     event_t* natures_grace;
     event_t* savage_roar;
+    event_t* t8_4pc_balance;
     event_t* unseen_moon;
 
     void reset() { memset( (void*) this, 0x00, sizeof( _expirations_t ) ); }
@@ -759,6 +762,42 @@ static void trigger_eclipse_starfire( spell_t* s )
       s -> sim -> roll( p -> talents.eclipse * 0.2 ) )
   {
     p -> _expirations.eclipse = new ( s -> sim ) expiration_t( s -> sim, p );
+  }
+}
+
+// trigger_t8_2pc_balance ===================================================
+
+static void trigger_t8_4pc_balance( spell_t* s )
+{
+  struct expiration_t : public event_t
+  {
+    expiration_t( sim_t* sim, druid_t* p ) : event_t( sim, p )
+    {
+      name = "Tier 8 4 Piece Balance";
+      p -> aura_gain( "Tier 8 4 Piece Balance" );
+      p -> _buffs.t8_4pc_balance = 1;
+      sim -> add_event( this, 10.0 );
+    }
+    virtual void execute()
+    {
+      druid_t* p = player -> cast_druid();
+      p -> aura_loss( "Tier 8 4 Piece Balance" );
+      p -> _buffs.t8_4pc_balance       = 0;
+      p -> _expirations.t8_4pc_balance = 0;
+    }
+  };
+
+  druid_t* p = s -> player -> cast_druid();
+
+  event_t*& e = p -> _expirations.t8_4pc_balance;
+
+  if( e )
+  {
+    e -> reschedule( 10.0 );
+  }
+  else
+  {
+    e = new ( s -> sim ) expiration_t( s -> sim, p );
   }
 }
 
@@ -2152,6 +2191,17 @@ struct insect_swarm_t : public druid_spell_t
 
     observer = &( p -> active_insect_swarm );
   }
+  virtual void tick()
+  {
+    druid_spell_t::tick();
+    druid_t* p = player -> cast_druid();
+    if( p -> tiers.t8_4pc_balance && sim -> roll( 0.15 ) )
+    {
+      // FIX ME! Proc chance? 
+      p -> procs.tier8_4pc -> occur();
+      trigger_t8_4pc_balance( this );
+    }
+  }
   virtual bool ready() 
   {
     if( ! druid_spell_t::ready() )
@@ -2406,9 +2456,11 @@ struct starfire_t : public druid_spell_t
   int eclipse_trigger;
   std::string prev_str;
   int extend_moonfire;
+  int instant;
 
   starfire_t( player_t* player, const std::string& options_str ) : 
-    druid_spell_t( "starfire", player, SCHOOL_ARCANE, TREE_BALANCE ), eclipse_benefit(0), eclipse_trigger(0), extend_moonfire(0)
+    druid_spell_t( "starfire", player, SCHOOL_ARCANE, TREE_BALANCE ), 
+    eclipse_benefit(0), eclipse_trigger(0), extend_moonfire(0), instant(0)
   {
     druid_t* p = player -> cast_druid();
 
@@ -2418,6 +2470,7 @@ struct starfire_t : public druid_spell_t
       { "extendmf", OPT_INT,    &extend_moonfire },
       { "eclipse",  OPT_STRING, &eclipse_str     },
       { "prev",     OPT_STRING, &prev_str        },
+      { "instant",  OPT_INT,    &instant         },
       { NULL }
     };
     parse_options( options, options_str );
@@ -2504,14 +2557,24 @@ struct starfire_t : public druid_spell_t
       }
     }
   }
-
+  virtual double execute_time()
+  {
+    druid_t* p = player -> cast_druid();
+    if( p -> _buffs.t8_4pc_balance )
+      return 0;
+      
+    return druid_spell_t::execute_time();
+  }
   virtual bool ready()
   {
     if( ! druid_spell_t::ready() )
       return false;
 
     druid_t* p = player -> cast_druid();
- 
+    
+    if( instant && p -> _buffs.t8_4pc_balance == 0)
+      return false;
+    
     if( extend_moonfire && p -> glyphs.starfire )
       if( p -> active_moonfire && p -> active_moonfire -> added_ticks > 2 )
         return false;
