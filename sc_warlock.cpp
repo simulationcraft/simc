@@ -2468,6 +2468,8 @@ struct shadow_bolt_t : public warlock_spell_t
                                  p -> gear.tier6_4pc               * 0.06 +
                                  p -> talents.improved_shadow_bolt * ( ( sim -> patch.after( 3, 1, 0 ) ) ? 0.01 : 0 ) );
     base_crit         += p -> talents.devastation * 0.05;
+    if( p -> gear.tier8_4pc )
+      base_crit       += 0.05;
     base_crit         += p -> talents.backlash * 0.01;
     direct_power_mod  *= 1.0 + p -> talents.shadow_and_flame * 0.04;
 
@@ -3254,6 +3256,11 @@ struct unstable_affliction_t : public warlock_spell_t
     base_hit         +=       p -> talents.suppression * 0.01;
     base_multiplier  *= 1.0 + ( p -> talents.shadow_mastery * 0.03 +
                             ( ( p -> talents.siphon_life && sim -> patch.after( 3, 1, 0 ) ) ? 0.05 : 0 ) );
+    if( p -> gear.tier8_2pc )
+    {
+      // FIX ME! Additive or multiplicative?
+      base_multiplier *= 1.0 + 0.20;
+    }
     tick_power_mod   += p -> talents.everlasting_affliction * 0.01;
 
     if( sim -> patch.after( 3, 1, 0 ) ) duration_group = "immolate";
@@ -3443,6 +3450,12 @@ struct immolate_t : public warlock_spell_t
                                   p -> talents.aftermath         * 0.03 );
 
     if( p -> gear.tier4_4pc ) num_ticks++;
+    if( p -> gear.tier8_2pc )
+    {
+      // FIX ME! Multiplicative or additive? 
+      base_multiplie *= 1 + 0.20;
+      
+    }
 
     observer = &( p -> active_immolate );
   }
@@ -3781,6 +3794,8 @@ struct incinerate_t : public warlock_spell_t
                                  p -> glyphs.incinerate   * 0.05 );
     base_crit         += p -> talents.devastation * 0.05;
     base_crit         += p -> talents.backlash * 0.01;
+    if( p -> gear.tier8_4pc )
+      base_crit       += 0.05;
     direct_power_mod  *= 1.0 + p -> talents.shadow_and_flame * 0.04;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
