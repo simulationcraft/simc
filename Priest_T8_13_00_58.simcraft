@@ -4,7 +4,7 @@ patch=3.1.0
 priest=Priest_T8_13_00_58
 level=80
 talents=http://ptr.wowhead.com/?talent=bVcbhZZGxfVRfzcfqfzAo
-actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/divine_spirit/inner_fire/shadow_form
+actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/fortitude/divine_spirit/inner_fire/shadow_form
 actions+=/shadow_fiend,trigger=6000/dispersion
 actions+=/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/mind_flay
 actions+=/mana_potion
