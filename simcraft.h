@@ -667,6 +667,7 @@ struct player_t
     int  eternal_sage;
     int  extract_of_necromatic_power;
     int  eye_of_magtheridon;
+    int  eye_of_the_broodmother;
     int  forge_ember;
     int  fury_of_the_five_flights;
     int  grim_toll;
@@ -717,6 +718,7 @@ struct player_t
     pet_t*    demonic_pact_pet;
     int       elemental_oath;
     int       executioner;
+    int       eye_of_the_broodmother;
     double    flametongue_totem;
     player_t* focus_magic;
     int       focus_magic_feedback;
@@ -772,14 +774,15 @@ struct player_t
     event_t* darkmoon_wrath;
     event_t* executioner;
     event_t* eye_of_magtheridon;
+    event_t* eye_of_the_broodmother;
     event_t* focus_magic_feedback;
+    event_t* fury_of_the_five_flights;
+    event_t* illustration_of_the_dragon_soul;
     event_t* mongoose_mh;
     event_t* mongoose_oh;
     event_t* spellstrike;
     event_t* tricks_of_the_trade;
     event_t* wrath_of_cenarius;
-    event_t* fury_of_the_five_flights;
-    event_t* illustration_of_the_dragon_soul;
     event_t *tier4_2pc, *tier4_4pc;
     event_t *tier5_2pc, *tier5_4pc;
     event_t *tier6_2pc, *tier6_4pc;

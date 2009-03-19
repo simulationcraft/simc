@@ -456,6 +456,52 @@ static void trigger_illustration_of_the_dragon_soul( spell_t* s )
   }
 }
 
+
+// Eye of the Broodmother =================================================================
+
+static void trigger_eye_of_the_broodmother( spell_t* s )
+{
+  struct eye_of_the_broodmother_expiration_t : public event_t
+  {
+    eye_of_the_broodmother_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
+    {
+      name = "Eye of the Broodmother Expiration";
+      sim -> add_event( this, 10.0 );
+    }
+    virtual void execute()
+    {
+      player -> aura_loss( "Eye of the Broodmother" );
+      player -> spell_power[ SCHOOL_MAX ] -= player -> buffs.eye_of_the_broodmother * 25;
+      player -> buffs.eye_of_the_broodmother = 0;
+      player -> expirations.eye_of_the_broodmother = 0;
+    }
+  };
+
+  if( ! s -> harmful ) return;
+
+  player_t* p = s -> player;
+
+  if( ! p ->  gear.eye_of_the_broodmother ) return;
+
+  if( p -> buffs.eye_of_the_broodmother < 5 )
+  {
+    p -> buffs.eye_of_the_broodmother++;
+    p -> spell_power[ SCHOOL_MAX ] += 25;
+    if( p -> buffs.eye_of_the_broodmother == 1 ) p -> aura_gain( "Eye of the Broodmother" );
+  }
+  
+  event_t*& e = p -> expirations.eye_of_the_broodmother;
+
+  if( e )
+  {
+    e -> reschedule( 10.0 );
+  }
+  else
+  {
+    e = new ( s -> sim ) eye_of_the_broodmother_expiration_t( s -> sim, p );
+  }
+}
+
 // Darkmoon Wrath ==========================================================
 
 static void clear_darkmoon_wrath( spell_t* s )
@@ -1126,6 +1172,7 @@ void unique_gear_t::spell_hit_event( spell_t* s )
   trigger_wrath_of_cenarius              ( s );
   trigger_sundial_of_the_exiled          ( s );
   trigger_embrace_of_the_spider          ( s );
+  trigger_eye_of_the_broodmother         ( s );
   trigger_illustration_of_the_dragon_soul( s );
   trigger_dying_curse                    ( s );
   trigger_forge_ember                    ( s );
@@ -1561,6 +1608,7 @@ bool unique_gear_t::parse_option( player_t*          p,
     { "eternal_sage",                         OPT_INT,   &( p -> gear.eternal_sage                    ) },
     { "extract_of_necromatic_power",          OPT_INT,   &( p -> gear.extract_of_necromatic_power     ) },
     { "eye_of_magtheridon",                   OPT_INT,   &( p -> gear.eye_of_magtheridon              ) },
+    { "eye_of_the_broodmother",               OPT_INT,   &( p -> gear.eye_of_the_broodmother          ) },
     { "forge_ember",                          OPT_INT,   &( p -> gear.forge_ember                     ) },
     { "fury_of_the_five_flights",             OPT_INT,   &( p -> gear.fury_of_the_five_flights        ) },
     { "grim_toll",                            OPT_INT,   &( p -> gear.grim_toll                       ) },
