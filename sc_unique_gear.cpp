@@ -1000,7 +1000,7 @@ static void trigger_mirror_of_truth( action_t* a )
 
 static void trigger_pyrite_infuser( action_t* a )
 {
-  struct mirror_of_truth_expiration_t : public event_t
+  struct pyrite_infuser_expiration_t : public event_t
   {
     pyrite_infuser_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
     {
