@@ -899,6 +899,40 @@ static void trigger_sundial_of_the_exiled( spell_t* s )
   }
 }
 
+// Elemental Focus Stone ============================================
+
+static void trigger_elemental_focus_stone( spell_t* s )
+{
+  struct elemental_focus_stone_expiration_t : public event_t
+  {
+    elemental_focus_stone_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
+    {
+      name = "Elemental Focus Stone Expiration";
+      player -> aura_gain( "Alacrity of the Elements" );
+      player -> spell_power[ SCHOOL_MAX ] += 522;
+      player -> cooldowns.elemental_focus_stone = sim -> current_time + 45;
+      sim -> add_event( this, 10.0 );
+    }
+    virtual void execute()
+    {
+      player -> aura_loss( "Alacrity of the Elements" );
+      player -> spell_power[ SCHOOL_MAX ] -= 522;
+    }
+  };
+
+  if( ! s -> harmful ) return;
+
+  player_t* p = s -> player;
+
+  if( p ->        gear.elemental_focus_stone && 
+      s -> sim -> cooldown_ready( p -> cooldowns.elemental_focus_stone ) &&
+      s -> sim -> roll( 0.10 ) )
+  {
+    p -> procs.elemental_focus_stone -> occur();
+    new ( s -> sim ) elemental_focus_stone_expiration_t( s -> sim, p );
+  }
+}
+
 // Forge Ember ============================================
 
 static void trigger_forge_ember( spell_t* s )
@@ -1198,6 +1232,7 @@ void unique_gear_t::spell_hit_event( spell_t* s )
   trigger_darkmoon_wrath                 ( s );
   trigger_elder_scribes                  ( s );
   trigger_eternal_sage                   ( s );
+  trigger_elemental_focus_stone          ( s );
   trigger_mark_of_defiance               ( s );
   trigger_mystical_skyfire               ( s );
   trigger_quagmirrans_eye                ( s );
@@ -1637,6 +1672,7 @@ bool unique_gear_t::parse_option( player_t*          p,
     { "dying_curse",                          OPT_INT,   &( p -> gear.dying_curse                     ) },
     { "egg_of_mortal_essence",                OPT_INT,   &( p -> gear.egg_of_mortal_essence           ) },
     { "elder_scribes",                        OPT_INT,   &( p -> gear.elder_scribes                   ) },
+    { "elemental_focus_stone",                OPT_INT,   &( p -> gear.elemental_focus_stone           ) },
     { "ember_skyflare",                       OPT_INT,   &( p -> gear.ember_skyflare                  ) },
     { "embrace_of_the_spider",                OPT_INT,   &( p -> gear.embrace_of_the_spider           ) },
     { "eternal_sage",                         OPT_INT,   &( p -> gear.eternal_sage                    ) },

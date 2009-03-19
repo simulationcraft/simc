@@ -786,6 +786,7 @@ void player_t::init_stats()
   procs.darkmoon_greatness           = get_proc( "darkmoon_greatness" );
   procs.dying_curse                  = get_proc( "dying_curse" );
   procs.elder_scribes                = get_proc( "elder_scribes" );
+  procs.elemental_focus_stone        = get_proc( "elemental_focus_stone" );
   procs.embrace_of_the_spider        = get_proc( "embrace_of_the_spider" );
   procs.eternal_sage                 = get_proc( "eternal_sage" );
   procs.extract_of_necromatic_power  = get_proc( "extract_of_necromatic_power" );

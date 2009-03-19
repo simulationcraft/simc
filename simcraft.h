@@ -662,6 +662,7 @@ struct player_t
     int  dying_curse;
     int  egg_of_mortal_essence;
     int  elder_scribes;
+    int  elemental_focus_stone;
     int  ember_skyflare;
     int  embrace_of_the_spider;
     int  eternal_sage;
@@ -798,8 +799,13 @@ struct player_t
   {
     double bloodlust;
     double darkmoon_greatness;
+    double dying_curse;
+    double egg_of_mortal_essence;
     double elder_scribes;
+    double elemental_focus_stone;
+    double embrace_of_the_spider;
     double eternal_sage;
+    double forge_ember;
     double grim_toll;
     double mark_of_defiance;
     double mirror_of_truth;
@@ -810,10 +816,6 @@ struct player_t
     double shiffars_nexus_horn;
     double spellsurge;
     double sundial_of_the_exiled;
-    double egg_of_mortal_essence;
-    double dying_curse;
-    double embrace_of_the_spider;
-    double forge_ember;
     double tier4_2pc, tier4_4pc;
     double tier5_2pc, tier5_4pc;
     double tier6_2pc, tier6_4pc;
@@ -881,6 +883,7 @@ struct player_t
     proc_t* darkmoon_greatness;
     proc_t* dying_curse;
     proc_t* elder_scribes;
+    proc_t* elemental_focus_stone;
     proc_t* embrace_of_the_spider;
     proc_t* eternal_sage;
     proc_t* extract_of_necromatic_power;
