@@ -79,6 +79,7 @@ struct rogue_t : public player_t
   gain_t* gains_focused_attacks;
   gain_t* gains_quick_recovery;
   gain_t* gains_relentless_strikes;
+  gain_t* tier8_2pc;
 
   // Procs
   proc_t* procs_combo_points;
@@ -1255,134 +1256,114 @@ struct blade_flurry_t : public rogue_attack_t
 
 struct envenom_t : public rogue_attack_t
 {
-  int min_doses;
-  int no_buff;
-  double* dose_dmg;
+	int min_doses;
+	int no_buff;
+	double dose_dmg;
 
-  envenom_t( player_t* player, const std::string& options_str ) : 
-    rogue_attack_t( "envenom", player, SCHOOL_NATURE, TREE_ASSASSINATION ), min_doses(1), no_buff(0)
-  {
-    rogue_t* p = player -> cast_rogue();
-    assert( p -> level >= 62 );
+	envenom_t( player_t* player, const std::string& options_str ) : 
+		rogue_attack_t( "envenom", player, SCHOOL_NATURE, TREE_ASSASSINATION ), min_doses(1), no_buff(0)
+	{
+		rogue_t* p = player -> cast_rogue();
+		assert( p -> level >= 62 );
 
-    option_t options[] =
-    {
-      { "min_doses", OPT_INT, &min_doses },
-      { "no_buff",   OPT_INT, &no_buff   },
-      { NULL }
-    };
-    parse_options( options, options_str );
+		option_t options[] =
+		{
+			{ "min_doses", OPT_INT, &min_doses },
+			{ "no_buff",   OPT_INT, &no_buff   },
+			{ NULL }
+		};
+		parse_options( options, options_str );
 
-    weapon = &( p -> main_hand_weapon );
-    weapon_multiplier = 0;      
-    requires_combo_points = true;
-    base_cost = 35;
+		weapon = &( p -> main_hand_weapon );
+		weapon_multiplier = 0;      
+		requires_combo_points = true;
+		base_cost = 35;
 
-    base_multiplier *= 1.0 + ( p -> talents.find_weakness * 0.02 + 
-                               util_t::talent_rank( p -> talents.vile_poisons, 3, 0.07, 0.14, 0.20 ) );
+		base_multiplier *= 1.0 + ( p -> talents.find_weakness * 0.02 + 
+							util_t::talent_rank( p -> talents.vile_poisons, 3, 0.07, 0.14, 0.20 ) );
 
+		if( p -> talents.surprise_attacks ) may_dodge = false;
 
-    if( p -> talents.surprise_attacks ) may_dodge = false;
-
-    static double dmg_80[] = { 216, 432, 648, 864, 1080 };
-    static double dmg_74[] = { 176, 352, 528, 704,  880 };
-    static double dmg_69[] = { 148, 296, 444, 492,  740 };
-    static double dmg_62[] = { 118, 236, 354, 472,  590 };
-
-    dose_dmg = ( p -> level >= 80 ? dmg_80 :
-		 p -> level >= 74 ? dmg_74 :
-		 p -> level >= 69 ? dmg_69 : 
-		                    dmg_62 );
-  }
-
-  virtual void execute()
-  {
-    struct expiration_t : public event_t
-    {
-      expiration_t( sim_t* sim, rogue_t* p, double duration ) : event_t( sim, p )
-      {
-        name = "Envenom Expiration";
-        p -> aura_gain( "Envenom" );
-        p -> _buffs.envenom = 1;
-        sim -> add_event( this, duration );
-      }
-      virtual void execute()
-      {
-        rogue_t* p = player -> cast_rogue();
-        p -> aura_loss( "Envenom" );
-        p ->       _buffs.envenom = 0;
-        p -> _expirations.envenom = 0;
-      }
-    };
-
-    rogue_t* p = player -> cast_rogue();
-
-    int doses_consumed = std::min( p -> _buffs.poison_doses, p -> _buffs.combo_points );
-    double envenom_duration = 1.0 + p -> _buffs.combo_points;
-
-    event_t*& e = p -> _expirations.envenom;
-
-    if( e )
-    {
-      e -> reschedule( envenom_duration );
-    }
-    else
-    {
-      e = new ( sim ) expiration_t( sim, p, envenom_duration );
-    }
-
-    rogue_attack_t::execute();
-
-    if( result_is_hit() )
-    {
-      if( doses_consumed > 0 )
-      {
-	p -> _buffs.poison_doses -= doses_consumed;
-
-	if( p -> _buffs.poison_doses == 0 )
-        {
-	  p -> active_deadly_poison -> cancel();
+		dose_dmg = ( p -> level >= 80 ? 216 :
+					 p -> level >= 74 ? 176 :
+					 p -> level >= 69 ? 148 : 118 );
 	}
-	consume_deadly_poison( p );
-      }
-      trigger_cut_to_the_chase( this );
-    }
-  }
 
-  virtual void player_buff()
-  {
-    rogue_t* p = player -> cast_rogue();
+	virtual void execute()
+	{
+		struct expiration_t : public event_t
+		{
+			expiration_t( sim_t* sim, rogue_t* p, double duration ) : event_t( sim, p )
+			{
+				name = "Envenom Expiration";
+				p -> aura_gain( "Envenom" );
+				p -> _buffs.envenom = 1;
+				sim -> add_event( this, duration );
+			}
+			virtual void execute()
+			{
+				rogue_t* p = player -> cast_rogue();
+				p -> aura_loss( "Envenom" );
+				p ->       _buffs.envenom = 0;
+				p -> _expirations.envenom = 0;
+			}
+		};
 
-    int doses_consumed = std::min( p -> _buffs.poison_doses, p -> _buffs.combo_points );
+		rogue_t* p = player -> cast_rogue();
 
-    if( doses_consumed == 0 )
-    {
-      rogue_attack_t::player_buff();
-      player_multiplier = 0;
-    }
-    else
-    {
-      direct_power_mod = p -> _buffs.combo_points * 0.07;
-      base_direct_dmg = dose_dmg[ doses_consumed-1 ];
-      rogue_attack_t::player_buff();
-    }
+		int doses_consumed = std::min( p -> _buffs.poison_doses, p -> _buffs.combo_points );
+		double envenom_duration = 1.0 + p -> _buffs.combo_points;
 
-    trigger_dirty_deeds( this );
-  }
+		event_t*& e = p -> _expirations.envenom;
 
-  virtual bool ready()
-  {
-    rogue_t* p = player -> cast_rogue();
+		if( e )
+			e -> reschedule( envenom_duration );
+		else
+			e = new ( sim ) expiration_t( sim, p, envenom_duration );
 
-    if( min_doses > 0 )
-      if( min_doses > p -> _buffs.poison_doses )
-        return false;
+		rogue_attack_t::execute();
 
-    if( no_buff && p -> _buffs.envenom )
-      return false;
+		if( result_is_hit() )
+		{
+			p -> _buffs.poison_doses -= doses_consumed;
 
-    return rogue_attack_t::ready();
-  }
+			if( p -> _buffs.poison_doses == 0 )
+				p -> active_deadly_poison -> cancel();
+			consume_deadly_poison( p );
+			
+			trigger_cut_to_the_chase( this );
+		}
+	}
+
+	virtual void player_buff()
+	{
+		rogue_t* p = player -> cast_rogue();
+
+		int doses_consumed = std::min( p -> _buffs.poison_doses, p -> _buffs.combo_points );
+
+		direct_power_mod = p -> _buffs.combo_points * 0.07;
+		base_direct_dmg = doses_consumed * dose_dmg;
+		rogue_attack_t::player_buff();
+
+		trigger_dirty_deeds( this );
+	}
+
+	virtual bool ready()
+	{
+		rogue_t* p = player -> cast_rogue();
+
+		// Envenom is not usable when there is no DP on a target
+		if( p -> _buffs.poison_doses == 0 )
+			return false;
+		
+		if( min_doses > 0 && min_doses > p -> _buffs.poison_doses )
+			return false;
+
+		if( no_buff && p -> _buffs.envenom )
+			return false;
+
+		return rogue_attack_t::ready();
+	}
 };
 
 // Eviscerate ================================================================
@@ -2124,6 +2105,7 @@ struct rupture_t : public rogue_attack_t
                                     p -> gear.tier7_2pc          * 0.10 );
 
     if( p -> talents.surprise_attacks ) may_dodge = false;
+	if( p -> gear.tier8_4pc ) tick_may_crit = true;
 
     static double dmg_79[] = { 145, 163, 181, 199, 217 };
     static double dmg_74[] = { 122, 137, 152, 167, 182 };
@@ -2565,6 +2547,14 @@ struct deadly_poison_t : public rogue_poison_t
     rogue_t* p = player -> cast_rogue();
     rogue_poison_t::player_buff();
     player_multiplier *= p -> _buffs.poison_doses;
+  }
+  
+  virtual void tick()
+  {
+	rogue_t* p = player -> cast_rogue();
+	rogue_poison_t::tick();
+	if( p -> gear.tier8_2pc )
+		p -> resource_gain( RESOURCE_ENERGY, 1, p -> gains_tier8_2pc );
   }
 
   virtual void last_tick()
