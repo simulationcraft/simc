@@ -142,7 +142,7 @@ uptime_t* target_t::get_uptime( const std::string& name )
 
 void target_t::init()
 {
-  initial_armor = sim -> P309 ? 13000 : 10645;
+  if( initial_armor == 0 ) initial_armor = sim -> P309 ? 13000 : 10645;
 
   if( ! race_str.empty() )
   {
