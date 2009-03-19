@@ -1275,9 +1275,8 @@ static void trigger_piercing_shots( action_t* a )
 
     p -> active_piercing_shots -> cancel();
   }
-
   p -> active_piercing_shots -> base_tick_dmg = dmg / 8;
-  p -> active_piercing_shots -> execute();
+  p -> active_piercing_shots -> schedule_tick();
 }
 
 // trigger_rabid_power ===============================================
@@ -3748,7 +3747,6 @@ void hunter_t::reset()
   active_pet            = 0;
   active_aspect         = ASPECT_NONE;
   active_black_arrow    = 0;
-  active_piercing_shots = 0;
   active_scorpid_sting  = 0;
   active_serpent_sting  = 0;
   active_viper_sting    = 0;

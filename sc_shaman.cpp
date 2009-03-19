@@ -685,7 +685,7 @@ static void trigger_tier8_4pc_elemental( spell_t* s )
   }
 
   p -> active_lightning_bolt_dot -> base_tick_dmg = dmg / 8;
-  p -> active_lightning_bolt_dot -> execute();
+  p -> active_lightning_bolt_dot -> schedule_tick();
 }
 
 // trigger_ashtongue_talisman ===============================================
@@ -3085,7 +3085,6 @@ void shaman_t::reset()
   // Active
   active_flame_shock        = 0;
   active_shield             = 0;
-  active_lightning_bolt_dot = 0;
 
   _buffs.reset();
   _cooldowns.reset();
