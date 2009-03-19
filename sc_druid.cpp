@@ -56,6 +56,7 @@ struct druid_t : public player_t
   {
     event_t* berserk;
     event_t* eclipse;
+    event_t* idol_of_the_corruptor;
     event_t* natures_grace;
     event_t* savage_roar;
     event_t* unseen_moon;
@@ -173,6 +174,8 @@ struct druid_t : public player_t
 
   struct idols_t
   {
+    int corruptor;
+    int crying_wind;
     int ravenous_beast;
     int shooting_star;
     int steadfast_renewal;
@@ -879,6 +882,45 @@ static void trigger_primal_precision( druid_attack_t* a )
   p -> resource_gain( RESOURCE_ENERGY, energy_restored, p -> gains_primal_precision );
 }
 
+// trigger_idol_of_the_corruptor ===========================================
+
+static void trigger_idol_of_the_corruptor( attack_t* a )
+{
+  // FIX ME! Get to know the proc chance.
+  double chance = 0.5;
+  if( a -> sim -> roll( 1 - chance ) ) 
+    return;
+    
+  druid_t* p = a -> player -> cast_druid();
+
+  struct idol_of_the_corruptor_t : public event_t
+  {
+    idol_of_the_corruptor_t( sim_t* sim, player_t* player ) : event_t( sim, player )
+    {
+      name = "Idol of the Corruptor Expiration";
+      player -> aura_gain( "Idol of the Corruptor" );
+      player -> attribute[ ATTR_AGILITY ] += 153;
+      sim -> add_event( this, 12.0 );
+    }
+    virtual void execute()
+    {
+      player -> aura_loss( "Idol of the Corruptor" );
+      player -> attribute[ ATTR_AGILITY ] -= 153;
+    }
+  };
+  
+  event_t*& e = p -> _expirations.idol_of_the_corruptor;
+
+  if( e )
+  {
+    e -> reschedule( 12.0 );
+  }
+  else
+  {
+    e = new ( a -> sim ) idol_of_the_corruptor_t( a -> sim, p );
+  }
+}
+
 // =========================================================================
 // Druid Attack
 // =========================================================================
@@ -1281,6 +1323,8 @@ struct mangle_cat_t : public druid_attack_t
     if( result_is_hit() )
     {
       trigger_mangle( this );
+      if( player -> cast_druid() -> idols.corruptor )
+        trigger_idol_of_the_corruptor( this );
     }
   }
 };
@@ -2089,7 +2133,7 @@ struct insect_swarm_t : public druid_spell_t
       { 0, 0 }
     };
     init_rank( ranks );
-     
+
     base_execute_time = 0;
     base_tick_time    = 2.0;
     num_ticks         = 6;
@@ -2098,6 +2142,10 @@ struct insect_swarm_t : public druid_spell_t
     base_multiplier *= 1.0 + util_t::talent_rank(p -> talents.genesis, 5, 0.01) +
                             ( p -> glyphs.insect_swarm  ? 0.30 : 0.00 ) +
                             ( p -> tiers.t7_2pc_balance ? 0.10 : 0.00 );
+
+    // Druid T8 Balance Relic -- Increases the spell power of your Insect Swarm by 374.
+    if( p -> idols.crying_wind )
+      base_power += 374;
    
 
     if( p -> talents.natures_splendor ) num_ticks++;
@@ -3120,7 +3168,7 @@ void druid_t::regen( double periodicity )
   if( resource_max[ RESOURCE_ENERGY ] > 0 )
   {
     uptimes_energy_cap -> update( resource_current[ RESOURCE_ENERGY ] == 
-				  resource_max    [ RESOURCE_ENERGY ] );
+                                  resource_max    [ RESOURCE_ENERGY ] );
   }
 }
 
@@ -3379,6 +3427,8 @@ bool druid_t::parse_option( const std::string& name,
     { "glyph_starfire",            OPT_INT,  &( glyphs.starfire                   ) },
     { "glyph_starfall",            OPT_INT,  &( glyphs.starfall                   ) },
     // Idols
+    { "idol_of_the_corruptor",      OPT_INT,  &( idols.corruptor                  ) },
+    { "idol_of_the_crying_wind",    OPT_INT,  &( idols.crying_wind                ) },
     { "idol_of_the_ravenous_beast", OPT_INT,  &( idols.ravenous_beast             ) },
     { "idol_of_steadfast_renewal",  OPT_INT,  &( idols.steadfast_renewal          ) },
     { "idol_of_the_shooting_star",  OPT_INT,  &( idols.shooting_star              ) },
