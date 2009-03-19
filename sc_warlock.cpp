@@ -3254,13 +3254,10 @@ struct unstable_affliction_t : public warlock_spell_t
     
     base_cost        *= 1.0 - p -> talents.suppression * 0.02;
     base_hit         +=       p -> talents.suppression * 0.01;
-    base_multiplier  *= 1.0 + ( p -> talents.shadow_mastery * 0.03 +
-                            ( ( p -> talents.siphon_life && sim -> patch.after( 3, 1, 0 ) ) ? 0.05 : 0 ) );
-    if( p -> gear.tier8_2pc )
-    {
-      // FIX ME! Additive or multiplicative?
-      base_multiplier *= 1.0 + 0.20;
-    }
+    base_multiplier  *= 1.0 + p -> talents.shadow_mastery * 0.03
+                            + p -> gear.tier8_2pc         * 0.20 + //FIXME assuming additive
+                            ( p -> talents.siphon_life && sim -> patch.after( 3, 1, 0 ) ) ? 0.05 : 0;
+
     tick_power_mod   += p -> talents.everlasting_affliction * 0.01;
 
     if( sim -> patch.after( 3, 1, 0 ) ) duration_group = "immolate";
@@ -3442,20 +3439,16 @@ struct immolate_t : public warlock_spell_t
 
     base_dd_multiplier *= 1.0 + ( p -> talents.emberstorm        * 0.03 +
                                   p -> talents.improved_immolate * 0.10 -
-                                  p -> glyphs.immolate           * 0.10 );
+                                  p -> glyphs.immolate           * 0.10 +
+                                  p -> gear.tier8_2pc            * 0.20 ); //FIXME assuming additive
 
     base_td_multiplier *= 1.0 + ( p -> talents.emberstorm        * 0.03 +
                                   p -> talents.improved_immolate * 0.10 +
                                   p -> glyphs.immolate           * 0.20 +
-                                  p -> talents.aftermath         * 0.03 );
+                                  p -> talents.aftermath         * 0.03 +
+                                  p -> gear.tier8_2pc            * 0.20 ); //FIXME assuming additive
 
     if( p -> gear.tier4_4pc ) num_ticks++;
-    if( p -> gear.tier8_2pc )
-    {
-      // FIX ME! Multiplicative or additive? 
-      base_multiplier *= 1 + 0.20;
-      
-    }
 
     observer = &( p -> active_immolate );
   }
@@ -3631,7 +3624,10 @@ struct conflagrate_t : public warlock_spell_t
       base_cost       *= 1.0 - ( p -> talents.cataclysm * 0.03
                              + ( ( p -> talents.cataclysm ) ? 0.01 : 0 ) );
       base_multiplier *= 1.0 + p -> talents.aftermath         * 0.03
-                             + p -> talents.improved_immolate * 0.10;
+                             + p -> talents.improved_immolate * 0.10
+                             + p -> glyphs.immolate           * 0.20
+                             + p -> gear.tier8_2pc            * 0.20; //FIXME assuming additive
+          
     }
     base_multiplier  *= 1.0 + p -> talents.emberstorm * 0.03;
     base_crit        += p -> talents.devastation * 0.05;
