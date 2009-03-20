@@ -453,7 +453,7 @@ static void add_combo_point( druid_t* p )
 
 // trigger_omen_of_clarity ==================================================
 
-static void trigger_omen_of_clarity( action_t* a )
+static void trigger_omen_of_clarity( action_t* a, bool* feral_t8 = false )
 {
   druid_t* p = a -> player -> cast_druid();
 
@@ -798,6 +798,23 @@ static void trigger_t8_4pc_balance( spell_t* s )
   else
   {
     e = new ( s -> sim ) expiration_t( s -> sim, p );
+  }
+}
+
+// trigger_t8_2pc_feral =====================================================
+//*
+static void trigger_t8_2pc_feral( action_t* a )
+{
+  if( a -> sim -> roll( 0.02 ) )
+  {
+    /* 2% chance on tick, http://ptr.wowhead.com/?spell=64752
+    /  It is just another chance to procc the same clearcasting
+    /  buff that OoC provides. OoC and t8_2pc_feral overwrite
+    /  each other. Easier to treat it just (ab)use the OoC handling */
+    druid_t* p = a -> player -> cast_druid();
+    p -> aura_gain( "Omen of Clarity" );
+    p -> _buffs.omen_of_clarity = 1;
+    p -> procs_omen_of_clarity -> occur();
   }
 }
 
@@ -1406,6 +1423,11 @@ struct rake_t : public druid_attack_t
     
     observer = &( p -> active_rake );
   }
+  virtual void tick()
+  {
+    druid_attack_t::tick();
+    trigger_t8_2pc_feral( this );
+  }
 };
 
 // Rip ======================================================================
@@ -1452,6 +1474,12 @@ struct rip_t : public druid_attack_t
     added_ticks = 0;
     num_ticks = 6 + ( p -> glyphs.rip ? 2 : 0 ) + ( p -> tiers.t7_2pc_feral ? 2 : 0 );
     druid_attack_t::execute();
+  }
+
+  virtual void tick()
+  {
+    druid_attack_t::tick();
+    trigger_t8_2pc_feral( this );
   }
 
   virtual void player_buff()
