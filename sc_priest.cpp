@@ -608,6 +608,7 @@ struct holy_fire_t : public priest_spell_t
 
     static rank_t ranks[] =
     {
+	  { 80, 12, 900, 1140, 50, 0.11 }, // Dumy rank for level 80.
       { 78, 11, 890, 1130, 50, 0.11 },
       { 72, 10, 732,  928, 47, 0.11 },
       { 66,  9, 412,  523, 33, 0.11  },
@@ -647,7 +648,8 @@ struct smite_t : public priest_spell_t
 
     static rank_t ranks[] =
     {
-      { 80, 12, 707, 793, 0, 0.15 },
+	  { 80, 13, 713, 799, 0, 0.15 }, // Dummy rank for level 80
+      { 79, 12, 707, 793, 0, 0.15 },
       { 75, 11, 604, 676, 0, 0.15 },
       { 69, 10, 545, 611, 0, 0.15 },
       { 61,  9, 405, 455, 0, 0.17 },
@@ -1139,6 +1141,7 @@ struct mind_blast_t : public priest_spell_t
 
     static rank_t ranks[] =
     {
+	  { 80, 14, 997, 1053, 0, 0.17 }, // Dummy rank for level 80 characters.
       { 79, 13, 992, 1048, 0, 0.17 },
       { 74, 12, 837,  883, 0, 0.17 },
       { 69, 11, 708,  748, 0, 0.17 },
