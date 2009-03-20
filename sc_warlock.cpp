@@ -2068,6 +2068,8 @@ void warlock_spell_t::target_debuff( int dmg_type )
 
   spell_t::target_debuff( dmg_type );
 
+  double stone_bonus = 0;
+
   if( dmg_type == DMG_OVER_TIME )
   {
     if( p -> _buffs.shadow_embrace && ( school == SCHOOL_SHADOW || sim -> patch.before( 3, 1, 0 ) ) )
@@ -2081,20 +2083,36 @@ void warlock_spell_t::target_debuff( int dmg_type )
 
     if( p -> main_hand_weapon.buff == SPELL_STONE ) 
     {
-      double bonus = 1.01;
+      stone_bonus = 0.01;
       if( sim -> patch.after( 3, 1, 0 ) && p -> talents.master_conjuror > 0 )
-        bonus = 1.00 + p -> talents.master_conjuror * 0.02;
-      target_multiplier *= bonus;
+        stone_bonus = p -> talents.master_conjuror * 0.02;
     }
   }
   else
   {
     if( p -> main_hand_weapon.buff == FIRE_STONE ) 
     {
-      double bonus = 1.01;
+      stone_bonus = 0.01;
       if( sim -> patch.after( 3, 1, 0 ) && p -> talents.master_conjuror > 0 )
-        bonus = 1.00 + p -> talents.master_conjuror * 0.02;
-      target_multiplier *= bonus;
+        stone_bonus = p -> talents.master_conjuror * 0.02;
+    }
+  }
+  if( stone_bonus > 0 )
+  {
+    // HACK: Fire/spell stone is additive with Emberstorm and Shadow Mastery
+    if( school == SCHOOL_FIRE )
+    {
+      target_multiplier /= 1 + p -> talents.emberstorm * 0.03;
+      target_multiplier *= 1 + p -> talents.emberstorm * 0.03 + stone_bonus;
+    }
+    else if( school == SCHOOL_SHADOW )
+    {
+      target_multiplier /= 1 + p -> talents.shadow_mastery * 0.03;
+      target_multiplier *= 1 + p -> talents.shadow_mastery * 0.03 + stone_bonus;
+    }
+    else
+    {
+      target_multiplier *= 1 + stone_bonus;
     }
   }
 }
