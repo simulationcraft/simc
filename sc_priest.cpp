@@ -39,7 +39,6 @@ struct priest_t : public player_t
     event_t* improved_spirit_tap;
     event_t* shadow_weaving;
     event_t* glyph_of_shadow;
-	event_t* devious_mind;
 
     void reset() { memset( (void*) this, 0x00, sizeof( _expirations_t ) ); }
     _expirations_t() { reset(); }
@@ -113,6 +112,8 @@ struct priest_t : public player_t
   };
   glyphs_t glyphs;
 
+  double devious_mind_delay;
+
   priest_t( sim_t* sim, std::string& name ) : player_t( sim, PRIEST, name ) 
   {
     // Active
@@ -122,6 +123,9 @@ struct priest_t : public player_t
     active_vampiric_embrace  = 0;
     active_mind_blast        = 0;
     active_shadow_word_death = 0;
+
+	// Tier 8 4-piece Delay
+	devious_mind_delay		 = 0.0;
 
     // Gains
     gains_dispersion   = get_gain( "dispersion" );
@@ -511,7 +515,6 @@ static void trigger_glyph_of_shadow( spell_t* s )
 }
 
 // trigger_devious_mind ====================================================
-
 static void trigger_devious_mind( spell_t* s )
 {
   struct expiration_t : public event_t
@@ -519,22 +522,36 @@ static void trigger_devious_mind( spell_t* s )
     int haste_bonus;
     expiration_t( sim_t* sim, priest_t* p ) : event_t( sim, p )
     {
-      name = "Devious Mind Expiration";
-      p -> _buffs.devious_mind = 1;
-      p -> aura_gain( "devious_mind" );
-      haste_bonus = 240;
-      p -> haste_rating += haste_bonus;
+	  name = "Devious Mind Expiration";
+	  p -> _buffs.devious_mind = 2;
+	  p -> aura_gain( "devious_mind" );
+	  haste_bonus = 240;
+	  p -> haste_rating += haste_bonus;
 	  p -> recalculate_haste();
-      sim -> add_event( this, 4.0 );
+	  sim -> add_event( this, 4.0 );
+    }
+    virtual void execute()
+    {
+	  priest_t* p = player -> cast_priest();
+  	  p -> _buffs.devious_mind = 0;
+	  p -> aura_loss( "devious_mind" );
+	  p -> haste_rating -= haste_bonus;
+	  p -> recalculate_haste();
+    }
+  };
+
+  struct delay_t : public event_t
+  {   
+    delay_t( sim_t* sim, priest_t* p ) : event_t( sim, p )
+    {
+  	  name = "Devious Mind Delay";
+	  p -> _buffs.devious_mind = 1;
+	  sim -> add_event( this, ( p -> devious_mind_delay > 0.01 ? p -> devious_mind_delay : 0.01 ) );			
     }
     virtual void execute()
     {
       priest_t* p = player -> cast_priest();
-      p -> _buffs.devious_mind = 0;
-      p -> aura_loss( "devious_mind" );
-      p -> haste_rating -= haste_bonus;
-	  p -> recalculate_haste();
-      p -> _expirations.devious_mind = 0;
+	  new ( sim ) expiration_t( sim, p );
     }
   };
 
@@ -542,16 +559,14 @@ static void trigger_devious_mind( spell_t* s )
 
   if( p -> gear.tier8_4pc )
   {
-    event_t*& e = p -> _expirations.devious_mind;
-
-    if( e )
-    {
-      e -> reschedule( 4.0 );
-    }
-    else
-    {
-      e = new ( s -> sim ) expiration_t( s -> sim, p );
-    }
+    if ( p -> devious_mind_delay < 0.01 )
+	{
+		new ( s -> sim ) expiration_t( s -> sim, p);
+	}
+	else
+	{
+		new ( s -> sim ) delay_t( s -> sim, p );
+	}
   }
 }
 
@@ -1205,6 +1220,7 @@ struct shadow_word_death_t : public priest_spell_t
 {
   double mb_wait;
   int    mb_priority;
+  int    devious_mind_filler;
 
   shadow_word_death_t( player_t* player, const std::string& options_str ) : 
     priest_spell_t( "shadow_word_death", player, SCHOOL_SHADOW, TREE_SHADOW ), mb_wait(0), mb_priority(0)
@@ -1214,7 +1230,8 @@ struct shadow_word_death_t : public priest_spell_t
     option_t options[] =
     {
       { "mb_wait",     OPT_FLT,  &mb_wait     },
-      { "mb_priority", OPT_INT, &mb_priority },
+      { "mb_priority", OPT_INT, &mb_priority  },
+	  { "devious_mind_filler", OPT_INT, &devious_mind_filler },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1299,6 +1316,12 @@ struct shadow_word_death_t : public priest_spell_t
         return false;
     }
 
+	if ( devious_mind_filler )
+	{
+	  if ( p -> _buffs.devious_mind != 1 )
+	    return false;
+	}
+
     return true;
   }
 };
@@ -1309,6 +1332,7 @@ struct mind_flay_t : public priest_spell_t
 {
   double mb_wait;
   int    swp_refresh;
+  int	 devious_mind_wait;
 
   mind_flay_t( player_t* player, const std::string& options_str ) : 
     priest_spell_t( "mind_flay", player, SCHOOL_SHADOW, TREE_SHADOW ), mb_wait(0), swp_refresh(0)
@@ -1320,6 +1344,7 @@ struct mind_flay_t : public priest_spell_t
     {
       { "swp_refresh", OPT_INT, &swp_refresh },
       { "mb_wait",     OPT_FLT,  &mb_wait     },
+	  { "devious_mind_wait", OPT_INT, &devious_mind_wait },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1448,6 +1473,12 @@ struct mind_flay_t : public priest_spell_t
       if( ( p -> active_mind_blast -> cooldown_ready - sim -> current_time ) < mb_wait )
         return false;
     }
+
+	if ( devious_mind_wait )
+	{
+	  if ( p -> gear.tier8_4pc && p -> _buffs.devious_mind == 1 )
+	    return false;
+	}
 
     return true;
   }
@@ -1832,7 +1863,7 @@ void priest_t::spell_start_event( spell_t* s )
 {
   player_t::spell_start_event( s );
 
-  uptimes_devious_mind		  -> update( _buffs.devious_mind        != 0 );
+  uptimes_devious_mind -> update( _buffs.devious_mind == 2 );
 }
 
 // priest_t::spell_finish_event ==============================================
@@ -2142,6 +2173,8 @@ bool priest_t::parse_option( const std::string& name,
     { "glyph_shadow_word_death",       OPT_INT,  &( glyphs.shadow_word_death              ) },
     { "glyph_shadow_word_pain",        OPT_INT,  &( glyphs.shadow_word_pain               ) },
     { "glyph_shadow",                  OPT_INT,  &( glyphs.shadow                         ) },
+	// Options
+	{ "devious_mind_delay",			   OPT_FLT,  &( devious_mind_delay					  ) },
     // Deprecated 
     { "glyph_blue_promises",    OPT_DEPRECATED, NULL },
     { "glyph_no_blue_promises", OPT_DEPRECATED, NULL },
