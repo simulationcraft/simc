@@ -1329,7 +1329,8 @@ struct mind_flay_t : public priest_spell_t
 {
   double mb_wait;
   int    swp_refresh;
-  int	 devious_mind_wait;
+  int	   devious_mind_wait;
+  int    devious_mind_priority;
 
   mind_flay_t( player_t* player, const std::string& options_str ) : 
     priest_spell_t( "mind_flay", player, SCHOOL_SHADOW, TREE_SHADOW ), mb_wait(0), swp_refresh(0)
@@ -1342,6 +1343,7 @@ struct mind_flay_t : public priest_spell_t
       { "swp_refresh", OPT_INT, &swp_refresh },
       { "mb_wait",     OPT_FLT,  &mb_wait     },
 	    { "devious_mind_wait", OPT_INT, &devious_mind_wait },
+      { "devious_mind_priority", OPT_INT, &devious_mind_priority },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1479,6 +1481,12 @@ struct mind_flay_t : public priest_spell_t
 	    if ( p -> gear.tier8_4pc && p -> _buffs.devious_mind == DEVIOUS_MIND_STATE_WAITING )
 	      return false;
 	  }
+
+    if ( devious_mind_priority )
+    {
+	    if ( p -> gear.tier8_4pc && p -> _buffs.devious_mind != DEVIOUS_MIND_STATE_ACTIVE )
+	      return false;
+    }
 
     return true;
   }
