@@ -40,7 +40,6 @@ struct hunter_t : public player_t
     int    improved_steady_shot;
     int    lock_and_load;
     double master_tactician;
-    int    precision_shots;
     double rapid_fire;
     int    trueshot_aura;
 
@@ -69,7 +68,6 @@ struct hunter_t : public player_t
     event_t* improved_steady_shot;
     event_t* lock_and_load;
     event_t* master_tactician;
-    event_t* precision_shots;
     event_t* rapid_fire;
     
     void reset() { memset( (void*) this, 0x00, sizeof( _expirations_t ) ); }
@@ -97,7 +95,6 @@ struct hunter_t : public player_t
   uptime_t* uptimes_improved_steady_shot;
   uptime_t* uptimes_master_tactician;
   uptime_t* uptimes_rapid_fire;
-  uptime_t* uptimes_t8_4pc;
 
   // Auto-Attack
   attack_t* ranged_attack;
@@ -230,7 +227,6 @@ struct hunter_t : public player_t
     uptimes_improved_steady_shot        = get_uptime( "improved_steady_shot" );
     uptimes_master_tactician            = get_uptime( "master_tactician" );
     uptimes_rapid_fire                  = get_uptime( "rapid_fire" );
-    uptimes_t8_4pc                      = get_uptime( "t8_4pc" );
     
     ammo_dps = 0;
     quiver_haste = 0.0;
@@ -1334,21 +1330,21 @@ static void trigger_tier8_4pc( attack_t* a )
     {
       name = "Precision Shots Expiration";
       p -> aura_gain( "Precision Shots" );
-      p -> _buffs.precision_shots = 600;
+      p -> attack_power += 600;
       sim -> add_event( this, 15.0 );
     }
     virtual void execute()
     {
       hunter_t* p = player -> cast_hunter();
       p -> aura_loss( "Precision Shots" );
-      p -> _buffs.precision_shots = 0;
-      p -> _expirations.precision_shots = 0;
+      p -> attack_power         -= 600;
+      p -> expirations.tier8_4pc = 0;
     }
   };
 
   p -> procs.tier8_4pc -> occur();
 
-  event_t*& e = p -> _expirations.precision_shots;
+  event_t*& e = p -> expirations.tier8_4pc;
 
   if( e )
   {
@@ -2221,7 +2217,7 @@ void hunter_attack_t::execute()
     }
   }
   hunter_t* p = player -> cast_hunter();
-  p -> uptimes_t8_4pc -> update( p -> _buffs.precision_shots != 0 );
+  p -> uptimes.tier8_4pc -> update( p -> expirations.tier8_4pc != 0 );
 }
 
 // hunter_attack_t::execute_time ============================================
@@ -3821,7 +3817,6 @@ double hunter_t::composite_attack_power()
   ap += stamina() * talents.hunter_vs_wild * 0.1;
 
   ap += _buffs.furious_howl;
-  ap += _buffs.precision_shots;
   uptimes_furious_howl -> update( _buffs.furious_howl != 0 );
 
   if( _buffs.expose_weakness ) ap += agility() * 0.25;
