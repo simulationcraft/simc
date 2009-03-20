@@ -97,6 +97,7 @@ struct hunter_t : public player_t
   uptime_t* uptimes_improved_steady_shot;
   uptime_t* uptimes_master_tactician;
   uptime_t* uptimes_rapid_fire;
+  uptime_t* uptimes_t8_4pc;
 
   // Auto-Attack
   attack_t* ranged_attack;
@@ -229,7 +230,8 @@ struct hunter_t : public player_t
     uptimes_improved_steady_shot        = get_uptime( "improved_steady_shot" );
     uptimes_master_tactician            = get_uptime( "master_tactician" );
     uptimes_rapid_fire                  = get_uptime( "rapid_fire" );
-
+    uptimes_t8_4pc                      = get_uptime( "t8_4pc" );
+    
     ammo_dps = 0;
     quiver_haste = 0.0;
     summon_pet_str = "cat";
@@ -2218,6 +2220,8 @@ void hunter_attack_t::execute()
       trigger_thrill_of_the_hunt( this );
     }
   }
+  hunter_t* p = player -> cast_hunter();
+  p -> uptimes_t8_4pc -> update( p -> _buffs.precision_shots != 0 );
 }
 
 // hunter_attack_t::execute_time ============================================
