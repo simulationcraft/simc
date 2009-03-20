@@ -925,16 +925,12 @@ static void trigger_primal_precision( druid_attack_t* a )
 
 static void trigger_idol_of_the_corruptor( attack_t* a )
 {
-  // FIX ME! Get to know the proc chance.
-  double chance = 0.5;
-  if( a -> sim -> roll( 1 - chance ) ) 
-    return;
     
   druid_t* p = a -> player -> cast_druid();
 
-  struct idol_of_the_corruptor_t : public event_t
+  struct idol_of_the_corruptor_expiration_t : public event_t
   {
-    idol_of_the_corruptor_t( sim_t* sim, player_t* player ) : event_t( sim, player )
+    idol_of_the_corruptor_expiration_t( sim_t* sim, player_t* player ) : event_t( sim, player )
     {
       name = "Idol of the Corruptor Expiration";
       player -> aura_gain( "Idol of the Corruptor" );
@@ -943,8 +939,10 @@ static void trigger_idol_of_the_corruptor( attack_t* a )
     }
     virtual void execute()
     {
-      player -> aura_loss( "Idol of the Corruptor" );
-      player -> attribute[ ATTR_AGILITY ] -= 153;
+      druid_t* p = player -> cast_druid();
+      p -> aura_loss( "Idol of the Corruptor" );
+      p -> attribute[ ATTR_AGILITY ] -= 153;
+      p -> _expirations.idol_of_the_corruptor = 0;
     }
   };
   
@@ -956,7 +954,7 @@ static void trigger_idol_of_the_corruptor( attack_t* a )
   }
   else
   {
-    e = new ( a -> sim ) idol_of_the_corruptor_t( a -> sim, p );
+    e = new ( a -> sim ) idol_of_the_corruptor_expiration_t( a -> sim, p );
   }
 }
 
@@ -1363,7 +1361,9 @@ struct mangle_cat_t : public druid_attack_t
     {
       trigger_mangle( this );
       if( player -> cast_druid() -> idols.corruptor )
+      {
         trigger_idol_of_the_corruptor( this );
+      }
     }
   }
 };
