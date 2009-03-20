@@ -15,8 +15,6 @@ struct priest_t : public player_t
   action_t* active_shadow_word_pain;
   action_t* active_vampiric_touch;
   action_t* active_vampiric_embrace;
-  action_t* active_mind_blast;
-  action_t* active_shadow_word_death;
 
   // Buffs
   struct _buffs_t
@@ -26,7 +24,7 @@ struct priest_t : public player_t
     int shadow_weaving;
     int surge_of_light;
     int glyph_of_shadow;
-	int devious_mind;
+	  int devious_mind;
 
     void reset() { memset( (void*) this, 0x00, sizeof( _buffs_t ) ); }
     _buffs_t() { reset(); }
@@ -44,6 +42,16 @@ struct priest_t : public player_t
     _expirations_t() { reset(); }
   };
   _expirations_t _expirations;
+
+  // Cooldowns
+  struct _cooldowns_t
+  {
+    double mind_blast;
+
+    void reset() { memset( (void*) this, 0x00, sizeof( _cooldowns_t ) ); }
+    _cooldowns_t() { reset(); }
+  };
+  _cooldowns_t _cooldowns;
 
   // Gains
   gain_t* gains_shadow_fiend;
@@ -121,11 +129,9 @@ struct priest_t : public player_t
     active_shadow_word_pain  = 0;
     active_vampiric_touch    = 0;
     active_vampiric_embrace  = 0;
-    active_mind_blast        = 0;
-    active_shadow_word_death = 0;
 
-	// Tier 8 4-piece Delay
-	devious_mind_delay		 = 0.0;
+	  // Tier 8 4-piece Delay
+	  devious_mind_delay		 = 0.0;
 
     // Gains
     gains_dispersion   = get_gain( "dispersion" );
@@ -134,7 +140,7 @@ struct priest_t : public player_t
     // Up-Times
     uptimes_improved_spirit_tap = get_uptime( "improved_spirit_tap" );
     uptimes_glyph_of_shadow = get_uptime( "glyph_of_shadow" );
-	uptimes_devious_mind = get_uptime( "devious_mind" );
+	  uptimes_devious_mind = get_uptime( "devious_mind" );
   }
 
   // Character Definition
@@ -153,6 +159,8 @@ struct priest_t : public player_t
   virtual void spell_finish_event( spell_t* );
   virtual void spell_damage_event( spell_t*, double amount, int dmg_type );
 };
+
+enum devious_mind_states_t { DEVIOUS_MIND_STATE_NONE=0, DEVIOUS_MIND_STATE_WAITING, DEVIOUS_MIND_STATE_ACTIVE };
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
@@ -517,41 +525,39 @@ static void trigger_glyph_of_shadow( spell_t* s )
 // trigger_devious_mind ====================================================
 static void trigger_devious_mind( spell_t* s )
 {
-  struct expiration_t : public event_t
+  struct devious_mind_expiration_t : public event_t
   {
-    int haste_bonus;
-    expiration_t( sim_t* sim, priest_t* p ) : event_t( sim, p )
+    devious_mind_expiration_t( sim_t* sim, priest_t* p ) : event_t( sim, p )
     {
-	  name = "Devious Mind Expiration";
-	  p -> _buffs.devious_mind = 2;
-	  p -> aura_gain( "devious_mind" );
-	  haste_bonus = 240;
-	  p -> haste_rating += haste_bonus;
-	  p -> recalculate_haste();
-	  sim -> add_event( this, 4.0 );
+	    name = "Devious Mind Expiration";
+	    p -> _buffs.devious_mind = DEVIOUS_MIND_STATE_ACTIVE;
+	    p -> aura_gain( "devious_mind" );
+	    p -> haste_rating += 240;
+	    p -> recalculate_haste();
+	    sim -> add_event( this, 4.0 );
     }
     virtual void execute()
     {
-	  priest_t* p = player -> cast_priest();
-  	  p -> _buffs.devious_mind = 0;
-	  p -> aura_loss( "devious_mind" );
-	  p -> haste_rating -= haste_bonus;
-	  p -> recalculate_haste();
+	    priest_t* p = player -> cast_priest();
+  	  p -> _buffs.devious_mind = DEVIOUS_MIND_STATE_NONE;
+	    p -> aura_loss( "devious_mind" );
+	    p -> haste_rating -= 240;
+	    p -> recalculate_haste();
     }
   };
 
-  struct delay_t : public event_t
+  struct devious_mind_delay_t : public event_t
   {   
-    delay_t( sim_t* sim, priest_t* p ) : event_t( sim, p )
+    devious_mind_delay_t( sim_t* sim, priest_t* p ) : event_t( sim, p )
     {
   	  name = "Devious Mind Delay";
-	  p -> _buffs.devious_mind = 1;
-	  sim -> add_event( this, ( p -> devious_mind_delay > 0.01 ? p -> devious_mind_delay : 0.01 ) );			
+	    p -> _buffs.devious_mind = DEVIOUS_MIND_STATE_WAITING;
+	    sim -> add_event( this, p -> devious_mind_delay );			
     }
     virtual void execute()
     {
       priest_t* p = player -> cast_priest();
-	  new ( sim ) expiration_t( sim, p );
+	    new ( sim ) devious_mind_expiration_t( sim, p );
     }
   };
 
@@ -560,13 +566,13 @@ static void trigger_devious_mind( spell_t* s )
   if( p -> gear.tier8_4pc )
   {
     if ( p -> devious_mind_delay < 0.01 )
-	{
-		new ( s -> sim ) expiration_t( s -> sim, p);
-	}
-	else
-	{
-		new ( s -> sim ) delay_t( s -> sim, p );
-	}
+	  {
+		  new ( s -> sim ) devious_mind_expiration_t( s -> sim, p);
+	  }
+	  else
+	  {
+		  new ( s -> sim ) devious_mind_delay_t( s -> sim, p );
+	  }
   }
 }
 
@@ -1183,24 +1189,22 @@ struct mind_blast_t : public priest_spell_t
     
     base_crit_bonus_multiplier *= 1.0 + p -> talents.shadow_power * 0.20;
 
-    if( p -> gear.tier6_4pc ) base_multiplier *= 1.10;
-
-    assert( p -> active_mind_blast == 0 );
-    p -> active_mind_blast = this;
+    if( p -> gear.tier6_4pc ) base_multiplier *= 1.10;   
   }
 
   virtual void execute()
   {
     priest_spell_t::execute();
-	priest_t* p = player -> cast_priest();
-	if ( p -> gear.tier8_4pc && result_is_hit() )
-	{
-	  trigger_devious_mind( this );
-	}
+	  priest_t* p = player -> cast_priest();
+	  if ( p -> gear.tier8_4pc && result_is_hit() )
+	  {
+	    trigger_devious_mind( this );
+	  }
     if( result == RESULT_CRIT )
     {
       trigger_improved_spirit_tap( this );
     }
+    p -> _cooldowns.mind_blast = cooldown_ready;
   }
   
   virtual void player_buff()
@@ -1231,7 +1235,7 @@ struct shadow_word_death_t : public priest_spell_t
     {
       { "mb_wait",     OPT_FLT,  &mb_wait     },
       { "mb_priority", OPT_INT, &mb_priority  },
-	  { "devious_mind_filler", OPT_INT, &devious_mind_filler },
+	    { "devious_mind_filler", OPT_INT, &devious_mind_filler },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1259,9 +1263,6 @@ struct shadow_word_death_t : public priest_spell_t
     base_crit_bonus_multiplier *= 1.0 + p -> talents.shadow_power * 0.20;
 
     if ( p -> gear.tier7_4pc ) base_crit += 0.1;
-
-    assert( p -> active_shadow_word_death == 0 );
-    p -> active_shadow_word_death = this;
   }
 
   virtual void execute() 
@@ -1300,27 +1301,21 @@ struct shadow_word_death_t : public priest_spell_t
 
     if( mb_wait )
     {
-      if( ! p -> active_mind_blast )
-        return false;
-
-      if( ( p -> active_mind_blast -> cooldown_ready - sim -> current_time ) < mb_wait )
+      if( ( p -> _cooldowns.mind_blast - sim -> current_time ) < mb_wait )
         return false;
     }
 
     if( mb_priority )
     {
-      if( ! p -> active_mind_blast )
-        return false;
-
-      if( ( p -> active_mind_blast -> cooldown_ready - sim -> current_time ) > ( haste() * 1.5 + sim -> gcd_lag + mb_wait ) )
+      if( ( p -> _cooldowns.mind_blast - sim -> current_time ) > ( haste() * 1.5 + sim -> gcd_lag + mb_wait ) )
         return false;
     }
 
-	if ( devious_mind_filler )
-	{
-	  if ( p -> _buffs.devious_mind != 1 )
-	    return false;
-	}
+	  if ( devious_mind_filler )
+	  {
+	    if ( p -> _buffs.devious_mind != DEVIOUS_MIND_STATE_WAITING )
+	      return false;
+	  }
 
     return true;
   }
@@ -1344,7 +1339,7 @@ struct mind_flay_t : public priest_spell_t
     {
       { "swp_refresh", OPT_INT, &swp_refresh },
       { "mb_wait",     OPT_FLT,  &mb_wait     },
-	  { "devious_mind_wait", OPT_INT, &devious_mind_wait },
+	    { "devious_mind_wait", OPT_INT, &devious_mind_wait },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1467,18 +1462,15 @@ struct mind_flay_t : public priest_spell_t
 
     if( mb_wait )
     {
-      if( ! p -> active_mind_blast )
-        return false;
-
-      if( ( p -> active_mind_blast -> cooldown_ready - sim -> current_time ) < mb_wait )
+      if( ( p -> _cooldowns.mind_blast - sim -> current_time ) < mb_wait )
         return false;
     }
 
-	if ( devious_mind_wait )
-	{
-	  if ( p -> gear.tier8_4pc && p -> _buffs.devious_mind == 1 )
-	    return false;
-	}
+	  if ( devious_mind_wait )
+  	{
+	    if ( p -> gear.tier8_4pc && p -> _buffs.devious_mind == DEVIOUS_MIND_STATE_WAITING )
+	      return false;
+	  }
 
     return true;
   }
@@ -1863,7 +1855,7 @@ void priest_t::spell_start_event( spell_t* s )
 {
   player_t::spell_start_event( s );
 
-  uptimes_devious_mind -> update( _buffs.devious_mind == 2 );
+  uptimes_devious_mind -> update( _buffs.devious_mind == DEVIOUS_MIND_STATE_ACTIVE );
 }
 
 // priest_t::spell_finish_event ==============================================
@@ -2008,6 +2000,7 @@ void priest_t::reset()
 
   _buffs.reset();
   _expirations.reset();
+  _cooldowns.reset();
 }
 
 // priest_t::regen  ==========================================================
