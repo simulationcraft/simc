@@ -87,7 +87,6 @@ struct hunter_t : public player_t
   gain_t* gains_viper_aspect_shot;
 
   // Procs
-  proc_t* procs_tier8_4pc;
   proc_t* procs_wild_quiver;
 
   // Uptimes
@@ -220,7 +219,6 @@ struct hunter_t : public player_t
     gains_viper_aspect_shot    = get_gain( "viper_aspect_shot" );
 
     // Procs
-    procs_tier8_4pc   = get_proc( "tier8_4pc" );
     procs_wild_quiver = get_proc( "wild_quiver" );
 
     // Up-Times
@@ -1346,7 +1344,7 @@ static void trigger_tier8_4pc( attack_t* a )
     }
   };
 
-  p -> procs_tier8_4pc -> occur();
+  p -> procs.tier8_4pc -> occur();
 
   event_t*& e = p -> _expirations.precision_shots;
 
