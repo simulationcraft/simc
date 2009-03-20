@@ -522,6 +522,7 @@ static void trigger_tier8_2pc( spell_t* s )
       name = "Tier 8 2 Piece Expiration";
       player -> aura_gain( "Tier 8 2 Piece" );
       player -> spell_power[ SCHOOL_MAX ] += 350;
+      player -> cooldowns.tier8_2pc        = sim -> current_time + 45;
       player -> buffs.tier8_2pc            = 1;
       sim -> add_event( this, 15.0 );
     }
@@ -535,18 +536,21 @@ static void trigger_tier8_2pc( spell_t* s )
   };
 
   mage_t* p = s -> player -> cast_mage();
-
-  p -> procs.tier8_2pc -> occur();
-
-  event_t*& e = p -> expirations.tier8_2pc;
   
-  if( e )
+  if( s -> sim -> cooldown_ready( p -> cooldowns.tier8_2pc ) )
   {
-    e -> reschedule( 15.0 );
-  }
-  else
-  {
-    e = new ( s -> sim ) expiration_t( s -> sim, p );
+    p -> procs.tier8_2pc -> occur();
+
+    event_t*& e = p -> expirations.tier8_2pc;
+    
+    if( e )
+    {
+      e -> reschedule( 15.0 );
+    }
+    else
+    {
+      e = new ( s -> sim ) expiration_t( s -> sim, p );
+    }
   }
 }
 
