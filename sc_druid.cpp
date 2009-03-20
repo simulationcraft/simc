@@ -70,6 +70,7 @@ struct druid_t : public player_t
   _expirations_t _expirations;
 
   // Gains
+  gain_t* gains_energy_refund;
   gain_t* gains_moonkin_form;
   gain_t* gains_omen_of_clarity;
   gain_t* gains_primal_precision;
@@ -223,10 +224,11 @@ struct druid_t : public player_t
     active_starfall_stars = 0;
     
     // Gains
-    gains_moonkin_form     = get_gain( "moonkin_form"    );
-    gains_omen_of_clarity  = get_gain( "omen_of_clarity" );
+    gains_energy_refund    = get_gain( "energy_refund"    );
+    gains_moonkin_form     = get_gain( "moonkin_form"     );
+    gains_omen_of_clarity  = get_gain( "omen_of_clarity"  );
     gains_primal_precision = get_gain( "primal_precision" );
-    gains_tigers_fury      = get_gain( "tigers_fury" );
+    gains_tigers_fury      = get_gain( "tigers_fury"      );
 
     // Procs
     procs_combo_points    = get_proc( "combo_points" );
@@ -918,6 +920,20 @@ static void trigger_primal_fury( druid_attack_t* a )
   } 
 }
 
+// trigger_energy_refund ===================================================
+
+static void trigger_energy_refund( druid_attack_t* a )
+{
+  druid_t* p = a -> player -> cast_druid();
+  
+  if ( ! a -> adds_combo_points )
+    return;
+
+  double energy_restored = a -> resource_consumed * 0.80;
+
+  p -> resource_gain( RESOURCE_ENERGY, energy_restored, p -> gains_energy_refund );
+}
+
 // trigger_primal_precision ================================================
 
 static void trigger_primal_precision( druid_attack_t* a )
@@ -928,9 +944,6 @@ static void trigger_primal_precision( druid_attack_t* a )
     return;
 
   if ( ! a -> requires_combo_points )
-    return;
-
-  if( a -> result_is_hit() )
     return;
 
   double energy_restored = a -> resource_consumed * p -> talents.primal_precision * 0.40;
@@ -1058,8 +1071,11 @@ void druid_attack_t::execute()
       trigger_primal_fury( this );
     }
   }
-
-  trigger_primal_precision( this );
+  else
+  {
+    trigger_energy_refund( this );
+    trigger_primal_precision( this );
+  }
 
   break_stealth( p );
 }
