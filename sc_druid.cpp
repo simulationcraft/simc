@@ -814,7 +814,7 @@ static void trigger_t8_2pc_feral( action_t* a )
     druid_t* p = a -> player -> cast_druid();
     p -> aura_gain( "Omen of Clarity" );
     p -> _buffs.omen_of_clarity = 1;
-    p -> procs_omen_of_clarity -> occur();
+    p -> procs.tier8_2pc -> occur();
   }
 }
 
