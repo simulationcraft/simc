@@ -61,6 +61,7 @@ struct priest_t : public player_t
   uptime_t* uptimes_improved_spirit_tap;
   uptime_t* uptimes_glyph_of_shadow;
   uptime_t* uptimes_devious_mind;
+  uptime_t* uptimes_devious_mind_mf;
 
   struct talents_t
   {
@@ -141,6 +142,7 @@ struct priest_t : public player_t
     uptimes_improved_spirit_tap = get_uptime( "improved_spirit_tap" );
     uptimes_glyph_of_shadow = get_uptime( "glyph_of_shadow" );
 	  uptimes_devious_mind = get_uptime( "devious_mind" );
+    uptimes_devious_mind_mf = get_uptime( "devious_mind_mf" );
   }
 
   // Character Definition
@@ -1377,6 +1379,12 @@ struct mind_flay_t : public priest_spell_t
   }
 
   // Odd thing to handle: WotLK has behaviour similar to Arcane Missiles
+  virtual void schedule_execute()
+  {
+    priest_t* p = player -> cast_priest();
+    priest_spell_t::schedule_execute(); 
+    p -> uptimes_devious_mind_mf -> update( p -> _buffs.devious_mind == DEVIOUS_MIND_STATE_ACTIVE );
+  }
 
   virtual void execute()
   {
@@ -1506,20 +1514,20 @@ struct dispersion_t : public priest_spell_t
   virtual bool ready()
   {
     double consumption_rate, time_to_oom;
-	double fudge_factor = 1.1;
+	  double fudge_factor = 1.1;
 
     if( ! priest_spell_t::ready() )
       return false;
 
-	consumption_rate  = ( player -> resource_initial[ RESOURCE_MANA ] - 
+  	consumption_rate  = ( player -> resource_initial[ RESOURCE_MANA ] - 
 					  	  player -> resource_current[ RESOURCE_MANA ] ) / 
-					 	  sim -> current_time;
-	consumption_rate *= fudge_factor;
+					 	    sim -> current_time;
+	  consumption_rate *= fudge_factor;
 
-	time_to_oom = player -> resource_current[ RESOURCE_MANA ] / consumption_rate;
+	  time_to_oom = player -> resource_current[ RESOURCE_MANA ] / consumption_rate;
 
-	if ( sim -> target -> time_to_die() < time_to_oom ) 
-		return false;
+	  if ( sim -> target -> time_to_die() < time_to_oom ) 
+		  return false;
 
     if( player -> buffs.bloodlust && ( time_to_oom > 45.0 ) )
       return false;
@@ -1607,7 +1615,7 @@ struct inner_focus_t : public priest_spell_t
     free_action = p -> create_action( spell_name.c_str(), spell_options.c_str() );
     free_action -> base_cost = 0;
     free_action -> background = true;
-	free_action -> base_crit += 0.25;
+	  free_action -> base_crit += 0.25;
   }
    
   virtual void execute()
