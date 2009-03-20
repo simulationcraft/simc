@@ -40,6 +40,7 @@ struct hunter_t : public player_t
     int    improved_steady_shot;
     int    lock_and_load;
     double master_tactician;
+    int    precision_shots;
     double rapid_fire;
     int    trueshot_aura;
 
@@ -68,6 +69,7 @@ struct hunter_t : public player_t
     event_t* improved_steady_shot;
     event_t* lock_and_load;
     event_t* master_tactician;
+    event_t* precision_shots;
     event_t* rapid_fire;
     
     void reset() { memset( (void*) this, 0x00, sizeof( _expirations_t ) ); }
@@ -85,6 +87,7 @@ struct hunter_t : public player_t
   gain_t* gains_viper_aspect_shot;
 
   // Procs
+  proc_t* procs_tier8_4pc;
   proc_t* procs_wild_quiver;
 
   // Uptimes
@@ -217,6 +220,7 @@ struct hunter_t : public player_t
     gains_viper_aspect_shot    = get_gain( "viper_aspect_shot" );
 
     // Procs
+    procs_tier8_4pc   = get_proc( "tier8_4pc" );
     procs_wild_quiver = get_proc( "wild_quiver" );
 
     // Up-Times
@@ -1308,6 +1312,52 @@ static void trigger_thrill_of_the_hunt( attack_t* a )
     return;
 
   p -> resource_gain( RESOURCE_MANA, a -> resource_consumed * 0.40, p -> gains_thrill_of_the_hunt );
+}
+
+// trigger_tier8_4pc =================================================
+
+static void trigger_tier8_4pc( attack_t* a )
+{
+  hunter_t* p = a -> player -> cast_hunter();
+
+  if ( ! p -> gear.tier8_4pc )
+    return;
+
+  // FIXME: Does it have a cooldown?
+
+  if ( ! a -> sim -> roll( 0.1 ) )
+    return;
+
+  struct precision_shots_expiration_t : public event_t
+  {
+    precision_shots_expiration_t( sim_t* sim, hunter_t* p ) : event_t( sim, p )
+    {
+      name = "Precision Shots Expiration";
+      p -> aura_gain( "Precision Shots" );
+      p -> _buffs.precision_shots = 600;
+      sim -> add_event( this, 15.0 );
+    }
+    virtual void execute()
+    {
+      hunter_t* p = player -> cast_hunter();
+      p -> aura_loss( "Precision Shots" );
+      p -> _buffs.precision_shots = 0;
+      p -> _expirations.precision_shots = 0;
+    }
+  };
+
+  p -> procs_tier8_4pc -> occur();
+
+  event_t*& e = p -> _expirations.precision_shots;
+
+  if( e )
+  {
+    e -> reschedule( 15.0 );
+  }
+  else
+  {
+    e = new ( a -> sim ) precision_shots_expiration_t( a -> sim, p );
+  }
 }
 
 // trigger_wild_quiver ===============================================
@@ -2989,6 +3039,7 @@ struct serpent_sting_t : public hunter_attack_t
     num_ticks        = p -> glyphs.serpent_sting ? 7 : 5;
     tick_power_mod   = 0.2 / 5.0;
     base_multiplier *= 1.0 + p -> talents.improved_stings * 0.1;
+    base_multiplier *= 1.0 + p -> gear.tier8_2pc * 0.1;
 
     observer = &( p -> active_serpent_sting );
   }
@@ -3112,6 +3163,7 @@ struct steady_shot_t : public hunter_attack_t
     if( result_is_hit() )
     {
       trigger_improved_steady_shot( this );
+      trigger_tier8_4pc( this ); // FIXME: does it need to hit to proc?
 
       if( result == RESULT_CRIT )
       {
@@ -3767,6 +3819,7 @@ double hunter_t::composite_attack_power()
   ap += stamina() * talents.hunter_vs_wild * 0.1;
 
   ap += _buffs.furious_howl;
+  ap += _buffs.precision_shots;
   uptimes_furious_howl -> update( _buffs.furious_howl != 0 );
 
   if( _buffs.expose_weakness ) ap += agility() * 0.25;
