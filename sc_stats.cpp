@@ -151,7 +151,10 @@ void stats_t::analyze()
     dps  = total_dmg / ( total_execute_time + total_tick_time );
     dpe  = total_dmg / num_executes;
     dpet = total_dmg / ( total_execute_time + ( channeled ? total_tick_time : 0 ) );
-    dpr  = total_dmg / resource_consumed;
+    if (resource_consumed > 0.0)
+      dpr = total_dmg / resource_consumed;
+    else
+      dpr = 0.0;
   }
 
   resource_consumed /= num_iterations;
