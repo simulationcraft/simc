@@ -821,7 +821,23 @@ void player_t::init_stats()
   procs.tier8_4pc                    = get_proc( "tier8_4pc" );
 
   uptimes.replenishment = get_uptime( "replenishment" );
-
+  uptimes.berserking_mh = get_uptime( "berserking_mh" );
+  uptimes.berserking_oh = get_uptime( "berserking_oh" );
+  uptimes.executioner   = get_uptime( "executioner" );
+  uptimes.mongoose_mh   = get_uptime( "mongoose_mh" );
+  uptimes.mongoose_oh   = get_uptime( "mongoose_oh" );
+  uptimes.replenishment = get_uptime( "replenishment" );
+  uptimes.tier4_2pc     = get_uptime( "tier4_2pc" );
+  uptimes.tier4_4pc     = get_uptime( "tier4_4pc" );
+  uptimes.tier5_2pc     = get_uptime( "tier5_2pc" );
+  uptimes.tier5_4pc     = get_uptime( "tier5_4pc" );
+  uptimes.tier6_2pc     = get_uptime( "tier6_2pc" );
+  uptimes.tier6_4pc     = get_uptime( "tier6_4pc" );
+  uptimes.tier7_2pc     = get_uptime( "tier7_2pc" );
+  uptimes.tier7_4pc     = get_uptime( "tier7_4pc" );
+  uptimes.tier8_2pc     = get_uptime( "tier8_2pc" );
+  uptimes.tier8_4pc     = get_uptime( "tier8_4pc" );
+  
   iteration_dps.clear();
   iteration_dps.insert( iteration_dps.begin(), sim -> iterations, 0 );
 }
