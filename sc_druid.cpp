@@ -2569,6 +2569,9 @@ struct starfire_t : public druid_spell_t
   {
     druid_t* p = player -> cast_druid();
     druid_spell_t::execute();
+    
+    event_t::early( p -> _expirations.t8_4pc_balance );
+    
     if( result_is_hit() )
     {
       trigger_ashtongue_talisman( this );
