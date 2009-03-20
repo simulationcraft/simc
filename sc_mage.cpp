@@ -507,6 +507,49 @@ static void trigger_tier5_4pc( spell_t* s )
   }
 }
 
+// trigger_tier8_2pc ========================================================
+
+static void trigger_tier8_2pc( spell_t* s )
+{
+  // http://ptr.wowhead.com/?spell=64867
+  if( ! s -> sim -> roll( 0.25 ) )
+    return; 
+    
+  struct expiration_t : public event_t
+  {
+    expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
+    {
+      name = "Tier 8 2 Piece Expiration";
+      player -> aura_gain( "Tier 8 2 Piece" );
+      player -> spell_power[ SCHOOL_MAX ] += 350;
+      player -> buffs.tier8_2pc            = 1;
+      sim -> add_event( this, 15.0 );
+    }
+    virtual void execute()
+    {
+      player -> aura_loss( "Tier 8 2 Piece" );
+      player -> spell_power[ SCHOOL_MAX ] -= 350;
+      player -> buffs.tier8_2pc            = 0;
+      player -> expirations.tier8_2pc      = 0;
+    }
+  };
+
+  mage_t* p = s -> player -> cast_mage();
+
+  p -> procs.tier8_2pc -> occur();
+
+  event_t*& e = p -> expirations.tier8_2pc;
+  
+  if( e )
+  {
+    e -> reschedule( 15.0 );
+  }
+  else
+  {
+    e = new ( s -> sim ) expiration_t( s -> sim, p );
+  }
+}
+
 // trigger_ignite ===========================================================
 
 static void trigger_ignite( spell_t* s,
@@ -1050,6 +1093,9 @@ void mage_spell_t::execute()
   mage_t* p = player -> cast_mage();
   spell_t::execute();
   clear_fingers_of_frost( this );
+  
+  player -> uptimes.tier8_2pc -> update( player -> buffs.tier8_2pc == 1 );
+  
   if( result_is_hit() )
   {
     trigger_arcane_concentration( this );
@@ -1287,7 +1333,11 @@ struct arcane_blast_t : public mage_spell_t
   {
     mage_spell_t::execute(); 
 
-    if( result_is_hit() ) trigger_missile_barrage( this );
+    if( result_is_hit() )
+    {
+      trigger_missile_barrage( this );
+      trigger_tier8_2pc( this );
+    }
 
     struct expiration_t : public event_t
     {
@@ -1867,7 +1917,11 @@ struct fire_ball_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
     mage_spell_t::execute();
-    if( result_is_hit() ) trigger_missile_barrage( this );
+    if( result_is_hit() )
+    {
+      trigger_missile_barrage( this );
+      trigger_tier8_2pc( this );
+    }
     trigger_hot_streak( this );
     p -> _buffs.brain_freeze = 0;
   }
@@ -2271,6 +2325,7 @@ struct frost_bolt_t : public mage_spell_t
     {
       trigger_missile_barrage( this );
       trigger_replenishment( this );
+      trigger_tier8_2pc( this );
     }
   }
 };
@@ -2447,7 +2502,11 @@ struct frostfire_bolt_t : public mage_spell_t
   virtual void execute()
   {
     mage_spell_t::execute();
-    if( result_is_hit() ) trigger_missile_barrage( this );
+    if( result_is_hit() )
+    {
+      trigger_missile_barrage( this );
+      trigger_tier8_2pc( this );
+    }
     trigger_hot_streak( this );
   }
 };
