@@ -20,7 +20,7 @@ actions+=/envenom,min_combo_points=2,snd<=2
 actions+=/tricks_of_the_trade
 actions+=/mutilate,max_combo_points=3
 
-# Gear: http://www.chardev.org/?template=147364
+# Gear: http://www.chardev.org/?template=147364 with WD mainhand
 gear_stamina=951
 gear_strength=10
 gear_agility=1089
@@ -41,8 +41,8 @@ tier7_4pc=1
 relentless_earthstorm=1
 
 # Weapons
-main_hand=dagger,dps=171,speed=1.4,enchant=berserking
-off_hand=dagger,dps=156,speed=1.4,enchant=berserking
+main_hand=dagger,dps=157,speed=1.4,enchant=berserking
+off_hand=dagger,dps=157,speed=1.4,enchant=berserking
 
 # Item Procs
 darkmoon_greatness=1

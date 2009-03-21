@@ -999,7 +999,7 @@ struct melee_t : public rogue_attack_t
     trigger_gcd     = 0;
     base_cost       = 0;
 
-    if( p -> dual_wield() ) base_hit -= 0.18;
+    if( p -> dual_wield() ) base_hit -= 0.19;
   }
 
   virtual double haste()

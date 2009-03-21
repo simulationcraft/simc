@@ -13,12 +13,12 @@ actions=flask,type=endless_rage/food,type=fish_feast/apply_poison,main_hand=inst
 actions+=/auto_attack
 actions+=/pool_energy,for_next=1/hunger_for_blood,refresh_at=2
 actions+=/slice_and_dice,min_combo_points=2,snd<=2
-actions+=/tricks_of_the_trade
 actions+=/cold_blood,sync=envenom
 actions+=/envenom,min_combo_points=4,no_buff=1
+actions+=/tricks_of_the_trade
 actions+=/mutilate,max_combo_points=3
 
-# Gear: http://www.chardev.org/?template=147364
+# Gear: http://www.chardev.org/?template=147364 with SR offhand
 gear_stamina=951
 gear_strength=10
 gear_agility=1075

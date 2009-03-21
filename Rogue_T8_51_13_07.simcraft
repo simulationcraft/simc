@@ -22,17 +22,17 @@ actions+=/tricks_of_the_trade
 actions+=/mutilate,max_combo_points=3
 
 # Gear: http://www.chardev.org/?template=147364
-gear_stamina=951
+gear_stamina=946
 gear_strength=10
-gear_agility=1075
+gear_agility=1082
 gear_intellect=10
 gear_spirit=10
-gear_attack_power=2149
+gear_attack_power=2117
 gear_expertise_rating=209
 gear_armor_penetration_rating=94
-gear_hit_rating=266
-gear_crit_rating=513
-gear_haste_rating=303
+gear_hit_rating=250
+gear_crit_rating=544
+gear_haste_rating=279
 
 # Set Bonuses
 tier7_2pc=1
@@ -43,7 +43,7 @@ relentless_earthstorm=1
 
 # Weapons
 main_hand=dagger,dps=171,speed=1.8,enchant=berserking
-off_hand=dagger,dps=171,speed=1.8,enchant=berserking
+off_hand=dagger,dps=157,speed=1.4,enchant=berserking
 
 # Item Procs
 darkmoon_greatness=1

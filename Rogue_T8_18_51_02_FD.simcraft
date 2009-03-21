@@ -9,9 +9,9 @@ level=80
 talents=http://ptr.wowhead.com/?talent=f0eb0eZMgVoxcxoru0xRtb
 
 # Action queue
-actions=flask,type=endless_rage/food,type=fish_feast/apply_poison,main_hand=wound,off_hand=wound
+actions=flask,type=endless_rage/food,type=fish_feast/apply_poison,main_hand=wound,off_hand=deadly
 actions+=/auto_attack
-actions+=/slice_and_dice,min_combo_points=1,snd<=2,time<=4
+actions+=/slice_and_dice,min_combo_points=1,time<=4
 actions+=/pool_energy,energy<=60,snd<=5/slice_and_dice,min_combo_points=3,snd<=2
 actions+=/tricks_of_the_trade
 actions+=/killing_spree,energy<=30/blade_flurry
@@ -22,7 +22,7 @@ actions+=/eviscerate,min_combo_points=5,time_to_die<=10
 actions+=/sinister_strike,max_combo_points=4
 actions+=/adrenaline_rush
 
-# Gear
+# Gear: http://www.chardev.org/?template=150674
 gear_stamina=924
 gear_strength=10
 gear_agility=1099
