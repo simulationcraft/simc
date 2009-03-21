@@ -771,6 +771,10 @@ static void trigger_eclipse_starfire( spell_t* s )
 
 static void trigger_t8_4pc_balance( spell_t* s )
 {
+  // http://thottbot.com/test/s64824 3%
+  if( s -> sim -> roll( 0.03 ) )
+    return;
+    
   struct expiration_t : public event_t
   {
     expiration_t( sim_t* sim, druid_t* p ) : event_t( sim, p )
@@ -790,6 +794,8 @@ static void trigger_t8_4pc_balance( spell_t* s )
   };
 
   druid_t* p = s -> player -> cast_druid();
+ 
+  p -> procs.tier8_4pc -> occur();
 
   event_t*& e = p -> _expirations.t8_4pc_balance;
 
@@ -2239,10 +2245,8 @@ struct insect_swarm_t : public druid_spell_t
   {
     druid_spell_t::tick();
     druid_t* p = player -> cast_druid();
-    if( p -> tiers.t8_4pc_balance && sim -> roll( 0.03 ) )
+    if( p -> tiers.t8_4pc_balance )
     {
-      // http://thottbot.com/test/s64824 3%
-      p -> procs.tier8_4pc -> occur();
       trigger_t8_4pc_balance( this );
     }
   }
