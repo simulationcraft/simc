@@ -60,6 +60,7 @@ struct druid_t : public player_t
     event_t* eclipse;
     event_t* idol_of_the_corruptor;
     event_t* natures_grace;
+    event_t* mangle;    
     event_t* savage_roar;
     event_t* t8_4pc_balance;
     event_t* unseen_moon;
@@ -455,7 +456,7 @@ static void add_combo_point( druid_t* p )
 
 // trigger_omen_of_clarity ==================================================
 
-static void trigger_omen_of_clarity( action_t* a, bool* feral_t8 = false )
+static void trigger_omen_of_clarity( action_t* a )
 {
   druid_t* p = a -> player -> cast_druid();
 
@@ -562,15 +563,17 @@ static void trigger_mangle( attack_t* a )
 {
   struct mangle_expiration_t : public event_t
   {
-    mangle_expiration_t( sim_t* sim, double duration ): event_t( sim, 0 )
+    mangle_expiration_t( sim_t* sim, druid_t* p, double duration ): event_t( sim, p, 0 )
     {
+      name = "Mangle Cat Expiration";
       sim -> target -> debuffs.mangle++;
       sim -> add_event( this, duration );
     }
     virtual void execute()
     {
+      druid_t* p = player -> cast_druid();
       sim -> target -> debuffs.mangle--;
-      sim -> target -> expirations.mangle = 0;
+      p -> _expirations.mangle = 0;
     }
   };
 
@@ -578,7 +581,7 @@ static void trigger_mangle( attack_t* a )
       
   double duration = 12.0 + ( p -> glyphs.mangle ? 6.0 : 0.0 );
 
-  event_t*& e = a -> sim -> target -> expirations.mangle;
+  event_t*& e = p -> _expirations.mangle;
 
   if( e )
   {
@@ -589,7 +592,7 @@ static void trigger_mangle( attack_t* a )
   }
   else
   {
-    e = new ( a -> sim ) mangle_expiration_t( a -> sim, duration );
+    e = new ( a -> sim ) mangle_expiration_t( a -> sim, p, duration );
   }
 }
 
@@ -810,9 +813,12 @@ static void trigger_t8_4pc_balance( spell_t* s )
 }
 
 // trigger_t8_2pc_feral =====================================================
-//*
+
 static void trigger_t8_2pc_feral( action_t* a )
 {
+  if( a -> player -> cast_druid() -> tiers.t8_2pc_feral == 0)
+    return;
+
   if( a -> sim -> roll( 0.02 ) )
   {
     /* 2% chance on tick, http://ptr.wowhead.com/?spell=64752
@@ -1141,7 +1147,6 @@ bool druid_attack_t::ready()
     return false;
 
   druid_t*  p = player -> cast_druid();
-  target_t* t = sim -> target;
 
   if( requires_position != POSITION_NONE )
     if( p -> position != requires_position )
@@ -1176,11 +1181,11 @@ bool druid_attack_t::ready()
   double ct = sim -> current_time;
 
   if( min_mangle_expire > 0 )
-    if( ! t -> expirations.mangle || ( ( t -> expirations.mangle -> occurs() - ct ) < min_mangle_expire ) )
+    if( ! p -> _expirations.mangle || ( ( p -> _expirations.mangle -> occurs() - ct ) < min_mangle_expire ) )
       return false;
 
   if( max_mangle_expire > 0 )
-    if( t -> expirations.mangle && ( ( t -> expirations.mangle -> occurs() - ct ) > max_mangle_expire ) )
+    if( p -> _expirations.mangle && ( ( p -> _expirations.mangle -> occurs() - ct ) > max_mangle_expire ) )
       return false;
 
   if( min_savage_roar_expire > 0 )
