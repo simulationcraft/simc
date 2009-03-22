@@ -2060,7 +2060,7 @@ struct flametongue_totem_t : public shaman_spell_t
 			     p -> talents.mental_quickness * 0.02 );
 
     bonus = util_t::ability_rank( p -> level,  144,80,  122,76,  106,72,  73,67,  62,0 );
-    bonus *= p -> talents.enhancing_totems * 0.05;
+    bonus *= 1 + p -> talents.enhancing_totems * 0.05;
   }
 
   virtual void execute()
