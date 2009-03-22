@@ -311,11 +311,7 @@ bool action_t::result_is_miss()
 
 double action_t::armor()
 {
-  double adjusted_armor = sim -> target -> composite_armor();
-
-  if( player -> buffs.executioner ) adjusted_armor -= 840;
-
-  return adjusted_armor;
+  return sim -> target -> composite_armor();
 }
 
 // action_t::resistance =====================================================
