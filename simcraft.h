@@ -1186,7 +1186,6 @@ struct target_t
     event_t* improved_faerie_fire;
     event_t* improved_scorch;
     event_t* improved_shadow_bolt;
-    event_t* mangle;
     event_t* nature_vulnerability;
     event_t* shadow_vulnerability;
     event_t* shadow_weaving;
