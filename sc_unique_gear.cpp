@@ -899,6 +899,40 @@ static void trigger_sundial_of_the_exiled( spell_t* s )
   }
 }
 
+// Flare of the Heavens ============================================
+
+static void trigger_flare_of_the_heavens( spell_t* s )
+{
+  struct flare_of_the_heavens_expiration_t : public event_t
+  {
+    flare_of_the_heavens_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
+    {
+      name = "Flare of the Heavens Expiration";
+      player -> aura_gain( "Flare of the Heavens" );
+      player -> spell_power[ SCHOOL_MAX ] += 850;
+      player -> cooldowns.flare_of_the_heavens = sim -> current_time + 45;
+      sim -> add_event( this, 10.0 );
+    }
+    virtual void execute()
+    {
+      player -> aura_loss( "Flare of the Heavens" );
+      player -> spell_power[ SCHOOL_MAX ] -= 850;
+    }
+  };
+
+  if( ! s -> harmful ) return;
+
+  player_t* p = s -> player;
+
+  if( p ->        gear.flare_of_the_heavens && 
+      s -> sim -> cooldown_ready( p -> cooldowns.flare_of_the_heavens ) &&
+      s -> sim -> roll( 0.10 ) )
+  {
+    p -> procs.flare_of_the_heavens -> occur();
+    new ( s -> sim ) flare_of_the_heavens_expiration_t( s -> sim, p );
+  }
+}
+
 // Elemental Focus Stone ============================================
 
 static void trigger_elemental_focus_stone( spell_t* s )
@@ -1233,6 +1267,7 @@ void unique_gear_t::spell_hit_event( spell_t* s )
   trigger_elder_scribes                  ( s );
   trigger_eternal_sage                   ( s );
   trigger_elemental_focus_stone          ( s );
+  trigger_flare_of_the_heavens           ( s );
   trigger_mark_of_defiance               ( s );
   trigger_mystical_skyfire               ( s );
   trigger_quagmirrans_eye                ( s );
@@ -1679,6 +1714,7 @@ bool unique_gear_t::parse_option( player_t*          p,
     { "extract_of_necromatic_power",          OPT_INT,   &( p -> gear.extract_of_necromatic_power     ) },
     { "eye_of_magtheridon",                   OPT_INT,   &( p -> gear.eye_of_magtheridon              ) },
     { "eye_of_the_broodmother",               OPT_INT,   &( p -> gear.eye_of_the_broodmother          ) },
+    { "flare_of_the_heavens",                 OPT_INT,   &( p -> gear.flare_of_the_heavens            ) },
     { "forge_ember",                          OPT_INT,   &( p -> gear.forge_ember                     ) },
     { "fury_of_the_five_flights",             OPT_INT,   &( p -> gear.fury_of_the_five_flights        ) },
     { "grim_toll",                            OPT_INT,   &( p -> gear.grim_toll                       ) },

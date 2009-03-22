@@ -669,6 +669,7 @@ struct player_t
     int  extract_of_necromatic_power;
     int  eye_of_magtheridon;
     int  eye_of_the_broodmother;
+    int  flare_of_the_heavens;
     int  forge_ember;
     int  fury_of_the_five_flights;
     int  grim_toll;
@@ -805,6 +806,7 @@ struct player_t
     double elemental_focus_stone;
     double embrace_of_the_spider;
     double eternal_sage;
+    double flare_of_the_heavens;
     double forge_ember;
     double grim_toll;
     double mark_of_defiance;
@@ -888,6 +890,7 @@ struct player_t
     proc_t* eternal_sage;
     proc_t* extract_of_necromatic_power;
     proc_t* eye_of_magtheridon;
+    proc_t* flare_of_the_heavens;
     proc_t* forge_ember;
     proc_t* grim_toll;
     proc_t* judgement_of_wisdom;

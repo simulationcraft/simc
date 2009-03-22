@@ -791,6 +791,7 @@ void player_t::init_stats()
   procs.eternal_sage                 = get_proc( "eternal_sage" );
   procs.extract_of_necromatic_power  = get_proc( "extract_of_necromatic_power" );
   procs.eye_of_magtheridon           = get_proc( "eye_of_magtheridon" );
+  procs.flare_of_the_heavens         = get_proc( "flare_of_the_heavens" );
   procs.forge_ember                  = get_proc( "forge_ember" );
   procs.grim_toll                    = get_proc( "grim_toll" );
   procs.judgement_of_wisdom          = get_proc( "judgement_of_wisdom" );
