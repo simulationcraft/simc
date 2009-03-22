@@ -45,6 +45,9 @@ struct mage_t : public player_t
   {
     event_t* arcane_blast;
     event_t* replenishment;
+    event_t* hot_streak;
+    event_t* missile_barrage;
+    event_t* brain_freeze;
 
     void reset() { memset( (void*) this, 0x00, sizeof( _expirations_t ) ); }
     _expirations_t() { reset(); }
@@ -511,6 +514,10 @@ static void trigger_tier5_4pc( spell_t* s )
 
 static void trigger_tier8_2pc( spell_t* s )
 {
+  mage_t* p = s -> player -> cast_mage();
+  
+  if( p -> gear.tier8_2pc == 0 )
+    return;
   // http://ptr.wowhead.com/?spell=64867
   if( ! s -> sim -> roll( 0.25 ) )
     return; 
@@ -534,8 +541,6 @@ static void trigger_tier8_2pc( spell_t* s )
       player -> expirations.tier8_2pc      = 0;
     }
   };
-
-  mage_t* p = s -> player -> cast_mage();
   
   if( s -> sim -> cooldown_ready( p -> cooldowns.tier8_2pc ) )
   {
@@ -552,6 +557,23 @@ static void trigger_tier8_2pc( spell_t* s )
       e = new ( s -> sim ) expiration_t( s -> sim, p );
     }
   }
+}
+
+// trigger_tier8_4pc ========================================================
+
+static bool trigger_tier8_4pc( spell_t* s )
+{
+  mage_t* p = s -> player -> cast_mage();
+
+  if( ! p -> gear.tier8_4pc == 1 )
+    return false;
+
+  if( ! s -> sim -> roll( 0.10 ) )
+    return false;
+    
+  p -> procs.tier8_4pc -> occur();
+
+  return true;
 }
 
 // trigger_ignite ===========================================================
@@ -854,8 +876,36 @@ static void trigger_brain_freeze( spell_t* s )
 
   mage_t* p = s -> player -> cast_mage();
 
-  if( ! p -> _buffs.brain_freeze && s -> sim -> roll( p -> talents.brain_freeze * 0.05 ) )
+  if( s -> sim -> roll( p -> talents.brain_freeze * 0.05 ) )
   {
+    struct expiration_t : public event_t
+    {
+      expiration_t( sim_t* sim, mage_t* p ) : event_t( sim, p )
+      {
+        name = "Brain Freeze Expiration";
+        p -> aura_gain( "Brain Freeze" );
+        p -> _buffs.brain_freeze = sim -> current_time;
+        sim -> add_event( this, 15.0 );
+      }
+      virtual void execute()
+      {
+        mage_t* p = player -> cast_mage();
+        p -> aura_loss( "Brain Freeze" );
+        p -> _buffs.brain_freeze       = 0;
+        p -> _expirations.brain_freeze = 0;
+      }
+    };
+    
+    event_t*& e = p -> _expirations.brain_freeze;
+          
+    if( e )
+    {
+      e -> reschedule( 15.0 );
+    }
+    else
+    {
+      e = new ( s -> sim ) expiration_t( s -> sim, p );
+    }
     p -> _buffs.brain_freeze = s -> sim -> current_time;
   }
 }
@@ -875,8 +925,36 @@ static void trigger_hot_streak( spell_t* s )
 
       if( p -> _buffs.hot_streak == 2 )
       {
-        p -> _buffs.hot_streak_pyroblast = s -> sim -> current_time;
+        struct expiration_t : public event_t
+        {
+          expiration_t( sim_t* sim, mage_t* p ) : event_t( sim, p )
+          {
+            name = "Hot Streak Expiration";
+            p -> aura_gain( "Hot Streak" );
+            p -> _buffs.hot_streak_pyroblast = sim -> current_time;
+            sim -> add_event( this, 10.0 );
+          }
+          virtual void execute()
+          {
+            mage_t* p = player -> cast_mage();
+            p -> aura_loss( "Hot Streak" );
+            p -> _buffs.hot_streak_pyroblast = 0;
+            p -> _expirations.hot_streak     = 0;
+          }
+        };
+        
         p -> _buffs.hot_streak = 0;
+        
+        event_t*& e = p -> _expirations.hot_streak;
+              
+        if( e )
+        {
+          e -> reschedule( 10.0 );
+        }
+        else
+        {
+          e = new ( s -> sim ) expiration_t( s -> sim, p );
+        }
       }
     }
     else
@@ -940,32 +1018,44 @@ static void stack_improved_scorch( spell_t* s )
   }
 }
 
-// clear_missile_barrage ==========================================================
-
-static void clear_missile_barrage( spell_t* s )
-{
-  mage_t* p = s -> player -> cast_mage();
-
-  if(  p -> _buffs.missile_barrage )
-  {
-    p -> aura_loss( "Missile Barrage" );
-    p -> _buffs.missile_barrage = 0;
-  }
-}
-
 // trigger_missile_barrage =========================================================
 
 static void trigger_missile_barrage( spell_t* s )
 {
   mage_t* p = s -> player -> cast_mage();
 
-  if(   p -> talents.missile_barrage && 
-      ! p ->   _buffs.missile_barrage )
+  if( p -> talents.missile_barrage )
   {
     if( s -> sim -> roll( p -> talents.missile_barrage * 0.04 ) )
     {
-      p -> aura_gain( "Missile Barrage" );
-      p -> _buffs.missile_barrage = s -> sim -> current_time;
+      struct expiration_t : public event_t
+      {
+        expiration_t( sim_t* sim, mage_t* p ) : event_t( sim, p )
+        {
+          name = "Missile Barrage Expiration";
+          p -> aura_gain( "Missile Barrage" );
+          p -> _buffs.missile_barrage = sim -> current_time;
+          sim -> add_event( this, 15.0 );
+        }
+        virtual void execute()
+        {
+          mage_t* p = player -> cast_mage();
+          p -> aura_loss( "Missile Barrage" );
+          p -> _buffs.missile_barrage       = 0;
+          p -> _expirations.missile_barrage = 0;
+        }
+      };
+      
+      event_t*& e = p -> _expirations.missile_barrage;
+            
+      if( e )
+      {
+        e -> reschedule( 15.0 );
+      }
+      else
+      {
+        e = new ( s -> sim ) expiration_t( s -> sim, p );
+      }
     }
   }
 }
@@ -1558,8 +1648,12 @@ struct arcane_missiles_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
     mage_spell_t::last_tick();
-    clear_missile_barrage( this );
     clear_arcane_potency( this );
+
+    if( p -> _expirations.missile_barrage )
+      if( ! trigger_tier8_4pc( this ) )
+        event_t::early( p -> _expirations.missile_barrage );
+
     if( abar_combo && abar_spell -> ready() ) 
     {
       p -> action_start( abar_spell );
@@ -1927,7 +2021,9 @@ struct fire_ball_t : public mage_spell_t
       trigger_tier8_2pc( this );
     }
     trigger_hot_streak( this );
-    p -> _buffs.brain_freeze = 0;
+    if( p -> _expirations.brain_freeze )
+      if( ! trigger_tier8_4pc( this ) )
+        event_t::early( p -> _expirations.brain_freeze );
   }
 
   virtual bool ready()
@@ -2133,8 +2229,12 @@ struct pyroblast_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
     mage_spell_t::execute();
-    if( p -> _buffs.hot_streak_pyroblast ) p -> procs_hot_streak_pyroblast -> occur();
-    p -> _buffs.hot_streak_pyroblast = 0;
+    if( p -> _expirations.hot_streak )
+    {
+      p -> procs_hot_streak_pyroblast -> occur();
+      if( ! trigger_tier8_4pc( this ) )
+        event_t::early( p -> _expirations.hot_streak );
+    }
   }
 
   virtual double execute_time()
