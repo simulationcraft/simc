@@ -1283,18 +1283,9 @@ struct envenom_t : public rogue_attack_t
 
 		if( p -> talents.surprise_attacks ) may_dodge = false;
 		  
-		if( sim -> P309 )
-		{
-			dose_dmg = ( p -> level >= 80 ? 216 :
-						 p -> level >= 74 ? 176 :
-						 p -> level >= 69 ? 148 : 118 );
-		}
-		else
-		{
-			dose_dmg = ( p -> level >= 80 ? 75 :
-						 p -> level >= 74 ? 75 :
-						 p -> level >= 69 ? 75 : 75 );
-		}
+		dose_dmg = ( p -> level >= 80 ? 216 :
+					 p -> level >= 74 ? 176 :
+					 p -> level >= 69 ? 148 : 118 );
 	}
 
 	virtual void execute()
