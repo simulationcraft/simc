@@ -1,0 +1,48 @@
+
+# This is a default gear profile for Tier-8 Best-In-Slot Shadow Priests
+# Based on this gear set: http://www.chardev.org/?template=147140
+
+# Standard Gear Attributes
+gear_stamina=940
+gear_strength=0
+gear_agility=0
+gear_intellect=900
+gear_spirit=343
+gear_attack_power=0
+gear_expertise_rating=0
+gear_armor_penetration_rating=0
+gear_spell_power=2236
+gear_hit_rating=298
+gear_crit_rating=632
+gear_haste_rating=493
+gear_mp5=0
+# Added 75 spell power to account for profession-specific bonuses
+enchant_spell_power=+75
+
+tier8_2pc=1
+tier8_4pc=1
+
+# Meta Gem
+chaotic_skyflare=1
+
+# Item Procs
+illustration_of_the_dragon_soul=1
+flare_of_the_heavens=1
+
+# Gear List until chardev.org is updated.
+# Helm: [url=http://ptr.wowhead.com/?item=46172]Conqueror's Circlet of Sanctification[/url] with CSD + Runed Scarlet Ruby + sp/crit enchant.
+# Neck: [url=http://ptr.wowhead.com/?item=45133]Pendant of Fiery Havoc[/url] + Potent Monarch Topaz.  46 hit.
+# Shoulder: [url=http://ptr.wowhead.com/?item=46165]Conqueror's Mantle of Sanctification[/url] + Runed Scarlet Ruby + sp/crit enchant. 
+# Back: [url=http://ptr.wowhead.com/?item=45242]Drape of Mortal Downfall[/url] + Potent Monarch Topaz. +23 haste enchant. 41 hit.
+# Chest: [url=http://ptr.wowhead.com/?item=46168]Conqueror's Raiments of Sanctification[/url] + 2 * Runed Scarlet Ruby. +10stats enchant. 74 hit. 
+# Wrist: [url=http://ptr.wowhead.com/?item=44008]Unsullied Cuffs[/url] + Runed Scarlet Ruby. +30sp enchant.
+# Hands: [url=http://ptr.wowhead.com/?item=46163]Conqueror's Handwraps of Sanctification[/url] + Runed Scarlet Ruby. +28sp enchant.
+# Waist: [url=http://ptr.wowhead.com/?item=45557]Sash of Ancient Power[/url] + 2*Runed Scarlet Ruby. Eternal Belt Buckle + Runed Scarlet Ruby. 43 hit.
+# Legs: [url=http://ptr.wowhead.com/?item=40560]Leggings of the Wanton Spellcaster[/url]. 50sp/20spi enchant. 82 hit.
+# Feet: [url=http://static.mmo-champion.com/mmoc/images/news/2009/march/items/items_241.jpg]Boots of Fiery Resolution[/url] + 2*Runed Scarlet Ruby. Icewalker enchant. 
+# Finger1: [url=http://ptr.wowhead.com/?item=40399]Signet of Manifested Pain[/url]. 
+# Finger2: [url=http://ptr.wowhead.com/?item=45168]Pyrelight Circle[/url]. 
+# Trinket1: [url=http://ptr.wowhead.com/?item=45518]Flare of Heavens[/url]. 
+# Trinket2: [url=http://ptr.wowhead.com/?item=40432]Illustration of the Dragon Soul[/url]. 
+# Mainhand: [url=http://ptr.wowhead.com/?item=45457]Staff of Endless Winter[/url] + 2 * Purified Twilight Opals. +81 spellpower enchant.
+# Ranged: [url=http://ptr.wowhead.com/?item=45511]Scepter of Lost Souls[/url]. 
