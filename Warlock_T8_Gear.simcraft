@@ -1,0 +1,47 @@
+
+# This is a default gear profile for Tier-8 Warlocks who have 3% hit from talents
+# Based on this gear set: (see below)
+# Added 75 spell power to account for profession-specific bonuses
+
+# Standard Gear Attributes
+gear_stamina=961
+gear_strength=0
+gear_agility=0
+gear_intellect=848
+gear_spirit=365
+gear_attack_power=0
+gear_expertise_rating=0
+gear_armor_penetration_rating=0
+gear_spell_power=2348
+gear_hit_rating=292
+gear_crit_rating=571
+gear_haste_rating=454
+
+tier8_2pc=1
+tier8_4pc=1
+
+# Meta Gem
+chaotic_skyflare=1
+
+# Item Procs
+illustration_of_the_dragon_soul=1
+flare_of_the_heavens=1
+
+# Gear List until chardev.org is updated:
+# Helm: [url=http://ptr.wowhead.com/?item=40562]Hood of Rationality[/url] with CSD + Runed Scarlet Ruby + sp/crit enchant
+# Neck: [url=http://ptr.wowhead.com/?item=45133]Pendant of Fiery Havoc[/url] + Runed Scarlet Ruby
+# Shoulder: [url=http://ptr.wowhead.com/?item=46136]Conqueror's Deathbringer Shoulderpads[/url] + Veiled Monarch Topaz + sp/crit enchant 
+# Back: [url=http://ptr.wowhead.com/?item=45242]Drape of Mortal Downfall[/url] + Runed Scarlet Ruby + 23haste enchant
+# Chest: [url=http://ptr.wowhead.com/?item=46137]Conqueror's Deathbringer Robe[/url] + Runed Scarlet Ruby + Reckless Monarch Topaz + 15spirit enchant
+# Wrist: [url=http://ptr.wowhead.com/?item=44008]Unsullied Cuffs[/url] + Runed Scarlet Ruby + 30sp enchant
+# Hands: [url=http://ptr.wowhead.com/?item=46135]Conqueror's Deathbringer Gloves[/url] + Purified Twilight Opal + 28 sp enchant.
+# Waist: [url=http://ptr.wowhead.com/?item=45557]Sash of Ancient Power[/url] + Runed Scarlet Ruby + Purified Twilight Opal + Eternal Belt Buckle + Runed Scarlet Ruby
+# Legs: [url=http://ptr.wowhead.com/?item=46139]Conqueror's Deathbringer Leggings[/url] + 2*Runed Scarlet Ruby + 50sp/20spi enchant
+# Feet: [url=http://static.mmo-champion.com/mmoc/images/news/2009/march/items/items_241.jpg]Boots of Fiery Resolution[/url] + 2*Runed Scarlet Ruby + Icewalker enchant 
+# Finger1: [url=http://ptr.wowhead.com/?item=40399]Signet of Manifested Pain[/url]
+# Finger2: [url=http://ptr.wowhead.com/?item=45168]Pyrelight Circle[/url]
+# Trinket1: [url=http://ptr.wowhead.com/?item=45518]Flare of Heavens[/url]
+# Trinket2: [url=http://ptr.wowhead.com/?item=40432]Illustration of the Dragon Soul[/url]
+# Mainhand: [url=http://ptr.wowhead.com/?item=45437]Runescribed Blade[/url] + 63 spellpower enchant
+# Offhand: [url=http://ptr.wowhead.com/?item=45271]Ironmender[/url]
+# Ranged: [url=http://ptr.wowhead.com/?item=45511]Scepter of Lost Souls[/url]
