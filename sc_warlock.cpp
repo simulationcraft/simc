@@ -3469,13 +3469,13 @@ struct immolate_t : public warlock_spell_t
     {
       base_dd_multiplier *= 1.0 + ( p -> talents.emberstorm        * 0.03 +
                                     p -> talents.improved_immolate * 0.10 +
-                                    p -> gear.tier8_2pc            * 0.20 ); //FIXME assuming additive
+                                    p -> gear.tier8_2pc            * 0.10 ); //FIXME assuming additive
 
       base_td_multiplier *= 1.0 + ( p -> talents.emberstorm        * 0.03 +
                                     p -> talents.improved_immolate * 0.10 +
                                     p -> glyphs.immolate           * 0.10 +
                                     p -> talents.aftermath         * 0.03 +
-                                    p -> gear.tier8_2pc            * 0.20 ); //FIXME assuming additive
+                                    p -> gear.tier8_2pc            * 0.10 ); //FIXME assuming additive
     }
 
 
@@ -3657,7 +3657,7 @@ struct conflagrate_t : public warlock_spell_t
       base_multiplier *= 1.0 + p -> talents.aftermath         * 0.03
                              + p -> talents.improved_immolate * 0.10
                              + p -> glyphs.immolate           * 0.10
-                             + p -> gear.tier8_2pc            * 0.20; //FIXME assuming additive
+                             + p -> gear.tier8_2pc            * 0.10; //FIXME assuming additive
           
     }
     base_multiplier  *= 1.0 + p -> talents.emberstorm * 0.03;
