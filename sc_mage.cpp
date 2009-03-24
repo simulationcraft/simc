@@ -995,7 +995,7 @@ static void stack_improved_scorch( spell_t* s )
     {
       if( p -> glyphs.improved_scorch )
       {
-        t -> debuffs.improved_scorch += 3;
+        t -> debuffs.improved_scorch += ( s -> sim -> P309 ? 3 : 5 );
         if( t -> debuffs.improved_scorch > 5 ) t -> debuffs.improved_scorch = 5;
       }
       else
@@ -2293,17 +2293,20 @@ struct scorch_t : public mage_spell_t
     direct_power_mod  = (1.5/3.5); 
       
     base_cost        *= 1.0 - p -> talents.frost_channeling * (0.1/3);
-    base_multiplier  *= 1.0 + p -> talents.fire_power * 0.02;
+    base_multiplier  *= 1.0 + p -> talents.fire_power         * 0.02;
     base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
-    base_multiplier  *= 1.0 + p -> talents.spell_impact * 0.02;
+    base_multiplier  *= 1.0 + p -> talents.spell_impact       * 0.02;
+
     base_crit        += p -> talents.arcane_instability * 0.01;
-    base_crit        += p -> talents.incineration * 0.02;
-    base_crit        += p -> talents.critical_mass * 0.02;
-    base_crit        += p -> talents.pyromaniac * 0.01;
+    base_crit        += p -> talents.incineration       * 0.02;
+    base_crit        += p -> talents.critical_mass      * 0.02;
+    base_crit        += p -> talents.pyromaniac         * 0.01;
+    if( ! sim -> P309 )
+      base_crit        += p -> talents.improved_scorch    * 0.03;
 
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) +
-					  ( p -> talents.burnout     * 0.10 ) +
-					  ( p -> gear.tier7_4pc ? 0.05 : 0.00 ) );
+                                          ( p -> talents.burnout     * 0.10 ) +
+                                          ( p -> gear.tier7_4pc ? 0.05 : 0.00 ) );
 
     if( debuff ) assert( p -> talents.improved_scorch );
   }
