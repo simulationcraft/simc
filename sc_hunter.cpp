@@ -3389,11 +3389,11 @@ struct hunters_mark_t : public hunter_spell_t
   {
     struct expiration_t : public event_t
     {
-      expiration_t( sim_t* sim ) :
-        event_t( sim, 0 )
+      expiration_t( sim_t* sim, player_t* p, double duration ) :
+        event_t( sim, p )
       {
         name = "Hunter's Mark Expiration";
-        sim -> add_event( this, 120.0 );
+        sim -> add_event( this, duration );
       }
       virtual void execute()
       {
@@ -3411,14 +3411,14 @@ struct hunters_mark_t : public hunter_spell_t
     event_t*& e = t -> expirations.hunters_mark;
 
     t -> debuffs.hunters_mark = ap_bonus;
-
+    double duration = ( sim -> P309 ? 120.0 : 300.0 );
     if( e )
     {
-      e -> reschedule( 120.0 );
+      e -> reschedule( duration );
     }
     else
     {
-      e = new ( sim ) expiration_t( sim );
+      e = new ( sim ) expiration_t( sim, player, duration);
     }
 
     player -> action_finish( this );
