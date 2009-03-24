@@ -1276,7 +1276,14 @@ void mage_spell_t::player_buff()
 
   if( p -> _buffs.molten_armor )
   {
-    player_crit += p -> glyphs.molten_armor ? 0.05 : 0.03;
+    if ( sim -> P309)
+    {
+      player_crit += p -> glyphs.molten_armor ? 0.05 : 0.03;
+    }
+    else
+    {
+      player_crit += p -> spirit() * (p -> glyphs.molten_armor ? 0.4 : 0.25) / p -> rating.spell_crit;
+    }
   }
 
   if ( p -> buffs.focus_magic_feedback )

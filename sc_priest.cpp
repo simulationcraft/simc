@@ -450,7 +450,7 @@ static void trigger_improved_spirit_tap( spell_t* s )
       name = "Improved Spirit Tap Expiration";
       p -> _buffs.improved_spirit_tap = 1;
       p -> aura_gain( "improved_spirit_tap" );
-      spirit_bonus = p -> attribute[ ATTR_SPIRIT ] * p -> talents.improved_spirit_tap * 0.05;
+      spirit_bonus = p -> spirit() * p -> talents.improved_spirit_tap * 0.05;
       p -> attribute[ ATTR_SPIRIT ] += spirit_bonus;
       sim -> add_event( this, 8.0 );
     }
@@ -493,7 +493,7 @@ static void trigger_glyph_of_shadow( spell_t* s )
       name = "Glyph of Shadow Expiration";
       p -> _buffs.glyph_of_shadow = 1;
       p -> aura_gain( "glyph_of_shadow" );
-      spellpower_bonus = p -> attribute[ ATTR_SPIRIT ] * 0.1;
+      spellpower_bonus = p -> spirit() * 0.1;
       p -> spell_power[ SCHOOL_MAX ] += spellpower_bonus;
       sim -> add_event( this, 10.0 );
     }
@@ -631,11 +631,11 @@ struct holy_fire_t : public priest_spell_t
 
     static rank_t ranks[] =
     {
-	  { 80, 12, 900, 1140, 50, 0.11 }, // Dumy rank for level 80.
+	    { 80, 12, 900, 1140, 50, 0.11 }, // Dummy rank for level 80.
       { 78, 11, 890, 1130, 50, 0.11 },
       { 72, 10, 732,  928, 47, 0.11 },
-      { 66,  9, 412,  523, 33, 0.11  },
-      { 60,  8, 355,  449, 29, 0.13  },
+      { 66,  9, 412,  523, 33, 0.11 },
+      { 60,  8, 355,  449, 29, 0.13 },
       { 0,   0 }
     };
     init_rank( ranks );
@@ -671,7 +671,7 @@ struct smite_t : public priest_spell_t
 
     static rank_t ranks[] =
     {
-	  { 80, 13, 713, 799, 0, 0.15 }, // Dummy rank for level 80
+  	  { 80, 13, 713, 799, 0, 0.15 }, // Dummy rank for level 80
       { 79, 12, 707, 793, 0, 0.15 },
       { 75, 11, 604, 676, 0, 0.15 },
       { 69, 10, 545, 611, 0, 0.15 },
@@ -948,11 +948,11 @@ struct vampiric_touch_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
 
-	if ( ! sim -> P309 )
-	{
+	  if ( ! sim -> P309 )
+	  {
       tick_may_crit              = p -> buffs.shadow_form != 0;
       base_crit_bonus_multiplier = 1.0 + ( p -> buffs.shadow_form != 0 );
-	}
+	  }
 
     priest_spell_t::execute(); 
     if( result_is_hit() ) 
@@ -1020,19 +1020,19 @@ struct devouring_plague_t : public priest_spell_t
     tick_power_mod    = base_tick_time / 15.0;
     tick_power_mod   *= 0.925;
     base_cost        *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility, 3, 0.04, 0.07, 0.10 ) +
-								p -> talents.shadow_focus * 0.02 );
+							         	p -> talents.shadow_focus * 0.02 );
     base_cost         = floor(base_cost);
-    base_multiplier  *= 1.0 + ( p -> talents.darkness                  * 0.02 + 
-								p -> talents.twin_disciplines          * 0.01 +
-								p -> talents.improved_devouring_plague * 0.05 +
-								p -> gear.tier8_2pc                    * 0.15 ); // FIX ME! Is tier8_2pc additive or multiplicative?
+    base_multiplier  *= 1.0 + ( p -> talents.darkness          * 0.02 + 
+							         	p -> talents.twin_disciplines          * 0.01 +
+						         		p -> talents.improved_devouring_plague * 0.05 +
+								        p -> gear.tier8_2pc                    * 0.15 ); // FIX ME! Is tier8_2pc additive or multiplicative?
     base_hit         += p -> talents.shadow_focus * 0.01;
 
-	if ( p -> talents.improved_devouring_plague )
-	{
-	  may_crit		  = 1;
-	}
-	base_crit += p -> talents.mind_melt * 0.03;
+	  if ( p -> talents.improved_devouring_plague )
+	  {
+	    may_crit = 1;
+	  }
+	  base_crit += p -> talents.mind_melt * 0.03;
 
     observer = &( p -> active_devouring_plague );
   }
@@ -1041,20 +1041,20 @@ struct devouring_plague_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
 
-	if ( ! sim -> P309 )
-	{
+  	if ( ! sim -> P309 )
+	  {
       tick_may_crit              = p -> buffs.shadow_form != 0;
       base_crit_bonus_multiplier = 1.0 + ( p -> buffs.shadow_form != 0 );
-	}
-	if ( p -> talents.improved_devouring_plague )
-	{
-	  base_crit -= p -> talents.mind_melt * 0.03;
-	}
+	  }
+  	if ( p -> talents.improved_devouring_plague )
+	  {
+	    base_crit -= p -> talents.mind_melt * 0.03;
+	  }
     priest_spell_t::execute(); 
-	if ( p -> talents.improved_devouring_plague )
-	{
-	  base_crit += p -> talents.mind_melt * 0.03;
-	}
+  	if ( p -> talents.improved_devouring_plague )
+	  {
+	    base_crit += p -> talents.mind_melt * 0.03;
+	  }
     if( result_is_hit() ) 
     {
       push_misery( this );
@@ -1079,20 +1079,20 @@ struct devouring_plague_t : public priest_spell_t
     direct_dmg = 0;
     if( p -> talents.improved_devouring_plague )
     {
-	  int saved_result = result;
-	  result = RESULT_HIT;
+	    int saved_result = result;
+	    result = RESULT_HIT;
       direct_dmg = calculate_tick_damage() * num_ticks * p -> talents.improved_devouring_plague * 0.05;
-	  result = saved_result;
-	  if ( result == RESULT_CRIT )
-	  {
-	    double saved_base_crit_bonus_multiplier = base_crit_bonus_multiplier;
-		if ( p -> buffs.shadow_form )
-		{
-		  base_crit_bonus_multiplier *= 0.5;
-		}
-		direct_dmg *= 1.0 + total_crit_bonus();
-		base_crit_bonus_multiplier = saved_base_crit_bonus_multiplier;
-	  }
+	    result = saved_result;
+	    if ( result == RESULT_CRIT )
+	    {
+	      double saved_base_crit_bonus_multiplier = base_crit_bonus_multiplier;
+		    if ( p -> buffs.shadow_form )
+		    {
+		      base_crit_bonus_multiplier *= 0.5;
+		    }
+		    direct_dmg *= 1.0 + total_crit_bonus();
+		    base_crit_bonus_multiplier = saved_base_crit_bonus_multiplier;
+	    }
     }
     return direct_dmg;
   }
@@ -1164,7 +1164,7 @@ struct mind_blast_t : public priest_spell_t
 
     static rank_t ranks[] =
     {
-	  { 80, 14, 997, 1053, 0, 0.17 }, // Dummy rank for level 80 characters.
+	    { 80, 14, 997, 1053, 0, 0.17 }, // Dummy rank for level 80 characters.
       { 79, 13, 992, 1048, 0, 0.17 },
       { 74, 12, 837,  883, 0, 0.17 },
       { 69, 11, 708,  748, 0, 0.17 },
