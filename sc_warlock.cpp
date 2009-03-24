@@ -2612,6 +2612,13 @@ struct chaos_bolt_t : public warlock_spell_t
       { 60, 1,  607,  769, 0, 0.09 },
       { 0, 0 }
     };
+    
+    if( sim -> patch.after( 3, 1, 0 ) )
+    {
+      ranks[0].dd_min = 1429;
+      ranks[0].dd_max = 1813;
+    }
+
     init_rank( ranks );
     
     base_execute_time = 2.5; 
@@ -3448,16 +3455,29 @@ struct immolate_t : public warlock_spell_t
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
 
-    base_dd_multiplier *= 1.0 + ( p -> talents.emberstorm        * 0.03 +
-                                  p -> talents.improved_immolate * 0.10 -
-                                  p -> glyphs.immolate           * 0.10 +
-                                  p -> gear.tier8_2pc            * 0.20 ); //FIXME assuming additive
+    if( sim -> patch.before( 3, 1, 0 ) )
+    {
+      base_dd_multiplier *= 1.0 + ( p -> talents.emberstorm        * 0.03 +
+                                    p -> talents.improved_immolate * 0.10 -
+                                    p -> glyphs.immolate           * 0.10 );
 
-    base_td_multiplier *= 1.0 + ( p -> talents.emberstorm        * 0.03 +
-                                  p -> talents.improved_immolate * 0.10 +
-                                  p -> glyphs.immolate           * 0.20 +
-                                  p -> talents.aftermath         * 0.03 +
-                                  p -> gear.tier8_2pc            * 0.20 ); //FIXME assuming additive
+      base_td_multiplier *= 1.0 + ( p -> talents.emberstorm        * 0.03 +
+                                    p -> talents.improved_immolate * 0.10 +
+                                    p -> glyphs.immolate           * 0.20 );
+    }
+    else
+    {
+      base_dd_multiplier *= 1.0 + ( p -> talents.emberstorm        * 0.03 +
+                                    p -> talents.improved_immolate * 0.10 +
+                                    p -> gear.tier8_2pc            * 0.20 ); //FIXME assuming additive
+
+      base_td_multiplier *= 1.0 + ( p -> talents.emberstorm        * 0.03 +
+                                    p -> talents.improved_immolate * 0.10 +
+                                    p -> glyphs.immolate           * 0.10 +
+                                    p -> talents.aftermath         * 0.03 +
+                                    p -> gear.tier8_2pc            * 0.20 ); //FIXME assuming additive
+    }
+
 
     if( p -> gear.tier4_4pc ) num_ticks++;
 
@@ -3636,7 +3656,7 @@ struct conflagrate_t : public warlock_spell_t
                              + ( ( p -> talents.cataclysm ) ? 0.01 : 0 ) );
       base_multiplier *= 1.0 + p -> talents.aftermath         * 0.03
                              + p -> talents.improved_immolate * 0.10
-                             + p -> glyphs.immolate           * 0.20
+                             + p -> glyphs.immolate           * 0.10
                              + p -> gear.tier8_2pc            * 0.20; //FIXME assuming additive
           
     }
