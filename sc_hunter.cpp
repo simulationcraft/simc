@@ -1252,14 +1252,8 @@ static void trigger_piercing_shots( action_t* a )
       num_ticks      = 8;
       tick_power_mod = 0;
     }
-    void player_buff()
-    {
-      player_multiplier = 1.0;
-    }
-    void target_debuff()
-    {
-      target_multiplier = 1.0;
-    }
+    void player_buff() {}
+    void target_debuff( int dmg_type ) {}
   };
 
   double dmg = p -> talents.piercing_shots * 0.1 * a -> direct_dmg;
