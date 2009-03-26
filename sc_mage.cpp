@@ -1282,7 +1282,7 @@ void mage_spell_t::player_buff()
     }
     else
     {
-      player_crit += p -> spirit() * (p -> glyphs.molten_armor ? 0.4 : 0.25) / p -> rating.spell_crit;
+      player_crit += p -> spirit() * (p -> glyphs.molten_armor ? 0.55 : 0.35) / p -> rating.spell_crit;
     }
   }
 
@@ -1985,11 +1985,13 @@ struct fire_ball_t : public mage_spell_t
     base_crit         += p -> talents.arcane_instability * 0.01;
     base_crit         += p -> talents.critical_mass * 0.02;
     base_crit         += p -> talents.pyromaniac * 0.01;
+    if( ! sim -> P309 )
+      base_crit       += p -> talents.improved_scorch * 0.01;
     direct_power_mod  += p -> talents.empowered_fire * 0.05;
 
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) +
                                           ( p -> talents.burnout     * 0.10 ) + 
-					  ( p -> gear.tier7_4pc ? 0.05 : 0.00 ) );
+                                          ( p -> gear.tier7_4pc ? 0.05 : 0.00 ) );
 
     if( p -> gear.tier6_4pc   ) base_multiplier *= 1.05;
     if( p -> glyphs.fire_ball ) base_crit += 0.05;
@@ -2120,9 +2122,9 @@ struct living_bomb_t : public mage_spell_t
       
     static rank_t ranks[] =
     {
-      { 80, 3, 759, 759, 345, 0.22 },
-      { 70, 2, 568, 568, 256, 0.22 },
-      { 60, 1, 336, 336, 155, 0.22 },
+      { 80, 3, 759, 759, 690, 0.22 },
+      { 70, 2, 568, 568, 512, 0.22 },
+      { 60, 1, 336, 336, 306, 0.22 },
       { 0, 0 }
     };
     init_rank( ranks );
@@ -2309,7 +2311,7 @@ struct scorch_t : public mage_spell_t
     base_crit        += p -> talents.critical_mass      * 0.02;
     base_crit        += p -> talents.pyromaniac         * 0.01;
     if( ! sim -> P309 )
-      base_crit        += p -> talents.improved_scorch    * 0.03;
+      base_crit        += p -> talents.improved_scorch    * 0.01;
 
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) +
                                           ( p -> talents.burnout     * 0.10 ) +
@@ -2412,6 +2414,8 @@ struct frost_bolt_t : public mage_spell_t
     base_multiplier   *= 1.0 + p -> talents.chilled_to_the_bone * 0.01;
     base_crit         += p -> talents.arcane_instability * 0.01;
     base_crit         += p -> talents.empowered_frost_bolt * 0.02;
+    if( ! sim -> P309 )
+      base_crit       += p -> talents.winters_chill * 0.01;
     direct_power_mod  += p -> talents.empowered_frost_bolt * 0.05;
 
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.ice_shards  * 1.0/3 ) +
@@ -2590,6 +2594,8 @@ struct frostfire_bolt_t : public mage_spell_t
     base_crit         += p -> talents.arcane_instability * 0.01;
     base_crit         += p -> talents.critical_mass * 0.02;
     base_crit         += p -> talents.pyromaniac * 0.01;
+    if( ! sim -> P309 )
+      base_crit       += p -> talents.improved_scorch * 0.01;
     direct_power_mod  += p -> talents.empowered_fire * 0.05;
 
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.ice_shards  * 1.0/3 ) +
