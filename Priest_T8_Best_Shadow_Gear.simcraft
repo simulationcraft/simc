@@ -3,18 +3,18 @@
 # Based on this gear set: http://www.chardev.org/?template=147140
 
 # Standard Gear Attributes
-gear_stamina=940
+gear_stamina=958
 gear_strength=0
 gear_agility=0
-gear_intellect=900
-gear_spirit=343
+gear_intellect=945
+gear_spirit=385
 gear_attack_power=0
 gear_expertise_rating=0
 gear_armor_penetration_rating=0
-gear_spell_power=2236
-gear_hit_rating=298
-gear_crit_rating=632
-gear_haste_rating=493
+gear_spell_power=2277
+gear_hit_rating=294
+gear_crit_rating=596
+gear_haste_rating=475
 gear_mp5=0
 # Added 75 spell power to account for profession-specific bonuses
 enchant_spell_power=+75
