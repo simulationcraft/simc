@@ -1126,7 +1126,7 @@ void druid_attack_t::player_buff()
   if( ! sim -> P309 && p -> _buffs.savage_roar )
   {
     // sr glyph seems to be additive
-    player_multiplier *= 1.3 + 0.06 * p -> glyphs.savage_roar;
+    player_multiplier *= 1.3 + 0.03 * p -> glyphs.savage_roar;
   }
 
   if( p -> talents.naturalist )
@@ -1445,9 +1445,7 @@ struct rake_t : public druid_attack_t
     tick_power_mod    = 0.06;
     base_cost        -= p -> talents.ferocity;
     base_multiplier  *= 1.0 + p -> talents.savage_fury * 0.1;
-
-    tick_may_crit = ( p -> talents.primal_gore != 0 );
-    
+  
     observer = &( p -> active_rake );
   }
   virtual void tick()
