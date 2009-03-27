@@ -775,7 +775,7 @@ static void trigger_eclipse_starfire( spell_t* s )
 static void trigger_t8_4pc_balance( spell_t* s )
 {
   // http://thottbot.com/test/s64824 3%
-  if( ! s -> sim -> roll( 0.03 ) )
+  if( ! s -> sim -> roll( 0.05 ) )
     return;
     
   struct expiration_t : public event_t
