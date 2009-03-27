@@ -1055,10 +1055,6 @@ struct devouring_plague_t : public priest_spell_t
 	  {
 	    base_crit += p -> talents.mind_melt * 0.03;
 	  }
-    if( result_is_hit() ) 
-    {
-      push_misery( this );
-    }
   }
 
   virtual void tick() 
@@ -1070,7 +1066,6 @@ struct devouring_plague_t : public priest_spell_t
   virtual void last_tick() 
   {
     priest_spell_t::last_tick(); 
-    pop_misery( this );
   }
   
   virtual double calculate_direct_damage()
@@ -1855,7 +1850,6 @@ void priest_t::spell_hit_event( spell_t* s )
   if( s -> school == SCHOOL_SHADOW )
   {
     stack_shadow_weaving( s );
-    if( s -> num_ticks && ! s -> channeled ) push_misery( s );
   }
 
   if( s -> result == RESULT_CRIT )
