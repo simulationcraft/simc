@@ -1229,7 +1229,7 @@ struct shadow_word_death_t : public priest_spell_t
   int    devious_mind_filler;
 
   shadow_word_death_t( player_t* player, const std::string& options_str ) : 
-    priest_spell_t( "shadow_word_death", player, SCHOOL_SHADOW, TREE_SHADOW ), mb_wait(0), mb_priority(0)
+    priest_spell_t( "shadow_word_death", player, SCHOOL_SHADOW, TREE_SHADOW ), mb_wait(0), mb_priority(0), devious_mind_filler(0)
   {
     priest_t* p = player -> cast_priest();
 
@@ -1333,7 +1333,7 @@ struct mind_flay_t : public priest_spell_t
   int    devious_mind_priority;
 
   mind_flay_t( player_t* player, const std::string& options_str ) : 
-    priest_spell_t( "mind_flay", player, SCHOOL_SHADOW, TREE_SHADOW ), mb_wait(0), swp_refresh(0)
+    priest_spell_t( "mind_flay", player, SCHOOL_SHADOW, TREE_SHADOW ), mb_wait(0), swp_refresh(0), devious_mind_wait(0), devious_mind_priority(0)
   {
     priest_t* p = player -> cast_priest();
     assert( p -> talents.mind_flay );

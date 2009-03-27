@@ -1,6 +1,7 @@
 
 # This is a default gear profile for Tier-7 Best-In-Slot Shadow Priests
 # Based on this gear set: http://www.chardev.org/?template=147140
+# Added 75 spell power to account for profession-specific bonuses
 
 # Standard Gear Attributes
 gear_stamina=900
@@ -11,13 +12,11 @@ gear_spirit=404
 gear_attack_power=0
 gear_expertise_rating=0
 gear_armor_penetration_rating=0
-gear_spell_power=2041
+gear_spell_power=2116
 gear_hit_rating=288
 gear_crit_rating=449
 gear_haste_rating=463
 gear_mp5=15
-# Added 75 spell power to account for profession-specific bonuses
-enchant_spell_power=+75
 
 tier7_2pc=0
 tier7_4pc=0
