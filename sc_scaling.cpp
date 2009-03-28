@@ -42,44 +42,29 @@ void scaling_t::analyze_attributes()
       fflush( stdout );
 
       sim_t* child_sim = new sim_t( sim );
-      child_sim -> gear_delta.attribute[ i ] = ( calculate_scale_factors == 2 ) ? gear.attribute[ i ] / 2 : gear.attribute[ i ];
+      child_sim -> gear_delta.attribute[ i ] = gear.attribute[ i ] / calculate_scale_factors;
       child_sim -> execute();
 
-      sim_t* child_sim2 = NULL;
+      sim_t* ref_sim = sim;
       if ( calculate_scale_factors == 2 )
       {
-        child_sim2 = new sim_t( sim );
-        child_sim2 -> gear_delta.attribute[ i ] = -( gear.attribute[ i ] / 2 );
-        child_sim2 -> execute();
+        ref_sim = new sim_t( sim );
+        ref_sim -> gear_delta.attribute[ i ] = -( gear.attribute[ i ] / 2 );
+        ref_sim -> execute();
       }
 
       for( int j=0; j < num_players; j++ )
       {
-	      player_t* p = sim -> players_by_name[ j ];
-	      player_t* child_p = child_sim -> find_player( p -> name() );
+	player_t*       p =       sim -> players_by_name[ j ];
+	player_t*   ref_p =   ref_sim -> find_player( p -> name() );
+	player_t* child_p = child_sim -> find_player( p -> name() );
 	
-	      double f;
-        
-        switch ( calculate_scale_factors )
-        {
-          case 2:
-            f = ( child_p -> dps - p -> dps ) / ( gear.attribute[ i ] / 2 );
+	double f = ( child_p -> dps - ref_p -> dps ) / gear.attribute[ i ];
 
-            child_p = child_sim2 -> find_player( p -> name() );
-            f += ( child_p -> dps - p -> dps ) / -( gear.attribute[ i ] / 2 );
-            f /= 2.0;
-            break;
-          case 1: 
-          default:
-            f = ( child_p -> dps - p -> dps ) / gear.attribute[ i ];
-            break;
-        }
-
-	      if( f > 0.09 ) p -> scaling.attribute[ i ] = f;
+	if( f > 0.09 ) p -> scaling.attribute[ i ] = f;
       }
 
-      if ( calculate_scale_factors == 2 )
-        delete child_sim2;
+      if( ref_sim != sim ) delete ref_sim;
       delete child_sim;
     }
   }
