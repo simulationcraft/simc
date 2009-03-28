@@ -2084,8 +2084,6 @@ void warlock_spell_t::target_debuff( int dmg_type )
     if( p -> main_hand_weapon.buff == SPELL_STONE ) 
     {
       stone_bonus = 0.01;
-      if( sim -> patch.after( 3, 1, 0 ) && p -> talents.master_conjuror > 0 )
-        stone_bonus = p -> talents.master_conjuror * 0.02;
     }
   }
   else
@@ -2093,8 +2091,6 @@ void warlock_spell_t::target_debuff( int dmg_type )
     if( p -> main_hand_weapon.buff == FIRE_STONE ) 
     {
       stone_bonus = 0.01;
-      if( sim -> patch.after( 3, 1, 0 ) && p -> talents.master_conjuror > 0 )
-        stone_bonus = p -> talents.master_conjuror * 0.02;
     }
   }
   if( stone_bonus > 0 )
