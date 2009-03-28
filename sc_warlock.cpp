@@ -2606,17 +2606,23 @@ struct chaos_bolt_t : public warlock_spell_t
       
     rank_t ranks[] =
     {
-      { 80, 4, 1243, 1577, 0, 0.07 },
-      { 75, 3,  882, 1120, 0, 0.07 },
-      { 70, 2,  781,  991, 0, 0.07 },
-      { 60, 1,  607,  769, 0, 0.09 },
+      { 80, 4, 1429, 1813, 0, 0.07 },
+      { 75, 3, 1217, 1545, 0, 0.07 },
+      { 70, 2, 1077, 1367, 0, 0.07 },
+      { 60, 1,  837, 1061, 0, 0.09 },
       { 0, 0 }
     };
     
-    if( sim -> patch.after( 3, 1, 0 ) )
+    if( sim -> P309 )
     {
-      ranks[0].dd_min = 1429;
-      ranks[0].dd_max = 1813;
+      ranks[0].dd_min = 1243;
+      ranks[0].dd_max = 1577;
+      ranks[1].dd_min = 882;
+      ranks[1].dd_max = 1120;
+      ranks[2].dd_min = 781;
+      ranks[2].dd_max = 991;
+      ranks[3].dd_min = 607;
+      ranks[3].dd_max = 769;
     }
 
     init_rank( ranks );
