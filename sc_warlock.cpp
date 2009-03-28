@@ -1769,8 +1769,15 @@ static void trigger_demonic_pact( action_t* a )
 
   if( ! o -> talents.demonic_pact ) return;
 
-  double buff = 0.10 * ( o -> composite_spell_power( SCHOOL_MAX )
-                     - ( o -> spell_power_per_spirit * o -> spirit() ) ); // Does not currently include spell power from spirit
+  double buff = 0.10 * o -> composite_spell_power( SCHOOL_MAX );
+
+  buff -= o -> spell_power_per_spirit * o -> spirit(); // Before 3.1, does not include spell power from spirit
+
+  if( o -> sim -> patch.after( 3, 1, 0 ) ) // After 3.1, includes spell power from fel armor but not from life tap glyph
+  {
+    if( o -> _buffs.fel_armor      ) buff += o -> spirit() * 0.3;
+    if( o -> _buffs.life_tap_glyph ) buff -= o -> spirit() * 0.2;
+  }
 
   if( buff < p -> buffs.demonic_pact ) return;
 
