@@ -42,26 +42,26 @@ void scaling_t::analyze_attributes()
       fflush( stdout );
 
       sim_t* child_sim = new sim_t( sim );
-      child_sim -> gear_delta.attribute[ i ] = gear.attribute[ i ] / ( center_scale_delta ? 2.0 : 1.0 );
+      child_sim -> gear_delta.attribute[ i ] = gear.attribute[ i ] / ( center_scale_delta ? 2 : 1 );
       child_sim -> execute();
 
       sim_t* ref_sim = sim;
       if( center_scale_delta )
       {
         ref_sim = new sim_t( sim );
-        ref_sim -> gear_delta.attribute[ i ] = -( gear.attribute[ i ] / 2.0 );
+        ref_sim -> gear_delta.attribute[ i ] = -( gear.attribute[ i ] / 2 );
         ref_sim -> execute();
       }
 
       for( int j=0; j < num_players; j++ )
       {
-	player_t*       p =       sim -> players_by_name[ j ];
-	player_t*   ref_p =   ref_sim -> find_player( p -> name() );
-	player_t* child_p = child_sim -> find_player( p -> name() );
+	      player_t*       p =       sim -> players_by_name[ j ];
+	      player_t*   ref_p =   ref_sim -> find_player( p -> name() );
+	      player_t* child_p = child_sim -> find_player( p -> name() );
 	
-	double f = ( child_p -> dps - ref_p -> dps ) / gear.attribute[ i ];
+	      double f = ( child_p -> dps - ref_p -> dps ) / gear.attribute[ i ];
 
-	if( f > 0.09 ) p -> scaling.attribute[ i ] = f;
+	      if( f > 0.09 ) p -> scaling.attribute[ i ] = f;
       }
 
       if( ref_sim != sim ) delete ref_sim;
@@ -83,14 +83,14 @@ void scaling_t::analyze_spell_power()
     fflush( stdout );
 
     sim_t* child_sim = new sim_t( sim );
-    child_sim -> gear_delta.spell_power = gear.spell_power / ( center_scale_delta ? 2.0 : 1.0 );
+    child_sim -> gear_delta.spell_power = gear.spell_power / ( center_scale_delta ? 2 : 1 );
     child_sim -> execute();
 
     sim_t* ref_sim = sim;
     if( center_scale_delta )
     {
       ref_sim = new sim_t( sim );
-      ref_sim -> gear_delta.spell_power = -( gear.spell_power / 2.0 );
+      ref_sim -> gear_delta.spell_power = -( gear.spell_power / 2 );
       ref_sim -> execute();
     }
 
@@ -123,14 +123,14 @@ void scaling_t::analyze_attack_power()
     fflush( stdout );
 
     sim_t* child_sim = new sim_t( sim );
-    child_sim -> gear_delta.attack_power = gear.attack_power / ( center_scale_delta ? 2.0 : 1.0 );
+    child_sim -> gear_delta.attack_power = gear.attack_power / ( center_scale_delta ? 2 : 1 );
     child_sim -> execute();
 
     sim_t* ref_sim = sim;
     if( center_scale_delta )
     {
       ref_sim = new sim_t( sim );
-      ref_sim -> gear_delta.attack_power = -( gear.attack_power / 2.0 );
+      ref_sim -> gear_delta.attack_power = -( gear.attack_power / 2 );
       ref_sim -> execute();
     }
 
@@ -198,14 +198,14 @@ void scaling_t::analyze_armor_penetration()
     fflush( stdout );
 
     sim_t* child_sim = new sim_t( sim );
-    child_sim -> gear_delta.armor_penetration_rating = gear.armor_penetration_rating / ( center_scale_delta ? 2.0 : 1.0 );
+    child_sim -> gear_delta.armor_penetration_rating = gear.armor_penetration_rating / ( center_scale_delta ? 2 : 1 );
     child_sim -> execute();
 
     sim_t* ref_sim = sim;
     if( center_scale_delta )
     {
       ref_sim = new sim_t( sim );
-      ref_sim -> gear_delta.armor_penetration_rating = -( gear.armor_penetration_rating / 2.0 );
+      ref_sim -> gear_delta.armor_penetration_rating = -( gear.armor_penetration_rating / 2 );
       ref_sim -> execute();
     }
 
@@ -274,14 +274,14 @@ void scaling_t::analyze_crit()
     fflush( stdout );
 
     sim_t* child_sim = new sim_t( sim );
-    child_sim -> gear_delta.crit_rating = gear.crit_rating / ( center_scale_delta ? 2.0 : 1.0 );
+    child_sim -> gear_delta.crit_rating = gear.crit_rating / ( center_scale_delta ? 2 : 1 );
     child_sim -> execute();
 
     sim_t* ref_sim = sim;
     if( center_scale_delta )
     {
       ref_sim = new sim_t( sim );
-      ref_sim -> gear_delta.crit_rating = -( gear.crit_rating / 2.0 );
+      ref_sim -> gear_delta.crit_rating = -( gear.crit_rating / 2 );
       ref_sim -> execute();
     }
 
@@ -314,14 +314,14 @@ void scaling_t::analyze_haste()
     fflush( stdout );
 
     sim_t* child_sim = new sim_t( sim );
-    child_sim -> gear_delta.haste_rating = gear.haste_rating / ( center_scale_delta ? 2.0 : 1.0 );
+    child_sim -> gear_delta.haste_rating = gear.haste_rating / ( center_scale_delta ? 2 : 1 );
     child_sim -> execute();
 
     sim_t* ref_sim = sim;
     if( center_scale_delta )
     {
       ref_sim = new sim_t( sim );
-      ref_sim -> gear_delta.haste_rating = -( gear.haste_rating / 2.0 );
+      ref_sim -> gear_delta.haste_rating = -( gear.haste_rating / 2 );
       ref_sim -> execute();
     }
 
