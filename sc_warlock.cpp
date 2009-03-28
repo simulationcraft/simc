@@ -1769,7 +1769,7 @@ static void trigger_demonic_pact( action_t* a )
 
   if( ! o -> talents.demonic_pact ) return;
 
-  double buff = 0.10 * o -> composite_spell_power( SCHOOL_MAX );
+  double buff = o -> composite_spell_power( SCHOOL_MAX );
 
   buff -= o -> spell_power_per_spirit * o -> spirit(); // Before 3.1, does not include spell power from spirit
 
@@ -1778,6 +1778,8 @@ static void trigger_demonic_pact( action_t* a )
     if( o -> _buffs.fel_armor      ) buff += o -> spirit() * 0.3;
     if( o -> _buffs.life_tap_glyph ) buff -= o -> spirit() * 0.2;
   }
+
+  buff *= 0.10;
 
   if( buff < p -> buffs.demonic_pact ) return;
 
