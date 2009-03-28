@@ -1881,7 +1881,7 @@ struct ferocious_bite_t : public druid_attack_t
     
     if( sim -> target -> debuffs.bleeding > 0 )
     {
-      player_crit += 0.10 * p -> talents.rend_and_tear;
+      player_crit += 0.05 * p -> talents.rend_and_tear;
     } 
 
   }
