@@ -444,6 +444,13 @@ void scaling_t::analyze()
 {
   if( ! calculate_scale_factors ) return;
 
+  if( calculate_scale_factors != 1 &&
+      calculate_scale_factors != 2 )
+  {
+    printf( "simcraft: Valid values for calculate_scale_factors are 0 and 1\n" );
+    exit(0);
+  }
+
   analyze_attributes();
   analyze_spell_power();
   analyze_attack_power();
