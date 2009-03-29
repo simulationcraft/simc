@@ -448,6 +448,7 @@ struct warlock_pet_attack_t : public attack_t
   {
     background = true;
     repeating  = true;
+    may_glance = false;
     warlock_pet_t* p = (warlock_pet_t*) player -> cast_pet();
     p -> adjust_base_modifiers( this );
   }
@@ -755,16 +756,29 @@ struct felhunter_pet_t : public warlock_pet_t
 
 struct succubus_pet_t : public warlock_pet_t
 {
-  struct lash_of_pain_t : public warlock_pet_attack_t
+  struct lash_of_pain_t : public warlock_pet_spell_t
   {
     lash_of_pain_t( player_t* player ) : 
-      warlock_pet_attack_t( "lash_of_pain", player, RESOURCE_MANA, SCHOOL_SHADOW )
+      warlock_pet_spell_t( "lash_of_pain", player, RESOURCE_MANA, SCHOOL_SHADOW )
     {
+      static rank_t ranks[] =
+      {
+        { 80, 9, 237, 237, 0, 0 },
+        { 74, 8, 193, 193, 0, 0 },
+        { 68, 7, 123, 123, 0, 0 },
+        { 60, 6,  99,  99, 0, 0 },
+        { 0,  0 }
+      };
+      init_rank( ranks );
+
+      base_cost         = 0; // FIXME! When pets no longer have infinite mana......
+      direct_power_mod  = ( 1.5 / 3.5 );
+      may_crit          = true;
+
       succubus_pet_t* p = (succubus_pet_t*) player -> cast_pet();
       warlock_t*      o = p -> owner -> cast_warlock();
 
       cooldown   = 12.0;
-      base_direct_dmg = util_t::ability_rank( p -> level,  237.0,80,  193.0,74,  123.0,68,  99.0,0 );
       cooldown  -= 3.0 * ( o -> talents.improved_lash_of_pain + o -> talents.demonic_power );
     }
   };
