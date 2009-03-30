@@ -857,7 +857,6 @@ struct player_t
     gain_t* innervate;
     gain_t* glyph_of_innervate;
     gain_t* judgement_of_wisdom;
-    gain_t* mana_gem;
     gain_t* mana_potion;
     gain_t* mana_spring;
     gain_t* mana_tide;
@@ -995,12 +994,12 @@ struct player_t
   virtual void      schedule_ready( double delta_time=0, bool waiting=false );
   virtual action_t* execute_action();
 
-  virtual void raid_event( action_t* ) {}
-  virtual void regen( double periodicity=2.0 );
-  virtual void resource_gain( int resource, double amount, gain_t* g=0 );
-  virtual void resource_loss( int resource, double amount );
-  virtual bool resource_available( int resource, double cost );
-  virtual int  primary_resource() { return RESOURCE_NONE; }
+  virtual void   raid_event( action_t* ) {}
+  virtual void   regen( double periodicity=2.0 );
+  virtual double resource_gain( int resource, double amount, gain_t* g=0 );
+  virtual double resource_loss( int resource, double amount );
+  virtual bool   resource_available( int resource, double cost );
+  virtual int    primary_resource() { return RESOURCE_NONE; }
 
   virtual void  summon_pet( const char* name );
   virtual void dismiss_pet( const char* name );

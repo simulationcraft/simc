@@ -57,7 +57,11 @@ void option_t::print( sim_t* sim, option_t* options )
   {
     option_t& o = options[ i ];
 
-    fprintf( sim -> output_file, "\t%s : ", o.name );
+    if( o.type != OPT_APPEND &&
+	o.type != OPT_DEPRECATED ) 
+    {
+      fprintf( sim -> output_file, "\t%s : ", o.name );
+    }
     
     switch( o.type )
     {

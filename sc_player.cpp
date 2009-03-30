@@ -31,9 +31,9 @@ static void trigger_judgement_of_wisdom( action_t* a )
       proc_chance = a -> weapon -> proc_chance_on_swing( sim -> jow_ppm,a -> time_to_execute );
 
       if( sim -> debug )
-	report_t::log( sim, "JoW ppm %f, swing time %f, chance %f",
-		       sim -> jow_ppm, a -> weapon -> swing_time,
-		       proc_chance );
+        report_t::log( sim, "JoW ppm %f, swing time %f, chance %f",
+                       sim -> jow_ppm, a -> weapon -> swing_time,
+                       proc_chance );
     }
     else
     {
@@ -152,7 +152,7 @@ void player_t::gear_t::allocate_attack_power_budget( sim_t* sim )
 
 player_t::player_t( sim_t*             s, 
                     int                t,
-		    const std::string& n ) :
+                    const std::string& n ) :
   sim(s), name_str(n), next(0), type(t), level(80), party(0), member(0), gcd_ready(0), base_gcd(1.5), sleeping(0), pet_list(0),
   // Haste
   base_haste_rating(0), initial_haste_rating(0), haste_rating(0), spell_haste(1.0), attack_haste(1.0),
@@ -212,7 +212,7 @@ player_t::player_t( sim_t*             s,
 
   for( int i=0; i < PROF_MAX; i++ )
   {
-	profession[ i ] = 0;    
+        profession[ i ] = 0;    
   }
 
   for( int i=0; i <= SCHOOL_MAX; i++ )
@@ -376,18 +376,18 @@ void player_t::init_spell()
   if( initial_spell_hit == 0 )
   {
     initial_spell_hit = base_spell_hit + ( gear.hit_rating + 
-					   gear.hit_rating_enchant ) / rating.spell_hit;
+                                           gear.hit_rating_enchant ) / rating.spell_hit;
   }
   if( initial_spell_crit == 0 )
   {
     initial_spell_crit = base_spell_crit + ( gear.crit_rating + 
-					     gear.crit_rating_enchant ) / rating.spell_crit;
+                                             gear.crit_rating_enchant ) / rating.spell_crit;
   }
   if( initial_spell_penetration == 0 )
   {
     initial_spell_penetration = ( base_spell_penetration +   
-				  gear.spell_penetration + 
-				  gear.spell_penetration_enchant );
+                                  gear.spell_penetration + 
+                                  gear.spell_penetration_enchant );
   }
   if( initial_mp5 == 0 ) 
   {
@@ -436,22 +436,22 @@ void player_t::init_attack()
   if( initial_attack_hit == 0 )
   {
     initial_attack_hit = base_attack_hit + ( gear.hit_rating + 
-					     gear.hit_rating_enchant ) / rating.attack_hit;
+                                             gear.hit_rating_enchant ) / rating.attack_hit;
   }
   if( initial_attack_crit == 0 )
   {
     initial_attack_crit = base_attack_crit + ( gear.crit_rating + 
-					       gear.crit_rating_enchant ) / rating.attack_crit;
+                                               gear.crit_rating_enchant ) / rating.attack_crit;
   }
   if( initial_attack_expertise == 0 )
   {
     initial_attack_expertise = base_attack_expertise + ( gear.expertise_rating + 
-							 gear.expertise_rating_enchant ) / rating.expertise;
+                                                         gear.expertise_rating_enchant ) / rating.expertise;
   }
   if( initial_attack_penetration == 0 )
   {
     initial_attack_penetration = base_attack_penetration + ( gear.armor_penetration_rating + 
-							     gear.armor_penetration_rating_enchant ) / rating.armor_penetration;
+                                                             gear.armor_penetration_rating_enchant ) / rating.armor_penetration;
   }
 
   if( ! is_pet() )
@@ -467,7 +467,7 @@ void player_t::init_attack()
 // player_t::init_weapon ===================================================
 
 void player_t::init_weapon( weapon_t*    w, 
-			    std::string& encoding )
+                            std::string& encoding )
 {
   if( encoding.empty() ) return;
 
@@ -498,73 +498,73 @@ void player_t::init_weapon( weapon_t*    w,
 
       if( 2 != util_t::string_split( s, "=", "S S", &parm, &value ) )
       {
-	invalid = true;
+        invalid = true;
       }
       if( parm == "dmg" || parm == "damage" )
       {
-	w -> damage = atof( value.c_str() );
-	assert( w -> damage != 0 );
+        w -> damage = atof( value.c_str() );
+        assert( w -> damage != 0 );
       }
       else if( parm == "dps" )
       {
-	weapon_dps = atof( value.c_str() );
-	assert( weapon_dps != 0 );
+        weapon_dps = atof( value.c_str() );
+        assert( weapon_dps != 0 );
       }
       else if( parm == "speed" )
       {
-	w -> swing_time = atof( value.c_str() );
-	assert( w -> swing_time != 0 );
+        w -> swing_time = atof( value.c_str() );
+        assert( w -> swing_time != 0 );
       }
       else if( parm == "school" )
       {
-	for( int j=0; j <= SCHOOL_MAX; j++ )
-	{
-	  if( j == SCHOOL_MAX ) invalid = true;
-	  if( value == util_t::school_type_string( j ) )
-	  {
-	    w -> school = j;
-	    break;
-	  }
-	}
+        for( int j=0; j <= SCHOOL_MAX; j++ )
+        {
+          if( j == SCHOOL_MAX ) invalid = true;
+          if( value == util_t::school_type_string( j ) )
+          {
+            w -> school = j;
+            break;
+          }
+        }
       }
       else if( parm == "enchant" )
       {
-	for( int j=0; j <= WEAPON_ENCHANT_MAX; j++ )
-	{
-	  if( j == WEAPON_ENCHANT_MAX ) invalid = true;
-	  if( value == util_t::weapon_enchant_type_string( j ) )
-	  {
-	    w -> enchant = j;
-	    break;
-	  }
-	}
+        for( int j=0; j <= WEAPON_ENCHANT_MAX; j++ )
+        {
+          if( j == WEAPON_ENCHANT_MAX ) invalid = true;
+          if( value == util_t::weapon_enchant_type_string( j ) )
+          {
+            w -> enchant = j;
+            break;
+          }
+        }
       }
       else if( parm == "buff" )
       {
-	for( int j=0; j <= WEAPON_BUFF_MAX; j++ )
-	{
-	  if( j == WEAPON_BUFF_MAX ) invalid = true;
-	  if( value == util_t::weapon_buff_type_string( j ) )
-	  {
-	    w -> buff = j;
-	    break;
-	  }
-	}
+        for( int j=0; j <= WEAPON_BUFF_MAX; j++ )
+        {
+          if( j == WEAPON_BUFF_MAX ) invalid = true;
+          if( value == util_t::weapon_buff_type_string( j ) )
+          {
+            w -> buff = j;
+            break;
+          }
+        }
       }
       else if( parm == "enchant_bonus" )
       {
-	w -> enchant_bonus = atoi( value.c_str() );
+        w -> enchant_bonus = atoi( value.c_str() );
       }
       else if( parm == "buff_bonus" )
       {
-	w -> buff_bonus = atoi( value.c_str() );
+        w -> buff_bonus = atoi( value.c_str() );
       }
       else invalid = true;
 
       if( invalid )
       {
-	printf( "Invalid weapon encoding: %s\n", encoding.c_str() );
-	assert(0);
+        printf( "Invalid weapon encoding: %s\n", encoding.c_str() );
+        assert(0);
       }
     }
   }
@@ -624,7 +624,7 @@ void player_t::init_consumables()
 
 // player_t::init_professions ==============================================
 
-void player_t::init_professions()			 
+void player_t::init_professions()                        
 {
   if( professions_str.empty() ) return;
   
@@ -635,26 +635,26 @@ void player_t::init_professions()
 
   for( int i=0; i<size; i++)
   {
-	std::string& s = splits[ i ];
-	std::string parm, value;
-	if( 2 != util_t::string_split( s, "=", "S S", &parm, &value ) ) invalid = true;
-	
-	int p;
+        std::string& s = splits[ i ];
+        std::string parm, value;
+        if( 2 != util_t::string_split( s, "=", "S S", &parm, &value ) ) invalid = true;
+        
+        int p;
     for( p=0; p < PROF_MAX; p++ )
     {
       const char* name = util_t::profession_type_string( p );
       if( parm == name ) break;
     }
 
-	if( p < PROF_MAX ) profession[ p ] = atoi( value.c_str() );
+        if( p < PROF_MAX ) profession[ p ] = atoi( value.c_str() );
     else invalid = true;
   }
   
   if( invalid )
   {
-	printf( "Invalid profession encoding: %s\n", professions_str.c_str() );
-	assert(0);
-  }	
+        printf( "Invalid profession encoding: %s\n", professions_str.c_str() );
+        assert(0);
+  }     
   
   // Miners gain additional stamina 
   if      ( profession[ PROF_MINING ] >= 450 ) attribute_initial[ ATTR_STAMINA ] += 50.0;
@@ -662,7 +662,7 @@ void player_t::init_professions()
   else if ( profession[ PROF_MINING ] >= 300 ) attribute_initial[ ATTR_STAMINA ] += 10.0;
   else if ( profession[ PROF_MINING ] >= 225 ) attribute_initial[ ATTR_STAMINA ] +=  7.0;
   else if ( profession[ PROF_MINING ] >= 150 ) attribute_initial[ ATTR_STAMINA ] +=  5.0;
-  else if ( profession[ PROF_MINING ] >=  75 ) attribute_initial[ ATTR_STAMINA ] +=  3.0;	
+  else if ( profession[ PROF_MINING ] >=  75 ) attribute_initial[ ATTR_STAMINA ] +=  3.0;       
   
   // Skinners gain additional crit rating
   if      ( profession[ PROF_SKINNING ] >= 450 ) initial_attack_crit += 32.0 / rating.attack_crit;
@@ -670,7 +670,7 @@ void player_t::init_professions()
   else if ( profession[ PROF_SKINNING ] >= 300 ) initial_attack_crit += 12.0 / rating.attack_crit;
   else if ( profession[ PROF_SKINNING ] >= 225 ) initial_attack_crit +=  9.0 / rating.attack_crit;
   else if ( profession[ PROF_SKINNING ] >= 150 ) initial_attack_crit +=  6.0 / rating.attack_crit;
-  else if ( profession[ PROF_SKINNING ] >=  75 ) initial_attack_crit +=  3.0 / rating.attack_crit;	  
+  else if ( profession[ PROF_SKINNING ] >=  75 ) initial_attack_crit +=  3.0 / rating.attack_crit;        
 }
 
 // player_t::init_actions ==================================================
@@ -709,14 +709,14 @@ void player_t::init_actions()
 
       if( cut_pt != action_name.npos )
       {
-	action_options = action_name.substr( cut_pt + 1 );
-	action_name    = action_name.substr( 0, cut_pt );
+        action_options = action_name.substr( cut_pt + 1 );
+        action_name    = action_name.substr( 0, cut_pt );
       }
 
       if( ! action_t::create_action( this, action_name, action_options ) )
       {
-	printf( "util_t::player: Unknown action: %s\n", splits[ i ].c_str() );
-	assert( false );
+        printf( "util_t::player: Unknown action: %s\n", splits[ i ].c_str() );
+        assert( false );
       }
     }
   }
@@ -758,7 +758,6 @@ void player_t::init_stats()
   gains.innervate              = get_gain( "innervate" );
   gains.glyph_of_innervate     = get_gain( "glyph_of_innervate" );
   gains.judgement_of_wisdom    = get_gain( "judgement_of_wisdom" );
-  gains.mana_gem               = get_gain( "mana_gem" );
   gains.mana_potion            = get_gain( "mana_potion" );
   gains.mana_spring            = get_gain( "mana_spring" );
   gains.mana_tide              = get_gain( "mana_tide" );
@@ -873,7 +872,7 @@ double player_t::composite_spell_power( int school )
   if( school == SCHOOL_FROSTFIRE )
   {
     sp = std::max( spell_power[ SCHOOL_FROST ],
-		   spell_power[ SCHOOL_FIRE  ] );
+                   spell_power[ SCHOOL_FIRE  ] );
   }
 
   if( school != SCHOOL_MAX ) sp += spell_power[ SCHOOL_MAX ];
@@ -1117,7 +1116,7 @@ void player_t::reset()
 // player_t::schedule_ready =================================================
 
 void player_t::schedule_ready( double delta_time,
-			       bool   waiting )
+                               bool   waiting )
 {
   executing = 0;
   channeling = 0;
@@ -1137,22 +1136,22 @@ void player_t::schedule_ready( double delta_time,
     {
       if( last_foreground_action -> trigger_gcd == 0 )
       {
-	lag = 0;
+        lag = 0;
       }
       else if( last_foreground_action -> channeled ) 
       {
-	lag = sim -> rng -> range( sim -> channel_lag - sim -> channel_lag_range,
-				   sim -> channel_lag + sim -> channel_lag_range );
+        lag = sim -> rng -> range( sim -> channel_lag - sim -> channel_lag_range,
+                                   sim -> channel_lag + sim -> channel_lag_range );
       }
       else if( gcd_adjust > 0 ) 
       {
-	lag = sim -> rng -> range( sim -> gcd_lag - sim -> gcd_lag_range,
-				   sim -> gcd_lag + sim -> gcd_lag_range );
+        lag = sim -> rng -> range( sim -> gcd_lag - sim -> gcd_lag_range,
+                                   sim -> gcd_lag + sim -> gcd_lag_range );
       }
       else // queued cast
       {
-	lag = sim -> rng -> range( sim -> queue_lag - sim -> queue_lag_range,
-				   sim -> queue_lag + sim -> queue_lag_range );
+        lag = sim -> rng -> range( sim -> queue_lag - sim -> queue_lag_range,
+                                   sim -> queue_lag + sim -> queue_lag_range );
       }
     }
 
@@ -1237,7 +1236,7 @@ void player_t::regen( double periodicity )
     {
       if( mana_regen_while_casting < 1.0 )
       {
-	spirit_regen *= mana_regen_while_casting;
+        spirit_regen *= mana_regen_while_casting;
       }
 
       resource_gain( RESOURCE_MANA, spirit_regen, gains.spirit_intellect_regen );      
@@ -1257,9 +1256,9 @@ void player_t::regen( double periodicity )
 
     if( sim -> P309 && buffs.water_elemental )
     {
-	double water_elemental_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.006 / 5.0;
+        double water_elemental_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.006 / 5.0;
 
-	resource_gain( RESOURCE_MANA, water_elemental_regen, gains.water_elemental );
+        resource_gain( RESOURCE_MANA, water_elemental_regen, gains.water_elemental );
     }
 
     if( sim -> P309 || ( buffs.blessing_of_wisdom >= buffs.mana_spring ) )
@@ -1292,14 +1291,21 @@ void player_t::regen( double periodicity )
 
 // player_t::resource_loss =================================================
 
-void player_t::resource_loss( int resource,
-                              double amount )
+double player_t::resource_loss( int resource,
+                                double amount )
 {
-  if( amount == 0 ) return;
+  if( amount == 0 ) return 0;
+
+  double actual_amount;
 
   if( sim -> infinite_resource[ resource ] == 0 )
   {
     resource_current[ resource ] -= amount;
+    actual_amount = amount;
+  }
+  else 
+  {
+    actual_amount = 0;
   }
 
   resource_lost[ resource ] += amount;
@@ -1310,15 +1316,17 @@ void player_t::resource_loss( int resource,
   }
 
   if( sim -> debug ) report_t::log( sim, "Player %s spends %.0f %s", name(), amount, util_t::resource_type_string( resource ) );
+
+  return actual_amount;
 }
 
 // player_t::resource_gain =================================================
 
-void player_t::resource_gain( int     resource,
-                              double  amount,
-                              gain_t* source )
+double player_t::resource_gain( int     resource,
+                                double  amount,
+                                gain_t* source )
 {
-  if( sleeping ) return;
+  if( sleeping ) return 0;
 
   double actual_amount = std::min( amount, resource_max[ resource ] - resource_current[ resource ] );
   if( actual_amount > 0 )
@@ -1332,14 +1340,16 @@ void player_t::resource_gain( int     resource,
   if( sim -> log ) 
     report_t::log( sim, "%s gains %.0f (%.0f) %s from %s (%.0f)", 
                    name(), actual_amount, amount, 
-		   util_t::resource_type_string( resource ), source ? source -> name() : "unknown", 
-		   resource_current[ resource ] );
+                   util_t::resource_type_string( resource ), source ? source -> name() : "unknown", 
+                   resource_current[ resource ] );
+
+  return actual_amount;
 }
 
 // player_t::resource_available ============================================
 
 bool player_t::resource_available( int    resource,
-				   double cost )
+                                   double cost )
 {
   if( resource == RESOURCE_NONE || cost == 0 )
   {
@@ -1453,15 +1463,15 @@ void player_t::action_tick( action_t* action )
   {
     unique_gear_t::attack_tick_event( (attack_t*) action );
         enchant_t::attack_tick_event( (attack_t*) action );
-	           attack_tick_event( (attack_t*) action );
+                   attack_tick_event( (attack_t*) action );
   }
 }
 
 // player_t::action_damage ==================================================
 
 void player_t::action_damage( action_t* action, 
-			      double    amount,
-			      int       dmg_type )
+                              double    amount,
+                              int       dmg_type )
 {
   if( action -> type == ACTION_SPELL )
   {
@@ -1480,7 +1490,7 @@ void player_t::action_damage( action_t* action,
 // player_t::action_heal ====================================================
 
 void player_t::action_heal( action_t* action, 
-			    double    amount )
+                            double    amount )
 {
   if( action -> type == ACTION_SPELL )
   {
@@ -1547,15 +1557,15 @@ void player_t::spell_tick_event( spell_t* spell )
 // player_t::spell_damage_event =============================================
 
 void player_t::spell_damage_event( spell_t* spell, 
-				   double   amount,
-				   int      dmg_type )
+                                   double   amount,
+                                   int      dmg_type )
 {
 }
 
 // player_t::spell_heal_event ===============================================
 
 void player_t::spell_heal_event( spell_t* spell, 
-				 double   amount )
+                                 double   amount )
 {
 }
 
@@ -1593,15 +1603,15 @@ void player_t::attack_tick_event( attack_t* attack )
 // player_t::attack_damage_event ============================================
 
 void player_t::attack_damage_event( attack_t* attack, 
-				    double    amount,
-				    int       dmg_type )
+                                    double    amount,
+                                    int       dmg_type )
 {
 }
 
 // player_t::attack_heal_event ==============================================
 
 void player_t::attack_heal_event( attack_t* attack, 
-				  double    amount )
+                                  double    amount )
 {
 }
 
@@ -1614,7 +1624,7 @@ void player_t::attack_finish_event( attack_t* attack )
 // player_t::share_cooldown =================================================
 
 void player_t::share_cooldown( const std::string& group,
-			       double             duration )
+                               double             duration )
 {
   double ready = sim -> current_time + duration;
 
@@ -1624,7 +1634,7 @@ void player_t::share_cooldown( const std::string& group,
     {
       if( ready > a -> cooldown_ready )
       {
-	a -> cooldown_ready = ready;
+        a -> cooldown_ready = ready;
       }
     }
   }
@@ -1633,7 +1643,7 @@ void player_t::share_cooldown( const std::string& group,
 // player_t::share_duration =================================================
 
 void player_t::share_duration( const std::string& group,
-			       double             ready )
+                               double             ready )
 {
   for( action_t* a = action_list; a; a = a -> next )
   {
@@ -1641,7 +1651,7 @@ void player_t::share_duration( const std::string& group,
     {
       if( a -> duration_ready < ready )
       {
-	a -> duration_ready = ready;
+        a -> duration_ready = ready;
       }
     }
   }
@@ -1827,14 +1837,14 @@ struct wait_until_ready_t : public action_t
       
       if( a -> cooldown_ready > sim -> current_time )
       {
-	      double delta_time = a -> cooldown_ready - sim -> current_time;
-	      if( delta_time > trigger_gcd ) trigger_gcd = delta_time;
+              double delta_time = a -> cooldown_ready - sim -> current_time;
+              if( delta_time > trigger_gcd ) trigger_gcd = delta_time;
       }
 
       if( a -> duration_ready > sim -> current_time )
       {
-	      double delta_time = a -> duration_ready - ( sim -> current_time + a -> execute_time() );
-	      if( delta_time > trigger_gcd ) trigger_gcd = delta_time;
+              double delta_time = a -> duration_ready - ( sim -> current_time + a -> execute_time() );
+              if( delta_time > trigger_gcd ) trigger_gcd = delta_time;
       }
     }
 
@@ -1878,7 +1888,7 @@ struct restore_mana_t : public action_t
 // player_t::create_action ==================================================
 
 action_t* player_t::create_action( const std::string& name,
-				   const std::string& options_str )
+                                   const std::string& options_str )
 {
   if( name == "restore_mana" ) return new     restore_mana_t( this, options_str );
   if( name == "wait"         ) return new wait_until_ready_t( this, options_str );
@@ -1900,9 +1910,9 @@ pet_t* player_t::find_pet( const std::string& pet_name )
 // player_t::get_talent_trees ===============================================
 
 bool player_t::get_talent_trees( std::vector<int*>& tree1,
-				 std::vector<int*>& tree2,
-				 std::vector<int*>& tree3,
-				 talent_translation_t translation[][3] )
+                                 std::vector<int*>& tree2,
+                                 std::vector<int*>& tree3,
+                                 talent_translation_t translation[][3] )
 {
   for( int i=0; translation[ i ][ 0 ].index > 0; i++ ) tree1.push_back( translation[ i ][ 0 ].address );
   for( int i=0; translation[ i ][ 1 ].index > 0; i++ ) tree2.push_back( translation[ i ][ 1 ].address );
@@ -1914,7 +1924,7 @@ bool player_t::get_talent_trees( std::vector<int*>& tree1,
 // player_t::parse_talents ==================================================
 
 bool player_t::parse_talents( std::vector<int*>& talent_tree,
-			      const std::string& talent_string )
+                              const std::string& talent_string )
 {
   const char* s = talent_string.c_str();
 
@@ -2048,7 +2058,7 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
 // player_t::parse_talents ==================================================
 
 bool player_t::parse_talents( const std::string& talent_string,
-			      int                encoding )
+                              int                encoding )
 {
   if( encoding == ENCODING_BLIZZARD ) return parse_talents        ( talent_string );
   if( encoding == ENCODING_MMO      ) return parse_talents_mmo    ( talent_string );
@@ -2060,21 +2070,21 @@ bool player_t::parse_talents( const std::string& talent_string,
 // player_t::parse_option ===================================================
 
 bool player_t::parse_option( const std::string& name,
-			     const std::string& value )
+                             const std::string& value )
 {
   option_t options[] =
   {
     // Player - General
     { "name",                                 OPT_STRING, &( name_str                                       ) },
-	{ "race",                                 OPT_STRING, &( race_str                                       ) },
+        { "race",                                 OPT_STRING, &( race_str                                       ) },
     { "level",                                OPT_INT,    &( level                                          ) },
     { "gcd",                                  OPT_FLT,    &( base_gcd                                       ) },
     { "sleeping",                             OPT_INT,    &( sleeping                                       ) },
-	// Player - Professions
-	{ "professions",                          OPT_STRING, &( professions_str                                ) },
-    // Player - Haste										          
+        // Player - Professions
+        { "professions",                          OPT_STRING, &( professions_str                                ) },
+    // Player - Haste                                                                                     
     { "haste_rating",                         OPT_INT,    &( initial_haste_rating                           ) },
-    // Player - Attributes									          
+    // Player - Attributes                                                                                
     { "strength",                             OPT_FLT,    &( attribute_initial[ ATTR_STRENGTH  ]            ) },
     { "agility",                              OPT_FLT,    &( attribute_initial[ ATTR_AGILITY   ]            ) },
     { "stamina",                              OPT_FLT,    &( attribute_initial[ ATTR_STAMINA   ]            ) },
@@ -2110,7 +2120,7 @@ bool player_t::parse_option( const std::string& name,
     { "spell_power_per_intellect",            OPT_FLT,    &( spell_power_per_intellect                      ) },
     { "spell_power_per_spirit",               OPT_FLT,    &( spell_power_per_spirit                         ) },
     { "spell_crit_per_intellect",             OPT_FLT,    &( spell_crit_per_intellect                       ) },
-    // Player - Attack Mechanics							       
+    // Player - Attack Mechanics                                                               
     { "attack_power",                         OPT_FLT,    &( initial_attack_power                           ) },
     { "attack_hit",                           OPT_FLT,    &( initial_attack_hit                             ) },
     { "attack_expertise",                     OPT_FLT,    &( initial_attack_expertise                       ) },
@@ -2141,7 +2151,7 @@ bool player_t::parse_option( const std::string& name,
     { "base_energy",                          OPT_FLT,    &( resource_base   [ RESOURCE_ENERGY ]            ) },
     { "base_focus",                           OPT_FLT,    &( resource_base   [ RESOURCE_FOCUS  ]            ) },
     { "base_runic",                           OPT_FLT,    &( resource_base   [ RESOURCE_RUNIC  ]            ) },
-    // Player - Action Priority List								        
+    // Player - Action Priority List                                                                    
     { "pre_actions",                          OPT_STRING, &( action_list_prefix                             ) },
     { "actions",                              OPT_STRING, &( action_list_str                                ) },
     { "actions+",                             OPT_APPEND, &( action_list_str                                ) },
@@ -2149,7 +2159,7 @@ bool player_t::parse_option( const std::string& name,
     { "skip_actions",                         OPT_STRING, &( action_list_skip                               ) },
     // Player - Reporting
     { "quiet",                                OPT_INT,   &( quiet                                          ) },
-    // Player - Gear - Attributes								            
+    // Player - Gear - Attributes                                                                           
     { "gear_strength",                        OPT_INT,  &( gear.attribute        [ ATTR_STRENGTH  ]       ) },
     { "gear_agility",                         OPT_INT,  &( gear.attribute        [ ATTR_AGILITY   ]       ) },
     { "gear_stamina",                         OPT_INT,  &( gear.attribute        [ ATTR_STAMINA   ]       ) },
@@ -2160,7 +2170,7 @@ bool player_t::parse_option( const std::string& name,
     { "enchant_stamina",                      OPT_INT,  &( gear.attribute_enchant[ ATTR_STAMINA   ]       ) },
     { "enchant_intellect",                    OPT_INT,  &( gear.attribute_enchant[ ATTR_INTELLECT ]       ) },
     { "enchant_spirit",                       OPT_INT,  &( gear.attribute_enchant[ ATTR_SPIRIT    ]       ) },
-    // Player - Gear - Spell									            
+    // Player - Gear - Spell                                                                                
     { "gear_spell_power",                     OPT_INT,  &( gear.spell_power[ SCHOOL_MAX    ]              ) },
     { "gear_spell_power_arcane",              OPT_INT,  &( gear.spell_power[ SCHOOL_ARCANE ]              ) },
     { "gear_spell_power_fire",                OPT_INT,  &( gear.spell_power[ SCHOOL_FIRE   ]              ) },
@@ -2179,21 +2189,21 @@ bool player_t::parse_option( const std::string& name,
     { "enchant_spell_power_shadow",           OPT_INT,  &( gear.spell_power_enchant[ SCHOOL_SHADOW ]      ) },
     { "enchant_spell_penetration",            OPT_INT,  &( gear.spell_penetration_enchant                 ) },
     { "enchant_mp5",                          OPT_INT,  &( gear.mp5_enchant                               ) },
-    // Player - Gear - Attack									            
+    // Player - Gear - Attack                                                                               
     { "gear_attack_power",                    OPT_INT,  &( gear.attack_power                              ) },
     { "gear_expertise_rating",                OPT_INT,  &( gear.expertise_rating                          ) },
     { "gear_armor_penetration_rating",        OPT_INT,  &( gear.armor_penetration_rating                  ) },
     { "enchant_attack_power",                 OPT_INT,  &( gear.attack_power_enchant                      ) },
     { "enchant_expertise_rating",             OPT_INT,  &( gear.expertise_rating_enchant                  ) },
     { "enchant_armor_penetration",            OPT_INT,  &( gear.armor_penetration_rating_enchant          ) },
-    // Player - Gear - Common									            
+    // Player - Gear - Common                                                                               
     { "gear_haste_rating",                    OPT_INT,  &( gear.haste_rating                              ) },
     { "gear_hit_rating",                      OPT_INT,  &( gear.hit_rating                                ) },
     { "gear_crit_rating",                     OPT_INT,  &( gear.crit_rating                               ) },
     { "enchant_haste_rating",                 OPT_INT,  &( gear.haste_rating_enchant                      ) },
     { "enchant_hit_rating",                   OPT_INT,  &( gear.hit_rating_enchant                        ) },
     { "enchant_crit_rating",                  OPT_INT,  &( gear.crit_rating_enchant                       ) },
-    // Player - Gear - Resource									            
+    // Player - Gear - Resource                                                                             
     { "gear_health",                          OPT_INT,  &( gear.resource        [ RESOURCE_HEALTH ]       ) },
     { "gear_mana",                            OPT_INT,  &( gear.resource        [ RESOURCE_MANA   ]       ) },
     { "gear_rage",                            OPT_INT,  &( gear.resource        [ RESOURCE_RAGE   ]       ) },
@@ -2206,7 +2216,7 @@ bool player_t::parse_option( const std::string& name,
     { "enchant_energy",                       OPT_INT,  &( gear.resource_enchant[ RESOURCE_ENERGY ]       ) },
     { "enchant_focus",                        OPT_INT,  &( gear.resource_enchant[ RESOURCE_FOCUS  ]       ) },
     { "enchant_runic",                        OPT_INT,  &( gear.resource_enchant[ RESOURCE_RUNIC  ]       ) },
-    // Player - Gear - Budgeting								            
+    // Player - Gear - Budgeting                                                                            
     { "spell_power_budget",                   OPT_INT,  &( gear.spell_power_budget                        ) },
     { "attack_power_budget",                  OPT_INT,  &( gear.attack_power_budget                       ) },
     { "budget_slots",                         OPT_INT,  &( gear.budget_slots                              ) },
@@ -2221,7 +2231,7 @@ bool player_t::parse_option( const std::string& name,
     { "tier7_4pc",                            OPT_INT,  &( gear.tier7_4pc                                 ) },
     { "tier8_2pc",                            OPT_INT,  &( gear.tier8_2pc                                 ) },
     { "tier8_4pc",                            OPT_INT,  &( gear.tier8_4pc                                 ) },
-    // Player - Consumables									            
+    // Player - Consumables                                                                                 
     { "flask",                                OPT_STRING, &( flask_str                                    ) },
     { "elixirs",                              OPT_STRING, &( elixirs_str                                  ) },
     { "food",                                 OPT_STRING, &( food_str                                     ) },
