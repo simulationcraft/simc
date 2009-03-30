@@ -1135,7 +1135,11 @@ void player_t::schedule_ready( double delta_time,
 
     if( last_foreground_action )
     {
-      if( last_foreground_action -> channeled ) 
+      if( last_foreground_action -> trigger_gcd == 0 )
+      {
+	lag = 0;
+      }
+      else if( last_foreground_action -> channeled ) 
       {
 	lag = sim -> rng -> range( sim -> channel_lag - sim -> channel_lag_range,
 				   sim -> channel_lag + sim -> channel_lag_range );
@@ -1161,6 +1165,8 @@ void player_t::schedule_ready( double delta_time,
   {
     last_foreground_action -> stats -> total_execute_time += delta_time;
   }
+
+  if( delta_time == 0 ) delta_time = 0.000001;
   
   new ( sim ) player_ready_event_t( sim, this, delta_time );
 }

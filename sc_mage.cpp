@@ -9,6 +9,8 @@
 // Mage
 // ==========================================================================
 
+enum { ROTATION_NONE=0, ROTATION_DPS, ROTATION_DPM, ROTATION_MAX };
+
 struct mage_t : public player_t
 {
   // Active
@@ -74,6 +76,9 @@ struct mage_t : public player_t
 
   // Options
   std::string focus_magic_target_str;
+
+  // Rotation (DPS vs DPM)
+  int current_rotation;
 
   struct talents_t
   {
@@ -193,6 +198,8 @@ struct mage_t : public player_t
     uptimes_icy_veins            = get_uptime( "icy_veins" );
     uptimes_water_elemental      = get_uptime( "water_elemental" );
     uptimes_focus_magic_feedback = get_uptime( "focus_magic_feedback" );
+
+    current_rotation = ROTATION_NONE;
   }
 
   // Character Definition
@@ -266,14 +273,21 @@ static void stack_winters_chill( spell_t* s,
 
 struct mage_spell_t : public spell_t
 {
+  int dps_rotation;
+  int dpm_rotation;
+
   mage_spell_t( const char* n, player_t* player, int s, int t ) : 
-    spell_t( n, player, RESOURCE_MANA, s, t ) 
+    spell_t( n, player, RESOURCE_MANA, s, t ),
+    dps_rotation(0),
+    dpm_rotation(0)
   {
     mage_t* p = player -> cast_mage();
     base_cost *= 1.0 - p -> talents.precision * 0.01;
     base_hit  += p -> talents.precision * 0.01;
   }
 
+  virtual void   parse_options( option_t*, const std::string& );
+  virtual bool   ready();
   virtual double cost();
   virtual double haste();
   virtual void   execute();
@@ -1153,6 +1167,38 @@ static void trigger_ashtongue_talisman( spell_t* s )
 // =========================================================================
 // Mage Spell
 // =========================================================================
+
+// mage_spell_t::parse_options =============================================
+
+void mage_spell_t::parse_options( option_t*          options,
+				  const std::string& options_str )
+{
+  option_t base_options[] =
+  {
+    { "dps", OPT_INT, &dps_rotation },
+    { "dpm", OPT_INT, &dpm_rotation },
+    { NULL }
+  };
+  std::vector<option_t> merged_options;
+  spell_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
+}
+
+// mage_spell_t::ready =====================================================
+
+bool mage_spell_t::ready()
+{
+  mage_t* p = player -> cast_mage();
+
+  if( dps_rotation )
+    if( p -> current_rotation != ROTATION_DPS )
+      return false;
+
+  if( dpm_rotation )
+    if( p -> current_rotation != ROTATION_DPM )
+      return false;
+
+  return spell_t::ready();
+}
 
 // mage_spell_t::cost ======================================================
 
@@ -2942,6 +2988,52 @@ struct mana_gem_t : public action_t
   }
 };
 
+// ==========================================================================
+// Choose Rotation
+// ==========================================================================
+
+struct choose_rotation_t : public action_t
+{
+  choose_rotation_t( player_t* p, const std::string& options_str ) : 
+    action_t( ACTION_USE, "choose_rotation", p )
+  {
+    cooldown = 10;
+
+    option_t options[] =
+    {
+      { "cooldown", OPT_FLT, &cooldown },
+      { NULL }
+    };
+    parse_options( options, options_str );
+
+    trigger_gcd = 0;
+    harmful = false;
+  }
+
+  int choose_rotation()
+  {
+    return ROTATION_NONE;
+  }
+  
+  virtual void execute()
+  {
+    mage_t* p = player -> cast_mage();
+
+    if( sim -> log ) report_t::log( sim, "%s Considers Spell Rotation", p -> name() );
+
+  }
+
+  virtual bool ready()
+  {
+    mage_t* p = player -> cast_mage();
+
+    if( cooldown_ready > sim -> current_time ) 
+      return false;
+
+    return( choose_rotation() != p -> current_rotation );
+  }
+};
+
 } // ANONYMOUS NAMESPACE ===================================================
 
 // ==========================================================================
@@ -2958,6 +3050,7 @@ action_t* mage_t::create_action( const std::string& name,
   if( name == "arcane_brilliance" ) return new     arcane_brilliance_t( this, options_str );
   if( name == "arcane_missiles"   ) return new       arcane_missiles_t( this, options_str );
   if( name == "arcane_power"      ) return new          arcane_power_t( this, options_str );
+  if( name == "choose_rotation"   ) return new       choose_rotation_t( this, options_str );
   if( name == "cold_snap"         ) return new             cold_snap_t( this, options_str );
   if( name == "combustion"        ) return new            combustion_t( this, options_str );
   if( name == "evocation"         ) return new             evocation_t( this, options_str );
@@ -3038,6 +3131,8 @@ void mage_t::reset()
 
   _buffs.reset();
   _expirations.reset();
+
+  current_rotation = ROTATION_NONE;
 }
 
 // mage_t::regen  ==========================================================
