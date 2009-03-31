@@ -3217,8 +3217,11 @@ void druid_t::init_base()
   mana_per_intellect      = 15;
   energy_regen_per_second = 10;
 
-  mana_regen_while_casting = util_t::talent_rank(talents.intensity,  3, 0.10);
-  mp5_per_intellect        = util_t::talent_rank(talents.dreamstate, 3, 0.04, 0.07, 0.10);
+  mana_regen_while_casting = ( sim -> P309 ? 
+			       util_t::talent_rank( talents.intensity,  3, 0.10 ) :
+			       util_t::talent_rank( talents.intensity,  3, 0.17, 0.33, 0.50 ) );
+
+  mp5_per_intellect = util_t::talent_rank( talents.dreamstate, 3, 0.04, 0.07, 0.10 );
 
   base_gcd = 1.5;
 }
