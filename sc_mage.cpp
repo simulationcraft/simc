@@ -2673,7 +2673,7 @@ struct frostfire_bolt_t : public mage_spell_t
     {
       base_tick_time = 3.0;
       num_ticks      = 3;
-      tick_power_mod = 0.05 / 3.0;
+      tick_power_mod = 0;
     }
       
     base_cost         *= 1.0 - p -> talents.frost_channeling * (0.1/3);

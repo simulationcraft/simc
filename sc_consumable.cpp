@@ -132,7 +132,7 @@ struct food_t : public action_t
       player -> attribute[ ATTR_STAMINA ] += 40;
       break;
     case FOOD_SNAPPER_EXTREME:
-      player -> spell_hit += 40;
+      player -> spell_hit += 40 / player -> rating.spell_hit;
       player -> attribute[ ATTR_STAMINA ] += 40;
       break;
     case FOOD_SMOKED_SALMON:
