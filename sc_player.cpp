@@ -592,14 +592,18 @@ void player_t::init_unique_gear()
 
 void player_t::init_resources( bool force ) 
 {
+  // The first 20pts of intellect/stamina only provide 1pt of mana/health.
+  // Code simplified on the assumption that the minimum player level is 60.
+  double adjust = is_pet() ? 0 : 20;
+
   for( int i=0; i < RESOURCE_MAX; i++ )
   {
     if( force || resource_initial[ i ] == 0 )
     {
       resource_initial[ i ] = resource_base[ i ] + gear.resource[ i ] + gear.resource_enchant[ i ];
 
-      if( i == RESOURCE_MANA   ) resource_initial[ i ] += intellect() * mana_per_intellect;
-      if( i == RESOURCE_HEALTH ) resource_initial[ i ] +=   stamina() * health_per_stamina;
+      if( i == RESOURCE_MANA   ) resource_initial[ i ] += ( intellect() - adjust ) * mana_per_intellect + adjust;
+      if( i == RESOURCE_HEALTH ) resource_initial[ i ] += (   stamina() - adjust ) * health_per_stamina + adjust;
     }
     resource_current[ i ] = resource_max[ i ] = resource_initial[ i ];
   }
