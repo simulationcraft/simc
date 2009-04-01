@@ -527,8 +527,6 @@ void action_t::execute()
 {
   if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
 
-  if( ticking ) cancel();
-
   if( observer ) *observer = 0;
 
   player_buff();
@@ -552,6 +550,11 @@ void action_t::execute()
 
     if( num_ticks > 0 ) 
     {
+      if( ticking ) 
+      {
+	last_tick();
+	cancel();
+      }
       current_tick = 0;
       added_ticks = 0;
       schedule_tick();
@@ -828,8 +831,6 @@ void action_t::reset()
 
 void action_t::cancel()
 {
-  if( ticking && school == SCHOOL_BLEED ) sim -> target -> debuffs.bleeding--;
-
   if( player -> channeling == tick_event ) player -> channeling = 0;
 
   event_t::cancel( execute_event );
