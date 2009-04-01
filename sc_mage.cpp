@@ -63,9 +63,8 @@ struct mage_t : public player_t
 
   // Procs
   proc_t* procs_clearcasting;
-  proc_t* procs_hot_streak_pyroblast;
-  proc_t* procs_missile_barrage;
   proc_t* procs_deferred_ignite;
+  proc_t* procs_hot_streak_pyroblast;
 
   // Up-Times
   uptime_t* uptimes_arcane_blast[ 4 ];
@@ -75,6 +74,7 @@ struct mage_t : public player_t
   uptime_t* uptimes_fingers_of_frost;
   uptime_t* uptimes_focus_magic_feedback;
   uptime_t* uptimes_icy_veins;
+  uptime_t* uptimes_missile_barrage;
   uptime_t* uptimes_water_elemental;
 
   // Options
@@ -201,9 +201,8 @@ struct mage_t : public player_t
 
     // Procs
     procs_clearcasting         = get_proc( "clearcasting" );
-    procs_hot_streak_pyroblast = get_proc( "hot_streak_pyroblast" );
-    procs_missile_barrage      = get_proc( "missile_barrage" );
     procs_deferred_ignite      = get_proc( "deferred_ignite" );
+    procs_hot_streak_pyroblast = get_proc( "hot_streak_pyroblast" );
 
     // Up-Times
     uptimes_arcane_blast[ 0 ]    = get_uptime( "arcane_blast_0" );
@@ -214,9 +213,10 @@ struct mage_t : public player_t
     uptimes_dps_rotation         = get_uptime( "dps_rotation" );
     uptimes_dpm_rotation         = get_uptime( "dpm_rotation" );
     uptimes_fingers_of_frost     = get_uptime( "fingers_of_frost" );
-    uptimes_icy_veins            = get_uptime( "icy_veins" );
-    uptimes_water_elemental      = get_uptime( "water_elemental" );
     uptimes_focus_magic_feedback = get_uptime( "focus_magic_feedback" );
+    uptimes_icy_veins            = get_uptime( "icy_veins" );
+    uptimes_missile_barrage      = get_uptime( "missile_barrage" );
+    uptimes_water_elemental      = get_uptime( "water_elemental" );
   }
 
   // Character Definition
@@ -1691,6 +1691,19 @@ struct arcane_missiles_t : public mage_spell_t
     if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
     consume_resource();
     player_buff();
+    p -> uptimes_missile_barrage -> update( p -> _buffs.missile_barrage != 0 );
+    if( p -> _buffs.missile_barrage )
+    {
+      base_tick_time = 0.5;
+      if( ! trigger_tier8_4pc( this ) )
+      {
+        event_t::early( p -> _expirations.missile_barrage );
+      }
+    }
+    else
+    {
+      base_tick_time = 1.0;
+    }
     schedule_tick();
     update_ready();
     direct_dmg = 0;
@@ -1747,11 +1760,6 @@ struct arcane_missiles_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
     mage_spell_t::last_tick();
     clear_arcane_potency( this );
-
-    if( p -> _expirations.missile_barrage )
-      if( ! trigger_tier8_4pc( this ) )
-        event_t::early( p -> _expirations.missile_barrage );
-
     if( abar_combo && abar_spell -> ready() ) 
     {
       p -> action_start( abar_spell );
@@ -1759,14 +1767,6 @@ struct arcane_missiles_t : public mage_spell_t
       p -> last_foreground_action = abar_spell;
     }
     event_t::early( p -> _expirations.arcane_blast );
-  }
-
-  virtual double tick_time()
-  {
-    mage_t* p = player -> cast_mage();
-    double t = mage_spell_t::tick_time();
-    if( p -> _buffs.missile_barrage ) t /= 2;
-    return t;
   }
 
   virtual bool ready()
