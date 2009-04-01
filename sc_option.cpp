@@ -156,6 +156,149 @@ bool option_t::parse( sim_t* sim,
   return true;
 }
 
+// parse_talents ============================================================
+
+static void parse_talents( sim_t*       sim,
+			   std::string& value )
+{
+  sim -> active_player -> talents_str = value;
+
+  std::string talent_string, address_string;
+  int encoding = ENCODING_NONE;
+
+  std::string::size_type cut_pt; 
+  if( ( cut_pt = value.find_first_of( "=" ) ) != value.npos ) 
+  {
+    talent_string = value.substr( cut_pt + 1 );
+    address_string = value.substr( 0, cut_pt );
+
+    if( address_string.find( "worldofwarcraft" ) != value.npos )
+    {
+      encoding = ENCODING_BLIZZARD;
+    }
+    else if( address_string.find( "mmo-champion" ) != value.npos )
+    {
+      encoding = ENCODING_MMO;
+
+      std::vector<std::string> parts;
+      int part_count = util_t::string_split(parts, talent_string, "&");
+
+      talent_string = parts[ 0 ];
+      for( int i = 1; i < part_count; i++ )
+      {
+	std::string part_name, part_value;
+	if( 2 == util_t::string_split( parts[i], "=", "S S", &part_name, &part_value ) )
+        {
+	  if( part_name == "glyph" )
+          {
+	    //FIXME: ADD GLYPH SUPPORT?
+	  }
+	  else if( part_name == "version" )
+          {
+	    //FIXME: WHAT TO DO WITH VERSION NUMBER?
+	  }
+	}
+      }
+    }
+    else if( address_string.find( "wowhead" ) != value.npos )
+    {
+      encoding = ENCODING_WOWHEAD;
+    }
+  }
+
+  if( encoding == ENCODING_NONE || ! sim -> active_player -> parse_talents( talent_string, encoding ) )
+  {
+    printf( "simcraft: Unable to decode talent string %s for %s\n", value.c_str(), sim -> active_player -> name() );
+    exit( 0 );
+  }
+}
+
+// parse_active =============================================================
+
+static void parse_active( sim_t*       sim,
+			  std::string& value )
+{
+  if( value == "owner" )
+  {
+    sim -> active_player = sim -> active_player -> cast_pet() -> owner;
+  }
+  else if( value == "none" || value == "0" )
+  {
+    sim -> active_player = 0;
+  }
+  else
+  {
+    if( sim -> active_player )
+    {
+      sim -> active_player = sim -> active_player -> find_pet( value );
+    }
+    if( ! sim -> active_player )
+    {
+      sim -> active_player = sim -> find_player( value );
+    }
+    if( ! sim -> active_player )
+    {
+      printf( "simcraft: Unable to find player %s\n", value.c_str() );
+      exit(0);
+    }
+  }
+}
+
+// parse_optimal_raid =======================================================
+
+static void parse_optimal_raid( sim_t*       sim,
+				std::string& value )
+{
+  sim -> optimal_raid = atoi( value.c_str() );
+
+  sim -> overrides.affliction_effects     = sim -> optimal_raid ? 12 : 0;
+  sim -> overrides.arcane_brilliance      = sim -> optimal_raid;
+  sim -> overrides.battle_shout           = sim -> optimal_raid;
+  sim -> overrides.bleeding               = sim -> optimal_raid; 
+  sim -> overrides.blessing_of_kings      = sim -> optimal_raid;
+  sim -> overrides.blessing_of_might      = sim -> optimal_raid;
+  sim -> overrides.blessing_of_wisdom     = sim -> optimal_raid;
+  sim -> overrides.blood_frenzy           = sim -> optimal_raid; 
+  sim -> overrides.bloodlust              = sim -> optimal_raid; 
+  sim -> overrides.crypt_fever            = sim -> optimal_raid; 
+  sim -> overrides.curse_of_elements      = sim -> optimal_raid; 
+  sim -> overrides.divine_spirit          = sim -> optimal_raid;
+  sim -> overrides.earth_and_moon         = sim -> optimal_raid; 
+  sim -> overrides.faerie_fire            = sim -> optimal_raid; 
+  sim -> overrides.ferocious_inspiration  = sim -> optimal_raid; 
+  sim -> overrides.fortitude              = sim -> optimal_raid;
+  sim -> overrides.hunters_mark           = sim -> optimal_raid; 
+  sim -> overrides.improved_divine_spirit = sim -> optimal_raid;
+  sim -> overrides.improved_moonkin_aura  = sim -> optimal_raid;
+  sim -> overrides.improved_scorch        = sim -> optimal_raid; 
+  sim -> overrides.improved_shadow_bolt   = sim -> optimal_raid; 
+  sim -> overrides.judgement_of_wisdom    = sim -> optimal_raid; 
+  sim -> overrides.leader_of_the_pack     = sim -> optimal_raid;
+  sim -> overrides.mana_spring            = sim -> optimal_raid;
+  sim -> overrides.mangle                 = sim -> optimal_raid; 
+  sim -> overrides.mark_of_the_wild       = sim -> optimal_raid;
+  sim -> overrides.master_poisoner        = sim -> optimal_raid; 
+  sim -> overrides.misery                 = sim -> optimal_raid; 
+  sim -> overrides.moonkin_aura           = sim -> optimal_raid;
+  sim -> overrides.poisoned               = sim -> optimal_raid; 
+  sim -> overrides.razorice               = sim -> optimal_raid; 
+  sim -> overrides.replenishment          = sim -> optimal_raid;
+  sim -> overrides.sanctified_retribution = sim -> optimal_raid;
+  sim -> overrides.savage_combat          = sim -> optimal_raid; 
+  sim -> overrides.snare                  = sim -> optimal_raid; 
+  sim -> overrides.strength_of_earth      = sim -> optimal_raid;
+  sim -> overrides.sunder_armor           = sim -> optimal_raid; 
+  sim -> overrides.swift_retribution      = sim -> optimal_raid;
+  sim -> overrides.thunder_clap           = sim -> optimal_raid; 
+  sim -> overrides.totem_of_wrath         = sim -> optimal_raid;
+  sim -> overrides.totem_of_wrath         = sim -> optimal_raid; 
+  sim -> overrides.trueshot_aura          = sim -> optimal_raid;
+  sim -> overrides.unleashed_rage         = sim -> optimal_raid;
+  sim -> overrides.windfury_totem         = sim -> optimal_raid;
+  sim -> overrides.winters_chill          = sim -> optimal_raid; 
+  sim -> overrides.wrath_of_air           = sim -> optimal_raid;
+}
+
 // option_t::parse ==========================================================
 
 bool option_t::parse( sim_t*       sim,
@@ -263,79 +406,15 @@ bool option_t::parse( sim_t*       sim,
   }
   else if( name == "active"  ) 
   { 
-    if( value == "owner" )
-    {
-      sim -> active_player = sim -> active_player -> cast_pet() -> owner;
-    }
-    else
-    {
-      if( sim -> active_player )
-      {
-	sim -> active_player = sim -> active_player -> find_pet( value );
-      }
-      if( ! sim -> active_player )
-      {
-	sim -> active_player = sim -> find_player( value );
-      }
-      if( ! sim -> active_player )
-      {
-	printf( "simcraft: Unable to find player %s\n", value.c_str() );
-	exit(0);
-      }
-    }
+    parse_active( sim, value );
   }
   else if( name == "talents" )
   {
-    sim -> active_player -> talents_str = value;
-
-    std::string talent_string, address_string;
-    int encoding = ENCODING_NONE;
-
-    std::string::size_type cut_pt; 
-    if( ( cut_pt = value.find_first_of( "=" ) ) != value.npos ) 
-    {
-       talent_string = value.substr( cut_pt + 1 );
-      address_string = value.substr( 0, cut_pt );
-
-      if( address_string.find( "worldofwarcraft" ) != value.npos )
-      {
-        encoding = ENCODING_BLIZZARD;
-      }
-      else if( address_string.find( "mmo-champion" ) != value.npos )
-      {
-        encoding = ENCODING_MMO;
-
-	std::vector<std::string> parts;
-	int part_count = util_t::string_split(parts, talent_string, "&");
-
-        talent_string = parts[ 0 ];
-        for( int i = 1; i < part_count; i++ )
-        {
-	  std::string part_name, part_value;
-          if( 2 == util_t::string_split( parts[i], "=", "S S", &part_name, &part_value ) )
-          {
-            if( part_name == "glyph" )
-            {
-              //FIXME: ADD GLYPH SUPPORT?
-            }
-            else if( part_name == "version" )
-            {
-              //FIXME: WHAT TO DO WITH VERSION NUMBER?
-            }
-          }
-        }
-      }
-      else if( address_string.find( "wowhead" ) != value.npos )
-      {
-        encoding = ENCODING_WOWHEAD;
-      }
-    }
-
-    if( encoding == ENCODING_NONE || ! sim -> active_player -> parse_talents( talent_string, encoding ) )
-    {
-      printf( "simcraft: Unable to decode talent string %s for %s\n", value.c_str(), sim -> active_player -> name() );
-      exit( 0 );
-    }
+    parse_talents( sim, value );
+  }
+  else if( name == "optimal_raid" )
+  {
+    parse_optimal_raid( sim, value );
   }
   else
   {

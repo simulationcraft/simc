@@ -2426,8 +2426,8 @@ struct scorch_t : public mage_spell_t
     {
       target_t* t = sim -> target;
 
-      if( t -> debuffs.improved_scorch < 5 )
-        return true;
+      if( t -> debuffs.improved_scorch >= 5 )
+        return false;
 
       event_t* e = t -> expirations.improved_scorch;
 

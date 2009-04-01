@@ -185,33 +185,31 @@ void target_t::reset()
 
 void target_t::combat_begin()
 {
-  if( sim -> overrides.affliction_effects ) debuffs.affliction_effects = sim -> overrides.affliction_effects;
-  else if( sim -> optimal_raid ) debuffs.affliction_effects = 12;
+  if( sim -> overrides.affliction_effects    ) debuffs.affliction_effects = sim -> overrides.affliction_effects;
+  if( sim -> overrides.bleeding              ) debuffs.bleeding = 1;
+  if( sim -> overrides.blood_frenzy          ) debuffs.blood_frenzy = 1;
+  if( sim -> overrides.crypt_fever           ) debuffs.crypt_fever = 1;
+  if( sim -> overrides.curse_of_elements     ) debuffs.curse_of_elements = 13;
+  if( sim -> overrides.earth_and_moon        ) debuffs.earth_and_moon = 13;
+  if( sim -> overrides.faerie_fire           ) debuffs.faerie_fire = sim -> P309 ? 1260 : 0.05;
+  if( sim -> overrides.ferocious_inspiration ) debuffs.ferocious_inspiration = 1;
+  if( sim -> overrides.hunters_mark          ) debuffs.hunters_mark = 450;
+  if( sim -> overrides.improved_scorch       ) debuffs.improved_scorch = 5;
+  if( sim -> overrides.improved_shadow_bolt  ) debuffs.improved_shadow_bolt = 5;
+  if( sim -> overrides.judgement_of_wisdom   ) debuffs.judgement_of_wisdom = 1;
+  if( sim -> overrides.mangle                ) debuffs.mangle = 1;
+  if( sim -> overrides.master_poisoner       ) debuffs.master_poisoner = 1;
+  if( sim -> overrides.misery                ) { debuffs.misery = 3; debuffs.misery_stack = 1; }
+  if( sim -> overrides.poisoned              ) debuffs.poisoned = 1;
+  if( sim -> overrides.razorice              ) debuffs.razorice = 1;
+  if( sim -> overrides.savage_combat         ) debuffs.savage_combat = 1;
+  if( sim -> overrides.snare                 ) debuffs.snare = 1;
+  if( sim -> overrides.sunder_armor          ) debuffs.sunder_armor = sim -> P309 ? 3925 : 0.20;
+  if( sim -> overrides.thunder_clap          ) debuffs.thunder_clap = 1;
+  if( sim -> overrides.totem_of_wrath        ) debuffs.totem_of_wrath = 1;
+  if( sim -> overrides.winters_chill         ) debuffs.winters_chill = 5;
 
-  if( sim -> optimal_raid || sim -> overrides.bleeding              ) debuffs.bleeding = 1;
-  if( sim -> optimal_raid || sim -> overrides.blood_frenzy          ) debuffs.blood_frenzy = 1;
-  if( sim -> optimal_raid || sim -> overrides.crypt_fever           ) debuffs.crypt_fever = 1;
-  if( sim -> optimal_raid || sim -> overrides.curse_of_elements     ) debuffs.curse_of_elements = 13;
-  if( sim -> optimal_raid || sim -> overrides.earth_and_moon        ) debuffs.earth_and_moon = 13;
-  if( sim -> optimal_raid || sim -> overrides.faerie_fire           ) debuffs.faerie_fire = sim -> P309 ? 1260 : 0.05;
-  if( sim -> optimal_raid || sim -> overrides.ferocious_inspiration ) debuffs.ferocious_inspiration = 1;
-  if( sim -> optimal_raid || sim -> overrides.hunters_mark          ) debuffs.hunters_mark = 450;
-  if( sim -> optimal_raid || sim -> overrides.improved_scorch       ) debuffs.improved_scorch = 5;
-  if( sim -> optimal_raid || sim -> overrides.improved_shadow_bolt  ) debuffs.improved_shadow_bolt = 5;
-  if( sim -> optimal_raid || sim -> overrides.judgement_of_wisdom   ) debuffs.judgement_of_wisdom = 1;
-  if( sim -> optimal_raid || sim -> overrides.mangle                ) debuffs.mangle = 1;
-  if( sim -> optimal_raid || sim -> overrides.master_poisoner       ) debuffs.master_poisoner = 1;
-  if( sim -> optimal_raid || sim -> overrides.misery                ) { debuffs.misery = 3; debuffs.misery_stack = 1; }
-  if( sim -> optimal_raid || sim -> overrides.poisoned              ) debuffs.poisoned = 1;
-  if( sim -> optimal_raid || sim -> overrides.razorice              ) debuffs.razorice = 1;
-  if( sim -> optimal_raid || sim -> overrides.savage_combat         ) debuffs.savage_combat = 1;
-  if( sim -> optimal_raid || sim -> overrides.snare                 ) debuffs.snare = 1;
-  if( sim -> optimal_raid || sim -> overrides.sunder_armor          ) debuffs.sunder_armor = sim -> P309 ? 3925 : 0.20;
-  if( sim -> optimal_raid || sim -> overrides.thunder_clap          ) debuffs.thunder_clap = 1;
-  if( sim -> optimal_raid || sim -> overrides.totem_of_wrath        ) debuffs.totem_of_wrath = 1;
-  if( sim -> optimal_raid || sim -> overrides.winters_chill         ) debuffs.winters_chill = 5;
-
-  if( sim -> optimal_raid || sim -> overrides.bloodlust )
+  if( sim -> overrides.bloodlust )
   {
     // Setup a periodic check for Bloodlust
 

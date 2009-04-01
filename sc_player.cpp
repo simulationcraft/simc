@@ -990,28 +990,28 @@ void player_t::combat_begin()
     get_gain( "initial_mana" ) -> add( resource_max[ RESOURCE_MANA ] );
   }
 
-  if( sim -> optimal_raid || sim -> overrides.battle_shout           ) buffs.battle_shout = 548;
-  if( sim -> optimal_raid || sim -> overrides.blessing_of_kings      ) buffs.blessing_of_kings = 1;
-  if( sim -> optimal_raid || sim -> overrides.blessing_of_might      ) buffs.blessing_of_might = 688;
-  if( sim -> optimal_raid || sim -> overrides.blessing_of_wisdom     ) buffs.blessing_of_wisdom = 91;
-  if( sim -> optimal_raid || sim -> overrides.sanctified_retribution ) buffs.sanctified_retribution = 1;
-  if( sim -> optimal_raid || sim -> overrides.swift_retribution      ) buffs.swift_retribution = 1;
-  if( sim -> optimal_raid || sim -> overrides.arcane_brilliance      ) buffs.arcane_brilliance = 60;
-  if( sim -> optimal_raid || sim -> overrides.divine_spirit          ) buffs.divine_spirit = 80;
-  if( sim -> optimal_raid || sim -> overrides.fortitude              ) buffs.fortitude = 215;
-  if( sim -> optimal_raid || sim -> overrides.improved_divine_spirit ) buffs.improved_divine_spirit = 80;
-  if( sim -> optimal_raid || sim -> overrides.improved_moonkin_aura  ) buffs.improved_moonkin_aura = 1;
-  if( sim -> optimal_raid || sim -> overrides.leader_of_the_pack     ) buffs.leader_of_the_pack = 1;
-  if( sim -> optimal_raid || sim -> overrides.mana_spring            ) buffs.mana_spring = 42.5;
-  if( sim -> optimal_raid || sim -> overrides.mark_of_the_wild       ) buffs.mark_of_the_wild = 52;
-  if( sim -> optimal_raid || sim -> overrides.moonkin_aura           ) buffs.moonkin_aura = 1;
-  if( sim -> optimal_raid || sim -> overrides.replenishment          ) buffs.replenishment = 1;
-  if( sim -> optimal_raid || sim -> overrides.strength_of_earth      ) buffs.strength_of_earth = 99;
-  if( sim -> optimal_raid || sim -> overrides.totem_of_wrath         ) buffs.totem_of_wrath = 280;
-  if( sim -> optimal_raid || sim -> overrides.trueshot_aura          ) buffs.trueshot_aura = 1;
-  if( sim -> optimal_raid || sim -> overrides.unleashed_rage         ) buffs.unleashed_rage = 1;
-  if( sim -> optimal_raid || sim -> overrides.windfury_totem         ) buffs.windfury_totem = 0.20;
-  if( sim -> optimal_raid || sim -> overrides.wrath_of_air           ) buffs.wrath_of_air = 1;
+  if( sim -> overrides.battle_shout           ) buffs.battle_shout = 548;
+  if( sim -> overrides.blessing_of_kings      ) buffs.blessing_of_kings = 1;
+  if( sim -> overrides.blessing_of_might      ) buffs.blessing_of_might = 688;
+  if( sim -> overrides.blessing_of_wisdom     ) buffs.blessing_of_wisdom = 91;
+  if( sim -> overrides.sanctified_retribution ) buffs.sanctified_retribution = 1;
+  if( sim -> overrides.swift_retribution      ) buffs.swift_retribution = 1;
+  if( sim -> overrides.arcane_brilliance      ) buffs.arcane_brilliance = 60;
+  if( sim -> overrides.divine_spirit          ) buffs.divine_spirit = 80;
+  if( sim -> overrides.fortitude              ) buffs.fortitude = 215;
+  if( sim -> overrides.improved_divine_spirit ) buffs.improved_divine_spirit = 80;
+  if( sim -> overrides.improved_moonkin_aura  ) buffs.improved_moonkin_aura = 1;
+  if( sim -> overrides.leader_of_the_pack     ) buffs.leader_of_the_pack = 1;
+  if( sim -> overrides.mana_spring            ) buffs.mana_spring = 42.5;
+  if( sim -> overrides.mark_of_the_wild       ) buffs.mark_of_the_wild = 52;
+  if( sim -> overrides.moonkin_aura           ) buffs.moonkin_aura = 1;
+  if( sim -> overrides.replenishment          ) buffs.replenishment = 1;
+  if( sim -> overrides.strength_of_earth      ) buffs.strength_of_earth = 99;
+  if( sim -> overrides.totem_of_wrath         ) buffs.totem_of_wrath = 280;
+  if( sim -> overrides.trueshot_aura          ) buffs.trueshot_aura = 1;
+  if( sim -> overrides.unleashed_rage         ) buffs.unleashed_rage = 1;
+  if( sim -> overrides.windfury_totem         ) buffs.windfury_totem = 0.20;
+  if( sim -> overrides.wrath_of_air           ) buffs.wrath_of_air = 1;
 }
 
 // player_t::combat_end ====================================================
