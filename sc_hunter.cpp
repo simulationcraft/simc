@@ -2809,7 +2809,6 @@ struct explosive_shot_t : public hunter_attack_t
     // FIXME! Explosive Shot appears to be generating "on-hit" and "on-crit" procs for each tick.
     // FIXME! To handle this, each "tick" is modeled as an attack that cannot miss.
     num_ticks = 0;
-    ticking = 0;
     may_miss = false;
     hunter_attack_t::execute();
     if( result == RESULT_CRIT )
@@ -2817,7 +2816,6 @@ struct explosive_shot_t : public hunter_attack_t
       trigger_hunting_party( this );
     }
     num_ticks = 2;
-    ticking = 1;
     may_miss = true;
   }
 
@@ -3051,12 +3049,6 @@ struct serpent_sting_t : public hunter_attack_t
   {
     hunter_attack_t::last_tick();
     sim -> target -> debuffs.poisoned--;
-  }
-
-  virtual void cancel()
-  {
-    if( tick_event ) sim -> target -> debuffs.poisoned--;
-    hunter_attack_t::cancel();
   }
 
   virtual bool ready()

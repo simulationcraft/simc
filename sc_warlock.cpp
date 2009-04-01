@@ -3738,7 +3738,6 @@ struct conflagrate_t : public warlock_spell_t
       if( cancel_dot )
       {
         (*dot_spell) -> cancel();
-        *dot_spell = 0;
       }
     }
   }
@@ -4779,7 +4778,7 @@ void warlock_t::reset()
   active_pet         = 0;
   active_corruption  = 0;
   active_curse       = 0;
-  active_immolate    = 0;
+ active_immolate    = 0;
   active_shadowflame = 0;
   active_dots        = 0;
   affliction_effects = 0;

@@ -550,11 +550,7 @@ void action_t::execute()
 
     if( num_ticks > 0 ) 
     {
-      if( ticking ) 
-      {
-	last_tick();
-	cancel();
-      }
+      if( ticking ) cancel();
       current_tick = 0;
       added_ticks = 0;
       schedule_tick();
@@ -831,6 +827,8 @@ void action_t::reset()
 
 void action_t::cancel()
 {
+  if( ticking ) last_tick();
+
   if( player -> channeling == tick_event ) player -> channeling = 0;
 
   event_t::cancel( execute_event );

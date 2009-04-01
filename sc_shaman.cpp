@@ -18,11 +18,9 @@ struct shaman_t : public player_t
   spell_t* earth_totem;
 
   // Active
-  spell_t* active_flame_shock;
-  spell_t* active_lava_burst;
-  spell_t* active_lightning_charge;
-  spell_t* active_shield;
-  spell_t* active_lightning_bolt_dot;
+  action_t* active_flame_shock;
+  action_t* active_lightning_charge;
+  action_t* active_lightning_bolt_dot;
 
   // Buffs
   struct _buffs_t
@@ -32,6 +30,7 @@ struct shaman_t : public player_t
     int    elemental_mastery;
     int    flurry;
     int    lightning_charges;
+    int    lightning_shield;
     int    maelstrom_weapon;
     int    nature_vulnerability;
     int    nature_vulnerability_charges;
@@ -49,6 +48,7 @@ struct shaman_t : public player_t
   struct _cooldowns_t
   {
     double windfury_weapon;
+    double lava_burst;
 
     void reset() { memset( (void*) this, 0x00, sizeof( _cooldowns_t ) ); }
     _cooldowns_t() { reset(); }
@@ -219,9 +219,7 @@ struct shaman_t : public player_t
 
     // Active
     active_flame_shock        = 0;
-    active_lava_burst         = 0;
     active_lightning_charge   = 0;
-    active_shield             = 0;
     active_lightning_bolt_dot = 0;
 
     // Gains
@@ -658,16 +656,9 @@ static void trigger_tier8_4pc_elemental( spell_t* s )
       // FIX ME! I shamelessly copied from the hunters piercing shots and currently there is no information about those values.
       base_tick_time  = 1.0;
       num_ticks       = 8;
-
     }
-    void player_buff()
-    {
-      player_multiplier = 1.0;
-    }
-    void target_debuff()
-    {
-      target_multiplier = 1.0;
-    }
+    void player_buff() {}
+    void target_debuff() {}
   };
 
   double dmg = s -> direct_dmg * 0.08;
@@ -913,8 +904,7 @@ void shaman_attack_t::assess_damage( double amount,
 
       if( p -> _buffs.lightning_charges == 0 )
       {
-        p -> aura_loss( "Lightning Shield" );
-        p -> active_shield = 0;
+	p -> active_lightning_charge -> cancel();
       }
     }
   }
@@ -1325,8 +1315,8 @@ struct chain_lightning_t : public shaman_spell_t
       if( maelstrom > p -> _buffs.maelstrom_weapon )
       return false;
 
-    if( max_lvb_cd > 0 && p -> active_lava_burst )
-      if( ( p -> active_lava_burst -> cooldown_ready - sim -> current_time ) > ( max_lvb_cd * haste() ) )
+    if( max_lvb_cd > 0  )
+      if( ( p -> _cooldowns.lava_burst - sim -> current_time ) > ( max_lvb_cd * haste() ) )
 	return false;
 
     return true;
@@ -1500,23 +1490,20 @@ struct lava_burst_t : public shaman_spell_t
       base_dd_min       += 215;
       base_dd_max       += 215;
     }
-
-    p -> active_lava_burst = this;
   }
 
   virtual void execute()
   {
+    shaman_t* p = player -> cast_shaman();
     shaman_spell_t::execute();
-    event_t::early( player -> cast_shaman() -> _expirations.maelstrom_weapon );
     if( result_is_hit() )
     {
-      shaman_t* p = player -> cast_shaman();
-      if( p -> active_flame_shock && !p -> glyphs.flame_shock )
+      if( p -> active_flame_shock && ! p -> glyphs.flame_shock )
       {
         p -> active_flame_shock -> cancel();
-        p -> active_flame_shock = 0;
       }
     }
+    p -> _cooldowns.lava_burst = cooldown_ready;
   }
 
   virtual void player_buff()
@@ -1810,22 +1797,8 @@ struct flame_shock_t : public shaman_spell_t
       trigger_gcd = 0.5;
       min_gcd     = 0.5;
     }
-  }
 
-  virtual void execute()
-  {
-    shaman_t* p = player -> cast_shaman();
-    shaman_spell_t::execute();
-    if( result_is_hit() )
-    {
-      p -> active_flame_shock = this;
-    }
-  }
-
-  virtual void last_tick() 
-  {
-    shaman_spell_t::last_tick(); 
-    player -> cast_shaman() -> active_flame_shock = 0;
+    observer = &( p -> active_flame_shock );
   }
 };
 
@@ -2741,6 +2714,13 @@ struct lightning_shield_t : public shaman_spell_t
 
       if( p -> glyphs.lightning_shield ) base_multiplier *= 1.20;
     }
+    virtual void cancel()
+    {
+      shaman_t* p = player -> cast_shaman();
+      p -> aura_loss( "Lightning Shield" );
+      p -> _buffs.lightning_charges = 0;
+      p -> _buffs.lightning_shield = 0;    
+    }
   };
 
   lightning_shield_t( player_t* player, const std::string& options_str ) : 
@@ -2775,8 +2755,13 @@ struct lightning_shield_t : public shaman_spell_t
   {
     shaman_t* p = player -> cast_shaman();
     if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    if( p -> _buffs.water_shield )
+    {
+      p -> aura_loss( "Water Shield" );
+      p -> _buffs.water_shield = 0;
+    }
     p -> _buffs.lightning_charges = 3 + 2 * p -> talents.static_shock;
-    p -> active_shield = this;
+    p -> _buffs.lightning_shield = 1;    
     p -> aura_gain( "Lightning Shield" );
     consume_resource();
     update_ready();
@@ -2786,10 +2771,12 @@ struct lightning_shield_t : public shaman_spell_t
 
   virtual bool ready()
   {
-    if( ! shaman_spell_t::ready() )
+    shaman_t* p = player -> cast_shaman();
+
+    if( p -> _buffs.lightning_shield )
       return false;
 
-    return( player -> cast_shaman() -> active_shield == 0 );
+    return shaman_spell_t::ready();
   }
 };
 
@@ -2823,13 +2810,22 @@ struct water_shield_t : public shaman_spell_t
   {
     shaman_t* p = player -> cast_shaman();
     if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    if( p -> _buffs.lightning_shield )
+    {
+      p -> active_lightning_charge -> cancel();
+    }
+    p -> aura_gain( "Water Shield" );
     p -> _buffs.water_shield = base_cost;
-    p -> active_shield = this;
   }
 
   virtual bool ready()
   {
-    return( player -> cast_shaman() -> active_shield == 0 );
+    shaman_t* p = player -> cast_shaman();
+
+    if( p -> _buffs.water_shield )
+      return false;
+
+    return shaman_spell_t::ready();
   }
 };
 
@@ -3081,10 +3077,6 @@ void shaman_t::reset()
   air_totem   = 0;
   water_totem = 0;
   earth_totem = 0;;
-
-  // Active
-  active_flame_shock        = 0;
-  active_shield             = 0;
 
   _buffs.reset();
   _cooldowns.reset();

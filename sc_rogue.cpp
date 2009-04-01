@@ -1264,114 +1264,119 @@ struct blade_flurry_t : public rogue_attack_t
 
 struct envenom_t : public rogue_attack_t
 {
-	int min_doses;
-	int no_buff;
-	double dose_dmg;
+  int min_doses;
+  int no_buff;
+  double dose_dmg;
 
-	envenom_t( player_t* player, const std::string& options_str ) : 
-		rogue_attack_t( "envenom", player, SCHOOL_NATURE, TREE_ASSASSINATION ), min_doses(1), no_buff(0)
-	{
-		rogue_t* p = player -> cast_rogue();
-		assert( p -> level >= 62 );
+  envenom_t( player_t* player, const std::string& options_str ) : 
+    rogue_attack_t( "envenom", player, SCHOOL_NATURE, TREE_ASSASSINATION ), min_doses(1), no_buff(0)
+  {
+    rogue_t* p = player -> cast_rogue();
+    assert( p -> level >= 62 );
 
-		option_t options[] =
-		{
-			{ "min_doses", OPT_INT, &min_doses },
-			{ "no_buff",   OPT_INT, &no_buff   },
-			{ NULL }
-		};
-		parse_options( options, options_str );
+    option_t options[] =
+    {
+      { "min_doses", OPT_INT, &min_doses },
+      { "no_buff",   OPT_INT, &no_buff   },
+      { NULL }
+    };
+    parse_options( options, options_str );
 
-		weapon = &( p -> main_hand_weapon );
-		weapon_multiplier = 0;      
-		requires_combo_points = true;
-		base_cost = 35;
+    weapon = &( p -> main_hand_weapon );
+    weapon_multiplier = 0;      
+    requires_combo_points = true;
+    base_cost = 35;
 
-		base_multiplier *= 1.0 + ( p -> talents.find_weakness * 0.02 + 
-							util_t::talent_rank( p -> talents.vile_poisons, 3, 0.07, 0.14, 0.20 ) );
+    base_multiplier *= 1.0 + ( p -> talents.find_weakness * 0.02 + 
+			       util_t::talent_rank( p -> talents.vile_poisons, 3, 0.07, 0.14, 0.20 ) );
 
-		if( p -> talents.surprise_attacks ) may_dodge = false;
+    if( p -> talents.surprise_attacks ) may_dodge = false;
 		  
-		dose_dmg = ( p -> level >= 80 ? 216 :
-					 p -> level >= 74 ? 176 :
-					 p -> level >= 69 ? 148 : 118 );
-	}
+    dose_dmg = ( p -> level >= 80 ? 216 :
+		 p -> level >= 74 ? 176 :
+		 p -> level >= 69 ? 148 : 118 );
+  }
 
-	virtual void execute()
-	{
-		struct expiration_t : public event_t
-		{
-			expiration_t( sim_t* sim, rogue_t* p, double duration ) : event_t( sim, p )
-			{
-				name = "Envenom Expiration";
-				p -> aura_gain( "Envenom" );
-				p -> _buffs.envenom = 1;
-				sim -> add_event( this, duration );
-			}
-			virtual void execute()
-			{
-				rogue_t* p = player -> cast_rogue();
-				p -> aura_loss( "Envenom" );
-				p ->       _buffs.envenom = 0;
-				p -> _expirations.envenom = 0;
-			}
-		};
+  virtual void execute()
+  {
+    struct expiration_t : public event_t
+    {
+      expiration_t( sim_t* sim, rogue_t* p, double duration ) : event_t( sim, p )
+      {
+	name = "Envenom Expiration";
+	p -> aura_gain( "Envenom" );
+	p -> _buffs.envenom = 1;
+	sim -> add_event( this, duration );
+      }
+      virtual void execute()
+      {
+	rogue_t* p = player -> cast_rogue();
+	p -> aura_loss( "Envenom" );
+	p ->       _buffs.envenom = 0;
+	p -> _expirations.envenom = 0;
+      }
+    };
+    
+    rogue_t* p = player -> cast_rogue();
 
-		rogue_t* p = player -> cast_rogue();
+    int doses_consumed = std::min( p -> _buffs.poison_doses, p -> _buffs.combo_points );
+    double envenom_duration = 1.0 + p -> _buffs.combo_points;
 
-		int doses_consumed = std::min( p -> _buffs.poison_doses, p -> _buffs.combo_points );
-		double envenom_duration = 1.0 + p -> _buffs.combo_points;
+    event_t*& e = p -> _expirations.envenom;
 
-		event_t*& e = p -> _expirations.envenom;
+    if( e )
+    {
+      e -> reschedule( envenom_duration );
+    }
+    else
+    {
+      e = new ( sim ) expiration_t( sim, p, envenom_duration );
+    }
+    
+    rogue_attack_t::execute();
 
-		if( e )
-			e -> reschedule( envenom_duration );
-		else
-			e = new ( sim ) expiration_t( sim, p, envenom_duration );
+    if( result_is_hit() )
+    {
+      p -> _buffs.poison_doses -= doses_consumed;
 
-		rogue_attack_t::execute();
-
-		if( result_is_hit() )
-		{
-			p -> _buffs.poison_doses -= doses_consumed;
-
-			if( p -> _buffs.poison_doses == 0 )
-				p -> active_deadly_poison -> cancel();
-			consume_deadly_poison( p );
+      if( p -> _buffs.poison_doses == 0 )
+      {
+	p -> active_deadly_poison -> cancel();
+      }
 			
-			trigger_cut_to_the_chase( this );
-		}
-	}
+      trigger_cut_to_the_chase( this );
+    }
+  }
 
-	virtual void player_buff()
-	{
-		rogue_t* p = player -> cast_rogue();
+  virtual void player_buff()
+  {
+    rogue_t* p = player -> cast_rogue();
+    
+    int doses_consumed = std::min( p -> _buffs.poison_doses, p -> _buffs.combo_points );
 
-		int doses_consumed = std::min( p -> _buffs.poison_doses, p -> _buffs.combo_points );
+    direct_power_mod = p -> _buffs.combo_points * 0.07;
+    base_direct_dmg = base_dd_min = base_dd_max = doses_consumed * dose_dmg;
+    rogue_attack_t::player_buff();
+    
+    trigger_dirty_deeds( this );
+  }
 
-		direct_power_mod = p -> _buffs.combo_points * 0.07;
-		base_direct_dmg = doses_consumed * dose_dmg;
-		rogue_attack_t::player_buff();
+  virtual bool ready()
+  {
+    rogue_t* p = player -> cast_rogue();
 
-		trigger_dirty_deeds( this );
-	}
-
-	virtual bool ready()
-	{
-		rogue_t* p = player -> cast_rogue();
-
-		// Envenom is not usable when there is no DP on a target
-		if( p -> _buffs.poison_doses == 0 )
-			return false;
+    // Envenom is not usable when there is no DP on a target
+    if( p -> _buffs.poison_doses == 0 )
+      return false;
 		
-		if( min_doses > 0 && min_doses > p -> _buffs.poison_doses )
-			return false;
+    if( min_doses > 0 && min_doses > p -> _buffs.poison_doses )
+      return false;
 
-		if( no_buff && p -> _buffs.envenom )
-			return false;
+    if( no_buff && p -> _buffs.envenom )
+      return false;
 
-		return rogue_attack_t::ready();
-	}
+    return rogue_attack_t::ready();
+  }
 };
 
 // Eviscerate ================================================================
@@ -1924,7 +1929,6 @@ struct killing_spree_t : public rogue_attack_t
 
     // FIXME! Need to separate this out into two attack_t classes with same name for reporting.
     num_ticks = 0;
-    ticking = 0;
 
     double mh_dd=0, oh_dd=0;
     int mh_result=RESULT_NONE, oh_result=RESULT_NONE;
@@ -1951,7 +1955,6 @@ struct killing_spree_t : public rogue_attack_t
 
     // FIXME! Need to separate this out into two attack_t classes with same name for reporting.
     num_ticks = 5;
-    ticking = 1;
   }
 
   virtual void player_buff()
