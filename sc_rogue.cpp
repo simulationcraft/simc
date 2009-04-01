@@ -1874,6 +1874,8 @@ struct hunger_for_blood_t : public rogue_attack_t
 
 struct killing_spree_t : public rogue_attack_t
 {
+  rogue_attack_t* proc_attack;
+
   killing_spree_t( player_t* player, const std::string& options_str ) : 
     rogue_attack_t( "killing_spree", player, SCHOOL_PHYSICAL, TREE_COMBAT )
   {
@@ -1920,6 +1922,10 @@ struct killing_spree_t : public rogue_attack_t
   {
     rogue_t* p = player -> cast_rogue();
 
+    // FIXME! Need to separate this out into two attack_t classes with same name for reporting.
+    num_ticks = 0;
+    ticking = 0;
+
     double mh_dd=0, oh_dd=0;
     int mh_result=RESULT_NONE, oh_result=RESULT_NONE;
 
@@ -1942,6 +1948,10 @@ struct killing_spree_t : public rogue_attack_t
     tick_dmg = mh_dd + oh_dd;
     result   = mh_result;
     attack_t::update_stats( DMG_OVER_TIME );
+
+    // FIXME! Need to separate this out into two attack_t classes with same name for reporting.
+    num_ticks = 5;
+    ticking = 1;
   }
 
   virtual void player_buff()

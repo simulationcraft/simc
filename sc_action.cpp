@@ -20,7 +20,7 @@ action_t::action_t( int         ty,
   sim(p->sim), type(ty), name_str(n), player(p), school(s), resource(r), tree(tr), result(RESULT_NONE),
   binary(false), channeled(false), background(false), repeating(false), aoe(false), harmful(true), proc(false), heal(false),
   may_miss(false), may_resist(false), may_dodge(false), may_parry(false), 
-  may_glance(false), may_block(false), may_crush(false), may_crit(false), tick_may_crit(false),
+  may_glance(false), may_block(false), may_crush(false), may_crit(false), tick_may_crit(false), clip_dot(false),
   min_gcd(0), trigger_gcd(0),
   base_execute_time(0), base_tick_time(0), base_cost(0),
   base_dd_min(0), base_dd_max(0), base_td_init(0),
@@ -527,6 +527,8 @@ void action_t::execute()
 {
   if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
 
+  if( ticking ) cancel();
+
   if( observer ) *observer = 0;
 
   player_buff();
@@ -548,14 +550,11 @@ void action_t::execute()
       assess_damage( direct_dmg, DMG_DIRECT );
     }
 
-    if( num_ticks > 0 && ! ticking ) 
+    if( num_ticks > 0 ) 
     {
-      // FIXME! This should just cancel existing tick......
       current_tick = 0;
       added_ticks = 0;
       schedule_tick();
-
-      if( school == SCHOOL_BLEED ) sim -> target -> debuffs.bleeding++;
     }
   }
   else
@@ -658,6 +657,8 @@ void action_t::schedule_tick()
 {
   if( sim -> debug ) report_t::log( sim, "%s schedules tick for %s", player -> name(), name() );
 
+  if( current_tick == 0 && school == SCHOOL_BLEED ) sim -> target -> debuffs.bleeding++;
+
   ticking = 1;
 
   time_to_tick = tick_time();
@@ -681,11 +682,15 @@ void action_t::refresh_duration()
   // Recalculate state of current player buffs.
   player_buff();
 
-  // Refreshing a DoT does not interfere with the next tick event.  Ticks will stil occur
-  // every "base_tick_time" seconds.  To determine the new finish time for the DoT, start 
-  // from the time of the next tick and add the time for the remaining ticks to that event.
-  duration_ready = tick_event -> time + base_tick_time * ( num_ticks - 1 );
-  player -> share_duration( duration_group, duration_ready );
+  if( ! clip_dot )
+  {
+    // Refreshing a DoT does not interfere with the next tick event.  Ticks will stil occur
+    // every "base_tick_time" seconds.  To determine the new finish time for the DoT, start 
+    // from the time of the next tick and add the time for the remaining ticks to that event.
+
+    duration_ready = tick_event -> time + base_tick_time * ( num_ticks - 1 );
+    player -> share_duration( duration_group, duration_ready );
+  }
 
   current_tick = 0;
 }
@@ -694,12 +699,14 @@ void action_t::refresh_duration()
 
 void action_t::extend_duration( int extra_ticks )
 {
-
     num_ticks += extra_ticks;
   added_ticks += extra_ticks;
 
-  duration_ready += tick_time() * extra_ticks;
-  player -> share_duration( duration_group, duration_ready );
+  if( ! clip_dot ) 
+  {
+    duration_ready += tick_time() * extra_ticks;
+    player -> share_duration( duration_group, duration_ready );
+  }
 
   if( sim -> debug ) report_t::log( sim, "%s extends duration of %s, adding %d tick(s), totalling %d ticks", player -> name(), name(), extra_ticks, num_ticks );
 }

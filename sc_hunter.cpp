@@ -1633,21 +1633,16 @@ struct rake_t : public hunter_pet_attack_t
     base_tick_time  = 3;
     tick_power_mod  = 0.0175;
     cooldown        = 10 * ( 1.0 - o -> talents.longevity * 0.10 );
+
+    // FIXME! Assuming pets are not smart enough to wait for Rake to finish ticking
+    clip_dot = true;
   }
 
   virtual void execute()
   {
-    // FIXME! Assuming pets are not smart enough to wait for Rake to finish ticking
-    if( ticking ) cancel();
     school = SCHOOL_PHYSICAL;
     hunter_pet_attack_t::execute();
     school = SCHOOL_BLEED;
-  }
-
-  virtual void update_ready()
-  {
-    hunter_pet_attack_t::update_ready();
-    duration_ready = 0;
   }
 };
 
@@ -1731,6 +1726,9 @@ struct savage_rend_t : public hunter_pet_attack_t
     base_tick_time  = 5;
     tick_power_mod  = 0.0175; // FIXME Check
     cooldown        = 60 * ( 1.0 - o -> talents.longevity * 0.10 );
+
+    // FIXME! Assuming pets are not smart enough to wait for Rake to finish ticking
+    clip_dot = true;
   }
 
   virtual void execute()
@@ -1772,12 +1770,6 @@ struct savage_rend_t : public hunter_pet_attack_t
 	e = new ( sim ) expiration_t( sim, p );
       }
     }
-  }
-
-  virtual void update_ready()
-  {
-    hunter_pet_attack_t::update_ready();
-    duration_ready = 0;
   }
 };
 
@@ -2816,12 +2808,16 @@ struct explosive_shot_t : public hunter_attack_t
   {
     // FIXME! Explosive Shot appears to be generating "on-hit" and "on-crit" procs for each tick.
     // FIXME! To handle this, each "tick" is modeled as an attack that cannot miss.
+    num_ticks = 0;
+    ticking = 0;
     may_miss = false;
     hunter_attack_t::execute();
     if( result == RESULT_CRIT )
     {
       trigger_hunting_party( this );
     }
+    num_ticks = 2;
+    ticking = 1;
     may_miss = true;
   }
 

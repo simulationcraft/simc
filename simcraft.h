@@ -1301,6 +1301,7 @@ struct action_t
   int school, resource, tree, result;
   bool binary, channeled, background, repeating, aoe, harmful, proc, heal;
   bool may_miss, may_resist, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit, tick_may_crit;
+  bool clip_dot;
   double min_gcd, trigger_gcd;
   double base_execute_time, base_tick_time, base_cost;
   double base_dd_min, base_dd_max, base_td_init;

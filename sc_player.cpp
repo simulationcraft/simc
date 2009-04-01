@@ -1817,7 +1817,7 @@ struct wait_until_ready_t : public action_t
   double sec;
 
   wait_until_ready_t( player_t* player, const std::string& options_str ) : 
-    action_t( ACTION_OTHER, "wait", player ), sec(0.1)
+    action_t( ACTION_OTHER, "wait", player ), sec(1.0)
   {
     option_t options[] =
     {
@@ -1830,21 +1830,21 @@ struct wait_until_ready_t : public action_t
   virtual void execute() 
   {
     trigger_gcd = sec;
-    
+
     for( action_t* a = player -> action_list; a; a = a -> next )
     {
       if( a -> background ) continue;
       
       if( a -> cooldown_ready > sim -> current_time )
       {
-              double delta_time = a -> cooldown_ready - sim -> current_time;
-              if( delta_time > trigger_gcd ) trigger_gcd = delta_time;
+	double delta_time = a -> cooldown_ready - sim -> current_time;
+	if( delta_time < trigger_gcd ) trigger_gcd = delta_time;
       }
 
       if( a -> duration_ready > sim -> current_time )
       {
-              double delta_time = a -> duration_ready - ( sim -> current_time + a -> execute_time() );
-              if( delta_time > trigger_gcd ) trigger_gcd = delta_time;
+	double delta_time = a -> duration_ready - ( sim -> current_time + a -> execute_time() );
+	if( delta_time < trigger_gcd ) trigger_gcd = delta_time;
       }
     }
 
