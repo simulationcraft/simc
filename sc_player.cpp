@@ -797,6 +797,7 @@ void player_t::init_stats()
   procs.flare_of_the_heavens         = get_proc( "flare_of_the_heavens" );
   procs.forge_ember                  = get_proc( "forge_ember" );
   procs.grim_toll                    = get_proc( "grim_toll" );
+  procs.honor_among_thieves_donor    = ( is_pet() ? ( cast_pet() -> owner ) : this ) -> get_proc( "honor_among_thieves_donor" );
   procs.judgement_of_wisdom          = get_proc( "judgement_of_wisdom" );
   procs.lightning_capacitor          = get_proc( "lightning_capacitor" );
   procs.mark_of_defiance             = get_proc( "mark_of_defiance" );

@@ -893,6 +893,7 @@ struct player_t
     proc_t* flare_of_the_heavens;
     proc_t* forge_ember;
     proc_t* grim_toll;
+    proc_t* honor_among_thieves_donor;
     proc_t* judgement_of_wisdom;
     proc_t* lightning_capacitor;
     proc_t* mark_of_defiance;

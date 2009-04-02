@@ -363,7 +363,7 @@ void report_t::print_procs()
 	  fprintf( sim -> output_file, "\n    %s:\n", player -> name() );
 	  first = false;
 	}
-	fprintf( sim -> output_file, "        %s=%.1f|%.1fsec\n", p -> name(), p -> count, p -> frequency );
+	fprintf( sim -> output_file, "        %s=%.1f|%.2fsec\n", p -> name(), p -> count, p -> frequency );
       }
     }
   }

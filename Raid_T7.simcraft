@@ -40,4 +40,5 @@ Warlock_T7_55_00_16_CoE.simcraft
 Warlock_T7_55_00_16_DG.simcraft
 
 # Since honor_among_thieves_interval=0 the HAT Rogue must be in a party
-party=Rogue_T7_08_20_43/Rogue_T7_23_05_43/Hunter_T7_06_14_51/Hunter_T7_52_12_07/Shaman_T7_16_55_00
+party=Rogue_T7_08_20_43/Hunter_T7_06_14_51/Hunter_T7_15_51_05/Mage_T7_57_03_11/Mage_T7_18_00_53
+party=Rogue_T7_23_05_43/Hunter_T7_52_12_07/Priest_T7_14_00_57/Mage_T7_53_18_00/Shaman_T7_57_14_00

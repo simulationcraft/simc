@@ -3242,6 +3242,7 @@ void rogue_t::raid_event( action_t* a )
       {
 	add_combo_point( this );
 	procs_honor_among_thieves -> occur();
+	p -> procs.honor_among_thieves_donor -> occur();
 	_cooldowns.honor_among_thieves[ p -> member ] = sim -> current_time + 1.0;
       }
     }
