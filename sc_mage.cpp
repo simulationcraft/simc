@@ -2955,9 +2955,9 @@ struct mirror_image_spell_t : public mage_spell_t
 
 struct mana_gem_t : public action_t
 {
-  int trigger;
-  int min;
-  int max;
+  double trigger;
+  double min;
+  double max;
 
   mana_gem_t( player_t* player, const std::string& options_str ) : 
     action_t( ACTION_USE, "mana_gem", player ), trigger(0), min(3330), max(3500)
@@ -2966,9 +2966,9 @@ struct mana_gem_t : public action_t
 
     option_t options[] =
     {
-      { "min",     OPT_INT, &min     },
-      { "max",     OPT_INT, &max     },
-      { "trigger", OPT_INT, &trigger },
+      { "min",     OPT_FLT, &min     },
+      { "max",     OPT_FLT, &max     },
+      { "trigger", OPT_FLT, &trigger },
       { NULL }
     };
     parse_options( options, options_str );
