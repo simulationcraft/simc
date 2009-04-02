@@ -1299,7 +1299,7 @@ struct action_t
   std::string name_str;
   player_t* player;
   int school, resource, tree, result;
-  bool binary, channeled, background, repeating, aoe, harmful, proc, heal;
+  bool special, binary, channeled, background, repeating, aoe, harmful, proc, heal;
   bool may_miss, may_resist, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit, tick_may_crit;
   bool clip_dot;
   double min_gcd, trigger_gcd;
@@ -1338,7 +1338,7 @@ struct action_t
   action_t* next;
   action_t* sequence;
 
-  action_t( int type, const char* name, player_t* p=0, int r=RESOURCE_NONE, int s=SCHOOL_NONE, int t=TREE_NONE );
+  action_t( int type, const char* name, player_t* p=0, int r=RESOURCE_NONE, int s=SCHOOL_NONE, int t=TREE_NONE, bool special=false );
   virtual ~action_t() {}
 
   virtual void      parse_options( option_t*, const std::string& options_str );
@@ -1395,7 +1395,7 @@ struct attack_t : public action_t
 {
   double base_expertise, player_expertise, target_expertise;
 
-  attack_t( const char* n=0, player_t* p=0, int r=RESOURCE_NONE, int s=SCHOOL_PHYSICAL, int t=TREE_NONE );
+  attack_t( const char* n=0, player_t* p=0, int r=RESOURCE_NONE, int s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=false );
   virtual ~attack_t() {}
 
   // Attack Overrides
@@ -1407,23 +1407,13 @@ struct attack_t : public action_t
   virtual int    build_table( double* chances, int* results );
   virtual void   calculate_result();
 
-  // Passthru Methods
-  virtual double cost()                              { return action_t::cost();                    }
-  virtual double gcd()                               { return action_t::gcd();                     }
-  virtual double tick_time()                         { return action_t::tick_time();               }
-  virtual double calculate_direct_damage()           { return action_t::calculate_direct_damage(); }
-  virtual double calculate_tick_damage()             { return action_t::calculate_tick_damage();   }
-  virtual double resistance()                        { return action_t::resistance();              }
-  virtual void   consume_resource()                  { action_t::consume_resource();               }
-  virtual void   execute()                           { action_t::execute();                        }
-  virtual void   tick()                              { action_t::tick();                           }
-  virtual void   last_tick()                         { action_t::last_tick();                      }
-  virtual void   assess_damage( double a, int t ) { action_t::assess_damage( a, t );            }
-  virtual void   schedule_execute()                  { action_t::schedule_execute();               }
-  virtual void   schedule_tick()                     { action_t::schedule_tick();                  }
-  virtual bool   ready()                             { return action_t::ready();                   }
-  virtual void   reset()                             { action_t::reset();                          }
-
+  // Attack Specific
+  virtual double   miss_chance( int delta_level );
+  virtual double  dodge_chance( int delta_level );
+  virtual double  parry_chance( int delta_level );
+  virtual double glance_chance( int delta_level );
+  virtual double  block_chance( int delta_level );
+  virtual double   crit_chance( int delta_level );
   virtual double total_expertise() { return base_expertise + player_expertise + target_expertise; }
 };
 
@@ -1444,21 +1434,6 @@ struct spell_t : public action_t
   virtual void   target_debuff( int dmg_type );
   virtual double level_based_miss_chance( int player, int target );
   virtual void   calculate_result();
-
-  // Passthru Methods
-  virtual double cost()                              { return action_t::cost();                    }
-  virtual double calculate_direct_damage()           { return action_t::calculate_direct_damage(); }
-  virtual double calculate_tick_damage()             { return action_t::calculate_tick_damage();   }
-  virtual double resistance()                        { return action_t::resistance();              }
-  virtual void   consume_resource()                  { action_t::consume_resource();               }
-  virtual void   execute()                           { action_t::execute();                        }
-  virtual void   tick()                              { action_t::tick();                           }
-  virtual void   last_tick()                         { action_t::last_tick();                      }
-  virtual void   assess_damage( double a, int t ) { action_t::assess_damage( a, t );            }
-  virtual void   schedule_execute()                  { action_t::schedule_execute();               }
-  virtual void   schedule_tick()                     { action_t::schedule_tick();                  }
-  virtual bool   ready()                             { return action_t::ready();                   }
-  virtual void   reset()                             { action_t::reset();                          }
 };
 
 // Player Ready Event ========================================================

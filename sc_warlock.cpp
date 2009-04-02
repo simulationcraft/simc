@@ -409,7 +409,7 @@ struct warlock_pet_t : public pet_t
 struct warlock_pet_melee_t : public attack_t
 {
   warlock_pet_melee_t( player_t* player, const char* name ) : 
-    attack_t( name, player, RESOURCE_NONE, SCHOOL_PHYSICAL )
+    attack_t( name, player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_NONE, false )
   {
     warlock_pet_t* p = (warlock_pet_t*) player -> cast_pet();
 
@@ -444,7 +444,7 @@ struct warlock_pet_melee_t : public attack_t
 struct warlock_pet_attack_t : public attack_t
 {
   warlock_pet_attack_t( const char* n, player_t* player, int r=RESOURCE_MANA, int s=SCHOOL_PHYSICAL ) : 
-    attack_t( n, player, r, s )
+    attack_t( n, player, r, s, TREE_NONE, true )
   {
     background = true;
     repeating  = true;

@@ -12,7 +12,7 @@
 // spell_t::spell_t ==========================================================
 
 spell_t::spell_t( const char* n, player_t* p, int r, int s, int t ) :
-  action_t( ACTION_SPELL, n, p, r, s, t )
+  action_t( ACTION_SPELL, n, p, r, s, t, true )
 {
   may_miss = may_resist = true;
   base_crit_bonus = 0.5;

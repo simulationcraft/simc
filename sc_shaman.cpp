@@ -274,10 +274,9 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 
 struct shaman_attack_t : public attack_t
 {
-  shaman_attack_t( const char* n, player_t* player, int s=SCHOOL_PHYSICAL, int t=TREE_NONE ) : 
-    attack_t( n, player, RESOURCE_MANA, s, t ) 
+  shaman_attack_t( const char* n, player_t* player, int s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) : 
+    attack_t( n, player, RESOURCE_MANA, s, t, special ) 
   {
-    may_glance = false;
     base_direct_dmg = 1;
     shaman_t* p = player -> cast_shaman();
     base_multiplier *= 1.0 + p -> talents.weapon_mastery * 0.1/3;
@@ -919,11 +918,10 @@ void shaman_attack_t::assess_damage( double amount,
 struct melee_t : public shaman_attack_t
 {
   melee_t( const char* name, player_t* player ) : 
-    shaman_attack_t( name, player )
+    shaman_attack_t( name, player, SCHOOL_PHYSICAL, TREE_NONE, false )
   {
     shaman_t* p = player -> cast_shaman();
 
-    may_glance  = true;
     background  = true;
     repeating   = true;
     trigger_gcd = 0;

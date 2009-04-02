@@ -596,8 +596,8 @@ struct hunter_pet_t : public pet_t
 
 struct hunter_attack_t : public attack_t
 {
-  hunter_attack_t( const char* n, player_t* player, int s=SCHOOL_PHYSICAL, int t=TREE_NONE ) :
-    attack_t( n, player, RESOURCE_MANA, s, t )
+  hunter_attack_t( const char* n, player_t* player, int s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) :
+    attack_t( n, player, RESOURCE_MANA, s, t, special )
   {
     hunter_t* p = player -> cast_hunter();
 
@@ -1418,15 +1418,11 @@ static void trigger_wolverine_bite( attack_t* a )
 
 struct hunter_pet_attack_t : public attack_t
 {
-  bool special;
-
-  hunter_pet_attack_t( const char* n, player_t* player, int r=RESOURCE_FOCUS, int sc=SCHOOL_PHYSICAL, bool sp=true ) :
-    attack_t( n, player, r, sc, TREE_BEAST_MASTERY ), special(sp)
+  hunter_pet_attack_t( const char* n, player_t* player, int r=RESOURCE_FOCUS, int sc=SCHOOL_PHYSICAL, bool special=true ) :
+    attack_t( n, player, r, sc, TREE_BEAST_MASTERY, special )
   {
     hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
-
-    may_glance = ! special;
 
     if( p -> sim -> patch.after( 3, 1, 0 ) )
     {
@@ -1561,7 +1557,6 @@ struct pet_melee_t : public hunter_pet_attack_t
     base_direct_dmg    = 1;
     background         = true;
     repeating          = true;
-    may_glance         = true;
 
     if( p -> talents.cobra_reflexes )
     {
@@ -2276,8 +2271,11 @@ void hunter_attack_t::player_buff()
 
 struct ranged_t : public hunter_attack_t
 {
+  // FIXME! Setting "special=true" would create the desired 2-roll effect,
+  // but it would also triger Honor-Among-Thieves procs.......
+
   ranged_t( player_t* player ) :
-    hunter_attack_t( "ranged", player )
+    hunter_attack_t( "ranged", player, SCHOOL_PHYSICAL, TREE_NONE, /*special*/false )
   {
     hunter_t* p = player -> cast_hunter();
 

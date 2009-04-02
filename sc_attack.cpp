@@ -11,11 +11,13 @@
 
 // attack_t::attack_t =======================================================
 
-attack_t::attack_t( const char* n, player_t* p, int r, int s, int t ) :
-  action_t( ACTION_ATTACK, n, p, r, s, t ),
+attack_t::attack_t( const char* n, player_t* p, int resource, int school, int tree, bool special ) :
+  action_t( ACTION_ATTACK, n, p, resource, school, tree, special ),
   base_expertise(0), player_expertise(0), target_expertise(0)
 {
   may_miss = may_resist = may_dodge = may_parry = may_glance = may_block = may_crit = true;
+
+  if( special ) may_glance = false;
 
   if( player -> position == POSITION_BACK )
   {
@@ -26,7 +28,7 @@ attack_t::attack_t( const char* n, player_t* p, int r, int s, int t ) :
   {
     may_block  = false;
     may_dodge  = false;
-    may_glance = false;
+    may_glance = false; // FIXME! If we decide to make ranged auto-shot become "special" this line goes away.
     may_parry  = false;
   }
 
@@ -146,6 +148,63 @@ void attack_t::target_debuff( int dmg_type )
   }
 }
 
+// attack_t::miss_chance ====================================================
+
+double attack_t::miss_chance( int delta_level )
+{
+  if( delta_level > 2 )
+  {
+    // FIXME: needs testing for delta_level > 3
+    return 0.07 + ( delta_level - 2 ) * 0.01 - total_hit();
+  }
+  else
+  {
+    return 0.05 + delta_level * 0.005 - total_hit();
+  }
+}
+
+// attack_t::dodge_chance ===================================================
+
+double attack_t::dodge_chance( int delta_level )
+{
+  return 0.05 + delta_level * 0.005 - total_expertise();
+}
+
+// attack_t::parry_chance ===================================================
+
+double attack_t::parry_chance( int delta_level )
+{
+  return 0.05 + delta_level * 0.005 - total_expertise();
+}
+
+// attack_t::glance_chance ==================================================
+
+double attack_t::glance_chance( int delta_level )
+{
+  return ( delta_level + 1 ) * 0.06;
+}
+
+// attack_t::block_chance ===================================================
+
+double attack_t::block_chance( int delta_level )
+{
+  return 0.05 + delta_level * 0.005;
+}
+
+// attack_t::crit_chance ====================================================
+
+double attack_t::crit_chance( int delta_level )
+{
+  if( delta_level > 2 )
+  {
+    return total_crit() - ( 0.03 + delta_level * 0.006 );
+  }
+  else
+  {
+    return total_crit() - ( delta_level * 0.002 );
+  }
+}
+
 // attack_t::build_table ====================================================
 
 int attack_t::build_table( double* chances, 
@@ -153,58 +212,21 @@ int attack_t::build_table( double* chances,
 {
   double miss=0, dodge=0, parry=0, glance=0, block=0, crit=0;
 
-  double expertise = total_expertise();
-
   int delta_level = sim -> target -> level - player -> level;
 
-  if( may_miss  ) 
-  {
-    if( delta_level > 2 )
-    {
-      // FIXME: needs testing for delta_level > 3
-      miss  = 0.07 + ( delta_level - 2 ) * 0.01;
-    }
-    else
-    {
-      miss = 0.05 + delta_level * 0.005;
-    }
-    miss -= total_hit();
-  }
-
-  if( may_dodge ) 
-  {
-    dodge  = 0.05 + delta_level * 0.005;
-    dodge -= expertise;
-  }
-
-  if( may_parry ) 
-  {
-    parry  = 0.05 + delta_level * 0.005;
-    parry -= expertise;
-  }
-
-  if( may_glance ) 
-  {
-    glance = (delta_level + 1) * 0.06;
-  }
+  if( may_miss   )   miss =   miss_chance( delta_level );
+  if( may_dodge  )  dodge =  dodge_chance( delta_level );
+  if( may_parry  )  parry =  parry_chance( delta_level );
+  if( may_glance ) glance = glance_chance( delta_level );
 
   if( may_block && sim -> target -> shield ) 
   {
-    block = 0.05 + delta_level * 0.005;
+    block = block_chance( delta_level );
   }
 
-  if( may_crit )
+  if( may_crit ) // && ! special )
   {
-    crit = total_crit();
-
-    if( delta_level > 2 )
-    {
-      crit -= 0.03 + delta_level * 0.006;
-    }
-    else
-    {
-      crit -= delta_level * 0.002;
-    }
+    crit = crit_chance( delta_level );
   }
 
   if( sim -> debug ) report_t::log( sim, "attack_t::build_table: %s miss=%.3f dodge=%.3f parry=%.3f glance=%.3f block=%.3f crit=%.3f",
@@ -290,11 +312,20 @@ void attack_t::calculate_result()
   }
   assert( result != RESULT_NONE );
 
-  if( binary && result_is_hit() )
+  if( result_is_hit() )
   {
-    if( sim -> roll( resistance() ) )
+    if( binary && sim -> roll( resistance() ) )
     {
       result = RESULT_RESIST;
+    }
+    else if( false ) // special && may_crit ) // Specials are 2-roll calculations
+    {
+      int delta_level = sim -> target -> level - player -> level;
+
+      if( sim -> roll( crit_chance( delta_level ) ) )
+      {
+	result = RESULT_CRIT;
+      }
     }
   }
 

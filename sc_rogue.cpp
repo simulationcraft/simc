@@ -286,8 +286,8 @@ struct rogue_attack_t : public attack_t
   double min_rup_expire, max_rup_expire;
   double min_env_expire, max_env_expire;
 
-  rogue_attack_t( const char* n, player_t* player, int s=SCHOOL_PHYSICAL, int t=TREE_NONE ) : 
-    attack_t( n, player, RESOURCE_ENERGY, s, t ), 
+  rogue_attack_t( const char* n, player_t* player, int s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) : 
+    attack_t( n, player, RESOURCE_ENERGY, s, t, special ), 
     requires_weapon(WEAPON_NONE),
     requires_position(POSITION_NONE),
     requires_stealth(false),
@@ -304,7 +304,6 @@ struct rogue_attack_t : public attack_t
     base_crit            += p -> talents.malice * 0.01;
     base_hit             += p -> talents.precision * 0.01;
     base_crit_multiplier *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
-    may_glance = false;
   }
 
   virtual void   parse_options( option_t*, const std::string& options_str );
@@ -810,7 +809,8 @@ void rogue_attack_t::execute()
     trigger_apply_poisons( this );
     trigger_ruthlessness( this );
     trigger_sword_specialization( this );
-	 if( ! p -> sim -> P309) trigger_tricks_of_the_trade( this );
+
+    if( ! p -> sim -> P309) trigger_tricks_of_the_trade( this );
 
     if( result == RESULT_CRIT )
     {
@@ -1003,12 +1003,11 @@ bool rogue_attack_t::ready()
 struct melee_t : public rogue_attack_t
 {
   melee_t( const char* name, player_t* player ) : 
-    rogue_attack_t( name, player )
+    rogue_attack_t( name, player, SCHOOL_PHYSICAL, TREE_NONE, false )
   {
     rogue_t* p = player -> cast_rogue();
 
     base_direct_dmg = 1;
-    may_glance      = true;
     background      = true;
     repeating       = true;
     trigger_gcd     = 0;
@@ -3235,8 +3234,8 @@ void rogue_t::raid_event( action_t* a )
     if( p -> party != 0 &&
         p -> party == party  &&
 	a -> result == RESULT_CRIT && 
+	a -> special &&
 	! a -> proc &&
-	! a -> may_glance &&
 	sim -> roll( talents.honor_among_thieves / 3.0 ) )
     {
       if( sim -> current_time > _cooldowns.honor_among_thieves[ p -> member ] )

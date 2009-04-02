@@ -308,8 +308,8 @@ struct druid_attack_t : public attack_t
   double min_rip_expire, max_rip_expire;
   double min_rake_expire, max_rake_expire;
 
-  druid_attack_t( const char* n, player_t* player, int s=SCHOOL_PHYSICAL, int t=TREE_NONE ) :
-    attack_t( n, player, RESOURCE_ENERGY, s, t ),
+  druid_attack_t( const char* n, player_t* player, int s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) :
+    attack_t( n, player, RESOURCE_ENERGY, s, t, special ),
     requires_stealth(0),
     requires_position(POSITION_NONE),
     requires_combo_points(false),
@@ -322,8 +322,6 @@ struct druid_attack_t : public attack_t
     min_rip_expire(0), max_rip_expire(0),
     min_rake_expire(0), max_rake_expire(0)
   {
-    may_glance = false;
-
     druid_t* p = player -> cast_druid();
 
     base_crit_multiplier *= 1.0 + util_t::talent_rank( p -> talents.predatory_instincts, 3, 0.03, 0.07, 0.10 );
@@ -1228,10 +1226,9 @@ void druid_attack_t::tick()
 struct melee_t : public druid_attack_t
 {
   melee_t( const char* name, player_t* player ) :
-    druid_attack_t( name, player )
+    druid_attack_t( name, player, SCHOOL_PHYSICAL, TREE_NONE, /*special*/false )
   {
     base_dd_min = base_dd_max = 1;
-    may_glance  = true;
     background  = true;
     repeating   = true;
     trigger_gcd = 0;
