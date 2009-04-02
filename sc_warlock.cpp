@@ -1795,8 +1795,6 @@ static void trigger_demonic_pact( action_t* a )
 
   buff *= 0.10;
 
-  if( buff < p -> buffs.demonic_pact ) return;
-
   if( p -> buffs.demonic_pact_pet ) 
   {
     if( p -> buffs.demonic_pact == buff &&
