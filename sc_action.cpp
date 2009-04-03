@@ -404,7 +404,7 @@ double action_t::calculate_tick_damage()
 
   if( base_tick_dmg == 0 ) base_tick_dmg = base_td_init;
 
-  if( base_tick_dmg == 0 ) return 0;
+  if( base_tick_dmg == 0 && tick_power_mod == 0 ) return 0;
 
   // FIXME! Are there DoT effects that include weapon damage/modifiers?
 
