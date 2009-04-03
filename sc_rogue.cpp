@@ -1179,7 +1179,7 @@ struct backstab_t : public rogue_attack_t
     requires_position      = POSITION_BACK;
     adds_combo_points      = true;
     base_cost             -= p -> talents.slaughter_from_the_shadows * 3;
-    weapon_multiplier     *= 1.50 + p -> talents.sinister_calling * 0.01;
+    weapon_multiplier     *= 1.50 + p -> talents.sinister_calling * 0.02;
 
     base_multiplier *= 1.0 + ( p -> talents.aggression       * 0.03 +
 			       p -> talents.blade_twisting   * 0.05 +
@@ -1715,7 +1715,7 @@ struct hemorrhage_t : public rogue_attack_t
     normalize_weapon_speed      = true;
     adds_combo_points           = true;
     base_cost                   = 35 - p -> talents.slaughter_from_the_shadows;
-    weapon_multiplier          *= 1.10 + p -> talents.sinister_calling * 0.01;
+    weapon_multiplier          *= 1.10 + p -> talents.sinister_calling * 0.02;
     base_multiplier            *= 1.0 + ( p -> talents.find_weakness    * 0.02 +
                                           p -> talents.surprise_attacks * 0.10 +
                                           p -> gear.tier6_4pc           * 0.06 );
