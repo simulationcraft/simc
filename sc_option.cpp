@@ -367,6 +367,11 @@ bool option_t::parse( sim_t*       sim,
     parse( sim, file );
     fclose( file );      
   }
+  else if( name == "death_knight" ) 
+  { 
+    sim -> active_player = player_t::create_death_knight( sim, value ); 
+    assert( sim -> active_player );
+  }
   else if( name == "druid" ) 
   { 
     sim -> active_player = player_t::create_druid( sim, value ); 

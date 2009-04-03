@@ -1,0 +1,33 @@
+#!simcraft max_time=300 optimal_raid=1
+
+patch=3.1.0
+death_knight=Death_Knight_Test
+level=80
+talents=http://talent.mmo-champion.com/?deathknight=23050205300033032310231013510000000000000000000000000000230230205003000000000000000000
+
+
+# Action queue
+actions=auto_attack
+actions+=/plague_strike/icy_touch/death_strike/blood_strike/blood_strike/death_coil
+actions+=/death_strike/obliterate/blood_strike/blood_strike/death_coil/death_coil,once=0/clear
+
+# Gear
+gear_stamina=933
+gear_strength=1072
+gear_agility=300
+gear_intellect=10
+gear_spirit=10
+gear_attack_power=1143
+gear_expertise_rating=125
+gear_armor_penetration_rating=144
+gear_hit_rating=296
+gear_crit_rating=560
+gear_haste_rating=233
+
+# Weapons
+main_hand=sword_2h,dps=203.6,speed=3.6
+
+# Removing Buff Spam
+blessing_of_wisdom=0
+mana_spring=0
+replenishment=0

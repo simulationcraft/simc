@@ -59,6 +59,7 @@ struct action_t;
 struct attack_t;
 struct base_stats_t;
 struct callback_t;
+struct death_knight_t;
 struct druid_t;
 struct event_t;
 struct gain_t;
@@ -178,6 +179,7 @@ enum school_type {
 
 enum talent_tree_type {
   TREE_NONE=0,
+  TREE_BLOOD,         TREE_UNHOLY,                         // DEATH KNIGHT
   TREE_BALANCE,       TREE_FERAL,        TREE_RESTORATION, // DRUID
   TREE_BEAST_MASTERY, TREE_MARKSMANSHIP, TREE_SURVIVAL,    // HUNTER
   TREE_ARCANE,        TREE_FIRE,         TREE_FROST,       // MAGE
@@ -1049,24 +1051,26 @@ struct player_t
 
   // Class-Specific Methods
 
-  static player_t * create_druid  ( sim_t* sim, std::string& name );
-  static player_t * create_hunter ( sim_t* sim, std::string& name );
-  static player_t * create_mage   ( sim_t* sim, std::string& name );
-  static player_t * create_priest ( sim_t* sim, std::string& name );
-  static player_t * create_rogue  ( sim_t* sim, std::string& name );
-  static player_t * create_shaman ( sim_t* sim, std::string& name );
-  static player_t * create_warlock( sim_t* sim, std::string& name );
+  static player_t * create_death_knight( sim_t* sim, std::string& name );
+  static player_t * create_druid       ( sim_t* sim, std::string& name );
+  static player_t * create_hunter      ( sim_t* sim, std::string& name );
+  static player_t * create_mage        ( sim_t* sim, std::string& name );
+  static player_t * create_priest      ( sim_t* sim, std::string& name );
+  static player_t * create_rogue       ( sim_t* sim, std::string& name );
+  static player_t * create_shaman      ( sim_t* sim, std::string& name );
+  static player_t * create_warlock     ( sim_t* sim, std::string& name );
 
   bool is_pet() { return type == PLAYER_PET || type == PLAYER_GUARDIAN; }
 
-  druid_t  * cast_druid  () { assert( type == DRUID      ); return (druid_t  *) this; }
-  hunter_t * cast_hunter () { assert( type == HUNTER     ); return (hunter_t *) this; }
-  mage_t   * cast_mage   () { assert( type == MAGE       ); return (mage_t   *) this; }
-  priest_t * cast_priest () { assert( type == PRIEST     ); return (priest_t *) this; }
-  rogue_t  * cast_rogue  () { assert( type == ROGUE      ); return (rogue_t  *) this; }
-  shaman_t * cast_shaman () { assert( type == SHAMAN     ); return (shaman_t *) this; }
-  warlock_t* cast_warlock() { assert( type == WARLOCK    ); return (warlock_t*) this; }
-  pet_t*     cast_pet    () { assert( is_pet()           ); return (pet_t    *) this; }
+  death_knight_t* cast_death_knight() { assert( type == DEATH_KNIGHT ); return (death_knight_t*) this; }
+  druid_t       * cast_druid       () { assert( type == DRUID        ); return (druid_t       *) this; }
+  hunter_t      * cast_hunter      () { assert( type == HUNTER       ); return (hunter_t      *) this; }
+  mage_t        * cast_mage        () { assert( type == MAGE         ); return (mage_t        *) this; }
+  priest_t      * cast_priest      () { assert( type == PRIEST       ); return (priest_t      *) this; }
+  rogue_t       * cast_rogue       () { assert( type == ROGUE        ); return (rogue_t       *) this; }
+  shaman_t      * cast_shaman      () { assert( type == SHAMAN       ); return (shaman_t      *) this; }
+  warlock_t     * cast_warlock     () { assert( type == WARLOCK      ); return (warlock_t     *) this; }
+  pet_t         * cast_pet         () { assert( is_pet()             ); return (pet_t         *) this; }
 
   bool      in_gcd() { return gcd_ready > sim -> current_time; }
   bool      recent_cast();
