@@ -44,7 +44,8 @@ action_t::action_t( int         ty,
   min_current_time(0), max_current_time(0), 
   min_time_to_die(0), max_time_to_die(0), 
   min_health_percentage(0), max_health_percentage(0), 
-  sync_action(0), observer(0), next(0), sequence(0)
+  is_terminal(false), seq_completed(false),
+  sync_action(0), observer(0), next(0)
 {
   if( sim -> debug ) report_t::log( sim, "Player %s creates action %s", p -> name(), name() );
   action_t** last = &( p -> action_list );
@@ -572,8 +573,6 @@ void action_t::execute()
 
   if( repeating && ! proc ) schedule_execute();
 
-  if( sequence ) sequence -> schedule_execute();
-
   if( harmful ) player -> in_combat = true;
 }
 
@@ -727,6 +726,10 @@ void action_t::update_ready()
 
     player -> share_duration( duration_group, sim -> current_time + 0.01 + tick_time() * num_ticks );
   }
+  if( ! seq_str.empty() ) 
+  {
+    seq_completed = true;
+  }
 }
 
 // action_t::update_stats ===================================================
@@ -790,10 +793,28 @@ bool action_t::ready()
     if( player -> buffs.bloodlust )
       return false;
 
+  if( ! seq_str.empty() )
+    if( seq_completed )
+      return false;
+
   if( sync_action && ! sync_action -> ready() )
     return false;
 
   return true;
+}
+
+// action_t::terminal =======================================================
+
+bool action_t::terminal()
+{
+  if( is_terminal ) 
+    return true;
+
+  if( ! seq_str.empty() && 
+      ! seq_completed )
+    return true;
+  
+  return false;
 }
 
 // action_t::reset ==========================================================
@@ -820,6 +841,8 @@ void action_t::reset()
   execute_event = 0;
   tick_event = 0;
   if( observer ) *observer = 0;
+  is_terminal = false;
+  seq_completed = false;
 
   stats -> reset( this );
 }

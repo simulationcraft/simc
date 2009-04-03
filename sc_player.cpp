@@ -1189,7 +1189,7 @@ action_t* player_t::execute_action()
     if( action -> ready() )
       break;
 
-    if( action -> type == ACTION_CYCLE )
+    if( action -> terminal() )
       break;
   }
 
@@ -1818,6 +1818,125 @@ uptime_t* player_t::get_uptime( const std::string& name )
   return u;
 }
 
+// player_t::reset_sequence =================================================
+
+void player_t::reset_sequence( const std::string& seq_name )
+{
+  for( action_t* a = action_list; a; a = a -> next )
+  {
+    if( a -> seq_str.empty() )
+      continue;
+
+    if( seq_name.empty() || seq_name == a -> seq_str )
+    {
+      a -> seq_completed = false;
+    }
+  }
+}
+
+// Reset Sequnce Action ====================================================
+
+struct reset_seq_t : public action_t
+{
+  std::string seq_name;
+
+  reset_seq_t( player_t* player, const std::string& options_str ) : 
+    action_t( ACTION_OTHER, "reset_seq", player )
+  {
+    option_t options[] =
+    {
+      { "name", OPT_STRING, &seq_name },
+      { NULL }
+    };
+    parse_options( options, options_str );
+
+    trigger_gcd = 0;
+  }
+
+  virtual void execute() 
+  {
+    player -> reset_sequence( seq_name );
+  }
+
+  virtual bool ready()
+  {
+    return true;
+  }
+};
+
+// Cycle Action ============================================================
+
+struct cycle_t : public action_t
+{
+  action_t* current_action;
+
+  cycle_t( player_t* player, const std::string& options_str ) : 
+    action_t( ACTION_OTHER, "cycle", player ), current_action(0)
+  {
+  }
+
+  virtual void reset()
+  {
+    action_t::reset();
+
+    current_action = next;
+    if( ! current_action )
+    {
+      printf( "simcraft: player %s has no actions after 'cycle'\n", player -> name() );
+      exit( 0 );
+    }
+    is_terminal = true;
+  }
+
+  virtual void schedule_execute() 
+  {
+    player -> last_foreground_action = current_action;
+    current_action -> schedule_execute();
+    current_action = current_action -> next;
+    if( ! current_action ) current_action = next;
+  }
+
+  virtual bool ready()
+  {
+    if( ! current_action ) return false;
+
+    return current_action -> ready();
+  }
+};
+
+// Restore Mana Action =====================================================
+
+struct restore_mana_t : public action_t
+{
+  double mana;
+
+  restore_mana_t( player_t* player, const std::string& options_str ) : 
+    action_t( ACTION_OTHER, "restore_mana", player ), mana(0)
+  {
+    option_t options[] =
+    {
+      { "mana", OPT_FLT, &mana },
+      { NULL }
+    };
+    parse_options( options, options_str );
+
+    trigger_gcd = 0;
+  }
+
+  virtual void execute() 
+  {
+    double mana_missing = player -> resource_max[ RESOURCE_MANA ] - player -> resource_current[ RESOURCE_MANA ];
+    double mana_gain = mana;
+
+    if( mana_gain == 0 || mana_gain > mana_missing ) mana_gain = mana_missing;
+
+    if( mana_gain > 0 )
+    {
+      player -> resource_gain( RESOURCE_MANA, mana_gain, player -> gains.restore_mana );
+    }
+  }
+};
+
 // Wait Until Ready Action ===================================================
 
 struct wait_until_ready_t : public action_t
@@ -1860,84 +1979,15 @@ struct wait_until_ready_t : public action_t
   }
 };
 
-// Restore Mana Action =====================================================
-
-struct restore_mana_t : public action_t
-{
-  double mana;
-
-  restore_mana_t( player_t* player, const std::string& options_str ) : 
-    action_t( ACTION_OTHER, "restore_mana", player ), mana(0)
-  {
-    option_t options[] =
-    {
-      { "mana", OPT_FLT, &mana },
-      { NULL }
-    };
-    parse_options( options, options_str );
-
-    trigger_gcd = 0;
-  }
-
-  virtual void execute() 
-  {
-    double mana_missing = player -> resource_max[ RESOURCE_MANA ] - player -> resource_current[ RESOURCE_MANA ];
-    double mana_gain = mana;
-
-    if( mana_gain == 0 || mana_gain > mana_missing ) mana_gain = mana_missing;
-
-    if( mana_gain > 0 )
-    {
-      player -> resource_gain( RESOURCE_MANA, mana_gain, player -> gains.restore_mana );
-    }
-  }
-};
-
-// Cycle Action ============================================================
-
-struct cycle_action_t : public action_t
-{
-  action_t* current_action;
-
-  cycle_action_t( player_t* player, const std::string& options_str ) : 
-    action_t( ACTION_CYCLE, "cycle", player ), current_action(0)
-  {
-  }
-
-  virtual void reset()
-  {
-    current_action = next;
-    if( ! current_action )
-    {
-      printf( "simcraft: player %s has no actions after 'cycle'\n", player -> name() );
-      exit( 0 );
-    }
-  }
-
-  virtual void schedule_execute() 
-  {
-    player -> last_foreground_action = current_action;
-    current_action -> schedule_execute();
-    current_action = current_action -> next;
-    if( ! current_action ) current_action = next;
-  }
-
-  virtual bool ready()
-  {
-    if( ! current_action ) return false;
-
-    return current_action -> ready();
-  }
-};
-
 // player_t::create_action ==================================================
 
 action_t* player_t::create_action( const std::string& name,
                                    const std::string& options_str )
 {
+  if( name == "cycle"        ) return new            cycle_t( this, options_str );
+  if( name == "reset_seq"    ) return new        reset_seq_t( this, options_str );
   if( name == "restore_mana" ) return new     restore_mana_t( this, options_str );
   if( name == "wait"         ) return new wait_until_ready_t( this, options_str );
-  if( name == "cycle"        ) return new     cycle_action_t( this, options_str );
 
   return 0;
 }

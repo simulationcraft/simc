@@ -3233,6 +3233,7 @@ void rogue_t::raid_event( action_t* a )
 
     if( p -> party != 0 &&
         p -> party == party  &&
+	p -> type != PLAYER_GUARDIAN &&
 	a -> result == RESULT_CRIT && 
 	a -> special &&
 	! a -> proc &&

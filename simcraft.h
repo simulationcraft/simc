@@ -167,7 +167,7 @@ enum result_type {
   RESULT_MAX
 };
 
-enum action_type { ACTION_USE=0, ACTION_SPELL, ACTION_ATTACK, ACTION_OTHER, ACTION_CYCLE, ACTION_SEQUENCE, ACTION_MAX };
+enum action_type { ACTION_USE=0, ACTION_SPELL, ACTION_ATTACK, ACTION_OTHER, ACTION_MAX };
 
 enum school_type {
   SCHOOL_NONE=0,
@@ -1082,6 +1082,7 @@ struct player_t
   proc_t*   get_proc  ( const std::string& name );
   stats_t*  get_stats ( const std::string& name );
   uptime_t* get_uptime( const std::string& name );
+  void      reset_sequence( const std::string& name );
 };
 
 // Pet =======================================================================
@@ -1333,11 +1334,12 @@ struct action_t
   double min_current_time, max_current_time;
   double min_time_to_die, max_time_to_die;
   double min_health_percentage, max_health_percentage;
+  bool is_terminal, seq_completed;
+  std::string seq_str;
   std::string sync_str;
   action_t*   sync_action;
   action_t** observer;
   action_t* next;
-  action_t* sequence;
 
   action_t( int type, const char* name, player_t* p=0, int r=RESOURCE_NONE, int s=SCHOOL_NONE, int t=TREE_NONE, bool special=false );
   virtual ~action_t() {}
@@ -1372,6 +1374,7 @@ struct action_t
   virtual void   update_ready();
   virtual void   update_stats( int type );
   virtual bool   ready();
+  virtual bool   terminal();
   virtual void   reset();
   virtual void   cancel();
   virtual const char* name() { return name_str.c_str(); }

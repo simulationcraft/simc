@@ -416,8 +416,11 @@ struct mirror_image_pet_t : public pet_t
 
   struct mirror_blast_t : public spell_t
   {
-    mirror_blast_t( mirror_image_pet_t* mirror_image ):
-      spell_t( "mirror_blast", mirror_image, RESOURCE_MANA, SCHOOL_FIRE, TREE_FIRE ) 
+    action_t* next_in_sequence;
+
+    mirror_blast_t( mirror_image_pet_t* mirror_image, action_t* nis ):
+      spell_t( "mirror_blast", mirror_image, RESOURCE_MANA, SCHOOL_FIRE, TREE_FIRE ),
+      next_in_sequence( nis )
     {
       base_cost         = 0;
       base_execute_time = 0;
@@ -441,13 +444,17 @@ struct mirror_image_pet_t : public pet_t
       {
         stack_winters_chill( this, 1.00 );
       }
+      if( next_in_sequence ) next_in_sequence -> schedule_execute();
     }
   };
 
   struct mirror_bolt_t : public spell_t
   {
-    mirror_bolt_t( mirror_image_pet_t* mirror_image ):
-      spell_t( "mirror_bolt", mirror_image, RESOURCE_MANA, SCHOOL_FROST, TREE_FROST ) 
+    action_t* next_in_sequence;
+
+    mirror_bolt_t( mirror_image_pet_t* mirror_image, action_t* nis ):
+      spell_t( "mirror_bolt", mirror_image, RESOURCE_MANA, SCHOOL_FROST, TREE_FROST ),
+      next_in_sequence( nis )
     {
       base_cost         = 0;
       base_execute_time = 3.0;
@@ -455,6 +462,11 @@ struct mirror_image_pet_t : public pet_t
       direct_power_mod  = 0.30;
       may_crit          = true;
       background        = true;
+    }
+    virtual void execute()
+    {
+      spell_t::execute();
+      if( next_in_sequence ) next_in_sequence -> schedule_execute();
     }
     virtual void player_buff()
     {
@@ -469,21 +481,15 @@ struct mirror_image_pet_t : public pet_t
   {
     for( int i=0; i < num_images; i++ )
     {
-      action_t* first_action=0;
-      action_t** prev_action = &first_action;
+      action_t* front=0;
 
       for( int j=0; j < num_rotations; j++ )
       {
-        spell_t* blast = new mirror_blast_t( this );
-        spell_t* bolt1 = new mirror_bolt_t ( this );
-        spell_t* bolt2 = new mirror_bolt_t ( this );
-
-        *prev_action = blast;
-        blast -> sequence = bolt1;
-        bolt1 -> sequence = bolt2;
-        prev_action = &( bolt2 -> sequence );
+        front = new mirror_bolt_t ( this, front );
+	front = new mirror_bolt_t ( this, front );
+        front = new mirror_blast_t( this, front );
       }
-      sequences.push_back( first_action );
+      sequences.push_back( front );
     }    
   }
   virtual void init_base()
