@@ -1059,6 +1059,7 @@ struct player_t
   static player_t * create_rogue       ( sim_t* sim, std::string& name );
   static player_t * create_shaman      ( sim_t* sim, std::string& name );
   static player_t * create_warlock     ( sim_t* sim, std::string& name );
+  static player_t * create_warrior     ( sim_t* sim, std::string& name );
 
   bool is_pet() { return type == PLAYER_PET || type == PLAYER_GUARDIAN; }
 
@@ -1070,6 +1071,7 @@ struct player_t
   rogue_t       * cast_rogue       () { assert( type == ROGUE        ); return (rogue_t       *) this; }
   shaman_t      * cast_shaman      () { assert( type == SHAMAN       ); return (shaman_t      *) this; }
   warlock_t     * cast_warlock     () { assert( type == WARLOCK      ); return (warlock_t     *) this; }
+  warrior_t     * cast_warrior     () { assert( type == WARRIOR      ); return (warrior_t     *) this; }
   pet_t         * cast_pet         () { assert( is_pet()             ); return (pet_t         *) this; }
 
   bool      in_gcd() { return gcd_ready > sim -> current_time; }

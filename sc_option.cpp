@@ -404,6 +404,10 @@ bool option_t::parse( sim_t*       sim,
   {
     sim -> active_player = player_t::create_warlock( sim, value );
   }
+  else if( name == "warrior" )
+  {
+    sim -> active_player = player_t::create_warrior( sim, value );
+  }
   else if( name == "pet" ) 
   { 
     sim -> active_player = sim -> active_player -> create_pet( value );
