@@ -17,12 +17,12 @@ enum rune_type {
 #define RUNE_TYPE_MASK  3
 #define RUNE_SLOT_MAX   6
 
-struct rune_t
+struct dk_rune_t
 {
 	double cooldown_ready;
 	int    type;
 
-  rune_t() : cooldown_ready(0), type(RUNE_TYPE_NONE) {}
+  dk_rune_t() : cooldown_ready(0), type(RUNE_TYPE_NONE) {}
 
   bool is_death(                     ) const { return (type & RUNE_TYPE_DEATH) != 0;                          }
 	bool is_ready( double current_time ) const { return cooldown_ready <= current_time;                         }
@@ -217,7 +217,7 @@ struct death_knight_t : public player_t
 
   struct runes_t
   {
-	  rune_t slot[RUNE_SLOT_MAX];
+	  dk_rune_t slot[RUNE_SLOT_MAX];
 
 	  runes_t()    { for( int i = 0; i < RUNE_SLOT_MAX; ++i ) slot[i].type = RUNE_TYPE_BLOOD + (i >> 1); }
 	  void reset() { for( int i = 0; i < RUNE_SLOT_MAX; ++i ) slot[i].reset();                           }
@@ -371,7 +371,7 @@ group_runes ( player_t* player, int blood, int frost, int unholy, bool* group )
   // Selecting available non-death runes to satisfy cost
 	for( int i = 0; i < RUNE_SLOT_MAX; ++i )
 	{
-		rune_t& r = p -> _runes.slot[i];
+		dk_rune_t& r = p -> _runes.slot[i];
 		if (r.is_ready(t) && ! r.is_death() && cost[r.get_type()] > 0)
 		{
 			--cost[r.get_type()];
@@ -383,7 +383,7 @@ group_runes ( player_t* player, int blood, int frost, int unholy, bool* group )
   // Selecting available death runes to satisfy remaining cost
 	for( int i = 0; cost[0] > 0 && i < RUNE_SLOT_MAX; ++i )
 	{
-		rune_t& r = p -> _runes.slot[i];
+		dk_rune_t& r = p -> _runes.slot[i];
 		if (r.is_ready(t) && r.is_death())
 		{
 			--cost[0];
