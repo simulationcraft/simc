@@ -43,6 +43,7 @@ SRC =\
 	sc_action.cpp		\
 	sc_attack.cpp		\
 	sc_consumable.cpp	\
+	sc_death_knight.cpp	\
 	sc_druid.cpp		\
 	sc_enchant.cpp		\
 	sc_event.cpp		\
@@ -66,6 +67,7 @@ SRC =\
 	sc_unique_gear.cpp	\
 	sc_util.cpp		\
 	sc_warlock.cpp		\
+	sc_warrior.cpp	\
 	sc_weapon.cpp
 
 SRC_H   := $(filter %.h,   $(SRC))
