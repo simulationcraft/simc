@@ -280,6 +280,9 @@ const char* util_t::talent_tree_string( int tree )
   case TREE_AFFLICTION:  return "affliction";
   case TREE_DEMONOLOGY:  return "demonology";
   case TREE_DESTRUCTION: return "destruction";
+  case TREE_ARMS:        return "arms";
+  case TREE_FURY:        return "fury";
+  case TREE_PROTECTION:  return "protection";
   }
   return "unknown";
 }
