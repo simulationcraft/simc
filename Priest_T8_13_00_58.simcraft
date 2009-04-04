@@ -6,7 +6,7 @@ level=80
 talents=http://ptr.wowhead.com/?talent=bVcbhZZGxfVRfzcfqfzAo
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/fortitude/divine_spirit/inner_fire/shadow_form
 actions+=/shadow_fiend,trigger=6000/dispersion
-actions+=/shadow_word_pain,shadow_weaving_wait=1/mind_blast/devouring_plague/vampiric_touch/mind_flay
+actions+=/shadow_word_pain,shadow_weaving_wait=1/vampiric_touch/devouring_plague/mind_blast/mind_flay
 actions+=/mana_potion
 Priest_T8_Shadow_Gear.simcraft
 glyph_shadow_word_pain=1
