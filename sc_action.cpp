@@ -434,6 +434,20 @@ double action_t::calculate_tick_damage()
   return tick_dmg;
 }
 
+// action_t::calculate_weapon_damage =========================================
+
+double action_t::calculate_weapon_damage()
+{
+  double weapon_damage = normalize_weapon_damage ? weapon -> damage * 2.8 / weapon -> swing_time : weapon -> damage;
+  double weapon_speed  = normalize_weapon_speed  ? weapon -> normalized_weapon_speed() : weapon -> swing_time;
+
+  double hand_multiplier = ( weapon -> slot == SLOT_OFF_HAND ) ? 0.5 : 1.0;
+
+  double power_damage = weapon_speed * direct_power_mod * total_power();
+  
+  return ( weapon_damage + power_damage ) * weapon_multiplier * hand_multiplier;
+}
+
 // action_t::calculate_direct_damage =========================================
 
 double action_t::calculate_direct_damage()
@@ -459,14 +473,7 @@ double action_t::calculate_direct_damage()
 
   if( weapon && weapon_multiplier > 0 )
   {
-    double weapon_damage = normalize_weapon_damage ? weapon -> damage * 2.8 / weapon -> swing_time : weapon -> damage;
-    double weapon_speed  = normalize_weapon_speed  ? weapon -> normalized_weapon_speed() : weapon -> swing_time;
-
-    double hand_multiplier = ( weapon -> slot == SLOT_OFF_HAND ) ? 0.5 : 1.0;
-
-    double power_damage = weapon_speed * direct_power_mod * total_power();
-
-    direct_dmg  = base_direct_dmg + ( weapon_damage + power_damage ) * weapon_multiplier * hand_multiplier;
+    direct_dmg  = base_direct_dmg + calculate_weapon_damage();
     direct_dmg *= total_dd_multiplier();
   }
   else

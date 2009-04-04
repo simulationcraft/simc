@@ -1366,6 +1366,7 @@ struct action_t
   virtual bool   result_is_miss();
   virtual double calculate_direct_damage();
   virtual double calculate_tick_damage();
+  virtual double calculate_weapon_damage();
   virtual double armor();
   virtual double resistance();
   virtual void   consume_resource();

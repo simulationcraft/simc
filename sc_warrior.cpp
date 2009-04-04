@@ -14,6 +14,7 @@ enum warrior_stance { STANCE_NONE=0, STANCE_BATTLE, STANCE_BERSERKER, STANCE_DEF
 struct warrior_t : public player_t
 {
   // Active
+  action_t* active_deep_wounds;
   action_t* active_heroic_strike;
   int       active_stance;
   
@@ -141,6 +142,7 @@ struct warrior_t : public player_t
   warrior_t( sim_t* sim, std::string& name ) : player_t( sim, WARRIOR, name )
   {
     // Active
+    active_deep_wounds   = 0;
     active_heroic_strike = 0;
     active_stance        = STANCE_BATTLE; 
     
@@ -218,6 +220,7 @@ struct warrior_attack_t : public attack_t
     may_glance   = false;
     base_hit    += p -> talents.precision * 0.01;
     base_crit   += p -> talents.cruelty   * 0.01;
+    normalize_weapon_speed = true;
     if( special )
       base_crit_bonus_multiplier *= 1.0 + p -> talents.impale * 0.10;
   }
@@ -232,6 +235,65 @@ struct warrior_attack_t : public attack_t
 // ==========================================================================
 // Static Functions
 // ==========================================================================
+
+// trigger_deep_wounds ======================================================
+
+static void trigger_deep_wounds( action_t* a )
+{
+  warrior_t* p = a -> player -> cast_warrior();
+
+  if( ! p -> talents.deep_wounds )
+    return;
+
+  struct deep_wounds_t : public attack_t
+  {
+    deep_wounds_t( player_t* p ) : attack_t( "deep_wounds", p, RESOURCE_NONE, SCHOOL_BLEED )
+    {
+      may_miss    = false;
+      background  = true;
+      proc        = true;
+      trigger_gcd = 0;
+      base_cost   = 0;
+
+      base_multiplier = 1.0;
+      base_tick_time = 1.0;
+      num_ticks      = 6;
+      tick_power_mod = 0;
+    }
+    void player_buff() {}
+    void target_debuff( int dmg_type ) {}
+  };
+  double dmg;
+  if( a -> weapon == 0 )
+  {
+    // If no weapon is a attached to the attack, assume it would calculate with
+    // the mainhands damage.
+    a -> weapon = &( p -> main_hand_weapon );
+    dmg  = p -> talents.deep_wounds * 0.16 * a -> calculate_weapon_damage();
+    dmg *= a -> total_dd_multiplier();
+    a -> weapon = 0;
+  }
+  else 
+  {
+    dmg = p -> talents.deep_wounds * 0.16 * a -> calculate_weapon_damage();
+    dmg *= a -> total_dd_multiplier();
+  }
+
+
+  if( ! p -> active_deep_wounds ) p -> active_deep_wounds = new deep_wounds_t( p );
+
+  if( p -> active_deep_wounds -> ticking )
+  {
+    int num_ticks = p -> active_deep_wounds -> num_ticks;
+    int remaining_ticks = num_ticks - p -> active_deep_wounds -> current_tick;
+
+    dmg += p -> active_deep_wounds -> base_tick_dmg * remaining_ticks;
+
+    p -> active_deep_wounds -> cancel();
+  }
+  p -> active_deep_wounds -> base_tick_dmg = dmg / 6.0;
+  p -> active_deep_wounds -> schedule_tick();
+}
 
 // trigger_overpower_activation =============================================
 
@@ -283,6 +345,7 @@ void warrior_attack_t::execute()
 
   if( result == RESULT_CRIT )
   {
+    trigger_deep_wounds( this );
     if( p -> talents.flurry ) 
     {
       p -> aura_gain( "Flurry (3)" );
@@ -395,6 +458,9 @@ struct melee_t : public warrior_attack_t
     repeating       = true;
     trigger_gcd     = 0;
     base_cost       = 0;
+    
+    normalize_weapon_speed = false;
+    
     if( p -> dual_wield() ) base_hit -= 0.19;
     // Rage Conversion Value, needed for: damage done => rage gained
     rage_conversion_value = 0.0091107836 * p -> level * p -> level + 3.225598133* p -> level + 4.2652911;
@@ -560,7 +626,6 @@ struct bloodthirst_t : public warrior_attack_t
     base_cost         = 30;
     base_direct_dmg   = 1;
     direct_power_mod  = 0.50;
-    weapon_multiplier = 0;
 
   }
   virtual void execute()
@@ -599,7 +664,6 @@ struct mortal_strike_t : public warrior_attack_t
     cooldown               = 6.0 - ( p -> talents.improved_mortal_strike / 3.0 );
     base_multiplier       *= 1 + util_t::talent_rank( p -> talents.improved_mortal_strike, 3, 0.03, 0.06, 0.10)
                                + ( p -> glyphs.mortal_strike ? 0.10 : 0.0 );
-    normalize_weapon_speed = true;
     
     weapon = &( p -> main_hand_weapon );
   }
@@ -626,7 +690,6 @@ struct overpower_t : public warrior_attack_t
     base_crit      += p -> talents.improved_overpower * 0.25;
     base_direct_dmg = 1;
     cooldown   = 5.0 - p -> talents.unrelenting_assault;
-    normalize_weapon_speed = true;
     stancemask = STANCE_BATTLE;
     
     weapon = &( p -> main_hand_weapon );
@@ -673,7 +736,6 @@ struct whirlwind_t : public warrior_attack_t
     base_multiplier       *= 1 + p -> talents.improved_whirlwind * 0.10 + p -> talents.unending_fury * 0.02;
     base_direct_dmg        = 1;
 
-    normalize_weapon_speed = true;
     
     stancemask = STANCE_BERSERKER;
 
