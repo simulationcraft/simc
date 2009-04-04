@@ -9,10 +9,13 @@
 // Warrior
 // ==========================================================================
 
+enum warrior_stance { STANCE_NONE=0, STANCE_BATTLE, STANCE_BERSERKER, STANCE_DEFENSE=4 };
+
 struct warrior_t : public player_t
 {
   // Active
   action_t* active_heroic_strike;
+  int       active_stance;
   
   // action_t* ;
 
@@ -133,6 +136,7 @@ struct warrior_t : public player_t
   {
     // Active
     active_heroic_strike = 0;
+    active_stance        = STANCE_BATTLE; 
     
     // Gains
     gains_mh_attack = get_gain( "mh_attack" );
@@ -152,6 +156,8 @@ struct warrior_t : public player_t
   // Character Definition
   virtual void      init_base();
   virtual void      combat_begin();
+  virtual double    composite_attack_power_multiplier();
+  virtual double    composite_attribute_multiplier(int attr);
   virtual void      reset();
   virtual void      regen( double periodicity );
   virtual bool      get_talent_trees( std::vector<int*>& arms, std::vector<int*>& fury, std::vector<int*>& protection );
@@ -160,6 +166,32 @@ struct warrior_t : public player_t
   virtual int       primary_resource() { return RESOURCE_RAGE; }
 
 };
+
+// warrior_t::composite_attack_power_multiplier ============================
+
+double warrior_t::composite_attack_power_multiplier()
+{
+  double m = attack_power_multiplier;
+
+  if( sim -> P309 && active_stance == STANCE_BERSERKER )
+  {
+    m *= 1 + talents.improved_berserker_stance * 0.02;
+  }
+  return m;
+}
+
+// warrior_t::composite_attribute_multiplier ===============================
+
+double warrior_t::composite_attribute_multiplier( int attr )
+{
+  double m = attribute_multiplier[ attr ]; 
+  if( attr == ATTR_STRENGTH && ! sim -> P309 && active_stance == STANCE_BERSERKER )
+  {
+    m *= 1 + talents.improved_berserker_stance * 0.04;
+  }
+  return m;
+}
+
 
 namespace { // ANONYMOUS NAMESPACE =========================================
 
@@ -170,10 +202,11 @@ namespace { // ANONYMOUS NAMESPACE =========================================
 struct warrior_attack_t : public attack_t
 {
   double min_rage, max_rage;
-
+  int stancemask;
   warrior_attack_t( const char* n, player_t* player, int s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true  ) : 
     attack_t( n, player, RESOURCE_RAGE, s, t, special ), 
-    min_rage(0), max_rage(0)
+    min_rage(0), max_rage(0), 
+    stancemask(STANCE_BATTLE|STANCE_BERSERKER|STANCE_DEFENSE)
   {
     warrior_t* p = player -> cast_warrior();
     may_glance   = false;
@@ -231,11 +264,13 @@ void warrior_attack_t::execute()
   warrior_t* p = player -> cast_warrior();
 
   if( result == RESULT_CRIT )
+  {
     if( p -> talents.flurry ) 
     {
       p -> aura_gain( "Flurry (3)" );
       p -> _buffs.flurry = 3;
     }
+  }
 }
 
 // warrior_attack_t::player_buff ============================================
@@ -275,6 +310,19 @@ void warrior_attack_t::player_buff()
       }
     }
   }
+  if( p -> active_stance == STANCE_BATTLE)
+  {
+    // A balanced combat stance
+  }
+  else if( p -> active_stance == STANCE_BERSERKER )
+  {
+    player_crit += 0.03;
+    
+  }
+  else if( p -> active_stance == STANCE_DEFENSE )
+  {
+    player_multiplier *= 1.0 - 0.1;
+  }
 }
 
 // warrior_attack_t::ready() ================================================
@@ -293,7 +341,11 @@ bool warrior_attack_t::ready()
   if( max_rage > 0 )
     if( p -> resource_current[ RESOURCE_RAGE ] > max_rage )
       return false;
-
+  
+  // Attack vailable in current stance?
+  if( ( stancemask & p -> active_stance ) == 0)
+    return false;
+    
   return true;
 }
 
@@ -487,6 +539,41 @@ struct bloodthirst_t : public warrior_attack_t
   }
 };
 
+// Mortal Strike =============================================================
+
+struct mortal_strike_t : public warrior_attack_t
+{
+  mortal_strike_t( player_t* player, const std::string& options_str ) : 
+    warrior_attack_t( "mortal_strike",  player, SCHOOL_PHYSICAL, TREE_FURY )
+  {
+    warrior_t* p = player -> cast_warrior();
+    assert( p -> talents.mortal_strike );
+    option_t options[] =
+    {
+      { NULL }
+    };
+    parse_options( options, options_str );
+    
+    static rank_t ranks[] =
+    {
+      { 80, 8, 380, 380, 0, 30 },
+      { 75, 7, 320, 320, 0, 30 },
+      { 70, 6, 210, 210, 0, 30 },
+      { 66, 5, 185, 185, 0, 30 },
+      { 60, 4, 160, 160, 0, 30 },
+      { 0, 0 }
+    };
+    init_rank( ranks );
+    
+    cooldown               = 6.0 - ( p -> talents.improved_mortal_strike / 3.0 );
+    base_direct_dmg        = 1;
+    base_multiplier       *= 1 + util_t::talent_rank( p -> talents.improved_mortal_strike, 3, 0.03, 0.06, 0.10);
+    normalize_weapon_speed = true;
+
+
+  }
+};
+
 // Whirlwind ===============================================================
 
 struct whirlwind_t : public warrior_attack_t
@@ -501,14 +588,17 @@ struct whirlwind_t : public warrior_attack_t
       { NULL }
     };
     parse_options( options, options_str );
-    
+
     cooldown               = 10.0;
-    
+
     base_cost              = 25;
-    base_multiplier       *= 1 + p -> talents.improved_whirlwind * 0.10;
+    base_multiplier       *= 1 + p -> talents.improved_whirlwind * 0.10 + p -> talents.unending_fury * 0.02;
     base_direct_dmg        = 1;
 
     normalize_weapon_speed = true;
+    
+    stancemask = STANCE_BERSERKER;
+
     weapon = &( p -> main_hand_weapon );
   }
 
@@ -537,6 +627,63 @@ struct whirlwind_t : public warrior_attack_t
 // Warrior Spells
 // =========================================================================
 
+// Stance ==================================================================
+
+struct stance_t : public spell_t
+{
+  int switch_to_stance;
+  stance_t( player_t* player, const std::string& options_str ) : 
+    spell_t( "stance", player ), switch_to_stance(0)
+  {
+    warrior_t* p = player -> cast_warrior();
+
+    std::string stance_str;
+    option_t options[] =
+    {
+      { "choose",  OPT_STRING, &stance_str     },
+      { NULL }
+    };
+    parse_options( options, options_str );
+    
+    if( ! stance_str.empty() )
+    {
+      if( stance_str == "battle" )
+        switch_to_stance = STANCE_BATTLE;
+      else if( stance_str == "berserker" || stance_str == "zerker" )
+        switch_to_stance = STANCE_BERSERKER;
+      else if( stance_str == "def" || stance_str == "defensive" )
+        switch_to_stance = STANCE_DEFENSE;
+    }
+    if( switch_to_stance == 0)
+      switch_to_stance = p -> active_stance;
+
+    trigger_gcd = 0;
+    cooldown    = 1.0;
+  }
+
+  virtual void execute()
+  {
+    const char* stance_name[] = { "Unknown Stance",
+                                  "Battle Stance",
+                                  "Berserker Stance",
+                                  "Unpossible Stance",
+                                  "Defensive Stance"};
+    warrior_t* p = player -> cast_warrior();
+    p -> aura_loss( stance_name[ p -> active_stance  ]);
+    p -> active_stance = switch_to_stance;
+    p -> aura_gain( stance_name[ p -> active_stance  ]);
+    update_ready();
+  }
+  
+  virtual bool ready()
+  {
+    warrior_t* p = player -> cast_warrior();
+
+    return p -> active_stance != switch_to_stance;
+  }
+};
+
+
 
 } // ANONYMOUS NAMESPACE ===================================================
 
@@ -552,6 +699,8 @@ action_t* warrior_t::create_action( const std::string& name,
   if( name == "auto_attack"         ) return new auto_attack_t        ( this, options_str );
   if( name == "bloodthirst"         ) return new bloodthirst_t        ( this, options_str );
   if( name == "heroic_strike"       ) return new heroic_strike_t      ( this, options_str );
+  if( name == "mortal_strike"       ) return new mortal_strike_t      ( this, options_str );
+  if( name == "stance"              ) return new stance_t             ( this, options_str );
   if( name == "whirlwind"           ) return new whirlwind_t          ( this, options_str );
 
   return player_t::create_action( name, options_str );
