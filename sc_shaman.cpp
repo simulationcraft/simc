@@ -1885,6 +1885,90 @@ struct searing_totem_t : public shaman_spell_t
   virtual double gcd() { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
 };
 
+// Magma Totem Spell =======================================================
+
+struct magma_totem_t : public shaman_spell_t
+{
+  magma_totem_t( player_t* player, const std::string& options_str ) : 
+    shaman_spell_t( "magma_totem", player, SCHOOL_FIRE, TREE_ELEMENTAL )
+  {
+    shaman_t* p = player -> cast_shaman();
+
+    option_t options[] =
+    {
+      { NULL }
+    };
+    parse_options( options, options_str );
+
+    static rank_t ranks[] =
+    {
+      { 78,  7, 371, 371, 0, 0.27 },
+      { 73,  6, 314, 314, 0, 0.27 },
+      { 65,  5, 180, 180, 0, 0.27 },
+      { 56,  4, 131, 131, 0, 0.27 },
+      { 0, 0 }
+    };
+    init_rank( ranks );
+
+    base_execute_time = 0; 
+    base_tick_time    = 2.0;
+    direct_power_mod  = 0.75 * base_tick_time / 15.0;
+    num_ticks         = 10;
+    may_crit          = true;
+    duration_group    = "fire_totem";
+    trigger_gcd       = 1.0;
+    base_multiplier  *= 1.0 + p -> talents.call_of_flame * 0.05;
+    base_hit         += p -> talents.elemental_precision * 0.01;
+
+    base_cost_reduction += ( p -> talents.totemic_focus    * 0.05 +
+			     p -> talents.mental_quickness * 0.02 );
+
+    base_crit_bonus_multiplier *= 1.0 + p -> talents.elemental_fury * 0.20;
+  }
+
+  // Odd things to handle:
+  // (1) Execute is guaranteed.
+  // (2) Each "tick" is like an "execute".
+  // (3) No hit/miss events are triggered.
+
+  virtual void execute() 
+  {
+    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
+    consume_resource();
+    player_buff();
+    schedule_tick();
+    update_ready();
+    direct_dmg = 0;
+    update_stats( DMG_DIRECT );
+    player -> action_finish( this );
+  }
+
+  virtual void tick() 
+  {
+    if( sim -> debug ) report_t::log( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
+    may_resist = false;
+    target_debuff( DMG_DIRECT );
+    calculate_result();
+    may_resist = true;
+    if( result_is_hit() )
+    {
+      calculate_direct_damage();
+      if( direct_dmg > 0 )
+      {
+        tick_dmg = direct_dmg;
+        assess_damage( tick_dmg, DMG_OVER_TIME );
+      }
+    }
+    else
+    {
+      if( sim -> log ) report_t::log( sim, "%s avoids %s (%s)", sim -> target -> name(), name(), util_t::result_type_string( result ) );
+    }
+    update_stats( DMG_OVER_TIME );
+  }
+
+  virtual double gcd() { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
+};
+
 // Totem of Wrath Spell =====================================================
 
 struct totem_of_wrath_t : public shaman_spell_t
@@ -2949,6 +3033,7 @@ action_t* shaman_t::create_action( const std::string& name,
   if( name == "mana_tide_totem"         ) return new          mana_tide_totem_t( this, options_str );
   if( name == "natures_swiftness"       ) return new        shamans_swiftness_t( this, options_str );
   if( name == "searing_totem"           ) return new            searing_totem_t( this, options_str );
+  if( name == "magma_totem"             ) return new              magma_totem_t( this, options_str );
   if( name == "shamanistic_rage"        ) return new         shamanistic_rage_t( this, options_str );
   if( name == "spirit_wolf"             ) return new        spirit_wolf_spell_t( this, options_str );
   if( name == "stormstrike"             ) return new              stormstrike_t( this, options_str );

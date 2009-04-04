@@ -4,8 +4,8 @@ shaman=Shaman_T8_16_55_00
 level=80
 talents=http://ptr.wowhead.com/?talent=hVhhVZhbxIoxdIhusRuVo
 actions=flask,type=endless_rage/food,type=fish_feast/windfury_weapon,weapon=main/flametongue_weapon,weapon=off
-actions+=/strength_of_earth_totem/windfury_totem/searing_totem/lightning_shield/bloodlust,time_to_die<=60
-actions+=/auto_attack/lightning_bolt,maelstrom=5/shamanistic_rage/spirit_wolf/earth_shock,ss_wait=1/stormstrike/earth_shock/lava_lash
+actions+=/strength_of_earth_totem/windfury_totem/bloodlust,time_to_die<=60
+actions+=/auto_attack/lightning_bolt,maelstrom=5/shamanistic_rage/stormstrike/earth_shock/magma_totem/lightning_shield/lava_lash/spirit_wolf
 
 # Gear: http://www.chardev.org/?template=149566
 gear_stamina=853
