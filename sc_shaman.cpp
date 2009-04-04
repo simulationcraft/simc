@@ -3063,7 +3063,8 @@ void shaman_t::init_rating()
 {
   player_t::init_rating();
 
-  rating.attack_haste *= 1.0 / 1.30;
+  if ( !sim -> P309 )
+    rating.attack_haste *= 1.0 / 1.30;
 }
 
 // shaman_t::init_base ========================================================

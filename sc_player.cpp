@@ -743,6 +743,11 @@ void player_t::init_actions()
 void player_t::init_rating() 
 {
   rating.init( level );
+
+  if ( sim -> P309 )
+  {
+    rating.armor_penetration *= 1.25;
+  }
 }
 
 // player_t::init_stats ====================================================
