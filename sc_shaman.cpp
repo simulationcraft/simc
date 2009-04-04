@@ -391,7 +391,7 @@ static void trigger_flametongue_weapon( attack_t* a )
       proc             = true;
       may_crit         = true;
       trigger_gcd      = 0;
-      direct_power_mod = 0.10;
+      direct_power_mod = 0.10; // Fix-Me. In 3.1 this scales with weapon speed.
       base_hit        += p -> talents.elemental_precision * 0.01;
 
       reset();
@@ -598,17 +598,15 @@ static void trigger_nature_vulnerability( attack_t* a )
   shaman_t* p = a -> player -> cast_shaman();
   event_t*& e = p -> _expirations.nature_vulnerability;
 
-  double duration;
+  double duration = 12.0;
 
   if( a -> sim -> P309 )
   {
     p -> _buffs.nature_vulnerability_charges = 2 + p -> talents.improved_stormstrike;
-    duration = 12.0;
   }
   else
   {
     p -> _buffs.nature_vulnerability_charges = 4;
-    duration = 10.0;
   }
    
   if( e )
@@ -936,7 +934,7 @@ struct melee_t : public shaman_attack_t
     shaman_t* p = player -> cast_shaman();
     if( p -> _buffs.flurry > 0 ) 
     {
-      t *= 1.0 / ( 1.0 + 0.05 * ( 1 + p -> talents.flurry + p -> tiers.t7_4pc_enhancement ) );
+      t *= 1.0 / ( 1.0 + 0.05 * ( ( sim -> P309 ? 1 : 0 ) + p -> talents.flurry + p -> tiers.t7_4pc_enhancement ) );
     }
     p -> uptimes_flurry -> update( p -> _buffs.flurry > 0 );
     return t;
@@ -1027,7 +1025,7 @@ struct stormstrike_t : public shaman_attack_t
     shaman_t* p = player -> cast_shaman();
 
     base_cost = p -> resource_base[ RESOURCE_MANA ] * 0.08;
-    cooldown  = 10.0;
+    cooldown  = ( sim -> P309 ? 10.0 : 8.0 );
     if( p -> tiers.t8_2pc_enhancement )
       base_multiplier *= 1.0 + 0.20;
 
@@ -1082,7 +1080,10 @@ double shaman_spell_t::cost()
   if( c == 0 ) return 0;
   double cr = cost_reduction();
   if( p -> _buffs.elemental_focus   ) cr += 0.40;
-  if( p -> _buffs.elemental_mastery ) cr += 0.20;
+  if ( sim -> P309 )
+  {
+    if( p -> _buffs.elemental_mastery ) cr += 0.20;
+  }
   c *= 1.0 - cr;
   if( p -> buffs.tier4_4pc ) c -= 270;
   if( c < 0 ) c = 0;
@@ -1119,7 +1120,7 @@ void shaman_spell_t::player_buff()
   spell_t::player_buff();
   if( p -> _buffs.elemental_mastery )
   {
-    player_crit += 0.20;
+    player_crit += ( sim -> P309 ? 0.20 : 0.15 );
   }
   if( p -> _buffs.nature_vulnerability && school == SCHOOL_NATURE )
   {
@@ -1276,8 +1277,13 @@ struct chain_lightning_t : public shaman_spell_t
 
   virtual void execute()
   {
+    shaman_t* p = player -> cast_shaman();
     shaman_spell_t::execute();
     event_t::early( player -> cast_shaman() -> _expirations.maelstrom_weapon );
+    if ( ( ! sim -> P309 ) && ( p -> _buffs.elemental_mastery == 1 ) )
+    {
+      p -> _buffs.elemental_mastery = 2;
+    }
     if( result_is_hit() )
     {
       trigger_lightning_overload( this, lightning_overload_stats, lightning_overload_chance );
@@ -1298,6 +1304,10 @@ struct chain_lightning_t : public shaman_spell_t
       {
         t *= ( 1.0 - p -> _buffs.maelstrom_weapon * 0.20 );
       }
+    }
+    if ( ( ! sim -> P309 ) && ( p -> _buffs.elemental_mastery == 1 ) )
+    {
+      t = 0;
     }
     return t;
   }
@@ -1391,8 +1401,13 @@ struct lightning_bolt_t : public shaman_spell_t
 
   virtual void execute()
   {
+    shaman_t* p = player -> cast_shaman();
     shaman_spell_t::execute();
     event_t::early( player -> cast_shaman() -> _expirations.maelstrom_weapon );
+    if ( ( ! sim -> P309 ) && ( p -> _buffs.elemental_mastery == 1 ) )
+    {
+      p -> _buffs.elemental_mastery = 2;
+    }
     if( result_is_hit() )
     {
       trigger_ashtongue_talisman( this );
@@ -1418,6 +1433,10 @@ struct lightning_bolt_t : public shaman_spell_t
       {
         t *= ( 1.0 - p -> _buffs.maelstrom_weapon * 0.20 );
       }
+    }
+    if ( ( ! sim -> P309 ) && ( p -> _buffs.elemental_mastery == 1 ) )
+    {
+      t = 0;
     }
     return t;
   }
@@ -1494,6 +1513,10 @@ struct lava_burst_t : public shaman_spell_t
   {
     shaman_t* p = player -> cast_shaman();
     shaman_spell_t::execute();
+    if ( ( ! sim -> P309 ) && ( p -> _buffs.elemental_mastery == 1 ) )
+    {
+      p -> _buffs.elemental_mastery = 2;
+    }
     if( result_is_hit() )
     {
       if( p -> active_flame_shock && ! p -> glyphs.flame_shock )
@@ -1502,6 +1525,17 @@ struct lava_burst_t : public shaman_spell_t
       }
     }
     p -> _cooldowns.lava_burst = cooldown_ready;
+  }
+
+  virtual double execute_time()
+  {
+    double t = shaman_spell_t::execute_time();
+    shaman_t* p = player -> cast_shaman();
+    if ( ( ! sim -> P309 ) && ( p -> _buffs.elemental_mastery == 1 ) )
+    {
+      t = 0;
+    }
+    return t;
   }
 
   virtual void player_buff()
@@ -1575,7 +1609,8 @@ struct elemental_mastery_t : public shaman_spell_t
         shaman_t* p = player -> cast_shaman();
         p -> aura_gain( "Elemental Mastery" );
         p -> _buffs.elemental_mastery = 1;
-        sim -> add_event( this, 30.0 );
+        // Fix-Me. Needs a shared cooldown with nature's swiftness in 3.1.0
+        sim -> add_event( this, ( sim -> P309 ? 30.0 : 15.0 ) );
       }
       virtual void execute()
       {
@@ -2617,9 +2652,18 @@ struct mana_spring_totem_t : public shaman_spell_t
     base_cost_reduction += ( p -> talents.totemic_focus    * 0.05 +
 			     p -> talents.mental_quickness * 0.02 );
 
-    regen = util_t::ability_rank( p -> level,  34.0,80,  30.0,76,  25.0,71,  20.0,65,  17.0,0 );
+    if ( sim -> P309 )
+    {
+      regen = util_t::ability_rank( p -> level,  34.0,80,  30.0,76,  25.0,71,  20.0,65,  17.0,0 );
 
-    regen *= 1.0 + p -> talents.restorative_totems * 0.05;
+      regen *= 1.0 + p -> talents.restorative_totems * 0.05;
+    }
+    else
+    {
+      regen = util_t::ability_rank( p -> level,  91.0,80,  82.0,76,  73.0,71,  41.0,65,  31.0,0 );
+
+      regen *= 1.0 + util_t::talent_rank( p -> talents.restorative_totems, 3, 0.07, 0.12, 0.20 );
+    }
   }
 
   virtual void execute() 
@@ -2666,7 +2710,7 @@ struct bloodlust_t : public shaman_spell_t
     harmful = false;
     base_cost = ( 0.26 * player -> resource_base[ RESOURCE_MANA ] );
     base_cost_reduction += p -> talents.mental_quickness * 0.02;
-    cooldown = 600;
+    cooldown = ( sim -> P309 ? 600 : 300 );
   }
 
   virtual void execute()
@@ -2683,7 +2727,7 @@ struct bloodlust_t : public shaman_spell_t
           {
             p -> aura_gain( "Bloodlust" );
             p -> buffs.bloodlust = 1;
-            p -> cooldowns.bloodlust = sim -> current_time + 300;
+            p -> cooldowns.bloodlust = sim -> current_time + ( sim -> P309 ? 300 : 600 );
           }
         }
         sim -> add_event( this, 40.0 );

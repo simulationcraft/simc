@@ -1003,7 +1003,7 @@ void player_t::combat_begin()
   if( sim -> overrides.battle_shout           ) buffs.battle_shout = 548;
   if( sim -> overrides.blessing_of_kings      ) buffs.blessing_of_kings = 1;
   if( sim -> overrides.blessing_of_might      ) buffs.blessing_of_might = 688;
-  if( sim -> overrides.blessing_of_wisdom     ) buffs.blessing_of_wisdom = 91;
+  if( sim -> overrides.blessing_of_wisdom     ) buffs.blessing_of_wisdom = 91*1.2;
   if( sim -> overrides.sanctified_retribution ) buffs.sanctified_retribution = 1;
   if( sim -> overrides.swift_retribution      ) buffs.swift_retribution = 1;
   if( sim -> overrides.arcane_brilliance      ) buffs.arcane_brilliance = 60;
@@ -1012,7 +1012,7 @@ void player_t::combat_begin()
   if( sim -> overrides.improved_divine_spirit ) buffs.improved_divine_spirit = 80;
   if( sim -> overrides.improved_moonkin_aura  ) buffs.improved_moonkin_aura = 1;
   if( sim -> overrides.leader_of_the_pack     ) buffs.leader_of_the_pack = 1;
-  if( sim -> overrides.mana_spring            ) buffs.mana_spring = 42.5;
+  if( sim -> overrides.mana_spring            ) buffs.mana_spring = ( sim -> P309 ? 42.5 : 91.0*1.2 );
   if( sim -> overrides.mark_of_the_wild       ) buffs.mark_of_the_wild = 52;
   if( sim -> overrides.moonkin_aura           ) buffs.moonkin_aura = 1;
   if( sim -> overrides.replenishment          ) buffs.replenishment = 1;
