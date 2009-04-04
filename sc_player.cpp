@@ -1091,8 +1091,6 @@ void player_t::reset()
   last_foreground_action = 0;
   last_action_time = 0;
 
-  init_resources( true );
-
   executing = 0;
   channeling = 0;
   in_combat = false;
@@ -1115,6 +1113,8 @@ void player_t::reset()
   expirations.reset();
   cooldowns.reset();
   
+  init_resources( true );
+
   for( action_t* a = action_list; a; a = a -> next ) 
   {
     a -> reset();
