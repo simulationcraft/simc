@@ -3143,8 +3143,8 @@ void rogue_t::init_base()
   initial_attack_power_multiplier  *= 1.0 + ( talents.savage_combat * 0.02 +
                                               talents.deadliness    * 0.02 );
 
-  base_attack_crit = -0.003;
-  initial_attack_crit_per_agility = rating_t::interpolate( level, 0.000355, 0.000250, 0.000120 );
+  base_attack_crit = -0.00298321;
+  initial_attack_crit_per_agility = rating_t::interpolate( level, 0.000355, 0.000250, 0.000120085 );
 
   base_attack_expertise = 0.25 * talents.weapon_expertise * 0.05;
 

@@ -2001,9 +2001,9 @@ pet_t* priest_t::create_pet( const std::string& pet_name )
 void priest_t::init_base()
 {
   // Dwarf Priest base stats
-  static base_stats_t base_stats_60 = { 60, 1397, 1376, 37, 36, 53, 119, 124, 0.007600, 0.023384 };
-  static base_stats_t base_stats_70 = { 70, 3391, 2620, 41, 41, 61, 144, 150, 0.012375, 0.011726 };
-  static base_stats_t base_stats_80 = { 80, 6960, 3863, 45, 47, 70, 173, 180, 0.012400, 0.011764 };
+  static base_stats_t base_stats_60 = { 60, 1397, 1376, 37, 36, 53, 119, 124, 0.0123765, 0.0317927 };
+  static base_stats_t base_stats_70 = { 70, 3391, 2620, 41, 41, 61, 144, 150, 0.0123765, 0.0317927 };
+  static base_stats_t base_stats_80 = { 80, 6960, 3863, 45, 47, 70, 173, 180, 0.0123765, 0.0317927 };
 
   attribute_base[ ATTR_STRENGTH  ] = rating_t::interpolate( level, base_stats_60.strength,  base_stats_70.strength,  base_stats_80.strength  );
   attribute_base[ ATTR_AGILITY   ] = rating_t::interpolate( level, base_stats_60.agility,   base_stats_70.agility,   base_stats_80.agility   );
@@ -2017,14 +2017,14 @@ void priest_t::init_base()
 
   base_spell_crit = rating_t::interpolate( level, base_stats_60.spell_crit, base_stats_70.spell_crit, base_stats_80.spell_crit );
 
-  initial_spell_crit_per_intellect = rating_t::interpolate( level, 0.01/60.0, 0.01/80.0, 0.01/166.6666709 );
+  initial_spell_crit_per_intellect = rating_t::interpolate( level, 0.01/60.0, 0.01/80.0, 0.01/166.79732 );
   initial_spell_power_per_spirit = ( talents.spiritual_guidance * 0.05 +
                                      talents.twisted_faith      * 0.02 );
 
   base_attack_power = -10;
   base_attack_crit  = rating_t::interpolate( level, base_stats_60.melee_crit, base_stats_70.melee_crit, base_stats_80.melee_crit );
   initial_attack_power_per_strength = 1.0;
-  initial_attack_crit_per_agility = rating_t::interpolate( level, 0.01/21.92982456, 0.01/24.93765586, 0.01/52.08333333 );
+  initial_attack_crit_per_agility = rating_t::interpolate( level, 0.01/21.92982456, 0.01/24.93765586, 0.01/52.19533582 );
 
   resource_base[ RESOURCE_HEALTH ] = rating_t::interpolate( level, base_stats_60.health, base_stats_70.health, base_stats_80.health );
   resource_base[ RESOURCE_MANA   ] = rating_t::interpolate( level, base_stats_60.mana,   base_stats_70.mana,   base_stats_80.mana   );

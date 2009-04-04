@@ -1163,8 +1163,8 @@ death_knight_t::init_base()
   base_attack_power = -20;
   initial_attack_power_per_strength = 2.0;
 
-  base_attack_crit = 0.0319;
-  initial_attack_crit_per_agility = rating_t::interpolate( level, 1 / 2000, 1 / 3200, 1 / 6250 );
+  base_attack_crit = 0.0318669;
+  initial_attack_crit_per_agility = rating_t::interpolate( level, 1 / 2000, 1 / 3200, 1 / 6244.965 );
 
   base_attack_expertise = 0.0025 * 0;
 

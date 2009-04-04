@@ -721,9 +721,9 @@ void warrior_t::init_base()
   
   // FIX ME!
   base_attack_power = -20;
-  base_attack_crit = 0.0319;
+  base_attack_crit = 0.031905;
   
-  initial_attack_crit_per_agility = rating_t::interpolate( level, 1 / 2000, 1 / 3200, 1 / 6250 ); 
+  initial_attack_crit_per_agility = rating_t::interpolate( level, 1 / 2000, 1 / 3200, 1 / 6256.61 ); 
   
   health_per_stamina = 10;
   

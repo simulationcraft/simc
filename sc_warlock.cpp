@@ -4747,13 +4747,13 @@ void warlock_t::init_base()
                                                   + ( ( talents.demonic_embrace ) ? 0.01 : 0 );
   }
 
-  base_spell_crit = 0.0170;
-  initial_spell_crit_per_intellect = rating_t::interpolate( level, 0.01/60.0, 0.01/80.0, 0.01/166.6 );
+  base_spell_crit = 0.0169966;
+  initial_spell_crit_per_intellect = rating_t::interpolate( level, 0.01/60.0, 0.01/80.0, 0.01/166.79732 );
 
   base_attack_power = -10;
-  base_attack_crit  = 0.02;
+  base_attack_crit  = 0.0262233;
   initial_attack_power_per_strength = 1.0;
-  initial_attack_crit_per_agility = rating_t::interpolate( level, 0.01/16.0, 0.01/24.9, 0.01/52.1 );
+  initial_attack_crit_per_agility = rating_t::interpolate( level, 0.01/16.0, 0.01/24.9, 0.01/50.01500 );
 
   // FIXME! Make this level-specific.
   resource_base[ RESOURCE_HEALTH ] = 3200;

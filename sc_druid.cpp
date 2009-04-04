@@ -3187,18 +3187,18 @@ void druid_t::init_base()
     }
   }
 
-  base_spell_crit = 0.0185;
-  initial_spell_crit_per_intellect = rating_t::interpolate( level, 0.01/60.0, 0.01/80.0, 0.01/166.6 );
+  base_spell_crit = 0.0185298;
+  initial_spell_crit_per_intellect = rating_t::interpolate( level, 0.01/60.0, 0.01/80.0, 0.01/166.79732 );
   initial_spell_power_per_intellect = talents.lunar_guidance * 0.04;
   initial_spell_power_per_spirit = ( talents.improved_moonkin_form * 0.05 );
 
   base_attack_power = ( level * 2 ) - 20;
-  base_attack_crit  = 0.01;
+  base_attack_crit  = 0.0747516;
   base_attack_expertise = 0.25 * talents.primal_precision * 0.05;
 
   initial_attack_power_per_agility  = 1.0;
   initial_attack_power_per_strength = 2.0;
-  initial_attack_crit_per_agility = rating_t::interpolate( level, 0.01/25.0, 0.01/40.0, 0.01/83.3 );
+  initial_attack_crit_per_agility = rating_t::interpolate( level, 0.01/25.0, 0.01/40.0, 0.01/83.3104 );
 
   // FIXME! Make this level-specific.
   resource_base[ RESOURCE_HEALTH ] = 3600;

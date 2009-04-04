@@ -3223,14 +3223,14 @@ void mage_t::init_base()
   attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.0 + talents.arcane_mind * 0.03;
   attribute_multiplier_initial[ ATTR_SPIRIT    ] *= 1.0 + talents.student_of_the_mind * ( 0.1 / 3.0 );
 
-  base_spell_crit = 0.0125;
-  initial_spell_crit_per_intellect = rating_t::interpolate( level, 0.01/60.0, 0.01/80.0, 0.01/166.6 );
+  base_spell_crit = 0.00907381;
+  initial_spell_crit_per_intellect = rating_t::interpolate( level, 0.01/60.0, 0.01/80.0, 0.01/166.79732 );
   initial_spell_power_per_intellect = talents.mind_mastery * 0.03;
 
   base_attack_power = -10;
-  base_attack_crit  = 0.03;
+  base_attack_crit  = 0.0345777;
   initial_attack_power_per_strength = 1.0;
-  initial_attack_crit_per_agility = rating_t::interpolate( level, 0.01/16.0, 0.01/24.9, 0.01/52.1 );
+  initial_attack_crit_per_agility = rating_t::interpolate( level, 0.01/16.0, 0.01/24.9, 0.01/51.84598 );
 
   // FIXME! Make this level-specific.
   resource_base[ RESOURCE_HEALTH ] = 3200;

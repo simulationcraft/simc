@@ -3132,14 +3132,14 @@ void shaman_t::init_base()
     base_attack_expertise = 0.25 * talents.unleashed_rage * 0.03;
   }
 
-  base_spell_crit = 0.0225;
-  initial_spell_crit_per_intellect = rating_t::interpolate( level, 0.01/60.0, 0.01/80.0, 0.01/166.6 );
+  base_spell_crit = 0.0220045;
+  initial_spell_crit_per_intellect = rating_t::interpolate( level, 0.01/60.0, 0.01/80.0, 0.01/166.79732 );
 
   base_attack_power = ( level * 2 ) - 20;
-  base_attack_crit  = 0.0167;
+  base_attack_crit  = 0.0292234;
   initial_attack_power_per_strength = 1.0;
   initial_attack_power_per_agility  = 1.0;
-  initial_attack_crit_per_agility = rating_t::interpolate( level, 0.01/25.0, 0.01/40.0, 0.01/83.3 );
+  initial_attack_crit_per_agility = rating_t::interpolate( level, 0.01/25.0, 0.01/40.0, 0.01/83.388 );
 
 
   resource_base[ RESOURCE_HEALTH ] = 3185;

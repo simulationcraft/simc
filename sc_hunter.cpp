@@ -3752,11 +3752,11 @@ void hunter_t::init_base()
   attribute_multiplier_initial[ ATTR_STAMINA ]   *= 1.0 + talents.survivalist * 0.02;
 
   base_attack_power = level * 2 - 10;
-  base_attack_crit  = -0.0153;
+  base_attack_crit  = -0.0153388;
 
   initial_attack_power_per_strength = 0.0;
   initial_attack_power_per_agility  = 1.0;
-  initial_attack_crit_per_agility   = rating_t::interpolate( level, 0.01/33.0, 0.01/40.0, 0.01/83.33 );
+  initial_attack_crit_per_agility   = rating_t::interpolate( level, 0.01/33.0, 0.01/40.0, 0.01/83.2875252 );
 
   resource_base[ RESOURCE_HEALTH ] = 4579;
   resource_base[ RESOURCE_MANA   ] = rating_t::interpolate( level, 1500, 3383, 5046 );
