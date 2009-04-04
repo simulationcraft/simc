@@ -2396,8 +2396,6 @@ struct windfury_weapon_t : public shaman_spell_t
     trigger_gcd = 0;
 
     bonus_power = util_t::ability_rank( p -> level,  1250.0,80,  1090.0,76,  835.0,71,  445.0,0  );
-
-    if( p -> glyphs.windfury_weapon ) bonus_power *= 1.40;
   }
 
   virtual void execute()
