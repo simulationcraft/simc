@@ -23,7 +23,7 @@ struct warrior_t : public player_t
   struct _buffs_t
   {
     int flurry;
-    
+    double overpower; // Time overpower activation fades, as there is only a 5sec window to use it
     void reset() { memset( (void*) this, 0x00, sizeof( _buffs_t ) ); }
     _buffs_t() { reset(); }
   };
@@ -52,7 +52,7 @@ struct warrior_t : public player_t
   gain_t* gains_oh_attack;
 
   // Procs
-  // proc_t* ;
+  proc_t* procs_glyph_overpower;
   
   // Up-Times
   uptime_t* uptimes_flurry;
@@ -128,6 +128,12 @@ struct warrior_t : public player_t
 
   struct glyphs_t
   {
+    int execution;
+    int heroic_strike;
+    int mortal_strike;
+    int overpower;
+    int rending;
+    int whirlwind;
     glyphs_t() { memset( (void*) this, 0x0, sizeof( glyphs_t ) ); }
   };
   glyphs_t glyphs;
@@ -143,7 +149,7 @@ struct warrior_t : public player_t
     gains_oh_attack = get_gain( "oh_attack" );
 
     // Procs
-
+    procs_glyph_overpower = get_proc( "glyph_of_overpower" );
     // Up-Times
     uptimes_flurry                = get_uptime( "flurry" );
   
@@ -223,6 +229,18 @@ struct warrior_attack_t : public attack_t
   virtual bool   ready();
 };
 
+// ==========================================================================
+// Static Functions
+// ==========================================================================
+
+// trigger_overpower_activation =============================================
+
+static void trigger_overpower_activation( warrior_t* p )
+{
+  p -> _buffs.overpower = p -> sim -> current_time + 5.0;
+  p -> aura_gain( "Overpower Activation" );
+}
+
 // =========================================================================
 // Warrior Attacks
 // =========================================================================
@@ -269,6 +287,18 @@ void warrior_attack_t::execute()
     {
       p -> aura_gain( "Flurry (3)" );
       p -> _buffs.flurry = 3;
+    }
+  }
+  else if( result == RESULT_DODGE  )
+  {
+    trigger_overpower_activation( p );
+  }
+  else if( result == RESULT_PARRY )
+  {
+    if( p -> glyphs.overpower && sim -> roll( 0.50 ) ) 
+    {
+      trigger_overpower_activation( p );
+      p -> procs_glyph_overpower -> occur();
     }
   }
 }
@@ -526,10 +556,11 @@ struct bloodthirst_t : public warrior_attack_t
     };
     parse_options( options, options_str );
     
-    cooldown               = 5.0;
-    base_cost              = 30;
-    base_direct_dmg        = 1;
-    direct_power_mod       = 0.50;
+    cooldown          = 5.0;
+    base_cost         = 30;
+    base_direct_dmg   = 1;
+    direct_power_mod  = 0.50;
+    weapon_multiplier = 0;
 
   }
   virtual void execute()
@@ -566,11 +597,58 @@ struct mortal_strike_t : public warrior_attack_t
     init_rank( ranks );
     
     cooldown               = 6.0 - ( p -> talents.improved_mortal_strike / 3.0 );
-    base_direct_dmg        = 1;
-    base_multiplier       *= 1 + util_t::talent_rank( p -> talents.improved_mortal_strike, 3, 0.03, 0.06, 0.10);
+    base_multiplier       *= 1 + util_t::talent_rank( p -> talents.improved_mortal_strike, 3, 0.03, 0.06, 0.10)
+                               + ( p -> glyphs.mortal_strike ? 0.10 : 0.0 );
     normalize_weapon_speed = true;
+    
+    weapon = &( p -> main_hand_weapon );
+  }
+};
 
+// Overpower =================================================================
 
+struct overpower_t : public warrior_attack_t
+{
+  overpower_t( player_t* player, const std::string& options_str ) : 
+    warrior_attack_t( "overpower",  player, SCHOOL_PHYSICAL, TREE_ARMS )
+  {
+    warrior_t* p = player -> cast_warrior();
+    option_t options[] =
+    {
+      { NULL }
+    };
+    parse_options( options, options_str );
+    
+    may_dodge = false; 
+    may_parry = false; 
+    may_block = false; // The Overpower cannot be blocked, dodged or parried.
+    base_cost  = 5.0;
+    base_crit      += p -> talents.improved_overpower * 0.25;
+    base_direct_dmg = 1;
+    cooldown   = 5.0 - p -> talents.unrelenting_assault;
+    normalize_weapon_speed = true;
+    stancemask = STANCE_BATTLE;
+    
+    weapon = &( p -> main_hand_weapon );
+
+  }
+  virtual void execute()
+  {
+    warrior_attack_t::execute();
+    warrior_t* p = player -> cast_warrior();
+    p -> _buffs.overpower = 0;
+  }
+  virtual bool ready()
+  {
+    if( ! warrior_attack_t::ready() )
+      return false;
+      
+    warrior_t* p = player -> cast_warrior();
+
+    if( p -> _buffs.overpower > p -> sim -> current_time )
+      return true;
+    
+    return false;
   }
 };
 
@@ -589,7 +667,7 @@ struct whirlwind_t : public warrior_attack_t
     };
     parse_options( options, options_str );
 
-    cooldown               = 10.0;
+    cooldown               = 10.0 - ( p -> glyphs.whirlwind ? 2 : 0 );
 
     base_cost              = 25;
     base_multiplier       *= 1 + p -> talents.improved_whirlwind * 0.10 + p -> talents.unending_fury * 0.02;
@@ -700,6 +778,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if( name == "bloodthirst"         ) return new bloodthirst_t        ( this, options_str );
   if( name == "heroic_strike"       ) return new heroic_strike_t      ( this, options_str );
   if( name == "mortal_strike"       ) return new mortal_strike_t      ( this, options_str );
+  if( name == "overpower"           ) return new overpower_t          ( this, options_str );
   if( name == "stance"              ) return new stance_t             ( this, options_str );
   if( name == "whirlwind"           ) return new whirlwind_t          ( this, options_str );
 
@@ -873,6 +952,12 @@ bool warrior_t::parse_option( const std::string& name,
     { "weapon_mastery",                  OPT_INT, &( talents.weapon_mastery                  ) },
     { "wrecking_crew",                   OPT_INT, &( talents.wrecking_crew                   ) },
     // Glyphs
+    { "glyph_of_execution",              OPT_INT, &( glyphs.execution                        ) },
+    { "glyph_of_heroic_strike",          OPT_INT, &( glyphs.heroic_strike                    ) },
+    { "glyph_of_mortal_strike",          OPT_INT, &( glyphs.mortal_strike                    ) },
+    { "glyph_of_overpower",              OPT_INT, &( glyphs.overpower                        ) },
+    { "glyph_of_rending",                OPT_INT, &( glyphs.rending                          ) },
+    { "glyph_of_whirlwind",              OPT_INT, &( glyphs.whirlwind                        ) },
     { NULL, OPT_UNKNOWN }
   };
 
