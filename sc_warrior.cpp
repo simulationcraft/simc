@@ -19,7 +19,8 @@ struct warrior_t : public player_t
   // Buffs
   struct _buffs_t
   {
-
+    int flurry;
+    
     void reset() { memset( (void*) this, 0x00, sizeof( _buffs_t ) ); }
     _buffs_t() { reset(); }
   };
@@ -51,7 +52,7 @@ struct warrior_t : public player_t
   // proc_t* ;
   
   // Up-Times
-  // uptime_t* ;
+  uptime_t* uptimes_flurry;
   
   // Auto-Attack
   attack_t* main_hand_attack;
@@ -140,6 +141,7 @@ struct warrior_t : public player_t
     // Procs
 
     // Up-Times
+    uptimes_flurry                = get_uptime( "flurry" );
   
     // Auto-Attack
     main_hand_attack = 0;
@@ -173,8 +175,12 @@ struct warrior_attack_t : public attack_t
     attack_t( n, player, RESOURCE_RAGE, s, t, special ), 
     min_rage(0), max_rage(0)
   {
-    //warrior_t* p = player -> cast_warrior();
-    may_glance = false;
+    warrior_t* p = player -> cast_warrior();
+    may_glance   = false;
+    base_hit    += p -> talents.precision * 0.01;
+    base_crit   += p -> talents.cruelty   * 0.01;
+    if( special )
+      base_crit_bonus_multiplier *= 1.0 + p -> talents.impale * 0.10;
   }
 
   virtual void   parse_options( option_t*, const std::string& options_str );
@@ -209,8 +215,10 @@ void warrior_attack_t::parse_options( option_t*          options,
 
 double warrior_attack_t::cost()
 {
-  //warrior_t* p = player -> cast_warrior();
+  warrior_t* p = player -> cast_warrior();
   double c = attack_t::cost();
+  if( harmful )
+    c -= p -> talents.focused_rage;
   return c;
 }
 
@@ -218,18 +226,55 @@ double warrior_attack_t::cost()
 
 void warrior_attack_t::execute()
 {
-  //warrior_t* p = player -> cast_warrior();
   attack_t::execute();
+
+  warrior_t* p = player -> cast_warrior();
+
+  if( result == RESULT_CRIT )
+    if( p -> talents.flurry ) 
+    {
+      p -> aura_gain( "Flurry (3)" );
+      p -> _buffs.flurry = 3;
+    }
 }
 
 // warrior_attack_t::player_buff ============================================
 
 void warrior_attack_t::player_buff()
 {
-  // warrior_t* p = player -> cast_warrior();
-
   attack_t::player_buff();
 
+  warrior_t* p = player -> cast_warrior();
+  
+  if( weapon )
+  {
+    if( p -> talents.mace_specialization )
+    {
+      if( weapon -> type == WEAPON_MACE || 
+          weapon -> type == WEAPON_MACE_2H )
+      {
+        player_penetration += p -> talents.mace_specialization * 0.03;
+      }
+    }
+    if( p -> talents.poleaxe_specialization )
+    {
+      if( weapon -> type == WEAPON_AXE_2H ||
+	      weapon -> type == WEAPON_AXE    ||
+	      weapon -> type == WEAPON_POLEARM )
+      {
+        player_crit            += p -> talents.poleaxe_specialization * 0.01;
+        //FIX ME! Is this additive with Impale?
+        player_crit_bonus_multiplier *= 1 + p -> talents.poleaxe_specialization * 0.01;
+      }
+    }
+    if( p -> talents.dual_wield_specialization )
+    {
+      if( weapon -> slot == SLOT_OFF_HAND )
+      {
+        player_multiplier *= 1.0 + p -> talents.dual_wield_specialization * 0.10;
+      }
+    }
+  }
 }
 
 // warrior_attack_t::ready() ================================================
@@ -273,13 +318,16 @@ struct melee_t : public warrior_attack_t
     rage_conversion_value = 0.0091107836 * p -> level * p -> level + 3.225598133* p -> level + 4.2652911;
   }
 
-  virtual double haste()
+  virtual double execute_time()
   {
-    //warrior_t* p = player -> cast_warrior();
-
-    double h = warrior_attack_t::haste();
-    // FIX ME! Flurry?
-    return h;
+    double t = warrior_attack_t::execute_time();
+    warrior_t* p = player -> cast_warrior();
+    if( p -> _buffs.flurry > 0 ) 
+    {
+      t *= 1.0 / ( 1.0 + 0.05 * p -> talents.flurry  ) ;
+    }
+    p -> uptimes_flurry -> update( p -> _buffs.flurry > 0 );
+    return t;
   }
 
   virtual void execute()
@@ -287,7 +335,13 @@ struct melee_t : public warrior_attack_t
     warrior_attack_t::execute();
    
     warrior_t* p = player -> cast_warrior();
-   
+
+    if( p -> _buffs.flurry > 0 )
+    {
+      p -> _buffs.flurry--;
+      if( p -> _buffs.flurry == 0) p -> aura_loss( "Flurry" );
+    }
+
     if( result_is_hit() )
     {
       /* http://www.wowwiki.com/Formulas:Rage_generation
@@ -364,6 +418,7 @@ struct auto_attack_t : public warrior_attack_t
 };
 
 // Heroic Strike ===========================================================
+
 struct heroic_strike_t : public warrior_attack_t
 {
   heroic_strike_t( player_t* player, const std::string& options_str ) : 
@@ -389,12 +444,10 @@ struct heroic_strike_t : public warrior_attack_t
     };
     init_rank( ranks );
     weapon = &( p -> main_hand_weapon );
-    base_cost -= p -> talents.focused_rage + p -> talents.improved_heroic_strike;
-    
-    background      = true;
-    repeating       = true;
+    base_cost -= p -> talents.improved_heroic_strike;
     trigger_gcd     = 0;
-    base_cost       = 15;
+    
+    
     // Heroic Strike needs swinging auto_attack!
     assert( p -> main_hand_attack -> execute_event == 0 );
     observer = &( p -> active_heroic_strike ); 
@@ -404,6 +457,79 @@ struct heroic_strike_t : public warrior_attack_t
   // No real clue how to do a "on next swing" type action.
   // Because the rage is also only consumed when the HS hits
   // Probably needs a fancier way then i could think of
+};
+
+// Bloodthirst ===============================================================
+
+struct bloodthirst_t : public warrior_attack_t
+{
+  bloodthirst_t( player_t* player, const std::string& options_str ) : 
+    warrior_attack_t( "bloodthirst",  player, SCHOOL_PHYSICAL, TREE_FURY )
+  {
+    warrior_t* p = player -> cast_warrior();
+    assert( p -> talents.bloodthirst );
+    option_t options[] =
+    {
+      { NULL }
+    };
+    parse_options( options, options_str );
+    
+    cooldown               = 5.0;
+    base_cost              = 30;
+    base_direct_dmg        = 1;
+    direct_power_mod       = 0.50;
+
+  }
+  virtual void execute()
+  {
+    warrior_attack_t::execute();
+    //trigger_bloodsurge();
+  }
+};
+
+// Whirlwind ===============================================================
+
+struct whirlwind_t : public warrior_attack_t
+{
+  whirlwind_t( player_t* player, const std::string& options_str ) : 
+    warrior_attack_t( "whirlwind",  player, SCHOOL_PHYSICAL, TREE_FURY )
+  {
+    warrior_t* p = player -> cast_warrior();
+
+    option_t options[] =
+    {
+      { NULL }
+    };
+    parse_options( options, options_str );
+    
+    cooldown               = 10.0;
+    
+    base_cost              = 25;
+    base_multiplier       *= 1 + p -> talents.improved_whirlwind * 0.10;
+    base_direct_dmg        = 1;
+
+    normalize_weapon_speed = true;
+    weapon = &( p -> main_hand_weapon );
+  }
+
+  virtual void consume_resource() { }
+
+  virtual void execute()
+  {
+    attack_t::consume_resource();
+    
+    // MH hit
+    weapon = &( player -> main_hand_weapon );
+    warrior_attack_t::execute();
+    // if( result_is_hit() ) trigger_bloodsurge();
+
+    // OH hit
+    weapon = &( player -> off_hand_weapon );
+    warrior_attack_t::execute();
+    // if( result_is_hit() ) trigger_bloodsurge();
+
+    player -> action_finish( this );
+  }
 };
 
 
@@ -424,7 +550,9 @@ action_t* warrior_t::create_action( const std::string& name,
                                   const std::string& options_str )
 {
   if( name == "auto_attack"         ) return new auto_attack_t        ( this, options_str );
+  if( name == "bloodthirst"         ) return new bloodthirst_t        ( this, options_str );
   if( name == "heroic_strike"       ) return new heroic_strike_t      ( this, options_str );
+  if( name == "whirlwind"           ) return new whirlwind_t          ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -433,12 +561,23 @@ action_t* warrior_t::create_action( const std::string& name,
 
 void warrior_t::init_base()
 {
-  attribute_base[ ATTR_STRENGTH  ] = 179;
+  attribute_base[ ATTR_STRENGTH  ] = 179; // Tauren lvl 80
   attribute_base[ ATTR_AGILITY   ] = 108;
   attribute_base[ ATTR_STAMINA   ] = 161;
   attribute_base[ ATTR_INTELLECT ] =  31;
   attribute_base[ ATTR_SPIRIT    ] =  61;
   resource_base[  RESOURCE_RAGE  ] = 100;
+  
+  initial_attack_power_per_strength = 2.0;
+  
+  // FIX ME!
+  base_attack_power = -20;
+  base_attack_crit = 0.0319;
+  
+  initial_attack_crit_per_agility = rating_t::interpolate( level, 1 / 2000, 1 / 3200, 1 / 6250 ); 
+  
+  health_per_stamina = 10;
+  
   base_gcd = 1.5;
 }
 
