@@ -49,6 +49,7 @@ struct warrior_t : public player_t
     event_t* bloodsurge;
     event_t* death_wish;
     event_t* recklessness;
+    event_t* sudden_death;
     
     void reset() { memset( (void*) this, 0x00, sizeof( _expirations_t ) ); }
     _expirations_t() { reset(); }
@@ -327,22 +328,22 @@ static void trigger_deep_wounds( action_t* a )
     void player_buff() {}
     void target_debuff( int dmg_type ) {}
   };
-  double dmg;
-  if( a -> weapon == 0 )
-  {
-    // If no weapon is a attached to the attack, assume it would calculate with
-    // the mainhands damage.
-    a -> weapon = &( p -> main_hand_weapon );
-    dmg  = p -> talents.deep_wounds * 0.16 * a -> calculate_weapon_damage();
-    dmg *= a -> total_dd_multiplier();
-    a -> weapon = 0;
-  }
-  else 
-  {
-    dmg = p -> talents.deep_wounds * 0.16 * a -> calculate_weapon_damage();
-    dmg *= a -> total_dd_multiplier();
-  }
+  double dmg                   = 0;
+  double tmp_weapon_multiplier = 0;
 
+  // Every action HAS to have an weapon associated.
+  assert( a -> weapon != 0 );
+  
+  // But multiplier is set to 0 for attacks like Bloodthirst, Execute
+  // So get the wepaon_damage with a multiplier of 1.0 for DW calculation
+  
+  tmp_weapon_multiplier = a -> weapon_multiplier;
+  a -> weapon_multiplier = 1.0;
+  
+  dmg  = p -> talents.deep_wounds * 0.16 * a -> calculate_weapon_damage();
+  dmg *= a -> total_dd_multiplier();
+
+  a -> weapon_multiplier = tmp_weapon_multiplier;
 
   if( ! p -> active_deep_wounds ) p -> active_deep_wounds = new deep_wounds_t( p );
 
@@ -704,11 +705,101 @@ struct bloodthirst_t : public warrior_attack_t
     base_multiplier  *= 1 + p -> talents.unending_fury * 0.02;
     direct_power_mod  = 0.50;
 
+    weapon = &( p -> main_hand_weapon );
+    weapon_multiplier = 0;
   }
   virtual void execute()
   {
     warrior_attack_t::execute();
     trigger_bloodsurge( this );
+  }
+};
+
+// Execute ===================================================================
+
+struct execute_t : public warrior_attack_t
+{
+  double excess_rage_mod, excess_rage;
+  execute_t( player_t* player, const std::string& options_str ) : 
+    warrior_attack_t( "execute",  player, SCHOOL_PHYSICAL, TREE_FURY )
+  {
+    warrior_t* p = player -> cast_warrior();
+    option_t options[] =
+    {
+      { NULL }
+    };
+    parse_options( options, options_str );
+    
+    static rank_t ranks[] =
+    {
+      { 80, 8, 1456, 1456, 0, 15 },
+      { 73, 7, 1142, 1142, 0, 15 },
+      { 70, 6,  865,  865, 0, 15 },
+      { 65, 5,  687,  687, 0, 15 },
+      { 56, 4,  554,  554, 0, 15 },
+      { 0, 0 }
+    };
+    init_rank( ranks );
+    
+    excess_rage_mod   = ( p -> level >= 80 ? 38 :
+                          p -> level >= 73 ? 30 :
+                          p -> level >= 70 ? 21 :
+                          p -> level >= 65 ? 18 :
+                                             15 ); 
+    base_cost        -= util_t::talent_rank( p -> talents.improved_execute, 2, 2, 5);
+    direct_power_mod  = 0.20;
+    
+    stancemask = STANCE_BATTLE | STANCE_BERSERKER;
+    weapon = &( p -> main_hand_weapon );
+    weapon_multiplier = 0;
+  }
+  virtual void execute()
+  {
+    warrior_t* p = player -> cast_warrior();
+
+    excess_rage = ( p -> resource_current[ RESOURCE_RAGE ] - warrior_attack_t::cost() );
+    if( p -> glyphs.execution )
+      excess_rage += 10;
+      
+    // FIX ME! Implement Sudden Death somehow over here
+    if( excess_rage > 0 )
+    {
+      base_dd_max      += excess_rage_mod * excess_rage;
+      base_dd_min      += excess_rage_mod * excess_rage;
+    }
+    
+    if( p -> glyphs.execution )
+      excess_rage -= 10;
+    
+    warrior_attack_t::execute();
+  }
+  
+  virtual void consume_resource()
+  {
+    warrior_attack_t::consume_resource();
+
+    // Let the additional rage consumption create it's own debug log entries.
+    if( sim -> debug )
+      report_t::log( sim, "%s consumes an additional %.1f %s for %s", player -> name(),
+                     excess_rage, util_t::resource_type_string( resource ), name() );
+
+    player -> resource_loss( resource, excess_rage );
+    stats -> consume_resource( excess_rage );
+
+  }
+  
+  virtual bool ready()
+  {
+    if( ! warrior_attack_t::ready() )
+      return false;
+      
+    warrior_t* p = player -> cast_warrior();
+    
+    if( sim -> target -> health_percentage() > 20 && p -> _expirations.sudden_death == 0 )
+      return false;
+      
+    return true;
+
   }
 };
 
@@ -763,10 +854,12 @@ struct overpower_t : public warrior_attack_t
     may_dodge = false; 
     may_parry = false; 
     may_block = false; // The Overpower cannot be blocked, dodged or parried.
-    base_cost  = 5.0;
+
+    base_cost       = 5.0;
     base_crit      += p -> talents.improved_overpower * 0.25;
     base_direct_dmg = 1;
-    cooldown   = 5.0 - p -> talents.unrelenting_assault;
+    cooldown        = 5.0 - p -> talents.unrelenting_assault * 2.0;
+
     stancemask = STANCE_BATTLE;
     
     weapon = &( p -> main_hand_weapon );
@@ -1135,6 +1228,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if( name == "auto_attack"         ) return new auto_attack_t        ( this, options_str );
   if( name == "bloodthirst"         ) return new bloodthirst_t        ( this, options_str );
   if( name == "death_wish"          ) return new death_wish_t         ( this, options_str );
+  if( name == "execute"             ) return new execute_t            ( this, options_str );
   if( name == "heroic_strike"       ) return new heroic_strike_t      ( this, options_str );
   if( name == "mortal_strike"       ) return new mortal_strike_t      ( this, options_str );
   if( name == "overpower"           ) return new overpower_t          ( this, options_str );
