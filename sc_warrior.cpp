@@ -23,6 +23,7 @@ struct warrior_t : public player_t
   // Buffs
   struct _buffs_t
   {
+    int bloodsurge;
     int flurry;
     double overpower; // Time overpower activation fades, as there is only a 5sec window to use it
     void reset() { memset( (void*) this, 0x00, sizeof( _buffs_t ) ); }
@@ -715,6 +716,94 @@ struct overpower_t : public warrior_attack_t
   }
 };
 
+// Slam ====================================================================
+
+struct slam_t : public warrior_attack_t
+{
+  int bloodsurge;
+  slam_t( player_t* player, const std::string& options_str ) : 
+    warrior_attack_t( "slam",  player, SCHOOL_PHYSICAL, TREE_FURY ),
+    bloodsurge(0)
+  {
+    warrior_t* p = player -> cast_warrior();
+
+    option_t options[] =
+    {
+      { "bloodsurge", OPT_INT, &bloodsurge },
+      { NULL }
+    };
+    parse_options( options, options_str );
+    
+    static rank_t ranks[] =
+    {
+      { 80, 8, 250, 250, 0, 15 },
+      { 74, 7, 220, 220, 0, 15 },
+      { 69, 6, 140, 140, 0, 15 },
+      { 61, 5, 105, 105, 0, 15 },
+      { 54, 4,  87,  87, 0, 15 },
+      { 0, 0 }
+    };
+    init_rank( ranks );
+
+    base_execute_time  = 1.5 - p -> talents.improved_slam * 0.5;
+
+   
+    weapon = &( p -> main_hand_weapon );
+  }
+  virtual double haste()
+  {
+    // No haste for slam cast?
+    return 1.0;
+  }
+  
+  virtual double execute_time()
+  {
+    warrior_t* p = player -> cast_warrior();
+    if( p -> _buffs.bloodsurge )
+      return 0.0;
+    else
+      return warrior_attack_t::execute_time();
+  }
+  
+  virtual void schedule_execute()
+  {
+    warrior_attack_t::schedule_execute();
+    
+    warrior_t* p = player -> cast_warrior();
+    // While slam is casting, the auto_attack is paused
+    // So we simply reschedule the auto_attack by slam's casttime
+    double time_to_next_hit;
+    // Mainhand
+    if( p -> main_hand_attack )
+    { 
+      time_to_next_hit  = p -> main_hand_attack -> execute_event -> occurs();
+      time_to_next_hit -= sim -> current_time;
+      time_to_next_hit += base_execute_time;
+      p -> main_hand_attack -> execute_event -> reschedule( time_to_next_hit );
+    }
+    // Offhand
+    if( p -> off_hand_attack )
+    {
+      time_to_next_hit  = p -> off_hand_attack -> execute_event -> occurs();
+      time_to_next_hit -= sim -> current_time;
+      time_to_next_hit += base_execute_time;
+      p -> off_hand_attack -> execute_event -> reschedule( time_to_next_hit );
+    }
+  }
+  
+  virtual bool ready()
+  {
+    if( ! warrior_attack_t::ready() )
+      return false;
+      
+    warrior_t* p = player -> cast_warrior();
+    if( p -> _buffs.bloodsurge == 0 && bloodsurge )
+      return false;
+      
+    return true;
+  }
+};
+
 // Whirlwind ===============================================================
 
 struct whirlwind_t : public warrior_attack_t
@@ -755,8 +844,11 @@ struct whirlwind_t : public warrior_attack_t
 
     // OH hit
     weapon = &( player -> off_hand_weapon );
-    warrior_attack_t::execute();
-    // if( result_is_hit() ) trigger_bloodsurge();
+    if( weapon )
+    {
+      warrior_attack_t::execute();
+      // if( result_is_hit() ) trigger_bloodsurge();
+    }
 
     player -> action_finish( this );
   }
@@ -841,6 +933,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if( name == "heroic_strike"       ) return new heroic_strike_t      ( this, options_str );
   if( name == "mortal_strike"       ) return new mortal_strike_t      ( this, options_str );
   if( name == "overpower"           ) return new overpower_t          ( this, options_str );
+  if( name == "slam"                ) return new slam_t               ( this, options_str );
   if( name == "stance"              ) return new stance_t             ( this, options_str );
   if( name == "whirlwind"           ) return new whirlwind_t          ( this, options_str );
 
