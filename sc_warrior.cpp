@@ -27,6 +27,7 @@ struct warrior_t : public player_t
     double death_wish;
     int    flurry;
     double overpower;
+    int    recklessness;
     
     void reset() { memset( (void*) this, 0x00, sizeof( _buffs_t ) ); }
     _buffs_t() { reset(); }
@@ -47,6 +48,8 @@ struct warrior_t : public player_t
   {
     event_t* bloodsurge;
     event_t* death_wish;
+    event_t* recklessness;
+    
     void reset() { memset( (void*) this, 0x00, sizeof( _expirations_t ) ); }
     _expirations_t() { reset(); }
   };
@@ -278,7 +281,7 @@ static void trigger_bloodsurge( action_t* a )
     virtual void execute()
     {
       warrior_t* p = player -> cast_warrior();
-      p -> aura_loss( "bloodsurge Weapon" );
+      p -> aura_loss( "Bloodsurge" );
       p -> _buffs.bloodsurge = 0;
       p -> _expirations.bloodsurge = 0;
     }
@@ -425,6 +428,8 @@ void warrior_attack_t::execute()
       p -> procs_glyph_overpower -> occur();
     }
   }
+  if( p -> _buffs.recklessness > 0 && special )
+    p -> _buffs.recklessness--;
 }
 
 // warrior_attack_t::player_buff ============================================
@@ -479,6 +484,9 @@ void warrior_attack_t::player_buff()
   }
   
   player_multiplier *= 1.0 + p -> _buffs.death_wish;
+
+  if( p -> _buffs.recklessness > 0 && special)
+    player_crit += 1.0;
   
 }
 
@@ -1001,6 +1009,7 @@ struct death_wish_t : public spell_t
     };
     parse_options( options, options_str );
     
+    base_cost   = 10;
     trigger_gcd = 0;
     cooldown    = 180.0 * ( 1.0 - 0.11 * p -> talents.intensify_rage );
   }
@@ -1033,6 +1042,68 @@ struct death_wish_t : public spell_t
   
 };
 
+// Recklessness ============================================================
+
+struct recklessness_t : public spell_t
+{
+  int stancemask;
+  recklessness_t( player_t* player, const std::string& options_str ) : 
+    spell_t( "recklessness", player )
+  {
+    warrior_t* p = player -> cast_warrior();
+
+    std::string stance_str;
+    option_t options[] =
+    {
+      { NULL }
+    };
+    parse_options( options, options_str );
+    
+    trigger_gcd = 0;
+    cooldown    = 300.0 * ( 1.0 - 0.11 * p -> talents.intensify_rage );
+    
+    stancemask  = STANCE_BERSERKER;
+  }
+
+  virtual void execute()
+  {
+    struct expiration_t : public event_t
+    {
+      expiration_t( sim_t* sim, warrior_t* p ) : event_t( sim, p )
+      {
+        name = "Recklessness Expiration";
+        p -> aura_gain( "Recklessness" );
+        p -> _buffs.recklessness = 3;
+        sim -> add_event( this, 12.0 );
+      }
+      virtual void execute()
+      {
+        warrior_t* p = player -> cast_warrior();
+        p -> aura_loss( "Recklessness" );
+        p -> _buffs.recklessness = 0;
+        p -> _expirations.recklessness = 0;
+      }
+    };
+
+    warrior_t* p = player -> cast_warrior();
+    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    update_ready();
+    p -> _expirations.recklessness = new ( sim ) expiration_t( sim, p );
+  }
+  
+  virtual bool ready()
+  {
+    if( ! spell_t::ready() )
+      return false;
+
+    warrior_t* p = player -> cast_warrior();
+    
+    if( ( stancemask & p -> active_stance ) == 0)
+      return false;
+
+    return true;
+  }
+};
 
 
 } // ANONYMOUS NAMESPACE ===================================================
