@@ -465,7 +465,7 @@ void warrior_attack_t::player_buff()
     {
       if( weapon -> slot == SLOT_OFF_HAND )
       {
-        player_multiplier *= 1.0 + p -> talents.dual_wield_specialization * 0.10;
+        player_multiplier *= 1.0 + p -> talents.dual_wield_specialization * 0.05;
       }
     }
   }
