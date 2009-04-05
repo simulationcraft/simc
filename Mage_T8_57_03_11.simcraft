@@ -12,8 +12,8 @@ actions+=/evocation
 actions+=/choose_rotation
 actions+=/arcane_blast,max=2
 actions+=/arcane_blast,max=3,arcane_power=1
-actions+=/arcane_missiles,barrage=1
 actions+=/arcane_blast,max=3,dps=1
+actions+=/arcane_missiles,barrage=1
 actions+=/arcane_missiles
 actions+=/mana_potion
 

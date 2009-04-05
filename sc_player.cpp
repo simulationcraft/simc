@@ -1022,6 +1022,8 @@ void player_t::combat_begin()
   if( sim -> overrides.unleashed_rage         ) buffs.unleashed_rage = 1;
   if( sim -> overrides.windfury_totem         ) buffs.windfury_totem = 0.20;
   if( sim -> overrides.wrath_of_air           ) buffs.wrath_of_air = 1;
+
+  init_resources( true );
 }
 
 // player_t::combat_end ====================================================
