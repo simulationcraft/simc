@@ -468,6 +468,10 @@ void warrior_attack_t::player_buff()
         player_multiplier *= 1.0 + p -> talents.dual_wield_specialization * 0.05;
       }
     }
+    if( weapon -> group() == WEAPON_2H )
+    {
+      player_multiplier *= 1.0 + p -> talents.twohanded_weapon_specialization * 0.02;
+    }
   }
   if( p -> active_stance == STANCE_BATTLE)
   {
@@ -484,7 +488,7 @@ void warrior_attack_t::player_buff()
   }
   
   player_multiplier *= 1.0 + p -> _buffs.death_wish;
-
+  
   if( p -> _buffs.recklessness > 0 && special)
     player_crit += 1.0;
   
@@ -697,6 +701,7 @@ struct bloodthirst_t : public warrior_attack_t
     cooldown          = 5.0;
     base_cost         = 30;
     base_direct_dmg   = 1;
+    base_multiplier  *= 1 + p -> talents.unending_fury * 0.02;
     direct_power_mod  = 0.50;
 
   }
@@ -817,6 +822,7 @@ struct slam_t : public warrior_attack_t
     init_rank( ranks );
 
     base_execute_time  = 1.5 - p -> talents.improved_slam * 0.5;
+    base_multiplier   *= 1 + p -> talents.unending_fury * 0.02;
 
    
     weapon = &( p -> main_hand_weapon );
