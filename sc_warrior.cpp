@@ -1125,9 +1125,11 @@ action_t* warrior_t::create_action( const std::string& name,
 {
   if( name == "auto_attack"         ) return new auto_attack_t        ( this, options_str );
   if( name == "bloodthirst"         ) return new bloodthirst_t        ( this, options_str );
+  if( name == "death_wish"          ) return new death_wish_t         ( this, options_str );
   if( name == "heroic_strike"       ) return new heroic_strike_t      ( this, options_str );
   if( name == "mortal_strike"       ) return new mortal_strike_t      ( this, options_str );
   if( name == "overpower"           ) return new overpower_t          ( this, options_str );
+  if( name == "recklessness"        ) return new recklessness_t       ( this, options_str );
   if( name == "slam"                ) return new slam_t               ( this, options_str );
   if( name == "stance"              ) return new stance_t             ( this, options_str );
   if( name == "whirlwind"           ) return new whirlwind_t          ( this, options_str );
