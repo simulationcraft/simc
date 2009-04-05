@@ -915,9 +915,9 @@ struct slam_t : public warrior_attack_t
     init_rank( ranks );
 
     base_execute_time  = 1.5 - p -> talents.improved_slam * 0.5;
-    base_multiplier   *= 1 + p -> talents.unending_fury * 0.02;
+    base_multiplier   *= 1 + p -> talents.unending_fury * 0.02 + ( p -> gear.tier7_2pc ? 0.10 : 0.0 );
 
-   
+    normalize_weapon_speed = false;
     weapon = &( p -> main_hand_weapon );
   }
   virtual double haste()
