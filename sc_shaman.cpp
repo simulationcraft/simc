@@ -702,22 +702,25 @@ static void trigger_lightning_overload( spell_t* s,
   {
     p -> procs_lightning_overload -> occur();
 
-    double   cost        = s -> base_cost;
-    double   multiplier  = s -> base_multiplier;
-    stats_t* stats       = s -> stats;
+    double   cost             = s -> base_cost;
+    double   multiplier       = s -> base_multiplier;
+    double   direct_power_mod = s -> direct_power_mod;
+    stats_t* stats            = s -> stats;
 
-    s -> proc             = true;
-    s -> base_cost        = 0;
-    s -> base_multiplier /= 2.0;
-    s -> stats            = lightning_overload_stats;
+    s -> proc                 = true;
+    s -> base_cost            = 0;
+    s -> base_multiplier     /= 2.0;
+    s -> direct_power_mod    += p -> talents.shamanism * 0.02; // Reapplied here because Shamanism isn't affected by the *0.5.
+    s -> stats                = lightning_overload_stats;
 
-    s -> time_to_execute = 0;
+    s -> time_to_execute      = 0;
     s -> execute();
 
-    s -> proc            = false;
-    s -> base_cost       = cost;
-    s -> base_multiplier = multiplier;
-    s -> stats           = stats;
+    s -> proc                 = false;
+    s -> base_cost            = cost;
+    s -> base_multiplier      = multiplier;
+    s -> direct_power_mod     = direct_power_mod;
+    s -> stats                = stats;
   }
 }
 
