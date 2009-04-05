@@ -57,6 +57,7 @@ struct warrior_t : public player_t
   _expirations_t _expirations;
 
   // Gains
+  gain_t* gains_anger_management;
   gain_t* gains_mh_attack;
   gain_t* gains_oh_attack;
 
@@ -65,6 +66,7 @@ struct warrior_t : public player_t
   
   // Up-Times
   uptime_t* uptimes_flurry;
+  uptime_t* uptimes_rage_cap;
   
   // Auto-Attack
   attack_t* main_hand_attack;
@@ -155,13 +157,16 @@ struct warrior_t : public player_t
     active_stance        = STANCE_BATTLE; 
     
     // Gains
-    gains_mh_attack = get_gain( "mh_attack" );
-    gains_oh_attack = get_gain( "oh_attack" );
-
+    gains_anger_management = get_gain( "anger_management" );
+    gains_mh_attack        = get_gain( "mh_attack" );
+    gains_oh_attack        = get_gain( "oh_attack" );
+    
     // Procs
     procs_glyph_overpower = get_proc( "glyph_of_overpower" );
+    
     // Up-Times
     uptimes_flurry                = get_uptime( "flurry" );
+    uptimes_rage_cap              = get_uptime( "rage_cap" );
   
     // Auto-Attack
     main_hand_attack = 0;
@@ -1292,7 +1297,19 @@ void warrior_t::reset()
 void warrior_t::regen( double periodicity )
 {
   player_t::regen( periodicity );
-  // Anger Management?
+  // FIX ME! Is this approach better, or a repeating 3sec timer which gives
+  // 1.0 rage.
+  if( talents.anger_management )
+  {
+    if( sim -> infinite_resource[ RESOURCE_RAGE ] == 0 )
+    {
+      double rage_regen = 1.0 / 3.0; // 1 rage per 3 sec.
+      rage_regen *= periodicity;
+      resource_gain( RESOURCE_RAGE, rage_regen, gains_anger_management );
+    }
+  }
+  uptimes_rage_cap -> update( resource_current[ RESOURCE_RAGE ] ==
+                              resource_max    [ RESOURCE_RAGE] );
    
 }
 
