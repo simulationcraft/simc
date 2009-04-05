@@ -23,9 +23,11 @@ struct warrior_t : public player_t
   // Buffs
   struct _buffs_t
   {
-    int bloodsurge;
-    int flurry;
-    double overpower; // Time overpower activation fades, as there is only a 5sec window to use it
+    int    bloodsurge;
+    double death_wish;
+    int    flurry;
+    double overpower;
+    
     void reset() { memset( (void*) this, 0x00, sizeof( _buffs_t ) ); }
     _buffs_t() { reset(); }
   };
@@ -44,6 +46,7 @@ struct warrior_t : public player_t
   struct _expirations_t
   {
     event_t* bloodsurge;
+    event_t* death_wish;
     void reset() { memset( (void*) this, 0x00, sizeof( _expirations_t ) ); }
     _expirations_t() { reset(); }
   };
@@ -227,11 +230,23 @@ struct warrior_attack_t : public attack_t
   }
 
   virtual void   parse_options( option_t*, const std::string& options_str );
+  virtual double dodge_chance( int delta_level );
   virtual double cost();
   virtual void   execute();
   virtual void   player_buff();
   virtual bool   ready();
 };
+
+double warrior_attack_t::dodge_chance( int delta_level )
+{
+  double chance = attack_t::dodge_chance( delta_level );
+  
+  warrior_t* p = player -> cast_warrior();
+  
+  chance -= p -> talents.weapon_mastery * 0.01;
+  
+  return chance;  
+}
 
 // ==========================================================================
 // Static Functions
@@ -462,6 +477,9 @@ void warrior_attack_t::player_buff()
   {
     player_multiplier *= 1.0 - 0.1;
   }
+  
+  player_multiplier *= 1.0 + p -> _buffs.death_wish;
+  
 }
 
 // warrior_attack_t::ready() ================================================
@@ -965,6 +983,54 @@ struct stance_t : public spell_t
 
     return p -> active_stance != switch_to_stance;
   }
+};
+
+// Death Wish ==============================================================
+
+struct death_wish_t : public spell_t
+{
+  death_wish_t( player_t* player, const std::string& options_str ) : 
+    spell_t( "death_wish", player )
+  {
+    warrior_t* p = player -> cast_warrior();
+
+    std::string stance_str;
+    option_t options[] =
+    {
+      { NULL }
+    };
+    parse_options( options, options_str );
+    
+    trigger_gcd = 0;
+    cooldown    = 180.0 * ( 1.0 - 0.11 * p -> talents.intensify_rage );
+  }
+
+  virtual void execute()
+  {
+    struct expiration_t : public event_t
+    {
+      expiration_t( sim_t* sim, warrior_t* p ) : event_t( sim, p )
+      {
+        name = "Death Wish Expiration";
+        p -> aura_gain( "Death Wish" );
+        p -> _buffs.death_wish = 0.20;
+        sim -> add_event( this, 30.0 );
+      }
+      virtual void execute()
+      {
+        warrior_t* p = player -> cast_warrior();
+        p -> aura_loss( "Death Wish" );
+        p -> _buffs.death_wish = 0;
+        p -> _expirations.death_wish = 0;
+      }
+    };
+
+    warrior_t* p = player -> cast_warrior();
+    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    update_ready();
+    p -> _expirations.death_wish = new ( sim ) expiration_t( sim, p );
+  }
+  
 };
 
 
