@@ -919,20 +919,29 @@ struct whirlwind_t : public warrior_attack_t
 
   virtual void execute()
   {
-    attack_t::consume_resource();
-    
-    // MH hit
-    weapon = &( player -> main_hand_weapon );
-    warrior_attack_t::execute();
-    trigger_bloodsurge( this );
+    warrior_t* p = player -> cast_warrior();
 
     // OH hit
     weapon = &( player -> off_hand_weapon );
     if( weapon )
     {
+    /* Special case for Recklessness + Whirlwind + Dualwield
+    *  Every hand uses one charge, _BUT_ if only one charge 
+    *  is left on recklessness, both hands will crit.
+    *  So we deal with offhand first and increase charges by
+    *  if only one is left, so mainhand also gets one.
+    */
+      if( p -> _buffs.recklessness == 1 && special )
+        p -> _buffs.recklessness++;
       warrior_attack_t::execute();
       trigger_bloodsurge( this );
     }
+    // MH hit
+    weapon = &( player -> main_hand_weapon );
+    warrior_attack_t::execute();
+    trigger_bloodsurge( this );
+
+    warrior_attack_t::consume_resource();
 
     player -> action_finish( this );
   }
