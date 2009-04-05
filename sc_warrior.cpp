@@ -43,7 +43,7 @@ struct warrior_t : public player_t
   // Expirations
   struct _expirations_t
   {
-
+    event_t* bloodsurge;
     void reset() { memset( (void*) this, 0x00, sizeof( _expirations_t ) ); }
     _expirations_t() { reset(); }
   };
@@ -236,6 +236,51 @@ struct warrior_attack_t : public attack_t
 // ==========================================================================
 // Static Functions
 // ==========================================================================
+
+// trigger_bloodsurge =======================================================
+
+static void trigger_bloodsurge( action_t* a )
+{
+    
+  warrior_t* p = a -> player -> cast_warrior();
+  
+  if( ! a -> result_is_hit() )
+    return;
+  
+  double chance = util_t::talent_rank( p -> talents.bloodsurge, 3, 0.07, 0.13, 0.20 );
+  if( ! a -> sim -> roll( chance ) )
+    return;
+  
+  struct bloodsurge_expiration_t : public event_t
+  {
+    bloodsurge_expiration_t( sim_t* sim, warrior_t* player ) : event_t( sim, player )
+    {
+      name = "Bloodsurge Expiration";
+      player -> aura_gain( "Bloodsurge" );
+      player -> _buffs.bloodsurge = 1;
+      sim -> add_event( this, 5.0 );
+    }
+    virtual void execute()
+    {
+      warrior_t* p = player -> cast_warrior();
+      p -> aura_loss( "bloodsurge Weapon" );
+      p -> _buffs.bloodsurge = 0;
+      p -> _expirations.bloodsurge = 0;
+    }
+  };
+  
+  event_t*& e = p -> _expirations.bloodsurge;
+  
+  if( e )
+  {
+    e -> reschedule( 5.0 );
+  }
+  else
+  {
+    e = new ( a -> sim ) bloodsurge_expiration_t( a -> sim, p );
+  }
+    
+}
 
 // trigger_deep_wounds ======================================================
 
@@ -632,7 +677,7 @@ struct bloodthirst_t : public warrior_attack_t
   virtual void execute()
   {
     warrior_attack_t::execute();
-    //trigger_bloodsurge();
+    trigger_bloodsurge( this );
   }
 };
 
@@ -764,7 +809,14 @@ struct slam_t : public warrior_attack_t
     else
       return warrior_attack_t::execute_time();
   }
-  
+  virtual void execute()
+  {
+    warrior_attack_t::execute();
+
+    warrior_t* p = player -> cast_warrior();
+    if( p -> _buffs.bloodsurge )
+      event_t::early( p -> _expirations.bloodsurge );
+  }  
   virtual void schedule_execute()
   {
     warrior_attack_t::schedule_execute();
@@ -840,14 +892,14 @@ struct whirlwind_t : public warrior_attack_t
     // MH hit
     weapon = &( player -> main_hand_weapon );
     warrior_attack_t::execute();
-    // if( result_is_hit() ) trigger_bloodsurge();
+    trigger_bloodsurge( this );
 
     // OH hit
     weapon = &( player -> off_hand_weapon );
     if( weapon )
     {
       warrior_attack_t::execute();
-      // if( result_is_hit() ) trigger_bloodsurge();
+      trigger_bloodsurge( this );
     }
 
     player -> action_finish( this );
