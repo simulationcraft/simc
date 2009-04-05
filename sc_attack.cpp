@@ -225,7 +225,7 @@ int attack_t::build_table( double* chances,
     block = block_chance( delta_level );
   }
 
-  if( may_crit ) // && ! special )
+  if( may_crit && ! special ) // Specials are 2-roll calculations
   {
     crit = crit_chance( delta_level );
   }
@@ -319,7 +319,7 @@ void attack_t::calculate_result()
     {
       result = RESULT_RESIST;
     }
-    else if( false ) // special && may_crit ) // Specials are 2-roll calculations
+    else if( special && may_crit ) // Specials are 2-roll calculations
     {
       int delta_level = sim -> target -> level - player -> level;
 
