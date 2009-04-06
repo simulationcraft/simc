@@ -82,7 +82,7 @@ struct warrior_t : public player_t
 
   struct talents_t
   {
-    int amored_to_the_teeth;
+    int armored_to_the_teeth;
     int anger_management;
     int bladestorm;
     int blood_frenzy;
@@ -1802,7 +1802,7 @@ bool warrior_t::get_talent_trees( std::vector<int*>& arms,
 {
   talent_translation_t translation[][3] =
   {
-    { {  1, &( talents.improved_heroic_strike          ) }, {  1, &( talents.amored_to_the_teeth       ) }, {  1, &( talents.improved_bloodrage         ) } },
+    { {  1, &( talents.improved_heroic_strike          ) }, {  1, &( talents.armored_to_the_teeth      ) }, {  1, &( talents.improved_bloodrage         ) } },
     { {  2, NULL                                         }, {  2, &( talents.booming_voice             ) }, {  2, NULL                                    } },
     { {  3, &( talents.improved_rend                   ) }, {  3, &( talents.cruelty                   ) }, {  3, &( talents.improved_thunderclap       ) } },
     { {  4, NULL                                         }, {  4, NULL                                   }, {  4, &( talents.incite                     ) } },
@@ -1846,7 +1846,7 @@ bool warrior_t::parse_option( const std::string& name,
   option_t options[] =
   {
     // Talents
-    { "amored_to_the_teeth",             OPT_INT, &( talents.amored_to_the_teeth             ) },
+    { "armored_to_the_teeth",            OPT_INT, &( talents.armored_to_the_teeth            ) },
     { "anger_management",                OPT_INT, &( talents.anger_management                ) },
     { "bladestorm",                      OPT_INT, &( talents.bladestorm                      ) },
     { "blood_frenzy",                    OPT_INT, &( talents.blood_frenzy                    ) },
