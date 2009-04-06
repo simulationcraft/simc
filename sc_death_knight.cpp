@@ -24,9 +24,9 @@ struct dk_rune_t
 
   dk_rune_t() : cooldown_ready(0), type(RUNE_TYPE_NONE) {}
 
-  bool is_death(                     ) const { return (type & RUNE_TYPE_DEATH) != 0;                          }
-	bool is_ready( double current_time ) const { return cooldown_ready <= current_time;                         }
-  int  get_type(                     ) const { return type & RUNE_TYPE_MASK;                                  }
+  bool is_death(                     ) const { return (type & RUNE_TYPE_DEATH) != 0;  }
+	bool is_ready( double current_time ) const { return cooldown_ready <= current_time; }
+  int  get_type(                     ) const { return type & RUNE_TYPE_MASK;          }
 
 	void consume( double current_time, double cooldown, bool convert )
 	{
@@ -55,7 +55,8 @@ struct death_knight_t : public player_t
   // Buffs
   struct _buffs_t
   {
-    // EMPTY
+    double  butchery_timer;
+    int     scent_of_blood_stack;
 
     void reset() { memset( (void*) this, 0x00, sizeof( _buffs_t ) ); }
     _buffs_t() { reset(); }
@@ -65,10 +66,11 @@ struct death_knight_t : public player_t
   // Cooldowns
   struct _cooldowns_t
   {
-    // EMPTY
+    double  scent_of_blood;
 
     void reset() 
     { 
+      scent_of_blood = 0;
     }
     _cooldowns_t() { reset(); }
   };
@@ -87,6 +89,8 @@ struct death_knight_t : public player_t
   // Gains
   gain_t* gains_rune_abilities;
 	gain_t* gains_runic_overflow;
+	gain_t* gains_butchery;
+	gain_t* gains_scent_of_blood;
 
   // Procs
   proc_t* procs_scent_of_blood;
@@ -106,12 +110,12 @@ struct death_knight_t : public player_t
 
   // Talents
   struct talents_t
-  {
-	  int butchery;
-	  int subversion;											// Work in progress...
-	  int bladed_armor;
-	  int scent_of_blood;
-	  int two_handed_weapon_spec;
+  {                                     // Status:
+	  int butchery;                       // Done
+	  int subversion;											// Done
+	  int bladed_armor;                   // In progress...pending armor in player_t
+	  int scent_of_blood;                 // Done
+	  int two_handed_weapon_spec;         // Done
 	  int rune_tap;
 	  int dark_conviction;
 	  int death_rune_mastery;
@@ -238,6 +242,8 @@ struct death_knight_t : public player_t
     // Gains
     gains_rune_abilities    = get_gain( "rune_abilities" );
 		gains_runic_overflow    = get_gain( "runic_overflow" );
+		gains_butchery          = get_gain( "butchery" );
+		gains_scent_of_blood    = get_gain( "scent_of_blood" );
 
     // Procs
     procs_scent_of_blood    = get_proc( "scent_of_blood" );
@@ -257,6 +263,8 @@ struct death_knight_t : public player_t
   virtual void      init_base();
   virtual void      init_resources( bool force );
   virtual void      combat_begin();
+  virtual double    composite_attack_power();
+  virtual void      regen( double periodicity );
   virtual void      reset();
 	virtual double    resource_gain( int resource, double amount, gain_t* g = 0);
   virtual bool      get_talent_trees( std::vector<int*>& blood, std::vector<int*>& frost, std::vector<int*>& unholy );
@@ -298,8 +306,11 @@ struct death_knight_attack_t : public attack_t
     execute_once(true),
     executed_once(false)
   {
+    death_knight_t* p = player -> cast_death_knight();
  		for( int i = 0; i < RUNE_SLOT_MAX; ++i ) use[i] = false;
     may_glance = false;
+    if( p -> talents.two_handed_weapon_spec )
+      weapon_multiplier *= 1 + (p -> talents.two_handed_weapon_spec * 0.02);
   }
 
   virtual void   parse_options( option_t*, const std::string& options_str );
@@ -452,6 +463,12 @@ death_knight_attack_t::execute()
 		double gain = -cost();
 		if( gain > 0 ) p -> resource_gain( resource, gain, p -> gains_rune_abilities );
 
+    if( p -> _buffs.scent_of_blood_stack && p->_cooldowns.scent_of_blood <= p -> sim -> current_time )
+    {
+      p -> _buffs.scent_of_blood_stack--;
+      p -> resource_gain( resource, 5, p -> gains_scent_of_blood );
+    }
+
     if( result == RESULT_CRIT )
     {
       // EMPTY
@@ -459,6 +476,7 @@ death_knight_attack_t::execute()
   }
   else
   {
+    if( cost() > 0 ) execute_once = true;
 		refund_runes( p, use );
   }
 }
@@ -550,6 +568,7 @@ death_knight_spell_t::execute()
   }
   else
   {
+    if( cost() > 0 ) execute_once = true;
 		refund_runes(p, use);
   }
 }
@@ -758,7 +777,7 @@ struct blood_strike_t : public death_knight_attack_t
 struct death_strike_t : public death_knight_attack_t
 {
   death_strike_t( player_t* player, const std::string& options_str  ) : 
-    death_knight_attack_t( "death_strike", player, SCHOOL_PHYSICAL, TREE_BLOOD )
+    death_knight_attack_t( "death_strike", player, SCHOOL_PHYSICAL, TREE_UNHOLY )
   {
     death_knight_t* p = player -> cast_death_knight();
 
@@ -1027,7 +1046,7 @@ struct scourge_strike_t : public death_knight_attack_t
 struct death_coil_t : public death_knight_spell_t
 {
 		death_coil_t(player_t* player, const std::string& options_str) :
-			death_knight_spell_t( "death_coil", player, SCHOOL_SHADOW, TREE_UNHOLY)
+			death_knight_spell_t( "death_coil", player, SCHOOL_SHADOW, TREE_BLOOD)
 		{
 			option_t options[] =
 			{
@@ -1232,14 +1251,37 @@ death_knight_t::combat_begin()
 			virtual void execute()
 			{
 				death_knight_t* p = player -> cast_death_knight();
-				// TODO: Add Buff
-				p -> procs_scent_of_blood -> occur();
+
+        if( p -> _cooldowns.scent_of_blood <= sim -> current_time && sim -> roll( 0.15 ) )
+        {
+          p -> _cooldowns.scent_of_blood = sim -> current_time + 10;
+          p -> _buffs.scent_of_blood_stack = p -> talents.scent_of_blood;
+  				p -> procs_scent_of_blood -> occur();
+        }
 				new ( sim ) scent_of_blood_proc_t( sim, p, p -> scent_of_blood_interval );
 			}
 		};
 
 		new ( sim ) scent_of_blood_proc_t( sim, this, scent_of_blood_interval );
 	}
+}
+
+double
+death_knight_t::composite_attack_power()
+{
+  return player_t::composite_attack_power() + talents.bladed_armor * 0 /* Replace ZERO with this->armor() when implemented */; 
+}
+
+void
+death_knight_t::regen( double periodicity )
+{
+  _buffs.butchery_timer += periodicity;
+  if( _buffs.butchery_timer >= 5.0 )
+  {
+    _buffs.butchery_timer -= 5;
+    resource_gain( RESOURCE_RUNIC, talents.butchery, cast_death_knight() -> gains_butchery );
+  }
+  player_t::regen(periodicity);
 }
 
 void
