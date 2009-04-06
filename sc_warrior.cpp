@@ -47,6 +47,7 @@ struct warrior_t : public player_t
   // Expirations
   struct _expirations_t
   {
+    event_t* blood_frenzy;
     event_t* bloodsurge;
     event_t* death_wish;
     event_t* recklessness;
@@ -286,6 +287,48 @@ double warrior_attack_t::dodge_chance( int delta_level )
 // Static Functions
 // ==========================================================================
 
+// trigger_blood_frenzy =====================================================
+
+static void trigger_blood_frenzy( action_t* a )
+{
+  warrior_t* p = a -> player -> cast_warrior();
+  if( ! p -> talents.blood_frenzy )
+    return;
+  
+  struct blood_frenzy_expiration_t : public event_t
+  {
+    blood_frenzy_expiration_t( sim_t* sim, warrior_t* player, double duration ) : event_t( sim, player, 0 )
+    {
+      name = "Blood Frenzy Expiration";
+      sim -> target -> debuffs.blood_frenzy++;
+      sim -> add_event( this, duration );
+    }
+    virtual void execute()
+    {
+      warrior_t* p = player -> cast_warrior();
+      sim -> target -> debuffs.blood_frenzy--;
+      p -> _expirations.blood_frenzy = 0;
+    }
+  };
+  
+  event_t*& e = p -> _expirations.blood_frenzy;
+  
+  double duration = a -> num_ticks * a -> base_tick_time;
+  
+  if( e )
+  {
+    // The new bleeds duration lasts longer than the current one.
+    // Different duration: Deep Wounds vs Rend (+glyph)
+    if( duration > ( e -> occurs() - a -> sim -> current_time ) )
+      e -> reschedule( duration );
+  }
+  else
+  {
+    e = new ( a -> sim ) blood_frenzy_expiration_t( a -> sim, p, duration);
+  }
+    
+}
+
 // trigger_bloodsurge =======================================================
 
 static void trigger_bloodsurge( action_t* a )
@@ -333,6 +376,48 @@ static void trigger_bloodsurge( action_t* a )
     
 }
 
+// trigger_tier7_4pc ========================================================
+
+static void trigger_tier7_4pc( action_t* a )
+{
+  warrior_t* p = a -> player -> cast_warrior();
+  if( p -> gear.tier7_4pc == 0 )
+    return;
+    
+  if( ! a -> sim -> roll( 0.10 ) ) 
+    return;
+  
+  struct heightened_reflexes_expiration_t : public event_t
+  {
+    heightened_reflexes_expiration_t( sim_t* sim, warrior_t* p ) : event_t( sim, p )
+    {
+      name = "Spirits of the Lost (tier7_4pc) Expiration";
+      player -> aura_gain( "Spirits of the Lost (tier7_4pc)" );
+      player -> buffs.tier7_4pc = 5;
+      sim -> add_event( this, 30.0 );
+    }
+    virtual void execute()
+    {
+      player -> aura_loss( "Heightened Reflexes" );
+      player -> buffs.tier7_4pc = 0;
+      player -> expirations.tier7_4pc = 0;
+    }
+  };
+
+  p -> procs.tier7_4pc -> occur();
+
+  event_t*& e = p -> expirations.tier7_4pc;
+
+  if( e )
+  {
+    e -> reschedule( 30.0 );
+  }
+  else
+  {
+    e = new ( a -> sim ) heightened_reflexes_expiration_t( a -> sim, p );
+  }
+}
+
 // trigger_deep_wounds ======================================================
 
 static void trigger_deep_wounds( action_t* a )
@@ -344,11 +429,12 @@ static void trigger_deep_wounds( action_t* a )
 
   struct deep_wounds_t : public warrior_attack_t
   {
-    deep_wounds_t( player_t* p ) : warrior_attack_t( "deep_wounds", p, SCHOOL_BLEED, TREE_ARMS )
+    deep_wounds_t( warrior_t* p ) : 
+      warrior_attack_t( "deep_wounds", p, SCHOOL_BLEED, TREE_ARMS )
     {
-      may_miss    = false;
-      background  = true;
+      may_miss = may_dodge = may_block = may_glance = may_crit = may_parry = false;
       proc        = true;
+      background  = true;
       trigger_gcd = 0;
       base_cost   = 0;
 
@@ -356,9 +442,26 @@ static void trigger_deep_wounds( action_t* a )
       base_tick_time = 1.0;
       num_ticks      = 6;
       tick_power_mod = 0;
+      
+      weapon_multiplier = 0; // 1/5th of weapon_damage per tick.
+      weapon   = &( p -> main_hand_weapon );
     }
     virtual void player_buff() {}
-    virtual void target_debuff( int dmg_type ) {}
+    virtual void target_debuff( int dmg_type ) 
+    {
+      if( sim -> target -> debuffs.mangle || sim -> target -> debuffs.trauma )
+        target_multiplier = 1.30;
+    }
+    virtual void execute()
+    {
+      trigger_blood_frenzy( this );
+      schedule_tick();
+    }
+    virtual void tick()
+    {
+      warrior_attack_t::tick();
+      trigger_tier7_4pc( this );
+    }
   };
 
   double dmg                   = 0;
@@ -390,7 +493,7 @@ static void trigger_deep_wounds( action_t* a )
     p -> active_deep_wounds -> cancel();
   }
   p -> active_deep_wounds -> base_tick_dmg = dmg / 6.0;
-  p -> active_deep_wounds -> schedule_tick();
+  p -> active_deep_wounds -> execute();
 }
 
 // trigger_overpower_activation =============================================
@@ -401,53 +504,14 @@ static void trigger_overpower_activation( warrior_t* p )
   p -> aura_gain( "Overpower Activation" );
 }
 
-// trigger_tier7_4pc ========================================================
-
-static void trigger_tier7_4pc( action_t* a )
-{
-  warrior_t* p = a -> player -> cast_warrior();
-  if( a -> result != RESULT_CRIT )
-    return;
-    
-  if( ! a -> sim -> roll( 0.40 ) ) 
-    return;
-  
-  struct heightened_reflexes_expiration_t : public event_t
-  {
-    heightened_reflexes_expiration_t( sim_t* sim, warrior_t* p ) : event_t( sim, p )
-    {
-      name = "Spirits of the Lost (tier7_4pc) Expiration";
-      player -> aura_gain( "Spirits of the Lost (tier7_4pc)" );
-      player -> buffs.tier7_4pc = 5;
-      sim -> add_event( this, 30.0 );
-    }
-    virtual void execute()
-    {
-      player -> aura_loss( "Heightened Reflexes" );
-      player -> buffs.tier7_4pc = 0;
-      player -> expirations.tier7_4pc = 0;
-    }
-  };
-
-  p -> procs.tier7_4pc -> occur();
-
-  event_t*& e = p -> expirations.tier8_2pc;
-
-  if( e )
-  {
-    e -> reschedule( 30.0 );
-  }
-  else
-  {
-    e = new ( a -> sim ) heightened_reflexes_expiration_t( a -> sim, p );
-  }
-}
-
 // trigger_tier8_2pc ========================================================
 
 static void trigger_tier8_2pc( action_t* a )
 {
   warrior_t* p = a -> player -> cast_warrior();
+  if( p -> gear.tier8_2pc == 0 )
+    return;
+
   if( a -> result != RESULT_CRIT )
     return;
     
@@ -518,6 +582,9 @@ double warrior_attack_t::cost()
     c -= p -> talents.focused_rage;
 
   c -= p -> buffs.tier7_4pc;
+  if( c < 0 ) 
+    return 0;
+
   return c;
 }
 
@@ -663,6 +730,17 @@ struct melee_t : public warrior_attack_t
     // Rage Conversion Value, needed for: damage done => rage gained
     rage_conversion_value = 0.0091107836 * p -> level * p -> level + 3.225598133* p -> level + 4.2652911;
   }
+  virtual double haste()
+  {
+    warrior_t* p = player -> cast_warrior();
+
+    double h = warrior_attack_t::haste();
+
+    h *= 1.0 / ( 1.0 + p -> talents.blood_frenzy * 0.03);
+
+    return h;
+  }
+
 
   virtual double execute_time()
   {
@@ -987,7 +1065,7 @@ struct execute_t : public warrior_attack_t
 struct mortal_strike_t : public warrior_attack_t
 {
   mortal_strike_t( player_t* player, const std::string& options_str ) : 
-    warrior_attack_t( "mortal_strike",  player, SCHOOL_PHYSICAL, TREE_FURY )
+    warrior_attack_t( "mortal_strike",  player, SCHOOL_PHYSICAL, TREE_ARMS )
   {
     warrior_t* p = player -> cast_warrior();
     assert( p -> talents.mortal_strike );
@@ -1008,12 +1086,13 @@ struct mortal_strike_t : public warrior_attack_t
     };
     init_rank( ranks );
     
-    cooldown               = 6.0 - ( p -> talents.improved_mortal_strike / 3.0 );
-    base_multiplier       *= 1 + util_t::talent_rank( p -> talents.improved_mortal_strike, 3, 0.03, 0.06, 0.10)
-                               + ( p -> glyphs.mortal_strike ? 0.10 : 0.0 );
+    cooldown         = 6.0 - ( p -> talents.improved_mortal_strike / 3.0 );
+    base_multiplier *= 1 + util_t::talent_rank( p -> talents.improved_mortal_strike, 3, 0.03, 0.06, 0.10)
+                         + ( p -> glyphs.mortal_strike ? 0.10 : 0 );
     if( p -> gear.tier8_4pc )
       base_crit += 0.10;
-      
+
+    weapon_multiplier = 1;
     weapon = &( p -> main_hand_weapon );
   }
 };
@@ -1126,8 +1205,8 @@ struct rend_t : public warrior_attack_t
     weapon_multiplier = 0; // Else there would be a direct damage component
     warrior_attack_t::execute();
     weapon_multiplier = 1.0 / 5.0; // 1/5th of weapon_damage per tick.
+    trigger_blood_frenzy( this );
   }
-
 };
 
 // Slam ====================================================================
@@ -1347,6 +1426,10 @@ double warrior_spell_t::cost()
     c -= p -> talents.focused_rage;
 
   c -= p -> buffs.tier7_4pc;
+
+  if( c < 0 ) 
+    return 0;
+
   return c;
 }
 
@@ -1748,7 +1831,8 @@ bool warrior_t::get_talent_trees( std::vector<int*>& arms,
     { { 27, &( talents.endless_rage                    ) }, { 27, &( talents.titans_grip               ) }, { 27, &( talents.shockwave                  ) } },
     { { 28, &( talents.blood_frenzy                    ) }, {  0, NULL                                   }, {  0, NULL                                    } },
     { { 29, &( talents.wrecking_crew                   ) }, {  0, NULL                                   }, {  0, NULL                                    } },
-    { { 30, &( talents.bladestorm                      ) }, {  0, NULL                                   }, {  0, NULL                                    } }
+    { { 30, &( talents.bladestorm                      ) }, {  0, NULL                                   }, {  0, NULL                                    } },
+    { {  0, NULL                                         }, {  0, NULL                                   }, {  0, NULL                                    } }
   };
   
   return player_t::get_talent_trees( arms, fury, protection, translation );

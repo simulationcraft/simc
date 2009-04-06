@@ -254,11 +254,12 @@ void action_t::target_debuff( int dmg_type )
 
   if( school == SCHOOL_BLEED ) 
   {
-    if( t -> debuffs.mangle )
+    if( t -> debuffs.mangle || t -> debuffs.trauma )
     {
       target_multiplier *= 1.30;
     }
     t -> uptimes.mangle -> update( t -> debuffs.mangle != 0 );
+    t -> uptimes.trauma -> update( t -> debuffs.trauma != 0 );
   }
 
   if( sim -> P309 && t -> debuffs.razorice )

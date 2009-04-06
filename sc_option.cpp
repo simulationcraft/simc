@@ -289,6 +289,7 @@ static void parse_optimal_raid( sim_t*       sim,
   sim -> overrides.strength_of_earth      = sim -> optimal_raid;
   sim -> overrides.sunder_armor           = sim -> optimal_raid; 
   sim -> overrides.swift_retribution      = sim -> optimal_raid;
+  sim -> overrides.trauma                 = sim -> optimal_raid; 
   sim -> overrides.thunder_clap           = sim -> optimal_raid; 
   sim -> overrides.totem_of_wrath         = sim -> optimal_raid;
   sim -> overrides.totem_of_wrath         = sim -> optimal_raid; 

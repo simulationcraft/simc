@@ -357,7 +357,6 @@ struct sim_t
     int blessing_of_kings;
     int blessing_of_might;
     int blessing_of_wisdom;
-    int blood_frenzy;
     int crypt_fever;
     int judgement_of_wisdom;
     int razorice;
@@ -370,6 +369,7 @@ struct sim_t
     int affliction_effects;
     int arcane_brilliance;
     int bleeding;
+    int blood_frenzy;
     int bloodlust;
     int bloodlust_early;
     int curse_of_elements;
@@ -395,6 +395,7 @@ struct sim_t
     int savage_combat;
     int strength_of_earth;
     int totem_of_wrath;
+    int trauma;
     int trueshot_aura;
     int unleashed_rage;
     int windfury_totem;
@@ -1174,6 +1175,7 @@ struct target_t
     int    slow;
     int    snare;
     double sunder_armor;
+    int    trauma;
     int    thunder_clap;
     int    totem_of_wrath;
     int    winters_chill;
@@ -1215,6 +1217,7 @@ struct target_t
     uptime_t* mangle;
     uptime_t* master_poisoner;
     uptime_t* savage_combat;
+    uptime_t* trauma;
     uptime_t* totem_of_wrath;
     uptime_t* winters_chill;
     uptime_t* winters_grasp;

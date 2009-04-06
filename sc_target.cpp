@@ -163,6 +163,7 @@ void target_t::init()
   uptimes.mangle               = get_uptime( "mangle"               );
   uptimes.master_poisoner      = get_uptime( "master_poisoner"      );
   uptimes.savage_combat        = get_uptime( "savage_combat"        );
+  uptimes.trauma               = get_uptime( "trauma"               );
   uptimes.totem_of_wrath       = get_uptime( "totem_of_wrath"       );
   uptimes.winters_chill        = get_uptime( "winters_chill"        );
   uptimes.winters_grasp        = get_uptime( "winters_grasp"        );
@@ -207,6 +208,7 @@ void target_t::combat_begin()
   if( sim -> overrides.sunder_armor          ) debuffs.sunder_armor = sim -> P309 ? 3925 : 0.20;
   if( sim -> overrides.thunder_clap          ) debuffs.thunder_clap = 1;
   if( sim -> overrides.totem_of_wrath        ) debuffs.totem_of_wrath = 1;
+  if( sim -> overrides.trauma                ) debuffs.trauma = 1;
   if( sim -> overrides.winters_chill         ) debuffs.winters_chill = 5;
 
   if( sim -> overrides.bloodlust )
