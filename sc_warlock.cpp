@@ -947,6 +947,7 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 struct warlock_spell_t : public spell_t
 {
   bool decimation_trigger, decimation_consumer;
+  int metamorphosis;
 
   warlock_spell_t( const char* n, player_t* player, int s, int t ) : 
     spell_t( n, player, RESOURCE_MANA, s, t ), decimation_trigger(false), decimation_consumer(false)
@@ -961,6 +962,8 @@ struct warlock_spell_t : public spell_t
   virtual void   target_debuff( int dmg_type );
   virtual void   execute();
   virtual void   tick();
+  virtual void   parse_options( option_t*, const std::string& );
+  virtual bool   ready();
 };
 
 // trigger_tier7_2pc =======================================================
@@ -2178,6 +2181,37 @@ void warlock_spell_t::tick()
   spell_t::tick();
   trigger_molten_core( this );
   trigger_tier7_2pc( this );
+}
+
+// warlock_spell_t::parse_options =============================================
+
+void warlock_spell_t::parse_options( option_t*          options,
+                                     const std::string& options_str )
+{
+  option_t base_options[] =
+  {
+    { "metamorphosis", OPT_INT, &metamorphosis },
+    { NULL }
+  };
+  std::vector<option_t> merged_options;
+  spell_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
+}
+
+// warlock_spell_t::ready =====================================================
+
+bool warlock_spell_t::ready()
+{
+  warlock_t* p = player -> cast_warlock();
+
+  if( ! spell_t::ready() )
+    return false;
+
+  if( metamorphosis > 0 )
+    return( p -> _buffs.metamorphosis != 0 );
+  else if( metamorphosis < 0 )
+    return( p -> _buffs.metamorphosis == 0 );
+
+  return true;
 }
 
 // Curse of Elements Spell ===================================================
@@ -4112,6 +4146,9 @@ struct life_tap_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
 
+    if( ! warlock_spell_t::ready() )
+      return false;
+
     if( inferno )
     {
       if( p -> active_pet == 0 ||
@@ -4169,6 +4206,9 @@ struct dark_pact_t : public warlock_spell_t
 
   virtual bool ready()
   {
+    if( ! warlock_spell_t::ready() )
+      return false;
+
     return( player -> resource_current[ RESOURCE_MANA ] < 1000 );
   }
 };
