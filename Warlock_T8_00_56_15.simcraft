@@ -4,7 +4,7 @@ warlock=Warlock_T8_00_56_15
 level=80
 talents=http://talent.mmo-champion.com/?warlock=000000000000000000000000000000320330113520252013523135155000005000000000000000000
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/spell_stone/fel_armor/summon_pet,felguard
-actions+=/demonic_empowerment/life_tap,tier7_4pc=1,time>=100,health_percentage>=35,metamorphosis=-1
+actions+=/demonic_empowerment/life_tap,trigger=10000,health_percentage>=35,metamorphosis=-1
 actions+=/life_tap,glyph=1/metamorphosis/curse_of_doom,time_to_die>=90/immolation,health_percentage>=35
 actions+=/soul_fire,decimation=1/immolate/corruption,health_percentage>=35/shadow_bolt/life_tap
 Warlock_T7_Hit_Gear.simcraft
