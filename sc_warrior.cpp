@@ -28,7 +28,7 @@ struct warrior_t : public player_t
     int    flurry;
     double overpower;
     int    recklessness;
-    
+    int    heroic_strike;
     void reset() { memset( (void*) this, 0x00, sizeof( _buffs_t ) ); }
     _buffs_t() { reset(); }
   };
@@ -58,6 +58,7 @@ struct warrior_t : public player_t
 
   // Gains
   gain_t* gains_anger_management;
+  gain_t* gains_glyph_of_heroic_strike;
   gain_t* gains_mh_attack;
   gain_t* gains_oh_attack;
 
@@ -66,6 +67,7 @@ struct warrior_t : public player_t
   
   // Up-Times
   uptime_t* uptimes_flurry;
+  uptime_t* uptimes_heroic_strike;
   uptime_t* uptimes_rage_cap;
   
   // Auto-Attack
@@ -157,15 +159,17 @@ struct warrior_t : public player_t
     active_stance        = STANCE_BATTLE; 
     
     // Gains
-    gains_anger_management = get_gain( "anger_management" );
-    gains_mh_attack        = get_gain( "mh_attack" );
-    gains_oh_attack        = get_gain( "oh_attack" );
+    gains_anger_management       = get_gain( "anger_management" );
+    gains_glyph_of_heroic_strike = get_gain( "glyph_of_heroic_strike" );
+    gains_mh_attack              = get_gain( "mh_attack" );
+    gains_oh_attack              = get_gain( "oh_attack" );
     
     // Procs
     procs_glyph_overpower = get_proc( "glyph_of_overpower" );
     
     // Up-Times
     uptimes_flurry                = get_uptime( "flurry" );
+    uptimes_heroic_strike         = get_uptime( "heroic_strike" );
     uptimes_rage_cap              = get_uptime( "rage_cap" );
   
     // Auto-Attack
@@ -562,7 +566,6 @@ struct melee_t : public warrior_attack_t
 
   virtual void execute()
   {
-    warrior_attack_t::execute();
    
     warrior_t* p = player -> cast_warrior();
 
@@ -571,6 +574,25 @@ struct melee_t : public warrior_attack_t
       p -> _buffs.flurry--;
       if( p -> _buffs.flurry == 0) p -> aura_loss( "Flurry" );
     }
+    if( weapon -> slot == SLOT_MAIN_HAND )
+    {
+      // We can't rely on the resource check from the time we queued the HS.
+      // Easily possible that at the time we reach the MH hit, we have spent
+      // all the rage and therefor have to check again if we have enough rage.
+      if( p -> active_heroic_strike && p -> resource_current[ RESOURCE_RAGE ] < p -> active_heroic_strike -> cost() )
+      {
+        p -> active_heroic_strike -> cancel();
+      }
+      p -> uptimes_heroic_strike -> update( p -> active_heroic_strike != 0 );
+      if( p -> active_heroic_strike  )
+      {
+        p -> active_heroic_strike -> execute();
+        schedule_execute();
+        return;
+      }
+    }
+
+    warrior_attack_t::execute();
 
     if( result_is_hit() )
     {
@@ -673,20 +695,57 @@ struct heroic_strike_t : public warrior_attack_t
       { 0, 0 }
     };
     init_rank( ranks );
-    weapon = &( p -> main_hand_weapon );
-    base_cost -= p -> talents.improved_heroic_strike;
+    weapon          = &( p -> main_hand_weapon );
+    base_cost      -= p -> talents.improved_heroic_strike;
     trigger_gcd     = 0;
     
-    
+    weapon = &( p -> main_hand_weapon );
+    normalize_weapon_speed = false;
+
     // Heroic Strike needs swinging auto_attack!
     assert( p -> main_hand_attack -> execute_event == 0 );
-    observer = &( p -> active_heroic_strike ); 
+    observer = &( p -> active_heroic_strike );
   }
+  virtual void consume_resource()
+  {
+    if( result_is_hit() )
+    {
+      // Heroic Strike consumes the rage _ONLY_ when it actually hits,
+      // not when it is a dodge/parry
+      // FIX ME! Assuming the same behaviour for a normal miss at the
+      // moment, but that could be wrong.
+      warrior_attack_t::consume_resource();
+    }
+  }
+  virtual void schedule_execute()
+  {
+    // We don't actually create a event to execute Heroic Strike instead of the 
+    // MH attack.
+    if( observer ) *observer = this;
+    if( sim -> log ) report_t::log( sim, "%s queues %s", player -> name(), name() );
+    player -> schedule_ready( 0 );
+  }
+  virtual void execute()
+  {
+    warrior_t* p = player -> cast_warrior();
+    warrior_attack_t::execute();
+    if( result == RESULT_CRIT && p -> glyphs.heroic_strike )
+    {
+      p -> resource_gain( RESOURCE_RAGE, 10.0, p -> gains_glyph_of_heroic_strike );
+    }
+  }
+  virtual bool ready()
+  {
+    if( ! warrior_attack_t::ready() )
+      return false;
 
-  // FIX ME!!
-  // No real clue how to do a "on next swing" type action.
-  // Because the rage is also only consumed when the HS hits
-  // Probably needs a fancier way then i could think of
+    warrior_t* p = player -> cast_warrior();
+    // Allready queued up heroic strike?
+    if( p -> active_heroic_strike )
+      return false;
+      
+    return true;
+  }  
 };
 
 // Bloodthirst ===============================================================
