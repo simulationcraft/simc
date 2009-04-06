@@ -950,7 +950,7 @@ struct warlock_spell_t : public spell_t
   int metamorphosis;
 
   warlock_spell_t( const char* n, player_t* player, int s, int t ) : 
-    spell_t( n, player, RESOURCE_MANA, s, t ), decimation_trigger(false), decimation_consumer(false)
+    spell_t( n, player, RESOURCE_MANA, s, t ), decimation_trigger(false), decimation_consumer(false), metamorphosis(0)
   {
   }
 
