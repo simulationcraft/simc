@@ -60,6 +60,7 @@ struct warrior_t : public player_t
   // Gains
   gain_t* gains_anger_management;
   gain_t* gains_bloodrage;
+  gain_t* gains_berserker_rage;
   gain_t* gains_glyph_of_heroic_strike;
   gain_t* gains_mh_attack;
   gain_t* gains_oh_attack;
@@ -165,6 +166,7 @@ struct warrior_t : public player_t
     // Gains
     gains_anger_management       = get_gain( "anger_management" );
     gains_bloodrage              = get_gain( "bloodrage" );
+    gains_berserker_rage         = get_gain( "berserker_rage" );
     gains_glyph_of_heroic_strike = get_gain( "glyph_of_heroic_strike" );
     gains_mh_attack              = get_gain( "mh_attack" );
     gains_oh_attack              = get_gain( "oh_attack" );
@@ -1418,6 +1420,37 @@ struct stance_t : public warrior_spell_t
   }
 };
 
+// Berserker Rage ==========================================================
+
+struct berserker_rage_t : public warrior_spell_t
+{
+  berserker_rage_t( player_t* player, const std::string& options_str ) : 
+    warrior_spell_t( "berserker_rage", player )
+  {
+    warrior_t* p = player -> cast_warrior();
+
+    std::string stance_str;
+    option_t options[] =
+    {
+      { NULL }
+    };
+    parse_options( options, options_str );
+
+    base_cost   = 0;
+    trigger_gcd = 0;
+    cooldown    = 30 * ( 1.0 - 0.11 * p -> talents.intensify_rage );;
+    harmful     = false;
+  }
+
+  virtual void execute()
+  {
+    warrior_spell_t::execute();
+    
+    warrior_t* p = player -> cast_warrior();      
+    p -> resource_gain( RESOURCE_RAGE, 10 * p -> talents.improved_berserker_rage , p -> gains_berserker_rage );
+  }
+};
+
 // Bloodrage ===============================================================
 
 struct bloodrage_t : public warrior_spell_t
@@ -1425,7 +1458,7 @@ struct bloodrage_t : public warrior_spell_t
   bloodrage_t( player_t* player, const std::string& options_str ) : 
     warrior_spell_t( "bloodrage", player )
   {
-    //warrior_t* p = player -> cast_warrior();
+    warrior_t* p = player -> cast_warrior();
 
     std::string stance_str;
     option_t options[] =
@@ -1436,7 +1469,7 @@ struct bloodrage_t : public warrior_spell_t
     
     base_cost   = 0;
     trigger_gcd = 0;
-    cooldown    = 60;
+    cooldown    = 60 * ( 1.0 - 0.11 * p -> talents.intensify_rage );;
     harmful     = false;
   }
 
@@ -1582,6 +1615,7 @@ action_t* warrior_t::create_action( const std::string& name,
                                   const std::string& options_str )
 {
   if( name == "auto_attack"         ) return new auto_attack_t        ( this, options_str );
+  if( name == "berserker_rage"      ) return new berserker_rage_t     ( this, options_str );
   if( name == "bloodrage"           ) return new bloodrage_t          ( this, options_str );
   if( name == "bloodthirst"         ) return new bloodthirst_t        ( this, options_str );
   if( name == "death_wish"          ) return new death_wish_t         ( this, options_str );
