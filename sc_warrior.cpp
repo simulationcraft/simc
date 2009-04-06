@@ -52,6 +52,7 @@ struct warrior_t : public player_t
     event_t* death_wish;
     event_t* recklessness;
     event_t* sudden_death;
+    event_t* trauma;
     
     void reset() { memset( (void*) this, 0x00, sizeof( _expirations_t ) ); }
     _expirations_t() { reset(); }
@@ -60,6 +61,7 @@ struct warrior_t : public player_t
 
   // Gains
   gain_t* gains_anger_management;
+  gain_t* gains_avoided_attacks;
   gain_t* gains_bloodrage;
   gain_t* gains_berserker_rage;
   gain_t* gains_glyph_of_heroic_strike;
@@ -166,6 +168,7 @@ struct warrior_t : public player_t
     
     // Gains
     gains_anger_management       = get_gain( "anger_management" );
+    gains_avoided_attacks        = get_gain( "avoided_attacks" );
     gains_bloodrage              = get_gain( "bloodrage" );
     gains_berserker_rage         = get_gain( "berserker_rage" );
     gains_glyph_of_heroic_strike = get_gain( "glyph_of_heroic_strike" );
@@ -248,11 +251,14 @@ namespace { // ANONYMOUS NAMESPACE =========================================
 struct warrior_attack_t : public attack_t
 {
   double min_rage, max_rage;
+  bool aoe_attack;
   int stancemask;
   warrior_attack_t( const char* n, player_t* player, int s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true  ) : 
     attack_t( n, player, RESOURCE_RAGE, s, t, special ), 
     min_rage(0), max_rage(0), 
+    aoe_attack(false),
     stancemask(STANCE_BATTLE|STANCE_BERSERKER|STANCE_DEFENSE)
+
   {
     warrior_t* p = player -> cast_warrior();
     may_glance   = false;
@@ -266,6 +272,7 @@ struct warrior_attack_t : public attack_t
 
   virtual void   parse_options( option_t*, const std::string& options_str );
   virtual double dodge_chance( int delta_level );
+  virtual void   consume_resource();
   virtual double cost();
   virtual void   execute();
   virtual void   player_buff();
@@ -551,6 +558,45 @@ static void trigger_tier8_2pc( action_t* a )
   }
 }
 
+// trigger_trauma ===========================================================
+
+static void trigger_trauma( action_t* a )
+{
+  warrior_t* p = a -> player -> cast_warrior();
+  if( p -> talents.trauma == 0 )
+    return;
+
+  if( a -> result != RESULT_CRIT )
+    return;
+  
+  struct trauma_expiration_t : public event_t
+  {
+    trauma_expiration_t( sim_t* sim, warrior_t* p ) : event_t( sim, p )
+    {
+      name = "Trauma Expiration";
+      sim -> target -> debuffs.trauma++;
+      sim -> add_event( this, 15.0 );
+    }
+    virtual void execute()
+    {
+      warrior_t* p = player -> cast_warrior();
+      sim -> target -> debuffs.trauma--;
+      p -> _expirations.trauma = 0;
+    }
+  };
+
+  event_t*& e = p -> _expirations.trauma;
+
+  if( e )
+  {
+    e -> reschedule( 15.0 );
+  }
+  else
+  {
+    e = new ( a -> sim ) trauma_expiration_t( a -> sim, p );
+  }
+}
+
 // =========================================================================
 // Warrior Attacks
 // =========================================================================
@@ -587,7 +633,27 @@ double warrior_attack_t::cost()
 
   return c;
 }
+// warrior_attack_t::consume_resource ========================================
 
+void warrior_attack_t::consume_resource()
+{
+  attack_t::consume_resource();
+
+  // Warrior attacks which are are avoided by the target consume only 20%
+  // Only Exception are AoE attacks like Whirlwind/Bladestorm 
+  // result != RESULT_NONE is needed so the cost is not reduced when the sim 
+  // checks all actions if they are ready base on resource cost.
+  if( aoe_attack )
+    return;
+  
+  if( result_is_hit() )
+    return;
+
+  warrior_t* p = player -> cast_warrior();  
+  double rage_restored = resource_consumed * 0.80;
+  p -> resource_gain( RESOURCE_RAGE, rage_restored, p -> gains_avoided_attacks );
+
+}
 // warrior_attack_t::execute =================================================
 
 void warrior_attack_t::execute()
@@ -777,13 +843,16 @@ struct melee_t : public warrior_attack_t
       if( p -> active_heroic_strike  )
       {
         p -> active_heroic_strike -> execute();
+        //trigger_trauma( p -> active_heroic_strike );
         schedule_execute();
         return;
       }
     }
 
     warrior_attack_t::execute();
-
+    
+    trigger_trauma( this );
+    
     if( result_is_hit() )
     {
       /* http://www.wowwiki.com/Formulas:Rage_generation
@@ -896,17 +965,7 @@ struct heroic_strike_t : public warrior_attack_t
     assert( p -> main_hand_attack -> execute_event == 0 );
     observer = &( p -> active_heroic_strike );
   }
-  virtual void consume_resource()
-  {
-    if( result_is_hit() )
-    {
-      // Heroic Strike consumes the rage _ONLY_ when it actually hits,
-      // not when it is a dodge/parry
-      // FIX ME! Assuming the same behaviour for a normal miss at the
-      // moment, but that could be wrong.
-      warrior_attack_t::consume_resource();
-    }
-  }
+
   virtual void schedule_execute()
   {
     // We don't actually create a event to execute Heroic Strike instead of the 
@@ -1036,12 +1095,16 @@ struct execute_t : public warrior_attack_t
     warrior_attack_t::consume_resource();
 
     // Let the additional rage consumption create it's own debug log entries.
-    if( sim -> debug )
-      report_t::log( sim, "%s consumes an additional %.1f %s for %s", player -> name(),
-                     excess_rage, util_t::resource_type_string( resource ), name() );
+    // FIX ME! Does a missed execute consume the excess_rage?
+    if( result_is_hit() )
+    {
+      if( sim -> debug )
+        report_t::log( sim, "%s consumes an additional %.1f %s for %s", player -> name(),
+                       excess_rage, util_t::resource_type_string( resource ), name() );
 
-    player -> resource_loss( resource, excess_rage );
-    stats -> consume_resource( excess_rage );
+      player -> resource_loss( resource, excess_rage );
+      stats -> consume_resource( excess_rage );
+    }
 
   }
   
@@ -1329,7 +1392,7 @@ struct whirlwind_t : public warrior_attack_t
     base_multiplier       *= 1 + p -> talents.improved_whirlwind * 0.10 + p -> talents.unending_fury * 0.02;
     base_direct_dmg        = 1;
 
-    
+    aoe_attack = true;
     stancemask = STANCE_BERSERKER;
 
     weapon = &( p -> main_hand_weapon );
