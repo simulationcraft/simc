@@ -407,9 +407,14 @@ double action_t::calculate_tick_damage()
 
   if( base_tick_dmg == 0 && tick_power_mod == 0 ) return 0;
 
-  // FIXME! Are there DoT effects that include weapon damage/modifiers?
-
   tick_dmg  = base_tick_dmg + total_power() * tick_power_mod;
+  
+  // Rend is a DoT with weapon_multiplier > 0
+  if( weapon && weapon_multiplier > 0 )
+  {
+    tick_dmg += calculate_weapon_damage();
+  }
+  
   tick_dmg *= total_td_multiplier();
   
   double init_tick_dmg = tick_dmg;

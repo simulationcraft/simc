@@ -63,7 +63,9 @@ struct warrior_t : public player_t
   gain_t* gains_oh_attack;
 
   // Procs
+  proc_t* procs_bloodsurge;
   proc_t* procs_glyph_overpower;
+  proc_t* procs_taste_for_blood;
   
   // Up-Times
   uptime_t* uptimes_flurry;
@@ -165,7 +167,9 @@ struct warrior_t : public player_t
     gains_oh_attack              = get_gain( "oh_attack" );
     
     // Procs
+    procs_bloodsurge      = get_proc( "bloodusrge" );
     procs_glyph_overpower = get_proc( "glyph_of_overpower" );
+    procs_taste_for_blood = get_proc( "taste_for_blood" );
     
     // Up-Times
     uptimes_flurry                = get_uptime( "flurry" );
@@ -202,6 +206,7 @@ double warrior_t::composite_attack_power_multiplier()
   {
     m *= 1 + talents.improved_berserker_stance * 0.02;
   }
+  m *= 1 + talents.blood_frenzy * 0.03;
   return m;
 }
 
@@ -278,6 +283,8 @@ static void trigger_bloodsurge( action_t* a )
   double chance = util_t::talent_rank( p -> talents.bloodsurge, 3, 0.07, 0.13, 0.20 );
   if( ! a -> sim -> roll( chance ) )
     return;
+  
+  p -> procs_bloodsurge -> occur();
   
   struct bloodsurge_expiration_t : public event_t
   {
@@ -949,6 +956,69 @@ struct overpower_t : public warrior_attack_t
   }
 };
 
+// Rend ======================================================================
+
+struct rend_t : public warrior_attack_t
+{
+  rend_t( player_t* player, const std::string& options_str ) : 
+    warrior_attack_t( "rend",  player, SCHOOL_BLEED, TREE_ARMS )
+  {
+    warrior_t* p = player -> cast_warrior();
+    option_t options[] =
+    {
+      { NULL }
+    };
+    parse_options( options, options_str );
+    
+    static rank_t ranks[] =
+    {
+      { 76, 10, 0, 0, 380, 10 },
+      { 71,  9, 0, 0, 315, 10 },
+      { 68,  8, 0, 0, 215, 10 },
+      { 60,  7, 0, 0, 185, 10 },
+      { 0, 0 }
+    };
+    init_rank( ranks );
+
+
+    base_cost         = 10.0;
+    base_tick_time    = 3.0;
+    num_ticks         = 5 + ( p -> glyphs.rending ? 2 : 0 );
+    base_multiplier  *= 1 + p -> talents.improved_rend * 0.10;
+    
+    stancemask = STANCE_BATTLE | STANCE_DEFENSE;
+    
+    weapon_multiplier = 1.0 / 5.0; // 1/5th of weapon_damage per tick.
+    weapon = &( p -> main_hand_weapon );
+
+  }
+  virtual void player_buff()
+  {
+    warrior_attack_t::player_buff();
+    // If used while the victim is above 75% health, Rend does 35% more damage.
+    if( sim -> target -> health_percentage() > 75 )
+      player_multiplier *= 1.35;
+  }
+  
+  virtual void tick()
+  {
+    warrior_attack_t::tick();
+    warrior_t* p = player -> cast_warrior();
+    if( sim -> roll ( p -> talents.taste_for_blood * 0.10 ) )
+    {
+      trigger_overpower_activation( p );
+      p -> procs_taste_for_blood -> occur();
+    }
+  }
+  virtual void execute()
+  {
+    weapon_multiplier = 0; // Else there would be a direct damage component
+    warrior_attack_t::execute();
+    weapon_multiplier = 1.0 / 5.0; // 1/5th of weapon_damage per tick.
+  }
+
+};
+
 // Slam ====================================================================
 
 struct slam_t : public warrior_attack_t
@@ -1297,6 +1367,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if( name == "mortal_strike"       ) return new mortal_strike_t      ( this, options_str );
   if( name == "overpower"           ) return new overpower_t          ( this, options_str );
   if( name == "recklessness"        ) return new recklessness_t       ( this, options_str );
+  if( name == "rend"                ) return new rend_t               ( this, options_str );
   if( name == "slam"                ) return new slam_t               ( this, options_str );
   if( name == "stance"              ) return new stance_t             ( this, options_str );
   if( name == "whirlwind"           ) return new whirlwind_t          ( this, options_str );
