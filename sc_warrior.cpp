@@ -331,24 +331,6 @@ static void trigger_deep_wounds( action_t* a )
   if( ! p -> talents.deep_wounds )
     return;
 
-  struct deep_wounds_t : public warrior_attack_t
-  {
-    deep_wounds_t( player_t* p ) : warrior_attack_t( "deep_wounds", p, SCHOOL_BLEED, TREE_ARMS )
-    {
-      may_miss    = false;
-      background  = true;
-      proc        = true;
-      trigger_gcd = 0;
-      base_cost   = 0;
-
-      base_multiplier = 1.0;
-      base_tick_time = 1.0;
-      num_ticks      = 6;
-      tick_power_mod = 0;
-    }
-    virtual void player_buff() {}
-    virtual void target_debuff( int dmg_type ) {}
-  };
   double dmg                   = 0;
   double tmp_weapon_multiplier = 0;
 
@@ -568,8 +550,7 @@ void warrior_attack_t::player_buff()
 	      weapon -> type == WEAPON_POLEARM )
       {
         player_crit            += p -> talents.poleaxe_specialization * 0.01;
-        //FIX ME! Is this additive with Impale?
-        player_crit_bonus_multiplier *= 1 + p -> talents.poleaxe_specialization * 0.01;
+        player_crit_multiplier *= 1 + p -> talents.poleaxe_specialization * 0.01;
       }
     }
     if( p -> talents.dual_wield_specialization )
