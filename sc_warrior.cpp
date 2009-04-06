@@ -226,13 +226,13 @@ double warrior_t::composite_attribute_multiplier( int attr )
     {
       m *= 1 + talents.improved_berserker_stance * 0.04;
     }
-     m *= 1 + talents.strength_of_arms * 0.02
-     m *= 1 + talents.vitality * 0.02
+     m *= 1 + talents.strength_of_arms * 0.02;
+     m *= 1 + talents.vitality * 0.02;
   }
   else if( attr == ATTR_STAMINA )
   {
-     m *= 1 + talents.strength_of_arms * 0.02
-     m *= 1 + talents.vitality * 0.02
+     m *= 1 + talents.strength_of_arms * 0.02;
+     m *= 1 + talents.vitality * 0.02;
   }
   return m;
 }
@@ -341,6 +341,25 @@ static void trigger_deep_wounds( action_t* a )
 
   if( ! p -> talents.deep_wounds )
     return;
+
+  struct deep_wounds_t : public warrior_attack_t
+  {
+    deep_wounds_t( player_t* p ) : warrior_attack_t( "deep_wounds", p, SCHOOL_BLEED, TREE_ARMS )
+    {
+      may_miss    = false;
+      background  = true;
+      proc        = true;
+      trigger_gcd = 0;
+      base_cost   = 0;
+
+      base_multiplier = 1.0;
+      base_tick_time = 1.0;
+      num_ticks      = 6;
+      tick_power_mod = 0;
+    }
+    virtual void player_buff() {}
+    virtual void target_debuff( int dmg_type ) {}
+  };
 
   double dmg                   = 0;
   double tmp_weapon_multiplier = 0;
