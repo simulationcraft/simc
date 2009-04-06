@@ -220,9 +220,19 @@ double warrior_t::composite_attack_power_multiplier()
 double warrior_t::composite_attribute_multiplier( int attr )
 {
   double m = attribute_multiplier[ attr ]; 
-  if( attr == ATTR_STRENGTH && ! sim -> P309 && active_stance == STANCE_BERSERKER )
+  if( attr == ATTR_STRENGTH )
   {
-    m *= 1 + talents.improved_berserker_stance * 0.04;
+    if ( ! sim -> P309 && active_stance == STANCE_BERSERKER )
+    {
+      m *= 1 + talents.improved_berserker_stance * 0.04;
+    }
+     m *= 1 + talents.strength_of_arms * 0.02
+     m *= 1 + talents.vitality * 0.02
+  }
+  else if( attr == ATTR_STAMINA )
+  {
+     m *= 1 + talents.strength_of_arms * 0.02
+     m *= 1 + talents.vitality * 0.02
   }
   return m;
 }
@@ -250,6 +260,7 @@ struct warrior_attack_t : public attack_t
     normalize_weapon_speed = true;
     if( special )
       base_crit_bonus_multiplier *= 1.0 + p -> talents.impale * 0.10;
+    
   }
 
   virtual void   parse_options( option_t*, const std::string& options_str );
@@ -1629,7 +1640,7 @@ void warrior_t::init_base()
   // FIX ME!
   base_attack_power = -20;
   base_attack_crit = 0.031905;
-  
+  base_attack_expertise = 0.25 * talents.vitality * 0.02;  
   initial_attack_crit_per_agility = rating_t::interpolate( level, 1 / 2000, 1 / 3200, 1 / 6256.61 ); 
   
   health_per_stamina = 10;
