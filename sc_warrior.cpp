@@ -23,6 +23,7 @@ struct warrior_t : public player_t
   // Buffs
   struct _buffs_t
   {
+    int    bloodrage;
     int    bloodsurge;
     double death_wish;
     int    flurry;
@@ -58,6 +59,7 @@ struct warrior_t : public player_t
 
   // Gains
   gain_t* gains_anger_management;
+  gain_t* gains_bloodrage;
   gain_t* gains_glyph_of_heroic_strike;
   gain_t* gains_mh_attack;
   gain_t* gains_oh_attack;
@@ -162,6 +164,7 @@ struct warrior_t : public player_t
     
     // Gains
     gains_anger_management       = get_gain( "anger_management" );
+    gains_bloodrage              = get_gain( "bloodrage" );
     gains_glyph_of_heroic_strike = get_gain( "glyph_of_heroic_strike" );
     gains_mh_attack              = get_gain( "mh_attack" );
     gains_oh_attack              = get_gain( "oh_attack" );
@@ -326,9 +329,9 @@ static void trigger_deep_wounds( action_t* a )
   if( ! p -> talents.deep_wounds )
     return;
 
-  struct deep_wounds_t : public attack_t
+  struct deep_wounds_t : public warrior_attack_t
   {
-    deep_wounds_t( player_t* p ) : attack_t( "deep_wounds", p, RESOURCE_NONE, SCHOOL_BLEED )
+    deep_wounds_t( player_t* p ) : warrior_attack_t( "deep_wounds", p, SCHOOL_BLEED, TREE_ARMS )
     {
       may_miss    = false;
       background  = true;
@@ -341,8 +344,8 @@ static void trigger_deep_wounds( action_t* a )
       num_ticks      = 6;
       tick_power_mod = 0;
     }
-    void player_buff() {}
-    void target_debuff( int dmg_type ) {}
+    virtual void player_buff() {}
+    virtual void target_debuff( int dmg_type ) {}
   };
   double dmg                   = 0;
   double tmp_weapon_multiplier = 0;
@@ -384,6 +387,92 @@ static void trigger_overpower_activation( warrior_t* p )
   p -> aura_gain( "Overpower Activation" );
 }
 
+// trigger_tier7_4pc ========================================================
+
+static void trigger_tier7_4pc( action_t* a )
+{
+  warrior_t* p = a -> player -> cast_warrior();
+  if( a -> result != RESULT_CRIT )
+    return;
+    
+  if( ! a -> sim -> roll( 0.40 ) ) 
+    return;
+  
+  struct heightened_reflexes_expiration_t : public event_t
+  {
+    heightened_reflexes_expiration_t( sim_t* sim, warrior_t* p ) : event_t( sim, p )
+    {
+      name = "Spirits of the Lost (tier7_4pc) Expiration";
+      player -> aura_gain( "Spirits of the Lost (tier7_4pc)" );
+      player -> buffs.tier7_4pc = 5;
+      sim -> add_event( this, 30.0 );
+    }
+    virtual void execute()
+    {
+      player -> aura_loss( "Heightened Reflexes" );
+      player -> buffs.tier7_4pc = 0;
+      player -> expirations.tier7_4pc = 0;
+    }
+  };
+
+  p -> procs.tier7_4pc -> occur();
+
+  event_t*& e = p -> expirations.tier8_2pc;
+
+  if( e )
+  {
+    e -> reschedule( 30.0 );
+  }
+  else
+  {
+    e = new ( a -> sim ) heightened_reflexes_expiration_t( a -> sim, p );
+  }
+}
+
+// trigger_tier8_2pc ========================================================
+
+static void trigger_tier8_2pc( action_t* a )
+{
+  warrior_t* p = a -> player -> cast_warrior();
+  if( a -> result != RESULT_CRIT )
+    return;
+    
+  if( ! a -> sim -> roll( 0.40 ) ) 
+    return;
+  
+  struct heightened_reflexes_expiration_t : public event_t
+  {
+    heightened_reflexes_expiration_t( sim_t* sim, warrior_t* p ) : event_t( sim, p )
+    {
+      name = "Heightened Reflexes (tier8_2pc) Expiration";
+      player -> aura_gain( "Heightened Reflexes (tier8_2pc)" );
+      player -> haste_rating += 150;
+      player -> recalculate_haste();
+      sim -> add_event( this, 5.0 );
+    }
+    virtual void execute()
+    {
+      player -> aura_loss( "Heightened Reflexes" );
+      player -> haste_rating -= 150;
+      player -> recalculate_haste();
+      player -> expirations.tier8_2pc = 0;
+    }
+  };
+
+  p -> procs.tier8_2pc -> occur();
+
+  event_t*& e = p -> expirations.tier8_2pc;
+
+  if( e )
+  {
+    e -> reschedule( 5.0 );
+  }
+  else
+  {
+    e = new ( a -> sim ) heightened_reflexes_expiration_t( a -> sim, p );
+  }
+}
+
 // =========================================================================
 // Warrior Attacks
 // =========================================================================
@@ -413,6 +502,8 @@ double warrior_attack_t::cost()
   double c = attack_t::cost();
   if( harmful )
     c -= p -> talents.focused_rage;
+
+  c -= p -> buffs.tier7_4pc;
   return c;
 }
 
@@ -421,6 +512,7 @@ double warrior_attack_t::cost()
 void warrior_attack_t::execute()
 {
   attack_t::execute();
+  event_t::early( player -> expirations.tier7_4pc );
 
   warrior_t* p = player -> cast_warrior();
 
@@ -736,10 +828,11 @@ struct heroic_strike_t : public warrior_attack_t
   {
     warrior_t* p = player -> cast_warrior();
     warrior_attack_t::execute();
-    if( result == RESULT_CRIT && p -> glyphs.heroic_strike )
-    {
-      p -> resource_gain( RESOURCE_RAGE, 10.0, p -> gains_glyph_of_heroic_strike );
-    }
+
+    trigger_tier8_2pc( this );
+    if( result == RESULT_CRIT )
+      if( p -> glyphs.heroic_strike )
+        p -> resource_gain( RESOURCE_RAGE, 10.0, p -> gains_glyph_of_heroic_strike );
   }
   virtual bool ready()
   {
@@ -775,6 +868,8 @@ struct bloodthirst_t : public warrior_attack_t
     base_direct_dmg   = 1;
     base_multiplier  *= 1 + p -> talents.unending_fury * 0.02;
     direct_power_mod  = 0.50;
+    if( p -> gear.tier8_4pc )
+      base_crit += 0.10;
 
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
@@ -903,7 +998,9 @@ struct mortal_strike_t : public warrior_attack_t
     cooldown               = 6.0 - ( p -> talents.improved_mortal_strike / 3.0 );
     base_multiplier       *= 1 + util_t::talent_rank( p -> talents.improved_mortal_strike, 3, 0.03, 0.06, 0.10)
                                + ( p -> glyphs.mortal_strike ? 0.10 : 0.0 );
-    
+    if( p -> gear.tier8_4pc )
+      base_crit += 0.10;
+      
     weapon = &( p -> main_hand_weapon );
   }
 };
@@ -1004,6 +1101,7 @@ struct rend_t : public warrior_attack_t
   {
     warrior_attack_t::tick();
     warrior_t* p = player -> cast_warrior();
+    trigger_tier7_4pc( this );
     if( sim -> roll ( p -> talents.taste_for_blood * 0.10 ) )
     {
       trigger_overpower_activation( p );
@@ -1075,6 +1173,9 @@ struct slam_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
     if( p -> _buffs.bloodsurge )
       event_t::early( p -> _expirations.bloodsurge );
+
+    trigger_tier8_2pc( this );
+        
   }  
   virtual void schedule_execute()
   {
@@ -1179,13 +1280,94 @@ struct whirlwind_t : public warrior_attack_t
 // Warrior Spells
 // =========================================================================
 
+struct warrior_spell_t : public spell_t
+{
+  double min_rage, max_rage;
+  int stancemask;
+  warrior_spell_t( const char* n, player_t* player, int s=SCHOOL_PHYSICAL, int t=TREE_NONE ) : 
+    spell_t( n, player, RESOURCE_RAGE, s, t ), 
+    min_rage(0), max_rage(0), 
+    stancemask(STANCE_BATTLE|STANCE_BERSERKER|STANCE_DEFENSE)
+  {
+  }
+
+  virtual void   parse_options( option_t*, const std::string& options_str );
+  virtual double cost();
+  virtual void   execute();
+  virtual bool   ready();
+};
+
+// warrior_spell_t::parse_options ===========================================
+
+void warrior_spell_t::parse_options( option_t*          options,
+                                      const std::string& options_str )
+{
+  option_t base_options[] =
+  {
+    { "min_rage",       OPT_FLT, &min_rage       },
+    { "max_rage",       OPT_FLT, &max_rage       },
+    { "rage>",          OPT_FLT, &min_rage       },
+    { "rage<",          OPT_FLT, &max_rage       },
+    { NULL }
+  };
+  std::vector<option_t> merged_options;
+  spell_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
+}
+
+// warrior_spell_t::execute ==================================================
+
+void warrior_spell_t::execute()
+{
+  spell_t::execute();
+  // As it seems tier7 4pc is consumed by everything, no matter if it costs
+  // rage. "Reduces the rage cost of your next ability is reduced by 5."
+  event_t::early( player -> expirations.tier7_4pc );
+}
+
+// warrior_spell_t::cost =====================================================
+
+double warrior_spell_t::cost()
+{
+  warrior_t* p = player -> cast_warrior();
+  double c = spell_t::cost();
+  if( harmful )
+    c -= p -> talents.focused_rage;
+
+  c -= p -> buffs.tier7_4pc;
+  return c;
+}
+
+// warrior_spell_t::ready() ==================================================
+
+bool warrior_spell_t::ready()
+{
+  if( ! spell_t::ready() )
+    return false;
+
+  warrior_t* p = player -> cast_warrior();
+
+  if( min_rage > 0 )
+    if( p -> resource_current[ RESOURCE_RAGE ] < min_rage )
+      return false;
+
+  if( max_rage > 0 )
+    if( p -> resource_current[ RESOURCE_RAGE ] > max_rage )
+      return false;
+  
+  // Attack vailable in current stance?
+  if( ( stancemask & p -> active_stance ) == 0)
+    return false;
+    
+  return true;
+}
+
 // Stance ==================================================================
 
-struct stance_t : public spell_t
+struct stance_t : public warrior_spell_t
 {
   int switch_to_stance;
   stance_t( player_t* player, const std::string& options_str ) : 
-    spell_t( "stance", player ), switch_to_stance(0)
+    warrior_spell_t( "stance", player ), switch_to_stance(0)
   {
     warrior_t* p = player -> cast_warrior();
 
@@ -1211,6 +1393,7 @@ struct stance_t : public spell_t
 
     trigger_gcd = 0;
     cooldown    = 1.0;
+    harmful     = false;
   }
 
   virtual void execute()
@@ -1235,12 +1418,63 @@ struct stance_t : public spell_t
   }
 };
 
+// Bloodrage ===============================================================
+
+struct bloodrage_t : public warrior_spell_t
+{
+  bloodrage_t( player_t* player, const std::string& options_str ) : 
+    warrior_spell_t( "bloodrage", player )
+  {
+    //warrior_t* p = player -> cast_warrior();
+
+    std::string stance_str;
+    option_t options[] =
+    {
+      { NULL }
+    };
+    parse_options( options, options_str );
+    
+    base_cost   = 0;
+    trigger_gcd = 0;
+    cooldown    = 60;
+    harmful     = false;
+  }
+
+  virtual void execute()
+  {
+    warrior_spell_t::execute();
+    
+    warrior_t* p = player -> cast_warrior();      
+    p -> resource_gain( RESOURCE_RAGE, 10 * (1 + p -> talents.improved_bloodrage * 0.25), p -> gains_bloodrage );
+    p -> _buffs.bloodrage = 10;
+    struct bloodrage_buff_t : public event_t
+    {
+      bloodrage_buff_t( sim_t* sim, player_t* player) : event_t( sim, player)
+      {
+        name = "Bloodrage Buff";
+        sim -> add_event( this, 1.0 );
+      }
+      virtual void execute()
+      {
+        warrior_t* p = player -> cast_warrior();
+        p -> resource_gain( RESOURCE_RAGE, 1 + p -> talents.improved_bloodrage * 0.25, p -> gains_bloodrage );
+        p -> _buffs.bloodrage--;
+        if( p -> _buffs.bloodrage > 0)
+        {
+          new ( sim ) bloodrage_buff_t( sim, p );
+        }
+      }
+    };
+    new ( sim ) bloodrage_buff_t( sim, p );
+  }
+};
+
 // Death Wish ==============================================================
 
-struct death_wish_t : public spell_t
+struct death_wish_t : public warrior_spell_t
 {
   death_wish_t( player_t* player, const std::string& options_str ) : 
-    spell_t( "death_wish", player )
+    warrior_spell_t( "death_wish", player )
   {
     warrior_t* p = player -> cast_warrior();
 
@@ -1254,6 +1488,7 @@ struct death_wish_t : public spell_t
     base_cost   = 10;
     trigger_gcd = 0;
     cooldown    = 180.0 * ( 1.0 - 0.11 * p -> talents.intensify_rage );
+    harmful     = false;
   }
 
   virtual void execute()
@@ -1286,11 +1521,10 @@ struct death_wish_t : public spell_t
 
 // Recklessness ============================================================
 
-struct recklessness_t : public spell_t
+struct recklessness_t : public warrior_spell_t
 {
-  int stancemask;
   recklessness_t( player_t* player, const std::string& options_str ) : 
-    spell_t( "recklessness", player )
+    warrior_spell_t( "recklessness", player )
   {
     warrior_t* p = player -> cast_warrior();
 
@@ -1301,8 +1535,8 @@ struct recklessness_t : public spell_t
     };
     parse_options( options, options_str );
     
-    trigger_gcd = 0;
     cooldown    = 300.0 * ( 1.0 - 0.11 * p -> talents.intensify_rage );
+    harmful     = false;
     
     stancemask  = STANCE_BERSERKER;
   }
@@ -1332,19 +1566,7 @@ struct recklessness_t : public spell_t
     update_ready();
     p -> _expirations.recklessness = new ( sim ) expiration_t( sim, p );
   }
-  
-  virtual bool ready()
-  {
-    if( ! spell_t::ready() )
-      return false;
 
-    warrior_t* p = player -> cast_warrior();
-    
-    if( ( stancemask & p -> active_stance ) == 0)
-      return false;
-
-    return true;
-  }
 };
 
 
@@ -1360,6 +1582,7 @@ action_t* warrior_t::create_action( const std::string& name,
                                   const std::string& options_str )
 {
   if( name == "auto_attack"         ) return new auto_attack_t        ( this, options_str );
+  if( name == "bloodrage"           ) return new bloodrage_t          ( this, options_str );
   if( name == "bloodthirst"         ) return new bloodthirst_t        ( this, options_str );
   if( name == "death_wish"          ) return new death_wish_t         ( this, options_str );
   if( name == "execute"             ) return new execute_t            ( this, options_str );
