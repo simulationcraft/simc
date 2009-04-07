@@ -1125,7 +1125,9 @@ struct execute_t : public warrior_attack_t
 {
   double excess_rage_mod, excess_rage;
   execute_t( player_t* player, const std::string& options_str ) : 
-    warrior_attack_t( "execute",  player, SCHOOL_PHYSICAL, TREE_FURY )
+    warrior_attack_t( "execute",  player, SCHOOL_PHYSICAL, TREE_FURY ),
+    excess_rage_mod(0),
+    excess_rage(0)
   {
     warrior_t* p = player -> cast_warrior();
     option_t options[] =
