@@ -168,7 +168,7 @@ struct warrior_t : public player_t
     active_bladestorm_attack = 0;
     active_deep_wounds       = 0;
     active_heroic_strike     = 0;
-    active_stance            = STANCE_BATTLE; 
+    active_stance            = STANCE_NONE; 
     
     // Gains
     gains_anger_management       = get_gain( "anger_management" );
@@ -213,13 +213,12 @@ struct warrior_t : public player_t
 
 double warrior_t::composite_attack_power_multiplier()
 {
-  double m = attack_power_multiplier;
+  double m = player_t::composite_attack_power_multiplier();
 
   if( sim -> P309 && active_stance == STANCE_BERSERKER )
   {
     m *= 1 + talents.improved_berserker_stance * 0.02;
   }
-  m *= 1 + talents.blood_frenzy * 0.03;
   return m;
 }
 
@@ -227,20 +226,13 @@ double warrior_t::composite_attack_power_multiplier()
 
 double warrior_t::composite_attribute_multiplier( int attr )
 {
-  double m = attribute_multiplier[ attr ]; 
+  double m = player_t::composite_attribute_multiplier( attr ); 
   if( attr == ATTR_STRENGTH )
   {
     if ( ! sim -> P309 && active_stance == STANCE_BERSERKER )
     {
       m *= 1 + talents.improved_berserker_stance * 0.04;
     }
-     m *= 1 + talents.strength_of_arms * 0.02;
-     m *= 1 + talents.vitality * 0.02;
-  }
-  else if( attr == ATTR_STAMINA )
-  {
-     m *= 1 + talents.strength_of_arms * 0.02;
-     m *= 1 + talents.vitality * 0.02;
   }
   return m;
 }
@@ -1979,15 +1971,21 @@ void warrior_t::init_base()
   attribute_base[ ATTR_STAMINA   ] = 161;
   attribute_base[ ATTR_INTELLECT ] =  31;
   attribute_base[ ATTR_SPIRIT    ] =  61;
+
   resource_base[  RESOURCE_RAGE  ] = 100;
-  
+  resource_base[ RESOURCE_HEALTH ] = 4579;
+    
   initial_attack_power_per_strength = 2.0;
+  initial_attack_power_per_agility  = 0.0;
   
   // FIX ME!
-  base_attack_power = -20;
+  base_attack_power = level * 2 -20;
   base_attack_crit = 0.031905;
   base_attack_expertise = 0.25 * talents.vitality * 0.02;  
   initial_attack_crit_per_agility = rating_t::interpolate( level, 1 / 2000, 1 / 3200, 1 / 6256.61 ); 
+     
+  attribute_multiplier_initial[ ATTR_STRENGTH ]   *= 1 + talents.strength_of_arms * 0.02 + talents.vitality * 0.02;
+  attribute_multiplier_initial[ ATTR_STAMINA  ]   *= 1 + talents.strength_of_arms * 0.02 + talents.vitality * 0.02;
   
   health_per_stamina = 10;
   
@@ -2011,7 +2009,8 @@ void warrior_t::reset()
 {
   player_t::reset();
 
-  active_heroic_strike = 0;
+  active_heroic_strike     = 0;
+  active_stance            = STANCE_NONE;
 
   _buffs.reset();
   _cooldowns.reset();
