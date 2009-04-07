@@ -1649,9 +1649,10 @@ struct bladestorm_t : public warrior_spell_t
     struct bladestorm_attack_t : public warrior_attack_t
     {
       bladestorm_attack_t( player_t* player ) : 
-        warrior_attack_t( "bladestorm", player )
+        warrior_attack_t( "bladestorm", player, SCHOOL_PHYSICAL, TREE_ARMS )
       {
         base_direct_dmg = 1;
+        trigger_gcd     = 0;
         background      = true;
       }
       virtual void consume_resource() {}
