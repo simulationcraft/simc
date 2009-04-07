@@ -1618,6 +1618,29 @@ bool warrior_spell_t::ready()
   return true;
 }
 
+// Battle Shout ============================================================
+
+struct battle_shout_t : public warrior_spell_t
+{
+  float refresh_early;
+  int   shout_base_bonus;
+  battle_shout_t( player_t* player, const std::string& options_str ) : 
+    warrior_spell_t( "battle_shout", player ),
+    refresh_early(0.0),
+    shout_base_bonus(0)
+  {
+    warrior_t* p = player -> cast_warrior();
+
+    option_t options[] =
+    {
+      { "refresh_early",  OPT_FLT, &refresh_early }, 
+      { NULL }
+    };
+    harmful     = false;
+    
+  }
+};
+
 // Bladestorm ==============================================================
 
 // warrior_spell_t or else the activation itself would consume 
@@ -1665,8 +1688,8 @@ struct bladestorm_t : public warrior_spell_t
     trigger_gcd = 6.0; 
     
     harmful     = false;
-    
-    p -> active_bladestorm_attack = new bladestorm_attack_t( p );
+
+    p -> active_bladestorm_attack = new bladestorm_attack_t( p );    
   }
   virtual void execute()
   {
@@ -1691,63 +1714,6 @@ struct bladestorm_t : public warrior_spell_t
 	{
       new ( sim ) expiration_t( sim, player, i );
 	}
-  }
-};
-
-// Stance ==================================================================
-
-struct stance_t : public warrior_spell_t
-{
-  int switch_to_stance;
-  stance_t( player_t* player, const std::string& options_str ) : 
-    warrior_spell_t( "stance", player ), switch_to_stance(0)
-  {
-    warrior_t* p = player -> cast_warrior();
-
-    std::string stance_str;
-    option_t options[] =
-    {
-      { "choose",  OPT_STRING, &stance_str     },
-      { NULL }
-    };
-    parse_options( options, options_str );
-    
-    if( ! stance_str.empty() )
-    {
-      if( stance_str == "battle" )
-        switch_to_stance = STANCE_BATTLE;
-      else if( stance_str == "berserker" || stance_str == "zerker" )
-        switch_to_stance = STANCE_BERSERKER;
-      else if( stance_str == "def" || stance_str == "defensive" )
-        switch_to_stance = STANCE_DEFENSE;
-    }
-    if( switch_to_stance == 0)
-      switch_to_stance = p -> active_stance;
-
-    trigger_gcd = 0;
-    cooldown    = 1.0;
-    harmful     = false;
-  }
-
-  virtual void execute()
-  {
-    const char* stance_name[] = { "Unknown Stance",
-                                  "Battle Stance",
-                                  "Berserker Stance",
-                                  "Unpossible Stance",
-                                  "Defensive Stance"};
-    warrior_t* p = player -> cast_warrior();
-    p -> aura_loss( stance_name[ p -> active_stance  ]);
-    p -> active_stance = switch_to_stance;
-    p -> aura_gain( stance_name[ p -> active_stance  ]);
-    update_ready();
-  }
-  
-  virtual bool ready()
-  {
-    warrior_t* p = player -> cast_warrior();
-
-    return p -> active_stance != switch_to_stance;
   }
 };
 
@@ -1933,6 +1899,62 @@ struct recklessness_t : public warrior_spell_t
 
 };
 
+// Stance ==================================================================
+
+struct stance_t : public warrior_spell_t
+{
+  int switch_to_stance;
+  stance_t( player_t* player, const std::string& options_str ) : 
+    warrior_spell_t( "stance", player ), switch_to_stance(0)
+  {
+    warrior_t* p = player -> cast_warrior();
+
+    std::string stance_str;
+    option_t options[] =
+    {
+      { "choose",  OPT_STRING, &stance_str     },
+      { NULL }
+    };
+    parse_options( options, options_str );
+    
+    if( ! stance_str.empty() )
+    {
+      if( stance_str == "battle" )
+        switch_to_stance = STANCE_BATTLE;
+      else if( stance_str == "berserker" || stance_str == "zerker" )
+        switch_to_stance = STANCE_BERSERKER;
+      else if( stance_str == "def" || stance_str == "defensive" )
+        switch_to_stance = STANCE_DEFENSE;
+    }
+    if( switch_to_stance == 0)
+      switch_to_stance = p -> active_stance;
+
+    trigger_gcd = 0;
+    cooldown    = 1.0;
+    harmful     = false;
+  }
+
+  virtual void execute()
+  {
+    const char* stance_name[] = { "Unknown Stance",
+                                  "Battle Stance",
+                                  "Berserker Stance",
+                                  "Unpossible Stance",
+                                  "Defensive Stance"};
+    warrior_t* p = player -> cast_warrior();
+    p -> aura_loss( stance_name[ p -> active_stance  ]);
+    p -> active_stance = switch_to_stance;
+    p -> aura_gain( stance_name[ p -> active_stance  ]);
+    update_ready();
+  }
+  
+  virtual bool ready()
+  {
+    warrior_t* p = player -> cast_warrior();
+
+    return p -> active_stance != switch_to_stance;
+  }
+};
 
 } // ANONYMOUS NAMESPACE ===================================================
 
@@ -1983,7 +2005,8 @@ void warrior_t::init_base()
   // FIX ME!
   base_attack_power = level * 2 -20;
   base_attack_crit = 0.031905;
-  base_attack_expertise = 0.25 * talents.vitality * 0.02;  
+  base_attack_expertise  = 0.25 * talents.vitality * 0.02;  
+  base_attack_expertise += 0.25 * talents.strength_of_arms * 0.02;  
   initial_attack_crit_per_agility = rating_t::interpolate( level, 1 / 2000, 1 / 3200, 1 / 6256.61 ); 
      
   attribute_multiplier_initial[ ATTR_STRENGTH ]   *= 1 + talents.strength_of_arms * 0.02 + talents.vitality * 0.02;
@@ -2013,7 +2036,7 @@ void warrior_t::reset()
 
   active_heroic_strike     = 0;
   active_stance            = STANCE_NONE;
-
+  
   _buffs.reset();
   _cooldowns.reset();
   _expirations.reset();
