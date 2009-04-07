@@ -14,6 +14,7 @@ enum warrior_stance { STANCE_NONE=0, STANCE_BATTLE, STANCE_BERSERKER, STANCE_DEF
 struct warrior_t : public player_t
 {
   // Active
+  action_t* active_bladestorm_attack;
   action_t* active_deep_wounds;
   action_t* active_heroic_strike;
   int       active_stance;
@@ -164,9 +165,10 @@ struct warrior_t : public player_t
   warrior_t( sim_t* sim, std::string& name ) : player_t( sim, WARRIOR, name )
   {
     // Active
-    active_deep_wounds   = 0;
-    active_heroic_strike = 0;
-    active_stance        = STANCE_BATTLE; 
+    active_bladestorm_attack = 0;
+    active_deep_wounds       = 0;
+    active_heroic_strike     = 0;
+    active_stance            = STANCE_BATTLE; 
     
     // Gains
     gains_anger_management       = get_gain( "anger_management" );
@@ -436,6 +438,9 @@ static void trigger_deep_wounds( action_t* a )
   if( ! p -> talents.deep_wounds )
     return;
 
+  if( a -> result != RESULT_CRIT )
+    return;
+
   struct deep_wounds_t : public warrior_attack_t
   {
     deep_wounds_t( warrior_t* p ) : 
@@ -513,7 +518,7 @@ static void trigger_overpower_activation( warrior_t* p )
   p -> aura_gain( "Overpower Activation" );
 }
 
-// trigger_trigger_rampage ==================================================
+// trigger_rampage ==========================================================
 
 static void trigger_rampage( attack_t* a )
 {
@@ -1042,11 +1047,12 @@ struct heroic_strike_t : public warrior_attack_t
       { 0, 0 }
     };
     init_rank( ranks );
-    weapon          = &( p -> main_hand_weapon );
     base_cost      -= p -> talents.improved_heroic_strike;
+    base_crit      += p -> talents.incite * 0.05;
     trigger_gcd     = 0;
     
-    weapon = &( p -> main_hand_weapon );
+    
+    weapon                 = &( p -> main_hand_weapon );
     normalize_weapon_speed = false;
 
     // Heroic Strike needs swinging auto_attack!
@@ -1324,8 +1330,9 @@ struct rend_t : public warrior_attack_t
       { 0, 0 }
     };
     init_rank( ranks );
-
-
+    
+    may_crit          = false;
+    
     base_cost         = 10.0;
     base_tick_time    = 3.0;
     num_ticks         = 5 + ( p -> glyphs.rending ? 2 : 0 );
@@ -1497,25 +1504,29 @@ struct whirlwind_t : public warrior_attack_t
   {
     warrior_t* p = player -> cast_warrior();
 
-    // OH hit
-    weapon = &( player -> off_hand_weapon );
-    if( weapon )
-    {
     /* Special case for Recklessness + Whirlwind + Dualwield
     *  Every hand uses one charge, _BUT_ if only one charge 
     *  is left on recklessness, both hands will crit.
     *  So we deal with offhand first and increase charges by
-    *  if only one is left, so mainhand also gets one.
+    *  if only one is left, so offhand also gets one.
     */
-      if( p -> _buffs.recklessness == 1 && special )
+    if( p -> off_hand_weapon.type != WEAPON_NONE )
+    {
+      if( p -> _buffs.recklessness == 1 )
         p -> _buffs.recklessness++;
-      warrior_attack_t::execute();
-      trigger_bloodsurge( this );
     }
+    weapon = &( player -> off_hand_weapon );
     // MH hit
     weapon = &( player -> main_hand_weapon );
     warrior_attack_t::execute();
     trigger_bloodsurge( this );
+
+    if( p -> off_hand_weapon.type != WEAPON_NONE )
+    {
+      weapon = &( player -> off_hand_weapon );
+      warrior_attack_t::execute();
+      trigger_bloodsurge( this );
+    }
 
     warrior_attack_t::consume_resource();
 
@@ -1612,6 +1623,82 @@ bool warrior_spell_t::ready()
     
   return true;
 }
+
+// Bladestorm ==============================================================
+
+// warrior_spell_t or else the activation itself would consume 
+// recklessness charges
+struct bladestorm_t : public warrior_spell_t
+{
+  bladestorm_t( player_t* player, const std::string& options_str ) : 
+    warrior_spell_t( "bladestorm", player )
+  {
+    warrior_t* p = player -> cast_warrior();
+    assert( p -> talents.bladestorm );
+    struct bladestorm_attack_t : public warrior_attack_t
+    {
+      bladestorm_attack_t( player_t* player ) : 
+        warrior_attack_t( "bladestorm", player )
+      {
+        base_direct_dmg = 1;
+        background      = true;
+      }
+      virtual void consume_resource() {}
+      virtual void execute()
+      {
+        warrior_t* p = player -> cast_warrior();
+    
+        weapon = &( p -> main_hand_weapon );
+        warrior_attack_t::execute();
+    
+        if( p -> off_hand_weapon.type != WEAPON_NONE )
+        {
+          weapon = &( player -> off_hand_weapon );
+          warrior_attack_t::execute();
+        }
+      }
+    };
+    option_t options[] =
+    {
+      { NULL }
+    };
+    parse_options( options, options_str );
+    
+    base_cost   = 25;
+    cooldown    = 90;
+    // Bladestorm locks the use of other abilities for the time the buff is up
+    // So let it trigger a 6sec gcd. auto_attack is not effected by bladestorm
+    trigger_gcd = 6.0; 
+    
+    harmful     = false;
+    
+    p -> active_bladestorm_attack = new bladestorm_attack_t( p );
+  }
+  virtual void execute()
+  {
+    warrior_spell_t::execute();
+    struct expiration_t : public event_t
+    {
+      expiration_t( sim_t* sim, player_t* p, double duration ) : event_t( sim, p )
+      {
+        name = "Bladestorm Tick";
+        sim -> add_event( this, duration );
+      }
+      virtual void execute()
+      {
+        warrior_t* p = player -> cast_warrior();
+        p -> active_bladestorm_attack -> execute();
+      }
+    };
+    /* Bladestorm 'ticks' 7 times, once instantly upon cast
+    *  and then every second for 6 seconds
+    */
+    for(int i = 0; i < 7; i++)
+	{
+      new ( sim ) expiration_t( sim, player, i );
+	}
+  }
+};
 
 // Stance ==================================================================
 
@@ -1866,6 +1953,7 @@ action_t* warrior_t::create_action( const std::string& name,
 {
   if( name == "auto_attack"         ) return new auto_attack_t        ( this, options_str );
   if( name == "berserker_rage"      ) return new berserker_rage_t     ( this, options_str );
+  if( name == "bladestorm"          ) return new bladestorm_t         ( this, options_str );
   if( name == "bloodrage"           ) return new bloodrage_t          ( this, options_str );
   if( name == "bloodthirst"         ) return new bloodthirst_t        ( this, options_str );
   if( name == "death_wish"          ) return new death_wish_t         ( this, options_str );
@@ -1922,6 +2010,8 @@ void warrior_t::combat_begin()
 void warrior_t::reset()
 {
   player_t::reset();
+
+  active_heroic_strike = 0;
 
   _buffs.reset();
   _cooldowns.reset();
