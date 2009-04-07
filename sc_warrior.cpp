@@ -843,7 +843,6 @@ struct melee_t : public warrior_attack_t
       if( p -> active_heroic_strike  )
       {
         p -> active_heroic_strike -> execute();
-        //trigger_trauma( p -> active_heroic_strike );
         schedule_execute();
         return;
       }
@@ -980,6 +979,8 @@ struct heroic_strike_t : public warrior_attack_t
     warrior_attack_t::execute();
 
     trigger_tier8_2pc( this );
+    // FIX ME! Does Trauma proc off HS?
+    trigger_trauma( this );
     if( result == RESULT_CRIT )
       if( p -> glyphs.heroic_strike )
         p -> resource_gain( RESOURCE_RAGE, 10.0, p -> gains_glyph_of_heroic_strike );
@@ -1065,8 +1066,12 @@ struct execute_t : public warrior_attack_t
     base_cost        -= util_t::talent_rank( p -> talents.improved_execute, 2, 2, 5);
     direct_power_mod  = 0.20;
     
+    // Execute consumes rage no matter if it missed or not
+    aoe_attack = true;
+    
     stancemask = STANCE_BATTLE | STANCE_BERSERKER;
-    weapon = &( p -> main_hand_weapon );
+
+    weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
   }
   virtual void execute()
@@ -1096,16 +1101,15 @@ struct execute_t : public warrior_attack_t
 
     // Let the additional rage consumption create it's own debug log entries.
     // FIX ME! Does a missed execute consume the excess_rage?
-    if( result_is_hit() )
-    {
+    // if( result_is_hit() )
+    // { 
       if( sim -> debug )
         report_t::log( sim, "%s consumes an additional %.1f %s for %s", player -> name(),
                        excess_rage, util_t::resource_type_string( resource ), name() );
 
       player -> resource_loss( resource, excess_rage );
       stats -> consume_resource( excess_rage );
-    }
-
+    // }
   }
   
   virtual bool ready()
