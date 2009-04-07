@@ -29,7 +29,7 @@ struct warrior_t : public player_t
     int    flurry;
     double overpower;
     int    recklessness;
-    int    heroic_strike;
+    double wrecking_crew;
     void reset() { memset( (void*) this, 0x00, sizeof( _buffs_t ) ); }
     _buffs_t() { reset(); }
   };
@@ -50,9 +50,11 @@ struct warrior_t : public player_t
     event_t* blood_frenzy;
     event_t* bloodsurge;
     event_t* death_wish;
+    event_t* rampage;
     event_t* recklessness;
     event_t* sudden_death;
     event_t* trauma;
+    event_t* wrecking_crew;
     
     void reset() { memset( (void*) this, 0x00, sizeof( _expirations_t ) ); }
     _expirations_t() { reset(); }
@@ -125,7 +127,7 @@ struct warrior_t : public player_t
     int poleaxe_specialization;
     int precision;
     int puncture;
-    int ranoage;
+    int rampage;
     int shield_mastery;
     int shockwave;
     int strength_of_arms;
@@ -511,6 +513,51 @@ static void trigger_overpower_activation( warrior_t* p )
   p -> aura_gain( "Overpower Activation" );
 }
 
+// trigger_trigger_rampage ==================================================
+
+static void trigger_rampage( attack_t* a )
+{
+  warrior_t* p = a -> player -> cast_warrior();
+  if( p -> talents.rampage == 0 )
+    return;
+
+  if( a -> result != RESULT_CRIT )
+    return;
+    
+  struct rampage_expiration_t : public event_t
+  {
+    rampage_expiration_t( sim_t* sim, warrior_t* p ) : event_t( sim, p )
+    {
+      name = "Rampage Reflexes Expiration";
+      for( player_t* curr_player = sim -> player_list; curr_player; curr_player = curr_player -> next )
+      {
+        curr_player -> buffs.rampage++;
+      }
+      sim -> add_event( this, 10.0 );
+    }
+    virtual void execute()
+    {
+      for( player_t* curr_player = sim -> player_list; curr_player; curr_player = curr_player -> next )
+      {
+        curr_player -> buffs.rampage--;
+      }
+      warrior_t* p = player -> cast_warrior();
+      p -> _expirations.rampage = 0;
+    }
+  };
+
+  event_t*& e = p -> _expirations.rampage;
+
+  if( e )
+  {
+    e -> reschedule( 10.0 );
+  }
+  else
+  {
+    e = new ( a -> sim ) rampage_expiration_t( a -> sim, p );
+  }
+}
+
 // trigger_tier8_2pc ========================================================
 
 static void trigger_tier8_2pc( action_t* a )
@@ -597,6 +644,45 @@ static void trigger_trauma( action_t* a )
   }
 }
 
+// trigger_wrecking_crew ====================================================
+
+static void trigger_wrecking_crew( action_t* a )
+{
+  warrior_t* p = a -> player -> cast_warrior();
+  if( p -> talents.wrecking_crew == 0 )
+    return;
+
+  if( a -> result != RESULT_CRIT )
+    return;
+  
+  struct wrecking_crew_expiration_t : public event_t
+  {
+    wrecking_crew_expiration_t( sim_t* sim, warrior_t* p ) : event_t( sim, p )
+    {
+      name = "Wrecking Crew Expiration";
+      p -> _buffs.wrecking_crew = p -> talents.wrecking_crew * 0.02;
+      sim -> add_event( this, 12.0 );
+    }
+    virtual void execute()
+    {
+      warrior_t* p = player -> cast_warrior();
+      p -> _buffs.wrecking_crew = 0;
+      p -> _expirations.wrecking_crew = 0;
+    }
+  };
+
+  event_t*& e = p -> _expirations.wrecking_crew;
+
+  if( e )
+  {
+    e -> reschedule( 12.0 );
+  }
+  else
+  {
+    e = new ( a -> sim ) wrecking_crew_expiration_t( a -> sim, p );
+  }
+}
+
 // =========================================================================
 // Warrior Attacks
 // =========================================================================
@@ -666,6 +752,8 @@ void warrior_attack_t::execute()
   if( result == RESULT_CRIT )
   {
     trigger_deep_wounds( this );
+    trigger_rampage( this );
+    trigger_wrecking_crew( this );
     if( p -> talents.flurry ) 
     {
       p -> aura_gain( "Flurry (3)" );
@@ -743,6 +831,7 @@ void warrior_attack_t::player_buff()
   }
   
   player_multiplier *= 1.0 + p -> _buffs.death_wish;
+  player_multiplier *= 1.0 + p -> _buffs.wrecking_crew;
   
   if( p -> _buffs.recklessness > 0 && special)
     player_crit += 1.0;
@@ -1892,7 +1981,7 @@ bool warrior_t::get_talent_trees( std::vector<int*>& arms,
     { { 21, &( talents.mortal_strike                   ) }, { 21, NULL                                   }, { 21, NULL                                    } },
     { { 22, &( talents.strength_of_arms                ) }, { 22, &( talents.improved_berserker_stance ) }, { 22, NULL                                    } },
     { { 23, &( talents.improved_slam                   ) }, { 23, NULL                                   }, { 23, &( talents.devastate                  ) } },
-    { { 24, &( talents.improved_mortal_strike          ) }, { 24, &( talents.ranoage                   ) }, { 24, &( talents.critical_block             ) } },
+    { { 24, &( talents.improved_mortal_strike          ) }, { 24, &( talents.rampage                   ) }, { 24, &( talents.critical_block             ) } },
     { { 25, &( talents.unrelenting_assault             ) }, { 25, &( talents.bloodsurge                ) }, { 25, &( talents.sword_and_board            ) } },
     { { 26, &( talents.sudden_death                    ) }, { 26, &( talents.unending_fury             ) }, { 26, NULL                                    } },
     { { 27, &( talents.endless_rage                    ) }, { 27, &( talents.titans_grip               ) }, { 27, &( talents.shockwave                  ) } },
@@ -1954,7 +2043,7 @@ bool warrior_t::parse_option( const std::string& name,
     { "poleaxe_specialization",          OPT_INT, &( talents.poleaxe_specialization          ) },
     { "precision",                       OPT_INT, &( talents.precision                       ) },
     { "puncture",                        OPT_INT, &( talents.puncture                        ) },
-    { "ranoage",                         OPT_INT, &( talents.ranoage                         ) },
+    { "rampage",                         OPT_INT, &( talents.rampage                         ) },
     { "shield_mastery",                  OPT_INT, &( talents.shield_mastery                  ) },
     { "shockwave",                       OPT_INT, &( talents.shockwave                       ) },
     { "strength_of_arms",                OPT_INT, &( talents.strength_of_arms                ) },

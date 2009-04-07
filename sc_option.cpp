@@ -281,6 +281,7 @@ static void parse_optimal_raid( sim_t*       sim,
   sim -> overrides.misery                 = sim -> optimal_raid; 
   sim -> overrides.moonkin_aura           = sim -> optimal_raid;
   sim -> overrides.poisoned               = sim -> optimal_raid; 
+  sim -> overrides.rampage                = sim -> optimal_raid; 
   sim -> overrides.razorice               = sim -> optimal_raid; 
   sim -> overrides.replenishment          = sim -> optimal_raid;
   sim -> overrides.sanctified_retribution = sim -> optimal_raid;

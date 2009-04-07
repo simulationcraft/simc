@@ -7,7 +7,17 @@ talents=http://www.wowhead.com/?talent=LG0G0fhZhxj0V0uReRVzAo
 
 # Action queue
 actions=flask,type=endless_rage/food,type=fish_feast
+actions+=/stance,choose=berserker
 actions+=/auto_attack
+actions+=/bloodrage
+actions+=/berserker_rage
+actions+=/heroic_strike,rage>=30
+actions+=/death_wish,time>=10
+actions+=/recklessness,time>=10
+actions+=/slam,bloodsurge=1
+actions+=/whirlwind
+actions+=/bloodthirst
+actions+=/execute
 
 # Gear: http://www.chardev.org/?template=147364
 # Just loaded a guild fury warrior from the armory

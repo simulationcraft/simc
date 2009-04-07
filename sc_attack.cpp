@@ -118,7 +118,9 @@ void attack_t::player_buff()
 
   if( p -> type != PLAYER_GUARDIAN )
   {
-    if( p -> buffs.leader_of_the_pack ) player_crit += 0.05;
+    if( p -> buffs.leader_of_the_pack || 
+        p -> buffs.rampage ) 
+      player_crit += 0.05;
 
     if( p -> gear.chaotic_skyflare      ||
 	p -> gear.relentless_earthstorm ) 

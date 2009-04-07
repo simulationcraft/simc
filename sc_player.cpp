@@ -1015,6 +1015,7 @@ void player_t::combat_begin()
   if( sim -> overrides.mana_spring            ) buffs.mana_spring = ( sim -> P309 ? 42.5 : 91.0*1.2 );
   if( sim -> overrides.mark_of_the_wild       ) buffs.mark_of_the_wild = 52;
   if( sim -> overrides.moonkin_aura           ) buffs.moonkin_aura = 1;
+  if( sim -> overrides.rampage                ) buffs.rampage = 1;
   if( sim -> overrides.replenishment          ) buffs.replenishment = 1;
   if( sim -> overrides.strength_of_earth      ) buffs.strength_of_earth = 99;
   if( sim -> overrides.totem_of_wrath         ) buffs.totem_of_wrath = 280;

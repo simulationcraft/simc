@@ -391,6 +391,7 @@ struct sim_t
     int misery;
     int moonkin_aura;
     int poisoned;
+    int rampage;
     int replenishment;
     int savage_combat;
     int strength_of_earth;
@@ -745,6 +746,7 @@ struct player_t
     int       mongoose_mh;
     int       mongoose_oh;
     int       power_infusion;
+    int       rampage;
     int       replenishment;
     int       sanctified_retribution;
     int       shadow_form;
