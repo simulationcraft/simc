@@ -3457,6 +3457,8 @@ struct kill_command_t : public hunter_spell_t
 
     if( ! p -> active_pet )
       return false;
+    if( p -> active_pet -> _buffs.kill_command != 0 )
+      return false;
 
     return hunter_spell_t::ready();
   }
