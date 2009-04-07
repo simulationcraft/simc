@@ -9,7 +9,7 @@
 // Warrior
 // ==========================================================================
 
-enum warrior_stance { STANCE_NONE=0, STANCE_BATTLE, STANCE_BERSERKER, STANCE_DEFENSE=4 };
+enum warrior_stance { STANCE_BATTLE=1, STANCE_BERSERKER, STANCE_DEFENSE=4 };
 
 struct warrior_t : public player_t
 {
@@ -168,7 +168,7 @@ struct warrior_t : public player_t
     active_bladestorm_attack = 0;
     active_deep_wounds       = 0;
     active_heroic_strike     = 0;
-    active_stance            = STANCE_NONE; 
+    active_stance            = STANCE_BATTLE; 
     
     // Gains
     gains_anger_management       = get_gain( "anger_management" );
@@ -178,7 +178,7 @@ struct warrior_t : public player_t
     gains_glyph_of_heroic_strike = get_gain( "glyph_of_heroic_strike" );
     gains_mh_attack              = get_gain( "mh_attack" );
     gains_oh_attack              = get_gain( "oh_attack" );
-    
+
     // Procs
     procs_bloodsurge      = get_proc( "bloodusrge" );
     procs_glyph_overpower = get_proc( "glyph_of_overpower" );
@@ -282,7 +282,9 @@ double warrior_attack_t::dodge_chance( int delta_level )
   warrior_t* p = player -> cast_warrior();
   
   chance -= p -> talents.weapon_mastery * 0.01;
-  
+  if( chance < 0 )
+    return 0;
+
   return chance;  
 }
 
@@ -1722,7 +1724,6 @@ struct berserker_rage_t : public warrior_spell_t
   {
     warrior_t* p = player -> cast_warrior();
 
-    std::string stance_str;
     option_t options[] =
     {
       { NULL }
@@ -1753,7 +1754,6 @@ struct bloodrage_t : public warrior_spell_t
   {
     warrior_t* p = player -> cast_warrior();
 
-    std::string stance_str;
     option_t options[] =
     {
       { NULL }
@@ -1806,7 +1806,6 @@ struct death_wish_t : public warrior_spell_t
   {
     warrior_t* p = player -> cast_warrior();
 
-    std::string stance_str;
     option_t options[] =
     {
       { NULL }
@@ -1856,7 +1855,6 @@ struct recklessness_t : public warrior_spell_t
   {
     warrior_t* p = player -> cast_warrior();
 
-    std::string stance_str;
     option_t options[] =
     {
       { NULL }
@@ -1905,7 +1903,7 @@ struct stance_t : public warrior_spell_t
   stance_t( player_t* player, const std::string& options_str ) : 
     warrior_spell_t( "stance", player ), switch_to_stance(0)
   {
-    warrior_t* p = player -> cast_warrior();
+    //warrior_t* p = player -> cast_warrior();
 
     std::string stance_str;
     option_t options[] =
@@ -1924,8 +1922,11 @@ struct stance_t : public warrior_spell_t
       else if( stance_str == "def" || stance_str == "defensive" )
         switch_to_stance = STANCE_DEFENSE;
     }
-    if( switch_to_stance == 0)
-      switch_to_stance = p -> active_stance;
+    else
+    {
+      // Default to Battle Stance
+      switch_to_stance = STANCE_BATTLE;
+    }
 
     base_cost   = 0;
     trigger_gcd = 0;
@@ -1944,13 +1945,12 @@ struct stance_t : public warrior_spell_t
     p -> aura_loss( stance_name[ p -> active_stance  ]);
     p -> active_stance = switch_to_stance;
     p -> aura_gain( stance_name[ p -> active_stance  ]);
+    
     update_ready();
   }
   
   virtual bool ready()
   {
-    warrior_spell_t::execute();
-
     warrior_t* p = player -> cast_warrior();
 
     return p -> active_stance != switch_to_stance;
@@ -2036,7 +2036,7 @@ void warrior_t::reset()
   player_t::reset();
 
   active_heroic_strike     = 0;
-  active_stance            = STANCE_NONE;
+  active_stance            = STANCE_BATTLE;
   
   _buffs.reset();
   _cooldowns.reset();
