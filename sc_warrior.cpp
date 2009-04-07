@@ -1571,10 +1571,13 @@ void warrior_spell_t::parse_options( option_t*          options,
 
 void warrior_spell_t::execute()
 {
-  spell_t::execute();
+  warrior_spell_t::consume_resource();
+
   // As it seems tier7 4pc is consumed by everything, no matter if it costs
   // rage. "Reduces the rage cost of your next ability is reduced by 5."
   event_t::early( player -> expirations.tier7_4pc );
+
+  update_ready();
 }
 
 // warrior_spell_t::cost =====================================================
@@ -1629,15 +1632,6 @@ struct battle_shout_t : public warrior_spell_t
     refresh_early(0.0),
     shout_base_bonus(0)
   {
-    warrior_t* p = player -> cast_warrior();
-
-    option_t options[] =
-    {
-      { "refresh_early",  OPT_FLT, &refresh_early }, 
-      { NULL }
-    };
-    harmful     = false;
-    
   }
 };
 
@@ -1693,7 +1687,6 @@ struct bladestorm_t : public warrior_spell_t
   }
   virtual void execute()
   {
-    warrior_spell_t::execute();
     struct expiration_t : public event_t
     {
       expiration_t( sim_t* sim, player_t* p, double duration ) : event_t( sim, p )
@@ -1714,6 +1707,8 @@ struct bladestorm_t : public warrior_spell_t
 	{
       new ( sim ) expiration_t( sim, player, i );
 	}
+
+    warrior_spell_t::execute();
   }
 };
 
@@ -1772,11 +1767,6 @@ struct bloodrage_t : public warrior_spell_t
 
   virtual void execute()
   {
-    warrior_spell_t::execute();
-    
-    warrior_t* p = player -> cast_warrior();      
-    p -> resource_gain( RESOURCE_RAGE, 10 * (1 + p -> talents.improved_bloodrage * 0.25), p -> gains_bloodrage );
-    p -> _buffs.bloodrage = 10;
     struct bloodrage_buff_t : public event_t
     {
       bloodrage_buff_t( sim_t* sim, player_t* player) : event_t( sim, player)
@@ -1795,6 +1785,13 @@ struct bloodrage_t : public warrior_spell_t
         }
       }
     };
+    
+    warrior_spell_t::execute();
+
+    warrior_t* p = player -> cast_warrior();      
+    p -> _buffs.bloodrage = 10;
+    p -> resource_gain( RESOURCE_RAGE, 10 * (1 + p -> talents.improved_bloodrage * 0.25), p -> gains_bloodrage );
+
     new ( sim ) bloodrage_buff_t( sim, p );
   }
 };
@@ -1823,6 +1820,7 @@ struct death_wish_t : public warrior_spell_t
 
   virtual void execute()
   {
+
     struct expiration_t : public event_t
     {
       expiration_t( sim_t* sim, warrior_t* p ) : event_t( sim, p )
@@ -1841,12 +1839,11 @@ struct death_wish_t : public warrior_spell_t
       }
     };
 
+    warrior_spell_t::execute();
+
     warrior_t* p = player -> cast_warrior();
-    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
-    update_ready();
     p -> _expirations.death_wish = new ( sim ) expiration_t( sim, p );
   }
-  
 };
 
 // Recklessness ============================================================
@@ -1891,9 +1888,9 @@ struct recklessness_t : public warrior_spell_t
       }
     };
 
+    warrior_spell_t::execute();
+
     warrior_t* p = player -> cast_warrior();
-    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
-    update_ready();
     p -> _expirations.recklessness = new ( sim ) expiration_t( sim, p );
   }
 
@@ -1929,6 +1926,7 @@ struct stance_t : public warrior_spell_t
     if( switch_to_stance == 0)
       switch_to_stance = p -> active_stance;
 
+    base_cost   = 0;
     trigger_gcd = 0;
     cooldown    = 1.0;
     harmful     = false;
@@ -1950,6 +1948,8 @@ struct stance_t : public warrior_spell_t
   
   virtual bool ready()
   {
+    warrior_spell_t::execute();
+
     warrior_t* p = player -> cast_warrior();
 
     return p -> active_stance != switch_to_stance;
