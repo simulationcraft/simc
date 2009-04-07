@@ -181,6 +181,9 @@ player_t::player_t( sim_t*             s,
   attack_power_per_agility(0),  initial_attack_power_per_agility(0),
   attack_crit_per_agility(0),   initial_attack_crit_per_agility(0),
   position( POSITION_BACK ),
+  // Defense Mechanics
+  base_armor(0), initial_armor(0), armor(0),
+  armor_per_agility(2.0),
   // Resources 
   mana_per_intellect(0), health_per_stamina(0),
   // Consumables
@@ -212,7 +215,7 @@ player_t::player_t( sim_t*             s,
 
   for( int i=0; i < PROF_MAX; i++ )
   {
-        profession[ i ] = 0;    
+    profession[ i ] = 0;    
   }
 
   for( int i=0; i <= SCHOOL_MAX; i++ )
@@ -292,6 +295,7 @@ void player_t::init()
   init_race();
   init_spell();
   init_attack();
+  init_defense();
   init_weapon( &main_hand_weapon, main_hand_str );
   init_weapon(  &off_hand_weapon,  off_hand_str );
   init_weapon(    &ranged_weapon,    ranged_str );
@@ -461,6 +465,21 @@ void player_t::init_attack()
     initial_attack_crit        += sim -> gear_delta.crit_rating              / rating.attack_crit;
     initial_attack_expertise   += sim -> gear_delta.expertise_rating         / rating.expertise;
     initial_attack_penetration += sim -> gear_delta.armor_penetration_rating / rating.armor_penetration;
+  }
+}
+
+// player_t::init_defense ====================================================
+
+void player_t::init_defense() 
+{
+  if( initial_armor == 0 )
+  {
+    initial_armor = base_armor + gear.armor + gear.armor_enchant;
+  }
+
+  if( ! is_pet() )
+  {
+    initial_attack_power += sim -> gear_delta.armor;
   }
 }
 
@@ -871,6 +890,13 @@ double player_t::composite_attack_power()
 double player_t::composite_attack_crit()
 {
   return attack_crit + attack_crit_per_agility * agility();
+}
+
+// player_t::composite_armor =========================================
+
+double player_t::composite_armor()
+{
+  return armor + armor_per_agility * agility();
 }
 
 // player_t::composite_spell_power ========================================
@@ -2180,12 +2206,12 @@ bool player_t::parse_option( const std::string& name,
   {
     // Player - General
     { "name",                                 OPT_STRING, &( name_str                                       ) },
-        { "race",                                 OPT_STRING, &( race_str                                       ) },
+    { "race",                                 OPT_STRING, &( race_str                                       ) },
     { "level",                                OPT_INT,    &( level                                          ) },
     { "gcd",                                  OPT_FLT,    &( base_gcd                                       ) },
     { "sleeping",                             OPT_INT,    &( sleeping                                       ) },
-        // Player - Professions
-        { "professions",                          OPT_STRING, &( professions_str                                ) },
+    // Player - Professions
+    { "professions",                          OPT_STRING, &( professions_str                                ) },
     // Player - Haste                                                                                     
     { "haste_rating",                         OPT_INT,    &( initial_haste_rating                           ) },
     // Player - Attributes                                                                                
@@ -2238,6 +2264,10 @@ bool player_t::parse_option( const std::string& name,
     { "attack_power_per_strength",            OPT_FLT,    &( attack_power_per_strength                      ) },
     { "attack_power_per_agility",             OPT_FLT,    &( attack_power_per_agility                       ) },
     { "attack_crit_per_agility",              OPT_FLT,    &( attack_crit_per_agility                        ) },
+    // Player - Defense Mechanics
+    { "armor",                                OPT_FLT,    &( initial_armor                                  ) },
+    { "base_armor",                           OPT_FLT,    &( base_armor                                     ) },
+    { "armor_per_agility",                    OPT_FLT,    &( armor_per_agility                              ) },
     // Player - Weapons
     { "main_hand",                            OPT_STRING, &( main_hand_str                                  ) },
     { "off_hand",                             OPT_STRING, &( off_hand_str                                   ) },
@@ -2300,6 +2330,9 @@ bool player_t::parse_option( const std::string& name,
     { "enchant_attack_power",                 OPT_INT,  &( gear.attack_power_enchant                      ) },
     { "enchant_expertise_rating",             OPT_INT,  &( gear.expertise_rating_enchant                  ) },
     { "enchant_armor_penetration",            OPT_INT,  &( gear.armor_penetration_rating_enchant          ) },
+    // Player - Gear - Defense
+    { "gear_armor",                           OPT_INT,  &( gear.armor                                     ) },
+    { "enchant_armor",                        OPT_INT,  &( gear.armor_enchant                             ) },
     // Player - Gear - Common                                                                               
     { "gear_haste_rating",                    OPT_INT,  &( gear.haste_rating                              ) },
     { "gear_hit_rating",                      OPT_INT,  &( gear.hit_rating                                ) },

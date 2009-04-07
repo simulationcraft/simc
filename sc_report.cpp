@@ -100,6 +100,7 @@ report_t::report_t( sim_t* s ) :
   report_attack_stats(1),
   report_chart(1),
   report_core_stats(1),
+  report_defense_stats(1),
   report_dpr(1),
   report_dps(1),
   report_gains(1),
@@ -129,6 +130,7 @@ bool report_t::parse_option( const std::string& name,
     { "report_attack_stats", OPT_INT, &( report_attack_stats     ) },
     { "report_chart",        OPT_INT, &( report_chart            ) },
     { "report_core_stats",   OPT_INT, &( report_core_stats       ) },
+    { "report_defense",      OPT_INT, &( report_defense_stats    ) },
     { "report_dpr",          OPT_INT, &( report_dpr              ) },
     { "report_dps",          OPT_INT, &( report_dps              ) },
     { "report_gains",        OPT_INT, &( report_gains            ) },
@@ -313,6 +315,16 @@ void report_t::print_attack_stats( player_t* p )
 	   report_tag ? "expertise="   : "", p -> composite_attack_expertise()   * 100.0,
 	   report_tag ? "penetration=" : "", p -> composite_attack_penetration() * 100.0,
 	   report_tag ? "haste="       : "", ( 1.0 / p -> attack_haste - 1 )     * 100.0 );
+}
+
+// report_t::print_defense_stats ===============================================
+
+void report_t::print_defense_stats( player_t* p )
+{
+  fprintf( sim -> output_file, 
+	   "%s  %s%.0f\n", 
+	   report_tag ? "  Defense Stats:" : "",
+	   report_tag ? "armor="           : "", p -> composite_armor() );
 }
 
 // report_t::print_gains =====================================================
@@ -532,9 +544,10 @@ void report_t::print()
 
     if( report_name ) fprintf( sim -> output_file, "\n" );
 
-    if( report_core_stats   ) print_core_stats  ( p );
-    if( report_spell_stats  ) print_spell_stats ( p );
-    if( report_attack_stats ) print_attack_stats( p );
+    if( report_core_stats    ) print_core_stats  ( p );
+    if( report_spell_stats   ) print_spell_stats ( p );
+    if( report_attack_stats  ) print_attack_stats( p );
+    if( report_defense_stats ) print_defense_stats( p );
 
     if( report_actions ) print_actions( p );
 

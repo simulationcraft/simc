@@ -328,6 +328,7 @@ struct sim_t
     int hit_rating;
     int crit_rating;
     int haste_rating;
+    int armor;
 
     gear_default_t() { memset( (void*) this, 0x00, sizeof( gear_default_t ) ); }
   };
@@ -344,6 +345,7 @@ struct sim_t
     int hit_rating;
     int crit_rating;
     int haste_rating;
+    int armor;
 
     gear_delta_t() { memset( (void*) this, 0x00, sizeof( gear_delta_t ) ); }
   };
@@ -583,6 +585,10 @@ struct player_t
   double attack_crit_per_agility,   initial_attack_crit_per_agility;
   int    position;
 
+  // Defense Mechanics
+  double base_armor, initial_armor, armor;
+  double armor_per_agility;
+
   // Weapons
   std::string main_hand_str,    off_hand_str,    ranged_str;
   weapon_t    main_hand_weapon, off_hand_weapon, ranged_weapon;
@@ -647,6 +653,8 @@ struct player_t
     int attack_power,             attack_power_enchant;
     int armor_penetration_rating, armor_penetration_rating_enchant;
     int expertise_rating,         expertise_rating_enchant;
+    // Defense Gear
+    int armor, armor_enchant;
     // Common Gear
     int hit_rating, hit_rating_enchant;
     int crit_rating, crit_rating_enchant;
@@ -963,6 +971,7 @@ struct player_t
   virtual void init_race();
   virtual void init_spell();
   virtual void init_attack();
+  virtual void init_defense();
   virtual void init_weapon( weapon_t*, std::string& );
   virtual void init_unique_gear();
   virtual void init_resources( bool force = false );
@@ -981,6 +990,8 @@ struct player_t
   virtual double composite_attack_expertise()   { return attack_expertise;   }
   virtual double composite_attack_hit()         { return attack_hit;         }
   virtual double composite_attack_penetration() { return attack_penetration; }
+
+  virtual double composite_armor();
 
   virtual double composite_spell_power( int school );
   virtual double composite_spell_crit();
@@ -1598,6 +1609,7 @@ struct report_t
   int report_attack_stats;
   int report_chart;
   int report_core_stats;
+  int report_defense_stats;
   int report_dpr;
   int report_dps;
   int report_gains;
@@ -1621,6 +1633,7 @@ struct report_t
   void print_core_stats  ( player_t* );
   void print_spell_stats ( player_t* );
   void print_attack_stats( player_t* );
+  void print_defense_stats( player_t* );
   void print_gains();
   void print_procs();
   void print_uptime();
