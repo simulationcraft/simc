@@ -19,16 +19,16 @@ actions+=/envenom,min_combo_points=5,env<=1
 actions+=/eviscerate,min_combo_points=5
 actions+=/hemorrhage,max_combo_points=3,energy>=80
 
-# Gear: http://www.chardev.org/?template=148495
+# Gear: http://www.chardev.org/?template=158141
 gear_stamina=963
 gear_strength=10
-gear_agility=1083
+gear_agility=1013
 gear_intellect=10
 gear_spirit=10
 gear_attack_power=2181
 gear_expertise_rating=217
 gear_armor_penetration_rating=94
-gear_hit_rating=293
+gear_hit_rating=363
 gear_crit_rating=517
 gear_haste_rating=289
 
