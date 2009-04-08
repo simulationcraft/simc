@@ -21,7 +21,8 @@ sim_t::sim_t( sim_t* p ) :
   events_remaining(0), max_events_remaining(0), 
   events_processed(0), total_events_processed(0),
   seed(0), id(0), iterations(1000), current_iteration(0), threads(0),
-  optimal_raid(0), potion_sickness(1), average_dmg(1), log(0), debug(0), timestamp(1), sfmt(1),
+  armor_update_interval(20), optimal_raid(0), potion_sickness(1), average_dmg(1),
+  log(0), debug(0), timestamp(1), sfmt(1),
   jow_chance(0), jow_ppm(15.0),
   wheel_seconds(0), wheel_size(0), wheel_mask(0), timing_slice(0), wheel_granularity(0.0),
   raid_dps(0), total_dmg(0), total_seconds(0), elapsed_cpu_seconds(0), merge_ignite(0), report_progress(1),
@@ -696,6 +697,7 @@ bool sim_t::parse_option( const std::string& name,
 {
   option_t options[] =
   {
+    { "armor_update_internval",           OPT_INT,    &( armor_update_interval                    ) },
     { "average_dmg",                      OPT_INT,    &( average_dmg                              ) },
     { "debug",                            OPT_INT,    &( debug                                    ) },
     { "channel_lag",                      OPT_FLT,    &( channel_lag                              ) },

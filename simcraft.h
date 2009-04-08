@@ -307,7 +307,7 @@ struct sim_t
   int         events_processed, total_events_processed;
   int         seed, id, iterations, current_iteration, threads;
   int         infinite_resource[ RESOURCE_MAX ];
-  int         optimal_raid, potion_sickness, average_dmg, log, debug, timestamp, sfmt;
+  int         armor_update_interval, optimal_raid, potion_sickness, average_dmg, log, debug, timestamp, sfmt;
   double      jow_chance, jow_ppm;
 
   std::vector<std::string> party_encoding;
@@ -586,7 +586,7 @@ struct player_t
   int    position;
 
   // Defense Mechanics
-  double base_armor, initial_armor, armor;
+  double base_armor, initial_armor, armor, armor_cache;
   double armor_per_agility;
 
   // Weapons
@@ -812,6 +812,7 @@ struct player_t
 
   struct cooldowns_t
   {
+    double armor_cache;
     double bloodlust;
     double darkmoon_greatness;
     double dying_curse;
@@ -992,6 +993,7 @@ struct player_t
   virtual double composite_attack_penetration() { return attack_penetration; }
 
   virtual double composite_armor();
+  virtual double composite_armor_snapshot();
 
   virtual double composite_spell_power( int school );
   virtual double composite_spell_crit();

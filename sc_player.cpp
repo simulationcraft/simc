@@ -182,7 +182,7 @@ player_t::player_t( sim_t*             s,
   attack_crit_per_agility(0),   initial_attack_crit_per_agility(0),
   position( POSITION_BACK ),
   // Defense Mechanics
-  base_armor(0), initial_armor(0), armor(0),
+  base_armor(0), initial_armor(0), armor(0), armor_cache(0),
   armor_per_agility(2.0),
   // Resources 
   mana_per_intellect(0), health_per_stamina(0),
@@ -899,6 +899,21 @@ double player_t::composite_armor()
   return armor + armor_per_agility * agility();
 }
 
+// player_t::composite_armor_snapshot =========================================
+
+double player_t::composite_armor_snapshot()
+{
+  int time_offset = sim -> current_iteration % sim -> armor_update_interval;
+
+  if( time_offset + sim -> current_time > cooldowns.armor_cache )
+  {
+    cooldowns.armor_cache = time_offset + 
+      (floor(sim -> current_time / sim -> armor_update_interval) + 1) * sim -> armor_update_interval;
+    armor_cache = composite_armor();
+  }
+  return armor_cache;
+}
+
 // player_t::composite_spell_power ========================================
 
 double player_t::composite_spell_power( int school ) 
@@ -1107,6 +1122,9 @@ void player_t::reset()
   attack_crit        = initial_attack_crit;
   attack_penetration = initial_attack_penetration;
 
+  armor       = initial_armor;
+  armor_cache = initial_armor;
+
   spell_power_multiplier    = initial_spell_power_multiplier;
   spell_power_per_intellect = initial_spell_power_per_intellect;
   spell_power_per_spirit    = initial_spell_power_per_spirit;
@@ -1142,6 +1160,8 @@ void player_t::reset()
   expirations.reset();
   cooldowns.reset();
   
+  cooldowns.armor_cache = sim -> current_iteration % sim -> armor_update_interval;
+
   init_resources( true );
 
   for( action_t* a = action_list; a; a = a -> next ) 
