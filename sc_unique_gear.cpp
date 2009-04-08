@@ -568,18 +568,18 @@ static void trigger_lightning_capacitor( spell_t* s )
     lightning_discharge_t( player_t* player ) : 
       spell_t( "lightning_discharge", player, RESOURCE_NONE, SCHOOL_NATURE )
     {
-      base_direct_dmg = 750;
-      base_cost       = 0;
-      cooldown        = 2.5;
-      may_crit        = true;
-      trigger_gcd     = 0;
-      background      = true;
+      base_dd_min = base_dd_max = 750;
+      base_cost   = 0;
+      cooldown    = 2.5;
+      may_crit    = true;
+      trigger_gcd = 0;
+      background  = true;
       reset();
     }
     virtual void player_buff()
     {
       spell_t::player_buff();
-      player_power = 0;
+      spell_power_multiplier = 0;
     }
   };
 
@@ -619,18 +619,18 @@ static void trigger_thunder_capacitor( spell_t* s )
     thunder_discharge_t( player_t* player ) : 
       spell_t( "thunder_discharge", player, RESOURCE_NONE, SCHOOL_NATURE )
     {
-      base_direct_dmg = 1276;
-      base_cost       = 0;
-      cooldown        = 2.5;
-      may_crit        = true;
-      trigger_gcd     = 0;
-      background      = true;
+      base_dd_min = base_dd_max = 1276;
+      base_cost   = 0;
+      cooldown    = 2.5;
+      may_crit    = true;
+      trigger_gcd = 0;
+      background  = true;
       reset();
     }
     virtual void player_buff()
     {
       spell_t::player_buff();
-      player_power = 0;
+      spell_power_multiplier = 0;
     }
   };
 
@@ -670,17 +670,17 @@ static void trigger_timbals_crystal( spell_t* s )
     timbals_discharge_t( player_t* player ) : 
       spell_t( "timbals_discharge", player, RESOURCE_NONE, SCHOOL_SHADOW )
     {
-      base_direct_dmg = 380;
-      cooldown        = 15;
-      may_crit        = true;
-      trigger_gcd     = 0;
-      background      = true;
+      base_dd_min = base_dd_max = 380;
+      cooldown    = 15;
+      may_crit    = true;
+      trigger_gcd = 0;
+      background  = true;
       reset();
     }
     virtual void player_buff()
     {
       spell_t::player_buff();
-      player_power = 0;
+      spell_power_multiplier = 0;
     }
     virtual void assess_damage( double amount, int dmg_type )
     {
@@ -790,17 +790,17 @@ static void trigger_extract_of_necromatic_power( spell_t* s )
     extract_of_necromatic_power_discharge_t( player_t* player ) : 
       spell_t( "extract_of_necromatic_power_discharge", player, RESOURCE_NONE, SCHOOL_SHADOW )
     {
-      base_direct_dmg = 1050;
-      cooldown        = 15;
-      may_crit        = true;
-      trigger_gcd     = 0;
-      background      = true;
+      base_dd_min = base_dd_max = 1050;
+      cooldown    = 15;
+      may_crit    = true;
+      trigger_gcd = 0;
+      background  = true;
       reset();
     }
     virtual void player_buff()
     {
       spell_t::player_buff();
-      player_power = 0;
+      spell_power_multiplier = 0;
     }
     virtual void assess_damage( double amount, int dmg_type )
     {

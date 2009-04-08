@@ -236,6 +236,8 @@ int rng_t::roll( double chance )
 double rng_t::range( double min,
 		     double max )
 {
+  if( min == max ) return min;
+
   assert( min <= max );
 
   return min + real() * ( max - min );

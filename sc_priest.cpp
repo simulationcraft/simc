@@ -198,21 +198,15 @@ struct shadow_fiend_pet_t : public pet_t
     {
       weapon = &( player -> main_hand_weapon );
       base_execute_time = weapon -> swing_time;
-      base_direct_dmg = 1;
+      base_dd_min = base_dd_max = 1;
       background = true;
       repeating  = true;
-          if ( ! sim -> P309 )
-          {
-            may_dodge  = false;
+      if ( ! sim -> P309 )
+      {
+	may_dodge  = false;
         may_miss   = false;
         may_parry  = false;
-          }
-    }
-    void player_buff()
-    {
-      attack_t::player_buff();
-      player_t* o = player -> cast_pet() -> owner;
-      player_power += 0.57 * o -> composite_spell_power( SCHOOL_SHADOW );
+      }
     }
     void assess_damage( double amount, int dmg_type )
     {
@@ -246,6 +240,12 @@ struct shadow_fiend_pet_t : public pet_t
     if( owner -> gear.tier4_2pc ) attribute_base[ ATTR_STAMINA ] += 75;
 
     melee = new melee_t( this );
+  }
+  virtual double composite_attack_power()
+  {
+    double ap = pet_t::composite_attack_power();
+    ap += 0.57 * owner -> composite_spell_power( SCHOOL_SHADOW );
+    return ap;
   }
   virtual void summon()
   {

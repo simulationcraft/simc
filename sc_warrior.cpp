@@ -499,11 +499,11 @@ static void trigger_deep_wounds( action_t* a )
     int num_ticks = p -> active_deep_wounds -> num_ticks;
     int remaining_ticks = num_ticks - p -> active_deep_wounds -> current_tick;
 
-    dmg += p -> active_deep_wounds -> base_tick_dmg * remaining_ticks;
+    dmg += p -> active_deep_wounds -> base_td * remaining_ticks;
 
     p -> active_deep_wounds -> cancel();
   }
-  p -> active_deep_wounds -> base_tick_dmg = dmg / 6.0;
+  p -> active_deep_wounds -> base_td = dmg / 6.0;
   p -> active_deep_wounds -> execute();
 }
 
@@ -893,7 +893,8 @@ struct melee_t : public warrior_attack_t
   {
     warrior_t* p = player -> cast_warrior();
 
-    base_direct_dmg = 1;
+    base_dd_min = base_dd_max = 1;
+
     may_glance      = true;
     background      = true;
     repeating       = true;
@@ -1124,16 +1125,17 @@ struct bloodthirst_t : public warrior_attack_t
     };
     parse_options( options, options_str );
     
+    weapon = &( p -> main_hand_weapon );
+    weapon_multiplier = 0;
+
+    base_dd_min = base_dd_max = 1;
+
     cooldown          = 5.0;
     base_cost         = 30;
-    base_direct_dmg   = 1;
     base_multiplier  *= 1 + p -> talents.unending_fury * 0.02;
     direct_power_mod  = 0.50;
     if( p -> gear.tier8_4pc )
       base_crit += 0.10;
-
-    weapon = &( p -> main_hand_weapon );
-    weapon_multiplier = 0;
   }
   virtual void execute()
   {
@@ -1175,6 +1177,10 @@ struct execute_t : public warrior_attack_t
                           p -> level >= 70 ? 21 :
                           p -> level >= 65 ? 18 :
                                              15 ); 
+
+    weapon            = &( p -> main_hand_weapon );
+    weapon_multiplier = 0;
+
     base_cost        -= util_t::talent_rank( p -> talents.improved_execute, 2, 2, 5);
     direct_power_mod  = 0.20;
     
@@ -1182,9 +1188,6 @@ struct execute_t : public warrior_attack_t
     aoe_attack = true;
     
     stancemask = STANCE_BATTLE | STANCE_BERSERKER;
-
-    weapon            = &( p -> main_hand_weapon );
-    weapon_multiplier = 0;
   }
   virtual void execute()
   {
@@ -1290,19 +1293,20 @@ struct overpower_t : public warrior_attack_t
     };
     parse_options( options, options_str );
     
+    weapon = &( p -> main_hand_weapon );
+
     may_dodge = false; 
     may_parry = false; 
     may_block = false; // The Overpower cannot be blocked, dodged or parried.
 
+    base_dd_min = base_dd_max = 1;
+
     base_cost       = 5.0;
     base_crit      += p -> talents.improved_overpower * 0.25;
-    base_direct_dmg = 1;
     cooldown        = 5.0 - p -> talents.unrelenting_assault * 2.0;
 
     stancemask = STANCE_BATTLE;
     
-    weapon = &( p -> main_hand_weapon );
-
   }
   virtual void execute()
   {
@@ -1340,15 +1344,15 @@ struct rend_t : public warrior_attack_t
     
     static rank_t ranks[] =
     {
-      { 76, 10, 0, 0, 380, 10 },
-      { 71,  9, 0, 0, 315, 10 },
-      { 68,  8, 0, 0, 215, 10 },
-      { 60,  7, 0, 0, 185, 10 },
+      { 76, 10, 0, 0, 76, 10 },
+      { 71,  9, 0, 0, 63, 10 },
+      { 68,  8, 0, 0, 43, 10 },
+      { 60,  7, 0, 0, 37, 10 },
       { 0, 0 }
     };
     init_rank( ranks );
     
-    may_crit          = false;
+    weapon = &( p -> main_hand_weapon );
     
     base_cost         = 10.0;
     base_tick_time    = 3.0;
@@ -1357,8 +1361,6 @@ struct rend_t : public warrior_attack_t
     
     stancemask = STANCE_BATTLE | STANCE_DEFENSE;
     
-    weapon_multiplier = 1.0 / 5.0; // 1/5th of weapon_damage per tick.
-    weapon = &( p -> main_hand_weapon );
 
   }
   virtual void player_buff()
@@ -1382,9 +1384,8 @@ struct rend_t : public warrior_attack_t
   }
   virtual void execute()
   {
-    weapon_multiplier = 0; // Else there would be a direct damage component
+    base_td = base_td_init + calculate_weapon_damage() / 5;
     warrior_attack_t::execute();
-    weapon_multiplier = 1.0 / 5.0; // 1/5th of weapon_damage per tick.
     trigger_blood_frenzy( this );
   }
 };
@@ -1503,16 +1504,16 @@ struct whirlwind_t : public warrior_attack_t
     };
     parse_options( options, options_str );
 
-    cooldown               = 10.0 - ( p -> glyphs.whirlwind ? 2 : 0 );
+    weapon = &( p -> main_hand_weapon );
 
-    base_cost              = 25;
-    base_multiplier       *= 1 + p -> talents.improved_whirlwind * 0.10 + p -> talents.unending_fury * 0.02;
-    base_direct_dmg        = 1;
+    base_dd_min = base_dd_max = 1;
+
+    cooldown         = 10.0 - ( p -> glyphs.whirlwind ? 2 : 0 );
+    base_cost        = 25;
+    base_multiplier *= 1 + p -> talents.improved_whirlwind * 0.10 + p -> talents.unending_fury * 0.02;
 
     aoe_attack = true;
     stancemask = STANCE_BERSERKER;
-
-    weapon = &( p -> main_hand_weapon );
   }
 
   virtual void consume_resource() { }
@@ -1674,7 +1675,7 @@ struct bladestorm_t : public warrior_spell_t
       bladestorm_attack_t( player_t* player ) : 
         warrior_attack_t( "bladestorm", player, SCHOOL_PHYSICAL, TREE_ARMS )
       {
-        base_direct_dmg = 1;
+        base_dd_min = base_dd_max = 1;
         trigger_gcd     = 0;
         background      = true;
       }

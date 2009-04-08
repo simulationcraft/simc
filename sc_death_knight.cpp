@@ -576,13 +576,11 @@ death_knight_spell_t::execute()
 void
 death_knight_spell_t::player_buff()
 {
-	spell_t::player_buff();
+  spell_t::player_buff();
 
-  player_power     = player -> composite_attack_power();
-  power_multiplier = player -> composite_attack_power_multiplier();
-
-	if( sim -> debug ) report_t::log( sim, "death_knight_spell_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f, p_mult=%.0f", 
-				    name(), player_hit, player_crit, player_power, player_penetration, power_multiplier );
+  if( sim -> debug ) 
+    report_t::log( sim, "death_knight_spell_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f, p_mult=%.0f", 
+		   name(), player_hit, player_crit, player_spell_power, player_penetration, player_multiplier );
 
 }
 
@@ -623,7 +621,7 @@ struct melee_t : public death_knight_attack_t
 
     execute_once = false;
 
-    base_direct_dmg = 1;
+    base_dd_min = base_dd_max = 1;
     may_glance      = true;
     background      = true;
     repeating       = true;

@@ -1271,11 +1271,11 @@ static void trigger_piercing_shots( action_t* a )
     int num_ticks = p -> active_piercing_shots -> num_ticks;
     int remaining_ticks = num_ticks - p -> active_piercing_shots -> current_tick;
 
-    dmg += p -> active_piercing_shots -> base_tick_dmg * remaining_ticks;
+    dmg += p -> active_piercing_shots -> base_td * remaining_ticks;
 
     p -> active_piercing_shots -> cancel();
   }
-  p -> active_piercing_shots -> base_tick_dmg = dmg / 8;
+  p -> active_piercing_shots -> base_td = dmg / 8;
   p -> active_piercing_shots -> schedule_tick();
 }
 
@@ -1396,10 +1396,9 @@ static void trigger_wild_quiver( attack_t* a )
 
     p -> procs_wild_quiver -> occur();
 
-    if( a -> sim -> patch.before(3, 1, 0) )
-      p -> active_wild_quiver -> base_direct_dmg = 0.50 * a -> direct_dmg;
-    else
-      p -> active_wild_quiver -> base_direct_dmg = 0.80 * a -> direct_dmg;
+    double base_dd = ( a -> sim -> P309 ? 0.50 : 0.80 ) * a -> direct_dmg;
+    p -> active_wild_quiver -> base_dd_min = base_dd;
+    p -> active_wild_quiver -> base_dd_max = base_dd;
     p -> active_wild_quiver -> execute();
   }
 }
@@ -1429,6 +1428,8 @@ struct hunter_pet_attack_t : public attack_t
   {
     hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
+
+    direct_power_mod = 1.0/14;
 
     if( p -> sim -> patch.after( 3, 1, 0 ) )
     {
@@ -1559,10 +1560,11 @@ struct pet_melee_t : public hunter_pet_attack_t
     hunter_t*     o = p -> owner -> cast_hunter();
 
     weapon = &( p -> main_hand_weapon );
-    base_execute_time  = weapon -> swing_time;
-    base_direct_dmg    = 1;
-    background         = true;
-    repeating          = true;
+    base_execute_time = weapon -> swing_time;
+    base_dd_min       = base_dd_max = 1;
+    background        = true;
+    repeating         = true;
+    direct_power_mod  = 0;
 
     if( p -> talents.cobra_reflexes )
     {
@@ -1608,8 +1610,8 @@ struct focus_dump_t : public hunter_pet_attack_t
     hunter_pet_attack_t( n, player, RESOURCE_FOCUS, SCHOOL_PHYSICAL )
   {
     parse_options( 0, options_str );
-    base_cost       = 25;
-    base_direct_dmg = 143;
+    base_dd_min = base_dd_max = 143;
+    base_cost = 25;
   }
 };
 
@@ -1627,8 +1629,8 @@ struct rake_t : public hunter_pet_attack_t
 
     parse_options( 0, options_str );
 
+    base_dd_min = base_dd_max = 57;
     base_cost       = 20;
-    base_direct_dmg = 57;
     base_td_init    = 21;
     num_ticks       = 3;
     base_tick_time  = 3;
@@ -1661,9 +1663,9 @@ struct monstrous_bite_t : public hunter_pet_attack_t
 
     parse_options( 0, options_str );
 
-    base_cost        = 20;
-    base_direct_dmg  = 107;
-    cooldown         = 10 * ( 1.0 - o -> talents.longevity * 0.10 );
+    base_dd_min = base_dd_max = 107;
+    base_cost = 20;
+    cooldown  = 10 * ( 1.0 - o -> talents.longevity * 0.10 );
   }
 
   virtual void execute()
@@ -1720,13 +1722,13 @@ struct savage_rend_t : public hunter_pet_attack_t
 
     parse_options( 0, options_str );
 
-    base_cost       = 20;
-    base_direct_dmg = 71;
-    base_td_init    = 24;
-    num_ticks       = 3;
-    base_tick_time  = 5;
-    tick_power_mod  = 0.0175; // FIXME Check
-    cooldown        = 60 * ( 1.0 - o -> talents.longevity * 0.10 );
+    base_dd_min = base_dd_max = 71;
+    base_cost      = 20;
+    base_td_init   = 24;
+    num_ticks      = 3;
+    base_tick_time = 5;
+    tick_power_mod = 0.0175; // FIXME Check
+    cooldown       = 60 * ( 1.0 - o -> talents.longevity * 0.10 );
 
     // FIXME! Assuming pets are not smart enough to wait for Rake to finish ticking
     clip_dot = true;
@@ -1788,9 +1790,9 @@ struct wolverine_bite_t : public hunter_pet_attack_t
 
     parse_options( 0, options_str );
 
-    base_cost        = 0;
-    base_direct_dmg  = 5 * p -> level;
-    cooldown         = 10 * ( 1.0 - o -> talents.longevity * 0.10 );
+    base_dd_min = base_dd_max  = 5 * p -> level;
+    base_cost   = 0;
+    cooldown    = 10 * ( 1.0 - o -> talents.longevity * 0.10 );
 
     may_dodge = may_block = may_parry = false;
   }
@@ -1887,7 +1889,7 @@ struct hunter_pet_spell_t : public spell_t
 
     spell_t::player_buff();
 
-    player_power += 0.125 * o -> composite_spell_power( SCHOOL_MAX );
+    player_spell_power += 0.125 * o -> composite_spell_power( SCHOOL_MAX );
 
     if( p -> _buffs.bestial_wrath ) player_multiplier *= 1.50;
 
@@ -1917,8 +1919,8 @@ struct froststorm_breath_t : public hunter_pet_spell_t
 
     parse_options( 0, options_str );
 
+    base_dd_min = base_dd_max = 150;
     base_cost        = 20;
-    base_direct_dmg  = 150;
     direct_power_mod = 1.5 / 3.5;
     cooldown         = 10 * ( 1.0 - o -> talents.longevity * 0.10 );
   }
@@ -1938,8 +1940,8 @@ struct lightning_breath_t : public hunter_pet_spell_t
 
     parse_options( 0, options_str );
 
+    base_dd_min = base_dd_max = 100;
     base_cost        = 20;
-    base_direct_dmg  = 100;
     direct_power_mod = 1.5 / 3.5;
     cooldown         = 10 * ( 1.0 - o -> talents.longevity * 0.10 );
   }
@@ -2694,7 +2696,9 @@ struct chimera_shot_t : public hunter_attack_t
 
         if( ! p -> active_chimera_serpent ) p -> active_chimera_serpent = new chimera_serpent_t( p );
 
-        p -> active_chimera_serpent -> base_direct_dmg = 0.40 * sting_dmg;
+	double base_dd = 0.40 * sting_dmg;
+        p -> active_chimera_serpent -> base_dd_min = base_dd;
+        p -> active_chimera_serpent -> base_dd_max = base_dd;
         p -> active_chimera_serpent -> execute();
 
       }
@@ -2880,11 +2884,9 @@ struct kill_shot_t : public hunter_attack_t
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );
 
-    // kill shot actually gets 2 x ap-modified damage + 40% ap, which is the same as
-    // 2 x (weapon + 2.8*ap*2/14)
     normalize_weapon_speed = true;
     weapon_multiplier      = 2.0;
-    direct_power_mod       = 2.0/14;
+    direct_power_mod       = 0.40;
     cooldown               = 15;
     if( p -> sim -> patch.before(3, 1, 0) ) trigger_gcd = 0.0;
 
@@ -3122,7 +3124,8 @@ struct steady_shot_t : public hunter_attack_t
 
     normalize_weapon_damage = true;
     normalize_weapon_speed  = true;
-    direct_power_mod        = 0.5/14.0;
+    weapon_power_mod        = 0;
+    direct_power_mod        = 0.1;
     base_execute_time       = 2.0;
 
     base_cost *= 1.0 - p -> talents.master_marksman * 0.05;

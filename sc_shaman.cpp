@@ -277,7 +277,7 @@ struct shaman_attack_t : public attack_t
   shaman_attack_t( const char* n, player_t* player, int s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) : 
     attack_t( n, player, RESOURCE_MANA, s, t, special ) 
   {
-    base_direct_dmg = 1;
+    base_dd_min = base_dd_max = 1;
     shaman_t* p = player -> cast_shaman();
     base_multiplier *= 1.0 + p -> talents.weapon_mastery * 0.1/3;
     base_crit += p -> talents.thundering_strikes * 0.01;
@@ -328,21 +328,12 @@ struct spirit_wolf_pet_t : public pet_t
     {
       weapon = &( player -> main_hand_weapon );
       base_execute_time = weapon -> swing_time;
-      base_direct_dmg = 1;
+      base_dd_min = base_dd_max = 1;
       background = true;
       repeating = true;
 
       // There are actually two wolves.....
       base_multiplier *= 2.0;
-    }
-    void player_buff()
-    {
-      attack_t::player_buff();
-      shaman_t* o = player -> cast_pet() -> owner -> cast_shaman();
-      if( o -> glyphs.feral_spirit )
-      {
-	player_power += 0.30 * o -> composite_attack_power();
-      }
     }
   };
 
@@ -368,6 +359,16 @@ struct spirit_wolf_pet_t : public pet_t
     initial_attack_crit_per_agility = rating_t::interpolate( level, 0.01/25.0, 0.01/40.0, 0.01/83.3 );
 
     melee = new melee_t( this );
+  }
+  virtual double composite_attack_power()
+  {
+    double ap = pet_t::composite_attack_power();
+    shaman_t* o = owner -> cast_shaman();
+    if( o -> glyphs.feral_spirit )
+    {
+      ap += 0.30 * o -> composite_attack_power();
+    }
+    return ap;
   }
   virtual void summon()
   {
@@ -410,7 +411,10 @@ static void trigger_flametongue_weapon( attack_t* a )
 
     double fire_dmg = util_t::ability_rank( p -> level,  70.0,80,  70.0,77,  60.0,72,  35.0,65,  30.0,0 );
 
-    p -> flametongue_weapon_spell -> base_direct_dmg = fire_dmg * a -> weapon -> swing_time;
+    fire_dmg *= a -> weapon -> swing_time;
+
+    p -> flametongue_weapon_spell -> base_dd_min = fire_dmg;
+    p -> flametongue_weapon_spell -> base_dd_max = fire_dmg;
     p -> flametongue_weapon_spell -> execute();
   }
 }
@@ -433,7 +437,7 @@ static void trigger_windfury_weapon( attack_t* a )
     virtual void player_buff()
     {
       shaman_attack_t::player_buff();
-      player_power += weapon -> buff_bonus;
+      player_attack_power += weapon -> buff_bonus;
     }
   };
 
@@ -667,12 +671,12 @@ static void trigger_tier8_4pc_elemental( spell_t* s )
     int num_ticks = p -> active_lightning_bolt_dot -> num_ticks;
     int remaining_ticks = num_ticks - p -> active_lightning_bolt_dot -> current_tick;
 
-    dmg += p -> active_lightning_bolt_dot -> base_tick_dmg * remaining_ticks;
+    dmg += p -> active_lightning_bolt_dot -> base_td * remaining_ticks;
 
     p -> active_lightning_bolt_dot -> cancel();
   }
 
-  p -> active_lightning_bolt_dot -> base_tick_dmg = dmg / 4;
+  p -> active_lightning_bolt_dot -> base_td = dmg / 4;
   p -> active_lightning_bolt_dot -> schedule_tick();
 }
 
@@ -864,7 +868,7 @@ void shaman_attack_t::execute()
     }
     if( p -> _buffs.shamanistic_rage ) 
     {
-      p -> resource_gain( RESOURCE_MANA, player_power * 0.30, p -> gains_shamanistic_rage );
+      p -> resource_gain( RESOURCE_MANA, player_attack_power * 0.30, p -> gains_shamanistic_rage );
     }
     trigger_flametongue_weapon( this );
     trigger_windfury_weapon( this );
@@ -999,12 +1003,11 @@ struct lava_lash_t : public shaman_attack_t
   {
     shaman_t* p = player -> cast_shaman();
 
-    weapon          = &( player -> off_hand_weapon );
-    base_direct_dmg = 1;
-    cooldown        = 6;
-    base_cost       = p -> resource_base[ RESOURCE_MANA ] * 0.04;
-    if( p -> tiers.t8_2pc_enhancement )
-      base_multiplier *= 1.0 + 0.20;
+    weapon      = &( player -> off_hand_weapon );
+    base_dd_min = base_dd_max = 1;
+    cooldown    = 6;
+    base_cost   = p -> resource_base[ RESOURCE_MANA ] * 0.04;
+    if( p -> tiers.t8_2pc_enhancement ) base_multiplier *= 1.0 + 0.20;
   }
 
   virtual void player_buff()
@@ -1263,7 +1266,7 @@ struct chain_lightning_t : public shaman_spell_t
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.elemental_fury * 0.20;
 
-    if( p -> totems.hex ) base_power += 165;
+    if( p -> totems.hex ) base_spell_power += 165;
 
     lightning_overload_stats = p -> get_stats( "lightning_overload" );
     lightning_overload_stats -> school = SCHOOL_NATURE;
@@ -1386,7 +1389,7 @@ struct lightning_bolt_t : public shaman_spell_t
     if( p -> tiers.t6_4pc_elemental ) base_multiplier     *= 1.05;
     if( p -> tiers.t7_2pc_elemental ) base_cost_reduction += 0.05;
     if( p -> glyphs.lightning_bolt  ) base_multiplier     *= 1.04;
-    if( p -> totems.hex             ) base_power          += 165;
+    if( p -> totems.hex             ) base_spell_power    += 165;
 
     lightning_overload_stats = p -> get_stats( "lightning_overload" );
     lightning_overload_stats -> school = SCHOOL_NATURE;
@@ -2829,11 +2832,12 @@ struct lightning_shield_t : public shaman_spell_t
     
       shaman_t* p = player -> cast_shaman();
 
+      base_dd_min = base_dd_max = base_dmg;
+
       trigger_gcd      = 0;
       background       = true;
       direct_power_mod = 0.33;
 
-      base_direct_dmg  = base_dmg;
       base_hit        += p -> talents.elemental_precision * 0.01;
       base_multiplier *= 1.0 + p -> talents.improved_shields * 0.05 + ( p -> tiers.t7_2pc_enhancement ? 0.10 : 0.00 );
 

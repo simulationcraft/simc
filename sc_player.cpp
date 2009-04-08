@@ -889,7 +889,18 @@ double player_t::composite_attack_power()
 
 double player_t::composite_attack_crit()
 {
-  return attack_crit + attack_crit_per_agility * agility();
+  double ac = attack_crit + attack_crit_per_agility * agility();
+
+  if( type != PLAYER_GUARDIAN )
+  {
+    if( buffs.leader_of_the_pack || 
+        buffs.rampage ) 
+    {
+      ac += 0.05;
+    }
+  }
+
+  return ac;
 }
 
 // player_t::composite_armor =========================================
@@ -931,6 +942,28 @@ double player_t::composite_spell_power( int school )
   sp += spell_power_per_intellect * intellect();
   sp += spell_power_per_spirit    * spirit();
 
+  if( type != PLAYER_GUARDIAN )
+  {
+    double best_buff = 0;
+    if( buffs.totem_of_wrath )
+    {
+      if( best_buff < buffs.totem_of_wrath ) best_buff = buffs.totem_of_wrath;
+    }
+    if( buffs.flametongue_totem ) 
+    {
+      if( best_buff < buffs.flametongue_totem ) best_buff = buffs.flametongue_totem;
+    }
+    if( buffs.demonic_pact )
+    {
+      if( best_buff < buffs.demonic_pact ) best_buff = buffs.demonic_pact;
+    }
+    if( buffs.improved_divine_spirit )
+    {
+      if( best_buff < buffs.improved_divine_spirit ) best_buff = buffs.improved_divine_spirit;
+    }
+    sp += best_buff;
+  }
+
   return sp;
 }
 
@@ -938,7 +971,20 @@ double player_t::composite_spell_power( int school )
 
 double player_t::composite_spell_crit()
 {
-  return spell_crit + spell_crit_per_intellect * intellect();
+  double sc = spell_crit + spell_crit_per_intellect * intellect();
+
+  if( type != PLAYER_GUARDIAN )
+  {
+    if( buffs.focus_magic ) sc += 0.03;
+
+    if( buffs.elemental_oath ||
+	buffs.moonkin_aura   )
+    {
+      sc += 0.05;
+    }
+  }
+
+  return sc;
 }
 
 // player_t::composite_attack_power_multiplier =============================

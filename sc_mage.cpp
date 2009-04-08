@@ -331,15 +331,15 @@ struct water_elemental_pet_t : public pet_t
     {
       base_cost          = 0;
       base_execute_time  = 2.5;
-      base_direct_dmg    = ( 256 + 328 ) / 2;
-      base_direct_dmg   +=( player -> level - 50 ) * 11.5;
+      base_dd_min        = 256 + ( player -> level - 50 ) * 11.5;
+      base_dd_max        = 328 + ( player -> level - 50 ) * 11.5;
       direct_power_mod   = ( 5.0 / 6.0 );
       may_crit           = true;
     }
     virtual void player_buff()
     {
       spell_t::player_buff();
-      player_power += player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_FROST ) / 3.0;
+      player_spell_power += player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_FROST ) / 3.0;
     }
   };
 
@@ -424,7 +424,8 @@ struct mirror_image_pet_t : public pet_t
     {
       base_cost         = 0;
       base_execute_time = 0;
-      base_direct_dmg   = ( 92 + 103 ) / 2;
+      base_dd_min       = 92;
+      base_dd_max       = 103;
       direct_power_mod  = 0.15;
       may_crit          = true;
       background        = true;
@@ -433,7 +434,7 @@ struct mirror_image_pet_t : public pet_t
     {
       mirror_image_pet_t* p = (mirror_image_pet_t*) player;
       spell_t::player_buff();
-      player_power += player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_FIRE ) / p -> num_images;
+      player_spell_power += player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_FIRE ) / p -> num_images;
     }
     virtual void execute()
     {
@@ -458,7 +459,8 @@ struct mirror_image_pet_t : public pet_t
     {
       base_cost         = 0;
       base_execute_time = 3.0;
-      base_direct_dmg   = ( 163 + 169 ) / 2;
+      base_dd_min       = 163;
+      base_dd_max       = 169;
       direct_power_mod  = 0.30;
       may_crit          = true;
       background        = true;
@@ -472,7 +474,7 @@ struct mirror_image_pet_t : public pet_t
     {
       mirror_image_pet_t* p = (mirror_image_pet_t*) player;
       spell_t::player_buff();
-      player_power += player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_FROST ) / p -> num_images;
+      player_spell_power += player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_FROST ) / p -> num_images;
     }
   };
 
@@ -670,12 +672,12 @@ static void trigger_ignite( spell_t* s,
     int num_ticks = p -> active_ignite -> num_ticks;
     int remaining_ticks = num_ticks - p -> active_ignite -> current_tick;
 
-    ignite_dmg += p -> active_ignite -> base_tick_dmg * remaining_ticks;
+    ignite_dmg += p -> active_ignite -> base_td * remaining_ticks;
 
     p -> active_ignite -> cancel();
   }
 
-  p -> active_ignite -> base_tick_dmg = ignite_dmg / 2.0;
+  p -> active_ignite -> base_td = ignite_dmg / 2.0;
   p -> active_ignite -> schedule_tick();
 }
 
@@ -1389,8 +1391,8 @@ void mage_spell_t::player_buff()
   p -> uptimes_focus_magic_feedback -> update( p -> buffs.focus_magic_feedback != 0 );
 
   if( sim -> debug ) 
-    report_t::log( sim, "mage_spell_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f", 
-                   name(), player_hit, player_crit, player_power, player_penetration );
+    report_t::log( sim, "mage_spell_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f mult=%.2f", 
+                   name(), player_hit, player_crit, player_spell_power, player_penetration, player_multiplier );
 }
 
 // =========================================================================

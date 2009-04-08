@@ -34,8 +34,6 @@ attack_t::attack_t( const char* n, player_t* p, int resource, int school, int tr
 
   base_crit_bonus = 1.0;
   
-  direct_power_mod = tick_power_mod = 1.0 / 14;
-
   trigger_gcd = p -> base_gcd;
   min_gcd = 1.0;
 }
@@ -113,42 +111,25 @@ void attack_t::player_buff()
   player_hit       = p -> composite_attack_hit();
   player_expertise = p -> composite_attack_expertise();
   player_crit      = p -> composite_attack_crit();
-  player_power     = p -> composite_attack_power();
-  power_multiplier = p -> composite_attack_power_multiplier();
 
-  if( p -> type != PLAYER_GUARDIAN )
+  if( p -> gear.chaotic_skyflare      ||
+      p -> gear.relentless_earthstorm ) 
   {
-    if( p -> buffs.leader_of_the_pack || 
-        p -> buffs.rampage ) 
-      player_crit += 0.05;
-
-    if( p -> gear.chaotic_skyflare      ||
-	p -> gear.relentless_earthstorm ) 
-    {
-      player_crit_multiplier *= 1.03;
-    }
+    player_crit_multiplier *= 1.03;
   }
 
   if( sim -> debug ) 
-    report_t::log( sim, "attack_t::player_buff: %s hit=%.2f expertise=%.2f crit=%.2f power=%.2f penetration=%.0f", 
-		   name(), player_hit, player_expertise, player_crit, player_power, player_penetration );
+    report_t::log( sim, "attack_t::player_buff: %s hit=%.2f expertise=%.2f crit=%.2f crit_multiplier=%.2f", 
+		   name(), player_hit, player_expertise, player_crit, player_crit_multiplier );
 }
 
 // attack_t::target_debuff ==================================================
 
 void attack_t::target_debuff( int dmg_type )
 {
-  player_t* p = player;
-  target_t* t = sim -> target;
-
   action_t::target_debuff( dmg_type );
 
   target_expertise = 0;
-
-  if( p -> position == POSITION_RANGED )
-  {
-    target_power += t -> debuffs.hunters_mark;
-  }
 }
 
 // attack_t::miss_chance ====================================================

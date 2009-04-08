@@ -361,12 +361,6 @@ struct treants_pet_t : public pet_t
       // Model the three Treants as one actor hitting 3x hard
       base_multiplier *= 3.0;
     }
-    void player_buff()
-    {
-      attack_t::player_buff();
-      player_t* o = player -> cast_pet() -> owner;
-      player_power += 0.57 * o -> composite_spell_power( SCHOOL_MAX );
-    }
   };
 
   melee_t* melee;
@@ -390,6 +384,12 @@ struct treants_pet_t : public pet_t
     initial_attack_power_per_strength = 2.0;
 
     melee = new melee_t( this );
+  }
+  virtual double composite_attack_power()
+  {
+    double ap = pet_t::composite_attack_power();
+    ap += 0.57 * owner -> composite_spell_power( SCHOOL_MAX );
+    return ap;
   }
   virtual void summon()
   {
@@ -1095,21 +1095,7 @@ void druid_attack_t::execute()
 double druid_attack_t::calculate_direct_damage()
 {
   druid_t* p = player -> cast_druid();
-
-  if( base_dd_min > 0 && base_dd_max > 0 )
-  {
-    if( sim -> average_dmg )
-    {
-      base_direct_dmg = ( base_dd_min + base_dd_max ) / 2.0;
-    }
-    else
-    {
-      base_direct_dmg = sim -> rng -> range( base_dd_min, base_dd_max );
-    }
-
-    base_direct_dmg += p -> _buffs.tigers_fury;
-  }
-
+  base_dd_adder = p -> _buffs.tigers_fury;
   return attack_t::calculate_direct_damage();
 }
 
@@ -1828,8 +1814,6 @@ struct ferocious_bite_t : public druid_attack_t
   {
     druid_t* p = player -> cast_druid();
 
-    base_direct_dmg = 0; // Force recalculation based upon new base_dd min/max values.
-
     base_dd_min = combo_point_dmg[ p -> _buffs.combo_points - 1 ].min;
     base_dd_max = combo_point_dmg[ p -> _buffs.combo_points - 1 ].max;
 
@@ -2237,10 +2221,11 @@ struct insect_swarm_t : public druid_spell_t
                             ( p -> glyphs.insect_swarm  ? 0.30 : 0.00 ) +
                             ( p -> tiers.t7_2pc_balance ? 0.10 : 0.00 );
 
-    // Druid T8 Balance Relic -- Increases the spell power of your Insect Swarm by 374.
-    if( p -> idols.crying_wind )
-      base_power += 374;
-
+    if( p -> idols.crying_wind ) 
+    {
+      // Druid T8 Balance Relic -- Increases the spell power of your Insect Swarm by 374.
+      base_spell_power += 374;
+    }
 
     if( p -> talents.natures_splendor ) num_ticks++;
 
@@ -2561,7 +2546,7 @@ struct starfire_t : public druid_spell_t
     if ( p -> idols.shooting_star )
     {
       // Equip: Increases the spell power of your Starfire spell by 165.
-      base_power += 165;
+      base_spell_power += 165;
     }
     if( p -> tiers.t6_4pc_balance ) base_crit += 0.05;
     if( p -> tiers.t7_4pc_balance ) base_crit += 0.05;

@@ -415,9 +415,9 @@ struct warlock_pet_melee_t : public attack_t
 
     weapon = &( p -> main_hand_weapon );
     base_execute_time = weapon -> swing_time;
-    base_direct_dmg   = 1;
-    background        = true;
-    repeating         = true;
+    base_dd_min = base_dd_max = 1;
+    background  = true;
+    repeating   = true;
 
     p -> adjust_base_modifiers( this );
 
@@ -431,7 +431,7 @@ struct warlock_pet_melee_t : public attack_t
     attack_t::player_buff();
     if( p -> pet_type != PET_INFERNAL )
     {
-      player_power += 0.57 * o -> composite_spell_power( SCHOOL_MAX );
+      player_attack_power += 0.57 * o -> composite_spell_power( SCHOOL_MAX );
       p -> adjust_player_modifiers( this );
     }
   }
@@ -469,7 +469,7 @@ struct warlock_pet_attack_t : public attack_t
     warlock_pet_t* p = (warlock_pet_t*) player -> cast_pet();
     warlock_t* o = p -> owner -> cast_warlock();
     attack_t::player_buff();
-    player_power += 0.57 * player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_MAX );
+    player_attack_power += 0.57 * player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_MAX );
     if( p -> _buffs.demonic_empathy ) player_multiplier *= 1.0 + o -> talents.demonic_empathy * 0.01;
     p -> adjust_player_modifiers( this );
   }
@@ -510,7 +510,7 @@ struct warlock_pet_spell_t : public spell_t
     warlock_pet_t* p = (warlock_pet_t*) player -> cast_pet();
     warlock_t* o = p -> owner -> cast_warlock();
     spell_t::player_buff();
-    player_power += 0.15 * player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_MAX );
+    player_spell_power += 0.15 * player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_MAX );
     if( p -> _buffs.demonic_empathy ) player_multiplier *= 1.0 + o -> talents.demonic_empathy * 0.01;
     p -> adjust_player_modifiers( this );
   }
@@ -612,7 +612,7 @@ struct felguard_pet_t : public warlock_pet_t
       felguard_pet_t* p = (felguard_pet_t*) player -> cast_pet();
       weapon   = &( p -> main_hand_weapon );
       cooldown = 6.0;
-      base_direct_dmg = util_t::ability_rank( p -> level,  124.0,76,  78.0,68,  50.0,0 );
+      base_dd_min = base_dd_max = util_t::ability_rank( p -> level,  124.0,76,  78.0,68,  50.0,0 );
     }
     virtual void player_buff()
     {
@@ -620,8 +620,8 @@ struct felguard_pet_t : public warlock_pet_t
       warlock_t*      o = p -> owner -> cast_warlock();
 
       warlock_pet_attack_t::player_buff();
-      player_power *= 1.0 + p -> _buffs.demonic_frenzy * ( 0.05 + o -> talents.demonic_brutality * 0.01 );
-      if( o -> glyphs.felguard ) player_power *= 1.20;
+      player_attack_power *= 1.0 + p -> _buffs.demonic_frenzy * ( 0.05 + o -> talents.demonic_brutality * 0.01 );
+      if( o -> glyphs.felguard ) player_attack_power *= 1.20;
     }
   };
 
@@ -645,9 +645,9 @@ struct felguard_pet_t : public warlock_pet_t
       warlock_t*      o = p -> owner -> cast_warlock();
 
       warlock_pet_melee_t::player_buff();
-      player_power *= 1.0 + p -> _buffs.demonic_frenzy * ( 0.05 + o -> talents.demonic_brutality * 0.01 );
+      player_attack_power *= 1.0 + p -> _buffs.demonic_frenzy * ( 0.05 + o -> talents.demonic_brutality * 0.01 );
 
-      if( o -> glyphs.felguard ) player_power *= 1.20;
+      if( o -> glyphs.felguard ) player_attack_power *= 1.20;
     }
     virtual void assess_damage( double amount, int dmg_type )
     {
@@ -706,7 +706,7 @@ struct felhunter_pet_t : public warlock_pet_t
     {
       felhunter_pet_t* p = (felhunter_pet_t*) player -> cast_pet();
       cooldown = 6.0;
-      base_direct_dmg = util_t::ability_rank( p -> level,  118.0,74,  101.0,66,  88.0,0 );
+      base_dd_min = base_dd_max = util_t::ability_rank( p -> level,  118.0,74,  101.0,66,  88.0,0 );
     }
     virtual void player_buff()
     {
@@ -826,7 +826,7 @@ struct infernal_pet_t : public warlock_pet_t
     infernal_immolation_t( player_t* player ) : 
       warlock_pet_spell_t( "immolation", player, RESOURCE_NONE, SCHOOL_FIRE )
     {
-      base_direct_dmg   = 40;
+      base_dd_min = base_dd_max = 40;
       direct_power_mod  = 0.2;
       background        = true;
       repeating         = true;
@@ -844,7 +844,7 @@ struct infernal_pet_t : public warlock_pet_t
       warlock_pet_t* p = (warlock_pet_t*) player -> cast_pet();
       warlock_t* o = p -> owner -> cast_warlock();
       spell_t::player_buff();
-      player_power += o -> composite_spell_power( school );
+      player_spell_power += o -> composite_spell_power( school );
     }
   };
 
@@ -992,7 +992,7 @@ static void trigger_tier5_4pc( spell_t*  s,
   {
     if( dot_spell )
     {
-      dot_spell -> base_tick_dmg *= 1.10;
+      dot_spell -> base_td *= 1.10;
     }
   }
 }
@@ -1583,7 +1583,10 @@ static void trigger_pandemic( spell_t* s )
   {
     if( ! p -> active_pandemic ) p -> active_pandemic = new pandemic_t( p );
 
-    p -> active_pandemic -> base_direct_dmg = s -> tick_dmg * p -> talents.pandemic / 3.0;
+    double base_dd = s -> tick_dmg * p -> talents.pandemic / 3.0;
+
+    p -> active_pandemic -> base_dd_min = base_dd;
+    p -> active_pandemic -> base_dd_max = base_dd;
     p -> active_pandemic -> execute();
   }
 }
@@ -2014,7 +2017,7 @@ void warlock_spell_t::player_buff()
     if( p -> _buffs.pet_sacrifice == PET_FELGUARD ) player_multiplier *= 1.0 + 0.07;
     if( p -> _buffs.pet_sacrifice == PET_SUCCUBUS ) player_multiplier *= 1.0 + 0.10;
 
-    if( p -> _buffs.flame_shadow ) player_power += 135;
+    if( p -> _buffs.flame_shadow ) player_spell_power += 135;
     p -> uptimes_flame_shadow -> update( p -> _buffs.flame_shadow != 0 );
 
     if( p -> _buffs.pyroclasm ) player_multiplier *= 1.0 + p -> talents.pyroclasm * 0.02;
@@ -2025,7 +2028,7 @@ void warlock_spell_t::player_buff()
     if( p -> _buffs.pet_sacrifice == PET_FELGUARD ) player_multiplier *= 1.0 + 0.07;
     if( p -> _buffs.pet_sacrifice == PET_IMP      ) player_multiplier *= 1.0 + 0.10;
 
-    if( p -> _buffs.shadow_flame ) player_power += 135;
+    if( p -> _buffs.shadow_flame ) player_spell_power += 135;
     p -> uptimes_shadow_flame -> update( p -> _buffs.shadow_flame != 0 );
 
     if( p -> _buffs.molten_core ) player_multiplier *= 1.10;
@@ -2924,7 +2927,7 @@ struct corruption_t : public warlock_spell_t
   virtual void execute()
   {
     warlock_t* p = player -> cast_warlock();
-    base_tick_dmg = base_td_init;
+    base_td = base_td_init;
     warlock_spell_t::execute();
     if( result_is_hit() )
     {
@@ -3544,7 +3547,7 @@ struct immolate_t : public warlock_spell_t
   virtual void execute()
   {
     warlock_t* p = player -> cast_warlock();
-    base_tick_dmg = base_td_init;
+    base_td = base_td_init;
     warlock_spell_t::execute();
     if( result_is_hit() )
     {
@@ -3623,7 +3626,7 @@ struct shadowflame_t : public warlock_spell_t
   virtual void execute()
   {
     warlock_t* p = player -> cast_warlock();
-    base_tick_dmg = base_td_init;
+    base_td = base_td_init;
     // DD is shadow damage, DoT is fire damage
     school = SCHOOL_SHADOW;
     warlock_spell_t::execute();
@@ -3753,7 +3756,7 @@ struct conflagrate_t : public warlock_spell_t
                                 * ( (*dot_spell) -> num_ticks      );
       direct_power_mod          = ( (*dot_spell) -> tick_power_mod )
                                 * ( (*dot_spell) -> num_ticks      );
-      player_power = (*dot_spell) -> player_power;
+      player_spell_power = (*dot_spell) -> player_spell_power;
     }
     return warlock_spell_t::calculate_direct_damage();
   }
@@ -3891,8 +3894,7 @@ struct incinerate_t : public warlock_spell_t
   virtual void execute()
   {
     warlock_t* p = player -> cast_warlock();
-    base_direct_dmg = ( base_dd_min + base_dd_max ) / 2.0;
-    if( p -> active_immolate ) base_direct_dmg += immolate_bonus;
+    base_dd_adder = p -> active_immolate ? immolate_bonus : 0;
     warlock_spell_t::execute();
     if( result_is_hit() )
     {

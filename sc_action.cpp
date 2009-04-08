@@ -23,19 +23,23 @@ action_t::action_t( int         ty,
   may_miss(false), may_resist(false), may_dodge(false), may_parry(false), 
   may_glance(false), may_block(false), may_crush(false), may_crit(false), tick_may_crit(false), clip_dot(false),
   min_gcd(0), trigger_gcd(0),
+  weapon_power_mod(1.0/14), direct_power_mod(0), tick_power_mod(0),
   base_execute_time(0), base_tick_time(0), base_cost(0),
-  base_dd_min(0), base_dd_max(0), base_td_init(0),
-  base_dd_multiplier(1), base_td_multiplier(1), power_multiplier(1),
-    base_multiplier(1),   base_hit(0),   base_crit(0),   base_power(0),   base_penetration(0),
-  player_multiplier(1), player_hit(0), player_crit(0), player_power(0), player_penetration(0),
-  target_multiplier(1), target_hit(0), target_crit(0), target_power(0), target_penetration(0),
+  base_dd_min(0), base_dd_max(0), base_td(0), base_td_init(0),
+  base_dd_multiplier(1), base_td_multiplier(1), 
+    base_multiplier(1),   base_hit(0),   base_crit(0),   base_penetration(0),
+  player_multiplier(1), player_hit(0), player_crit(0), player_penetration(0),
+  target_multiplier(1), target_hit(0), target_crit(0), target_penetration(0),
+    base_spell_power(0),   base_attack_power(0),
+  player_spell_power(0), player_attack_power(0),
+  target_spell_power(0), target_attack_power(0),
+  spell_power_multiplier(1), attack_power_multiplier(1), power_conversion(0),
     base_crit_multiplier(1),   base_crit_bonus_multiplier(1),
   player_crit_multiplier(1), player_crit_bonus_multiplier(1),
   target_crit_multiplier(1), target_crit_bonus_multiplier(1),
-  player_dd_adder(0), target_dd_adder(0),
+  base_dd_adder(0), player_dd_adder(0), target_dd_adder(0),
   resource_consumed(0),
-  direct_dmg(0), base_direct_dmg(0), direct_power_mod(0), 
-  tick_dmg(0), base_tick_dmg(0), tick_power_mod(0),
+  direct_dmg(0), tick_dmg(0), 
   num_ticks(0), current_tick(0), added_ticks(0), ticking(0), 
   cooldown_group(n), duration_group(n), cooldown(0), cooldown_ready(0), duration_ready(0),
   weapon(0), weapon_multiplier(1), normalize_weapon_damage( false ), normalize_weapon_speed( false ), 
@@ -174,10 +178,12 @@ void action_t::player_buff()
   player_crit                  = 0;
   player_crit_multiplier       = 1.0;
   player_crit_bonus_multiplier = 1.0;
-  player_power                 = 0;
   player_penetration           = 0;
   player_dd_adder              = 0;
-  power_multiplier             = 1.0;
+  player_spell_power           = 0;
+  player_attack_power          = 0;
+  spell_power_multiplier       = 1.0;
+  attack_power_multiplier      = 1.0;
 
   player_t* p = player;
   target_t* t = sim -> target;
@@ -215,9 +221,21 @@ void action_t::player_buff()
     player_multiplier *= 1.0 + p -> buffs.tricks_of_the_trade * 0.01;
   }
 
+  if( type == ACTION_ATTACK || power_conversion > 0 )
+  {
+    player_attack_power     = p -> composite_attack_power();
+    attack_power_multiplier = p -> composite_attack_power_multiplier();
+  }
+
+  if( type == ACTION_SPELL || power_conversion > 0 )
+  {
+    player_spell_power     = p -> composite_spell_power( school );
+    spell_power_multiplier = p -> composite_spell_power_multiplier();
+  }
+
   if( sim -> debug ) 
-    report_t::log( sim, "action_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f", 
-                   name(), player_hit, player_crit, player_power, player_penetration );
+    report_t::log( sim, "action_t::player_buff: %s hit=%.2f crit=%.2f penetration=%.0f spell_power=%.2f attack_power=%.2f ", 
+                   name(), player_hit, player_crit, player_penetration, player_spell_power, player_attack_power );
 }
 
 // action_t::target_debuff ==================================================
@@ -229,10 +247,12 @@ void action_t::target_debuff( int dmg_type )
   target_crit                  = 0;
   target_crit_multiplier       = 1.0;
   target_crit_bonus_multiplier = 1.0;
-  target_power                 = 0;
+  target_attack_power          = 0;
+  target_spell_power           = 0;
   target_penetration           = 0;
   target_dd_adder              = 0;
 
+  player_t* p = player;
   target_t* t = sim -> target;
 
   if( school == SCHOOL_PHYSICAL || 
@@ -281,6 +301,19 @@ void action_t::target_debuff( int dmg_type )
   {
     target_crit += 0.03;
   }
+
+  if( type == ACTION_ATTACK || power_conversion > 0 )
+  {
+    if( p -> position == POSITION_RANGED )
+    {
+      target_attack_power += t -> debuffs.hunters_mark;
+    }
+  }
+  if( type == ACTION_SPELL || power_conversion > 0 )
+  {
+    // no spell power based debuffs at this time
+  }
+
   t -> uptimes.totem_of_wrath  -> update( t -> debuffs.totem_of_wrath  != 0 );
   t -> uptimes.master_poisoner -> update( t -> debuffs.master_poisoner != 0 );
 
@@ -288,8 +321,8 @@ void action_t::target_debuff( int dmg_type )
   t -> uptimes.winters_grasp -> update( t -> debuffs.winters_grasp != 0 );
 
   if( sim -> debug ) 
-    report_t::log( sim, "action_t::target_debuff: %s multiplier=%.2f hit=%.2f crit=%.2f power=%.2f penetration=%.0f", 
-                   name(), target_multiplier, target_hit, target_crit, target_power, target_penetration );
+    report_t::log( sim, "action_t::target_debuff: %s multiplier=%.2f hit=%.2f crit=%.2f attack_power=%.2f spell_power=%.2f penetration=%.0f", 
+                   name(), target_multiplier, target_hit, target_crit, target_attack_power, target_spell_power, target_penetration );
 }
 
 // action_t::result_is_hit ==================================================
@@ -399,24 +432,54 @@ double action_t::total_crit_bonus()
   return crit_bonus;
 }
 
+// action_t::total_power =====================================================
+
+double action_t::total_power()
+{
+  double power=0;
+
+  if( type == ACTION_ATTACK )
+  {
+    power = total_attack_power();
+
+    if( power_conversion > 0 ) power += total_spell_power() * power_conversion;
+  }
+  else if( type == ACTION_SPELL )
+  {
+    power = total_spell_power();
+
+    if( power_conversion > 0 ) power += total_attack_power() * power_conversion;
+  }
+  return power;
+}
+
+// action_t::calculate_weapon_damage =========================================
+
+double action_t::calculate_weapon_damage()
+{
+  if( ! weapon || weapon_multiplier <= 0 ) return 0;
+
+  double weapon_damage = normalize_weapon_damage ? weapon -> damage * 2.8 / weapon -> swing_time : weapon -> damage;
+  double weapon_speed  = normalize_weapon_speed  ? weapon -> normalized_weapon_speed() : weapon -> swing_time;
+
+  double hand_multiplier = ( weapon -> slot == SLOT_OFF_HAND ) ? 0.5 : 1.0;
+
+  double power_damage = weapon_speed * weapon_power_mod * total_attack_power();
+  
+  return ( weapon_damage + power_damage ) * weapon_multiplier * hand_multiplier;
+}
+
 // action_t::calculate_tick_damage ===========================================
 
 double action_t::calculate_tick_damage()
 {
   tick_dmg = 0;
 
-  if( base_tick_dmg == 0 ) base_tick_dmg = base_td_init;
+  if( base_td == 0 ) base_td = base_td_init;
 
-  if( base_tick_dmg == 0 && tick_power_mod == 0 ) return 0;
+  if( base_td == 0 ) return 0;
 
-  tick_dmg  = base_tick_dmg + total_power() * tick_power_mod;
-  
-  // Rend is a DoT with weapon_multiplier > 0
-  if( weapon && weapon_multiplier > 0 )
-  {
-    tick_dmg += calculate_weapon_damage();
-  }
-  
+  tick_dmg  = base_td + total_power() * tick_power_mod;
   tick_dmg *= total_td_multiplier();
   
   double init_tick_dmg = tick_dmg;
@@ -433,26 +496,12 @@ double action_t::calculate_tick_damage()
 
   if( sim -> debug ) 
   {
-    report_t::log( sim, "%s dmg for %s: td=%.0f i_td=%.0f b_td=%.0f mod=%.2f b_power=%.0f p_power=%.0f t_power=%.0f b_mult=%.2f p_mult=%.2f t_mult=%.2f", 
-                   player -> name(), name(), tick_dmg, init_tick_dmg, base_tick_dmg, tick_power_mod, 
-                   base_power, player_power, target_power, base_multiplier * base_td_multiplier, player_multiplier, target_multiplier );
+    report_t::log( sim, "%s dmg for %s: td=%.0f i_td=%.0f b_td=%.0f mod=%.2f power=%.0f b_mult=%.2f p_mult=%.2f t_mult=%.2f", 
+                   player -> name(), name(), tick_dmg, init_tick_dmg, base_td, tick_power_mod, 
+                   total_power(), base_multiplier * base_td_multiplier, player_multiplier, target_multiplier );
   }
 
   return tick_dmg;
-}
-
-// action_t::calculate_weapon_damage =========================================
-
-double action_t::calculate_weapon_damage()
-{
-  double weapon_damage = normalize_weapon_damage ? weapon -> damage * 2.8 / weapon -> swing_time : weapon -> damage;
-  double weapon_speed  = normalize_weapon_speed  ? weapon -> normalized_weapon_speed() : weapon -> swing_time;
-
-  double hand_multiplier = ( weapon -> slot == SLOT_OFF_HAND ) ? 0.5 : 1.0;
-
-  double power_damage = weapon_speed * direct_power_mod * total_power();
-  
-  return ( weapon_damage + power_damage ) * weapon_multiplier * hand_multiplier;
 }
 
 // action_t::calculate_direct_damage =========================================
@@ -461,33 +510,23 @@ double action_t::calculate_direct_damage()
 {
   direct_dmg = 0;
 
-  if( base_dd_max > 0 )
+  double base_direct_dmg=0;
+
+  if( sim -> average_dmg )
   {
-    if( sim -> average_dmg )
-    {
-      if( base_direct_dmg == 0 )
-      {
-        base_direct_dmg = ( base_dd_min + base_dd_max ) / 2.0;
-      }
-    }
-    else
-    {
-      base_direct_dmg = sim -> rng -> range( base_dd_min, base_dd_max );
-    }
+    base_direct_dmg = ( base_dd_min + base_dd_max ) / 2.0;
+  }
+  else
+  {
+    base_direct_dmg = sim -> rng -> range( base_dd_min, base_dd_max );
   }
 
   if( base_direct_dmg == 0 ) return 0;
 
-  if( weapon && weapon_multiplier > 0 )
-  {
-    direct_dmg  = base_direct_dmg + calculate_weapon_damage();
-    direct_dmg *= total_dd_multiplier();
-  }
-  else
-  {
-    direct_dmg  = base_direct_dmg + direct_power_mod * total_power();
-    direct_dmg *= total_dd_multiplier();
-  }
+  direct_dmg  = base_direct_dmg + base_dd_adder;
+  direct_dmg += calculate_weapon_damage();
+  direct_dmg += direct_power_mod * total_power();
+  direct_dmg *= total_dd_multiplier();
   
   double init_direct_dmg = direct_dmg;
     
@@ -514,9 +553,9 @@ double action_t::calculate_direct_damage()
 
   if( sim -> debug ) 
   {
-    report_t::log( sim, "%s dmg for %s: dd=%.0f i_dd=%.0f b_dd=%.0f mod=%.2f b_power=%.0f p_power=%.0f t_power=%.0f b_mult=%.2f p_mult=%.2f t_mult=%.2f", 
+    report_t::log( sim, "%s dmg for %s: dd=%.0f i_dd=%.0f b_dd=%.0f mod=%.2f power=%.0f b_mult=%.2f p_mult=%.2f t_mult=%.2f", 
                    player -> name(), name(), direct_dmg, init_direct_dmg, base_direct_dmg, direct_power_mod, 
-                   base_power, player_power, target_power, base_multiplier * base_dd_multiplier, player_multiplier, target_multiplier );
+                   total_power(), base_multiplier * base_dd_multiplier, player_multiplier, target_multiplier );
   }
 
   return direct_dmg;

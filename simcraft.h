@@ -1329,19 +1329,23 @@ struct action_t
   bool may_miss, may_resist, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit, tick_may_crit;
   bool clip_dot;
   double min_gcd, trigger_gcd;
+  double weapon_power_mod, direct_power_mod, tick_power_mod;
   double base_execute_time, base_tick_time, base_cost;
-  double base_dd_min, base_dd_max, base_td_init;
-  double base_dd_multiplier, base_td_multiplier, power_multiplier;
-  double   base_multiplier,   base_hit,   base_crit,   base_power,   base_penetration;
-  double player_multiplier, player_hit, player_crit, player_power, player_penetration;
-  double target_multiplier, target_hit, target_crit, target_power, target_penetration;
+  double base_dd_min, base_dd_max, base_td, base_td_init;
+  double base_dd_multiplier, base_td_multiplier;
+  double   base_multiplier,   base_hit,   base_crit,   base_penetration;
+  double player_multiplier, player_hit, player_crit, player_penetration;
+  double target_multiplier, target_hit, target_crit, target_penetration;
+  double   base_spell_power,   base_attack_power;
+  double player_spell_power, player_attack_power;
+  double target_spell_power, target_attack_power;
+  double spell_power_multiplier, attack_power_multiplier, power_conversion;
   double   base_crit_multiplier,   base_crit_bonus_multiplier, base_crit_bonus;
   double player_crit_multiplier, player_crit_bonus_multiplier;
   double target_crit_multiplier, target_crit_bonus_multiplier;
-  double player_dd_adder, target_dd_adder;
+  double base_dd_adder, player_dd_adder, target_dd_adder;
   double resource_consumed;
-  double direct_dmg, base_direct_dmg, direct_power_mod;
-  double   tick_dmg, base_tick_dmg,     tick_power_mod;
+  double direct_dmg, tick_dmg;
   int num_ticks, current_tick, added_ticks;
   int ticking;
   std::string cooldown_group, duration_group;
@@ -1405,10 +1409,13 @@ struct action_t
   virtual const char* name() { return name_str.c_str(); }
 
   virtual double total_multiplier() { return   base_multiplier * player_multiplier * target_multiplier; }
-  virtual double total_power()      { return ( base_power      + player_power      + target_power       ) * power_multiplier; }
   virtual double total_hit()        { return   base_hit        + player_hit        + target_hit;        }
   virtual double total_crit()       { return   base_crit       + player_crit       + target_crit;       }
   virtual double total_crit_bonus();
+
+  virtual double total_spell_power()  { return ( base_spell_power  + player_spell_power  + target_spell_power  ) *  spell_power_multiplier; }
+  virtual double total_attack_power() { return ( base_attack_power + player_attack_power + target_attack_power ) * attack_power_multiplier; }
+  virtual double total_power();
 
   // Some actions require different multipliers for the "direct" and "tick" portions.
 

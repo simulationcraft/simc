@@ -329,11 +329,13 @@ struct rogue_poison_t : public spell_t
 
     base_hit  += p -> talents.precision * 0.01;
 	
-	base_multiplier *= 1.0 + util_t::talent_rank( p -> talents.vile_poisons,  3, 0.07, 0.14, 0.20 );
+    base_multiplier *= 1.0 + util_t::talent_rank( p -> talents.vile_poisons,  3, 0.07, 0.14, 0.20 );
 
     base_crit_multiplier *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
 
     weapon_multiplier = 0;
+
+    power_conversion = 1.0; // Poisons are spells that use attack power
   }
 
   virtual void player_buff();
@@ -1007,7 +1009,7 @@ struct melee_t : public rogue_attack_t
   {
     rogue_t* p = player -> cast_rogue();
 
-    base_direct_dmg = 1;
+    base_dd_min = base_dd_max = 1;
     background      = true;
     repeating       = true;
     trigger_gcd     = 0;
@@ -1354,7 +1356,7 @@ struct envenom_t : public rogue_attack_t
     int doses_consumed = std::min( p -> _buffs.poison_doses, p -> _buffs.combo_points );
 
     direct_power_mod = p -> _buffs.combo_points * 0.07;
-    base_direct_dmg = base_dd_min = base_dd_max = doses_consumed * dose_dmg;
+    base_dd_min = base_dd_max = doses_consumed * dose_dmg;
     rogue_attack_t::player_buff();
     
     trigger_dirty_deeds( this );
@@ -1431,11 +1433,7 @@ struct eviscerate_t : public rogue_attack_t
 
     direct_power_mod = 0.05 * p -> _buffs.combo_points;
 
-    if( sim -> average_dmg ) 
-    {
-      base_direct_dmg = ( base_dd_min + base_dd_max ) / 2;
-    }
-    else
+    if( ! sim -> average_dmg ) 
     {
       double range = 0.02 * p -> _buffs.combo_points;
 
@@ -1710,7 +1708,7 @@ struct hemorrhage_t : public rogue_attack_t
     };
     parse_options( options, options_str );
       
-    base_direct_dmg = 1;
+    base_dd_min = base_dd_max = 1;
     weapon = &( p -> main_hand_weapon );
     normalize_weapon_speed      = true;
     adds_combo_points           = true;
@@ -1892,10 +1890,10 @@ struct killing_spree_t : public rogue_attack_t
     };
     parse_options( options, options_str );
       
+    base_dd_min = base_dd_max = 1;
     channeled       = true;
     cooldown        = 120;
     num_ticks       = 5;
-    base_direct_dmg = 1;
     base_tick_time  = 0.5;
     base_cost       = 0;
     base_multiplier *= 1.0 + p -> talents.find_weakness * 0.02;
@@ -2202,10 +2200,10 @@ struct shiv_t : public rogue_attack_t
       
     weapon = &( p -> off_hand_weapon );
     adds_combo_points = true;
-    base_direct_dmg   = 1;
-    base_multiplier  *= 1.0 + ( p -> talents.find_weakness    * 0.02 +
-                                p -> talents.surprise_attacks * 0.10 );
-    base_crit                  += p -> talents.turn_the_tables * 0.02;
+    base_dd_min = base_dd_max = 1;
+    base_multiplier *= 1.0 + ( p -> talents.find_weakness    * 0.02 +
+			       p -> talents.surprise_attacks * 0.10 );
+    base_crit += p -> talents.turn_the_tables * 0.02;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
 
     may_crit = sim -> P309;
@@ -2431,14 +2429,8 @@ void rogue_poison_t::player_buff()
 
   spell_t::player_buff();
 
-  player_power     = p -> composite_attack_power();
-  power_multiplier = p -> composite_attack_power_multiplier();
+  spell_power_multiplier = 0;
 
-  /* Poisons are not affected by Cold Blood
-  if( p -> _buffs.cold_blood )
-  {
-    player_crit += 1.0;
-  }*/
   if( p -> _buffs.hunger_for_blood )
   {
     player_multiplier *= 1.0 + p -> _buffs.hunger_for_blood * 0.01 + p -> glyphs.hunger_for_blood * 0.03;
@@ -2489,7 +2481,7 @@ struct anesthetic_poison_t : public rogue_poison_t
     proc             = true;
     may_crit         = true;
     direct_power_mod = 0;
-    base_direct_dmg  = util_t::ability_rank( p -> level,  249,77,  153,68,  0,0 );
+    base_dd_min = base_dd_max  = util_t::ability_rank( p -> level,  249,77,  153,68,  0,0 );
   }
   
   virtual void execute()
@@ -2601,7 +2593,7 @@ struct instant_poison_t : public rogue_poison_t
     proc             = true;
     may_crit         = true;
     direct_power_mod = 0.10;
-    base_direct_dmg  = util_t::ability_rank( p -> level,  350,79,  286,73,  188,68,  88,0 );
+    base_dd_min = base_dd_max  = util_t::ability_rank( p -> level,  350,79,  286,73,  188,68,  88,0 );
   }
 
   virtual void execute()
@@ -2651,7 +2643,7 @@ struct wound_poison_t : public rogue_poison_t
     proc             = true;
     may_crit         = true;
     direct_power_mod = .04;
-    base_direct_dmg  = util_t::ability_rank( p -> level,  231,78,  188,72,  112,64,  53,0 );
+    base_dd_min = base_dd_max = util_t::ability_rank( p -> level,  231,78,  188,72,  112,64,  53,0 );
   }
   
   virtual void execute()

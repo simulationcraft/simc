@@ -113,49 +113,17 @@ void spell_t::player_buff()
 
   player_t* p = player;
 
-  player_hit       = p -> composite_spell_hit();
-  player_crit      = p -> composite_spell_crit();
-  player_power     = p -> composite_spell_power( school );
-  power_multiplier = p -> composite_spell_power_multiplier();
+  player_hit  = p -> composite_spell_hit();
+  player_crit = p -> composite_spell_crit();
 
-  if( p -> type != PLAYER_GUARDIAN )
+  if( p -> gear.chaotic_skyflare      ||
+      p -> gear.relentless_earthstorm ) 
   {
-    if( p -> gear.chaotic_skyflare      ||
-	p -> gear.relentless_earthstorm ) 
-    {
-      player_crit_multiplier *= 1.03;
-    }
-
-    if( p -> buffs.focus_magic ) player_crit += 0.03;
-
-    if( p -> buffs.elemental_oath ||
-	p -> buffs.moonkin_aura   )
-    {
-      player_crit += 0.05;
-    }
-
-    double best_buff = 0;
-    if( p -> buffs.totem_of_wrath )
-    {
-      if( best_buff < p -> buffs.totem_of_wrath ) best_buff = p -> buffs.totem_of_wrath;
-    }
-    if( p -> buffs.flametongue_totem ) 
-    {
-      if( best_buff < p -> buffs.flametongue_totem ) best_buff = p -> buffs.flametongue_totem;
-    }
-    if( p -> buffs.demonic_pact )
-    {
-      if( best_buff < p -> buffs.demonic_pact ) best_buff = p -> buffs.demonic_pact;
-    }
-    if( p -> buffs.improved_divine_spirit )
-    {
-      if( best_buff < p -> buffs.improved_divine_spirit ) best_buff = p -> buffs.improved_divine_spirit;
-    }
-    player_power += best_buff;
+    player_crit_multiplier *= 1.03;
   }
 
-  if( sim -> debug ) report_t::log( sim, "spell_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f", 
-				    name(), player_hit, player_crit, player_power, player_penetration );
+  if( sim -> debug ) report_t::log( sim, "spell_t::player_buff: %s hit=%.2f crit=%.2f crit_multiplier=%.2f", 
+				    name(), player_hit, player_crit, player_crit_multiplier );
 }
 
 // spell_t::target_debuff =====================================================
@@ -177,8 +145,8 @@ void spell_t::target_debuff( int dmg_type )
   t -> uptimes.improved_shadow_bolt -> update( t -> debuffs.improved_shadow_bolt != 0 );
 
   if( sim -> debug ) 
-    report_t::log( sim, "spell_t::target_debuff: %s multiplier=%.2f hit=%.2f crit=%.2f power=%.2f penetration=%.0f", 
-		   name(), target_multiplier, target_hit, target_crit, target_power, target_penetration );
+    report_t::log( sim, "spell_t::target_debuff: %s multiplier=%.2f hit=%.2f crit=%.2f", 
+		   name(), target_multiplier, target_hit, target_crit );
 }
    
 // spell_t::level_based_miss_chance ==========================================
