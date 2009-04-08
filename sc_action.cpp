@@ -307,6 +307,7 @@ bool action_t::result_is_hit()
 bool action_t::result_is_miss()
 {
   return( result == RESULT_MISS   || 
+          result == RESULT_DODGE  || 
           result == RESULT_RESIST );
 }
 

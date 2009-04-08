@@ -1862,13 +1862,16 @@ struct ferocious_bite_t : public druid_attack_t
     // Consumes the base_cost and handles Omen of Clarity
     druid_attack_t::consume_resource();
 
-    // Let the additional energy consumption create it's own debug log entries.
-    if( sim -> debug )
-      report_t::log( sim, "%s consumes an additional %.1f %s for %s", player -> name(),
-                     excess_energy, util_t::resource_type_string( resource ), name() );
+    if( result_is_hit() )
+    {
+      // Let the additional energy consumption create it's own debug log entries.
+      if( sim -> debug )
+	report_t::log( sim, "%s consumes an additional %.1f %s for %s", player -> name(),
+		       excess_energy, util_t::resource_type_string( resource ), name() );
 
-    player -> resource_loss( resource, excess_energy );
-    stats -> consume_resource( excess_energy );
+      player -> resource_loss( resource, excess_energy );
+      stats -> consume_resource( excess_energy );
+    }
 
   }
 
