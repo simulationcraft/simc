@@ -4110,10 +4110,11 @@ struct life_tap_t : public warlock_spell_t
   int    inferno;
   int    glyph;
   int    tier7_4pc;
+  int    max;
   double base_tap;
 
   life_tap_t( player_t* player, const std::string& options_str ) : 
-    warlock_spell_t( "life_tap", player, SCHOOL_SHADOW, TREE_AFFLICTION ), trigger(1000), inferno(0), glyph(0), tier7_4pc(0), base_tap(0)
+    warlock_spell_t( "life_tap", player, SCHOOL_SHADOW, TREE_AFFLICTION ), trigger(1000), inferno(0), glyph(0), tier7_4pc(0), max(0), base_tap(0)
   {
     option_t options[] =
     {
@@ -4121,6 +4122,7 @@ struct life_tap_t : public warlock_spell_t
       { "inferno",   OPT_INT, &inferno   },
       { "glyph",     OPT_INT, &glyph     },
       { "tier7_4pc", OPT_INT, &tier7_4pc },
+      { "max",       OPT_INT, &max       },
       { NULL }
     };
     parse_options( options, options_str );
@@ -4164,6 +4166,9 @@ struct life_tap_t : public warlock_spell_t
 
     if( glyph )
       return( ! p -> _buffs.life_tap_glyph );
+
+    if( max )
+      trigger = p -> resource_max[ RESOURCE_MANA ] - ( base_tap + 3.0 * p -> spirit() ) * ( 1.0 + p -> talents.improved_life_tap * 0.10 );
 
     return( p -> resource_current[ RESOURCE_MANA ] < trigger );
   }
