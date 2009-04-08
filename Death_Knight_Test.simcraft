@@ -23,6 +23,7 @@ gear_armor_penetration_rating=0
 gear_hit_rating=333
 gear_crit_rating=812
 gear_haste_rating=140
+gear_armor=15409
 
 # Weapons
 main_hand=sword_2h,dps=222.9,speed=3.4

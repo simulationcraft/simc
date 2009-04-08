@@ -113,7 +113,7 @@ struct death_knight_t : public player_t
   {                                     // Status:
 	  int butchery;                       // Done
 	  int subversion;											// Done
-	  int bladed_armor;                   // In progress...pending armor in player_t
+	  int bladed_armor;                   // Done
 	  int scent_of_blood;                 // Done
 	  int two_handed_weapon_spec;         // Done
 	  int rune_tap;
@@ -1269,7 +1269,7 @@ death_knight_t::combat_begin()
 double
 death_knight_t::composite_attack_power()
 {
-  return player_t::composite_attack_power() + talents.bladed_armor * 0 /* Replace ZERO with this->armor() when implemented */; 
+  return player_t::composite_attack_power() + (talents.bladed_armor ? talents.bladed_armor * composite_armor_snapshot() / 180 : 0); 
 }
 
 void
