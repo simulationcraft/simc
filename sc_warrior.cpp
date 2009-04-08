@@ -71,6 +71,7 @@ struct warrior_t : public player_t
   gain_t* gains_glyph_of_heroic_strike;
   gain_t* gains_mh_attack;
   gain_t* gains_oh_attack;
+  gain_t* gains_unbridled_wrath;
 
   // Procs
   proc_t* procs_bloodsurge;
@@ -179,7 +180,8 @@ struct warrior_t : public player_t
     gains_glyph_of_heroic_strike = get_gain( "glyph_of_heroic_strike" );
     gains_mh_attack              = get_gain( "mh_attack" );
     gains_oh_attack              = get_gain( "oh_attack" );
-
+    gains_unbridled_wrath        = get_gain( "unbridled_wrath" );
+    
     // Procs
     procs_bloodsurge      = get_proc( "bloodusrge" );
     procs_glyph_overpower = get_proc( "glyph_of_overpower" );
@@ -558,6 +560,24 @@ static void trigger_rampage( attack_t* a )
   }
 }
 
+// trigger_unbridled_wrath ==================================================
+
+static void trigger_unbridled_wrath( action_t* a )
+{
+  warrior_t* p = a -> player -> cast_warrior();
+  
+  if( ! a -> result_is_hit() )
+    return;
+    
+  if( ! p -> talents.unbridled_wrath )
+    return;
+
+  double PPM = p -> talents.unbridled_wrath * 3; // 15 ppm @ 5/5
+  double chance = a -> weapon -> proc_chance_on_swing( PPM );
+  if( a -> sim -> roll( chance ) )
+    p -> resource_gain( RESOURCE_RAGE, 1.0 , p -> gains_unbridled_wrath );
+}
+
 // trigger_tier8_2pc ========================================================
 
 static void trigger_tier8_2pc( action_t* a )
@@ -738,7 +758,6 @@ void warrior_attack_t::consume_resource()
   warrior_t* p = player -> cast_warrior();  
   double rage_restored = resource_consumed * 0.80;
   p -> resource_gain( RESOURCE_RAGE, rage_restored, p -> gains_avoided_attacks );
-
 }
 // warrior_attack_t::execute =================================================
 
@@ -941,6 +960,8 @@ struct melee_t : public warrior_attack_t
 
     warrior_attack_t::execute();
     
+    trigger_unbridled_wrath( this );
+    
     if( result_is_hit() )
     {
       /* http://www.wowwiki.com/Formulas:Rage_generation
@@ -1069,8 +1090,7 @@ struct heroic_strike_t : public warrior_attack_t
     warrior_attack_t::execute();
 
     trigger_tier8_2pc( this );
-    // FIX ME! Does Trauma proc off HS?
-    trigger_trauma( this );
+    trigger_unbridled_wrath( this );
     if( result == RESULT_CRIT )
       if( p -> glyphs.heroic_strike )
         p -> resource_gain( RESOURCE_RAGE, 10.0, p -> gains_glyph_of_heroic_strike );
