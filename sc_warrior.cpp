@@ -24,6 +24,7 @@ struct warrior_t : public player_t
   // Buffs
   struct _buffs_t
   {
+    int    bladestorm;
     int    bloodrage;
     int    bloodsurge;
     double death_wish;
@@ -750,9 +751,11 @@ void warrior_attack_t::execute()
 
   if( result == RESULT_CRIT )
   {
+    // Critproccgalore
     trigger_deep_wounds( this );
     trigger_rampage( this );
     trigger_wrecking_crew( this );
+    trigger_trauma( this );
     if( p -> talents.flurry ) 
     {
       p -> aura_gain( "Flurry (3)" );
@@ -937,8 +940,6 @@ struct melee_t : public warrior_attack_t
     }
 
     warrior_attack_t::execute();
-    
-    trigger_trauma( this );
     
     if( result_is_hit() )
     {
