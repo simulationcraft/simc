@@ -860,7 +860,8 @@ void warrior_attack_t::player_buff()
   }
   if( p -> active_stance == STANCE_BATTLE)
   {
-    // A balanced combat stance
+    if( ! sim -> P309 )
+      player_penetration += 0.10;
   }
   else if( p -> active_stance == STANCE_BERSERKER )
   {
@@ -1603,28 +1604,12 @@ struct warrior_spell_t : public spell_t
   {
   }
 
-  virtual void   parse_options( option_t*, const std::string& options_str );
   virtual double cost();
   virtual void   execute();
+  virtual double gcd();
+  virtual void   parse_options( option_t*, const std::string& options_str );
   virtual bool   ready();
 };
-
-// warrior_spell_t::parse_options ===========================================
-
-void warrior_spell_t::parse_options( option_t*          options,
-                                      const std::string& options_str )
-{
-  option_t base_options[] =
-  {
-    { "min_rage",       OPT_FLT, &min_rage       },
-    { "max_rage",       OPT_FLT, &max_rage       },
-    { "rage>",          OPT_FLT, &min_rage       },
-    { "rage<",          OPT_FLT, &max_rage       },
-    { NULL }
-  };
-  std::vector<option_t> merged_options;
-  spell_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
-}
 
 // warrior_spell_t::execute ==================================================
 
@@ -1654,6 +1639,14 @@ double warrior_spell_t::cost()
     return 0;
 
   return c;
+}
+
+// warrior_spell_t::gcd ======================================================
+
+double warrior_spell_t::gcd()
+{
+  // Unaffected by haste
+  return trigger_gcd;
 }
 
 // warrior_spell_t::ready() ==================================================
@@ -1693,6 +1686,23 @@ struct battle_shout_t : public warrior_spell_t
   {
   }
 };
+
+// warrior_spell_t::parse_options ===========================================
+
+void warrior_spell_t::parse_options( option_t*          options,
+                                      const std::string& options_str )
+{
+  option_t base_options[] =
+  {
+    { "min_rage",       OPT_FLT, &min_rage       },
+    { "max_rage",       OPT_FLT, &max_rage       },
+    { "rage>",          OPT_FLT, &min_rage       },
+    { "rage<",          OPT_FLT, &max_rage       },
+    { NULL }
+  };
+  std::vector<option_t> merged_options;
+  spell_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
+}
 
 // Bladestorm ==============================================================
 
