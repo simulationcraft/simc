@@ -1198,16 +1198,27 @@ struct execute_t : public warrior_attack_t
       excess_rage += 10;
       
     // FIX ME! Implement Sudden Death somehow over here
+    
+    
     if( excess_rage > 0 )
     {
       base_dd_max      += excess_rage_mod * excess_rage;
       base_dd_min      += excess_rage_mod * excess_rage;
+    }
+    else
+    {
+      excess_rage = 0;
     }
     
     if( p -> glyphs.execution )
       excess_rage -= 10;
     
     warrior_attack_t::execute();
+    if( excess_rage > 0 )
+    {
+      base_dd_max      -= excess_rage_mod * excess_rage;
+      base_dd_min      -= excess_rage_mod * excess_rage;
+    }
   }
   
   virtual void consume_resource()

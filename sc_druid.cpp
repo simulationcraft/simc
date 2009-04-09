@@ -1838,6 +1838,12 @@ struct ferocious_bite_t : public druid_attack_t
     }
 
     druid_attack_t::execute();
+    if( excess_energy > 0)
+    {
+      direct_power_mod -= excess_energy / 410;
+      base_dd_max      -= excess_engery_mod * excess_energy;
+      base_dd_min      -= excess_engery_mod * excess_energy;
+    }
   }
 
   virtual void consume_resource()
