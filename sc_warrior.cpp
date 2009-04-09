@@ -30,6 +30,7 @@ struct warrior_t : public player_t
     int    flurry;
     double overpower;
     int    recklessness;
+    double titans_grip;
     double wrecking_crew;
     void reset() { memset( (void*) this, 0x00, sizeof( _buffs_t ) ); }
     _buffs_t() { reset(); }
@@ -39,6 +40,7 @@ struct warrior_t : public player_t
   // Cooldowns
   struct _cooldowns_t
   {
+    double taste_for_blood;
 
     void reset() { memset( (void*) this, 0x00, sizeof( _cooldowns_t ) ); }
     _cooldowns_t() { reset(); }
@@ -530,10 +532,40 @@ static void trigger_deep_wounds( action_t* a )
 
 // trigger_overpower_activation =============================================
 
-static void trigger_overpower_activation( warrior_t* p )
+static void trigger_overpower_activation( attack_t* a )
 {
+  warrior_t* p = a -> player -> cast_warrior();
   p -> _buffs.overpower = p -> sim -> current_time + 5.0;
   p -> aura_gain( "Overpower Activation" );
+}
+
+// trigger_taste_for_blood ==================================================
+
+static void trigger_taste_for_blood( attack_t* a )
+{
+  warrior_t* p = a -> player -> cast_warrior();
+  sim_t* sim   = a -> sim;
+  if( sim -> P309 )
+  {
+    if( sim -> roll ( p -> talents.taste_for_blood * 0.10 ) )
+    {
+      trigger_overpower_activation( a );
+      p -> procs_taste_for_blood -> occur();
+    }
+  }
+  else
+  {
+    // 3.1.0
+    // * Taste for Blood: Will now proc 33%/66%/100% of the time with a 6 second cooldown.
+    if( ! sim -> cooldown_ready( p -> _cooldowns.taste_for_blood ) )
+      return;
+    if( sim -> roll ( p -> talents.taste_for_blood / 3.0 ) )
+    {
+      p -> _cooldowns.taste_for_blood = sim -> current_time + 6.0;
+      p -> procs_taste_for_blood -> occur();
+      trigger_overpower_activation( a );
+    }
+  }
 }
 
 // trigger_rampage ==========================================================
@@ -804,13 +836,13 @@ void warrior_attack_t::execute()
   }
   else if( result == RESULT_DODGE  )
   {
-    trigger_overpower_activation( p );
+    trigger_overpower_activation( this );
   }
   else if( result == RESULT_PARRY )
   {
-    if( p -> glyphs.overpower && sim -> roll( 0.50 ) ) 
+    if( p -> glyphs.overpower && ( ! sim -> P309 || sim -> roll( 0.50 ) ) ) 
     {
-      trigger_overpower_activation( p );
+      trigger_overpower_activation( this );
       p -> procs_glyph_overpower -> occur();
     }
   }
@@ -875,6 +907,7 @@ void warrior_attack_t::player_buff()
   
   player_multiplier *= 1.0 + p -> _buffs.death_wish;
   player_multiplier *= 1.0 + p -> _buffs.wrecking_crew;
+  player_multiplier *= 1.0 + p -> _buffs.titans_grip;
   
   if( p -> _buffs.recklessness > 0 && special)
     player_crit += 1.0;
@@ -1043,7 +1076,12 @@ struct auto_attack_t : public warrior_attack_t
       // Dual-wielding, if one of the two weapons is a 2hander we have to have
       // the Titan's Grip talent!
       if( p -> main_hand_weapon.group() == WEAPON_2H || p -> off_hand_weapon.group() == WEAPON_2H )
+      {
         assert(p -> talents.titans_grip != 0 );
+        // * Titan's Grip (Tier 11) now reduces physical damage you deal by 10%.
+        if( ! sim -> P309 )
+          p -> _buffs.titans_grip = -0.10;
+      }
     }
 
     trigger_gcd = 0;
@@ -1412,13 +1450,8 @@ struct rend_t : public warrior_attack_t
   virtual void tick()
   {
     warrior_attack_t::tick();
-    warrior_t* p = player -> cast_warrior();
     trigger_tier7_4pc( this );
-    if( sim -> roll ( p -> talents.taste_for_blood * 0.10 ) )
-    {
-      trigger_overpower_activation( p );
-      p -> procs_taste_for_blood -> occur();
-    }
+    trigger_taste_for_blood( this );
   }
   virtual void execute()
   {
@@ -1803,7 +1836,6 @@ struct berserker_rage_t : public warrior_spell_t
     parse_options( options, options_str );
 
     base_cost   = 0;
-    trigger_gcd = 0;
     cooldown    = 30 * ( 1.0 - 0.11 * p -> talents.intensify_rage );;
     harmful     = false;
   }
