@@ -591,7 +591,7 @@ static void trigger_replenishment( spell_t* s )
       name = "Replenishment Expiration";
       for( player_t* p = sim -> player_list; p; p = p -> next )
       {
-	if( p -> buffs.replenishment == 0 ) p -> aura_gain( "Replenishment" );
+       	if( p -> buffs.replenishment == 0 ) p -> aura_gain( "Replenishment" );
         p -> buffs.replenishment++;
       }
       sim -> add_event( this, 15.0 );
@@ -601,7 +601,7 @@ static void trigger_replenishment( spell_t* s )
       for( player_t* p = sim -> player_list; p; p = p -> next )
       {
         p -> buffs.replenishment--;
-	if( p -> buffs.replenishment == 0 ) p -> aura_loss( "Replenishment" );
+       	if( p -> buffs.replenishment == 0 ) p -> aura_loss( "Replenishment" );
       }
       player -> cast_priest() -> _expirations.replenishment = 0;
     }
@@ -1060,17 +1060,17 @@ struct devouring_plague_t : public priest_spell_t
     base_cost        *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility, 3, 0.04, 0.07, 0.10 ) +
                                                                         p -> talents.shadow_focus * 0.02 );
     base_cost         = floor(base_cost);
-    base_multiplier  *= 1.0 + ( p -> talents.darkness          * 0.02 + 
-                                                                        p -> talents.twin_disciplines          * 0.01 +
-                                                                        p -> talents.improved_devouring_plague * 0.05 +
-                                                                        p -> gear.tier8_2pc                    * 0.15 ); // FIX ME! Is tier8_2pc additive or multiplicative?
+    base_multiplier  *= 1.0 + ( p -> talents.darkness                  * 0.02 + 
+                                p -> talents.twin_disciplines          * 0.01 +
+                                p -> talents.improved_devouring_plague * 0.05 +
+                                p -> gear.tier8_2pc                    * 0.15 ); // FIX ME! Is tier8_2pc additive or multiplicative?
     base_hit         += p -> talents.shadow_focus * 0.01;
 
-          if ( p -> talents.improved_devouring_plague )
-          {
-            may_crit = 1;
-          }
-          base_crit += p -> talents.mind_melt * 0.03;
+    if ( p -> talents.improved_devouring_plague )
+    {
+      may_crit = 1;
+    }
+    base_crit += p -> talents.mind_melt * 0.03;
 
     observer = &( p -> active_devouring_plague );
   }
@@ -1079,20 +1079,20 @@ struct devouring_plague_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
 
-        if ( ! sim -> P309 )
-          {
+    if ( ! sim -> P309 )
+    {
       tick_may_crit              = p -> buffs.shadow_form != 0;
       base_crit_bonus_multiplier = 1.0 + ( p -> buffs.shadow_form != 0 );
-          }
-        if ( p -> talents.improved_devouring_plague )
-          {
-            base_crit -= p -> talents.mind_melt * 0.03;
-          }
+    }
+    if ( p -> talents.improved_devouring_plague )
+    {
+      base_crit -= p -> talents.mind_melt * 0.03;
+    }
     priest_spell_t::execute(); 
-        if ( p -> talents.improved_devouring_plague )
-          {
-            base_crit += p -> talents.mind_melt * 0.03;
-          }
+    if ( p -> talents.improved_devouring_plague )
+    {
+      base_crit += p -> talents.mind_melt * 0.03;
+    }
   }
 
   virtual void tick() 
@@ -1112,20 +1112,20 @@ struct devouring_plague_t : public priest_spell_t
     direct_dmg = 0;
     if( p -> talents.improved_devouring_plague )
     {
-            int saved_result = result;
-            result = RESULT_HIT;
+      int saved_result = result;
+      result = RESULT_HIT;
       direct_dmg = calculate_tick_damage() * num_ticks * p -> talents.improved_devouring_plague * 0.05;
-            result = saved_result;
-            if ( result == RESULT_CRIT )
-            {
-              double saved_base_crit_bonus_multiplier = base_crit_bonus_multiplier;
-                    if ( p -> buffs.shadow_form )
-                    {
-                      base_crit_bonus_multiplier *= 0.5;
-                    }
-                    direct_dmg *= 1.0 + total_crit_bonus();
-                    base_crit_bonus_multiplier = saved_base_crit_bonus_multiplier;
-            }
+      result = saved_result;
+      if ( result == RESULT_CRIT )
+      {
+        double saved_base_crit_bonus_multiplier = base_crit_bonus_multiplier;
+        if ( p -> buffs.shadow_form )
+        {
+          base_crit_bonus_multiplier *= 0.5;
+        }
+        direct_dmg *= 1.0 + total_crit_bonus();
+        base_crit_bonus_multiplier = saved_base_crit_bonus_multiplier;
+      }
     }
     return direct_dmg;
   }
