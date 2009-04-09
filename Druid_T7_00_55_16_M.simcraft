@@ -18,10 +18,10 @@ actions+=/rake
 actions+=/shred
 
 # Gear http://www.chardev.org/?template=149272
-gear_stamina=1032
-gear_strength=253
+gear_stamina=1044
+gear_strength=212
 gear_agility=799
-gear_attack_power=2241
+gear_attack_power=2161
 gear_expertise_rating=129
 gear_armor_penetration_rating=229
 gear_hit_rating=259
