@@ -4,17 +4,17 @@
 # Added 75 spell power to account for profession-specific bonuses
 
 # Standard Gear Attributes
-gear_stamina=958
+gear_stamina=985
 gear_strength=0
 gear_agility=0
-gear_intellect=945
-gear_spirit=385
+gear_intellect=918
+gear_spirit=381
 gear_attack_power=0
 gear_expertise_rating=0
 gear_armor_penetration_rating=0
-gear_spell_power=2352
+gear_spell_power=2375
 gear_hit_rating=294
-gear_crit_rating=596
+gear_crit_rating=621
 gear_haste_rating=475
 gear_mp5=0
 
@@ -34,13 +34,13 @@ flare_of_the_heavens=1
 # Shoulder: [url=http://ptr.wowhead.com/?item=46165]Conqueror's Mantle of Sanctification[/url] + Runed Scarlet Ruby + sp/crit enchant. 
 # Back: [url=http://ptr.wowhead.com/?item=45242]Drape of Mortal Downfall[/url] + Potent Monarch Topaz. +23 haste enchant. 41 hit.
 # Chest: [url=http://ptr.wowhead.com/?item=46168]Conqueror's Raiments of Sanctification[/url] + 2 * Runed Scarlet Ruby. +10stats enchant. 74 hit. 
-# Wrist: [url=http://ptr.wowhead.com/?item=44008]Unsullied Cuffs[/url] + Runed Scarlet Ruby. +30sp enchant.
-# Hands: [url=http://ptr.wowhead.com/?item=46163]Conqueror's Handwraps of Sanctification[/url] + Runed Scarlet Ruby. +28sp enchant.
+# Wrist: [url=http://ptr.wowhead.com/?item=45275]Bracers of Unleashed Magic[/url] +30sp enchant. 36 hit.
+# Hands: [url=http://ptr.wowhead.com/?item=45520]Handwraps of the Vigilant[/url] + 2*Runed Scarlet Ruby. +28sp enchant.
 # Waist: [url=http://ptr.wowhead.com/?item=45557]Sash of Ancient Power[/url] + 2*Runed Scarlet Ruby. Eternal Belt Buckle + Runed Scarlet Ruby. 43 hit.
-# Legs: [url=http://ptr.wowhead.com/?item=40560]Leggings of the Wanton Spellcaster[/url]. 50sp/20spi enchant. 82 hit.
-# Feet: [url=http://static.mmo-champion.com/mmoc/images/news/2009/march/items/items_241.jpg]Boots of Fiery Resolution[/url] + 2*Runed Scarlet Ruby. Icewalker enchant. 
+# Legs: [url=http://ptr.wowhead.com/?item=46170]Conqueror's Pants of Sanctification[/url] + 2 * Runed Scarlet Ruby. 50sp/20spi enchant.
+# Feet: [url=http://ptr.wowhead.com/?item=45135]Boots of Fiery Resolution[/url] + 2*Runed Scarlet Ruby. Icewalker enchant. 
 # Finger1: [url=http://ptr.wowhead.com/?item=40399]Signet of Manifested Pain[/url]. 
-# Finger2: [url=http://ptr.wowhead.com/?item=45168]Pyrelight Circle[/url]. 
+# Finger2: [url=http://ptr.wowhead.com/?item=45297]Shimmering Seal[/url]. 
 # Trinket1: [url=http://ptr.wowhead.com/?item=45518]Flare of Heavens[/url]. 
 # Trinket2: [url=http://ptr.wowhead.com/?item=40432]Illustration of the Dragon Soul[/url]. 
 # Mainhand: [url=http://ptr.wowhead.com/?item=45457]Staff of Endless Winter[/url] + 2 * Purified Twilight Opals. +81 spellpower enchant.
