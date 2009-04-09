@@ -454,7 +454,7 @@ static void trigger_deep_wounds( action_t* a )
       num_ticks      = 6;
       tick_power_mod = 0;
       
-      weapon_multiplier = 0; // 1/5th of weapon_damage per tick.
+      weapon_multiplier = 0;
       weapon   = &( p -> main_hand_weapon );
     }
     virtual void player_buff() {}
@@ -1210,14 +1210,13 @@ struct execute_t : public warrior_attack_t
       excess_rage = 0;
     }
     
-    if( p -> glyphs.execution )
-      excess_rage -= 10;
-    
     warrior_attack_t::execute();
+    
     if( excess_rage > 0 )
     {
-      base_dd_max      -= excess_rage_mod * excess_rage;
-      base_dd_min      -= excess_rage_mod * excess_rage;
+      base_dd_max  -= excess_rage_mod * excess_rage;
+      base_dd_min  -= excess_rage_mod * excess_rage;
+      excess_rage   = 0;
     }
   }
   
