@@ -24,7 +24,6 @@ struct warrior_t : public player_t
   // Buffs
   struct _buffs_t
   {
-    int    bladestorm;
     int    bloodrage;
     int    bloodsurge;
     double death_wish;
@@ -154,6 +153,7 @@ struct warrior_t : public player_t
 
   struct glyphs_t
   {
+    int bladestorm;
     int execution;
     int heroic_strike;
     int mortal_strike;
@@ -1091,8 +1091,10 @@ struct heroic_strike_t : public warrior_attack_t
     init_rank( ranks );
     base_cost      -= p -> talents.improved_heroic_strike;
     base_crit      += p -> talents.incite * 0.05;
+    if( ! sim -> P309 && p -> glyphs.heroic_strike )
+      base_crit    += 0.05;
+
     trigger_gcd     = 0;
-    
     
     weapon                 = &( p -> main_hand_weapon );
     normalize_weapon_speed = false;
@@ -1117,7 +1119,7 @@ struct heroic_strike_t : public warrior_attack_t
 
     trigger_tier8_2pc( this );
     trigger_unbridled_wrath( this );
-    if( result == RESULT_CRIT )
+    if( sim -> P309 && result == RESULT_CRIT )
       if( p -> glyphs.heroic_strike )
         p -> resource_gain( RESOURCE_RAGE, 10.0, p -> gains_glyph_of_heroic_strike );
   }
@@ -1747,6 +1749,9 @@ struct bladestorm_t : public warrior_spell_t
     
     base_cost   = 25;
     cooldown    = 90;
+    if( ! sim -> P309 && p -> glyphs.bladestorm )
+      cooldown -= 15;
+
     // Bladestorm locks the use of other abilities for the time the buff is up
     // So let it trigger a 6sec gcd. auto_attack is not effected by bladestorm
     trigger_gcd = 6.0; 
@@ -2244,6 +2249,7 @@ bool warrior_t::parse_option( const std::string& name,
     { "weapon_mastery",                  OPT_INT, &( talents.weapon_mastery                  ) },
     { "wrecking_crew",                   OPT_INT, &( talents.wrecking_crew                   ) },
     // Glyphs
+    { "glyph_of_bladestorm",             OPT_INT, &( glyphs.bladestorm                       ) },
     { "glyph_of_execution",              OPT_INT, &( glyphs.execution                        ) },
     { "glyph_of_heroic_strike",          OPT_INT, &( glyphs.heroic_strike                    ) },
     { "glyph_of_mortal_strike",          OPT_INT, &( glyphs.mortal_strike                    ) },
