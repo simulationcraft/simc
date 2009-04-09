@@ -443,8 +443,6 @@ static void trigger_deep_wounds( action_t* a )
     deep_wounds_t( warrior_t* p ) : 
       warrior_attack_t( "deep_wounds", p, SCHOOL_BLEED, TREE_ARMS )
     {
-      may_miss = may_dodge = may_block = may_glance = may_crit = may_parry = false;
-      proc        = true;
       background  = true;
       trigger_gcd = 0;
       base_cost   = 0;
@@ -475,7 +473,8 @@ static void trigger_deep_wounds( action_t* a )
     }
   };
 
-  double dmg                   = 0;
+  double dw_damage             = 0;
+  double dw_weapon_damage      = 0;
   double tmp_weapon_multiplier = 0;
 
   // Every action HAS to have an weapon associated.
@@ -486,24 +485,48 @@ static void trigger_deep_wounds( action_t* a )
   
   tmp_weapon_multiplier = a -> weapon_multiplier;
   a -> weapon_multiplier = 1.0;
-  
-  dmg  = p -> talents.deep_wounds * 0.16 * a -> calculate_weapon_damage();
-  dmg *= a -> total_dd_multiplier();
+
+  dw_weapon_damage = a -> calculate_weapon_damage();
+  dw_damage        = p -> talents.deep_wounds * 0.16 * dw_weapon_damage;
+  dw_damage       *= a -> total_dd_multiplier();
 
   a -> weapon_multiplier = tmp_weapon_multiplier;
 
   if( ! p -> active_deep_wounds ) p -> active_deep_wounds = new deep_wounds_t( p );
 
+  sim_t* sim = a -> sim;
   if( p -> active_deep_wounds -> ticking )
   {
     int num_ticks = p -> active_deep_wounds -> num_ticks;
     int remaining_ticks = num_ticks - p -> active_deep_wounds -> current_tick;
 
-    dmg += p -> active_deep_wounds -> base_td * remaining_ticks;
+    dw_damage += p -> active_deep_wounds -> base_td * remaining_ticks;
 
     p -> active_deep_wounds -> cancel();
+
+    if( sim -> debug ) 
+      report_t::log( sim, "trigger_deep_wounds: REFRESH src=%s wpn=%s wpn_dmg=%.1f t_remain=%d t_old=%.1f t_new=%.1f", 
+  		   a -> name(), 
+  		   a -> weapon -> slot == SLOT_MAIN_HAND ? "mh" : "oh",
+  		   dw_weapon_damage,
+  		   remaining_ticks,
+  		   p -> active_deep_wounds -> base_td,
+  		   dw_damage / 6.0
+  		   );  
   }
-  p -> active_deep_wounds -> base_td = dmg / 6.0;
+  else
+  {
+    // Deep wounds is a bitch!
+    if( sim -> debug ) 
+      report_t::log( sim, "trigger_deep_wounds: NEW src=%s wpn=%s wpn_dmg=%.1f t_new=%.1f", 
+  		   a -> name(), 
+  		   a -> weapon -> slot == SLOT_MAIN_HAND ? "mh" : "oh",
+  		   dw_weapon_damage,
+  		   dw_damage / 6.0
+  		   );
+  }
+
+  p -> active_deep_wounds -> base_td = dw_damage / 6.0;
   p -> active_deep_wounds -> execute();
 }
 
@@ -857,6 +880,9 @@ void warrior_attack_t::player_buff()
   if( p -> _buffs.recklessness > 0 && special)
     player_crit += 1.0;
   
+  if( sim -> debug ) 
+    report_t::log( sim, "warrior_action_t::player_buff: %s hit=%.2f crit=%.2f penetration=%.0f spell_power=%.2f attack_power=%.2f ", 
+                   name(), player_hit, player_crit, player_penetration, player_spell_power, player_attack_power );
 }
 
 // warrior_attack_t::ready() ================================================
@@ -1364,6 +1390,7 @@ struct rend_t : public warrior_attack_t
     
     weapon = &( p -> main_hand_weapon );
     
+    may_crit          = false;
     base_cost         = 10.0;
     base_tick_time    = 3.0;
     num_ticks         = 5 + ( p -> glyphs.rending ? 2 : 0 );
@@ -1685,7 +1712,7 @@ struct bladestorm_t : public warrior_spell_t
       bladestorm_attack_t( player_t* player ) : 
         warrior_attack_t( "bladestorm", player, SCHOOL_PHYSICAL, TREE_ARMS )
       {
-        base_dd_min = base_dd_max = 1;
+        base_dd_min     = base_dd_max = 1;
         trigger_gcd     = 0;
         background      = true;
       }
