@@ -1113,8 +1113,11 @@ struct devouring_plague_t : public priest_spell_t
     if( p -> talents.improved_devouring_plague )
     {
       int saved_result = result;
+      double saved_player_spell_power = player_spell_power;
       result = RESULT_HIT;
+      player_spell_power -= p -> spell_power_per_spirit * p -> spirit();
       direct_dmg = calculate_tick_damage() * num_ticks * p -> talents.improved_devouring_plague * 0.05;
+      player_spell_power = saved_player_spell_power;
       result = saved_result;
       if ( result == RESULT_CRIT )
       {
