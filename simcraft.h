@@ -1353,7 +1353,8 @@ struct action_t
   double   base_spell_power,   base_attack_power;
   double player_spell_power, player_attack_power;
   double target_spell_power, target_attack_power;
-  double spell_power_multiplier, attack_power_multiplier, power_conversion;
+  double   base_spell_power_multiplier,   base_attack_power_multiplier;
+  double player_spell_power_multiplier, player_attack_power_multiplier;
   double   base_crit_multiplier,   base_crit_bonus_multiplier, base_crit_bonus;
   double player_crit_multiplier, player_crit_bonus_multiplier;
   double target_crit_multiplier, target_crit_bonus_multiplier;
@@ -1427,8 +1428,8 @@ struct action_t
   virtual double total_crit()       { return   base_crit       + player_crit       + target_crit;       }
   virtual double total_crit_bonus();
 
-  virtual double total_spell_power()  { return ( base_spell_power  + player_spell_power  + target_spell_power  ) *  spell_power_multiplier; }
-  virtual double total_attack_power() { return ( base_attack_power + player_attack_power + target_attack_power ) * attack_power_multiplier; }
+  virtual double total_spell_power()  { return ( base_spell_power  + player_spell_power  + target_spell_power  ) * base_spell_power_multiplier  * player_spell_power_multiplier;  }
+  virtual double total_attack_power() { return ( base_attack_power + player_attack_power + target_attack_power ) * base_attack_power_multiplier * player_attack_power_multiplier; }
   virtual double total_power();
 
   // Some actions require different multipliers for the "direct" and "tick" portions.

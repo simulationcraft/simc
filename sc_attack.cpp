@@ -15,7 +15,7 @@ attack_t::attack_t( const char* n, player_t* p, int resource, int school, int tr
   action_t( ACTION_ATTACK, n, p, resource, school, tree, special ),
   base_expertise(0), player_expertise(0), target_expertise(0)
 {
-  may_miss = may_resist = may_dodge = may_parry = may_glance = may_block = may_crit = true;
+  may_miss = may_resist = may_dodge = may_parry = may_glance = may_block = true;
 
   if( special ) may_glance = false;
 
@@ -32,6 +32,7 @@ attack_t::attack_t( const char* n, player_t* p, int resource, int school, int tr
     may_parry  = false;
   }
 
+  base_attack_power_multiplier = 1.0;
   base_crit_bonus = 1.0;
   
   trigger_gcd = p -> base_gcd;

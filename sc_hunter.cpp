@@ -1248,6 +1248,7 @@ static void trigger_piercing_shots( action_t* a )
     piercing_shots_t( player_t* p ) : attack_t( "piercing_shots", p, RESOURCE_NONE, SCHOOL_BLEED )
     {
       may_miss    = false;
+      may_crit    = true;
       background  = true;
       proc        = true;
       trigger_gcd = 0;
@@ -1391,6 +1392,7 @@ static void trigger_wild_quiver( attack_t* a )
     {
       wild_quiver_t( player_t* p ) : attack_t( "wild_quiver", p, RESOURCE_NONE, SCHOOL_NATURE )
       {
+	may_crit    = true;
         background  = true;
         proc        = true;
         trigger_gcd = 0;
@@ -1434,6 +1436,8 @@ struct hunter_pet_attack_t : public attack_t
   {
     hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
+
+    may_crit = true;
 
     direct_power_mod = 1.0/14;
 
@@ -2297,6 +2301,7 @@ struct ranged_t : public hunter_attack_t
     assert( weapon -> group() == WEAPON_RANGED );
     base_execute_time = weapon -> swing_time;
 
+    may_crit    = true;
     background  = true;
     repeating   = true;
     trigger_gcd = 0;
@@ -2380,7 +2385,8 @@ struct aimed_shot_t : public hunter_attack_t
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );
 
-    normalize_weapon_speed  = true;
+    may_crit = true;
+    normalize_weapon_speed = true;
 
     cooldown = 10;
     cooldown_group = "aimed_multi";
@@ -2480,6 +2486,7 @@ struct arcane_shot_t : public hunter_attack_t
     };
     init_rank( ranks );
 
+    may_crit = true;
     cooldown = 6;
     cooldown_group = "arcane_explosive";
 
@@ -2628,6 +2635,7 @@ struct chimera_shot_t : public hunter_attack_t
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );
 
+    may_crit     = true;
     base_dd_min = 1;
     base_dd_max = 1;
     base_cost   = p -> resource_base[ RESOURCE_MANA ] * ( p -> sim -> P309 ? 0.16 : 0.12 );
@@ -2689,6 +2697,7 @@ struct chimera_shot_t : public hunter_attack_t
           {
             // FIXME! Which talents benefit this attack?
             // FIXME! Which procs can be triggered by this attack?
+	    may_crit    = true;
             background  = true;
             proc        = true;
             trigger_gcd = 0;
@@ -2767,6 +2776,7 @@ struct explosive_shot_t : public hunter_attack_t
     };
     init_rank( ranks );
 
+    may_crit = true;
     cooldown = 6;
     cooldown_group = "arcane_explosive";
 
@@ -2890,6 +2900,7 @@ struct kill_shot_t : public hunter_attack_t
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );
 
+    may_crit               = true;
     normalize_weapon_speed = true;
     weapon_multiplier      = 2.0;
     direct_power_mod       = 0.40;
@@ -2956,6 +2967,7 @@ struct multi_shot_t : public hunter_attack_t
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );
 
+    may_crit               = true;
     normalize_weapon_speed = true;
     cooldown               = 10;
     cooldown_group         = "aimed_multi";
@@ -2982,6 +2994,7 @@ struct scatter_shot_t : public hunter_attack_t
     hunter_t* p = player -> cast_hunter();
     assert( p -> talents.scatter_shot );
 
+    may_crit    = true;
     base_dd_min = 1;
     base_dd_max = 1;
     base_cost   = p -> resource_base[ RESOURCE_MANA ] * 0.08;
@@ -3133,6 +3146,8 @@ struct steady_shot_t : public hunter_attack_t
     weapon_power_mod        = 0;
     direct_power_mod        = 0.1;
     base_execute_time       = 2.0;
+
+    may_crit = true;
 
     base_cost *= 1.0 - p -> talents.master_marksman * 0.05;
 

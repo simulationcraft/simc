@@ -574,12 +574,8 @@ static void trigger_lightning_capacitor( spell_t* s )
       may_crit    = true;
       trigger_gcd = 0;
       background  = true;
+      base_spell_power_multiplier = 0;
       reset();
-    }
-    virtual void player_buff()
-    {
-      spell_t::player_buff();
-      spell_power_multiplier = 0;
     }
   };
 
@@ -625,12 +621,8 @@ static void trigger_thunder_capacitor( spell_t* s )
       may_crit    = true;
       trigger_gcd = 0;
       background  = true;
+      base_spell_power_multiplier = 0;
       reset();
-    }
-    virtual void player_buff()
-    {
-      spell_t::player_buff();
-      spell_power_multiplier = 0;
     }
   };
 
@@ -676,11 +668,7 @@ static void trigger_timbals_crystal( spell_t* s )
       trigger_gcd = 0;
       background  = true;
       reset();
-    }
-    virtual void player_buff()
-    {
-      spell_t::player_buff();
-      spell_power_multiplier = 0;
+      base_spell_power_multiplier = 0;
     }
     virtual void assess_damage( double amount, int dmg_type )
     {
@@ -795,12 +783,8 @@ static void trigger_extract_of_necromatic_power( spell_t* s )
       may_crit    = true;
       trigger_gcd = 0;
       background  = true;
+      base_spell_power_multiplier = 0;
       reset();
-    }
-    virtual void player_buff()
-    {
-      spell_t::player_buff();
-      spell_power_multiplier = 0;
     }
     virtual void assess_damage( double amount, int dmg_type )
     {

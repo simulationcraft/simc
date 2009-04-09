@@ -207,6 +207,7 @@ struct shadow_fiend_pet_t : public pet_t
         may_miss   = false;
         may_parry  = false;
       }
+      may_crit = true;
     }
     void assess_damage( double amount, int dmg_type )
     {

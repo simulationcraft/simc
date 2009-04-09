@@ -416,6 +416,7 @@ struct warlock_pet_melee_t : public attack_t
     weapon = &( p -> main_hand_weapon );
     base_execute_time = weapon -> swing_time;
     base_dd_min = base_dd_max = 1;
+    may_crit    = true;
     background  = true;
     repeating   = true;
 
@@ -449,6 +450,7 @@ struct warlock_pet_attack_t : public attack_t
     background = true;
     repeating  = true;
     may_glance = false;
+    may_crit   = true;
     warlock_pet_t* p = (warlock_pet_t*) player -> cast_pet();
     p -> adjust_base_modifiers( this );
   }

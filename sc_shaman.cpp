@@ -331,6 +331,7 @@ struct spirit_wolf_pet_t : public pet_t
       base_dd_min = base_dd_max = 1;
       background = true;
       repeating = true;
+      may_crit = true;
 
       // There are actually two wolves.....
       base_multiplier *= 2.0;
@@ -429,6 +430,7 @@ static void trigger_windfury_weapon( attack_t* a )
       shaman_attack_t( "windfury", player )
     {
       shaman_t* p = player -> cast_shaman();
+      may_crit    = true;
       background  = true;
       trigger_gcd = 0;
       base_multiplier *= 1.0 + p -> talents.elemental_weapons * 0.133333;
@@ -927,6 +929,7 @@ struct melee_t : public shaman_attack_t
   {
     shaman_t* p = player -> cast_shaman();
 
+    may_crit    = true;
     background  = true;
     repeating   = true;
     trigger_gcd = 0;
@@ -1005,6 +1008,7 @@ struct lava_lash_t : public shaman_attack_t
 
     weapon      = &( player -> off_hand_weapon );
     base_dd_min = base_dd_max = 1;
+    may_crit    = true;
     cooldown    = 6;
     base_cost   = p -> resource_base[ RESOURCE_MANA ] * 0.04;
     if( p -> tiers.t8_2pc_enhancement ) base_multiplier *= 1.0 + 0.20;
@@ -1030,6 +1034,7 @@ struct stormstrike_t : public shaman_attack_t
   {
     shaman_t* p = player -> cast_shaman();
 
+    may_crit  = true;
     base_cost = p -> resource_base[ RESOURCE_MANA ] * 0.08;
     cooldown  = ( sim -> P309 ? 10.0 : 8.0 );
     if( p -> tiers.t8_2pc_enhancement )

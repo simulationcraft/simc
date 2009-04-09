@@ -337,7 +337,9 @@ struct rogue_poison_t : public spell_t
 
     weapon_multiplier = 0;
 
-    power_conversion = 1.0; // Poisons are spells that use attack power
+    // Poisons are spells that use attack power
+    base_spell_power_multiplier  = 0.0; 
+    base_attack_power_multiplier = 1.0; 
   }
 
   virtual void player_buff();
@@ -1013,6 +1015,7 @@ struct melee_t : public rogue_attack_t
     repeating       = true;
     trigger_gcd     = 0;
     base_cost       = 0;
+    may_crit        = true;
 
     if( p -> dual_wield() ) base_hit -= 0.19;
   }
@@ -1112,6 +1115,7 @@ struct ambush_t : public rogue_attack_t
     init_rank( ranks );
 
     weapon = &( p -> main_hand_weapon );
+    may_crit               = true;
     normalize_weapon_speed = true;
     requires_weapon        = WEAPON_DAGGER;
     requires_position      = POSITION_BACK;
@@ -1175,6 +1179,7 @@ struct backstab_t : public rogue_attack_t
     init_rank( ranks );
 
     weapon = &( p -> main_hand_weapon );
+    may_crit               = true;
     normalize_weapon_speed = true;
     requires_weapon        = WEAPON_DAGGER;
     requires_position      = POSITION_BACK;
@@ -1284,6 +1289,7 @@ struct envenom_t : public rogue_attack_t
 
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier = 0;      
+    may_crit = true;
     requires_combo_points = true;
     base_cost = 35;
 
@@ -1401,6 +1407,7 @@ struct eviscerate_t : public rogue_attack_t
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
 
+    may_crit = true;
     requires_combo_points = true;
     base_cost = 35;
 
@@ -1672,6 +1679,7 @@ struct ghostly_strike_t : public rogue_attack_t
     parse_options( options, options_str );
       
     weapon = &( p -> main_hand_weapon );
+    may_crit                    = true;
     normalize_weapon_speed      = true;
     adds_combo_points           = true;
     cooldown                    = p -> glyphs.ghostly_strike ? 30 : 20;
@@ -1709,6 +1717,7 @@ struct hemorrhage_t : public rogue_attack_t
       
     base_dd_min = base_dd_max = 1;
     weapon = &( p -> main_hand_weapon );
+    may_crit                    = true;
     normalize_weapon_speed      = true;
     adds_combo_points           = true;
     base_cost                   = 35 - p -> talents.slaughter_from_the_shadows;
@@ -1995,6 +2004,7 @@ struct mutilate_t : public rogue_attack_t
     };
     init_rank( ranks );
 
+    may_crit               = true;
     requires_weapon        = WEAPON_DAGGER;
     weapon                 = &( p -> main_hand_weapon );
     adds_combo_points      = true;
@@ -2257,6 +2267,7 @@ struct sinister_strike_t : public rogue_attack_t
     init_rank( ranks );
 
     weapon = &( p -> main_hand_weapon );
+    may_crit               = true;
     normalize_weapon_speed = true;
     adds_combo_points      = true;
 
@@ -2428,8 +2439,6 @@ void rogue_poison_t::player_buff()
   rogue_t* p = player -> cast_rogue();
 
   spell_t::player_buff();
-
-  spell_power_multiplier = 0;
 
   if( p -> _buffs.hunger_for_blood )
   {

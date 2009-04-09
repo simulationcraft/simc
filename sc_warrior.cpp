@@ -954,6 +954,7 @@ struct melee_t : public warrior_attack_t
     base_dd_min = base_dd_max = 1;
 
     may_glance      = true;
+    may_crit        = true;
     background      = true;
     repeating       = true;
     trigger_gcd     = 0;
@@ -1127,6 +1128,8 @@ struct heroic_strike_t : public warrior_attack_t
       { 0, 0 }
     };
     init_rank( ranks );
+
+    may_crit        = true;
     base_cost      -= p -> talents.improved_heroic_strike;
     base_crit      += p -> talents.incite * 0.05;
     if( ! sim -> P309 && p -> glyphs.heroic_strike )
@@ -1195,6 +1198,7 @@ struct bloodthirst_t : public warrior_attack_t
 
     base_dd_min = base_dd_max = 1;
 
+    may_crit          = true;
     cooldown          = 5.0;
     base_cost         = 30;
     base_multiplier  *= 1 + p -> talents.unending_fury * 0.02;
@@ -1246,6 +1250,7 @@ struct execute_t : public warrior_attack_t
     weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
 
+    may_crit          = true;
     base_cost        -= util_t::talent_rank( p -> talents.improved_execute, 2, 2, 5);
     direct_power_mod  = 0.20;
     
@@ -1343,6 +1348,7 @@ struct mortal_strike_t : public warrior_attack_t
     };
     init_rank( ranks );
     
+    may_crit         = true;
     cooldown         = 6.0 - ( p -> talents.improved_mortal_strike / 3.0 );
     base_multiplier *= 1 + util_t::talent_rank( p -> talents.improved_mortal_strike, 3, 0.03, 0.06, 0.10)
                          + ( p -> glyphs.mortal_strike ? 0.10 : 0 );
@@ -1370,6 +1376,7 @@ struct overpower_t : public warrior_attack_t
     
     weapon = &( p -> main_hand_weapon );
 
+    may_crit  = true;
     may_dodge = false; 
     may_parry = false; 
     may_block = false; // The Overpower cannot be blocked, dodged or parried.
@@ -1490,6 +1497,8 @@ struct slam_t : public warrior_attack_t
     };
     init_rank( ranks );
 
+    may_crit = true;
+
     base_execute_time  = 1.5 - p -> talents.improved_slam * 0.5;
     base_multiplier   *= 1 + p -> talents.unending_fury * 0.02 + ( p -> gear.tier7_2pc ? 0.10 : 0.0 );
 
@@ -1579,6 +1588,7 @@ struct whirlwind_t : public warrior_attack_t
 
     base_dd_min = base_dd_max = 1;
 
+    may_crit         = true;
     cooldown         = 10.0 - ( p -> glyphs.whirlwind ? 2 : 0 );
     base_cost        = 25;
     base_multiplier *= 1 + p -> talents.improved_whirlwind * 0.10 + p -> talents.unending_fury * 0.02;
@@ -1758,6 +1768,7 @@ struct bladestorm_t : public warrior_spell_t
         base_dd_min     = base_dd_max = 1;
         trigger_gcd     = 0;
         background      = true;
+	may_crit        = true;
       }
       virtual void consume_resource() {}
       virtual void execute()

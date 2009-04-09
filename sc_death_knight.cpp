@@ -622,6 +622,7 @@ struct melee_t : public death_knight_attack_t
     execute_once = false;
 
     base_dd_min = base_dd_max = 1;
+    may_crit        = true;
     may_glance      = true;
     background      = true;
     repeating       = true;
@@ -757,9 +758,9 @@ struct blood_strike_t : public death_knight_attack_t
 
     weapon = &( p -> main_hand_weapon );
     normalize_weapon_speed = true;
-    weapon_multiplier     *= 0.4;
-
-		base_crit += p -> talents.subversion * 0.03;
+    weapon_multiplier *= 0.4;
+    may_crit = true;
+    base_crit += p -> talents.subversion * 0.03;
   }
 
   void
@@ -802,6 +803,7 @@ struct death_strike_t : public death_knight_attack_t
     weapon = &( p -> main_hand_weapon );
     normalize_weapon_speed = true;
     weapon_multiplier     *= 0.75;
+    may_crit = true;
   }
 };
 
@@ -836,8 +838,8 @@ struct heart_strike_t : public death_knight_attack_t
     weapon = &( p -> main_hand_weapon );
     normalize_weapon_speed = true;
     weapon_multiplier     *= 0.5;
-
-		base_crit += p -> talents.subversion * 0.03;
+    may_crit = true;
+    base_crit += p -> talents.subversion * 0.03;
   }
 
   void
@@ -913,14 +915,15 @@ struct obliterate_t : public death_knight_attack_t
     };
     init_rank( ranks );
 
-		cost_frost = 1;
-		cost_unholy = 1;
+    cost_frost = 1;
+    cost_unholy = 1;
 
     weapon = &( p -> main_hand_weapon );
     normalize_weapon_speed = true;
     weapon_multiplier     *= 0.8;
 
-		base_crit += p -> talents.subversion * 0.03;
+    may_crit = true;
+    base_crit += p -> talents.subversion * 0.03;
   }
 
   void
@@ -984,8 +987,8 @@ struct plague_strike_t : public death_knight_attack_t
     weapon = &( p -> main_hand_weapon );
     normalize_weapon_speed = true;
     weapon_multiplier     *= 0.5;
-
-		p -> blood_plague = new blood_plague_t(player);
+    may_crit = true;
+    p -> blood_plague = new blood_plague_t(player);
   }
 
   void
@@ -1025,6 +1028,7 @@ struct scourge_strike_t : public death_knight_attack_t
     weapon = &( p -> main_hand_weapon );
     normalize_weapon_speed = true;
     weapon_multiplier     *= 0.45;
+    may_crit = true;
   }
 
   void
@@ -1098,6 +1102,7 @@ struct frost_strike_t : public death_knight_attack_t
     weapon = &( p -> main_hand_weapon );
     normalize_weapon_speed = true;
     weapon_multiplier     *= 0.6;
+    may_crit = true;
   }
 };
 

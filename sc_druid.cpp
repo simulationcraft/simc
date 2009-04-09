@@ -355,6 +355,7 @@ struct treants_pet_t : public pet_t
       base_dd_min = base_dd_max = 1;
       background = true;
       repeating = true;
+      may_crit = true;
 
       base_multiplier *= 1.0 + o -> talents.brambles * 0.05;
 
@@ -1219,7 +1220,7 @@ struct melee_t : public druid_attack_t
     repeating   = true;
     trigger_gcd = 0;
     base_cost   = 0;
-
+    may_crit    = true;
   }
 
   virtual void execute()
@@ -1456,7 +1457,6 @@ struct rip_t : public druid_attack_t
     parse_options( options, options_str );
     
     may_crit              = false;
-
     requires_combo_points = true;
     base_cost             = 30;
     base_tick_time        = 2.0;
@@ -1793,6 +1793,7 @@ struct ferocious_bite_t : public druid_attack_t
     parse_options( options, options_str );
 
     requires_combo_points = true;
+    may_crit  = true;
     base_cost = 35;
 
     base_multiplier *= 1.0 + ( p -> talents.feral_aggression * 0.03 );

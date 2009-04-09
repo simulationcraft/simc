@@ -33,7 +33,8 @@ action_t::action_t( int         ty,
     base_spell_power(0),   base_attack_power(0),
   player_spell_power(0), player_attack_power(0),
   target_spell_power(0), target_attack_power(0),
-  spell_power_multiplier(1), attack_power_multiplier(1), power_conversion(0),
+    base_spell_power_multiplier(0),   base_attack_power_multiplier(0), 
+  player_spell_power_multiplier(1), player_attack_power_multiplier(1), 
     base_crit_multiplier(1),   base_crit_bonus_multiplier(1),
   player_crit_multiplier(1), player_crit_bonus_multiplier(1),
   target_crit_multiplier(1), target_crit_bonus_multiplier(1),
@@ -173,17 +174,17 @@ double action_t::cost()
 
 void action_t::player_buff()
 {
-  player_multiplier            = 1.0;
-  player_hit                   = 0;
-  player_crit                  = 0;
-  player_crit_multiplier       = 1.0;
-  player_crit_bonus_multiplier = 1.0;
-  player_penetration           = 0;
-  player_dd_adder              = 0;
-  player_spell_power           = 0;
-  player_attack_power          = 0;
-  spell_power_multiplier       = 1.0;
-  attack_power_multiplier      = 1.0;
+  player_multiplier              = 1.0;
+  player_hit                     = 0;
+  player_crit                    = 0;
+  player_crit_multiplier         = 1.0;
+  player_crit_bonus_multiplier   = 1.0;
+  player_penetration             = 0;
+  player_dd_adder                = 0;
+  player_spell_power             = 0;
+  player_attack_power            = 0;
+  player_spell_power_multiplier  = 1.0;
+  player_attack_power_multiplier = 1.0;
 
   player_t* p = player;
   target_t* t = sim -> target;
@@ -221,16 +222,16 @@ void action_t::player_buff()
     player_multiplier *= 1.0 + p -> buffs.tricks_of_the_trade * 0.01;
   }
 
-  if( type == ACTION_ATTACK || power_conversion > 0 )
+  if( base_attack_power_multiplier > 0 )
   {
-    player_attack_power     = p -> composite_attack_power();
-    attack_power_multiplier = p -> composite_attack_power_multiplier();
+    player_attack_power            = p -> composite_attack_power();
+    player_attack_power_multiplier = p -> composite_attack_power_multiplier();
   }
 
-  if( type == ACTION_SPELL || power_conversion > 0 )
+  if( base_spell_power_multiplier > 0 )
   {
-    player_spell_power     = p -> composite_spell_power( school );
-    spell_power_multiplier = p -> composite_spell_power_multiplier();
+    player_spell_power            = p -> composite_spell_power( school );
+    player_spell_power_multiplier = p -> composite_spell_power_multiplier();
   }
 
   if( sim -> debug ) 
@@ -302,14 +303,14 @@ void action_t::target_debuff( int dmg_type )
     target_crit += 0.03;
   }
 
-  if( type == ACTION_ATTACK || power_conversion > 0 )
+  if( base_attack_power_multiplier > 0 )
   {
     if( p -> position == POSITION_RANGED )
     {
       target_attack_power += t -> debuffs.hunters_mark;
     }
   }
-  if( type == ACTION_SPELL || power_conversion > 0 )
+  if( base_spell_power_multiplier > 0 )
   {
     // no spell power based debuffs at this time
   }
@@ -438,18 +439,9 @@ double action_t::total_power()
 {
   double power=0;
 
-  if( type == ACTION_ATTACK )
-  {
-    power = total_attack_power();
+  if( base_spell_power_multiplier  > 0 ) power += total_spell_power();
+  if( base_attack_power_multiplier > 0 ) power += total_attack_power();
 
-    if( power_conversion > 0 ) power += total_spell_power() * power_conversion;
-  }
-  else if( type == ACTION_SPELL )
-  {
-    power = total_spell_power();
-
-    if( power_conversion > 0 ) power += total_attack_power() * power_conversion;
-  }
   return power;
 }
 
