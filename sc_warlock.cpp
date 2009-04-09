@@ -4170,9 +4170,9 @@ struct life_tap_t : public warlock_spell_t
       return( ! p -> _buffs.life_tap_glyph );
 
     if( max )
-      trigger = p -> resource_max[ RESOURCE_MANA ] - ( base_tap + 3.0 * p -> spirit() ) * ( 1.0 + p -> talents.improved_life_tap * 0.10 );
+      trigger = (int) (p -> resource_max[ RESOURCE_MANA ] - ( base_tap + 3.0 * p -> spirit() ) * ( 1.0 + p -> talents.improved_life_tap * 0.10 ));
 
-    return( p -> resource_current[ RESOURCE_MANA ] < trigger );
+    return( p -> resource_current[ RESOURCE_MANA ] < (double) trigger );
   }
 };
 
