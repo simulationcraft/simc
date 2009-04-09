@@ -18,18 +18,18 @@ actions+=/envenom,min_combo_points=5,env<=1
 actions+=/eviscerate,min_combo_points=5
 actions+=/hemorrhage,max_combo_points=3,energy>=80
 
-# Gear: http://www.chardev.org/?template=158141
-gear_stamina=963
+# Gear: http://www.chardev.org/?template=158141 with Webbed Death MH
+gear_stamina=958
 gear_strength=10
-gear_agility=1013
+gear_agility=1020
 gear_intellect=10
 gear_spirit=10
-gear_attack_power=2181
+gear_attack_power=2149
 gear_expertise_rating=217
 gear_armor_penetration_rating=94
-gear_hit_rating=363
-gear_crit_rating=517
-gear_haste_rating=289
+gear_hit_rating=384
+gear_crit_rating=511
+gear_haste_rating=265
 
 # Set Bonuses
 tier7_2pc=1
@@ -39,7 +39,7 @@ tier7_4pc=0
 relentless_earthstorm=1
 
 # Weapons
-main_hand=dagger,dps=171,speed=2.6,enchant=berserking
+main_hand=dagger,dps=157,speed=1.4,enchant=berserking
 off_hand=dagger,dps=157,speed=1.4,enchant=berserking
 
 # Item Procs

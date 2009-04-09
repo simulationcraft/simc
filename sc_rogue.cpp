@@ -76,6 +76,7 @@ struct rogue_t : public player_t
   // Gains
   gain_t* gains_adrenaline_rush;
   gain_t* gains_combat_potency;
+  gain_t* gains_energy_refund;
   gain_t* gains_focused_attacks;
   gain_t* gains_quick_recovery;
   gain_t* gains_relentless_strikes;
@@ -211,6 +212,7 @@ struct rogue_t : public player_t
     // Gains
     gains_adrenaline_rush    = get_gain( "adrenaline_rush" );
     gains_combat_potency     = get_gain( "combat_potency" );
+    gains_energy_refund      = get_gain( "energy_refund" );
     gains_focused_attacks    = get_gain( "focused_attacks" );
     gains_quick_recovery     = get_gain( "quick_recovery" );
     gains_relentless_strikes = get_gain( "relentless_strikes" );
@@ -553,6 +555,20 @@ static void trigger_focused_attacks( rogue_attack_t* a )
   }
 }
 
+// trigger_energy_refund ===================================================
+
+static void trigger_energy_refund( rogue_attack_t* a )
+{
+  rogue_t* p = a -> player -> cast_rogue();
+
+  if ( ! a -> adds_combo_points )
+    return;
+
+  double energy_restored = a -> resource_consumed * 0.80;
+
+  p -> resource_gain( RESOURCE_ENERGY, energy_restored, p -> gains_energy_refund );
+}
+
 // trigger_quick_recovery ==================================================
 
 static void trigger_quick_recovery( rogue_attack_t* a )
@@ -728,24 +744,6 @@ static void remove_poison_debuff( rogue_t* p)
 	t -> debuffs.poisoned--;
 }
 
-// trigger_deadly_poison ====================================================
-
-static void trigger_deadly_poison( rogue_t* p )
-{
-	p -> procs_deadly_poison -> occur();
-
-	// Target is about to get Dedly poisoned.
-	if( p -> _buffs.poison_doses == 0 ) apply_poison_debuff( p );
-}
-
-// consume_deadly_poison ====================================================
-
-static void consume_deadly_poison( rogue_t* p )
-{
-	// Target no longer deadly poisoned.
-	if( p -> _buffs.poison_doses == 0 ) remove_poison_debuff( p );
-}
-
 // =========================================================================
 // Rogue Attacks
 // =========================================================================
@@ -822,6 +820,7 @@ void rogue_attack_t::execute()
   }
   else
   {
+    trigger_energy_refund( this );
     trigger_quick_recovery( this );
   }
 
@@ -1181,7 +1180,7 @@ struct backstab_t : public rogue_attack_t
     requires_position      = POSITION_BACK;
     adds_combo_points      = true;
     base_cost             -= p -> talents.slaughter_from_the_shadows * 3;
-    weapon_multiplier     *= 1.50 + p -> talents.sinister_calling * 0.02;
+    weapon_multiplier     *= 1.50 + p -> talents.sinister_calling * (sim -> P309 ? .01 : .02);
 
     base_multiplier *= 1.0 + ( p -> talents.aggression       * 0.03 +
 			       p -> talents.blade_twisting   * 0.05 +
@@ -1713,7 +1712,7 @@ struct hemorrhage_t : public rogue_attack_t
     normalize_weapon_speed      = true;
     adds_combo_points           = true;
     base_cost                   = 35 - p -> talents.slaughter_from_the_shadows;
-    weapon_multiplier          *= 1.10 + p -> talents.sinister_calling * 0.02;
+    weapon_multiplier          *= 1.10 + p -> talents.sinister_calling * (sim -> P309 ? .01 : .02);
     base_multiplier            *= 1.0 + ( p -> talents.find_weakness    * 0.02 +
                                           p -> talents.surprise_attacks * 0.10 +
                                           p -> gear.tier6_4pc           * 0.06 );
@@ -2452,12 +2451,7 @@ void rogue_poison_t::player_buff()
       player_multiplier      *= 1.0 + p -> talents.murder * 0.02;
       player_crit_multiplier *= 1.0 + p -> talents.murder * 0.02;
     }
-  } 
-  /* ShS works only on the ability itself.
-  if( p -> _buffs.shadowstep )
-  {
-    player_multiplier *= 1.2;
-  }*/
+  }
   if( p -> _buffs.killing_spree && ! sim -> P309 )
   {
     player_multiplier *= 1.20;
@@ -2482,7 +2476,8 @@ struct anesthetic_poison_t : public rogue_poison_t
     proc             = true;
     may_crit         = true;
     direct_power_mod = 0;
-    base_dd_min = base_dd_max  = util_t::ability_rank( p -> level,  249,77,  153,68,  0,0 );
+    base_dd_min      = util_t::ability_rank( p -> level,  218,77,  134,68,  0,0 );
+    base_dd_max      = util_t::ability_rank( p -> level,  280,77,  172,68,  0,0 );
   }
   
   virtual void execute()
@@ -2527,9 +2522,8 @@ struct deadly_poison_t : public rogue_poison_t
       chance += p -> talents.improved_poisons * 0.02;
       if( p -> _buffs.envenom )
       {
-	chance += 0.15;
-	// Master Poisoner gives DP app rate to Envenom only on PTR
-	if( ! sim -> P309 ) chance += p -> talents.master_poisoner * 0.15;
+        chance += 0.15;
+        if( ! sim -> P309 ) chance += p -> talents.master_poisoner * 0.15;
       }
       p -> uptimes_envenom -> update( p -> _buffs.envenom != 0 );
       success = sim -> roll( chance );
@@ -2537,20 +2531,26 @@ struct deadly_poison_t : public rogue_poison_t
 
     if( success )
     {
-      trigger_deadly_poison( p );
+      p -> procs_deadly_poison -> occur();
 
-      if( p -> _buffs.poison_doses < 5 ) p -> _buffs.poison_doses++;
+      calculate_result();
 
-      if( sim -> log ) report_t::log( sim, "%s performs %s (%d)", player -> name(), name(), p -> _buffs.poison_doses );
-
-      if( ticking )
+      if( result_is_hit() )
       {
-        refresh_duration();
-      }
-      else
-      {
-        player_buff();
-        schedule_tick();
+        if( p -> _buffs.poison_doses < 5 ) p -> _buffs.poison_doses++;
+
+        if( sim -> log ) report_t::log( sim, "%s performs %s (%d)", player -> name(), name(), p -> _buffs.poison_doses );
+
+        if( ticking )
+        {
+          refresh_duration();
+        }
+        else
+        {
+          player_buff();
+          schedule_tick();
+          apply_poison_debuff( p );
+        }
       }
     }
   }
@@ -2577,7 +2577,7 @@ struct deadly_poison_t : public rogue_poison_t
     rogue_t* p = player -> cast_rogue();
     rogue_poison_t::last_tick();
     p -> _buffs.poison_doses = 0;
-    consume_deadly_poison( p );
+    remove_poison_debuff( p );
   }
 };
 
@@ -2594,7 +2594,8 @@ struct instant_poison_t : public rogue_poison_t
     proc             = true;
     may_crit         = true;
     direct_power_mod = 0.10;
-    base_dd_min = base_dd_max  = util_t::ability_rank( p -> level,  350,79,  286,73,  188,68,  88,0 );
+    base_dd_min      = util_t::ability_rank( p -> level,  300,79,  245,73,  161,68,  76,0 );
+    base_dd_max      = util_t::ability_rank( p -> level,  400,79,  327,73,  215,68,  100,0 );
   }
 
   virtual void execute()
@@ -2612,16 +2613,16 @@ struct instant_poison_t : public rogue_poison_t
     {
       if( p -> _buffs.shiv )
       {
-	chance = 1.0;
-	may_crit = false;
+        chance = 1.0;
+        may_crit = false;
       }
       else
       {
-	double PPM = 8.57;
-	PPM *= 1.0 + ( ( p -> talents.improved_poisons * 0.10 ) +
-		       ( p -> _buffs.envenom ? 0.75 : 0.00    ) );
-	chance = weapon -> proc_chance_on_swing( PPM );
-	may_crit = true;
+        double PPM = 8.57;
+        PPM *= 1.0 + ( ( p -> talents.improved_poisons * 0.10 ) + 
+                       ( p -> _buffs.envenom ? 0.75 : 0.00    ) );
+        chance = weapon -> proc_chance_on_swing( PPM );
+        may_crit = true;
       }
     }
     if( sim -> roll( chance ) )
@@ -2653,15 +2654,15 @@ struct wound_poison_t : public rogue_poison_t
     {
       expiration_t( sim_t* sim, rogue_t* p ) : event_t( sim, p )
       {
-	name = "Wound Poison Expiration";
-	apply_poison_debuff( p );
-	sim -> add_event( this, 15.0 );
+        name = "Wound Poison Expiration";
+        apply_poison_debuff( p );
+        sim -> add_event( this, 15.0 );
       }
       virtual void execute()
       {
-	rogue_t* p = player -> cast_rogue();
-	p -> _expirations.wound_poison = 0;
-	remove_poison_debuff( p );
+        rogue_t* p = player -> cast_rogue();
+        p -> _expirations.wound_poison = 0;
+        remove_poison_debuff( p );
       }
     };
     
@@ -2677,14 +2678,14 @@ struct wound_poison_t : public rogue_poison_t
     {
       if( p -> _buffs.shiv )
       {
-	chance = 1.0;
-	may_crit = false;
+        chance = 1.0;
+        may_crit = false;
       }
       else
       {
-	double PPM = 21.43;
-	chance = weapon -> proc_chance_on_swing( PPM );
-	may_crit = true;
+        double PPM = 21.43;
+        chance = weapon -> proc_chance_on_swing( PPM );
+        may_crit = true;
       }
     }
     
@@ -2693,16 +2694,16 @@ struct wound_poison_t : public rogue_poison_t
       rogue_poison_t::execute();
       if( result_is_hit() )
       {
-	event_t*& e = p -> _expirations.wound_poison;
+        event_t*& e = p -> _expirations.wound_poison;
 
-	if( e )
-	{
-	  e -> reschedule( 15.0 );
-	}
-	else
-	{
-	  e = new ( sim ) expiration_t( sim, p );
-	}
+        if( e )
+        {
+          e -> reschedule( 15.0 );
+        }
+        else
+        {
+          e = new ( sim ) expiration_t( sim, p );
+        }
       }
     }
   }
@@ -3142,7 +3143,7 @@ void rogue_t::init_base()
   base_attack_expertise = 0.25 * talents.weapon_expertise * 0.05;
 
   resource_base[ RESOURCE_HEALTH ] = 3524;
-  resource_base[ RESOURCE_ENERGY ] = 100 + ( talents.vigor ? 10 : 0 ) + ( glyphs.vigor ? 10 : 0 );
+  resource_base[ RESOURCE_ENERGY ] = 100 + ( talents.vigor ? ( glyphs.vigor ? 20 : 10 ) : 0 );
 
   health_per_stamina       = 10;
   energy_regen_per_second  = 10;
