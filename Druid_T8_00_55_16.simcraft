@@ -16,13 +16,13 @@ actions+=/ferocious_bite,cp>=5,rip>=5,savage_roar>=6
 actions+=/rake
 actions+=/shred
 
-# Gear http://www.chardev.org/?template=149559
+# Gear http://www.chardev.org/?template=159033
 gear_stamina=1056
 gear_strength=10
-gear_agility=1037
+gear_agility=941
 gear_attack_power=2117
 gear_expertise_rating=129
-gear_armor_penetration_rating=236
+gear_armor_penetration_rating=232
 gear_hit_rating=259
 gear_crit_rating=515
 gear_haste_rating=297
@@ -42,4 +42,4 @@ glyph_savage_roar=1
 glyph_shred=1
 
 # Relic
-idol_of_worship=1
+idol_of_the_ravenous_beast=1
