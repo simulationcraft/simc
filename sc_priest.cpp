@@ -584,6 +584,12 @@ static void trigger_devious_mind( spell_t* s )
 
 static void trigger_replenishment( spell_t* s )
 {
+  if ( s -> sim -> new_replenishment )
+  {
+    s -> player -> trigger_replenishment();
+    return;
+  }
+
   struct replenishment_expiration_t : public event_t
   {
     replenishment_expiration_t( sim_t* sim, priest_t* player ) : event_t( sim, player )

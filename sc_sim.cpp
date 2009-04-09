@@ -24,6 +24,7 @@ sim_t::sim_t( sim_t* p ) :
   armor_update_interval(20), optimal_raid(0), potion_sickness(1), average_dmg(1),
   log(0), debug(0), timestamp(1), sfmt(1),
   jow_chance(0), jow_ppm(15.0),
+  new_replenishment(0), 
   wheel_seconds(0), wheel_size(0), wheel_mask(0), timing_slice(0), wheel_granularity(0.0),
   raid_dps(0), total_dmg(0), total_seconds(0), elapsed_cpu_seconds(0), merge_ignite(0), report_progress(1),
   output_file(stdout), html_file(0), wiki_file(0), thread_handle(0)
@@ -756,6 +757,9 @@ bool sim_t::parse_option( const std::string& name,
     { "wheel_granularity",                OPT_FLT,    &( wheel_granularity                        ) },
     { "wheel_seconds",                    OPT_INT,    &( wheel_seconds                            ) },
     { "wiki",                             OPT_STRING, &( wiki_file_str                            ) },
+
+    // Flags: 1 == Use new model. 2 == Priortise current receivers over new ones. 4 == Hard limit of 10 buffs at a time per provider
+    { "new_replenishment",                OPT_INT,    &( new_replenishment                        ) },
     // Overrides - Buffs/Debuffs
     { "affliction_effects",     OPT_INT, &( overrides.affliction_effects      ) },
     { "arcane_brilliance",      OPT_INT, &( overrides.arcane_brilliance       ) },

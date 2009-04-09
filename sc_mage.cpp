@@ -1125,6 +1125,12 @@ static void trigger_replenishment( spell_t* s )
   if( s -> sim -> roll( p -> talents.improved_water_elemental / 3.0 ) )
     return;
 
+  if ( s -> sim -> new_replenishment )
+  {
+    p -> trigger_replenishment();
+    return;
+  }
+
   struct replenishment_expiration_t : public event_t
   {
     replenishment_expiration_t( sim_t* sim, mage_t* m ) : event_t( sim, m )

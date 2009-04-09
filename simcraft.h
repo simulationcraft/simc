@@ -309,6 +309,7 @@ struct sim_t
   int         infinite_resource[ RESOURCE_MAX ];
   int         armor_update_interval, optimal_raid, potion_sickness, average_dmg, log, debug, timestamp, sfmt;
   double      jow_chance, jow_ppm;
+  int         new_replenishment;
 
   std::vector<std::string> party_encoding;
 
@@ -756,6 +757,8 @@ struct player_t
     int       power_infusion;
     int       rampage;
     int       replenishment;
+    player_t* new_replenishment;
+    int       choose_replenishment;
     int       sanctified_retribution;
     int       shadow_form;
     double    strength_of_earth;
@@ -781,6 +784,14 @@ struct player_t
   };
   buff_t buffs;
 
+  struct replenishments_t
+  {
+    player_t* receivers[10];
+    void reset() { memset( (void*) this, 0x0, sizeof( replenishments_t ) ); }
+    replenishments_t() { reset(); }
+  };
+  replenishments_t replenishments;
+
   struct expirations_t
   {
     double spellsurge;
@@ -797,6 +808,7 @@ struct player_t
     event_t* illustration_of_the_dragon_soul;
     event_t* mongoose_mh;
     event_t* mongoose_oh;
+    event_t* new_replenishment;
     event_t* spellstrike;
     event_t* tricks_of_the_trade;
     event_t* wrath_of_cenarius;
@@ -1064,6 +1076,8 @@ struct player_t
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name ) { return 0; }
   virtual pet_t*    find_pet     ( const std::string& name );
+
+  virtual void trigger_replenishment( );
 
   // Class-Specific Methods
 

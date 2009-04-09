@@ -907,6 +907,12 @@ static void trigger_hunting_party( attack_t* a )
   if ( ! a -> sim -> roll( chance ) )
     return;
 
+  if ( a -> sim -> new_replenishment )
+  {
+    a -> player -> trigger_replenishment();
+    return;
+  }
+
   struct hunting_party_expiration_t : public event_t
   {
     hunting_party_expiration_t( sim_t* sim, hunter_t* h ) : event_t( sim, h )

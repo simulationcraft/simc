@@ -1250,6 +1250,17 @@ static void trigger_soul_leech( spell_t* s )
         double amount = p -> resource_max[ RESOURCE_MANA ] * p -> talents.improved_soul_leech * 0.01;
 
         p -> resource_gain( RESOURCE_MANA, amount, p -> gains_soul_leech );
+
+        if ( ! s -> sim -> P309 )
+        {
+          if ( s -> sim -> roll( 0.5 * p -> talents.improved_soul_leech ) )
+          {
+            if ( s -> sim -> new_replenishment != 0 )
+            {
+              p -> trigger_replenishment();
+            }
+          }
+        }
       }
     }
   }

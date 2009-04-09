@@ -92,6 +92,97 @@ static void trigger_focus_magic_feedback( spell_t* spell )
   }
 }
 
+// trigger_new_replenishment =============================================
+
+static void trigger_new_replenishment( player_t* provider, player_t* receiver )
+{
+  struct replenishment_expiration_t : public event_t
+  {
+    player_t* replenishment_provider;
+    player_t* replenishment_receiver;
+
+    replenishment_expiration_t( sim_t* sim, player_t* provider, player_t* receiver ) : event_t( sim, receiver ), 
+      replenishment_provider( provider ), replenishment_receiver ( receiver )
+    {
+      name = "Replenishment Expiration";
+      replenishment_receiver -> aura_gain( "Replenishment" );
+      replenishment_receiver -> buffs.new_replenishment = replenishment_provider;
+      if( sim -> debug )
+        report_t::log( sim, "Replenishment gain: Provider: %s, Receiver: %s",
+                       replenishment_provider -> name(), replenishment_receiver -> name() );
+      sim -> add_event( this, 15.0 );
+    }
+    virtual void execute()
+    {
+      replenishment_receiver -> aura_loss( "Replenishment" );
+      replenishment_receiver -> buffs.new_replenishment = 0;
+      replenishment_receiver -> expirations.new_replenishment = 0;
+      if( sim -> debug )
+        report_t::log( sim, "Replenishment loss: Provider: %s, Receiver: %s",
+                       replenishment_provider -> name(), replenishment_receiver -> name() );
+    }
+  };
+
+  if ( ( receiver == 0 ) || ( ( receiver -> buffs.new_replenishment != 0 ) && ( receiver -> buffs.new_replenishment != provider ) ) )
+    return;
+
+  event_t*& e = receiver -> expirations.new_replenishment;
+
+  if( e )
+  {
+    e -> reschedule( 15.0 );
+  }
+  else
+  {
+    e = new ( provider -> sim ) replenishment_expiration_t( provider -> sim, provider, receiver );
+  }
+}
+
+// choose_replenishment_receiver =============================================
+
+static player_t *choose_replenishment_receiver( player_t* provider )
+{
+  player_t* p_min = 0;
+  double min_percent = 1.01;
+  
+  for( player_t* p = provider -> sim -> player_list; p; p = p -> next )
+  {
+    if ( ( p -> buffs.choose_replenishment == 0 ) &&
+         ( ( p -> buffs.new_replenishment == 0 ) || ( p -> buffs.new_replenishment == provider ) ) && 
+         ( p -> resource_max[ RESOURCE_MANA ] > 0 ) )
+    {
+      double percent = p -> resource_current [ RESOURCE_MANA ] / p -> resource_max[ RESOURCE_MANA ];
+      
+      if ( percent < min_percent )
+      {
+        p_min = p;
+        min_percent = percent;
+      }
+    }
+    for( pet_t* pet = p -> pet_list ; pet; pet = pet -> next_pet )
+    {
+      if ( ( pet -> buffs.choose_replenishment == 0 ) &&
+           ( ( pet -> buffs.new_replenishment == 0 ) || ( pet -> buffs.new_replenishment == provider ) ) && 
+           ( pet -> type == PLAYER_PET ) &&
+           ( pet -> resource_max[ RESOURCE_MANA ] > 0 ) )
+      {
+        double percent = pet -> resource_current [ RESOURCE_MANA ] / pet -> resource_max[ RESOURCE_MANA ];
+    
+        if ( percent < min_percent )
+        {
+          p_min = (player_t *) pet;
+          min_percent = percent;
+        }
+      }
+    }
+  }
+  if ( p_min != 0 )
+  {
+    p_min -> buffs.choose_replenishment = 1;
+  }
+  return p_min;
+}
+
 } // ANONYMOUS NAMESPACE ===================================================
 
 // ==========================================================================
@@ -855,7 +946,6 @@ void player_t::init_stats()
   uptimes.executioner   = get_uptime( "executioner" );
   uptimes.mongoose_mh   = get_uptime( "mongoose_mh" );
   uptimes.mongoose_oh   = get_uptime( "mongoose_oh" );
-  uptimes.replenishment = get_uptime( "replenishment" );
   uptimes.tier4_2pc     = get_uptime( "tier4_2pc" );
   uptimes.tier4_4pc     = get_uptime( "tier4_4pc" );
   uptimes.tier5_2pc     = get_uptime( "tier5_2pc" );
@@ -1205,6 +1295,7 @@ void player_t::reset()
   buffs.reset();
   expirations.reset();
   cooldowns.reset();
+  replenishments.reset();
   
   cooldowns.armor_cache = sim -> current_iteration % sim -> armor_update_interval;
 
@@ -1354,13 +1445,13 @@ void player_t::regen( double periodicity )
 
     resource_gain( RESOURCE_MANA, mp5_regen, gains.mp5_regen );
 
-    if( buffs.replenishment )
+    if( sim -> overrides.replenishment || ( ( sim -> new_replenishment != 0 ) ? ( buffs.new_replenishment != 0 ) : ( buffs.replenishment != 0 ) ) )
     {
       double replenishment_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.0025 / 1.0;
 
       resource_gain( RESOURCE_MANA, replenishment_regen, gains.replenishment );
     }
-    uptimes.replenishment -> update( buffs.replenishment != 0 );
+    uptimes.replenishment -> update( sim -> new_replenishment ? ( buffs.new_replenishment != 0 ) : ( buffs.replenishment != 0 ) );
 
     if( sim -> P309 && buffs.water_elemental )
     {
@@ -2101,6 +2192,43 @@ pet_t* player_t::find_pet( const std::string& pet_name )
       return p;
 
   return 0;
+}
+
+// player_t::trigger_replenishment ================================================
+
+void player_t::trigger_replenishment( )
+{
+  player_t* old_receivers[10];
+
+  for ( int count = 0; count < 10; count++ )
+  {
+    old_receivers[ count ] = replenishments.receivers[ count ];
+    if ( replenishments.receivers[ count ] != 0 )
+    {
+      replenishments.receivers[ count ] -> buffs.choose_replenishment = ( ( sim -> new_replenishment & 2 ) == 2 ) ? 1 : 0;
+    }
+  }
+  for ( int count = 0; count < 10; count++ )
+  {
+    if ( ( replenishments.receivers[ count ] == 0 ) || ( ( sim -> new_replenishment & 2 ) != 2 ) )
+    {
+      replenishments.receivers[ count ] = choose_replenishment_receiver( this );
+    }
+    if ( replenishments.receivers[ count ] != 0 )
+    {
+      trigger_new_replenishment( this, replenishments.receivers[ count ] );
+    }
+  }
+  if ( ( sim -> new_replenishment & 4 ) == 4 )
+  {
+    for ( int count = 0; count < 10 ; count++ )
+    {
+      if ( ( old_receivers[ count ] != 0 ) && ( old_receivers[ count ] -> buffs.choose_replenishment == 0 ) )
+      {
+        event_t::early( old_receivers[ count ] -> expirations.new_replenishment );
+      }
+    }
+  }
 }
 
 // player_t::get_talent_trees ===============================================
