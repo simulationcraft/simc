@@ -913,8 +913,8 @@ void warrior_attack_t::player_buff()
     player_crit += 1.0;
   
   if( sim -> debug ) 
-    report_t::log( sim, "warrior_action_t::player_buff: %s hit=%.2f crit=%.2f penetration=%.0f spell_power=%.2f attack_power=%.2f ", 
-                   name(), player_hit, player_crit, player_penetration, player_spell_power, player_attack_power );
+    report_t::log( sim, "warrior_attack_t::player_buff: %s hit=%.2f expertise=%.2f crit=%.2f crit_multiplier=%.2f", 
+		   name(), player_hit, player_expertise, player_crit, player_crit_multiplier );
 }
 
 // warrior_attack_t::ready() ================================================
