@@ -1454,6 +1454,8 @@ struct rip_t : public druid_attack_t
       { NULL }
     };
     parse_options( options, options_str );
+    
+    may_crit              = false;
 
     requires_combo_points = true;
     base_cost             = 30;
@@ -1886,10 +1888,9 @@ struct ferocious_bite_t : public druid_attack_t
 
 struct druid_spell_t : public spell_t
 {
-  bool is_aoe;
   int skip_on_eclipse;
   druid_spell_t( const char* n, player_t* p, int s, int t ) :
-    spell_t( n, p, RESOURCE_MANA, s, t ), is_aoe(false), skip_on_eclipse(0) {}
+    spell_t( n, p, RESOURCE_MANA, s, t ), skip_on_eclipse(0) {}
   virtual void   consume_resource();
   virtual double cost();
   virtual void   execute();
@@ -1996,7 +1997,7 @@ void druid_spell_t::execute()
 
   if( result == RESULT_CRIT )
   {
-    if( p -> _buffs.moonkin_form && ! is_aoe )
+    if( p -> _buffs.moonkin_form && ! aoe )
     {
       p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.02, p -> gains_moonkin_form );
     }
@@ -2004,7 +2005,7 @@ void druid_spell_t::execute()
     trigger_natures_grace( this );
   }
 
-  if( ! is_aoe )
+  if( ! aoe )
   {
     trigger_omen_of_clarity( this );
   }
@@ -2843,7 +2844,7 @@ struct starfall_t : public druid_spell_t
         may_miss          = true;
         may_resist        = true;
         background        = true;
-        is_aoe            = true; // Prevents procing Omen or Moonkin Form mana gains.
+        aoe            = true; // Prevents procing Omen or Moonkin Form mana gains.
         trigger_gcd       = 0;
 
         base_execute_time          = 0;
@@ -2866,7 +2867,7 @@ struct starfall_t : public druid_spell_t
         may_miss          = true;
         may_resist        = true;
         background        = true;
-        is_aoe            = true; // Prevents procing Omen or Moonkin Form mana gains.
+        aoe            = true; // Prevents procing Omen or Moonkin Form mana gains.
         trigger_gcd       = 0;
 
         base_execute_time          = 0;
@@ -2908,7 +2909,7 @@ struct starfall_t : public druid_spell_t
 
     cooldown          = p -> sim -> P309 ? 180 : 90;
     base_execute_time = 0;
-    is_aoe            = true;
+    aoe               = true; // Can the actual CAST of Starfall trigger omen? FIX ME!
     stars             = 10;
 
     static rank_t ranks[] =

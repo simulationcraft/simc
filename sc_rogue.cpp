@@ -2112,7 +2112,8 @@ struct rupture_t : public rogue_attack_t
       
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
-
+    
+    may_crit              = false;    
     requires_combo_points = true;
     base_cost             = 25;
     base_tick_time        = 2.0; 

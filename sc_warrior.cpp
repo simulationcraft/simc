@@ -250,12 +250,10 @@ namespace { // ANONYMOUS NAMESPACE =========================================
 struct warrior_attack_t : public attack_t
 {
   double min_rage, max_rage;
-  bool aoe_attack;
   int stancemask;
   warrior_attack_t( const char* n, player_t* player, int s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true  ) : 
     attack_t( n, player, RESOURCE_RAGE, s, t, special ), 
-    min_rage(0), max_rage(0), 
-    aoe_attack(false),
+    min_rage(0), max_rage(0),
     stancemask(STANCE_BATTLE|STANCE_BERSERKER|STANCE_DEFENSE)
 
   {
@@ -772,7 +770,7 @@ void warrior_attack_t::consume_resource()
   // Only Exception are AoE attacks like Whirlwind/Bladestorm 
   // result != RESULT_NONE is needed so the cost is not reduced when the sim 
   // checks all actions if they are ready base on resource cost.
-  if( aoe_attack )
+  if( aoe )
     return;
   
   if( result_is_hit() )
@@ -1211,7 +1209,7 @@ struct execute_t : public warrior_attack_t
     direct_power_mod  = 0.20;
     
     // Execute consumes rage no matter if it missed or not
-    aoe_attack = true;
+    aoe = true;
     
     stancemask = STANCE_BATTLE | STANCE_BERSERKER;
   }
@@ -1549,7 +1547,7 @@ struct whirlwind_t : public warrior_attack_t
     base_cost        = 25;
     base_multiplier *= 1 + p -> talents.improved_whirlwind * 0.10 + p -> talents.unending_fury * 0.02;
 
-    aoe_attack = true;
+    aoe = true;
     stancemask = STANCE_BERSERKER;
   }
 
