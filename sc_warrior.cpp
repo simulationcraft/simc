@@ -185,7 +185,7 @@ struct warrior_t : public player_t
     gains_unbridled_wrath        = get_gain( "unbridled_wrath" );
     
     // Procs
-    procs_bloodsurge      = get_proc( "bloodusrge" );
+    procs_bloodsurge      = get_proc( "bloodsurge" );
     procs_glyph_overpower = get_proc( "glyph_of_overpower" );
     procs_taste_for_blood = get_proc( "taste_for_blood" );
     
