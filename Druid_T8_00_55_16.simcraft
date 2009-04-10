@@ -16,14 +16,15 @@ actions+=/ferocious_bite,cp>=5,rip>=5,savage_roar>=6
 actions+=/rake
 actions+=/shred
 
+
 # Gear http://www.chardev.org/?template=159033
 # Added +128 AP to cover 2 professions.
 gear_stamina=1044
 gear_strength=10
-gear_agility=925
+gear_agility=917
 gear_attack_power=2245
 gear_expertise_rating=129
-gear_armor_penetration_rating=332
+gear_armor_penetration_rating=340
 gear_hit_rating=259
 gear_crit_rating=515
 gear_haste_rating=297
