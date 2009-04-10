@@ -17,12 +17,13 @@ actions+=/rake
 actions+=/shred
 
 # Gear http://www.chardev.org/?template=159033
-gear_stamina=1056
+# Added +128 AP to cover 2 professions.
+gear_stamina=1044
 gear_strength=10
-gear_agility=941
-gear_attack_power=2117
+gear_agility=925
+gear_attack_power=2245
 gear_expertise_rating=129
-gear_armor_penetration_rating=232
+gear_armor_penetration_rating=332
 gear_hit_rating=259
 gear_crit_rating=515
 gear_haste_rating=297
