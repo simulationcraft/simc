@@ -17,7 +17,7 @@ actions+=/mangle_cat,mangle<=2
 actions+=/rake
 actions+=/shred
 
-# Gear http://www.chardev.org/?template=159033
+# Gear http://www.chardev.org/?template=149559
 # Added +128 AP to cover 2 professions.
 gear_stamina=1044
 gear_strength=10
