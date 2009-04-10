@@ -902,7 +902,7 @@ static void trigger_hunting_party( attack_t* a )
   if( a -> sim -> patch.before(3, 1, 0) )
     chance = p -> talents.hunting_party * 0.20;
   else
-    chance = p -> talents.hunting_party / 3;
+    chance = p -> talents.hunting_party / 3.0;
 
   if ( ! a -> sim -> roll( chance ) )
     return;
