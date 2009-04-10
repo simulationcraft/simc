@@ -159,6 +159,10 @@ struct food_t : public action_t
       player -> attribute[ ATTR_AGILITY ] += 40;
       player -> attribute[ ATTR_STAMINA ] += 40;
       break;
+    case FOOD_DRAGONFIN_FILET:
+      player -> attribute[ ATTR_STRENGTH ] += 40;
+      player -> attribute[ ATTR_STAMINA  ] += 40;
+      break;
     case FOOD_GREAT_FEAST:
       player -> attack_power              += 60;
       player -> spell_power[ SCHOOL_MAX ] += 35;

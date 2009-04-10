@@ -375,6 +375,7 @@ const char* util_t::food_type_string( int food )
   case FOOD_GOLDEN_FISHSTICKS:       return "golden_fishsticks";
   case FOOD_CRUNCHY_SERPENT:         return "crunchy_serpent";
   case FOOD_BLACKENED_DRAGONFIN:     return "blackened_dragonfin";
+  case FOOD_DRAGONFIN_FILET:         return "dragonfin_filet";
   case FOOD_GREAT_FEAST:             return "great_feast";
   case FOOD_FISH_FEAST:              return "fish_feast";
   }
