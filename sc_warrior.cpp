@@ -1387,6 +1387,8 @@ struct overpower_t : public warrior_attack_t
     base_crit      += p -> talents.improved_overpower * 0.25;
     cooldown        = 5.0 - p -> talents.unrelenting_assault * 2.0;
 
+    tiger_gcd = 1.0;
+
     stancemask = STANCE_BATTLE;
     
   }
@@ -1462,7 +1464,7 @@ struct rend_t : public warrior_attack_t
   }
   virtual void execute()
   {
-    base_td = base_td_init + calculate_weapon_damage() / 5;
+    base_td = base_td_init + calculate_weapon_damage() / 5.0;
     warrior_attack_t::execute();
     trigger_blood_frenzy( this );
   }
