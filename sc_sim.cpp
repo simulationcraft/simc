@@ -24,7 +24,7 @@ sim_t::sim_t( sim_t* p ) :
   armor_update_interval(20), optimal_raid(0), potion_sickness(1), average_dmg(1),
   log(0), debug(0), timestamp(1), sfmt(1),
   jow_chance(0), jow_ppm(15.0),
-  new_replenishment(0), 
+  current_id(1), new_replenishment(0), 
   wheel_seconds(0), wheel_size(0), wheel_mask(0), timing_slice(0), wheel_granularity(0.0),
   raid_dps(0), total_dmg(0), total_seconds(0), elapsed_cpu_seconds(0), merge_ignite(0), report_progress(1),
   output_file(stdout), html_file(0), wiki_file(0), thread_handle(0)
@@ -691,6 +691,17 @@ player_t* sim_t::find_player( const std::string& name )
   return 0;
 }
 
+// sim_t::find_player ( int id ) =======================================================
+
+player_t* sim_t::find_player( int id )
+{
+  for( player_t* p = player_list; p; p = p -> next )
+  {
+    if( id == p -> id ) return p;
+  }
+  return 0;
+}
+
 // sim_t::parse_option ======================================================
 
 bool sim_t::parse_option( const std::string& name,
@@ -757,8 +768,6 @@ bool sim_t::parse_option( const std::string& name,
     { "wheel_granularity",                OPT_FLT,    &( wheel_granularity                        ) },
     { "wheel_seconds",                    OPT_INT,    &( wheel_seconds                            ) },
     { "wiki",                             OPT_STRING, &( wiki_file_str                            ) },
-
-    // Flags: 1 == Use new model. 2 == Priortise current receivers over new ones. 4 == Hard limit of 10 buffs at a time per provider
     { "new_replenishment",                OPT_INT,    &( new_replenishment                        ) },
     // Overrides - Buffs/Debuffs
     { "affliction_effects",     OPT_INT, &( overrides.affliction_effects      ) },

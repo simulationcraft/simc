@@ -1122,7 +1122,7 @@ static void trigger_replenishment( spell_t* s )
   if( ! p -> talents.improved_water_elemental )
     return;
 
-  if( s -> sim -> roll( p -> talents.improved_water_elemental / 3.0 ) )
+  if( ! s -> sim -> roll( p -> talents.improved_water_elemental / 3.0 ) )
     return;
 
   if ( s -> sim -> new_replenishment )

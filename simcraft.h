@@ -310,6 +310,7 @@ struct sim_t
   int         infinite_resource[ RESOURCE_MAX ];
   int         armor_update_interval, optimal_raid, potion_sickness, average_dmg, log, debug, timestamp, sfmt;
   double      jow_chance, jow_ppm;
+  int         current_id;
   int         new_replenishment;
 
   std::vector<std::string> party_encoding;
@@ -452,6 +453,7 @@ struct sim_t
   bool      cooldown_ready( double cooldown_time ) { return cooldown_time <= current_time; }
   int       roll( double chance ) { return rng -> roll( chance ); }
   player_t* find_player( const std::string& name );
+  player_t* find_player( int id );
 };
 
 // Scaling ===================================================================
@@ -532,6 +534,7 @@ struct player_t
 {
   sim_t*      sim;
   std::string name_str, talents_str;
+  int         id;
   player_t*   next;
   int         type, level, party, member;
   double      gcd_ready, base_gcd;
@@ -787,7 +790,8 @@ struct player_t
 
   struct replenishments_t
   {
-    player_t* receivers[10];
+    int receivers[10];
+    int invalid_target;
     void reset() { memset( (void*) this, 0x0, sizeof( replenishments_t ) ); }
     replenishments_t() { reset(); }
   };

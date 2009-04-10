@@ -86,6 +86,11 @@ void pet_t::summon()
 
 void pet_t::dismiss()
 {
+  if ( expirations.new_replenishment != 0 )
+  {
+    event_t::early( expirations.new_replenishment );
+    expirations.new_replenishment = 0;
+  }
   if( sim -> log ) report_t::log( sim, "%s dismisses %s", owner -> name(), name() );
 
   sleeping = 1;

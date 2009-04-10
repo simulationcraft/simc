@@ -2402,7 +2402,8 @@ struct cat_form_t : public druid_spell_t
       if( d -> melee_attack )
         d -> melee_attack -> cancel(); // Force melee swing to restart if necessary
     }
-
+ 
+    d -> replenishments.invalid_target = 1;
     d -> _buffs.cat_form = 1;
     d -> base_gcd = 1.0;
     d -> reset_gcd();
@@ -2444,6 +2445,7 @@ struct moonkin_form_t : public druid_spell_t
     if( sim -> log ) report_t::log( sim, "%s performs %s", d -> name(), name() );
 
     d -> _buffs.moonkin_form = 1;
+    d -> replenishments.invalid_target = 0;
 
     for( player_t* p = sim -> player_list; p; p = p -> next )
     {
