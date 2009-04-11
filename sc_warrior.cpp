@@ -476,21 +476,24 @@ static void trigger_deep_wounds( action_t* a )
   double dw_damage             = 0;
   double dw_weapon_damage      = 0;
   double tmp_weapon_multiplier = 0;
+  bool   tmp_weapon_normalize  = false;
 
   // Every action HAS to have an weapon associated.
   assert( a -> weapon != 0 );
   
   // But multiplier is set to 0 for attacks like Bloodthirst, Execute
   // So get the wepaon_damage with a multiplier of 1.0 for DW calculation
-  
+  // Also Deep wounds uses un-normalized weapon speed.
+  tmp_weapon_normalize  = a -> normalize_weapon_speed;
   tmp_weapon_multiplier = a -> weapon_multiplier;
-  a -> weapon_multiplier = 1.0;
+  a -> weapon_multiplier      = 1.0;
+  a -> normalize_weapon_speed = false;
 
   dw_weapon_damage = a -> calculate_weapon_damage();
   dw_damage        = p -> talents.deep_wounds * 0.16 * dw_weapon_damage;
-  dw_damage       *= a -> total_dd_multiplier();
 
-  a -> weapon_multiplier = tmp_weapon_multiplier;
+  a -> weapon_multiplier =      tmp_weapon_multiplier;
+  a -> normalize_weapon_speed = tmp_weapon_normalize;
 
   if( ! p -> active_deep_wounds ) p -> active_deep_wounds = new deep_wounds_t( p );
 
