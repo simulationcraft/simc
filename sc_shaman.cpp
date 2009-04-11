@@ -3027,6 +3027,7 @@ struct spirit_wolf_spell_t : public shaman_spell_t
     parse_options( options, options_str );
 
     cooldown   = 180.0;
+    trigger_gcd = 0;
     base_cost  = p -> resource_max[ RESOURCE_MANA ] * 0.12;
   }
 
