@@ -203,6 +203,15 @@ void action_t::player_buff()
   }
 
   if( p -> type == PLAYER_GUARDIAN ) return;  // Guardians do not benefit from auras
+  
+  if( school == SCHOOL_SHADOW )
+  {
+    // That needs to be here because shadow form affects ALL shadow damage (e.g. trinkets)
+    if( p -> buffs.shadow_form )
+    {
+      player_multiplier *= 1.15;
+    }
+  }
 
   if( p -> buffs.sanctified_retribution || t -> debuffs.ferocious_inspiration  ) 
   {
