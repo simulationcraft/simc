@@ -41,7 +41,7 @@ struct warrior_t : public player_t
   struct _cooldowns_t
   {
     double taste_for_blood;
-
+    double sword_specialization;
     void reset() { memset( (void*) this, 0x00, sizeof( _cooldowns_t ) ); }
     _cooldowns_t() { reset(); }
   };
@@ -77,6 +77,7 @@ struct warrior_t : public player_t
   // Procs
   proc_t* procs_bloodsurge;
   proc_t* procs_glyph_overpower;
+  proc_t* procs_sword_specialization;
   proc_t* procs_taste_for_blood;
   
   // Up-Times
@@ -185,9 +186,10 @@ struct warrior_t : public player_t
     gains_unbridled_wrath        = get_gain( "unbridled_wrath" );
     
     // Procs
-    procs_bloodsurge      = get_proc( "bloodsurge" );
-    procs_glyph_overpower = get_proc( "glyph_of_overpower" );
-    procs_taste_for_blood = get_proc( "taste_for_blood" );
+    procs_bloodsurge           = get_proc( "bloodsurge" );
+    procs_glyph_overpower      = get_proc( "glyph_of_overpower" );
+    procs_sword_specialization = get_proc( "sword_specialization" );
+    procs_taste_for_blood      = get_proc( "taste_for_blood" );
     
     // Up-Times
     uptimes_flurry                = get_uptime( "flurry" );
@@ -344,7 +346,7 @@ static void trigger_bloodsurge( action_t* a )
     
   warrior_t* p = a -> player -> cast_warrior();
   
-  if( ! a -> result_is_hit() )
+  if( a -> result_is_miss() )
     return;
   
   double chance = util_t::talent_rank( p -> talents.bloodsurge, 3, 0.07, 0.13, 0.20 );
@@ -563,6 +565,48 @@ static void trigger_overpower_activation( attack_t* a )
   p -> aura_gain( "Overpower Activation" );
 }
 
+// trigger_sword_specialization =============================================
+
+static void trigger_sword_specialization( attack_t* a )
+{
+  if( a -> proc ) return;
+  
+  if( a -> result_is_miss() ) return;
+
+  weapon_t* w = a -> weapon;
+
+  if( ! w ) return;
+
+  if( w -> type != WEAPON_SWORD && w -> type != WEAPON_SWORD_2H )
+    return;
+  
+  warrior_t* p = a -> player -> cast_warrior();
+
+  if( ! p -> talents.sword_specialization )
+    return;
+
+  if( ! a -> sim -> cooldown_ready( p -> _cooldowns.sword_specialization ) )
+    return;
+
+  if( a -> sim -> roll( p -> talents.sword_specialization * 0.01 ) )
+  {
+    p -> procs_sword_specialization -> occur();
+    p -> _cooldowns.sword_specialization = a -> sim -> current_time + 6.0;
+    if( w -> slot == SLOT_MAIN_HAND )
+    {
+      p -> main_hand_attack -> proc = true;
+      p -> main_hand_attack -> execute();
+      p -> main_hand_attack -> proc = false;
+    }
+    else if( w -> slot == SLOT_OFF_HAND )
+    {
+      p -> off_hand_attack -> proc = true;
+      p -> off_hand_attack -> execute();
+      p -> off_hand_attack -> proc = false;
+    }
+  }
+}
+
 // trigger_taste_for_blood ==================================================
 
 static void trigger_taste_for_blood( attack_t* a )
@@ -643,7 +687,7 @@ static void trigger_unbridled_wrath( action_t* a )
 {
   warrior_t* p = a -> player -> cast_warrior();
   
-  if( ! a -> result_is_hit() )
+  if( a -> result_is_miss() )
     return;
     
   if( ! p -> talents.unbridled_wrath )
@@ -831,10 +875,13 @@ void warrior_attack_t::consume_resource()
   
   if( result_is_hit() )
     return;
-
-  warrior_t* p = player -> cast_warrior();  
-  double rage_restored = resource_consumed * 0.80;
-  p -> resource_gain( RESOURCE_RAGE, rage_restored, p -> gains_avoided_attacks );
+  
+  if( resource_consumed > 0 )
+  {
+    warrior_t* p = player -> cast_warrior();  
+    double rage_restored = resource_consumed * 0.80;
+    p -> resource_gain( RESOURCE_RAGE, rage_restored, p -> gains_avoided_attacks );
+  }
 }
 // warrior_attack_t::execute =================================================
 
@@ -1044,8 +1091,6 @@ struct melee_t : public warrior_attack_t
 
     warrior_attack_t::execute();
     
-    trigger_unbridled_wrath( this );
-    
     if( result_is_hit() )
     {
       /* http://www.wowwiki.com/Formulas:Rage_generation
@@ -1074,6 +1119,8 @@ struct melee_t : public warrior_attack_t
          
       p -> resource_gain( RESOURCE_RAGE, rage_gained, weapon -> slot == SLOT_OFF_HAND ? p -> gains_oh_attack : p -> gains_mh_attack );
     }
+    trigger_unbridled_wrath( this );
+    trigger_sword_specialization( this );
   }
 };
 
@@ -1182,11 +1229,13 @@ struct heroic_strike_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
     warrior_attack_t::execute();
 
-    trigger_tier8_2pc( this );
-    trigger_unbridled_wrath( this );
     if( sim -> P309 && result == RESULT_CRIT )
       if( p -> glyphs.heroic_strike )
         p -> resource_gain( RESOURCE_RAGE, 10.0, p -> gains_glyph_of_heroic_strike );
+
+    trigger_tier8_2pc( this );
+    trigger_unbridled_wrath( this );
+    trigger_sword_specialization( this );
   }
   virtual bool ready()
   {
