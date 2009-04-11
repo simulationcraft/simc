@@ -1193,7 +1193,7 @@ void player_t::combat_begin()
   if( sim -> overrides.moonkin_aura           ) buffs.moonkin_aura = 1;
   if( sim -> overrides.rampage                ) buffs.rampage = 1;
   if( sim -> overrides.replenishment          ) buffs.replenishment = 1;
-  if( sim -> overrides.strength_of_earth      ) buffs.strength_of_earth = 99;
+  if( sim -> overrides.strength_of_earth      ) buffs.strength_of_earth = 178;
   if( sim -> overrides.totem_of_wrath         ) buffs.totem_of_wrath = 280;
   if( sim -> overrides.trueshot_aura          ) buffs.trueshot_aura = 1;
   if( sim -> overrides.unleashed_rage         ) buffs.unleashed_rage = 1;

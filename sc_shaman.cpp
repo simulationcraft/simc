@@ -2455,7 +2455,7 @@ struct strength_of_earth_totem_t : public shaman_spell_t
     base_cost_reduction += ( p -> talents.totemic_focus    * 0.05 +
 			     p -> talents.mental_quickness * 0.02 );
 
-    bonus  = util_t::ability_rank( p -> level,  86,65,  77,0 );
+    bonus  = util_t::ability_rank( p -> level,  155,80, 115,75, 86,65,  77,0 );
     bonus *= 1.0 + p -> talents.enhancing_totems * 0.05;
   }
 
