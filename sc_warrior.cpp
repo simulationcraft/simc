@@ -592,11 +592,15 @@ static void trigger_sword_specialization( attack_t* a )
   {
     p -> procs_sword_specialization -> occur();
     p -> _cooldowns.sword_specialization = a -> sim -> current_time + 6.0;
-    if( w -> slot == SLOT_MAIN_HAND )
-    {
+    /* http://elitistjerks.com/f81/t37807-depth_arms_dps_discussion/p27/#post1186561
+    // I'm suprised to see that offhand sword spec still procs a main hand attack
+    */
+    // if( w -> slot == SLOT_MAIN_HAND )
+    // {
       p -> main_hand_attack -> proc = true;
       p -> main_hand_attack -> execute();
       p -> main_hand_attack -> proc = false;
+    /*
     }
     else if( w -> slot == SLOT_OFF_HAND )
     {
@@ -604,6 +608,7 @@ static void trigger_sword_specialization( attack_t* a )
       p -> off_hand_attack -> execute();
       p -> off_hand_attack -> proc = false;
     }
+    */
   }
 }
 
