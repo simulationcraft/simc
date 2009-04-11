@@ -2122,7 +2122,7 @@ void warrior_t::init_base()
   initial_attack_power_per_agility  = 0.0;
   
   // FIX ME!
-  base_attack_power = level * 2 -20;
+  base_attack_power = level * 2 +60;
   base_attack_crit = 0.031905;
   base_attack_expertise  = 0.25 * talents.vitality * 0.02;  
   base_attack_expertise += 0.25 * talents.strength_of_arms * 0.02;  
