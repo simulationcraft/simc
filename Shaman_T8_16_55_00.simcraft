@@ -1,4 +1,5 @@
 #!simcraft optimal_raid=1 max_time=300
+
 patch=3.1.0
 shaman=Shaman_T8_16_55_00
 level=80
@@ -7,22 +8,18 @@ actions=flask,type=endless_rage/food,type=fish_feast/windfury_weapon,weapon=main
 actions+=/strength_of_earth_totem/windfury_totem/bloodlust,time_to_die<=60
 actions+=/auto_attack/lightning_bolt,maelstrom=5/shamanistic_rage/stormstrike/earth_shock/magma_totem/lightning_shield/lava_lash/spirit_wolf
 
-# Gear: http://www.chardev.org/?template=158797
+# Gear: http://www.chardev.org/ptr/?template=159696
 gear_stamina=858
 gear_strength=10
 gear_agility=760
 gear_intellect=380
 gear_spirit=10
-gear_attack_power=2159
-gear_expertise_rating=194
+gear_attack_power=2255
+gear_expertise_rating=138
 gear_armor_penetration_rating=68
-gear_hit_rating=347
+gear_hit_rating=371
 gear_crit_rating=682
 gear_haste_rating=201
-
-# 3.1 Unleashed Rage gives 9 Expertise
-enchant_attack_power=+144
-enchant_expertise_rating=-72
 
 # Set Bonuses
 tier7_2pc=1
@@ -32,8 +29,8 @@ tier7_4pc=1
 relentless_earthstorm=1
 
 # Weapons
-main_hand=fist,dps=171,speed=2.6,enchant=berserking
-off_hand=mace,dps=157,speed=2.5,enchant=berserking
+main_hand=fist,dps=171.3,speed=2.6,enchant=berserking
+off_hand=mace,dps=156.6,speed=2.5,enchant=berserking
 
 # Item Procs
 grim_toll=1
@@ -42,7 +39,7 @@ mirror_of_truth=1
 # Glyphs
 glyph_windfury_weapon=1
 glyph_stormstrike=1
-glyph_lightning_shield=1
+glyph_feral_spirit=1
 
 # Totem
 totem_of_dueling=1
