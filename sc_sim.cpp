@@ -200,6 +200,7 @@ void sim_t::combat( int iteration )
     }
     if( target -> initial_health > 0 && target -> current_health <= 0 )
     {
+      target -> recalculate_health();
       if( debug ) report_t::log( this, "Target has died, ending simulation" );     
       delete e;
       break;

@@ -62,8 +62,18 @@ void target_t::assess_damage( double amount,
 
 void target_t::recalculate_health()
 {
-  current_health = total_dmg;
-  initial_health = current_health * ( sim -> max_time / sim -> current_time );
+  if( sim -> max_time == 0 ) return;
+
+  if( initial_health == 0 )
+  {
+    current_health = total_dmg;
+    initial_health = current_health * ( sim -> max_time / sim -> current_time );
+  }
+  else if( current_health <= 0 )
+  {
+    double adjust = initial_health * ( sim -> max_time - sim -> current_time ) / sim -> max_time;
+    initial_health += adjust / ( sim -> current_iteration + 1 );
+  }
   
   if( sim -> debug ) report_t::log( sim, "Target initial health calculated to be %.0f", initial_health );     
 }
