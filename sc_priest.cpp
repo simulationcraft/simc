@@ -660,7 +660,13 @@ void priest_spell_t::player_buff()
     {
       player_multiplier *= 1.0 + p -> _buffs.shadow_weaving * 0.02;
     }
+
+    if( p -> buffs.shadow_form )
+    {
+      player_multiplier *= 1.15;
+    }
   }
+
   if( p -> talents.focused_power )
   {
     player_multiplier *= 1.0 + p -> talents.focused_power * 0.02;

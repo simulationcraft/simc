@@ -204,14 +204,6 @@ void action_t::player_buff()
 
   if( p -> type == PLAYER_GUARDIAN ) return;  // Guardians do not benefit from auras
 
-  if( school == SCHOOL_SHADOW )
-  {
-    if( p -> buffs.shadow_form )
-    {
-      player_multiplier *= 1.15;
-    }
-  }
-
   if( p -> buffs.sanctified_retribution || t -> debuffs.ferocious_inspiration  ) 
   {
     player_multiplier *= 1.03;
