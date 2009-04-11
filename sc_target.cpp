@@ -13,7 +13,7 @@
 
 target_t::target_t( sim_t* s ) :
   sim(s), name_str("Fluffy Pillow"), race(RACE_HUMANOID), level(83), 
-  initial_armor(0), armor(0), block_value(0), shield(0), 
+  initial_armor(-1), armor(0), block_value(0), shield(0), 
   initial_health( 0 ), current_health(0), total_dmg(0), uptime_list(0)
 {
   for( int i=0; i < SCHOOL_MAX; i++ ) spell_resistance[ i ] = 0;
@@ -142,7 +142,7 @@ uptime_t* target_t::get_uptime( const std::string& name )
 
 void target_t::init()
 {
-  if( initial_armor == 0 ) initial_armor = sim -> P309 ? 13000 : 10645;
+  if( initial_armor < 0 ) initial_armor = sim -> P309 ? 13000 : 10645;
 
   if( ! race_str.empty() )
   {
