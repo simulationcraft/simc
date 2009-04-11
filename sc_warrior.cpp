@@ -1387,7 +1387,7 @@ struct overpower_t : public warrior_attack_t
     base_crit      += p -> talents.improved_overpower * 0.25;
     cooldown        = 5.0 - p -> talents.unrelenting_assault * 2.0;
 
-    tiger_gcd = 1.0;
+    trigger_gcd = 1.0;
 
     stancemask = STANCE_BATTLE;
     

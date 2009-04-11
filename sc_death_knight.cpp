@@ -484,7 +484,7 @@ death_knight_attack_t::execute()
 void
 death_knight_attack_t::player_buff()
 {
-  death_knight_t* p = player -> cast_death_knight();
+  //death_knight_t* p = player -> cast_death_knight();
 
   attack_t::player_buff();
 
@@ -681,7 +681,7 @@ struct death_knight_disease_t : public death_knight_spell_t
     death_knight_disease_t( const char* name, player_t* player, int s, int t) :
 			death_knight_spell_t( name, player, s, t)
 		{
-			death_knight_t* p = player -> cast_death_knight();
+		  //death_knight_t* p = player -> cast_death_knight();
 
       execute_once = false;
 	      
@@ -944,7 +944,7 @@ struct obliterate_t : public death_knight_attack_t
 		death_knight_attack_t::execute();
 		if (result_is_hit()) 
 		{
-      int before = p -> diseases;
+		  //int before = p -> diseases;
 
 			if ( p -> active_blood_plague && p -> active_blood_plague -> ticking )
         p -> active_blood_plague -> cancel();
