@@ -4641,7 +4641,10 @@ struct spell_stone_t : public warlock_spell_t
 
     bonus_haste = util_t::ability_rank( p -> level,  60,80,  50,72,  40,66,  30,0 );
     
-    bonus_haste = (int) ( bonus_haste * ( 1.0 + p -> talents.master_conjuror * 1.50 ) );
+    if( sim -> patch.before( 3, 1, 0 ) )
+      bonus_haste = (int) ( bonus_haste * ( 1.0 + p -> talents.master_conjuror * 0.15 ) );
+    else
+      bonus_haste = (int) ( bonus_haste * ( 1.0 + p -> talents.master_conjuror * 1.50 ) );
   }
 
   virtual void execute()
