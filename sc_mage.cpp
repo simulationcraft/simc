@@ -45,7 +45,6 @@ struct mage_t : public player_t
   struct _expirations_t
   {
     event_t* arcane_blast;
-    event_t* replenishment;
     event_t* hot_streak;
     event_t* missile_barrage;
     event_t* brain_freeze;
@@ -1125,43 +1124,7 @@ static void trigger_replenishment( spell_t* s )
   if( ! s -> sim -> roll( p -> talents.improved_water_elemental / 3.0 ) )
     return;
 
-  if ( s -> sim -> new_replenishment )
-  {
-    p -> trigger_replenishment();
-    return;
-  }
-
-  struct replenishment_expiration_t : public event_t
-  {
-    replenishment_expiration_t( sim_t* sim, mage_t* m ) : event_t( sim, m )
-    {
-      name = "Replenishment Expiration";
-      for( player_t* p = sim -> player_list; p; p = p -> next )
-      {
-        p -> buffs.replenishment++;
-      }
-      sim -> add_event( this, 15.0 );
-    }
-    virtual void execute()
-    {
-      for( player_t* p = sim -> player_list; p; p = p -> next )
-      {
-        p -> buffs.replenishment--;
-      }
-      player -> cast_mage() -> _expirations.replenishment = 0;
-    }
-  };
-
-  event_t*& e = p -> _expirations.replenishment;
-
-  if( e )
-  {
-    e -> reschedule( 15.0 );
-  }
-  else
-  {
-    e = new ( s -> sim ) replenishment_expiration_t( s -> sim, p );
-  }
+  p -> trigger_replenishment();
 }
 
 // trigger_ashtongue_talisman ======================================================

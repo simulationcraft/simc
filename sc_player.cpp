@@ -92,41 +92,168 @@ static void trigger_focus_magic_feedback( spell_t* spell )
   }
 }
 
-// trigger_new_replenishment =============================================
+// choose_replenish_targets ==============================================
 
-static void trigger_new_replenishment( player_t* provider, player_t* receiver )
+static void choose_replenish_targets( player_t* provider )
 {
-  struct replenishment_expiration_t : public event_t
-  {
-    player_t* replenishment_provider;
-    player_t* replenishment_receiver;
+  sim_t* sim = provider -> sim;
 
-    replenishment_expiration_t( sim_t* sim, player_t* provider, player_t* receiver ) : event_t( sim, receiver ), 
-      replenishment_provider( provider ), replenishment_receiver ( receiver )
+  std::vector<player_t*>& candidates = sim      -> replenishment_candidates;
+  std::vector<player_t*>& targets    = provider -> replenishment_targets;
+
+  if( sim -> replenishment_candidates.empty() )
+  {
+    for( player_t* p = sim -> player_list; p; p = p -> next )
+    {
+      if( p -> type != PLAYER_GUARDIAN && 
+	  p -> primary_resource() == RESOURCE_MANA )
+      {
+	sim -> replenishment_candidates.push_back( p );
+      }
+    }
+  }
+
+  // If replenishment is not missing from any of the candidates, then the target list will not change
+
+  bool replenishment_missing = false;
+  for( int i = candidates.size() - 1; i >= 0; i-- ) 
+  {
+    player_t* p = candidates[ i ];
+
+    if( ! p -> sleeping && ! p -> buffs.replenishment )
+    {
+      replenishment_missing = true;
+      break;
+    }
+  }
+
+  if( replenishment_missing )
+  {
+    for( int i = targets.size() - 1; i >= 0; i-- ) 
+    {
+      targets[ i ] -> aura_loss( "Replenishment" );
+      targets[ i ] -> buffs.replenishment = 0;
+    }
+    targets.clear();
+
+    for( int i=0; i < sim -> replenishment_targets; i++ )
+    {
+      player_t* min_player=0;
+      double    min_mana=0;
+    
+      for( int j = candidates.size() - 1; j >= 0; j-- )
+      {
+	player_t* p = candidates[ j ];
+
+	if( p -> sleeping || p -> buffs.replenishment ) continue;
+
+	if( ! min_player || min_mana > p -> resource_current[ RESOURCE_MANA ] )
+	{
+	  min_player = p;
+	  min_mana   = p -> resource_current[ RESOURCE_MANA ];
+	}
+      }
+      if( min_player )
+      {
+	min_player -> aura_gain( "Replenishment" );
+	min_player -> buffs.replenishment = 1;
+	targets.push_back( min_player );
+      }
+      else break;
+    }
+  }
+}
+
+// replenish_targets =====================================================
+
+static void replenish_targets( player_t* provider )
+{
+  sim_t* sim = provider -> sim;
+
+  choose_replenish_targets( provider );
+
+  if( provider -> replenishment_targets.empty() )
+    return;
+
+  struct replenish_tick_t : public event_t
+  {
+    int ticks_remaining;
+
+    replenish_tick_t( sim_t* sim, player_t* provider, int ticks ) : event_t( sim, provider ), ticks_remaining( ticks )
+    {
+      name = "Replenishment Tick";
+      sim -> add_event( this, 1.0 );
+    }
+    virtual void execute()
+    {
+      for( int i = player -> replenishment_targets.size() - 1; i >= 0; i-- )
+      {
+	player_t* p = player -> replenishment_targets[ i ];
+	if( p -> sleeping ) continue;
+
+	p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.0025, p -> gains.replenishment );
+      }
+
+      event_t*& e = player -> expirations.replenishment;
+
+      if( --ticks_remaining == 0 )
+      {
+	e = 0;
+      }
+      else
+      {
+	e = new ( sim ) replenish_tick_t( sim, player, ticks_remaining );
+      }
+    }
+    virtual void reschedule( double new_time )
+    {
+      event_t::reschedule( new_time );
+      ticks_remaining = 15;
+    }
+  };
+
+  event_t*& e = provider -> expirations.replenishment;
+
+  if( e )
+  {
+    e -> reschedule( 1.0 );
+  }
+  else
+  {
+    e = new ( sim ) replenish_tick_t( sim, provider, 15 );
+  }
+}
+
+// replenish_raid ========================================================
+
+static void replenish_raid( player_t* provider )
+{
+  sim_t* sim = provider -> sim;
+
+  struct replenish_expiration_t : public event_t
+  {
+    replenish_expiration_t( sim_t* sim, player_t* provider ) : event_t( sim, provider )
     {
       name = "Replenishment Expiration";
-      replenishment_receiver -> aura_gain( "Replenishment" );
-      replenishment_receiver -> buffs.new_replenishment = replenishment_provider;
-      if( sim -> debug )
-        report_t::log( sim, "Replenishment gain: Provider: %s, Receiver: %s",
-                       replenishment_provider -> name(), replenishment_receiver -> name() );
+      for( player_t* p = sim -> player_list; p; p = p -> next )
+      {
+       	if( p -> buffs.replenishment == 0 ) p -> aura_gain( "Replenishment" );
+        p -> buffs.replenishment++;
+      }
       sim -> add_event( this, 15.0 );
     }
     virtual void execute()
     {
-      replenishment_receiver -> aura_loss( "Replenishment" );
-      replenishment_receiver -> buffs.new_replenishment = 0;
-      replenishment_receiver -> expirations.new_replenishment = 0;
-      if( sim -> debug )
-        report_t::log( sim, "Replenishment loss: Provider: %s, Receiver: %s",
-                       replenishment_provider -> name(), replenishment_receiver -> name() );
+      for( player_t* p = sim -> player_list; p; p = p -> next )
+      {
+        p -> buffs.replenishment--;
+       	if( p -> buffs.replenishment == 0 ) p -> aura_loss( "Replenishment" );
+      }
+      player -> expirations.replenishment = 0;
     }
   };
 
-  if ( ( receiver == 0 ) || ( ( receiver -> buffs.new_replenishment != 0 ) && ( receiver -> buffs.new_replenishment != provider ) ) )
-    return;
-
-  event_t*& e = receiver -> expirations.new_replenishment;
+  event_t*& e = provider -> expirations.replenishment;
 
   if( e )
   {
@@ -134,52 +261,8 @@ static void trigger_new_replenishment( player_t* provider, player_t* receiver )
   }
   else
   {
-    e = new ( provider -> sim ) replenishment_expiration_t( provider -> sim, provider, receiver );
+    e = new ( sim ) replenish_expiration_t( sim, provider );
   }
-}
-
-// choose_replenishment_receiver =============================================
-
-static player_t *choose_replenishment_receiver( player_t* provider )
-{
-  player_t* p_min = 0;
-  double min_mana = 1.0E+20;
-  
-  for( player_t* p = provider -> sim -> player_list; p; p = p -> next )
-  {
-    if ( p -> sleeping || ( p -> type == PLAYER_PET ) || ( p -> type == PLAYER_GUARDIAN ) || ( p -> type == PLAYER_NONE ) )
-      continue;
-    if ( ( p -> buffs.choose_replenishment == 0 ) &&
-         ( ( p -> buffs.new_replenishment == 0 ) || ( p -> buffs.new_replenishment == provider ) ) && 
-         ( p -> resource_max[ RESOURCE_MANA ] > 1000 ) && ( p -> replenishments.invalid_target == 0 ) )
-    {
-      if ( p -> resource_current [ RESOURCE_MANA ] < min_mana )
-      {
-        p_min = p;
-        min_mana = p -> resource_current [ RESOURCE_MANA ];
-      }
-    }
-    for( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
-    {
-      if ( pet -> sleeping || ( pet -> type == PLAYER_GUARDIAN ) || ( pet -> type == PLAYER_NONE ) )
-        continue;
-      if ( ( pet -> buffs.choose_replenishment == 0 ) &&
-           ( ( pet -> buffs.new_replenishment == 0 ) || ( pet -> buffs.new_replenishment == provider ) ) && 
-           ( pet -> resource_max[ RESOURCE_MANA ] > 1000 ) && ( pet -> replenishments.invalid_target == 0 ) )
-      {
-        if ( pet -> resource_current [ RESOURCE_MANA ] < min_mana )
-        {
-          p_min = (player_t *) pet;
-          min_mana = pet -> resource_current [ RESOURCE_MANA ];
-        }
-      }
-    }
-  }
-  if ( p_min != 0 )
-  {
-    p_min -> buffs.choose_replenishment = 1;
-  }
-  return p_min;
 }
 
 } // ANONYMOUS NAMESPACE ===================================================
@@ -243,7 +326,7 @@ void player_t::gear_t::allocate_attack_power_budget( sim_t* sim )
 player_t::player_t( sim_t*             s, 
                     int                t,
                     const std::string& n ) :
-  sim(s), name_str(n), id(s -> current_id++), next(0), type(t), level(80), party(0), member(0), gcd_ready(0), base_gcd(1.5), sleeping(0), pet_list(0),
+  sim(s), name_str(n), next(0), type(t), level(80), party(0), member(0), gcd_ready(0), base_gcd(1.5), sleeping(0), pet_list(0),
   // Haste
   base_haste_rating(0), initial_haste_rating(0), haste_rating(0), spell_haste(1.0), attack_haste(1.0),
   // Spell Mechanics
@@ -1302,7 +1385,8 @@ void player_t::reset()
   buffs.reset();
   expirations.reset();
   cooldowns.reset();
-  replenishments.reset();
+
+  replenishment_targets.clear();
 
   init_resources( true );
 
@@ -1450,13 +1534,13 @@ void player_t::regen( double periodicity )
 
     resource_gain( RESOURCE_MANA, mp5_regen, gains.mp5_regen );
 
-    if( sim -> overrides.replenishment || ( ( sim -> new_replenishment != 0 ) ? ( buffs.new_replenishment != 0 ) : ( buffs.replenishment != 0 ) ) )
+    if( sim -> overrides.replenishment || ( buffs.replenishment && sim -> replenishment_targets <= 0 ) )
     {
       double replenishment_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.0025 / 1.0;
 
       resource_gain( RESOURCE_MANA, replenishment_regen, gains.replenishment );
     }
-    uptimes.replenishment -> update( sim -> new_replenishment ? ( buffs.new_replenishment != 0 ) : ( buffs.replenishment != 0 ) );
+    uptimes.replenishment -> update( buffs.replenishment != 0 );
 
     if( sim -> P309 && buffs.water_elemental )
     {
@@ -2201,37 +2285,18 @@ pet_t* player_t::find_pet( const std::string& pet_name )
 
 // player_t::trigger_replenishment ================================================
 
-void player_t::trigger_replenishment( )
+void player_t::trigger_replenishment()
 {
-  player_t* old_receivers[10];
-  player_t* receiver;
+  if( sim -> overrides.replenishment ) 
+    return;
 
-  for ( int count = 0; count < 10; count++ )
-  {  
-    old_receivers[ count ] = sim -> find_player( replenishments.receivers[ count ] );
-    if ( old_receivers[ count ] != 0 )
-    {
-      old_receivers[ count ] -> buffs.choose_replenishment = 0;
-    }
-    replenishments.receivers[ count ] = 0;
-  }
-  for ( int count = 0; count < 10; count++ )
+  if( sim -> replenishment_targets > 0 )
   {
-    receiver = choose_replenishment_receiver( this );
-    if ( receiver != 0 )
-    {
-      replenishments.receivers[ count ] = receiver -> id;
-      trigger_new_replenishment( this, receiver );
-    }
+    replenish_targets( this );
   }
-  for ( int count = 0; count < 10 ; count++ )
+  else
   {
-    if ( ( old_receivers[ count ] != 0 ) && ( old_receivers[ count ] -> buffs.choose_replenishment == 0 ) &&
-         ( old_receivers[ count ] -> expirations.new_replenishment != 0 ) &&
-         ( old_receivers[ count ] -> expirations.new_replenishment -> canceled == 0 ) )
-    {
-      event_t::early( old_receivers[ count ] -> expirations.new_replenishment );
-    }
+    replenish_raid( this );
   }
 }
 

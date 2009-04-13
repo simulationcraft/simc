@@ -63,7 +63,6 @@ struct hunter_t : public player_t
   {
     event_t* cobra_strikes;
     event_t* expose_weakness;
-    event_t* hunting_party;
     event_t* improved_aspect_of_the_hawk;
     event_t* improved_steady_shot;
     event_t* lock_and_load;
@@ -898,53 +897,12 @@ static void trigger_hunting_party( attack_t* a )
   if ( ! p -> talents.hunting_party )
     return;
 
-  double chance = 0;
-  if( a -> sim -> patch.before(3, 1, 0) )
-    chance = p -> talents.hunting_party * 0.20;
-  else
-    chance = p -> talents.hunting_party / 3.0;
+  double chance = p -> talents.hunting_party / ( a -> sim -> P309 ? 5.0 : 3.0 );
 
   if ( ! a -> sim -> roll( chance ) )
     return;
 
-  if ( a -> sim -> new_replenishment )
-  {
-    a -> player -> trigger_replenishment();
-    return;
-  }
-
-  struct hunting_party_expiration_t : public event_t
-  {
-    hunting_party_expiration_t( sim_t* sim, hunter_t* h ) : event_t( sim, h )
-    {
-      name = "Hunting Party Expiration";
-      for( player_t* p = sim -> player_list; p; p = p -> next )
-      {
-        p -> buffs.replenishment++;
-      }
-      sim -> add_event( this, 15.0 );
-    }
-    virtual void execute()
-    {
-      for( player_t* p = sim -> player_list; p; p = p -> next )
-      {
-        p -> buffs.replenishment--;
-      }
-      hunter_t* h = player -> cast_hunter();
-      h -> _expirations.hunting_party = 0;
-    }
-  };
-
-  event_t*& e = p -> _expirations.hunting_party;
-
-  if ( e )
-  {
-    e -> reschedule( 15.0 );
-  }
-  else
-  {
-    e = new ( a -> sim ) hunting_party_expiration_t( a -> sim, p );
-  }
+  p -> trigger_replenishment();
 }
 
 // trigger_improved_aspect_of_the_hawk =====================================

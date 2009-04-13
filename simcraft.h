@@ -115,8 +115,8 @@ struct event_t
   {
     if( ! name ) name = "unknown";
   }
-  void reschedule( double new_time );
   double occurs() { return reschedule_time != 0 ? reschedule_time : time; }
+  virtual void reschedule( double new_time );
   virtual void execute() { printf( "%s\n", name ? name : "(no name)" ); assert(0); }
   virtual ~event_t() {}
   static void cancel( event_t*& e ) { if( e ) { e -> canceled = 1;                 e=0; } }
@@ -310,8 +310,6 @@ struct sim_t
   int         infinite_resource[ RESOURCE_MAX ];
   int         armor_update_interval, optimal_raid, potion_sickness, average_dmg, log, debug, timestamp, sfmt;
   double      jow_chance, jow_ppm;
-  int         current_id;
-  int         new_replenishment;
 
   std::vector<std::string> party_encoding;
 
@@ -411,6 +409,10 @@ struct sim_t
   };
   overrides_t overrides;
 
+  // Replenishment
+  int replenishment_targets;
+  std::vector<player_t*> replenishment_candidates;
+
   // Reporting
   report_t*  report;
   scaling_t* scaling;
@@ -453,7 +455,6 @@ struct sim_t
   bool      cooldown_ready( double cooldown_time ) { return cooldown_time <= current_time; }
   int       roll( double chance ) { return rng -> roll( chance ); }
   player_t* find_player( const std::string& name );
-  player_t* find_player( int id );
 };
 
 // Scaling ===================================================================
@@ -534,7 +535,6 @@ struct player_t
 {
   sim_t*      sim;
   std::string name_str, talents_str;
-  int         id;
   player_t*   next;
   int         type, level, party, member;
   double      gcd_ready, base_gcd;
@@ -606,6 +606,9 @@ struct player_t
   double  resource_current[ RESOURCE_MAX ];
   double  mana_per_intellect;
   double  health_per_stamina;
+
+  // Replenishment
+  std::vector<player_t*> replenishment_targets;
 
   // Consumables
   std::string flask_str, elixirs_str, food_str;
@@ -762,8 +765,6 @@ struct player_t
     int       power_infusion;
     int       rampage;
     int       replenishment;
-    player_t* new_replenishment;
-    int       choose_replenishment;
     int       sanctified_retribution;
     int       shadow_form;
     double    strength_of_earth;
@@ -789,15 +790,6 @@ struct player_t
   };
   buff_t buffs;
 
-  struct replenishments_t
-  {
-    int receivers[10];
-    int invalid_target;
-    void reset() { memset( (void*) this, 0x0, sizeof( replenishments_t ) ); }
-    replenishments_t() { reset(); }
-  };
-  replenishments_t replenishments;
-
   struct expirations_t
   {
     double spellsurge;
@@ -814,7 +806,7 @@ struct player_t
     event_t* illustration_of_the_dragon_soul;
     event_t* mongoose_mh;
     event_t* mongoose_oh;
-    event_t* new_replenishment;
+    event_t* replenishment;
     event_t* spellstrike;
     event_t* tricks_of_the_trade;
     event_t* wrath_of_cenarius;
@@ -1082,7 +1074,7 @@ struct player_t
   virtual pet_t*    create_pet   ( const std::string& name ) { return 0; }
   virtual pet_t*    find_pet     ( const std::string& name );
 
-  virtual void trigger_replenishment( );
+  virtual void trigger_replenishment();
 
   // Class-Specific Methods
 

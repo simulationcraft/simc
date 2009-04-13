@@ -1253,14 +1253,11 @@ static void trigger_soul_leech( spell_t* s )
 
         p -> resource_gain( RESOURCE_MANA, amount, p -> gains_soul_leech );
 
-        if ( ! s -> sim -> P309 )
+        if( ! s -> sim -> P309 )
         {
-          if ( s -> sim -> roll( 0.5 * p -> talents.improved_soul_leech ) )
+          if( s -> sim -> roll( 0.5 * p -> talents.improved_soul_leech ) )
           {
-            if ( s -> sim -> new_replenishment != 0 )
-            {
-              p -> trigger_replenishment();
-            }
+	    p -> trigger_replenishment();
           }
         }
       }

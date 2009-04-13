@@ -36,7 +36,6 @@ struct priest_t : public player_t
   {
     event_t* glyph_of_shadow;
     event_t* improved_spirit_tap;
-    event_t* replenishment;
     event_t* shadow_weaving;
 
     void reset() { memset( (void*) this, 0x00, sizeof( _expirations_t ) ); }
@@ -585,49 +584,11 @@ static void trigger_devious_mind( spell_t* s )
 
 static void trigger_replenishment( spell_t* s )
 {
-  if ( s -> sim -> new_replenishment )
-  {
-    s -> player -> trigger_replenishment();
-    return;
-  }
-
-  struct replenishment_expiration_t : public event_t
-  {
-    replenishment_expiration_t( sim_t* sim, priest_t* player ) : event_t( sim, player )
-    {
-      name = "Replenishment Expiration";
-      for( player_t* p = sim -> player_list; p; p = p -> next )
-      {
-       	if( p -> buffs.replenishment == 0 ) p -> aura_gain( "Replenishment" );
-        p -> buffs.replenishment++;
-      }
-      sim -> add_event( this, 15.0 );
-    }
-    virtual void execute()
-    {
-      for( player_t* p = sim -> player_list; p; p = p -> next )
-      {
-        p -> buffs.replenishment--;
-       	if( p -> buffs.replenishment == 0 ) p -> aura_loss( "Replenishment" );
-      }
-      player -> cast_priest() -> _expirations.replenishment = 0;
-    }
-  };
-
   priest_t* p = s -> player -> cast_priest();
 
   if( p -> active_vampiric_touch )
   {
-    event_t*& e = p -> _expirations.replenishment;
-
-    if( e )
-    {
-      e -> reschedule( 15.0 );
-    }
-    else
-    {
-      e = new ( s -> sim ) replenishment_expiration_t( s -> sim, p );
-    }
+    p -> trigger_replenishment();
   }
 }
 
