@@ -1644,8 +1644,6 @@ struct arcane_missiles_volley_t : public mage_spell_t
       trigger_ashtongue_talisman( this );
     }
   }
-
-  virtual void update_stats( int dmg_type ) {}
 };
 
 struct arcane_missiles_channel_t : public mage_spell_t

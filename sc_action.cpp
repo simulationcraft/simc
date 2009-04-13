@@ -782,6 +782,8 @@ void action_t::update_ready()
 
 void action_t::update_stats( int type )
 {
+  if( dual ) return;
+
   if( type == DMG_DIRECT )
   {
     stats -> add( direct_dmg, type, result, time_to_execute );
