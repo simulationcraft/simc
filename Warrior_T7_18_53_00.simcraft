@@ -1,0 +1,61 @@
+#!simcraft max_time=300 optimal_raid=1
+
+warrior=Warrior_T7_18_53_00
+level=80
+talents=http://www.wowhead.com/?talent=LG0G0fhZhxj0V0udeRVzAo
+
+# Action queue
+actions=flask,type=endless_rage/food,type=dragonfin_filet
+actions+=/stance,choose=berserker/auto_attack
+# Execute phase
+actions+=/bloodrage,rage<=85
+actions+=/heroic_strike,rage>=75,health_percentage<=20
+actions+=/whirlwind,rage<=95,health_percentage<=20
+actions+=/bloodthirst,rage<=75,health_percentage<=20
+actions+=/slam,bloodsurge=1,rage<=45,health_percentage<=20
+actions+=/death_wish,health_percentage<=20
+actions+=/execute
+actions+=/recklessness,health_percentage<=20
+# 100% to 20%
+actions+=/heroic_strike,rage>=42,health_percentage>=20
+actions+=/whirlwind,health_percentage>=20
+actions+=/bloodthirst,health_percentage>=20
+actions+=/slam,bloodsurge=1,health_percentage>=20
+actions+=/death_wish,time>=10,health_percentage>=20,time_to_die>=135
+actions+=/recklessness,health_percentage>=20,time_to_die>=230
+actions+=/berserker_rage
+ 
+
+# Gear: http://www.chardev.org/?template=160414
+# Just loaded a guild fury warrior from the armory
+gear_stamina=1102
+gear_strength=508
+gear_agility=605
+gear_intellect=10
+gear_spirit=10
+gear_attack_power=1977
+gear_expertise_rating=149
+gear_armor_penetration_rating=221
+gear_hit_rating=164
+gear_crit_rating=964
+gear_haste_rating=274
+
+# Set Bonuses
+tier7_2pc=1
+
+# Meta Gem
+chaotic_skyflare=1
+
+# Weapons
+main_hand=axe_2h,dps=222.9,speed=3.4,enchant=berserking
+off_hand=axe_2h,dps=222.9,speed=3.4,enchant=berserking
+
+# Item Procs
+darkmoon_greatness=1
+mirror_of_truth=1
+
+# Glyphs
+
+glyph_of_heroic_strike=1
+glyph_of_whirlwind=1
+glyph_of_execution=1
