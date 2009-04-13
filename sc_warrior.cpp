@@ -1522,7 +1522,9 @@ struct rend_t : public warrior_attack_t
     base_tick_time    = 3.0;
     num_ticks         = 5 + ( p -> glyphs.rending ? 2 : 0 );
     base_multiplier  *= 1 + p -> talents.improved_rend * 0.10;
-    
+
+    normalize_weapon_speed = false;
+
     stancemask = STANCE_BATTLE | STANCE_DEFENSE;
     
 
