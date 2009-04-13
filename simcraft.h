@@ -464,6 +464,7 @@ struct scaling_t
   sim_t* sim;
   int    calculate_scale_factors;
   int    center_scale_delta;
+  double scale_factor_noise;
 
   // Gear delta for determining scale factors
 

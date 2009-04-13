@@ -12,7 +12,11 @@
 // scaling_t::scaling_t =====================================================
 
 
-scaling_t::scaling_t( sim_t* s ) : sim(s), calculate_scale_factors(0), center_scale_delta(0)
+scaling_t::scaling_t( sim_t* s ) : 
+  sim(s), 
+  calculate_scale_factors(0), 
+  center_scale_delta(0),
+  scale_factor_noise(0.10)
 {
   for( int i=ATTRIBUTE_NONE+1; i < ATTRIBUTE_MAX; i++ )
   {
@@ -61,7 +65,7 @@ void scaling_t::analyze_attributes()
 	
 	      double f = ( child_p -> dps - ref_p -> dps ) / gear.attribute[ i ];
 
-	      if( f > 0.09 ) p -> scaling.attribute[ i ] = f;
+	      if( f >= scale_factor_noise ) p -> scaling.attribute[ i ] = f;
       }
 
       if( ref_sim != sim ) delete ref_sim;
@@ -102,7 +106,7 @@ void scaling_t::analyze_spell_power()
 
       double f = ( child_p -> dps - ref_p -> dps ) / gear.spell_power;
 
-      if( f > 0.09 ) p -> scaling.spell_power = f;
+      if( f >= scale_factor_noise ) p -> scaling.spell_power = f;
     }
 
     if( ref_sim != sim ) delete ref_sim;
@@ -142,7 +146,7 @@ void scaling_t::analyze_attack_power()
 
       double f = ( child_p -> dps - ref_p -> dps ) / gear.attack_power;
 
-      if( f > 0.09 ) p -> scaling.attack_power = f;
+      if( f >= scale_factor_noise ) p -> scaling.attack_power = f;
     }
 
     if( ref_sim != sim ) delete ref_sim;
@@ -177,7 +181,7 @@ void scaling_t::analyze_expertise()
 	
       double f = ( child_p -> dps - ref_p -> dps ) / gear.expertise_rating;
 
-      if( f > 0.09 ) p -> scaling.expertise_rating = f;
+      if( f >= scale_factor_noise ) p -> scaling.expertise_rating = f;
     }
 
     if( ref_sim != sim ) delete sim;
@@ -217,7 +221,7 @@ void scaling_t::analyze_armor_penetration()
 	
       double f = ( child_p -> dps - ref_p -> dps ) / gear.armor_penetration_rating;
 
-      if( f > 0.09 ) p -> scaling.armor_penetration_rating = f;
+      if( f >= scale_factor_noise ) p -> scaling.armor_penetration_rating = f;
     }
 
     if( ref_sim != sim ) delete ref_sim;
@@ -252,7 +256,7 @@ void scaling_t::analyze_hit()
 	
       double f = ( child_p -> dps - ref_p -> dps ) / gear.hit_rating;
 
-      if( f > 0.09 ) p -> scaling.hit_rating = f;
+      if( f >= scale_factor_noise ) p -> scaling.hit_rating = f;
     }
 
     if( ref_sim != sim ) delete sim;
@@ -293,7 +297,7 @@ void scaling_t::analyze_crit()
 	
       double f = ( child_p -> dps - ref_p -> dps ) / gear.crit_rating;
 
-      if( f > 0.09 ) p -> scaling.crit_rating = f;
+      if( f >= scale_factor_noise ) p -> scaling.crit_rating = f;
     }
 
     if( ref_sim != sim ) delete ref_sim;
@@ -333,7 +337,7 @@ void scaling_t::analyze_haste()
 	
       double f = ( child_p -> dps - ref_p -> dps ) / gear.haste_rating;
 
-      if( f > 0.09 ) p -> scaling.haste_rating = f;
+      if( f >= scale_factor_noise ) p -> scaling.haste_rating = f;
     }
 
     if( ref_sim != sim ) delete ref_sim;
@@ -366,6 +370,7 @@ bool scaling_t::parse_option( const std::string& name,
   {
     { "calculate_scale_factors",        OPT_INT, &( calculate_scale_factors              ) },
     { "center_scale_delta",             OPT_INT, &( center_scale_delta                   ) },
+    { "scale_factor_noise",             OPT_FLT, &( scale_factor_noise                   ) },
     { "scale_strength",                 OPT_INT, &( gear.attribute[ ATTR_STRENGTH  ]     ) },
     { "scale_agility",                  OPT_INT, &( gear.attribute[ ATTR_AGILITY   ]     ) },
     { "scale_stamina",                  OPT_INT, &( gear.attribute[ ATTR_STAMINA   ]     ) },
