@@ -1378,7 +1378,7 @@ struct execute_t : public warrior_attack_t
   {
     warrior_t* p = player -> cast_warrior();
     
-    if( sim -> target -> health_percentage() > 20 || p -> _buffs.sudden_death < sim -> current_time )
+    if( sim -> target -> health_percentage() > 20 || p -> _buffs.sudden_death > sim -> current_time )
     {
       assert(p -> _buffs.sudden_death > sim -> current_time);
       // Sudden Death Execute
