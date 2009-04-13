@@ -1,9 +1,9 @@
 #!simcraft max_time=300 optimal_raid=1
 
 patch=3.1.0
-hunter=Hunter_T8_00_15_55
+hunter=Hunter_T8_01_15_55
 level=80
-talents=http://ptr.wowhead.com/?talent=cZ0eVooZx0ci0cIhedAhsd
+talents=http://ptr.wowhead.com/?talent=coZ0eVooZx0ci0cIhedAhsk
 
 # Action queue
 actions=flask,type=endless_rage/food,type=blackened_dragonfin/summon_pet/hunters_mark
