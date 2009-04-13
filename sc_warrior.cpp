@@ -1378,11 +1378,12 @@ struct execute_t : public warrior_attack_t
   {
     warrior_t* p = player -> cast_warrior();
     
-    if( sim -> target -> health_percentage() > 20 )
+    if( sim -> target -> health_percentage() > 20 || p -> _buffs.sudden_death < sim -> current_time )
     {
       assert(p -> _buffs.sudden_death > sim -> current_time);
-      // We can execute due to sudden death;
-      // Maximum of 30 rage used
+      // Sudden Death Execute
+      // Consumes a max of 30 rage, also if the target is below 20%, where normal
+      // Execute would use all the rage
       excess_rage = std::min(p -> resource_current[ RESOURCE_RAGE ], 30.0) - warrior_attack_t::cost();
     }
     else
@@ -1419,7 +1420,7 @@ struct execute_t : public warrior_attack_t
       excess_rage   = 0;
     }
     
-    // SuddenDeath In addition, you keep at least 10 rage after using Execute.
+    // Sudden Death: In addition, you keep at least 10 rage after using Execute.
     if( p -> resource_current[ RESOURCE_RAGE ] < 10.0 )
     {
       if( p -> _buffs.sudden_death > sim -> current_time )
