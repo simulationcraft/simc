@@ -272,8 +272,8 @@ player_t::player_t( sim_t*             s,
   attack_crit_per_agility(0),   initial_attack_crit_per_agility(0),
   position( POSITION_BACK ),
   // Defense Mechanics
-  base_armor(0), initial_armor(0), armor(0), armor_cache(0),
-  armor_per_agility(2.0),
+  base_armor(0), initial_armor(0), armor(0), armor_snapshot(0),
+  armor_per_agility(2.0), use_armor_snapshot(false),
   // Resources 
   mana_per_intellect(0), health_per_stamina(0),
   // Consumables
@@ -999,21 +999,6 @@ double player_t::composite_armor()
   return armor + armor_per_agility * agility();
 }
 
-// player_t::composite_armor_snapshot =========================================
-
-double player_t::composite_armor_snapshot()
-{
-  int time_offset = sim -> current_iteration % sim -> armor_update_interval;
-
-  if( time_offset + sim -> current_time > cooldowns.armor_cache )
-  {
-    cooldowns.armor_cache = time_offset + 
-      (floor(sim -> current_time / sim -> armor_update_interval) + 1) * sim -> armor_update_interval;
-    armor_cache = composite_armor();
-  }
-  return armor_cache;
-}
-
 // player_t::composite_spell_power ========================================
 
 double player_t::composite_spell_power( int school ) 
@@ -1201,6 +1186,29 @@ void player_t::combat_begin()
   if( sim -> overrides.wrath_of_air           ) buffs.wrath_of_air = 1;
 
   init_resources( true );
+
+  if( use_armor_snapshot )
+  {
+    assert( sim -> armor_update_interval > 0 );
+
+    struct armor_snapshot_event_t : public event_t
+    {
+      armor_snapshot_event_t( sim_t* sim, player_t* p, double interval ) : event_t( sim, p )
+      {
+        name = "Armor Snapshot";
+        sim -> add_event( this, interval );
+      }
+      virtual void execute()
+      {
+        if( sim -> debug)
+          report_t::log( sim, "Armor Snapshot: %.02f -> %.02f", player -> armor_snapshot, player -> composite_armor() );
+        player -> armor_snapshot = player -> composite_armor();
+        new ( sim ) armor_snapshot_event_t( sim, player, sim -> armor_update_interval );
+      }
+    };
+    armor_snapshot = composite_armor();
+    new ( sim ) armor_snapshot_event_t( sim, this, sim -> current_iteration % sim -> armor_update_interval );
+  }
 }
 
 // player_t::combat_end ====================================================
@@ -1257,8 +1265,8 @@ void player_t::reset()
   attack_crit        = initial_attack_crit;
   attack_penetration = initial_attack_penetration;
 
-  armor       = initial_armor;
-  armor_cache = initial_armor;
+  armor              = initial_armor;
+  armor_snapshot     = 0;
 
   spell_power_multiplier    = initial_spell_power_multiplier;
   spell_power_per_intellect = initial_spell_power_per_intellect;
@@ -1295,8 +1303,6 @@ void player_t::reset()
   expirations.reset();
   cooldowns.reset();
   replenishments.reset();
-  
-  cooldowns.armor_cache = sim -> current_iteration % sim -> armor_update_interval;
 
   init_resources( true );
 

@@ -591,8 +591,9 @@ struct player_t
   int    position;
 
   // Defense Mechanics
-  double base_armor, initial_armor, armor, armor_cache;
+  double base_armor, initial_armor, armor, armor_snapshot;
   double armor_per_agility;
+  bool   use_armor_snapshot;
 
   // Weapons
   std::string main_hand_str,    off_hand_str,    ranged_str;
@@ -829,7 +830,6 @@ struct player_t
 
   struct cooldowns_t
   {
-    double armor_cache;
     double bloodlust;
     double darkmoon_greatness;
     double dying_curse;
@@ -1010,7 +1010,7 @@ struct player_t
   virtual double composite_attack_penetration() { return attack_penetration; }
 
   virtual double composite_armor();
-  virtual double composite_armor_snapshot();
+  virtual double composite_armor_snapshot()     { return armor_snapshot; }
 
   virtual double composite_spell_power( int school );
   virtual double composite_spell_crit();

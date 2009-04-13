@@ -257,6 +257,9 @@ struct death_knight_t : public player_t
 
     // Options
     scent_of_blood_interval = 0;
+
+    // Settings
+    use_armor_snapshot      = true;
   }
 
   // Character Definition
