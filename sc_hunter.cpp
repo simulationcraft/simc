@@ -2486,6 +2486,11 @@ struct arcane_shot_t : public hunter_attack_t
     };
     init_rank( ranks );
 
+    // To trigger ppm-based JoW
+    weapon = &( p -> ranged_weapon );
+    assert( weapon -> group() == WEAPON_RANGED );
+    weapon_multiplier = 0;
+
     may_crit = true;
     cooldown = 6;
     cooldown_group = "arcane_explosive";
@@ -2775,6 +2780,11 @@ struct explosive_shot_t : public hunter_attack_t
       { 0, 0 }
     };
     init_rank( ranks );
+
+    // To trigger ppm-based JoW
+    weapon = &( p -> ranged_weapon );
+    assert( weapon -> group() == WEAPON_RANGED );
+    weapon_multiplier = 0;
 
     may_crit = true;
     cooldown = 6;
