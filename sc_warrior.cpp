@@ -25,7 +25,7 @@ struct warrior_t : public player_t
   struct _buffs_t
   {
     int    bloodrage;
-    int    bloodsurge;
+    double bloodsurge;
     double death_wish;
     int    flurry;
     double overpower;
@@ -380,7 +380,7 @@ static void trigger_bloodsurge( action_t* a )
     {
       name = "Bloodsurge Expiration";
       player -> aura_gain( "Bloodsurge" );
-      player -> _buffs.bloodsurge = 1;
+      player -> _buffs.bloodsurge = sim -> current_time;
       sim -> add_event( this, 5.0 );
     }
     virtual void execute()
@@ -1267,9 +1267,8 @@ struct heroic_strike_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
     warrior_attack_t::execute();
 
-    if( sim -> P309 && result == RESULT_CRIT )
-      if( p -> glyphs.heroic_strike )
-        p -> resource_gain( RESOURCE_RAGE, 10.0, p -> _gains.glyph_of_heroic_strike );
+    if( sim -> P309 && p -> glyphs.heroic_strike && result == RESULT_CRIT )
+      p -> resource_gain( RESOURCE_RAGE, 10.0, p -> _gains.glyph_of_heroic_strike );
 
     trigger_tier8_2pc( this );
     trigger_unbridled_wrath( this );
@@ -1702,8 +1701,13 @@ struct slam_t : public warrior_attack_t
       return false;
       
     warrior_t* p = player -> cast_warrior();
-    if( p -> _buffs.bloodsurge == 0 && bloodsurge )
-      return false;
+    
+    if( bloodsurge )
+    {
+      // Player does not instantaneous become aware of the proc
+      if( ! sim -> time_to_think( p -> _buffs.bloodsurge ) )
+        return false;
+    }
       
     return true;
   }
