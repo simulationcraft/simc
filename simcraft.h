@@ -1337,7 +1337,7 @@ struct action_t
   std::string name_str;
   player_t* player;
   int school, resource, tree, result;
-  bool special, binary, channeled, background, repeating, aoe, harmful, proc, heal;
+  bool dual, special, binary, channeled, background, repeating, aoe, harmful, proc, heal;
   bool may_miss, may_resist, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit, tick_may_crit;
   bool clip_dot;
   double min_gcd, trigger_gcd;

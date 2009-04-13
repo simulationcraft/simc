@@ -1578,74 +1578,49 @@ struct arcane_blast_t : public mage_spell_t
 
 // Arcane Missiles Spell ====================================================
 
-struct arcane_missiles_t : public mage_spell_t
+struct arcane_missiles_volley_t : public mage_spell_t
 {
-  spell_t* abar_spell;
-  int abar_combo;
-  int barrage;
-  int clearcast;
-
-  arcane_missiles_t( player_t* player, const std::string& options_str ) : 
-    mage_spell_t( "arcane_missiles", player, SCHOOL_ARCANE, TREE_ARCANE ), abar_combo(0), barrage(0), clearcast(0)
+  arcane_missiles_volley_t( player_t* player ) : mage_spell_t( "arcane_missiles", player, SCHOOL_ARCANE, TREE_ARCANE )
   {
     mage_t* p = player -> cast_mage();
 
-    option_t options[] =
-    {
-      { "abar_combo", OPT_INT, &abar_combo },
-      { "barrage",    OPT_INT, &barrage    },
-      { "clearcast",  OPT_INT, &clearcast  },
-      { NULL }
-    };
-    parse_options( options, options_str );
-      
     static rank_t ranks[] =
     {
-      { 79, 13, 360, 260, 0, 0.31 },
-      { 75, 12, 320, 320, 0, 0.31 },
-      { 70, 11, 280, 280, 0, 785  },
-      { 69, 10, 260, 260, 0, 740  },
-      { 63,  9, 240, 240, 0, 685  },
-      { 60,  8, 230, 230, 0, 655  },
+      { 79, 13, 360, 260, 0, 0 },
+      { 75, 12, 320, 320, 0, 0 },
+      { 70, 11, 280, 280, 0, 0 },
+      { 69, 10, 260, 260, 0, 0 },
+      { 63,  9, 240, 240, 0, 0 },
+      { 60,  8, 230, 230, 0, 0 },
       { 0, 0 }
     };
     init_rank( ranks );
 
-    base_execute_time = 0;
-    base_tick_time    = 1.0; 
-    num_ticks         = 5; 
-    may_crit          = true; 
-    channeled         = true;
-    direct_power_mod  = base_tick_time / 3.5; // bonus per missle
-    base_cost        *= 1.0 - p -> talents.precision     * 0.01;
-    base_cost        *= 1.0 - p -> talents.arcane_focus  * 0.01;
-    base_cost        *= 1.0 - util_t::talent_rank( p -> talents.frost_channeling, 3, 0.04, 0.07, 0.10 );
+    dual       = true;
+    background = true;
+    may_crit   = true; 
+    
+    direct_power_mod  = 1.0 / 3.5; // bonus per missle
+    
     base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
     base_crit        += p -> talents.arcane_instability * 0.01;
     base_hit         += p -> talents.arcane_focus * 0.01;
     direct_power_mod += p -> talents.arcane_empowerment * 0.03;        // bonus per missle
-
+    
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) + 
-                                          ( p -> talents.burnout     * 0.10 ) +
-                                          ( p -> glyphs.arcane_missiles ? 0.25 : 0.00 ) +
-                                          ( p -> gear.tier7_4pc         ? 0.05 : 0.00 ) );
-
-    if( abar_combo )
-    {
-      std::string abar_options;
-      abar_spell = new arcane_barrage_t( player, abar_options );
-      // prevents scheduling of player_ready events
-      abar_spell -> background = true;  
-      abar_spell -> proc = true;  
-    }
-
+					  ( p -> talents.burnout     * 0.10 ) +
+					  ( p -> glyphs.arcane_missiles ? 0.25 : 0.00 ) +
+					  ( p -> gear.tier7_4pc         ? 0.05 : 0.00 ) );
+    
     if( p -> gear.tier6_4pc ) base_multiplier *= 1.05;
   }
-
+  
   virtual void player_buff()
   {
     mage_t* p = player -> cast_mage();
+
     mage_spell_t::player_buff();
+
     if( p -> _buffs.arcane_blast )
     {
       player_multiplier *= 1.0 + p ->  _buffs.arcane_blast * ( 0.15 + ( p -> glyphs.arcane_blast ? 0.03 : 0.00 ) );
@@ -1658,78 +1633,83 @@ struct arcane_missiles_t : public mage_spell_t
     player_multiplier *= 1.0 + snared * p -> talents.torment_the_weak * 0.04;
   }
 
-  // Odd things to handle:
-  // (1) Execute is guaranteed.
-  // (2) Each "tick" is like an "execute".
+  virtual void execute()
+  {
+    mage_spell_t::execute();
+    
+    if( result == RESULT_CRIT )
+    {
+      trigger_master_of_elements( this, 0.20 );
+      trigger_tier5_4pc( this );
+      trigger_ashtongue_talisman( this );
+    }
+  }
+
+  virtual void update_stats( int dmg_type ) {}
+};
+
+struct arcane_missiles_channel_t : public mage_spell_t
+{
+  spell_t* volley;
+  int barrage;
+  int clearcast;
+
+  arcane_missiles_channel_t( player_t* player, const std::string& options_str ) : 
+    mage_spell_t( "arcane_missiles", player, SCHOOL_ARCANE, TREE_ARCANE ), barrage(0), clearcast(0)
+  {
+    mage_t* p = player -> cast_mage();
+
+    option_t options[] =
+    {
+      { "barrage",    OPT_INT, &barrage    },
+      { "clearcast",  OPT_INT, &clearcast  },
+      { NULL }
+    };
+    parse_options( options, options_str );
+      
+    may_miss          = false;
+    may_resist        = false;
+    channeled         = true;
+    num_ticks         = 5; 
+    base_tick_time    = 1.0; 
+
+    base_cost         = 0.31 * p -> resource_base[ RESOURCE_MANA ];
+    base_cost        *= 1.0 - p -> talents.precision     * 0.01;
+    base_cost        *= 1.0 - p -> talents.arcane_focus  * 0.01;
+    base_cost        *= 1.0 - util_t::talent_rank( p -> talents.frost_channeling, 3, 0.04, 0.07, 0.10 );
+
+    volley = new arcane_missiles_volley_t( p );
+  }
 
   virtual void execute()
   {
     mage_t* p = player -> cast_mage();
-    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
-    consume_resource();
-    player_buff();
+
+    base_tick_time = p -> _buffs.missile_barrage ? 0.5 : 1.0;
+
     p -> uptimes_missile_barrage -> update( p -> _buffs.missile_barrage != 0 );
+
     if( p -> _buffs.missile_barrage )
     {
-      base_tick_time = 0.5;
       if( ! trigger_tier8_4pc( this ) )
       {
         event_t::early( p -> _expirations.missile_barrage );
       }
     }
-    else
-    {
-      base_tick_time = 1.0;
-    }
-    schedule_tick();
-    update_ready();
-    direct_dmg = 0;
-    update_stats( DMG_DIRECT );
-    trigger_arcane_concentration( this );
-    p -> action_finish( this );
+
+    mage_spell_t::execute();
   }
 
   virtual void tick() 
   {
-    mage_t* p = player -> cast_mage();
-
-    if( current_tick == num_ticks && abar_combo && abar_spell -> ready() )
-    {
-      if( sim -> debug ) report_t::log( sim, "Skipping last tick of %s to combo with %s", name(), abar_spell -> name() );
-      return;
-    }
-
     if( sim -> debug ) report_t::log( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
 
-    may_resist = false;
-    player_buff(); // this oddball spell requires player stat recalculation before each missile.
-    target_debuff( DMG_DIRECT );
-    calculate_result();
-    may_resist = true;
+    volley -> execute();
 
-    if( result_is_hit() )
-    {
-      calculate_direct_damage();
-      p -> action_hit( this );
-      if( direct_dmg > 0 )
-      {
-        tick_dmg = direct_dmg;
-        assess_damage( tick_dmg, DMG_OVER_TIME );
-      }
-      if( result == RESULT_CRIT )
-      {
-        trigger_master_of_elements( this, ( 1.0 / num_ticks ) );
-        trigger_tier5_4pc( this );
-        trigger_ashtongue_talisman( this );
-      }
-    }
-    else
-    {
-      if( sim -> log ) report_t::log( sim, "%s avoids %s (%s)", sim -> target -> name(), name(), util_t::result_type_string( result ) );
-      p -> action_miss( this );
-    }
+    result   = volley -> result;
+    tick_dmg = volley -> direct_dmg;
 
-    update_stats( DMG_OVER_TIME );
+    mage_spell_t::update_stats( DMG_OVER_TIME );
   }
 
   virtual void last_tick()
@@ -1737,12 +1717,6 @@ struct arcane_missiles_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
     mage_spell_t::last_tick();
     clear_arcane_potency( this );
-    if( abar_combo && abar_spell -> ready() ) 
-    {
-      p -> action_start( abar_spell );
-      abar_spell -> execute();
-      p -> last_foreground_action = abar_spell;
-    }
     event_t::early( p -> _expirations.arcane_blast );
   }
 
@@ -3137,32 +3111,32 @@ struct choose_rotation_t : public action_t
 action_t* mage_t::create_action( const std::string& name,
                                  const std::string& options_str )
 {
-  if( name == "arcane_barrage"    ) return new        arcane_barrage_t( this, options_str );
-  if( name == "arcane_blast"      ) return new          arcane_blast_t( this, options_str );
-  if( name == "arcane_brilliance" ) return new     arcane_brilliance_t( this, options_str );
-  if( name == "arcane_missiles"   ) return new       arcane_missiles_t( this, options_str );
-  if( name == "arcane_power"      ) return new          arcane_power_t( this, options_str );
-  if( name == "choose_rotation"   ) return new       choose_rotation_t( this, options_str );
-  if( name == "cold_snap"         ) return new             cold_snap_t( this, options_str );
-  if( name == "combustion"        ) return new            combustion_t( this, options_str );
-  if( name == "evocation"         ) return new             evocation_t( this, options_str );
-  if( name == "fire_ball"         ) return new             fire_ball_t( this, options_str );
-  if( name == "fire_blast"        ) return new            fire_blast_t( this, options_str );
-  if( name == "focus_magic"       ) return new           focus_magic_t( this, options_str );
-  if( name == "frost_bolt"        ) return new            frost_bolt_t( this, options_str );
-  if( name == "frostfire_bolt"    ) return new        frostfire_bolt_t( this, options_str );
-  if( name == "ice_lance"         ) return new             ice_lance_t( this, options_str );
-  if( name == "icy_veins"         ) return new             icy_veins_t( this, options_str );
-  if( name == "living_bomb"       ) return new           living_bomb_t( this, options_str );
-  if( name == "mage_armor"        ) return new            mage_armor_t( this, options_str );
-  if( name == "mirror_image"      ) return new    mirror_image_spell_t( this, options_str );
-  if( name == "molten_armor"      ) return new          molten_armor_t( this, options_str );
-  if( name == "presence_of_mind"  ) return new      presence_of_mind_t( this, options_str );
-  if( name == "pyroblast"         ) return new             pyroblast_t( this, options_str );
-  if( name == "scorch"            ) return new                scorch_t( this, options_str );
-  if( name == "slow"              ) return new                  slow_t( this, options_str );
-  if( name == "water_elemental"   ) return new water_elemental_spell_t( this, options_str );
-  if( name == "mana_gem"          ) return new              mana_gem_t( this, options_str );
+  if( name == "arcane_barrage"    ) return new          arcane_barrage_t( this, options_str );
+  if( name == "arcane_blast"      ) return new            arcane_blast_t( this, options_str );
+  if( name == "arcane_brilliance" ) return new       arcane_brilliance_t( this, options_str );
+  if( name == "arcane_missiles"   ) return new arcane_missiles_channel_t( this, options_str );
+  if( name == "arcane_power"      ) return new            arcane_power_t( this, options_str );
+  if( name == "choose_rotation"   ) return new         choose_rotation_t( this, options_str );
+  if( name == "cold_snap"         ) return new               cold_snap_t( this, options_str );
+  if( name == "combustion"        ) return new              combustion_t( this, options_str );
+  if( name == "evocation"         ) return new               evocation_t( this, options_str );
+  if( name == "fire_ball"         ) return new               fire_ball_t( this, options_str );
+  if( name == "fire_blast"        ) return new              fire_blast_t( this, options_str );
+  if( name == "focus_magic"       ) return new             focus_magic_t( this, options_str );
+  if( name == "frost_bolt"        ) return new              frost_bolt_t( this, options_str );
+  if( name == "frostfire_bolt"    ) return new          frostfire_bolt_t( this, options_str );
+  if( name == "ice_lance"         ) return new               ice_lance_t( this, options_str );
+  if( name == "icy_veins"         ) return new               icy_veins_t( this, options_str );
+  if( name == "living_bomb"       ) return new             living_bomb_t( this, options_str );
+  if( name == "mage_armor"        ) return new              mage_armor_t( this, options_str );
+  if( name == "mirror_image"      ) return new      mirror_image_spell_t( this, options_str );
+  if( name == "molten_armor"      ) return new            molten_armor_t( this, options_str );
+  if( name == "presence_of_mind"  ) return new        presence_of_mind_t( this, options_str );
+  if( name == "pyroblast"         ) return new               pyroblast_t( this, options_str );
+  if( name == "scorch"            ) return new                  scorch_t( this, options_str );
+  if( name == "slow"              ) return new                    slow_t( this, options_str );
+  if( name == "water_elemental"   ) return new   water_elemental_spell_t( this, options_str );
+  if( name == "mana_gem"          ) return new                mana_gem_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
