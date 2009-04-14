@@ -92,15 +92,10 @@ static void trigger_focus_magic_feedback( spell_t* spell )
   }
 }
 
-// choose_replenish_targets ==============================================
+// init_replenish_targets ================================================
 
-static void choose_replenish_targets( player_t* provider )
+static void init_replenish_targets( sim_t* sim )
 {
-  sim_t* sim = provider -> sim;
-
-  std::vector<player_t*>& candidates = sim      -> replenishment_candidates;
-  std::vector<player_t*>& targets    = provider -> replenishment_targets;
-
   if( sim -> replenishment_candidates.empty() )
   {
     for( player_t* p = sim -> player_list; p; p = p -> next )
@@ -112,10 +107,21 @@ static void choose_replenish_targets( player_t* provider )
       }
     }
   }
+}
 
-  // If replenishment is not missing from any of the candidates, then the target list will not change
+// choose_replenish_targets ==============================================
+
+static void choose_replenish_targets( player_t* provider )
+{
+  sim_t* sim = provider -> sim;
+
+  init_replenish_targets( sim );
+
+  std::vector<player_t*>& candidates = sim      -> replenishment_candidates;
+  std::vector<player_t*>& targets    = provider -> replenishment_targets;
 
   bool replenishment_missing = false;
+
   for( int i = candidates.size() - 1; i >= 0; i-- ) 
   {
     player_t* p = candidates[ i ];
@@ -127,39 +133,50 @@ static void choose_replenish_targets( player_t* provider )
     }
   }
 
-  if( replenishment_missing )
+  // If replenishment is not missing from any of the candidates, then the target list will not change
+
+  if( ! replenishment_missing ) return;
+
+  for( int i = targets.size() - 1; i >= 0; i-- ) 
   {
-    for( int i = targets.size() - 1; i >= 0; i-- ) 
-    {
-      targets[ i ] -> aura_loss( "Replenishment" );
-      targets[ i ] -> buffs.replenishment = 0;
-    }
-    targets.clear();
+    targets[ i ] -> buffs.replenishment = -1;
+  }
+  targets.clear();
 
-    for( int i=0; i < sim -> replenishment_targets; i++ )
-    {
-      player_t* min_player=0;
-      double    min_mana=0;
+  for( int i=0; i < sim -> replenishment_targets; i++ )
+  {
+    player_t* min_player=0;
+    double    min_mana=0;
     
-      for( int j = candidates.size() - 1; j >= 0; j-- )
-      {
-	player_t* p = candidates[ j ];
+    for( int j = candidates.size() - 1; j >= 0; j-- )
+    {
+      player_t* p = candidates[ j ];
 
-	if( p -> sleeping || p -> buffs.replenishment ) continue;
+      if( p -> sleeping || ( p -> buffs.replenishment == 1 ) ) continue;
 
-	if( ! min_player || min_mana > p -> resource_current[ RESOURCE_MANA ] )
-	{
-	  min_player = p;
-	  min_mana   = p -> resource_current[ RESOURCE_MANA ];
-	}
-      }
-      if( min_player )
+      if( ! min_player || min_mana > p -> resource_current[ RESOURCE_MANA ] )
       {
-	min_player -> aura_gain( "Replenishment" );
-	min_player -> buffs.replenishment = 1;
-	targets.push_back( min_player );
+	min_player = p;
+	min_mana   = p -> resource_current[ RESOURCE_MANA ];
       }
-      else break;
+    }
+    if( min_player )
+    {
+      if( min_player -> buffs.replenishment == 0 ) min_player -> aura_gain( "Replenishment" );
+      min_player -> buffs.replenishment = 1;
+      targets.push_back( min_player );
+    }
+    else break;
+  }
+
+  for( int i = candidates.size() - 1; i >= 0; i-- ) 
+  {
+    player_t* p = candidates[ i ];
+
+    if( p -> buffs.replenishment < 0 ) 
+    {
+      p -> aura_loss( "Replenishment" );
+      p -> buffs.replenishment = 0;
     }
   }
 }
@@ -207,8 +224,7 @@ static void replenish_targets( player_t* provider )
     }
     virtual void reschedule( double new_time )
     {
-      event_t::reschedule( new_time );
-      ticks_remaining = 15;
+      ticks_remaining = 15; // Just refresh, do not reschedule.
     }
   };
 
@@ -216,7 +232,7 @@ static void replenish_targets( player_t* provider )
 
   if( e )
   {
-    e -> reschedule( 1.0 );
+    e -> reschedule( 0.0 );
   }
   else
   {
