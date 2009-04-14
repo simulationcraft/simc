@@ -46,7 +46,7 @@ infinite_mana=0
 regen_periodicity=1.0
 
 # Patch 3.1.x WotLK boss armor
-target_armor=10645
+target_armor=10643
 
 # Support for Feral Bear does not yet exist
 faerie_fire=1
