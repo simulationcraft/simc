@@ -370,13 +370,38 @@ double action_t::resistance()
   }
   else if( school == SCHOOL_PHYSICAL )
   {
-    double adjusted_armor = armor() * ( 1.0 - penetration );
+    if ( sim -> P309 )
+    {
+      double adjusted_armor = armor() * ( 1.0 - penetration );
 
-    if( adjusted_armor <= 0 ) return 0;
+      if( adjusted_armor <= 0 ) 
+      {
+        resist = 0.0;
+      }
+      else 
+      {
+        double adjusted_level = player -> level + 4.5 * ( player -> level - 59 );
 
-    double adjusted_level = player -> level + 4.5 * ( player -> level - 59 );
+        resist = adjusted_armor / ( adjusted_armor + 400 + 85.0 * adjusted_level );
+      }
+    }
+    else
+    {
+      // Formula taken from: http://elitistjerks.com/f31/t29453-combat_ratings_level_80_a/p16/#post1170842
+      // FIX-ME: Using the 0.81 factor to account for the current bug as per the thread. Remove when the bug is fixed.
+      double armor_penetration_buffs = 0.81 * penetration;
+      double armor_penetration_debuffs = 1.0 - t -> composite_armor_penetration_debuffs();
+      double half_reduction_armor = 400 + 85.0 * ( player -> level + 4.5 * ( player -> level - 59 ) );
 
-    resist = adjusted_armor / ( adjusted_armor + 400 + 85.0 * adjusted_level );
+      resist = 1.0 - half_reduction_armor / 
+        ( half_reduction_armor + armor() * 
+          ( 1.0 - ( armor_penetration_buffs + armor_penetration_debuffs ) +
+            ( armor() * armor_penetration_buffs * armor_penetration_debuffs / 
+              ( half_reduction_armor + armor() ) 
+            )              
+          ) 
+        );
+    }
   }
   else
   {

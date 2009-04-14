@@ -105,8 +105,10 @@ double target_t::health_percentage()
 
 double target_t::composite_armor()
 {
-  double adjusted_armor = armor;
+//  double adjusted_armor = armor;
 
+  return armor;
+/*
   if( sim -> P309 )
   {
     adjusted_armor -= std::max( debuffs.sunder_armor, debuffs.expose_armor );
@@ -119,6 +121,26 @@ double target_t::composite_armor()
   }
 
   return adjusted_armor;
+ */
+}
+
+double target_t::composite_armor_penetration_debuffs()
+{
+  double armor_penetration = 0.0;
+
+  if( sim -> P309 )
+  {
+    armor_penetration += std::max( debuffs.sunder_armor, debuffs.expose_armor );
+    armor_penetration += debuffs.faerie_fire;
+  }
+  else
+  {
+    armor_penetration = 1.0;
+    armor_penetration *= 1.0 - std::max( debuffs.sunder_armor, debuffs.expose_armor );
+    armor_penetration *= 1.0 - debuffs.faerie_fire;
+  }
+
+  return armor_penetration;
 }
 
 // target_t::get_uptime =====================================================

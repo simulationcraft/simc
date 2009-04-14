@@ -1265,6 +1265,7 @@ struct target_t
   double time_to_die();
   double health_percentage();
   double composite_armor();
+  double composite_armor_penetration_debuffs();
   uptime_t* get_uptime( const std::string& name );
   bool parse_option( const std::string& name, const std::string& value );
   const char* name() { return name_str.c_str(); }
