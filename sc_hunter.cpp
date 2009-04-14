@@ -529,7 +529,7 @@ struct hunter_pet_t : public pet_t
     double ap = player_t::composite_attack_power();
 
     ap += o -> stamina() * o -> talents.hunter_vs_wild * 0.1;
-    ap += o -> composite_attack_power() * 0.22 * (1 + talents.wild_hunt * 0.20);
+    ap += o -> composite_attack_power() * 0.22 * (1 + talents.wild_hunt * 0.10);
     ap += _buffs.furious_howl;
 
     if( o -> active_aspect == ASPECT_BEAST )
