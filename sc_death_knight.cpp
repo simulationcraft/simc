@@ -89,7 +89,6 @@ struct death_knight_t : public player_t
 
   // Gains
   gain_t* gains_rune_abilities;
-  gain_t* gains_runic_overflow;
   gain_t* gains_butchery;
   gain_t* gains_scent_of_blood;
 
@@ -241,7 +240,6 @@ struct death_knight_t : public player_t
 
     // Gains
     gains_rune_abilities     = get_gain( "rune_abilities" );
-    gains_runic_overflow     = get_gain( "runic_overflow" );
     gains_butchery           = get_gain( "butchery" );
     gains_scent_of_blood     = get_gain( "scent_of_blood" );
 
@@ -273,7 +271,6 @@ struct death_knight_t : public player_t
   virtual double    composite_attack_power();
   virtual void      regen( double periodicity );
   virtual void      reset();
-  virtual double    resource_gain( int resource, double amount, gain_t* g = 0);
   virtual bool      get_talent_trees( std::vector<int*>& blood, std::vector<int*>& frost, std::vector<int*>& unholy );
   virtual bool      parse_option( const std::string& name, const std::string& value );
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -1371,19 +1368,6 @@ death_knight_t::reset()
   _cooldowns.reset();
   _expirations.reset();
   _runes.reset();
-}
-
-double
-death_knight_t::resource_gain( int resource, double  amount, gain_t* source )
-{
-  if( sleeping || amount <= 0 ) return 0;
-
-  double actual_amount = player_t::resource_gain( resource, amount, source );
-
-  if( actual_amount < amount && resource == RESOURCE_RUNIC )
-    gains_runic_overflow -> add( amount - actual_amount );
-
-  return actual_amount;
 }
 
 bool
