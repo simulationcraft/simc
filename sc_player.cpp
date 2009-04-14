@@ -1255,11 +1255,6 @@ void player_t::combat_begin()
     schedule_ready();
   }
 
-  if( primary_resource() == RESOURCE_MANA )
-  {
-    get_gain( "initial_mana" ) -> add( resource_max[ RESOURCE_MANA ] );
-  }
-
   if( sim -> overrides.battle_shout           ) buffs.battle_shout = 548;
   if( sim -> overrides.blessing_of_kings      ) buffs.blessing_of_kings = 1;
   if( sim -> overrides.blessing_of_might      ) buffs.blessing_of_might = 688;
@@ -1285,6 +1280,11 @@ void player_t::combat_begin()
   if( sim -> overrides.wrath_of_air           ) buffs.wrath_of_air = 1;
 
   init_resources( true );
+
+  if( primary_resource() == RESOURCE_MANA )
+  {
+    get_gain( "initial_mana" ) -> add( resource_max[ RESOURCE_MANA ] );
+  }
 
   if( use_armor_snapshot )
   {
