@@ -452,7 +452,8 @@ void sim_t::analyze()
 
     for( gain_t* g = p -> gain_list; g; g = g -> next )
     {
-      g -> amount /= iterations;
+      g -> actual   /= iterations;
+      g -> overflow /= iterations;
     }
 
     for( proc_t* proc = p -> proc_list; proc; proc = proc -> next )

@@ -1057,7 +1057,7 @@ void druid_attack_t::consume_resource()
     double amount = attack_t::cost();
     if( amount > 0 )
     {
-      p -> gains_omen_of_clarity -> add( amount );
+      p -> gains_omen_of_clarity -> add( amount, 0 );
       p -> _buffs.omen_of_clarity = 0;
       p -> aura_loss( "Omen of Clarity" );
     }

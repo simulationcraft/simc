@@ -1639,7 +1639,7 @@ double player_t::resource_gain( int     resource,
   }
 
   resource_gained [ resource ] += actual_amount;
-  if( source ) source -> add( actual_amount );
+  if( source ) source -> add( actual_amount, amount - actual_amount );
 
   if( sim -> log ) 
     report_t::log( sim, "%s gains %.0f (%.0f) %s from %s (%.0f)", 

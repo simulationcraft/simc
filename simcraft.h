@@ -1585,11 +1585,11 @@ struct consumable_t
 struct gain_t
 {
   std::string name_str;
-  double amount;
+  double actual, overflow;
   gain_t* next;
-  gain_t( const std::string& n ) : name_str(n), amount(0) {}
-  void add( double a ) { amount += a; }
-  void merge( gain_t* other ) { amount += other -> amount; }
+  gain_t( const std::string& n ) : name_str(n), actual(0), overflow(0) {}
+  void add( double a, double o=0 ) { actual += a; overflow += o; }
+  void merge( gain_t* other ) { actual += other -> actual; overflow += other -> overflow; }
   const char* name() { return name_str.c_str(); }
 };
 

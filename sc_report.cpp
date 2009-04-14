@@ -341,14 +341,17 @@ void report_t::print_gains()
     bool first=true;
     for( gain_t* g = p -> gain_list; g; g = g -> next )
     {
-      if( g -> amount > 0 ) 
+      if( g -> actual > 0 ) 
       {
 	if( first )
         {
 	  fprintf( sim -> output_file, "\n    %s:\n", p -> name() );
 	  first = false;
 	}
-	fprintf( sim -> output_file, "        %s=%.1f\n", g -> name(), g -> amount );
+	fprintf( sim -> output_file, "        %s=%.1f", g -> name(), g -> actual );
+	double overflow_pct = 100.0 * g -> overflow / ( g -> actual + g -> overflow );
+	if( overflow_pct > 1.0 ) fprintf( sim -> output_file, "  (overflow=%.1f%%)", overflow_pct );
+	fprintf( sim -> output_file, "\n" );
       }
     }
   }
@@ -1058,7 +1061,7 @@ const char* report_t::chart_action_dmg( std::string& s, player_t* p )
 struct compare_gain {
   bool operator()( gain_t* l, gain_t* r ) const
   {
-    return l -> amount > r -> amount;
+    return l -> actual > r -> actual;
   }
 };
 
@@ -1069,8 +1072,8 @@ const char* report_t::chart_gains( std::string& s, player_t* p )
   double total_gain=0;
   for( gain_t* g = p -> gain_list; g; g = g -> next )
   {
-    if( g -> amount <= 0 ) continue;
-    total_gain += g -> amount;
+    if( g -> actual <= 0 ) continue;
+    total_gain += g -> actual;
     gains_list.push_back( g );
   }
 
@@ -1090,7 +1093,7 @@ const char* report_t::chart_gains( std::string& s, player_t* p )
   for( int i=0; i < num_gains; i++ )
   {
     gain_t* g = gains_list[ i ];
-    snprintf( buffer, sizeof(buffer), "%s%.0f", (i?",":""), 100.0 * g -> amount / total_gain ); s += buffer;
+    snprintf( buffer, sizeof(buffer), "%s%.0f", (i?",":""), 100.0 * g -> actual / total_gain ); s += buffer;
   }
   s += "&";
   s += "chds=0,100";
