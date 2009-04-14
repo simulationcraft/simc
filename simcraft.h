@@ -369,6 +369,7 @@ struct sim_t
     int swift_retribution;
     int thunder_clap;
     // Overrides for supported classes
+    int abominations_might;
     int affliction_effects;
     int arcane_brilliance;
     int bleeding;
@@ -728,6 +729,7 @@ struct player_t
 
   struct buff_t
   {
+    int       abominations_might;
     double    arcane_brilliance;
     int       battle_shout;
     int       berserking_mh;

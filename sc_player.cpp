@@ -1167,7 +1167,8 @@ double player_t::composite_attack_power_multiplier()
   double m = attack_power_multiplier;
 
   if( buffs.unleashed_rage ||
-      buffs.trueshot_aura  )
+      buffs.trueshot_aura ||
+      buffs.abominations_might )
   {
     m *= 1.10;
   }
@@ -1255,6 +1256,7 @@ void player_t::combat_begin()
     schedule_ready();
   }
 
+  if( sim -> overrides.abominations_might     ) buffs.abominations_might = 1;
   if( sim -> overrides.battle_shout           ) buffs.battle_shout = 548;
   if( sim -> overrides.blessing_of_kings      ) buffs.blessing_of_kings = 1;
   if( sim -> overrides.blessing_of_might      ) buffs.blessing_of_might = 688;

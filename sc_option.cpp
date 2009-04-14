@@ -251,6 +251,7 @@ static void parse_optimal_raid( sim_t*       sim,
 {
   sim -> optimal_raid = atoi( value.c_str() );
 
+  sim -> overrides.abominations_might     = sim -> optimal_raid;
   sim -> overrides.affliction_effects     = sim -> optimal_raid ? 12 : 0;
   sim -> overrides.arcane_brilliance      = sim -> optimal_raid;
   sim -> overrides.battle_shout           = sim -> optimal_raid;

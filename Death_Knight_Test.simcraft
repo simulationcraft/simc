@@ -30,8 +30,3 @@ main_hand=sword_2h,dps=222.9,speed=3.4
 
 # Death Knight specific settings
 scent_of_blood_interval=8
-
-# Removing Buff Spam
-blessing_of_wisdom=0
-mana_spring=0
-replenishment=0

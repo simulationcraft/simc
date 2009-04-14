@@ -763,6 +763,7 @@ bool sim_t::parse_option( const std::string& name,
     { "wheel_seconds",                    OPT_INT,    &( wheel_seconds                            ) },
     { "wiki",                             OPT_STRING, &( wiki_file_str                            ) },
     // Overrides - Buffs/Debuffs
+    { "abominations_might",               OPT_INT,    &( overrides.abominations_might             ) },
     { "affliction_effects",               OPT_INT,    &( overrides.affliction_effects             ) },
     { "arcane_brilliance",                OPT_INT,    &( overrides.arcane_brilliance              ) },
     { "battle_shout",                     OPT_INT,    &( overrides.battle_shout                   ) },

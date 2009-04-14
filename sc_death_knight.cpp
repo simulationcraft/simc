@@ -46,6 +46,15 @@ struct dk_rune_t
 
 struct death_knight_t : public player_t
 {
+  // Raid Expirations
+  struct _raid_expirations_t
+  {
+    event_t* abominations_might;
+
+    void reset() { memset( (void*) this, 0x00, sizeof( _raid_expirations_t ) ); }
+    _raid_expirations_t() { reset(); }
+  };
+  static _raid_expirations_t expirations;
 
   // Active
   action_t* active_blood_plague;
@@ -93,10 +102,12 @@ struct death_knight_t : public player_t
   gain_t* gains_scent_of_blood;
 
   // Procs
-  proc_t* procs_scent_of_blood;
+  proc_t* procs_abominations_might;
   proc_t* procs_bloody_vengeance;
+  proc_t* procs_scent_of_blood;
   
   // Up-Times
+  uptime_t* uptimes_abominations_might;
   uptime_t* uptimes_bloody_vengeance;
   
   // Auto-Attack
@@ -123,7 +134,7 @@ struct death_knight_t : public player_t
     int bloody_strikes;                 // Done
     int veteran_of_the_third_war;       // Done
     int bloody_vengeance;               // Done
-    int abominations_might;
+    int abominations_might;             //
     int bloodworms;
     int hysteria;
     int improved_blood_presence;
@@ -244,11 +255,13 @@ struct death_knight_t : public player_t
     gains_scent_of_blood     = get_gain( "scent_of_blood" );
 
     // Procs
-    procs_scent_of_blood     = get_proc( "scent_of_blood" );
+    procs_abominations_might = get_proc( "abominations_might" );
     procs_bloody_vengeance   = get_proc( "bloody_vengeance" );
+    procs_scent_of_blood     = get_proc( "scent_of_blood" );
 
     // Up-Times
-    uptimes_bloody_vengeance = get_uptime( "bloody_vengeance" );
+    uptimes_abominations_might = get_uptime( "abominations_might" );
+    uptimes_bloody_vengeance   = get_uptime( "bloody_vengeance" );
   
     // Auto-Attack
     main_hand_attack         = NULL;
@@ -280,6 +293,9 @@ struct death_knight_t : public player_t
   // Utilities
   bool abort_execute_action;
 };
+
+// Static Members
+death_knight_t::_raid_expirations_t death_knight_t::expirations;
 
 namespace { // ANONYMOUS NAMESPACE =========================================
 
@@ -431,6 +447,56 @@ refund_runes( player_t* player, const bool* use )
 }
 
 static void
+trigger_abominations_might( action_t* a, double base_chance )
+{
+  struct abominations_might_expiration_t : public event_t
+  {
+    abominations_might_expiration_t( sim_t* sim, player_t* player ) : event_t( sim, player )
+    {
+      name = "Abomination's Might Expiration";
+      for( player_t* p = sim -> player_list; p; p = p -> next )
+      {
+        if( p -> sleeping ) continue;
+        if( p -> buffs.abominations_might == 0 ) p -> aura_gain( "Abomination's Might" );
+        p -> buffs.abominations_might = 1;
+      }
+      sim -> add_event( this, 10.0 );
+    }
+    virtual void execute()
+    {
+      for( player_t* p = sim -> player_list; p; p = p -> next )
+      {
+        if ( p -> buffs.abominations_might )
+        {
+          p -> aura_loss( "Abomination's Might" );
+          p -> buffs.abominations_might = 0;
+        }
+      }
+      death_knight_t::expirations.abominations_might = NULL;
+    }
+  };
+
+  death_knight_t* p = a -> player -> cast_death_knight();
+  
+  if( ! a -> sim -> roll( base_chance * p -> talents.abominations_might ) ) return;
+  
+  p -> procs_abominations_might -> occur();
+
+  if( a -> sim -> overrides.abominations_might ) return;
+
+  event_t*& e = death_knight_t::expirations.abominations_might;
+
+  if( e )
+  {
+    e -> reschedule( 10.0 );
+  }
+  else
+  {
+    e = new ( a -> sim ) abominations_might_expiration_t( a -> sim, p );
+  }
+}
+
+static void
 stack_bloody_vengeance( action_t* a )
 {
   struct expiration_t : public event_t
@@ -551,6 +617,8 @@ death_knight_attack_t::player_buff()
     p -> uptimes_bloody_vengeance -> update( p -> _buffs.bloody_vengeance != 0 );
   }
 
+  p -> uptimes_abominations_might -> update( p -> buffs.abominations_might != 0 );
+
   if( sim -> debug ) 
     report_t::log( sim, "death_knight_attack_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f, p_mult=%.0f", 
        name(), player_hit, player_crit, player_spell_power, player_penetration, player_multiplier );
@@ -647,6 +715,8 @@ death_knight_spell_t::player_buff()
     player_multiplier *= 1 + p-> talents.bloody_vengeance * 0.01 * p -> _buffs.bloody_vengeance;
     p -> uptimes_bloody_vengeance -> update( p -> _buffs.bloody_vengeance != 0 );
   }
+
+  p -> uptimes_abominations_might -> update( p -> buffs.abominations_might != 0 );
 
   if( sim -> debug ) 
     report_t::log( sim, "death_knight_spell_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f, p_mult=%.0f", 
@@ -840,6 +910,13 @@ struct blood_strike_t : public death_knight_attack_t
     target_multiplier *= 1 + p -> diseases * 0.125;
     assert (p -> diseases <= 2);
   }
+
+  void
+  execute()
+  {
+    death_knight_attack_t::execute();
+    if( result_is_hit() ) trigger_abominations_might( this, 0.25 );
+  }
 };
 
 struct death_strike_t : public death_knight_attack_t
@@ -874,6 +951,13 @@ struct death_strike_t : public death_knight_attack_t
     weapon_multiplier     *= 0.75;
 
     convert_runes = p->talents.death_rune_mastery / 3;
+  }
+
+  void
+  execute()
+  {
+    death_knight_attack_t::execute();
+    if( result_is_hit() ) trigger_abominations_might( this, 0.5 );
   }
 };
 
@@ -920,6 +1004,13 @@ struct heart_strike_t : public death_knight_attack_t
     death_knight_attack_t::target_debuff( dmg_type);
     target_multiplier *= 1 + p -> diseases * 0.1;
     assert (p -> diseases <= 2);
+  }
+
+  void
+  execute()
+  {
+    death_knight_attack_t::execute();
+    if( result_is_hit() ) trigger_abominations_might( this, 0.25 );
   }
 };
 
@@ -1014,6 +1105,8 @@ struct obliterate_t : public death_knight_attack_t
     death_knight_attack_t::execute();
     if( result_is_hit() )
     {
+      trigger_abominations_might( this, 0.5 );
+
       if( p -> active_blood_plague && p -> active_blood_plague -> ticking )
         p -> active_blood_plague -> cancel();
 
@@ -1368,6 +1461,8 @@ death_knight_t::reset()
   _cooldowns.reset();
   _expirations.reset();
   _runes.reset();
+
+  death_knight_t::expirations.reset();
 }
 
 bool
