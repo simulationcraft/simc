@@ -46,16 +46,6 @@ struct dk_rune_t
 
 struct death_knight_t : public player_t
 {
-  // Raid Expirations
-  struct _raid_expirations_t
-  {
-    event_t* abominations_might;
-
-    void reset() { memset( (void*) this, 0x00, sizeof( _raid_expirations_t ) ); }
-    _raid_expirations_t() { reset(); }
-  };
-  static _raid_expirations_t expirations;
-
   // Active
   action_t* active_blood_plague;
   action_t* active_frost_fever;
@@ -294,9 +284,6 @@ struct death_knight_t : public player_t
   bool abort_execute_action;
 };
 
-// Static Members
-death_knight_t::_raid_expirations_t death_knight_t::expirations;
-
 namespace { // ANONYMOUS NAMESPACE =========================================
 
 // ==========================================================================
@@ -457,8 +444,11 @@ trigger_abominations_might( action_t* a, double base_chance )
       for( player_t* p = sim -> player_list; p; p = p -> next )
       {
         if( p -> sleeping ) continue;
-        if( p -> buffs.abominations_might == 0 ) p -> aura_gain( "Abomination's Might" );
-        p -> buffs.abominations_might = 1;
+        if( p -> buffs.abominations_might == 0 ) 
+	{
+	  p -> aura_gain( "Abomination's Might" );
+	  p -> buffs.abominations_might = 1;
+	}
       }
       sim -> add_event( this, 10.0 );
     }
@@ -472,7 +462,7 @@ trigger_abominations_might( action_t* a, double base_chance )
           p -> buffs.abominations_might = 0;
         }
       }
-      death_knight_t::expirations.abominations_might = NULL;
+      sim -> expirations.abominations_might = NULL;
     }
   };
 
@@ -484,7 +474,7 @@ trigger_abominations_might( action_t* a, double base_chance )
 
   if( a -> sim -> overrides.abominations_might ) return;
 
-  event_t*& e = death_knight_t::expirations.abominations_might;
+  event_t*& e = a -> sim -> expirations.abominations_might;
 
   if( e )
   {
@@ -1461,8 +1451,6 @@ death_knight_t::reset()
   _cooldowns.reset();
   _expirations.reset();
   _runes.reset();
-
-  death_knight_t::expirations.reset();
 }
 
 bool

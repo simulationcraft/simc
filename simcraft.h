@@ -410,6 +410,32 @@ struct sim_t
   };
   overrides_t overrides;
 
+  // Auras
+  struct auras_t
+  {
+    int improved_moonkin;
+    int leader_of_the_pack;
+    int moonkin;
+    int sanctified_retribution;
+    int swift_retribution;
+    int trueshot;
+    void reset() { memset( (void*) this, 0x00, sizeof( auras_t ) ); }
+    auras_t() { reset(); }
+  };
+  auras_t auras;
+
+  // Expirations
+  struct expirations_t
+  {
+    event_t* abominations_might;
+    event_t* ferocious_inspiration;
+    event_t* rampage;
+    event_t* unleashed_rage;
+    void reset() { memset( (void*) this, 0x00, sizeof( expirations_t ) ); }
+    expirations_t() { reset(); }
+  };
+  expirations_t expirations;
+
   // Replenishment
   int replenishment_targets;
   std::vector<player_t*> replenishment_candidates;
@@ -747,6 +773,7 @@ struct player_t
     int       elemental_oath;
     int       executioner;
     int       eye_of_the_broodmother;
+    int       ferocious_inspiration;
     double    flametongue_totem;
     player_t* focus_magic;
     int       focus_magic_feedback;
@@ -754,29 +781,23 @@ struct player_t
     int       fury_of_the_five_flights;
     int       illustration_of_the_dragon_soul;
     double    improved_divine_spirit;
-    int       improved_moonkin_aura;
     int       innervate;
     int       glyph_of_innervate;
-    int       leader_of_the_pack;
     int       lightning_capacitor;
     double    mana_cost_reduction;
     double    mana_spring;
     double    mark_of_the_wild;
-    int       moonkin_aura;
     int       mongoose_mh;
     int       mongoose_oh;
     int       power_infusion;
     int       rampage;
     int       replenishment;
-    int       sanctified_retribution;
     int       shadow_form;
     double    strength_of_earth;
-    int       swift_retribution;
     int       talisman_of_ascendance;
     int       thunder_capacitor;
     double    totem_of_wrath;
     int       tricks_of_the_trade;
-    int       trueshot_aura;
     int       unleashed_rage;
     int       violet_eye;
     double    windfury_totem;
@@ -1184,7 +1205,6 @@ struct target_t
     int    curse_of_elements;
     double expose_armor;
     double faerie_fire;
-    int    ferocious_inspiration;
     double frozen;
     double hemorrhage;
     int    hemorrhage_charges;
@@ -1220,7 +1240,6 @@ struct target_t
     event_t* curse_of_elements;
     event_t* expose_armor;
     event_t* faerie_fire;
-    event_t* ferocious_inspiration;
     event_t* frozen;
     event_t* earth_and_moon;
     event_t* hemorrhage;

@@ -800,28 +800,34 @@ static void trigger_ferocious_inspiration( action_t* a )
 
   if ( ! o -> talents.ferocious_inspiration ) return;
 
-  // FIXME! Pretending FI is a target debuff helps performance.
-  // FIXME! It also bypasses the issue with properly updating pet expirations when they are dismissed.
-
   struct ferocious_inspiration_expiration_t : public event_t
   {
     ferocious_inspiration_expiration_t( sim_t* sim ) : event_t( sim )
     {
       name = "Ferocious Inspiration Expiration";
-      if( sim -> log ) report_t::log( sim, "Everyone gains Ferocious Inspiration." );
-      sim -> target -> debuffs.ferocious_inspiration = 1;
+      for( player_t* p = sim -> player_list; p; p = p -> next )
+      {
+        if( p -> sleeping ) continue;
+        if( p -> buffs.ferocious_inspiration == 0 ) p -> aura_gain( "Ferocious Inspiration" );
+        p -> buffs.ferocious_inspiration = 1;
+      }
       sim -> add_event( this, 10.0 );
     }
     virtual void execute()
     {
-      if( sim -> log ) report_t::log( sim, "Everyone loses Ferocious Inspiration." );
-      sim -> target -> debuffs.ferocious_inspiration = 0;
-      sim -> target -> expirations.ferocious_inspiration = 0;
+      for( player_t* p = sim -> player_list; p; p = p -> next )
+      {
+        if ( p -> buffs.ferocious_inspiration )
+        {
+          p -> aura_loss( "Ferocious Inspiration" );
+          p -> buffs.ferocious_inspiration = 0;
+        }
+      }
+      sim -> expirations.ferocious_inspiration = 0;
     }
   };
 
-  target_t* t = a -> sim -> target;
-  event_t*& e = t -> expirations.ferocious_inspiration;
+  event_t*& e = a -> sim -> expirations.ferocious_inspiration;
 
   if ( e )
   {
@@ -3618,18 +3624,10 @@ struct trueshot_aura_t : public hunter_spell_t
 
   virtual void execute()
   {
-    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
-
-    player -> cast_hunter() -> _buffs.trueshot_aura = 1;
-
-    for( player_t* p = sim -> player_list; p; p = p -> next )
-    {
-      if( p -> buffs.trueshot_aura == 0 )
-      {
-        p -> aura_gain( "Trueshot Aura" );
-      }
-      p -> buffs.trueshot_aura++;
-    }
+    hunter_t* p = player -> cast_hunter();
+    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    p -> _buffs.trueshot_aura = 1;
+    sim -> auras.trueshot = 1;
   }
 
   virtual bool ready()

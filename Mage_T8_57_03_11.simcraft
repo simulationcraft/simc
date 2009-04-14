@@ -13,7 +13,9 @@ actions+=/choose_rotation
 actions+=/arcane_blast,max=2
 actions+=/arcane_blast,max=3,arcane_power=1
 actions+=/arcane_blast,max=3,dps=1
-actions+=/arcane_missiles,barrage=1
+# Spamming Arcane Blast under Arcane Power until Missile Barrage procs appears to be a wash
+# actions+=/arcane_missiles,barrage=1
+# actions+=/arcane_blast,arcane_power=1
 actions+=/arcane_missiles
 actions+=/mana_potion
 

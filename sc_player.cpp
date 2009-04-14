@@ -1081,8 +1081,7 @@ double player_t::composite_attack_crit()
 
   if( type != PLAYER_GUARDIAN )
   {
-    if( buffs.leader_of_the_pack || 
-        buffs.rampage ) 
+    if( sim -> auras.leader_of_the_pack || buffs.rampage ) 
     {
       ac += 0.05;
     }
@@ -1150,8 +1149,7 @@ double player_t::composite_spell_crit()
   {
     if( buffs.focus_magic ) sc += 0.03;
 
-    if( buffs.elemental_oath ||
-	buffs.moonkin_aura   )
+    if( buffs.elemental_oath || sim -> auras.moonkin )
     {
       sc += 0.05;
     }
@@ -1166,11 +1164,13 @@ double player_t::composite_attack_power_multiplier()
 {
   double m = attack_power_multiplier;
 
-  if( buffs.unleashed_rage ||
-      buffs.trueshot_aura ||
-      buffs.abominations_might )
+  if( sim -> auras.trueshot || buffs.abominations_might )
   {
     m *= 1.10;
+  }
+  else
+  {
+    m *= 1.0 + buffs.unleashed_rage * 0.01;
   }
 
   return m;
@@ -1257,26 +1257,21 @@ void player_t::combat_begin()
   }
 
   if( sim -> overrides.abominations_might     ) buffs.abominations_might = 1;
+  if( sim -> overrides.arcane_brilliance      ) buffs.arcane_brilliance = 60;
   if( sim -> overrides.battle_shout           ) buffs.battle_shout = 548;
   if( sim -> overrides.blessing_of_kings      ) buffs.blessing_of_kings = 1;
   if( sim -> overrides.blessing_of_might      ) buffs.blessing_of_might = 688;
   if( sim -> overrides.blessing_of_wisdom     ) buffs.blessing_of_wisdom = 91*1.2;
-  if( sim -> overrides.sanctified_retribution ) buffs.sanctified_retribution = 1;
-  if( sim -> overrides.swift_retribution      ) buffs.swift_retribution = 1;
-  if( sim -> overrides.arcane_brilliance      ) buffs.arcane_brilliance = 60;
   if( sim -> overrides.divine_spirit          ) buffs.divine_spirit = 80;
+  if( sim -> overrides.ferocious_inspiration  ) buffs.ferocious_inspiration = 1;
   if( sim -> overrides.fortitude              ) buffs.fortitude = 215;
   if( sim -> overrides.improved_divine_spirit ) buffs.improved_divine_spirit = 80;
-  if( sim -> overrides.improved_moonkin_aura  ) buffs.improved_moonkin_aura = 1;
-  if( sim -> overrides.leader_of_the_pack     ) buffs.leader_of_the_pack = 1;
   if( sim -> overrides.mana_spring            ) buffs.mana_spring = ( sim -> P309 ? 42.5 : 91.0*1.2 );
   if( sim -> overrides.mark_of_the_wild       ) buffs.mark_of_the_wild = 52;
-  if( sim -> overrides.moonkin_aura           ) buffs.moonkin_aura = 1;
   if( sim -> overrides.rampage                ) buffs.rampage = 1;
   if( sim -> overrides.replenishment          ) buffs.replenishment = 1;
   if( sim -> overrides.strength_of_earth      ) buffs.strength_of_earth = 178;
   if( sim -> overrides.totem_of_wrath         ) buffs.totem_of_wrath = 280;
-  if( sim -> overrides.trueshot_aura          ) buffs.trueshot_aura = 1;
   if( sim -> overrides.unleashed_rage         ) buffs.unleashed_rage = 1;
   if( sim -> overrides.windfury_totem         ) buffs.windfury_totem = 0.20;
   if( sim -> overrides.wrath_of_air           ) buffs.wrath_of_air = 1;

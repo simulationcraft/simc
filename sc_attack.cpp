@@ -76,7 +76,7 @@ double attack_t::haste()
       h *= 1.0 / ( 1.0 + 0.30 );
     }
 
-    if( p -> buffs.swift_retribution || p -> buffs.improved_moonkin_aura ) 
+    if( sim -> auras.swift_retribution || sim -> auras.improved_moonkin ) 
     {
       h *= 1.0 / ( 1.0 + 0.03 );
     }

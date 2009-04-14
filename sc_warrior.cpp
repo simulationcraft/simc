@@ -54,7 +54,6 @@ struct warrior_t : public player_t
     event_t* blood_frenzy;
     event_t* bloodsurge;
     event_t* death_wish;
-    event_t* rampage;
     event_t* recklessness;
     event_t* trauma;
     event_t* wrecking_crew;
@@ -678,6 +677,7 @@ static void trigger_taste_for_blood( attack_t* a )
 static void trigger_rampage( attack_t* a )
 {
   warrior_t* p = a -> player -> cast_warrior();
+
   if( p -> talents.rampage == 0 )
     return;
 
@@ -686,27 +686,35 @@ static void trigger_rampage( attack_t* a )
     
   struct rampage_expiration_t : public event_t
   {
-    rampage_expiration_t( sim_t* sim, warrior_t* p ) : event_t( sim, p )
+    rampage_expiration_t( sim_t* sim ) : event_t( sim )
     {
       name = "Rampage Reflexes Expiration";
-      for( player_t* curr_player = sim -> player_list; curr_player; curr_player = curr_player -> next )
+      for( player_t* p = sim -> player_list; p; p = p -> next )
       {
-        curr_player -> buffs.rampage++;
+        if( p -> sleeping ) continue;
+        if( p -> buffs.rampage == 0 ) 
+	{
+	  p -> aura_gain( "Rampage Reflexes" );
+	  p -> buffs.rampage = 1;
+	}
       }
       sim -> add_event( this, 10.0 );
     }
     virtual void execute()
     {
-      for( player_t* curr_player = sim -> player_list; curr_player; curr_player = curr_player -> next )
+      for( player_t* p = sim -> player_list; p; p = p -> next )
       {
-        curr_player -> buffs.rampage--;
+        if ( p -> buffs.rampage )
+        {
+          p -> aura_loss( "Rampage Reflexes" );
+          p -> buffs.rampage = 0;
+        }
       }
-      warrior_t* p = player -> cast_warrior();
-      p -> _expirations.rampage = 0;
+      sim -> expirations.rampage = NULL;
     }
   };
 
-  event_t*& e = p -> _expirations.rampage;
+  event_t*& e = a -> sim -> expirations.rampage;
 
   if( e )
   {
@@ -714,7 +722,7 @@ static void trigger_rampage( attack_t* a )
   }
   else
   {
-    e = new ( a -> sim ) rampage_expiration_t( a -> sim, p );
+    e = new ( a -> sim ) rampage_expiration_t( a -> sim );
   }
 }
 

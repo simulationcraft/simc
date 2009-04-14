@@ -2042,7 +2042,7 @@ void druid_spell_t::player_buff()
 {
   druid_t* p = player -> cast_druid();
   spell_t::player_buff();
-  if( p -> buffs.moonkin_aura )
+  if( p -> _buffs.moonkin_form )
   {
     player_multiplier *= 1.0 + p -> talents.master_shapeshifter * 0.02;
   }
@@ -2409,10 +2409,11 @@ struct cat_form_t : public druid_spell_t
 
     if( d -> talents.leader_of_the_pack )
     {
+      sim -> auras.leader_of_the_pack = 1;
+
       for( player_t* p = sim -> player_list; p; p = p -> next )
       {
         if( ! p -> sleeping ) p -> aura_gain( "Leader of the Pack" );
-        p -> buffs.leader_of_the_pack = 1;
       }
     }
   }
@@ -2440,21 +2441,22 @@ struct moonkin_form_t : public druid_spell_t
 
   virtual void execute()
   {
-    druid_t* d = player -> cast_druid();
-    if( sim -> log ) report_t::log( sim, "%s performs %s", d -> name(), name() );
+    druid_t* p = player -> cast_druid();
 
-    d -> _buffs.moonkin_form = 1;
+    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+
+    p -> _buffs.moonkin_form = 1;
+
+    sim -> auras.moonkin = 1;
+
+    if( p -> talents.improved_moonkin_form )
+    {
+      sim -> auras.improved_moonkin = 1;
+    }
 
     for( player_t* p = sim -> player_list; p; p = p -> next )
     {
       if( ! p -> sleeping ) p -> aura_gain( "Moonkin Aura" );
-
-      p -> buffs.moonkin_aura = 1;
-
-      if( d -> talents.improved_moonkin_form )
-      {
-        p -> buffs.improved_moonkin_aura = 1;
-      }
     }
   }
 

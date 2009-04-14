@@ -187,7 +187,6 @@ void action_t::player_buff()
   player_attack_power_multiplier = 1.0;
 
   player_t* p = player;
-  target_t* t = sim -> target;
 
   if( school == SCHOOL_BLEED )
   {
@@ -202,25 +201,26 @@ void action_t::player_buff()
     player_penetration = p -> composite_spell_penetration();
   }
 
-  if( p -> type == PLAYER_GUARDIAN ) return;  // Guardians do not benefit from auras
-  
-  if( school == SCHOOL_SHADOW )
+  if( p -> type != PLAYER_GUARDIAN )
   {
-    // That needs to be here because shadow form affects ALL shadow damage (e.g. trinkets)
-    if( p -> buffs.shadow_form )
+    if( school == SCHOOL_SHADOW )
     {
-      player_multiplier *= 1.15;
+      // That needs to be here because shadow form affects ALL shadow damage (e.g. trinkets)
+      if( p -> buffs.shadow_form )
+      {
+	player_multiplier *= 1.15;
+      }
     }
-  }
 
-  if( p -> buffs.sanctified_retribution || t -> debuffs.ferocious_inspiration  ) 
-  {
-    player_multiplier *= 1.03;
-  }
+    if( sim -> auras.sanctified_retribution || p -> buffs.ferocious_inspiration  ) 
+    {
+      player_multiplier *= 1.03;
+    }
 
-  if( p -> buffs.tricks_of_the_trade ) 
-  {
-    player_multiplier *= 1.0 + p -> buffs.tricks_of_the_trade * 0.01;
+    if( p -> buffs.tricks_of_the_trade ) 
+    {
+      player_multiplier *= 1.0 + p -> buffs.tricks_of_the_trade * 0.01;
+    }
   }
 
   if( base_attack_power_multiplier > 0 )

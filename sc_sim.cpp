@@ -239,6 +239,8 @@ void sim_t::reset()
 {
   if( debug ) report_t::log( this, "Reseting Simulator" );
   current_time = id = 0;
+  auras.reset();
+  expirations.reset();
   target -> reset();
   for( player_t* p = player_list; p; p = p -> next )
   {
@@ -253,6 +255,13 @@ void sim_t::combat_begin()
   if( debug ) report_t::log( this, "Combat Begin" );
 
   reset();
+
+  if( overrides.improved_moonkin_aura  ) auras.improved_moonkin = 1;
+  if( overrides.leader_of_the_pack     ) auras.leader_of_the_pack = 1;
+  if( overrides.moonkin_aura           ) auras.moonkin = 1;
+  if( overrides.sanctified_retribution ) auras.sanctified_retribution = 1;
+  if( overrides.swift_retribution      ) auras.swift_retribution = 1;
+  if( overrides.trueshot_aura          ) auras.trueshot = 1;
 
   target -> combat_begin();
 
