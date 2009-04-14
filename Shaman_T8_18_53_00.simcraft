@@ -1,7 +1,7 @@
 #!simcraft optimal_raid=1 max_time=300
 
 patch=3.1.0
-shaman=Shaman_T8_16_55_00
+shaman=Shaman_T8_18_53_00
 level=80
 talents=http://ptr.wowhead.com/?talent=hVhGVZhbxIoxdIhusouVo
 actions=flask,type=endless_rage/food,type=fish_feast/windfury_weapon,weapon=main/flametongue_weapon,weapon=off
