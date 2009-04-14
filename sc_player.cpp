@@ -1506,81 +1506,84 @@ action_t* player_t::execute_action()
 void player_t::regen( double periodicity )
 {
   int resource_type = primary_resource();
-  
-  if( resource_type == RESOURCE_ENERGY && sim -> infinite_resource[ resource_type ] == 0 && resource_max[ resource_type ] > 0 )
+
+  if( sim -> infinite_resource[ resource_type ] == 0 )
   {
-    double energy_regen = periodicity * energy_regen_per_second;
-
-    resource_gain( resource_type, energy_regen, gains.energy_regen );
-  }
-
-  if( resource_type == RESOURCE_FOCUS && sim -> infinite_resource[ resource_type ] == 0 && resource_max[ resource_type ] > 0 )
-  {
-    double focus_regen = periodicity * focus_regen_per_second;
-
-    resource_gain( resource_type, focus_regen, gains.focus_regen );
-  }
-
-  if( resource_type == RESOURCE_MANA && sim -> infinite_resource[ resource_type ] == 0 && resource_max[ resource_type ] > 0 )
-  {
-    double spirit_regen = periodicity * sqrt( intellect() ) * spirit() * mana_regen_base;
-
-    if( buffs.innervate )
+    if( resource_type == RESOURCE_ENERGY )
     {
-      if( buffs.glyph_of_innervate ) 
+      double energy_regen = periodicity * energy_regen_per_second;
+
+      resource_gain( resource_type, energy_regen, gains.energy_regen );
+    }
+
+    if( resource_type == RESOURCE_FOCUS )
+    {
+      double focus_regen = periodicity * focus_regen_per_second;
+
+      resource_gain( resource_type, focus_regen, gains.focus_regen );
+    }
+
+    if( resource_type == RESOURCE_MANA )
+    {
+      double spirit_regen = periodicity * sqrt( intellect() ) * spirit() * mana_regen_base;
+
+      if( buffs.innervate )
       {
-        resource_gain( resource_type, spirit_regen, gains.glyph_of_innervate );
+	if( buffs.glyph_of_innervate ) 
+        {
+	  resource_gain( resource_type, spirit_regen, gains.glyph_of_innervate );
+	}
+
+	spirit_regen *= 5.0;
+
+	resource_gain( resource_type, spirit_regen, gains.innervate );      
+      }
+      else if( buffs.glyph_of_innervate )
+      {
+	resource_gain( resource_type, spirit_regen, gains.glyph_of_innervate );
+      }
+      else if( recent_cast() )
+      {
+	if( mana_regen_while_casting < 1.0 )
+	{
+	  spirit_regen *= mana_regen_while_casting;
+	}
+
+	resource_gain( resource_type, spirit_regen, gains.spirit_intellect_regen );      
       }
 
-      spirit_regen *= 5.0;
+      double mp5_regen = periodicity * ( mp5 + intellect() * mp5_per_intellect ) / 5.0;
 
-      resource_gain( resource_type, spirit_regen, gains.innervate );      
-    }
-    else if( buffs.glyph_of_innervate )
-    {
-      resource_gain( resource_type, spirit_regen, gains.glyph_of_innervate );
-    }
-    else if( recent_cast() )
-    {
-      if( mana_regen_while_casting < 1.0 )
+      resource_gain( resource_type, mp5_regen, gains.mp5_regen );
+
+      if( sim -> overrides.replenishment || ( buffs.replenishment && sim -> replenishment_targets <= 0 ) )
       {
-        spirit_regen *= mana_regen_while_casting;
+	double replenishment_regen = periodicity * resource_max[ resource_type ] * 0.0025 / 1.0;
+
+	resource_gain( resource_type, replenishment_regen, gains.replenishment );
       }
+      uptimes.replenishment -> update( buffs.replenishment != 0 );
 
-      resource_gain( resource_type, spirit_regen, gains.spirit_intellect_regen );      
-    }
-
-    double mp5_regen = periodicity * ( mp5 + intellect() * mp5_per_intellect ) / 5.0;
-
-    resource_gain( resource_type, mp5_regen, gains.mp5_regen );
-
-    if( sim -> overrides.replenishment || ( buffs.replenishment && sim -> replenishment_targets <= 0 ) )
-    {
-      double replenishment_regen = periodicity * resource_max[ resource_type ] * 0.0025 / 1.0;
-
-      resource_gain( resource_type, replenishment_regen, gains.replenishment );
-    }
-    uptimes.replenishment -> update( buffs.replenishment != 0 );
-
-    if( sim -> P309 && buffs.water_elemental )
-    {
+      if( sim -> P309 && buffs.water_elemental )
+      {
         double water_elemental_regen = periodicity * resource_max[ resource_type ] * 0.006 / 5.0;
 
         resource_gain( resource_type, water_elemental_regen, gains.water_elemental );
-    }
+      }
 
-    if( sim -> P309 || ( buffs.blessing_of_wisdom >= buffs.mana_spring ) )
-    {
-      double wisdom_regen = periodicity * buffs.blessing_of_wisdom / 5.0;
+      if( sim -> P309 || ( buffs.blessing_of_wisdom >= buffs.mana_spring ) )
+      {
+	double wisdom_regen = periodicity * buffs.blessing_of_wisdom / 5.0;
 
-      resource_gain( resource_type, wisdom_regen, gains.blessing_of_wisdom );
-    }
+	resource_gain( resource_type, wisdom_regen, gains.blessing_of_wisdom );
+      }
 
-    if( sim -> P309 || ( buffs.mana_spring > buffs.blessing_of_wisdom ) )
-    {
-      double mana_spring_regen = periodicity * buffs.mana_spring / 2.0;
+      if( sim -> P309 || ( buffs.mana_spring > buffs.blessing_of_wisdom ) )
+      {
+	double mana_spring_regen = periodicity * buffs.mana_spring / 2.0;
 
-      resource_gain( resource_type, mana_spring_regen, gains.mana_spring );
+	resource_gain( resource_type, mana_spring_regen, gains.mana_spring );
+      }
     }
   }
 
