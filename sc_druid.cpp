@@ -16,7 +16,6 @@ struct druid_t : public player_t
   action_t* active_moonfire;
   action_t* active_rake;
   action_t* active_rip;
-  action_t* active_starfall_stars;
 
   // Buffs
   struct _buffs_t
@@ -222,7 +221,6 @@ struct druid_t : public player_t
     active_moonfire       = 0;
     active_rake           = 0;
     active_rip            = 0;
-    active_starfall_stars = 0;
 
     // Gains
     gains_energy_refund    = get_gain( "energy_refund"    );
@@ -2823,7 +2821,7 @@ struct wrath_t : public druid_spell_t
 
 struct starfall_t : public druid_spell_t
 {
-  int stars;
+  spell_t* starfall_star;
   starfall_t( player_t* player, const std::string& options_str ) :
     druid_spell_t( "starfall", player, SCHOOL_ARCANE, TREE_BALANCE )
   {
@@ -2847,13 +2845,19 @@ struct starfall_t : public druid_spell_t
         may_miss          = true;
         may_resist        = true;
         background        = true;
-        aoe            = true; // Prevents procing Omen or Moonkin Form mana gains.
-        trigger_gcd       = 0;
+        aoe               = true; // Prevents procing Omen or Moonkin Form mana gains.
+        dual = true;
 
-        base_execute_time          = 0;
-        base_cost                  *= 1.0 - util_t::talent_rank(p -> talents.moonglow, 3, 0.03);
         base_crit                  += util_t::talent_rank(p -> talents.natures_majesty, 2, 0.02);
         base_crit_bonus_multiplier *= 1.0 + util_t::talent_rank(p -> talents.vengeance, 5, 0.20);
+        if( p -> glyphs.focus )
+          base_multiplier *= 1.2;
+      }
+      virtual void execute()
+      {
+        druid_spell_t::execute();
+        tick_dmg = direct_dmg;
+        update_stats( DMG_OVER_TIME );
       }
 
     };
@@ -2870,14 +2874,16 @@ struct starfall_t : public druid_spell_t
         may_miss          = true;
         may_resist        = true;
         background        = true;
-        aoe            = true; // Prevents procing Omen or Moonkin Form mana gains.
-        trigger_gcd       = 0;
+        aoe               = true; // Prevents procing Omen or Moonkin Form mana gains.
+        dual = true;
 
-        base_execute_time          = 0;
+
         base_dd_min = base_dd_max  = 0;
-        base_cost                  *= 1.0 - util_t::talent_rank(p -> talents.moonglow, 3, 0.03);
         base_crit                  += util_t::talent_rank(p -> talents.natures_majesty, 2, 0.02);
         base_crit_bonus_multiplier *= 1.0 + util_t::talent_rank(p -> talents.vengeance, 5, 0.20);
+
+        if( p -> glyphs.focus )
+          base_multiplier *= 1.2;
 
         starfall_star_splash = new starfall_star_splash_t( p );
       }
@@ -2885,20 +2891,13 @@ struct starfall_t : public druid_spell_t
       virtual void execute()
       {
         druid_spell_t::execute();
-
-        druid_t* p = player -> cast_druid();
+        tick_dmg = direct_dmg;
+        update_stats( DMG_OVER_TIME );
 
         if( result_is_hit() )
         {
           // FIXME! Just an assumption that the splash damage only occurs if the star did not miss. (
           starfall_star_splash -> execute();
-        }
-        p -> _buffs.starfall--;
-
-        // If there are no pending stars, lose the buff, so there is no need to setup an extra expiration event
-        if( p -> _buffs.starfall == 0)
-        {
-          p -> aura_loss( "Starfall" );
         }
       }
     };
@@ -2909,11 +2908,13 @@ struct starfall_t : public druid_spell_t
       { NULL }
     };
     parse_options( options, options_str );
+    
+    num_ticks      = 10; 
+    base_tick_time = 1.0; 
 
     cooldown          = p -> sim -> P309 ? 180 : 90;
     base_execute_time = 0;
     aoe               = true; // Can the actual CAST of Starfall trigger omen? FIX ME!
-    stars             = 10;
 
     static rank_t ranks[] =
     {
@@ -2926,54 +2927,25 @@ struct starfall_t : public druid_spell_t
     init_rank( ranks );
 
 
-    p -> active_starfall_stars = new starfall_star_t( p );
-    p -> active_starfall_stars -> base_dd_max = base_dd_max;
-    p -> active_starfall_stars -> base_dd_min = base_dd_min;
+    starfall_star = new starfall_star_t( p );
+    starfall_star -> base_dd_max = base_dd_max;
+    starfall_star -> base_dd_min = base_dd_min;
     base_dd_min = base_dd_max = 0;
 
-    if( p -> glyphs.focus )
-    {
-      p -> active_starfall_stars -> base_multiplier *= 1.2;
-    }
     if( p -> glyphs.starfall )
     {
       if( p -> sim -> P309 )
-        stars    += 2;
+        num_ticks += 2;
       else
-        cooldown -= 30;
+        cooldown  -= 30;
     }
   }
-
-  virtual void execute()
+  virtual void tick()
   {
-    druid_t* p = player -> cast_druid();
-    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
-    consume_resource();
-    update_ready();
-    player -> action_finish( this );
-    p -> aura_gain( "Starfall" );
-    p -> _buffs.starfall = stars; // The number of stars that are pending do drop.
-
-    struct event_starfall_star_t : public event_t
-    {
-      event_starfall_star_t( sim_t* sim, player_t* player) : event_t( sim, player)
-      {
-        name = "Starfall Star";
-        sim -> add_event( this, 1.0 );
-      }
-      virtual void execute()
-      {
-        druid_t* p = player -> cast_druid();
-        p -> active_starfall_stars -> execute();
-        if( p -> _buffs.starfall > 0)
-        {
-          new ( sim ) event_starfall_star_t( sim, p );
-        }
-      }
-    };
-    new ( sim ) event_starfall_star_t( sim, p );
+    if( sim -> debug ) report_t::log( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
+    starfall_star -> execute();
+    update_time( DMG_OVER_TIME );
   }
-
 };
 
 // Mark of the Wild Spell =====================================================
