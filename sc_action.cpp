@@ -21,7 +21,8 @@ action_t::action_t( int         ty,
   sim(p->sim), type(ty), name_str(n), player(p), school(s), resource(r), tree(tr), result(RESULT_NONE),
   dual(false), special(sp), binary(false), channeled(false), background(false), repeating(false), aoe(false), harmful(true), proc(false), heal(false),
   may_miss(false), may_resist(false), may_dodge(false), may_parry(false), 
-  may_glance(false), may_block(false), may_crush(false), may_crit(false), tick_may_crit(false), clip_dot(false),
+  may_glance(false), may_block(false), may_crush(false), may_crit(false),
+  tick_may_crit(false), tick_zero(false), clip_dot(false),
   min_gcd(0), trigger_gcd(0),
   weapon_power_mod(1.0/14), direct_power_mod(0), tick_power_mod(0),
   base_execute_time(0), base_tick_time(0), base_cost(0),
@@ -728,7 +729,16 @@ void action_t::schedule_tick()
 {
   if( sim -> debug ) report_t::log( sim, "%s schedules tick for %s", player -> name(), name() );
 
-  if( current_tick == 0 && school == SCHOOL_BLEED ) sim -> target -> debuffs.bleeding++;
+  if( current_tick == 0 )
+  {
+    if( school == SCHOOL_BLEED ) sim -> target -> debuffs.bleeding++;
+
+    if( tick_zero ) 
+    {
+      time_to_tick = 0;
+      tick();
+    }
+  }
 
   ticking = 1;
 
@@ -815,6 +825,21 @@ void action_t::update_stats( int type )
   else if( type == DMG_OVER_TIME )
   {
     stats -> add( tick_dmg, type, result, time_to_tick );
+  }
+  else assert(0);
+}
+
+// action_t::update_time ===================================================
+
+void action_t::update_time( int type )
+{
+  if( type == DMG_DIRECT )
+  {
+    stats -> total_execute_time += time_to_execute;
+  }
+  else if( type == DMG_OVER_TIME )
+  {
+    stats -> total_tick_time += time_to_tick;
   }
   else assert(0);
 }

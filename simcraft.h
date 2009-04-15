@@ -1310,7 +1310,8 @@ struct stats_t
   double total_execute_time, total_tick_time;
   double total_dmg;
   double dps, dpe, dpet, dpr;
-  double total_intervals, num_intervals, last_execute;
+  double total_intervals, num_intervals;
+  double last_execute;
 
   struct stats_results_t
   {
@@ -1360,8 +1361,8 @@ struct action_t
   player_t* player;
   int school, resource, tree, result;
   bool dual, special, binary, channeled, background, repeating, aoe, harmful, proc, heal;
-  bool may_miss, may_resist, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit, tick_may_crit;
-  bool clip_dot;
+  bool may_miss, may_resist, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
+  bool tick_may_crit, tick_zero, clip_dot;
   double min_gcd, trigger_gcd;
   double weapon_power_mod, direct_power_mod, tick_power_mod;
   double base_execute_time, base_tick_time, base_cost;
@@ -1437,6 +1438,7 @@ struct action_t
   virtual void   extend_duration( int extra_ticks );
   virtual void   update_ready();
   virtual void   update_stats( int type );
+  virtual void   update_time( int type );
   virtual bool   ready();
   virtual bool   terminal();
   virtual void   reset();

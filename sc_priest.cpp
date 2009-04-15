@@ -1447,7 +1447,7 @@ struct mind_flay_t : public priest_spell_t
   {
     if( sim -> debug ) report_t::log( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
     mind_flay_tick -> execute();
-    priest_spell_t::update_stats( DMG_OVER_TIME );
+    update_time( DMG_OVER_TIME );
   }
 
   virtual bool ready()

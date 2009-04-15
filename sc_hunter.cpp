@@ -2718,8 +2718,69 @@ struct chimera_shot_t : public hunter_attack_t
 
 // Explosive Shot ================================================================
 
+struct explosive_tick_t : public hunter_attack_t
+{
+  explosive_tick_t( player_t* player ) :
+    hunter_attack_t( "explosive_shot", player, SCHOOL_FIRE, TREE_SURVIVAL )
+  {
+    hunter_t* p = player -> cast_hunter();
+
+    static rank_t ranks[] =
+    {
+      { 80, 4,  386, 464, 0, 0 },
+      { 75, 3,  325, 391, 0, 0 },
+      { 70, 2,  221, 265, 0, 0 },
+      { 60, 1,  160, 192, 0, 0 },
+      { 0, 0 }
+    };
+    init_rank( ranks );
+
+    // To trigger ppm-based JoW
+    weapon = &( p -> ranged_weapon );
+    assert( weapon -> group() == WEAPON_RANGED );
+    weapon_multiplier = 0;
+
+    dual       = true;
+    background = true;
+    may_crit   = true;
+
+    direct_power_mod = 0.14;
+
+    base_multiplier *= 1.0 + p -> talents.sniper_training * 0.02;
+    base_multiplier *= p -> ranged_weapon_specialization_multiplier();
+
+    if( ! sim -> P309 ) base_multiplier *= 1.0 + p -> talents.tnt * 0.02;
+
+    base_crit += p -> talents.survival_instincts * 0.02;
+
+    if( sim -> P309 ) base_crit += p -> talents.tnt * 0.03;
+
+    base_crit_bonus_multiplier *= 1.0 + p -> talents.mortal_shots * 0.06;
+
+    if( p -> glyphs.explosive_shot )
+    {
+      assert( p -> sim -> patch.after(3, 1, 0) );
+      base_crit += 0.04;
+    }
+  }
+
+  virtual void execute()
+  {
+    hunter_attack_t::execute();
+
+    tick_dmg = direct_dmg;
+    update_stats( DMG_OVER_TIME );
+
+    if( result == RESULT_CRIT )
+    {
+      trigger_hunting_party( this );
+    }
+  }
+};
+
 struct explosive_shot_t : public hunter_attack_t
 {
+  attack_t* explosive_tick;
   int lock_and_load;
 
   explosive_shot_t( player_t* player, const std::string& options_str ) :
@@ -2736,108 +2797,38 @@ struct explosive_shot_t : public hunter_attack_t
     };
     parse_options( options, options_str );
 
-    static rank_t ranks[] =
-    {
-      { 80, 4,  386, 464, 0, 0.07 },
-      { 75, 3,  325, 391, 0, 0.07 },
-      { 70, 2,  221, 265, 0, 0.07 },
-      { 60, 1,  160, 192, 0, 0.10 },
-      { 0, 0 }
-    };
-    init_rank( ranks );
+    base_cost = 0.07 * p -> resource_base[ RESOURCE_MANA ];
 
-    // To trigger ppm-based JoW
-    weapon = &( p -> ranged_weapon );
-    assert( weapon -> group() == WEAPON_RANGED );
-    weapon_multiplier = 0;
-
-    may_crit = true;
     cooldown = 6;
     cooldown_group = "arcane_explosive";
 
+    tick_zero      = true;
     num_ticks      = 2;
     base_tick_time = 1.0;
-    direct_power_mod = 0.14;
-    tick_power_mod = 0.14;
 
-    base_multiplier *= 1.0 + p -> talents.sniper_training * 0.02;
-    base_multiplier *= p -> ranged_weapon_specialization_multiplier();
-    if( sim -> patch.after(3, 1, 0) ) base_multiplier *= 1.0 + p -> talents.tnt * 0.02;
-
-    base_crit += p -> talents.survival_instincts * 0.02;
-    if( sim -> patch.before(3, 1, 0) ) base_crit += p -> talents.tnt * 0.03;
-
-    base_crit_bonus_multiplier *= 1.0 + p -> talents.mortal_shots * 0.06;
-
-    if( p -> glyphs.explosive_shot )
-    {
-      assert( p -> sim -> patch.after(3, 1, 0) );
-      base_crit += 0.04;
-    }
+    explosive_tick = new explosive_tick_t( p );
   }
 
   virtual double cost()
   {
-    // FIXME: ugly workaround to avoid paying triple
-    if ( !may_miss ) return 0;
-
     hunter_t* p = player -> cast_hunter();
     if ( p -> _buffs.lock_and_load ) return 0;
     return hunter_attack_t::cost();
   }
 
-  virtual void consume_resource()
-  {
-    hunter_attack_t::consume_resource();
-    resource_consumed /= 3.0;
-  }
-
-  virtual void execute()
-  {
-    // FIXME! Bypass hunter_attack_t procs and just schedule ticks.  Only initial shot can miss.
-    hunter_attack_t::execute();
-    consume_lock_and_load( this );
-    if( result == RESULT_CRIT )
-    {
-      trigger_hunting_party( this );
-    }
-  }
-
   virtual void tick()
   {
-    // FIXME! Explosive Shot appears to be generating "on-hit" and "on-crit" procs for each tick.
-    // FIXME! To handle this, each "tick" is modeled as an attack that cannot miss.
-    num_ticks = 0;
-    may_miss = false;
-    hunter_attack_t::execute();
-    if( result == RESULT_CRIT )
-    {
-      trigger_hunting_party( this );
-    }
-    num_ticks = 2;
-    may_miss = true;
+    if( sim -> debug ) report_t::log( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
+    explosive_tick -> may_miss = ( current_tick != 0 );
+    explosive_tick -> execute();
+    update_time( DMG_OVER_TIME );
   }
 
   virtual void update_ready()
   {
-    if( may_miss ) // Explosive charge was just fired
-    {
-      hunter_t* p = player -> cast_hunter();
-      cooldown = p -> _buffs.lock_and_load ? 0.0 : 6.0;
-      hunter_attack_t::update_ready();
-    }
-  }
-
-  virtual void update_stats( int type )
-  {
-      tick_dmg = direct_dmg;
-    direct_dmg = 0;
-
-    if( may_miss ) // Explosive charge was just fired
-    {
-      hunter_attack_t::update_stats( DMG_DIRECT );
-    }
-    hunter_attack_t::update_stats( DMG_OVER_TIME );
+    hunter_t* p = player -> cast_hunter();
+    cooldown = p -> _buffs.lock_and_load ? 0.0 : 6.0;
+    hunter_attack_t::update_ready();
   }
 
   virtual bool ready()

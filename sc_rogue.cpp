@@ -1969,7 +1969,7 @@ struct killing_spree_t : public rogue_attack_t
       }
     }
 
-    update_stats( DMG_OVER_TIME );
+    update_time( DMG_OVER_TIME );
   }
 
   virtual void last_tick()

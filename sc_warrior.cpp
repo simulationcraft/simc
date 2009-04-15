@@ -1257,6 +1257,7 @@ struct bladestorm_t : public warrior_attack_t
     num_ticks      = 6; 
     base_tick_time = 1.0;
     channeled      = true;
+    tick_zero      = true;
 
     if( ! sim -> P309 && p -> glyphs.bladestorm )
       cooldown -= 15;
@@ -1264,38 +1265,27 @@ struct bladestorm_t : public warrior_attack_t
     bladestorm_tick = new bladestorm_tick_t( p );
   }
 
-  virtual double tick_time() 
-  {
-    // Bladestorm not modified by haste effects
-    return base_tick_time;
-  }
-
-  virtual void execute()
-  {
-    warrior_attack_t::execute();
-
-    // One attack happens immediately 
-    current_tick = 0;
-    time_to_tick = 0;
-    tick();
-  }
-  
   virtual void tick() 
   {
-    if( sim -> debug )
-      report_t::log( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
+    if( sim -> debug ) report_t::log( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
 
     bladestorm_tick -> weapon = &( player -> main_hand_weapon );
     bladestorm_tick -> execute();
 
-    if( bladestorm_tick -> result_is_hit() && player -> off_hand_weapon.type != WEAPON_NONE )
+    if( bladestorm_tick -> result_is_hit() )
     {
-      bladestorm_tick -> weapon = &( player -> off_hand_weapon );
-      bladestorm_tick -> execute();
+      if( player -> off_hand_weapon.type != WEAPON_NONE )
+      {
+	bladestorm_tick -> weapon = &( player -> off_hand_weapon );
+	bladestorm_tick -> execute();
+      }
     }
 
-    update_stats( DMG_OVER_TIME );
+    update_time( DMG_OVER_TIME );
   }
+
+  // Bladestorm not modified by haste effects
+  virtual double haste() { return 1.0; }
 };
 
 // Heroic Strike ===========================================================

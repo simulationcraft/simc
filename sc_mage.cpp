@@ -1704,7 +1704,7 @@ struct arcane_missiles_t : public mage_spell_t
   {
     if( sim -> debug ) report_t::log( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
     arcane_missiles_tick -> execute();
-    mage_spell_t::update_stats( DMG_OVER_TIME );
+    update_time( DMG_OVER_TIME );
   }
 
   virtual void last_tick()
