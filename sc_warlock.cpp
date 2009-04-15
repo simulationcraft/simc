@@ -3728,7 +3728,8 @@ struct conflagrate_t : public warlock_spell_t
                              + p -> talents.improved_immolate * 0.10
                              + p -> glyphs.immolate           * 0.10
                              + p -> gear.tier8_2pc            * 0.10; //FIXME assuming additive
-          
+
+      base_multiplier *= 0.7;
     }
     base_multiplier  *= 1.0 + p -> talents.emberstorm * 0.03;
     base_crit        += p -> talents.devastation * 0.05;
