@@ -805,12 +805,6 @@ static void trigger_ferocious_inspiration( action_t* a )
     ferocious_inspiration_expiration_t( sim_t* sim ) : event_t( sim )
     {
       name = "Ferocious Inspiration Expiration";
-      for( player_t* p = sim -> player_list; p; p = p -> next )
-      {
-        if( p -> sleeping ) continue;
-        if( p -> buffs.ferocious_inspiration == 0 ) p -> aura_gain( "Ferocious Inspiration" );
-        p -> buffs.ferocious_inspiration = 1;
-      }
       sim -> add_event( this, 10.0 );
     }
     virtual void execute()
@@ -826,6 +820,13 @@ static void trigger_ferocious_inspiration( action_t* a )
       sim -> expirations.ferocious_inspiration = 0;
     }
   };
+
+  for( player_t* p = a -> sim -> player_list; p; p = p -> next )
+  {
+    if( p -> sleeping ) continue;
+    if( p -> buffs.ferocious_inspiration == 0 ) p -> aura_gain( "Ferocious Inspiration" );
+    p -> buffs.ferocious_inspiration = 1;
+  }
 
   event_t*& e = a -> sim -> expirations.ferocious_inspiration;
 

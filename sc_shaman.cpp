@@ -548,12 +548,8 @@ static void trigger_unleashed_rage( attack_t* a )
   for( player_t* p = a -> sim -> player_list; p; p = p -> next )
   {
     if( p -> sleeping ) continue;
-
-    if( ur >= p -> buffs.unleashed_rage )
-    {
-      refresh_event = true;
-    }
-    if( ur > p -> buffs.unleashed_rage )
+    if( ur >= p -> buffs.unleashed_rage ) refresh_event = true;
+    if( ur >  p -> buffs.unleashed_rage )
     {
       if( p -> buffs.unleashed_rage == 0 ) p -> aura_gain( "Unleashed Rage" );
       p -> buffs.unleashed_rage = ur;

@@ -438,18 +438,9 @@ trigger_abominations_might( action_t* a, double base_chance )
 {
   struct abominations_might_expiration_t : public event_t
   {
-    abominations_might_expiration_t( sim_t* sim, player_t* player ) : event_t( sim, player )
+    abominations_might_expiration_t( sim_t* sim ) : event_t( sim )
     {
       name = "Abomination's Might Expiration";
-      for( player_t* p = sim -> player_list; p; p = p -> next )
-      {
-        if( p -> sleeping ) continue;
-        if( p -> buffs.abominations_might == 0 ) 
-	{
-	  p -> aura_gain( "Abomination's Might" );
-	  p -> buffs.abominations_might = 1;
-	}
-      }
       sim -> add_event( this, 10.0 );
     }
     virtual void execute()
@@ -466,13 +457,23 @@ trigger_abominations_might( action_t* a, double base_chance )
     }
   };
 
-  death_knight_t* p = a -> player -> cast_death_knight();
+  death_knight_t* dk = a -> player -> cast_death_knight();
   
-  if( ! a -> sim -> roll( base_chance * p -> talents.abominations_might ) ) return;
+  if( ! a -> sim -> roll( base_chance * dk -> talents.abominations_might ) ) return;
   
-  p -> procs_abominations_might -> occur();
+  dk -> procs_abominations_might -> occur();
 
   if( a -> sim -> overrides.abominations_might ) return;
+
+  for( player_t* p = a -> sim -> player_list; p; p = p -> next )
+  {
+    if( p -> sleeping ) continue;
+    if( p -> buffs.abominations_might == 0 ) 
+    {
+      p -> aura_gain( "Abomination's Might" );
+      p -> buffs.abominations_might = 1;
+    }
+  }
 
   event_t*& e = a -> sim -> expirations.abominations_might;
 
@@ -482,7 +483,7 @@ trigger_abominations_might( action_t* a, double base_chance )
   }
   else
   {
-    e = new ( a -> sim ) abominations_might_expiration_t( a -> sim, p );
+    e = new ( a -> sim ) abominations_might_expiration_t( a -> sim );
   }
 }
 

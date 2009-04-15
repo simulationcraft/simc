@@ -1993,7 +1993,7 @@ void player_t::aura_gain( const char* aura_name )
 {
   // FIXME! Aura-tracking here.
 
-  if( sim -> log ) report_t::log( sim, "Player %s gains %s", name(), aura_name );
+  if( sim -> log && ! sleeping ) report_t::log( sim, "Player %s gains %s", name(), aura_name );
 }
 
 // player_t::aura_loss ======================================================
@@ -2002,7 +2002,7 @@ void player_t::aura_loss( const char* aura_name )
 {
   // FIXME! Aura-tracking here.
 
-  if( sim -> log ) report_t::log( sim, "Player %s loses %s", name(), aura_name );
+  if( sim -> log && ! sleeping ) report_t::log( sim, "Player %s loses %s", name(), aura_name );
 }
 
 // player_t::get_gain =======================================================

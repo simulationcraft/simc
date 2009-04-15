@@ -676,28 +676,16 @@ static void trigger_taste_for_blood( attack_t* a )
 
 static void trigger_rampage( attack_t* a )
 {
-  warrior_t* p = a -> player -> cast_warrior();
+  warrior_t* w = a -> player -> cast_warrior();
 
-  if( p -> talents.rampage == 0 )
+  if( w -> talents.rampage == 0 )
     return;
 
-  if( a -> result != RESULT_CRIT )
-    return;
-    
   struct rampage_expiration_t : public event_t
   {
     rampage_expiration_t( sim_t* sim ) : event_t( sim )
     {
       name = "Rampage Reflexes Expiration";
-      for( player_t* p = sim -> player_list; p; p = p -> next )
-      {
-        if( p -> sleeping ) continue;
-        if( p -> buffs.rampage == 0 ) 
-	{
-	  p -> aura_gain( "Rampage Reflexes" );
-	  p -> buffs.rampage = 1;
-	}
-      }
       sim -> add_event( this, 10.0 );
     }
     virtual void execute()
@@ -713,6 +701,16 @@ static void trigger_rampage( attack_t* a )
       sim -> expirations.rampage = NULL;
     }
   };
+
+  for( player_t* p = a -> sim -> player_list; p; p = p -> next )
+  {
+    if( p -> sleeping ) continue;
+    if( p -> buffs.rampage == 0 ) 
+    {
+      p -> aura_gain( "Rampage Reflexes" );
+      p -> buffs.rampage = 1;
+    }
+  }
 
   event_t*& e = a -> sim -> expirations.rampage;
 
