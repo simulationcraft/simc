@@ -1,0 +1,14 @@
+#!simcraft max_time=300 optimal_raid=1
+
+patch=3.1.0
+priest=Priest_T8_13_00_58
+level=80
+talents=http://ptr.wowhead.com/?talent=bVcbhZZGxfVRfzcfqfzAo
+actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/fortitude/divine_spirit/inner_fire/shadow_form
+actions+=/shadow_fiend,trigger=6000/dispersion
+actions+=/shadow_word_pain,shadow_weaving_wait=1/speed_potion/vampiric_touch/devouring_plague/mind_blast/shadow_word_death,mb_wait=0,mb_priority=0/mind_flay
+actions+=/mana_potion
+Priest_T7_Best_Shadow_Gear.simcraft
+glyph_shadow_word_pain=1
+glyph_shadow=1
+glyph_shadow_word_death=1

@@ -5,7 +5,7 @@ level=80
 talents=http://www.wowhead.com/?talent=bVcbkhxtrxo0bZ0Et0bbqbZG
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/fortitude/inner_fire/divine_spirit/mana_potion/shadow_fiend,trigger=6000
 actions+=/inner_focus,shadow_word_pain/shadow_word_pain/power_infusion/holy_fire/mind_blast/smite
-Caster_T7_Base_Gear.simcraft
+Priest_T7_Best_Shadow_Gear.simcraft
 enchant_crit_rating=+100
 enchant_hit_rating=+75
 enchant_haste_rating=-175
