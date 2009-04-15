@@ -3239,7 +3239,7 @@ void rogue_t::raid_event( action_t* a )
 	p -> type != PLAYER_GUARDIAN &&
 	a -> result == RESULT_CRIT && 
 	a -> special &&
-	! a -> num_ticks &&
+	! a -> ticking &&
 	! a -> proc &&
 	sim -> roll( talents.honor_among_thieves / 3.0 ) )
     {

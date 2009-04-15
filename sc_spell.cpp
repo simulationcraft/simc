@@ -177,9 +177,11 @@ double spell_t::level_based_miss_chance( int player,
 
 void spell_t::calculate_result()
 {
-  direct_dmg = tick_dmg = 0;
+  direct_dmg = 0;
 
   result = RESULT_NONE;
+
+  if( ! harmful ) return;
 
   if( ( result == RESULT_NONE ) && may_miss )
   {

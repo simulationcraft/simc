@@ -1331,8 +1331,77 @@ struct shadow_word_death_t : public priest_spell_t
 
 // Mind Flay Spell ============================================================
 
+struct mind_flay_tick_t : public priest_spell_t
+{
+  mind_flay_tick_t( player_t* player ) : 
+    priest_spell_t( "mind_flay", player, SCHOOL_SHADOW, TREE_SHADOW )
+  {
+    priest_t* p = player -> cast_priest();
+
+    static rank_t ranks[] =
+    {
+      { 80, 9, 196, 196, 0, 0 },
+      { 74, 8, 164, 164, 0, 0 },
+      { 68, 7, 150, 150, 0, 0 },
+      { 60, 6, 121, 121, 0, 0 },
+      { 0, 0 }
+    };
+    init_rank( ranks );
+
+    dual              = true;
+    background        = true;
+    may_crit          = true;
+    direct_power_mod  = 1.0 / 3.5;
+    direct_power_mod *= 0.9;  // Nerf Bat!
+    direct_power_mod *= 1.0 + p -> talents.misery * 0.05;
+    base_hit         += p -> talents.shadow_focus * 0.01;
+    base_multiplier  *= 1.0 + ( p -> talents.darkness         * 0.02 + 
+                                p -> talents.twin_disciplines * 0.01 );
+    base_crit        += p -> talents.mind_melt * 0.02;
+
+    base_crit_bonus_multiplier *= 1.0 + p -> talents.shadow_power * 0.20;
+    
+    if( p -> gear.tier4_4pc ) base_multiplier *= 1.05;
+  }
+
+  virtual void execute()
+  {
+    priest_t* p = player -> cast_priest();
+    ticking = 1; // Prevent HAT procs
+    priest_spell_t::execute();
+    tick_dmg = direct_dmg;
+    update_stats( DMG_OVER_TIME );
+    if( result_is_hit() )
+    {
+      if( p -> active_shadow_word_pain )
+      {
+        if( sim -> roll( p -> talents.pain_and_suffering * (1.0/3.0) ) )
+        {
+          p -> active_shadow_word_pain -> refresh_duration();
+        }
+      }
+    }
+  }
+
+  virtual void player_buff()
+  {
+    priest_t* p = player -> cast_priest();
+    priest_spell_t::player_buff();
+    if( p -> talents.twisted_faith )
+    {
+      if( p -> active_shadow_word_pain ) 
+      {
+        player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.02;
+        if( p -> glyphs.shadow_word_pain ) player_multiplier *= 1.10;
+      }
+    }
+  }
+};
+
 struct mind_flay_t : public priest_spell_t
 {
+  spell_t* mind_flay_tick;
+
   double mb_wait;
   int    swp_refresh;
   int    devious_mind_wait;
@@ -1354,39 +1423,19 @@ struct mind_flay_t : public priest_spell_t
     };
     parse_options( options, options_str );
 
-    static rank_t ranks[] =
-    {
-      { 80, 9, 196, 196, 0, 0.09 },
-      { 74, 8, 164, 164, 0, 0.09 },
-      { 68, 7, 150, 150, 0, 0.09  },
-      { 60, 6, 121, 121, 0, 0.10  },
-      { 0, 0 }
-    };
-    init_rank( ranks );
-    
-    base_execute_time = 0.0; 
-    base_tick_time    = 1.0; 
-    num_ticks         = 3;
-    channeled         = true; 
-    binary            = false;
-    may_crit          = true;
-    direct_power_mod  = base_tick_time / 3.5;
-    direct_power_mod *= 0.9;  // Nerf Bat!
-    base_cost        *= 1.0 - ( p -> talents.focused_mind * 0.05 + 
-                                p -> talents.shadow_focus * 0.02 );
-    base_cost         = floor(base_cost);
-    base_hit         += p -> talents.shadow_focus * 0.01;
-    base_multiplier  *= 1.0 + ( p -> talents.darkness         * 0.02 + 
-                                p -> talents.twin_disciplines * 0.01 );
-    base_crit        += p -> talents.mind_melt * 0.02;
-    direct_power_mod *= 1.0 + p -> talents.misery * 0.05;
+    harmful        = false;
+    channeled      = true; 
+    num_ticks      = 3;
+    base_tick_time = 1.0; 
 
-    base_crit_bonus_multiplier *= 1.0 + p -> talents.shadow_power * 0.20;
-    
-    if( p -> gear.tier4_4pc ) base_multiplier *= 1.05;
+    base_cost  = 0.09 * p -> resource_base[ RESOURCE_MANA ];
+    base_cost *= 1.0 - ( p -> talents.focused_mind * 0.05 + 
+			 p -> talents.shadow_focus * 0.02 );
+    base_cost  = floor(base_cost);
+
+    mind_flay_tick = new mind_flay_tick_t( p );
   }
 
-  // Odd thing to handle: WotLK has behaviour similar to Arcane Missiles
   virtual void schedule_execute()
   {
     priest_t* p = player -> cast_priest();
@@ -1394,69 +1443,11 @@ struct mind_flay_t : public priest_spell_t
     p -> uptimes_devious_mind_mf -> update( p -> _buffs.devious_mind == DEVIOUS_MIND_STATE_ACTIVE );
   }
 
-  virtual void execute()
-  {
-    priest_t* p = player -> cast_priest();
-    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
-    consume_resource();
-    player_buff();
-    schedule_tick();
-    update_ready();
-    direct_dmg = 0;
-    update_stats( DMG_DIRECT );
-    p -> action_finish( this );
-  }
-
-  virtual void player_buff()
-  {
-    priest_t* p = player -> cast_priest();
-    priest_spell_t::player_buff();
-    if( p -> talents.twisted_faith )
-    {
-      if( p -> active_shadow_word_pain ) 
-      {
-        player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.02;
-        if( p -> glyphs.shadow_word_pain ) player_multiplier *= 1.10;
-      }
-    }
-  }
-
   virtual void tick()
   {
-    priest_t* p = player -> cast_priest();
-    
     if( sim -> debug ) report_t::log( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
-
-    may_resist = false;
-    target_debuff( DMG_DIRECT );
-    calculate_result();
-    may_resist = true;
-
-    if( result_is_hit() )
-    {
-      calculate_direct_damage();
-      p -> action_hit( this );
-      if( direct_dmg > 0 )
-      {
-        tick_dmg = direct_dmg;
-        assess_damage( tick_dmg, DMG_OVER_TIME );
-      }
-
-      if( p -> active_shadow_word_pain )
-      {
-        if( sim -> roll( p -> talents.pain_and_suffering * (1.0/3.0) ) )
-        {
-          p -> active_shadow_word_pain -> refresh_duration();
-        }
-      }
-    }
-    else
-    {
-      if( sim -> log ) report_t::log( sim, "%s avoids %s (%s)", sim -> target -> name(), name(), util_t::result_type_string( result ) );
-      p -> action_miss( this );
-    }
-
-    update_stats( DMG_OVER_TIME );
+    mind_flay_tick -> execute();
+    priest_spell_t::update_stats( DMG_OVER_TIME );
   }
 
   virtual bool ready()

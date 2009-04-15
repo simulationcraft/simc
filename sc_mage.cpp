@@ -1578,9 +1578,9 @@ struct arcane_blast_t : public mage_spell_t
 
 // Arcane Missiles Spell ====================================================
 
-struct arcane_missiles_volley_t : public mage_spell_t
+struct arcane_missiles_tick_t : public mage_spell_t
 {
-  arcane_missiles_volley_t( player_t* player ) : mage_spell_t( "arcane_missiles", player, SCHOOL_ARCANE, TREE_ARCANE )
+  arcane_missiles_tick_t( player_t* player ) : mage_spell_t( "arcane_missiles", player, SCHOOL_ARCANE, TREE_ARCANE )
   {
     mage_t* p = player -> cast_mage();
 
@@ -1636,7 +1636,10 @@ struct arcane_missiles_volley_t : public mage_spell_t
   virtual void execute()
   {
     mage_spell_t::execute();
-    
+
+    tick_dmg = direct_dmg;
+    update_stats( DMG_OVER_TIME );
+
     if( result == RESULT_CRIT )
     {
       trigger_master_of_elements( this, 0.20 );
@@ -1646,13 +1649,13 @@ struct arcane_missiles_volley_t : public mage_spell_t
   }
 };
 
-struct arcane_missiles_channel_t : public mage_spell_t
+struct arcane_missiles_t : public mage_spell_t
 {
-  spell_t* volley;
+  spell_t* arcane_missiles_tick;
   int barrage;
   int clearcast;
 
-  arcane_missiles_channel_t( player_t* player, const std::string& options_str ) : 
+  arcane_missiles_t( player_t* player, const std::string& options_str ) : 
     mage_spell_t( "arcane_missiles", player, SCHOOL_ARCANE, TREE_ARCANE ), barrage(0), clearcast(0)
   {
     mage_t* p = player -> cast_mage();
@@ -1665,18 +1668,17 @@ struct arcane_missiles_channel_t : public mage_spell_t
     };
     parse_options( options, options_str );
       
-    may_miss          = false;
-    may_resist        = false;
-    channeled         = true;
-    num_ticks         = 5; 
-    base_tick_time    = 1.0; 
+    harmful        = false;
+    channeled      = true;
+    num_ticks      = 5; 
+    base_tick_time = 1.0; 
 
-    base_cost         = 0.31 * p -> resource_base[ RESOURCE_MANA ];
-    base_cost        *= 1.0 - p -> talents.precision     * 0.01;
-    base_cost        *= 1.0 - p -> talents.arcane_focus  * 0.01;
-    base_cost        *= 1.0 - util_t::talent_rank( p -> talents.frost_channeling, 3, 0.04, 0.07, 0.10 );
+    base_cost  = 0.31 * p -> resource_base[ RESOURCE_MANA ];
+    base_cost *= 1.0 - p -> talents.precision     * 0.01;
+    base_cost *= 1.0 - p -> talents.arcane_focus  * 0.01;
+    base_cost *= 1.0 - util_t::talent_rank( p -> talents.frost_channeling, 3, 0.04, 0.07, 0.10 );
 
-    volley = new arcane_missiles_volley_t( p );
+    arcane_missiles_tick = new arcane_missiles_tick_t( p );
   }
 
   virtual void execute()
@@ -1701,12 +1703,7 @@ struct arcane_missiles_channel_t : public mage_spell_t
   virtual void tick() 
   {
     if( sim -> debug ) report_t::log( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
-
-    volley -> execute();
-
-    result   = volley -> result;
-    tick_dmg = volley -> direct_dmg;
-
+    arcane_missiles_tick -> execute();
     mage_spell_t::update_stats( DMG_OVER_TIME );
   }
 
@@ -3112,7 +3109,7 @@ action_t* mage_t::create_action( const std::string& name,
   if( name == "arcane_barrage"    ) return new          arcane_barrage_t( this, options_str );
   if( name == "arcane_blast"      ) return new            arcane_blast_t( this, options_str );
   if( name == "arcane_brilliance" ) return new       arcane_brilliance_t( this, options_str );
-  if( name == "arcane_missiles"   ) return new arcane_missiles_channel_t( this, options_str );
+  if( name == "arcane_missiles"   ) return new         arcane_missiles_t( this, options_str );
   if( name == "arcane_power"      ) return new            arcane_power_t( this, options_str );
   if( name == "choose_rotation"   ) return new         choose_rotation_t( this, options_str );
   if( name == "cold_snap"         ) return new               cold_snap_t( this, options_str );

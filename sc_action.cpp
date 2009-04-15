@@ -334,7 +334,8 @@ bool action_t::result_is_hit()
   return( result == RESULT_HIT    || 
           result == RESULT_CRIT   || 
           result == RESULT_GLANCE || 
-          result == RESULT_BLOCK  );
+          result == RESULT_BLOCK  || 
+          result == RESULT_NONE   );
 }
 
 // action_t::result_is_miss =================================================
@@ -614,11 +615,11 @@ void action_t::execute()
   {
     calculate_direct_damage();
 
-    player -> action_hit( this );
-    
     if( direct_dmg > 0 )
     {
       assess_damage( direct_dmg, DMG_DIRECT );
+
+      player -> action_hit( this );
     }
 
     if( num_ticks > 0 ) 
@@ -638,7 +639,7 @@ void action_t::execute()
 
   update_ready();
 
-  update_stats( DMG_DIRECT );
+  if( ! dual ) update_stats( DMG_DIRECT );
 
   player -> action_finish( this );
 
@@ -807,8 +808,6 @@ void action_t::update_ready()
 
 void action_t::update_stats( int type )
 {
-  if( dual ) return;
-
   if( type == DMG_DIRECT )
   {
     stats -> add( direct_dmg, type, result, time_to_execute );
@@ -917,7 +916,7 @@ void action_t::reset()
   is_terminal = false;
   seq_completed = false;
 
-  stats -> reset( this );
+  if( ! dual ) stats -> reset( this );
 }
 
 // action_t::cancel =========================================================

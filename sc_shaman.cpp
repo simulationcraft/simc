@@ -537,37 +537,38 @@ static void trigger_unleashed_rage( attack_t* a )
 
   if( a -> proc ) return;
 
-  int ur = a -> player -> cast_shaman() -> talents.unleashed_rage;
+  shaman_t* s = a -> player -> cast_shaman();
+  int ur=0;
 
-  if( ur == 0 ) return;
+  if( s -> talents.unleashed_rage == 0 ) return;
 
-  ur = a -> sim -> P309 ? ( ur * 2 ) : util_t::talent_rank( ur, 3, 4, 7, 10 );
+  if( a -> sim -> P309 )
+  {
+    ur = s -> talents.unleashed_rage * 2;
+  }
+  else
+  {
+    ur = util_t::talent_rank( s -> talents.unleashed_rage, 3, 4, 7, 10 );
+  }
 
-  bool refresh_event = false;
+  if( ur < s -> buffs.unleashed_rage ) return;
 
   for( player_t* p = a -> sim -> player_list; p; p = p -> next )
   {
     if( p -> sleeping ) continue;
-    if( ur >= p -> buffs.unleashed_rage ) refresh_event = true;
-    if( ur >  p -> buffs.unleashed_rage )
-    {
-      if( p -> buffs.unleashed_rage == 0 ) p -> aura_gain( "Unleashed Rage" );
-      p -> buffs.unleashed_rage = ur;
-    }
+    if( p -> buffs.unleashed_rage == 0 ) p -> aura_gain( "Unleashed Rage" );
+    p -> buffs.unleashed_rage = ur;
   }
 
-  if( refresh_event )
-  {
-    event_t*& e = a -> sim -> expirations.unleashed_rage;
+  event_t*& e = a -> sim -> expirations.unleashed_rage;
 
-    if( e )
-    {
-      e -> reschedule( 10.0 );
-    }
-    else
-    {
-      e = new ( a -> sim ) unleashed_rage_expiration_t( a -> sim );
-    }
+  if( e )
+  {
+    e -> reschedule( 10.0 );
+  }
+  else
+  {
+    e = new ( a -> sim ) unleashed_rage_expiration_t( a -> sim );
   }
 }
 

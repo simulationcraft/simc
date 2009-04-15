@@ -1217,47 +1217,30 @@ struct auto_attack_t : public warrior_attack_t
 
 // Bladestorm ==============================================================
 
-struct bladestorm_attack_t : public warrior_attack_t
+struct bladestorm_tick_t : public warrior_attack_t
 {
-  bladestorm_attack_t( player_t* player ) : 
-    warrior_attack_t( "bladestorm", player, SCHOOL_PHYSICAL, TREE_ARMS )
+  bladestorm_tick_t( player_t* player ) : 
+    warrior_attack_t( "bladestorm", player, SCHOOL_PHYSICAL, TREE_ARMS, false )
   {
     base_dd_min = base_dd_max = 1;
-    trigger_gcd = 0;
+    dual        = true;
     background  = true;
     may_crit    = true;
-    dual        = true;
   }
-  virtual void consume_resource() {}
   virtual void execute()
   {
-    warrior_t* p = player -> cast_warrior();
-    
-    tick_dmg = 0.0;
-
-    if( p -> off_hand_weapon.type != WEAPON_NONE )
-    {
-      weapon = &( player -> off_hand_weapon );
-      warrior_attack_t::execute();
-      // Bladestorm + Dualwield triggers two attacks, so
-      // bladestorm_attack -> result/direct_dmg will only return the main_hand
-      // values in bladestorm_channel_t. So we have to deal with stats here.
-      tick_dmg = direct_dmg;
-      dual     = false;
-      warrior_attack_t::update_stats( DMG_OVER_TIME );
-      dual     = true;
-    }
-    weapon = &( p -> main_hand_weapon );
     warrior_attack_t::execute();
+    tick_dmg = direct_dmg;
+    update_stats( DMG_OVER_TIME );
   }
 };
 
-struct bladestorm_channel_t : public warrior_attack_t
+struct bladestorm_t : public warrior_attack_t
 {
-  attack_t* bladestorm_attack;
+  attack_t* bladestorm_tick;
   
-  bladestorm_channel_t( player_t* player, const std::string& options_str ) : 
-    warrior_attack_t( "bladestorm", player, SCHOOL_PHYSICAL, TREE_ARMS, false )
+  bladestorm_t( player_t* player, const std::string& options_str ) : 
+    warrior_attack_t( "bladestorm", player, SCHOOL_PHYSICAL, TREE_ARMS )
   {
     warrior_t* p = player -> cast_warrior();
     assert( p -> talents.bladestorm );
@@ -1266,12 +1249,10 @@ struct bladestorm_channel_t : public warrior_attack_t
       { NULL }
     };
     parse_options( options, options_str );
-    base_dd_min = base_dd_max = 0;
 
-    may_miss = may_resist = may_dodge = may_parry = may_glance = may_block = false;
-
-    base_cost   = 25;
-    cooldown    = 90;
+    harmful   = false;
+    base_cost = 25;
+    cooldown  = 90;
     
     num_ticks      = 6; 
     base_tick_time = 1.0;
@@ -1280,13 +1261,22 @@ struct bladestorm_channel_t : public warrior_attack_t
     if( ! sim -> P309 && p -> glyphs.bladestorm )
       cooldown -= 15;
 
-    bladestorm_attack = new bladestorm_attack_t( p );
+    bladestorm_tick = new bladestorm_tick_t( p );
+  }
+
+  virtual double tick_time() 
+  {
+    // Bladestorm not modified by haste effects
+    return base_tick_time;
   }
 
   virtual void execute()
   {
-    warrior_attack_t::execute();      
+    warrior_attack_t::execute();
+
     // One attack happens immediately 
+    current_tick = 0;
+    time_to_tick = 0;
     tick();
   }
   
@@ -1295,12 +1285,16 @@ struct bladestorm_channel_t : public warrior_attack_t
     if( sim -> debug )
       report_t::log( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
 
-    bladestorm_attack -> execute();
-    
-    tick_dmg = bladestorm_attack -> direct_dmg;
-    result   = bladestorm_attack -> result;
-    
-    warrior_attack_t::update_stats( DMG_OVER_TIME );
+    bladestorm_tick -> weapon = &( player -> main_hand_weapon );
+    bladestorm_tick -> execute();
+
+    if( bladestorm_tick -> result_is_hit() )
+    {
+      bladestorm_tick -> weapon = &( player -> off_hand_weapon );
+      bladestorm_tick -> execute();
+    }
+
+    update_stats( DMG_OVER_TIME );
   }
 };
 
@@ -2238,21 +2232,21 @@ struct stance_t : public warrior_spell_t
 action_t* warrior_t::create_action( const std::string& name,
                                   const std::string& options_str )
 {
-  if( name == "auto_attack"         ) return new auto_attack_t        ( this, options_str );
-  if( name == "berserker_rage"      ) return new berserker_rage_t     ( this, options_str );
-  if( name == "bladestorm"          ) return new bladestorm_channel_t ( this, options_str );
-  if( name == "bloodrage"           ) return new bloodrage_t          ( this, options_str );
-  if( name == "bloodthirst"         ) return new bloodthirst_t        ( this, options_str );
-  if( name == "death_wish"          ) return new death_wish_t         ( this, options_str );
-  if( name == "execute"             ) return new execute_t            ( this, options_str );
-  if( name == "heroic_strike"       ) return new heroic_strike_t      ( this, options_str );
-  if( name == "mortal_strike"       ) return new mortal_strike_t      ( this, options_str );
-  if( name == "overpower"           ) return new overpower_t          ( this, options_str );
-  if( name == "recklessness"        ) return new recklessness_t       ( this, options_str );
-  if( name == "rend"                ) return new rend_t               ( this, options_str );
-  if( name == "slam"                ) return new slam_t               ( this, options_str );
-  if( name == "stance"              ) return new stance_t             ( this, options_str );
-  if( name == "whirlwind"           ) return new whirlwind_t          ( this, options_str );
+  if( name == "auto_attack"         ) return new auto_attack_t   ( this, options_str );
+  if( name == "berserker_rage"      ) return new berserker_rage_t( this, options_str );
+  if( name == "bladestorm"          ) return new bladestorm_t    ( this, options_str );
+  if( name == "bloodrage"           ) return new bloodrage_t     ( this, options_str );
+  if( name == "bloodthirst"         ) return new bloodthirst_t   ( this, options_str );
+  if( name == "death_wish"          ) return new death_wish_t    ( this, options_str );
+  if( name == "execute"             ) return new execute_t       ( this, options_str );
+  if( name == "heroic_strike"       ) return new heroic_strike_t ( this, options_str );
+  if( name == "mortal_strike"       ) return new mortal_strike_t ( this, options_str );
+  if( name == "overpower"           ) return new overpower_t     ( this, options_str );
+  if( name == "recklessness"        ) return new recklessness_t  ( this, options_str );
+  if( name == "rend"                ) return new rend_t          ( this, options_str );
+  if( name == "slam"                ) return new slam_t          ( this, options_str );
+  if( name == "stance"              ) return new stance_t        ( this, options_str );
+  if( name == "whirlwind"           ) return new whirlwind_t     ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }

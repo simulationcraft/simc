@@ -276,12 +276,14 @@ int attack_t::build_table( double* chances,
 
 void attack_t::calculate_result()
 {
-  direct_dmg = tick_dmg = 0;
+  direct_dmg = 0;
 
   double chances[ RESULT_MAX ];
   int    results[ RESULT_MAX ];
 
   result = RESULT_NONE;
+
+  if( ! harmful ) return;
 
   int num_results = build_table( chances, results );
 
