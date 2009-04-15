@@ -1940,12 +1940,6 @@ struct killing_spree_t : public rogue_attack_t
     p -> _buffs.killing_spree = 1;
   }
 
-  virtual double tick_time() 
-  {
-    // Killing Spree not modified by haste effects
-    return base_tick_time;
-  }
-
   virtual void player_buff()
   {
     rogue_attack_t::player_buff();
@@ -1978,6 +1972,9 @@ struct killing_spree_t : public rogue_attack_t
     rogue_attack_t::last_tick();
     p -> _buffs.killing_spree = 0;
   }
+
+  // Killing Spree not modified by haste effects
+  virtual double haste() { return 1.0; }
 };
 
 // Mutilate =================================================================

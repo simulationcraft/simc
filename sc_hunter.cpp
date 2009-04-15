@@ -2743,6 +2743,7 @@ struct explosive_tick_t : public hunter_attack_t
     dual       = true;
     background = true;
     may_crit   = true;
+    may_miss   = false;
 
     direct_power_mod = 0.14;
 
@@ -2819,7 +2820,6 @@ struct explosive_shot_t : public hunter_attack_t
   virtual void tick()
   {
     if( sim -> debug ) report_t::log( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
-    explosive_tick -> may_miss = ( current_tick != 0 );
     explosive_tick -> execute();
     update_time( DMG_OVER_TIME );
   }
