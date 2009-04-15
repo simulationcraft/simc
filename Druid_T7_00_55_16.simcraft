@@ -1,9 +1,9 @@
 #!simcraft max_time=300 optimal_raid=1
 
-patch=3.0.9
-druid=Druid_T7_00_55_16
+patch=3.1.0
+druid=Druid_T8_00_55_16
 level=80
-talents=http://www.wowhead.com/?talent=0ZEG0cfrz0eR0huAo0Eczb
+talents=http://ptr.wowhead.com/?talent=0ZEGMcfrz0eR0huVkbAczb
 actions=flask,type=endless_rage/food,type=blackened_dragonfin
 actions+=/cat_form
 actions+=/auto_attack
@@ -16,13 +16,15 @@ actions+=/ferocious_bite,cp>=5,rip>=5,savage_roar>=6
 actions+=/rake
 actions+=/shred
 
-# Gear http://www.chardev.org/?template=149272
+
+# Gear http://www.chardev.org/?template=149559
+# Added +128 AP to cover 2 professions.
 gear_stamina=1044
-gear_strength=212
-gear_agility=799
-gear_attack_power=2161
+gear_strength=10
+gear_agility=917
+gear_attack_power=2245
 gear_expertise_rating=129
-gear_armor_penetration_rating=229
+gear_armor_penetration_rating=340
 gear_hit_rating=259
 gear_crit_rating=515
 gear_haste_rating=297
@@ -38,7 +40,8 @@ main_hand=staff,dps=222.9,speed=2.4,enchant=berserking
 
 # Glyphs
 glyph_rip=1
-glyph_mangle=1
+glyph_savage_roar=1
+glyph_shred=1
 
 # Relic
 idol_of_the_ravenous_beast=1

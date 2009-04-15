@@ -1,6 +1,5 @@
 #!simcraft max_time=300 optimal_raid=1
 
-patch=3.1.0
 druid=Druid_T8_00_55_16
 level=80
 talents=http://ptr.wowhead.com/?talent=0ZEGMcfrz0eR0huVkbAczb
@@ -16,27 +15,43 @@ actions+=/ferocious_bite,cp>=5,rip>=5,savage_roar>=6
 actions+=/rake
 actions+=/shred
 
+# Gear (chardev isn't up to date yet, link follows later...)
+# Valorous Nightsong Headguard, 16 ArPen, Relentless meta
+# Broach of the Wailing Night
+# Valorous Dreamwalker Shoulderpads, 16 ArPen
+# Tunic of the Limber Stalker
+# Death-warmed Belt, 8 ArPen/12 Sta, 2x16 Expertise Rating
+# Valorous Dreamwalker Legguards, 2x16 ArPen
+# Runed Ironhide Boots, 16 ArPen
+# Mechanist's Bindings
+# Valorous Nightsong Handgrips, 8 Agi/8 Hit
+# Metallic Loop of the Sufferer
+# Strength of the Automation
+# Darkmoon Card: Greatness (Agi)
+# Wrathstone
+# Drape of Icy Intent, 8 Agi/8 Hit
+# Twisted Visage
+# Idol of Worship
 
-# Gear http://www.chardev.org/?template=149559
-# Added +128 AP to cover 2 professions.
-gear_stamina=1044
-gear_strength=10
-gear_agility=917
-gear_attack_power=2245
-gear_expertise_rating=129
-gear_armor_penetration_rating=340
+gear_stamina=1150
+gear_strength=82
+gear_agility=1241
+gear_attack_power=2602
+gear_expertise_rating=130
+gear_armor_penetration_rating=414
 gear_hit_rating=259
-gear_crit_rating=515
-gear_haste_rating=297
+gear_crit_rating=720
+gear_haste_rating=151
 tier7_2pc=1
+tier8_2pc=1
 relentless_earthstorm=1
 
 # Trinkets
 darkmoon_greatness=1
-grim_toll=1
+wrathstone=1
 
 # Weapon
-main_hand=staff,dps=222.9,speed=2.4,enchant=berserking
+main_hand=staff,dps=232.5,speed=2.4,enchant=berserking
 
 # Glyphs
 glyph_rip=1
@@ -44,4 +59,5 @@ glyph_savage_roar=1
 glyph_shred=1
 
 # Relic
-idol_of_the_ravenous_beast=1
+idol_of_worship=1
+
