@@ -48,6 +48,9 @@ tier7_2pc=1
 tier8_2pc=1
 relentless_earthstorm=1
 
+# Generic profession bonus
+enchant_attack_power=128
+
 # Trinkets
 darkmoon_greatness=1
 wrathstone=1
