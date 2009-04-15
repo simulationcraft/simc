@@ -14,7 +14,6 @@ enum warrior_stance { STANCE_BATTLE=1, STANCE_BERSERKER, STANCE_DEFENSE=4 };
 struct warrior_t : public player_t
 {
   // Active
-  action_t* active_bladestorm_attack;
   action_t* active_deep_wounds;
   action_t* active_heroic_strike;
   int       active_stance;
@@ -186,7 +185,6 @@ struct warrior_t : public player_t
   warrior_t( sim_t* sim, std::string& name ) : player_t( sim, WARRIOR, name )
   {
     // Active
-    active_bladestorm_attack = 0;
     active_deep_wounds       = 0;
     active_heroic_strike     = 0;
     active_stance            = STANCE_BATTLE; 
@@ -1217,6 +1215,95 @@ struct auto_attack_t : public warrior_attack_t
   }
 };
 
+// Bladestorm ==============================================================
+
+struct bladestorm_attack_t : public warrior_attack_t
+{
+  bladestorm_attack_t( player_t* player ) : 
+    warrior_attack_t( "bladestorm", player, SCHOOL_PHYSICAL, TREE_ARMS )
+  {
+    base_dd_min = base_dd_max = 1;
+    trigger_gcd = 0;
+    background  = true;
+    may_crit    = true;
+    dual        = true;
+  }
+  virtual void consume_resource() {}
+  virtual void execute()
+  {
+    warrior_t* p = player -> cast_warrior();
+    
+    tick_dmg = 0.0;
+
+    if( p -> off_hand_weapon.type != WEAPON_NONE )
+    {
+      weapon = &( player -> off_hand_weapon );
+      warrior_attack_t::execute();
+      // Bladestorm + Dualwield triggers two attacks, so
+      // bladestorm_attack -> result/direct_dmg will only return the main_hand
+      // values in bladestorm_channel_t. So we have to deal with stats here.
+      tick_dmg = direct_dmg;
+      dual     = false;
+      warrior_attack_t::update_stats( DMG_OVER_TIME );
+      dual     = true;
+    }
+    weapon = &( p -> main_hand_weapon );
+    warrior_attack_t::execute();
+  }
+};
+
+struct bladestorm_channel_t : public warrior_attack_t
+{
+  attack_t* bladestorm_attack;
+  
+  bladestorm_channel_t( player_t* player, const std::string& options_str ) : 
+    warrior_attack_t( "bladestorm", player, SCHOOL_PHYSICAL, TREE_ARMS, false )
+  {
+    warrior_t* p = player -> cast_warrior();
+    assert( p -> talents.bladestorm );
+    option_t options[] =
+    {
+      { NULL }
+    };
+    parse_options( options, options_str );
+    base_dd_min = base_dd_max = 0;
+
+    may_miss = may_resist = may_dodge = may_parry = may_glance = may_block = false;
+
+    base_cost   = 25;
+    cooldown    = 90;
+    
+    num_ticks      = 6; 
+    base_tick_time = 1.0;
+    channeled      = true;
+
+    if( ! sim -> P309 && p -> glyphs.bladestorm )
+      cooldown -= 15;
+
+    bladestorm_attack = new bladestorm_attack_t( p );
+  }
+
+  virtual void execute()
+  {
+    warrior_attack_t::execute();      
+    // One attack happens immediately 
+    tick();
+  }
+  
+  virtual void tick() 
+  {
+    if( sim -> debug )
+      report_t::log( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
+
+    bladestorm_attack -> execute();
+    
+    tick_dmg = bladestorm_attack -> direct_dmg;
+    result   = bladestorm_attack -> result;
+    
+    warrior_attack_t::update_stats( DMG_OVER_TIME );
+  }
+};
+
 // Heroic Strike ===========================================================
 
 struct heroic_strike_t : public warrior_attack_t
@@ -1899,88 +1986,6 @@ void warrior_spell_t::parse_options( option_t*          options,
   spell_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
 }
 
-// Bladestorm ==============================================================
-
-// warrior_spell_t or else the activation itself would consume 
-// recklessness charges
-struct bladestorm_t : public warrior_spell_t
-{
-  bladestorm_t( player_t* player, const std::string& options_str ) : 
-    warrior_spell_t( "bladestorm", player )
-  {
-    warrior_t* p = player -> cast_warrior();
-    assert( p -> talents.bladestorm );
-    struct bladestorm_attack_t : public warrior_attack_t
-    {
-      bladestorm_attack_t( player_t* player ) : 
-        warrior_attack_t( "bladestorm", player, SCHOOL_PHYSICAL, TREE_ARMS )
-      {
-        base_dd_min     = base_dd_max = 1;
-        trigger_gcd     = 0;
-        background      = true;
-	may_crit        = true;
-      }
-      virtual void consume_resource() {}
-      virtual void execute()
-      {
-        warrior_t* p = player -> cast_warrior();
-    
-        weapon = &( p -> main_hand_weapon );
-        warrior_attack_t::execute();
-    
-        if( p -> off_hand_weapon.type != WEAPON_NONE )
-        {
-          weapon = &( player -> off_hand_weapon );
-          warrior_attack_t::execute();
-        }
-      }
-    };
-    option_t options[] =
-    {
-      { NULL }
-    };
-    parse_options( options, options_str );
-    
-    base_cost   = 25;
-    cooldown    = 90;
-    if( ! sim -> P309 && p -> glyphs.bladestorm )
-      cooldown -= 15;
-
-    // Bladestorm locks the use of other abilities for the time the buff is up
-    // So let it trigger a 6sec gcd. auto_attack is not effected by bladestorm
-    trigger_gcd = 6.0; 
-    
-    harmful     = false;
-
-    p -> active_bladestorm_attack = new bladestorm_attack_t( p );    
-  }
-  virtual void execute()
-  {
-    struct expiration_t : public event_t
-    {
-      expiration_t( sim_t* sim, player_t* p, double duration ) : event_t( sim, p )
-      {
-        name = "Bladestorm Tick";
-        sim -> add_event( this, duration );
-      }
-      virtual void execute()
-      {
-        warrior_t* p = player -> cast_warrior();
-        p -> active_bladestorm_attack -> execute();
-      }
-    };
-    /* Bladestorm 'ticks' 7 times, once instantly upon cast
-    *  and then every second for 6 seconds
-    */
-    for(int i = 0; i < 7; i++)
-	{
-      new ( sim ) expiration_t( sim, player, i );
-	}
-
-    warrior_spell_t::execute();
-  }
-};
-
 // Berserker Rage ==========================================================
 
 struct berserker_rage_t : public warrior_spell_t
@@ -2235,7 +2240,7 @@ action_t* warrior_t::create_action( const std::string& name,
 {
   if( name == "auto_attack"         ) return new auto_attack_t        ( this, options_str );
   if( name == "berserker_rage"      ) return new berserker_rage_t     ( this, options_str );
-  if( name == "bladestorm"          ) return new bladestorm_t         ( this, options_str );
+  if( name == "bladestorm"          ) return new bladestorm_channel_t ( this, options_str );
   if( name == "bloodrage"           ) return new bloodrage_t          ( this, options_str );
   if( name == "bloodthirst"         ) return new bloodthirst_t        ( this, options_str );
   if( name == "death_wish"          ) return new death_wish_t         ( this, options_str );
