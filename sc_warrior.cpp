@@ -1288,7 +1288,7 @@ struct bladestorm_t : public warrior_attack_t
     bladestorm_tick -> weapon = &( player -> main_hand_weapon );
     bladestorm_tick -> execute();
 
-    if( bladestorm_tick -> result_is_hit() )
+    if( bladestorm_tick -> result_is_hit() && player -> off_hand_weapon.type != WEAPON_NONE )
     {
       bladestorm_tick -> weapon = &( player -> off_hand_weapon );
       bladestorm_tick -> execute();
