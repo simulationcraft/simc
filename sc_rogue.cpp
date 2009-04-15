@@ -1882,9 +1882,33 @@ struct hunger_for_blood_t : public rogue_attack_t
 
 // Killing Spree ============================================================
 
+struct killing_spree_tick_t : public rogue_attack_t
+{
+  killing_spree_tick_t( player_t* player ) : 
+    rogue_attack_t( "killing_spree", player, SCHOOL_PHYSICAL, TREE_COMBAT )
+  {
+    rogue_t* p = player -> cast_rogue();
+      
+    dual       = true;
+    background = true;
+    may_crit   = true;
+
+    base_dd_min = base_dd_max = 1;
+
+    base_multiplier *= 1.0 + p -> talents.find_weakness * 0.02;
+  }
+
+  virtual void execute()
+  {
+    rogue_attack_t::execute();
+    tick_dmg = direct_dmg;
+    update_stats( DMG_OVER_TIME );
+  }
+};
+
 struct killing_spree_t : public rogue_attack_t
 {
-  rogue_attack_t* proc_attack;
+  attack_t* killing_spree_tick;
 
   killing_spree_t( player_t* player, const std::string& options_str ) : 
     rogue_attack_t( "killing_spree", player, SCHOOL_PHYSICAL, TREE_COMBAT )
@@ -1903,23 +1927,17 @@ struct killing_spree_t : public rogue_attack_t
     cooldown        = 120;
     num_ticks       = 5;
     base_tick_time  = 0.5;
-    base_cost       = 0;
-    base_multiplier *= 1.0 + p -> talents.find_weakness * 0.02;
 
     if( p -> glyphs.killing_spree ) cooldown -= 45;
+
+    killing_spree_tick = new killing_spree_tick_t( p );
   }
 
   virtual void execute()
   {
     rogue_t* p = player -> cast_rogue();
-    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    rogue_attack_t::execute();
     p -> _buffs.killing_spree = 1;
-    schedule_tick();
-    update_ready();
-    // For cleaner statistics gathering we register the damage as a DoT
-    direct_dmg = 0;
-    attack_t::update_stats( DMG_DIRECT );
-    p -> action_finish( this );
   }
 
   virtual double tick_time() 
@@ -1928,44 +1946,30 @@ struct killing_spree_t : public rogue_attack_t
     return base_tick_time;
   }
 
-  virtual void tick()
-  {
-    rogue_t* p = player -> cast_rogue();
-
-    // FIXME! Need to separate this out into two attack_t classes with same name for reporting.
-    num_ticks = 0;
-
-    double mh_dd=0, oh_dd=0;
-    int mh_result=RESULT_NONE, oh_result=RESULT_NONE;
-
-    weapon = &( p -> main_hand_weapon );
-    rogue_attack_t::execute();
-    mh_dd = direct_dmg;
-    mh_result = result;
-
-    if( result_is_hit() )
-    {
-      if( p -> off_hand_weapon.type != WEAPON_NONE )
-      {
-        weapon = &( p -> off_hand_weapon );
-        rogue_attack_t::execute();
-        oh_dd = direct_dmg;
-        oh_result = result;
-      }
-    }
-
-    tick_dmg = mh_dd + oh_dd;
-    result   = mh_result;
-    attack_t::update_stats( DMG_OVER_TIME );
-
-    // FIXME! Need to separate this out into two attack_t classes with same name for reporting.
-    num_ticks = 5;
-  }
-
   virtual void player_buff()
   {
     rogue_attack_t::player_buff();
     trigger_dirty_deeds( this );
+  }
+
+  virtual void tick()
+  {
+    if( sim -> debug )
+      report_t::log( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
+
+    killing_spree_tick -> weapon = &( player -> main_hand_weapon );
+    killing_spree_tick -> execute();
+
+    if( killing_spree_tick -> result_is_hit() )
+    {
+      if( player -> off_hand_weapon.type != WEAPON_NONE )
+      {
+	killing_spree_tick -> weapon = &( player -> off_hand_weapon );
+	killing_spree_tick -> execute();
+      }
+    }
+
+    update_stats( DMG_OVER_TIME );
   }
 
   virtual void last_tick()
@@ -1974,8 +1978,6 @@ struct killing_spree_t : public rogue_attack_t
     rogue_attack_t::last_tick();
     p -> _buffs.killing_spree = 0;
   }
-
-  virtual void update_stats( int type ) { }
 };
 
 // Mutilate =================================================================

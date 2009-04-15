@@ -7,7 +7,8 @@
 patch=3.1.0
 rogue=Rogue_T8_08_20_43
 level=80
-talents=http://ptr.wowhead.com/?talent=fhfZ0gc0x0xZxbcbGGzdAzVc
+talents=http://ptr.wowhead.com/?talent=fhfZ0gc0xcbZxbcbGGzdAzVc
+
 
 # Action queue
 actions=flask,type=endless_rage/food,type=fish_feast/apply_poison,main_hand=wound,off_hand=deadly
@@ -16,7 +17,7 @@ actions+=/slice_and_dice,min_combo_points=4,snd<=3
 actions+=/tricks_of_the_trade
 actions+=/rupture,min_combo_points=5
 actions+=/eviscerate,min_combo_points=5
-actions+=/hemorrhage,max_combo_points=3,energy>=80
+actions+=/hemorrhage,max_combo_points=2,energy>=80
 
 # Gear: http://www.chardev.org/?template=147412
 gear_stamina=968
