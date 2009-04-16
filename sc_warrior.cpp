@@ -1594,9 +1594,10 @@ struct overpower_t : public warrior_attack_t
 
     base_dd_min = base_dd_max = 1;
 
-    base_cost       = 5.0;
-    base_crit      += p -> talents.improved_overpower * 0.25;
-    cooldown        = 5.0 - p -> talents.unrelenting_assault * 2.0;
+    base_cost        = 5.0;
+    base_crit       += p -> talents.improved_overpower * 0.25;
+    base_multiplier *= 1.0 + p -> talents.unrelenting_assault * 0.1;
+    cooldown         = 5.0 - p -> talents.unrelenting_assault * 2.0;
     
     if(p -> talents.unrelenting_assault == 2)
       trigger_gcd = 1.0;
