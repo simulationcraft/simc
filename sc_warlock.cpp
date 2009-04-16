@@ -845,8 +845,8 @@ struct infernal_pet_t : public warlock_pet_t
       // immolation uses the master's spell power, not the infernal's
       warlock_pet_t* p = (warlock_pet_t*) player -> cast_pet();
       warlock_t* o = p -> owner -> cast_warlock();
-      spell_t::player_buff();
-      player_spell_power += o -> composite_spell_power( school );
+      warlock_pet_spell_t::player_buff();
+      player_spell_power = o -> composite_spell_power( school );
     }
   };
 
@@ -1799,7 +1799,10 @@ static void trigger_demonic_pact( action_t* a )
 
   if( ! o -> talents.demonic_pact ) return;
 
+  // HACK ALERT!!!  To prevent spell power contributions from ToW/FT/IDS/DP buffs, we fiddle with player type
+  o -> type = PLAYER_GUARDIAN;
   double buff = o -> composite_spell_power( SCHOOL_MAX );
+  o -> type = WARLOCK;
 
   buff -= o -> spell_power_per_spirit * o -> spirit(); // Before 3.1, does not include spell power from spirit
 
