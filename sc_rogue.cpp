@@ -3246,23 +3246,23 @@ void rogue_t::raid_event( action_t* a )
   {
     player_t* p = a -> player;
 
-    if( p -> party != 0 &&
-        p -> party == party  &&
-	p -> type != PLAYER_GUARDIAN &&
-	a -> result == RESULT_CRIT && 
-	a -> special &&
-	! a -> ticking &&
-	! a -> proc &&
-	sim -> roll( talents.honor_among_thieves / 3.0 ) )
-    {
-      if( sim -> current_time > _cooldowns.honor_among_thieves[ p -> member ] )
-      {
-	add_combo_point( this );
-	procs_honor_among_thieves -> occur();
-	p -> procs.honor_among_thieves_donor -> occur();
-	_cooldowns.honor_among_thieves[ p -> member ] = sim -> current_time + 1.0;
-      }
-    }
+    if( p -> party == 0 || p -> party != party ) return;
+
+    if( p -> type == PLAYER_GUARDIAN ) return;
+    if( p -> type == PLAYER_PET && ! sim -> P309 ) return;
+
+    if( a -> result != RESULT_CRIT ) return;
+
+    if( ! a -> special || a -> ticking || a -> proc ) return;
+
+    if( ! sim -> roll( talents.honor_among_thieves / 3.0 ) ) return;
+
+    if( sim -> current_time < _cooldowns.honor_among_thieves[ p -> member ] ) return;
+
+    add_combo_point( this );
+    procs_honor_among_thieves -> occur();
+    p -> procs.honor_among_thieves_donor -> occur();
+    _cooldowns.honor_among_thieves[ p -> member ] = sim -> current_time + 1.0;
   }
 }
 

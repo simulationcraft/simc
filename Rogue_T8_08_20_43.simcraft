@@ -53,4 +53,4 @@ glyph_slice_and_dice=1
 glyph_eviscerate=1
 
 # When using this profile with a real raid AND party setups, override this value to zero.
-honor_among_thieves_interval=0.5
+honor_among_thieves_interval=0.65
