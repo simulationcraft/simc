@@ -87,7 +87,7 @@ struct rogue_t : public player_t
   // Procs
   proc_t* procs_combo_points;
   proc_t* procs_deadly_poison;
-  proc_t* procs_honor_among_thieves;
+  proc_t* procs_honor_among_thieves_receiver;
   proc_t* procs_ruthlessness;
   proc_t* procs_seal_fate;
   proc_t* procs_sword_specialization;
@@ -221,12 +221,12 @@ struct rogue_t : public player_t
     gains_relentless_strikes = get_gain( "relentless_strikes" );
 
     // Procs
-    procs_combo_points         = get_proc( "combo_points" );
-    procs_deadly_poison        = get_proc( "deadly_poisons" );
-    procs_honor_among_thieves  = get_proc( "honor_among_thieves" );
-    procs_ruthlessness         = get_proc( "ruthlessness" );
-    procs_seal_fate            = get_proc( "seal_fate" );
-    procs_sword_specialization = get_proc( "sword_specialization" );
+    procs_combo_points                 = get_proc( "combo_points" );
+    procs_deadly_poison                = get_proc( "deadly_poisons" );
+    procs_honor_among_thieves_receiver = get_proc( "honor_among_thieves_receiver" );
+    procs_ruthlessness                 = get_proc( "ruthlessness" );
+    procs_seal_fate                    = get_proc( "seal_fate" );
+    procs_sword_specialization         = get_proc( "sword_specialization" );
 
     // Up-Times
     uptimes_blade_flurry        = get_uptime( "blade_flurry" );
@@ -3183,12 +3183,6 @@ void rogue_t::combat_begin()
   {
     if( honor_among_thieves_interval > 0 )
     {
-      if( party != 0 )
-      {
-	printf( "simcraft: %s cannot have both a party specification and a non-zero 'honor_among_thieves_interval' value.\n", name() );
-	exit(0);
-      }
-
       struct honor_among_thieves_proc_t : public event_t
       {
 	honor_among_thieves_proc_t( sim_t* sim, rogue_t* p, double interval ) : event_t( sim, p )
@@ -3200,7 +3194,7 @@ void rogue_t::combat_begin()
 	{
 	  rogue_t* p = player -> cast_rogue();
 	  add_combo_point( p );
-	  p -> procs_honor_among_thieves -> occur();
+	  p -> procs_honor_among_thieves_receiver -> occur();
 	  // Next proc comes in +/- 50% random range centered on 'honor_among_thieves_interval'
 	  double interval = sim -> rng -> range( 0.5 * p -> honor_among_thieves_interval,
 						 1.5 * p -> honor_among_thieves_interval );
@@ -3234,22 +3228,31 @@ void rogue_t::reset()
   _expirations.reset();
 
   for( player_t* p = sim -> player_list; p; p = p -> next )
-    if( p -> party != 0 && p -> party == party )
-      _cooldowns.honor_among_thieves.push_back( 0.0 );
+  {
+    _cooldowns.honor_among_thieves.push_back( 0.0 );
+  }
 }
 
 // rogue_t::raid_event ====================================================
 
 void rogue_t::raid_event( action_t* a )
 {
-  if( talents.honor_among_thieves && ( honor_among_thieves_interval == 0 ) )
+  if( talents.honor_among_thieves )
   {
     player_t* p = a -> player;
 
-    if( p -> party == 0 || p -> party != party ) return;
+    if( honor_among_thieves_interval == 0 )
+    {
+      if( p -> party == 0 || p -> party != party ) return;
 
-    if( p -> type == PLAYER_GUARDIAN ) return;
-    if( p -> type == PLAYER_PET && ! sim -> P309 ) return;
+      if( p -> type == PLAYER_GUARDIAN ) return;
+
+      if( p -> type == PLAYER_PET && ! sim -> P309 ) return;
+    }
+    else
+    {
+      if( p != this ) return;
+    }
 
     if( a -> result != RESULT_CRIT ) return;
 
@@ -3260,9 +3263,15 @@ void rogue_t::raid_event( action_t* a )
     if( sim -> current_time < _cooldowns.honor_among_thieves[ p -> member ] ) return;
 
     add_combo_point( this );
-    procs_honor_among_thieves -> occur();
-    p -> procs.honor_among_thieves_donor -> occur();
+
     _cooldowns.honor_among_thieves[ p -> member ] = sim -> current_time + 1.0;
+
+    p -> procs.honor_among_thieves_donor -> occur();
+
+    if( p != this )
+    {
+      procs_honor_among_thieves_receiver -> occur();
+    }
   }
 }
 

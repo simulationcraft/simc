@@ -345,6 +345,15 @@ bool sim_t::init()
       party_index = 0;
       for( player_t* p = player_list; p; p = p -> next ) p -> party = 0;
     }
+    else if( party_str == "all" )
+    {
+      int member_index = 0;
+      for( player_t* p = player_list; p; p = p -> next ) 
+      {
+	p -> party = 1;
+	p -> member = member_index++;
+      }
+    }
     else
     {
       party_index++;
