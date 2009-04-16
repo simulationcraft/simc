@@ -1864,7 +1864,7 @@ struct hunter_pet_spell_t : public spell_t
 
     spell_t::player_buff();
 
-    player_spell_power += 0.125 * o -> composite_spell_power( SCHOOL_MAX );
+    player_spell_power += 0.125 * o -> composite_attack_power();
 
     if( p -> _buffs.bestial_wrath ) player_multiplier *= 1.50;
 

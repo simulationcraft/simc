@@ -1,0 +1,12 @@
+#!simcraft
+
+optimal_raid=1
+
+Globals_T8.simcraft
+
+Hunter_T8_53_13_05.simcraft name=Hunter_T8_53_13_05_Cat          summon_pet=cat
+Hunter_T8_53_13_05.simcraft name=Hunter_T8_53_13_05_Devilsaur    summon_pet=devilsaur
+Hunter_T8_53_13_05.simcraft name=Hunter_T8_53_13_05_Raptor       summon_pet=raptor
+Hunter_T8_53_13_05.simcraft name=Hunter_T8_53_13_05_WindSerpent  summon_pet=wind_serpent
+Hunter_T8_53_13_05.simcraft name=Hunter_T8_53_13_05_Wolf         summon_pet=wolf
+
