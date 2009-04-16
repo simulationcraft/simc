@@ -1319,9 +1319,11 @@ struct attack_power_trinket_t : public action_t
   {
     option_t options[] =
     {
-      { "power",    OPT_FLT, &attack_power },
-      { "length",   OPT_FLT, &length       },
-      { "cooldown", OPT_FLT, &cooldown     },
+      { "name",     OPT_STRING, &name_str     },
+      { "power",    OPT_FLT,    &attack_power },
+      { "length",   OPT_FLT,    &length       },
+      { "cooldown", OPT_FLT,    &cooldown     },
+      { "sync",     OPT_STRING, &sync_str     },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1357,7 +1359,7 @@ struct attack_power_trinket_t : public action_t
       }
     };
   
-    if( sim -> log ) report_t::log( sim, "Player %s uses Attack Power Trinket", player -> name() );
+    if( sim -> log ) report_t::log( sim, "Player %s uses %s Attack Power Trinket", player -> name(), name() );
     cooldown_ready = player -> sim -> current_time + cooldown;
     // Trinket use may not overlap.....
     player -> share_cooldown( cooldown_group, length );
@@ -1378,9 +1380,11 @@ struct spell_power_trinket_t : public action_t
   {
     option_t options[] =
     {
-      { "power",    OPT_FLT, &spell_power },
-      { "length",   OPT_FLT, &length      },
-      { "cooldown", OPT_FLT, &cooldown    },
+      { "name",     OPT_STRING, &name_str    },
+      { "power",    OPT_FLT,    &spell_power },
+      { "length",   OPT_FLT,    &length      },
+      { "cooldown", OPT_FLT,    &cooldown    },
+      { "sync",     OPT_STRING, &sync_str    },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1416,7 +1420,7 @@ struct spell_power_trinket_t : public action_t
       }
     };
   
-    if( sim -> log ) report_t::log( sim, "Player %s uses Spell Power Trinket", player -> name() );
+    if( sim -> log ) report_t::log( sim, "Player %s uses %s Spell Power Trinket", player -> name(), name() );
     cooldown_ready = player -> sim -> current_time + cooldown;
     // Trinket use may not overlap.....
     player -> share_cooldown( cooldown_group, length );
@@ -1438,9 +1442,11 @@ struct haste_trinket_t : public action_t
   {
     option_t options[] =
     {
-      { "rating",   OPT_INT, &haste_rating },
-      { "length",   OPT_FLT, &length       },
-      { "cooldown", OPT_FLT, &cooldown     },
+      { "name",     OPT_STRING, &name_str     },
+      { "rating",   OPT_INT,    &haste_rating },
+      { "length",   OPT_FLT,    &length       },
+      { "cooldown", OPT_FLT,    &cooldown     },
+      { "sync",     OPT_STRING, &sync_str     },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1478,7 +1484,7 @@ struct haste_trinket_t : public action_t
       }
     };
   
-    if( sim -> log ) report_t::log( sim, "Player %s uses Haste Trinket", player -> name() );
+    if( sim -> log ) report_t::log( sim, "Player %s uses %s Haste Trinket", player -> name(), name() );
     cooldown_ready = player -> sim -> current_time + cooldown;
     // Trinket use may not overlap.....
     player -> share_cooldown( cooldown_group, length );

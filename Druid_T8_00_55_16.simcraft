@@ -1,5 +1,6 @@
 #!simcraft max_time=300 optimal_raid=1
 
+patch=3.1.0
 druid=Druid_T8_00_55_16
 level=80
 talents=http://ptr.wowhead.com/?talent=0ZEGMcfrz0eR0huVkbAczb
@@ -10,6 +11,7 @@ actions+=/shred,omen_of_clarity=1
 actions+=/tigers_fury,energy<=40
 actions+=/berserk,tigers_fury=1
 actions+=/savage_roar,cp>=1,savage_roar<=4
+actions+=/attack_power_trinket,name=wrathstone,power=856,length=20,cooldown=120,sync=rip
 actions+=/rip,cp>=5,time_to_die>=10
 actions+=/ferocious_bite,cp>=5,rip>=5,savage_roar>=6
 actions+=/rake
@@ -49,9 +51,8 @@ relentless_earthstorm=1
 # Generic profession bonus
 enchant_attack_power=128
 
-# Trinkets
+# Trinket Procs
 darkmoon_greatness=1
-wrathstone=1
 
 # Weapon
 main_hand=staff,dps=232.5,speed=2.4,enchant=berserking
