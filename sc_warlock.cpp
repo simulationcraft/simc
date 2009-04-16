@@ -4168,10 +4168,10 @@ struct life_tap_t : public warlock_spell_t
       }
     }
 
-    if( tier7_4pc )
+    if( tier7_4pc && p -> gear.tier7_4pc )
       return( ! p -> buffs.tier7_4pc );
 
-    if( glyph )
+    if( glyph && p -> glyphs.life_tap )
       return( ! p -> _buffs.life_tap_glyph );
 
     if( max )
