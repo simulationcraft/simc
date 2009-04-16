@@ -9,6 +9,8 @@
 // Rogue
 // ==========================================================================
 
+static const int MAX_COMBO_POINTS=5;
+
 struct rogue_t : public player_t
 {
   // Active
@@ -39,6 +41,7 @@ struct rogue_t : public player_t
     int stealthed;
     int tricks_ready;
     player_t* tricks_target;
+    double combo_points_proc[ MAX_COMBO_POINTS+1 ];
 
     void reset() { memset( (void*) this, 0x00, sizeof( _buffs_t ) ); }
     _buffs_t() { reset(); }
@@ -421,7 +424,7 @@ static void clear_combo_points( rogue_t* p )
 
 static void add_combo_point( rogue_t* p )
 {
-  if( p -> _buffs.combo_points >= 5 ) return;
+  if( p -> _buffs.combo_points >= MAX_COMBO_POINTS ) return;
 
   const char* name[] = { "Combo Points (1)",
                          "Combo Points (2)",
@@ -430,6 +433,8 @@ static void add_combo_point( rogue_t* p )
                          "Combo Points (5)" };
 
   p -> _buffs.combo_points++;
+
+  p -> _buffs.combo_points_proc[ p -> _buffs.combo_points ] = p -> sim -> current_time;
 
   p -> aura_gain( name[ p -> _buffs.combo_points - 1 ] );
 
@@ -949,12 +954,20 @@ bool rogue_attack_t::ready()
     return false;
 
   if( min_combo_points > 0 )
+  {
     if( p -> _buffs.combo_points < min_combo_points )
       return false;
 
-  if( max_combo_points > 0 )
-    if( p -> _buffs.combo_points > max_combo_points )
+    if( ! sim -> time_to_think( p -> _buffs.combo_points_proc[ min_combo_points ] ) )
       return false;
+  }
+
+  if( max_combo_points > 0 )
+  {
+    if( p -> _buffs.combo_points > max_combo_points )
+      if( sim -> time_to_think( p -> _buffs.combo_points_proc[ max_combo_points+1 ] ) )
+	return false;
+  }
 
   if( min_energy > 0 )
     if( p -> resource_current[ RESOURCE_ENERGY ] < min_energy )
