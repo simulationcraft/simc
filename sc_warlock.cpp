@@ -1400,66 +1400,57 @@ static void trigger_decimation( warlock_spell_t* s )
     expiration_t( sim_t* sim, warlock_t* p ) : event_t( sim, p )
     {
       name = "Decimation Expiration";
-      p -> aura_gain( "Decimation" );
-      //Assumes 1.5 second travel time on triggering spells
-      sim -> add_event( this, 11.5 );
+      sim -> add_event( this, 10.0 );
     }
     virtual void execute()
     {
       warlock_t* p = player -> cast_warlock();
+      p -> _buffs.decimation = 0;
       p -> aura_loss( "Decimation" );
-      if( p -> _buffs.decimation == 2 )
-        p -> _buffs.decimation = 1;
-      else if( p -> _buffs.decimation != 1 )
-        p -> _buffs.decimation = 0;
       p -> _expirations.decimation = 0;
     }
   };
   
+  // The decimation only procs when the triggering spells lands on the target, after
+  // spending time flying through the air.  We have an event which will activate the buff
+  // after the spell hits, then after activating the buff it will start an expiration timer
+  struct activation_t : public event_t
+  {
+  	activation_t( sim_t* sim, warlock_t *p ) : event_t( sim, p )
+  	{
+  		name = "Decimation activation";
+  		// Assume 1.5 second flight time -- will make this param later
+  		sim -> add_event( this, sim -> warlock_nuke_travel_time );
+  	}
+  	virtual void execute()
+  	{
+		warlock_t* p = player -> cast_warlock();
+		p -> aura_gain("Decimation");
+		p -> _buffs.decimation = 1;
+		event_t*&  e = p -> _expirations.decimation;
+		if( e )
+		{
+			e -> reschedule( 10.0 );
+		}
+		else
+		{
+			e = new ( sim ) expiration_t( sim, p );
+		}
+  	}
+  };
+
   warlock_t* p = s -> player -> cast_warlock();
 
   if( ( ! p -> talents.decimation ) || ( s -> sim -> target -> health_percentage() > 35 ) ) return;
 
   if( s -> decimation_trigger && s -> result_is_hit() )
   {
-    event_t*&  e = p -> _expirations.decimation;
-    if( e )
-    {
-      //Assumes 1.5 second travel time on triggering spells
-      e -> reschedule( 11.5 );
-    }
-    else
-    {
-      e = new ( s -> sim ) expiration_t( s -> sim, p );
-    }
+    new ( s -> sim ) activation_t( s -> sim, p );
   }
 
-  switch( p -> _buffs.decimation )
+  if( s -> decimation_consumer )
   {
-  case 0:
-    // No decimation buff, no trigger in air
-    if( s -> decimation_trigger && s -> result_is_hit() )
-      p -> _buffs.decimation = 1;
-    break;
-  case 1:
-    // No decimation buff, trigger in air
-    if( s -> decimation_trigger )
-      p -> _buffs.decimation = ( s -> result_is_hit() ) ? 2 : 3;
-    break;
-  case 2:
-    // Decimation buff, trigger in air
-    if( s -> decimation_consumer )
-      p -> _buffs.decimation = 1;
-    else if( ! ( s -> decimation_trigger && s -> result_is_hit() ) )
-      p -> _buffs.decimation = 3;
-    break;
-  case 3:
-    // Decimation buff, no trigger in air
-    if( s -> decimation_consumer )
-      p -> _buffs.decimation = 0;
-    else if( s -> decimation_trigger && s -> result_is_hit() )
-      p -> _buffs.decimation = 2;
-    break;
+      if( p -> _expirations.decimation ) event_t::early( p -> _expirations.decimation );
   }
 }
 
@@ -4089,7 +4080,7 @@ struct soul_fire_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     double t = warlock_spell_t::execute_time();
-    if( p -> _buffs.decimation >= 2 )
+    if( p -> _buffs.decimation )
     {
       if( p -> talents.decimation == 1 )
         t *= 0.65;
@@ -4111,7 +4102,7 @@ struct soul_fire_t : public warlock_spell_t
         return false;
 
     if( decimation )
-      if( ! ( p -> _buffs.decimation >= 2 ) )
+      if( ! p -> _buffs.decimation )
         return false;
           
     return true;

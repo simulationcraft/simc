@@ -302,6 +302,7 @@ struct sim_t
   double      queue_lag, queue_lag_range;
   double      gcd_lag, gcd_lag_range;
   double      channel_lag, channel_lag_range;
+  double      warlock_nuke_travel_time;
   double      reaction_time, regen_periodicity;
   double      current_time, max_time;
   int         events_remaining, max_events_remaining;
