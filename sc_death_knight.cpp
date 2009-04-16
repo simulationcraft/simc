@@ -54,9 +54,9 @@ struct death_knight_t : public player_t
   // Buffs
   struct _buffs_t
   {
+    int     bloody_vengeance;
     double  butchery;
     int     scent_of_blood;
-    int     bloody_vengeance;
 
     void reset() { memset( (void*) this, 0x00, sizeof( _buffs_t ) ); }
     _buffs_t() { reset(); }
@@ -66,11 +66,10 @@ struct death_knight_t : public player_t
   // Cooldowns
   struct _cooldowns_t
   {
-    double  scent_of_blood;
-
+    // EMPTY
     void reset() 
     { 
-      scent_of_blood = 0;
+      // EMPTY
     }
     _cooldowns_t() { reset(); }
   };
@@ -80,6 +79,7 @@ struct death_knight_t : public player_t
   struct _expirations_t
   {
     event_t* bloody_vengeance;
+    event_t* scent_of_blood;
 
     void reset() { memset( (void*) this, 0x00, sizeof( _expirations_t ) ); }
     _expirations_t() { reset(); }
@@ -99,6 +99,7 @@ struct death_knight_t : public player_t
   // Up-Times
   uptime_t* uptimes_abominations_might;
   uptime_t* uptimes_bloody_vengeance;
+  uptime_t* uptimes_scent_of_blood;
   
   // Auto-Attack
   attack_t* main_hand_attack;
@@ -124,7 +125,7 @@ struct death_knight_t : public player_t
     int bloody_strikes;                 // Done
     int veteran_of_the_third_war;       // Done
     int bloody_vengeance;               // Done
-    int abominations_might;             //
+    int abominations_might;             // Done
     int bloodworms;
     int hysteria;
     int improved_blood_presence;
@@ -252,6 +253,7 @@ struct death_knight_t : public player_t
     // Up-Times
     uptimes_abominations_might = get_uptime( "abominations_might" );
     uptimes_bloody_vengeance   = get_uptime( "bloody_vengeance" );
+    uptimes_scent_of_blood     = get_uptime( "scent_of_blood" );
   
     // Auto-Attack
     main_hand_attack         = NULL;
@@ -358,6 +360,8 @@ struct death_knight_spell_t : public spell_t
     death_knight_t* p = player -> cast_death_knight();
     for( int i = 0; i < RUNE_SLOT_MAX; ++i ) use[i] = false;
     may_crit = true;
+    base_spell_power_multiplier = 0;
+    base_attack_power_multiplier = 1;
 
     if( p -> talents.dark_conviction )
       base_crit += p -> talents.dark_conviction * 0.01;
@@ -398,7 +402,7 @@ group_runes ( player_t* player, int blood, int frost, int unholy, bool* group )
   for( int i = 0; i < RUNE_SLOT_MAX; ++i )
   {
     dk_rune_t& r = p -> _runes.slot[i];
-    if (r.is_ready(t) && ! r.is_death() && cost[r.get_type()] > 0)
+    if( r.is_ready(t) && ! r.is_death() && cost[r.get_type()] > 0 )
     {
       --cost[r.get_type()];
       --cost[0];
@@ -410,7 +414,7 @@ group_runes ( player_t* player, int blood, int frost, int unholy, bool* group )
   for( int i = 0; cost[0] > 0 && i < RUNE_SLOT_MAX; ++i )
   {
     dk_rune_t& r = p -> _runes.slot[i];
-    if (r.is_ready(t) && r.is_death())
+    if( r.is_ready(t) && r.is_death() )
     {
       --cost[0];
       use[i] = true;
@@ -447,7 +451,7 @@ trigger_abominations_might( action_t* a, double base_chance )
     {
       for( player_t* p = sim -> player_list; p; p = p -> next )
       {
-        if ( p -> buffs.abominations_might )
+        if( p -> buffs.abominations_might )
         {
           p -> aura_loss( "Abomination's Might" );
           p -> buffs.abominations_might = 0;
@@ -484,6 +488,52 @@ trigger_abominations_might( action_t* a, double base_chance )
   else
   {
     e = new ( a -> sim ) abominations_might_expiration_t( a -> sim );
+  }
+}
+
+static void
+trigger_scent_of_blood( player_t* player )
+{
+  static const char* const  aura_string[] = { "Scent of Blood(1)", "Scent of Blood(2)", "Scent of Blood(3)" };
+
+  struct scent_of_blood_expiration_t : public event_t
+  {
+    scent_of_blood_expiration_t( player_t* p ) : event_t( p -> sim, p )
+    {
+      name = "Scent of Blood Expiration";
+      sim -> add_event( this, 10.0 );
+    }
+    virtual void execute()
+    {
+      death_knight_t* p = player -> cast_death_knight();
+
+      if( p -> _buffs.scent_of_blood )
+      {
+        p -> aura_loss( "Scent of Blood" );
+        p -> _buffs.scent_of_blood = 0;
+      }
+
+      p -> _expirations.scent_of_blood = NULL;
+    }
+  };
+
+  death_knight_t* p = player -> cast_death_knight();
+  
+  if( ! p -> talents.scent_of_blood || ! p -> sim -> roll( 0.15 ) ) return;
+  
+  p -> aura_gain( aura_string[ p -> talents.scent_of_blood - 1 ] );
+  p -> _buffs.scent_of_blood = p -> talents.scent_of_blood;
+  p -> procs_scent_of_blood -> occur();
+
+  event_t*& e = p -> _expirations.scent_of_blood;
+
+  if( e )
+  {
+    e -> reschedule( 10.0 );
+  }
+  else
+  {
+    e = new ( p -> sim ) scent_of_blood_expiration_t( p );
   }
 }
 
@@ -559,7 +609,7 @@ death_knight_attack_t::reset()
 void
 death_knight_attack_t::consume_resource()
 {
-  if (cost() > 0) attack_t::consume_resource();
+  if( cost() > 0 ) attack_t::consume_resource();
   consume_runes( player, use, convert_runes == 0 ? false : sim->roll( convert_runes ) == 1 );
 }
 
@@ -576,12 +626,6 @@ death_knight_attack_t::execute()
 
     double gain = -cost();
     if( gain > 0 ) p -> resource_gain( resource, gain, p -> gains_rune_abilities );
-
-    if( p -> _buffs.scent_of_blood && p->_cooldowns.scent_of_blood <= p -> sim -> current_time )
-    {
-      p -> _buffs.scent_of_blood--;
-      p -> resource_gain( resource, 5, p -> gains_scent_of_blood );
-    }
 
     if( result == RESULT_CRIT )
     {
@@ -664,7 +708,7 @@ death_knight_spell_t::reset()
 void
 death_knight_spell_t::consume_resource()
 {
-  if (cost() > 0) spell_t::consume_resource();
+  if( cost() > 0 ) spell_t::consume_resource();
   consume_runes( player, use, convert_runes == 0 ? false : sim->roll( convert_runes ) == 1 );
 }
 
@@ -760,6 +804,25 @@ struct melee_t : public death_knight_attack_t
 
     if( p -> dual_wield() ) base_hit -= 0.19;
   }
+
+  void
+  execute()
+  {
+    death_knight_t* p = player -> cast_death_knight();
+
+    death_knight_attack_t::execute();
+    
+    if( result_is_hit() )
+    {
+      p -> uptimes_scent_of_blood -> update( p -> _buffs.scent_of_blood > 0 );
+
+      if( p -> _buffs.scent_of_blood )
+      {
+        if( ! --p -> _buffs.scent_of_blood ) p -> aura_loss("Scent of Blood");
+        p -> resource_gain( resource, 10, p -> gains_scent_of_blood );
+      }
+    }
+  }
 };
 
 struct auto_attack_t : public death_knight_attack_t
@@ -816,7 +879,7 @@ struct death_knight_disease_t : public death_knight_spell_t
         
       static rank_t ranks[] =
       {
-        { 1, 1, 0, 0, 0, 0 },
+        { 1, 1, 0, 0, 1, 0 },
         { 0, 0 }
       };
       init_rank( ranks );
@@ -1040,7 +1103,7 @@ struct icy_touch_t : public death_knight_spell_t
   execute()
     {
       death_knight_spell_t::execute();
-      if (result_is_hit()) player -> cast_death_knight() -> frost_fever -> execute();
+      if( result_is_hit() ) player -> cast_death_knight() -> frost_fever -> execute();
     }
 };
 
@@ -1146,7 +1209,7 @@ struct plague_strike_t : public death_knight_attack_t
   execute()
     {
       death_knight_attack_t::execute();
-      if (result_is_hit()) player -> cast_death_knight() -> blood_plague -> execute();
+      if( result_is_hit() ) player -> cast_death_knight() -> blood_plague -> execute();
     }
 };
 
@@ -1330,8 +1393,11 @@ death_knight_t::init_base()
   attribute_base[ ATTR_INTELLECT ] = 35;
   attribute_base[ ATTR_SPIRIT    ] = 60;
 
-  attribute_multiplier_initial[ ATTR_STRENGTH ] *= 1.0 + talents.veteran_of_the_third_war * 0.02;
-  attribute_multiplier_initial[ ATTR_STAMINA ]  *= 1.0 + talents.veteran_of_the_third_war * 0.02;
+  attribute_multiplier_initial[ ATTR_STRENGTH ] *= 1.0 +
+                                                     talents.veteran_of_the_third_war * 0.02 +
+                                                     talents.abominations_might * 0.01;
+  attribute_multiplier_initial[ ATTR_STAMINA ]  *= 1.0 +
+                                                     talents.veteran_of_the_third_war * 0.02;
 
   base_attack_power = -20;
   initial_attack_power_per_strength = 2.0;
@@ -1397,22 +1463,15 @@ death_knight_t::combat_begin()
   {
     struct scent_of_blood_proc_t : public event_t
     {
-      scent_of_blood_proc_t( sim_t* sim, death_knight_t* p, double interval ) : event_t( sim, p )
+      scent_of_blood_proc_t( sim_t* sim, player_t* p, double interval ) : event_t( sim, p )
       {
         name = "Scent of Blood Proc";
         sim -> add_event( this, interval );
       }
       virtual void execute()
       {
-        death_knight_t* p = player -> cast_death_knight();
-
-        if( p -> _cooldowns.scent_of_blood <= sim -> current_time && sim -> roll( 0.15 ) )
-        {
-          p -> _cooldowns.scent_of_blood = sim -> current_time + 10;
-          p -> _buffs.scent_of_blood = p -> talents.scent_of_blood;
-          p -> procs_scent_of_blood -> occur();
-        }
-        new ( sim ) scent_of_blood_proc_t( sim, p, p -> scent_of_blood_interval );
+        trigger_scent_of_blood( player );
+        new ( sim ) scent_of_blood_proc_t( sim, player, player -> cast_death_knight() -> scent_of_blood_interval );
       }
     };
 
