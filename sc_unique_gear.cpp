@@ -1679,6 +1679,30 @@ struct violet_eye_t : public action_t
 };
 
 // ==========================================================================
+// Hand-Mounted Pyro Rocket
+// ==========================================================================
+
+
+struct hand_mounted_pyro_rocket_t : public spell_t
+{
+  hand_mounted_pyro_rocket_t( player_t* p, const std::string& options_str ) : 
+    spell_t( "hand_mounted_pyro_rocket", p, RESOURCE_NONE, SCHOOL_FIRE )
+    // FIX ME! Does this use attack or spell mechanics?
+  {
+    cooldown    = 45;
+    trigger_gcd = 0;
+    base_dd_min = 1440;
+    base_dd_max = 1760;
+    may_crit    = true;
+    // FIX ME!
+    // Hand-Mounted Pyro Rocket: No longer on the global cooldown. Damage 
+    // increased, Cooldown reduced. Now invokes a 10-second DPS burst item 
+    // category cooldown.
+    // Which items share the cooldown the 10s cd?
+  }
+};
+
+// ==========================================================================
 // unique_gear_t::parse_option
 // ==========================================================================
 
@@ -1746,13 +1770,14 @@ action_t* unique_gear_t::create_action( player_t*          p,
                                         const std::string& name, 
                                         const std::string& options_str )
 {
-  if( name == "attack_power_trinket"   ) return new attack_power_trinket_t  ( p, options_str );
-  if( name == "haste_trinket"          ) return new haste_trinket_t         ( p, options_str );
-  if( name == "hazzrahs_charm"         ) return new hazzrahs_charm_t        ( p, options_str );
-  if( name == "spell_power_trinket"    ) return new spell_power_trinket_t   ( p, options_str );
-  if( name == "talisman_of_ascendance" ) return new talisman_of_ascendance_t( p, options_str );
-  if( name == "violet_eye"             ) return new violet_eye_t            ( p, options_str );
-  if( name == "zandalarian_hero_charm" ) return new zandalarian_hero_charm_t( p, options_str );
+  if( name == "attack_power_trinket"     ) return new attack_power_trinket_t    ( p, options_str );
+  if( name == "haste_trinket"            ) return new haste_trinket_t           ( p, options_str );
+  if( name == "hazzrahs_charm"           ) return new hazzrahs_charm_t          ( p, options_str );
+  if( name == "spell_power_trinket"      ) return new spell_power_trinket_t     ( p, options_str );
+  if( name == "talisman_of_ascendance"   ) return new talisman_of_ascendance_t  ( p, options_str );
+  if( name == "violet_eye"               ) return new violet_eye_t              ( p, options_str );
+  if( name == "zandalarian_hero_charm"   ) return new zandalarian_hero_charm_t  ( p, options_str );
+  if( name == "hand_mounted_pyro_rocket" ) return new hand_mounted_pyro_rocket_t( p, options_str );
 
   return 0;
 }
