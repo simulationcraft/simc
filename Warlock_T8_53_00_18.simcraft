@@ -4,7 +4,7 @@ warlock=Warlock_T8_53_00_18
 level=80
 talents=http://talent.mmo-champion.com/?warlock=235002200102351005350033115100000000000000000000000000055001205000000000000000000
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/spell_stone/fel_armor/summon_pet,succubus
-actions+=/haunt,debuff=1/life_tap,glyph=1/corruption/curse_of_agony/unstable_affliction/haunt
+actions+=/haunt,debuff=1/corruption/curse_of_agony/unstable_affliction/haunt
 actions+=/drain_soul,health_percentage<=25,interrupt=1/shadow_bolt/life_tap
 Warlock_T8_Gear.simcraft
 glyph_haunt=1
