@@ -159,7 +159,7 @@ bool option_t::parse( sim_t* sim,
 // parse_talents ============================================================
 
 static void parse_talents( sim_t*       sim,
-			   std::string& value )
+         std::string& value )
 {
   sim -> active_player -> talents_str = value;
 
@@ -167,7 +167,7 @@ static void parse_talents( sim_t*       sim,
   int encoding = ENCODING_NONE;
 
   std::string::size_type cut_pt; 
-  if( ( cut_pt = value.find_first_of( "=" ) ) != value.npos ) 
+  if( ( cut_pt = value.find_first_of( "=#" ) ) != value.npos ) 
   {
     talent_string = value.substr( cut_pt + 1 );
     address_string = value.substr( 0, cut_pt );
@@ -186,18 +186,18 @@ static void parse_talents( sim_t*       sim,
       talent_string = parts[ 0 ];
       for( int i = 1; i < part_count; i++ )
       {
-	std::string part_name, part_value;
-	if( 2 == util_t::string_split( parts[i], "=", "S S", &part_name, &part_value ) )
+        std::string part_name, part_value;
+        if( 2 == util_t::string_split( parts[i], "=", "S S", &part_name, &part_value ) )
         {
-	  if( part_name == "glyph" )
+          if( part_name == "glyph" )
           {
-	    //FIXME: ADD GLYPH SUPPORT?
-	  }
-	  else if( part_name == "version" )
+            //FIXME: ADD GLYPH SUPPORT?
+          }
+          else if( part_name == "version" )
           {
-	    //FIXME: WHAT TO DO WITH VERSION NUMBER?
-	  }
-	}
+            //FIXME: WHAT TO DO WITH VERSION NUMBER?
+          }
+        }
       }
     }
     else if( address_string.find( "wowhead" ) != value.npos )
