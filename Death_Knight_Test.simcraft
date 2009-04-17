@@ -3,13 +3,12 @@
 patch=3.1.0
 death_knight=Death_Knight_Test
 level=80
-talents=http://talent.mmo-champion.com/?deathknight=23023205300033032310231013510000000000000000000000000000230230205003000000000000000000
-
+talents=http://www.wowhead.com/?talent#jfVRVh0Icfof0stZfMhhxM
 
 # Action queue
 actions=auto_attack
-actions+=/plague_strike/icy_touch/hysteria/death_strike/blood_strike/blood_strike/death_coil
-actions+=/death_strike/obliterate/blood_strike/blood_strike/death_coil/death_coil,once=0/clear
+actions+=/plague_strike/icy_touch/hysteria/death_strike/heart_strike/heart_strike/death_coil
+actions+=/death_strike/heart_strike/heart_strike/heart_strike/heart_strike/death_coil/death_coil,once=0/clear
 
 # Gear
 gear_stamina=1169
@@ -29,4 +28,4 @@ gear_armor=15409
 main_hand=sword_2h,dps=222.9,speed=3.4
 
 # Death Knight specific settings
-scent_of_blood_interval=8
+scent_of_blood_interval=10

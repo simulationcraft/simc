@@ -93,6 +93,7 @@ struct death_knight_t : public player_t
   proc_t* procs_abominations_might;
   proc_t* procs_bloody_vengeance;
   proc_t* procs_scent_of_blood;
+  proc_t* procs_sudden_doom;
   
   // Up-Times
   uptime_t* uptimes_abominations_might;
@@ -107,6 +108,9 @@ struct death_knight_t : public player_t
   // Diseases
   spell_t* blood_plague;
   spell_t* frost_fever;
+
+  // Special
+  spell_t* sudden_doom;
 
   // Options
   int scent_of_blood_interval;
@@ -128,7 +132,7 @@ struct death_knight_t : public player_t
     int bloodworms;
     int hysteria;                       // Done
     int improved_death_strike;          // Done
-    int sudden_doom;
+    int sudden_doom;                    // Done
     int heart_strike;										// Done
     int might_of_mograine;              // Done
     int blood_gorged;                   // Done
@@ -244,6 +248,7 @@ struct death_knight_t : public player_t
     procs_abominations_might = get_proc( "abominations_might" );
     procs_bloody_vengeance   = get_proc( "bloody_vengeance" );
     procs_scent_of_blood     = get_proc( "scent_of_blood" );
+    procs_sudden_doom        = get_proc( "sudden_doom" );
 
     // Up-Times
     uptimes_abominations_might = get_uptime( "abominations_might" );
@@ -258,6 +263,8 @@ struct death_knight_t : public player_t
     blood_plague             = NULL;
     frost_fever              = NULL;
 
+    sudden_doom              = NULL;
+
     // Options
     scent_of_blood_interval  = 0;
 
@@ -268,6 +275,7 @@ struct death_knight_t : public player_t
   // Character Definition
   virtual void      init_base();
   virtual void      init_resources( bool force );
+  virtual void      init_actions();
   virtual void      combat_begin();
   virtual double    composite_attack_power();
   virtual void      regen( double periodicity );
@@ -569,6 +577,17 @@ trigger_scent_of_blood( player_t* player )
   {
     e = new ( p -> sim ) scent_of_blood_expiration_t( p );
   }
+}
+
+static void
+trigger_sudden_doom( action_t* a )
+{
+  death_knight_t* p = a -> player -> cast_death_knight();
+
+  if( ! p -> sim -> roll( p -> talents.sudden_doom * 0.05 ) ) return;
+
+  p -> procs_sudden_doom -> occur();
+  p -> sudden_doom -> execute();
 }
 
 static void
@@ -1013,7 +1032,11 @@ struct blood_strike_t : public death_knight_attack_t
   execute()
   {
     death_knight_attack_t::execute();
-    if( result_is_hit() ) trigger_abominations_might( this, 0.25 );
+    if( result_is_hit() )
+    {
+      trigger_abominations_might( this, 0.25 );
+      trigger_sudden_doom( this );
+    }
   }
 };
 
@@ -1112,7 +1135,11 @@ struct heart_strike_t : public death_knight_attack_t
   execute()
   {
     death_knight_attack_t::execute();
-    if( result_is_hit() ) trigger_abominations_might( this, 0.25 );
+    if( result_is_hit() )
+    {
+      trigger_abominations_might( this, 0.25 );
+      trigger_sudden_doom( this );
+    }
   }
 };
 
@@ -1143,8 +1170,6 @@ struct icy_touch_t : public death_knight_spell_t
       base_execute_time = 0;
       direct_power_mod  = 0.1;
       cooldown          = 0.0;
-
-      player -> cast_death_knight() -> frost_fever = new frost_fever_t(player);
     }
 
   void
@@ -1250,7 +1275,6 @@ struct plague_strike_t : public death_knight_attack_t
     weapon = &( p -> main_hand_weapon );
     normalize_weapon_speed = true;
     weapon_multiplier     *= 0.5;
-    p -> blood_plague = new blood_plague_t(player);
   }
 
   void
@@ -1308,9 +1332,14 @@ struct scourge_strike_t : public death_knight_attack_t
 
 struct death_coil_t : public death_knight_spell_t
 {
-    death_coil_t(player_t* player, const std::string& options_str) :
+    death_coil_t(player_t* player, const std::string& options_str, bool sudden_doom = false ) :
       death_knight_spell_t( "death_coil", player, SCHOOL_SHADOW, TREE_BLOOD)
     {
+      proc = sudden_doom;
+      execute_once = !sudden_doom;
+
+      int cost = proc ? 0 : 40;
+
       option_t options[] =
       {
         { NULL }
@@ -1319,11 +1348,11 @@ struct death_coil_t : public death_knight_spell_t
         
       static rank_t ranks[] =
       {
-        { 80, 5, 443, 443, 0, 40 },
-        { 76, 4, 381, 381, 0, 40 },
-        { 68, 3, 275, 275, 0, 40 },
-        { 62, 2, 208, 208, 0, 40 },
-        { 55, 1, 184, 184, 0, 40 },
+        { 80, 5, 443, 443, 0, cost },
+        { 76, 4, 381, 381, 0, cost },
+        { 68, 3, 275, 275, 0, cost },
+        { 62, 2, 208, 208, 0, cost },
+        { 55, 1, 184, 184, 0, cost },
         { 0, 0 }
       };
       init_rank( ranks );
@@ -1331,6 +1360,8 @@ struct death_coil_t : public death_knight_spell_t
       base_execute_time = 0;
       direct_power_mod  = 0.15;
       cooldown          = 0.0;
+
+      if( proc ) trigger_gcd = 0;
     }
 };
 
@@ -1374,6 +1405,8 @@ struct hysteria_t : public action_t
   hysteria_t(player_t* player, const std::string& options_str) :
     action_t( ACTION_OTHER, "hysteria", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_BLOOD )
   {
+    assert( player -> cast_death_knight() -> talents.hysteria == 1 );
+
     option_t options[] =
     {
       { NULL }
@@ -1537,6 +1570,15 @@ death_knight_t::init_resources(bool force)
 {
   player_t::init_resources(force);
   resource_current[ RESOURCE_RUNIC ] = 0;
+}
+
+void
+death_knight_t::init_actions()
+{
+  player_t::init_actions();
+  blood_plague = new blood_plague_t( this );
+  frost_fever = new frost_fever_t( this );
+  if( talents.sudden_doom ) sudden_doom = new death_coil_t( this, "", true );
 }
 
 void
