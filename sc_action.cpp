@@ -209,8 +209,12 @@ void action_t::player_buff()
       // That needs to be here because shadow form affects ALL shadow damage (e.g. trinkets)
       if( p -> buffs.shadow_form )
       {
-	player_multiplier *= 1.15;
+        player_multiplier *= 1.15;
       }
+    }
+    else if( p -> buffs.hysteria && school == SCHOOL_PHYSICAL )
+    {
+      player_multiplier *= 1.2;
     }
 
     if( sim -> auras.sanctified_retribution || p -> buffs.ferocious_inspiration  ) 

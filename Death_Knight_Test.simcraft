@@ -8,7 +8,7 @@ talents=http://talent.mmo-champion.com/?deathknight=2302320530003303231023101351
 
 # Action queue
 actions=auto_attack
-actions+=/plague_strike/icy_touch/death_strike/blood_strike/blood_strike/death_coil
+actions+=/plague_strike/icy_touch/hysteria/death_strike/blood_strike/blood_strike/death_coil
 actions+=/death_strike/obliterate/blood_strike/blood_strike/death_coil/death_coil,once=0/clear
 
 # Gear

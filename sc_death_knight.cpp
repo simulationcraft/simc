@@ -66,11 +66,9 @@ struct death_knight_t : public player_t
   // Cooldowns
   struct _cooldowns_t
   {
-    // EMPTY
-    void reset() 
-    { 
-      // EMPTY
-    }
+    double  hysteria;
+
+    void reset() { memset( (void*) this, 0x00, sizeof( _cooldowns_t ) ); }
     _cooldowns_t() { reset(); }
   };
   _cooldowns_t _cooldowns;
@@ -99,6 +97,7 @@ struct death_knight_t : public player_t
   // Up-Times
   uptime_t* uptimes_abominations_might;
   uptime_t* uptimes_bloody_vengeance;
+  uptime_t* uptimes_hysteria;
   uptime_t* uptimes_scent_of_blood;
   
   // Auto-Attack
@@ -127,14 +126,12 @@ struct death_knight_t : public player_t
     int bloody_vengeance;               // Done
     int abominations_might;             // Done
     int bloodworms;
-    int hysteria;
-    int improved_blood_presence;
-    int improved_death_strike;
+    int hysteria;                       // Done
+    int improved_death_strike;          // Done
     int sudden_doom;
-    int vampiric_blood;
     int heart_strike;										// Done
-    int might_of_mograine;
-    int blood_gorged;
+    int might_of_mograine;              // Done
+    int blood_gorged;                   // Done
     int dancing_rune_weapon;
     int improved_icy_touch;
     int runic_power_mastery;						// Done
@@ -153,7 +150,6 @@ struct death_knight_t : public player_t
     int rime;
     int chilblains;
     int hungering_cold;
-    int improved_frost_presence;
     int blood_of_the_north;
     int unbreakable_armor;
     int frost_strike;
@@ -213,7 +209,6 @@ struct death_knight_t : public player_t
     int scourge_strike;
     int strangulate;
     int unholy_blight;
-    int vampiric_blood;
     int the_ghoul;
 
     glyphs_t() { memset( (void*) this, 0x0, sizeof( glyphs_t ) ); }
@@ -253,6 +248,7 @@ struct death_knight_t : public player_t
     // Up-Times
     uptimes_abominations_might = get_uptime( "abominations_might" );
     uptimes_bloody_vengeance   = get_uptime( "bloody_vengeance" );
+    uptimes_hysteria           = get_uptime( "hysteria" );
     uptimes_scent_of_blood     = get_uptime( "scent_of_blood" );
   
     // Auto-Attack
@@ -492,6 +488,44 @@ trigger_abominations_might( action_t* a, double base_chance )
 }
 
 static void
+trigger_hysteria( player_t* player, player_t* target )
+{
+  struct hysteria_expiration_t : public event_t
+  {
+    hysteria_expiration_t( player_t* p ) : event_t( p -> sim, p )
+    {
+      name = "Hysteria Expiration";
+      sim -> add_event( this, 30.0 );
+    }
+    virtual void execute()
+    {
+      if( player -> buffs.hysteria )
+      {
+        player -> aura_loss( "Hysteria" );
+        player -> buffs.hysteria = 0;
+      }
+
+      player -> expirations.hysteria = NULL;
+    }
+  };
+  
+  target -> aura_gain( "Hysteria" );
+  target -> buffs.hysteria = 1;
+  player -> cast_death_knight() -> _cooldowns.hysteria = player -> sim -> current_time + 180;
+
+  event_t*& e = target -> expirations.hysteria;
+
+  if( e )
+  {
+    e -> reschedule( 30.0 );
+  }
+  else
+  {
+    e = new ( player -> sim ) hysteria_expiration_t( target );
+  }
+}
+
+static void
 trigger_scent_of_blood( player_t* player )
 {
   static const char* const  aura_string[] = { "Scent of Blood(1)", "Scent of Blood(2)", "Scent of Blood(3)" };
@@ -646,13 +680,22 @@ death_knight_attack_t::player_buff()
 
   attack_t::player_buff();
 
-  if( school == SCHOOL_PHYSICAL && p -> talents.bloody_vengeance )
+  if( school == SCHOOL_PHYSICAL )
   {
     player_multiplier *= 1 + p-> talents.bloody_vengeance * 0.01 * p -> _buffs.bloody_vengeance;
     p -> uptimes_bloody_vengeance -> update( p -> _buffs.bloody_vengeance != 0 );
+    p -> uptimes_hysteria -> update( p -> buffs.hysteria != 0 );
   }
 
   p -> uptimes_abominations_might -> update( p -> buffs.abominations_might != 0 );
+
+  if( p->talents.blood_gorged )
+  {
+    player_penetration += p -> talents.blood_gorged * 0.02;
+
+    if( p->resource_current[ RESOURCE_HEALTH ] >= p->resource_max[ RESOURCE_HEALTH ] * 0.75  )
+      player_multiplier *= 1 + p -> talents.blood_gorged * 0.02;
+  }
 
   if( sim -> debug ) 
     report_t::log( sim, "death_knight_attack_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f, p_mult=%.0f", 
@@ -953,6 +996,7 @@ struct blood_strike_t : public death_knight_attack_t
     weapon_multiplier *= 0.4;
 
     base_crit += p -> talents.subversion * 0.03;
+    base_crit_bonus *= p -> talents.might_of_mograine * 0.15;
     base_multiplier *= 1 + p -> talents.bloody_strikes * 0.15;
   }
 
@@ -1004,6 +1048,9 @@ struct death_strike_t : public death_knight_attack_t
     normalize_weapon_speed = true;
     weapon_multiplier     *= 0.75;
 
+    base_crit += p -> talents.improved_death_strike * 0.03;
+    base_crit_bonus *= p -> talents.might_of_mograine * 0.15;
+    base_multiplier *= 1 + p -> talents.improved_death_strike * 0.15;
     convert_runes = p->talents.death_rune_mastery / 3;
   }
 
@@ -1048,6 +1095,7 @@ struct heart_strike_t : public death_knight_attack_t
     weapon_multiplier     *= 0.5;
 
     base_crit += p -> talents.subversion * 0.03;
+    base_crit_bonus *= p -> talents.might_of_mograine * 0.15;
     base_multiplier *= 1 + p -> talents.bloody_strikes * 0.15;
   }
 
@@ -1317,6 +1365,38 @@ struct frost_strike_t : public death_knight_attack_t
   }
 };
 
+// ==========================================================================
+// Death Knight Other Abilities
+// ==========================================================================
+
+struct hysteria_t : public action_t
+{
+  hysteria_t(player_t* player, const std::string& options_str) :
+    action_t( ACTION_OTHER, "hysteria", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_BLOOD )
+  {
+    option_t options[] =
+    {
+      { NULL }
+    };
+    parse_options( options, options_str );
+
+    trigger_gcd = 0;
+  }
+
+  void
+  execute()
+  {
+    trigger_hysteria( player, player );
+  }
+
+  bool
+  ready()
+  {
+    return player -> sim -> current_time > player -> cast_death_knight() -> _cooldowns.hysteria;
+  }
+};
+
+
 }	// namespace
 
 // ==========================================================================
@@ -1370,6 +1450,7 @@ death_knight_t::create_action( const std::string& name, const std::string& optio
   if( name == "auto_attack"         ) return new auto_attack_t        ( this, options_str );
   if( name == "clear"               ) return new clear_t              ( this, options_str );
 
+  // Rune Actions
   if( name == "blood_strike"        ) return new blood_strike_t       ( this, options_str );
   if( name == "death_strike"        ) return new death_strike_t       ( this, options_str );
   if( name == "heart_strike"        ) return new heart_strike_t       ( this, options_str );
@@ -1378,8 +1459,12 @@ death_knight_t::create_action( const std::string& name, const std::string& optio
   if( name == "plague_strike"       ) return new plague_strike_t      ( this, options_str );
   if( name == "scourge_strike"      ) return new scourge_strike_t     ( this, options_str );
 
+  // Runic Power Actions
   if( name == "death_coil"          ) return new death_coil_t         ( this, options_str );
   if( name == "frost_strike"        ) return new frost_strike_t       ( this, options_str );
+
+  // Other Actions
+  if( name == "hysteria"            ) return new hysteria_t           ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -1537,10 +1622,10 @@ death_knight_t::get_talent_trees( std::vector<int*>& blood, std::vector<int*>& f
     { { 17, &( talents.abominations_might       ) }, { 17, &( talents.merciless_combat        ) }, { 17, NULL                                  } },
     { { 18, &( talents.bloodworms               ) }, { 18, &( talents.rime                    ) }, { 18, &( talents.reaping                  ) } },
     { { 19, &( talents.hysteria                 ) }, { 19, &( talents.chilblains              ) }, { 19, &( talents.ghoul_frenzy             ) } },
-    { { 20, &( talents.improved_blood_presence  ) }, { 20, &( talents.hungering_cold          ) }, { 20, &( talents.desecration              ) } },
-    { { 21, &( talents.improved_death_strike    ) }, { 21, &( talents.improved_frost_presence ) }, { 21, NULL                                  } },
+    { { 20, NULL                                  }, { 20, &( talents.hungering_cold          ) }, { 20, &( talents.desecration              ) } },
+    { { 21, &( talents.improved_death_strike    ) }, { 21, NULL                                 }, { 21, NULL                                  } },
     { { 22, &( talents.sudden_doom              ) }, { 22, &( talents.blood_of_the_north      ) }, { 22, &( talents.improved_unholy_presence ) } },
-    { { 23, &( talents.vampiric_blood           ) }, { 23, &( talents.unbreakable_armor       ) }, { 23, &( talents.night_of_the_dead        ) } },
+    { { 23, NULL                                  }, { 23, &( talents.unbreakable_armor       ) }, { 23, &( talents.night_of_the_dead        ) } },
     { { 24, NULL                                  }, { 24, NULL                                 }, { 24, &( talents.crypt_fever              ) } },
     { { 25, &( talents.heart_strike             ) }, { 25, &( talents.frost_strike            ) }, { 25, &( talents.bone_shield              ) } },
     { { 26, &( talents.might_of_mograine        ) }, { 26, &( talents.guile_of_gorefiend      ) }, { 26, &( talents.wandering_plague         ) } },
@@ -1573,10 +1658,8 @@ death_knight_t::parse_option( const std::string& name, const std::string& value 
     { "abominations_might",       OPT_INT, &( talents.abominations_might       ) },
     { "bloodworms",               OPT_INT, &( talents.bloodworms               ) },
     { "hysteria",                 OPT_INT, &( talents.hysteria                 ) },
-    { "improved_blood_presence",  OPT_INT, &( talents.improved_blood_presence  ) },
     { "improved_death_strike",    OPT_INT, &( talents.improved_death_strike    ) },
     { "sudden_doom",              OPT_INT, &( talents.sudden_doom              ) },
-    { "vampiric_blood",           OPT_INT, &( talents.vampiric_blood           ) },
     { "heart_strike",             OPT_INT, &( talents.heart_strike             ) },
     { "might_of_mograine",        OPT_INT, &( talents.might_of_mograine        ) },
     { "blood_gorged",             OPT_INT, &( talents.blood_gorged             ) },
@@ -1598,7 +1681,6 @@ death_knight_t::parse_option( const std::string& name, const std::string& value 
     { "rime",                     OPT_INT, &( talents.rime                     ) },
     { "chilblains",               OPT_INT, &( talents.chilblains               ) },
     { "hungering_cold",           OPT_INT, &( talents.hungering_cold           ) },
-    { "improved_frost_presence",  OPT_INT, &( talents.improved_frost_presence  ) },
     { "blood_of_the_north",       OPT_INT, &( talents.blood_of_the_north       ) },
     { "unbreakable_armor",        OPT_INT, &( talents.unbreakable_armor        ) },
     { "frost_strike",             OPT_INT, &( talents.frost_strike             ) },
@@ -1652,7 +1734,6 @@ death_knight_t::parse_option( const std::string& name, const std::string& value 
     { "glyph_scourge_strike",      OPT_INT, &( glyphs.scourge_strike      ) },
     { "glyph_strangulate",         OPT_INT, &( glyphs.strangulate         ) },
     { "glyph_unholy_blight",       OPT_INT, &( glyphs.unholy_blight       ) },
-    { "glyph_vampiric_blood",      OPT_INT, &( glyphs.vampiric_blood      ) },
     { "glyph_the_ghoul",           OPT_INT, &( glyphs.the_ghoul           ) },
 
     // Options

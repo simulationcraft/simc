@@ -776,6 +776,7 @@ struct player_t
     double    improved_divine_spirit;
     int       innervate;
     int       glyph_of_innervate;
+    int       hysteria;
     int       lightning_capacitor;
     double    mana_cost_reduction;
     double    mana_spring;
@@ -820,6 +821,7 @@ struct player_t
     event_t* eye_of_the_broodmother;
     event_t* focus_magic_feedback;
     event_t* fury_of_the_five_flights;
+    event_t* hysteria;
     event_t* illustration_of_the_dragon_soul;
     event_t* mongoose_mh;
     event_t* mongoose_oh;
