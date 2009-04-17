@@ -3210,8 +3210,8 @@ void rogue_t::register_callbacks()
 	if( p -> type == PLAYER_PET && ! sim -> P309 ) continue;
       }
 
-      p -> register_attack_result_callback( RESULT_CRIT, trigger_honor_among_thieves, this );
-      p -> register_spell_result_callback ( RESULT_CRIT, trigger_honor_among_thieves, this );
+      p -> register_attack_result_callback( RESULT_CRIT_MASK, trigger_honor_among_thieves, this );
+      p -> register_spell_result_callback ( RESULT_CRIT_MASK, trigger_honor_among_thieves, this );
     }
   }  
 }

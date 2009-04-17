@@ -222,7 +222,6 @@ const char* util_t::result_type_string( int type )
   case RESULT_PARRY:  return "parry";
   case RESULT_BLOCK:  return "block";
   case RESULT_GLANCE: return "glance";
-  case RESULT_CRUSH:  return "crush";
   case RESULT_CRIT:   return "crit";
   case RESULT_HIT:    return "hit";
   }

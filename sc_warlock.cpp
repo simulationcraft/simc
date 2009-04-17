@@ -4243,7 +4243,6 @@ struct fel_armor_t : public warlock_spell_t
     // Model the passive health tick.....
     base_tick_time = 5.0; 
     num_ticks      = 1;
-    heal           = true;
   }
 
   virtual void execute() 
@@ -4263,8 +4262,7 @@ struct fel_armor_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     current_tick = 0; // ticks indefinitely
-    p -> resource_gain( RESOURCE_HEALTH, 0, p -> gains_fel_armor );
-    p -> action_heal( this, 0 );
+    p -> resource_gain( RESOURCE_HEALTH, 0, p -> gains_fel_armor, this );
   }
 
   virtual bool ready()

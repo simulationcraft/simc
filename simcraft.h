@@ -120,10 +120,14 @@ enum resource_type {
 
 enum result_type {
   RESULT_NONE=0,
-  RESULT_MISS,   RESULT_RESIST, RESULT_DODGE, RESULT_PARRY, RESULT_BLOCK,
-  RESULT_GLANCE, RESULT_CRUSH,  RESULT_CRIT,  RESULT_HIT,   RESULT_TICK,
+  RESULT_MISS,  RESULT_RESIST, RESULT_DODGE, RESULT_PARRY, 
+  RESULT_BLOCK, RESULT_GLANCE, RESULT_CRIT,  RESULT_HIT,
   RESULT_MAX
 };
+
+#define RESULT_HIT_MASK  ( (1<<RESULT_GLANCE) | (1<<RESULT_BLOCK) | (1<<RESULT_CRIT) | (1<<RESULT_HIT) )
+#define RESULT_CRIT_MASK ( (1<<RESULT_CRIT) )
+#define RESULT_MISS_MASK ( (1<<RESULT_MISS) )
 
 enum action_type { ACTION_USE=0, ACTION_SPELL, ACTION_ATTACK, ACTION_OTHER, ACTION_MAX };
 
@@ -639,9 +643,13 @@ struct player_t
   bool     in_combat;
 
   // Callbacks
+  action_callback_t* resource_gain_callbacks[ RESOURCE_MAX ];
+  action_callback_t* resource_loss_callbacks[ RESOURCE_MAX ];
   action_callback_t* attack_result_callbacks[ RESULT_MAX ];
   action_callback_t*  spell_result_callbacks[ RESULT_MAX ];
   action_callback_t* action_tick_callbacks;
+  action_callback_t* action_tick_damage_callbacks;
+  action_callback_t* action_direct_damage_callbacks;
 
   // Action Priority List
   action_t*   action_list;
@@ -1042,8 +1050,8 @@ struct player_t
   virtual action_t* execute_action();
 
   virtual void   regen( double periodicity=2.0 );
-  virtual double resource_gain( int resource, double amount, gain_t* g=0 );
-  virtual double resource_loss( int resource, double amount );
+  virtual double resource_gain( int resource, double amount, gain_t* g=0, action_t* a=0 );
+  virtual double resource_loss( int resource, double amount, action_t* a=0 );
   virtual bool   resource_available( int resource, double cost );
   virtual int    primary_resource() { return RESOURCE_NONE; }
 
@@ -1060,7 +1068,6 @@ struct player_t
   virtual void action_hit   ( action_t* );
   virtual void action_tick  ( action_t* );
   virtual void action_damage( action_t*, double amount, int dmg_type );
-  virtual void action_heal  ( action_t*, double amount );
   virtual void action_finish( action_t* );
 
   virtual void spell_start_event ( spell_t* );
@@ -1068,7 +1075,6 @@ struct player_t
   virtual void spell_hit_event   ( spell_t* );
   virtual void spell_tick_event  ( spell_t* );
   virtual void spell_damage_event( spell_t*, double amount, int dmg_type );
-  virtual void spell_heal_event  ( spell_t*, double amount );
   virtual void spell_finish_event( spell_t* );
 
   virtual void attack_start_event ( attack_t* );
@@ -1076,13 +1082,16 @@ struct player_t
   virtual void attack_hit_event   ( attack_t* );
   virtual void attack_tick_event  ( attack_t* );
   virtual void attack_damage_event( attack_t*, double amount, int dmg_type );
-  virtual void attack_heal_event  ( attack_t*, double amount );
   virtual void attack_finish_event( attack_t* );
 
-  virtual void register_callbacks() {}
-  virtual void register_attack_result_callback( int result, action_callback_func_t f_ptr, void* user_data=0 );
-  virtual void register_spell_result_callback ( int result, action_callback_func_t f_ptr, void* user_data=0 );
-  virtual void register_action_tick_callback( action_callback_func_t f_ptr, void* user_data=0 );
+  virtual void register_callbacks();
+  virtual void register_resource_gain_callback( int resource, action_callback_func_t f_ptr, void* user_data=0 );
+  virtual void register_resource_loss_callback( int resource, action_callback_func_t f_ptr, void* user_data=0 );
+  virtual void register_attack_result_callback( int result_mask, action_callback_func_t f_ptr, void* user_data=0 );
+  virtual void register_spell_result_callback ( int result_mask, action_callback_func_t f_ptr, void* user_data=0 );
+  virtual void register_action_tick_callback         ( action_callback_func_t f_ptr, void* user_data=0 );
+  virtual void register_action_tick_damage_callback  ( action_callback_func_t f_ptr, void* user_data=0 );
+  virtual void register_action_direct_damage_callback( action_callback_func_t f_ptr, void* user_data=0 );
 
   virtual bool get_talent_trees( std::vector<int*>& tree1, std::vector<int*>& tree2, std::vector<int*>& tree3, talent_translation_t translation[][3] );
   virtual bool get_talent_trees( std::vector<int*>& tree1, std::vector<int*>& tree2, std::vector<int*>& tree3 ) { return false; }
@@ -1175,17 +1184,17 @@ struct pet_t : public player_t
 
 struct target_t
 {
-  sim_t*      sim;
+  sim_t* sim;
   std::string name_str, race_str;
-  int      race;
-  int      level;
-  int     spell_resistance[ SCHOOL_MAX ];
-  int     initial_armor, armor;
-  int     block_value;
-  int      shield;
-  double      initial_health, current_health;
-  double      total_dmg;
-  uptime_t*   uptime_list;
+  int race;
+  int level;
+  int spell_resistance[ SCHOOL_MAX ];
+  int initial_armor, armor;
+  int block_value;
+  int shield;
+  double initial_health, current_health;
+  double total_dmg;
+  uptime_t* uptime_list;
 
   struct cooldowns_t
   {
@@ -1359,7 +1368,7 @@ struct action_t
   std::string name_str;
   player_t* player;
   int school, resource, tree, result;
-  bool dual, special, binary, channeled, background, repeating, aoe, harmful, proc, heal;
+  bool dual, special, binary, channeled, background, repeating, aoe, harmful, proc;
   bool may_miss, may_resist, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
   bool tick_may_crit, tick_zero, clip_dot;
   double min_gcd, trigger_gcd;
@@ -1551,7 +1560,6 @@ struct unique_gear_t
   static void spell_hit_event   ( spell_t* );
   static void spell_tick_event  ( spell_t* );
   static void spell_damage_event( spell_t*, double amount, int dmg_type );
-  static void spell_heal_event  ( spell_t*, double amount );
   static void spell_finish_event( spell_t* );
 
   static void attack_start_event ( attack_t* ) {}
@@ -1559,13 +1567,12 @@ struct unique_gear_t
   static void attack_hit_event   ( attack_t* );
   static void attack_tick_event  ( attack_t* ) {}
   static void attack_damage_event( attack_t*, double amount, int dmg_type );
-  static void attack_heal_event  ( attack_t*, double amount ) {}
   static void attack_finish_event( attack_t* ) {}
 
   static bool parse_option( player_t*, const std::string& name, const std::string& value );
-
   static action_t* create_action( player_t*, const std::string& name, const std::string& options );
   static void init( player_t* );
+  static void register_callbacks( player_t* );
 };
 
 // Enchants ===================================================================
@@ -1577,7 +1584,6 @@ struct enchant_t
   static void spell_hit_event   ( spell_t* ) {}
   static void spell_tick_event  ( spell_t* ) {}
   static void spell_damage_event( spell_t*, double amount, int dmg_type ) {}
-  static void spell_heal_event  ( spell_t*, double amount ) {}
   static void spell_finish_event( spell_t* );
 
   static void attack_start_event ( attack_t* ) {}
@@ -1585,7 +1591,6 @@ struct enchant_t
   static void attack_hit_event   ( attack_t* );
   static void attack_tick_event  ( attack_t* ) {}
   static void attack_damage_event( attack_t*, double amount, int dmg_type ) {}
-  static void attack_heal_event  ( attack_t*, double amount ) {}
   static void attack_finish_event( attack_t* ) {}
 
   static void trigger_flametongue_totem( attack_t* );

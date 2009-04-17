@@ -813,10 +813,9 @@ static void trigger_extract_of_necromatic_power( spell_t* s )
 
 // Egg of Mortal Essence ============================================
 
-static void trigger_egg_of_mortal_essence( spell_t* s )
+static void trigger_egg_of_mortal_essence( action_t* s,
+					   void*     user_data )
 {
-  if( ! s -> heal ) return; // Does not work off damage spells with secondary heal effect
-
   struct egg_of_mortal_essence_expiration_t : public event_t
   {
     egg_of_mortal_essence_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
@@ -838,8 +837,7 @@ static void trigger_egg_of_mortal_essence( spell_t* s )
 
   player_t* p = s -> player;
 
-  if( p -> gear.egg_of_mortal_essence &&
-      s -> sim -> cooldown_ready( p -> cooldowns.egg_of_mortal_essence ) &&
+  if( s -> sim -> cooldown_ready( p -> cooldowns.egg_of_mortal_essence ) &&
       s -> sim -> roll( 0.10 ) )
   {
     p -> procs.egg_of_mortal_essence -> occur();
@@ -1116,7 +1114,8 @@ static void trigger_grim_toll( action_t* a )
 
 // Fury of the Five Flights ======================================
 
-static void trigger_fury_of_the_five_flights( action_t* a )
+static void trigger_fury_of_the_five_flights( action_t* a,
+					      void*     user_data )
 {
   struct fury_of_the_five_flights_expiration_t : public event_t
   {
@@ -1136,8 +1135,6 @@ static void trigger_fury_of_the_five_flights( action_t* a )
 
 
   player_t* p = a -> player;
-
-  if( ! p ->  gear.fury_of_the_five_flights ) return;
 
   if( p -> buffs.fury_of_the_five_flights < 20 )
   {
@@ -1218,7 +1215,6 @@ static void trigger_darkmoon_greatness( action_t* a )
 
 void unique_gear_t::attack_hit_event( attack_t* a )
 {
-  trigger_fury_of_the_five_flights( a );
   trigger_grim_toll( a );
   
   if ( a -> result == RESULT_CRIT )
@@ -1288,14 +1284,6 @@ void unique_gear_t::spell_tick_event( spell_t* s )
 void unique_gear_t::spell_damage_event( spell_t* s, double amount, int dmg_type )
 {
   trigger_darkmoon_greatness( s );
-}
-
-// unique_gear_t::spell_heal_event ==========================================
-
-void unique_gear_t::spell_heal_event( spell_t* s, double amount )
-{
-  trigger_darkmoon_greatness( s );
-  trigger_egg_of_mortal_essence( s );
 }
 
 // unique_gear_t::spell_finish_event ========================================
@@ -1791,5 +1779,21 @@ void unique_gear_t::init( player_t* p )
   if( p -> gear.ember_skyflare )
   {
     p -> attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.02;    
+  }
+}
+
+// ==========================================================================
+// unique_gear_t::register_callbacks
+// ==========================================================================
+
+void unique_gear_t::register_callbacks( player_t* p )
+{
+  if( p -> gear.fury_of_the_five_flights ) 
+  {
+    p -> register_attack_result_callback( RESULT_HIT_MASK, trigger_fury_of_the_five_flights );
+  }
+  if( p -> gear.egg_of_mortal_essence )
+  {
+    p -> register_resource_gain_callback( RESOURCE_HEALTH, trigger_egg_of_mortal_essence );
   }
 }

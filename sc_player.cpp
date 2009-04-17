@@ -383,7 +383,7 @@ player_t::player_t( sim_t*             s,
   // Events
   executing(0), channeling(0), in_combat(false),
   // Callbacks
-  action_tick_callbacks(0),
+  action_tick_callbacks(0), action_tick_damage_callbacks(0), action_direct_damage_callbacks(0),
   // Actions
   action_list(0),
   // Reporting
@@ -425,6 +425,8 @@ player_t::player_t( sim_t*             s,
     resource_base[ i ] = resource_initial[ i ] = resource_max[ i ] = resource_current[ i ] = 0;
 
     resource_lost[ i ] = resource_gained[ i ] = 0;
+
+    resource_loss_callbacks[ i ] = resource_gain_callbacks[ i ] = 0;
   }
 
   // Setup default gear profiles
@@ -1601,8 +1603,9 @@ void player_t::regen( double periodicity )
 
 // player_t::resource_loss =================================================
 
-double player_t::resource_loss( int resource,
-                                double amount )
+double player_t::resource_loss( int       resource,
+                                double    amount,
+				action_t* action )
 {
   if( amount == 0 ) return 0;
 
@@ -1625,6 +1628,14 @@ double player_t::resource_loss( int resource,
     last_cast = sim -> current_time;
   }
 
+  if( action )
+  {
+    for( action_callback_t* cb = resource_loss_callbacks[ resource ]; cb; cb = cb -> next )
+    {
+      cb -> trigger( action );
+    }
+  }
+
   if( sim -> debug ) report_t::log( sim, "Player %s spends %.0f %s", name(), amount, util_t::resource_type_string( resource ) );
 
   return actual_amount;
@@ -1632,9 +1643,10 @@ double player_t::resource_loss( int resource,
 
 // player_t::resource_gain =================================================
 
-double player_t::resource_gain( int     resource,
-                                double  amount,
-                                gain_t* source )
+double player_t::resource_gain( int       resource,
+                                double    amount,
+                                gain_t*   source,
+				action_t* action )
 {
   if( sleeping ) return 0;
 
@@ -1645,7 +1657,16 @@ double player_t::resource_gain( int     resource,
   }
 
   resource_gained [ resource ] += actual_amount;
+
   if( source ) source -> add( actual_amount, amount - actual_amount );
+
+  if( action )
+  {
+    for( action_callback_t* cb = resource_gain_callbacks[ resource ]; cb; cb = cb -> next )
+    {
+      cb -> trigger( action );
+    }
+  }
 
   if( sim -> log ) 
     report_t::log( sim, "%s gains %.0f (%.0f) %s from %s (%.0f)", 
@@ -1699,28 +1720,71 @@ void player_t::dismiss_pet( const char* pet_name )
   assert(0);
 }
 
-// player_t::register_attack_result_callback ================================
+// player_t::register_callbacks =============================================
 
-void player_t::register_attack_result_callback( int                    result, 
+void player_t::register_callbacks()
+{
+  unique_gear_t::register_callbacks( this );
+}
+
+// player_t::register_resource_gain_callback ================================
+
+void player_t::register_resource_gain_callback( int                    resource, 
 						action_callback_func_t f_ptr, 
 						void*                  user_data )
 {
   action_callback_t* cb = new action_callback_t( f_ptr, user_data );
 
-  cb -> next = attack_result_callbacks[ result ];
-  attack_result_callbacks[ result ] = cb;
+  cb -> next = resource_gain_callbacks[ resource ];
+  resource_gain_callbacks[ resource ] = cb;
+}
+
+// player_t::register_resource_loss_callback ================================
+
+void player_t::register_resource_loss_callback( int                    resource, 
+						action_callback_func_t f_ptr, 
+						void*                  user_data )
+{
+  action_callback_t* cb = new action_callback_t( f_ptr, user_data );
+
+  cb -> next = resource_loss_callbacks[ resource ];
+  resource_loss_callbacks[ resource ] = cb;
+}
+
+// player_t::register_attack_result_callback ================================
+
+void player_t::register_attack_result_callback( int                    mask, 
+						action_callback_func_t f_ptr, 
+						void*                  user_data )
+{
+  for( int i=0; i < RESULT_MAX; i++ )
+  {
+    if( mask & ( 1 << i ) )
+    {
+      action_callback_t* cb = new action_callback_t( f_ptr, user_data );
+
+      cb -> next = attack_result_callbacks[ i ];
+      attack_result_callbacks[ i ] = cb;
+    }
+  }
 }
 
 // player_t::register_spell_result_callback =================================
 
-void player_t::register_spell_result_callback( int                    result, 
+void player_t::register_spell_result_callback( int                    mask, 
 					       action_callback_func_t f_ptr, 
 					       void*                  user_data )
 {
-  action_callback_t* cb = new action_callback_t( f_ptr, user_data );
+  for( int i=0; i < RESULT_MAX; i++ )
+  {
+    if( mask & ( 1 << i ) )
+    {
+      action_callback_t* cb = new action_callback_t( f_ptr, user_data );
 
-  cb -> next = spell_result_callbacks[ result ];
-  spell_result_callbacks[ result ] = cb;
+      cb -> next = spell_result_callbacks[ i ];
+      spell_result_callbacks[ i ] = cb;
+    }
+  }
 }
 
 // player_t::register_action_tick_callback ==================================
@@ -1732,6 +1796,28 @@ void player_t::register_action_tick_callback( action_callback_func_t f_ptr,
 
   cb -> next = action_tick_callbacks;
   action_tick_callbacks = cb;
+}
+
+// player_t::register_action_tick_damage_callback ===========================
+
+void player_t::register_action_tick_damage_callback( action_callback_func_t f_ptr, 
+						     void*                  user_data )
+{
+  action_callback_t* cb = new action_callback_t( f_ptr, user_data );
+
+  cb -> next = action_tick_damage_callbacks;
+  action_tick_damage_callbacks = cb;
+}
+
+// player_t::register_action_direct_damage_callback =========================
+
+void player_t::register_action_direct_damage_callback( action_callback_func_t f_ptr, 
+						       void*                  user_data )
+{
+  action_callback_t* cb = new action_callback_t( f_ptr, user_data );
+
+  cb -> next = action_direct_damage_callbacks;
+  action_direct_damage_callbacks = cb;
 }
 
 // player_t::action_start ===================================================
@@ -1832,25 +1918,6 @@ void player_t::action_damage( action_t* action,
   }
 }
 
-// player_t::action_heal ====================================================
-
-void player_t::action_heal( action_t* action, 
-                            double    amount )
-{
-  if( action -> type == ACTION_SPELL )
-  {
-    unique_gear_t::spell_heal_event( (spell_t*) action, amount );
-        enchant_t::spell_heal_event( (spell_t*) action, amount );
-                   spell_heal_event( (spell_t*) action, amount );
-  }
-  else if( action -> type == ACTION_ATTACK )
-  {
-    unique_gear_t::attack_heal_event( (attack_t*) action, amount );
-        enchant_t::attack_heal_event( (attack_t*) action, amount );
-                   attack_heal_event( (attack_t*) action, amount );
-  }
-}
-
 // player_t::action_finish ==================================================
 
 void player_t::action_finish( action_t* action )
@@ -1907,13 +1974,6 @@ void player_t::spell_damage_event( spell_t* spell,
 {
 }
 
-// player_t::spell_heal_event ===============================================
-
-void player_t::spell_heal_event( spell_t* spell, 
-                                 double   amount )
-{
-}
-
 // player_t::spell_finish_event =============================================
 
 void player_t::spell_finish_event( spell_t* spell )
@@ -1950,13 +2010,6 @@ void player_t::attack_tick_event( attack_t* attack )
 void player_t::attack_damage_event( attack_t* attack, 
                                     double    amount,
                                     int       dmg_type )
-{
-}
-
-// player_t::attack_heal_event ==============================================
-
-void player_t::attack_heal_event( attack_t* attack, 
-                                  double    amount )
 {
 }
 

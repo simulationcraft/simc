@@ -231,8 +231,8 @@ struct mage_t : public player_t
 
   // Event Tracking
   virtual void   regen( double periodicity );
-  virtual double resource_gain( int resource, double amount, gain_t* source );
-  virtual double resource_loss( int resource, double amount );
+  virtual double resource_gain( int resource, double amount, gain_t* source=0, action_t* action=0 );
+  virtual double resource_loss( int resource, double amount, action_t* action=0 );
 };
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
@@ -3250,11 +3250,12 @@ void mage_t::regen( double periodicity )
 
 // mage_t::resource_gain ===================================================
 
-double mage_t::resource_gain( int     resource,
-                              double  amount,
-                              gain_t* source )
+double mage_t::resource_gain( int       resource,
+                              double    amount,
+                              gain_t*   source,
+			      action_t* action )
 {
-  double actual_amount = player_t::resource_gain( resource, amount, source );
+  double actual_amount = player_t::resource_gain( resource, amount, source, action );
 
   if( source != gains_evocation &&
       source != gains_mana_gem )
@@ -3267,10 +3268,11 @@ double mage_t::resource_gain( int     resource,
 
 // mage_t::resource_loss ===================================================
 
-double mage_t::resource_loss( int     resource,
-                              double  amount )
+double mage_t::resource_loss( int       resource,
+                              double    amount,
+			      action_t* action )
 {
-  double actual_amount = player_t::resource_loss( resource, amount );
+  double actual_amount = player_t::resource_loss( resource, amount, action );
 
   if( rotation.current == ROTATION_DPS )
   {
