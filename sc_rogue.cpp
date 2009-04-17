@@ -51,14 +51,9 @@ struct rogue_t : public player_t
   // Cooldowns
   struct _cooldowns_t
   {
-    std::vector<double> honor_among_thieves;
-    double              seal_fate;
+    double seal_fate;
 
-    void reset() 
-    { 
-      honor_among_thieves.clear(); 
-      seal_fate=0; 
-    }
+    void reset() { memset( (void*) this, 0x00, sizeof( _cooldowns_t ) ); }
     _cooldowns_t() { reset(); }
   };
   _cooldowns_t _cooldowns;
@@ -69,7 +64,7 @@ struct rogue_t : public player_t
     event_t* envenom;
     event_t* slice_and_dice;
     event_t* hunger_for_blood;
-	 event_t* wound_poison;
+    event_t* wound_poison;
 
     void reset() { memset( (void*) this, 0x00, sizeof( _expirations_t ) ); }
     _expirations_t() { reset(); }
@@ -248,9 +243,9 @@ struct rogue_t : public player_t
 
   // Character Definition
   virtual void      init_base();
+  virtual void      register_callbacks();
   virtual void      combat_begin();
   virtual void      reset();
-  virtual void      raid_event( action_t* );
   virtual void      regen( double periodicity );
   virtual bool      get_talent_trees( std::vector<int*>& assassination, std::vector<int*>& combat, std::vector<int*>& subtlety );
   virtual bool      parse_talents_mmo( const std::string& talent_string );
@@ -529,6 +524,27 @@ static void trigger_dirty_deeds( rogue_attack_t* a )
   if( a -> sim -> target -> health_percentage() < 35 )
   {
     a -> player_multiplier *= 1.0 + p -> talents.dirty_deeds * 0.10;
+  }
+}
+
+// trigger_honor_among_thieves =============================================
+
+static void trigger_honor_among_thieves( action_t* a, 
+					 void*     user_data )
+{
+  if( ! a -> special || a -> ticking || a -> proc ) return;
+    
+  rogue_t* p = ( (player_t*) user_data ) -> cast_rogue();
+
+  if( ! a -> sim -> roll( p -> talents.honor_among_thieves / 3.0 ) ) return;
+
+  add_combo_point( p );
+
+  a -> player -> procs.honor_among_thieves_donor -> occur();
+
+  if( p != a -> player )
+  {
+    p -> procs_honor_among_thieves_receiver -> occur();
   }
 }
 
@@ -3173,6 +3189,33 @@ void rogue_t::init_base()
   base_gcd = 1.0;
 }
 
+// rogue_t::register_callbacks ===============================================
+
+void rogue_t::register_callbacks()
+{
+  player_t::register_callbacks();
+
+  if( talents.honor_among_thieves )
+  {
+    for( player_t* p = sim -> player_list; p; p = p -> next )
+    {
+      if( p != this )
+      {
+	if( honor_among_thieves_interval != 0 ) continue; // using "virtual" party procs
+
+	if( p -> party == 0 || p -> party != party ) continue;
+
+	if( p -> type == PLAYER_GUARDIAN ) continue;
+
+	if( p -> type == PLAYER_PET && ! sim -> P309 ) continue;
+      }
+
+      p -> register_attack_result_callback( RESULT_CRIT, trigger_honor_among_thieves, this );
+      p -> register_spell_result_callback ( RESULT_CRIT, trigger_honor_among_thieves, this );
+    }
+  }  
+}
+
 // rogue_t::combat_begin ===================================================
 
 void rogue_t::combat_begin() 
@@ -3226,53 +3269,6 @@ void rogue_t::reset()
   _buffs.reset();
   _cooldowns.reset();
   _expirations.reset();
-
-  for( player_t* p = sim -> player_list; p; p = p -> next )
-  {
-    _cooldowns.honor_among_thieves.push_back( 0.0 );
-  }
-}
-
-// rogue_t::raid_event ====================================================
-
-void rogue_t::raid_event( action_t* a )
-{
-  if( talents.honor_among_thieves )
-  {
-    player_t* p = a -> player;
-
-    if( honor_among_thieves_interval == 0 )
-    {
-      if( p -> party == 0 || p -> party != party ) return;
-
-      if( p -> type == PLAYER_GUARDIAN ) return;
-
-      if( p -> type == PLAYER_PET && ! sim -> P309 ) return;
-    }
-    else
-    {
-      if( p != this ) return;
-    }
-
-    if( a -> result != RESULT_CRIT ) return;
-
-    if( ! a -> special || a -> ticking || a -> proc ) return;
-
-    if( ! sim -> roll( talents.honor_among_thieves / 3.0 ) ) return;
-
-    if( sim -> current_time < _cooldowns.honor_among_thieves[ p -> member ] ) return;
-
-    add_combo_point( this );
-
-    _cooldowns.honor_among_thieves[ p -> member ] = sim -> current_time + 1.0;
-
-    p -> procs.honor_among_thieves_donor -> occur();
-
-    if( p != this )
-    {
-      procs_honor_among_thieves_receiver -> occur();
-    }
-  }
 }
 
 // rogue_t::regen ==========================================================

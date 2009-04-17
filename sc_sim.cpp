@@ -378,6 +378,11 @@ bool sim_t::init()
     }
   }
 
+  for( player_t* p = player_list; p; p = p -> next )
+  {
+    p -> register_callbacks();
+  }
+
   return true;
 }
 

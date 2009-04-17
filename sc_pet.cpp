@@ -29,6 +29,8 @@ pet_t::pet_t( sim_t*             s,
     stamina_per_owner = 0.75;
   intellect_per_owner = 0.30;
 
+  party = owner -> party;
+
   // By default, only report statistics in the context of the owner
   quiet = 1;
 }

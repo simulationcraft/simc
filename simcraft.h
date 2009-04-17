@@ -56,7 +56,9 @@ struct patch_t
 // Forward Declarations ======================================================
 
 struct action_t;
+struct action_callback_t;
 struct attack_t;
+struct spell_tick_t;
 struct base_stats_t;
 struct callback_t;
 struct death_knight_t;
@@ -87,61 +89,16 @@ struct warlock_t;
 struct warrior_t;
 struct weapon_t;
 
-// Random Number Generation ==================================================
+typedef void (*action_callback_func_t)(action_t*, void* user_data);
 
-struct rng_t
-{
-  static rng_t* init( int sfmt );
-  virtual int roll( double chance );
-  virtual double real();
-  virtual double range( double min, double max );
-  virtual ~rng_t() {}
-};
-
-// Event =====================================================================
-
-struct event_t
-{
-  event_t*  next;
-  sim_t*    sim;
-  player_t* player;
-  uint32_t  id;
-  double    time;
-  double    reschedule_time;
-  int       canceled;
-  const char* name;
-  event_t( sim_t* s, player_t* p=0, const char* n=0 ) :
-    next(0), sim(s), player(p), reschedule_time(0), canceled(0), name(n)
-  {
-    if( ! name ) name = "unknown";
-  }
-  double occurs() { return reschedule_time != 0 ? reschedule_time : time; }
-  virtual void reschedule( double new_time );
-  virtual void execute() { printf( "%s\n", name ? name : "(no name)" ); assert(0); }
-  virtual ~event_t() {}
-  static void cancel( event_t*& e ) { if( e ) { e -> canceled = 1;                 e=0; } }
-  static void  early( event_t*& e ) { if( e ) { e -> canceled = 1; e -> execute(); e=0; } }
-  // Simple free-list memory manager.
-  static void* operator new( size_t, sim_t* );
-  static void* operator new( size_t ) throw();  // DO NOT USE!
-  static void  operator delete( void* );
-  static void  operator delete( void*, sim_t* ) {}
-  static void deallocate( event_t* e );
-};
-
-struct event_compare_t
-{
-  bool operator () (event_t* lhs, event_t* rhs ) const
-  {
-    return( lhs -> time == rhs -> time ) ? ( lhs -> id > rhs -> id ) : ( lhs -> time > rhs -> time );
-  }
-};
-
-// Simulation Engine =========================================================
+// Enumerations ==============================================================
 
 enum race_type {
-  RACE_NONE=0, RACE_BEAST, RACE_DRAGONKIN, RACE_GIANT, RACE_HUMANOID,
-  NIGHT_ELF, HUMAN, GNOME, DWARF, DRAENEI, ORC, TROLL, UNDEAD, BLOOD_ELF, TAUREN,
+  RACE_NONE=0, 
+  // Target Races
+  RACE_BEAST, RACE_DRAGONKIN, RACE_GIANT, RACE_HUMANOID,
+  // Player Races
+  RACE_NIGHT_ELF, RACE_HUMAN, RACE_GNOME, RACE_DWARF, RACE_DRAENEI, RACE_ORC, RACE_TROLL, RACE_UNDEAD, RACE_BLOOD_ELF, RACE_TAUREN,
   RACE_MAX
 };
 
@@ -281,11 +238,85 @@ enum profession_type {
    PROF_MAX
 }; 
 
+// Thread Wrappers ===========================================================
+
 struct thread_t
 {
   static void launch( sim_t* );
   static void wait( sim_t* );
 };
+
+// Random Number Generation ==================================================
+
+struct rng_t
+{
+  static rng_t* init( int sfmt );
+  virtual int roll( double chance );
+  virtual double real();
+  virtual double range( double min, double max );
+  virtual ~rng_t() {}
+};
+
+// Event =====================================================================
+
+struct event_t
+{
+  event_t*  next;
+  sim_t*    sim;
+  player_t* player;
+  uint32_t  id;
+  double    time;
+  double    reschedule_time;
+  int       canceled;
+  const char* name;
+  event_t( sim_t* s, player_t* p=0, const char* n=0 ) :
+    next(0), sim(s), player(p), reschedule_time(0), canceled(0), name(n)
+  {
+    if( ! name ) name = "unknown";
+  }
+  double occurs() { return reschedule_time != 0 ? reschedule_time : time; }
+  virtual void reschedule( double new_time );
+  virtual void execute() { printf( "%s\n", name ? name : "(no name)" ); assert(0); }
+  virtual ~event_t() {}
+  static void cancel( event_t*& e ) { if( e ) { e -> canceled = 1;                 e=0; } }
+  static void  early( event_t*& e ) { if( e ) { e -> canceled = 1; e -> execute(); e=0; } }
+  // Simple free-list memory manager.
+  static void* operator new( size_t, sim_t* );
+  static void* operator new( size_t ) throw();  // DO NOT USE!
+  static void  operator delete( void* );
+  static void  operator delete( void*, sim_t* ) {}
+  static void deallocate( event_t* e );
+};
+
+struct event_compare_t
+{
+  bool operator () (event_t* lhs, event_t* rhs ) const
+  {
+    return( lhs -> time == rhs -> time ) ? ( lhs -> id > rhs -> id ) : ( lhs -> time > rhs -> time );
+  }
+};
+
+// Gear Set ==================================================================
+
+struct gear_set_t
+{
+  int attribute[ ATTRIBUTE_MAX ];
+  int resource[ RESOURCE_MAX ];
+  int spell_power;
+  int spell_penetration;
+  int mp5;
+  int attack_power;
+  int expertise_rating;
+  int armor_penetration_rating;
+  int hit_rating;
+  int crit_rating;
+  int haste_rating;
+  int armor;
+
+  gear_set_t() { memset( (void*) this, 0x00, sizeof( gear_set_t ) ); }
+};
+
+// Simulation Engine =========================================================
 
 struct sim_t
 {
@@ -319,39 +350,9 @@ struct sim_t
   int    wheel_seconds, wheel_size, wheel_mask, timing_slice;
   double wheel_granularity;
 
-  // Default Gear Profile
-  struct gear_default_t
-  {
-    int attribute[ ATTRIBUTE_MAX ];
-    int spell_power;
-    int attack_power;
-    int expertise_rating;
-    int armor_penetration_rating;
-    int hit_rating;
-    int crit_rating;
-    int haste_rating;
-    int armor;
-
-    gear_default_t() { memset( (void*) this, 0x00, sizeof( gear_default_t ) ); }
-  };
-  gear_default_t gear_default;
-
-  // Delta Gear Profile
-  struct gear_delta_t
-  {
-    int attribute[ ATTRIBUTE_MAX ];
-    int spell_power;
-    int attack_power;
-    int expertise_rating;
-    int armor_penetration_rating;
-    int hit_rating;
-    int crit_rating;
-    int haste_rating;
-    int armor;
-
-    gear_delta_t() { memset( (void*) this, 0x00, sizeof( gear_delta_t ) ); }
-  };
-  gear_delta_t gear_delta;
+  // Global Gear Sets
+  gear_set_t gear_default;
+  gear_set_t gear_delta;
 
   // Buffs and Debuffs Overrides
   struct overrides_t
@@ -495,21 +496,7 @@ struct scaling_t
   double scale_factor_noise;
 
   // Gear delta for determining scale factors
-
-  struct gear_t
-  {
-    int attribute[ ATTRIBUTE_MAX ];
-    int spell_power;
-    int attack_power;
-    int expertise_rating;
-    int armor_penetration_rating;
-    int hit_rating;
-    int crit_rating;
-    int haste_rating;
-
-    gear_t() { memset( (void*) this, 0x00, sizeof( gear_t ) ); }
-  };
-  gear_t gear;
+  gear_set_t gear;
 
   scaling_t( sim_t* s );
 
@@ -650,6 +637,11 @@ struct player_t
   event_t* executing;
   event_t* channeling;
   bool     in_combat;
+
+  // Callbacks
+  action_callback_t* attack_result_callbacks[ RESULT_MAX ];
+  action_callback_t*  spell_result_callbacks[ RESULT_MAX ];
+  action_callback_t* action_tick_callbacks;
 
   // Action Priority List
   action_t*   action_list;
@@ -1047,7 +1039,6 @@ struct player_t
   virtual void      schedule_ready( double delta_time=0, bool waiting=false );
   virtual action_t* execute_action();
 
-  virtual void   raid_event( action_t* ) {}
   virtual void   regen( double periodicity=2.0 );
   virtual double resource_gain( int resource, double amount, gain_t* g=0 );
   virtual double resource_loss( int resource, double amount );
@@ -1085,6 +1076,11 @@ struct player_t
   virtual void attack_damage_event( attack_t*, double amount, int dmg_type );
   virtual void attack_heal_event  ( attack_t*, double amount );
   virtual void attack_finish_event( attack_t* );
+
+  virtual void register_callbacks() {}
+  virtual void register_attack_result_callback( int result, action_callback_func_t f_ptr, void* user_data=0 );
+  virtual void register_spell_result_callback ( int result, action_callback_func_t f_ptr, void* user_data=0 );
+  virtual void register_action_tick_callback( action_callback_func_t f_ptr, void* user_data=0 );
 
   virtual bool get_talent_trees( std::vector<int*>& tree1, std::vector<int*>& tree2, std::vector<int*>& tree3, talent_translation_t translation[][3] );
   virtual bool get_talent_trees( std::vector<int*>& tree1, std::vector<int*>& tree2, std::vector<int*>& tree3 ) { return false; }
@@ -1592,6 +1588,17 @@ struct enchant_t
 
   static void trigger_flametongue_totem( attack_t* );
   static void trigger_windfury_totem   ( attack_t* );
+};
+
+// Action Callback ===========================================================
+
+struct action_callback_t
+{
+  action_callback_func_t f_ptr;
+  void* user_data;
+  action_callback_t* next;
+  void trigger( action_t* a ) { f_ptr( a, user_data ); }
+  action_callback_t( action_callback_func_t f, void* u=0 ) : f_ptr(f), user_data(u), next(0) {}
 };
 
 // Consumable ================================================================

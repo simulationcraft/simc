@@ -48,6 +48,9 @@ regen_periodicity=1.0
 # Patch 3.0.x WotLK boss armor
 target_armor=13000
 
+# Target race
+target_race=humanoid
+
 # Support for Feral Bear does not yet exist
 faerie_fire=1
 mangle=1

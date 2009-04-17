@@ -216,9 +216,9 @@ void spell_t::calculate_result()
     }
   }
 
-  for( player_t* p = sim -> player_list; p; p = p -> next )
+  for( action_callback_t* cb = player -> spell_result_callbacks[ result ]; cb; cb = cb -> next )
   {
-    if( ! p -> sleeping) p -> raid_event( this );
+    cb -> trigger( this );
   }
 
   if( sim -> debug ) report_t::log( sim, "%s result for %s is %s", player -> name(), name(), util_t::result_type_string( result ) );

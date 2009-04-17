@@ -382,6 +382,8 @@ player_t::player_t( sim_t*             s,
   food( FOOD_NONE ),
   // Events
   executing(0), channeling(0), in_combat(false),
+  // Callbacks
+  action_tick_callbacks(0),
   // Actions
   action_list(0),
   // Reporting
@@ -395,6 +397,12 @@ player_t::player_t( sim_t*             s,
   while( *last ) last = &( (*last) -> next );
   *last = this;
   next = 0;
+
+  for( int i=0; i < RESULT_MAX; i++ )
+  {
+    attack_result_callbacks[ i ] = 0;
+     spell_result_callbacks[ i ] = 0;
+  }
 
   for( int i=0; i < ATTRIBUTE_MAX; i++ )
   {
@@ -1689,6 +1697,41 @@ void player_t::dismiss_pet( const char* pet_name )
     }
   }
   assert(0);
+}
+
+// player_t::register_attack_result_callback ================================
+
+void player_t::register_attack_result_callback( int                    result, 
+						action_callback_func_t f_ptr, 
+						void*                  user_data )
+{
+  action_callback_t* cb = new action_callback_t( f_ptr, user_data );
+
+  cb -> next = attack_result_callbacks[ result ];
+  attack_result_callbacks[ result ] = cb;
+}
+
+// player_t::register_spell_result_callback =================================
+
+void player_t::register_spell_result_callback( int                    result, 
+					       action_callback_func_t f_ptr, 
+					       void*                  user_data )
+{
+  action_callback_t* cb = new action_callback_t( f_ptr, user_data );
+
+  cb -> next = spell_result_callbacks[ result ];
+  spell_result_callbacks[ result ] = cb;
+}
+
+// player_t::register_action_tick_callback ==================================
+
+void player_t::register_action_tick_callback( action_callback_func_t f_ptr, 
+					      void*                  user_data )
+{
+  action_callback_t* cb = new action_callback_t( f_ptr, user_data );
+
+  cb -> next = action_tick_callbacks;
+  action_tick_callbacks = cb;
 }
 
 // player_t::action_start ===================================================

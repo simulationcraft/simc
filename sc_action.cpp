@@ -671,6 +671,11 @@ void action_t::tick()
   
   assess_damage( tick_dmg, DMG_OVER_TIME );
 
+  for( action_callback_t* cb = player -> action_tick_callbacks; cb; cb = cb -> next )
+  {
+    cb -> trigger( this );
+  }
+
   update_stats( DMG_OVER_TIME );
 
   player -> action_tick( this );

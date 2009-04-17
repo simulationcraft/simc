@@ -130,19 +130,19 @@ const char* util_t::race_type_string( int type )
   {
   case RACE_NONE:      return "none";
   case RACE_BEAST:     return "beast";
+  case RACE_BLOOD_ELF: return "blood_elf";
+  case RACE_DRAENEI:   return "draenei";
   case RACE_DRAGONKIN: return "dragonkin";
+  case RACE_DWARF:     return "dwarf";
   case RACE_GIANT:     return "giant";
+  case RACE_GNOME:     return "gnome";
+  case RACE_HUMAN:     return "human";
   case RACE_HUMANOID:  return "humanoid";
-  case HUMAN:          return "human";
-  case NIGHT_ELF:      return "night_elf";
-  case DWARF:          return "dwarf";
-  case GNOME:          return "gnome";
-  case DRAENEI:        return "draenei";
-  case ORC:            return "orc";
-  case TROLL:          return "troll";
-  case UNDEAD:         return "undead";
-  case TAUREN:         return "tauren";
-  case BLOOD_ELF:      return "blood_elf";
+  case RACE_NIGHT_ELF: return "night_elf";
+  case RACE_ORC:       return "orc";
+  case RACE_TAUREN:    return "tauren";
+  case RACE_TROLL:     return "troll";
+  case RACE_UNDEAD:    return "undead";
   }
   return "unknown";
 }
