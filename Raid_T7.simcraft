@@ -31,13 +31,13 @@ Rogue_T7_51_13_07.simcraft   tricks_of_the_trade_target=Rogue_T7_07_51_13
 Shaman_T7_16_55_00.simcraft
 Shaman_T7_57_14_00.simcraft
 
-Warlock_T7_00_31_40.simcraft
+Warlock_T7_00_40_31.simcraft
 Warlock_T7_00_41_30.simcraft
-Warlock_T7_00_55_16.simcraft
-Warlock_T7_02_13_56.simcraft
-Warlock_T7_55_00_16.simcraft
-Warlock_T7_55_00_16_CoE.simcraft
-Warlock_T7_55_00_16_DG.simcraft
+Warlock_T7_03_52_16.simcraft
+Warlock_T7_00_56_15.simcraft
+Warlock_T7_03_13_55.simcraft
+Warlock_T7_53_00_18.simcraft
+Warlock_T7_53_00_18_DG.simcraft
 
 # To get real simulation of HAT procs, the Rogues must be in a party and honor_among_thieves_interval=0
 # active=Rogue_T7_23_05_43  honor_among_thieves_interval=0
