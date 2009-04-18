@@ -1318,8 +1318,6 @@ struct heroic_strike_t : public warrior_attack_t
     may_crit        = true;
     base_cost      -= p -> talents.improved_heroic_strike;
     base_crit      += p -> talents.incite * 0.05;
-    if( ! sim -> P309 && p -> glyphs.heroic_strike )
-      base_crit    += 0.05;
 
     trigger_gcd     = 0;
     
@@ -1344,7 +1342,7 @@ struct heroic_strike_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
     warrior_attack_t::execute();
 
-    if( sim -> P309 && p -> glyphs.heroic_strike && result == RESULT_CRIT )
+    if( p -> glyphs.heroic_strike && result == RESULT_CRIT )
       p -> resource_gain( RESOURCE_RAGE, 10.0, p -> _gains.glyph_of_heroic_strike );
 
     trigger_tier8_2pc( this );
