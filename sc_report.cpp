@@ -2264,18 +2264,18 @@ void report_t::Wlog_damage(action_t* action, double damage, int dmg_type){
 	char s[1000], buff[200];
 	strcpy(s,"");
 	bool hasMelee= Wlog_isMelee(action->name()); 
-	char* evS= (hasMelee)? "SWING_DAMAGE": (dmg_type==DMG_OVER_TIME)? "SPELL_PERIODIC_DAMAGE" : "SPELL_DAMAGE";
+	const char* evS= (hasMelee)? "SWING_DAMAGE": (dmg_type==DMG_OVER_TIME)? "SPELL_PERIODIC_DAMAGE" : "SPELL_DAMAGE";
 	if (!hasMelee)	Wlog_addActivity(s, action->blizzID, action->name(), action->school);
 	int dmg=(int)damage;
 	int ress= (int) action->ressisted_dmg;
 	int block= (int) action->blocked_dmg;
 	int spellRes= action->result; 
-	char* sCrit=(spellRes==RESULT_CRIT)?"1":"nil";
-	char* sGlanc=(spellRes==RESULT_GLANCE)?"1":"nil";
-	char* sCrush="nil"; // (spellRes==RESULT_CRUSH)?"1":"nil";  //RESULT_CRUSH was removed?
+	const char* sCrit=(spellRes==RESULT_CRIT)?"1":"nil";
+	const char* sGlanc=(spellRes==RESULT_GLANCE)?"1":"nil";
+	const char* sCrush="nil"; // (spellRes==RESULT_CRUSH)?"1":"nil";  //RESULT_CRUSH was removed?
 	sprintf(buff,",%d,0,%d,%d,0,%d,%s,%s,%s",dmg,Wlog_schoolID(action->school),ress, block,sCrit, sGlanc, sCrush);
 	strcat(s,buff);
-	report_t::Wlog_general(evS, action->player, 0, s);
+	report_t::Wlog_general((char *) evS, action->player, 0, s);
 }
 
 // report miss (complete miss, as opposed to partial ressist which is in damage report)
@@ -2309,15 +2309,15 @@ void report_t::Wlog_energize(player_t* player, gain_t* source, double amount, do
 		evS="SPELL_PERIODIC_HEAL";
 		sprintf(s,",%d,%d,nil",value,overheal);
 	}
-	char* actName= (source)?source->name():"";
+	char* actName= (char *)((source)?source->name():"");
 	report_t::Wlog_general(evS, player, player, 0, actName, SCHOOL_PHYSICAL, s);
 }
 
 // report gained or lost aura 
 // - CALLED (2x) from player_t::aura_gain(type==+1) and player_t::aura_loss(type==-1)
 void report_t::Wlog_aura(player_t* player, const char* name, int type, int blizzID){
-	char* evS= (type>0)?"SPELL_AURA_APPLIED":"SPELL_AURA_REMOVED";
-	report_t::Wlog_general(evS, player, player, blizzID, name, SCHOOL_PHYSICAL, ",BUFF");
+	const char* evS= (type>0)?"SPELL_AURA_APPLIED":"SPELL_AURA_REMOVED";
+	report_t::Wlog_general((char *) evS, player, player, blizzID, name, SCHOOL_PHYSICAL, ",BUFF");
 }
 
 // report summoned pet 
