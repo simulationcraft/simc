@@ -1,11 +1,12 @@
 #!simcraft max_time=300 optimal_raid=1
 
+patch=3.1.0
 hunter=Hunter_T7_15_51_05
 level=80
-talents=http://www.wowhead.com/?talent=ctbMzLZ0eVfRhzMgoxhiox
+talents=http://ptr.wowhead.com/?talent=ctbMzLZ0eVsRhzrIothqox
 
 # Action queue
-actions=flask,type=endless_rage/food,type=fish_feast/summon_pet/hunters_mark/trueshot_aura
+actions=flask,type=endless_rage/food,type=blackened_dragonfin/summon_pet/hunters_mark/trueshot_aura
 actions+=/auto_shot/aspect/serpent_sting/rapid_fire/kill_command/kill_shot/chimera_shot/readiness,wait_for_rapid_fire=1/arcane_shot/aimed_shot/steady_shot
 
 # Gear: http://www.chardev.org/?template=148672
@@ -31,7 +32,7 @@ darkmoon_greatness=1
 fury_of_the_five_flights=1
 
 # Glyphs
-glyph_improved_aspect_of_the_hawk=1
+glyph_chimera_shot=1
 glyph_serpent_sting=1
 glyph_steady_shot=1
 
@@ -41,4 +42,4 @@ ammo_dps=67.5
 quiver_haste=15
 
 # Pet (cat|devilsaur|raptor|wind_serpent|wolf)
-summon_pet=cat
+summon_pet=wolf
