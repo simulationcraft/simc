@@ -30,7 +30,7 @@ sim_t::sim_t( sim_t* p ) :
   raid_dps(0), total_dmg(0), 
   total_seconds(0), elapsed_cpu_seconds(0), 
   merge_ignite(0), report_progress(1),
-  output_file(stdout), html_file(0), wiki_file(0), thread_handle(0)
+  output_file(stdout), html_file(0), wiki_file(0), thread_handle(0), log_file(0)
 {
 
   for( int i=0; i < RESOURCE_MAX; i++ ) 
@@ -914,6 +914,7 @@ int main( int argc, char** argv )
   sim.report -> chart();
 
   if( sim.output_file != stdout ) fclose( sim.output_file );
+  if (sim.log_file) fclose(sim.log_file);
   
   return 0;
 }
