@@ -499,6 +499,8 @@ double action_t::calculate_weapon_damage()
 double action_t::calculate_tick_damage()
 {
   tick_dmg = 0;
+  ressisted_dmg=0;
+  blocked_dmg=0;
 
   if( base_td == 0 ) base_td = base_td_init;
 
@@ -514,10 +516,13 @@ double action_t::calculate_tick_damage()
     tick_dmg *= 1.0 + total_crit_bonus();
   }
 
+
   if( ! binary ) 
   {
-    tick_dmg *= 1.0 - resistance();
+     ressisted_dmg= resistance()*tick_dmg;
+	 tick_dmg -= ressisted_dmg;
   }
+
 
   if( sim -> debug ) 
   {
@@ -534,6 +539,9 @@ double action_t::calculate_tick_damage()
 double action_t::calculate_direct_damage()
 {
   direct_dmg = 0;
+  ressisted_dmg=0;
+  blocked_dmg=0;
+
 
   double base_direct_dmg=0;
 
@@ -566,13 +574,15 @@ double action_t::calculate_direct_damage()
     direct_dmg *= 1.0 + total_crit_bonus();
   }
 
-  if( ! binary ) direct_dmg *= 1.0 - resistance();
+  if( ! binary ){
+	  ressisted_dmg= resistance()*direct_dmg;
+	  direct_dmg -= ressisted_dmg;
+  }
 
   if( result == RESULT_BLOCK )
   {
-    double blocked = sim -> target -> block_value;
-
-    direct_dmg -= blocked;
+    blocked_dmg = sim -> target -> block_value;
+    direct_dmg -= blocked_dmg;
     if( direct_dmg < 0 ) direct_dmg = 0;
   }
 
