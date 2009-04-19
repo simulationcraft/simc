@@ -707,6 +707,7 @@ struct player_t
     int  budget_slots;
     // Unique Gear
     int  ashtongue_talisman;
+    int  bandits_insignia;
     int  chaotic_skyflare;
     int  darkmoon_crusade;
     int  darkmoon_greatness;
@@ -933,6 +934,7 @@ struct player_t
   struct procs_t
   {
     proc_t* ashtongue_talisman;
+    proc_t* bandits_insignia;
     proc_t* darkmoon_greatness;
     proc_t* dying_curse;
     proc_t* elder_scribes;
@@ -973,6 +975,7 @@ struct player_t
 
   struct actions_t
   {
+    action_t* bandits_insignia;
     action_t* extract_of_necromatic_power_discharge;
     action_t* lightning_discharge;
     action_t* thunder_discharge;

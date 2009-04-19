@@ -1009,6 +1009,7 @@ void player_t::init_stats()
   gains.tier8_4pc              = get_gain( "tier8_4pc" );
 
   procs.ashtongue_talisman           = get_proc( "ashtongue_talisman" );
+  procs.bandits_insignia             = get_proc( "bandits_insignia" );
   procs.darkmoon_greatness           = get_proc( "darkmoon_greatness" );
   procs.dying_curse                  = get_proc( "dying_curse" );
   procs.elder_scribes                = get_proc( "elder_scribes" );

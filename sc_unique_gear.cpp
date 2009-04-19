@@ -695,6 +695,44 @@ static void trigger_timbals_crystal( spell_t* s )
   } 
 }
 
+// Bandit's Insignia ========================================================
+
+static void trigger_bandits_insignia( action_t* a )
+{
+  struct bandits_insignia_t : public spell_t
+  {
+    bandits_insignia_t( player_t* player ) :
+      spell_t("bandits_insignia", player, RESOURCE_NONE, SCHOOL_ARCANE )
+    {
+      base_dd_min = 1504;
+      base_dd_max = 2256;
+      cooldown    = 45;
+      may_crit    = true;
+      trigger_gcd = 0;
+      background  = true;
+      reset();
+      base_spell_power_multiplier = 0;
+    }
+  };
+
+  player_t* p = a -> player;
+
+  if( p -> gear.bandits_insignia )
+  {
+    if( ! p -> actions.bandits_insignia )
+    {
+      p -> actions.bandits_insignia = new bandits_insignia_t( p );
+    }
+
+    if( p -> actions.bandits_insignia -> ready() &&
+        a -> sim -> roll( 0.15 ) )
+    {
+      p -> procs.bandits_insignia -> occur();
+      p -> actions.bandits_insignia -> execute();
+    }
+  }
+}
+
 // Talisman of Ascendance ===================================================
 
 static void trigger_talisman_of_ascendance( spell_t* s )
@@ -1215,6 +1253,7 @@ static void trigger_darkmoon_greatness( action_t* a )
 
 void unique_gear_t::attack_hit_event( attack_t* a )
 {
+  trigger_bandits_insignia( a );
   trigger_grim_toll( a );
   
   if ( a -> result == RESULT_CRIT )
@@ -1701,6 +1740,7 @@ bool unique_gear_t::parse_option( player_t*          p,
   option_t options[] =
   {
     { "ashtongue_talisman",                   OPT_INT,   &( p -> gear.ashtongue_talisman              ) },
+    { "bandits_insignia",                     OPT_INT,   &( p -> gear.bandits_insignia                ) },
     { "chaotic_skyfire",                      OPT_INT,   &( p -> gear.chaotic_skyflare                ) },
     { "chaotic_skyflare",                     OPT_INT,   &( p -> gear.chaotic_skyflare                ) },
     { "darkmoon_crusade",                     OPT_INT,   &( p -> gear.darkmoon_crusade                ) },
