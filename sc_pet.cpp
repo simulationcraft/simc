@@ -78,10 +78,13 @@ void pet_t::reset()
 
 void pet_t::summon()
 {
-  if( sim -> log ) report_t::log( sim, "%s summons %s.", owner -> name(), name() );
-  sleeping = 0;
-  init_resources( true );
-  summon_time = sim -> current_time;
+	if( sim -> log ){
+		report_t::log( sim, "%s summons %s.", owner -> name(), name() );
+		report_t::Wlog_summon_pet(this);
+	}
+	sleeping = 0;
+	init_resources( true );
+	summon_time = sim -> current_time;
 }
 
 // pet_t::dismiss ===========================================================

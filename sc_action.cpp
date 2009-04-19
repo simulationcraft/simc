@@ -42,6 +42,7 @@ action_t::action_t( int         ty,
   base_dd_adder(0), player_dd_adder(0), target_dd_adder(0),
   resource_consumed(0),
   direct_dmg(0), tick_dmg(0), 
+  ressisted_dmg(0), blocked_dmg(0), blizzID(0), // Wlog
   num_ticks(0), current_tick(0), added_ticks(0), ticking(0), 
   cooldown_group(n), duration_group(n), cooldown(0), cooldown_ready(0), duration_ready(0),
   weapon(0), weapon_multiplier(1), normalize_weapon_damage( false ), normalize_weapon_speed( false ), 
@@ -637,9 +638,12 @@ void action_t::execute()
   }
   else
   {
-    if( sim -> log ) report_t::log( sim, "%s avoids %s (%s)", sim -> target -> name(), name(), util_t::result_type_string( result ) );
+	  if( sim -> log ){
+		  report_t::log( sim, "%s avoids %s (%s)", sim -> target -> name(), name(), util_t::result_type_string( result ) );
+		  report_t::Wlog_damage_miss(this, DMG_DIRECT);
+	  }
 
-    player -> action_miss( this );
+      player -> action_miss( this );
   }
 
   update_ready();
@@ -704,13 +708,15 @@ void action_t::last_tick()
 void action_t::assess_damage( double amount, 
                               int    dmg_type )
 {
-   if( sim -> log )
-     report_t::log( sim, "%s %s %ss %s for %.0f %s damage (%s)",
+	if( sim -> log ){
+		  report_t::log( sim, "%s %s %ss %s for %.0f %s damage (%s)",
                     player -> name(), name(), 
                     util_t::dmg_type_string( dmg_type ),
                     sim -> target -> name(), amount, 
                     util_t::school_type_string( school ),
                     util_t::result_type_string( result ) );
+	   	  report_t::Wlog_damage(this, amount, dmg_type);
+	}
 
    sim -> target -> assess_damage( amount, school, dmg_type );
 
@@ -721,7 +727,11 @@ void action_t::assess_damage( double amount,
 
 void action_t::schedule_execute()
 {
-  if( sim -> log ) report_t::log( sim, "%s schedules execute for %s", player -> name(), name() );
+	if( sim -> log ){
+		report_t::log( sim, "%s schedules execute for %s", player -> name(), name() );
+		report_t::Wlog_startCast(this);
+	}
+
 
   time_to_execute = execute_time();
   

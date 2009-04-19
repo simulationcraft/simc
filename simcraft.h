@@ -456,6 +456,7 @@ struct sim_t
   std::vector<player_t*> players_by_name;
   std::string html_file_str, wiki_file_str;
   FILE* output_file;
+  FILE* log_file;
   FILE* html_file;
   FILE* wiki_file;
 
@@ -1141,8 +1142,8 @@ struct player_t
   void      recalculate_haste();
   double    mana_regen_per_second();
   bool      dual_wield() { return main_hand_weapon.type != WEAPON_NONE && off_hand_weapon.type != WEAPON_NONE; }
-  void      aura_gain( const char* name );
-  void      aura_loss( const char* name );
+  void      aura_gain( const char* name, int blizzID=0 ); //for Wlog_ , added optional parameter blizzID. If supplied, web pages can show tooltips
+  void      aura_loss( const char* name, int blizzID=0 );
   gain_t*   get_gain  ( const std::string& name );
   proc_t*   get_proc  ( const std::string& name );
   stats_t*  get_stats ( const std::string& name );
@@ -1390,6 +1391,8 @@ struct action_t
   double base_dd_adder, player_dd_adder, target_dd_adder;
   double resource_consumed;
   double direct_dmg, tick_dmg;
+  double ressisted_dmg, blocked_dmg; 
+  int	 blizzID;					 
   int num_ticks, current_tick, added_ticks;
   int ticking;
   std::string cooldown_group, duration_group;
@@ -1730,6 +1733,17 @@ struct report_t
     va_start( vap, format );
     va_printf( sim, format, vap );
   }
+  // WoW log emulator, general functions
+  static void Wlog_general(char* WOWevent, player_t* playerSrc, player_t* playerDst, char* suffix);
+  static void Wlog_general(char* WOWevent, player_t* playerSrc, player_t* playerDst, action_t* action, char* suffix);
+  static void Wlog_general(char* WOWevent, player_t* playerSrc, player_t* playerDst, int spellID, const char* spellName, int spellSchool,char* suffix);
+  // WoW log emulator, customized functions for Event types
+  static void Wlog_startCast(action_t* action);
+  static void Wlog_damage(action_t* action, double damage, int dmg_type);
+  static void Wlog_damage_miss(action_t* action, int  dmg_type);
+  static void Wlog_energize(player_t* player,gain_t* source, double amount, double actual_amount, int resource);
+  static void Wlog_aura(player_t* player, const char* name, int type, int blizzID=0);
+  static void Wlog_summon_pet(pet_t* pet);
 };
 
 // Talent Translation =========================================================

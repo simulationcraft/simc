@@ -344,9 +344,22 @@ bool option_t::parse( sim_t*       sim,
       sim -> output_file = fopen( value.c_str(), "w" );
       if( ! sim -> output_file )
       {
-	fprintf( stderr, "simcraft: Unable to open output file '%s'\n", value.c_str() );
-	exit(0);
+			fprintf( stderr, "simcraft: Unable to open output file '%s'\n", value.c_str() );
+			exit(0);
       }
+
+	  if (sim->log){  // opening/creating output file for Wlog_
+		  char Wlog_Name[100];
+		  strcpy(Wlog_Name,value.c_str());
+		  strcat(Wlog_Name,".WLOG.txt");
+		  sim -> log_file = fopen( Wlog_Name, "w" );
+		  if( ! sim -> log_file )
+		  {
+			fprintf( stderr, "simcraft: Unable to open LOG file '%s'\n", Wlog_Name );
+			exit(0);
+		  }
+	  }
+
     }
   }
   else if( name == "patch" )

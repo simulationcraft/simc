@@ -2010,3 +2010,322 @@ void report_t::va_printf( sim_t*      sim,
   fflush( sim -> output_file );
 }
 
+
+
+
+
+//======================================================================
+//
+//   WoW  standard log emulation :  general functions
+//
+//   > WHEN and WHAT it does
+//   - create log file "compatible" with standard WoW log
+//   - right now this works if "log=1" option is on, in file named
+//     same as "output" with appended ".WLOG.txt"
+//   - "compatible" means can work on analyzer tools like WWS, WMO
+//     WMO= http://www.wowmeteronline.com
+//     WWS= http://wowwebstats.com
+//   - that means some data can be omitted or approximated
+//
+//   > WHAT is needed in SC_<Wow_class>.CPP 
+//   - it will work for all classes WITHOUT need to change/add anything
+//     in specific class source files, but it is OPTIONAL to define
+//     blizzID in any descendant of action_t, or to add optional blizzID
+//     parameter when calling aura_gain("xx",id)
+//   - those blizzIDs could be seen in original WoW log files: integer to
+//     the left of "spell name" in SPELL_CAST_ or SPELL_DAMAGE events
+//
+//   > WHY is good to fill those OPTIONAL  Blizzard IDs
+//   - WMO/WWS need majority of correct spell IDs to guess player class
+//   - correct class is not needed for showing damage but is needed for
+//     showing threat (in WMO), and for class color and pet in headers
+//   - IDs enable tooltips (like wowhead ones) on spells in WMO/WWS
+//   - submitting blizzID in calls to aura_gain("xx", id) is even
+//     more optional (not needed to determine class), but helps 
+//     for tooltips also. 
+//   - futureproof: Blizzard IDs are good for any integration with others,
+//     for example, adding links/tooltips in HTML output to wowhead etc
+//
+//======================================================================
+
+
+//utility f-on to converst string to uppercase (no idea if standard C++ has it somewhere)
+void Wlog_toupper(char* src){
+	while (*src){
+		*src=toupper(*src);
+		src++;
+	}
+}
+
+
+// check if log is allowed, and initialize log line with timestamp if it is
+bool Wlog_init(sim_t* sim, char* line){
+	if (!sim->log) return false;
+	int hours, minutes, seconds, milisec;
+	milisec= (int) (sim->current_time *1000);
+	seconds= milisec/1000;
+	milisec%=1000;
+	minutes=seconds/60;
+	seconds%=60;
+	hours=minutes/60;
+	minutes%=60;
+	sprintf(line,"3/27 %02d:%02d:%02d.%03d  ",hours,minutes, seconds, milisec);
+	return true;
+}
+
+// output log line (save one line to file)
+void Wlog_printLine(sim_t* sim, char* line){
+	fprintf( sim->log_file, line );
+	fflush(sim->log_file);
+}
+
+// add player info to log line ',playerID,"playerName",playerFlags'
+// artifically generate player ID (type/subtype/id) by recognizing player/pet/npc, and hashing name to ID
+// also append playerFlags suitable for player type
+void Wlog_addPlayer(char* line, player_t* plr){
+	// WMO and WMS recognize only certain mob names as "bosses", and "Fluffy" is not one of them;)
+	// need to pass plr=="0" to use it
+	char* fixedTarget= ",0xF1300079AA001884,\"Heroic Training Dummy\",0x10a28"; 
+	// some spells (like auras) dont have destinaton unit, so they use null target
+	// need to pass plr== "(player_t*)-1"
+	char* nulTarget=",0x0000000000000000,nil,0x80000000"; 
+	if (plr==(player_t*)-1){
+		strcat(line, nulTarget);
+	}else
+	if (plr){
+		//calculate hash based on player name
+		long hash=0, sum=0;
+		const char* p=plr->name();
+		while(*p){
+			hash=hash*(*p+50) ^ (*p);
+			hash&=0xffff;
+			sum+=*p;
+			p++;
+		}
+		sum&=0xffff;
+		//create artifical unit ID, format type+subtype+id= TTTSSSSSSSIIIIII
+		int idx_type, idx_subtype, idx_id; 
+		int playerFlag;
+
+		idx_type=0x010;
+		idx_subtype=0x0000002;
+		idx_id=((sum<<16)| hash) &0xffffff;
+		playerFlag=0x511;
+		if (plr->is_pet()){
+			idx_type=0xF14;
+			idx_subtype=0x0601FC5;//0601FC1
+			playerFlag=0x1111;
+		}
+		// use name_str , to avoid player name in front of pet name ("player_pet" -> "pet")
+		// ID was calculated on whole name, so log&report tools will know how to link them
+		//add to line
+		char buff[100];
+		sprintf(buff,",0x%03X%07X%06X,\"%s\",0x%X",idx_type,idx_subtype,idx_id,plr->name_str.c_str(),playerFlag);
+		strcat(line,buff);
+	}else
+		strcat(line, fixedTarget); 
+}
+
+
+// map simcraft school IDs with Blizzard school IDs
+// if unknown or unmappable, return PHYSICAL
+int Wlog_schoolID(int school){
+	int ws=0;
+	switch(school){
+		 case SCHOOL_ARCANE: ws=0x40; break;
+		 case SCHOOL_BLEED: ws=0x01; break;  //phys   
+		 case SCHOOL_CHAOS: ws=0x02; break;  //holy?   
+		 case SCHOOL_FIRE: ws=0x04; break;     
+	     case SCHOOL_FROST: ws=0x10; break;     
+		 case SCHOOL_FROSTFIRE: ws=0x14; break;     
+		 case SCHOOL_HOLY: ws=0x02; break;     
+		 case SCHOOL_NATURE: ws=0x08; break; 
+		 case SCHOOL_PHYSICAL: ws=0x01; break;     
+		 case SCHOOL_SHADOW: ws=0x20; break;     
+		 default: ws=0x01; break; //phys if unknown
+	}
+	return ws;
+}
+
+// map simcraft resource ID to Blizzard resource ID
+// if unknown or unmappable, return -100 
+int Wlog_resourceID(int resource){
+	int type=0;
+	switch(resource){
+		case  RESOURCE_HEALTH: type=-2; break;     
+		case  RESOURCE_MANA: type=0; break;     
+		case  RESOURCE_RAGE: type=1; break;     
+		case  RESOURCE_ENERGY: type=3; break;     
+		case  RESOURCE_FOCUS: type=2; break;     
+		case  RESOURCE_RUNIC: type=6; break;    
+		default: type=-100; break;
+	}
+	return type;
+}
+
+//check if activity is melee, based on action name 
+//Not ideal, but I couldnt find action->Wlog_isMelee type of flag
+bool Wlog_isMelee(const char* actionName){
+	bool hasMelee= strstr(actionName,"melee")!=0; 
+	if (!hasMelee) hasMelee= strstr(actionName,"Melee")!=0; 
+	return hasMelee;
+}
+
+// add activity data to log line ',spellID,"spellName",spellSchool'
+// if id is not supplied (==0), autogenerate one by hashing spell name
+// and place it in safe 1mil range (so not to overlap with real ID)
+// BUT, it is advisable to add BlizzIDs to activities
+void Wlog_addActivity(char* line, int id, const char* aname, int school){
+	char buff[100], name[100];
+	// if empty name, set unknown
+	if ((aname==0)||(*aname==0)) strcpy(name,"Unknown"); else strcpy(name, aname);
+	// calculate hash value based on name, and replace '_' with spaces
+	char* p=name;
+	if (*p) *p=toupper(*p); // capitalize first letter
+	int hash=0;
+	while(*p){
+		if (*p=='_') *p=' ';
+		hash= (hash<<4)^toupper(*p);
+		hash= (hash &0xffff)^(hash>>16);
+		hash&=0xffff;
+		p++;
+	}
+	// if no wow ID in action, generate one based on hash
+    if (id==0) id=1000000+hash;
+	// add to line
+	sprintf(buff,",%d,\"%s\",0x%X",id,name,Wlog_schoolID(school) );
+	strcat(line,buff);
+}
+
+
+
+
+// most general log line has format:  Event, SourceUnit, DestinationUnit ....(optionally followed by other data) 
+// good description at :  http://www.wowwiki.com/API_COMBAT_LOG_EVENT
+void report_t::Wlog_general(char* WOWevent, player_t* playerSrc, player_t* playerDst, char* suffix){
+	if (!playerSrc) return;
+	sim_t* sim=playerSrc->sim;
+	char s[1000];
+	if (!Wlog_init(sim, s)) return;
+	strcat(s,WOWevent);
+	Wlog_addPlayer(s,playerSrc);
+	Wlog_addPlayer(s,playerDst);
+	if (suffix)	strcat(s,suffix);
+	strcat(s,"\n");
+	Wlog_printLine(sim, s);
+}
+
+// spell related events have spell parameters in addition (optionally followed by other data) : spellID, spellName, spellSchool ....
+void report_t::Wlog_general(char* WOWevent, player_t* playerSrc, player_t* playerDst, int spellID, const char* spellName, int spellSchool,char* suffix){
+	char s[1000];
+	strcpy(s,"");
+	Wlog_addActivity(s,spellID, spellName, spellSchool);
+	if (suffix)	strcat(s,suffix);
+	report_t::Wlog_general(WOWevent, playerSrc, playerDst,s);
+}
+
+// this wrapper generate spell event type, by getting spell data from sim action_t type
+void report_t::Wlog_general(char* WOWevent, player_t* playerSrc, player_t* playerDst, action_t* action,char* suffix){
+	if (action)
+		report_t::Wlog_general(WOWevent, playerSrc, playerDst, action->blizzID, action->name(), action->school, suffix);
+	else
+		report_t::Wlog_general(WOWevent, playerSrc, playerDst, 0, 0, 0, suffix);
+
+}
+
+
+
+//======================================================================
+//
+//   WoW  standard log emulation :  customized EVENTS
+//   - easier to call from simulator code
+//   - no need to know Blizz log format
+//   - no neeed to know event and field values like "SPELL_CAST_type"
+//   - generally integrated on action_t level to support all classes
+//   - "optional" support in classes.cpp is defining Blizzard actionIDs for
+//     class_defined activities/spells etc
+//
+//======================================================================
+
+
+// start casting of spells. usually ignored by WWS, WMO etc
+// - CALLED  from action_t::schedule_execute
+void report_t::Wlog_startCast(action_t* action){
+	Wlog_general("SPELL_CAST_START", action->player, (player_t*)-1, action,0);
+}
+
+
+// report damage. Most important event obviously. 
+// - CALLED  from action_t::assess_damage
+// - input is simulator action creating damage, damage value and type (DMG_OVER_TIME, DMG_DIRECT)
+// - needed new fields in action_t to remember "ressisted" values in calculate_xxx
+void report_t::Wlog_damage(action_t* action, double damage, int dmg_type){
+	if (!action) return;
+	char s[1000], buff[200];
+	strcpy(s,"");
+	bool hasMelee= Wlog_isMelee(action->name()); 
+	char* evS= (hasMelee)? "SWING_DAMAGE": (dmg_type==DMG_OVER_TIME)? "SPELL_PERIODIC_DAMAGE" : "SPELL_DAMAGE";
+	if (!hasMelee)	Wlog_addActivity(s, action->blizzID, action->name(), action->school);
+	int dmg=(int)damage;
+	int ress= (int) action->ressisted_dmg;
+	int block= (int) action->blocked_dmg;
+	int spellRes= action->result; 
+	char* sCrit=(spellRes==RESULT_CRIT)?"1":"nil";
+	char* sGlanc=(spellRes==RESULT_GLANCE)?"1":"nil";
+	char* sCrush="nil"; // (spellRes==RESULT_CRUSH)?"1":"nil";  //RESULT_CRUSH was removed?
+	sprintf(buff,",%d,0,%d,%d,0,%d,%s,%s,%s",dmg,Wlog_schoolID(action->school),ress, block,sCrit, sGlanc, sCrush);
+	strcat(s,buff);
+	report_t::Wlog_general(evS, action->player, 0, s);
+}
+
+// report miss (complete miss, as opposed to partial ressist which is in damage report)
+// - CALLED  from action_t::execute if it was miss
+// - just like above damage report, it needs to distinguish between melee and spell damage/miss, and use action name for that
+void report_t::Wlog_damage_miss(action_t* action, int  dmg_type){
+	  char buff[500];
+	  sprintf(buff,",%s",util_t::result_type_string( action->result ));
+	  Wlog_toupper(buff);
+	  bool hasMelee= Wlog_isMelee(action->name()); 
+	  char* evS;
+	  if (hasMelee) evS="SWING_MISSED"; else if (dmg_type==DMG_OVER_TIME) evS="SPELL_PERIODIC_MISSED"; else evS="SPELL_MISSED";
+	  report_t::Wlog_general(evS, action->player, 0, action, buff);
+}
+
+// report change in resource (mana and others)
+// - CALLED  from player_t::resource_gain
+// - it report health gains as PERIODIC_HEAL, since ENERGIZE didnt work
+void report_t::Wlog_energize(player_t* player, gain_t* source, double amount, double actual_amount, int resource){
+	int type=Wlog_resourceID(resource);
+	if (type<-2) return; // health is -2, other acceptable resources are >=0
+	char s[1000];
+	int value=(int)actual_amount; 
+    int overheal= (int)amount-value;
+	char* evS;
+	if (type>=0){
+		evS="SPELL_ENERGIZE";
+		sprintf(s,",%d,%d",value,type);
+	}else{
+	// if health regen, report as periodic heal
+		evS="SPELL_PERIODIC_HEAL";
+		sprintf(s,",%d,%d,nil",value,overheal);
+	}
+	char* actName= (source)?source->name():"";
+	report_t::Wlog_general(evS, player, player, 0, actName, SCHOOL_PHYSICAL, s);
+}
+
+// report gained or lost aura 
+// - CALLED (2x) from player_t::aura_gain(type==+1) and player_t::aura_loss(type==-1)
+void report_t::Wlog_aura(player_t* player, const char* name, int type, int blizzID){
+	char* evS= (type>0)?"SPELL_AURA_APPLIED":"SPELL_AURA_REMOVED";
+	report_t::Wlog_general(evS, player, player, blizzID, name, SCHOOL_PHYSICAL, ",BUFF");
+}
+
+// report summoned pet 
+// - CALLED  from pet_t::summon
+// - some parsers are sensitive to this when they need to bind pet to his owner
+// - thats why several lines are generated
+void report_t::Wlog_summon_pet(pet_t* pet){
+	report_t::Wlog_general("SPELL_SUMMON", pet->owner, pet, 688,"Ritual Enslavement",SCHOOL_SHADOW,0);
+	report_t::Wlog_general("SPELL_SUMMON", pet->owner, pet, 688,"Summon pet",SCHOOL_SHADOW,0);
+	report_t::Wlog_general("SPELL_ENERGIZE", pet->owner, pet,688,"Summon pet",SCHOOL_SHADOW,",0,0");
+}

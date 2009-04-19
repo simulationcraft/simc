@@ -990,14 +990,14 @@ static void trigger_dying_curse( spell_t* s )
     dying_curse_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
     {
       name = "Dying Curse";
-      player -> aura_gain( "Dying Curse" );
+      player -> aura_gain( "Dying Curse", 60494 );
       player -> spell_power[ SCHOOL_MAX ] += 765;
       player -> cooldowns.dying_curse = sim -> current_time + 45;
       sim -> add_event( this, 10.0 );
     }
     virtual void execute()
     {
-      player -> aura_loss( "Dying Curse" );
+      player -> aura_loss( "Dying Curse", 60494 );
       player -> spell_power[ SCHOOL_MAX ] -= 765;
     }
   };

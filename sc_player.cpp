@@ -1668,11 +1668,14 @@ double player_t::resource_gain( int       resource,
     }
   }
 
-  if( sim -> log ) 
+  if( sim -> log ){ 
     report_t::log( sim, "%s gains %.0f (%.0f) %s from %s (%.0f)", 
                    name(), actual_amount, amount, 
                    util_t::resource_type_string( resource ), source ? source -> name() : "unknown", 
                    resource_current[ resource ] );
+	if ((amount!=0)||(actual_amount!=0)) //not checked in Wlog_energize to allow report of 0,0 if needed
+		report_t::Wlog_energize(this, source, amount, actual_amount, resource);
+  }
 
   return actual_amount;
 }
@@ -2083,20 +2086,27 @@ action_t* player_t::find_action( const std::string& str )
 
 // player_t::aura_gain ======================================================
 
-void player_t::aura_gain( const char* aura_name )
+void player_t::aura_gain( const char* aura_name , int blizzID )
 {
   // FIXME! Aura-tracking here.
 
-  if( sim -> log && ! sleeping ) report_t::log( sim, "Player %s gains %s", name(), aura_name );
+	if( sim -> log && ! sleeping ){
+		report_t::log( sim, "Player %s gains %s", name(), aura_name );
+		report_t::Wlog_aura(this,aura_name,+1, blizzID);
+	}
+
 }
 
 // player_t::aura_loss ======================================================
 
-void player_t::aura_loss( const char* aura_name )
+void player_t::aura_loss( const char* aura_name , int blizzID )
 {
   // FIXME! Aura-tracking here.
 
-  if( sim -> log && ! sleeping ) report_t::log( sim, "Player %s loses %s", name(), aura_name );
+	if( sim -> log && ! sleeping ){
+		report_t::log( sim, "Player %s loses %s", name(), aura_name );
+		report_t::Wlog_aura(this,aura_name,-1, blizzID);
+	}
 }
 
 // player_t::get_gain =======================================================

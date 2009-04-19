@@ -531,6 +531,7 @@ struct imp_pet_t : public warlock_pet_t
     {
       imp_pet_t* p = (imp_pet_t*) player -> cast_pet();
       warlock_t* o = p -> owner -> cast_warlock();
+	  blizzID = 47964; 
 
       static rank_t ranks[] =
       {
@@ -1162,7 +1163,7 @@ static void stack_shadow_embrace( spell_t* s )
     expiration_t( sim_t* sim, warlock_t* p ) : event_t( sim, p )
     {
       name = "Shadow Embrace Expiration";
-      p -> aura_gain( "Shadow Embrace" );
+      p -> aura_gain( "Shadow Embrace",32391 );
       if( sim -> patch.before( 3, 1, 0 ) )
         sim -> target -> debuffs.affliction_effects++;
       else
@@ -1172,7 +1173,7 @@ static void stack_shadow_embrace( spell_t* s )
     virtual void execute()
     {
       warlock_t* p = player -> cast_warlock();
-      p -> aura_loss( "Shadow Embrace" );
+      p -> aura_loss( "Shadow Embrace",32391 );
       p -> _buffs.shadow_embrace = 0;
       p -> _expirations.shadow_embrace = 0;
       if( sim -> patch.before( 3, 1, 0 ) )
@@ -1212,7 +1213,7 @@ static void trigger_nightfall( spell_t* s )
     if( s -> sim -> roll( 0.02 * p -> talents.nightfall ) )
     {
       p -> procs_shadow_trance -> occur();
-      p -> aura_gain( "Shadow Trance" );
+      p -> aura_gain( "Shadow Trance",17941 );
       p -> _buffs.shadow_trance = 1;
     }
   }
@@ -1229,7 +1230,7 @@ static void trigger_corruption_glyph( spell_t* s )
     if( s -> sim -> roll( 0.04 ) )
     {
       p -> procs_shadow_trance -> occur();
-      p -> aura_gain( "Shadow Trance" );
+      p -> aura_gain( "Shadow Trance",17941 );
       p -> _buffs.shadow_trance = 1;
     }
   }
@@ -1314,7 +1315,7 @@ static void trigger_haunted( spell_t* s )
     expiration_t( sim_t* sim, warlock_t* p ) : event_t( sim, p )
     {
       name = "Haunt Expiration";
-      p -> aura_gain( "Haunted" );
+      p -> aura_gain( "Haunted", 59164 );
       p -> _buffs.haunted = 1;
       if( sim -> patch.before( 3, 1, 0 ) )
         sim -> target -> debuffs.affliction_effects++;
@@ -1325,7 +1326,7 @@ static void trigger_haunted( spell_t* s )
     virtual void execute()
     {
       warlock_t* p = player -> cast_warlock();
-      p -> aura_loss( "Haunted" );
+      p -> aura_loss( "Haunted", 59164 );
       p -> _buffs.haunted = 0;
       if( sim -> patch.before( 3, 1, 0 ) )
         sim -> target -> debuffs.affliction_effects--;
@@ -1357,14 +1358,14 @@ static void trigger_molten_core( spell_t* s )
     expiration_t( sim_t* sim, warlock_t* p ) : event_t( sim, p )
     {
       name = "Molten Core Expiration";
-      p -> aura_gain( "Molten Core" );
+      p -> aura_gain( "Molten Core",47383 );
       p -> _buffs.molten_core = sim -> current_time;
       sim -> add_event( this, 12.0 );
     }
     virtual void execute()
     {
       warlock_t* p = player -> cast_warlock();
-      p -> aura_loss( "Molten Core" );
+      p -> aura_loss( "Molten Core",47383 );
       p -> _buffs.molten_core = 0;
       p -> _expirations.molten_core = 0;
     }
@@ -1463,7 +1464,7 @@ static void trigger_eradication( spell_t* s )
     expiration_t( sim_t* sim, warlock_t* p ) : event_t( sim, p )
     {
       name = "Eradication Expiration";
-      p -> aura_gain( "Eradication" );
+      p -> aura_gain( "Eradication",64371 );
       if ( sim -> patch.before( 3, 1, 0 ) )
       {
         p -> _buffs.eradication = 1;
@@ -1478,7 +1479,7 @@ static void trigger_eradication( spell_t* s )
     virtual void execute()
     {
       warlock_t* p = player -> cast_warlock();
-      p -> aura_loss( "Eradication" );
+      p -> aura_loss( "Eradication",64371 );
       p -> _buffs.eradication = 0;
       p -> _expirations.eradication = 0;
     }
@@ -1882,14 +1883,14 @@ static void trigger_life_tap_glyph( spell_t* s )
     {
       p = player -> cast_warlock();
       name = "Life Tap Glyph Expiration";
-      p -> aura_gain( "Life Tap Glyph" );
+      p -> aura_gain( "Life Tap Glyph",63321 );
       p -> _buffs.life_tap_glyph = 1;
       sim -> add_event( this, 20.0 );
     }
     virtual void execute()
     {
       warlock_t* p = player -> cast_warlock();
-      p -> aura_loss( "Life Tap Glyph" );
+      p -> aura_loss( "Life Tap Glyph",63321 );
       p -> _expirations.life_tap_glyph = 0;
       p -> _buffs.life_tap_glyph = 0;
     }
@@ -2325,7 +2326,7 @@ struct curse_of_agony_t : public warlock_spell_t
     warlock_spell_t( "curse_of_agony", player, SCHOOL_SHADOW, TREE_AFFLICTION )
   {
     warlock_t* p = player -> cast_warlock();
-
+	blizzID= 47864;
     option_t options[] =
     {
       { NULL }
@@ -2500,7 +2501,7 @@ struct shadow_bolt_t : public warlock_spell_t
     shadow_trance(0), backdraft(0), isb_benefit(0), isb_trigger(0)
   {
     warlock_t* p = player -> cast_warlock();
-
+	blizzID = 47809;
     option_t options[] =
     {
       { "shadow_trance", OPT_INT, &shadow_trance },
@@ -2568,7 +2569,7 @@ struct shadow_bolt_t : public warlock_spell_t
     warlock_spell_t::schedule_execute(); 
     if( p -> _buffs.shadow_trance )
     {
-      p -> aura_loss( "Shadow Trance" );
+      p -> aura_loss( "Shadow Trance",17941 );
       p -> _buffs.shadow_trance = 0;
     }
   }
@@ -2884,13 +2885,13 @@ struct corruption_t : public warlock_spell_t
     warlock_spell_t( "corruption", player, SCHOOL_SHADOW, TREE_AFFLICTION )
   {
     warlock_t* p = player -> cast_warlock();
-
+	blizzID= 47813;
     option_t options[] =
     {
       { NULL }
     };
     parse_options( options, options_str );
-      
+ 	     
     static rank_t ranks[] =
     {
       { 77, 10, 0, 0, 180, 0.14 },
@@ -3082,7 +3083,7 @@ struct drain_soul_t : public warlock_spell_t
     warlock_spell_t( "drain_soul", player, SCHOOL_SHADOW, TREE_AFFLICTION ), interrupt(0), health_multiplier(0)
   {
     warlock_t* p = player -> cast_warlock();
-
+	blizzID= 47855; 
     option_t options[] =
     {
       { "interrupt", OPT_INT, &interrupt },
@@ -3310,7 +3311,7 @@ struct unstable_affliction_t : public warlock_spell_t
     warlock_spell_t( "unstable_affliction", player, SCHOOL_SHADOW, TREE_AFFLICTION )
   {
     warlock_t* p = player -> cast_warlock();
-
+	blizzID = 47843;
     assert( p -> talents.unstable_affliction );
     
     option_t options[] =
@@ -3401,7 +3402,7 @@ struct haunt_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     assert( p -> talents.haunt );
-
+	blizzID= 59164;
     option_t options[] =
     {
       { "debuff", OPT_INT, &debuff     },
@@ -3474,7 +3475,7 @@ struct immolate_t : public warlock_spell_t
     warlock_spell_t( "immolate", player, SCHOOL_FIRE, TREE_DESTRUCTION )
   {
     warlock_t* p = player -> cast_warlock();
-
+	blizzID= 47811;
     option_t options[] =
     {
       { "target_pct", OPT_DEPRECATED, (void*) "health_percentage>" },
@@ -4123,6 +4124,7 @@ struct life_tap_t : public warlock_spell_t
   life_tap_t( player_t* player, const std::string& options_str ) : 
     warlock_spell_t( "life_tap", player, SCHOOL_SHADOW, TREE_AFFLICTION ), trigger(1000), inferno(0), glyph(0), tier7_4pc(0), max(0), base_tap(0)
   {
+    blizzID= 57946;
     option_t options[] =
     {
       { "trigger",   OPT_INT, &trigger   },
