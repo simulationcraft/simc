@@ -616,6 +616,7 @@ struct felguard_pet_t : public warlock_pet_t
       weapon   = &( p -> main_hand_weapon );
       cooldown = 6.0;
       base_dd_min = base_dd_max = util_t::ability_rank( p -> level,  124.0,76,  78.0,68,  50.0,0 );
+	  blizzID=47994;
     }
     virtual void player_buff()
     {
@@ -980,7 +981,7 @@ static void trigger_tier7_2pc( spell_t* s )
   {
     p -> buffs.tier7_2pc = s -> sim -> roll( 0.15 );
 
-    if( p -> buffs.tier7_2pc ) p -> aura_gain( "Demonic Soul" );
+    if( p -> buffs.tier7_2pc ) p -> aura_gain( "Demonic Soul" ,61595 );
   }
 }
 
@@ -1270,18 +1271,19 @@ static void trigger_soul_leech( spell_t* s )
 
 static void trigger_backdraft( spell_t* s )
 {
+
   struct expiration_t : public event_t
   {
     expiration_t( sim_t* sim, warlock_t* p ) : event_t( sim, p )
     {
       name = "Backdraft Expiration";
-      p -> aura_gain( "Backdraft" );
+      p -> aura_gain( "Backdraft", 47257+ p->talents.backdraft );
       sim -> add_event( this, 15.0 );
     }
     virtual void execute()
     {
       warlock_t* p = player -> cast_warlock();
-      p -> aura_loss( "Backdraft" );
+      p -> aura_loss( "Backdraft", 47257+ p->talents.backdraft  );
       p -> _buffs.backdraft = 0;
       p -> _expirations.backdraft = 0;
     }
@@ -1358,14 +1360,14 @@ static void trigger_molten_core( spell_t* s )
     expiration_t( sim_t* sim, warlock_t* p ) : event_t( sim, p )
     {
       name = "Molten Core Expiration";
-      p -> aura_gain( "Molten Core",47383 );
+      p -> aura_gain( "Molten Core", 47244+ p->talents.molten_core );
       p -> _buffs.molten_core = sim -> current_time;
       sim -> add_event( this, 12.0 );
     }
     virtual void execute()
     {
       warlock_t* p = player -> cast_warlock();
-      p -> aura_loss( "Molten Core",47383 );
+      p -> aura_loss( "Molten Core", 47244+ p->talents.molten_core );
       p -> _buffs.molten_core = 0;
       p -> _expirations.molten_core = 0;
     }
@@ -1396,6 +1398,8 @@ static void trigger_molten_core( spell_t* s )
 
 static void trigger_decimation( warlock_spell_t* s )
 {
+  static int dec_blizzIDs[]={0, 63156, 63158};
+  
   struct expiration_t : public event_t
   {
     expiration_t( sim_t* sim, warlock_t* p ) : event_t( sim, p )
@@ -1407,7 +1411,7 @@ static void trigger_decimation( warlock_spell_t* s )
     {
       warlock_t* p = player -> cast_warlock();
       p -> _buffs.decimation = 0;
-      p -> aura_loss( "Decimation" );
+	  p -> aura_loss( "Decimation" ,dec_blizzIDs[p->talents.decimation%3] );
       p -> _expirations.decimation = 0;
     }
   };
@@ -1426,7 +1430,7 @@ static void trigger_decimation( warlock_spell_t* s )
   	virtual void execute()
   	{
 		warlock_t* p = player -> cast_warlock();
-		p -> aura_gain("Decimation");
+		p -> aura_gain("Decimation" ,dec_blizzIDs[p->talents.decimation%3]);
 		p -> _buffs.decimation = 1;
 		event_t*&  e = p -> _expirations.decimation;
 		if( e )
@@ -1464,7 +1468,7 @@ static void trigger_eradication( spell_t* s )
     expiration_t( sim_t* sim, warlock_t* p ) : event_t( sim, p )
     {
       name = "Eradication Expiration";
-      p -> aura_gain( "Eradication",64371 );
+      p -> aura_gain( "Eradication",47195+ p->talents.eradication );
       if ( sim -> patch.before( 3, 1, 0 ) )
       {
         p -> _buffs.eradication = 1;
@@ -1479,7 +1483,7 @@ static void trigger_eradication( spell_t* s )
     virtual void execute()
     {
       warlock_t* p = player -> cast_warlock();
-      p -> aura_loss( "Eradication",64371 );
+      p -> aura_loss( "Eradication",47195+ p->talents.eradication );
       p -> _buffs.eradication = 0;
       p -> _expirations.eradication = 0;
     }
@@ -1597,19 +1601,21 @@ static void trigger_pandemic( spell_t* s )
 
 static void trigger_pyroclasm( spell_t* s )
 {
+  static int pyro_blizzIDs[]={0,18096,18073,63245};
+
   struct expiration_t : public event_t
   {
     expiration_t( sim_t* sim, warlock_t* p ) : event_t( sim, p )
     {
       name = "Pyroclasm Expiration";
-      p -> aura_gain( "Pyroclasm" );
+      p -> aura_gain( "Pyroclasm", pyro_blizzIDs[p->talents.pyroclasm%4] );
       p -> _buffs.pyroclasm = 1;
       sim -> add_event( this, 10.0 );
     }
     virtual void execute()
     {
       warlock_t* p = player -> cast_warlock();
-      p -> aura_loss( "Pyroclasm" );
+      p -> aura_loss( "Pyroclasm", pyro_blizzIDs[p->talents.pyroclasm%4] );
       p -> _buffs.pyroclasm = 0;
       p -> _expirations.pyroclasm = 0;
     }
@@ -1635,19 +1641,21 @@ static void trigger_pyroclasm( spell_t* s )
 
 static void trigger_empowered_imp( spell_t* s )
 {
+  static int eimp_ids[]={0,47220,47221,47223};
+
   struct expiration_t : public event_t
   {
     expiration_t( sim_t* sim, warlock_t* o ) : event_t( sim, o )
     {
       name = "Empowered Imp Expiration";
-      o -> aura_gain( "Empowered Imp" );
+      o -> aura_gain( "Empowered Imp", eimp_ids[o->talents.empowered_imp%4] );
       o -> _buffs.empowered_imp = 1;
       sim -> add_event( this, 8.0 );
     }
     virtual void execute()
     {
       warlock_t* o = player -> cast_warlock();
-      o -> aura_loss( "Empowered Imp" );
+      o -> aura_loss( "Empowered Imp", eimp_ids[o->talents.empowered_imp%4] );
       o -> _buffs.empowered_imp = 0;
       o -> _expirations.empowered_imp = 0;
     }
@@ -1767,7 +1775,7 @@ static void trigger_demonic_pact( action_t* a )
       name = "Demonic Pact Expiration";
       for( player_t* p = sim -> player_list; p; p = p -> next )
       {
-        p -> aura_gain( "Demonic Pact" );
+        p -> aura_gain( "Demonic Pact", 47235+ ((warlock_t*)(pet->owner))->talents.demonic_pact );
         p -> buffs.demonic_pact = buff; 
         p -> buffs.demonic_pact_pet = pet;
       }
@@ -1778,7 +1786,7 @@ static void trigger_demonic_pact( action_t* a )
       warlock_pet_t* pet = (warlock_pet_t*) player -> cast_pet();
       for( player_t* p = sim -> player_list; p; p = p -> next )
       {
-        p -> aura_loss( "Demonic Pact" );
+        p -> aura_loss( "Demonic Pact", 47235+ ((warlock_t*)(pet->owner))->talents.demonic_pact );
         p -> buffs.demonic_pact = 0;    
         p -> buffs.demonic_pact_pet = 0;
       }
@@ -1840,14 +1848,14 @@ static void trigger_tier7_4pc( spell_t* s )
     expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
     {
       name = "Spirits of the Damned Expiration";
-      player -> aura_gain( "Spirits of the Damned" );
+      player -> aura_gain( "Spirits of the Damned",61082 );
       player -> attribute[ ATTR_SPIRIT ] += 300;
       player -> buffs.tier7_4pc = 1;
       sim -> add_event( this, 10.0 );
     }
     virtual void execute()
     {
-      player -> aura_loss( "Spirits of the Damned" );
+      player -> aura_loss( "Spirits of the Damned",61082 );
       player -> attribute[ ATTR_SPIRIT ] -= 300;
       player -> expirations.tier7_4pc = 0;
       player -> buffs.tier7_4pc = 0;
@@ -1883,14 +1891,14 @@ static void trigger_life_tap_glyph( spell_t* s )
     {
       p = player -> cast_warlock();
       name = "Life Tap Glyph Expiration";
-      p -> aura_gain( "Life Tap Glyph",63321 );
+      p -> aura_gain( "Life Tap Glyph",63941 );
       p -> _buffs.life_tap_glyph = 1;
       sim -> add_event( this, 20.0 );
     }
     virtual void execute()
     {
       warlock_t* p = player -> cast_warlock();
-      p -> aura_loss( "Life Tap Glyph",63321 );
+      p -> aura_loss( "Life Tap Glyph",63941 );
       p -> _expirations.life_tap_glyph = 0;
       p -> _buffs.life_tap_glyph = 0;
     }
@@ -1922,13 +1930,13 @@ static void trigger_ashtongue_talisman( spell_t* s )
     expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
     {
       name = "Ashtongue Talisman Expiration";
-      player -> aura_gain( "Ashtongue Talisman" );
+      player -> aura_gain( "Ashtongue Talisman", 32493 );
       player -> spell_power[ SCHOOL_MAX ] += 220;
       sim -> add_event( this, 5.0 );
     }
     virtual void execute()
     {
-      player -> aura_loss( "Ashtongue Talisman" );
+      player -> aura_loss( "Ashtongue Talisman", 32493 );
       player -> spell_power[ SCHOOL_MAX ] -= 220;
       player -> expirations.ashtongue_talisman = 0;
     }
@@ -2595,7 +2603,7 @@ struct shadow_bolt_t : public warlock_spell_t
     }
     if( p -> buffs.tier7_2pc )
     {
-      p -> aura_loss( "Demonic Soul" );
+      p -> aura_loss( "Demonic Soul" , 61595 );
       p -> buffs.tier7_2pc = 0;
     }
   }
@@ -3846,7 +3854,7 @@ struct incinerate_t : public warlock_spell_t
     warlock_spell_t( "incinerate", player, SCHOOL_FIRE, TREE_DESTRUCTION ), backdraft(0), molten_core(0), immolate_bonus(0)
   {
     warlock_t* p = player -> cast_warlock();
-
+	blizzID=47838;
     option_t options[] =
     {
       { "backdraft",   OPT_INT, &backdraft   },
@@ -3909,7 +3917,7 @@ struct incinerate_t : public warlock_spell_t
     }
     if( p -> buffs.tier7_2pc )
     {
-      p -> aura_loss( "Demonic Soul" );
+      p -> aura_loss( "Demonic Soul" ,61595 );
       p -> buffs.tier7_2pc = 0;
     }
   }
@@ -4020,7 +4028,7 @@ struct soul_fire_t : public warlock_spell_t
     warlock_spell_t( "soul_fire", player, SCHOOL_FIRE, TREE_DESTRUCTION ), backdraft(0), decimation(0), noweave(0)
   {
     warlock_t* p = player -> cast_warlock();
-
+	blizzID=47825;
     option_t options[] =
     {
       { "backdraft",  OPT_INT, &backdraft  },
@@ -4484,14 +4492,14 @@ struct metamorphosis_t : public warlock_spell_t
       {
         name = "Metamorphosis Expiration";
         warlock_t* p = player -> cast_warlock();
-        p -> aura_gain( "Metamorphosis" );
+        p -> aura_gain( "Metamorphosis", 47241 );
         p -> _buffs.metamorphosis = 1;
         sim -> add_event( this, 30.0 + p -> glyphs.metamorphosis * 6.0 );
       }
       virtual void execute()
       {
         warlock_t* p = player -> cast_warlock();
-        p -> aura_loss( "Metamorphosis" );
+        p -> aura_loss( "Metamorphosis", 47241 );
         p -> _buffs.metamorphosis = 0;
       }
     };

@@ -894,14 +894,14 @@ static void trigger_sundial_of_the_exiled( spell_t* s )
     sundial_of_the_exiled_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
     {
       name = "Sundial of the Exiled Expiration";
-      player -> aura_gain( "Sundial of the Exiled" );
+      player -> aura_gain( "Sundial of the Exiled" ,60064 );
       player -> spell_power[ SCHOOL_MAX ] += 590;
       player -> cooldowns.sundial_of_the_exiled = sim -> current_time + 45;
       sim -> add_event( this, 10.0 );
     }
     virtual void execute()
     {
-      player -> aura_loss( "Sundial of the Exiled" );
+      player -> aura_loss( "Sundial of the Exiled" ,60064 );
       player -> spell_power[ SCHOOL_MAX ] -= 590;
     }
   };
