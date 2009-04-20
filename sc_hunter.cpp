@@ -1355,7 +1355,7 @@ static void trigger_wild_quiver( attack_t* a )
 
     struct wild_quiver_t : public hunter_attack_t
     {
-      wild_quiver_t( hunter_t* p ) : hunter_attack_t( "wild_quiver", p, SCHOOL_NATURE, TREE_MARKSMANSHIP )
+      wild_quiver_t( hunter_t* player ) : hunter_attack_t( "wild_quiver", player, SCHOOL_NATURE, TREE_MARKSMANSHIP )
       {
         may_crit    = true;
         background  = true;
@@ -1364,10 +1364,12 @@ static void trigger_wild_quiver( attack_t* a )
         base_cost   = 0;
         base_dd_min = base_dd_max = 0.01;
 
-        weapon = &( p -> ranged_weapon );
+        weapon = &( player -> ranged_weapon );
         assert( weapon -> group() == WEAPON_RANGED );
-        base_multiplier *= p -> ranged_weapon_specialization_multiplier();
+        base_multiplier *= player -> ranged_weapon_specialization_multiplier();
         base_multiplier *= ( sim -> P309 ? 0.50 : 0.80 );
+        add_ammunition();
+        add_scope();
       }
     };
 
