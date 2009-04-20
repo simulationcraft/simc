@@ -76,6 +76,7 @@ struct shaman_t : public player_t
 
   // Procs
   proc_t* procs_lightning_overload;
+  proc_t* procs_windfury;
   
   // Up-Times
   uptime_t* uptimes_elemental_devastation;
@@ -229,6 +230,7 @@ struct shaman_t : public player_t
 
     // Procs
     procs_lightning_overload = get_proc( "lightning_overload" );
+    procs_windfury           = get_proc( "windfury" );
 
     // Up-Times
     uptimes_elemental_devastation = get_uptime( "elemental_devastation"    );
@@ -454,7 +456,7 @@ static void trigger_windfury_weapon( attack_t* a )
     }
     p -> _cooldowns.windfury_weapon = a -> sim -> current_time + 3.0;
 
-    p -> procs.windfury -> occur();
+    p -> procs_windfury -> occur();
     p -> windfury_weapon_attack -> weapon = a -> weapon;
     p -> windfury_weapon_attack -> execute();
     p -> windfury_weapon_attack -> execute();
@@ -1081,8 +1083,6 @@ struct stormstrike_t : public shaman_attack_t
 
     trigger_improved_stormstrike( this );
     trigger_totem_of_dueling( this );
-    
-    p -> action_finish( this );
   }
   virtual void consume_resource() { }
 };
@@ -1911,7 +1911,6 @@ struct searing_totem_t : public shaman_spell_t
     update_ready();
     direct_dmg = 0;
     update_stats( DMG_DIRECT );
-    player -> action_finish( this );
   }
 
   virtual void tick() 
@@ -1995,7 +1994,6 @@ struct magma_totem_t : public shaman_spell_t
     update_ready();
     direct_dmg = 0;
     update_stats( DMG_DIRECT );
-    player -> action_finish( this );
   }
 
   virtual void tick() 
@@ -2111,8 +2109,6 @@ struct totem_of_wrath_t : public shaman_spell_t
 
       new ( sim ) glyph_expiration_t( sim, p, bonus_spell_power * 0.30 );
     }
-
-    p -> action_finish( this );
   }
 
   virtual bool ready()
@@ -2203,7 +2199,6 @@ struct flametongue_totem_t : public shaman_spell_t
     if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
-    player -> action_finish( this );
     new ( sim ) expiration_t( sim, player, this );
   }
 
@@ -2278,7 +2273,6 @@ struct windfury_totem_t : public shaman_spell_t
     if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
-    player -> action_finish( this );
     new ( sim ) expiration_t( sim, player, this );
   }
 
@@ -2501,7 +2495,6 @@ struct strength_of_earth_totem_t : public shaman_spell_t
     if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
-    player -> action_finish( this );
     new ( sim ) expiration_t( sim, player, bonus );
   }
 
@@ -2566,7 +2559,6 @@ struct wrath_of_air_totem_t : public shaman_spell_t
     if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
-    player -> action_finish( this );
     new ( sim ) expiration_t( sim, player );
   }
 
@@ -2615,7 +2607,6 @@ struct mana_tide_totem_t : public shaman_spell_t
     consume_resource();
     schedule_tick();
     update_ready();
-    player -> action_finish( this );
   }
 
   virtual void tick() 
@@ -2693,7 +2684,6 @@ struct mana_spring_totem_t : public shaman_spell_t
       p -> buffs.mana_spring = regen;
     }
     update_ready();
-    player -> action_finish( this );
   }
 
   virtual bool ready()
@@ -2766,7 +2756,6 @@ struct bloodlust_t : public shaman_spell_t
     if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
-    player -> action_finish( this );
     new ( sim ) expiration_t( sim, player );
   }
 
@@ -2820,7 +2809,6 @@ struct shamanistic_rage_t : public shaman_spell_t
 
     if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
     update_ready();
-    player -> action_finish( this );
     new ( sim ) expiration_t( sim, player );
   }
 
@@ -2911,7 +2899,6 @@ struct lightning_shield_t : public shaman_spell_t
     consume_resource();
     update_ready();
     direct_dmg = 0;
-    p -> action_finish( this );
   }
 
   virtual bool ready()
@@ -2992,7 +2979,6 @@ struct thunderstorm_t : public shaman_spell_t
     shaman_t* p = player -> cast_shaman();
     update_ready();
     p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.08, p -> gains_thunderstorm );
-    p -> action_finish( this );
   }
 
   virtual bool ready()
@@ -3045,7 +3031,6 @@ struct spirit_wolf_spell_t : public shaman_spell_t
     consume_resource();
     update_ready();
     player -> summon_pet( "spirit_wolf" );
-    player -> action_finish( this );
     new ( sim ) spirit_wolf_expiration_t( sim, player );
   }
 

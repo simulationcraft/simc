@@ -9,88 +9,98 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 
 // trigger_judgement_of_wisdom ==============================================
 
-static void trigger_judgement_of_wisdom( action_t* a )
+struct judgement_of_wisdom_callback_t : public action_callback_t
 {
-  sim_t* sim = a -> sim;
-  
-  if( ! sim -> target -> debuffs.judgement_of_wisdom ) return;
+  gain_t* gain;
+  proc_t* proc;
 
-  player_t* p = a -> player;
-
-  double base_mana = p -> resource_base[ RESOURCE_MANA ];
-
-  if( base_mana <= 0 )
-    return;
-
-  double proc_chance = sim -> jow_chance;
-
-  if( sim -> jow_ppm )
-  { 
-    if( a -> weapon ) 
-    {
-      proc_chance = a -> weapon -> proc_chance_on_swing( sim -> jow_ppm,a -> time_to_execute );
-
-      if( sim -> debug )
-        report_t::log( sim, "JoW ppm %f, swing time %f, chance %f",
-                       sim -> jow_ppm, a -> weapon -> swing_time,
-                       proc_chance );
-    }
-    else
-    {
-      double time_to_execute = a -> channeled ? a -> time_to_tick : a -> time_to_execute;
-
-      if( time_to_execute == 0 ) time_to_execute = p -> base_gcd;
-
-      proc_chance = sim -> jow_ppm * time_to_execute / 60.0;
-    }
+  judgement_of_wisdom_callback_t( player_t* p ) : action_callback_t( p -> sim, p ) 
+  {
+    gain = p -> get_gain( "judgement_of_wisdom" );
+    proc = p -> get_proc( "judgement_of_wisdom" );
   }
 
-  if( ! sim -> roll( proc_chance ) )
-    return;
+  virtual void trigger( action_t* a )
+  {
+    sim_t* sim = a -> sim;
+  
+    if( ! sim -> target -> debuffs.judgement_of_wisdom ) 
+      return;
 
-  p -> procs.judgement_of_wisdom -> occur();
+    player_t* p = a -> player;
 
-  p -> resource_gain( RESOURCE_MANA, base_mana * 0.02, p -> gains.judgement_of_wisdom );
-}
+    double base_mana = p -> resource_base[ RESOURCE_MANA ];
+
+    double proc_chance = sim -> jow_chance;
+
+    if( sim -> jow_ppm )
+    { 
+      if( a -> weapon ) 
+      {
+	proc_chance = a -> weapon -> proc_chance_on_swing( sim -> jow_ppm,a -> time_to_execute );
+      }
+      else
+      {
+	double time_to_execute = a -> channeled ? a -> time_to_tick : a -> time_to_execute;
+
+	if( time_to_execute == 0 ) time_to_execute = p -> base_gcd;
+
+	proc_chance = sim -> jow_ppm * time_to_execute / 60.0;
+      }
+    }
+
+    if( ! sim -> roll( proc_chance ) )
+      return;
+
+    proc -> occur();
+
+    p -> resource_gain( RESOURCE_MANA, base_mana * 0.02, gain );
+  }
+};
 
 // trigger_focus_magic_feedback =============================================
 
-static void trigger_focus_magic_feedback( spell_t* spell )
+struct focus_magic_feedback_callback_t : public action_callback_t
 {
-  struct expiration_t : public event_t
-  {
-    player_t* mage;
+  focus_magic_feedback_callback_t( player_t* p ) : action_callback_t( p -> sim, p ) {}
 
-    expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p ), mage( p -> buffs.focus_magic )
+  virtual void trigger( action_t* a )
+  {
+    struct expiration_t : public event_t
     {
-      name = "Focus Magic Feedback Expiration";
-      mage -> aura_gain( "Focus Magic Feedback" );
-      mage -> buffs.focus_magic_feedback = 1;
-      sim -> add_event( this, 10.0 );
-    }
-    virtual void execute()
+      player_t* mage;
+
+      expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p ), mage( p -> buffs.focus_magic )
+      {
+	name = "Focus Magic Feedback Expiration";
+	mage -> aura_gain( "Focus Magic Feedback" );
+	mage -> buffs.focus_magic_feedback = 1;
+	sim -> add_event( this, 10.0 );
+      }
+      virtual void execute()
+      {
+	mage -> aura_loss( "Focus Magic Feedback" );
+	mage -> buffs.focus_magic_feedback = 0;
+	mage -> expirations.focus_magic_feedback = 0;
+      }
+    };
+
+    player_t* p = a -> player;
+
+    if( ! p -> buffs.focus_magic ) return;
+
+    event_t*& e = p -> buffs.focus_magic -> expirations.focus_magic_feedback;
+
+    if( e )
     {
-      mage -> aura_loss( "Focus Magic Feedback" );
-      mage -> buffs.focus_magic_feedback = 0;
-      mage -> expirations.focus_magic_feedback = 0;
+      e -> reschedule( 10.0 );
     }
-  };
-
-  player_t* p = spell -> player;
-
-  if( ! p -> buffs.focus_magic ) return;
-
-  event_t*& e = p -> buffs.focus_magic -> expirations.focus_magic_feedback;
-
-  if( e )
-  {
-    e -> reschedule( 10.0 );
+    else
+    {
+      e = new ( p -> sim ) expiration_t( p -> sim, p );
+    }
   }
-  else
-  {
-    e = new ( p -> sim ) expiration_t( p -> sim, p );
-  }
-}
+};
 
 // init_replenish_targets ================================================
 
@@ -284,56 +294,6 @@ static void replenish_raid( player_t* provider )
 } // ANONYMOUS NAMESPACE ===================================================
 
 // ==========================================================================
-// Player - Gear
-// ==========================================================================
-
-// player_t::gear_t::allocate_spell_power_budget( sim_t* sim ) ==============
-
-void player_t::gear_t::allocate_spell_power_budget( sim_t* sim )
-{
-  if( sim -> debug ) report_t::log( sim, "Allocating spell_power budget...." );   
-
-  if(  hit_rating   == 0 &&
-       crit_rating  == 0 &&
-       haste_rating == 0 )
-  {
-    spell_power[ SCHOOL_MAX ] = spell_power_budget;
-    return;
-  }
-
-  if( budget_slots == 0 ) budget_slots = 16;
-
-  double spell_power_statmod = 0.855;
-
-  double slot_power = spell_power_budget / (double) budget_slots;
-  double slot_hit   = hit_rating         / (double) budget_slots;
-  double slot_crit  = crit_rating        / (double) budget_slots;
-  double slot_haste = haste_rating       / (double) budget_slots;
-
-  double target = pow( slot_power * spell_power_statmod, 1.5 );
-
-  double cost = pow( slot_hit,   1.5 ) +
-                pow( slot_crit,  1.5 ) +
-                pow( slot_haste, 1.5 );
-
-  spell_power[ SCHOOL_MAX ] = (int) ( budget_slots * pow( target - cost, 1.0 / 1.5 ) / spell_power_statmod );
-  
-  if( sim -> debug ) report_t::log( sim, "slot_power=%.1f  slot_hit=%.1f  slot_crit=%.1f  slot_haste=%.1f  target=%.1f  cost=%.1f  spell_power=%d\n",
-                   slot_power, slot_hit, slot_crit, slot_haste, target, cost, spell_power[ SCHOOL_MAX ] );
-}
-
-// player_t::gear_t::allocate_attack_power_budget( sim_t* sim ) =============
-
-void player_t::gear_t::allocate_attack_power_budget( sim_t* sim )
-{
-  if( sim -> debug ) report_t::log( sim, "Allocating attack_power budget...." );   
-
-  // double attack_power_statmod = 0.5;
-
-  assert(0);
-}
-
-// ==========================================================================
 // Player
 // ==========================================================================
 
@@ -382,15 +342,13 @@ player_t::player_t( sim_t*             s,
   food( FOOD_NONE ),
   // Events
   executing(0), channeling(0), in_combat(false),
-  // Callbacks
-  action_tick_callbacks(0), action_tick_damage_callbacks(0), action_direct_damage_callbacks(0),
   // Actions
   action_list(0),
   // Reporting
   quiet(0), last_foreground_action(0),
   last_action_time(0), total_seconds(0), total_waiting(0), iteration_dmg(0), total_dmg(0), 
   dps(0), dps_min(0), dps_max(0), dps_std_dev(0), dps_error(0), dpr(0), rps_gain(0), rps_loss(0),
-  proc_list(0), gain_list(0), stats_list(0), uptime_list(0)
+  proc_list(0), gain_list(0), stats_list(0), uptime_list(0), unique_gear(0), enchant(0)
 {
   if( sim -> debug ) report_t::log( sim, "Creating Player %s", name() );
   player_t** last = &( sim -> player_list );
@@ -398,12 +356,9 @@ player_t::player_t( sim_t*             s,
   *last = this;
   next = 0;
 
-  for( int i=0; i < RESULT_MAX; i++ )
-  {
-    attack_result_callbacks[ i ] = 0;
-     spell_result_callbacks[ i ] = 0;
-  }
-
+  unique_gear = new unique_gear_t();
+  enchant     = new enchant_t();
+  
   for( int i=0; i < ATTRIBUTE_MAX; i++ )
   {
     attribute[ i ] = attribute_base[ i ] = attribute_initial[ i ] = 0;
@@ -425,8 +380,6 @@ player_t::player_t( sim_t*             s,
     resource_base[ i ] = resource_initial[ i ] = resource_max[ i ] = resource_current[ i ] = 0;
 
     resource_lost[ i ] = resource_gained[ i ] = 0;
-
-    resource_loss_callbacks[ i ] = resource_gain_callbacks[ i ] = 0;
   }
 
   // Setup default gear profiles
@@ -499,6 +452,7 @@ void player_t::init()
   init_weapon(  &off_hand_weapon,  off_hand_str );
   init_weapon(    &ranged_weapon,    ranged_str );
   init_unique_gear();
+  init_enchant();
   init_professions();
   init_resources();
   init_consumables();
@@ -561,12 +515,6 @@ void player_t::init_race()
 
 void player_t::init_spell() 
 {
-  if( gear.spell_power_budget != 0 &&
-      gear.spell_power[ SCHOOL_MAX ] == 0 ) 
-  {
-    gear.allocate_spell_power_budget( sim );
-  }
-
   if( initial_spell_power[ SCHOOL_MAX ] == 0 )
   {
     for( int i=0; i <= SCHOOL_MAX; i++ )
@@ -626,12 +574,6 @@ void player_t::init_spell()
 
 void player_t::init_attack() 
 {
-  if( gear.attack_power_budget != 0 &&
-      gear.attack_power == 0 ) 
-  {
-    gear.allocate_attack_power_budget( sim );
-  }
-
   if( initial_attack_power == 0 )
   {
     initial_attack_power = base_attack_power + gear.attack_power + gear.attack_power_enchant;
@@ -678,7 +620,7 @@ void player_t::init_defense()
 
   if( ! is_pet() )
   {
-    initial_attack_power += sim -> gear_delta.armor;
+    initial_armor += sim -> gear_delta.armor;
   }
 }
 
@@ -804,6 +746,13 @@ void player_t::init_weapon( weapon_t*    w,
 void player_t::init_unique_gear()
 {
   unique_gear_t::init( this );
+}
+
+// player_t::init_enchant ==================================================
+
+void player_t::init_enchant()
+{
+  enchant_t::init( this );
 }
 
 // player_t::init_resources ================================================
@@ -988,8 +937,6 @@ void player_t::init_stats()
   gains.mana_potion            = get_gain( "mana_potion" );
   gains.mana_spring            = get_gain( "mana_spring" );
   gains.mana_tide              = get_gain( "mana_tide" );
-  gains.mark_of_defiance       = get_gain( "mark_of_defiance" );
-  gains.mirror_of_truth        = get_gain( "mirror_of_truth" );
   gains.mp5_regen              = get_gain( "mp5_regen" );
   gains.replenishment          = get_gain( "replenishment" );
   gains.restore_mana           = get_gain( "restore_mana" );
@@ -1009,35 +956,7 @@ void player_t::init_stats()
   gains.tier8_4pc              = get_gain( "tier8_4pc" );
 
   procs.ashtongue_talisman           = get_proc( "ashtongue_talisman" );
-  procs.bandits_insignia             = get_proc( "bandits_insignia" );
-  procs.darkmoon_greatness           = get_proc( "darkmoon_greatness" );
-  procs.dying_curse                  = get_proc( "dying_curse" );
-  procs.elder_scribes                = get_proc( "elder_scribes" );
-  procs.elemental_focus_stone        = get_proc( "elemental_focus_stone" );
-  procs.embrace_of_the_spider        = get_proc( "embrace_of_the_spider" );
-  procs.eternal_sage                 = get_proc( "eternal_sage" );
-  procs.extract_of_necromatic_power  = get_proc( "extract_of_necromatic_power" );
-  procs.eye_of_magtheridon           = get_proc( "eye_of_magtheridon" );
-  procs.flare_of_the_heavens         = get_proc( "flare_of_the_heavens" );
-  procs.forge_ember                  = get_proc( "forge_ember" );
-  procs.grim_toll                    = get_proc( "grim_toll" );
   procs.honor_among_thieves_donor    = ( is_pet() ? ( cast_pet() -> owner ) : this ) -> get_proc( "honor_among_thieves_donor" );
-  procs.judgement_of_wisdom          = get_proc( "judgement_of_wisdom" );
-  procs.lightning_capacitor          = get_proc( "lightning_capacitor" );
-  procs.mark_of_defiance             = get_proc( "mark_of_defiance" );
-  procs.mirror_of_truth              = get_proc( "mirror_of_truth" );
-  procs.mystical_skyfire             = get_proc( "mystical_skyfire" );
-  procs.pyrite_infuser               = get_proc( "pyrite_infuser" );
-  procs.quagmirrans_eye              = get_proc( "quagmirrans_eye" );
-  procs.sextant_of_unstable_currents = get_proc( "sextant_of_unstable_currents" );
-  procs.shiffars_nexus_horn          = get_proc( "shiffars_nexus_horn" );
-  procs.spellstrike                  = get_proc( "spellstrike" );
-  procs.sundial_of_the_exiled        = get_proc( "sundial_of_the_exiled" );
-  procs.egg_of_mortal_essence        = get_proc( "egg_of_mortal_essence" );
-  procs.thunder_capacitor            = get_proc( "thunder_capacitor" );
-  procs.timbals_crystal              = get_proc( "timbals_crystal" );
-  procs.windfury                     = get_proc( "windfury" );
-  procs.wrath_of_cenarius            = get_proc( "wrath_of_cenarius" );
   procs.tier4_2pc                    = get_proc( "tier4_2pc" );
   procs.tier4_4pc                    = get_proc( "tier4_4pc" );
   procs.tier5_2pc                    = get_proc( "tier5_2pc" );
@@ -1050,11 +969,6 @@ void player_t::init_stats()
   procs.tier8_4pc                    = get_proc( "tier8_4pc" );
 
   uptimes.replenishment = get_uptime( "replenishment" );
-  uptimes.berserking_mh = get_uptime( "berserking_mh" );
-  uptimes.berserking_oh = get_uptime( "berserking_oh" );
-  uptimes.executioner   = get_uptime( "executioner" );
-  uptimes.mongoose_mh   = get_uptime( "mongoose_mh" );
-  uptimes.mongoose_oh   = get_uptime( "mongoose_oh" );
   uptimes.tier4_2pc     = get_uptime( "tier4_2pc" );
   uptimes.tier4_4pc     = get_uptime( "tier4_4pc" );
   uptimes.tier5_2pc     = get_uptime( "tier5_2pc" );
@@ -1410,6 +1324,20 @@ void player_t::reset()
   expirations.reset();
   cooldowns.reset();
 
+  for( int i=0; i < RESOURCE_MAX; i++ )
+  {
+    action_callback_t::reset( resource_gain_callbacks[ i ] );
+    action_callback_t::reset( resource_loss_callbacks[ i ] );
+  }
+  for( int i=0; i < RESULT_MAX; i++ )
+  {
+    action_callback_t::reset( attack_result_callbacks[ i ] );
+    action_callback_t::reset(  spell_result_callbacks[ i ] );
+  }
+  action_callback_t::reset( tick_callbacks );
+  action_callback_t::reset( tick_damage_callbacks );
+  action_callback_t::reset( direct_damage_callbacks );
+
   replenishment_targets.clear();
 
   init_resources( true );
@@ -1631,10 +1559,7 @@ double player_t::resource_loss( int       resource,
 
   if( action )
   {
-    for( action_callback_t* cb = resource_loss_callbacks[ resource ]; cb; cb = cb -> next )
-    {
-      cb -> trigger( action );
-    }
+    action_callback_t::trigger( resource_loss_callbacks[ resource ], action );
   }
 
   if( sim -> debug ) report_t::log( sim, "Player %s spends %.0f %s", name(), amount, util_t::resource_type_string( resource ) );
@@ -1663,10 +1588,7 @@ double player_t::resource_gain( int       resource,
 
   if( action )
   {
-    for( action_callback_t* cb = resource_gain_callbacks[ resource ]; cb; cb = cb -> next )
-    {
-      cb -> trigger( action );
-    }
+    action_callback_t::trigger( resource_gain_callbacks[ resource ], action );
   }
 
   if( sim -> log ){ 
@@ -1692,6 +1614,98 @@ bool player_t::resource_available( int    resource,
   }
 
   return resource_current[ resource ] >= cost;
+}
+
+// player_t::stat_gain ======================================================
+
+void player_t::stat_gain( int    stat,
+			  double amount )
+{
+  switch( stat )
+  {
+    case STAT_STRENGTH:  attribute[ ATTR_STRENGTH  ] += amount; break;
+    case STAT_AGILITY:   attribute[ ATTR_AGILITY   ] += amount; break;
+    case STAT_STAMINA:   attribute[ ATTR_STAMINA   ] += amount; break;
+    case STAT_INTELLECT: attribute[ ATTR_INTELLECT ] += amount; break;
+    case STAT_SPIRIT:    attribute[ ATTR_SPIRIT    ] += amount; break;
+      
+    case STAT_HEALTH: resource_gain( RESOURCE_HEALTH, amount ); break;
+    case STAT_MANA:   resource_gain( RESOURCE_MANA,   amount ); break;
+    case STAT_RAGE:   resource_gain( RESOURCE_RAGE,   amount ); break;
+    case STAT_ENERGY: resource_gain( RESOURCE_ENERGY, amount ); break;
+    case STAT_FOCUS:  resource_gain( RESOURCE_FOCUS,  amount ); break;
+    case STAT_RUNIC:  resource_gain( RESOURCE_RUNIC,  amount ); break;
+
+    case STAT_SPELL_POWER:       spell_power[ SCHOOL_MAX ] += amount; break;
+    case STAT_SPELL_PENETRATION: spell_penetration         += amount; break;
+    case STAT_MP5:               mp5                       += amount; break;
+
+    case STAT_ATTACK_POWER:             attack_power       += amount;                            break;
+    case STAT_EXPERTISE_RATING:         attack_expertise   += amount / rating.expertise;         break;
+    case STAT_ARMOR_PENETRATION_RATING: attack_penetration += amount / rating.armor_penetration; break;
+
+    case STAT_HIT_RATING: 
+      attack_hit += amount / rating.attack_hit;
+      spell_hit  += amount / rating.spell_hit;
+      break;
+
+    case STAT_CRIT_RATING: 
+      attack_crit += amount / rating.attack_crit;
+      spell_crit  += amount / rating.spell_crit;
+      break;
+
+    case STAT_HASTE_RATING: haste_rating += amount; recalculate_haste(); break;
+
+    case STAT_ARMOR: armor += amount; break;
+
+    default: assert(0);
+  }
+}
+
+// player_t::stat_loss ======================================================
+
+void player_t::stat_loss( int    stat,
+			  double amount )
+{
+  switch( stat )
+  {
+    case STAT_STRENGTH:  attribute[ ATTR_STRENGTH  ] -= amount; break;
+    case STAT_AGILITY:   attribute[ ATTR_AGILITY   ] -= amount; break;
+    case STAT_STAMINA:   attribute[ ATTR_STAMINA   ] -= amount; break;
+    case STAT_INTELLECT: attribute[ ATTR_INTELLECT ] -= amount; break;
+    case STAT_SPIRIT:    attribute[ ATTR_SPIRIT    ] -= amount; break;
+      
+    case STAT_HEALTH: resource_loss( RESOURCE_HEALTH, amount ); break;
+    case STAT_MANA:   resource_loss( RESOURCE_MANA,   amount ); break;
+    case STAT_RAGE:   resource_loss( RESOURCE_RAGE,   amount ); break;
+    case STAT_ENERGY: resource_loss( RESOURCE_ENERGY, amount ); break;
+    case STAT_FOCUS:  resource_loss( RESOURCE_FOCUS,  amount ); break;
+    case STAT_RUNIC:  resource_loss( RESOURCE_RUNIC,  amount ); break;
+
+    case STAT_SPELL_POWER:       spell_power[ SCHOOL_MAX ] -= amount; break;
+    case STAT_SPELL_PENETRATION: spell_penetration         -= amount; break;
+    case STAT_MP5:               mp5                       -= amount; break;
+
+    case STAT_ATTACK_POWER:             attack_power       -= amount;                            break;
+    case STAT_EXPERTISE_RATING:         attack_expertise   -= amount / rating.expertise;         break;
+    case STAT_ARMOR_PENETRATION_RATING: attack_penetration -= amount / rating.armor_penetration; break;
+
+    case STAT_HIT_RATING: 
+      attack_hit -= amount / rating.attack_hit;
+      spell_hit  -= amount / rating.spell_hit;
+      break;
+
+    case STAT_CRIT_RATING: 
+      attack_crit -= amount / rating.attack_crit;
+      spell_crit  -= amount / rating.spell_crit;
+      break;
+
+    case STAT_HASTE_RATING: haste_rating -= amount; recalculate_haste(); break;
+
+    case STAT_ARMOR: armor -= amount; break;
+
+    default: assert(0);
+  }
 }
 
 // player_t::summon_pet =====================================================
@@ -1728,299 +1742,84 @@ void player_t::dismiss_pet( const char* pet_name )
 
 void player_t::register_callbacks()
 {
+  if( primary_resource() == RESOURCE_MANA ) 
+  {
+    action_callback_t* cb = new judgement_of_wisdom_callback_t( this );
+
+    register_attack_result_callback( RESULT_HIT_MASK, cb );
+    register_spell_result_callback ( RESULT_HIT_MASK, cb );
+  }
+
+  register_spell_result_callback( RESULT_CRIT_MASK, new focus_magic_feedback_callback_t( this ) );
+
   unique_gear_t::register_callbacks( this );
+
+  enchant_t::register_callbacks( this );
 }
 
 // player_t::register_resource_gain_callback ================================
 
-void player_t::register_resource_gain_callback( int                    resource, 
-						action_callback_func_t f_ptr, 
-						void*                  user_data )
+void player_t::register_resource_gain_callback( int                resource, 
+						action_callback_t* cb )
 {
-  action_callback_t* cb = new action_callback_t( f_ptr, user_data );
-
-  cb -> next = resource_gain_callbacks[ resource ];
-  resource_gain_callbacks[ resource ] = cb;
+  resource_gain_callbacks[ resource ].push_back( cb );
 }
 
 // player_t::register_resource_loss_callback ================================
 
-void player_t::register_resource_loss_callback( int                    resource, 
-						action_callback_func_t f_ptr, 
-						void*                  user_data )
+void player_t::register_resource_loss_callback( int                resource, 
+						action_callback_t* cb )
 {
-  action_callback_t* cb = new action_callback_t( f_ptr, user_data );
-
-  cb -> next = resource_loss_callbacks[ resource ];
-  resource_loss_callbacks[ resource ] = cb;
+  resource_loss_callbacks[ resource ].push_back( cb );
 }
 
 // player_t::register_attack_result_callback ================================
 
-void player_t::register_attack_result_callback( int                    mask, 
-						action_callback_func_t f_ptr, 
-						void*                  user_data )
+void player_t::register_attack_result_callback( int                mask, 
+						action_callback_t* cb )
 {
   for( int i=0; i < RESULT_MAX; i++ )
   {
-    if( mask & ( 1 << i ) )
+    if( mask < 0 || ( mask & ( 1 << i ) ) )
     {
-      action_callback_t* cb = new action_callback_t( f_ptr, user_data );
-
-      cb -> next = attack_result_callbacks[ i ];
-      attack_result_callbacks[ i ] = cb;
+      attack_result_callbacks[ i ].push_back( cb );
     }
   }
 }
 
 // player_t::register_spell_result_callback =================================
 
-void player_t::register_spell_result_callback( int                    mask, 
-					       action_callback_func_t f_ptr, 
-					       void*                  user_data )
+void player_t::register_spell_result_callback( int                mask, 
+					       action_callback_t* cb )
 {
   for( int i=0; i < RESULT_MAX; i++ )
   {
-    if( mask & ( 1 << i ) )
+    if( mask < 0 || ( mask & ( 1 << i ) ) )
     {
-      action_callback_t* cb = new action_callback_t( f_ptr, user_data );
-
-      cb -> next = spell_result_callbacks[ i ];
-      spell_result_callbacks[ i ] = cb;
+      spell_result_callbacks[ i ].push_back( cb );
     }
   }
 }
 
-// player_t::register_action_tick_callback ==================================
+// player_t::register_tick_callback =========================================
 
-void player_t::register_action_tick_callback( action_callback_func_t f_ptr, 
-					      void*                  user_data )
+void player_t::register_tick_callback( action_callback_t* cb )
 {
-  action_callback_t* cb = new action_callback_t( f_ptr, user_data );
-
-  cb -> next = action_tick_callbacks;
-  action_tick_callbacks = cb;
+  tick_callbacks.push_back( cb );
 }
 
-// player_t::register_action_tick_damage_callback ===========================
+// player_t::register_tick_damage_callback ==================================
 
-void player_t::register_action_tick_damage_callback( action_callback_func_t f_ptr, 
-						     void*                  user_data )
+void player_t::register_tick_damage_callback( action_callback_t* cb )
 {
-  action_callback_t* cb = new action_callback_t( f_ptr, user_data );
-
-  cb -> next = action_tick_damage_callbacks;
-  action_tick_damage_callbacks = cb;
+  tick_damage_callbacks.push_back( cb );
 }
 
-// player_t::register_action_direct_damage_callback =========================
+// player_t::register_direct_damage_callback ================================
 
-void player_t::register_action_direct_damage_callback( action_callback_func_t f_ptr, 
-						       void*                  user_data )
+void player_t::register_direct_damage_callback( action_callback_t* cb )
 {
-  action_callback_t* cb = new action_callback_t( f_ptr, user_data );
-
-  cb -> next = action_direct_damage_callbacks;
-  action_direct_damage_callbacks = cb;
-}
-
-// player_t::action_start ===================================================
-
-void player_t::action_start( action_t* action )
-{
-  if( ! action -> background )
-  {
-    gcd_ready = sim -> current_time + action -> gcd();
-    executing = action -> execute_event;
-  }
-
-  if( action -> type == ACTION_SPELL )
-  {
-    unique_gear_t::spell_start_event( (spell_t*) action );
-        enchant_t::spell_start_event( (spell_t*) action );
-                   spell_start_event( (spell_t*) action );
-  }
-  else if( action -> type == ACTION_ATTACK )
-  {
-    unique_gear_t::attack_start_event( (attack_t*) action );
-        enchant_t::attack_start_event( (attack_t*) action );
-                   attack_start_event( (attack_t*) action );
-  }
-}
-
-// player_t::action_miss ====================================================
-
-void player_t::action_miss( action_t* action )
-{
-  if( action -> type == ACTION_SPELL )
-  {
-    unique_gear_t::spell_miss_event( (spell_t*) action );
-        enchant_t::spell_miss_event( (spell_t*) action );
-                   spell_miss_event( (spell_t*) action );
-  }
-  else if( action -> type == ACTION_ATTACK )
-  {
-    unique_gear_t::attack_miss_event( (attack_t*) action );
-        enchant_t::attack_miss_event( (attack_t*) action );
-                   attack_miss_event( (attack_t*) action );
-  }
-}
-
-// player_t::action_hit =====================================================
-
-void player_t::action_hit( action_t* action )
-{
-  if( action -> type == ACTION_SPELL )
-  {
-    unique_gear_t::spell_hit_event( (spell_t*) action );
-        enchant_t::spell_hit_event( (spell_t*) action );
-                   spell_hit_event( (spell_t*) action );
-  }
-  else if( action -> type == ACTION_ATTACK )
-  {
-    unique_gear_t::attack_hit_event( (attack_t*) action );
-        enchant_t::attack_hit_event( (attack_t*) action );
-                   attack_hit_event( (attack_t*) action );
-  }
-}
-
-// player_t::action_tick ====================================================
-
-void player_t::action_tick( action_t* action )
-{
-  if( action -> type == ACTION_SPELL )
-  {
-    unique_gear_t::spell_tick_event( (spell_t*) action );
-        enchant_t::spell_tick_event( (spell_t*) action );
-                   spell_tick_event( (spell_t*) action );
-  }
-  else if( action -> type == ACTION_ATTACK )
-  {
-    unique_gear_t::attack_tick_event( (attack_t*) action );
-        enchant_t::attack_tick_event( (attack_t*) action );
-                   attack_tick_event( (attack_t*) action );
-  }
-}
-
-// player_t::action_damage ==================================================
-
-void player_t::action_damage( action_t* action, 
-                              double    amount,
-                              int       dmg_type )
-{
-  if( action -> type == ACTION_SPELL )
-  {
-    unique_gear_t::spell_damage_event( (spell_t*) action, amount, dmg_type );
-        enchant_t::spell_damage_event( (spell_t*) action, amount, dmg_type );
-                   spell_damage_event( (spell_t*) action, amount, dmg_type );
-  }
-  else if( action -> type == ACTION_ATTACK )
-  {
-    unique_gear_t::attack_damage_event( (attack_t*) action, amount, dmg_type );
-        enchant_t::attack_damage_event( (attack_t*) action, amount, dmg_type );
-                   attack_damage_event( (attack_t*) action, amount, dmg_type );
-  }
-}
-
-// player_t::action_finish ==================================================
-
-void player_t::action_finish( action_t* action )
-{
-  if( action -> type == ACTION_SPELL )
-  {
-    unique_gear_t::spell_finish_event( (spell_t*) action );
-        enchant_t::spell_finish_event( (spell_t*) action );
-                   spell_finish_event( (spell_t*) action );
-  }
-  else if( action -> type == ACTION_ATTACK )
-  {
-    unique_gear_t::attack_finish_event( (attack_t*) action );
-        enchant_t::attack_finish_event( (attack_t*) action );
-                   attack_finish_event( (attack_t*) action );
-  }
-}
-
-// player_t::spell_start_event ==============================================
-
-void player_t::spell_start_event( spell_t* spell )
-{
-}
-
-// player_t::spell_miss_event ===============================================
-
-void player_t::spell_miss_event( spell_t* spell )
-{
-}
-
-// player_t::spell_hit_event ================================================
-
-void player_t::spell_hit_event( spell_t* spell )
-{
-  trigger_judgement_of_wisdom( spell );
-
-  if ( spell -> result == RESULT_CRIT )
-  {
-    trigger_focus_magic_feedback( spell );
-  }
-}
-
-// player_t::spell_tick_event ===============================================
-
-void player_t::spell_tick_event( spell_t* spell )
-{
-}
-
-// player_t::spell_damage_event =============================================
-
-void player_t::spell_damage_event( spell_t* spell, 
-                                   double   amount,
-                                   int      dmg_type )
-{
-}
-
-// player_t::spell_finish_event =============================================
-
-void player_t::spell_finish_event( spell_t* spell )
-{
-}
-
-// player_t::attack_start_event =============================================
-
-void player_t::attack_start_event( attack_t* attack )
-{
-}
-
-// player_t::attack_miss_event ==============================================
-
-void player_t::attack_miss_event( attack_t* attack )
-{
-}
-
-// player_t::attack_hit_event ===============================================
-
-void player_t::attack_hit_event( attack_t* attack )
-{
-  trigger_judgement_of_wisdom( attack );
-}
-
-// player_t::attack_tick_event ==============================================
-
-void player_t::attack_tick_event( attack_t* attack )
-{
-}
-
-// player_t::attack_damage_event ============================================
-
-void player_t::attack_damage_event( attack_t* attack, 
-                                    double    amount,
-                                    int       dmg_type )
-{
-}
-
-// player_t::attack_finish_event ============================================
-
-void player_t::attack_finish_event( attack_t* attack )
-{
+  direct_damage_callbacks.push_back( cb );
 }
 
 // player_t::share_cooldown =================================================
@@ -2737,11 +2536,8 @@ bool player_t::parse_option( const std::string& name,
     { "enchant_energy",                       OPT_INT,  &( gear.resource_enchant[ RESOURCE_ENERGY ]       ) },
     { "enchant_focus",                        OPT_INT,  &( gear.resource_enchant[ RESOURCE_FOCUS  ]       ) },
     { "enchant_runic",                        OPT_INT,  &( gear.resource_enchant[ RESOURCE_RUNIC  ]       ) },
-    // Player - Gear - Budgeting                                                                            
-    { "spell_power_budget",                   OPT_INT,  &( gear.spell_power_budget                        ) },
-    { "attack_power_budget",                  OPT_INT,  &( gear.attack_power_budget                       ) },
-    { "budget_slots",                         OPT_INT,  &( gear.budget_slots                              ) },
     // Player - Tier Bonuses
+    { "ashtongue_talisman",                   OPT_INT,  &( gear.ashtongue_talisman                        ) },
     { "tier4_2pc",                            OPT_INT,  &( gear.tier4_2pc                                 ) },
     { "tier4_4pc",                            OPT_INT,  &( gear.tier4_4pc                                 ) },
     { "tier5_2pc",                            OPT_INT,  &( gear.tier5_2pc                                 ) },
@@ -2770,6 +2566,8 @@ bool player_t::parse_option( const std::string& name,
   }
 
   if( unique_gear_t::parse_option( this, name, value ) ) return true;
+  
+  if( enchant_t::parse_option( this, name, value ) ) return true;
   
   return option_t::parse( sim, options, name, value );
 }

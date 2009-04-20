@@ -527,27 +527,6 @@ static void trigger_dirty_deeds( rogue_attack_t* a )
   }
 }
 
-// trigger_honor_among_thieves =============================================
-
-static void trigger_honor_among_thieves( action_t* a, 
-					 void*     user_data )
-{
-  if( ! a -> special || a -> ticking || a -> proc ) return;
-    
-  rogue_t* p = ( (player_t*) user_data ) -> cast_rogue();
-
-  if( ! a -> sim -> roll( p -> talents.honor_among_thieves / 3.0 ) ) return;
-
-  add_combo_point( p );
-
-  a -> player -> procs.honor_among_thieves_donor -> occur();
-
-  if( p != a -> player )
-  {
-    p -> procs_honor_among_thieves_receiver -> occur();
-  }
-}
-
 // trigger_initiative ======================================================
 
 static void trigger_initiative( rogue_attack_t* a )
@@ -2062,8 +2041,6 @@ struct mutilate_t : public rogue_attack_t
       weapon = &( player -> off_hand_weapon );
       rogue_attack_t::execute();
     }
-
-    player -> action_finish( this );
   }
 
   virtual void player_buff()
@@ -3189,6 +3166,31 @@ void rogue_t::init_base()
   base_gcd = 1.0;
 }
 
+// trigger_honor_among_thieves =============================================
+
+struct honor_among_thieves_callback_t : public action_callback_t
+{
+  honor_among_thieves_callback_t( rogue_t* r ) : action_callback_t( r -> sim, r ) {}
+
+  virtual void trigger( action_t* a )
+  {
+    if( ! a -> special || a -> ticking || a -> proc ) return;
+    
+    rogue_t* rogue = listener -> cast_rogue();
+
+    if( ! a -> sim -> roll( rogue -> talents.honor_among_thieves / 3.0 ) ) return;
+
+    add_combo_point( rogue );
+
+    a -> player -> procs.honor_among_thieves_donor -> occur();
+
+    if( rogue != a -> player )
+    {
+      rogue -> procs_honor_among_thieves_receiver -> occur();
+    }
+  }
+};
+
 // rogue_t::register_callbacks ===============================================
 
 void rogue_t::register_callbacks()
@@ -3210,8 +3212,8 @@ void rogue_t::register_callbacks()
 	if( p -> type == PLAYER_PET && ! sim -> P309 ) continue;
       }
 
-      p -> register_attack_result_callback( RESULT_CRIT_MASK, trigger_honor_among_thieves, this );
-      p -> register_spell_result_callback ( RESULT_CRIT_MASK, trigger_honor_among_thieves, this );
+      p -> register_attack_result_callback( RESULT_CRIT_MASK, new honor_among_thieves_callback_t( this ) );
+      p -> register_spell_result_callback ( RESULT_CRIT_MASK, new honor_among_thieves_callback_t( this ) );
     }
   }  
 }

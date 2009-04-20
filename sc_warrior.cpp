@@ -1848,8 +1848,6 @@ struct whirlwind_t : public warrior_attack_t
     }
 
     warrior_attack_t::consume_resource();
-
-    player -> action_finish( this );
   }
 };
 

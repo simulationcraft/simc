@@ -1975,7 +1975,6 @@ struct call_of_the_wild_t : public hunter_pet_spell_t
     if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
     consume_resource();
     update_ready();
-    player -> action_finish( this );
     new ( sim ) expiration_t( sim, p );
   }
 };
@@ -2029,7 +2028,6 @@ struct furious_howl_t : public hunter_pet_spell_t
     if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
     consume_resource();
     update_ready();
-    player -> action_finish( this );
     new ( sim ) expiration_t( sim, p );
   }
 };
@@ -2079,7 +2077,6 @@ struct rabid_t : public hunter_pet_spell_t
     if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
     consume_resource();
     update_ready();
-    player -> action_finish( this );
     new ( sim ) rabid_expiration_t( sim, p );
   }
 };
@@ -3339,7 +3336,6 @@ struct bestial_wrath_t : public hunter_spell_t
     if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
-    player -> action_finish( this );
     new ( sim ) expiration_t( sim, player );
   }
 };
@@ -3399,8 +3395,6 @@ struct hunters_mark_t : public hunter_spell_t
     {
       e = new ( sim ) expiration_t( sim, player, duration);
     }
-
-    player -> action_finish( this );
   }
 
   virtual bool ready()
@@ -3441,7 +3435,6 @@ struct kill_command_t : public hunter_spell_t
     p -> active_pet -> _buffs.kill_command = 3;
     consume_resource();
     update_ready();
-    player -> action_finish( this );
   }
 
   virtual bool ready()
@@ -3505,7 +3498,6 @@ struct rapid_fire_t : public hunter_spell_t
     p -> _buffs.rapid_fire = p -> glyphs.rapid_fire ? 0.48 : 0.40;
     consume_resource();
     update_ready();
-    player -> action_finish( this );
     new ( sim ) expiration_t( sim, p );
   }
 

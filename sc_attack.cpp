@@ -113,8 +113,8 @@ void attack_t::player_buff()
   player_expertise = p -> composite_attack_expertise();
   player_crit      = p -> composite_attack_crit();
 
-  if( p -> gear.chaotic_skyflare      ||
-      p -> gear.relentless_earthstorm ) 
+  if( p -> unique_gear -> chaotic_skyflare      ||
+      p -> unique_gear -> relentless_earthstorm ) 
   {
     player_crit_multiplier *= 1.03;
   }
@@ -316,11 +316,14 @@ void attack_t::calculate_result()
     }
   }
 
-  for( action_callback_t* cb = player -> attack_result_callbacks[ result ]; cb; cb = cb -> next )
-  {
-    cb -> trigger( this );
-  }
-
   if( sim -> debug ) report_t::log( sim, "%s result for %s is %s", player -> name(), name(), util_t::result_type_string( result ) );
 }
 
+// attack_t::execute =======================================================
+
+void attack_t::execute()
+{
+  action_t::execute();
+
+  action_callback_t::trigger( player -> attack_result_callbacks[ result ], this );
+}

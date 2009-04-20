@@ -153,13 +153,7 @@ struct priest_t : public player_t
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
   virtual int       primary_resource() { return RESOURCE_MANA; }
-
-  // Event Tracking
-  virtual void regen( double periodicity );
-  virtual void spell_hit_event   ( spell_t* );
-  virtual void spell_start_event ( spell_t* );
-  virtual void spell_finish_event( spell_t* );
-  virtual void spell_damage_event( spell_t*, double amount, int dmg_type );
+  virtual void      regen( double periodicity );
 };
 
 enum devious_mind_states_t { DEVIOUS_MIND_STATE_NONE=0, DEVIOUS_MIND_STATE_WAITING, DEVIOUS_MIND_STATE_ACTIVE };
@@ -181,6 +175,8 @@ struct priest_spell_t : public spell_t
   }
 
   virtual double haste();
+  virtual void   schedule_execute();
+  virtual void   execute();
   virtual void   player_buff();
 };
 
@@ -609,12 +605,57 @@ double priest_spell_t::haste()
   return h;
 }
 
+// priest_spell_t::schedule_execute =========================================
+
+void priest_spell_t::schedule_execute()
+{
+  priest_t* p = player -> cast_priest();
+
+  spell_t::schedule_execute();
+
+  p -> uptimes_devious_mind -> update( p -> _buffs.devious_mind == DEVIOUS_MIND_STATE_ACTIVE );
+}
+
+// priest_spell_t::execute ==================================================
+
+void priest_spell_t::execute()
+{
+  priest_t* p = player -> cast_priest();
+
+  spell_t::execute();
+
+  if( result_is_hit() )
+  {
+    if( school == SCHOOL_SHADOW )
+    {
+      stack_shadow_weaving( this );
+    }
+    if( result == RESULT_CRIT )
+    {
+      trigger_surge_of_light( this );
+      trigger_glyph_of_shadow( this );
+    }
+  }
+
+  if( harmful )
+  {
+    pop_tier5_2pc ( this );
+    push_tier5_2pc( this );
+  }
+  pop_tier5_4pc( this );
+
+  p -> uptimes_improved_spirit_tap -> update( p -> _buffs.improved_spirit_tap != 0 );
+  p -> uptimes_glyph_of_shadow     -> update( p -> _buffs.glyph_of_shadow     != 0 );
+}
+
 // priest_spell_t::player_buff ==============================================
 
 void priest_spell_t::player_buff()
 {
   priest_t* p = player -> cast_priest();
+
   spell_t::player_buff();
+
   if( school == SCHOOL_SHADOW )
   {
     if( p -> _buffs.shadow_weaving )
@@ -785,7 +826,6 @@ struct penance_t : public priest_spell_t
     update_ready();
     direct_dmg = 0;
     update_stats( DMG_DIRECT );
-    player -> action_finish( this );
   }
 
   virtual void tick() 
@@ -798,7 +838,6 @@ struct penance_t : public priest_spell_t
     if( result_is_hit() )
     {
       calculate_direct_damage();
-      player -> action_hit( this );
       if( direct_dmg > 0 )
       {
         tick_dmg = direct_dmg;
@@ -808,7 +847,6 @@ struct penance_t : public priest_spell_t
     else
     {
       if( sim -> log ) report_t::log( sim, "%s avoids %s (%s)", sim -> target -> name(), name(), util_t::result_type_string( result ) );
-      player -> action_miss( this );
     }
     update_stats( DMG_OVER_TIME );
   }
@@ -1823,7 +1861,6 @@ struct shadow_fiend_spell_t : public priest_spell_t
     consume_resource();
     update_ready();
     player -> summon_pet( "shadow_fiend" );
-    player -> action_finish( this );
     new ( sim ) shadow_fiend_expiration_t( sim, player );
   }
 
@@ -1838,82 +1875,6 @@ struct shadow_fiend_spell_t : public priest_spell_t
 };
 
 } // ANONYMOUS NAMESPACE ====================================================
-
-// ==========================================================================
-// Priest Event Tracking
-// ==========================================================================
-
-// priest_t::spell_hit_event ================================================
-
-void priest_t::spell_hit_event( spell_t* s )
-{
-  player_t::spell_hit_event( s );
-
-  if( s -> school == SCHOOL_SHADOW )
-  {
-    stack_shadow_weaving( s );
-  }
-
-  if( s -> result == RESULT_CRIT )
-  {
-    trigger_surge_of_light( s );
-    trigger_glyph_of_shadow( s );
-  }
-}
-
-// priest_t::spell_start_event ==============================================
-
-void priest_t::spell_start_event( spell_t* s )
-{
-  player_t::spell_start_event( s );
-
-  uptimes_devious_mind -> update( _buffs.devious_mind == DEVIOUS_MIND_STATE_ACTIVE );
-}
-
-// priest_t::spell_finish_event ==============================================
-
-void priest_t::spell_finish_event( spell_t* s )
-{
-  player_t::spell_finish_event( s );
-
-  if( s -> harmful )
-  {
-    pop_tier5_2pc ( s );
-    push_tier5_2pc( s );
-  }
-  pop_tier5_4pc( s );
-
-  uptimes_improved_spirit_tap -> update( _buffs.improved_spirit_tap != 0 );
-  uptimes_glyph_of_shadow     -> update( _buffs.glyph_of_shadow     != 0 );
-}
-
-// priest_t::spell_damage_event ==============================================
-
-void priest_t::spell_damage_event( spell_t* s,
-                                   double   amount,
-                                   int      dmg_type )
-{
-  player_t::spell_damage_event( s, amount, dmg_type );
-
-  if( s -> school == SCHOOL_SHADOW )
-  {
-    if( active_vampiric_embrace )
-    {
-      double self_healing = 0.15 * ( 1.0 + talents.improved_vampiric_embrace * 1.0/3 );
-      double party_healing = 0.03 * ( 1.0 + talents.improved_vampiric_embrace * 1.0/3 );
-
-      this -> resource_gain( RESOURCE_HEALTH, amount * self_healing );
-
-      for( player_t* p = sim -> player_list; p; p = p -> next )
-      {
-        if( p -> party == party && p != this )
-        {
-          p -> resource_gain( RESOURCE_HEALTH, amount * party_healing );
-        }
-      }
-    }
-  }
-}
 
 // ==========================================================================
 // Priest Character Definition

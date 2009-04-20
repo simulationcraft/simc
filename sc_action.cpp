@@ -634,10 +634,7 @@ void action_t::execute()
     if( direct_dmg > 0 )
     {
       assess_damage( direct_dmg, DMG_DIRECT );
-
-      player -> action_hit( this );
     }
-
     if( num_ticks > 0 ) 
     {
       if( ticking ) cancel();
@@ -648,19 +645,16 @@ void action_t::execute()
   }
   else
   {
-	  if( sim -> log ){
-		  report_t::log( sim, "%s avoids %s (%s)", sim -> target -> name(), name(), util_t::result_type_string( result ) );
-		  report_t::Wlog_damage_miss(this, DMG_DIRECT);
-	  }
-
-      player -> action_miss( this );
+    if( sim -> log )
+    {
+      report_t::log( sim, "%s avoids %s (%s)", sim -> target -> name(), name(), util_t::result_type_string( result ) );
+      report_t::Wlog_damage_miss(this, DMG_DIRECT);
+    }
   }
 
   update_ready();
 
   if( ! dual ) update_stats( DMG_DIRECT );
-
-  player -> action_finish( this );
 
   if( repeating && ! proc ) schedule_execute();
 
@@ -689,14 +683,9 @@ void action_t::tick()
   
   assess_damage( tick_dmg, DMG_OVER_TIME );
 
-  for( action_callback_t* cb = player -> action_tick_callbacks; cb; cb = cb -> next )
-  {
-    cb -> trigger( this );
-  }
+  action_callback_t::trigger( player -> tick_callbacks, this );
 
   update_stats( DMG_OVER_TIME );
-
-  player -> action_tick( this );
 }
 
 // action_t::last_tick=======================================================
@@ -730,7 +719,14 @@ void action_t::assess_damage( double amount,
 
    sim -> target -> assess_damage( amount, school, dmg_type );
 
-   player -> action_damage( this, amount, dmg_type );
+   if( dmg_type == DMG_DIRECT )
+   {
+     action_callback_t::trigger( player -> direct_damage_callbacks, this );
+   }
+   else // DMG_OVER_TIME
+   {
+     action_callback_t::trigger( player -> tick_damage_callbacks, this );
+   }
 }
 
 // action_t::schedule_execute ==============================================
@@ -749,7 +745,11 @@ void action_t::schedule_execute()
 
   if( observer ) *observer = this;
 
-  player -> action_start( this );
+  if( ! background )
+  {
+    player -> gcd_ready = sim -> current_time + gcd();
+    player -> executing = execute_event;
+  }
 }
 
 // action_t::schedule_tick =================================================

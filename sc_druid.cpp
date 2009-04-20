@@ -2173,7 +2173,6 @@ struct innervate_t : public druid_spell_t
       player -> aura_gain("Glyph of Innervate");
       new ( sim ) expiration_glyph_t( sim, player);
     }
-    player -> action_finish( this );
     new ( sim ) expiration_t( sim, innervate_target);
   }
 
@@ -3022,7 +3021,6 @@ struct treants_spell_t : public druid_spell_t
     consume_resource();
     update_ready();
     player -> summon_pet( "treants" );
-    player -> action_finish( this );
     new ( sim ) treants_expiration_t( sim, player );
   }
 

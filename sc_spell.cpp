@@ -117,8 +117,8 @@ void spell_t::player_buff()
   player_hit  = p -> composite_spell_hit();
   player_crit = p -> composite_spell_crit();
 
-  if( p -> gear.chaotic_skyflare      ||
-      p -> gear.relentless_earthstorm ) 
+  if( p -> unique_gear -> chaotic_skyflare      ||
+      p -> unique_gear -> relentless_earthstorm ) 
   {
     player_crit_multiplier *= 1.03;
   }
@@ -216,11 +216,14 @@ void spell_t::calculate_result()
     }
   }
 
-  for( action_callback_t* cb = player -> spell_result_callbacks[ result ]; cb; cb = cb -> next )
-  {
-    cb -> trigger( this );
-  }
-
   if( sim -> debug ) report_t::log( sim, "%s result for %s is %s", player -> name(), name(), util_t::result_type_string( result ) );
 }
 
+// spell_t::execute =========================================================
+
+void spell_t::execute()
+{
+  action_t::execute();
+
+  action_callback_t::trigger( player -> spell_result_callbacks[ result ], this );
+}

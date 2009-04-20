@@ -5,1333 +5,144 @@
 
 #include "simcraft.h"
 
-namespace { // ANONYMOUS NAMESPACE ==========================================
+// stat_proc_callback =======================================================
 
-// Mystical Skyfire Diamond =================================================
-
-static void trigger_mystical_skyfire( spell_t* s )
+struct stat_proc_callback_t : public action_callback_t
 {
-  struct mystical_skyfire_expiration_t : public event_t
+  std::string name_str;
+  int stat, stacks, max_stacks;
+  double amount, proc_chance, duration;
+  double cooldown, cooldown_ready;
+  event_t* expiration;
+  proc_t* proc;
+
+  stat_proc_callback_t( const std::string& n, player_t* p, int s, int ms, double a, double pc, double d, double cd ) :
+    action_callback_t( p -> sim, p ),
+    name_str(n), stat(s), stacks(0), max_stacks(s), amount(a), proc_chance(pc), duration(d), cooldown(cd), cooldown_ready(0), expiration(0), proc(0) 
   {
-    mystical_skyfire_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      player -> aura_gain( "Mystical Skyfire" );
-      player -> haste_rating += 320;
-      player -> recalculate_haste();
-      player -> cooldowns.mystical_skyfire = sim -> current_time + 45;
-      sim -> add_event( this, 4.0 );
-    }
-    virtual void execute()
-    {
-      player -> aura_loss( "Mystical Skyfire" );
-      player -> haste_rating -= 320;
-      player -> recalculate_haste();
-    }
-  };
-
-  if( ! s -> harmful ) return;
-
-  player_t* p = s -> player;
-
-  if( p -> gear.mystical_skyfire                                    &&
-      s -> sim -> cooldown_ready( p -> cooldowns.mystical_skyfire ) &&
-      s -> sim -> roll( 0.15 ) )
-  {
-    p -> procs.mystical_skyfire -> occur();
-    new ( s -> sim ) mystical_skyfire_expiration_t( s -> sim, p );
+    if( proc_chance ) proc = p -> get_proc( name_str.c_str() );
   }
-}
 
-// Spellstrike Set Bonus ====================================================
+  virtual void reset() { stacks=0; cooldown_ready=0; expiration=0; }
 
-static void trigger_spellstrike( spell_t* s )
-{
-  struct spellstrike_expiration_t : public event_t
+  virtual void trigger( action_t* a )
   {
-    spellstrike_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
+    if( cooldown )
+      if( sim -> current_time < cooldown_ready )
+	return;
+
+    if( proc_chance )
     {
-      name = "Spellstrike Set Bonus Expiration";
-      player -> aura_gain( "Spellstrike Set Bonus" );
-      player -> spell_power[ SCHOOL_MAX ] += 92;
-      sim -> add_event( this, 10.0 );
-    }
-    virtual void execute()
-    {
-      player -> aura_loss( "Spellstrike Set Bonus" );
-      player -> spell_power[ SCHOOL_MAX ] -= 92;
-      player -> expirations.spellstrike = 0;
-    }
-  };
+      if( ! sim -> roll( proc_chance ) )
+	return;
 
-  if( ! s -> harmful ) return;
-
-  player_t* p = s -> player;
-
-  if( p -> gear.spellstrike && s -> sim -> roll( 0.05 ) )
-  {
-    p -> procs.spellstrike -> occur();
-
-    event_t*& e = p -> expirations.spellstrike;
-
-    if( e )
-    {
-      e -> reschedule( 10.0 );
-    }
-    else
-    {
-      e = new ( s -> sim ) spellstrike_expiration_t( s -> sim, p );
-    }
-  }
-}
-
-// Wrath of Cenarius ====================================================
-
-static void trigger_wrath_of_cenarius( spell_t* s )
-{
-  struct wrath_of_cenarius_expiration_t : public event_t
-  {
-    wrath_of_cenarius_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      name = "Wrath of Cenarius Expiration";
-      player -> aura_gain( "Wrath of Cenarius" );
-      player -> spell_power[ SCHOOL_MAX ] += 132;
-      sim -> add_event( this, 10.0 );
-    }
-    virtual void execute()
-    {
-      player -> aura_loss( "Wrath of Cenarius" );
-      player -> spell_power[ SCHOOL_MAX ] -= 132;
-      player -> expirations.wrath_of_cenarius = 0;
-    }
-  };
-
-  if( ! s -> harmful ) return;
-
-  player_t* p = s -> player;
-
-  if( p -> gear.wrath_of_cenarius && s -> sim -> roll( 0.05 ) )
-  {
-    p -> procs.wrath_of_cenarius -> occur();
-
-    event_t*& e = p -> expirations.wrath_of_cenarius;
-
-    if( e )
-    {
-      e -> reschedule( 10.0 );
-    }
-    else
-    {
-      e = new ( s -> sim ) wrath_of_cenarius_expiration_t( s -> sim, p );
-    }
-  }
-}
-
-// Robe of the Elder Scribes ================================================
-
-static void trigger_elder_scribes( spell_t* s )
-{
-  struct elder_scribes_expiration_t : public event_t
-  {
-    elder_scribes_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      name = "Elder Scribes Expiration";
-      player -> aura_gain( "Power of Arcanagos" );
-      player -> spell_power[ SCHOOL_MAX ] += 130;
-      player -> cooldowns.elder_scribes = sim -> current_time + 60;
-      sim -> add_event( this, 10.0 );
-    }
-    virtual void execute()
-    {
-      player -> aura_loss( "Power of Arcanagos" );
-      player -> spell_power[ SCHOOL_MAX ] -= 130;
-    }
-  };
-
-  player_t* p = s -> player;
-
-  if(  p -> gear.elder_scribes                                    && 
-       s -> sim -> cooldown_ready( p -> cooldowns.elder_scribes ) &&
-       s -> sim -> roll( 0.05 ) )
-  {
-    p -> procs.elder_scribes -> occur();
-    new ( s -> sim ) elder_scribes_expiration_t( s -> sim, p );
-  }
-}
-
-// Eternal Sage ============================================================
-
-static void trigger_eternal_sage( spell_t* s )
-{
-  struct eternal_sage_expiration_t : public event_t
-  {
-    eternal_sage_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      name = "Eternal Sage Expiration";
-      player -> aura_gain( "Eternal Sage" );
-      player -> spell_power[ SCHOOL_MAX ] += 95;
-      player -> cooldowns.eternal_sage = sim -> current_time + 45;
-      sim -> add_event( this, 10.0 );
-    }
-    virtual void execute()
-    {
-      player -> aura_loss( "Eternal Sage" );
-      player -> spell_power[ SCHOOL_MAX ] -= 95;
-    }
-  };
-
-  player_t* p = s -> player;
-
-  if(  p -> gear.eternal_sage                                    && 
-       s -> sim -> cooldown_ready( p -> cooldowns.eternal_sage ) &&
-       s -> sim -> roll( 0.10 ) )
-  {
-    p -> procs.eternal_sage -> occur();
-    new ( s -> sim ) eternal_sage_expiration_t( s -> sim, p );
-  }
-}
-
-// Eye of Magtheridon ======================================================
-
-static void trigger_eye_of_magtheridon( spell_t* s )
-{
-  struct eye_of_magtheridon_expiration_t : public event_t
-  {
-    eye_of_magtheridon_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      name = "Eye of Magtheridon Expiration";
-      player -> aura_gain( "Eye of Magtheridon" );
-      player -> spell_power[ SCHOOL_MAX ] += 170;
-      sim -> add_event( this, 10.0 );
-    }
-    virtual void execute()
-    {
-      player -> aura_loss( "Eye of Magtheridon" );
-      player -> spell_power[ SCHOOL_MAX ] -= 170;
-      player -> expirations.eye_of_magtheridon = 0;
-    }
-  };
-
-  player_t* p = s -> player;
-
-  if( p -> gear.eye_of_magtheridon )
-  {
-    p -> procs.eye_of_magtheridon -> occur();
-
-    event_t*& e = p -> expirations.eye_of_magtheridon;
-
-    if( e )
-    {
-      e -> reschedule( 10.0 );
-    }
-    else
-    {
-      e = new ( s -> sim ) eye_of_magtheridon_expiration_t( s -> sim, p );
-    }
-  }
-}
-
-// Shiffar's Nexus Horn =====================================================
-
-static void trigger_shiffars_nexus_horn( spell_t* s )
-{
-  struct shiffars_nexus_horn_expiration_t : public event_t
-  {
-    shiffars_nexus_horn_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      name = "Shiffar's Nexus Horn Expiration";
-      player -> aura_gain( "Shiffar's Nexus Horn" );
-      player -> spell_power[ SCHOOL_MAX ] += 225;
-      player -> cooldowns.shiffars_nexus_horn = sim -> current_time + 45;
-      sim -> add_event( this, 10.0 );
-    }
-    virtual void execute()
-    {
-      player -> aura_loss( "Shiffar's Nexus Horn" );
-      player -> spell_power[ SCHOOL_MAX ] -= 225;
-    }
-  };
-
-  player_t* p = s -> player;
-
-  if( p ->        gear.shiffars_nexus_horn                             && 
-      s -> sim -> cooldown_ready( p -> cooldowns.shiffars_nexus_horn ) &&
-      s -> sim -> roll( 0.20 ) )
-  {
-    p -> procs.shiffars_nexus_horn -> occur();
-    new ( s -> sim ) shiffars_nexus_horn_expiration_t( s -> sim, p );
-  }
-}
-
-// Sextant of Unstable Currents ============================================
-
-static void trigger_sextant_of_unstable_currents( spell_t* s )
-{
-  struct sextant_of_unstable_currents_expiration_t : public event_t
-  {
-    sextant_of_unstable_currents_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      name = "Sextant of Unstable Currents Expiration";
-      player -> aura_gain( "Sextant of Unstable Currents" );
-      player -> spell_power[ SCHOOL_MAX ] += 190;
-      player -> cooldowns.sextant_of_unstable_currents = sim -> current_time + 45;
-      sim -> add_event( this, 15.0 );
-    }
-    virtual void execute()
-    {
-      player -> aura_loss( "Sextant of Unstable Currents" );
-      player -> spell_power[ SCHOOL_MAX ] -= 190;
-    }
-  };
-
-  player_t* p = s -> player;
-
-  if( p ->        gear.sextant_of_unstable_currents                             && 
-      s -> sim -> cooldown_ready( p -> cooldowns.sextant_of_unstable_currents ) &&
-      s -> sim -> roll( 0.20 ) )
-  {
-    p -> procs.sextant_of_unstable_currents -> occur();
-    new ( s -> sim ) sextant_of_unstable_currents_expiration_t( s -> sim, p );
-  }
-}
-
-// Quagmirran's Eye ========================================================
-
-static void trigger_quagmirrans_eye( spell_t* s )
-{
-  struct quagmirrans_eye_expiration_t : public event_t
-  {
-    quagmirrans_eye_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      name = "Quagmirran's Eye Expiration";
-      player -> aura_gain( "Quagmirran's Eye" );
-      player -> haste_rating += 320;
-      player -> recalculate_haste();
-      player -> cooldowns.quagmirrans_eye = sim -> current_time + 45;
-      sim -> add_event( this, 6.0 );
-    }
-    virtual void execute()
-    {
-      player -> aura_loss( "Quagmirran's Eye" );
-      player -> haste_rating -= 320;
-      player -> recalculate_haste();
-    }
-  };
-
-  if( ! s -> harmful ) return;
-
-  player_t* p = s -> player;
-
-  if( p ->        gear.quagmirrans_eye                             && 
-      s -> sim -> cooldown_ready( p -> cooldowns.quagmirrans_eye ) && 
-      s -> sim -> roll( 0.10 ) )
-  {
-    p -> procs.quagmirrans_eye -> occur();
-    new ( s -> sim ) quagmirrans_eye_expiration_t( s -> sim, p );
-  }
-}
-
-// Embrace of the Spider ========================================================
-
-static void trigger_embrace_of_the_spider( spell_t* s )
-{
-  struct embrace_of_the_spider_expiration_t : public event_t
-  {
-    embrace_of_the_spider_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      name = "Embrace of the Spider Expiration";
-      player -> aura_gain( "Embrace of the Spider" );
-      player -> haste_rating += 505;
-      player -> recalculate_haste();
-      player -> cooldowns.embrace_of_the_spider = sim -> current_time + 45;
-      sim -> add_event( this, 10.0 );
-    }
-    virtual void execute()
-    {
-      player -> aura_loss( "Embrace of the Spider" );
-      player -> haste_rating -= 505;
-      player -> recalculate_haste();
-    }
-  };
-
-  if( ! s -> harmful ) return;
-
-  player_t* p = s -> player;
-
-  if( p ->        gear.embrace_of_the_spider                             && 
-      s -> sim -> cooldown_ready( p -> cooldowns.embrace_of_the_spider ) && 
-      s -> sim -> roll( 0.10 ) )
-  {
-    p -> procs.embrace_of_the_spider -> occur();
-    new ( s -> sim ) embrace_of_the_spider_expiration_t( s -> sim, p );
-  }
-}
-
-// Darkmoon Crusade ========================================================
-
-static void trigger_darkmoon_crusade( spell_t* s )
-{
-  struct darkmoon_crusade_expiration_t : public event_t
-  {
-    darkmoon_crusade_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      name = "Darkmoon Crusade Expiration";
-      sim -> add_event( this, 10.0 );
-    }
-    virtual void execute()
-    {
-      player -> aura_loss( "Darkmoon Crusade" );
-      player -> spell_power[ SCHOOL_MAX ] -= player -> buffs.darkmoon_crusade * 8;
-      player -> buffs.darkmoon_crusade = 0;
-      player -> expirations.darkmoon_crusade = 0;
-    }
-  };
-
-  if( ! s -> harmful ) return;
-
-  player_t* p = s -> player;
-
-  if( ! p ->  gear.darkmoon_crusade ) return;
-
-  if( p -> buffs.darkmoon_crusade < 10 )
-  {
-    p -> buffs.darkmoon_crusade++;
-    p -> spell_power[ SCHOOL_MAX ] += 8;
-    if( p -> buffs.darkmoon_crusade == 1 ) p -> aura_gain( "Darkmoon Crusade" );
-  }
-  
-  event_t*& e = p -> expirations.darkmoon_crusade;
-
-  if( e )
-  {
-    e -> reschedule( 10.0 );
-  }
-  else
-  {
-    e = new ( s -> sim ) darkmoon_crusade_expiration_t( s -> sim, p );
-  }
-}
-
-// Illustration of the Dragon Soul ========================================================
-
-static void trigger_illustration_of_the_dragon_soul( spell_t* s )
-{
-  struct illustration_of_the_dragon_soul_expiration_t : public event_t
-  {
-    illustration_of_the_dragon_soul_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      name = "Illustration of the Dragon Soul";
-      sim -> add_event( this, 10.0 );
-    }
-    virtual void execute()
-    {
-      player -> aura_loss( "Illustration of the Dragon Soul" );
-      player -> spell_power[ SCHOOL_MAX ] -= player -> buffs.illustration_of_the_dragon_soul * 20;
-      player -> buffs.illustration_of_the_dragon_soul = 0;
-      player -> expirations.illustration_of_the_dragon_soul = 0;
-    }
-  };
-
-  if( ! s -> harmful ) return;
-
-  player_t* p = s -> player;
-
-  if( ! p ->  gear.illustration_of_the_dragon_soul ) return;
-
-  if( p -> buffs.illustration_of_the_dragon_soul < 10 )
-  {
-    p -> buffs.illustration_of_the_dragon_soul++;
-    p -> spell_power[ SCHOOL_MAX ] += 20;
-    if( p -> buffs.illustration_of_the_dragon_soul == 1 ) p -> aura_gain( "Illustration of the Dragon Soul" );
-  }
-  
-  event_t*& e = p -> expirations.illustration_of_the_dragon_soul;
-
-  if( e )
-  {
-    e -> reschedule( 10.0 );
-  }
-  else
-  {
-    e = new ( s -> sim ) illustration_of_the_dragon_soul_expiration_t( s -> sim, p );
-  }
-}
-
-
-// Eye of the Broodmother =================================================================
-
-static void trigger_eye_of_the_broodmother( spell_t* s )
-{
-  struct eye_of_the_broodmother_expiration_t : public event_t
-  {
-    eye_of_the_broodmother_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      name = "Eye of the Broodmother Expiration";
-      sim -> add_event( this, 10.0 );
-    }
-    virtual void execute()
-    {
-      player -> aura_loss( "Eye of the Broodmother" );
-      player -> spell_power[ SCHOOL_MAX ] -= player -> buffs.eye_of_the_broodmother * 25;
-      player -> buffs.eye_of_the_broodmother = 0;
-      player -> expirations.eye_of_the_broodmother = 0;
-    }
-  };
-
-  if( ! s -> harmful ) return;
-
-  player_t* p = s -> player;
-
-  if( ! p ->  gear.eye_of_the_broodmother ) return;
-
-  if( p -> buffs.eye_of_the_broodmother < 5 )
-  {
-    p -> buffs.eye_of_the_broodmother++;
-    p -> spell_power[ SCHOOL_MAX ] += 25;
-    if( p -> buffs.eye_of_the_broodmother == 1 ) p -> aura_gain( "Eye of the Broodmother" );
-  }
-  
-  event_t*& e = p -> expirations.eye_of_the_broodmother;
-
-  if( e )
-  {
-    e -> reschedule( 10.0 );
-  }
-  else
-  {
-    e = new ( s -> sim ) eye_of_the_broodmother_expiration_t( s -> sim, p );
-  }
-}
-
-// Darkmoon Wrath ==========================================================
-
-static void clear_darkmoon_wrath( spell_t* s )
-{
-  event_t*& e = s -> player -> expirations.darkmoon_wrath;
-
-  if( e ) 
-  {
-    e -> canceled = 1;
-    e -> execute();
-  }
-}
-
-static void trigger_darkmoon_wrath( spell_t* s )
-{
-  struct darkmoon_wrath_expiration_t : public event_t
-  {
-    darkmoon_wrath_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      name = "Darkmoon Wrath Expiration";
-      sim -> add_event( this, 10.0 );
-    }
-    virtual void execute()
-    {
-      player -> aura_loss( "Darkmoon Wrath" );
-      player -> spell_crit -= player -> buffs.darkmoon_wrath * ( 17.0 / player -> rating.spell_crit );
-      player -> buffs.darkmoon_wrath = 0;
-      player -> expirations.darkmoon_wrath = 0;
-    }
-  };
-
-  if( ! s -> harmful  ) return;
-  if( ! s -> may_crit ) return;
-
-  player_t* p = s -> player;
-
-  if( ! p -> gear.darkmoon_wrath ) return;
-
-  event_t*& e = p -> expirations.darkmoon_wrath;
-
-  if( p -> buffs.darkmoon_wrath < 10 )
-  {
-    p -> buffs.darkmoon_wrath++;
-    p -> spell_crit += 17 / p -> rating.spell_crit;
-    if( p -> buffs.darkmoon_wrath == 1 ) p -> aura_gain( "Darkmoon Wrath" );
-  }
-  
-  if( e )
-  {
-    e -> reschedule( 10.0 );
-  }
-  else
-  {
-    e = new ( s -> sim ) darkmoon_wrath_expiration_t( s -> sim, p );
-  }
-}
-
-// Lightning Capacitor =====================================================
-
-static void trigger_lightning_capacitor( spell_t* s )
-{
-  struct lightning_discharge_t : public spell_t
-  {
-    lightning_discharge_t( player_t* player ) : 
-      spell_t( "lightning_discharge", player, RESOURCE_NONE, SCHOOL_NATURE )
-    {
-      base_dd_min = base_dd_max = 750;
-      base_cost   = 0;
-      cooldown    = 2.5;
-      may_crit    = true;
-      trigger_gcd = 0;
-      background  = true;
-      base_spell_power_multiplier = 0;
-      reset();
-    }
-  };
-
-  player_t* p = s -> player;
-
-  if(  p -> gear.lightning_capacitor )
-  {
-    if( ! p -> actions.lightning_discharge ) 
-    {
-      p -> actions.lightning_discharge = new lightning_discharge_t( p );
+      proc -> occur();
     }
 
-    if( p -> actions.lightning_discharge -> ready() )
+    if( cooldown ) 
+      cooldown_ready = sim -> current_time + cooldown;
+
+    if( stacks < max_stacks )
     {
-      if( p -> buffs.lightning_capacitor < 2 )
+      stacks++;
+      listener -> aura_gain( name_str.c_str() );
+      listener -> stat_gain( stat, amount );
+    }
+
+    if( duration )
+    {
+      if( expiration )
       {
-        p -> buffs.lightning_capacitor++;
-        if( p -> buffs.lightning_capacitor == 1 ) p -> aura_gain( "Lightning Capacitor" );
+	expiration -> reschedule( duration );
       }
       else
       {
-        p -> procs.lightning_capacitor -> occur();
-        p -> buffs.lightning_capacitor = 0;
-        p -> aura_loss( "Lightning Capacitor" );
-        p -> actions.lightning_discharge -> execute();
+	struct expiration_t : public event_t
+	{
+	  stat_proc_callback_t* callback;
+	  
+	  expiration_t( sim_t* sim, player_t* player, stat_proc_callback_t* cb ) : event_t( sim, player ), callback( cb )
+	  {
+	    name = callback -> name_str.c_str();
+	    sim -> add_event( this, callback -> duration );
+	  }
+	  virtual void execute()
+	  {
+	    player -> aura_loss( callback -> name_str.c_str() );
+	    player -> stat_loss( callback -> stat, callback -> amount * callback -> stacks );
+	    callback -> expiration = 0;
+	    callback -> stacks = 0;
+	  }
+	};
+
+	expiration = new ( sim ) expiration_t( sim, listener, this );
       }
     }
-  } 
-}
+  }
+};
 
-// Thunder Capacitor =====================================================
+// discharge_proc_callback ==================================================
 
-static void trigger_thunder_capacitor( spell_t* s )
+struct discharge_proc_callback_t : public action_callback_t
 {
-  struct thunder_discharge_t : public spell_t
+  std::string name_str;
+  int stacks, max_stacks;
+  double proc_chance;
+  double cooldown, cooldown_ready;
+  spell_t* spell;
+  proc_t* proc;
+
+  discharge_proc_callback_t( const std::string& n, player_t* p, int ms, int school, double min, double max, double pc, double cd ) :
+    action_callback_t( p -> sim, p ),
+    name_str(n), stacks(0), max_stacks(ms), proc_chance(pc), cooldown(cd), cooldown_ready(0)
   {
-    thunder_discharge_t( player_t* player ) : 
-      spell_t( "thunder_discharge", player, RESOURCE_NONE, SCHOOL_NATURE )
+    struct discharge_spell_t : public spell_t
     {
-      base_dd_min = base_dd_max = 1276;
-      base_cost   = 0;
-      cooldown    = 2.5;
-      may_crit    = true;
-      trigger_gcd = 0;
-      background  = true;
-      base_spell_power_multiplier = 0;
-      reset();
-    }
-  };
-
-  player_t* p = s -> player;
-
-  if(  p -> gear.thunder_capacitor )
-  {
-    if( ! p -> actions.thunder_discharge ) 
-    {
-      p -> actions.thunder_discharge = new thunder_discharge_t( p );
-    }
-
-    if( p -> actions.thunder_discharge -> ready() )
-    {
-      if( p -> buffs.thunder_capacitor < 2 )
+      discharge_spell_t( const char* n, player_t* p, double min, double max, int s ) : 
+	spell_t( n, p, RESOURCE_NONE, s )
       {
-        p -> buffs.thunder_capacitor++;
-        if( p -> buffs.thunder_capacitor == 1 ) p -> aura_gain( "Thunder Capacitor" );
+	trigger_gcd = 0;
+	base_dd_min = min;
+	base_dd_max = max;
+	may_crit    = true;
+	background  = true;
+	base_spell_power_multiplier = 0;
+	reset();
       }
-      else
-      {
-        p -> procs.thunder_capacitor -> occur();
-        p -> buffs.thunder_capacitor = 0;
-        p -> aura_loss( "Thunder Capacitor" );
-        p -> actions.thunder_discharge -> execute();
-      }
-    }
-  } 
-}
+    };
 
-// Timbals Focusing Crystal =================================================
+    spell = new discharge_spell_t( name_str.c_str(), p, min, max, school );
 
-static void trigger_timbals_crystal( spell_t* s )
-{
-  struct timbals_discharge_t : public spell_t
+    proc = p -> get_proc( name_str.c_str() );
+  }
+
+  virtual void reset() { stacks=0; cooldown_ready=0; }
+
+  virtual void trigger( action_t* a )
   {
-    timbals_discharge_t( player_t* player ) : 
-      spell_t( "timbals_discharge", player, RESOURCE_NONE, SCHOOL_SHADOW )
+    if( cooldown )
+      if( sim -> current_time < cooldown_ready )
+	return;
+
+    if( proc_chance )
+      if( ! sim -> roll( proc_chance ) )
+	return;
+
+    if( ++stacks < max_stacks )
     {
-      base_dd_min = base_dd_max = 380;
-      cooldown    = 15;
-      may_crit    = true;
-      trigger_gcd = 0;
-      background  = true;
-      reset();
-      base_spell_power_multiplier = 0;
+      listener -> aura_gain( name_str.c_str() );
     }
-    virtual void assess_damage( double amount, int dmg_type )
+    else
     {
-      // Not considered a "direct-dmg" spell, so ISB charges not consumed.
-      spell_t::assess_damage( direct_dmg, DMG_OVER_TIME ); 
-    }
-  };
-
-  player_t* p = s -> player;
-
-  if( p -> gear.timbals_crystal )
-  {
-    if( ! p -> actions.timbals_discharge ) 
-    {
-      p -> actions.timbals_discharge = new timbals_discharge_t( p );
-    }
-
-    if( p -> actions.timbals_discharge -> ready() && 
-        s -> sim -> roll( 0.10 ) )
-    {
-      p -> procs.timbals_crystal -> occur();
-      p -> actions.timbals_discharge -> execute();
-    }
-  } 
-}
-
-// Bandit's Insignia ========================================================
-
-static void trigger_bandits_insignia( action_t* a )
-{
-  struct bandits_insignia_t : public spell_t
-  {
-    bandits_insignia_t( player_t* player ) :
-      spell_t("bandits_insignia", player, RESOURCE_NONE, SCHOOL_ARCANE )
-    {
-      base_dd_min = 1504;
-      base_dd_max = 2256;
-      cooldown    = 45;
-      may_crit    = true;
-      trigger_gcd = 0;
-      background  = true;
-      reset();
-      base_spell_power_multiplier = 0;
-    }
-  };
-
-  player_t* p = a -> player;
-
-  if( p -> gear.bandits_insignia )
-  {
-    if( ! p -> actions.bandits_insignia )
-    {
-      p -> actions.bandits_insignia = new bandits_insignia_t( p );
-    }
-
-    if( p -> actions.bandits_insignia -> ready() &&
-        a -> sim -> roll( 0.15 ) )
-    {
-      p -> procs.bandits_insignia -> occur();
-      p -> actions.bandits_insignia -> execute();
+      stacks = 0;
+      spell -> execute();
+      proc -> occur();
+      
+      if( cooldown ) 
+	cooldown_ready = sim -> current_time + cooldown;
     }
   }
-}
-
-// Talisman of Ascendance ===================================================
-
-static void trigger_talisman_of_ascendance( spell_t* s )
-{
-  if( ! s -> harmful ) return;
-
-  int& buff = s -> player -> buffs.talisman_of_ascendance;
-
-  if( buff != 0 )
-  {
-    if( buff < 200 )
-    {
-      buff = ( buff < 0 ) ? 40 : buff+40;
-      s -> player -> spell_power[ SCHOOL_MAX ] += 40;
-    }
-    else 
-    {
-      s -> player -> spell_power[ SCHOOL_MAX ] -= buff;
-      buff = 0;
-    }
-  } 
-}
-
-// Zandalarian Hero Charm ===================================================
-
-static void trigger_zandalarian_hero_charm( spell_t* s )
-{
-  if( ! s -> harmful ) return;
-
-  if( s -> player -> buffs.zandalarian_hero_charm > 0 )
-  {
-    s -> player -> buffs.zandalarian_hero_charm  -= 17;
-    s -> player -> spell_power[ SCHOOL_MAX ] -= 17;
-  } 
-}
-
-// Mark of Defiance =========================================================
-
-static void trigger_mark_of_defiance( spell_t* s )
-{
-  if( ! s -> harmful ) return;
-
-  player_t* p = s -> player;
-
-  if( p -> gear.mark_of_defiance                                    && 
-      s -> sim -> cooldown_ready( p -> cooldowns.mark_of_defiance ) && 
-      s -> sim -> roll( 0.15 ) )
-  {
-    {
-      p -> procs.mark_of_defiance -> occur();
-      p -> resource_gain( RESOURCE_MANA, 150.0, p -> gains.mark_of_defiance );
-      p -> cooldowns.mark_of_defiance = s -> sim -> current_time + 15;
-    }
-  }
-}
-
-// Violet Eye ================================================================
-
-static void trigger_violet_eye( spell_t* s )
-{
-  player_t* p = s -> player;
-
-  if( p -> buffs.violet_eye == 0 ) return;
-
-  if( p -> buffs.violet_eye < 0 )
-    p -> buffs.violet_eye = 1;
-  else
-    p -> buffs.violet_eye++;
-
-  p -> mp5 += 21;
-
-  if( p -> buffs.violet_eye == 1 ) p -> aura_gain( "Violet Eye" );
-}
-
-// Extract of Necromatic Power =================================================
-
-static void trigger_extract_of_necromatic_power( spell_t* s )
-{
-  struct extract_of_necromatic_power_discharge_t : public spell_t
-  {
-    extract_of_necromatic_power_discharge_t( player_t* player ) : 
-      spell_t( "extract_of_necromatic_power_discharge", player, RESOURCE_NONE, SCHOOL_SHADOW )
-    {
-      base_dd_min = base_dd_max = 1050;
-      cooldown    = 15;
-      may_crit    = true;
-      trigger_gcd = 0;
-      background  = true;
-      base_spell_power_multiplier = 0;
-      reset();
-    }
-    virtual void assess_damage( double amount, int dmg_type )
-    {
-      // Not considered a "direct-dmg" spell, so ISB charges not consumed.
-      spell_t::assess_damage( direct_dmg, DMG_OVER_TIME ); 
-    }
-  };
-
-  player_t* p = s -> player;
-
-  if( p -> gear.extract_of_necromatic_power )
-  {
-    if( ! p -> actions.extract_of_necromatic_power_discharge ) 
-    {
-      p -> actions.extract_of_necromatic_power_discharge = new extract_of_necromatic_power_discharge_t( p );
-    }
-
-    if( p -> actions.extract_of_necromatic_power_discharge -> ready() && 
-        s -> sim -> roll( 0.10 ) )
-    {
-      p -> procs.extract_of_necromatic_power -> occur();
-      p -> actions.extract_of_necromatic_power_discharge -> execute();
-    }
-  } 
-}
-
-// Egg of Mortal Essence ============================================
-
-static void trigger_egg_of_mortal_essence( action_t* s,
-					   void*     user_data )
-{
-  struct egg_of_mortal_essence_expiration_t : public event_t
-  {
-    egg_of_mortal_essence_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      name = "The Egg of Mortal Essence";
-      player -> aura_gain( "Egg of Mortal Essence" );
-      player -> haste_rating += 505;
-      player -> recalculate_haste();
-      player -> cooldowns.egg_of_mortal_essence = sim -> current_time + 45;
-      sim -> add_event( this, 10.0 );
-    }
-    virtual void execute()
-    {
-      player -> aura_loss( "Egg of Mortal Essence" );
-      player -> haste_rating -= 505;
-      player -> recalculate_haste();
-    }
-  };
-
-  player_t* p = s -> player;
-
-  if( s -> sim -> cooldown_ready( p -> cooldowns.egg_of_mortal_essence ) &&
-      s -> sim -> roll( 0.10 ) )
-  {
-    p -> procs.egg_of_mortal_essence -> occur();
-
-    new ( s -> sim ) egg_of_mortal_essence_expiration_t( s -> sim, p );
-  }
-}
-
-
-// Sundial of the Exiled ============================================
-
-static void trigger_sundial_of_the_exiled( spell_t* s )
-{
-  struct sundial_of_the_exiled_expiration_t : public event_t
-  {
-    sundial_of_the_exiled_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      name = "Sundial of the Exiled Expiration";
-      player -> aura_gain( "Sundial of the Exiled" ,60064 );
-      player -> spell_power[ SCHOOL_MAX ] += 590;
-      player -> cooldowns.sundial_of_the_exiled = sim -> current_time + 45;
-      sim -> add_event( this, 10.0 );
-    }
-    virtual void execute()
-    {
-      player -> aura_loss( "Sundial of the Exiled" ,60064 );
-      player -> spell_power[ SCHOOL_MAX ] -= 590;
-    }
-  };
-
-  if( ! s -> harmful ) return;
-
-  player_t* p = s -> player;
-
-  if( p ->        gear.sundial_of_the_exiled && 
-      s -> sim -> cooldown_ready( p -> cooldowns.sundial_of_the_exiled ) &&
-      s -> sim -> roll( 0.10 ) )
-  {
-    p -> procs.sundial_of_the_exiled -> occur();
-    new ( s -> sim ) sundial_of_the_exiled_expiration_t( s -> sim, p );
-  }
-}
-
-// Flare of the Heavens ============================================
-
-static void trigger_flare_of_the_heavens( spell_t* s )
-{
-  struct flare_of_the_heavens_expiration_t : public event_t
-  {
-    flare_of_the_heavens_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      name = "Flare of the Heavens Expiration";
-      player -> aura_gain( "Flare of the Heavens" );
-      player -> spell_power[ SCHOOL_MAX ] += 850;
-      player -> cooldowns.flare_of_the_heavens = sim -> current_time + 45;
-      sim -> add_event( this, 10.0 );
-    }
-    virtual void execute()
-    {
-      player -> aura_loss( "Flare of the Heavens" );
-      player -> spell_power[ SCHOOL_MAX ] -= 850;
-    }
-  };
-
-  if( ! s -> harmful ) return;
-
-  player_t* p = s -> player;
-
-  if( p ->        gear.flare_of_the_heavens && 
-      s -> sim -> cooldown_ready( p -> cooldowns.flare_of_the_heavens ) &&
-      s -> sim -> roll( 0.10 ) )
-  {
-    p -> procs.flare_of_the_heavens -> occur();
-    new ( s -> sim ) flare_of_the_heavens_expiration_t( s -> sim, p );
-  }
-}
-
-// Elemental Focus Stone ============================================
-
-static void trigger_elemental_focus_stone( spell_t* s )
-{
-  struct elemental_focus_stone_expiration_t : public event_t
-  {
-    elemental_focus_stone_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      name = "Elemental Focus Stone Expiration";
-      player -> aura_gain( "Alacrity of the Elements" );
-      player -> spell_power[ SCHOOL_MAX ] += 522;
-      player -> cooldowns.elemental_focus_stone = sim -> current_time + 45;
-      sim -> add_event( this, 10.0 );
-    }
-    virtual void execute()
-    {
-      player -> aura_loss( "Alacrity of the Elements" );
-      player -> spell_power[ SCHOOL_MAX ] -= 522;
-    }
-  };
-
-  if( ! s -> harmful ) return;
-
-  player_t* p = s -> player;
-
-  if( p ->        gear.elemental_focus_stone && 
-      s -> sim -> cooldown_ready( p -> cooldowns.elemental_focus_stone ) &&
-      s -> sim -> roll( 0.10 ) )
-  {
-    p -> procs.elemental_focus_stone -> occur();
-    new ( s -> sim ) elemental_focus_stone_expiration_t( s -> sim, p );
-  }
-}
-
-// Forge Ember ============================================
-
-static void trigger_forge_ember( spell_t* s )
-{
-  struct forge_ember_expiration_t : public event_t
-  {
-    forge_ember_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      name = "Forge Ember";
-      player -> aura_gain( "Forge Ember" );
-      player -> spell_power[ SCHOOL_MAX ] += 512;
-      player -> cooldowns.forge_ember = sim -> current_time + 45;
-      sim -> add_event( this, 10.0 );
-    }
-    virtual void execute()
-    {
-      player -> aura_loss( "Forge Ember" );
-      player -> spell_power[ SCHOOL_MAX ] -= 512;
-    }
-  };
-
-  player_t* p = s -> player;
-
-  if( p ->        gear.forge_ember && 
-      s -> sim -> cooldown_ready( p -> cooldowns.forge_ember ) &&
-      s -> sim -> roll( 0.10 ) )
-  {
-    p -> procs.forge_ember -> occur();
-    new ( s -> sim ) forge_ember_expiration_t( s -> sim, p );
-  }
-}
-
-// Dying Curse ============================================
-
-static void trigger_dying_curse( spell_t* s )
-{
-  struct dying_curse_expiration_t : public event_t
-  {
-    dying_curse_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      name = "Dying Curse";
-      player -> aura_gain( "Dying Curse", 60494 );
-      player -> spell_power[ SCHOOL_MAX ] += 765;
-      player -> cooldowns.dying_curse = sim -> current_time + 45;
-      sim -> add_event( this, 10.0 );
-    }
-    virtual void execute()
-    {
-      player -> aura_loss( "Dying Curse", 60494 );
-      player -> spell_power[ SCHOOL_MAX ] -= 765;
-    }
-  };
-
-  player_t* p = s -> player;
-
-  if( p ->        gear.dying_curse && 
-      s -> sim -> cooldown_ready( p -> cooldowns.dying_curse ) &&
-      s -> sim -> roll( 0.15 ) )
-  {
-    p -> procs.dying_curse -> occur();
-    new ( s -> sim ) dying_curse_expiration_t( s -> sim, p );
-  }
-}
-
-// Mirror of Truth ============================================
-
-static void trigger_mirror_of_truth( action_t* a )
-{
-  struct mirror_of_truth_expiration_t : public event_t
-  {
-    mirror_of_truth_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      name = "Mirror of Truth";
-      player -> aura_gain( "Reflection of Torment" );
-      player -> attack_power += 1000;
-      player -> cooldowns.mirror_of_truth = sim -> current_time + 50;
-      sim -> add_event( this, 10.0 );
-    }
-    virtual void execute()
-    {
-      player -> aura_loss( "Reflection of Torment" );
-      player -> attack_power -= 1000;
-    }
-  };
-
-  player_t* p = a -> player;
-
-  if( p -> gear.mirror_of_truth &&
-      a -> sim -> cooldown_ready( p -> cooldowns.mirror_of_truth ) &&
-      a -> sim -> roll( 0.10 ) )
-  {
-    p -> procs.mirror_of_truth -> occur();
-
-    new ( a -> sim ) mirror_of_truth_expiration_t( a -> sim, p );
-  }
-}
-
-// Pyrite Infuser =============================================
-
-static void trigger_pyrite_infuser( action_t* a )
-{
-  struct pyrite_infuser_expiration_t : public event_t
-  {
-    pyrite_infuser_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      name = "Pyrite Infusion Expiration";
-      player -> aura_gain( "Pyrite Infusion" );
-      player -> attack_power += 1234;
-      player -> cooldowns.pyrite_infuser = sim -> current_time + 45;
-      sim -> add_event( this, 10.0 );
-    }
-    virtual void execute()
-    {
-      player -> aura_loss( "Pyrite Infusion" );
-      player -> attack_power -= 1234;
-    }
-  };
-
-  player_t* p = a -> player;
-
-  if( p -> gear.pyrite_infuser &&
-      a -> sim -> cooldown_ready( p -> cooldowns.pyrite_infuser ) &&
-      a -> sim -> roll( 0.10 ) )
-  {
-    p -> procs.pyrite_infuser -> occur();
-
-    new ( a -> sim ) pyrite_infuser_expiration_t( a -> sim, p );
-  }
-}
-
-// Grim Toll ====================================================
-
-static void trigger_grim_toll( action_t* a )
-{
-  struct grim_toll_expiration_t : public event_t
-  {
-    grim_toll_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      name = "Grim Toll";
-      player -> aura_gain( "Grim Toll" );
-      player -> attack_penetration += 612 / player -> rating.armor_penetration;
-      player -> cooldowns.grim_toll = sim -> current_time + 45;
-      sim -> add_event( this, 10.0 );
-    }
-    virtual void execute()
-    {
-      player -> aura_loss( "Grim Toll" ); 
-      player -> attack_penetration -= 612 / player -> rating.armor_penetration;
-    }
-  };
-
-  player_t* p = a -> player;
-
-  if( p -> gear.grim_toll &&
-      a -> sim -> cooldown_ready( p -> cooldowns.grim_toll ) &&
-      a -> sim -> roll( 0.15 ) )
-  {
-    p -> procs.grim_toll -> occur();
-
-    new ( a -> sim ) grim_toll_expiration_t( a -> sim, p );
-  }
-}
-
-// Fury of the Five Flights ======================================
-
-static void trigger_fury_of_the_five_flights( action_t* a,
-					      void*     user_data )
-{
-  struct fury_of_the_five_flights_expiration_t : public event_t
-  {
-    fury_of_the_five_flights_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      name = "Fury of the Five Flights";
-      sim -> add_event( this, 10.0 );
-    }
-    virtual void execute()
-    {
-      player -> aura_loss( "Fury of the Five Flights" );
-      player -> attack_power -= player -> buffs.fury_of_the_five_flights * 16;
-      player -> buffs.fury_of_the_five_flights = 0;
-      player -> expirations.fury_of_the_five_flights = 0;
-    }
-  };
-
-
-  player_t* p = a -> player;
-
-  if( p -> buffs.fury_of_the_five_flights < 20 )
-  {
-    p -> buffs.fury_of_the_five_flights++;
-    p -> attack_power += 16;
-    if( p -> buffs.fury_of_the_five_flights == 1 ) p -> aura_gain( "Fury of the Five Flights" );
-  }
-  
-  event_t*& e = p -> expirations.fury_of_the_five_flights;
-
-  if( e )
-  {
-    e -> reschedule( 10.0 );
-  }
-  else
-  {
-    e = new ( a -> sim ) fury_of_the_five_flights_expiration_t( a -> sim, p );
-  }
-}
-
-// Darkmoon:Greatness ============================================
-
-static void trigger_darkmoon_greatness( action_t* a )
-{
-  struct darkmoon_greatness_expiration_t : public event_t
-  {
-    int attr_type;
-
-    darkmoon_greatness_expiration_t( sim_t* sim, player_t* p, int t ) : event_t( sim, p ), attr_type(t)
-    {
-      name = "Darkmoon Greatness";
-      player -> aura_gain( "Greatness" );
-      player -> attribute [ attr_type ] += 300;
-      player -> cooldowns.darkmoon_greatness = sim -> current_time + 45;
-      sim -> add_event( this, 15.0 );
-    }
-    virtual void execute()
-    {
-      player -> aura_loss( "Greatness" );
-      player -> attribute [ attr_type ] -= 300;
-    }
-  };
-
-  player_t* p = a -> player;
-  
-  if( p -> gear.darkmoon_greatness &&
-      a -> sim -> cooldown_ready( p -> cooldowns.darkmoon_greatness ) &&
-      a -> sim -> roll( 0.35 ) )
-  {
-    p -> procs.darkmoon_greatness -> occur();
-
-    int attr_type = ATTRIBUTE_NONE;
-    double max = 0;
-
-    for( int i=ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; i++ )
-    {
-      if( i == ATTR_STAMINA ) continue;
-
-      if( p -> attribute[ i ] > max )
-      {
-	max = p -> attribute [ i ];
-	attr_type = i;
-      }
-    }
-    
-    new ( a -> sim ) darkmoon_greatness_expiration_t( a -> sim, p, attr_type );
-  }
-}
-
-
-} // ANONYMOUS NAMESPACE ====================================================
-
-// ==========================================================================
-// Gear
-// ==========================================================================
-
-// unique_gear_t::attack_hit_event ==========================================
-
-void unique_gear_t::attack_hit_event( attack_t* a )
-{
-  trigger_bandits_insignia( a );
-  trigger_grim_toll( a );
-  
-  if ( a -> result == RESULT_CRIT )
-  {
-    trigger_mirror_of_truth( a );
-    trigger_pyrite_infuser ( a );
-  }
-}
-
-// unique_gear_t::attack_damage_event =======================================
-
-void unique_gear_t::attack_damage_event( attack_t* a, double amount, int dmg_type )
-{
-  trigger_darkmoon_greatness( a );
-}
-
-// unique_gear_t::spell_miss_event ==========================================
-
-void unique_gear_t::spell_miss_event( spell_t* s )
-{
-  trigger_eye_of_magtheridon( s );
-}
-
-// unique_gear_t::spell_hit_event ===========================================
-
-void unique_gear_t::spell_hit_event( spell_t* s )
-{
-  trigger_darkmoon_crusade               ( s );
-  trigger_darkmoon_wrath                 ( s );
-  trigger_elder_scribes                  ( s );
-  trigger_eternal_sage                   ( s );
-  trigger_elemental_focus_stone          ( s );
-  trigger_flare_of_the_heavens           ( s );
-  trigger_mark_of_defiance               ( s );
-  trigger_mystical_skyfire               ( s );
-  trigger_quagmirrans_eye                ( s );
-  trigger_spellstrike                    ( s );
-  trigger_violet_eye                     ( s );
-  trigger_wrath_of_cenarius              ( s );
-  trigger_sundial_of_the_exiled          ( s );
-  trigger_embrace_of_the_spider          ( s );
-  trigger_eye_of_the_broodmother         ( s );
-  trigger_illustration_of_the_dragon_soul( s );
-  trigger_dying_curse                    ( s );
-  trigger_forge_ember                    ( s );
-
-  if( s -> result == RESULT_CRIT )
-  {
-    clear_darkmoon_wrath                ( s );
-    trigger_lightning_capacitor         ( s );
-    trigger_sextant_of_unstable_currents( s );
-    trigger_shiffars_nexus_horn         ( s );
-    trigger_thunder_capacitor           ( s );
-  }
-}
-
-// unique_gear_t::spell_tick_event ==========================================
-
-void unique_gear_t::spell_tick_event( spell_t* s )
-{
-  trigger_timbals_crystal            ( s );
-  trigger_extract_of_necromatic_power( s );
-}
-
-// unique_gear_t::spell_damage_event ========================================
-
-void unique_gear_t::spell_damage_event( spell_t* s, double amount, int dmg_type )
-{
-  trigger_darkmoon_greatness( s );
-}
-
-// unique_gear_t::spell_finish_event ========================================
-
-void unique_gear_t::spell_finish_event( spell_t* s )
-{
-  trigger_talisman_of_ascendance( s );
-  trigger_zandalarian_hero_charm( s );
-}
+};
 
 // ==========================================================================
 // Attack Power Trinket Action
@@ -1520,192 +331,6 @@ struct haste_trinket_t : public action_t
 };
 
 // ==========================================================================
-// Talisman of Ascendance Action
-// ==========================================================================
-
-struct talisman_of_ascendance_t : public action_t
-{
-  struct talisman_of_ascendance_expiration_t : public event_t
-  {
-    talisman_of_ascendance_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      name = "Talisman of Ascendance Expiration";
-      sim -> add_event( this, 20.0 );
-    }
-    virtual void execute()
-    {
-      player -> aura_loss( "Talisman of Ascendance" );
-      int& buff = player -> buffs.talisman_of_ascendance;
-      if( buff > 0 ) player -> spell_power[ SCHOOL_MAX ] -= buff;
-      buff = 0;
-    }
-  };
-  
-  talisman_of_ascendance_t( player_t* p, const std::string& options_str ) : 
-    action_t( ACTION_USE, "talisman_of_ascendance", p )
-  {
-    cooldown_group = "spell_power_trinket";
-    trigger_gcd = 0;
-    harmful = false;
-  }
-  
-  virtual void execute()
-  {
-    if( sim -> log ) report_t::log( sim, "Player %s uses Talisman of Ascendance", player -> name() );
-    player -> aura_gain( "Talisman of Ascendance" );
-    player -> buffs.talisman_of_ascendance = -1;
-    cooldown_ready = sim -> current_time + 60.0;
-    // Trinket use may not overlap.....
-    player -> share_cooldown( cooldown_group, 20.0 );
-    new ( sim ) talisman_of_ascendance_expiration_t( sim, player );
-  }
-};
-
-// ==========================================================================
-// Zandalarian Hero Charm Action
-// ==========================================================================
-
-struct zandalarian_hero_charm_t : public action_t
-{
-  struct zandalarian_hero_charm_expiration_t : public event_t
-  {
-    zandalarian_hero_charm_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      name = "Zandalarian Hero Charm Expiration";
-      sim -> add_event( this, 20.0 );
-    }
-    virtual void execute()
-    {
-      player -> aura_loss( "Zandalarian Hero Charm" );
-      player -> spell_power[ SCHOOL_MAX ] -= player -> buffs.zandalarian_hero_charm;
-      player -> buffs.zandalarian_hero_charm = 0;
-    }
-  };
-  
-  zandalarian_hero_charm_t( player_t* p, const std::string& options_str ) : 
-    action_t( ACTION_USE, "zandalarian_hero_charm", p )
-  {
-    cooldown_group = "spell_power_trinket";
-    trigger_gcd = 0;
-    harmful = false;
-  }
-  
-  virtual void execute()
-  {
-    if( sim -> log ) report_t::log( sim, "Player %s uses Zandalarian Hero Charm", player -> name() );
-    player -> aura_gain( "Zandalarian Hero Charm" );
-    player -> buffs.zandalarian_hero_charm = 204;
-    player -> spell_power[ SCHOOL_MAX ] += player -> buffs.zandalarian_hero_charm;
-    cooldown_ready = sim -> current_time + 120.0;
-    // Trinket use may not overlap.....
-    player -> share_cooldown( cooldown_group, 20.0 );
-    new ( sim ) zandalarian_hero_charm_expiration_t( sim, player );
-  }
-};
-
-// ==========================================================================
-// Hazzrahs Charm Spell
-// ==========================================================================
-
-struct hazzrahs_charm_t : public action_t
-{
-  struct hazzrahs_charm_expiration_t : public event_t
-  {
-    hazzrahs_charm_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      name = "Hazzrahs Charm Expiration";
-      p -> aura_gain( "Hazzarahs Charm" );
-      double duration=0;
-      switch( p -> type )
-      {
-      case MAGE:    duration = 20.0; p -> spell_power[ SCHOOL_ARCANE ] += 200;            break;
-      case PRIEST:  duration = 15.0; p -> haste_rating += 400;  p -> recalculate_haste(); break;
-      case WARLOCK: duration = 20.0; p -> spell_crit += 140 / ( p -> rating.spell_crit ); break;
-      }
-      sim -> add_event( this, duration );
-    }
-    virtual void execute()
-    {
-      player_t* p = player;
-      p -> aura_loss( "Hazzarahs Charm" );
-      switch( p -> type )
-      {
-      case MAGE:    p -> spell_power[ SCHOOL_ARCANE ] -= 200;            break;
-      case PRIEST:  p -> haste_rating -= 400;  p -> recalculate_haste(); break;
-      case WARLOCK: p -> spell_crit -= 140 / ( p -> rating.spell_crit ); break;
-      }
-    }
-  };
-  
-  hazzrahs_charm_t( player_t* p, const std::string& options_str ) : 
-    action_t( ACTION_USE, "hazzrahs_charm", p )
-  {
-    cooldown_group = "spell_power_trinket";
-    trigger_gcd = 0;
-    harmful = false;
-
-    // This trinket is only availables to Mages, Priests, and Warlocks.
-    if( p -> type != MAGE    &&
-        p -> type != PRIEST  &&
-        p -> type != WARLOCK )
-    {
-      assert( 0 );
-    }
-  }
-  
-  virtual void execute()
-  {
-    if( sim -> log ) report_t::log( sim, "Player %s uses Hazzrahs Charm", player -> name() );
-    cooldown_ready = sim -> current_time + 180.0;
-    // Trinket use may not overlap.....
-    player -> share_cooldown( cooldown_group, 20.0 );
-    new ( sim ) hazzrahs_charm_expiration_t( sim, player );
-  }
-};
-
-// ==========================================================================
-// Violet Eye Spell
-// ==========================================================================
-
-struct violet_eye_t : public action_t
-{
-  struct violet_eye_expiration_t : public event_t
-  {
-    violet_eye_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      name = "Violet Eye Expiration";
-      p -> aura_gain( "Violet Eye" );
-      p -> buffs.violet_eye = -1;
-      sim -> add_event( this, 20.0 );
-    }
-    virtual void execute()
-    {
-      player_t* p = player;
-      p -> aura_loss( "Violet Eye" );
-      p -> mp5 -= p -> buffs.violet_eye * 21;
-      p -> buffs.violet_eye = 0;
-    }
-  };
-
-  violet_eye_t( player_t* p, const std::string& options_str ) : 
-    action_t( ACTION_USE, "violet_eye", p )
-  {
-    cooldown_group = "mana_trinket";
-    harmful = false;
-    trigger_gcd = 0;
-  }
-  
-  virtual void execute()
-  {
-    if( sim -> log ) report_t::log( sim, "Player %s uses Pendant of the Violet Eye", player -> name() );
-    cooldown_ready = sim -> current_time + 120.0;
-    // Trinket use may not overlap.....
-    player -> share_cooldown( cooldown_group, 20.0 );
-    new ( sim ) violet_eye_expiration_t( sim, player );
-  }
-};
-
-// ==========================================================================
 // Hand-Mounted Pyro Rocket
 // ==========================================================================
 
@@ -1739,45 +364,40 @@ bool unique_gear_t::parse_option( player_t*          p,
 {
   option_t options[] =
   {
-    { "ashtongue_talisman",                   OPT_INT,   &( p -> gear.ashtongue_talisman              ) },
-    { "bandits_insignia",                     OPT_INT,   &( p -> gear.bandits_insignia                ) },
-    { "chaotic_skyfire",                      OPT_INT,   &( p -> gear.chaotic_skyflare                ) },
-    { "chaotic_skyflare",                     OPT_INT,   &( p -> gear.chaotic_skyflare                ) },
-    { "darkmoon_crusade",                     OPT_INT,   &( p -> gear.darkmoon_crusade                ) },
-    { "darkmoon_greatness",                   OPT_INT,   &( p -> gear.darkmoon_greatness              ) },
-    { "darkmoon_wrath",                       OPT_INT,   &( p -> gear.darkmoon_wrath                  ) },
-    { "dying_curse",                          OPT_INT,   &( p -> gear.dying_curse                     ) },
-    { "egg_of_mortal_essence",                OPT_INT,   &( p -> gear.egg_of_mortal_essence           ) },
-    { "elder_scribes",                        OPT_INT,   &( p -> gear.elder_scribes                   ) },
-    { "elemental_focus_stone",                OPT_INT,   &( p -> gear.elemental_focus_stone           ) },
-    { "ember_skyflare",                       OPT_INT,   &( p -> gear.ember_skyflare                  ) },
-    { "embrace_of_the_spider",                OPT_INT,   &( p -> gear.embrace_of_the_spider           ) },
-    { "eternal_sage",                         OPT_INT,   &( p -> gear.eternal_sage                    ) },
-    { "extract_of_necromatic_power",          OPT_INT,   &( p -> gear.extract_of_necromatic_power     ) },
-    { "eye_of_magtheridon",                   OPT_INT,   &( p -> gear.eye_of_magtheridon              ) },
-    { "eye_of_the_broodmother",               OPT_INT,   &( p -> gear.eye_of_the_broodmother          ) },
-    { "flare_of_the_heavens",                 OPT_INT,   &( p -> gear.flare_of_the_heavens            ) },
-    { "forge_ember",                          OPT_INT,   &( p -> gear.forge_ember                     ) },
-    { "fury_of_the_five_flights",             OPT_INT,   &( p -> gear.fury_of_the_five_flights        ) },
-    { "grim_toll",                            OPT_INT,   &( p -> gear.grim_toll                       ) },
-    { "illustration_of_the_dragon_soul",      OPT_INT,   &( p -> gear.illustration_of_the_dragon_soul ) },
-    { "lightning_capacitor",                  OPT_INT,   &( p -> gear.lightning_capacitor             ) },
-    { "mirror_of_truth",                      OPT_INT,   &( p -> gear.mirror_of_truth                 ) },
-    { "mark_of_defiance",                     OPT_INT,   &( p -> gear.mark_of_defiance                ) },
-    { "mystical_skyfire",                     OPT_INT,   &( p -> gear.mystical_skyfire                ) },
-    { "pyrite_infuser",                       OPT_INT,   &( p -> gear.pyrite_infuser                  ) },
-    { "quagmirrans_eye",                      OPT_INT,   &( p -> gear.quagmirrans_eye                 ) },
-    { "relentless_earthstorm",                OPT_INT,   &( p -> gear.relentless_earthstorm           ) },
-    { "sextant_of_unstable_currents",         OPT_INT,   &( p -> gear.sextant_of_unstable_currents    ) },
-    { "shiffars_nexus_horn",                  OPT_INT,   &( p -> gear.shiffars_nexus_horn             ) },
-    { "spellstrike",                          OPT_INT,   &( p -> gear.spellstrike                     ) },
-    { "spellsurge",                           OPT_INT,   &( p -> gear.spellsurge                      ) },
-    { "sundial_of_the_exiled",                OPT_INT,   &( p -> gear.sundial_of_the_exiled           ) },
-    { "talisman_of_ascendance",               OPT_INT,   &( p -> gear.talisman_of_ascendance          ) },
-    { "thunder_capacitor",                    OPT_INT,   &( p -> gear.thunder_capacitor               ) },
-    { "timbals_crystal",                      OPT_INT,   &( p -> gear.timbals_crystal                 ) },
-    { "wrath_of_cenarius",                    OPT_INT,   &( p -> gear.wrath_of_cenarius               ) },
-    { "zandalarian_hero_charm",               OPT_INT,   &( p -> gear.zandalarian_hero_charm          ) },
+    { "bandits_insignia",                     OPT_INT,   &( p -> unique_gear -> bandits_insignia                ) },
+    { "chaotic_skyfire",                      OPT_INT,   &( p -> unique_gear -> chaotic_skyflare                ) },
+    { "chaotic_skyflare",                     OPT_INT,   &( p -> unique_gear -> chaotic_skyflare                ) },
+    { "darkmoon_crusade",                     OPT_INT,   &( p -> unique_gear -> darkmoon_crusade                ) },
+    { "darkmoon_greatness",                   OPT_INT,   &( p -> unique_gear -> darkmoon_greatness              ) },
+    { "dying_curse",                          OPT_INT,   &( p -> unique_gear -> dying_curse                     ) },
+    { "egg_of_mortal_essence",                OPT_INT,   &( p -> unique_gear -> egg_of_mortal_essence           ) },
+    { "elder_scribes",                        OPT_INT,   &( p -> unique_gear -> elder_scribes                   ) },
+    { "elemental_focus_stone",                OPT_INT,   &( p -> unique_gear -> elemental_focus_stone           ) },
+    { "ember_skyflare",                       OPT_INT,   &( p -> unique_gear -> ember_skyflare                  ) },
+    { "embrace_of_the_spider",                OPT_INT,   &( p -> unique_gear -> embrace_of_the_spider           ) },
+    { "eternal_sage",                         OPT_INT,   &( p -> unique_gear -> eternal_sage                    ) },
+    { "extract_of_necromatic_power",          OPT_INT,   &( p -> unique_gear -> extract_of_necromatic_power     ) },
+    { "eye_of_magtheridon",                   OPT_INT,   &( p -> unique_gear -> eye_of_magtheridon              ) },
+    { "eye_of_the_broodmother",               OPT_INT,   &( p -> unique_gear -> eye_of_the_broodmother          ) },
+    { "flare_of_the_heavens",                 OPT_INT,   &( p -> unique_gear -> flare_of_the_heavens            ) },
+    { "forge_ember",                          OPT_INT,   &( p -> unique_gear -> forge_ember                     ) },
+    { "fury_of_the_five_flights",             OPT_INT,   &( p -> unique_gear -> fury_of_the_five_flights        ) },
+    { "grim_toll",                            OPT_INT,   &( p -> unique_gear -> grim_toll                       ) },
+    { "illustration_of_the_dragon_soul",      OPT_INT,   &( p -> unique_gear -> illustration_of_the_dragon_soul ) },
+    { "lightning_capacitor",                  OPT_INT,   &( p -> unique_gear -> lightning_capacitor             ) },
+    { "mirror_of_truth",                      OPT_INT,   &( p -> unique_gear -> mirror_of_truth                 ) },
+    { "mark_of_defiance",                     OPT_INT,   &( p -> unique_gear -> mark_of_defiance                ) },
+    { "mystical_skyfire",                     OPT_INT,   &( p -> unique_gear -> mystical_skyfire                ) },
+    { "pyrite_infuser",                       OPT_INT,   &( p -> unique_gear -> pyrite_infuser                  ) },
+    { "quagmirrans_eye",                      OPT_INT,   &( p -> unique_gear -> quagmirrans_eye                 ) },
+    { "relentless_earthstorm",                OPT_INT,   &( p -> unique_gear -> relentless_earthstorm           ) },
+    { "sextant_of_unstable_currents",         OPT_INT,   &( p -> unique_gear -> sextant_of_unstable_currents    ) },
+    { "shiffars_nexus_horn",                  OPT_INT,   &( p -> unique_gear -> shiffars_nexus_horn             ) },
+    { "spellstrike",                          OPT_INT,   &( p -> unique_gear -> spellstrike                     ) },
+    { "sundial_of_the_exiled",                OPT_INT,   &( p -> unique_gear -> sundial_of_the_exiled           ) },
+    { "thunder_capacitor",                    OPT_INT,   &( p -> unique_gear -> thunder_capacitor               ) },
+    { "timbals_crystal",                      OPT_INT,   &( p -> unique_gear -> timbals_crystal                 ) },
+    { "wrath_of_cenarius",                    OPT_INT,   &( p -> unique_gear -> wrath_of_cenarius               ) },
     { NULL, OPT_UNKNOWN }
   };
   
@@ -1800,11 +420,7 @@ action_t* unique_gear_t::create_action( player_t*          p,
 {
   if( name == "attack_power_trinket"     ) return new attack_power_trinket_t    ( p, options_str );
   if( name == "haste_trinket"            ) return new haste_trinket_t           ( p, options_str );
-  if( name == "hazzrahs_charm"           ) return new hazzrahs_charm_t          ( p, options_str );
   if( name == "spell_power_trinket"      ) return new spell_power_trinket_t     ( p, options_str );
-  if( name == "talisman_of_ascendance"   ) return new talisman_of_ascendance_t  ( p, options_str );
-  if( name == "violet_eye"               ) return new violet_eye_t              ( p, options_str );
-  if( name == "zandalarian_hero_charm"   ) return new zandalarian_hero_charm_t  ( p, options_str );
   if( name == "hand_mounted_pyro_rocket" ) return new hand_mounted_pyro_rocket_t( p, options_str );
 
   return 0;
@@ -1816,7 +432,7 @@ action_t* unique_gear_t::create_action( player_t*          p,
 
 void unique_gear_t::init( player_t* p )
 {
-  if( p -> gear.ember_skyflare )
+  if( p -> unique_gear -> ember_skyflare )
   {
     p -> attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.02;    
   }
@@ -1828,12 +444,207 @@ void unique_gear_t::init( player_t* p )
 
 void unique_gear_t::register_callbacks( player_t* p )
 {
-  if( p -> gear.fury_of_the_five_flights ) 
+  action_callback_t* cb;
+
+  // Stat Procs
+
+  //---------------------------------------------------------------------------------------------------------
+  if( p -> unique_gear -> darkmoon_crusade ) 
   {
-    p -> register_attack_result_callback( RESULT_HIT_MASK, trigger_fury_of_the_five_flights );
+    cb = new stat_proc_callback_t( "Darkmoon Crusade", p, STAT_SPELL_POWER, 10, 8, 0.0, 10.0, 0.0 );
+    p -> register_spell_result_callback( RESULT_HIT_MASK, cb );
   }
-  if( p -> gear.egg_of_mortal_essence )
+  //---------------------------------------------------------------------------------------------------------
+  if( p -> unique_gear -> darkmoon_greatness )
   {
-    p -> register_resource_gain_callback( RESOURCE_HEALTH, trigger_egg_of_mortal_essence );
+    int attr[] = { ATTR_STRENGTH, ATTR_AGILITY, ATTR_INTELLECT, ATTR_SPIRIT };
+    int stat[] = { STAT_STRENGTH, STAT_AGILITY, STAT_INTELLECT, STAT_SPIRIT };
+
+    int max_stat=-1, max_value=0;
+
+    for( int i=0; i < 4; i++ ) 
+    {
+      if( p -> attribute[ attr[ i ] ] > max_value )
+      {
+	max_value = p -> attribute[ attr[ i ] ];
+	max_stat = stat[ i ];
+      }
+    }
+    cb = new stat_proc_callback_t( "Darkmoon Greatness", p, max_stat, 1, 300, 0.35, 15.0, 45.0 );
+
+    p -> register_tick_damage_callback( cb );
+    p -> register_direct_damage_callback( cb );
   }
+  //---------------------------------------------------------------------------------------------------------
+  if( p -> unique_gear -> dying_curse )
+  {
+    cb = new stat_proc_callback_t( "Dying Curse", p, STAT_SPELL_POWER, 1, 765, 0.15, 10.0, 45.0 );
+    p -> register_spell_result_callback( RESULT_HIT_MASK, cb );
+  }
+  //---------------------------------------------------------------------------------------------------------
+  if( p -> unique_gear -> egg_of_mortal_essence )
+  {
+    cb = new stat_proc_callback_t( "Egg of Mortal Essence", p, STAT_HASTE_RATING, 1, 505, 0.10, 10.0, 45.0 );
+    p -> register_resource_gain_callback( RESOURCE_HEALTH, cb );
+  }
+  //---------------------------------------------------------------------------------------------------------
+  if( p -> unique_gear -> elder_scribes )
+  {
+    cb = new stat_proc_callback_t( "Elder Scribes", p, STAT_SPELL_POWER, 1, 130, 0.05, 10.0, 60.0 );
+    p -> register_spell_result_callback( RESULT_HIT_MASK, cb );
+  }
+  //---------------------------------------------------------------------------------------------------------
+  if( p -> unique_gear -> elemental_focus_stone )
+  {
+    cb = new stat_proc_callback_t( "Elemental Focus Stone", p, STAT_SPELL_POWER, 1, 522, 0.10, 10.0, 45.0 );
+    p -> register_spell_result_callback( RESULT_HIT_MASK, cb );
+  }
+  //---------------------------------------------------------------------------------------------------------
+  if( p -> unique_gear -> embrace_of_the_spider )
+  {
+    cb = new stat_proc_callback_t( "Embrace of the Spider", p, STAT_HASTE_RATING, 1, 505, 0.10, 10.0, 45.0 );
+    p -> register_spell_result_callback( RESULT_HIT_MASK, cb );
+  }
+  //---------------------------------------------------------------------------------------------------------
+  if( p -> unique_gear -> eternal_sage )
+  {
+    cb = new stat_proc_callback_t( "Eternal Sage", p, STAT_SPELL_POWER, 1, 95, 0.10, 10.0, 45.0 );
+    p -> register_spell_result_callback( RESULT_HIT_MASK, cb );
+  }
+  //---------------------------------------------------------------------------------------------------------
+  if( p -> unique_gear -> eye_of_magtheridon )
+  {
+    cb = new stat_proc_callback_t( "Eye of Magtheridon", p, STAT_SPELL_POWER, 1, 170, 1.00, 10.0, 0.0 );
+    p -> register_spell_result_callback( RESULT_MISS_MASK, cb );
+  }
+  //---------------------------------------------------------------------------------------------------------
+  if( p -> unique_gear -> eye_of_the_broodmother ) 
+  {
+    cb = new stat_proc_callback_t( "Eye of the Broodmother", p, STAT_SPELL_POWER, 5, 25, 0.0, 10.0, 0.0 );
+    p -> register_spell_result_callback( RESULT_HIT_MASK, cb );
+  }
+  //---------------------------------------------------------------------------------------------------------
+  if( p -> unique_gear -> flare_of_the_heavens )
+  {
+    cb = new stat_proc_callback_t( "Flare of the Heavens", p, STAT_SPELL_POWER, 1, 850, 0.10, 10.0, 45.0 );
+    p -> register_spell_result_callback( RESULT_HIT_MASK, cb );
+  }
+  //---------------------------------------------------------------------------------------------------------
+  if( p -> unique_gear -> forge_ember )
+  {
+    cb = new stat_proc_callback_t( "Forge Ember", p, STAT_SPELL_POWER, 1, 512, 0.10, 10.0, 45.0 );
+    p -> register_spell_result_callback( RESULT_HIT_MASK, cb );
+  }
+  //---------------------------------------------------------------------------------------------------------
+  if( p -> unique_gear -> fury_of_the_five_flights ) 
+  {
+    cb = new stat_proc_callback_t( "Fury of the Five Flights", p, STAT_ATTACK_POWER, 20, 16, 0.0, 10.0, 0.0 );
+    p -> register_attack_result_callback( RESULT_HIT_MASK, cb );
+  }
+  //---------------------------------------------------------------------------------------------------------
+  if( p -> unique_gear -> grim_toll )
+  {
+    cb = new stat_proc_callback_t( "Grim Toll", p, STAT_ARMOR_PENETRATION_RATING, 1, 612, 0.15, 10.0, 45.0 );
+    p -> register_attack_result_callback( RESULT_HIT_MASK, cb );
+  }
+  //---------------------------------------------------------------------------------------------------------
+  if( p -> unique_gear -> illustration_of_the_dragon_soul ) 
+  {
+    cb = new stat_proc_callback_t( "Illustration of the Dragon Soul", p, STAT_SPELL_POWER, 10, 20, 0.0, 10.0, 0.0 );
+    p -> register_spell_result_callback( RESULT_HIT_MASK, cb );
+  }
+  //---------------------------------------------------------------------------------------------------------
+  if( p -> unique_gear -> mark_of_defiance )
+  {
+    cb = new stat_proc_callback_t( "Mark of Defiance", p, STAT_MANA, 1, 150, 0.15, 0.0, 15.0 );
+    p -> register_spell_result_callback( RESULT_HIT_MASK, cb );
+  }
+  //---------------------------------------------------------------------------------------------------------
+  if( p -> unique_gear -> mirror_of_truth )
+  {
+    cb = new stat_proc_callback_t( "Mirror of Truth", p, STAT_ATTACK_POWER, 1, 1000, 0.10, 10.0, 50.0 );
+    p -> register_attack_result_callback( RESULT_CRIT_MASK, cb );
+  }
+  //---------------------------------------------------------------------------------------------------------
+  if( p -> unique_gear -> mystical_skyfire )
+  {
+    cb = new stat_proc_callback_t( "Mystical Skyfire", p, STAT_HASTE_RATING, 1, 320, 0.15, 4.0, 45.0 );
+    p -> register_spell_result_callback( RESULT_HIT_MASK, cb );
+  }
+  //---------------------------------------------------------------------------------------------------------
+  if( p -> unique_gear -> pyrite_infuser )
+  {
+    cb = new stat_proc_callback_t( "Pyrite Infuser", p, STAT_ATTACK_POWER, 1, 1234, 0.10, 10.0, 45.0 );
+    p -> register_attack_result_callback( RESULT_CRIT_MASK, cb );
+  }
+  //---------------------------------------------------------------------------------------------------------
+  if( p -> unique_gear -> quagmirrans_eye )
+  {
+    cb = new stat_proc_callback_t( "Quagmirrans Eye", p, STAT_HASTE_RATING, 1, 320, 0.10, 6.0, 45.0 );
+    p -> register_spell_result_callback( RESULT_HIT_MASK, cb );
+  }
+  //---------------------------------------------------------------------------------------------------------
+  if( p -> unique_gear -> shiffars_nexus_horn )
+  {
+    cb = new stat_proc_callback_t( "Shiffars Nexus Horn", p, STAT_SPELL_POWER, 1, 225, 0.20, 10.0, 45.0 );
+    p -> register_spell_result_callback( RESULT_CRIT_MASK, cb );
+  }
+  //---------------------------------------------------------------------------------------------------------
+  if( p -> unique_gear -> sextant_of_unstable_currents )
+  {
+    cb = new stat_proc_callback_t( "Sextant of Unstable Currents", p, STAT_SPELL_POWER, 1, 190, 0.20, 15.0, 45.0 );
+    p -> register_spell_result_callback( RESULT_CRIT_MASK, cb );
+  }
+  //---------------------------------------------------------------------------------------------------------
+  if( p -> unique_gear -> spellstrike )
+  {
+    cb = new stat_proc_callback_t( "Spellstrike", p, STAT_SPELL_POWER, 1, 92, 0.05, 10.0, 0.0 );
+    p -> register_spell_result_callback( RESULT_HIT_MASK, cb );
+  }
+  //---------------------------------------------------------------------------------------------------------
+  if( p -> unique_gear -> sundial_of_the_exiled )
+  {
+    cb = new stat_proc_callback_t( "Sundial of the Exiled", p, STAT_SPELL_POWER, 1, 590, 0.10, 10.0, 45.0 );
+    p -> register_spell_result_callback( RESULT_HIT_MASK, cb );
+  }
+  //---------------------------------------------------------------------------------------------------------
+  if( p -> unique_gear -> wrath_of_cenarius )
+  {
+    cb = new stat_proc_callback_t( "Wrath of Cenarius", p, STAT_SPELL_POWER, 1, 132, 0.05, 10.0, 0.0 );
+    p -> register_spell_result_callback( RESULT_HIT_MASK, cb );
+  }
+  //---------------------------------------------------------------------------------------------------------
+
+  // Discharge Procs
+
+  //---------------------------------------------------------------------------------------------------------
+  if( p -> unique_gear -> bandits_insignia )
+  {
+    cb = new discharge_proc_callback_t( "Bandits Insignia", p, 1, SCHOOL_ARCANE, 1504, 2256, 0.15, 45 );
+    p -> register_attack_result_callback( RESULT_HIT_MASK, cb );
+  }
+  if( p -> unique_gear -> extract_of_necromatic_power )
+  {
+    cb = new discharge_proc_callback_t( "Extract of Necromatic Power", p, 1, SCHOOL_SHADOW, 1050, 1050, 0.10, 15 );
+    p -> register_tick_callback( cb );
+  }
+  //---------------------------------------------------------------------------------------------------------
+  if( p -> unique_gear -> lightning_capacitor )
+  {
+    cb = new discharge_proc_callback_t( "Lightning Capacitor", p, 3, SCHOOL_NATURE, 750, 750, 0, 2.5 );
+    p -> register_spell_result_callback( RESULT_CRIT_MASK, cb );
+  }
+  //---------------------------------------------------------------------------------------------------------
+  if( p -> unique_gear -> timbals_crystal )
+  {
+    cb = new discharge_proc_callback_t( "Timbals Focusing Crystal", p, 1, SCHOOL_SHADOW, 380, 380, 0.10, 15 );
+    p -> register_tick_callback( cb );
+  }
+  //---------------------------------------------------------------------------------------------------------
+  if( p -> unique_gear -> thunder_capacitor )
+  {
+    cb = new discharge_proc_callback_t( "Thunder Capacitor", p, 3, SCHOOL_NATURE, 1276, 1276, 0, 2.5 );
+    p -> register_spell_result_callback( RESULT_CRIT_MASK, cb );
+  }
+  //---------------------------------------------------------------------------------------------------------
 }

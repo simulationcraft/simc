@@ -63,6 +63,7 @@ struct base_stats_t;
 struct callback_t;
 struct death_knight_t;
 struct druid_t;
+struct enchant_t;
 struct event_t;
 struct gain_t;
 struct hunter_t;
@@ -84,12 +85,11 @@ struct spell_t;
 struct stats_t;
 struct talent_translation_t;
 struct target_t;
+struct unique_gear_t;
 struct uptime_t;
 struct warlock_t;
 struct warrior_t;
 struct weapon_t;
-
-typedef void (*action_callback_func_t)(action_t*, void* user_data);
 
 // Enumerations ==============================================================
 
@@ -128,6 +128,7 @@ enum result_type {
 #define RESULT_HIT_MASK  ( (1<<RESULT_GLANCE) | (1<<RESULT_BLOCK) | (1<<RESULT_CRIT) | (1<<RESULT_HIT) )
 #define RESULT_CRIT_MASK ( (1<<RESULT_CRIT) )
 #define RESULT_MISS_MASK ( (1<<RESULT_MISS) )
+#define RESULT_ALL_MASK  -1
 
 enum action_type { ACTION_USE=0, ACTION_SPELL, ACTION_ATTACK, ACTION_OTHER, ACTION_MAX };
 
@@ -171,6 +172,17 @@ enum weapon_buff_type {
 };
 
 enum slot_type { SLOT_NONE=0, SLOT_MAIN_HAND, SLOT_OFF_HAND, SLOT_RANGED, SLOT_MAX };
+
+enum stat_type {
+  STAT_NONE=0,
+  STAT_STRENGTH,     STAT_AGILITY,           STAT_STAMINA, STAT_INTELLECT, STAT_SPIRIT,
+  STAT_HEALTH,       STAT_MANA,              STAT_RAGE,    STAT_ENERGY,    STAT_FOCUS,  STAT_RUNIC,
+  STAT_SPELL_POWER,  STAT_SPELL_PENETRATION, STAT_MP5,
+  STAT_ATTACK_POWER, STAT_EXPERTISE_RATING,  STAT_ARMOR_PENETRATION_RATING,
+  STAT_HIT_RATING,   STAT_CRIT_RATING,       STAT_HASTE_RATING,
+  STAT_ARMOR,
+  STAT_MAX
+};
 
 enum elixir_type {
   ELIXIR_NONE=0,
@@ -644,13 +656,13 @@ struct player_t
   bool     in_combat;
 
   // Callbacks
-  action_callback_t* resource_gain_callbacks[ RESOURCE_MAX ];
-  action_callback_t* resource_loss_callbacks[ RESOURCE_MAX ];
-  action_callback_t* attack_result_callbacks[ RESULT_MAX ];
-  action_callback_t*  spell_result_callbacks[ RESULT_MAX ];
-  action_callback_t* action_tick_callbacks;
-  action_callback_t* action_tick_damage_callbacks;
-  action_callback_t* action_direct_damage_callbacks;
+  std::vector<action_callback_t*> resource_gain_callbacks[ RESOURCE_MAX ];
+  std::vector<action_callback_t*> resource_loss_callbacks[ RESOURCE_MAX ];
+  std::vector<action_callback_t*> attack_result_callbacks[ RESULT_MAX ];
+  std::vector<action_callback_t*>  spell_result_callbacks[ RESULT_MAX ];
+  std::vector<action_callback_t*> tick_callbacks;
+  std::vector<action_callback_t*> tick_damage_callbacks;
+  std::vector<action_callback_t*> direct_damage_callbacks;
 
   // Action Priority List
   action_t*   action_list;
@@ -701,93 +713,43 @@ struct player_t
     // Resource Gear
     int resource        [ RESOURCE_MAX ];
     int resource_enchant[ RESOURCE_MAX ];
-    // Budgeting
-    int spell_power_budget;
-    int attack_power_budget;
-    int  budget_slots;
-    // Unique Gear
+    // Tier Gear
     int  ashtongue_talisman;
-    int  bandits_insignia;
-    int  chaotic_skyflare;
-    int  darkmoon_crusade;
-    int  darkmoon_greatness;
-    int  darkmoon_wrath;
-    int  dying_curse;
-    int  egg_of_mortal_essence;
-    int  elder_scribes;
-    int  elemental_focus_stone;
-    int  ember_skyflare;
-    int  embrace_of_the_spider;
-    int  eternal_sage;
-    int  extract_of_necromatic_power;
-    int  eye_of_magtheridon;
-    int  eye_of_the_broodmother;
-    int  flare_of_the_heavens;
-    int  forge_ember;
-    int  fury_of_the_five_flights;
-    int  grim_toll;
-    int  illustration_of_the_dragon_soul;
-    int  lightning_capacitor;
-    int  mark_of_defiance;
-    int  mirror_of_truth;
-    int  mystical_skyfire;
-    int  pyrite_infuser;
-    int  quagmirrans_eye;
-    int  relentless_earthstorm;
-    int  sextant_of_unstable_currents;
-    int  shiffars_nexus_horn;
-    int  spellstrike;
-    int  spellsurge;
-    int  sundial_of_the_exiled;
-    int  talisman_of_ascendance;
-    int  thunder_capacitor;
-    int  timbals_crystal;
-    int  wrath_of_cenarius;
-    int  zandalarian_hero_charm;
     int  tier4_2pc, tier4_4pc;
     int  tier5_2pc, tier5_4pc;
     int  tier6_2pc, tier6_4pc;
     int  tier7_2pc, tier7_4pc;
     int  tier8_2pc, tier8_4pc;
     gear_t() { memset( (void*) this, 0x00, sizeof( gear_t ) ); }
-
-    void allocate_spell_power_budget( sim_t* );
-    void allocate_attack_power_budget( sim_t* );
   };
   gear_t gear;
+
+  unique_gear_t* unique_gear;
+  enchant_t* enchant;
 
   struct buff_t
   {
     int       abominations_might;
     double    arcane_brilliance;
     int       battle_shout;
-    int       berserking_mh;
-    int       berserking_oh;
     int       blessing_of_kings;
     int       blessing_of_might;
     double    blessing_of_wisdom;
     double    divine_spirit;
     int       bloodlust;
     double    cast_time_reduction;
-    int       darkmoon_crusade;
-    int       darkmoon_wrath;
     double    demonic_pact;
     pet_t*    demonic_pact_pet;
     int       elemental_oath;
-    int       executioner;
-    int       eye_of_the_broodmother;
     int       ferocious_inspiration;
     double    flametongue_totem;
     player_t* focus_magic;
     int       focus_magic_feedback;
     double    fortitude;
-    int       fury_of_the_five_flights;
-    int       illustration_of_the_dragon_soul;
     double    improved_divine_spirit;
     int       innervate;
     int       glyph_of_innervate;
     int       hysteria;
-    int       lightning_capacitor;
     double    mana_cost_reduction;
     double    mana_spring;
     double    mark_of_the_wild;
@@ -798,16 +760,12 @@ struct player_t
     int       replenishment;
     int       shadow_form;
     double    strength_of_earth;
-    int       talisman_of_ascendance;
-    int       thunder_capacitor;
     double    totem_of_wrath;
     int       tricks_of_the_trade;
     int       unleashed_rage;
-    int       violet_eye;
     double    windfury_totem;
     int       water_elemental;
     int       wrath_of_air;
-    int       zandalarian_hero_charm;
     int       tier4_2pc, tier4_4pc;
     int       tier5_2pc, tier5_4pc;
     int       tier6_2pc, tier6_4pc;
@@ -820,25 +778,11 @@ struct player_t
 
   struct expirations_t
   {
-    double spellsurge;
     event_t* ashtongue_talisman;
-    event_t* berserking_mh;
-    event_t* berserking_oh;
-    event_t* darkmoon_crusade;
-    event_t* darkmoon_wrath;
-    event_t* executioner;
-    event_t* eye_of_magtheridon;
-    event_t* eye_of_the_broodmother;
     event_t* focus_magic_feedback;
-    event_t* fury_of_the_five_flights;
     event_t* hysteria;
-    event_t* illustration_of_the_dragon_soul;
-    event_t* mongoose_mh;
-    event_t* mongoose_oh;
     event_t* replenishment;
-    event_t* spellstrike;
     event_t* tricks_of_the_trade;
-    event_t* wrath_of_cenarius;
     event_t *tier4_2pc, *tier4_4pc;
     event_t *tier5_2pc, *tier5_4pc;
     event_t *tier6_2pc, *tier6_4pc;
@@ -852,25 +796,6 @@ struct player_t
   struct cooldowns_t
   {
     double bloodlust;
-    double darkmoon_greatness;
-    double dying_curse;
-    double egg_of_mortal_essence;
-    double elder_scribes;
-    double elemental_focus_stone;
-    double embrace_of_the_spider;
-    double eternal_sage;
-    double flare_of_the_heavens;
-    double forge_ember;
-    double grim_toll;
-    double mark_of_defiance;
-    double mirror_of_truth;
-    double mystical_skyfire;
-    double pyrite_infuser;
-    double quagmirrans_eye;
-    double sextant_of_unstable_currents;
-    double shiffars_nexus_horn;
-    double spellsurge;
-    double sundial_of_the_exiled;
     double tier4_2pc, tier4_4pc;
     double tier5_2pc, tier5_4pc;
     double tier6_2pc, tier6_4pc;
@@ -883,11 +808,6 @@ struct player_t
 
   struct uptimes_t
   {
-    uptime_t* berserking_mh;
-    uptime_t* berserking_oh;
-    uptime_t* executioner;
-    uptime_t* mongoose_mh;
-    uptime_t* mongoose_oh;
     uptime_t* replenishment;
     uptime_t *tier4_2pc, *tier4_4pc;
     uptime_t *tier5_2pc, *tier5_4pc;
@@ -912,8 +832,6 @@ struct player_t
     gain_t* mana_potion;
     gain_t* mana_spring;
     gain_t* mana_tide;
-    gain_t* mark_of_defiance;
-    gain_t* mirror_of_truth;
     gain_t* mp5_regen;
     gain_t* replenishment;
     gain_t* restore_mana;
@@ -934,35 +852,7 @@ struct player_t
   struct procs_t
   {
     proc_t* ashtongue_talisman;
-    proc_t* bandits_insignia;
-    proc_t* darkmoon_greatness;
-    proc_t* dying_curse;
-    proc_t* elder_scribes;
-    proc_t* elemental_focus_stone;
-    proc_t* embrace_of_the_spider;
-    proc_t* eternal_sage;
-    proc_t* extract_of_necromatic_power;
-    proc_t* eye_of_magtheridon;
-    proc_t* flare_of_the_heavens;
-    proc_t* forge_ember;
-    proc_t* grim_toll;
     proc_t* honor_among_thieves_donor;
-    proc_t* judgement_of_wisdom;
-    proc_t* lightning_capacitor;
-    proc_t* mark_of_defiance;
-    proc_t* mirror_of_truth;
-    proc_t* mystical_skyfire;
-    proc_t* pyrite_infuser;
-    proc_t* quagmirrans_eye;
-    proc_t* sextant_of_unstable_currents;
-    proc_t* shiffars_nexus_horn;
-    proc_t* spellstrike;
-    proc_t* sundial_of_the_exiled;
-    proc_t* egg_of_mortal_essence;
-    proc_t* thunder_capacitor;
-    proc_t* timbals_crystal;
-    proc_t* windfury;
-    proc_t* wrath_of_cenarius;
     proc_t *tier4_2pc, *tier4_4pc;
     proc_t *tier5_2pc, *tier5_4pc;
     proc_t *tier6_2pc, *tier6_4pc;
@@ -972,18 +862,6 @@ struct player_t
     procs_t() { reset(); }
   };
   procs_t procs;
-
-  struct actions_t
-  {
-    action_t* bandits_insignia;
-    action_t* extract_of_necromatic_power_discharge;
-    action_t* lightning_discharge;
-    action_t* thunder_discharge;
-    action_t* timbals_discharge;
-    void reset() { memset( (void*) this, 0x00, sizeof( actions_t ) ); }
-    actions_t() { reset(); }
-  };
-  actions_t actions;
 
   struct scaling_t
   {
@@ -1015,6 +893,7 @@ struct player_t
   virtual void init_defense();
   virtual void init_weapon( weapon_t*, std::string& );
   virtual void init_unique_gear();
+  virtual void init_enchant();
   virtual void init_resources( bool force = false );
   virtual void init_consumables();
   virtual void init_professions();
@@ -1059,43 +938,20 @@ struct player_t
   virtual bool   resource_available( int resource, double cost );
   virtual int    primary_resource() { return RESOURCE_NONE; }
 
+  virtual void stat_gain( int stat, double amount );
+  virtual void stat_loss( int stat, double amount );
+
   virtual void  summon_pet( const char* name );
   virtual void dismiss_pet( const char* name );
 
-  // Managing action_xxx events:
-  // (1) To "throw" an event, ALWAYS invoke the action_xxx function.
-  // (2) To "catch" an event, ALWAYS implement a spell_xxx or attack_xxx virtual function in player sub-class.
-  // Disregarding these instructions may result in serious injury and/or death.
-
-  virtual void action_start ( action_t* );
-  virtual void action_miss  ( action_t* );
-  virtual void action_hit   ( action_t* );
-  virtual void action_tick  ( action_t* );
-  virtual void action_damage( action_t*, double amount, int dmg_type );
-  virtual void action_finish( action_t* );
-
-  virtual void spell_start_event ( spell_t* );
-  virtual void spell_miss_event  ( spell_t* );
-  virtual void spell_hit_event   ( spell_t* );
-  virtual void spell_tick_event  ( spell_t* );
-  virtual void spell_damage_event( spell_t*, double amount, int dmg_type );
-  virtual void spell_finish_event( spell_t* );
-
-  virtual void attack_start_event ( attack_t* );
-  virtual void attack_miss_event  ( attack_t* );
-  virtual void attack_hit_event   ( attack_t* );
-  virtual void attack_tick_event  ( attack_t* );
-  virtual void attack_damage_event( attack_t*, double amount, int dmg_type );
-  virtual void attack_finish_event( attack_t* );
-
   virtual void register_callbacks();
-  virtual void register_resource_gain_callback( int resource, action_callback_func_t f_ptr, void* user_data=0 );
-  virtual void register_resource_loss_callback( int resource, action_callback_func_t f_ptr, void* user_data=0 );
-  virtual void register_attack_result_callback( int result_mask, action_callback_func_t f_ptr, void* user_data=0 );
-  virtual void register_spell_result_callback ( int result_mask, action_callback_func_t f_ptr, void* user_data=0 );
-  virtual void register_action_tick_callback         ( action_callback_func_t f_ptr, void* user_data=0 );
-  virtual void register_action_tick_damage_callback  ( action_callback_func_t f_ptr, void* user_data=0 );
-  virtual void register_action_direct_damage_callback( action_callback_func_t f_ptr, void* user_data=0 );
+  virtual void register_resource_gain_callback( int resource, action_callback_t* );
+  virtual void register_resource_loss_callback( int resource, action_callback_t* );
+  virtual void register_attack_result_callback( int result_mask, action_callback_t* );
+  virtual void register_spell_result_callback ( int result_mask, action_callback_t* );
+  virtual void register_tick_callback         ( action_callback_t* );
+  virtual void register_tick_damage_callback  ( action_callback_t* );
+  virtual void register_direct_damage_callback( action_callback_t* );
 
   virtual bool get_talent_trees( std::vector<int*>& tree1, std::vector<int*>& tree2, std::vector<int*>& tree3, talent_translation_t translation[][3] );
   virtual bool get_talent_trees( std::vector<int*>& tree1, std::vector<int*>& tree2, std::vector<int*>& tree3 ) { return false; }
@@ -1493,6 +1349,7 @@ struct attack_t : public action_t
   virtual void   target_debuff( int dmg_type );
   virtual int    build_table( double* chances, int* results );
   virtual void   calculate_result();
+  virtual void   execute();
 
   // Attack Specific
   virtual double   miss_chance( int delta_level );
@@ -1521,6 +1378,21 @@ struct spell_t : public action_t
   virtual void   target_debuff( int dmg_type );
   virtual double level_based_miss_chance( int player, int target );
   virtual void   calculate_result();
+  virtual void   execute();
+};
+
+// Action Callback ===========================================================
+
+struct action_callback_t
+{
+  sim_t* sim;
+  player_t* listener;
+  action_callback_t( sim_t* s, player_t* l ) : sim(s), listener(l) {}
+  virtual ~action_callback_t() {}
+  virtual void trigger( action_t* ) = 0;
+  virtual void reset() {}
+  static void trigger( std::vector<action_callback_t*>& v, action_t* a ) { for( int i=v.size()-1; i>=0; i-- ) v[i]->trigger(a); }
+  static void   reset( std::vector<action_callback_t*>& v ) { for( int i=v.size()-1; i>=0; i-- ) v[i]->reset(); }
 };
 
 // Player Ready Event ========================================================
@@ -1561,22 +1433,44 @@ struct regen_event_t : public event_t
 
 struct unique_gear_t
 {
-  static void spell_start_event ( spell_t* ) {}
-  static void spell_miss_event  ( spell_t* );
-  static void spell_hit_event   ( spell_t* );
-  static void spell_tick_event  ( spell_t* );
-  static void spell_damage_event( spell_t*, double amount, int dmg_type );
-  static void spell_finish_event( spell_t* );
+  int  bandits_insignia;
+  int  chaotic_skyflare;
+  int  darkmoon_crusade;
+  int  darkmoon_greatness;
+  int  dying_curse;
+  int  egg_of_mortal_essence;
+  int  elder_scribes;
+  int  elemental_focus_stone;
+  int  ember_skyflare;
+  int  embrace_of_the_spider;
+  int  eternal_sage;
+  int  extract_of_necromatic_power;
+  int  eye_of_magtheridon;
+  int  eye_of_the_broodmother;
+  int  flare_of_the_heavens;
+  int  forge_ember;
+  int  fury_of_the_five_flights;
+  int  grim_toll;
+  int  illustration_of_the_dragon_soul;
+  int  lightning_capacitor;
+  int  mark_of_defiance;
+  int  mirror_of_truth;
+  int  mystical_skyfire;
+  int  pyrite_infuser;
+  int  quagmirrans_eye;
+  int  relentless_earthstorm;
+  int  sextant_of_unstable_currents;
+  int  shiffars_nexus_horn;
+  int  spellstrike;
+  int  sundial_of_the_exiled;
+  int  thunder_capacitor;
+  int  timbals_crystal;
+  int  wrath_of_cenarius;
 
-  static void attack_start_event ( attack_t* ) {}
-  static void attack_miss_event  ( attack_t* ) {}
-  static void attack_hit_event   ( attack_t* );
-  static void attack_tick_event  ( attack_t* ) {}
-  static void attack_damage_event( attack_t*, double amount, int dmg_type );
-  static void attack_finish_event( attack_t* ) {}
-
-  static bool parse_option( player_t*, const std::string& name, const std::string& value );
+  unique_gear_t() { memset( (void*) this, 0x00, sizeof( unique_gear_t ) ); }
+  
   static action_t* create_action( player_t*, const std::string& name, const std::string& options );
+  static bool parse_option( player_t*, const std::string& name, const std::string& value );
   static void init( player_t* );
   static void register_callbacks( player_t* );
 };
@@ -1585,33 +1479,13 @@ struct unique_gear_t
 
 struct enchant_t
 {
-  static void spell_start_event ( spell_t* ) {}
-  static void spell_miss_event  ( spell_t* ) {}
-  static void spell_hit_event   ( spell_t* ) {}
-  static void spell_tick_event  ( spell_t* ) {}
-  static void spell_damage_event( spell_t*, double amount, int dmg_type ) {}
-  static void spell_finish_event( spell_t* );
+  int spellsurge;
 
-  static void attack_start_event ( attack_t* ) {}
-  static void attack_miss_event  ( attack_t* ) {}
-  static void attack_hit_event   ( attack_t* );
-  static void attack_tick_event  ( attack_t* ) {}
-  static void attack_damage_event( attack_t*, double amount, int dmg_type ) {}
-  static void attack_finish_event( attack_t* ) {}
+  enchant_t() { memset( (void*) this, 0x00, sizeof( enchant_t ) ); }
 
-  static void trigger_flametongue_totem( attack_t* );
-  static void trigger_windfury_totem   ( attack_t* );
-};
-
-// Action Callback ===========================================================
-
-struct action_callback_t
-{
-  action_callback_func_t f_ptr;
-  void* user_data;
-  action_callback_t* next;
-  void trigger( action_t* a ) { f_ptr( a, user_data ); }
-  action_callback_t( action_callback_func_t f, void* u=0 ) : f_ptr(f), user_data(u), next(0) {}
+  static bool parse_option( player_t*, const std::string& name, const std::string& value );
+  static void init( player_t* );
+  static void register_callbacks( player_t* );
 };
 
 // Consumable ================================================================

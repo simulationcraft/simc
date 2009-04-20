@@ -398,8 +398,7 @@ struct warlock_pet_t : public pet_t
     }
   }
 
-  virtual void attack_hit_event( attack_t* a );
-  virtual void  spell_hit_event( spell_t* s );
+  virtual void register_callbacks();
 };
 
 // ==========================================================================
@@ -553,6 +552,7 @@ struct imp_pet_t : public warlock_pet_t
                                  o -> talents.empowered_imp * 0.05 +
                                  o -> glyphs.imp * ( ( sim -> patch.before( 3, 1, 0 ) ) ? 0.10 : 0.20 ) );
     }
+    virtual void execute();
     virtual void player_buff()
     {
       imp_pet_t* p = (imp_pet_t*) player -> cast_pet();
@@ -597,8 +597,6 @@ struct imp_pet_t : public warlock_pet_t
 
     return player_t::create_action( name, options_str );
   }
-
-  virtual void spell_hit_event( spell_t* s );
 };
 
 // ==========================================================================
@@ -1681,49 +1679,6 @@ static void trigger_empowered_imp( spell_t* s )
   }
 }
 
-// trigger_demonic_empathy_on_owner ========================================
-
-static void trigger_demonic_empathy_on_owner( action_t* a )
-{
-  struct expiration_t : public event_t
-  {
-    expiration_t( sim_t* sim, warlock_t* o ) : event_t( sim, o )
-    {
-      name = "Demonic Empathy Expiration";
-      o -> aura_gain( "Demonic Empathy" );
-      sim -> add_event( this, 15.0 );
-    }
-    virtual void execute()
-    {
-      warlock_t* o = player -> cast_warlock();
-      o -> aura_loss( "Demonic Empathy" );
-      o -> _buffs.demonic_empathy = 0;
-      o -> _expirations.demonic_empathy = 0;
-    }
-  };
-  
-  warlock_pet_t* p = (warlock_pet_t*) a -> player -> cast_pet();
-  warlock_t* o = p -> owner -> cast_warlock();
-
-  if( ! o -> talents.demonic_empathy ) return;
-
-  // demonic empathy only triggers on spells and abilities, not melee
-  if( a -> resource != RESOURCE_MANA ) return;
-
-  o -> _buffs.demonic_empathy = 3;
-
-  event_t*& e = o -> _expirations.demonic_empathy;
-
-  if( e )
-  {
-    e -> reschedule( 15.0 );
-  }
-  else
-  {
-    e = new ( a -> sim ) expiration_t( a -> sim, o );
-  }
-}
-
 // trigger_demonic_empathy_on_pet ==========================================
 
 static void trigger_demonic_empathy_on_pet( spell_t* s )
@@ -1761,81 +1716,6 @@ static void trigger_demonic_empathy_on_pet( spell_t* s )
   else
   {
     e = new ( s -> sim ) expiration_t( s -> sim, p );
-  }
-}
-
-// trigger_demonic_pact ====================================================
-
-static void trigger_demonic_pact( action_t* a )
-{
-  struct expiration_t : public event_t
-  {
-    expiration_t( sim_t* sim, warlock_pet_t* pet, double buff ) : event_t( sim, pet )
-    {
-      name = "Demonic Pact Expiration";
-      for( player_t* p = sim -> player_list; p; p = p -> next )
-      {
-        p -> aura_gain( "Demonic Pact", 47235+ ((warlock_t*)(pet->owner))->talents.demonic_pact );
-        p -> buffs.demonic_pact = buff; 
-        p -> buffs.demonic_pact_pet = pet;
-      }
-      sim -> add_event( this, 12.0 );
-    }
-    virtual void execute()
-    {
-      warlock_pet_t* pet = (warlock_pet_t*) player -> cast_pet();
-      for( player_t* p = sim -> player_list; p; p = p -> next )
-      {
-        p -> aura_loss( "Demonic Pact", 47235+ ((warlock_t*)(pet->owner))->talents.demonic_pact );
-        p -> buffs.demonic_pact = 0;    
-        p -> buffs.demonic_pact_pet = 0;
-      }
-      pet -> _expirations.demonic_pact = 0;
-    }
-  };
-  
-  warlock_pet_t* p = (warlock_pet_t*) a -> player -> cast_pet();
-  warlock_t* o = p -> owner -> cast_warlock();
-
-  if( ! o -> talents.demonic_pact ) return;
-
-  // HACK ALERT!!!  To prevent spell power contributions from ToW/FT/IDS/DP buffs, we fiddle with player type
-  o -> type = PLAYER_GUARDIAN;
-  double buff = o -> composite_spell_power( SCHOOL_MAX );
-  o -> type = WARLOCK;
-
-  buff -= o -> spell_power_per_spirit * o -> spirit(); // Before 3.1, does not include spell power from spirit
-
-  if( o -> sim -> patch.after( 3, 1, 0 ) ) // After 3.1, includes spell power from fel armor but not from life tap glyph
-  {
-    if( o -> _buffs.fel_armor      ) buff += o -> spirit() * 0.3;
-    if( o -> _buffs.life_tap_glyph ) buff -= o -> spirit() * 0.2;
-  }
-
-  buff *= 0.10;
-
-  if( p -> buffs.demonic_pact_pet ) 
-  {
-    if( p -> buffs.demonic_pact == buff &&
-        p -> buffs.demonic_pact_pet == p )
-    {
-      // If the SAME pet is putting up the SAME buff, then just let it reschedule the one in place.
-    }
-    else
-    {
-      event_t::cancel( ( (warlock_pet_t*) p -> buffs.demonic_pact_pet ) -> _expirations.demonic_pact );
-    }
-  }
-
-  event_t*& e = p -> _expirations.demonic_pact;
-
-  if( e )
-  {
-    e -> reschedule( 12.0 );
-  }
-  else
-  {
-    e = new ( a -> sim ) expiration_t( a -> sim, p, buff );
   }
 }
 
@@ -4507,7 +4387,6 @@ struct metamorphosis_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
     update_ready();
-    p -> action_finish( this );
     new ( sim ) expiration_t( sim, p );
   }
 };
@@ -4561,7 +4440,6 @@ struct demonic_empowerment_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
     update_ready();
-    p -> action_finish( this );
     new ( sim ) expiration_t( sim, p -> active_pet );
   }
 
@@ -4668,41 +4546,166 @@ struct spell_stone_t : public warlock_spell_t
 // Warlock Pet Events
 // ==========================================================================
 
-// warlock_pet_t::attack_hit_event ==========================================
+// demonic_empathy_callback =================================================
 
-void warlock_pet_t::attack_hit_event( attack_t* a )
+struct demonic_empathy_callback_t : public action_callback_t
 {
-  player_t::attack_hit_event( a );
+  demonic_empathy_callback_t( player_t* p ) : action_callback_t( p -> sim, p ) {}
 
-  if( a -> result == RESULT_CRIT )
+  virtual void trigger( action_t* a )
   {
-    trigger_demonic_pact( a );
-    trigger_demonic_empathy_on_owner( a );
+    struct expiration_t : public event_t
+    {
+      expiration_t( sim_t* sim, warlock_t* o ) : event_t( sim, o )
+      {
+	name = "Demonic Empathy Expiration";
+	o -> aura_gain( "Demonic Empathy" );
+	sim -> add_event( this, 15.0 );
+      }
+      virtual void execute()
+      {
+	warlock_t* o = player -> cast_warlock();
+	o -> aura_loss( "Demonic Empathy" );
+	o -> _buffs.demonic_empathy = 0;
+	o -> _expirations.demonic_empathy = 0;
+      }
+    };
+  
+    warlock_pet_t* p = (warlock_pet_t*) a -> player -> cast_pet();
+    warlock_t* o = p -> owner -> cast_warlock();
+
+    // demonic empathy only triggers on spells and abilities, not melee
+    if( a -> resource != RESOURCE_MANA ) return;
+
+    o -> _buffs.demonic_empathy = 3;
+
+    event_t*& e = o -> _expirations.demonic_empathy;
+
+    if( e )
+    {
+      e -> reschedule( 15.0 );
+    }
+    else
+    {
+      e = new ( a -> sim ) expiration_t( a -> sim, o );
+    }
+  }
+};
+
+// demonic_pact_callback ===================================================
+
+struct demonic_pact_callback_t : public action_callback_t
+{
+  demonic_pact_callback_t( player_t* p ) : action_callback_t( p -> sim, p ) {}
+
+  virtual void trigger( action_t* a )
+  {
+    struct expiration_t : public event_t
+    {
+      expiration_t( sim_t* sim, warlock_pet_t* pet, double buff ) : event_t( sim, pet )
+      {
+	name = "Demonic Pact Expiration";
+	warlock_t* o = pet -> owner -> cast_warlock();
+	for( player_t* p = sim -> player_list; p; p = p -> next )
+        {
+	  p -> aura_gain( "Demonic Pact", 47235 + o -> talents.demonic_pact );
+	  p -> buffs.demonic_pact = buff; 
+	  p -> buffs.demonic_pact_pet = pet;
+	}
+	sim -> add_event( this, 12.0 );
+      }
+      virtual void execute()
+      {
+	warlock_pet_t* pet = (warlock_pet_t*) player -> cast_pet();
+	warlock_t* o = pet -> owner -> cast_warlock();
+	for( player_t* p = sim -> player_list; p; p = p -> next )
+	{
+	  p -> aura_loss( "Demonic Pact", 47235 + o -> talents.demonic_pact );
+	  p -> buffs.demonic_pact = 0;    
+	  p -> buffs.demonic_pact_pet = 0;
+	}
+	pet -> _expirations.demonic_pact = 0;
+      }
+    };
+  
+    warlock_pet_t* p = (warlock_pet_t*) a -> player -> cast_pet();
+    warlock_t* o = p -> owner -> cast_warlock();
+
+    // HACK ALERT!!!  To prevent spell power contributions from ToW/FT/IDS/DP buffs, we fiddle with player type
+    o -> type = PLAYER_GUARDIAN;
+    double buff = o -> composite_spell_power( SCHOOL_MAX );
+    o -> type = WARLOCK;
+
+    buff -= o -> spell_power_per_spirit * o -> spirit(); // Before 3.1, does not include spell power from spirit
+
+    if( o -> sim -> patch.after( 3, 1, 0 ) ) // After 3.1, includes spell power from fel armor but not from life tap glyph
+    {
+      if( o -> _buffs.fel_armor      ) buff += o -> spirit() * 0.3;
+      if( o -> _buffs.life_tap_glyph ) buff -= o -> spirit() * 0.2;
+    }
+
+    buff *= 0.10;
+
+    if( p -> buffs.demonic_pact_pet ) 
+    {
+      if( p -> buffs.demonic_pact == buff &&
+	  p -> buffs.demonic_pact_pet == p )
+      {
+	// If the SAME pet is putting up the SAME buff, then just let it reschedule the one in place.
+      }
+      else
+      {
+	event_t::cancel( ( (warlock_pet_t*) p -> buffs.demonic_pact_pet ) -> _expirations.demonic_pact );
+      }
+    }
+
+    event_t*& e = p -> _expirations.demonic_pact;
+
+    if( e )
+    {
+      e -> reschedule( 12.0 );
+    }
+    else
+    {
+      e = new ( a -> sim ) expiration_t( a -> sim, p, buff );
+    }
+  }
+};
+
+// warlock_pet_t::register_callbacks ========================================
+
+void warlock_pet_t::register_callbacks()
+{
+  warlock_t* o = owner -> cast_warlock();
+
+  pet_t::register_callbacks();
+
+  if( o -> talents.demonic_pact )
+  {
+    action_callback_t* cb = new demonic_pact_callback_t( this );
+
+    register_attack_result_callback( RESULT_CRIT_MASK, cb );
+    register_spell_result_callback ( RESULT_CRIT_MASK, cb );
+  }
+
+  if( o -> talents.demonic_empathy )
+  {
+    action_callback_t* cb = new demonic_empathy_callback_t( this );
+
+    register_attack_result_callback( RESULT_CRIT_MASK, cb );
+    register_spell_result_callback ( RESULT_CRIT_MASK, cb );
   }
 }
 
-// warlock_pet_t::spell_hit_event ===========================================
+// imp_pet_t::fire_bolt_t::execute ==========================================
 
-void warlock_pet_t::spell_hit_event( spell_t* s )
+void imp_pet_t::fire_bolt_t::execute()
 {
-  player_t::spell_hit_event( s );
+  warlock_pet_spell_t::execute();
 
-  if( s -> result == RESULT_CRIT )
+  if( result == RESULT_CRIT )
   {
-    trigger_demonic_pact( s );
-    trigger_demonic_empathy_on_owner( s );
-  }
-}
-
-// imp_pet_t::spell_hit_event ===============================================
-
-void imp_pet_t::spell_hit_event( spell_t* s )
-{
-  warlock_pet_t::spell_hit_event( s );
-
-  if( s -> result == RESULT_CRIT )
-  {
-    trigger_empowered_imp( s );
+    trigger_empowered_imp( this );
   }
 }
 
