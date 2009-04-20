@@ -1,6 +1,5 @@
 #!simcraft max_time=300 optimal_raid=1
 
-patch=3.1.0
 mage=Mage_T8_18_00_53
 level=80
 talents=http://ptr.wowhead.com/?talent=of0Vck0cZZVIccRcu0f0gfsx

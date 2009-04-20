@@ -50,7 +50,7 @@ struct patch_t
     *version  = (int) m % 100; m /= 100;
     *arch     = (int) m % 100;
   }
-  patch_t() { mask = encode( 3, 0, 9 ); }
+  patch_t() { mask = encode( 3, 1, 0 ); }
 };
 
 // Forward Declarations ======================================================

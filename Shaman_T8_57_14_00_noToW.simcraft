@@ -1,5 +1,5 @@
 #!simcraft optimal_raid=1 max_time=300
-patch=3.1.0
+
 shaman=Shaman_T8_57_14_00
 level=80
 talents=http://ptr.wowhead.com/?talent=hEh0qcdItGfzAo0xxco
