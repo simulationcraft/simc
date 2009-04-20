@@ -1,9 +1,0 @@
-pet=wind_serpent
-cobra_reflexes=2
-owls_focus=2
-feeding_frenzy=2
-spiked_collar=3
-roar_of_recovery=1
-wolverine_bite=1
-actions=auto_attack/roar_of_recovery/wolverine_bite/lightning_breath/bite
-active=owner
