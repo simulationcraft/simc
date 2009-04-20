@@ -1153,8 +1153,7 @@ struct target_t
   void recalculate_health();
   double time_to_die();
   double health_percentage();
-  double composite_armor();
-  double composite_armor_penetration_debuffs();
+  double base_armor();
   uptime_t* get_uptime( const std::string& name );
   bool parse_option( const std::string& name, const std::string& value );
   const char* name() { return name_str.c_str(); }
@@ -1250,7 +1249,7 @@ struct action_t
   double base_dd_adder, player_dd_adder, target_dd_adder;
   double resource_consumed;
   double direct_dmg, tick_dmg;
-  double ressisted_dmg, blocked_dmg; 
+  double resisted_dmg, blocked_dmg; 
   int	 blizzID;					 
   int num_ticks, current_tick, added_ticks;
   int ticking;
@@ -1611,9 +1610,9 @@ struct report_t
     va_printf( sim, format, vap );
   }
   // WoW log emulator, general functions
-  static void Wlog_general(char* WOWevent, player_t* playerSrc, player_t* playerDst, char* suffix);
-  static void Wlog_general(char* WOWevent, player_t* playerSrc, player_t* playerDst, action_t* action, char* suffix);
-  static void Wlog_general(char* WOWevent, player_t* playerSrc, player_t* playerDst, int spellID, const char* spellName, int spellSchool,char* suffix);
+  static void Wlog_general(const char* WOWevent, player_t* playerSrc, player_t* playerDst, const char* suffix);
+  static void Wlog_general(const char* WOWevent, player_t* playerSrc, player_t* playerDst, action_t* action, const char* suffix);
+  static void Wlog_general(const char* WOWevent, player_t* playerSrc, player_t* playerDst, int spellID, const char* spellName, int spellSchool,const char* suffix);
   // WoW log emulator, customized functions for Event types
   static void Wlog_startCast(action_t* action);
   static void Wlog_damage(action_t* action, double damage, int dmg_type);

@@ -2087,10 +2087,10 @@ void Wlog_printLine(sim_t* sim, char* line){
 void Wlog_addPlayer(char* line, player_t* plr){
 	// WMO and WMS recognize only certain mob names as "bosses", and "Fluffy" is not one of them;)
 	// need to pass plr=="0" to use it
-	char* fixedTarget= ",0xF1300079AA001884,\"Heroic Training Dummy\",0x10a28"; 
+        const char* fixedTarget= ",0xF1300079AA001884,\"Heroic Training Dummy\",0x10a28"; 
 	// some spells (like auras) dont have destinaton unit, so they use null target
 	// need to pass plr== "(player_t*)-1"
-	char* nulTarget=",0x0000000000000000,nil,0x80000000"; 
+	const char* nulTarget=",0x0000000000000000,nil,0x80000000"; 
 	if (plr==(player_t*)-1){
 		strcat(line, nulTarget);
 	}else
@@ -2204,7 +2204,7 @@ void Wlog_addActivity(char* line, int id, const char* aname, int school){
 
 // most general log line has format:  Event, SourceUnit, DestinationUnit ....(optionally followed by other data) 
 // good description at :  http://www.wowwiki.com/API_COMBAT_LOG_EVENT
-void report_t::Wlog_general(char* WOWevent, player_t* playerSrc, player_t* playerDst, char* suffix){
+void report_t::Wlog_general(const char* WOWevent, player_t* playerSrc, player_t* playerDst, const char* suffix){
 	if (!playerSrc) return;
 	sim_t* sim=playerSrc->sim;
 	char s[1000];
@@ -2218,7 +2218,7 @@ void report_t::Wlog_general(char* WOWevent, player_t* playerSrc, player_t* playe
 }
 
 // spell related events have spell parameters in addition (optionally followed by other data) : spellID, spellName, spellSchool ....
-void report_t::Wlog_general(char* WOWevent, player_t* playerSrc, player_t* playerDst, int spellID, const char* spellName, int spellSchool,char* suffix){
+void report_t::Wlog_general(const char* WOWevent, player_t* playerSrc, player_t* playerDst, int spellID, const char* spellName, int spellSchool,const char* suffix){
 	char s[1000];
 	strcpy(s,"");
 	Wlog_addActivity(s,spellID, spellName, spellSchool);
@@ -2227,7 +2227,7 @@ void report_t::Wlog_general(char* WOWevent, player_t* playerSrc, player_t* playe
 }
 
 // this wrapper generate spell event type, by getting spell data from sim action_t type
-void report_t::Wlog_general(char* WOWevent, player_t* playerSrc, player_t* playerDst, action_t* action,char* suffix){
+void report_t::Wlog_general(const char* WOWevent, player_t* playerSrc, player_t* playerDst, action_t* action,const char* suffix){
 	if (action)
 		report_t::Wlog_general(WOWevent, playerSrc, playerDst, action->blizzID, action->name(), action->school, suffix);
 	else
@@ -2269,7 +2269,7 @@ void report_t::Wlog_damage(action_t* action, double damage, int dmg_type){
 	const char* evS= (hasMelee)? "SWING_DAMAGE": (dmg_type==DMG_OVER_TIME)? "SPELL_PERIODIC_DAMAGE" : "SPELL_DAMAGE";
 	if (!hasMelee)	Wlog_addActivity(s, action->blizzID, action->name(), action->school);
 	int dmg=(int)damage;
-	int ress= (int) action->ressisted_dmg;
+	int ress= (int) action->resisted_dmg;
 	int block= (int) action->blocked_dmg;
 	int spellRes= action->result; 
 	const char* sCrit=(spellRes==RESULT_CRIT)?"1":"nil";
@@ -2288,7 +2288,7 @@ void report_t::Wlog_damage_miss(action_t* action, int  dmg_type){
 	  sprintf(buff,",%s",util_t::result_type_string( action->result ));
 	  Wlog_toupper(buff);
 	  bool hasMelee= Wlog_isMelee(action->name()); 
-	  char* evS;
+	  const char* evS;
 	  if (hasMelee) evS="SWING_MISSED"; else if (dmg_type==DMG_OVER_TIME) evS="SPELL_PERIODIC_MISSED"; else evS="SPELL_MISSED";
 	  report_t::Wlog_general(evS, action->player, 0, action, buff);
 }
@@ -2302,7 +2302,7 @@ void report_t::Wlog_energize(player_t* player, gain_t* source, double amount, do
 	char s[1000];
 	int value=(int)actual_amount; 
     int overheal= (int)amount-value;
-	char* evS;
+	const char* evS;
 	if (type>=0){
 		evS="SPELL_ENERGIZE";
 		sprintf(s,",%d,%d",value,type);
@@ -2319,7 +2319,7 @@ void report_t::Wlog_energize(player_t* player, gain_t* source, double amount, do
 // - CALLED (2x) from player_t::aura_gain(type==+1) and player_t::aura_loss(type==-1)
 void report_t::Wlog_aura(player_t* player, const char* name, int type, int blizzID){
 	const char* evS= (type>0)?"SPELL_AURA_APPLIED":"SPELL_AURA_REMOVED";
-	report_t::Wlog_general((char *) evS, player, player, blizzID, name, SCHOOL_PHYSICAL, ",BUFF");
+	report_t::Wlog_general(evS, player, player, blizzID, name, SCHOOL_PHYSICAL, ",BUFF");
 }
 
 // report summoned pet 

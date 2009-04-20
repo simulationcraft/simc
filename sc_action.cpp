@@ -42,7 +42,7 @@ action_t::action_t( int         ty,
   base_dd_adder(0), player_dd_adder(0), target_dd_adder(0),
   resource_consumed(0),
   direct_dmg(0), tick_dmg(0), 
-  ressisted_dmg(0), blocked_dmg(0), blizzID(0), // Wlog
+  resisted_dmg(0), blocked_dmg(0), blizzID(0), // Wlog
   num_ticks(0), current_tick(0), added_ticks(0), ticking(0), 
   cooldown_group(n), duration_group(n), cooldown(0), cooldown_ready(0), duration_ready(0),
   weapon(0), weapon_multiplier(1), normalize_weapon_damage( false ), normalize_weapon_speed( false ), 
@@ -357,7 +357,22 @@ bool action_t::result_is_miss()
 
 double action_t::armor()
 {
-  return sim -> target -> composite_armor();
+  target_t* t = sim -> target;
+
+  double adjusted_armor =  t -> base_armor();
+
+  if( sim -> P309 )
+  {
+    adjusted_armor -= std::max( t -> debuffs.sunder_armor, t -> debuffs.expose_armor );
+    adjusted_armor -= t -> debuffs.faerie_fire;
+  }
+  else
+  {
+    adjusted_armor *= 1.0 - std::max( t -> debuffs.sunder_armor, t -> debuffs.expose_armor );
+    adjusted_armor *= 1.0 - t -> debuffs.faerie_fire;
+  }
+
+  return adjusted_armor;
 }
 
 // action_t::resistance =====================================================
@@ -377,37 +392,24 @@ double action_t::resistance()
   }
   else if( school == SCHOOL_PHYSICAL )
   {
-    if ( sim -> P309 )
+    double half_reduction = 400 + 85.0 * ( player -> level + 4.5 * ( player -> level - 59 ) );
+    double reduced_armor = armor();
+    double penetration_max = reduced_armor;
+
+    if( ! sim -> P309 )
     {
-      double adjusted_armor = armor() * ( 1.0 - penetration );
-
-      if( adjusted_armor <= 0 ) 
-      {
-        resist = 0.0;
-      }
-      else 
-      {
-        double adjusted_level = player -> level + 4.5 * ( player -> level - 59 );
-
-        resist = adjusted_armor / ( adjusted_armor + 400 + 85.0 * adjusted_level );
-      }
+      penetration_max = std::min( reduced_armor, ( reduced_armor + half_reduction ) / 3.0 );
     }
-    else
-    {
-      // Formula taken from: http://elitistjerks.com/f31/t29453-combat_ratings_level_80_a/p16/#post1170842
-      // FIX-ME: Using the 0.81 factor to account for the current bug as per the thread. Remove when the bug is fixed.
-      double armor_penetration_buffs = 0.81 * penetration;
-      double armor_penetration_debuffs = 1.0 - t -> composite_armor_penetration_debuffs();
-      double half_reduction_armor = 400 + 85.0 * ( player -> level + 4.5 * ( player -> level - 59 ) );
 
-      resist = 1.0 - half_reduction_armor / 
-        ( half_reduction_armor + armor() * 
-          ( 1.0 - ( armor_penetration_buffs + armor_penetration_debuffs ) +
-            ( armor() * armor_penetration_buffs * armor_penetration_debuffs / 
-              ( half_reduction_armor + armor() ) 
-            )              
-          ) 
-        );
+    double adjusted_armor = reduced_armor - penetration_max * penetration;
+
+    if( adjusted_armor <= 0 ) 
+    {
+      resist = 0.0;
+    }
+    else 
+    {
+      resist = adjusted_armor / ( adjusted_armor + half_reduction );
     }
   }
   else
@@ -424,6 +426,8 @@ double action_t::resistance()
     if( resist_rating < 0 ) resist_rating = 0;
 
     resist = resist_rating / ( player -> level * 5.0 );
+
+    if( resist > 1.0 ) resist = 1.0;
 
     if( ! binary )
     {
@@ -498,9 +502,7 @@ double action_t::calculate_weapon_damage()
 
 double action_t::calculate_tick_damage()
 {
-  tick_dmg = 0;
-  ressisted_dmg=0;
-  blocked_dmg=0;
+  tick_dmg = resisted_dmg = blocked_dmg = 0;
 
   if( base_td == 0 ) base_td = base_td_init;
 
@@ -519,8 +521,8 @@ double action_t::calculate_tick_damage()
 
   if( ! binary ) 
   {
-     ressisted_dmg= resistance()*tick_dmg;
-	 tick_dmg -= ressisted_dmg;
+     resisted_dmg = resistance() * tick_dmg;
+     tick_dmg -= resisted_dmg;
   }
 
 
@@ -538,10 +540,7 @@ double action_t::calculate_tick_damage()
 
 double action_t::calculate_direct_damage()
 {
-  direct_dmg = 0;
-  ressisted_dmg=0;
-  blocked_dmg=0;
-
+  direct_dmg = resisted_dmg = blocked_dmg = 0;
 
   double base_direct_dmg=0;
 
@@ -574,9 +573,10 @@ double action_t::calculate_direct_damage()
     direct_dmg *= 1.0 + total_crit_bonus();
   }
 
-  if( ! binary ){
-	  ressisted_dmg= resistance()*direct_dmg;
-	  direct_dmg -= ressisted_dmg;
+  if( ! binary )
+  {
+    resisted_dmg = resistance() * direct_dmg;
+    direct_dmg -= resisted_dmg;
   }
 
   if( result == RESULT_BLOCK )
@@ -707,15 +707,16 @@ void action_t::last_tick()
 void action_t::assess_damage( double amount, 
                               int    dmg_type )
 {
-	if( sim -> log ){
-		  report_t::log( sim, "%s %s %ss %s for %.0f %s damage (%s)",
-                    player -> name(), name(), 
-                    util_t::dmg_type_string( dmg_type ),
-                    sim -> target -> name(), amount, 
-                    util_t::school_type_string( school ),
-                    util_t::result_type_string( result ) );
-	   	  report_t::Wlog_damage(this, amount, dmg_type);
-	}
+  if( sim -> log )
+  {
+    report_t::log( sim, "%s %s %ss %s for %.0f %s damage (%s)",
+		   player -> name(), name(), 
+		   util_t::dmg_type_string( dmg_type ),
+		   sim -> target -> name(), amount, 
+		   util_t::school_type_string( school ),
+		   util_t::result_type_string( result ) );
+    report_t::Wlog_damage(this, amount, dmg_type);
+  }
 
    sim -> target -> assess_damage( amount, school, dmg_type );
 
@@ -733,11 +734,11 @@ void action_t::assess_damage( double amount,
 
 void action_t::schedule_execute()
 {
-	if( sim -> log ){
-		report_t::log( sim, "%s schedules execute for %s", player -> name(), name() );
-		report_t::Wlog_startCast(this);
-	}
-
+  if( sim -> log )
+  {
+    report_t::log( sim, "%s schedules execute for %s", player -> name(), name() );
+    report_t::Wlog_startCast(this);
+  }
 
   time_to_execute = execute_time();
   
