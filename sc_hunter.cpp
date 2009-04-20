@@ -3074,6 +3074,9 @@ struct silencing_shot_t : public hunter_attack_t
     normalize_weapon_speed = true;
     cooldown               = 20;
 
+    if( ! p -> sim -> P309)
+      trigger_gcd = 0;
+
     weapon_multiplier *= 0.5;
 
     base_multiplier *= p -> ranged_weapon_specialization_multiplier();
