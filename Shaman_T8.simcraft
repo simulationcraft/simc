@@ -1,0 +1,9 @@
+#!simcraft
+
+optimal_raid=1
+
+Globals_T8.simcraft
+
+Shaman_T8_18_53_00.simcraft
+Shaman_T8_57_14_00.simcraft
+Shaman_T8_57_14_00_noToW.simcraft

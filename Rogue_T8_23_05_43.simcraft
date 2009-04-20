@@ -4,7 +4,6 @@
 # set honor_among_thieves_interval=0
 # set tricks_of_the_trade=a_player_name
 
-patch=3.1.0
 rogue=Rogue_T8_23_05_43
 level=80
 talents=http://ptr.wowhead.com/?talent=fheb0fxZ0xZxbrbhGzdAzqc

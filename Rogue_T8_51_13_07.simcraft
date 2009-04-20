@@ -3,7 +3,6 @@
 # When using this profile in the context of a raid:
 # set tricks_of_the_trade=a_player_name
 
-patch=3.1.0
 rogue=Rogue_T8_51_13_07
 level=80
 talents=http://ptr.wowhead.com/?talent=f0ef0exoVboIuVo0xV0hZxb
