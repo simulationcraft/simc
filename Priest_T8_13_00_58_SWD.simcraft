@@ -1,6 +1,5 @@
 #!simcraft max_time=300 optimal_raid=1
 
-patch=3.1.0
 priest=Priest_T8_13_00_58_SWD
 level=80
 talents=http://ptr.wowhead.com/?talent=bVcbhZZGxfVRfzcfqfzAo

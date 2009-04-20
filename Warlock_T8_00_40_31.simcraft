@@ -1,5 +1,5 @@
 #!simcraft max_time=300 optimal_raid=1
-patch=3.1.0
+
 warlock=Warlock_T8_00_40_31
 level=80
 talents=http://talent.mmo-champion.com/?warlock=000000000000000000000000000003320030113520253003220000005203205210131051000000000
