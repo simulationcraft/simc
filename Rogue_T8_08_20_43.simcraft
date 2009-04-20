@@ -42,7 +42,7 @@ relentless_earthstorm=1
 
 # Weapons
 main_hand=fist,dps=171,speed=2.6,enchant=berserking
-off_hand=dagger,dps=171,speed=1.8,enchant=berserking
+off_hand=dagger,dps=157,speed=1.4,enchant=berserking
 
 # Item Procs
 darkmoon_greatness=1

@@ -18,7 +18,7 @@ actions+=/tricks_of_the_trade
 actions+=/rupture,min_combo_points=4
 actions+=/envenom,min_combo_points=4,env<=1
 actions+=/eviscerate,min_combo_points=4
-actions+=/hemorrhage,max_combo_points=3,energy>=80
+actions+=/hemorrhage,max_combo_points=2,energy>=80
 
 # Gear: http://www.chardev.org/?template=158141
 gear_stamina=963
