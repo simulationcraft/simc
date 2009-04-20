@@ -1348,30 +1348,32 @@ static void trigger_wild_quiver( attack_t* a )
 
   if(  a -> sim -> roll( chance ) )
   {
-    // FIXME! What hit/crit talents apply?
+    // FIXME! What hit/crit talents apply? At least Lethal Shots & Master Marksman
     // FIXME! Which proc-related talents can it trigger?
     // FIXME! Currently coded to benefit from all talents affecting ranged attacks.
     // FIXME! Talents that do not affect it can filter on "proc=true".
 
-    struct wild_quiver_t : public attack_t
+    struct wild_quiver_t : public hunter_attack_t
     {
-      wild_quiver_t( player_t* p ) : attack_t( "wild_quiver", p, RESOURCE_NONE, SCHOOL_NATURE )
+      wild_quiver_t( hunter_t* p ) : hunter_attack_t( "wild_quiver", p, SCHOOL_NATURE, TREE_MARKSMANSHIP )
       {
-	may_crit    = true;
+        may_crit    = true;
         background  = true;
         proc        = true;
         trigger_gcd = 0;
         base_cost   = 0;
+        base_dd_min = base_dd_max = 0.01;
+
+        weapon = &( p -> ranged_weapon );
+        assert( weapon -> group() == WEAPON_RANGED );
+        base_multiplier *= p -> ranged_weapon_specialization_multiplier();
+        base_multiplier *= ( sim -> P309 ? 0.50 : 0.80 );
       }
     };
 
     if( ! p -> active_wild_quiver ) p -> active_wild_quiver = new wild_quiver_t( p );
 
     p -> procs_wild_quiver -> occur();
-
-    double base_dd = ( a -> sim -> P309 ? 0.50 : 0.80 ) * a -> direct_dmg;
-    p -> active_wild_quiver -> base_dd_min = base_dd;
-    p -> active_wild_quiver -> base_dd_max = base_dd;
     p -> active_wild_quiver -> execute();
   }
 }
