@@ -2060,7 +2060,7 @@ void Wlog_toupper(char* src){
 
 // check if log is allowed, and initialize log line with timestamp if it is
 bool Wlog_init(sim_t* sim, char* line){
-	if (!sim->log) return false;
+	if ((!sim->log)||(!sim->log_file)) return false;
 	int hours, minutes, seconds, milisec;
 	milisec= (int) (sim->current_time *1000);
 	seconds= milisec/1000;
@@ -2075,8 +2075,10 @@ bool Wlog_init(sim_t* sim, char* line){
 
 // output log line (save one line to file)
 void Wlog_printLine(sim_t* sim, char* line){
-	fprintf( sim->log_file, line );
-	fflush(sim->log_file);
+	if (sim->log_file){
+		fprintf( sim->log_file, line );
+		fflush(sim->log_file);
+	}
 }
 
 // add player info to log line ',playerID,"playerName",playerFlags'
