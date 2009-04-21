@@ -17,6 +17,10 @@ enum rune_type {
 #define RUNE_TYPE_MASK  3
 #define RUNE_SLOT_MAX   6
 
+#define GET_BLOOD_RUNE_COUNT(x)  ((x) & 0x03)
+#define GET_FROST_RUNE_COUNT(x)  (((x) >> 3) & 0x03)
+#define GET_UNHOLY_RUNE_COUNT(x) (((x) >> 6) & 0x03)
+
 struct dk_rune_t
 {
   double cooldown_ready;
@@ -225,7 +229,6 @@ struct death_knight_t : public player_t
 
     runes_t()    { for( int i = 0; i < RUNE_SLOT_MAX; ++i ) slot[i].type = RUNE_TYPE_BLOOD + (i >> 1); }
     void reset() { for( int i = 0; i < RUNE_SLOT_MAX; ++i ) slot[i].reset();                           }
-
   };
   runes_t _runes;
 
@@ -306,16 +309,18 @@ struct death_knight_attack_t : public attack_t
   bool   use[RUNE_SLOT_MAX];
   bool   execute_once;
   bool   executed_once;
+  int    min_blood, max_blood, exact_blood;
+  int    min_frost, max_frost, exact_frost;
+  int    min_unholy, max_unholy, exact_unholy;
 
   death_knight_attack_t( const char* n, player_t* player, int s=SCHOOL_PHYSICAL, int t=TREE_NONE ) : 
     attack_t( n, player, RESOURCE_RUNIC, s, t ), 
     requires_weapon(true),
-    cost_blood(0),
-    cost_frost(0),
-    cost_unholy(0),
-    convert_runes(0),
-    execute_once(true),
-    executed_once(false)
+    cost_blood(0),cost_frost(0),cost_unholy(0),convert_runes(0),
+    execute_once(true),executed_once(false),
+    min_blood(-1), max_blood(-1), exact_blood(-1),
+    min_frost(-1), max_frost(-1), exact_frost(-1),
+    min_unholy(-1), max_unholy(-1), exact_unholy(-1)
   {
     death_knight_t* p = player -> cast_death_knight();
     for( int i = 0; i < RUNE_SLOT_MAX; ++i ) use[i] = false;
@@ -351,15 +356,17 @@ struct death_knight_spell_t : public spell_t
   bool   use[RUNE_SLOT_MAX];
   bool   execute_once;
   bool   executed_once;
+  int    min_blood, max_blood, exact_blood;
+  int    min_frost, max_frost, exact_frost;
+  int    min_unholy, max_unholy, exact_unholy;
 
   death_knight_spell_t( const char* n, player_t* player, int s, int t ) : 
     spell_t( n, player, RESOURCE_RUNIC, s, t ),
-    cost_blood(0),
-    cost_frost(0),
-    cost_unholy(0),
-    convert_runes(false),
-    execute_once(true),
-    executed_once(false)
+    cost_blood(0),cost_frost(0),cost_unholy(0),convert_runes(false),
+    execute_once(true),executed_once(false),
+    min_blood(-1), max_blood(-1), exact_blood(-1),
+    min_frost(-1), max_frost(-1), exact_frost(-1),
+    min_unholy(-1), max_unholy(-1), exact_unholy(-1)
   {
     death_knight_t* p = player -> cast_death_knight();
     for( int i = 0; i < RUNE_SLOT_MAX; ++i ) use[i] = false;
@@ -384,6 +391,42 @@ struct death_knight_spell_t : public spell_t
 // ==========================================================================
 // Local Utility Functions
 // ==========================================================================
+static action_t*
+clear_execute_flags( player_t* player )
+{
+  death_knight_t* p = player -> cast_death_knight();
+  for ( action_t* a = p -> action_list; a; a = a -> next )
+  {
+    death_knight_attack_t* att = dynamic_cast<death_knight_attack_t*>(a);
+    if( att )
+    {
+      att ->executed_once = false;
+      continue;
+    }
+
+    death_knight_spell_t* spl = dynamic_cast<death_knight_spell_t*>(a);
+    if( spl ) spl ->executed_once = false;
+  }
+  return p -> action_list;
+}
+
+static int
+count_runes( player_t* player )
+{
+  death_knight_t* p = player -> cast_death_knight();
+  double t = p -> sim -> current_time;
+  int count = 0;
+
+  // Storing ready runes by type in 2 bit blocks with 0 value bit separator (11 bits total)
+  for( int i = 0; i < RUNE_SLOT_MAX; ++i )
+    if( p -> _runes.slot[i].is_ready(t) )
+      count |= 1 << (i + (i >> 1));
+
+  // Adding bits in each two-bit block (0xDB = 011 011 011)
+  // NOTE: Use GET_XXX_RUNE_COUNT macros to process return value
+  return ((count & (count << 1)) | (count >> 1)) & 0xDB;
+}
+
 static void
 consume_runes( player_t* player, const bool* use, bool convert_runes = false )
 {
@@ -644,7 +687,16 @@ death_knight_attack_t::parse_options( option_t* options, const std::string& opti
 {
   option_t base_options[] =
   {
-    { "once", OPT_BOOL, &execute_once },
+    { "blood" ,  OPT_INT,  &exact_blood  },
+    { "blood>" , OPT_INT,  &min_blood  },
+    { "blood<" , OPT_INT,  &max_blood  },
+    { "frost" ,  OPT_INT,  &exact_frost  },
+    { "frost>" , OPT_INT,  &min_frost  },
+    { "frost<" , OPT_INT,  &max_frost  },
+    { "once"  ,  OPT_BOOL, &execute_once },
+    { "unholy",  OPT_INT,  &exact_unholy },
+    { "unholy>", OPT_INT,  &min_unholy },
+    { "unholy<", OPT_INT,  &max_unholy },
     { NULL }
   };
   std::vector<option_t> merged_options;
@@ -687,7 +739,7 @@ death_knight_attack_t::execute()
   }
   else
   {
-    if( cost() > 0 ) execute_once = true;
+    if( cost() > 0 ) executed_once = true;
     refund_runes( p, use );
   }
 }
@@ -740,6 +792,23 @@ death_knight_attack_t::ready()
     if( ! weapon || weapon->group() == WEAPON_RANGED ) 
       return false;
 
+  int count = count_runes(p);
+  int c = GET_BLOOD_RUNE_COUNT(count);
+
+  if( (exact_blood != -1 && c != exact_blood) ||
+      (min_blood != -1 && c < min_blood) ||
+      (max_blood != -1 && c > max_blood) ) return false;
+
+  c = GET_FROST_RUNE_COUNT(count);
+  if( (exact_frost != -1 && c != exact_frost) ||
+      (min_frost != -1 && c < min_frost) ||
+      (max_frost != -1 && c > max_frost) ) return false;
+
+  c = GET_UNHOLY_RUNE_COUNT(count);
+  if( (exact_unholy != -1 && c != exact_unholy) ||
+      (min_unholy != -1 && c < min_unholy) ||
+      (max_unholy != -1 && c > max_unholy) ) return false;
+
   return group_runes( p, cost_blood, cost_frost, cost_unholy, use);
 }
 
@@ -752,7 +821,16 @@ death_knight_spell_t::parse_options( option_t* options, const std::string& optio
 {
   option_t base_options[] =
   {
-    { "once", OPT_BOOL, &execute_once },
+    { "blood" ,  OPT_INT,  &exact_blood  },
+    { "blood>" , OPT_INT,  &min_blood  },
+    { "blood<" , OPT_INT,  &max_blood  },
+    { "frost" ,  OPT_INT,  &exact_frost  },
+    { "frost>" , OPT_INT,  &min_frost  },
+    { "frost<" , OPT_INT,  &max_frost  },
+    { "once"  ,  OPT_BOOL, &execute_once },
+    { "unholy",  OPT_INT,  &exact_unholy },
+    { "unholy>", OPT_INT,  &min_unholy },
+    { "unholy<", OPT_INT,  &max_unholy },
     { NULL }
   };
   std::vector<option_t> merged_options;
@@ -834,6 +912,23 @@ death_knight_spell_t::ready()
 
   if( ! spell_t::ready() )
     return false;
+
+  int count = count_runes(p);
+  int c = GET_BLOOD_RUNE_COUNT(count);
+
+  if( (exact_blood != -1 && c != exact_blood) ||
+      (min_blood != -1 && c < min_blood) ||
+      (max_blood != -1 && c > max_blood) ) return false;
+
+  c = GET_FROST_RUNE_COUNT(count);
+  if( (exact_frost != -1 && c != exact_frost) ||
+      (min_frost != -1 && c < min_frost) ||
+      (max_frost != -1 && c > max_frost) ) return false;
+
+  c = GET_UNHOLY_RUNE_COUNT(count);
+  if( (exact_unholy != -1 && c != exact_unholy) ||
+      (min_unholy != -1 && c < min_unholy) ||
+      (max_unholy != -1 && c > max_unholy) ) return false;
 
   return group_runes( player, cost_blood, cost_frost, cost_unholy, use);
 }
@@ -1332,37 +1427,49 @@ struct scourge_strike_t : public death_knight_attack_t
 
 struct death_coil_t : public death_knight_spell_t
 {
-    death_coil_t(player_t* player, const std::string& options_str, bool sudden_doom = false ) :
-      death_knight_spell_t( "death_coil", player, SCHOOL_SHADOW, TREE_BLOOD)
+  death_coil_t(player_t* player, const std::string& options_str, bool sudden_doom = false ) :
+    death_knight_spell_t( "death_coil", player, SCHOOL_SHADOW, TREE_BLOOD)
+  {
+    option_t options[] =
     {
-      proc = sudden_doom;
-      execute_once = !sudden_doom;
-
-      int cost = proc ? 0 : 40;
-
-      option_t options[] =
-      {
-        { NULL }
-      };
-      parse_options( options, options_str );
-        
-      static rank_t ranks[] =
-      {
-        { 80, 5, 443, 443, 0, cost },
-        { 76, 4, 381, 381, 0, cost },
-        { 68, 3, 275, 275, 0, cost },
-        { 62, 2, 208, 208, 0, cost },
-        { 55, 1, 184, 184, 0, cost },
-        { 0, 0 }
-      };
-      init_rank( ranks );
+      { NULL }
+    };
+    parse_options( options, options_str );
       
-      base_execute_time = 0;
-      direct_power_mod  = 0.15;
-      cooldown          = 0.0;
+    static rank_t ranks[] =
+    {
+      { 80, 5, 443, 443, 0, 40 },
+      { 76, 4, 381, 381, 0, 40 },
+      { 68, 3, 275, 275, 0, 40 },
+      { 62, 2, 208, 208, 0, 40 },
+      { 55, 1, 184, 184, 0, 40 },
+      { 0, 0 }
+    };
+    init_rank( ranks );
+    
+    base_execute_time = 0;
+    direct_power_mod  = 0.15;
+    cooldown          = 0.0;
 
-      if( proc ) trigger_gcd = 0;
+    if( sudden_doom )
+    {
+      proc = true;
+      base_cost = 0;
+      trigger_gcd = 0;
     }
+  }
+  bool ready()
+  {
+    if( proc ) return false;
+
+    bool ready = death_knight_spell_t::ready();
+    if( ! ready )
+    {
+      player -> cast_death_knight() -> abort_execute_action = false;
+      executed_once = true;
+    }
+    return ready;
+  }
 };
 
 struct frost_strike_t : public death_knight_attack_t
@@ -1393,6 +1500,16 @@ struct frost_strike_t : public death_knight_attack_t
     weapon = &( p -> main_hand_weapon );
     normalize_weapon_speed = true;
     weapon_multiplier     *= 0.6;
+  }
+  bool ready()
+  {
+    bool ready = death_knight_attack_t::ready();
+    if( ! ready )
+    {
+      player -> cast_death_knight() -> abort_execute_action = false;
+      executed_once = true;
+    }
+    return ready;
   }
 };
 
@@ -1433,47 +1550,6 @@ struct hysteria_t : public action_t
 }	// namespace
 
 // ==========================================================================
-// Death Knight Custom "clear" action to reset executed flags
-// ==========================================================================
-
-struct clear_t : public action_t
-{
-  clear_t( player_t* player, const std::string& options_str ) : 
-    action_t( ACTION_OTHER, "clear", player )
-  {
-    option_t options[] =
-    {
-      { NULL }
-    };
-    parse_options( options, options_str );
-
-    trigger_gcd = 0;
-  }
-
-  virtual void execute() 
-  {
-    death_knight_t* p = player -> cast_death_knight();
-    for ( action_t* a = p -> action_list; a != this; a = a -> next )
-    {
-      death_knight_attack_t* att = dynamic_cast<death_knight_attack_t*>(a);
-      if( att )
-      {
-        att ->executed_once = false;
-        continue;
-      }
-
-      death_knight_spell_t* spl = dynamic_cast<death_knight_spell_t*>(a);
-      if( spl )
-      {
-        spl ->executed_once = false;
-        continue;
-      }
-    }
-  }
-};
-
-
-// ==========================================================================
 // Death Knight Character Definition
 // ==========================================================================
 
@@ -1481,7 +1557,6 @@ action_t*
 death_knight_t::create_action( const std::string& name, const std::string& options_str )
 {
   if( name == "auto_attack"         ) return new auto_attack_t        ( this, options_str );
-  if( name == "clear"               ) return new clear_t              ( this, options_str );
 
   // Rune Actions
   if( name == "blood_strike"        ) return new blood_strike_t       ( this, options_str );
@@ -1536,12 +1611,15 @@ death_knight_t::init_base()
 action_t*
 death_knight_t::execute_action()
 {
-  action_t* action=0;
+  bool      repass = false;
+  action_t* action = NULL;
 
   abort_execute_action = false;
 
-  for( action = action_list; action; action = action -> next )
+  for( action = action_list; action; action = (! action -> next && repass) ? clear_execute_flags(this) : action -> next )
   {
+    if( action == action_list ) repass = ! repass;
+
     if( action -> background )
       continue;
 

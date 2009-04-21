@@ -7,8 +7,8 @@ talents=http://www.wowhead.com/?talent#jfVRVh0Icfof0stZfMhhxM
 
 # Action queue
 actions=auto_attack
-actions+=/plague_strike/icy_touch/hysteria/death_strike/heart_strike/heart_strike/death_coil
-actions+=/death_strike/heart_strike/heart_strike/heart_strike/heart_strike/death_coil/death_coil,once=0/clear
+actions+=/plague_strike/icy_touch/hysteria/heart_strike/heart_strike/death_strike/death_coil
+actions+=/death_strike/heart_strike/heart_strike/heart_strike/heart_strike/death_coil,unholy=0,once=0
 
 # Gear
 gear_stamina=1169
