@@ -2368,7 +2368,7 @@ struct shadow_bolt_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
 
-    travel_speed = 20.0; // set before options to allow override
+    travel_speed = 21.0; // set before options to allow override
     option_t options[] =
     {
       { "shadow_trance", OPT_INT, &shadow_trance },
@@ -3718,7 +3718,7 @@ struct incinerate_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
 
-    travel_speed = 20.0; // set before options to allow override
+    travel_speed = 21.0; // set before options to allow override
     option_t options[] =
     {
       { "backdraft",   OPT_INT, &backdraft   },
