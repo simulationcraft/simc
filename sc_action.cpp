@@ -187,7 +187,7 @@ double action_t::travel_time()
 
   double v = sim -> travel_variance;
 
-  if( v ) t *= 1.0 + sim -> rng -> range( -v, +v );
+  if( v ) t = sim -> rng -> gaussian( t, v );
 
   return t;
 }
