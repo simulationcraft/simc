@@ -270,6 +270,7 @@ struct rng_t
   virtual int roll( double chance );
   virtual double real();
   virtual double range( double min, double max );
+  virtual double gaussian( double mean, double stddev );
   virtual ~rng_t() {}
 };
 
