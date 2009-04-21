@@ -1,6 +1,6 @@
 #!simcraft optimal_raid=1 max_time=300
 
-shaman=Shaman_T7_57_14_00
+shaman=Shaman_T7_57_14_00_noToW
 level=80
 talents=http://ptr.wowhead.com/?talent=hEh0qcdItGfzAo0xxco
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/flametongue_weapon,weapon=main/water_shield
