@@ -1,6 +1,6 @@
 #!simcraft max_time=300 optimal_raid=1
 
-priest=Priest_T8_13_00_58
+priest=Priest_T7_13_00_58
 level=80
 talents=http://ptr.wowhead.com/?talent=bVcbhZZGxfVRfzcfqfzAo
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/fortitude/divine_spirit/inner_fire/shadow_form
