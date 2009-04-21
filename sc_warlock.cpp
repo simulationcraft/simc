@@ -219,6 +219,8 @@ struct warlock_t : public player_t
 
   warlock_t( sim_t* sim, std::string& name ) : player_t( sim, WARLOCK, name ) 
   {
+    distance = 30;
+
     // Active
     active_pet         = 0;
     active_corruption  = 0;
@@ -530,7 +532,6 @@ struct imp_pet_t : public warlock_pet_t
     {
       imp_pet_t* p = (imp_pet_t*) player -> cast_pet();
       warlock_t* o = p -> owner -> cast_warlock();
-	  blizzID = 47964; 
 
       static rank_t ranks[] =
       {
@@ -539,7 +540,7 @@ struct imp_pet_t : public warlock_pet_t
         { 58, 7,  83,  93, 0, 115 },
         { 0,  0 }
       };
-      init_rank( ranks );
+      init_rank( ranks, 47964 );
 
       base_cost         = 0; // FIXME! When pets no longer have infinite mana......
       base_execute_time = 2.5;
@@ -614,7 +615,7 @@ struct felguard_pet_t : public warlock_pet_t
       weapon   = &( p -> main_hand_weapon );
       cooldown = 6.0;
       base_dd_min = base_dd_max = util_t::ability_rank( p -> level,  124.0,76,  78.0,68,  50.0,0 );
-	  blizzID=47994;
+      blizzID = 47994;
     }
     virtual void player_buff()
     {
@@ -948,11 +949,10 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 
 struct warlock_spell_t : public spell_t
 {
-  bool decimation_trigger, decimation_consumer;
   int metamorphosis;
 
   warlock_spell_t( const char* n, player_t* player, int s, int t ) : 
-    spell_t( n, player, RESOURCE_MANA, s, t ), decimation_trigger(false), decimation_consumer(false), metamorphosis(0)
+    spell_t( n, player, RESOURCE_MANA, s, t ), metamorphosis(0)
   {
   }
 
@@ -1074,6 +1074,7 @@ static void decrement_shadow_vulnerability( warlock_t* p )
 }
 
 // trigger_improved_shadow_bolt ===========================================
+
 static void trigger_improved_shadow_bolt( spell_t* s )
 {
   warlock_t* p = s -> player -> cast_warlock();
@@ -1394,66 +1395,45 @@ static void trigger_molten_core( spell_t* s )
 
 // trigger_decimation =====================================================
 
-static void trigger_decimation( warlock_spell_t* s )
+static void trigger_decimation( warlock_spell_t* s,
+				int result )
 {
-  static int dec_blizzIDs[]={0, 63156, 63158};
-  
-  struct expiration_t : public event_t
+  warlock_t* p = s -> player -> cast_warlock();
+
+  if( result != RESULT_HIT && 
+      result != RESULT_CRIT ) return;
+
+  if( ( ! p -> talents.decimation ) || ( s -> sim -> target -> health_percentage() > 35 ) ) return;
+
+  static int aura_id[] = { 0, 63156, 63158 };
+
+  struct decimation_expiration_t : public event_t
   {
-    expiration_t( sim_t* sim, warlock_t* p ) : event_t( sim, p )
+    decimation_expiration_t( sim_t* sim, warlock_t* p ) : event_t( sim, p )
     {
       name = "Decimation Expiration";
+      p -> aura_gain( "Decimation" , aura_id[ p -> talents.decimation % 3 ] );
+      p -> _buffs.decimation = 1;
       sim -> add_event( this, 10.0 );
     }
     virtual void execute()
     {
       warlock_t* p = player -> cast_warlock();
+      p -> aura_loss( "Decimation" , aura_id[ p -> talents.decimation % 3 ] );
       p -> _buffs.decimation = 0;
-	  p -> aura_loss( "Decimation" ,dec_blizzIDs[p->talents.decimation%3] );
       p -> _expirations.decimation = 0;
     }
   };
-  
-  // The decimation only procs when the triggering spells lands on the target, after
-  // spending time flying through the air.  We have an event which will activate the buff
-  // after the spell hits, then after activating the buff it will start an expiration timer
-  struct activation_t : public event_t
+
+  event_t*&  e = p -> _expirations.decimation;
+
+  if( e )
   {
-  	activation_t( sim_t* sim, warlock_t *p ) : event_t( sim, p )
-  	{
-  		name = "Decimation activation";
-  		// Assume 1.5 second flight time -- will make this param later
-  		sim -> add_event( this, sim -> warlock_nuke_travel_time );
-  	}
-  	virtual void execute()
-  	{
-		warlock_t* p = player -> cast_warlock();
-		p -> aura_gain("Decimation" ,dec_blizzIDs[p->talents.decimation%3]);
-		p -> _buffs.decimation = 1;
-		event_t*&  e = p -> _expirations.decimation;
-		if( e )
-		{
-			e -> reschedule( 10.0 );
-		}
-		else
-		{
-			e = new ( sim ) expiration_t( sim, p );
-		}
-  	}
-  };
-
-  warlock_t* p = s -> player -> cast_warlock();
-
-  if( ( ! p -> talents.decimation ) || ( s -> sim -> target -> health_percentage() > 35 ) ) return;
-
-  if( s -> decimation_trigger && s -> result_is_hit() )
-  {
-    new ( s -> sim ) activation_t( s -> sim, p );
+    e -> reschedule( 10.0 );
   }
-
-  if( s -> decimation_consumer )
+  else
   {
-      if( p -> _expirations.decimation ) event_t::early( p -> _expirations.decimation );
+    e = new ( s -> sim ) decimation_expiration_t( s -> sim, p );
   }
 }
 
@@ -1599,21 +1579,21 @@ static void trigger_pandemic( spell_t* s )
 
 static void trigger_pyroclasm( spell_t* s )
 {
-  static int pyro_blizzIDs[]={0,18096,18073,63245};
+  static int blizzID[]={0,18096,18073,63245};
 
   struct expiration_t : public event_t
   {
     expiration_t( sim_t* sim, warlock_t* p ) : event_t( sim, p )
     {
       name = "Pyroclasm Expiration";
-      p -> aura_gain( "Pyroclasm", pyro_blizzIDs[p->talents.pyroclasm%4] );
+      p -> aura_gain( "Pyroclasm", blizzID[p->talents.pyroclasm%4] );
       p -> _buffs.pyroclasm = 1;
       sim -> add_event( this, 10.0 );
     }
     virtual void execute()
     {
       warlock_t* p = player -> cast_warlock();
-      p -> aura_loss( "Pyroclasm", pyro_blizzIDs[p->talents.pyroclasm%4] );
+      p -> aura_loss( "Pyroclasm", blizzID[p->talents.pyroclasm%4] );
       p -> _buffs.pyroclasm = 0;
       p -> _expirations.pyroclasm = 0;
     }
@@ -2066,8 +2046,6 @@ void warlock_spell_t::execute()
   {
     event_t::early( p -> _expirations.empowered_imp );
   }
-
-  trigger_decimation( this );
 }
 
 // warlock_spell_t::tick =====================================================
@@ -2214,7 +2192,7 @@ struct curse_of_agony_t : public warlock_spell_t
     warlock_spell_t( "curse_of_agony", player, SCHOOL_SHADOW, TREE_AFFLICTION )
   {
     warlock_t* p = player -> cast_warlock();
-	blizzID= 47864;
+
     option_t options[] =
     {
       { NULL }
@@ -2229,7 +2207,7 @@ struct curse_of_agony_t : public warlock_spell_t
       { 58, 6, 0, 0,  87, 215  },
       { 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 47864 );
       
     base_execute_time = 0; 
     base_tick_time    = 2.0; 
@@ -2389,7 +2367,8 @@ struct shadow_bolt_t : public warlock_spell_t
     shadow_trance(0), backdraft(0), isb_benefit(0), isb_trigger(0)
   {
     warlock_t* p = player -> cast_warlock();
-	blizzID = 47809;
+
+    travel_speed = 20.0; // set before options to allow override
     option_t options[] =
     {
       { "shadow_trance", OPT_INT, &shadow_trance },
@@ -2409,8 +2388,8 @@ struct shadow_bolt_t : public warlock_spell_t
       { 60,  9, 455, 507, 0, 370  },
       { 0, 0 }
     };
-    init_rank( ranks );
-    
+    init_rank( ranks, 47809 );
+
     base_execute_time = 3.0; 
     may_crit          = true;
     direct_power_mod  = base_execute_time / 3.5;
@@ -2439,8 +2418,6 @@ struct shadow_bolt_t : public warlock_spell_t
     direct_power_mod  *= 1.0 + p -> talents.shadow_and_flame * 0.04;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
-
-    decimation_trigger = true;
   }
 
   virtual double execute_time()
@@ -2486,6 +2463,13 @@ struct shadow_bolt_t : public warlock_spell_t
       p -> aura_loss( "Demonic Soul" , 61595 );
       p -> buffs.tier7_2pc = 0;
     }
+  }
+
+  virtual void travel( int    travel_result, 
+		       double travel_dmg )
+  {
+    warlock_spell_t::travel( travel_result, travel_dmg );
+    trigger_decimation( this, travel_result );
   }
 
   virtual void player_buff()
@@ -2773,7 +2757,7 @@ struct corruption_t : public warlock_spell_t
     warlock_spell_t( "corruption", player, SCHOOL_SHADOW, TREE_AFFLICTION )
   {
     warlock_t* p = player -> cast_warlock();
-	blizzID= 47813;
+
     option_t options[] =
     {
       { NULL }
@@ -2788,7 +2772,7 @@ struct corruption_t : public warlock_spell_t
       { 60,  7, 0, 0, 137, 340  },
       { 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 47813 );
 
     base_execute_time = 0.0; 
     base_tick_time    = 3.0; 
@@ -2971,7 +2955,7 @@ struct drain_soul_t : public warlock_spell_t
     warlock_spell_t( "drain_soul", player, SCHOOL_SHADOW, TREE_AFFLICTION ), interrupt(0), health_multiplier(0)
   {
     warlock_t* p = player -> cast_warlock();
-	blizzID= 47855; 
+
     option_t options[] =
     {
       { "interrupt", OPT_INT, &interrupt },
@@ -2987,7 +2971,7 @@ struct drain_soul_t : public warlock_spell_t
       { 52, 4, 0, 0,  91, 290  },
       { 0, 0 }
     };
-    rank_t* rank = init_rank( ranks );
+    rank_t* rank = init_rank( ranks, 47855 );
     
     base_execute_time = 0; 
     base_tick_time    = 3.0; 
@@ -3199,7 +3183,6 @@ struct unstable_affliction_t : public warlock_spell_t
     warlock_spell_t( "unstable_affliction", player, SCHOOL_SHADOW, TREE_AFFLICTION )
   {
     warlock_t* p = player -> cast_warlock();
-	blizzID = 47843;
     assert( p -> talents.unstable_affliction );
     
     option_t options[] =
@@ -3216,7 +3199,7 @@ struct unstable_affliction_t : public warlock_spell_t
       { 60, 2,  0, 0, 155, 315  },
       { 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 47843 );
     
     base_execute_time = 1.5; 
     base_tick_time    = 3.0;
@@ -3290,7 +3273,7 @@ struct haunt_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     assert( p -> talents.haunt );
-	blizzID= 59164;
+
     option_t options[] =
     {
       { "debuff", OPT_INT, &debuff     },
@@ -3308,7 +3291,7 @@ struct haunt_t : public warlock_spell_t
       { 60, 1, 405, 473, 0, 0.12 },
       { 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 59164 );
     
     base_execute_time = 1.5; 
     direct_power_mod  = base_execute_time / 3.5; 
@@ -3363,7 +3346,7 @@ struct immolate_t : public warlock_spell_t
     warlock_spell_t( "immolate", player, SCHOOL_FIRE, TREE_DESTRUCTION )
   {
     warlock_t* p = player -> cast_warlock();
-	blizzID= 47811;
+
     option_t options[] =
     {
       { "target_pct", OPT_DEPRECATED, (void*) "health_percentage>" },
@@ -3380,7 +3363,7 @@ struct immolate_t : public warlock_spell_t
       { 60,  7, 258, 258,  97, 370  },
       { 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 47811 );
 
     base_execute_time = 2.0; 
     may_crit          = true;
@@ -3734,7 +3717,8 @@ struct incinerate_t : public warlock_spell_t
     warlock_spell_t( "incinerate", player, SCHOOL_FIRE, TREE_DESTRUCTION ), backdraft(0), molten_core(0), immolate_bonus(0)
   {
     warlock_t* p = player -> cast_warlock();
-	blizzID=47838;
+
+    travel_speed = 20.0; // set before options to allow override
     option_t options[] =
     {
       { "backdraft",   OPT_INT, &backdraft   },
@@ -3751,7 +3735,7 @@ struct incinerate_t : public warlock_spell_t
       { 64, 1, 357, 413, 0, 256  },
       { 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 47838 );
      
     base_execute_time  = 2.5; 
     may_crit           = true;
@@ -3781,8 +3765,6 @@ struct incinerate_t : public warlock_spell_t
     base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
 
     immolate_bonus = util_t::ability_rank( p -> level,  157,80,  130,74,  120,70,  108,0 );
-
-    decimation_trigger = true;
   }
 
   virtual void execute()
@@ -3800,6 +3782,13 @@ struct incinerate_t : public warlock_spell_t
       p -> aura_loss( "Demonic Soul" ,61595 );
       p -> buffs.tier7_2pc = 0;
     }
+  }
+
+  virtual void travel( int    travel_result, 
+		       double travel_dmg )
+  {
+    warlock_spell_t::travel( travel_result, travel_dmg );
+    trigger_decimation( this, travel_result );
   }
 
   virtual void player_buff()
@@ -3902,18 +3891,16 @@ struct soul_fire_t : public warlock_spell_t
 {
   int backdraft;
   int decimation;
-  int noweave;
 
   soul_fire_t( player_t* player, const std::string& options_str ) : 
-    warlock_spell_t( "soul_fire", player, SCHOOL_FIRE, TREE_DESTRUCTION ), backdraft(0), decimation(0), noweave(0)
+    warlock_spell_t( "soul_fire", player, SCHOOL_FIRE, TREE_DESTRUCTION ), backdraft(0), decimation(0)
   {
     warlock_t* p = player -> cast_warlock();
-	blizzID=47825;
+
     option_t options[] =
     {
       { "backdraft",  OPT_INT, &backdraft  },
       { "decimation", OPT_INT, &decimation },
-      { "noweave"   , OPT_INT, &noweave    },
       { NULL }
     };
     parse_options( options, options_str );
@@ -3927,7 +3914,7 @@ struct soul_fire_t : public warlock_spell_t
       { 56, 2,  703,  881, 0, 335  },
       { 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 47825 );
      
     base_execute_time = 6.0; 
     may_crit          = true; 
@@ -3950,19 +3937,17 @@ struct soul_fire_t : public warlock_spell_t
     base_crit         += p -> talents.backlash * 0.01;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
-
-    decimation_consumer = true;
   }
 
   virtual void execute()
   {
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::execute();
-    if( noweave ) p -> _buffs.decimation = 0;
     if( result_is_hit() )
     {
       trigger_soul_leech( this );
     }
+    event_t::early( p -> _expirations.decimation );
   }
 
   virtual double execute_time()
@@ -4012,7 +3997,8 @@ struct life_tap_t : public warlock_spell_t
   life_tap_t( player_t* player, const std::string& options_str ) : 
     warlock_spell_t( "life_tap", player, SCHOOL_SHADOW, TREE_AFFLICTION ), trigger(1000), inferno(0), glyph(0), tier7_4pc(0), max(0), base_tap(0)
   {
-    blizzID= 57946;
+    blizzID = 57946;
+
     option_t options[] =
     {
       { "trigger",   OPT_INT, &trigger   },

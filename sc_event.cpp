@@ -160,6 +160,35 @@ void action_tick_event_t::execute()
   else action -> schedule_tick();
 }
 
+// ==========================================================================
+// Action Travel Event
+// ==========================================================================
+
+// action_travel_event_t::action_travel_event_t =============================
+
+action_travel_event_t::action_travel_event_t( sim_t*    sim,
+					      action_t* a,
+					      double    time_to_travel ) :
+  event_t( sim, a -> player ), action( a )
+{
+  name   = "Action Travel";
+  result = a -> result;
+  damage = a -> direct_dmg;
+
+  if( sim -> debug )
+    report_t::log( sim, "New Action Travel Event: %s %s %.2f",
+		   player -> name(), a -> name(), time_to_travel );
+
+  sim -> add_event( this, time_to_travel );
+}
+
+// action_travel_event_t::execute ===========================================
+
+void action_travel_event_t::execute()
+{
+  action -> travel( result, damage );
+}
+
 // ===========================================================================
 // Regen Event
 // ===========================================================================

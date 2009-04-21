@@ -38,6 +38,7 @@ void spell_t::parse_options( option_t*          options,
     { "health_percentage>", OPT_FLT,    &min_health_percentage },
     { "health_percentage<", OPT_FLT,    &max_health_percentage },
     { "bloodlust",          OPT_INT,    &bloodlust_active      },
+    { "travel_speed",       OPT_FLT,    &travel_speed          },
     { NULL }
   };
   std::vector<option_t> merged_options;

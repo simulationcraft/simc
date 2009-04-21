@@ -349,14 +349,14 @@ struct sim_t
   double      queue_lag, queue_lag_range;
   double      gcd_lag, gcd_lag_range;
   double      channel_lag, channel_lag_range;
-  double      warlock_nuke_travel_time;
   double      reaction_time, regen_periodicity;
   double      current_time, max_time;
   int         events_remaining, max_events_remaining;
   int         events_processed, total_events_processed;
   int         seed, id, iterations, current_iteration, threads;
   int         infinite_resource[ RESOURCE_MAX ];
-  int         armor_update_interval, optimal_raid, potion_sickness, average_dmg, log, debug, timestamp, sfmt;
+  int         armor_update_interval, potion_sickness, travel_variance;
+  int         optimal_raid, average_dmg, log, debug, timestamp, sfmt;
   double      jow_chance, jow_ppm;
 
   std::vector<std::string> party_encoding;
@@ -570,6 +570,7 @@ struct player_t
   std::string name_str, talents_str;
   player_t*   next;
   int         type, level, party, member;
+  double      distance;
   double      gcd_ready, base_gcd;
   int         sleeping;
   rating_t    rating;
@@ -1206,6 +1207,7 @@ struct rank_t
 {
   int level, index;
   double dd_min, dd_max, tick, cost;
+  int id;
 };
 
 // Base Stats ================================================================
@@ -1262,7 +1264,7 @@ struct action_t
   stats_t* stats;
   event_t* execute_event;
   event_t* tick_event;
-  double time_to_execute, time_to_tick;
+  double time_to_execute, time_to_tick, time_to_travel, travel_speed;
   int rank_index, bloodlust_active;
   double min_current_time, max_current_time;
   double min_time_to_die, max_time_to_die;
@@ -1279,13 +1281,14 @@ struct action_t
 
   virtual void      parse_options( option_t*, const std::string& options_str );
   virtual option_t* merge_options( std::vector<option_t>&, option_t*, option_t* );
-  virtual rank_t*   init_rank( rank_t* rank_list );
+  virtual rank_t*   init_rank( rank_t* rank_list, int id=0 );
 
   virtual double cost();
   virtual double haste()        { return 1.0;               }
   virtual double gcd()          { return trigger_gcd;       }
   virtual double execute_time() { return base_execute_time; }
   virtual double tick_time()    { return base_tick_time;    }
+  virtual double travel_time();
   virtual void   player_buff();
   virtual void   target_debuff( int dmg_type );
   virtual void   calculate_result() { assert(0); }
@@ -1300,9 +1303,11 @@ struct action_t
   virtual void   execute();
   virtual void   tick();
   virtual void   last_tick();
+  virtual void   travel( int result, double dmg );
   virtual void   assess_damage( double amount, int dmg_type );
   virtual void   schedule_execute();
   virtual void   schedule_tick();
+  virtual void   schedule_travel();
   virtual void   refresh_duration();
   virtual void   extend_duration( int extra_ticks );
   virtual void   update_ready();
@@ -1417,6 +1422,17 @@ struct action_tick_event_t : public event_t
 {
   action_t* action;
   action_tick_event_t( sim_t* sim, action_t* a, double time_to_tick );
+  virtual void execute();
+};
+
+// Action Travel Event =======================================================
+
+struct action_travel_event_t : public event_t
+{
+  action_t* action;
+  int result;
+  double damage;
+  action_travel_event_t( sim_t* sim, action_t* a, double time_to_travel );
   virtual void execute();
 };
 

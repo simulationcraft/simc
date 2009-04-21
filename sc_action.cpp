@@ -46,7 +46,8 @@ action_t::action_t( int         ty,
   num_ticks(0), current_tick(0), added_ticks(0), ticking(0), 
   cooldown_group(n), duration_group(n), cooldown(0), cooldown_ready(0), duration_ready(0),
   weapon(0), weapon_multiplier(1), normalize_weapon_damage( false ), normalize_weapon_speed( false ), 
-  stats(0), execute_event(0), tick_event(0), time_to_execute(0), time_to_tick(0), 
+  stats(0), execute_event(0), tick_event(0), 
+  time_to_execute(0), time_to_tick(0), time_to_travel(0), travel_speed(0),
   rank_index(-1), bloodlust_active(0), 
   min_current_time(0), max_current_time(0), 
   min_time_to_die(0), max_time_to_die(0), 
@@ -116,7 +117,8 @@ option_t* action_t::merge_options( std::vector<option_t>& merged_options,
 
 // action_t::init_rank ======================================================
 
-rank_t* action_t::init_rank( rank_t* rank_list )
+rank_t* action_t::init_rank( rank_t* rank_list, 
+			     int     id )
 {
   if( resource == RESOURCE_MANA )
   {
@@ -143,6 +145,7 @@ rank_t* action_t::init_rank( rank_t* rank_list )
        base_dd_max  = rank -> dd_max;
        base_td_init = rank -> tick;
        base_cost    = rank -> cost;
+       blizzID      = id ? id : rank -> id;
 
        return rank;
      }
@@ -172,6 +175,23 @@ double action_t::cost()
    return c;
 }
    
+// action_t::travel_time =====================================================
+
+double action_t::travel_time()
+{
+  if( travel_speed == 0 ) return 0;
+
+  if( player -> distance == 0 ) return 0;
+
+  double t = player -> distance / travel_speed;
+
+  double v = sim -> travel_variance;
+
+  if( v ) t *= 1.0 + sim -> rng -> range( -v, +v );
+
+  return t;
+}
+
 // action_t::player_buff =====================================================
 
 void action_t::player_buff()
@@ -656,6 +676,8 @@ void action_t::execute()
 
   if( ! dual ) update_stats( DMG_DIRECT );
 
+  schedule_travel();
+
   if( repeating && ! proc ) schedule_execute();
 
   if( harmful ) player -> in_combat = true;
@@ -688,7 +710,7 @@ void action_t::tick()
   update_stats( DMG_OVER_TIME );
 }
 
-// action_t::last_tick=======================================================
+// action_t::last_tick =======================================================
 
 void action_t::last_tick()
 {
@@ -700,6 +722,19 @@ void action_t::last_tick()
   if( school == SCHOOL_BLEED ) sim -> target -> debuffs.bleeding--;
 
   if( observer ) *observer = 0;
+}
+
+// action_t::travel ==========================================================
+
+void action_t::travel( int    travel_result,
+		       double travel_dmg )
+{
+  if( sim -> log ) 
+    report_t::log( sim, "%s from %s arrives on target (%s for %.0f)", 
+		   name(), player -> name(),
+		   util_t::result_type_string( travel_result ), travel_dmg );
+
+  // FIXME! Damage still applied at execute().  This is just a place to model travel-time effects.
 }
 
 // action_t::assess_damage ==================================================
@@ -779,6 +814,22 @@ void action_t::schedule_tick()
   if( channeled ) player -> channeling = tick_event;
 
   if( observer ) *observer = this;
+}
+
+// action_t::schedule_travel ===============================================
+
+void action_t::schedule_travel()
+{
+  time_to_travel = travel_time();
+
+  if( time_to_travel == 0 ) return;
+
+  if( sim -> log )
+  {
+    report_t::log( sim, "%s schedules travel for %s", player -> name(), name() );
+  }
+
+  new ( sim ) action_travel_event_t( sim, this, time_to_travel );
 }
 
 // action_t::refresh_duration ================================================
