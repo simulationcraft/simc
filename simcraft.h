@@ -350,13 +350,14 @@ struct sim_t
   double      queue_lag, queue_lag_range;
   double      gcd_lag, gcd_lag_range;
   double      channel_lag, channel_lag_range;
+  double      travel_variance;
   double      reaction_time, regen_periodicity;
   double      current_time, max_time;
   int         events_remaining, max_events_remaining;
   int         events_processed, total_events_processed;
   int         seed, id, iterations, current_iteration, threads;
   int         infinite_resource[ RESOURCE_MAX ];
-  int         armor_update_interval, potion_sickness, travel_variance;
+  int         armor_update_interval, potion_sickness;
   int         optimal_raid, average_dmg, log, debug, timestamp, sfmt;
   double      jow_chance, jow_ppm;
 
