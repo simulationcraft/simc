@@ -460,7 +460,8 @@ void unique_gear_t::register_callbacks( player_t* p )
     int attr[] = { ATTR_STRENGTH, ATTR_AGILITY, ATTR_INTELLECT, ATTR_SPIRIT };
     int stat[] = { STAT_STRENGTH, STAT_AGILITY, STAT_INTELLECT, STAT_SPIRIT };
 
-    int max_stat=-1, max_value=0;
+    int max_stat=-1;
+    double max_value=0;
 
     for( int i=0; i < 4; i++ ) 
     {

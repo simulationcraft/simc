@@ -1652,7 +1652,7 @@ void player_t::stat_gain( int    stat,
       spell_crit  += amount / rating.spell_crit;
       break;
 
-    case STAT_HASTE_RATING: haste_rating += amount; recalculate_haste(); break;
+    case STAT_HASTE_RATING: haste_rating += (int) amount; recalculate_haste(); break;
 
     case STAT_ARMOR: armor += amount; break;
 
@@ -1698,7 +1698,7 @@ void player_t::stat_loss( int    stat,
       spell_crit  -= amount / rating.spell_crit;
       break;
 
-    case STAT_HASTE_RATING: haste_rating -= amount; recalculate_haste(); break;
+    case STAT_HASTE_RATING: haste_rating -= (int) amount; recalculate_haste(); break;
 
     case STAT_ARMOR: armor -= amount; break;
 
