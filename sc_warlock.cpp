@@ -788,10 +788,10 @@ struct succubus_pet_t : public warlock_pet_t
     {
       static rank_t ranks[] =
       {
-        { 80, 9, 237, 237, 0, 0.1 },  //FIXME: Assuming cost = 10% of base mana
-        { 74, 8, 193, 193, 0, 0.1 },
-        { 68, 7, 123, 123, 0, 0.1 },
-        { 60, 6,  99,  99, 0, 0.1 },
+        { 80, 9, 237, 237, 0, 250 },
+        { 74, 8, 193, 193, 0, 220 },
+        { 68, 7, 123, 123, 0, 190 },
+        { 60, 6,  99,  99, 0, 160 },
         { 0,  0 }
       };
       init_rank( ranks );
@@ -1274,6 +1274,7 @@ static void trigger_soul_leech( spell_t* s )
         double amount = p -> resource_max[ RESOURCE_MANA ] * p -> talents.improved_soul_leech * 0.01;
 
         p -> resource_gain( RESOURCE_MANA, amount, p -> gains_soul_leech );
+        if( p -> talents.mana_feed ) p -> active_pet -> resource_gain( RESOURCE_MANA, amount );
 
         if( ! s -> sim -> P309 )
         {
