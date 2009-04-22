@@ -318,9 +318,9 @@ bool sim_t::init()
 
   total_seconds = 0;
 
-  if(   queue_lag_range == 0 )   queue_lag_range =   queue_lag * 0.5;
-  if(     gcd_lag_range == 0 )     gcd_lag_range =     gcd_lag * 0.5;
-  if( channel_lag_range == 0 ) channel_lag_range = channel_lag * 0.5;
+  if(   queue_lag_range == 0 )   queue_lag_range =   queue_lag * 0.25;
+  if(     gcd_lag_range == 0 )     gcd_lag_range =     gcd_lag * 0.25;
+  if( channel_lag_range == 0 ) channel_lag_range = channel_lag * 0.25;
 
   target -> init();
 

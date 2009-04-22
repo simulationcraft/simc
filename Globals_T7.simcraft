@@ -11,13 +11,19 @@ log=0
 # Setting debug to a non-zero value will force the simulator to execute just one iteration
 debug=0
 
-# Lag is a random value centered on the value below with a range of +/- 50%
+# Lag is a random value (gaussian distribution) centered on the value below with a stddev of 25%
 # The type of lag is dependent upon the previous action and whether or not the player is
 # able to take advantage of the spell queuing system, has to time a multi-tap on GCD, or
 # has to wait for a channel to finish.
 queue_lag=0.075
 gcd_lag=0.150
 channel_lag=0.250
+
+# Flight time is based on the spell flight speed, but varies with lag.  For now, we model this variance
+# seperately from the 3 variables above, though it might be related to them.  This value is the stddev
+# of a gaussian distribution of travel time, centered on the mean which is based on distance from mob and
+# spell flight speed.
+travel_variance=0.075
 
 # Boss Level
 target_level=83
