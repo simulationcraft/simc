@@ -1408,8 +1408,16 @@ struct action_callback_t
   virtual ~action_callback_t() {}
   virtual void trigger( action_t* ) = 0;
   virtual void reset() {}
-  static void trigger( std::vector<action_callback_t*>& v, action_t* a ) { for( int i=v.size()-1; i>=0; i-- ) v[i]->trigger(a); }
-  static void   reset( std::vector<action_callback_t*>& v ) { for( int i=v.size()-1; i>=0; i-- ) v[i]->reset(); }
+  static void trigger( std::vector<action_callback_t*>& v, action_t* a )
+  {
+    std::vector<action_callback_t*>::size_type i = v.size();
+    if( i ) for( i--; i>=0; i-- ) v[i]->trigger(a);
+  }
+  static void   reset( std::vector<action_callback_t*>& v )
+  {
+    std::vector<action_callback_t*>::size_type i = v.size();
+    if( i ) for( i--; i>=0; i-- ) v[i]->reset();
+  }
 };
 
 // Player Ready Event ========================================================
