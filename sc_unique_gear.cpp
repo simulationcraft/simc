@@ -451,7 +451,7 @@ void unique_gear_t::register_callbacks( player_t* p )
   //---------------------------------------------------------------------------------------------------------
   if( p -> unique_gear -> darkmoon_crusade ) 
   {
-    cb = new stat_proc_callback_t( "Darkmoon Crusade", p, STAT_SPELL_POWER, 10, 8, 0.0, 10.0, 0.0 );
+    cb = new stat_proc_callback_t( "darkmoon_crusade", p, STAT_SPELL_POWER, 10, 8, 0.0, 10.0, 0.0 );
     p -> register_spell_result_callback( RESULT_HIT_MASK, cb );
   }
   //---------------------------------------------------------------------------------------------------------
@@ -471,7 +471,7 @@ void unique_gear_t::register_callbacks( player_t* p )
 	max_stat = stat[ i ];
       }
     }
-    cb = new stat_proc_callback_t( "Darkmoon Greatness", p, max_stat, 1, 300, 0.35, 15.0, 45.0 );
+    cb = new stat_proc_callback_t( "darkmoon_greatness", p, max_stat, 1, 300, 0.35, 15.0, 45.0 );
 
     p -> register_tick_damage_callback( cb );
     p -> register_direct_damage_callback( cb );
@@ -479,139 +479,139 @@ void unique_gear_t::register_callbacks( player_t* p )
   //---------------------------------------------------------------------------------------------------------
   if( p -> unique_gear -> dying_curse )
   {
-    cb = new stat_proc_callback_t( "Dying Curse", p, STAT_SPELL_POWER, 1, 765, 0.15, 10.0, 45.0 );
+    cb = new stat_proc_callback_t( "dying_curse", p, STAT_SPELL_POWER, 1, 765, 0.15, 10.0, 45.0 );
     p -> register_spell_result_callback( RESULT_HIT_MASK, cb );
   }
   //---------------------------------------------------------------------------------------------------------
   if( p -> unique_gear -> egg_of_mortal_essence )
   {
-    cb = new stat_proc_callback_t( "Egg of Mortal Essence", p, STAT_HASTE_RATING, 1, 505, 0.10, 10.0, 45.0 );
+    cb = new stat_proc_callback_t( "egg_of_mortal_essence", p, STAT_HASTE_RATING, 1, 505, 0.10, 10.0, 45.0 );
     p -> register_resource_gain_callback( RESOURCE_HEALTH, cb );
   }
   //---------------------------------------------------------------------------------------------------------
   if( p -> unique_gear -> elder_scribes )
   {
-    cb = new stat_proc_callback_t( "Elder Scribes", p, STAT_SPELL_POWER, 1, 130, 0.05, 10.0, 60.0 );
+    cb = new stat_proc_callback_t( "elder_scribes", p, STAT_SPELL_POWER, 1, 130, 0.05, 10.0, 60.0 );
     p -> register_spell_result_callback( RESULT_HIT_MASK, cb );
   }
   //---------------------------------------------------------------------------------------------------------
   if( p -> unique_gear -> elemental_focus_stone )
   {
-    cb = new stat_proc_callback_t( "Elemental Focus Stone", p, STAT_SPELL_POWER, 1, 522, 0.10, 10.0, 45.0 );
+    cb = new stat_proc_callback_t( "elemental_focus_stone", p, STAT_SPELL_POWER, 1, 522, 0.10, 10.0, 45.0 );
     p -> register_spell_result_callback( RESULT_HIT_MASK, cb );
   }
   //---------------------------------------------------------------------------------------------------------
   if( p -> unique_gear -> embrace_of_the_spider )
   {
-    cb = new stat_proc_callback_t( "Embrace of the Spider", p, STAT_HASTE_RATING, 1, 505, 0.10, 10.0, 45.0 );
+    cb = new stat_proc_callback_t( "embrace_of_the_spider", p, STAT_HASTE_RATING, 1, 505, 0.10, 10.0, 45.0 );
     p -> register_spell_result_callback( RESULT_HIT_MASK, cb );
   }
   //---------------------------------------------------------------------------------------------------------
   if( p -> unique_gear -> eternal_sage )
   {
-    cb = new stat_proc_callback_t( "Eternal Sage", p, STAT_SPELL_POWER, 1, 95, 0.10, 10.0, 45.0 );
+    cb = new stat_proc_callback_t( "eternal_sage", p, STAT_SPELL_POWER, 1, 95, 0.10, 10.0, 45.0 );
     p -> register_spell_result_callback( RESULT_HIT_MASK, cb );
   }
   //---------------------------------------------------------------------------------------------------------
   if( p -> unique_gear -> eye_of_magtheridon )
   {
-    cb = new stat_proc_callback_t( "Eye of Magtheridon", p, STAT_SPELL_POWER, 1, 170, 1.00, 10.0, 0.0 );
+    cb = new stat_proc_callback_t( "eye_of_magtheridon", p, STAT_SPELL_POWER, 1, 170, 1.00, 10.0, 0.0 );
     p -> register_spell_result_callback( RESULT_MISS_MASK, cb );
   }
   //---------------------------------------------------------------------------------------------------------
   if( p -> unique_gear -> eye_of_the_broodmother ) 
   {
-    cb = new stat_proc_callback_t( "Eye of the Broodmother", p, STAT_SPELL_POWER, 5, 25, 0.0, 10.0, 0.0 );
+    cb = new stat_proc_callback_t( "eye_of_the_broodmother", p, STAT_SPELL_POWER, 5, 25, 0.0, 10.0, 0.0 );
     p -> register_spell_result_callback( RESULT_HIT_MASK, cb );
   }
   //---------------------------------------------------------------------------------------------------------
   if( p -> unique_gear -> flare_of_the_heavens )
   {
-    cb = new stat_proc_callback_t( "Flare of the Heavens", p, STAT_SPELL_POWER, 1, 850, 0.10, 10.0, 45.0 );
+    cb = new stat_proc_callback_t( "flare_of_the_heavens", p, STAT_SPELL_POWER, 1, 850, 0.10, 10.0, 45.0 );
     p -> register_spell_result_callback( RESULT_HIT_MASK, cb );
   }
   //---------------------------------------------------------------------------------------------------------
   if( p -> unique_gear -> forge_ember )
   {
-    cb = new stat_proc_callback_t( "Forge Ember", p, STAT_SPELL_POWER, 1, 512, 0.10, 10.0, 45.0 );
+    cb = new stat_proc_callback_t( "forge_ember", p, STAT_SPELL_POWER, 1, 512, 0.10, 10.0, 45.0 );
     p -> register_spell_result_callback( RESULT_HIT_MASK, cb );
   }
   //---------------------------------------------------------------------------------------------------------
   if( p -> unique_gear -> fury_of_the_five_flights ) 
   {
-    cb = new stat_proc_callback_t( "Fury of the Five Flights", p, STAT_ATTACK_POWER, 20, 16, 0.0, 10.0, 0.0 );
+    cb = new stat_proc_callback_t( "fury_of_the_five_flights", p, STAT_ATTACK_POWER, 20, 16, 0.0, 10.0, 0.0 );
     p -> register_attack_result_callback( RESULT_HIT_MASK, cb );
   }
   //---------------------------------------------------------------------------------------------------------
   if( p -> unique_gear -> grim_toll )
   {
-    cb = new stat_proc_callback_t( "Grim Toll", p, STAT_ARMOR_PENETRATION_RATING, 1, 612, 0.15, 10.0, 45.0 );
+    cb = new stat_proc_callback_t( "grim_toll", p, STAT_ARMOR_PENETRATION_RATING, 1, 612, 0.15, 10.0, 45.0 );
     p -> register_attack_result_callback( RESULT_HIT_MASK, cb );
   }
   //---------------------------------------------------------------------------------------------------------
   if( p -> unique_gear -> illustration_of_the_dragon_soul ) 
   {
-    cb = new stat_proc_callback_t( "Illustration of the Dragon Soul", p, STAT_SPELL_POWER, 10, 20, 0.0, 10.0, 0.0 );
+    cb = new stat_proc_callback_t( "illustration_of_the_dragon_soul", p, STAT_SPELL_POWER, 10, 20, 0.0, 10.0, 0.0 );
     p -> register_spell_result_callback( RESULT_HIT_MASK, cb );
   }
   //---------------------------------------------------------------------------------------------------------
   if( p -> unique_gear -> mark_of_defiance )
   {
-    cb = new stat_proc_callback_t( "Mark of Defiance", p, STAT_MANA, 1, 150, 0.15, 0.0, 15.0 );
+    cb = new stat_proc_callback_t( "mark_of_defiance", p, STAT_MANA, 1, 150, 0.15, 0.0, 15.0 );
     p -> register_spell_result_callback( RESULT_HIT_MASK, cb );
   }
   //---------------------------------------------------------------------------------------------------------
   if( p -> unique_gear -> mirror_of_truth )
   {
-    cb = new stat_proc_callback_t( "Mirror of Truth", p, STAT_ATTACK_POWER, 1, 1000, 0.10, 10.0, 50.0 );
+    cb = new stat_proc_callback_t( "mirror_of_truth", p, STAT_ATTACK_POWER, 1, 1000, 0.10, 10.0, 50.0 );
     p -> register_attack_result_callback( RESULT_CRIT_MASK, cb );
   }
   //---------------------------------------------------------------------------------------------------------
   if( p -> unique_gear -> mystical_skyfire )
   {
-    cb = new stat_proc_callback_t( "Mystical Skyfire", p, STAT_HASTE_RATING, 1, 320, 0.15, 4.0, 45.0 );
+    cb = new stat_proc_callback_t( "mystical_skyfire", p, STAT_HASTE_RATING, 1, 320, 0.15, 4.0, 45.0 );
     p -> register_spell_result_callback( RESULT_HIT_MASK, cb );
   }
   //---------------------------------------------------------------------------------------------------------
   if( p -> unique_gear -> pyrite_infuser )
   {
-    cb = new stat_proc_callback_t( "Pyrite Infuser", p, STAT_ATTACK_POWER, 1, 1234, 0.10, 10.0, 45.0 );
+    cb = new stat_proc_callback_t( "pyrite_infuser", p, STAT_ATTACK_POWER, 1, 1234, 0.10, 10.0, 45.0 );
     p -> register_attack_result_callback( RESULT_CRIT_MASK, cb );
   }
   //---------------------------------------------------------------------------------------------------------
   if( p -> unique_gear -> quagmirrans_eye )
   {
-    cb = new stat_proc_callback_t( "Quagmirrans Eye", p, STAT_HASTE_RATING, 1, 320, 0.10, 6.0, 45.0 );
+    cb = new stat_proc_callback_t( "quagmirrans_eye", p, STAT_HASTE_RATING, 1, 320, 0.10, 6.0, 45.0 );
     p -> register_spell_result_callback( RESULT_HIT_MASK, cb );
   }
   //---------------------------------------------------------------------------------------------------------
   if( p -> unique_gear -> shiffars_nexus_horn )
   {
-    cb = new stat_proc_callback_t( "Shiffars Nexus Horn", p, STAT_SPELL_POWER, 1, 225, 0.20, 10.0, 45.0 );
+    cb = new stat_proc_callback_t( "shiffars_nexus_horn", p, STAT_SPELL_POWER, 1, 225, 0.20, 10.0, 45.0 );
     p -> register_spell_result_callback( RESULT_CRIT_MASK, cb );
   }
   //---------------------------------------------------------------------------------------------------------
   if( p -> unique_gear -> sextant_of_unstable_currents )
   {
-    cb = new stat_proc_callback_t( "Sextant of Unstable Currents", p, STAT_SPELL_POWER, 1, 190, 0.20, 15.0, 45.0 );
+    cb = new stat_proc_callback_t( "sextant_of_unstable_currents", p, STAT_SPELL_POWER, 1, 190, 0.20, 15.0, 45.0 );
     p -> register_spell_result_callback( RESULT_CRIT_MASK, cb );
   }
   //---------------------------------------------------------------------------------------------------------
   if( p -> unique_gear -> spellstrike )
   {
-    cb = new stat_proc_callback_t( "Spellstrike", p, STAT_SPELL_POWER, 1, 92, 0.05, 10.0, 0.0 );
+    cb = new stat_proc_callback_t( "spellstrike", p, STAT_SPELL_POWER, 1, 92, 0.05, 10.0, 0.0 );
     p -> register_spell_result_callback( RESULT_HIT_MASK, cb );
   }
   //---------------------------------------------------------------------------------------------------------
   if( p -> unique_gear -> sundial_of_the_exiled )
   {
-    cb = new stat_proc_callback_t( "Sundial of the Exiled", p, STAT_SPELL_POWER, 1, 590, 0.10, 10.0, 45.0 );
+    cb = new stat_proc_callback_t( "sundial_of_the_exiled", p, STAT_SPELL_POWER, 1, 590, 0.10, 10.0, 45.0 );
     p -> register_spell_result_callback( RESULT_HIT_MASK, cb );
   }
   //---------------------------------------------------------------------------------------------------------
   if( p -> unique_gear -> wrath_of_cenarius )
   {
-    cb = new stat_proc_callback_t( "Wrath of Cenarius", p, STAT_SPELL_POWER, 1, 132, 0.05, 10.0, 0.0 );
+    cb = new stat_proc_callback_t( "wrath_of_cenarius", p, STAT_SPELL_POWER, 1, 132, 0.05, 10.0, 0.0 );
     p -> register_spell_result_callback( RESULT_HIT_MASK, cb );
   }
   //---------------------------------------------------------------------------------------------------------
@@ -621,30 +621,30 @@ void unique_gear_t::register_callbacks( player_t* p )
   //---------------------------------------------------------------------------------------------------------
   if( p -> unique_gear -> bandits_insignia )
   {
-    cb = new discharge_proc_callback_t( "Bandits Insignia", p, 1, SCHOOL_ARCANE, 1504, 2256, 0.15, 45 );
+    cb = new discharge_proc_callback_t( "bandits_insignia", p, 1, SCHOOL_ARCANE, 1504, 2256, 0.15, 45 );
     p -> register_attack_result_callback( RESULT_HIT_MASK, cb );
   }
   if( p -> unique_gear -> extract_of_necromatic_power )
   {
-    cb = new discharge_proc_callback_t( "Extract of Necromatic Power", p, 1, SCHOOL_SHADOW, 1050, 1050, 0.10, 15 );
+    cb = new discharge_proc_callback_t( "extract_of_necromatic_power", p, 1, SCHOOL_SHADOW, 1050, 1050, 0.10, 15 );
     p -> register_tick_callback( cb );
   }
   //---------------------------------------------------------------------------------------------------------
   if( p -> unique_gear -> lightning_capacitor )
   {
-    cb = new discharge_proc_callback_t( "Lightning Capacitor", p, 3, SCHOOL_NATURE, 750, 750, 0, 2.5 );
+    cb = new discharge_proc_callback_t( "lightning_capacitor", p, 3, SCHOOL_NATURE, 750, 750, 0, 2.5 );
     p -> register_spell_result_callback( RESULT_CRIT_MASK, cb );
   }
   //---------------------------------------------------------------------------------------------------------
   if( p -> unique_gear -> timbals_crystal )
   {
-    cb = new discharge_proc_callback_t( "Timbals Focusing Crystal", p, 1, SCHOOL_SHADOW, 380, 380, 0.10, 15 );
+    cb = new discharge_proc_callback_t( "tmbals_focusing_crystal", p, 1, SCHOOL_SHADOW, 380, 380, 0.10, 15 );
     p -> register_tick_callback( cb );
   }
   //---------------------------------------------------------------------------------------------------------
   if( p -> unique_gear -> thunder_capacitor )
   {
-    cb = new discharge_proc_callback_t( "Thunder Capacitor", p, 3, SCHOOL_NATURE, 1276, 1276, 0, 2.5 );
+    cb = new discharge_proc_callback_t( "thunder_capacitor", p, 3, SCHOOL_NATURE, 1276, 1276, 0, 2.5 );
     p -> register_spell_result_callback( RESULT_CRIT_MASK, cb );
   }
   //---------------------------------------------------------------------------------------------------------
