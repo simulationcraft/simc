@@ -340,7 +340,10 @@ struct warlock_pet_t : public pet_t
     initial_attack_crit_per_agility   = rating_t::interpolate( level, 0.01/16.0, 0.01/24.9, 0.01/52.1 );
 
     health_per_stamina = 10;
-    mana_per_intellect = 15;
+    mana_per_intellect = 10.8;
+    mp5_per_intellect  = 2 / 3;
+
+    base_mp5 = -55;
   }
 
   virtual void reset()
@@ -544,7 +547,6 @@ struct imp_pet_t : public warlock_pet_t
       };
       init_rank( ranks, 47964 );
 
-      base_cost         = 0; // FIXME! When pets no longer have infinite mana......
       base_execute_time = 2.5;
       direct_power_mod  = ( 2.0 / 3.5 );
       may_crit          = true;
@@ -584,7 +586,10 @@ struct imp_pet_t : public warlock_pet_t
     resource_base[ RESOURCE_MANA   ] = 1175;
 
     health_per_stamina = 2;
-    mana_per_intellect = 5;
+    mana_per_intellect = 4.8;
+    mp5_per_intellect  = 5 / 6;
+
+    base_mp5 = -257;
   }
 
   virtual void summon()
@@ -614,10 +619,17 @@ struct felguard_pet_t : public warlock_pet_t
       warlock_pet_attack_t( "cleave", player, RESOURCE_MANA, SCHOOL_PHYSICAL )
     {
       felguard_pet_t* p = (felguard_pet_t*) player -> cast_pet();
+
+      static rank_t ranks[] =
+      {
+        { 76, 4, 124, 124, 0, 0.1 },
+        { 68, 3,  78,  78, 0, 0.1 },
+        { 0,  0 }
+      };
+      init_rank( ranks, 47994 );
+
       weapon   = &( p -> main_hand_weapon );
       cooldown = 6.0;
-      base_dd_min = base_dd_max = util_t::ability_rank( p -> level,  124.0,76,  78.0,68,  50.0,0 );
-      blizzID = 47994;
     }
     virtual void player_buff()
     {
@@ -710,8 +722,16 @@ struct felhunter_pet_t : public warlock_pet_t
       warlock_pet_attack_t( "shadow_bite", player, RESOURCE_MANA, SCHOOL_SHADOW )
     {
       felhunter_pet_t* p = (felhunter_pet_t*) player -> cast_pet();
+      
+      static rank_t ranks[] =
+      {
+        { 74, 5, 118, 118, 0, 0.03 },
+        { 66, 4, 101, 101, 0, 0.03 },
+        { 0,  0 }
+      };
+      init_rank( ranks, 54053 );
+
       cooldown = 6.0;
-      base_dd_min = base_dd_max = util_t::ability_rank( p -> level,  118.0,74,  101.0,66,  88.0,0 );
     }
     virtual void player_buff()
     {
@@ -768,15 +788,14 @@ struct succubus_pet_t : public warlock_pet_t
     {
       static rank_t ranks[] =
       {
-        { 80, 9, 237, 237, 0, 0 },
-        { 74, 8, 193, 193, 0, 0 },
-        { 68, 7, 123, 123, 0, 0 },
-        { 60, 6,  99,  99, 0, 0 },
+        { 80, 9, 237, 237, 0, 0.1 },  //FIXME: Assuming cost = 10% of base mana
+        { 74, 8, 193, 193, 0, 0.1 },
+        { 68, 7, 123, 123, 0, 0.1 },
+        { 60, 6,  99,  99, 0, 0.1 },
         { 0,  0 }
       };
       init_rank( ranks );
 
-      base_cost         = 0; // FIXME! When pets no longer have infinite mana......
       direct_power_mod  = ( 1.5 / 3.5 );
       may_crit          = true;
 
@@ -4051,9 +4070,11 @@ struct life_tap_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
     p -> procs_life_tap -> occur();
-    double mana = base_tap + 3.0 * p -> spirit();
+    double mana     = base_tap + 3.0 * p -> spirit();
     p -> resource_loss( RESOURCE_HEALTH, mana );
-    p -> resource_gain( RESOURCE_MANA, mana * ( 1.0 + p -> talents.improved_life_tap * 0.10 ), p -> gains_life_tap );
+    mana *= ( 1.0 + p -> talents.improved_life_tap * 0.10 );
+    p -> resource_gain( RESOURCE_MANA, mana, p -> gains_life_tap );
+    if( p -> talents.mana_feed ) p -> active_pet -> resource_gain( RESOURCE_MANA, mana );
     trigger_life_tap_glyph( this );
     trigger_tier7_4pc( this );
   }
