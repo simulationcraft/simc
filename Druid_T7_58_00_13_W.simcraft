@@ -2,12 +2,15 @@
 
 druid=Druid_T7_58_00_13_W
 level=80
-talents=http://ptr.wowhead.com/?talent=0xRbuiIsfdIVhouZbxczb
-actions=flask,type=frost_wyrm/food,type=fish_feast/mark_of_the_wild/moonkin_form/mana_potion/innervate,trigger=19000
-actions+=/treants/starfall,skip_on_eclipse=1
+talents=http://www.wowhead.com/?talent#0xRbuiIsfdIVhouZbxczb
+actions=flask,type=frost_wyrm/food,type=fish_feast/mark_of_the_wild/moonkin_form/mana_potion
+actions+=/innervate,trigger=19000
+actions+=/treants
+actions+=/starfall,skip_on_eclipse=1
 actions+=/moonfire,skip_on_eclipse=-1
-actions+=/insect_swarm,eclipse_left>=10
-actions+=/starfire,eclipse=trigger/wrath
+actions+=/insect_swarm,eclipse_left>=12
+actions+=/wrath,eclipse=benefit
+actions+=/starfire
 
 # Standard Gear Attributes http://www.chardev.org/?template=148722
 gear_stamina=800
@@ -37,4 +40,4 @@ glyph_starfire=1
 glyph_insect_swarm=1
 
 # Relic
-idol_of_steadfast_renewal=1
+idol_of_the_shooting_star=1
