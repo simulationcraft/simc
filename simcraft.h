@@ -1411,12 +1411,12 @@ struct action_callback_t
   static void trigger( std::vector<action_callback_t*>& v, action_t* a )
   {
     std::vector<action_callback_t*>::size_type i = v.size();
-    if( i ) for( i--; i>=0; i-- ) v[i]->trigger(a);
+    while( i ) v[--i]->trigger(a);
   }
   static void   reset( std::vector<action_callback_t*>& v )
   {
     std::vector<action_callback_t*>::size_type i = v.size();
-    if( i ) for( i--; i>=0; i-- ) v[i]->reset();
+    while( i ) v[--i]->reset();
   }
 };
 
