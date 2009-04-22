@@ -14,8 +14,10 @@ enum rune_type {
   RUNE_TYPE_NONE=0, RUNE_TYPE_BLOOD, RUNE_TYPE_FROST, RUNE_TYPE_UNHOLY, RUNE_TYPE_DEATH, RUNE_TYPE_WASDEATH=8
 };
 
-#define RUNE_TYPE_MASK  3
-#define RUNE_SLOT_MAX   6
+#define RUNE_TYPE_MASK     3
+#define RUNE_SLOT_MAX      6
+
+#define RUNE_GRACE_PERIOD  2.0
 
 #define GET_BLOOD_RUNE_COUNT(x)  ((x) & 0x03)
 #define GET_FROST_RUNE_COUNT(x)  (((x) >> 3) & 0x03)
@@ -36,7 +38,7 @@ struct dk_rune_t
   {
     assert ( current_time >= cooldown_ready );
 
-    cooldown_ready = current_time + cooldown;
+    cooldown_ready = (current_time <= (cooldown_ready + RUNE_GRACE_PERIOD) ? cooldown_ready : current_time) + cooldown;
     type = type & RUNE_TYPE_MASK | type << 1 & RUNE_TYPE_WASDEATH | (convert ? RUNE_TYPE_DEATH : 0) ;
   }
 
