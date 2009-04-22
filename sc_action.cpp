@@ -52,7 +52,6 @@ action_t::action_t( int         ty,
   min_current_time(0), max_current_time(0), 
   min_time_to_die(0), max_time_to_die(0), 
   min_health_percentage(0), max_health_percentage(0), 
-  is_terminal(false), seq_completed(false),
   sync_action(0), observer(0), next(0)
 {
   if( sim -> debug ) report_t::log( sim, "Player %s creates action %s", p -> name(), name() );
@@ -68,12 +67,21 @@ action_t::action_t( int         ty,
 void action_t::parse_options( option_t*          options, 
                               const std::string& options_str )
 {
-  if( options_str.empty()     ) return;
-  if( options_str.size() == 0 ) return;
+  std::string::size_type cut_pt = options_str.find_first_of( ":" );
+
+  std::string options_buffer;
+  if( cut_pt != options_str.npos )
+  {
+    options_buffer = options_str.substr( cut_pt + 1 );
+  }
+  else options_buffer = options_str;
+
+  if( options_buffer.empty()     ) return;
+  if( options_buffer.size() == 0 ) return;
 
   std::vector<std::string> splits;
 
-  int size = util_t::string_split( splits, options_str, "," );
+  int size = util_t::string_split( splits, options_buffer, "," );
 
   for( int i=0; i < size; i++ )
   {
@@ -88,10 +96,8 @@ void action_t::parse_options( option_t*          options,
     
     if( ! option_t::parse( sim, options, n, v ) )
     {
-		if ((!player)|| !player->allowUnknownOptions){  //C_A
-			fprintf( sim -> output_file, "util_t::spell: %s: Unexpected parameter '%s'.\n", name(), n.c_str() );
-			assert( false );
-		}
+      fprintf( sim -> output_file, "util_t::spell: %s: Unexpected parameter '%s'.\n", name(), n.c_str() );
+      assert( false );
     }
   }
 }
@@ -891,10 +897,6 @@ void action_t::update_ready()
 
     player -> share_duration( duration_group, sim -> current_time + 0.01 + tick_time() * num_ticks );
   }
-  if( ! seq_str.empty() ) 
-  {
-    seq_completed = true;
-  }
 }
 
 // action_t::update_stats ===================================================
@@ -973,28 +975,10 @@ bool action_t::ready()
     if( player -> buffs.bloodlust )
       return false;
 
-  if( ! seq_str.empty() )
-    if( seq_completed )
-      return false;
-
   if( sync_action && ! sync_action -> ready() )
     return false;
 
   return true;
-}
-
-// action_t::terminal =======================================================
-
-bool action_t::terminal()
-{
-  if( is_terminal ) 
-    return true;
-
-  if( ! seq_str.empty() && 
-      ! seq_completed )
-    return true;
-  
-  return false;
 }
 
 // action_t::reset ==========================================================
@@ -1021,8 +1005,6 @@ void action_t::reset()
   execute_event = 0;
   tick_event = 0;
   if( observer ) *observer = 0;
-  is_terminal = false;
-  seq_completed = false;
 
   if( ! dual ) stats -> reset( this );
 }
@@ -1050,9 +1032,6 @@ action_t* action_t::create_action( player_t*          p,
                                    const std::string& options )
 {
   action_t*  a = p -> create_action( name, options );
-
-  if( (!a) && combo_action_t::isCombo(name) ) a = new combo_action_t( p, name, options); //C_A
-  //if( ! a ) a= p->player_t::create_action(name,options); //this is potential fix for code to invoke generally defined all_player actions, but not needed for C_A
 
   if( ! a ) a = unique_gear_t::create_action( p, name, options );
   if( ! a ) a =  consumable_t::create_action( p, name, options );

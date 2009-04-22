@@ -59,6 +59,7 @@ SRC =\
 	sc_rogue.cpp		\
 	sc_shaman.cpp		\
 	sc_scaling.cpp		\
+	sc_sequence.cpp		\
 	sc_sim.cpp		\
 	sc_spell.cpp		\
 	sc_stats.cpp		\

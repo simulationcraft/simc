@@ -29,7 +29,6 @@ void spell_t::parse_options( option_t*          options,
   option_t base_options[] =
   {
     { "rank",               OPT_INT,    &rank_index            },
-    { "seq",                OPT_STRING, &seq_str               },
     { "sync",               OPT_STRING, &sync_str              },
     { "time>",              OPT_FLT,    &min_current_time      },
     { "time<",              OPT_FLT,    &max_current_time      },

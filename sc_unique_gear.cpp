@@ -624,6 +624,7 @@ void unique_gear_t::register_callbacks( player_t* p )
     cb = new discharge_proc_callback_t( "bandits_insignia", p, 1, SCHOOL_ARCANE, 1504, 2256, 0.15, 45 );
     p -> register_attack_result_callback( RESULT_HIT_MASK, cb );
   }
+  //---------------------------------------------------------------------------------------------------------
   if( p -> unique_gear -> extract_of_necromatic_power )
   {
     cb = new discharge_proc_callback_t( "extract_of_necromatic_power", p, 1, SCHOOL_SHADOW, 1050, 1050, 0.10, 15 );

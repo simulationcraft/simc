@@ -349,8 +349,7 @@ player_t::player_t( sim_t*             s,
   quiet(0), last_foreground_action(0),
   last_action_time(0), total_seconds(0), total_waiting(0), iteration_dmg(0), total_dmg(0), 
   dps(0), dps_min(0), dps_max(0), dps_std_dev(0), dps_error(0), dpr(0), rps_gain(0), rps_loss(0),
-  proc_list(0), gain_list(0), stats_list(0), uptime_list(0), unique_gear(0), enchant(0),
-  allowUnknownOptions(false) //C_A
+  proc_list(0), gain_list(0), stats_list(0), uptime_list(0), unique_gear(0), enchant(0)
 {
   if( sim -> debug ) report_t::log( sim, "Creating Player %s", name() );
   player_t** last = &( sim -> player_list );
@@ -888,7 +887,7 @@ void player_t::init_actions()
 
       if( ! action_t::create_action( this, action_name, action_options ) )
       {
-        printf( "util_t::player: Unknown action: %s\n", splits[ i ].c_str() );
+        printf( "player_t: Unknown action: %s\n", splits[ i ].c_str() );
         assert( false );
       }
     }
@@ -1418,9 +1417,6 @@ action_t* player_t::execute_action()
       continue;
 
     if( action -> ready() )
-      break;
-
-    if( action -> terminal() )
       break;
   }
 
@@ -2017,52 +2013,6 @@ uptime_t* player_t::get_uptime( const std::string& name )
   return u;
 }
 
-// player_t::reset_sequence =================================================
-
-void player_t::reset_sequence( const std::string& seq_name )
-{
-  for( action_t* a = action_list; a; a = a -> next )
-  {
-    if( a -> seq_str.empty() )
-      continue;
-
-    if( seq_name.empty() || seq_name == a -> seq_str )
-    {
-      a -> seq_completed = false;
-    }
-  }
-}
-
-// Reset Sequnce Action ====================================================
-
-struct reset_seq_t : public action_t
-{
-  std::string seq_name;
-
-  reset_seq_t( player_t* player, const std::string& options_str ) : 
-    action_t( ACTION_OTHER, "reset_seq", player )
-  {
-    option_t options[] =
-    {
-      { "name", OPT_STRING, &seq_name },
-      { NULL }
-    };
-    parse_options( options, options_str );
-
-    trigger_gcd = 0;
-  }
-
-  virtual void execute() 
-  {
-    player -> reset_sequence( seq_name );
-  }
-
-  virtual bool ready()
-  {
-    return true;
-  }
-};
-
 // Cycle Action ============================================================
 
 struct cycle_t : public action_t
@@ -2078,13 +2028,16 @@ struct cycle_t : public action_t
   {
     action_t::reset();
 
-    current_action = next;
     if( ! current_action )
     {
-      printf( "simcraft: player %s has no actions after 'cycle'\n", player -> name() );
-      exit( 0 );
+      current_action = next;
+      if( ! current_action )
+      {
+	printf( "simcraft: player %s has no actions after 'cycle'\n", player -> name() );
+	exit( 0 );
+      }
+      for( action_t* a = next; a; a = a -> next ) a -> background = true;
     }
-    is_terminal = true;
   }
 
   virtual void schedule_execute() 
@@ -2184,7 +2137,6 @@ action_t* player_t::create_action( const std::string& name,
                                    const std::string& options_str )
 {
   if( name == "cycle"        ) return new            cycle_t( this, options_str );
-  if( name == "reset_seq"    ) return new        reset_seq_t( this, options_str );
   if( name == "restore_mana" ) return new     restore_mana_t( this, options_str );
   if( name == "wait"         ) return new wait_until_ready_t( this, options_str );
 

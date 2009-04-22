@@ -733,8 +733,6 @@ struct player_t
 
   unique_gear_t* unique_gear;
   enchant_t* enchant;
-  bool allowUnknownOptions; //C_A
-
 
   struct buff_t
   {
@@ -1017,7 +1015,6 @@ struct player_t
   proc_t*   get_proc  ( const std::string& name );
   stats_t*  get_stats ( const std::string& name );
   uptime_t* get_uptime( const std::string& name );
-  void      reset_sequence( const std::string& name );
 };
 
 // Pet =======================================================================
@@ -1280,8 +1277,6 @@ struct action_t
   double min_current_time, max_current_time;
   double min_time_to_die, max_time_to_die;
   double min_health_percentage, max_health_percentage;
-  bool is_terminal, seq_completed;
-  std::string seq_str;
   std::string sync_str;
   action_t*   sync_action;
   action_t** observer;
@@ -1325,7 +1320,6 @@ struct action_t
   virtual void   update_stats( int type );
   virtual void   update_time( int type );
   virtual bool   ready();
-  virtual bool   terminal();
   virtual void   reset();
   virtual void   cancel();
   virtual const char* name() { return name_str.c_str(); }
@@ -1396,7 +1390,20 @@ struct spell_t : public action_t
   virtual void   execute();
 };
 
+// Sequence ==================================================================
 
+struct sequence_t : public action_t
+{
+  std::vector<action_t*> sub_actions;
+  int current_action;
+
+  sequence_t( const char* name, player_t*, const std::string& sub_action_str );
+  virtual ~sequence_t();
+  virtual void schedule_execute();
+  virtual void reset();
+  virtual bool ready();
+  virtual void restart() { current_action=0; }
+};
 
 // Action Callback ===========================================================
 
@@ -1719,24 +1726,6 @@ struct util_t
   static int string_split( std::vector<std::string>& results, const std::string& str, const char* delim );
   static int string_split( const std::string& str, const char* delim, const char* format, ... );
 };
-
-
-
-//C_A: combo_action ============================================
-struct combo_action_t : public action_t
-{
-	const static int maxCA=10;
-	action_t* combo_list[maxCA+1];
-	int comboN, lastItem;
-	int chkBreak;
-	combo_action_t( player_t* player, const std::string& combo_str, const std::string& options_str );
-	virtual ~combo_action_t();
-	static bool isCombo(const std::string& combo_str); 
-	virtual void schedule_execute();
-	virtual bool ready();
-};
-
-
 
 #endif // __SIMCRAFT_H
 
