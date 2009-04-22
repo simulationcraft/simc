@@ -176,6 +176,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\sc_combo_action.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\sc_consumable.cpp"
 			>
 		</File>
