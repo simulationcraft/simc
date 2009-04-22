@@ -2,6 +2,8 @@
 // Dedmonwakeen's Raid DPS/TPS Simulator.
 // Send questions to natehieter@gmail.com
 // ==========================================================================
+#ifndef __SIMCRAFT_H
+#define __SIMCRAFT_H
 
 // Platform Initialization ==================================================
 
@@ -90,6 +92,8 @@ struct uptime_t;
 struct warlock_t;
 struct warrior_t;
 struct weapon_t;
+
+
 
 // Enumerations ==============================================================
 
@@ -729,6 +733,8 @@ struct player_t
 
   unique_gear_t* unique_gear;
   enchant_t* enchant;
+  bool allowUnknownOptions; //C_A
+
 
   struct buff_t
   {
@@ -880,6 +886,7 @@ struct player_t
     scaling_t() { memset( (void*) this, 0x00, sizeof( scaling_t ) ); }
   };
   scaling_t scaling;
+
 
   player_t( sim_t* sim, int type, const std::string& name );
 
@@ -1222,6 +1229,8 @@ struct base_stats_t
   double spell_crit, melee_crit;
 };
 
+
+
 // Action ====================================================================
 
 struct action_t
@@ -1281,7 +1290,7 @@ struct action_t
   action_t( int type, const char* name, player_t* p=0, int r=RESOURCE_NONE, int s=SCHOOL_NONE, int t=TREE_NONE, bool special=false );
   virtual ~action_t() {}
 
-  virtual void      parse_options( option_t*, const std::string& options_str );
+  virtual void      parse_options( option_t*, const std::string& options_str);
   virtual option_t* merge_options( std::vector<option_t>&, option_t*, option_t* );
   virtual rank_t*   init_rank( rank_t* rank_list, int id=0 );
 
@@ -1386,6 +1395,8 @@ struct spell_t : public action_t
   virtual void   calculate_result();
   virtual void   execute();
 };
+
+
 
 // Action Callback ===========================================================
 
@@ -1700,3 +1711,24 @@ struct util_t
   static int string_split( std::vector<std::string>& results, const std::string& str, const char* delim );
   static int string_split( const std::string& str, const char* delim, const char* format, ... );
 };
+
+
+
+//C_A: combo_action ============================================
+struct combo_action_t : public action_t
+{
+	const static int maxCA=10;
+	action_t* combo_list[maxCA+1];
+	int comboN, lastItem;
+	int chkBreak;
+	combo_action_t( player_t* player, const std::string& combo_str, const std::string& options_str );
+	virtual ~combo_action_t();
+	static bool isCombo(const std::string& combo_str); 
+	virtual void schedule_execute();
+	virtual bool ready();
+};
+
+
+
+#endif // __SIMCRAFT_H
+

@@ -88,8 +88,10 @@ void action_t::parse_options( option_t*          options,
     
     if( ! option_t::parse( sim, options, n, v ) )
     {
-      fprintf( sim -> output_file, "util_t::spell: %s: Unexpected parameter '%s'.\n", name(), n.c_str() );
-      assert( false );
+		if ((!player)|| !player->allowUnknownOptions){  //C_A
+			fprintf( sim -> output_file, "util_t::spell: %s: Unexpected parameter '%s'.\n", name(), n.c_str() );
+			assert( false );
+		}
     }
   }
 }
@@ -1048,6 +1050,9 @@ action_t* action_t::create_action( player_t*          p,
                                    const std::string& options )
 {
   action_t*  a = p -> create_action( name, options );
+
+  if( (!a) && combo_action_t::isCombo(name) ) a = new combo_action_t( p, name, options); //C_A
+  //if( ! a ) a= p->player_t::create_action(name,options); //this is potential fix for code to invoke generally defined all_player actions, but not needed for C_A
 
   if( ! a ) a = unique_gear_t::create_action( p, name, options );
   if( ! a ) a =  consumable_t::create_action( p, name, options );
