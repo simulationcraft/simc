@@ -23,6 +23,8 @@ struct warlock_t : public player_t
   int            active_dots;
   int            affliction_effects;
 
+  std::queue<double> decimation_queue;
+
   // Buffs
   struct _buffs_t
   {
@@ -1393,12 +1395,25 @@ static void trigger_molten_core( spell_t* s )
   }
 }
 
+// queue_decimation =======================================================
+
+static void queue_decimation( warlock_spell_t* s )
+{
+  warlock_t* p = s -> player -> cast_warlock();
+  if( s -> time_to_travel )
+  {
+    p -> decimation_queue.push( s -> sim -> current_time + s -> time_to_travel );
+  }
+}
+
 // trigger_decimation =====================================================
 
 static void trigger_decimation( warlock_spell_t* s,
 				int result )
 {
   warlock_t* p = s -> player -> cast_warlock();
+
+  p -> decimation_queue.pop();
 
   if( result != RESULT_HIT && 
       result != RESULT_CRIT ) return;
@@ -2463,6 +2478,12 @@ struct shadow_bolt_t : public warlock_spell_t
       p -> aura_loss( "Demonic Soul" , 61595 );
       p -> buffs.tier7_2pc = 0;
     }
+  }
+
+  virtual void schedule_travel()
+  {
+    warlock_spell_t::schedule_travel();
+    queue_decimation( this );
   }
 
   virtual void travel( int    travel_result, 
@@ -3784,6 +3805,12 @@ struct incinerate_t : public warlock_spell_t
     }
   }
 
+  virtual void schedule_travel()
+  {
+    warlock_spell_t::schedule_travel();
+    queue_decimation( this );
+  }
+
   virtual void travel( int    travel_result, 
 		       double travel_dmg )
   {
@@ -4526,6 +4553,53 @@ struct spell_stone_t : public warlock_spell_t
   }
 };
 
+// Wait For Decimation =========================================================
+
+struct wait_for_decimation_t : public action_t
+{
+  double time;
+
+  wait_for_decimation_t( player_t* player, const std::string& options_str ) :
+    action_t( ACTION_OTHER, "wait_for_decimation", player ), time(0.25)
+  {
+    warlock_t* p = player -> cast_warlock();
+    assert( p -> talents.decimation );
+
+    option_t options[] =
+    {
+      { "time", OPT_FLT, &time },
+      { NULL }
+    };
+    parse_options( options, options_str );
+
+    trigger_gcd = 0;
+  }
+
+  virtual void execute()
+  {
+    warlock_t* p = player -> cast_warlock();
+
+    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+
+    trigger_gcd = p -> decimation_queue.front() - sim -> current_time;
+
+    assert( trigger_gcd > 0 && trigger_gcd <= time );
+  };
+
+  virtual bool ready()
+  {
+    warlock_t* p = player -> cast_warlock();
+    
+    if( sim -> target -> health_percentage() <= 35 )
+      if( ! p -> _buffs.decimation )
+	if( ! p -> decimation_queue.empty() )
+	  if( ( p -> decimation_queue.front() - sim -> current_time ) <= time )
+	    return true;
+
+    return false;
+  }
+};
+
 } // ANONYMOUS NAMESPACE ====================================================
 
 // ==========================================================================
@@ -4757,6 +4831,7 @@ action_t* warlock_t::create_action( const std::string& name,
   if( name == "siphon_life"         ) return new         siphon_life_t( this, options_str );
   if( name == "summon_pet"          ) return new          summon_pet_t( this, options_str );
   if( name == "unstable_affliction" ) return new unstable_affliction_t( this, options_str );
+  if( name == "wait_for_decimation" ) return new wait_for_decimation_t( this, options_str );
 
   return 0;
 }
@@ -4828,10 +4903,12 @@ void warlock_t::reset()
   active_pet         = 0;
   active_corruption  = 0;
   active_curse       = 0;
- active_immolate    = 0;
+  active_immolate    = 0;
   active_shadowflame = 0;
   active_dots        = 0;
   affliction_effects = 0;
+
+  while( ! decimation_queue.empty() ) decimation_queue.pop();
 
   _buffs.reset();
   _cooldowns.reset();
