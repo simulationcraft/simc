@@ -4003,8 +4003,12 @@ struct soul_fire_t : public warlock_spell_t
         return false;
 
     if( decimation )
+    {
       if( ! p -> _buffs.decimation )
         return false;
+      if( p -> distance >= 30 && p -> decimation_queue.empty() )
+        return false;
+    }
           
     return true;
   }
