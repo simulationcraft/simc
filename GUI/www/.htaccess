@@ -1,0 +1,70 @@
+#### PHP SITE-SPECIFIC CONFIGURATION ###
+# Redirect any PHP errors to a site-specific log
+php_value error_log "../logs/site_error.log"
+
+# Set the default time zone for this site
+php_value date.timezone "America/Chicago"
+
+# Make sure PHP's unholy magic quotes are disabled (legacy from day's of yore)
+php_flag magic_quotes_gpc off 
+php_flag magic_quotes_runtime off
+php_flag magic_quotes_sybase off
+
+# Display errors to the screen?  Should be off for all sites, unless you're debugging
+php_flag display_errors 					on
+php_flag display_startup_errors 	on
+
+# Make sure errors are going to the php log system
+php_flag log_errors								on
+
+# Set the maximum file upload size (Keep this as an integer, not a string like '10M')
+php_value upload_max_filesize			10000000
+
+
+# Show all errors, except for notices
+# In other words, "E_ALL & ~E_NOTICE | E_STRICT" as of PHP 5.
+# see http://us3.php.net/manual/en/errorfunc.constants.php
+#
+# E_ALL is 32767 in PHP 6, 30719 in PHP 5.3.x, 6143 in PHP 5.2.x, 2047 previously
+# So our bit mask is 32759 in PHP 6, 32759 in PHP 5.3.x, 8183 in PHP 5.2.x, 2039 previously
+php_value error_reporting 8183 
+
+
+# Make sure that .html files are parsed as html files (not php)
+AddType text/html .html
+
+
+# Do not allow access to file index pages
+Options -Indexes
+
+
+# Change the default index file
+DirectoryIndex index.php
+
+
+### DO NOT ALLOW ACCESS TO ANY *.log FILES ###
+<Files ~ "^.*\.([Ll][Oo][Gg])">
+	Order allow,deny
+	Deny from all
+	Satisfy All
+</Files>
+
+
+### DO NOT ALLOW ACCESS TO ANY *.inc.* FILES ###
+<Files ~ "^.*\.([Ii][Nn][Cc])\..*">
+	Order allow,deny
+	Deny from all
+	Satisfy All
+</Files>
+
+
+# Rewrite requests through index.php
+<IfModule mod_rewrite.c>
+
+	AcceptPathInfo on
+	RewriteEngine on
+
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteCond %{REQUEST_FILENAME} !-d
+	RewriteRule ^(.*)$ index.php/$1 [L,QSA]
+</IfModule>
