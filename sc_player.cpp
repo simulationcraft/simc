@@ -1419,7 +1419,7 @@ action_t* player_t::execute_action()
     if( action -> ready() )
       break;
 
-    if( action -> wait_on_ready )
+    if( action -> wait_on_ready == 1 )
     {
       action = 0;
       break;
