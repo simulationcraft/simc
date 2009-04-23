@@ -877,7 +877,7 @@ void player_t::init_actions()
       std::string action_name    = splits[ i ];
       std::string action_options = "";
 
-      std::string::size_type cut_pt = action_name.find_first_of( "," );       
+      std::string::size_type cut_pt = action_name.find_first_of( ",:" );
 
       if( cut_pt != action_name.npos )
       {
@@ -885,7 +885,7 @@ void player_t::init_actions()
         action_name    = action_name.substr( 0, cut_pt );
       }
 
-      if( ! action_t::create_action( this, action_name, action_options ) )
+      if( ! create_action( action_name, action_options ) )
       {
         printf( "player_t: Unknown action: %s\n", splits[ i ].c_str() );
         assert( false );
@@ -2056,6 +2056,41 @@ struct cycle_t : public action_t
   }
 };
 
+// Restart Sequence Action =================================================
+
+struct restart_sequence_t : public action_t
+{
+  std::string seq_name_str;
+
+  restart_sequence_t( player_t* player, const std::string& options_str ) : 
+    action_t( ACTION_OTHER, "restart_sequence", player )
+  {
+    option_t options[] =
+    {
+      { "name", OPT_STRING, &seq_name_str },
+      { NULL }
+    };
+    parse_options( options, options_str );
+
+    trigger_gcd = 0;
+  }
+
+  virtual void execute() 
+  {
+    for( action_t* a = player -> action_list; a; a = a -> next )
+    {
+      if( a -> type != ACTION_SEQUENCE )
+	continue;
+
+      if( ! seq_name_str.empty() )
+	if( seq_name_str != a -> name_str )
+	  continue;
+
+      ( (sequence_t*) a ) -> restart();
+    }
+  }
+};
+
 // Restore Mana Action =====================================================
 
 struct restore_mana_t : public action_t
@@ -2136,11 +2171,17 @@ struct wait_until_ready_t : public action_t
 action_t* player_t::create_action( const std::string& name,
                                    const std::string& options_str )
 {
-  if( name == "cycle"        ) return new            cycle_t( this, options_str );
-  if( name == "restore_mana" ) return new     restore_mana_t( this, options_str );
-  if( name == "wait"         ) return new wait_until_ready_t( this, options_str );
+  if( name == "cycle"            ) return new            cycle_t( this, options_str );
+  if( name == "restart_sequence" ) return new restart_sequence_t( this, options_str );
+  if( name == "restore_mana"     ) return new     restore_mana_t( this, options_str );
+  if( name == "wait"             ) return new wait_until_ready_t( this, options_str );
 
-  return 0;
+  action_t* a=0;
+
+  if( ! a ) a = unique_gear_t::create_action( this, name, options_str );
+  if( ! a ) a =  consumable_t::create_action( this, name, options_str );
+
+  return a;
 }
 
 // player_t::find_pet =======================================================

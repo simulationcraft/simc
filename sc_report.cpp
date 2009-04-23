@@ -1184,7 +1184,7 @@ const char* report_t::chart_uptimes_and_procs( std::string& s, player_t* p )
   for( int i=0; i < num_procs; i++ )
   {
     proc_t* proc = proc_list[ i ];
-    snprintf( buffer, sizeof(buffer), "%st++%.0f+(%.1fsec)++%s,000000,%d,0,15", ((num_uptimes+i)?"|":""), 
+    snprintf( buffer, sizeof(buffer), "%st++%.0f+(%.2fsec)++%s,000000,%d,0,15", ((num_uptimes+i)?"|":""), 
 	     proc -> count, proc -> frequency, proc -> name(), num_uptimes+i ); s += buffer;
   }
   s += "&";

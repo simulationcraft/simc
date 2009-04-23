@@ -39,29 +39,6 @@ attack_t::attack_t( const char* n, player_t* p, int resource, int school, int tr
   min_gcd = 1.0;
 }
   
-// attack_t::parse_options =================================================
-
-void attack_t::parse_options( option_t*          options,
-			      const std::string& options_str )
-{
-  option_t base_options[] =
-  {
-    { "rank",               OPT_INT,    &rank_index            },
-    { "sync",               OPT_STRING, &sync_str              },
-    { "time>",              OPT_FLT,    &min_current_time      },
-    { "time<",              OPT_FLT,    &max_current_time      },
-    { "time_to_die>",       OPT_FLT,    &min_time_to_die       },
-    { "time_to_die<",       OPT_FLT,    &max_time_to_die       },
-    { "health_percentage>", OPT_FLT,    &min_health_percentage },
-    { "health_percentage<", OPT_FLT,    &max_health_percentage },
-    { "bloodlust",          OPT_INT,    &bloodlust_active      },
-    { "travel_speed",       OPT_FLT,    &travel_speed          },
-    { NULL }
-  };
-  std::vector<option_t> merged_options;
-  action_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
-}
-
 // attack_t::haste ==========================================================
 
 double attack_t::haste()

@@ -134,7 +134,7 @@ enum result_type {
 #define RESULT_MISS_MASK ( (1<<RESULT_MISS) )
 #define RESULT_ALL_MASK  -1
 
-enum action_type { ACTION_USE=0, ACTION_SPELL, ACTION_ATTACK, ACTION_OTHER, ACTION_MAX };
+enum action_type { ACTION_USE=0, ACTION_SPELL, ACTION_ATTACK, ACTION_SEQUENCE, ACTION_OTHER, ACTION_MAX };
 
 enum school_type {
   SCHOOL_NONE=0,
@@ -1277,6 +1277,7 @@ struct action_t
   double min_current_time, max_current_time;
   double min_time_to_die, max_time_to_die;
   double min_health_percentage, max_health_percentage;
+  int wait_on_ready;
   std::string sync_str;
   action_t*   sync_action;
   action_t** observer;
@@ -1285,6 +1286,7 @@ struct action_t
   action_t( int type, const char* name, player_t* p=0, int r=RESOURCE_NONE, int s=SCHOOL_NONE, int t=TREE_NONE, bool special=false );
   virtual ~action_t() {}
 
+  virtual void      base_parse_options( option_t*, const std::string& options_str);
   virtual void      parse_options( option_t*, const std::string& options_str);
   virtual option_t* merge_options( std::vector<option_t>&, option_t*, option_t* );
   virtual rank_t*   init_rank( rank_t* rank_list, int id=0 );
@@ -1337,8 +1339,6 @@ struct action_t
 
   virtual double total_dd_multiplier() { return total_multiplier() * base_dd_multiplier; }
   virtual double total_td_multiplier() { return total_multiplier() * base_td_multiplier; }
-
-  static action_t* create_action( player_t*, const std::string& name, const std::string& options );
 };
 
 // Attack ====================================================================
@@ -1351,7 +1351,6 @@ struct attack_t : public action_t
   virtual ~attack_t() {}
 
   // Attack Overrides
-  virtual void   parse_options( option_t*, const std::string& options_str );
   virtual double haste();
   virtual double execute_time();
   virtual void   player_buff();
@@ -1378,7 +1377,6 @@ struct spell_t : public action_t
   virtual ~spell_t() {}
 
   // Spell Overrides
-  virtual void   parse_options( option_t*, const std::string& options_str );
   virtual double haste();
   virtual double gcd();
   virtual double execute_time();

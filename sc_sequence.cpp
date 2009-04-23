@@ -12,7 +12,7 @@
 // sequence_t::sequence_t ===================================================
 
 sequence_t::sequence_t( const char* n, player_t* p, const std::string& sub_action_str ) :
-  action_t( ACTION_OTHER, n, p ), current_action(0)
+  action_t( ACTION_SEQUENCE, n, p ), current_action(0)
 {
   trigger_gcd = 0;
 
@@ -33,7 +33,7 @@ sequence_t::sequence_t( const char* n, player_t* p, const std::string& sub_actio
       action_name    = action_name.substr( 0, cut_pt );
     }
 
-    action_t* a = action_t::create_action( p, action_name, action_options );
+    action_t* a = p -> create_action( action_name, action_options );
     if( ! a )
     {
       printf( "sequence_t: Unknown action: %s\n", splits[ i ].c_str() );
@@ -64,7 +64,7 @@ sequence_t::~sequence_t()
 
 void sequence_t::schedule_execute()
 {
-  sub_actions[ current_action ] -> schedule_execute();
+  sub_actions[ current_action++ ] -> schedule_execute();
 }
 
 // sequence_t::reset =========================================================
@@ -84,8 +84,18 @@ bool sequence_t::ready()
 
   while( current_action < size )
   {
-    if( sub_actions[ current_action ] -> ready() )
+    action_t* a = sub_actions[ current_action ];
+
+    if( a -> ready() )
       return true;
+
+    if( a -> wait_on_ready == 1 )
+      break;
+
+    if( ( a -> wait_on_ready != 0 ) && ( wait_on_ready == 1 ) )
+      break;
+
+    current_action++;
   }
   return false;
 }

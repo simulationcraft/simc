@@ -52,6 +52,7 @@ action_t::action_t( int         ty,
   min_current_time(0), max_current_time(0), 
   min_time_to_die(0), max_time_to_die(0), 
   min_health_percentage(0), max_health_percentage(0), 
+  wait_on_ready(-1),
   sync_action(0), observer(0), next(0)
 {
   if( sim -> debug ) report_t::log( sim, "Player %s creates action %s", p -> name(), name() );
@@ -62,10 +63,10 @@ action_t::action_t( int         ty,
   stats -> school = school;
 }
 
-// action_t::parse_options ==================================================
+// action_t::base_parse_options =============================================
 
-void action_t::parse_options( option_t*          options, 
-                              const std::string& options_str )
+void action_t::base_parse_options( option_t*          options, 
+				   const std::string& options_str )
 {
   std::string::size_type cut_pt = options_str.find_first_of( ":" );
 
@@ -121,6 +122,30 @@ option_t* action_t::merge_options( std::vector<option_t>& merged_options,
   merged_options.push_back( null_option );
 
   return &( merged_options[ 0 ] );
+}
+
+// action_t::parse_options =================================================
+
+void action_t::parse_options( option_t*          options,
+			      const std::string& options_str )
+{
+  option_t base_options[] =
+  {
+    { "rank",               OPT_INT,    &rank_index            },
+    { "sync",               OPT_STRING, &sync_str              },
+    { "time>",              OPT_FLT,    &min_current_time      },
+    { "time<",              OPT_FLT,    &max_current_time      },
+    { "time_to_die>",       OPT_FLT,    &min_time_to_die       },
+    { "time_to_die<",       OPT_FLT,    &max_time_to_die       },
+    { "health_percentage>", OPT_FLT,    &min_health_percentage },
+    { "health_percentage<", OPT_FLT,    &max_health_percentage },
+    { "bloodlust",          OPT_INT,    &bloodlust_active      },
+    { "travel_speed",       OPT_FLT,    &travel_speed          },
+    { "wait_on_ready",      OPT_INT,    &wait_on_ready         },
+    { NULL }
+  };
+  std::vector<option_t> merged_options;
+  action_t::base_parse_options( merge_options( merged_options, options, base_options ), options_str );
 }
 
 // action_t::init_rank ======================================================
@@ -1022,20 +1047,3 @@ void action_t::cancel()
 
   reset();
 }
-
-// ==========================================================================
-// action_t::create_action
-// ==========================================================================
-
-action_t* action_t::create_action( player_t*          p,
-                                   const std::string& name, 
-                                   const std::string& options )
-{
-  action_t*  a = p -> create_action( name, options );
-
-  if( ! a ) a = unique_gear_t::create_action( p, name, options );
-  if( ! a ) a =  consumable_t::create_action( p, name, options );
-
-  return a;
-}
-

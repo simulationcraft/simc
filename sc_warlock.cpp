@@ -4859,7 +4859,7 @@ action_t* warlock_t::create_action( const std::string& name,
   if( name == "unstable_affliction" ) return new unstable_affliction_t( this, options_str );
   if( name == "wait_for_decimation" ) return new wait_for_decimation_t( this, options_str );
 
-  return 0;
+  return player_t::create_action( name, options_str );
 }
 
 // warlock_t::create_pet =====================================================
