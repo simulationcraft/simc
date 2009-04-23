@@ -1418,6 +1418,12 @@ action_t* player_t::execute_action()
 
     if( action -> ready() )
       break;
+
+    if( action -> wait_on_ready )
+    {
+      action = 0;
+      break;
+    }
   }
 
   last_foreground_action = action;

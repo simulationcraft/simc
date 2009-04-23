@@ -12,7 +12,7 @@
 // sequence_t::sequence_t ===================================================
 
 sequence_t::sequence_t( const char* n, player_t* p, const std::string& sub_action_str ) :
-  action_t( ACTION_SEQUENCE, n, p ), current_action(0)
+  action_t( ACTION_SEQUENCE, n, p ), current_action(-1)
 {
   trigger_gcd = 0;
 
@@ -72,6 +72,17 @@ void sequence_t::schedule_execute()
 void sequence_t::reset()
 {
   action_t::reset();
+  if( current_action == -1 )
+  {
+    for( unsigned i=0; i < sub_actions.size(); i++ )
+    {
+      action_t* a = sub_actions[ i ];
+      if( a -> wait_on_ready == -1 )
+      {
+	a -> wait_on_ready = wait_on_ready;
+      }
+    }
+  }
   current_action = 0;
 }
 
@@ -82,6 +93,8 @@ bool sequence_t::ready()
   int size = sub_actions.size();
   if( size == 0 ) return false;
 
+  wait_on_ready = 0;
+
   while( current_action < size )
   {
     action_t* a = sub_actions[ current_action ];
@@ -90,10 +103,10 @@ bool sequence_t::ready()
       return true;
 
     if( a -> wait_on_ready == 1 )
+    {
+      wait_on_ready = 1;
       break;
-
-    if( ( a -> wait_on_ready != 0 ) && ( wait_on_ready == 1 ) )
-      break;
+    }
 
     current_action++;
   }
