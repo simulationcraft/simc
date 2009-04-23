@@ -515,19 +515,7 @@ static void trigger_deep_wounds( action_t* a )
   dw_damage        = p -> talents.deep_wounds * 0.16 * dw_weapon_damage;
   dw_multiplier    = a -> player_multiplier;
   /* FIX ME! Deep Wounds is currently double dipping from Death Wish
-  // and I assume it's the same for Wrecking Crew!
-  // Charscreen: 1499-1793 (note, 2h is already included here)
-  // (1499+1793)/2 * 0.48 / 6 = 131.68 tick damage
-  // Heroic Training Dummy suffers 131 Physical damage from Gutdok's Deep Wounds.
-  // with Death Wish up
-  // Charscreen: 1499-1793 x120% (note how death wish is applied at the end, not
-  // included in the damage range.)
-  // (1499+1793)/2 * 0.48 / 6 * 1.2 = 158.00 tick damage this SHOULD happen!
-  // Heroic Training Dummy suffers 189 Physical damage from Gutdok's Deep Wounds.
-  // (1499+1793)/2 * 0.48 / 6 * 1.2 * 1.2 = 189.62 but THIS is what happens.
-  */ 
-  dw_multiplier    *= 1.0 + p -> _buffs.death_wish;
-  dw_multiplier    *= 1.0 + p -> _buffs.wrecking_crew;
+  // Was fixed with 3.1.1 */ 
 
   a -> weapon_multiplier =      tmp_weapon_multiplier;
   a -> normalize_weapon_speed = tmp_weapon_normalize;
