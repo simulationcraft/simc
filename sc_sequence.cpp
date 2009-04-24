@@ -105,7 +105,7 @@ bool sequence_t::ready()
     if( a -> wait_on_ready == 1 )
     {
       wait_on_ready = 1;
-      break;
+      return false;
     }
 
     current_action++;

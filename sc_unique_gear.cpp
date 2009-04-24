@@ -18,7 +18,7 @@ struct stat_proc_callback_t : public action_callback_t
 
   stat_proc_callback_t( const std::string& n, player_t* p, int s, int ms, double a, double pc, double d, double cd ) :
     action_callback_t( p -> sim, p ),
-    name_str(n), stat(s), stacks(0), max_stacks(s), amount(a), proc_chance(pc), duration(d), cooldown(cd), cooldown_ready(0), expiration(0), proc(0) 
+    name_str(n), stat(s), stacks(0), max_stacks(ms), amount(a), proc_chance(pc), duration(d), cooldown(cd), cooldown_ready(0), expiration(0), proc(0) 
   {
     if( proc_chance ) proc = p -> get_proc( name_str.c_str() );
   }
