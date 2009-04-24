@@ -24,18 +24,6 @@ actions+=/slam,bloodsurge=1,health_percentage>=20
 actions+=/death_wish,time>=10,health_percentage>=20,time_to_die>=135
 actions+=/recklessness,health_percentage>=20,time_to_die>=230
 actions+=/berserker_rage
- 
-gear_stamina=1102
-gear_strength=508
-gear_agility=605
-gear_intellect=10
-gear_spirit=10
-gear_attack_power=1977
-gear_expertise_rating=149
-gear_armor_penetration_rating=221
-gear_hit_rating=164
-gear_crit_rating=964
-gear_haste_rating=274
 
 # Gear: http://www.chardev.org/?template=156716
 gear_stamina=1250
