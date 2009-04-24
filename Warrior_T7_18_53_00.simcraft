@@ -37,6 +37,19 @@ gear_hit_rating=164
 gear_crit_rating=964
 gear_haste_rating=274
 
+# Gear: http://www.chardev.org/?template=156716
+gear_stamina=1250
+gear_strength=739
+gear_agility=499
+gear_intellect=10
+gear_spirit=10
+gear_attack_power=1415
+gear_expertise_rating=205
+gear_armor_penetration_rating=159
+gear_hit_rating=230
+gear_crit_rating=922
+gear_haste_rating=209
+
 # Set Bonuses
 tier7_2pc=1
 
