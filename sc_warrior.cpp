@@ -574,6 +574,14 @@ static void trigger_overpower_activation( attack_t* a )
 static void trigger_sudden_death( attack_t* a )
 {
   warrior_t* p = a -> player -> cast_warrior();
+  if( a -> result_is_miss() )
+    return;
+  
+  // If the action did not deal direct damage it should not trigger SD
+  // E.g. Deep Wounds, Rend, ...
+  if( ! ( a -> direct_dmg > 0 ) ) 
+    return;
+
   if( a -> sim -> roll( p -> talents.sudden_death * 0.03 ) )
   {
     p -> _procs.sudden_death -> occur();
@@ -921,6 +929,8 @@ void warrior_attack_t::execute()
 
   warrior_t* p = player -> cast_warrior();
 
+  trigger_sudden_death( this );
+
   if( result == RESULT_CRIT )
   {
     // Critproccgalore
@@ -948,6 +958,8 @@ void warrior_attack_t::execute()
   }
   if( p -> _buffs.recklessness > 0 && special )
     p -> _buffs.recklessness--;
+
+  trigger_sword_specialization( this );
 }
 
 // warrior_attack_t::player_buff ============================================
@@ -1149,8 +1161,6 @@ struct melee_t : public warrior_attack_t
       p -> resource_gain( RESOURCE_RAGE, rage_gained, weapon -> slot == SLOT_OFF_HAND ? p -> _gains.oh_attack : p -> _gains.mh_attack );
     }
     trigger_unbridled_wrath( this );
-    trigger_sudden_death( this );
-    trigger_sword_specialization( this );
   }
 };
 
@@ -1335,8 +1345,6 @@ struct heroic_strike_t : public warrior_attack_t
 
     trigger_tier8_2pc( this );
     trigger_unbridled_wrath( this );
-    trigger_sudden_death( this );
-    trigger_sword_specialization( this );
   }
   virtual bool ready()
   {
@@ -1471,18 +1479,22 @@ struct execute_t : public warrior_attack_t
     {
       base_dd_adder = 0;
     }
-    
+    // We have to save if it a SD execute, warrior_attack_t::execute() itself
+    // can trigger SD, so afterwards it would look like it was an SD execute
+    bool wasSuddenDeath = false;
+    if( p -> _buffs.sudden_death > sim -> current_time )
+    {
+      p -> aura_loss( "Sudden Death" );
+      wasSuddenDeath = true;
+    }
+    p -> _buffs.sudden_death = 0;
+
     warrior_attack_t::execute();
     
     // Sudden Death: In addition, you keep at least 10 rage after using Execute.
-    if( p -> resource_current[ RESOURCE_RAGE ] < 10.0 )
-    {
-      if( p -> _buffs.sudden_death > sim -> current_time )
-      {
-        p -> resource_gain( RESOURCE_RAGE, 10.0 - p -> resource_current[ RESOURCE_RAGE ] , p -> _gains.sudden_death );
-      }
-    }
-    p -> _buffs.sudden_death = 0;
+    if( wasSuddenDeath &&  p -> resource_current[ RESOURCE_RAGE ] < 10.0 )
+      p -> resource_gain( RESOURCE_RAGE, 10.0 - p -> resource_current[ RESOURCE_RAGE ] , p -> _gains.sudden_death );
+
   }
   
   virtual void consume_resource() { }
