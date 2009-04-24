@@ -1828,22 +1828,20 @@ struct ferocious_bite_t : public druid_attack_t
       // Additional damage AND additinal scaling from AP.
       // druid_attack_t::cost() takes care of OoC handling.
 
-      excess_energy = ( excess_energy > 30 ? 30 : excess_energy);
+      excess_energy     = ( excess_energy > 30 ? 30 : excess_energy);
       direct_power_mod += excess_energy / 410.0;
-      base_dd_max      += excess_engery_mod * excess_energy;
-      base_dd_min      += excess_engery_mod * excess_energy;
+      base_dd_adder     = excess_engery_mod * excess_energy;
     }
     else
     {
       excess_energy = 0;
+      base_dd_adder = 0;
     }
 
     druid_attack_t::execute();
     if( excess_energy > 0)
     {
       direct_power_mod -= excess_energy / 410.0;
-      base_dd_max      -= excess_engery_mod * excess_energy;
-      base_dd_min      -= excess_engery_mod * excess_energy;
     }
   }
 

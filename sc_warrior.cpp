@@ -1465,22 +1465,14 @@ struct execute_t : public warrior_attack_t
       
     if( excess_rage > 0 )
     {
-      base_dd_max      += excess_rage_mod * excess_rage;
-      base_dd_min      += excess_rage_mod * excess_rage;
+      base_dd_adder = excess_rage_mod * excess_rage;
     }
     else
     {
-      excess_rage = 0;
+      base_dd_adder = 0;
     }
     
     warrior_attack_t::execute();
-    
-    if( excess_rage > 0 )
-    {
-      base_dd_max  -= excess_rage_mod * excess_rage;
-      base_dd_min  -= excess_rage_mod * excess_rage;
-      excess_rage   = 0;
-    }
     
     // Sudden Death: In addition, you keep at least 10 rage after using Execute.
     if( p -> resource_current[ RESOURCE_RAGE ] < 10.0 )
