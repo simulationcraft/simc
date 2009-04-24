@@ -5,6 +5,8 @@
 
 #include "simcraft.h"
 
+struct bloodworm_pet_t;
+
 // ==========================================================================
 // Death Knight Runes
 // ==========================================================================
@@ -16,6 +18,7 @@ enum rune_type {
 
 #define RUNE_TYPE_MASK     3
 #define RUNE_SLOT_MAX      6
+#define MAX_BLOODWORMS     4
 
 #define RUNE_GRACE_PERIOD  2.0
 
@@ -53,9 +56,12 @@ struct dk_rune_t
 struct death_knight_t : public player_t
 {
   // Active
-  action_t* active_blood_plague;
-  action_t* active_frost_fever;
+  action_t*  active_blood_plague;
+  action_t*  active_frost_fever;
   int diseases;
+
+  // Pets and Guardians
+  bloodworm_pet_t*  active_bloodworms[MAX_BLOODWORMS];
 
   // Buffs
   struct _buffs_t
@@ -72,6 +78,7 @@ struct death_knight_t : public player_t
   // Cooldowns
   struct _cooldowns_t
   {
+    double  bloodworms;
     double  hysteria;
 
     void reset() { memset( (void*) this, 0x00, sizeof( _cooldowns_t ) ); }
@@ -82,6 +89,7 @@ struct death_knight_t : public player_t
   // Expirations
   struct _expirations_t
   {
+    event_t* bloodworms;
     event_t* bloody_vengeance;
     event_t* scent_of_blood;
 
@@ -97,12 +105,14 @@ struct death_knight_t : public player_t
 
   // Procs
   proc_t* procs_abominations_might;
+  proc_t* procs_bloodworms;
   proc_t* procs_bloody_vengeance;
   proc_t* procs_scent_of_blood;
   proc_t* procs_sudden_doom;
   
   // Up-Times
   uptime_t* uptimes_abominations_might;
+  uptime_t* uptimes_bloodworms;
   uptime_t* uptimes_bloody_vengeance;
   uptime_t* uptimes_hysteria;
   uptime_t* uptimes_scent_of_blood;
@@ -135,7 +145,7 @@ struct death_knight_t : public player_t
     int veteran_of_the_third_war;       // Done
     int bloody_vengeance;               // Done
     int abominations_might;             // Done
-    int bloodworms;
+    int bloodworms;                     // Done
     int hysteria;                       // Done
     int improved_death_strike;          // Done
     int sudden_doom;                    // Done
@@ -244,6 +254,9 @@ struct death_knight_t : public player_t
     active_frost_fever       = NULL;
     diseases = 0;
 
+    // Pets and Guardians
+    for( int i = MAX_BLOODWORMS; i ; ) active_bloodworms[--i] = NULL;
+
     // Gains
     gains_rune_abilities     = get_gain( "rune_abilities" );
     gains_butchery           = get_gain( "butchery" );
@@ -251,12 +264,14 @@ struct death_knight_t : public player_t
 
     // Procs
     procs_abominations_might = get_proc( "abominations_might" );
+    procs_bloodworms         = get_proc( "bloodworms" );
     procs_bloody_vengeance   = get_proc( "bloody_vengeance" );
     procs_scent_of_blood     = get_proc( "scent_of_blood" );
     procs_sudden_doom        = get_proc( "sudden_doom" );
 
     // Up-Times
     uptimes_abominations_might = get_uptime( "abominations_might" );
+    uptimes_bloodworms         = get_uptime( "bloodworms" );
     uptimes_bloody_vengeance   = get_uptime( "bloody_vengeance" );
     uptimes_hysteria           = get_uptime( "hysteria" );
     uptimes_scent_of_blood     = get_uptime( "scent_of_blood" );
@@ -294,6 +309,73 @@ struct death_knight_t : public player_t
   // Utilities
   bool abort_execute_action;
 };
+
+// ==========================================================================
+// Guardians
+// ==========================================================================
+
+struct bloodworm_pet_t : public pet_t
+{
+  static const char* id[];
+
+  struct melee_t : public attack_t
+  {
+    melee_t( player_t* player ) : 
+      attack_t( "bloodworm_melee", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_NONE, false )
+    {
+      weapon = &( player -> main_hand_weapon );
+      base_execute_time = weapon -> swing_time;
+      base_dd_min = base_dd_max = 1;
+      may_crit    = true;
+      background  = true;
+      repeating   = true;
+    }
+    void execute()
+    {
+      attack_t::execute();
+      player -> cast_pet() -> owner -> cast_death_knight() -> uptimes_bloodworms -> update( true );
+    }
+  };
+
+  melee_t*  melee;
+
+  bloodworm_pet_t( sim_t* sim, player_t* owner, int num) :
+    pet_t( sim, owner, id[num - 1], true /*guardian*/ )
+  {
+    main_hand_weapon.type       = WEAPON_BEAST;
+    main_hand_weapon.damage     = 20;
+    main_hand_weapon.swing_time = 2.0;
+  }
+  virtual void init_base()
+  {
+    // Stolen from Priest's Shadowfiend
+    attribute_base[ ATTR_STRENGTH  ] = 145;
+    attribute_base[ ATTR_AGILITY   ] =  38;
+    attribute_base[ ATTR_STAMINA   ] = 190;
+    attribute_base[ ATTR_INTELLECT ] = 133;
+
+    health_per_stamina = 7.5;
+    mana_per_intellect = 5;
+
+    melee = new melee_t( this );
+  }
+  virtual void summon()
+  {
+    death_knight_t* o = owner -> cast_death_knight();
+    pet_t::summon();
+    for( int i = MAX_BLOODWORMS; i--; )
+      if( ! o -> active_bloodworms[i] )
+      {
+        o -> active_bloodworms[i] = this;
+        break;
+      }
+    melee -> schedule_execute();
+  }
+
+  virtual int primary_resource() { return RESOURCE_MANA; }
+};
+
+const char* bloodworm_pet_t::id[] = { "bloodworm#1", "bloodworm#2", "bloodworm#3", "bloodworm#4" };
 
 namespace { // ANONYMOUS NAMESPACE =========================================
 
@@ -541,6 +623,47 @@ trigger_abominations_might( action_t* a, double base_chance )
 }
 
 static void
+trigger_bloodworms( action_t* a )
+{
+  struct bloodworms_expiration_t : public event_t
+  {
+    bloodworms_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
+    {
+      name = "Bloodworms Expiration";
+      sim -> add_event( this, 20.0 );
+    }
+    virtual void execute()
+    {
+      death_knight_t* p = player -> cast_death_knight();
+      for( int i = MAX_BLOODWORMS; i--; )
+        if( p-> active_bloodworms[i] )
+        {
+          p -> active_bloodworms[i] -> dismiss();
+          p -> active_bloodworms[i] = NULL;
+        }
+      p -> uptimes_bloodworms -> update( false );
+      p -> _expirations.bloodworms = NULL;
+    }
+  };
+
+  death_knight_t* p = a -> player -> cast_death_knight();
+
+  if(   a -> sim -> current_time <= p->_cooldowns.bloodworms ||
+      ! a -> sim -> roll( p -> talents.bloodworms * 0.03 ) ) return;
+  
+  p -> procs_bloodworms -> occur();
+  p -> _cooldowns.bloodworms = a -> sim -> current_time + 20;
+
+  // Forcing exactly 3 bloodworms for now
+  for( int i = 3; i; )
+    p->summon_pet(bloodworm_pet_t::id[--i]);
+
+  event_t*& e = p -> _expirations.bloodworms;
+  assert( !e );
+  e = new ( a -> sim ) bloodworms_expiration_t( a -> sim, p );
+}
+
+static void
 trigger_hysteria( player_t* player, player_t* target )
 {
   struct hysteria_expiration_t : public event_t
@@ -733,6 +856,8 @@ death_knight_attack_t::execute()
 
     double gain = -cost();
     if( gain > 0 ) p -> resource_gain( resource, gain, p -> gains_rune_abilities );
+
+    trigger_bloodworms( this );
 
     if( result == RESULT_CRIT )
     {
@@ -1714,6 +1839,9 @@ death_knight_t::reset()
   active_frost_fever  = NULL;
   diseases            = 0;
 
+  // Pets and Guardians
+  for( int i = MAX_BLOODWORMS; i ; ) active_bloodworms[--i] = NULL;
+
   _buffs.reset();
   _cooldowns.reset();
   _expirations.reset();
@@ -1880,5 +2008,12 @@ death_knight_t::parse_option( const std::string& name, const std::string& value 
 player_t*
 player_t::create_death_knight( sim_t* sim, std::string& name ) 
 {
-  return new death_knight_t( sim, name );
+  death_knight_t* p = new death_knight_t( sim, name );
+
+  new bloodworm_pet_t( sim, p, 1 );
+  new bloodworm_pet_t( sim, p, 2 );
+  new bloodworm_pet_t( sim, p, 3 );
+  new bloodworm_pet_t( sim, p, 4 );
+
+  return p;
 }
