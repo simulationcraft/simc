@@ -615,6 +615,9 @@ static void trigger_sword_specialization( attack_t* a )
 
   if( a -> sim -> roll( p -> talents.sword_specialization * 0.01 ) )
   {
+    if( a -> sim -> log )
+      report_t::log( a -> sim, "%s gains one extra attack through %s",
+                     p -> name(), p -> _procs.sword_specialization -> name());
     p -> _procs.sword_specialization -> occur();
     p -> _cooldowns.sword_specialization = a -> sim -> current_time + 6.0;
     /* http://elitistjerks.com/f81/t37807-depth_arms_dps_discussion/p27/#post1186561
@@ -1122,7 +1125,7 @@ struct melee_t : public warrior_attack_t
         p -> active_heroic_strike -> cancel();
       }
       p -> uptimes_heroic_strike -> update( p -> active_heroic_strike != 0 );
-      if( p -> active_heroic_strike  )
+      if( p -> active_heroic_strike && ! proc )
       {
         p -> active_heroic_strike -> execute();
         schedule_execute();
