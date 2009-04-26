@@ -77,7 +77,7 @@
 				<ul id="new_member_by_class">
 				
 					<!-- For each of the classes defined in the XML file (Except 'all_classes'), add a list element -->
-					<xsl:for-each select="supported_classes/class[not(@class='all_classes')]">
+					<xsl:for-each select="options/supported_classes/class[not(@class='all_classes')]">
 						<xsl:sort select="@class" />
 					
 						<li>
@@ -102,7 +102,13 @@
 						<label for="armory_server">Server</label>
 						<select name="armory_server" id="armory_server">
 							<option value=""></option>
-							<option value="alleria">Alleria</option>
+							<xsl:for-each select="//servers/server">
+								<xsl:sort select="@name" />
+								<option>
+									<xsl:attribute name="value"><xsl:value-of select="@name" /></xsl:attribute>
+									<xsl:value-of select="@name" />
+								</option>
+							</xsl:for-each>
 						</select>
 					</li>
 					
@@ -142,7 +148,7 @@
 				<div id="global_options_wrapper">
 				
 					<!-- Loop over each option in the global set, sorted by the file in which the option originated -->
-					<xsl:for-each select="global_options/option">
+					<xsl:for-each select="options/global_options/option">
 						<xsl:sort select="@file" />
 				
 						<!-- If this source file has changed from the previous option in this list (or if this is the first iteration of this loop), call the template -->
@@ -194,7 +200,7 @@
 	<!-- Javascript support section, describing the classes -->
 	<xsl:template name="javascript_prefill">
 		<div class="hidden" id="prototype_character_classes">
-			<xsl:for-each select="supported_classes/class">
+			<xsl:for-each select="options/supported_classes/class">
 	
 				<!-- Because javascript sucks and has no HEREDOC equivalent, we have to do this the hard way... -->
 				<!-- each class will get a hidden div holding a prototype new-raider, with a replacable tag string in place of it's index number -->

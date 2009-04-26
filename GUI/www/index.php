@@ -5,6 +5,7 @@ set_include_path( get_include_path().PATH_SEPARATOR.'../php' );
 // Require the support files
 require_once 'defines.inc.php';
 require_once 'functions.inc.php';
+require_once 'wow_functions.inc.php';
 
 
 // Create the output XML object
@@ -28,10 +29,6 @@ if( $request_file_name == 'simulation.xml' ) {
 	// Call the simcraft execution
 	$simcraft_output = shell_exec( $simcraft_command );
 	
-	// FIXME temporarily, just print the html, since the generated html isn't XHTML compliant and won't fit in an XML file
-	print file_get_contents($output_file);
-	die();
-	
 //	// Add the simcraft command to the outgoing xml, just for documentation
 //	$xml->addChild('simcraft_command', htmlentities($simcraft_command) );
 //	
@@ -46,6 +43,10 @@ if( $request_file_name == 'simulation.xml' ) {
 //	
 //	// Define the XSL that will style this XML
 //	$xsl_path = 'xsl/result_display.xsl';
+
+	// FIXME temporarily, just print the html, since the generated html isn't XHTML compliant and won't fit in an XML file
+	print file_get_contents($output_file);
+	die();
 }
 
 // Else, just show the simulation configuration form
@@ -53,6 +54,17 @@ else {
 
 	// Add the simulation config form XML to the outgoing XML object
 	append_simulation_config_form($xml);
+	
+	// Add the servers
+	$arr_servers = get_arr_wow_servers();
+	$xml_servers = $xml->addChild('servers');
+	foreach( $arr_servers as $arr_server ) {
+		$new_server = $xml_servers->addChild('server');
+		$new_server->addAttribute('name', $arr_server['name']);
+	}
+		
+	// Add the default raid members
+	add_raider_to_XML($xml, array('class'=>'warlock') );
 	
 	// Define the XSL that will style this XML
 	$xsl_path = 'xsl/config_form.xsl';

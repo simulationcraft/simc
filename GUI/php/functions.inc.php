@@ -1,57 +1,4 @@
 <?php 
-// === SUPPORT FUNCTIONS ===
-/**
- * Handle implicit class-file loading
- * @param string $class_name
- * @return null
- */ 
-function __autoload( $class_name ) 
-{
-	require_once "$class_name.inc.php";
-}
-
-/**
- * Return a full path corresponding with the input path, and throw an exception if the path doesn't exist
- * @param string $path
- * @return string
- */
-function get_valid_path( $path )
-{
-	// If the path supplied isn't legit, throw an exception
-	if( ! realpath($path) ) {
-		throw new Exception("The supplied path ($path) does not have a valid real path.");
-	}
-	
-	// Return the real path, with a single directory separator on the right
-	return rtrim(realpath($path), '/') . '/';
-}
-
-/**
- * Simple helper function to speed up the laborious xpath process with SimpleXMLElement
- * @param $xml
- * @param $str_xpath
- * @return unknown_type
- */
-function fetch_single_XML_xpath($xml, $str_xpath)
-{
-	$match = $xml->xpath($str_xpath);
-	if( count($match) !== 1) {
-		throw new Exception("More than one result was matched on this XML element");
-	}
-	return $match[0];
-}
- 
-/**
- * Another simple helper function.  This one sets a single property on the fetched element
- * @return unknown_type
- */
-function set_single_xml_xpath_property($xml, $str_xpath, $attribute_name, $attribute_value)
-{
-	$target = fetch_single_XML_xpath($xml, $str_xpath);
-	$target[$attribute_name] = $attribute_value;
-} 
-
-
 // === BUILDING THE SIMCRAFT COMMAND ===
 
 /**
@@ -118,18 +65,224 @@ function recursive_build_option_string( array $array )
 	return $str_return;
 } 
 
-// === BUILDING THE CONFIGURATION FORM ===
+// === ATTACHING THE CONFIGURATION FORM ===
 
 /**
- * Add the xml representing the configuration screen to the passed XML object
- * @param SimpleXMLElement $xml the object to which to attach the simulation configuration
- * @return null
+ * Append the configuration form contents to the XML element
+ * @param $xml
+ * @return unknown_type
  */
 function append_simulation_config_form(SimpleXMLElement $xml)
+{
+	// If we're not allowed to use the cached config options, or if they don't exist
+	$str_options_xml = read_cache_value('config_options_xml');
+	if( USE_CACHE_CONFIG_OPTIONS === false || is_null($str_options_xml) ) {
+	
+		// Build the configuration form by parsing the C++ source files
+		$str_options_xml = build_simulation_config_options()->asXML();
+
+		// cache these values for future reference
+		write_cache_value('config_options_xml', $str_options_xml);
+	}
+
+	// Append the config options to the passed xml target
+	simplexml_append($xml, new SimpleXMLElement($str_options_xml));
+	
+	// Set default values
+	set_default_values($xml);
+}
+
+/**
+ * Attempt to set some default values
+ * @param $xml
+ * @return unknown_type
+ */
+function set_default_values( SimpleXMLElement $xml )
+{
+	// Reach in and get the global-options tag
+	$global_options = $xml->options->global_options ? $xml->options->global_options : $xml->options->addChild('global_options');
+	
+	// Get the all-classes options tag
+	$all_classes = fetch_single_XML_xpath($xml->options->supported_classes, "class[@class='all_classes']");
+	
+	// Most of these were lifted from the Globals_T7 file
+	set_single_xml_xpath_property($global_options, "option[@name='patch']", 'value', '3.1.0');
+	set_single_xml_xpath_property($global_options, "option[@name='queue_lag']", 'value', 0.075);
+	set_single_xml_xpath_property($global_options, "option[@name='gcd_lag']", 'value', 0.150);
+	set_single_xml_xpath_property($global_options, "option[@name='channel_lag']", 'value', 0.250);
+	set_single_xml_xpath_property($global_options, "option[@name='target_level']", 'value', 83);
+	set_single_xml_xpath_property($global_options, "option[@name='max_time']", 'value', 300);
+	set_single_xml_xpath_property($global_options, "option[@name='iterations']", 'value', 1000);
+	set_single_xml_xpath_property($global_options, "option[@name='infinite_mana']", 'value', 0);
+	set_single_xml_xpath_property($global_options, "option[@name='regen_periodicity']", 'value', 1.0);
+	set_single_xml_xpath_property($global_options, "option[@name='target_armor']", 'value', 10643);
+	set_single_xml_xpath_property($global_options, "option[@name='target_race']", 'value', none);
+	set_single_xml_xpath_property($global_options, "option[@name='faerie_fire']", 'value', 1);
+	set_single_xml_xpath_property($global_options, "option[@name='mangle']", 'value', 1);
+	set_single_xml_xpath_property($global_options, "option[@name='battle_shout']", 'value', 1);
+	set_single_xml_xpath_property($global_options, "option[@name='sunder_armor']", 'value', 1);
+	set_single_xml_xpath_property($global_options, "option[@name='thunder_clap']", 'value', 1);
+	set_single_xml_xpath_property($global_options, "option[@name='blessing_of_kings']", 'value', 1);
+	set_single_xml_xpath_property($global_options, "option[@name='blessing_of_wisdom']", 'value', 1);
+	set_single_xml_xpath_property($global_options, "option[@name='blessing_of_might']", 'value', 1);
+	set_single_xml_xpath_property($global_options, "option[@name='judgement_of_wisdom']", 'value', 1);
+	set_single_xml_xpath_property($global_options, "option[@name='sanctified_retribution']", 'value', 1);
+	set_single_xml_xpath_property($global_options, "option[@name='swift_retribution']", 'value', 1);
+	set_single_xml_xpath_property($global_options, "option[@name='crypt_fever']", 'value', 1);
+	set_single_xml_xpath_property($global_options, "option[@name='calculate_scale_factors']", 'value', 0);
+	set_single_xml_xpath_property($global_options, "option[@name='optimal_raid']", 'value', 1);
+}
+
+/**
+ * Add A raider to the target XML object
+ * 
+ * @param $class_name
+ * @param $xml
+ * @return unknown_type
+ */
+function add_raider_to_XML(SimpleXMLElement $xml, array $arr_option_values )
+{
+	// globalize the supported-class define array 
+	global $ARR_SUPPORTED_CLASSES;
+	
+	// Make sure the class name is an allowed class
+	if( !in_array($arr_option_values['class'], array_keys($ARR_SUPPORTED_CLASSES)) ) {
+		throw new Exception("The supplied class name ({$arr_option_values['class']}) is not an allowed class.");
+	}
+		
+	// If the raid-content tag isn't already present in the target xml, add it
+	$xml_raid_content = $xml->raid_content ? $xml->raid_content : $xml->addChild('raid_content');
+	
+	// Add the player tag
+	$new_raider = $xml_raid_content->addChild('player'); 
+	
+	// Add any options this raider has by default
+	foreach($arr_option_values as $option_name => $option_value) {
+		$new_raider->addAttribute($option_name, $option_value);
+	}
+} 
+
+// === SUPPORT FUNCTIONS ===
+
+/**
+ * Handle implicit class-file loading
+ * @param string $class_name
+ * @return null
+ */ 
+function __autoload( $class_name ) 
+{
+	require_once "$class_name.inc.php";
+}
+
+/**
+ * Return a full path corresponding with the input path, and throw an exception if the path doesn't exist
+ * @param string $path
+ * @return string
+ */
+function get_valid_path( $path )
+{
+	// If the path supplied isn't legit, throw an exception
+	if( ! realpath($path) ) {
+		throw new Exception("The supplied path ($path) does not have a valid real path.");
+	}
+	
+	// Return the real path, with a single directory separator on the right
+	return rtrim(realpath($path), '/') . '/';
+}
+
+/**
+ * Simple helper function to speed up the laborious xpath process with SimpleXMLElement
+ * @param $xml
+ * @param $str_xpath
+ * @return unknown_type
+ */
+function fetch_single_XML_xpath($xml, $str_xpath)
+{
+	// Attempt to match the element
+	$match = $xml->xpath($str_xpath);
+	
+	// One and only one match must be made
+	if( count($match) == 0) {
+		throw new Exception("No Elements were found that match the xpath search");
+	}
+	else if( count($match) > 1) {
+		throw new Exception("More than one result was matched on this XML element");
+	}
+	
+	// Return the valid match
+	return $match[0];
+}
+ 
+/**
+ * Another simple helper function.  This one sets a single property on the fetched element
+ * @return unknown_type
+ */
+function set_single_xml_xpath_property($xml, $str_xpath, $attribute_name, $attribute_value)
+{
+	$target = fetch_single_XML_xpath($xml, $str_xpath);
+	$target[$attribute_name] = $attribute_value;
+}  
+
+// === DATA CACHING ===
+
+/**
+ * Given any arbitrary variable, stash it in the data cache
+ * @param $name
+ * @param $value
+ * @return unknown_type
+ */
+function write_cache_value($name, $value)
+{
+	// If the cache file already exists, fetch it's content array
+	if( is_file(CACHE_FILE_PATH) ) { 
+		$arr_cache = unserialize(file_get_contents(CACHE_FILE_PATH));
+	}
+	
+	// else, create the blank array
+	else {
+		$arr_cache = array();
+	}	
+
+	// Write the new element to the array
+	$arr_cache[$name] = $value;
+	
+	// Write the array back to the cache file
+	file_put_contents(CACHE_FILE_PATH, serialize($arr_cache));
+}
+
+/**
+ * Given a variable name, read it from the data cache
+ * @param $name
+ * @return unknown_type
+ */
+function read_cache_value($name)
+{
+	// If the cache file already exists, fetch it's content array
+	if( is_file(CACHE_FILE_PATH) ) { 
+		$arr_cache = unserialize(file_get_contents(CACHE_FILE_PATH));
+		return $arr_cache[$name];
+	}
+	
+	// Else, there's no cache value to report, return null
+	else {
+		return null;
+	}
+} 
+
+// === GENERATING CONFIG OPTIONS FROM C++ SOURCE ===
+
+/**
+ * Generate xml representing the configuration options
+ * @return SimpleXMLElement
+ */
+function build_simulation_config_options()
 { 
 	// Allow access to the global definition arrays (from defines.inc.php)
 	global $ARR_SUPPORTED_CLASSES, $ARR_PLAYER_RELATED_SOURCE_FILES;
 
+	// The options XML root
+	$xml = new SimpleXMLElement('<options />');
+	
 	
 	// Build the array of C++ source files that constitute simulationcraft
 	$arr_source_files = scandir(SIMULATIONCRAFT_PATH);
@@ -187,15 +340,13 @@ function append_simulation_config_form(SimpleXMLElement $xml)
 			add_options_to_XML( $arr_options, $xml_global_options);
 		}		
 	}
-	
-	// Add Raiding party members
-	add_raid_members($xml);
 		
 	// Add the additional hand-tweaked options
 	add_hand_edited_options($xml);
 	
-	// Set default values
-	set_default_values($xml);
+	
+	// return the generated XML
+	return $xml;
 }
 
 /**
@@ -245,88 +396,9 @@ function add_hand_edited_options( SimpleXMLElement $xml )
 }
 
 /**
- * Add the default raid memmbers to the outgoing XML
- * @param $xml
- * @return unknown_type
- */
-function add_raid_members( SimpleXMLElement $xml )
-{
-	// Add the default raid content
-	add_raider_to_XML($xml, array('class'=>'warlock') );
-}
-
-/**
- * Add A raider to the target XML object
- * 
- * @param $class_name
- * @param $xml
- * @return unknown_type
- */
-function add_raider_to_XML(SimpleXMLElement $xml, array $arr_option_values )
-{
-	// globalize the supported-class define array 
-	global $ARR_SUPPORTED_CLASSES;
-	
-	// Make sure the class name is an allowed class
-	if( !in_array($arr_option_values['class'], array_keys($ARR_SUPPORTED_CLASSES)) ) {
-		throw new Exception("The supplied class name ({$arr_option_values['class']}) is not an allowed class.");
-	}
-		
-	// If the raid-content tag isn't already present in the target xml, add it
-	$xml_raid_content = $xml->raid_content ? $xml->raid_content : $xml->addChild('raid_content');
-	
-	// Add the player tag
-	$new_raider = $xml_raid_content->addChild('player'); 
-	
-	// Add any options this raider has by default
-	foreach($arr_option_values as $option_name => $option_value) {
-		$new_raider->addAttribute($option_name, $option_value);
-	}
-}
-
-/**
- * Attempt to set some default values
- * @param $xml
- * @return unknown_type
- */
-function set_default_values( SimpleXMLElement $xml )
-{
-	// Reach in and get the global-options tag
-	$global_options = $xml->global_options ? $xml->global_options : $xml->addChild('global_options');
-	
-	// Get the all-classes options tag
-	$all_classes = fetch_single_XML_xpath($xml->supported_classes, "class[@class='all_classes']");
-	
-	// Most of these were lifted from the Globals_T7 file
-	set_single_xml_xpath_property($global_options, "option[@name='patch']", 'value', '3.1.0');
-	set_single_xml_xpath_property($global_options, "option[@name='queue_lag']", 'value', 0.075);
-	set_single_xml_xpath_property($global_options, "option[@name='gcd_lag']", 'value', 0.150);
-	set_single_xml_xpath_property($global_options, "option[@name='channel_lag']", 'value', 0.250);
-	set_single_xml_xpath_property($global_options, "option[@name='target_level']", 'value', 83);
-	set_single_xml_xpath_property($global_options, "option[@name='max_time']", 'value', 300);
-	set_single_xml_xpath_property($global_options, "option[@name='iterations']", 'value', 1000);
-	set_single_xml_xpath_property($global_options, "option[@name='infinite_mana']", 'value', 0);
-	set_single_xml_xpath_property($global_options, "option[@name='regen_periodicity']", 'value', 1.0);
-	set_single_xml_xpath_property($global_options, "option[@name='target_armor']", 'value', 10643);
-	set_single_xml_xpath_property($global_options, "option[@name='target_race']", 'value', none);
-	set_single_xml_xpath_property($global_options, "option[@name='faerie_fire']", 'value', 1);
-	set_single_xml_xpath_property($global_options, "option[@name='mangle']", 'value', 1);
-	set_single_xml_xpath_property($global_options, "option[@name='battle_shout']", 'value', 1);
-	set_single_xml_xpath_property($global_options, "option[@name='sunder_armor']", 'value', 1);
-	set_single_xml_xpath_property($global_options, "option[@name='thunder_clap']", 'value', 1);
-	set_single_xml_xpath_property($global_options, "option[@name='blessing_of_kings']", 'value', 1);
-	set_single_xml_xpath_property($global_options, "option[@name='blessing_of_wisdom']", 'value', 1);
-	set_single_xml_xpath_property($global_options, "option[@name='blessing_of_might']", 'value', 1);
-	set_single_xml_xpath_property($global_options, "option[@name='judgement_of_wisdom']", 'value', 1);
-	set_single_xml_xpath_property($global_options, "option[@name='sanctified_retribution']", 'value', 1);
-	set_single_xml_xpath_property($global_options, "option[@name='swift_retribution']", 'value', 1);
-	set_single_xml_xpath_property($global_options, "option[@name='crypt_fever']", 'value', 1);
-	set_single_xml_xpath_property($global_options, "option[@name='calculate_scale_factors']", 'value', 0);
-	set_single_xml_xpath_property($global_options, "option[@name='optimal_raid']", 'value', 1);
-}
-
-/**
  * Parse one of the simulationcraft C++ source files for the command-line options it handles
+ * 
+ * Optionally, you can cache the file's parse for later
  * 
  * this method relies heavily on regular expressions, and assumes the existence of a parse_options()
  * method in the file, which must contain an array of options.  If this source format changes,
@@ -361,7 +433,7 @@ function parse_source_file_for_options( $file_path )
 				'file' => $file_path
 			);
 	}
-
+			
 	// Return the array of matches	
 	return $arr_output;
 }

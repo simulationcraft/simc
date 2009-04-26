@@ -1,6 +1,27 @@
 <?php 
 /**
+ * Should cached copies of data from remote sources be used instead?  Servers, sever-status, etc.
+ * @var boolean
+ */
+define('USE_CACHE_WOW_DATA', true);
+
+
+/**
+ * Should cached copies of the configuration data from simcraft source code be used?
+ * @var boolean
+ */
+define('USE_CACHE_CONFIG_OPTIONS', true);
+
+/**
+ * The cache file path, relative to the index.php file that is executing all the scripts
+ * @var string
+ */
+define('CACHE_FILE_PATH', '../data/cachefile.dat');
+
+/**
  * Where is the simulationcraft executable directory (relative to the index.php script)
+ * 
+ * This path is used for running simcraft as well as generating the config data from source (when necessary)
  * 
  * With the current setup of the simulationcraft project, the root should be two directories higher
  * @var string
