@@ -9,11 +9,8 @@ var last_insert_number = 1;
  */
 $( function() {
 	
-	// Reset the event handlers
-	reset_handlers();
-	
 	/*  Clicking a member of the new-member list should insert a new raider of that class */
-	$('ul#new_member li.supported_class').click( function() {
+	$('ul#new_member_by_class li.supported_class').click( function() {
 		
 		// Build an array of the css classes this element has
 		var classes = $(this).attr('class').split(' ');
@@ -22,20 +19,10 @@ $( function() {
 		for (var i=0; i<classes.length; i++) {
 						
 			// If this class name corresponds to one of the indices in arr_prototype_class, then insert this element
-			if( $('div#hidden_div_'+classes[i]).size() ) {
+			if( $('div#prototype_character_classes div#hidden_div_'+classes[i]).size() ) {
 				
-				// Create the string of html for the new element
-				var new_member = $('div#hidden_div_'+classes[i]).html(); 
-				
-				// Replace the counter placeholder string in the text with the real index
-				last_insert_number++;
-				new_member = new_member.replace(/{INDEX_VALUE}/g, last_insert_number);
-				
-				// Append the new list element to the list of raiding players
-				$('ul#raid_members').append(new_member);
-
-				// Reset the event handlers
-				reset_handlers();
+				// Add a new raider of the given class
+				add_new_raider(classes[i]);
 				
 				// Once one is found, we can safely end
 				break;
@@ -43,7 +30,42 @@ $( function() {
 		}
 	});
 	
+	// Reset the event handlers
+	reset_list_elements();
 });
+
+
+/**
+ * Add a new raid member, with the given class name
+ * @param class_name
+ * @return
+ */
+function add_new_raider(class_name, arr_values)
+{
+	// Create the string of html for the new element
+	var str_new_member = $('div#hidden_div_'+class_name).html(); 
+	if( !str_new_member ) {
+		alert('error adding new member.');
+	}
+	
+	// Replace the counter placeholder string in the text with the real index
+	last_insert_number++;
+	str_new_member = str_new_member.replace(/{INDEX_VALUE}/g, last_insert_number);
+	
+	// Append the new list element to the list of raiding players
+	$('ul#raid_members').append(str_new_member);
+
+	// Reset the event handlers
+	reset_list_elements();
+
+	// If any values were passed, set the new element's field values
+	if(typeof arr_values == 'object') {
+		for(index in arr_values) {
+			$('ul#raid_members li.raider:last input.field_'+index).val(arr_values[index]);
+		}
+	}
+
+}
 
 /**
  * Reset the click handlers for the various actions
@@ -56,13 +78,18 @@ $( function() {
  * XSL parsed pages.
  * @return
  */
-function reset_handlers()
+function reset_list_elements()
 {
+	// Apply some rounded corner fluff
+	$('ul#raid_members li.raider div.member_class').corner('br 20px');
+	
+	
 	// Reset the event handlers for the close buttons
-	$('div.close_button').unbind('click');
-	$('div.close_button').click( function() {
-		$(this).parents('li.raider').remove(); 
+	$('ul#raid_members li.raider div.close_button').unbind('click');
+	$('ul#raid_members li.raider div.close_button').click( function() {
+		$(this).parent('li.raider').remove(); 
 	});
+	
 	
 	/* Allow folded fieldsets to toggle their folded-ness on click of the legend */
 	$('fieldset.foldable legend').unbind('click');
@@ -70,6 +97,25 @@ function reset_handlers()
 		$(this).parent().toggleClass('folded');
 	});
 
-	
+
+	// NOTE: this button is commented out in the XSL - this function doesn't work well yet (field value copy doesnt work)
+	// define the 'clone' operation
+	$('ul#raid_members li.raider div.clone_button').unbind('click');
+	$('ul#raid_members li.raider div.clone_button').click( function() {
+		
+		// Determine the class of this element
+		var class_name = $('input.field_class', $(this).parent()).val();
+		
+		// Add a new copy of the same class
+		add_new_raider(class_name);
+
+		// Copy all the field values from the cloned raider to the new raider
+		$("input[type!='hidden']", $(this).parent()).each( function() {
+			$("input[type!='checkbox']."+this.className, $('ul#raid_members li.raider:last')).val( $(this).val() );
+			if(this.checked) {
+				$("input[type='checkbox']."+this.className, $('ul#raid_members li.raider:last')).attr('checked', true);
+			}
+		});
+	});
 	
 }

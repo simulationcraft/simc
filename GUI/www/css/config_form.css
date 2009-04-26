@@ -4,56 +4,20 @@
  */
 
 /* === GENERAL STYLING === */
-body {
-	background-color: gray;
-}
-
+/* Any hidden element */
 .hidden {
 	display: none; 
+	visibility: hidden;
 }
 
-/* This div wraps the entire page's content */
-div#content_wrapper {
-	margin-top: 75px;
-	background-color: #EEEEEE;
-	border: 3px solid black;
+/* The overall page background */
+/* Thanks to chanchan222 http://www.flickr.com/photos/chanchan222/2853664161/ Creative Commons License */
+body {
+	background: black url(../images/2853664161_eb5835216c_o_feathered.jpg) no-repeat center top;
 	padding: 10px;
 }
 
-/* Page panels are general sub-divisons of the content block (raid composition, for example) */
-fieldset.page_panel {
-	border: 1px solid gray;
-	padding: 5px;
-	background-color: #CCCCCC;
-	margin-bottom: 25px;		
-}
-
-	/* Legend background-color styling doesn't work well in IE. The workaround here is to not use IE. */
-	fieldset.page_panel legend.page_panel {
-		background-color: white;
-		border: 1px solid gray;
-		padding: 3px 1.5em;
-		margin-left: 20px;
-	}
-
-	/* Fieldsets within a page panel (groups of options, for example) */
-	fieldset.page_panel fieldset {
-		margin-bottom: 10px;
-	}
-	
-		fieldset.page_panel fieldset legend {
-			 font-size: 1.2em;
-			 font-weight: bold;
-		}
-
-
-/* The form commit buttons */
-input.go_button {
-	margin-top: 10px;
-	margin-right: 30px;
-}
-
-/* User options should pile up left to right and top to bottom */
+/* Any user options should pile up left to right and top to bottom */
 ul.user_options li {
 	position: relative;
 	display: -moz-inline-box; display: inline-block;  zoom: 1; *display: inline; /* Cross-browser inline-block support */
@@ -72,13 +36,13 @@ ul.user_options li {
 		bottom: -1.0em;					/* Push the label down below the element */
 		left: 0px;
 		font-size: small;
-		color: #555555;
 		width: 5em;
 		vertical-align: text-top;
 	}
 
 /* Checkboxes should be styled differently to most fields, give them a smaller margin */
 ul.user_options li.checkbox {
+	text-align: right;
 	margin-bottom: 5px;
 }
 
@@ -108,196 +72,304 @@ fieldset.foldable.folded legend {
 
 
 
-/* === RAID COMPOSITION === */
-
-/* Wrapping is to be discouraged when trying to side-stack elements correctly */
-fieldset#raid_composition {
-	white-space: nowrap;
+/* === TITLE BAR === */
+div#title_bar {
+	color: white;
+	margin-bottom: 5px;
+	text-align: right;
 }
 
-/*  Make the new-member menu and the raid member list stack up next to each other */
-div#sidebar, ul#raid_members {
-	display: -moz-inline-box; display: inline-block;  zoom: 1; *display: inline; /* Cross-browser inline-block support */
-	vertical-align: top;
-	margin-top: 5px;
-	white-space: normal;	/* Wrapping within the stacked elements is ok */
-}
-
-
-	/* === SIDEBAR === */
-	div#sidebar {
-		margin-right: 30px;
-		width: 190px;
-		text-align: center;
+	div#title_bar a {
+		color: white;
+		text-decoration: none;
 	}
-	
-		div#sidebar div#new_member_wrapper {
-			border: 1px solid gray;
-			padding: 5px;
-			background-color: white;
-		}
 
-			div#sidebar div#new_member_wrapper ul {
-				display: block;
-				width: 148px;
-				padding: 10px;
-			}
-	
-				div#sidebar div#new_member_wrapper ul li.supported_class {
-					display: -moz-inline-box; display: inline-block;  zoom: 1; *display: inline; /* Cross-browser inline-block support */
-					position: relative;
-					margin: 0px 5px 0px 5px;
-					cursor: pointer;
-					width: 64px;
-					height: 84px;
-				}
-	
-					div#sidebar div#new_member_wrapper ul li.supported_class span {
-						position: absolute;
-						bottom: 5px;
-						display: block;
-						width: 100%;
-						text-align: center;
-						color: #AA0000;
-						font-size: 12px;
-					}
+	div#title_bar a:hover {
+		color: red;
+	}
 
-				div#sidebar div#new_member_wrapper ul li.supported_class.death_knight {
-					background: url(../images/UI-CharacterCreate-Classes_Deathknight.png) no-repeat 0 0;
-				}
+	div#title_bar h1 {
+		font-size: xx-large;
+		font-weight: bold;
+	}
 
-				div#sidebar div#new_member_wrapper ul li.supported_class.druid {
-					background: url(../images/UI-CharacterCreate-Classes_Druid.png) no-repeat 0 0;
-				}
+	div#title_bar p {
+		font-size: small;
+		font-style: italic;
+	}
 
-				div#sidebar div#new_member_wrapper ul li.supported_class.hunter {
-					background: url(../images/UI-CharacterCreate-Classes_Hunter.png) no-repeat 0 0;
-				}
 
-				div#sidebar div#new_member_wrapper ul li.supported_class.mage {
-					background: url(../images/UI-CharacterCreate-Classes_Mage.png) no-repeat 0 0;
-				}
 
-				div#sidebar div#new_member_wrapper ul li.supported_class.paladin {
-					background: url(../images/UI-CharacterCreate-Classes_Paladin.png) no-repeat 0 0;
-				}
+/* === SIDEBAR === */
+/* The sidebar wrapper div */
+div#sidebar {
+	position: absolute;	/* Take the sidebar out of the flow model */
+	text-align: center;
+}
+	/* Each of the major sections of the sidebar */
+	div#sidebar div.sidebar_section {
+		border: 1px solid black;
+		background-color: white;
+		padding: 5px;
+		width: 178px;
+		margin-bottom: 10px;
+	}
 
-				div#sidebar div#new_member_wrapper ul li.supported_class.priest {
-					background: url(../images/UI-CharacterCreate-Classes_Priest.png) no-repeat 0 0;
-				}
-
-				div#sidebar div#new_member_wrapper ul li.supported_class.rogue {
-					background: url(../images/UI-CharacterCreate-Classes_Rogue.png) no-repeat 0 0;
-				}
-
-				div#sidebar div#new_member_wrapper ul li.supported_class.shaman {
-					background: url(../images/UI-CharacterCreate-Classes_Shaman.png) no-repeat 0 0;
-				}
-
-				div#sidebar div#new_member_wrapper ul li.supported_class.warlock {
-					background: url(../images/UI-CharacterCreate-Classes_Warlock.png) no-repeat 0 0;
-				}
-
-				div#sidebar div#new_member_wrapper ul li.supported_class.warrior {
-					background: url(../images/UI-CharacterCreate-Classes_Warrior.png) no-repeat 0 0;
-				}
-
-		div#sidebar span.list_caption {
+		/* The list of add-a-new-member-by-class buttons */
+		div#sidebar ul#new_member_by_class {
 			display: block;
-			color: #444444;
-			font-size: smaller;
-			font-style: italic;
-			padding: 3px;
+			width: 158px;
+			padding: 10px;
 		}
 
-
-	
-	/* === RAID MEMBERS === */
-	ul#raid_members {
-		width: 80%;
-	}
-			
-		ul#raid_members li.raider {
-			position: relative;
-			border: 1px solid gray;
-			background-color: #EEEEEE;
-			padding: 5px;
-			padding-top: 30px; 	/* Make room for the close button (see below) */
-			padding-bottom: 25px;
-			margin-bottom: 10px;	
-		}
-		
-			ul#raid_members li.raider div.close_button {
-				position: absolute;
-				top: 2px;
-				right: 2px;
-				background: url(../images/button_cancel.png) no-repeat 0 0;
-				width: 22px;
-				height: 22px;
+			/* each of the list elements */
+			div#sidebar ul#new_member_by_class li.supported_class {
+				display: -moz-inline-box; display: inline-block;  zoom: 1; *display: inline; /* Cross-browser inline-block support */
+				position: relative;
+				margin: 0px 5px;
 				cursor: pointer;
+				width: 64px;
+				height: 84px;
 			}
+	
+				/* The text for each of the add-new-by-class icons */
+				div#sidebar ul#new_member_by_class li.supported_class span {
+					position: absolute;
+					bottom: 5px;
+					left: 0px;
+					display: block;
+					width: 100%;
+					text-align: center;
+					color: #AA0000;
+					font-size: 12px;
+				}
+
+			/* The various class buttons */
+			div#sidebar ul#new_member_by_class li.supported_class.death_knight {
+				background: url(../images/UI-CharacterCreate-Classes_Deathknight.png) no-repeat 0 0;
+			}
+
+			div#sidebar ul#new_member_by_class li.supported_class.druid {
+				background: url(../images/UI-CharacterCreate-Classes_Druid.png) no-repeat 0 0;
+			}
+
+			div#sidebar ul#new_member_by_class li.supported_class.hunter {
+				background: url(../images/UI-CharacterCreate-Classes_Hunter.png) no-repeat 0 0;
+			}
+
+			div#sidebar ul#new_member_by_class li.supported_class.mage {
+				background: url(../images/UI-CharacterCreate-Classes_Mage.png) no-repeat 0 0;
+			}
+
+			div#sidebar ul#new_member_by_class li.supported_class.paladin {
+				background: url(../images/UI-CharacterCreate-Classes_Paladin.png) no-repeat 0 0;
+			}
+
+			div#sidebar ul#new_member_by_class li.supported_class.priest {
+				background: url(../images/UI-CharacterCreate-Classes_Priest.png) no-repeat 0 0;
+			}
+
+			div#sidebar ul#new_member_by_class li.supported_class.rogue {
+				background: url(../images/UI-CharacterCreate-Classes_Rogue.png) no-repeat 0 0;
+			}
+
+			div#sidebar ul#new_member_by_class li.supported_class.shaman {
+				background: url(../images/UI-CharacterCreate-Classes_Shaman.png) no-repeat 0 0;
+			}
+
+			div#sidebar ul#new_member_by_class li.supported_class.warlock {
+				background: url(../images/UI-CharacterCreate-Classes_Warlock.png) no-repeat 0 0;
+			}
+
+			div#sidebar ul#new_member_by_class li.supported_class.warrior {
+				background: url(../images/UI-CharacterCreate-Classes_Warrior.png) no-repeat 0 0;
+			}
+
+	div#sidebar span.sidebar_caption {
+		font-size: smaller;
+		font-style: italic;
+	}
+	
+	
+	/* The add-a-member-by-armory-import fields */
+	ul#new_member_by_armory {
+		display: block;
+		width: 158px;
+		padding: 10px;
+	}
+	
+		ul#new_member_by_armory li {
+			position: relative;
+			white-space: nowrap;
+			vertical-align: top;
+			text-align: left;
+			margin-bottom: 1.3em;	/* Leave room for the label outside the margin, below */
+		}
 		
-			ul#raid_members li.raider div.member_class {
+			/* Push the labels down below the fields */
+			ul#new_member_by_armory li label {
 				position: absolute;
-				top: 0px;
+				bottom: -1.0em;					/* Push the label down below the element */
 				left: 0px;
-				height: 22px;
-				padding: 2px 1em;
-				margin: 0px;
-				border-right: 1px solid gray;
-				border-bottom: 1px solid gray;
-				background-color: #CFCFCF;
-				font-weight: bold;
-				width: 25em;
+				width: 158px;
+				vertical-align: text-top;
+				color: #AA0000;
+				font-size: 12px;
+			}	
+	
+			ul#new_member_by_armory input {
+				width: 153px;
 			}
-			
-			/* These colors were lifted from http://www.wowwiki.com/Class_colors */
-			ul#raid_members li.raider div.member_class.death_knight {
-				background-color: #9482C9;
-				color: white;
-			}
-			
-			ul#raid_members li.raider div.member_class.druid {
-				background-color: #FF7D0A;
-				color: white;
-			}
-			
-			ul#raid_members li.raider div.member_class.hunter {
-				background-color: #ABD473;
-				color: 444444;
-			}
-			
-			ul#raid_members li.raider div.member_class.mage {
-				background-color: #69CCF0;
-				color: white;
-			}
-			
-			ul#raid_members li.raider div.member_class.paladin {
-				background-color: #F58CBA;
-				color: white;
-			}
-			
-			ul#raid_members li.raider div.member_class.priest {
-				background-color: #FFFFFF;
-				color: 444444;
-			}
-			
-			ul#raid_members li.raider div.member_class.rogue {
-				background-color: #FFF569;
-				color: #444444;
-			}
-			
-			ul#raid_members li.raider div.member_class.shaman {
-				background-color: #2459FF;
-				color: white;
-			}
-			
-			ul#raid_members li.raider div.member_class.warlock {
-				background-color: #9482C9;
-				color: white;
-			}
-			
-			ul#raid_members li.raider div.member_class.warrior {
-				background-color: #C79C6E;
-				color: white;
-			}
+
+	div#sidebar span#armory_import {
+		display: -moz-inline-box; display: inline-block;  zoom: 1; *display: inline; /* Cross-browser inline-block support */
+		border: 3px outset black;
+		padding: 3px 20px;
+		background-color: #CCCCCC;
+		cursor: pointer;
+	}
+
+	div#sidebar span#armory_import:hover {
+		background-color: #DDDDDD;
+	}
+
+
+
+/* === RAID COMPOSITION === */
+form#config_form {
+	padding-left: 208px; /*  Make room for the sidebar */
+	color: white;	
+}
+
+/* The form commit buttons */
+form#config_form input.go_button {
+	margin-right: 30px;
+}
+
+/* Page panels are general sub-divisons of the content block (raid composition, for example) */
+form#config_form div.page_panel {
+	border: 1px solid black;
+	background-image: url(../images/opacity.png);
+	padding: 5px;
+	margin-bottom: 15px;		
+}
+
+	form#config_form div.page_panel h2.page_panel {
+		margin-bottom: 10px;
+	}
+
+	/* Fieldsets within a page panel (groups of options, for example) */
+	form#config_form div.page_panel fieldset {
+		margin-bottom: 10px;
+	}
+	
+		form#config_form div.page_panel fieldset legend {
+			 font-size: 1.2em;
+			 font-weight: bold;
+		}
+
+
+
+/* === RAID MEMBERS === */
+	/* Each of the raid members */
+	ul#raid_members li.raider {
+		position: relative;
+		border: 1px solid black;
+		background-color: #202020;
+		padding: 30px 5px 25px 5px;	/* Leave room for the cancel button at the top (see below) */
+		margin-bottom: 10px;	
+	}
+	
+		/* The button that removes the character from the raid */
+		ul#raid_members li.raider div.close_button, ul#raid_members li.raider div.clone_button {
+			position: absolute;
+			top: 2px;
+			font-size: 0px;
+			width: 22px;
+			height: 22px;
+			cursor: pointer;
+		}
+	
+		ul#raid_members li.raider div.close_button {
+			right: 2px;
+			background: url(../images/button_cancel.png) no-repeat 0 0;			
+		}
+		
+		ul#raid_members li.raider div.clone_button {
+			right: 30px;
+			background: url(../images/1240702681_reload_all_tabs.png) no-repeat 0 0;			
+		}
+	
+		/* The character class-indicator header */
+		ul#raid_members li.raider div.member_class {
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			height: 22px;
+			padding: 2px 1em;
+			margin: 0px;
+			border-right: 1px solid gray;
+			border-bottom: 1px solid gray;
+			background-color: #CFCFCF;
+			font-weight: bold;
+			width: 25em;
+		}
+		
+		/* These colors were lifted from http://www.wowwiki.com/Class_colors */
+		ul#raid_members li.raider div.member_class.death_knight {
+			background-color: #9482C9;
+			color: white;
+		}
+		
+		ul#raid_members li.raider div.member_class.druid {
+			background-color: #FF7D0A;
+			color: white;
+		}
+		
+		ul#raid_members li.raider div.member_class.hunter {
+			background-color: #ABD473;
+			color: #444444;
+		}
+		
+		ul#raid_members li.raider div.member_class.mage {
+			background-color: #69CCF0;
+			color: white;
+		}
+		
+		ul#raid_members li.raider div.member_class.paladin {
+			background-color: #F58CBA;
+			color: white;
+		}
+		
+		ul#raid_members li.raider div.member_class.priest {
+			background-color: #FFFFFF;
+			color: #444444;
+		}
+		
+		ul#raid_members li.raider div.member_class.rogue {
+			background-color: #FFF569;
+			color: #444444;
+		}
+		
+		ul#raid_members li.raider div.member_class.shaman {
+			background-color: #2459FF;
+			color: white;
+		}
+		
+		ul#raid_members li.raider div.member_class.warlock {
+			background-color: #9482C9;
+			color: white;
+		}
+		
+		ul#raid_members li.raider div.member_class.warrior {
+			background-color: #C79C6E;
+			color: white;
+		}
+
+		
+	/* === GLOBAL OPTIONS === */
+	div#global_options_wrapper {
+		border: 1px solid black;
+		background-color: #202020;
+		padding: 5px;
+	}

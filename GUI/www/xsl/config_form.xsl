@@ -11,15 +11,21 @@
 		
 		<head>
 			<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-			<meta name="description" content="" />
-			<meta name="keywords" content="" />
+			<meta name="description" content="A tool to explore combat mechanics in the popular MMO RPG World of Warcraft (tm)" />
+			<meta name="keywords" content="simulationcraft,simcraft,world of warcraft,wow,simulation" />
 			
 			<title>SimulationCraft</title>
+
+			<!-- Thanks to http://www.favicon.cc/?action=icon&file_id=3266 for the favicon Creative Commons, no attribution necessary -->
+			<link rel="icon" type="image/x-icon" href="images/favicon.ico" />
 			
-			<link rel="stylesheet" type="text/css" href="css/reset.css" />
-			<link rel="stylesheet" type="text/css" href="css/config_form.css" />
+			<!-- CSS File links -->
+			<link rel="stylesheet" type="text/css" media="all" title="Default Style" href="css/reset.css" />
+			<link rel="stylesheet" type="text/css" media="all" title="Default Style" href="css/config_form.css" />
 			
-			<script type="text/javascript" src="http://jqueryjs.googlecode.com/files/jquery-1.2.6.min.js"></script>
+			<!-- Javascript file includes -->
+			<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
+			<script type="text/javascript" src="js/jquery.corner.js"></script>
 			<script type="text/javascript" src="js/config_form.js"></script>
 		</head>
 				
@@ -30,79 +36,131 @@
 
 			<!-- The overall page content -->		
 			<div id="content_wrapper">
+				
+				<!-- Add the title bar -->
+				<xsl:call-template name="titlebar" />
 
-				<form id="config_form" name="config_form" action="simulation.xml" method="post" target="_blank">
+				<!-- Add the side bar -->
+				<xsl:call-template name="sidebar" />
 
-
-					<!-- Raid Composition -->
-					<fieldset id="raid_composition" class="page_panel">
-						<legend class="page_panel">Raid Composition</legend>
-
-						<!-- Sidebar (handles adding new members to the raid) -->	
-						<div id="sidebar">
-						
-							<!--  Menu of classes, used to add new members to the raid -->
-							<div id="new_member_wrapper">
-								<h1>Add By Class</h1>
-												
-								<ul id="new_member">
-								
-									<!-- For each of hte classes defined in the XML file (Except 'all_classes'), add a list element -->
-									<xsl:for-each select="supported_classes/class[not(@class='all_classes')]">
-									<xsl:sort select="@class" />
-									
-										<li>
-											<xsl:attribute name="class">supported_class <xsl:value-of select="@class" /></xsl:attribute>
-											<xsl:attribute name="title"><xsl:value-of select="@label" /></xsl:attribute>
-											<span><xsl:value-of select="@label" /></span>
-										</li>
-									
-									</xsl:for-each>
-								</ul>	
-							</div>
-	
-							<!-- Instructional caption -->
-							<span class="list_caption">Select one of the above classes to add a new member to the raid</span>
-		
-						</div>
-										
-										
-						<!--  The main list of raid members (generated with a template defined below) -->
-						<ul id="raid_members">
-							<xsl:apply-templates select="raid_content/player" />
-						</ul>
-					</fieldset>	
-
-
-
-					<!-- Global simulation settings -->
-					<fieldset id="global_settings" class="page_panel">
-						<legend class="page_panel">Global Settings</legend>
-
-						<!-- Loop over each option in the global set, sorted by the file in which the option originated -->
-						<xsl:for-each select="global_options/option">
-							<xsl:sort select="@file" />
-					
-							<!-- If this source file has changed from the previous option in this list (or if this is the first iteration of this loop), call the template -->
-							<xsl:if test="position()=1 or @file != preceding-sibling::option[1]/@file">
-								<xsl:call-template name="global_options_section">
-									<xsl:with-param name="file_name" select="@file" />
-								</xsl:call-template>
-							</xsl:if>
-						</xsl:for-each>
-
-					</fieldset>
-
-
-					<!--  Form submit/reset buttons -->
-					<input class="go_button" type="submit" value="Simulate" />		
-					<input class="reset_button" type="reset" value="Reset" />
-
-				</form>
+				<!-- Add the main content form -->										
+				<xsl:call-template name="content_form" />
 			</div>
 
 		</body>
 	</html>
+	</xsl:template>
+
+
+
+	<!-- === TITLE === -->
+	<xsl:template name="titlebar">
+		<div id="title_bar">
+			<h1><a href="http://code.google.com/p/simulationcraft/" target="_blank">SimulationCraft</a></h1>
+			<p>A World of Warcraft Combat Simulation</p>
+		</div>
+	</xsl:template>
+	
+	
+
+	<!-- === SIDEBAR === -->
+	<xsl:template name="sidebar">
+
+		<!-- Sidebar (handles adding new members to the raid) -->	
+		<div id="sidebar">
+		
+			<!--  Menu of classes, used to add new members to the raid -->
+			<div class="sidebar_section">
+				<h1>Add by Class</h1>
+								
+				<!-- The list of buttons to add a new raider by class -->
+				<ul id="new_member_by_class">
+				
+					<!-- For each of the classes defined in the XML file (Except 'all_classes'), add a list element -->
+					<xsl:for-each select="supported_classes/class[not(@class='all_classes')]">
+						<xsl:sort select="@class" />
+					
+						<li>
+							<xsl:attribute name="class">supported_class <xsl:value-of select="@class" /></xsl:attribute>
+							<xsl:attribute name="title"><xsl:value-of select="@label" /></xsl:attribute>
+							<span><xsl:value-of select="@label" /></span>
+						</li>
+					
+					</xsl:for-each>
+				</ul>	
+
+				<!-- Instructional caption -->
+				<span class="sidebar_caption">Select one of the above classes to add a new member to the raid</span>
+			</div>
+
+			<!--  Menu of classes, used to add new members to the raid -->
+			<div class="sidebar_section">
+				<h1>Add from Armory</h1>
+								
+				<ul id="new_member_by_armory">
+					<li>
+						<label for="armory_server">Server</label>
+						<select name="armory_server" id="armory_server">
+							<option value=""></option>
+							<option value="alleria">Alleria</option>
+						</select>
+					</li>
+					
+					<li>
+						<label for="armory_character_name">Character Name</label>
+						<input type="text" name="armory_character_name" id="armory_character_name" />
+					</li>
+				</ul>
+				
+				<span id="armory_import">Import</span>
+			</div>
+		</div>
+	</xsl:template>
+	
+	
+	
+	<!-- === THE MAIN SUBMISSION FORM === -->
+	<xsl:template name="content_form">
+		<!-- Add the raid configuration form -->
+		<form id="config_form" name="config_form" action="simulation.xml" method="post" target="_blank">										
+								
+			<!-- Raid Composition -->										
+			<div id="raid_composition" class="page_panel">
+				<h2 class="page_panel">Raid Composition</h2>
+								
+				<!--  The main list of raid members (generated with a template defined below) -->
+				<ul id="raid_members">
+					<xsl:apply-templates select="raid_content/player" />
+				</ul>
+			</div>	
+
+
+			<!-- Global simulation settings -->
+			<div id="global_settings" class="page_panel">
+				<h2 class="page_panel">Global Settings</h2>
+
+				<div id="global_options_wrapper">
+				
+					<!-- Loop over each option in the global set, sorted by the file in which the option originated -->
+					<xsl:for-each select="global_options/option">
+						<xsl:sort select="@file" />
+				
+						<!-- If this source file has changed from the previous option in this list (or if this is the first iteration of this loop), call the template -->
+						<xsl:if test="position()=1 or @file != preceding-sibling::option[1]/@file">
+							<xsl:call-template name="global_options_section">
+								<xsl:with-param name="file_name" select="@file" />
+							</xsl:call-template>
+						</xsl:if>
+					</xsl:for-each>
+					
+				</div>
+				
+			</div>
+
+			<!--  Form submit/reset buttons -->
+			<input class="go_button" type="submit" value="Simulate" />		
+			<input class="reset_button" type="reset" value="Reset" />
+		</form>	
 	</xsl:template>
 
 
@@ -133,24 +191,26 @@
 	</xsl:template>
 	
 	
-	<!-- Javascript array describing the classes -->
+	<!-- Javascript support section, describing the classes -->
 	<xsl:template name="javascript_prefill">
-		<xsl:for-each select="supported_classes/class">
-
-			<!-- Because javascript sucks and has no HEREDOC equivalent, we have to do this the hard way... -->
-			<!-- each class will get a hidden div holding a prototype new-raider, with a replacable tag string in place of it's index number -->
-			<!-- On add, javascript will copy this hidden div, and replace the tag string with the actual index number -->
-			<div class="hidden">
-				<xsl:attribute name="id">hidden_div_<xsl:value-of select="@class" /></xsl:attribute>
-			
-				<!-- Call the template that handles displaying a raider instance (same as the one used to print the visible raider list elements) -->
-				<xsl:call-template name="raid_content_player">
-					<xsl:with-param name="class" select="@class" />
-					<xsl:with-param name="index" select="'{INDEX_VALUE}'" />
-				</xsl:call-template>
-			</div>
-			
-		</xsl:for-each>
+		<div class="hidden" id="prototype_character_classes">
+			<xsl:for-each select="supported_classes/class">
+	
+				<!-- Because javascript sucks and has no HEREDOC equivalent, we have to do this the hard way... -->
+				<!-- each class will get a hidden div holding a prototype new-raider, with a replacable tag string in place of it's index number -->
+				<!-- On add, javascript will copy this hidden div, and replace the tag string with the actual index number -->
+				<div class="hidden">
+					<xsl:attribute name="id">hidden_div_<xsl:value-of select="@class" /></xsl:attribute>
+				
+					<!-- Call the template that handles displaying a raider instance (same as the one used to print the visible raider list elements) -->
+					<xsl:call-template name="raid_content_player">
+						<xsl:with-param name="class" select="@class" />
+						<xsl:with-param name="index" select="'{INDEX_VALUE}'" />
+					</xsl:call-template>
+				</div>
+				
+			</xsl:for-each>
+		</div>
 	</xsl:template>
 		
 	
@@ -165,9 +225,12 @@
 		<xsl:param name="index" select="position()" />
 
 		<li class="raider">
-		
+
+			<!-- Clone button -->
+			<div class="clone_button" title="Clone this Player">Clone</div>						
+
 			<!-- Close button -->
-			<div class="close_button" title="Remove this Player"></div>						
+			<div class="close_button" title="Remove this Player">Close</div>						
 		
 			<!--  Class description block (with the text looked up in the supported_classes tag) -->
 			<div>
@@ -320,6 +383,9 @@
 			<!-- Set the field name and id attributes -->
 			<xsl:attribute name="name"><xsl:value-of select="$name_string" /></xsl:attribute>
 			<xsl:attribute name="id"><xsl:value-of select="$id_string" /></xsl:attribute>
+		
+			<!-- Set the css class if it's set -->
+			<xsl:attribute name="class">field_<xsl:value-of select="$field_name" /></xsl:attribute>
 		
 			<!-- set the input-type from the xml type attribute -->	
 			<xsl:attribute name="type">

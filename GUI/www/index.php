@@ -28,33 +28,33 @@ if( $request_file_name == 'simulation.xml' ) {
 	// Call the simcraft execution
 	$simcraft_output = shell_exec( $simcraft_command );
 	
-	// FIXME temporarily, just print the html, since the generated html isn't XHTML compliant
+	// FIXME temporarily, just print the html, since the generated html isn't XHTML compliant and won't fit in an XML file
 	print file_get_contents($output_file);
 	die();
 	
-//	// Add the simcraft command to the outgoing xml, just for posterity
+//	// Add the simcraft command to the outgoing xml, just for documentation
 //	$xml->addChild('simcraft_command', htmlentities($simcraft_command) );
 //	
 //	// Add the response to the outgoing xml
 //	$xml->addChild('command_return', $simcraft_output);
 //	
-//	// Parse the output file
+//	// Load the generated report output file
 //	$file_contents = file_get_contents($output_file);
 //	
 //	// Add the generated report
 //	$xml->addChild('generated_report', $file_contents );
 //	
-//	// Attach the appropriate XSL file
+//	// Define the XSL that will style this XML
 //	$xsl_path = 'xsl/result_display.xsl';
 }
 
 // Else, just show the simulation configuration form
 else {
 
-	// Add the sumulation config form XML to the outgoing XML object
+	// Add the simulation config form XML to the outgoing XML object
 	append_simulation_config_form($xml);
 	
-	// Attach the config form XSL
+	// Define the XSL that will style this XML
 	$xsl_path = 'xsl/config_form.xsl';
 }
 

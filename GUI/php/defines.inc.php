@@ -1,6 +1,6 @@
 <?php 
 /**
- * Where is the sumulationcraft executable directory (relative to the index.php script)
+ * Where is the simulationcraft executable directory (relative to the index.php script)
  * 
  * With the current setup of the simulationcraft project, the root should be two directories higher
  * @var string
