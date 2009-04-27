@@ -25,18 +25,18 @@ actions+=/death_wish,time>=10,health_percentage>=20,time_to_die>=135
 actions+=/recklessness,health_percentage>=20,time_to_die>=230
 actions+=/berserker_rage
 
-# Gear: http://www.chardev.org/?template=156716
-gear_stamina=1250
-gear_strength=739
-gear_agility=499
+# Gear: http://www.chardev.org/?template=167055
+gear_stamina=1235
+gear_strength=612
+gear_agility=555
 gear_intellect=10
 gear_spirit=10
-gear_attack_power=1415
-gear_expertise_rating=205
-gear_armor_penetration_rating=159
-gear_hit_rating=230
-gear_crit_rating=922
-gear_haste_rating=209
+gear_attack_power=1885
+gear_expertise_rating=208
+gear_armor_penetration_rating=253
+gear_hit_rating=185
+gear_crit_rating=904
+gear_haste_rating=228
 
 # Set Bonuses
 tier7_2pc=1
@@ -50,7 +50,7 @@ off_hand=axe_2h,dps=222.9,speed=3.4,enchant=berserking
 
 # Item Procs
 darkmoon_greatness=1
-mirror_of_truth=1
+grim_toll=1
 
 glyph_of_heroic_strike=1
 glyph_of_whirlwind=1
