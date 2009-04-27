@@ -70,6 +70,12 @@ fieldset.foldable.folded legend {
 	background: url(../images/edit_add.png) no-repeat 0 0;
 }
 
+/* The form commit buttons */
+form#config_form input.go_button {
+	margin-left: 208px;
+	margin-right: 30px;
+}
+
 
 
 /* === TITLE BAR === */
@@ -221,49 +227,34 @@ div#sidebar {
 				width: 153px;
 			}
 
-	div#sidebar span#armory_import {
-		display: -moz-inline-box; display: inline-block;  zoom: 1; *display: inline; /* Cross-browser inline-block support */
-		border: 3px outset black;
-		padding: 3px 20px;
-		background-color: #CCCCCC;
-		cursor: pointer;
-	}
-
-	div#sidebar span#armory_import:hover {
-		background-color: #DDDDDD;
-	}
+	
 
 
 
 /* === RAID COMPOSITION === */
-form#config_form {
+div#config_content {
 	padding-left: 208px; /*  Make room for the sidebar */
 	color: white;	
 }
 
-/* The form commit buttons */
-form#config_form input.go_button {
-	margin-right: 30px;
-}
-
 /* Page panels are general sub-divisons of the content block (raid composition, for example) */
-form#config_form div.page_panel {
+div#config_content div.page_panel {
 	border: 1px solid black;
 	background-image: url(../images/opacity.png);
 	padding: 5px;
 	margin-bottom: 15px;		
 }
 
-	form#config_form div.page_panel h2.page_panel {
+	div#config_content div.page_panel h2.page_panel {
 		margin-bottom: 10px;
 	}
 
 	/* Fieldsets within a page panel (groups of options, for example) */
-	form#config_form div.page_panel fieldset {
+	div#config_content div.page_panel fieldset {
 		margin-bottom: 10px;
 	}
 	
-		form#config_form div.page_panel fieldset legend {
+		div#config_content div.page_panel fieldset legend {
 			 font-size: 1.2em;
 			 font-weight: bold;
 		}
@@ -315,57 +306,65 @@ form#config_form div.page_panel {
 			width: 25em;
 		}
 		
+		/* The character name field */
+		ul#raid_members li.raider div.member_class input.field_name {
+			font-weight: bold;
+			text-decoration: underline;
+			border: 1px solid black;
+			background-color: transparent;
+		}
+		
 		/* These colors were lifted from http://www.wowwiki.com/Class_colors */
-		ul#raid_members li.raider div.member_class.death_knight {
+		ul#raid_members li.raider div.member_class.death_knight, ul#raid_members li.raider div.member_class.death_knight input.field_name {
 			background-color: #9482C9;
 			color: white;
 		}
 		
-		ul#raid_members li.raider div.member_class.druid {
+		ul#raid_members li.raider div.member_class.druid, ul#raid_members li.raider div.member_class.druid input.field_name {
 			background-color: #FF7D0A;
 			color: white;
 		}
 		
-		ul#raid_members li.raider div.member_class.hunter {
+		ul#raid_members li.raider div.member_class.hunter, ul#raid_members li.raider div.member_class.hunter input.field_name {
 			background-color: #ABD473;
 			color: #444444;
 		}
 		
-		ul#raid_members li.raider div.member_class.mage {
+		ul#raid_members li.raider div.member_class.mage, ul#raid_members li.raider div.member_class.mage input.field_name {
 			background-color: #69CCF0;
 			color: white;
 		}
 		
-		ul#raid_members li.raider div.member_class.paladin {
+		ul#raid_members li.raider div.member_class.paladin, ul#raid_members li.raider div.member_class.paladin input.field_name {
 			background-color: #F58CBA;
 			color: white;
 		}
 		
-		ul#raid_members li.raider div.member_class.priest {
+		ul#raid_members li.raider div.member_class.priest, ul#raid_members li.raider div.member_class.priest input.field_name {
 			background-color: #FFFFFF;
 			color: #444444;
 		}
 		
-		ul#raid_members li.raider div.member_class.rogue {
+		ul#raid_members li.raider div.member_class.rogue, ul#raid_members li.raider div.member_class.rogue input.field_name {
 			background-color: #FFF569;
 			color: #444444;
 		}
 		
-		ul#raid_members li.raider div.member_class.shaman {
+		ul#raid_members li.raider div.member_class.shaman, ul#raid_members li.raider div.member_class.shaman input.field_name {
 			background-color: #2459FF;
 			color: white;
 		}
 		
-		ul#raid_members li.raider div.member_class.warlock {
+		ul#raid_members li.raider div.member_class.warlock, ul#raid_members li.raider div.member_class.warlock input.field_name {
 			background-color: #9482C9;
 			color: white;
 		}
 		
-		ul#raid_members li.raider div.member_class.warrior {
+		ul#raid_members li.raider div.member_class.warrior, ul#raid_members li.raider div.member_class.warrior input.field_name {
 			background-color: #C79C6E;
 			color: white;
 		}
-
+				
 		
 	/* === GLOBAL OPTIONS === */
 	div#global_options_wrapper {

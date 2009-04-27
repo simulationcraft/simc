@@ -12,17 +12,13 @@ require_once 'wow_functions.inc.php';
 $xml = new SimpleXMLElement_XSL('<xml></xml>');
 
 
-// Determine the file that was requested in the URL
-$request_file_name = basename($_SERVER['PATH_INFO']);
+// If the 'simulate' button was pressed, run the simulation
+if( isset($_POST['simulate']) ) {
 
-
-// If the request is to run a simulation, run it now
-if( $request_file_name == 'simulation.xml' ) {
-	
-	// Develop the simcraft command from the form input
+	// Develop the simcraft command from the form input, with a random file name for the output catcher
 	$output_file = tempnam('/tmp', 'simcraft_output');
 	$simcraft_command = generate_simcraft_command($_POST, $output_file );
-
+	
 	// Change to the simulationcraft directory
 	chdir( get_valid_path(SIMULATIONCRAFT_PATH) );
 	
@@ -51,11 +47,14 @@ if( $request_file_name == 'simulation.xml' ) {
 
 // Else, just show the simulation configuration form
 else {
-
-	// Add the simulation config form XML to the outgoing XML object
-	append_simulation_config_form($xml);
 	
-	// Add the servers
+	// Define the XSL that will style this XML
+	$xsl_path = 'xsl/config_form.xsl';
+		
+	// Add the simulation config form XML to the outgoing XML object
+	append_simulation_config_form($xml, $_POST);
+		
+	// Add the wow servers
 	$arr_servers = get_arr_wow_servers();
 	$xml_servers = $xml->addChild('servers');
 	foreach( $arr_servers as $arr_server ) {
@@ -63,11 +62,13 @@ else {
 		$new_server->addAttribute('name', $arr_server['name']);
 	}
 		
-	// Add the default raid members
-	add_raider_to_XML($xml, array('class'=>'warlock') );
-	
-	// Define the XSL that will style this XML
-	$xsl_path = 'xsl/config_form.xsl';
+	// If a request was passed to add a raid member from the armory, do it now
+	if( isset($_POST['add_from_armory']) ) {
+		add_raider_from_web($xml, $_POST['add_from_armory']['name'], $_POST['add_from_armory']['server'] );
+
+		// Add the selected server to the xml, for convenience
+		$xml->options->addAttribute('selected_server', $_POST['add_from_armory']['server']);
+	}
 }
 
 

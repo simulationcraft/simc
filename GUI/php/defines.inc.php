@@ -14,6 +14,8 @@ define('USE_CACHE_CONFIG_OPTIONS', true);
 
 /**
  * The cache file path, relative to the index.php file that is executing all the scripts
+ * 
+ * note that this file needs to be read/writeable by the user which this script will run as
  * @var string
  */
 define('CACHE_FILE_PATH', '../data/cachefile.dat');

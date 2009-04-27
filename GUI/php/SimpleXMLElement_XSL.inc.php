@@ -35,22 +35,4 @@ class SimpleXMLElement_XSL extends SimpleXMLElement
 	}
 
 }
-
-
-/**
- * Thanks to l dot j dot peters at student dot utwente dot nl 
- * from http://us.php.net/manual/en/function.simplexml-element-addChild.php
- * 
- * Append one element to another.
- * @param $parent
- * @param $new_child
- * @return unknown_type
- */
-function simplexml_append(SimpleXMLElement $parent, SimpleXMLElement $new_child){
-    $node1 = dom_import_simplexml($parent);
-    $dom_sxe = dom_import_simplexml($new_child);
-    $node2 = $node1->ownerDocument->importNode($dom_sxe, true);
-    $node1->appendChild($node2);
-} 
-
 ?>

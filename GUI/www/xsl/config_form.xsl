@@ -40,13 +40,21 @@
 				<!-- Add the title bar -->
 				<xsl:call-template name="titlebar" />
 
-				<!-- Add the side bar -->
-				<xsl:call-template name="sidebar" />
+				<!-- Add the raid configuration form -->
+				<form id="config_form" name="config_form" action="simulation.xml" method="post">										
+										
+					<!-- Add the side bar -->
+					<xsl:call-template name="sidebar" />
+		
+					<!-- Add the main content form -->										
+					<xsl:call-template name="content_form" />
 
-				<!-- Add the main content form -->										
-				<xsl:call-template name="content_form" />
+					<!--  Form submit/reset buttons -->
+					<input class="go_button" name="simulate" id="simulate" type="submit" value="Simulate" />		
+					<input class="reset_button" type="reset" value="Reset" />
+					
+				</form>	
 			</div>
-
 		</body>
 	</html>
 	</xsl:template>
@@ -100,12 +108,15 @@
 				<ul id="new_member_by_armory">
 					<li>
 						<label for="armory_server">Server</label>
-						<select name="armory_server" id="armory_server">
+						<select name="add_from_armory[server]" id="armory_server">
 							<option value=""></option>
 							<xsl:for-each select="//servers/server">
 								<xsl:sort select="@name" />
 								<option>
 									<xsl:attribute name="value"><xsl:value-of select="@name" /></xsl:attribute>
+									<xsl:if test="@name=/xml/options/@selected_server">
+										<xsl:attribute name="selected">selected</xsl:attribute>
+									</xsl:if>
 									<xsl:value-of select="@name" />
 								</option>
 							</xsl:for-each>
@@ -114,11 +125,11 @@
 					
 					<li>
 						<label for="armory_character_name">Character Name</label>
-						<input type="text" name="armory_character_name" id="armory_character_name" />
+						<input type="text" name="add_from_armory[name]" id="armory_character_name" />
 					</li>
 				</ul>
 				
-				<span id="armory_import">Import</span>
+				<input type="submit" value="Import" name="import_from_armory" />
 			</div>
 		</div>
 	</xsl:template>
@@ -127,9 +138,8 @@
 	
 	<!-- === THE MAIN SUBMISSION FORM === -->
 	<xsl:template name="content_form">
-		<!-- Add the raid configuration form -->
-		<form id="config_form" name="config_form" action="simulation.xml" method="post" target="_blank">										
-								
+		<div id="config_content">
+		
 			<!-- Raid Composition -->										
 			<div id="raid_composition" class="page_panel">
 				<h2 class="page_panel">Raid Composition</h2>
@@ -160,13 +170,8 @@
 					</xsl:for-each>
 					
 				</div>
-				
 			</div>
-
-			<!--  Form submit/reset buttons -->
-			<input class="go_button" type="submit" value="Simulate" />		
-			<input class="reset_button" type="reset" value="Reset" />
-		</form>	
+		</div>
 	</xsl:template>
 
 
@@ -197,7 +202,8 @@
 	</xsl:template>
 	
 	
-	<!-- Javascript support section, describing the classes -->
+	
+	<!-- === Javascript support section, describing the classes === -->
 	<xsl:template name="javascript_prefill">
 		<div class="hidden" id="prototype_character_classes">
 			<xsl:for-each select="options/supported_classes/class">
@@ -207,19 +213,22 @@
 				<!-- On add, javascript will copy this hidden div, and replace the tag string with the actual index number -->
 				<div class="hidden">
 					<xsl:attribute name="id">hidden_div_<xsl:value-of select="@class" /></xsl:attribute>
-				
-					<!-- Call the template that handles displaying a raider instance (same as the one used to print the visible raider list elements) -->
-					<xsl:call-template name="raid_content_player">
-						<xsl:with-param name="class" select="@class" />
-						<xsl:with-param name="index" select="'{INDEX_VALUE}'" />
-					</xsl:call-template>
+
+					<ul>
+						<!-- Call the template that handles displaying a raider instance (same as the one used to print the visible raider list elements) -->
+						<xsl:call-template name="raid_content_player">
+							<xsl:with-param name="index" select="'{INDEX_VALUE}'" />
+						</xsl:call-template>
+					</ul>
 				</div>
 				
 			</xsl:for-each>
 		</div>
 	</xsl:template>
-		
 	
+	
+		
+	<!-- === raider element === -->
 	<!-- players in the raid-content tag.  This template gets used to generate the visible elements as well as the prototypical hidden raiders, 
 			which get used by javascript to insert new players -->
 	<xsl:template match="raid_content/player" name="raid_content_player">
@@ -238,63 +247,75 @@
 			<!-- Close button -->
 			<div class="close_button" title="Remove this Player">Close</div>						
 		
+		
 			<!--  Class description block (with the text looked up in the supported_classes tag) -->
 			<div>
 				<xsl:attribute name="class">member_class <xsl:value-of select="$class" /></xsl:attribute>
-				<xsl:value-of select="//supported_classes/class[@class=$class]/@label" />
+				<xsl:value-of select="//supported_classes/class[@class=$class]/@label" /> - 
+
+				<!-- option defining the name for the raider -->
+				<xsl:call-template name="simcraft_option">
+					<xsl:with-param name="type">text</xsl:with-param>
+					<xsl:with-param name="variable_name">raider</xsl:with-param>
+					<xsl:with-param name="array_index"><xsl:value-of select="$index" /></xsl:with-param>
+					<xsl:with-param name="field_name">name</xsl:with-param>
+					<xsl:with-param name="value"><xsl:value-of select="@name" /></xsl:with-param>
+					<xsl:with-param name="show_label" select="'false'" />
+				</xsl:call-template>
 			</div>
+			
 			
 			<!-- Hidden option variable defining the class for the raider -->
 			<xsl:call-template name="simcraft_option">
 				<xsl:with-param name="type">hidden</xsl:with-param>
 				<xsl:with-param name="variable_name">raider</xsl:with-param>
 				<xsl:with-param name="array_index"><xsl:value-of select="$index" /></xsl:with-param>
-				<xsl:with-param name="value"><xsl:value-of select="$class" /></xsl:with-param>
 				<xsl:with-param name="field_name">class</xsl:with-param>
+				<xsl:with-param name="value"><xsl:value-of select="$class" /></xsl:with-param>
 			</xsl:call-template>
 			
 			
-			<!-- List of options for this user (except for class, which shows up above as a hidden) -->
+			<!-- List of options for this user (except for class and name, which were explicity positioned above already) -->
 			<!-- Show all the straight gear-stat related fields -->
 			<xsl:call-template name="player_option_list">
 				<xsl:with-param name="index" select="$index" />
 				<xsl:with-param name="name" select="'Gear'" />
-				<xsl:with-param name="which" select="//supported_classes/class[@class='all_classes']/option[not(@name='class') and @tag='gear'] | //supported_classes/class[@class=$class]/option[not(@name='class') and @tag='gear']" />
+				<xsl:with-param name="which" select="//supported_classes/class[@class='all_classes']/option[not(@name='class') and not(@name='name') and @tag='gear'] | //supported_classes/class[@class=$class]/option[not(@name='class') and not(@name='name') and @tag='gear']" />
 			</xsl:call-template>
 			
 			<!-- Show all the options dealing with tier gear effects -->
 			<xsl:call-template name="player_option_list">
 				<xsl:with-param name="index" select="$index" />
 				<xsl:with-param name="name" select="'Tier Gear Effects'" />
-				<xsl:with-param name="which" select="//supported_classes/class[@class='all_classes']/option[not(@name='class') and @tag='tiers'] | //supported_classes/class[@class=$class]/option[not(@name='class') and @tag='tiers']" />
+				<xsl:with-param name="which" select="//supported_classes/class[@class='all_classes']/option[not(@name='class') and not(@name='name') and @tag='tiers'] | //supported_classes/class[@class=$class]/option[not(@name='class') and not(@name='name') and @tag='tiers']" />
 			</xsl:call-template>
 
 			<!-- Show the glyph options -->
 			<xsl:call-template name="player_option_list">
 				<xsl:with-param name="index" select="$index" />
 				<xsl:with-param name="name" select="'Glyphs'" />
-				<xsl:with-param name="which" select="//supported_classes/class[@class='all_classes']/option[not(@name='class') and @tag='glyphs'] | //supported_classes/class[@class=$class]/option[not(@name='class') and @tag='glyphs']" />
+				<xsl:with-param name="which" select="//supported_classes/class[@class='all_classes']/option[not(@name='class') and not(@name='name') and @tag='glyphs'] | //supported_classes/class[@class=$class]/option[not(@name='class') and not(@name='name') and @tag='glyphs']" />
 			</xsl:call-template>
 
 			<!-- Show the Idol options -->
 			<xsl:call-template name="player_option_list">
 				<xsl:with-param name="index" select="$index" />
 				<xsl:with-param name="name" select="'Idols'" />
-				<xsl:with-param name="which" select="//supported_classes/class[@class='all_classes']/option[not(@name='class') and @tag='idols'] | //supported_classes/class[@class=$class]/option[not(@name='class') and @tag='idols']" />
+				<xsl:with-param name="which" select="//supported_classes/class[@class='all_classes']/option[not(@name='class') and not(@name='name') and @tag='idols'] | //supported_classes/class[@class=$class]/option[not(@name='class') and not(@name='name') and @tag='idols']" />
 			</xsl:call-template>
 
 			<!-- Show the Totem options -->
 			<xsl:call-template name="player_option_list">
 				<xsl:with-param name="index" select="$index" />
 				<xsl:with-param name="name" select="'Totems'" />
-				<xsl:with-param name="which" select="//supported_classes/class[@class='all_classes']/option[not(@name='class') and @tag='totems'] | //supported_classes/class[@class=$class]/option[not(@name='class') and @tag='totems']" />
+				<xsl:with-param name="which" select="//supported_classes/class[@class='all_classes']/option[not(@name='class') and not(@name='name') and @tag='totems'] | //supported_classes/class[@class=$class]/option[not(@name='class') and not(@name='name') and @tag='totems']" />
 			</xsl:call-template>
 
 			<!-- Show all the 'all-classes' and class specific fields that weren't shown above -->
 			<xsl:call-template name="player_option_list">
 				<xsl:with-param name="index" select="$index" />
 				<xsl:with-param name="name" select="'Other'" />
-				<xsl:with-param name="which" select="//supported_classes/class[@class='all_classes']/option[not(@name='class') and not(@tag='glyphs') and not(@tag='tiers') and not(@tag='gear') and not(@tag='idols') and not(@tag='totems')] | //supported_classes/class[@class=$class]/option[not(@name='class') and not(@tag='glyphs') and not(@tag='tiers') and not(@tag='gear') and not(@tag='idols') and not(@tag='totems')]" />
+				<xsl:with-param name="which" select="//supported_classes/class[@class='all_classes']/option[not(@name='class') and not(@name='name') and not(@tag='glyphs') and not(@tag='tiers') and not(@tag='gear') and not(@tag='idols') and not(@tag='totems')] | //supported_classes/class[@class=$class]/option[not(@name='class') and not(@name='name') and not(@tag='glyphs') and not(@tag='tiers') and not(@tag='gear') and not(@tag='idols') and not(@tag='totems')]" />
 			</xsl:call-template>
 			
 		</li>
@@ -313,6 +334,10 @@
 		<!-- Which option elements should be selected to build the list? -->
 		<xsl:param name="which" />
 		
+		<!-- 'this' raider, defined by the current context.  Used below in a loop, where the context would be different -->
+		<xsl:variable name="raider_element" select="." />
+		
+		
 		<!-- If the which variable actually finds any elements, show the fieldset -->
 		<xsl:if test="$which">
 			<fieldset class="option_section foldable folded">
@@ -323,17 +348,23 @@
 				<!-- For each of the options selected in the $which parameter, build a list-element for it -->
 				<xsl:for-each select="$which">
 					<xsl:sort select="@label" />
+					
 					<li>
 					
 						<!-- Mark checkbox list elements specially, for CSS hooking -->
 						<xsl:if test="@type='boolean'">
 							<xsl:attribute name="class">checkbox</xsl:attribute>
 						</xsl:if>
-										
+
+						<!-- Remember the name of this field name -->
+						<xsl:variable name="this_field_name" select="@name" />
+									
 						<!-- Call the template that handles options, with the appropriate parameters -->
 						<xsl:apply-templates select=".">
 							<xsl:with-param name="variable_name">raider</xsl:with-param>
 							<xsl:with-param name="array_index"><xsl:value-of select="$index" /></xsl:with-param>
+							<!-- This is crazy but it works - pass for the value the raider-element's attribute with a name equivalent to this field's name - wow -->
+							<xsl:with-param name="value"><xsl:value-of select="$raider_element/@*[name()=$this_field_name]" /></xsl:with-param> 
 						</xsl:apply-templates>
 					</li>
 				</xsl:for-each>
@@ -367,6 +398,9 @@
 		<!-- The label to show the user -->
 		<xsl:param name="field_label" select="@label" />
 	
+		<!-- Should the field label be shown? -->
+		<xsl:param name="show_label" select="'true'" />
+
 	
 		<!-- Generate the string to use for ID's -->
 		<xsl:variable name="id_string"><xsl:value-of select="$variable_name" />_<xsl:if test="not($array_index='')"><xsl:value-of select="$array_index"/>_</xsl:if><xsl:value-of select="$field_name" /></xsl:variable>
@@ -375,7 +409,7 @@
 		<xsl:variable name="name_string"><xsl:value-of select="$variable_name" /><xsl:if test="not($array_index='')">[<xsl:value-of select="$array_index"/>]</xsl:if>[<xsl:value-of select="$field_name" />]</xsl:variable>
 
 		<!-- Show the label for non-hidden fields -->
-		<xsl:if test="not($type='hidden')">
+		<xsl:if test="not($type='hidden') and $show_label='true'">
 			<label>
 				<xsl:attribute name="for"><xsl:value-of select="$id_string" /></xsl:attribute>
 				<xsl:value-of select="$field_label" />

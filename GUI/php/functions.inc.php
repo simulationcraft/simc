@@ -3,7 +3,7 @@
 
 /**
  * Generate the simcraft system command, from the given array of options
- * @param array$arr_options
+ * @param array $arr_options
  * @return string
  */
 function generate_simcraft_command( array $arr_options, $output_file=null )
@@ -11,8 +11,9 @@ function generate_simcraft_command( array $arr_options, $output_file=null )
 	// Start with the simcraft invocation
 	$simcraft_command = './simcraft';
 
-	// Add the options array
-	$simcraft_command .= recursive_build_option_string($arr_options);		
+	// Add the options from 'globals' and 'raider' sub-arrays
+	$simcraft_command .= recursive_build_option_string($arr_options['globals']);	
+	$simcraft_command .= recursive_build_option_string($arr_options['raider']);		
 	
 	// Add the output directives
 	if( !is_null($output_file) ) {
@@ -30,33 +31,36 @@ function generate_simcraft_command( array $arr_options, $output_file=null )
  * @param $array
  * @return string
  */
-function recursive_build_option_string( array $array )
+function recursive_build_option_string( array $array=null )
 {
 	// Init this array's string
 	$str_return = '';
 	
 	// Loop over the elements of this array
-	foreach($array as $index => $element) {
-
-		// If the element is an array, recurse for deeper options 
-		if( is_array($element) ) {
-			$str_return .= recursive_build_option_string($element);
-		}
-		
-		// Else, just append this element
-		else {
-			// If the element name is class, this is a special attribute that we inserted manually, handle it separately
-			if( $index === 'class' ) {
-				$str_return .= ' ' . $element . "='" . $array['name']."'";
+	if( is_array($array) ) {
+		foreach($array as $index => $element) {
+	
+			// If the element is an array, recurse for deeper options 
+			if( is_array($element) ) {
+				$str_return .= recursive_build_option_string($element);
 			}
 			
-			// Since class and name are handled together, if this element is name, skip it
-			else if( $index === 'name' ) {
-			}
-			
-			// Otherwise, if the element isn't empty, append it to the string
-			else if( $element !== '' ) {
-				$str_return .= ' ' . $index . "='" . $element . "'";
+			// Else, just append this element
+			else {
+				
+				// If the element name is class, this is a special attribute that we inserted manually, handle it separately
+				if( $index === 'class' ) {
+					$str_return .= ' ' . $element . "='" . $array['name']."'";
+				}
+				
+				// Since class and name are handled together, if this element is name, skip it
+				else if( $index === 'name' ) {
+				}
+				
+				// Otherwise, if the element isn't empty, append it to the string
+				else if( $element !== '' ) {
+					$str_return .= ' ' . $index . "='" . $element . "'";
+				}
 			}
 		}
 	}
@@ -69,10 +73,15 @@ function recursive_build_option_string( array $array )
 
 /**
  * Append the configuration form contents to the XML element
- * @param $xml
- * @return unknown_type
+ * 
+ * optionally, an array of options can be passed (Which should just be $_POST, the form submission array)
+ * 
+ * This function is capable of caching the configuration fields
+ * @param SimpleXMLElement $xml
+ * @param array $arr_options
+ * @return null
  */
-function append_simulation_config_form(SimpleXMLElement $xml)
+function append_simulation_config_form(SimpleXMLElement $xml, array $arr_options=null)
 {
 	// If we're not allowed to use the cached config options, or if they don't exist
 	$str_options_xml = read_cache_value('config_options_xml');
@@ -88,8 +97,42 @@ function append_simulation_config_form(SimpleXMLElement $xml)
 	// Append the config options to the passed xml target
 	simplexml_append($xml, new SimpleXMLElement($str_options_xml));
 	
-	// Set default values
-	set_default_values($xml);
+	// If any values were submitted, set the values from that array
+	if(!empty($arr_options)) {
+		set_values_from_array($xml, $arr_options);
+	}
+	
+	// else just use the default values
+	else {
+		set_default_values($xml);
+	}
+}
+
+/**
+ * Given an array of values from the form, set the values in the passed form
+ * @param SimpleXMLElement $xml
+ * @param $array
+ * @return null
+ */
+function set_values_from_array( SimpleXMLElement $xml, array $arr_options )
+{
+	// Reach in and get the global-options tag (or create it if it isn't present)
+	$global_options = $xml->options->global_options ? $xml->options->global_options : $xml->options->addChild('global_options');
+
+	// Append each of the globals values that was present in the array
+	if( is_array($arr_options['globals']) ) {
+		foreach($arr_options['globals'] as $index => $value ) {
+			$target = $global_options->xpath("option[@name='$index']");
+			$target[0]['value'] = $value;
+		}
+	}
+	
+	// For each of the raiders, add a new raider with those attributes
+	if( is_array($arr_options['raider']) ) {
+		foreach($arr_options['raider'] as $arr_values ) {
+			add_raider_to_XML($xml, $arr_values);
+		}
+	}
 }
 
 /**
@@ -160,6 +203,36 @@ function add_raider_to_XML(SimpleXMLElement $xml, array $arr_option_values )
 	foreach($arr_option_values as $option_name => $option_value) {
 		$new_raider->addAttribute($option_name, $option_value);
 	}
+	
+	// Ensure that the name of this raider is distinct from any of the existing members
+	while( count($xml_raid_content->xpath("player[@name='{$new_raider['name']}']")) > 1 ) {
+		$new_raider['name'] = $new_raider['name'].'A';
+	}
+}
+
+/**
+ * Add a raider definition to the xml, from the web
+ * 
+ * This involves fetching the character from the armory, and then fetching any additional information
+ * from various sources
+ * 
+ * FIXME: Currently, this function only pulls the output of fetch_character_from_armory().  This is incomplete
+ * since the armory doesn't contain all the necessary data for a simulation member
+ * @param $xml
+ * @param $character_name
+ * @param $server_name
+ * @return unknown_type
+ */
+function add_raider_from_web( SimpleXMLElement $xml, $character_name, $server_name)
+{
+	// Fetch the given character from the armory
+	$arr_character = fetch_character_from_armory($character_name, $server_name);
+	if( $arr_character === false ) {
+		return false;
+	}
+	
+	// Add the raider to the xml, with the given values
+	add_raider_to_XML($xml, $arr_character);
 } 
 
 // === SUPPORT FUNCTIONS ===
@@ -196,13 +269,13 @@ function get_valid_path( $path )
  * @param $str_xpath
  * @return unknown_type
  */
-function fetch_single_XML_xpath($xml, $str_xpath)
+function fetch_single_XML_xpath( SimpleXMLElement $xml, $str_xpath )
 {
 	// Attempt to match the element
 	$match = $xml->xpath($str_xpath);
-	
+
 	// One and only one match must be made
-	if( count($match) == 0) {
+	if( !is_array($match) || count($match) == 0) {
 		throw new Exception("No Elements were found that match the xpath search");
 	}
 	else if( count($match) > 1) {
@@ -217,11 +290,27 @@ function fetch_single_XML_xpath($xml, $str_xpath)
  * Another simple helper function.  This one sets a single property on the fetched element
  * @return unknown_type
  */
-function set_single_xml_xpath_property($xml, $str_xpath, $attribute_name, $attribute_value)
+function set_single_xml_xpath_property( SimpleXMLElement $xml, $str_xpath, $attribute_name, $attribute_value )
 {
 	$target = fetch_single_XML_xpath($xml, $str_xpath);
 	$target[$attribute_name] = $attribute_value;
-}  
+}
+
+/**
+ * Thanks to l dot j dot peters at student dot utwente dot nl 
+ * from http://us.php.net/manual/en/function.simplexml-element-addChild.php
+ * 
+ * Append one element to another.
+ * @param $parent
+ * @param $new_child
+ * @return unknown_type
+ */
+function simplexml_append(SimpleXMLElement $parent, SimpleXMLElement $new_child){
+    $node1 = dom_import_simplexml($parent);
+    $dom_sxe = dom_import_simplexml($new_child);
+    $node2 = $node1->ownerDocument->importNode($dom_sxe, true);
+    $node1->appendChild($node2);
+} 
 
 // === DATA CACHING ===
 

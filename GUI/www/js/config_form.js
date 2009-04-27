@@ -9,7 +9,21 @@ var last_insert_number = 1;
  */
 $( function() {
 	
-	/*  Clicking a member of the new-member list should insert a new raider of that class */
+	// Set the last insert number to start after the existing raider records
+	last_insert_number = $('ul#raid_members li.raider').size();
+	
+	// Form submit buttons should all remove the form target, except simulate
+	$("form#config_form input[type='submit']").click( function() {
+		$("form#config_form").removeAttr('target');
+		return true;
+	});
+	$("form#config_form input#simulate").click( function() {
+		$("form#config_form").attr('target', '_blank');
+		return true;
+	});
+	
+	
+	// Clicking a member of the new-member list should insert a new raider of that class.  Set the event handler.
 	$('ul#new_member_by_class li.supported_class').click( function() {
 		
 		// Build an array of the css classes this element has
@@ -19,7 +33,7 @@ $( function() {
 		for (var i=0; i<classes.length; i++) {
 						
 			// If this class name corresponds to one of the indices in arr_prototype_class, then insert this element
-			if( $('div#prototype_character_classes div#hidden_div_'+classes[i]).size() ) {
+			if( $('div#prototype_character_classes div#hidden_div_'+classes[i]+' ul').size() ) {
 				
 				// Add a new raider of the given class
 				add_new_raider(classes[i]);
@@ -43,7 +57,7 @@ $( function() {
 function add_new_raider(class_name, arr_values)
 {
 	// Create the string of html for the new element
-	var str_new_member = $('div#hidden_div_'+class_name).html(); 
+	var str_new_member = $('div#hidden_div_'+class_name+' ul').html(); 
 	if( !str_new_member ) {
 		alert('error adding new member.');
 	}
@@ -81,7 +95,7 @@ function add_new_raider(class_name, arr_values)
 function reset_list_elements()
 {
 	// Apply some rounded corner fluff
-	$('ul#raid_members li.raider div.member_class').corner('br 20px');
+	$('ul#raid_members li.raider div.member_class').corner('br 10px');
 	
 	
 	// Reset the event handlers for the close buttons
@@ -116,6 +130,9 @@ function reset_list_elements()
 				$("input[type='checkbox']."+this.className, $('ul#raid_members li.raider:last')).attr('checked', true);
 			}
 		});
+		
+		// append to the name the last_insert_number, to make sure the characters are kept distinct
+		$("input.field_name", $('ul#raid_members li.raider:last')).val($("input.field_name", $('ul#raid_members li.raider:last')).val()+'_'+last_insert_number);
 	});
 	
 }
