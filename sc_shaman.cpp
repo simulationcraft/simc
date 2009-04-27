@@ -699,7 +699,7 @@ static void trigger_ashtongue_talisman( spell_t* s )
 {
   shaman_t* p = s -> player -> cast_shaman();
 
-  if( p -> gear.ashtongue_talisman && s -> sim -> roll( 0.15 ) )
+  if( p -> unique_gear -> ashtongue_talisman && s -> sim -> roll( 0.15 ) )
   {
     p -> resource_gain( RESOURCE_MANA, 110.0, p -> gains.ashtongue_talisman );
   }
@@ -3159,9 +3159,9 @@ void shaman_t::init_base()
   {
     // Simply assume the totems are out all the time.
 
-    gear.spell_power_enchant[ SCHOOL_MAX ] += 45;
-    gear.crit_rating_enchant               += 35;
-    gear.mp5_enchant                       += 15;
+    enchant -> stats.spell_power += 45;
+    enchant -> stats.crit_rating += 35;
+    enchant -> stats.mp5         += 15;
   }
 }
 
@@ -3173,29 +3173,29 @@ void shaman_t::init_unique_gear()
 
   if( talents.dual_wield )
   {
-    if( gear.tier4_2pc ) tiers.t4_2pc_enhancement = 1;
-    if( gear.tier4_4pc ) tiers.t4_4pc_enhancement = 1;
-    if( gear.tier5_2pc ) tiers.t5_2pc_enhancement = 1;
-    if( gear.tier5_4pc ) tiers.t5_4pc_enhancement = 1;
-    if( gear.tier6_2pc ) tiers.t6_2pc_enhancement = 1;
-    if( gear.tier6_4pc ) tiers.t6_4pc_enhancement = 1;
-    if( gear.tier7_2pc ) tiers.t7_2pc_enhancement = 1;
-    if( gear.tier7_4pc ) tiers.t7_4pc_enhancement = 1;
-    if( gear.tier8_2pc ) tiers.t8_2pc_enhancement = 1;
-    if( gear.tier8_4pc ) tiers.t8_4pc_enhancement = 1;
+    if( unique_gear -> tier4_2pc ) tiers.t4_2pc_enhancement = 1;
+    if( unique_gear -> tier4_4pc ) tiers.t4_4pc_enhancement = 1;
+    if( unique_gear -> tier5_2pc ) tiers.t5_2pc_enhancement = 1;
+    if( unique_gear -> tier5_4pc ) tiers.t5_4pc_enhancement = 1;
+    if( unique_gear -> tier6_2pc ) tiers.t6_2pc_enhancement = 1;
+    if( unique_gear -> tier6_4pc ) tiers.t6_4pc_enhancement = 1;
+    if( unique_gear -> tier7_2pc ) tiers.t7_2pc_enhancement = 1;
+    if( unique_gear -> tier7_4pc ) tiers.t7_4pc_enhancement = 1;
+    if( unique_gear -> tier8_2pc ) tiers.t8_2pc_enhancement = 1;
+    if( unique_gear -> tier8_4pc ) tiers.t8_4pc_enhancement = 1;
   }
   else
   {
-    if( gear.tier4_2pc ) tiers.t4_2pc_elemental = 1;
-    if( gear.tier4_4pc ) tiers.t4_4pc_elemental = 1;
-    if( gear.tier5_2pc ) tiers.t5_2pc_elemental = 1;
-    if( gear.tier5_4pc ) tiers.t5_4pc_elemental = 1;
-    if( gear.tier6_2pc ) tiers.t6_2pc_elemental = 1;
-    if( gear.tier6_4pc ) tiers.t6_4pc_elemental = 1;
-    if( gear.tier7_2pc ) tiers.t7_2pc_elemental = 1;
-    if( gear.tier7_4pc ) tiers.t7_4pc_elemental = 1;
-    if( gear.tier8_2pc ) tiers.t8_2pc_elemental = 1;
-    if( gear.tier8_4pc ) tiers.t8_4pc_elemental = 1;
+    if( unique_gear -> tier4_2pc ) tiers.t4_2pc_elemental = 1;
+    if( unique_gear -> tier4_4pc ) tiers.t4_4pc_elemental = 1;
+    if( unique_gear -> tier5_2pc ) tiers.t5_2pc_elemental = 1;
+    if( unique_gear -> tier5_4pc ) tiers.t5_4pc_elemental = 1;
+    if( unique_gear -> tier6_2pc ) tiers.t6_2pc_elemental = 1;
+    if( unique_gear -> tier6_4pc ) tiers.t6_4pc_elemental = 1;
+    if( unique_gear -> tier7_2pc ) tiers.t7_2pc_elemental = 1;
+    if( unique_gear -> tier7_4pc ) tiers.t7_4pc_elemental = 1;
+    if( unique_gear -> tier8_2pc ) tiers.t8_2pc_elemental = 1;
+    if( unique_gear -> tier8_4pc ) tiers.t8_4pc_elemental = 1;
   }
 }
 

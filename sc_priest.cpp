@@ -233,7 +233,7 @@ struct shadow_fiend_pet_t : public pet_t
     base_attack_power = -20;
     initial_attack_power_per_strength = 2.0;
 
-    if( owner -> gear.tier4_2pc ) attribute_base[ ATTR_STAMINA ] += 75;
+    if( owner -> unique_gear -> tier4_2pc ) attribute_base[ ATTR_STAMINA ] += 75;
 
     melee = new melee_t( this );
   }
@@ -333,7 +333,7 @@ static void push_tier5_2pc( spell_t*s )
 
   assert( p -> buffs.tier5_2pc == 0 );
 
-  if( p -> gear.tier5_2pc && s -> sim -> roll( 0.06 ) )
+  if( p -> unique_gear -> tier5_2pc && s -> sim -> roll( 0.06 ) )
   {
     p -> buffs.tier5_2pc = 1;
     p -> buffs.mana_cost_reduction += 150;
@@ -361,7 +361,7 @@ static void push_tier5_4pc( spell_t*s )
 {
   priest_t* p = s -> player -> cast_priest();
 
-  if(   p ->  gear.tier5_4pc && 
+  if(   p ->  unique_gear -> tier5_4pc && 
       ! p -> buffs.tier5_4pc &&
         s -> sim -> roll( 0.40 ) )
   {
@@ -407,7 +407,7 @@ static void trigger_ashtongue_talisman( spell_t* s )
 
   player_t* p = s -> player;
 
-  if( p -> gear.ashtongue_talisman && s -> sim -> roll( 0.10 ) )
+  if( p -> unique_gear -> ashtongue_talisman && s -> sim -> roll( 0.10 ) )
   {
     p -> procs.ashtongue_talisman -> occur();
 
@@ -563,7 +563,7 @@ static void trigger_devious_mind( spell_t* s )
 
   priest_t* p = s -> player -> cast_priest();
 
-  if( p -> gear.tier8_4pc )
+  if( p -> unique_gear -> tier8_4pc )
   {
     if ( p -> devious_mind_delay < 0.01 )
     {
@@ -745,7 +745,7 @@ struct smite_t : public priest_spell_t
     base_multiplier   *= 1.0 + p -> talents.searing_light * 0.05;
     base_crit         += p -> talents.holy_specialization * 0.01;
     
-    if( p -> gear.tier4_4pc ) base_multiplier *= 1.05;
+    if( p -> unique_gear -> tier4_4pc ) base_multiplier *= 1.05;
   }
 
   virtual void execute()
@@ -895,7 +895,7 @@ struct shadow_word_pain_t : public priest_spell_t
     base_hit  += p -> talents.shadow_focus * 0.01;
     base_crit += p -> talents.mind_melt * 0.03;
 
-    if( p -> gear.tier6_2pc ) num_ticks++;
+    if( p -> unique_gear -> tier6_2pc ) num_ticks++;
 
     observer = &( p -> active_shadow_word_pain );
   }
@@ -1070,7 +1070,7 @@ struct devouring_plague_t : public priest_spell_t
     base_multiplier  *= 1.0 + ( p -> talents.darkness                  * 0.02 + 
                                 p -> talents.twin_disciplines          * 0.01 +
                                 p -> talents.improved_devouring_plague * 0.05 +
-                                p -> gear.tier8_2pc                    * 0.15 ); // FIX ME! Is tier8_2pc additive or multiplicative?
+                                p -> unique_gear -> tier8_2pc                    * 0.15 ); // FIX ME! Is tier8_2pc additive or multiplicative?
     base_hit         += p -> talents.shadow_focus * 0.01;
 
     if ( p -> talents.improved_devouring_plague )
@@ -1224,7 +1224,7 @@ struct mind_blast_t : public priest_spell_t
       
     base_cost        *= 1.0 - ( p -> talents.focused_mind * 0.05 +
                                 p -> talents.shadow_focus * 0.02 +
-                                p -> gear.tier7_2pc ? 0.1 : 0.0  );
+                                p -> unique_gear -> tier7_2pc ? 0.1 : 0.0  );
     base_cost         = floor(base_cost);
     base_multiplier  *= 1.0 + p -> talents.darkness * 0.02;
     base_hit         += p -> talents.shadow_focus * 0.01;
@@ -1234,7 +1234,7 @@ struct mind_blast_t : public priest_spell_t
     
     base_crit_bonus_multiplier *= 1.0 + p -> talents.shadow_power * 0.20;
 
-    if( p -> gear.tier6_4pc ) base_multiplier *= 1.10;   
+    if( p -> unique_gear -> tier6_4pc ) base_multiplier *= 1.10;   
   }
 
   virtual void execute()
@@ -1308,7 +1308,7 @@ struct shadow_word_death_t : public priest_spell_t
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.shadow_power * 0.20;
 
-    if ( p -> gear.tier7_4pc ) base_crit += 0.1;
+    if ( p -> unique_gear -> tier7_4pc ) base_crit += 0.1;
   }
 
   virtual void execute() 
@@ -1399,7 +1399,7 @@ struct mind_flay_tick_t : public priest_spell_t
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.shadow_power * 0.20;
     
-    if( p -> gear.tier4_4pc ) base_multiplier *= 1.05;
+    if( p -> unique_gear -> tier4_4pc ) base_multiplier *= 1.05;
   }
 
   virtual void execute()
@@ -1513,13 +1513,13 @@ struct mind_flay_t : public priest_spell_t
 
     if( devious_mind_wait )
     {
-      if ( p -> gear.tier8_4pc && p -> _buffs.devious_mind == DEVIOUS_MIND_STATE_WAITING )
+      if ( p -> unique_gear -> tier8_4pc && p -> _buffs.devious_mind == DEVIOUS_MIND_STATE_WAITING )
         return false;
     }
 
     if( devious_mind_priority )
     {
-      if ( p -> gear.tier8_4pc && p -> _buffs.devious_mind != DEVIOUS_MIND_STATE_ACTIVE )
+      if ( p -> unique_gear -> tier8_4pc && p -> _buffs.devious_mind != DEVIOUS_MIND_STATE_ACTIVE )
         return false;
     }
 
@@ -1818,7 +1818,7 @@ struct shadow_fiend_spell_t : public priest_spell_t
     shadow_fiend_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
     {
       double duration = 15.1;
-      if( p -> gear.tier4_2pc ) duration += 3.0;
+      if( p -> unique_gear -> tier4_2pc ) duration += 3.0;
       sim -> add_event( this, duration );
     }
     virtual void execute()

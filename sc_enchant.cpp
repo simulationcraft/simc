@@ -300,6 +300,28 @@ bool enchant_t::parse_option( player_t*          p,
 {
   option_t options[] =
   {
+    // Stat Enchants
+    { "enchant_strength",          OPT_INT,  &( p -> enchant -> stats.attribute[ ATTR_STRENGTH  ] ) },
+    { "enchant_agility",           OPT_INT,  &( p -> enchant -> stats.attribute[ ATTR_AGILITY   ] ) },
+    { "enchant_stamina",           OPT_INT,  &( p -> enchant -> stats.attribute[ ATTR_STAMINA   ] ) },
+    { "enchant_intellect",         OPT_INT,  &( p -> enchant -> stats.attribute[ ATTR_INTELLECT ] ) },
+    { "enchant_spirit",            OPT_INT,  &( p -> enchant -> stats.attribute[ ATTR_SPIRIT    ] ) },
+    { "enchant_spell_power",       OPT_INT,  &( p -> enchant -> stats.spell_power                 ) },
+    { "enchant_mp5",               OPT_INT,  &( p -> enchant -> stats.mp5                         ) },
+    { "enchant_attack_power",      OPT_INT,  &( p -> enchant -> stats.attack_power                ) },
+    { "enchant_expertise_rating",  OPT_INT,  &( p -> enchant -> stats.expertise_rating            ) },
+    { "enchant_armor_penetration", OPT_INT,  &( p -> enchant -> stats.armor_penetration_rating    ) },
+    { "enchant_armor",             OPT_INT,  &( p -> enchant -> stats.armor                       ) },
+    { "enchant_haste_rating",      OPT_INT,  &( p -> enchant -> stats.haste_rating                ) },
+    { "enchant_hit_rating",        OPT_INT,  &( p -> enchant -> stats.hit_rating                  ) },
+    { "enchant_crit_rating",       OPT_INT,  &( p -> enchant -> stats.crit_rating                 ) },
+    { "enchant_health",            OPT_INT,  &( p -> enchant -> stats.resource[ RESOURCE_HEALTH ] ) },
+    { "enchant_mana",              OPT_INT,  &( p -> enchant -> stats.resource[ RESOURCE_MANA   ] ) },
+    { "enchant_rage",              OPT_INT,  &( p -> enchant -> stats.resource[ RESOURCE_RAGE   ] ) },
+    { "enchant_energy",            OPT_INT,  &( p -> enchant -> stats.resource[ RESOURCE_ENERGY ] ) },
+    { "enchant_focus",             OPT_INT,  &( p -> enchant -> stats.resource[ RESOURCE_FOCUS  ] ) },
+    { "enchant_runic",             OPT_INT,  &( p -> enchant -> stats.resource[ RESOURCE_RUNIC  ] ) },
+    // Unique Enchants
     { "spellsurge", OPT_INT, &( p -> enchant -> spellsurge ) },
     { NULL, OPT_UNKNOWN }
   };

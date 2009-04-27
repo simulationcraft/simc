@@ -852,7 +852,7 @@ static void trigger_ashtongue_talisman( spell_t* s )
 
   player_t* p = s -> player;
 
-  if( p -> gear.ashtongue_talisman && s -> sim -> roll( 0.25 ) )
+  if( p -> unique_gear -> ashtongue_talisman && s -> sim -> roll( 0.25 ) )
   {
     p -> procs.ashtongue_talisman -> occur();
 
@@ -3198,29 +3198,29 @@ void druid_t::init_unique_gear()
 
   if( talents.moonkin_form )
   {
-    if( gear.tier4_2pc ) tiers.t4_2pc_balance = 1;
-    if( gear.tier4_4pc ) tiers.t4_4pc_balance = 1;
-    if( gear.tier5_2pc ) tiers.t5_2pc_balance = 1;
-    if( gear.tier5_4pc ) tiers.t5_4pc_balance = 1;
-    if( gear.tier6_2pc ) tiers.t6_2pc_balance = 1;
-    if( gear.tier6_4pc ) tiers.t6_4pc_balance = 1;
-    if( gear.tier7_2pc ) tiers.t7_2pc_balance = 1;
-    if( gear.tier7_4pc ) tiers.t7_4pc_balance = 1;
-    if( gear.tier8_2pc ) tiers.t8_2pc_balance = 1;
-    if( gear.tier8_4pc ) tiers.t8_4pc_balance = 1;
+    if( unique_gear -> tier4_2pc ) tiers.t4_2pc_balance = 1;
+    if( unique_gear -> tier4_4pc ) tiers.t4_4pc_balance = 1;
+    if( unique_gear -> tier5_2pc ) tiers.t5_2pc_balance = 1;
+    if( unique_gear -> tier5_4pc ) tiers.t5_4pc_balance = 1;
+    if( unique_gear -> tier6_2pc ) tiers.t6_2pc_balance = 1;
+    if( unique_gear -> tier6_4pc ) tiers.t6_4pc_balance = 1;
+    if( unique_gear -> tier7_2pc ) tiers.t7_2pc_balance = 1;
+    if( unique_gear -> tier7_4pc ) tiers.t7_4pc_balance = 1;
+    if( unique_gear -> tier8_2pc ) tiers.t8_2pc_balance = 1;
+    if( unique_gear -> tier8_4pc ) tiers.t8_4pc_balance = 1;
   }
   else
   {
-    if( gear.tier4_2pc ) tiers.t4_2pc_feral = 1;
-    if( gear.tier4_4pc ) tiers.t4_4pc_feral = 1;
-    if( gear.tier5_2pc ) tiers.t5_2pc_feral = 1;
-    if( gear.tier5_4pc ) tiers.t5_4pc_feral = 1;
-    if( gear.tier6_2pc ) tiers.t6_2pc_feral = 1;
-    if( gear.tier6_4pc ) tiers.t6_4pc_feral = 1;
-    if( gear.tier7_2pc ) tiers.t7_2pc_feral = 1;
-    if( gear.tier7_4pc ) tiers.t7_4pc_feral = 1;
-    if( gear.tier8_2pc ) tiers.t8_2pc_feral = 1;
-    if( gear.tier8_4pc ) tiers.t8_4pc_feral = 1;
+    if( unique_gear -> tier4_2pc ) tiers.t4_2pc_feral = 1;
+    if( unique_gear -> tier4_4pc ) tiers.t4_4pc_feral = 1;
+    if( unique_gear -> tier5_2pc ) tiers.t5_2pc_feral = 1;
+    if( unique_gear -> tier5_4pc ) tiers.t5_4pc_feral = 1;
+    if( unique_gear -> tier6_2pc ) tiers.t6_2pc_feral = 1;
+    if( unique_gear -> tier6_4pc ) tiers.t6_4pc_feral = 1;
+    if( unique_gear -> tier7_2pc ) tiers.t7_2pc_feral = 1;
+    if( unique_gear -> tier7_4pc ) tiers.t7_4pc_feral = 1;
+    if( unique_gear -> tier8_2pc ) tiers.t8_2pc_feral = 1;
+    if( unique_gear -> tier8_4pc ) tiers.t8_4pc_feral = 1;
 
     equipped_weapon_dps = main_hand_weapon.damage / main_hand_weapon.swing_time;
   }

@@ -537,7 +537,7 @@ static void trigger_tier5_4pc( spell_t* s )
 
   mage_t* p = s -> player -> cast_mage();
 
-  if( p -> gear.tier5_4pc )
+  if( p -> unique_gear -> tier5_4pc )
   {
     p -> procs.tier5_4pc -> occur();
 
@@ -560,7 +560,7 @@ static void trigger_tier8_2pc( spell_t* s )
 {
   mage_t* p = s -> player -> cast_mage();
   
-  if( p -> gear.tier8_2pc == 0 )
+  if( p -> unique_gear -> tier8_2pc == 0 )
     return;
   // http://ptr.wowhead.com/?spell=64867
   if( ! s -> sim -> roll( 0.25 ) )
@@ -609,7 +609,7 @@ static bool trigger_tier8_4pc( spell_t* s )
 {
   mage_t* p = s -> player -> cast_mage();
 
-  if( ! p -> gear.tier8_4pc == 1 )
+  if( ! p -> unique_gear -> tier8_4pc == 1 )
     return false;
 
   if( ! s -> sim -> roll( 0.10 ) )
@@ -1152,7 +1152,7 @@ static void trigger_ashtongue_talisman( spell_t* s )
 
   player_t* p = s -> player;
 
-  if( p -> gear.ashtongue_talisman && s -> sim -> roll( 0.50 ) )
+  if( p -> unique_gear -> ashtongue_talisman && s -> sim -> roll( 0.50 ) )
   {
     p -> procs.ashtongue_talisman -> occur();
 
@@ -1407,7 +1407,7 @@ struct arcane_barrage_t : public mage_spell_t
 
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) + 
                                           ( p -> talents.burnout     * 0.10 ) +
-                                          ( p -> gear.tier7_4pc ? 0.05 : 0.00 ) );
+                                          ( p -> unique_gear -> tier7_4pc ? 0.05 : 0.00 ) );
   }
 
   virtual void player_buff()
@@ -1480,9 +1480,9 @@ struct arcane_blast_t : public mage_spell_t
 
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25   ) + 
                                           ( p -> talents.burnout     * 0.10   ) +
-                                          ( p -> gear.tier7_4pc ? 0.05 : 0.00 ) );
+                                          ( p -> unique_gear -> tier7_4pc ? 0.05 : 0.00 ) );
 
-    if( p -> gear.tier5_2pc ) base_multiplier *= 1.05;
+    if( p -> unique_gear -> tier5_2pc ) base_multiplier *= 1.05;
   }
 
   virtual double cost()
@@ -1492,7 +1492,7 @@ struct arcane_blast_t : public mage_spell_t
     if( c != 0 )
     {
       if( p -> _buffs.arcane_blast ) c += base_cost * p -> _buffs.arcane_blast * 2.00;
-      if( p -> gear.tier5_2pc      ) c += base_cost * 0.05;
+      if( p -> unique_gear -> tier5_2pc      ) c += base_cost * 0.05;
     }
     return c;
   }
@@ -1610,9 +1610,9 @@ struct arcane_missiles_tick_t : public mage_spell_t
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) + 
 					  ( p -> talents.burnout     * 0.10 ) +
 					  ( p -> glyphs.arcane_missiles ? 0.25 : 0.00 ) +
-					  ( p -> gear.tier7_4pc         ? 0.05 : 0.00 ) );
+					  ( p -> unique_gear -> tier7_4pc         ? 0.05 : 0.00 ) );
     
-    if( p -> gear.tier6_4pc ) base_multiplier *= 1.05;
+    if( p -> unique_gear -> tier6_4pc ) base_multiplier *= 1.05;
   }
   
   virtual void player_buff()
@@ -1901,7 +1901,7 @@ struct evocation_t : public mage_spell_t
     cooldown      -= p -> talents.arcane_flows * 60.0;
     harmful        = false;
 
-    if( p -> gear.tier6_2pc ) num_ticks++;
+    if( p -> unique_gear -> tier6_2pc ) num_ticks++;
   }
    
   virtual void tick()
@@ -1934,7 +1934,7 @@ struct presence_of_mind_t : public mage_spell_t
     assert( p -> talents.presence_of_mind );
 
     cooldown = 120.0;
-    if( p -> gear.tier4_4pc ) cooldown -= 24.0;
+    if( p -> unique_gear -> tier4_4pc ) cooldown -= 24.0;
     cooldown *= 1.0 - p -> talents.arcane_flows * 0.15;
 
     if( options_str.empty() )
@@ -2023,11 +2023,11 @@ struct fire_ball_t : public mage_spell_t
 
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) +
                                           ( p -> talents.burnout     * 0.10 ) + 
-                                          ( p -> gear.tier7_4pc ? 0.05 : 0.00 ) );
+                                          ( p -> unique_gear -> tier7_4pc ? 0.05 : 0.00 ) );
 
     if( ! sim -> P309 ) base_crit += p -> talents.improved_scorch * 0.01;
 
-    if( p -> gear.tier6_4pc   ) base_multiplier *= 1.05;
+    if( p -> unique_gear -> tier6_4pc   ) base_multiplier *= 1.05;
     if( p -> glyphs.fire_ball ) base_crit += 0.05;
   }
 
@@ -2127,7 +2127,7 @@ struct fire_blast_t : public mage_spell_t
 
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) +
                                           ( p -> talents.burnout     * 0.10 ) +
-                                          ( p -> gear.tier7_4pc ? 0.05 : 0.00 ) );
+                                          ( p -> unique_gear -> tier7_4pc ? 0.05 : 0.00 ) );
   }
   virtual void execute()
   {
@@ -2181,7 +2181,7 @@ struct living_bomb_t : public mage_spell_t
 
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) +
                                           ( p -> talents.burnout     * 0.10 ) + 
-                                          ( p -> gear.tier7_4pc ? 0.05 : 0.00 ) );
+                                          ( p -> unique_gear -> tier7_4pc ? 0.05 : 0.00 ) );
   }
 
   // Odd thing to handle: The direct-damage comes at the last tick instead of the beginning of the spell.
@@ -2265,7 +2265,7 @@ struct pyroblast_t : public mage_spell_t
 
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) +
                                           ( p -> talents.burnout     * 0.10 ) + 
-                                          ( p -> gear.tier7_4pc ? 0.05 : 0.00 ) );
+                                          ( p -> unique_gear -> tier7_4pc ? 0.05 : 0.00 ) );
   }
 
   virtual void execute()
@@ -2349,7 +2349,7 @@ struct scorch_t : public mage_spell_t
 
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) +
                                           ( p -> talents.burnout     * 0.10 ) +
-                                          ( p -> gear.tier7_4pc ? 0.05 : 0.00 ) );
+                                          ( p -> unique_gear -> tier7_4pc ? 0.05 : 0.00 ) );
 
     if( ! sim -> P309 ) base_crit += p -> talents.improved_scorch * 0.01;
 
@@ -2455,11 +2455,11 @@ struct frost_bolt_t : public mage_spell_t
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.ice_shards  * 1.0/3 ) +
                                           ( p -> talents.spell_power * 0.25  ) + 
                                           ( p -> talents.burnout     * 0.10  ) +
-                                          ( p -> gear.tier7_4pc ? 0.05 : 0.00 ) );
+                                          ( p -> unique_gear -> tier7_4pc ? 0.05 : 0.00 ) );
 
     if( ! sim -> P309 ) base_crit += p -> talents.winters_chill * 0.01;
 
-    if( p -> gear.tier6_4pc    ) base_multiplier *= 1.05;
+    if( p -> unique_gear -> tier6_4pc    ) base_multiplier *= 1.05;
     if( p -> glyphs.frost_bolt ) base_multiplier *= 1.05;
   }
 
@@ -2528,7 +2528,7 @@ struct ice_lance_t : public mage_spell_t
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.ice_shards  * 1.0/3 ) +
                                           ( p -> talents.spell_power * 0.25  ) +
                                           ( p -> talents.burnout     * 0.10  ) +
-                                          ( p -> gear.tier7_4pc ? 0.05 : 0.00 ) );
+                                          ( p -> unique_gear -> tier7_4pc ? 0.05 : 0.00 ) );
   }
 
   virtual void player_buff()
@@ -2636,7 +2636,7 @@ struct frostfire_bolt_t : public mage_spell_t
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.ice_shards  * 1.0/3 ) +
                                           ( p -> talents.spell_power * 0.25  ) +
                                           ( p -> talents.burnout     * 0.10  ) +
-                                          ( p -> gear.tier7_4pc ? 0.05 : 0.00 ) );
+                                          ( p -> unique_gear -> tier7_4pc ? 0.05 : 0.00 ) );
 
     if( ! sim -> P309 ) base_crit += p -> talents.improved_scorch * 0.01;
 
@@ -2933,7 +2933,7 @@ struct mana_gem_t : public action_t
       max *= 1.40;
       trigger *= 1.40;
     }
-    if( p -> gear.tier7_2pc ) 
+    if( p -> unique_gear -> tier7_2pc ) 
     {
       min *= 1.40;
       max *= 1.40;
@@ -2954,7 +2954,7 @@ struct mana_gem_t : public action_t
 
     double gain = sim -> rng -> range( min, max );
 
-    if( p -> gear.tier7_2pc ) 
+    if( p -> unique_gear -> tier7_2pc ) 
     {
       struct expiration_t : public event_t
       {
@@ -3033,7 +3033,7 @@ struct choose_rotation_t : public action_t
     regen_rate += p -> resource_max[ RESOURCE_MANA ] * 0.60 / ( 240.0 - p -> talents.arcane_flows * 60.0 );
 
     // Mana Gem
-    regen_rate += 3400 * ( 1.0 + p -> glyphs.mana_gem * 0.40 ) * ( 1.0 + p -> gear.tier7_2pc * 0.40 ) / 120.0;
+    regen_rate += 3400 * ( 1.0 + p -> glyphs.mana_gem * 0.40 ) * ( 1.0 + p -> unique_gear -> tier7_2pc * 0.40 ) / 120.0;
 
     if( p -> rotation.current == ROTATION_DPS )
     {

@@ -400,7 +400,7 @@ int util_t::string_split( std::vector<std::string>& results,
   {
     results.push_back( buffer );
   }
-  assert( results.size() <= INT_MAX );
+
   return static_cast<int>( results.size() );
 }
 

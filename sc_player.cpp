@@ -349,7 +349,7 @@ player_t::player_t( sim_t*             s,
   quiet(0), last_foreground_action(0),
   last_action_time(0), total_seconds(0), total_waiting(0), iteration_dmg(0), total_dmg(0), 
   dps(0), dps_min(0), dps_max(0), dps_std_dev(0), dps_error(0), dpr(0), rps_gain(0), rps_loss(0),
-  proc_list(0), gain_list(0), stats_list(0), uptime_list(0), unique_gear(0), enchant(0)
+  proc_list(0), gain_list(0), stats_list(0), uptime_list(0), enchant(0), unique_gear(0)
 {
   if( sim -> debug ) report_t::log( sim, "Creating Player %s", name() );
   player_t** last = &( sim -> player_list );
@@ -389,15 +389,22 @@ player_t::player_t( sim_t*             s,
   {
     for( int i=0; i < ATTRIBUTE_MAX; i++ )
     {
-      gear.attribute[ i ] = sim -> gear_default.attribute[ i ];
+      gear_stats.attribute[ i ] = sim -> gear_default.attribute[ i ];
     }
-    gear.spell_power[ SCHOOL_MAX ] = sim -> gear_default.spell_power;
-    gear.attack_power              = sim -> gear_default.attack_power;
-    gear.expertise_rating          = sim -> gear_default.expertise_rating;
-    gear.armor_penetration_rating  = sim -> gear_default.armor_penetration_rating;
-    gear.hit_rating                = sim -> gear_default.hit_rating;
-    gear.crit_rating               = sim -> gear_default.crit_rating;
-    gear.haste_rating              = sim -> gear_default.haste_rating;
+    for( int i=0; i < RESOURCE_MAX; i++ )
+    {
+      gear_stats.resource[ i ] = sim -> gear_default.resource[ i ];
+    }
+    gear_stats.spell_power              = sim -> gear_default.spell_power;
+    gear_stats.spell_penetration        = sim -> gear_default.spell_penetration;
+    gear_stats.mp5                      = sim -> gear_default.mp5;
+    gear_stats.attack_power             = sim -> gear_default.attack_power;
+    gear_stats.expertise_rating         = sim -> gear_default.expertise_rating;
+    gear_stats.armor_penetration_rating = sim -> gear_default.armor_penetration_rating;
+    gear_stats.hit_rating               = sim -> gear_default.hit_rating;
+    gear_stats.crit_rating              = sim -> gear_default.crit_rating;
+    gear_stats.haste_rating             = sim -> gear_default.haste_rating;
+    gear_stats.armor                    = sim -> gear_default.armor;
   }
 
   main_hand_weapon.slot = SLOT_MAIN_HAND;
@@ -465,18 +472,23 @@ void player_t::init()
 
 void player_t::init_core() 
 {
+  equip_stats.  hit_rating = gear_stats.  hit_rating + gem_stats.  hit_rating + enchant -> stats.  hit_rating;
+  equip_stats. crit_rating = gear_stats. crit_rating + gem_stats. crit_rating + enchant -> stats. crit_rating;
+  equip_stats.haste_rating = gear_stats.haste_rating + gem_stats.haste_rating + enchant -> stats.haste_rating;
+
   if( initial_haste_rating == 0 ) 
   {
-    initial_haste_rating = base_haste_rating + gear.haste_rating + gear.haste_rating_enchant;
+    initial_haste_rating = equip_stats.haste_rating;
   }
 
   for( int i=0; i < ATTRIBUTE_MAX; i++ )
   {
+    equip_stats.attribute[ i ] = gear_stats.attribute[ i ] + gem_stats.attribute[ i ] + enchant -> stats.attribute[ i ];
+
     if( attribute_initial[ i ] == 0 )
     {
-      attribute_initial[ i ] = attribute_base[ i ] + gear.attribute[ i ] + gear.attribute_enchant[ i ];
+      attribute_initial[ i ] = attribute_base[ i ] + equip_stats.attribute[ i ];
     }
-    attribute[ i ] = attribute_initial[ i ];
   }
 
   if( ! is_pet() )
@@ -516,34 +528,30 @@ void player_t::init_race()
 
 void player_t::init_spell() 
 {
+  equip_stats.spell_power       = gear_stats.spell_power       + gem_stats.spell_power       + enchant -> stats.spell_power;
+  equip_stats.spell_penetration = gear_stats.spell_penetration + gem_stats.spell_penetration + enchant -> stats.spell_penetration;
+  equip_stats.mp5               = gear_stats.mp5               + gem_stats.mp5               + enchant -> stats.mp5;
+
   if( initial_spell_power[ SCHOOL_MAX ] == 0 )
   {
-    for( int i=0; i <= SCHOOL_MAX; i++ )
-    {
-      initial_spell_power[ i ] = gear.spell_power[ i ] + gear.spell_power_enchant[ i ];
-    }
-    initial_spell_power[ SCHOOL_MAX ] += base_spell_power;
+    initial_spell_power[ SCHOOL_MAX ] = base_spell_power + equip_stats.spell_power;
   }
 
   if( initial_spell_hit == 0 )
   {
-    initial_spell_hit = base_spell_hit + ( gear.hit_rating + 
-                                           gear.hit_rating_enchant ) / rating.spell_hit;
+    initial_spell_hit = base_spell_hit + equip_stats.hit_rating / rating.spell_hit;
   }
   if( initial_spell_crit == 0 )
   {
-    initial_spell_crit = base_spell_crit + ( gear.crit_rating + 
-                                             gear.crit_rating_enchant ) / rating.spell_crit;
+    initial_spell_crit = base_spell_crit + equip_stats.crit_rating / rating.spell_crit;
   }
   if( initial_spell_penetration == 0 )
   {
-    initial_spell_penetration = ( base_spell_penetration +   
-                                  gear.spell_penetration + 
-                                  gear.spell_penetration_enchant );
+    initial_spell_penetration = base_spell_penetration + equip_stats.spell_penetration;
   }
   if( initial_mp5 == 0 ) 
   {
-    initial_mp5 = base_mp5 + gear.mp5 + gear.mp5_enchant;
+    initial_mp5 = base_mp5 + equip_stats.mp5;
   }
 
   if( ! is_pet() )
@@ -575,29 +583,33 @@ void player_t::init_spell()
 
 void player_t::init_attack() 
 {
+  equip_stats.attack_power     = gear_stats.    attack_power + gem_stats.    attack_power + enchant -> stats.attack_power;
+  equip_stats.expertise_rating = gear_stats.expertise_rating + gem_stats.expertise_rating + enchant -> stats.expertise_rating;
+
+  equip_stats.armor_penetration_rating = 
+          gear_stats.armor_penetration_rating + 
+           gem_stats.armor_penetration_rating + 
+    enchant -> stats.armor_penetration_rating;
+
   if( initial_attack_power == 0 )
   {
-    initial_attack_power = base_attack_power + gear.attack_power + gear.attack_power_enchant;
+    initial_attack_power = base_attack_power + equip_stats.attack_power;
   }
   if( initial_attack_hit == 0 )
   {
-    initial_attack_hit = base_attack_hit + ( gear.hit_rating + 
-                                             gear.hit_rating_enchant ) / rating.attack_hit;
+    initial_attack_hit = base_attack_hit + equip_stats.hit_rating / rating.attack_hit;
   }
   if( initial_attack_crit == 0 )
   {
-    initial_attack_crit = base_attack_crit + ( gear.crit_rating + 
-                                               gear.crit_rating_enchant ) / rating.attack_crit;
+    initial_attack_crit = base_attack_crit + equip_stats.crit_rating / rating.attack_crit;
   }
   if( initial_attack_expertise == 0 )
   {
-    initial_attack_expertise = base_attack_expertise + ( gear.expertise_rating + 
-                                                         gear.expertise_rating_enchant ) / rating.expertise;
+    initial_attack_expertise = base_attack_expertise + equip_stats.expertise_rating / rating.expertise;
   }
   if( initial_attack_penetration == 0 )
   {
-    initial_attack_penetration = base_attack_penetration + ( gear.armor_penetration_rating + 
-                                                             gear.armor_penetration_rating_enchant ) / rating.armor_penetration;
+    initial_attack_penetration = base_attack_penetration + equip_stats.armor_penetration_rating / rating.armor_penetration;
   }
 
   if( ! is_pet() )
@@ -614,9 +626,11 @@ void player_t::init_attack()
 
 void player_t::init_defense() 
 {
+  equip_stats.armor = gear_stats.armor + gem_stats.armor + enchant -> stats.armor;
+
   if( initial_armor == 0 )
   {
-    initial_armor = base_armor + gear.armor + gear.armor_enchant;
+    initial_armor = base_armor + equip_stats.armor;
   }
 
   if( ! is_pet() )
@@ -768,7 +782,11 @@ void player_t::init_resources( bool force )
   {
     if( force || resource_initial[ i ] == 0 )
     {
-      resource_initial[ i ] = resource_base[ i ] + gear.resource[ i ] + gear.resource_enchant[ i ];
+      resource_initial[ i ] = 
+	            resource_base[ i ] + 
+	      gear_stats.resource[ i ] + 
+	       gem_stats.resource[ i ] +
+	enchant -> stats.resource[ i ];
 
       if( i == RESOURCE_MANA   ) resource_initial[ i ] += ( intellect() - adjust ) * mana_per_intellect + adjust;
       if( i == RESOURCE_HEALTH ) resource_initial[ i ] += (   stamina() - adjust ) * health_per_stamina + adjust;
@@ -2474,86 +2492,53 @@ bool player_t::parse_option( const std::string& name,
     { "post_actions",                         OPT_STRING, &( action_list_postfix                            ) },
     { "skip_actions",                         OPT_STRING, &( action_list_skip                               ) },
     // Player - Reporting
-    { "quiet",                                OPT_INT,   &( quiet                                          ) },
-    // Player - Gear - Attributes                                                                           
-    { "gear_strength",                        OPT_INT,  &( gear.attribute        [ ATTR_STRENGTH  ]       ) },
-    { "gear_agility",                         OPT_INT,  &( gear.attribute        [ ATTR_AGILITY   ]       ) },
-    { "gear_stamina",                         OPT_INT,  &( gear.attribute        [ ATTR_STAMINA   ]       ) },
-    { "gear_intellect",                       OPT_INT,  &( gear.attribute        [ ATTR_INTELLECT ]       ) },
-    { "gear_spirit",                          OPT_INT,  &( gear.attribute        [ ATTR_SPIRIT    ]       ) },
-    { "enchant_strength",                     OPT_INT,  &( gear.attribute_enchant[ ATTR_STRENGTH  ]       ) },
-    { "enchant_agility",                      OPT_INT,  &( gear.attribute_enchant[ ATTR_AGILITY   ]       ) },
-    { "enchant_stamina",                      OPT_INT,  &( gear.attribute_enchant[ ATTR_STAMINA   ]       ) },
-    { "enchant_intellect",                    OPT_INT,  &( gear.attribute_enchant[ ATTR_INTELLECT ]       ) },
-    { "enchant_spirit",                       OPT_INT,  &( gear.attribute_enchant[ ATTR_SPIRIT    ]       ) },
-    // Player - Gear - Spell                                                                                
-    { "gear_spell_power",                     OPT_INT,  &( gear.spell_power[ SCHOOL_MAX    ]              ) },
-    { "gear_spell_power_arcane",              OPT_INT,  &( gear.spell_power[ SCHOOL_ARCANE ]              ) },
-    { "gear_spell_power_fire",                OPT_INT,  &( gear.spell_power[ SCHOOL_FIRE   ]              ) },
-    { "gear_spell_power_frost",               OPT_INT,  &( gear.spell_power[ SCHOOL_FROST  ]              ) },
-    { "gear_spell_power_holy",                OPT_INT,  &( gear.spell_power[ SCHOOL_HOLY   ]              ) },
-    { "gear_spell_power_nature",              OPT_INT,  &( gear.spell_power[ SCHOOL_NATURE ]              ) },
-    { "gear_spell_power_shadow",              OPT_INT,  &( gear.spell_power[ SCHOOL_SHADOW ]              ) },
-    { "gear_spell_penetration",               OPT_INT,  &( gear.spell_penetration                         ) },
-    { "gear_mp5",                             OPT_INT,  &( gear.mp5                                       ) },
-    { "enchant_spell_power",                  OPT_INT,  &( gear.spell_power_enchant[ SCHOOL_MAX    ]      ) },
-    { "enchant_spell_power_arcane",           OPT_INT,  &( gear.spell_power_enchant[ SCHOOL_ARCANE ]      ) },
-    { "enchant_spell_power_fire",             OPT_INT,  &( gear.spell_power_enchant[ SCHOOL_FIRE   ]      ) },
-    { "enchant_spell_power_frost",            OPT_INT,  &( gear.spell_power_enchant[ SCHOOL_FROST  ]      ) },
-    { "enchant_spell_power_holy",             OPT_INT,  &( gear.spell_power_enchant[ SCHOOL_HOLY   ]      ) },
-    { "enchant_spell_power_nature",           OPT_INT,  &( gear.spell_power_enchant[ SCHOOL_NATURE ]      ) },
-    { "enchant_spell_power_shadow",           OPT_INT,  &( gear.spell_power_enchant[ SCHOOL_SHADOW ]      ) },
-    { "enchant_spell_penetration",            OPT_INT,  &( gear.spell_penetration_enchant                 ) },
-    { "enchant_mp5",                          OPT_INT,  &( gear.mp5_enchant                               ) },
-    // Player - Gear - Attack                                                                               
-    { "gear_attack_power",                    OPT_INT,  &( gear.attack_power                              ) },
-    { "gear_expertise_rating",                OPT_INT,  &( gear.expertise_rating                          ) },
-    { "gear_armor_penetration_rating",        OPT_INT,  &( gear.armor_penetration_rating                  ) },
-    { "enchant_attack_power",                 OPT_INT,  &( gear.attack_power_enchant                      ) },
-    { "enchant_expertise_rating",             OPT_INT,  &( gear.expertise_rating_enchant                  ) },
-    { "enchant_armor_penetration",            OPT_INT,  &( gear.armor_penetration_rating_enchant          ) },
-    // Player - Gear - Defense
-    { "gear_armor",                           OPT_INT,  &( gear.armor                                     ) },
-    { "enchant_armor",                        OPT_INT,  &( gear.armor_enchant                             ) },
-    // Player - Gear - Common                                                                               
-    { "gear_haste_rating",                    OPT_INT,  &( gear.haste_rating                              ) },
-    { "gear_hit_rating",                      OPT_INT,  &( gear.hit_rating                                ) },
-    { "gear_crit_rating",                     OPT_INT,  &( gear.crit_rating                               ) },
-    { "enchant_haste_rating",                 OPT_INT,  &( gear.haste_rating_enchant                      ) },
-    { "enchant_hit_rating",                   OPT_INT,  &( gear.hit_rating_enchant                        ) },
-    { "enchant_crit_rating",                  OPT_INT,  &( gear.crit_rating_enchant                       ) },
-    // Player - Gear - Resource                                                                             
-    { "gear_health",                          OPT_INT,  &( gear.resource        [ RESOURCE_HEALTH ]       ) },
-    { "gear_mana",                            OPT_INT,  &( gear.resource        [ RESOURCE_MANA   ]       ) },
-    { "gear_rage",                            OPT_INT,  &( gear.resource        [ RESOURCE_RAGE   ]       ) },
-    { "gear_energy",                          OPT_INT,  &( gear.resource        [ RESOURCE_ENERGY ]       ) },
-    { "gear_focus",                           OPT_INT,  &( gear.resource        [ RESOURCE_FOCUS  ]       ) },
-    { "gear_runic",                           OPT_INT,  &( gear.resource        [ RESOURCE_RUNIC  ]       ) },
-    { "enchant_health",                       OPT_INT,  &( gear.resource_enchant[ RESOURCE_HEALTH ]       ) },
-    { "enchant_mana",                         OPT_INT,  &( gear.resource_enchant[ RESOURCE_MANA   ]       ) },
-    { "enchant_rage",                         OPT_INT,  &( gear.resource_enchant[ RESOURCE_RAGE   ]       ) },
-    { "enchant_energy",                       OPT_INT,  &( gear.resource_enchant[ RESOURCE_ENERGY ]       ) },
-    { "enchant_focus",                        OPT_INT,  &( gear.resource_enchant[ RESOURCE_FOCUS  ]       ) },
-    { "enchant_runic",                        OPT_INT,  &( gear.resource_enchant[ RESOURCE_RUNIC  ]       ) },
-    // Player - Tier Bonuses
-    { "ashtongue_talisman",                   OPT_INT,  &( gear.ashtongue_talisman                        ) },
-    { "tier4_2pc",                            OPT_INT,  &( gear.tier4_2pc                                 ) },
-    { "tier4_4pc",                            OPT_INT,  &( gear.tier4_4pc                                 ) },
-    { "tier5_2pc",                            OPT_INT,  &( gear.tier5_2pc                                 ) },
-    { "tier5_4pc",                            OPT_INT,  &( gear.tier5_4pc                                 ) },
-    { "tier6_2pc",                            OPT_INT,  &( gear.tier6_2pc                                 ) },
-    { "tier6_4pc",                            OPT_INT,  &( gear.tier6_4pc                                 ) },
-    { "tier7_2pc",                            OPT_INT,  &( gear.tier7_2pc                                 ) },
-    { "tier7_4pc",                            OPT_INT,  &( gear.tier7_4pc                                 ) },
-    { "tier8_2pc",                            OPT_INT,  &( gear.tier8_2pc                                 ) },
-    { "tier8_4pc",                            OPT_INT,  &( gear.tier8_4pc                                 ) },
+    { "quiet",                                OPT_INT,   &( quiet                                           ) },
+    // Player - Gear
+    { "gear_strength",                        OPT_INT,  &( gear_stats.attribute[ ATTR_STRENGTH  ]           ) },
+    { "gear_agility",                         OPT_INT,  &( gear_stats.attribute[ ATTR_AGILITY   ]           ) },
+    { "gear_stamina",                         OPT_INT,  &( gear_stats.attribute[ ATTR_STAMINA   ]           ) },
+    { "gear_intellect",                       OPT_INT,  &( gear_stats.attribute[ ATTR_INTELLECT ]           ) },
+    { "gear_spirit",                          OPT_INT,  &( gear_stats.attribute[ ATTR_SPIRIT    ]           ) },
+    { "gear_spell_power",                     OPT_INT,  &( gear_stats.spell_power                           ) },
+    { "gear_mp5",                             OPT_INT,  &( gear_stats.mp5                                   ) },
+    { "gear_attack_power",                    OPT_INT,  &( gear_stats.attack_power                          ) },
+    { "gear_expertise_rating",                OPT_INT,  &( gear_stats.expertise_rating                      ) },
+    { "gear_armor_penetration_rating",        OPT_INT,  &( gear_stats.armor_penetration_rating              ) },
+    { "gear_haste_rating",                    OPT_INT,  &( gear_stats.haste_rating                          ) },
+    { "gear_hit_rating",                      OPT_INT,  &( gear_stats.hit_rating                            ) },
+    { "gear_crit_rating",                     OPT_INT,  &( gear_stats.crit_rating                           ) },
+    { "gear_health",                          OPT_INT,  &( gear_stats.resource[ RESOURCE_HEALTH ]           ) },
+    { "gear_mana",                            OPT_INT,  &( gear_stats.resource[ RESOURCE_MANA   ]           ) },
+    { "gear_rage",                            OPT_INT,  &( gear_stats.resource[ RESOURCE_RAGE   ]           ) },
+    { "gear_energy",                          OPT_INT,  &( gear_stats.resource[ RESOURCE_ENERGY ]           ) },
+    { "gear_focus",                           OPT_INT,  &( gear_stats.resource[ RESOURCE_FOCUS  ]           ) },
+    { "gear_runic",                           OPT_INT,  &( gear_stats.resource[ RESOURCE_RUNIC  ]           ) }, 
+    { "gear_armor",                           OPT_INT,  &( gear_stats.armor                                 ) },
+    // Player - Gems
+    { "gem_strength",                         OPT_INT,  &( gem_stats.attribute[ ATTR_STRENGTH  ]            ) },
+    { "gem_agility",                          OPT_INT,  &( gem_stats.attribute[ ATTR_AGILITY   ]            ) },
+    { "gem_stamina",                          OPT_INT,  &( gem_stats.attribute[ ATTR_STAMINA   ]            ) },
+    { "gem_intellect",                        OPT_INT,  &( gem_stats.attribute[ ATTR_INTELLECT ]            ) },
+    { "gem_spirit",                           OPT_INT,  &( gem_stats.attribute[ ATTR_SPIRIT    ]            ) },
+    { "gem_spell_power",                      OPT_INT,  &( gem_stats.spell_power                            ) },
+    { "gem_mp5",                              OPT_INT,  &( gem_stats.mp5                                    ) },
+    { "gem_attack_power",                     OPT_INT,  &( gem_stats.attack_power                           ) },
+    { "gem_expertise_rating",                 OPT_INT,  &( gem_stats.expertise_rating                       ) },
+    { "gem_armor_penetration_rating",         OPT_INT,  &( gem_stats.armor_penetration_rating               ) },
+    { "gem_haste_rating",                     OPT_INT,  &( gem_stats.haste_rating                           ) },
+    { "gem_hit_rating",                       OPT_INT,  &( gem_stats.hit_rating                             ) },
+    { "gem_crit_rating",                      OPT_INT,  &( gem_stats.crit_rating                            ) },
+    { "gem_health",                           OPT_INT,  &( gem_stats.resource[ RESOURCE_HEALTH ]            ) },
+    { "gem_mana",                             OPT_INT,  &( gem_stats.resource[ RESOURCE_MANA   ]            ) },
+    { "gem_rage",                             OPT_INT,  &( gem_stats.resource[ RESOURCE_RAGE   ]            ) },
+    { "gem_energy",                           OPT_INT,  &( gem_stats.resource[ RESOURCE_ENERGY ]            ) },
+    { "gem_focus",                            OPT_INT,  &( gem_stats.resource[ RESOURCE_FOCUS  ]            ) },
+    { "gem_runic",                            OPT_INT,  &( gem_stats.resource[ RESOURCE_RUNIC  ]            ) },
+    { "gem_armor",                            OPT_INT,  &( gem_stats.armor                                  ) },
     // Player - Consumables                                                                                 
-    { "flask",                                OPT_STRING, &( flask_str                                    ) },
-    { "elixirs",                              OPT_STRING, &( elixirs_str                                  ) },
-    { "food",                                 OPT_STRING, &( food_str                                     ) },
-    // Deprecated
-    { "enchant_attack_expertise_rating", OPT_DEPRECATED,  (void*) "enchant_expertise_rating"  },
-    { "enchant_attack_penetration",      OPT_DEPRECATED,  (void*) "enchant_armor_penetration" },
+    { "flask",                                OPT_STRING, &( flask_str                                      ) },
+    { "elixirs",                              OPT_STRING, &( elixirs_str                                    ) },
+    { "food",                                 OPT_STRING, &( food_str                                       ) },
     { NULL, OPT_UNKNOWN }
   };
 

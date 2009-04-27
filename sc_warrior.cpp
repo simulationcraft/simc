@@ -407,7 +407,7 @@ static void trigger_bloodsurge( action_t* a )
 static void trigger_tier7_4pc( action_t* a )
 {
   warrior_t* p = a -> player -> cast_warrior();
-  if( p -> gear.tier7_4pc == 0 )
+  if( p -> unique_gear -> tier7_4pc == 0 )
     return;
     
   if( ! a -> sim -> roll( 0.10 ) ) 
@@ -744,7 +744,7 @@ static void trigger_unbridled_wrath( action_t* a )
 static void trigger_tier8_2pc( action_t* a )
 {
   warrior_t* p = a -> player -> cast_warrior();
-  if( p -> gear.tier8_2pc == 0 )
+  if( p -> unique_gear -> tier8_2pc == 0 )
     return;
 
   if( a -> result != RESULT_CRIT )
@@ -1388,7 +1388,7 @@ struct bloodthirst_t : public warrior_attack_t
     base_cost         = 30;
     base_multiplier  *= 1 + p -> talents.unending_fury * 0.02;
     direct_power_mod  = 0.50;
-    if( p -> gear.tier8_4pc )
+    if( p -> unique_gear -> tier8_4pc )
       base_crit += 0.10;
   }
   virtual void execute()
@@ -1556,7 +1556,7 @@ struct mortal_strike_t : public warrior_attack_t
     cooldown         = 6.0 - ( p -> talents.improved_mortal_strike / 3.0 );
     base_multiplier *= 1 + util_t::talent_rank( p -> talents.improved_mortal_strike, 3, 0.03, 0.06, 0.10)
                          + ( p -> glyphs.mortal_strike ? 0.10 : 0 );
-    if( p -> gear.tier8_4pc )
+    if( p -> unique_gear -> tier8_4pc )
       base_crit += 0.10;
 
     weapon_multiplier = 1;
@@ -1710,7 +1710,7 @@ struct slam_t : public warrior_attack_t
     may_crit = true;
 
     base_execute_time  = 1.5 - p -> talents.improved_slam * 0.5;
-    base_multiplier   *= 1 + p -> talents.unending_fury * 0.02 + ( p -> gear.tier7_2pc ? 0.10 : 0.0 );
+    base_multiplier   *= 1 + p -> talents.unending_fury * 0.02 + ( p -> unique_gear -> tier7_2pc ? 0.10 : 0.0 );
 
     normalize_weapon_speed = false;
     weapon = &( p -> main_hand_weapon );

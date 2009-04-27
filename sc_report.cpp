@@ -484,18 +484,18 @@ void report_t::print_scale_factors()
 
     for( int j=0; j < ATTRIBUTE_MAX; j++ )
     {
-      if( sim -> scaling -> gear.attribute[ j ] ) 
+      if( sim -> scaling -> stats.attribute[ j ] ) 
       {
 	fprintf( sim -> output_file, "  %s=%.2f", util_t::attribute_type_string( j ), p -> scaling.attribute[ j ] );
       }
     }
-    if( sim -> scaling -> gear.spell_power              ) fprintf( sim -> output_file,              "  spell_power=%.2f", p -> scaling.spell_power              );
-    if( sim -> scaling -> gear.attack_power             ) fprintf( sim -> output_file,             "  attack_power=%.2f", p -> scaling.attack_power             );
-    if( sim -> scaling -> gear.expertise_rating         ) fprintf( sim -> output_file,         "  expertise_rating=%.2f", p -> scaling.expertise_rating         );
-    if( sim -> scaling -> gear.armor_penetration_rating ) fprintf( sim -> output_file, "  armor_penetrating_rating=%.2f", p -> scaling.armor_penetration_rating );
-    if( sim -> scaling -> gear.hit_rating               ) fprintf( sim -> output_file,               "  hit_rating=%.2f", p -> scaling.hit_rating               );
-    if( sim -> scaling -> gear.crit_rating              ) fprintf( sim -> output_file,              "  crit_rating=%.2f", p -> scaling.crit_rating              );
-    if( sim -> scaling -> gear.haste_rating             ) fprintf( sim -> output_file,             "  haste_rating=%.2f", p -> scaling.haste_rating             );
+    if( sim -> scaling -> stats.spell_power              ) fprintf( sim -> output_file,              "  spell_power=%.2f", p -> scaling.spell_power              );
+    if( sim -> scaling -> stats.attack_power             ) fprintf( sim -> output_file,             "  attack_power=%.2f", p -> scaling.attack_power             );
+    if( sim -> scaling -> stats.expertise_rating         ) fprintf( sim -> output_file,         "  expertise_rating=%.2f", p -> scaling.expertise_rating         );
+    if( sim -> scaling -> stats.armor_penetration_rating ) fprintf( sim -> output_file, "  armor_penetrating_rating=%.2f", p -> scaling.armor_penetration_rating );
+    if( sim -> scaling -> stats.hit_rating               ) fprintf( sim -> output_file,               "  hit_rating=%.2f", p -> scaling.hit_rating               );
+    if( sim -> scaling -> stats.crit_rating              ) fprintf( sim -> output_file,              "  crit_rating=%.2f", p -> scaling.crit_rating              );
+    if( sim -> scaling -> stats.haste_rating             ) fprintf( sim -> output_file,             "  haste_rating=%.2f", p -> scaling.haste_rating             );
 
     fprintf( sim -> output_file, "\n" );
   }
@@ -635,23 +635,21 @@ const char* report_t::chart_raid_gear( std::string& s )
   {
     player_t* p = sim -> players_by_rank[ i ];
 
-    data_points[ 0 ][ i ] = ( p -> gear.attribute[ ATTR_STRENGTH  ] + p -> gear.attribute_enchant[ ATTR_STRENGTH  ] );
-    data_points[ 1 ][ i ] = ( p -> gear.attribute[ ATTR_AGILITY   ] + p -> gear.attribute_enchant[ ATTR_AGILITY   ] );
-    data_points[ 2 ][ i ] = ( p -> gear.attribute[ ATTR_INTELLECT ] + p -> gear.attribute_enchant[ ATTR_INTELLECT ] );
+    data_points[ 0 ][ i ] = p -> equip_stats.attribute[ ATTR_STRENGTH  ];
+    data_points[ 1 ][ i ] = p -> equip_stats.attribute[ ATTR_AGILITY   ];
+    data_points[ 2 ][ i ] = p -> equip_stats.attribute[ ATTR_INTELLECT ];
 
-    data_points[ 3 ][ i ] = ( ( p -> gear.attribute[ ATTR_SPIRIT ] + p -> gear.attribute_enchant[ ATTR_SPIRIT ] ) +
-			      ( p -> gear.mp5 + p -> gear.mp5_enchant ) * 2.5 );
+    data_points[ 3 ][ i ] = p -> equip_stats.attribute[ ATTR_SPIRIT ] + p -> equip_stats.mp5 * 2.5;
 
-    data_points[ 4 ][ i ] = ( p -> gear.attack_power              + p -> gear.attack_power_enchant              ) * 0.5;
-    data_points[ 5 ][ i ] = ( p -> gear.spell_power[ SCHOOL_MAX ] + p -> gear.spell_power_enchant[ SCHOOL_MAX ] ) * 0.86;
+    data_points[ 4 ][ i ] = p -> equip_stats.attack_power * 0.50;
+    data_points[ 5 ][ i ] = p -> equip_stats.spell_power  * 0.86;
 
-    data_points[ 6 ][ i ] = ( p -> gear.hit_rating       + p -> gear.hit_rating_enchant       );
-    data_points[ 7 ][ i ] = ( p -> gear.crit_rating      + p -> gear.crit_rating_enchant      );
-    data_points[ 8 ][ i ] = ( p -> gear.haste_rating     + p -> gear.haste_rating_enchant     );
-    data_points[ 9 ][ i ] = ( p -> gear.expertise_rating + p -> gear.expertise_rating_enchant );
+    data_points[ 6 ][ i ] = p -> equip_stats.hit_rating;
+    data_points[ 7 ][ i ] = p -> equip_stats.crit_rating;
+    data_points[ 8 ][ i ] = p -> equip_stats.haste_rating;
+    data_points[ 9 ][ i ] = p -> equip_stats.expertise_rating;
 
-    data_points[ 10 ][ i ] = ( p -> gear.armor_penetration_rating + p -> gear.armor_penetration_rating_enchant ) +
-                             ( p -> gear.spell_penetration        + p -> gear.spell_penetration_enchant        ) * 0.80 ;
+    data_points[ 10 ][ i ] = p -> equip_stats.armor_penetration_rating + p -> equip_stats.spell_penetration * 0.80;
   }
 
   double max_total=0;
@@ -1382,43 +1380,43 @@ const char* report_t::gear_weights_lootrank( std::string& s,
 
   for( int j=0; j < ATTRIBUTE_MAX; j++ )
   {
-    if( sim -> scaling -> gear.attribute[ j ] ) 
+    if( sim -> scaling -> stats.attribute[ j ] ) 
     {
       snprintf( buffer, sizeof(buffer), "&%s=%.2f", attr_prefix[ j ], p -> scaling.attribute[ j ] );
       s += buffer;
     }
   }
-  if( sim -> scaling -> gear.spell_power ) 
+  if( sim -> scaling -> stats.spell_power ) 
   { 
     snprintf( buffer, sizeof(buffer), "&spd=%.2f", p -> scaling.spell_power ); 
     s += buffer; 
   }
-  if( sim -> scaling -> gear.attack_power ) 
+  if( sim -> scaling -> stats.attack_power ) 
   { 
     snprintf( buffer, sizeof(buffer), "&map=%.2f", p -> scaling.attack_power );
     s += buffer; 
   }
-  if( sim -> scaling -> gear.expertise_rating ) 
+  if( sim -> scaling -> stats.expertise_rating ) 
   {
     snprintf( buffer, sizeof(buffer), "&Exp=%.2f", p -> scaling.expertise_rating );
     s += buffer; 
   }
-  if( sim -> scaling -> gear.armor_penetration_rating )
+  if( sim -> scaling -> stats.armor_penetration_rating )
   {
     snprintf( buffer, sizeof(buffer), "&arp=%.2f", p -> scaling.armor_penetration_rating );
     s += buffer;
   }
-  if( sim -> scaling -> gear.hit_rating )
+  if( sim -> scaling -> stats.hit_rating )
   {
     snprintf( buffer, sizeof(buffer), "&mhit=%.2f", p -> scaling.hit_rating );
     s += buffer;
   }
-  if( sim -> scaling -> gear.crit_rating )
+  if( sim -> scaling -> stats.crit_rating )
   {
     snprintf( buffer, sizeof(buffer), "&mcr=%.2f", p -> scaling.crit_rating );
     s += buffer;
   }
-  if( sim -> scaling -> gear.haste_rating )
+  if( sim -> scaling -> stats.haste_rating )
   {
     snprintf( buffer, sizeof(buffer), "&mh=%.2f", p -> scaling.haste_rating );
     s += buffer;
@@ -1462,43 +1460,43 @@ const char* report_t::gear_weights_wowhead( std::string& s,
 
   for( int j=0; j < ATTRIBUTE_MAX; j++ )
   {
-    if( sim -> scaling -> gear.attribute[ j ] ) 
+    if( sim -> scaling -> stats.attribute[ j ] ) 
     {
       prefix_list.push_back( attr_prefix[ j ] );
        value_list.push_back( p -> scaling.attribute[ j ] );
     }
   }
-  if( sim -> scaling -> gear.spell_power ) 
+  if( sim -> scaling -> stats.spell_power ) 
   { 
     prefix_list.push_back( 123 );
      value_list.push_back( p -> scaling.spell_power ); 
   }
-  if( sim -> scaling -> gear.attack_power ) 
+  if( sim -> scaling -> stats.attack_power ) 
   { 
     prefix_list.push_back( 77 );
      value_list.push_back( p -> scaling.attack_power );
   }
-  if( sim -> scaling -> gear.expertise_rating ) 
+  if( sim -> scaling -> stats.expertise_rating ) 
   {
     prefix_list.push_back( 117 );
      value_list.push_back( p -> scaling.expertise_rating );
   }
-  if( sim -> scaling -> gear.armor_penetration_rating )
+  if( sim -> scaling -> stats.armor_penetration_rating )
   {
     prefix_list.push_back( 114 );
      value_list.push_back( p -> scaling.armor_penetration_rating );
   }
-  if( sim -> scaling -> gear.hit_rating )
+  if( sim -> scaling -> stats.hit_rating )
   {
     prefix_list.push_back( 119 );
      value_list.push_back( p -> scaling.hit_rating );
   }
-  if( sim -> scaling -> gear.crit_rating )
+  if( sim -> scaling -> stats.crit_rating )
   {
     prefix_list.push_back( 96 );
      value_list.push_back( p -> scaling.crit_rating );
   }
-  if( sim -> scaling -> gear.haste_rating )
+  if( sim -> scaling -> stats.haste_rating )
   {
     prefix_list.push_back( 103 );
      value_list.push_back( p -> scaling.haste_rating );
@@ -1535,18 +1533,18 @@ void report_t::html_scale_factors()
   fprintf( sim -> html_file, "<TR> <TH>profile</TH>" );
   for( int j=0; j < ATTRIBUTE_MAX; j++ )
   {
-    if( sim -> scaling -> gear.attribute[ j ] ) 
+    if( sim -> scaling -> stats.attribute[ j ] ) 
     {
       fprintf( sim -> html_file, " <TH>%s</TH>", util_t::attribute_type_string( j ) );
     }
   }
-  if( sim -> scaling -> gear.spell_power              ) fprintf( sim -> html_file, " <TH>spell power</TH>" );
-  if( sim -> scaling -> gear.attack_power             ) fprintf( sim -> html_file, " <TH>attack power</TH>" );
-  if( sim -> scaling -> gear.expertise_rating         ) fprintf( sim -> html_file, " <TH>expertise</TH>" );
-  if( sim -> scaling -> gear.armor_penetration_rating ) fprintf( sim -> html_file, " <TH>armor pen</TH>" );
-  if( sim -> scaling -> gear.hit_rating               ) fprintf( sim -> html_file, " <TH>hit</TH>" );
-  if( sim -> scaling -> gear.crit_rating              ) fprintf( sim -> html_file, " <TH>crit</TH>" );
-  if( sim -> scaling -> gear.haste_rating             ) fprintf( sim -> html_file, " <TH>haste</TH>" );
+  if( sim -> scaling -> stats.spell_power              ) fprintf( sim -> html_file, " <TH>spell power</TH>" );
+  if( sim -> scaling -> stats.attack_power             ) fprintf( sim -> html_file, " <TH>attack power</TH>" );
+  if( sim -> scaling -> stats.expertise_rating         ) fprintf( sim -> html_file, " <TH>expertise</TH>" );
+  if( sim -> scaling -> stats.armor_penetration_rating ) fprintf( sim -> html_file, " <TH>armor pen</TH>" );
+  if( sim -> scaling -> stats.hit_rating               ) fprintf( sim -> html_file, " <TH>hit</TH>" );
+  if( sim -> scaling -> stats.crit_rating              ) fprintf( sim -> html_file, " <TH>crit</TH>" );
+  if( sim -> scaling -> stats.haste_rating             ) fprintf( sim -> html_file, " <TH>haste</TH>" );
   fprintf( sim -> html_file, " <TH>lootrank</TH> <TH>wowhead</TH> </TR>\n" );
 
   std::string buffer;
@@ -1560,18 +1558,18 @@ void report_t::html_scale_factors()
 
     for( int j=0; j < ATTRIBUTE_MAX; j++ )
     {
-      if( sim -> scaling -> gear.attribute[ j ] ) 
+      if( sim -> scaling -> stats.attribute[ j ] ) 
       {
 	fprintf( sim -> html_file, " <TD>%.2f</TD>", p -> scaling.attribute[ j ] );
       }
     }
-    if( sim -> scaling -> gear.spell_power              ) fprintf( sim -> html_file, " <TD>%.2f</TD>", p -> scaling.spell_power              );
-    if( sim -> scaling -> gear.attack_power             ) fprintf( sim -> html_file, " <TD>%.2f</TD>", p -> scaling.attack_power             );
-    if( sim -> scaling -> gear.expertise_rating         ) fprintf( sim -> html_file, " <TD>%.2f</TD>", p -> scaling.expertise_rating         );
-    if( sim -> scaling -> gear.armor_penetration_rating ) fprintf( sim -> html_file, " <TD>%.2f</TD>", p -> scaling.armor_penetration_rating );
-    if( sim -> scaling -> gear.hit_rating               ) fprintf( sim -> html_file, " <TD>%.2f</TD>", p -> scaling.hit_rating               );
-    if( sim -> scaling -> gear.crit_rating              ) fprintf( sim -> html_file, " <TD>%.2f</TD>", p -> scaling.crit_rating              );
-    if( sim -> scaling -> gear.haste_rating             ) fprintf( sim -> html_file, " <TD>%.2f</TD>", p -> scaling.haste_rating             );
+    if( sim -> scaling -> stats.spell_power              ) fprintf( sim -> html_file, " <TD>%.2f</TD>", p -> scaling.spell_power              );
+    if( sim -> scaling -> stats.attack_power             ) fprintf( sim -> html_file, " <TD>%.2f</TD>", p -> scaling.attack_power             );
+    if( sim -> scaling -> stats.expertise_rating         ) fprintf( sim -> html_file, " <TD>%.2f</TD>", p -> scaling.expertise_rating         );
+    if( sim -> scaling -> stats.armor_penetration_rating ) fprintf( sim -> html_file, " <TD>%.2f</TD>", p -> scaling.armor_penetration_rating );
+    if( sim -> scaling -> stats.hit_rating               ) fprintf( sim -> html_file, " <TD>%.2f</TD>", p -> scaling.hit_rating               );
+    if( sim -> scaling -> stats.crit_rating              ) fprintf( sim -> html_file, " <TD>%.2f</TD>", p -> scaling.crit_rating              );
+    if( sim -> scaling -> stats.haste_rating             ) fprintf( sim -> html_file, " <TD>%.2f</TD>", p -> scaling.haste_rating             );
 
     fprintf( sim -> html_file, " <TD><a href=\"%s\"> lootrank</a></TD>", gear_weights_lootrank( buffer, p ) );
     fprintf( sim -> html_file, " <TD><a href=\"%s\"> wowhead </a></TD>", gear_weights_wowhead ( buffer, p ) );
@@ -1770,18 +1768,18 @@ void report_t::wiki_scale_factors()
   fprintf( sim -> wiki_file, "|| ||" );
   for( int j=0; j < ATTRIBUTE_MAX; j++ )
   {
-    if( sim -> scaling -> gear.attribute[ j ] ) 
+    if( sim -> scaling -> stats.attribute[ j ] ) 
     {
       fprintf( sim -> wiki_file, "  %s ||", util_t::attribute_type_string( j ) );
     }
   }
-  if( sim -> scaling -> gear.spell_power              ) fprintf( sim -> wiki_file, " spell power  ||" );
-  if( sim -> scaling -> gear.attack_power             ) fprintf( sim -> wiki_file, " attack power ||" );
-  if( sim -> scaling -> gear.expertise_rating         ) fprintf( sim -> wiki_file, " expertise    ||" );
-  if( sim -> scaling -> gear.armor_penetration_rating ) fprintf( sim -> wiki_file, " armor pen    ||" );
-  if( sim -> scaling -> gear.hit_rating               ) fprintf( sim -> wiki_file, " hit          ||" );
-  if( sim -> scaling -> gear.crit_rating              ) fprintf( sim -> wiki_file, " crit         ||" );
-  if( sim -> scaling -> gear.haste_rating             ) fprintf( sim -> wiki_file, " haste        ||" );
+  if( sim -> scaling -> stats.spell_power              ) fprintf( sim -> wiki_file, " spell power  ||" );
+  if( sim -> scaling -> stats.attack_power             ) fprintf( sim -> wiki_file, " attack power ||" );
+  if( sim -> scaling -> stats.expertise_rating         ) fprintf( sim -> wiki_file, " expertise    ||" );
+  if( sim -> scaling -> stats.armor_penetration_rating ) fprintf( sim -> wiki_file, " armor pen    ||" );
+  if( sim -> scaling -> stats.hit_rating               ) fprintf( sim -> wiki_file, " hit          ||" );
+  if( sim -> scaling -> stats.crit_rating              ) fprintf( sim -> wiki_file, " crit         ||" );
+  if( sim -> scaling -> stats.haste_rating             ) fprintf( sim -> wiki_file, " haste        ||" );
   fprintf( sim -> wiki_file, " lootrank || wowhead ||\n" );
 
   std::string buffer;
@@ -1795,18 +1793,18 @@ void report_t::wiki_scale_factors()
 
     for( int j=0; j < ATTRIBUTE_MAX; j++ )
     {
-      if( sim -> scaling -> gear.attribute[ j ] ) 
+      if( sim -> scaling -> stats.attribute[ j ] ) 
       {
 	fprintf( sim -> wiki_file, " %.2f ||", p -> scaling.attribute[ j ] );
       }
     }
-    if( sim -> scaling -> gear.spell_power              ) fprintf( sim -> wiki_file, " %.2f ||", p -> scaling.spell_power              );
-    if( sim -> scaling -> gear.attack_power             ) fprintf( sim -> wiki_file, " %.2f ||", p -> scaling.attack_power             );
-    if( sim -> scaling -> gear.expertise_rating         ) fprintf( sim -> wiki_file, " %.2f ||", p -> scaling.expertise_rating         );
-    if( sim -> scaling -> gear.armor_penetration_rating ) fprintf( sim -> wiki_file, " %.2f ||", p -> scaling.armor_penetration_rating );
-    if( sim -> scaling -> gear.hit_rating               ) fprintf( sim -> wiki_file, " %.2f ||", p -> scaling.hit_rating               );
-    if( sim -> scaling -> gear.crit_rating              ) fprintf( sim -> wiki_file, " %.2f ||", p -> scaling.crit_rating              );
-    if( sim -> scaling -> gear.haste_rating             ) fprintf( sim -> wiki_file, " %.2f ||", p -> scaling.haste_rating             );
+    if( sim -> scaling -> stats.spell_power              ) fprintf( sim -> wiki_file, " %.2f ||", p -> scaling.spell_power              );
+    if( sim -> scaling -> stats.attack_power             ) fprintf( sim -> wiki_file, " %.2f ||", p -> scaling.attack_power             );
+    if( sim -> scaling -> stats.expertise_rating         ) fprintf( sim -> wiki_file, " %.2f ||", p -> scaling.expertise_rating         );
+    if( sim -> scaling -> stats.armor_penetration_rating ) fprintf( sim -> wiki_file, " %.2f ||", p -> scaling.armor_penetration_rating );
+    if( sim -> scaling -> stats.hit_rating               ) fprintf( sim -> wiki_file, " %.2f ||", p -> scaling.hit_rating               );
+    if( sim -> scaling -> stats.crit_rating              ) fprintf( sim -> wiki_file, " %.2f ||", p -> scaling.crit_rating              );
+    if( sim -> scaling -> stats.haste_rating             ) fprintf( sim -> wiki_file, " %.2f ||", p -> scaling.haste_rating             );
 
     fprintf( sim -> wiki_file, " [%s lootrank] ||", gear_weights_lootrank( buffer, p ) );
     fprintf( sim -> wiki_file, " [%s wowhead ] ||", gear_weights_wowhead ( buffer, p ) );

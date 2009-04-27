@@ -1288,7 +1288,7 @@ static void trigger_tier8_4pc( attack_t* a )
 {
   hunter_t* p = a -> player -> cast_hunter();
 
-  if ( ! p -> gear.tier8_4pc )
+  if ( ! p -> unique_gear -> tier8_4pc )
     return;
 
   // FIXME: Does it have a cooldown?
@@ -1552,7 +1552,7 @@ struct pet_melee_t : public hunter_pet_attack_t
     }
     base_execute_time *= 1.0 / ( 1.0 + 0.04 * o -> talents.serpents_swiftness );
 
-    if( o -> gear.tier7_2pc ) base_multiplier *= 1.05;
+    if( o -> unique_gear -> tier7_2pc ) base_multiplier *= 1.05;
   }
 };
 
@@ -3016,7 +3016,7 @@ struct serpent_sting_t : public hunter_attack_t
     num_ticks        = p -> glyphs.serpent_sting ? 7 : 5;
     tick_power_mod   = 0.2 / 5.0;
     base_multiplier *= 1.0 + p -> talents.improved_stings * 0.1;
-    base_multiplier *= 1.0 + p -> gear.tier8_2pc * 0.1;
+    base_multiplier *= 1.0 + p -> unique_gear -> tier8_2pc * 0.1;
 
     observer = &( p -> active_serpent_sting );
   }

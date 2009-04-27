@@ -364,6 +364,19 @@ bool unique_gear_t::parse_option( player_t*          p,
 {
   option_t options[] =
   {
+    // Tier Gear
+    { "ashtongue_talisman",                   OPT_INT,  &( p -> unique_gear -> ashtongue_talisman               ) },
+    { "tier4_2pc",                            OPT_INT,  &( p -> unique_gear -> tier4_2pc                        ) },
+    { "tier4_4pc",                            OPT_INT,  &( p -> unique_gear -> tier4_4pc                        ) },
+    { "tier5_2pc",                            OPT_INT,  &( p -> unique_gear -> tier5_2pc                        ) },
+    { "tier5_4pc",                            OPT_INT,  &( p -> unique_gear -> tier5_4pc                        ) },
+    { "tier6_2pc",                            OPT_INT,  &( p -> unique_gear -> tier6_2pc                        ) },
+    { "tier6_4pc",                            OPT_INT,  &( p -> unique_gear -> tier6_4pc                        ) },
+    { "tier7_2pc",                            OPT_INT,  &( p -> unique_gear -> tier7_2pc                        ) },
+    { "tier7_4pc",                            OPT_INT,  &( p -> unique_gear -> tier7_4pc                        ) },
+    { "tier8_2pc",                            OPT_INT,  &( p -> unique_gear -> tier8_2pc                        ) },
+    { "tier8_4pc",                            OPT_INT,  &( p -> unique_gear -> tier8_4pc                        ) },
+    // Unique Gear
     { "bandits_insignia",                     OPT_INT,   &( p -> unique_gear -> bandits_insignia                ) },
     { "chaotic_skyfire",                      OPT_INT,   &( p -> unique_gear -> chaotic_skyflare                ) },
     { "chaotic_skyflare",                     OPT_INT,   &( p -> unique_gear -> chaotic_skyflare                ) },

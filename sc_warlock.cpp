@@ -722,8 +722,6 @@ struct felhunter_pet_t : public warlock_pet_t
     shadow_bite_t( player_t* player ) : 
       warlock_pet_attack_t( "shadow_bite", player, RESOURCE_MANA, SCHOOL_SHADOW )
     {
-      felhunter_pet_t* p = (felhunter_pet_t*) player -> cast_pet();
-      
       static rank_t ranks[] =
       {
         { 74, 5, 118, 118, 0, 0.03 },
@@ -1010,7 +1008,7 @@ static void trigger_tier7_2pc( spell_t* s )
 {
   warlock_t* p = s -> player -> cast_warlock();
 
-  if(   p ->  gear.tier7_2pc &&
+  if(   p ->  unique_gear -> tier7_2pc &&
       ! p -> buffs.tier7_2pc )
   {
     p -> buffs.tier7_2pc = s -> sim -> roll( 0.15 );
@@ -1026,7 +1024,7 @@ static void trigger_tier5_4pc( spell_t*  s,
 {
   warlock_t* p = s -> player -> cast_warlock();
 
-  if( p -> gear.tier5_4pc )
+  if( p -> unique_gear -> tier5_4pc )
   {
     if( dot_spell )
     {
@@ -1077,7 +1075,7 @@ static void trigger_tier4_2pc( spell_t* s )
   
   warlock_t* p = s -> player -> cast_warlock();
 
-  if( p -> gear.tier4_2pc )
+  if( p -> unique_gear -> tier4_2pc )
   {
     if( s -> sim -> roll( 0.05 ) )
     {
@@ -1774,7 +1772,7 @@ static void trigger_tier7_4pc( spell_t* s )
 
   player_t* p = s -> player;
 
-  if( p -> gear.tier7_4pc )
+  if( p -> unique_gear -> tier7_4pc )
   {
     p -> procs.tier7_4pc -> occur();
 
@@ -1854,7 +1852,7 @@ static void trigger_ashtongue_talisman( spell_t* s )
 
   player_t* p = s -> player;
 
-  if( p -> gear.ashtongue_talisman && s -> sim -> roll( 0.20 ) )
+  if( p -> unique_gear -> ashtongue_talisman && s -> sim -> roll( 0.20 ) )
   {
     p -> procs.ashtongue_talisman -> occur();
 
@@ -2459,10 +2457,10 @@ struct shadow_bolt_t : public warlock_spell_t
     }
     base_execute_time -=  p -> talents.bane * 0.1;
     base_multiplier   *= 1.0 + ( p -> talents.shadow_mastery       * 0.03 +
-                                 p -> gear.tier6_4pc               * 0.06 +
+                                 p -> unique_gear -> tier6_4pc     * 0.06 +
                                  p -> talents.improved_shadow_bolt * ( ( sim -> patch.after( 3, 1, 0 ) ) ? 0.01 : 0 ) );
     base_crit         += p -> talents.devastation * 0.05;
-    if( p -> gear.tier8_4pc )
+    if( p -> unique_gear -> tier8_4pc )
       base_crit       += 0.05;
     base_crit         += p -> talents.backlash * 0.01;
     direct_power_mod  *= 1.0 + p -> talents.shadow_and_flame * 0.04;
@@ -2851,7 +2849,7 @@ struct corruption_t : public warlock_spell_t
       base_crit += p -> talents.malediction * 0.03;
     }
 
-    if( p -> gear.tier4_4pc ) num_ticks++;
+    if( p -> unique_gear -> tier4_4pc ) num_ticks++;
 
     observer = &( p -> active_corruption );
 
@@ -2880,7 +2878,7 @@ struct corruption_t : public warlock_spell_t
     trigger_nightfall( this );
     trigger_corruption_glyph( this );
     trigger_ashtongue_talisman( this );
-    if( player -> gear.tier6_2pc ) player -> resource_gain( RESOURCE_HEALTH, 70 );
+    if( player -> unique_gear -> tier6_2pc ) player -> resource_gain( RESOURCE_HEALTH, 70 );
   }
 
   virtual void last_tick()
@@ -3265,7 +3263,7 @@ struct unstable_affliction_t : public warlock_spell_t
     base_cost        *= 1.0 - p -> talents.suppression * 0.02;
     base_hit         +=       p -> talents.suppression * 0.01;
     base_multiplier  *= 1.0 + p -> talents.shadow_mastery * 0.03
-                            + p -> gear.tier8_2pc         * 0.20 + //FIXME assuming additive
+                            + p -> unique_gear -> tier8_2pc * 0.20 + //FIXME assuming additive
                           ( ( p -> talents.siphon_life && sim -> patch.after( 3, 1, 0 ) ) ? 0.05 : 0 );
 
     tick_power_mod   += p -> talents.everlasting_affliction * 0.01;
@@ -3461,17 +3459,17 @@ struct immolate_t : public warlock_spell_t
     {
       base_dd_multiplier *= 1.0 + ( p -> talents.emberstorm        * 0.03 +
                                     p -> talents.improved_immolate * 0.10 +
-                                    p -> gear.tier8_2pc            * 0.10 ); //FIXME assuming additive
+                                    p -> unique_gear -> tier8_2pc  * 0.10 ); //FIXME assuming additive
 
       base_td_multiplier *= 1.0 + ( p -> talents.emberstorm        * 0.03 +
                                     p -> talents.improved_immolate * 0.10 +
                                     p -> glyphs.immolate           * 0.10 +
                                     p -> talents.aftermath         * 0.03 +
-                                    p -> gear.tier8_2pc            * 0.10 ); //FIXME assuming additive
+                                    p -> unique_gear -> tier8_2pc  * 0.10 ); //FIXME assuming additive
     }
 
 
-    if( p -> gear.tier4_4pc ) num_ticks++;
+    if( p -> unique_gear -> tier4_4pc ) num_ticks++;
 
     observer = &( p -> active_immolate );
   }
@@ -3490,7 +3488,7 @@ struct immolate_t : public warlock_spell_t
   virtual void tick()
   {
     warlock_spell_t::tick(); 
-    if( player -> gear.tier6_2pc ) player -> resource_gain( RESOURCE_HEALTH, 35 );
+    if( player -> unique_gear -> tier6_2pc ) player -> resource_gain( RESOURCE_HEALTH, 35 );
   }
 
   virtual void last_tick()
@@ -3649,7 +3647,7 @@ struct conflagrate_t : public warlock_spell_t
       base_multiplier *= 1.0 + p -> talents.aftermath         * 0.03
                              + p -> talents.improved_immolate * 0.10
                              + p -> glyphs.immolate           * 0.10
-                             + p -> gear.tier8_2pc            * 0.10; //FIXME assuming additive
+                             + p -> unique_gear -> tier8_2pc  * 0.10; //FIXME assuming additive
 
       base_multiplier *= 0.7;
     }
@@ -3809,12 +3807,12 @@ struct incinerate_t : public warlock_spell_t
                              + ( ( p -> talents.cataclysm ) ? 0.01 : 0 ) );
     }
     base_execute_time -= p -> talents.emberstorm * 0.05;
-    base_multiplier   *= 1.0 + ( p -> talents.emberstorm  * 0.03 +
-                                 p -> gear.tier6_4pc      * 0.06 +
-                                 p -> glyphs.incinerate   * 0.05 );
+    base_multiplier   *= 1.0 + ( p -> talents.emberstorm       * 0.03 +
+                                 p -> unique_gear -> tier6_4pc * 0.06 +
+                                 p -> glyphs.incinerate        * 0.05 );
     base_crit         += p -> talents.devastation * 0.05;
     base_crit         += p -> talents.backlash * 0.01;
-    if( p -> gear.tier8_4pc )
+    if( p -> unique_gear -> tier8_4pc )
       base_crit       += 0.05;
     direct_power_mod  *= 1.0 + p -> talents.shadow_and_flame * 0.04;
 
@@ -4112,7 +4110,7 @@ struct life_tap_t : public warlock_spell_t
       }
     }
 
-    if( tier7_4pc && p -> gear.tier7_4pc )
+    if( tier7_4pc && p -> unique_gear -> tier7_4pc )
       return( ! p -> buffs.tier7_4pc );
 
     if( glyph && p -> glyphs.life_tap )

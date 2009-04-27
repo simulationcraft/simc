@@ -317,9 +317,9 @@ struct event_compare_t
   }
 };
 
-// Gear Set ==================================================================
+// Gear Stats ================================================================
 
-struct gear_set_t
+struct gear_stats_t
 {
   int attribute[ ATTRIBUTE_MAX ];
   int resource[ RESOURCE_MAX ];
@@ -334,7 +334,7 @@ struct gear_set_t
   int haste_rating;
   int armor;
 
-  gear_set_t() { memset( (void*) this, 0x00, sizeof( gear_set_t ) ); }
+  gear_stats_t() { memset( (void*) this, 0x00, sizeof( gear_stats_t ) ); }
 };
 
 // Simulation Engine =========================================================
@@ -372,9 +372,9 @@ struct sim_t
   int    wheel_seconds, wheel_size, wheel_mask, timing_slice;
   double wheel_granularity;
 
-  // Global Gear Sets
-  gear_set_t gear_default;
-  gear_set_t gear_delta;
+  // Global Gear Stats
+  gear_stats_t gear_default;
+  gear_stats_t gear_delta;
 
   // Buffs and Debuffs Overrides
   struct overrides_t
@@ -519,7 +519,7 @@ struct scaling_t
   double scale_factor_noise;
 
   // Gear delta for determining scale factors
-  gear_set_t gear;
+  gear_stats_t stats;
 
   scaling_t( sim_t* s );
 
@@ -698,41 +698,12 @@ struct player_t
   std::vector<double> iteration_dps;
   std::vector<int> distribution_dps;
 
-  struct gear_t
-  {
-    // Attributes
-    int attribute        [ ATTRIBUTE_MAX ];
-    int attribute_enchant[ ATTRIBUTE_MAX ];
-    // Spell Gear
-    int spell_power[ SCHOOL_MAX+1 ], spell_power_enchant[ SCHOOL_MAX+1 ];
-    int spell_penetration,           spell_penetration_enchant;
-    int mp5, mp5_enchant;
-    // Attack Gear
-    int attack_power,             attack_power_enchant;
-    int armor_penetration_rating, armor_penetration_rating_enchant;
-    int expertise_rating,         expertise_rating_enchant;
-    // Defense Gear
-    int armor, armor_enchant;
-    // Common Gear
-    int hit_rating, hit_rating_enchant;
-    int crit_rating, crit_rating_enchant;
-    int haste_rating, haste_rating_enchant;
-    // Resource Gear
-    int resource        [ RESOURCE_MAX ];
-    int resource_enchant[ RESOURCE_MAX ];
-    // Tier Gear
-    int  ashtongue_talisman;
-    int  tier4_2pc, tier4_4pc;
-    int  tier5_2pc, tier5_4pc;
-    int  tier6_2pc, tier6_4pc;
-    int  tier7_2pc, tier7_4pc;
-    int  tier8_2pc, tier8_4pc;
-    gear_t() { memset( (void*) this, 0x00, sizeof( gear_t ) ); }
-  };
-  gear_t gear;
-
+  // Gear
+  gear_stats_t   equip_stats;
+  gear_stats_t   gear_stats;
+  gear_stats_t   gem_stats;
+  enchant_t*     enchant;
   unique_gear_t* unique_gear;
-  enchant_t* enchant;
 
   struct buff_t
   {
@@ -1474,6 +1445,15 @@ struct regen_event_t : public event_t
 
 struct unique_gear_t
 {
+  // Tier Gear
+  int  ashtongue_talisman;
+  int  tier4_2pc, tier4_4pc;
+  int  tier5_2pc, tier5_4pc;
+  int  tier6_2pc, tier6_4pc;
+  int  tier7_2pc, tier7_4pc;
+  int  tier8_2pc, tier8_4pc;
+
+  // Specific Gear
   int  bandits_insignia;
   int  chaotic_skyflare;
   int  darkmoon_crusade;
@@ -1520,6 +1500,7 @@ struct unique_gear_t
 
 struct enchant_t
 {
+  gear_stats_t stats;
   int spellsurge;
 
   enchant_t() { memset( (void*) this, 0x00, sizeof( enchant_t ) ); }

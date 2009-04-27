@@ -789,7 +789,7 @@ double rogue_attack_t::cost()
   if( p -> _buffs.overkill ) c -= 10;
   if( c < 0 ) c = 0;
   // FIXME! In what order do Overkill, Slaughter From The Shadows, and Tier7-4pc get combined?
-  if( adds_combo_points && p -> gear.tier7_4pc ) c *= 0.95;  
+  if( adds_combo_points && p -> unique_gear -> tier7_4pc ) c *= 0.95;  
   return c;
 }
 
@@ -1040,7 +1040,7 @@ struct melee_t : public rogue_attack_t
     }
 
     if( p -> _buffs.blade_flurry   ) h *= 1.0 / ( 1.0 + 0.20 );
-    if( p -> _buffs.slice_and_dice ) h *= 1.0 / ( 1.0 + 0.40 + ( p -> gear.tier6_2pc ? 0.05 : 0.00 ) );
+    if( p -> _buffs.slice_and_dice ) h *= 1.0 / ( 1.0 + 0.40 + ( p -> unique_gear -> tier6_2pc ? 0.05 : 0.00 ) );
 
     p -> uptimes_blade_flurry   -> update( p -> _buffs.blade_flurry   != 0 );
     p -> uptimes_slice_and_dice -> update( p -> _buffs.slice_and_dice != 0 );
@@ -1200,7 +1200,7 @@ struct backstab_t : public rogue_attack_t
 			       p -> talents.find_weakness    * 0.02 +
 			       p -> talents.opportunity      * 0.10 +
 			       p -> talents.surprise_attacks * 0.10 +
-			       p -> gear.tier6_4pc           * 0.06 );
+			       p -> unique_gear -> tier6_4pc * 0.06 );
 
     base_crit += ( p -> talents.puncturing_wounds * 0.10 +
                    p -> talents.turn_the_tables   * 0.02 );
@@ -1732,7 +1732,7 @@ struct hemorrhage_t : public rogue_attack_t
     weapon_multiplier          *= 1.10 + p -> talents.sinister_calling * (sim -> P309 ? .01 : .02);
     base_multiplier            *= 1.0 + ( p -> talents.find_weakness    * 0.02 +
                                           p -> talents.surprise_attacks * 0.10 +
-                                          p -> gear.tier6_4pc           * 0.06 );
+                                          p -> unique_gear -> tier6_4pc * 0.06 );
     base_crit                  += p -> talents.turn_the_tables * 0.02;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
 
@@ -2017,9 +2017,9 @@ struct mutilate_t : public rogue_attack_t
     adds_combo_points      = true;
     normalize_weapon_speed = true;
     
-    base_multiplier  *= 1.0 + ( p -> talents.find_weakness * 0.02 +
-                                p -> talents.opportunity   * 0.10 +
-                                p -> gear.tier6_4pc        * 0.06 );
+    base_multiplier  *= 1.0 + ( p -> talents.find_weakness    * 0.02 +
+                                p -> talents.opportunity      * 0.10 +
+                                p -> unique_gear -> tier6_4pc * 0.06 );
 
     base_crit += ( p -> talents.puncturing_wounds * 0.05 +
                    p -> talents.turn_the_tables   * 0.02 );
@@ -2131,13 +2131,13 @@ struct rupture_t : public rogue_attack_t
     requires_combo_points = true;
     base_cost             = 25;
     base_tick_time        = 2.0; 
-    base_multiplier      *= 1.0 + ( p -> talents.blood_spatter   * 0.15 +
-                                    p -> talents.find_weakness   * 0.02 +
-                                    p -> talents.serrated_blades * 0.10 +
-                                    p -> gear.tier7_2pc          * 0.10 );
+    base_multiplier      *= 1.0 + ( p -> talents.blood_spatter    * 0.15 +
+                                    p -> talents.find_weakness    * 0.02 +
+                                    p -> talents.serrated_blades  * 0.10 +
+                                    p -> unique_gear -> tier7_2pc * 0.10 );
 
     if( p -> talents.surprise_attacks ) may_dodge = false;
-	if( p -> gear.tier8_4pc ) tick_may_crit = true;
+	if( p -> unique_gear -> tier8_4pc ) tick_may_crit = true;
 
     static double dmg_79[] = { 145, 163, 181, 199, 217 };
     static double dmg_74[] = { 122, 137, 152, 167, 182 };
@@ -2282,7 +2282,7 @@ struct sinister_strike_t : public rogue_attack_t
                                p -> talents.blade_twisting   * 0.05 +
                                p -> talents.find_weakness    * 0.02 +
                                p -> talents.surprise_attacks * 0.10 +
-                               p -> gear.tier6_4pc           * 0.06 );
+                               p -> unique_gear -> tier6_4pc * 0.06 );
 
     base_crit += p -> talents.turn_the_tables * 0.02;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
@@ -2580,7 +2580,7 @@ struct deadly_poison_t : public rogue_poison_t
   {
     rogue_t* p = player -> cast_rogue();
     rogue_poison_t::tick();
-    if( p -> gear.tier8_2pc )
+    if( p -> unique_gear -> tier8_2pc )
     {
       p -> resource_gain( RESOURCE_ENERGY, 1, p -> gains.tier8_2pc );
     }
