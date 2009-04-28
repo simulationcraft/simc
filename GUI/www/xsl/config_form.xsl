@@ -276,13 +276,22 @@
 			
 			
 			<!-- List of options for this user (except for class and name, which were explicity positioned above already) -->
+			<!--  This is probably not the ultimately best way to handle this, since its based on weird indirect C++ context scraping -->
+			
 			<!-- Show all the straight gear-stat related fields -->
 			<xsl:call-template name="player_option_list">
 				<xsl:with-param name="index" select="$index" />
 				<xsl:with-param name="name" select="'Gear'" />
-				<xsl:with-param name="which" select="//supported_classes/class[@class='all_classes']/option[not(@name='class') and not(@name='name') and @tag='gear'] | //supported_classes/class[@class=$class]/option[not(@name='class') and not(@name='name') and @tag='gear']" />
+				<xsl:with-param name="which" select="//supported_classes/class[@class='all_classes']/option[not(@name='class') and not(@name='name') and @tag='gear_stats'] | //supported_classes/class[@class=$class]/option[not(@name='class') and not(@name='name') and @tag='gear_stats']" />
 			</xsl:call-template>
 			
+			<!-- Show all the straight gem-stat related fields -->
+			<xsl:call-template name="player_option_list">
+				<xsl:with-param name="index" select="$index" />
+				<xsl:with-param name="name" select="'Gems'" />
+				<xsl:with-param name="which" select="//supported_classes/class[@class='all_classes']/option[not(@name='class') and not(@name='name') and @tag='gem_stats'] | //supported_classes/class[@class=$class]/option[not(@name='class') and not(@name='name') and @tag='gem_stats']" />
+			</xsl:call-template>
+
 			<!-- Show all the options dealing with tier gear effects -->
 			<xsl:call-template name="player_option_list">
 				<xsl:with-param name="index" select="$index" />
@@ -315,7 +324,7 @@
 			<xsl:call-template name="player_option_list">
 				<xsl:with-param name="index" select="$index" />
 				<xsl:with-param name="name" select="'Other'" />
-				<xsl:with-param name="which" select="//supported_classes/class[@class='all_classes']/option[not(@name='class') and not(@name='name') and not(@tag='glyphs') and not(@tag='tiers') and not(@tag='gear') and not(@tag='idols') and not(@tag='totems')] | //supported_classes/class[@class=$class]/option[not(@name='class') and not(@name='name') and not(@tag='glyphs') and not(@tag='tiers') and not(@tag='gear') and not(@tag='idols') and not(@tag='totems')]" />
+				<xsl:with-param name="which" select="//supported_classes/class[@class='all_classes']/option[not(@name='class') and not(@name='name') and not(@tag='glyphs') and not(@tag='tiers') and not(@tag='gear_stats') and not(@tag='gem_stats') and not(@tag='idols') and not(@tag='totems')] | //supported_classes/class[@class=$class]/option[not(@name='class') and not(@name='name') and not(@tag='glyphs') and not(@tag='tiers') and not(@tag='gear_stats') and not(@tag='gem_stats') and not(@tag='idols') and not(@tag='totems')]" />
 			</xsl:call-template>
 			
 		</li>
