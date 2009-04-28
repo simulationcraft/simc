@@ -74,42 +74,47 @@ function fetch_character_from_armory($character_name, $server_name)
 	}
 	
 	// === FETCH THE CHARACTER SHEET FOR THE CHARACTER ===
-	// create curl resource
+	// character sheet
 	$ch = curl_init();
-	
-	// set url
 	curl_setopt($ch, CURLOPT_URL, "http://www.wowarmory.com/character-sheet.xml?r=".urlencode($server_name)."&n=".urlencode($character_name) );
-	
-	// return the transfer as a string
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-	
-	// Pretend to be a browser that understands XML
 	curl_setopt($ch, CURLOPT_USERAGENT,  "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.2) Gecko/20070319 Firefox/2.0.0.3");
-	
-	// $output contains the output string
 	$response_xml = curl_exec($ch);
-	
-	// close curl resource to free up system resources
 	curl_close($ch);
-	
-	// Create an XML object of the response
-	$xml = new SimpleXMLElement(preg_replace('/<\?.*\?>/', '', $response_xml));
-	if(count($xml->xpath('//errorhtml')) > 0) {
+	$character_xml = new SimpleXMLElement(preg_replace('/<\?.*\?>/', '', $response_xml));
+	if(count($character_xml->xpath('//errorhtml')) > 0) {
 		return false;
 	}
 
+	// character sheet
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, "http://www.wowarmory.com/character-talents.xml?r=".urlencode($server_name)."&n=".urlencode($character_name) );
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	curl_setopt($ch, CURLOPT_USERAGENT,  "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.2) Gecko/20070319 Firefox/2.0.0.3");
+	$response_xml = curl_exec($ch);
+	curl_close($ch);
+	$talent_xml = new SimpleXMLElement(preg_replace('/<\?.*\?>/', '', $response_xml));
+	if(count($talent_xml->xpath('//errorhtml')) > 0) {
+		return false;
+	}
+
+	// Pull out some useful values
+	$class_id = (string)fetch_single_XML_xpath($character_xml, 'characterInfo/character/@classId');
+	$talent_string = (string)fetch_single_XML_xpath($talent_xml, 'characterInfo/talentGroups/talentGroup[@active="1"]/talentSpec/@value');
+	
 	
 	// === PREPARE THE CHARACTER OUTPUT ARRAY ===
 	// These fields should match up with fields in the config options 
 	$arr_character = array();
 	
 	// base stats
-	$arr_character['class'] = strtolower((string)fetch_single_XML_xpath($xml, 'characterInfo/character/@class'));
-	$arr_character['name'] = strtolower((string)fetch_single_XML_xpath($xml, 'characterInfo/character/@name'));
-	$arr_character['race'] = strtolower((string)fetch_single_XML_xpath($xml, 'characterInfo/character/@race'));
+	$arr_character['class'] = strtolower((string)fetch_single_XML_xpath($character_xml, 'characterInfo/character/@class'));
+	$arr_character['name'] = strtolower((string)fetch_single_XML_xpath($character_xml, 'characterInfo/character/@name'));
+	$arr_character['race'] = strtolower((string)fetch_single_XML_xpath($character_xml, 'characterInfo/character/@race'));
+	$arr_character['talents'] = "http://www.wowarmory.com/talent-calc.xml?cid=$class_id&tal=$talent_string";
 
 	// glyphs
-	$arr_glyphs = $xml->xpath('characterInfo/characterTab/glyphs/glyph/@name');
+	$arr_glyphs = $character_xml->xpath('characterInfo/characterTab/glyphs/glyph/@name');
 	if( is_array($arr_glyphs) ) {
 		foreach($arr_glyphs as $glyph_name) {
 			$stripped_name = str_replace(array('glyph of ', ' '), array('glyph ', '_'), strtolower($glyph_name));
