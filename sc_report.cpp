@@ -1360,7 +1360,11 @@ const char* report_t::gear_weights_lootrank( std::string& s,
   char buffer[ 1024 ];
 
   s = "http://www.lootrank.com/wow/wr.asp?";
-
+  
+  // Restrict lootrank to rare gems until epic gems become available
+  // Gem: Not Set = Epic, 2=Common, 3=Rare
+  s += "&Gem=3";
+  
   switch( p -> type )
   {
   case DEATH_KNIGHT: s += "Cla=2048"; break;
@@ -1377,7 +1381,7 @@ const char* report_t::gear_weights_lootrank( std::string& s,
   }
 
   const char* attr_prefix[] = { "None", "Str", "Agi", "Sta", "Int", "Spi" };
-
+  
   for( int j=0; j < ATTRIBUTE_MAX; j++ )
   {
     if( sim -> scaling -> stats.attribute[ j ] ) 
@@ -1451,7 +1455,11 @@ const char* report_t::gear_weights_wowhead( std::string& s,
   default: assert(0);
   }
 
-  s += "gm=4;gb=1;";
+  // Restrict wowhead to rare gems
+  s += "gm=3;gb=1;";
+  // Replace with this when  epic gems become available
+  // s += "gm=4;gb=1;";
+
 
   std::vector<int> prefix_list;
   std::vector<double> value_list;
