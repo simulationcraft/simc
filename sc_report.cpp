@@ -1361,10 +1361,6 @@ const char* report_t::gear_weights_lootrank( std::string& s,
 
   s = "http://www.lootrank.com/wow/wr.asp?";
   
-  // Restrict lootrank to rare gems until epic gems become available
-  // Gem: Not Set = Epic, 2=Common, 3=Rare
-  s += "&Gem=3";
-  
   switch( p -> type )
   {
   case DEATH_KNIGHT: s += "Cla=2048"; break;
@@ -1379,6 +1375,10 @@ const char* report_t::gear_weights_lootrank( std::string& s,
   case WARRIOR:      s += "Cla=1";    break;
   default: assert(0);
   }
+
+  // Restrict lootrank to rare gems until epic gems become available
+  // Gem: Not Set = Epic, 2=Common, 3=Rare
+  s += "&Gem=3";
 
   const char* attr_prefix[] = { "None", "Str", "Agi", "Sta", "Int", "Spi" };
   
