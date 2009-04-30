@@ -272,12 +272,13 @@ struct rng_t
 {
   bool   gaussian_pair_use;
   double gaussian_pair_value;
-  static rng_t* init( int sfmt );
+  rng_t() : gaussian_pair_use(false) {}
   virtual int roll( double chance );
   virtual double real();
   virtual double range( double min, double max );
   virtual double gaussian( double mean, double stddev );
   virtual ~rng_t() {}
+  static rng_t* init( int sfmt );
 };
 
 // Event =====================================================================
