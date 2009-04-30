@@ -235,6 +235,7 @@ struct hunter_t : public player_t
   // Character Definition
   virtual void      init();
   virtual void      init_base();
+  virtual void      init_scaling();
   virtual void      reset();
   virtual double    composite_attack_power();
   virtual bool      get_talent_trees( std::vector<int*>& beastmastery, std::vector<int*>& marksmanship, std::vector<int*>& survival );
@@ -242,6 +243,7 @@ struct hunter_t : public player_t
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet( const std::string& name );
   virtual int       primary_resource() { return RESOURCE_MANA; }
+  virtual int       primary_role()     { return ROLE_ATTACK; }
 
   // Event Tracking
   virtual void regen( double periodicity );
@@ -3755,6 +3757,17 @@ void hunter_t::init_base()
   mana_per_intellect = 15;
 
   position = POSITION_RANGED;
+}
+
+// hunter_t::init_scaling ====================================================
+
+void hunter_t::init_scaling()
+{
+  player_t::init_scaling();
+
+  scales_with[ STAT_INTELLECT ] = 1;
+
+  if( talents.hunter_vs_wild ) scales_with[ STAT_STAMINA ] = 1;
 }
 
 // hunter_t::reset ===========================================================

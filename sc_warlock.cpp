@@ -264,12 +264,14 @@ struct warlock_t : public player_t
 
   // Character Definition
   virtual void      init_base();
+  virtual void      init_scaling();
   virtual void      reset();
   virtual bool      get_talent_trees( std::vector<int*>& affliction, std::vector<int*>& demonology, std::vector<int*>& destruction );
   virtual bool      parse_option ( const std::string& name, const std::string& value );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
   virtual int       primary_resource() { return RESOURCE_MANA; }
+  virtual int       primary_role()     { return ROLE_SPELL; }
   virtual double    composite_spell_power( int school );
 
   // Event Tracking
@@ -4930,6 +4932,15 @@ void warlock_t::init_base()
 
   mana_per_intellect *= 1.0 + ( talents.fel_intellect + talents.fel_vitality ) * 0.01;
   health_per_stamina *= 1.0 + ( talents.fel_stamina   + talents.fel_vitality ) * 0.01;
+}
+
+// warlock_t::init_scaling ===================================================
+
+void warlock_t::init_scaling()
+{
+  player_t::init_scaling();
+
+  if( talents.demonic_knowledge ) scales_with[ STAT_STAMINA ] = 1;
 }
 
 // warlock_t::reset ==========================================================

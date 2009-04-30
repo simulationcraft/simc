@@ -367,11 +367,6 @@ player_t::player_t( sim_t*             s,
     attribute_multiplier[ i ] = attribute_multiplier_initial[ i ] = 1.0;
   }
 
-  for( int i=0; i < PROF_MAX; i++ )
-  {
-    profession[ i ] = 0;    
-  }
-
   for( int i=0; i <= SCHOOL_MAX; i++ )
   {
     initial_spell_power[ i ] = spell_power[ i ] = 0;
@@ -383,6 +378,9 @@ player_t::player_t( sim_t*             s,
 
     resource_lost[ i ] = resource_gained[ i ] = 0;
   }
+
+  for( int i=0; i < PROF_MAX; i++ ) profession[ i ] = 0;    
+  for( int i=0; i < STAT_MAX; i++ ) scales_with[ i ] = 0;
 
   // Setup default gear profiles
 
@@ -1017,6 +1015,46 @@ void player_t::init_stats()
   
   iteration_dps.clear();
   iteration_dps.insert( iteration_dps.begin(), sim -> iterations, 0 );
+}
+
+// player_t::init_scaling ==================================================
+
+void player_t::init_scaling() 
+{
+  if( ! is_pet() )
+  {
+    int role = primary_role();
+
+    int attack = ( ( role == ROLE_ATTACK ) || ( role == ROLE_HYBRID ) ) ? 1 : 0;
+    int spell  = ( ( role == ROLE_SPELL  ) || ( role == ROLE_HYBRID ) ) ? 1 : 0;
+
+    scales_with[ STAT_STRENGTH  ] = attack;
+    scales_with[ STAT_AGILITY   ] = attack;
+    scales_with[ STAT_STAMINA   ] = 0;
+    scales_with[ STAT_INTELLECT ] = spell;
+    scales_with[ STAT_SPIRIT    ] = spell;
+
+    scales_with[ STAT_HEALTH ] = 0;
+    scales_with[ STAT_MANA   ] = 0;
+    scales_with[ STAT_RAGE   ] = 0;
+    scales_with[ STAT_ENERGY ] = 0;
+    scales_with[ STAT_FOCUS  ] = 0;
+    scales_with[ STAT_RUNIC  ] = 0;
+
+    scales_with[ STAT_SPELL_POWER       ] = spell;
+    scales_with[ STAT_SPELL_PENETRATION ] = 0;
+    scales_with[ STAT_MP5               ] = 0;
+
+    scales_with[ STAT_ATTACK_POWER             ] = attack;
+    scales_with[ STAT_EXPERTISE_RATING         ] = attack;
+    scales_with[ STAT_ARMOR_PENETRATION_RATING ] = attack;
+
+    scales_with[ STAT_HIT_RATING   ] = 1;
+    scales_with[ STAT_CRIT_RATING  ] = 1;
+    scales_with[ STAT_HASTE_RATING ] = 1;
+
+    scales_with[ STAT_ARMOR ] = 0;
+  }
 }
 
 // player_t::composite_attack_power ========================================

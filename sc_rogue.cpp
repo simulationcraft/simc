@@ -252,6 +252,7 @@ struct rogue_t : public player_t
   virtual bool      parse_option( const std::string& name, const std::string& value );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual int       primary_resource() { return RESOURCE_ENERGY; }
+  virtual int       primary_role()     { return ROLE_ATTACK; }
 
   // Utilities 
   double combo_point_rank( double* cp_list )

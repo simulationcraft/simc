@@ -59,13 +59,13 @@ void scaling_t::analyze_attributes()
 
       for( int j=0; j < num_players; j++ )
       {
-              player_t*       p =       sim -> players_by_name[ j ];
-              player_t*   ref_p =   ref_sim -> find_player( p -> name() );
-              player_t* child_p = child_sim -> find_player( p -> name() );
+        player_t*       p =       sim -> players_by_name[ j ];
+        player_t*   ref_p =   ref_sim -> find_player( p -> name() );
+        player_t* child_p = child_sim -> find_player( p -> name() );
         
-              double f = ( child_p -> dps - ref_p -> dps ) / stats.attribute[ i ];
+        double f = ( child_p -> dps - ref_p -> dps ) / stats.attribute[ i ];
 
-              if( f >= scale_factor_noise ) p -> scaling.attribute[ i ] = f;
+        if( f >= scale_factor_noise ) p -> scaling.attribute[ i ] = f;
       }
 
       if( ref_sim != sim ) delete ref_sim;

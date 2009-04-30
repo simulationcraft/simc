@@ -262,6 +262,7 @@ struct shaman_t : public player_t
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
   virtual int       primary_resource() { return RESOURCE_MANA; }
+  virtual int       primary_role()     { return talents.dual_wield ? ROLE_ATTACK : ROLE_SPELL; }
 
   // Event Tracking
   virtual void regen( double periodicity );

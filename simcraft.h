@@ -258,6 +258,8 @@ enum profession_type {
    PROF_MAX
 }; 
 
+enum role_type { ROLE_NONE=0, ROLE_ATTACK, ROLE_SPELL, ROLE_TANK, ROLE_HYBRID, ROLE_MAX };
+
 // Thread Wrappers ===========================================================
 
 struct thread_t
@@ -338,6 +340,9 @@ struct gear_stats_t
   int armor;
 
   gear_stats_t() { memset( (void*) this, 0x00, sizeof( gear_stats_t ) ); }
+
+  void set_stat( int stat, int value );
+  int  get_stat( int stat );
 };
 
 // Simulation Engine =========================================================
@@ -707,11 +712,12 @@ struct player_t
   std::string gear_weights_lootrank_link, gear_weights_wowhead_link;
 
   // Gear
-  gear_stats_t   equip_stats;
-  gear_stats_t   gear_stats;
-  gear_stats_t   gem_stats;
-  enchant_t*     enchant;
+  gear_stats_t equip_stats;
+  gear_stats_t gear_stats;
+  gear_stats_t gem_stats;
+  enchant_t* enchant;
   unique_gear_t* unique_gear;
+  int scales_with[ STAT_MAX ];
 
   struct buff_t
   {
@@ -887,6 +893,7 @@ struct player_t
   virtual void init_professions();
   virtual void init_actions();
   virtual void init_rating();
+  virtual void init_scaling();
   virtual void init_stats();
 
   virtual void reset();
@@ -925,6 +932,7 @@ struct player_t
   virtual double resource_loss( int resource, double amount, action_t* a=0 );
   virtual bool   resource_available( int resource, double cost );
   virtual int    primary_resource() { return RESOURCE_NONE; }
+  virtual int    primary_role()     { return ROLE_HYBRID; }
 
   virtual void stat_gain( int stat, double amount );
   virtual void stat_loss( int stat, double amount );
