@@ -123,7 +123,7 @@ int chart_t::raid_dps( std::vector<std::string>& images,
 
     for( int i=0; i < num_players; i++ )
     {
-      player_t* p = sim -> players_by_rank[ i ];
+      player_t* p = player_list[ i ];
       snprintf( buffer, sizeof(buffer), "%s%.0f", (i?"|":""), p -> dps ); s += buffer;
     }
     s += "&";
@@ -133,13 +133,13 @@ int chart_t::raid_dps( std::vector<std::string>& images,
     for( int i=0; i < num_players; i++ )
     {
       if( i ) s += ",";
-      s += get_color( sim -> players_by_rank[ i ] );
+      s += get_color( player_list[ i ] );
     }
     s += "&";
     s += "chm=";
     for( int i=0; i < num_players; i++ )
     {
-      player_t* p = sim -> players_by_rank[ i ];
+      player_t* p = player_list[ i ];
       snprintf( buffer, sizeof(buffer), "%st++%.0f++%s,%s,%d,0,15", (i?"|":""), p -> dps, p -> name(), get_color( p ), i ); s += buffer;
     }
     s += "&";
@@ -252,7 +252,7 @@ int chart_t::raid_gear( std::vector<std::string>& images,
     for( int i = num_players-1; i >= 0; i-- )
     {
       s += "|";
-      s += sim -> players_by_rank[ i ] -> name();
+      s += player_list[ i ] -> name();
     }
     s += "&";
     s += "chxs=0,000000,15";
