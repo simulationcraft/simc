@@ -1119,14 +1119,14 @@ static void trigger_improved_shadow_bolt( spell_t* s )
   {
     expiration_t( sim_t* sim, warlock_t* p ) : event_t( sim )
     {
-      if( sim -> log ) report_t::log( sim, "%s gains Improved Shadow Bolt %d", sim -> target -> name(), sim -> target -> debuffs.improved_shadow_bolt );
+      if( sim -> log ) log_t::output( sim, "%s gains Improved Shadow Bolt %d", sim -> target -> name(), sim -> target -> debuffs.improved_shadow_bolt );
       name = "Improved Shadow Bolt Expiration";
       sim -> add_event( this, 30.0 );
       sim -> target -> debuffs.improved_shadow_bolt = p -> talents.improved_shadow_bolt;
     }
     virtual void execute()
     {
-      if( sim -> log ) report_t::log( sim, "%s loses Improved Shadow Bolt", sim -> target -> name() );
+      if( sim -> log ) log_t::output( sim, "%s loses Improved Shadow Bolt", sim -> target -> name() );
       sim -> target -> debuffs.improved_shadow_bolt = 0;
       sim -> target -> expirations.improved_shadow_bolt = 0;
     }
@@ -1293,7 +1293,7 @@ static void trigger_soul_leech( spell_t* s )
         {
           if( s -> sim -> roll( 0.5 * p -> talents.improved_soul_leech ) )
           {
-	    p -> trigger_replenishment();
+            p -> trigger_replenishment();
           }
         }
       }
@@ -1442,7 +1442,7 @@ static void queue_decimation( warlock_spell_t* s )
 // trigger_decimation =====================================================
 
 static void trigger_decimation( warlock_spell_t* s,
-				int result )
+                                int result )
 {
   warlock_t* p = s -> player -> cast_warlock();
 
@@ -1627,21 +1627,21 @@ static void trigger_pandemic( spell_t* s )
 
 static void trigger_pyroclasm( spell_t* s )
 {
-  static int blizzID[]={0,18096,18073,63245};
+  static int aura_id[]={ 0, 18096, 18073, 63245 };
 
   struct expiration_t : public event_t
   {
     expiration_t( sim_t* sim, warlock_t* p ) : event_t( sim, p )
     {
       name = "Pyroclasm Expiration";
-      p -> aura_gain( "Pyroclasm", blizzID[p->talents.pyroclasm%4] );
+      p -> aura_gain( "Pyroclasm", aura_id[p->talents.pyroclasm%4] );
       p -> _buffs.pyroclasm = 1;
       sim -> add_event( this, 10.0 );
     }
     virtual void execute()
     {
       warlock_t* p = player -> cast_warlock();
-      p -> aura_loss( "Pyroclasm", blizzID[p->talents.pyroclasm%4] );
+      p -> aura_loss( "Pyroclasm", aura_id[p->talents.pyroclasm%4] );
       p -> _buffs.pyroclasm = 0;
       p -> _expirations.pyroclasm = 0;
     }
@@ -2520,7 +2520,7 @@ struct shadow_bolt_t : public warlock_spell_t
   }
 
   virtual void travel( int    travel_result, 
-		       double travel_dmg )
+                       double travel_dmg )
   {
     warlock_spell_t::travel( travel_result, travel_dmg );
     trigger_decimation( this, travel_result );
@@ -2817,7 +2817,7 @@ struct corruption_t : public warlock_spell_t
       { NULL }
     };
     parse_options( options, options_str );
- 	     
+             
     static rank_t ranks[] =
     {
       { 77, 10, 0, 0, 180, 0.14 },
@@ -3845,7 +3845,7 @@ struct incinerate_t : public warlock_spell_t
   }
 
   virtual void travel( int    travel_result, 
-		       double travel_dmg )
+                       double travel_dmg )
   {
     warlock_spell_t::travel( travel_result, travel_dmg );
     trigger_decimation( this, travel_result );
@@ -4061,7 +4061,7 @@ struct life_tap_t : public warlock_spell_t
   life_tap_t( player_t* player, const std::string& options_str ) : 
     warlock_spell_t( "life_tap", player, SCHOOL_SHADOW, TREE_AFFLICTION ), trigger(1000), inferno(0), glyph(0), tier7_4pc(0), max(0), base_tap(0)
   {
-    blizzID = 57946;
+    id = 57946;
 
     option_t options[] =
     {
@@ -4082,7 +4082,7 @@ struct life_tap_t : public warlock_spell_t
   virtual void execute() 
   {
     warlock_t* p = player -> cast_warlock();
-    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     p -> procs_life_tap -> occur();
     double mana     = base_tap + 3.0 * p -> spirit();
     p -> resource_loss( RESOURCE_HEALTH, mana );
@@ -4151,7 +4151,7 @@ struct dark_pact_t : public warlock_spell_t
   virtual void execute() 
   {
     warlock_t* p = player -> cast_warlock();
-    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     p -> procs_dark_pact -> occur();
     player_buff();
     double mana = ( base_dd_max + ( direct_power_mod * p -> composite_spell_power( SCHOOL_SHADOW ) ) ) * base_multiplier * player_multiplier;
@@ -4191,7 +4191,7 @@ struct fel_armor_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
 
-    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
 
     p -> _buffs.fel_armor = bonus_spell_power;
     p -> _buffs.demon_armor = 0;
@@ -4230,7 +4230,7 @@ struct sacrifice_pet_t : public warlock_spell_t
   virtual void execute() 
   {
     warlock_t* p = player -> cast_warlock();
-    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     p -> _buffs.pet_sacrifice = p -> active_pet -> pet_type;
     p -> active_pet -> dismiss();
     p -> active_pet = 0;
@@ -4288,7 +4288,7 @@ struct inferno_t : public warlock_spell_t
     parse_options( options, options_str );
 
     if( max_health_percentage == 0 && 
-	max_time_to_die       == 0 )
+        max_time_to_die       == 0 )
     {
       max_time_to_die = 60;
     }
@@ -4437,7 +4437,7 @@ struct metamorphosis_t : public warlock_spell_t
     };
 
     warlock_t* p = player -> cast_warlock();
-    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     update_ready();
     new ( sim ) expiration_t( sim, p );
   }
@@ -4490,7 +4490,7 @@ struct demonic_empowerment_t : public warlock_spell_t
     };
 
     warlock_t* p = player -> cast_warlock();
-    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     update_ready();
     new ( sim ) expiration_t( sim, p -> active_pet );
   }
@@ -4543,7 +4543,7 @@ struct fire_stone_t : public warlock_spell_t
 
   virtual void execute()
   {
-    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
 
     player -> main_hand_weapon.buff = FIRE_STONE;
     player -> spell_crit += bonus_crit / player -> rating.spell_crit;
@@ -4579,7 +4579,7 @@ struct spell_stone_t : public warlock_spell_t
 
   virtual void execute()
   {
-    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
 
     player -> main_hand_weapon.buff = SPELL_STONE;
     player -> haste_rating += bonus_haste;
@@ -4618,7 +4618,7 @@ struct wait_for_decimation_t : public action_t
   {
     warlock_t* p = player -> cast_warlock();
 
-    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
 
     trigger_gcd = p -> decimation_queue.front() - sim -> current_time;
 
@@ -4631,9 +4631,9 @@ struct wait_for_decimation_t : public action_t
     
     if( sim -> target -> health_percentage() <= 35 )
       if( ! p -> _buffs.decimation )
-	if( ! p -> decimation_queue.empty() )
-	  if( ( p -> decimation_queue.front() - sim -> current_time ) <= time )
-	    return true;
+        if( ! p -> decimation_queue.empty() )
+          if( ( p -> decimation_queue.front() - sim -> current_time ) <= time )
+            return true;
 
     return false;
   }
@@ -4657,16 +4657,16 @@ struct demonic_empathy_callback_t : public action_callback_t
     {
       expiration_t( sim_t* sim, warlock_t* o ) : event_t( sim, o )
       {
-	name = "Demonic Empathy Expiration";
-	o -> aura_gain( "Demonic Empathy" );
-	sim -> add_event( this, 15.0 );
+        name = "Demonic Empathy Expiration";
+        o -> aura_gain( "Demonic Empathy" );
+        sim -> add_event( this, 15.0 );
       }
       virtual void execute()
       {
-	warlock_t* o = player -> cast_warlock();
-	o -> aura_loss( "Demonic Empathy" );
-	o -> _buffs.demonic_empathy = 0;
-	o -> _expirations.demonic_empathy = 0;
+        warlock_t* o = player -> cast_warlock();
+        o -> aura_loss( "Demonic Empathy" );
+        o -> _buffs.demonic_empathy = 0;
+        o -> _expirations.demonic_empathy = 0;
       }
     };
   
@@ -4703,27 +4703,27 @@ struct demonic_pact_callback_t : public action_callback_t
     {
       expiration_t( sim_t* sim, warlock_pet_t* pet, double buff ) : event_t( sim, pet )
       {
-	name = "Demonic Pact Expiration";
-	warlock_t* o = pet -> owner -> cast_warlock();
-	for( player_t* p = sim -> player_list; p; p = p -> next )
+        name = "Demonic Pact Expiration";
+        warlock_t* o = pet -> owner -> cast_warlock();
+        for( player_t* p = sim -> player_list; p; p = p -> next )
         {
-	  p -> aura_gain( "Demonic Pact", 47235 + o -> talents.demonic_pact );
-	  p -> buffs.demonic_pact = buff; 
-	  p -> buffs.demonic_pact_pet = pet;
-	}
-	sim -> add_event( this, 12.0 );
+          p -> aura_gain( "Demonic Pact", 47235 + o -> talents.demonic_pact );
+          p -> buffs.demonic_pact = buff; 
+          p -> buffs.demonic_pact_pet = pet;
+        }
+        sim -> add_event( this, 12.0 );
       }
       virtual void execute()
       {
-	warlock_pet_t* pet = (warlock_pet_t*) player -> cast_pet();
-	warlock_t* o = pet -> owner -> cast_warlock();
-	for( player_t* p = sim -> player_list; p; p = p -> next )
-	{
-	  p -> aura_loss( "Demonic Pact", 47235 + o -> talents.demonic_pact );
-	  p -> buffs.demonic_pact = 0;    
-	  p -> buffs.demonic_pact_pet = 0;
-	}
-	pet -> _expirations.demonic_pact = 0;
+        warlock_pet_t* pet = (warlock_pet_t*) player -> cast_pet();
+        warlock_t* o = pet -> owner -> cast_warlock();
+        for( player_t* p = sim -> player_list; p; p = p -> next )
+        {
+          p -> aura_loss( "Demonic Pact", 47235 + o -> talents.demonic_pact );
+          p -> buffs.demonic_pact = 0;    
+          p -> buffs.demonic_pact_pet = 0;
+        }
+        pet -> _expirations.demonic_pact = 0;
       }
     };
   
@@ -4748,13 +4748,13 @@ struct demonic_pact_callback_t : public action_callback_t
     if( p -> buffs.demonic_pact_pet ) 
     {
       if( p -> buffs.demonic_pact == buff &&
-	  p -> buffs.demonic_pact_pet == p )
+          p -> buffs.demonic_pact_pet == p )
       {
-	// If the SAME pet is putting up the SAME buff, then just let it reschedule the one in place.
+        // If the SAME pet is putting up the SAME buff, then just let it reschedule the one in place.
       }
       else
       {
-	event_t::cancel( ( (warlock_pet_t*) p -> buffs.demonic_pact_pet ) -> _expirations.demonic_pact );
+        event_t::cancel( ( (warlock_pet_t*) p -> buffs.demonic_pact_pet ) -> _expirations.demonic_pact );
       }
     }
 

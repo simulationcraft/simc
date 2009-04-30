@@ -68,9 +68,9 @@ void stats_t::reset( action_t* a )
 // stats_t::add =============================================================
 
 void stats_t::add( double amount,
-		   int    dmg_type,
-		   int    result,
-		   double time )
+                   int    dmg_type,
+                   int    result,
+                   double time )
 {
   player -> iteration_dmg += amount;
   total_dmg += amount;
@@ -86,7 +86,7 @@ void stats_t::add( double amount,
     if( amount > r.max_dmg ) r.max_dmg = amount;
 
     if( last_execute > 0 &&
-	last_execute != sim -> current_time )
+        last_execute != sim -> current_time )
     {
       num_intervals++;
       total_intervals += sim -> current_time - last_execute;

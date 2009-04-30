@@ -79,7 +79,7 @@ void sequence_t::reset()
       action_t* a = sub_actions[ i ];
       if( a -> wait_on_ready == -1 )
       {
-	a -> wait_on_ready = wait_on_ready;
+        a -> wait_on_ready = wait_on_ready;
       }
     }
   }

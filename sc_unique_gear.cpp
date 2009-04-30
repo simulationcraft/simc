@@ -29,12 +29,12 @@ struct stat_proc_callback_t : public action_callback_t
   {
     if( cooldown )
       if( sim -> current_time < cooldown_ready )
-	return;
+        return;
 
     if( proc_chance )
     {
       if( ! sim -> roll( proc_chance ) )
-	return;
+        return;
 
       proc -> occur();
     }
@@ -53,29 +53,29 @@ struct stat_proc_callback_t : public action_callback_t
     {
       if( expiration )
       {
-	expiration -> reschedule( duration );
+        expiration -> reschedule( duration );
       }
       else
       {
-	struct expiration_t : public event_t
-	{
-	  stat_proc_callback_t* callback;
-	  
-	  expiration_t( sim_t* sim, player_t* player, stat_proc_callback_t* cb ) : event_t( sim, player ), callback( cb )
-	  {
-	    name = callback -> name_str.c_str();
-	    sim -> add_event( this, callback -> duration );
-	  }
-	  virtual void execute()
-	  {
-	    player -> aura_loss( callback -> name_str.c_str() );
-	    player -> stat_loss( callback -> stat, callback -> amount * callback -> stacks );
-	    callback -> expiration = 0;
-	    callback -> stacks = 0;
-	  }
-	};
+        struct expiration_t : public event_t
+        {
+          stat_proc_callback_t* callback;
+          
+          expiration_t( sim_t* sim, player_t* player, stat_proc_callback_t* cb ) : event_t( sim, player ), callback( cb )
+          {
+            name = callback -> name_str.c_str();
+            sim -> add_event( this, callback -> duration );
+          }
+          virtual void execute()
+          {
+            player -> aura_loss( callback -> name_str.c_str() );
+            player -> stat_loss( callback -> stat, callback -> amount * callback -> stacks );
+            callback -> expiration = 0;
+            callback -> stacks = 0;
+          }
+        };
 
-	expiration = new ( sim ) expiration_t( sim, listener, this );
+        expiration = new ( sim ) expiration_t( sim, listener, this );
       }
     }
   }
@@ -99,15 +99,15 @@ struct discharge_proc_callback_t : public action_callback_t
     struct discharge_spell_t : public spell_t
     {
       discharge_spell_t( const char* n, player_t* p, double min, double max, int s ) : 
-	spell_t( n, p, RESOURCE_NONE, s )
+        spell_t( n, p, RESOURCE_NONE, s )
       {
-	trigger_gcd = 0;
-	base_dd_min = min;
-	base_dd_max = max;
-	may_crit    = true;
-	background  = true;
-	base_spell_power_multiplier = 0;
-	reset();
+        trigger_gcd = 0;
+        base_dd_min = min;
+        base_dd_max = max;
+        may_crit    = true;
+        background  = true;
+        base_spell_power_multiplier = 0;
+        reset();
       }
     };
 
@@ -122,11 +122,11 @@ struct discharge_proc_callback_t : public action_callback_t
   {
     if( cooldown )
       if( sim -> current_time < cooldown_ready )
-	return;
+        return;
 
     if( proc_chance )
       if( ! sim -> roll( proc_chance ) )
-	return;
+        return;
 
     if( ++stacks < max_stacks )
     {
@@ -139,7 +139,7 @@ struct discharge_proc_callback_t : public action_callback_t
       proc -> occur();
       
       if( cooldown ) 
-	cooldown_ready = sim -> current_time + cooldown;
+        cooldown_ready = sim -> current_time + cooldown;
     }
   }
 };
@@ -197,7 +197,7 @@ struct attack_power_trinket_t : public action_t
       }
     };
   
-    if( sim -> log ) report_t::log( sim, "Player %s uses %s Attack Power Trinket", player -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "Player %s uses %s Attack Power Trinket", player -> name(), name() );
     cooldown_ready = player -> sim -> current_time + cooldown;
     // Trinket use may not overlap.....
     player -> share_cooldown( cooldown_group, length );
@@ -258,7 +258,7 @@ struct spell_power_trinket_t : public action_t
       }
     };
   
-    if( sim -> log ) report_t::log( sim, "Player %s uses %s Spell Power Trinket", player -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "Player %s uses %s Spell Power Trinket", player -> name(), name() );
     cooldown_ready = player -> sim -> current_time + cooldown;
     // Trinket use may not overlap.....
     player -> share_cooldown( cooldown_group, length );
@@ -322,7 +322,7 @@ struct haste_trinket_t : public action_t
       }
     };
   
-    if( sim -> log ) report_t::log( sim, "Player %s uses %s Haste Trinket", player -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "Player %s uses %s Haste Trinket", player -> name(), name() );
     cooldown_ready = player -> sim -> current_time + cooldown;
     // Trinket use may not overlap.....
     player -> share_cooldown( cooldown_group, length );
@@ -480,8 +480,8 @@ void unique_gear_t::register_callbacks( player_t* p )
     {
       if( p -> attribute[ attr[ i ] ] > max_value )
       {
-	max_value = p -> attribute[ attr[ i ] ];
-	max_stat = stat[ i ];
+        max_value = p -> attribute[ attr[ i ] ];
+        max_stat = stat[ i ];
       }
     }
     cb = new stat_proc_callback_t( "darkmoon_greatness", p, max_stat, 1, 300, 0.35, 15.0, 45.0 );

@@ -97,8 +97,8 @@ void attack_t::player_buff()
   }
 
   if( sim -> debug ) 
-    report_t::log( sim, "attack_t::player_buff: %s hit=%.2f expertise=%.2f crit=%.2f crit_multiplier=%.2f", 
-		   name(), player_hit, player_expertise, player_crit, player_crit_multiplier );
+    log_t::output( sim, "attack_t::player_buff: %s hit=%.2f expertise=%.2f crit=%.2f crit_multiplier=%.2f", 
+                   name(), player_hit, player_expertise, player_crit, player_crit_multiplier );
 }
 
 // attack_t::target_debuff ==================================================
@@ -170,7 +170,7 @@ double attack_t::crit_chance( int delta_level )
 // attack_t::build_table ====================================================
 
 int attack_t::build_table( double* chances, 
-			   int*    results )
+                           int*    results )
 {
   double miss=0, dodge=0, parry=0, glance=0, block=0, crit=0;
 
@@ -191,8 +191,8 @@ int attack_t::build_table( double* chances,
     crit = crit_chance( delta_level );
   }
 
-  if( sim -> debug ) report_t::log( sim, "attack_t::build_table: %s miss=%.3f dodge=%.3f parry=%.3f glance=%.3f block=%.3f crit=%.3f",
-		   name(), miss, dodge, parry, glance, block, crit );
+  if( sim -> debug ) log_t::output( sim, "attack_t::build_table: %s miss=%.3f dodge=%.3f parry=%.3f glance=%.3f block=%.3f crit=%.3f",
+                   name(), miss, dodge, parry, glance, block, crit );
   
   double total = 0;
   int num_results = 0;
@@ -288,12 +288,12 @@ void attack_t::calculate_result()
 
       if( sim -> roll( crit_chance( delta_level ) ) )
       {
-	result = RESULT_CRIT;
+        result = RESULT_CRIT;
       }
     }
   }
 
-  if( sim -> debug ) report_t::log( sim, "%s result for %s is %s", player -> name(), name(), util_t::result_type_string( result ) );
+  if( sim -> debug ) log_t::output( sim, "%s result for %s is %s", player -> name(), name(), util_t::result_type_string( result ) );
 }
 
 // attack_t::execute =======================================================

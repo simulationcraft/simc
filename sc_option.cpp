@@ -30,7 +30,7 @@ static bool only_white_space( char* s )
 // remove_space =============================================================
 
 static void remove_white_space( std::string& buffer,
-				char*        line )
+                                char*        line )
 {
   while( is_white_space( *line ) ) line++;
 
@@ -58,7 +58,7 @@ void option_t::print( sim_t* sim, option_t* options )
     option_t& o = options[ i ];
 
     if( o.type != OPT_APPEND &&
-	o.type != OPT_DEPRECATED ) 
+        o.type != OPT_DEPRECATED ) 
     {
       fprintf( sim -> output_file, "\t%s : ", o.name );
     }
@@ -72,9 +72,9 @@ void option_t::print( sim_t* sim, option_t* options )
     case OPT_FLT:    fprintf( f, "%.2f\n", *( (double*)      o.address )                    ); break;
     case OPT_LIST:     
       {
-	std::vector<std::string>& v = *( (std::vector<std::string>*) o.address );
-	for( unsigned i=0; i < v.size(); i++ ) fprintf( f, "%s%s", (i?" ":""), v[ i ].c_str() );
-	fprintf( f, "\n" );
+        std::vector<std::string>& v = *( (std::vector<std::string>*) o.address );
+        for( unsigned i=0; i < v.size(); i++ ) fprintf( f, "%s%s", (i?" ":""), v[ i ].c_str() );
+        fprintf( f, "\n" );
       }
       break;
     case OPT_APPEND:     break;
@@ -87,9 +87,9 @@ void option_t::print( sim_t* sim, option_t* options )
 // option_t::parse ==========================================================
 
 bool option_t::parse( sim_t*             sim,
-		      option_t*          options,
-		      const std::string& name,
-		      const std::string& value )
+                      option_t*          options,
+                      const std::string& name,
+                      const std::string& value )
 {
   for( int i=0; options[ i ].name; i++ )
   {
@@ -107,13 +107,13 @@ bool option_t::parse( sim_t*             sim,
       case OPT_FLT:    *( (double*)      o.address ) = atof( value.c_str() );                break;
       case OPT_LIST:   ( (std::vector<std::string>*) o.address ) -> push_back( value );      break;
       case OPT_DEPRECATED: 
-	printf( "simcraft: option '%s' has been deprecated.\n", o.name );
-	if( o.address ) printf( "simcraft: please use '%s' instead.\n", (char*) o.address ); 
-	exit(0);
+        printf( "simcraft: option '%s' has been deprecated.\n", o.name );
+        if( o.address ) printf( "simcraft: please use '%s' instead.\n", (char*) o.address ); 
+        exit(0);
       default: assert(0);
       }
       return true;
-    }	 
+    }    
   }
 
   return false;
@@ -122,7 +122,7 @@ bool option_t::parse( sim_t*             sim,
 // option_t::parse ==========================================================
 
 bool option_t::parse( sim_t* sim,
-		      FILE*  file )
+                      FILE*  file )
 {
   char buffer[ 1024 ];
   while( fgets( buffer, 1024, file ) )
@@ -137,9 +137,9 @@ bool option_t::parse( sim_t* sim,
 // option_t::parse ==========================================================
 
 bool option_t::parse( sim_t* sim,
-		      char*  line )
+                      char*  line )
 {
-  if( sim -> debug ) report_t::log( sim, "option_t::parse: %s", line );
+  if( sim -> debug ) log_t::output( sim, "option_t::parse: %s", line );
 
   std::string buffer;
 
@@ -159,7 +159,7 @@ bool option_t::parse( sim_t* sim,
 // parse_talents ============================================================
 
 static void parse_talents( sim_t*       sim,
-         std::string& value )
+                           std::string& value )
 {
   sim -> active_player -> talents_str = value;
 
@@ -216,7 +216,7 @@ static void parse_talents( sim_t*       sim,
 // parse_active =============================================================
 
 static void parse_active( sim_t*       sim,
-			  std::string& value )
+                          std::string& value )
 {
   if( value == "owner" )
   {
@@ -247,7 +247,7 @@ static void parse_active( sim_t*       sim,
 // parse_optimal_raid =======================================================
 
 static void parse_optimal_raid( sim_t*       sim,
-				std::string& value )
+                                std::string& value )
 {
   sim -> optimal_raid = atoi( value.c_str() );
 
@@ -305,9 +305,9 @@ static void parse_optimal_raid( sim_t*       sim,
 // option_t::parse ==========================================================
 
 bool option_t::parse( sim_t*       sim,
-		      std::string& token )
+                      std::string& token )
 {
-  if( sim -> debug ) report_t::log( sim, "option_t::parse: %s", token.c_str() );
+  if( sim -> debug ) log_t::output( sim, "option_t::parse: %s", token.c_str() );
 
   if( token == "-" )
   {
@@ -335,34 +335,7 @@ bool option_t::parse( sim_t*       sim,
   name  = token.substr( 0, cut_pt );
   value = token.substr( cut_pt + 1 );
 
-  if( name == "output" )
-  {
-    if( ! sim -> parent )
-    {
-      if( sim -> output_file != stdout ) fclose( sim -> output_file );
-
-      sim -> output_file = fopen( value.c_str(), "w" );
-      if( ! sim -> output_file )
-      {
-			fprintf( stderr, "simcraft: Unable to open output file '%s'\n", value.c_str() );
-			exit(0);
-      }
-
-	  if (sim->log){  // opening/creating output file for Wlog_
-		  char Wlog_Name[100];
-		  strcpy(Wlog_Name,value.c_str());
-		  strcat(Wlog_Name,".WLOG.txt");
-		  sim -> log_file = fopen( Wlog_Name, "w" );
-		  if( ! sim -> log_file )
-		  {
-			fprintf( stderr, "simcraft: Unable to open LOG file '%s'\n", Wlog_Name );
-			exit(0);
-		  }
-	  }
-
-    }
-  }
-  else if( name == "patch" )
+  if( name == "patch" )
   {
     int arch, version, revision;
     if( 3 != util_t::string_split( value, ".", "i i i", &arch, &version, &revision ) )
@@ -371,6 +344,32 @@ bool option_t::parse( sim_t*       sim,
       return false;
     }
     sim -> patch.set( arch, version, revision );
+  }
+  else if( name == "combat_log" )
+  {
+    if( ! sim -> parent )
+    {
+      sim -> log_file = fopen( value.c_str(), "w" );
+      if( ! sim -> log_file )
+      {
+        fprintf( stderr, "simcraft: Unable to open combat log file '%s'\n", value.c_str() );
+        exit(0);
+      }
+    }
+  }
+  else if( name == "output" )
+  {
+    if( ! sim -> parent )
+    {
+      if( sim -> output_file != stdout ) fclose( sim -> output_file );
+
+      sim -> output_file = fopen( value.c_str(), "w" );
+      if( ! sim -> output_file )
+      {
+        fprintf( stderr, "simcraft: Unable to open output file '%s'\n", value.c_str() );
+        exit(0);
+      }
+    }
   }
   else if( name == "input" )
   {
@@ -456,8 +455,8 @@ bool option_t::parse( sim_t*       sim,
 // option_t::parse ==========================================================
 
 bool option_t::parse( sim_t* sim,
-		      int    argc, 
-		      char** argv )
+                      int    argc, 
+                      char** argv )
 {
   sim -> argc = argc;
   sim -> argv = argv;
@@ -480,6 +479,10 @@ bool option_t::parse( sim_t* sim,
   {
     sim -> debug = 0;
     sim -> log = 0;
+  }
+  if( sim -> log_file ) 
+  {
+    sim -> log = 1;
   }
   if( sim -> debug ) 
   {

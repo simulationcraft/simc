@@ -6,8 +6,8 @@
 #include "simcraft.h"
 
 double util_t::talent_rank( int    num, 
-			    int    max, 
-			    double increment )
+                            int    max, 
+                            double increment )
 {
   assert( num >= 0 );
   assert( max > 0 );
@@ -18,8 +18,8 @@ double util_t::talent_rank( int    num,
 }
 
 int util_t::talent_rank( int num, 
-			 int max, 
-			 int increment )
+                         int max, 
+                         int increment )
 {
   assert( num >= 0 );
   assert( max > 0 );
@@ -30,9 +30,9 @@ int util_t::talent_rank( int num,
 }
 
 double util_t::talent_rank( int    num, 
-			    int    max, 
-			    double first, 
-			    double second, ... )
+                            int    max, 
+                            double first, 
+                            double second, ... )
 {
   assert( num >= 0 );
   assert( max > 0 );
@@ -57,9 +57,9 @@ double util_t::talent_rank( int    num,
 }
 
 int util_t::talent_rank( int num, 
-			 int max, 
-			 int first, 
-			 int second, ... )
+                         int max, 
+                         int first, 
+                         int second, ... )
 {
   assert( num >= 0 );
   assert( max > 0 );
@@ -84,8 +84,8 @@ int util_t::talent_rank( int num,
 }
 
 double util_t::ability_rank( int    player_level, 
-			     double ability_value, 
-			     int    ability_level, ... )
+                             double ability_value, 
+                             int    ability_level, ... )
 {
   va_list vap;
   va_start( vap, ability_level );
@@ -102,8 +102,8 @@ double util_t::ability_rank( int    player_level,
 }
 
 int util_t::ability_rank( int player_level, 
-			  int ability_value, 
-			  int ability_level, ... )
+                          int ability_value, 
+                          int ability_level, ... )
 {
   va_list vap;
   va_start( vap, ability_level );
@@ -382,8 +382,8 @@ const char* util_t::food_type_string( int food )
 }
 
 int util_t::string_split( std::vector<std::string>& results, 
-			  const std::string&        str,
-			  const char*               delim )
+                          const std::string&        str,
+                          const char*               delim )
 {
   std::string buffer = str;
   std::string::size_type cut_pt;
@@ -405,8 +405,8 @@ int util_t::string_split( std::vector<std::string>& results,
 }
 
 int util_t::string_split( const std::string& str,
-			  const char*        delim, 
-			  const char*        format, ... )
+                          const char*        delim, 
+                          const char*        format, ... )
 {
   std::vector<std::string>    str_splits;
   std::vector<std::string> format_splits;

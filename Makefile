@@ -42,12 +42,14 @@ SRC =\
 	simcraft.h		\
 	sc_action.cpp		\
 	sc_attack.cpp		\
+	sc_chart.cpp		\
 	sc_consumable.cpp	\
 	sc_death_knight.cpp	\
 	sc_druid.cpp		\
 	sc_enchant.cpp		\
 	sc_event.cpp		\
 	sc_hunter.cpp		\
+	sc_log.cpp		\
 	sc_mage.cpp		\
 	sc_option.cpp		\
 	sc_pet.cpp		\

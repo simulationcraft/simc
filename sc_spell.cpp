@@ -100,8 +100,8 @@ void spell_t::player_buff()
     player_crit_multiplier *= 1.03;
   }
 
-  if( sim -> debug ) report_t::log( sim, "spell_t::player_buff: %s hit=%.2f crit=%.2f crit_multiplier=%.2f", 
-				    name(), player_hit, player_crit, player_crit_multiplier );
+  if( sim -> debug ) log_t::output( sim, "spell_t::player_buff: %s hit=%.2f crit=%.2f crit_multiplier=%.2f", 
+                                    name(), player_hit, player_crit, player_crit_multiplier );
 }
 
 // spell_t::target_debuff =====================================================
@@ -123,14 +123,14 @@ void spell_t::target_debuff( int dmg_type )
   t -> uptimes.improved_shadow_bolt -> update( t -> debuffs.improved_shadow_bolt != 0 );
 
   if( sim -> debug ) 
-    report_t::log( sim, "spell_t::target_debuff: %s multiplier=%.2f hit=%.2f crit=%.2f", 
-		   name(), target_multiplier, target_hit, target_crit );
+    log_t::output( sim, "spell_t::target_debuff: %s multiplier=%.2f hit=%.2f crit=%.2f", 
+                   name(), target_multiplier, target_hit, target_crit );
 }
    
 // spell_t::level_based_miss_chance ==========================================
 
 double spell_t::level_based_miss_chance( int player, 
-					 int target )
+                                         int target )
 {
   int delta_level = target - player;
   double miss=0;
@@ -188,12 +188,12 @@ void spell_t::calculate_result()
     {
       if( sim -> roll( total_crit() ) )
       {
-	result = RESULT_CRIT;
+        result = RESULT_CRIT;
       }
     }
   }
 
-  if( sim -> debug ) report_t::log( sim, "%s result for %s is %s", player -> name(), name(), util_t::result_type_string( result ) );
+  if( sim -> debug ) log_t::output( sim, "%s result for %s is %s", player -> name(), name(), util_t::result_type_string( result ) );
 }
 
 // spell_t::execute =========================================================

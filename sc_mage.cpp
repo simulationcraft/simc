@@ -254,7 +254,7 @@ static void stack_winters_chill( spell_t* s,
     }
     virtual void execute()
     {
-      if( sim -> log ) report_t::log( sim, "Target %s loses Winters Chill", sim -> target -> name() );
+      if( sim -> log ) log_t::output( sim, "Target %s loses Winters Chill", sim -> target -> name() );
       sim -> target -> debuffs.winters_chill = 0;
       sim -> target -> expirations.winters_chill = 0;
     }
@@ -269,7 +269,7 @@ static void stack_winters_chill( spell_t* s,
       t -> debuffs.winters_chill += 1;
 
       if( s -> sim -> log ) 
-        report_t::log( s -> sim, "Target %s gains Winters Chill %d", 
+        log_t::output( s -> sim, "Target %s gains Winters Chill %d", 
                        t -> name(), t -> debuffs.winters_chill );
     }
 
@@ -487,7 +487,7 @@ struct mirror_image_pet_t : public pet_t
       for( int j=0; j < num_rotations; j++ )
       {
         front = new mirror_bolt_t ( this, front );
-	front = new mirror_bolt_t ( this, front );
+        front = new mirror_bolt_t ( this, front );
         front = new mirror_blast_t( this, front );
       }
       sequences.push_back( front );
@@ -666,7 +666,7 @@ static void trigger_ignite( spell_t* s,
   {
     p -> procs_deferred_ignite -> occur();
 
-    if( s -> sim -> debug ) report_t::log( s -> sim, "Player %s defers Ignite.", p -> name() );
+    if( s -> sim -> debug ) log_t::output( s -> sim, "Player %s defers Ignite.", p -> name() );
 
     int num_ticks = p -> active_ignite -> num_ticks;
     int remaining_ticks = num_ticks - p -> active_ignite -> current_tick;
@@ -801,13 +801,13 @@ static void trigger_frostbite( spell_t* s )
     expiration_t( sim_t* sim ) : event_t( sim )
     {
       name = "Frozen Expiration";
-      if( sim -> log ) report_t::log( sim, "Target %s gains Frozen", sim -> target -> name() );
+      if( sim -> log ) log_t::output( sim, "Target %s gains Frozen", sim -> target -> name() );
       sim -> target -> debuffs.frozen = sim -> current_time;
       sim -> add_event( this, 5.0 );
     }
     virtual void execute()
     {
-      if( sim -> log ) report_t::log( sim, "Target %s loses Frozen", sim -> target -> name() );
+      if( sim -> log ) log_t::output( sim, "Target %s loses Frozen", sim -> target -> name() );
       sim -> target -> debuffs.frozen = 0;
       sim -> target -> expirations.frozen = 0;
     }
@@ -845,14 +845,14 @@ static void trigger_winters_grasp( spell_t* s )
     expiration_t( sim_t* sim ) : event_t( sim )
     {
       name = "Winters Grasp Expiration";
-      if( sim -> log ) report_t::log( sim, "Target %s gains Winters Grasp", sim -> target -> name() );
+      if( sim -> log ) log_t::output( sim, "Target %s gains Winters Grasp", sim -> target -> name() );
       sim -> target -> debuffs.frozen = sim -> current_time;
       sim -> target -> debuffs.winters_grasp = 1;
       sim -> add_event( this, 5.0 );
     }
     virtual void execute()
     {
-      if( sim -> log ) report_t::log( sim, "Target %s loses Winters Grasp", sim -> target -> name() );
+      if( sim -> log ) log_t::output( sim, "Target %s loses Winters Grasp", sim -> target -> name() );
       sim -> target -> debuffs.frozen = 0;
       sim -> target -> debuffs.winters_grasp = 0;
       sim -> target -> expirations.winters_grasp = 0;
@@ -1030,7 +1030,7 @@ static void stack_improved_scorch( spell_t* s )
     }
     virtual void execute()
     {
-      if( sim -> log ) report_t::log( sim, "%s loses Improved Scorch", sim -> target -> name() );
+      if( sim -> log ) log_t::output( sim, "%s loses Improved Scorch", sim -> target -> name() );
       sim -> target -> debuffs.improved_scorch = 0;
       sim -> target -> expirations.improved_scorch = 0;
     }
@@ -1051,7 +1051,7 @@ static void stack_improved_scorch( spell_t* s )
       {
         t -> debuffs.improved_scorch += 1;
       }
-      if( s -> sim -> log ) report_t::log( s -> sim, "%s gains Improved Scorch %d", t -> name(), t -> debuffs.improved_scorch );
+      if( s -> sim -> log ) log_t::output( s -> sim, "%s gains Improved Scorch %d", t -> name(), t -> debuffs.improved_scorch );
     }
 
     event_t*& e = t -> expirations.improved_scorch;
@@ -1360,7 +1360,7 @@ void mage_spell_t::player_buff()
   p -> uptimes_focus_magic_feedback -> update( p -> buffs.focus_magic_feedback != 0 );
 
   if( sim -> debug ) 
-    report_t::log( sim, "mage_spell_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f mult=%.2f", 
+    log_t::output( sim, "mage_spell_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f mult=%.2f", 
                    name(), player_hit, player_crit, player_spell_power, player_penetration, player_multiplier );
 }
 
@@ -1530,7 +1530,7 @@ struct arcane_blast_t : public mage_spell_t
     {
       p -> _buffs.arcane_blast++;
 
-      if( sim -> debug ) report_t::log( sim, "%s gains Arcane Blast %d", p -> name(), p -> _buffs.arcane_blast );
+      if( sim -> debug ) log_t::output( sim, "%s gains Arcane Blast %d", p -> name(), p -> _buffs.arcane_blast );
     }
 
     event_t*& e = p -> _expirations.arcane_blast;
@@ -1608,9 +1608,9 @@ struct arcane_missiles_tick_t : public mage_spell_t
     direct_power_mod += p -> talents.arcane_empowerment * 0.03;        // bonus per missle
     
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) + 
-					  ( p -> talents.burnout     * 0.10 ) +
-					  ( p -> glyphs.arcane_missiles ? 0.25 : 0.00 ) +
-					  ( p -> unique_gear -> tier7_4pc         ? 0.05 : 0.00 ) );
+                                          ( p -> talents.burnout     * 0.10 ) +
+                                          ( p -> glyphs.arcane_missiles ? 0.25 : 0.00 ) +
+                                          ( p -> unique_gear -> tier7_4pc         ? 0.05 : 0.00 ) );
     
     if( p -> unique_gear -> tier6_4pc ) base_multiplier *= 1.05;
   }
@@ -1702,7 +1702,7 @@ struct arcane_missiles_t : public mage_spell_t
 
   virtual void tick() 
   {
-    if( sim -> debug ) report_t::log( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
+    if( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
     arcane_missiles_tick -> execute();
     update_time( DMG_OVER_TIME );
   }
@@ -1768,7 +1768,7 @@ struct arcane_power_t : public mage_spell_t
    
   virtual void execute()
   {
-    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
     new ( sim ) expiration_t( sim, player );
@@ -1784,13 +1784,13 @@ struct slow_t : public mage_spell_t
     expiration_t( sim_t* sim ) : event_t( sim )
     {
       name = "Slow Expiration";
-      if( sim -> log ) report_t::log( sim, "Target %s gains Slow", sim -> target -> name() );
+      if( sim -> log ) log_t::output( sim, "Target %s gains Slow", sim -> target -> name() );
       sim -> target -> debuffs.slow = 1;
       sim -> add_event( this, 15.0 );
     }
     virtual void execute()
     {
-      if( sim -> log ) report_t::log( sim, "Target %s loses Slow", sim -> target -> name() );
+      if( sim -> log ) log_t::output( sim, "Target %s loses Slow", sim -> target -> name() );
       sim -> target -> debuffs.slow = 0;
     }
   };
@@ -1805,7 +1805,7 @@ struct slow_t : public mage_spell_t
    
   virtual void execute()
   {
-    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
     new ( sim ) expiration_t( sim );
@@ -1857,15 +1857,15 @@ struct focus_magic_t : public mage_spell_t
   virtual void execute()
   {
     mage_t* p = player -> cast_mage();
-    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     if( focus_magic_target == p )
     {
-      if( sim -> log ) report_t::log( sim, "%s grants SomebodySomewhere Focus Magic", p -> name() );
+      if( sim -> log ) log_t::output( sim, "%s grants SomebodySomewhere Focus Magic", p -> name() );
       p -> buffs.focus_magic_feedback = 1;
     }
     else
     {
-      if( sim -> log ) report_t::log( sim, "%s grants %s Focus Magic", p -> name(), focus_magic_target -> name() );
+      if( sim -> log ) log_t::output( sim, "%s grants %s Focus Magic", p -> name(), focus_magic_target -> name() );
       focus_magic_target -> buffs.focus_magic = p;
     }
   }
@@ -1939,7 +1939,7 @@ struct presence_of_mind_t : public mage_spell_t
 
     if( options_str.empty() )
     {
-      report_t::log( sim, "simcraft: The presence_of_mind action must be coupled with a second action." );
+      log_t::output( sim, "simcraft: The presence_of_mind action must be coupled with a second action." );
       exit(0);
     }
 
@@ -1962,7 +1962,7 @@ struct presence_of_mind_t : public mage_spell_t
   virtual void execute()
   {
     mage_t* p = player -> cast_mage();
-    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     p -> aura_gain( "Presence of Mind" );
     p -> last_foreground_action = fast_action;
     trigger_arcane_potency( this );
@@ -2400,7 +2400,7 @@ struct combustion_t : public mage_spell_t
   virtual void execute()
   {
     mage_t* p = player -> cast_mage();
-    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     p -> aura_gain( "Combustion" );
     p -> _buffs.combustion = 0;
     p -> _buffs.combustion_crits = 3;
@@ -2703,7 +2703,7 @@ struct icy_veins_t : public mage_spell_t
    
   virtual void execute()
   {
-    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
     new ( sim ) expiration_t( sim, player );
@@ -2733,7 +2733,7 @@ struct cold_snap_t : public mage_spell_t
    
   virtual void execute()
   {
-    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
 
     for( action_t* a = player -> action_list; a; a = a -> next )
     {
@@ -2760,7 +2760,7 @@ struct molten_armor_t : public mage_spell_t
   virtual void execute()
   {
     mage_t* p = player -> cast_mage();
-    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     p -> _buffs.mage_armor   = 0;
     p -> _buffs.molten_armor = 1;
   }
@@ -2784,7 +2784,7 @@ struct mage_armor_t : public mage_spell_t
   virtual void execute()
   {
     mage_t* p = player -> cast_mage();
-    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     p -> _buffs.mage_armor   = 1;
     p -> _buffs.molten_armor = 0;
   }
@@ -2811,7 +2811,7 @@ struct arcane_brilliance_t : public mage_spell_t
    
   virtual void execute()
   {
-    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
 
     for( player_t* p = sim -> player_list; p; p = p -> next )
     {
@@ -2950,7 +2950,7 @@ struct mana_gem_t : public action_t
   {
     mage_t* p = player -> cast_mage();
 
-    if( sim -> log ) report_t::log( sim, "%s uses Mana Gem", p -> name() );
+    if( sim -> log ) log_t::output( sim, "%s uses Mana Gem", p -> name() );
 
     double gain = sim -> rng -> range( min, max );
 
@@ -3021,7 +3021,7 @@ struct choose_rotation_t : public action_t
   {
     mage_t* p = player -> cast_mage();
 
-    if( sim -> log ) report_t::log( sim, "%s Considers Spell Rotation", p -> name() );
+    if( sim -> log ) log_t::output( sim, "%s Considers Spell Rotation", p -> name() );
 
     // It is important to smooth out the regen rate by averaging out the returns from Evocation and Mana Gems.
     // In order for this to work, the resource_gain() method must filter out these sources when
@@ -3047,7 +3047,7 @@ struct choose_rotation_t : public action_t
 
         if( oom_time < sim -> target -> time_to_die() )
         {
-          if( sim -> log ) report_t::log( sim, "%s switches to DPM spell rotation", p -> name() );
+          if( sim -> log ) log_t::output( sim, "%s switches to DPM spell rotation", p -> name() );
 
           p -> rotation.current = ROTATION_DPM;
         }
@@ -3065,14 +3065,14 @@ struct choose_rotation_t : public action_t
 
         if( oom_time > sim -> target -> time_to_die() )
         {
-          if( sim -> log ) report_t::log( sim, "%s switches to DPS spell rotation", p -> name() );
+          if( sim -> log ) log_t::output( sim, "%s switches to DPS spell rotation", p -> name() );
 
           p -> rotation.current = ROTATION_DPS;
         }
       }
       else
       {
-        if( sim -> log ) report_t::log( sim, "%s switches to DPS rotation (negative consumption)", p -> name() );
+        if( sim -> log ) log_t::output( sim, "%s switches to DPS rotation (negative consumption)", p -> name() );
 
         p -> rotation.current = ROTATION_DPS;
       }
@@ -3188,7 +3188,7 @@ void mage_t::combat_begin()
 
   if( ! armor_type_str.empty() )
   {
-    if( sim -> log ) report_t::log( sim, "%s equips %s armor", name(), armor_type_str.c_str() );
+    if( sim -> log ) log_t::output( sim, "%s equips %s armor", name(), armor_type_str.c_str() );
 
     if( armor_type_str == "mage" )
     {
@@ -3253,7 +3253,7 @@ void mage_t::regen( double periodicity )
 double mage_t::resource_gain( int       resource,
                               double    amount,
                               gain_t*   source,
-			      action_t* action )
+                              action_t* action )
 {
   double actual_amount = player_t::resource_gain( resource, amount, source, action );
 
@@ -3270,7 +3270,7 @@ double mage_t::resource_gain( int       resource,
 
 double mage_t::resource_loss( int       resource,
                               double    amount,
-			      action_t* action )
+                              action_t* action )
 {
   double actual_amount = player_t::resource_loss( resource, amount, action );
 

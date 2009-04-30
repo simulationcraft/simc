@@ -12,7 +12,7 @@
 // sim_t::sim_t =============================================================
 
 sim_t::sim_t( sim_t* p ) : 
-  parent(p), P309(true), rng(0), free_list(0), player_list(0), active_player(0),
+  parent(p), P309(true), rng(0), free_list(0), player_list(0), active_player(0), num_players(0),
   queue_lag(0.075), queue_lag_range(0), 
   gcd_lag(0.150), gcd_lag_range(0), 
   channel_lag(0.250), channel_lag_range(0),
@@ -24,14 +24,14 @@ sim_t::sim_t( sim_t* p ) :
   seed(0), id(0), iterations(1000), current_iteration(0), threads(0),
   armor_update_interval(20), potion_sickness(1),
   optimal_raid(0), average_dmg(1),
-  log(0), debug(0), timestamp(1), sfmt(1),
+  log(0), debug(0), sfmt(1),
   jow_chance(0), jow_ppm(15.0),
   wheel_seconds(0), wheel_size(0), wheel_mask(0), timing_slice(0), wheel_granularity(0.0),
   replenishment_targets(0),
   raid_dps(0), total_dmg(0), 
   total_seconds(0), elapsed_cpu_seconds(0), 
   merge_ignite(0), report_progress(1),
-  output_file(stdout), log_file(0), html_file(0), wiki_file(0), thread_handle(0)
+  output_file(stdout), log_file(0), thread_handle(0)
 {
 
   for( int i=0; i < RESOURCE_MAX; i++ ) 
@@ -40,7 +40,6 @@ sim_t::sim_t( sim_t* p ) :
   }
 
   target  = new  target_t( this );
-  report  = new  report_t( this );
   scaling = new scaling_t( this );
 
   if( parent ) 
@@ -73,7 +72,6 @@ sim_t::~sim_t()
 
   if( rng     ) delete rng;
   if( target  ) delete target;
-  if( report  ) delete report;
   if( scaling ) delete scaling;
   
   int num_children = children.size();
@@ -105,14 +103,14 @@ void sim_t::add_event( event_t* e,
   events_remaining++;
   if( events_remaining > max_events_remaining ) max_events_remaining = events_remaining;
 
-  if( debug ) report_t::log( this, "Add Event: %s %.2f %d", e -> name, e -> time, e -> id );
+  if( debug ) log_t::output( this, "Add Event: %s %.2f %d", e -> name, e -> time, e -> id );
 }
 
 // sim_t::reschedule_event ====================================================
 
 void sim_t::reschedule_event( event_t* e )
 {
-   if( debug ) report_t::log( this, "Reschedule Event: %s %d", e -> name, e -> id );
+   if( debug ) log_t::output( this, "Reschedule Event: %s %d", e -> name, e -> id );
 
    add_event( e, ( e -> reschedule_time - current_time ) );
 
@@ -149,7 +147,7 @@ event_t* sim_t::next_event()
 
 void sim_t::flush_events()
 {
-   if( debug ) report_t::log( this, "Flush Events" );
+   if( debug ) log_t::output( this, "Flush Events" );
 
    for( int i=0; i < wheel_size; i++ )
    {
@@ -186,7 +184,7 @@ void sim_t::cancel_events( player_t* p )
 
 void sim_t::combat( int iteration )
 {
-  if( debug ) report_t::log( this, "Starting Simulator" );
+  if( debug ) log_t::output( this, "Starting Simulator" );
 
   current_iteration = iteration;
 
@@ -198,14 +196,14 @@ void sim_t::combat( int iteration )
 
     if( max_time > 0 && current_time > max_time ) 
     {
-      if( debug ) report_t::log( this, "MaxTime reached, ending simulation" );     
+      if( debug ) log_t::output( this, "MaxTime reached, ending simulation" );     
       delete e;
       break;
     }
     if( target -> initial_health > 0 && target -> current_health <= 0 )
     {
       target -> recalculate_health();
-      if( debug ) report_t::log( this, "Target has died, ending simulation" );     
+      if( debug ) log_t::output( this, "Target has died, ending simulation" );     
       delete e;
       break;
     }
@@ -215,7 +213,7 @@ void sim_t::combat( int iteration )
     }
     if( e -> canceled ) 
     {
-      if( debug ) report_t::log( this, "Canceled event: %s", e -> name );     
+      if( debug ) log_t::output( this, "Canceled event: %s", e -> name );     
     }
     else if( e -> reschedule_time > e -> time )
     {
@@ -224,7 +222,7 @@ void sim_t::combat( int iteration )
     }
     else
     {
-      if( debug ) report_t::log( this, "Executing event: %s", e -> name );     
+      if( debug ) log_t::output( this, "Executing event: %s", e -> name );     
       e -> execute();
       
       if( e -> player ) e -> player -> last_action_time = current_time;
@@ -239,7 +237,7 @@ void sim_t::combat( int iteration )
 
 void sim_t::reset()
 {
-  if( debug ) report_t::log( this, "Reseting Simulator" );
+  if( debug ) log_t::output( this, "Reseting Simulator" );
   current_time = id = 0;
   auras.reset();
   expirations.reset();
@@ -254,7 +252,7 @@ void sim_t::reset()
 
 void sim_t::combat_begin()
 {
-  if( debug ) report_t::log( this, "Combat Begin" );
+  if( debug ) log_t::output( this, "Combat Begin" );
 
   reset();
 
@@ -278,7 +276,7 @@ void sim_t::combat_begin()
 
 void sim_t::combat_end()
 {
-  if( debug ) report_t::log( this, "Combat End" );
+  if( debug ) log_t::output( this, "Combat End" );
 
   total_seconds += current_time;
   total_events_processed += events_processed;
@@ -351,8 +349,8 @@ bool sim_t::init()
       int member_index = 0;
       for( player_t* p = player_list; p; p = p -> next ) 
       {
-	p -> party = 1;
-	p -> member = member_index++;
+        p -> party = 1;
+        p -> member = member_index++;
       }
     }
     else
@@ -369,12 +367,12 @@ bool sim_t::init()
         if( ! p ) printf( "simcraft: ERROR! Unable to find player %s\n", player_names[ j ].c_str() );
         assert( p );
         p -> party = party_index;
-	p -> member = member_index++;
-	for( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet ) 
-	{
-	  pet -> party = party_index;
-	  pet -> member = member_index++;
-	}
+        p -> member = member_index++;
+        for( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet ) 
+        {
+          pet -> party = party_index;
+          pet -> member = member_index++;
+        }
       }
     }
   }
@@ -564,6 +562,28 @@ void sim_t::analyze()
   std::sort( players_by_name.begin(), players_by_name.end(), compare_name() );
 
   raid_dps = total_dmg / total_seconds;
+
+  chart_t::raid_dps     ( dps_charts,     this );
+  chart_t::raid_dpet    ( dpet_charts,    this );
+  chart_t::raid_gear    ( gear_charts,    this );
+  chart_t::raid_downtime( downtime_chart, this );
+  chart_t::raid_uptimes ( uptimes_chart,  this );
+
+  for( player_t* p = player_list; p; p = p -> next )
+  {
+    if( p -> quiet ) continue;
+
+    chart_t::action_dpet      ( p -> action_dpet_chart,       p );
+    chart_t::action_dmg       ( p -> action_dmg_chart,        p );
+    chart_t::gains            ( p -> gains_chart,             p );
+    chart_t::uptimes_and_procs( p -> uptimes_and_procs_chart, p );
+    chart_t::timeline_resource( p -> timeline_resource_chart, p );
+    chart_t::timeline_dps     ( p -> timeline_dps_chart,      p );
+    chart_t::distribution_dps ( p -> distribution_dps_chart,  p );
+
+    chart_t::gear_weights_lootrank( p -> gear_weights_lootrank_link, p );
+    chart_t::gear_weights_wowhead ( p -> gear_weights_wowhead_link,  p );
+  }
 }
 
 // sim_t::iterate ===========================================================
@@ -794,7 +814,6 @@ bool sim_t::parse_option( const std::string& name,
     { "debug",                            OPT_INT,    &( debug                                    ) },
     { "html",                             OPT_STRING, &( html_file_str                            ) },
     { "log",                              OPT_INT,    &( log                                      ) },
-    { "timestamp",                        OPT_INT,    &( timestamp                                ) },
     { "wiki",                             OPT_STRING, &( wiki_file_str                            ) },
     // Overrides - Buffs/Debuffs
     { "abominations_might",               OPT_INT,    &( overrides.abominations_might             ) },
@@ -869,7 +888,6 @@ bool sim_t::parse_option( const std::string& name,
   }
 
   if( target  -> parse_option( name, value ) ) return true;
-  if( report  -> parse_option( name, value ) ) return true;
   if( scaling -> parse_option( name, value ) ) return true;
 
   if( active_player && active_player -> parse_option( name, value ) ) return true;
@@ -932,11 +950,10 @@ int main( int argc, char** argv )
 
   fprintf( stdout, "\nGenerating reports...\n" );
 
-  sim.report -> print();
-  sim.report -> chart();
+  report_t::print_suite( &sim );
 
   if( sim.output_file != stdout ) fclose( sim.output_file );
-  if (sim.log_file) fclose(sim.log_file);
+  if( sim.log_file ) fclose( sim.log_file );
   
   return 0;
 }

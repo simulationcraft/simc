@@ -496,7 +496,7 @@ static void stack_maelstrom_weapon( attack_t* a )
     if( p -> _buffs.maelstrom_weapon < 5 ) 
     {
       p -> _buffs.maelstrom_weapon++;
-      if( a -> sim -> log ) report_t::log( a -> sim, "%s gains Maelstrom Weapon %d", p -> name(), p -> _buffs.maelstrom_weapon );
+      if( a -> sim -> log ) log_t::output( a -> sim, "%s gains Maelstrom Weapon %d", p -> name(), p -> _buffs.maelstrom_weapon );
     }
 
     event_t*& e = p -> _expirations.maelstrom_weapon;
@@ -709,7 +709,7 @@ static void trigger_ashtongue_talisman( spell_t* s )
 
 static void trigger_lightning_overload( spell_t* s,
                                         stats_t* lightning_overload_stats,
-					double   lightning_overload_chance )
+                                        double   lightning_overload_chance )
 {
   shaman_t* p = s -> player -> cast_shaman();
 
@@ -840,17 +840,17 @@ static void trigger_totem_of_dueling( attack_t* a )
     {
       totem_of_dueling_expiration_t( sim_t* sim, player_t* player ) : event_t( sim, player )
       {
-	name = "Totem of Dueling Expiration";
-	player -> aura_gain( "Totem of Dueling" );
-	player -> haste_rating += 60;
-	player -> recalculate_haste();
-	sim -> add_event( this, 6.0 );
+        name = "Totem of Dueling Expiration";
+        player -> aura_gain( "Totem of Dueling" );
+        player -> haste_rating += 60;
+        player -> recalculate_haste();
+        sim -> add_event( this, 6.0 );
       }
       virtual void execute()
       {
-	player -> aura_loss( "Totem of Dueling" );
-	player -> haste_rating -= 60;
-	player -> recalculate_haste();
+        player -> aura_loss( "Totem of Dueling" );
+        player -> haste_rating -= 60;
+        player -> recalculate_haste();
       }
     };
 
@@ -921,7 +921,7 @@ void shaman_attack_t::assess_damage( double amount,
 
       if( p -> _buffs.lightning_charges == 0 )
       {
-	p -> active_lightning_charge -> cancel();
+        p -> active_lightning_charge -> cancel();
       }
     }
   }
@@ -1345,7 +1345,7 @@ struct chain_lightning_t : public shaman_spell_t
 
     if( max_lvb_cd > 0  )
       if( ( p -> _cooldowns.lava_burst - sim -> current_time ) > ( max_lvb_cd * haste() ) )
-	return false;
+        return false;
 
     return true;
   }
@@ -1640,7 +1640,7 @@ struct elemental_mastery_t : public shaman_spell_t
       }
     };
 
-    if( sim -> log ) report_t::log( sim, "%s performs elemental_mastery", player -> name() );
+    if( sim -> log ) log_t::output( sim, "%s performs elemental_mastery", player -> name() );
     update_ready();
     new (sim) expiration_t( sim, player );
   }
@@ -1667,7 +1667,7 @@ struct shamans_swiftness_t : public shaman_spell_t
    
   virtual void execute()
   {
-    if( sim -> log ) report_t::log( sim, "%s performs natures_swiftness", player -> name() );
+    if( sim -> log ) log_t::output( sim, "%s performs natures_swiftness", player -> name() );
     update_ready();
     shaman_t* p = player -> cast_shaman();
     p -> aura_gain( "Natures Swiftness" );
@@ -1714,8 +1714,8 @@ struct earth_shock_t : public shaman_spell_t
     base_hit         += p -> talents.elemental_precision * 0.01;
 
     base_cost_reduction  += ( p -> talents.convection        * 0.02 +
-			      p -> talents.mental_quickness  * 0.02 +
-			      p -> talents.shamanistic_focus * 0.45 );
+                              p -> talents.mental_quickness  * 0.02 +
+                              p -> talents.shamanistic_focus * 0.45 );
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.elemental_fury * 0.20;
 
@@ -1772,14 +1772,14 @@ struct frost_shock_t : public shaman_spell_t
     cooldown          = 6.0;
     cooldown_group    = "shock";
     cooldown         -= ( p -> talents.reverberation  * 0.2 +
-			  p -> talents.booming_echoes * 1.0 );
+                          p -> talents.booming_echoes * 1.0 );
     base_multiplier  *= 1.0 + ( p -> talents.concussion     * 0.01 +
-				p -> talents.booming_echoes * 0.10 );
+                                p -> talents.booming_echoes * 0.10 );
     base_hit         += p -> talents.elemental_precision * 0.01;
 
     base_cost_reduction  += ( p -> talents.convection        * 0.02 +
-			      p -> talents.mental_quickness  * 0.02 +
-			      p -> talents.shamanistic_focus * 0.45 );
+                              p -> talents.mental_quickness  * 0.02 +
+                              p -> talents.shamanistic_focus * 0.45 );
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.elemental_fury * 0.20;
 
@@ -1829,19 +1829,19 @@ struct flame_shock_t : public shaman_spell_t
     if ( p -> glyphs.flame_shock ) num_ticks += 2;
       
     cooldown -= ( p -> talents.reverberation  * 0.2 +
-		  p -> talents.booming_echoes * 1.0 );
+                  p -> talents.booming_echoes * 1.0 );
 
     base_hit += p -> talents.elemental_precision * 0.01;
 
     base_dd_multiplier *= 1.0 + ( p -> talents.concussion     * 0.01 +
-				  p -> talents.booming_echoes * 0.10 );
+                                  p -> talents.booming_echoes * 0.10 );
 
     base_td_multiplier *= 1.0 + ( p -> talents.concussion * 0.01 +
-				  util_t::talent_rank( p -> talents.storm_earth_and_fire, 3, 0.20 ) );
+                                  util_t::talent_rank( p -> talents.storm_earth_and_fire, 3, 0.20 ) );
 
     base_cost_reduction  += ( p -> talents.convection        * 0.02 +
-			      p -> talents.mental_quickness  * 0.02 +
-			      p -> talents.shamanistic_focus * 0.45 );
+                              p -> talents.mental_quickness  * 0.02 +
+                              p -> talents.shamanistic_focus * 0.45 );
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.elemental_fury * 0.20;
 
@@ -1892,7 +1892,7 @@ struct searing_totem_t : public shaman_spell_t
     base_hit         += p -> talents.elemental_precision * 0.01;
 
     base_cost_reduction += ( p -> talents.totemic_focus    * 0.05 +
-			     p -> talents.mental_quickness * 0.02 );
+                             p -> talents.mental_quickness * 0.02 );
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.elemental_fury * 0.20;
   }
@@ -1904,7 +1904,7 @@ struct searing_totem_t : public shaman_spell_t
 
   virtual void execute() 
   {
-    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     player_buff();
     schedule_tick();
@@ -1915,7 +1915,7 @@ struct searing_totem_t : public shaman_spell_t
 
   virtual void tick() 
   {
-    if( sim -> debug ) report_t::log( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
+    if( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
     may_resist = false;
     target_debuff( DMG_DIRECT );
     calculate_result();
@@ -1931,7 +1931,7 @@ struct searing_totem_t : public shaman_spell_t
     }
     else
     {
-      if( sim -> log ) report_t::log( sim, "%s avoids %s (%s)", sim -> target -> name(), name(), util_t::result_type_string( result ) );
+      if( sim -> log ) log_t::output( sim, "%s avoids %s (%s)", sim -> target -> name(), name(), util_t::result_type_string( result ) );
     }
     update_stats( DMG_OVER_TIME );
   }
@@ -1975,7 +1975,7 @@ struct magma_totem_t : public shaman_spell_t
     base_hit         += p -> talents.elemental_precision * 0.01;
 
     base_cost_reduction += ( p -> talents.totemic_focus    * 0.05 +
-			     p -> talents.mental_quickness * 0.02 );
+                             p -> talents.mental_quickness * 0.02 );
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.elemental_fury * 0.20;
   }
@@ -1987,7 +1987,7 @@ struct magma_totem_t : public shaman_spell_t
 
   virtual void execute() 
   {
-    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     player_buff();
     schedule_tick();
@@ -1998,7 +1998,7 @@ struct magma_totem_t : public shaman_spell_t
 
   virtual void tick() 
   {
-    if( sim -> debug ) report_t::log( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
+    if( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
     may_resist = false;
     target_debuff( DMG_DIRECT );
     calculate_result();
@@ -2014,7 +2014,7 @@ struct magma_totem_t : public shaman_spell_t
     }
     else
     {
-      if( sim -> log ) report_t::log( sim, "%s avoids %s (%s)", sim -> target -> name(), name(), util_t::result_type_string( result ) );
+      if( sim -> log ) log_t::output( sim, "%s avoids %s (%s)", sim -> target -> name(), name(), util_t::result_type_string( result ) );
     }
     update_stats( DMG_OVER_TIME );
   }
@@ -2045,7 +2045,7 @@ struct totem_of_wrath_t : public shaman_spell_t
     trigger_gcd    = 1.0;
 
     base_cost_reduction += ( p -> talents.totemic_focus    * 0.05 +
-			     p -> talents.mental_quickness * 0.02 );
+                             p -> talents.mental_quickness * 0.02 );
 
     bonus_spell_power = util_t::ability_rank( p -> level,  280.0,80,  140.0,70,  120.0,0 );
   }
@@ -2054,7 +2054,7 @@ struct totem_of_wrath_t : public shaman_spell_t
   {
     shaman_t* p = player -> cast_shaman();
 
-    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
 
     consume_resource();
     update_ready();
@@ -2063,26 +2063,26 @@ struct totem_of_wrath_t : public shaman_spell_t
     {
       struct totem_expiration_t : public event_t
       {
-	totem_expiration_t( sim_t* sim, player_t* player, double bonus_spell_power ) : event_t( sim, player )
-	{
-	  name = "Totem of Wrath Expiration";
-	  sim -> target -> debuffs.totem_of_wrath++;
-	  for( player_t* p = sim -> player_list; p; p = p -> next )
-	  {
-	    p -> aura_gain( "Totem of Wrath" );
-	    p -> buffs.totem_of_wrath = bonus_spell_power;
-	  }
-	  sim -> add_event( this, 300.0 );
-	}
-	virtual void execute()
-	{
-	  sim -> target -> debuffs.totem_of_wrath--;
-	  for( player_t* p = sim -> player_list; p; p = p -> next )
-	  {
-	    p -> aura_loss( "Totem of Wrath" );
-	    p -> buffs.totem_of_wrath = 0;
-	  }
-	}
+        totem_expiration_t( sim_t* sim, player_t* player, double bonus_spell_power ) : event_t( sim, player )
+        {
+          name = "Totem of Wrath Expiration";
+          sim -> target -> debuffs.totem_of_wrath++;
+          for( player_t* p = sim -> player_list; p; p = p -> next )
+          {
+            p -> aura_gain( "Totem of Wrath" );
+            p -> buffs.totem_of_wrath = bonus_spell_power;
+          }
+          sim -> add_event( this, 300.0 );
+        }
+        virtual void execute()
+        {
+          sim -> target -> debuffs.totem_of_wrath--;
+          for( player_t* p = sim -> player_list; p; p = p -> next )
+          {
+            p -> aura_loss( "Totem of Wrath" );
+            p -> buffs.totem_of_wrath = 0;
+          }
+        }
       };
 
       new ( sim ) totem_expiration_t( sim, p, bonus_spell_power );
@@ -2092,19 +2092,19 @@ struct totem_of_wrath_t : public shaman_spell_t
     {
       struct glyph_expiration_t : public event_t
       {
-	glyph_expiration_t( sim_t* sim, shaman_t* p, double bonus_spell_power ) : event_t( sim, p )
-	{
-	  name = "Totem of Wrath Glyph Expiration";
-	  p -> aura_gain( "Totem of Wrath Glyph" );
-	  p -> _buffs.totem_of_wrath_glyph = bonus_spell_power;
-	  sim -> add_event( this, 300.0 );
-	}
-	virtual void execute()
-	{
-	  shaman_t* p = player -> cast_shaman();
-	  p -> aura_loss( "Totem of Wrath Glyph" );
-	  p -> _buffs.totem_of_wrath_glyph = 0;
-	}
+        glyph_expiration_t( sim_t* sim, shaman_t* p, double bonus_spell_power ) : event_t( sim, p )
+        {
+          name = "Totem of Wrath Glyph Expiration";
+          p -> aura_gain( "Totem of Wrath Glyph" );
+          p -> _buffs.totem_of_wrath_glyph = bonus_spell_power;
+          sim -> add_event( this, 300.0 );
+        }
+        virtual void execute()
+        {
+          shaman_t* p = player -> cast_shaman();
+          p -> aura_loss( "Totem of Wrath Glyph" );
+          p -> _buffs.totem_of_wrath_glyph = 0;
+        }
       };
 
       new ( sim ) glyph_expiration_t( sim, p, bonus_spell_power * 0.30 );
@@ -2163,7 +2163,7 @@ struct flametongue_totem_t : public shaman_spell_t
     trigger_gcd    = 1.0;
 
     base_cost_reduction += ( p -> talents.totemic_focus    * 0.05 +
-			     p -> talents.mental_quickness * 0.02 );
+                             p -> talents.mental_quickness * 0.02 );
 
     bonus = util_t::ability_rank( p -> level,  144,80,  122,76,  106,72,  73,67,  62,0 );
     bonus *= 1 + p -> talents.enhancing_totems * 0.05;
@@ -2196,7 +2196,7 @@ struct flametongue_totem_t : public shaman_spell_t
       }
     };
 
-    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
     new ( sim ) expiration_t( sim, player, this );
@@ -2235,7 +2235,7 @@ struct windfury_totem_t : public shaman_spell_t
     trigger_gcd    = 1.0;
 
     base_cost_reduction += ( p -> talents.totemic_focus    * 0.05 +
-			     p -> talents.mental_quickness * 0.02 );
+                             p -> talents.mental_quickness * 0.02 );
 
     bonus = 0.16 + p -> talents.improved_windfury_totem * 0.02;
   }
@@ -2270,7 +2270,7 @@ struct windfury_totem_t : public shaman_spell_t
       }
     };
 
-    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
     new ( sim ) expiration_t( sim, player, this );
@@ -2339,7 +2339,7 @@ struct flametongue_weapon_t : public shaman_spell_t
 
   virtual void execute()
   {
-    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
 
     if( main ) 
     {
@@ -2414,7 +2414,7 @@ struct windfury_weapon_t : public shaman_spell_t
 
   virtual void execute()
   {
-    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
 
     if( main ) 
     {
@@ -2456,7 +2456,7 @@ struct strength_of_earth_totem_t : public shaman_spell_t
     trigger_gcd    = 1.0;
 
     base_cost_reduction += ( p -> talents.totemic_focus    * 0.05 +
-			     p -> talents.mental_quickness * 0.02 );
+                             p -> talents.mental_quickness * 0.02 );
 
     bonus  = util_t::ability_rank( p -> level,  155,80, 115,75, 86,65,  77,0 );
     bonus *= 1.0 + p -> talents.enhancing_totems * 0.05;
@@ -2492,7 +2492,7 @@ struct strength_of_earth_totem_t : public shaman_spell_t
       }
     };
 
-    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
     new ( sim ) expiration_t( sim, player, bonus );
@@ -2529,7 +2529,7 @@ struct wrath_of_air_totem_t : public shaman_spell_t
     trigger_gcd    = 1.0;
 
     base_cost_reduction += ( p -> talents.totemic_focus    * 0.05 +
-			     p -> talents.mental_quickness * 0.02 );
+                             p -> talents.mental_quickness * 0.02 );
   }
 
   virtual void execute()
@@ -2556,7 +2556,7 @@ struct wrath_of_air_totem_t : public shaman_spell_t
       }
     };
 
-    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
     new ( sim ) expiration_t( sim, player );
@@ -2598,12 +2598,12 @@ struct mana_tide_totem_t : public shaman_spell_t
     trigger_gcd     = 1.0;
 
     base_cost_reduction += ( p -> talents.totemic_focus    * 0.05 +
-			     p -> talents.mental_quickness * 0.02 );
+                             p -> talents.mental_quickness * 0.02 );
   }
 
   virtual void execute() 
   {
-    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     schedule_tick();
     update_ready();
@@ -2611,7 +2611,7 @@ struct mana_tide_totem_t : public shaman_spell_t
 
   virtual void tick() 
   {
-    if( sim -> debug ) report_t::log( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
+    if( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
 
     double pct = 0.06;
     if( player -> cast_shaman() -> glyphs.mana_tide ) pct += 0.01;
@@ -2659,7 +2659,7 @@ struct mana_spring_totem_t : public shaman_spell_t
     trigger_gcd     = 1.0;
 
     base_cost_reduction += ( p -> talents.totemic_focus    * 0.05 +
-			     p -> talents.mental_quickness * 0.02 );
+                             p -> talents.mental_quickness * 0.02 );
 
     if ( sim -> P309 )
     {
@@ -2677,7 +2677,7 @@ struct mana_spring_totem_t : public shaman_spell_t
 
   virtual void execute() 
   {
-    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     for( player_t* p = sim -> player_list; p; p = p -> next )
     {
@@ -2753,7 +2753,7 @@ struct bloodlust_t : public shaman_spell_t
       }
     };
 
-    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
     new ( sim ) expiration_t( sim, player );
@@ -2807,7 +2807,7 @@ struct shamanistic_rage_t : public shaman_spell_t
       }
     };
 
-    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     update_ready();
     new ( sim ) expiration_t( sim, player );
   }
@@ -2887,7 +2887,7 @@ struct lightning_shield_t : public shaman_spell_t
   virtual void execute()
   {
     shaman_t* p = player -> cast_shaman();
-    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     if( p -> _buffs.water_shield )
     {
       p -> aura_loss( "Water Shield" );
@@ -2941,7 +2941,7 @@ struct water_shield_t : public shaman_spell_t
   virtual void execute()
   {
     shaman_t* p = player -> cast_shaman();
-    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     if( p -> _buffs.lightning_shield )
     {
       p -> active_lightning_charge -> cancel();
@@ -3045,8 +3045,8 @@ struct spirit_wolf_spell_t : public shaman_spell_t
     {
       if( target_pct > 0 )
       {
-	if( t -> health_percentage() > target_pct )
-	  return false;
+        if( t -> health_percentage() > target_pct )
+          return false;
       }
     }
 

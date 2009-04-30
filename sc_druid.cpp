@@ -606,13 +606,13 @@ static void trigger_earth_and_moon( spell_t* s )
     earth_and_moon_expiration_t( sim_t* sim, druid_t* p ) : event_t( sim )
     {
       name = "Earth and Moon Expiration";
-      if( sim -> log ) report_t::log( sim, "%s gains Earth and Moon", sim -> target -> name() );
+      if( sim -> log ) log_t::output( sim, "%s gains Earth and Moon", sim -> target -> name() );
       sim -> target -> debuffs.earth_and_moon = (int) util_t::talent_rank( p -> talents.earth_and_moon, 3, 4, 9, 13 );
       sim -> add_event( this, 12.0 );
     }
     virtual void execute()
     {
-      if( sim -> log ) report_t::log( sim, "%s loses Earth and Moon", sim -> target -> name() );
+      if( sim -> log ) log_t::output( sim, "%s loses Earth and Moon", sim -> target -> name() );
       sim -> target -> debuffs.earth_and_moon = 0;
       sim -> target -> expirations.earth_and_moon = 0;
     }
@@ -1281,7 +1281,7 @@ struct claw_t : public druid_attack_t
       { 58, 7, 115, 115, 0, 45 },
       { 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 48570 );
 
     weapon = &( p -> main_hand_weapon );
     adds_combo_points = true;
@@ -1310,6 +1310,7 @@ struct faerie_fire_feral_t : public druid_attack_t
     direct_power_mod = 0.05;
     cooldown = 6.0;
     may_crit = true;
+    id = 16857;
   }
 
   virtual void execute()
@@ -1321,7 +1322,7 @@ struct faerie_fire_feral_t : public druid_attack_t
       direct_power_mod = 0;
       base_dd_min = base_dd_max = 0;
     }
-    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     if( p -> _buffs.bear_form ) druid_attack_t::execute();
     trigger_faerie_fire( this );
     update_ready();
@@ -1366,7 +1367,7 @@ struct mangle_cat_t : public druid_attack_t
       { 58, 2, 256, 256, 0, 45 },
       { 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 48566 );
 
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier *= 2.0;
@@ -1417,7 +1418,7 @@ struct rake_t : public druid_attack_t
       { 54, 4,  64,  90,  99, 40 },
       { 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 48574 );
 
     adds_combo_points = true;
     may_crit          = true;
@@ -1453,6 +1454,8 @@ struct rip_t : public druid_attack_t
       { NULL }
     };
     parse_options( options, options_str );
+
+    id = 49800;
     
     may_crit              = false;
     requires_combo_points = true;
@@ -1517,6 +1520,7 @@ struct savage_roar_t : public druid_attack_t
     parse_options( options, options_str );
     requires_combo_points = true;
     base_cost = 25;
+    id = 52610;
   }
 
   virtual void execute()
@@ -1585,7 +1589,7 @@ struct shred_t : public druid_attack_t
       { 54, 5, 180, 180, 0, 60 },
       { 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 48572 );
 
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier *= 2.25;
@@ -1664,6 +1668,7 @@ berserk_t( player_t* player, const std::string& options_str ) :
     parse_options( options, options_str );
 
     cooldown = 180;
+    id = 50334;
   }
 
   virtual void execute()
@@ -1687,7 +1692,7 @@ berserk_t( player_t* player, const std::string& options_str ) :
     };
 
     druid_t* p = player -> cast_druid();
-    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     update_ready();
     p -> _expirations.berserk = new ( sim ) expiration_t( sim, p );
   }
@@ -1721,13 +1726,14 @@ struct tigers_fury_t : public druid_attack_t
     };
     parse_options( options, options_str );
 
-    cooldown       = 30.0 - 3.0 * p -> tiers.t7_4pc_feral;
-    trigger_gcd    = 0;
+    cooldown    = 30.0 - 3.0 * p -> tiers.t7_4pc_feral;
+    trigger_gcd = 0;
+    id = 50213;
   }
 
   virtual void execute()
   {
-    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
 
     druid_t* p = player -> cast_druid();
 
@@ -1789,6 +1795,8 @@ struct ferocious_bite_t : public druid_attack_t
       { NULL }
     };
     parse_options( options, options_str );
+
+    id = 48577;
 
     requires_combo_points = true;
     may_crit  = true;
@@ -1855,8 +1863,8 @@ struct ferocious_bite_t : public druid_attack_t
     {
       // Let the additional energy consumption create it's own debug log entries.
       if( sim -> debug )
-	report_t::log( sim, "%s consumes an additional %.1f %s for %s", player -> name(),
-		       excess_energy, util_t::resource_type_string( resource ), name() );
+        log_t::output( sim, "%s consumes an additional %.1f %s for %s", player -> name(),
+                       excess_energy, util_t::resource_type_string( resource ), name() );
 
       player -> resource_loss( resource, excess_energy );
       stats -> consume_resource( excess_energy );
@@ -2074,11 +2082,12 @@ struct faerie_fire_t : public druid_spell_t
     parse_options( options, options_str );
 
     base_cost = p -> resource_base[ RESOURCE_MANA ] * 0.07;
+    id = 770;
   }
 
   virtual void execute()
   {
-    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     trigger_faerie_fire( this );
     trigger_improved_faerie_fire( this );
@@ -2121,6 +2130,8 @@ struct innervate_t : public druid_spell_t
       { NULL }
     };
     parse_options( options, options_str );
+
+    id = 29166;
 
     base_cost = ( sim -> P309 ?  p -> resource_base[ RESOURCE_MANA ] * 0.04 : 0 );
     base_execute_time = 0;
@@ -2213,7 +2224,7 @@ struct insect_swarm_t : public druid_spell_t
       { 60, 5, 0, 0, 124, 155  },
       { 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 48468 );
 
     base_execute_time = 0;
     base_tick_time    = 2.0;
@@ -2303,7 +2314,7 @@ struct moonfire_t : public druid_spell_t
       { 58, 10, 189, 221,  96, 375  },
       { 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 48463 );
 
     base_execute_time = 0;
     base_tick_time    = 3.0;
@@ -2378,13 +2389,14 @@ struct cat_form_t : public druid_spell_t
     trigger_gcd = 0;
     base_execute_time = 0;
     base_cost = 0;
+    id = 768;
   }
 
   virtual void execute()
   {
     druid_t* d = player -> cast_druid();
 
-    if( sim -> log ) report_t::log( sim, "%s performs %s", d -> name(),name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", d -> name(),name() );
 
     weapon_t* w = &( d -> main_hand_weapon );
 
@@ -2432,13 +2444,14 @@ struct moonkin_form_t : public druid_spell_t
     trigger_gcd = 0;
     base_execute_time = 0;
     base_cost = 0;
+    id = 24858;
   }
 
   virtual void execute()
   {
     druid_t* p = player -> cast_druid();
 
-    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
 
     p -> _buffs.moonkin_form = 1;
 
@@ -2479,11 +2492,12 @@ struct druids_swiftness_t : public druid_spell_t
       cooldown_group = options_str;
       duration_group = options_str;
     }
+    id = 17116;
   }
 
   virtual void execute()
   {
-    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     druid_t* p = player -> cast_druid();
     p -> aura_gain( "Natures Swiftness" );
     p -> _buffs.natures_swiftness = 1;
@@ -2535,7 +2549,7 @@ struct starfire_t : public druid_spell_t
       { 60,  7,  693,  817, 0, 340  },
       { 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 48465 );
 
     base_execute_time = 3.5;
     direct_power_mod  = ( base_execute_time / 3.5 );
@@ -2706,7 +2720,7 @@ struct wrath_t : public druid_spell_t
       { 61,  9, 397, 447, 0, 210  },
       { 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 48461 );
 
     base_execute_time = 2.0;
     direct_power_mod  = ( base_execute_time / 3.5 );
@@ -2872,8 +2886,7 @@ struct starfall_t : public druid_spell_t
         may_resist        = true;
         background        = true;
         aoe               = true; // Prevents procing Omen or Moonkin Form mana gains.
-        dual = true;
-
+        dual              = true;
 
         base_dd_min = base_dd_max  = 0;
         base_crit                  += util_t::talent_rank(p -> talents.natures_majesty, 2, 0.02);
@@ -2883,6 +2896,8 @@ struct starfall_t : public druid_spell_t
           base_multiplier *= 1.2;
 
         starfall_star_splash = new starfall_star_splash_t( p );
+
+	id = 53201;
       }
 
       virtual void execute()
@@ -2939,7 +2954,7 @@ struct starfall_t : public druid_spell_t
   }
   virtual void tick()
   {
-    if( sim -> debug ) report_t::log( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
+    if( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
     starfall_star -> execute();
     update_time( DMG_OVER_TIME );
   }
@@ -2957,15 +2972,14 @@ struct mark_of_the_wild_t : public druid_spell_t
     druid_t* p = player -> cast_druid();
 
     trigger_gcd = 0;
-
-    bonus = util_t::ability_rank( player -> level,  37.0,80, 14.0,70,  12.0,0 );
-
+    bonus  = util_t::ability_rank( player -> level,  37.0,80, 14.0,70,  12.0,0 );
     bonus *= 1.0 + p -> talents.improved_mark_of_the_wild * 0.20;
+    id = 48469;
   }
 
   virtual void execute()
   {
-    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
 
     for( player_t* p = sim -> player_list; p; p = p -> next )
     {
@@ -3000,7 +3014,9 @@ struct treants_spell_t : public druid_spell_t
     parse_options( options, options_str );
 
     cooldown = 180.0;
-    base_cost = p -> resource_base[ RESOURCE_MANA ] * 0.12;  }
+    base_cost = p -> resource_base[ RESOURCE_MANA ] * 0.12;  
+    id = 33831;
+  }
 
   virtual void execute()
   {
@@ -3048,7 +3064,7 @@ struct stealth_t : public spell_t
   virtual void execute()
   {
     druid_t* p = player -> cast_druid();
-    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     enter_stealth( p );
   }
 
@@ -3182,8 +3198,8 @@ void druid_t::init_base()
   energy_regen_per_second = 10;
 
   mana_regen_while_casting = ( sim -> P309 ? 
-			       util_t::talent_rank( talents.intensity,  3, 0.10 ) :
-			       util_t::talent_rank( talents.intensity,  3, 0.17, 0.33, 0.50 ) );
+                               util_t::talent_rank( talents.intensity,  3, 0.10 ) :
+                               util_t::talent_rank( talents.intensity,  3, 0.17, 0.33, 0.50 ) );
 
   mp5_per_intellect = util_t::talent_rank( talents.dreamstate, 3, 0.04, 0.07, 0.10 );
 

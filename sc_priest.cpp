@@ -198,7 +198,7 @@ struct shadow_fiend_pet_t : public pet_t
       repeating  = true;
       if ( ! sim -> P309 )
       {
-	may_dodge  = false;
+        may_dodge  = false;
         may_miss   = false;
         may_parry  = false;
       }
@@ -267,7 +267,7 @@ static void stack_shadow_weaving( spell_t* s )
     }
     virtual void execute()
     {
-      if( sim -> log ) report_t::log( sim, "%s loses Shadow Weaving", sim -> target -> name() );
+      if( sim -> log ) log_t::output( sim, "%s loses Shadow Weaving", sim -> target -> name() );
       priest_t* p = player -> cast_priest();
       p -> _buffs.shadow_weaving = 0;
       p -> _expirations.shadow_weaving = 0;
@@ -281,7 +281,7 @@ static void stack_shadow_weaving( spell_t* s )
     if( p -> _buffs.shadow_weaving < 5 ) 
     {
       p -> _buffs.shadow_weaving++;
-      if( sim -> log ) report_t::log( sim, "%s gains Shadow Weaving %d", p -> name(), p -> _buffs.shadow_weaving );
+      if( sim -> log ) log_t::output( sim, "%s gains Shadow Weaving %d", p -> name(), p -> _buffs.shadow_weaving );
     }
 
     event_t*& e = p -> _expirations.shadow_weaving;
@@ -820,7 +820,7 @@ struct penance_t : public priest_spell_t
 
   virtual void execute() 
   {
-    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     schedule_tick();
     update_ready();
@@ -830,7 +830,7 @@ struct penance_t : public priest_spell_t
 
   virtual void tick() 
   {
-    if( sim -> debug ) report_t::log( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
+    if( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
     may_resist = false;
     target_debuff( DMG_DIRECT );
     calculate_result();
@@ -846,7 +846,7 @@ struct penance_t : public priest_spell_t
     }
     else
     {
-      if( sim -> log ) report_t::log( sim, "%s avoids %s (%s)", sim -> target -> name(), name(), util_t::result_type_string( result ) );
+      if( sim -> log ) log_t::output( sim, "%s avoids %s (%s)", sim -> target -> name(), name(), util_t::result_type_string( result ) );
     }
     update_stats( DMG_OVER_TIME );
   }
@@ -1247,7 +1247,7 @@ struct mind_blast_t : public priest_spell_t
       trigger_replenishment( this );
       if( result == RESULT_CRIT )
       {
-	trigger_improved_spirit_tap( this );
+        trigger_improved_spirit_tap( this );
       }
     }
     p -> _cooldowns.mind_blast = cooldown_ready;
@@ -1468,7 +1468,7 @@ struct mind_flay_t : public priest_spell_t
 
     base_cost  = 0.09 * p -> resource_base[ RESOURCE_MANA ];
     base_cost *= 1.0 - ( p -> talents.focused_mind * 0.05 + 
-			 p -> talents.shadow_focus * 0.02 );
+                         p -> talents.shadow_focus * 0.02 );
     base_cost  = floor(base_cost);
 
     mind_flay_tick = new mind_flay_tick_t( p );
@@ -1483,7 +1483,7 @@ struct mind_flay_t : public priest_spell_t
 
   virtual void tick()
   {
-    if( sim -> debug ) report_t::log( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
+    if( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
     mind_flay_tick -> execute();
     update_time( DMG_OVER_TIME );
   }
@@ -1611,7 +1611,7 @@ struct power_infusion_t : public priest_spell_t
    
   virtual void execute()
   {
-    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
     new ( sim ) expiration_t( sim, player );
@@ -1664,7 +1664,7 @@ struct inner_focus_t : public priest_spell_t
   virtual void execute()
   {
     priest_t* p = player -> cast_priest();
-    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     p -> aura_gain( "Inner Focus" );
     p -> last_foreground_action = free_action;
     free_action -> execute();
@@ -1699,7 +1699,7 @@ struct divine_spirit_t : public priest_spell_t
    
   virtual void execute()
   {
-    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
 
     for( player_t* p = sim -> player_list; p; p = p -> next )
     {
@@ -1740,7 +1740,7 @@ struct fortitude_t : public priest_spell_t
    
   virtual void execute()
   {
-    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
 
     for( player_t* p = sim -> player_list; p; p = p -> next )
     {
@@ -1769,7 +1769,7 @@ struct inner_fire_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
 
-    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
 
     double bonus_power = util_t::ability_rank( p -> level,  120.0,77,  95.0,71,  0.0,0  );
 
@@ -1799,7 +1799,7 @@ struct shadow_form_t : public priest_spell_t
    
   virtual void execute()
   {
-    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     player -> buffs.shadow_form = 1;
   }
 

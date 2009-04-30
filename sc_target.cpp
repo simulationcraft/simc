@@ -30,7 +30,19 @@ target_t::~target_t()
   }
 }
 
-// target_t::assess_damage ===================================================
+// target_t::id =============================================================
+
+const char* target_t::id()
+{
+  if( id_str.empty() )
+  {
+    id_str = "0xF1300079AA001884,\"Heroic Training Dummy\",0x10a28"; 
+  }
+
+  return id_str.c_str();
+}
+
+// target_t::assess_damage ==================================================
 
 void target_t::assess_damage( double amount, 
                               int    school, 
@@ -44,9 +56,9 @@ void target_t::assess_damage( double amount,
 
     if( current_health <= 0 ) 
     {
-      if( sim -> log ) report_t::log( sim, "%s has died.", name() );
+      if( sim -> log ) log_t::output( sim, "%s has died.", name() );
     }
-    else if( sim -> debug ) report_t::log( sim, "Target %s has %.0f remaining health", name(), current_health );
+    else if( sim -> debug ) log_t::output( sim, "Target %s has %.0f remaining health", name(), current_health );
   }
 
   // FIXME! Someday create true "callbacks" for the various events to clean up crap like this.
@@ -75,7 +87,7 @@ void target_t::recalculate_health()
     initial_health += adjust / ( sim -> current_iteration + 1 );
   }
   
-  if( sim -> debug ) report_t::log( sim, "Target initial health calculated to be %.0f", initial_health );     
+  if( sim -> debug ) log_t::output( sim, "Target initial health calculated to be %.0f", initial_health );     
 }
 
 // target_t::time_to_die =====================================================
@@ -145,7 +157,7 @@ void target_t::init()
   {
     for( race = RACE_NONE; race < RACE_MAX; race++ )
       if( race_str == util_t::race_type_string( race ) )
-	break;
+        break;
 
     if( race == RACE_MAX )
     {
@@ -170,7 +182,7 @@ void target_t::init()
 
 void target_t::reset()
 {
-  if( sim -> debug ) report_t::log( sim, "Reseting target %s", name() );
+  if( sim -> debug ) log_t::output( sim, "Reseting target %s", name() );
   total_dmg = 0;
   armor = initial_armor;
   current_health = initial_health;
@@ -215,7 +227,7 @@ void target_t::combat_begin()
     {
       bloodlust_proc_t( sim_t* sim ) : event_t( sim, 0 )
       {
-	name = "Bloodlust Proc";
+        name = "Bloodlust Proc";
         for( player_t* p = sim -> player_list; p; p = p -> next )
         {
           if( p -> sleeping ) continue;
@@ -223,10 +235,10 @@ void target_t::combat_begin()
           {
             p -> aura_gain( "Bloodlust" );
             p -> buffs.bloodlust = 1;
-	    p -> cooldowns.bloodlust = sim -> current_time + (sim -> P309 ? 300 : 600);
+            p -> cooldowns.bloodlust = sim -> current_time + (sim -> P309 ? 300 : 600);
           }
         }
-	sim -> add_event( this, 40.0 );
+        sim -> add_event( this, 40.0 );
       }
       virtual void execute()
       {
@@ -244,22 +256,22 @@ void target_t::combat_begin()
     {
       bloodlust_check_t( sim_t* sim ) : event_t( sim, 0 )
       {
-	name = "Bloodlust Check";
-	sim -> add_event( this, 1.0 );
+        name = "Bloodlust Check";
+        sim -> add_event( this, 1.0 );
       }
       virtual void execute()
       {
-	target_t* t = sim -> target;
-	if( ( sim -> overrides.bloodlust_early && ( sim -> current_time > sim -> overrides.bloodlust_early ) ) ||
-	    ( t -> health_percentage() < 25 ) || 
-	    ( t -> time_to_die()       < 60 ) )
-	{
-	  new ( sim ) bloodlust_proc_t( sim );
-	}
-	else
-	{
-	  new ( sim ) bloodlust_check_t( sim );
-	}
+        target_t* t = sim -> target;
+        if( ( sim -> overrides.bloodlust_early && ( sim -> current_time > sim -> overrides.bloodlust_early ) ) ||
+            ( t -> health_percentage() < 25 ) || 
+            ( t -> time_to_die()       < 60 ) )
+        {
+          new ( sim ) bloodlust_proc_t( sim );
+        }
+        else
+        {
+          new ( sim ) bloodlust_check_t( sim );
+        }
       }
     };
 
@@ -276,12 +288,14 @@ void target_t::combat_end()
 // target_t::parse_option ======================================================
 
 bool target_t::parse_option( const std::string& name,
-			     const std::string& value )
+                             const std::string& value )
 {
   option_t options[] =
   {
     // General
+    { "target_name",           OPT_STRING, &( name_str                          ) },
     { "target_race",           OPT_STRING, &( race_str                          ) },
+    { "target_id",             OPT_STRING, &( id_str                            ) },
     { "target_level",          OPT_INT,    &( level                             ) },
     { "target_resist_holy",    OPT_INT,    &( spell_resistance[ SCHOOL_HOLY   ] ) },
     { "target_resist_shadow",  OPT_INT,    &( spell_resistance[ SCHOOL_SHADOW ] ) },

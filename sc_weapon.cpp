@@ -63,7 +63,7 @@ double weapon_t::normalized_weapon_speed()
 // weapon_t::proc_chance_on_swing ===========================================
 
 double weapon_t::proc_chance_on_swing( double PPM,
-				       double adjusted_swing_time )
+                                       double adjusted_swing_time )
 {
   if( adjusted_swing_time == 0 ) adjusted_swing_time = swing_time;
 

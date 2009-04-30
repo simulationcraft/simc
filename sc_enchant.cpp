@@ -16,29 +16,29 @@ struct spellsurge_callback_t : public action_callback_t
     struct spellsurge_t : public spell_t
     {
       spellsurge_t( player_t* p ) : 
-	spell_t( "spellsurge", p, RESOURCE_MANA, SCHOOL_ARCANE )
+        spell_t( "spellsurge", p, RESOURCE_MANA, SCHOOL_ARCANE )
       {
-	background     = true;
-	base_tick_time = 1.0;
-	num_ticks      = 10;
-	trigger_gcd    = 0;
-	cooldown       = 60;
+        background     = true;
+        base_tick_time = 1.0;
+        num_ticks      = 10;
+        trigger_gcd    = 0;
+        cooldown       = 60;
       }
       virtual void execute() 
       {
-	assert( current_tick == 0 );
-	schedule_tick();
+        assert( current_tick == 0 );
+        schedule_tick();
       }
       virtual void tick()
       {
-	for( player_t* p = sim -> player_list; p; p = p -> next )
-	{
-	  if( p -> party == player -> party ) 
-	  {
-	    if( sim -> log ) report_t::log( sim, "Player %s gains mana from %s 's Spellsurge.", p -> name(), player -> name() );
-	    p -> resource_gain( RESOURCE_MANA, 10.0, p -> gains.spellsurge );
-	  }
-	}
+        for( player_t* p = sim -> player_list; p; p = p -> next )
+        {
+          if( p -> party == player -> party ) 
+          {
+            if( sim -> log ) log_t::output( sim, "Player %s gains mana from %s 's Spellsurge.", p -> name(), player -> name() );
+            p -> resource_gain( RESOURCE_MANA, 10.0, p -> gains.spellsurge );
+          }
+        }
       }
     };
 
@@ -51,18 +51,18 @@ struct spellsurge_callback_t : public action_callback_t
     {
       for( player_t* p = a -> sim -> player_list; p; p = p -> next )
       {
-	// Invalidate any existing Spellsurge procs.
+        // Invalidate any existing Spellsurge procs.
 
-	if( p -> party == a -> player -> party ) 
+        if( p -> party == a -> player -> party ) 
         {
-	  action_t* spellsurge = p -> find_action( "spellsurge" );
+          action_t* spellsurge = p -> find_action( "spellsurge" );
 
-	  if( spellsurge && spellsurge -> ticking )
-	  {
-	    spellsurge -> cancel();
-	    break;
-	  }
-	}
+          if( spellsurge && spellsurge -> ticking )
+          {
+            spellsurge -> cancel();
+            break;
+          }
+        }
       }
     
       spell -> execute();
@@ -96,20 +96,20 @@ struct berserking_callback_t : public action_callback_t
       event_t*& expirations_berserking;
 
       berserking_expiration_t( sim_t* sim, player_t* player, int& b_m, event_t*& e_m ) : 
-	event_t( sim, player ), buffs_berserking( b_m ), expirations_berserking( e_m )
+        event_t( sim, player ), buffs_berserking( b_m ), expirations_berserking( e_m )
       {
-	name = "Berserking Expiration";
-	player -> aura_gain( "Berserking" );
-	player -> attack_power += 400;
-	buffs_berserking = 1;
-	sim -> add_event( this, 15.0 );
+        name = "Berserking Expiration";
+        player -> aura_gain( "Berserking" );
+        player -> attack_power += 400;
+        buffs_berserking = 1;
+        sim -> add_event( this, 15.0 );
       }
       virtual void execute()
       {
-	player -> aura_loss( "Berserking" );
-	player -> attack_power -= 400;
-	buffs_berserking = 0;
-	expirations_berserking = 0;
+        player -> aura_loss( "Berserking" );
+        player -> attack_power -= 400;
+        buffs_berserking = 0;
+        expirations_berserking = 0;
       }
     };
 
@@ -135,11 +135,11 @@ struct berserking_callback_t : public action_callback_t
     {
       if( e )
       {
-	e -> reschedule( 15.0 );
+        e -> reschedule( 15.0 );
       }
       else
       {
-	e = new ( a -> sim ) berserking_expiration_t( a -> sim, p, b, e );
+        e = new ( a -> sim ) berserking_expiration_t( a -> sim, p, b, e );
       }
     }
 
@@ -172,20 +172,20 @@ struct mongoose_callback_t : public action_callback_t
       event_t*& expirations_mongoose;
 
       mongoose_expiration_t( sim_t* sim, player_t* player, int& b_m, event_t*& e_m ) : 
-	event_t( sim, player ), buffs_mongoose( b_m ), expirations_mongoose( e_m )
+        event_t( sim, player ), buffs_mongoose( b_m ), expirations_mongoose( e_m )
       {
-	name = "Mongoose Expiration";
-	player -> aura_gain( "Mongoose Lightning Speed" );
-	player -> attribute[ ATTR_AGILITY ] += 120;
-	buffs_mongoose = 1;
-	sim -> add_event( this, 15.0 );
+        name = "Mongoose Expiration";
+        player -> aura_gain( "Mongoose Lightning Speed" );
+        player -> attribute[ ATTR_AGILITY ] += 120;
+        buffs_mongoose = 1;
+        sim -> add_event( this, 15.0 );
       }
       virtual void execute()
       {
-	player -> aura_loss( "Mongoose Lightning Speed" );
-	player -> attribute[ ATTR_AGILITY ] -= 120;
-	buffs_mongoose = 0;
-	expirations_mongoose = 0;
+        player -> aura_loss( "Mongoose Lightning Speed" );
+        player -> attribute[ ATTR_AGILITY ] -= 120;
+        buffs_mongoose = 0;
+        expirations_mongoose = 0;
       }
     };
 
@@ -211,11 +211,11 @@ struct mongoose_callback_t : public action_callback_t
     {
       if( e )
       {
-	e -> reschedule( 15.0 );
+        e -> reschedule( 15.0 );
       }
       else
       {
-	e = new ( a -> sim ) mongoose_expiration_t( a -> sim, p, b, e );
+        e = new ( a -> sim ) mongoose_expiration_t( a -> sim, p, b, e );
       }
     }
 
@@ -245,18 +245,18 @@ struct executioner_callback_t : public action_callback_t
       executioner_callback_t* callback;
       expiration_t( sim_t* sim, player_t* player, executioner_callback_t* cb ) : event_t( sim, player ), callback( cb )
       {
-	name = "Executioner Expiration";
-	player -> aura_gain( "Executioner" );
-	player -> attack_penetration += 120 / player -> rating.armor_penetration;
-	callback -> buff = 1;
-	sim -> add_event( this, 15.0 );
+        name = "Executioner Expiration";
+        player -> aura_gain( "Executioner" );
+        player -> attack_penetration += 120 / player -> rating.armor_penetration;
+        callback -> buff = 1;
+        sim -> add_event( this, 15.0 );
       }
       virtual void execute()
       {
-	player -> aura_loss( "Executioner" );
-	player -> attack_penetration -= 120 / player -> rating.armor_penetration;
-	callback -> buff       = 0;
-	callback -> expiration = 0;
+        player -> aura_loss( "Executioner" );
+        player -> attack_penetration -= 120 / player -> rating.armor_penetration;
+        callback -> buff       = 0;
+        callback -> expiration = 0;
       }
     };
 
@@ -276,11 +276,11 @@ struct executioner_callback_t : public action_callback_t
     {
       if( expiration )
       {
-	expiration -> reschedule( 15.0 );
+        expiration -> reschedule( 15.0 );
       }
       else
       {
-	expiration = new ( a -> sim ) expiration_t( a -> sim, p, this );
+        expiration = new ( a -> sim ) expiration_t( a -> sim, p, this );
       }
     }
 
@@ -295,8 +295,8 @@ struct executioner_callback_t : public action_callback_t
 // enchant_t::parse_option ==================================================
 
 bool enchant_t::parse_option( player_t*          p,
-			      const std::string& name, 
-			      const std::string& value )
+                              const std::string& name, 
+                              const std::string& value )
 {
   option_t options[] =
   {

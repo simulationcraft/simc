@@ -37,15 +37,15 @@ struct judgement_of_wisdom_callback_t : public action_callback_t
     { 
       if( a -> weapon ) 
       {
-	proc_chance = a -> weapon -> proc_chance_on_swing( sim -> jow_ppm,a -> time_to_execute );
+        proc_chance = a -> weapon -> proc_chance_on_swing( sim -> jow_ppm,a -> time_to_execute );
       }
       else
       {
-	double time_to_execute = a -> channeled ? a -> time_to_tick : a -> time_to_execute;
+        double time_to_execute = a -> channeled ? a -> time_to_tick : a -> time_to_execute;
 
-	if( time_to_execute == 0 ) time_to_execute = p -> base_gcd;
+        if( time_to_execute == 0 ) time_to_execute = p -> base_gcd;
 
-	proc_chance = sim -> jow_ppm * time_to_execute / 60.0;
+        proc_chance = sim -> jow_ppm * time_to_execute / 60.0;
       }
     }
 
@@ -72,16 +72,16 @@ struct focus_magic_feedback_callback_t : public action_callback_t
 
       expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p ), mage( p -> buffs.focus_magic )
       {
-	name = "Focus Magic Feedback Expiration";
-	mage -> aura_gain( "Focus Magic Feedback" );
-	mage -> buffs.focus_magic_feedback = 1;
-	sim -> add_event( this, 10.0 );
+        name = "Focus Magic Feedback Expiration";
+        mage -> aura_gain( "Focus Magic Feedback" );
+        mage -> buffs.focus_magic_feedback = 1;
+        sim -> add_event( this, 10.0 );
       }
       virtual void execute()
       {
-	mage -> aura_loss( "Focus Magic Feedback" );
-	mage -> buffs.focus_magic_feedback = 0;
-	mage -> expirations.focus_magic_feedback = 0;
+        mage -> aura_loss( "Focus Magic Feedback" );
+        mage -> buffs.focus_magic_feedback = 0;
+        mage -> expirations.focus_magic_feedback = 0;
       }
     };
 
@@ -111,9 +111,9 @@ static void init_replenish_targets( sim_t* sim )
     for( player_t* p = sim -> player_list; p; p = p -> next )
     {
       if( p -> type != PLAYER_GUARDIAN && 
-	  p -> primary_resource() == RESOURCE_MANA )
+          p -> primary_resource() == RESOURCE_MANA )
       {
-	sim -> replenishment_candidates.push_back( p );
+        sim -> replenishment_candidates.push_back( p );
       }
     }
   }
@@ -166,8 +166,8 @@ static void choose_replenish_targets( player_t* provider )
 
       if( ! min_player || min_mana > p -> resource_current[ RESOURCE_MANA ] )
       {
-	min_player = p;
-	min_mana   = p -> resource_current[ RESOURCE_MANA ];
+        min_player = p;
+        min_mana   = p -> resource_current[ RESOURCE_MANA ];
       }
     }
     if( min_player )
@@ -215,21 +215,21 @@ static void replenish_targets( player_t* provider )
     {
       for( int i = player -> replenishment_targets.size() - 1; i >= 0; i-- )
       {
-	player_t* p = player -> replenishment_targets[ i ];
-	if( p -> sleeping ) continue;
+        player_t* p = player -> replenishment_targets[ i ];
+        if( p -> sleeping ) continue;
 
-	p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.0025, p -> gains.replenishment );
+        p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.0025, p -> gains.replenishment );
       }
 
       event_t*& e = player -> expirations.replenishment;
 
       if( --ticks_remaining == 0 )
       {
-	e = 0;
+        e = 0;
       }
       else
       {
-	e = new ( sim ) replenish_tick_t( sim, player, ticks_remaining );
+        e = new ( sim ) replenish_tick_t( sim, player, ticks_remaining );
       }
     }
     virtual void reschedule( double new_time )
@@ -263,7 +263,7 @@ static void replenish_raid( player_t* provider )
       name = "Replenishment Expiration";
       for( player_t* p = sim -> player_list; p; p = p -> next )
       {
-       	if( p -> buffs.replenishment == 0 ) p -> aura_gain( "Replenishment" );
+        if( p -> buffs.replenishment == 0 ) p -> aura_gain( "Replenishment" );
         p -> buffs.replenishment++;
       }
       sim -> add_event( this, 15.0 );
@@ -273,7 +273,7 @@ static void replenish_raid( player_t* provider )
       for( player_t* p = sim -> player_list; p; p = p -> next )
       {
         p -> buffs.replenishment--;
-       	if( p -> buffs.replenishment == 0 ) p -> aura_loss( "Replenishment" );
+        if( p -> buffs.replenishment == 0 ) p -> aura_loss( "Replenishment" );
       }
       player -> expirations.replenishment = 0;
     }
@@ -302,7 +302,7 @@ static void replenish_raid( player_t* provider )
 player_t::player_t( sim_t*             s, 
                     int                t,
                     const std::string& n ) :
-  sim(s), name_str(n), next(0), type(t), level(80), party(0), member(0), 
+  sim(s), name_str(n), next(0), index(-1), type(t), level(80), party(0), member(0), 
   distance(0), gcd_ready(0), base_gcd(1.5), sleeping(0), pet_list(0),
   // Haste
   base_haste_rating(0), initial_haste_rating(0), haste_rating(0), spell_haste(1.0), attack_haste(1.0),
@@ -351,11 +351,12 @@ player_t::player_t( sim_t*             s,
   dps(0), dps_min(0), dps_max(0), dps_std_dev(0), dps_error(0), dpr(0), rps_gain(0), rps_loss(0),
   proc_list(0), gain_list(0), stats_list(0), uptime_list(0), enchant(0), unique_gear(0)
 {
-  if( sim -> debug ) report_t::log( sim, "Creating Player %s", name() );
+  if( sim -> debug ) log_t::output( sim, "Creating Player %s", name() );
   player_t** last = &( sim -> player_list );
   while( *last ) last = &( (*last) -> next );
   *last = this;
   next = 0;
+  index = ++( sim -> num_players );
 
   unique_gear = new unique_gear_t();
   enchant     = new enchant_t();
@@ -443,11 +444,26 @@ player_t::~player_t()
   }
 }
 
+// player_t::id ============================================================
+
+const char* player_t::id()
+{
+  if( id_str.empty() )
+  {
+    // create artifical unit ID, format type+subtype+id= TTTSSSSSSSIIIIII
+    char buffer[ 1024 ];
+    sprintf( buffer, "0x0100000002%06X,\"%s\",0x511", index, name_str.c_str() );
+    id_str = buffer;
+  }
+
+  return id_str.c_str();
+}
+
 // player_t::init ==========================================================
 
 void player_t::init() 
 {
-  if( sim -> debug ) report_t::log( sim, "Initializing player %s", name() );   
+  if( sim -> debug ) log_t::output( sim, "Initializing player %s", name() );   
 
   init_rating();
   init_base();
@@ -783,10 +799,10 @@ void player_t::init_resources( bool force )
     if( force || resource_initial[ i ] == 0 )
     {
       resource_initial[ i ] = 
-	            resource_base[ i ] + 
-	      gear_stats.resource[ i ] + 
-	       gem_stats.resource[ i ] +
-	enchant -> stats.resource[ i ];
+                    resource_base[ i ] + 
+              gear_stats.resource[ i ] + 
+               gem_stats.resource[ i ] +
+        enchant -> stats.resource[ i ];
 
       if( i == RESOURCE_MANA   ) resource_initial[ i ] += ( intellect() - adjust ) * mana_per_intellect + adjust;
       if( i == RESOURCE_HEALTH ) resource_initial[ i ] += (   stamina() - adjust ) * health_per_stamina + adjust;
@@ -876,17 +892,17 @@ void player_t::init_actions()
 
     if( ! action_list_prefix.empty() )
     {
-      if( sim -> debug ) report_t::log( sim, "Player %s: action_list_prefix=%s", name(), action_list_prefix.c_str() );   
+      if( sim -> debug ) log_t::output( sim, "Player %s: action_list_prefix=%s", name(), action_list_prefix.c_str() );   
       size = util_t::string_split( splits, action_list_prefix, "/" );
     }
     if( ! action_list_str.empty() )
     {
-      if( sim -> debug ) report_t::log( sim, "Player %s: action_list_str=%s", name(), action_list_str.c_str() );   
+      if( sim -> debug ) log_t::output( sim, "Player %s: action_list_str=%s", name(), action_list_str.c_str() );   
       size = util_t::string_split( splits, action_list_str, "/" );
     }
     if( ! action_list_postfix.empty() )
     {
-      if( sim -> debug ) report_t::log( sim, "Player %s: action_list_postfix=%s", name(), action_list_postfix.c_str() );   
+      if( sim -> debug ) log_t::output( sim, "Player %s: action_list_postfix=%s", name(), action_list_postfix.c_str() );   
       size = util_t::string_split( splits, action_list_postfix, "/" );
     }
 
@@ -913,7 +929,7 @@ void player_t::init_actions()
 
   if( ! action_list_skip.empty() )
   {
-    if( sim -> debug ) report_t::log( sim, "Player %s: action_list_skip=%s", name(), action_list_skip.c_str() );   
+    if( sim -> debug ) log_t::output( sim, "Player %s: action_list_skip=%s", name(), action_list_skip.c_str() );   
     std::vector<std::string> splits;
     int size = util_t::string_split( splits, action_list_skip, "/" );
     for( int i=0; i < size; i++ )
@@ -1193,7 +1209,7 @@ double player_t::spirit()
 
 void player_t::combat_begin() 
 {
-  if( sim -> debug ) report_t::log( sim, "Combat begins for player %s", name() );   
+  if( sim -> debug ) log_t::output( sim, "Combat begins for player %s", name() );   
 
   if( action_list && ! is_pet() && ! sleeping ) 
   {
@@ -1241,7 +1257,7 @@ void player_t::combat_begin()
       virtual void execute()
       {
         if( sim -> debug)
-          report_t::log( sim, "Armor Snapshot: %.02f -> %.02f", player -> armor_snapshot, player -> composite_armor() );
+          log_t::output( sim, "Armor Snapshot: %.02f -> %.02f", player -> armor_snapshot, player -> composite_armor() );
         player -> armor_snapshot = player -> composite_armor();
         new ( sim ) armor_snapshot_event_t( sim, player, sim -> armor_update_interval );
       }
@@ -1255,7 +1271,7 @@ void player_t::combat_begin()
 
 void player_t::combat_end() 
 {
-  if( sim -> debug ) report_t::log( sim, "Combat ends for player %s", name() );   
+  if( sim -> debug ) log_t::output( sim, "Combat ends for player %s", name() );   
 
   double iteration_seconds = last_action_time;
 
@@ -1275,7 +1291,7 @@ void player_t::combat_end()
 
 void player_t::reset() 
 {
-  if( sim -> debug ) report_t::log( sim, "Reseting player %s", name() );   
+  if( sim -> debug ) log_t::output( sim, "Reseting player %s", name() );   
 
   last_cast = 0;
   gcd_ready = 0;
@@ -1553,7 +1569,7 @@ void player_t::regen( double periodicity )
 
 double player_t::resource_loss( int       resource,
                                 double    amount,
-				action_t* action )
+                                action_t* action )
 {
   if( amount == 0 ) return 0;
 
@@ -1581,7 +1597,7 @@ double player_t::resource_loss( int       resource,
     action_callback_t::trigger( resource_loss_callbacks[ resource ], action );
   }
 
-  if( sim -> debug ) report_t::log( sim, "Player %s spends %.0f %s", name(), amount, util_t::resource_type_string( resource ) );
+  if( sim -> debug ) log_t::output( sim, "Player %s spends %.0f %s", name(), amount, util_t::resource_type_string( resource ) );
 
   return actual_amount;
 }
@@ -1591,7 +1607,7 @@ double player_t::resource_loss( int       resource,
 double player_t::resource_gain( int       resource,
                                 double    amount,
                                 gain_t*   source,
-				action_t* action )
+                                action_t* action )
 {
   if( sleeping ) return 0;
 
@@ -1610,13 +1626,17 @@ double player_t::resource_gain( int       resource,
     action_callback_t::trigger( resource_gain_callbacks[ resource ], action );
   }
 
-  if( sim -> log ){ 
-    report_t::log( sim, "%s gains %.0f (%.0f) %s from %s (%.0f)", 
+  if( sim -> log )
+  { 
+    log_t::output( sim, "%s gains %.0f (%.0f) %s from %s (%.0f)", 
                    name(), actual_amount, amount, 
                    util_t::resource_type_string( resource ), source ? source -> name() : "unknown", 
                    resource_current[ resource ] );
-	if ((amount!=0)||(actual_amount!=0)) //not checked in Wlog_energize to allow report of 0,0 if needed
-		report_t::Wlog_energize(this, source, amount, actual_amount, resource);
+
+    if( amount && source )
+    {
+      log_t::resource_gain_event( this, resource, amount, actual_amount, source );
+    }
   }
 
   return actual_amount;
@@ -1638,7 +1658,7 @@ bool player_t::resource_available( int    resource,
 // player_t::stat_gain ======================================================
 
 void player_t::stat_gain( int    stat,
-			  double amount )
+                          double amount )
 {
   switch( stat )
   {
@@ -1684,7 +1704,7 @@ void player_t::stat_gain( int    stat,
 // player_t::stat_loss ======================================================
 
 void player_t::stat_loss( int    stat,
-			  double amount )
+                          double amount )
 {
   switch( stat )
   {
@@ -1779,7 +1799,7 @@ void player_t::register_callbacks()
 // player_t::register_resource_gain_callback ================================
 
 void player_t::register_resource_gain_callback( int                resource, 
-						action_callback_t* cb )
+                                                action_callback_t* cb )
 {
   resource_gain_callbacks[ resource ].push_back( cb );
 }
@@ -1787,7 +1807,7 @@ void player_t::register_resource_gain_callback( int                resource,
 // player_t::register_resource_loss_callback ================================
 
 void player_t::register_resource_loss_callback( int                resource, 
-						action_callback_t* cb )
+                                                action_callback_t* cb )
 {
   resource_loss_callbacks[ resource ].push_back( cb );
 }
@@ -1795,7 +1815,7 @@ void player_t::register_resource_loss_callback( int                resource,
 // player_t::register_attack_result_callback ================================
 
 void player_t::register_attack_result_callback( int                mask, 
-						action_callback_t* cb )
+                                                action_callback_t* cb )
 {
   for( int i=0; i < RESULT_MAX; i++ )
   {
@@ -1809,7 +1829,7 @@ void player_t::register_attack_result_callback( int                mask,
 // player_t::register_spell_result_callback =================================
 
 void player_t::register_spell_result_callback( int                mask, 
-					       action_callback_t* cb )
+                                               action_callback_t* cb )
 {
   for( int i=0; i < RESULT_MAX; i++ )
   {
@@ -1905,27 +1925,25 @@ action_t* player_t::find_action( const std::string& str )
 
 // player_t::aura_gain ======================================================
 
-void player_t::aura_gain( const char* aura_name , int blizzID )
+void player_t::aura_gain( const char* aura_name , int aura_id )
 {
-  // FIXME! Aura-tracking here.
-
-	if( sim -> log && ! sleeping ){
-		report_t::log( sim, "Player %s gains %s", name(), aura_name );
-		report_t::Wlog_aura(this,aura_name,+1, blizzID);
-	}
+  if( sim -> log && ! sleeping )
+  {
+    log_t::output( sim, "Player %s gains %s", name(), aura_name );
+    log_t::aura_gain_event( this, aura_name, aura_id );
+  }
 
 }
 
 // player_t::aura_loss ======================================================
 
-void player_t::aura_loss( const char* aura_name , int blizzID )
+void player_t::aura_loss( const char* aura_name , int aura_id )
 {
-  // FIXME! Aura-tracking here.
-
-	if( sim -> log && ! sleeping ){
-		report_t::log( sim, "Player %s loses %s", name(), aura_name );
-		report_t::Wlog_aura(this,aura_name,-1, blizzID);
-	}
+  if( sim -> log && ! sleeping )
+  {
+    log_t::output( sim, "Player %s loses %s", name(), aura_name );
+    log_t::aura_loss_event( this, aura_name, aura_id );
+  }
 }
 
 // player_t::get_gain =======================================================
@@ -2057,8 +2075,8 @@ struct cycle_t : public action_t
       current_action = next;
       if( ! current_action )
       {
-	printf( "simcraft: player %s has no actions after 'cycle'\n", player -> name() );
-	exit( 0 );
+        printf( "simcraft: player %s has no actions after 'cycle'\n", player -> name() );
+        exit( 0 );
       }
       for( action_t* a = next; a; a = a -> next ) a -> background = true;
     }
@@ -2104,11 +2122,11 @@ struct restart_sequence_t : public action_t
     for( action_t* a = player -> action_list; a; a = a -> next )
     {
       if( a -> type != ACTION_SEQUENCE )
-	continue;
+        continue;
 
       if( ! seq_name_str.empty() )
-	if( seq_name_str != a -> name_str )
-	  continue;
+        if( seq_name_str != a -> name_str )
+          continue;
 
       ( (sequence_t*) a ) -> restart();
     }
@@ -2175,14 +2193,14 @@ struct wait_until_ready_t : public action_t
       
       if( a -> cooldown_ready > sim -> current_time )
       {
-	double delta_time = a -> cooldown_ready - sim -> current_time;
-	if( delta_time < trigger_gcd ) trigger_gcd = delta_time;
+        double delta_time = a -> cooldown_ready - sim -> current_time;
+        if( delta_time < trigger_gcd ) trigger_gcd = delta_time;
       }
 
       if( a -> duration_ready > sim -> current_time )
       {
-	double delta_time = a -> duration_ready - ( sim -> current_time + a -> execute_time() );
-	if( delta_time < trigger_gcd ) trigger_gcd = delta_time;
+        double delta_time = a -> duration_ready - ( sim -> current_time + a -> execute_time() );
+        if( delta_time < trigger_gcd ) trigger_gcd = delta_time;
       }
     }
 
@@ -2406,6 +2424,7 @@ bool player_t::parse_option( const std::string& name,
     // Player - General
     { "name",                                 OPT_STRING, &( name_str                                       ) },
     { "race",                                 OPT_STRING, &( race_str                                       ) },
+    { "id",                                   OPT_STRING, &( id_str                                         ) },
     { "level",                                OPT_INT,    &( level                                          ) },
     { "gcd",                                  OPT_FLT,    &( base_gcd                                       ) },
     { "distance",                             OPT_FLT,    &( distance                                       ) },

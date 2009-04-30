@@ -12,7 +12,7 @@
 // ::new ====================================================================
 
 void* event_t::operator new( size_t size,
-			     sim_t* sim )
+                             sim_t* sim )
 {
   // This override of ::new is ONLY for event_t memory management!
 
@@ -72,7 +72,7 @@ player_ready_event_t::player_ready_event_t( sim_t*    sim,
   event_t( sim, p )
 {
   name = "Player-Ready";
-  if( sim -> debug ) report_t::log( sim, "New Player-Ready Event: %s", p -> name() );
+  if( sim -> debug ) log_t::output( sim, "New Player-Ready Event: %s", p -> name() );
   sim -> add_event( this, delta_time );
 }
 
@@ -93,12 +93,12 @@ void player_ready_event_t::execute()
 // action_execute_event_t::action_execute_event_t ===========================
 
 action_execute_event_t::action_execute_event_t( sim_t*    sim,
-						action_t* a,
-						double    time_to_execute ) :
+                                                action_t* a,
+                                                double    time_to_execute ) :
   event_t( sim, a -> player ), action( a )
 {
   name = "Action-Execute";
-  if( sim -> debug ) report_t::log( sim, "New Action Execute Event: %s %s %.1f", player -> name(), a -> name(), time_to_execute );
+  if( sim -> debug ) log_t::output( sim, "New Action Execute Event: %s %s %.1f", player -> name(), a -> name(), time_to_execute );
   sim -> add_event( this, time_to_execute );
 }
 
@@ -123,15 +123,15 @@ void action_execute_event_t::execute()
 // action_tick_event_t::action_tick_event_t =================================
 
 action_tick_event_t::action_tick_event_t( sim_t*    sim,
-					  action_t* a,
-					  double    time_to_tick ) :
+                                          action_t* a,
+                                          double    time_to_tick ) :
   event_t( sim, a -> player ), action( a )
 {
   name = "Action Tick";
   
   if( sim -> debug )
-    report_t::log( sim, "New Action Tick Event: %s %s %d-of-%d %.2f",
-		   player -> name(), a -> name(), a -> current_tick + 1, a -> num_ticks, time_to_tick );
+    log_t::output( sim, "New Action Tick Event: %s %s %d-of-%d %.2f",
+                   player -> name(), a -> name(), a -> current_tick + 1, a -> num_ticks, time_to_tick );
 
   sim -> add_event( this, time_to_tick );
 }
@@ -167,8 +167,8 @@ void action_tick_event_t::execute()
 // action_travel_event_t::action_travel_event_t =============================
 
 action_travel_event_t::action_travel_event_t( sim_t*    sim,
-					      action_t* a,
-					      double    time_to_travel ) :
+                                              action_t* a,
+                                              double    time_to_travel ) :
   event_t( sim, a -> player ), action( a )
 {
   name   = "Action Travel";
@@ -176,8 +176,8 @@ action_travel_event_t::action_travel_event_t( sim_t*    sim,
   damage = a -> direct_dmg;
 
   if( sim -> debug )
-    report_t::log( sim, "New Action Travel Event: %s %s %.2f",
-		   player -> name(), a -> name(), time_to_travel );
+    log_t::output( sim, "New Action Travel Event: %s %s %.2f",
+                   player -> name(), a -> name(), time_to_travel );
 
   sim -> add_event( this, time_to_travel );
 }
@@ -198,7 +198,7 @@ void action_travel_event_t::execute()
 regen_event_t::regen_event_t( sim_t* sim ) : event_t( sim )
 {
   name = "Regen Event";
-  if( sim -> debug ) report_t::log( sim, "New Regen Event" );
+  if( sim -> debug ) log_t::output( sim, "New Regen Event" );
   sim -> add_event( this, sim -> regen_periodicity );
 }
 
@@ -225,5 +225,5 @@ void event_t::reschedule( double new_time )
 {
   reschedule_time = sim -> current_time + new_time;
 
-  if( sim -> debug ) report_t::log( sim, "Rescheduling event %s (%d) from %.2f to %.2f", name, id, time, reschedule_time );
+  if( sim -> debug ) log_t::output( sim, "Rescheduling event %s (%d) from %.2f to %.2f", name, id, time, reschedule_time );
 }

@@ -31,19 +31,19 @@
 #define N32 (N * 4)
 
 // MEXP_1279 paramaters
-#define POS1	7
-#define SL1	14
-#define SL2	3
-#define SR1	5
-#define SR2	1
-#define MSK1	0xf7fefffdU
-#define MSK2	0x7fefcfffU
-#define MSK3	0xaff3ef3fU
-#define MSK4	0xb5ffff7fU
-#define PARITY1	0x00000001U
-#define PARITY2	0x00000000U
-#define PARITY3	0x00000000U
-#define PARITY4	0x20000000U
+#define POS1    7
+#define SL1     14
+#define SL2     3
+#define SR1     5
+#define SR2     1
+#define MSK1    0xf7fefffdU
+#define MSK2    0x7fefcfffU
+#define MSK3    0xaff3ef3fU
+#define MSK4    0xb5ffff7fU
+#define PARITY1 0x00000001U
+#define PARITY2 0x00000000U
+#define PARITY3 0x00000000U
+#define PARITY4 0x20000000U
 
 // a parity check vector which certificate the period of 2^{MEXP} 
 static uint32_t parity[4] = {PARITY1, PARITY2, PARITY3, PARITY4};
@@ -75,24 +75,24 @@ inline static void period_certification( w128_t* sfmt, uint32_t* psfmt32 )
     uint32_t work;
 
     for (i = 0; i < 4; i++)
-	inner ^= psfmt32[i] & parity[i];
+        inner ^= psfmt32[i] & parity[i];
     for (i = 16; i > 0; i >>= 1)
-	inner ^= inner >> i;
+        inner ^= inner >> i;
     inner &= 1;
     /* check OK */
     if (inner == 1) {
-	return;
+        return;
     }
     /* check NG, and modification */
     for (i = 0; i < 4; i++) {
-	work = 1;
-	for (j = 0; j < 32; j++) {
-	    if ((work & parity[i]) != 0) {
-		psfmt32[i] ^= work;
-		return;
-	    }
-	    work = work << 1;
-	}
+        work = 1;
+        for (j = 0; j < 32; j++) {
+            if ((work & parity[i]) != 0) {
+                psfmt32[i] ^= work;
+                return;
+            }
+            work = work << 1;
+        }
     }
 }
 
@@ -156,7 +156,7 @@ inline static void do_recursion(w128_t *r, w128_t *a, w128_t *b, w128_t *c, w128
 }
 
 inline static void gen_rand_all( w128_t*   sfmt,
-				 uint32_t* psfmt32 ) 
+                                 uint32_t* psfmt32 ) 
 {
     int i;
     w128_t *r1, *r2;
@@ -164,14 +164,14 @@ inline static void gen_rand_all( w128_t*   sfmt,
     r1 = &sfmt[N - 2];
     r2 = &sfmt[N - 1];
     for (i = 0; i < N - POS1; i++) {
-	do_recursion(&sfmt[i], &sfmt[i], &sfmt[i + POS1], r1, r2);
-	r1 = r2;
-	r2 = &sfmt[i];
+        do_recursion(&sfmt[i], &sfmt[i], &sfmt[i + POS1], r1, r2);
+        r1 = r2;
+        r2 = &sfmt[i];
     }
     for (; i < N; i++) {
-	do_recursion(&sfmt[i], &sfmt[i], &sfmt[i + POS1 - N], r1, r2);
-	r1 = r2;
-	r2 = &sfmt[i];
+        do_recursion(&sfmt[i], &sfmt[i], &sfmt[i + POS1 - N], r1, r2);
+        r1 = r2;
+        r2 = &sfmt[i];
     }
 }
 
@@ -179,7 +179,7 @@ inline static uint32_t gen_rand32(rng_sfmt_t* r)
 {
     if (r->idx >= N32) {
         gen_rand_all(r->sfmt, r->psfmt32);
-	r->idx = 0;
+        r->idx = 0;
     }
     return r->psfmt32[r->idx++];
 }
@@ -234,7 +234,7 @@ int rng_t::roll( double chance )
 // rng_t::range =============================================================
 
 double rng_t::range( double min,
-		     double max )
+                     double max )
 {
   if( min == max ) return min;
 
@@ -246,43 +246,44 @@ double rng_t::range( double min,
 // rng_t::gaussian ==========================================================
 
 double rng_t::gaussian( double mean,
-			double stddev )
+                        double stddev )
 {
-	// This code adapted from ftp://ftp.taygeta.com/pub/c/boxmuller.c
-/* boxmuller.c           Implements the Polar form of the Box-Muller
-                         Transformation
+  // This code adapted from ftp://ftp.taygeta.com/pub/c/boxmuller.c
+  // Implements the Polar form of the Box-Muller Transformation
+  //
+  //                  (c) Copyright 1994, Everett F. Carter Jr.
+  //                      Permission is granted by the author to use
+  //                      this software for any application provided this
+  //                      copyright notice is preserved.
 
-                      (c) Copyright 1994, Everett F. Carter Jr.
-                          Permission is granted by the author to use
-			  this software for any application provided this
-			  copyright notice is preserved.
+  double x1, x2, w, y1, y2, z;
 
-*/
-	double x1, x2, w, y1;
-	static double y2;
-	static bool use_last = false;
+  if( gaussian_pair_use )
+  {
+    z = gaussian_pair_value;
+    gaussian_pair_use = false;
+  }
+  else
+  {
+    do {
+      x1 = 2.0 * real() - 1.0;
+      x2 = 2.0 * real() - 1.0;
+      w = x1 * x1 + x2 * x2;
+    } while ( w >= 1.0 );
+    
+    w = sqrt( (-2.0 * log( w ) ) / w );
+    y1 = x1 * w;
+    y2 = x2 * w;
 
-	if (use_last)		        /* use value from previous call */
-	{
-		y1 = y2;
-		use_last = false;
-	}
-	else
-	{
-		do {
-			x1 = 2.0 * real() - 1.0;
-			x2 = 2.0 * real() - 1.0;
-			w = x1 * x1 + x2 * x2;
-		} while ( w >= 1.0 );
+    z = y1;
+    gaussian_pair_value = y2;
+    gaussian_pair_use = true;
+  }
 
-		w = sqrt( (-2.0 * log( w ) ) / w );
-		y1 = x1 * w;
-		y2 = x2 * w;
-		use_last = true;
-	}
+  // True gaussian distribution can of course yield any number at some probability.  So truncate on the low end.
+  double value = mean + z * stddev;
 
-	// True gaussian distribution can of course yield any number at some probability.  So truncate on the low end.
-	return( (mean + y1 * stddev) >= 0.0 ? (mean + y1 * stddev) : 0.0 );
+  return( value > 0 ? value : 0 );
 }
 
 

@@ -133,74 +133,76 @@ struct death_knight_t : public player_t
 
   // Talents
   struct talents_t
-  {                                     // Status:
-    int butchery;                       // Done
-    int subversion;											// Done
-    int bladed_armor;                   // Done
-    int scent_of_blood;                 // Done
-    int two_handed_weapon_spec;         // Done
-    int dark_conviction;                // Done
-    int death_rune_mastery;             // Done
-    int bloody_strikes;                 // Done
-    int veteran_of_the_third_war;       // Done
-    int bloody_vengeance;               // Done
-    int abominations_might;             // Done
-    int bloodworms;                     // Done
-    int hysteria;                       // Done
-    int improved_death_strike;          // Done
-    int sudden_doom;                    // Done
-    int heart_strike;										// Done
-    int might_of_mograine;              // Done
-    int blood_gorged;                   // Done
-    int dancing_rune_weapon;
-    int improved_icy_touch;
-    int runic_power_mastery;						// Done
-    int toughness;
-    int black_ice;
-    int nerves_of_cold_steel;
-    int icy_talons;
+  {
+    int abominations_might;
+    int bladed_armor;
+    int blood_gorged;       
+    int bloodworms;
+    int bloody_strikes;
+    int bloody_vengeance;
+    int butchery;
+    int dark_conviction;
+    int death_rune_mastery;
+    int heart_strike;
+    int hysteria;
+    int improved_death_strike;
+    int might_of_mograine;
+    int runic_power_mastery;
+    int scent_of_blood;
+    int subversion;
+    int sudden_doom;
+    int two_handed_weapon_spec;
+    int veteran_of_the_third_war;
+
+    // NYI
     int annihilation;
-    int killing_machine;
-    int chill_of_the_grave;
-    int endless_winter;
-    int glacier_rot;
-    int deathchill;
-    int improved_icy_talons;
-    int merciless_combat;
-    int rime;
-    int chilblains;
-    int hungering_cold;
+    int black_ice;
+    int blood_caked_blade;
     int blood_of_the_north;
-    int unbreakable_armor;
+    int bone_shield;
+    int chilblains;
+    int chill_of_the_grave;
+    int corpse_explosion;
+    int crypt_fever;
+    int dancing_rune_weapon;
+    int deathchill;
+    int desecration;
+    int dirge;
+    int ebon_plaguebringer;
+    int endless_winter;
+    int epidemic;
     int frost_strike;
+    int ghoul_frenzy;
+    int glacier_rot;
     int guile_of_gorefiend;
-    int tundra_stalker;
     int howling_blast;
+    int hungering_cold;
+    int icy_talons;
+    int improved_icy_talons;
+    int improved_icy_touch;
+    int improved_unholy_presence;
+    int impurity;
+    int killing_machine;
+    int master_of_ghouls;
+    int merciless_combat;
+    int morbidity;
+    int necrosis;
+    int nerves_of_cold_steel;
+    int night_of_the_dead;
+    int outbreak;
+    int rage_of_rivendare;
+    int ravenous_dead;
+    int reaping;
+    int rime;
+    int scourge_strike;
+    int summon_gargoyle;
+    int toughness;
+    int tundra_stalker;
+    int unbreakable_armor;
+    int unholy_blight;
     int vicious_strikes;
     int virulence;
-    int epidemic;
-    int morbidity;
-    int ravenous_dead;
-    int outbreak;
-    int necrosis;
-    int corpse_explosion;
-    int blood_caked_blade;
-    int master_of_ghouls;
-    int unholy_blight;
-    int impurity;
-    int dirge;
-    int reaping;
-    int ghoul_frenzy;
-    int desecration;
-    int improved_unholy_presence;
-    int night_of_the_dead;
-    int crypt_fever;
-    int bone_shield;
     int wandering_plague;
-    int ebon_plaguebringer;
-    int scourge_strike;
-    int rage_of_rivendare;
-    int summon_gargoyle;
 
     talents_t() { memset( (void*) this, 0x0, sizeof( talents_t ) ); }
   };
@@ -896,7 +898,7 @@ death_knight_attack_t::player_buff()
   }
 
   if( sim -> debug ) 
-    report_t::log( sim, "death_knight_attack_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f, p_mult=%.0f", 
+    log_t::output( sim, "death_knight_attack_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f, p_mult=%.0f", 
        name(), player_hit, player_crit, player_spell_power, player_penetration, player_multiplier );
 }
 
@@ -1021,7 +1023,7 @@ death_knight_spell_t::player_buff()
   p -> uptimes_abominations_might -> update( p -> buffs.abominations_might != 0 );
 
   if( sim -> debug ) 
-    report_t::log( sim, "death_knight_spell_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f, p_mult=%.0f", 
+    log_t::output( sim, "death_knight_spell_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f, p_mult=%.0f", 
        name(), player_hit, player_crit, player_spell_power, player_penetration, player_multiplier );
 }
 
@@ -1180,7 +1182,7 @@ struct death_knight_disease_t : public death_knight_spell_t
 
   virtual bool ready()     { return false; }
   virtual void execute()   { player -> cast_death_knight() -> diseases++; death_knight_spell_t::execute();   }
-  virtual void last_tick() { player -> cast_death_knight() -> diseases--;	death_knight_spell_t::last_tick(); }
+  virtual void last_tick() { player -> cast_death_knight() -> diseases--;       death_knight_spell_t::last_tick(); }
 };
 
 struct blood_plague_t : public death_knight_disease_t
@@ -1674,7 +1676,7 @@ struct hysteria_t : public action_t
 };
 
 
-}	// namespace
+}       // namespace
 
 // ==========================================================================
 // Death Knight Character Definition
@@ -1707,7 +1709,7 @@ death_knight_t::create_action( const std::string& name, const std::string& optio
 void
 death_knight_t::init_base()
 {
-  attribute_base[ ATTR_STRENGTH  ] = 185;	// Human Level 80 Stats
+  attribute_base[ ATTR_STRENGTH  ] = 185;       // Human Level 80 Stats
   attribute_base[ ATTR_AGILITY   ] = 112;
   attribute_base[ ATTR_STAMINA   ] = 169;
   attribute_base[ ATTR_INTELLECT ] = 35;

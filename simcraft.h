@@ -270,6 +270,8 @@ struct thread_t
 
 struct rng_t
 {
+  bool   gaussian_pair_use;
+  double gaussian_pair_value;
   static rng_t* init( int sfmt );
   virtual int roll( double chance );
   virtual double real();
@@ -348,9 +350,10 @@ struct sim_t
   bool        P309;
   rng_t*      rng;
   event_t*    free_list;
+  target_t*   target;
   player_t*   player_list;
   player_t*   active_player;
-  target_t*   target;
+  int         num_players;
   double      queue_lag, queue_lag_range;
   double      gcd_lag, gcd_lag_range;
   double      channel_lag, channel_lag_range;
@@ -362,7 +365,7 @@ struct sim_t
   int         seed, id, iterations, current_iteration, threads;
   int         infinite_resource[ RESOURCE_MAX ];
   int         armor_update_interval, potion_sickness;
-  int         optimal_raid, average_dmg, log, debug, timestamp, sfmt;
+  int         optimal_raid, average_dmg, log, debug, sfmt;
   double      jow_chance, jow_ppm;
 
   std::vector<std::string> party_encoding;
@@ -472,11 +475,12 @@ struct sim_t
   int        report_progress;
   std::vector<player_t*> players_by_rank;
   std::vector<player_t*> players_by_name;
+  std::vector<std::string> id_dictionary;
+  std::vector<std::string> dps_charts, gear_charts, dpet_charts;
+  std::string downtime_chart, uptimes_chart;
   std::string html_file_str, wiki_file_str;
   FILE* output_file;
   FILE* log_file;
-  FILE* html_file;
-  FILE* wiki_file;
 
   // Multi-Threading
   std::vector<sim_t*> children;
@@ -573,9 +577,9 @@ struct weapon_t
 struct player_t
 {
   sim_t*      sim;
-  std::string name_str, talents_str;
+  std::string name_str, talents_str, id_str;
   player_t*   next;
-  int         type, level, party, member;
+  int         index, type, level, party, member;
   double      distance;
   double      gcd_ready, base_gcd;
   int         sleeping;
@@ -697,6 +701,9 @@ struct player_t
   std::vector<double> timeline_dps;
   std::vector<double> iteration_dps;
   std::vector<int> distribution_dps;
+  std::string action_dpet_chart, action_dmg_chart, gains_chart, uptimes_and_procs_chart;
+  std::string timeline_resource_chart, timeline_dps_chart, distribution_dps_chart;
+  std::string gear_weights_lootrank_link, gear_weights_wowhead_link;
 
   // Gear
   gear_stats_t   equip_stats;
@@ -862,6 +869,7 @@ struct player_t
   virtual ~player_t();
 
   virtual const char* name() { return name_str.c_str(); }
+  virtual const char* id();
   
   virtual void init();
   virtual void init_base() = 0;
@@ -980,8 +988,8 @@ struct player_t
   void      recalculate_haste();
   double    mana_regen_per_second();
   bool      dual_wield() { return main_hand_weapon.type != WEAPON_NONE && off_hand_weapon.type != WEAPON_NONE; }
-  void      aura_gain( const char* name, int blizzID=0 ); //for Wlog_ , added optional parameter blizzID. If supplied, web pages can show tooltips
-  void      aura_loss( const char* name, int blizzID=0 );
+  void      aura_gain( const char* name, int aura_id=0 );
+  void      aura_loss( const char* name, int aura_id=0 );
   gain_t*   get_gain  ( const std::string& name );
   proc_t*   get_proc  ( const std::string& name );
   stats_t*  get_stats ( const std::string& name );
@@ -1016,6 +1024,7 @@ struct pet_t : public player_t
 
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual const char* name() { return full_name_str.c_str(); }
+  virtual const char* id();
 };
 
 // Target ====================================================================
@@ -1023,7 +1032,7 @@ struct pet_t : public player_t
 struct target_t
 {
   sim_t* sim;
-  std::string name_str, race_str;
+  std::string name_str, race_str, id_str;
   int race;
   int level;
   int spell_resistance[ SCHOOL_MAX ];
@@ -1135,6 +1144,7 @@ struct target_t
   uptime_t* get_uptime( const std::string& name );
   bool parse_option( const std::string& name, const std::string& value );
   const char* name() { return name_str.c_str(); }
+  const char* id();
 };
 
 // Stats =====================================================================
@@ -1207,7 +1217,7 @@ struct action_t
   int type;
   std::string name_str;
   player_t* player;
-  int school, resource, tree, result;
+  int id, school, resource, tree, result;
   bool dual, special, binary, channeled, background, repeating, aoe, harmful, proc;
   bool may_miss, may_resist, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
   bool tick_may_crit, tick_zero, clip_dot;
@@ -1231,7 +1241,6 @@ struct action_t
   double resource_consumed;
   double direct_dmg, tick_dmg;
   double resisted_dmg, blocked_dmg; 
-  int	 blizzID;					 
   int num_ticks, current_tick, added_ticks;
   int ticking;
   std::string cooldown_group, duration_group;
@@ -1527,8 +1536,9 @@ struct gain_t
 {
   std::string name_str;
   double actual, overflow;
+  int id;
   gain_t* next;
-  gain_t( const std::string& n ) : name_str(n), actual(0), overflow(0) {}
+  gain_t( const std::string& n, int _id=0 ) : name_str(n), actual(0), overflow(0), id(_id) {}
   void add( double a, double o=0 ) { actual += a; overflow += o; }
   void merge( gain_t* other ) { actual += other -> actual; overflow += other -> overflow; }
   const char* name() { return name_str.c_str(); }
@@ -1566,83 +1576,32 @@ struct uptime_t
 
 struct report_t
 {
-  sim_t* sim;
+  static void print_text( FILE*, sim_t* );
+  static void print_html( sim_t* );
+  static void print_wiki( sim_t* );
+  static void print_suite( sim_t* );
+};
 
-  int report_actions;
-  int report_attack_stats;
-  int report_chart;
-  int report_core_stats;
-  int report_defense_stats;
-  int report_dpr;
-  int report_dps;
-  int report_gains;
-  int report_miss;
-  int report_rps;
-  int report_name;
-  int report_performance;
-  int report_procs;
-  int report_raid_dps;
-  int report_scaling;
-  int report_spell_stats;
-  int report_statistics;
-  int report_tag;
-  int report_uptime;
-  int report_waiting;
+// Chart ======================================================================
 
-  report_t( sim_t* s );
-  bool parse_option( const std::string& name, const std::string& value );
-  void print_action      ( stats_t* );
-  void print_actions     ( player_t* );
-  void print_core_stats  ( player_t* );
-  void print_spell_stats ( player_t* );
-  void print_attack_stats( player_t* );
-  void print_defense_stats( player_t* );
-  void print_gains();
-  void print_procs();
-  void print_uptime();
-  void print_waiting();
-  void print_performance();
-  void print_scale_factors();
-  void print();
-  const char* chart_raid_dps( std::string& s );
-  int         chart_raid_dpet( std::string& s , std::vector<std::string>& images );
-  const char* chart_raid_downtime( std::string& s );
-  const char* chart_raid_gear( std::string& s );
-  const char* chart_raid_uptimes( std::string& s );
-  const char* chart_action_dpet      ( std::string& s, player_t* );
-  const char* chart_action_dmg       ( std::string& s, player_t* );
-  const char* chart_gains            ( std::string& s, player_t* );
-  const char* chart_uptimes_and_procs( std::string& s, player_t* );
-  const char* chart_timeline_resource( std::string& s, player_t* );
-  const char* chart_timeline_dps     ( std::string& s, player_t* );
-  const char* chart_distribution_dps ( std::string& s, player_t* );
-  const char* gear_weights_lootrank( std::string& s, player_t* );
-  const char* gear_weights_wowhead ( std::string& s, player_t* );
-  void html_scale_factors();
-  void wiki_scale_factors();
-  void html_trigger_menu();
-  void chart_html();
-  void chart_wiki();
-  void chart();
-  static void timestamp( sim_t* sim );
-  static void va_printf( sim_t*, const char* format, va_list );
-  inline static void log( sim_t* sim, const char* format, ... )
-  {
-    va_list vap;
-    va_start( vap, format );
-    va_printf( sim, format, vap );
-  }
-  // WoW log emulator, general functions
-  static void Wlog_general(const char* WOWevent, player_t* playerSrc, player_t* playerDst, const char* suffix);
-  static void Wlog_general(const char* WOWevent, player_t* playerSrc, player_t* playerDst, action_t* action, const char* suffix);
-  static void Wlog_general(const char* WOWevent, player_t* playerSrc, player_t* playerDst, int spellID, const char* spellName, int spellSchool,const char* suffix);
-  // WoW log emulator, customized functions for Event types
-  static void Wlog_startCast(action_t* action);
-  static void Wlog_damage(action_t* action, double damage, int dmg_type);
-  static void Wlog_damage_miss(action_t* action, int  dmg_type);
-  static void Wlog_energize(player_t* player,gain_t* source, double amount, double actual_amount, int resource);
-  static void Wlog_aura(player_t* player, const char* name, int type, int blizzID=0);
-  static void Wlog_summon_pet(pet_t* pet);
+struct chart_t
+{
+  static int raid_dps ( std::vector<std::string>& images, sim_t* );
+  static int raid_dpet( std::vector<std::string>& images, sim_t* );
+  static int raid_gear( std::vector<std::string>& images, sim_t* );
+
+  static const char* raid_downtime    ( std::string& s, sim_t* );
+  static const char* raid_uptimes     ( std::string& s, sim_t* );
+  static const char* action_dpet      ( std::string& s, player_t* );
+  static const char* action_dmg       ( std::string& s, player_t* );
+  static const char* gains            ( std::string& s, player_t* );
+  static const char* uptimes_and_procs( std::string& s, player_t* );
+  static const char* timeline_resource( std::string& s, player_t* );
+  static const char* timeline_dps     ( std::string& s, player_t* );
+  static const char* distribution_dps ( std::string& s, player_t* );
+
+  static const char* gear_weights_lootrank( std::string& s, player_t* );
+  static const char* gear_weights_wowhead ( std::string& s, player_t* );
 };
 
 // Talent Translation =========================================================
@@ -1669,6 +1628,22 @@ struct option_t
   static bool parse( sim_t*, char* line );
   static bool parse( sim_t*, std::string& token );
   static bool parse( sim_t*, int argc, char** argv );
+};
+
+// Log =======================================================================
+
+struct log_t
+{
+  // Generic Output
+  static void output( sim_t*, const char* format, ... );
+  // Combat Log
+  static void start_event( action_t* );
+  static void damage_event( action_t*, double dmg, int dmg_type );
+  static void miss_event( action_t* );
+  static void resource_gain_event( player_t*, int resource, double amount, double actual_amount, gain_t* source );
+  static void aura_gain_event( player_t*, const char* name, int id );
+  static void aura_loss_event( player_t*, const char* name, int id );
+  static void summon_event( pet_t* );
 };
 
 // Utilities =================================================================

@@ -422,25 +422,25 @@ struct hunter_pet_t : public pet_t
 
       if( sim -> patch.after( 3, 1, 0 ) )
       {
-	talents.shark_attack = ( o -> talents.beast_mastery ) ? 2 : 0;
-	talents.wild_hunt    = ( o -> talents.beast_mastery ) ? 2 : 1;
+        talents.shark_attack = ( o -> talents.beast_mastery ) ? 2 : 0;
+        talents.wild_hunt    = ( o -> talents.beast_mastery ) ? 2 : 1;
       }
 
       if( pet_type == PET_CAT )
       {
-	action_list_str = "auto_attack/call_of_the_wild/rabid/rake/claw";
+        action_list_str = "auto_attack/call_of_the_wild/rabid/rake/claw";
       }
       else if( pet_type == PET_DEVILSAUR )
       {
-	action_list_str = "auto_attack/monstrous_bite/call_of_the_wild/rabid/bite";
+        action_list_str = "auto_attack/monstrous_bite/call_of_the_wild/rabid/bite";
       }
       else if( pet_type == PET_RAPTOR )
       {
-	action_list_str = "auto_attack/savage_rend/call_of_the_wild/rabid/claw";
+        action_list_str = "auto_attack/savage_rend/call_of_the_wild/rabid/claw";
       }
       else if( pet_type == PET_WOLF )
       {
-	action_list_str = "auto_attack/furious_howl/call_of_the_wild/rabid/bite";
+        action_list_str = "auto_attack/furious_howl/call_of_the_wild/rabid/bite";
       }
       else unsupported = true;
     }
@@ -455,12 +455,12 @@ struct hunter_pet_t : public pet_t
 
       if( sim -> patch.after( 3, 1, 0 ) )
       {
-	talents.wild_hunt = ( o -> talents.beast_mastery ) ? 2 : 1;
+        talents.wild_hunt = ( o -> talents.beast_mastery ) ? 2 : 1;
       }
 
       if( pet_type == PET_WIND_SERPENT )
       {
-	action_list_str = "auto_attack/roar_of_recovery/wolverine_bite/lightning_breath/bite";
+        action_list_str = "auto_attack/roar_of_recovery/wolverine_bite/lightning_breath/bite";
       }
       else unsupported = true;
     }
@@ -1521,8 +1521,8 @@ struct hunter_pet_attack_t : public attack_t
 
       if( p -> _buffs.kill_command )
       {
-	player_multiplier *= 1.0 + p -> _buffs.kill_command * 0.20;
-	player_crit       += o -> talents.focused_fire * 0.10;
+        player_multiplier *= 1.0 + p -> _buffs.kill_command * 0.20;
+        player_crit       += o -> talents.focused_fire * 0.10;
       }
     }
   }
@@ -1618,6 +1618,8 @@ struct rake_t : public hunter_pet_attack_t
 
     // FIXME! Assuming pets are not smart enough to wait for Rake to finish ticking
     clip_dot = true;
+
+    id = 59886;
   }
 
   virtual void execute()
@@ -1725,31 +1727,31 @@ struct savage_rend_t : public hunter_pet_attack_t
     {
       struct expiration_t : public event_t
       {
-	expiration_t( sim_t* sim, hunter_pet_t* p ) : event_t( sim, p )
-	{
-	  name = "Savage Rend Expiration";
-	  p -> aura_gain( "Savage Rend" );
-	  p -> _buffs.savage_rend = 1;
-	  sim -> add_event( this, 30.0 );
-	}
-	virtual void execute()
-	{
-	  hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
-	  p -> aura_loss( "Savage Rend" );
-	  p -> _buffs.savage_rend = 0;
-	  p -> _expirations.savage_rend = 0;
-	}
+        expiration_t( sim_t* sim, hunter_pet_t* p ) : event_t( sim, p )
+        {
+          name = "Savage Rend Expiration";
+          p -> aura_gain( "Savage Rend" );
+          p -> _buffs.savage_rend = 1;
+          sim -> add_event( this, 30.0 );
+        }
+        virtual void execute()
+        {
+          hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+          p -> aura_loss( "Savage Rend" );
+          p -> _buffs.savage_rend = 0;
+          p -> _expirations.savage_rend = 0;
+        }
       };
 
       event_t*& e = p -> _expirations.savage_rend;
 
       if ( e )
       {
-	e -> reschedule( 30.0 );
+        e -> reschedule( 30.0 );
       }
       else
       {
-	e = new ( sim ) expiration_t( sim, p );
+        e = new ( sim ) expiration_t( sim, p );
       }
     }
   }
@@ -1853,7 +1855,7 @@ struct hunter_pet_spell_t : public spell_t
     {
       if( result == RESULT_CRIT )
       {
-	trigger_invigoration( this );
+        trigger_invigoration( this );
       }
     }
     consume_cobra_strikes( this );
@@ -1972,7 +1974,7 @@ struct call_of_the_wild_t : public hunter_pet_spell_t
       }
     };
 
-    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     consume_resource();
     update_ready();
     new ( sim ) expiration_t( sim, p );
@@ -2025,7 +2027,7 @@ struct furious_howl_t : public hunter_pet_spell_t
       }
     };
 
-    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     consume_resource();
     update_ready();
     new ( sim ) expiration_t( sim, p );
@@ -2074,7 +2076,7 @@ struct rabid_t : public hunter_pet_spell_t
       }
     };
 
-    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     consume_resource();
     update_ready();
     new ( sim ) rabid_expiration_t( sim, p );
@@ -2116,7 +2118,7 @@ struct roar_of_recovery_t : public hunter_pet_spell_t
     hunter_t*     o = p -> owner -> cast_hunter();
 
     if( ( o -> resource_current[ RESOURCE_MANA ] /
-	  o -> resource_max    [ RESOURCE_MANA ] ) > 0.50 )
+          o -> resource_max    [ RESOURCE_MANA ] ) > 0.50 )
       return false;
 
     return hunter_pet_spell_t::ready();
@@ -2668,7 +2670,7 @@ struct chimera_shot_t : public hunter_attack_t
           {
             // FIXME! Which talents benefit this attack?
             // FIXME! Which procs can be triggered by this attack?
-	    may_crit    = true;
+            may_crit    = true;
             background  = true;
             proc        = true;
             trigger_gcd = 0;
@@ -2682,7 +2684,7 @@ struct chimera_shot_t : public hunter_attack_t
 
         if( ! p -> active_chimera_serpent ) p -> active_chimera_serpent = new chimera_serpent_t( p );
 
-	double base_dd = 0.40 * sting_dmg;
+        double base_dd = 0.40 * sting_dmg;
         p -> active_chimera_serpent -> base_dd_min = base_dd;
         p -> active_chimera_serpent -> base_dd_max = base_dd;
         p -> active_chimera_serpent -> execute();
@@ -2819,7 +2821,7 @@ struct explosive_shot_t : public hunter_attack_t
 
   virtual void tick()
   {
-    if( sim -> debug ) report_t::log( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
+    if( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
     explosive_tick -> execute();
     update_time( DMG_OVER_TIME );
   }
@@ -3260,21 +3262,21 @@ struct aspect_t : public hunter_spell_t
     {
       if( aspect == ASPECT_HAWK )
       {
-        if( sim -> log ) report_t::log( sim, "%s performs Aspect of the Hawk", p -> name() );
+        if( sim -> log ) log_t::output( sim, "%s performs Aspect of the Hawk", p -> name() );
         p -> active_aspect = ASPECT_HAWK;
         p -> _buffs.aspect_of_the_hawk = hawk_bonus;
         p -> _buffs.aspect_of_the_viper = 0;
       }
       else if( aspect == ASPECT_VIPER )
       {
-        if( sim -> log ) report_t::log( sim, "%s performs Aspect of the Viper", p -> name() );
+        if( sim -> log ) log_t::output( sim, "%s performs Aspect of the Viper", p -> name() );
         p -> active_aspect = ASPECT_VIPER;
         p -> _buffs.aspect_of_the_hawk = 0;
         p -> _buffs.aspect_of_the_viper = viper_multiplier;
       }
       else if( aspect == ASPECT_BEAST )
       {
-        if( sim -> log ) report_t::log( sim, "%s performs Aspect of the Beast", p -> name() );
+        if( sim -> log ) log_t::output( sim, "%s performs Aspect of the Beast", p -> name() );
         p -> active_aspect = ASPECT_BEAST;
         p -> _buffs.aspect_of_the_hawk = 0;
         p -> _buffs.aspect_of_the_viper = 0;
@@ -3336,7 +3338,7 @@ struct bestial_wrath_t : public hunter_spell_t
       }
     };
 
-    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
     new ( sim ) expiration_t( sim, player );
@@ -3381,7 +3383,7 @@ struct hunters_mark_t : public hunter_spell_t
       }
     };
 
-    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
 
     consume_resource();
 
@@ -3432,7 +3434,7 @@ struct kill_command_t : public hunter_spell_t
   virtual void execute()
   {
     hunter_t* p = player -> cast_hunter();
-    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     assert( p -> active_pet -> _buffs.kill_command == 0 );
     p -> active_pet -> aura_gain( "Kill Command" );
     p -> active_pet -> _buffs.kill_command = 3;
@@ -3497,7 +3499,7 @@ struct rapid_fire_t : public hunter_spell_t
       }
     };
 
-    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     p -> _buffs.rapid_fire = p -> glyphs.rapid_fire ? 0.48 : 0.40;
     consume_resource();
     update_ready();
@@ -3548,7 +3550,7 @@ struct readiness_t : public hunter_spell_t
 
   virtual void execute()
   {
-    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
 
     for( action_t* a = player -> action_list; a; a = a -> next )
     {
@@ -3615,7 +3617,7 @@ struct trueshot_aura_t : public hunter_spell_t
   virtual void execute()
   {
     hunter_t* p = player -> cast_hunter();
-    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     p -> _buffs.trueshot_aura = 1;
     sim -> auras.trueshot = 1;
   }

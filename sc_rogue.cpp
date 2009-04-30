@@ -328,7 +328,7 @@ struct rogue_poison_t : public spell_t
     proc = true;
 
     base_hit  += p -> talents.precision * 0.01;
-	
+        
     base_multiplier *= 1.0 + util_t::talent_rank( p -> talents.vile_poisons,  3, 0.07, 0.14, 0.20 );
 
     base_crit_multiplier *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
@@ -726,24 +726,24 @@ static void trigger_tricks_of_the_trade( rogue_attack_t* a )
 
 static void apply_poison_debuff( rogue_t* p)
 {
-	target_t* t = p -> sim -> target;
+        target_t* t = p -> sim -> target;
 
-	if( p -> talents.master_poisoner ) t -> debuffs.master_poisoner++;
-	if( p -> talents.savage_combat   ) t -> debuffs.savage_combat++;
+        if( p -> talents.master_poisoner ) t -> debuffs.master_poisoner++;
+        if( p -> talents.savage_combat   ) t -> debuffs.savage_combat++;
 
-	t -> debuffs.poisoned++;
+        t -> debuffs.poisoned++;
 }
 
 // remove_poison_debuff =====================================================
 
 static void remove_poison_debuff( rogue_t* p)
 {
-	target_t* t = p -> sim -> target;
+        target_t* t = p -> sim -> target;
 
-	if( p -> talents.master_poisoner ) t -> debuffs.master_poisoner--;
-	if( p -> talents.savage_combat   ) t -> debuffs.savage_combat--;
+        if( p -> talents.master_poisoner ) t -> debuffs.master_poisoner--;
+        if( p -> talents.savage_combat   ) t -> debuffs.savage_combat--;
 
-	t -> debuffs.poisoned--;
+        t -> debuffs.poisoned--;
 }
 
 // =========================================================================
@@ -854,7 +854,7 @@ void rogue_attack_t::player_buff()
     if( p -> talents.close_quarters_combat )
     {
       if( weapon -> type == WEAPON_DAGGER ||
-	  weapon -> type == WEAPON_FIST   )
+          weapon -> type == WEAPON_FIST   )
       {
         player_crit += p -> talents.close_quarters_combat * 0.01;
       }
@@ -961,7 +961,7 @@ bool rogue_attack_t::ready()
   {
     if( p -> _buffs.combo_points > max_combo_points )
       if( sim -> time_to_think( p -> _buffs.combo_points_proc[ max_combo_points+1 ] ) )
-	return false;
+        return false;
   }
 
   if( min_energy > 0 )
@@ -1196,11 +1196,11 @@ struct backstab_t : public rogue_attack_t
     weapon_multiplier     *= 1.50 + p -> talents.sinister_calling * (sim -> P309 ? .01 : .02);
 
     base_multiplier *= 1.0 + ( p -> talents.aggression       * 0.03 +
-			       p -> talents.blade_twisting   * 0.05 +
-			       p -> talents.find_weakness    * 0.02 +
-			       p -> talents.opportunity      * 0.10 +
-			       p -> talents.surprise_attacks * 0.10 +
-			       p -> unique_gear -> tier6_4pc * 0.06 );
+                               p -> talents.blade_twisting   * 0.05 +
+                               p -> talents.find_weakness    * 0.02 +
+                               p -> talents.opportunity      * 0.10 +
+                               p -> talents.surprise_attacks * 0.10 +
+                               p -> unique_gear -> tier6_4pc * 0.06 );
 
     base_crit += ( p -> talents.puncturing_wounds * 0.10 +
                    p -> talents.turn_the_tables   * 0.02 );
@@ -1219,8 +1219,8 @@ struct backstab_t : public rogue_attack_t
     rogue_t* p = player -> cast_rogue();
     rogue_attack_t::execute();
     if( p -> glyphs.backstab && 
-	p -> active_rupture  &&
-	p -> active_rupture -> added_ticks < 3 )
+        p -> active_rupture  &&
+        p -> active_rupture -> added_ticks < 3 )
     {
       p -> active_rupture -> extend_duration( 1 );
     }
@@ -1267,7 +1267,7 @@ struct blade_flurry_t : public rogue_attack_t
     };
 
     rogue_t* p = player -> cast_rogue();
-    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     update_ready();
     new ( sim ) expiration_t( sim, p );
   }
@@ -1302,13 +1302,13 @@ struct envenom_t : public rogue_attack_t
     base_cost = 35;
 
     base_multiplier *= 1.0 + ( p -> talents.find_weakness * 0.02 + 
-			       util_t::talent_rank( p -> talents.vile_poisons, 3, 0.07, 0.14, 0.20 ) );
+                               util_t::talent_rank( p -> talents.vile_poisons, 3, 0.07, 0.14, 0.20 ) );
 
     if( p -> talents.surprise_attacks ) may_dodge = false;
-		  
+                  
     dose_dmg = ( p -> level >= 80 ? 216 :
-		 p -> level >= 74 ? 176 :
-		 p -> level >= 69 ? 148 : 118 );
+                 p -> level >= 74 ? 176 :
+                 p -> level >= 69 ? 148 : 118 );
   }
 
   virtual void execute()
@@ -1317,17 +1317,17 @@ struct envenom_t : public rogue_attack_t
     {
       expiration_t( sim_t* sim, rogue_t* p, double duration ) : event_t( sim, p )
       {
-	name = "Envenom Expiration";
-	p -> aura_gain( "Envenom" );
-	p -> _buffs.envenom = 1;
-	sim -> add_event( this, duration );
+        name = "Envenom Expiration";
+        p -> aura_gain( "Envenom" );
+        p -> _buffs.envenom = 1;
+        sim -> add_event( this, duration );
       }
       virtual void execute()
       {
-	rogue_t* p = player -> cast_rogue();
-	p -> aura_loss( "Envenom" );
-	p ->       _buffs.envenom = 0;
-	p -> _expirations.envenom = 0;
+        rogue_t* p = player -> cast_rogue();
+        p -> aura_loss( "Envenom" );
+        p ->       _buffs.envenom = 0;
+        p -> _expirations.envenom = 0;
       }
     };
     
@@ -1355,9 +1355,9 @@ struct envenom_t : public rogue_attack_t
 
       if( p -> _buffs.poison_doses == 0 )
       {
-	p -> active_deadly_poison -> cancel();
+        p -> active_deadly_poison -> cancel();
       }
-			
+                        
       trigger_cut_to_the_chase( this );
     }
   }
@@ -1382,7 +1382,7 @@ struct envenom_t : public rogue_attack_t
     // Envenom is not usable when there is no DP on a target
     if( p -> _buffs.poison_doses == 0 )
       return false;
-		
+                
     if( min_doses > 0 && min_doses > p -> _buffs.poison_doses )
       return false;
 
@@ -1530,7 +1530,7 @@ struct expose_armor_t : public rogue_attack_t
         };
 
         double duration = ( sim -> P309 ) ? 30 : 6 * p -> _buffs.combo_points; 
-		if(p -> glyphs.expose_armor) duration += 10;
+                if(p -> glyphs.expose_armor) duration += 10;
 
         t -> debuffs.expose_armor = debuff;
 
@@ -1588,7 +1588,7 @@ struct feint_t : public rogue_attack_t
   virtual void execute()
   {
     rogue_t* p = player -> cast_rogue();
-    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     consume_resource();
     update_ready();
     // model threat eventually......
@@ -1609,7 +1609,7 @@ struct garrote_t : public rogue_attack_t
       { NULL }
     };
     parse_options( options, options_str );
-		
+                
     static rank_t ranks[] =
     {
       { 80, 10, 0, 0, 119, 50 },
@@ -1624,19 +1624,19 @@ struct garrote_t : public rogue_attack_t
     weapon_multiplier = 0;
     // to stop seal fate procs
     may_crit          = false; 
-		
+                
     requires_position = POSITION_BACK;
     requires_stealth  = true;
     adds_combo_points = true;
-		
+                
     num_ticks         = 6;
     base_tick_time    = 3.0;
     tick_power_mod    = .07;
-		
+                
     base_cost        -= p -> talents.dirty_deeds * 10;
     base_multiplier  *= 1.0 + ( p -> talents.find_weakness * .02 +
-				p -> talents.opportunity   * .1 +
-				p -> talents.blood_spatter * .15 );
+                                p -> talents.opportunity   * .1 +
+                                p -> talents.blood_spatter * .15 );
   }
   
   virtual void execute()
@@ -1662,7 +1662,7 @@ struct garrote_t : public rogue_attack_t
 
     return rogue_attack_t::ready();
   }
-	
+        
   virtual void player_buff()
   {
     rogue_attack_t::player_buff();
@@ -1835,17 +1835,17 @@ struct hunger_for_blood_t : public rogue_attack_t
 
     double hfb_duration = ( sim -> P309 ) ? 30.0 : 60.0;
 
-    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
 
     if( p -> _buffs.hunger_for_blood < 15 )
     {
       if( sim -> P309 )
       {
-	p -> _buffs.hunger_for_blood += 5;
+        p -> _buffs.hunger_for_blood += 5;
       }
       else
       {
-	p -> _buffs.hunger_for_blood = 15;
+        p -> _buffs.hunger_for_blood = 15;
       }
       p -> aura_gain( "Hunger For Blood" );
     }
@@ -1957,7 +1957,7 @@ struct killing_spree_t : public rogue_attack_t
   virtual void tick()
   {
     if( sim -> debug )
-      report_t::log( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
+      log_t::output( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
 
     killing_spree_tick -> weapon = &( player -> main_hand_weapon );
     killing_spree_tick -> execute();
@@ -1966,8 +1966,8 @@ struct killing_spree_t : public rogue_attack_t
     {
       if( player -> off_hand_weapon.type != WEAPON_NONE )
       {
-	killing_spree_tick -> weapon = &( player -> off_hand_weapon );
-	killing_spree_tick -> execute();
+        killing_spree_tick -> weapon = &( player -> off_hand_weapon );
+        killing_spree_tick -> execute();
       }
     }
 
@@ -2085,7 +2085,7 @@ struct premeditation_t : public rogue_attack_t
   virtual void execute()
   {
     rogue_t* p = player -> cast_rogue();
-    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     add_combo_point( p );
     add_combo_point( p );
     update_ready();
@@ -2137,7 +2137,7 @@ struct rupture_t : public rogue_attack_t
                                     p -> unique_gear -> tier7_2pc * 0.10 );
 
     if( p -> talents.surprise_attacks ) may_dodge = false;
-	if( p -> unique_gear -> tier8_4pc ) tick_may_crit = true;
+        if( p -> unique_gear -> tier8_4pc ) tick_may_crit = true;
 
     static double dmg_79[] = { 145, 163, 181, 199, 217 };
     static double dmg_74[] = { 122, 137, 152, 167, 182 };
@@ -2192,7 +2192,7 @@ struct shadowstep_t : public rogue_attack_t
   virtual void execute()
   {
     rogue_t* p = player -> cast_rogue();
-    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     p -> _buffs.shadowstep = 1;
     update_ready();
   }
@@ -2217,7 +2217,7 @@ struct shiv_t : public rogue_attack_t
     adds_combo_points = true;
     base_dd_min = base_dd_max = 1;
     base_multiplier *= 1.0 + ( p -> talents.find_weakness    * 0.02 +
-			       p -> talents.surprise_attacks * 0.10 );
+                               p -> talents.surprise_attacks * 0.10 );
     base_crit += p -> talents.turn_the_tables * 0.02;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
 
@@ -2330,12 +2330,12 @@ struct slice_and_dice_t : public rogue_attack_t
   virtual void execute()
   {
     rogue_t* p = player -> cast_rogue();
-    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     refresh_duration();
     consume_resource();
     trigger_relentless_strikes( this );
     clear_combo_points( p );
-	trigger_ruthlessness( this );
+        trigger_ruthlessness( this );
     p -> active_slice_and_dice = this;
   }
 
@@ -2356,7 +2356,7 @@ struct slice_and_dice_t : public rogue_attack_t
         p -> aura_loss( "Slice and Dice" );
         p ->       _buffs.slice_and_dice = 0;
         p -> _expirations.slice_and_dice = 0;
-	p ->      active_slice_and_dice = 0;
+        p ->      active_slice_and_dice = 0;
       }
     };
 
@@ -2402,7 +2402,7 @@ struct pool_energy_t : public rogue_attack_t
 
   virtual void execute()
   {
-    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
   }
 
   virtual double gcd()
@@ -2415,7 +2415,7 @@ struct pool_energy_t : public rogue_attack_t
     if( for_next )
     {
       if( next -> ready() )
-	return false;
+        return false;
 
       // If the next action in the list would be "ready" if it was not constrained by energy,
       // then this command will pool energy until we have enough.
@@ -2553,7 +2553,7 @@ struct deadly_poison_t : public rogue_poison_t
       {
         if( p -> _buffs.poison_doses < 5 ) p -> _buffs.poison_doses++;
 
-        if( sim -> log ) report_t::log( sim, "%s performs %s (%d)", player -> name(), name(), p -> _buffs.poison_doses );
+        if( sim -> log ) log_t::output( sim, "%s performs %s (%d)", player -> name(), name(), p -> _buffs.poison_doses );
 
         if( ticking )
         {
@@ -2780,7 +2780,7 @@ struct apply_poison_t : public rogue_poison_t
   {
     rogue_t* p = player -> cast_rogue();
 
-    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
 
     if( main_hand_poison != WEAPON_BUFF_NONE ) p -> main_hand_weapon.buff = main_hand_poison;
     if(  off_hand_poison != WEAPON_BUFF_NONE ) p ->  off_hand_weapon.buff =  off_hand_poison;
@@ -2852,7 +2852,7 @@ struct adrenaline_rush_t : public spell_t
     };
 
     rogue_t* p = player -> cast_rogue();
-    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     update_ready();
     new ( sim ) expiration_t( sim, p );
   }
@@ -2881,7 +2881,7 @@ struct cold_blood_t : public spell_t
   virtual void execute()
   {
     rogue_t* p = player -> cast_rogue();
-    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     p -> _buffs.cold_blood = 1;
     update_ready();
   }
@@ -2912,7 +2912,7 @@ struct preparation_t : public spell_t
   virtual void execute()
   {
     rogue_t* p = player -> cast_rogue();
-    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     for( action_t* a = player -> action_list; a; a = a -> next )
     {
       if( a -> name_str == "vanish"     ||
@@ -2966,7 +2966,7 @@ struct shadow_dance_t : public spell_t
     };
 
     rogue_t* p = player -> cast_rogue();
-    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     update_ready();
     new ( sim ) expiration_t( sim, p );
   }
@@ -2985,7 +2985,7 @@ struct stealth_t : public spell_t
   virtual void execute()
   {
     rogue_t* p = player -> cast_rogue();
-    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     enter_stealth( p );
   }
 
@@ -3039,8 +3039,8 @@ struct tricks_of_the_trade_t : public spell_t
   {
     rogue_t* p = player -> cast_rogue();
 
-    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
-    if( sim -> log ) report_t::log( sim, "%s grants %s Tricks of the Trade", p -> name(), tricks_target -> name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s grants %s Tricks of the Trade", p -> name(), tricks_target -> name() );
 
     consume_resource();
     update_ready();
@@ -3078,7 +3078,7 @@ struct vanish_t : public spell_t
   virtual void execute()
   {
     rogue_t* p = player -> cast_rogue();
-    if( sim -> log ) report_t::log( sim, "%s performs %s", p -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     enter_stealth( p );
   }
 
@@ -3203,13 +3203,13 @@ void rogue_t::register_callbacks()
     {
       if( p != this )
       {
-	if( honor_among_thieves_interval != 0 ) continue; // using "virtual" party procs
+        if( honor_among_thieves_interval != 0 ) continue; // using "virtual" party procs
 
-	if( p -> party == 0 || p -> party != party ) continue;
+        if( p -> party == 0 || p -> party != party ) continue;
 
-	if( p -> type == PLAYER_GUARDIAN ) continue;
+        if( p -> type == PLAYER_GUARDIAN ) continue;
 
-	if( p -> type == PLAYER_PET && ! sim -> P309 ) continue;
+        if( p -> type == PLAYER_PET && ! sim -> P309 ) continue;
       }
 
       p -> register_attack_result_callback( RESULT_CRIT_MASK, new honor_among_thieves_callback_t( this ) );
@@ -3230,21 +3230,21 @@ void rogue_t::combat_begin()
     {
       struct honor_among_thieves_proc_t : public event_t
       {
-	honor_among_thieves_proc_t( sim_t* sim, rogue_t* p, double interval ) : event_t( sim, p )
-	{
-	  name = "Honor Among Thieves Proc";
-	  sim -> add_event( this, interval );
-	}
-	virtual void execute()
-	{
-	  rogue_t* p = player -> cast_rogue();
-	  add_combo_point( p );
-	  p -> procs_honor_among_thieves_receiver -> occur();
-	  // Next proc comes in +/- 50% random range centered on 'honor_among_thieves_interval'
-	  double interval = sim -> rng -> range( 0.5 * p -> honor_among_thieves_interval,
-						 1.5 * p -> honor_among_thieves_interval );
-	  new ( sim ) honor_among_thieves_proc_t( sim, p, interval );
-	}
+        honor_among_thieves_proc_t( sim_t* sim, rogue_t* p, double interval ) : event_t( sim, p )
+        {
+          name = "Honor Among Thieves Proc";
+          sim -> add_event( this, interval );
+        }
+        virtual void execute()
+        {
+          rogue_t* p = player -> cast_rogue();
+          add_combo_point( p );
+          p -> procs_honor_among_thieves_receiver -> occur();
+          // Next proc comes in +/- 50% random range centered on 'honor_among_thieves_interval'
+          double interval = sim -> rng -> range( 0.5 * p -> honor_among_thieves_interval,
+                                                 1.5 * p -> honor_among_thieves_interval );
+          new ( sim ) honor_among_thieves_proc_t( sim, p, interval );
+        }
       };
       
       // First proc comes 1.0 seconds into combat.
@@ -3290,7 +3290,7 @@ void rogue_t::regen( double periodicity )
   }
   
   uptimes_energy_cap -> update( resource_current[ RESOURCE_ENERGY ] == 
-				resource_max    [ RESOURCE_ENERGY ] );
+                                resource_max    [ RESOURCE_ENERGY ] );
 
   uptimes_rupture -> update( active_rupture != 0 );
 }

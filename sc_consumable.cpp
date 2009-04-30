@@ -44,7 +44,7 @@ struct flask_t : public action_t
 
   virtual void execute()
   {
-    if( sim -> log ) report_t::log( sim, "%s uses Flask %s", player -> name(), util_t::flask_type_string( type ) );
+    if( sim -> log ) log_t::output( sim, "%s uses Flask %s", player -> name(), util_t::flask_type_string( type ) );
     player -> flask = type;
     switch( type )
     {
@@ -123,7 +123,7 @@ struct food_t : public action_t
 
   virtual void execute()
   {
-    if( sim -> log ) report_t::log( sim, "%s uses Food %s", player -> name(), util_t::food_type_string( type ) );
+    if( sim -> log ) log_t::output( sim, "%s uses Food %s", player -> name(), util_t::food_type_string( type ) );
     player -> food = type;
     switch( type )
     {
@@ -228,7 +228,7 @@ struct destruction_potion_t : public action_t
       }
     };
 
-    if( sim -> log ) report_t::log( sim, "%s uses %s", player -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s uses %s", player -> name(), name() );
     player -> share_cooldown( cooldown_group, cooldown );
     new ( sim ) expiration_t( sim, player );
     used = sim -> potion_sickness;
@@ -296,7 +296,7 @@ struct speed_potion_t : public action_t
       }
     };
 
-    if( sim -> log ) report_t::log( sim, "%s uses %s", player -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s uses %s", player -> name(), name() );
     player -> share_cooldown( cooldown_group, cooldown );
     new ( sim ) expiration_t( sim, player );
     used = sim -> potion_sickness;
@@ -370,7 +370,7 @@ struct wild_magic_potion_t : public action_t
       }
     };
 
-    if( sim -> log ) report_t::log( sim, "%s uses %s", player -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s uses %s", player -> name(), name() );
     player -> share_cooldown( cooldown_group, cooldown );
     new ( sim ) expiration_t( sim, player );
     used = sim -> potion_sickness;
@@ -437,7 +437,7 @@ struct mana_potion_t : public action_t
 
   virtual void execute()
   {
-    if( sim -> log ) report_t::log( sim, "%s uses Mana potion", player -> name() );
+    if( sim -> log ) log_t::output( sim, "%s uses Mana potion", player -> name() );
     double gain = sim -> rng -> range( min, max );
     player -> resource_gain( RESOURCE_MANA, gain, player -> gains.mana_potion );
     player -> share_cooldown( cooldown_group, cooldown );
@@ -496,7 +496,7 @@ struct health_stone_t : public action_t
 
   virtual void execute()
   {
-    if( sim -> log ) report_t::log( sim, "%s uses Health Stone", player -> name() );
+    if( sim -> log ) log_t::output( sim, "%s uses Health Stone", player -> name() );
     player -> resource_gain( RESOURCE_HEALTH, health );
     player -> share_cooldown( cooldown_group, cooldown );
     used = sim -> potion_sickness;
@@ -556,7 +556,7 @@ struct dark_rune_t : public action_t
 
   virtual void execute()
   {
-    if( sim -> log ) report_t::log( sim, "%s uses Dark Rune", player -> name() );
+    if( sim -> log ) log_t::output( sim, "%s uses Dark Rune", player -> name() );
     player -> resource_gain( RESOURCE_MANA,   mana, player -> gains.dark_rune );
     player -> resource_loss( RESOURCE_HEALTH, health );
     player -> share_cooldown( cooldown_group, cooldown );
@@ -604,7 +604,7 @@ struct wizard_oil_t : public action_t
 
   virtual void execute()
   {
-    if( sim -> log ) report_t::log( sim, "%s performs %s", player -> name(), name() );
+    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
 
     player -> main_hand_weapon.buff = WIZARD_OIL;
     player -> spell_power[ SCHOOL_MAX ] += bonus_power;

@@ -59,13 +59,13 @@ void scaling_t::analyze_attributes()
 
       for( int j=0; j < num_players; j++ )
       {
-	      player_t*       p =       sim -> players_by_name[ j ];
-	      player_t*   ref_p =   ref_sim -> find_player( p -> name() );
-	      player_t* child_p = child_sim -> find_player( p -> name() );
-	
-	      double f = ( child_p -> dps - ref_p -> dps ) / stats.attribute[ i ];
+              player_t*       p =       sim -> players_by_name[ j ];
+              player_t*   ref_p =   ref_sim -> find_player( p -> name() );
+              player_t* child_p = child_sim -> find_player( p -> name() );
+        
+              double f = ( child_p -> dps - ref_p -> dps ) / stats.attribute[ i ];
 
-	      if( f >= scale_factor_noise ) p -> scaling.attribute[ i ] = f;
+              if( f >= scale_factor_noise ) p -> scaling.attribute[ i ] = f;
       }
 
       if( ref_sim != sim ) delete ref_sim;
@@ -178,7 +178,7 @@ void scaling_t::analyze_expertise()
       player_t*       p =       sim -> players_by_name[ j ];
       player_t*   ref_p =   ref_sim -> find_player( p -> name() );
       player_t* child_p = child_sim -> find_player( p -> name() );
-	
+        
       double f = ( child_p -> dps - ref_p -> dps ) / stats.expertise_rating;
 
       if( f >= scale_factor_noise ) p -> scaling.expertise_rating = f;
@@ -218,7 +218,7 @@ void scaling_t::analyze_armor_penetration()
       player_t*       p =       sim -> players_by_name[ j ];
       player_t*   ref_p =   ref_sim -> find_player( p -> name() );
       player_t* child_p = child_sim -> find_player( p -> name() );
-	
+        
       double f = ( child_p -> dps - ref_p -> dps ) / stats.armor_penetration_rating;
 
       if( f >= scale_factor_noise ) p -> scaling.armor_penetration_rating = f;
@@ -253,7 +253,7 @@ void scaling_t::analyze_hit()
       player_t*       p =       sim -> players_by_name[ j ];
       player_t*   ref_p =   ref_sim -> find_player( p -> name() );
       player_t* child_p = child_sim -> find_player( p -> name() );
-	
+        
       double f = ( child_p -> dps - ref_p -> dps ) / stats.hit_rating;
 
       if( f >= scale_factor_noise ) p -> scaling.hit_rating = f;
@@ -294,7 +294,7 @@ void scaling_t::analyze_crit()
       player_t*       p =       sim -> players_by_name[ j ];
       player_t*   ref_p =   ref_sim -> find_player( p -> name() );
       player_t* child_p = child_sim -> find_player( p -> name() );
-	
+        
       double f = ( child_p -> dps - ref_p -> dps ) / stats.crit_rating;
 
       if( f >= scale_factor_noise ) p -> scaling.crit_rating = f;
@@ -334,7 +334,7 @@ void scaling_t::analyze_haste()
       player_t*       p =       sim -> players_by_name[ j ];
       player_t*   ref_p =   ref_sim -> find_player( p -> name() );
       player_t* child_p = child_sim -> find_player( p -> name() );
-	
+        
       double f = ( child_p -> dps - ref_p -> dps ) / stats.haste_rating;
 
       if( f >= scale_factor_noise ) p -> scaling.haste_rating = f;
@@ -364,7 +364,7 @@ void scaling_t::analyze()
 // scaling_t::parse_option ==================================================
 
 bool scaling_t::parse_option( const std::string& name,
-			      const std::string& value )
+                              const std::string& value )
 {
   option_t options[] =
   {
