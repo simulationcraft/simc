@@ -580,9 +580,6 @@ void sim_t::analyze()
     chart_t::timeline_resource( p -> timeline_resource_chart, p );
     chart_t::timeline_dps     ( p -> timeline_dps_chart,      p );
     chart_t::distribution_dps ( p -> distribution_dps_chart,  p );
-
-    chart_t::gear_weights_lootrank( p -> gear_weights_lootrank_link, p );
-    chart_t::gear_weights_wowhead ( p -> gear_weights_wowhead_link,  p );
   }
 }
 

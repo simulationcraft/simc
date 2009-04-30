@@ -359,6 +359,14 @@ void scaling_t::analyze()
   analyze_hit();
   analyze_crit();
   analyze_haste();
+
+  for( player_t* p = sim -> player_list; p; p = p -> next )
+  {
+    if( p -> quiet ) continue;
+
+    chart_t::gear_weights_lootrank( p -> gear_weights_lootrank_link, p );
+    chart_t::gear_weights_wowhead ( p -> gear_weights_wowhead_link,  p );
+  }
 }
 
 // scaling_t::parse_option ==================================================
