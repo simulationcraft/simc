@@ -558,3 +558,14 @@ int util_t::string_split( const std::string& str,
 
   return str_size;
 }
+
+
+int util_t::miliseconds(){
+
+#if defined( _MSC_VER )
+	return clock()/(CLOCKS_PER_SEC/1000);
+#else
+	return clock()/(CLOCKS_PER_SEC/1000); //if this is not available to other compilers, use below
+	//return time( NULL )*1000;
+#endif
+}

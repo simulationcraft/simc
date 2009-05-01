@@ -290,7 +290,7 @@ static void print_performance( FILE* file, sim_t* sim )
            "  TotalEvents   = %d\n"
            "  MaxEventQueue = %d\n"
            "  SimSeconds    = %.0f\n"
-           "  CpuSeconds    = %.0f\n"
+           "  CpuSeconds    = %.3f\n"
            "  SpeedUp       = %.0f\n", 
            sim -> total_events_processed,
            sim -> max_events_remaining,
