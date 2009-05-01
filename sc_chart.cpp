@@ -1115,3 +1115,54 @@ const char* chart_t::gear_weights_wowhead( std::string& s,
   return s.c_str();
 }
 
+// chart_t::gear_weights_pawn =============================================
+    typedef std::pair<std::string,double> svpair;
+    bool svpairsortvalue(const svpair& left, const svpair& right)
+    {
+      return left.second > right.second;
+    }
+
+const char* chart_t::gear_weights_pawn( std::string& s,
+                                            player_t*    p )
+{
+  sim_t* sim = p -> sim;
+  char buffer[ 1024 ];
+
+  s = "";
+  std::vector<svpair> scalefactors;
+    if( sim -> scaling -> stats.attribute[ ATTR_STRENGTH ] ) scalefactors.push_back( std::make_pair("Strength", p -> scaling.attribute[ ATTR_STRENGTH ] ));
+    if( sim -> scaling -> stats.attribute[ ATTR_AGILITY ] ) scalefactors.push_back( std::make_pair("Agility", p -> scaling.attribute[ ATTR_AGILITY ] ));
+    if( sim -> scaling -> stats.attribute[ ATTR_STAMINA ] ) scalefactors.push_back( std::make_pair("Stamina", p -> scaling.attribute[ ATTR_STAMINA ] ));
+    if( sim -> scaling -> stats.attribute[ ATTR_INTELLECT ] ) scalefactors.push_back( std::make_pair("Intellect", p -> scaling.attribute[ ATTR_INTELLECT ] ));
+    if( sim -> scaling -> stats.attribute[ ATTR_SPIRIT ] ) scalefactors.push_back( std::make_pair("Spirit", p -> scaling.attribute[ ATTR_SPIRIT ] ));
+    if( sim -> scaling -> stats.spell_power ) scalefactors.push_back( std::make_pair("SpellDamage", p -> scaling.spell_power ));
+    if( sim -> scaling -> stats.attack_power ) scalefactors.push_back( std::make_pair("AP", p -> scaling.attack_power ));
+    if( sim -> scaling -> stats.expertise_rating ) scalefactors.push_back( std::make_pair("ExpertiseRating", p -> scaling.expertise_rating ) );
+    if( sim -> scaling -> stats.armor_penetration_rating ) scalefactors.push_back( std::make_pair("ArmorPenetration", p -> scaling.armor_penetration_rating ));
+    if( sim -> scaling -> stats.hit_rating ) scalefactors.push_back( std::make_pair("HitRating", p -> scaling.hit_rating ));
+    if( sim -> scaling -> stats.crit_rating ) scalefactors.push_back( std::make_pair("CritRating", p -> scaling.crit_rating ));
+    if( sim -> scaling -> stats.haste_rating ) scalefactors.push_back( std::make_pair("HasteRating", p -> scaling.haste_rating ));
+
+    std::vector<svpair>::iterator iter = scalefactors.begin();
+    
+    while( iter != scalefactors.end() )
+    {
+      if ((*iter).second < 0.01 )
+        iter = scalefactors.erase( iter );
+      else
+        ++iter;
+    }
+    std::sort(scalefactors.begin(), scalefactors.end(), svpairsortvalue);
+
+    snprintf( buffer, sizeof(buffer), "( Pawn: v1: \"%s\": ", p -> name() );
+    s += buffer;
+
+    for( std::vector<svpair>::const_iterator it = scalefactors.begin(); it != scalefactors.end(); ++it)
+    {
+      snprintf( buffer, sizeof(buffer), "%s=%.2f, ", (*it).first.c_str(), (*it).second);
+      s += buffer;
+    }
+    s += " )";
+
+  return s.c_str();
+}

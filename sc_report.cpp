@@ -450,7 +450,7 @@ static void print_html_scale_factors( FILE*  file,
       fprintf( file, " <TH>%s</TH>", util_t::stat_type_abbrev( i ) );
     }
   }
-  fprintf( file, " <TH>lootrank</TH> <TH>wowhead</TH> </TR>\n" );
+  fprintf( file, " <TH>lootrank</TH> <TH>wowhead</TH> <TH>pawn</TH> </TR>\n" );
 
   std::string buffer;
   int num_players = sim -> players_by_name.size();
@@ -471,6 +471,19 @@ static void print_html_scale_factors( FILE*  file,
 
     fprintf( file, " <TD><a href=\"%s\"> lootrank</a></TD>", p -> gear_weights_lootrank_link.c_str() );
     fprintf( file, " <TD><a href=\"%s\"> wowhead </a></TD>", p -> gear_weights_wowhead_link.c_str() );
+    fprintf( file, 
+       " <TD><div style=\"margin:1px; margin-top:1px\">"
+       "<pre class=\"alt2\" dir=\"ltr\" style=\""
+       "margin: 0px;"
+       "padding: 3px;"
+       "border: 1px inset;"
+       "width: 64px;"
+       "height: 30px;"
+       "text-align: left;"
+       "overflow: auto\">%s"
+       "</pre>"
+       "</div></TD> ",
+    p -> gear_weights_pawn_string.c_str() );
 
     fprintf( file, " </TR>\n" );
   }
@@ -623,7 +636,7 @@ static void print_wiki_scale_factors( FILE*  file,
       fprintf( file, " %s ||", util_t::stat_type_abbrev( i ) );
     }
   }
-  fprintf( file, " lootrank || wowhead ||\n" );
+  fprintf( file, " lootrank || wowhead || pawn ||\n" );
 
   std::string buffer;
   int num_players = sim -> players_by_name.size();
@@ -644,6 +657,7 @@ static void print_wiki_scale_factors( FILE*  file,
 
     fprintf( file, " [%s lootrank] ||", p -> gear_weights_lootrank_link.c_str() );
     fprintf( file, " [%s wowhead ] ||", p -> gear_weights_wowhead_link.c_str() );
+    fprintf( file, " [%s pawn ] ||", p -> gear_weights_pawn_string.c_str() );
 
     fprintf( file, "\n" );
   }
