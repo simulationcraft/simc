@@ -165,53 +165,52 @@ int chart_t::raid_gear( std::vector<std::string>& images,
   int num_players = sim -> players_by_rank.size();
   assert( num_players != 0 );
 
-  const int NUM_CATEGORIES = 11;
-  std::vector<double> data_points[ NUM_CATEGORIES ];
+  std::vector<double> data_points[ STAT_MAX ];
 
-  for( int i=0; i < NUM_CATEGORIES; i++ ) 
+  for( int i=0; i < STAT_MAX; i++ )
   {
-    data_points[ i ].insert( data_points[ i ].begin(), num_players, 0 );
-  }
+    data_points[ i ].insert( data_points[ i ].begin(), num_players, 0.0 );
 
-  for( int i=0; i < num_players; i++ )
-  {
-    player_t* p = sim -> players_by_rank[ i ];
+    for( int j=0; j < num_players; j++ )
+    {
+      player_t* p = sim -> players_by_rank[ j ];
 
-    data_points[ 0 ][ i ] = p -> equip_stats.attribute[ ATTR_STRENGTH  ];
-    data_points[ 1 ][ i ] = p -> equip_stats.attribute[ ATTR_AGILITY   ];
-    data_points[ 2 ][ i ] = p -> equip_stats.attribute[ ATTR_INTELLECT ];
-
-    data_points[ 3 ][ i ] = p -> equip_stats.attribute[ ATTR_SPIRIT ] + p -> equip_stats.mp5 * 2.5;
-
-    data_points[ 4 ][ i ] = p -> equip_stats.attack_power * 0.50;
-    data_points[ 5 ][ i ] = p -> equip_stats.spell_power  * 0.86;
-
-    data_points[ 6 ][ i ] = p -> equip_stats.hit_rating;
-    data_points[ 7 ][ i ] = p -> equip_stats.crit_rating;
-    data_points[ 8 ][ i ] = p -> equip_stats.haste_rating;
-    data_points[ 9 ][ i ] = p -> equip_stats.expertise_rating;
-
-    data_points[ 10 ][ i ] = p -> equip_stats.armor_penetration_rating + p -> equip_stats.spell_penetration * 0.80;
+      data_points[ i ][ j ] = p -> equip_stats.get_stat( i ) * gear_stats_t::stat_mod( i );
+    }
   }
 
   double max_total=0;
   for( int i=0; i < num_players; i++ )
   {
     double total=0;
-    for( int j=0; j < NUM_CATEGORIES; j++ )
+    for( int j=0; j < STAT_MAX; j++ )
     {
       total += data_points[ j ][ i ];
     }
     if( total > max_total ) max_total = total;
   }
 
-  const char* colors[] = {
-    class_color( WARRIOR ), class_color( HUNTER ), class_color( MAGE    ), class_color( DRUID  ), class_color( ROGUE        ), 
-    class_color( WARLOCK ), class_color( PRIEST ), class_color( PALADIN ), class_color( SHAMAN ), class_color( DEATH_KNIGHT ), "00FF00"
-  };
+  const char* colors[ STAT_MAX ];
+
+  for( int i=0; i < STAT_MAX; i++ ) colors[ i ] = 0;
+
+  colors[ STAT_STRENGTH                 ] = class_color( WARRIOR );
+  colors[ STAT_AGILITY                  ] = class_color( HUNTER );
+  colors[ STAT_INTELLECT                ] = class_color( MAGE );
+  colors[ STAT_SPIRIT                   ] = class_color( DRUID );
+  colors[ STAT_MP5                      ] = class_color( DRUID );
+  colors[ STAT_ATTACK_POWER             ] = class_color( ROGUE );
+  colors[ STAT_SPELL_POWER              ] = class_color( WARLOCK );
+  colors[ STAT_HIT_RATING               ] = class_color( PRIEST );
+  colors[ STAT_CRIT_RATING              ] = class_color( PALADIN );
+  colors[ STAT_HASTE_RATING             ] = class_color( SHAMAN );
+  colors[ STAT_EXPERTISE_RATING         ] = class_color( DEATH_KNIGHT );
+  colors[ STAT_ARMOR_PENETRATION_RATING ] = "00FF00";
+  colors[ STAT_SPELL_PENETRATION        ] = "00FF00";
 
   std::string s;
   char buffer[ 1024 ];
+  bool first;
 
   std::vector<player_t*> player_list = sim -> players_by_rank;
   int max_players = 25;
@@ -228,9 +227,12 @@ int chart_t::raid_gear( std::vector<std::string>& images,
     s += "chbh=15";
     s += "&";
     s += "chd=t:";
-    for( int i=0; i < NUM_CATEGORIES; i++ )
+    first = true;
+    for( int i=0; i < STAT_MAX; i++ )
     {
-      if( i ) s += "|";
+      if( ! colors[ i ] ) continue;
+      if( ! first ) s += "|";
+      first = false;
       for( int j=0; j < num_players; j++ )
       {
         snprintf( buffer, sizeof(buffer), "%s%.0f", (j?",":""), data_points[ i ][ j ] ); s += buffer;
@@ -240,9 +242,12 @@ int chart_t::raid_gear( std::vector<std::string>& images,
     snprintf( buffer, sizeof(buffer), "chds=0,%.0f", max_total ); s += buffer;
     s += "&";
     s += "chco=";
-    for( int i=0; i < NUM_CATEGORIES; i++ )
+    first = true;
+    for( int i=0; i < STAT_MAX; i++ )
     {
-      if( i ) s += ",";
+      if( ! colors[ i ] ) continue;
+      if( ! first ) s += ",";
+      first = false;
       s += colors[ i ];
     }
     s += "&";
@@ -257,7 +262,15 @@ int chart_t::raid_gear( std::vector<std::string>& images,
     s += "&";
     s += "chxs=0,000000,15";
     s += "&";
-    s += "chdl=Strength|Agility|Intellect|Spirit/MP5|Attack+Power|Spell+Power|Hit+Rating|Crit+Rating|Haste+Rating|Expertise+Rating|Penetration";
+    s += "chdl=";
+    first = true;
+    for( int i=0; i < STAT_MAX; i++ )
+    {
+      if( ! colors[ i ] ) continue;
+      if( ! first ) s += "|";
+      first = false;
+      s += util_t::stat_type_abbrev( i );
+    }
     s += "&";
     s += "chtt=Gear+Overview";
     s += "&";
@@ -265,7 +278,7 @@ int chart_t::raid_gear( std::vector<std::string>& images,
 
     images.push_back( s );
 
-    for( int i=0; i < NUM_CATEGORIES; i++ ) 
+    for( int i=0; i < STAT_MAX; i++ ) 
     {
       std::vector<double>& c = data_points[ i ];
       c.erase( c.begin(), c.begin() + num_players );

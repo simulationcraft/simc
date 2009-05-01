@@ -478,6 +478,7 @@ void player_t::init()
   init_professions();
   init_resources();
   init_consumables();
+  init_scaling();
   init_actions();
   init_stats();
 }
@@ -1698,6 +1699,8 @@ bool player_t::resource_available( int    resource,
 void player_t::stat_gain( int    stat,
                           double amount )
 {
+  if( sim -> log ) log_t::output( sim, "%s gains %.0f %s", name(), amount, util_t::stat_type_string( stat ) );
+
   switch( stat )
   {
     case STAT_STRENGTH:  attribute[ ATTR_STRENGTH  ] += amount; break;
@@ -1744,6 +1747,8 @@ void player_t::stat_gain( int    stat,
 void player_t::stat_loss( int    stat,
                           double amount )
 {
+  if( sim -> log ) log_t::output( sim, "%s loses %.0f %s", name(), amount, util_t::stat_type_string( stat ) );
+
   switch( stat )
   {
     case STAT_STRENGTH:  attribute[ ATTR_STRENGTH  ] -= amount; break;
@@ -2551,47 +2556,47 @@ bool player_t::parse_option( const std::string& name,
     // Player - Reporting
     { "quiet",                                OPT_INT,   &( quiet                                           ) },
     // Player - Gear
-    { "gear_strength",                        OPT_INT,  &( gear_stats.attribute[ ATTR_STRENGTH  ]           ) },
-    { "gear_agility",                         OPT_INT,  &( gear_stats.attribute[ ATTR_AGILITY   ]           ) },
-    { "gear_stamina",                         OPT_INT,  &( gear_stats.attribute[ ATTR_STAMINA   ]           ) },
-    { "gear_intellect",                       OPT_INT,  &( gear_stats.attribute[ ATTR_INTELLECT ]           ) },
-    { "gear_spirit",                          OPT_INT,  &( gear_stats.attribute[ ATTR_SPIRIT    ]           ) },
-    { "gear_spell_power",                     OPT_INT,  &( gear_stats.spell_power                           ) },
-    { "gear_mp5",                             OPT_INT,  &( gear_stats.mp5                                   ) },
-    { "gear_attack_power",                    OPT_INT,  &( gear_stats.attack_power                          ) },
-    { "gear_expertise_rating",                OPT_INT,  &( gear_stats.expertise_rating                      ) },
-    { "gear_armor_penetration_rating",        OPT_INT,  &( gear_stats.armor_penetration_rating              ) },
-    { "gear_haste_rating",                    OPT_INT,  &( gear_stats.haste_rating                          ) },
-    { "gear_hit_rating",                      OPT_INT,  &( gear_stats.hit_rating                            ) },
-    { "gear_crit_rating",                     OPT_INT,  &( gear_stats.crit_rating                           ) },
-    { "gear_health",                          OPT_INT,  &( gear_stats.resource[ RESOURCE_HEALTH ]           ) },
-    { "gear_mana",                            OPT_INT,  &( gear_stats.resource[ RESOURCE_MANA   ]           ) },
-    { "gear_rage",                            OPT_INT,  &( gear_stats.resource[ RESOURCE_RAGE   ]           ) },
-    { "gear_energy",                          OPT_INT,  &( gear_stats.resource[ RESOURCE_ENERGY ]           ) },
-    { "gear_focus",                           OPT_INT,  &( gear_stats.resource[ RESOURCE_FOCUS  ]           ) },
-    { "gear_runic",                           OPT_INT,  &( gear_stats.resource[ RESOURCE_RUNIC  ]           ) }, 
-    { "gear_armor",                           OPT_INT,  &( gear_stats.armor                                 ) },
+    { "gear_strength",                        OPT_FLT,  &( gear_stats.attribute[ ATTR_STRENGTH  ]           ) },
+    { "gear_agility",                         OPT_FLT,  &( gear_stats.attribute[ ATTR_AGILITY   ]           ) },
+    { "gear_stamina",                         OPT_FLT,  &( gear_stats.attribute[ ATTR_STAMINA   ]           ) },
+    { "gear_intellect",                       OPT_FLT,  &( gear_stats.attribute[ ATTR_INTELLECT ]           ) },
+    { "gear_spirit",                          OPT_FLT,  &( gear_stats.attribute[ ATTR_SPIRIT    ]           ) },
+    { "gear_spell_power",                     OPT_FLT,  &( gear_stats.spell_power                           ) },
+    { "gear_mp5",                             OPT_FLT,  &( gear_stats.mp5                                   ) },
+    { "gear_attack_power",                    OPT_FLT,  &( gear_stats.attack_power                          ) },
+    { "gear_expertise_rating",                OPT_FLT,  &( gear_stats.expertise_rating                      ) },
+    { "gear_armor_penetration_rating",        OPT_FLT,  &( gear_stats.armor_penetration_rating              ) },
+    { "gear_haste_rating",                    OPT_FLT,  &( gear_stats.haste_rating                          ) },
+    { "gear_hit_rating",                      OPT_FLT,  &( gear_stats.hit_rating                            ) },
+    { "gear_crit_rating",                     OPT_FLT,  &( gear_stats.crit_rating                           ) },
+    { "gear_health",                          OPT_FLT,  &( gear_stats.resource[ RESOURCE_HEALTH ]           ) },
+    { "gear_mana",                            OPT_FLT,  &( gear_stats.resource[ RESOURCE_MANA   ]           ) },
+    { "gear_rage",                            OPT_FLT,  &( gear_stats.resource[ RESOURCE_RAGE   ]           ) },
+    { "gear_energy",                          OPT_FLT,  &( gear_stats.resource[ RESOURCE_ENERGY ]           ) },
+    { "gear_focus",                           OPT_FLT,  &( gear_stats.resource[ RESOURCE_FOCUS  ]           ) },
+    { "gear_runic",                           OPT_FLT,  &( gear_stats.resource[ RESOURCE_RUNIC  ]           ) }, 
+    { "gear_armor",                           OPT_FLT,  &( gear_stats.armor                                 ) },
     // Player - Gems
-    { "gem_strength",                         OPT_INT,  &( gem_stats.attribute[ ATTR_STRENGTH  ]            ) },
-    { "gem_agility",                          OPT_INT,  &( gem_stats.attribute[ ATTR_AGILITY   ]            ) },
-    { "gem_stamina",                          OPT_INT,  &( gem_stats.attribute[ ATTR_STAMINA   ]            ) },
-    { "gem_intellect",                        OPT_INT,  &( gem_stats.attribute[ ATTR_INTELLECT ]            ) },
-    { "gem_spirit",                           OPT_INT,  &( gem_stats.attribute[ ATTR_SPIRIT    ]            ) },
-    { "gem_spell_power",                      OPT_INT,  &( gem_stats.spell_power                            ) },
-    { "gem_mp5",                              OPT_INT,  &( gem_stats.mp5                                    ) },
-    { "gem_attack_power",                     OPT_INT,  &( gem_stats.attack_power                           ) },
-    { "gem_expertise_rating",                 OPT_INT,  &( gem_stats.expertise_rating                       ) },
-    { "gem_armor_penetration_rating",         OPT_INT,  &( gem_stats.armor_penetration_rating               ) },
-    { "gem_haste_rating",                     OPT_INT,  &( gem_stats.haste_rating                           ) },
-    { "gem_hit_rating",                       OPT_INT,  &( gem_stats.hit_rating                             ) },
-    { "gem_crit_rating",                      OPT_INT,  &( gem_stats.crit_rating                            ) },
-    { "gem_health",                           OPT_INT,  &( gem_stats.resource[ RESOURCE_HEALTH ]            ) },
-    { "gem_mana",                             OPT_INT,  &( gem_stats.resource[ RESOURCE_MANA   ]            ) },
-    { "gem_rage",                             OPT_INT,  &( gem_stats.resource[ RESOURCE_RAGE   ]            ) },
-    { "gem_energy",                           OPT_INT,  &( gem_stats.resource[ RESOURCE_ENERGY ]            ) },
-    { "gem_focus",                            OPT_INT,  &( gem_stats.resource[ RESOURCE_FOCUS  ]            ) },
-    { "gem_runic",                            OPT_INT,  &( gem_stats.resource[ RESOURCE_RUNIC  ]            ) },
-    { "gem_armor",                            OPT_INT,  &( gem_stats.armor                                  ) },
+    { "gem_strength",                         OPT_FLT,  &( gem_stats.attribute[ ATTR_STRENGTH  ]            ) },
+    { "gem_agility",                          OPT_FLT,  &( gem_stats.attribute[ ATTR_AGILITY   ]            ) },
+    { "gem_stamina",                          OPT_FLT,  &( gem_stats.attribute[ ATTR_STAMINA   ]            ) },
+    { "gem_intellect",                        OPT_FLT,  &( gem_stats.attribute[ ATTR_INTELLECT ]            ) },
+    { "gem_spirit",                           OPT_FLT,  &( gem_stats.attribute[ ATTR_SPIRIT    ]            ) },
+    { "gem_spell_power",                      OPT_FLT,  &( gem_stats.spell_power                            ) },
+    { "gem_mp5",                              OPT_FLT,  &( gem_stats.mp5                                    ) },
+    { "gem_attack_power",                     OPT_FLT,  &( gem_stats.attack_power                           ) },
+    { "gem_expertise_rating",                 OPT_FLT,  &( gem_stats.expertise_rating                       ) },
+    { "gem_armor_penetration_rating",         OPT_FLT,  &( gem_stats.armor_penetration_rating               ) },
+    { "gem_haste_rating",                     OPT_FLT,  &( gem_stats.haste_rating                           ) },
+    { "gem_hit_rating",                       OPT_FLT,  &( gem_stats.hit_rating                             ) },
+    { "gem_crit_rating",                      OPT_FLT,  &( gem_stats.crit_rating                            ) },
+    { "gem_health",                           OPT_FLT,  &( gem_stats.resource[ RESOURCE_HEALTH ]            ) },
+    { "gem_mana",                             OPT_FLT,  &( gem_stats.resource[ RESOURCE_MANA   ]            ) },
+    { "gem_rage",                             OPT_FLT,  &( gem_stats.resource[ RESOURCE_RAGE   ]            ) },
+    { "gem_energy",                           OPT_FLT,  &( gem_stats.resource[ RESOURCE_ENERGY ]            ) },
+    { "gem_focus",                            OPT_FLT,  &( gem_stats.resource[ RESOURCE_FOCUS  ]            ) },
+    { "gem_runic",                            OPT_FLT,  &( gem_stats.resource[ RESOURCE_RUNIC  ]            ) },
+    { "gem_armor",                            OPT_FLT,  &( gem_stats.armor                                  ) },
     // Player - Consumables                                                                                 
     { "flask",                                OPT_STRING, &( flask_str                                      ) },
     { "elixirs",                              OPT_STRING, &( elixirs_str                                    ) },

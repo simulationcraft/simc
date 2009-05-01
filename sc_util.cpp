@@ -5,6 +5,8 @@
 
 #include "simcraft.h"
 
+// util_t::talent_rank =====================================================
+
 double util_t::talent_rank( int    num, 
                             int    max, 
                             double increment )
@@ -17,6 +19,8 @@ double util_t::talent_rank( int    num,
   return num * increment;
 }
 
+// util_t::talent_rank =====================================================
+
 int util_t::talent_rank( int num, 
                          int max, 
                          int increment )
@@ -28,6 +32,8 @@ int util_t::talent_rank( int num,
 
   return num * increment;
 }
+
+// util_t::talent_rank =====================================================
 
 double util_t::talent_rank( int    num, 
                             int    max, 
@@ -56,6 +62,8 @@ double util_t::talent_rank( int    num,
   return value;
 }
 
+// util_t::talent_rank =====================================================
+
 int util_t::talent_rank( int num, 
                          int max, 
                          int first, 
@@ -83,6 +91,8 @@ int util_t::talent_rank( int num,
   return value;
 }
 
+// util_t::ability_rank ====================================================
+
 double util_t::ability_rank( int    player_level, 
                              double ability_value, 
                              int    ability_level, ... )
@@ -100,6 +110,8 @@ double util_t::ability_rank( int    player_level,
 
   return ability_value;
 }
+
+// util_t::ability_rank ====================================================
 
 int util_t::ability_rank( int player_level, 
                           int ability_value, 
@@ -119,10 +131,14 @@ int util_t::ability_rank( int player_level,
   return ability_value;
 }
 
+// util_t::dup =============================================================
+
 char* util_t::dup( const char *value )
 {
    return strcpy( (char*) malloc( strlen( value ) + 1 ), value );
 }
+
+// util_t::race_type_string ================================================
 
 const char* util_t::race_type_string( int type )
 {
@@ -147,6 +163,8 @@ const char* util_t::race_type_string( int type )
   return "unknown";
 }
 
+// util_t::profession_type_string ==========================================
+
 const char* util_t::profession_type_string( int type )
 {
   switch( type )
@@ -166,6 +184,8 @@ const char* util_t::profession_type_string( int type )
   }
   return "unknown";
 }
+
+// util_t::player_type_string ==============================================
 
 const char* util_t::player_type_string( int type )
 {
@@ -188,6 +208,8 @@ const char* util_t::player_type_string( int type )
   return "unknown";
 }
 
+// util_t::attribute_type_string ===========================================
+
 const char* util_t::attribute_type_string( int type )
 {
   switch( type )
@@ -201,6 +223,8 @@ const char* util_t::attribute_type_string( int type )
   return "unknown";
 }
 
+// util_t::dmg_type_string =================================================
+
 const char* util_t::dmg_type_string( int type )
 {
   switch( type )
@@ -210,6 +234,8 @@ const char* util_t::dmg_type_string( int type )
   }
   return "unknown";
 }
+
+// util_t::result_type_string ==============================================
 
 const char* util_t::result_type_string( int type )
 {
@@ -228,6 +254,8 @@ const char* util_t::result_type_string( int type )
   return "unknown";
 }
 
+// util_t::resource_type_string ============================================
+
 const char* util_t::resource_type_string( int type )
 {
   switch( type )
@@ -242,6 +270,8 @@ const char* util_t::resource_type_string( int type )
   }
   return "unknown";
 }
+
+// util_t::school_type_string ==============================================
 
 const char* util_t::school_type_string( int school )
 {
@@ -260,6 +290,8 @@ const char* util_t::school_type_string( int school )
   }
   return "unknown";
 }
+
+// util_t::talent_tree_string ==============================================
 
 const char* util_t::talent_tree_string( int tree )
 {
@@ -286,6 +318,8 @@ const char* util_t::talent_tree_string( int tree )
   return "unknown";
 }
 
+// util_t::weapon_type_string ==============================================
+
 const char* util_t::weapon_type_string( int weapon )
 {
   switch( weapon )
@@ -311,6 +345,8 @@ const char* util_t::weapon_type_string( int weapon )
   return "unknown";
 }
 
+// util_t::weapon_enchant_type_string ======================================
+
 const char* util_t::weapon_enchant_type_string( int enchant )
 {
   switch( enchant )
@@ -324,6 +360,8 @@ const char* util_t::weapon_enchant_type_string( int enchant )
   }
   return "unknown";
 }
+
+// util_t::weapon_buff_type_string =========================================
 
 const char* util_t::weapon_buff_type_string( int buff )
 {
@@ -344,6 +382,8 @@ const char* util_t::weapon_buff_type_string( int buff )
   return "unknown";
 }
 
+// util_t::flask_type_string ===============================================
+
 const char* util_t::flask_type_string( int flask )
 {
   switch( flask )
@@ -360,6 +400,8 @@ const char* util_t::flask_type_string( int flask )
   }
   return "unknown";
 }
+
+// util_t::food_type_string ================================================
 
 const char* util_t::food_type_string( int food )
 {
@@ -380,6 +422,84 @@ const char* util_t::food_type_string( int food )
   }
   return "unknown";
 }
+
+// util_t::stat_type_string =================================================
+
+const char* util_t::stat_type_string( int stat )
+{
+  switch( stat )
+  {
+  case STAT_STRENGTH:  return "strength";
+  case STAT_AGILITY:   return "agility";
+  case STAT_STAMINA:   return "stamina";
+  case STAT_INTELLECT: return "intellect";
+  case STAT_SPIRIT:    return "spirit";
+
+  case STAT_HEALTH: return "health";
+  case STAT_MANA:   return "mana";
+  case STAT_RAGE:   return "rage";
+  case STAT_ENERGY: return "energy";
+  case STAT_FOCUS:  return "focus";
+  case STAT_RUNIC:  return "runic";
+
+  case STAT_SPELL_POWER:       return "spell_power";
+  case STAT_SPELL_PENETRATION: return "spell_penetration";
+  case STAT_MP5:               return "mp5";
+
+  case STAT_ATTACK_POWER:             return "attack_power";
+  case STAT_EXPERTISE_RATING:         return "expertise_rating";
+  case STAT_ARMOR_PENETRATION_RATING: return "armor_penetration_rating";
+
+  case STAT_HIT_RATING:   return "hit_rating";
+  case STAT_CRIT_RATING:  return "crit_rating";
+  case STAT_HASTE_RATING: return "haste_rating";
+
+  case STAT_ARMOR: return "armor";
+
+  default: assert(0);
+  }
+  return 0;
+}
+
+// util_t::stat_type_abbrev =================================================
+
+const char* util_t::stat_type_abbrev( int stat )
+{
+  switch( stat )
+  {
+  case STAT_STRENGTH:  return "Str";
+  case STAT_AGILITY:   return "Agi";
+  case STAT_STAMINA:   return "Sta";
+  case STAT_INTELLECT: return "Int";
+  case STAT_SPIRIT:    return "Spi";
+
+  case STAT_HEALTH: return "Health";
+  case STAT_MANA:   return "Mana";
+  case STAT_RAGE:   return "Rage";
+  case STAT_ENERGY: return "Energy";
+  case STAT_FOCUS:  return "Focus";
+  case STAT_RUNIC:  return "Runic";
+
+  case STAT_SPELL_POWER:       return "SP";
+  case STAT_SPELL_PENETRATION: return "SPen";
+  case STAT_MP5:               return "MP5";
+
+  case STAT_ATTACK_POWER:             return "AP";
+  case STAT_EXPERTISE_RATING:         return "Exp";
+  case STAT_ARMOR_PENETRATION_RATING: return "ArPen";
+
+  case STAT_HIT_RATING:   return "Hit";
+  case STAT_CRIT_RATING:  return "Crit";
+  case STAT_HASTE_RATING: return "Haste";
+
+  case STAT_ARMOR: return "Armor";
+
+  default: assert(0);
+  }
+  return 0;
+}
+
+// util_t::string_split ====================================================
 
 int util_t::string_split( std::vector<std::string>& results, 
                           const std::string&        str,
@@ -403,6 +523,8 @@ int util_t::string_split( std::vector<std::string>& results,
 
   return static_cast<int>( results.size() );
 }
+
+// util_t::string_split ====================================================
 
 int util_t::string_split( const std::string& str,
                           const char*        delim, 

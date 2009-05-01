@@ -326,23 +326,25 @@ struct event_compare_t
 
 struct gear_stats_t
 {
-  int attribute[ ATTRIBUTE_MAX ];
-  int resource[ RESOURCE_MAX ];
-  int spell_power;
-  int spell_penetration;
-  int mp5;
-  int attack_power;
-  int expertise_rating;
-  int armor_penetration_rating;
-  int hit_rating;
-  int crit_rating;
-  int haste_rating;
-  int armor;
+  double attribute[ ATTRIBUTE_MAX ];
+  double resource[ RESOURCE_MAX ];
+  double spell_power;
+  double spell_penetration;
+  double mp5;
+  double attack_power;
+  double expertise_rating;
+  double armor_penetration_rating;
+  double hit_rating;
+  double crit_rating;
+  double haste_rating;
+  double armor;
 
   gear_stats_t() { memset( (void*) this, 0x00, sizeof( gear_stats_t ) ); }
 
-  void set_stat( int stat, int value );
-  int  get_stat( int stat );
+  void   set_stat( int stat, double value );
+  double get_stat( int stat );
+  
+  static double stat_mod( int stat );
 };
 
 // Simulation Engine =========================================================
@@ -717,6 +719,9 @@ struct player_t
   gear_stats_t gem_stats;
   enchant_t* enchant;
   unique_gear_t* unique_gear;
+
+  // Scale Factors
+  gear_stats_t scaling;
   int scales_with[ STAT_MAX ];
 
   struct buff_t
@@ -854,22 +859,6 @@ struct player_t
     procs_t() { reset(); }
   };
   procs_t procs;
-
-  struct scaling_t
-  {
-    double attribute[ ATTRIBUTE_MAX ];
-    double spell_power;
-    double attack_power;
-    double expertise_rating;
-    double armor_penetration_rating;
-    double hit_rating;
-    double crit_rating;
-    double haste_rating;
-
-    scaling_t() { memset( (void*) this, 0x00, sizeof( scaling_t ) ); }
-  };
-  scaling_t scaling;
-
 
   player_t( sim_t* sim, int type, const std::string& name );
 
@@ -1670,21 +1659,23 @@ struct util_t
 
   static char* dup( const char* );
 
-  static const char* race_type_string          ( int type );
-  static const char* profession_type_string    ( int type );
-  static const char* player_type_string        ( int type );
   static const char* attribute_type_string     ( int type );
   static const char* dmg_type_string           ( int type );
-  static const char* result_type_string        ( int type );
-  static const char* resource_type_string      ( int type );
-  static const char* school_type_string        ( int type );
-  static const char* talent_tree_string        ( int tree );
-  static const char* weapon_type_string        ( int type );
-  static const char* weapon_enchant_type_string( int type );
-  static const char* weapon_buff_type_string   ( int type );
   static const char* elixir_type_string        ( int type );
   static const char* flask_type_string         ( int type );
   static const char* food_type_string          ( int type );
+  static const char* player_type_string        ( int type );
+  static const char* profession_type_string    ( int type );
+  static const char* race_type_string          ( int type );
+  static const char* resource_type_string      ( int type );
+  static const char* result_type_string        ( int type );
+  static const char* school_type_string        ( int type );
+  static const char* stat_type_string          ( int type );
+  static const char* stat_type_abbrev          ( int type );
+  static const char* talent_tree_string        ( int tree );
+  static const char* weapon_buff_type_string   ( int type );
+  static const char* weapon_enchant_type_string( int type );
+  static const char* weapon_type_string        ( int type );
 
   static int string_split( std::vector<std::string>& results, const std::string& str, const char* delim );
   static int string_split( const std::string& str, const char* delim, const char* format, ... );

@@ -315,22 +315,14 @@ static void print_scale_factors( FILE* file, sim_t* sim )
 
     fprintf( file, "  %-25s", p -> name() );
 
-    for( int j=0; j < ATTRIBUTE_MAX; j++ )
+    for( int j=0; j < STAT_MAX; j++ )
     {
-      if( sim -> scaling -> stats.attribute[ j ] ) 
+      if( sim -> scaling -> stats.get_stat( j ) != 0 )
       {
-        fprintf( file, "  %s=%.2f", util_t::attribute_type_string( j ), p -> scaling.attribute[ j ] );
+        fprintf( file, "  %s=%.2f", util_t::stat_type_abbrev( j ), p -> scaling.get_stat( j ) );
       }
     }
-    if( sim -> scaling -> stats.spell_power              ) fprintf( file,              "  spell_power=%.2f", p -> scaling.spell_power              );
-    if( sim -> scaling -> stats.attack_power             ) fprintf( file,             "  attack_power=%.2f", p -> scaling.attack_power             );
-    if( sim -> scaling -> stats.expertise_rating         ) fprintf( file,         "  expertise_rating=%.2f", p -> scaling.expertise_rating         );
-    if( sim -> scaling -> stats.armor_penetration_rating ) fprintf( file, "  armor_penetrating_rating=%.2f", p -> scaling.armor_penetration_rating );
-    if( sim -> scaling -> stats.hit_rating               ) fprintf( file,               "  hit_rating=%.2f", p -> scaling.hit_rating               );
-    if( sim -> scaling -> stats.crit_rating              ) fprintf( file,              "  crit_rating=%.2f", p -> scaling.crit_rating              );
-    if( sim -> scaling -> stats.haste_rating             ) fprintf( file,             "  haste_rating=%.2f", p -> scaling.haste_rating             );
-
-    fprintf( sim -> output_file, "\n" );
+    fprintf( file, "\n" );
   }
 }
 
@@ -451,20 +443,13 @@ static void print_html_scale_factors( FILE*  file,
 
   fprintf( file, "<TABLE BORDER CELLPADDING=4>\n" );
   fprintf( file, "<TR> <TH>profile</TH>" );
-  for( int j=0; j < ATTRIBUTE_MAX; j++ )
+  for( int i=0; i < STAT_MAX; i++ )
   {
-    if( sim -> scaling -> stats.attribute[ j ] ) 
+    if( sim -> scaling -> stats.get_stat( i ) != 0 )
     {
-      fprintf( file, " <TH>%s</TH>", util_t::attribute_type_string( j ) );
+      fprintf( file, " <TH>%s</TH>", util_t::stat_type_abbrev( i ) );
     }
   }
-  if( sim -> scaling -> stats.spell_power              ) fprintf( file, " <TH>spell power</TH>" );
-  if( sim -> scaling -> stats.attack_power             ) fprintf( file, " <TH>attack power</TH>" );
-  if( sim -> scaling -> stats.expertise_rating         ) fprintf( file, " <TH>expertise</TH>" );
-  if( sim -> scaling -> stats.armor_penetration_rating ) fprintf( file, " <TH>armor pen</TH>" );
-  if( sim -> scaling -> stats.hit_rating               ) fprintf( file, " <TH>hit</TH>" );
-  if( sim -> scaling -> stats.crit_rating              ) fprintf( file, " <TH>crit</TH>" );
-  if( sim -> scaling -> stats.haste_rating             ) fprintf( file, " <TH>haste</TH>" );
   fprintf( file, " <TH>lootrank</TH> <TH>wowhead</TH> </TR>\n" );
 
   std::string buffer;
@@ -476,20 +461,13 @@ static void print_html_scale_factors( FILE*  file,
 
     fprintf( file, "<TR> <TD>%s</TD>", p -> name() );
 
-    for( int j=0; j < ATTRIBUTE_MAX; j++ )
+    for( int j=0; j < STAT_MAX; j++ )
     {
-      if( sim -> scaling -> stats.attribute[ j ] ) 
+      if( sim -> scaling -> stats.get_stat( j ) != 0 )
       {
-        fprintf( file, " <TD>%.2f</TD>", p -> scaling.attribute[ j ] );
+        fprintf( file, " <TD>%.2f</TD>", p -> scaling.get_stat( j ) );
       }
     }
-    if( sim -> scaling -> stats.spell_power              ) fprintf( file, " <TD>%.2f</TD>", p -> scaling.spell_power              );
-    if( sim -> scaling -> stats.attack_power             ) fprintf( file, " <TD>%.2f</TD>", p -> scaling.attack_power             );
-    if( sim -> scaling -> stats.expertise_rating         ) fprintf( file, " <TD>%.2f</TD>", p -> scaling.expertise_rating         );
-    if( sim -> scaling -> stats.armor_penetration_rating ) fprintf( file, " <TD>%.2f</TD>", p -> scaling.armor_penetration_rating );
-    if( sim -> scaling -> stats.hit_rating               ) fprintf( file, " <TD>%.2f</TD>", p -> scaling.hit_rating               );
-    if( sim -> scaling -> stats.crit_rating              ) fprintf( file, " <TD>%.2f</TD>", p -> scaling.crit_rating              );
-    if( sim -> scaling -> stats.haste_rating             ) fprintf( file, " <TD>%.2f</TD>", p -> scaling.haste_rating             );
 
     fprintf( file, " <TD><a href=\"%s\"> lootrank</a></TD>", p -> gear_weights_lootrank_link.c_str() );
     fprintf( file, " <TD><a href=\"%s\"> wowhead </a></TD>", p -> gear_weights_wowhead_link.c_str() );
@@ -638,20 +616,13 @@ static void print_wiki_scale_factors( FILE*  file,
   fprintf( file, "== DPS Scale Factors (dps increase per unit stat) ==\n" );
 
   fprintf( file, "|| ||" );
-  for( int j=0; j < ATTRIBUTE_MAX; j++ )
+  for( int i=0; i < STAT_MAX; i++ )
   {
-    if( sim -> scaling -> stats.attribute[ j ] ) 
+    if( sim -> scaling -> stats.get_stat( i ) != 0 )
     {
-      fprintf( file, "  %s ||", util_t::attribute_type_string( j ) );
+      fprintf( file, " %s ||", util_t::stat_type_abbrev( i ) );
     }
   }
-  if( sim -> scaling -> stats.spell_power              ) fprintf( file, " spell power  ||" );
-  if( sim -> scaling -> stats.attack_power             ) fprintf( file, " attack power ||" );
-  if( sim -> scaling -> stats.expertise_rating         ) fprintf( file, " expertise    ||" );
-  if( sim -> scaling -> stats.armor_penetration_rating ) fprintf( file, " armor pen    ||" );
-  if( sim -> scaling -> stats.hit_rating               ) fprintf( file, " hit          ||" );
-  if( sim -> scaling -> stats.crit_rating              ) fprintf( file, " crit         ||" );
-  if( sim -> scaling -> stats.haste_rating             ) fprintf( file, " haste        ||" );
   fprintf( file, " lootrank || wowhead ||\n" );
 
   std::string buffer;
@@ -663,20 +634,13 @@ static void print_wiki_scale_factors( FILE*  file,
 
     fprintf( file, "|| %-25s ||", p -> name() );
 
-    for( int j=0; j < ATTRIBUTE_MAX; j++ )
+    for( int j=0; j < STAT_MAX; j++ )
     {
-      if( sim -> scaling -> stats.attribute[ j ] ) 
+      if( sim -> scaling -> stats.get_stat( j ) != 0 )
       {
-        fprintf( file, " %.2f ||", p -> scaling.attribute[ j ] );
+	fprintf( file, " %.2f ||", p -> scaling.get_stat( j ) );
       }
     }
-    if( sim -> scaling -> stats.spell_power              ) fprintf( file, " %.2f ||", p -> scaling.spell_power              );
-    if( sim -> scaling -> stats.attack_power             ) fprintf( file, " %.2f ||", p -> scaling.attack_power             );
-    if( sim -> scaling -> stats.expertise_rating         ) fprintf( file, " %.2f ||", p -> scaling.expertise_rating         );
-    if( sim -> scaling -> stats.armor_penetration_rating ) fprintf( file, " %.2f ||", p -> scaling.armor_penetration_rating );
-    if( sim -> scaling -> stats.hit_rating               ) fprintf( file, " %.2f ||", p -> scaling.hit_rating               );
-    if( sim -> scaling -> stats.crit_rating              ) fprintf( file, " %.2f ||", p -> scaling.crit_rating              );
-    if( sim -> scaling -> stats.haste_rating             ) fprintf( file, " %.2f ||", p -> scaling.haste_rating             );
 
     fprintf( file, " [%s lootrank] ||", p -> gear_weights_lootrank_link.c_str() );
     fprintf( file, " [%s wowhead ] ||", p -> gear_weights_wowhead_link.c_str() );
