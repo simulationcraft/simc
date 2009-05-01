@@ -379,7 +379,7 @@ struct sim_t
   std::vector<std::string> party_encoding;
 
   // Timing Wheel Event Management
-  std::vector<event_t*> timing_wheel;
+  event_t** timing_wheel; 
   int    wheel_seconds, wheel_size, wheel_mask, timing_slice;
   double wheel_granularity;
 

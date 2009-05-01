@@ -26,7 +26,7 @@ sim_t::sim_t( sim_t* p ) :
   optimal_raid(0), average_dmg(1),
   log(0), debug(0), sfmt(1),
   jow_chance(0), jow_ppm(15.0),
-  wheel_seconds(0), wheel_size(0), wheel_mask(0), timing_slice(0), wheel_granularity(0.0),
+  timing_wheel(0), wheel_seconds(0), wheel_size(0), wheel_mask(0), timing_slice(0), wheel_granularity(0.0),
   replenishment_targets(0),
   raid_dps(0), total_dmg(0), 
   total_seconds(0), elapsed_cpu_seconds(0), 
@@ -79,6 +79,7 @@ sim_t::~sim_t()
   {
     delete children[ i ];
   }
+  if (timing_wheel) delete timing_wheel;
 }
 
 // sim_t::add_event ==========================================================
@@ -311,8 +312,9 @@ bool sim_t::init()
   wheel_mask--;
 
   // The timing wheel represents an array of event lists: Each time slice has an event list.
-  timing_wheel.clear();
-  timing_wheel.insert( timing_wheel.begin(), wheel_size, (event_t*) 0 );
+  if (timing_wheel) delete timing_wheel;
+  timing_wheel= new event_t*[wheel_size+1];
+  memset(timing_wheel,0,sizeof(event_t*)*(wheel_size+1)); 
 
   total_seconds = 0;
 

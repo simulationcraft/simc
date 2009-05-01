@@ -65,6 +65,7 @@
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				TargetMachine="1"
+				Profile="true"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -140,6 +141,7 @@
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				TargetMachine="1"
+				Profile="true"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -176,7 +178,7 @@
 			>
 		</File>
 		<File
-			RelativePath=".\sc_combo_action.cpp"
+			RelativePath=".\sc_chart.cpp"
 			>
 		</File>
 		<File
@@ -200,7 +202,15 @@
 			>
 		</File>
 		<File
+			RelativePath=".\sc_gear_stats.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\sc_hunter.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\sc_log.cpp"
 			>
 		</File>
 		<File
