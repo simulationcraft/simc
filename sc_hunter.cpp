@@ -85,6 +85,7 @@ struct hunter_t : public player_t
 
   // Procs
   proc_t* procs_wild_quiver;
+  proc_t* procs_lock_and_load;
 
   // Uptimes
   uptime_t* uptimes_aspect_of_the_viper;
@@ -217,6 +218,7 @@ struct hunter_t : public player_t
 
     // Procs
     procs_wild_quiver = get_proc( "wild_quiver" );
+    procs_lock_and_load = get_proc( "lock_and_load" );
 
     // Up-Times
     uptimes_aspect_of_the_viper         = get_uptime( "aspect_of_the_viper" );
@@ -1078,6 +1080,7 @@ static void trigger_lock_and_load( attack_t* a )
   };
 
   p -> _buffs.lock_and_load = 2;
+  p -> procs_lock_and_load -> occur();
 
   event_t*& e = p -> _expirations.lock_and_load;
 
