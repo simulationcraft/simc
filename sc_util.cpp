@@ -454,6 +454,9 @@ const char* util_t::stat_type_string( int stat )
   case STAT_CRIT_RATING:  return "crit_rating";
   case STAT_HASTE_RATING: return "haste_rating";
 
+  case STAT_WEAPON_DPS:   return "weapon_dps";
+  case STAT_WEAPON_SPEED: return "weapon_speed";
+
   case STAT_ARMOR: return "armor";
 
   default: assert(0);
@@ -491,6 +494,9 @@ const char* util_t::stat_type_abbrev( int stat )
   case STAT_HIT_RATING:   return "Hit";
   case STAT_CRIT_RATING:  return "Crit";
   case STAT_HASTE_RATING: return "Haste";
+
+  case STAT_WEAPON_DPS:   return "Wdps";
+  case STAT_WEAPON_SPEED: return "Wspeed";
 
   case STAT_ARMOR: return "Armor";
 

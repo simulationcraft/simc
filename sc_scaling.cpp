@@ -50,13 +50,18 @@ scaling_t::scaling_t( sim_t* s ) :
   {
     stats.attribute[ i ] = 250;
   }
-  stats.armor_penetration_rating =  250;
+
+  stats.spell_power =  250;
+
   stats.attack_power             =  250;
-  stats.crit_rating              =  250;
+  stats.armor_penetration_rating =  250;
   stats.expertise_rating         = -150;
-  stats.haste_rating             =  250;
-  stats.hit_rating               = -200;
-  stats.spell_power              =  250;
+
+  stats.hit_rating   = -200;
+  stats.crit_rating  =  250;
+  stats.haste_rating =  250;
+
+  stats.weapon_dps = 50;
 }
 
 // scaling_t::analyze =======================================================
@@ -141,6 +146,7 @@ bool scaling_t::parse_option( const std::string& name,
     { "scale_hit_rating",               OPT_FLT, &( stats.hit_rating                     ) },
     { "scale_crit_rating",              OPT_FLT, &( stats.crit_rating                    ) },
     { "scale_haste_rating",             OPT_FLT, &( stats.haste_rating                   ) },
+    { "scale_weapon_dps",               OPT_FLT, &( stats.weapon_dps                     ) },
     { NULL, OPT_UNKNOWN }
   };
 

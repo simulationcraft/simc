@@ -661,10 +661,10 @@ void player_t::init_weapon( weapon_t*    w,
 {
   if( encoding.empty() ) return;
 
-  double weapon_dps = 0;
-
   std::vector<std::string> splits;
   int size = util_t::string_split( splits, encoding, "," );
+
+  double weapon_dps = 0;
 
   for( int i=0; i < size; i++ )
   {
@@ -764,7 +764,18 @@ void player_t::init_weapon( weapon_t*    w,
     w -> enchant_bonus = util_t::ability_rank( level, 15.0,72,  12.0,67,  7.0,0 );
   }
 
+  if( w -> swing_time == 0 ) w -> swing_time = sim -> gear_default.weapon_speed;
+  if( w -> damage     == 0 ) w -> damage     = sim -> gear_default.weapon_dps * w -> swing_time;
+
   if( weapon_dps != 0 ) w -> damage = weapon_dps * w -> swing_time;
+
+  if( w -> slot == SLOT_MAIN_HAND ||
+      w -> slot == SLOT_RANGED    )
+  {
+    // Stat deltas for scale factor generation.
+    w -> swing_time += sim -> gear_delta.weapon_speed;
+    w -> damage     += sim -> gear_delta.weapon_dps * w -> swing_time;
+  }
 
   if( w -> slot == SLOT_MAIN_HAND ) assert( w -> type >= WEAPON_NONE && w -> type < WEAPON_2H );
   if( w -> slot == SLOT_OFF_HAND  ) assert( w -> type >= WEAPON_NONE && w -> type < WEAPON_2H );
@@ -1053,6 +1064,9 @@ void player_t::init_scaling()
     scales_with[ STAT_HIT_RATING   ] = 1;
     scales_with[ STAT_CRIT_RATING  ] = 1;
     scales_with[ STAT_HASTE_RATING ] = 1;
+
+    scales_with[ STAT_WEAPON_DPS   ] = attack;
+    scales_with[ STAT_WEAPON_SPEED ] = 0;
 
     scales_with[ STAT_ARMOR ] = 0;
   }

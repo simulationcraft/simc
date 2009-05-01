@@ -43,6 +43,9 @@ void gear_stats_t::set_stat( int    stat,
   case STAT_CRIT_RATING:  crit_rating  = value; break;
   case STAT_HASTE_RATING: haste_rating = value; break;
 
+  case STAT_WEAPON_DPS:   weapon_dps   = value; break;
+  case STAT_WEAPON_SPEED: weapon_speed = value; break;
+
   case STAT_ARMOR: armor = value; break;
 
   default: assert(0);
@@ -81,6 +84,9 @@ double gear_stats_t::get_stat( int stat )
   case STAT_HIT_RATING:   return hit_rating;
   case STAT_CRIT_RATING:  return crit_rating;
   case STAT_HASTE_RATING: return haste_rating;
+
+  case STAT_WEAPON_DPS:   return weapon_dps;
+  case STAT_WEAPON_SPEED: return weapon_speed;
 
   case STAT_ARMOR: return armor;
 
