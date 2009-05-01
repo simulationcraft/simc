@@ -664,7 +664,7 @@ static void print_wiki_player( FILE*     file,
 
   if( ! p -> action_dpet_chart.empty() )
   {
-    action_dpet = p -> uptimes_and_procs_chart;
+    action_dpet = p -> action_dpet_chart;
     action_dpet += "&dummy=dummy.png";
   }
   if( ! p -> uptimes_and_procs_chart.empty() )
