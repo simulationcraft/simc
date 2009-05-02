@@ -3078,6 +3078,7 @@ struct silencing_shot_t : public hunter_attack_t
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );
 
+    may_crit               = true;
     normalize_weapon_speed = true;
     cooldown               = 20;
 
