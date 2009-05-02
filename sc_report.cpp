@@ -657,7 +657,7 @@ static void print_wiki_scale_factors( FILE*  file,
 
     fprintf( file, " [%s lootrank] ||", p -> gear_weights_lootrank_link.c_str() );
     fprintf( file, " [%s wowhead ] ||", p -> gear_weights_wowhead_link.c_str() );
-    fprintf( file, " [%s pawn ] ||", p -> gear_weights_pawn_string.c_str() );
+    fprintf( file, " [%s pawn    ] ||", p -> gear_weights_pawn_string.c_str() );
 
     fprintf( file, "\n" );
   }

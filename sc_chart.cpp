@@ -1116,53 +1116,79 @@ const char* chart_t::gear_weights_wowhead( std::string& s,
 }
 
 // chart_t::gear_weights_pawn =============================================
-    typedef std::pair<std::string,double> svpair;
-    bool svpairsortvalue(const svpair& left, const svpair& right)
-    {
-      return left.second > right.second;
-    }
+
+struct compare_stat_scale_factors {
+  player_t* player;
+  compare_stat_scale_factors( player_t* p ) : player(p) {}
+  bool operator()( const int& l, const int& r ) const
+  {
+    return( player -> scaling.get_stat( l ) > 
+	    player -> scaling.get_stat( r ) );
+  }
+};
+
 
 const char* chart_t::gear_weights_pawn( std::string& s,
-                                            player_t*    p )
+					player_t*    p )
 {
-  sim_t* sim = p -> sim;
+  std::vector<int> stats;
+  for( int i=0; i < STAT_MAX; i++ ) stats.push_back( i );
+  std::sort( stats.begin(), stats.end(), compare_stat_scale_factors( p ) );
+
+  struct pawn_key_t
+  {
+    const char* name;
+    int stat;
+  } pawn_keys[] =
+      {
+	{ "Strength",         STAT_STRENGTH                 },
+	{ "Agility",          STAT_AGILITY                  },
+	{ "Stamina",          STAT_STAMINA                  },
+	{ "Intellect",        STAT_INTELLECT                },
+	{ "Spirit",           STAT_SPIRIT                   },
+	{ "SpellDamage",      STAT_SPELL_POWER              },
+	{ "AP",               STAT_ATTACK_POWER             },
+	{ "ExpertiseRating",  STAT_EXPERTISE_RATING         },
+	{ "ArmorPenetration", STAT_ARMOR_PENETRATION_RATING },
+	{ "HitRating",        STAT_HIT_RATING               },
+	{ "CritRating",       STAT_CRIT_RATING              },
+	{ "HasteRating",      STAT_HASTE_RATING             },
+	{ 0 }
+      };
+
   char buffer[ 1024 ];
+  bool first = true;
 
   s = "";
-  std::vector<svpair> scalefactors;
-    if( sim -> scaling -> stats.attribute[ ATTR_STRENGTH ] ) scalefactors.push_back( std::make_pair("Strength", p -> scaling.attribute[ ATTR_STRENGTH ] ));
-    if( sim -> scaling -> stats.attribute[ ATTR_AGILITY ] ) scalefactors.push_back( std::make_pair("Agility", p -> scaling.attribute[ ATTR_AGILITY ] ));
-    if( sim -> scaling -> stats.attribute[ ATTR_STAMINA ] ) scalefactors.push_back( std::make_pair("Stamina", p -> scaling.attribute[ ATTR_STAMINA ] ));
-    if( sim -> scaling -> stats.attribute[ ATTR_INTELLECT ] ) scalefactors.push_back( std::make_pair("Intellect", p -> scaling.attribute[ ATTR_INTELLECT ] ));
-    if( sim -> scaling -> stats.attribute[ ATTR_SPIRIT ] ) scalefactors.push_back( std::make_pair("Spirit", p -> scaling.attribute[ ATTR_SPIRIT ] ));
-    if( sim -> scaling -> stats.spell_power ) scalefactors.push_back( std::make_pair("SpellDamage", p -> scaling.spell_power ));
-    if( sim -> scaling -> stats.attack_power ) scalefactors.push_back( std::make_pair("AP", p -> scaling.attack_power ));
-    if( sim -> scaling -> stats.expertise_rating ) scalefactors.push_back( std::make_pair("ExpertiseRating", p -> scaling.expertise_rating ) );
-    if( sim -> scaling -> stats.armor_penetration_rating ) scalefactors.push_back( std::make_pair("ArmorPenetration", p -> scaling.armor_penetration_rating ));
-    if( sim -> scaling -> stats.hit_rating ) scalefactors.push_back( std::make_pair("HitRating", p -> scaling.hit_rating ));
-    if( sim -> scaling -> stats.crit_rating ) scalefactors.push_back( std::make_pair("CritRating", p -> scaling.crit_rating ));
-    if( sim -> scaling -> stats.haste_rating ) scalefactors.push_back( std::make_pair("HasteRating", p -> scaling.haste_rating ));
+  snprintf( buffer, sizeof(buffer), "( Pawn: v1: \"%s\": ", p -> name() );
+  s += buffer;
 
-    std::vector<svpair>::iterator iter = scalefactors.begin();
-    
-    while( iter != scalefactors.end() )
+  for( int i=0; i < STAT_MAX; i++ )
+  {
+    int stat = stats[ i ];
+
+    double value = p -> scaling.get_stat( stat );
+    if( value == 0 ) continue;
+
+    const char* name=0;
+    for( int j=0; pawn_keys[ j ].name; j++ )
     {
-      if ((*iter).second < 0.01 )
-        iter = scalefactors.erase( iter );
-      else
-        ++iter;
+      if( pawn_keys[ j ].stat == stat )
+      {
+	name = pawn_keys[ j ].name;
+	break;
+      }
     }
-    std::sort(scalefactors.begin(), scalefactors.end(), svpairsortvalue);
-
-    snprintf( buffer, sizeof(buffer), "( Pawn: v1: \"%s\": ", p -> name() );
-    s += buffer;
-
-    for( std::vector<svpair>::const_iterator it = scalefactors.begin(); it != scalefactors.end(); ++it)
+    if( name )
     {
-      snprintf( buffer, sizeof(buffer), "%s=%.2f, ", (*it).first.c_str(), (*it).second);
+      if( ! first ) s += ",";
+      first = false;
+      snprintf( buffer, sizeof(buffer), " %s=%.2f", name, value );
       s += buffer;
     }
-    s += " )";
+  }
+   
+  s += " )";
 
   return s.c_str();
 }
