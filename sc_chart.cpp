@@ -951,7 +951,7 @@ const char* chart_t::gear_weights_lootrank( std::string& s,
 
   // Restrict lootrank to rare gems until epic gems become available
   // Gem: Not Set = Epic, 2=Common, 3=Rare
-  s += "&Gem=3";
+  s += "Gem=3&";
 
   switch( p -> type )
   {
