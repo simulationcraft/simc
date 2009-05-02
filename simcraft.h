@@ -359,6 +359,7 @@ struct sim_t
   sim_t*      parent;
   patch_t     patch;
   bool        P309;
+  bool        P312;
   rng_t*      rng;
   event_t*    free_list;
   target_t*   target;
