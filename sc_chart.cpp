@@ -1135,27 +1135,6 @@ const char* chart_t::gear_weights_pawn( std::string& s,
   for( int i=0; i < STAT_MAX; i++ ) stats.push_back( i );
   std::sort( stats.begin(), stats.end(), compare_stat_scale_factors( p ) );
 
-  struct pawn_key_t
-  {
-    const char* name;
-    int stat;
-  } pawn_keys[] =
-      {
-	{ "Strength",         STAT_STRENGTH                 },
-	{ "Agility",          STAT_AGILITY                  },
-	{ "Stamina",          STAT_STAMINA                  },
-	{ "Intellect",        STAT_INTELLECT                },
-	{ "Spirit",           STAT_SPIRIT                   },
-	{ "SpellDamage",      STAT_SPELL_POWER              },
-	{ "AP",               STAT_ATTACK_POWER             },
-	{ "ExpertiseRating",  STAT_EXPERTISE_RATING         },
-	{ "ArmorPenetration", STAT_ARMOR_PENETRATION_RATING },
-	{ "HitRating",        STAT_HIT_RATING               },
-	{ "CritRating",       STAT_CRIT_RATING              },
-	{ "HasteRating",      STAT_HASTE_RATING             },
-	{ 0 }
-      };
-
   char buffer[ 1024 ];
   bool first = true;
 
@@ -1171,14 +1150,22 @@ const char* chart_t::gear_weights_pawn( std::string& s,
     if( value == 0 ) continue;
 
     const char* name=0;
-    for( int j=0; pawn_keys[ j ].name; j++ )
+    switch( stat )
     {
-      if( pawn_keys[ j ].stat == stat )
-      {
-	name = pawn_keys[ j ].name;
-	break;
-      }
+    case STAT_STRENGTH:                 name = "Strength";         break;
+    case STAT_AGILITY:                  name = "Agility";          break;
+    case STAT_STAMINA:                  name = "Stamina";          break;
+    case STAT_INTELLECT:                name = "Intellect";        break;
+    case STAT_SPIRIT:                   name = "Spirit";           break;
+    case STAT_SPELL_POWER:              name = "SpellDamage";      break;
+    case STAT_ATTACK_POWER:             name = "AP";               break;
+    case STAT_EXPERTISE_RATING:         name = "ExpertiseRating";  break;
+    case STAT_ARMOR_PENETRATION_RATING: name = "ArmorPenetration"; break;
+    case STAT_HIT_RATING:               name = "HitRating";        break;
+    case STAT_CRIT_RATING:              name = "CritRating";       break;
+    case STAT_HASTE_RATING:             name = "HasteRating";      break;
     }
+
     if( name )
     {
       if( ! first ) s += ",";
