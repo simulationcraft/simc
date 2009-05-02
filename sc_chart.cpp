@@ -1123,13 +1123,12 @@ struct compare_stat_scale_factors {
   bool operator()( const int& l, const int& r ) const
   {
     return( player -> scaling.get_stat( l ) > 
-	    player -> scaling.get_stat( r ) );
+            player -> scaling.get_stat( r ) );
   }
 };
 
-
 const char* chart_t::gear_weights_pawn( std::string& s,
-					player_t*    p )
+                                        player_t*    p )
 {
   std::vector<int> stats;
   for( int i=0; i < STAT_MAX; i++ ) stats.push_back( i );
