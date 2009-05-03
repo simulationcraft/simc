@@ -748,8 +748,8 @@ struct player_t
     int       focus_magic_feedback;
     double    fortitude;
     double    improved_divine_spirit;
-    int       innervate;
-    int       glyph_of_innervate;
+    double    innervate;
+    double    glyph_of_innervate;
     int       hysteria;
     double    mana_cost_reduction;
     double    mana_spring;

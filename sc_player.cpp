@@ -1546,30 +1546,53 @@ void player_t::regen( double periodicity )
     else if( resource_type == RESOURCE_MANA )
     {
       double spirit_regen = periodicity * sqrt( intellect() ) * spirit() * mana_regen_base;
-
-      if( buffs.innervate )
+      
+      if( sim -> P312 )
       {
+        // In 3.1.2 Innervate is changed to a fixed amount of mana
+        // 450% of the druids basemana (Glyph: 90%)
+
+        
+        if( buffs.innervate )
+        {
+          resource_gain( resource_type, buffs.innervate * periodicity, gains.innervate );      
+        }
         if( buffs.glyph_of_innervate ) 
         {
-          resource_gain( resource_type, spirit_regen, gains.glyph_of_innervate );
+          resource_gain( resource_type, buffs.glyph_of_innervate * periodicity, gains.glyph_of_innervate );
         }
-
-        spirit_regen *= 5.0;
-
-        resource_gain( resource_type, spirit_regen, gains.innervate );      
-      }
-      else if( buffs.glyph_of_innervate )
-      {
-        resource_gain( resource_type, spirit_regen, gains.glyph_of_innervate );
-      }
-      else if( recent_cast() )
-      {
-        if( mana_regen_while_casting < 1.0 )
+        if( recent_cast() && mana_regen_while_casting < 1.0 )
         {
           spirit_regen *= mana_regen_while_casting;
         }
-
-        resource_gain( resource_type, spirit_regen, gains.spirit_intellect_regen );      
+        resource_gain( resource_type, spirit_regen, gains.spirit_intellect_regen );
+      }
+      else
+      {
+        if( buffs.innervate )
+        {
+          if( buffs.glyph_of_innervate ) 
+          {
+            resource_gain( resource_type, spirit_regen, gains.glyph_of_innervate );
+          }
+  
+          spirit_regen *= 5.0;
+  
+          resource_gain( resource_type, spirit_regen, gains.innervate );      
+        }
+        else if( buffs.glyph_of_innervate )
+        {
+          resource_gain( resource_type, spirit_regen, gains.glyph_of_innervate );
+        }
+        else if( recent_cast() )
+        {
+          if( mana_regen_while_casting < 1.0 )
+          {
+            spirit_regen *= mana_regen_while_casting;
+          }
+  
+          resource_gain( resource_type, spirit_regen, gains.spirit_intellect_regen );      
+        }
       }
 
       double mp5_regen = periodicity * ( mp5 + intellect() * mp5_per_intellect ) / 5.0;

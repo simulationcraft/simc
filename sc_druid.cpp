@@ -2095,6 +2095,7 @@ struct innervate_t : public druid_spell_t
   }
   virtual void execute()
   {
+    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(),name() );
     struct expiration_t : public event_t
     {
       expiration_t( sim_t* sim, player_t* p) : event_t( sim, p)
@@ -2104,7 +2105,7 @@ struct innervate_t : public druid_spell_t
       virtual void execute()
       {
         player -> buffs.innervate = 0;
-        player -> aura_loss("Innervate");
+        player -> aura_loss("Innervate", 29166);
       }
     };
     struct expiration_glyph_t : public event_t
@@ -2123,12 +2124,20 @@ struct innervate_t : public druid_spell_t
     consume_resource();
     update_ready();
 
-    innervate_target -> buffs.innervate = 1;
-    innervate_target -> aura_gain("Innervate");
+    // In 3.1.2 Innervate is changed to 450% of base mana of the caster
+    // Per second: player -> resource_base[ RESOURCE_MANA ]* 4.5 / 20.0
+    // ~
+    // Glyph of Innervate: 90%
+    // Per second: player -> resource_base[ RESOURCE_MANA ]* 0.9 / 20.0
+    // In ::regen() we then just give the player:
+    // buffs.innervate * periodicity mana
+    
+    innervate_target -> buffs.innervate = player -> resource_base[ RESOURCE_MANA ]* 4.5 / 20.0;
+    innervate_target -> aura_gain("Innervate", 29166);
 
     if( player -> cast_druid() -> glyphs.innervate )
     {
-      player -> buffs.glyph_of_innervate = 1;
+      player -> buffs.glyph_of_innervate = player -> resource_base[ RESOURCE_MANA ]* 0.9 / 20.0;
       player -> aura_gain("Glyph of Innervate");
       new ( sim ) expiration_glyph_t( sim, player);
     }
@@ -3086,11 +3095,11 @@ void druid_t::init_rating()
 
 void druid_t::init_base()
 {
-  attribute_base[ ATTR_STRENGTH  ] =  81;
-  attribute_base[ ATTR_AGILITY   ] =  65;
-  attribute_base[ ATTR_STAMINA   ] =  85;
-  attribute_base[ ATTR_INTELLECT ] = 115;
-  attribute_base[ ATTR_SPIRIT    ] = 135;
+  attribute_base[ ATTR_STRENGTH  ] =  94;
+  attribute_base[ ATTR_AGILITY   ] =  77;
+  attribute_base[ ATTR_STAMINA   ] = 100;
+  attribute_base[ ATTR_INTELLECT ] = 138;
+  attribute_base[ ATTR_SPIRIT    ] = 161;
 
   if( talents.moonkin_form && talents.furor )
   {
@@ -3120,7 +3129,7 @@ void druid_t::init_base()
   resource_base[ RESOURCE_HEALTH ] = 3600;
   if( talents.moonkin_form )
   {
-    resource_base[ RESOURCE_MANA ] = rating_t::interpolate( level, 1103, 2090, 3796 );
+    resource_base[ RESOURCE_MANA ] = rating_t::interpolate( level, 1103, 2090, 3496 );
   }
   else
   {
