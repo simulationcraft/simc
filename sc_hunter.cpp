@@ -1044,8 +1044,13 @@ static void trigger_lock_and_load( attack_t* a )
   if( ! p -> talents.lock_and_load )
     return;
 
-  // NB: talent calc says 3%,7%,10%, assuming it's really 10% * (1/3,2/3,3/3)
-  if ( ! a -> sim -> roll( p -> talents.lock_and_load * 0.1 / 3 ) )
+  double chance = 0;
+  if( a -> sim -> P312 )
+    chance = p -> talents.lock_and_load * 0.02;
+  else
+    // NB: talent calc says 3%,7%,10%, assuming it's really 10% * (1/3,2/3,3/3)
+    chance = p -> talents.lock_and_load * 0.1 / 3;
+  if ( ! a -> sim -> roll( chance ) )
     return;
 
   struct lock_and_load_expiration_t : public event_t
@@ -1253,6 +1258,7 @@ static void trigger_rabid_power( attack_t* a )
     return;
   if ( ! p -> _buffs.rabid )
     return;
+  // FIXME: Probably a ppm, not flat chance
   if ( p -> _buffs.rabid_power_stack == 5 || ! a -> sim -> roll( 0.5 ) )
     return;
 
