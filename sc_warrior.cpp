@@ -221,7 +221,6 @@ struct warrior_t : public player_t
   // Character Definition
   virtual void      init_base();
   virtual void      combat_begin();
-  virtual double    composite_attack_power_multiplier();
   virtual double    composite_attribute_multiplier(int attr);
   virtual void      reset();
   virtual void      regen( double periodicity );
@@ -232,19 +231,6 @@ struct warrior_t : public player_t
   virtual int       primary_role()     { return ROLE_ATTACK; }
 };
 
-// warrior_t::composite_attack_power_multiplier ============================
-
-double warrior_t::composite_attack_power_multiplier()
-{
-  double m = player_t::composite_attack_power_multiplier();
-
-  if( sim -> P309 && active_stance == STANCE_BERSERKER )
-  {
-    m *= 1 + talents.improved_berserker_stance * 0.02;
-  }
-  return m;
-}
-
 // warrior_t::composite_attribute_multiplier ===============================
 
 double warrior_t::composite_attribute_multiplier( int attr )
@@ -252,7 +238,7 @@ double warrior_t::composite_attribute_multiplier( int attr )
   double m = player_t::composite_attribute_multiplier( attr ); 
   if( attr == ATTR_STRENGTH )
   {
-    if ( ! sim -> P309 && active_stance == STANCE_BERSERKER )
+    if( active_stance == STANCE_BERSERKER )
     {
       m *= 1 + talents.improved_berserker_stance * 0.04;
     }
@@ -646,26 +632,15 @@ static void trigger_taste_for_blood( attack_t* a )
 {
   warrior_t* p = a -> player -> cast_warrior();
   sim_t* sim   = a -> sim;
-  if( sim -> P309 )
+  // 3.1.0
+  // * Taste for Blood: Will now proc 33%/66%/100% of the time with a 6 second cooldown.
+  if( ! sim -> cooldown_ready( p -> _cooldowns.taste_for_blood ) )
+    return;
+  if( sim -> roll ( p -> talents.taste_for_blood / 3.0 ) )
   {
-    if( sim -> roll ( p -> talents.taste_for_blood * 0.10 ) )
-    {
-      trigger_overpower_activation( a );
-      p -> _procs.taste_for_blood -> occur();
-    }
-  }
-  else
-  {
-    // 3.1.0
-    // * Taste for Blood: Will now proc 33%/66%/100% of the time with a 6 second cooldown.
-    if( ! sim -> cooldown_ready( p -> _cooldowns.taste_for_blood ) )
-      return;
-    if( sim -> roll ( p -> talents.taste_for_blood / 3.0 ) )
-    {
-      p -> _cooldowns.taste_for_blood = sim -> current_time + 6.0;
-      p -> _procs.taste_for_blood -> occur();
-      trigger_overpower_activation( a );
-    }
+    p -> _cooldowns.taste_for_blood = sim -> current_time + 6.0;
+    p -> _procs.taste_for_blood -> occur();
+    trigger_overpower_activation( a );
   }
 }
 
@@ -953,7 +928,7 @@ void warrior_attack_t::execute()
   }
   else if( result == RESULT_PARRY )
   {
-    if( p -> glyphs.overpower && ( ! sim -> P309 || sim -> roll( 0.50 ) ) ) 
+    if( p -> glyphs.overpower ) 
     {
       trigger_overpower_activation( this );
       p -> _procs.glyph_overpower -> occur();
@@ -1007,8 +982,7 @@ void warrior_attack_t::player_buff()
   }
   if( p -> active_stance == STANCE_BATTLE)
   {
-    if( ! sim -> P309 )
-      player_penetration += 0.10;
+    player_penetration += 0.10;
   }
   else if( p -> active_stance == STANCE_BERSERKER )
   {
@@ -1194,8 +1168,7 @@ struct auto_attack_t : public warrior_attack_t
       {
         assert(p -> talents.titans_grip != 0 );
         // * Titan's Grip (Tier 11) now reduces physical damage you deal by 10%.
-        if( ! sim -> P309 )
-          p -> _buffs.titans_grip = -0.10;
+        p -> _buffs.titans_grip = -0.10;
       }
     }
 
@@ -1260,7 +1233,7 @@ struct bladestorm_t : public warrior_attack_t
     channeled      = true;
     tick_zero      = true;
 
-    if( ! sim -> P309 && p -> glyphs.bladestorm )
+    if( p -> glyphs.bladestorm )
       cooldown -= 15;
 
     bladestorm_tick = new bladestorm_tick_t( p );

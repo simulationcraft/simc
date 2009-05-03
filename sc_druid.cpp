@@ -479,16 +479,8 @@ static void trigger_faerie_fire( action_t* a )
     expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
     {
       target_t* t = sim -> target;
-      if( sim -> P309 )
-      {
-        t -> debuffs.faerie_fire = util_t::ability_rank( p -> level,  1260,76,  610,66,  505,0 );
-        sim -> add_event( this, 40.0 );
-      }
-      else
-      {
-        t -> debuffs.faerie_fire = 0.05;
-        sim -> add_event( this, 300.0 );
-      }
+      t -> debuffs.faerie_fire = 0.05;
+      sim -> add_event( this, 300.0 );
     }
 
     virtual void execute()
@@ -503,10 +495,7 @@ static void trigger_faerie_fire( action_t* a )
 
   if( e )
   {
-    if( a -> sim -> P309 )
-      e -> reschedule( 40.0 );
-    else
-      e -> reschedule( 300.0 );
+    e -> reschedule( 300.0 );
   }
   else
   {
@@ -528,10 +517,7 @@ static void trigger_improved_faerie_fire( action_t* a )
     expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
     {
       sim -> target -> debuffs.improved_faerie_fire = 3;
-      if( sim -> P309 )
-        sim -> add_event( this, 40.0 );
-      else
-        sim -> add_event( this, 300.0 );
+      sim -> add_event( this, 300.0 );
     }
     virtual void execute()
     {
@@ -544,10 +530,7 @@ static void trigger_improved_faerie_fire( action_t* a )
 
   if( e )
   {
-    if( a -> sim -> P309 )
-      e -> reschedule( 40.0 );
-    else
-      e -> reschedule( 300.0 );
+    e -> reschedule( 300.0 );
   }
   else
   {
@@ -640,65 +623,33 @@ static void trigger_natures_grace( spell_t* s )
   if( ! s -> sim -> roll( p -> talents.natures_grace / 3.0 ) )
     return;
 
-  if( s -> sim -> P309 )
+  struct natures_grace_expiration_t : public event_t
   {
-    if( ! p -> _buffs.natures_grace )
+    natures_grace_expiration_t( sim_t* sim, druid_t* p ) : event_t( sim, p )
     {
+      name = "Nature's Grace Expiration";
       p -> aura_gain( "Nature's Grace" );
-      p -> _buffs.natures_grace = 1;
-      p -> buffs.cast_time_reduction += 0.5;
+      p -> _buffs.natures_grace = 0.20;
+      sim -> add_event( this, 3.0 );
     }
+    virtual void execute()
+    {
+      druid_t* p = player -> cast_druid();
+      p -> _buffs.natures_grace       = 0;
+      p -> _expirations.natures_grace = 0;
+      p -> aura_loss( "Nature's Grace" );
+    }
+  };
+
+  event_t*& e = p -> _expirations.natures_grace;
+
+  if( e )
+  {
+    e -> reschedule( 3.0 );
   }
   else
   {
-    struct natures_grace_expiration_t : public event_t
-    {
-      natures_grace_expiration_t( sim_t* sim, druid_t* p ) : event_t( sim, p )
-      {
-        name = "Nature's Grace Expiration";
-        p -> aura_gain( "Nature's Grace" );
-        p -> _buffs.natures_grace = 0.20;
-        sim -> add_event( this, 3.0 );
-      }
-      virtual void execute()
-      {
-        druid_t* p = player -> cast_druid();
-        p -> _buffs.natures_grace       = 0;
-        p -> _expirations.natures_grace = 0;
-        p -> aura_loss( "Nature's Grace" );
-      }
-    };
-
-    event_t*& e = p -> _expirations.natures_grace;
-
-    if( e )
-    {
-      e -> reschedule( 3.0 );
-    }
-    else
-    {
-      e = new ( s -> sim ) natures_grace_expiration_t(s -> sim, p );
-    }
-  }
-}
-
-// consume_natures_grace ===================================================
-
-static void consume_natures_grace( spell_t* s )
-{
-  druid_t* p = s -> player -> cast_druid();
-
-  if( ! p -> _buffs.natures_grace )
-    return;
-
-  if( s -> sim -> P309 )
-  {
-    if( s -> time_to_execute > 0 )
-    {
-      p -> aura_loss( "Nature's Grace" );
-      p -> _buffs.natures_grace = 0;
-      p -> buffs.cast_time_reduction -= 0.5;
-    }
+    e = new ( s -> sim ) natures_grace_expiration_t(s -> sim, p );
   }
 }
 
@@ -1107,7 +1058,7 @@ void druid_attack_t::player_buff()
 
   attack_t::player_buff();
 
-  if( ! sim -> P309 && p -> _buffs.savage_roar )
+  if( p -> _buffs.savage_roar )
   {
     // sr glyph seems to be additive
     player_multiplier *= 1.3 + 0.03 * p -> glyphs.savage_roar;
@@ -1956,7 +1907,7 @@ double druid_spell_t::haste()
   druid_t* p = player -> cast_druid();
   double h = spell_t::haste();
   if( p -> talents.celestial_focus ) h *= 1.0 / ( 1.0 + p -> talents.celestial_focus * 0.01 );
-  if( ! sim -> P309 && p -> _buffs.natures_grace )
+  if( p -> _buffs.natures_grace )
   {
     h *= 1.0 / ( 1.0 + p -> _buffs.natures_grace );
   }
@@ -1996,8 +1947,6 @@ void druid_spell_t::schedule_execute()
 void druid_spell_t::execute()
 {
   druid_t* p = player -> cast_druid();
-
-  consume_natures_grace( this );
 
   spell_t::execute();
 
@@ -2134,7 +2083,7 @@ struct innervate_t : public druid_spell_t
 
     id = 29166;
 
-    base_cost = ( sim -> P309 ?  p -> resource_base[ RESOURCE_MANA ] * 0.04 : 0 );
+    base_cost = 0.0;
     base_execute_time = 0;
     cooldown  = 480;
     harmful   = false;
@@ -2230,7 +2179,7 @@ struct insect_swarm_t : public druid_spell_t
     base_execute_time = 0;
     base_tick_time    = 2.0;
     num_ticks         = 6;
-    tick_power_mod    = (( sim -> P309 ) ? ( base_tick_time / 15.0 ) * 0.95 : 0.2);
+    tick_power_mod    = 0.2;
 
     base_multiplier *= 1.0 + util_t::talent_rank(p -> talents.genesis, 5, 0.01) +
                             ( p -> glyphs.insect_swarm  ? 0.30 : 0.00 ) +
@@ -2757,13 +2706,6 @@ struct wrath_t : public druid_spell_t
     }
   }
 
-  virtual void schedule_execute()
-  {
-    druid_t* p = player -> cast_druid();
-    trigger_gcd = ( p -> _buffs.natures_grace && p -> sim -> P309 ) ? p -> base_gcd - 0.5 : p -> base_gcd;
-    druid_spell_t::schedule_execute();
-  }
-
   virtual void player_buff()
   {
     druid_spell_t::player_buff();
@@ -2771,7 +2713,7 @@ struct wrath_t : public druid_spell_t
     p -> uptimes_eclipse_wrath -> update( p -> _buffs.eclipse_wrath != 0 );
     if( p -> _buffs.eclipse_wrath )
     {
-      player_multiplier *= 1 + ( ( sim -> P309 ) ? 0.20 : 0.30 ) + p -> tiers.t8_2pc_balance * 0.15;
+      player_multiplier *= 1.3 + p -> tiers.t8_2pc_balance * 0.15;
     }
     if( p -> active_insect_swarm )
     {
@@ -2925,7 +2867,7 @@ struct starfall_t : public druid_spell_t
     num_ticks      = 10; 
     base_tick_time = 1.0; 
 
-    cooldown          = p -> sim -> P309 ? 180 : 90;
+    cooldown          = 90;
     base_execute_time = 0;
     aoe               = true; // Can the actual CAST of Starfall trigger omen? FIX ME!
 
@@ -2946,12 +2888,7 @@ struct starfall_t : public druid_spell_t
     base_dd_min = base_dd_max = 0;
 
     if( p -> glyphs.starfall )
-    {
-      if( p -> sim -> P309 )
-        num_ticks += 2;
-      else
-        cooldown  -= 30;
-    }
+      cooldown  -= 30;
   }
   virtual void tick()
   {
@@ -3142,8 +3079,7 @@ void druid_t::init_rating()
 {
   player_t::init_rating();
 
-  if ( ! sim -> P309 )
-    rating.attack_haste *= 1.0 / 1.30;
+  rating.attack_haste *= 1.0 / 1.30;
 }
 
 // druid_t::init_base =======================================================
@@ -3164,10 +3100,7 @@ void druid_t::init_base()
   {
     attribute_multiplier[ i ] *= 1.0 + 0.02 * talents.survival_of_the_fittest;
 
-    if( ! sim -> P309 )
-    {
-      attribute_multiplier[ i ] *= 1.0 + 0.01 * talents.improved_mark_of_the_wild;
-    }
+    attribute_multiplier[ i ] *= 1.0 + 0.01 * talents.improved_mark_of_the_wild;
   }
 
   base_spell_crit = 0.0185298;
@@ -3198,9 +3131,7 @@ void druid_t::init_base()
   mana_per_intellect      = 15;
   energy_regen_per_second = 10;
 
-  mana_regen_while_casting = ( sim -> P309 ? 
-                               util_t::talent_rank( talents.intensity,  3, 0.10 ) :
-                               util_t::talent_rank( talents.intensity,  3, 0.17, 0.33, 0.50 ) );
+  mana_regen_while_casting = util_t::talent_rank( talents.intensity,  3, 0.17, 0.33, 0.50 );
 
   mp5_per_intellect = util_t::talent_rank( talents.dreamstate, 3, 0.04, 0.07, 0.10 );
 
@@ -3301,8 +3232,6 @@ double druid_t::composite_attack_power()
 double druid_t::composite_attack_power_multiplier()
 {
   double multiplier = player_t::composite_attack_power_multiplier();
-
-  if( sim -> P309 && _buffs.savage_roar ) multiplier *= 1.40;
 
   if ( _buffs.cat_form && talents.heart_of_the_wild )
   {
