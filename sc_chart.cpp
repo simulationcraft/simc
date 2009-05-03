@@ -944,7 +944,6 @@ const char* chart_t::distribution_dps( std::string& s,
 const char* chart_t::gear_weights_lootrank( std::string& s,
                                             player_t*    p )
 {
-  sim_t* sim = p -> sim;
   char buffer[ 1024 ];
 
   s = "http://www.lootrank.com/wow/wr.asp?";
@@ -968,50 +967,33 @@ const char* chart_t::gear_weights_lootrank( std::string& s,
   default: assert(0);
   }
 
-  const char* attr_prefix[] = { "None", "Str", "Agi", "Sta", "Int", "Spi" };
-
-  for( int j=0; j < ATTRIBUTE_MAX; j++ )
+  for( int i=0; i < STAT_MAX; i++ )
   {
-    if( sim -> scaling -> stats.attribute[ j ] ) 
+    double value = p -> scaling.get_stat( i );
+    if( value == 0 ) continue;
+
+    const char* name=0;
+    switch( i )
     {
-      snprintf( buffer, sizeof(buffer), "&%s=%.2f", attr_prefix[ j ], p -> scaling.attribute[ j ] );
+    case STAT_STRENGTH:                 name = "Str";  break;
+    case STAT_AGILITY:                  name = "Agi";  break;
+    case STAT_STAMINA:                  name = "Sta";  break;
+    case STAT_INTELLECT:                name = "Int";  break;
+    case STAT_SPIRIT:                   name = "Spi";  break;
+    case STAT_SPELL_POWER:              name = "spd";  break;
+    case STAT_ATTACK_POWER:             name = "map";  break;
+    case STAT_EXPERTISE_RATING:         name = "Exp";  break;
+    case STAT_ARMOR_PENETRATION_RATING: name = "arp";  break;
+    case STAT_HIT_RATING:               name = "mhit"; break;
+    case STAT_CRIT_RATING:              name = "mcr";  break;
+    case STAT_HASTE_RATING:             name = "mh";   break;
+    }
+
+    if( name )
+    {
+      snprintf( buffer, sizeof(buffer), "&%s=%.2f", name, value );
       s += buffer;
     }
-  }
-  if( sim -> scaling -> stats.spell_power ) 
-  { 
-    snprintf( buffer, sizeof(buffer), "&spd=%.2f", p -> scaling.spell_power ); 
-    s += buffer; 
-  }
-  if( sim -> scaling -> stats.attack_power ) 
-  { 
-    snprintf( buffer, sizeof(buffer), "&map=%.2f", p -> scaling.attack_power );
-    s += buffer; 
-  }
-  if( sim -> scaling -> stats.expertise_rating ) 
-  {
-    snprintf( buffer, sizeof(buffer), "&Exp=%.2f", p -> scaling.expertise_rating );
-    s += buffer; 
-  }
-  if( sim -> scaling -> stats.armor_penetration_rating )
-  {
-    snprintf( buffer, sizeof(buffer), "&arp=%.2f", p -> scaling.armor_penetration_rating );
-    s += buffer;
-  }
-  if( sim -> scaling -> stats.hit_rating )
-  {
-    snprintf( buffer, sizeof(buffer), "&mhit=%.2f", p -> scaling.hit_rating );
-    s += buffer;
-  }
-  if( sim -> scaling -> stats.crit_rating )
-  {
-    snprintf( buffer, sizeof(buffer), "&mcr=%.2f", p -> scaling.crit_rating );
-    s += buffer;
-  }
-  if( sim -> scaling -> stats.haste_rating )
-  {
-    snprintf( buffer, sizeof(buffer), "&mh=%.2f", p -> scaling.haste_rating );
-    s += buffer;
   }
 
   s += "&Ver=6&usr=&ser=&grp=www";
@@ -1024,8 +1006,8 @@ const char* chart_t::gear_weights_lootrank( std::string& s,
 const char* chart_t::gear_weights_wowhead( std::string& s,
                                            player_t*    p )
 {
-  sim_t* sim = p -> sim;
   char buffer[ 1024 ];
+  bool first=true;
 
   s = "http://www.wowhead.com/?items&filter=";
 
@@ -1047,70 +1029,50 @@ const char* chart_t::gear_weights_wowhead( std::string& s,
   // Restrict wowhead to rare gems. When epic gems become available:"gm=4;gb=1;"
   s += "gm=3;gb=1;";
 
-  std::vector<int> prefix_list;
-  std::vector<double> value_list;
+  std::string    id_string = "";
+  std::string value_string = "";
 
-  int attr_prefix[] = { -1, 20, 21, 22, 23, 24 };
-
-  for( int j=0; j < ATTRIBUTE_MAX; j++ )
+  for( int i=0; i < STAT_MAX; i++ )
   {
-    if( sim -> scaling -> stats.attribute[ j ] ) 
+    double value = p -> scaling.get_stat( i );
+    if( value == 0 ) continue;
+
+    int id=0;
+    switch( i )
     {
-      prefix_list.push_back( attr_prefix[ j ] );
-       value_list.push_back( p -> scaling.attribute[ j ] );
+    case STAT_STRENGTH:                 id = 20;  break;
+    case STAT_AGILITY:                  id = 21;  break;
+    case STAT_STAMINA:                  id = 22;  break;
+    case STAT_INTELLECT:                id = 23;  break;
+    case STAT_SPIRIT:                   id = 24;  break;
+    case STAT_SPELL_POWER:              id = 123; break;
+    case STAT_ATTACK_POWER:             id = 77;  break;
+    case STAT_EXPERTISE_RATING:         id = 117; break;
+    case STAT_ARMOR_PENETRATION_RATING: id = 114; break;
+    case STAT_HIT_RATING:               id = 119; break;
+    case STAT_CRIT_RATING:              id = 96;  break;
+    case STAT_HASTE_RATING:             id = 103; break;
+    }
+
+    if( id )
+    {
+      if( ! first )
+      {
+	   id_string += ":";
+	value_string += ":";
+      }
+      first = false;
+
+      snprintf( buffer, sizeof(buffer), "%d", id );
+      id_string += buffer;
+
+      snprintf( buffer, sizeof(buffer), "%.2f", value );
+      value_string += buffer;
     }
   }
-  if( sim -> scaling -> stats.spell_power ) 
-  { 
-    prefix_list.push_back( 123 );
-     value_list.push_back( p -> scaling.spell_power ); 
-  }
-  if( sim -> scaling -> stats.attack_power ) 
-  { 
-    prefix_list.push_back( 77 );
-     value_list.push_back( p -> scaling.attack_power );
-  }
-  if( sim -> scaling -> stats.expertise_rating ) 
-  {
-    prefix_list.push_back( 117 );
-     value_list.push_back( p -> scaling.expertise_rating );
-  }
-  if( sim -> scaling -> stats.armor_penetration_rating )
-  {
-    prefix_list.push_back( 114 );
-     value_list.push_back( p -> scaling.armor_penetration_rating );
-  }
-  if( sim -> scaling -> stats.hit_rating )
-  {
-    prefix_list.push_back( 119 );
-     value_list.push_back( p -> scaling.hit_rating );
-  }
-  if( sim -> scaling -> stats.crit_rating )
-  {
-    prefix_list.push_back( 96 );
-     value_list.push_back( p -> scaling.crit_rating );
-  }
-  if( sim -> scaling -> stats.haste_rating )
-  {
-    prefix_list.push_back( 103 );
-     value_list.push_back( p -> scaling.haste_rating );
-  }
 
-  s += "wt=";
-  for( unsigned i=0; i < prefix_list.size(); i++ )
-  {
-    snprintf( buffer, sizeof(buffer), "%s%d", ( i ? ":" : "" ), prefix_list[ i ] );
-    s += buffer;
-  }
-  s += ";";
-
-  s += "wtv=";
-  for( unsigned i=0; i < value_list.size(); i++ )
-  {
-    snprintf( buffer, sizeof(buffer), "%s%.2f", ( i ? ":" : "" ), value_list[ i ] );
-    s += buffer;
-  }
-  s += ";";
+  s += "wt="  +    id_string + ";";
+  s += "wtv=" + value_string + ";";
 
   return s.c_str();
 }
