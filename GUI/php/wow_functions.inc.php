@@ -118,7 +118,7 @@ function fetch_character_from_armory($character_name, $server_name)
 	if( is_array($arr_glyphs) ) {
 		foreach($arr_glyphs as $glyph_name) {
 			$stripped_name = str_replace(array('glyph of ', ' '), array('glyph ', '_'), strtolower($glyph_name));
-			$arr_character[$stripped_name] = 'true'; 
+			$arr_character[$stripped_name] = 1; 
 		}
 	}
 	

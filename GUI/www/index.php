@@ -8,78 +8,99 @@ require_once 'functions.inc.php';
 require_once 'wow_functions.inc.php';
 
 
-// Create the output XML object
-$xml = new SimpleXMLElement_XSL('<xml></xml>');
-
-
 // If the 'simulate' button was pressed, run the simulation
 if( isset($_POST['simulate']) ) {
 
+	// Create the output XML object
+	$xml = new SimpleXMLElement_XSL('<xml></xml>');
+	
 	// Develop the simcraft command from the form input, with a random file name for the output catcher
 	$output_file = tempnam('/tmp', 'simcraft_output');
-	$simcraft_command = generate_simcraft_command($_POST, $output_file );
+	$simcraft_command = generate_simcraft_command( $_POST, $output_file );
 	
 	// Change to the simulationcraft directory
 	chdir( get_valid_path(SIMULATIONCRAFT_PATH) );
 	
 	// Call the simcraft execution
 	$simcraft_output = shell_exec( $simcraft_command );
-	
-//	// Add the simcraft command to the outgoing xml, just for documentation
-//	$xml->addChild('simcraft_command', htmlentities($simcraft_command) );
-//	
-//	// Add the response to the outgoing xml
-//	$xml->addChild('command_return', $simcraft_output);
-//	
-//	// Load the generated report output file
-//	$file_contents = file_get_contents($output_file);
-//	
-//	// Add the generated report
-//	$xml->addChild('generated_report', $file_contents );
-//	
-//	// Define the XSL that will style this XML
-//	$xsl_path = 'xsl/result_display.xsl';
 
 	// FIXME temporarily, just print the html, since the generated html isn't XHTML compliant and won't fit in an XML file
 	print file_get_contents($output_file);
-	die();
 }
 
-// Else, just show the simulation configuration form
-else {
+
+// Else, if the request was to export the config file
+else if( isset($_POST['export_file']) ) {
+
+	// Build the output string
+	$output = build_config_file_from_array($_POST);
 	
-	// Define the XSL that will style this XML
-	$xsl_path = 'xsl/config_form.xsl';
+	// Send the page header and the file content
+	header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+	header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
+	header('Cache-Control: no-store, no-cache, must-revalidate'); // HTTP/1.1
+	header('Cache-Control: post-check=0, pre-check=0', false); // HTTP/1.1
+	header('Pragma: no-cache'); // HTTP/1.0
+	header('Content-Disposition: attachment; filename="'.date('YmdHis').'.simcraft"');
+	header("Content-length: " . strlen($output) );
+	header('Content-type: text/text');
+	print $output;	
+}
+
+
+// Else, show the simulation configuration form
+else {
+
+	// Create the output XML object
+	$xml = new SimpleXMLElement_XSL('<xml></xml>');
 		
 	// Add the simulation config form XML to the outgoing XML object
-	append_simulation_config_form($xml, $_POST);
-		
+	append_simulation_config_form($xml);
+
 	// Add the wow servers
-	$arr_servers = get_arr_wow_servers();
-	$xml_servers = $xml->addChild('servers');
-	foreach( $arr_servers as $arr_server ) {
-		$new_server = $xml_servers->addChild('server');
-		$new_server->addAttribute('name', $arr_server['name']);
+	add_wow_servers($xml);
+	
+	// If a file import was requested, import the file's contents
+	if( isset($_POST['import_file']) ) {
+		
+		// Unless we should clear the form before importing, go ahead and load the submitted field values again 
+		if(!$_POST['clear_before_import']) {
+			set_values_from_array($xml, $_POST);
+		}
+		
+		// Set the values from the uploaded file
+		set_values_from_uploaded_file($xml);
+	}
+	
+	// Else, if any post values were submitted, set them in the form
+	else if( !empty($_POST) ) {
+		set_values_from_array($xml, $_POST);
+	}
+	
+	// else just use the default values
+	else {
+		set_default_values($xml);
 	}
 		
 	// If a request was passed to add a raid member from the armory, do it now
 	if( isset($_POST['add_from_armory']) ) {
-		add_raider_from_web($xml, $_POST['add_from_armory']['name'], $_POST['add_from_armory']['server'] );
-
-		// Add the selected server to the xml, for convenience
+		
+		// Add the 'selected' server to the xml, for conveniently re-setting the selected value after reload
 		$xml->options->addAttribute('selected_server', $_POST['add_from_armory']['server']);
+		
+		// Add the raider, importing them from the web
+		add_raider_from_web($xml, $_POST['add_from_armory']['name'], $_POST['add_from_armory']['server'] );
 	}
+
+	// Send the page header for xml content
+	header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+	header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
+	header('Cache-Control: no-store, no-cache, must-revalidate'); // HTTP/1.1
+	header('Cache-Control: post-check=0, pre-check=0', false); // HTTP/1.1
+	header('Pragma: no-cache'); // HTTP/1.0
+	header('Content-type: text/xml');
+	
+	// Send the output string
+	echo $xml->asXML_with_XSL('xsl/config_form.xsl');
 }
-
-
-// Send the page header for xml content
-header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
-header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
-header('Cache-Control: no-store, no-cache, must-revalidate'); // HTTP/1.1
-header('Cache-Control: post-check=0, pre-check=0', false); // HTTP/1.1
-header('Pragma: no-cache'); // HTTP/1.0
-header('Content-type: text/xml');
-
-// Send the output string
-echo $xml->asXML_with_XSL($xsl_path);
 ?>

@@ -17,8 +17,8 @@ php_flag display_startup_errors 	on
 # Make sure errors are going to the php log system
 php_flag log_errors								on
 
-# Set the maximum file upload size (Keep this as an integer, not a string like '10M')
-php_value upload_max_filesize			10000000
+# Set the maximum file upload size
+php_value upload_max_filesize			1M
 
 
 # Show all errors, except for notices

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="xsl/config_form.xsl"?>
 <xml>
-  <options>
+  <options max_file_size="1048576">
     <supported_classes>
       <class class="druid" label="Druid">
         <option name="glyph_berserk" label="Glyph Berserk" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_druid.cpp" value=""/>
@@ -169,6 +169,7 @@
       <class class="all_classes" label="All Classes">
         <option name="name" label="Name" type="text" cpp_type="OPT_STRING" tag="name_str" file="sc_player.cpp" value=""/>
         <option name="race" label="Race" type="text" cpp_type="OPT_STRING" tag="race_str" file="sc_player.cpp" value=""/>
+        <option name="id" label="Id" type="text" cpp_type="OPT_STRING" tag="id_str" file="sc_player.cpp" value=""/>
         <option name="level" label="Level" type="text" cpp_type="OPT_INT" tag="level" file="sc_player.cpp" value=""/>
         <option name="gcd" label="Gcd" type="text" cpp_type="OPT_FLT" tag="base_gcd" file="sc_player.cpp" value=""/>
         <option name="distance" label="Distance" type="text" cpp_type="OPT_FLT" tag="distance" file="sc_player.cpp" value=""/>
@@ -245,46 +246,46 @@
         <option name="post_actions" label="Post Actions" type="text" cpp_type="OPT_STRING" tag="action_list_postfix" file="sc_player.cpp" value=""/>
         <option name="skip_actions" label="Skip Actions" type="text" cpp_type="OPT_STRING" tag="action_list_skip" file="sc_player.cpp" value=""/>
         <option name="quiet" label="Quiet" type="text" cpp_type="OPT_INT" tag="quiet" file="sc_player.cpp" value=""/>
-        <option name="gear_strength" label="Gear Strength" type="text" cpp_type="OPT_INT" tag="gear_stats" file="sc_player.cpp" value=""/>
-        <option name="gear_agility" label="Gear Agility" type="text" cpp_type="OPT_INT" tag="gear_stats" file="sc_player.cpp" value=""/>
-        <option name="gear_stamina" label="Gear Stamina" type="text" cpp_type="OPT_INT" tag="gear_stats" file="sc_player.cpp" value=""/>
-        <option name="gear_intellect" label="Gear Intellect" type="text" cpp_type="OPT_INT" tag="gear_stats" file="sc_player.cpp" value=""/>
-        <option name="gear_spirit" label="Gear Spirit" type="text" cpp_type="OPT_INT" tag="gear_stats" file="sc_player.cpp" value=""/>
-        <option name="gear_spell_power" label="Gear Spell Power" type="text" cpp_type="OPT_INT" tag="gear_stats" file="sc_player.cpp" value=""/>
-        <option name="gear_mp5" label="Gear Mp5" type="text" cpp_type="OPT_INT" tag="gear_stats" file="sc_player.cpp" value=""/>
-        <option name="gear_attack_power" label="Gear Attack Power" type="text" cpp_type="OPT_INT" tag="gear_stats" file="sc_player.cpp" value=""/>
-        <option name="gear_expertise_rating" label="Gear Expertise Rating" type="text" cpp_type="OPT_INT" tag="gear_stats" file="sc_player.cpp" value=""/>
-        <option name="gear_armor_penetration_rating" label="Gear Armor Penetration Rating" type="text" cpp_type="OPT_INT" tag="gear_stats" file="sc_player.cpp" value=""/>
-        <option name="gear_haste_rating" label="Gear Haste Rating" type="text" cpp_type="OPT_INT" tag="gear_stats" file="sc_player.cpp" value=""/>
-        <option name="gear_hit_rating" label="Gear Hit Rating" type="text" cpp_type="OPT_INT" tag="gear_stats" file="sc_player.cpp" value=""/>
-        <option name="gear_crit_rating" label="Gear Crit Rating" type="text" cpp_type="OPT_INT" tag="gear_stats" file="sc_player.cpp" value=""/>
-        <option name="gear_health" label="Gear Health" type="text" cpp_type="OPT_INT" tag="gear_stats" file="sc_player.cpp" value=""/>
-        <option name="gear_mana" label="Gear Mana" type="text" cpp_type="OPT_INT" tag="gear_stats" file="sc_player.cpp" value=""/>
-        <option name="gear_rage" label="Gear Rage" type="text" cpp_type="OPT_INT" tag="gear_stats" file="sc_player.cpp" value=""/>
-        <option name="gear_energy" label="Gear Energy" type="text" cpp_type="OPT_INT" tag="gear_stats" file="sc_player.cpp" value=""/>
-        <option name="gear_focus" label="Gear Focus" type="text" cpp_type="OPT_INT" tag="gear_stats" file="sc_player.cpp" value=""/>
-        <option name="gear_runic" label="Gear Runic" type="text" cpp_type="OPT_INT" tag="gear_stats" file="sc_player.cpp" value=""/>
-        <option name="gear_armor" label="Gear Armor" type="text" cpp_type="OPT_INT" tag="gear_stats" file="sc_player.cpp" value=""/>
-        <option name="gem_strength" label="Gem Strength" type="text" cpp_type="OPT_INT" tag="gem_stats" file="sc_player.cpp" value=""/>
-        <option name="gem_agility" label="Gem Agility" type="text" cpp_type="OPT_INT" tag="gem_stats" file="sc_player.cpp" value=""/>
-        <option name="gem_stamina" label="Gem Stamina" type="text" cpp_type="OPT_INT" tag="gem_stats" file="sc_player.cpp" value=""/>
-        <option name="gem_intellect" label="Gem Intellect" type="text" cpp_type="OPT_INT" tag="gem_stats" file="sc_player.cpp" value=""/>
-        <option name="gem_spirit" label="Gem Spirit" type="text" cpp_type="OPT_INT" tag="gem_stats" file="sc_player.cpp" value=""/>
-        <option name="gem_spell_power" label="Gem Spell Power" type="text" cpp_type="OPT_INT" tag="gem_stats" file="sc_player.cpp" value=""/>
-        <option name="gem_mp5" label="Gem Mp5" type="text" cpp_type="OPT_INT" tag="gem_stats" file="sc_player.cpp" value=""/>
-        <option name="gem_attack_power" label="Gem Attack Power" type="text" cpp_type="OPT_INT" tag="gem_stats" file="sc_player.cpp" value=""/>
-        <option name="gem_expertise_rating" label="Gem Expertise Rating" type="text" cpp_type="OPT_INT" tag="gem_stats" file="sc_player.cpp" value=""/>
-        <option name="gem_armor_penetration_rating" label="Gem Armor Penetration Rating" type="text" cpp_type="OPT_INT" tag="gem_stats" file="sc_player.cpp" value=""/>
-        <option name="gem_haste_rating" label="Gem Haste Rating" type="text" cpp_type="OPT_INT" tag="gem_stats" file="sc_player.cpp" value=""/>
-        <option name="gem_hit_rating" label="Gem Hit Rating" type="text" cpp_type="OPT_INT" tag="gem_stats" file="sc_player.cpp" value=""/>
-        <option name="gem_crit_rating" label="Gem Crit Rating" type="text" cpp_type="OPT_INT" tag="gem_stats" file="sc_player.cpp" value=""/>
-        <option name="gem_health" label="Gem Health" type="text" cpp_type="OPT_INT" tag="gem_stats" file="sc_player.cpp" value=""/>
-        <option name="gem_mana" label="Gem Mana" type="text" cpp_type="OPT_INT" tag="gem_stats" file="sc_player.cpp" value=""/>
-        <option name="gem_rage" label="Gem Rage" type="text" cpp_type="OPT_INT" tag="gem_stats" file="sc_player.cpp" value=""/>
-        <option name="gem_energy" label="Gem Energy" type="text" cpp_type="OPT_INT" tag="gem_stats" file="sc_player.cpp" value=""/>
-        <option name="gem_focus" label="Gem Focus" type="text" cpp_type="OPT_INT" tag="gem_stats" file="sc_player.cpp" value=""/>
-        <option name="gem_runic" label="Gem Runic" type="text" cpp_type="OPT_INT" tag="gem_stats" file="sc_player.cpp" value=""/>
-        <option name="gem_armor" label="Gem Armor" type="text" cpp_type="OPT_INT" tag="gem_stats" file="sc_player.cpp" value=""/>
+        <option name="gear_strength" label="Gear Strength" type="text" cpp_type="OPT_FLT" tag="gear_stats" file="sc_player.cpp" value=""/>
+        <option name="gear_agility" label="Gear Agility" type="text" cpp_type="OPT_FLT" tag="gear_stats" file="sc_player.cpp" value=""/>
+        <option name="gear_stamina" label="Gear Stamina" type="text" cpp_type="OPT_FLT" tag="gear_stats" file="sc_player.cpp" value=""/>
+        <option name="gear_intellect" label="Gear Intellect" type="text" cpp_type="OPT_FLT" tag="gear_stats" file="sc_player.cpp" value=""/>
+        <option name="gear_spirit" label="Gear Spirit" type="text" cpp_type="OPT_FLT" tag="gear_stats" file="sc_player.cpp" value=""/>
+        <option name="gear_spell_power" label="Gear Spell Power" type="text" cpp_type="OPT_FLT" tag="gear_stats" file="sc_player.cpp" value=""/>
+        <option name="gear_mp5" label="Gear Mp5" type="text" cpp_type="OPT_FLT" tag="gear_stats" file="sc_player.cpp" value=""/>
+        <option name="gear_attack_power" label="Gear Attack Power" type="text" cpp_type="OPT_FLT" tag="gear_stats" file="sc_player.cpp" value=""/>
+        <option name="gear_expertise_rating" label="Gear Expertise Rating" type="text" cpp_type="OPT_FLT" tag="gear_stats" file="sc_player.cpp" value=""/>
+        <option name="gear_armor_penetration_rating" label="Gear Armor Penetration Rating" type="text" cpp_type="OPT_FLT" tag="gear_stats" file="sc_player.cpp" value=""/>
+        <option name="gear_haste_rating" label="Gear Haste Rating" type="text" cpp_type="OPT_FLT" tag="gear_stats" file="sc_player.cpp" value=""/>
+        <option name="gear_hit_rating" label="Gear Hit Rating" type="text" cpp_type="OPT_FLT" tag="gear_stats" file="sc_player.cpp" value=""/>
+        <option name="gear_crit_rating" label="Gear Crit Rating" type="text" cpp_type="OPT_FLT" tag="gear_stats" file="sc_player.cpp" value=""/>
+        <option name="gear_health" label="Gear Health" type="text" cpp_type="OPT_FLT" tag="gear_stats" file="sc_player.cpp" value=""/>
+        <option name="gear_mana" label="Gear Mana" type="text" cpp_type="OPT_FLT" tag="gear_stats" file="sc_player.cpp" value=""/>
+        <option name="gear_rage" label="Gear Rage" type="text" cpp_type="OPT_FLT" tag="gear_stats" file="sc_player.cpp" value=""/>
+        <option name="gear_energy" label="Gear Energy" type="text" cpp_type="OPT_FLT" tag="gear_stats" file="sc_player.cpp" value=""/>
+        <option name="gear_focus" label="Gear Focus" type="text" cpp_type="OPT_FLT" tag="gear_stats" file="sc_player.cpp" value=""/>
+        <option name="gear_runic" label="Gear Runic" type="text" cpp_type="OPT_FLT" tag="gear_stats" file="sc_player.cpp" value=""/>
+        <option name="gear_armor" label="Gear Armor" type="text" cpp_type="OPT_FLT" tag="gear_stats" file="sc_player.cpp" value=""/>
+        <option name="gem_strength" label="Gem Strength" type="text" cpp_type="OPT_FLT" tag="gem_stats" file="sc_player.cpp" value=""/>
+        <option name="gem_agility" label="Gem Agility" type="text" cpp_type="OPT_FLT" tag="gem_stats" file="sc_player.cpp" value=""/>
+        <option name="gem_stamina" label="Gem Stamina" type="text" cpp_type="OPT_FLT" tag="gem_stats" file="sc_player.cpp" value=""/>
+        <option name="gem_intellect" label="Gem Intellect" type="text" cpp_type="OPT_FLT" tag="gem_stats" file="sc_player.cpp" value=""/>
+        <option name="gem_spirit" label="Gem Spirit" type="text" cpp_type="OPT_FLT" tag="gem_stats" file="sc_player.cpp" value=""/>
+        <option name="gem_spell_power" label="Gem Spell Power" type="text" cpp_type="OPT_FLT" tag="gem_stats" file="sc_player.cpp" value=""/>
+        <option name="gem_mp5" label="Gem Mp5" type="text" cpp_type="OPT_FLT" tag="gem_stats" file="sc_player.cpp" value=""/>
+        <option name="gem_attack_power" label="Gem Attack Power" type="text" cpp_type="OPT_FLT" tag="gem_stats" file="sc_player.cpp" value=""/>
+        <option name="gem_expertise_rating" label="Gem Expertise Rating" type="text" cpp_type="OPT_FLT" tag="gem_stats" file="sc_player.cpp" value=""/>
+        <option name="gem_armor_penetration_rating" label="Gem Armor Penetration Rating" type="text" cpp_type="OPT_FLT" tag="gem_stats" file="sc_player.cpp" value=""/>
+        <option name="gem_haste_rating" label="Gem Haste Rating" type="text" cpp_type="OPT_FLT" tag="gem_stats" file="sc_player.cpp" value=""/>
+        <option name="gem_hit_rating" label="Gem Hit Rating" type="text" cpp_type="OPT_FLT" tag="gem_stats" file="sc_player.cpp" value=""/>
+        <option name="gem_crit_rating" label="Gem Crit Rating" type="text" cpp_type="OPT_FLT" tag="gem_stats" file="sc_player.cpp" value=""/>
+        <option name="gem_health" label="Gem Health" type="text" cpp_type="OPT_FLT" tag="gem_stats" file="sc_player.cpp" value=""/>
+        <option name="gem_mana" label="Gem Mana" type="text" cpp_type="OPT_FLT" tag="gem_stats" file="sc_player.cpp" value=""/>
+        <option name="gem_rage" label="Gem Rage" type="text" cpp_type="OPT_FLT" tag="gem_stats" file="sc_player.cpp" value=""/>
+        <option name="gem_energy" label="Gem Energy" type="text" cpp_type="OPT_FLT" tag="gem_stats" file="sc_player.cpp" value=""/>
+        <option name="gem_focus" label="Gem Focus" type="text" cpp_type="OPT_FLT" tag="gem_stats" file="sc_player.cpp" value=""/>
+        <option name="gem_runic" label="Gem Runic" type="text" cpp_type="OPT_FLT" tag="gem_stats" file="sc_player.cpp" value=""/>
+        <option name="gem_armor" label="Gem Armor" type="text" cpp_type="OPT_FLT" tag="gem_stats" file="sc_player.cpp" value=""/>
         <option name="flask" label="Flask" type="text" cpp_type="OPT_STRING" tag="flask_str" file="sc_player.cpp" value=""/>
         <option name="elixirs" label="Elixirs" type="text" cpp_type="OPT_STRING" tag="elixirs_str" file="sc_player.cpp" value=""/>
         <option name="food" label="Food" type="text" cpp_type="OPT_STRING" tag="food_str" file="sc_player.cpp" value=""/>
@@ -337,62 +338,43 @@
       </class>
     </supported_classes>
     <global_options>
-      <option name="enchant_strength" label="Enchant Strength" type="text" cpp_type="OPT_INT" tag="p -&gt; enchant -&gt; stats" file="sc_enchant.cpp" value=""/>
-      <option name="enchant_agility" label="Enchant Agility" type="text" cpp_type="OPT_INT" tag="p -&gt; enchant -&gt; stats" file="sc_enchant.cpp" value=""/>
-      <option name="enchant_stamina" label="Enchant Stamina" type="text" cpp_type="OPT_INT" tag="p -&gt; enchant -&gt; stats" file="sc_enchant.cpp" value=""/>
-      <option name="enchant_intellect" label="Enchant Intellect" type="text" cpp_type="OPT_INT" tag="p -&gt; enchant -&gt; stats" file="sc_enchant.cpp" value=""/>
-      <option name="enchant_spirit" label="Enchant Spirit" type="text" cpp_type="OPT_INT" tag="p -&gt; enchant -&gt; stats" file="sc_enchant.cpp" value=""/>
-      <option name="enchant_spell_power" label="Enchant Spell Power" type="text" cpp_type="OPT_INT" tag="p -&gt; enchant -&gt; stats" file="sc_enchant.cpp" value=""/>
-      <option name="enchant_mp5" label="Enchant Mp5" type="text" cpp_type="OPT_INT" tag="p -&gt; enchant -&gt; stats" file="sc_enchant.cpp" value=""/>
-      <option name="enchant_attack_power" label="Enchant Attack Power" type="text" cpp_type="OPT_INT" tag="p -&gt; enchant -&gt; stats" file="sc_enchant.cpp" value=""/>
-      <option name="enchant_expertise_rating" label="Enchant Expertise Rating" type="text" cpp_type="OPT_INT" tag="p -&gt; enchant -&gt; stats" file="sc_enchant.cpp" value=""/>
-      <option name="enchant_armor_penetration" label="Enchant Armor Penetration" type="text" cpp_type="OPT_INT" tag="p -&gt; enchant -&gt; stats" file="sc_enchant.cpp" value=""/>
-      <option name="enchant_armor" label="Enchant Armor" type="text" cpp_type="OPT_INT" tag="p -&gt; enchant -&gt; stats" file="sc_enchant.cpp" value=""/>
-      <option name="enchant_haste_rating" label="Enchant Haste Rating" type="text" cpp_type="OPT_INT" tag="p -&gt; enchant -&gt; stats" file="sc_enchant.cpp" value=""/>
-      <option name="enchant_hit_rating" label="Enchant Hit Rating" type="text" cpp_type="OPT_INT" tag="p -&gt; enchant -&gt; stats" file="sc_enchant.cpp" value=""/>
-      <option name="enchant_crit_rating" label="Enchant Crit Rating" type="text" cpp_type="OPT_INT" tag="p -&gt; enchant -&gt; stats" file="sc_enchant.cpp" value=""/>
-      <option name="enchant_health" label="Enchant Health" type="text" cpp_type="OPT_INT" tag="p -&gt; enchant -&gt; stats" file="sc_enchant.cpp" value=""/>
-      <option name="enchant_mana" label="Enchant Mana" type="text" cpp_type="OPT_INT" tag="p -&gt; enchant -&gt; stats" file="sc_enchant.cpp" value=""/>
-      <option name="enchant_rage" label="Enchant Rage" type="text" cpp_type="OPT_INT" tag="p -&gt; enchant -&gt; stats" file="sc_enchant.cpp" value=""/>
-      <option name="enchant_energy" label="Enchant Energy" type="text" cpp_type="OPT_INT" tag="p -&gt; enchant -&gt; stats" file="sc_enchant.cpp" value=""/>
-      <option name="enchant_focus" label="Enchant Focus" type="text" cpp_type="OPT_INT" tag="p -&gt; enchant -&gt; stats" file="sc_enchant.cpp" value=""/>
-      <option name="enchant_runic" label="Enchant Runic" type="text" cpp_type="OPT_INT" tag="p -&gt; enchant -&gt; stats" file="sc_enchant.cpp" value=""/>
+      <option name="enchant_strength" label="Enchant Strength" type="text" cpp_type="OPT_FLT" tag="p -&gt; enchant -&gt; stats" file="sc_enchant.cpp" value=""/>
+      <option name="enchant_agility" label="Enchant Agility" type="text" cpp_type="OPT_FLT" tag="p -&gt; enchant -&gt; stats" file="sc_enchant.cpp" value=""/>
+      <option name="enchant_stamina" label="Enchant Stamina" type="text" cpp_type="OPT_FLT" tag="p -&gt; enchant -&gt; stats" file="sc_enchant.cpp" value=""/>
+      <option name="enchant_intellect" label="Enchant Intellect" type="text" cpp_type="OPT_FLT" tag="p -&gt; enchant -&gt; stats" file="sc_enchant.cpp" value=""/>
+      <option name="enchant_spirit" label="Enchant Spirit" type="text" cpp_type="OPT_FLT" tag="p -&gt; enchant -&gt; stats" file="sc_enchant.cpp" value=""/>
+      <option name="enchant_spell_power" label="Enchant Spell Power" type="text" cpp_type="OPT_FLT" tag="p -&gt; enchant -&gt; stats" file="sc_enchant.cpp" value=""/>
+      <option name="enchant_mp5" label="Enchant Mp5" type="text" cpp_type="OPT_FLT" tag="p -&gt; enchant -&gt; stats" file="sc_enchant.cpp" value=""/>
+      <option name="enchant_attack_power" label="Enchant Attack Power" type="text" cpp_type="OPT_FLT" tag="p -&gt; enchant -&gt; stats" file="sc_enchant.cpp" value=""/>
+      <option name="enchant_expertise_rating" label="Enchant Expertise Rating" type="text" cpp_type="OPT_FLT" tag="p -&gt; enchant -&gt; stats" file="sc_enchant.cpp" value=""/>
+      <option name="enchant_armor_penetration" label="Enchant Armor Penetration" type="text" cpp_type="OPT_FLT" tag="p -&gt; enchant -&gt; stats" file="sc_enchant.cpp" value=""/>
+      <option name="enchant_armor" label="Enchant Armor" type="text" cpp_type="OPT_FLT" tag="p -&gt; enchant -&gt; stats" file="sc_enchant.cpp" value=""/>
+      <option name="enchant_haste_rating" label="Enchant Haste Rating" type="text" cpp_type="OPT_FLT" tag="p -&gt; enchant -&gt; stats" file="sc_enchant.cpp" value=""/>
+      <option name="enchant_hit_rating" label="Enchant Hit Rating" type="text" cpp_type="OPT_FLT" tag="p -&gt; enchant -&gt; stats" file="sc_enchant.cpp" value=""/>
+      <option name="enchant_crit_rating" label="Enchant Crit Rating" type="text" cpp_type="OPT_FLT" tag="p -&gt; enchant -&gt; stats" file="sc_enchant.cpp" value=""/>
+      <option name="enchant_health" label="Enchant Health" type="text" cpp_type="OPT_FLT" tag="p -&gt; enchant -&gt; stats" file="sc_enchant.cpp" value=""/>
+      <option name="enchant_mana" label="Enchant Mana" type="text" cpp_type="OPT_FLT" tag="p -&gt; enchant -&gt; stats" file="sc_enchant.cpp" value=""/>
+      <option name="enchant_rage" label="Enchant Rage" type="text" cpp_type="OPT_FLT" tag="p -&gt; enchant -&gt; stats" file="sc_enchant.cpp" value=""/>
+      <option name="enchant_energy" label="Enchant Energy" type="text" cpp_type="OPT_FLT" tag="p -&gt; enchant -&gt; stats" file="sc_enchant.cpp" value=""/>
+      <option name="enchant_focus" label="Enchant Focus" type="text" cpp_type="OPT_FLT" tag="p -&gt; enchant -&gt; stats" file="sc_enchant.cpp" value=""/>
+      <option name="enchant_runic" label="Enchant Runic" type="text" cpp_type="OPT_FLT" tag="p -&gt; enchant -&gt; stats" file="sc_enchant.cpp" value=""/>
       <option name="spellsurge" label="Spellsurge" type="text" cpp_type="OPT_INT" tag="p -&gt; enchant -&gt; spellsurge" file="sc_enchant.cpp" value=""/>
-      <option name="report_actions" label="Report Actions" type="text" cpp_type="OPT_INT" tag="report_actions" file="sc_report.cpp" value=""/>
-      <option name="report_attack_stats" label="Report Attack Stats" type="text" cpp_type="OPT_INT" tag="report_attack_stats" file="sc_report.cpp" value=""/>
-      <option name="report_chart" label="Report Chart" type="text" cpp_type="OPT_INT" tag="report_chart" file="sc_report.cpp" value=""/>
-      <option name="report_core_stats" label="Report Core Stats" type="text" cpp_type="OPT_INT" tag="report_core_stats" file="sc_report.cpp" value=""/>
-      <option name="report_defense" label="Report Defense" type="text" cpp_type="OPT_INT" tag="report_defense_stats" file="sc_report.cpp" value=""/>
-      <option name="report_dpr" label="Report Dpr" type="text" cpp_type="OPT_INT" tag="report_dpr" file="sc_report.cpp" value=""/>
-      <option name="report_dps" label="Report Dps" type="text" cpp_type="OPT_INT" tag="report_dps" file="sc_report.cpp" value=""/>
-      <option name="report_gains" label="Report Gains" type="text" cpp_type="OPT_INT" tag="report_gains" file="sc_report.cpp" value=""/>
-      <option name="report_miss" label="Report Miss" type="text" cpp_type="OPT_INT" tag="report_miss" file="sc_report.cpp" value=""/>
-      <option name="report_rps" label="Report Rps" type="text" cpp_type="OPT_INT" tag="report_rps" file="sc_report.cpp" value=""/>
-      <option name="report_name" label="Report Name" type="text" cpp_type="OPT_INT" tag="report_name" file="sc_report.cpp" value=""/>
-      <option name="report_performance" label="Report Performance" type="text" cpp_type="OPT_INT" tag="report_performance" file="sc_report.cpp" value=""/>
-      <option name="report_procs" label="Report Procs" type="text" cpp_type="OPT_INT" tag="report_procs" file="sc_report.cpp" value=""/>
-      <option name="report_raid_dps" label="Report Raid Dps" type="text" cpp_type="OPT_INT" tag="report_raid_dps" file="sc_report.cpp" value=""/>
-      <option name="report_scaling" label="Report Scaling" type="text" cpp_type="OPT_INT" tag="report_scaling" file="sc_report.cpp" value=""/>
-      <option name="report_spell_stats" label="Report Spell Stats" type="text" cpp_type="OPT_INT" tag="report_spell_stats" file="sc_report.cpp" value=""/>
-      <option name="report_statistics" label="Report Statistics" type="text" cpp_type="OPT_INT" tag="report_statistics" file="sc_report.cpp" value=""/>
-      <option name="report_tag" label="Report Tag" type="text" cpp_type="OPT_INT" tag="report_tag" file="sc_report.cpp" value=""/>
-      <option name="report_uptime" label="Report Uptime" type="text" cpp_type="OPT_INT" tag="report_uptime" file="sc_report.cpp" value=""/>
-      <option name="report_waiting" label="Report Waiting" type="text" cpp_type="OPT_INT" tag="report_waiting" file="sc_report.cpp" value=""/>
       <option name="calculate_scale_factors" label="Calculate Scale Factors" type="text" cpp_type="OPT_INT" tag="calculate_scale_factors" file="sc_scaling.cpp" value="0"/>
       <option name="center_scale_delta" label="Center Scale Delta" type="text" cpp_type="OPT_INT" tag="center_scale_delta" file="sc_scaling.cpp" value=""/>
       <option name="scale_factor_noise" label="Scale Factor Noise" type="text" cpp_type="OPT_FLT" tag="scale_factor_noise" file="sc_scaling.cpp" value=""/>
-      <option name="scale_strength" label="Scale Strength" type="text" cpp_type="OPT_INT" tag="stats" file="sc_scaling.cpp" value=""/>
-      <option name="scale_agility" label="Scale Agility" type="text" cpp_type="OPT_INT" tag="stats" file="sc_scaling.cpp" value=""/>
-      <option name="scale_stamina" label="Scale Stamina" type="text" cpp_type="OPT_INT" tag="stats" file="sc_scaling.cpp" value=""/>
-      <option name="scale_intellect" label="Scale Intellect" type="text" cpp_type="OPT_INT" tag="stats" file="sc_scaling.cpp" value=""/>
-      <option name="scale_spirit" label="Scale Spirit" type="text" cpp_type="OPT_INT" tag="stats" file="sc_scaling.cpp" value=""/>
-      <option name="scale_spell_power" label="Scale Spell Power" type="text" cpp_type="OPT_INT" tag="stats" file="sc_scaling.cpp" value=""/>
-      <option name="scale_attack_power" label="Scale Attack Power" type="text" cpp_type="OPT_INT" tag="stats" file="sc_scaling.cpp" value=""/>
-      <option name="scale_expertise_rating" label="Scale Expertise Rating" type="text" cpp_type="OPT_INT" tag="stats" file="sc_scaling.cpp" value=""/>
-      <option name="scale_armor_penetration_rating" label="Scale Armor Penetration Rating" type="text" cpp_type="OPT_INT" tag="stats" file="sc_scaling.cpp" value=""/>
-      <option name="scale_hit_rating" label="Scale Hit Rating" type="text" cpp_type="OPT_INT" tag="stats" file="sc_scaling.cpp" value=""/>
-      <option name="scale_crit_rating" label="Scale Crit Rating" type="text" cpp_type="OPT_INT" tag="stats" file="sc_scaling.cpp" value=""/>
-      <option name="scale_haste_rating" label="Scale Haste Rating" type="text" cpp_type="OPT_INT" tag="stats" file="sc_scaling.cpp" value=""/>
+      <option name="scale_strength" label="Scale Strength" type="text" cpp_type="OPT_FLT" tag="stats" file="sc_scaling.cpp" value=""/>
+      <option name="scale_agility" label="Scale Agility" type="text" cpp_type="OPT_FLT" tag="stats" file="sc_scaling.cpp" value=""/>
+      <option name="scale_stamina" label="Scale Stamina" type="text" cpp_type="OPT_FLT" tag="stats" file="sc_scaling.cpp" value=""/>
+      <option name="scale_intellect" label="Scale Intellect" type="text" cpp_type="OPT_FLT" tag="stats" file="sc_scaling.cpp" value=""/>
+      <option name="scale_spirit" label="Scale Spirit" type="text" cpp_type="OPT_FLT" tag="stats" file="sc_scaling.cpp" value=""/>
+      <option name="scale_spell_power" label="Scale Spell Power" type="text" cpp_type="OPT_FLT" tag="stats" file="sc_scaling.cpp" value=""/>
+      <option name="scale_attack_power" label="Scale Attack Power" type="text" cpp_type="OPT_FLT" tag="stats" file="sc_scaling.cpp" value=""/>
+      <option name="scale_expertise_rating" label="Scale Expertise Rating" type="text" cpp_type="OPT_FLT" tag="stats" file="sc_scaling.cpp" value=""/>
+      <option name="scale_armor_penetration_rating" label="Scale Armor Penetration Rating" type="text" cpp_type="OPT_FLT" tag="stats" file="sc_scaling.cpp" value=""/>
+      <option name="scale_hit_rating" label="Scale Hit Rating" type="text" cpp_type="OPT_FLT" tag="stats" file="sc_scaling.cpp" value=""/>
+      <option name="scale_crit_rating" label="Scale Crit Rating" type="text" cpp_type="OPT_FLT" tag="stats" file="sc_scaling.cpp" value=""/>
+      <option name="scale_haste_rating" label="Scale Haste Rating" type="text" cpp_type="OPT_FLT" tag="stats" file="sc_scaling.cpp" value=""/>
+      <option name="scale_weapon_dps" label="Scale Weapon Dps" type="text" cpp_type="OPT_FLT" tag="stats" file="sc_scaling.cpp" value=""/>
       <option name="iterations" label="Iterations" type="text" cpp_type="OPT_INT" tag="iterations" file="sc_sim.cpp" value="1000"/>
       <option name="max_time" label="Max Time" type="text" cpp_type="OPT_FLT" tag="max_time" file="sc_sim.cpp" value="300"/>
       <option name="threads" label="Threads" type="text" cpp_type="OPT_INT" tag="threads" file="sc_sim.cpp" value=""/>
@@ -404,44 +386,48 @@
       <option name="queue_lag_range" label="Queue Lag Range" type="text" cpp_type="OPT_FLT" tag="queue_lag_range" file="sc_sim.cpp" value=""/>
       <option name="reaction_time" label="Reaction Time" type="text" cpp_type="OPT_FLT" tag="reaction_time" file="sc_sim.cpp" value=""/>
       <option name="travel_variance" label="Travel Variance" type="text" cpp_type="OPT_FLT" tag="travel_variance" file="sc_sim.cpp" value=""/>
-      <option name="default_strength" label="Default Strength" type="text" cpp_type="OPT_INT" tag="gear_default" file="sc_sim.cpp" value=""/>
-      <option name="default_agility" label="Default Agility" type="text" cpp_type="OPT_INT" tag="gear_default" file="sc_sim.cpp" value=""/>
-      <option name="default_stamina" label="Default Stamina" type="text" cpp_type="OPT_INT" tag="gear_default" file="sc_sim.cpp" value=""/>
-      <option name="default_intellect" label="Default Intellect" type="text" cpp_type="OPT_INT" tag="gear_default" file="sc_sim.cpp" value=""/>
-      <option name="default_spirit" label="Default Spirit" type="text" cpp_type="OPT_INT" tag="gear_default" file="sc_sim.cpp" value=""/>
-      <option name="default_spell_power" label="Default Spell Power" type="text" cpp_type="OPT_INT" tag="gear_default" file="sc_sim.cpp" value=""/>
-      <option name="default_attack_power" label="Default Attack Power" type="text" cpp_type="OPT_INT" tag="gear_default" file="sc_sim.cpp" value=""/>
-      <option name="default_expertise_rating" label="Default Expertise Rating" type="text" cpp_type="OPT_INT" tag="gear_default" file="sc_sim.cpp" value=""/>
-      <option name="default_armor_penetration_rating" label="Default Armor Penetration Rating" type="text" cpp_type="OPT_INT" tag="gear_default" file="sc_sim.cpp" value=""/>
-      <option name="default_hit_rating" label="Default Hit Rating" type="text" cpp_type="OPT_INT" tag="gear_default" file="sc_sim.cpp" value=""/>
-      <option name="default_crit_rating" label="Default Crit Rating" type="text" cpp_type="OPT_INT" tag="gear_default" file="sc_sim.cpp" value=""/>
-      <option name="default_haste_rating" label="Default Haste Rating" type="text" cpp_type="OPT_INT" tag="gear_default" file="sc_sim.cpp" value=""/>
-      <option name="default_health" label="Default Health" type="text" cpp_type="OPT_INT" tag="gear_default" file="sc_sim.cpp" value=""/>
-      <option name="default_mana" label="Default Mana" type="text" cpp_type="OPT_INT" tag="gear_default" file="sc_sim.cpp" value=""/>
-      <option name="default_rage" label="Default Rage" type="text" cpp_type="OPT_INT" tag="gear_default" file="sc_sim.cpp" value=""/>
-      <option name="default_energy" label="Default Energy" type="text" cpp_type="OPT_INT" tag="gear_default" file="sc_sim.cpp" value=""/>
-      <option name="default_focus" label="Default Focus" type="text" cpp_type="OPT_INT" tag="gear_default" file="sc_sim.cpp" value=""/>
-      <option name="default_runic" label="Default Runic" type="text" cpp_type="OPT_INT" tag="gear_default" file="sc_sim.cpp" value=""/>
-      <option name="default_armor" label="Default Armor" type="text" cpp_type="OPT_INT" tag="gear_default" file="sc_sim.cpp" value=""/>
-      <option name="delta_strength" label="Delta Strength" type="text" cpp_type="OPT_INT" tag="gear_delta" file="sc_sim.cpp" value=""/>
-      <option name="delta_agility" label="Delta Agility" type="text" cpp_type="OPT_INT" tag="gear_delta" file="sc_sim.cpp" value=""/>
-      <option name="delta_stamina" label="Delta Stamina" type="text" cpp_type="OPT_INT" tag="gear_delta" file="sc_sim.cpp" value=""/>
-      <option name="delta_intellect" label="Delta Intellect" type="text" cpp_type="OPT_INT" tag="gear_delta" file="sc_sim.cpp" value=""/>
-      <option name="delta_spirit" label="Delta Spirit" type="text" cpp_type="OPT_INT" tag="gear_delta" file="sc_sim.cpp" value=""/>
-      <option name="delta_spell_power" label="Delta Spell Power" type="text" cpp_type="OPT_INT" tag="gear_delta" file="sc_sim.cpp" value=""/>
-      <option name="delta_attack_power" label="Delta Attack Power" type="text" cpp_type="OPT_INT" tag="gear_delta" file="sc_sim.cpp" value=""/>
-      <option name="delta_expertise_rating" label="Delta Expertise Rating" type="text" cpp_type="OPT_INT" tag="gear_delta" file="sc_sim.cpp" value=""/>
-      <option name="delta_armor_penetration_rating" label="Delta Armor Penetration Rating" type="text" cpp_type="OPT_INT" tag="gear_delta" file="sc_sim.cpp" value=""/>
-      <option name="delta_hit_rating" label="Delta Hit Rating" type="text" cpp_type="OPT_INT" tag="gear_delta" file="sc_sim.cpp" value=""/>
-      <option name="delta_crit_rating" label="Delta Crit Rating" type="text" cpp_type="OPT_INT" tag="gear_delta" file="sc_sim.cpp" value=""/>
-      <option name="delta_haste_rating" label="Delta Haste Rating" type="text" cpp_type="OPT_INT" tag="gear_delta" file="sc_sim.cpp" value=""/>
-      <option name="delta_health" label="Delta Health" type="text" cpp_type="OPT_INT" tag="gear_delta" file="sc_sim.cpp" value=""/>
-      <option name="delta_mana" label="Delta Mana" type="text" cpp_type="OPT_INT" tag="gear_delta" file="sc_sim.cpp" value=""/>
-      <option name="delta_rage" label="Delta Rage" type="text" cpp_type="OPT_INT" tag="gear_delta" file="sc_sim.cpp" value=""/>
-      <option name="delta_energy" label="Delta Energy" type="text" cpp_type="OPT_INT" tag="gear_delta" file="sc_sim.cpp" value=""/>
-      <option name="delta_focus" label="Delta Focus" type="text" cpp_type="OPT_INT" tag="gear_delta" file="sc_sim.cpp" value=""/>
-      <option name="delta_runic" label="Delta Runic" type="text" cpp_type="OPT_INT" tag="gear_delta" file="sc_sim.cpp" value=""/>
-      <option name="delta_armor" label="Delta Armor" type="text" cpp_type="OPT_INT" tag="gear_delta" file="sc_sim.cpp" value=""/>
+      <option name="default_strength" label="Default Strength" type="text" cpp_type="OPT_FLT" tag="gear_default" file="sc_sim.cpp" value=""/>
+      <option name="default_agility" label="Default Agility" type="text" cpp_type="OPT_FLT" tag="gear_default" file="sc_sim.cpp" value=""/>
+      <option name="default_stamina" label="Default Stamina" type="text" cpp_type="OPT_FLT" tag="gear_default" file="sc_sim.cpp" value=""/>
+      <option name="default_intellect" label="Default Intellect" type="text" cpp_type="OPT_FLT" tag="gear_default" file="sc_sim.cpp" value=""/>
+      <option name="default_spirit" label="Default Spirit" type="text" cpp_type="OPT_FLT" tag="gear_default" file="sc_sim.cpp" value=""/>
+      <option name="default_health" label="Default Health" type="text" cpp_type="OPT_FLT" tag="gear_default" file="sc_sim.cpp" value=""/>
+      <option name="default_mana" label="Default Mana" type="text" cpp_type="OPT_FLT" tag="gear_default" file="sc_sim.cpp" value=""/>
+      <option name="default_rage" label="Default Rage" type="text" cpp_type="OPT_FLT" tag="gear_default" file="sc_sim.cpp" value=""/>
+      <option name="default_energy" label="Default Energy" type="text" cpp_type="OPT_FLT" tag="gear_default" file="sc_sim.cpp" value=""/>
+      <option name="default_focus" label="Default Focus" type="text" cpp_type="OPT_FLT" tag="gear_default" file="sc_sim.cpp" value=""/>
+      <option name="default_runic" label="Default Runic" type="text" cpp_type="OPT_FLT" tag="gear_default" file="sc_sim.cpp" value=""/>
+      <option name="default_spell_power" label="Default Spell Power" type="text" cpp_type="OPT_FLT" tag="gear_default" file="sc_sim.cpp" value=""/>
+      <option name="default_attack_power" label="Default Attack Power" type="text" cpp_type="OPT_FLT" tag="gear_default" file="sc_sim.cpp" value=""/>
+      <option name="default_expertise_rating" label="Default Expertise Rating" type="text" cpp_type="OPT_FLT" tag="gear_default" file="sc_sim.cpp" value=""/>
+      <option name="default_armor_penetration_rating" label="Default Armor Penetration Rating" type="text" cpp_type="OPT_FLT" tag="gear_default" file="sc_sim.cpp" value=""/>
+      <option name="default_hit_rating" label="Default Hit Rating" type="text" cpp_type="OPT_FLT" tag="gear_default" file="sc_sim.cpp" value=""/>
+      <option name="default_crit_rating" label="Default Crit Rating" type="text" cpp_type="OPT_FLT" tag="gear_default" file="sc_sim.cpp" value=""/>
+      <option name="default_haste_rating" label="Default Haste Rating" type="text" cpp_type="OPT_FLT" tag="gear_default" file="sc_sim.cpp" value=""/>
+      <option name="default_weapon_dps" label="Default Weapon Dps" type="text" cpp_type="OPT_FLT" tag="gear_default" file="sc_sim.cpp" value=""/>
+      <option name="default_weapon_speed" label="Default Weapon Speed" type="text" cpp_type="OPT_FLT" tag="gear_default" file="sc_sim.cpp" value=""/>
+      <option name="default_armor" label="Default Armor" type="text" cpp_type="OPT_FLT" tag="gear_default" file="sc_sim.cpp" value=""/>
+      <option name="delta_strength" label="Delta Strength" type="text" cpp_type="OPT_FLT" tag="gear_delta" file="sc_sim.cpp" value=""/>
+      <option name="delta_agility" label="Delta Agility" type="text" cpp_type="OPT_FLT" tag="gear_delta" file="sc_sim.cpp" value=""/>
+      <option name="delta_stamina" label="Delta Stamina" type="text" cpp_type="OPT_FLT" tag="gear_delta" file="sc_sim.cpp" value=""/>
+      <option name="delta_intellect" label="Delta Intellect" type="text" cpp_type="OPT_FLT" tag="gear_delta" file="sc_sim.cpp" value=""/>
+      <option name="delta_spirit" label="Delta Spirit" type="text" cpp_type="OPT_FLT" tag="gear_delta" file="sc_sim.cpp" value=""/>
+      <option name="delta_health" label="Delta Health" type="text" cpp_type="OPT_FLT" tag="gear_delta" file="sc_sim.cpp" value=""/>
+      <option name="delta_mana" label="Delta Mana" type="text" cpp_type="OPT_FLT" tag="gear_delta" file="sc_sim.cpp" value=""/>
+      <option name="delta_rage" label="Delta Rage" type="text" cpp_type="OPT_FLT" tag="gear_delta" file="sc_sim.cpp" value=""/>
+      <option name="delta_energy" label="Delta Energy" type="text" cpp_type="OPT_FLT" tag="gear_delta" file="sc_sim.cpp" value=""/>
+      <option name="delta_focus" label="Delta Focus" type="text" cpp_type="OPT_FLT" tag="gear_delta" file="sc_sim.cpp" value=""/>
+      <option name="delta_runic" label="Delta Runic" type="text" cpp_type="OPT_FLT" tag="gear_delta" file="sc_sim.cpp" value=""/>
+      <option name="delta_spell_power" label="Delta Spell Power" type="text" cpp_type="OPT_FLT" tag="gear_delta" file="sc_sim.cpp" value=""/>
+      <option name="delta_attack_power" label="Delta Attack Power" type="text" cpp_type="OPT_FLT" tag="gear_delta" file="sc_sim.cpp" value=""/>
+      <option name="delta_expertise_rating" label="Delta Expertise Rating" type="text" cpp_type="OPT_FLT" tag="gear_delta" file="sc_sim.cpp" value=""/>
+      <option name="delta_armor_penetration_rating" label="Delta Armor Penetration Rating" type="text" cpp_type="OPT_FLT" tag="gear_delta" file="sc_sim.cpp" value=""/>
+      <option name="delta_hit_rating" label="Delta Hit Rating" type="text" cpp_type="OPT_FLT" tag="gear_delta" file="sc_sim.cpp" value=""/>
+      <option name="delta_crit_rating" label="Delta Crit Rating" type="text" cpp_type="OPT_FLT" tag="gear_delta" file="sc_sim.cpp" value=""/>
+      <option name="delta_haste_rating" label="Delta Haste Rating" type="text" cpp_type="OPT_FLT" tag="gear_delta" file="sc_sim.cpp" value=""/>
+      <option name="delta_weapon_dps" label="Delta Weapon Dps" type="text" cpp_type="OPT_FLT" tag="gear_delta" file="sc_sim.cpp" value=""/>
+      <option name="delta_weapon_speed" label="Delta Weapon Speed" type="text" cpp_type="OPT_FLT" tag="gear_delta" file="sc_sim.cpp" value=""/>
+      <option name="delta_armor" label="Delta Armor" type="text" cpp_type="OPT_FLT" tag="gear_delta" file="sc_sim.cpp" value=""/>
       <option name="infinite_energy" label="Infinite Energy" type="text" cpp_type="OPT_INT" tag="infinite_resource[ RESOURCE_ENERGY ]" file="sc_sim.cpp" value=""/>
       <option name="infinite_focus" label="Infinite Focus" type="text" cpp_type="OPT_INT" tag="infinite_resource[ RESOURCE_FOCUS  ]" file="sc_sim.cpp" value=""/>
       <option name="infinite_health" label="Infinite Health" type="text" cpp_type="OPT_INT" tag="infinite_resource[ RESOURCE_HEALTH ]" file="sc_sim.cpp" value=""/>
@@ -452,7 +438,6 @@
       <option name="debug" label="Debug" type="text" cpp_type="OPT_INT" tag="debug" file="sc_sim.cpp" value=""/>
       <option name="html" label="Html" type="text" cpp_type="OPT_STRING" tag="html_file_str" file="sc_sim.cpp" value=""/>
       <option name="log" label="Log" type="text" cpp_type="OPT_INT" tag="log" file="sc_sim.cpp" value=""/>
-      <option name="timestamp" label="Timestamp" type="text" cpp_type="OPT_INT" tag="timestamp" file="sc_sim.cpp" value=""/>
       <option name="wiki" label="Wiki" type="text" cpp_type="OPT_STRING" tag="wiki_file_str" file="sc_sim.cpp" value=""/>
       <option name="abominations_might" label="Abominations Might" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value=""/>
       <option name="affliction_effects" label="Affliction Effects" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value=""/>
@@ -514,7 +499,9 @@
       <option name="sfmt" label="Sfmt" type="text" cpp_type="OPT_INT" tag="sfmt" file="sc_sim.cpp" value=""/>
       <option name="wheel_granularity" label="Wheel Granularity" type="text" cpp_type="OPT_FLT" tag="wheel_granularity" file="sc_sim.cpp" value=""/>
       <option name="wheel_seconds" label="Wheel Seconds" type="text" cpp_type="OPT_INT" tag="wheel_seconds" file="sc_sim.cpp" value=""/>
+      <option name="target_name" label="Target Name" type="text" cpp_type="OPT_STRING" tag="name_str" file="sc_target.cpp" value=""/>
       <option name="target_race" label="Target Race" type="text" cpp_type="OPT_STRING" tag="race_str" file="sc_target.cpp" value="none"/>
+      <option name="target_id" label="Target Id" type="text" cpp_type="OPT_STRING" tag="id_str" file="sc_target.cpp" value=""/>
       <option name="target_level" label="Target Level" type="text" cpp_type="OPT_INT" tag="level" file="sc_target.cpp" value="83"/>
       <option name="target_resist_holy" label="Target Resist Holy" type="text" cpp_type="OPT_INT" tag="spell_resistance[ SCHOOL_HOLY   ]" file="sc_target.cpp" value=""/>
       <option name="target_resist_shadow" label="Target Resist Shadow" type="text" cpp_type="OPT_INT" tag="spell_resistance[ SCHOOL_SHADOW ]" file="sc_target.cpp" value=""/>
@@ -549,8 +536,6 @@
     <server name="Arathor"/>
     <server name="Archimonde"/>
     <server name="Area 52"/>
-    <server name="Arena Tournament 1"/>
-    <server name="Arena Tournament 2"/>
     <server name="Argent Dawn"/>
     <server name="Arthas"/>
     <server name="Arygos"/>

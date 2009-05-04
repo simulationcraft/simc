@@ -41,18 +41,17 @@
 				<xsl:call-template name="titlebar" />
 
 				<!-- Add the raid configuration form -->
-				<form id="config_form" name="config_form" action="simulation.xml" method="post">										
+				<form id="config_form" name="config_form" action="simulation.xml" method="post" enctype="multipart/form-data">										
 										
 					<!-- Add the side bar -->
 					<xsl:call-template name="sidebar" />
+
+					<!-- Add the bottom bar -->
+					<xsl:call-template name="bottombar" />
 		
 					<!-- Add the main content form -->										
 					<xsl:call-template name="content_form" />
-
-					<!--  Form submit/reset buttons -->
-					<input class="go_button" name="simulate" id="simulate" type="submit" value="Simulate" />		
-					<input class="reset_button" type="reset" value="Reset" />
-					
+				
 				</form>	
 			</div>
 		</body>
@@ -105,7 +104,7 @@
 			<div class="sidebar_section">
 				<h1>Add from Armory</h1>
 								
-				<ul id="new_member_by_armory">
+				<ul id="new_member_by_armory" class="subscript_labels">
 					<li>
 						<label for="armory_server">Server</label>
 						<select name="add_from_armory[server]" id="armory_server">
@@ -133,7 +132,50 @@
 			</div>
 		</div>
 	</xsl:template>
-	
+
+
+
+	<!--  === FLOATING BOTTOM BAR === -->
+	<xsl:template name="bottombar">
+		<div id="bottombar">
+
+			<div class="bottombar_section">
+				<h3>Simulation</h3>
+				<input name="simulate" id="simulate" type="submit" value="Run Simulation" title="Execute the SimulationCraft simulation and display the results" />
+				<input type="reset" value="Reset Form" title="Reset the fields of this simulation to their values as of the past page load" />
+			</div>
+
+			<div class="bottombar_section">
+				<h3>Import SimCraft Files</h3>
+				<ul class="subscript_labels stacked_fields">
+					<li>
+						<label for="import_file_path">Import File</label>
+						<!-- Max upload file size, in bytes -->
+						<input name="MAX_FILE_SIZE" type="hidden" value="30000">
+							<xsl:attribute name="value"><xsl:value-of select="/xml/options/@max_file_size" /></xsl:attribute>
+						</input>					
+						<input type="file" name="import_file_path" title="Which file should be imported?" />
+					</li>
+					
+					<li>
+						<label for="clear_before_import">Clear Form?</label>
+						<input name="clear_before_import" type="checkbox" value="1" title="Should the current simulation be cleared before adding this file's configuration?" />
+					</li>
+								
+					<li>
+						<input name="import_file" type="submit" value="Import from File" title="Import the specified .simcraft file into the current simulation" />
+					</li>
+				</ul>
+			</div>
+
+			<div class="bottombar_section">
+				<h3>Export SimCraft Files</h3>
+				<input name="export_file" type="submit" value="Export to File" title="Download an export of the current simulation build to a .simcraft file" />
+			</div>
+
+		</div>
+	</xsl:template>
+		
 	
 	
 	<!-- === THE MAIN SUBMISSION FORM === -->
@@ -184,7 +226,7 @@
 		<fieldset class="foldable folded">
 			<legend><xsl:value-of select="$file_name" /></legend>
 			
-			<ul class="user_options">
+			<ul class="stacked_fields subscript_labels">
 	
 				<!-- Loop over the sibling options to this option, selecting only the options that have the given file name (sorted by label) -->
 				<xsl:for-each select="../option[@file=$file_name]">
@@ -352,7 +394,7 @@
 			<fieldset class="option_section foldable folded">
 				<legend><xsl:value-of select="$name" /></legend>
 			
-				<ul class="raider_options user_options">
+				<ul class="raider_options stacked_fields subscript_labels">
 			
 				<!-- For each of the options selected in the $which parameter, build a list-element for it -->
 				<xsl:for-each select="$which">
@@ -457,7 +499,7 @@
 			</xsl:attribute>
 
 			<!--  for boolean types, set the checked value of the checkbox from the value -->		
-			<xsl:if test="$type='boolean' and $value='true'">
+			<xsl:if test="$type='boolean' and $value=1">
 				<xsl:attribute name="checked">checked</xsl:attribute>
 			</xsl:if>
 		
