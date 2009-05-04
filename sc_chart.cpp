@@ -48,7 +48,7 @@ static const char* school_color( int type )
 
 static const char* get_color( player_t* p )
 {
-  if( p -> is_pet() ) 
+  if( p -> is_pet() )
   {
     return class_color( p -> cast_pet() -> owner -> type );
   }
@@ -94,7 +94,7 @@ static const char* extended_encoding( int number )
 
 // chart_t::raid_dps =========================================================
 
-int chart_t::raid_dps( std::vector<std::string>& images, 
+int chart_t::raid_dps( std::vector<std::string>& images,
                        sim_t* sim )
 {
   int num_players = sim -> players_by_rank.size();
@@ -159,7 +159,7 @@ int chart_t::raid_dps( std::vector<std::string>& images,
 
 // chart_t::raid_gear ========================================================
 
-int chart_t::raid_gear( std::vector<std::string>& images, 
+int chart_t::raid_gear( std::vector<std::string>& images,
                         sim_t* sim )
 {
   int num_players = sim -> players_by_rank.size();
@@ -278,7 +278,7 @@ int chart_t::raid_gear( std::vector<std::string>& images,
 
     images.push_back( s );
 
-    for( int i=0; i < STAT_MAX; i++ ) 
+    for( int i=0; i < STAT_MAX; i++ )
     {
       std::vector<double>& c = data_points[ i ];
       c.erase( c.begin(), c.begin() + num_players );
@@ -299,13 +299,13 @@ const char* chart_t::raid_downtime( std::string& s,
 {
   int num_players = sim -> players_by_name.size();
   assert( num_players != 0 );
-  
+
   std::vector<player_t*> waiting_list;
 
   for( int i=0; i < num_players; i++ )
   {
     player_t* p = sim -> players_by_name[ i ];
-    if( ( p -> total_waiting / p -> total_seconds ) > 0.01 ) 
+    if( ( p -> total_waiting / p -> total_seconds ) > 0.01 )
     {
       waiting_list.push_back( p );
     }
@@ -396,7 +396,7 @@ const char* chart_t::raid_uptimes( std::string& s,
   s += "chtt=Global+Up-Times";
   s += "&";
   s += "chts=000000,20";
-  
+
   return s.c_str();
 }
 
@@ -409,7 +409,7 @@ struct compare_dpet {
   }
 };
 
-int chart_t::raid_dpet( std::vector<std::string>& images, 
+int chart_t::raid_dpet( std::vector<std::string>& images,
                         sim_t* sim )
 {
   int num_players = sim -> players_by_rank.size();
@@ -475,7 +475,7 @@ int chart_t::raid_dpet( std::vector<std::string>& images,
     for( int i=0; i < num_stats; i++ )
     {
       stats_t* st = stats_list[ i ];
-      snprintf( buffer, sizeof(buffer), "%st++%.0f++%s+(%s),%s,%d,0,10", (i?"|":""), 
+      snprintf( buffer, sizeof(buffer), "%st++%.0f++%s+(%s),%s,%d,0,10", (i?"|":""),
                st -> dpet, st -> name_str.c_str(), st -> player -> name(), get_color( st -> player ), i ); s += buffer;
     }
     s += "&";
@@ -495,7 +495,7 @@ int chart_t::raid_dpet( std::vector<std::string>& images,
 
 // chart_t::action_dpet ======================================================
 
-const char* chart_t::action_dpet( std::string& s, 
+const char* chart_t::action_dpet( std::string& s,
                                   player_t* p )
 {
   std::vector<stats_t*> stats_list;
@@ -516,7 +516,7 @@ const char* chart_t::action_dpet( std::string& s,
       if( st -> total_dmg <= 0 ) continue;
       if( ! st -> channeled && st -> total_execute_time <= 0 ) continue;
       if( st -> dpet > ( 10 * p -> dps ) ) continue;
-      
+
       stats_list.push_back( st );
     }
   }
@@ -574,7 +574,7 @@ struct compare_dmg {
   }
 };
 
-const char* chart_t::action_dmg( std::string& s, 
+const char* chart_t::action_dmg( std::string& s,
                                  player_t* p )
 {
   std::vector<stats_t*> stats_list;
@@ -645,7 +645,7 @@ struct compare_gain {
   }
 };
 
-const char* chart_t::gains( std::string& s, 
+const char* chart_t::gains( std::string& s,
                             player_t* p )
 {
   std::vector<gain_t*> gains_list;
@@ -679,7 +679,7 @@ const char* chart_t::gains( std::string& s,
   s += "&";
   s += "chds=0,100";
   s += "&";
-  s += "chco=";  
+  s += "chco=";
   s += get_color( p );
   s += "&";
   s += "chl=";
@@ -698,7 +698,7 @@ const char* chart_t::gains( std::string& s,
 
 // chart_t::uptimes_and_procs ==================================================
 
-const char* chart_t::uptimes_and_procs( std::string& s, 
+const char* chart_t::uptimes_and_procs( std::string& s,
                                         player_t* p )
 {
   std::vector<uptime_t*> uptime_list;
@@ -766,7 +766,7 @@ const char* chart_t::uptimes_and_procs( std::string& s,
   for( int i=0; i < num_procs; i++ )
   {
     proc_t* proc = proc_list[ i ];
-    snprintf( buffer, sizeof(buffer), "%st++%.0f+(%.2fsec)++%s,000000,%d,0,15", ((num_uptimes+i)?"|":""), 
+    snprintf( buffer, sizeof(buffer), "%st++%.0f+(%.2fsec)++%s,000000,%d,0,15", ((num_uptimes+i)?"|":""),
              proc -> count, proc -> frequency, proc -> name(), num_uptimes+i ); s += buffer;
   }
   s += "&";
@@ -779,7 +779,7 @@ const char* chart_t::uptimes_and_procs( std::string& s,
 
 // chart_t::timeline_dps =====================================================
 
-const char* chart_t::timeline_dps( std::string& s, 
+const char* chart_t::timeline_dps( std::string& s,
                                    player_t* p )
 {
   int max_buckets = p -> timeline_dps.size();
@@ -796,9 +796,9 @@ const char* chart_t::timeline_dps( std::string& s,
   }
 
   double dps_max=0;
-  for( int i=0; i < max_buckets; i++ ) 
+  for( int i=0; i < max_buckets; i++ )
   {
-    if( p -> timeline_dps[ i ] > dps_max ) 
+    if( p -> timeline_dps[ i ] > dps_max )
     {
       dps_max = p -> timeline_dps[ i ];
     }
@@ -814,7 +814,7 @@ const char* chart_t::timeline_dps( std::string& s,
   s += "cht=lc";
   s += "&";
   s += "chd=s:";
-  for( int i=0; i < max_buckets; i += increment ) 
+  for( int i=0; i < max_buckets; i += increment )
   {
     s += simple_encoding( (int) ( p -> timeline_dps[ i ] * dps_adjust ) );
   }
@@ -836,7 +836,7 @@ const char* chart_t::timeline_dps( std::string& s,
 
 // chart_t::timeline_resource ================================================
 
-const char* chart_t::timeline_resource( std::string& s, 
+const char* chart_t::timeline_resource( std::string& s,
                                         player_t* p )
 {
   if( p -> primary_resource() == RESOURCE_NONE ) return 0;
@@ -857,9 +857,9 @@ const char* chart_t::timeline_resource( std::string& s,
   }
 
   double resource_max=0;
-  for( int i=0; i < max_buckets; i++ ) 
+  for( int i=0; i < max_buckets; i++ )
   {
-    if( p -> timeline_resource[ i ] > resource_max ) 
+    if( p -> timeline_resource[ i ] > resource_max )
     {
       resource_max = p -> timeline_resource[ i ];
     }
@@ -875,7 +875,7 @@ const char* chart_t::timeline_resource( std::string& s,
   s += "cht=lc";
   s += "&";
   s += "chd=s:";
-  for( int i=0; i < max_buckets; i += increment ) 
+  for( int i=0; i < max_buckets; i += increment )
   {
     s += simple_encoding( (int) ( p -> timeline_resource[ i ] * resource_adjust ) );
   }
@@ -895,15 +895,15 @@ const char* chart_t::timeline_resource( std::string& s,
 
 // chart_t::distribution_dps ==================================================
 
-const char* chart_t::distribution_dps( std::string& s, 
+const char* chart_t::distribution_dps( std::string& s,
                                        player_t* p )
 {
   int max_buckets = p -> distribution_dps.size();
 
   int count_max=0;
-  for( int i=0; i < max_buckets; i++ ) 
+  for( int i=0; i < max_buckets; i++ )
   {
-    if( p -> distribution_dps[ i ] > count_max ) 
+    if( p -> distribution_dps[ i ] > count_max )
     {
       count_max = p -> distribution_dps[ i ];
     }
@@ -917,7 +917,7 @@ const char* chart_t::distribution_dps( std::string& s,
   s += "cht=bvs";
   s += "&";
   s += "chd=t:";
-  for( int i=0; i < max_buckets; i++ ) 
+  for( int i=0; i < max_buckets; i++ )
   {
     snprintf( buffer, sizeof(buffer), "%s%d", (i?",":""), p -> distribution_dps[ i ] ); s += buffer;
   }
@@ -956,7 +956,7 @@ const char* chart_t::gear_weights_lootrank( std::string& s,
   {
   case DEATH_KNIGHT: s += "Cla=2048"; break;
   case DRUID:        s += "Cla=1024"; break;
-  case HUNTER:       s += "Cla=4";    break; 
+  case HUNTER:       s += "Cla=4";    break;
   case MAGE:         s += "Cla=128";  break;
   case PALADIN:      s += "Cla=2";    break;
   case PRIEST:       s += "Cla=16";   break;
@@ -987,6 +987,8 @@ const char* chart_t::gear_weights_lootrank( std::string& s,
     case STAT_HIT_RATING:               name = "mhit"; break;
     case STAT_CRIT_RATING:              name = "mcr";  break;
     case STAT_HASTE_RATING:             name = "mh";   break;
+    case STAT_WEAPON_DPS:
+    	if( HUNTER == p -> type ) name = "rdps"; else name = "dps";  break;
     }
 
     if( name )
@@ -1015,7 +1017,7 @@ const char* chart_t::gear_weights_wowhead( std::string& s,
   {
   case DEATH_KNIGHT: s += "ub=6;";  break;
   case DRUID:        s += "ub=11;"; break;
-  case HUNTER:       s += "ub=3;";  break; 
+  case HUNTER:       s += "ub=3;";  break;
   case MAGE:         s += "ub=8;";  break;
   case PALADIN:      s += "ub=2;";  break;
   case PRIEST:       s += "ub=5;";  break;
@@ -1052,6 +1054,8 @@ const char* chart_t::gear_weights_wowhead( std::string& s,
     case STAT_HIT_RATING:               id = 119; break;
     case STAT_CRIT_RATING:              id = 96;  break;
     case STAT_HASTE_RATING:             id = 103; break;
+    case STAT_WEAPON_DPS:
+    	if( HUNTER == p -> type ) id = 138; else id = 32;  break;
     }
 
     if( id )
@@ -1084,7 +1088,7 @@ struct compare_stat_scale_factors {
   compare_stat_scale_factors( player_t* p ) : player(p) {}
   bool operator()( const int& l, const int& r ) const
   {
-    return( player -> scaling.get_stat( l ) > 
+    return( player -> scaling.get_stat( l ) >
             player -> scaling.get_stat( r ) );
   }
 };
@@ -1125,6 +1129,8 @@ const char* chart_t::gear_weights_pawn( std::string& s,
     case STAT_HIT_RATING:               name = "HitRating";        break;
     case STAT_CRIT_RATING:              name = "CritRating";       break;
     case STAT_HASTE_RATING:             name = "HasteRating";      break;
+    case STAT_WEAPON_DPS:
+    	if( HUNTER == p -> type ) name = "RangedDps"; else name = "MeleeDps";  break;
     }
 
     if( name )
@@ -1135,7 +1141,7 @@ const char* chart_t::gear_weights_pawn( std::string& s,
       s += buffer;
     }
   }
-   
+
   s += " )";
 
   return s.c_str();
