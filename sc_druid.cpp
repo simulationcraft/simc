@@ -719,12 +719,13 @@ static void trigger_eclipse_starfire( spell_t* s )
   }
 }
 
-// trigger_t8_2pc_balance ===================================================
+// trigger_t8_4pc_balance ===================================================
 
 static void trigger_t8_4pc_balance( spell_t* s )
 {
   // http://thottbot.com/test/s64824
-  if( ! s -> sim -> roll( 0.05 ) )
+  double chance = (s -> sim -> P312 ? 0.15 : 0.05);
+  if( ! s -> sim -> roll( chance ) )
     return;
 
   struct expiration_t : public event_t
