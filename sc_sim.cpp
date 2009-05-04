@@ -719,14 +719,14 @@ void sim_t::partition()
 
 void sim_t::execute()
 {
-  int start_time = util_t::miliseconds();
+  int start_time = util_t::milliseconds();
 
   partition();
   iterate();
   merge();
   analyze();
 
-  elapsed_cpu_seconds = ( util_t::miliseconds() - start_time )/1000.0;
+  elapsed_cpu_seconds = ( util_t::milliseconds() - start_time )/1000.0;
 }
 
 // sim_t::find_player =======================================================

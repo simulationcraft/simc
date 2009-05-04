@@ -566,7 +566,7 @@ int util_t::string_split( const std::string& str,
 }
 
 
-int util_t::miliseconds(){
+int util_t::milliseconds(){
 
 #if defined( _MSC_VER )
 	return clock()/(CLOCKS_PER_SEC/1000);

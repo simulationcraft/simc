@@ -1685,7 +1685,7 @@ struct util_t
   static int string_split( std::vector<std::string>& results, const std::string& str, const char* delim );
   static int string_split( const std::string& str, const char* delim, const char* format, ... );
 
-  static int miliseconds();
+  static int milliseconds();
 };
 
 #endif // __SIMCRAFT_H

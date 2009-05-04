@@ -1,0 +1,68 @@
+
+SimulationCraft for World of Warcraft build 3.1.0 (iterations=100, max_time=300, optimal_raid=1)
+
+DPS Ranking:
+   6086 100.0%  Raid
+   6095  100.0%  Warrior_T7_18_53_00
+
+Player=Warrior_T7_18_53_00  DPS=6095.1 (Error=+/-45.1 Range=+/-672)  DPR=362.6  RS=16.8/16.9  (rage)
+  Core Stats:  strength=759  agility=663  stamina=1396  intellect=41  spirit=71  health=18359  mana=20
+  Spell Stats:  power=0  hit=7.1%  crit=19.7%  penetration=0  haste=7.0%  mp5=0
+  Attack Stats  power=3623  hit=5.6%  crit=33.5%  expertise=6.3  penetration20.5  haste=7.0%
+  Defense Stats:  armor=1326
+  Actions:
+    bloodthirst           Count= 50.0| 5.8sec  DPE= 5522|15%  DPET= 3347  DPR= 184.1  Miss=0.0%  Hit=3344  Crit= 7652|11632|50.8%  Dodge=0.3%
+    deep_wounds           Count=  0.0| 0.0sec  DPE=    1|14%  DPET=    1  DPR=   0.0  Miss=-1.$%  TickCount=212  Tick=1228
+    execute               Count= 12.6| 3.0sec  DPE= 8920| 6%  DPET= 5405  DPR= 119.3  Miss=0.0%  Hit=5279  Crit=12103|17602|53.4%  Dodge=0.1%
+    heroic_strike         Count=112.9| 2.4sec  DPE= 4180|26%  DPET=    1  DPR= 348.3  Miss=0.0%  Hit=2574  Crit= 5819| 8442|49.6%  Dodge=0.2%
+    melee_main_hand       Count= 33.1| 9.2sec  DPE= 2820| 5%  DPET= 1458  DPR=   0.0  Miss=18.6%  Hit=2200  Crit= 4597| 6472|48.5%  Glance=1671|25.2%  Dodge=0.1%
+    melee_off_hand        Count=144.1| 2.1sec  DPE= 1712|14%  DPET=  832  DPR=   0.0  Miss=19.0%  Hit=1344  Crit= 2779| 4047|49.2%  Glance=1011|24.0%  Dodge=0.1%
+    slam                  Count= 19.1|14.2sec  DPE= 4555| 5%  DPET= 2759  DPR= 303.7  Miss=0.0%  Hit=2827  Crit= 6341| 9355|49.2%  Dodge=0.1%
+    whirlwind             Count= 71.2| 8.4sec  DPE= 3731|15%  DPET= 4523  DPR= 298.5  Miss=0.0%  Hit=2224  Crit= 5067| 9084|53.1%  Dodge=0.1%
+
+Gains:
+
+    Warrior_T7_18_53_00:
+        avoided_attacks=5.1
+        berserker_rage=117.2  (overflow=8.3%)
+        bloodrage=147.9  (overflow=3.6%)
+        glyph_of_heroic_strike=560.0
+        mh_attack=1164.7  (overflow=6.1%)
+        oh_attack=2885.2  (overflow=10.5%)
+        unbridled_wrath=153.1  (overflow=11.9%)
+
+Procs:
+
+    Warrior_T7_18_53_00:
+        bloodsurge=24.2|12.31sec
+        darkmoon_greatness=7.0|42.56sec
+        grim_toll=6.3|47.60sec
+
+Up-Times:
+
+    Global:
+        100.0% : blood_frenzy
+        100.0% : master_poisoner
+        100.0% : savage_combat
+        100.0% : totem_of_wrath
+
+    Warrior_T7_18_53_00:
+        59.3% : berserking_mh
+        31.7% : berserking_oh
+        86.5% : flurry
+        77.3% : heroic_strike
+         7.4% : rage_cap
+
+Waiting:
+    27.2% : Warrior_T7_18_53_00
+
+Baseline Performance:
+  TotalEvents   = 265478
+  MaxEventQueue = 17
+  SimSeconds    = 29793
+  CpuSeconds    = 0.470
+  SpeedUp       = 63390
+
+Scale Factors:
+  Warrior_T7_18_53_00        Str=1.81  Agi=0.96  Sta=0.00  Int=0.00  Spi=0.00  SP=0.00  AP=0.80  Exp=2.19  ArPen=1.88  Hit=1.80  Crit=1.49  Haste=1.06  Wdps=5.10
+
