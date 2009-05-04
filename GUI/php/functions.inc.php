@@ -258,7 +258,7 @@ function add_wow_servers( SimpleXMLElement $xml )
 function build_config_file_from_array( array $arr_options )
 {
 	// Prime the output string
-	$return_string = '';
+	$return_string = "#!simcraft\n\n";
 	
 	// Append each of the globals values that was present in the array
 	if( is_array($arr_options['globals']) ) {
