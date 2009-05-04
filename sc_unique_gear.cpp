@@ -510,7 +510,7 @@ void unique_gear_t::register_callbacks( player_t* p )
   //---------------------------------------------------------------------------------------------------------
   if( p -> unique_gear -> elemental_focus_stone )
   {
-    cb = new stat_proc_callback_t( "elemental_focus_stone", p, STAT_SPELL_POWER, 1, 522, 0.10, 10.0, 45.0 );
+    cb = new stat_proc_callback_t( "elemental_focus_stone", p, STAT_HASTE_RATING, 1, 522, 0.10, 10.0, 45.0 );
     p -> register_spell_result_callback( RESULT_HIT_MASK, cb );
   }
   //---------------------------------------------------------------------------------------------------------
