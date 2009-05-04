@@ -13,7 +13,8 @@
 /* The overall page background */
 /* Thanks to chanchan222 http://www.flickr.com/photos/chanchan222/2853664161/ Creative Commons License */
 body {
-	background: black url(../images/2853664161_eb5835216c_o_feathered.jpg) no-repeat center top;
+	background: black url(../images/2853664161_eb5835216c_o_feathered.jpg) no-repeat fixed center top;
+	padding-bottom: 5em; /* Make sure there's enough room when scrolled all the way down for the fixed footer */
 }
 
 /* Any user options should pile up left to right and top to bottom */
