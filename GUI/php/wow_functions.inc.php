@@ -5,7 +5,7 @@
  * @param $only_active_servers
  * @return unknown_type
  */
-function get_arr_wow_servers($only_active_servers=false)
+function get_arr_wow_servers( )
 {
 	// If we're to use the cached values, use them if they exist
 	$arr_cached_servers = read_cache_value('arr_wow_servers');
@@ -17,35 +17,57 @@ function get_arr_wow_servers($only_active_servers=false)
 	
 	// Otherwise, fetch the servers from the internet, and cache them
 	else {
-
-		// create curl resource
-		$ch = curl_init();
 		
-		// set url
-		curl_setopt($ch, CURLOPT_URL, 'http://www.worldofwarcraft.com/realmstatus/status.xml');
+		// Build the array of target regions
+		$realm_list = array();
+		$realm_list['US'] = 'http://www.worldofwarcraft.com/realmstatus/index.xml';
+		$realm_list['EU'] = 'http://www.wow-europe.com/realmstatus/index.xml';
 		
-		// return the transfer as a string
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		
-		// Pretend to be a browser that understands XML
-		curl_setopt($ch, CURLOPT_USERAGENT,  "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.2) Gecko/20070319 Firefox/2.0.0.3");
-	
-		// $output contains the output string
-		$response_xml = curl_exec($ch);
-		
-		// close curl resource to free up system resources
-		curl_close($ch);
-		
-		// Create an XML object of the response
-		$xml = new SimpleXMLElement(preg_replace('/<\?.*\?>/', '', $response_xml));
-		
-		// Assemble the array
+		// Loop over the various realm lists
 		$arr_return = array();
-		foreach($xml->xpath('rs/r') as $realm) {
-			if($only_active_servers===false || (string)$realm['s']==1 ) {
-				$arr_return[] = array( 
-						'name' => (string)$realm['n'],
-						'status' => (string)$realm['s']==1 ? 'up' : 'down',
+		foreach($realm_list as $list_name => $url) {
+			
+			// create curl resource
+			$ch = curl_init();
+			
+			// set url
+			curl_setopt($ch, CURLOPT_URL, $url);
+			
+			// return the transfer as a string
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+			
+			// Pretend to be a browser that understands XML
+			curl_setopt($ch, CURLOPT_USERAGENT,  "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.2) Gecko/20070319 Firefox/2.0.0.3");
+		
+			// $output contains the output string
+			$response_xml = curl_exec($ch);
+			
+			// close curl resource to free up system resources
+			curl_close($ch);
+			
+			// Create an XML object of the response
+			$xml = new SimpleXMLElement(preg_replace('/<\?.*\?>/', '', $response_xml));
+			
+			// Assemble the array
+			$arr_return[$list_name] = array();
+			foreach($xml->xpath('channel/item') as $realm) {
+				
+				// Pull out the realm info
+				$realm_name = (string) $realm->link;
+				$realm_status = 1;
+
+				// Clean up the realm name
+				if( strpos($realm_name, 'r=') ) {
+					$realm_name = substr( $realm_name, strpos($realm_name, 'r=')+2 );
+				}
+				else if( strpos($realm_name, '#') ) {
+					$realm_name = substr( $realm_name, strpos($realm_name, '#')+1 );
+				}
+				
+				// Add the realm to the list
+				$arr_return[$list_name][] = array( 
+						'name' => $list_name.':'.$realm_name,
+						'label' => $realm_name
 					);
 			}
 		}
@@ -73,10 +95,27 @@ function fetch_character_from_armory($character_name, $server_name)
 		return false;
 	}
 	
+	// Attempt to pull out the region from the server name (if its there)
+	if( strpos($server_name, ':')) {
+		list($region_name, $server_name) = explode(':', $server_name);
+	}
+
+	// Determine the armory root, from the region
+	if( $region_name == 'US') {
+		$armory_root_url = 'http://www.wowarmory.com/';
+	}
+	else if( $region_name == 'EU') {
+		$armory_root_url = 'http://eu.wowarmory.com/';
+	}
+	else {
+		$armory_root_url = 'http://www.wowarmory.com/';
+	}
+	
+	
 	// === FETCH THE CHARACTER SHEET FOR THE CHARACTER ===
 	// character sheet
 	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL, "http://www.wowarmory.com/character-sheet.xml?r=".urlencode($server_name)."&n=".urlencode($character_name) );
+	curl_setopt($ch, CURLOPT_URL, $armory_root_url."character-sheet.xml?r=".urlencode($server_name)."&n=".urlencode($character_name) );
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 	curl_setopt($ch, CURLOPT_USERAGENT,  "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.2) Gecko/20070319 Firefox/2.0.0.3");
 	$response_xml = curl_exec($ch);
@@ -86,9 +125,9 @@ function fetch_character_from_armory($character_name, $server_name)
 		return false;
 	}
 
-	// character sheet
+	// talent sheet
 	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL, "http://www.wowarmory.com/character-talents.xml?r=".urlencode($server_name)."&n=".urlencode($character_name) );
+	curl_setopt($ch, CURLOPT_URL, $armory_root_url."character-talents.xml?r=".urlencode($server_name)."&n=".urlencode($character_name) );
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 	curl_setopt($ch, CURLOPT_USERAGENT,  "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.2) Gecko/20070319 Firefox/2.0.0.3");
 	$response_xml = curl_exec($ch);

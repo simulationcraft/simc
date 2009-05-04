@@ -243,10 +243,15 @@ function add_raider_from_web( SimpleXMLElement $xml, $character_name, $server_na
 function add_wow_servers( SimpleXMLElement $xml )
 {
 	$arr_servers = get_arr_wow_servers();
+	//print_r($arr_servers);
 	$xml_servers = $xml->addChild('servers');
-	foreach( $arr_servers as $arr_server ) {
-		$new_server = $xml_servers->addChild('server');
-		$new_server->addAttribute('name', $arr_server['name']);
+	foreach( $arr_servers as $region => $arr_list ) {
+		foreach( $arr_list as $arr_server ) {
+			$new_server = $xml_servers->addChild('server');
+			$new_server->addAttribute('name', $arr_server['name']);
+			$new_server->addAttribute('label', $arr_server['label']);
+			$new_server->addAttribute('region', $region);
+		}
 	}
 } 
 

@@ -17,6 +17,12 @@ body {
 	padding-bottom: 5em; /* Make sure there's enough room when scrolled all the way down for the fixed footer */
 }
 
+/* Optgroups */
+optgroup {
+	margin-top: 5px;
+	font-size: 1.2em;
+}
+
 /* Any user options should pile up left to right and top to bottom */
 ul.stacked_fields li {
 	display: -moz-inline-box; display: inline-block;  zoom: 1; *display: inline; /* Cross-browser inline-block support */

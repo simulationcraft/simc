@@ -109,15 +109,27 @@
 						<label for="armory_server">Server</label>
 						<select name="add_from_armory[server]" id="armory_server">
 							<option value=""></option>
+							
 							<xsl:for-each select="//servers/server">
-								<xsl:sort select="@name" />
-								<option>
-									<xsl:attribute name="value"><xsl:value-of select="@name" /></xsl:attribute>
-									<xsl:if test="@name=/xml/options/@selected_server">
-										<xsl:attribute name="selected">selected</xsl:attribute>
-									</xsl:if>
-									<xsl:value-of select="@name" />
-								</option>
+								<xsl:if test="position()=1 or @region != preceding-sibling::server[1]/@region">
+									
+									<optgroup><xsl:value-of select="@region" /></optgroup>
+									
+									<xsl:variable name="region"><xsl:value-of select="@region" /></xsl:variable>
+									<xsl:for-each select="//servers/server[@region=$region]">
+										<xsl:sort select="@region" />
+										<xsl:sort select="@label" />
+										<option>
+											<xsl:attribute name="value"><xsl:value-of select="@name" /></xsl:attribute>
+											
+											<xsl:if test="@name=/xml/options/@selected_server">
+												<xsl:attribute name="selected">selected</xsl:attribute>
+											</xsl:if>
+											
+											<xsl:value-of select="@label" />
+										</option>
+									</xsl:for-each>
+								</xsl:if>
 							</xsl:for-each>
 						</select>
 					</li>
