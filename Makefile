@@ -24,7 +24,12 @@ ifeq (64,${BITS})
 CPP_FLAGS  += -m64
 LINK_FLAGS += -m64
 else
-CPP_FLAGS  += -malign-double 
+ifeq (i386,${HOSTTYPE})
+CPP_FLAGS  += -malign-double
+endif
+ifeq (i686,${HOSTTYPE})
+CPP_FLAGS  += -malign-double
+endif
 endif
 endif
 
