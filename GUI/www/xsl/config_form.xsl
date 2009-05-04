@@ -138,13 +138,15 @@
 	<!--  === FLOATING BOTTOM BAR === -->
 	<xsl:template name="bottombar">
 		<div id="bottombar">
-
+		
 			<div class="bottombar_section">
 				<h3>Simulation</h3>
-				<input name="simulate" id="simulate" type="submit" value="Run Simulation" title="Execute the SimulationCraft simulation and display the results" />
+				<xsl:if test="/xml/options/@allow_simulation='1'">
+					<input name="simulate" id="simulate" type="submit" value="Run Simulation" title="Execute the SimulationCraft simulation and display the results" />
+				</xsl:if>
 				<input type="reset" value="Reset Form" title="Reset the fields of this simulation to their values as of the past page load" />
 			</div>
-
+			
 			<div class="bottombar_section">
 				<h3>Import SimCraft Files</h3>
 				<ul class="subscript_labels stacked_fields">

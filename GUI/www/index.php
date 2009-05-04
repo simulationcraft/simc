@@ -9,7 +9,7 @@ require_once 'wow_functions.inc.php';
 
 
 // If the 'simulate' button was pressed, run the simulation
-if( isset($_POST['simulate']) ) {
+if( isset($_POST['simulate']) && ALLOW_SIMULATION===true ) {
 
 	// Create the output XML object
 	$xml = new SimpleXMLElement_XSL('<xml></xml>');

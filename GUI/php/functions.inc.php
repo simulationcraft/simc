@@ -29,6 +29,9 @@ function append_simulation_config_form( SimpleXMLElement $xml )
 	
 	//Set the max-file-size for uploaded files
 	$xml->options->addAttribute('max_file_size', return_bytes(ini_get('upload_max_filesize')));
+	
+	// Add the 'allow simulation' define
+	$xml->options->addAttribute('allow_simulation', ALLOW_SIMULATION?1:0);
 }
 
 /**
