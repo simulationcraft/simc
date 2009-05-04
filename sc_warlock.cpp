@@ -2590,6 +2590,8 @@ struct shadow_burn_t : public warlock_spell_t
     base_multiplier *= 1.0 + p -> talents.shadow_mastery * 0.03;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
+
+    if( sim -> P312 ) direct_power_mod  *= 1.0 + p -> talents.shadow_and_flame * 0.04;
    }
 
   virtual void execute()
@@ -3106,13 +3108,13 @@ struct immolate_t : public warlock_spell_t
     base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
     base_dd_multiplier *= 1.0 + ( p -> talents.emberstorm        * 0.03 +
                                   p -> talents.improved_immolate * 0.10 +
-                                  p -> unique_gear -> tier8_2pc  * 0.10 ); //FIXME assuming additive
+                                  p -> unique_gear -> tier8_2pc  * 0.10 );
 
     base_td_multiplier *= 1.0 + ( p -> talents.emberstorm        * 0.03 +
                                   p -> talents.improved_immolate * 0.10 +
                                   p -> glyphs.immolate           * 0.10 +
                                   p -> talents.aftermath         * 0.03 +
-                                  p -> unique_gear -> tier8_2pc  * 0.10 ); //FIXME assuming additive
+                                  p -> unique_gear -> tier8_2pc  * 0.10 );
   
     
     if( ! sim -> P312 ) 
@@ -3267,12 +3269,11 @@ struct conflagrate_t : public warlock_spell_t
                            + ( ( p -> talents.cataclysm ) ? 0.01 : 0 ) );
     base_multiplier *= 1.0 + p -> talents.aftermath         * 0.03
                            + p -> talents.improved_immolate * 0.10
-                           + p -> glyphs.immolate           * 0.10
-                           + p -> unique_gear -> tier8_2pc  * 0.10; //FIXME assuming additive
+                           + p -> glyphs.immolate           * 0.10;
 
     if( ! sim -> P312 ) base_multiplier *= 0.7;
 
-    base_multiplier  *= 1.0 + p -> talents.emberstorm * 0.03;
+    base_multiplier  *= 1.0 + p -> talents.emberstorm * 0.03 + p -> unique_gear -> tier8_2pc * 0.10 ;
     base_crit        += p -> talents.devastation * 0.05;
     base_crit        += p -> talents.backlash * 0.01;
     
