@@ -17,11 +17,16 @@ body {
 	padding-bottom: 5em; /* Make sure there's enough room when scrolled all the way down for the fixed footer */
 }
 
-/* Optgroups */
+/* Select Optgroups */
 optgroup {
-	margin-top: 5px;
-	font-size: 1.2em;
+	padding: 0px;
+	margin: 0px;
 }
+
+	optgroup option {
+		margin: 0px 0px 0px 5px;
+		padding: 0px;
+	}
 
 /* Any user options should pile up left to right and top to bottom */
 ul.stacked_fields li {

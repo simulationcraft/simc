@@ -113,22 +113,24 @@
 							<xsl:for-each select="//servers/server">
 								<xsl:if test="position()=1 or @region != preceding-sibling::server[1]/@region">
 									
-									<optgroup><xsl:value-of select="@region" /></optgroup>
+									<optgroup>
+										<xsl:attribute name="label"><xsl:value-of select="@region" /></xsl:attribute>
 									
-									<xsl:variable name="region"><xsl:value-of select="@region" /></xsl:variable>
-									<xsl:for-each select="//servers/server[@region=$region]">
-										<xsl:sort select="@region" />
-										<xsl:sort select="@label" />
-										<option>
-											<xsl:attribute name="value"><xsl:value-of select="@name" /></xsl:attribute>
-											
-											<xsl:if test="@name=/xml/options/@selected_server">
-												<xsl:attribute name="selected">selected</xsl:attribute>
-											</xsl:if>
-											
-											<xsl:value-of select="@label" />
-										</option>
-									</xsl:for-each>
+										<xsl:variable name="region"><xsl:value-of select="@region" /></xsl:variable>
+										<xsl:for-each select="//servers/server[@region=$region]">
+											<xsl:sort select="@region" />
+											<xsl:sort select="@label" />
+											<option>
+												<xsl:attribute name="value"><xsl:value-of select="@name" /></xsl:attribute>
+												
+												<xsl:if test="@name=/xml/options/@selected_server">
+													<xsl:attribute name="selected">selected</xsl:attribute>
+												</xsl:if>
+												
+												<xsl:value-of select="@label" />
+											</option>
+										</xsl:for-each>
+									</optgroup>
 								</xsl:if>
 							</xsl:for-each>
 						</select>
