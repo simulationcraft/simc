@@ -195,7 +195,6 @@ void target_t::reset()
 
 void target_t::combat_begin()
 {
-  if( sim -> overrides.affliction_effects    ) debuffs.affliction_effects = sim -> overrides.affliction_effects;
   if( sim -> overrides.bleeding              ) debuffs.bleeding = 1;
   if( sim -> overrides.blood_frenzy          ) debuffs.blood_frenzy = 1;
   if( sim -> overrides.crypt_fever           ) debuffs.crypt_fever = 1;
@@ -292,11 +291,13 @@ bool target_t::parse_option( const std::string& name,
 {
   option_t options[] =
   {
-    // General
+    // @option_doc loc=global/target/general title="Target General"
     { "target_name",           OPT_STRING, &( name_str                          ) },
     { "target_race",           OPT_STRING, &( race_str                          ) },
-    { "target_id",             OPT_STRING, &( id_str                            ) },
     { "target_level",          OPT_INT,    &( level                             ) },
+    { "target_health",         OPT_FLT,    &( initial_health                    ) },
+    { "target_id",             OPT_STRING, &( id_str                            ) },
+    // @option_doc loc=global/target/defense title="Target Defense"
     { "target_resist_holy",    OPT_INT,    &( spell_resistance[ SCHOOL_HOLY   ] ) },
     { "target_resist_shadow",  OPT_INT,    &( spell_resistance[ SCHOOL_SHADOW ] ) },
     { "target_resist_arcane",  OPT_INT,    &( spell_resistance[ SCHOOL_ARCANE ] ) },
@@ -306,13 +307,12 @@ bool target_t::parse_option( const std::string& name,
     { "target_armor",          OPT_INT,    &( initial_armor                     ) },
     { "target_shield",         OPT_INT,    &( shield                            ) },
     { "target_block",          OPT_INT,    &( block_value                       ) },
-    { "target_health",         OPT_FLT,    &( initial_health                    ) },
     { NULL, OPT_UNKNOWN }
   };
 
   if( name.empty() )
   {
-    option_t::print( sim, options );
+    option_t::print( sim -> output_file, options );
     return false;
   }
 

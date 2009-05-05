@@ -57,6 +57,7 @@ SRC =\
 	sc_hunter.cpp		\
 	sc_log.cpp		\
 	sc_mage.cpp		\
+	sc_main.cpp		\
 	sc_option.cpp		\
 	sc_pet.cpp		\
 	sc_player.cpp		\
@@ -76,7 +77,7 @@ SRC =\
 	sc_unique_gear.cpp	\
 	sc_util.cpp		\
 	sc_warlock.cpp		\
-	sc_warrior.cpp	\
+	sc_warrior.cpp		\
 	sc_weapon.cpp
 
 SRC_H   := $(filter %.h,   $(SRC))

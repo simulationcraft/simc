@@ -246,7 +246,7 @@ struct death_knight_t : public player_t
   };
   runes_t _runes;
 
-  death_knight_t( sim_t* sim, std::string& name ) :
+  death_knight_t( sim_t* sim, const std::string& name ) :
     player_t( sim, DEATH_KNIGHT, name )
   {
     assert ( sim ->patch.after(3,1,0) );
@@ -393,8 +393,8 @@ struct death_knight_attack_t : public attack_t
   int    cost_unholy;
   double convert_runes;
   bool   use[RUNE_SLOT_MAX];
-  bool   execute_once;
-  bool   executed_once;
+  int    execute_once;
+  int    executed_once;
   int    min_blood, max_blood, exact_blood;
   int    min_frost, max_frost, exact_frost;
   int    min_unholy, max_unholy, exact_unholy;
@@ -403,7 +403,7 @@ struct death_knight_attack_t : public attack_t
     attack_t( n, player, RESOURCE_RUNIC, s, t ), 
     requires_weapon(true),
     cost_blood(0),cost_frost(0),cost_unholy(0),convert_runes(0),
-    execute_once(true),executed_once(false),
+    execute_once(1),executed_once(0),
     min_blood(-1), max_blood(-1), exact_blood(-1),
     min_frost(-1), max_frost(-1), exact_frost(-1),
     min_unholy(-1), max_unholy(-1), exact_unholy(-1)
@@ -440,8 +440,8 @@ struct death_knight_spell_t : public spell_t
   int    cost_unholy;
   double convert_runes;
   bool   use[RUNE_SLOT_MAX];
-  bool   execute_once;
-  bool   executed_once;
+  int    execute_once;
+  int    executed_once;
   int    min_blood, max_blood, exact_blood;
   int    min_frost, max_frost, exact_frost;
   int    min_unholy, max_unholy, exact_unholy;
@@ -449,7 +449,7 @@ struct death_knight_spell_t : public spell_t
   death_knight_spell_t( const char* n, player_t* player, int s, int t ) : 
     spell_t( n, player, RESOURCE_RUNIC, s, t ),
     cost_blood(0),cost_frost(0),cost_unholy(0),convert_runes(false),
-    execute_once(true),executed_once(false),
+    execute_once(1),executed_once(0),
     min_blood(-1), max_blood(-1), exact_blood(-1),
     min_frost(-1), max_frost(-1), exact_frost(-1),
     min_unholy(-1), max_unholy(-1), exact_unholy(-1)
@@ -1002,7 +1002,7 @@ death_knight_spell_t::execute()
   }
   else
   {
-    if( cost() > 0 ) execute_once = true;
+    if( cost() > 0 ) execute_once = 1;
     refund_runes(p, use);
   }
 }
@@ -1079,7 +1079,7 @@ struct melee_t : public death_knight_attack_t
   {
     death_knight_t* p = player -> cast_death_knight();
 
-    execute_once = false;
+    execute_once = 0;
 
     base_dd_min = base_dd_max = 1;
     may_glance      = true;
@@ -1118,7 +1118,7 @@ struct auto_attack_t : public death_knight_attack_t
   {
     death_knight_t* p = player -> cast_death_knight();
 
-    execute_once = false;
+    execute_once = 0;
 
     assert( p -> main_hand_weapon.type != WEAPON_NONE );
     p -> main_hand_attack = new melee_t( "melee_main_hand", player );
@@ -1161,7 +1161,7 @@ struct death_knight_disease_t : public death_knight_spell_t
     {
       //death_knight_t* p = player -> cast_death_knight();
 
-      execute_once = false;
+      execute_once = 0;
         
       static rank_t ranks[] =
       {
@@ -1896,7 +1896,7 @@ death_knight_t::parse_option( const std::string& name, const std::string& value 
 {
   option_t options[] =
   {
-    // Talents
+    // @option_doc loc=skip
     { "butchery",                 OPT_INT, &( talents.butchery                 ) },
     { "subversion",               OPT_INT, &( talents.subversion               ) },
     { "bladed_armor",             OPT_INT, &( talents.bladed_armor             ) },
@@ -1965,30 +1965,30 @@ death_knight_t::parse_option( const std::string& name, const std::string& value 
     { "rage_of_rivendare",        OPT_INT, &( talents.rage_of_rivendare        ) },
     { "summon_gargoyle",          OPT_INT, &( talents.summon_gargoyle          ) },
 
-    // Glyphs
-    { "glyph_blood_tap",           OPT_INT, &( glyphs.blood_tap           ) },
-    { "glyph_horn_of_winter",      OPT_INT, &( glyphs.horn_of_winter      ) },
-    { "glyph_heart_strike",        OPT_INT, &( glyphs.heart_strike        ) },
-    { "glyph_blood_strike",        OPT_INT, &( glyphs.blood_strike        ) },
-    { "glyph_chains_of_ice",       OPT_INT, &( glyphs.chains_of_ice       ) },
-    { "glyph_dancing_rune_weapon", OPT_INT, &( glyphs.dancing_rune_weapon ) },
-    { "glyph_dark_death",          OPT_INT, &( glyphs.dark_death          ) },
-    { "glyph_death_strike",        OPT_INT, &( glyphs.death_strike        ) },
-    { "glyph_death_and_decay",     OPT_INT, &( glyphs.death_and_decay     ) },
-    { "glyph_disease",             OPT_INT, &( glyphs.disease             ) },
-    { "glyph_frost_strike",        OPT_INT, &( glyphs.frost_strike        ) },
-    { "glyph_howling_blast",       OPT_INT, &( glyphs.howling_blast       ) },
-    { "glyph_hungering_cold",      OPT_INT, &( glyphs.hungering_cold      ) },
-    { "glyph_icy_touch",           OPT_INT, &( glyphs.icy_touch           ) },
-    { "glyph_obliterate",          OPT_INT, &( glyphs.obliterate          ) },
-    { "glyph_plague_strike",       OPT_INT, &( glyphs.plague_strike       ) },
-    { "glyph_rune_strike",         OPT_INT, &( glyphs.rune_strike         ) },
-    { "glyph_scourge_strike",      OPT_INT, &( glyphs.scourge_strike      ) },
-    { "glyph_strangulate",         OPT_INT, &( glyphs.strangulate         ) },
-    { "glyph_unholy_blight",       OPT_INT, &( glyphs.unholy_blight       ) },
-    { "glyph_the_ghoul",           OPT_INT, &( glyphs.the_ghoul           ) },
+    // @option_doc loc=player/glyphs title="Glyphs"
+    { "glyph_blood_tap",           OPT_BOOL, &( glyphs.blood_tap           ) },
+    { "glyph_horn_of_winter",      OPT_BOOL, &( glyphs.horn_of_winter      ) },
+    { "glyph_heart_strike",        OPT_BOOL, &( glyphs.heart_strike        ) },
+    { "glyph_blood_strike",        OPT_BOOL, &( glyphs.blood_strike        ) },
+    { "glyph_chains_of_ice",       OPT_BOOL, &( glyphs.chains_of_ice       ) },
+    { "glyph_dancing_rune_weapon", OPT_BOOL, &( glyphs.dancing_rune_weapon ) },
+    { "glyph_dark_death",          OPT_BOOL, &( glyphs.dark_death          ) },
+    { "glyph_death_strike",        OPT_BOOL, &( glyphs.death_strike        ) },
+    { "glyph_death_and_decay",     OPT_BOOL, &( glyphs.death_and_decay     ) },
+    { "glyph_disease",             OPT_BOOL, &( glyphs.disease             ) },
+    { "glyph_frost_strike",        OPT_BOOL, &( glyphs.frost_strike        ) },
+    { "glyph_howling_blast",       OPT_BOOL, &( glyphs.howling_blast       ) },
+    { "glyph_hungering_cold",      OPT_BOOL, &( glyphs.hungering_cold      ) },
+    { "glyph_icy_touch",           OPT_BOOL, &( glyphs.icy_touch           ) },
+    { "glyph_obliterate",          OPT_BOOL, &( glyphs.obliterate          ) },
+    { "glyph_plague_strike",       OPT_BOOL, &( glyphs.plague_strike       ) },
+    { "glyph_rune_strike",         OPT_BOOL, &( glyphs.rune_strike         ) },
+    { "glyph_scourge_strike",      OPT_BOOL, &( glyphs.scourge_strike      ) },
+    { "glyph_strangulate",         OPT_BOOL, &( glyphs.strangulate         ) },
+    { "glyph_unholy_blight",       OPT_BOOL, &( glyphs.unholy_blight       ) },
+    { "glyph_the_ghoul",           OPT_BOOL, &( glyphs.the_ghoul           ) },
 
-    // Options
+    // @option_doc loc=player/misc title="Misc"
     { "scent_of_blood_interval",   OPT_INT, &( scent_of_blood_interval    ) },
     { NULL, OPT_UNKNOWN }
   };
@@ -1996,7 +1996,7 @@ death_knight_t::parse_option( const std::string& name, const std::string& value 
   if( name.empty() )
   {
     player_t::parse_option( std::string(), std::string() );
-    option_t::print( sim, options );
+    option_t::print( sim -> output_file, options );
     return false;
   }
 
@@ -2008,7 +2008,7 @@ death_knight_t::parse_option( const std::string& name, const std::string& value 
 // player_t implementations ============================================
 
 player_t*
-player_t::create_death_knight( sim_t* sim, std::string& name ) 
+player_t::create_death_knight( sim_t* sim, const std::string& name ) 
 {
   death_knight_t* p = new death_knight_t( sim, name );
 

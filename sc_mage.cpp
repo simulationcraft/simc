@@ -186,7 +186,7 @@ struct mage_t : public player_t
   };
   glyphs_t glyphs;
 
-  mage_t( sim_t* sim, std::string& name ) : player_t( sim, MAGE, name )
+  mage_t( sim_t* sim, const std::string& name ) : player_t( sim, MAGE, name )
   {
     // Active
     active_ignite          = 0;
@@ -1181,10 +1181,10 @@ void mage_spell_t::parse_options( option_t*          options,
 {
   option_t base_options[] =
   {
-    { "dps",          OPT_INT, &dps_rotation },
-    { "dpm",          OPT_INT, &dpm_rotation },
-    { "arcane_power", OPT_INT, &arcane_power },
-    { "icy_veins",    OPT_INT, &icy_veins    },
+    { "dps",          OPT_BOOL, &dps_rotation },
+    { "dpm",          OPT_BOOL, &dpm_rotation },
+    { "arcane_power", OPT_BOOL, &arcane_power },
+    { "icy_veins",    OPT_BOOL, &icy_veins    },
     { NULL }
   };
   std::vector<option_t> merged_options;
@@ -1663,8 +1663,8 @@ struct arcane_missiles_t : public mage_spell_t
 
     option_t options[] =
     {
-      { "barrage",    OPT_INT, &barrage    },
-      { "clearcast",  OPT_INT, &clearcast  },
+      { "barrage",    OPT_BOOL, &barrage    },
+      { "clearcast",  OPT_BOOL, &clearcast  },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1991,7 +1991,7 @@ struct fire_ball_t : public mage_spell_t
 
     option_t options[] =
     {
-      { "brain_freeze", OPT_INT, &brain_freeze },
+      { "brain_freeze", OPT_BOOL, &brain_freeze },
       { NULL }
     };
     parse_options( options, options_str );
@@ -2233,7 +2233,7 @@ struct pyroblast_t : public mage_spell_t
 
     option_t options[] =
     {
-      { "hot_streak", OPT_INT, &hot_streak },
+      { "hot_streak", OPT_BOOL, &hot_streak },
       { NULL }
     };
     parse_options( options, options_str );
@@ -2318,7 +2318,7 @@ struct scorch_t : public mage_spell_t
 
     option_t options[] =
     {
-      { "debuff",    OPT_INT, &debuff     },
+      { "debuff",    OPT_BOOL, &debuff     },
       { NULL }
     };
     parse_options( options, options_str );
@@ -2499,8 +2499,8 @@ struct ice_lance_t : public mage_spell_t
 
     option_t options[] =
     {
-      { "frozen",      OPT_INT, &frozen      },
-      { "fb_priority", OPT_INT, &fb_priority },
+      { "frozen",      OPT_BOOL, &frozen      },
+      { "fb_priority", OPT_BOOL, &fb_priority },
       { NULL }
     };
     parse_options( options, options_str );
@@ -2598,7 +2598,7 @@ struct frostfire_bolt_t : public mage_spell_t
 
     option_t options[] =
     {
-      { "dot_wait", OPT_INT, &dot_wait   },
+      { "dot_wait", OPT_BOOL, &dot_wait   },
       { NULL }
     };
     parse_options( options, options_str );
@@ -3354,6 +3354,7 @@ bool mage_t::parse_option( const std::string& name,
 {
   option_t options[] =
   {
+    // @option_doc loc=skip
     { "arcane_barrage",            OPT_INT,   &( talents.arcane_barrage            ) },
     { "arcane_concentration",      OPT_INT,   &( talents.arcane_concentration      ) },
     { "arcane_empowerment",        OPT_INT,   &( talents.arcane_empowerment        ) },
@@ -3417,23 +3418,23 @@ bool mage_t::parse_option( const std::string& name,
     { "winters_chill",             OPT_INT,   &( talents.winters_chill             ) },
     { "winters_grasp",             OPT_INT,   &( talents.winters_grasp             ) },
     { "world_in_flames",           OPT_INT,   &( talents.world_in_flames           ) },
-    // Glyphs
-    { "glyph_arcane_barrage",      OPT_INT,   &( glyphs.arcane_barrage             ) },
-    { "glyph_arcane_blast",        OPT_INT,   &( glyphs.arcane_blast               ) },
-    { "glyph_arcane_missiles",     OPT_INT,   &( glyphs.arcane_missiles            ) },
-    { "glyph_arcane_power",        OPT_INT,   &( glyphs.arcane_power               ) },
-    { "glyph_fire_ball",           OPT_INT,   &( glyphs.fire_ball                  ) },
-    { "glyph_frost_bolt",          OPT_INT,   &( glyphs.frost_bolt                 ) },
-    { "glyph_ice_lance",           OPT_INT,   &( glyphs.ice_lance                  ) },
-    { "glyph_improved_scorch",     OPT_INT,   &( glyphs.improved_scorch            ) },
-    { "glyph_living_bomb",         OPT_INT,   &( glyphs.living_bomb                ) },
-    { "glyph_mage_armor",          OPT_INT,   &( glyphs.mage_armor                 ) },
-    { "glyph_mana_gem",            OPT_INT,   &( glyphs.mana_gem                   ) },
-    { "glyph_mirror_image",        OPT_INT,   &( glyphs.mirror_image               ) },
-    { "glyph_molten_armor",        OPT_INT,   &( glyphs.molten_armor               ) },
-    { "glyph_water_elemental",     OPT_INT,   &( glyphs.water_elemental            ) },
-    { "glyph_frostfire",           OPT_INT,   &( glyphs.frostfire                  ) },
-    // Options
+    // @option_doc loc=player/glyphs title="Glyphs"
+    { "glyph_arcane_barrage",      OPT_BOOL,   &( glyphs.arcane_barrage            ) },
+    { "glyph_arcane_blast",        OPT_BOOL,   &( glyphs.arcane_blast              ) },
+    { "glyph_arcane_missiles",     OPT_BOOL,   &( glyphs.arcane_missiles           ) },
+    { "glyph_arcane_power",        OPT_BOOL,   &( glyphs.arcane_power              ) },
+    { "glyph_fire_ball",           OPT_BOOL,   &( glyphs.fire_ball                 ) },
+    { "glyph_frost_bolt",          OPT_BOOL,   &( glyphs.frost_bolt                ) },
+    { "glyph_ice_lance",           OPT_BOOL,   &( glyphs.ice_lance                 ) },
+    { "glyph_improved_scorch",     OPT_BOOL,   &( glyphs.improved_scorch           ) },
+    { "glyph_living_bomb",         OPT_BOOL,   &( glyphs.living_bomb               ) },
+    { "glyph_mage_armor",          OPT_BOOL,   &( glyphs.mage_armor                ) },
+    { "glyph_mana_gem",            OPT_BOOL,   &( glyphs.mana_gem                  ) },
+    { "glyph_mirror_image",        OPT_BOOL,   &( glyphs.mirror_image              ) },
+    { "glyph_molten_armor",        OPT_BOOL,   &( glyphs.molten_armor              ) },
+    { "glyph_water_elemental",     OPT_BOOL,   &( glyphs.water_elemental           ) },
+    { "glyph_frostfire",           OPT_BOOL,   &( glyphs.frostfire                 ) },
+    // @option_doc loc=player/misc title="Misc"
     { "armor_type",                OPT_STRING, &( armor_type_str                   ) },
     { "focus_magic_target",        OPT_STRING, &( focus_magic_target_str           ) },
     { NULL, OPT_UNKNOWN }
@@ -3442,7 +3443,7 @@ bool mage_t::parse_option( const std::string& name,
   if( name.empty() )
   {
     player_t::parse_option( std::string(), std::string() );
-    option_t::print( sim, options );
+    option_t::print( sim -> output_file, options );
     return false;
   }
 
@@ -3453,8 +3454,7 @@ bool mage_t::parse_option( const std::string& name,
 
 // player_t::create_mage  ===================================================
 
-player_t* player_t::create_mage( sim_t*       sim, 
-                                 std::string& name ) 
+player_t* player_t::create_mage( sim_t* sim, const std::string& name ) 
 {
   mage_t* p = new mage_t( sim, name );
 

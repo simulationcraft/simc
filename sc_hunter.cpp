@@ -194,7 +194,7 @@ struct hunter_t : public player_t
   };
   glyphs_t glyphs;
 
-  hunter_t( sim_t* sim, std::string& name ) : player_t( sim, HUNTER, name )
+  hunter_t( sim_t* sim, const std::string& name ) : player_t( sim, HUNTER, name )
   {
     // Active
     active_pet             = 0;
@@ -571,7 +571,7 @@ struct hunter_pet_t : public pet_t
     if( name.empty() )
     {
       pet_t::parse_option( std::string(), std::string() );
-      option_t::print( sim, options );
+      option_t::print( sim -> output_file, options );
       return false;
     }
 
@@ -2301,7 +2301,7 @@ struct aimed_shot_t : public hunter_attack_t
 
     option_t options[] =
     {
-      { "improved_steady_shot", OPT_INT, &improved_steady_shot },
+      { "improved_steady_shot", OPT_BOOL, &improved_steady_shot },
       { NULL }
     };
     parse_options( options, options_str );
@@ -2397,8 +2397,8 @@ struct arcane_shot_t : public hunter_attack_t
 
     option_t options[] =
     {
-      { "improved_steady_shot", OPT_INT, &improved_steady_shot },
-      { "lock_and_load",        OPT_INT, &lock_and_load        },
+      { "improved_steady_shot", OPT_BOOL, &improved_steady_shot },
+      { "lock_and_load",        OPT_BOOL, &lock_and_load        },
       { NULL }
     };
     parse_options( options, options_str );
@@ -2557,8 +2557,8 @@ struct chimera_shot_t : public hunter_attack_t
 
     option_t options[] =
     {
-      { "active_sting",         OPT_INT, &active_sting         },
-      { "improved_steady_shot", OPT_INT, &improved_steady_shot },
+      { "active_sting",         OPT_BOOL, &active_sting         },
+      { "improved_steady_shot", OPT_BOOL, &improved_steady_shot },
       { NULL }
     };
     parse_options( options, options_str );
@@ -2748,7 +2748,7 @@ struct explosive_shot_t : public hunter_attack_t
 
     option_t options[] =
     {
-      { "lock_and_load", OPT_INT, &lock_and_load },
+      { "lock_and_load", OPT_BOOL, &lock_and_load },
       { NULL }
     };
     parse_options( options, options_str );
@@ -2950,7 +2950,7 @@ struct serpent_sting_t : public hunter_attack_t
 
     option_t options[] =
     {
-      { "force", OPT_INT, &force },
+      { "force", OPT_BOOL, &force },
       { NULL }
     };
     parse_options( options, options_str );
@@ -3137,10 +3137,10 @@ struct aspect_t : public hunter_spell_t
 
     option_t options[] =
     {
-      { "beast_during_bw", OPT_INT, &beast_during_bw },
-      { "hawk_always",     OPT_INT, &hawk_always },
-      { "viper_start",     OPT_INT, &viper_start },
-      { "viper_stop",      OPT_INT, &viper_stop  },
+      { "beast_during_bw", OPT_BOOL, &beast_during_bw },
+      { "hawk_always",     OPT_BOOL, &hawk_always },
+      { "viper_start",     OPT_INT,  &viper_start },
+      { "viper_stop",      OPT_INT,  &viper_stop  },
       { NULL }
     };
     parse_options( options, options_str );
@@ -3398,7 +3398,7 @@ struct rapid_fire_t : public hunter_spell_t
 
     option_t options[] =
     {
-      { "viper", OPT_INT, &viper },
+      { "viper", OPT_BOOL, &viper },
       { NULL }
     };
     parse_options( options, options_str );
@@ -3468,7 +3468,7 @@ struct readiness_t : public hunter_spell_t
     {
       // Only perform Readiness while Rapid Fire is up, allows the sequence
       // Rapid Fire, Readiness, Rapid Fire, for better RF uptime
-      { "wait_for_rapid_fire", OPT_INT, &wait_for_rf },
+      { "wait_for_rapid_fire", OPT_BOOL, &wait_for_rf },
       { NULL }
     };
     parse_options( options, options_str );
@@ -3808,7 +3808,7 @@ bool hunter_t::parse_option( const std::string& name,
 {
   option_t options[] =
   {
-    // Talents
+    // @option_doc loc=skip
     { "aimed_shot",                        OPT_INT, &( talents.aimed_shot                   ) },
     { "animal_handler",                    OPT_INT, &( talents.animal_handler               ) },
     { "aspect_mastery",                    OPT_INT, &( talents.aspect_mastery               ) },
@@ -3870,20 +3870,20 @@ bool hunter_t::parse_option( const std::string& name,
     { "trueshot_aura",                     OPT_INT, &( talents.trueshot_aura                ) },
     { "unleashed_fury",                    OPT_INT, &( talents.unleashed_fury               ) },
     { "wild_quiver",                       OPT_INT, &( talents.wild_quiver                  ) },
-    // Glyphs
-    { "glyph_aimed_shot",                  OPT_INT, &( glyphs.aimed_shot                    ) },
-    { "glyph_aspect_of_the_viper",         OPT_INT, &( glyphs.aspect_of_the_viper           ) },
-    { "glyph_bestial_wrath",               OPT_INT, &( glyphs.bestial_wrath                 ) },
-    { "glyph_chimera_shot",                OPT_INT, &( glyphs.chimera_shot                  ) },
-    { "glyph_explosive_shot",              OPT_INT, &( glyphs.explosive_shot                ) },
-    { "glyph_hunters_mark",                OPT_INT, &( glyphs.hunters_mark                  ) },
-    { "glyph_improved_aspect_of_the_hawk", OPT_INT, &( glyphs.improved_aspect_of_the_hawk   ) },
-    { "glyph_kill_shot",                   OPT_INT, &( glyphs.kill_shot                     ) },
-    { "glyph_rapid_fire",                  OPT_INT, &( glyphs.rapid_fire                    ) },
-    { "glyph_serpent_sting",               OPT_INT, &( glyphs.serpent_sting                 ) },
-    { "glyph_steady_shot",                 OPT_INT, &( glyphs.steady_shot                   ) },
-    { "glyph_trueshot_aura",               OPT_INT, &( glyphs.trueshot_aura                 ) },
-    // Custom
+    // @option_doc loc=player/glyphs title="Glyphs"
+    { "glyph_aimed_shot",                  OPT_BOOL, &( glyphs.aimed_shot                   ) },
+    { "glyph_aspect_of_the_viper",         OPT_BOOL, &( glyphs.aspect_of_the_viper          ) },
+    { "glyph_bestial_wrath",               OPT_BOOL, &( glyphs.bestial_wrath                ) },
+    { "glyph_chimera_shot",                OPT_BOOL, &( glyphs.chimera_shot                 ) },
+    { "glyph_explosive_shot",              OPT_BOOL, &( glyphs.explosive_shot               ) },
+    { "glyph_hunters_mark",                OPT_BOOL, &( glyphs.hunters_mark                 ) },
+    { "glyph_improved_aspect_of_the_hawk", OPT_BOOL, &( glyphs.improved_aspect_of_the_hawk  ) },
+    { "glyph_kill_shot",                   OPT_BOOL, &( glyphs.kill_shot                    ) },
+    { "glyph_rapid_fire",                  OPT_BOOL, &( glyphs.rapid_fire                   ) },
+    { "glyph_serpent_sting",               OPT_BOOL, &( glyphs.serpent_sting                ) },
+    { "glyph_steady_shot",                 OPT_BOOL, &( glyphs.steady_shot                  ) },
+    { "glyph_trueshot_aura",               OPT_BOOL, &( glyphs.trueshot_aura                ) },
+    // @option_doc loc=player/misc title="Misc"
     { "ammo_dps",                          OPT_FLT,    &( ammo_dps                          ) },
     { "quiver_haste",                      OPT_FLT,    &( quiver_haste                      ) },
     { "summon_pet",                        OPT_STRING, &( summon_pet_str                    ) },
@@ -3894,7 +3894,7 @@ bool hunter_t::parse_option( const std::string& name,
   if( name.empty() )
   {
     player_t::parse_option( std::string(), std::string() );
-    option_t::print( sim, options );
+    option_t::print( sim -> output_file, options );
     return false;
   }
 
@@ -3905,8 +3905,7 @@ bool hunter_t::parse_option( const std::string& name,
 
 // player_t::create_hunter  =================================================
 
-player_t* player_t::create_hunter( sim_t*       sim,
-                                   std::string& name )
+player_t* player_t::create_hunter( sim_t* sim, const std::string& name )
 {
   return new hunter_t( sim, name );
 }

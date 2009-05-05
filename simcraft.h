@@ -350,9 +350,18 @@ struct gear_stats_t
   static double stat_mod( int stat );
 };
 
+// Application ===============================================================
+
+struct app_t
+{
+  virtual const char* name() = 0;
+  virtual int  main( int argc, char** argv ) = 0;
+  virtual bool parse_option( const std::string& name, const std::string& value ) = 0;
+};
+
 // Simulation Engine =========================================================
 
-struct sim_t
+struct sim_t : public app_t
 {
   int         argc;
   char**      argv;
@@ -409,7 +418,6 @@ struct sim_t
     int thunder_clap;
     // Overrides for supported classes
     int abominations_might;
-    int affliction_effects;
     int arcane_brilliance;
     int bleeding;
     int blood_frenzy;
@@ -490,7 +498,7 @@ struct sim_t
   std::vector<std::string> id_dictionary;
   std::vector<std::string> dps_charts, gear_charts, dpet_charts;
   std::string downtime_chart, uptimes_chart;
-  std::string html_file_str, wiki_file_str;
+  std::string output_file_str, log_file_str, html_file_str, wiki_file_str;
   FILE* output_file;
   FILE* log_file;
 
@@ -500,6 +508,10 @@ struct sim_t
 
   sim_t( sim_t* parent=0 );
  ~sim_t();
+
+  virtual const char* name() { return "simcraft"; }
+  virtual int main( int argc, char** argv );
+  virtual bool parse_option( const std::string& name, const std::string& value );
 
   void      combat( int iteration );
   void      combat_begin();
@@ -517,8 +529,8 @@ struct sim_t
   void      iterate();
   void      partition();
   void      execute();
-  bool      parse_option( const std::string& name, const std::string& value );
   void      print_options();
+  bool      parse_options( int argc, char** argv );
   bool      time_to_think( double proc_time ) { if( proc_time == 0 ) return false; return current_time - proc_time > reaction_time; }
   bool      cooldown_ready( double cooldown_time ) { return cooldown_time <= current_time; }
   int       roll( double chance ) { return rng -> roll( chance ); }
@@ -607,7 +619,7 @@ struct player_t
   int         race;
 
   // Haste
-  int    base_haste_rating, initial_haste_rating, haste_rating;
+  double base_haste_rating, initial_haste_rating, haste_rating;
   double spell_haste, attack_haste;
 
   // Attributes
@@ -943,12 +955,13 @@ struct player_t
   virtual void register_direct_damage_callback( action_callback_t* );
 
   virtual bool get_talent_trees( std::vector<int*>& tree1, std::vector<int*>& tree2, std::vector<int*>& tree3, talent_translation_t translation[][3] );
-  virtual bool get_talent_trees( std::vector<int*>& tree1, std::vector<int*>& tree2, std::vector<int*>& tree3 ) { return false; }
+  virtual bool get_talent_trees( std::vector<int*>& tree1, std::vector<int*>& tree2, std::vector<int*>& tree3 );
   virtual bool parse_talents( std::vector<int*>& talent_tree, const std::string& talent_string );
   virtual bool parse_talents( const std::string& talent_string );
   virtual bool parse_talents_mmo( const std::string& talent_string );
   virtual bool parse_talents_wowhead( const std::string& talent_string );
   virtual bool parse_talents( const std::string& talent_string, int encoding );
+  virtual bool parse_talent_url( const std::string& url );
 
   virtual bool      parse_option ( const std::string& name, const std::string& value );
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -959,15 +972,17 @@ struct player_t
 
   // Class-Specific Methods
 
-  static player_t * create_death_knight( sim_t* sim, std::string& name );
-  static player_t * create_druid       ( sim_t* sim, std::string& name );
-  static player_t * create_hunter      ( sim_t* sim, std::string& name );
-  static player_t * create_mage        ( sim_t* sim, std::string& name );
-  static player_t * create_priest      ( sim_t* sim, std::string& name );
-  static player_t * create_rogue       ( sim_t* sim, std::string& name );
-  static player_t * create_shaman      ( sim_t* sim, std::string& name );
-  static player_t * create_warlock     ( sim_t* sim, std::string& name );
-  static player_t * create_warrior     ( sim_t* sim, std::string& name );
+  static player_t* create( sim_t* sim, const std::string& type, const std::string& name );
+
+  static player_t * create_death_knight( sim_t* sim, const std::string& name );
+  static player_t * create_druid       ( sim_t* sim, const std::string& name );
+  static player_t * create_hunter      ( sim_t* sim, const std::string& name );
+  static player_t * create_mage        ( sim_t* sim, const std::string& name );
+  static player_t * create_priest      ( sim_t* sim, const std::string& name );
+  static player_t * create_rogue       ( sim_t* sim, const std::string& name );
+  static player_t * create_shaman      ( sim_t* sim, const std::string& name );
+  static player_t * create_warlock     ( sim_t* sim, const std::string& name );
+  static player_t * create_warrior     ( sim_t* sim, const std::string& name );
 
   bool is_pet() { return type == PLAYER_PET || type == PLAYER_GUARDIAN; }
 
@@ -1055,7 +1070,6 @@ struct target_t
 
   struct debuff_t
   {
-    int    affliction_effects;
     int    bleeding;
     int    blood_frenzy;
     int    crypt_fever;
@@ -1617,7 +1631,18 @@ struct talent_translation_t
 
 // Options ====================================================================
 
-enum option_type_t { OPT_STRING=0, OPT_APPEND, OPT_CHAR_P, OPT_BOOL, OPT_INT, OPT_FLT, OPT_LIST, OPT_DEPRECATED, OPT_UNKNOWN };
+enum option_type_t 
+{ 
+  OPT_STRING=0,   // std::string*
+  OPT_APPEND,     // std::string* (append)
+  OPT_CHAR_P,     // char*
+  OPT_BOOL,       // int (only valid values are 1 and 0)
+  OPT_INT,        // int
+  OPT_FLT,        // double
+  OPT_LIST,       // std::vector<std::string>*
+  OPT_DEPRECATED, 
+  OPT_UNKNOWN 
+};
 
 struct option_t
 {
@@ -1625,12 +1650,11 @@ struct option_t
   int type;
   void*  address;
 
-  static void print( sim_t*, option_t* );
-  static bool parse( sim_t*, option_t*, const std::string& name, const std::string& value );
-  static bool parse( sim_t*, FILE* file );
-  static bool parse( sim_t*, char* line );
-  static bool parse( sim_t*, std::string& token );
-  static bool parse( sim_t*, int argc, char** argv );
+  static void print( FILE*, option_t* );
+  static bool parse( app_t*, option_t*, const std::string& name, const std::string& value );
+  static bool parse_file( app_t*, FILE* file );
+  static bool parse_line( app_t*, char* line );
+  static bool parse_token( app_t*, std::string& token );
 };
 
 // Log =======================================================================

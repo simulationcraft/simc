@@ -132,28 +132,29 @@ bool scaling_t::parse_option( const std::string& name,
 {
   option_t options[] =
   {
-    { "calculate_scale_factors",        OPT_INT, &( calculate_scale_factors              ) },
-    { "center_scale_delta",             OPT_INT, &( center_scale_delta                   ) },
-    { "scale_factor_noise",             OPT_FLT, &( scale_factor_noise                   ) },
-    { "scale_strength",                 OPT_FLT, &( stats.attribute[ ATTR_STRENGTH  ]    ) },
-    { "scale_agility",                  OPT_FLT, &( stats.attribute[ ATTR_AGILITY   ]    ) },
-    { "scale_stamina",                  OPT_FLT, &( stats.attribute[ ATTR_STAMINA   ]    ) },
-    { "scale_intellect",                OPT_FLT, &( stats.attribute[ ATTR_INTELLECT ]    ) },
-    { "scale_spirit",                   OPT_FLT, &( stats.attribute[ ATTR_SPIRIT    ]    ) },
-    { "scale_spell_power",              OPT_FLT, &( stats.spell_power                    ) },
-    { "scale_attack_power",             OPT_FLT, &( stats.attack_power                   ) },
-    { "scale_expertise_rating",         OPT_FLT, &( stats.expertise_rating               ) },
-    { "scale_armor_penetration_rating", OPT_FLT, &( stats.armor_penetration_rating       ) },
-    { "scale_hit_rating",               OPT_FLT, &( stats.hit_rating                     ) },
-    { "scale_crit_rating",              OPT_FLT, &( stats.crit_rating                    ) },
-    { "scale_haste_rating",             OPT_FLT, &( stats.haste_rating                   ) },
-    { "scale_weapon_dps",               OPT_FLT, &( stats.weapon_dps                     ) },
+    // @option_doc loc=global/scale_factors title="Scale Factors"
+    { "calculate_scale_factors",        OPT_BOOL, &( calculate_scale_factors              ) },
+    { "center_scale_delta",             OPT_BOOL, &( center_scale_delta                   ) },
+    { "scale_factor_noise",             OPT_FLT,  &( scale_factor_noise                   ) },
+    { "scale_strength",                 OPT_FLT,  &( stats.attribute[ ATTR_STRENGTH  ]    ) },
+    { "scale_agility",                  OPT_FLT,  &( stats.attribute[ ATTR_AGILITY   ]    ) },
+    { "scale_stamina",                  OPT_FLT,  &( stats.attribute[ ATTR_STAMINA   ]    ) },
+    { "scale_intellect",                OPT_FLT,  &( stats.attribute[ ATTR_INTELLECT ]    ) },
+    { "scale_spirit",                   OPT_FLT,  &( stats.attribute[ ATTR_SPIRIT    ]    ) },
+    { "scale_spell_power",              OPT_FLT,  &( stats.spell_power                    ) },
+    { "scale_attack_power",             OPT_FLT,  &( stats.attack_power                   ) },
+    { "scale_expertise_rating",         OPT_FLT,  &( stats.expertise_rating               ) },
+    { "scale_armor_penetration_rating", OPT_FLT,  &( stats.armor_penetration_rating       ) },
+    { "scale_hit_rating",               OPT_FLT,  &( stats.hit_rating                     ) },
+    { "scale_crit_rating",              OPT_FLT,  &( stats.crit_rating                    ) },
+    { "scale_haste_rating",             OPT_FLT,  &( stats.haste_rating                   ) },
+    { "scale_weapon_dps",               OPT_FLT,  &( stats.weapon_dps                     ) },
     { NULL, OPT_UNKNOWN }
   };
 
   if( name.empty() )
   {
-    option_t::print( sim, options );
+    option_t::print( sim -> output_file, options );
     return false;
   }
 

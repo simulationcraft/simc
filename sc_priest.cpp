@@ -123,7 +123,7 @@ struct priest_t : public player_t
 
   double devious_mind_delay;
 
-  priest_t( sim_t* sim, std::string& name ) : player_t( sim, PRIEST, name ) 
+  priest_t( sim_t* sim, const std::string& name ) : player_t( sim, PRIEST, name ) 
   {
     // Active
     active_devouring_plague  = 0;
@@ -866,7 +866,7 @@ struct shadow_word_pain_t : public priest_spell_t
 
     option_t options[] =
     {
-      { "shadow_weaving_wait", OPT_INT, &shadow_weaving_wait },
+      { "shadow_weaving_wait", OPT_BOOL, &shadow_weaving_wait },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1280,9 +1280,9 @@ struct shadow_word_death_t : public priest_spell_t
 
     option_t options[] =
     {
-      { "mb_wait",             OPT_FLT, &mb_wait             },
-      { "mb_priority",         OPT_INT, &mb_priority         },
-      { "devious_mind_filler", OPT_INT, &devious_mind_filler },
+      { "mb_wait",             OPT_FLT,  &mb_wait             },
+      { "mb_priority",         OPT_BOOL, &mb_priority         },
+      { "devious_mind_filler", OPT_BOOL, &devious_mind_filler },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1454,10 +1454,10 @@ struct mind_flay_t : public priest_spell_t
 
     option_t options[] =
     {
-      { "swp_refresh",           OPT_INT, &swp_refresh           },
-      { "mb_wait",               OPT_FLT, &mb_wait               },
-      { "devious_mind_wait",     OPT_INT, &devious_mind_wait     },
-      { "devious_mind_priority", OPT_INT, &devious_mind_priority },
+      { "swp_refresh",           OPT_BOOL, &swp_refresh           },
+      { "mb_wait",               OPT_FLT,  &mb_wait               },
+      { "devious_mind_wait",     OPT_BOOL, &devious_mind_wait     },
+      { "devious_mind_priority", OPT_BOOL, &devious_mind_priority },
       { NULL }
     };
     parse_options( options, options_str );
@@ -2094,6 +2094,7 @@ bool priest_t::parse_option( const std::string& name,
 {
   option_t options[] =
   {
+    // @option_doc loc=skip
     { "aspiration",                    OPT_INT,  &( talents.aspiration                    ) },
     { "darkness",                      OPT_INT,  &( talents.darkness                      ) },
     { "dispersion",                    OPT_INT,  &( talents.dispersion                    ) },
@@ -2136,11 +2137,11 @@ bool priest_t::parse_option( const std::string& name,
     { "vampiric_embrace",              OPT_INT,  &( talents.vampiric_embrace              ) },
     { "vampiric_touch",                OPT_INT,  &( talents.vampiric_touch                ) },
     { "veiled_shadows",                OPT_INT,  &( talents.veiled_shadows                ) },
-    // Glyphs
-    { "glyph_shadow_word_death",       OPT_INT,  &( glyphs.shadow_word_death              ) },
-    { "glyph_shadow_word_pain",        OPT_INT,  &( glyphs.shadow_word_pain               ) },
-    { "glyph_shadow",                  OPT_INT,  &( glyphs.shadow                         ) },
-    // Options
+    // @option_doc loc=player/glyphs title="Glyphs"
+    { "glyph_shadow_word_death",       OPT_BOOL, &( glyphs.shadow_word_death              ) },
+    { "glyph_shadow_word_pain",        OPT_BOOL, &( glyphs.shadow_word_pain               ) },
+    { "glyph_shadow",                  OPT_BOOL, &( glyphs.shadow                         ) },
+    // @option_doc loc=player/misc title="Misc"
     { "devious_mind_delay",            OPT_FLT,  &( devious_mind_delay                    ) },
     // Deprecated 
     { "glyph_blue_promises",    OPT_DEPRECATED, NULL },
@@ -2151,7 +2152,7 @@ bool priest_t::parse_option( const std::string& name,
   if( name.empty() )
   {
     player_t::parse_option( std::string(), std::string() );
-    option_t::print( sim, options );
+    option_t::print( sim -> output_file, options );
     return false;
   }
 
@@ -2162,8 +2163,7 @@ bool priest_t::parse_option( const std::string& name,
 
 // player_t::create_priest  =================================================
 
-player_t* player_t::create_priest( sim_t*       sim, 
-                                   std::string& name ) 
+player_t* player_t::create_priest( sim_t* sim, const std::string& name ) 
 {
   priest_t* p =  new priest_t( sim, name );
 

@@ -139,9 +139,9 @@ void action_t::parse_options( option_t*          options,
     { "time_to_die<",       OPT_FLT,    &max_time_to_die       },
     { "health_percentage>", OPT_FLT,    &min_health_percentage },
     { "health_percentage<", OPT_FLT,    &max_health_percentage },
-    { "bloodlust",          OPT_INT,    &bloodlust_active      },
+    { "bloodlust",          OPT_BOOL,   &bloodlust_active      },
     { "travel_speed",       OPT_FLT,    &travel_speed          },
-    { "wait_on_ready",      OPT_INT,    &wait_on_ready         },
+    { "wait_on_ready",      OPT_BOOL,   &wait_on_ready         },
     { NULL }
   };
   std::vector<option_t> merged_options;

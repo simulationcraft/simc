@@ -182,7 +182,7 @@ struct warrior_t : public player_t
   };
   glyphs_t glyphs;
 
-  warrior_t( sim_t* sim, std::string& name ) : player_t( sim, WARRIOR, name )
+  warrior_t( sim_t* sim, const std::string& name ) : player_t( sim, WARRIOR, name )
   {
     // Active
     active_deep_wounds       = 0;
@@ -1386,7 +1386,7 @@ struct execute_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
     option_t options[] =
     {
-      { "sudden_death", OPT_INT, &sudden_death },
+      { "sudden_death", OPT_BOOL, &sudden_death },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1664,7 +1664,7 @@ struct slam_t : public warrior_attack_t
 
     option_t options[] =
     {
-      { "bloodsurge", OPT_INT, &bloodsurge },
+      { "bloodsurge", OPT_BOOL, &bloodsurge },
       { NULL }
     };
     parse_options( options, options_str );
@@ -2335,7 +2335,7 @@ bool warrior_t::parse_option( const std::string& name,
 {
   option_t options[] =
   {
-    // Talents
+    // @option_doc loc=skip
     { "armored_to_the_teeth",            OPT_INT, &( talents.armored_to_the_teeth            ) },
     { "anger_management",                OPT_INT, &( talents.anger_management                ) },
     { "bladestorm",                      OPT_INT, &( talents.bladestorm                      ) },
@@ -2395,21 +2395,21 @@ bool warrior_t::parse_option( const std::string& name,
     { "vitality",                        OPT_INT, &( talents.vitality                        ) },
     { "weapon_mastery",                  OPT_INT, &( talents.weapon_mastery                  ) },
     { "wrecking_crew",                   OPT_INT, &( talents.wrecking_crew                   ) },
-    // Glyphs
-    { "glyph_of_bladestorm",             OPT_INT, &( glyphs.bladestorm                       ) },
-    { "glyph_of_execution",              OPT_INT, &( glyphs.execution                        ) },
-    { "glyph_of_heroic_strike",          OPT_INT, &( glyphs.heroic_strike                    ) },
-    { "glyph_of_mortal_strike",          OPT_INT, &( glyphs.mortal_strike                    ) },
-    { "glyph_of_overpower",              OPT_INT, &( glyphs.overpower                        ) },
-    { "glyph_of_rending",                OPT_INT, &( glyphs.rending                          ) },
-    { "glyph_of_whirlwind",              OPT_INT, &( glyphs.whirlwind                        ) },
+    // @option_doc loc=player/glyphs title="Glyphs"
+    { "glyph_of_bladestorm",             OPT_BOOL, &( glyphs.bladestorm                      ) },
+    { "glyph_of_execution",              OPT_BOOL, &( glyphs.execution                       ) },
+    { "glyph_of_heroic_strike",          OPT_BOOL, &( glyphs.heroic_strike                   ) },
+    { "glyph_of_mortal_strike",          OPT_BOOL, &( glyphs.mortal_strike                   ) },
+    { "glyph_of_overpower",              OPT_BOOL, &( glyphs.overpower                       ) },
+    { "glyph_of_rending",                OPT_BOOL, &( glyphs.rending                         ) },
+    { "glyph_of_whirlwind",              OPT_BOOL, &( glyphs.whirlwind                       ) },
     { NULL, OPT_UNKNOWN }
   };
 
   if( name.empty() )
   {
     player_t::parse_option( std::string(), std::string() );
-    option_t::print( sim, options );
+    option_t::print( sim -> output_file, options );
     return false;
   }
 
@@ -2420,8 +2420,7 @@ bool warrior_t::parse_option( const std::string& name,
 
 // player_t::create_warrior ===============================================
 
-player_t* player_t::create_warrior( sim_t*       sim, 
-                                    std::string& name ) 
+player_t* player_t::create_warrior( sim_t* sim, const std::string& name ) 
 {
   return new warrior_t( sim, name );
 }

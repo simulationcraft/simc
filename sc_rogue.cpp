@@ -197,7 +197,7 @@ struct rogue_t : public player_t
   };
   glyphs_t glyphs;
 
-  rogue_t( sim_t* sim, std::string& name ) : player_t( sim, ROGUE, name )
+  rogue_t( sim_t* sim, const std::string& name ) : player_t( sim, ROGUE, name )
   {
     // Active
     active_anesthetic_poison = 0;
@@ -1290,8 +1290,8 @@ struct envenom_t : public rogue_attack_t
 
     option_t options[] =
     {
-      { "min_doses", OPT_INT, &min_doses },
-      { "no_buff",   OPT_INT, &no_buff   },
+      { "min_doses", OPT_INT,  &min_doses },
+      { "no_buff",   OPT_BOOL, &no_buff   },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1483,7 +1483,7 @@ struct expose_armor_t : public rogue_attack_t
 
     option_t options[] =
     {
-      { "override_sunder", OPT_INT, &override_sunder },
+      { "override_sunder", OPT_BOOL, &override_sunder },
       { NULL }
     };
     parse_options( options, options_str );
@@ -2394,8 +2394,8 @@ struct pool_energy_t : public rogue_attack_t
   {
     option_t options[] =
     {
-      { "wait",     OPT_FLT, &wait     },
-      { "for_next", OPT_INT, &for_next },
+      { "wait",     OPT_FLT,  &wait     },
+      { "for_next", OPT_BOOL, &for_next },
       { NULL }
     };
     parse_options( options, options_str );
@@ -3361,7 +3361,7 @@ bool rogue_t::parse_option( const std::string& name,
 {
   option_t options[] =
   {
-    // Talents
+    // @option_doc loc=skip
     { "adrenaline_rush",            OPT_INT, &( talents.adrenaline_rush            ) },
     { "aggression",                 OPT_INT, &( talents.aggression                 ) },
     { "blade_flurry",               OPT_INT, &( talents.blade_flurry               ) },
@@ -3422,26 +3422,26 @@ bool rogue_t::parse_option( const std::string& name,
     { "vile_poisons",               OPT_INT, &( talents.vile_poisons               ) },
     { "vitality",                   OPT_INT, &( talents.vitality                   ) },
     { "weapon_expertise",           OPT_INT, &( talents.weapon_expertise           ) },
-    // Glyphs
-    { "glyph_adrenaline_rush",      OPT_INT, &( glyphs.adrenaline_rush             ) },
-    { "glyph_backstab",             OPT_INT, &( glyphs.backstab                    ) },
-    { "glyph_blade_flurry",         OPT_INT, &( glyphs.blade_flurry                ) },
-    { "glyph_eviscerate",           OPT_INT, &( glyphs.eviscerate                  ) },
-    { "glyph_expose_armor",         OPT_INT, &( glyphs.expose_armor                ) },
-    { "glyph_feint",                OPT_INT, &( glyphs.feint                       ) },
-    { "glyph_ghostly_strike",       OPT_INT, &( glyphs.ghostly_strike              ) },
-    { "glyph_hemorrhage",           OPT_INT, &( glyphs.hemorrhage                  ) },
-    { "glyph_hunger_for_blood",     OPT_INT, &( glyphs.hunger_for_blood            ) },
-    { "glyph_killing_spree",        OPT_INT, &( glyphs.killing_spree               ) },
-    { "glyph_mutilate",             OPT_INT, &( glyphs.mutilate                    ) },
-    { "glyph_preparation",          OPT_INT, &( glyphs.preparation                 ) },
-    { "glyph_rupture",              OPT_INT, &( glyphs.rupture                     ) },
-    { "glyph_shadow_dance",         OPT_INT, &( glyphs.shadow_dance                ) },
-    { "glyph_sinister_strike",      OPT_INT, &( glyphs.sinister_strike             ) },
-    { "glyph_slice_and_dice",       OPT_INT, &( glyphs.slice_and_dice              ) },
-    { "glyph_tricks_of_the_trade",  OPT_INT, &( glyphs.tricks_of_the_trade         ) },
-    { "glyph_vigor",                OPT_INT, &( glyphs.vigor                       ) },
-    // Options
+    // @option_doc loc=player/glyphs title="Glyphs"
+    { "glyph_adrenaline_rush",      OPT_BOOL, &( glyphs.adrenaline_rush            ) },
+    { "glyph_backstab",             OPT_BOOL, &( glyphs.backstab                   ) },
+    { "glyph_blade_flurry",         OPT_BOOL, &( glyphs.blade_flurry               ) },
+    { "glyph_eviscerate",           OPT_BOOL, &( glyphs.eviscerate                 ) },
+    { "glyph_expose_armor",         OPT_BOOL, &( glyphs.expose_armor               ) },
+    { "glyph_feint",                OPT_BOOL, &( glyphs.feint                      ) },
+    { "glyph_ghostly_strike",       OPT_BOOL, &( glyphs.ghostly_strike             ) },
+    { "glyph_hemorrhage",           OPT_BOOL, &( glyphs.hemorrhage                 ) },
+    { "glyph_hunger_for_blood",     OPT_BOOL, &( glyphs.hunger_for_blood           ) },
+    { "glyph_killing_spree",        OPT_BOOL, &( glyphs.killing_spree              ) },
+    { "glyph_mutilate",             OPT_BOOL, &( glyphs.mutilate                   ) },
+    { "glyph_preparation",          OPT_BOOL, &( glyphs.preparation                ) },
+    { "glyph_rupture",              OPT_BOOL, &( glyphs.rupture                    ) },
+    { "glyph_shadow_dance",         OPT_BOOL, &( glyphs.shadow_dance               ) },
+    { "glyph_sinister_strike",      OPT_BOOL, &( glyphs.sinister_strike            ) },
+    { "glyph_slice_and_dice",       OPT_BOOL, &( glyphs.slice_and_dice             ) },
+    { "glyph_tricks_of_the_trade",  OPT_BOOL, &( glyphs.tricks_of_the_trade        ) },
+    { "glyph_vigor",                OPT_BOOL, &( glyphs.vigor                      ) },
+    // @option_doc loc=player/misc title="Misc"
     { "honor_among_thieves_interval", OPT_FLT,    &( honor_among_thieves_interval   ) },
     { "tricks_of_the_trade_target",   OPT_STRING, &( tricks_of_the_trade_target_str ) },
     { NULL, OPT_UNKNOWN }
@@ -3450,7 +3450,7 @@ bool rogue_t::parse_option( const std::string& name,
   if( name.empty() )
   {
     player_t::parse_option( std::string(), std::string() );
-    option_t::print( sim, options );
+    option_t::print( sim -> output_file, options );
     return false;
   }
 
@@ -3461,8 +3461,7 @@ bool rogue_t::parse_option( const std::string& name,
 
 // player_t::create_rogue  =================================================
 
-player_t* player_t::create_rogue( sim_t*       sim, 
-                                  std::string& name ) 
+player_t* player_t::create_rogue( sim_t* sim, const std::string& name ) 
 {
   return new rogue_t( sim, name );
 }

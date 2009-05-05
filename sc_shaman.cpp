@@ -209,7 +209,7 @@ struct shaman_t : public player_t
   };
   tiers_t tiers;
 
-  shaman_t( sim_t* sim, std::string& name ) : player_t( sim, SHAMAN, name )
+  shaman_t( sim_t* sim, const std::string& name ) : player_t( sim, SHAMAN, name )
   {
     // Totems
     fire_totem  = 0;
@@ -1369,8 +1369,8 @@ struct lightning_bolt_t : public shaman_spell_t
 
     option_t options[] =
     {
-      { "maelstrom", OPT_INT, &maelstrom  },
-      { "ss_wait",   OPT_INT, &ss_wait    },
+      { "maelstrom", OPT_INT,  &maelstrom  },
+      { "ss_wait",   OPT_BOOL, &ss_wait    },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1493,8 +1493,8 @@ struct lava_burst_t : public shaman_spell_t
 
     option_t options[] =
     {
-      { "flame_shock",        OPT_INT, &flame_shock        },
-      { "max_ticks_consumed", OPT_INT, &max_ticks_consumed },
+      { "flame_shock",        OPT_BOOL, &flame_shock        },
+      { "max_ticks_consumed", OPT_INT,  &max_ticks_consumed },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1689,7 +1689,7 @@ struct earth_shock_t : public shaman_spell_t
 
     option_t options[] =
     {
-      { "ss_wait", OPT_INT, &ss_wait     },
+      { "ss_wait", OPT_BOOL, &ss_wait },
       { NULL }
     };
     parse_options( options, options_str );
@@ -3374,6 +3374,7 @@ bool shaman_t::parse_option( const std::string& name,
 {
   option_t options[] =
   {
+    // @option_doc loc=skip
     { "ancestral_knowledge",       OPT_INT,  &( talents.ancestral_knowledge       ) },
     { "blessing_of_the_eternals",  OPT_INT,  &( talents.blessing_of_the_eternals  ) },
     { "booming_echoes",            OPT_INT,  &( talents.booming_echoes            ) },
@@ -3424,50 +3425,50 @@ bool shaman_t::parse_option( const std::string& name,
     { "unrelenting_storm",         OPT_INT,  &( talents.unrelenting_storm         ) },
     { "unleashed_rage",            OPT_INT,  &( talents.unleashed_rage            ) },
     { "weapon_mastery",            OPT_INT,  &( talents.weapon_mastery            ) },
-    // Glyphs
-    { "glyph_elemental_mastery",   OPT_INT,  &( glyphs.elemental_mastery          ) },
-    { "glyph_feral_spirit",        OPT_INT,  &( glyphs.feral_spirit               ) },
-    { "glyph_flame_shock",         OPT_INT,  &( glyphs.flame_shock                ) },
-    { "glyph_flametongue_weapon",  OPT_INT,  &( glyphs.flametongue_weapon         ) },
-    { "glyph_lava",                OPT_INT,  &( glyphs.lava                       ) },
-    { "glyph_lava_lash",           OPT_INT,  &( glyphs.lava_lash                  ) },
-    { "glyph_lightning_bolt",      OPT_INT,  &( glyphs.lightning_bolt             ) },
-    { "glyph_lightning_shield",    OPT_INT,  &( glyphs.lightning_shield           ) },
-    { "glyph_mana_tide",           OPT_INT,  &( glyphs.mana_tide                  ) },
-    { "glyph_shocking",            OPT_INT,  &( glyphs.shocking                   ) },
-    { "glyph_stormstrike",         OPT_INT,  &( glyphs.stormstrike                ) },
-    { "glyph_thunderstorm",        OPT_INT,  &( glyphs.thunderstorm               ) },
-    { "glyph_totem_of_wrath",      OPT_INT,  &( glyphs.totem_of_wrath             ) },
-    { "glyph_windfury_weapon",     OPT_INT,  &( glyphs.windfury_weapon            ) },
-    // Totems
-    { "totem_of_dueling",          OPT_INT,  &( totems.dueling                    ) },
-    { "totem_of_hex",              OPT_INT,  &( totems.hex                        ) },
-    { "totem_of_the_dancing_flame",OPT_INT,  &( totems.dancing_flame              ) },
-    { "thunderfall_totem",         OPT_INT,  &( totems.thunderfall                ) },
-    // Tier Bonuses
-    { "tier4_2pc_elemental",       OPT_INT,  &( tiers.t4_2pc_elemental            ) },
-    { "tier4_4pc_elemental",       OPT_INT,  &( tiers.t4_4pc_elemental            ) },
-    { "tier5_2pc_elemental",       OPT_INT,  &( tiers.t5_2pc_elemental            ) },
-    { "tier5_4pc_elemental",       OPT_INT,  &( tiers.t5_4pc_elemental            ) },
-    { "tier6_2pc_elemental",       OPT_INT,  &( tiers.t6_2pc_elemental            ) },
-    { "tier6_4pc_elemental",       OPT_INT,  &( tiers.t6_4pc_elemental            ) },
-    { "tier7_2pc_elemental",       OPT_INT,  &( tiers.t7_2pc_elemental            ) },
-    { "tier7_4pc_elemental",       OPT_INT,  &( tiers.t7_4pc_elemental            ) },
-    { "tier4_2pc_enhancement",     OPT_INT,  &( tiers.t4_2pc_enhancement          ) },
-    { "tier4_4pc_enhancement",     OPT_INT,  &( tiers.t4_4pc_enhancement          ) },
-    { "tier5_2pc_enhancement",     OPT_INT,  &( tiers.t5_2pc_enhancement          ) },
-    { "tier5_4pc_enhancement",     OPT_INT,  &( tiers.t5_4pc_enhancement          ) },
-    { "tier6_2pc_enhancement",     OPT_INT,  &( tiers.t6_2pc_enhancement          ) },
-    { "tier6_4pc_enhancement",     OPT_INT,  &( tiers.t6_4pc_enhancement          ) },
-    { "tier7_2pc_enhancement",     OPT_INT,  &( tiers.t7_2pc_enhancement          ) },
-    { "tier7_4pc_enhancement",     OPT_INT,  &( tiers.t7_4pc_enhancement          ) },
+    // @option_doc loc=player/glyphs title="Glyphs"
+    { "glyph_elemental_mastery",   OPT_BOOL, &( glyphs.elemental_mastery          ) },
+    { "glyph_feral_spirit",        OPT_BOOL, &( glyphs.feral_spirit               ) },
+    { "glyph_flame_shock",         OPT_BOOL, &( glyphs.flame_shock                ) },
+    { "glyph_flametongue_weapon",  OPT_BOOL, &( glyphs.flametongue_weapon         ) },
+    { "glyph_lava",                OPT_BOOL, &( glyphs.lava                       ) },
+    { "glyph_lava_lash",           OPT_BOOL, &( glyphs.lava_lash                  ) },
+    { "glyph_lightning_bolt",      OPT_BOOL, &( glyphs.lightning_bolt             ) },
+    { "glyph_lightning_shield",    OPT_BOOL, &( glyphs.lightning_shield           ) },
+    { "glyph_mana_tide",           OPT_BOOL, &( glyphs.mana_tide                  ) },
+    { "glyph_shocking",            OPT_BOOL, &( glyphs.shocking                   ) },
+    { "glyph_stormstrike",         OPT_BOOL, &( glyphs.stormstrike                ) },
+    { "glyph_thunderstorm",        OPT_BOOL, &( glyphs.thunderstorm               ) },
+    { "glyph_totem_of_wrath",      OPT_BOOL, &( glyphs.totem_of_wrath             ) },
+    { "glyph_windfury_weapon",     OPT_BOOL, &( glyphs.windfury_weapon            ) },
+    // @option_doc loc=player/totems title="Totems"
+    { "totem_of_dueling",          OPT_BOOL, &( totems.dueling                    ) },
+    { "totem_of_hex",              OPT_BOOL, &( totems.hex                        ) },
+    { "totem_of_the_dancing_flame",OPT_BOOL, &( totems.dancing_flame              ) },
+    { "thunderfall_totem",         OPT_BOOL, &( totems.thunderfall                ) },
+    // @option_doc loc=skip
+    { "tier4_2pc_elemental",       OPT_BOOL, &( tiers.t4_2pc_elemental            ) },
+    { "tier4_4pc_elemental",       OPT_BOOL, &( tiers.t4_4pc_elemental            ) },
+    { "tier5_2pc_elemental",       OPT_BOOL, &( tiers.t5_2pc_elemental            ) },
+    { "tier5_4pc_elemental",       OPT_BOOL, &( tiers.t5_4pc_elemental            ) },
+    { "tier6_2pc_elemental",       OPT_BOOL, &( tiers.t6_2pc_elemental            ) },
+    { "tier6_4pc_elemental",       OPT_BOOL, &( tiers.t6_4pc_elemental            ) },
+    { "tier7_2pc_elemental",       OPT_BOOL, &( tiers.t7_2pc_elemental            ) },
+    { "tier7_4pc_elemental",       OPT_BOOL, &( tiers.t7_4pc_elemental            ) },
+    { "tier4_2pc_enhancement",     OPT_BOOL, &( tiers.t4_2pc_enhancement          ) },
+    { "tier4_4pc_enhancement",     OPT_BOOL, &( tiers.t4_4pc_enhancement          ) },
+    { "tier5_2pc_enhancement",     OPT_BOOL, &( tiers.t5_2pc_enhancement          ) },
+    { "tier5_4pc_enhancement",     OPT_BOOL, &( tiers.t5_4pc_enhancement          ) },
+    { "tier6_2pc_enhancement",     OPT_BOOL, &( tiers.t6_2pc_enhancement          ) },
+    { "tier6_4pc_enhancement",     OPT_BOOL, &( tiers.t6_4pc_enhancement          ) },
+    { "tier7_2pc_enhancement",     OPT_BOOL, &( tiers.t7_2pc_enhancement          ) },
+    { "tier7_4pc_enhancement",     OPT_BOOL, &( tiers.t7_4pc_enhancement          ) },
     { NULL, OPT_UNKNOWN }
   };
 
   if( name.empty() )
   {
     player_t::parse_option( std::string(), std::string() );
-    option_t::print( sim, options );
+    option_t::print( sim -> output_file, options );
     return false;
   }
 
@@ -3478,8 +3479,7 @@ bool shaman_t::parse_option( const std::string& name,
 
 // player_t::create_shaman  =================================================
 
-player_t* player_t::create_shaman( sim_t*       sim, 
-                                   std::string& name ) 
+player_t* player_t::create_shaman( sim_t* sim, const std::string& name ) 
 {
   shaman_t* p = new shaman_t( sim, name );
 

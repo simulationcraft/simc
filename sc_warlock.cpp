@@ -219,7 +219,7 @@ struct warlock_t : public player_t
   };
   glyphs_t glyphs;
 
-  warlock_t( sim_t* sim, std::string& name ) : player_t( sim, WARLOCK, name ) 
+  warlock_t( sim_t* sim, const std::string& name ) : player_t( sim, WARLOCK, name ) 
   {
     distance = 30;
 
@@ -2262,10 +2262,10 @@ struct shadow_bolt_t : public warlock_spell_t
     travel_speed = 21.0; // set before options to allow override
     option_t options[] =
     {
-      { "shadow_trance", OPT_INT, &shadow_trance },
-      { "backdraft",     OPT_INT, &backdraft     },
-      { "isb_benefit",   OPT_INT, &isb_benefit   },
-      { "isb_trigger",   OPT_INT, &isb_trigger   },
+      { "shadow_trance", OPT_BOOL, &shadow_trance },
+      { "backdraft",     OPT_BOOL, &backdraft     },
+      { "isb_benefit",   OPT_BOOL, &isb_benefit   },
+      { "isb_trigger",   OPT_BOOL, &isb_trigger   },
       { NULL }
     };
     parse_options( options, options_str );
@@ -2404,8 +2404,8 @@ struct chaos_bolt_t : public warlock_spell_t
 
     option_t options[] =
     {
-      { "backdraft",   OPT_INT, &backdraft   },
-      { "molten_core", OPT_INT, &molten_core },
+      { "backdraft",   OPT_BOOL, &backdraft   },
+      { "molten_core", OPT_BOOL, &molten_core },
       { NULL }
     };
     parse_options( options, options_str );
@@ -2765,7 +2765,6 @@ struct drain_life_t : public warlock_spell_t
     warlock_spell_t::player_buff();
 
     warlock_t* p = player -> cast_warlock();
-    target_t*  t = sim -> target;
 
     double min_multiplier[] = { 0, 0.03, 0.06 };
     double max_multiplier[] = { 0, 0.09, 0.18 };
@@ -2804,7 +2803,7 @@ struct drain_soul_t : public warlock_spell_t
 
     option_t options[] =
     {
-      { "interrupt", OPT_INT, &interrupt },
+      { "interrupt",  OPT_BOOL, &interrupt },
       { "target_pct", OPT_DEPRECATED, (void*) "health_percentage<" },
       { NULL }
     };
@@ -2878,7 +2877,6 @@ struct drain_soul_t : public warlock_spell_t
     warlock_spell_t::player_buff();
 
     warlock_t* p = player -> cast_warlock();
-    target_t*  t = sim -> target;
 
     double min_multiplier[] = { 0, 0.03, 0.06 };
     double max_multiplier[] = { 0, 0.09, 0.18 };
@@ -3001,7 +2999,7 @@ struct haunt_t : public warlock_spell_t
 
     option_t options[] =
     {
-      { "debuff", OPT_INT, &debuff     },
+      { "debuff", OPT_BOOL, &debuff     },
       { "only_for_debuff", OPT_DEPRECATED, (void*) "debuff" },
       { NULL }
     };
@@ -3246,8 +3244,8 @@ struct conflagrate_t : public warlock_spell_t
 
     option_t options[] =
     {
-      { "no_backdraft", OPT_INT, &no_backdraft },
-      { "ticks_lost",   OPT_INT, &ticks_lost   },
+      { "no_backdraft", OPT_BOOL, &no_backdraft },
+      { "ticks_lost",   OPT_INT,  &ticks_lost   },
       { NULL }
     };
     parse_options( options, options_str );
@@ -3408,8 +3406,8 @@ struct incinerate_t : public warlock_spell_t
     travel_speed = 21.0; // set before options to allow override
     option_t options[] =
     {
-      { "backdraft",   OPT_INT, &backdraft   },
-      { "molten_core", OPT_INT, &molten_core },
+      { "backdraft",   OPT_BOOL, &backdraft   },
+      { "molten_core", OPT_BOOL, &molten_core },
       { NULL }
     };
     parse_options( options, options_str );
@@ -3580,8 +3578,8 @@ struct soul_fire_t : public warlock_spell_t
 
     option_t options[] =
     {
-      { "backdraft",  OPT_INT, &backdraft  },
-      { "decimation", OPT_INT, &decimation },
+      { "backdraft",  OPT_BOOL, &backdraft  },
+      { "decimation", OPT_BOOL, &decimation },
       { NULL }
     };
     parse_options( options, options_str );
@@ -3679,11 +3677,11 @@ struct life_tap_t : public warlock_spell_t
 
     option_t options[] =
     {
-      { "trigger",   OPT_INT, &trigger   },
-      { "inferno",   OPT_INT, &inferno   },
-      { "glyph",     OPT_INT, &glyph     },
-      { "tier7_4pc", OPT_INT, &tier7_4pc },
-      { "max",       OPT_INT, &max       },
+      { "trigger",   OPT_INT,  &trigger   },
+      { "inferno",   OPT_BOOL, &inferno   },
+      { "glyph",     OPT_BOOL, &glyph     },
+      { "tier7_4pc", OPT_BOOL, &tier7_4pc },
+      { "max",       OPT_BOOL, &max       },
       { NULL }
     };
     parse_options( options, options_str );
@@ -4622,6 +4620,7 @@ bool warlock_t::parse_option( const std::string& name,
 {
   option_t options[] =
   {
+    // @option_doc loc=skip
     { "aftermath",                OPT_INT,  &( talents.aftermath                ) },
     { "amplify_curse",            OPT_INT,  &( talents.amplify_curse            ) },
     { "backdraft",                OPT_INT,  &( talents.backdraft                ) },
@@ -4695,31 +4694,31 @@ bool warlock_t::parse_option( const std::string& name,
     { "suppression",              OPT_INT,  &( talents.suppression              ) },
     { "unholy_power",             OPT_INT,  &( talents.unholy_power             ) },
     { "unstable_affliction",      OPT_INT,  &( talents.unstable_affliction      ) },
-    // Glyphs
-    { "glyph_chaos_bolt",          OPT_INT,  &( glyphs.chaos_bolt               ) },
-    { "glyph_conflagrate",         OPT_INT,  &( glyphs.conflagrate              ) },
-    { "glyph_corruption",          OPT_INT,  &( glyphs.corruption               ) },
-    { "glyph_curse_of_agony",      OPT_INT,  &( glyphs.curse_of_agony           ) },
-    { "glyph_felguard",            OPT_INT,  &( glyphs.felguard                 ) },
-    { "glyph_felhunter",           OPT_INT,  &( glyphs.felhunter                ) },
-    { "glyph_haunt",               OPT_INT,  &( glyphs.haunt                    ) },
-    { "glyph_immolate",            OPT_INT,  &( glyphs.immolate                 ) },
-    { "glyph_imp",                 OPT_INT,  &( glyphs.imp                      ) },
-    { "glyph_incinerate",          OPT_INT,  &( glyphs.incinerate               ) },
-    { "glyph_life_tap",            OPT_INT,  &( glyphs.life_tap                 ) },
-    { "glyph_metamorphosis",       OPT_INT,  &( glyphs.metamorphosis            ) },
-    { "glyph_searing_pain",        OPT_INT,  &( glyphs.searing_pain             ) },
-    { "glyph_shadow_bolt",         OPT_INT,  &( glyphs.shadow_bolt              ) },
-    { "glyph_shadow_burn",         OPT_INT,  &( glyphs.shadow_burn              ) },
-    { "glyph_siphon_life",         OPT_INT,  &( glyphs.siphon_life              ) },
-    { "glyph_unstable_affliction", OPT_INT,  &( glyphs.unstable_affliction      ) },
+    // @option_doc loc=player/glyphs title="Glyphs"
+    { "glyph_chaos_bolt",          OPT_BOOL, &( glyphs.chaos_bolt               ) },
+    { "glyph_conflagrate",         OPT_BOOL, &( glyphs.conflagrate              ) },
+    { "glyph_corruption",          OPT_BOOL, &( glyphs.corruption               ) },
+    { "glyph_curse_of_agony",      OPT_BOOL, &( glyphs.curse_of_agony           ) },
+    { "glyph_felguard",            OPT_BOOL, &( glyphs.felguard                 ) },
+    { "glyph_felhunter",           OPT_BOOL, &( glyphs.felhunter                ) },
+    { "glyph_haunt",               OPT_BOOL, &( glyphs.haunt                    ) },
+    { "glyph_immolate",            OPT_BOOL, &( glyphs.immolate                 ) },
+    { "glyph_imp",                 OPT_BOOL, &( glyphs.imp                      ) },
+    { "glyph_incinerate",          OPT_BOOL, &( glyphs.incinerate               ) },
+    { "glyph_life_tap",            OPT_BOOL, &( glyphs.life_tap                 ) },
+    { "glyph_metamorphosis",       OPT_BOOL, &( glyphs.metamorphosis            ) },
+    { "glyph_searing_pain",        OPT_BOOL, &( glyphs.searing_pain             ) },
+    { "glyph_shadow_bolt",         OPT_BOOL, &( glyphs.shadow_bolt              ) },
+    { "glyph_shadow_burn",         OPT_BOOL, &( glyphs.shadow_burn              ) },
+    { "glyph_siphon_life",         OPT_BOOL, &( glyphs.siphon_life              ) },
+    { "glyph_unstable_affliction", OPT_BOOL, &( glyphs.unstable_affliction      ) },
     { NULL, OPT_UNKNOWN }
   };
 
   if( name.empty() )
   {
     player_t::parse_option( std::string(), std::string() );
-    option_t::print( sim, options );
+    option_t::print( sim -> output_file, options );
     return false;
   }
 
@@ -4730,8 +4729,7 @@ bool warlock_t::parse_option( const std::string& name,
 
 // player_t::create_warlock ================================================
 
-player_t* player_t::create_warlock( sim_t*       sim, 
-                                    std::string& name ) 
+player_t* player_t::create_warlock( sim_t* sim, const std::string& name ) 
 {
   warlock_t* p = new warlock_t( sim, name );
 

@@ -215,7 +215,7 @@ struct druid_t : public player_t
   };
   tiers_t tiers;
 
-  druid_t( sim_t* sim, std::string& name ) : player_t( sim, DRUID, name )
+  druid_t( sim_t* sim, const std::string& name ) : player_t( sim, DRUID, name )
   {
     active_insect_swarm   = 0;
     active_moonfire       = 0;
@@ -961,23 +961,23 @@ void druid_attack_t::parse_options( option_t*          options,
 {
   option_t base_options[] =
   {
-    { "berserk",          OPT_INT, &berserk                },
-    { "min_combo_points", OPT_INT, &min_combo_points       },
-    { "max_combo_points", OPT_INT, &max_combo_points       },
-    { "cp>",              OPT_INT, &min_combo_points       },
-    { "cp<",              OPT_INT, &max_combo_points       },
-    { "min_energy",       OPT_FLT, &min_energy             },
-    { "max_energy",       OPT_FLT, &max_energy             },
-    { "energy>",          OPT_FLT, &min_energy             },
-    { "energy<",          OPT_FLT, &max_energy             },
-    { "rip>",             OPT_FLT, &min_rip_expire         },
-    { "rip<",             OPT_FLT, &max_rip_expire         },
-    { "rake>",            OPT_FLT, &min_rake_expire        },
-    { "rake<",            OPT_FLT, &max_rake_expire        },
-    { "mangle>",          OPT_FLT, &min_mangle_expire      },
-    { "mangle<",          OPT_FLT, &max_mangle_expire      },
-    { "savage_roar>",     OPT_FLT, &min_savage_roar_expire },
-    { "savage_roar<",     OPT_FLT, &max_savage_roar_expire },
+    { "berserk",          OPT_BOOL, &berserk                },
+    { "min_combo_points", OPT_INT,  &min_combo_points       },
+    { "max_combo_points", OPT_INT,  &max_combo_points       },
+    { "cp>",              OPT_INT,  &min_combo_points       },
+    { "cp<",              OPT_INT,  &max_combo_points       },
+    { "min_energy",       OPT_FLT,  &min_energy             },
+    { "max_energy",       OPT_FLT,  &max_energy             },
+    { "energy>",          OPT_FLT,  &min_energy             },
+    { "energy<",          OPT_FLT,  &max_energy             },
+    { "rip>",             OPT_FLT,  &min_rip_expire         },
+    { "rip<",             OPT_FLT,  &max_rip_expire         },
+    { "rake>",            OPT_FLT,  &min_rake_expire        },
+    { "rake<",            OPT_FLT,  &max_rake_expire        },
+    { "mangle>",          OPT_FLT,  &min_mangle_expire      },
+    { "mangle<",          OPT_FLT,  &max_mangle_expire      },
+    { "savage_roar>",     OPT_FLT,  &min_savage_roar_expire },
+    { "savage_roar<",     OPT_FLT,  &max_savage_roar_expire },
     { NULL }
   };
   std::vector<option_t> merged_options;
@@ -1254,7 +1254,7 @@ struct faerie_fire_feral_t : public druid_attack_t
   {
     option_t options[] =
     {
-      { "debuff_only", OPT_INT, &debuff_only },
+      { "debuff_only", OPT_BOOL, &debuff_only },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1528,7 +1528,7 @@ struct shred_t : public druid_attack_t
 
     option_t options[] =
     {
-      { "omen_of_clarity",     OPT_INT, &omen_of_clarity },
+      { "omen_of_clarity", OPT_BOOL, &omen_of_clarity },
       { NULL }
     };
     parse_options( options, options_str );
@@ -1614,7 +1614,7 @@ berserk_t( player_t* player, const std::string& options_str ) :
 
     option_t options[] =
     {
-      { "tigers_fury", OPT_INT, &tigers_fury },
+      { "tigers_fury", OPT_BOOL, &tigers_fury },
       { NULL }
     };
 
@@ -2171,8 +2171,8 @@ struct insect_swarm_t : public druid_spell_t
 
     option_t options[] =
     {
-      { "wrath_ready",     OPT_INT, &wrath_ready      },
-      { "eclipse_left>",   OPT_FLT, &min_eclipse_left },
+      { "wrath_ready",     OPT_BOOL, &wrath_ready      },
+      { "eclipse_left>",   OPT_FLT,  &min_eclipse_left },
      { NULL }
     };
     parse_options( options, options_str );
@@ -2484,10 +2484,10 @@ struct starfire_t : public druid_spell_t
     std::string eclipse_str;
     option_t options[] =
     {
-      { "extendmf", OPT_INT,    &extend_moonfire },
+      { "extendmf", OPT_BOOL,   &extend_moonfire },
       { "eclipse",  OPT_STRING, &eclipse_str     },
       { "prev",     OPT_STRING, &prev_str        },
-      { "instant",  OPT_INT,    &instant         },
+      { "instant",  OPT_BOOL,   &instant         },
       { NULL }
     };
     parse_options( options, options_str );
@@ -3405,7 +3405,7 @@ bool druid_t::parse_option( const std::string& name,
 {
   option_t options[] =
   {
-    // Talents
+    // @option_doc loc=skip
     { "balance_of_power",          OPT_INT,  &( talents.balance_of_power          ) },
     { "berserk",                   OPT_INT,  &( talents.berserk                   ) },
     { "brambles",                  OPT_INT,  &( talents.brambles                  ) },
@@ -3460,49 +3460,49 @@ bool druid_t::parse_option( const std::string& name,
     { "starlight_wrath",           OPT_INT,  &( talents.starlight_wrath           ) },
     { "vengeance",                 OPT_INT,  &( talents.vengeance                 ) },
     { "wrath_of_cenarius",         OPT_INT,  &( talents.wrath_of_cenarius         ) },
-    // Glyphs
-    { "glyph_berserk",             OPT_INT,  &( glyphs.berserk                    ) },
-    { "glyph_insect_swarm",        OPT_INT,  &( glyphs.insect_swarm               ) },
-    { "glyph_innervate",           OPT_INT,  &( glyphs.innervate                  ) },
-    { "glyph_mangle",              OPT_INT,  &( glyphs.mangle                     ) },
-    { "glyph_moonfire",            OPT_INT,  &( glyphs.moonfire                   ) },
-    { "glyph_rip",                 OPT_INT,  &( glyphs.rip                        ) },
-    { "glyph_savage_roar",         OPT_INT,  &( glyphs.savage_roar                ) },
-    { "glyph_shred",               OPT_INT,  &( glyphs.shred                      ) },
-    { "glyph_starfire",            OPT_INT,  &( glyphs.starfire                   ) },
-    { "glyph_starfall",            OPT_INT,  &( glyphs.starfall                   ) },
-    // Idols
-    { "idol_of_the_corruptor",      OPT_INT,  &( idols.corruptor                  ) },
-    { "idol_of_the_crying_wind",    OPT_INT,  &( idols.crying_wind                ) },
-    { "idol_of_the_ravenous_beast", OPT_INT,  &( idols.ravenous_beast             ) },
-    { "idol_of_steadfast_renewal",  OPT_INT,  &( idols.steadfast_renewal          ) },
-    { "idol_of_the_shooting_star",  OPT_INT,  &( idols.shooting_star              ) },
-    { "idol_of_the_unseen_moon",    OPT_INT,  &( idols.unseen_moon                ) },
-    { "idol_of_worship",            OPT_INT,  &( idols.worship                    ) },
-    // Tier Bonuses
-    { "tier4_2pc_balance",       OPT_INT,  &( tiers.t4_2pc_balance                ) },
-    { "tier4_4pc_balance",       OPT_INT,  &( tiers.t4_4pc_balance                ) },
-    { "tier5_2pc_balance",       OPT_INT,  &( tiers.t5_2pc_balance                ) },
-    { "tier5_4pc_balance",       OPT_INT,  &( tiers.t5_4pc_balance                ) },
-    { "tier6_2pc_balance",       OPT_INT,  &( tiers.t6_2pc_balance                ) },
-    { "tier6_4pc_balance",       OPT_INT,  &( tiers.t6_4pc_balance                ) },
-    { "tier7_2pc_balance",       OPT_INT,  &( tiers.t7_2pc_balance                ) },
-    { "tier7_4pc_balance",       OPT_INT,  &( tiers.t7_4pc_balance                ) },
-    { "tier4_2pc_feral",         OPT_INT,  &( tiers.t4_2pc_feral                  ) },
-    { "tier4_4pc_feral",         OPT_INT,  &( tiers.t4_4pc_feral                  ) },
-    { "tier5_2pc_feral",         OPT_INT,  &( tiers.t5_2pc_feral                  ) },
-    { "tier5_4pc_feral",         OPT_INT,  &( tiers.t5_4pc_feral                  ) },
-    { "tier6_2pc_feral",         OPT_INT,  &( tiers.t6_2pc_feral                  ) },
-    { "tier6_4pc_feral",         OPT_INT,  &( tiers.t6_4pc_feral                  ) },
-    { "tier7_2pc_feral",         OPT_INT,  &( tiers.t7_2pc_feral                  ) },
-    { "tier7_4pc_feral",         OPT_INT,  &( tiers.t7_4pc_feral                  ) },
+    // @option_doc loc=player/glyphs title="Glyphs"
+    { "glyph_berserk",             OPT_BOOL,  &( glyphs.berserk                   ) },
+    { "glyph_insect_swarm",        OPT_BOOL,  &( glyphs.insect_swarm              ) },
+    { "glyph_innervate",           OPT_BOOL,  &( glyphs.innervate                 ) },
+    { "glyph_mangle",              OPT_BOOL,  &( glyphs.mangle                    ) },
+    { "glyph_moonfire",            OPT_BOOL,  &( glyphs.moonfire                  ) },
+    { "glyph_rip",                 OPT_BOOL,  &( glyphs.rip                       ) },
+    { "glyph_savage_roar",         OPT_BOOL,  &( glyphs.savage_roar               ) },
+    { "glyph_shred",               OPT_BOOL,  &( glyphs.shred                     ) },
+    { "glyph_starfire",            OPT_BOOL,  &( glyphs.starfire                  ) },
+    { "glyph_starfall",            OPT_BOOL,  &( glyphs.starfall                  ) },
+    // @option_doc loc=player/idols title="Idols"
+    { "idol_of_the_corruptor",      OPT_BOOL,  &( idols.corruptor                 ) },
+    { "idol_of_the_crying_wind",    OPT_BOOL,  &( idols.crying_wind               ) },
+    { "idol_of_the_ravenous_beast", OPT_BOOL,  &( idols.ravenous_beast            ) },
+    { "idol_of_steadfast_renewal",  OPT_BOOL,  &( idols.steadfast_renewal         ) },
+    { "idol_of_the_shooting_star",  OPT_BOOL,  &( idols.shooting_star             ) },
+    { "idol_of_the_unseen_moon",    OPT_BOOL,  &( idols.unseen_moon               ) },
+    { "idol_of_worship",            OPT_BOOL,  &( idols.worship                   ) },
+    // @option_doc loc=skip
+    { "tier4_2pc_balance",          OPT_BOOL,  &( tiers.t4_2pc_balance            ) },
+    { "tier4_4pc_balance",          OPT_BOOL,  &( tiers.t4_4pc_balance            ) },
+    { "tier5_2pc_balance",          OPT_BOOL,  &( tiers.t5_2pc_balance            ) },
+    { "tier5_4pc_balance",          OPT_BOOL,  &( tiers.t5_4pc_balance            ) },
+    { "tier6_2pc_balance",          OPT_BOOL,  &( tiers.t6_2pc_balance            ) },
+    { "tier6_4pc_balance",          OPT_BOOL,  &( tiers.t6_4pc_balance            ) },
+    { "tier7_2pc_balance",          OPT_BOOL,  &( tiers.t7_2pc_balance            ) },
+    { "tier7_4pc_balance",          OPT_BOOL,  &( tiers.t7_4pc_balance            ) },
+    { "tier4_2pc_feral",            OPT_BOOL,  &( tiers.t4_2pc_feral              ) },
+    { "tier4_4pc_feral",            OPT_BOOL,  &( tiers.t4_4pc_feral              ) },
+    { "tier5_2pc_feral",            OPT_BOOL,  &( tiers.t5_2pc_feral              ) },
+    { "tier5_4pc_feral",            OPT_BOOL,  &( tiers.t5_4pc_feral              ) },
+    { "tier6_2pc_feral",            OPT_BOOL,  &( tiers.t6_2pc_feral              ) },
+    { "tier6_4pc_feral",            OPT_BOOL,  &( tiers.t6_4pc_feral              ) },
+    { "tier7_2pc_feral",            OPT_BOOL,  &( tiers.t7_2pc_feral              ) },
+    { "tier7_4pc_feral",            OPT_BOOL,  &( tiers.t7_4pc_feral              ) },
     { NULL, OPT_UNKNOWN }
   };
 
   if( name.empty() )
   {
     player_t::parse_option( std::string(), std::string() );
-    option_t::print( sim, options );
+    option_t::print( sim -> output_file, options );
     return false;
   }
 
@@ -3513,8 +3513,8 @@ bool druid_t::parse_option( const std::string& name,
 
 // player_t::create_druid  ==================================================
 
-player_t* player_t::create_druid( sim_t*       sim,
-                                  std::string& name )
+player_t* player_t::create_druid( sim_t*             sim,
+                                  const std::string& name )
 {
   druid_t* p = new druid_t( sim, name );
 
