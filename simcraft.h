@@ -362,12 +362,13 @@ struct roll_instance_t
 struct roll_t{
 	rng_t* rng;
 	int normalized;
+	double phase_shift;
 	std::map<std::string, roll_instance_t> rollMap;
-	void init(int sfmt, int normalized_roll);
+	void init(int sfmt, int normalized_roll, double phase);
 	void reset();
 	int rnd(double chance);
 public:
-	roll_t(int sfmt, int normalized_roll);
+	roll_t(int sfmt, int normalized_roll, double phase);
 	virtual ~roll_t();
 	double real();
 	int roll(double chance);
@@ -537,8 +538,9 @@ struct sim_t : public app_t
   // Multi-Threading
   std::vector<sim_t*> children;
   void* thread_handle;
+  int  threadID;
 
-  sim_t( sim_t* parent=0 );
+  sim_t( sim_t* parent=0, int thrdID=0 );
  ~sim_t();
 
   virtual const char* name() { return "simcraft"; }

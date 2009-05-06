@@ -579,19 +579,24 @@ int util_t::milliseconds(){
 // Normalized_roll  implementation
 
 
-roll_t::roll_t(int sfmt, int normalized_roll){
+roll_t::roll_t(int sfmt, int normalized_roll, double phase){
 	rng=0;
 	normalized=0;
-	init(sfmt, normalized_roll);
+	phase_shift=0;
+	init(sfmt, normalized_roll,phase);
 }
 
 roll_t::~roll_t(){
 	reset();
 }
 
-void roll_t::init(int sfmt, int normalized_roll){
+void roll_t::init(int sfmt, int normalized_roll, double phase){
 	if (!rng) rng = rng_t::init( sfmt );
 	normalized=normalized_roll;
+	if (phase<0) phase=abs(phase);
+	if (phase>=1) phase=0;
+	phase_shift= 0.5+phase;
+	if (phase_shift>=1) phase_shift-=1;
 }
 
 void roll_t::reset(){
@@ -599,13 +604,13 @@ void roll_t::reset(){
 }
 
 double roll_t::real(){
-	if (!rng) init(0,normalized);
+	if (!rng) init(0,normalized,0);
 	return rng -> real(); 
 }
 
 
 int roll_t::rnd(double chance){
-	if (!rng) init(0,normalized);
+	if (!rng) init(0,normalized,0);
 	if (chance<=0) return 0;
 	if (chance>=1) return 1;
 	return rng -> roll( chance ); 
@@ -636,7 +641,7 @@ int roll_t::roll(double chance, std::string rollName){
 	ri->nTries++;
 	ri->wanted+=chance;
 	// decide if I should "give"
-	if (ri->given+0.5 < ri->wanted){
+	if (ri->given+phase_shift < ri->wanted){
 		ri->given++;
 		return 1;
 	}else

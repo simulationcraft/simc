@@ -134,7 +134,7 @@ static bool parse_optimal_raid( sim_t*             sim,
 
 // sim_t::sim_t =============================================================
 
-sim_t::sim_t( sim_t* p ) : 
+sim_t::sim_t( sim_t* p, int thrdID ) : 
   parent(p), P309(false), P312(false), rng(0), free_list(0), player_list(0), active_player(0), num_players(0),
   queue_lag(0.075), queue_lag_range(0), 
   gcd_lag(0.150), gcd_lag_range(0), 
@@ -155,7 +155,8 @@ sim_t::sim_t( sim_t* p ) :
   raid_dps(0), total_dmg(0), 
   total_seconds(0), elapsed_cpu_seconds(0), 
   merge_ignite(0), report_progress(1),
-  output_file(stdout), log_file(0), thread_handle(0)
+  output_file(stdout), log_file(0), thread_handle(0), threadID(thrdID)
+
 {
 
   for( int i=0; i < RESOURCE_MAX; i++ ) 
@@ -422,8 +423,10 @@ bool sim_t::init()
 {
   P309 = patch.before( 3, 1, 0 );
   P312 = patch.after( 3, 1, 2 );
-
-  rng = new roll_t( sfmt, normalized_roll );
+  
+  double phase=0;
+  if ((threads>1)&&(threadID>0)) phase=threadID/(threads+0.0);
+  rng = new roll_t( sfmt, normalized_roll, phase );
 
   // Timing wheel depth defaults to 10 minutes with a granularity of 10 buckets per second.
   if( wheel_seconds     <= 0 ) wheel_seconds     = 600;
@@ -731,6 +734,7 @@ void sim_t::iterate()
   if( report_progress ) fprintf( stdout, "\n" );
 
   reset();
+  rng->reset();
 }
 
 // sim_t::merge =============================================================
@@ -828,7 +832,7 @@ void sim_t::partition()
 
   for( int i=0; i < num_children; i++ )
   {
-    sim_t* child = children[ i ] = new sim_t( this );
+    sim_t* child = children[ i ] = new sim_t( this, i+1 );
     child -> iterations /= threads;
     child -> report_progress = 0;
   }
