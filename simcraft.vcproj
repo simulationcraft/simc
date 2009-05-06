@@ -220,6 +220,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\sc_main.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\sc_option.cpp"
 			>
 		</File>

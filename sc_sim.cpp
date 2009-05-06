@@ -149,6 +149,7 @@ sim_t::sim_t( sim_t* p ) :
   optimal_raid(0), average_dmg(1),
   log(0), debug(0), sfmt(1),
   jow_chance(0), jow_ppm(15.0),
+  normalized_roll(0),
   timing_wheel(0), wheel_seconds(0), wheel_size(0), wheel_mask(0), timing_slice(0), wheel_granularity(0.0),
   replenishment_targets(0),
   raid_dps(0), total_dmg(0), 
@@ -422,7 +423,7 @@ bool sim_t::init()
   P309 = patch.before( 3, 1, 0 );
   P312 = patch.after( 3, 1, 2 );
 
-  rng = rng_t::init( sfmt );
+  rng = new roll_t( sfmt, normalized_roll );
 
   // Timing wheel depth defaults to 10 minutes with a granularity of 10 buckets per second.
   if( wheel_seconds     <= 0 ) wheel_seconds     = 600;
@@ -1027,7 +1028,8 @@ bool sim_t::parse_option( const std::string& name,
     { "sfmt",                             OPT_BOOL,   &( sfmt                                     ) },
     { "wheel_granularity",                OPT_FLT,    &( wheel_granularity                        ) },
     { "wheel_seconds",                    OPT_INT,    &( wheel_seconds                            ) },
-    { NULL, OPT_UNKNOWN }
+    { "normalized_roll",                  OPT_INT,    &( normalized_roll                          ) },
+	{ NULL, OPT_UNKNOWN }
   };
 
   if( name.empty() )

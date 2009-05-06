@@ -49,7 +49,7 @@ struct judgement_of_wisdom_callback_t : public action_callback_t
       }
     }
 
-    if( ! sim -> roll( proc_chance ) )
+    if( ! sim -> rng->roll( proc_chance,p,"jow_cb" ) )
       return;
 
     proc -> occur();

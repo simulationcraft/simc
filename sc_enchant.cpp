@@ -47,7 +47,7 @@ struct spellsurge_callback_t : public action_callback_t
 
   virtual void trigger( action_t* a )
   {
-    if( spell -> ready() && a -> sim -> roll( 0.15 ) )
+    if( spell -> ready() && a -> sim -> rng-> roll( 0.15, "spellsurge_cb" ) )
     {
       for( player_t* p = a -> sim -> player_list; p; p = p -> next )
       {
@@ -131,7 +131,7 @@ struct berserking_callback_t : public action_callback_t
     double PPM = 1.2;
     double swing_time = a -> time_to_execute;
 
-    if( a -> sim -> roll( w -> proc_chance_on_swing( PPM, swing_time ) ) )
+    if( a -> sim -> rng-> roll( w -> proc_chance_on_swing( PPM, swing_time ),p,"berserking_cb" ) )
     {
       if( e )
       {
@@ -207,7 +207,7 @@ struct mongoose_callback_t : public action_callback_t
     double PPM = 1.2 - ( ( std::max( p -> level, 70 ) - 70 ) * 0.02 );
     double swing_time = a -> time_to_execute;
 
-    if( a -> sim -> roll( w -> proc_chance_on_swing( PPM, swing_time ) ) )
+    if( a -> sim -> rng->roll( w -> proc_chance_on_swing( PPM, swing_time ),p,"mongoose_cb" ) )
     {
       if( e )
       {
@@ -272,7 +272,7 @@ struct executioner_callback_t : public action_callback_t
     double PPM = 1.2;
     double swing_time = a -> time_to_execute;
 
-    if( a -> sim -> roll( w -> proc_chance_on_swing( PPM, swing_time ) ) )
+    if( a -> sim -> rng->roll( w -> proc_chance_on_swing( PPM, swing_time ),p,"executioner_cb" ) )
     {
       if( expiration )
       {

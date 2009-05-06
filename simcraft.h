@@ -92,7 +92,7 @@ struct uptime_t;
 struct warlock_t;
 struct warrior_t;
 struct weapon_t;
-
+struct roll_t;
 
 
 // Enumerations ==============================================================
@@ -350,6 +350,36 @@ struct gear_stats_t
   static double stat_mod( int stat );
 };
 
+// normalized and standard random
+struct roll_instance_t
+{
+	int    given;
+	double wanted; // sum of chances
+	int    nTries;
+	roll_instance_t() { memset( (void*) this, 0x00, sizeof( roll_instance_t ) ); }
+};
+
+struct roll_t{
+	rng_t* rng;
+	int normalized;
+	std::map<std::string, roll_instance_t> rollMap;
+	void init(int sfmt, int normalized_roll);
+	void reset();
+	int rnd(double chance);
+public:
+	roll_t(int sfmt, int normalized_roll);
+	virtual ~roll_t();
+	double real();
+	int roll(double chance);
+	int roll(double chance, std::string rollName);
+	int roll(double chance, player_t* plr, std::string& rollName);
+	int roll(double chance, player_t* plr, const char* rollName);
+	int roll(double chance, action_t* act, std::string& rollName);
+	int roll(double chance, action_t* act, const char* rollName);
+    double range( double min, double max );
+    double gaussian( double mean, double stddev );
+};
+
 // Application ===============================================================
 
 struct app_t
@@ -369,7 +399,7 @@ struct sim_t : public app_t
   patch_t     patch;
   bool        P309;
   bool        P312;
-  rng_t*      rng;
+  roll_t*      rng;
   event_t*    free_list;
   target_t*   target;
   player_t*   player_list;
@@ -388,6 +418,7 @@ struct sim_t : public app_t
   int         armor_update_interval, potion_sickness;
   int         optimal_raid, average_dmg, log, debug, sfmt;
   double      jow_chance, jow_ppm;
+  int		  normalized_roll;
 
   std::vector<std::string> party_encoding;
 
@@ -501,6 +532,7 @@ struct sim_t : public app_t
   std::string output_file_str, log_file_str, html_file_str, wiki_file_str;
   FILE* output_file;
   FILE* log_file;
+
 
   // Multi-Threading
   std::vector<sim_t*> children;
@@ -1711,6 +1743,8 @@ struct util_t
 
   static int milliseconds();
 };
+
+
 
 #endif // __SIMCRAFT_H
 

@@ -1007,7 +1007,7 @@ static void trigger_tier7_2pc( spell_t* s )
   if(   p ->  unique_gear -> tier7_2pc &&
       ! p -> buffs.tier7_2pc )
   {
-    p -> buffs.tier7_2pc = s -> sim -> roll( 0.15 );
+    p -> buffs.tier7_2pc = s -> sim -> rng-> roll( 0.15,p,"t7pc2" );
 
     if( p -> buffs.tier7_2pc ) p -> aura_gain( "Demonic Soul" ,61595 );
   }
@@ -1073,7 +1073,7 @@ static void trigger_tier4_2pc( spell_t* s )
 
   if( p -> unique_gear -> tier4_2pc )
   {
-    if( s -> sim -> roll( 0.05 ) )
+    if( s -> sim -> rng-> roll( 0.05,p,"t4pc2" ) )
     {
       event_t*& e = ( s -> school == SCHOOL_SHADOW ) ? p -> _expirations.shadow_flame : p -> _expirations.flame_shadow;
 
@@ -1192,7 +1192,7 @@ static void trigger_nightfall( spell_t* s )
 
   if( p -> talents.nightfall && ! p -> _buffs.shadow_trance )
   {
-    if( s -> sim -> roll( 0.02 * p -> talents.nightfall ) )
+    if( s -> sim -> rng->roll( 0.02 * p -> talents.nightfall, p, "nightfall" ) )
     {
       p -> procs_shadow_trance -> occur();
       p -> aura_gain( "Shadow Trance",17941 );
@@ -1209,7 +1209,7 @@ static void trigger_corruption_glyph( spell_t* s )
 
   if( p -> glyphs.corruption && ! p -> _buffs.shadow_trance )
   {
-    if( s -> sim -> roll( 0.04 ) )
+    if( s -> sim -> rng-> roll( 0.04, p, "shadow_trance" ) )
     {
       p -> procs_shadow_trance -> occur();
       p -> aura_gain( "Shadow Trance",17941 );
@@ -1226,7 +1226,7 @@ static void trigger_soul_leech( spell_t* s )
 
   if( p -> talents.soul_leech )
   {
-    if( s -> sim -> roll( 0.10 * p -> talents.soul_leech ) )
+    if( s -> sim -> rng-> roll( 0.10 * p -> talents.soul_leech, p, "soul_leech" ) )
     {
       p -> resource_gain( RESOURCE_HEALTH, s -> direct_dmg * 0.20 );
 
@@ -1239,7 +1239,7 @@ static void trigger_soul_leech( spell_t* s )
 
         if( ! s -> sim -> P309 )
         {
-          if( s -> sim -> roll( 0.5 * p -> talents.improved_soul_leech ) )
+          if( s -> sim -> rng-> roll( 0.5 * p -> talents.improved_soul_leech, p, "impr_soul_leech" ) )
           {
             p -> trigger_replenishment();
           }
@@ -1355,7 +1355,7 @@ static void trigger_molten_core( spell_t* s )
 
   if( ! p -> talents.molten_core ) return;
 
-  if( s -> sim -> roll( p -> talents.molten_core * 0.05 ) )
+  if( s -> sim -> rng-> roll( p -> talents.molten_core * 0.05, p, "molten core" ) )
   {
     event_t*&  e = p -> _expirations.molten_core;
 
@@ -1453,7 +1453,7 @@ static void trigger_eradication( spell_t* s )
 
   if( ! p -> talents.eradication ) return;
 
-  if( s -> sim -> roll( 0.06 ) )
+  if( s -> sim -> rng-> roll( 0.06, p, "eradication" ) )
   {
     event_t*&  e = p -> _expirations.eradication;
     if( e )
@@ -1493,7 +1493,7 @@ static void trigger_everlasting_affliction( spell_t* s )
 
   if( ! p -> active_corruption ) return;
 
-  if( s -> sim -> roll( p -> talents.everlasting_affliction * 0.20 ) )
+  if( s -> sim -> rng-> roll( p -> talents.everlasting_affliction * 0.20, p, "everlast_afflic" ) )
   {
     p -> active_corruption -> refresh_duration();
   }
@@ -1568,7 +1568,7 @@ static void trigger_empowered_imp( spell_t* s )
 
   if( ! o -> talents.empowered_imp ) return;
 
-  if( s -> sim -> roll( o -> talents.empowered_imp / 3.0 ) )
+  if( s -> sim -> rng-> roll( o -> talents.empowered_imp / 3.0 ,o, "empowered imp") )
   {
     event_t*& e = o -> _expirations.empowered_imp;
 
@@ -1728,7 +1728,7 @@ static void trigger_ashtongue_talisman( spell_t* s )
 
   player_t* p = s -> player;
 
-  if( p -> unique_gear -> ashtongue_talisman && s -> sim -> roll( 0.20 ) )
+  if( p -> unique_gear -> ashtongue_talisman && s -> sim -> rng-> roll( 0.20,p,"ashtongue" ) )
   {
     p -> procs.ashtongue_talisman -> occur();
 
@@ -3293,7 +3293,7 @@ struct conflagrate_t : public warlock_spell_t
     {
       dot_spell = &( p -> active_shadowflame );
     }
-    else if( sim -> roll( 0.50 ) )
+    else if( sim -> rng-> roll( 0.50,p,"immo or sf" ) )
     {
       dot_spell = &( p -> active_immolate );
     }

@@ -33,7 +33,7 @@ struct stat_proc_callback_t : public action_callback_t
 
     if( proc_chance )
     {
-      if( ! sim -> roll( proc_chance ) )
+		if( ! sim -> rng-> roll( proc_chance, a->player, name_str ) )
         return;
 
       proc -> occur();
@@ -125,7 +125,7 @@ struct discharge_proc_callback_t : public action_callback_t
         return;
 
     if( proc_chance )
-      if( ! sim -> roll( proc_chance ) )
+      if( ! sim -> rng->roll( proc_chance, a->player, name_str ) )
         return;
 
     if( ++stacks < max_stacks )

@@ -728,7 +728,7 @@ void action_t::tick()
 
   if( tick_may_crit )
   {
-    if( sim -> roll( total_crit() ) )
+    if( sim -> rng-> roll( total_crit(), this, "tick_crit" ) )
     {
       result = RESULT_CRIT;
     }
