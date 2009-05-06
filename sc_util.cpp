@@ -576,7 +576,14 @@ int util_t::milliseconds(){
 #endif
 }
 
-// Normalized_roll  implementation
+// Normalized_roll  implementation. Level of normalization depends on "normalized_roll=" value:
+// ==0: no normalization
+// ==1: full normalization, max determinism
+// >=10: slightly lower determinism, random phase_shifts
+// >=20: random events distribution
+// >=30: random gaussian
+// >=40: random range too
+// atm normalized_roll>=40 is same as no normalization
 
 
 roll_t::roll_t(int sfmt, int normalized_roll, double phase){
@@ -622,7 +629,7 @@ int roll_t::roll(double chance){
 
 
 int roll_t::roll(double chance, std::string rollName){
-	if (!normalized) return rnd(chance);
+	if ((!normalized)||(normalized>=20)) return rnd(chance);
 	//check if new value
 	std::map<std::string, roll_instance_t>::iterator it= rollMap.find(rollName);
 	roll_instance_t* ri=0;
@@ -630,6 +637,10 @@ int roll_t::roll(double chance, std::string rollName){
 	if(it== rollMap.end())
 	{	
 		roll_instance_t rn;
+		if (normalized>=10)
+			rn.given=real();
+		else
+			rn.given=phase_shift;
 		rollMap[rollName]=rn;
 		ri=&rollMap[rollName];
 	} else
@@ -638,10 +649,9 @@ int roll_t::roll(double chance, std::string rollName){
 	if (chance<=0) chance=0;
 	if (chance>=1) chance=1;
 	// advance
-	ri->nTries++;
 	ri->wanted+=chance;
 	// decide if I should "give"
-	if (ri->given+phase_shift < ri->wanted){
+	if (ri->given < ri->wanted){
 		ri->given++;
 		return 1;
 	}else
@@ -651,7 +661,7 @@ int roll_t::roll(double chance, std::string rollName){
 
 
 int roll_t::roll(double chance, player_t* plr, const char* rollName){
-	if (!normalized) return rnd(chance);
+	if ((!normalized)||(normalized>=20)) return rnd(chance);
 	std::string s="";
 	if (plr){
 		s= plr->name_str;
@@ -661,12 +671,12 @@ int roll_t::roll(double chance, player_t* plr, const char* rollName){
 	return roll(chance, s);
 }
 int roll_t::roll(double chance, player_t* plr, std::string& rollName){
-	if (!normalized) return rnd(chance);
+	if ((!normalized)||(normalized>=20)) return rnd(chance);
 	return roll(chance, plr, rollName.c_str());
 }
 
 int roll_t::roll(double chance, action_t* act, const char* rollName){
-	if (!normalized) return rnd(chance);
+	if ((!normalized)||(normalized>=20)) return rnd(chance);
 	std::string s="";
 	player_t* plr= 0;
 	if (act){
@@ -678,18 +688,22 @@ int roll_t::roll(double chance, action_t* act, const char* rollName){
 	return roll(chance, plr, s);
 }
 int roll_t::roll(double chance, action_t* act, std::string& rollName){
-	if (!normalized) return rnd(chance);
+	if ((!normalized)||(normalized>=20)) return rnd(chance);
 	return roll(chance, act, rollName.c_str());
 }
 
 double roll_t::range( double min, double max ){
-	if (normalized) return (min+max)/2.0;
-	if (!rng) rng = rng_t::init(0);
-	return rng->range(min,max);
+	if ((!normalized)||(normalized>=40)){
+		if (!rng) rng = rng_t::init(0);
+		return rng->range(min,max);
+	}
+	return (min+max)/2.0;
 }
 
 double roll_t::gaussian( double mean, double stddev ){
-	if (normalized) return mean;
-	if (!rng) rng = rng_t::init(0);
-	return rng->gaussian(mean, stddev);
+	if ((!normalized)||(normalized>=30)){
+		if (!rng) rng = rng_t::init(0);
+		return rng->gaussian(mean, stddev);
+	}
+	return mean;
 }

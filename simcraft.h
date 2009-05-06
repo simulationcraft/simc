@@ -353,8 +353,8 @@ struct gear_stats_t
 // normalized and standard random
 struct roll_instance_t
 {
-	int    given;
-	double wanted; // sum of chances
+	double given;
+	double wanted; 
 	int    nTries;
 	roll_instance_t() { memset( (void*) this, 0x00, sizeof( roll_instance_t ) ); }
 };
