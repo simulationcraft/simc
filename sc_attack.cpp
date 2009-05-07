@@ -264,16 +264,40 @@ void attack_t::calculate_result()
 
   int num_results = build_table( chances, results );
 
-  double random = sim -> rng -> real();
 
-  for( int i=0; i < num_results; i++ )
-  {
-    if( random <= chances[ i ] )
-    {
-      result = results[ i ];
-      break;
-    }
+  if ((!sim->normalized_roll)||(sim->normalized_roll>=20)){
+	  //regular attack table
+	  double random = sim -> rng -> real();
+	  for( int i=0; i < num_results; i++ )
+	  {
+		if( random <= chances[ i ] )
+		{
+		  result = results[ i ];
+		  break;
+		}
+	  }
+  }else{
+	  // normalized attack table
+	  double ps=0;
+	  //try all except last
+	  for( int i=0; i < num_results-1; i++ )
+	  {
+		  double chanceHere= chances[ i ]/(1-ps);
+		  char  rollType[40];
+		  sprintf(rollType, "atk-%d",results[i]);
+		  if (sim->rng->roll( chanceHere, this, rollType)){
+			  result = results[ i ];
+			  break;
+		  }
+		  ps+=chances[i];
+		  if (ps>=1) break;
+	  }
+	  // if none selected up to here, select last
+	  if ((result == RESULT_NONE)&&(num_results>0)){
+		  result=results[num_results-1];
+	  }
   }
+
   assert( result != RESULT_NONE );
 
   if( result_is_hit() )
