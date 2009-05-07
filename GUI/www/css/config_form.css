@@ -34,7 +34,6 @@ ul.stacked_fields li {
 	list-style-type: none;
 	vertical-align: top;
 	margin-left: 12px;
-	min-width: 14em;
 }
 
 
@@ -44,30 +43,43 @@ ul.subscript_labels li {
 	white-space: nowrap;
 	text-align: left;	
 	margin-bottom: 1.3em;	/* Leave room for the label outside the margin, below */
+	width: 14em;
 	font-size: 0.875em;
+	min-height: 2.5em;	
 }
 
 	/* Push the labels down below the fields */
 	ul.subscript_labels li label {
 		position: absolute;
-		bottom: -1.0em;					/* Push the label down below the element */
+		bottom: -0.5em;					/* Push the label down below the element */
 		left: 0px;
 		font-size: small;
 		width: 5em;
 		vertical-align: text-top;
 	}
 
-	/* Checkboxes should be styled differently to most fields, give them a smaller margin */
-	ul.subscript_labels li.checkbox {
-		text-align: right;
-		margin-bottom: 5px;
-	}
+/* Checkboxes should be styled differently to most fields, give them a smaller margin */
+ul.subscript_labels li.checkbox {
+	margin-bottom: 5px;	
+}
 
-		/* And don't make checkbox labels push down below the field, allow them to stack up where they usually would */
-		ul.subscript_labels li.checkbox label {
-			position: relative;
-			bottom: 0px;
-		}
+	ul.subscript_labels li.checkbox input {
+		position: absolute;
+		top: 0px;
+		left: 0px;
+	}
+	
+	/* And don't make checkbox labels push down below the field, allow them to stack up where they usually would */
+	ul.subscript_labels li.checkbox label {
+		display: -moz-inline-box; display: inline-block;  zoom: 1; *display: inline; /* Cross-browser inline-block support */
+		white-space: normal;
+		position: static;
+		bottom: auto;
+		left: auto;
+		width: 13em;
+		margin-left: 2em;
+		padding-top: 3px;
+	}
 
 
 /* Foldable fieldsets get some styling */
@@ -217,9 +229,13 @@ div#sidebar {
 		padding: 10px;
 	}
 	
+		ul#new_member_by_armory li {
+			width: auto;
+		}
+	
 		/* the fields themselves */
-		ul#new_member_by_armory input {
-			width: 100%;
+		ul#new_member_by_armory li input, ul#new_member_by_armory li select {
+			width: 158px;
 		}
 
 		/* The field labels */
@@ -264,10 +280,12 @@ div#bottombar {
 
 		div#bottombar div.bottombar_section ul.stacked_fields li {
 			min-width: 7em;
+			width: auto;
 		}
 		
-		div#bottombar div.bottombar_section ul label {
+		div#bottombar div.bottombar_section ul li label {
 			font-size: 0.95em;
+			bottom: -0.7em;
 		}
 
 

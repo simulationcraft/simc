@@ -121,14 +121,11 @@
 											<xsl:sort select="@region" />
 											<xsl:sort select="@label" />
 											<option>
-												<xsl:attribute name="value"><xsl:value-of select="@name" /></xsl:attribute>
-												
+												<xsl:attribute name="value"><xsl:value-of select="@region" />:<xsl:value-of select="@name" /></xsl:attribute>
 												<xsl:if test="@name=/xml/options/@selected_server">
 													<xsl:attribute name="selected">selected</xsl:attribute>
 												</xsl:if>
-												
-												<xsl:value-of select="@label" />
-											</option>
+												<xsl:value-of select="@name" /> (<xsl:value-of select="@region" />)</option>
 										</xsl:for-each>
 									</optgroup>
 								</xsl:if>
@@ -248,6 +245,11 @@
 				<xsl:for-each select="../option[@file=$file_name]">
 				<xsl:sort select="@label" />
 					<li>
+
+						<!-- Mark checkbox list elements specially, for CSS hooking -->
+						<xsl:if test="@type='boolean'">
+							<xsl:attribute name="class">checkbox</xsl:attribute>
+						</xsl:if>
 					
 						<!-- Call the general template for options, with 'globals' as the generated field name -->
 						<xsl:apply-templates select=".">

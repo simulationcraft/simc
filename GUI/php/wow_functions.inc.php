@@ -45,29 +45,32 @@ function get_arr_wow_servers( )
 			// close curl resource to free up system resources
 			curl_close($ch);
 			
-			// Create an XML object of the response
-			$xml = new SimpleXMLElement(preg_replace('/<\?.*\?>/', '', $response_xml));
+			// Create an XML object of the response (cleaning up the badly formed XML...)
+			$xml = new SimpleXMLElement(preg_replace(array('/<\?.*\?>/', '/&nbsp;/'), array('', '&#160;'), $response_xml) );
 			
 			// Assemble the array
 			$arr_return[$list_name] = array();
 			foreach($xml->xpath('channel/item') as $realm) {
 				
+				// The EU RSS is annoyingly different
+				if( $realm->title && $realm->title=='Alert') {
+					continue;
+				}
+				
 				// Pull out the realm info
 				$realm_name = (string) $realm->link;
-				$realm_status = 1;
 
 				// Clean up the realm name
-				if( strpos($realm_name, 'r=') ) {
+				if( strpos($realm_name, 'r=')!==false ) {
 					$realm_name = substr( $realm_name, strpos($realm_name, 'r=')+2 );
 				}
-				else if( strpos($realm_name, '#') ) {
+				else if( strpos($realm_name, '#')!==false ) {
 					$realm_name = substr( $realm_name, strpos($realm_name, '#')+1 );
 				}
 				
 				// Add the realm to the list
 				$arr_return[$list_name][] = array( 
-						'name' => $list_name.':'.$realm_name,
-						'label' => $realm_name
+						'name' => $realm_name
 					);
 			}
 		}

@@ -1,251 +1,183 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="xsl/config_form.xsl"?>
 <xml>
-  <options max_file_size="1048576">
+  <options max_file_size="1048576" allow_simulation="1">
     <supported_classes>
       <class class="druid" label="Druid">
-        <option name="glyph_berserk" label="Glyph Berserk" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_druid.cpp" value=""/>
-        <option name="glyph_insect_swarm" label="Glyph Insect Swarm" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_druid.cpp" value=""/>
-        <option name="glyph_innervate" label="Glyph Innervate" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_druid.cpp" value=""/>
-        <option name="glyph_mangle" label="Glyph Mangle" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_druid.cpp" value=""/>
-        <option name="glyph_moonfire" label="Glyph Moonfire" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_druid.cpp" value=""/>
-        <option name="glyph_rip" label="Glyph Rip" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_druid.cpp" value=""/>
-        <option name="glyph_savage_roar" label="Glyph Savage Roar" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_druid.cpp" value=""/>
-        <option name="glyph_shred" label="Glyph Shred" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_druid.cpp" value=""/>
-        <option name="glyph_starfire" label="Glyph Starfire" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_druid.cpp" value=""/>
-        <option name="glyph_starfall" label="Glyph Starfall" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_druid.cpp" value=""/>
-        <option name="idol_of_the_corruptor" label="Idol Of The Corruptor" type="boolean" cpp_type="OPT_INT" tag="idols" file="sc_druid.cpp" value=""/>
-        <option name="idol_of_the_crying_wind" label="Idol Of The Crying Wind" type="boolean" cpp_type="OPT_INT" tag="idols" file="sc_druid.cpp" value=""/>
-        <option name="idol_of_the_ravenous_beast" label="Idol Of The Ravenous Beast" type="boolean" cpp_type="OPT_INT" tag="idols" file="sc_druid.cpp" value=""/>
-        <option name="idol_of_steadfast_renewal" label="Idol Of Steadfast Renewal" type="boolean" cpp_type="OPT_INT" tag="idols" file="sc_druid.cpp" value=""/>
-        <option name="idol_of_the_shooting_star" label="Idol Of The Shooting Star" type="boolean" cpp_type="OPT_INT" tag="idols" file="sc_druid.cpp" value=""/>
-        <option name="idol_of_the_unseen_moon" label="Idol Of The Unseen Moon" type="boolean" cpp_type="OPT_INT" tag="idols" file="sc_druid.cpp" value=""/>
-        <option name="idol_of_worship" label="Idol Of Worship" type="boolean" cpp_type="OPT_INT" tag="idols" file="sc_druid.cpp" value=""/>
-        <option name="tier4_2pc_balance" label="Tier4 2pc Balance" type="boolean" cpp_type="OPT_INT" tag="tiers" file="sc_druid.cpp" value=""/>
-        <option name="tier4_4pc_balance" label="Tier4 4pc Balance" type="boolean" cpp_type="OPT_INT" tag="tiers" file="sc_druid.cpp" value=""/>
-        <option name="tier5_2pc_balance" label="Tier5 2pc Balance" type="boolean" cpp_type="OPT_INT" tag="tiers" file="sc_druid.cpp" value=""/>
-        <option name="tier5_4pc_balance" label="Tier5 4pc Balance" type="boolean" cpp_type="OPT_INT" tag="tiers" file="sc_druid.cpp" value=""/>
-        <option name="tier6_2pc_balance" label="Tier6 2pc Balance" type="boolean" cpp_type="OPT_INT" tag="tiers" file="sc_druid.cpp" value=""/>
-        <option name="tier6_4pc_balance" label="Tier6 4pc Balance" type="boolean" cpp_type="OPT_INT" tag="tiers" file="sc_druid.cpp" value=""/>
-        <option name="tier7_2pc_balance" label="Tier7 2pc Balance" type="boolean" cpp_type="OPT_INT" tag="tiers" file="sc_druid.cpp" value=""/>
-        <option name="tier7_4pc_balance" label="Tier7 4pc Balance" type="boolean" cpp_type="OPT_INT" tag="tiers" file="sc_druid.cpp" value=""/>
-        <option name="tier4_2pc_feral" label="Tier4 2pc Feral" type="boolean" cpp_type="OPT_INT" tag="tiers" file="sc_druid.cpp" value=""/>
-        <option name="tier4_4pc_feral" label="Tier4 4pc Feral" type="boolean" cpp_type="OPT_INT" tag="tiers" file="sc_druid.cpp" value=""/>
-        <option name="tier5_2pc_feral" label="Tier5 2pc Feral" type="boolean" cpp_type="OPT_INT" tag="tiers" file="sc_druid.cpp" value=""/>
-        <option name="tier5_4pc_feral" label="Tier5 4pc Feral" type="boolean" cpp_type="OPT_INT" tag="tiers" file="sc_druid.cpp" value=""/>
-        <option name="tier6_2pc_feral" label="Tier6 2pc Feral" type="boolean" cpp_type="OPT_INT" tag="tiers" file="sc_druid.cpp" value=""/>
-        <option name="tier6_4pc_feral" label="Tier6 4pc Feral" type="boolean" cpp_type="OPT_INT" tag="tiers" file="sc_druid.cpp" value=""/>
-        <option name="tier7_2pc_feral" label="Tier7 2pc Feral" type="boolean" cpp_type="OPT_INT" tag="tiers" file="sc_druid.cpp" value=""/>
-        <option name="tier7_4pc_feral" label="Tier7 4pc Feral" type="boolean" cpp_type="OPT_INT" tag="tiers" file="sc_druid.cpp" value=""/>
+        <option name="glyph_berserk" label="Glyph Berserk" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_druid.cpp" value=""/>
+        <option name="glyph_insect_swarm" label="Glyph Insect Swarm" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_druid.cpp" value=""/>
+        <option name="glyph_innervate" label="Glyph Innervate" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_druid.cpp" value=""/>
+        <option name="glyph_mangle" label="Glyph Mangle" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_druid.cpp" value=""/>
+        <option name="glyph_moonfire" label="Glyph Moonfire" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_druid.cpp" value=""/>
+        <option name="glyph_rip" label="Glyph Rip" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_druid.cpp" value=""/>
+        <option name="glyph_savage_roar" label="Glyph Savage Roar" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_druid.cpp" value=""/>
+        <option name="glyph_shred" label="Glyph Shred" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_druid.cpp" value=""/>
+        <option name="glyph_starfire" label="Glyph Starfire" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_druid.cpp" value=""/>
+        <option name="glyph_starfall" label="Glyph Starfall" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_druid.cpp" value=""/>
+        <option name="idol_of_the_corruptor" label="Idol Of The Corruptor" type="boolean" cpp_type="OPT_BOOL" tag="idols" file="sc_druid.cpp" value=""/>
+        <option name="idol_of_the_crying_wind" label="Idol Of The Crying Wind" type="boolean" cpp_type="OPT_BOOL" tag="idols" file="sc_druid.cpp" value=""/>
+        <option name="idol_of_the_ravenous_beast" label="Idol Of The Ravenous Beast" type="boolean" cpp_type="OPT_BOOL" tag="idols" file="sc_druid.cpp" value=""/>
+        <option name="idol_of_steadfast_renewal" label="Idol Of Steadfast Renewal" type="boolean" cpp_type="OPT_BOOL" tag="idols" file="sc_druid.cpp" value=""/>
+        <option name="idol_of_the_shooting_star" label="Idol Of The Shooting Star" type="boolean" cpp_type="OPT_BOOL" tag="idols" file="sc_druid.cpp" value=""/>
+        <option name="idol_of_the_unseen_moon" label="Idol Of The Unseen Moon" type="boolean" cpp_type="OPT_BOOL" tag="idols" file="sc_druid.cpp" value=""/>
+        <option name="idol_of_worship" label="Idol Of Worship" type="boolean" cpp_type="OPT_BOOL" tag="idols" file="sc_druid.cpp" value=""/>
+        <option name="tier4_2pc_balance" label="Tier4 2pc Balance" type="boolean" cpp_type="OPT_BOOL" tag="tiers" file="sc_druid.cpp" value=""/>
+        <option name="tier4_4pc_balance" label="Tier4 4pc Balance" type="boolean" cpp_type="OPT_BOOL" tag="tiers" file="sc_druid.cpp" value=""/>
+        <option name="tier5_2pc_balance" label="Tier5 2pc Balance" type="boolean" cpp_type="OPT_BOOL" tag="tiers" file="sc_druid.cpp" value=""/>
+        <option name="tier5_4pc_balance" label="Tier5 4pc Balance" type="boolean" cpp_type="OPT_BOOL" tag="tiers" file="sc_druid.cpp" value=""/>
+        <option name="tier6_2pc_balance" label="Tier6 2pc Balance" type="boolean" cpp_type="OPT_BOOL" tag="tiers" file="sc_druid.cpp" value=""/>
+        <option name="tier6_4pc_balance" label="Tier6 4pc Balance" type="boolean" cpp_type="OPT_BOOL" tag="tiers" file="sc_druid.cpp" value=""/>
+        <option name="tier7_2pc_balance" label="Tier7 2pc Balance" type="boolean" cpp_type="OPT_BOOL" tag="tiers" file="sc_druid.cpp" value=""/>
+        <option name="tier7_4pc_balance" label="Tier7 4pc Balance" type="boolean" cpp_type="OPT_BOOL" tag="tiers" file="sc_druid.cpp" value=""/>
+        <option name="tier4_2pc_feral" label="Tier4 2pc Feral" type="boolean" cpp_type="OPT_BOOL" tag="tiers" file="sc_druid.cpp" value=""/>
+        <option name="tier4_4pc_feral" label="Tier4 4pc Feral" type="boolean" cpp_type="OPT_BOOL" tag="tiers" file="sc_druid.cpp" value=""/>
+        <option name="tier5_2pc_feral" label="Tier5 2pc Feral" type="boolean" cpp_type="OPT_BOOL" tag="tiers" file="sc_druid.cpp" value=""/>
+        <option name="tier5_4pc_feral" label="Tier5 4pc Feral" type="boolean" cpp_type="OPT_BOOL" tag="tiers" file="sc_druid.cpp" value=""/>
+        <option name="tier6_2pc_feral" label="Tier6 2pc Feral" type="boolean" cpp_type="OPT_BOOL" tag="tiers" file="sc_druid.cpp" value=""/>
+        <option name="tier6_4pc_feral" label="Tier6 4pc Feral" type="boolean" cpp_type="OPT_BOOL" tag="tiers" file="sc_druid.cpp" value=""/>
+        <option name="tier7_2pc_feral" label="Tier7 2pc Feral" type="boolean" cpp_type="OPT_BOOL" tag="tiers" file="sc_druid.cpp" value=""/>
+        <option name="tier7_4pc_feral" label="Tier7 4pc Feral" type="boolean" cpp_type="OPT_BOOL" tag="tiers" file="sc_druid.cpp" value=""/>
       </class>
       <class class="hunter" label="Hunter">
-        <option name="glyph_aimed_shot" label="Glyph Aimed Shot" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_hunter.cpp" value=""/>
-        <option name="glyph_aspect_of_the_viper" label="Glyph Aspect Of The Viper" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_hunter.cpp" value=""/>
-        <option name="glyph_bestial_wrath" label="Glyph Bestial Wrath" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_hunter.cpp" value=""/>
-        <option name="glyph_chimera_shot" label="Glyph Chimera Shot" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_hunter.cpp" value=""/>
-        <option name="glyph_explosive_shot" label="Glyph Explosive Shot" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_hunter.cpp" value=""/>
-        <option name="glyph_hunters_mark" label="Glyph Hunters Mark" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_hunter.cpp" value=""/>
-        <option name="glyph_improved_aspect_of_the_hawk" label="Glyph Improved Aspect Of The Hawk" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_hunter.cpp" value=""/>
-        <option name="glyph_kill_shot" label="Glyph Kill Shot" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_hunter.cpp" value=""/>
-        <option name="glyph_rapid_fire" label="Glyph Rapid Fire" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_hunter.cpp" value=""/>
-        <option name="glyph_serpent_sting" label="Glyph Serpent Sting" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_hunter.cpp" value=""/>
-        <option name="glyph_steady_shot" label="Glyph Steady Shot" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_hunter.cpp" value=""/>
-        <option name="glyph_trueshot_aura" label="Glyph Trueshot Aura" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_hunter.cpp" value=""/>
+        <option name="glyph_aimed_shot" label="Glyph Aimed Shot" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_hunter.cpp" value=""/>
+        <option name="glyph_aspect_of_the_viper" label="Glyph Aspect Of The Viper" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_hunter.cpp" value=""/>
+        <option name="glyph_bestial_wrath" label="Glyph Bestial Wrath" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_hunter.cpp" value=""/>
+        <option name="glyph_chimera_shot" label="Glyph Chimera Shot" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_hunter.cpp" value=""/>
+        <option name="glyph_explosive_shot" label="Glyph Explosive Shot" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_hunter.cpp" value=""/>
+        <option name="glyph_hunters_mark" label="Glyph Hunters Mark" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_hunter.cpp" value=""/>
+        <option name="glyph_improved_aspect_of_the_hawk" label="Glyph Improved Aspect Of The Hawk" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_hunter.cpp" value=""/>
+        <option name="glyph_kill_shot" label="Glyph Kill Shot" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_hunter.cpp" value=""/>
+        <option name="glyph_rapid_fire" label="Glyph Rapid Fire" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_hunter.cpp" value=""/>
+        <option name="glyph_serpent_sting" label="Glyph Serpent Sting" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_hunter.cpp" value=""/>
+        <option name="glyph_steady_shot" label="Glyph Steady Shot" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_hunter.cpp" value=""/>
+        <option name="glyph_trueshot_aura" label="Glyph Trueshot Aura" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_hunter.cpp" value=""/>
         <option name="ammo_dps" label="Ammo Dps" type="text" cpp_type="OPT_FLT" tag="ammo_dps" file="sc_hunter.cpp" value=""/>
         <option name="quiver_haste" label="Quiver Haste" type="text" cpp_type="OPT_FLT" tag="quiver_haste" file="sc_hunter.cpp" value=""/>
         <option name="summon_pet" label="Summon Pet" type="text" cpp_type="OPT_STRING" tag="summon_pet_str" file="sc_hunter.cpp" value=""/>
       </class>
       <class class="mage" label="Mage">
-        <option name="glyph_arcane_barrage" label="Glyph Arcane Barrage" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_mage.cpp" value=""/>
-        <option name="glyph_arcane_blast" label="Glyph Arcane Blast" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_mage.cpp" value=""/>
-        <option name="glyph_arcane_missiles" label="Glyph Arcane Missiles" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_mage.cpp" value=""/>
-        <option name="glyph_arcane_power" label="Glyph Arcane Power" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_mage.cpp" value=""/>
-        <option name="glyph_fire_ball" label="Glyph Fire Ball" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_mage.cpp" value=""/>
-        <option name="glyph_frost_bolt" label="Glyph Frost Bolt" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_mage.cpp" value=""/>
-        <option name="glyph_ice_lance" label="Glyph Ice Lance" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_mage.cpp" value=""/>
-        <option name="glyph_improved_scorch" label="Glyph Improved Scorch" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_mage.cpp" value=""/>
-        <option name="glyph_living_bomb" label="Glyph Living Bomb" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_mage.cpp" value=""/>
-        <option name="glyph_mage_armor" label="Glyph Mage Armor" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_mage.cpp" value=""/>
-        <option name="glyph_mana_gem" label="Glyph Mana Gem" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_mage.cpp" value=""/>
-        <option name="glyph_mirror_image" label="Glyph Mirror Image" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_mage.cpp" value=""/>
-        <option name="glyph_molten_armor" label="Glyph Molten Armor" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_mage.cpp" value=""/>
-        <option name="glyph_water_elemental" label="Glyph Water Elemental" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_mage.cpp" value=""/>
-        <option name="glyph_frostfire" label="Glyph Frostfire" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_mage.cpp" value=""/>
+        <option name="glyph_arcane_barrage" label="Glyph Arcane Barrage" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_mage.cpp" value=""/>
+        <option name="glyph_arcane_blast" label="Glyph Arcane Blast" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_mage.cpp" value=""/>
+        <option name="glyph_arcane_missiles" label="Glyph Arcane Missiles" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_mage.cpp" value=""/>
+        <option name="glyph_arcane_power" label="Glyph Arcane Power" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_mage.cpp" value=""/>
+        <option name="glyph_fire_ball" label="Glyph Fire Ball" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_mage.cpp" value=""/>
+        <option name="glyph_frost_bolt" label="Glyph Frost Bolt" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_mage.cpp" value=""/>
+        <option name="glyph_ice_lance" label="Glyph Ice Lance" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_mage.cpp" value=""/>
+        <option name="glyph_improved_scorch" label="Glyph Improved Scorch" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_mage.cpp" value=""/>
+        <option name="glyph_living_bomb" label="Glyph Living Bomb" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_mage.cpp" value=""/>
+        <option name="glyph_mage_armor" label="Glyph Mage Armor" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_mage.cpp" value=""/>
+        <option name="glyph_mana_gem" label="Glyph Mana Gem" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_mage.cpp" value=""/>
+        <option name="glyph_mirror_image" label="Glyph Mirror Image" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_mage.cpp" value=""/>
+        <option name="glyph_molten_armor" label="Glyph Molten Armor" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_mage.cpp" value=""/>
+        <option name="glyph_water_elemental" label="Glyph Water Elemental" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_mage.cpp" value=""/>
+        <option name="glyph_frostfire" label="Glyph Frostfire" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_mage.cpp" value=""/>
         <option name="armor_type" label="Armor Type" type="text" cpp_type="OPT_STRING" tag="armor_type_str" file="sc_mage.cpp" value=""/>
         <option name="focus_magic_target" label="Focus Magic Target" type="text" cpp_type="OPT_STRING" tag="focus_magic_target_str" file="sc_mage.cpp" value=""/>
       </class>
       <class class="priest" label="Priest">
-        <option name="glyph_shadow_word_death" label="Glyph Shadow Word Death" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_priest.cpp" value=""/>
-        <option name="glyph_shadow_word_pain" label="Glyph Shadow Word Pain" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_priest.cpp" value=""/>
-        <option name="glyph_shadow" label="Glyph Shadow" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_priest.cpp" value=""/>
+        <option name="glyph_shadow_word_death" label="Glyph Shadow Word Death" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_priest.cpp" value=""/>
+        <option name="glyph_shadow_word_pain" label="Glyph Shadow Word Pain" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_priest.cpp" value=""/>
+        <option name="glyph_shadow" label="Glyph Shadow" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_priest.cpp" value=""/>
         <option name="devious_mind_delay" label="Devious Mind Delay" type="text" cpp_type="OPT_FLT" tag="devious_mind_delay" file="sc_priest.cpp" value=""/>
       </class>
       <class class="rogue" label="Rogue">
-        <option name="glyph_adrenaline_rush" label="Glyph Adrenaline Rush" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_rogue.cpp" value=""/>
-        <option name="glyph_backstab" label="Glyph Backstab" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_rogue.cpp" value=""/>
-        <option name="glyph_blade_flurry" label="Glyph Blade Flurry" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_rogue.cpp" value=""/>
-        <option name="glyph_eviscerate" label="Glyph Eviscerate" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_rogue.cpp" value=""/>
-        <option name="glyph_expose_armor" label="Glyph Expose Armor" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_rogue.cpp" value=""/>
-        <option name="glyph_feint" label="Glyph Feint" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_rogue.cpp" value=""/>
-        <option name="glyph_ghostly_strike" label="Glyph Ghostly Strike" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_rogue.cpp" value=""/>
-        <option name="glyph_hemorrhage" label="Glyph Hemorrhage" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_rogue.cpp" value=""/>
-        <option name="glyph_hunger_for_blood" label="Glyph Hunger For Blood" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_rogue.cpp" value=""/>
-        <option name="glyph_killing_spree" label="Glyph Killing Spree" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_rogue.cpp" value=""/>
-        <option name="glyph_mutilate" label="Glyph Mutilate" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_rogue.cpp" value=""/>
-        <option name="glyph_preparation" label="Glyph Preparation" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_rogue.cpp" value=""/>
-        <option name="glyph_rupture" label="Glyph Rupture" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_rogue.cpp" value=""/>
-        <option name="glyph_shadow_dance" label="Glyph Shadow Dance" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_rogue.cpp" value=""/>
-        <option name="glyph_sinister_strike" label="Glyph Sinister Strike" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_rogue.cpp" value=""/>
-        <option name="glyph_slice_and_dice" label="Glyph Slice And Dice" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_rogue.cpp" value=""/>
-        <option name="glyph_tricks_of_the_trade" label="Glyph Tricks Of The Trade" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_rogue.cpp" value=""/>
-        <option name="glyph_vigor" label="Glyph Vigor" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_rogue.cpp" value=""/>
+        <option name="glyph_adrenaline_rush" label="Glyph Adrenaline Rush" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_rogue.cpp" value=""/>
+        <option name="glyph_backstab" label="Glyph Backstab" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_rogue.cpp" value=""/>
+        <option name="glyph_blade_flurry" label="Glyph Blade Flurry" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_rogue.cpp" value=""/>
+        <option name="glyph_eviscerate" label="Glyph Eviscerate" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_rogue.cpp" value=""/>
+        <option name="glyph_expose_armor" label="Glyph Expose Armor" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_rogue.cpp" value=""/>
+        <option name="glyph_feint" label="Glyph Feint" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_rogue.cpp" value=""/>
+        <option name="glyph_ghostly_strike" label="Glyph Ghostly Strike" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_rogue.cpp" value=""/>
+        <option name="glyph_hemorrhage" label="Glyph Hemorrhage" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_rogue.cpp" value=""/>
+        <option name="glyph_hunger_for_blood" label="Glyph Hunger For Blood" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_rogue.cpp" value=""/>
+        <option name="glyph_killing_spree" label="Glyph Killing Spree" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_rogue.cpp" value=""/>
+        <option name="glyph_mutilate" label="Glyph Mutilate" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_rogue.cpp" value=""/>
+        <option name="glyph_preparation" label="Glyph Preparation" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_rogue.cpp" value=""/>
+        <option name="glyph_rupture" label="Glyph Rupture" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_rogue.cpp" value=""/>
+        <option name="glyph_shadow_dance" label="Glyph Shadow Dance" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_rogue.cpp" value=""/>
+        <option name="glyph_sinister_strike" label="Glyph Sinister Strike" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_rogue.cpp" value=""/>
+        <option name="glyph_slice_and_dice" label="Glyph Slice And Dice" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_rogue.cpp" value=""/>
+        <option name="glyph_tricks_of_the_trade" label="Glyph Tricks Of The Trade" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_rogue.cpp" value=""/>
+        <option name="glyph_vigor" label="Glyph Vigor" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_rogue.cpp" value=""/>
         <option name="honor_among_thieves_interval" label="Honor Among Thieves Interval" type="text" cpp_type="OPT_FLT" tag="honor_among_thieves_interval" file="sc_rogue.cpp" value=""/>
         <option name="tricks_of_the_trade_target" label="Tricks Of The Trade Target" type="text" cpp_type="OPT_STRING" tag="tricks_of_the_trade_target_str" file="sc_rogue.cpp" value=""/>
       </class>
       <class class="shaman" label="Shaman">
-        <option name="glyph_elemental_mastery" label="Glyph Elemental Mastery" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_shaman.cpp" value=""/>
-        <option name="glyph_feral_spirit" label="Glyph Feral Spirit" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_shaman.cpp" value=""/>
-        <option name="glyph_flame_shock" label="Glyph Flame Shock" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_shaman.cpp" value=""/>
-        <option name="glyph_flametongue_weapon" label="Glyph Flametongue Weapon" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_shaman.cpp" value=""/>
-        <option name="glyph_lava" label="Glyph Lava" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_shaman.cpp" value=""/>
-        <option name="glyph_lava_lash" label="Glyph Lava Lash" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_shaman.cpp" value=""/>
-        <option name="glyph_lightning_bolt" label="Glyph Lightning Bolt" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_shaman.cpp" value=""/>
-        <option name="glyph_lightning_shield" label="Glyph Lightning Shield" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_shaman.cpp" value=""/>
-        <option name="glyph_mana_tide" label="Glyph Mana Tide" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_shaman.cpp" value=""/>
-        <option name="glyph_shocking" label="Glyph Shocking" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_shaman.cpp" value=""/>
-        <option name="glyph_stormstrike" label="Glyph Stormstrike" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_shaman.cpp" value=""/>
-        <option name="glyph_thunderstorm" label="Glyph Thunderstorm" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_shaman.cpp" value=""/>
-        <option name="glyph_totem_of_wrath" label="Glyph Totem Of Wrath" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_shaman.cpp" value=""/>
-        <option name="glyph_windfury_weapon" label="Glyph Windfury Weapon" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_shaman.cpp" value=""/>
-        <option name="totem_of_dueling" label="Totem Of Dueling" type="boolean" cpp_type="OPT_INT" tag="totems" file="sc_shaman.cpp" value=""/>
-        <option name="totem_of_hex" label="Totem Of Hex" type="boolean" cpp_type="OPT_INT" tag="totems" file="sc_shaman.cpp" value=""/>
-        <option name="totem_of_the_dancing_flame" label="Totem Of The Dancing Flame" type="boolean" cpp_type="OPT_INT" tag="totems" file="sc_shaman.cpp" value=""/>
-        <option name="thunderfall_totem" label="Thunderfall Totem" type="boolean" cpp_type="OPT_INT" tag="totems" file="sc_shaman.cpp" value=""/>
-        <option name="tier4_2pc_elemental" label="Tier4 2pc Elemental" type="boolean" cpp_type="OPT_INT" tag="tiers" file="sc_shaman.cpp" value=""/>
-        <option name="tier4_4pc_elemental" label="Tier4 4pc Elemental" type="boolean" cpp_type="OPT_INT" tag="tiers" file="sc_shaman.cpp" value=""/>
-        <option name="tier5_2pc_elemental" label="Tier5 2pc Elemental" type="boolean" cpp_type="OPT_INT" tag="tiers" file="sc_shaman.cpp" value=""/>
-        <option name="tier5_4pc_elemental" label="Tier5 4pc Elemental" type="boolean" cpp_type="OPT_INT" tag="tiers" file="sc_shaman.cpp" value=""/>
-        <option name="tier6_2pc_elemental" label="Tier6 2pc Elemental" type="boolean" cpp_type="OPT_INT" tag="tiers" file="sc_shaman.cpp" value=""/>
-        <option name="tier6_4pc_elemental" label="Tier6 4pc Elemental" type="boolean" cpp_type="OPT_INT" tag="tiers" file="sc_shaman.cpp" value=""/>
-        <option name="tier7_2pc_elemental" label="Tier7 2pc Elemental" type="boolean" cpp_type="OPT_INT" tag="tiers" file="sc_shaman.cpp" value=""/>
-        <option name="tier7_4pc_elemental" label="Tier7 4pc Elemental" type="boolean" cpp_type="OPT_INT" tag="tiers" file="sc_shaman.cpp" value=""/>
-        <option name="tier4_2pc_enhancement" label="Tier4 2pc Enhancement" type="boolean" cpp_type="OPT_INT" tag="tiers" file="sc_shaman.cpp" value=""/>
-        <option name="tier4_4pc_enhancement" label="Tier4 4pc Enhancement" type="boolean" cpp_type="OPT_INT" tag="tiers" file="sc_shaman.cpp" value=""/>
-        <option name="tier5_2pc_enhancement" label="Tier5 2pc Enhancement" type="boolean" cpp_type="OPT_INT" tag="tiers" file="sc_shaman.cpp" value=""/>
-        <option name="tier5_4pc_enhancement" label="Tier5 4pc Enhancement" type="boolean" cpp_type="OPT_INT" tag="tiers" file="sc_shaman.cpp" value=""/>
-        <option name="tier6_2pc_enhancement" label="Tier6 2pc Enhancement" type="boolean" cpp_type="OPT_INT" tag="tiers" file="sc_shaman.cpp" value=""/>
-        <option name="tier6_4pc_enhancement" label="Tier6 4pc Enhancement" type="boolean" cpp_type="OPT_INT" tag="tiers" file="sc_shaman.cpp" value=""/>
-        <option name="tier7_2pc_enhancement" label="Tier7 2pc Enhancement" type="boolean" cpp_type="OPT_INT" tag="tiers" file="sc_shaman.cpp" value=""/>
-        <option name="tier7_4pc_enhancement" label="Tier7 4pc Enhancement" type="boolean" cpp_type="OPT_INT" tag="tiers" file="sc_shaman.cpp" value=""/>
+        <option name="glyph_elemental_mastery" label="Glyph Elemental Mastery" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_shaman.cpp" value=""/>
+        <option name="glyph_feral_spirit" label="Glyph Feral Spirit" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_shaman.cpp" value=""/>
+        <option name="glyph_flame_shock" label="Glyph Flame Shock" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_shaman.cpp" value=""/>
+        <option name="glyph_flametongue_weapon" label="Glyph Flametongue Weapon" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_shaman.cpp" value=""/>
+        <option name="glyph_lava" label="Glyph Lava" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_shaman.cpp" value=""/>
+        <option name="glyph_lava_lash" label="Glyph Lava Lash" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_shaman.cpp" value=""/>
+        <option name="glyph_lightning_bolt" label="Glyph Lightning Bolt" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_shaman.cpp" value=""/>
+        <option name="glyph_lightning_shield" label="Glyph Lightning Shield" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_shaman.cpp" value=""/>
+        <option name="glyph_mana_tide" label="Glyph Mana Tide" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_shaman.cpp" value=""/>
+        <option name="glyph_shocking" label="Glyph Shocking" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_shaman.cpp" value=""/>
+        <option name="glyph_stormstrike" label="Glyph Stormstrike" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_shaman.cpp" value=""/>
+        <option name="glyph_thunderstorm" label="Glyph Thunderstorm" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_shaman.cpp" value=""/>
+        <option name="glyph_totem_of_wrath" label="Glyph Totem Of Wrath" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_shaman.cpp" value=""/>
+        <option name="glyph_windfury_weapon" label="Glyph Windfury Weapon" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_shaman.cpp" value=""/>
+        <option name="totem_of_dueling" label="Totem Of Dueling" type="boolean" cpp_type="OPT_BOOL" tag="totems" file="sc_shaman.cpp" value=""/>
+        <option name="totem_of_hex" label="Totem Of Hex" type="boolean" cpp_type="OPT_BOOL" tag="totems" file="sc_shaman.cpp" value=""/>
+        <option name="totem_of_the_dancing_flame" label="Totem Of The Dancing Flame" type="boolean" cpp_type="OPT_BOOL" tag="totems" file="sc_shaman.cpp" value=""/>
+        <option name="thunderfall_totem" label="Thunderfall Totem" type="boolean" cpp_type="OPT_BOOL" tag="totems" file="sc_shaman.cpp" value=""/>
+        <option name="tier4_2pc_elemental" label="Tier4 2pc Elemental" type="boolean" cpp_type="OPT_BOOL" tag="tiers" file="sc_shaman.cpp" value=""/>
+        <option name="tier4_4pc_elemental" label="Tier4 4pc Elemental" type="boolean" cpp_type="OPT_BOOL" tag="tiers" file="sc_shaman.cpp" value=""/>
+        <option name="tier5_2pc_elemental" label="Tier5 2pc Elemental" type="boolean" cpp_type="OPT_BOOL" tag="tiers" file="sc_shaman.cpp" value=""/>
+        <option name="tier5_4pc_elemental" label="Tier5 4pc Elemental" type="boolean" cpp_type="OPT_BOOL" tag="tiers" file="sc_shaman.cpp" value=""/>
+        <option name="tier6_2pc_elemental" label="Tier6 2pc Elemental" type="boolean" cpp_type="OPT_BOOL" tag="tiers" file="sc_shaman.cpp" value=""/>
+        <option name="tier6_4pc_elemental" label="Tier6 4pc Elemental" type="boolean" cpp_type="OPT_BOOL" tag="tiers" file="sc_shaman.cpp" value=""/>
+        <option name="tier7_2pc_elemental" label="Tier7 2pc Elemental" type="boolean" cpp_type="OPT_BOOL" tag="tiers" file="sc_shaman.cpp" value=""/>
+        <option name="tier7_4pc_elemental" label="Tier7 4pc Elemental" type="boolean" cpp_type="OPT_BOOL" tag="tiers" file="sc_shaman.cpp" value=""/>
+        <option name="tier4_2pc_enhancement" label="Tier4 2pc Enhancement" type="boolean" cpp_type="OPT_BOOL" tag="tiers" file="sc_shaman.cpp" value=""/>
+        <option name="tier4_4pc_enhancement" label="Tier4 4pc Enhancement" type="boolean" cpp_type="OPT_BOOL" tag="tiers" file="sc_shaman.cpp" value=""/>
+        <option name="tier5_2pc_enhancement" label="Tier5 2pc Enhancement" type="boolean" cpp_type="OPT_BOOL" tag="tiers" file="sc_shaman.cpp" value=""/>
+        <option name="tier5_4pc_enhancement" label="Tier5 4pc Enhancement" type="boolean" cpp_type="OPT_BOOL" tag="tiers" file="sc_shaman.cpp" value=""/>
+        <option name="tier6_2pc_enhancement" label="Tier6 2pc Enhancement" type="boolean" cpp_type="OPT_BOOL" tag="tiers" file="sc_shaman.cpp" value=""/>
+        <option name="tier6_4pc_enhancement" label="Tier6 4pc Enhancement" type="boolean" cpp_type="OPT_BOOL" tag="tiers" file="sc_shaman.cpp" value=""/>
+        <option name="tier7_2pc_enhancement" label="Tier7 2pc Enhancement" type="boolean" cpp_type="OPT_BOOL" tag="tiers" file="sc_shaman.cpp" value=""/>
+        <option name="tier7_4pc_enhancement" label="Tier7 4pc Enhancement" type="boolean" cpp_type="OPT_BOOL" tag="tiers" file="sc_shaman.cpp" value=""/>
       </class>
       <class class="warlock" label="Warlock">
-        <option name="glyph_chaos_bolt" label="Glyph Chaos Bolt" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_warlock.cpp" value=""/>
-        <option name="glyph_conflagrate" label="Glyph Conflagrate" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_warlock.cpp" value=""/>
-        <option name="glyph_corruption" label="Glyph Corruption" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_warlock.cpp" value=""/>
-        <option name="glyph_curse_of_agony" label="Glyph Curse Of Agony" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_warlock.cpp" value=""/>
-        <option name="glyph_felguard" label="Glyph Felguard" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_warlock.cpp" value=""/>
-        <option name="glyph_felhunter" label="Glyph Felhunter" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_warlock.cpp" value=""/>
-        <option name="glyph_haunt" label="Glyph Haunt" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_warlock.cpp" value=""/>
-        <option name="glyph_immolate" label="Glyph Immolate" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_warlock.cpp" value=""/>
-        <option name="glyph_imp" label="Glyph Imp" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_warlock.cpp" value=""/>
-        <option name="glyph_incinerate" label="Glyph Incinerate" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_warlock.cpp" value=""/>
-        <option name="glyph_life_tap" label="Glyph Life Tap" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_warlock.cpp" value=""/>
-        <option name="glyph_metamorphosis" label="Glyph Metamorphosis" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_warlock.cpp" value=""/>
-        <option name="glyph_searing_pain" label="Glyph Searing Pain" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_warlock.cpp" value=""/>
-        <option name="glyph_shadow_bolt" label="Glyph Shadow Bolt" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_warlock.cpp" value=""/>
-        <option name="glyph_shadow_burn" label="Glyph Shadow Burn" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_warlock.cpp" value=""/>
-        <option name="glyph_siphon_life" label="Glyph Siphon Life" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_warlock.cpp" value=""/>
-        <option name="glyph_unstable_affliction" label="Glyph Unstable Affliction" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_warlock.cpp" value=""/>
+        <option name="glyph_chaos_bolt" label="Glyph Chaos Bolt" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_warlock.cpp" value=""/>
+        <option name="glyph_conflagrate" label="Glyph Conflagrate" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_warlock.cpp" value=""/>
+        <option name="glyph_corruption" label="Glyph Corruption" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_warlock.cpp" value=""/>
+        <option name="glyph_curse_of_agony" label="Glyph Curse Of Agony" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_warlock.cpp" value=""/>
+        <option name="glyph_felguard" label="Glyph Felguard" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_warlock.cpp" value=""/>
+        <option name="glyph_felhunter" label="Glyph Felhunter" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_warlock.cpp" value=""/>
+        <option name="glyph_haunt" label="Glyph Haunt" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_warlock.cpp" value=""/>
+        <option name="glyph_immolate" label="Glyph Immolate" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_warlock.cpp" value=""/>
+        <option name="glyph_imp" label="Glyph Imp" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_warlock.cpp" value=""/>
+        <option name="glyph_incinerate" label="Glyph Incinerate" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_warlock.cpp" value=""/>
+        <option name="glyph_life_tap" label="Glyph Life Tap" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_warlock.cpp" value=""/>
+        <option name="glyph_metamorphosis" label="Glyph Metamorphosis" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_warlock.cpp" value=""/>
+        <option name="glyph_searing_pain" label="Glyph Searing Pain" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_warlock.cpp" value=""/>
+        <option name="glyph_shadow_bolt" label="Glyph Shadow Bolt" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_warlock.cpp" value=""/>
+        <option name="glyph_shadow_burn" label="Glyph Shadow Burn" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_warlock.cpp" value=""/>
+        <option name="glyph_siphon_life" label="Glyph Siphon Life" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_warlock.cpp" value=""/>
+        <option name="glyph_unstable_affliction" label="Glyph Unstable Affliction" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_warlock.cpp" value=""/>
       </class>
       <class class="warrior" label="Warrior">
-        <option name="glyph_of_bladestorm" label="Glyph Of Bladestorm" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_warrior.cpp" value=""/>
-        <option name="glyph_of_execution" label="Glyph Of Execution" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_warrior.cpp" value=""/>
-        <option name="glyph_of_heroic_strike" label="Glyph Of Heroic Strike" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_warrior.cpp" value=""/>
-        <option name="glyph_of_mortal_strike" label="Glyph Of Mortal Strike" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_warrior.cpp" value=""/>
-        <option name="glyph_of_overpower" label="Glyph Of Overpower" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_warrior.cpp" value=""/>
-        <option name="glyph_of_rending" label="Glyph Of Rending" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_warrior.cpp" value=""/>
-        <option name="glyph_of_whirlwind" label="Glyph Of Whirlwind" type="boolean" cpp_type="OPT_INT" tag="glyphs" file="sc_warrior.cpp" value=""/>
+        <option name="glyph_of_bladestorm" label="Glyph Of Bladestorm" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_warrior.cpp" value=""/>
+        <option name="glyph_of_execution" label="Glyph Of Execution" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_warrior.cpp" value=""/>
+        <option name="glyph_of_heroic_strike" label="Glyph Of Heroic Strike" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_warrior.cpp" value=""/>
+        <option name="glyph_of_mortal_strike" label="Glyph Of Mortal Strike" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_warrior.cpp" value=""/>
+        <option name="glyph_of_overpower" label="Glyph Of Overpower" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_warrior.cpp" value=""/>
+        <option name="glyph_of_rending" label="Glyph Of Rending" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_warrior.cpp" value=""/>
+        <option name="glyph_of_whirlwind" label="Glyph Of Whirlwind" type="boolean" cpp_type="OPT_BOOL" tag="glyphs" file="sc_warrior.cpp" value=""/>
       </class>
       <class class="all_classes" label="All Classes">
         <option name="name" label="Name" type="text" cpp_type="OPT_STRING" tag="name_str" file="sc_player.cpp" value=""/>
         <option name="race" label="Race" type="text" cpp_type="OPT_STRING" tag="race_str" file="sc_player.cpp" value=""/>
-        <option name="id" label="Id" type="text" cpp_type="OPT_STRING" tag="id_str" file="sc_player.cpp" value=""/>
         <option name="level" label="Level" type="text" cpp_type="OPT_INT" tag="level" file="sc_player.cpp" value=""/>
-        <option name="gcd" label="Gcd" type="text" cpp_type="OPT_FLT" tag="base_gcd" file="sc_player.cpp" value=""/>
         <option name="distance" label="Distance" type="text" cpp_type="OPT_FLT" tag="distance" file="sc_player.cpp" value=""/>
-        <option name="sleeping" label="Sleeping" type="text" cpp_type="OPT_INT" tag="sleeping" file="sc_player.cpp" value=""/>
         <option name="professions" label="Professions" type="text" cpp_type="OPT_STRING" tag="professions_str" file="sc_player.cpp" value=""/>
-        <option name="haste_rating" label="Haste Rating" type="text" cpp_type="OPT_INT" tag="initial_haste_rating" file="sc_player.cpp" value=""/>
-        <option name="strength" label="Strength" type="text" cpp_type="OPT_FLT" tag="attribute_initial[ ATTR_STRENGTH  ]" file="sc_player.cpp" value=""/>
-        <option name="agility" label="Agility" type="text" cpp_type="OPT_FLT" tag="attribute_initial[ ATTR_AGILITY   ]" file="sc_player.cpp" value=""/>
-        <option name="stamina" label="Stamina" type="text" cpp_type="OPT_FLT" tag="attribute_initial[ ATTR_STAMINA   ]" file="sc_player.cpp" value=""/>
-        <option name="intellect" label="Intellect" type="text" cpp_type="OPT_FLT" tag="attribute_initial[ ATTR_INTELLECT ]" file="sc_player.cpp" value=""/>
-        <option name="spirit" label="Spirit" type="text" cpp_type="OPT_FLT" tag="attribute_initial[ ATTR_SPIRIT    ]" file="sc_player.cpp" value=""/>
-        <option name="base_strength" label="Base Strength" type="text" cpp_type="OPT_FLT" tag="attribute_base   [ ATTR_STRENGTH  ]" file="sc_player.cpp" value=""/>
-        <option name="base_agility" label="Base Agility" type="text" cpp_type="OPT_FLT" tag="attribute_base   [ ATTR_AGILITY   ]" file="sc_player.cpp" value=""/>
-        <option name="base_stamina" label="Base Stamina" type="text" cpp_type="OPT_FLT" tag="attribute_base   [ ATTR_STAMINA   ]" file="sc_player.cpp" value=""/>
-        <option name="base_intellect" label="Base Intellect" type="text" cpp_type="OPT_FLT" tag="attribute_base   [ ATTR_INTELLECT ]" file="sc_player.cpp" value=""/>
-        <option name="base_spirit" label="Base Spirit" type="text" cpp_type="OPT_FLT" tag="attribute_base   [ ATTR_SPIRIT    ]" file="sc_player.cpp" value=""/>
-        <option name="strength_multiplier" label="Strength Multiplier" type="text" cpp_type="OPT_FLT" tag="attribute_multiplier_initial[ ATTR_STRENGTH  ]" file="sc_player.cpp" value=""/>
-        <option name="agility_multiplier" label="Agility Multiplier" type="text" cpp_type="OPT_FLT" tag="attribute_multiplier_initial[ ATTR_AGILITY   ]" file="sc_player.cpp" value=""/>
-        <option name="stamina_multiplier" label="Stamina Multiplier" type="text" cpp_type="OPT_FLT" tag="attribute_multiplier_initial[ ATTR_STAMINA   ]" file="sc_player.cpp" value=""/>
-        <option name="intellect_multiplier" label="Intellect Multiplier" type="text" cpp_type="OPT_FLT" tag="attribute_multiplier_initial[ ATTR_INTELLECT ]" file="sc_player.cpp" value=""/>
-        <option name="spirit_multiplier" label="Spirit Multiplier" type="text" cpp_type="OPT_FLT" tag="attribute_multiplier_initial[ ATTR_SPIRIT    ]" file="sc_player.cpp" value=""/>
-        <option name="spell_power" label="Spell Power" type="text" cpp_type="OPT_FLT" tag="initial_spell_power[ SCHOOL_MAX    ]" file="sc_player.cpp" value=""/>
-        <option name="spell_power_arcane" label="Spell Power Arcane" type="text" cpp_type="OPT_FLT" tag="initial_spell_power[ SCHOOL_ARCANE ]" file="sc_player.cpp" value=""/>
-        <option name="spell_power_fire" label="Spell Power Fire" type="text" cpp_type="OPT_FLT" tag="initial_spell_power[ SCHOOL_FIRE   ]" file="sc_player.cpp" value=""/>
-        <option name="spell_power_frost" label="Spell Power Frost" type="text" cpp_type="OPT_FLT" tag="initial_spell_power[ SCHOOL_FROST  ]" file="sc_player.cpp" value=""/>
-        <option name="spell_power_holy" label="Spell Power Holy" type="text" cpp_type="OPT_FLT" tag="initial_spell_power[ SCHOOL_HOLY   ]" file="sc_player.cpp" value=""/>
-        <option name="spell_power_nature" label="Spell Power Nature" type="text" cpp_type="OPT_FLT" tag="initial_spell_power[ SCHOOL_NATURE ]" file="sc_player.cpp" value=""/>
-        <option name="spell_power_shadow" label="Spell Power Shadow" type="text" cpp_type="OPT_FLT" tag="initial_spell_power[ SCHOOL_SHADOW ]" file="sc_player.cpp" value=""/>
-        <option name="spell_hit" label="Spell Hit" type="text" cpp_type="OPT_FLT" tag="initial_spell_hit" file="sc_player.cpp" value=""/>
-        <option name="spell_crit" label="Spell Crit" type="text" cpp_type="OPT_FLT" tag="initial_spell_crit" file="sc_player.cpp" value=""/>
-        <option name="spell_penetration" label="Spell Penetration" type="text" cpp_type="OPT_FLT" tag="initial_spell_penetration" file="sc_player.cpp" value=""/>
-        <option name="mp5" label="Mp5" type="text" cpp_type="OPT_FLT" tag="initial_mp5" file="sc_player.cpp" value=""/>
-        <option name="base_spell_power" label="Base Spell Power" type="text" cpp_type="OPT_FLT" tag="base_spell_power" file="sc_player.cpp" value=""/>
-        <option name="base_spell_hit" label="Base Spell Hit" type="text" cpp_type="OPT_FLT" tag="base_spell_hit" file="sc_player.cpp" value=""/>
-        <option name="base_spell_crit" label="Base Spell Crit" type="text" cpp_type="OPT_FLT" tag="base_spell_crit" file="sc_player.cpp" value=""/>
-        <option name="base_spell_penetration" label="Base Spell Penetration" type="text" cpp_type="OPT_FLT" tag="base_spell_penetration" file="sc_player.cpp" value=""/>
-        <option name="base_mp5" label="Base Mp5" type="text" cpp_type="OPT_FLT" tag="base_mp5" file="sc_player.cpp" value=""/>
-        <option name="spell_power_per_intellect" label="Spell Power Per Intellect" type="text" cpp_type="OPT_FLT" tag="spell_power_per_intellect" file="sc_player.cpp" value=""/>
-        <option name="spell_power_per_spirit" label="Spell Power Per Spirit" type="text" cpp_type="OPT_FLT" tag="spell_power_per_spirit" file="sc_player.cpp" value=""/>
-        <option name="spell_crit_per_intellect" label="Spell Crit Per Intellect" type="text" cpp_type="OPT_FLT" tag="spell_crit_per_intellect" file="sc_player.cpp" value=""/>
-        <option name="attack_power" label="Attack Power" type="text" cpp_type="OPT_FLT" tag="initial_attack_power" file="sc_player.cpp" value=""/>
-        <option name="attack_hit" label="Attack Hit" type="text" cpp_type="OPT_FLT" tag="initial_attack_hit" file="sc_player.cpp" value=""/>
-        <option name="attack_expertise" label="Attack Expertise" type="text" cpp_type="OPT_FLT" tag="initial_attack_expertise" file="sc_player.cpp" value=""/>
-        <option name="attack_crit" label="Attack Crit" type="text" cpp_type="OPT_FLT" tag="initial_attack_crit" file="sc_player.cpp" value=""/>
-        <option name="attack_penetration" label="Attack Penetration" type="text" cpp_type="OPT_FLT" tag="initial_attack_penetration" file="sc_player.cpp" value=""/>
-        <option name="base_attack_power" label="Base Attack Power" type="text" cpp_type="OPT_FLT" tag="base_attack_power" file="sc_player.cpp" value=""/>
-        <option name="base_attack_hit" label="Base Attack Hit" type="text" cpp_type="OPT_FLT" tag="base_attack_hit" file="sc_player.cpp" value=""/>
-        <option name="base_attack_expertise" label="Base Attack Expertise" type="text" cpp_type="OPT_FLT" tag="base_attack_expertise" file="sc_player.cpp" value=""/>
-        <option name="base_attack_crit" label="Base Attack Crit" type="text" cpp_type="OPT_FLT" tag="base_attack_crit" file="sc_player.cpp" value=""/>
-        <option name="base_attack_penetration" label="Base Attack Penetration" type="text" cpp_type="OPT_FLT" tag="base_attack_penetration" file="sc_player.cpp" value=""/>
-        <option name="attack_power_per_strength" label="Attack Power Per Strength" type="text" cpp_type="OPT_FLT" tag="attack_power_per_strength" file="sc_player.cpp" value=""/>
-        <option name="attack_power_per_agility" label="Attack Power Per Agility" type="text" cpp_type="OPT_FLT" tag="attack_power_per_agility" file="sc_player.cpp" value=""/>
-        <option name="attack_crit_per_agility" label="Attack Crit Per Agility" type="text" cpp_type="OPT_FLT" tag="attack_crit_per_agility" file="sc_player.cpp" value=""/>
-        <option name="armor" label="Armor" type="text" cpp_type="OPT_FLT" tag="initial_armor" file="sc_player.cpp" value=""/>
-        <option name="base_armor" label="Base Armor" type="text" cpp_type="OPT_FLT" tag="base_armor" file="sc_player.cpp" value=""/>
-        <option name="armor_per_agility" label="Armor Per Agility" type="text" cpp_type="OPT_FLT" tag="armor_per_agility" file="sc_player.cpp" value=""/>
+        <option name="actions" label="Actions" type="text" cpp_type="OPT_STRING" tag="action_list_str" file="sc_player.cpp" value=""/>
+        <option name="sleeping" label="Sleeping" type="boolean" cpp_type="OPT_BOOL" tag="sleeping" file="sc_player.cpp" value=""/>
+        <option name="quiet" label="Quiet" type="boolean" cpp_type="OPT_BOOL" tag="quiet" file="sc_player.cpp" value=""/>
         <option name="main_hand" label="Main Hand" type="text" cpp_type="OPT_STRING" tag="main_hand_str" file="sc_player.cpp" value=""/>
         <option name="off_hand" label="Off Hand" type="text" cpp_type="OPT_STRING" tag="off_hand_str" file="sc_player.cpp" value=""/>
         <option name="ranged" label="Ranged" type="text" cpp_type="OPT_STRING" tag="ranged_str" file="sc_player.cpp" value=""/>
-        <option name="health" label="Health" type="text" cpp_type="OPT_FLT" tag="resource_initial[ RESOURCE_HEALTH ]" file="sc_player.cpp" value=""/>
-        <option name="mana" label="Mana" type="text" cpp_type="OPT_FLT" tag="resource_initial[ RESOURCE_MANA   ]" file="sc_player.cpp" value=""/>
-        <option name="rage" label="Rage" type="text" cpp_type="OPT_FLT" tag="resource_initial[ RESOURCE_RAGE   ]" file="sc_player.cpp" value=""/>
-        <option name="energy" label="Energy" type="text" cpp_type="OPT_FLT" tag="resource_initial[ RESOURCE_ENERGY ]" file="sc_player.cpp" value=""/>
-        <option name="focus" label="Focus" type="text" cpp_type="OPT_FLT" tag="resource_initial[ RESOURCE_FOCUS  ]" file="sc_player.cpp" value=""/>
-        <option name="runic" label="Runic" type="text" cpp_type="OPT_FLT" tag="resource_initial[ RESOURCE_RUNIC  ]" file="sc_player.cpp" value=""/>
-        <option name="base_health" label="Base Health" type="text" cpp_type="OPT_FLT" tag="resource_base   [ RESOURCE_HEALTH ]" file="sc_player.cpp" value=""/>
-        <option name="base_mana" label="Base Mana" type="text" cpp_type="OPT_FLT" tag="resource_base   [ RESOURCE_MANA   ]" file="sc_player.cpp" value=""/>
-        <option name="base_rage" label="Base Rage" type="text" cpp_type="OPT_FLT" tag="resource_base   [ RESOURCE_RAGE   ]" file="sc_player.cpp" value=""/>
-        <option name="base_energy" label="Base Energy" type="text" cpp_type="OPT_FLT" tag="resource_base   [ RESOURCE_ENERGY ]" file="sc_player.cpp" value=""/>
-        <option name="base_focus" label="Base Focus" type="text" cpp_type="OPT_FLT" tag="resource_base   [ RESOURCE_FOCUS  ]" file="sc_player.cpp" value=""/>
-        <option name="base_runic" label="Base Runic" type="text" cpp_type="OPT_FLT" tag="resource_base   [ RESOURCE_RUNIC  ]" file="sc_player.cpp" value=""/>
-        <option name="pre_actions" label="Pre Actions" type="text" cpp_type="OPT_STRING" tag="action_list_prefix" file="sc_player.cpp" value=""/>
-        <option name="actions" label="Actions" type="text" cpp_type="OPT_STRING" tag="action_list_str" file="sc_player.cpp" value=""/>
-        <option name="post_actions" label="Post Actions" type="text" cpp_type="OPT_STRING" tag="action_list_postfix" file="sc_player.cpp" value=""/>
-        <option name="skip_actions" label="Skip Actions" type="text" cpp_type="OPT_STRING" tag="action_list_skip" file="sc_player.cpp" value=""/>
-        <option name="quiet" label="Quiet" type="text" cpp_type="OPT_INT" tag="quiet" file="sc_player.cpp" value=""/>
         <option name="gear_strength" label="Gear Strength" type="text" cpp_type="OPT_FLT" tag="gear_stats" file="sc_player.cpp" value=""/>
         <option name="gear_agility" label="Gear Agility" type="text" cpp_type="OPT_FLT" tag="gear_stats" file="sc_player.cpp" value=""/>
         <option name="gear_stamina" label="Gear Stamina" type="text" cpp_type="OPT_FLT" tag="gear_stats" file="sc_player.cpp" value=""/>
@@ -286,54 +218,122 @@
         <option name="gem_focus" label="Gem Focus" type="text" cpp_type="OPT_FLT" tag="gem_stats" file="sc_player.cpp" value=""/>
         <option name="gem_runic" label="Gem Runic" type="text" cpp_type="OPT_FLT" tag="gem_stats" file="sc_player.cpp" value=""/>
         <option name="gem_armor" label="Gem Armor" type="text" cpp_type="OPT_FLT" tag="gem_stats" file="sc_player.cpp" value=""/>
-        <option name="flask" label="Flask" type="text" cpp_type="OPT_STRING" tag="flask_str" file="sc_player.cpp" value=""/>
+        <option name="base_strength" label="Base Strength" type="text" cpp_type="OPT_FLT" tag="attribute_base[ ATTR_STRENGTH  ]" file="sc_player.cpp" value=""/>
+        <option name="base_agility" label="Base Agility" type="text" cpp_type="OPT_FLT" tag="attribute_base[ ATTR_AGILITY   ]" file="sc_player.cpp" value=""/>
+        <option name="base_stamina" label="Base Stamina" type="text" cpp_type="OPT_FLT" tag="attribute_base[ ATTR_STAMINA   ]" file="sc_player.cpp" value=""/>
+        <option name="base_intellect" label="Base Intellect" type="text" cpp_type="OPT_FLT" tag="attribute_base[ ATTR_INTELLECT ]" file="sc_player.cpp" value=""/>
+        <option name="base_spirit" label="Base Spirit" type="text" cpp_type="OPT_FLT" tag="attribute_base[ ATTR_SPIRIT    ]" file="sc_player.cpp" value=""/>
+        <option name="base_energy" label="Base Energy" type="text" cpp_type="OPT_FLT" tag="resource_base[ RESOURCE_ENERGY ]" file="sc_player.cpp" value=""/>
+        <option name="base_focus" label="Base Focus" type="text" cpp_type="OPT_FLT" tag="resource_base[ RESOURCE_FOCUS  ]" file="sc_player.cpp" value=""/>
+        <option name="base_health" label="Base Health" type="text" cpp_type="OPT_FLT" tag="resource_base[ RESOURCE_HEALTH ]" file="sc_player.cpp" value=""/>
+        <option name="base_mana" label="Base Mana" type="text" cpp_type="OPT_FLT" tag="resource_base[ RESOURCE_MANA   ]" file="sc_player.cpp" value=""/>
+        <option name="base_rage" label="Base Rage" type="text" cpp_type="OPT_FLT" tag="resource_base[ RESOURCE_RAGE   ]" file="sc_player.cpp" value=""/>
+        <option name="base_runic" label="Base Runic" type="text" cpp_type="OPT_FLT" tag="resource_base[ RESOURCE_RUNIC  ]" file="sc_player.cpp" value=""/>
+        <option name="base_armor" label="Base Armor" type="text" cpp_type="OPT_FLT" tag="base_armor" file="sc_player.cpp" value=""/>
+        <option name="base_attack_crit" label="Base Attack Crit" type="text" cpp_type="OPT_FLT" tag="base_attack_crit" file="sc_player.cpp" value=""/>
+        <option name="base_attack_expertise" label="Base Attack Expertise" type="text" cpp_type="OPT_FLT" tag="base_attack_expertise" file="sc_player.cpp" value=""/>
+        <option name="base_attack_hit" label="Base Attack Hit" type="text" cpp_type="OPT_FLT" tag="base_attack_hit" file="sc_player.cpp" value=""/>
+        <option name="base_attack_penetration" label="Base Attack Penetration" type="text" cpp_type="OPT_FLT" tag="base_attack_penetration" file="sc_player.cpp" value=""/>
+        <option name="base_attack_power" label="Base Attack Power" type="text" cpp_type="OPT_FLT" tag="base_attack_power" file="sc_player.cpp" value=""/>
+        <option name="base_mp5" label="Base Mp5" type="text" cpp_type="OPT_FLT" tag="base_mp5" file="sc_player.cpp" value=""/>
+        <option name="base_spell_crit" label="Base Spell Crit" type="text" cpp_type="OPT_FLT" tag="base_spell_crit" file="sc_player.cpp" value=""/>
+        <option name="base_spell_hit" label="Base Spell Hit" type="text" cpp_type="OPT_FLT" tag="base_spell_hit" file="sc_player.cpp" value=""/>
+        <option name="base_spell_penetration" label="Base Spell Penetration" type="text" cpp_type="OPT_FLT" tag="base_spell_penetration" file="sc_player.cpp" value=""/>
+        <option name="base_spell_power" label="Base Spell Power" type="text" cpp_type="OPT_FLT" tag="base_spell_power" file="sc_player.cpp" value=""/>
+        <option name="armor_per_agility" label="Armor Per Agility" type="text" cpp_type="OPT_FLT" tag="armor_per_agility" file="sc_player.cpp" value=""/>
+        <option name="attack_crit_per_agility" label="Attack Crit Per Agility" type="text" cpp_type="OPT_FLT" tag="attack_crit_per_agility" file="sc_player.cpp" value=""/>
+        <option name="attack_power_per_agility" label="Attack Power Per Agility" type="text" cpp_type="OPT_FLT" tag="attack_power_per_agility" file="sc_player.cpp" value=""/>
+        <option name="attack_power_per_strength" label="Attack Power Per Strength" type="text" cpp_type="OPT_FLT" tag="attack_power_per_strength" file="sc_player.cpp" value=""/>
+        <option name="spell_crit_per_intellect" label="Spell Crit Per Intellect" type="text" cpp_type="OPT_FLT" tag="spell_crit_per_intellect" file="sc_player.cpp" value=""/>
+        <option name="gcd" label="Gcd" type="text" cpp_type="OPT_FLT" tag="base_gcd" file="sc_player.cpp" value=""/>
+        <option name="id" label="Id" type="text" cpp_type="OPT_STRING" tag="id_str" file="sc_player.cpp" value=""/>
+        <option name="agility" label="Agility" type="text" cpp_type="OPT_FLT" tag="attribute_initial[ ATTR_AGILITY   ]" file="sc_player.cpp" value=""/>
+        <option name="agility_multiplier" label="Agility Multiplier" type="text" cpp_type="OPT_FLT" tag="attribute_multiplier_initial[ ATTR_AGILITY   ]" file="sc_player.cpp" value=""/>
+        <option name="armor" label="Armor" type="text" cpp_type="OPT_FLT" tag="initial_armor" file="sc_player.cpp" value=""/>
+        <option name="attack_crit" label="Attack Crit" type="text" cpp_type="OPT_FLT" tag="initial_attack_crit" file="sc_player.cpp" value=""/>
+        <option name="attack_expertise" label="Attack Expertise" type="text" cpp_type="OPT_FLT" tag="initial_attack_expertise" file="sc_player.cpp" value=""/>
+        <option name="attack_hit" label="Attack Hit" type="text" cpp_type="OPT_FLT" tag="initial_attack_hit" file="sc_player.cpp" value=""/>
+        <option name="attack_penetration" label="Attack Penetration" type="text" cpp_type="OPT_FLT" tag="initial_attack_penetration" file="sc_player.cpp" value=""/>
+        <option name="attack_power" label="Attack Power" type="text" cpp_type="OPT_FLT" tag="initial_attack_power" file="sc_player.cpp" value=""/>
         <option name="elixirs" label="Elixirs" type="text" cpp_type="OPT_STRING" tag="elixirs_str" file="sc_player.cpp" value=""/>
+        <option name="energy" label="Energy" type="text" cpp_type="OPT_FLT" tag="resource_initial[ RESOURCE_ENERGY ]" file="sc_player.cpp" value=""/>
+        <option name="flask" label="Flask" type="text" cpp_type="OPT_STRING" tag="flask_str" file="sc_player.cpp" value=""/>
+        <option name="focus" label="Focus" type="text" cpp_type="OPT_FLT" tag="resource_initial[ RESOURCE_FOCUS  ]" file="sc_player.cpp" value=""/>
         <option name="food" label="Food" type="text" cpp_type="OPT_STRING" tag="food_str" file="sc_player.cpp" value=""/>
-        <option name="ashtongue_talisman" label="Ashtongue Talisman" type="text" cpp_type="OPT_INT" tag="p -&gt; unique_gear -&gt; ashtongue_talisman" file="sc_unique_gear.cpp" value=""/>
-        <option name="tier4_2pc" label="Tier4 2pc" type="text" cpp_type="OPT_INT" tag="p -&gt; unique_gear -&gt; tier4_2pc" file="sc_unique_gear.cpp" value=""/>
-        <option name="tier4_4pc" label="Tier4 4pc" type="text" cpp_type="OPT_INT" tag="p -&gt; unique_gear -&gt; tier4_4pc" file="sc_unique_gear.cpp" value=""/>
-        <option name="tier5_2pc" label="Tier5 2pc" type="text" cpp_type="OPT_INT" tag="p -&gt; unique_gear -&gt; tier5_2pc" file="sc_unique_gear.cpp" value=""/>
-        <option name="tier5_4pc" label="Tier5 4pc" type="text" cpp_type="OPT_INT" tag="p -&gt; unique_gear -&gt; tier5_4pc" file="sc_unique_gear.cpp" value=""/>
-        <option name="tier6_2pc" label="Tier6 2pc" type="text" cpp_type="OPT_INT" tag="p -&gt; unique_gear -&gt; tier6_2pc" file="sc_unique_gear.cpp" value=""/>
-        <option name="tier6_4pc" label="Tier6 4pc" type="text" cpp_type="OPT_INT" tag="p -&gt; unique_gear -&gt; tier6_4pc" file="sc_unique_gear.cpp" value=""/>
-        <option name="tier7_2pc" label="Tier7 2pc" type="text" cpp_type="OPT_INT" tag="p -&gt; unique_gear -&gt; tier7_2pc" file="sc_unique_gear.cpp" value=""/>
-        <option name="tier7_4pc" label="Tier7 4pc" type="text" cpp_type="OPT_INT" tag="p -&gt; unique_gear -&gt; tier7_4pc" file="sc_unique_gear.cpp" value=""/>
-        <option name="tier8_2pc" label="Tier8 2pc" type="text" cpp_type="OPT_INT" tag="p -&gt; unique_gear -&gt; tier8_2pc" file="sc_unique_gear.cpp" value=""/>
-        <option name="tier8_4pc" label="Tier8 4pc" type="text" cpp_type="OPT_INT" tag="p -&gt; unique_gear -&gt; tier8_4pc" file="sc_unique_gear.cpp" value=""/>
-        <option name="bandits_insignia" label="Bandits Insignia" type="text" cpp_type="OPT_INT" tag="p -&gt; unique_gear -&gt; bandits_insignia" file="sc_unique_gear.cpp" value=""/>
-        <option name="chaotic_skyfire" label="Chaotic Skyfire" type="text" cpp_type="OPT_INT" tag="p -&gt; unique_gear -&gt; chaotic_skyflare" file="sc_unique_gear.cpp" value=""/>
-        <option name="chaotic_skyflare" label="Chaotic Skyflare" type="text" cpp_type="OPT_INT" tag="p -&gt; unique_gear -&gt; chaotic_skyflare" file="sc_unique_gear.cpp" value=""/>
-        <option name="darkmoon_crusade" label="Darkmoon Crusade" type="text" cpp_type="OPT_INT" tag="p -&gt; unique_gear -&gt; darkmoon_crusade" file="sc_unique_gear.cpp" value=""/>
-        <option name="darkmoon_greatness" label="Darkmoon Greatness" type="text" cpp_type="OPT_INT" tag="p -&gt; unique_gear -&gt; darkmoon_greatness" file="sc_unique_gear.cpp" value=""/>
-        <option name="dying_curse" label="Dying Curse" type="text" cpp_type="OPT_INT" tag="p -&gt; unique_gear -&gt; dying_curse" file="sc_unique_gear.cpp" value=""/>
-        <option name="egg_of_mortal_essence" label="Egg Of Mortal Essence" type="text" cpp_type="OPT_INT" tag="p -&gt; unique_gear -&gt; egg_of_mortal_essence" file="sc_unique_gear.cpp" value=""/>
-        <option name="elder_scribes" label="Elder Scribes" type="text" cpp_type="OPT_INT" tag="p -&gt; unique_gear -&gt; elder_scribes" file="sc_unique_gear.cpp" value=""/>
-        <option name="elemental_focus_stone" label="Elemental Focus Stone" type="text" cpp_type="OPT_INT" tag="p -&gt; unique_gear -&gt; elemental_focus_stone" file="sc_unique_gear.cpp" value=""/>
-        <option name="ember_skyflare" label="Ember Skyflare" type="text" cpp_type="OPT_INT" tag="p -&gt; unique_gear -&gt; ember_skyflare" file="sc_unique_gear.cpp" value=""/>
-        <option name="embrace_of_the_spider" label="Embrace Of The Spider" type="text" cpp_type="OPT_INT" tag="p -&gt; unique_gear -&gt; embrace_of_the_spider" file="sc_unique_gear.cpp" value=""/>
-        <option name="eternal_sage" label="Eternal Sage" type="text" cpp_type="OPT_INT" tag="p -&gt; unique_gear -&gt; eternal_sage" file="sc_unique_gear.cpp" value=""/>
-        <option name="extract_of_necromatic_power" label="Extract Of Necromatic Power" type="text" cpp_type="OPT_INT" tag="p -&gt; unique_gear -&gt; extract_of_necromatic_power" file="sc_unique_gear.cpp" value=""/>
-        <option name="eye_of_magtheridon" label="Eye Of Magtheridon" type="text" cpp_type="OPT_INT" tag="p -&gt; unique_gear -&gt; eye_of_magtheridon" file="sc_unique_gear.cpp" value=""/>
-        <option name="eye_of_the_broodmother" label="Eye Of The Broodmother" type="text" cpp_type="OPT_INT" tag="p -&gt; unique_gear -&gt; eye_of_the_broodmother" file="sc_unique_gear.cpp" value=""/>
-        <option name="flare_of_the_heavens" label="Flare Of The Heavens" type="text" cpp_type="OPT_INT" tag="p -&gt; unique_gear -&gt; flare_of_the_heavens" file="sc_unique_gear.cpp" value=""/>
-        <option name="forge_ember" label="Forge Ember" type="text" cpp_type="OPT_INT" tag="p -&gt; unique_gear -&gt; forge_ember" file="sc_unique_gear.cpp" value=""/>
-        <option name="fury_of_the_five_flights" label="Fury Of The Five Flights" type="text" cpp_type="OPT_INT" tag="p -&gt; unique_gear -&gt; fury_of_the_five_flights" file="sc_unique_gear.cpp" value=""/>
-        <option name="grim_toll" label="Grim Toll" type="text" cpp_type="OPT_INT" tag="p -&gt; unique_gear -&gt; grim_toll" file="sc_unique_gear.cpp" value=""/>
-        <option name="illustration_of_the_dragon_soul" label="Illustration Of The Dragon Soul" type="text" cpp_type="OPT_INT" tag="p -&gt; unique_gear -&gt; illustration_of_the_dragon_soul" file="sc_unique_gear.cpp" value=""/>
-        <option name="lightning_capacitor" label="Lightning Capacitor" type="text" cpp_type="OPT_INT" tag="p -&gt; unique_gear -&gt; lightning_capacitor" file="sc_unique_gear.cpp" value=""/>
-        <option name="mirror_of_truth" label="Mirror Of Truth" type="text" cpp_type="OPT_INT" tag="p -&gt; unique_gear -&gt; mirror_of_truth" file="sc_unique_gear.cpp" value=""/>
-        <option name="mark_of_defiance" label="Mark Of Defiance" type="text" cpp_type="OPT_INT" tag="p -&gt; unique_gear -&gt; mark_of_defiance" file="sc_unique_gear.cpp" value=""/>
-        <option name="mystical_skyfire" label="Mystical Skyfire" type="text" cpp_type="OPT_INT" tag="p -&gt; unique_gear -&gt; mystical_skyfire" file="sc_unique_gear.cpp" value=""/>
-        <option name="pyrite_infuser" label="Pyrite Infuser" type="text" cpp_type="OPT_INT" tag="p -&gt; unique_gear -&gt; pyrite_infuser" file="sc_unique_gear.cpp" value=""/>
-        <option name="quagmirrans_eye" label="Quagmirrans Eye" type="text" cpp_type="OPT_INT" tag="p -&gt; unique_gear -&gt; quagmirrans_eye" file="sc_unique_gear.cpp" value=""/>
-        <option name="relentless_earthstorm" label="Relentless Earthstorm" type="text" cpp_type="OPT_INT" tag="p -&gt; unique_gear -&gt; relentless_earthstorm" file="sc_unique_gear.cpp" value=""/>
-        <option name="sextant_of_unstable_currents" label="Sextant Of Unstable Currents" type="text" cpp_type="OPT_INT" tag="p -&gt; unique_gear -&gt; sextant_of_unstable_currents" file="sc_unique_gear.cpp" value=""/>
-        <option name="shiffars_nexus_horn" label="Shiffars Nexus Horn" type="text" cpp_type="OPT_INT" tag="p -&gt; unique_gear -&gt; shiffars_nexus_horn" file="sc_unique_gear.cpp" value=""/>
-        <option name="spellstrike" label="Spellstrike" type="text" cpp_type="OPT_INT" tag="p -&gt; unique_gear -&gt; spellstrike" file="sc_unique_gear.cpp" value=""/>
-        <option name="sundial_of_the_exiled" label="Sundial Of The Exiled" type="text" cpp_type="OPT_INT" tag="p -&gt; unique_gear -&gt; sundial_of_the_exiled" file="sc_unique_gear.cpp" value=""/>
-        <option name="thunder_capacitor" label="Thunder Capacitor" type="text" cpp_type="OPT_INT" tag="p -&gt; unique_gear -&gt; thunder_capacitor" file="sc_unique_gear.cpp" value=""/>
-        <option name="timbals_crystal" label="Timbals Crystal" type="text" cpp_type="OPT_INT" tag="p -&gt; unique_gear -&gt; timbals_crystal" file="sc_unique_gear.cpp" value=""/>
-        <option name="wrath_of_cenarius" label="Wrath Of Cenarius" type="text" cpp_type="OPT_INT" tag="p -&gt; unique_gear -&gt; wrath_of_cenarius" file="sc_unique_gear.cpp" value=""/>
+        <option name="haste_rating" label="Haste Rating" type="text" cpp_type="OPT_FLT" tag="initial_haste_rating" file="sc_player.cpp" value=""/>
+        <option name="health" label="Health" type="text" cpp_type="OPT_FLT" tag="resource_initial[ RESOURCE_HEALTH ]" file="sc_player.cpp" value=""/>
+        <option name="intellect" label="Intellect" type="text" cpp_type="OPT_FLT" tag="attribute_initial[ ATTR_INTELLECT ]" file="sc_player.cpp" value=""/>
+        <option name="intellect_multiplier" label="Intellect Multiplier" type="text" cpp_type="OPT_FLT" tag="attribute_multiplier_initial[ ATTR_INTELLECT ]" file="sc_player.cpp" value=""/>
+        <option name="mana" label="Mana" type="text" cpp_type="OPT_FLT" tag="resource_initial[ RESOURCE_MANA   ]" file="sc_player.cpp" value=""/>
+        <option name="mp5" label="Mp5" type="text" cpp_type="OPT_FLT" tag="initial_mp5" file="sc_player.cpp" value=""/>
+        <option name="post_actions" label="Post Actions" type="text" cpp_type="OPT_STRING" tag="action_list_postfix" file="sc_player.cpp" value=""/>
+        <option name="pre_actions" label="Pre Actions" type="text" cpp_type="OPT_STRING" tag="action_list_prefix" file="sc_player.cpp" value=""/>
+        <option name="rage" label="Rage" type="text" cpp_type="OPT_FLT" tag="resource_initial[ RESOURCE_RAGE   ]" file="sc_player.cpp" value=""/>
+        <option name="runic" label="Runic" type="text" cpp_type="OPT_FLT" tag="resource_initial[ RESOURCE_RUNIC  ]" file="sc_player.cpp" value=""/>
+        <option name="skip_actions" label="Skip Actions" type="text" cpp_type="OPT_STRING" tag="action_list_skip" file="sc_player.cpp" value=""/>
+        <option name="spell_crit" label="Spell Crit" type="text" cpp_type="OPT_FLT" tag="initial_spell_crit" file="sc_player.cpp" value=""/>
+        <option name="spell_hit" label="Spell Hit" type="text" cpp_type="OPT_FLT" tag="initial_spell_hit" file="sc_player.cpp" value=""/>
+        <option name="spell_penetration" label="Spell Penetration" type="text" cpp_type="OPT_FLT" tag="initial_spell_penetration" file="sc_player.cpp" value=""/>
+        <option name="spell_power" label="Spell Power" type="text" cpp_type="OPT_FLT" tag="initial_spell_power[ SCHOOL_MAX    ]" file="sc_player.cpp" value=""/>
+        <option name="spell_power_arcane" label="Spell Power Arcane" type="text" cpp_type="OPT_FLT" tag="initial_spell_power[ SCHOOL_ARCANE ]" file="sc_player.cpp" value=""/>
+        <option name="spell_power_fire" label="Spell Power Fire" type="text" cpp_type="OPT_FLT" tag="initial_spell_power[ SCHOOL_FIRE   ]" file="sc_player.cpp" value=""/>
+        <option name="spell_power_frost" label="Spell Power Frost" type="text" cpp_type="OPT_FLT" tag="initial_spell_power[ SCHOOL_FROST  ]" file="sc_player.cpp" value=""/>
+        <option name="spell_power_holy" label="Spell Power Holy" type="text" cpp_type="OPT_FLT" tag="initial_spell_power[ SCHOOL_HOLY   ]" file="sc_player.cpp" value=""/>
+        <option name="spell_power_nature" label="Spell Power Nature" type="text" cpp_type="OPT_FLT" tag="initial_spell_power[ SCHOOL_NATURE ]" file="sc_player.cpp" value=""/>
+        <option name="spell_power_per_intellect" label="Spell Power Per Intellect" type="text" cpp_type="OPT_FLT" tag="spell_power_per_intellect" file="sc_player.cpp" value=""/>
+        <option name="spell_power_per_spirit" label="Spell Power Per Spirit" type="text" cpp_type="OPT_FLT" tag="spell_power_per_spirit" file="sc_player.cpp" value=""/>
+        <option name="spell_power_shadow" label="Spell Power Shadow" type="text" cpp_type="OPT_FLT" tag="initial_spell_power[ SCHOOL_SHADOW ]" file="sc_player.cpp" value=""/>
+        <option name="spirit" label="Spirit" type="text" cpp_type="OPT_FLT" tag="attribute_initial[ ATTR_SPIRIT    ]" file="sc_player.cpp" value=""/>
+        <option name="spirit_multiplier" label="Spirit Multiplier" type="text" cpp_type="OPT_FLT" tag="attribute_multiplier_initial[ ATTR_SPIRIT    ]" file="sc_player.cpp" value=""/>
+        <option name="stamina" label="Stamina" type="text" cpp_type="OPT_FLT" tag="attribute_initial[ ATTR_STAMINA   ]" file="sc_player.cpp" value=""/>
+        <option name="stamina_multiplier" label="Stamina Multiplier" type="text" cpp_type="OPT_FLT" tag="attribute_multiplier_initial[ ATTR_STAMINA   ]" file="sc_player.cpp" value=""/>
+        <option name="strength" label="Strength" type="text" cpp_type="OPT_FLT" tag="attribute_initial[ ATTR_STRENGTH  ]" file="sc_player.cpp" value=""/>
+        <option name="strength_multiplier" label="Strength Multiplier" type="text" cpp_type="OPT_FLT" tag="attribute_multiplier_initial[ ATTR_STRENGTH  ]" file="sc_player.cpp" value=""/>
+        <option name="ashtongue_talisman" label="Ashtongue Talisman" type="boolean" cpp_type="OPT_BOOL" tag="p -&gt; unique_gear -&gt; ashtongue_talisman" file="sc_unique_gear.cpp" value=""/>
+        <option name="tier4_2pc" label="Tier4 2pc" type="boolean" cpp_type="OPT_BOOL" tag="p -&gt; unique_gear -&gt; tier4_2pc" file="sc_unique_gear.cpp" value=""/>
+        <option name="tier4_4pc" label="Tier4 4pc" type="boolean" cpp_type="OPT_BOOL" tag="p -&gt; unique_gear -&gt; tier4_4pc" file="sc_unique_gear.cpp" value=""/>
+        <option name="tier5_2pc" label="Tier5 2pc" type="boolean" cpp_type="OPT_BOOL" tag="p -&gt; unique_gear -&gt; tier5_2pc" file="sc_unique_gear.cpp" value=""/>
+        <option name="tier5_4pc" label="Tier5 4pc" type="boolean" cpp_type="OPT_BOOL" tag="p -&gt; unique_gear -&gt; tier5_4pc" file="sc_unique_gear.cpp" value=""/>
+        <option name="tier6_2pc" label="Tier6 2pc" type="boolean" cpp_type="OPT_BOOL" tag="p -&gt; unique_gear -&gt; tier6_2pc" file="sc_unique_gear.cpp" value=""/>
+        <option name="tier6_4pc" label="Tier6 4pc" type="boolean" cpp_type="OPT_BOOL" tag="p -&gt; unique_gear -&gt; tier6_4pc" file="sc_unique_gear.cpp" value=""/>
+        <option name="tier7_2pc" label="Tier7 2pc" type="boolean" cpp_type="OPT_BOOL" tag="p -&gt; unique_gear -&gt; tier7_2pc" file="sc_unique_gear.cpp" value=""/>
+        <option name="tier7_4pc" label="Tier7 4pc" type="boolean" cpp_type="OPT_BOOL" tag="p -&gt; unique_gear -&gt; tier7_4pc" file="sc_unique_gear.cpp" value=""/>
+        <option name="tier8_2pc" label="Tier8 2pc" type="boolean" cpp_type="OPT_BOOL" tag="p -&gt; unique_gear -&gt; tier8_2pc" file="sc_unique_gear.cpp" value=""/>
+        <option name="tier8_4pc" label="Tier8 4pc" type="boolean" cpp_type="OPT_BOOL" tag="p -&gt; unique_gear -&gt; tier8_4pc" file="sc_unique_gear.cpp" value=""/>
+        <option name="bandits_insignia" label="Bandits Insignia" type="boolean" cpp_type="OPT_BOOL" tag="p -&gt; unique_gear -&gt; bandits_insignia" file="sc_unique_gear.cpp" value=""/>
+        <option name="chaotic_skyfire" label="Chaotic Skyfire" type="boolean" cpp_type="OPT_BOOL" tag="p -&gt; unique_gear -&gt; chaotic_skyflare" file="sc_unique_gear.cpp" value=""/>
+        <option name="chaotic_skyflare" label="Chaotic Skyflare" type="boolean" cpp_type="OPT_BOOL" tag="p -&gt; unique_gear -&gt; chaotic_skyflare" file="sc_unique_gear.cpp" value=""/>
+        <option name="darkmoon_crusade" label="Darkmoon Crusade" type="boolean" cpp_type="OPT_BOOL" tag="p -&gt; unique_gear -&gt; darkmoon_crusade" file="sc_unique_gear.cpp" value=""/>
+        <option name="darkmoon_greatness" label="Darkmoon Greatness" type="boolean" cpp_type="OPT_BOOL" tag="p -&gt; unique_gear -&gt; darkmoon_greatness" file="sc_unique_gear.cpp" value=""/>
+        <option name="dying_curse" label="Dying Curse" type="boolean" cpp_type="OPT_BOOL" tag="p -&gt; unique_gear -&gt; dying_curse" file="sc_unique_gear.cpp" value=""/>
+        <option name="egg_of_mortal_essence" label="Egg Of Mortal Essence" type="boolean" cpp_type="OPT_BOOL" tag="p -&gt; unique_gear -&gt; egg_of_mortal_essence" file="sc_unique_gear.cpp" value=""/>
+        <option name="elder_scribes" label="Elder Scribes" type="boolean" cpp_type="OPT_BOOL" tag="p -&gt; unique_gear -&gt; elder_scribes" file="sc_unique_gear.cpp" value=""/>
+        <option name="elemental_focus_stone" label="Elemental Focus Stone" type="boolean" cpp_type="OPT_BOOL" tag="p -&gt; unique_gear -&gt; elemental_focus_stone" file="sc_unique_gear.cpp" value=""/>
+        <option name="ember_skyflare" label="Ember Skyflare" type="boolean" cpp_type="OPT_BOOL" tag="p -&gt; unique_gear -&gt; ember_skyflare" file="sc_unique_gear.cpp" value=""/>
+        <option name="embrace_of_the_spider" label="Embrace Of The Spider" type="boolean" cpp_type="OPT_BOOL" tag="p -&gt; unique_gear -&gt; embrace_of_the_spider" file="sc_unique_gear.cpp" value=""/>
+        <option name="eternal_sage" label="Eternal Sage" type="boolean" cpp_type="OPT_BOOL" tag="p -&gt; unique_gear -&gt; eternal_sage" file="sc_unique_gear.cpp" value=""/>
+        <option name="extract_of_necromatic_power" label="Extract Of Necromatic Power" type="boolean" cpp_type="OPT_BOOL" tag="p -&gt; unique_gear -&gt; extract_of_necromatic_power" file="sc_unique_gear.cpp" value=""/>
+        <option name="eye_of_magtheridon" label="Eye Of Magtheridon" type="boolean" cpp_type="OPT_BOOL" tag="p -&gt; unique_gear -&gt; eye_of_magtheridon" file="sc_unique_gear.cpp" value=""/>
+        <option name="eye_of_the_broodmother" label="Eye Of The Broodmother" type="boolean" cpp_type="OPT_BOOL" tag="p -&gt; unique_gear -&gt; eye_of_the_broodmother" file="sc_unique_gear.cpp" value=""/>
+        <option name="flare_of_the_heavens" label="Flare Of The Heavens" type="boolean" cpp_type="OPT_BOOL" tag="p -&gt; unique_gear -&gt; flare_of_the_heavens" file="sc_unique_gear.cpp" value=""/>
+        <option name="forge_ember" label="Forge Ember" type="boolean" cpp_type="OPT_BOOL" tag="p -&gt; unique_gear -&gt; forge_ember" file="sc_unique_gear.cpp" value=""/>
+        <option name="fury_of_the_five_flights" label="Fury Of The Five Flights" type="boolean" cpp_type="OPT_BOOL" tag="p -&gt; unique_gear -&gt; fury_of_the_five_flights" file="sc_unique_gear.cpp" value=""/>
+        <option name="grim_toll" label="Grim Toll" type="boolean" cpp_type="OPT_BOOL" tag="p -&gt; unique_gear -&gt; grim_toll" file="sc_unique_gear.cpp" value=""/>
+        <option name="illustration_of_the_dragon_soul" label="Illustration Of The Dragon Soul" type="boolean" cpp_type="OPT_BOOL" tag="p -&gt; unique_gear -&gt; illustration_of_the_dragon_soul" file="sc_unique_gear.cpp" value=""/>
+        <option name="lightning_capacitor" label="Lightning Capacitor" type="boolean" cpp_type="OPT_BOOL" tag="p -&gt; unique_gear -&gt; lightning_capacitor" file="sc_unique_gear.cpp" value=""/>
+        <option name="mirror_of_truth" label="Mirror Of Truth" type="boolean" cpp_type="OPT_BOOL" tag="p -&gt; unique_gear -&gt; mirror_of_truth" file="sc_unique_gear.cpp" value=""/>
+        <option name="mark_of_defiance" label="Mark Of Defiance" type="boolean" cpp_type="OPT_BOOL" tag="p -&gt; unique_gear -&gt; mark_of_defiance" file="sc_unique_gear.cpp" value=""/>
+        <option name="mystical_skyfire" label="Mystical Skyfire" type="boolean" cpp_type="OPT_BOOL" tag="p -&gt; unique_gear -&gt; mystical_skyfire" file="sc_unique_gear.cpp" value=""/>
+        <option name="pyrite_infuser" label="Pyrite Infuser" type="boolean" cpp_type="OPT_BOOL" tag="p -&gt; unique_gear -&gt; pyrite_infuser" file="sc_unique_gear.cpp" value=""/>
+        <option name="quagmirrans_eye" label="Quagmirrans Eye" type="boolean" cpp_type="OPT_BOOL" tag="p -&gt; unique_gear -&gt; quagmirrans_eye" file="sc_unique_gear.cpp" value=""/>
+        <option name="relentless_earthstorm" label="Relentless Earthstorm" type="boolean" cpp_type="OPT_BOOL" tag="p -&gt; unique_gear -&gt; relentless_earthstorm" file="sc_unique_gear.cpp" value=""/>
+        <option name="sextant_of_unstable_currents" label="Sextant Of Unstable Currents" type="boolean" cpp_type="OPT_BOOL" tag="p -&gt; unique_gear -&gt; sextant_of_unstable_currents" file="sc_unique_gear.cpp" value=""/>
+        <option name="shiffars_nexus_horn" label="Shiffars Nexus Horn" type="boolean" cpp_type="OPT_BOOL" tag="p -&gt; unique_gear -&gt; shiffars_nexus_horn" file="sc_unique_gear.cpp" value=""/>
+        <option name="spellstrike" label="Spellstrike" type="boolean" cpp_type="OPT_BOOL" tag="p -&gt; unique_gear -&gt; spellstrike" file="sc_unique_gear.cpp" value=""/>
+        <option name="sundial_of_the_exiled" label="Sundial Of The Exiled" type="boolean" cpp_type="OPT_BOOL" tag="p -&gt; unique_gear -&gt; sundial_of_the_exiled" file="sc_unique_gear.cpp" value=""/>
+        <option name="thunder_capacitor" label="Thunder Capacitor" type="boolean" cpp_type="OPT_BOOL" tag="p -&gt; unique_gear -&gt; thunder_capacitor" file="sc_unique_gear.cpp" value=""/>
+        <option name="timbals_crystal" label="Timbals Crystal" type="boolean" cpp_type="OPT_BOOL" tag="p -&gt; unique_gear -&gt; timbals_crystal" file="sc_unique_gear.cpp" value=""/>
+        <option name="wrath_of_cenarius" label="Wrath Of Cenarius" type="boolean" cpp_type="OPT_BOOL" tag="p -&gt; unique_gear -&gt; wrath_of_cenarius" file="sc_unique_gear.cpp" value=""/>
         <option name="talents" label="Talents" type="text" cpp_type="OPT_STRING" tag="" file="meta_options" value=""/>
       </class>
     </supported_classes>
@@ -358,9 +358,9 @@
       <option name="enchant_energy" label="Enchant Energy" type="text" cpp_type="OPT_FLT" tag="p -&gt; enchant -&gt; stats" file="sc_enchant.cpp" value=""/>
       <option name="enchant_focus" label="Enchant Focus" type="text" cpp_type="OPT_FLT" tag="p -&gt; enchant -&gt; stats" file="sc_enchant.cpp" value=""/>
       <option name="enchant_runic" label="Enchant Runic" type="text" cpp_type="OPT_FLT" tag="p -&gt; enchant -&gt; stats" file="sc_enchant.cpp" value=""/>
-      <option name="spellsurge" label="Spellsurge" type="text" cpp_type="OPT_INT" tag="p -&gt; enchant -&gt; spellsurge" file="sc_enchant.cpp" value=""/>
-      <option name="calculate_scale_factors" label="Calculate Scale Factors" type="text" cpp_type="OPT_INT" tag="calculate_scale_factors" file="sc_scaling.cpp" value="0"/>
-      <option name="center_scale_delta" label="Center Scale Delta" type="text" cpp_type="OPT_INT" tag="center_scale_delta" file="sc_scaling.cpp" value=""/>
+      <option name="spellsurge" label="Spellsurge" type="boolean" cpp_type="OPT_BOOL" tag="p -&gt; enchant -&gt; spellsurge" file="sc_enchant.cpp" value=""/>
+      <option name="calculate_scale_factors" label="Calculate Scale Factors" type="boolean" cpp_type="OPT_BOOL" tag="calculate_scale_factors" file="sc_scaling.cpp" value="0"/>
+      <option name="center_scale_delta" label="Center Scale Delta" type="boolean" cpp_type="OPT_BOOL" tag="center_scale_delta" file="sc_scaling.cpp" value=""/>
       <option name="scale_factor_noise" label="Scale Factor Noise" type="text" cpp_type="OPT_FLT" tag="scale_factor_noise" file="sc_scaling.cpp" value=""/>
       <option name="scale_strength" label="Scale Strength" type="text" cpp_type="OPT_FLT" tag="stats" file="sc_scaling.cpp" value=""/>
       <option name="scale_agility" label="Scale Agility" type="text" cpp_type="OPT_FLT" tag="stats" file="sc_scaling.cpp" value=""/>
@@ -378,6 +378,7 @@
       <option name="iterations" label="Iterations" type="text" cpp_type="OPT_INT" tag="iterations" file="sc_sim.cpp" value="1000"/>
       <option name="max_time" label="Max Time" type="text" cpp_type="OPT_FLT" tag="max_time" file="sc_sim.cpp" value="300"/>
       <option name="threads" label="Threads" type="text" cpp_type="OPT_INT" tag="threads" file="sc_sim.cpp" value=""/>
+      <option name="average_dmg" label="Average Dmg" type="boolean" cpp_type="OPT_BOOL" tag="average_dmg" file="sc_sim.cpp" value=""/>
       <option name="channel_lag" label="Channel Lag" type="text" cpp_type="OPT_FLT" tag="channel_lag" file="sc_sim.cpp" value="0.25"/>
       <option name="channel_lag_range" label="Channel Lag Range" type="text" cpp_type="OPT_FLT" tag="channel_lag_range" file="sc_sim.cpp" value=""/>
       <option name="gcd_lag" label="Gcd Lag" type="text" cpp_type="OPT_FLT" tag="gcd_lag" file="sc_sim.cpp" value="0.15"/>
@@ -386,6 +387,67 @@
       <option name="queue_lag_range" label="Queue Lag Range" type="text" cpp_type="OPT_FLT" tag="queue_lag_range" file="sc_sim.cpp" value=""/>
       <option name="reaction_time" label="Reaction Time" type="text" cpp_type="OPT_FLT" tag="reaction_time" file="sc_sim.cpp" value=""/>
       <option name="travel_variance" label="Travel Variance" type="text" cpp_type="OPT_FLT" tag="travel_variance" file="sc_sim.cpp" value=""/>
+      <option name="combat_log" label="Combat Log" type="text" cpp_type="OPT_STRING" tag="log_file_str" file="sc_sim.cpp" value=""/>
+      <option name="debug" label="Debug" type="boolean" cpp_type="OPT_BOOL" tag="debug" file="sc_sim.cpp" value=""/>
+      <option name="html" label="Html" type="text" cpp_type="OPT_STRING" tag="html_file_str" file="sc_sim.cpp" value=""/>
+      <option name="log" label="Log" type="boolean" cpp_type="OPT_BOOL" tag="log" file="sc_sim.cpp" value=""/>
+      <option name="output" label="Output" type="text" cpp_type="OPT_STRING" tag="output_file_str" file="sc_sim.cpp" value=""/>
+      <option name="wiki" label="Wiki" type="text" cpp_type="OPT_STRING" tag="wiki_file_str" file="sc_sim.cpp" value=""/>
+      <option name="abominations_might" label="Abominations Might" type="boolean" cpp_type="OPT_BOOL" tag="overrides" file="sc_sim.cpp" value=""/>
+      <option name="arcane_brilliance" label="Arcane Brilliance" type="boolean" cpp_type="OPT_BOOL" tag="overrides" file="sc_sim.cpp" value=""/>
+      <option name="battle_shout" label="Battle Shout" type="boolean" cpp_type="OPT_BOOL" tag="overrides" file="sc_sim.cpp" value="1"/>
+      <option name="bleeding" label="Bleeding" type="boolean" cpp_type="OPT_BOOL" tag="overrides" file="sc_sim.cpp" value=""/>
+      <option name="blessing_of_kings" label="Blessing Of Kings" type="boolean" cpp_type="OPT_BOOL" tag="overrides" file="sc_sim.cpp" value="1"/>
+      <option name="blessing_of_might" label="Blessing Of Might" type="boolean" cpp_type="OPT_BOOL" tag="overrides" file="sc_sim.cpp" value="1"/>
+      <option name="blessing_of_wisdom" label="Blessing Of Wisdom" type="boolean" cpp_type="OPT_BOOL" tag="overrides" file="sc_sim.cpp" value="1"/>
+      <option name="blood_frenzy" label="Blood Frenzy" type="boolean" cpp_type="OPT_BOOL" tag="overrides" file="sc_sim.cpp" value=""/>
+      <option name="bloodlust" label="Bloodlust" type="boolean" cpp_type="OPT_BOOL" tag="overrides" file="sc_sim.cpp" value=""/>
+      <option name="bloodlust_early" label="Bloodlust Early" type="boolean" cpp_type="OPT_BOOL" tag="overrides" file="sc_sim.cpp" value=""/>
+      <option name="crypt_fever" label="Crypt Fever" type="boolean" cpp_type="OPT_BOOL" tag="overrides" file="sc_sim.cpp" value="1"/>
+      <option name="curse_of_elements" label="Curse Of Elements" type="boolean" cpp_type="OPT_BOOL" tag="overrides" file="sc_sim.cpp" value=""/>
+      <option name="divine_spirit" label="Divine Spirit" type="boolean" cpp_type="OPT_BOOL" tag="overrides" file="sc_sim.cpp" value=""/>
+      <option name="earth_and_moon" label="Earth And Moon" type="boolean" cpp_type="OPT_BOOL" tag="overrides" file="sc_sim.cpp" value=""/>
+      <option name="faerie_fire" label="Faerie Fire" type="boolean" cpp_type="OPT_BOOL" tag="overrides" file="sc_sim.cpp" value="1"/>
+      <option name="ferocious_inspiration" label="Ferocious Inspiration" type="boolean" cpp_type="OPT_BOOL" tag="overrides" file="sc_sim.cpp" value=""/>
+      <option name="fortitude" label="Fortitude" type="boolean" cpp_type="OPT_BOOL" tag="overrides" file="sc_sim.cpp" value=""/>
+      <option name="hunters_mark" label="Hunters Mark" type="boolean" cpp_type="OPT_BOOL" tag="overrides" file="sc_sim.cpp" value=""/>
+      <option name="improved_divine_spirit" label="Improved Divine Spirit" type="boolean" cpp_type="OPT_BOOL" tag="overrides" file="sc_sim.cpp" value=""/>
+      <option name="improved_moonkin_aura" label="Improved Moonkin Aura" type="boolean" cpp_type="OPT_BOOL" tag="overrides" file="sc_sim.cpp" value=""/>
+      <option name="improved_scorch" label="Improved Scorch" type="boolean" cpp_type="OPT_BOOL" tag="overrides" file="sc_sim.cpp" value=""/>
+      <option name="improved_shadow_bolt" label="Improved Shadow Bolt" type="boolean" cpp_type="OPT_BOOL" tag="overrides" file="sc_sim.cpp" value=""/>
+      <option name="judgement_of_wisdom" label="Judgement Of Wisdom" type="boolean" cpp_type="OPT_BOOL" tag="overrides" file="sc_sim.cpp" value="1"/>
+      <option name="leader_of_the_pack" label="Leader Of The Pack" type="boolean" cpp_type="OPT_BOOL" tag="overrides" file="sc_sim.cpp" value=""/>
+      <option name="mana_spring" label="Mana Spring" type="boolean" cpp_type="OPT_BOOL" tag="overrides" file="sc_sim.cpp" value=""/>
+      <option name="mangle" label="Mangle" type="boolean" cpp_type="OPT_BOOL" tag="overrides" file="sc_sim.cpp" value="1"/>
+      <option name="mark_of_the_wild" label="Mark Of The Wild" type="boolean" cpp_type="OPT_BOOL" tag="overrides" file="sc_sim.cpp" value=""/>
+      <option name="master_poisoner" label="Master Poisoner" type="boolean" cpp_type="OPT_BOOL" tag="overrides" file="sc_sim.cpp" value=""/>
+      <option name="misery" label="Misery" type="boolean" cpp_type="OPT_BOOL" tag="overrides" file="sc_sim.cpp" value=""/>
+      <option name="moonkin_aura" label="Moonkin Aura" type="boolean" cpp_type="OPT_BOOL" tag="overrides" file="sc_sim.cpp" value=""/>
+      <option name="poisoned" label="Poisoned" type="boolean" cpp_type="OPT_BOOL" tag="overrides" file="sc_sim.cpp" value=""/>
+      <option name="razorice" label="Razorice" type="boolean" cpp_type="OPT_BOOL" tag="overrides" file="sc_sim.cpp" value=""/>
+      <option name="replenishment" label="Replenishment" type="boolean" cpp_type="OPT_BOOL" tag="overrides" file="sc_sim.cpp" value=""/>
+      <option name="sanctified_retribution" label="Sanctified Retribution" type="boolean" cpp_type="OPT_BOOL" tag="overrides" file="sc_sim.cpp" value="1"/>
+      <option name="savage_combat" label="Savage Combat" type="boolean" cpp_type="OPT_BOOL" tag="overrides" file="sc_sim.cpp" value=""/>
+      <option name="snare" label="Snare" type="boolean" cpp_type="OPT_BOOL" tag="overrides" file="sc_sim.cpp" value=""/>
+      <option name="strength_of_earth" label="Strength Of Earth" type="boolean" cpp_type="OPT_BOOL" tag="overrides" file="sc_sim.cpp" value=""/>
+      <option name="sunder_armor" label="Sunder Armor" type="boolean" cpp_type="OPT_BOOL" tag="overrides" file="sc_sim.cpp" value="1"/>
+      <option name="swift_retribution" label="Swift Retribution" type="boolean" cpp_type="OPT_BOOL" tag="overrides" file="sc_sim.cpp" value="1"/>
+      <option name="thunder_clap" label="Thunder Clap" type="boolean" cpp_type="OPT_BOOL" tag="overrides" file="sc_sim.cpp" value="1"/>
+      <option name="totem_of_wrath" label="Totem Of Wrath" type="boolean" cpp_type="OPT_BOOL" tag="overrides" file="sc_sim.cpp" value=""/>
+      <option name="totem_of_wrath" label="Totem Of Wrath" type="boolean" cpp_type="OPT_BOOL" tag="overrides" file="sc_sim.cpp" value=""/>
+      <option name="trauma" label="Trauma" type="boolean" cpp_type="OPT_BOOL" tag="overrides" file="sc_sim.cpp" value=""/>
+      <option name="trueshot_aura" label="Trueshot Aura" type="boolean" cpp_type="OPT_BOOL" tag="overrides" file="sc_sim.cpp" value=""/>
+      <option name="unleashed_rage" label="Unleashed Rage" type="boolean" cpp_type="OPT_BOOL" tag="overrides" file="sc_sim.cpp" value=""/>
+      <option name="windfury_totem" label="Windfury Totem" type="boolean" cpp_type="OPT_BOOL" tag="overrides" file="sc_sim.cpp" value=""/>
+      <option name="winters_chill" label="Winters Chill" type="boolean" cpp_type="OPT_BOOL" tag="overrides" file="sc_sim.cpp" value=""/>
+      <option name="wrath_of_air" label="Wrath Of Air" type="boolean" cpp_type="OPT_BOOL" tag="overrides" file="sc_sim.cpp" value=""/>
+      <option name="infinite_energy" label="Infinite Energy" type="boolean" cpp_type="OPT_BOOL" tag="infinite_resource[ RESOURCE_ENERGY ]" file="sc_sim.cpp" value=""/>
+      <option name="infinite_focus" label="Infinite Focus" type="boolean" cpp_type="OPT_BOOL" tag="infinite_resource[ RESOURCE_FOCUS  ]" file="sc_sim.cpp" value=""/>
+      <option name="infinite_health" label="Infinite Health" type="boolean" cpp_type="OPT_BOOL" tag="infinite_resource[ RESOURCE_HEALTH ]" file="sc_sim.cpp" value=""/>
+      <option name="infinite_mana" label="Infinite Mana" type="boolean" cpp_type="OPT_BOOL" tag="infinite_resource[ RESOURCE_MANA   ]" file="sc_sim.cpp" value="0"/>
+      <option name="infinite_rage" label="Infinite Rage" type="boolean" cpp_type="OPT_BOOL" tag="infinite_resource[ RESOURCE_RAGE   ]" file="sc_sim.cpp" value=""/>
+      <option name="infinite_runic" label="Infinite Runic" type="boolean" cpp_type="OPT_BOOL" tag="infinite_resource[ RESOURCE_RUNIC  ]" file="sc_sim.cpp" value=""/>
+      <option name="regen_periodicity" label="Regen Periodicity" type="text" cpp_type="OPT_FLT" tag="regen_periodicity" file="sc_sim.cpp" value="1"/>
       <option name="default_strength" label="Default Strength" type="text" cpp_type="OPT_FLT" tag="gear_default" file="sc_sim.cpp" value=""/>
       <option name="default_agility" label="Default Agility" type="text" cpp_type="OPT_FLT" tag="gear_default" file="sc_sim.cpp" value=""/>
       <option name="default_stamina" label="Default Stamina" type="text" cpp_type="OPT_FLT" tag="gear_default" file="sc_sim.cpp" value=""/>
@@ -428,81 +490,22 @@
       <option name="delta_weapon_dps" label="Delta Weapon Dps" type="text" cpp_type="OPT_FLT" tag="gear_delta" file="sc_sim.cpp" value=""/>
       <option name="delta_weapon_speed" label="Delta Weapon Speed" type="text" cpp_type="OPT_FLT" tag="gear_delta" file="sc_sim.cpp" value=""/>
       <option name="delta_armor" label="Delta Armor" type="text" cpp_type="OPT_FLT" tag="gear_delta" file="sc_sim.cpp" value=""/>
-      <option name="infinite_energy" label="Infinite Energy" type="text" cpp_type="OPT_INT" tag="infinite_resource[ RESOURCE_ENERGY ]" file="sc_sim.cpp" value=""/>
-      <option name="infinite_focus" label="Infinite Focus" type="text" cpp_type="OPT_INT" tag="infinite_resource[ RESOURCE_FOCUS  ]" file="sc_sim.cpp" value=""/>
-      <option name="infinite_health" label="Infinite Health" type="text" cpp_type="OPT_INT" tag="infinite_resource[ RESOURCE_HEALTH ]" file="sc_sim.cpp" value=""/>
-      <option name="infinite_mana" label="Infinite Mana" type="text" cpp_type="OPT_INT" tag="infinite_resource[ RESOURCE_MANA   ]" file="sc_sim.cpp" value="0"/>
-      <option name="infinite_rage" label="Infinite Rage" type="text" cpp_type="OPT_INT" tag="infinite_resource[ RESOURCE_RAGE   ]" file="sc_sim.cpp" value=""/>
-      <option name="infinite_runic" label="Infinite Runic" type="text" cpp_type="OPT_INT" tag="infinite_resource[ RESOURCE_RUNIC  ]" file="sc_sim.cpp" value=""/>
-      <option name="regen_periodicity" label="Regen Periodicity" type="text" cpp_type="OPT_FLT" tag="regen_periodicity" file="sc_sim.cpp" value="1"/>
-      <option name="debug" label="Debug" type="text" cpp_type="OPT_INT" tag="debug" file="sc_sim.cpp" value=""/>
-      <option name="html" label="Html" type="text" cpp_type="OPT_STRING" tag="html_file_str" file="sc_sim.cpp" value=""/>
-      <option name="log" label="Log" type="text" cpp_type="OPT_INT" tag="log" file="sc_sim.cpp" value=""/>
-      <option name="wiki" label="Wiki" type="text" cpp_type="OPT_STRING" tag="wiki_file_str" file="sc_sim.cpp" value=""/>
-      <option name="abominations_might" label="Abominations Might" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value=""/>
-      <option name="affliction_effects" label="Affliction Effects" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value=""/>
-      <option name="arcane_brilliance" label="Arcane Brilliance" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value=""/>
-      <option name="battle_shout" label="Battle Shout" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value="1"/>
-      <option name="bleeding" label="Bleeding" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value=""/>
-      <option name="blessing_of_kings" label="Blessing Of Kings" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value="1"/>
-      <option name="blessing_of_might" label="Blessing Of Might" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value="1"/>
-      <option name="blessing_of_wisdom" label="Blessing Of Wisdom" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value="1"/>
-      <option name="blood_frenzy" label="Blood Frenzy" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value=""/>
-      <option name="bloodlust" label="Bloodlust" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value=""/>
-      <option name="bloodlust_early" label="Bloodlust Early" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value=""/>
-      <option name="crypt_fever" label="Crypt Fever" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value="1"/>
-      <option name="curse_of_elements" label="Curse Of Elements" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value=""/>
-      <option name="divine_spirit" label="Divine Spirit" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value=""/>
-      <option name="earth_and_moon" label="Earth And Moon" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value=""/>
-      <option name="faerie_fire" label="Faerie Fire" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value="1"/>
-      <option name="ferocious_inspiration" label="Ferocious Inspiration" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value=""/>
-      <option name="fortitude" label="Fortitude" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value=""/>
-      <option name="hunters_mark" label="Hunters Mark" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value=""/>
-      <option name="improved_divine_spirit" label="Improved Divine Spirit" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value=""/>
-      <option name="improved_moonkin_aura" label="Improved Moonkin Aura" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value=""/>
-      <option name="improved_scorch" label="Improved Scorch" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value=""/>
-      <option name="improved_shadow_bolt" label="Improved Shadow Bolt" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value=""/>
-      <option name="judgement_of_wisdom" label="Judgement Of Wisdom" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value="1"/>
-      <option name="leader_of_the_pack" label="Leader Of The Pack" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value=""/>
-      <option name="mana_spring" label="Mana Spring" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value=""/>
-      <option name="mangle" label="Mangle" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value="1"/>
-      <option name="mark_of_the_wild" label="Mark Of The Wild" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value=""/>
-      <option name="master_poisoner" label="Master Poisoner" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value=""/>
-      <option name="misery" label="Misery" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value=""/>
-      <option name="moonkin_aura" label="Moonkin Aura" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value=""/>
-      <option name="poisoned" label="Poisoned" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value=""/>
-      <option name="razorice" label="Razorice" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value=""/>
-      <option name="replenishment" label="Replenishment" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value=""/>
-      <option name="sanctified_retribution" label="Sanctified Retribution" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value="1"/>
-      <option name="savage_combat" label="Savage Combat" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value=""/>
-      <option name="snare" label="Snare" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value=""/>
-      <option name="strength_of_earth" label="Strength Of Earth" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value=""/>
-      <option name="sunder_armor" label="Sunder Armor" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value="1"/>
-      <option name="swift_retribution" label="Swift Retribution" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value="1"/>
-      <option name="thunder_clap" label="Thunder Clap" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value="1"/>
-      <option name="totem_of_wrath" label="Totem Of Wrath" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value=""/>
-      <option name="totem_of_wrath" label="Totem Of Wrath" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value=""/>
-      <option name="trauma" label="Trauma" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value=""/>
-      <option name="trueshot_aura" label="Trueshot Aura" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value=""/>
-      <option name="unleashed_rage" label="Unleashed Rage" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value=""/>
-      <option name="windfury_totem" label="Windfury Totem" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value=""/>
-      <option name="winters_chill" label="Winters Chill" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value=""/>
-      <option name="wrath_of_air" label="Wrath Of Air" type="text" cpp_type="OPT_INT" tag="overrides" file="sc_sim.cpp" value=""/>
+      <option name="armor_update_internval" label="Armor Update Internval" type="text" cpp_type="OPT_INT" tag="armor_update_interval" file="sc_sim.cpp" value=""/>
       <option name="jow_chance" label="Jow Chance" type="text" cpp_type="OPT_FLT" tag="jow_chance" file="sc_sim.cpp" value=""/>
       <option name="jow_ppm" label="Jow Ppm" type="text" cpp_type="OPT_FLT" tag="jow_ppm" file="sc_sim.cpp" value=""/>
-      <option name="merge_ignite" label="Merge Ignite" type="text" cpp_type="OPT_INT" tag="merge_ignite" file="sc_sim.cpp" value=""/>
+      <option name="merge_ignite" label="Merge Ignite" type="boolean" cpp_type="OPT_BOOL" tag="merge_ignite" file="sc_sim.cpp" value=""/>
+      <option name="potion_sickness" label="Potion Sickness" type="boolean" cpp_type="OPT_BOOL" tag="potion_sickness" file="sc_sim.cpp" value=""/>
       <option name="replenishment_targets" label="Replenishment Targets" type="text" cpp_type="OPT_INT" tag="replenishment_targets" file="sc_sim.cpp" value=""/>
-      <option name="potion_sickness" label="Potion Sickness" type="text" cpp_type="OPT_INT" tag="potion_sickness" file="sc_sim.cpp" value=""/>
-      <option name="armor_update_internval" label="Armor Update Internval" type="text" cpp_type="OPT_INT" tag="armor_update_interval" file="sc_sim.cpp" value=""/>
-      <option name="average_dmg" label="Average Dmg" type="text" cpp_type="OPT_INT" tag="average_dmg" file="sc_sim.cpp" value=""/>
       <option name="seed" label="Seed" type="text" cpp_type="OPT_INT" tag="seed" file="sc_sim.cpp" value=""/>
-      <option name="sfmt" label="Sfmt" type="text" cpp_type="OPT_INT" tag="sfmt" file="sc_sim.cpp" value=""/>
+      <option name="sfmt" label="Sfmt" type="boolean" cpp_type="OPT_BOOL" tag="sfmt" file="sc_sim.cpp" value=""/>
       <option name="wheel_granularity" label="Wheel Granularity" type="text" cpp_type="OPT_FLT" tag="wheel_granularity" file="sc_sim.cpp" value=""/>
       <option name="wheel_seconds" label="Wheel Seconds" type="text" cpp_type="OPT_INT" tag="wheel_seconds" file="sc_sim.cpp" value=""/>
+      <option name="normalized_roll" label="Normalized Roll" type="text" cpp_type="OPT_INT" tag="normalized_roll" file="sc_sim.cpp" value=""/>
       <option name="target_name" label="Target Name" type="text" cpp_type="OPT_STRING" tag="name_str" file="sc_target.cpp" value=""/>
       <option name="target_race" label="Target Race" type="text" cpp_type="OPT_STRING" tag="race_str" file="sc_target.cpp" value="none"/>
-      <option name="target_id" label="Target Id" type="text" cpp_type="OPT_STRING" tag="id_str" file="sc_target.cpp" value=""/>
       <option name="target_level" label="Target Level" type="text" cpp_type="OPT_INT" tag="level" file="sc_target.cpp" value="83"/>
+      <option name="target_health" label="Target Health" type="text" cpp_type="OPT_FLT" tag="initial_health" file="sc_target.cpp" value=""/>
+      <option name="target_id" label="Target Id" type="text" cpp_type="OPT_STRING" tag="id_str" file="sc_target.cpp" value=""/>
       <option name="target_resist_holy" label="Target Resist Holy" type="text" cpp_type="OPT_INT" tag="spell_resistance[ SCHOOL_HOLY   ]" file="sc_target.cpp" value=""/>
       <option name="target_resist_shadow" label="Target Resist Shadow" type="text" cpp_type="OPT_INT" tag="spell_resistance[ SCHOOL_SHADOW ]" file="sc_target.cpp" value=""/>
       <option name="target_resist_arcane" label="Target Resist Arcane" type="text" cpp_type="OPT_INT" tag="spell_resistance[ SCHOOL_ARCANE ]" file="sc_target.cpp" value=""/>
@@ -512,252 +515,511 @@
       <option name="target_armor" label="Target Armor" type="text" cpp_type="OPT_INT" tag="initial_armor" file="sc_target.cpp" value="10643"/>
       <option name="target_shield" label="Target Shield" type="text" cpp_type="OPT_INT" tag="shield" file="sc_target.cpp" value=""/>
       <option name="target_block" label="Target Block" type="text" cpp_type="OPT_INT" tag="block_value" file="sc_target.cpp" value=""/>
-      <option name="target_health" label="Target Health" type="text" cpp_type="OPT_FLT" tag="initial_health" file="sc_target.cpp" value=""/>
-      <option name="optimal_raid" label="Optimal Raid" type="text" cpp_type="OPT_INT" tag="" file="meta_options" value="1"/>
+      <option name="optimal_raid" label="Optimal Raid" type="boolean" cpp_type="OPT_BOOL" tag="" file="meta_options" value="1"/>
       <option name="patch" label="Patch" type="text" cpp_type="OPT_STRING" tag="" file="meta_options" value="3.1.0"/>
     </global_options>
   </options>
   <servers>
-    <server name="Aegwynn"/>
-    <server name="Aerie Peak"/>
-    <server name="Agamaggan"/>
-    <server name="Aggramar"/>
-    <server name="Akama"/>
-    <server name="Alexstrasza"/>
-    <server name="Alleria"/>
-    <server name="Altar of Storms"/>
-    <server name="Alterac Mountains"/>
-    <server name="Aman'Thul"/>
-    <server name="Andorhal"/>
-    <server name="Anetheron"/>
-    <server name="Antonidas"/>
-    <server name="Anub'arak"/>
-    <server name="Anvilmar"/>
-    <server name="Arathor"/>
-    <server name="Archimonde"/>
-    <server name="Area 52"/>
-    <server name="Argent Dawn"/>
-    <server name="Arthas"/>
-    <server name="Arygos"/>
-    <server name="Auchindoun"/>
-    <server name="Azgalor"/>
-    <server name="Azjol-Nerub"/>
-    <server name="Azshara"/>
-    <server name="Azuremyst"/>
-    <server name="Baelgun"/>
-    <server name="Balnazzar"/>
-    <server name="Barthilas"/>
-    <server name="Black Dragonflight"/>
-    <server name="Blackhand"/>
-    <server name="Blackrock"/>
-    <server name="Blackwater Raiders"/>
-    <server name="Blackwing Lair"/>
-    <server name="Blade's Edge"/>
-    <server name="Bladefist"/>
-    <server name="Bleeding Hollow"/>
-    <server name="Blood Furnace"/>
-    <server name="Bloodhoof"/>
-    <server name="Bloodscalp"/>
-    <server name="Bonechewer"/>
-    <server name="Borean Tundra"/>
-    <server name="Boulderfist"/>
-    <server name="Bronzebeard"/>
-    <server name="Burning Blade"/>
-    <server name="Burning Legion"/>
-    <server name="Caelestrasz"/>
-    <server name="Cairne"/>
-    <server name="Cenarion Circle"/>
-    <server name="Cenarius"/>
-    <server name="Cho'gall"/>
-    <server name="Chromaggus"/>
-    <server name="Coilfang"/>
-    <server name="Crushridge"/>
-    <server name="Daggerspine"/>
-    <server name="Dalaran"/>
-    <server name="Dalvengyr"/>
-    <server name="Dark Iron"/>
-    <server name="Darkspear"/>
-    <server name="Darrowmere"/>
-    <server name="Dath'Remar"/>
-    <server name="Dawnbringer"/>
-    <server name="Deathwing"/>
-    <server name="Demon Soul"/>
-    <server name="Dentarg"/>
-    <server name="Destromath"/>
-    <server name="Dethecus"/>
-    <server name="Detheroc"/>
-    <server name="Doomhammer"/>
-    <server name="Draenor"/>
-    <server name="Dragonblight"/>
-    <server name="Dragonmaw"/>
-    <server name="Drak'Tharon"/>
-    <server name="Drak'thul"/>
-    <server name="Draka"/>
-    <server name="Drakkari"/>
-    <server name="Dreadmaul"/>
-    <server name="Drenden"/>
-    <server name="Dunemaul"/>
-    <server name="Durotan"/>
-    <server name="Duskwood"/>
-    <server name="Earthen Ring"/>
-    <server name="Echo Isles"/>
-    <server name="Eitrigg"/>
-    <server name="Eldre'Thalas"/>
-    <server name="Elune"/>
-    <server name="Emerald Dream"/>
-    <server name="Eonar"/>
-    <server name="Eredar"/>
-    <server name="Executus"/>
-    <server name="Exodar"/>
-    <server name="Farstriders"/>
-    <server name="Feathermoon"/>
-    <server name="Fenris"/>
-    <server name="Firetree"/>
-    <server name="Fizzcrank"/>
-    <server name="Frostmane"/>
-    <server name="Frostmourne"/>
-    <server name="Frostwolf"/>
-    <server name="Galakrond"/>
-    <server name="Garithos"/>
-    <server name="Garona"/>
-    <server name="Garrosh"/>
-    <server name="Ghostlands"/>
-    <server name="Gilneas"/>
-    <server name="Gnomeregan"/>
-    <server name="Gorefiend"/>
-    <server name="Gorgonnash"/>
-    <server name="Greymane"/>
-    <server name="Grizzly Hills"/>
-    <server name="Gul'dan"/>
-    <server name="Gundrak"/>
-    <server name="Gurubashi"/>
-    <server name="Hakkar"/>
-    <server name="Haomarush"/>
-    <server name="Hellscream"/>
-    <server name="Hydraxis"/>
-    <server name="Hyjal"/>
-    <server name="Icecrown"/>
-    <server name="Illidan"/>
-    <server name="Jaedenar"/>
-    <server name="Jubei'Thos"/>
-    <server name="Kael'thas"/>
-    <server name="Kalecgos"/>
-    <server name="Kargath"/>
-    <server name="Kel'Thuzad"/>
-    <server name="Khadgar"/>
-    <server name="Khaz Modan"/>
-    <server name="Khaz'goroth"/>
-    <server name="Kil'jaeden"/>
-    <server name="Kilrogg"/>
-    <server name="Kirin Tor"/>
-    <server name="Korgath"/>
-    <server name="Korialstrasz"/>
-    <server name="Kul Tiras"/>
-    <server name="Laughing Skull"/>
-    <server name="Lethon"/>
-    <server name="Lightbringer"/>
-    <server name="Lightning's Blade"/>
-    <server name="Lightninghoof"/>
-    <server name="Llane"/>
-    <server name="Lothar"/>
-    <server name="Madoran"/>
-    <server name="Maelstrom"/>
-    <server name="Magtheridon"/>
-    <server name="Maiev"/>
-    <server name="Mal'Ganis"/>
-    <server name="Malfurion"/>
-    <server name="Malorne"/>
-    <server name="Malygos"/>
-    <server name="Mannoroth"/>
-    <server name="Medivh"/>
-    <server name="Misha"/>
-    <server name="Mok'Nathal"/>
-    <server name="Moon Guard"/>
-    <server name="Moonrunner"/>
-    <server name="Mug'thol"/>
-    <server name="Muradin"/>
-    <server name="Nagrand"/>
-    <server name="Nathrezim"/>
-    <server name="Nazgrel"/>
-    <server name="Nazjatar"/>
-    <server name="Ner'zhul"/>
-    <server name="Nesingwary"/>
-    <server name="Nordrassil"/>
-    <server name="Norgannon"/>
-    <server name="Onyxia"/>
-    <server name="Perenolde"/>
-    <server name="Proudmoore"/>
-    <server name="Quel'dorei"/>
-    <server name="Quel'Thalas"/>
-    <server name="Ragnaros"/>
-    <server name="Ravencrest"/>
-    <server name="Ravenholdt"/>
-    <server name="Rexxar"/>
-    <server name="Rivendare"/>
-    <server name="Runetotem"/>
-    <server name="Sargeras"/>
-    <server name="Saurfang"/>
-    <server name="Scarlet Crusade"/>
-    <server name="Scilla"/>
-    <server name="Sen'jin"/>
-    <server name="Sentinels"/>
-    <server name="Shadow Council"/>
-    <server name="Shadowmoon"/>
-    <server name="Shadowsong"/>
-    <server name="Shandris"/>
-    <server name="Shattered Halls"/>
-    <server name="Shattered Hand"/>
-    <server name="Shu'halo"/>
-    <server name="Silver Hand"/>
-    <server name="Silvermoon"/>
-    <server name="Sisters of Elune"/>
-    <server name="Skullcrusher"/>
-    <server name="Skywall"/>
-    <server name="Smolderthorn"/>
-    <server name="Spinebreaker"/>
-    <server name="Spirestone"/>
-    <server name="Staghelm"/>
-    <server name="Steamwheedle Cartel"/>
-    <server name="Stonemaul"/>
-    <server name="Stormrage"/>
-    <server name="Stormreaver"/>
-    <server name="Stormscale"/>
-    <server name="Suramar"/>
-    <server name="Tanaris"/>
-    <server name="Terenas"/>
-    <server name="Terokkar"/>
-    <server name="Thaurissan"/>
-    <server name="The Forgotten Coast"/>
-    <server name="The Scryers"/>
-    <server name="The Underbog"/>
-    <server name="The Venture Co"/>
-    <server name="Thorium Brotherhood"/>
-    <server name="Thrall"/>
-    <server name="Thunderhorn"/>
-    <server name="Thunderlord"/>
-    <server name="Tichondrius"/>
-    <server name="Tortheldrin"/>
-    <server name="Trollbane"/>
-    <server name="Turalyon"/>
-    <server name="Twisting Nether"/>
-    <server name="Uldaman"/>
-    <server name="Uldum"/>
-    <server name="Undermine"/>
-    <server name="Ursin"/>
-    <server name="Uther"/>
-    <server name="Vashj"/>
-    <server name="Vek'nilash"/>
-    <server name="Velen"/>
-    <server name="Warsong"/>
-    <server name="Whisperwind"/>
-    <server name="Wildhammer"/>
-    <server name="Windrunner"/>
-    <server name="Winterhoof"/>
-    <server name="Wyrmrest Accord"/>
-    <server name="Ysera"/>
-    <server name="Ysondre"/>
-    <server name="Zangarmarsh"/>
-    <server name="Zul'jin"/>
-    <server name="Zuluhed"/>
+    <server name="Aegwynn" region="US"/>
+    <server name="Aerie Peak" region="US"/>
+    <server name="Agamaggan" region="US"/>
+    <server name="Aggramar" region="US"/>
+    <server name="Akama" region="US"/>
+    <server name="Alexstrasza" region="US"/>
+    <server name="Alleria" region="US"/>
+    <server name="Altar of Storms" region="US"/>
+    <server name="Alterac Mountains" region="US"/>
+    <server name="Aman'Thul" region="US"/>
+    <server name="Andorhal" region="US"/>
+    <server name="Anetheron" region="US"/>
+    <server name="Antonidas" region="US"/>
+    <server name="Anub'arak" region="US"/>
+    <server name="Anvilmar" region="US"/>
+    <server name="Arathor" region="US"/>
+    <server name="Archimonde" region="US"/>
+    <server name="Area 52" region="US"/>
+    <server name="Argent Dawn" region="US"/>
+    <server name="Arthas" region="US"/>
+    <server name="Arygos" region="US"/>
+    <server name="Auchindoun" region="US"/>
+    <server name="Azgalor" region="US"/>
+    <server name="Azjol-Nerub" region="US"/>
+    <server name="Azshara" region="US"/>
+    <server name="Azuremyst" region="US"/>
+    <server name="Baelgun" region="US"/>
+    <server name="Balnazzar" region="US"/>
+    <server name="Barthilas" region="US"/>
+    <server name="Black Dragonflight" region="US"/>
+    <server name="Blackhand" region="US"/>
+    <server name="Blackrock" region="US"/>
+    <server name="Blackwater Raiders" region="US"/>
+    <server name="Blackwing Lair" region="US"/>
+    <server name="Blade's Edge" region="US"/>
+    <server name="Bladefist" region="US"/>
+    <server name="Bleeding Hollow" region="US"/>
+    <server name="Blood Furnace" region="US"/>
+    <server name="Bloodhoof" region="US"/>
+    <server name="Bloodscalp" region="US"/>
+    <server name="Bonechewer" region="US"/>
+    <server name="Borean Tundra" region="US"/>
+    <server name="Boulderfist" region="US"/>
+    <server name="Bronzebeard" region="US"/>
+    <server name="Burning Blade" region="US"/>
+    <server name="Burning Legion" region="US"/>
+    <server name="Caelestrasz" region="US"/>
+    <server name="Cairne" region="US"/>
+    <server name="Cenarion Circle" region="US"/>
+    <server name="Cenarius" region="US"/>
+    <server name="Cho'gall" region="US"/>
+    <server name="Chromaggus" region="US"/>
+    <server name="Coilfang" region="US"/>
+    <server name="Crushridge" region="US"/>
+    <server name="Daggerspine" region="US"/>
+    <server name="Dalaran" region="US"/>
+    <server name="Dalvengyr" region="US"/>
+    <server name="Dark Iron" region="US"/>
+    <server name="Darkspear" region="US"/>
+    <server name="Darrowmere" region="US"/>
+    <server name="Dath'Remar" region="US"/>
+    <server name="Dawnbringer" region="US"/>
+    <server name="Deathwing" region="US"/>
+    <server name="Demon Soul" region="US"/>
+    <server name="Dentarg" region="US"/>
+    <server name="Destromath" region="US"/>
+    <server name="Dethecus" region="US"/>
+    <server name="Detheroc" region="US"/>
+    <server name="Doomhammer" region="US"/>
+    <server name="Draenor" region="US"/>
+    <server name="Dragonblight" region="US"/>
+    <server name="Dragonmaw" region="US"/>
+    <server name="Drak'Tharon" region="US"/>
+    <server name="Drak'thul" region="US"/>
+    <server name="Draka" region="US"/>
+    <server name="Drakkari" region="US"/>
+    <server name="Dreadmaul" region="US"/>
+    <server name="Drenden" region="US"/>
+    <server name="Dunemaul" region="US"/>
+    <server name="Durotan" region="US"/>
+    <server name="Duskwood" region="US"/>
+    <server name="Earthen Ring" region="US"/>
+    <server name="Echo Isles" region="US"/>
+    <server name="Eitrigg" region="US"/>
+    <server name="Eldre'Thalas" region="US"/>
+    <server name="Elune" region="US"/>
+    <server name="Emerald Dream" region="US"/>
+    <server name="Eonar" region="US"/>
+    <server name="Eredar" region="US"/>
+    <server name="Executus" region="US"/>
+    <server name="Exodar" region="US"/>
+    <server name="Farstriders" region="US"/>
+    <server name="Feathermoon" region="US"/>
+    <server name="Fenris" region="US"/>
+    <server name="Firetree" region="US"/>
+    <server name="Fizzcrank" region="US"/>
+    <server name="Frostmane" region="US"/>
+    <server name="Frostmourne" region="US"/>
+    <server name="Frostwolf" region="US"/>
+    <server name="Galakrond" region="US"/>
+    <server name="Garithos" region="US"/>
+    <server name="Garona" region="US"/>
+    <server name="Garrosh" region="US"/>
+    <server name="Ghostlands" region="US"/>
+    <server name="Gilneas" region="US"/>
+    <server name="Gnomeregan" region="US"/>
+    <server name="Gorefiend" region="US"/>
+    <server name="Gorgonnash" region="US"/>
+    <server name="Greymane" region="US"/>
+    <server name="Grizzly Hills" region="US"/>
+    <server name="Gul'dan" region="US"/>
+    <server name="Gundrak" region="US"/>
+    <server name="Gurubashi" region="US"/>
+    <server name="Hakkar" region="US"/>
+    <server name="Haomarush" region="US"/>
+    <server name="Hellscream" region="US"/>
+    <server name="Hydraxis" region="US"/>
+    <server name="Hyjal" region="US"/>
+    <server name="Icecrown" region="US"/>
+    <server name="Illidan" region="US"/>
+    <server name="Jaedenar" region="US"/>
+    <server name="Jubei'Thos" region="US"/>
+    <server name="Kael'thas" region="US"/>
+    <server name="Kalecgos" region="US"/>
+    <server name="Kargath" region="US"/>
+    <server name="Kel'Thuzad" region="US"/>
+    <server name="Khadgar" region="US"/>
+    <server name="Khaz Modan" region="US"/>
+    <server name="Khaz'goroth" region="US"/>
+    <server name="Kil'jaeden" region="US"/>
+    <server name="Kilrogg" region="US"/>
+    <server name="Kirin Tor" region="US"/>
+    <server name="Korgath" region="US"/>
+    <server name="Korialstrasz" region="US"/>
+    <server name="Kul Tiras" region="US"/>
+    <server name="Laughing Skull" region="US"/>
+    <server name="Lethon" region="US"/>
+    <server name="Lightbringer" region="US"/>
+    <server name="Lightning's Blade" region="US"/>
+    <server name="Lightninghoof" region="US"/>
+    <server name="Llane" region="US"/>
+    <server name="Lothar" region="US"/>
+    <server name="Madoran" region="US"/>
+    <server name="Maelstrom" region="US"/>
+    <server name="Magtheridon" region="US"/>
+    <server name="Maiev" region="US"/>
+    <server name="Mal'Ganis" region="US"/>
+    <server name="Malfurion" region="US"/>
+    <server name="Malorne" region="US"/>
+    <server name="Malygos" region="US"/>
+    <server name="Mannoroth" region="US"/>
+    <server name="Medivh" region="US"/>
+    <server name="Misha" region="US"/>
+    <server name="Mok'Nathal" region="US"/>
+    <server name="Moon Guard" region="US"/>
+    <server name="Moonrunner" region="US"/>
+    <server name="Mug'thol" region="US"/>
+    <server name="Muradin" region="US"/>
+    <server name="Nagrand" region="US"/>
+    <server name="Nathrezim" region="US"/>
+    <server name="Nazgrel" region="US"/>
+    <server name="Nazjatar" region="US"/>
+    <server name="Ner'zhul" region="US"/>
+    <server name="Nesingwary" region="US"/>
+    <server name="Nordrassil" region="US"/>
+    <server name="Norgannon" region="US"/>
+    <server name="Onyxia" region="US"/>
+    <server name="Perenolde" region="US"/>
+    <server name="Proudmoore" region="US"/>
+    <server name="Quel'dorei" region="US"/>
+    <server name="Quel'Thalas" region="US"/>
+    <server name="Ragnaros" region="US"/>
+    <server name="Ravencrest" region="US"/>
+    <server name="Ravenholdt" region="US"/>
+    <server name="Rexxar" region="US"/>
+    <server name="Rivendare" region="US"/>
+    <server name="Runetotem" region="US"/>
+    <server name="Sargeras" region="US"/>
+    <server name="Saurfang" region="US"/>
+    <server name="Scarlet Crusade" region="US"/>
+    <server name="Scilla" region="US"/>
+    <server name="Sen'jin" region="US"/>
+    <server name="Sentinels" region="US"/>
+    <server name="Shadow Council" region="US"/>
+    <server name="Shadowmoon" region="US"/>
+    <server name="Shadowsong" region="US"/>
+    <server name="Shandris" region="US"/>
+    <server name="Shattered Halls" region="US"/>
+    <server name="Shattered Hand" region="US"/>
+    <server name="Shu'halo" region="US"/>
+    <server name="Silver Hand" region="US"/>
+    <server name="Silvermoon" region="US"/>
+    <server name="Sisters of Elune" region="US"/>
+    <server name="Skullcrusher" region="US"/>
+    <server name="Skywall" region="US"/>
+    <server name="Smolderthorn" region="US"/>
+    <server name="Spinebreaker" region="US"/>
+    <server name="Spirestone" region="US"/>
+    <server name="Staghelm" region="US"/>
+    <server name="Steamwheedle Cartel" region="US"/>
+    <server name="Stonemaul" region="US"/>
+    <server name="Stormrage" region="US"/>
+    <server name="Stormreaver" region="US"/>
+    <server name="Stormscale" region="US"/>
+    <server name="Suramar" region="US"/>
+    <server name="Tanaris" region="US"/>
+    <server name="Terenas" region="US"/>
+    <server name="Terokkar" region="US"/>
+    <server name="Thaurissan" region="US"/>
+    <server name="The Forgotten Coast" region="US"/>
+    <server name="The Scryers" region="US"/>
+    <server name="The Underbog" region="US"/>
+    <server name="The Venture Co" region="US"/>
+    <server name="Thorium Brotherhood" region="US"/>
+    <server name="Thrall" region="US"/>
+    <server name="Thunderhorn" region="US"/>
+    <server name="Thunderlord" region="US"/>
+    <server name="Tichondrius" region="US"/>
+    <server name="Tortheldrin" region="US"/>
+    <server name="Trollbane" region="US"/>
+    <server name="Turalyon" region="US"/>
+    <server name="Twisting Nether" region="US"/>
+    <server name="Uldaman" region="US"/>
+    <server name="Uldum" region="US"/>
+    <server name="Undermine" region="US"/>
+    <server name="Ursin" region="US"/>
+    <server name="Uther" region="US"/>
+    <server name="Vashj" region="US"/>
+    <server name="Vek'nilash" region="US"/>
+    <server name="Velen" region="US"/>
+    <server name="Warsong" region="US"/>
+    <server name="Whisperwind" region="US"/>
+    <server name="Wildhammer" region="US"/>
+    <server name="Windrunner" region="US"/>
+    <server name="Winterhoof" region="US"/>
+    <server name="Wyrmrest Accord" region="US"/>
+    <server name="Ysera" region="US"/>
+    <server name="Ysondre" region="US"/>
+    <server name="Zangarmarsh" region="US"/>
+    <server name="Zul'jin" region="US"/>
+    <server name="Zuluhed" region="US"/>
+    <server name="Aerie Peak" region="EU"/>
+    <server name="Agamaggan" region="EU"/>
+    <server name="Aggramar" region="EU"/>
+    <server name="Ahn'Qiraj" region="EU"/>
+    <server name="Al'Akir" region="EU"/>
+    <server name="Alonsus" region="EU"/>
+    <server name="Anachronos" region="EU"/>
+    <server name="Arathor" region="EU"/>
+    <server name="Argent Dawn" region="EU"/>
+    <server name="Aszune" region="EU"/>
+    <server name="Auchindoun" region="EU"/>
+    <server name="Azjol-Nerub" region="EU"/>
+    <server name="Azuremyst" region="EU"/>
+    <server name="Balnazzar" region="EU"/>
+    <server name="Blade's Edge" region="EU"/>
+    <server name="Bladefist" region="EU"/>
+    <server name="Bloodfeather" region="EU"/>
+    <server name="Bloodhoof" region="EU"/>
+    <server name="Bloodscalp" region="EU"/>
+    <server name="Boulderfist" region="EU"/>
+    <server name="Bronze Dragonflight" region="EU"/>
+    <server name="Bronzebeard" region="EU"/>
+    <server name="Burning Blade" region="EU"/>
+    <server name="Burning Legion" region="EU"/>
+    <server name="Burning Steppes" region="EU"/>
+    <server name="Chamber of Aspects" region="EU"/>
+    <server name="Chromaggus" region="EU"/>
+    <server name="Crushridge" region="EU"/>
+    <server name="Daggerspine" region="EU"/>
+    <server name="Darkmoon Faire" region="EU"/>
+    <server name="Darksorrow" region="EU"/>
+    <server name="Darkspear" region="EU"/>
+    <server name="Deathwing" region="EU"/>
+    <server name="Defias Brotherhood" region="EU"/>
+    <server name="Dentarg" region="EU"/>
+    <server name="Doomhammer" region="EU"/>
+    <server name="Draenor" region="EU"/>
+    <server name="Dragonblight" region="EU"/>
+    <server name="Dragonmaw" region="EU"/>
+    <server name="Drak'thul" region="EU"/>
+    <server name="Dunemaul" region="EU"/>
+    <server name="Earthen Ring" region="EU"/>
+    <server name="Emerald Dream" region="EU"/>
+    <server name="Emeriss" region="EU"/>
+    <server name="Eonar" region="EU"/>
+    <server name="Executus" region="EU"/>
+    <server name="Frostmane" region="EU"/>
+    <server name="Frostwhisper" region="EU"/>
+    <server name="Genjuros" region="EU"/>
+    <server name="Ghostlands" region="EU"/>
+    <server name="Grim Batol" region="EU"/>
+    <server name="Hakkar" region="EU"/>
+    <server name="Haomarush" region="EU"/>
+    <server name="Hellfire" region="EU"/>
+    <server name="Hellscream" region="EU"/>
+    <server name="Jaedenar" region="EU"/>
+    <server name="Karazhan" region="EU"/>
+    <server name="Kazzak" region="EU"/>
+    <server name="Khadgar" region="EU"/>
+    <server name="Kilrogg" region="EU"/>
+    <server name="Kor'gall" region="EU"/>
+    <server name="Kul Tiras" region="EU"/>
+    <server name="Laughing Skull" region="EU"/>
+    <server name="Lightbringer" region="EU"/>
+    <server name="Lightning's Blade" region="EU"/>
+    <server name="Magtheridon" region="EU"/>
+    <server name="Mazrigos" region="EU"/>
+    <server name="Moonglade" region="EU"/>
+    <server name="Nagrand" region="EU"/>
+    <server name="Neptulon" region="EU"/>
+    <server name="Nordrassil" region="EU"/>
+    <server name="Outland" region="EU"/>
+    <server name="Quel'Thalas" region="EU"/>
+    <server name="Ragnaros" region="EU"/>
+    <server name="Ravencrest" region="EU"/>
+    <server name="Ravenholdt" region="EU"/>
+    <server name="Runetotem" region="EU"/>
+    <server name="Saurfang" region="EU"/>
+    <server name="Scarshield Legion" region="EU"/>
+    <server name="Shadowsong" region="EU"/>
+    <server name="Shattered Halls" region="EU"/>
+    <server name="Shattered Hand" region="EU"/>
+    <server name="Silvermoon" region="EU"/>
+    <server name="Skullcrusher" region="EU"/>
+    <server name="Spinebreaker" region="EU"/>
+    <server name="Sporeggar" region="EU"/>
+    <server name="Steamwheedle Cartel" region="EU"/>
+    <server name="Stormrage" region="EU"/>
+    <server name="Stormreaver" region="EU"/>
+    <server name="Stormscale" region="EU"/>
+    <server name="Sunstrider" region="EU"/>
+    <server name="Sylvanas" region="EU"/>
+    <server name="Talnivarr" region="EU"/>
+    <server name="Tarren Mill" region="EU"/>
+    <server name="Terenas" region="EU"/>
+    <server name="Terokkar" region="EU"/>
+    <server name="The Maelstrom" region="EU"/>
+    <server name="The Sha'tar" region="EU"/>
+    <server name="The Venture Co." region="EU"/>
+    <server name="Thunderhorn" region="EU"/>
+    <server name="Trollbane" region="EU"/>
+    <server name="Turalyon" region="EU"/>
+    <server name="Twilight's Hammer" region="EU"/>
+    <server name="Twisting Nether" region="EU"/>
+    <server name="Vashj" region="EU"/>
+    <server name="Vek'nilash" region="EU"/>
+    <server name="Wildhammer" region="EU"/>
+    <server name="Xavius" region="EU"/>
+    <server name="Zenedar" region="EU"/>
+    <server name="Aegwynn" region="EU"/>
+    <server name="Alexstrasza" region="EU"/>
+    <server name="Alleria" region="EU"/>
+    <server name="Aman'Thul" region="EU"/>
+    <server name="Ambossar" region="EU"/>
+    <server name="Anetheron" region="EU"/>
+    <server name="Antonidas" region="EU"/>
+    <server name="Anub'arak" region="EU"/>
+    <server name="Area 52" region="EU"/>
+    <server name="Arthas" region="EU"/>
+    <server name="Arygos" region="EU"/>
+    <server name="Azshara" region="EU"/>
+    <server name="Baelgun" region="EU"/>
+    <server name="Blackhand" region="EU"/>
+    <server name="Blackmoore" region="EU"/>
+    <server name="Blackrock" region="EU"/>
+    <server name="Blutkessel" region="EU"/>
+    <server name="Dalvengyr" region="EU"/>
+    <server name="Das Konsortium" region="EU"/>
+    <server name="Das Syndikat" region="EU"/>
+    <server name="Der abyssische Rat" region="EU"/>
+    <server name="Der Mithrilorden" region="EU"/>
+    <server name="Der Rat von Dalaran" region="EU"/>
+    <server name="Destromath" region="EU"/>
+    <server name="Dethecus" region="EU"/>
+    <server name="Die Aldor" region="EU"/>
+    <server name="Die Arguswacht" region="EU"/>
+    <server name="Die ewige Wacht" region="EU"/>
+    <server name="Die Nachtwache" region="EU"/>
+    <server name="Die Silberne Hand" region="EU"/>
+    <server name="Die Todeskrallen" region="EU"/>
+    <server name="Dun Morogh" region="EU"/>
+    <server name="Durotan" region="EU"/>
+    <server name="Echsenkessel" region="EU"/>
+    <server name="Eredar" region="EU"/>
+    <server name="Festung der Stürme" region="EU"/>
+    <server name="Forscherliga" region="EU"/>
+    <server name="Frostmourne" region="EU"/>
+    <server name="Frostwolf" region="EU"/>
+    <server name="Garrosh" region="EU"/>
+    <server name="Gilneas" region="EU"/>
+    <server name="Gorgonnash" region="EU"/>
+    <server name="Gul'dan" region="EU"/>
+    <server name="Kargath" region="EU"/>
+    <server name="Kel'Thuzad" region="EU"/>
+    <server name="Khaz'goroth" region="EU"/>
+    <server name="Kil'Jaeden" region="EU"/>
+    <server name="Krag'jin" region="EU"/>
+    <server name="Kult der Verdammten" region="EU"/>
+    <server name="Lordaeron" region="EU"/>
+    <server name="Lothar" region="EU"/>
+    <server name="Madmortem" region="EU"/>
+    <server name="Mal'Ganis" region="EU"/>
+    <server name="Malfurion" region="EU"/>
+    <server name="Malorne" region="EU"/>
+    <server name="Malygos" region="EU"/>
+    <server name="Mannoroth" region="EU"/>
+    <server name="Mug'thol" region="EU"/>
+    <server name="Nathrezim" region="EU"/>
+    <server name="Nazjatar" region="EU"/>
+    <server name="Nefarian" region="EU"/>
+    <server name="Nera'thor" region="EU"/>
+    <server name="Nethersturm" region="EU"/>
+    <server name="Norgannon" region="EU"/>
+    <server name="Nozdormu" region="EU"/>
+    <server name="Onyxia" region="EU"/>
+    <server name="Perenolde" region="EU"/>
+    <server name="Proudmoore" region="EU"/>
+    <server name="Rajaxx" region="EU"/>
+    <server name="Rexxar" region="EU"/>
+    <server name="Sen'jin" region="EU"/>
+    <server name="Shattrath" region="EU"/>
+    <server name="Taerar" region="EU"/>
+    <server name="Teldrassil" region="EU"/>
+    <server name="Terrordar" region="EU"/>
+    <server name="Theradras" region="EU"/>
+    <server name="Thrall" region="EU"/>
+    <server name="Tichondrius" region="EU"/>
+    <server name="Tirion" region="EU"/>
+    <server name="Todeswache" region="EU"/>
+    <server name="Ulduar" region="EU"/>
+    <server name="Un'Goro" region="EU"/>
+    <server name="Vek'lor" region="EU"/>
+    <server name="Wrathbringer" region="EU"/>
+    <server name="Ysera" region="EU"/>
+    <server name="Zirkel des Cenarius" region="EU"/>
+    <server name="Zuluhed" region="EU"/>
+    <server name="Arak-arahm" region="EU"/>
+    <server name="Arathi" region="EU"/>
+    <server name="Archimonde" region="EU"/>
+    <server name="Chants éternels" region="EU"/>
+    <server name="Cho'gall" region="EU"/>
+    <server name="Confrérie du Thorium" region="EU"/>
+    <server name="Conseil des Ombres" region="EU"/>
+    <server name="Culte de la Rive noire" region="EU"/>
+    <server name="Dalaran" region="EU"/>
+    <server name="Drek'Thar" region="EU"/>
+    <server name="Eitrigg" region="EU"/>
+    <server name="Eldre'Thalas" region="EU"/>
+    <server name="Elune" region="EU"/>
+    <server name="Garona" region="EU"/>
+    <server name="Hyjal" region="EU"/>
+    <server name="Illidan" region="EU"/>
+    <server name="Kael'thas" region="EU"/>
+    <server name="Khaz Modan" region="EU"/>
+    <server name="Kirin Tor" region="EU"/>
+    <server name="Krasus" region="EU"/>
+    <server name="La Croisade écarlate" region="EU"/>
+    <server name="Les Clairvoyants" region="EU"/>
+    <server name="Les Sentinelles" region="EU"/>
+    <server name="Marécage de Zangar" region="EU"/>
+    <server name="Medivh" region="EU"/>
+    <server name="Naxxramas" region="EU"/>
+    <server name="Ner'zhul" region="EU"/>
+    <server name="Rashgarroth" region="EU"/>
+    <server name="Sargeras" region="EU"/>
+    <server name="Sinstralis" region="EU"/>
+    <server name="Suramar" region="EU"/>
+    <server name="Temple noir" region="EU"/>
+    <server name="Throk'Feroth" region="EU"/>
+    <server name="Uldaman" region="EU"/>
+    <server name="Varimathras" region="EU"/>
+    <server name="Vol'jin" region="EU"/>
+    <server name="Ysondre" region="EU"/>
+    <server name="C'Thun" region="EU"/>
+    <server name="Colinas Pardas" region="EU"/>
+    <server name="Dun Modr" region="EU"/>
+    <server name="Exodar" region="EU"/>
+    <server name="Los Errantes" region="EU"/>
+    <server name="Minahonda" region="EU"/>
+    <server name="Sanguino" region="EU"/>
+    <server name="Shen'dralar" region="EU"/>
+    <server name="Tyrande" region="EU"/>
+    <server name="Uldum" region="EU"/>
+    <server name="Zul'Jin" region="EU"/>
+    <server name="Азурегос" region="EU"/>
+    <server name="Борейская тундра" region="EU"/>
+    <server name="Вечная Песня" region="EU"/>
+    <server name="Гордунни" region="EU"/>
+    <server name="Гром" region="EU"/>
+    <server name="Дракономор" region="EU"/>
+    <server name="Король-лич" region="EU"/>
+    <server name="Пиратская бухта" region="EU"/>
+    <server name="Подземье" region="EU"/>
+    <server name="Разувий" region="EU"/>
+    <server name="Свежеватель Душ" region="EU"/>
+    <server name="Седогрив" region="EU"/>
+    <server name="Страж смерти" region="EU"/>
+    <server name="Термоштепсель" region="EU"/>
+    <server name="Ткач Смерти" region="EU"/>
+    <server name="Ясеневый лес" region="EU"/>
   </servers>
 </xml>

@@ -243,13 +243,12 @@ function add_raider_from_web( SimpleXMLElement $xml, $character_name, $server_na
 function add_wow_servers( SimpleXMLElement $xml )
 {
 	$arr_servers = get_arr_wow_servers();
-	//print_r($arr_servers);
+
 	$xml_servers = $xml->addChild('servers');
 	foreach( $arr_servers as $region => $arr_list ) {
 		foreach( $arr_list as $arr_server ) {
 			$new_server = $xml_servers->addChild('server');
 			$new_server->addAttribute('name', $arr_server['name']);
-			$new_server->addAttribute('label', $arr_server['label']);
 			$new_server->addAttribute('region', $region);
 		}
 	}
@@ -445,7 +444,8 @@ function set_single_xml_xpath_property( SimpleXMLElement $xml, $str_xpath, $attr
  * @param $new_child
  * @return unknown_type
  */
-function simplexml_append(SimpleXMLElement $parent, SimpleXMLElement $new_child){
+function simplexml_append( SimpleXMLElement $parent, SimpleXMLElement $new_child )
+{
 	$node1 = dom_import_simplexml($parent);
 	$dom_sxe = dom_import_simplexml($new_child);
 	$node2 = $node1->ownerDocument->importNode($dom_sxe, true);
@@ -457,7 +457,7 @@ function simplexml_append(SimpleXMLElement $parent, SimpleXMLElement $new_child)
  * @param string $val
  * @return integer
  */
-function return_bytes($val) 
+function return_bytes( $val ) 
 {
 	$val = trim($val);
 	$last = strtolower($val[strlen($val)-1]);
@@ -482,7 +482,7 @@ function return_bytes($val)
  * @param $value
  * @return unknown_type
  */
-function write_cache_value($name, $value)
+function write_cache_value( $name, $value )
 {
 	// If the cache file already exists, fetch it's content array
 	if( is_file(CACHE_FILE_PATH) ) { 
@@ -506,7 +506,7 @@ function write_cache_value($name, $value)
  * @param $name
  * @return unknown_type
  */
-function read_cache_value($name)
+function read_cache_value( $name )
 {
 	// If the cache file already exists, fetch it's content array
 	if( is_file(CACHE_FILE_PATH) ) { 
@@ -630,7 +630,7 @@ function add_hand_edited_options( SimpleXMLElement $xml )
 	// Add the optimal-raid meta-parameter
 	add_options_to_XML(array(array(
 				'name' => 'optimal_raid',
-				'type' => 'OPT_INT',
+				'type' => 'OPT_BOOL',
 				'tag' => '',
 				'file' => 'meta_options'
 		)), 
@@ -698,7 +698,7 @@ function parse_source_file_for_options( $file_path )
  * @param SimpleXMLElement $xml_object
  * @return null
  */
-function add_options_to_XML( array $arr_options, SimpleXMLElement $xml_object)
+function add_options_to_XML( array $arr_options, SimpleXMLElement $xml_object )
 {
 	// Loop over the supplied array of options
 	foreach($arr_options as $arr_option ) {
@@ -710,14 +710,14 @@ function add_options_to_XML( array $arr_options, SimpleXMLElement $xml_object)
 		
 		
 		// === Convert the C++ types to html field types ===
-		// certain types of OPT_INT options can be assumed to be boolean checkboxes
-		if( $arr_option['type']==='OPT_INT' && in_array($arr_option['tag'], array('glyphs', 'idols', 'totems', 'tiers')) ) {
-			$html_type = 'boolean';
+		// OPT_INTs are just text fields
+		if( $arr_option['type']==='OPT_INT' ) {
+			$html_type = 'text';
 		}
 		
-		// All other OPT_INTs are just text fields
-		else if( $arr_option['type']==='OPT_INT' ) {
-			$html_type = 'text';
+		// OPT_BOOL's are boolean
+		else if( $arr_option['type']==='OPT_BOOL' ) {
+			$html_type = 'boolean';
 		}
 		
 		// strings are text fields
