@@ -1515,6 +1515,7 @@ struct unique_gear_t
   int  mark_of_defiance;
   int  mirror_of_truth;
   int  mystical_skyfire;
+  int  pandoras_plea;
   int  pyrite_infuser;
   int  quagmirrans_eye;
   int  relentless_earthstorm;

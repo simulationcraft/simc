@@ -409,6 +409,7 @@ bool unique_gear_t::parse_option( player_t*          p,
     { "mirror_of_truth",                      OPT_BOOL,  &( p -> unique_gear -> mirror_of_truth                 ) },
     { "mark_of_defiance",                     OPT_BOOL,  &( p -> unique_gear -> mark_of_defiance                ) },
     { "mystical_skyfire",                     OPT_BOOL,  &( p -> unique_gear -> mystical_skyfire                ) },
+    { "pandoras_plea",                        OPT_BOOL,  &( p -> unique_gear ->pandoras_plea                    ) },
     { "pyrite_infuser",                       OPT_BOOL,  &( p -> unique_gear -> pyrite_infuser                  ) },
     { "quagmirrans_eye",                      OPT_BOOL,  &( p -> unique_gear -> quagmirrans_eye                 ) },
     { "relentless_earthstorm",                OPT_BOOL,  &( p -> unique_gear -> relentless_earthstorm           ) },
@@ -591,6 +592,12 @@ void unique_gear_t::register_callbacks( player_t* p )
   if( p -> unique_gear -> mystical_skyfire )
   {
     cb = new stat_proc_callback_t( "mystical_skyfire", p, STAT_HASTE_RATING, 1, 320, 0.15, 4.0, 45.0 );
+    p -> register_spell_result_callback( RESULT_HIT_MASK, cb );
+  }
+  //---------------------------------------------------------------------------------------------------------
+  if( p -> unique_gear -> pandoras_plea )
+  {
+    cb = new stat_proc_callback_t( "pandoras_plea", p, STAT_SPELL_POWER, 1, 850, 0.10, 10.0, 45.0 );
     p -> register_spell_result_callback( RESULT_HIT_MASK, cb );
   }
   //---------------------------------------------------------------------------------------------------------
