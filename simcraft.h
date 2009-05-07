@@ -360,16 +360,17 @@ struct roll_instance_t
 };
 
 struct roll_t{
+private:
 	rng_t* rng;
 	int normalized;
 	double phase_shift;
 	std::map<std::string, roll_instance_t> rollMap;
 	void init(int sfmt, int normalized_roll, double phase);
-	void reset();
 	int rnd(double chance);
 public:
 	roll_t(int sfmt, int normalized_roll, double phase);
 	virtual ~roll_t();
+	void reset();
 	double real();
 	int roll(double chance);
 	int roll(double chance, std::string rollName);

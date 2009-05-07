@@ -483,7 +483,7 @@ static void trigger_combat_potency( rogue_attack_t* a )
   if( ! p -> talents.combat_potency )
     return;
 
-  if( a -> sim -> roll( 0.20 ) )
+  if( a -> sim -> rng-> roll( 0.20, p, "combat_potency" ) )
   {
     p -> resource_gain( RESOURCE_ENERGY, p -> talents.combat_potency * 3.0, p -> gains_combat_potency );
   }
@@ -501,7 +501,7 @@ static void trigger_cut_to_the_chase( rogue_attack_t* a )
   if( ! p -> _buffs.slice_and_dice ) 
     return;
 
-  if( a -> sim -> roll( p -> talents.cut_to_the_chase * 0.20 ) )
+  if( a -> sim -> rng-> roll( p -> talents.cut_to_the_chase * 0.20,p,"cut_to_the_chase" ) )
   {
     int combo_points = p -> _buffs.combo_points;
     p -> _buffs.combo_points = 5;
@@ -537,7 +537,7 @@ static void trigger_initiative( rogue_attack_t* a )
   if( ! p -> talents.initiative )
     return;
 
-  if( a -> sim -> roll( p -> talents.initiative / 3.0 ) )
+  if( a -> sim -> rng-> roll( p -> talents.initiative / 3.0 , p, "initiative" ) )
   {
     add_combo_point( p );
   }
@@ -552,7 +552,7 @@ static void trigger_focused_attacks( rogue_attack_t* a )
   if( ! p -> talents.focused_attacks )
     return;
 
-  if( a -> sim -> roll( p -> talents.focused_attacks / 3.0 ) )
+  if( a -> sim -> rng-> roll( p -> talents.focused_attacks / 3.0, p, "focused_attacks" ) )
   {
     p -> resource_gain( RESOURCE_ENERGY, 2, p -> gains_focused_attacks );
   }
@@ -601,7 +601,7 @@ static void trigger_relentless_strikes( rogue_attack_t* a )
   if( ! a -> requires_combo_points )
     return;
 
-  if( a -> sim -> roll( p -> talents.relentless_strikes * p -> _buffs.combo_points * 0.04 ) )
+  if( a -> sim -> rng-> roll( p -> talents.relentless_strikes * p -> _buffs.combo_points * 0.04, p, "relentless_strikes" ) )
   {
     p -> resource_gain( RESOURCE_ENERGY, 25, p -> gains_relentless_strikes );
   }
@@ -619,7 +619,7 @@ static void trigger_ruthlessness( rogue_attack_t* a )
   if( ! a -> requires_combo_points )
     return;
 
-  if( a -> sim -> roll( p -> talents.ruthlessness * 0.20 ) )
+  if( a -> sim -> rng-> roll( p -> talents.ruthlessness * 0.20, p, "ruthlessness"  ) )
   {
     p -> procs_ruthlessness -> occur();
     add_combo_point( p );
@@ -645,7 +645,7 @@ static void trigger_seal_fate( rogue_attack_t* a )
 
   if( p -> talents.seal_fate )
   {
-    if( a -> sim -> roll( p -> talents.seal_fate * 0.20 ) )
+    if( a -> sim -> rng-> roll( p -> talents.seal_fate * 0.20, p, "seal_fate" ) )
     {
       p -> _cooldowns.seal_fate = a -> sim -> current_time;
       p -> procs_seal_fate -> occur();
@@ -672,7 +672,7 @@ static void trigger_sword_specialization( rogue_attack_t* a )
   if( ! p -> talents.sword_specialization )
     return;
 
-  if( a -> sim -> roll( p -> talents.sword_specialization * 0.01 ) )
+  if( a -> sim -> rng-> roll( p -> talents.sword_specialization * 0.01, p, "sword_specialization" ) )
   {
     p -> main_hand_attack -> proc = true;
     p -> main_hand_attack -> execute();
@@ -2295,7 +2295,7 @@ struct sinister_strike_t : public rogue_attack_t
     rogue_attack_t::execute();
     if( result == RESULT_CRIT )
     {
-      if( p -> glyphs.sinister_strike && sim -> roll( 0.50 ) )
+      if( p -> glyphs.sinister_strike && sim -> rng-> roll( 0.50,p,"sinister_strike 1/2" ) )
       {
         add_combo_point( p );
       }
@@ -2501,7 +2501,7 @@ struct anesthetic_poison_t : public rogue_poison_t
     // Anesthtic is not on PPM on PTR
     double chance = p -> _buffs.shiv ? 1.0 : .5;
     may_crit = ( sim -> P309 ) ? true : ( ( p -> _buffs.shiv ) ? false : true );
-    if( sim -> roll( chance ) )
+    if( sim -> rng-> roll( chance,p,"anesthetic_poison" ) )
     {
       rogue_poison_t::execute();
     }
@@ -2541,7 +2541,7 @@ struct deadly_poison_t : public rogue_poison_t
         if( ! sim -> P309 ) chance += p -> talents.master_poisoner * 0.15;
       }
       p -> uptimes_envenom -> update( p -> _buffs.envenom != 0 );
-      success = sim -> roll( chance );
+      success = sim -> rng-> roll( chance,p,"deadly_poison" );
     }
 
     if( success )
@@ -2640,7 +2640,7 @@ struct instant_poison_t : public rogue_poison_t
         may_crit = true;
       }
     }
-    if( sim -> roll( chance ) )
+    if( sim -> rng-> roll( chance,p,"instant_poison" ) )
     {
       rogue_poison_t::execute();
     }
@@ -2704,7 +2704,7 @@ struct wound_poison_t : public rogue_poison_t
       }
     }
     
-    if( sim -> roll( chance ) )
+    if( sim -> rng-> roll( chance,p,"Wound Poison Exp" ) )
     {
       rogue_poison_t::execute();
       if( result_is_hit() )
@@ -3179,7 +3179,7 @@ struct honor_among_thieves_callback_t : public action_callback_t
     
     rogue_t* rogue = listener -> cast_rogue();
 
-    if( ! a -> sim -> roll( rogue -> talents.honor_among_thieves / 3.0 ) ) return;
+	if( ! a -> sim -> rng-> roll( rogue -> talents.honor_among_thieves / 3.0, a->player, "HAT" ) ) return;
 
     add_combo_point( rogue );
 

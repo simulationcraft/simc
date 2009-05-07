@@ -352,7 +352,7 @@ static void trigger_bloodsurge( action_t* a )
     return;
   
   double chance = util_t::talent_rank( p -> talents.bloodsurge, 3, 0.07, 0.13, 0.20 );
-  if( ! a -> sim -> roll( chance ) )
+  if( ! a -> sim -> rng-> roll( chance,p, "bloodsurge" ) )
     return;
   
   p -> _procs.bloodsurge -> occur();
@@ -396,7 +396,7 @@ static void trigger_tier7_4pc( action_t* a )
   if( p -> unique_gear -> tier7_4pc == 0 )
     return;
     
-  if( ! a -> sim -> roll( 0.10 ) ) 
+  if( ! a -> sim -> rng-> roll( 0.10,p,"t7pc4" ) ) 
     return;
   
   struct heightened_reflexes_expiration_t : public event_t
@@ -568,7 +568,7 @@ static void trigger_sudden_death( attack_t* a )
   if( ! ( a -> direct_dmg > 0 ) ) 
     return;
 
-  if( a -> sim -> roll( p -> talents.sudden_death * 0.03 ) )
+  if( a -> sim -> rng-> roll( p -> talents.sudden_death * 0.03, p, "sudden_death" ) )
   {
     p -> _procs.sudden_death -> occur();
     p -> _buffs.sudden_death = p -> sim -> current_time + 10.0;
@@ -599,7 +599,7 @@ static void trigger_sword_specialization( attack_t* a )
   if( ! a -> sim -> cooldown_ready( p -> _cooldowns.sword_specialization ) )
     return;
 
-  if( a -> sim -> roll( p -> talents.sword_specialization * 0.01 ) )
+  if( a -> sim -> rng-> roll( p -> talents.sword_specialization * 0.01, p, "sword_specialization" ) )
   {
     if( a -> sim -> log )
       log_t::output( a -> sim, "%s gains one extra attack through %s",
@@ -710,7 +710,7 @@ static void trigger_unbridled_wrath( action_t* a )
 
   double PPM = p -> talents.unbridled_wrath * 3; // 15 ppm @ 5/5
   double chance = a -> weapon -> proc_chance_on_swing( PPM );
-  if( a -> sim -> roll( chance ) )
+  if( a -> sim -> rng-> roll( chance, p, "unbridled_wrath" ) )
     p -> resource_gain( RESOURCE_RAGE, 1.0 , p -> _gains.unbridled_wrath );
 }
 
@@ -725,7 +725,7 @@ static void trigger_tier8_2pc( action_t* a )
   if( a -> result != RESULT_CRIT )
     return;
     
-  if( ! a -> sim -> roll( 0.40 ) ) 
+  if( ! a -> sim -> rng-> roll( 0.40, p, "t8pc2" ) ) 
     return;
   
   struct heightened_reflexes_expiration_t : public event_t
