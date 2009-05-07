@@ -20,7 +20,8 @@ enum rune_type {
 #define RUNE_SLOT_MAX      6
 #define MAX_BLOODWORMS     4
 
-#define RUNE_GRACE_PERIOD  2.0
+#define RUNE_GRACE_PERIOD   2.0
+#define RUNIC_POWER_REFUND  0.9
 
 #define GET_BLOOD_RUNE_COUNT(x)  ((x) & 0x03)
 #define GET_FROST_RUNE_COUNT(x)  (((x) >> 3) & 0x03)
@@ -101,6 +102,7 @@ struct death_knight_t : public player_t
   // Gains
   gain_t* gains_rune_abilities;
   gain_t* gains_butchery;
+  gain_t* gains_power_refund;
   gain_t* gains_scent_of_blood;
 
   // Procs
@@ -262,6 +264,7 @@ struct death_knight_t : public player_t
     // Gains
     gains_rune_abilities     = get_gain( "rune_abilities" );
     gains_butchery           = get_gain( "butchery" );
+    gains_power_refund       = get_gain( "power_refund" );
     gains_scent_of_blood     = get_gain( "scent_of_blood" );
 
     // Procs
@@ -544,7 +547,7 @@ group_runes ( player_t* player, int blood, int frost, int unholy, bool* group )
   }
 
   // Selecting available death runes to satisfy remaining cost
-  for( int i = 0; cost[0] > 0 && i < RUNE_SLOT_MAX; ++i )
+  for( int i = RUNE_SLOT_MAX; cost[0] > 0 && i--; )
   {
     dk_rune_t& r = p -> _runes.slot[i];
     if( r.is_ready(t) && r.is_death() )
@@ -560,6 +563,15 @@ group_runes ( player_t* player, int blood, int frost, int unholy, bool* group )
   for( int i = 0; i < RUNE_SLOT_MAX; ++i) group[i] = use[i];
 
   return true;
+}
+
+static void
+refund_power( action_t* a )
+{
+  death_knight_t* p = a -> player -> cast_death_knight();
+
+  if ( a -> resource_consumed > 0 )
+    p -> resource_gain( RESOURCE_RUNIC, a -> resource_consumed * RUNIC_POWER_REFUND, p -> gains_power_refund );
 }
 
 static void
@@ -869,6 +881,7 @@ death_knight_attack_t::execute()
   else
   {
     if( cost() > 0 ) executed_once = true;
+    refund_power( this );
     refund_runes( p, use );
   }
 }
@@ -1003,6 +1016,7 @@ death_knight_spell_t::execute()
   else
   {
     if( cost() > 0 ) execute_once = 1;
+    refund_power( this );
     refund_runes(p, use);
   }
 }
