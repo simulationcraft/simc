@@ -114,6 +114,16 @@ struct warlock_t : public player_t
   uptime_t* uptimes_shadow_vulnerability;
   uptime_t* uptimes_spirits_of_the_damned;
 
+  // Random Number Generators
+  rng_t* rng_nightfall;
+  rng_t* rng_shadow_trance;
+  rng_t* rng_soul_leech;
+  rng_t* rng_improved_soul_leech;
+  rng_t* rng_molten_core;
+  rng_t* rng_eradication;
+  rng_t* rng_everlasting_affliction;
+  rng_t* rng_empowered_imp;
+
   struct talents_t
   {
     int  aftermath;
@@ -223,7 +233,6 @@ struct warlock_t : public player_t
   {
     distance = 30;
 
-    // Active
     active_pet         = 0;
     active_corruption  = 0;
     active_curse       = 0;
@@ -232,39 +241,15 @@ struct warlock_t : public player_t
     active_pandemic    = 0;
     active_dots        = 0;
     affliction_effects = 0;
-
-    // Gains
-    gains_dark_pact  = get_gain( "dark_pact"  );
-    gains_fel_armor  = get_gain( "fel_armor"  );
-    gains_felhunter  = get_gain( "felhunter"  );
-    gains_life_tap   = get_gain( "life_tap"   );
-    gains_sacrifice  = get_gain( "sacrifice"  );
-    gains_soul_leech = get_gain( "soul_leech" );
-
-    // Procs
-    procs_dark_pact     = get_proc( "dark_pact" );
-    procs_life_tap      = get_proc( "life_tap" );
-    procs_shadow_trance = get_proc( "shadow_trance" );
-
-    // Up-Times
-    uptimes_backdraft             = get_uptime( "backdraft"             );
-    uptimes_demonic_empathy       = get_uptime( "demonic_empathy"       );
-    uptimes_demonic_pact          = get_uptime( "demonic_pact"          );
-    uptimes_demonic_soul          = get_uptime( "demonic_soul"          );
-    uptimes_empowered_imp         = get_uptime( "empowered_imp"         );
-    uptimes_eradication           = get_uptime( "eradication"           );
-    uptimes_flame_shadow          = get_uptime( "flame_shadow"          );
-    uptimes_molten_core           = get_uptime( "molten_core"           );
-    uptimes_pyroclasm             = get_uptime( "pyroclasm"             );
-    uptimes_shadow_flame          = get_uptime( "shadow_flame"          );
-    uptimes_shadow_trance         = get_uptime( "shadow_trance"         );
-    uptimes_shadow_vulnerability  = get_uptime( "shadow_vulnerability"  );
-    uptimes_spirits_of_the_damned = get_uptime( "spirits_of_the_damned" );
   }
 
   // Character Definition
   virtual void      init_base();
   virtual void      init_scaling();
+  virtual void      init_gains();
+  virtual void      init_procs();
+  virtual void      init_uptimes();
+  virtual void      init_rng();
   virtual void      reset();
   virtual bool      get_talent_trees( std::vector<int*>& affliction, std::vector<int*>& demonology, std::vector<int*>& destruction );
   virtual bool      parse_option ( const std::string& name, const std::string& value );
@@ -1007,7 +992,7 @@ static void trigger_tier7_2pc( spell_t* s )
   if(   p ->  unique_gear -> tier7_2pc &&
       ! p -> buffs.tier7_2pc )
   {
-    p -> buffs.tier7_2pc = s -> sim -> rng-> roll( 0.15,p,"t7pc2" );
+    p -> buffs.tier7_2pc = p -> rngs.tier7_2pc -> roll( 0.15 );
 
     if( p -> buffs.tier7_2pc ) p -> aura_gain( "Demonic Soul" ,61595 );
   }
@@ -1073,7 +1058,7 @@ static void trigger_tier4_2pc( spell_t* s )
 
   if( p -> unique_gear -> tier4_2pc )
   {
-    if( s -> sim -> rng-> roll( 0.05,p,"t4pc2" ) )
+    if( p -> rngs.tier4_2pc -> roll( 0.05 ) )
     {
       event_t*& e = ( s -> school == SCHOOL_SHADOW ) ? p -> _expirations.shadow_flame : p -> _expirations.flame_shadow;
 
@@ -1192,7 +1177,7 @@ static void trigger_nightfall( spell_t* s )
 
   if( p -> talents.nightfall && ! p -> _buffs.shadow_trance )
   {
-    if( s -> sim -> rng->roll( 0.02 * p -> talents.nightfall, p, "nightfall" ) )
+    if( p -> rng_nightfall -> roll( 0.02 * p -> talents.nightfall ) )
     {
       p -> procs_shadow_trance -> occur();
       p -> aura_gain( "Shadow Trance",17941 );
@@ -1209,7 +1194,7 @@ static void trigger_corruption_glyph( spell_t* s )
 
   if( p -> glyphs.corruption && ! p -> _buffs.shadow_trance )
   {
-    if( s -> sim -> rng-> roll( 0.04, p, "shadow_trance" ) )
+    if( p -> rng_shadow_trance -> roll( 0.04 ) )
     {
       p -> procs_shadow_trance -> occur();
       p -> aura_gain( "Shadow Trance",17941 );
@@ -1226,7 +1211,7 @@ static void trigger_soul_leech( spell_t* s )
 
   if( p -> talents.soul_leech )
   {
-    if( s -> sim -> rng-> roll( 0.10 * p -> talents.soul_leech, p, "soul_leech" ) )
+    if( p -> rng_soul_leech -> roll( 0.10 * p -> talents.soul_leech ) )
     {
       p -> resource_gain( RESOURCE_HEALTH, s -> direct_dmg * 0.20 );
 
@@ -1239,7 +1224,7 @@ static void trigger_soul_leech( spell_t* s )
 
         if( ! s -> sim -> P309 )
         {
-          if( s -> sim -> rng-> roll( 0.5 * p -> talents.improved_soul_leech, p, "impr_soul_leech" ) )
+	  if( p -> rng_improved_soul_leech -> roll( 0.5 * p -> talents.improved_soul_leech ) )
           {
             p -> trigger_replenishment();
           }
@@ -1355,7 +1340,7 @@ static void trigger_molten_core( spell_t* s )
 
   if( ! p -> talents.molten_core ) return;
 
-  if( s -> sim -> rng-> roll( p -> talents.molten_core * 0.05, p, "molten core" ) )
+  if( p -> rng_molten_core -> roll( p -> talents.molten_core * 0.05 ) )
   {
     event_t*&  e = p -> _expirations.molten_core;
 
@@ -1453,9 +1438,10 @@ static void trigger_eradication( spell_t* s )
 
   if( ! p -> talents.eradication ) return;
 
-  if( s -> sim -> rng-> roll( 0.06, p, "eradication" ) )
+  if( p -> rng_eradication -> roll( 0.06 ) )
   {
     event_t*&  e = p -> _expirations.eradication;
+
     if( e )
     {
       e -> reschedule( 10.0 );
@@ -1493,7 +1479,7 @@ static void trigger_everlasting_affliction( spell_t* s )
 
   if( ! p -> active_corruption ) return;
 
-  if( s -> sim -> rng-> roll( p -> talents.everlasting_affliction * 0.20, p, "everlast_afflic" ) )
+  if( p -> rng_everlasting_affliction -> roll( p -> talents.everlasting_affliction * 0.20 ) )
   {
     p -> active_corruption -> refresh_duration();
   }
@@ -1568,7 +1554,7 @@ static void trigger_empowered_imp( spell_t* s )
 
   if( ! o -> talents.empowered_imp ) return;
 
-  if( s -> sim -> rng-> roll( o -> talents.empowered_imp / 3.0 ,o, "empowered imp") )
+  if( o -> rng_empowered_imp -> roll( o -> talents.empowered_imp / 3.0 ) )
   {
     event_t*& e = o -> _expirations.empowered_imp;
 
@@ -1728,7 +1714,8 @@ static void trigger_ashtongue_talisman( spell_t* s )
 
   player_t* p = s -> player;
 
-  if( p -> unique_gear -> ashtongue_talisman && s -> sim -> rng-> roll( 0.20,p,"ashtongue" ) )
+  if( p -> unique_gear -> ashtongue_talisman && 
+      p -> rngs.ashtongue_talisman -> roll( 0.20 ) )
   {
     p -> procs.ashtongue_talisman -> occur();
 
@@ -3293,7 +3280,7 @@ struct conflagrate_t : public warlock_spell_t
     {
       dot_spell = &( p -> active_shadowflame );
     }
-    else if( sim -> rng-> roll( 0.50,p,"immo or sf" ) )
+    else if( sim -> rng -> roll( 0.50 ) )
     {
       dot_spell = &( p -> active_immolate );
     }
@@ -4534,6 +4521,68 @@ void warlock_t::init_scaling()
   player_t::init_scaling();
 
   if( talents.demonic_knowledge ) scales_with[ STAT_STAMINA ] = 1;
+}
+
+// warlock_t::init_gains =====================================================
+
+void warlock_t::init_gains()
+{
+  player_t::init_gains();
+
+  gains_dark_pact  = get_gain( "dark_pact"  );
+  gains_fel_armor  = get_gain( "fel_armor"  );
+  gains_felhunter  = get_gain( "felhunter"  );
+  gains_life_tap   = get_gain( "life_tap"   );
+  gains_sacrifice  = get_gain( "sacrifice"  );
+  gains_soul_leech = get_gain( "soul_leech" );
+}
+
+// warlock_t::init_procs =====================================================
+
+void warlock_t::init_procs()
+{
+  player_t::init_procs();
+
+  procs_dark_pact     = get_proc( "dark_pact" );
+  procs_life_tap      = get_proc( "life_tap" );
+  procs_shadow_trance = get_proc( "shadow_trance" );
+}
+
+// warlock_t::init_uptimes ===================================================
+
+void warlock_t::init_uptimes()
+{
+  player_t::init_uptimes();
+
+  uptimes_backdraft             = get_uptime( "backdraft"             );
+  uptimes_demonic_empathy       = get_uptime( "demonic_empathy"       );
+  uptimes_demonic_pact          = get_uptime( "demonic_pact"          );
+  uptimes_demonic_soul          = get_uptime( "demonic_soul"          );
+  uptimes_empowered_imp         = get_uptime( "empowered_imp"         );
+  uptimes_eradication           = get_uptime( "eradication"           );
+  uptimes_flame_shadow          = get_uptime( "flame_shadow"          );
+  uptimes_molten_core           = get_uptime( "molten_core"           );
+  uptimes_pyroclasm             = get_uptime( "pyroclasm"             );
+  uptimes_shadow_flame          = get_uptime( "shadow_flame"          );
+  uptimes_shadow_trance         = get_uptime( "shadow_trance"         );
+  uptimes_shadow_vulnerability  = get_uptime( "shadow_vulnerability"  );
+  uptimes_spirits_of_the_damned = get_uptime( "spirits_of_the_damned" );
+}
+
+// warlock_t::init_rng =======================================================
+
+void warlock_t::init_rng()
+{
+  player_t::init_rng();
+
+  rng_nightfall              = get_rng( "nightfall"              );
+  rng_shadow_trance          = get_rng( "shadow_trance"          );
+  rng_soul_leech             = get_rng( "soul_leech"             );
+  rng_improved_soul_leech    = get_rng( "improved_soul_leech"    );
+  rng_molten_core            = get_rng( "molten_core"            );
+  rng_eradication            = get_rng( "eradication"            );
+  rng_everlasting_affliction = get_rng( "everlasting_affliction" );
+  rng_empowered_imp          = get_rng( "empowered_imp"          );
 }
 
 // warlock_t::reset ==========================================================

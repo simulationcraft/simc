@@ -134,7 +134,7 @@ static bool parse_optimal_raid( sim_t*             sim,
 
 // sim_t::sim_t =============================================================
 
-sim_t::sim_t( sim_t* p, int thrdID ) : 
+sim_t::sim_t( sim_t* p, int index ) : 
   parent(p), P309(false), P312(false), rng(0), free_list(0), player_list(0), active_player(0), num_players(0),
   queue_lag(0.075), queue_lag_range(0), 
   gcd_lag(0.150), gcd_lag_range(0), 
@@ -144,19 +144,18 @@ sim_t::sim_t( sim_t* p, int thrdID ) :
   current_time(0), max_time(0),
   events_remaining(0), max_events_remaining(0), 
   events_processed(0), total_events_processed(0),
-  seed(0), id(0), iterations(1000), current_iteration(0), threads(0),
+  seed(0), id(0), iterations(1000), current_iteration(0),
   armor_update_interval(20), potion_sickness(1),
-  optimal_raid(0), average_dmg(1),
-  log(0), debug(0), sfmt(1),
+  optimal_raid(0), log(0), debug(0), sfmt(1),
   jow_chance(0), jow_ppm(15.0),
-  normalized_roll(0),
+  normalized_dmg(1), normalized_rng(0), normalized_rng_sf(0), random_phase_shift(0), variable_phase_shift(0),
   timing_wheel(0), wheel_seconds(0), wheel_size(0), wheel_mask(0), timing_slice(0), wheel_granularity(0.0),
   replenishment_targets(0),
   raid_dps(0), total_dmg(0), 
   total_seconds(0), elapsed_cpu_seconds(0), 
   merge_ignite(0), report_progress(1),
-  output_file(stdout), log_file(0), thread_handle(0), threadID(thrdID)
-
+  output_file(stdout), log_file(0), threads(0), 
+  thread_handle(0), thread_index(index)
 {
 
   for( int i=0; i < RESOURCE_MAX; i++ ) 
@@ -422,11 +421,9 @@ void sim_t::combat_end()
 bool sim_t::init()
 {
   P309 = patch.before( 3, 1, 0 );
-  P312 = patch.after( 3, 1, 2 );
+  P312 = patch.after ( 3, 1, 2 );
   
-  double phase=0;
-  if ((threads>1)&&(threadID>0)) phase=threadID/(threads+0.0);
-  rng = new roll_t( sfmt, normalized_roll, phase );
+  rng = rng_t::create( this );
 
   // Timing wheel depth defaults to 10 minutes with a granularity of 10 buckets per second.
   if( wheel_seconds     <= 0 ) wheel_seconds     = 600;
@@ -734,7 +731,6 @@ void sim_t::iterate()
   if( report_progress ) fprintf( stdout, "\n" );
 
   reset();
-  rng->reset();
 }
 
 // sim_t::merge =============================================================
@@ -868,6 +864,13 @@ player_t* sim_t::find_player( const std::string& name )
   return 0;
 }
 
+// sim_t::roll ==============================================================
+
+int sim_t::roll( double chance )
+{
+  return rng -> roll( chance );
+}
+
 // sim_t::print_options =====================================================
 
 void sim_t::print_options()
@@ -901,7 +904,6 @@ bool sim_t::parse_option( const std::string& name,
     { "iterations",                       OPT_INT,    &( iterations                               ) },
     { "max_time",                         OPT_FLT,    &( max_time                                 ) },
     { "threads",                          OPT_INT,    &( threads                                  ) },
-    { "average_dmg",                      OPT_BOOL,   &( average_dmg                              ) },
     // @option_doc loc=global/lag title="Lag"
     { "channel_lag",                      OPT_FLT,    &( channel_lag                              ) },
     { "channel_lag_range",                OPT_FLT,    &( channel_lag_range                        ) },
@@ -975,6 +977,12 @@ bool sim_t::parse_option( const std::string& name,
     { "infinite_rage",                    OPT_BOOL,   &( infinite_resource[ RESOURCE_RAGE   ]     ) },
     { "infinite_runic",                   OPT_BOOL,   &( infinite_resource[ RESOURCE_RUNIC  ]     ) },
     { "regen_periodicity",                OPT_FLT,    &( regen_periodicity                        ) },
+    // @option_doc loc=global/rng title="Normalized RNG"
+    { "normalized_dmg",                   OPT_BOOL,   &( normalized_dmg                           ) },
+    { "normalized_rng",                   OPT_BOOL,   &( normalized_rng                           ) },
+    { "normalized_rng_sf",                OPT_BOOL,   &( normalized_rng_sf                        ) },
+    { "random_phase_shift",               OPT_BOOL,   &( random_phase_shift                       ) },
+    { "variable_phase_shift",             OPT_BOOL,   &( variable_phase_shift                     ) },
     // @option_doc loc=global/party title="Party Composition"
     { "party",                            OPT_LIST,   &( party_encoding                           ) },
     // @option_doc loc=skip
@@ -1032,8 +1040,7 @@ bool sim_t::parse_option( const std::string& name,
     { "sfmt",                             OPT_BOOL,   &( sfmt                                     ) },
     { "wheel_granularity",                OPT_FLT,    &( wheel_granularity                        ) },
     { "wheel_seconds",                    OPT_INT,    &( wheel_seconds                            ) },
-    { "normalized_roll",                  OPT_INT,    &( normalized_roll                          ) },
-	{ NULL, OPT_UNKNOWN }
+    { NULL, OPT_UNKNOWN }
   };
 
   if( name.empty() )
@@ -1133,8 +1140,8 @@ int sim_t::main( int argc, char** argv )
   patch.decode( &arch, &version, &revision );
 
   fprintf( output_file, 
-           "\nSimulationCraft for World of Warcraft build %d.%d.%d (iterations=%d, max_time=%.0f, optimal_raid=%d)\n",
-           arch, version, revision, iterations, max_time, optimal_raid );
+           "\nSimulationCraft for World of Warcraft build %d.%d.%d (iterations=%d, max_time=%.0f, optimal_raid=%d, normalized_rng=%d)\n",
+           arch, version, revision, iterations, max_time, optimal_raid, normalized_rng );
   fflush( output_file );
 
   fprintf( stdout, "\nGenerating baseline... \n" ); fflush( stdout );

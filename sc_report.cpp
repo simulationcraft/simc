@@ -297,7 +297,6 @@ static void print_performance( FILE* file, sim_t* sim )
            sim -> iterations * sim -> total_seconds,
            sim -> elapsed_cpu_seconds,
            sim -> iterations * sim -> total_seconds / sim -> elapsed_cpu_seconds );
-  if (sim->normalized_roll) fprintf( file, "  Normalization = %d\n", sim->normalized_roll);
 }
 
 // print_scale_factors ========================================================

@@ -63,42 +63,34 @@ struct warrior_t : public player_t
   _expirations_t _expirations;
 
   // Gains
-  struct _gains_t
-  {
-    gain_t* anger_management;
-    gain_t* avoided_attacks;
-    gain_t* bloodrage;
-    gain_t* berserker_rage;
-    gain_t* glyph_of_heroic_strike;
-    gain_t* mh_attack;
-    gain_t* oh_attack;
-    gain_t* sudden_death;
-    gain_t* unbridled_wrath;
-    
-    void reset() { memset( (void*) this, 0x00, sizeof( _gains_t ) ); }
-    _gains_t() { reset(); }
-  };
-  _gains_t _gains;
+  gain_t* gains_anger_management;
+  gain_t* gains_avoided_attacks;
+  gain_t* gains_bloodrage;
+  gain_t* gains_berserker_rage;
+  gain_t* gains_glyph_of_heroic_strike;
+  gain_t* gains_mh_attack;
+  gain_t* gains_oh_attack;
+  gain_t* gains_sudden_death;
+  gain_t* gains_unbridled_wrath;
 
   // Procs
-  struct _procs_t
-  {
-    proc_t* bloodsurge;
-    proc_t* glyph_overpower;
-    proc_t* sudden_death;
-    proc_t* sword_specialization;
-    proc_t* taste_for_blood;
-    
-    void reset() { memset( (void*) this, 0x00, sizeof( _procs_t ) ); }
-    _procs_t() { reset(); }
-  };
-  _procs_t _procs;
-
+  proc_t* procs_bloodsurge;
+  proc_t* procs_glyph_overpower;
+  proc_t* procs_sudden_death;
+  proc_t* procs_sword_specialization;
+  proc_t* procs_taste_for_blood;
   
   // Up-Times
   uptime_t* uptimes_flurry;
   uptime_t* uptimes_heroic_strike;
   uptime_t* uptimes_rage_cap;
+
+  // Random Number Generation
+  rng_t* rng_bloodsurge;
+  rng_t* rng_sudden_death;
+  rng_t* rng_sword_specialization;
+  rng_t* rng_taste_for_blood;
+  rng_t* rng_unbridled_wrath;
   
   // Auto-Attack
   attack_t* main_hand_attack;
@@ -188,38 +180,18 @@ struct warrior_t : public player_t
     active_deep_wounds       = 0;
     active_heroic_strike     = 0;
     active_stance            = STANCE_BATTLE; 
-    
-    // Gains
-    _gains.anger_management       = get_gain( "anger_management" );
-    _gains.avoided_attacks        = get_gain( "avoided_attacks" );
-    _gains.bloodrage              = get_gain( "bloodrage" );
-    _gains.berserker_rage         = get_gain( "berserker_rage" );
-    _gains.glyph_of_heroic_strike = get_gain( "glyph_of_heroic_strike" );
-    _gains.mh_attack              = get_gain( "mh_attack" );
-    _gains.oh_attack              = get_gain( "oh_attack" );
-    _gains.sudden_death           = get_gain( "sudden_death" );
-    _gains.unbridled_wrath        = get_gain( "unbridled_wrath" );
-    
-    // Procs
-    _procs.bloodsurge           = get_proc( "bloodsurge" );
-    _procs.glyph_overpower      = get_proc( "glyph_of_overpower" );
-    _procs.sudden_death         = get_proc( "sudden_death" );
-    _procs.sword_specialization = get_proc( "sword_specialization" );
-    _procs.taste_for_blood      = get_proc( "taste_for_blood" );
-    
-    // Up-Times
-    uptimes_flurry                = get_uptime( "flurry" );
-    uptimes_heroic_strike         = get_uptime( "heroic_strike" );
-    uptimes_rage_cap              = get_uptime( "rage_cap" );
   
     // Auto-Attack
     main_hand_attack = 0;
     off_hand_attack  = 0;
-
   }
 
   // Character Definition
   virtual void      init_base();
+  virtual void      init_gains();
+  virtual void      init_procs();
+  virtual void      init_uptimes();
+  virtual void      init_rng();
   virtual void      combat_begin();
   virtual double    composite_attribute_multiplier(int attr);
   virtual void      reset();
@@ -345,17 +317,16 @@ static void trigger_blood_frenzy( action_t* a )
 
 static void trigger_bloodsurge( action_t* a )
 {
-    
   warrior_t* p = a -> player -> cast_warrior();
   
   if( a -> result_is_miss() )
     return;
   
   double chance = util_t::talent_rank( p -> talents.bloodsurge, 3, 0.07, 0.13, 0.20 );
-  if( ! a -> sim -> rng-> roll( chance,p, "bloodsurge" ) )
+  if( ! p -> rng_bloodsurge -> roll( chance ) )
     return;
   
-  p -> _procs.bloodsurge -> occur();
+  p -> procs_bloodsurge -> occur();
   
   struct bloodsurge_expiration_t : public event_t
   {
@@ -393,10 +364,11 @@ static void trigger_bloodsurge( action_t* a )
 static void trigger_tier7_4pc( action_t* a )
 {
   warrior_t* p = a -> player -> cast_warrior();
-  if( p -> unique_gear -> tier7_4pc == 0 )
+
+  if( ! p -> unique_gear -> tier7_4pc )
     return;
     
-  if( ! a -> sim -> rng-> roll( 0.10,p,"t7pc4" ) ) 
+  if( ! p -> rngs.tier7_4pc -> roll( 0.10 ) ) 
     return;
   
   struct heightened_reflexes_expiration_t : public event_t
@@ -568,9 +540,9 @@ static void trigger_sudden_death( attack_t* a )
   if( ! ( a -> direct_dmg > 0 ) ) 
     return;
 
-  if( a -> sim -> rng-> roll( p -> talents.sudden_death * 0.03, p, "sudden_death" ) )
+  if( p -> rng_sudden_death -> roll( p -> talents.sudden_death * 0.03 ) )
   {
-    p -> _procs.sudden_death -> occur();
+    p -> procs_sudden_death -> occur();
     p -> _buffs.sudden_death = p -> sim -> current_time + 10.0;
     p -> aura_gain( "Sudden Death" );
   }
@@ -599,12 +571,12 @@ static void trigger_sword_specialization( attack_t* a )
   if( ! a -> sim -> cooldown_ready( p -> _cooldowns.sword_specialization ) )
     return;
 
-  if( a -> sim -> rng-> roll( p -> talents.sword_specialization * 0.01, p, "sword_specialization" ) )
+  if( p -> rng_sword_specialization -> roll( p -> talents.sword_specialization * 0.01 ) )
   {
     if( a -> sim -> log )
       log_t::output( a -> sim, "%s gains one extra attack through %s",
-                     p -> name(), p -> _procs.sword_specialization -> name());
-    p -> _procs.sword_specialization -> occur();
+                     p -> name(), p -> procs_sword_specialization -> name());
+    p -> procs_sword_specialization -> occur();
     p -> _cooldowns.sword_specialization = a -> sim -> current_time + 6.0;
     /* http://elitistjerks.com/f81/t37807-depth_arms_dps_discussion/p27/#post1186561
     // I'm suprised to see that offhand sword spec still procs a main hand attack
@@ -631,15 +603,17 @@ static void trigger_sword_specialization( attack_t* a )
 static void trigger_taste_for_blood( attack_t* a )
 {
   warrior_t* p = a -> player -> cast_warrior();
-  sim_t* sim   = a -> sim;
-  // 3.1.0
-  // * Taste for Blood: Will now proc 33%/66%/100% of the time with a 6 second cooldown.
-  if( ! sim -> cooldown_ready( p -> _cooldowns.taste_for_blood ) )
+
+  if( ! p -> talents.taste_for_blood )
     return;
-  if( sim -> roll ( p -> talents.taste_for_blood / 3.0 ) )
+
+  if( ! a -> sim -> cooldown_ready( p -> _cooldowns.taste_for_blood ) )
+    return;
+
+  if( p -> rng_taste_for_blood -> roll( p -> talents.taste_for_blood / 3.0 ) )
   {
-    p -> _cooldowns.taste_for_blood = sim -> current_time + 6.0;
-    p -> _procs.taste_for_blood -> occur();
+    p -> _cooldowns.taste_for_blood = a -> sim -> current_time + 6.0;
+    p -> procs_taste_for_blood -> occur();
     trigger_overpower_activation( a );
   }
 }
@@ -710,8 +684,11 @@ static void trigger_unbridled_wrath( action_t* a )
 
   double PPM = p -> talents.unbridled_wrath * 3; // 15 ppm @ 5/5
   double chance = a -> weapon -> proc_chance_on_swing( PPM );
-  if( a -> sim -> rng-> roll( chance, p, "unbridled_wrath" ) )
-    p -> resource_gain( RESOURCE_RAGE, 1.0 , p -> _gains.unbridled_wrath );
+
+  if( p -> rng_unbridled_wrath -> roll( chance ) )
+  {
+    p -> resource_gain( RESOURCE_RAGE, 1.0 , p -> gains_unbridled_wrath );
+  }
 }
 
 // trigger_tier8_2pc ========================================================
@@ -719,13 +696,14 @@ static void trigger_unbridled_wrath( action_t* a )
 static void trigger_tier8_2pc( action_t* a )
 {
   warrior_t* p = a -> player -> cast_warrior();
-  if( p -> unique_gear -> tier8_2pc == 0 )
-    return;
 
   if( a -> result != RESULT_CRIT )
     return;
     
-  if( ! a -> sim -> rng-> roll( 0.40, p, "t8pc2" ) ) 
+  if( ! p -> unique_gear -> tier8_2pc )
+    return;
+
+  if( ! p -> rngs.tier8_2pc -> roll( 0.40 ) ) 
     return;
   
   struct heightened_reflexes_expiration_t : public event_t
@@ -895,7 +873,7 @@ void warrior_attack_t::consume_resource()
   {
     warrior_t* p = player -> cast_warrior();  
     double rage_restored = resource_consumed * 0.80;
-    p -> resource_gain( RESOURCE_RAGE, rage_restored, p -> _gains.avoided_attacks );
+    p -> resource_gain( RESOURCE_RAGE, rage_restored, p -> gains_avoided_attacks );
   }
 }
 // warrior_attack_t::execute =================================================
@@ -931,7 +909,7 @@ void warrior_attack_t::execute()
     if( p -> glyphs.overpower ) 
     {
       trigger_overpower_activation( this );
-      p -> _procs.glyph_overpower -> occur();
+      p -> procs_glyph_overpower -> occur();
     }
   }
   if( p -> _buffs.recklessness > 0 && special )
@@ -1135,7 +1113,7 @@ struct melee_t : public warrior_attack_t
       if( p -> talents.endless_rage )
         rage_gained *= 1.25;
          
-      p -> resource_gain( RESOURCE_RAGE, rage_gained, weapon -> slot == SLOT_OFF_HAND ? p -> _gains.oh_attack : p -> _gains.mh_attack );
+      p -> resource_gain( RESOURCE_RAGE, rage_gained, weapon -> slot == SLOT_OFF_HAND ? p -> gains_oh_attack : p -> gains_mh_attack );
     }
     trigger_unbridled_wrath( this );
   }
@@ -1317,7 +1295,7 @@ struct heroic_strike_t : public warrior_attack_t
     warrior_attack_t::execute();
 
     if( p -> glyphs.heroic_strike && result == RESULT_CRIT )
-      p -> resource_gain( RESOURCE_RAGE, 10.0, p -> _gains.glyph_of_heroic_strike );
+      p -> resource_gain( RESOURCE_RAGE, 10.0, p -> gains_glyph_of_heroic_strike );
 
     trigger_tier8_2pc( this );
     trigger_unbridled_wrath( this );
@@ -1469,7 +1447,7 @@ struct execute_t : public warrior_attack_t
     
     // Sudden Death: In addition, you keep at least 10 rage after using Execute.
     if( wasSuddenDeath &&  p -> resource_current[ RESOURCE_RAGE ] < 10.0 )
-      p -> resource_gain( RESOURCE_RAGE, 10.0 - p -> resource_current[ RESOURCE_RAGE ] , p -> _gains.sudden_death );
+      p -> resource_gain( RESOURCE_RAGE, 10.0 - p -> resource_current[ RESOURCE_RAGE ] , p -> gains_sudden_death );
 
   }
   
@@ -1961,7 +1939,7 @@ struct berserker_rage_t : public warrior_spell_t
     warrior_spell_t::execute();
     
     warrior_t* p = player -> cast_warrior();      
-    p -> resource_gain( RESOURCE_RAGE, 10 * p -> talents.improved_berserker_rage , p -> _gains.berserker_rage );
+    p -> resource_gain( RESOURCE_RAGE, 10 * p -> talents.improved_berserker_rage , p -> gains_berserker_rage );
   }
 };
 
@@ -1998,7 +1976,7 @@ struct bloodrage_t : public warrior_spell_t
       virtual void execute()
       {
         warrior_t* p = player -> cast_warrior();
-        p -> resource_gain( RESOURCE_RAGE, 1 + p -> talents.improved_bloodrage * 0.25, p -> _gains.bloodrage );
+        p -> resource_gain( RESOURCE_RAGE, 1 + p -> talents.improved_bloodrage * 0.25, p -> gains_bloodrage );
         p -> _buffs.bloodrage--;
         if( p -> _buffs.bloodrage > 0)
         {
@@ -2011,7 +1989,7 @@ struct bloodrage_t : public warrior_spell_t
 
     warrior_t* p = player -> cast_warrior();      
     p -> _buffs.bloodrage = 10;
-    p -> resource_gain( RESOURCE_RAGE, 10 * (1 + p -> talents.improved_bloodrage * 0.25), p -> _gains.bloodrage );
+    p -> resource_gain( RESOURCE_RAGE, 10 * (1 + p -> talents.improved_bloodrage * 0.25), p -> gains_bloodrage );
 
     new ( sim ) bloodrage_buff_t( sim, p );
   }
@@ -2238,6 +2216,59 @@ void warrior_t::init_base()
   base_gcd = 1.5;
 }
 
+// warrior_t::init_gains =======================================================
+
+void warrior_t::init_gains()
+{
+  player_t::init_gains();
+    
+  gains_anger_management       = get_gain( "anger_management" );
+  gains_avoided_attacks        = get_gain( "avoided_attacks" );
+  gains_bloodrage              = get_gain( "bloodrage" );
+  gains_berserker_rage         = get_gain( "berserker_rage" );
+  gains_glyph_of_heroic_strike = get_gain( "glyph_of_heroic_strike" );
+  gains_mh_attack              = get_gain( "mh_attack" );
+  gains_oh_attack              = get_gain( "oh_attack" );
+  gains_sudden_death           = get_gain( "sudden_death" );
+  gains_unbridled_wrath        = get_gain( "unbridled_wrath" );
+}
+
+// warrior_t::init_procs =======================================================
+
+void warrior_t::init_procs()
+{
+  player_t::init_procs();
+    
+  procs_bloodsurge           = get_proc( "bloodsurge" );
+  procs_glyph_overpower      = get_proc( "glyph_of_overpower" );
+  procs_sudden_death         = get_proc( "sudden_death" );
+  procs_sword_specialization = get_proc( "sword_specialization" );
+  procs_taste_for_blood      = get_proc( "taste_for_blood" );
+}
+
+// warrior_t::init_uptimes =====================================================
+
+void warrior_t::init_uptimes()
+{
+  player_t::init_uptimes();
+    
+  uptimes_flurry        = get_uptime( "flurry" );
+  uptimes_heroic_strike = get_uptime( "heroic_strike" );
+  uptimes_rage_cap      = get_uptime( "rage_cap" );
+}
+
+// warrior_t::init_rng =========================================================
+
+void warrior_t::init_rng()
+{
+  player_t::init_rng();
+
+  rng_bloodsurge           = get_rng( "bloodsurge" );
+  rng_sudden_death         = get_rng( "sudden_death" );
+  rng_sword_specialization = get_rng( "sword_specialization" );
+  rng_taste_for_blood      = get_rng( "taste_for_blood" );
+  rng_unbridled_wrath      = get_rng( "unbridled_wrath" );
+}
 
 // warrior_t::combat_begin =====================================================
 
@@ -2276,7 +2307,7 @@ void warrior_t::regen( double periodicity )
     {
       double rage_regen = 1.0 / 3.0; // 1 rage per 3 sec.
       rage_regen *= periodicity;
-      resource_gain( RESOURCE_RAGE, rage_regen, _gains.anger_management );
+      resource_gain( RESOURCE_RAGE, rage_regen, gains_anger_management );
     }
   }
   uptimes_rage_cap -> update( resource_current[ RESOURCE_RAGE ] ==

@@ -211,6 +211,71 @@ double rng_sfmt_t::real()
 }
 
 // ==========================================================================
+// Normalized Random Number Generator
+// ==========================================================================
+
+// normalized_rng_t::normalized_rng_t =======================================
+
+normalized_rng_t::normalized_rng_t( const std::string& n, rng_t* b, double fps ) :
+  name_str(n), base(b), fixed_phase_shift(fps), actual(0), expected(0), next(0) 
+{
+}
+
+// normalized_rng_t::roll ===================================================
+
+int normalized_rng_t::roll( double chance )
+{
+  if( chance <= 0 ) return 0;
+  if( chance >= 1 ) return 1;
+
+  double phase_shift = fixed_phase_shift;
+
+  if( phase_shift == 0 ) phase_shift = real();
+
+  expected += chance;
+
+  if( ( actual + phase_shift ) < expected )
+  {
+    actual++;
+    return 1;
+  }
+
+  return 0;
+}
+
+// normalized_rng_t::range ==================================================
+
+double normalized_rng_t::range( double min,
+				double max )
+{
+  return ( min + max ) / 2.0;
+}
+
+// normalized_rng_t::gaussian ===============================================
+
+double normalized_rng_t::gaussian( double mean,
+				   double stddev )
+{
+  return mean;
+}
+
+// normalized_rng_t::create =================================================
+
+normalized_rng_t* normalized_rng_t::create( sim_t* sim,
+					    const std::string& name )
+{
+  int total_threads = sim -> threads;
+  if( total_threads < 1 ) total_threads = 1;
+
+  double phase_shift = ( sim -> thread_index + 1.0 ) / ( total_threads + 1.0 );
+  
+  if( sim ->   random_phase_shift ) phase_shift = sim -> rng -> real();
+  if( sim -> variable_phase_shift ) phase_shift = 0;
+
+  return new normalized_rng_t( name, sim -> rng, phase_shift );
+}
+
+// ==========================================================================
 // Standard Random Number Generator
 // ==========================================================================
 
@@ -291,9 +356,9 @@ double rng_t::gaussian( double mean,
 // Choosing the RNG package.........
 // ==========================================================================
 
-rng_t* rng_t::init( int sfmt )
+rng_t* rng_t::create( sim_t* sim )
 {
-  if( sfmt )
+  if( sim -> sfmt )
   {
     return new rng_sfmt_t();
   }

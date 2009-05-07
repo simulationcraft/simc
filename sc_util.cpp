@@ -576,6 +576,8 @@ int util_t::milliseconds(){
 #endif
 }
 
+#if 0
+
 // Normalized_roll  implementation. Level of normalization depends on "normalized_roll=" value:
 // ==0: no normalization
 // ==1: full normalization, max determinism
@@ -707,3 +709,4 @@ double roll_t::gaussian( double mean, double stddev ){
 	}
 	return mean;
 }
+#endif

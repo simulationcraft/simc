@@ -56,9 +56,26 @@ action_t::action_t( int         ty,
   sync_action(0), observer(0), next(0)
 {
   if( sim -> debug ) log_t::output( sim, "Player %s creates action %s", p -> name(), name() );
+
+  if( ! player -> initialized )
+  {
+    printf( "simcraft: Actions must not be created before player_t::init().  Culprit: %s %s\n", player -> name(), name() );
+    assert(0);
+  }
+
   action_t** last = &( p -> action_list );
   while( *last ) last = &( (*last) -> next );
   *last = this;
+
+  std::string buffer;
+  for( int i=0; i < RESULT_MAX; i++ )
+  {
+    buffer  = name_str;
+    buffer += "_";
+    buffer += util_t::result_type_string( i );
+    rng[ i ] = player -> get_rng( buffer );
+  }
+  
   stats = p -> get_stats( n );
   stats -> school = school;
 }
@@ -597,7 +614,7 @@ double action_t::calculate_direct_damage()
 
   double base_direct_dmg=0;
 
-  if( sim -> average_dmg )
+  if( sim -> normalized_dmg )
   {
     base_direct_dmg = ( base_dd_min + base_dd_max ) / 2.0;
   }
@@ -728,7 +745,7 @@ void action_t::tick()
 
   if( tick_may_crit )
   {
-    if( sim -> rng-> roll( total_crit(), this, "tick_crit" ) )
+    if( rng[ RESULT_CRIT ] -> roll( total_crit() ) )
     {
       result = RESULT_CRIT;
     }

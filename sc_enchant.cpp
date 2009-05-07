@@ -10,6 +10,7 @@
 struct spellsurge_callback_t : public action_callback_t
 {
   spell_t* spell;
+  rng_t* rng;
 
   spellsurge_callback_t( player_t* p ) : action_callback_t( p -> sim, p )
   {
@@ -43,11 +44,12 @@ struct spellsurge_callback_t : public action_callback_t
     };
 
     spell = new spellsurge_t( p );
+    rng = p -> get_rng( "spellsurge" );
   }
 
   virtual void trigger( action_t* a )
   {
-    if( spell -> ready() && a -> sim -> rng-> roll( 0.15, "spellsurge_cb" ) )
+    if( spell -> ready() && rng -> roll( 0.15 ) )
     {
       for( player_t* p = a -> sim -> player_list; p; p = p -> next )
       {
@@ -79,11 +81,17 @@ struct berserking_callback_t : public action_callback_t
   event_t*  oh_expiration;
   uptime_t* mh_uptime;
   uptime_t* oh_uptime;
+  rng_t*    mh_rng;
+  rng_t*    oh_rng;
 
   berserking_callback_t( player_t* p ) : action_callback_t( p -> sim, p ), mh_buff(0), oh_buff(0), mh_expiration(0), oh_expiration(0) 
   {
     mh_uptime = p -> get_uptime( "berserking_mh" );
     oh_uptime = p -> get_uptime( "berserking_oh" );
+
+    // FIXME! Normalized RNG does not handle overlapping procs very well.
+    mh_rng = p -> sim -> rng; // p -> get_rng( "berserking_mh" );
+    oh_rng = p -> sim -> rng; // p -> get_rng( "berserking_oh" );
   }
 
   virtual void reset() { mh_buff = oh_buff = 0; mh_expiration = oh_expiration = 0; }
@@ -126,12 +134,13 @@ struct berserking_callback_t : public action_callback_t
 
     int&       b = mh ? mh_buff       : oh_buff;
     event_t*&  e = mh ? mh_expiration : oh_expiration;
-    uptime_t*& u = mh ? mh_uptime     : oh_uptime;
+    uptime_t*  u = mh ? mh_uptime     : oh_uptime;
+    rng_t*     r = mh ? mh_rng        : oh_rng;
 
     double PPM = 1.2;
     double swing_time = a -> time_to_execute;
 
-    if( a -> sim -> rng-> roll( w -> proc_chance_on_swing( PPM, swing_time ),p,"berserking_cb" ) )
+    if( r -> roll( w -> proc_chance_on_swing( PPM, swing_time ) ) )
     {
       if( e )
       {
@@ -155,11 +164,17 @@ struct mongoose_callback_t : public action_callback_t
   event_t*  oh_expiration;
   uptime_t* mh_uptime;
   uptime_t* oh_uptime;
+  rng_t*    mh_rng;
+  rng_t*    oh_rng;
 
   mongoose_callback_t( player_t* p ) : action_callback_t( p -> sim, p ), mh_expiration(0), oh_expiration(0) 
   {
     mh_uptime = p -> get_uptime( "mongoose_mh" );
     oh_uptime = p -> get_uptime( "mongoose_oh" );
+
+    // FIXME! Normalized RNG does not handle overlapping procs very well.
+    mh_rng = p -> sim -> rng; // p -> get_rng( "mongoose_mh" );
+    oh_rng = p -> sim -> rng; // p -> get_rng( "mongoose_oh" );
   }
 
   virtual void reset() { mh_expiration = oh_expiration = 0; }
@@ -202,12 +217,13 @@ struct mongoose_callback_t : public action_callback_t
     int& b = mh ? p -> buffs.mongoose_mh : p -> buffs.mongoose_oh;
 
     event_t*&  e = mh ? mh_expiration : oh_expiration;
-    uptime_t*& u = mh ? mh_uptime     : oh_uptime;
+    uptime_t*  u = mh ? mh_uptime     : oh_uptime;
+    rng_t*     r = mh ? mh_rng        : oh_rng;
 
     double PPM = 1.2 - ( ( std::max( p -> level, 70 ) - 70 ) * 0.02 );
     double swing_time = a -> time_to_execute;
 
-    if( a -> sim -> rng->roll( w -> proc_chance_on_swing( PPM, swing_time ),p,"mongoose_cb" ) )
+    if( r -> roll( w -> proc_chance_on_swing( PPM, swing_time ) ) )
     {
       if( e )
       {
@@ -230,10 +246,14 @@ struct executioner_callback_t : public action_callback_t
   int       buff;
   event_t*  expiration;
   uptime_t* uptime;
+  rng_t*    rng;
 
   executioner_callback_t( player_t* p ) : action_callback_t( p -> sim, p ), buff(0), expiration(0) 
   {
     uptime = p -> get_uptime( "executioner" );
+
+    // FIXME! Normalized RNG does not handle overlapping procs very well.
+    rng = p -> sim -> rng; // p -> get_rng( "executioner" );
   }
 
   virtual void reset() { buff = 0; expiration = 0; }
@@ -272,7 +292,7 @@ struct executioner_callback_t : public action_callback_t
     double PPM = 1.2;
     double swing_time = a -> time_to_execute;
 
-    if( a -> sim -> rng->roll( w -> proc_chance_on_swing( PPM, swing_time ),p,"executioner_cb" ) )
+    if( rng -> roll( w -> proc_chance_on_swing( PPM, swing_time ) ) )
     {
       if( expiration )
       {

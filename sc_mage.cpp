@@ -481,6 +481,20 @@ struct mirror_image_pet_t : public pet_t
   mirror_image_pet_t( sim_t* sim, player_t* owner ) :
     pet_t( sim, owner, "mirror_image", true /*guardian*/ ), num_images(3), num_rotations(4)
   {
+  }
+  virtual void init_base()
+  {
+    // Stolen from Priest's Shadowfiend
+    attribute_base[ ATTR_STRENGTH  ] = 145;
+    attribute_base[ ATTR_AGILITY   ] =  38;
+    attribute_base[ ATTR_STAMINA   ] = 190;
+    attribute_base[ ATTR_INTELLECT ] = 133;
+
+    health_per_stamina = 7.5;
+    mana_per_intellect = 5;
+  }
+  virtual void init_actions()
+  {
     for( int i=0; i < num_images; i++ )
     {
       action_t* front=0;
@@ -493,17 +507,6 @@ struct mirror_image_pet_t : public pet_t
       }
       sequences.push_back( front );
     }    
-  }
-  virtual void init_base()
-  {
-    // Stolen from Priest's Shadowfiend
-    attribute_base[ ATTR_STRENGTH  ] = 145;
-    attribute_base[ ATTR_AGILITY   ] =  38;
-    attribute_base[ ATTR_STAMINA   ] = 190;
-    attribute_base[ ATTR_INTELLECT ] = 133;
-
-    health_per_stamina = 7.5;
-    mana_per_intellect = 5;
   }
   virtual void summon()
   {

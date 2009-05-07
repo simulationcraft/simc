@@ -166,7 +166,7 @@ void spell_t::calculate_result()
 
     miss_chance -= total_hit();
 
-    if( sim -> rng-> roll( miss_chance, this, "miss" ) )
+    if( rng[ RESULT_MISS ] -> roll( miss_chance ) )
     {
       result = RESULT_MISS;
     }
@@ -174,7 +174,7 @@ void spell_t::calculate_result()
 
   if( ( result == RESULT_NONE ) && may_resist && binary )
   {
-    if( sim -> rng-> roll( resistance(), this, "ressist" ) )
+    if( rng[ RESULT_RESIST ] -> roll( resistance() ) )
     {
       result = RESULT_RESIST;
     }
@@ -186,7 +186,7 @@ void spell_t::calculate_result()
 
     if( may_crit )
     {
-      if( sim -> rng-> roll( total_crit(), this, "crit" ) )
+      if( rng[ RESULT_CRIT ] -> roll( total_crit() ) )
       {
         result = RESULT_CRIT;
       }

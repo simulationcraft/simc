@@ -13,11 +13,13 @@ struct judgement_of_wisdom_callback_t : public action_callback_t
 {
   gain_t* gain;
   proc_t* proc;
+  rng_t*  rng;
 
   judgement_of_wisdom_callback_t( player_t* p ) : action_callback_t( p -> sim, p ) 
   {
     gain = p -> get_gain( "judgement_of_wisdom" );
     proc = p -> get_proc( "judgement_of_wisdom" );
+    rng  = p -> get_rng ( "judgement_of_wisdom" );
   }
 
   virtual void trigger( action_t* a )
@@ -49,7 +51,7 @@ struct judgement_of_wisdom_callback_t : public action_callback_t
       }
     }
 
-    if( ! sim -> rng->roll( proc_chance,p,"jow_cb" ) )
+    if( ! rng -> roll( proc_chance ) )
       return;
 
     proc -> occur();
@@ -303,7 +305,7 @@ player_t::player_t( sim_t*             s,
                     int                t,
                     const std::string& n ) :
   sim(s), name_str(n), next(0), index(-1), type(t), level(80), party(0), member(0), 
-  distance(0), gcd_ready(0), base_gcd(1.5), sleeping(0), pet_list(0),
+  distance(0), gcd_ready(0), base_gcd(1.5), sleeping(0), initialized(0), pet_list(0),
   // Haste
   base_haste_rating(0), initial_haste_rating(0), haste_rating(0), spell_haste(1.0), attack_haste(1.0),
   // Spell Mechanics
@@ -349,7 +351,7 @@ player_t::player_t( sim_t*             s,
   quiet(0), last_foreground_action(0),
   last_action_time(0), total_seconds(0), total_waiting(0), iteration_dmg(0), total_dmg(0), 
   dps(0), dps_min(0), dps_max(0), dps_std_dev(0), dps_error(0), dpr(0), rps_gain(0), rps_loss(0),
-  proc_list(0), gain_list(0), stats_list(0), uptime_list(0), enchant(0), unique_gear(0)
+  proc_list(0), gain_list(0), stats_list(0), uptime_list(0), enchant(0), unique_gear(0), rng_list(0)
 {
   if( sim -> debug ) log_t::output( sim, "Creating Player %s", name() );
   player_t** last = &( sim -> player_list );
@@ -440,6 +442,11 @@ player_t::~player_t()
     uptime_list = u -> next;
     delete u;
   }
+  while( normalized_rng_t* r = rng_list )
+  {
+    rng_list = r -> next;
+    delete r;
+  }
 }
 
 // player_t::id ============================================================
@@ -463,6 +470,8 @@ void player_t::init()
 {
   if( sim -> debug ) log_t::output( sim, "Initializing player %s", name() );   
 
+  initialized = 1;
+
   init_rating();
   init_base();
   init_core();
@@ -480,6 +489,10 @@ void player_t::init()
   init_consumables();
   init_scaling();
   init_actions();
+  init_gains();
+  init_procs();
+  init_uptimes();
+  init_rng();
   init_stats();
 }
  
@@ -962,15 +975,10 @@ void player_t::init_rating()
   }
 }
 
-// player_t::init_stats ====================================================
+// player_t::init_gains ====================================================
 
-void player_t::init_stats() 
+void player_t::init_gains() 
 {
-  for( int i=0; i < RESOURCE_MAX; i++ )
-  {
-    resource_lost[ i ] = resource_gained[ i ] = 0;
-  }
-
   gains.ashtongue_talisman     = get_gain( "ashtongue_talisman" );
   gains.blessing_of_wisdom     = get_gain( "blessing_of_wisdom" );
   gains.dark_rune              = get_gain( "dark_rune" );
@@ -999,32 +1007,69 @@ void player_t::init_stats()
   gains.tier7_4pc              = get_gain( "tier7_4pc" );
   gains.tier8_2pc              = get_gain( "tier8_2pc" );
   gains.tier8_4pc              = get_gain( "tier8_4pc" );
+}
 
-  procs.ashtongue_talisman           = get_proc( "ashtongue_talisman" );
-  procs.honor_among_thieves_donor    = ( is_pet() ? ( cast_pet() -> owner ) : this ) -> get_proc( "honor_among_thieves_donor" );
-  procs.tier4_2pc                    = get_proc( "tier4_2pc" );
-  procs.tier4_4pc                    = get_proc( "tier4_4pc" );
-  procs.tier5_2pc                    = get_proc( "tier5_2pc" );
-  procs.tier5_4pc                    = get_proc( "tier5_4pc" );
-  procs.tier6_2pc                    = get_proc( "tier6_2pc" );
-  procs.tier6_4pc                    = get_proc( "tier6_4pc" );
-  procs.tier7_2pc                    = get_proc( "tier7_2pc" );
-  procs.tier7_4pc                    = get_proc( "tier7_4pc" );
-  procs.tier8_2pc                    = get_proc( "tier8_2pc" );
-  procs.tier8_4pc                    = get_proc( "tier8_4pc" );
+// player_t::init_procs ====================================================
 
+void player_t::init_procs() 
+{
+  procs.ashtongue_talisman        = get_proc( "ashtongue_talisman" );
+  procs.honor_among_thieves_donor = ( is_pet() ? ( cast_pet() -> owner ) : this ) -> get_proc( "honor_among_thieves_donor" );
+  procs.tier4_2pc = get_proc( "tier4_2pc" );
+  procs.tier4_4pc = get_proc( "tier4_4pc" );
+  procs.tier5_2pc = get_proc( "tier5_2pc" );
+  procs.tier5_4pc = get_proc( "tier5_4pc" );
+  procs.tier6_2pc = get_proc( "tier6_2pc" );
+  procs.tier6_4pc = get_proc( "tier6_4pc" );
+  procs.tier7_2pc = get_proc( "tier7_2pc" );
+  procs.tier7_4pc = get_proc( "tier7_4pc" );
+  procs.tier8_2pc = get_proc( "tier8_2pc" );
+  procs.tier8_4pc = get_proc( "tier8_4pc" );
+}
+
+// player_t::init_uptimes ==================================================
+
+void player_t::init_uptimes() 
+{
   uptimes.replenishment = get_uptime( "replenishment" );
-  uptimes.tier4_2pc     = get_uptime( "tier4_2pc" );
-  uptimes.tier4_4pc     = get_uptime( "tier4_4pc" );
-  uptimes.tier5_2pc     = get_uptime( "tier5_2pc" );
-  uptimes.tier5_4pc     = get_uptime( "tier5_4pc" );
-  uptimes.tier6_2pc     = get_uptime( "tier6_2pc" );
-  uptimes.tier6_4pc     = get_uptime( "tier6_4pc" );
-  uptimes.tier7_2pc     = get_uptime( "tier7_2pc" );
-  uptimes.tier7_4pc     = get_uptime( "tier7_4pc" );
-  uptimes.tier8_2pc     = get_uptime( "tier8_2pc" );
-  uptimes.tier8_4pc     = get_uptime( "tier8_4pc" );
-  
+  uptimes.tier4_2pc = get_uptime( "tier4_2pc" );
+  uptimes.tier4_4pc = get_uptime( "tier4_4pc" );
+  uptimes.tier5_2pc = get_uptime( "tier5_2pc" );
+  uptimes.tier5_4pc = get_uptime( "tier5_4pc" );
+  uptimes.tier6_2pc = get_uptime( "tier6_2pc" );
+  uptimes.tier6_4pc = get_uptime( "tier6_4pc" );
+  uptimes.tier7_2pc = get_uptime( "tier7_2pc" );
+  uptimes.tier7_4pc = get_uptime( "tier7_4pc" );
+  uptimes.tier8_2pc = get_uptime( "tier8_2pc" );
+  uptimes.tier8_4pc = get_uptime( "tier8_4pc" );
+}
+
+// player_t::init_rng ======================================================
+
+void player_t::init_rng() 
+{
+  rngs.ashtongue_talisman = get_rng( "ashtongue_talisman" );
+  rngs.tier4_2pc = get_rng( "tier4_2pc" );
+  rngs.tier4_4pc = get_rng( "tier4_4pc" );
+  rngs.tier5_2pc = get_rng( "tier5_2pc" );
+  rngs.tier5_4pc = get_rng( "tier5_4pc" );
+  rngs.tier6_2pc = get_rng( "tier6_2pc" );
+  rngs.tier6_4pc = get_rng( "tier6_4pc" );
+  rngs.tier7_2pc = get_rng( "tier7_2pc" );
+  rngs.tier7_4pc = get_rng( "tier7_4pc" );
+  rngs.tier8_2pc = get_rng( "tier8_2pc" );
+  rngs.tier8_4pc = get_rng( "tier8_4pc" );
+}
+
+// player_t::init_stats ====================================================
+
+void player_t::init_stats() 
+{
+  for( int i=0; i < RESOURCE_MAX; i++ )
+  {
+    resource_lost[ i ] = resource_gained[ i ] = 0;
+  }
+
   iteration_dps.clear();
   iteration_dps.insert( iteration_dps.begin(), sim -> iterations, 0 );
 }
@@ -2133,6 +2178,32 @@ uptime_t* player_t::get_uptime( const std::string& name )
   *tail = u;
 
   return u;
+}
+
+// player_t::get_rng =======================================================
+
+rng_t* player_t::get_rng( const std::string& n )
+{
+  assert( sim -> rng );
+
+  if( ! sim -> normalized_rng ) return sim -> rng;
+
+  normalized_rng_t* rng=0;
+
+  for( rng = rng_list; rng; rng = rng -> next )
+  {
+    if( rng -> name_str == n )
+      return rng;
+  }
+
+  if( ! rng )
+  {
+    rng = normalized_rng_t::create( sim, n );
+    rng -> next = rng_list;
+    rng_list = rng;
+  }
+
+  return rng;
 }
 
 // Cycle Action ============================================================

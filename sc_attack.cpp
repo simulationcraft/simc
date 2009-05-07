@@ -264,45 +264,51 @@ void attack_t::calculate_result()
 
   int num_results = build_table( chances, results );
 
+  if( num_results == 1 )
+  {
+    result = results[ 0 ];
+  }
+  else
+  {
+    if( sim -> normalized_rng )
+    {
+      // Encode 1-roll attack table into equivalent multi-roll system
+      
+      double prev_chance = 0.0;
 
-  if ((!sim->normalized_roll)||(sim->normalized_roll>=20)){
-	  //regular attack table
-	  double random = sim -> rng -> real();
-	  for( int i=0; i < num_results; i++ )
-	  {
-		if( random <= chances[ i ] )
-		{
-		  result = results[ i ];
-		  break;
-		}
-	  }
-  }else{
-	  // normalized attack table
-	  double ps=0;
-	  //try all except last
-	  for( int i=0; i < num_results-1; i++ )
-	  {
-		  double chanceHere= (chances[ i ]-ps)/(1-ps);
-		  char  rollType[40];
-		  sprintf(rollType, "atk-%d",results[i]);
-		  if (sim->rng->roll( chanceHere, this, rollType)){
-			  result = results[ i ];
-			  break;
-		  }
-		  ps=chances[i];
-		  if (ps>=1) break;
-	  }
-	  // if none selected up to here, select last
-	  if ((result == RESULT_NONE)&&(num_results>0)){
-		  result=results[num_results-1];
-	  }
+      for( int i=0; i < num_results-1; i++ )
+      {
+	if( rng[ results[ i ] ] -> roll( ( chances[ i ] - prev_chance ) / ( 1.0 - prev_chance ) ) )
+	{
+	  result = results[ i ];
+	  break;
+	}
+	prev_chance = chances[ i ];
+      }
+      if( result == RESULT_NONE ) result = results[ num_results-1 ];
+    }
+    else
+    {
+      // 1-roll attack table with true RNG
+
+      double random = sim -> rng -> real();
+
+      for( int i=0; i < num_results; i++ )
+      {
+	if( random <= chances[ i ] )
+	{
+	  result = results[ i ];
+	  break;
+	}
+      }
+    }
   }
 
   assert( result != RESULT_NONE );
 
   if( result_is_hit() )
   {
-    if( binary && sim -> rng-> roll( resistance(), this, "ressist" ) )
+    if( binary && rng[ RESULT_RESIST ] -> roll( resistance() ) )
     {
       result = RESULT_RESIST;
     }
@@ -310,7 +316,7 @@ void attack_t::calculate_result()
     {
       int delta_level = sim -> target -> level - player -> level;
 
-      if( sim -> rng-> roll( crit_chance( delta_level ), this, "crit" ) )
+      if( rng[ RESULT_CRIT ] -> roll( crit_chance( delta_level ) ) )
       {
         result = RESULT_CRIT;
       }

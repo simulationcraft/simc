@@ -15,12 +15,18 @@ struct stat_proc_callback_t : public action_callback_t
   double cooldown, cooldown_ready;
   event_t* expiration;
   proc_t* proc;
+  rng_t* rng;
 
   stat_proc_callback_t( const std::string& n, player_t* p, int s, int ms, double a, double pc, double d, double cd ) :
     action_callback_t( p -> sim, p ),
-    name_str(n), stat(s), stacks(0), max_stacks(ms), amount(a), proc_chance(pc), duration(d), cooldown(cd), cooldown_ready(0), expiration(0), proc(0) 
+    name_str(n), stat(s), stacks(0), max_stacks(ms), amount(a), proc_chance(pc), duration(d), cooldown(cd), 
+    cooldown_ready(0), expiration(0), proc(0), rng(0)
   {
-    if( proc_chance ) proc = p -> get_proc( name_str.c_str() );
+    if( proc_chance ) 
+    {
+      proc = p -> get_proc( name_str.c_str() );
+      rng  = p -> get_rng ( name_str.c_str() );
+    }
   }
 
   virtual void reset() { stacks=0; cooldown_ready=0; expiration=0; }
@@ -33,7 +39,7 @@ struct stat_proc_callback_t : public action_callback_t
 
     if( proc_chance )
     {
-		if( ! sim -> rng-> roll( proc_chance, a->player, name_str ) )
+      if( ! rng -> roll( proc_chance ) )
         return;
 
       proc -> occur();
@@ -91,6 +97,7 @@ struct discharge_proc_callback_t : public action_callback_t
   double cooldown, cooldown_ready;
   spell_t* spell;
   proc_t* proc;
+  rng_t* rng;
 
   discharge_proc_callback_t( const std::string& n, player_t* p, int ms, int school, double min, double max, double pc, double cd ) :
     action_callback_t( p -> sim, p ),
@@ -114,6 +121,7 @@ struct discharge_proc_callback_t : public action_callback_t
     spell = new discharge_spell_t( name_str.c_str(), p, min, max, school );
 
     proc = p -> get_proc( name_str.c_str() );
+    rng  = p -> get_rng ( name_str.c_str() );
   }
 
   virtual void reset() { stacks=0; cooldown_ready=0; }
@@ -125,7 +133,7 @@ struct discharge_proc_callback_t : public action_callback_t
         return;
 
     if( proc_chance )
-      if( ! sim -> rng->roll( proc_chance, a->player, name_str ) )
+      if( ! rng -> roll( proc_chance ) )
         return;
 
     if( ++stacks < max_stacks )

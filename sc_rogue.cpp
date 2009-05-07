@@ -96,6 +96,22 @@ struct rogue_t : public player_t
   uptime_t* uptimes_rupture;
   uptime_t* uptimes_slice_and_dice;
   uptime_t* uptimes_tricks_of_the_trade;
+
+  // Random Number Generation
+  rng_t* rng_anesthetic_poison;
+  rng_t* rng_combat_potency;
+  rng_t* rng_cut_to_the_chase;
+  rng_t* rng_deadly_poison;
+  rng_t* rng_focused_attacks;
+  rng_t* rng_honor_among_thieves;
+  rng_t* rng_initiative;
+  rng_t* rng_instant_poison;
+  rng_t* rng_relentless_strikes;
+  rng_t* rng_ruthlessness;
+  rng_t* rng_seal_fate;
+  rng_t* rng_sinister_strike_glyph;
+  rng_t* rng_sword_specialization;
+  rng_t* rng_wound_poison;
   
   // Auto-Attack
   attack_t* main_hand_attack;
@@ -206,32 +222,6 @@ struct rogue_t : public player_t
     active_wound_poison      = 0;
     active_rupture           = 0;
     active_slice_and_dice    = 0;
-
-    // Gains
-    gains_adrenaline_rush    = get_gain( "adrenaline_rush" );
-    gains_combat_potency     = get_gain( "combat_potency" );
-    gains_energy_refund      = get_gain( "energy_refund" );
-    gains_focused_attacks    = get_gain( "focused_attacks" );
-    gains_quick_recovery     = get_gain( "quick_recovery" );
-    gains_relentless_strikes = get_gain( "relentless_strikes" );
-
-    // Procs
-    procs_combo_points                 = get_proc( "combo_points" );
-    procs_deadly_poison                = get_proc( "deadly_poisons" );
-    procs_honor_among_thieves_receiver = get_proc( "honor_among_thieves_receiver" );
-    procs_ruthlessness                 = get_proc( "ruthlessness" );
-    procs_seal_fate                    = get_proc( "seal_fate" );
-    procs_sword_specialization         = get_proc( "sword_specialization" );
-
-    // Up-Times
-    uptimes_blade_flurry        = get_uptime( "blade_flurry" );
-    uptimes_energy_cap          = get_uptime( "energy_cap" );
-    uptimes_envenom             = get_uptime( "envenom" );
-    uptimes_hunger_for_blood    = get_uptime( "hunger_for_blood" );
-    uptimes_poisoned            = get_uptime( "poisoned" );
-    uptimes_rupture             = get_uptime( "rupture" );
-    uptimes_slice_and_dice      = get_uptime( "slice_and_dice" );
-    uptimes_tricks_of_the_trade = get_uptime( "tricks_of_the_trade" );
   
     // Auto-Attack
     main_hand_attack = 0;
@@ -243,6 +233,10 @@ struct rogue_t : public player_t
 
   // Character Definition
   virtual void      init_base();
+  virtual void      init_gains();
+  virtual void      init_procs();
+  virtual void      init_uptimes();
+  virtual void      init_rng();
   virtual void      register_callbacks();
   virtual void      combat_begin();
   virtual void      reset();
@@ -483,7 +477,7 @@ static void trigger_combat_potency( rogue_attack_t* a )
   if( ! p -> talents.combat_potency )
     return;
 
-  if( a -> sim -> rng-> roll( 0.20, p, "combat_potency" ) )
+  if( p -> rng_combat_potency -> roll( 0.20 ) )
   {
     p -> resource_gain( RESOURCE_ENERGY, p -> talents.combat_potency * 3.0, p -> gains_combat_potency );
   }
@@ -501,7 +495,7 @@ static void trigger_cut_to_the_chase( rogue_attack_t* a )
   if( ! p -> _buffs.slice_and_dice ) 
     return;
 
-  if( a -> sim -> rng-> roll( p -> talents.cut_to_the_chase * 0.20,p,"cut_to_the_chase" ) )
+  if( p -> rng_cut_to_the_chase -> roll( p -> talents.cut_to_the_chase * 0.20 ) )
   {
     int combo_points = p -> _buffs.combo_points;
     p -> _buffs.combo_points = 5;
@@ -537,7 +531,7 @@ static void trigger_initiative( rogue_attack_t* a )
   if( ! p -> talents.initiative )
     return;
 
-  if( a -> sim -> rng-> roll( p -> talents.initiative / 3.0 , p, "initiative" ) )
+  if( p -> rng_initiative -> roll( p -> talents.initiative / 3.0 ) )
   {
     add_combo_point( p );
   }
@@ -552,7 +546,7 @@ static void trigger_focused_attacks( rogue_attack_t* a )
   if( ! p -> talents.focused_attacks )
     return;
 
-  if( a -> sim -> rng-> roll( p -> talents.focused_attacks / 3.0, p, "focused_attacks" ) )
+  if( p -> rng_focused_attacks -> roll( p -> talents.focused_attacks / 3.0 ) )
   {
     p -> resource_gain( RESOURCE_ENERGY, 2, p -> gains_focused_attacks );
   }
@@ -601,7 +595,7 @@ static void trigger_relentless_strikes( rogue_attack_t* a )
   if( ! a -> requires_combo_points )
     return;
 
-  if( a -> sim -> rng-> roll( p -> talents.relentless_strikes * p -> _buffs.combo_points * 0.04, p, "relentless_strikes" ) )
+  if( p -> rng_relentless_strikes -> roll( p -> talents.relentless_strikes * p -> _buffs.combo_points * 0.04 ) )
   {
     p -> resource_gain( RESOURCE_ENERGY, 25, p -> gains_relentless_strikes );
   }
@@ -619,7 +613,7 @@ static void trigger_ruthlessness( rogue_attack_t* a )
   if( ! a -> requires_combo_points )
     return;
 
-  if( a -> sim -> rng-> roll( p -> talents.ruthlessness * 0.20, p, "ruthlessness"  ) )
+  if( p -> rng_ruthlessness -> roll( p -> talents.ruthlessness * 0.20 ) )
   {
     p -> procs_ruthlessness -> occur();
     add_combo_point( p );
@@ -645,7 +639,7 @@ static void trigger_seal_fate( rogue_attack_t* a )
 
   if( p -> talents.seal_fate )
   {
-    if( a -> sim -> rng-> roll( p -> talents.seal_fate * 0.20, p, "seal_fate" ) )
+    if( p -> rng_seal_fate -> roll( p -> talents.seal_fate * 0.20 ) )
     {
       p -> _cooldowns.seal_fate = a -> sim -> current_time;
       p -> procs_seal_fate -> occur();
@@ -672,7 +666,7 @@ static void trigger_sword_specialization( rogue_attack_t* a )
   if( ! p -> talents.sword_specialization )
     return;
 
-  if( a -> sim -> rng-> roll( p -> talents.sword_specialization * 0.01, p, "sword_specialization" ) )
+  if( p -> rng_sword_specialization -> roll( p -> talents.sword_specialization * 0.01 ) )
   {
     p -> main_hand_attack -> proc = true;
     p -> main_hand_attack -> execute();
@@ -1448,7 +1442,7 @@ struct eviscerate_t : public rogue_attack_t
 
     direct_power_mod = 0.05 * p -> _buffs.combo_points;
 
-    if( ! sim -> average_dmg ) 
+    if( ! sim -> normalized_dmg ) 
     {
       double range = 0.02 * p -> _buffs.combo_points;
 
@@ -2295,7 +2289,8 @@ struct sinister_strike_t : public rogue_attack_t
     rogue_attack_t::execute();
     if( result == RESULT_CRIT )
     {
-      if( p -> glyphs.sinister_strike && sim -> rng-> roll( 0.50,p,"sinister_strike 1/2" ) )
+      if( p -> glyphs.sinister_strike && 
+	  p -> rng_sinister_strike_glyph -> roll( 0.50 ) )
       {
         add_combo_point( p );
       }
@@ -2501,7 +2496,7 @@ struct anesthetic_poison_t : public rogue_poison_t
     // Anesthtic is not on PPM on PTR
     double chance = p -> _buffs.shiv ? 1.0 : .5;
     may_crit = ( sim -> P309 ) ? true : ( ( p -> _buffs.shiv ) ? false : true );
-    if( sim -> rng-> roll( chance,p,"anesthetic_poison" ) )
+    if( p -> rng_anesthetic_poison -> roll( chance ) )
     {
       rogue_poison_t::execute();
     }
@@ -2541,7 +2536,7 @@ struct deadly_poison_t : public rogue_poison_t
         if( ! sim -> P309 ) chance += p -> talents.master_poisoner * 0.15;
       }
       p -> uptimes_envenom -> update( p -> _buffs.envenom != 0 );
-      success = sim -> rng-> roll( chance,p,"deadly_poison" );
+      success = p -> rng_deadly_poison -> roll( chance );
     }
 
     if( success )
@@ -2640,7 +2635,7 @@ struct instant_poison_t : public rogue_poison_t
         may_crit = true;
       }
     }
-    if( sim -> rng-> roll( chance,p,"instant_poison" ) )
+    if( p -> rng_instant_poison -> roll( chance ) )
     {
       rogue_poison_t::execute();
     }
@@ -2704,7 +2699,7 @@ struct wound_poison_t : public rogue_poison_t
       }
     }
     
-    if( sim -> rng-> roll( chance,p,"Wound Poison Exp" ) )
+    if( p -> rng_wound_poison -> roll( chance ) )
     {
       rogue_poison_t::execute();
       if( result_is_hit() )
@@ -3167,6 +3162,72 @@ void rogue_t::init_base()
   base_gcd = 1.0;
 }
 
+// rogue_t::init_gains =======================================================
+
+void rogue_t::init_gains()
+{
+  player_t::init_gains();
+
+  gains_adrenaline_rush    = get_gain( "adrenaline_rush" );
+  gains_combat_potency     = get_gain( "combat_potency" );
+  gains_energy_refund      = get_gain( "energy_refund" );
+  gains_focused_attacks    = get_gain( "focused_attacks" );
+  gains_quick_recovery     = get_gain( "quick_recovery" );
+  gains_relentless_strikes = get_gain( "relentless_strikes" );
+}
+
+// rogue_t::init_procs =======================================================
+
+void rogue_t::init_procs()
+{
+  player_t::init_procs();
+
+  procs_combo_points                 = get_proc( "combo_points" );
+  procs_deadly_poison                = get_proc( "deadly_poisons" );
+  procs_honor_among_thieves_receiver = get_proc( "honor_among_thieves_receiver" );
+  procs_ruthlessness                 = get_proc( "ruthlessness" );
+  procs_seal_fate                    = get_proc( "seal_fate" );
+  procs_sword_specialization         = get_proc( "sword_specialization" );
+}
+
+// rogue_t::init_uptimes =====================================================
+
+void rogue_t::init_uptimes()
+{
+  player_t::init_uptimes();
+
+  uptimes_blade_flurry        = get_uptime( "blade_flurry" );
+  uptimes_energy_cap          = get_uptime( "energy_cap" );
+  uptimes_envenom             = get_uptime( "envenom" );
+  uptimes_hunger_for_blood    = get_uptime( "hunger_for_blood" );
+  uptimes_poisoned            = get_uptime( "poisoned" );
+  uptimes_rupture             = get_uptime( "rupture" );
+  uptimes_slice_and_dice      = get_uptime( "slice_and_dice" );
+  uptimes_tricks_of_the_trade = get_uptime( "tricks_of_the_trade" );
+}
+
+// rogue_t::init_rng =========================================================
+
+void rogue_t::init_rng()
+{
+  player_t::init_rng();
+
+  rng_anesthetic_poison     = get_rng( "anesthetic_poison" );
+  rng_combat_potency        = get_rng( "combat_potency" );
+  rng_cut_to_the_chase      = get_rng( "cut_to_the_chase" );
+  rng_deadly_poison         = get_rng( "deadly_poison" );
+  rng_focused_attacks       = get_rng( "focused_attacks" );
+  rng_honor_among_thieves   = get_rng( "honor_among_thieves" );
+  rng_initiative            = get_rng( "initiative" );
+  rng_instant_poison        = get_rng( "instant_poison" );
+  rng_relentless_strikes    = get_rng( "relentless_strikes" );
+  rng_ruthlessness          = get_rng( "ruthlessness" );
+  rng_seal_fate             = get_rng( "seal_fate" );
+  rng_sinister_strike_glyph = get_rng( "sinister_strike_glyph" );
+  rng_sword_specialization  = get_rng( "sword_specialization" );
+  rng_wound_poison          = get_rng( "wound_poison" );
+}
+
 // trigger_honor_among_thieves =============================================
 
 struct honor_among_thieves_callback_t : public action_callback_t
@@ -3179,7 +3240,7 @@ struct honor_among_thieves_callback_t : public action_callback_t
     
     rogue_t* rogue = listener -> cast_rogue();
 
-	if( ! a -> sim -> rng-> roll( rogue -> talents.honor_among_thieves / 3.0, a->player, "HAT" ) ) return;
+    if( ! rogue -> rng_honor_among_thieves -> roll( rogue -> talents.honor_among_thieves / 3.0 ) ) return;
 
     add_combo_point( rogue );
 
