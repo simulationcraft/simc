@@ -282,14 +282,14 @@ void attack_t::calculate_result()
 	  //try all except last
 	  for( int i=0; i < num_results-1; i++ )
 	  {
-		  double chanceHere= chances[ i ]/(1-ps);
+		  double chanceHere= (chances[ i ]-ps)/(1-ps);
 		  char  rollType[40];
 		  sprintf(rollType, "atk-%d",results[i]);
 		  if (sim->rng->roll( chanceHere, this, rollType)){
 			  result = results[ i ];
 			  break;
 		  }
-		  ps+=chances[i];
+		  ps=chances[i];
 		  if (ps>=1) break;
 	  }
 	  // if none selected up to here, select last
