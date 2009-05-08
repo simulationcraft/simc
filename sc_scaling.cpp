@@ -77,7 +77,7 @@ void scaling_t::analyze()
   {
     if( ! is_scaling_stat( sim, i ) ) continue;
 
-    int scale_delta = stats.get_stat( i );
+    int scale_delta = (int) stats.get_stat( i );
     if( scale_delta == 0 ) continue;
 
     fprintf( stdout, "\nGenerating scale factors for %s...\n", util_t::stat_type_string( i ) );

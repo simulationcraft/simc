@@ -364,7 +364,7 @@ struct normalized_distance_rng_t : public normalized_rng_t
   void setN4(double expP)
   {
     lastAvg = expP;
-    N1 = 1 / expP;
+    N1 = (int) (1 / expP);
     if (N1 > maxN4) N1 = maxN4;
     N4 = 4 * N1;
     if (N4 > maxN4) N4 = maxN4;
