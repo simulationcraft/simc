@@ -379,7 +379,7 @@ struct sim_t : public app_t
 
   // Normalized Random Number Generation
   int normalized_dmg, normalized_rng, normalized_rng_sf;
-  int random_phase_shift, variable_phase_shift;
+  int random_phase_shift, variable_phase_shift, extended_phase_shift;
 
   // Timing Wheel Event Management
   event_t** timing_wheel; 

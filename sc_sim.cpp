@@ -148,7 +148,8 @@ sim_t::sim_t( sim_t* p, int index ) :
   armor_update_interval(20), potion_sickness(1),
   optimal_raid(0), log(0), debug(0), sfmt(1),
   jow_chance(0), jow_ppm(15.0),
-  normalized_dmg(1), normalized_rng(0), normalized_rng_sf(0), random_phase_shift(0), variable_phase_shift(0),
+  normalized_dmg(1), normalized_rng(0), normalized_rng_sf(0), 
+  random_phase_shift(0), variable_phase_shift(0), extended_phase_shift(0),
   timing_wheel(0), wheel_seconds(0), wheel_size(0), wheel_mask(0), timing_slice(0), wheel_granularity(0.0),
   replenishment_targets(0),
   raid_dps(0), total_dmg(0), 
@@ -983,6 +984,7 @@ bool sim_t::parse_option( const std::string& name,
     { "normalized_rng_sf",                OPT_BOOL,   &( normalized_rng_sf                        ) },
     { "random_phase_shift",               OPT_BOOL,   &( random_phase_shift                       ) },
     { "variable_phase_shift",             OPT_BOOL,   &( variable_phase_shift                     ) },
+    { "extended_phase_shift",             OPT_INT,    &( extended_phase_shift                     ) },
     // @option_doc loc=global/party title="Party Composition"
     { "party",                            OPT_LIST,   &( party_encoding                           ) },
     // @option_doc loc=skip

@@ -230,7 +230,8 @@ int normalized_rng_t::roll( double chance )
 
   double phase_shift = fixed_phase_shift;
 
-  if( phase_shift == 0 ) phase_shift = real();
+  if( phase_shift == 0 ) phase_shift  =  real();
+  if( phase_shift <  0 ) phase_shift *= -real();
 
   expected += chance;
 
@@ -271,6 +272,7 @@ normalized_rng_t* normalized_rng_t::create( sim_t* sim,
   
   if( sim ->   random_phase_shift ) phase_shift = sim -> rng -> real();
   if( sim -> variable_phase_shift ) phase_shift = 0;
+  if( sim -> extended_phase_shift ) phase_shift = -( sim -> extended_phase_shift );
 
   return new normalized_rng_t( name, sim -> rng, phase_shift );
 }
