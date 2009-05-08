@@ -312,6 +312,9 @@
 			</xsl:call-template>
 			
 
+			<!-- Remember this raider element, for passing as a reference element -->
+			<xsl:variable name="this_raider" select="." />
+
 			<!-- For each of the options appropriate for this raider... -->
 			<xsl:for-each select="//supported_classes/class[@class='all_classes' or @class=$class]/option[generate-id() = generate-id(key('options', @optdoc_loc)[1]) ]">
 				<xsl:sort select="@optdoc_loc" />
@@ -323,6 +326,7 @@
 					<xsl:with-param name="index" select="$index" />
 					<xsl:with-param name="name" select="@optdoc_title" />
 					<xsl:with-param name="which" select="//supported_classes/class[@class='all_classes' or @class=$class]/option[not(@name='class') and not(@name='name') and @optdoc_loc=$optdoc_loc]" />
+					<xsl:with-param name="reference_element" select="$this_raider" />
 				</xsl:call-template>
 			</xsl:for-each>
 
@@ -332,6 +336,7 @@
 				<xsl:with-param name="index" select="$index" />
 				<xsl:with-param name="name" select="'Others (unsorted)'" />
 				<xsl:with-param name="which" select="//supported_classes/class[@class='all_classes' or @class=$class]/option[not(@name='class') and not(@name='name') and not(@optdoc_loc)]" />
+				<xsl:with-param name="reference_element" select="$this_raider" />
 			</xsl:call-template>
 
 			
@@ -358,7 +363,7 @@
 		<xsl:param name="root_name" />
 		
 		<!-- 'this' raider, defined by the current context.  Used below in a loop, where the context would be different -->
-		<xsl:variable name="parent_element" select="." />
+		<xsl:param name="reference_element" />
 		
 		
 		<!-- If the which variable actually finds any elements, show the fieldset -->
@@ -383,16 +388,25 @@
 						<xsl:variable name="this_field_name" select="@name" />
 									
 						<!-- Call the template that handles options, with the appropriate parameters -->
-						<xsl:apply-templates select=".">
-							<xsl:with-param name="variable_name"><xsl:value-of select="$root_name" /></xsl:with-param>
-							<xsl:with-param name="array_index"><xsl:value-of select="$index" /></xsl:with-param>
+						<!-- If a value was already set for this option, don't use the parent element's attribute-value for the value (use the option's value attribute) -->
+						<xsl:choose>
 							
-							<!-- If a value was already set for this option, don't use the parent element's attribute-value for the value (use the option's value attribute) -->
-							<xsl:if test="not(@value)">
-								<!-- This is crazy but it works - pass for the value the parent-element's attribute with a name equivalent to this field's name - wow -->
-								<xsl:with-param name="value"><xsl:value-of select="$parent_element/@*[name()=$this_field_name]" /></xsl:with-param>
-							</xsl:if> 
-						</xsl:apply-templates>
+							<xsl:when test="$reference_element">
+								<xsl:apply-templates select=".">
+									<xsl:with-param name="variable_name"><xsl:value-of select="$root_name" /></xsl:with-param>
+									<xsl:with-param name="array_index"><xsl:value-of select="$index" /></xsl:with-param>
+									<!-- This is crazy but it works - pass for the value the parent-element's attribute with a name equivalent to this field's name - wow -->
+									<xsl:with-param name="value"><xsl:value-of select="$reference_element/@*[name()=$this_field_name]" /></xsl:with-param>
+								</xsl:apply-templates>
+							</xsl:when>
+							
+							<xsl:otherwise>
+								<xsl:apply-templates select=".">
+									<xsl:with-param name="variable_name"><xsl:value-of select="$root_name" /></xsl:with-param>
+									<xsl:with-param name="array_index"><xsl:value-of select="$index" /></xsl:with-param>
+								</xsl:apply-templates>
+							</xsl:otherwise>
+						</xsl:choose>
 					</li>
 				</xsl:for-each>
 				
