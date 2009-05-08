@@ -328,7 +328,7 @@ struct normalized_rng_t : public rng_t
 
     double phase_shift = fixed_phase_shift;
     
-    if( phase_shift >= 1.0 ) phase_shift *= real();
+    if( phase_shift > 1.0 ) phase_shift *= real();
     
     if( ( actual + phase_shift ) < expected )
     {
@@ -355,7 +355,7 @@ struct normalized_distance_rng_t : public normalized_rng_t
   double lastAvg;
 
   normalized_distance_rng_t( const std::string& n, rng_t* b ) :
-    normalized_rng_t( n, b, 0 ), nTries(0), lastOk(0)
+    normalized_rng_t( n, b, 0.5 ), nTries(0), lastOk(0)
   {
     for (int i = 0; i < maxN4 + 2; i++) nit[i] = 0;
   }
