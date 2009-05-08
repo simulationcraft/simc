@@ -378,7 +378,7 @@ struct sim_t : public app_t
   std::vector<std::string> party_encoding;
 
   // Normalized Random Number Generation
-  int normalized_dmg, normalized_rng, normalized_rng_sf;
+  int normalized_dmg, normalized_rng, normalized_rng_sf, normalized_gauss_off;
   int random_phase_shift, variable_phase_shift, extended_phase_shift;
 
   // Timing Wheel Event Management
@@ -1023,6 +1023,7 @@ struct player_t
   stats_t*  get_stats ( const std::string& name );
   uptime_t* get_uptime( const std::string& name );
   rng_t*    get_rng   ( const std::string& name, int maxAlg=0 );
+  double    gaussian(double mean, double stddev );
 };
 
 // Pet =======================================================================

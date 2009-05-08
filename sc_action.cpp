@@ -237,7 +237,7 @@ double action_t::travel_time()
 
   double v = sim -> travel_variance;
 
-  if( v ) t = sim -> rng -> gaussian( t, v );
+  if( v ) t = player -> gaussian( t, v );
 
   return t;
 }

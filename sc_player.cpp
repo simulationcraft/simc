@@ -1510,15 +1510,15 @@ void player_t::schedule_ready( double delta_time,
       }
       else if( last_foreground_action -> channeled ) 
       {
-        lag = sim -> rng -> gaussian( sim -> channel_lag, sim -> channel_lag_range);
+        lag = gaussian( sim -> channel_lag, sim -> channel_lag_range);
       }
       else if( gcd_adjust > 0 ) 
       {
-        lag = sim -> rng -> gaussian( sim -> gcd_lag, sim -> gcd_lag_range);
+        lag = gaussian( sim -> gcd_lag, sim -> gcd_lag_range);
       }
       else // queued cast
       {
-        lag = sim -> rng -> gaussian( sim -> queue_lag, sim -> queue_lag_range);
+        lag = gaussian( sim -> queue_lag, sim -> queue_lag_range);
       }
     }
 
@@ -2205,6 +2205,12 @@ rng_t* player_t::get_rng( const std::string& n, int maxAlg )
 
   return rng;
 }
+
+double  player_t::gaussian(double mean, double stddev ){
+	if (( ! sim -> normalized_rng ) || (sim-> normalized_gauss_off)) return sim -> rng->gaussian(mean,stddev);
+	return mean;
+}
+
 
 // Cycle Action ============================================================
 
