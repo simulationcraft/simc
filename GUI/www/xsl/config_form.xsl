@@ -3,6 +3,7 @@
 
 	<xsl:output method="html" encoding="utf-8" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN" cdata-section-elements="pre script style" indent="yes" />
 	
+	<xsl:key name="options" match="option" use="@optdoc_loc" />
 	
 	<!--  Top-level XML tag this matches the root of the xml, and is the top of the xsl parsing tree -->
 	<xsl:template match="/xml">
@@ -212,53 +213,29 @@
 
 				<div id="global_options_wrapper">
 				
-					<!-- Loop over each option in the global set, sorted by the file in which the option originated -->
-					<xsl:for-each select="options/global_options/option">
-						<xsl:sort select="@file" />
-				
-						<!-- If this source file has changed from the previous option in this list (or if this is the first iteration of this loop), call the template -->
-						<xsl:if test="position()=1 or @file != preceding-sibling::option[1]/@file">
-							<xsl:call-template name="global_options_section">
-								<xsl:with-param name="file_name" select="@file" />
-							</xsl:call-template>
-						</xsl:if>
+					<!-- For each of the options appropriate for this raider... -->
+					<xsl:for-each select="//global_options/option[generate-id() = generate-id(key('options', @optdoc_loc)[1]) ]">
+						<xsl:sort select="@optdoc_loc" />
+						<xsl:variable name="optdoc_loc"><xsl:value-of select="@optdoc_loc" /></xsl:variable>
+		
+						<!-- List of options for this user (except for class and name, which were explicity positioned above already) -->
+						<xsl:call-template name="option_list">
+							<xsl:with-param name="root_name" select="'globals'" />
+							<xsl:with-param name="name" select="@optdoc_title" />
+							<xsl:with-param name="which" select="//global_options/option[@optdoc_loc=$optdoc_loc]" />
+						</xsl:call-template>
 					</xsl:for-each>
+		
+					<!-- Do another set for the options that have no optdoc-loc -->
+					<xsl:call-template name="option_list">
+						<xsl:with-param name="root_name" select="'globals'" />
+						<xsl:with-param name="name" select="'Others (unsorted)'" />
+						<xsl:with-param name="which" select="//global_options/option[not(@optdoc_loc)]" />
+					</xsl:call-template>				
 					
 				</div>
 			</div>
 		</div>
-	</xsl:template>
-
-
-	<!-- Generate a section of global options, given the file name as a parameter -->
-	<xsl:template name="global_options_section">
-	
-		<!-- For which file name is this section being generated? -->
-		<xsl:param name="file_name" />
-		
-		<fieldset class="foldable folded">
-			<legend><xsl:value-of select="$file_name" /></legend>
-			
-			<ul class="stacked_fields subscript_labels">
-	
-				<!-- Loop over the sibling options to this option, selecting only the options that have the given file name (sorted by label) -->
-				<xsl:for-each select="../option[@file=$file_name]">
-				<xsl:sort select="@label" />
-					<li>
-
-						<!-- Mark checkbox list elements specially, for CSS hooking -->
-						<xsl:if test="@type='boolean'">
-							<xsl:attribute name="class">checkbox</xsl:attribute>
-						</xsl:if>
-					
-						<!-- Call the general template for options, with 'globals' as the generated field name -->
-						<xsl:apply-templates select=".">
-							<xsl:with-param name="variable_name">globals</xsl:with-param>
-						</xsl:apply-templates>
-					</li>
-				</xsl:for-each>
-			</ul>
-		</fieldset>
 	</xsl:template>
 	
 	
@@ -334,65 +311,39 @@
 				<xsl:with-param name="value"><xsl:value-of select="$class" /></xsl:with-param>
 			</xsl:call-template>
 			
-			
-			<!-- List of options for this user (except for class and name, which were explicity positioned above already) -->
-			<!--  This is probably not the ultimately best way to handle this, since its based on weird indirect C++ context scraping -->
-			
-			<!-- Show all the straight gear-stat related fields -->
-			<xsl:call-template name="player_option_list">
+
+			<!-- For each of the options appropriate for this raider... -->
+			<xsl:for-each select="//supported_classes/class[@class='all_classes' or @class=$class]/option[generate-id() = generate-id(key('options', @optdoc_loc)[1]) ]">
+				<xsl:sort select="@optdoc_loc" />
+				<xsl:variable name="optdoc_loc"><xsl:value-of select="@optdoc_loc" /></xsl:variable>
+
+				<!-- List of options for this user (except for class and name, which were explicity positioned above already) -->
+				<xsl:call-template name="option_list">
+					<xsl:with-param name="root_name" select="'raider'" />
+					<xsl:with-param name="index" select="$index" />
+					<xsl:with-param name="name" select="@optdoc_title" />
+					<xsl:with-param name="which" select="//supported_classes/class[@class='all_classes' or @class=$class]/option[not(@name='class') and not(@name='name') and @optdoc_loc=$optdoc_loc]" />
+				</xsl:call-template>
+			</xsl:for-each>
+
+			<!-- Do another set for the options that have no optdoc-loc -->
+			<xsl:call-template name="option_list">
+				<xsl:with-param name="root_name" select="'raider'" />
 				<xsl:with-param name="index" select="$index" />
-				<xsl:with-param name="name" select="'Gear'" />
-				<xsl:with-param name="which" select="//supported_classes/class[@class='all_classes']/option[not(@name='class') and not(@name='name') and @tag='gear_stats'] | //supported_classes/class[@class=$class]/option[not(@name='class') and not(@name='name') and @tag='gear_stats']" />
-			</xsl:call-template>
-			
-			<!-- Show all the straight gem-stat related fields -->
-			<xsl:call-template name="player_option_list">
-				<xsl:with-param name="index" select="$index" />
-				<xsl:with-param name="name" select="'Gems'" />
-				<xsl:with-param name="which" select="//supported_classes/class[@class='all_classes']/option[not(@name='class') and not(@name='name') and @tag='gem_stats'] | //supported_classes/class[@class=$class]/option[not(@name='class') and not(@name='name') and @tag='gem_stats']" />
+				<xsl:with-param name="name" select="'Others (unsorted)'" />
+				<xsl:with-param name="which" select="//supported_classes/class[@class='all_classes' or @class=$class]/option[not(@name='class') and not(@name='name') and not(@optdoc_loc)]" />
 			</xsl:call-template>
 
-			<!-- Show all the options dealing with tier gear effects -->
-			<xsl:call-template name="player_option_list">
-				<xsl:with-param name="index" select="$index" />
-				<xsl:with-param name="name" select="'Tier Gear Effects'" />
-				<xsl:with-param name="which" select="//supported_classes/class[@class='all_classes']/option[not(@name='class') and not(@name='name') and @tag='tiers'] | //supported_classes/class[@class=$class]/option[not(@name='class') and not(@name='name') and @tag='tiers']" />
-			</xsl:call-template>
-
-			<!-- Show the glyph options -->
-			<xsl:call-template name="player_option_list">
-				<xsl:with-param name="index" select="$index" />
-				<xsl:with-param name="name" select="'Glyphs'" />
-				<xsl:with-param name="which" select="//supported_classes/class[@class='all_classes']/option[not(@name='class') and not(@name='name') and @tag='glyphs'] | //supported_classes/class[@class=$class]/option[not(@name='class') and not(@name='name') and @tag='glyphs']" />
-			</xsl:call-template>
-
-			<!-- Show the Idol options -->
-			<xsl:call-template name="player_option_list">
-				<xsl:with-param name="index" select="$index" />
-				<xsl:with-param name="name" select="'Idols'" />
-				<xsl:with-param name="which" select="//supported_classes/class[@class='all_classes']/option[not(@name='class') and not(@name='name') and @tag='idols'] | //supported_classes/class[@class=$class]/option[not(@name='class') and not(@name='name') and @tag='idols']" />
-			</xsl:call-template>
-
-			<!-- Show the Totem options -->
-			<xsl:call-template name="player_option_list">
-				<xsl:with-param name="index" select="$index" />
-				<xsl:with-param name="name" select="'Totems'" />
-				<xsl:with-param name="which" select="//supported_classes/class[@class='all_classes']/option[not(@name='class') and not(@name='name') and @tag='totems'] | //supported_classes/class[@class=$class]/option[not(@name='class') and not(@name='name') and @tag='totems']" />
-			</xsl:call-template>
-
-			<!-- Show all the 'all-classes' and class specific fields that weren't shown above -->
-			<xsl:call-template name="player_option_list">
-				<xsl:with-param name="index" select="$index" />
-				<xsl:with-param name="name" select="'Other'" />
-				<xsl:with-param name="which" select="//supported_classes/class[@class='all_classes']/option[not(@name='class') and not(@name='name') and not(@tag='glyphs') and not(@tag='tiers') and not(@tag='gear_stats') and not(@tag='gem_stats') and not(@tag='idols') and not(@tag='totems')] | //supported_classes/class[@class=$class]/option[not(@name='class') and not(@name='name') and not(@tag='glyphs') and not(@tag='tiers') and not(@tag='gear_stats') and not(@tag='gem_stats') and not(@tag='idols') and not(@tag='totems')]" />
-			</xsl:call-template>
 			
 		</li>
 	</xsl:template>
 
 
+
+
+
 	<!-- A group of options for a raid member -->
-	<xsl:template name="player_option_list">
+	<xsl:template name="option_list">
 		
 		<!-- What index should we use in the HTML field name (ensures that PHP gets an array of values) -->
 		<xsl:param name="index" />
@@ -403,8 +354,11 @@
 		<!-- Which option elements should be selected to build the list? -->
 		<xsl:param name="which" />
 		
+		<!-- The root name of the option field names -->
+		<xsl:param name="root_name" />
+		
 		<!-- 'this' raider, defined by the current context.  Used below in a loop, where the context would be different -->
-		<xsl:variable name="raider_element" select="." />
+		<xsl:variable name="parent_element" select="." />
 		
 		
 		<!-- If the which variable actually finds any elements, show the fieldset -->
@@ -417,7 +371,7 @@
 				<!-- For each of the options selected in the $which parameter, build a list-element for it -->
 				<xsl:for-each select="$which">
 					<xsl:sort select="@label" />
-					
+		
 					<li>
 					
 						<!-- Mark checkbox list elements specially, for CSS hooking -->
@@ -430,10 +384,14 @@
 									
 						<!-- Call the template that handles options, with the appropriate parameters -->
 						<xsl:apply-templates select=".">
-							<xsl:with-param name="variable_name">raider</xsl:with-param>
+							<xsl:with-param name="variable_name"><xsl:value-of select="$root_name" /></xsl:with-param>
 							<xsl:with-param name="array_index"><xsl:value-of select="$index" /></xsl:with-param>
-							<!-- This is crazy but it works - pass for the value the raider-element's attribute with a name equivalent to this field's name - wow -->
-							<xsl:with-param name="value"><xsl:value-of select="$raider_element/@*[name()=$this_field_name]" /></xsl:with-param> 
+							
+							<!-- If a value was already set for this option, don't use the parent element's attribute-value for the value (use the option's value attribute) -->
+							<xsl:if test="not(@value)">
+								<!-- This is crazy but it works - pass for the value the parent-element's attribute with a name equivalent to this field's name - wow -->
+								<xsl:with-param name="value"><xsl:value-of select="$parent_element/@*[name()=$this_field_name]" /></xsl:with-param>
+							</xsl:if> 
 						</xsl:apply-templates>
 					</li>
 				</xsl:for-each>

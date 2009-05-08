@@ -667,23 +667,46 @@ function parse_source_file_for_options( $file_path )
 
 	// Load the file in question's contents, stripping out any new-lines
 	$file_contents = file_get_contents( $file_path );
-	$file_contents = str_replace("\n", '', $file_contents);
 	
-	// Match for the options (fun with regular expressions)
-	preg_match('/bool [-_A-Za-z0-9]+::parse_option\(.*options\[\][\s]*=[\s]*{(.*);/U', $file_contents, $parse_matches);
+	// Match the file contents for the parse_option() method
+	preg_match('/^bool\s+[-_A-Za-z0-9]+::parse_option\(.*{.*options\[\]\s*=\s*{(.*)};$/Usm', $file_contents, $parse_matches);
 	$options = $parse_matches[1];
-	preg_match_all('/{[\s]*"([^,]*)",[\s]*([^,]*),[\s]*&\([\s]*([^,.]*)[^,]*\)[\s]*}[\s]*,/', $options, $parse_matches, PREG_SET_ORDER);
-	//var_dump($parse_matches);
+	
+	// Match the parse_option method for individual option or option_doc strings
+	preg_match_all('/^\s*{\s*"([^"]*)",\s*([^,]*),.*},\s*$|^\s*\/\/\s*@option_doc(\s*[^=\s]*=[^=\s]*)*$/Usm', $options, $parse_matches, PREG_SET_ORDER);
 	
 	// Arrange the options in a sane array
 	$arr_output = array();
+	$last_loc = null;
+	$last_title = null;
 	foreach($parse_matches as $array) {
-		$arr_output[] = array(
-				'name' => trim($array[1]), 
-				'type' => trim($array[2]), 
-				'tag' => trim($array[3]), 
-				'file' => $file_path
-			);
+
+		// If this is an option doc line, set the new last-loc and last-title
+		if( substr(trim($array[0]),0,2)=='//' ) {
+			$arr_optdoc = explode(' ', trim($array[0]) );
+			array_shift($arr_optdoc);
+			array_shift($arr_optdoc);
+			foreach( $arr_optdoc as $optdoc_string) {
+				list($optdoc_var, $optdoc_val) = explode('=', $optdoc_string);
+				if($optdoc_var === 'loc') {
+					$last_loc = trim($optdoc_val, '" ');
+				}
+				else if($optdoc_var === 'title') {
+					$last_title = trim($optdoc_val, '" ');
+				}
+			}
+		}
+
+		// Else, this is an option line, add it to the array of options
+		else {
+			$arr_output[] = array(
+					'name' => trim($array[1]), 
+					'type' => trim($array[2]), 
+					'optdoc_loc' => $last_loc,
+					'optdoc_title' => $last_title, 
+					'file' => $file_path
+				);
+		}
 	}
 			
 	// Return the array of matches	
@@ -703,8 +726,8 @@ function add_options_to_XML( array $arr_options, SimpleXMLElement $xml_object )
 	// Loop over the supplied array of options
 	foreach($arr_options as $arr_option ) {
 
-		// Ignore talent tags, these will be passed as a 'talents' URL
-		if( $arr_option['tag'] === 'talents' ) {
+		// Ignore elements with a 'skip' optdoc loc
+		if( $arr_option['optdoc_loc'] === 'skip' ) {
 			continue;
 		}
 		
@@ -742,9 +765,14 @@ function add_options_to_XML( array $arr_options, SimpleXMLElement $xml_object )
 		$xml_new->addAttribute('label', ucwords(strtolower(str_replace('_', ' ', $arr_option['name']))) );
 		$xml_new->addAttribute('type', $html_type);
 		$xml_new->addAttribute('cpp_type', $arr_option['type']);
-		$xml_new->addAttribute('tag', $arr_option['tag']);
 		$xml_new->addAttribute('file', basename($arr_option['file']) );
-		$xml_new->addAttribute('value', '');
+		if( !empty($arr_option['optdoc_loc']) ) {
+			$xml_new->addAttribute('optdoc_loc', $arr_option['optdoc_loc']);
+		}
+		if( !empty($arr_option['optdoc_title']) ) {
+			$xml_new->addAttribute('optdoc_title', $arr_option['optdoc_title']);
+		}
+		$xml_new->addAttribute('value', '');		
 	}
 }
 ?>
