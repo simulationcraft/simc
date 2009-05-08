@@ -442,7 +442,7 @@ player_t::~player_t()
     uptime_list = u -> next;
     delete u;
   }
-  while( normalized_rng_t* r = rng_list )
+  while( rng_t* r = rng_list )
   {
     rng_list = r -> next;
     delete r;
@@ -1510,15 +1510,15 @@ void player_t::schedule_ready( double delta_time,
       }
       else if( last_foreground_action -> channeled ) 
       {
-        lag = gaussian( sim -> channel_lag, sim -> channel_lag_range);
+        lag = sim -> gaussian( sim -> channel_lag, sim -> channel_lag_range);
       }
       else if( gcd_adjust > 0 ) 
       {
-        lag = gaussian( sim -> gcd_lag, sim -> gcd_lag_range);
+        lag = sim -> gaussian( sim -> gcd_lag, sim -> gcd_lag_range);
       }
       else // queued cast
       {
-        lag = gaussian( sim -> queue_lag, sim -> queue_lag_range);
+        lag = sim -> gaussian( sim -> queue_lag, sim -> queue_lag_range);
       }
     }
 
@@ -2182,13 +2182,13 @@ uptime_t* player_t::get_uptime( const std::string& name )
 
 // player_t::get_rng =======================================================
 
-rng_t* player_t::get_rng( const std::string& n, int maxAlg )
+rng_t* player_t::get_rng( const std::string& n, int type )
 {
   assert( sim -> rng );
 
   if( ! sim -> normalized_rng ) return sim -> rng;
 
-  normalized_rng_t* rng=0;
+  rng_t* rng=0;
 
   for( rng = rng_list; rng; rng = rng -> next )
   {
@@ -2198,19 +2198,13 @@ rng_t* player_t::get_rng( const std::string& n, int maxAlg )
 
   if( ! rng )
   {
-    rng = normalized_rng_t::create( sim, n, maxAlg );
+    rng = rng_t::create( sim, n, type );
     rng -> next = rng_list;
     rng_list = rng;
   }
 
   return rng;
 }
-
-double  player_t::gaussian(double mean, double stddev ){
-	if (( ! sim -> normalized_rng ) || (sim-> normalized_gauss_off)) return sim -> rng->gaussian(mean,stddev);
-	return mean;
-}
-
 
 // Cycle Action ============================================================
 

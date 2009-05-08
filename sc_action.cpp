@@ -73,7 +73,7 @@ action_t::action_t( int         ty,
     buffer  = name_str;
     buffer += "_";
     buffer += util_t::result_type_string( i );
-    rng[ i ] = player -> get_rng( buffer, 1 );
+    rng[ i ] = player -> get_rng( buffer, RNG_NORM_PHASE );
   }
   
   stats = p -> get_stats( n );
@@ -237,7 +237,7 @@ double action_t::travel_time()
 
   double v = sim -> travel_variance;
 
-  if( v ) t = player -> gaussian( t, v );
+  if( v ) t = sim -> gaussian( t, v );
 
   return t;
 }

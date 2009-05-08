@@ -89,9 +89,8 @@ struct berserking_callback_t : public action_callback_t
     mh_uptime = p -> get_uptime( "berserking_mh" );
     oh_uptime = p -> get_uptime( "berserking_oh" );
 
-    // FIXME! Normalized RNG does not handle overlapping procs very well.
-    mh_rng = p -> get_rng( "berserking_mh" ); //p -> sim -> rng; //
-    oh_rng = p -> get_rng( "berserking_oh" );// p -> sim -> rng; 
+    mh_rng = p -> get_rng( "berserking_mh" );
+    oh_rng = p -> get_rng( "berserking_oh" );
   }
 
   virtual void reset() { mh_buff = oh_buff = 0; mh_expiration = oh_expiration = 0; }
@@ -172,9 +171,8 @@ struct mongoose_callback_t : public action_callback_t
     mh_uptime = p -> get_uptime( "mongoose_mh" );
     oh_uptime = p -> get_uptime( "mongoose_oh" );
 
-    // FIXME! Normalized RNG does not handle overlapping procs very well.
-    mh_rng = p -> sim -> rng; // p -> get_rng( "mongoose_mh" );
-    oh_rng = p -> sim -> rng; // p -> get_rng( "mongoose_oh" );
+    mh_rng = p -> sim -> rng;
+    oh_rng = p -> sim -> rng;
   }
 
   virtual void reset() { mh_expiration = oh_expiration = 0; }

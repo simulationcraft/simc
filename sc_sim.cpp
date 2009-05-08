@@ -148,8 +148,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   armor_update_interval(20), potion_sickness(1),
   optimal_raid(0), log(0), debug(0), sfmt(1),
   jow_chance(0), jow_ppm(15.0),
-  normalized_dmg(1), normalized_rng(0), normalized_rng_sf(0), normalized_gauss_off(0), 
-  random_phase_shift(0), variable_phase_shift(0), extended_phase_shift(0),
+  normalized_dmg(1), normalized_rng(0), normalized_rng_sf(0), normalized_gauss(1), variable_phase_shift(1),
   timing_wheel(0), wheel_seconds(0), wheel_size(0), wheel_mask(0), timing_slice(0), wheel_granularity(0.0),
   replenishment_targets(0),
   raid_dps(0), total_dmg(0), 
@@ -424,7 +423,7 @@ bool sim_t::init()
   P309 = patch.before( 3, 1, 0 );
   P312 = patch.after ( 3, 1, 2 );
   
-  rng = rng_t::create( this );
+  rng = rng_t::create( this, "global", sfmt ? RNG_SFMT : RNG_STD );
 
   // Timing wheel depth defaults to 10 minutes with a granularity of 10 buckets per second.
   if( wheel_seconds     <= 0 ) wheel_seconds     = 600;
@@ -872,6 +871,17 @@ int sim_t::roll( double chance )
   return rng -> roll( chance );
 }
 
+// sim_t::gaussian ==========================================================
+
+double sim_t::gaussian( double mean, 
+			double stddev )
+{
+  if( normalized_rng && normalized_gauss ) 
+    return mean;
+
+  return rng -> gaussian( mean, stddev );
+}
+
 // sim_t::print_options =====================================================
 
 void sim_t::print_options()
@@ -982,10 +992,8 @@ bool sim_t::parse_option( const std::string& name,
     { "normalized_dmg",                   OPT_BOOL,   &( normalized_dmg                           ) },
     { "normalized_rng",                   OPT_BOOL,   &( normalized_rng                           ) },
     { "normalized_rng_sf",                OPT_BOOL,   &( normalized_rng_sf                        ) },
-    { "normalized_gauss_off",             OPT_BOOL,   &( normalized_gauss_off                     ) },
-    { "random_phase_shift",               OPT_BOOL,   &( random_phase_shift                       ) },
-    { "variable_phase_shift",             OPT_BOOL,   &( variable_phase_shift                     ) },
-    { "extended_phase_shift",             OPT_INT,    &( extended_phase_shift                     ) },
+    { "normalized_gauss",                 OPT_BOOL,   &( normalized_gauss                         ) },
+    { "variable_phase_shift",             OPT_INT,    &( variable_phase_shift                     ) },
     // @option_doc loc=global/party title="Party Composition"
     { "party",                            OPT_LIST,   &( party_encoding                           ) },
     // @option_doc loc=skip

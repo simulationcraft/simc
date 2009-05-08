@@ -70,7 +70,6 @@ struct event_t;
 struct gain_t;
 struct hunter_t;
 struct mage_t;
-struct normalized_rng_t;
 struct option_t;
 struct pet_t;
 struct player_t;
@@ -262,6 +261,8 @@ enum profession_type {
 
 enum role_type { ROLE_NONE=0, ROLE_ATTACK, ROLE_SPELL, ROLE_TANK, ROLE_HYBRID, ROLE_MAX };
 
+enum rng_type { RNG_NONE=0, RNG_STD, RNG_SFMT, RNG_NORM_PHASE, RNG_NORM_DISTANCE, RNG_MAX };
+
 // Thread Wrappers ===========================================================
 
 struct thread_t
@@ -343,6 +344,7 @@ struct app_t
   virtual const char* name() = 0;
   virtual int  main( int argc, char** argv ) = 0;
   virtual bool parse_option( const std::string& name, const std::string& value ) { return false; }
+  virtual ~app_t() {}
 };
 
 // Simulation Engine =========================================================
@@ -378,8 +380,8 @@ struct sim_t : public app_t
   std::vector<std::string> party_encoding;
 
   // Normalized Random Number Generation
-  int normalized_dmg, normalized_rng, normalized_rng_sf, normalized_gauss_off;
-  int random_phase_shift, variable_phase_shift, extended_phase_shift;
+  int normalized_dmg, normalized_rng, normalized_rng_sf, normalized_gauss;
+  int variable_phase_shift;
 
   // Timing Wheel Event Management
   event_t** timing_wheel; 
@@ -526,6 +528,7 @@ struct sim_t : public app_t
   bool      time_to_think( double proc_time ) { if( proc_time == 0 ) return false; return current_time - proc_time > reaction_time; }
   bool      cooldown_ready( double cooldown_time ) { return cooldown_time <= current_time; }
   int       roll( double chance );
+  double    gaussian( double mean, double stddev );
   player_t* find_player( const std::string& name );
 };
 
@@ -868,7 +871,7 @@ struct player_t
   };
   procs_t procs;
 
-  normalized_rng_t* rng_list;
+  rng_t* rng_list;
   
   struct rngs_t
   {
@@ -1022,8 +1025,7 @@ struct player_t
   proc_t*   get_proc  ( const std::string& name );
   stats_t*  get_stats ( const std::string& name );
   uptime_t* get_uptime( const std::string& name );
-  rng_t*    get_rng   ( const std::string& name, int maxAlg=0 );
-  double    gaussian(double mean, double stddev );
+  rng_t*    get_rng   ( const std::string& name, int type=RNG_NORM_DISTANCE );
 };
 
 // Pet =======================================================================
@@ -1692,10 +1694,12 @@ struct log_t
 
 struct rng_t
 {
+  std::string name_str;
   bool   gaussian_pair_use;
   double gaussian_pair_value;
+  rng_t* next;
 
-  rng_t() : gaussian_pair_use(false) {}
+  rng_t( const std::string& n ) : name_str(n), gaussian_pair_use(false), next(0) {}
   virtual ~rng_t() {}
 
   virtual int    roll( double chance );
@@ -1703,41 +1707,7 @@ struct rng_t
   virtual double range( double min, double max );
   virtual double gaussian( double mean, double stddev );
 
-  static rng_t* create( sim_t* );
-};
-
-// Normalized Random Number Generation ======================================
-
-struct normalized_rng_t : public rng_t
-{
-private:
-  rng_t* base;
-  double fixed_phase_shift;
-  double actual, expected;
-  int	 nTries;
-
-  int alg_phase, max_alg;
-  static const int maxN4 = 400;
-  int nextGive;
-  int nit[maxN4 + 2];
-  int lastOk;
-  int N4, N1;
-  double lastAvg;
-
-
-  void setN4(double expP);
-  void resetN4(double expP);
-  void findNextGive();
-public:
-  std::string name_str;
-  normalized_rng_t* next;
-  normalized_rng_t( const std::string& name, rng_t* base, double fixed_phased_shift, int maxAlg=0 );
-  virtual double real() { return base -> real(); }
-  virtual int    roll( double chance );
-  virtual double range( double min, double max );
-  virtual double gaussian( double mean, double stddev );
-
-  static normalized_rng_t* create( sim_t*, const std::string& name, int maxAlg=0  );
+  static rng_t* create( sim_t*, const std::string& name, int type=RNG_STD );
 };
 
 // Utilities =================================================================
