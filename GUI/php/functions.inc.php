@@ -735,22 +735,22 @@ function add_options_to_XML( array $arr_options, SimpleXMLElement $xml_object )
 		// === Convert the C++ types to html field types ===
 		// OPT_INTs are just text fields
 		if( $arr_option['type']==='OPT_INT' ) {
-			$html_type = 'text';
+			$interpreted_type = 'integer';
 		}
 		
 		// OPT_BOOL's are boolean
 		else if( $arr_option['type']==='OPT_BOOL' ) {
-			$html_type = 'boolean';
+			$interpreted_type = 'boolean';
 		}
 		
 		// strings are text fields
 		else if( $arr_option['type']==='OPT_STRING' ) {
-			$html_type = 'text';
+			$interpreted_type = 'string';
 		}
 		
 		// floats are text fields
 		else if( $arr_option['type']==='OPT_FLT' ) {
-			$html_type = 'text';
+			$interpreted_type = 'float';
 		}
 		
 		// Do not display options that are not of the above types
@@ -763,7 +763,7 @@ function add_options_to_XML( array $arr_options, SimpleXMLElement $xml_object )
 		$xml_new = $xml_object->addChild('option');
 		$xml_new->addAttribute('name', $arr_option['name']);
 		$xml_new->addAttribute('label', ucwords(strtolower(str_replace('_', ' ', $arr_option['name']))) );
-		$xml_new->addAttribute('type', $html_type);
+		$xml_new->addAttribute('type', $interpreted_type);
 		$xml_new->addAttribute('cpp_type', $arr_option['type']);
 		$xml_new->addAttribute('file', basename($arr_option['file']) );
 		if( !empty($arr_option['optdoc_loc']) ) {
