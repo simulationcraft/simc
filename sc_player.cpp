@@ -2186,7 +2186,7 @@ rng_t* player_t::get_rng( const std::string& n, int type )
 {
   assert( sim -> rng );
 
-  if( ! sim -> normalized_rng ) return sim -> rng;
+  if( ! sim -> normalized_rng || type == RNG_STD ) return sim -> rng;
 
   rng_t* rng=0;
 
