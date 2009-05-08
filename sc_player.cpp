@@ -2182,7 +2182,7 @@ uptime_t* player_t::get_uptime( const std::string& name )
 
 // player_t::get_rng =======================================================
 
-rng_t* player_t::get_rng( const std::string& n )
+rng_t* player_t::get_rng( const std::string& n, int maxAlg )
 {
   assert( sim -> rng );
 
@@ -2198,7 +2198,7 @@ rng_t* player_t::get_rng( const std::string& n )
 
   if( ! rng )
   {
-    rng = normalized_rng_t::create( sim, n );
+    rng = normalized_rng_t::create( sim, n, maxAlg );
     rng -> next = rng_list;
     rng_list = rng;
   }

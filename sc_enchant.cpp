@@ -90,8 +90,8 @@ struct berserking_callback_t : public action_callback_t
     oh_uptime = p -> get_uptime( "berserking_oh" );
 
     // FIXME! Normalized RNG does not handle overlapping procs very well.
-    mh_rng = p -> sim -> rng; // p -> get_rng( "berserking_mh" );
-    oh_rng = p -> sim -> rng; // p -> get_rng( "berserking_oh" );
+    mh_rng = p -> get_rng( "berserking_mh" ); //p -> sim -> rng; //
+    oh_rng = p -> get_rng( "berserking_oh" );// p -> sim -> rng; 
   }
 
   virtual void reset() { mh_buff = oh_buff = 0; mh_expiration = oh_expiration = 0; }

@@ -1022,7 +1022,7 @@ struct player_t
   proc_t*   get_proc  ( const std::string& name );
   stats_t*  get_stats ( const std::string& name );
   uptime_t* get_uptime( const std::string& name );
-  rng_t*    get_rng   ( const std::string& name );
+  rng_t*    get_rng   ( const std::string& name, int maxAlg=0 );
 };
 
 // Pet =======================================================================
@@ -1709,20 +1709,34 @@ struct rng_t
 
 struct normalized_rng_t : public rng_t
 {
-  std::string name_str;
+private:
   rng_t* base;
   double fixed_phase_shift;
   double actual, expected;
+  int	 nTries;
+
+  int alg_phase, max_alg;
+  static const int maxN4 = 400;
+  int nextGive;
+  int nit[maxN4 + 2];
+  int lastOk;
+  int N4, N1;
+  double lastAvg;
+
+
+  void setN4(double expP);
+  void resetN4(double expP);
+  void findNextGive();
+public:
+  std::string name_str;
   normalized_rng_t* next;
-
-  normalized_rng_t( const std::string& name, rng_t* base, double fixed_phased_shift );
-
+  normalized_rng_t( const std::string& name, rng_t* base, double fixed_phased_shift, int maxAlg=0 );
   virtual double real() { return base -> real(); }
   virtual int    roll( double chance );
   virtual double range( double min, double max );
   virtual double gaussian( double mean, double stddev );
 
-  static normalized_rng_t* create( sim_t*, const std::string& name );
+  static normalized_rng_t* create( sim_t*, const std::string& name, int maxAlg=0  );
 };
 
 // Utilities =================================================================

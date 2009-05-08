@@ -216,10 +216,84 @@ double rng_sfmt_t::real()
 
 // normalized_rng_t::normalized_rng_t =======================================
 
-normalized_rng_t::normalized_rng_t( const std::string& n, rng_t* b, double fps ) :
+normalized_rng_t::normalized_rng_t( const std::string& n, rng_t* b, double fps, int maxAlg ) :
   name_str(n), base(b), fixed_phase_shift(fps), actual(0), expected(0), next(0) 
 {
+  alg_phase = 0;
+  max_alg= maxAlg; 
+  if (max_alg<=0) max_alg=2;
+  lastOk = 0;
+  nTries=0;
+  for (int i = 0; i < maxN4 + 2; i++) nit[i] = 0;
 }
+
+void normalized_rng_t::setN4(double expP)
+{
+    lastAvg = expP;
+    N1 = 1 / expP;
+    if (N1 > maxN4) N1 = maxN4;
+    N4 = 4 * N1;
+    if (N4 > maxN4) N4 = maxN4;
+    nextGive = N1;
+}
+
+void normalized_rng_t::resetN4(double expP)
+{
+    lastAvg = expP;
+    N1 = (int)(1 / expP);
+    if (N1 > maxN4) N1 = maxN4;
+    int newN4 = 4 * N1;
+    if (newN4 > maxN4) newN4 = maxN4;
+    if (newN4 > N4)
+    {
+        int sumOver = 0;
+        for (int i = N4 + 2; i <= newN4 + 1; i++) sumOver += nit[i];
+        nit[N4 + 1] -= sumOver;
+    }
+    else
+    {
+        int sumOver = 0;
+        for (int i = newN4 + 2; i <= N4 + 1; i++) sumOver += nit[i];
+        nit[newN4 + 1] += sumOver;
+    }
+	N4=newN4;
+}
+
+
+void normalized_rng_t::findNextGive()
+{
+    double avgP = expected / nTries;
+    // check if average chance is significantly different, to increase number of tracked distances
+    if ((lastAvg-avgP) / lastAvg > 0.10) 
+        resetN4(avgP);
+    // find position that is lagging most
+    double exTot = avgP * nTries;
+    double exP = avgP * exTot;
+    double avg1P = 1 - avgP;
+    double sumExp = 0;
+    double worst = -1;
+    int worstID = 0;
+    for (int i = 1; i <= N4+1; i++)
+    {
+        if (i > N4) 
+            exP = exTot - sumExp;
+        double difP = exP - nit[i];
+        if (difP > worst)
+        {
+            worstID = i;
+            worst = difP;
+        }
+        sumExp += exP;
+        exP *= avg1P;
+    }
+    if (worstID <= 0)
+    {
+        worstID = N1;
+    }
+    // fill that position
+    nextGive = worstID;
+}
+
 
 // normalized_rng_t::roll ===================================================
 
@@ -228,20 +302,50 @@ int normalized_rng_t::roll( double chance )
   if( chance <= 0 ) return 0;
   if( chance >= 1 ) return 1;
 
-  double phase_shift = fixed_phase_shift;
-
-  if( phase_shift == 0 ) phase_shift  =  real();
-  if( phase_shift <  0 ) phase_shift *= -real();
-
+  nTries++;
   expected += chance;
-
-  if( ( actual + phase_shift ) < expected )
+  // select regular normalise (phase #1), or advanced (#2)
+  if (alg_phase <= 1)
   {
-    actual++;
-    return 1;
-  }
+	  //check if there is enough data to switch to #2 phase in algorithm
+	  if ((nTries== 10)&&(max_alg>=2))
+      {
+            //move to algorithm phase #2
+            double avgP = expected / nTries;
+            setN4(avgP);
+            alg_phase = 2;
+	  }
+	  // regular normalize 
+	  double phase_shift = fixed_phase_shift;
 
-  return 0;
+	  if( phase_shift == 0 ) phase_shift  =  real();
+	  if( phase_shift <  0 ) phase_shift *= -real();
+
+
+	  if( ( actual + phase_shift ) < expected )
+	  {
+		actual++;
+		return 1;
+	  }
+
+	  return 0;
+  } else
+  if (alg_phase == 2)	
+  {
+		nextGive--;
+		if (nextGive <= 0)
+		{
+			actual++;
+			int dist = nTries - lastOk;
+			if (dist > N4) dist = N4 + 1;
+			nit[dist]++;
+			lastOk = nTries;
+			findNextGive();
+			return true;
+		}
+		return false;
+  }
+  return false;
 }
 
 // normalized_rng_t::range ==================================================
@@ -263,7 +367,7 @@ double normalized_rng_t::gaussian( double mean,
 // normalized_rng_t::create =================================================
 
 normalized_rng_t* normalized_rng_t::create( sim_t* sim,
-					    const std::string& name )
+					    const std::string& name, int maxAlg )
 {
   int total_threads = sim -> threads;
   if( total_threads < 1 ) total_threads = 1;
@@ -274,7 +378,7 @@ normalized_rng_t* normalized_rng_t::create( sim_t* sim,
   if( sim -> variable_phase_shift ) phase_shift = 0;
   if( sim -> extended_phase_shift ) phase_shift = -( sim -> extended_phase_shift );
 
-  return new normalized_rng_t( name, sim -> rng, phase_shift );
+  return new normalized_rng_t( name, sim -> rng, phase_shift, maxAlg );
 }
 
 // ==========================================================================
