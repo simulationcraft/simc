@@ -319,12 +319,6 @@ void sim_t::combat( int iteration )
   {
     current_time = e -> time;
 
-    if( max_time > 0 && current_time > max_time ) 
-    {
-      if( debug ) log_t::output( this, "MaxTime reached, ending simulation" );     
-      delete e;
-      break;
-    }
     if( target -> initial_health > 0 && target -> current_health <= 0 )
     {
       target -> recalculate_health();

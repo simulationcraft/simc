@@ -81,12 +81,14 @@ void target_t::recalculate_health()
     current_health = total_dmg;
     initial_health = current_health * ( sim -> max_time / sim -> current_time );
   }
-  else if( current_health <= 0 )
+  else
   {
-    double adjust = initial_health * ( sim -> max_time - sim -> current_time ) / sim -> max_time;
-    initial_health += adjust / ( sim -> current_iteration + 1 );
+    double delta_time = sim -> max_time - sim -> current_time;
+    double adjust = initial_health * delta_time / sim -> max_time;
+    adjust /= sim -> current_iteration + 1; // dampening factor
+    initial_health += adjust;
   }
-  
+
   if( sim -> debug ) log_t::output( sim, "Target initial health calculated to be %.0f", initial_health );     
 }
 
