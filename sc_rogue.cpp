@@ -1440,14 +1440,10 @@ struct eviscerate_t : public rogue_attack_t
     base_dd_min = combo_point_dmg[ p -> _buffs.combo_points - 1 ].min;
     base_dd_max = combo_point_dmg[ p -> _buffs.combo_points - 1 ].max;
 
-    direct_power_mod = 0.05 * p -> _buffs.combo_points;
+    double range = 0.02 * p -> _buffs.combo_points;
 
-    if( ! sim -> normalized_dmg ) 
-    {
-      double range = 0.02 * p -> _buffs.combo_points;
-
-      direct_power_mod += sim -> rng -> range( -range, +range );
-    }
+    direct_power_mod  = 0.05 * p -> _buffs.combo_points;
+    direct_power_mod += sim -> rng -> range( -range, +range );
 
     rogue_attack_t::execute();
 

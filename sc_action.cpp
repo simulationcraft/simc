@@ -612,16 +612,7 @@ double action_t::calculate_direct_damage()
 {
   direct_dmg = resisted_dmg = blocked_dmg = 0;
 
-  double base_direct_dmg=0;
-
-  if( sim -> normalized_dmg )
-  {
-    base_direct_dmg = ( base_dd_min + base_dd_max ) / 2.0;
-  }
-  else
-  {
-    base_direct_dmg = sim -> rng -> range( base_dd_min, base_dd_max );
-  }
+  double base_direct_dmg = sim -> rng -> range( base_dd_min, base_dd_max );
 
   if( base_direct_dmg == 0 ) return 0;
 

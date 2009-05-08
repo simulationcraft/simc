@@ -380,7 +380,7 @@ struct sim_t : public app_t
   std::vector<std::string> party_encoding;
 
   // Normalized Random Number Generation
-  int normalized_dmg, normalized_rng, normalized_rng_sf, normalized_gauss;
+  int normalized_roll, normalized_roll_sf, normalized_range, normalized_gauss;
   int variable_phase_shift;
 
   // Timing Wheel Event Management
@@ -528,6 +528,7 @@ struct sim_t : public app_t
   bool      time_to_think( double proc_time ) { if( proc_time == 0 ) return false; return current_time - proc_time > reaction_time; }
   bool      cooldown_ready( double cooldown_time ) { return cooldown_time <= current_time; }
   int       roll( double chance );
+  double    range( double min, double max );
   double    gaussian( double mean, double stddev );
   player_t* find_player( const std::string& name );
 };
