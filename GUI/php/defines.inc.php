@@ -62,6 +62,7 @@ $ARR_SUPPORTED_CLASSES = array(
  */
 $ARR_PLAYER_RELATED_SOURCE_FILES = array(
 		'sc_player.cpp',
+		'sc_enchant.cpp',
 		'sc_unique_gear.cpp'
 	);
 ?>

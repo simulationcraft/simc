@@ -215,6 +215,27 @@
         <option name="spell_crit_per_intellect" label="Spell Crit Per Intellect" type="float" cpp_type="OPT_FLT" file="sc_player.cpp" optdoc_loc="player/all/base" optdoc_title="Base Stats" value=""/>
         <option name="gcd" label="Gcd" type="float" cpp_type="OPT_FLT" file="sc_player.cpp" optdoc_loc="player/all/base" optdoc_title="Base Stats" value=""/>
         <option name="id" label="Id" type="string" cpp_type="OPT_STRING" file="sc_player.cpp" optdoc_loc="player/all/base" optdoc_title="Base Stats" value=""/>
+        <option name="enchant_strength" label="Enchant Strength" type="float" cpp_type="OPT_FLT" file="sc_enchant.cpp" optdoc_loc="player/all/enchant/stats" optdoc_title="Stat Enchants" value=""/>
+        <option name="enchant_agility" label="Enchant Agility" type="float" cpp_type="OPT_FLT" file="sc_enchant.cpp" optdoc_loc="player/all/enchant/stats" optdoc_title="Stat Enchants" value=""/>
+        <option name="enchant_stamina" label="Enchant Stamina" type="float" cpp_type="OPT_FLT" file="sc_enchant.cpp" optdoc_loc="player/all/enchant/stats" optdoc_title="Stat Enchants" value=""/>
+        <option name="enchant_intellect" label="Enchant Intellect" type="float" cpp_type="OPT_FLT" file="sc_enchant.cpp" optdoc_loc="player/all/enchant/stats" optdoc_title="Stat Enchants" value=""/>
+        <option name="enchant_spirit" label="Enchant Spirit" type="float" cpp_type="OPT_FLT" file="sc_enchant.cpp" optdoc_loc="player/all/enchant/stats" optdoc_title="Stat Enchants" value=""/>
+        <option name="enchant_spell_power" label="Enchant Spell Power" type="float" cpp_type="OPT_FLT" file="sc_enchant.cpp" optdoc_loc="player/all/enchant/stats" optdoc_title="Stat Enchants" value=""/>
+        <option name="enchant_mp5" label="Enchant Mp5" type="float" cpp_type="OPT_FLT" file="sc_enchant.cpp" optdoc_loc="player/all/enchant/stats" optdoc_title="Stat Enchants" value=""/>
+        <option name="enchant_attack_power" label="Enchant Attack Power" type="float" cpp_type="OPT_FLT" file="sc_enchant.cpp" optdoc_loc="player/all/enchant/stats" optdoc_title="Stat Enchants" value=""/>
+        <option name="enchant_expertise_rating" label="Enchant Expertise Rating" type="float" cpp_type="OPT_FLT" file="sc_enchant.cpp" optdoc_loc="player/all/enchant/stats" optdoc_title="Stat Enchants" value=""/>
+        <option name="enchant_armor_penetration" label="Enchant Armor Penetration" type="float" cpp_type="OPT_FLT" file="sc_enchant.cpp" optdoc_loc="player/all/enchant/stats" optdoc_title="Stat Enchants" value=""/>
+        <option name="enchant_armor" label="Enchant Armor" type="float" cpp_type="OPT_FLT" file="sc_enchant.cpp" optdoc_loc="player/all/enchant/stats" optdoc_title="Stat Enchants" value=""/>
+        <option name="enchant_haste_rating" label="Enchant Haste Rating" type="float" cpp_type="OPT_FLT" file="sc_enchant.cpp" optdoc_loc="player/all/enchant/stats" optdoc_title="Stat Enchants" value=""/>
+        <option name="enchant_hit_rating" label="Enchant Hit Rating" type="float" cpp_type="OPT_FLT" file="sc_enchant.cpp" optdoc_loc="player/all/enchant/stats" optdoc_title="Stat Enchants" value=""/>
+        <option name="enchant_crit_rating" label="Enchant Crit Rating" type="float" cpp_type="OPT_FLT" file="sc_enchant.cpp" optdoc_loc="player/all/enchant/stats" optdoc_title="Stat Enchants" value=""/>
+        <option name="enchant_health" label="Enchant Health" type="float" cpp_type="OPT_FLT" file="sc_enchant.cpp" optdoc_loc="player/all/enchant/stats" optdoc_title="Stat Enchants" value=""/>
+        <option name="enchant_mana" label="Enchant Mana" type="float" cpp_type="OPT_FLT" file="sc_enchant.cpp" optdoc_loc="player/all/enchant/stats" optdoc_title="Stat Enchants" value=""/>
+        <option name="enchant_rage" label="Enchant Rage" type="float" cpp_type="OPT_FLT" file="sc_enchant.cpp" optdoc_loc="player/all/enchant/stats" optdoc_title="Stat Enchants" value=""/>
+        <option name="enchant_energy" label="Enchant Energy" type="float" cpp_type="OPT_FLT" file="sc_enchant.cpp" optdoc_loc="player/all/enchant/stats" optdoc_title="Stat Enchants" value=""/>
+        <option name="enchant_focus" label="Enchant Focus" type="float" cpp_type="OPT_FLT" file="sc_enchant.cpp" optdoc_loc="player/all/enchant/stats" optdoc_title="Stat Enchants" value=""/>
+        <option name="enchant_runic" label="Enchant Runic" type="float" cpp_type="OPT_FLT" file="sc_enchant.cpp" optdoc_loc="player/all/enchant/stats" optdoc_title="Stat Enchants" value=""/>
+        <option name="spellsurge" label="Spellsurge" type="boolean" cpp_type="OPT_BOOL" file="sc_enchant.cpp" optdoc_loc="player/all/enchant/procs" optdoc_title="Proc Enchants" value=""/>
         <option name="ashtongue_talisman" label="Ashtongue Talisman" type="boolean" cpp_type="OPT_BOOL" file="sc_unique_gear.cpp" optdoc_loc="player/all/tier" optdoc_title="Tier Bonuses" value=""/>
         <option name="tier4_2pc" label="Tier4 2pc" type="boolean" cpp_type="OPT_BOOL" file="sc_unique_gear.cpp" optdoc_loc="player/all/tier" optdoc_title="Tier Bonuses" value=""/>
         <option name="tier4_4pc" label="Tier4 4pc" type="boolean" cpp_type="OPT_BOOL" file="sc_unique_gear.cpp" optdoc_loc="player/all/tier" optdoc_title="Tier Bonuses" value=""/>
@@ -265,27 +286,6 @@
       </class>
     </supported_classes>
     <global_options>
-      <option name="enchant_strength" label="Enchant Strength" type="float" cpp_type="OPT_FLT" file="sc_enchant.cpp" optdoc_loc="player/all/enchant/stats" optdoc_title="Stat Enchants" value=""/>
-      <option name="enchant_agility" label="Enchant Agility" type="float" cpp_type="OPT_FLT" file="sc_enchant.cpp" optdoc_loc="player/all/enchant/stats" optdoc_title="Stat Enchants" value=""/>
-      <option name="enchant_stamina" label="Enchant Stamina" type="float" cpp_type="OPT_FLT" file="sc_enchant.cpp" optdoc_loc="player/all/enchant/stats" optdoc_title="Stat Enchants" value=""/>
-      <option name="enchant_intellect" label="Enchant Intellect" type="float" cpp_type="OPT_FLT" file="sc_enchant.cpp" optdoc_loc="player/all/enchant/stats" optdoc_title="Stat Enchants" value=""/>
-      <option name="enchant_spirit" label="Enchant Spirit" type="float" cpp_type="OPT_FLT" file="sc_enchant.cpp" optdoc_loc="player/all/enchant/stats" optdoc_title="Stat Enchants" value=""/>
-      <option name="enchant_spell_power" label="Enchant Spell Power" type="float" cpp_type="OPT_FLT" file="sc_enchant.cpp" optdoc_loc="player/all/enchant/stats" optdoc_title="Stat Enchants" value=""/>
-      <option name="enchant_mp5" label="Enchant Mp5" type="float" cpp_type="OPT_FLT" file="sc_enchant.cpp" optdoc_loc="player/all/enchant/stats" optdoc_title="Stat Enchants" value=""/>
-      <option name="enchant_attack_power" label="Enchant Attack Power" type="float" cpp_type="OPT_FLT" file="sc_enchant.cpp" optdoc_loc="player/all/enchant/stats" optdoc_title="Stat Enchants" value=""/>
-      <option name="enchant_expertise_rating" label="Enchant Expertise Rating" type="float" cpp_type="OPT_FLT" file="sc_enchant.cpp" optdoc_loc="player/all/enchant/stats" optdoc_title="Stat Enchants" value=""/>
-      <option name="enchant_armor_penetration" label="Enchant Armor Penetration" type="float" cpp_type="OPT_FLT" file="sc_enchant.cpp" optdoc_loc="player/all/enchant/stats" optdoc_title="Stat Enchants" value=""/>
-      <option name="enchant_armor" label="Enchant Armor" type="float" cpp_type="OPT_FLT" file="sc_enchant.cpp" optdoc_loc="player/all/enchant/stats" optdoc_title="Stat Enchants" value=""/>
-      <option name="enchant_haste_rating" label="Enchant Haste Rating" type="float" cpp_type="OPT_FLT" file="sc_enchant.cpp" optdoc_loc="player/all/enchant/stats" optdoc_title="Stat Enchants" value=""/>
-      <option name="enchant_hit_rating" label="Enchant Hit Rating" type="float" cpp_type="OPT_FLT" file="sc_enchant.cpp" optdoc_loc="player/all/enchant/stats" optdoc_title="Stat Enchants" value=""/>
-      <option name="enchant_crit_rating" label="Enchant Crit Rating" type="float" cpp_type="OPT_FLT" file="sc_enchant.cpp" optdoc_loc="player/all/enchant/stats" optdoc_title="Stat Enchants" value=""/>
-      <option name="enchant_health" label="Enchant Health" type="float" cpp_type="OPT_FLT" file="sc_enchant.cpp" optdoc_loc="player/all/enchant/stats" optdoc_title="Stat Enchants" value=""/>
-      <option name="enchant_mana" label="Enchant Mana" type="float" cpp_type="OPT_FLT" file="sc_enchant.cpp" optdoc_loc="player/all/enchant/stats" optdoc_title="Stat Enchants" value=""/>
-      <option name="enchant_rage" label="Enchant Rage" type="float" cpp_type="OPT_FLT" file="sc_enchant.cpp" optdoc_loc="player/all/enchant/stats" optdoc_title="Stat Enchants" value=""/>
-      <option name="enchant_energy" label="Enchant Energy" type="float" cpp_type="OPT_FLT" file="sc_enchant.cpp" optdoc_loc="player/all/enchant/stats" optdoc_title="Stat Enchants" value=""/>
-      <option name="enchant_focus" label="Enchant Focus" type="float" cpp_type="OPT_FLT" file="sc_enchant.cpp" optdoc_loc="player/all/enchant/stats" optdoc_title="Stat Enchants" value=""/>
-      <option name="enchant_runic" label="Enchant Runic" type="float" cpp_type="OPT_FLT" file="sc_enchant.cpp" optdoc_loc="player/all/enchant/stats" optdoc_title="Stat Enchants" value=""/>
-      <option name="spellsurge" label="Spellsurge" type="boolean" cpp_type="OPT_BOOL" file="sc_enchant.cpp" optdoc_loc="player/all/enchant/procs" optdoc_title="Proc Enchants" value=""/>
       <option name="calculate_scale_factors" label="Calculate Scale Factors" type="boolean" cpp_type="OPT_BOOL" file="sc_scaling.cpp" optdoc_loc="global/scale_factors" optdoc_title="Scale Factors" value="0"/>
       <option name="center_scale_delta" label="Center Scale Delta" type="boolean" cpp_type="OPT_BOOL" file="sc_scaling.cpp" optdoc_loc="global/scale_factors" optdoc_title="Scale Factors" value=""/>
       <option name="scale_factor_noise" label="Scale Factor Noise" type="float" cpp_type="OPT_FLT" file="sc_scaling.cpp" optdoc_loc="global/scale_factors" optdoc_title="Scale Factors" value=""/>
