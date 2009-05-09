@@ -3692,9 +3692,12 @@ void hunter_t::init_scaling()
 {
   player_t::init_scaling();
 
+  scales_with[ STAT_STRENGTH  ] = 0;
   scales_with[ STAT_INTELLECT ] = 1;
 
   if( talents.hunter_vs_wild ) scales_with[ STAT_STAMINA ] = 1;
+
+  scales_with[ STAT_EXPERTISE_RATING ] = 0;
 }
 
 // hunter_t::reset ===========================================================
