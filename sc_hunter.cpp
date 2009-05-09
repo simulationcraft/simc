@@ -96,6 +96,21 @@ struct hunter_t : public player_t
   uptime_t* uptimes_master_tactician;
   uptime_t* uptimes_rapid_fire;
 
+  // Random Number Generation
+  rng_t* rng_cobra_strikes;
+  rng_t* rng_expose_weakness;
+  rng_t* rng_frenzy;
+  rng_t* rng_hunting_party;
+  rng_t* rng_improved_aoth;
+  rng_t* rng_improved_steady_shot;
+  rng_t* rng_invigoration;
+  rng_t* rng_lock_and_load;
+  rng_t* rng_master_tactician;
+  rng_t* rng_owls_focus;
+  rng_t* rng_rabid_power;
+  rng_t* rng_thrill_of_the_hunt;
+  rng_t* rng_wild_quiver;
+
   // Auto-Attack
   attack_t* ranged_attack;
 
@@ -206,28 +221,6 @@ struct hunter_t : public player_t
     active_scorpid_sting   = 0;
     active_serpent_sting   = 0;
     active_viper_sting     = 0;
-
-    // Gains
-    gains_chimera_viper        = get_gain( "chimera_viper" );
-    gains_invigoration         = get_gain( "invigoration" );
-    gains_rapid_recuperation   = get_gain( "rapid_recuperation" );
-    gains_roar_of_recovery     = get_gain( "roar_of_recovery" );
-    gains_thrill_of_the_hunt   = get_gain( "thrill_of_the_hunt" );
-    gains_viper_aspect_passive = get_gain( "viper_aspect_passive" );
-    gains_viper_aspect_shot    = get_gain( "viper_aspect_shot" );
-
-    // Procs
-    procs_wild_quiver = get_proc( "wild_quiver" );
-    procs_lock_and_load = get_proc( "lock_and_load" );
-
-    // Up-Times
-    uptimes_aspect_of_the_viper         = get_uptime( "aspect_of_the_viper" );
-    uptimes_expose_weakness             = get_uptime( "expose_weakness" );
-    uptimes_furious_howl                = get_uptime( "furious_howl" );
-    uptimes_improved_aspect_of_the_hawk = get_uptime( "improved_aspect_of_the_hawk" );
-    uptimes_improved_steady_shot        = get_uptime( "improved_steady_shot" );
-    uptimes_master_tactician            = get_uptime( "master_tactician" );
-    uptimes_rapid_fire                  = get_uptime( "rapid_fire" );
     
     ammo_dps = 0;
     quiver_haste = 0.0;
@@ -237,6 +230,10 @@ struct hunter_t : public player_t
   // Character Definition
   virtual void      init();
   virtual void      init_base();
+  virtual void      init_gains();
+  virtual void      init_procs();
+  virtual void      init_uptimes();
+  virtual void      init_rng();
   virtual void      init_scaling();
   virtual void      reset();
   virtual double    composite_attack_power();
@@ -359,9 +356,6 @@ struct hunter_pet_t : public pet_t
   // Gains
   gain_t* gains_go_for_the_throat;
 
-  // Procs
-  proc_t* procs_placeholder;
-
   // Uptimes
   uptime_t* uptimes_frenzy;
   uptime_t* uptimes_monstrous_bite;
@@ -398,17 +392,6 @@ struct hunter_pet_t : public pet_t
     main_hand_weapon.swing_time = 2.0;
 
     stamina_per_owner = 0.45;
-
-    // Gains
-    gains_go_for_the_throat = get_gain( "go_for_the_throat" );
-
-    // Procs
-    procs_placeholder = get_proc( "placeholder" );
-
-    // Uptimes
-    uptimes_frenzy         = o -> get_uptime( "frenzy" );
-    uptimes_monstrous_bite = o -> get_uptime( "monstrous_bite" );
-    uptimes_savage_rend    = o -> get_uptime( "savage_rend" );
 
     bool unsupported = false;
 
@@ -514,6 +497,20 @@ struct hunter_pet_t : public pet_t
 
     focus_regen_per_second  = ( 24.5 / 4.0 );
     focus_regen_per_second *= 1.0 + o -> talents.bestial_discipline * 0.50;
+  }
+
+  virtual void init_gains()
+  {
+    pet_t::init_gains();
+    gains_go_for_the_throat = get_gain( "go_for_the_throat" );
+  }
+
+  virtual void init_uptimes()
+  {
+    pet_t::init_uptimes();
+    uptimes_frenzy         = owner -> get_uptime( "frenzy" );
+    uptimes_monstrous_bite = owner -> get_uptime( "monstrous_bite" );
+    uptimes_savage_rend    = owner -> get_uptime( "savage_rend" );
   }
 
   virtual double composite_attack_power()
@@ -677,7 +674,7 @@ static void trigger_cobra_strikes( attack_t* a )
 
   if ( ! p -> talents.cobra_strikes )
     return;
-  if ( ! a -> sim -> roll( p -> talents.cobra_strikes * 0.2 ) )
+  if ( ! p -> rng_cobra_strikes -> roll( p -> talents.cobra_strikes * 0.2 ) )
     return;
 
   struct cobra_strikes_expiration_t : public event_t
@@ -735,7 +732,7 @@ static void trigger_expose_weakness( attack_t* a )
   if ( ! p -> talents.expose_weakness )
     return;
 
-  if ( ! a -> sim -> roll( p -> talents.expose_weakness / 3.0 ) )
+  if ( ! p -> rng_expose_weakness -> roll( p -> talents.expose_weakness / 3.0 ) )
     return;
 
   struct expose_weakness_expiration_t : public event_t
@@ -842,7 +839,7 @@ static void trigger_frenzy( action_t* a )
   hunter_t*     o = p -> owner -> cast_hunter();
 
   if ( ! o -> talents.frenzy ) return;
-  if ( ! a -> sim -> roll( o -> talents.frenzy * 0.2 ) ) return;
+  if ( ! o -> rng_frenzy -> roll( o -> talents.frenzy * 0.2 ) ) return;
 
   struct frenzy_expiration_t : public event_t
   {
@@ -899,7 +896,7 @@ static void trigger_hunting_party( attack_t* a )
 
   double chance = p -> talents.hunting_party / 3.0;
 
-  if ( ! a -> sim -> roll( chance ) )
+  if ( ! p -> rng_hunting_party -> roll( chance ) )
     return;
 
   p -> trigger_replenishment();
@@ -917,7 +914,7 @@ static void trigger_improved_aspect_of_the_hawk( attack_t* a )
   if ( p -> active_aspect != ASPECT_HAWK )
     return;
 
-  if ( ! a -> sim -> roll( 0.10 ) )
+  if ( ! p -> rng_improved_aoth -> roll( 0.10 ) )
     return;
 
   struct improved_aspect_of_the_hawk_expiration_t : public event_t
@@ -963,7 +960,7 @@ static void trigger_improved_steady_shot( attack_t* a )
   if ( ! p -> talents.improved_steady_shot )
     return;
 
-  if ( ! a -> sim -> roll( p -> talents.improved_steady_shot * 0.05 ) )
+  if ( ! p -> rng_improved_steady_shot -> roll( p -> talents.improved_steady_shot * 0.05 ) )
     return;
 
   struct improved_steady_shot_expiration_t : public event_t
@@ -1012,7 +1009,7 @@ static void trigger_invigoration( action_t* a )
   if( ! o -> talents.invigoration )
     return;
 
-  if( ! a -> sim -> roll( o -> talents.invigoration * 0.50 ) )
+  if( ! o -> rng_invigoration -> roll( o -> talents.invigoration * 0.50 ) )
     return;
 
   o -> resource_gain( RESOURCE_MANA, 0.01 * o -> resource_max[ RESOURCE_MANA ], o -> gains_invigoration );
@@ -1050,7 +1047,7 @@ static void trigger_lock_and_load( attack_t* a )
   else
     // NB: talent calc says 3%,7%,10%, assuming it's really 10% * (1/3,2/3,3/3)
     chance = p -> talents.lock_and_load * 0.1 / 3;
-  if ( ! a -> sim -> roll( chance ) )
+  if ( ! p -> rng_lock_and_load -> roll( chance ) )
     return;
 
   struct lock_and_load_expiration_t : public event_t
@@ -1112,7 +1109,7 @@ static void trigger_master_tactician( attack_t* a )
   if ( ! p -> talents.master_tactician )
     return;
 
-  if ( ! a -> sim -> roll( 0.10 ) )
+  if ( ! p -> rng_master_tactician -> roll( 0.10 ) )
     return;
 
   struct master_tactician_expiration_t : public event_t
@@ -1151,11 +1148,12 @@ static void trigger_master_tactician( attack_t* a )
 static void trigger_owls_focus( action_t* a )
 {
   hunter_pet_t* p = (hunter_pet_t*) a -> player -> cast_pet();
+  hunter_t* o = p -> owner -> cast_hunter();
 
   if( ! p -> talents.owls_focus )
     return;
 
-  if( ! a -> sim -> roll( p -> talents.owls_focus * 0.15 ) )
+  if( ! o -> rng_owls_focus -> roll( p -> talents.owls_focus * 0.15 ) )
     return;
 
   struct owls_focus_expiration_t : public event_t
@@ -1253,13 +1251,14 @@ static void trigger_piercing_shots( action_t* a )
 static void trigger_rabid_power( attack_t* a )
 {
   hunter_pet_t* p = (hunter_pet_t*) a -> player -> cast_pet();
+  hunter_t* o = p -> owner -> cast_hunter();
 
   if ( ! p -> talents.rabid )
     return;
   if ( ! p -> _buffs.rabid )
     return;
   // FIXME: Probably a ppm, not flat chance
-  if ( p -> _buffs.rabid_power_stack == 5 || ! a -> sim -> roll( 0.5 ) )
+  if ( p -> _buffs.rabid_power_stack == 5 || ! o -> rng_rabid_power -> roll( 0.5 ) )
     return;
 
   p -> _buffs.rabid_power_stack++;
@@ -1274,7 +1273,7 @@ static void trigger_thrill_of_the_hunt( attack_t* a )
   if ( ! p -> talents.thrill_of_the_hunt )
     return;
 
-  if ( ! a -> sim -> roll( p -> talents.thrill_of_the_hunt / 3.0 ) )
+  if ( ! p -> rng_thrill_of_the_hunt -> roll( p -> talents.thrill_of_the_hunt / 3.0 ) )
     return;
 
   p -> resource_gain( RESOURCE_MANA, a -> resource_consumed * 0.40, p -> gains_thrill_of_the_hunt );
@@ -1291,7 +1290,7 @@ static void trigger_tier8_4pc( attack_t* a )
 
   // FIXME: Does it have a cooldown?
 
-  if ( ! a -> sim -> roll( 0.1 ) )
+  if ( ! p -> rngs.tier8_4pc -> roll( 0.1 ) )
     return;
 
   struct precision_shots_expiration_t : public event_t
@@ -1341,7 +1340,7 @@ static void trigger_wild_quiver( attack_t* a )
   double chance = 0;
   chance = p -> talents.wild_quiver * 0.04;
 
-  if(  a -> sim -> roll( chance ) )
+  if( p -> rng_wild_quiver -> roll( chance ) )
   {
     // FIXME! What hit/crit talents apply? At least Lethal Shots & Master Marksman
     // FIXME! Which proc-related talents can it trigger?
@@ -3684,6 +3683,64 @@ void hunter_t::init_base()
   mana_per_intellect = 15;
 
   position = POSITION_RANGED;
+}
+
+// hunter_t::init_gains ======================================================
+
+void hunter_t::init_gains()
+{
+  player_t::init_gains();
+  gains_chimera_viper        = get_gain( "chimera_viper" );
+  gains_invigoration         = get_gain( "invigoration" );
+  gains_rapid_recuperation   = get_gain( "rapid_recuperation" );
+  gains_roar_of_recovery     = get_gain( "roar_of_recovery" );
+  gains_thrill_of_the_hunt   = get_gain( "thrill_of_the_hunt" );
+  gains_viper_aspect_passive = get_gain( "viper_aspect_passive" );
+  gains_viper_aspect_shot    = get_gain( "viper_aspect_shot" );
+}
+
+// hunter_t::init_procs ======================================================
+
+void hunter_t::init_procs()
+{
+  player_t::init_procs();
+  procs_wild_quiver = get_proc( "wild_quiver" );
+  procs_lock_and_load = get_proc( "lock_and_load" );
+}
+
+// hunter_t::init_uptimes ====================================================
+
+void hunter_t::init_uptimes()
+{
+  player_t::init_uptimes();
+  uptimes_aspect_of_the_viper         = get_uptime( "aspect_of_the_viper" );
+  uptimes_expose_weakness             = get_uptime( "expose_weakness" );
+  uptimes_furious_howl                = get_uptime( "furious_howl" );
+  uptimes_improved_aspect_of_the_hawk = get_uptime( "improved_aspect_of_the_hawk" );
+  uptimes_improved_steady_shot        = get_uptime( "improved_steady_shot" );
+  uptimes_master_tactician            = get_uptime( "master_tactician" );
+  uptimes_rapid_fire                  = get_uptime( "rapid_fire" );
+}
+
+// hunter_t::init_rng ========================================================
+
+void hunter_t::init_rng()
+{
+  player_t::init_rng();
+
+  rng_cobra_strikes        = get_rng( "cobra_strikes" );
+  rng_expose_weakness      = get_rng( "expose_weakness" );
+  rng_frenzy               = get_rng( "frenzy" );
+  rng_hunting_party        = get_rng( "hunting_party" );
+  rng_improved_aoth        = get_rng( "improved_aspect_of_the_hawk" );
+  rng_improved_steady_shot = get_rng( "improved_steady_shot" );
+  rng_invigoration         = get_rng( "invigoration" );
+  rng_lock_and_load        = get_rng( "lock_and_load" );
+  rng_master_tactician     = get_rng( "master_tactician" );
+  rng_owls_focus           = get_rng( "owls_focus" );
+  rng_rabid_power          = get_rng( "rabid_power" );
+  rng_thrill_of_the_hunt   = get_rng( "thrill_of_the_hunt" );
+  rng_wild_quiver          = get_rng( "wild_quiver" );
 }
 
 // hunter_t::init_scaling ====================================================
