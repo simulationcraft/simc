@@ -3479,7 +3479,7 @@ bool rogue_t::parse_option( const std::string& name,
     { "vile_poisons",               OPT_INT, &( talents.vile_poisons               ) },
     { "vitality",                   OPT_INT, &( talents.vitality                   ) },
     { "weapon_expertise",           OPT_INT, &( talents.weapon_expertise           ) },
-    // @option_doc loc=player/glyphs title="Glyphs"
+    // @option_doc loc=player/rogue/glyphs title="Glyphs"
     { "glyph_adrenaline_rush",      OPT_BOOL, &( glyphs.adrenaline_rush            ) },
     { "glyph_backstab",             OPT_BOOL, &( glyphs.backstab                   ) },
     { "glyph_blade_flurry",         OPT_BOOL, &( glyphs.blade_flurry               ) },
@@ -3498,7 +3498,7 @@ bool rogue_t::parse_option( const std::string& name,
     { "glyph_slice_and_dice",       OPT_BOOL, &( glyphs.slice_and_dice             ) },
     { "glyph_tricks_of_the_trade",  OPT_BOOL, &( glyphs.tricks_of_the_trade        ) },
     { "glyph_vigor",                OPT_BOOL, &( glyphs.vigor                      ) },
-    // @option_doc loc=player/misc title="Misc"
+    // @option_doc loc=player/rogue/misc title="Misc"
     { "honor_among_thieves_interval", OPT_FLT,    &( honor_among_thieves_interval   ) },
     { "tricks_of_the_trade_target",   OPT_STRING, &( tricks_of_the_trade_target_str ) },
     { NULL, OPT_UNKNOWN }

@@ -2137,11 +2137,11 @@ bool priest_t::parse_option( const std::string& name,
     { "vampiric_embrace",              OPT_INT,  &( talents.vampiric_embrace              ) },
     { "vampiric_touch",                OPT_INT,  &( talents.vampiric_touch                ) },
     { "veiled_shadows",                OPT_INT,  &( talents.veiled_shadows                ) },
-    // @option_doc loc=player/glyphs title="Glyphs"
+    // @option_doc loc=player/priest/glyphs title="Glyphs"
     { "glyph_shadow_word_death",       OPT_BOOL, &( glyphs.shadow_word_death              ) },
     { "glyph_shadow_word_pain",        OPT_BOOL, &( glyphs.shadow_word_pain               ) },
     { "glyph_shadow",                  OPT_BOOL, &( glyphs.shadow                         ) },
-    // @option_doc loc=player/misc title="Misc"
+    // @option_doc loc=player/priest/misc title="Misc"
     { "devious_mind_delay",            OPT_FLT,  &( devious_mind_delay                    ) },
     // Deprecated 
     { "glyph_blue_promises",    OPT_DEPRECATED, NULL },

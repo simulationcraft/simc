@@ -3460,7 +3460,7 @@ bool druid_t::parse_option( const std::string& name,
     { "starlight_wrath",           OPT_INT,  &( talents.starlight_wrath           ) },
     { "vengeance",                 OPT_INT,  &( talents.vengeance                 ) },
     { "wrath_of_cenarius",         OPT_INT,  &( talents.wrath_of_cenarius         ) },
-    // @option_doc loc=player/glyphs title="Glyphs"
+    // @option_doc loc=player/druid/glyphs title="Glyphs"
     { "glyph_berserk",             OPT_BOOL,  &( glyphs.berserk                   ) },
     { "glyph_insect_swarm",        OPT_BOOL,  &( glyphs.insect_swarm              ) },
     { "glyph_innervate",           OPT_BOOL,  &( glyphs.innervate                 ) },
@@ -3471,7 +3471,7 @@ bool druid_t::parse_option( const std::string& name,
     { "glyph_shred",               OPT_BOOL,  &( glyphs.shred                     ) },
     { "glyph_starfire",            OPT_BOOL,  &( glyphs.starfire                  ) },
     { "glyph_starfall",            OPT_BOOL,  &( glyphs.starfall                  ) },
-    // @option_doc loc=player/idols title="Idols"
+    // @option_doc loc=player/druid/idols title="Idols"
     { "idol_of_the_corruptor",      OPT_BOOL,  &( idols.corruptor                 ) },
     { "idol_of_the_crying_wind",    OPT_BOOL,  &( idols.crying_wind               ) },
     { "idol_of_the_ravenous_beast", OPT_BOOL,  &( idols.ravenous_beast            ) },

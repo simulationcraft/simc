@@ -3421,7 +3421,7 @@ bool mage_t::parse_option( const std::string& name,
     { "winters_chill",             OPT_INT,   &( talents.winters_chill             ) },
     { "winters_grasp",             OPT_INT,   &( talents.winters_grasp             ) },
     { "world_in_flames",           OPT_INT,   &( talents.world_in_flames           ) },
-    // @option_doc loc=player/glyphs title="Glyphs"
+    // @option_doc loc=player/mage/glyphs title="Glyphs"
     { "glyph_arcane_barrage",      OPT_BOOL,   &( glyphs.arcane_barrage            ) },
     { "glyph_arcane_blast",        OPT_BOOL,   &( glyphs.arcane_blast              ) },
     { "glyph_arcane_missiles",     OPT_BOOL,   &( glyphs.arcane_missiles           ) },
@@ -3437,7 +3437,7 @@ bool mage_t::parse_option( const std::string& name,
     { "glyph_molten_armor",        OPT_BOOL,   &( glyphs.molten_armor              ) },
     { "glyph_water_elemental",     OPT_BOOL,   &( glyphs.water_elemental           ) },
     { "glyph_frostfire",           OPT_BOOL,   &( glyphs.frostfire                 ) },
-    // @option_doc loc=player/misc title="Misc"
+    // @option_doc loc=player/mage/misc title="Misc"
     { "armor_type",                OPT_STRING, &( armor_type_str                   ) },
     { "focus_magic_target",        OPT_STRING, &( focus_magic_target_str           ) },
     { NULL, OPT_UNKNOWN }

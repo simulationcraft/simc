@@ -2426,7 +2426,7 @@ bool warrior_t::parse_option( const std::string& name,
     { "vitality",                        OPT_INT, &( talents.vitality                        ) },
     { "weapon_mastery",                  OPT_INT, &( talents.weapon_mastery                  ) },
     { "wrecking_crew",                   OPT_INT, &( talents.wrecking_crew                   ) },
-    // @option_doc loc=player/glyphs title="Glyphs"
+    // @option_doc loc=player/warrior/glyphs title="Glyphs"
     { "glyph_of_bladestorm",             OPT_BOOL, &( glyphs.bladestorm                      ) },
     { "glyph_of_execution",              OPT_BOOL, &( glyphs.execution                       ) },
     { "glyph_of_heroic_strike",          OPT_BOOL, &( glyphs.heroic_strike                   ) },

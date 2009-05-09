@@ -2639,7 +2639,7 @@ bool player_t::parse_option( const std::string& name,
 {
   option_t options[] =
   {
-    // @option_doc loc=player/general title="General"
+    // @option_doc loc=player/all/general title="General"
     { "name",                                 OPT_STRING, &( name_str                                       ) },
     { "race",                                 OPT_STRING, &( race_str                                       ) },
     { "level",                                OPT_INT,    &( level                                          ) },
@@ -2648,11 +2648,11 @@ bool player_t::parse_option( const std::string& name,
     { "actions",                              OPT_STRING, &( action_list_str                                ) },
     { "sleeping",                             OPT_BOOL,   &( sleeping                                       ) },
     { "quiet",                                OPT_BOOL,   &( quiet                                            ) },
-    // @option_doc loc=player/weapons title="Weapon Descriptions"
+    // @option_doc loc=player/all/weapons title="Weapon Descriptions"
     { "main_hand",                            OPT_STRING, &( main_hand_str                                  ) },
     { "off_hand",                             OPT_STRING, &( off_hand_str                                   ) },
     { "ranged",                               OPT_STRING, &( ranged_str                                     ) },
-    // @option_doc loc=player/gear title="Gear Stats"
+    // @option_doc loc=player/all/gear title="Gear Stats"
     { "gear_strength",                        OPT_FLT,  &( gear_stats.attribute[ ATTR_STRENGTH  ]           ) },
     { "gear_agility",                         OPT_FLT,  &( gear_stats.attribute[ ATTR_AGILITY   ]           ) },
     { "gear_stamina",                         OPT_FLT,  &( gear_stats.attribute[ ATTR_STAMINA   ]           ) },
@@ -2673,7 +2673,7 @@ bool player_t::parse_option( const std::string& name,
     { "gear_focus",                           OPT_FLT,  &( gear_stats.resource[ RESOURCE_FOCUS  ]           ) },
     { "gear_runic",                           OPT_FLT,  &( gear_stats.resource[ RESOURCE_RUNIC  ]           ) }, 
     { "gear_armor",                           OPT_FLT,  &( gear_stats.armor                                 ) },
-    // @option_doc loc=player/gems title="Gem Stats"
+    // @option_doc loc=player/all/gems title="Gem Stats"
     { "gem_strength",                         OPT_FLT,  &( gem_stats.attribute[ ATTR_STRENGTH  ]            ) },
     { "gem_agility",                          OPT_FLT,  &( gem_stats.attribute[ ATTR_AGILITY   ]            ) },
     { "gem_stamina",                          OPT_FLT,  &( gem_stats.attribute[ ATTR_STAMINA   ]            ) },
@@ -2694,7 +2694,7 @@ bool player_t::parse_option( const std::string& name,
     { "gem_focus",                            OPT_FLT,  &( gem_stats.resource[ RESOURCE_FOCUS  ]            ) },
     { "gem_runic",                            OPT_FLT,  &( gem_stats.resource[ RESOURCE_RUNIC  ]            ) },
     { "gem_armor",                            OPT_FLT,  &( gem_stats.armor                                  ) },
-    // @option_doc loc=player/base title="Base Stats"
+    // @option_doc loc=player/all/base title="Base Stats"
     { "base_strength",                        OPT_FLT,    &( attribute_base[ ATTR_STRENGTH  ]               ) },
     { "base_agility",                         OPT_FLT,    &( attribute_base[ ATTR_AGILITY   ]               ) },
     { "base_stamina",                         OPT_FLT,    &( attribute_base[ ATTR_STAMINA   ]               ) },

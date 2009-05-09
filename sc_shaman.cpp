@@ -3425,7 +3425,7 @@ bool shaman_t::parse_option( const std::string& name,
     { "unrelenting_storm",         OPT_INT,  &( talents.unrelenting_storm         ) },
     { "unleashed_rage",            OPT_INT,  &( talents.unleashed_rage            ) },
     { "weapon_mastery",            OPT_INT,  &( talents.weapon_mastery            ) },
-    // @option_doc loc=player/glyphs title="Glyphs"
+    // @option_doc loc=player/shaman/glyphs title="Glyphs"
     { "glyph_elemental_mastery",   OPT_BOOL, &( glyphs.elemental_mastery          ) },
     { "glyph_feral_spirit",        OPT_BOOL, &( glyphs.feral_spirit               ) },
     { "glyph_flame_shock",         OPT_BOOL, &( glyphs.flame_shock                ) },
@@ -3440,7 +3440,7 @@ bool shaman_t::parse_option( const std::string& name,
     { "glyph_thunderstorm",        OPT_BOOL, &( glyphs.thunderstorm               ) },
     { "glyph_totem_of_wrath",      OPT_BOOL, &( glyphs.totem_of_wrath             ) },
     { "glyph_windfury_weapon",     OPT_BOOL, &( glyphs.windfury_weapon            ) },
-    // @option_doc loc=player/totems title="Totems"
+    // @option_doc loc=player/shaman/totems title="Totems"
     { "totem_of_dueling",          OPT_BOOL, &( totems.dueling                    ) },
     { "totem_of_hex",              OPT_BOOL, &( totems.hex                        ) },
     { "totem_of_the_dancing_flame",OPT_BOOL, &( totems.dancing_flame              ) },

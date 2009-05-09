@@ -4743,7 +4743,7 @@ bool warlock_t::parse_option( const std::string& name,
     { "suppression",              OPT_INT,  &( talents.suppression              ) },
     { "unholy_power",             OPT_INT,  &( talents.unholy_power             ) },
     { "unstable_affliction",      OPT_INT,  &( talents.unstable_affliction      ) },
-    // @option_doc loc=player/glyphs title="Glyphs"
+    // @option_doc loc=player/warlock/glyphs title="Glyphs"
     { "glyph_chaos_bolt",          OPT_BOOL, &( glyphs.chaos_bolt               ) },
     { "glyph_conflagrate",         OPT_BOOL, &( glyphs.conflagrate              ) },
     { "glyph_corruption",          OPT_BOOL, &( glyphs.corruption               ) },

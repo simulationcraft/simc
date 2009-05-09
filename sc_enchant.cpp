@@ -318,7 +318,7 @@ bool enchant_t::parse_option( player_t*          p,
 {
   option_t options[] =
   {
-    // @option_doc loc=player/enchant/stats title="Stat Enchants"
+    // @option_doc loc=player/all/enchant/stats title="Stat Enchants"
     { "enchant_strength",          OPT_FLT,  &( p -> enchant -> stats.attribute[ ATTR_STRENGTH  ] ) },
     { "enchant_agility",           OPT_FLT,  &( p -> enchant -> stats.attribute[ ATTR_AGILITY   ] ) },
     { "enchant_stamina",           OPT_FLT,  &( p -> enchant -> stats.attribute[ ATTR_STAMINA   ] ) },
@@ -339,7 +339,7 @@ bool enchant_t::parse_option( player_t*          p,
     { "enchant_energy",            OPT_FLT,  &( p -> enchant -> stats.resource[ RESOURCE_ENERGY ] ) },
     { "enchant_focus",             OPT_FLT,  &( p -> enchant -> stats.resource[ RESOURCE_FOCUS  ] ) },
     { "enchant_runic",             OPT_FLT,  &( p -> enchant -> stats.resource[ RESOURCE_RUNIC  ] ) },
-    // @option_doc loc=player/enchant/procs title="Proc Enchants"
+    // @option_doc loc=player/all/enchant/procs title="Proc Enchants"
     { "spellsurge",                OPT_BOOL, &( p -> enchant -> spellsurge ) },
     { NULL, OPT_UNKNOWN }
   };

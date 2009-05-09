@@ -673,7 +673,7 @@ function parse_source_file_for_options( $file_path )
 	$options = $parse_matches[1];
 	
 	// Match the parse_option method for individual option or option_doc strings
-	preg_match_all('/^\s*{\s*"([^"]*)",\s*([^,]*),.*},\s*$|^\s*\/\/\s*@option_doc(\s*[^=\s]*=[^=\s]*)*$/Usm', $options, $parse_matches, PREG_SET_ORDER);
+	preg_match_all('/^\s*{\s*"([^"]*)",\s*([^\s,]*),.*},\s*$|^\s*\/\/\s*@option_doc(\s*(loc|title)=("[^"]*"|[^"=\s]*)\s*)*$/Usm', $options, $parse_matches, PREG_SET_ORDER);
 	
 	// Arrange the options in a sane array
 	$arr_output = array();
@@ -681,18 +681,22 @@ function parse_source_file_for_options( $file_path )
 	$last_title = null;
 	foreach($parse_matches as $array) {
 
-		// If this is an option doc line, set the new last-loc and last-title
-		if( substr(trim($array[0]),0,2)=='//' ) {
-			$arr_optdoc = explode(' ', trim($array[0]) );
-			array_shift($arr_optdoc);
-			array_shift($arr_optdoc);
-			foreach( $arr_optdoc as $optdoc_string) {
-				list($optdoc_var, $optdoc_val) = explode('=', $optdoc_string);
-				if($optdoc_var === 'loc') {
-					$last_loc = trim($optdoc_val, '" ');
+		// If this is a comment line, assume its an optiondoc, set the new last-loc and last-title
+		if( substr(trim($array[0]), 0, 2)=='//' ) {
+			
+			// Keep everything after the '@option_doc' 
+			$str_optdoc = substr($array[0], strpos($array[0], '@option_doc')+strlen('@option_doc')+1 );
+
+			// Match on the loc and title  option doc directives			
+			preg_match_all('/(loc|title)=("[^"]*"|[^"=\s]*)\s*/', $str_optdoc, $arr_optiondoc_matches, PREG_SET_ORDER);
+			
+			// For the identified option_doc assertions
+			foreach( $arr_optiondoc_matches as $arr_match) {
+				if($arr_match[1] === 'loc') {
+					$last_loc = trim($arr_match[2], '" ');
 				}
-				else if($optdoc_var === 'title') {
-					$last_title = trim($optdoc_val, '" ');
+				else if($arr_match[1] === 'title') {
+					$last_title = trim($arr_match[2], '" ');
 				}
 			}
 		}

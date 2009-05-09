@@ -1979,7 +1979,7 @@ death_knight_t::parse_option( const std::string& name, const std::string& value 
     { "rage_of_rivendare",        OPT_INT, &( talents.rage_of_rivendare        ) },
     { "summon_gargoyle",          OPT_INT, &( talents.summon_gargoyle          ) },
 
-    // @option_doc loc=player/glyphs title="Glyphs"
+    // @option_doc loc=player/death_knight/glyphs title="Glyphs"
     { "glyph_blood_tap",           OPT_BOOL, &( glyphs.blood_tap           ) },
     { "glyph_horn_of_winter",      OPT_BOOL, &( glyphs.horn_of_winter      ) },
     { "glyph_heart_strike",        OPT_BOOL, &( glyphs.heart_strike        ) },
@@ -2002,7 +2002,7 @@ death_knight_t::parse_option( const std::string& name, const std::string& value 
     { "glyph_unholy_blight",       OPT_BOOL, &( glyphs.unholy_blight       ) },
     { "glyph_the_ghoul",           OPT_BOOL, &( glyphs.the_ghoul           ) },
 
-    // @option_doc loc=player/misc title="Misc"
+    // @option_doc loc=player/death_knight/misc title="Misc"
     { "scent_of_blood_interval",   OPT_INT, &( scent_of_blood_interval    ) },
     { NULL, OPT_UNKNOWN }
   };

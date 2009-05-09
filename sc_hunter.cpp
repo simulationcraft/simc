@@ -3930,7 +3930,7 @@ bool hunter_t::parse_option( const std::string& name,
     { "trueshot_aura",                     OPT_INT, &( talents.trueshot_aura                ) },
     { "unleashed_fury",                    OPT_INT, &( talents.unleashed_fury               ) },
     { "wild_quiver",                       OPT_INT, &( talents.wild_quiver                  ) },
-    // @option_doc loc=player/glyphs title="Glyphs"
+    // @option_doc loc=player/hunter/glyphs title="Glyphs"
     { "glyph_aimed_shot",                  OPT_BOOL, &( glyphs.aimed_shot                   ) },
     { "glyph_aspect_of_the_viper",         OPT_BOOL, &( glyphs.aspect_of_the_viper          ) },
     { "glyph_bestial_wrath",               OPT_BOOL, &( glyphs.bestial_wrath                ) },
@@ -3943,7 +3943,7 @@ bool hunter_t::parse_option( const std::string& name,
     { "glyph_serpent_sting",               OPT_BOOL, &( glyphs.serpent_sting                ) },
     { "glyph_steady_shot",                 OPT_BOOL, &( glyphs.steady_shot                  ) },
     { "glyph_trueshot_aura",               OPT_BOOL, &( glyphs.trueshot_aura                ) },
-    // @option_doc loc=player/misc title="Misc"
+    // @option_doc loc=player/hunter/misc title="Misc"
     { "ammo_dps",                          OPT_FLT,    &( ammo_dps                          ) },
     { "quiver_haste",                      OPT_FLT,    &( quiver_haste                      ) },
     { "summon_pet",                        OPT_STRING, &( summon_pet_str                    ) },

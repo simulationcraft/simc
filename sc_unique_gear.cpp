@@ -372,7 +372,7 @@ bool unique_gear_t::parse_option( player_t*          p,
 {
   option_t options[] =
   {
-    // @option_doc loc=player/tier title="Tier Bonuses"
+    // @option_doc loc=player/all/tier title="Tier Bonuses"
     { "ashtongue_talisman",                   OPT_BOOL, &( p -> unique_gear -> ashtongue_talisman               ) },
     { "tier4_2pc",                            OPT_BOOL, &( p -> unique_gear -> tier4_2pc                        ) },
     { "tier4_4pc",                            OPT_BOOL, &( p -> unique_gear -> tier4_4pc                        ) },
@@ -384,7 +384,7 @@ bool unique_gear_t::parse_option( player_t*          p,
     { "tier7_4pc",                            OPT_BOOL, &( p -> unique_gear -> tier7_4pc                        ) },
     { "tier8_2pc",                            OPT_BOOL, &( p -> unique_gear -> tier8_2pc                        ) },
     { "tier8_4pc",                            OPT_BOOL, &( p -> unique_gear -> tier8_4pc                        ) },
-    // @option_doc loc=player/procs title="Unique Gear/Gem Effects"
+    // @option_doc loc=player/all/procs title="Unique Gear/Gem Effects"
     { "bandits_insignia",                     OPT_BOOL,  &( p -> unique_gear -> bandits_insignia                ) },
     { "chaotic_skyfire",                      OPT_BOOL,  &( p -> unique_gear -> chaotic_skyflare                ) },
     { "chaotic_skyflare",                     OPT_BOOL,  &( p -> unique_gear -> chaotic_skyflare                ) },
