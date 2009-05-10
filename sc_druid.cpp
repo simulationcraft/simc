@@ -2149,9 +2149,12 @@ struct innervate_t : public druid_spell_t
   {
     if( ! druid_spell_t::ready() )
       return false;
+    
+    if(trigger < 0)
+      return ( player -> resource_current[ RESOURCE_MANA ] + trigger ) < 0;
 
-    return( player -> resource_max    [ RESOURCE_MANA ] -
-        player -> resource_current[ RESOURCE_MANA ] ) > trigger;
+    return ( player -> resource_max    [ RESOURCE_MANA ] -
+             player -> resource_current[ RESOURCE_MANA ] ) > trigger;
   }
 };
 
