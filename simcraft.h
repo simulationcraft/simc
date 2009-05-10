@@ -873,6 +873,7 @@ struct player_t
   procs_t procs;
 
   rng_t* rng_list;
+  rng_t *rng_lag_channel, *rng_lag_gcd, *rng_lag_queue;
   
   struct rngs_t
   {
@@ -1026,7 +1027,7 @@ struct player_t
   proc_t*   get_proc  ( const std::string& name );
   stats_t*  get_stats ( const std::string& name );
   uptime_t* get_uptime( const std::string& name );
-  rng_t*    get_rng   ( const std::string& name, int type=RNG_NORM_DISTANCE );
+  rng_t*    get_rng   ( const std::string& name, int type=RNG_NORM_DISTANCE, bool forceType=false );
 };
 
 // Pet =======================================================================
@@ -1295,6 +1296,7 @@ struct action_t
   action_t*   sync_action;
   action_t** observer;
   action_t* next;
+  rng_t *rng_travel, *rng_damage;
 
   action_t( int type, const char* name, player_t* p=0, int r=RESOURCE_NONE, int s=SCHOOL_NONE, int t=TREE_NONE, bool special=false );
   virtual ~action_t() {}
@@ -1710,6 +1712,8 @@ struct rng_t
 
   static rng_t* create( sim_t*, const std::string& name, int type=RNG_STD );
 };
+
+void testRng(sim_t* sim);
 
 // Utilities =================================================================
 

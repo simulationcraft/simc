@@ -166,6 +166,8 @@ sim_t::sim_t( sim_t* p, int index ) :
   target  = new  target_t( this );
   scaling = new scaling_t( this );
 
+  rng = rng_t::create( this, "global0", RNG_SFMT ); // so it can be used in player_constructors
+
   if( parent ) 
   {
     // Import the config file

@@ -78,6 +78,13 @@ action_t::action_t( int         ty,
   
   stats = p -> get_stats( n );
   stats -> school = school;
+  buffer= name_str+"_act_travel_time";
+  rng_travel = p->get_rng(buffer, RNG_NORM_DISTANCE);
+  buffer= name_str+"_act_damage_range";
+  int rngType= RNG_STD;
+  if (sim->normalized_range==1) rngType=RNG_NORM_PHASE;
+  if (sim->normalized_range==2) rngType=RNG_NORM_DISTANCE;
+  rng_damage = p->get_rng(buffer, rngType, true);
 }
 
 // action_t::base_parse_options =============================================
@@ -237,7 +244,7 @@ double action_t::travel_time()
 
   double v = sim -> travel_variance;
 
-  if( v ) t = sim -> gaussian( t, v );
+  if( v ) t = rng_travel -> gaussian( t, v );
 
   return t;
 }
@@ -612,7 +619,7 @@ double action_t::calculate_direct_damage()
 {
   direct_dmg = resisted_dmg = blocked_dmg = 0;
 
-  double base_direct_dmg = sim -> range( base_dd_min, base_dd_max );
+  double base_direct_dmg = rng_damage -> range( base_dd_min, base_dd_max );
 
   if( base_direct_dmg == 0 ) return 0;
 

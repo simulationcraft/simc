@@ -100,11 +100,11 @@ double rng_t::gaussian( double mean,
 // Mersenne Exponent. The period of the sequence is a multiple of 2^MEXP-1.
 #define MEXP 1279
 
-// SFMT generator has an internal state array of 128-bit integers, and N is its size.
-#define N (MEXP / 128 + 1)
+// SFMT generator has an internal state array of 128-bit integers, and N_sfmt is its size.
+#define N_sfmt (MEXP / 128 + 1)
 
 // N32 is the size of internal state array when regarded as an array of 32-bit integers.
-#define N32 (N * 4)
+#define N32 (N_sfmt * 4)
 
 // MEXP_1279 paramaters
 #define POS1    7
@@ -132,7 +132,7 @@ struct w128_t
 
 struct rng_sfmt_t : public rng_t
 {
-  w128_t sfmt[N]; // the 128-bit internal state array 
+  w128_t sfmt[N_sfmt]; // the 128-bit internal state array 
 
   uint32_t *psfmt32; // the 32bit integer pointer to the 128-bit internal state array 
 
@@ -249,15 +249,15 @@ inline static void gen_rand_all( w128_t*   sfmt,
     int i;
     w128_t *r1, *r2;
 
-    r1 = &sfmt[N - 2];
-    r2 = &sfmt[N - 1];
-    for (i = 0; i < N - POS1; i++) {
+    r1 = &sfmt[N_sfmt - 2];
+    r2 = &sfmt[N_sfmt - 1];
+    for (i = 0; i < N_sfmt - POS1; i++) {
         do_recursion(&sfmt[i], &sfmt[i], &sfmt[i + POS1], r1, r2);
         r1 = r2;
         r2 = &sfmt[i];
     }
-    for (; i < N; i++) {
-        do_recursion(&sfmt[i], &sfmt[i], &sfmt[i + POS1 - N], r1, r2);
+    for (; i < N_sfmt; i++) {
+        do_recursion(&sfmt[i], &sfmt[i], &sfmt[i + POS1 - N_sfmt], r1, r2);
         r1 = r2;
         r2 = &sfmt[i];
     }
@@ -283,7 +283,7 @@ inline static double gen_rand_real(rng_sfmt_t* r)
 
 // rng_sfmt_t::rng_sfmt_t ===================================================
 
-rng_sfmt_t::rng_sfmt_t( const std::string& n ) : rng_t(n)
+rng_sfmt_t::rng_sfmt_t( const std::string& name ) : rng_t(name)
 { 
   psfmt32 = &sfmt[0].u[0]; 
   idx = N32; 
@@ -308,8 +308,8 @@ struct normalized_rng_t : public rng_t
   double fixed_phase_shift;
   double actual, expected;
 
-  normalized_rng_t( const std::string& n, rng_t* b, double fps ) :
-    rng_t(n), base(b), fixed_phase_shift(fps), actual(0), expected(0)
+  normalized_rng_t( const std::string& name, rng_t* b, double fps ) :
+    rng_t(name), base(b), fixed_phase_shift(fps), actual(0), expected(0)
   {
     if( fixed_phase_shift == 0 ) fixed_phase_shift = real();
   }
@@ -344,114 +344,245 @@ struct normalized_rng_t : public rng_t
 // Normalized RNG with Distance Tracking
 // ==========================================================================
 
+// ====   struct norm_distribution_t   =====
+// utility class that ensure desired distribution and average in "fastest" way
+// used by range(), gauss() [and roll() in future]
+// Parameters for constructor:
+//   - avg: desired average value
+//   - N_elements:  number of possible elements/values that will be kept/distributed
+//   - values_n: value of each element in array [0..n-1]
+//   - chance_n: distribution probability that this element will be chosen
+// Since it is for internal use, those using it must ensure:
+//   - that supplied distribution probabilities (chance_n) add to 1.00
+//   - that average of values_n * chances_n equals supplied "avg"
+// Methods:
+//   - getNextID(): return next element that should be used [main method]
+//   - getNextValue(): same as above, only return value of element
+//   - change_N(): change number of tracked elements. 
+//     Note: caller must previously resize his chances_n, values_n
+//   - change_avg(): change desired average value
+
+struct norm_distribution_t{
+private:
+public:
+	int* counter;
+	int N;
+	int nTries;
+
+	double* chances;
+	double* values;
+	int arrSz;
+	double currSum;
+	bool invalidated;
+
+	norm_distribution_t(int N_elements){
+		N=N_elements;
+		if (N<=0) N=1;
+		arrSz=N*3/2+2;
+		counter= new int[arrSz];
+		chances= new double[arrSz];
+		values= new double[arrSz];
+		memset(counter,0,arrSz*sizeof(int));
+		memset(chances,0,arrSz*sizeof(double));
+		memset(values,0,arrSz*sizeof(double));
+		nTries=0;
+		invalidated=false;
+		currSum=0;
+	}
+
+	~norm_distribution_t(){
+		delete chances;
+		delete values;
+		delete counter;
+	}
+
+
+	void change_N(int newN){
+		// do we need resizing of arrays?
+		if (newN>=arrSz){
+			int newSz= newN*3/2+2;
+			//create larger arrays
+			int* n_counter= new int[newSz];
+			double* n_chances= new double[newSz];
+			double* n_values= new double[newSz];
+			memset(n_counter,0,newSz*sizeof(int));
+			memset(n_chances,0,newSz*sizeof(double));
+			memset(n_values,0,newSz*sizeof(double));
+			//copy old content
+			for (int i=0; i<arrSz; i++){
+				n_counter[i]= counter[i];
+				n_chances[i]=chances[i];
+				n_values[i]=values[i];
+			}
+			// delete old ones and link new ones
+			delete counter;
+			delete chances;
+			delete values;
+			counter=n_counter;
+			chances=n_chances;
+			values=n_values;
+			arrSz=newSz;
+		}
+		// expand counters
+		if (newN > N)
+		{
+		  int sumOver = 0;
+		  for (int i = N; i < newN; i++) sumOver += counter[i];
+		  counter[N-1] -= sumOver;
+		}
+		else
+		// compress counters
+		if (newN < N)
+		{
+		  int sumOver = 0;
+		  for (int i = newN; i < N; i++) sumOver += counter[i];
+		  counter[newN-1] += sumOver;
+		}
+		N=newN;
+		invalidated=true;
+	}
+	
+	// main logic of this class
+	int getNextID(double avgP){
+		// increase number of tries, and calculate current average
+		nTries++;
+		if (invalidated){
+			currSum=0;
+			for (int i=0; i<N; i++) currSum+=counter[i]*values[i];
+			invalidated=false;
+		}
+		// find next best suitable: one that is lagging most behind expected number of occurences
+		int selected_ID = -1;
+		int selected_lag = 0;
+		double selected_avg_diff=0;
+		for (int i = 0; i < N; i++)
+		{
+			// difference to expected number of occurences for this element
+			int lag = (int) floor(nTries* chances[i] - counter[i] + 0.5);
+			// how would selection of this element result in average difference
+			double avg_diff= abs((currSum+values[i])/nTries - avgP);
+			// now see if this is best choice so far
+			if ( (selected_ID<0) || (lag>selected_lag) || 
+				 ((lag==selected_lag)&&(avg_diff<selected_avg_diff))
+    			) 
+			{
+				selected_ID=i;
+				selected_lag=lag;
+				selected_avg_diff= avg_diff;
+			}
+		}
+		// use that position
+		counter[selected_ID]++;
+		currSum+=values[selected_ID];
+		return selected_ID;
+	}
+
+	double getNextValue(double avgP){
+		return values[getNextID(avgP)];
+	}
+	
+};
+
+
+// class that expose normalized random to users
 struct normalized_distance_rng_t : public normalized_rng_t
 {
-  static const int maxN4 = 400;
+  // roll variables
+  norm_distribution_t* nd_roll;
   int nTries;
-  int lastOk;
   int nextGive;
-  int nit[maxN4 + 2];
-  int N4, N1;
   double lastAvg;
+  // gaussian variables
+  norm_distribution_t* nd_gauss;
+  // range variables
+  norm_distribution_t* nd_range;
 
   normalized_distance_rng_t( const std::string& n, rng_t* b ) :
-    normalized_rng_t( n, b, 0.5 ), nTries(0), lastOk(0)
+    normalized_rng_t( n, b, 0.5 ), nTries(0), nd_roll(0), nd_gauss(0), nd_range(0)
   {
-    for (int i = 0; i < maxN4 + 2; i++) nit[i] = 0;
-  }
-  virtual ~normalized_distance_rng_t() {}
-
-  void setN4(double expP)
-  {
-    lastAvg = expP;
-    N1 = (int) (1 / expP);
-    if (N1 > maxN4) N1 = maxN4;
-    N4 = 4 * N1;
-    if (N4 > maxN4) N4 = maxN4;
-    nextGive = N1;
+	setGaussN(); // fixed to 7 values, so set here
+	setRangeN(); // also fixed to 7 values 
   }
 
-  void resetN4(double expP)
-  {
-    lastAvg = expP;
-    N1 = (int)(1 / expP);
-    if (N1 > maxN4) N1 = maxN4;
-    int newN4 = 4 * N1;
-    if (newN4 > maxN4) newN4 = maxN4;
-    if (newN4 > N4)
-    {
-      int sumOver = 0;
-      for (int i = N4 + 2; i <= newN4 + 1; i++) sumOver += nit[i];
-      nit[N4 + 1] -= sumOver;
-    }
-    else
-    {
-      int sumOver = 0;
-      for (int i = newN4 + 2; i <= N4 + 1; i++) sumOver += nit[i];
-      nit[newN4 + 1] += sumOver;
-    }
-    N4=newN4;
+  virtual ~normalized_distance_rng_t() {
+	  if (nd_gauss) delete nd_gauss;
+	  if (nd_roll)  delete nd_roll;
+	  if (nd_range) delete nd_range;
   }
 
-  void findNextGive()
-  {
-    double avgP = expected / nTries;
-
-    // check if average chance is significantly different, to increase number of tracked distances
-    if ((lastAvg-avgP) / lastAvg > 0.10) 
-      resetN4(avgP);
-
-    // find position that is lagging most
-    double exTot = avgP * nTries;
-    double exP = avgP * exTot;
-    double avg1P = 1 - avgP;
-    double sumExp = 0;
-    double worst = -1;
-    int worstID = 0;
-    for (int i = 1; i <= N4+1; i++)
-    {
-      if (i > N4) 
-	exP = exTot - sumExp;
-      double difP = exP - nit[i];
-      if (difP > worst)
-      {
-	worstID = i;
-	worst = difP;
-      }
-      sumExp += exP;
-      exP *= avg1P;
-    }
-    if (worstID <= 0)
-    {
-      worstID = N1;
-    }
-    // fill that position
-    nextGive = worstID;
+  //set gauss values, fixed 7 elements, track +/- multiples of stddev [-3..+3]
+  void setGaussN(){
+		if (nd_gauss) return;
+		int maxGN = 3;
+		nd_gauss = new norm_distribution_t(2*maxGN+1);
+		nd_gauss->values[maxGN]=0; // center value, 0
+		nd_gauss->chances[maxGN+0]=0.382925;
+		nd_gauss->chances[maxGN+1]=0.24173;
+		nd_gauss->chances[maxGN+2]=0.060598;
+		nd_gauss->chances[maxGN+3]=0.0062095;
+		for (int i=1; i<=maxGN; i++){
+			nd_gauss->values[maxGN+i]=i;
+			nd_gauss->values[maxGN-i]=-i;
+			nd_gauss->chances[maxGN-i]=nd_gauss->chances[maxGN+i];
+		}
   }
 
-  virtual int roll( double chance )
+  //set gauss values, fixed 7 elements, track +/- % of half-range  [-0.5..+0.5]
+  void setRangeN(){
+		if (nd_range) return;
+		int maxGN = 3;
+		nd_range = new norm_distribution_t(2*maxGN+1);
+		for (int i=0; i<=maxGN; i++){
+			nd_range->values[maxGN+i]=+i*0.5/maxGN;
+			nd_range->values[maxGN-i]=-i*0.5/maxGN;
+			nd_range->chances[maxGN+i]=1.0/(2*maxGN+1);
+			nd_range->chances[maxGN-i]=1.0/(2*maxGN+1);
+		}
+  }
+
+  // set roll values, dynamically based on avgP
+  void setRollN(){
+		double avgP = expected / nTries;
+		int maxN4=400;
+		int N=100;
+		if (avgP>0.001) N = (int) (1 / avgP);
+		if (N > maxN4) N = maxN4;
+		int N4 = 4 * N;
+		if (N4 > maxN4) N4 = maxN4;
+		if (!nd_roll)
+			nd_roll=new norm_distribution_t(N4+1);
+		else
+			nd_roll->change_N(N4+1);
+		double exP = avgP;
+		double sumExp = 0;
+		for (int i = 0; i < N4; i++)
+		{
+			nd_roll->chances[i]=exP;
+			nd_roll->values[i]=i+1;
+		    sumExp += exP;
+		    exP *= (1-avgP);
+		}
+		nd_roll->chances[N4]=1-sumExp;
+		nd_roll->values[N4]=N4+1;
+		nextGive=N;
+		lastAvg=avgP;
+  }
+
+  int roll( double chance )
   {
     if( chance <= 0 ) return 0;
     if( chance >= 1 ) return 1;
 
+	nTries++;
     expected += chance;
 
-    if( ++nTries <= 10 )
+    if( !nd_roll )
     {
-      if( nTries == 10 ) // switch to distance-based formula
+      if( nTries == 10 ) setRollN();// switch to distance-based formula
+      if( ( actual + fixed_phase_shift ) < expected )
       {
-	double avgP = expected / nTries;
-	setN4( avgP );
-      }
-
-      double phase_shift = fixed_phase_shift;
-      if( phase_shift >= 1.0 ) phase_shift *= real();
-    
-      if( ( actual + phase_shift ) < expected )
-      {
-	actual++;
-	lastOk = nTries;
-	return 1;
+			actual++;
+			return 1;
       }
     }
     else
@@ -459,20 +590,124 @@ struct normalized_distance_rng_t : public normalized_rng_t
       nextGive--;
       if( nextGive <= 0 )
       {
-	actual++;
-	int dist = nTries - lastOk;
-	if( dist > N4 ) dist = N4 + 1;
-	nit[dist]++;
-	lastOk = nTries;
-	findNextGive();
-	return 1;
+		actual++;
+		// check if average chance is significantly different
+		double avgP = expected / nTries;
+		if ((lastAvg-avgP) / lastAvg > 0.10) 
+			setRollN(); // increase number of tracked distances
+		else
+			nextGive= nd_roll->getNextID(1/chance)+1; // otherwise just take next
+		return 1;
       }
       return 0;
     }
-
     return 0;
   }
+
+
+  virtual double range( double min, double max ) { 
+	  //get shift from middle
+	  double rngShift= nd_range->getNextValue(0)*(max-min);
+	  //return result
+	  return ( min + max ) / 2.0 + rngShift; 
+  }
+
+  virtual double gaussian( double mean, double stddev ) {
+	  //get how many "stddev" i should shift this time
+	  double stdShift= nd_gauss->getNextValue(0)*stddev;
+	  // limit to 0..2*mean
+	  if (stdShift<-mean) stdShift=-mean;
+	  if (stdShift>+mean) stdShift=+mean;
+	  //return result
+	  return mean+stdShift; 
+  }
+
 };
+
+
+// used to test speed of convergence and correct distribution of possible values
+// by inserting next line in main(), after sim_t is declared:
+// testRng(&sim); return 1;
+void testRng(sim_t* sim){
+  // roll( test
+  printf("Roll test\n\n");
+  normalized_distance_rng_t* rngR= new normalized_distance_rng_t("test_roll", sim->rng);
+  int lastRep=1;
+  int nDsp=0;
+  int lastOK=0, numOK=0;
+  int distHist[100]={0};
+  double p=0.1;
+  int delta=10;
+  for (int i=1; i<10000; i++){
+	  bool ok=rngR->roll(p);
+	  if (ok){
+		  numOK++;
+		  int dist=i-lastOK;
+		  lastOK=i;
+		  distHist[dist]++;
+		  if (nDsp<10){
+			  printf("%d,",dist);
+			  nDsp++;
+		  }
+		  if (i>lastRep+delta){
+			  char sb[100];
+			  double avg=numOK/(i+0.0);
+			  printf(" >> i=%d, OK=%d, A=%1.2lf \n", i, numOK, avg*100 );
+			  std::string sr="";
+			  double exTot = p * i;
+			  double exP = p * exTot;
+			  double avg1P = 1 - p;
+			  for (int u=1; u<20; u++){
+				  double diff= (exP-distHist[u])/exP*100;
+				  if (diff<100)
+					sprintf(sb,"[%d]=%1.0lf%%,", u, diff  );
+				  else
+				    sprintf(sb,"[%d]!,", u  );
+				  sr+=sb;
+    		      exP *= avg1P;
+			  }
+			  sr+="\n\n";
+			  printf(sr.c_str());
+			  lastRep=i;
+			  nDsp=0;
+			  if (i>delta*10) delta*=10;
+		  }
+	  }
+  }
+  // gauss test
+  printf("Gauss test\n\n");
+  normalized_distance_rng_t* rng= new normalized_distance_rng_t("test", sim->rng);
+  lastRep=1;
+  nDsp=0;
+  double avgSum=0;
+  for (int i=1; i<1000000; i++){
+	  double n=rng->range(7,13);
+	  avgSum+=n;
+	  if (nDsp<10){
+		  printf("%1.0lf,",n);
+		  nDsp++;
+	  }
+	  if (i>=10*lastRep){
+		  std::string sr="\n";
+		  char sb[100];
+		  sprintf(sb,"A=%1.2lf;", avgSum/i );
+		  sr+=sb;
+		  for (int u=0; u<7; u++){
+			  double diff=rng->nd_gauss->counter[u]/(i+0.0);
+			  diff=(diff-rng->nd_gauss->chances[u])/rng->nd_gauss->chances[u]*100;
+			  sprintf(sb,"[%1.0lf]=%3.0lf%%,", rng->nd_gauss->values[u], diff  );
+			  sr+=sb;
+		  }
+		  sr+="\n";
+		  printf(sr.c_str());
+		  lastRep=i;
+		  nDsp=0;
+	  }
+  }
+  char c;
+  scanf("%c",&c);
+}
+
 
 // ==========================================================================
 // Choosing the RNG package.........

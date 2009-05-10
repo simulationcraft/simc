@@ -411,6 +411,11 @@ player_t::player_t( sim_t*             s,
   main_hand_weapon.slot = SLOT_MAIN_HAND;
    off_hand_weapon.slot = SLOT_OFF_HAND;
      ranged_weapon.slot = SLOT_RANGED;
+
+  int rng_type= sim->normalized_gauss? RNG_NORM_PHASE: RNG_NORM_DISTANCE;
+  rng_lag_channel = get_rng( "lag_channel"	, rng_type);
+  rng_lag_gcd     = get_rng( "lag_gcd"		, rng_type);
+  rng_lag_queue	  = get_rng( "lag_queue"	, rng_type);	
 }
 
 // player_t::~player_t =====================================================
@@ -1510,15 +1515,15 @@ void player_t::schedule_ready( double delta_time,
       }
       else if( last_foreground_action -> channeled ) 
       {
-        lag = sim -> gaussian( sim -> channel_lag, sim -> channel_lag_range);
+        lag = rng_lag_channel -> gaussian( sim -> channel_lag, sim -> channel_lag_range);
       }
       else if( gcd_adjust > 0 ) 
       {
-        lag = sim -> gaussian( sim -> gcd_lag, sim -> gcd_lag_range);
+        lag = rng_lag_gcd -> gaussian( sim -> gcd_lag, sim -> gcd_lag_range);
       }
       else // queued cast
       {
-        lag = sim -> gaussian( sim -> queue_lag, sim -> queue_lag_range);
+        lag = rng_lag_queue -> gaussian( sim -> queue_lag, sim -> queue_lag_range);
       }
     }
 
@@ -2182,11 +2187,13 @@ uptime_t* player_t::get_uptime( const std::string& name )
 
 // player_t::get_rng =======================================================
 
-rng_t* player_t::get_rng( const std::string& n, int type )
+rng_t* player_t::get_rng( const std::string& n, int type, bool forceType)
 {
   assert( sim -> rng );
 
-  if( ! sim -> normalized_roll || type == RNG_STD ) return sim -> rng;
+  if( (!sim -> normalized_roll) && (!forceType) ) return sim -> rng;
+
+  if( type == RNG_STD ) return sim -> rng;
 
   rng_t* rng=0;
 
