@@ -316,6 +316,7 @@ struct rng_normalized_t : public rng_t
   virtual double gaussian( double mean, double stddev ) { return mean; }
   virtual int roll( double chance )
   {
+    // NOTE! The cyclic nature makes it unsuitable for modeling overlapping procs.
     if( chance <= 0 ) return 0;
     if( chance >= 1 ) return 1;
     expected += chance;
@@ -330,18 +331,17 @@ struct rng_normalized_t : public rng_t
 
 // ==========================================================================
 // Normalized RNG via Variable Phase Shift
-// (1) accepts variable proc chance
-// (2) cyclic nature makes it unsuitable for modeling overlapping procs
 // ==========================================================================
 
-struct rng_variable_phase_shift_t : public rng_normalized_t
+struct rng_phase_shift_t : public rng_normalized_t
 {
-  rng_variable_phase_shift_t( const std::string& name, rng_t* b ) :
+  rng_phase_shift_t( const std::string& name, rng_t* b ) :
     rng_normalized_t( name, b ) {}
-  virtual ~rng_variable_phase_shift_t() {}
+  virtual ~rng_phase_shift_t() {}
 
   virtual int roll( double chance )
   {
+    // NOTE! The cyclic nature makes it unsuitable for modeling overlapping procs.
     if( chance <= 0 ) return 0;
     if( chance >= 1 ) return 1;
     expected += chance;
@@ -356,11 +356,9 @@ struct rng_variable_phase_shift_t : public rng_normalized_t
 
 // ==========================================================================
 // Normalized RNG with Distance Tracking
-// (1) accepts variable proc chance
-// (2) suitable for modeling overlapping procs
 // ==========================================================================
 
-struct rng_variable_distance_t : public rng_normalized_t
+struct rng_distance_simple_t : public rng_normalized_t
 {
   static const int maxN4 = 400;
   int nTries;
@@ -370,12 +368,12 @@ struct rng_variable_distance_t : public rng_normalized_t
   int N4, N1;
   double lastAvg;
 
-  rng_variable_distance_t( const std::string& n, rng_t* b ) :
+  rng_distance_simple_t( const std::string& n, rng_t* b ) :
     rng_normalized_t( n, b ), nTries(0), lastOk(0)
   {
     for (int i = 0; i < maxN4 + 2; i++) nit[i] = 0;
   }
-  virtual ~rng_variable_distance_t() {}
+  virtual ~rng_distance_simple_t() {}
 
   void setN4(double expP)
   {
@@ -483,62 +481,6 @@ struct rng_variable_distance_t : public rng_normalized_t
       return 0;
     }
 
-    return 0;
-  }
-};
-
-// ==========================================================================
-// Normalized RNG via Distribution Pre-Fill
-// (1) requires fixed proc chance
-// (2) suitable for modeling overlapping procs
-// ==========================================================================
-
-struct rng_fixed_pre_fill_t : public rng_normalized_t
-{
-  double fixed_chance;
-  int size, index;
-  char* distribution;
-
-  rng_fixed_pre_fill_t( const std::string& name, rng_t* b, int s=16 ) :
-    rng_normalized_t( name, b ), fixed_chance(0), size(s), index(0), distribution(0) {}
-  virtual ~rng_fixed_pre_fill_t() { if( distribution ) delete distribution; }
-  void pre_fill( double chance )
-  {
-    if( fixed_chance == 0 ) fixed_chance = chance;
-    assert( chance == fixed_chance );
-    if( distribution && index < size ) return;
-    if( ! distribution ) distribution = new char[ size ];
-    double exact_procs = fixed_chance * size + expected - actual;
-    int num_procs = (int) floor( exact_procs );
-    num_procs += base -> roll( exact_procs - num_procs );
-    int up=1, down=0;
-    if( chance > 0.50 ) 
-    {
-      up = 0;
-      down = 1;
-      num_procs = size - num_procs;
-    }
-    for( int i=0; i < size; i++ ) distribution[ i ] = down;
-    while( num_procs > 0 )
-    {
-      int index = real() * size;
-      if( distribution[ index ] == up ) continue;
-      distribution[ index ] = up;
-      num_procs--;
-    }
-    index = 0;
-  }
-  virtual int roll( double chance )
-  {
-    if( chance <= 0 ) return 0;
-    if( chance >= 1 ) return 1;
-    pre_fill( chance );
-    expected += chance;
-    if( distribution[ index++ ] )
-    {
-      actual++;
-      return 1;
-    }
     return 0;
   }
 };
@@ -675,11 +617,9 @@ struct norm_distribution_t{
 
 // ==========================================================================
 // Normalized RNG via Proc-Distribution Tracking 
-// (1) accepts variable proc chance
-// (2) suitable for modeling overlapping procs
 // ==========================================================================
 
-struct rng_variable_distribution_t : public rng_normalized_t
+struct rng_distance_advanced_t : public rng_normalized_t
 {
   int nTries;
   int nextGive;
@@ -689,12 +629,12 @@ struct rng_variable_distribution_t : public rng_normalized_t
   norm_distribution_t* nd_gauss;
   norm_distribution_t* nd_range;
 
-  rng_variable_distribution_t( const std::string& n, rng_t* b ) :
+  rng_distance_advanced_t( const std::string& n, rng_t* b ) :
     rng_normalized_t( n, b ), nTries(0), nextGive(0), lastAvg(0), nd_roll(0), nd_gauss(0), nd_range(0)
   {
   }
 
-  virtual ~rng_variable_distribution_t() 
+  virtual ~rng_distance_advanced_t() 
   {
     if (nd_gauss) delete nd_gauss;
     if (nd_roll)  delete nd_roll;
@@ -820,7 +760,57 @@ struct rng_variable_distribution_t : public rng_normalized_t
   }
 };
 
+// ==========================================================================
+// Normalized RNG via Distribution Pre-Fill
+// ==========================================================================
 
+struct rng_pre_fill_t : public rng_normalized_t
+{
+  int size, index;
+  char* distribution;
+
+  rng_pre_fill_t( const std::string& name, rng_t* b, int s=16 ) :
+    rng_normalized_t( name, b ), size(s), index(0), distribution(0) {}
+  virtual ~rng_pre_fill_t() { if( distribution ) delete distribution; }
+  void pre_fill( double chance )
+  {
+    if( distribution && index < size ) return;
+    if( ! distribution ) distribution = new char[ size ];
+    double exact_procs = chance * size + expected - actual;
+    int num_procs = (int) floor( exact_procs );
+    num_procs += base -> roll( exact_procs - num_procs );
+    if( num_procs > size ) num_procs = size;
+    int up=1, down=0;
+    if( num_procs > ( size >> 1 ) ) 
+    {
+      up = 0;
+      down = 1;
+      num_procs = size - num_procs;
+    }
+    for( int i=0; i < size; i++ ) distribution[ i ] = down;
+    while( num_procs > 0 )
+    {
+      int index = real() * size;
+      if( distribution[ index ] == up ) continue;
+      distribution[ index ] = up;
+      num_procs--;
+    }
+    index = 0;
+  }
+  virtual int roll( double chance )
+  {
+    if( chance <= 0 ) return 0;
+    if( chance >= 1 ) return 1;
+    pre_fill( chance );
+    expected += chance;
+    if( distribution[ index++ ] )
+    {
+      actual++;
+      return 1;
+    }
+    return 0;
+  }
+};
 
 // ==========================================================================
 // Choosing the RNG package.........
@@ -842,21 +832,21 @@ rng_t* rng_t::create( sim_t*             sim,
   {
     return new rng_normalized_t( name, sim -> rng );
   }
-  else if( rng_type == RNG_VARIABLE_PHASE_SHIFT )
+  else if( rng_type == RNG_PHASE_SHIFT )
   {
-    return new rng_variable_phase_shift_t( name, sim -> rng );
+    return new rng_phase_shift_t( name, sim -> rng );
   }
-  else if( rng_type == RNG_VARIABLE_DISTANCE )
+  else if( rng_type == RNG_DISTANCE_SIMPLE )
   {
-    return new rng_variable_distance_t( name, sim -> rng );
+    return new rng_distance_simple_t( name, sim -> rng );
   }
-  else if( rng_type == RNG_VARIABLE_DISTRIBUTION )
+  else if( rng_type == RNG_DISTANCE_ADVANCED )
   {
-    return new rng_variable_distribution_t( name, sim -> rng );
+    return new rng_distance_advanced_t( name, sim -> rng );
   }
-  else if( rng_type == RNG_FIXED_PRE_FILL )
+  else if( rng_type == RNG_PRE_FILL )
   {
-    return new rng_fixed_pre_fill_t( name, sim -> rng );
+    return new rng_pre_fill_t( name, sim -> rng );
   }
   assert(0);
   return 0;

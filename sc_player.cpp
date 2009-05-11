@@ -412,7 +412,7 @@ player_t::player_t( sim_t*             s,
    off_hand_weapon.slot = SLOT_OFF_HAND;
      ranged_weapon.slot = SLOT_RANGED;
 
-  int rng_type = sim -> normalized_roll ? RNG_VARIABLE_DISTRIBUTION : RNG_GLOBAL;
+  int rng_type = sim -> normalized_gauss ? RNG_DISTANCE_ADVANCED : RNG_GLOBAL;
   rng_lag_channel = get_rng( "lag_channel", rng_type );
   rng_lag_gcd     = get_rng( "lag_gcd"	  , rng_type );
   rng_lag_queue	  = get_rng( "lag_queue"  , rng_type );	
@@ -2193,8 +2193,9 @@ rng_t* player_t::get_rng( const std::string& n, int type )
 
   if( ! sim -> normalized_roll || type == RNG_GLOBAL ) return sim -> rng;
 
-  // FIXME! Use simpler VARIABLE_DISTANCE until VARIABLE_DISTRIBUTION fully debugged.
-  if( type == RNG_NONE ) type = RNG_VARIABLE_DISTANCE;
+  if( type == RNG_NONE        ) type = RNG_PHASE_SHIFT;
+  if( type == RNG_CYCLIC      ) type = RNG_PHASE_SHIFT;
+  if( type == RNG_DISTRIBUTED ) type = RNG_DISTANCE_SIMPLE;
 
   rng_t* rng=0;
 

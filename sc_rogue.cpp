@@ -3208,20 +3208,24 @@ void rogue_t::init_rng()
 {
   player_t::init_rng();
 
-  rng_anesthetic_poison     = get_rng( "anesthetic_poison" );
-  rng_combat_potency        = get_rng( "combat_potency" );
-  rng_cut_to_the_chase      = get_rng( "cut_to_the_chase" );
-  rng_deadly_poison         = get_rng( "deadly_poison" );
-  rng_focused_attacks       = get_rng( "focused_attacks" );
-  rng_honor_among_thieves   = get_rng( "honor_among_thieves", RNG_VARIABLE_DISTRIBUTION );
-  rng_initiative            = get_rng( "initiative" );
-  rng_instant_poison        = get_rng( "instant_poison" );
-  rng_relentless_strikes    = get_rng( "relentless_strikes" );
-  rng_ruthlessness          = get_rng( "ruthlessness" );
-  rng_seal_fate             = get_rng( "seal_fate" );
+  rng_anesthetic_poison     = get_rng( "anesthetic_poison"     );
+  rng_combat_potency        = get_rng( "combat_potency"        );
+  rng_cut_to_the_chase      = get_rng( "cut_to_the_chase"      );
+  rng_deadly_poison         = get_rng( "deadly_poison"         );
+  rng_focused_attacks       = get_rng( "focused_attacks"       );
+  rng_honor_among_thieves   = get_rng( "honor_among_thieves"   );
+  rng_initiative            = get_rng( "initiative"            );
+  rng_instant_poison        = get_rng( "instant_poison"        );
+  rng_relentless_strikes    = get_rng( "relentless_strikes"    );
+  rng_ruthlessness          = get_rng( "ruthlessness"          );
+  rng_seal_fate             = get_rng( "seal_fate"             );
   rng_sinister_strike_glyph = get_rng( "sinister_strike_glyph" );
-  rng_sword_specialization  = get_rng( "sword_specialization" );
-  rng_wound_poison          = get_rng( "wound_poison" );
+  rng_sword_specialization  = get_rng( "sword_specialization"  );
+  rng_wound_poison          = get_rng( "wound_poison"          );
+
+  // Overlapping procs require the use of a "distributed" RNG-stream when normalized_roll=1
+
+  // Add RNG_DISTRIBUTED RNGs here.
 }
 
 // trigger_honor_among_thieves =============================================
@@ -3300,7 +3304,7 @@ void rogue_t::combat_begin()
           p -> procs_honor_among_thieves_receiver -> occur();
 	  double mean     = p -> honor_among_thieves_interval;
 	  double stddev   = mean / 2.0;
-	  double interval = p -> rng_honor_among_thieves -> range( mean-stddev, mean+stddev );
+	  double interval = sim -> rng -> range( mean-stddev, mean+stddev );
           new ( sim ) honor_among_thieves_proc_t( sim, p, interval );
         }
       };

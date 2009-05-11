@@ -2263,11 +2263,18 @@ void warrior_t::init_rng()
 {
   player_t::init_rng();
 
-  rng_bloodsurge           = get_rng( "bloodsurge" );
-  rng_sudden_death         = get_rng( "sudden_death" );
+  // RNG_VARIABLE_PHASE_SHIFT provides excellent convergence, but poor distribution so it
+  // is not suitable for modeling overlapping procs.
+
+  rng_bloodsurge           = get_rng( "bloodsurge"           );
   rng_sword_specialization = get_rng( "sword_specialization" );
-  rng_taste_for_blood      = get_rng( "taste_for_blood" );
-  rng_unbridled_wrath      = get_rng( "unbridled_wrath" );
+  rng_taste_for_blood      = get_rng( "taste_for_blood"      );
+  rng_unbridled_wrath      = get_rng( "unbridled_wrath"      );
+
+  // Overlapping procs require the use of a "distributed" RNG-stream when normalized_roll=1
+
+  rng_sudden_death = get_rng( "sudden_death", RNG_DISTRIBUTED );
+
 }
 
 // warrior_t::combat_begin =====================================================

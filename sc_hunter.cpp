@@ -3728,19 +3728,22 @@ void hunter_t::init_rng()
 {
   player_t::init_rng();
 
-  rng_cobra_strikes        = get_rng( "cobra_strikes" );
-  rng_expose_weakness      = get_rng( "expose_weakness" );
-  rng_frenzy               = get_rng( "frenzy" );
-  rng_hunting_party        = get_rng( "hunting_party" );
-  rng_improved_aoth        = get_rng( "improved_aspect_of_the_hawk" );
-  rng_improved_steady_shot = get_rng( "improved_steady_shot" );
-  rng_invigoration         = get_rng( "invigoration" );
-  rng_lock_and_load        = get_rng( "lock_and_load" );
-  rng_master_tactician     = get_rng( "master_tactician" );
-  rng_owls_focus           = get_rng( "owls_focus" );
-  rng_rabid_power          = get_rng( "rabid_power" );
+  rng_cobra_strikes        = get_rng( "cobra_strikes"      );
+  rng_invigoration         = get_rng( "invigoration"       );
+  rng_owls_focus           = get_rng( "owls_focus"         );
   rng_thrill_of_the_hunt   = get_rng( "thrill_of_the_hunt" );
-  rng_wild_quiver          = get_rng( "wild_quiver" );
+  rng_wild_quiver          = get_rng( "wild_quiver"        );
+
+  // Overlapping procs require the use of a "distributed" RNG-stream when normalized_roll=1
+
+  rng_expose_weakness      = get_rng( "expose_weakness",             RNG_DISTRIBUTED );
+  rng_frenzy               = get_rng( "frenzy",                      RNG_DISTRIBUTED );
+  rng_hunting_party        = get_rng( "hunting_party",               RNG_DISTRIBUTED );
+  rng_improved_aoth        = get_rng( "improved_aspect_of_the_hawk", RNG_DISTRIBUTED );
+  rng_improved_steady_shot = get_rng( "improved_steady_shot",        RNG_DISTRIBUTED );
+  rng_lock_and_load        = get_rng( "lock_and_load",               RNG_DISTRIBUTED );
+  rng_master_tactician     = get_rng( "master_tactician",            RNG_DISTRIBUTED );
+  rng_rabid_power          = get_rng( "rabid_power",                 RNG_DISTRIBUTED );
 }
 
 // hunter_t::init_scaling ====================================================

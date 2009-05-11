@@ -4579,10 +4579,13 @@ void warlock_t::init_rng()
   rng_shadow_trance          = get_rng( "shadow_trance"          );
   rng_soul_leech             = get_rng( "soul_leech"             );
   rng_improved_soul_leech    = get_rng( "improved_soul_leech"    );
-  rng_molten_core            = get_rng( "molten_core"            );
-  rng_eradication            = get_rng( "eradication"            );
   rng_everlasting_affliction = get_rng( "everlasting_affliction" );
-  rng_empowered_imp          = get_rng( "empowered_imp"          );
+
+  // Overlapping procs require the use of a "distributed" RNG-stream when normalized_roll=1
+
+  rng_empowered_imp = get_rng( "empowered_imp", RNG_DISTRIBUTED );
+  rng_eradication   = get_rng( "eradication",   RNG_DISTRIBUTED );
+  rng_molten_core   = get_rng( "molten_core",   RNG_DISTRIBUTED );
 }
 
 // warlock_t::reset ==========================================================

@@ -263,14 +263,16 @@ enum role_type { ROLE_NONE=0, ROLE_ATTACK, ROLE_SPELL, ROLE_TANK, ROLE_HYBRID, R
 
 enum rng_type {
   RNG_NONE=0,
-  RNG_GLOBAL,                // Returns reference to global RNG on sim_t
-  RNG_STANDARD,              // Creates RNG using srand() and rand()
-  RNG_MERSENNE_TWISTER,      // Creates RNG using SIMD oriented Fast Mersenne Twister
-  RNG_NORMALIZED,            // Simplistic cycle-based RNG, unsuitable for overlapping procs
-  RNG_VARIABLE_PHASE_SHIFT,  // Cycle-based RNG with random phase shift per roll, unsuitable for overlapping procs
-  RNG_VARIABLE_DISTANCE,     // Simple proc-separation RNG, accepts variable proc chance
-  RNG_VARIABLE_DISTRIBUTION, // Complex proc-separation RNG, accepts variable proc chance
-  RNG_FIXED_PRE_FILL,        // Deterministic number of procs with random distribution, requires fixed proc chance
+  RNG_GLOBAL,            // Returns reference to global RNG on sim_t
+  RNG_STANDARD,          // Creates RNG using srand() and rand()
+  RNG_MERSENNE_TWISTER,  // Creates RNG using SIMD oriented Fast Mersenne Twister
+  RNG_CYCLIC,
+  RNG_NORMALIZED,        // Simplistic cycle-based RNG, unsuitable for overlapping procs
+  RNG_PHASE_SHIFT ,      // Cycle-based RNG with random phase shift per roll, unsuitable for overlapping procs
+  RNG_DISTRIBUTED,
+  RNG_DISTANCE_SIMPLE,   // Simple proc-separation RNG, accepts variable proc chance
+  RNG_DISTANCE_ADVANCED, // Complex proc-separation RNG, accepts variable proc chance
+  RNG_PRE_FILL,          // Deterministic number of procs with random distribution
   RNG_MAX 
 };
 

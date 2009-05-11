@@ -89,8 +89,8 @@ struct berserking_callback_t : public action_callback_t
     mh_uptime = p -> get_uptime( "berserking_mh" );
     oh_uptime = p -> get_uptime( "berserking_oh" );
 
-    mh_rng = p -> get_rng( "berserking_mh" );
-    oh_rng = p -> get_rng( "berserking_oh" );
+    mh_rng = p -> get_rng( "berserking_mh", RNG_DISTRIBUTED );
+    oh_rng = p -> get_rng( "berserking_oh", RNG_DISTRIBUTED );
   }
 
   virtual void reset() { mh_buff = oh_buff = 0; mh_expiration = oh_expiration = 0; }
@@ -171,8 +171,8 @@ struct mongoose_callback_t : public action_callback_t
     mh_uptime = p -> get_uptime( "mongoose_mh" );
     oh_uptime = p -> get_uptime( "mongoose_oh" );
 
-    mh_rng = p -> sim -> rng;
-    oh_rng = p -> sim -> rng;
+    mh_rng = p -> get_rng( "mongoose_mh", RNG_DISTRIBUTED );
+    oh_rng = p -> get_rng( "mongoose_oh", RNG_DISTRIBUTED );
   }
 
   virtual void reset() { mh_expiration = oh_expiration = 0; }
@@ -249,9 +249,7 @@ struct executioner_callback_t : public action_callback_t
   executioner_callback_t( player_t* p ) : action_callback_t( p -> sim, p ), buff(0), expiration(0) 
   {
     uptime = p -> get_uptime( "executioner" );
-
-    // FIXME! Normalized RNG does not handle overlapping procs very well.
-    rng = p -> sim -> rng; // p -> get_rng( "executioner" );
+    rng    = p -> get_rng( "executioner", RNG_DISTRIBUTED );
   }
 
   virtual void reset() { buff = 0; expiration = 0; }
