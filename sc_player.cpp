@@ -412,10 +412,10 @@ player_t::player_t( sim_t*             s,
    off_hand_weapon.slot = SLOT_OFF_HAND;
      ranged_weapon.slot = SLOT_RANGED;
 
-  int rng_type= sim->normalized_gauss? RNG_NORM_PHASE: RNG_NORM_DISTANCE;
-  rng_lag_channel = get_rng( "lag_channel"	, rng_type);
-  rng_lag_gcd     = get_rng( "lag_gcd"		, rng_type);
-  rng_lag_queue	  = get_rng( "lag_queue"	, rng_type);	
+  int rng_type = sim -> normalized_gauss ? RNG_NORM: RNG_NORM_DISTANCE;
+  rng_lag_channel = get_rng( "lag_channel", rng_type);
+  rng_lag_gcd     = get_rng( "lag_gcd"	  , rng_type);
+  rng_lag_queue	  = get_rng( "lag_queue"  , rng_type);	
 }
 
 // player_t::~player_t =====================================================
@@ -2187,13 +2187,11 @@ uptime_t* player_t::get_uptime( const std::string& name )
 
 // player_t::get_rng =======================================================
 
-rng_t* player_t::get_rng( const std::string& n, int type, bool forceType)
+rng_t* player_t::get_rng( const std::string& n, int type )
 {
   assert( sim -> rng );
 
-  if( (!sim -> normalized_roll) && (!forceType) ) return sim -> rng;
-
-  if( type == RNG_STD ) return sim -> rng;
+  if( ! sim -> normalized_roll || type == RNG_GLOBAL ) return sim -> rng;
 
   rng_t* rng=0;
 

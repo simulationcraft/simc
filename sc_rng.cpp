@@ -299,54 +299,116 @@ double rng_sfmt_t::real()
 }
 
 // ==========================================================================
-// Normalized RNG with Phase Shift
+// Base-Class for Normalized RNGs
 // ==========================================================================
 
-struct normalized_rng_t : public rng_t
+struct rng_normalized_t : public rng_t
 {
   rng_t* base;
-  double fixed_phase_shift;
   double actual, expected;
 
-  normalized_rng_t( const std::string& name, rng_t* b, double fps ) :
-    rng_t(name), base(b), fixed_phase_shift(fps), actual(0), expected(0)
-  {
-    if( fixed_phase_shift == 0 ) fixed_phase_shift = real();
-  }
-  virtual ~normalized_rng_t() {}
+  rng_normalized_t( const std::string& name, rng_t* b ) :
+    rng_t(name), base(b), actual(0), expected(0) {}
+  virtual ~rng_normalized_t() {}
 
   virtual double real() { return base -> real(); }
   virtual double range( double min, double max ) { return ( min + max ) / 2.0; }
   virtual double gaussian( double mean, double stddev ) { return mean; }
-
   virtual int roll( double chance )
   {
     if( chance <= 0 ) return 0;
     if( chance >= 1 ) return 1;
-
     expected += chance;
-
-    double phase_shift = fixed_phase_shift;
-    
-    if( phase_shift > 1.0 ) phase_shift *= real();
-    
-    if( ( actual + phase_shift ) < expected )
+    if( ( actual + 0.5 ) < expected )
     {
       actual++;
       return 1;
     }
-
     return 0;
   }
 };
 
 // ==========================================================================
-// Normalized RNG with Distance Tracking
+// Normalized RNG via Variable Phase Shift
+// (1) accepts variable proc chance
+// (2) cyclic nature makes it unsuitable for modeling overlapping procs
 // ==========================================================================
 
-// ====   struct norm_distribution_t   =====
+struct rng_norm_phase_shift_t : public rng_normalized_t
+{
+  rng_norm_phase_shift_t( const std::string& name, rng_t* b ) :
+    rng_normalized_t( name, b ) {}
+  virtual ~rng_norm_phase_shift_t() {}
+
+  virtual int roll( double chance )
+  {
+    if( chance <= 0 ) return 0;
+    if( chance >= 1 ) return 1;
+    expected += chance;
+    if( ( actual + real() ) < expected )
+    {
+      actual++;
+      return 1;
+    }
+    return 0;
+  }
+};
+
+// ==========================================================================
+// Normalized RNG via Distribution Pre-Fill
+// (1) requires fixed proc chance
+// (2) suitable for modeling overlapping procs
+// ==========================================================================
+
+struct rng_norm_pre_fill_t : public rng_normalized_t
+{
+  double fixed_chance;
+  int size, index;
+  char* distribution;
+
+  rng_norm_pre_fill_t( const std::string& name, rng_t* b, int s=100 ) :
+    rng_normalized_t( name, b ), fixed_chance(0), size(s), index(0), distribution(0) {}
+  virtual ~rng_norm_pre_fill_t() { if( distribution ) delete distribution; }
+  void pre_fill( double chance )
+  {
+    if( fixed_chance == 0 ) fixed_chance = chance;
+    assert( chance == fixed_chance );
+    if( distribution && index < size ) return;
+    if( ! distribution ) distribution = new char[ size ];
+    expected = fixed_chance * size;
+    int num_procs = (int) floor( expected );
+    num_procs += base -> roll( expected - num_procs );
+    int up=1, down=0;
+    if( chance > 0.50 ) 
+    {
+      up = 0;
+      down = 1;
+      num_procs = size - num_procs;
+    }
+    for( int i=0; i < size; i++ ) distribution[ i ] = down;
+    while( num_procs > 0 )
+    {
+      int index = real() * size;
+      if( distribution[ index ] == up ) continue;
+      distribution[ index ] = up;
+      num_procs--;
+    }
+    index = 0;
+  }
+  virtual int roll( double chance )
+  {
+    if( chance <= 0 ) return 0;
+    if( chance >= 1 ) return 1;
+    pre_fill( chance );
+    return distribution[ index++ ];
+  }
+};
+
+// ==========================================================================
+// Normalized Distribution
+// ==========================================================================
+
 // utility class that ensure desired distribution and average in "fastest" way
-// used by range(), gauss() [and roll() in future]
 // Parameters for constructor:
 //   - avg: desired average value
 //   - N_elements:  number of possible elements/values that will be kept/distributed
@@ -363,8 +425,6 @@ struct normalized_rng_t : public rng_t
 //   - change_avg(): change desired average value
 
 struct norm_distribution_t{
-private:
-public:
 	int* counter;
 	int N;
 	int nTries;
@@ -483,89 +543,95 @@ public:
 	
 };
 
+// ==========================================================================
+// Normalized RNG via Proc-Distance Tracking 
+// (1) accepts variable proc chance
+// (2) suitable for modeling overlapping procs
+// ==========================================================================
 
-// class that expose normalized random to users
-struct normalized_distance_rng_t : public normalized_rng_t
+struct rng_norm_distance_t : public rng_normalized_t
 {
-  // roll variables
-  norm_distribution_t* nd_roll;
   int nTries;
   int nextGive;
   double lastAvg;
-  // gaussian variables
+
+  norm_distribution_t* nd_roll;
   norm_distribution_t* nd_gauss;
-  // range variables
   norm_distribution_t* nd_range;
 
-  normalized_distance_rng_t( const std::string& n, rng_t* b ) :
-    normalized_rng_t( n, b, 0.5 ), nTries(0), nd_roll(0), nd_gauss(0), nd_range(0)
+  rng_norm_distance_t( const std::string& n, rng_t* b ) :
+    rng_normalized_t( n, b ), nTries(0), nextGive(0), lastAvg(0), nd_roll(0), nd_gauss(0), nd_range(0)
   {
-	setGaussN(); // fixed to 7 values, so set here
-	setRangeN(); // also fixed to 7 values 
   }
 
-  virtual ~normalized_distance_rng_t() {
-	  if (nd_gauss) delete nd_gauss;
-	  if (nd_roll)  delete nd_roll;
-	  if (nd_range) delete nd_range;
+  virtual ~rng_norm_distance_t() 
+  {
+    if (nd_gauss) delete nd_gauss;
+    if (nd_roll)  delete nd_roll;
+    if (nd_range) delete nd_range;
   }
 
-  //set gauss values, fixed 7 elements, track +/- multiples of stddev [-3..+3]
-  void setGaussN(){
-		if (nd_gauss) return;
-		int maxGN = 3;
-		nd_gauss = new norm_distribution_t(2*maxGN+1);
-		nd_gauss->values[maxGN]=0; // center value, 0
-		nd_gauss->chances[maxGN+0]=0.382925;
-		nd_gauss->chances[maxGN+1]=0.24173;
-		nd_gauss->chances[maxGN+2]=0.060598;
-		nd_gauss->chances[maxGN+3]=0.0062095;
-		for (int i=1; i<=maxGN; i++){
-			nd_gauss->values[maxGN+i]=i;
-			nd_gauss->values[maxGN-i]=-i;
-			nd_gauss->chances[maxGN-i]=nd_gauss->chances[maxGN+i];
-		}
+  void setGaussN()
+  {
+    //set gauss values, fixed 7 elements, track +/- multiples of stddev [-3..+3]
+    if (nd_gauss) return;
+    int maxGN = 3;
+    nd_gauss = new norm_distribution_t(2*maxGN+1);
+    nd_gauss->values[maxGN]=0; // center value, 0
+    nd_gauss->chances[maxGN+0]=0.382925;
+    nd_gauss->chances[maxGN+1]=0.24173;
+    nd_gauss->chances[maxGN+2]=0.060598;
+    nd_gauss->chances[maxGN+3]=0.0062095;
+    for (int i=1; i<=maxGN; i++)
+    {
+      nd_gauss->values[maxGN+i]=i;
+      nd_gauss->values[maxGN-i]=-i;
+      nd_gauss->chances[maxGN-i]=nd_gauss->chances[maxGN+i];
+    }
   }
 
-  //set gauss values, fixed 7 elements, track +/- % of half-range  [-0.5..+0.5]
-  void setRangeN(){
-		if (nd_range) return;
-		int maxGN = 3;
-		nd_range = new norm_distribution_t(2*maxGN+1);
-		for (int i=0; i<=maxGN; i++){
-			nd_range->values[maxGN+i]=+i*0.5/maxGN;
-			nd_range->values[maxGN-i]=-i*0.5/maxGN;
-			nd_range->chances[maxGN+i]=1.0/(2*maxGN+1);
-			nd_range->chances[maxGN-i]=1.0/(2*maxGN+1);
-		}
+  void setRangeN()
+  {
+    //set gauss values, fixed 7 elements, track +/- % of half-range  [-0.5..+0.5]
+    if (nd_range) return;
+    int maxGN = 3;
+    nd_range = new norm_distribution_t(2*maxGN+1);
+    for (int i=0; i<=maxGN; i++)
+    {
+      nd_range->values[maxGN+i]=+i*0.5/maxGN;
+      nd_range->values[maxGN-i]=-i*0.5/maxGN;
+      nd_range->chances[maxGN+i]=1.0/(2*maxGN+1);
+      nd_range->chances[maxGN-i]=1.0/(2*maxGN+1);
+    }
   }
 
-  // set roll values, dynamically based on avgP
-  void setRollN(){
-		double avgP = expected / nTries;
-		int maxN4=400;
-		int N=100;
-		if (avgP>0.001) N = (int) (1 / avgP);
-		if (N > maxN4) N = maxN4;
-		int N4 = 4 * N;
-		if (N4 > maxN4) N4 = maxN4;
-		if (!nd_roll)
-			nd_roll=new norm_distribution_t(N4+1);
-		else
-			nd_roll->change_N(N4+1);
-		double exP = avgP;
-		double sumExp = 0;
-		for (int i = 0; i < N4; i++)
-		{
-			nd_roll->chances[i]=exP;
-			nd_roll->values[i]=i+1;
-		    sumExp += exP;
-		    exP *= (1-avgP);
-		}
-		nd_roll->chances[N4]=1-sumExp;
-		nd_roll->values[N4]=N4+1;
-		nextGive=N;
-		lastAvg=avgP;
+  void setRollN()
+  {
+    // set roll values, dynamically based on avgP
+    double avgP = expected / nTries;
+    int maxN4=400;
+    int N=100;
+    if (avgP>0.001) N = (int) (1 / avgP);
+    if (N > maxN4) N = maxN4;
+    int N4 = 4 * N;
+    if (N4 > maxN4) N4 = maxN4;
+    if (!nd_roll)
+      nd_roll=new norm_distribution_t(N4+1);
+    else
+      nd_roll->change_N(N4+1);
+    double exP = avgP;
+    double sumExp = 0;
+    for (int i = 0; i < N4; i++)
+    {
+      nd_roll->chances[i]=exP;
+      nd_roll->values[i]=i+1;
+      sumExp += exP;
+      exP *= (1-avgP);
+    }
+    nd_roll->chances[N4]=1-sumExp;
+    nd_roll->values[N4]=N4+1;
+    nextGive=N;
+    lastAvg=avgP;
   }
 
   int roll( double chance )
@@ -573,16 +639,16 @@ struct normalized_distance_rng_t : public normalized_rng_t
     if( chance <= 0 ) return 0;
     if( chance >= 1 ) return 1;
 
-	nTries++;
+    nTries++;
     expected += chance;
 
     if( !nd_roll )
     {
       if( nTries == 10 ) setRollN();// switch to distance-based formula
-      if( ( actual + fixed_phase_shift ) < expected )
+      if( ( actual + 0.5 ) < expected )
       {
-			actual++;
-			return 1;
+	actual++;
+	return 1;
       }
     }
     else
@@ -590,48 +656,91 @@ struct normalized_distance_rng_t : public normalized_rng_t
       nextGive--;
       if( nextGive <= 0 )
       {
-		actual++;
-		// check if average chance is significantly different
-		double avgP = expected / nTries;
-		if ((lastAvg-avgP) / lastAvg > 0.10) 
-			setRollN(); // increase number of tracked distances
-		else
-			nextGive= nd_roll->getNextID(1/chance)+1; // otherwise just take next
-		return 1;
+	actual++;
+	// check if average chance is significantly different
+	double avgP = expected / nTries;
+	if ((lastAvg-avgP) / lastAvg > 0.10) 
+	  setRollN(); // increase number of tracked distances
+	else
+	  nextGive= nd_roll->getNextID(1/chance)+1; // otherwise just take next
+	return 1;
       }
       return 0;
     }
     return 0;
   }
 
-
-  virtual double range( double min, double max ) { 
-	  //get shift from middle
-	  double rngShift= nd_range->getNextValue(0)*(max-min);
-	  //return result
-	  return ( min + max ) / 2.0 + rngShift; 
+  virtual double range( double min, double max ) 
+  { 
+    setRangeN();
+    //get shift from middle
+    double rngShift= nd_range->getNextValue(0)*(max-min);
+    //return result
+    return ( min + max ) / 2.0 + rngShift; 
   }
 
-  virtual double gaussian( double mean, double stddev ) {
-	  //get how many "stddev" i should shift this time
-	  double stdShift= nd_gauss->getNextValue(0)*stddev;
-	  // limit to 0..2*mean
-	  if (stdShift<-mean) stdShift=-mean;
-	  if (stdShift>+mean) stdShift=+mean;
-	  //return result
-	  return mean+stdShift; 
+  virtual double gaussian( double mean, double stddev ) 
+  {
+    setGaussN();
+    //get how many "stddev" i should shift this time
+    double stdShift= nd_gauss->getNextValue(0)*stddev;
+    // limit to 0..2*mean
+    if (stdShift<-mean) stdShift=-mean;
+    if (stdShift>+mean) stdShift=+mean;
+    return mean+stdShift; 
   }
-
 };
 
 
-// used to test speed of convergence and correct distribution of possible values
-// by inserting next line in main(), after sim_t is declared:
-// testRng(&sim); return 1;
-void testRng(sim_t* sim){
-  // roll( test
+
+// ==========================================================================
+// Choosing the RNG package.........
+// ==========================================================================
+
+rng_t* rng_t::create( sim_t*             sim,
+		      const std::string& name,
+		      int                rng_type )
+{
+  if( rng_type == RNG_STD )
+  {
+    return new rng_t( name );
+  }
+  else if( rng_type == RNG_SFMT )
+  {
+    return new rng_sfmt_t( name );
+  }
+  else if( rng_type == RNG_NORM )
+  {
+    return new rng_normalized_t( name, sim -> rng );
+  }
+  else if( rng_type == RNG_NORM_PHASE_SHIFT )
+  {
+    return new rng_norm_phase_shift_t( name, sim -> rng );
+  }
+  else if( rng_type == RNG_NORM_DISTANCE )
+  {
+    return new rng_norm_distance_t( name, sim -> rng );
+  }
+  else if( rng_type == RNG_NORM_PRE_FILL )
+  {
+    return new rng_norm_pre_fill_t( name, sim -> rng );
+  }
+  assert(0);
+  return 0;
+}
+
+#ifdef UNIT_TEST
+
+// ==========================================================================
+// test for speed of convergence and correct distribution of possible values
+// ==========================================================================
+
+int main( int argc, char** argv )
+{
+  rng_t global_rng( "global" );
+
   printf("Roll test\n\n");
-  normalized_distance_rng_t* rngR= new normalized_distance_rng_t("test_roll", sim->rng);
+  rng_norm_distance_t rng_r("test_roll", &global_rng);
   int lastRep=1;
   int nDsp=0;
   int lastOK=0, numOK=0;
@@ -639,7 +748,7 @@ void testRng(sim_t* sim){
   double p=0.1;
   int delta=10;
   for (int i=1; i<10000; i++){
-	  bool ok=rngR->roll(p);
+	  bool ok=rng_r.roll(p);
 	  if (ok){
 		  numOK++;
 		  int dist=i-lastOK;
@@ -676,12 +785,12 @@ void testRng(sim_t* sim){
   }
   // gauss test
   printf("Gauss test\n\n");
-  normalized_distance_rng_t* rng= new normalized_distance_rng_t("test", sim->rng);
+  rng_norm_distance_t rng_g("test_gauss", &global_rng);
   lastRep=1;
   nDsp=0;
   double avgSum=0;
   for (int i=1; i<1000000; i++){
-	  double n=rng->range(7,13);
+	  double n=rng_g.range(7,13);
 	  avgSum+=n;
 	  if (nDsp<10){
 		  printf("%1.0lf,",n);
@@ -693,9 +802,9 @@ void testRng(sim_t* sim){
 		  sprintf(sb,"A=%1.2lf;", avgSum/i );
 		  sr+=sb;
 		  for (int u=0; u<7; u++){
-			  double diff=rng->nd_gauss->counter[u]/(i+0.0);
-			  diff=(diff-rng->nd_gauss->chances[u])/rng->nd_gauss->chances[u]*100;
-			  sprintf(sb,"[%1.0lf]=%3.0lf%%,", rng->nd_gauss->values[u], diff  );
+			  double diff=rng_g.nd_gauss->counter[u]/(i+0.0);
+			  diff=(diff-rng_g.nd_gauss->chances[u])/rng_g.nd_gauss->chances[u]*100;
+			  sprintf(sb,"[%1.0lf]=%3.0lf%%,", rng_g.nd_gauss->values[u], diff  );
 			  sr+=sb;
 		  }
 		  sr+="\n";
@@ -704,36 +813,7 @@ void testRng(sim_t* sim){
 		  nDsp=0;
 	  }
   }
-  char c;
-  scanf("%c",&c);
 }
 
-
-// ==========================================================================
-// Choosing the RNG package.........
-// ==========================================================================
-
-rng_t* rng_t::create( sim_t*             sim,
-		      const std::string& name,
-		      int                rng_type )
-{
-  if( rng_type == RNG_STD )
-  {
-    return new rng_t( name );
-  }
-  else if( rng_type == RNG_SFMT )
-  {
-    return new rng_sfmt_t( name );
-  }
-  else if( rng_type == RNG_NORM_PHASE )
-  {
-    return new normalized_rng_t( name, sim -> rng, sim -> variable_phase_shift );
-  }
-  else if( rng_type == RNG_NORM_DISTANCE )
-  {
-    return new normalized_distance_rng_t( name, sim -> rng );
-  }
-  assert(0);
-  return 0;
-}
+#endif
 

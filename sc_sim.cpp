@@ -146,9 +146,9 @@ sim_t::sim_t( sim_t* p, int index ) :
   events_processed(0), total_events_processed(0),
   seed(0), id(0), iterations(1000), current_iteration(0),
   armor_update_interval(20), potion_sickness(1),
-  optimal_raid(0), log(0), debug(0), sfmt(1),
+  optimal_raid(0), log(0), debug(0),
   jow_chance(0), jow_ppm(15.0),
-  normalized_roll(0), normalized_roll_sf(0), normalized_range(1), normalized_gauss(0), variable_phase_shift(1),
+  normalized_roll(0), normalized_roll_sf(0), normalized_range(1), normalized_gauss(0), 
   timing_wheel(0), wheel_seconds(0), wheel_size(0), wheel_mask(0), timing_slice(0), wheel_granularity(0.0),
   replenishment_targets(0),
   raid_dps(0), total_dmg(0), 
@@ -166,7 +166,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   target  = new  target_t( this );
   scaling = new scaling_t( this );
 
-  rng = rng_t::create( this, "global0", RNG_SFMT ); // so it can be used in player_constructors
+  rng = rng_t::create( this, "global", RNG_SFMT );
 
   if( parent ) 
   {
@@ -419,8 +419,6 @@ bool sim_t::init()
   P309 = patch.before( 3, 1, 0 );
   P312 = patch.after ( 3, 1, 2 );
   
-  rng = rng_t::create( this, "global", sfmt ? RNG_SFMT : RNG_STD );
-
   // Timing wheel depth defaults to 10 minutes with a granularity of 10 buckets per second.
   if( wheel_seconds     <= 0 ) wheel_seconds     = 600;
   if( wheel_granularity <= 0 ) wheel_granularity = 10;
@@ -998,7 +996,6 @@ bool sim_t::parse_option( const std::string& name,
     { "normalized_roll_sf",               OPT_BOOL,   &( normalized_roll_sf                       ) },
     { "normalized_range",                 OPT_BOOL,   &( normalized_range                         ) },
     { "normalized_gauss",                 OPT_BOOL,   &( normalized_gauss                         ) },
-    { "variable_phase_shift",             OPT_INT,    &( variable_phase_shift                     ) },
     // @option_doc loc=global/party title="Party Composition"
     { "party",                            OPT_LIST,   &( party_encoding                           ) },
     // @option_doc loc=skip
@@ -1053,7 +1050,6 @@ bool sim_t::parse_option( const std::string& name,
     { "potion_sickness",                  OPT_BOOL,   &( potion_sickness                          ) },
     { "replenishment_targets",            OPT_INT,    &( replenishment_targets                    ) },
     { "seed",                             OPT_INT,    &( seed                                     ) },
-    { "sfmt",                             OPT_BOOL,   &( sfmt                                     ) },
     { "wheel_granularity",                OPT_FLT,    &( wheel_granularity                        ) },
     { "wheel_seconds",                    OPT_INT,    &( wheel_seconds                            ) },
     { NULL, OPT_UNKNOWN }

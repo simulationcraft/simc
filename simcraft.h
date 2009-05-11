@@ -261,7 +261,7 @@ enum profession_type {
 
 enum role_type { ROLE_NONE=0, ROLE_ATTACK, ROLE_SPELL, ROLE_TANK, ROLE_HYBRID, ROLE_MAX };
 
-enum rng_type { RNG_NONE=0, RNG_STD, RNG_SFMT, RNG_NORM_PHASE, RNG_NORM_DISTANCE, RNG_MAX };
+enum rng_type { RNG_GLOBAL=0, RNG_STD, RNG_SFMT, RNG_NORM, RNG_NORM_PHASE_SHIFT, RNG_NORM_DISTANCE, RNG_NORM_PRE_FILL, RNG_MAX };
 
 // Thread Wrappers ===========================================================
 
@@ -374,14 +374,13 @@ struct sim_t : public app_t
   int         seed, id, iterations, current_iteration;
   int         infinite_resource[ RESOURCE_MAX ];
   int         armor_update_interval, potion_sickness;
-  int         optimal_raid, log, debug, sfmt;
+  int         optimal_raid, log, debug;
   double      jow_chance, jow_ppm;
 
   std::vector<std::string> party_encoding;
 
   // Normalized Random Number Generation
   int normalized_roll, normalized_roll_sf, normalized_range, normalized_gauss;
-  int variable_phase_shift;
 
   // Timing Wheel Event Management
   event_t** timing_wheel; 
@@ -1027,7 +1026,7 @@ struct player_t
   proc_t*   get_proc  ( const std::string& name );
   stats_t*  get_stats ( const std::string& name );
   uptime_t* get_uptime( const std::string& name );
-  rng_t*    get_rng   ( const std::string& name, int type=RNG_NORM_DISTANCE, bool forceType=false );
+  rng_t*    get_rng   ( const std::string& name, int type=RNG_NORM_DISTANCE );
 };
 
 // Pet =======================================================================
@@ -1283,6 +1282,7 @@ struct action_t
   bool normalize_weapon_damage;
   bool normalize_weapon_speed;
   rng_t* rng[ RESULT_MAX ];
+  rng_t* rng_travel;
   stats_t* stats;
   event_t* execute_event;
   event_t* tick_event;
@@ -1296,7 +1296,6 @@ struct action_t
   action_t*   sync_action;
   action_t** observer;
   action_t* next;
-  rng_t *rng_travel, *rng_damage;
 
   action_t( int type, const char* name, player_t* p=0, int r=RESOURCE_NONE, int s=SCHOOL_NONE, int t=TREE_NONE, bool special=false );
   virtual ~action_t() {}
