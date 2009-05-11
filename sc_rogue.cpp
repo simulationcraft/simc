@@ -3298,9 +3298,9 @@ void rogue_t::combat_begin()
           rogue_t* p = player -> cast_rogue();
           add_combo_point( p );
           p -> procs_honor_among_thieves_receiver -> occur();
-          // Next proc comes in +/- 50% random range centered on 'honor_among_thieves_interval'
-          double interval = sim -> rng -> range( 0.5 * p -> honor_among_thieves_interval,
-                                                 1.5 * p -> honor_among_thieves_interval );
+	  double mean     = p -> honor_among_thieves_interval;
+	  double stddev   = mean / 2.0;
+	  double interval = p -> rng_honor_among_thieves -> gaussian( mean, stddev );
           new ( sim ) honor_among_thieves_proc_t( sim, p, interval );
         }
       };
