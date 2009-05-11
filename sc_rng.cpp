@@ -572,7 +572,6 @@ struct norm_distribution_t{
 	double* values;
 	int arrSz;
 	double currSum;
-	bool invalidated;
 
 	norm_distribution_t(int N_elements){
 		N=N_elements;
@@ -585,7 +584,6 @@ struct norm_distribution_t{
 		memset(chances,0,arrSz*sizeof(double));
 		memset(values,0,arrSz*sizeof(double));
 		nTries=0;
-		invalidated=false;
 		currSum=0;
 	}
 
@@ -638,18 +636,11 @@ struct norm_distribution_t{
 		  counter[newN-1] += sumOver;
 		}
 		N=newN;
-		invalidated=true;
 	}
 	
 	// main logic of this class
 	int getNextID(double avgP){
-		// increase number of tries, and calculate current average
 		nTries++;
-		if (invalidated){
-			currSum=0;
-			for (int i=0; i<N; i++) currSum+=counter[i]*values[i];
-			invalidated=false;
-		}
 		// find next best suitable: one that is lagging most behind expected number of occurences
 		int selected_ID = -1;
 		int selected_lag = 0;
@@ -795,14 +786,13 @@ struct rng_variable_distribution_t : public rng_normalized_t
       nextGive--;
       if( nextGive <= 0 )
       {
-	actual++;
-	// check if average chance is significantly different
-	double avgP = expected / nTries;
-	if ((lastAvg-avgP) / lastAvg > 0.10) 
-	  setRollN(); // increase number of tracked distances
-	else
-	  nextGive= nd_roll->getNextID(1/chance)+1; // otherwise just take next
-	return 1;
+			actual++;
+			// check if average chance is significantly different
+			double avgP = expected / nTries;
+			if (abs(lastAvg-avgP) / lastAvg > 0.05)	setRollN(); // increase number of tracked distances
+			// take next best distance
+       	    nextGive= nd_roll->getNextID(1/chance)+1; 
+			return 1;
       }
       return 0;
     }
