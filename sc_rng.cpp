@@ -366,7 +366,7 @@ struct rng_norm_pre_fill_t : public rng_normalized_t
   int size, index;
   char* distribution;
 
-  rng_norm_pre_fill_t( const std::string& name, rng_t* b, int s=100 ) :
+  rng_norm_pre_fill_t( const std::string& name, rng_t* b, int s=16 ) :
     rng_normalized_t( name, b ), fixed_chance(0), size(s), index(0), distribution(0) {}
   virtual ~rng_norm_pre_fill_t() { if( distribution ) delete distribution; }
   void pre_fill( double chance )
@@ -375,9 +375,9 @@ struct rng_norm_pre_fill_t : public rng_normalized_t
     assert( chance == fixed_chance );
     if( distribution && index < size ) return;
     if( ! distribution ) distribution = new char[ size ];
-    expected = fixed_chance * size;
-    int num_procs = (int) floor( expected );
-    num_procs += base -> roll( expected - num_procs );
+    double exact_procs = fixed_chance * size + expected - actual;
+    int num_procs = (int) floor( exact_procs );
+    num_procs += base -> roll( exact_procs - num_procs );
     int up=1, down=0;
     if( chance > 0.50 ) 
     {
@@ -400,7 +400,13 @@ struct rng_norm_pre_fill_t : public rng_normalized_t
     if( chance <= 0 ) return 0;
     if( chance >= 1 ) return 1;
     pre_fill( chance );
-    return distribution[ index++ ];
+    expected += chance;
+    if( distribution[ index++ ] )
+    {
+      actual++;
+      return 1;
+    }
+    return 0;
   }
 };
 
