@@ -3300,7 +3300,8 @@ void rogue_t::combat_begin()
           p -> procs_honor_among_thieves_receiver -> occur();
 	  double mean     = p -> honor_among_thieves_interval;
 	  double stddev   = mean / 2.0;
-	  double interval = p -> rng_honor_among_thieves -> gaussian( mean, stddev );
+	//double interval = p -> rng_honor_among_thieves -> gaussian( mean, stddev );
+	  double interval = p -> rng_honor_among_thieves -> range( mean-stddev, mean+stddev );
           new ( sim ) honor_among_thieves_proc_t( sim, p, interval );
         }
       };
