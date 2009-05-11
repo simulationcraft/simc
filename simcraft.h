@@ -261,7 +261,18 @@ enum profession_type {
 
 enum role_type { ROLE_NONE=0, ROLE_ATTACK, ROLE_SPELL, ROLE_TANK, ROLE_HYBRID, ROLE_MAX };
 
-enum rng_type { RNG_GLOBAL=0, RNG_STD, RNG_SFMT, RNG_NORM, RNG_NORM_PHASE_SHIFT, RNG_NORM_DISTANCE, RNG_NORM_PRE_FILL, RNG_MAX };
+enum rng_type {
+  RNG_NONE=0,
+  RNG_GLOBAL,                // Returns reference to global RNG on sim_t
+  RNG_STANDARD,              // Creates RNG using srand() and rand()
+  RNG_MERSENNE_TWISTER,      // Creates RNG using SIMD oriented Fast Mersenne Twister
+  RNG_NORMALIZED,            // Simplistic cycle-based RNG, unsuitable for overlapping procs
+  RNG_VARIABLE_PHASE_SHIFT,  // Cycle-based RNG with random phase shift per roll, unsuitable for overlapping procs
+  RNG_VARIABLE_DISTANCE,     // Simple proc-separation RNG, accepts variable proc chance
+  RNG_VARIABLE_DISTRIBUTION, // Complex proc-separation RNG, accepts variable proc chance
+  RNG_FIXED_PRE_FILL,        // Deterministic number of procs with random distribution, requires fixed proc chance
+  RNG_MAX 
+};
 
 // Thread Wrappers ===========================================================
 
@@ -1026,7 +1037,7 @@ struct player_t
   proc_t*   get_proc  ( const std::string& name );
   stats_t*  get_stats ( const std::string& name );
   uptime_t* get_uptime( const std::string& name );
-  rng_t*    get_rng   ( const std::string& name, int type=RNG_NORM_DISTANCE );
+  rng_t*    get_rng   ( const std::string& name, int type=RNG_NONE );
 };
 
 // Pet =======================================================================
@@ -1709,7 +1720,7 @@ struct rng_t
   virtual double range( double min, double max );
   virtual double gaussian( double mean, double stddev );
 
-  static rng_t* create( sim_t*, const std::string& name, int type=RNG_STD );
+  static rng_t* create( sim_t*, const std::string& name, int type=RNG_STANDARD );
 };
 
 void testRng(sim_t* sim);

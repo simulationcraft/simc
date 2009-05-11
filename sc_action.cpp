@@ -73,7 +73,7 @@ action_t::action_t( int         ty,
     buffer  = name_str;
     buffer += "_";
     buffer += util_t::result_type_string( i );
-    rng[ i ] = player -> get_rng( buffer, RNG_NORM_PHASE_SHIFT );
+    rng[ i ] = player -> get_rng( buffer, RNG_VARIABLE_PHASE_SHIFT );
   }
   
   stats = p -> get_stats( n );
@@ -242,7 +242,7 @@ double action_t::travel_time()
     if( ! rng_travel )
     {
       std::string buffer = name_str + "_travel";
-      rng_travel = player -> get_rng( buffer, RNG_NORM_DISTANCE );
+      rng_travel = player -> get_rng( buffer, RNG_VARIABLE_DISTRIBUTION );
     }
     t = rng_travel -> gaussian( t, v );
   }

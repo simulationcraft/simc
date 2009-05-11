@@ -166,7 +166,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   target  = new  target_t( this );
   scaling = new scaling_t( this );
 
-  rng = rng_t::create( this, "global", RNG_SFMT );
+  rng = rng_t::create( this, "global", RNG_MERSENNE_TWISTER );
 
   if( parent ) 
   {
