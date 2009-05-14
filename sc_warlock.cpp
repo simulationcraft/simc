@@ -4575,14 +4575,15 @@ void warlock_t::init_rng()
 {
   player_t::init_rng();
 
-  rng_nightfall              = get_rng( "nightfall"              );
-  rng_shadow_trance          = get_rng( "shadow_trance"          );
   rng_soul_leech             = get_rng( "soul_leech"             );
   rng_improved_soul_leech    = get_rng( "improved_soul_leech"    );
   rng_everlasting_affliction = get_rng( "everlasting_affliction" );
 
   // Overlapping procs require the use of a "distributed" RNG-stream when normalized_roll=1
+  // also useful for frequent checks with low probability of proc and timed effect
 
+  rng_nightfall     = get_rng( "nightfall",     RNG_DISTRIBUTED );
+  rng_shadow_trance = get_rng( "shadow_trance", RNG_DISTRIBUTED );
   rng_empowered_imp = get_rng( "empowered_imp", RNG_DISTRIBUTED );
   rng_eradication   = get_rng( "eradication",   RNG_DISTRIBUTED );
   rng_molten_core   = get_rng( "molten_core",   RNG_DISTRIBUTED );

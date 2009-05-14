@@ -336,7 +336,9 @@ struct rng_normalized_t : public rng_t
 struct rng_phase_shift_t : public rng_normalized_t
 {
   rng_phase_shift_t( const std::string& name, rng_t* b ) :
-    rng_normalized_t( name, b ) {}
+    rng_normalized_t( name, b ) {
+        actual= b->real();
+    }
   virtual ~rng_phase_shift_t() {}
 
   virtual int roll( double chance )
@@ -345,7 +347,7 @@ struct rng_phase_shift_t : public rng_normalized_t
     if( chance <= 0 ) return 0;
     if( chance >= 1 ) return 1;
     expected += chance;
-    if( ( actual + real() ) < expected )
+    if(  actual  < expected )
     {
       actual++;
       return 1;
@@ -353,6 +355,62 @@ struct rng_phase_shift_t : public rng_normalized_t
     return 0;
   }
 };
+
+
+
+// ==========================================================================
+// Normalized RNG via Distribution Pre-Fill
+// ==========================================================================
+
+struct rng_pre_fill_t : public rng_normalized_t
+{
+  int size, index;
+  char* distribution;
+
+  rng_pre_fill_t( const std::string& name, rng_t* b, int s=16 ) :
+    rng_normalized_t( name, b ), size(s), index(0), distribution(0) {}
+  virtual ~rng_pre_fill_t() { if( distribution ) delete distribution; }
+  void pre_fill( double chance )
+  {
+    if( distribution && index < size ) return;
+    if( ! distribution ) distribution = new char[ size ];
+    double exact_procs = chance * size + expected - actual;
+    int num_procs = (int) floor( exact_procs );
+    num_procs += base -> roll( exact_procs - num_procs );
+    if( num_procs > size ) num_procs = size;
+    int up=1, down=0;
+    if( num_procs > ( size >> 1 ) ) 
+    {
+      up = 0;
+      down = 1;
+      num_procs = size - num_procs;
+    }
+    for( int i=0; i < size; i++ ) distribution[ i ] = down;
+    while( num_procs > 0 )
+    {
+      int index = real() * size;
+      if( distribution[ index ] == up ) continue;
+      distribution[ index ] = up;
+      num_procs--;
+    }
+    index = 0;
+  }
+  virtual int roll( double chance )
+  {
+    if( chance <= 0 ) return 0;
+    if( chance >= 1 ) return 1;
+    pre_fill( chance );
+    expected += chance;
+    if( distribution[ index++ ] )
+    {
+      actual++;
+      return 1;
+    }
+    return 0;
+  }
+};
+
+
 
 // ==========================================================================
 // Normalized RNG with Distance Tracking
@@ -372,6 +430,7 @@ struct rng_distance_simple_t : public rng_normalized_t
     rng_normalized_t( n, b ), nTries(0), lastOk(0)
   {
     for (int i = 0; i < maxN4 + 2; i++) nit[i] = 0;
+    actual= b->real();
   }
   virtual ~rng_distance_simple_t() {}
 
@@ -458,7 +517,7 @@ struct rng_distance_simple_t : public rng_normalized_t
 	setN4( avgP );
       }
 
-      if( ( actual + real() ) < expected )
+      if( actual < expected ) 
       {
 	actual++;
 	lastOk = nTries;
@@ -484,6 +543,7 @@ struct rng_distance_simple_t : public rng_normalized_t
     return 0;
   }
 };
+
 
 // ==========================================================================
 // Normalized Distribution
@@ -615,11 +675,15 @@ struct norm_distribution_t{
 	
 };
 
+
 // ==========================================================================
-// Normalized RNG via Proc-Distribution Tracking 
+// Base variable RNG class
+// (1) satisfy RNG_VARIABLE: used when distribution of possible values needs to be simulated.
+// (2) suitable for modeling overlapping procs
+// (3) return simulation of gauss/range  (ie not only mean values but distributed values also)
 // ==========================================================================
 
-struct rng_distance_advanced_t : public rng_normalized_t
+struct rng_variable_t : public rng_normalized_t
 {
   int nTries;
   int nextGive;
@@ -629,19 +693,20 @@ struct rng_distance_advanced_t : public rng_normalized_t
   norm_distribution_t* nd_gauss;
   norm_distribution_t* nd_range;
 
-  rng_distance_advanced_t( const std::string& n, rng_t* b ) :
+  rng_variable_t( const std::string& n, rng_t* b ) :
     rng_normalized_t( n, b ), nTries(0), nextGive(0), lastAvg(0), nd_roll(0), nd_gauss(0), nd_range(0)
   {
+      actual=b->real();
   }
 
-  virtual ~rng_distance_advanced_t() 
+  virtual ~rng_variable_t() 
   {
     if (nd_gauss) delete nd_gauss;
     if (nd_roll)  delete nd_roll;
     if (nd_range) delete nd_range;
   }
 
-  void setGaussN()
+  virtual void setGaussN()
   {
     //set gauss values, fixed 7 elements, track +/- multiples of stddev [-3..+3]
     if (nd_gauss) return;
@@ -660,7 +725,7 @@ struct rng_distance_advanced_t : public rng_normalized_t
     }
   }
 
-  void setRangeN()
+  virtual void setRangeN()
   {
     //set gauss values, fixed 7 elements, track +/- % of half-range  [-0.5..+0.5]
     if (nd_range) return;
@@ -675,7 +740,7 @@ struct rng_distance_advanced_t : public rng_normalized_t
     }
   }
 
-  void setRollN()
+  virtual void setRollN()
   {
     // set roll values, dynamically based on avgP
     double avgP = expected / nTries;
@@ -704,7 +769,7 @@ struct rng_distance_advanced_t : public rng_normalized_t
     lastAvg=avgP;
   }
 
-  int roll( double chance )
+  virtual int roll( double chance )
   {
     if( chance <= 0 ) return 0;
     if( chance >= 1 ) return 1;
@@ -715,10 +780,10 @@ struct rng_distance_advanced_t : public rng_normalized_t
     if( !nd_roll )
     {
       if( nTries == 10 ) setRollN();// switch to distance-based formula
-      if( ( actual + 0.5 ) < expected )
+      if( actual < expected )
       {
-	actual++;
-	return 1;
+	      actual++;
+	      return 1;
       }
     }
     else
@@ -731,7 +796,7 @@ struct rng_distance_advanced_t : public rng_normalized_t
 			double avgP = expected / nTries;
 			if (abs(lastAvg-avgP) / lastAvg > 0.05)	setRollN(); // increase number of tracked distances
 			// take next best distance
-       	    nextGive= nd_roll->getNextID(1/chance)+1; 
+       	    nextGive= floor(nd_roll->getNextValue(1/chance)+0.5); 
 			return 1;
       }
       return 0;
@@ -741,7 +806,7 @@ struct rng_distance_advanced_t : public rng_normalized_t
 
   virtual double range( double min, double max ) 
   { 
-    setRangeN();
+    setRangeN();  
     //get shift from middle
     double rngShift= nd_range->getNextValue(0)*(max-min);
     //return result
@@ -760,57 +825,144 @@ struct rng_distance_advanced_t : public rng_normalized_t
   }
 };
 
+
+
 // ==========================================================================
-// Normalized RNG via Distribution Pre-Fill
+// Normalized RNG via Proc-Distribution Tracking 
+// (1) accepts variable proc chance
+// (2) suitable for modeling overlapping procs
 // ==========================================================================
 
-struct rng_pre_fill_t : public rng_normalized_t
+struct rng_variable_distribution_t : public rng_variable_t
 {
-  int size, index;
-  char* distribution;
 
-  rng_pre_fill_t( const std::string& name, rng_t* b, int s=16 ) :
-    rng_normalized_t( name, b ), size(s), index(0), distribution(0) {}
-  virtual ~rng_pre_fill_t() { if( distribution ) delete distribution; }
-  void pre_fill( double chance )
+  rng_variable_distribution_t( const std::string& n, rng_t* b ) :
+    rng_variable_t( n, b )
   {
-    if( distribution && index < size ) return;
-    if( ! distribution ) distribution = new char[ size ];
-    double exact_procs = chance * size + expected - actual;
-    int num_procs = (int) floor( exact_procs );
-    num_procs += base -> roll( exact_procs - num_procs );
-    if( num_procs > size ) num_procs = size;
-    int up=1, down=0;
-    if( num_procs > ( size >> 1 ) ) 
-    {
-      up = 0;
-      down = 1;
-      num_procs = size - num_procs;
-    }
-    for( int i=0; i < size; i++ ) distribution[ i ] = down;
-    while( num_procs > 0 )
-    {
-      int index = real() * size;
-      if( distribution[ index ] == up ) continue;
-      distribution[ index ] = up;
-      num_procs--;
-    }
-    index = 0;
   }
-  virtual int roll( double chance )
+
+  // overwrite to reduce number of tracked distances into 10% bands
+  virtual void setRollN()
   {
-    if( chance <= 0 ) return 0;
-    if( chance >= 1 ) return 1;
-    pre_fill( chance );
-    expected += chance;
-    if( distribution[ index++ ] )
+    // calculate distribution, dynamically based on avgP
+    if (nTries<=0) return;
+    double avgP = expected / nTries;
+	if (avgP>=0.40) return; // high chances shoud use simple rng_fixed
+    double Nr=1000;
+    if (avgP>0.0001) Nr =  1 / avgP;
+	int N= floor(Nr+0.5);
+	int values[100]={0};
+	double chances[100]={0};
+	int k=0;
+	double sumChnc=0;
+	double totSumChnc=0;
+	double delta=0.11;
+    double exP = avgP;
+	int nIdx=0;
+	int i=0;
+	int lastI=0;
+	// group them into 10% chance groups, note last distance in group
+	// expected number of bands is 10
+	while ((totSumChnc<1-2*delta)&&(((k<10)&&(lastI<3*N))||!nIdx)){
+		i++;
+		double oldSumChnc=sumChnc;
+		sumChnc+=exP;
+		totSumChnc+=exP;
+		if (sumChnc>=delta){
+			k++;
+			if ((abs(oldSumChnc-delta)<abs(sumChnc-delta)) && (i>lastI+1)){
+				// 8,14 -> better 8 than 14
+				chances[k]=oldSumChnc;
+				lastI=i-1;
+				sumChnc=exP;
+			}else{
+				// 7,11 -> better 11
+				chances[k]=sumChnc;
+				lastI=i;
+				sumChnc=0;
+			}
+			values[k]=lastI;
+			if ((lastI>=N)&&(nIdx==0)){
+				nIdx=k;
+				delta/=2; // thinner bands after N
+			}
+		}
+		exP *= (1-avgP);
+	}
+	// distribute points to be at middle of their ranges (if asymetric, bit up). Also
+	// calculate at which point M to put last value [k+1], so that it match 1/p while still p(N)~10%
+	sumChnc=0;
+	double sumVal=0;
+	for (int i=1; i<=k; i++){
+		if (i!=nIdx){
+			values[i]=(values[i]+values[i-1]+1)/2; // puts it at middle of range
+			sumChnc+=chances[i];
+			sumVal+=chances[i]*values[i];
+		}else{
+			values[i]=N;
+		}
+	}
+	// find adequate value for last band to ensure sum(chance*value)==1
+	int M=0;
+	double pN= 0.10;
+	if (chances[nIdx]<=pN){ //approximate M if pN<10%, to be ~10%
+		M= floor(    (Nr-pN*N-sumVal)/(1-sumChnc-pN) +0.5);
+	}
+	if (M<=values[k]){ //approximate M if pN as given, or previous M too low
+		pN=chances[nIdx];
+		M= floor(    (Nr-pN*N-sumVal)/(1-sumChnc-pN) +0.5);
+	}
+	// fill values at N and last band
+	if (M>values[k]){
+		pN= (sumVal-Nr+M-M*sumChnc)/(M-N); //exact pN if integer M, to match average N=1/p
+		chances[nIdx]=pN;
+		k++;
+		values[k]=M;
+		chances[k]=1-sumChnc-pN;
+	}else
+		chances[nIdx]=1-sumChnc;
+	// sanity checks
+	if (0){
+		bool ok=true;
+		sumChnc=0;
+		sumVal=0;
+		for (int i=1; i<=k; i++){
+			if (chances[i]<0)
+				ok=false;
+			sumChnc+=chances[i];
+			sumVal+=chances[i]*values[i];
+			//printf("p[%d]=%1.2lf%%\n",values[i],chances[i]*100);
+		}
+		if (abs(1-sumChnc)>0.001) 
+			ok=false;
+		if (abs(Nr-sumVal)/Nr>0.05)
+			ok=false;
+		if (!ok){
+			// assert error?
+			printf("error");
+		}
+	}
+	// create distribution counter
+    if (!nd_roll)
+      nd_roll=new norm_distribution_t(k);
+    else
+      nd_roll->change_N(k);
+
+	// copy distance values and chances
+    for (int i = 0; i < k; i++)
     {
-      actual++;
-      return 1;
+      nd_roll->chances[i]= chances[i+1];
+      nd_roll->values[i]= values[i+1];
     }
-    return 0;
+    nextGive=N;
+    lastAvg=avgP;
   }
+
+
 };
+
+
+
 
 // ==========================================================================
 // Choosing the RNG package.........
@@ -836,17 +988,17 @@ rng_t* rng_t::create( sim_t*             sim,
   {
     return new rng_phase_shift_t( name, sim -> rng );
   }
+  else if( rng_type == RNG_PRE_FILL )
+  {
+    return new rng_pre_fill_t( name, sim -> rng );
+  }
   else if( rng_type == RNG_DISTANCE_SIMPLE )
   {
     return new rng_distance_simple_t( name, sim -> rng );
   }
   else if( rng_type == RNG_DISTANCE_ADVANCED )
   {
-    return new rng_distance_advanced_t( name, sim -> rng );
-  }
-  else if( rng_type == RNG_PRE_FILL )
-  {
-    return new rng_pre_fill_t( name, sim -> rng );
+    return new rng_variable_distribution_t( name, sim -> rng );
   }
   assert(0);
   return 0;

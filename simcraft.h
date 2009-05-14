@@ -262,14 +262,18 @@ enum profession_type {
 enum role_type { ROLE_NONE=0, ROLE_ATTACK, ROLE_SPELL, ROLE_TANK, ROLE_HYBRID, ROLE_MAX };
 
 enum rng_type {
-  RNG_NONE=0,
+  // general rng_ types, differs in why they are needed
+  RNG_NONE=0,       // when not certain where it will be used
+  RNG_CYCLIC,       // for roll() where even/periodical results are acceptable
+  RNG_DISTRIBUTED,  // for roll() where variable/distributed values should be returned
+  RNG_RANGE,        // for range() or gaussian() that will also be normalized
+  // specific rng_ types, differs in implementation
+  // in get)rng() general types should be used, unless real reason for specific exists
   RNG_GLOBAL,            // Returns reference to global RNG on sim_t
   RNG_STANDARD,          // Creates RNG using srand() and rand()
   RNG_MERSENNE_TWISTER,  // Creates RNG using SIMD oriented Fast Mersenne Twister
-  RNG_CYCLIC,
   RNG_NORMALIZED,        // Simplistic cycle-based RNG, unsuitable for overlapping procs
   RNG_PHASE_SHIFT ,      // Cycle-based RNG with random phase shift per roll, unsuitable for overlapping procs
-  RNG_DISTRIBUTED,
   RNG_DISTANCE_SIMPLE,   // Simple proc-separation RNG, accepts variable proc chance
   RNG_DISTANCE_ADVANCED, // Complex proc-separation RNG, accepts variable proc chance
   RNG_PRE_FILL,          // Deterministic number of procs with random distribution

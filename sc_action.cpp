@@ -242,7 +242,7 @@ double action_t::travel_time()
     if( ! rng_travel )
     {
       std::string buffer = name_str + "_travel";
-      rng_travel = player -> get_rng( buffer, RNG_DISTANCE_ADVANCED );
+      rng_travel = player -> get_rng( buffer, RNG_RANGE );
     }
     t = rng_travel -> gaussian( t, v );
   }

@@ -17,7 +17,7 @@ struct stat_proc_callback_t : public action_callback_t
   proc_t* proc;
   rng_t* rng;
 
-  stat_proc_callback_t( const std::string& n, player_t* p, int s, int ms, double a, double pc, double d, double cd ) :
+  stat_proc_callback_t( const std::string& n, player_t* p, int s, int ms, double a, double pc, double d, double cd, int rng_type=RNG_NONE ) :
     action_callback_t( p -> sim, p ),
     name_str(n), stat(s), stacks(0), max_stacks(ms), amount(a), proc_chance(pc), duration(d), cooldown(cd), 
     cooldown_ready(0), expiration(0), proc(0), rng(0)
@@ -25,7 +25,20 @@ struct stat_proc_callback_t : public action_callback_t
     if( proc_chance ) 
     {
       proc = p -> get_proc( name_str.c_str() );
-      rng  = p -> get_rng ( name_str.c_str() );
+      // "smart" decision for rng type if not supplied
+      // try to find overlap situations
+      if (rng_type==RNG_NONE){
+          // simple periodic/cyclic is enough if:
+          // -it can stack, or
+          // -does not have duration, or
+          // -duration is shorter than cooldown, or
+          // -high proc probability
+          if ((ms>1)||(d<=0)||(cd>=d)||(pc>=0.50)) 
+              rng_type= RNG_CYCLIC; 
+          else 
+              rng_type= RNG_DISTRIBUTED; 
+      }
+      rng  = p -> get_rng ( name_str.c_str(), rng_type );
     }
   }
 
@@ -99,7 +112,7 @@ struct discharge_proc_callback_t : public action_callback_t
   proc_t* proc;
   rng_t* rng;
 
-  discharge_proc_callback_t( const std::string& n, player_t* p, int ms, int school, double min, double max, double pc, double cd ) :
+  discharge_proc_callback_t( const std::string& n, player_t* p, int ms, int school, double min, double max, double pc, double cd, int rng_type=RNG_CYCLIC ) :
     action_callback_t( p -> sim, p ),
     name_str(n), stacks(0), max_stacks(ms), proc_chance(pc), cooldown(cd), cooldown_ready(0)
   {
@@ -121,7 +134,7 @@ struct discharge_proc_callback_t : public action_callback_t
     spell = new discharge_spell_t( name_str.c_str(), p, min, max, school );
 
     proc = p -> get_proc( name_str.c_str() );
-    rng  = p -> get_rng ( name_str.c_str() );
+    rng  = p -> get_rng ( name_str.c_str(), rng_type );  //default is CYCLIC since discharge should not have duration
   }
 
   virtual void reset() { stacks=0; cooldown_ready=0; }
