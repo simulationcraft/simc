@@ -8,29 +8,29 @@ actions+=/mana_gem,trigger=1000/speed_potion
 actions+=/mirror_image/ice_lance,frozen=1,fb_priority=1/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/frost_bolt
 actions+=/evocation
 
-# Gear: http://www.chardev.org/?template=148520
+# Gear: http://www.chardev.org/?template=182712 (+ Flare of the Heavens)
 gear_strength=10
 gear_agility=10
-gear_stamina=903
-gear_intellect=805
-gear_spirit=124
+gear_stamina=935
+gear_intellect=883
+gear_spirit=357
 gear_attack_power=0
 gear_expertise_rating=0
 gear_armor_penetration_rating=0
-gear_spell_power=2147
-gear_hit_rating=290
-gear_crit_rating=430
-gear_haste_rating=597
+gear_spell_power=2205  enchant_spell_power=75
+gear_hit_rating=293
+gear_crit_rating=409
+gear_haste_rating=654
 
 # Set Bonuses
-tier7_2pc=1
-tier7_4pc=1
+tier8_2pc=1
+tier8_4pc=1
 
 # Meta Gem
 chaotic_skyflare=1
 
 # Item Procs
-embrace_of_the_spider=1
+flare_of_the_heavens=1
 illustration_of_the_dragon_soul=1
 
 # Glyphs

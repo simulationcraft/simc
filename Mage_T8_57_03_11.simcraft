@@ -12,35 +12,34 @@ actions+=/choose_rotation
 actions+=/arcane_blast,max=2
 actions+=/arcane_blast,max=3,arcane_power=1
 actions+=/arcane_blast,max=3,dps=1
-# Spamming Arcane Blast under Arcane Power until Missile Barrage procs appears to be a wash
-# actions+=/arcane_missiles,barrage=1
-# actions+=/arcane_blast,arcane_power=1
+actions+=/arcane_missiles,barrage=1
+actions+=/arcane_blast,arcane_power=1
 actions+=/arcane_missiles
 actions+=/mana_potion
 
-# Gear: http://www.chardev.org/?template=148463
+# Gear: http://www.chardev.org/?template=182445 (+ Flare of the Heavens)
 gear_strength=10
 gear_agility=10
-gear_stamina=877
-gear_intellect=802
-gear_spirit=303
+gear_stamina=900
+gear_intellect=888
+gear_spirit=502
 gear_attack_power=0
 gear_expertise_rating=0
 gear_armor_penetration_rating=0
-gear_spell_power=2179
-gear_hit_rating=219
-gear_crit_rating=402
-gear_haste_rating=585
+gear_spell_power=2172  enchant_spell_power=75
+gear_hit_rating=209
+gear_crit_rating=531
+gear_haste_rating=557
 
 # Set Bonuses
-tier7_2pc=1
-tier7_4pc=1
+tier8_2pc=1
+tier8_4pc=1
 
 # Meta Gem
 chaotic_skyflare=1
 
 # Item Procs
-embrace_of_the_spider=1
+flare_of_the_heavens=1
 illustration_of_the_dragon_soul=1
 
 # Glyphs
