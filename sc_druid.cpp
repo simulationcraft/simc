@@ -1930,6 +1930,9 @@ void druid_spell_t::schedule_execute()
 {
   druid_t* p = player -> cast_druid();
 
+  if( druid_spell_t::execute_time() > 0 )
+    p -> uptimes_natures_grace -> update( p -> _buffs.natures_grace != 0 );
+
   spell_t::schedule_execute();
 
   if( base_execute_time > 0 )
@@ -1939,8 +1942,6 @@ void druid_spell_t::schedule_execute()
       p -> _buffs.natures_swiftness = 0;
     }
   }
-
-  p -> uptimes_natures_grace -> update( p -> _buffs.natures_grace != 0 );
 }
 
 // druid_spell_t::execute ==================================================
