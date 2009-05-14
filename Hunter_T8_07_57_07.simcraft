@@ -1,0 +1,44 @@
+#!simcraft max_time=300 optimal_raid=1
+
+hunter=Hunter_T8_07_57_07
+level=80
+talents=http://www.wowhead.com/?talent#cxbZ0eVsRhzGIkguAox00b
+
+# Action queue
+actions=flask,type=endless_rage/food,type=blackened_dragonfin/summon_pet/hunters_mark/trueshot_aura
+actions+=/auto_shot/aspect/serpent_sting/rapid_fire/kill_command/kill_shot/silencing_shot/chimera_shot/readiness,wait_for_rapid_fire=1/arcane_shot/aimed_shot/steady_shot
+
+# Gear:
+gear_agility=1274
+gear_stamina=752
+gear_intellect=318
+gear_attack_power=2191
+gear_crit_rating=856
+# gear_hit_rating=266, set to 263 because of the scale factor generation
+gear_hit_rating=263
+gear_armor_penetration_rating=282
+gear_haste_rating=141
+
+# Set Bonuses
+tier8_2pc=1
+tier8_4pc=1
+
+# Meta Gem
+relentless_earthstorm=1
+
+# Procs
+darkmoon_greatness=1
+mjolnir_runestone=1
+
+# Glyphs
+glyph_kill_shot=1
+glyph_serpent_sting=1
+glyph_steady_shot=1
+
+# Weapons
+ranged=bow,dps=170.2,speed=2.8
+ammo_dps=67.5
+quiver_haste=15
+
+# Pet (cat|devilsaur|raptor|wind_serpent|wolf)
+summon_pet=wolf

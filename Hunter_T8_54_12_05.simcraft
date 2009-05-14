@@ -1,43 +1,43 @@
 #!simcraft max_time=300 optimal_raid=1
 
-hunter=Hunter_T8_53_13_05
+hunter=Hunter_T8_54_12_05
 level=80
-talents=http://ptr.wowhead.com/?talent=ctbMzxtRwu0est0emoZx
+talents=http://www.wowhead.com/?talent#ctbMzxtRwuzest0ecoZx
 
 # Action queue
 actions=flask,type=endless_rage/food,type=fish_feast/summon_pet/hunters_mark
 actions+=/auto_shot/kill_command,sync=bestial_wrath/bestial_wrath/aspect/rapid_fire
 actions+=/kill_shot/arcane_shot/serpent_sting/multi_shot/steady_shot
 
-# Gear: http://www.chardev.org/?template=148665
-gear_stamina=913
-gear_strength=10
-gear_agility=971
-gear_intellect=340
-gear_spirit=10
-gear_attack_power=2637
-gear_crit_rating=662
+# Gear: 
+gear_agility=877
+gear_stamina=806
+gear_intellect=306
+gear_attack_power=2825
+gear_crit_rating=564
+# gear_hit_rating=267, set to 263 because of the scale factor generation
 gear_hit_rating=263
-gear_armor_penetration_rating=68
-gear_haste_rating=301
+gear_armor_penetration_rating=454
+gear_haste_rating=218
 
 # Set Bonuses
 tier7_2pc=1
+tier8_2pc=1
 
 # Meta Gem
 relentless_earthstorm=1
 
 # Procs
 darkmoon_greatness=1
-fury_of_the_five_flights=1
+mjolnir_runestone=1
 
 # Glyphs
 glyph_bestial_wrath=1
-glyph_steady_shot=1
+glyph_kill_shot=1
 glyph_improved_aspect_of_the_hawk=1
 
 # Weapons
-ranged=bow,dps=154.8,speed=2.9
+ranged=bow,dps=170.2,speed=2.8
 ammo_dps=67.5
 quiver_haste=15
 
