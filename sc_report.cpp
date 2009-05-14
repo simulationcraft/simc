@@ -319,7 +319,8 @@ static void print_scale_factors( FILE* file, sim_t* sim )
 
     for( int j=0; j < STAT_MAX; j++ )
     {
-      if( sim -> scaling -> stats.get_stat( j ) != 0 )
+      //if( sim -> scaling -> stats.get_stat( j ) != 0 )
+      if( p -> scales_with[ j ]  )
       {
         fprintf( file, "  %s=%.2f", util_t::stat_type_abbrev( j ), p -> scaling.get_stat( j ) );
       }
