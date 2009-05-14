@@ -420,6 +420,7 @@ bool unique_gear_t::parse_option( player_t*          p,
     { "illustration_of_the_dragon_soul",      OPT_BOOL,  &( p -> unique_gear -> illustration_of_the_dragon_soul ) },
     { "lightning_capacitor",                  OPT_BOOL,  &( p -> unique_gear -> lightning_capacitor             ) },
     { "mirror_of_truth",                      OPT_BOOL,  &( p -> unique_gear -> mirror_of_truth                 ) },
+    { "mjolnir_runestone",                    OPT_BOOL,  &( p -> unique_gear -> mjolnir_runestone               ) },
     { "mark_of_defiance",                     OPT_BOOL,  &( p -> unique_gear -> mark_of_defiance                ) },
     { "mystical_skyfire",                     OPT_BOOL,  &( p -> unique_gear -> mystical_skyfire                ) },
     { "pandoras_plea",                        OPT_BOOL,  &( p -> unique_gear ->pandoras_plea                    ) },
@@ -600,6 +601,13 @@ void unique_gear_t::register_callbacks( player_t* p )
   {
     cb = new stat_proc_callback_t( "mirror_of_truth", p, STAT_ATTACK_POWER, 1, 1000, 0.10, 10.0, 50.0 );
     p -> register_attack_result_callback( RESULT_CRIT_MASK, cb );
+  }
+  //---------------------------------------------------------------------------------------------------------
+  if( p -> unique_gear -> mjolnir_runestone )
+  {
+    // NB: tooltip says 612 ArP, but the proc is actually 665.
+    cb = new stat_proc_callback_t( "mjolnir_runestone", p, STAT_ARMOR_PENETRATION_RATING, 1, 665, 0.15, 10.0, 45.0 );
+    p -> register_attack_result_callback( RESULT_HIT_MASK, cb );
   }
   //---------------------------------------------------------------------------------------------------------
   if( p -> unique_gear -> mystical_skyfire )

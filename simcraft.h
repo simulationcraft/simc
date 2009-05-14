@@ -1536,6 +1536,7 @@ struct unique_gear_t
   int  lightning_capacitor;
   int  mark_of_defiance;
   int  mirror_of_truth;
+  int  mjolnir_runestone;
   int  mystical_skyfire;
   int  pandoras_plea;
   int  pyrite_infuser;
