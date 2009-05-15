@@ -556,6 +556,7 @@ struct scaling_t
   sim_t* sim;
   int    calculate_scale_factors;
   int    center_scale_delta;
+  int    scale_lag;
   double scale_factor_noise;
 
   // Gear delta for determining scale factors
@@ -564,14 +565,9 @@ struct scaling_t
   scaling_t( sim_t* s );
 
   void analyze();
-  void analyze_attributes();
-  void analyze_spell_power();
-  void analyze_attack_power();
-  void analyze_expertise();
-  void analyze_armor_penetration();
-  void analyze_hit();
-  void analyze_crit();
-  void analyze_haste();
+  void analyze_stats();
+  void analyze_lag();
+  void analyze_gear_weights();
   bool parse_option( const std::string& name, const std::string& value );
 };
 
@@ -750,6 +746,7 @@ struct player_t
 
   // Scale Factors
   gear_stats_t scaling;
+  double scaling_lag;
   int scales_with[ STAT_MAX ];
 
   struct buff_t

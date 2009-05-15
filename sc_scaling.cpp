@@ -44,6 +44,7 @@ scaling_t::scaling_t( sim_t* s ) :
   sim(s), 
   calculate_scale_factors(0), 
   center_scale_delta(0),
+  scale_lag(1),
   scale_factor_noise(0.10)
 {
   for( int i=ATTRIBUTE_NONE+1; i < ATTRIBUTE_MAX; i++ )
@@ -64,9 +65,9 @@ scaling_t::scaling_t( sim_t* s ) :
   stats.weapon_dps = 50;
 }
 
-// scaling_t::analyze =======================================================
+// scaling_t::analyze_stats =================================================
 
-void scaling_t::analyze()
+void scaling_t::analyze_stats()
 {
   if( ! calculate_scale_factors ) return;
 
@@ -116,15 +117,71 @@ void scaling_t::analyze()
     if( ref_sim != sim ) delete ref_sim;
     delete child_sim;
   }
+}
 
+// scaling_t::analyze_lag ===================================================
+
+void scaling_t::analyze_lag()
+{
+  if( ! calculate_scale_factors || ! scale_lag ) return;
+
+  int num_players = sim -> players_by_name.size();
+  if( num_players == 0 ) return;
+
+  fprintf( stdout, "\nGenerating scale factors for lag...\n" );
+  fflush( stdout );
+
+  sim_t* child_sim = new sim_t( sim );
+  child_sim ->   queue_lag += 0.100;
+  child_sim ->     gcd_lag += 0.100;
+  child_sim -> channel_lag += 0.100;
+  child_sim -> normalized_rng += sim -> normalized_rng_sf;
+  child_sim -> execute();
+
+  sim_t* ref_sim = sim;
+  if( sim -> normalized_rng_sf )
+  {
+    ref_sim = new sim_t( sim );
+    ref_sim -> normalized_rng += sim -> normalized_rng_sf;
+    ref_sim -> execute();
+  }
+
+  for( int i=0; i < num_players; i++ )
+  {
+    player_t*       p =       sim -> players_by_name[ i ];
+    player_t*   ref_p =   ref_sim -> find_player( p -> name() );
+    player_t* child_p = child_sim -> find_player( p -> name() );
+
+    double f = ( ref_p -> dps - child_p -> dps ) / 100;
+
+    if( f >= scale_factor_noise ) p -> scaling_lag = f;
+  }
+  
+  if( ref_sim != sim ) delete ref_sim;
+  delete child_sim;
+}
+
+// scaling_t::analyze_gear_weights ==========================================
+
+void scaling_t::analyze_gear_weights()
+{
   for( player_t* p = sim -> player_list; p; p = p -> next )
   {
     if( p -> quiet ) continue;
 
     chart_t::gear_weights_lootrank( p -> gear_weights_lootrank_link, p );
     chart_t::gear_weights_wowhead ( p -> gear_weights_wowhead_link,  p );
-    chart_t::gear_weights_pawn ( p -> gear_weights_pawn_string,  p );
+    chart_t::gear_weights_pawn    ( p -> gear_weights_pawn_string,   p );
   }
+}
+
+// scaling_t::analyze =======================================================
+
+void scaling_t::analyze()
+{
+  analyze_stats();
+  analyze_lag();
+  analyze_gear_weights();
 }
 
 // scaling_t::parse_option ==================================================
@@ -137,6 +194,7 @@ bool scaling_t::parse_option( const std::string& name,
     // @option_doc loc=global/scale_factors title="Scale Factors"
     { "calculate_scale_factors",        OPT_BOOL, &( calculate_scale_factors              ) },
     { "center_scale_delta",             OPT_BOOL, &( center_scale_delta                   ) },
+    { "scale_lag",                      OPT_BOOL, &( scale_lag                            ) },
     { "scale_factor_noise",             OPT_FLT,  &( scale_factor_noise                   ) },
     { "scale_strength",                 OPT_FLT,  &( stats.attribute[ ATTR_STRENGTH  ]    ) },
     { "scale_agility",                  OPT_FLT,  &( stats.attribute[ ATTR_AGILITY   ]    ) },
