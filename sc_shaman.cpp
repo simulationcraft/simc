@@ -252,6 +252,7 @@ struct shaman_t : public player_t
   // Character Definition
   virtual void      init_rating();
   virtual void      init_base();
+  virtual void      init_scaling();
   virtual void      init_unique_gear();
   virtual void      reset();
   virtual double    composite_attack_power();
@@ -262,7 +263,7 @@ struct shaman_t : public player_t
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
   virtual int       primary_resource() { return RESOURCE_MANA; }
-  virtual int       primary_role()     { return talents.dual_wield ? ROLE_ATTACK : ROLE_SPELL; }
+  virtual int       primary_role()     { return talents.dual_wield ? ROLE_HYBRID : ROLE_SPELL; }
 
   // Event Tracking
   virtual void regen( double periodicity );
@@ -3164,6 +3165,15 @@ void shaman_t::init_base()
     enchant -> stats.crit_rating += 35;
     enchant -> stats.mp5         += 15;
   }
+}
+
+// shaman_t::init_scaling ====================================================
+
+void shaman_t::init_scaling()
+{
+  player_t::init_scaling();
+
+  scales_with[ STAT_SPIRIT ] = 0;
 }
 
 // shaman_t::init_unique_gear ===============================================
