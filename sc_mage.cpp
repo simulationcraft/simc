@@ -1590,7 +1590,7 @@ struct arcane_missiles_tick_t : public mage_spell_t
 
     static rank_t ranks[] =
     {
-      { 79, 13, 360, 260, 0, 0 },
+      { 79, 13, 360, 360, 0, 0 },
       { 75, 12, 320, 320, 0, 0 },
       { 70, 11, 280, 280, 0, 0 },
       { 69, 10, 260, 260, 0, 0 },
