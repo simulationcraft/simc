@@ -3735,6 +3735,7 @@ void hunter_t::init_rng()
   rng_wild_quiver          = get_rng( "wild_quiver"        );
 
   // Overlapping procs require the use of a "distributed" RNG-stream when normalized_roll=1
+  // also useful for frequent checks with low probability of proc and timed effect
 
   rng_expose_weakness      = get_rng( "expose_weakness",             RNG_DISTRIBUTED );
   rng_frenzy               = get_rng( "frenzy",                      RNG_DISTRIBUTED );

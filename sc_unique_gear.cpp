@@ -17,7 +17,7 @@ struct stat_proc_callback_t : public action_callback_t
   proc_t* proc;
   rng_t* rng;
 
-  stat_proc_callback_t( const std::string& n, player_t* p, int s, int ms, double a, double pc, double d, double cd, int rng_type=RNG_NONE ) :
+  stat_proc_callback_t( const std::string& n, player_t* p, int s, int ms, double a, double pc, double d, double cd, int rng_type=RNG_DEFAULT ) :
     action_callback_t( p -> sim, p ),
     name_str(n), stat(s), stacks(0), max_stacks(ms), amount(a), proc_chance(pc), duration(d), cooldown(cd), 
     cooldown_ready(0), expiration(0), proc(0), rng(0)
@@ -25,18 +25,21 @@ struct stat_proc_callback_t : public action_callback_t
     if( proc_chance ) 
     {
       proc = p -> get_proc( name_str.c_str() );
-      // "smart" decision for rng type if not supplied
-      // try to find overlap situations
-      if (rng_type==RNG_NONE){
-          // simple periodic/cyclic is enough if:
-          // -it can stack, or
-          // -does not have duration, or
-          // -duration is shorter than cooldown, or
-          // -high proc probability
-          if ((ms>1)||(d<=0)||(cd>=d)||(pc>=0.50)) 
-              rng_type= RNG_CYCLIC; 
-          else 
-              rng_type= RNG_DISTRIBUTED; 
+      if( rng_type == RNG_DEFAULT )
+      {
+	// simple periodic/cyclic is enough if:
+	// -it can stack, or
+	// -does not have duration, or
+	// -duration is shorter than cooldown, or
+	// -high proc probability
+	if ((ms>1)||(d<=0)||(cd>=d)||(pc>=0.50)) 
+	{
+	  rng_type = RNG_CYCLIC; 
+	}
+	else 
+	{
+	  rng_type = RNG_DISTRIBUTED; 
+	}
       }
       rng  = p -> get_rng ( name_str.c_str(), rng_type );
     }

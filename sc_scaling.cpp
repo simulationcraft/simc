@@ -87,15 +87,15 @@ void scaling_t::analyze()
 
     sim_t* child_sim = new sim_t( sim );
     child_sim -> gear_delta.set_stat( i, +scale_delta / ( center ? 2 : 1 ) );
-    child_sim -> normalized_roll += sim -> normalized_roll_sf;
+    child_sim -> normalized_rng += sim -> normalized_rng_sf;
     child_sim -> execute();
 
     sim_t* ref_sim = sim;
-    if( center || sim -> normalized_roll_sf )
+    if( center || sim -> normalized_rng_sf )
     {
       ref_sim = new sim_t( sim );
       ref_sim -> gear_delta.set_stat( i, center ? -( scale_delta / 2 ) : 0 );
-      ref_sim -> normalized_roll += sim -> normalized_roll_sf;
+      ref_sim -> normalized_rng += sim -> normalized_rng_sf;
       ref_sim -> execute();
     }
 

@@ -261,23 +261,22 @@ enum profession_type {
 
 enum role_type { ROLE_NONE=0, ROLE_ATTACK, ROLE_SPELL, ROLE_TANK, ROLE_HYBRID, ROLE_MAX };
 
-enum rng_type {
-  // general rng_ types, differs in why they are needed
-  RNG_NONE=0,       // when not certain where it will be used
-  RNG_CYCLIC,       // for roll() where even/periodical results are acceptable
-  RNG_DISTRIBUTED,  // for roll() where variable/distributed values should be returned
-  RNG_RANGE,        // for range() or gaussian() that will also be normalized
-  // specific rng_ types, differs in implementation
-  // in get)rng() general types should be used, unless real reason for specific exists
-  RNG_GLOBAL,            // Returns reference to global RNG on sim_t
+enum rng_type 
+{
+  // Specifies the general class of RNG desired
+  RNG_DEFAULT=0,    // Do not care/know where it will be used
+  RNG_GLOBAL,       // Returns reference to global RNG on sim_t
+  RNG_CYCLIC,       // Normalized even/periodical results are acceptable
+  RNG_DISTRIBUTED,  // Normalized variable/distributed values should be returned
+
+  // Specifies a particular RNG desired
   RNG_STANDARD,          // Creates RNG using srand() and rand()
   RNG_MERSENNE_TWISTER,  // Creates RNG using SIMD oriented Fast Mersenne Twister
-  RNG_NORMALIZED,        // Simplistic cycle-based RNG, unsuitable for overlapping procs
-  RNG_PHASE_SHIFT ,      // Cycle-based RNG with random phase shift per roll, unsuitable for overlapping procs
-  RNG_DISTANCE_SIMPLE,   // Simple proc-separation RNG, accepts variable proc chance
-  RNG_DISTANCE_ADVANCED, // Complex proc-separation RNG, accepts variable proc chance
-  RNG_PRE_FILL,          // Deterministic number of procs with random distribution
-  RNG_MAX 
+  RNG_PHASE_SHIFT,       // Simplistic cycle-based RNG, unsuitable for overlapping procs
+  RNG_DISTANCE_SIMPLE,   // Simple normalized proc-separation RNG
+  RNG_DISTANCE_VARIABLE, // Complex normalized proc-separation RNG
+  RNG_DISTANCE_REDUCED,  // Complex normalized proc-separation RNG, provides faster convergence
+  RNG_PRE_FILL           // Deterministic number of procs with random distribution
 };
 
 // Thread Wrappers ===========================================================
@@ -397,7 +396,8 @@ struct sim_t : public app_t
   std::vector<std::string> party_encoding;
 
   // Normalized Random Number Generation
-  int normalized_roll, normalized_roll_sf, normalized_range, normalized_gauss;
+  int normalized_rng, normalized_rng_sf;
+  int average_range, average_gauss;
 
   // Timing Wheel Event Management
   event_t** timing_wheel; 
@@ -545,7 +545,7 @@ struct sim_t : public app_t
   bool      cooldown_ready( double cooldown_time ) { return cooldown_time <= current_time; }
   int       roll( double chance );
   double    range( double min, double max );
-  double    gaussian( double mean, double stddev );
+  double    gauss( double mean, double stddev );
   player_t* find_player( const std::string& name );
 };
 
@@ -1043,7 +1043,7 @@ struct player_t
   proc_t*   get_proc  ( const std::string& name );
   stats_t*  get_stats ( const std::string& name );
   uptime_t* get_uptime( const std::string& name );
-  rng_t*    get_rng   ( const std::string& name, int type=RNG_NONE );
+  rng_t*    get_rng   ( const std::string& name, int type=RNG_DEFAULT );
 };
 
 // Pet =======================================================================
@@ -1715,17 +1715,23 @@ struct log_t
 struct rng_t
 {
   std::string name_str;
-  bool   gaussian_pair_use;
-  double gaussian_pair_value;
+  bool   gauss_pair_use;
+  double gauss_pair_value;
+  double expected_roll,  actual_roll;
+  double expected_range, actual_range;
+  double expected_gauss, actual_gauss;
+  bool   average_range, average_gauss;
   rng_t* next;
 
-  rng_t( const std::string& n ) : name_str(n), gaussian_pair_use(false), next(0) {}
+  rng_t( const std::string& n, bool avg_range=false, bool avg_gauss=false );
   virtual ~rng_t() {}
 
-  virtual int    roll( double chance );
+  virtual int    type() { return RNG_STANDARD; }
   virtual double real();
+  virtual int    roll( double chance );
   virtual double range( double min, double max );
-  virtual double gaussian( double mean, double stddev );
+  virtual double gauss( double mean, double stddev );
+  virtual void   report(FILE*);
 
   static rng_t* create( sim_t*, const std::string& name, int type=RNG_STANDARD );
 };

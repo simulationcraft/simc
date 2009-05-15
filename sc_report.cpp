@@ -292,13 +292,15 @@ static void print_performance( FILE* file, sim_t* sim )
            "  TargetHealth  = %.0f\n"
            "  SimSeconds    = %.0f\n"
            "  CpuSeconds    = %.3f\n"
-           "  SpeedUp       = %.0f\n", 
+           "  SpeedUp       = %.0f\n\n", 
            sim -> total_events_processed,
            sim -> max_events_remaining,
 	   sim -> target -> initial_health,
            sim -> iterations * sim -> total_seconds,
            sim -> elapsed_cpu_seconds,
            sim -> iterations * sim -> total_seconds / sim -> elapsed_cpu_seconds );
+
+  sim -> rng -> report( file );
 }
 
 // print_scale_factors ========================================================

@@ -148,7 +148,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   armor_update_interval(20), potion_sickness(1),
   optimal_raid(0), log(0), debug(0),
   jow_chance(0), jow_ppm(15.0),
-  normalized_roll(0), normalized_roll_sf(0), normalized_range(1), normalized_gauss(0), 
+  normalized_rng(0), normalized_rng_sf(0), average_range(1), average_gauss(0), 
   timing_wheel(0), wheel_seconds(0), wheel_size(0), wheel_mask(0), timing_slice(0), wheel_granularity(0.0),
   replenishment_targets(0),
   raid_dps(0), total_dmg(0), 
@@ -870,19 +870,15 @@ int sim_t::roll( double chance )
 double sim_t::range( double min, 
 		     double max )
 {
-  if( normalized_range ) return ( min + max ) / 2.0;
-
   return rng -> range( min, max );
 }
 
-// sim_t::gaussian ==========================================================
+// sim_t::gauss =============================================================
 
-double sim_t::gaussian( double mean, 
-			double stddev )
+double sim_t::gauss( double mean, 
+		     double stddev )
 {
-  if( normalized_gauss ) return mean;
-
-  return rng -> gaussian( mean, stddev );
+  return rng -> gauss( mean, stddev );
 }
 
 // sim_t::print_options =====================================================
@@ -992,10 +988,10 @@ bool sim_t::parse_option( const std::string& name,
     { "infinite_runic",                   OPT_BOOL,   &( infinite_resource[ RESOURCE_RUNIC  ]     ) },
     { "regen_periodicity",                OPT_FLT,    &( regen_periodicity                        ) },
     // @option_doc loc=global/rng title="Normalized RNG"
-    { "normalized_roll",                  OPT_BOOL,   &( normalized_roll                          ) },
-    { "normalized_roll_sf",               OPT_BOOL,   &( normalized_roll_sf                       ) },
-    { "normalized_range",                 OPT_BOOL,   &( normalized_range                         ) },
-    { "normalized_gauss",                 OPT_BOOL,   &( normalized_gauss                         ) },
+    { "normalized_rng",                   OPT_BOOL,   &( normalized_rng                           ) },
+    { "normalized_rng_sf",                OPT_BOOL,   &( normalized_rng_sf                        ) },
+    { "average_range",                    OPT_BOOL,   &( average_range                            ) },
+    { "average_gauss",                    OPT_BOOL,   &( average_gauss                            ) },
     // @option_doc loc=global/party title="Party Composition"
     { "party",                            OPT_LIST,   &( party_encoding                           ) },
     // @option_doc loc=skip
@@ -1152,8 +1148,8 @@ int sim_t::main( int argc, char** argv )
   patch.decode( &arch, &version, &revision );
 
   fprintf( output_file, 
-           "\nSimulationCraft for World of Warcraft build %d.%d.%d (iterations=%d, max_time=%.0f, optimal_raid=%d, normalized_roll=%d)\n",
-           arch, version, revision, iterations, max_time, optimal_raid, normalized_roll );
+           "\nSimulationCraft for World of Warcraft build %d.%d.%d ( iterations=%d, max_time=%.0f, optimal_raid=%d, normalized_rng=%d )\n",
+           arch, version, revision, iterations, max_time, optimal_raid, normalized_rng );
   fflush( output_file );
 
   fprintf( stdout, "\nGenerating baseline... \n" ); fflush( stdout );

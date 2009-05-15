@@ -270,7 +270,7 @@ void attack_t::calculate_result()
   }
   else
   {
-    if( sim -> normalized_roll )
+    if( sim -> normalized_rng )
     {
       // Encode 1-roll attack table into equivalent multi-roll system
       

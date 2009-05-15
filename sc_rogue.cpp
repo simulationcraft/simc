@@ -105,7 +105,7 @@ struct rogue_t : public player_t
   rng_t* rng_eviscerate;
   rng_t* rng_focused_attacks;
   rng_t* rng_honor_among_thieves;
-  rng_t* rng_HAT_range;
+  rng_t* rng_HAT_interval;
   rng_t* rng_initiative;
   rng_t* rng_instant_poison;
   rng_t* rng_relentless_strikes;
@@ -3225,12 +3225,12 @@ void rogue_t::init_rng()
   rng_sword_specialization  = get_rng( "sword_specialization"  );
   rng_wound_poison          = get_rng( "wound_poison"          );
 
-  // Overlapping procs require the use of a "distributed" RNG-stream when normalized_roll=1
-  // also range() and gaussian() need advanced version of rng
+  // Overlapping procs require the use of a "distributed" RNG-stream when normalized_rng=1
+  // also useful for frequent checks with low probability of proc and timed effect
 
-  // Add RNG_DISTRIBUTED RNGs here.
-  rng_eviscerate            = get_rng( "eviscerate_range"   , RNG_RANGE );
-  rng_HAT_range             = get_rng( "HAT_range"          , RNG_RANGE );
+  rng_eviscerate   = get_rng( "eviscerate_range", RNG_DISTRIBUTED );
+  rng_HAT_interval = get_rng( "HAT_interval",     RNG_DISTRIBUTED );
+  rng_HAT_interval -> average_range = false;
 }
 
 // trigger_honor_among_thieves =============================================
@@ -3307,9 +3307,9 @@ void rogue_t::combat_begin()
           rogue_t* p = player -> cast_rogue();
           add_combo_point( p );
           p -> procs_honor_among_thieves_receiver -> occur();
-	      double mean     = p -> honor_among_thieves_interval;
-	      double stddev   = mean / 2.0;
-	      double interval = p-> rng_HAT_range -> range( mean-stddev, mean+stddev );
+	  double mean     = p -> honor_among_thieves_interval;
+	  double stddev   = mean / 2.0;
+	  double interval = p -> rng_HAT_interval -> range( mean-stddev, mean+stddev );
           new ( sim ) honor_among_thieves_proc_t( sim, p, interval );
         }
       };

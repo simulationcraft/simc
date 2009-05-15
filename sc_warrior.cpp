@@ -2272,9 +2272,9 @@ void warrior_t::init_rng()
   rng_unbridled_wrath      = get_rng( "unbridled_wrath"      );
 
   // Overlapping procs require the use of a "distributed" RNG-stream when normalized_roll=1
+  // also useful for frequent checks with low probability of proc and timed effect
 
   rng_sudden_death = get_rng( "sudden_death", RNG_DISTRIBUTED );
-
 }
 
 // warrior_t::combat_begin =====================================================

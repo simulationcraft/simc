@@ -412,10 +412,9 @@ player_t::player_t( sim_t*             s,
    off_hand_weapon.slot = SLOT_OFF_HAND;
      ranged_weapon.slot = SLOT_RANGED;
 
-  int rng_type = sim -> normalized_gauss ? RNG_CYCLIC : RNG_RANGE;
-  rng_lag_channel = get_rng( "lag_channel", rng_type );
-  rng_lag_gcd     = get_rng( "lag_gcd"	  , rng_type );
-  rng_lag_queue	  = get_rng( "lag_queue"  , rng_type );	
+  rng_lag_channel = get_rng( "lag_channel" );
+  rng_lag_gcd     = get_rng( "lag_gcd"     );
+  rng_lag_queue	  = get_rng( "lag_queue"   );	
 }
 
 // player_t::~player_t =====================================================
@@ -1515,15 +1514,15 @@ void player_t::schedule_ready( double delta_time,
       }
       else if( last_foreground_action -> channeled ) 
       {
-        lag = rng_lag_channel -> gaussian( sim -> channel_lag, sim -> channel_lag_range);
+        lag = rng_lag_channel -> gauss( sim -> channel_lag, sim -> channel_lag_range );
       }
       else if( gcd_adjust > 0 ) 
       {
-        lag = rng_lag_gcd -> gaussian( sim -> gcd_lag, sim -> gcd_lag_range);
+        lag = rng_lag_gcd -> gauss( sim -> gcd_lag, sim -> gcd_lag_range );
       }
       else // queued cast
       {
-        lag = rng_lag_queue -> gaussian( sim -> queue_lag, sim -> queue_lag_range);
+        lag = rng_lag_queue -> gauss( sim -> queue_lag, sim -> queue_lag_range );
       }
     }
 
@@ -2191,12 +2190,11 @@ rng_t* player_t::get_rng( const std::string& n, int type )
 {
   assert( sim -> rng );
 
-  if( ! sim -> normalized_roll || type == RNG_GLOBAL ) return sim -> rng;
+  if( ! sim -> normalized_rng || type == RNG_GLOBAL ) return sim -> rng;
 
-  if( type == RNG_NONE        ) type = RNG_PHASE_SHIFT;   
+  if( type == RNG_DEFAULT     ) type = RNG_PHASE_SHIFT;   
   if( type == RNG_CYCLIC      ) type = RNG_PHASE_SHIFT; 
   if( type == RNG_DISTRIBUTED ) type = RNG_DISTANCE_SIMPLE; 
-  if( type == RNG_RANGE       ) type = RNG_DISTANCE_ADVANCED;
 
   rng_t* rng=0;
 
