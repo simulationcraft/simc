@@ -2528,8 +2528,9 @@ struct starfire_t : public druid_spell_t
 
     if ( p -> idols.shooting_star )
     {
-      // Equip: Increases the spell power of your Starfire spell by 165.
-      base_spell_power += 165;
+      // Equip: Increases the damage dealt by Starfire by 165.
+      base_dd_min += 165;
+      base_dd_max += 165;
     }
     if( p -> tiers.t6_4pc_balance ) base_crit += 0.05;
     if( p -> tiers.t7_4pc_balance ) base_crit += 0.05;
@@ -2702,8 +2703,8 @@ struct wrath_t : public druid_spell_t
     if ( p -> idols.steadfast_renewal )
     {
       // Equip: Increases the damage dealt by Wrath by 70.
-      base_dd_min       += 70;
-      base_dd_max       += 70;
+      base_dd_min += 70;
+      base_dd_max += 70;
     }
   }
 
