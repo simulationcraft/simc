@@ -366,9 +366,13 @@ struct rng_phase_shift_t : public rng_normalized_t
   rng_phase_shift_t( const std::string& name, rng_t* b, bool avg_range, bool avg_gauss ) :
     rng_normalized_t( name, b, avg_range, avg_gauss ) 
   {
-    for( int i=0;      i < size;   i++ ) range_distribution[ i ] = i * 1.0/size + 1.0/(size*2);
-    for( int i=0;      i < size/2; i++ ) gauss_distribution[ i ] = -1.0 / (1<<i);
-    for( int i=size/2; i < size;   i++ ) gauss_distribution[ i ] = +1.0 / (1<<(size-i));
+    for( int i=0; i < size/2; i++ )
+    {
+      range_distribution[ i*2   ] = (   i) * 1.0/size + 1.0/(size*2);
+      range_distribution[ i*2+1 ] = (10-i) * 1.0/size - 1.0/(size*2);
+      gauss_distribution[ i*2   ] = -2.0 / (1<<i);
+      gauss_distribution[ i*2+1 ] = +2.0 / (1<<i);
+    }
     range_index = (int) real() * size;
     gauss_index = (int) real() * size;
     actual_roll = real();
@@ -423,10 +427,13 @@ struct rng_pre_fill_t : public rng_normalized_t
   rng_pre_fill_t( const std::string& name, rng_t* b, bool avg_range, bool avg_gauss ) :
     rng_normalized_t( name, b, avg_range, avg_gauss )
   {
-    for( int i=0;      i < size;   i++ ) range_distribution[ i ] = i * 1.0/size + 1.0/(size*2);
-    for( int i=0;      i < size/2; i++ ) gauss_distribution[ i ] = -1.0 / (1<<i);
-    for( int i=size/2; i < size;   i++ ) gauss_distribution[ i ] = +1.0 / (1<<(size-i));
-
+    for( int i=0; i < size/2; i++ )
+    {
+      range_distribution[ i*2   ] = (   i) * 1.0/size + 1.0/(size*2);
+      range_distribution[ i*2+1 ] = (10-i) * 1.0/size - 1.0/(size*2);
+      gauss_distribution[ i*2   ] = -2.0 / (1<<i);
+      gauss_distribution[ i*2+1 ] = +2.0 / (1<<i);
+    }
     range_index = (int) real() * size;
     gauss_index = (int) real() * size;
      roll_index = size;
@@ -513,6 +520,7 @@ struct rng_pre_fill_t : public rng_normalized_t
 
 struct rng_distance_simple_t : public rng_normalized_t
 {
+  // roll() distance-based distribution
   static const int maxN4 = 400;
   int nTries;
   int lastOk;
@@ -521,11 +529,24 @@ struct rng_distance_simple_t : public rng_normalized_t
   int N4, N1;
   double lastAvg;
 
+  // simple repeating sequence for range() and gauss()
+  static const int size = 10; // must be even number
+  double range_distribution[ size ];
+  double gauss_distribution[ size ];
+  int range_index, gauss_index;
+
   rng_distance_simple_t( const std::string& n, rng_t* b, bool avg_range, bool avg_gauss ) :
-    rng_normalized_t( n, b, avg_range, avg_gauss ), nTries(0), lastOk(0)
+    rng_normalized_t( n, b, avg_range, avg_gauss ), nTries(0), lastOk(0), range_index(0), gauss_index(0)
   {
     for (int i = 0; i < maxN4 + 2; i++) nit[i] = 0;
     actual_roll = real();
+    for( int i=0; i < size/2; i++ )
+    {
+      range_distribution[ i*2   ] = (   i) * 1.0/size + 1.0/(size*2);
+      range_distribution[ i*2+1 ] = (10-i) * 1.0/size - 1.0/(size*2);
+      gauss_distribution[ i*2   ] = -2.0 / (1<<i);
+      gauss_distribution[ i*2+1 ] = +2.0 / (1<<i);
+    }
   }
   virtual ~rng_distance_simple_t() {}
 
@@ -638,6 +659,26 @@ struct rng_distance_simple_t : public rng_normalized_t
     }
 
     return 0;
+  }
+
+  virtual double range( double min, double max )
+  {
+    if( average_range ) return ( min + max ) / 2.0;
+    if( ++range_index >= size ) range_index = 0;
+    double result = min + range_distribution[ range_index ] * ( max - min );
+    expected_range += ( max - min ) / 2.0;
+    actual_range += result;
+    return result;
+  }
+
+  virtual double gauss( double mean, double stddev )
+  {
+    if( average_gauss ) return mean; 
+    if( ++gauss_index >= size ) gauss_index = 0;
+    double result = mean + gauss_distribution[ gauss_index ] * stddev;
+    expected_gauss += mean;
+    actual_gauss += result;
+    return result;
   }
 };
 
