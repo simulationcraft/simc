@@ -85,6 +85,13 @@ struct shaman_t : public player_t
   uptime_t* uptimes_flurry;
   uptime_t* uptimes_nature_vulnerability;
   uptime_t* uptimes_unleashed_rage;
+
+  // Random Number Generators
+  rng_t* rng_improved_stormstrike;
+  rng_t* rng_lightning_overload;
+  rng_t* rng_maelstrom_weapon;
+  rng_t* rng_static_shock;
+  rng_t* rng_windfury_weapon;
   
   // Auto-Attack
   attack_t* main_hand_attack;
@@ -222,24 +229,6 @@ struct shaman_t : public player_t
     active_lightning_charge   = 0;
     active_lightning_bolt_dot = 0;
 
-    // Gains
-    gains_improved_stormstrike = get_gain( "improved_stormstrike" );
-    gains_shamanistic_rage     = get_gain( "shamanistic_rage" );
-    gains_thunderstorm         = get_gain( "thunderstorm"     );
-    gains_water_shield         = get_gain( "water_shield"     );
-
-    // Procs
-    procs_lightning_overload = get_proc( "lightning_overload" );
-    procs_windfury           = get_proc( "windfury" );
-
-    // Up-Times
-    uptimes_elemental_devastation = get_uptime( "elemental_devastation"    );
-    uptimes_elemental_focus       = get_uptime( "elemental_focus"          );
-    uptimes_elemental_oath        = get_uptime( "elemental_oath"           );
-    uptimes_flurry                = get_uptime( "flurry"                   );
-    uptimes_nature_vulnerability  = get_uptime( "nature_vulnerability"     );
-    uptimes_unleashed_rage        = get_uptime( "unleashed_rage"           );
-  
     // Auto-Attack
     main_hand_attack = 0;
     off_hand_attack  = 0;
@@ -253,6 +242,10 @@ struct shaman_t : public player_t
   virtual void      init_rating();
   virtual void      init_base();
   virtual void      init_scaling();
+  virtual void      init_gains();
+  virtual void      init_procs();
+  virtual void      init_uptimes();
+  virtual void      init_rng();
   virtual void      init_unique_gear();
   virtual void      reset();
   virtual double    composite_attack_power();
@@ -450,7 +443,7 @@ static void trigger_windfury_weapon( attack_t* a )
 
   if( ! a -> sim -> cooldown_ready( p -> _cooldowns.windfury_weapon ) ) return;
 
-  if( a -> sim -> roll( 0.20 + ( p -> glyphs.windfury_weapon ? 0.02 : 0 ) ) )
+  if( p -> rng_windfury_weapon -> roll( 0.20 + ( p -> glyphs.windfury_weapon ? 0.02 : 0 ) ) )
   {
     if( ! p -> windfury_weapon_attack )
     {
@@ -493,7 +486,7 @@ static void stack_maelstrom_weapon( attack_t* a )
   if( p -> tiers.t8_4pc_enhancement )
     chance *= 1.0 + 0.20;
     
-  if( a -> sim -> roll( chance ) )
+  if( p -> rng_maelstrom_weapon -> roll( chance ) )
   {
     if( p -> _buffs.maelstrom_weapon < 5 ) 
     {
@@ -546,14 +539,7 @@ static void trigger_unleashed_rage( attack_t* a )
 
   if( s -> talents.unleashed_rage == 0 ) return;
 
-  if( a -> sim -> P309 )
-  {
-    ur = s -> talents.unleashed_rage * 2;
-  }
-  else
-  {
-    ur = util_t::talent_rank( s -> talents.unleashed_rage, 3, 4, 7, 10 );
-  }
+  ur = util_t::talent_rank( s -> talents.unleashed_rage, 3, 4, 7, 10 );
 
   if( ur < s -> buffs.unleashed_rage ) return;
 
@@ -582,13 +568,10 @@ static void trigger_improved_stormstrike( attack_t* a )
 {
   shaman_t* p = a -> player -> cast_shaman();
 
-  if( a -> sim -> P309 )
-    return;
-
-  if( ! a -> sim -> roll( p -> talents.improved_stormstrike / 2.0 ) )
-    return;
-
-  p -> resource_gain( RESOURCE_MANA, 0.20 * p -> resource_base[ RESOURCE_MANA ], p -> gains_improved_stormstrike );
+  if( p -> rng_improved_stormstrike -> roll( p -> talents.improved_stormstrike / 2.0 ) )
+  {
+    p -> resource_gain( RESOURCE_MANA, 0.20 * p -> resource_base[ RESOURCE_MANA ], p -> gains_improved_stormstrike );
+  }
 }
 
 // trigger_nature_vulnerability =============================================
@@ -619,14 +602,7 @@ static void trigger_nature_vulnerability( attack_t* a )
 
   double duration = 12.0;
 
-  if( a -> sim -> P309 )
-  {
-    p -> _buffs.nature_vulnerability_charges = 2 + p -> talents.improved_stormstrike;
-  }
-  else
-  {
-    p -> _buffs.nature_vulnerability_charges = 4;
-  }
+  p -> _buffs.nature_vulnerability_charges = 4;
    
   if( e )
   {
@@ -646,7 +622,7 @@ static void trigger_tier5_4pc_elemental( spell_t* s )
 
   shaman_t* p = s -> player -> cast_shaman();
 
-  if( p -> tiers.t5_4pc_elemental && s -> sim -> roll( 0.25 ) )
+  if( p -> tiers.t5_4pc_elemental && p -> rngs.tier5_4pc -> roll( 0.25 ) )
   {
     p -> resource_gain( RESOURCE_MANA, 120.0, p -> gains.tier5_4pc );
   }
@@ -701,7 +677,8 @@ static void trigger_ashtongue_talisman( spell_t* s )
 {
   shaman_t* p = s -> player -> cast_shaman();
 
-  if( p -> unique_gear -> ashtongue_talisman && s -> sim -> roll( 0.15 ) )
+  if( p -> unique_gear -> ashtongue_talisman && 
+      p -> rngs.ashtongue_talisman -> roll( 0.15 ) )
   {
     p -> resource_gain( RESOURCE_MANA, 110.0, p -> gains.ashtongue_talisman );
   }
@@ -717,7 +694,9 @@ static void trigger_lightning_overload( spell_t* s,
 
   if( lightning_overload_chance == 0 ) return;
 
-  if( ! s -> proc && s -> sim -> roll( lightning_overload_chance ) )
+  if( s -> proc ) return;
+
+  if( p -> rng_lightning_overload -> roll( lightning_overload_chance ) )
   {
     p -> procs_lightning_overload -> occur();
 
@@ -916,7 +895,7 @@ void shaman_attack_t::assess_damage( double amount,
 
   if( num_ticks == 0 && p -> _buffs.lightning_charges > 0 )
   {
-    if( sim -> roll( p -> talents.static_shock * 0.02 ) )
+    if( p -> rng_static_shock -> roll( p -> talents.static_shock * 0.02 ) )
     {
       p -> _buffs.lightning_charges--;
       p -> active_lightning_charge -> execute();
@@ -957,7 +936,7 @@ struct melee_t : public shaman_attack_t
     shaman_t* p = player -> cast_shaman();
     if( p -> _buffs.flurry > 0 ) 
     {
-      t *= 1.0 / ( 1.0 + 0.05 * ( ( sim -> P309 ? 1 : 0 ) + p -> talents.flurry + p -> tiers.t7_4pc_enhancement ) );
+      t *= 1.0 / ( 1.0 + 0.05 * ( p -> talents.flurry + p -> tiers.t7_4pc_enhancement ) );
     }
     p -> uptimes_flurry -> update( p -> _buffs.flurry > 0 );
     return t;
@@ -1049,7 +1028,7 @@ struct stormstrike_t : public shaman_attack_t
 
     may_crit  = true;
     base_cost = p -> resource_base[ RESOURCE_MANA ] * 0.08;
-    cooldown  = ( sim -> P309 ? 10.0 : 8.0 );
+    cooldown  = 8.0;
     if( p -> tiers.t8_2pc_enhancement )
       base_multiplier *= 1.0 + 0.20;
 
@@ -1059,7 +1038,6 @@ struct stormstrike_t : public shaman_attack_t
       base_dd_max += 155;
       base_dd_min += 155;
     }
-    if( sim -> P309 ) cooldown -= p -> talents.improved_stormstrike;
   }
 
   virtual void execute()
@@ -1102,10 +1080,6 @@ double shaman_spell_t::cost()
   if( c == 0 ) return 0;
   double cr = cost_reduction();
   if( p -> _buffs.elemental_focus   ) cr += 0.40;
-  if ( sim -> P309 )
-  {
-    if( p -> _buffs.elemental_mastery ) cr += 0.20;
-  }
   c *= 1.0 - cr;
   if( p -> buffs.tier4_4pc ) c -= 270;
   if( c < 0 ) c = 0;
@@ -1142,7 +1116,7 @@ void shaman_spell_t::player_buff()
   spell_t::player_buff();
   if( p -> _buffs.elemental_mastery )
   {
-    player_crit += ( sim -> P309 ? 0.20 : 0.15 );
+    player_crit += 0.15;
   }
   if( p -> _buffs.nature_vulnerability && school == SCHOOL_NATURE )
   {
@@ -1189,7 +1163,7 @@ void shaman_spell_t::execute()
 
       if( p -> tiers.t4_4pc_elemental )
       {
-        p -> buffs.tier4_4pc = sim -> roll( 0.11 ) ;
+        p -> buffs.tier4_4pc = p -> rngs.tier4_4pc -> roll( 0.11 ) ;
       }
     }
   }
@@ -1287,14 +1261,7 @@ struct chain_lightning_t : public shaman_spell_t
     lightning_overload_stats = p -> get_stats( "lightning_overload" );
     lightning_overload_stats -> school = SCHOOL_NATURE;
     
-    if( sim -> P309 )
-    {
-      lightning_overload_chance = p -> talents.lightning_overload * 0.04 / 3.0;
-    }
-    else
-    {
-      lightning_overload_chance = util_t::talent_rank( p -> talents.lightning_overload, 3, 0.07, 0.14, 0.20 ) / 3.0;
-    }
+    lightning_overload_chance = util_t::talent_rank( p -> talents.lightning_overload, 3, 0.07, 0.14, 0.20 ) / 3.0;
   }
 
   virtual void execute()
@@ -1302,7 +1269,7 @@ struct chain_lightning_t : public shaman_spell_t
     shaman_t* p = player -> cast_shaman();
     shaman_spell_t::execute();
     event_t::early( player -> cast_shaman() -> _expirations.maelstrom_weapon );
-    if ( ( ! sim -> P309 ) && ( p -> _buffs.elemental_mastery == 1 ) )
+    if ( p -> _buffs.elemental_mastery == 1 )
     {
       p -> _buffs.elemental_mastery = 2;
     }
@@ -1327,7 +1294,7 @@ struct chain_lightning_t : public shaman_spell_t
         t *= ( 1.0 - p -> _buffs.maelstrom_weapon * 0.20 );
       }
     }
-    if ( ( ! sim -> P309 ) && ( p -> _buffs.elemental_mastery == 1 ) )
+    if ( p -> _buffs.elemental_mastery == 1 )
     {
       t = 0;
     }
@@ -1410,14 +1377,8 @@ struct lightning_bolt_t : public shaman_spell_t
     lightning_overload_stats = p -> get_stats( "lightning_overload" );
     lightning_overload_stats -> school = SCHOOL_NATURE;
 
-    if( sim -> P309 )
-    {
-      lightning_overload_chance = p -> talents.lightning_overload * 0.04;
-    }
-    else
-    {
-      lightning_overload_chance = util_t::talent_rank( p -> talents.lightning_overload, 3, 0.07, 0.14, 0.20 );
-    }
+    lightning_overload_chance = util_t::talent_rank( p -> talents.lightning_overload, 3, 0.07, 0.14, 0.20 );
+
     tier8_4pc_elemental = (p -> tiers.t8_4pc_elemental == 1);
   }
 
@@ -1426,7 +1387,7 @@ struct lightning_bolt_t : public shaman_spell_t
     shaman_t* p = player -> cast_shaman();
     shaman_spell_t::execute();
     event_t::early( player -> cast_shaman() -> _expirations.maelstrom_weapon );
-    if ( ( ! sim -> P309 ) && ( p -> _buffs.elemental_mastery == 1 ) )
+    if ( p -> _buffs.elemental_mastery == 1 )
     {
       p -> _buffs.elemental_mastery = 2;
     }
@@ -1456,7 +1417,7 @@ struct lightning_bolt_t : public shaman_spell_t
         t *= ( 1.0 - p -> _buffs.maelstrom_weapon * 0.20 );
       }
     }
-    if ( ( ! sim -> P309 ) && ( p -> _buffs.elemental_mastery == 1 ) )
+    if ( p -> _buffs.elemental_mastery == 1 )
     {
       t = 0;
     }
@@ -1535,7 +1496,7 @@ struct lava_burst_t : public shaman_spell_t
   {
     shaman_t* p = player -> cast_shaman();
     shaman_spell_t::execute();
-    if ( ( ! sim -> P309 ) && ( p -> _buffs.elemental_mastery == 1 ) )
+    if ( p -> _buffs.elemental_mastery == 1 )
     {
       p -> _buffs.elemental_mastery = 2;
     }
@@ -1553,7 +1514,7 @@ struct lava_burst_t : public shaman_spell_t
   {
     double t = shaman_spell_t::execute_time();
     shaman_t* p = player -> cast_shaman();
-    if ( ( ! sim -> P309 ) && ( p -> _buffs.elemental_mastery == 1 ) )
+    if ( p -> _buffs.elemental_mastery == 1 )
     {
       t = 0;
     }
@@ -1632,7 +1593,7 @@ struct elemental_mastery_t : public shaman_spell_t
         p -> aura_gain( "Elemental Mastery" );
         p -> _buffs.elemental_mastery = 1;
         // Fix-Me. Needs a shared cooldown with nature's swiftness in 3.1.0
-        sim -> add_event( this, ( sim -> P309 ? 30.0 : 15.0 ) );
+        sim -> add_event( this, 15.0 );
       }
       virtual void execute()
       {
@@ -2663,18 +2624,9 @@ struct mana_spring_totem_t : public shaman_spell_t
     base_cost_reduction += ( p -> talents.totemic_focus    * 0.05 +
                              p -> talents.mental_quickness * 0.02 );
 
-    if ( sim -> P309 )
-    {
-      regen = util_t::ability_rank( p -> level,  34.0,80,  30.0,76,  25.0,71,  20.0,65,  17.0,0 );
+    regen = util_t::ability_rank( p -> level,  91.0,80,  82.0,76,  73.0,71,  41.0,65,  31.0,0 );
 
-      regen *= 1.0 + p -> talents.restorative_totems * 0.05;
-    }
-    else
-    {
-      regen = util_t::ability_rank( p -> level,  91.0,80,  82.0,76,  73.0,71,  41.0,65,  31.0,0 );
-
-      regen *= 1.0 + util_t::talent_rank( p -> talents.restorative_totems, 3, 0.07, 0.12, 0.20 );
-    }
+    regen *= 1.0 + util_t::talent_rank( p -> talents.restorative_totems, 3, 0.07, 0.12, 0.20 );
   }
 
   virtual void execute() 
@@ -2720,7 +2672,7 @@ struct bloodlust_t : public shaman_spell_t
     harmful = false;
     base_cost = ( 0.26 * player -> resource_base[ RESOURCE_MANA ] );
     base_cost_reduction += p -> talents.mental_quickness * 0.02;
-    cooldown = ( sim -> P309 ? 600 : 300 );
+    cooldown = 300;
   }
 
   virtual void execute()
@@ -2737,7 +2689,7 @@ struct bloodlust_t : public shaman_spell_t
           {
             p -> aura_gain( "Bloodlust" );
             p -> buffs.bloodlust = 1;
-            p -> cooldowns.bloodlust = sim -> current_time + ( sim -> P309 ? 300 : 600 );
+            p -> cooldowns.bloodlust = sim -> current_time + 600;
           }
         }
         sim -> add_event( this, 40.0 );
@@ -3114,8 +3066,7 @@ void shaman_t::init_rating()
 {
   player_t::init_rating();
 
-  if ( !sim -> P309 )
-    rating.attack_haste *= 1.0 / 1.30;
+  rating.attack_haste *= 1.0 / 1.30;
 }
 
 // shaman_t::init_base ========================================================
@@ -3128,16 +3079,9 @@ void shaman_t::init_base()
   attribute_base[ ATTR_INTELLECT ] = 123;
   attribute_base[ ATTR_SPIRIT    ] = 140;
 
-  if( sim -> P309 )
-  {
-    attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.0 + talents.ancestral_knowledge * 0.02;
-  }
-  else
-  {
-    attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.0 + talents.ancestral_knowledge * 0.02;
-    attribute_multiplier_initial[ ATTR_STAMINA   ] *= 1.0 + talents.toughness           * 0.02;
-    base_attack_expertise = 0.25 * talents.unleashed_rage * 0.03;
-  }
+  attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.0 + talents.ancestral_knowledge * 0.02;
+  attribute_multiplier_initial[ ATTR_STAMINA   ] *= 1.0 + talents.toughness           * 0.02;
+  base_attack_expertise = 0.25 * talents.unleashed_rage * 0.03;
 
   base_spell_crit = 0.0220045;
   initial_spell_crit_per_intellect = rating_t::interpolate( level, 0.01/60.0, 0.01/80.0, 0.01/166.79732 );
@@ -3174,6 +3118,55 @@ void shaman_t::init_scaling()
   player_t::init_scaling();
 
   scales_with[ STAT_SPIRIT ] = 0;
+}
+
+// shaman_t::init_gains ======================================================
+
+void shaman_t::init_gains()
+{
+  player_t::init_gains();
+
+  gains_improved_stormstrike = get_gain( "improved_stormstrike" );
+  gains_shamanistic_rage     = get_gain( "shamanistic_rage" );
+  gains_thunderstorm         = get_gain( "thunderstorm"     );
+  gains_water_shield         = get_gain( "water_shield"     );
+}
+
+// shaman_t::init_procs ======================================================
+
+void shaman_t::init_procs()
+{
+  player_t::init_procs();
+
+  procs_lightning_overload = get_proc( "lightning_overload" );
+  procs_windfury           = get_proc( "windfury" );
+}
+
+// shaman_t::init_uptimes ====================================================
+
+void shaman_t::init_uptimes()
+{
+  player_t::init_uptimes();
+
+  uptimes_elemental_devastation = get_uptime( "elemental_devastation"    );
+  uptimes_elemental_focus       = get_uptime( "elemental_focus"          );
+  uptimes_elemental_oath        = get_uptime( "elemental_oath"           );
+  uptimes_flurry                = get_uptime( "flurry"                   );
+  uptimes_nature_vulnerability  = get_uptime( "nature_vulnerability"     );
+  uptimes_unleashed_rage        = get_uptime( "unleashed_rage"           );
+}
+
+// shaman_t::init_rng ========================================================
+
+void shaman_t::init_rng()
+{
+  player_t::init_rng();
+
+  rng_improved_stormstrike = get_rng( "improved_stormstrike" );
+  rng_lightning_overload   = get_rng( "lightning_overload"   );
+  rng_maelstrom_weapon     = get_rng( "maelstrom_weapon"     );
+  rng_static_shock         = get_rng( "static_shock"         );
+  rng_windfury_weapon      = get_rng( "windfury_weapon"      );
 }
 
 // shaman_t::init_unique_gear ===============================================
