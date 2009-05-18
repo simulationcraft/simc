@@ -63,6 +63,11 @@ struct priest_t : public player_t
   uptime_t* uptimes_devious_mind;
   uptime_t* uptimes_devious_mind_mf;
 
+  // Random Number Generators
+  rng_t* rng_pain_and_suffering;
+  rng_t* rng_shadow_weaving;
+  rng_t* rng_surge_of_light;
+
   struct talents_t
   {
     int  aspiration;
@@ -133,20 +138,13 @@ struct priest_t : public player_t
 
     // Tier 8 4-piece Delay
     devious_mind_delay = 0.0;
-
-    // Gains
-    gains_dispersion   = get_gain( "dispersion" );
-    gains_shadow_fiend = get_gain( "shadow_fiend" );
-
-    // Up-Times
-    uptimes_improved_spirit_tap = get_uptime( "improved_spirit_tap" );
-    uptimes_glyph_of_shadow     = get_uptime( "glyph_of_shadow" );
-    uptimes_devious_mind        = get_uptime( "devious_mind" );
-    uptimes_devious_mind_mf     = get_uptime( "devious_mind_mf" );
   }
 
   // Character Definition
   virtual void      init_base();
+  virtual void      init_gains();
+  virtual void      init_uptimes();
+  virtual void      init_rng();
   virtual void      reset();
   virtual bool      get_talent_trees( std::vector<int*>& discipline, std::vector<int*>& holy, std::vector<int*>& shadow );
   virtual bool      parse_option ( const std::string& name, const std::string& value );
@@ -197,20 +195,16 @@ struct shadow_fiend_pet_t : public pet_t
       base_dd_min = base_dd_max = 1;
       background = true;
       repeating  = true;
-      if ( ! sim -> P309 )
-      {
-        may_dodge  = false;
-        may_miss   = false;
-        may_parry  = false;
-      }
-      may_crit = true;
+      may_dodge  = false;
+      may_miss   = false;
+      may_parry  = false;
+      may_crit   = true;
     }
     void assess_damage( double amount, int dmg_type )
     {
       attack_t::assess_damage( amount, dmg_type );
       priest_t* p = player -> cast_pet() -> owner -> cast_priest();
-      double gain = sim -> P309 ? 0.04 : 0.05;
-      p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * gain, p -> gains_shadow_fiend );
+      p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.05, p -> gains_shadow_fiend );
     }
   };
 
@@ -275,7 +269,7 @@ static void stack_shadow_weaving( spell_t* s )
     }
   };
 
-  if( s -> sim -> roll( p -> talents.shadow_weaving * (1.0/3) ) )
+  if( p -> rng_shadow_weaving -> roll( p -> talents.shadow_weaving * (1.0/3) ) )
   {
     sim_t* sim = s -> sim;
 
@@ -334,7 +328,7 @@ static void push_tier5_2pc( spell_t*s )
 
   assert( p -> buffs.tier5_2pc == 0 );
 
-  if( p -> unique_gear -> tier5_2pc && s -> sim -> roll( 0.06 ) )
+  if( p -> unique_gear -> tier5_2pc && p -> rngs.tier5_2pc -> roll( 0.06 ) )
   {
     p -> buffs.tier5_2pc = 1;
     p -> buffs.mana_cost_reduction += 150;
@@ -362,9 +356,9 @@ static void push_tier5_4pc( spell_t*s )
 {
   priest_t* p = s -> player -> cast_priest();
 
-  if(   p ->  unique_gear -> tier5_4pc && 
-      ! p -> buffs.tier5_4pc &&
-        s -> sim -> roll( 0.40 ) )
+  if( ! p -> buffs.tier5_4pc &&
+        p -> unique_gear -> tier5_4pc && 
+        p -> rngs.tier5_4pc -> roll( 0.40 ) )
   {
     p -> buffs.tier5_4pc = 1;
     p -> spell_power[ SCHOOL_MAX ] += 100;
@@ -408,7 +402,8 @@ static void trigger_ashtongue_talisman( spell_t* s )
 
   player_t* p = s -> player;
 
-  if( p -> unique_gear -> ashtongue_talisman && s -> sim -> roll( 0.10 ) )
+  if( p -> unique_gear -> ashtongue_talisman && 
+      p -> rngs.ashtongue_talisman -> roll( 0.10 ) )
   {
     p -> procs.ashtongue_talisman -> occur();
 
@@ -432,7 +427,7 @@ static void trigger_surge_of_light( spell_t* s )
   priest_t* p = s -> player -> cast_priest();
 
   if( p -> talents.surge_of_light )
-    if( s -> sim -> roll( p -> talents.surge_of_light * 0.25 ) )
+    if( p -> rng_surge_of_light -> roll( p -> talents.surge_of_light * 0.25 ) )
       p -> _buffs.surge_of_light = 1;
 }
 
@@ -774,10 +769,47 @@ struct smite_t : public priest_spell_t
   }
 };
 
-// Pennnce Spell ===============================================================
+// Penance Spell ===============================================================
+
+struct penance_tick_t : public priest_spell_t
+{
+  penance_tick_t( player_t* player ) : 
+    priest_spell_t( "penance", player, SCHOOL_HOLY, TREE_HOLY )
+  {
+    priest_t* p = player -> cast_priest();
+
+    static rank_t ranks[] =
+    {
+      { 80, 4, 288, 288, 0, 0 },
+      { 76, 3, 256, 256, 0, 0 },
+      { 68, 2, 224, 224, 0, 0 },
+      { 60, 1, 184, 184, 0, 0 },
+      { 0, 0 }
+    };
+    init_rank( ranks );
+    
+    dual       = true;
+    background = true;
+    may_crit   = true;
+
+    direct_power_mod  = 0.8 / 3.5;
+ 
+    base_multiplier *= 1.0 + p -> talents.searing_light * 0.05 + p -> talents.twin_disciplines * 0.01;
+    base_crit       += p -> talents.holy_specialization * 0.01;
+  }
+
+  virtual void execute() 
+  {
+    priest_spell_t::execute();
+    tick_dmg = direct_dmg;
+    update_stats( DMG_OVER_TIME );
+  }
+};
 
 struct penance_t : public priest_spell_t
 {
+  spell_t* penance_tick;
+
   penance_t( player_t* player, const std::string& options_str ) : 
     priest_spell_t( "penance", player, SCHOOL_HOLY, TREE_HOLY )
   {
@@ -790,66 +822,24 @@ struct penance_t : public priest_spell_t
     };
     parse_options( options, options_str );
 
-    static rank_t ranks[] =
-    {
-      { 80, 4, 288, 288, 0, 0.16 },
-      { 76, 3, 256, 256, 0, 0.16 },
-      { 68, 2, 224, 224, 0, 0.16 },
-      { 60, 1, 184, 184, 0, 0.16 },
-      { 0, 0 }
-    };
-    init_rank( ranks );
-    
-    // Fix-Me. Penance ticks instantly and then once a second for 2 seconds.
+    may_miss = may_resist = false;
+
+    base_cost         = 0.16 * p -> resource_base[ RESOURCE_MANA ];
     base_execute_time = 0.0; 
-    base_tick_time    = 1.0;
-    num_ticks         = 3;
     channeled         = true;
-    may_crit          = true;
+    tick_zero         = true;
+    num_ticks         = 2;
+    base_tick_time    = 1.0;
     cooldown          = 10;
-    direct_power_mod  = 0.8 / 3.5;
-      
-    cooldown          *= 1.0 - p -> talents.aspiration * 0.10;
-    base_multiplier   *= 1.0 + p -> talents.searing_light * 0.05 + p -> talents.twin_disciplines * 0.01;
-    base_crit         += p -> talents.holy_specialization * 0.01;
-  }
+    cooldown         *= 1.0 - p -> talents.aspiration * 0.10;
 
-  // Odd things to handle:
-  // (1) Execute is guaranteed.
-  // (2) Each "tick" is like an "execute" and can "crit".
-  // (3) On each tick hit/miss events are triggered.
-
-  virtual void execute() 
-  {
-    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
-    consume_resource();
-    schedule_tick();
-    update_ready();
-    direct_dmg = 0;
-    update_stats( DMG_DIRECT );
+    penance_tick = new penance_tick_t( p );
   }
 
   virtual void tick() 
   {
     if( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
-    may_resist = false;
-    target_debuff( DMG_DIRECT );
-    calculate_result();
-    may_resist = true;
-    if( result_is_hit() )
-    {
-      calculate_direct_damage();
-      if( direct_dmg > 0 )
-      {
-        tick_dmg = direct_dmg;
-        assess_damage( tick_dmg, DMG_OVER_TIME );
-      }
-    }
-    else
-    {
-      if( sim -> log ) log_t::output( sim, "%s avoids %s (%s)", sim -> target -> name(), name(), util_t::result_type_string( result ) );
-    }
-    update_stats( DMG_OVER_TIME );
+    penance_tick -> execute();
   }
 };
 
@@ -904,13 +894,8 @@ struct shadow_word_pain_t : public priest_spell_t
   virtual void execute() 
   {
     priest_t* p = player -> cast_priest();
-
-        if ( ! sim -> P309 )
-        {
-      tick_may_crit              = p -> buffs.shadow_form != 0;
-      base_crit_bonus_multiplier = 1.0 + ( p -> buffs.shadow_form != 0 );
-        }
-
+    tick_may_crit = p -> buffs.shadow_form != 0;
+    base_crit_bonus_multiplier = 1.0 + ( p -> buffs.shadow_form != 0 );
     priest_spell_t::execute(); 
     if( result_is_hit() ) 
     {
@@ -942,17 +927,6 @@ struct shadow_word_pain_t : public priest_spell_t
       return false;
 
     return true;
-  }
-  
-  virtual double calculate_tick_damage()
-  {
-    priest_t* p = player -> cast_priest();
-    spell_t::calculate_tick_damage();
-    if( sim -> P309 && p -> buffs.shadow_form )
-    {
-      tick_dmg *= 1.0 + total_crit();
-    }
-    return tick_dmg;
   }
 };
 
@@ -1001,13 +975,8 @@ struct vampiric_touch_t : public priest_spell_t
   virtual void execute() 
   {
     priest_t* p = player -> cast_priest();
-
-    if ( ! sim -> P309 )
-    {
-      tick_may_crit              = p -> buffs.shadow_form != 0;
-      base_crit_bonus_multiplier = 1.0 + ( p -> buffs.shadow_form != 0 );
-    }
-
+    tick_may_crit = p -> buffs.shadow_form != 0;
+    base_crit_bonus_multiplier = 1.0 + ( p -> buffs.shadow_form != 0 );
     priest_spell_t::execute(); 
     if( result_is_hit() ) 
     {
@@ -1020,25 +989,72 @@ struct vampiric_touch_t : public priest_spell_t
     priest_spell_t::last_tick(); 
     pop_misery( this );
   }
-  
-  virtual double calculate_tick_damage()
-  {
-    priest_t* p = player -> cast_priest();
-    spell_t::calculate_tick_damage();
-    if( sim -> P309 && p -> buffs.shadow_form )
-    {
-      tick_dmg *= 1.0 + total_crit();
-    }
-    return tick_dmg;
-  }    
 };
 
 // Devouring Plague Spell ======================================================
 
+struct devouring_plague_burst_t : public priest_spell_t
+{
+  devouring_plague_burst_t( player_t* player ) : 
+    priest_spell_t( "devouring_plague", player, SCHOOL_SHADOW, TREE_SHADOW )
+  {
+    priest_t* p = player -> cast_priest();
+
+    static rank_t ranks[] =
+    {
+      { 79, 9, 172, 172, 0, 0 },
+      { 73, 8, 143, 143, 0, 0 },
+      { 68, 7, 136, 136, 0, 0 },
+      { 60, 6, 113, 113, 0, 0 },
+      { 0, 0 }
+    };
+    init_rank( ranks );
+
+    // burst = 5%-15% of total periodic damage from 8 ticks
+
+    dual       = true;
+    background = true;
+    may_crit   = true;
+
+    base_multiplier *= 8.0 * p -> talents.improved_devouring_plague * 0.05;    
+
+    direct_power_mod  = 3.0 / 15.0;
+    direct_power_mod *= 0.925;
+
+    base_multiplier  *= 1.0 + ( p -> talents.darkness                  * 0.02 + 
+                                p -> talents.twin_disciplines          * 0.01 +
+                                p -> talents.improved_devouring_plague * 0.05 +
+                                p -> unique_gear -> tier8_2pc          * 0.15 ); // FIX ME! Is tier8_2pc additive or multiplicative?
+
+    base_hit += p -> talents.shadow_focus * 0.01;
+  }
+
+  virtual void execute() 
+  {
+    priest_spell_t::execute();
+    update_stats( DMG_DIRECT );
+  }
+
+  virtual void player_buff()
+  {
+    priest_t* p = player -> cast_priest();
+    priest_spell_t::player_buff();
+    player_spell_power -= p -> spell_power_per_spirit * p -> spirit();
+  }
+
+  virtual void target_debuff( int dmg_type )
+  {
+    priest_spell_t::target_debuff( dmg_type );
+    if( sim -> target -> debuffs.crypt_fever ) target_multiplier *= 1.30;
+  }
+};
+
 struct devouring_plague_t : public priest_spell_t
 {
+  spell_t* devouring_plague_burst;
+
   devouring_plague_t( player_t* player, const std::string& options_str ) : 
-    priest_spell_t( "devouring_plague", player, SCHOOL_SHADOW, TREE_SHADOW )
+    priest_spell_t( "devouring_plague", player, SCHOOL_SHADOW, TREE_SHADOW ), devouring_plague_burst(0)
   {
     priest_t* p = player -> cast_priest();
 
@@ -1065,20 +1081,19 @@ struct devouring_plague_t : public priest_spell_t
     binary            = true;
     tick_power_mod    = base_tick_time / 15.0;
     tick_power_mod   *= 0.925;
-    base_cost        *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility, 3, 0.04, 0.07, 0.10 ) +
-                                                                        p -> talents.shadow_focus * 0.02 );
+    base_cost        *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility, 3, 0.04, 0.07, 0.10 ) + p -> talents.shadow_focus * 0.02 );
     base_cost         = floor(base_cost);
     base_multiplier  *= 1.0 + ( p -> talents.darkness                  * 0.02 + 
                                 p -> talents.twin_disciplines          * 0.01 +
                                 p -> talents.improved_devouring_plague * 0.05 +
-                                p -> unique_gear -> tier8_2pc                    * 0.15 ); // FIX ME! Is tier8_2pc additive or multiplicative?
+                                p -> unique_gear -> tier8_2pc          * 0.15 ); // FIX ME! Is tier8_2pc additive or multiplicative?
     base_hit         += p -> talents.shadow_focus * 0.01;
+    base_crit        += p -> talents.mind_melt * 0.03;
 
-    if ( p -> talents.improved_devouring_plague )
+    if( p -> talents.improved_devouring_plague )
     {
-      may_crit = 1;
+      devouring_plague_burst = new devouring_plague_burst_t( p );
     }
-    base_crit += p -> talents.mind_melt * 0.03;
 
     observer = &( p -> active_devouring_plague );
   }
@@ -1086,21 +1101,10 @@ struct devouring_plague_t : public priest_spell_t
   virtual void execute() 
   {
     priest_t* p = player -> cast_priest();
-
-    if ( ! sim -> P309 )
-    {
-      tick_may_crit              = p -> buffs.shadow_form != 0;
-      base_crit_bonus_multiplier = 1.0 + ( p -> buffs.shadow_form != 0 );
-    }
-    if ( p -> talents.improved_devouring_plague )
-    {
-      base_crit -= p -> talents.mind_melt * 0.03;
-    }
+    tick_may_crit = p -> buffs.shadow_form != 0;
+    base_crit_bonus_multiplier = 1.0 + ( p -> buffs.shadow_form != 0 );
     priest_spell_t::execute(); 
-    if ( p -> talents.improved_devouring_plague )
-    {
-      base_crit += p -> talents.mind_melt * 0.03;
-    }
+    if( devouring_plague_burst ) devouring_plague_burst -> execute();
   }
 
   virtual void tick() 
@@ -1109,54 +1113,16 @@ struct devouring_plague_t : public priest_spell_t
     player -> resource_gain( RESOURCE_HEALTH, tick_dmg * 0.15 );
   }
 
-  virtual void last_tick() 
-  {
-    priest_spell_t::last_tick(); 
-  }
-  
-  virtual double calculate_direct_damage()
-  {
-    priest_t* p = player -> cast_priest();
-    direct_dmg = 0;
-    if( p -> talents.improved_devouring_plague )
-    {
-      int saved_result = result;
-      double saved_player_spell_power = player_spell_power;
-      result = RESULT_HIT;
-      player_spell_power -= p -> spell_power_per_spirit * p -> spirit();
-      direct_dmg = calculate_tick_damage() * num_ticks * p -> talents.improved_devouring_plague * 0.05;
-      player_spell_power = saved_player_spell_power;
-      result = saved_result;
-      if ( result == RESULT_CRIT )
-      {
-        double saved_base_crit_bonus_multiplier = base_crit_bonus_multiplier;
-        if ( p -> buffs.shadow_form )
-        {
-          base_crit_bonus_multiplier *= 0.5;
-        }
-        direct_dmg *= 1.0 + total_crit_bonus();
-        base_crit_bonus_multiplier = saved_base_crit_bonus_multiplier;
-      }
-    }
-    return direct_dmg;
-  }
-
-  virtual double calculate_tick_damage()
-  {
-    priest_t* p = player -> cast_priest();
-    spell_t::calculate_tick_damage();
-    if( sim -> P309 && p -> buffs.shadow_form )
-    {
-      tick_dmg *= 1.0 + total_crit();
-    }
-    return tick_dmg;
-  }    
-
   virtual void target_debuff( int dmg_type )
   {
-    spell_t::target_debuff( dmg_type );
-
+    priest_spell_t::target_debuff( dmg_type );
     if( sim -> target -> debuffs.crypt_fever ) target_multiplier *= 1.30;
+  }
+
+  virtual void update_stats( int type )
+  {
+    if( devouring_plague_burst && type == DMG_DIRECT ) return;
+    priest_spell_t::update_stats( type );
   }
 };
 
@@ -1414,7 +1380,7 @@ struct mind_flay_tick_t : public priest_spell_t
     {
       if( p -> active_shadow_word_pain )
       {
-        if( sim -> roll( p -> talents.pain_and_suffering * (1.0/3.0) ) )
+        if( p -> rng_pain_and_suffering -> roll( p -> talents.pain_and_suffering * (1.0/3.0) ) )
         {
           p -> active_shadow_word_pain -> refresh_duration();
         }
@@ -1960,6 +1926,39 @@ void priest_t::init_base()
   attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.0 + talents.mental_strength * 0.03;
 }
 
+// priest_t::init_gains ======================================================
+
+void priest_t::init_gains()
+{
+  player_t::init_gains();
+
+  gains_dispersion   = get_gain( "dispersion" );
+  gains_shadow_fiend = get_gain( "shadow_fiend" );
+}
+
+// priest_t::init_uptimes ====================================================
+
+void priest_t::init_uptimes()
+{
+  player_t::init_uptimes();
+
+  uptimes_improved_spirit_tap = get_uptime( "improved_spirit_tap" );
+  uptimes_glyph_of_shadow     = get_uptime( "glyph_of_shadow" );
+  uptimes_devious_mind        = get_uptime( "devious_mind" );
+  uptimes_devious_mind_mf     = get_uptime( "devious_mind_mf" );
+}
+
+// priest_t::init_rng ========================================================
+
+void priest_t::init_rng()
+{
+  player_t::init_rng();
+
+  rng_pain_and_suffering = get_rng( "pain_and_suffering" );
+  rng_shadow_weaving     = get_rng( "shadow_weaving" );
+  rng_surge_of_light     = get_rng( "surge_of_light" );
+}
+
 // priest_t::reset ===========================================================
 
 void priest_t::reset()
@@ -1981,25 +1980,11 @@ void priest_t::reset()
 
 void priest_t::regen( double periodicity )
 {
-  mana_regen_while_casting = 0;
+  mana_regen_while_casting = util_t::talent_rank( talents.meditation, 3, 0.17, 0.33, 0.50 );
 
-  if( sim -> P309 )
+  if( _buffs.improved_spirit_tap )
   {
-    mana_regen_while_casting += talents.meditation * 0.10;
-
-    if( _buffs.improved_spirit_tap )
-    {
-      mana_regen_while_casting += talents.improved_spirit_tap * 0.10;
-    }
-  }
-  else
-  {
-    mana_regen_while_casting += util_t::talent_rank( talents.meditation, 3, 0.17, 0.33, 0.50 );
-
-    if( _buffs.improved_spirit_tap )
-    {
-      mana_regen_while_casting += util_t::talent_rank( talents.improved_spirit_tap, 2, 0.17, 0.33 );
-    }
+    mana_regen_while_casting += util_t::talent_rank( talents.improved_spirit_tap, 2, 0.17, 0.33 );
   }
 
   player_t::regen( periodicity );
