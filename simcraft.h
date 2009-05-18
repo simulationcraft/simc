@@ -886,10 +886,12 @@ struct player_t
   procs_t procs;
 
   rng_t* rng_list;
-  rng_t *rng_lag_channel, *rng_lag_gcd, *rng_lag_queue;
   
   struct rngs_t
   {
+    rng_t* lag_channel;
+    rng_t* lag_gcd;
+    rng_t* lag_queue;
     rng_t* ashtongue_talisman;
     rng_t *tier4_2pc, *tier4_4pc;
     rng_t *tier5_2pc, *tier5_4pc;

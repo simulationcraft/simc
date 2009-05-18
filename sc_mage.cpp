@@ -76,6 +76,18 @@ struct mage_t : public player_t
   uptime_t* uptimes_missile_barrage;
   uptime_t* uptimes_water_elemental;
 
+  // Random Number Generation
+  rng_t* rng_arcane_concentration;
+  rng_t* rng_brain_freeze;
+  rng_t* rng_fingers_of_frost;
+  rng_t* rng_frostbite;
+  rng_t* rng_hot_streak;
+  rng_t* rng_improved_scorch;
+  rng_t* rng_improved_water_elemental;
+  rng_t* rng_missile_barrage;
+  rng_t* rng_winters_chill;
+  rng_t* rng_winters_grasp;
+
   // Options
   std::string focus_magic_target_str;
   std::string armor_type_str;
@@ -191,35 +203,14 @@ struct mage_t : public player_t
     // Active
     active_ignite          = 0;
     active_water_elemental = 0;
-
-    // Gains
-    gains_clearcasting       = get_gain( "clearcasting" );
-    gains_evocation          = get_gain( "evocation" );
-    gains_mana_gem           = get_gain( "mana_gem" );
-    gains_master_of_elements = get_gain( "master_of_elements" );
-
-    // Procs
-    procs_clearcasting         = get_proc( "clearcasting" );
-    procs_deferred_ignite      = get_proc( "deferred_ignite" );
-    procs_hot_streak_pyroblast = get_proc( "hot_streak_pyroblast" );
-
-    // Up-Times
-    uptimes_arcane_blast[ 0 ]    = get_uptime( "arcane_blast_0" );
-    uptimes_arcane_blast[ 1 ]    = get_uptime( "arcane_blast_1" );
-    uptimes_arcane_blast[ 2 ]    = get_uptime( "arcane_blast_2" );
-    uptimes_arcane_blast[ 3 ]    = get_uptime( "arcane_blast_3" );
-    uptimes_arcane_power         = get_uptime( "arcane_power" );
-    uptimes_dps_rotation         = get_uptime( "dps_rotation" );
-    uptimes_dpm_rotation         = get_uptime( "dpm_rotation" );
-    uptimes_fingers_of_frost     = get_uptime( "fingers_of_frost" );
-    uptimes_focus_magic_feedback = get_uptime( "focus_magic_feedback" );
-    uptimes_icy_veins            = get_uptime( "icy_veins" );
-    uptimes_missile_barrage      = get_uptime( "missile_barrage" );
-    uptimes_water_elemental      = get_uptime( "water_elemental" );
   }
 
   // Character Definition
   virtual void      init_base();
+  virtual void      init_gains();
+  virtual void      init_procs();
+  virtual void      init_uptimes();
+  virtual void      init_rng();
   virtual void      combat_begin();
   virtual void      reset();
   virtual bool      get_talent_trees( std::vector<int*>& arcane, std::vector<int*>& fire, std::vector<int*>& frost );
@@ -261,29 +252,34 @@ static void stack_winters_chill( spell_t* s,
     }
   };
 
-  if( s -> sim -> roll( chance ) )
+  if( chance < 1.0 )
   {
-    target_t* t = s -> sim -> target;
+    mage_t* p = s -> player -> cast_mage();
 
-    if( t -> debuffs.winters_chill < 5 ) 
-    {
-      t -> debuffs.winters_chill += 1;
+    if( p -> rng_winters_chill -> roll( chance ) )
+      return;
+  }
 
-      if( s -> sim -> log ) 
-        log_t::output( s -> sim, "Target %s gains Winters Chill %d", 
-                       t -> name(), t -> debuffs.winters_chill );
-    }
+  target_t* t = s -> sim -> target;
 
-    event_t*& e = t -> expirations.winters_chill;
+  if( t -> debuffs.winters_chill < 5 ) 
+  {
+    t -> debuffs.winters_chill += 1;
+
+    if( s -> sim -> log ) 
+      log_t::output( s -> sim, "Target %s gains Winters Chill %d", 
+		     t -> name(), t -> debuffs.winters_chill );
+  }
+
+  event_t*& e = t -> expirations.winters_chill;
     
-    if( e )
-    {
-      e -> reschedule( 15.0 );
-    }
-    else
-    {
-      e = new ( s -> sim ) expiration_t( s -> sim );
-    }
+  if( e )
+  {
+    e -> reschedule( 15.0 );
+  }
+  else
+  {
+    e = new ( s -> sim ) expiration_t( s -> sim );
   }
 }
 
@@ -564,10 +560,11 @@ static void trigger_tier8_2pc( spell_t* s )
 {
   mage_t* p = s -> player -> cast_mage();
   
-  if( p -> unique_gear -> tier8_2pc == 0 )
+  if( ! p -> unique_gear -> tier8_2pc )
     return;
+
   // http://ptr.wowhead.com/?spell=64867
-  if( ! s -> sim -> roll( 0.25 ) )
+  if( ! p -> rngs.tier8_2pc -> roll( 0.25 ) )
     return; 
     
   struct expiration_t : public event_t
@@ -613,10 +610,10 @@ static bool trigger_tier8_4pc( spell_t* s )
 {
   mage_t* p = s -> player -> cast_mage();
 
-  if( ! p -> unique_gear -> tier8_4pc == 1 )
+  if( ! p -> unique_gear -> tier8_4pc )
     return false;
 
-  if( ! s -> sim -> roll( 0.10 ) )
+  if( ! p -> rngs.tier8_4pc -> roll( 0.10 ) )
     return false;
     
   p -> procs.tier8_4pc -> occur();
@@ -784,7 +781,7 @@ static void trigger_arcane_concentration( spell_t* s )
 
   if( ! p -> talents.arcane_concentration ) return;
 
-  if( s -> sim -> roll( p -> talents.arcane_concentration * 0.02 ) )
+  if( p -> rng_arcane_concentration -> roll( p -> talents.arcane_concentration * 0.02 ) )
   {
     p -> aura_gain( "Clearcasting" );
     p -> procs_clearcasting -> occur();
@@ -822,7 +819,7 @@ static void trigger_frostbite( spell_t* s )
 
   int level_diff = t -> level - p -> level;
 
-  if( ( level_diff <= 1 ) && s -> sim -> roll( p -> talents.frostbite * 0.05 ) )
+  if( ( level_diff <= 1 ) && p -> rng_frostbite -> roll( p -> talents.frostbite * 0.05 ) )
   {
     event_t*& e = t -> expirations.frozen;
     
@@ -865,7 +862,7 @@ static void trigger_winters_grasp( spell_t* s )
 
   mage_t* p = s -> player -> cast_mage();
 
-  if( s -> sim -> roll( p -> talents.winters_grasp * 0.05 ) )
+  if( p -> rng_winters_grasp -> roll( p -> talents.winters_grasp * 0.05 ) )
   {
     event_t*& e = s -> sim -> target -> expirations.winters_grasp;
     
@@ -913,7 +910,7 @@ static void trigger_fingers_of_frost( spell_t* s )
 
   mage_t* p = s -> player -> cast_mage();
 
-  if( s -> sim -> roll( p -> talents.fingers_of_frost * 0.15/2 ) )
+  if( p -> rng_fingers_of_frost -> roll( p -> talents.fingers_of_frost * 0.15/2 ) )
   {
     p -> _buffs.fingers_of_frost = 2;
     p -> _buffs.shatter_combo = 0;
@@ -929,7 +926,7 @@ static void trigger_brain_freeze( spell_t* s )
 
   mage_t* p = s -> player -> cast_mage();
 
-  if( s -> sim -> roll( p -> talents.brain_freeze * 0.05 ) )
+  if( p -> rng_brain_freeze -> roll( p -> talents.brain_freeze * 0.05 ) )
   {
     struct expiration_t : public event_t
     {
@@ -972,7 +969,7 @@ static void trigger_hot_streak( spell_t* s )
   if( p -> talents.hot_streak )
   {
     if( s -> result == RESULT_CRIT && 
-        s -> sim -> roll( p -> talents.hot_streak * (1/3.0) ) )
+        p -> rng_hot_streak -> roll( p -> talents.hot_streak * (1/3.0) ) )
     {
       p -> _buffs.hot_streak++;
 
@@ -1040,7 +1037,7 @@ static void stack_improved_scorch( spell_t* s )
     }
   };
 
-  if( s -> sim -> roll( p -> talents.improved_scorch / 3.0 ) )
+  if( p -> rng_improved_scorch -> roll( p -> talents.improved_scorch / 3.0 ) )
   {
     target_t* t = s -> sim -> target;
 
@@ -1079,7 +1076,7 @@ static void trigger_missile_barrage( spell_t* s )
 
   if( p -> talents.missile_barrage )
   {
-    if( s -> sim -> roll( p -> talents.missile_barrage * 0.04 ) )
+    if( p -> rng_missile_barrage -> roll( p -> talents.missile_barrage * 0.04 ) )
     {
       struct expiration_t : public event_t
       {
@@ -1119,13 +1116,10 @@ static void trigger_replenishment( spell_t* s )
 {
   mage_t* p = s -> player -> cast_mage();
 
-  if( s -> sim -> P309 )
-    return;
-
   if( ! p -> talents.improved_water_elemental )
     return;
 
-  if( ! s -> sim -> roll( p -> talents.improved_water_elemental / 3.0 ) )
+  if( ! p -> rng_improved_water_elemental -> roll( p -> talents.improved_water_elemental / 3.0 ) )
     return;
 
   p -> trigger_replenishment();
@@ -1156,7 +1150,8 @@ static void trigger_ashtongue_talisman( spell_t* s )
 
   player_t* p = s -> player;
 
-  if( p -> unique_gear -> ashtongue_talisman && s -> sim -> roll( 0.50 ) )
+  if( p -> unique_gear -> ashtongue_talisman && 
+      p -> rngs.ashtongue_talisman -> roll( 0.50 ) )
   {
     p -> procs.ashtongue_talisman -> occur();
 
@@ -2033,6 +2028,8 @@ struct fire_ball_t : public mage_spell_t
 
     if( p -> unique_gear -> tier6_4pc   ) base_multiplier *= 1.05;
     if( p -> glyphs.fire_ball ) base_crit += 0.05;
+
+    rng[ RESULT_CRIT ] = sim -> rng; // FIXME! Combustion playing havoc with normalized RNG
   }
 
   virtual void player_buff()
@@ -2649,6 +2646,8 @@ struct frostfire_bolt_t : public mage_spell_t
       base_multiplier *= 1.02;
       base_crit += 0.02;
     }
+
+    rng[ RESULT_CRIT ] = sim -> rng; // FIXME! Combustion playing havoc with normalized RNG
   }
 
   virtual void player_buff()
@@ -3182,6 +3181,71 @@ void mage_t::init_base()
 
   health_per_stamina = 10;
   mana_per_intellect = 15;
+}
+
+// mage_t::init_gains ======================================================
+
+void mage_t::init_gains()
+{
+  player_t::init_gains();
+
+  gains_clearcasting       = get_gain( "clearcasting" );
+  gains_evocation          = get_gain( "evocation" );
+  gains_mana_gem           = get_gain( "mana_gem" );
+  gains_master_of_elements = get_gain( "master_of_elements" );
+}
+
+// mage_t::init_procs ======================================================
+
+void mage_t::init_procs()
+{
+  player_t::init_procs();
+
+  procs_clearcasting         = get_proc( "clearcasting" );
+  procs_deferred_ignite      = get_proc( "deferred_ignite" );
+  procs_hot_streak_pyroblast = get_proc( "hot_streak_pyroblast" );
+}
+
+// mage_t::init_uptimes ====================================================
+
+void mage_t::init_uptimes()
+{
+  player_t::init_uptimes();
+
+  uptimes_arcane_blast[ 0 ]    = get_uptime( "arcane_blast_0" );
+  uptimes_arcane_blast[ 1 ]    = get_uptime( "arcane_blast_1" );
+  uptimes_arcane_blast[ 2 ]    = get_uptime( "arcane_blast_2" );
+  uptimes_arcane_blast[ 3 ]    = get_uptime( "arcane_blast_3" );
+  uptimes_arcane_power         = get_uptime( "arcane_power" );
+  uptimes_dps_rotation         = get_uptime( "dps_rotation" );
+  uptimes_dpm_rotation         = get_uptime( "dpm_rotation" );
+  uptimes_fingers_of_frost     = get_uptime( "fingers_of_frost" );
+  uptimes_focus_magic_feedback = get_uptime( "focus_magic_feedback" );
+  uptimes_icy_veins            = get_uptime( "icy_veins" );
+  uptimes_missile_barrage      = get_uptime( "missile_barrage" );
+  uptimes_water_elemental      = get_uptime( "water_elemental" );
+}
+
+// mage_t::init_rng ========================================================
+
+void mage_t::init_rng()
+{
+  player_t::init_rng();
+
+  rng_arcane_concentration     = get_rng( "arcane_concentration"     );
+  rng_brain_freeze             = get_rng( "brain_freeze"             );
+  rng_fingers_of_frost         = get_rng( "fingers_of_frost"         );
+  rng_frostbite                = get_rng( "frostbite"                );
+  rng_improved_scorch          = get_rng( "improved_scorch"          );
+  rng_improved_water_elemental = get_rng( "improved_water_elemental" );
+  rng_winters_chill            = get_rng( "winters_chill"            );
+  rng_winters_grasp            = get_rng( "winters_grasp"            );
+
+  // Overlapping procs require the use of a "distributed" RNG-stream when normalized_roll=1
+  // also useful for frequent checks with low probability of proc and timed effect
+
+  rng_hot_streak      = get_rng( "hot_streak"      );
+  rng_missile_barrage = get_rng( "missile_barrage" );
 }
 
 // mage_t::combat_begin ====================================================

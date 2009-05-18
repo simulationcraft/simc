@@ -411,10 +411,6 @@ player_t::player_t( sim_t*             s,
   main_hand_weapon.slot = SLOT_MAIN_HAND;
    off_hand_weapon.slot = SLOT_OFF_HAND;
      ranged_weapon.slot = SLOT_RANGED;
-
-  rng_lag_channel = get_rng( "lag_channel" );
-  rng_lag_gcd     = get_rng( "lag_gcd"     );
-  rng_lag_queue	  = get_rng( "lag_queue"   );	
 }
 
 // player_t::~player_t =====================================================
@@ -1063,6 +1059,10 @@ void player_t::init_rng()
   rngs.tier7_4pc = get_rng( "tier7_4pc" );
   rngs.tier8_2pc = get_rng( "tier8_2pc" );
   rngs.tier8_4pc = get_rng( "tier8_4pc" );
+
+  rngs.lag_channel = get_rng( "lag_channel" );
+  rngs.lag_gcd     = get_rng( "lag_gcd"     );
+  rngs.lag_queue   = get_rng( "lag_queue"   );  
 }
 
 // player_t::init_stats ====================================================
@@ -1514,15 +1514,15 @@ void player_t::schedule_ready( double delta_time,
       }
       else if( last_foreground_action -> channeled ) 
       {
-        lag = rng_lag_channel -> gauss( sim -> channel_lag, sim -> channel_lag_range );
+        lag = rngs.lag_channel -> gauss( sim -> channel_lag, sim -> channel_lag_range );
       }
       else if( gcd_adjust > 0 ) 
       {
-        lag = rng_lag_gcd -> gauss( sim -> gcd_lag, sim -> gcd_lag_range );
+        lag = rngs.lag_gcd -> gauss( sim -> gcd_lag, sim -> gcd_lag_range );
       }
       else // queued cast
       {
-        lag = rng_lag_queue -> gauss( sim -> queue_lag, sim -> queue_lag_range );
+        lag = rngs.lag_queue -> gauss( sim -> queue_lag, sim -> queue_lag_range );
       }
     }
 
@@ -2430,8 +2430,8 @@ bool player_t::get_talent_trees( std::vector<int*>& tree1,
 // player_t::get_talent_trees ===============================================
 
 bool player_t::get_talent_trees( std::vector<int*>& tree1, 
-				 std::vector<int*>& tree2, 
-				 std::vector<int*>& tree3 ) 
+                                 std::vector<int*>& tree2, 
+                                 std::vector<int*>& tree3 ) 
 { 
   return false;
 }
@@ -2798,8 +2798,8 @@ bool player_t::parse_option( const std::string& name,
 // player_t::create =========================================================
 
 player_t* player_t::create( sim_t*             sim,
-			    const std::string& type,
-			    const std::string& name )
+                            const std::string& type,
+                            const std::string& name )
 {
   if( type == "death_knight" ) 
   { 

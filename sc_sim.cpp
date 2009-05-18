@@ -166,8 +166,6 @@ sim_t::sim_t( sim_t* p, int index ) :
   target  = new  target_t( this );
   scaling = new scaling_t( this );
 
-  rng = rng_t::create( this, "global", RNG_MERSENNE_TWISTER );
-
   if( parent ) 
   {
     // Import the config file
@@ -1141,8 +1139,10 @@ int sim_t::main( int argc, char** argv )
     exit( 0 );
   }
 
-  if( seed == 0 ) seed = (int32_t) time( NULL );
+  if( seed == 0 ) seed = (int) time( NULL );
   srand( seed );
+
+  rng = rng_t::create( this, "global", RNG_MERSENNE_TWISTER );
 
   int arch, version, revision;
   patch.decode( &arch, &version, &revision );
