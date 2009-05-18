@@ -73,7 +73,7 @@ action_t::action_t( int         ty,
     buffer  = name_str;
     buffer += "_";
     buffer += util_t::result_type_string( i );
-    rng[ i ] = player -> get_rng( buffer, RNG_CYCLIC );
+    rng[ i ] = player -> get_rng( buffer, ( ( i == RESULT_CRIT ) ? RNG_DISTRIBUTED : RNG_CYCLIC ) );
   }
   
   stats = p -> get_stats( n );

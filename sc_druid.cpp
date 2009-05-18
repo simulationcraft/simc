@@ -36,7 +36,6 @@ struct druid_t : public player_t
     int    t8_4pc_balance;
     double tigers_fury;
 
-
     void reset() { memset( (void*) this, 0x00, sizeof( _buffs_t ) ); }
     _buffs_t() { reset(); }
   };
@@ -78,6 +77,7 @@ struct druid_t : public player_t
 
   // Procs
   proc_t* procs_combo_points;
+  proc_t* procs_combo_points_wasted;
   proc_t* procs_omen_of_clarity;
   proc_t* procs_primal_fury;
   proc_t* procs_unseen_moon;
@@ -90,6 +90,13 @@ struct druid_t : public player_t
   uptime_t* uptimes_savage_roar;
   uptime_t* uptimes_rip;
   uptime_t* uptimes_rake;
+
+  // Random Number Generation
+  rng_t* rng_eclipse;
+  rng_t* rng_natures_grace;
+  rng_t* rng_omen_of_clarity;
+  rng_t* rng_primal_fury;
+  rng_t* rng_unseen_moon;
 
   attack_t* melee_attack;
 
@@ -222,28 +229,6 @@ struct druid_t : public player_t
     active_rake           = 0;
     active_rip            = 0;
 
-    // Gains
-    gains_energy_refund    = get_gain( "energy_refund"    );
-    gains_moonkin_form     = get_gain( "moonkin_form"     );
-    gains_omen_of_clarity  = get_gain( "omen_of_clarity"  );
-    gains_primal_precision = get_gain( "primal_precision" );
-    gains_tigers_fury      = get_gain( "tigers_fury"      );
-
-    // Procs
-    procs_combo_points    = get_proc( "combo_points" );
-    procs_omen_of_clarity = get_proc( "omen_of_clarity" );
-    procs_primal_fury     = get_proc( "primal_fury" );
-    procs_unseen_moon     = get_proc( "unseen_moon" );
-
-    // Up-Times
-    uptimes_eclipse_starfire = get_uptime( "eclipse_starfire" );
-    uptimes_eclipse_wrath    = get_uptime( "eclipse_wrath"    );
-    uptimes_energy_cap       = get_uptime( "energy_cap"       );
-    uptimes_natures_grace    = get_uptime( "natures_grace"    );
-    uptimes_savage_roar      = get_uptime( "savage_roar"      );
-    uptimes_rip              = get_uptime( "rip"              );
-    uptimes_rake             = get_uptime( "rake"             );
-
     melee_attack = 0;
 
     equipped_weapon_dps = 0;
@@ -252,6 +237,10 @@ struct druid_t : public player_t
   // Character Definition
   virtual void      init_rating();
   virtual void      init_base();
+  virtual void      init_gains();
+  virtual void      init_procs();
+  virtual void      init_uptimes();
+  virtual void      init_rng();
   virtual void      init_unique_gear();
   virtual void      reset();
   virtual void      regen( double periodicity );
@@ -436,7 +425,11 @@ static void clear_combo_points( druid_t* p )
 
 static void add_combo_point( druid_t* p )
 {
-  if( p -> _buffs.combo_points >= 5 ) return;
+  if( p -> _buffs.combo_points >= 5 ) 
+  {
+    p -> procs_combo_points_wasted -> occur();
+    return;
+  }
 
   const char* name[] = { "Combo Points (1)",
                          "Combo Points (2)",
@@ -462,7 +455,7 @@ static void trigger_omen_of_clarity( action_t* a )
 
   // Convert to fixed ~6% proc rate
 
-  if( a -> sim -> roll( 3.5 / 60.0 ) )
+  if( p -> rng_omen_of_clarity -> roll( 3.5 / 60.0 ) )
   {
     p -> aura_gain( "Omen of Clarity" );
     p -> _buffs.omen_of_clarity = 1;
@@ -620,7 +613,7 @@ static void trigger_natures_grace( spell_t* s )
 {
   druid_t* p = s -> player -> cast_druid();
 
-  if( ! s -> sim -> roll( p -> talents.natures_grace / 3.0 ) )
+  if( ! p -> rng_natures_grace -> roll( p -> talents.natures_grace / 3.0 ) )
     return;
 
   struct natures_grace_expiration_t : public event_t
@@ -680,7 +673,7 @@ static void trigger_eclipse_wrath( spell_t* s )
 
   if( p -> talents.eclipse != 0 &&
       s -> sim -> cooldown_ready( p -> _cooldowns.eclipse ) &&
-      s -> sim -> roll( p -> talents.eclipse * 1.0/3 ) )
+      p -> rng_eclipse -> roll( p -> talents.eclipse * 1.0/3 ) )
   {
     p -> _expirations.eclipse = new ( s -> sim ) expiration_t( s -> sim, p );
   }
@@ -713,7 +706,7 @@ static void trigger_eclipse_starfire( spell_t* s )
 
   if( p -> talents.eclipse != 0 &&
       s -> sim -> cooldown_ready( p -> _cooldowns.eclipse ) &&
-      s -> sim -> roll( p -> talents.eclipse * 0.2 ) )
+      p -> rng_eclipse -> roll( p -> talents.eclipse * 0.2 ) )
   {
     p -> _expirations.eclipse = new ( s -> sim ) expiration_t( s -> sim, p );
   }
@@ -723,9 +716,11 @@ static void trigger_eclipse_starfire( spell_t* s )
 
 static void trigger_t8_4pc_balance( spell_t* s )
 {
+  druid_t* p = s -> player -> cast_druid();
+
   // http://thottbot.com/test/s64824
   double chance = (s -> sim -> P312 ? 0.15 : 0.05);
-  if( ! s -> sim -> roll( chance ) )
+  if( ! p -> rngs.tier8_4pc -> roll( chance ) )
     return;
 
   struct expiration_t : public event_t
@@ -746,8 +741,6 @@ static void trigger_t8_4pc_balance( spell_t* s )
     }
   };
 
-  druid_t* p = s -> player -> cast_druid();
-
   p -> procs.tier8_4pc -> occur();
 
   event_t*& e = p -> _expirations.t8_4pc_balance;
@@ -766,10 +759,12 @@ static void trigger_t8_4pc_balance( spell_t* s )
 
 static void trigger_t8_2pc_feral( action_t* a )
 {
-  if( a -> player -> cast_druid() -> tiers.t8_2pc_feral == 0)
+  druid_t* p = a -> player -> cast_druid();
+
+  if( ! p -> tiers.t8_2pc_feral )
     return;
 
-  if( a -> sim -> roll( 0.02 ) )
+  if( p -> rngs.tier8_2pc -> roll( 0.02 ) )
   {
     /* 2% chance on tick, http://ptr.wowhead.com/?spell=64752
     /  It is just another chance to procc the same clearcasting
@@ -805,7 +800,8 @@ static void trigger_ashtongue_talisman( spell_t* s )
 
   player_t* p = s -> player;
 
-  if( p -> unique_gear -> ashtongue_talisman && s -> sim -> roll( 0.25 ) )
+  if( p -> unique_gear -> ashtongue_talisman && 
+      p -> rngs.ashtongue_talisman -> roll( 0.25 ) )
   {
     p -> procs.ashtongue_talisman -> occur();
 
@@ -846,7 +842,7 @@ static void trigger_unseen_moon( spell_t* s )
 
   druid_t* p = s -> player -> cast_druid();
 
-  if( s -> sim -> roll( 0.5 ) )
+  if( p -> rng_unseen_moon -> roll( 0.5 ) )
   {
     p -> procs_unseen_moon -> occur();
 
@@ -875,7 +871,7 @@ static void trigger_primal_fury( druid_attack_t* a )
   if ( ! a -> adds_combo_points )
     return;
 
-  if ( a -> sim -> roll( p -> talents.primal_fury * 0.5 ) )
+  if ( p -> rng_primal_fury -> roll( p -> talents.primal_fury * 0.5 ) )
   {
     add_combo_point( p );
     p -> procs_primal_fury -> occur();
@@ -1967,7 +1963,8 @@ void druid_spell_t::execute()
     trigger_omen_of_clarity( this );
   }
 
-  if( p -> tiers.t4_2pc_balance && sim -> roll( 0.05 ) )
+  if( p -> tiers.t4_2pc_balance && 
+      p -> rngs.tier4_2pc -> roll( 0.05 ) )
   {
     p -> resource_gain( RESOURCE_MANA, 120.0, p -> gains.tier4_2pc );
   }
@@ -3154,6 +3151,60 @@ void druid_t::init_base()
   mp5_per_intellect = util_t::talent_rank( talents.dreamstate, 3, 0.04, 0.07, 0.10 );
 
   base_gcd = 1.5;
+}
+
+// druid_t::init_gains ======================================================
+
+void druid_t::init_gains()
+{
+  player_t::init_gains();
+
+  gains_energy_refund    = get_gain( "energy_refund"    );
+  gains_moonkin_form     = get_gain( "moonkin_form"     );
+  gains_omen_of_clarity  = get_gain( "omen_of_clarity"  );
+  gains_primal_precision = get_gain( "primal_precision" );
+  gains_tigers_fury      = get_gain( "tigers_fury"      );
+}
+
+// druid_t::init_procs ======================================================
+
+void druid_t::init_procs()
+{
+  player_t::init_procs();
+
+  procs_combo_points        = get_proc( "combo_points"        );
+  procs_combo_points_wasted = get_proc( "combo_points_wasted" );
+  procs_omen_of_clarity     = get_proc( "omen_of_clarity"     );
+  procs_primal_fury         = get_proc( "primal_fury"         );
+  procs_unseen_moon         = get_proc( "unseen_moon"         );
+}
+
+// druid_t::init_uptimes ====================================================
+
+void druid_t::init_uptimes()
+{
+  player_t::init_uptimes();
+
+  uptimes_eclipse_starfire = get_uptime( "eclipse_starfire" );
+  uptimes_eclipse_wrath    = get_uptime( "eclipse_wrath"    );
+  uptimes_energy_cap       = get_uptime( "energy_cap"       );
+  uptimes_natures_grace    = get_uptime( "natures_grace"    );
+  uptimes_savage_roar      = get_uptime( "savage_roar"      );
+  uptimes_rip              = get_uptime( "rip"              );
+  uptimes_rake             = get_uptime( "rake"             );
+}
+
+// druid_t::init_rng ========================================================
+
+void druid_t::init_rng()
+{
+  player_t::init_rng();
+
+  rng_eclipse         = get_rng( "eclipse"         );
+  rng_natures_grace   = get_rng( "natures_grace"   );
+  rng_omen_of_clarity = get_rng( "omen_of_clarity" );
+  rng_primal_fury     = get_rng( "primal_fury"     );
+  rng_unseen_moon     = get_rng( "unseen_moon"     );
 }
 
 // druid_t::init_unique_gear ================================================

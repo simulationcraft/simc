@@ -81,6 +81,7 @@ struct rogue_t : public player_t
 
   // Procs
   proc_t* procs_combo_points;
+  proc_t* procs_combo_points_wasted;
   proc_t* procs_deadly_poison;
   proc_t* procs_honor_among_thieves_receiver;
   proc_t* procs_ruthlessness;
@@ -416,7 +417,11 @@ static void clear_combo_points( rogue_t* p )
 
 static void add_combo_point( rogue_t* p )
 {
-  if( p -> _buffs.combo_points >= MAX_COMBO_POINTS ) return;
+  if( p -> _buffs.combo_points >= MAX_COMBO_POINTS ) 
+  {
+    p -> procs_combo_points_wasted -> occur();
+    return;
+  }
 
   const char* name[] = { "Combo Points (1)",
                          "Combo Points (2)",
@@ -3181,6 +3186,7 @@ void rogue_t::init_procs()
   player_t::init_procs();
 
   procs_combo_points                 = get_proc( "combo_points" );
+  procs_combo_points_wasted          = get_proc( "combo_points_wasted" );
   procs_deadly_poison                = get_proc( "deadly_poisons" );
   procs_honor_among_thieves_receiver = get_proc( "honor_among_thieves_receiver" );
   procs_ruthlessness                 = get_proc( "ruthlessness" );

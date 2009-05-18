@@ -142,7 +142,7 @@ static void print_spell_stats( FILE* file, player_t* p )
 static void print_attack_stats( FILE* file, player_t* p )
 {
   fprintf( file, 
-           "  Attack Stats  power=%.0f  hit=%.1f%%  crit=%.1f%%  expertise=%.1f  penetration%.1f  haste=%.1f%%\n", 
+           "  Attack Stats  power=%.0f  hit=%.1f%%  crit=%.1f%%  expertise=%.1f  penetration=%.1f%%  haste=%.1f%%\n", 
            p -> composite_attack_power() * p -> composite_attack_power_multiplier(),
            p -> composite_attack_hit()         * 100.0, 
            p -> composite_attack_crit()        * 100.0, 
