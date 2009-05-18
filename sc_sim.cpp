@@ -414,6 +414,8 @@ void sim_t::combat_end()
 
 bool sim_t::init()
 {
+  rng = rng_t::create( this, "global", RNG_MERSENNE_TWISTER );
+
   P309 = patch.before( 3, 1, 0 );
   P312 = patch.after ( 3, 1, 2 );
   
@@ -1141,8 +1143,6 @@ int sim_t::main( int argc, char** argv )
 
   if( seed == 0 ) seed = (int) time( NULL );
   srand( seed );
-
-  rng = rng_t::create( this, "global", RNG_MERSENNE_TWISTER );
 
   int arch, version, revision;
   patch.decode( &arch, &version, &revision );

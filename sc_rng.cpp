@@ -13,9 +13,9 @@
 
 rng_t::rng_t( const std::string& n, bool avg_range, bool avg_gauss ) : 
   name_str(n), gauss_pair_use(false), 
-  expected_roll(0),  actual_roll(0),
-  expected_range(0), actual_range(0),
-  expected_gauss(0), actual_gauss(0),
+  expected_roll(0),  actual_roll(0),  num_roll(0),
+  expected_range(0), actual_range(0), num_range(0),
+  expected_gauss(0), actual_gauss(0), num_gauss(0),
   average_range(avg_range), 
   average_gauss(avg_gauss),
   next(0)
@@ -35,6 +35,7 @@ int rng_t::roll( double chance )
 {
   if( chance <= 0 ) return 0;
   if( chance >= 1 ) return 1;
+  num_roll++;
   int result = ( real() < chance ) ? 1 : 0;
   expected_roll += chance;
   if( result ) actual_roll++;
@@ -49,6 +50,7 @@ double rng_t::range( double min,
   assert( min <= max );
   double result = ( min + max ) / 2.0;
   if( average_range ) return result;
+  num_range++;
   expected_range += result;
   if( min < max ) result =  min + real() * ( max - min );
   actual_range += result;
@@ -98,6 +100,7 @@ double rng_t::gauss( double mean,
   double result = mean + z * stddev;
   if( result < 0 ) result = 0;
 
+  num_gauss++;
   expected_gauss += mean;
     actual_gauss += result;
 
@@ -383,6 +386,7 @@ struct rng_phase_shift_t : public rng_normalized_t
   virtual double range( double min, double max )
   {
     if( average_range ) return ( min + max ) / 2.0;
+    num_range++;
     if( ++range_index >= size ) range_index = 0;
     double result = min + range_distribution[ range_index ] * ( max - min );
     expected_range += ( max - min ) / 2.0;
@@ -392,6 +396,7 @@ struct rng_phase_shift_t : public rng_normalized_t
   virtual double gauss( double mean, double stddev )
   {
     if( average_gauss ) return mean; 
+    num_gauss++;
     if( ++gauss_index >= size ) gauss_index = 0;
     double result = mean + gauss_distribution[ gauss_index ] * stddev;
     expected_gauss += mean;
@@ -402,6 +407,7 @@ struct rng_phase_shift_t : public rng_normalized_t
   {
     if( chance <= 0 ) return 0;
     if( chance >= 1 ) return 1;
+    num_roll++;
     expected_roll += chance;
     if( actual_roll < expected_roll )
     {
@@ -445,9 +451,11 @@ struct rng_pre_fill_t : public rng_normalized_t
   {
     if( chance <= 0 ) return 0;
     if( chance >= 1 ) return 1;
+    double avg_chance = ( num_roll > 0 ) ? ( expected_roll / num_roll ) : chance;
+    num_roll++;
     if( ++roll_index >= size )
     {
-      double exact_procs = chance * size + expected_roll - actual_roll;
+      double exact_procs = avg_chance * size + expected_roll - actual_roll;
       int num_procs = (int) floor( exact_procs );
       num_procs += base -> roll( exact_procs - num_procs );
       if( num_procs > size ) num_procs = size;
@@ -489,6 +497,7 @@ struct rng_pre_fill_t : public rng_normalized_t
       }
       range_index = 0;
     }
+    num_range++;
     double result = min + range_distribution[ range_index ] * ( max - min );
     expected_range += ( max - min ) / 2.0;
     actual_range += result;
@@ -507,6 +516,7 @@ struct rng_pre_fill_t : public rng_normalized_t
       }
       gauss_index = 0;
     }
+    num_gauss++;
     double result = mean + gauss_distribution[ gauss_index ] * stddev;
     expected_gauss += mean;
     actual_gauss += result;
@@ -522,7 +532,6 @@ struct rng_distance_simple_t : public rng_normalized_t
 {
   // roll() distance-based distribution
   static const int maxN4 = 400;
-  int nTries;
   int lastOk;
   int nextGive;
   int nit[maxN4 + 2];
@@ -536,7 +545,7 @@ struct rng_distance_simple_t : public rng_normalized_t
   int range_index, gauss_index;
 
   rng_distance_simple_t( const std::string& n, rng_t* b, bool avg_range, bool avg_gauss ) :
-    rng_normalized_t( n, b, avg_range, avg_gauss ), nTries(0), lastOk(0), range_index(0), gauss_index(0)
+    rng_normalized_t( n, b, avg_range, avg_gauss ), lastOk(0), range_index(0), gauss_index(0)
   {
     for (int i = 0; i < maxN4 + 2; i++) nit[i] = 0;
     actual_roll = real();
@@ -586,14 +595,14 @@ struct rng_distance_simple_t : public rng_normalized_t
 
   void findNextGive()
   {
-    double avgP = expected_roll / nTries;
+    double avgP = expected_roll / num_roll;
 
     // check if average chance is significantly different, to increase number of tracked distances
     if ((lastAvg-avgP) / lastAvg > 0.10) 
       resetN4(avgP);
 
     // find position that is lagging most
-    double exTot = avgP * nTries;
+    double exTot = avgP * num_roll;
     double exP = avgP * exTot;
     double avg1P = 1 - avgP;
     double sumExp = 0;
@@ -625,20 +634,21 @@ struct rng_distance_simple_t : public rng_normalized_t
     if( chance <= 0 ) return 0;
     if( chance >= 1 ) return 1;
 
+    num_roll++;
     expected_roll += chance;
 
-    if( ++nTries <= 10 )
+    if( num_roll <= 10 )
     {
-      if( nTries == 10 ) // switch to distance-based formula
+      if( num_roll == 10 ) // switch to distance-based formula
       {
-        double avgP = expected_roll / nTries;
+        double avgP = expected_roll / num_roll;
         setN4( avgP );
       }
 
       if( actual_roll < expected_roll ) 
       {
         actual_roll++;
-        lastOk = nTries;
+        lastOk = num_roll;
         return 1;
       }
     }
@@ -648,10 +658,10 @@ struct rng_distance_simple_t : public rng_normalized_t
       if( nextGive <= 0 )
       {
         actual_roll++;
-        int dist = nTries - lastOk;
+        int dist = num_roll - lastOk;
         if( dist > N4 ) dist = N4 + 1;
         nit[dist]++;
-        lastOk = nTries;
+        lastOk = num_roll;
         findNextGive();
         return 1;
       }
@@ -821,7 +831,6 @@ struct norm_distribution_t
 
 struct rng_distance_variable_t : public rng_normalized_t
 {
-  int nTries;
   int nextGive;
   double lastAvg;
 
@@ -830,7 +839,7 @@ struct rng_distance_variable_t : public rng_normalized_t
   norm_distribution_t* nd_range;
 
   rng_distance_variable_t( const std::string& n, rng_t* b, bool avg_range, bool avg_gauss ) :
-    rng_normalized_t( n, b, avg_range, avg_gauss ), nTries(0), nextGive(0), lastAvg(0), nd_roll(0), nd_gauss(0), nd_range(0)
+    rng_normalized_t( n, b, avg_range, avg_gauss ), nextGive(0), lastAvg(0), nd_roll(0), nd_gauss(0), nd_range(0)
   {
     actual_roll=real();
   }
@@ -879,7 +888,7 @@ struct rng_distance_variable_t : public rng_normalized_t
   virtual void setRollN()
   {
     // set roll values, dynamically based on avgP
-    double avgP = expected_roll / nTries;
+    double avgP = expected_roll / num_roll;
     int maxN4=400;
     int N=100;
     if (avgP>0.001) N = (int) (1 / avgP);
@@ -910,12 +919,12 @@ struct rng_distance_variable_t : public rng_normalized_t
     if( chance <= 0 ) return 0;
     if( chance >= 1 ) return 1;
 
-    nTries++;
+    num_roll++;
     expected_roll += chance;
 
-    if( !nd_roll )
+    if( ! nd_roll )
     {
-      if( nTries == 10 ) setRollN(); // switch to distance-based formula
+      if( num_roll == 10 ) setRollN(); // switch to distance-based formula
       if( actual_roll < expected_roll )
       {
         actual_roll++;
@@ -929,7 +938,7 @@ struct rng_distance_variable_t : public rng_normalized_t
       {
         actual_roll++;
         // check if average chance is significantly different
-        double avgP = expected_roll / nTries;
+        double avgP = expected_roll / num_roll;
         if (abs(lastAvg-avgP) / lastAvg > 0.05) setRollN(); // increase number of tracked distances
         // take next best distance
         nextGive= floor(nd_roll->getNextValue(1/chance)+0.5); 
@@ -980,8 +989,8 @@ struct rng_distance_reduced_t : public rng_distance_variable_t
   virtual void setRollN()
   {
     // calculate distribution, dynamically based on avgP
-    if (nTries<=0) return;
-    double avgP = expected_roll / nTries;
+    if (num_roll<=0) return;
+    double avgP = expected_roll / num_roll;
     if (avgP>=0.40) return; // high chances shoud use simple rng_fixed
     double Nr=1000;
     if (avgP>0.0001) Nr =  1 / avgP;

@@ -1045,7 +1045,7 @@ static void stack_improved_scorch( spell_t* s )
     {
       if( p -> glyphs.improved_scorch )
       {
-        t -> debuffs.improved_scorch += ( s -> sim -> P309 ? 3 : 5 );
+        t -> debuffs.improved_scorch += 5;
         if( t -> debuffs.improved_scorch > 5 ) t -> debuffs.improved_scorch = 5;
       }
       else
@@ -1342,14 +1342,7 @@ void mage_spell_t::player_buff()
 
   if( p -> _buffs.molten_armor )
   {
-    if ( sim -> P309)
-    {
-      player_crit += p -> glyphs.molten_armor ? 0.05 : 0.03;
-    }
-    else
-    {
-      player_crit += p -> spirit() * ( p -> glyphs.molten_armor ? 0.55 : 0.35 ) / p -> rating.spell_crit;
-    }
+    player_crit += p -> spirit() * ( p -> glyphs.molten_armor ? 0.55 : 0.35 ) / p -> rating.spell_crit;
   }
 
   if ( p -> buffs.focus_magic_feedback )
@@ -2024,12 +2017,10 @@ struct fire_ball_t : public mage_spell_t
                                           ( p -> talents.burnout     * 0.10 ) + 
                                           ( p -> unique_gear -> tier7_4pc ? 0.05 : 0.00 ) );
 
-    if( ! sim -> P309 ) base_crit += p -> talents.improved_scorch * 0.01;
+    base_crit += p -> talents.improved_scorch * 0.01;
 
     if( p -> unique_gear -> tier6_4pc   ) base_multiplier *= 1.05;
     if( p -> glyphs.fire_ball ) base_crit += 0.05;
-
-    rng[ RESULT_CRIT ] = sim -> rng; // FIXME! Combustion playing havoc with normalized RNG
   }
 
   virtual void player_buff()
@@ -2352,7 +2343,7 @@ struct scorch_t : public mage_spell_t
                                           ( p -> talents.burnout     * 0.10 ) +
                                           ( p -> unique_gear -> tier7_4pc ? 0.05 : 0.00 ) );
 
-    if( ! sim -> P309 ) base_crit += p -> talents.improved_scorch * 0.01;
+    base_crit += p -> talents.improved_scorch * 0.01;
 
     if( debuff ) assert( p -> talents.improved_scorch );
   }
@@ -2458,7 +2449,7 @@ struct frost_bolt_t : public mage_spell_t
                                           ( p -> talents.burnout     * 0.10  ) +
                                           ( p -> unique_gear -> tier7_4pc ? 0.05 : 0.00 ) );
 
-    if( ! sim -> P309 ) base_crit += p -> talents.winters_chill * 0.01;
+    base_crit += p -> talents.winters_chill * 0.01;
 
     if( p -> unique_gear -> tier6_4pc    ) base_multiplier *= 1.05;
     if( p -> glyphs.frost_bolt ) base_multiplier *= 1.05;
@@ -2639,15 +2630,13 @@ struct frostfire_bolt_t : public mage_spell_t
                                           ( p -> talents.burnout     * 0.10  ) +
                                           ( p -> unique_gear -> tier7_4pc ? 0.05 : 0.00 ) );
 
-    if( ! sim -> P309 ) base_crit += p -> talents.improved_scorch * 0.01;
+    base_crit += p -> talents.improved_scorch * 0.01;
 
     if ( p -> glyphs.frostfire )
     {
       base_multiplier *= 1.02;
       base_crit += 0.02;
     }
-
-    rng[ RESULT_CRIT ] = sim -> rng; // FIXME! Combustion playing havoc with normalized RNG
   }
 
   virtual void player_buff()
@@ -3293,22 +3282,13 @@ void mage_t::reset()
 
 void mage_t::regen( double periodicity )
 {
-  mana_regen_while_casting = 0;
-
-  if( sim -> P309 )
-  {
-    mana_regen_while_casting += ( talents.arcane_meditation * 0.10 +
-                                  talents.pyromaniac        * 0.10 );
-  }
-  else
-  {
-    mana_regen_while_casting += util_t::talent_rank( talents.arcane_meditation, 3, 0.17, 0.33, 0.50 );
-    mana_regen_while_casting += util_t::talent_rank( talents.pyromaniac,        3, 0.17, 0.33, 0.50 );
-  }
+  mana_regen_while_casting  = 0;
+  mana_regen_while_casting += util_t::talent_rank( talents.arcane_meditation, 3, 0.17, 0.33, 0.50 );
+  mana_regen_while_casting += util_t::talent_rank( talents.pyromaniac,        3, 0.17, 0.33, 0.50 );
 
   if( _buffs.mage_armor )
   {
-    mana_regen_while_casting += ( sim -> P309 ? 0.30 : 0.50 ) + ( glyphs.mage_armor ? 0.20 : 0.00 );
+    mana_regen_while_casting += 0.50 + ( glyphs.mage_armor ? 0.20 : 0.00 );
   }
 
   player_t::regen( periodicity );

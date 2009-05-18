@@ -1716,9 +1716,9 @@ struct rng_t
   std::string name_str;
   bool   gauss_pair_use;
   double gauss_pair_value;
-  double expected_roll,  actual_roll;
-  double expected_range, actual_range;
-  double expected_gauss, actual_gauss;
+  double expected_roll,  actual_roll,  num_roll;
+  double expected_range, actual_range, num_range;
+  double expected_gauss, actual_gauss, num_gauss;
   bool   average_range, average_gauss;
   rng_t* next;
 
