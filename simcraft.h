@@ -1517,6 +1517,7 @@ struct unique_gear_t
   int  chaotic_skyflare;
   int  darkmoon_crusade;
   int  darkmoon_greatness;
+  int  dark_matter;
   int  dying_curse;
   int  egg_of_mortal_essence;
   int  elder_scribes;

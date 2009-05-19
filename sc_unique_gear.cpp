@@ -406,6 +406,7 @@ bool unique_gear_t::parse_option( player_t*          p,
     { "chaotic_skyflare",                     OPT_BOOL,  &( p -> unique_gear -> chaotic_skyflare                ) },
     { "darkmoon_crusade",                     OPT_BOOL,  &( p -> unique_gear -> darkmoon_crusade                ) },
     { "darkmoon_greatness",                   OPT_BOOL,  &( p -> unique_gear -> darkmoon_greatness              ) },
+    { "dark_matter",                          OPT_BOOL,  &( p -> unique_gear -> dark_matter                     ) },
     { "dying_curse",                          OPT_BOOL,  &( p -> unique_gear -> dying_curse                     ) },
     { "egg_of_mortal_essence",                OPT_BOOL,  &( p -> unique_gear -> egg_of_mortal_essence           ) },
     { "elder_scribes",                        OPT_BOOL,  &( p -> unique_gear -> elder_scribes                   ) },
@@ -514,6 +515,12 @@ void unique_gear_t::register_callbacks( player_t* p )
 
     p -> register_tick_damage_callback( cb );
     p -> register_direct_damage_callback( cb );
+  }
+  //---------------------------------------------------------------------------------------------------------
+  if( p -> unique_gear -> dark_matter )
+  {
+    cb = new stat_proc_callback_t( "dark_matter", p, STAT_CRIT_RATING, 1, 612, 0.15, 10.0, 45.0 );
+    p -> register_attack_result_callback( RESULT_HIT_MASK, cb );
   }
   //---------------------------------------------------------------------------------------------------------
   if( p -> unique_gear -> dying_curse )
