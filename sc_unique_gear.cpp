@@ -402,6 +402,7 @@ bool unique_gear_t::parse_option( player_t*          p,
     { "tier8_4pc",                            OPT_BOOL, &( p -> unique_gear -> tier8_4pc                        ) },
     // @option_doc loc=player/all/procs title="Unique Gear/Gem Effects"
     { "bandits_insignia",                     OPT_BOOL,  &( p -> unique_gear -> bandits_insignia                ) },
+    { "blood_of_the_old_god",                 OPT_BOOL,  &( p -> unique_gear -> blood_of_the_old_god            ) },
     { "chaotic_skyfire",                      OPT_BOOL,  &( p -> unique_gear -> chaotic_skyflare                ) },
     { "chaotic_skyflare",                     OPT_BOOL,  &( p -> unique_gear -> chaotic_skyflare                ) },
     { "darkmoon_crusade",                     OPT_BOOL,  &( p -> unique_gear -> darkmoon_crusade                ) },
@@ -489,6 +490,18 @@ void unique_gear_t::register_callbacks( player_t* p )
   // Stat Procs
 
   //---------------------------------------------------------------------------------------------------------
+  if( p -> unique_gear -> blood_of_the_old_god )
+  {
+    cb = new stat_proc_callback_t( "blood_of_the_old_god", p, STAT_ATTACK_POWER, 1, 1234, 0.10, 10.0, 45.0 );
+    p -> register_attack_result_callback( RESULT_CRIT_MASK, cb );
+  }
+  //---------------------------------------------------------------------------------------------------------
+  if( p -> unique_gear -> dark_matter )
+  {
+    cb = new stat_proc_callback_t( "dark_matter", p, STAT_CRIT_RATING, 1, 612, 0.15, 10.0, 45.0 );
+    p -> register_attack_result_callback( RESULT_HIT_MASK, cb );
+  }
+  //---------------------------------------------------------------------------------------------------------
   if( p -> unique_gear -> darkmoon_crusade ) 
   {
     cb = new stat_proc_callback_t( "darkmoon_crusade", p, STAT_SPELL_POWER, 10, 8, 0.0, 10.0, 0.0 );
@@ -515,12 +528,6 @@ void unique_gear_t::register_callbacks( player_t* p )
 
     p -> register_tick_damage_callback( cb );
     p -> register_direct_damage_callback( cb );
-  }
-  //---------------------------------------------------------------------------------------------------------
-  if( p -> unique_gear -> dark_matter )
-  {
-    cb = new stat_proc_callback_t( "dark_matter", p, STAT_CRIT_RATING, 1, 612, 0.15, 10.0, 45.0 );
-    p -> register_attack_result_callback( RESULT_HIT_MASK, cb );
   }
   //---------------------------------------------------------------------------------------------------------
   if( p -> unique_gear -> dying_curse )

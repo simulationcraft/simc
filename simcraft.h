@@ -1514,6 +1514,7 @@ struct unique_gear_t
 
   // Specific Gear
   int  bandits_insignia;
+  int  blood_of_the_old_god;
   int  chaotic_skyflare;
   int  darkmoon_crusade;
   int  darkmoon_greatness;
