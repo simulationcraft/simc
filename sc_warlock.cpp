@@ -253,6 +253,7 @@ struct warlock_t : public player_t
   virtual void      reset();
   virtual bool      get_talent_trees( std::vector<int*>& affliction, std::vector<int*>& demonology, std::vector<int*>& destruction );
   virtual bool      parse_option ( const std::string& name, const std::string& value );
+  virtual std::string checkItemGlyphOption(aef_type t, std::string id_name);
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
   virtual int       primary_resource() { return RESOURCE_MANA; }
@@ -4779,6 +4780,24 @@ bool warlock_t::parse_option( const std::string& name,
 
   return player_t::parse_option( name, value );
 }
+
+std::string warlock_t::checkItemGlyphOption(aef_type t, std::string id_name){
+    armor_effect_t table[] =
+    {
+        { AEF_GLYPH, "Glyph of Imp", "glyph_imp=1" },
+        { AEF_GLYPH, "Glyph of Life Tap", "glyph_life_tap=1" },
+        { AEF_ITEM, "40420", "", 7 },
+        { AEF_ITEM, "40421", "", 7 },
+        { AEF_ITEM, "40422", "", 7 },
+        { AEF_ITEM, "40423", "", 7 },
+        { AEF_ITEM, "40424", "", 7 },
+        { AEF_SET, "set_7_2", "tier7_2pc=1"},
+        { AEF_SET, "set_7_4", "tier7_4pc=1"},
+        { AEF_NONE, NULL, NULL}
+    };
+    return parseItemGlyphOption(table, setCounters, t, id_name);
+}
+
 
 // player_t::create_warlock ================================================
 

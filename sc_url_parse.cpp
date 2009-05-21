@@ -304,8 +304,42 @@ std::string chkMaxValue(std::string& src, std::string path, std::string option){
 }
 
 
+std::string parseItemGlyphOption(armor_effect_t* table, int* setCounters, aef_type t, std::string id_name){
+    std::string my_options="";
+    if (table!=NULL){
+        int i=0;
+        while (table[i].t!=AEF_NONE){
+            if ((table[i].t==t)&&(table[i].id_name==id_name)){
+                std::string theOption=table[i].option;
+                if (theOption!="")  my_options+= theOption+"\n";
+                //is this set item?
+                if ((table[i].set>0)&&(table[i].set<20)){
+                    setCounters[table[i].set]++;
+                    char setName[100];
+                    sprintf(setName,"set_%d_%d",table[i].set , setCounters[table[i].set]);
+                    my_options+=parseItemGlyphOption(table, setCounters, AEF_SET, setName);
+                }
+            }
+            i++;
+        }
+    }
+    return my_options;
+}
+
+std::string checkItemGlyphOption(aef_type t, std::string id_name){
+    armor_effect_t table[] =
+    {
+        { AEF_GLYPH, "Glyph of Curse of Agony", "glyph_curse_of_agony=1" },
+        { AEF_ITEM, "45308", "eye_of_the_broodmother=1" },
+        { AEF_NONE, NULL, NULL}
+    };
+    return parseItemGlyphOption(table, 0, t, id_name);
+}
+
+
 bool parseArmory(sim_t* sim, std::string URL, bool parseName, bool parseTalents, bool parseGear){
     std::string optionStr="";
+    bool debug=false;
     // split URL
     int iofs=0;
     int id_http= URL.find("http://",iofs);
@@ -333,7 +367,8 @@ bool parseArmory(sim_t* sim, std::string URL, bool parseName, bool parseTalents,
         else
         player=URL.substr(id_name+id_name_sz,URL.length()-id_name-id_name_sz);
     }else
-        return "";
+        return false;
+    if (id_http<=0) wwwAdr="http://"+wwwAdr;
     // retrieve armory gear data (XML) for this player
     URL= wwwAdr+"/character-sheet.xml?r="+realm+"&cn="+player;
     std::string src= getArmoryData(URL);
@@ -372,6 +407,51 @@ bool parseArmory(sim_t* sim, std::string URL, bool parseName, bool parseTalents,
             optionStr+= chkValue(src,"characterBars.secondBar.effective","gear_mana=");
     }
 
+    // parse options so far, in order to create player, because following parses may need to call player->parse
+    if (optionStr!=""){
+        if (debug) printf("%s", optionStr.c_str()); ;
+        char* buffer= new char[optionStr.length()+20];
+        strcpy(buffer,optionStr.c_str());
+        option_t::parse_line( sim, buffer );
+        delete buffer;
+        optionStr="";
+    };
+
+    // parse for glyphs
+    node = getNode(src, "characterTab.glyphs");
+    if (node!=""){
+        std::string glyph_node, glyph_name;
+        for (int i=1; i<=3; i++){
+            glyph_node= getNodeOne(node, "glyph",i);
+            if (glyph_node!=""){
+                glyph_name= getValue(glyph_node, "name");
+                if (glyph_name !=""){
+                    optionStr+=checkItemGlyphOption(AEF_GLYPH, glyph_name);
+                    if ( sim->active_player) 
+                        optionStr+=sim->active_player->checkItemGlyphOption(AEF_GLYPH, glyph_name);
+                }
+            }
+        }
+    }
+    
+    // parse items for effects, procs etc
+    node = getNode(src, "characterTab.items");
+    if (node!=""){
+        std::string item_node, item_id;
+        for (int i=1; i<=18; i++){
+            item_node= getNodeOne(node, "item",i);
+            if (item_node!=""){
+                item_id= getValue(item_node, "id");
+                if (item_id !=""){
+                    optionStr+=checkItemGlyphOption(AEF_ITEM, item_id);
+                    if ( sim->active_player) 
+                        optionStr+=sim->active_player->checkItemGlyphOption(AEF_ITEM, item_id);
+                }
+            }
+        }
+    }
+
+
 
     // retrieve armory talents data (XML) for this player
     URL= wwwAdr+"/character-talents.xml?r="+realm+"&cn="+player;
@@ -389,16 +469,17 @@ bool parseArmory(sim_t* sim, std::string URL, bool parseName, bool parseTalents,
     
     // save url caches
     SaveCache();
-    //printf("%s", optionStr.c_str()); char c; scanf("%c",&c);
 
-    // now parse those options
+    // now parse remaining options
     if (optionStr!=""){
+        if (debug) printf("%s", optionStr.c_str()); ;
         char* buffer= new char[optionStr.length()+20];
         strcpy(buffer,optionStr.c_str());
-        return option_t::parse_line( sim, buffer );
+        option_t::parse_line( sim, buffer );
         delete buffer;
-    }else
-        return false;
+    }
+    if (debug) {char c; scanf("%c",&c);}
+    return true;
 }
 
 

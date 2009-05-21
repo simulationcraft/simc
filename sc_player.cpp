@@ -411,6 +411,8 @@ player_t::player_t( sim_t*             s,
   main_hand_weapon.slot = SLOT_MAIN_HAND;
    off_hand_weapon.slot = SLOT_OFF_HAND;
      ranged_weapon.slot = SLOT_RANGED;
+
+  for (int i=0; i<20; i++) setCounters[i]=0;
 }
 
 // player_t::~player_t =====================================================
@@ -2411,6 +2413,11 @@ void player_t::trigger_replenishment()
   {
     replenish_raid( this );
   }
+}
+
+// player_t::checkItemGlyphOption ================================================
+std::string player_t::checkItemGlyphOption(aef_type t, std::string id_name){
+    return "";
 }
 
 // player_t::get_talent_trees ===============================================

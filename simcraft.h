@@ -279,6 +279,9 @@ enum rng_type
   RNG_PRE_FILL           // Deterministic number of procs with random distribution
 };
 
+enum aef_type {  AEF_NONE, AEF_GLYPH, AEF_ITEM, AEF_SET };
+  
+
 // Thread Wrappers ===========================================================
 
 struct thread_t
@@ -904,6 +907,8 @@ struct player_t
   };
   rngs_t rngs;
 
+  int setCounters[20];
+
   player_t( sim_t* sim, int type, const std::string& name );
 
   virtual ~player_t();
@@ -1001,6 +1006,7 @@ struct player_t
   virtual pet_t*    find_pet     ( const std::string& name );
 
   virtual void trigger_replenishment();
+  virtual std::string checkItemGlyphOption(aef_type t, std::string id_name);
 
   // Class-Specific Methods
 
@@ -1696,6 +1702,9 @@ struct option_t
   static bool parse_token( app_t*, std::string& token );
 };
 
+
+
+
 // Log =======================================================================
 
 struct log_t
@@ -1780,6 +1789,14 @@ struct util_t
   static int milliseconds();
 };
 
+struct armor_effect_t{
+    aef_type t;
+    char* id_name;
+    char* option;
+    int set;
+};
+
+std::string parseItemGlyphOption(armor_effect_t* table, int* setCounters, aef_type t, std::string id_name);
 bool parseArmory(sim_t* sim, std::string URL, bool parseName=true, bool parseTalents=true, bool parseGear=true);
 
 
