@@ -5,6 +5,9 @@
 #include <wininet.h>
 #endif
 
+#include <algorithm>
+using namespace std;
+
 
 
 std::string getURLsource(std::string URL){
