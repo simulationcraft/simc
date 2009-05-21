@@ -61,6 +61,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalOptions="wininet.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="1"
@@ -137,6 +138,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalOptions="wininet.lib"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
 				SubSystem="1"
@@ -285,6 +287,10 @@
 		</File>
 		<File
 			RelativePath=".\sc_unique_gear.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\sc_url_parse.cpp"
 			>
 		</File>
 		<File

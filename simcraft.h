@@ -1780,6 +1780,8 @@ struct util_t
   static int milliseconds();
 };
 
+bool parseArmory(sim_t* sim, std::string URL, bool parseName=true, bool parseTalents=true, bool parseGear=true);
+
 
 
 #endif // __SIMCRAFT_H
