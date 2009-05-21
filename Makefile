@@ -18,7 +18,7 @@ CXX        = g++
 CPP_FLAGS  = -Wall
 LINK_FLAGS = 
 LINK_LIBS  = -lpthread
-OPTS       = -O3
+OPTS       = -O3 -ffast-math
 BITS       = 32
 ifeq (64,${BITS})
 CPP_FLAGS  += -m64
@@ -75,6 +75,7 @@ SRC =\
 	sc_target.cpp		\
 	sc_thread.cpp		\
 	sc_unique_gear.cpp	\
+	sc_url_parse.cpp	\
 	sc_util.cpp		\
 	sc_warlock.cpp		\
 	sc_warrior.cpp		\
