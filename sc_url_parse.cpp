@@ -305,7 +305,6 @@ std::string chkMaxValue(std::string& src, std::string path, std::string option){
 
 
 bool parseArmory(sim_t* sim, std::string URL, bool parseName, bool parseTalents, bool parseGear){
-    URL="http://armory.wow-europe.com/character-sheet.xml?r=Doomhammer&n=Nenad";
     std::string optionStr="";
     // split URL
     int iofs=0;
@@ -390,10 +389,9 @@ bool parseArmory(sim_t* sim, std::string URL, bool parseName, bool parseTalents,
     
     // save url caches
     SaveCache();
-
+    //printf("%s", optionStr.c_str()); char c; scanf("%c",&c);
 
     // now parse those options
-    if( sim->debug ) log_t::output( sim, "Parse Armory: %s", optionStr.c_str());
     if (optionStr!=""){
         char* buffer= new char[optionStr.length()+20];
         strcpy(buffer,optionStr.c_str());
