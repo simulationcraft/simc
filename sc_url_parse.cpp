@@ -5,16 +5,45 @@
 #include <wininet.h>
 #endif
 
+#if defined(USE_CURL)
+#include <curl/curl.h>
+#endif
+
 #include <algorithm>
 using namespace std;
 
+#ifdef _MSC_VER
+#define USER_AGENT_FOR_XML L"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.1) Gecko/20061204 Firefox/2.0.0.1"
+#else
+#define USER_AGENT_FOR_XML "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.1) Gecko/20061204 Firefox/2.0.0.1"
+#endif
+
+#ifdef USE_CURL
+// This is the writer call back function used by curl
+static int writer(char *data, size_t size, size_t nmemb, std::string *buffer)
+{
+    int result = 0;
+
+    // Is there anything in the buffer?
+    if (buffer != NULL)
+    {
+        // Append the data to the buffer
+        buffer->append(data, size * nmemb);
+        // How much did we write?
+        result = size * nmemb;
+    }
+
+    return result;
+}
+
+#endif
 
 
 std::string getURLsource(std::string URL){
     std::string res="";
     #if defined( _MSC_VER )
         HINTERNET hINet, hFile;
-        hINet = InternetOpen(L"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.1) Gecko/20061204 Firefox/2.0.0.1", INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0 );
+        hINet = InternetOpen(USER_AGENT_FOR_XML, INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0 );
         if ( !hINet )  return res;
         std::wstring wURL( URL.length(), L' ');
         std::copy(URL.begin(), URL.end(), wURL.begin());
@@ -34,6 +63,22 @@ std::string getURLsource(std::string URL){
             InternetCloseHandle( hFile );
         }
         InternetCloseHandle( hINet );
+    #elif defined(USE_CURL)
+    	CURL *curl;
+    	curl = curl_easy_init();
+    	if(curl)
+  	{
+  		curl_easy_setopt(curl, CURLOPT_URL, URL.c_str());
+  		curl_easy_setopt(curl, CURLOPT_USERAGENT, USER_AGENT_FOR_XML);
+  		curl_easy_setopt(curl, CURLOPT_HEADER, 0);
+  		curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
+  		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writer);
+  		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &res);
+
+  		curl_easy_perform(curl);
+
+  		curl_easy_cleanup(curl);
+  	}
     #endif
     return res;
 }
@@ -357,33 +402,33 @@ bool parseArmory(sim_t* sim, std::string URL, bool parseName, bool parseTalents,
     bool debug=false;
     // split URL
     int iofs=0;
-    int id_http= URL.find("http://",iofs);
-    if (id_http>=0) iofs=7;
-    int id_folder= URL.find("/", iofs);
-    if (id_folder>0) iofs=id_folder+1;
-    int id_srv= URL.find("?r=",iofs);
-    if (id_srv>0) iofs=id_srv+1;
-    int id_name= URL.find("&cn=",iofs);
+    size_t id_http= URL.find("http://",iofs);
+    if (id_http != string::npos) iofs=7;
+    size_t id_folder= URL.find("/", iofs);
+    if (id_folder != string::npos) iofs=id_folder+1;
+    size_t id_srv= URL.find("?r=",iofs);
+    if (id_srv != string::npos) iofs=id_srv+1;
+    size_t id_name= URL.find("&cn=",iofs);
     int id_name_sz=4;
-    if (id_name<=0){
+    if (string::npos == id_name){
         id_name= URL.find("&n=",iofs);
         id_name_sz=3;
     }
     std::string wwwAdr="";
     std::string realm="";
     std::string player="";
-    if (id_name>0){
+    if (id_name != string::npos){
         //extract url, realm and player names
         wwwAdr=URL.substr(0,id_folder);
         realm=URL.substr(id_srv+3,id_name-id_srv-3);
-        int id_amp=URL.find("&",id_name+1);
-        if (id_amp>0)
+        size_t id_amp=URL.find("&",id_name+1);
+        if (id_amp != string::npos)
             player=URL.substr(id_name+id_name_sz,id_amp-id_name-id_name_sz);
         else
         player=URL.substr(id_name+id_name_sz,URL.length()-id_name-id_name_sz);
     }else
         return false;
-    if (id_http<=0) wwwAdr="http://"+wwwAdr;
+    if (string::npos == id_http) wwwAdr="http://"+wwwAdr;
     // retrieve armory gear data (XML) for this player
     URL= wwwAdr+"/character-sheet.xml?r="+realm+"&cn="+player;
     std::string src= getArmoryData(URL);

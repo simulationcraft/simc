@@ -33,6 +33,11 @@ endif
 endif
 endif
 
+ifeq (yes,${USE_CURL})
+CPP_FLAGS += -DUSE_CURL
+LINK_LIBS += -lcurl
+endif
+
 # Windows platform with MinGW32
 ifeq (WINDOWS,${OS})
 CXX        = g++
