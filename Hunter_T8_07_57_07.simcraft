@@ -36,7 +36,7 @@ glyph_serpent_sting=1
 glyph_steady_shot=1
 
 # Weapons
-ranged=bow,dps=170.2,speed=2.8
+ranged=bow,dps=200.4,speed=2.8
 ammo_dps=67.5
 quiver_haste=15
 
