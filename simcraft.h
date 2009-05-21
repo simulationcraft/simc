@@ -279,7 +279,7 @@ enum rng_type
   RNG_PRE_FILL           // Deterministic number of procs with random distribution
 };
 
-enum aef_type {  AEF_NONE, AEF_GLYPH, AEF_ITEM, AEF_SET };
+enum aef_type {  AEF_NONE, AEF_GLYPH, AEF_ITEM };
   
 
 // Thread Wrappers ===========================================================

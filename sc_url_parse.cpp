@@ -304,6 +304,9 @@ std::string chkMaxValue(std::string& src, std::string path, std::string option){
 }
 
 
+std::string checkItemGlyphOption(aef_type t, std::string id_name);
+
+
 std::string parseItemGlyphOption(armor_effect_t* table, int* setCounters, aef_type t, std::string id_name){
     std::string my_options="";
     if (table!=NULL){
@@ -315,9 +318,13 @@ std::string parseItemGlyphOption(armor_effect_t* table, int* setCounters, aef_ty
                 //is this set item?
                 if ((table[i].set>0)&&(table[i].set<20)){
                     setCounters[table[i].set]++;
-                    char setName[100];
-                    sprintf(setName,"set_%d_%d",table[i].set , setCounters[table[i].set]);
-                    my_options+=parseItemGlyphOption(table, setCounters, AEF_SET, setName);
+					int ns=setCounters[table[i].set];
+					if ((ns==2)||(ns==4)){
+						char setName[100];
+						sprintf(setName,"tier%d_%dpc=1\n",table[i].set , setCounters[table[i].set]);
+						theOption=setName;
+						my_options+=theOption;
+					}
                 }
             }
             i++;
@@ -326,15 +333,20 @@ std::string parseItemGlyphOption(armor_effect_t* table, int* setCounters, aef_ty
     return my_options;
 }
 
-std::string checkItemGlyphOption(aef_type t, std::string id_name){
-    armor_effect_t table[] =
-    {
-        { AEF_GLYPH, "Glyph of Curse of Agony", "glyph_curse_of_agony=1" },
-        { AEF_ITEM, "45308", "eye_of_the_broodmother=1" },
-        { AEF_NONE, NULL, NULL}
-    };
-    return parseItemGlyphOption(table, 0, t, id_name);
+
+std::string addItemGlyphOption(sim_t* sim, std::string&  node, std::string name, aef_type t){
+	std::string res="";
+    if (node!=""){
+		std::string value= getValue(node, name);
+        if (value !=""){
+            res+=checkItemGlyphOption(t, value);
+            if ( sim->active_player) 
+                res+=sim->active_player->checkItemGlyphOption(t, value);
+        }
+    }
+	return res;
 }
+
 
 
 bool parseArmory(sim_t* sim, std::string URL, bool parseName, bool parseTalents, bool parseGear){
@@ -423,14 +435,7 @@ bool parseArmory(sim_t* sim, std::string URL, bool parseName, bool parseTalents,
         std::string glyph_node, glyph_name;
         for (int i=1; i<=3; i++){
             glyph_node= getNodeOne(node, "glyph",i);
-            if (glyph_node!=""){
-                glyph_name= getValue(glyph_node, "name");
-                if (glyph_name !=""){
-                    optionStr+=checkItemGlyphOption(AEF_GLYPH, glyph_name);
-                    if ( sim->active_player) 
-                        optionStr+=sim->active_player->checkItemGlyphOption(AEF_GLYPH, glyph_name);
-                }
-            }
+			optionStr+= addItemGlyphOption(sim, glyph_node, "name", AEF_GLYPH);
         }
     }
     
@@ -440,14 +445,10 @@ bool parseArmory(sim_t* sim, std::string URL, bool parseName, bool parseTalents,
         std::string item_node, item_id;
         for (int i=1; i<=18; i++){
             item_node= getNodeOne(node, "item",i);
-            if (item_node!=""){
-                item_id= getValue(item_node, "id");
-                if (item_id !=""){
-                    optionStr+=checkItemGlyphOption(AEF_ITEM, item_id);
-                    if ( sim->active_player) 
-                        optionStr+=sim->active_player->checkItemGlyphOption(AEF_ITEM, item_id);
-                }
-            }
+			optionStr+= addItemGlyphOption(sim, item_node, "id", AEF_ITEM);
+			optionStr+= addItemGlyphOption(sim, item_node, "gem0Id", AEF_ITEM);
+			optionStr+= addItemGlyphOption(sim, item_node, "gem1Id", AEF_ITEM);
+			optionStr+= addItemGlyphOption(sim, item_node, "gem2Id", AEF_ITEM);
         }
     }
 
@@ -483,3 +484,15 @@ bool parseArmory(sim_t* sim, std::string URL, bool parseName, bool parseTalents,
 }
 
 
+std::string checkItemGlyphOption(aef_type t, std::string id_name){
+    armor_effect_t table[] =
+    {
+        { AEF_ITEM, "41285", "chaotic_skyflare=1" },
+        { AEF_ITEM, "41333", "ember_skyflare=1" },
+        { AEF_ITEM, "45308", "eye_of_the_broodmother=1" },
+        { AEF_ITEM, "45518", "flare_of_the_heavens=1" },
+        { AEF_ITEM, "40432", "illustration_of_the_dragon_soul=1" },
+        { AEF_NONE, NULL, NULL}
+    };
+    return parseItemGlyphOption(table, 0, t, id_name);
+}
