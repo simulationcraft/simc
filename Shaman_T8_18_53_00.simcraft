@@ -7,6 +7,8 @@ actions=flask,type=endless_rage/food,type=fish_feast/windfury_weapon,weapon=main
 actions+=/strength_of_earth_totem/windfury_totem/bloodlust,time_to_die<=60
 actions+=/auto_attack/lightning_bolt,maelstrom=5/shamanistic_rage/stormstrike/earth_shock/magma_totem/lightning_shield/lava_lash/spirit_wolf
 
+# TODO: http://www.wowhead.com/?compare=45132:45463:46205:46212:46203:46208:45553:45244:45454:45461:45480:45525:45503:42608:46200:45931:44253
+
 # Gear: http://www.chardev.org/ptr/?template=159696
 gear_stamina=858
 gear_strength=10

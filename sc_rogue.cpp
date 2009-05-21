@@ -2334,7 +2334,7 @@ struct slice_and_dice_t : public rogue_attack_t
     consume_resource();
     trigger_relentless_strikes( this );
     clear_combo_points( p );
-        trigger_ruthlessness( this );
+    trigger_ruthlessness( this );
     p -> active_slice_and_dice = this;
   }
 

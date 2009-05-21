@@ -148,7 +148,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   armor_update_interval(20), potion_sickness(1),
   optimal_raid(0), log(0), debug(0),
   jow_chance(0), jow_ppm(15.0),
-  normalized_rng(0), normalized_rng_sf(0), average_range(1), average_gauss(0), 
+  normalized_rng(0), normalized_sf(0), deterministic_roll(0), average_range(1), average_gauss(0), 
   timing_wheel(0), wheel_seconds(0), wheel_size(0), wheel_mask(0), timing_slice(0), wheel_granularity(0.0),
   replenishment_targets(0),
   raid_dps(0), total_dmg(0), 
@@ -989,7 +989,8 @@ bool sim_t::parse_option( const std::string& name,
     { "regen_periodicity",                OPT_FLT,    &( regen_periodicity                        ) },
     // @option_doc loc=global/rng title="Normalized RNG"
     { "normalized_rng",                   OPT_BOOL,   &( normalized_rng                           ) },
-    { "normalized_rng_sf",                OPT_BOOL,   &( normalized_rng_sf                        ) },
+    { "normalized_sf",                    OPT_BOOL,   &( normalized_sf                            ) },
+    { "deterministic_roll",               OPT_BOOL,   &( deterministic_roll                       ) },
     { "average_range",                    OPT_BOOL,   &( average_range                            ) },
     { "average_gauss",                    OPT_BOOL,   &( average_gauss                            ) },
     // @option_doc loc=global/party title="Party Composition"

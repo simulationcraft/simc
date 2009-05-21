@@ -964,12 +964,18 @@ static void trigger_brain_freeze( spell_t* s )
 
 static void trigger_hot_streak( spell_t* s )
 {
-  mage_t* p = s -> player -> cast_mage();
+  sim_t* sim = s -> sim;
+  mage_t*  p = s -> player -> cast_mage();
 
   if( p -> talents.hot_streak )
   {
-    if( s -> result == RESULT_CRIT && 
-        p -> rng_hot_streak -> roll( p -> talents.hot_streak * (1/3.0) ) )
+    int result = s -> result;
+
+    if( sim -> normalized_rng && s -> result_is_hit() ) 
+    {
+      result = sim -> rng -> roll( s -> total_crit() ) ? RESULT_CRIT : RESULT_HIT;
+    }
+    if( result == RESULT_CRIT && p -> rng_hot_streak -> roll( p -> talents.hot_streak * (1/3.0) ) )
     {
       p -> _buffs.hot_streak++;
 
@@ -1003,7 +1009,7 @@ static void trigger_hot_streak( spell_t* s )
         }
         else
         {
-          e = new ( s -> sim ) expiration_t( s -> sim, p );
+          e = new ( sim ) expiration_t( sim, p );
         }
       }
     }

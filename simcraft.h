@@ -396,8 +396,8 @@ struct sim_t : public app_t
   std::vector<std::string> party_encoding;
 
   // Normalized Random Number Generation
-  int normalized_rng, normalized_rng_sf;
-  int average_range, average_gauss;
+  int normalized_rng, normalized_sf;
+  int deterministic_roll, average_range, average_gauss;
 
   // Timing Wheel Event Management
   event_t** timing_wheel; 
@@ -564,6 +564,7 @@ struct scaling_t
 
   scaling_t( sim_t* s );
 
+  void init_deltas();
   void analyze();
   void analyze_stats();
   void analyze_lag();
@@ -1732,7 +1733,8 @@ struct rng_t
   virtual int    roll( double chance );
   virtual double range( double min, double max );
   virtual double gauss( double mean, double stddev );
-  virtual void   report(FILE*);
+  virtual void   seed( uint32_t start );
+  virtual void   report( FILE* );
 
   static rng_t* create( sim_t*, const std::string& name, int type=RNG_STANDARD );
 };

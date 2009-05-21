@@ -45,24 +45,30 @@ scaling_t::scaling_t( sim_t* s ) :
   calculate_scale_factors(0), 
   center_scale_delta(0),
   scale_lag(1),
-  scale_factor_noise(0.10)
+  scale_factor_noise(0)
+{
+}
+
+// scaling_t::init_deltas ===================================================
+
+void scaling_t::init_deltas()
 {
   for( int i=ATTRIBUTE_NONE+1; i < ATTRIBUTE_MAX; i++ )
   {
-    stats.attribute[ i ] = 250;
+    if( stats.attribute[ i ] == 0 ) stats.attribute[ i ] = sim -> normalized_sf ? 100 : 250;
   }
 
-  stats.spell_power =  250;
+  if( stats.spell_power == 0 ) stats.spell_power = sim -> normalized_sf ? 100 : 250;
 
-  stats.attack_power             =  250;
-  stats.armor_penetration_rating =  250;
-  stats.expertise_rating         = -150;
+  if( stats.attack_power             == 0 ) stats.attack_power             =  sim -> normalized_sf ?  100 :  250;
+  if( stats.armor_penetration_rating == 0 ) stats.armor_penetration_rating =  sim -> normalized_sf ?  100 :  250;
+  if( stats.expertise_rating         == 0 ) stats.expertise_rating         =  sim -> normalized_sf ?  -75 : -150;
 
-  stats.hit_rating   = -200;
-  stats.crit_rating  =  250;
-  stats.haste_rating =  250;
+  if( stats.hit_rating   == 0 ) stats.hit_rating   = sim -> normalized_sf ? -100 : -200;
+  if( stats.crit_rating  == 0 ) stats.crit_rating  = sim -> normalized_sf ?  100 :  250;
+  if( stats.haste_rating == 0 ) stats.haste_rating = sim -> normalized_sf ?  100 :  250;
 
-  stats.weapon_dps = 50;
+  if( stats.weapon_dps == 0 ) stats.weapon_dps = sim -> normalized_sf ? 25 : 50;
 }
 
 // scaling_t::analyze_stats =================================================
@@ -88,15 +94,19 @@ void scaling_t::analyze_stats()
 
     sim_t* child_sim = new sim_t( sim );
     child_sim -> gear_delta.set_stat( i, +scale_delta / ( center ? 2 : 1 ) );
-    child_sim -> normalized_rng += sim -> normalized_rng_sf;
+    child_sim -> normalized_rng     += sim -> normalized_sf;
+    child_sim -> deterministic_roll += sim -> normalized_sf;
+    child_sim -> average_range      += sim -> normalized_sf;
     child_sim -> execute();
 
     sim_t* ref_sim = sim;
-    if( center || sim -> normalized_rng_sf )
+    if( center || sim -> normalized_sf )
     {
       ref_sim = new sim_t( sim );
       ref_sim -> gear_delta.set_stat( i, center ? -( scale_delta / 2 ) : 0 );
-      ref_sim -> normalized_rng += sim -> normalized_rng_sf;
+      ref_sim -> normalized_rng     += sim -> normalized_sf;
+      ref_sim -> deterministic_roll += sim -> normalized_sf;
+      ref_sim -> average_range      += sim -> normalized_sf;
       ref_sim -> execute();
     }
 
@@ -135,14 +145,18 @@ void scaling_t::analyze_lag()
   child_sim ->   queue_lag += 0.100;
   child_sim ->     gcd_lag += 0.100;
   child_sim -> channel_lag += 0.100;
-  child_sim -> normalized_rng += sim -> normalized_rng_sf;
+  child_sim -> normalized_rng     += sim -> normalized_sf;
+  child_sim -> deterministic_roll += sim -> normalized_sf;
+  child_sim -> average_range      += sim -> normalized_sf;
   child_sim -> execute();
 
   sim_t* ref_sim = sim;
-  if( sim -> normalized_rng_sf )
+  if( sim -> normalized_sf )
   {
     ref_sim = new sim_t( sim );
-    ref_sim -> normalized_rng += sim -> normalized_rng_sf;
+    ref_sim -> normalized_rng     += sim -> normalized_sf;
+    ref_sim -> deterministic_roll += sim -> normalized_sf;
+    ref_sim -> average_range      += sim -> normalized_sf;
     ref_sim -> execute();
   }
 
@@ -179,6 +193,7 @@ void scaling_t::analyze_gear_weights()
 
 void scaling_t::analyze()
 {
+  init_deltas();
   analyze_stats();
   analyze_lag();
   analyze_gear_weights();
