@@ -719,7 +719,7 @@ static void trigger_t8_4pc_balance( spell_t* s )
   druid_t* p = s -> player -> cast_druid();
 
   // http://thottbot.com/test/s64824
-  double chance = (s -> sim -> P312 ? 0.15 : 0.05);
+  double chance = 0.15;
   if( ! p -> rngs.tier8_4pc -> roll( chance ) )
     return;
 
@@ -3118,10 +3118,7 @@ void druid_t::init_base()
   base_spell_crit = 0.0185298;
   initial_spell_crit_per_intellect = rating_t::interpolate( level, 0.01/60.0, 0.01/80.0, 0.01/166.79732 );
   initial_spell_power_per_intellect = talents.lunar_guidance * 0.04;
-  if( sim -> P312 ) 
-    initial_spell_power_per_spirit = ( talents.improved_moonkin_form * 0.10 );
-  else
-    initial_spell_power_per_spirit = ( talents.improved_moonkin_form * 0.05 );
+  initial_spell_power_per_spirit = ( talents.improved_moonkin_form * 0.10 );
 
   base_attack_power = ( level * 2 ) - 20;
   base_attack_crit  = 0.0747516;

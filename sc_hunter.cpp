@@ -2967,8 +2967,8 @@ struct serpent_sting_t : public hunter_attack_t
     base_tick_time   = 3.0;
     num_ticks        = p -> glyphs.serpent_sting ? 7 : 5;
     tick_power_mod   = 0.2 / 5.0;
-    base_multiplier *= 1.0 + p -> talents.improved_stings * 0.1;
-    base_multiplier *= 1.0 + p -> unique_gear -> tier8_2pc * 0.1;
+    base_multiplier *= 1.0 + p -> talents.improved_stings * 0.1
+                           + p -> unique_gear -> tier8_2pc * 0.1;
 
     observer = &( p -> active_serpent_sting );
   }
