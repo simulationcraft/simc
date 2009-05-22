@@ -210,7 +210,7 @@ std::string getURLData(std::string URL){
     bool expired = (!found) || (nowTime-urlCache[found].time > expirationSeconds);
     if (expired){
         //check if last request was more than 2sec ago
-        while ((lastReqTime<nowTime)&&(time( NULL )-lastReqTime<2));
+        while ((lastReqTime<nowTime)&&(time( NULL )-lastReqTime<1));
         // HTTP request
         data= getURLsource(URL);
         //add to cache
@@ -499,12 +499,56 @@ bool player_parse_option(sim_t* sim, std::string& name, std::string& value){
     return sim->active_player->parse_option(name,value);
 }
 
+
+// display all stats
+void displayStats(gear_stats_t& gs, gear_stats_t* gsDiff=0){
+    if (gsDiff) printf("Gear Stats Difference:\n"); else printf("Gear Stats:\n");
+    for (int i=STAT_NONE; i<STAT_MAX; i++){
+        double oldVal=0;
+        if (gsDiff) oldVal=gsDiff->get_stat(i);
+        double val=gs.get_stat(i)- oldVal;
+        if (val!=0)
+            printf("    %s = %lf\n",util_t::stat_type_string(i), val);
+    }
+}
+
+
+struct set_tiers_t{
+    char* setName;
+    int tier;
+};
+
 // adds option for set bonuses
 void  addSetInfo(urlSplit_t& aURL, std::string setName, int setPieces,std::string  item_id){
     if (!aURL.sim->active_player) return;
-    // find set tier based on name and cache ... TO DO
-    // would need to use cache, and get iLvl of item_id if not in cache
+    // set names and tiers - probably only tiers 7&8 are important here atm
+    // set names should be same as on Armory - case sensitive, and common for 10man/25man
+    set_tiers_t setTiers[]={
+        // warlock sets
+        {"Felheart Raiment",1},
+        {"Nemesis Raiment",2},
+        {"Plagueheart Raiment",3},
+        {"Voidheart Raiment",4},
+        {"Corruptor Raiment",5},
+        {"Malefic Raiment",6},
+        {"Plagueheart Garb",7},
+        {"Deathbringer Garb",8},
+        // rogue sets
+        {"Bonescythe Battlegear",7},
+        {"Terrorblade Battlegear",8},
+        // mage sets
+        {"Frostfire Garb",7},
+        {"Kirin'dor Garb",8},
+        //end of list
+        {"",0}
+    };
+    // find set tier based on name
     int tier=7;
+    for (int i=0; setTiers[i].tier; i++)
+        if (setName==setTiers[i].setName){
+            tier=setTiers[i].tier;
+            break;
+        }
     // set tier option if any
     if (setPieces>aURL.setPieces[tier]){
         char setOption[100];
@@ -525,9 +569,119 @@ void  addSetInfo(urlSplit_t& aURL, std::string setName, int setPieces,std::strin
 }
 
 
+bool my_isdigit(char c){
+    if (c=='+') return true;
+    if (c=='-') return true;
+    return isdigit(c);
+}
+
+// find value/pattern pair
+double oneTxtStat(std::string& txt, std::string fullpat, int dir){
+    int idx=0;
+    double value=0;
+    //support multiple occurences of same pattern
+    while (idx>=0){
+        idx= txt.find(fullpat);
+        if (idx>=0){
+            int idL=idx;
+            int idR=idx+fullpat.length();
+            std::string strVal="";
+            int dL=0;
+            int dR=0;
+            if (dir>0){
+                int p=idR;
+                while ((p<txt.length())&&(txt[p]==' ')) p++; //skip spaces
+                dL=dR=p;
+                while ((p<txt.length())&& my_isdigit(txt[p]) ) p++; //walk over number
+                dR=p;
+                idR=dR;
+            }else{
+                int p=idL-1;
+                while ((p>=0)&&(txt[p]==' ')) p--; //skip spaces
+                dR=dL=p+1;
+                while ((p>=0)&& my_isdigit(txt[p]) ) p--; //walk over number
+                dL=p+1;
+                idL=dL;
+            }
+            //extract value
+            if (dR>dL) {
+                strVal=txt.substr(dL,dR-dL);
+                if (strVal!=""){
+                    if ((dir>0)||  ((dir<0)&&(strVal[0]=='+'))  )
+                        value+=atof(strVal.c_str());
+                }
+            }
+            //delete this instance
+            txt.erase(idL,idR-idL);
+        }
+    }
+    return value;
+}
+
+//try to find txt pattern and value pair. Patterns are expected in lower cases
+// it will try first: "pattern by XX", then "+XX pattern"
+// if found, it will remove pattern/value from txt
+bool chkOneTxtStat(gear_stats_t& gs, std::string& txt, int statID, std::string pattern){
+    bool ok=false;
+     
+    std::string pat;
+    double val;
+    // this patterns should increase stat
+    pat= " improves "+pattern+" by ";
+    val= oneTxtStat(txt, pat, +1);
+    if (val) {
+        gs.add_stat(statID,  val);
+        ok=true;
+    }
+    pat= " increases "+pattern+" by ";
+    val= oneTxtStat(txt, pat, +1);
+    if (val) {
+        gs.add_stat(statID,  val);
+        ok=true;
+    }
+    // this pattern oncrease stat ONLY if number to the left start with +
+    // it STILL has risk to admit some "chance to do +25 spell dmg", but in all texts so far
+    // all stat numbers of that type (ie in procs) appear to be without +
+    pat= " "+pattern;
+    val= oneTxtStat(txt, pat, -1);
+    if (val) {
+        gs.add_stat(statID,  val);
+        ok=true;
+    }
+    return false;
+}
+
 // parse text and search for stats to add
 void addTextStats(gear_stats_t& gs, std::string txt){
     if (txt=="") return;
+    txt= " "+tolower(txt)+" ";
+
+    //chkOneTxtStat(gs,txt, STAT_SPELL_POWER,               "shadow spell damage"); //problem: item may have shdw+frost+fire...
+    chkOneTxtStat(gs,txt, STAT_SPELL_POWER,               "spell power");
+    chkOneTxtStat(gs,txt, STAT_MP5,                       "mana regen");
+    chkOneTxtStat(gs,txt, STAT_MP5,                       "mana every");
+    chkOneTxtStat(gs,txt, STAT_MP5,                       "mana per");
+    chkOneTxtStat(gs,txt, STAT_MP5,                       "mana restored per");
+    chkOneTxtStat(gs,txt, STAT_MP5,                       "mana/5");
+    chkOneTxtStat(gs,txt, STAT_ATTACK_POWER,              "attack power");
+    chkOneTxtStat(gs,txt, STAT_EXPERTISE_RATING,          "expertise rating");
+    chkOneTxtStat(gs,txt, STAT_ARMOR_PENETRATION_RATING,  "armor penetration");
+    chkOneTxtStat(gs,txt, STAT_HASTE_RATING,              "haste rating");
+    chkOneTxtStat(gs,txt, STAT_HIT_RATING,                "ranged hit rating"); //we dont have them separate
+    chkOneTxtStat(gs,txt, STAT_HIT_RATING,                "hit rating");
+    chkOneTxtStat(gs,txt, STAT_CRIT_RATING,               "ranged critical strike");
+    chkOneTxtStat(gs,txt, STAT_CRIT_RATING,               "critical strike rating");
+    chkOneTxtStat(gs,txt, STAT_CRIT_RATING,               "crit rating");
+    chkOneTxtStat(gs,txt, STAT_STRENGTH,                  "strength"); 
+    chkOneTxtStat(gs,txt, STAT_AGILITY,                   "agility"); 
+    chkOneTxtStat(gs,txt, STAT_STAMINA,                   "stamina"); 
+    chkOneTxtStat(gs,txt, STAT_INTELLECT,                 "intellect"); 
+    chkOneTxtStat(gs,txt, STAT_SPIRIT,                    "spirit");
+    //shorter, less safe parses
+    chkOneTxtStat(gs,txt, STAT_ARMOR,                     "armor");
+    chkOneTxtStat(gs,txt, STAT_HEALTH,                    "health");
+    chkOneTxtStat(gs,txt, STAT_MANA,                      "mana");
+
 }
 
 
@@ -705,7 +859,7 @@ bool parseArmory(sim_t* sim, std::string URL, bool parseName, bool parseTalents,
     // parse items for effects, procs etc
     node = getNode(src, "characterTab.items");
     if ((node!="")&&(sim->active_player)){
-        gear_stats_t gs;
+        gear_stats_t gs, oldGS;
         int nGs=0;
         std::string item_node, item_id;
         for (int i=1; i<=18; i++){
@@ -719,15 +873,21 @@ bool parseArmory(sim_t* sim, std::string URL, bool parseName, bool parseTalents,
         		std::string  item_id= getValue(item_node, "id");
         		std::string  item_slot= getValue(item_node, "slot");
                 if (parseItemStats(aURL, gs, item_id, item_slot)) nGs++;
+                if (debug){ //remove from debug, too detailed (show every item stat gains)
+                    printf("ITEM= %s & slot=%s\n", item_id.c_str(),item_slot.c_str());
+                    displayStats(gs, &oldGS);
+                    oldGS=gs;
+                }
             }
         }
         //copy gear stats if needed
-        if ((nGs>0)&&parseGear&&ParseEachItem) sim->active_player->gear_stats = gs; 
+        if ((nGs>0)&&parseGear&&ParseEachItem) 
+            sim->active_player->gear_stats = gs; 
     }
 
     // save url caches
     SaveCache();
-
+    if (debug) displayStats(sim->active_player->gear_stats);
     // now parse remaining options, if any
     if (optionStr!=""){
         if (debug) printf("%s", optionStr.c_str()); ;
