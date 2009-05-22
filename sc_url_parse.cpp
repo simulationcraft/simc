@@ -3,7 +3,7 @@
 // 0=off
 // 1=regular debug
 // 2=more detailede debug
-const int debug=0;
+const int debug=2;
 
 
 
@@ -25,7 +25,7 @@ using namespace std;
 
 
 const bool ParseEachItem=true;
-const int maxCache=1000;
+const size_t maxCache=1000;
 const int expirationSeconds=3*60*60;
 
 
@@ -69,7 +69,7 @@ std::string getURLsource( std::string URL )
   hFile = InternetOpenUrl( hINet, wURL.c_str(), NULL, 0, INTERNET_FLAG_RELOAD, 0 );
   if ( hFile )
   {
-    const int bufSz=20000;
+    const size_t bufSz=20000;
     CHAR buffer[bufSz];
     DWORD dwRead=bufSz;
     //if (HttpQueryInfo(hFile, HTTP_QUERY_RAW_HEADERS_CRLF, buffer, &dwRead, NULL)) res+=buffer;
@@ -104,9 +104,9 @@ std::string getURLsource( std::string URL )
 
 struct cacheHeader_t
 {
-  int n;
-  int sz1;
-  int sz2;
+  size_t n;
+  size_t sz1;
+  size_t sz2;
   double t;
 };
 
@@ -124,17 +124,17 @@ struct urlSplit_t
   std::string player;
   int srvType;
   sim_t* sim;
-  int setPieces[20];
+  unsigned int setPieces[20];
 };
 
 
 enum url_page_t {  UPG_GEAR, UPG_TALENTS, UPG_ITEM  };
 
 
-int N_cache=0;
+size_t N_cache=0;
 urlCache_t* urlCache=0;
 double lastReqTime=0;
-const int maxBufSz=100000;
+const size_t maxBufSz=100000;
 
 
 std::string tolower( std::string src )
@@ -151,9 +151,9 @@ void SaveCache()
   FILE* file = fopen( "url_cache.txt" , "wb" );
   if ( file==NULL ) return;
   //mark expired and count all
-  int n=0;
+  unsigned int n=0;
   double nowTime= time( NULL );
-  for ( int i=1; i<=N_cache; i++ )
+  for ( size_t i=1; i<=N_cache; i++ )
   {
     bool expired = nowTime - urlCache[i].time > expirationSeconds;
     if ( expired || ( urlCache[i].data.length()>=( unsigned )maxBufSz ) )
@@ -167,7 +167,7 @@ void SaveCache()
   char* buffer= new char[maxBufSz];
   if ( fwrite( &hdr,sizeof( hdr ),1,file ) )
   {
-    for ( int i=1; i<=N_cache; i++ )
+    for ( size_t i=1; i<=N_cache; i++ )
       if ( urlCache[i].time>0 )
       {
         hdr.n=i;
@@ -196,8 +196,8 @@ void LoadCache()
   char* buffer=new char[maxBufSz];
   if ( fread( &hdr,sizeof( hdr ),1,file ) )
   {
-    int nel= hdr.n;
-    for ( int i=1; ( i<=nel )&&!feof( file ); i++ )
+    size_t nel= hdr.n;
+    for ( size_t i=1; ( i<=nel )&&!feof( file ); i++ )
     {
       if ( fread( &hdr,sizeof( hdr ),1,file ) )
       {
@@ -226,7 +226,7 @@ std::string proper_option_name( std::string& full_name )
   // first to lower letters and _ for spaces
   std::string newName( full_name.length(),' ' );
   newName="";
-  for ( int i=0; i<full_name.length(); i++ )
+  for ( size_t i=0; i<full_name.length(); i++ )
   {
     char c=full_name[i];
     c= tolower( c );		// lower case
@@ -249,8 +249,8 @@ std::string getURLData( std::string URL )
   std::string data="";
   //check cache
   LoadCache();
-  int found=0;
-  for ( int i=1; ( i<=N_cache ) && ( !found ); i++ )
+  unsigned int found=0;
+  for ( size_t i=1; ( i<=N_cache ) && ( !found ); i++ )
     if ( urlCache[i].url==URL )
       found=i;
   double nowTime= time( NULL );
@@ -305,7 +305,7 @@ std::string getArmoryData( urlSplit_t aURL, url_page_t pgt, std::string morePara
 //split URL to server, realm, player
 bool splitURL( std::string URL, urlSplit_t& aURL )
 {
-  int iofs=0;
+  size_t iofs=0;
   size_t id_http= URL.find( "http://",iofs );
   if ( id_http != string::npos ) iofs=7;
   size_t id_folder= URL.find( "/", iofs );
@@ -313,7 +313,7 @@ bool splitURL( std::string URL, urlSplit_t& aURL )
   size_t id_srv= URL.find( "?r=",iofs );
   if ( id_srv != string::npos ) iofs=id_srv+1;
   size_t id_name= URL.find( "&cn=",iofs );
-  int id_name_sz=4;
+  size_t id_name_sz=4;
   if ( string::npos == id_name )
   {
     id_name= URL.find( "&n=",iofs );
@@ -338,7 +338,7 @@ bool splitURL( std::string URL, urlSplit_t& aURL )
     return false;
   if ( string::npos == id_http ) aURL.wwwAdr="http://"+aURL.wwwAdr;
 
-  for ( int i=0; i<20; i++ )  aURL.setPieces[i]=0;
+  for ( unsigned int i=0; i<20; i++ )  aURL.setPieces[i]=0;
 
   return true;
 }
@@ -352,7 +352,7 @@ std::string getNodeOne( std::string& src, std::string name, int occurence=1 )
 {
   std::string nstart="<"+name;
   //fint n-th occurence of node
-  int offset=0;
+  size_t offset=0;
   size_t idx;
   do
   {
@@ -375,9 +375,9 @@ std::string getNodeOne( std::string& src, std::string name, int occurence=1 )
   // if node start found, find end
   if ( ( idx != string::npos )&&( occurence==0 ) )
   {
-    int np=nstart.length();
+    size_t np=nstart.length();
     std::string nextChar=src.substr( idx+np,1 );
-    int idxEnd=-1;
+    size_t idxEnd;
     bool singleLine=true;
     if ( nextChar==">" )
       singleLine=false;
@@ -392,7 +392,7 @@ std::string getNodeOne( std::string& src, std::string name, int occurence=1 )
     else
       nstart="</"+name+">"; // if this is multiline node, it ends with </name>
     idxEnd=src.find( nstart,idx+1 );
-    int i1=idx+name.length()+2;
+    size_t i1=idx+name.length()+2;
     if ( idxEnd != string::npos && idxEnd>i1 )
     {
       std::string res= src.substr( i1,idxEnd-i1 );
@@ -477,8 +477,8 @@ std::string getMaxValue( std::string& src, std::string path )
   std::string res="";
   double best=0;
   std::vector<std::string> paths;
-  int num_paths = util_t::string_split( paths,path, "," );
-  for ( int i=0; i < num_paths; i++ )
+  unsigned int num_paths = util_t::string_split( paths,path, "," );
+  for ( unsigned int i=0; i < num_paths; i++ )
   {
     std::string res2=getValue( src, paths[i] );
     if ( res2!="" )
@@ -531,7 +531,7 @@ std::string chkMaxValue( std::string& src, std::string path, std::string option 
 }
 
 
-int  getSetTier( std::string setName );
+unsigned int  getSetTier( std::string setName );
 
 
 
@@ -567,7 +567,7 @@ void addItemGlyphOption( sim_t* sim, std::string&  node, std::string name )
 void displayStats( gear_stats_t& gs, gear_stats_t* gsDiff=0 )
 {
   if ( gsDiff ) printf( "Gear Stats Difference:\n" ); else printf( "Gear Stats:\n" );
-  for ( int i=STAT_NONE; i<STAT_MAX; i++ )
+  for ( unsigned int i=STAT_NONE; i<STAT_MAX; i++ )
   {
     double oldVal=0;
     if ( gsDiff ) oldVal=gsDiff->get_stat( i );
@@ -580,10 +580,10 @@ void displayStats( gear_stats_t& gs, gear_stats_t* gsDiff=0 )
 
 
 // adds option for set bonuses
-void  addSetInfo( urlSplit_t& aURL, std::string setName, int setPieces,std::string  item_id )
+void  addSetInfo( urlSplit_t& aURL, std::string setName, unsigned int setPieces,std::string  item_id )
 {
   if ( !aURL.sim->active_player ) return;
-  int tier= getSetTier( setName );
+  unsigned int tier= getSetTier( setName );
   // set tier option if any
   if ( setPieces>aURL.setPieces[tier] )
   {
@@ -766,7 +766,7 @@ bool  parseItemStats( urlSplit_t& aURL, gear_stats_t& gs,  std::string& item_id,
   // parse gems and sockets
   std::string node= getNode( src, "socketData" );
   bool allMatch=true;
-  for ( int i=1; i<=5; i++ )
+  for ( unsigned int i=1; i<=5; i++ )
   {
     std::string gem= getNodeOne( node, "socket" ,i );
     if ( gem!="" )
@@ -785,8 +785,8 @@ bool  parseItemStats( urlSplit_t& aURL, gear_stats_t& gs,  std::string& item_id,
   std::string setName= getNode( node, "name" );
   if ( setName!="" )
   {
-    int setPieces=0;
-    for ( int i=1; i<=6; i++ )
+    unsigned int setPieces=0;
+    for ( unsigned int i=1; i<=6; i++ )
     {
       std::string sItem= getNodeOne( node, "item" ,i );
       if ( getValue( sItem, "equipped" )=="1" ) setPieces++;
@@ -902,7 +902,7 @@ bool parseArmory( sim_t* sim, std::string URL, bool parseName, bool parseTalents
   if ( ( node!="" )&&( sim->active_player ) )
   {
     std::string glyph_node, glyph_name;
-    for ( int i=1; i<=3; i++ )
+    for ( unsigned int i=1; i<=3; i++ )
     {
       glyph_node= getNodeOne( node, "glyph",i );
       if ( glyph_node!="" )
@@ -922,9 +922,9 @@ bool parseArmory( sim_t* sim, std::string URL, bool parseName, bool parseTalents
   if ( ( node!="" )&&( sim->active_player ) )
   {
     gear_stats_t gs, oldGS;
-    int nGs=0;
+    unsigned int nGs=0;
     std::string item_node, item_id;
-    for ( int i=1; i<=18; i++ )
+    for ( unsigned int i=1; i<=18; i++ )
     {
       item_node= getNodeOne( node, "item",i );
       addItemGlyphOption( sim, item_node, "id" );
@@ -977,13 +977,13 @@ bool parseArmory( sim_t* sim, std::string URL, bool parseName, bool parseTalents
 struct set_tiers_t
 {
   const char* setName;
-  int tier;
+  unsigned int tier;
 };
 
 // get set tier based on name
 // probably only tiers 7&8 are important here atm
 // set names should be same as on Armory - case sensitive, and common for 10man/25man
-int  getSetTier( std::string setName )
+unsigned int  getSetTier( std::string setName )
 {
   set_tiers_t setTiers[]={
                            // warlock sets
@@ -1005,8 +1005,8 @@ int  getSetTier( std::string setName )
                            {"",0}
                          };
   // find set tier based on name
-  int tier=7;
-  for ( int i=0; setTiers[i].tier; i++ )
+  unsigned int tier=7;
+  for ( size_t i=0; setTiers[i].tier; i++ )
     if ( setName==setTiers[i].setName )
     {
       tier=setTiers[i].tier;
