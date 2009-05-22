@@ -258,6 +258,8 @@ struct warlock_t : public player_t
   virtual int       primary_resource() { return RESOURCE_MANA; }
   virtual int       primary_role()     { return ROLE_SPELL; }
   virtual double    composite_spell_power( int school );
+  virtual std::string get_default_actions();
+
 
   // Event Tracking
   virtual void regen( double periodicity );
@@ -4401,6 +4403,35 @@ void imp_pet_t::fire_bolt_t::execute()
 // ==========================================================================
 // Warlock Character Definition
 // ==========================================================================
+
+std::string warlock_t::get_default_actions(){
+	std::string actions="";
+	if (talents.haunt){ // 53_00_18
+		actions+="flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/spell_stone/fel_armor/summon_pet,imp";
+		actions+="/haunt,debuff=1/corruption/curse_of_agony/unstable_affliction/haunt";
+		actions+="/drain_soul,health_percentage<=25,interrupt=1/shadow_bolt/life_tap";
+	}else
+	if (talents.metamorphosis){  // 00_56_15
+		actions+="flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/spell_stone/fel_armor/summon_pet,felguard";
+		actions+="/demonic_empowerment/life_tap,trigger=10000,health_percentage>=35,metamorphosis=-1";
+		actions+="/soul_fire,decimation=1/life_tap,glyph=1/metamorphosis/curse_of_doom,time_to_die>=90";
+		actions+="/immolation,health_percentage>=35/immolate/corruption,health_percentage>=35/shadow_bolt/life_tap";
+	}else
+		if (talents.summon_felguard && talents.emberstorm && talents.decimation){  // 00_41_30
+		actions+="flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/spell_stone/fel_armor/summon_pet,felguard";
+		actions+="/soul_fire,decimation=1/life_tap,glyph=1/immolate/curse_of_agony/corruption,health_percentage>=35/incinerate/life_tap";
+	}else
+	if (talents.decimation && talents.conflagrate){  // 00_40_31
+		actions+="flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/spell_stone/fel_armor/summon_pet,imp";
+		actions+="/soul_fire,decimation=1/life_tap,glyph=1/immolate/conflagrate";
+		actions+="/curse_of_agony/corruption,health_percentage>=35/incinerate/life_tap";
+	}else{ // generic
+		actions+="flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/spell_stone/fel_armor/summon_pet,imp";
+		actions+="/corruption/curse_of_agony/immolate/shadow_bolt/life_tap";
+	}
+	return actions;
+}
+
 
 // warlock_t::composite_spell_power =========================================
 

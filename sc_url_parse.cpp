@@ -213,6 +213,8 @@ std::string getURLData(std::string URL){
         while ((lastReqTime<nowTime)&&(time( NULL )-lastReqTime<1));
         // HTTP request
         data= getURLsource(URL);
+		// if there was timeout/error in this fetch, and we have old data, use it
+		if (found && (data=="")) data=urlCache[found].data;
         //add to cache
         if (found){
             urlCache[found].time= nowTime;

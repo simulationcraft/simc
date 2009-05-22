@@ -1008,6 +1008,8 @@ struct player_t
 
   virtual void trigger_replenishment();
   virtual std::string checkItemGlyphOption(aef_type t, std::string id_name);
+  virtual std::string get_default_actions() { return "";};
+
 
   // Class-Specific Methods
 
