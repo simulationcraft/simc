@@ -2,8 +2,9 @@
 // internal debug flag, only for this unit
 // 0=off
 // 1=regular debug
-// 2=more detailede debug
-const int debug=2;
+// 2=more detailed debug, each item stat shown
+// 3=each URL read shown
+const int debug=0;
 
 
 
@@ -260,7 +261,7 @@ std::string getURLData( std::string URL )
     //check if last request was more than 2sec ago
     while ( ( lastReqTime<nowTime )&&( time( NULL )-lastReqTime<1 ) );
     // HTTP request
-    printf( "Loading URL: %s\n",URL.c_str() );
+    if (debug>2) printf( "Loading URL: %s\n",URL.c_str() );
     data= getURLsource( URL );
     // if there was timeout/error in this fetch, and we have old data, use it
     if ( found && ( data=="" ) ) data=urlCache[found].data;
@@ -612,7 +613,7 @@ bool my_isdigit( char c )
 {
   if ( c=='+' ) return true;
   if ( c=='-' ) return true;
-  return isdigit( c );
+  return isdigit( c )!=0;
 }
 
 // find value/pattern pair
@@ -642,11 +643,11 @@ double oneTxtStat( std::string& txt, std::string fullpat, int dir )
       }
       else
       {
-        size_t p=idL-1;
-        while ( ( p != string::npos )&&( txt[p]==' ' ) ) p--; //skip spaces
-        dR=dL=p+1;
-        while ( ( p != string::npos )&& my_isdigit( txt[p] ) ) p--; //walk over number
-        dL=p+1;
+        int p=idL-1;
+        while ( ( p>=0 )&&( txt[p]==' ' ) ) p--; //skip spaces
+        dR=dL=(size_t) (p+1);
+        while ( ( p>=0 )&& my_isdigit( txt[p] ) ) p--; //walk over number
+        dL=(size_t)(p+1);
         idL=dL;
       }
       //extract value
@@ -976,7 +977,7 @@ bool parseArmory( sim_t* sim, std::string URL, bool parseName, bool parseTalents
 
 struct set_tiers_t
 {
-  const char* setName;
+  std::string setName;
   unsigned int tier;
 };
 
@@ -987,31 +988,52 @@ unsigned int  getSetTier( std::string setName )
 {
   set_tiers_t setTiers[]={
                            // warlock sets
-                           {"Felheart Raiment",1},
-                           {"Nemesis Raiment",2},
-                           {"Plagueheart Raiment",3},
-                           {"Voidheart Raiment",4},
-                           {"Corruptor Raiment",5},
-                           {"Malefic Raiment",6},
-                           {"Plagueheart Garb",7},
-                           {"Deathbringer Garb",8},
+                           {"felheart",1},
+                           {"nemesis",2},
+                           {"plagueheart raiment",3},
+                           {"voidheart",4},
+                           {"corruptor",5},
+                           {"malefic",6},
+                           {"plagueheart",7},
+                           {"deathbringer",8},
                            // rogue sets
-                           {"Bonescythe Battlegear",7},
-                           {"Terrorblade Battlegear",8},
+                           {"bonescythe",7},
+                           {"terrorblade",8},
                            // mage sets
-                           {"Frostfire Garb",7},
-                           {"Kirin'dor Garb",8},
+                           {"frostfire",7},
+                           {"kirin'dor",8},
+                           // druid sets
+                           {"Dreamwalker",7},
+                           {"nightsong ",8},
+                           // shaman sets
+                           {"earthshatter",7},
+                           {"worldbreaker",8},
+                           //  priest sets
+                           {"faith",7},
+                           {"sanctification",8},
+                           //  hunter sets
+                           {"cryptstalker",7},
+                           {"scourgestalker",8},
+                           //  DK sets
+                           {"scourgeborne",7},
+                           {"darkruned",8},
+                           //  sets
+                           {"",7},
+                           {"",8},
                            //end of list
                            {"",0}
                          };
   // find set tier based on name
-  unsigned int tier=7;
-  for ( size_t i=0; setTiers[i].tier; i++ )
-    if ( setName==setTiers[i].setName )
+  unsigned int tier=6;
+  setName=" "+tolower(setName)+" ";
+  for ( size_t i=0; setTiers[i].tier; i++ ){
+    std::string tierName=" "+setTiers[i].setName+" ";
+  	if ( setName.find(tierName)!=string::npos )
     {
       tier=setTiers[i].tier;
       break;
     }
+  }
   return tier;
 }
 
