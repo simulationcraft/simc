@@ -2421,10 +2421,6 @@ void player_t::trigger_replenishment()
   }
 }
 
-// player_t::checkItemGlyphOption ================================================
-std::string player_t::checkItemGlyphOption(aef_type t, std::string id_name){
-    return "";
-}
 
 // player_t::get_talent_trees ===============================================
 

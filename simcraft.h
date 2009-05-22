@@ -279,8 +279,7 @@ enum rng_type
   RNG_MAX
 };
 
-enum aef_type {  AEF_NONE, AEF_GLYPH, AEF_ITEM };
-  
+ 
 
 // Thread Wrappers ===========================================================
 
@@ -1007,7 +1006,6 @@ struct player_t
   virtual pet_t*    find_pet     ( const std::string& name );
 
   virtual void trigger_replenishment();
-  virtual std::string checkItemGlyphOption(aef_type t, std::string id_name);
   virtual std::string get_default_actions() { return "";};
 
 
@@ -1792,14 +1790,6 @@ struct util_t
   static int milliseconds();
 };
 
-struct armor_effect_t{
-  aef_type t;
-  const char* id_name;
-  const char* option;
-  int set;
-};
-
-std::string parseItemGlyphOption(armor_effect_t* table, int* setCounters, aef_type t, std::string id_name);
 bool parseArmory(sim_t* sim, std::string URL, bool parseName=true, bool parseTalents=true, bool parseGear=true);
 
 

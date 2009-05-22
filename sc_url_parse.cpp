@@ -1,3 +1,13 @@
+
+// internal debug flag, only for this unit
+// 0=off
+// 1=regular debug
+// 2=more detailede debug
+const int debug=0;
+
+
+
+
 #include "simcraft.h"
 
 #if defined( _MSC_VER )
@@ -15,9 +25,7 @@ using namespace std;
 
 
 const bool ParseEachItem=true;
-const bool debug=false;
-
-const size_t maxCache=1000;
+const int maxCache=1000;
 const int expirationSeconds=3*60*60;
 
 
@@ -115,18 +123,19 @@ struct urlSplit_t{
     int setPieces[20];
 };
 
+
 enum url_page_t {  UPG_GEAR, UPG_TALENTS, UPG_ITEM  };
 
 
-size_t N_cache=0;
+int N_cache=0;
 urlCache_t* urlCache=0;
 double lastReqTime=0;
-const size_t maxBufSz=100000;
+const int maxBufSz=100000;
 
 
 std::string tolower(std::string src){
     std::string dest=src;
-    for (size_t i=0; i<dest.length(); i++)
+    for (unsigned i=0; i<dest.length(); i++)
         dest[i]=tolower(dest[i]);
     return dest;
 }
@@ -138,9 +147,9 @@ void SaveCache(){
     //mark expired and count all
     int n=0;
     double nowTime= time(NULL);
-    for (size_t i=1; i<=N_cache; i++){
+    for (int i=1; i<=N_cache; i++){
         bool expired = nowTime - urlCache[i].time > expirationSeconds;
-        if (expired || (urlCache[i].data.length()>=maxBufSz) ) 
+        if (expired || (urlCache[i].data.length()>=(unsigned)maxBufSz) ) 
             urlCache[i].time=0;
         else
             n++;
@@ -150,7 +159,7 @@ void SaveCache(){
     hdr.n=n;
     char* buffer= new char[maxBufSz];
     if (fwrite(&hdr,sizeof(hdr),1,file)){
-        for (size_t i=1; i<=N_cache; i++)
+        for (int i=1; i<=N_cache; i++)
         if (urlCache[i].time>0)
         {
             hdr.n=i;
@@ -196,6 +205,29 @@ void LoadCache(){
 }
 
 
+// convert full descriptive name into "option name"
+// spaces become underscores, all lower letters
+// remove apostrophes
+std::string proper_option_name(std::string& full_name){
+	if (full_name=="") return full_name;
+    // first to lower letters and _ for spaces
+	std::string newName(full_name.length(),' ');
+	newName="";
+    for (int i=0; i<full_name.length(); i++){
+        char c=full_name[i];
+        c= tolower(c);		// lower case
+        if (c==' ') c='_';	// spaces to underscores
+		if (c!='\'')        // remove apostrophes
+          newName+=c;
+    }
+    // then remove first "of" for glyphs (legacy)
+    if (newName.substr(0,9)=="glyph_of_")   newName.erase(6,3);
+    // return result
+	return newName;
+}
+
+
+
 
 //wrapper for getURLsource, support for throttling and cache
 std::string getURLData(std::string URL){
@@ -203,7 +235,7 @@ std::string getURLData(std::string URL){
     //check cache
     LoadCache();
     int found=0;
-    for (size_t i=1; (i<=N_cache) && (!found); i++)
+    for (int i=1; (i<=N_cache) && (!found); i++)
         if (urlCache[i].url==URL)  
             found=i;
     double nowTime= time( NULL );
@@ -294,35 +326,35 @@ std::string getNodeOne(std::string& src, std::string name, int occurence=1){
 	std::string nstart="<"+name;
 	//fint n-th occurence of node
 	int offset=0;
-	size_t idx=-1;
+	int idx=-1;
 	do{
         std::string allowedNext=" >/";
-        idx=src.find(nstart,offset);
+	    idx=src.find(nstart,offset);
         bool found=false;
-        while ((idx != string::npos)&&(!found))
+        while ((idx>=0)&&(!found))
         {
             char n=src[idx+nstart.length()];
-            size_t i2=allowedNext.find(n);
-            if (i2 != string::npos)
+            int i2=allowedNext.find(n);
+            if (i2>=0)
                 found=true;
             else
-                idx=src.find(nstart,idx+1);
+        		idx=src.find(nstart,idx+1);
         }
 		occurence--;
 		offset=idx+1;
-	}while((idx != string::npos)&&(occurence>0));
+	}while((idx>=0)&&(occurence>0));
 	// if node start found, find end
-	if ((idx != string::npos)&&(occurence==0)){
-        size_t np=nstart.length();
+	if ((idx>=0)&&(occurence==0)){
+        int np=nstart.length();
 		std::string nextChar=src.substr(idx+np,1);
 		int idxEnd=-1;
         bool singleLine=true;
 		if (nextChar==">")	
 			singleLine=false;
         else{
-            size_t idLn= src.find("\n",idx+1);
-            size_t idEnd=src.find("/>",idx+1);
-            if ((idEnd == string::npos)||(idEnd>idLn)) singleLine=false;
+            int idLn= src.find("\n",idx+1);
+            int idEnd=src.find("/>",idx+1);
+            if ((idEnd<0)||(idEnd>idLn)) singleLine=false;
         }
 		if (singleLine)	
 			nstart="/>"; // for single line nodes, it ends with />  ..and presume NO inline nodes
@@ -427,8 +459,8 @@ double getParamFloat(std::string& src, std::string path){
 //get float value from entire node
 double getNodeFloat(std::string& src, std::string path){
     std::string res= getNode(src, path);
-    size_t idB= res.find(">"); // for <armor armorBonus="0">155</armor>
-    if ((idB != string::npos)&&(idB<res.length()-1)) 
+    int idB= res.find(">"); // for <armor armorBonus="0">155</armor>
+    if ((idB>=0)&&(idB<(int)(res.length()-1))) 
         res.erase(0,idB+1);
     return atof(res.c_str());
 }
@@ -451,56 +483,32 @@ std::string chkMaxValue(std::string& src, std::string path, std::string option){
 }
 
 
-std::string checkItemGlyphOption(aef_type t, std::string id_name);
+int  getSetTier(std::string setName);
 
 
-std::string parseItemGlyphOption(armor_effect_t* table, int* setCounters, aef_type t, std::string id_name){
-    std::string my_options="";
-    if (table!=NULL){
-        int i=0;
-        while (table[i].t!=AEF_NONE){
-            if ((table[i].t==t)&&(table[i].id_name==id_name)){
-                std::string theOption=table[i].option;
-                if (theOption!="")  my_options+= theOption+"\n";
-                //is this set item?
-                if ((table[i].set>0)&&(table[i].set<20)){
-                    setCounters[table[i].set]++;
-					int ns=setCounters[table[i].set];
-					if ((ns==2)||(ns==4)){
-						char setName[100];
-						sprintf(setName,"tier%d_%dpc=1\n",table[i].set , setCounters[table[i].set]);
-						theOption=setName;
-						my_options+=theOption;
-					}
-                }
-            }
-            i++;
-        }
-    }
-    return my_options;
-}
-
-
-std::string addItemGlyphOption(sim_t* sim, std::string&  node, std::string name, aef_type t){
-	std::string res="";
-    if (node!=""){
-		std::string value= getValue(node, name);
-        if (value !=""){
-            res+=checkItemGlyphOption(t, value);
-            if ( sim->active_player) 
-                res+=sim->active_player->checkItemGlyphOption(t, value);
-        }
-    }
-	return res;
-}
 
 
 // call players parse option
 bool player_parse_option(sim_t* sim, std::string& name, const std::string& value){
     if (!sim->active_player) return false;
-    if (debug) printf("%s=%s\n",name.c_str(),value.c_str());
-    return sim->active_player->parse_option(name,value);
+	bool ok=sim->active_player->parse_option(name,value);
+    if (debug&&ok) printf("%s=%s\n",name.c_str(),value.c_str());
+    return ok;
 }
+
+// call player_parse_option for every item, if special option exists
+// useful only for GEMs and ENCHANTs
+// since for items and glyphs "proper names" are generated and tried as options
+void addItemGlyphOption(sim_t* sim, std::string&  node, std::string name){
+    if (node!=""){
+		std::string itemID= getValue(node, name);
+		if (itemID !=""){
+			player_parse_option(sim,itemID,"1");
+		}
+    }
+}
+
+
 
 
 // display all stats
@@ -516,42 +524,11 @@ void displayStats(gear_stats_t& gs, gear_stats_t* gsDiff=0){
 }
 
 
-struct set_tiers_t{
-  const char* setName;
-  int tier;
-};
 
 // adds option for set bonuses
 void  addSetInfo(urlSplit_t& aURL, std::string setName, int setPieces,std::string  item_id){
     if (!aURL.sim->active_player) return;
-    // set names and tiers - probably only tiers 7&8 are important here atm
-    // set names should be same as on Armory - case sensitive, and common for 10man/25man
-    set_tiers_t setTiers[]={
-        // warlock sets
-        {"Felheart Raiment",1},
-        {"Nemesis Raiment",2},
-        {"Plagueheart Raiment",3},
-        {"Voidheart Raiment",4},
-        {"Corruptor Raiment",5},
-        {"Malefic Raiment",6},
-        {"Plagueheart Garb",7},
-        {"Deathbringer Garb",8},
-        // rogue sets
-        {"Bonescythe Battlegear",7},
-        {"Terrorblade Battlegear",8},
-        // mage sets
-        {"Frostfire Garb",7},
-        {"Kirin'dor Garb",8},
-        //end of list
-        {"",0}
-    };
-    // find set tier based on name
-    int tier=7;
-    for (int i=0; setTiers[i].tier; i++)
-        if (setName==setTiers[i].setName){
-            tier=setTiers[i].tier;
-            break;
-        }
+    int tier= getSetTier(setName);
     // set tier option if any
     if (setPieces>aURL.setPieces[tier]){
         char setOption[100];
@@ -572,6 +549,7 @@ void  addSetInfo(urlSplit_t& aURL, std::string setName, int setPieces,std::strin
 }
 
 
+
 bool my_isdigit(char c){
     if (c=='+') return true;
     if (c=='-') return true;
@@ -580,22 +558,22 @@ bool my_isdigit(char c){
 
 // find value/pattern pair
 double oneTxtStat(std::string& txt, std::string fullpat, int dir){
-    size_t idx=0;
+    int idx=0;
     double value=0;
     //support multiple occurences of same pattern
-    while (idx != string::npos){
+    while (idx>=0){
         idx= txt.find(fullpat);
-        if (idx != string::npos){
-            size_t idL=idx;
-            size_t idR=idx+fullpat.length();
+        if (idx>=0){
+            int idL=idx;
+            int idR=idx+fullpat.length();
             std::string strVal="";
-            size_t dL=0;
-            size_t dR=0;
+            int dL=0;
+            int dR=0;
             if (dir>0){
-                size_t p=idR;
-                while ((p<txt.length())&&(txt[p]==' ')) p++; //skip spaces
+                int p=idR;
+                while ((p<(int)txt.length())&&(txt[p]==' ')) p++; //skip spaces
                 dL=dR=p;
-                while ((p<txt.length())&& my_isdigit(txt[p]) ) p++; //walk over number
+                while ((p<(int)txt.length())&& my_isdigit(txt[p]) ) p++; //walk over number
                 dR=p;
                 idR=dR;
             }else{
@@ -753,11 +731,13 @@ bool  parseItemStats(urlSplit_t& aURL, gear_stats_t& gs,  std::string& item_id, 
             player_parse_option(aURL.sim,wpnName,wpnValue);
         }
     }
+	// check if there is any option for this item
+	std::string item_name=getNode(src, "itemTooltip.name");
+	if (item_name!="")
+		player_parse_option(aURL.sim, proper_option_name(item_name),"1");
 
     return true;
 }
-
-
 
 
 
@@ -840,20 +820,8 @@ bool parseArmory(sim_t* sim, std::string URL, bool parseName, bool parseTalents,
             if (glyph_node!=""){
 		        glyph_name= getValue(glyph_node, "name");
                 if (glyph_name !=""){
-                    // convert descriptive glyph name to "simcraft" form
-                    // first to lower letters and _ for spaces
-                    std::string newName(glyph_name.length(),' ');
-                    newName="";
-                    for (size_t i=0; i<glyph_name.length(); i++){
-                        char c=glyph_name[i];
-                        c= tolower(c);
-                        if (c==' ') c='_';
-                        newName+=c;
-                    }
-                    // then remove first "of"
-                    if (newName.substr(0,9)=="glyph_of_")   newName.erase(6,3);
                     // call directly to set option. It should NOT return error if not found
-                    player_parse_option(sim,newName,std::string("1"));
+                    player_parse_option(sim, proper_option_name(glyph_name),"1");
                 }
             }
         }
@@ -867,16 +835,17 @@ bool parseArmory(sim_t* sim, std::string URL, bool parseName, bool parseTalents,
         std::string item_node, item_id;
         for (int i=1; i<=18; i++){
             item_node= getNodeOne(node, "item",i);
-			optionStr+= addItemGlyphOption(sim, item_node, "id", AEF_ITEM);
-			optionStr+= addItemGlyphOption(sim, item_node, "gem0Id", AEF_ITEM);
-			optionStr+= addItemGlyphOption(sim, item_node, "gem1Id", AEF_ITEM);
-			optionStr+= addItemGlyphOption(sim, item_node, "gem2Id", AEF_ITEM);
+			addItemGlyphOption(sim, item_node, "id");
+			addItemGlyphOption(sim, item_node, "gem0Id");
+			addItemGlyphOption(sim, item_node, "gem1Id");
+			addItemGlyphOption(sim, item_node, "gem2Id");
+			addItemGlyphOption(sim, item_node, "permanentenchant");
             // if we parse each item for stats , do it here
             if (parseGear&&ParseEachItem&&(item_node!=""))  {
         		std::string  item_id= getValue(item_node, "id");
         		std::string  item_slot= getValue(item_node, "slot");
                 if (parseItemStats(aURL, gs, item_id, item_slot)) nGs++;
-                if (debug){ //remove from debug, too detailed (show every item stat gains)
+                if (debug>1){ // detailed, show every item stat gains
                     printf("ITEM= %s & slot=%s\n", item_id.c_str(),item_slot.c_str());
                     displayStats(gs, &oldGS);
                     oldGS=gs;
@@ -899,20 +868,51 @@ bool parseArmory(sim_t* sim, std::string URL, bool parseName, bool parseTalents,
         option_t::parse_line( sim, buffer );
         delete buffer;
     }
-    if (debug) {char c; scanf("%c",&c);}
+    if (debug) {
+		char c; 
+		printf("<debug> Press any key ...\n"); 
+		scanf("%c",&c);
+	}
     return true;
 }
 
 
-std::string checkItemGlyphOption(aef_type t, std::string id_name){
-    armor_effect_t table[] =
-    {
-        { AEF_ITEM, "41285", "chaotic_skyflare=1" },
-        { AEF_ITEM, "41333", "ember_skyflare=1" },
-        { AEF_ITEM, "45308", "eye_of_the_broodmother=1" },
-        { AEF_ITEM, "45518", "flare_of_the_heavens=1" },
-        { AEF_ITEM, "40432", "illustration_of_the_dragon_soul=1" },
-        { AEF_NONE, NULL, NULL}
+
+struct set_tiers_t{
+  const char* setName;
+  int tier;
+};
+
+// get set tier based on name
+// probably only tiers 7&8 are important here atm
+// set names should be same as on Armory - case sensitive, and common for 10man/25man
+int  getSetTier(std::string setName){
+    set_tiers_t setTiers[]={
+        // warlock sets
+        {"Felheart Raiment",1},
+        {"Nemesis Raiment",2},
+        {"Plagueheart Raiment",3},
+        {"Voidheart Raiment",4},
+        {"Corruptor Raiment",5},
+        {"Malefic Raiment",6},
+        {"Plagueheart Garb",7},
+        {"Deathbringer Garb",8},
+        // rogue sets
+        {"Bonescythe Battlegear",7},
+        {"Terrorblade Battlegear",8},
+        // mage sets
+        {"Frostfire Garb",7},
+        {"Kirin'dor Garb",8},
+        //end of list
+        {"",0}
     };
-    return parseItemGlyphOption(table, 0, t, id_name);
+    // find set tier based on name
+    int tier=7;
+    for (int i=0; setTiers[i].tier; i++)
+        if (setName==setTiers[i].setName){
+            tier=setTiers[i].tier;
+            break;
+        }
+	return tier;	
 }
+
