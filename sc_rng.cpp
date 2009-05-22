@@ -664,11 +664,11 @@ struct roll_distribution_t : public distribution_t
     double remainder = 1.0;
     for ( int i=0; i < size-1; i++ )
     {
-      values [ i ] = -avg_expected * ( i + 1 );
+      values [ i ] = 1.0 - avg_expected * ( i + 1 );
       chances[ i ] = remainder * avg_expected;
       remainder -= chances[ i ];
     }
-    values [ size-1 ] = -avg_expected * size;
+    values [ size-1 ] = 1.0 - avg_expected * size;
     chances[ size-1 ] = remainder;
     avg_fill = avg_expected;
   }
@@ -680,7 +680,6 @@ struct roll_distribution_t : public distribution_t
     if ( --distance < 0 )
     {
       fill();
-      actual += 1.0;
       distance = next_bucket();
     }
     if ( distance == 0 )
