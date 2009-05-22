@@ -4,7 +4,7 @@
 // 1=regular debug
 // 2=more detailed debug, each item stat shown
 // 3=each URL read shown
-const int debug=0;
+const int debug=3;
 
 
 
@@ -30,8 +30,11 @@ const size_t maxCache=1000;
 const int expirationSeconds=3*60*60;
 
 
-
+#ifdef _MSC_VER
 #define USER_AGENT_FOR_XML L"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.1) Gecko/20061204 Firefox/2.0.0.1"
+#else
+#define USER_AGENT_FOR_XML "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.1) Gecko/20061204 Firefox/2.0.0.1"
+#endif
 
 #ifdef USE_CURL
 // This is the writer call back function used by curl
@@ -905,6 +908,7 @@ bool parseArmory( sim_t* sim, std::string URL, bool parseName, bool parseTalents
       node= getNodeOne( src2,"talentGroup",2 );
     }
     optionStr+= chkValue( node, "talentSpec.value", "talents=http://worldofwarcraft?encoded=" );
+    if ( debug ) printf( "Parsing talents: %s", node.c_str() ); ;
   }
 
   // submit options so far, in order to create player, because following parses may need to call player->parse
