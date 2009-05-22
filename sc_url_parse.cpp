@@ -133,7 +133,7 @@ std::string tolower(std::string src){
 
 void SaveCache(){
     if ((!urlCache)||(N_cache==0)) return;
-    FILE* file = fopen( "url_cache.txt" , "w" ); 
+    FILE* file = fopen( "url_cache.txt" , "wb" ); 
     if (file==NULL) return;
     //mark expired and count all
     int n=0;
@@ -172,7 +172,7 @@ void LoadCache(){
     if (urlCache) return;
     urlCache=new urlCache_t[maxCache+2];
     N_cache    =0;
-    FILE* file = fopen( "url_cache.txt", "r" ); 
+    FILE* file = fopen( "url_cache.txt", "rb" ); 
     if (file==NULL) return;
     cacheHeader_t hdr;
     char* buffer=new char[maxBufSz];
@@ -212,6 +212,7 @@ std::string getURLData(std::string URL){
         //check if last request was more than 2sec ago
         while ((lastReqTime<nowTime)&&(time( NULL )-lastReqTime<1));
         // HTTP request
+		printf("Loading URL: %s\n",URL.c_str());
         data= getURLsource(URL);
 		// if there was timeout/error in this fetch, and we have old data, use it
 		if (found && (data=="")) data=urlCache[found].data;
@@ -815,7 +816,7 @@ bool parseArmory(sim_t* sim, std::string URL, bool parseName, bool parseTalents,
         node= getNode(src2,"talentGroup");
         std::string active= getValue(node,"active");
         if (active!="1"){
-            node= getNodeOne(src,"talentGroup",2);
+            node= getNodeOne(src2,"talentGroup",2);
         }
         optionStr+= chkValue(node, "talentSpec.value", "talents=http://worldofwarcraft?encoded=");
     }

@@ -4425,6 +4425,10 @@ std::string warlock_t::get_default_actions(){
 		actions+="flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/spell_stone/fel_armor/summon_pet,imp";
 		actions+="/soul_fire,decimation=1/life_tap,glyph=1/immolate/conflagrate";
 		actions+="/curse_of_agony/corruption,health_percentage>=35/incinerate/life_tap";
+	}else
+	if (talents.chaos_bolt){  // 00_13_58
+		actions+="flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/fire_stone/fel_armor/summon_pet,imp";
+		actions+="/curse_of_doom,time_to_die>=90/immolate/conflagrate/chaos_bolt/incinerate/life_tap";
 	}else{ // generic
 		actions+="flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/spell_stone/fel_armor/summon_pet,imp";
 		actions+="/corruption/curse_of_agony/immolate/shadow_bolt/life_tap";
