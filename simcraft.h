@@ -351,6 +351,7 @@ struct gear_stats_t
   gear_stats_t() { memset( (void*) this, 0x00, sizeof( gear_stats_t ) ); }
 
   void   set_stat( int stat, double value );
+  void   add_stat( int stat, double value );
   double get_stat( int stat );
   
   static double stat_mod( int stat );

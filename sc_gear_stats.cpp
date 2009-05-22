@@ -52,6 +52,48 @@ void gear_stats_t::set_stat( int    stat,
   }
 }
 
+void gear_stats_t::add_stat( int    stat,
+			     double value )
+{
+  switch( stat )
+  {
+  case STAT_NONE: break;
+
+  case STAT_STRENGTH:  attribute[ ATTR_STRENGTH  ] += value; break;
+  case STAT_AGILITY:   attribute[ ATTR_AGILITY   ] += value; break;
+  case STAT_STAMINA:   attribute[ ATTR_STAMINA   ] += value; break;
+  case STAT_INTELLECT: attribute[ ATTR_INTELLECT ] += value; break;
+  case STAT_SPIRIT:    attribute[ ATTR_SPIRIT    ] += value; break;
+
+  case STAT_HEALTH: resource[ RESOURCE_HEALTH ] += value; break;
+  case STAT_MANA:   resource[ RESOURCE_MANA   ] += value; break;
+  case STAT_RAGE:   resource[ RESOURCE_RAGE   ] += value; break;
+  case STAT_ENERGY: resource[ RESOURCE_ENERGY ] += value; break;
+  case STAT_FOCUS:  resource[ RESOURCE_FOCUS  ] += value; break;
+  case STAT_RUNIC:  resource[ RESOURCE_RUNIC  ] += value; break;
+
+  case STAT_SPELL_POWER:       spell_power       += value; break;
+  case STAT_SPELL_PENETRATION: spell_penetration += value; break;
+  case STAT_MP5:               mp5               += value; break;
+
+  case STAT_ATTACK_POWER:             attack_power             += value; break;
+  case STAT_EXPERTISE_RATING:         expertise_rating         += value; break;
+  case STAT_ARMOR_PENETRATION_RATING: armor_penetration_rating += value; break;
+
+  case STAT_HIT_RATING:   hit_rating   += value; break;
+  case STAT_CRIT_RATING:  crit_rating  += value; break;
+  case STAT_HASTE_RATING: haste_rating += value; break;
+
+  case STAT_WEAPON_DPS:   weapon_dps   += value; break;
+  case STAT_WEAPON_SPEED: weapon_speed += value; break;
+
+  case STAT_ARMOR: armor += value; break;
+
+  default: assert(0);
+  }
+}
+
+
 // gear_stats_t::get_stat ===================================================
 
 double gear_stats_t::get_stat( int stat )

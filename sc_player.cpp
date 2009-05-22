@@ -736,7 +736,7 @@ void player_t::init_weapon( weapon_t*    w,
       {
         for( int j=0; j <= WEAPON_ENCHANT_MAX; j++ )
         {
-          if( j == WEAPON_ENCHANT_MAX ) invalid = true;
+          //if( j == WEAPON_ENCHANT_MAX ) invalid = true;
           if( value == util_t::weapon_enchant_type_string( j ) )
           {
             w -> enchant = j;
@@ -768,8 +768,8 @@ void player_t::init_weapon( weapon_t*    w,
 
       if( invalid )
       {
-        printf( "Invalid weapon encoding: %s\n", encoding.c_str() );
-        assert(0);
+        if( sim -> debug ) printf( "Invalid weapon encoding: %s\n", encoding.c_str() );
+        //assert(0);
       }
     }
   }

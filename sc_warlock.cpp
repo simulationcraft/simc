@@ -253,7 +253,6 @@ struct warlock_t : public player_t
   virtual void      reset();
   virtual bool      get_talent_trees( std::vector<int*>& affliction, std::vector<int*>& demonology, std::vector<int*>& destruction );
   virtual bool      parse_option ( const std::string& name, const std::string& value );
-  virtual std::string checkItemGlyphOption(aef_type t, std::string id_name);
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
   virtual int       primary_resource() { return RESOURCE_MANA; }
@@ -4781,40 +4780,6 @@ bool warlock_t::parse_option( const std::string& name,
   return player_t::parse_option( name, value );
 }
 
-std::string warlock_t::checkItemGlyphOption(aef_type t, std::string id_name){
-    armor_effect_t table[] =
-    {
-        { AEF_GLYPH, "Glyph of Chaos Bolt", "glyph_chaos_bolt=1" },
-        { AEF_GLYPH, "Glyph of Conflagrate", "glyph_conflagrate=1" },
-        { AEF_GLYPH, "Glyph of Corruption", "glyph_corruption=1" },
-        { AEF_GLYPH, "Glyph of Curse of Agony", "glyph_curse_of_agony=1" },
-        { AEF_GLYPH, "Glyph of Felguard", "glyph_felguard=1" },
-        { AEF_GLYPH, "Glyph of Felhunter", "glyph_felhunter=1" },
-        { AEF_GLYPH, "Glyph of Haunt", "glyph_haunt=1" },
-        { AEF_GLYPH, "Glyph of Immolate", "glyph_immolate=1" },
-        { AEF_GLYPH, "Glyph of Imp", "glyph_imp=1" },
-        { AEF_GLYPH, "Glyph of Incinerate", "glyph_incinerate=1" },
-        { AEF_GLYPH, "Glyph of Life Tap", "glyph_life_tap=1" },
-        { AEF_GLYPH, "Glyph of Metamorphosis", "glyph_metamorphosis=1" },
-        { AEF_GLYPH, "Glyph of Searing Pain", "glyph_searing_pain=1" },
-        { AEF_GLYPH, "Glyph of Shadow Bolt", "glyph_shadow_bolt=1" },
-        { AEF_GLYPH, "Glyph of Shadow Burn", "glyph_shadow_burn=1" },
-        { AEF_GLYPH, "Glyph of Siphon Life", "glyph_siphon_life=1" },
-        { AEF_GLYPH, "Glyph of Unstable Affliction", "glyph_unstable_affliction=1" },
-        { AEF_ITEM, "40420", "", 7 },
-        { AEF_ITEM, "40421", "", 7 },
-        { AEF_ITEM, "40422", "", 7 },
-        { AEF_ITEM, "40423", "", 7 },
-        { AEF_ITEM, "40424", "", 7 },
-        { AEF_ITEM, "46135", "", 8 },
-        { AEF_ITEM, "46136", "", 8 },
-        { AEF_ITEM, "46137", "", 8 },
-        { AEF_ITEM, "46139", "", 8 },
-        { AEF_ITEM, "46140", "", 8 },
-        { AEF_NONE, NULL, NULL}
-    };
-    return parseItemGlyphOption(table, setCounters, t, id_name);
-}
 
 
 // player_t::create_warlock ================================================

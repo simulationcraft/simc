@@ -12,6 +12,16 @@
 #include <algorithm>
 using namespace std;
 
+
+
+const bool ParseEachItem=true;
+const bool debug=false;
+
+const int maxCache=1000;
+const int expirationSeconds=3*60*60;
+
+
+
 #ifdef _MSC_VER
 #define USER_AGENT_FOR_XML L"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.1) Gecko/20061204 Firefox/2.0.0.1"
 #else
@@ -101,17 +111,25 @@ struct urlSplit_t{
     std::string realm;
     std::string player;
     int srvType;
+    sim_t* sim;
+    int setPieces[20];
 };
 
 enum url_page_t {  UPG_GEAR, UPG_TALENTS, UPG_ITEM  };
 
 
-const int maxCache=100;
-const int expirationSeconds=15*60;
-
 int N_cache=0;
 urlCache_t* urlCache=0;
 double lastReqTime=0;
+const int maxBufSz=100000;
+
+
+std::string tolower(std::string src){
+    std::string dest=src;
+    for (int i=0; i<dest.length(); i++)
+        dest[i]=tolower(dest[i]);
+    return dest;
+}
 
 void SaveCache(){
     if ((!urlCache)||(N_cache==0)) return;
@@ -122,7 +140,7 @@ void SaveCache(){
     double nowTime= time(NULL);
     for (int i=1; i<=N_cache; i++){
         bool expired = nowTime - urlCache[i].time > expirationSeconds;
-        if (expired) 
+        if (expired || (urlCache[i].data.length()>=maxBufSz) ) 
             urlCache[i].time=0;
         else
             n++;
@@ -130,19 +148,23 @@ void SaveCache(){
     //save to file
     cacheHeader_t hdr;
     hdr.n=n;
+    char* buffer= new char[maxBufSz];
     if (fwrite(&hdr,sizeof(hdr),1,file)){
         for (int i=1; i<=N_cache; i++)
         if (urlCache[i].time>0)
         {
             hdr.n=i;
-            hdr.sz1= urlCache[i].url.length();
-            hdr.sz2= urlCache[i].data.length();
+            hdr.sz1= urlCache[i].url.length()+1;
+            hdr.sz2= urlCache[i].data.length()+1;
             hdr.t= urlCache[i].time;
             if (!fwrite(&hdr,sizeof(hdr),1,file)) break;
-            fwrite(urlCache[i].url.c_str(), urlCache[i].url.length(),1,file);
-            fwrite(urlCache[i].data.c_str(), urlCache[i].data.length(),1,file);
+            strcpy(buffer,urlCache[i].url.c_str());
+            fwrite(buffer, hdr.sz1,1,file);
+            strcpy(buffer,urlCache[i].data.c_str());
+            fwrite(buffer, hdr.sz2,1,file);
         }
     }
+    delete buffer;
     fclose(file);
 }
 
@@ -153,23 +175,23 @@ void LoadCache(){
     FILE* file = fopen( "url_cache.txt", "r" ); 
     if (file==NULL) return;
     cacheHeader_t hdr;
+    char* buffer=new char[maxBufSz];
     if (fread(&hdr,sizeof(hdr),1,file)){
         int nel= hdr.n;
         for (int i=1; (i<=nel)&&!feof(file); i++){
             if (fread(&hdr,sizeof(hdr),1,file)){
                 N_cache++;
                 urlCache[N_cache].time= hdr.t;
-                char* buffer= new char[max(hdr.sz1, hdr.sz2)+10];
                 fread(buffer, hdr.sz1,1,file); // url
                 buffer[hdr.sz1]=0;
                 urlCache[N_cache].url=buffer;
                 fread(buffer, hdr.sz2,1,file); // data
                 buffer[hdr.sz2]=0;
                 urlCache[N_cache].data=buffer;
-                delete buffer;
             }
         }
     }
+    delete buffer;
     fclose(file);
 }
 
@@ -219,7 +241,7 @@ std::string getArmoryData(urlSplit_t aURL, url_page_t pgt, std::string moreParam
         case UPG_ITEM:      URL+= "/item-tooltip.xml"; break;
         default:            URL+= "/character-sheet.xml"; break;
     }
-    URL+="?r="+aURL.realm+"&cn="+aURL.player+moreParams;
+    URL+="?r="+aURL.realm+"&n="+aURL.player+moreParams;
     return getURLData(URL);
 }
 
@@ -254,6 +276,9 @@ bool splitURL(std::string URL, urlSplit_t& aURL){
     }else
         return false;
     if (string::npos == id_http) aURL.wwwAdr="http://"+aURL.wwwAdr;
+    
+    for (int i=0; i<20; i++)  aURL.setPieces[i]=0;
+
     return true;
 }
 
@@ -390,6 +415,21 @@ std::string getMaxValue(std::string& src, std::string path){
     return res;
 }
 
+//get float value from param inside node
+double getParamFloat(std::string& src, std::string path){
+    std::string res= getValue(src, path);
+    return atof(res.c_str());
+}
+
+//get float value from entire node
+double getNodeFloat(std::string& src, std::string path){
+    std::string res= getNode(src, path);
+    int idB= res.find(">"); // for <armor armorBonus="0">155</armor>
+    if ((idB>=0)&&(idB<res.length()-1)) 
+        res.erase(0,idB+1);
+    return atof(res.c_str());
+}
+
 
 std::string chkValue(std::string& src, std::string path, std::string option){
     std::string res=getValue(src, path);
@@ -452,14 +492,128 @@ std::string addItemGlyphOption(sim_t* sim, std::string&  node, std::string name,
 }
 
 
-const bool ParseEachItem=false;
+// call players parse option
+bool player_parse_option(sim_t* sim, std::string& name, std::string& value){
+    if (!sim->active_player) return false;
+    if (debug) printf("%s=%s\n",name.c_str(),value.c_str());
+    return sim->active_player->parse_option(name,value);
+}
 
+// adds option for set bonuses
+void  addSetInfo(urlSplit_t& aURL, std::string setName, int setPieces,std::string  item_id){
+    if (!aURL.sim->active_player) return;
+    // find set tier based on name and cache ... TO DO
+    // would need to use cache, and get iLvl of item_id if not in cache
+    int tier=7;
+    // set tier option if any
+    if (setPieces>aURL.setPieces[tier]){
+        char setOption[100];
+        std::string strOption, strValue;
+        strValue="1";
+        if ((setPieces>=2)&&(aURL.setPieces[tier]<2)){
+            sprintf(setOption,"tier%d_2pc",tier);
+            strOption=setOption;
+            player_parse_option(aURL.sim,strOption,strValue);
+        }
+        if ((setPieces>=4)&&(aURL.setPieces[tier]<4)){
+            sprintf(setOption,"tier%d_4pc",tier);
+            strOption=setOption;
+            player_parse_option(aURL.sim,strOption,strValue);
+        }
+        aURL.setPieces[tier]= setPieces;
+    }
+}
+
+
+// parse text and search for stats to add
+void addTextStats(gear_stats_t& gs, std::string txt){
+    if (txt=="") return;
+}
+
+
+// parse stats from one item and adds it to total stats in "gs"
+// also should parse weapon stats  
+bool  parseItemStats(urlSplit_t& aURL, gear_stats_t& gs,  std::string& item_id, std::string& item_slot){
+    if (item_id=="") return false;
+    std::string src= getArmoryData(aURL,UPG_ITEM, "&i="+item_id+"&s="+item_slot );
+    if (src=="")  return false;
+    // add fixed stats
+    gs.add_stat(STAT_STRENGTH,                  getNodeFloat(src, "bonusStrength")); 
+    gs.add_stat(STAT_AGILITY,                   getNodeFloat(src, "bonusAgility")); 
+    gs.add_stat(STAT_STAMINA,                   getNodeFloat(src, "bonusStamina")); 
+    gs.add_stat(STAT_INTELLECT,                 getNodeFloat(src, "bonusIntellect")); 
+    gs.add_stat(STAT_SPIRIT,                    getNodeFloat(src, "bonusSpirit"));
+    gs.add_stat(STAT_SPELL_POWER,               getNodeFloat(src, "bonusSpellPower"));
+    gs.add_stat(STAT_MP5,                       getNodeFloat(src, "bonusManaRegen"));
+    gs.add_stat(STAT_ATTACK_POWER,              getNodeFloat(src, "bonusAttackPower"));
+    gs.add_stat(STAT_EXPERTISE_RATING,          getNodeFloat(src, "bonusExpertiseRating"));
+    gs.add_stat(STAT_ARMOR_PENETRATION_RATING,  getNodeFloat(src, "bonusArmorPenetration"));
+    gs.add_stat(STAT_HASTE_RATING,              getNodeFloat(src, "bonusHasteRating"));
+    gs.add_stat(STAT_HIT_RATING,                getNodeFloat(src, "bonusHitRating"));
+    gs.add_stat(STAT_CRIT_RATING,               getNodeFloat(src, "bonusCritRating"));
+    gs.add_stat(STAT_ARMOR,                     getNodeFloat(src, "armor"));
+    // add textual - descriptive - stats
+    addTextStats(gs, getNode(src, "enchant") );
+    addTextStats(gs, getNode(src, "spellData.desc") );
+    // parse gems and sockets
+    std::string node= getNode(src, "socketData");
+    bool allMatch=true;
+    for (int i=1; i<=5; i++){
+        std::string gem= getNodeOne(node, "socket" ,i);
+        if (gem!=""){
+            addTextStats(gs, getValue(gem, "enchant") );
+            if (getValue(gem, "match")!="1") allMatch=false;
+        }
+    }
+    // add socket bonus if all match
+    if (allMatch){
+        addTextStats(gs, getNode(node, "socketMatchEnchant") );
+    }
+    // parse set bonus
+    node= getNode(src, "setData");
+    std::string setName= getNode(node, "name");
+    if (setName!=""){
+        int setPieces=0;
+        for (int i=1; i<=6; i++){
+            std::string sItem= getNodeOne(node, "item" ,i);
+            if (getValue(sItem, "equipped")=="1") setPieces++;
+        }
+        // add info to set list
+        addSetInfo(aURL, setName, setPieces, item_id);
+    }
+    // parse weapon stats if its weapon
+    // main_hand=fist,dps=171,speed=2.6,enchant=berserking
+    std::string wpnName="";
+    if (item_slot=="15") wpnName="main_hand"; else
+    if (item_slot=="16") wpnName="off_hand"; else
+    if (item_slot=="17") wpnName="ranged";
+    if (wpnName!=""){
+        std::string wpnValue= tolower(getNode(src, "equipData.subclassName"));
+        if (wpnValue!=""){
+            wpnValue+= ",dps="+getNode(src, "damageData.dps");
+            wpnValue+= ",speed="+getNode(src, "damageData.speed");
+            wpnValue+= ",enchant="+getNode(src, "enchant");
+            player_parse_option(aURL.sim,wpnName,wpnValue);
+        }
+    }
+
+    return true;
+}
+
+
+
+
+
+
+// main procedure that parse armory info from giuven player URL (URL must have realm/player inside)
+// it set options either by building option string and calling parse_line(), or by directly calling
+// player->parse_option()
 bool parseArmory(sim_t* sim, std::string URL, bool parseName, bool parseTalents, bool parseGear){
     std::string optionStr="";
-    bool debug=false;
     // split URL
     urlSplit_t aURL;
     if (!splitURL(URL,aURL)) return false;
+    aURL.sim=sim;
     // retrieve armory gear data (XML) for this player
     std::string src= getArmoryData(aURL,UPG_GEAR );
     if (src=="") return false;
@@ -474,6 +628,7 @@ bool parseArmory(sim_t* sim, std::string URL, bool parseName, bool parseTalents,
         optionStr+= chkValue(src,"character.level","level=");
     }
 
+    //gear stats from summary tabs
     if (parseGear&&!ParseEachItem){
         optionStr+= chkValue(src,"baseStats.strength.effective","gear_strength=");
         optionStr+= chkValue(src,"baseStats.agility.effective","gear_agility=");
@@ -491,10 +646,9 @@ bool parseArmory(sim_t* sim, std::string URL, bool parseName, bool parseTalents,
         optionStr+= chkMaxValue(src,"spell.hitRating.value,melee.hitRating.value,ranged.hitRating.value","gear_hit_rating="); 
         optionStr+= chkMaxValue(src,"spell.critChance.rating,melee.critChance.rating,ranged.critChance.rating","gear_crit_rating="); 
 
-        optionStr+= chkValue(src,"characterBars.health.effective","gear_health=");
-        node= getValue(src, "characterBars.secondBar.type");
-        if (node=="m")
-            optionStr+= chkValue(src,"characterBars.secondBar.effective","gear_mana=");
+        //optionStr+= chkValue(src,"characterBars.health.effective","gear_health=");
+        //node= getValue(src, "characterBars.secondBar.type");
+        //if (node=="m")  optionStr+= chkValue(src,"characterBars.secondBar.effective","gear_mana=");
     }
 
 
@@ -542,8 +696,7 @@ bool parseArmory(sim_t* sim, std::string URL, bool parseName, bool parseTalents,
                     // then remove first "of"
                     if (newName.substr(0,9)=="glyph_of_")   newName.erase(6,3);
                     // call directly to set option. It should NOT return error if not found
-                    bool ok=sim->active_player->parse_option(newName,"1");
-                    if (debug) printf("%s=%d\n",newName.c_str(),ok);
+                    bool ok=player_parse_option(sim,newName,std::string("1"));
                 }
             }
         }
@@ -551,7 +704,9 @@ bool parseArmory(sim_t* sim, std::string URL, bool parseName, bool parseTalents,
     
     // parse items for effects, procs etc
     node = getNode(src, "characterTab.items");
-    if (node!=""){
+    if ((node!="")&&(sim->active_player)){
+        gear_stats_t gs;
+        int nGs=0;
         std::string item_node, item_id;
         for (int i=1; i<=18; i++){
             item_node= getNodeOne(node, "item",i);
@@ -559,7 +714,15 @@ bool parseArmory(sim_t* sim, std::string URL, bool parseName, bool parseTalents,
 			optionStr+= addItemGlyphOption(sim, item_node, "gem0Id", AEF_ITEM);
 			optionStr+= addItemGlyphOption(sim, item_node, "gem1Id", AEF_ITEM);
 			optionStr+= addItemGlyphOption(sim, item_node, "gem2Id", AEF_ITEM);
+            // if we parse each item for stats , do it here
+            if (parseGear&&ParseEachItem&&(item_node!=""))  {
+        		std::string  item_id= getValue(item_node, "id");
+        		std::string  item_slot= getValue(item_node, "slot");
+                if (parseItemStats(aURL, gs, item_id, item_slot)) nGs++;
+            }
         }
+        //copy gear stats if needed
+        if ((nGs>0)&&parseGear&&ParseEachItem) sim->active_player->gear_stats = gs; 
     }
 
     // save url caches
