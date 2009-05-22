@@ -96,6 +96,16 @@ struct urlCache_t{
     std::string data;
 };
 
+struct urlSplit_t{
+    std::string wwwAdr;
+    std::string realm;
+    std::string player;
+    int srvType;
+};
+
+enum url_page_t {  UPG_GEAR, UPG_TALENTS, UPG_ITEM  };
+
+
 const int maxCache=100;
 const int expirationSeconds=15*60;
 
@@ -166,7 +176,7 @@ void LoadCache(){
 
 
 //wrapper for getURLsource, support for throttling and cache
-std::string getArmoryData(std::string URL){
+std::string getURLData(std::string URL){
     std::string data="";
     //check cache
     LoadCache();
@@ -200,6 +210,52 @@ std::string getArmoryData(std::string URL){
     }
 }
 
+//wrapper supporting differnt armory pages
+std::string getArmoryData(urlSplit_t aURL, url_page_t pgt, std::string moreParams=""){
+    std::string URL=aURL.wwwAdr;
+    switch (pgt){
+        case UPG_GEAR:      URL+= "/character-sheet.xml"; break;
+        case UPG_TALENTS:   URL+= "/character-talents.xml"; break;
+        case UPG_ITEM:      URL+= "/item-tooltip.xml"; break;
+        default:            URL+= "/character-sheet.xml"; break;
+    }
+    URL+="?r="+aURL.realm+"&cn="+aURL.player+moreParams;
+    return getURLData(URL);
+}
+
+//split URL to server, realm, player
+bool splitURL(std::string URL, urlSplit_t& aURL){
+    int iofs=0;
+    size_t id_http= URL.find("http://",iofs);
+    if (id_http != string::npos) iofs=7;
+    size_t id_folder= URL.find("/", iofs);
+    if (id_folder != string::npos) iofs=id_folder+1;
+    size_t id_srv= URL.find("?r=",iofs);
+    if (id_srv != string::npos) iofs=id_srv+1;
+    size_t id_name= URL.find("&cn=",iofs);
+    int id_name_sz=4;
+    if (string::npos == id_name){
+        id_name= URL.find("&n=",iofs);
+        id_name_sz=3;
+    }
+    aURL.wwwAdr="";
+    aURL.realm="";
+    aURL.player="";
+    aURL.srvType=1;
+    if (id_name != string::npos){
+        //extract url, realm and player names
+        aURL.wwwAdr=URL.substr(0,id_folder);
+        aURL.realm=URL.substr(id_srv+3,id_name-id_srv-3);
+        size_t id_amp=URL.find("&",id_name+1);
+        if (id_amp != string::npos)
+            aURL.player=URL.substr(id_name+id_name_sz,id_amp-id_name-id_name_sz);
+        else
+            aURL.player=URL.substr(id_name+id_name_sz,URL.length()-id_name-id_name_sz);
+    }else
+        return false;
+    if (string::npos == id_http) aURL.wwwAdr="http://"+aURL.wwwAdr;
+    return true;
+}
 
 
 
@@ -396,42 +452,16 @@ std::string addItemGlyphOption(sim_t* sim, std::string&  node, std::string name,
 }
 
 
+const bool ParseEachItem=false;
 
 bool parseArmory(sim_t* sim, std::string URL, bool parseName, bool parseTalents, bool parseGear){
     std::string optionStr="";
     bool debug=false;
     // split URL
-    int iofs=0;
-    size_t id_http= URL.find("http://",iofs);
-    if (id_http != string::npos) iofs=7;
-    size_t id_folder= URL.find("/", iofs);
-    if (id_folder != string::npos) iofs=id_folder+1;
-    size_t id_srv= URL.find("?r=",iofs);
-    if (id_srv != string::npos) iofs=id_srv+1;
-    size_t id_name= URL.find("&cn=",iofs);
-    int id_name_sz=4;
-    if (string::npos == id_name){
-        id_name= URL.find("&n=",iofs);
-        id_name_sz=3;
-    }
-    std::string wwwAdr="";
-    std::string realm="";
-    std::string player="";
-    if (id_name != string::npos){
-        //extract url, realm and player names
-        wwwAdr=URL.substr(0,id_folder);
-        realm=URL.substr(id_srv+3,id_name-id_srv-3);
-        size_t id_amp=URL.find("&",id_name+1);
-        if (id_amp != string::npos)
-            player=URL.substr(id_name+id_name_sz,id_amp-id_name-id_name_sz);
-        else
-        player=URL.substr(id_name+id_name_sz,URL.length()-id_name-id_name_sz);
-    }else
-        return false;
-    if (string::npos == id_http) wwwAdr="http://"+wwwAdr;
+    urlSplit_t aURL;
+    if (!splitURL(URL,aURL)) return false;
     // retrieve armory gear data (XML) for this player
-    URL= wwwAdr+"/character-sheet.xml?r="+realm+"&cn="+player;
-    std::string src= getArmoryData(URL);
+    std::string src= getArmoryData(aURL,UPG_GEAR );
     if (src=="") return false;
 
     // parse that XML and search for available data
@@ -444,7 +474,7 @@ bool parseArmory(sim_t* sim, std::string URL, bool parseName, bool parseTalents,
         optionStr+= chkValue(src,"character.level","level=");
     }
 
-    if (parseGear){
+    if (parseGear&&!ParseEachItem){
         optionStr+= chkValue(src,"baseStats.strength.effective","gear_strength=");
         optionStr+= chkValue(src,"baseStats.agility.effective","gear_agility=");
         optionStr+= chkValue(src,"baseStats.stamina.effective","gear_stamina=");
@@ -456,7 +486,7 @@ bool parseArmory(sim_t* sim, std::string URL, bool parseName, bool parseTalents,
         optionStr+= chkMaxValue(src,"spell.bonusHealing.value","gear_spell_power="); //maybe max(all spells)
         optionStr+= chkMaxValue(src,"melee.power.effective,ranged.power.effective","gear_attack_power="); 
         optionStr+= chkMaxValue(src,"melee.expertise.rating","gear_expertise_rating="); 
-        optionStr+= chkMaxValue(src,"pell.hitRating.penetration,melee.hitRating.penetration,ranged.hitRating.penetration","gear_armor_penetration_rating="); 
+        optionStr+= chkMaxValue(src,"spell.hitRating.penetration,melee.hitRating.penetration,ranged.hitRating.penetration","gear_armor_penetration_rating="); 
         optionStr+= chkMaxValue(src,"spell.hasteRating.hasteRating,melee.mainHandSpeed.hasteRating,ranged.speed.hasteRating","gear_haste_rating="); 
         optionStr+= chkMaxValue(src,"spell.hitRating.value,melee.hitRating.value,ranged.hitRating.value","gear_hit_rating="); 
         optionStr+= chkMaxValue(src,"spell.critChance.rating,melee.critChance.rating,ranged.critChance.rating","gear_crit_rating="); 
@@ -467,7 +497,20 @@ bool parseArmory(sim_t* sim, std::string URL, bool parseName, bool parseTalents,
             optionStr+= chkValue(src,"characterBars.secondBar.effective","gear_mana=");
     }
 
-    // parse options so far, in order to create player, because following parses may need to call player->parse
+
+    // retrieve armory talents data (XML) for this player
+    if (parseTalents){
+        std::string src2= getArmoryData(aURL, UPG_TALENTS);
+        src2= getNode(src2, "talentGroups");
+        node= getNode(src2,"talentGroup");
+        std::string active= getValue(node,"active");
+        if (active!="1"){
+            node= getNodeOne(src,"talentGroup",2);
+        }
+        optionStr+= chkValue(node, "talentSpec.value", "talents=http://worldofwarcraft?encoded=");
+    }
+
+    // submit options so far, in order to create player, because following parses may need to call player->parse
     if (optionStr!=""){
         if (debug) printf("%s", optionStr.c_str()); ;
         char* buffer= new char[optionStr.length()+20];
@@ -479,11 +522,30 @@ bool parseArmory(sim_t* sim, std::string URL, bool parseName, bool parseTalents,
 
     // parse for glyphs
     node = getNode(src, "characterTab.glyphs");
-    if (node!=""){
+    if ((node!="")&&(sim->active_player)){
         std::string glyph_node, glyph_name;
         for (int i=1; i<=3; i++){
             glyph_node= getNodeOne(node, "glyph",i);
-			optionStr+= addItemGlyphOption(sim, glyph_node, "name", AEF_GLYPH);
+            if (glyph_node!=""){
+		        glyph_name= getValue(glyph_node, "name");
+                if (glyph_name !=""){
+                    // convert descriptive glyph name to "simcraft" form
+                    // first to lower letters and _ for spaces
+                    std::string newName(glyph_name.length(),' ');
+                    newName="";
+                    for (int i=0; i<glyph_name.length(); i++){
+                        char c=glyph_name[i];
+                        c= tolower(c);
+                        if (c==' ') c='_';
+                        newName+=c;
+                    }
+                    // then remove first "of"
+                    if (newName.substr(0,9)=="glyph_of_")   newName.erase(6,3);
+                    // call directly to set option. It should NOT return error if not found
+                    bool ok=sim->active_player->parse_option(newName,"1");
+                    if (debug) printf("%s=%d\n",newName.c_str(),ok);
+                }
+            }
         }
     }
     
@@ -500,26 +562,10 @@ bool parseArmory(sim_t* sim, std::string URL, bool parseName, bool parseTalents,
         }
     }
 
-
-
-    // retrieve armory talents data (XML) for this player
-    URL= wwwAdr+"/character-talents.xml?r="+realm+"&cn="+player;
-    if (parseTalents){
-        src= getArmoryData(URL);
-        src= getNode(src, "talentGroups");
-        node= getNode(src,"talentGroup");
-        std::string active= getValue(node,"active");
-        if (active!="1"){
-            node= getNodeOne(src,"talentGroup",2);
-        }
-        optionStr+= chkValue(node, "talentSpec.value", "talents=http://worldofwarcraft?encoded=");
-
-    }
-    
     // save url caches
     SaveCache();
 
-    // now parse remaining options
+    // now parse remaining options, if any
     if (optionStr!=""){
         if (debug) printf("%s", optionStr.c_str()); ;
         char* buffer= new char[optionStr.length()+20];
