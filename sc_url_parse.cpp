@@ -353,17 +353,17 @@ std::string getNodeOne( std::string& src, std::string name, int occurence=1 )
   std::string nstart="<"+name;
   //fint n-th occurence of node
   int offset=0;
-  int idx=-1;
+  size_t idx;
   do
   {
     std::string allowedNext=" >/";
     idx=src.find( nstart,offset );
     bool found=false;
-    while ( ( idx>=0 )&&( !found ) )
+    while ( ( idx != string::npos )&&( !found ) )
     {
       char n=src[idx+nstart.length()];
-      int i2=allowedNext.find( n );
-      if ( i2>=0 )
+      size_t i2=allowedNext.find( n );
+      if ( i2 != string::npos )
         found=true;
       else
         idx=src.find( nstart,idx+1 );
@@ -371,9 +371,9 @@ std::string getNodeOne( std::string& src, std::string name, int occurence=1 )
     occurence--;
     offset=idx+1;
   }
-  while ( ( idx>=0 )&&( occurence>0 ) );
+  while ( ( idx != string::npos )&&( occurence>0 ) );
   // if node start found, find end
-  if ( ( idx>=0 )&&( occurence==0 ) )
+  if ( ( idx != string::npos )&&( occurence==0 ) )
   {
     int np=nstart.length();
     std::string nextChar=src.substr( idx+np,1 );
@@ -383,9 +383,9 @@ std::string getNodeOne( std::string& src, std::string name, int occurence=1 )
       singleLine=false;
     else
     {
-      int idLn= src.find( "\n",idx+1 );
-      int idEnd=src.find( "/>",idx+1 );
-      if ( ( idEnd<0 )||( idEnd>idLn ) ) singleLine=false;
+      size_t idLn= src.find( "\n",idx+1 );
+      size_t idEnd=src.find( "/>",idx+1 );
+      if ( ( idEnd == string::npos )||( idEnd != string::npos && idEnd>idLn ) ) singleLine=false;
     }
     if ( singleLine )
       nstart="/>"; // for single line nodes, it ends with />  ..and presume NO inline nodes
@@ -393,7 +393,7 @@ std::string getNodeOne( std::string& src, std::string name, int occurence=1 )
       nstart="</"+name+">"; // if this is multiline node, it ends with </name>
     idxEnd=src.find( nstart,idx+1 );
     int i1=idx+name.length()+2;
-    if ( idxEnd>i1 )
+    if ( idxEnd != string::npos && idxEnd>i1 )
     {
       std::string res= src.substr( i1,idxEnd-i1 );
       return res;
@@ -410,10 +410,10 @@ std::string getNode( std::string& src, std::string nodeList )
 {
   std::string res=src;
   std::string node2;
-  int last_find=0;
-  int idx= nodeList.find( ".",last_find );
+  size_t last_find=0;
+  size_t idx= nodeList.find( ".",last_find );
   //get all nodes before last
-  while ( idx>last_find )
+  while ( idx != string::npos && idx>last_find )
   {
     node2= nodeList.substr( last_find,idx-last_find );
     res=getNodeOne( res, node2 );
@@ -434,12 +434,12 @@ std::string getValueOne( std::string& node, std::string name )
   std::string res="";
   std::string src=" "+node;
   std::string nstart=" "+name+"=\"";
-  int	idx=src.find( nstart );
-  if ( idx>=0 )
+  size_t idx=src.find( nstart );
+  if ( idx != string::npos )
   {
-    int i1=idx+nstart.length();
-    int idxEnd=src.find( "\"",i1 );
-    if ( idxEnd>i1 )
+    size_t i1=idx+nstart.length();
+    size_t idxEnd=src.find( "\"",i1 );
+    if ( idxEnd != string::npos && idxEnd>i1 )
     {
       res= src.substr( i1,idxEnd-i1 );
     }
@@ -453,8 +453,8 @@ std::string getValueOne( std::string& node, std::string name )
 std::string getValue( std::string& src, std::string path )
 {
   //find parameter name (last)
-  int idx=path.rfind( "." );
-  if ( idx>0 )
+  size_t idx=path.rfind( "." );
+  if ( idx != string::npos && idx>0 )
   {
     // get param name
     std::string paramName= path.substr( idx+1,path.length()-idx );
@@ -505,8 +505,8 @@ double getParamFloat( std::string& src, std::string path )
 double getNodeFloat( std::string& src, std::string path )
 {
   std::string res= getNode( src, path );
-  int idB= res.find( ">" ); // for <armor armorBonus="0">155</armor>
-  if ( ( idB>=0 )&&( idB<( int )( res.length()-1 ) ) )
+  size_t idB= res.find( ">" ); // for <armor armorBonus="0">155</armor>
+  if ( ( idB != string::npos )&&( idB<( res.length()-1 ) ) )
     res.erase( 0,idB+1 );
   return atof( res.c_str() );
 }
@@ -618,34 +618,34 @@ bool my_isdigit( char c )
 // find value/pattern pair
 double oneTxtStat( std::string& txt, std::string fullpat, int dir )
 {
-  int idx=0;
+  size_t idx=0;
   double value=0;
   //support multiple occurences of same pattern
-  while ( idx>=0 )
+  while ( idx != string::npos )
   {
     idx= txt.find( fullpat );
-    if ( idx>=0 )
+    if ( idx != string::npos )
     {
-      int idL=idx;
-      int idR=idx+fullpat.length();
+      size_t idL=idx;
+      size_t idR=idx+fullpat.length();
       std::string strVal="";
-      int dL=0;
-      int dR=0;
+      size_t dL=0;
+      size_t dR=0;
       if ( dir>0 )
       {
-        int p=idR;
-        while ( ( p<( int )txt.length() )&&( txt[p]==' ' ) ) p++; //skip spaces
+        size_t p=idR;
+        while ( ( p<txt.length() )&&( txt[p]==' ' ) ) p++; //skip spaces
         dL=dR=p;
-        while ( ( p<( int )txt.length() )&& my_isdigit( txt[p] ) ) p++; //walk over number
+        while ( ( p<txt.length() )&& my_isdigit( txt[p] ) ) p++; //walk over number
         dR=p;
         idR=dR;
       }
       else
       {
-        int p=idL-1;
-        while ( ( p>=0 )&&( txt[p]==' ' ) ) p--; //skip spaces
+        size_t p=idL-1;
+        while ( ( p != string::npos )&&( txt[p]==' ' ) ) p--; //skip spaces
         dR=dL=p+1;
-        while ( ( p>=0 )&& my_isdigit( txt[p] ) ) p--; //walk over number
+        while ( ( p != string::npos )&& my_isdigit( txt[p] ) ) p--; //walk over number
         dL=p+1;
         idL=dL;
       }
