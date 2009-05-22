@@ -273,10 +273,10 @@ enum rng_type
   RNG_STANDARD,          // Creates RNG using srand() and rand()
   RNG_MERSENNE_TWISTER,  // Creates RNG using SIMD oriented Fast Mersenne Twister
   RNG_PHASE_SHIFT,       // Simplistic cycle-based RNG, unsuitable for overlapping procs
-  RNG_DISTANCE_SIMPLE,   // Simple normalized proc-separation RNG
-  RNG_DISTANCE_VARIABLE, // Complex normalized proc-separation RNG
-  RNG_DISTANCE_REDUCED,  // Complex normalized proc-separation RNG, provides faster convergence
-  RNG_PRE_FILL           // Deterministic number of procs with random distribution
+  RNG_DISTANCE_SIMPLE,   // Simple normalized proc-separation RNG, suitable for fixed proc chance
+  RNG_DISTANCE_BANDS,    // Complex normalized proc-separation RNG, suitable for varying proc chance
+  RNG_PRE_FILL,          // Deterministic number of procs with random distribution
+  RNG_MAX
 };
 
 enum aef_type {  AEF_NONE, AEF_GLYPH, AEF_ITEM };
@@ -1793,10 +1793,10 @@ struct util_t
 };
 
 struct armor_effect_t{
-    aef_type t;
-    char* id_name;
-    char* option;
-    int set;
+  aef_type t;
+  const char* id_name;
+  const char* option;
+  int set;
 };
 
 std::string parseItemGlyphOption(armor_effect_t* table, int* setCounters, aef_type t, std::string id_name);

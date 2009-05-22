@@ -126,7 +126,7 @@ const int maxBufSz=100000;
 
 std::string tolower(std::string src){
     std::string dest=src;
-    for (int i=0; i<dest.length(); i++)
+    for (unsigned i=0; i<dest.length(); i++)
         dest[i]=tolower(dest[i]);
     return dest;
 }
@@ -140,7 +140,7 @@ void SaveCache(){
     double nowTime= time(NULL);
     for (int i=1; i<=N_cache; i++){
         bool expired = nowTime - urlCache[i].time > expirationSeconds;
-        if (expired || (urlCache[i].data.length()>=maxBufSz) ) 
+        if (expired || (urlCache[i].data.length()>=(unsigned)maxBufSz) ) 
             urlCache[i].time=0;
         else
             n++;
@@ -427,7 +427,7 @@ double getParamFloat(std::string& src, std::string path){
 double getNodeFloat(std::string& src, std::string path){
     std::string res= getNode(src, path);
     int idB= res.find(">"); // for <armor armorBonus="0">155</armor>
-    if ((idB>=0)&&(idB<res.length()-1)) 
+    if ((idB>=0)&&(idB<(int)(res.length()-1))) 
         res.erase(0,idB+1);
     return atof(res.c_str());
 }
@@ -495,7 +495,7 @@ std::string addItemGlyphOption(sim_t* sim, std::string&  node, std::string name,
 
 
 // call players parse option
-bool player_parse_option(sim_t* sim, std::string& name, std::string& value){
+bool player_parse_option(sim_t* sim, std::string& name, const std::string& value){
     if (!sim->active_player) return false;
     if (debug) printf("%s=%s\n",name.c_str(),value.c_str());
     return sim->active_player->parse_option(name,value);
@@ -516,8 +516,8 @@ void displayStats(gear_stats_t& gs, gear_stats_t* gsDiff=0){
 
 
 struct set_tiers_t{
-    char* setName;
-    int tier;
+  const char* setName;
+  int tier;
 };
 
 // adds option for set bonuses
@@ -592,9 +592,9 @@ double oneTxtStat(std::string& txt, std::string fullpat, int dir){
             int dR=0;
             if (dir>0){
                 int p=idR;
-                while ((p<txt.length())&&(txt[p]==' ')) p++; //skip spaces
+                while ((p<(int)txt.length())&&(txt[p]==' ')) p++; //skip spaces
                 dL=dR=p;
-                while ((p<txt.length())&& my_isdigit(txt[p]) ) p++; //walk over number
+                while ((p<(int)txt.length())&& my_isdigit(txt[p]) ) p++; //walk over number
                 dR=p;
                 idR=dR;
             }else{
@@ -843,7 +843,7 @@ bool parseArmory(sim_t* sim, std::string URL, bool parseName, bool parseTalents,
                     // first to lower letters and _ for spaces
                     std::string newName(glyph_name.length(),' ');
                     newName="";
-                    for (int i=0; i<glyph_name.length(); i++){
+                    for (unsigned i=0; i<glyph_name.length(); i++){
                         char c=glyph_name[i];
                         c= tolower(c);
                         if (c==' ') c='_';
@@ -852,7 +852,7 @@ bool parseArmory(sim_t* sim, std::string URL, bool parseName, bool parseTalents,
                     // then remove first "of"
                     if (newName.substr(0,9)=="glyph_of_")   newName.erase(6,3);
                     // call directly to set option. It should NOT return error if not found
-                    bool ok=player_parse_option(sim,newName,std::string("1"));
+                    player_parse_option(sim,newName,"1");
                 }
             }
         }

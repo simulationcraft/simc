@@ -2202,7 +2202,7 @@ rng_t* player_t::get_rng( const std::string& n, int type )
 
   if( type == RNG_DEFAULT     ) type = RNG_PHASE_SHIFT;   
   if( type == RNG_CYCLIC      ) type = RNG_PHASE_SHIFT; 
-  if( type == RNG_DISTRIBUTED ) type = RNG_PRE_FILL; 
+  if( type == RNG_DISTRIBUTED ) type = RNG_DISTANCE_BANDS; 
 
   rng_t* rng=0;
 

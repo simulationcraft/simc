@@ -973,6 +973,7 @@ static void trigger_hot_streak( spell_t* s )
 
     if( sim -> normalized_rng && s -> result_is_hit() ) 
     {
+      // Decouple Hot Streak proc from actual crit to reduce wild swings during normalization.
       result = sim -> rng -> roll( s -> total_crit() ) ? RESULT_CRIT : RESULT_HIT;
     }
     if( result == RESULT_CRIT && p -> rng_hot_streak -> roll( p -> talents.hot_streak * (1/3.0) ) )
