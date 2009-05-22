@@ -31,11 +31,7 @@ const int expirationSeconds=3*60*60;
 
 
 
-#ifdef _MSC_VER
 #define USER_AGENT_FOR_XML L"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.1) Gecko/20061204 Firefox/2.0.0.1"
-#else
-#define USER_AGENT_FOR_XML "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.1) Gecko/20061204 Firefox/2.0.0.1"
-#endif
 
 #ifdef USE_CURL
 // This is the writer call back function used by curl
@@ -667,6 +663,29 @@ double oneTxtStat( std::string& txt, std::string fullpat, int dir )
   return value;
 }
 
+// Try to find txt pattern and value pair.  This looks for "+X to All Stats" and adds all the stats
+// If found, it will remove the pattern/value from txt
+const bool chkAllStatsBonus( gear_stats_t& gs, std::string& txt, const std::string& pattern)
+{
+  bool ok=false;
+  
+  std::string pat;
+  double val;
+  
+  pat = " "+pattern;
+  val = oneTxtStat( txt, pat, -1 );
+  if( val )
+  {
+    gs.add_stat( STAT_STRENGTH, val );
+    gs.add_stat( STAT_AGILITY, val );
+    gs.add_stat( STAT_STAMINA, val );
+    gs.add_stat( STAT_INTELLECT, val );
+    gs.add_stat( STAT_SPIRIT, val );
+    ok = true;
+  }
+  return false;
+}
+
 //try to find txt pattern and value pair. Patterns are expected in lower cases
 // it will try first: "pattern by XX", then "+XX pattern"
 // if found, it will remove pattern/value from txt
@@ -711,6 +730,7 @@ void addTextStats( gear_stats_t& gs, std::string txt )
   txt= " "+tolower( txt )+" ";
 
   //chkOneTxtStat(gs,txt, STAT_SPELL_POWER,               "shadow spell damage"); //problem: item may have shdw+frost+fire...
+  chkAllStatsBonus( gs, txt,                             "all stats" );
   chkOneTxtStat( gs,txt, STAT_SPELL_POWER,               "spell power" );
   chkOneTxtStat( gs,txt, STAT_MP5,                       "mana regen" );
   chkOneTxtStat( gs,txt, STAT_MP5,                       "mana every" );
