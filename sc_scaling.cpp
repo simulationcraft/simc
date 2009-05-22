@@ -142,9 +142,9 @@ void scaling_t::analyze_lag()
   fflush( stdout );
 
   sim_t* child_sim = new sim_t( sim );
-  child_sim ->   queue_lag += 0.100;
-  child_sim ->     gcd_lag += 0.100;
-  child_sim -> channel_lag += 0.100;
+  child_sim ->   queue_lag *= 1.100;
+  child_sim ->     gcd_lag *= 1.100;
+  child_sim -> channel_lag *= 1.100;
   child_sim -> normalized_rng     += sim -> normalized_sf;
   child_sim -> deterministic_roll += sim -> normalized_sf;
   child_sim -> average_range      += sim -> normalized_sf;
@@ -166,7 +166,8 @@ void scaling_t::analyze_lag()
     player_t*   ref_p =   ref_sim -> find_player( p -> name() );
     player_t* child_p = child_sim -> find_player( p -> name() );
 
-    double f = ( ref_p -> dps - child_p -> dps ) / 100;
+    // Calculate DPS difference per millisecond of lag
+    double f = ( ref_p -> dps - child_p -> dps ) / ( ( child_sim -> queue_lag - sim -> queue_lag ) * 1000 );
 
     if( f >= scale_factor_noise ) p -> scaling_lag = f;
   }
