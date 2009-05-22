@@ -17,7 +17,7 @@ using namespace std;
 const bool ParseEachItem=true;
 const bool debug=false;
 
-const int maxCache=1000;
+const size_t maxCache=1000;
 const int expirationSeconds=3*60*60;
 
 
@@ -118,15 +118,15 @@ struct urlSplit_t{
 enum url_page_t {  UPG_GEAR, UPG_TALENTS, UPG_ITEM  };
 
 
-int N_cache=0;
+size_t N_cache=0;
 urlCache_t* urlCache=0;
 double lastReqTime=0;
-const int maxBufSz=100000;
+const size_t maxBufSz=100000;
 
 
 std::string tolower(std::string src){
     std::string dest=src;
-    for (unsigned i=0; i<dest.length(); i++)
+    for (size_t i=0; i<dest.length(); i++)
         dest[i]=tolower(dest[i]);
     return dest;
 }
@@ -138,9 +138,9 @@ void SaveCache(){
     //mark expired and count all
     int n=0;
     double nowTime= time(NULL);
-    for (int i=1; i<=N_cache; i++){
+    for (size_t i=1; i<=N_cache; i++){
         bool expired = nowTime - urlCache[i].time > expirationSeconds;
-        if (expired || (urlCache[i].data.length()>=(unsigned)maxBufSz) ) 
+        if (expired || (urlCache[i].data.length()>=maxBufSz) ) 
             urlCache[i].time=0;
         else
             n++;
@@ -150,7 +150,7 @@ void SaveCache(){
     hdr.n=n;
     char* buffer= new char[maxBufSz];
     if (fwrite(&hdr,sizeof(hdr),1,file)){
-        for (int i=1; i<=N_cache; i++)
+        for (size_t i=1; i<=N_cache; i++)
         if (urlCache[i].time>0)
         {
             hdr.n=i;
@@ -203,7 +203,7 @@ std::string getURLData(std::string URL){
     //check cache
     LoadCache();
     int found=0;
-    for (int i=1; (i<=N_cache) && (!found); i++)
+    for (size_t i=1; (i<=N_cache) && (!found); i++)
         if (urlCache[i].url==URL)  
             found=i;
     double nowTime= time( NULL );
@@ -294,35 +294,35 @@ std::string getNodeOne(std::string& src, std::string name, int occurence=1){
 	std::string nstart="<"+name;
 	//fint n-th occurence of node
 	int offset=0;
-	int idx=-1;
+	size_t idx=-1;
 	do{
         std::string allowedNext=" >/";
-	    idx=src.find(nstart,offset);
+        idx=src.find(nstart,offset);
         bool found=false;
-        while ((idx>=0)&&(!found))
+        while ((idx != string::npos)&&(!found))
         {
             char n=src[idx+nstart.length()];
-            int i2=allowedNext.find(n);
-            if (i2>=0)
+            size_t i2=allowedNext.find(n);
+            if (i2 != string::npos)
                 found=true;
             else
-        		idx=src.find(nstart,idx+1);
+                idx=src.find(nstart,idx+1);
         }
 		occurence--;
 		offset=idx+1;
-	}while((idx>=0)&&(occurence>0));
+	}while((idx != string::npos)&&(occurence>0));
 	// if node start found, find end
-	if ((idx>=0)&&(occurence==0)){
-        int np=nstart.length();
+	if ((idx != string::npos)&&(occurence==0)){
+        size_t np=nstart.length();
 		std::string nextChar=src.substr(idx+np,1);
 		int idxEnd=-1;
         bool singleLine=true;
 		if (nextChar==">")	
 			singleLine=false;
         else{
-            int idLn= src.find("\n",idx+1);
-            int idEnd=src.find("/>",idx+1);
-            if ((idEnd<0)||(idEnd>idLn)) singleLine=false;
+            size_t idLn= src.find("\n",idx+1);
+            size_t idEnd=src.find("/>",idx+1);
+            if ((idEnd == string::npos)||(idEnd>idLn)) singleLine=false;
         }
 		if (singleLine)	
 			nstart="/>"; // for single line nodes, it ends with />  ..and presume NO inline nodes
@@ -427,8 +427,8 @@ double getParamFloat(std::string& src, std::string path){
 //get float value from entire node
 double getNodeFloat(std::string& src, std::string path){
     std::string res= getNode(src, path);
-    int idB= res.find(">"); // for <armor armorBonus="0">155</armor>
-    if ((idB>=0)&&(idB<(int)(res.length()-1))) 
+    size_t idB= res.find(">"); // for <armor armorBonus="0">155</armor>
+    if ((idB != string::npos)&&(idB<res.length()-1)) 
         res.erase(0,idB+1);
     return atof(res.c_str());
 }
@@ -580,22 +580,22 @@ bool my_isdigit(char c){
 
 // find value/pattern pair
 double oneTxtStat(std::string& txt, std::string fullpat, int dir){
-    int idx=0;
+    size_t idx=0;
     double value=0;
     //support multiple occurences of same pattern
-    while (idx>=0){
+    while (idx != string::npos){
         idx= txt.find(fullpat);
-        if (idx>=0){
-            int idL=idx;
-            int idR=idx+fullpat.length();
+        if (idx != string::npos){
+            size_t idL=idx;
+            size_t idR=idx+fullpat.length();
             std::string strVal="";
-            int dL=0;
-            int dR=0;
+            size_t dL=0;
+            size_t dR=0;
             if (dir>0){
-                int p=idR;
-                while ((p<(int)txt.length())&&(txt[p]==' ')) p++; //skip spaces
+                size_t p=idR;
+                while ((p<txt.length())&&(txt[p]==' ')) p++; //skip spaces
                 dL=dR=p;
-                while ((p<(int)txt.length())&& my_isdigit(txt[p]) ) p++; //walk over number
+                while ((p<txt.length())&& my_isdigit(txt[p]) ) p++; //walk over number
                 dR=p;
                 idR=dR;
             }else{
@@ -844,7 +844,7 @@ bool parseArmory(sim_t* sim, std::string URL, bool parseName, bool parseTalents,
                     // first to lower letters and _ for spaces
                     std::string newName(glyph_name.length(),' ');
                     newName="";
-                    for (unsigned i=0; i<glyph_name.length(); i++){
+                    for (size_t i=0; i<glyph_name.length(); i++){
                         char c=glyph_name[i];
                         c= tolower(c);
                         if (c==' ') c='_';
@@ -853,7 +853,7 @@ bool parseArmory(sim_t* sim, std::string URL, bool parseName, bool parseTalents,
                     // then remove first "of"
                     if (newName.substr(0,9)=="glyph_of_")   newName.erase(6,3);
                     // call directly to set option. It should NOT return error if not found
-                    player_parse_option(sim,newName,"1");
+                    player_parse_option(sim,newName,std::string("1"));
                 }
             }
         }
