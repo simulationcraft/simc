@@ -8,30 +8,29 @@
 // stats_t::stats_t =========================================================
 
 stats_t::stats_t( const std::string& n, player_t* p ) :
-  name_str(n), sim(p->sim), player(p), next(0), school(SCHOOL_NONE),
-  channeled(false), analyzed(false), initialized(false), 
-  resource_consumed(0), last_execute(-1)
+    name_str( n ), sim( p->sim ), player( p ), next( 0 ), school( SCHOOL_NONE ),
+    channeled( false ), analyzed( false ), initialized( false ),
+    resource_consumed( 0 ), last_execute( -1 )
 {
-  
 }
 
 // stats_t::init ============================================================
 
 void stats_t::init()
 {
-  if( initialized ) return;
+  if ( initialized ) return;
   initialized = true;
 
   resource_consumed = 0;
 
-  num_buckets = (int) sim -> max_time;
-  if( num_buckets == 0 ) num_buckets = 600; // Default to 10 minutes
+  num_buckets = ( int ) sim -> max_time;
+  if ( num_buckets == 0 ) num_buckets = 600; // Default to 10 minutes
   num_buckets *= 2;
 
   timeline_dmg.clear();
   timeline_dmg.insert( timeline_dmg.begin(), num_buckets, 0 );
 
-  for( int i=0; i < RESULT_MAX; i++ )
+  for ( int i=0; i < RESULT_MAX; i++ )
   {
     execute_results[ i ].count     = 0;
     execute_results[ i ].min_dmg   = FLT_MAX;
@@ -68,25 +67,25 @@ void stats_t::reset( action_t* a )
 // stats_t::add =============================================================
 
 void stats_t::add( double amount,
-                   int    dmg_type,
-                   int    result,
-                   double time )
+                     int    dmg_type,
+                     int    result,
+                     double time )
 {
   player -> iteration_dmg += amount;
   total_dmg += amount;
 
-  if( dmg_type == DMG_DIRECT )
+  if ( dmg_type == DMG_DIRECT )
   {
     num_executes++;
     total_execute_time += time;
     stats_results_t& r = execute_results[ result ];
     r.count += 1;
     r.total_dmg += amount;
-    if( amount < r.min_dmg ) r.min_dmg = amount;
-    if( amount > r.max_dmg ) r.max_dmg = amount;
+    if ( amount < r.min_dmg ) r.min_dmg = amount;
+    if ( amount > r.max_dmg ) r.max_dmg = amount;
 
-    if( last_execute > 0 &&
-        last_execute != sim -> current_time )
+    if ( last_execute > 0 &&
+         last_execute != sim -> current_time )
     {
       num_intervals++;
       total_intervals += sim -> current_time - last_execute;
@@ -100,12 +99,12 @@ void stats_t::add( double amount,
     stats_results_t& r = tick_results[ result ];
     r.count += 1;
     r.total_dmg += amount;
-    if( amount < r.min_dmg ) r.min_dmg = amount;
-    if( amount > r.max_dmg ) r.max_dmg = amount;
+    if ( amount < r.min_dmg ) r.min_dmg = amount;
+    if ( amount > r.max_dmg ) r.max_dmg = amount;
   }
 
-  int index = (int) ( sim -> current_time );
-  if( index >= num_buckets )
+  int index = ( int ) ( sim -> current_time );
+  if ( index >= num_buckets )
   {
     // Double the size of the vector, initializing the new elements to zero.
     timeline_dmg.insert( timeline_dmg.begin() + num_buckets, num_buckets, 0 );
@@ -119,14 +118,14 @@ void stats_t::add( double amount,
 
 void stats_t::analyze()
 {
-  if( analyzed ) return;
+  if ( analyzed ) return;
   analyzed = true;
 
   int num_iterations = sim -> iterations;
 
-  for( int i=0; i < RESULT_MAX; i++ )
+  for ( int i=0; i < RESULT_MAX; i++ )
   {
-    if( execute_results[ i ].count != 0 )
+    if ( execute_results[ i ].count != 0 )
     {
       stats_results_t& r = execute_results[ i ];
 
@@ -135,7 +134,7 @@ void stats_t::analyze()
       r.count     /= num_iterations;
       r.total_dmg /= num_iterations;
     }
-    if( tick_results[ i ].count != 0 )
+    if ( tick_results[ i ].count != 0 )
     {
       stats_results_t& r = tick_results[ i ];
 
@@ -146,12 +145,12 @@ void stats_t::analyze()
     }
   }
 
-  if( total_dmg > 0 )
+  if ( total_dmg > 0 )
   {
     dps  = total_dmg / ( total_execute_time + total_tick_time );
     dpe  = total_dmg / num_executes;
     dpet = total_dmg / ( total_execute_time + ( channeled ? total_tick_time : 0 ) );
-    if (resource_consumed > 0.0)
+    if ( resource_consumed > 0.0 )
       dpr = total_dmg / resource_consumed;
     else
       dpr = 0.0;
@@ -168,7 +167,7 @@ void stats_t::analyze()
   total_tick_time    /= num_iterations;
   total_dmg          /= num_iterations;
 
-  for( int i=0; i < num_buckets; i++ )
+  for ( int i=0; i < num_buckets; i++ )
   {
     timeline_dmg[ i ] /= num_iterations;
   }
@@ -176,19 +175,19 @@ void stats_t::analyze()
   timeline_dps.clear();
   timeline_dps.insert( timeline_dps.begin(), num_buckets, 0 );
 
-  int max_buckets = std::min( (int) player -> total_seconds, (int) timeline_dmg.size() );
+  int max_buckets = std::min( ( int ) player -> total_seconds, ( int ) timeline_dmg.size() );
 
-  for( int i=0; i < max_buckets; i++ )
+  for ( int i=0; i < max_buckets; i++ )
   {
     double window_dmg  = timeline_dmg[ i ];
     int    window_size = 1;
 
-    for( int j=1; ( j <= 10 ) && ( (i-j) >=0 ); j++ )
+    for ( int j=1; ( j <= 10 ) && ( ( i-j ) >=0 ); j++ )
     {
       window_dmg += timeline_dmg[ i-j ];
       window_size++;
     }
-    for( int j=1; ( j <= 10 ) && ( (i+j) < max_buckets ); j++ )
+    for ( int j=1; ( j <= 10 ) && ( ( i+j ) < max_buckets ); j++ )
     {
       window_dmg += timeline_dmg[ i+j ];
       window_size++;
@@ -208,10 +207,10 @@ void stats_t::merge( stats_t* other )
   total_execute_time += other -> total_execute_time;
   total_tick_time    += other -> total_tick_time;
   total_dmg          += other -> total_dmg;
-  
-  for( int i=0; i < RESULT_MAX; i++ )
+
+  for ( int i=0; i < RESULT_MAX; i++ )
   {
-    if( other -> execute_results[ i ].count != 0 )
+    if ( other -> execute_results[ i ].count != 0 )
     {
       stats_results_t& other_r = other -> execute_results[ i ];
       stats_results_t&       r =          execute_results[ i ];
@@ -219,10 +218,10 @@ void stats_t::merge( stats_t* other )
       r.count     += other_r.count;
       r.total_dmg += other_r.total_dmg;
 
-      if( other_r.min_dmg < r.min_dmg ) r.min_dmg = other_r.min_dmg;
-      if( other_r.max_dmg > r.max_dmg ) r.max_dmg = other_r.max_dmg;
+      if ( other_r.min_dmg < r.min_dmg ) r.min_dmg = other_r.min_dmg;
+      if ( other_r.max_dmg > r.max_dmg ) r.max_dmg = other_r.max_dmg;
     }
-    if( other -> tick_results[ i ].count != 0 )
+    if ( other -> tick_results[ i ].count != 0 )
     {
       stats_results_t& other_r = other -> tick_results[ i ];
       stats_results_t&       r =          tick_results[ i ];
@@ -230,12 +229,12 @@ void stats_t::merge( stats_t* other )
       r.count     += other_r.count;
       r.total_dmg += other_r.total_dmg;
 
-      if( other_r.min_dmg < r.min_dmg ) r.min_dmg = other_r.min_dmg;
-      if( other_r.max_dmg > r.max_dmg ) r.max_dmg = other_r.max_dmg;
+      if ( other_r.min_dmg < r.min_dmg ) r.min_dmg = other_r.min_dmg;
+      if ( other_r.max_dmg > r.max_dmg ) r.max_dmg = other_r.max_dmg;
     }
   }
 
-  for( int i=0; i < num_buckets && i < other -> num_buckets; i++ )
+  for ( int i=0; i < num_buckets && i < other -> num_buckets; i++ )
   {
     timeline_dmg[ i ] += other -> timeline_dmg[ i ];
   }

@@ -12,9 +12,9 @@
 // gear_stats_t::set_stat ===================================================
 
 void gear_stats_t::set_stat( int    stat,
-			     double value )
+                             double value )
 {
-  switch( stat )
+  switch ( stat )
   {
   case STAT_NONE: break;
 
@@ -48,14 +48,14 @@ void gear_stats_t::set_stat( int    stat,
 
   case STAT_ARMOR: armor = value; break;
 
-  default: assert(0);
+  default: assert( 0 );
   }
 }
 
 void gear_stats_t::add_stat( int    stat,
-			     double value )
+                             double value )
 {
-  switch( stat )
+  switch ( stat )
   {
   case STAT_NONE: break;
 
@@ -89,7 +89,7 @@ void gear_stats_t::add_stat( int    stat,
 
   case STAT_ARMOR: armor += value; break;
 
-  default: assert(0);
+  default: assert( 0 );
   }
 }
 
@@ -98,7 +98,7 @@ void gear_stats_t::add_stat( int    stat,
 
 double gear_stats_t::get_stat( int stat )
 {
-  switch( stat )
+  switch ( stat )
   {
   case STAT_NONE: return 0;
 
@@ -132,7 +132,7 @@ double gear_stats_t::get_stat( int stat )
 
   case STAT_ARMOR: return armor;
 
-  default: assert(0);
+  default: assert( 0 );
   }
   return 0;
 }
@@ -141,7 +141,7 @@ double gear_stats_t::get_stat( int stat )
 
 double gear_stats_t::stat_mod( int stat )
 {
-  switch( stat )
+  switch ( stat )
   {
   case STAT_MP5:               return 2.50;
   case STAT_ATTACK_POWER:      return 0.50;

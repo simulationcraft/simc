@@ -9,7 +9,8 @@
 // Rating
 // ==========================================================================
 
-namespace { // ANONYMOUS NAMESPACE ==========================================
+namespace
+{ // ANONYMOUS NAMESPACE ==========================================
 
 // rating_60 =================================================================
 
@@ -17,7 +18,7 @@ static rating_t& rating_60()
 {
   static rating_t r;
 
-  if( r.spell_haste == 0 )
+  if ( r.spell_haste == 0 )
   {
     r.spell_haste       = 1000;
     r.spell_hit         =  800;
@@ -38,7 +39,7 @@ static rating_t& rating_70()
 {
   static rating_t r;
 
-  if( r.spell_haste == 0 )
+  if ( r.spell_haste == 0 )
   {
     r.spell_haste       = 1576;
     r.spell_hit         = 1262;
@@ -59,7 +60,7 @@ static rating_t& rating_80()
 {
   static rating_t r;
 
-  if( r.spell_haste == 0 )
+  if ( r.spell_haste == 0 )
   {
     r.spell_haste       = 3279;
     r.spell_hit         = 2623;
@@ -101,19 +102,19 @@ double rating_t::interpolate( int    level,
                               double val_70,
                               double val_80 )
 {
-  if( level <= 60 )
+  if ( level <= 60 )
   {
     return val_60;
   }
-  else if( level == 70 )
+  else if ( level == 70 )
   {
     return val_70;
   }
-  else if( level >= 80 )
+  else if ( level >= 80 )
   {
     return val_80;
   }
-  else if( level < 70 )
+  else if ( level < 70 )
   {
     // Assume linear progression for now.
     double adjust = ( level - 60 ) / 10.0;
@@ -125,6 +126,6 @@ double rating_t::interpolate( int    level,
     double adjust = ( level - 70 ) / 10.0;
     return val_70 + adjust * ( val_80 - val_70 );
   }
-  assert(0);
+  assert( 0 );
   return 0;
 }

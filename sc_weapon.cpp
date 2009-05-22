@@ -13,7 +13,7 @@
 
 int weapon_t::group()
 {
-  switch( type )
+  switch ( type )
   {
   case WEAPON_DAGGER:
   case WEAPON_SMALL:
@@ -51,12 +51,12 @@ double weapon_t::normalized_weapon_speed()
 {
   int g = group();
 
-  if( g == WEAPON_SMALL  ) return 1.7;
-  if( g == WEAPON_1H     ) return 2.4;
-  if( g == WEAPON_2H     ) return 3.3;
-  if( g == WEAPON_RANGED ) return 2.8;
+  if ( g == WEAPON_SMALL  ) return 1.7;
+  if ( g == WEAPON_1H     ) return 2.4;
+  if ( g == WEAPON_2H     ) return 3.3;
+  if ( g == WEAPON_RANGED ) return 2.8;
 
-  assert(0);
+  assert( 0 );
   return 0;
 }
 
@@ -65,10 +65,10 @@ double weapon_t::normalized_weapon_speed()
 double weapon_t::proc_chance_on_swing( double PPM,
                                        double adjusted_swing_time )
 {
-  if( adjusted_swing_time == 0 ) adjusted_swing_time = swing_time;
+  if ( adjusted_swing_time == 0 ) adjusted_swing_time = swing_time;
 
   double time_to_proc = 60.0 / PPM;
   double proc_chance = adjusted_swing_time / time_to_proc;
-  
+
   return proc_chance;
 }

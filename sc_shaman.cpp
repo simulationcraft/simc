@@ -39,7 +39,7 @@ struct shaman_t : public player_t
     double totem_of_wrath_glyph;
     double water_shield;
 
-    void reset() { memset( (void*) this, 0x00, sizeof( _buffs_t ) ); }
+    void reset() { memset( ( void* ) this, 0x00, sizeof( _buffs_t ) ); }
     _buffs_t() { reset(); }
   };
   _buffs_t _buffs;
@@ -50,7 +50,7 @@ struct shaman_t : public player_t
     double windfury_weapon;
     double lava_burst;
 
-    void reset() { memset( (void*) this, 0x00, sizeof( _cooldowns_t ) ); }
+    void reset() { memset( ( void* ) this, 0x00, sizeof( _cooldowns_t ) ); }
     _cooldowns_t() { reset(); }
   };
   _cooldowns_t _cooldowns;
@@ -63,7 +63,7 @@ struct shaman_t : public player_t
     event_t* maelstrom_weapon;
     event_t* nature_vulnerability;
 
-    void reset() { memset( (void*) this, 0x00, sizeof( _expirations_t ) ); }
+    void reset() { memset( ( void* ) this, 0x00, sizeof( _expirations_t ) ); }
     _expirations_t() { reset(); }
   };
   _expirations_t _expirations;
@@ -77,7 +77,7 @@ struct shaman_t : public player_t
   // Procs
   proc_t* procs_lightning_overload;
   proc_t* procs_windfury;
-  
+
   // Up-Times
   uptime_t* uptimes_elemental_devastation;
   uptime_t* uptimes_elemental_focus;
@@ -92,7 +92,7 @@ struct shaman_t : public player_t
   rng_t* rng_maelstrom_weapon;
   rng_t* rng_static_shock;
   rng_t* rng_windfury_weapon;
-  
+
   // Auto-Attack
   attack_t* main_hand_attack;
   attack_t*  off_hand_attack;
@@ -153,8 +153,8 @@ struct shaman_t : public player_t
     int  unrelenting_storm;
     int  unleashed_rage;
     int  weapon_mastery;
-    
-    talents_t() { memset( (void*) this, 0x0, sizeof( talents_t ) ); }
+
+    talents_t() { memset( ( void* ) this, 0x0, sizeof( talents_t ) ); }
   };
   talents_t talents;
 
@@ -175,7 +175,7 @@ struct shaman_t : public player_t
     int totem_of_wrath;
     int thunderstorm;
     int windfury_weapon;
-    glyphs_t() { memset( (void*) this, 0x0, sizeof( glyphs_t ) ); }
+    glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
   };
   glyphs_t glyphs;
 
@@ -186,7 +186,7 @@ struct shaman_t : public player_t
     int dancing_flame;
     int thunderfall;
 
-    totems_t() { memset( (void*) this, 0x0, sizeof( totems_t ) ); }
+    totems_t() { memset( ( void* ) this, 0x0, sizeof( totems_t ) ); }
   };
   totems_t totems;
 
@@ -212,7 +212,7 @@ struct shaman_t : public player_t
     int t7_4pc_enhancement;
     int t8_2pc_enhancement;
     int t8_4pc_enhancement;
-    tiers_t() { memset( (void*) this, 0x0, sizeof( tiers_t ) ); }
+    tiers_t() { memset( ( void* ) this, 0x0, sizeof( tiers_t ) ); }
   };
   tiers_t tiers;
 
@@ -262,7 +262,8 @@ struct shaman_t : public player_t
   virtual void regen( double periodicity );
 };
 
-namespace { // ANONYMOUS NAMESPACE ==========================================
+namespace
+{ // ANONYMOUS NAMESPACE ==========================================
 
 // ==========================================================================
 // Shaman Attack
@@ -270,14 +271,14 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 
 struct shaman_attack_t : public attack_t
 {
-  shaman_attack_t( const char* n, player_t* player, int s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) : 
-    attack_t( n, player, RESOURCE_MANA, s, t, special ) 
+  shaman_attack_t( const char* n, player_t* player, int s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) :
+      attack_t( n, player, RESOURCE_MANA, s, t, special )
   {
     base_dd_min = base_dd_max = 1;
     shaman_t* p = player -> cast_shaman();
     base_multiplier *= 1.0 + p -> talents.weapon_mastery * 0.1/3;
     base_crit += p -> talents.thundering_strikes * 0.01;
-    if( p -> dual_wield() ) base_hit += p -> talents.dual_wield_specialization * 0.02;
+    if ( p -> dual_wield() ) base_hit += p -> talents.dual_wield_specialization * 0.02;
   }
 
   virtual void execute();
@@ -293,8 +294,8 @@ struct shaman_spell_t : public spell_t
 {
   double base_cost_reduction;
 
-  shaman_spell_t( const char* n, player_t* p, int s, int t ) : 
-    spell_t( n, p, RESOURCE_MANA, s, t ), base_cost_reduction(0)
+  shaman_spell_t( const char* n, player_t* p, int s, int t ) :
+      spell_t( n, p, RESOURCE_MANA, s, t ), base_cost_reduction( 0 )
   {
     shaman_t* shaman = p -> cast_shaman();
     base_crit += shaman -> talents.thundering_strikes * 0.01;
@@ -319,8 +320,8 @@ struct spirit_wolf_pet_t : public pet_t
 {
   struct melee_t : public attack_t
   {
-    melee_t( player_t* player ) : 
-      attack_t( "wolf_melee", player )
+    melee_t( player_t* player ) :
+        attack_t( "wolf_melee", player )
     {
       weapon = &( player -> main_hand_weapon );
       base_execute_time = weapon -> swing_time;
@@ -337,7 +338,7 @@ struct spirit_wolf_pet_t : public pet_t
   melee_t* melee;
 
   spirit_wolf_pet_t( sim_t* sim, player_t* owner ) :
-    pet_t( sim, owner, "spirit_wolf" ), melee(0)
+      pet_t( sim, owner, "spirit_wolf" ), melee( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.damage     = 310;
@@ -378,7 +379,7 @@ static void trigger_flametongue_weapon( attack_t* a )
   struct flametongue_weapon_spell_t : public shaman_spell_t
   {
     flametongue_weapon_spell_t( player_t* player ) :
-      shaman_spell_t( "flametongue", player, SCHOOL_FIRE, TREE_ENHANCEMENT )
+        shaman_spell_t( "flametongue", player, SCHOOL_FIRE, TREE_ENHANCEMENT )
     {
       shaman_t* p = player -> cast_shaman();
 
@@ -393,12 +394,12 @@ static void trigger_flametongue_weapon( attack_t* a )
     }
   };
 
-  if( a -> weapon &&
-      a -> weapon -> buff == FLAMETONGUE )
+  if ( a -> weapon &&
+       a -> weapon -> buff == FLAMETONGUE )
   {
     shaman_t* p = a -> player -> cast_shaman();
 
-    if( ! p -> flametongue_weapon_spell )
+    if ( ! p -> flametongue_weapon_spell )
     {
       p -> flametongue_weapon_spell = new flametongue_weapon_spell_t( p );
     }
@@ -420,7 +421,7 @@ static void trigger_windfury_weapon( attack_t* a )
   struct windfury_weapon_attack_t : public shaman_attack_t
   {
     windfury_weapon_attack_t( player_t* player ) :
-      shaman_attack_t( "windfury", player )
+        shaman_attack_t( "windfury", player )
     {
       shaman_t* p = player -> cast_shaman();
       may_crit    = true;
@@ -438,14 +439,14 @@ static void trigger_windfury_weapon( attack_t* a )
 
   shaman_t* p = a -> player -> cast_shaman();
 
-  if( a -> weapon == 0 ) return;
-  if( a -> weapon -> buff != WINDFURY ) return;
+  if ( a -> weapon == 0 ) return;
+  if ( a -> weapon -> buff != WINDFURY ) return;
 
-  if( ! a -> sim -> cooldown_ready( p -> _cooldowns.windfury_weapon ) ) return;
+  if ( ! a -> sim -> cooldown_ready( p -> _cooldowns.windfury_weapon ) ) return;
 
-  if( p -> rng_windfury_weapon -> roll( 0.20 + ( p -> glyphs.windfury_weapon ? 0.02 : 0 ) ) )
+  if ( p -> rng_windfury_weapon -> roll( 0.20 + ( p -> glyphs.windfury_weapon ? 0.02 : 0 ) ) )
   {
-    if( ! p -> windfury_weapon_attack )
+    if ( ! p -> windfury_weapon_attack )
     {
       p -> windfury_weapon_attack = new windfury_weapon_attack_t( p );
     }
@@ -464,7 +465,7 @@ static void stack_maelstrom_weapon( attack_t* a )
 {
   shaman_t* p = a -> player -> cast_shaman();
 
-  if( p -> talents.maelstrom_weapon == 0 ) return;
+  if ( p -> talents.maelstrom_weapon == 0 ) return;
 
   struct maelstrom_weapon_expiration_t : public event_t
   {
@@ -483,20 +484,20 @@ static void stack_maelstrom_weapon( attack_t* a )
     }
   };
   double chance = a -> weapon -> proc_chance_on_swing( p -> talents.maelstrom_weapon * 2.0 );
-  if( p -> tiers.t8_4pc_enhancement )
+  if ( p -> tiers.t8_4pc_enhancement )
     chance *= 1.0 + 0.20;
-    
-  if( p -> rng_maelstrom_weapon -> roll( chance ) )
+
+  if ( p -> rng_maelstrom_weapon -> roll( chance ) )
   {
-    if( p -> _buffs.maelstrom_weapon < 5 ) 
+    if ( p -> _buffs.maelstrom_weapon < 5 )
     {
       p -> _buffs.maelstrom_weapon++;
-      if( a -> sim -> log ) log_t::output( a -> sim, "%s gains Maelstrom Weapon %d", p -> name(), p -> _buffs.maelstrom_weapon );
+      if ( a -> sim -> log ) log_t::output( a -> sim, "%s gains Maelstrom Weapon %d", p -> name(), p -> _buffs.maelstrom_weapon );
     }
 
     event_t*& e = p -> _expirations.maelstrom_weapon;
-    
-    if( e )
+
+    if ( e )
     {
       e -> reschedule( 30.0 );
     }
@@ -520,9 +521,9 @@ static void trigger_unleashed_rage( attack_t* a )
     }
     virtual void execute()
     {
-      for( player_t* p = sim -> player_list; p; p = p -> next )
+      for ( player_t* p = sim -> player_list; p; p = p -> next )
       {
-        if( p -> buffs.unleashed_rage > 0 )
+        if ( p -> buffs.unleashed_rage > 0 )
         {
           p -> buffs.unleashed_rage = 0;
           p -> aura_loss( "Unleashed Rage" );
@@ -532,27 +533,27 @@ static void trigger_unleashed_rage( attack_t* a )
     }
   };
 
-  if( a -> proc ) return;
+  if ( a -> proc ) return;
 
   shaman_t* s = a -> player -> cast_shaman();
   int ur=0;
 
-  if( s -> talents.unleashed_rage == 0 ) return;
+  if ( s -> talents.unleashed_rage == 0 ) return;
 
   ur = util_t::talent_rank( s -> talents.unleashed_rage, 3, 4, 7, 10 );
 
-  if( ur < s -> buffs.unleashed_rage ) return;
+  if ( ur < s -> buffs.unleashed_rage ) return;
 
-  for( player_t* p = a -> sim -> player_list; p; p = p -> next )
+  for ( player_t* p = a -> sim -> player_list; p; p = p -> next )
   {
-    if( p -> sleeping ) continue;
-    if( p -> buffs.unleashed_rage == 0 ) p -> aura_gain( "Unleashed Rage" );
+    if ( p -> sleeping ) continue;
+    if ( p -> buffs.unleashed_rage == 0 ) p -> aura_gain( "Unleashed Rage" );
     p -> buffs.unleashed_rage = ur;
   }
 
   event_t*& e = a -> sim -> expirations.unleashed_rage;
 
-  if( e )
+  if ( e )
   {
     e -> reschedule( 10.0 );
   }
@@ -568,7 +569,7 @@ static void trigger_improved_stormstrike( attack_t* a )
 {
   shaman_t* p = a -> player -> cast_shaman();
 
-  if( p -> rng_improved_stormstrike -> roll( p -> talents.improved_stormstrike / 2.0 ) )
+  if ( p -> rng_improved_stormstrike -> roll( p -> talents.improved_stormstrike / 2.0 ) )
   {
     p -> resource_gain( RESOURCE_MANA, 0.20 * p -> resource_base[ RESOURCE_MANA ], p -> gains_improved_stormstrike );
   }
@@ -603,8 +604,8 @@ static void trigger_nature_vulnerability( attack_t* a )
   double duration = 12.0;
 
   p -> _buffs.nature_vulnerability_charges = 4;
-   
-  if( e )
+
+  if ( e )
   {
     e -> reschedule( duration );
   }
@@ -618,11 +619,11 @@ static void trigger_nature_vulnerability( attack_t* a )
 
 static void trigger_tier5_4pc_elemental( spell_t* s )
 {
-  if( s -> result != RESULT_CRIT ) return;
+  if ( s -> result != RESULT_CRIT ) return;
 
   shaman_t* p = s -> player -> cast_shaman();
 
-  if( p -> tiers.t5_4pc_elemental && p -> rngs.tier5_4pc -> roll( 0.25 ) )
+  if ( p -> tiers.t5_4pc_elemental && p -> rngs.tier5_4pc -> roll( 0.25 ) )
   {
     p -> resource_gain( RESOURCE_MANA, 120.0, p -> gains.tier5_4pc );
   }
@@ -650,14 +651,13 @@ static void trigger_tier8_4pc_elemental( spell_t* s )
       num_ticks       = 4;
     }
     void player_buff() {}
-    void target_debuff() {}
-  };
+    void target_debuff() {}};
 
   double dmg = s -> direct_dmg * 0.08;
 
-  if( ! p -> active_lightning_bolt_dot ) p -> active_lightning_bolt_dot = new lightning_bolt_dot_t( p );
+  if ( ! p -> active_lightning_bolt_dot ) p -> active_lightning_bolt_dot = new lightning_bolt_dot_t( p );
 
-  if( p -> active_lightning_bolt_dot -> ticking )
+  if ( p -> active_lightning_bolt_dot -> ticking )
   {
     int num_ticks = p -> active_lightning_bolt_dot -> num_ticks;
     int remaining_ticks = num_ticks - p -> active_lightning_bolt_dot -> current_tick;
@@ -677,8 +677,8 @@ static void trigger_ashtongue_talisman( spell_t* s )
 {
   shaman_t* p = s -> player -> cast_shaman();
 
-  if( p -> unique_gear -> ashtongue_talisman && 
-      p -> rngs.ashtongue_talisman -> roll( 0.15 ) )
+  if ( p -> unique_gear -> ashtongue_talisman &&
+       p -> rngs.ashtongue_talisman -> roll( 0.15 ) )
   {
     p -> resource_gain( RESOURCE_MANA, 110.0, p -> gains.ashtongue_talisman );
   }
@@ -692,11 +692,11 @@ static void trigger_lightning_overload( spell_t* s,
 {
   shaman_t* p = s -> player -> cast_shaman();
 
-  if( lightning_overload_chance == 0 ) return;
+  if ( lightning_overload_chance == 0 ) return;
 
-  if( s -> proc ) return;
+  if ( s -> proc ) return;
 
-  if( p -> rng_lightning_overload -> roll( lightning_overload_chance ) )
+  if ( p -> rng_lightning_overload -> roll( lightning_overload_chance ) )
   {
     p -> procs_lightning_overload -> occur();
 
@@ -728,9 +728,9 @@ static void trigger_elemental_devastation( spell_t* s )
 {
   shaman_t* p = s -> player -> cast_shaman();
 
-  if( p -> talents.elemental_devastation == 0 ) return;
+  if ( p -> talents.elemental_devastation == 0 ) return;
 
-  if( s -> proc ) return;
+  if ( s -> proc ) return;
 
   struct elemental_devastation_expiration_t : public event_t
   {
@@ -749,8 +749,8 @@ static void trigger_elemental_devastation( spell_t* s )
   };
 
   event_t*& e = p -> _expirations.elemental_devastation;
-    
-  if( e )
+
+  if ( e )
   {
     e -> reschedule( 10.0 );
   }
@@ -769,37 +769,37 @@ static void trigger_elemental_oath( spell_t* s )
     elemental_oath_expiration_t( sim_t* sim, player_t* player ) : event_t( sim, player )
     {
       name = "Elemental Oath Expiration";
-      for( player_t* p = sim -> player_list; p; p = p -> next )
+      for ( player_t* p = sim -> player_list; p; p = p -> next )
       {
         if ( p -> sleeping ) continue;
-        if( p -> buffs.elemental_oath == 0 ) p -> aura_gain( "Elemental Oath" );
+        if ( p -> buffs.elemental_oath == 0 ) p -> aura_gain( "Elemental Oath" );
         p -> buffs.elemental_oath++;
       }
       sim -> add_event( this, 15.0 );
     }
     virtual void execute()
     {
-      for( player_t* p = sim -> player_list; p; p = p -> next )
+      for ( player_t* p = sim -> player_list; p; p = p -> next )
       {
-        if( p -> buffs.elemental_oath > 0 )
+        if ( p -> buffs.elemental_oath > 0 )
         {
           p -> buffs.elemental_oath--;
-          if( p -> buffs.elemental_oath == 0 ) p -> aura_loss( "Elemental Oath" );
+          if ( p -> buffs.elemental_oath == 0 ) p -> aura_loss( "Elemental Oath" );
         }
       }
       player -> cast_shaman() -> _expirations.elemental_oath = 0;
     }
   };
 
-  if( s -> proc ) return;
+  if ( s -> proc ) return;
 
   shaman_t* p = s -> player -> cast_shaman();
-  
-  if( p -> talents.elemental_oath == 0 ) return;
+
+  if ( p -> talents.elemental_oath == 0 ) return;
 
   event_t*& e = p -> _expirations.elemental_oath;
-    
-  if( e )
+
+  if ( e )
   {
     e -> reschedule( 15.0 );
   }
@@ -815,7 +815,7 @@ static void trigger_totem_of_dueling( attack_t* a )
 {
   shaman_t* p = a -> player -> cast_shaman();
 
-  if( p -> totems.dueling )
+  if ( p -> totems.dueling )
   {
     struct totem_of_dueling_expiration_t : public event_t
     {
@@ -836,7 +836,7 @@ static void trigger_totem_of_dueling( attack_t* a )
     };
 
     assert( a -> cooldown > 6.0 );  // Make sure we don't have to perform refreshes
-  
+
     new ( a -> sim ) totem_of_dueling_expiration_t( a -> sim, p );
   }
 }
@@ -853,14 +853,14 @@ void shaman_attack_t::execute()
 
   attack_t::execute();
 
-  if( result_is_hit() )
+  if ( result_is_hit() )
   {
-    if( result == RESULT_CRIT )
+    if ( result == RESULT_CRIT )
     {
       trigger_unleashed_rage( this );
-      if( p -> talents.flurry ) p -> _buffs.flurry = 3;
+      if ( p -> talents.flurry ) p -> _buffs.flurry = 3;
     }
-    if( p -> _buffs.shamanistic_rage ) 
+    if ( p -> _buffs.shamanistic_rage )
     {
       p -> resource_gain( RESOURCE_MANA, player_attack_power * 0.30, p -> gains_shamanistic_rage );
     }
@@ -876,7 +876,7 @@ void shaman_attack_t::player_buff()
 {
   attack_t::player_buff();
   shaman_t* p = player -> cast_shaman();
-  if( p -> _buffs.elemental_devastation ) 
+  if ( p -> _buffs.elemental_devastation )
   {
     player_crit += p -> talents.elemental_devastation * 0.03;
   }
@@ -886,21 +886,21 @@ void shaman_attack_t::player_buff()
 
 // shaman_attack_t::assess_damage ==========================================
 
-void shaman_attack_t::assess_damage( double amount, 
+void shaman_attack_t::assess_damage( double amount,
                                      int    dmg_type )
 {
   shaman_t* p = player -> cast_shaman();
 
   attack_t::assess_damage( amount, dmg_type );
 
-  if( num_ticks == 0 && p -> _buffs.lightning_charges > 0 )
+  if ( num_ticks == 0 && p -> _buffs.lightning_charges > 0 )
   {
-    if( p -> rng_static_shock -> roll( p -> talents.static_shock * 0.02 ) )
+    if ( p -> rng_static_shock -> roll( p -> talents.static_shock * 0.02 ) )
     {
       p -> _buffs.lightning_charges--;
       p -> active_lightning_charge -> execute();
 
-      if( p -> _buffs.lightning_charges == 0 )
+      if ( p -> _buffs.lightning_charges == 0 )
       {
         p -> active_lightning_charge -> cancel();
       }
@@ -916,8 +916,8 @@ void shaman_attack_t::assess_damage( double amount,
 
 struct melee_t : public shaman_attack_t
 {
-  melee_t( const char* name, player_t* player ) : 
-    shaman_attack_t( name, player, SCHOOL_PHYSICAL, TREE_NONE, false )
+  melee_t( const char* name, player_t* player ) :
+      shaman_attack_t( name, player, SCHOOL_PHYSICAL, TREE_NONE, false )
   {
     shaman_t* p = player -> cast_shaman();
 
@@ -927,14 +927,14 @@ struct melee_t : public shaman_attack_t
     trigger_gcd = 0;
     base_cost   = 0;
 
-    if( p -> dual_wield() ) base_hit -= 0.19;
+    if ( p -> dual_wield() ) base_hit -= 0.19;
   }
 
   virtual double execute_time()
   {
     double t = shaman_attack_t::execute_time();
     shaman_t* p = player -> cast_shaman();
-    if( p -> _buffs.flurry > 0 ) 
+    if ( p -> _buffs.flurry > 0 )
     {
       t *= 1.0 / ( 1.0 + 0.05 * ( p -> talents.flurry + p -> tiers.t7_4pc_enhancement ) );
     }
@@ -946,7 +946,7 @@ struct melee_t : public shaman_attack_t
   {
     shaman_attack_t::schedule_execute();
     shaman_t* p = player -> cast_shaman();
-    if( p -> _buffs.flurry > 0 ) p -> _buffs.flurry--;
+    if ( p -> _buffs.flurry > 0 ) p -> _buffs.flurry--;
   }
 };
 
@@ -954,8 +954,8 @@ struct melee_t : public shaman_attack_t
 
 struct auto_attack_t : public shaman_attack_t
 {
-  auto_attack_t( player_t* player, const std::string& options_str ) : 
-    shaman_attack_t( "auto_attack", player )
+  auto_attack_t( player_t* player, const std::string& options_str ) :
+      shaman_attack_t( "auto_attack", player )
   {
     shaman_t* p = player -> cast_shaman();
 
@@ -964,7 +964,7 @@ struct auto_attack_t : public shaman_attack_t
     p -> main_hand_attack -> weapon = &( p -> main_hand_weapon );
     p -> main_hand_attack -> base_execute_time = p -> main_hand_weapon.swing_time;
 
-    if( p -> off_hand_weapon.type != WEAPON_NONE )
+    if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
       assert( p -> talents.dual_wield );
       p -> off_hand_attack = new melee_t( "melee_off_hand", player );
@@ -979,7 +979,7 @@ struct auto_attack_t : public shaman_attack_t
   {
     shaman_t* p = player -> cast_shaman();
     p -> main_hand_attack -> schedule_execute();
-    if( p -> off_hand_attack ) p -> off_hand_attack -> schedule_execute();
+    if ( p -> off_hand_attack ) p -> off_hand_attack -> schedule_execute();
   }
 
   virtual bool ready()
@@ -993,8 +993,8 @@ struct auto_attack_t : public shaman_attack_t
 
 struct lava_lash_t : public shaman_attack_t
 {
-  lava_lash_t( player_t* player, const std::string& options_str ) : 
-    shaman_attack_t( "lava_lash", player, SCHOOL_FIRE, TREE_ENHANCEMENT )
+  lava_lash_t( player_t* player, const std::string& options_str ) :
+      shaman_attack_t( "lava_lash", player, SCHOOL_FIRE, TREE_ENHANCEMENT )
   {
     shaman_t* p = player -> cast_shaman();
 
@@ -1003,13 +1003,13 @@ struct lava_lash_t : public shaman_attack_t
     may_crit    = true;
     cooldown    = 6;
     base_cost   = p -> resource_base[ RESOURCE_MANA ] * 0.04;
-    if( p -> tiers.t8_2pc_enhancement ) base_multiplier *= 1.0 + 0.20;
+    if ( p -> tiers.t8_2pc_enhancement ) base_multiplier *= 1.0 + 0.20;
   }
 
   virtual void player_buff()
   {
     shaman_attack_t::player_buff();
-    if( weapon -> buff == FLAMETONGUE ) 
+    if ( weapon -> buff == FLAMETONGUE )
     {
       shaman_t* p = player -> cast_shaman();
       player_multiplier *= 1.25 + p -> glyphs.lava_lash * 0.10;
@@ -1021,19 +1021,19 @@ struct lava_lash_t : public shaman_attack_t
 
 struct stormstrike_t : public shaman_attack_t
 {
-  stormstrike_t( player_t* player, const std::string& options_str ) : 
-    shaman_attack_t( "stormstrike", player, SCHOOL_PHYSICAL, TREE_ENHANCEMENT )
+  stormstrike_t( player_t* player, const std::string& options_str ) :
+      shaman_attack_t( "stormstrike", player, SCHOOL_PHYSICAL, TREE_ENHANCEMENT )
   {
     shaman_t* p = player -> cast_shaman();
 
     may_crit  = true;
     base_cost = p -> resource_base[ RESOURCE_MANA ] * 0.08;
     cooldown  = 8.0;
-    if( p -> tiers.t8_2pc_enhancement )
+    if ( p -> tiers.t8_2pc_enhancement )
       base_multiplier *= 1.0 + 0.20;
 
     // Shaman T8 Enhancement Relic -- Increases weapon damage when you use Stormstrike by 155.
-    if( p -> totems.dancing_flame )
+    if ( p -> totems.dancing_flame )
     {
       base_dd_max += 155;
       base_dd_min += 155;
@@ -1050,11 +1050,11 @@ struct stormstrike_t : public shaman_attack_t
     weapon = &( p -> main_hand_weapon );
     shaman_attack_t::execute();
 
-    if( result_is_hit() )
+    if ( result_is_hit() )
     {
       trigger_nature_vulnerability( this );
 
-      if( p -> off_hand_weapon.type != WEAPON_NONE )
+      if ( p -> off_hand_weapon.type != WEAPON_NONE )
       {
         weapon = &( p -> off_hand_weapon );
         shaman_attack_t::execute();
@@ -1064,8 +1064,7 @@ struct stormstrike_t : public shaman_attack_t
     trigger_improved_stormstrike( this );
     trigger_totem_of_dueling( this );
   }
-  virtual void consume_resource() { }
-};
+  virtual void consume_resource() { }};
 
 // =========================================================================
 // Shaman Spell
@@ -1077,12 +1076,12 @@ double shaman_spell_t::cost()
 {
   shaman_t* p = player -> cast_shaman();
   double c = spell_t::cost();
-  if( c == 0 ) return 0;
+  if ( c == 0 ) return 0;
   double cr = cost_reduction();
-  if( p -> _buffs.elemental_focus   ) cr += 0.40;
+  if ( p -> _buffs.elemental_focus   ) cr += 0.40;
   c *= 1.0 - cr;
-  if( p -> buffs.tier4_4pc ) c -= 270;
-  if( c < 0 ) c = 0;
+  if ( p -> buffs.tier4_4pc ) c -= 270;
+  if ( c < 0 ) c = 0;
   return c;
 }
 
@@ -1092,7 +1091,7 @@ void shaman_spell_t::consume_resource()
 {
   spell_t::consume_resource();
   shaman_t* p = player -> cast_shaman();
-  if( p -> _buffs.elemental_focus > 0 ) 
+  if ( p -> _buffs.elemental_focus > 0 )
   {
     p -> _buffs.elemental_focus--;
   }
@@ -1104,7 +1103,7 @@ void shaman_spell_t::consume_resource()
 double shaman_spell_t::execute_time()
 {
   shaman_t* p = player -> cast_shaman();
-  if( p -> _buffs.natures_swiftness ) return 0;
+  if ( p -> _buffs.natures_swiftness ) return 0;
   return spell_t::execute_time();
 }
 
@@ -1114,29 +1113,29 @@ void shaman_spell_t::player_buff()
 {
   shaman_t* p = player -> cast_shaman();
   spell_t::player_buff();
-  if( p -> _buffs.elemental_mastery )
+  if ( p -> _buffs.elemental_mastery )
   {
     player_crit += 0.15;
   }
-  if( p -> _buffs.nature_vulnerability && school == SCHOOL_NATURE )
+  if ( p -> _buffs.nature_vulnerability && school == SCHOOL_NATURE )
   {
     player_multiplier *= 1.0 + p -> _buffs.nature_vulnerability * 0.01;
   }
   p -> uptimes_nature_vulnerability -> update( p -> _buffs.nature_vulnerability != 0 );
 
-  if( p -> glyphs.flametongue_weapon )
+  if ( p -> glyphs.flametongue_weapon )
   {
-    if( p -> main_hand_weapon.buff == FLAMETONGUE ||
-        p ->  off_hand_weapon.buff == FLAMETONGUE ) 
+    if ( p -> main_hand_weapon.buff == FLAMETONGUE ||
+         p ->  off_hand_weapon.buff == FLAMETONGUE )
     {
       player_crit += 0.02;
     }
   }
 
-  if( p -> talents.elemental_oath ) 
+  if ( p -> talents.elemental_oath )
   {
-    if( p -> buffs.elemental_oath &&
-        p -> _buffs.elemental_focus )
+    if ( p -> buffs.elemental_oath &&
+         p -> _buffs.elemental_focus )
     {
       player_multiplier *= 1.0 + p -> talents.elemental_oath * 0.05;
     }
@@ -1152,16 +1151,16 @@ void shaman_spell_t::execute()
 {
   shaman_t* p = player -> cast_shaman();
   spell_t::execute();
-  if( result_is_hit() )
+  if ( result_is_hit() )
   {
-    if( result == RESULT_CRIT )
+    if ( result == RESULT_CRIT )
     {
       trigger_elemental_devastation( this );
       trigger_elemental_oath( this );
 
       p -> _buffs.elemental_focus = 2;
 
-      if( p -> tiers.t4_4pc_elemental )
+      if ( p -> tiers.t4_4pc_elemental )
       {
         p -> buffs.tier4_4pc = p -> rngs.tier4_4pc -> roll( 0.11 ) ;
       }
@@ -1175,29 +1174,29 @@ void shaman_spell_t::schedule_execute()
 {
   spell_t::schedule_execute();
 
-  if( time_to_execute > 0 )
+  if ( time_to_execute > 0 )
   {
     shaman_t* p = player -> cast_shaman();
-    if( p -> main_hand_attack ) p -> main_hand_attack -> cancel();
-    if( p ->  off_hand_attack ) p ->  off_hand_attack -> cancel();
+    if ( p -> main_hand_attack ) p -> main_hand_attack -> cancel();
+    if ( p ->  off_hand_attack ) p ->  off_hand_attack -> cancel();
   }
 }
 
 // shaman_spell_t::assess_damage ============================================
 
-void shaman_spell_t::assess_damage( double amount, 
+void shaman_spell_t::assess_damage( double amount,
                                     int    dmg_type )
 {
   shaman_t* p = player -> cast_shaman();
 
   spell_t::assess_damage( amount, dmg_type );
 
-  if( dmg_type == DMG_DIRECT    &&
-      school   == SCHOOL_NATURE && 
-      p -> _buffs.nature_vulnerability_charges > 0 )
+  if ( dmg_type == DMG_DIRECT    &&
+       school   == SCHOOL_NATURE &&
+       p -> _buffs.nature_vulnerability_charges > 0 )
   {
     p -> _buffs.nature_vulnerability_charges--;
-    if( p -> _buffs.nature_vulnerability_charges == 0 )
+    if ( p -> _buffs.nature_vulnerability_charges == 0 )
     {
       event_t::early( p -> _expirations.nature_vulnerability );
     }
@@ -1217,32 +1216,32 @@ struct chain_lightning_t : public shaman_spell_t
   stats_t* lightning_overload_stats;
   double   lightning_overload_chance;
 
-  chain_lightning_t( player_t* player, const std::string& options_str ) : 
-    shaman_spell_t( "chain_lightning", player, SCHOOL_NATURE, TREE_ELEMENTAL ), 
-    max_lvb_cd(0), maelstrom(0), lightning_overload_stats(0), lightning_overload_chance(0)
+  chain_lightning_t( player_t* player, const std::string& options_str ) :
+      shaman_spell_t( "chain_lightning", player, SCHOOL_NATURE, TREE_ELEMENTAL ),
+      max_lvb_cd( 0 ), maelstrom( 0 ), lightning_overload_stats( 0 ), lightning_overload_chance( 0 )
   {
     shaman_t* p = player -> cast_shaman();
 
     option_t options[] =
-    {
-      { "lvb_cd<",   OPT_FLT, &max_lvb_cd },
-      { "maelstrom", OPT_INT, &maelstrom  },
-      { NULL }
-    };
+      {
+        { "lvb_cd<",   OPT_FLT, &max_lvb_cd },
+        { "maelstrom", OPT_INT, &maelstrom  },
+        { NULL }
+      };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-    {
-      { 80, 8, 973, 1111, 0, 0.26 },
-      { 74, 7, 806,  920, 0, 0.26 },
-      { 70, 6, 734,  838, 0,  760 },
-      { 63, 5, 603,  687, 0,  650 },
-      { 56, 4, 493,  551, 0,  550 },
-      { 0, 0 }
-    };
+      {
+        { 80, 8, 973, 1111, 0, 0.26 },
+        { 74, 7, 806,  920, 0, 0.26 },
+        { 70, 6, 734,  838, 0,  760 },
+        { 63, 5, 603,  687, 0,  650 },
+        { 56, 4, 493,  551, 0,  550 },
+        { 0, 0 }
+      };
     init_rank( ranks );
 
-    base_execute_time    = 2.0; 
+    base_execute_time    = 2.0;
     may_crit             = true;
     cooldown             = 6.0;
     direct_power_mod     = ( base_execute_time / 3.5 );
@@ -1256,11 +1255,11 @@ struct chain_lightning_t : public shaman_spell_t
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.elemental_fury * 0.20;
 
-    if( p -> totems.hex ) base_spell_power += 165;
+    if ( p -> totems.hex ) base_spell_power += 165;
 
     lightning_overload_stats = p -> get_stats( "lightning_overload" );
     lightning_overload_stats -> school = SCHOOL_NATURE;
-    
+
     lightning_overload_chance = util_t::talent_rank( p -> talents.lightning_overload, 3, 0.07, 0.14, 0.20 ) / 3.0;
   }
 
@@ -1273,7 +1272,7 @@ struct chain_lightning_t : public shaman_spell_t
     {
       p -> _buffs.elemental_mastery = 2;
     }
-    if( result_is_hit() )
+    if ( result_is_hit() )
     {
       trigger_lightning_overload( this, lightning_overload_stats, lightning_overload_chance );
     }
@@ -1283,9 +1282,9 @@ struct chain_lightning_t : public shaman_spell_t
   {
     double t = shaman_spell_t::execute_time();
     shaman_t* p = player -> cast_shaman();
-    if( p -> _buffs.maelstrom_weapon )
+    if ( p -> _buffs.maelstrom_weapon )
     {
-      if( p -> _buffs.maelstrom_weapon == 5 )
+      if ( p -> _buffs.maelstrom_weapon == 5 )
       {
         t = 0;
       }
@@ -1305,15 +1304,15 @@ struct chain_lightning_t : public shaman_spell_t
   {
     shaman_t* p = player -> cast_shaman();
 
-    if( ! shaman_spell_t::ready() )
+    if ( ! shaman_spell_t::ready() )
       return false;
 
-    if( maelstrom > 0 ) 
-      if( maelstrom > p -> _buffs.maelstrom_weapon )
-      return false;
+    if ( maelstrom > 0 )
+      if ( maelstrom > p -> _buffs.maelstrom_weapon )
+        return false;
 
-    if( max_lvb_cd > 0  )
-      if( ( p -> _cooldowns.lava_burst - sim -> current_time ) > ( max_lvb_cd * haste() ) )
+    if ( max_lvb_cd > 0  )
+      if ( ( p -> _cooldowns.lava_burst - sim -> current_time ) > ( max_lvb_cd * haste() ) )
         return false;
 
     return true;
@@ -1329,34 +1328,34 @@ struct lightning_bolt_t : public shaman_spell_t
   stats_t* lightning_overload_stats;
   double   lightning_overload_chance;
   bool     tier8_4pc_elemental;
-  lightning_bolt_t( player_t* player, const std::string& options_str ) : 
-    shaman_spell_t( "lightning_bolt", player, SCHOOL_NATURE, TREE_ELEMENTAL ), 
-    maelstrom(0), ss_wait(0), lightning_overload_stats(0), lightning_overload_chance(0), tier8_4pc_elemental(false)
+  lightning_bolt_t( player_t* player, const std::string& options_str ) :
+      shaman_spell_t( "lightning_bolt", player, SCHOOL_NATURE, TREE_ELEMENTAL ),
+      maelstrom( 0 ), ss_wait( 0 ), lightning_overload_stats( 0 ), lightning_overload_chance( 0 ), tier8_4pc_elemental( false )
   {
     shaman_t* p = player -> cast_shaman();
 
     option_t options[] =
-    {
-      { "maelstrom", OPT_INT,  &maelstrom  },
-      { "ss_wait",   OPT_BOOL, &ss_wait    },
-      { NULL }
-    };
+      {
+        { "maelstrom", OPT_INT,  &maelstrom  },
+        { "ss_wait",   OPT_BOOL, &ss_wait    },
+        { NULL }
+      };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-    {
-      { 79, 14, 715, 815, 0, 0.10 },
-      { 73, 13, 595, 679, 0, 0.10 },
-      { 67, 12, 563, 643, 0, 330  },
-      { 62, 11, 495, 565, 0, 300  },
-      { 56, 10, 419, 467, 0, 265  },
-      { 50,  9, 347, 389, 0, 230  },
-      { 44,  8, 282, 316, 0, 195  },
-      { 0, 0 }
-    };
+      {
+        { 79, 14, 715, 815, 0, 0.10 },
+        { 73, 13, 595, 679, 0, 0.10 },
+        { 67, 12, 563, 643, 0, 330  },
+        { 62, 11, 495, 565, 0, 300  },
+        { 56, 10, 419, 467, 0, 265  },
+        { 50,  9, 347, 389, 0, 230  },
+        { 44,  8, 282, 316, 0, 195  },
+        { 0, 0 }
+      };
     init_rank( ranks );
 
-    base_execute_time    = 2.5; 
+    base_execute_time    = 2.5;
     may_crit             = true;
     direct_power_mod     = ( base_execute_time / 3.5 );
     base_execute_time   -= p -> talents.lightning_mastery * 0.1;
@@ -1369,17 +1368,17 @@ struct lightning_bolt_t : public shaman_spell_t
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.elemental_fury * 0.20;
 
-    if( p -> tiers.t6_4pc_elemental ) base_multiplier     *= 1.05;
-    if( p -> tiers.t7_2pc_elemental ) base_cost_reduction += 0.05;
-    if( p -> glyphs.lightning_bolt  ) base_multiplier     *= 1.04;
-    if( p -> totems.hex             ) base_spell_power    += 165;
+    if ( p -> tiers.t6_4pc_elemental ) base_multiplier     *= 1.05;
+    if ( p -> tiers.t7_2pc_elemental ) base_cost_reduction += 0.05;
+    if ( p -> glyphs.lightning_bolt  ) base_multiplier     *= 1.04;
+    if ( p -> totems.hex             ) base_spell_power    += 165;
 
     lightning_overload_stats = p -> get_stats( "lightning_overload" );
     lightning_overload_stats -> school = SCHOOL_NATURE;
 
     lightning_overload_chance = util_t::talent_rank( p -> talents.lightning_overload, 3, 0.07, 0.14, 0.20 );
 
-    tier8_4pc_elemental = (p -> tiers.t8_4pc_elemental == 1);
+    tier8_4pc_elemental = ( p -> tiers.t8_4pc_elemental == 1 );
   }
 
   virtual void execute()
@@ -1391,12 +1390,12 @@ struct lightning_bolt_t : public shaman_spell_t
     {
       p -> _buffs.elemental_mastery = 2;
     }
-    if( result_is_hit() )
+    if ( result_is_hit() )
     {
       trigger_ashtongue_talisman( this );
       trigger_lightning_overload( this, lightning_overload_stats, lightning_overload_chance );
       trigger_tier5_4pc_elemental( this );
-      if( result == RESULT_CRIT && tier8_4pc_elemental )
+      if ( result == RESULT_CRIT && tier8_4pc_elemental )
         trigger_tier8_4pc_elemental( this );
 
     }
@@ -1406,9 +1405,9 @@ struct lightning_bolt_t : public shaman_spell_t
   {
     double t = shaman_spell_t::execute_time();
     shaman_t* p = player -> cast_shaman();
-    if( p -> _buffs.maelstrom_weapon )
+    if ( p -> _buffs.maelstrom_weapon )
     {
-      if( p -> _buffs.maelstrom_weapon == 5 )
+      if ( p -> _buffs.maelstrom_weapon == 5 )
       {
         t = 0;
       }
@@ -1428,13 +1427,13 @@ struct lightning_bolt_t : public shaman_spell_t
   {
     shaman_t* p = player -> cast_shaman();
 
-    if( ! shaman_spell_t::ready() )
+    if ( ! shaman_spell_t::ready() )
       return false;
 
-    if( maelstrom > p -> _buffs.maelstrom_weapon )
+    if ( maelstrom > p -> _buffs.maelstrom_weapon )
       return false;
 
-    if( ss_wait && p -> _buffs.nature_vulnerability <= 0 )
+    if ( ss_wait && p -> _buffs.nature_vulnerability <= 0 )
       return false;
 
     return true;
@@ -1448,28 +1447,28 @@ struct lava_burst_t : public shaman_spell_t
   int flame_shock;
   int max_ticks_consumed;
 
-  lava_burst_t( player_t* player, const std::string& options_str ) : 
-    shaman_spell_t( "lava_burst", player, SCHOOL_FIRE, TREE_ELEMENTAL ), flame_shock(0), max_ticks_consumed(0)
+  lava_burst_t( player_t* player, const std::string& options_str ) :
+      shaman_spell_t( "lava_burst", player, SCHOOL_FIRE, TREE_ELEMENTAL ), flame_shock( 0 ), max_ticks_consumed( 0 )
   {
     shaman_t* p = player -> cast_shaman();
 
     option_t options[] =
-    {
-      { "flame_shock",        OPT_BOOL, &flame_shock        },
-      { "max_ticks_consumed", OPT_INT,  &max_ticks_consumed },
-      { NULL }
-    };
+      {
+        { "flame_shock",        OPT_BOOL, &flame_shock        },
+        { "max_ticks_consumed", OPT_INT,  &max_ticks_consumed },
+        { NULL }
+      };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-    {
-      { 80, 2, 1192, 1518, 0, 0.10 },
-      { 75, 1, 1012, 1290, 0, 0.10 },
-      { 0, 0 }
-    };
+      {
+        { 80, 2, 1192, 1518, 0, 0.10 },
+        { 75, 1, 1012, 1290, 0, 0.10 },
+        { 0, 0 }
+      };
     init_rank( ranks );
 
-    base_execute_time    = 2.0; 
+    base_execute_time    = 2.0;
     direct_power_mod     = base_execute_time / 3.5;
     direct_power_mod    += p -> glyphs.lava ? 0.10 : 0.00;
     may_crit             = true;
@@ -1484,9 +1483,9 @@ struct lava_burst_t : public shaman_spell_t
     base_crit_bonus_multiplier *= 1.0 + ( util_t::talent_rank( p -> talents.lava_flows,     3, 0.06, 0.12, 0.24 ) +
                                           util_t::talent_rank( p -> talents.elemental_fury, 5, 0.20 ) +
                                           ( p -> tiers.t7_4pc_elemental ? 0.10 : 0.00 ) );
-    if(  p -> totems.thunderfall )
+    if (  p -> totems.thunderfall )
     {
-      // Shaman T8 Elemental Relic -- Increases the base damage of your Lavaburst by 215. 
+      // Shaman T8 Elemental Relic -- Increases the base damage of your Lavaburst by 215.
       base_dd_min       += 215;
       base_dd_max       += 215;
     }
@@ -1500,9 +1499,9 @@ struct lava_burst_t : public shaman_spell_t
     {
       p -> _buffs.elemental_mastery = 2;
     }
-    if( result_is_hit() )
+    if ( result_is_hit() )
     {
-      if( p -> active_flame_shock && ! p -> glyphs.flame_shock )
+      if ( p -> active_flame_shock && ! p -> glyphs.flame_shock )
       {
         p -> active_flame_shock -> cancel();
       }
@@ -1525,34 +1524,34 @@ struct lava_burst_t : public shaman_spell_t
   {
     shaman_spell_t::player_buff();
     shaman_t* p = player -> cast_shaman();
-    if( p -> active_flame_shock ) player_crit += 1.0;
+    if ( p -> active_flame_shock ) player_crit += 1.0;
   }
 
   virtual bool ready()
   {
-    if( ! shaman_spell_t::ready() )
+    if ( ! shaman_spell_t::ready() )
       return false;
 
-    if( flame_shock )
+    if ( flame_shock )
     {
       shaman_t* p = player -> cast_shaman();
 
-      if( ! p -> active_flame_shock ) 
+      if ( ! p -> active_flame_shock )
         return false;
 
       double lvb_finish = sim -> current_time + execute_time();
       double fs_finish  = p -> active_flame_shock -> duration_ready;
 
-      if( lvb_finish > fs_finish )
+      if ( lvb_finish > fs_finish )
         return false;
 
       if ( ! p -> glyphs.flame_shock )
       {
-        if( max_ticks_consumed > 0 )
+        if ( max_ticks_consumed > 0 )
         {
           double earliest_finish = fs_finish - max_ticks_consumed * 3.0;
 
-          if( lvb_finish < earliest_finish )
+          if ( lvb_finish < earliest_finish )
             return false;
         }
       }
@@ -1570,8 +1569,8 @@ struct lava_burst_t : public shaman_spell_t
 
 struct elemental_mastery_t : public shaman_spell_t
 {
-  elemental_mastery_t( player_t* player, const std::string& options_str ) : 
-    shaman_spell_t( "elemental_mastery", player, SCHOOL_NATURE, TREE_ELEMENTAL )
+  elemental_mastery_t( player_t* player, const std::string& options_str ) :
+      shaman_spell_t( "elemental_mastery", player, SCHOOL_NATURE, TREE_ELEMENTAL )
   {
     shaman_t* p = player -> cast_shaman();
     assert( p -> talents.elemental_mastery );
@@ -1579,9 +1578,9 @@ struct elemental_mastery_t : public shaman_spell_t
     cooldown  = 180.0;
     cooldown -= p -> glyphs.elemental_mastery ? 30.0 : 0.0;
 
-    trigger_gcd = 0;  
+    trigger_gcd = 0;
   }
-   
+
   virtual void execute()
   {
     struct expiration_t : public event_t
@@ -1603,9 +1602,9 @@ struct elemental_mastery_t : public shaman_spell_t
       }
     };
 
-    if( sim -> log ) log_t::output( sim, "%s performs elemental_mastery", player -> name() );
+    if ( sim -> log ) log_t::output( sim, "%s performs elemental_mastery", player -> name() );
     update_ready();
-    new (sim) expiration_t( sim, player );
+    new ( sim ) expiration_t( sim, player );
   }
 };
 
@@ -1613,24 +1612,24 @@ struct elemental_mastery_t : public shaman_spell_t
 
 struct shamans_swiftness_t : public shaman_spell_t
 {
-  shamans_swiftness_t( player_t* player, const std::string& options_str ) : 
-    shaman_spell_t( "natures_swiftness", player, SCHOOL_NATURE, TREE_RESTORATION )
+  shamans_swiftness_t( player_t* player, const std::string& options_str ) :
+      shaman_spell_t( "natures_swiftness", player, SCHOOL_NATURE, TREE_RESTORATION )
   {
     shaman_t* p = player -> cast_shaman();
     assert( p -> talents.natures_swiftness );
-    trigger_gcd = 0;  
+    trigger_gcd = 0;
     cooldown = 180.0;
-    if( ! options_str.empty() )
+    if ( ! options_str.empty() )
     {
       // This will prevent Natures Swiftness from being called before the desired "free spell" is ready to be cast.
       cooldown_group = options_str;
       duration_group = options_str;
     }
   }
-   
+
   virtual void execute()
   {
-    if( sim -> log ) log_t::output( sim, "%s performs natures_swiftness", player -> name() );
+    if ( sim -> log ) log_t::output( sim, "%s performs natures_swiftness", player -> name() );
     update_ready();
     shaman_t* p = player -> cast_shaman();
     p -> aura_gain( "Natures Swiftness" );
@@ -1644,30 +1643,30 @@ struct earth_shock_t : public shaman_spell_t
 {
   int ss_wait;
 
-  earth_shock_t( player_t* player, const std::string& options_str ) : 
-    shaman_spell_t( "earth_shock", player, SCHOOL_NATURE, TREE_ELEMENTAL ), ss_wait(0)
+  earth_shock_t( player_t* player, const std::string& options_str ) :
+      shaman_spell_t( "earth_shock", player, SCHOOL_NATURE, TREE_ELEMENTAL ), ss_wait( 0 )
   {
     shaman_t* p = player -> cast_shaman();
 
     option_t options[] =
-    {
-      { "ss_wait", OPT_BOOL, &ss_wait },
-      { NULL }
-    };
+      {
+        { "ss_wait", OPT_BOOL, &ss_wait },
+        { NULL }
+      };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-    {
-      { 79, 10, 849, 895, 0, 0.18 },
-      { 74,  9, 723, 761, 0, 0.18 },
-      { 69,  8, 658, 692, 0, 535  },
-      { 60,  7, 517, 545, 0, 450  },
-      { 48,  6, 359, 381, 0, 345  },
-      { 0, 0 }
-    };
+      {
+        { 79, 10, 849, 895, 0, 0.18 },
+        { 74,  9, 723, 761, 0, 0.18 },
+        { 69,  8, 658, 692, 0, 535  },
+        { 60,  7, 517, 545, 0, 450  },
+        { 48,  6, 359, 381, 0, 345  },
+        { 0, 0 }
+      };
     init_rank( ranks );
-    
-    base_execute_time = 0; 
+
+    base_execute_time = 0;
     direct_power_mod  = 0.41;
     may_crit          = true;
     cooldown          = 6.0;
@@ -1682,7 +1681,7 @@ struct earth_shock_t : public shaman_spell_t
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.elemental_fury * 0.20;
 
-    if( p -> glyphs.shocking ) 
+    if ( p -> glyphs.shocking )
     {
       trigger_gcd = 0.5;
       min_gcd     = 0.5;
@@ -1693,10 +1692,10 @@ struct earth_shock_t : public shaman_spell_t
   {
     shaman_t* p = player -> cast_shaman();
 
-    if( ! shaman_spell_t::ready() )
+    if ( ! shaman_spell_t::ready() )
       return false;
 
-    if( ss_wait && p -> _buffs.nature_vulnerability <= 0 )
+    if ( ss_wait && p -> _buffs.nature_vulnerability <= 0 )
       return false;
 
     return true;
@@ -1707,29 +1706,29 @@ struct earth_shock_t : public shaman_spell_t
 
 struct frost_shock_t : public shaman_spell_t
 {
-  frost_shock_t( player_t* player, const std::string& options_str ) : 
-    shaman_spell_t( "frost_shock", player, SCHOOL_FROST, TREE_ELEMENTAL )
+  frost_shock_t( player_t* player, const std::string& options_str ) :
+      shaman_spell_t( "frost_shock", player, SCHOOL_FROST, TREE_ELEMENTAL )
   {
     shaman_t* p = player -> cast_shaman();
 
     option_t options[] =
-    {
-      { NULL }
-    };
+      {
+        { NULL }
+      };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-    {
-      { 78, 7, 802, 848, 0, 0.18 },
-      { 73, 6, 681, 719, 0, 0.18 },
-      { 68, 5, 640, 676, 0, 525  },
-      { 58, 4, 486, 514, 0, 430  },
-      { 46, 3, 333, 353, 0, 325  },
-      { 0, 0 }
-    };
+      {
+        { 78, 7, 802, 848, 0, 0.18 },
+        { 73, 6, 681, 719, 0, 0.18 },
+        { 68, 5, 640, 676, 0, 525  },
+        { 58, 4, 486, 514, 0, 430  },
+        { 46, 3, 333, 353, 0, 325  },
+        { 0, 0 }
+      };
     init_rank( ranks );
-    
-    base_execute_time = 0; 
+
+    base_execute_time = 0;
     direct_power_mod  = 0.41;
     may_crit          = true;
     cooldown          = 6.0;
@@ -1746,7 +1745,7 @@ struct frost_shock_t : public shaman_spell_t
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.elemental_fury * 0.20;
 
-    if( p -> glyphs.shocking ) 
+    if ( p -> glyphs.shocking )
     {
       trigger_gcd = 0.5;
       min_gcd     = 0.5;
@@ -1758,28 +1757,28 @@ struct frost_shock_t : public shaman_spell_t
 
 struct flame_shock_t : public shaman_spell_t
 {
-  flame_shock_t( player_t* player, const std::string& options_str ) : 
-    shaman_spell_t( "flame_shock", player, SCHOOL_FIRE, TREE_ELEMENTAL )
+  flame_shock_t( player_t* player, const std::string& options_str ) :
+      shaman_spell_t( "flame_shock", player, SCHOOL_FIRE, TREE_ELEMENTAL )
   {
     shaman_t* p = player -> cast_shaman();
 
     option_t options[] =
-    {
-      { NULL }
-    };
+      {
+        { NULL }
+      };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-    {
-      { 80, 9, 500, 500, 139, 0.17 },
-      { 75, 8, 425, 425, 119, 0.17 },
-      { 70, 7, 377, 377, 105, 500  },
-      { 60, 6, 309, 309,  86, 450  },
-      { 0, 0 }
-    };
+      {
+        { 80, 9, 500, 500, 139, 0.17 },
+        { 75, 8, 425, 425, 119, 0.17 },
+        { 70, 7, 377, 377, 105, 500  },
+        { 60, 6, 309, 309,  86, 450  },
+        { 0, 0 }
+      };
     init_rank( ranks );
-    
-    base_execute_time = 0; 
+
+    base_execute_time = 0;
     base_tick_time    = 3.0;
     num_ticks         = 4;
     direct_power_mod  = 0.215;
@@ -1790,7 +1789,7 @@ struct flame_shock_t : public shaman_spell_t
     tick_may_crit     = ( p -> tiers.t8_2pc_elemental != 0 );
 
     if ( p -> glyphs.flame_shock ) num_ticks += 2;
-      
+
     cooldown -= ( p -> talents.reverberation  * 0.2 +
                   p -> talents.booming_echoes * 1.0 );
 
@@ -1808,7 +1807,7 @@ struct flame_shock_t : public shaman_spell_t
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.elemental_fury * 0.20;
 
-    if( p -> glyphs.shocking ) 
+    if ( p -> glyphs.shocking )
     {
       trigger_gcd = 0.5;
       min_gcd     = 0.5;
@@ -1822,29 +1821,29 @@ struct flame_shock_t : public shaman_spell_t
 
 struct searing_totem_t : public shaman_spell_t
 {
-  searing_totem_t( player_t* player, const std::string& options_str ) : 
-    shaman_spell_t( "searing_totem", player, SCHOOL_FIRE, TREE_ELEMENTAL )
+  searing_totem_t( player_t* player, const std::string& options_str ) :
+      shaman_spell_t( "searing_totem", player, SCHOOL_FIRE, TREE_ELEMENTAL )
   {
     shaman_t* p = player -> cast_shaman();
 
     option_t options[] =
-    {
-      { NULL }
-    };
+      {
+        { NULL }
+      };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-    {
-      { 80, 10, 90, 120, 0, 0.07 },
-      { 75,  9, 77, 103, 0, 0.07 },
-      { 71,  8, 68,  92, 0, 0.07 },
-      { 69,  7, 56,  74, 0, 0.07 },
-      { 60,  6, 40,  54, 0, 0.09 },
-      { 0, 0 }
-    };
+      {
+        { 80, 10, 90, 120, 0, 0.07 },
+        { 75,  9, 77, 103, 0, 0.07 },
+        { 71,  8, 68,  92, 0, 0.07 },
+        { 69,  7, 56,  74, 0, 0.07 },
+        { 60,  6, 40,  54, 0, 0.09 },
+        { 0, 0 }
+      };
     init_rank( ranks );
 
-    base_execute_time = 0; 
+    base_execute_time = 0;
     base_tick_time    = 2.5;
     direct_power_mod  = base_tick_time / 15.0;
     num_ticks         = 24;
@@ -1865,9 +1864,9 @@ struct searing_totem_t : public shaman_spell_t
   // (2) Each "tick" is like an "execute".
   // (3) No hit/miss events are triggered.
 
-  virtual void execute() 
+  virtual void execute()
   {
-    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     player_buff();
     schedule_tick();
@@ -1876,17 +1875,17 @@ struct searing_totem_t : public shaman_spell_t
     update_stats( DMG_DIRECT );
   }
 
-  virtual void tick() 
+  virtual void tick()
   {
-    if( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
+    if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
     may_resist = false;
     target_debuff( DMG_DIRECT );
     calculate_result();
     may_resist = true;
-    if( result_is_hit() )
+    if ( result_is_hit() )
     {
       calculate_direct_damage();
-      if( direct_dmg > 0 )
+      if ( direct_dmg > 0 )
       {
         tick_dmg = direct_dmg;
         assess_damage( tick_dmg, DMG_OVER_TIME );
@@ -1894,40 +1893,40 @@ struct searing_totem_t : public shaman_spell_t
     }
     else
     {
-      if( sim -> log ) log_t::output( sim, "%s avoids %s (%s)", sim -> target -> name(), name(), util_t::result_type_string( result ) );
+      if ( sim -> log ) log_t::output( sim, "%s avoids %s (%s)", sim -> target -> name(), name(), util_t::result_type_string( result ) );
     }
     update_stats( DMG_OVER_TIME );
   }
 
-  virtual double gcd() { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
+virtual double gcd() { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
 };
 
 // Magma Totem Spell =======================================================
 
 struct magma_totem_t : public shaman_spell_t
 {
-  magma_totem_t( player_t* player, const std::string& options_str ) : 
-    shaman_spell_t( "magma_totem", player, SCHOOL_FIRE, TREE_ELEMENTAL )
+  magma_totem_t( player_t* player, const std::string& options_str ) :
+      shaman_spell_t( "magma_totem", player, SCHOOL_FIRE, TREE_ELEMENTAL )
   {
     shaman_t* p = player -> cast_shaman();
 
     option_t options[] =
-    {
-      { NULL }
-    };
+      {
+        { NULL }
+      };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-    {
-      { 78,  7, 371, 371, 0, 0.27 },
-      { 73,  6, 314, 314, 0, 0.27 },
-      { 65,  5, 180, 180, 0, 0.27 },
-      { 56,  4, 131, 131, 0, 0.27 },
-      { 0, 0 }
-    };
+      {
+        { 78,  7, 371, 371, 0, 0.27 },
+        { 73,  6, 314, 314, 0, 0.27 },
+        { 65,  5, 180, 180, 0, 0.27 },
+        { 56,  4, 131, 131, 0, 0.27 },
+        { 0, 0 }
+      };
     init_rank( ranks );
 
-    base_execute_time = 0; 
+    base_execute_time = 0;
     base_tick_time    = 2.0;
     direct_power_mod  = 0.75 * base_tick_time / 15.0;
     num_ticks         = 10;
@@ -1948,9 +1947,9 @@ struct magma_totem_t : public shaman_spell_t
   // (2) Each "tick" is like an "execute".
   // (3) No hit/miss events are triggered.
 
-  virtual void execute() 
+  virtual void execute()
   {
-    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     player_buff();
     schedule_tick();
@@ -1959,17 +1958,17 @@ struct magma_totem_t : public shaman_spell_t
     update_stats( DMG_DIRECT );
   }
 
-  virtual void tick() 
+  virtual void tick()
   {
-    if( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
+    if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
     may_resist = false;
     target_debuff( DMG_DIRECT );
     calculate_result();
     may_resist = true;
-    if( result_is_hit() )
+    if ( result_is_hit() )
     {
       calculate_direct_damage();
-      if( direct_dmg > 0 )
+      if ( direct_dmg > 0 )
       {
         tick_dmg = direct_dmg;
         assess_damage( tick_dmg, DMG_OVER_TIME );
@@ -1977,12 +1976,12 @@ struct magma_totem_t : public shaman_spell_t
     }
     else
     {
-      if( sim -> log ) log_t::output( sim, "%s avoids %s (%s)", sim -> target -> name(), name(), util_t::result_type_string( result ) );
+      if ( sim -> log ) log_t::output( sim, "%s avoids %s (%s)", sim -> target -> name(), name(), util_t::result_type_string( result ) );
     }
     update_stats( DMG_OVER_TIME );
   }
 
-  virtual double gcd() { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
+virtual double gcd() { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
 };
 
 // Totem of Wrath Spell =====================================================
@@ -1991,18 +1990,18 @@ struct totem_of_wrath_t : public shaman_spell_t
 {
   double bonus_spell_power;
 
-  totem_of_wrath_t( player_t* player, const std::string& options_str ) : 
-    shaman_spell_t( "totem_of_wrath", player, SCHOOL_NATURE, TREE_ELEMENTAL ), bonus_spell_power(0)
+  totem_of_wrath_t( player_t* player, const std::string& options_str ) :
+      shaman_spell_t( "totem_of_wrath", player, SCHOOL_NATURE, TREE_ELEMENTAL ), bonus_spell_power( 0 )
   {
     shaman_t* p = player -> cast_shaman();
     assert( p -> talents.totem_of_wrath );
 
     option_t options[] =
-    {
-      { NULL }
-    };
+      {
+        { NULL }
+      };
     parse_options( options, options_str );
-      
+
     base_cost      = 400;
     duration_group = "fire_totem";
     trigger_gcd    = 1.0;
@@ -2017,12 +2016,12 @@ struct totem_of_wrath_t : public shaman_spell_t
   {
     shaman_t* p = player -> cast_shaman();
 
-    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
 
     consume_resource();
     update_ready();
 
-    if( p -> buffs.totem_of_wrath == 0 )
+    if ( p -> buffs.totem_of_wrath == 0 )
     {
       struct totem_expiration_t : public event_t
       {
@@ -2030,7 +2029,7 @@ struct totem_of_wrath_t : public shaman_spell_t
         {
           name = "Totem of Wrath Expiration";
           sim -> target -> debuffs.totem_of_wrath++;
-          for( player_t* p = sim -> player_list; p; p = p -> next )
+          for ( player_t* p = sim -> player_list; p; p = p -> next )
           {
             p -> aura_gain( "Totem of Wrath" );
             p -> buffs.totem_of_wrath = bonus_spell_power;
@@ -2040,7 +2039,7 @@ struct totem_of_wrath_t : public shaman_spell_t
         virtual void execute()
         {
           sim -> target -> debuffs.totem_of_wrath--;
-          for( player_t* p = sim -> player_list; p; p = p -> next )
+          for ( player_t* p = sim -> player_list; p; p = p -> next )
           {
             p -> aura_loss( "Totem of Wrath" );
             p -> buffs.totem_of_wrath = 0;
@@ -2051,7 +2050,7 @@ struct totem_of_wrath_t : public shaman_spell_t
       new ( sim ) totem_expiration_t( sim, p, bonus_spell_power );
     }
 
-    if( p -> glyphs.totem_of_wrath )
+    if ( p -> glyphs.totem_of_wrath )
     {
       struct glyph_expiration_t : public event_t
       {
@@ -2078,19 +2077,19 @@ struct totem_of_wrath_t : public shaman_spell_t
   {
     shaman_t* p = player -> cast_shaman();
 
-    if( ! shaman_spell_t::ready() )
+    if ( ! shaman_spell_t::ready() )
       return false;
 
-    if( p -> buffs.totem_of_wrath == 0 )
+    if ( p -> buffs.totem_of_wrath == 0 )
       return true;
 
-    if( p -> glyphs.totem_of_wrath && p -> _buffs.totem_of_wrath_glyph == 0 )
+    if ( p -> glyphs.totem_of_wrath && p -> _buffs.totem_of_wrath_glyph == 0 )
       return true;
 
     return false;
   }
 
-  virtual double gcd() { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
+virtual double gcd() { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
 };
 
 // Flametongue Totem Spell ====================================================
@@ -2099,26 +2098,26 @@ struct flametongue_totem_t : public shaman_spell_t
 {
   double bonus;
 
-  flametongue_totem_t( player_t* player, const std::string& options_str ) : 
-    shaman_spell_t( "flametongue_totem", player, SCHOOL_FIRE, TREE_ENHANCEMENT ), bonus(0)
+  flametongue_totem_t( player_t* player, const std::string& options_str ) :
+      shaman_spell_t( "flametongue_totem", player, SCHOOL_FIRE, TREE_ENHANCEMENT ), bonus( 0 )
   {
     shaman_t* p = player -> cast_shaman();
 
     option_t options[] =
-    {
-      { NULL }
-    };
+      {
+        { NULL }
+      };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-    {
-      { 80, 8,  0,  0, 144, 0.11 },
-      { 76, 7,  0,  0, 122, 0.11 },
-      { 72, 6,  0,  0, 106, 0.11 },
-      { 67, 5, 12, 12,  73, 325  },
-      { 58, 4, 15, 15,  62, 275  },
-      { 0, 0 }
-    };
+      {
+        { 80, 8,  0,  0, 144, 0.11 },
+        { 76, 7,  0,  0, 122, 0.11 },
+        { 72, 6,  0,  0, 106, 0.11 },
+        { 67, 5, 12, 12,  73, 325  },
+        { 58, 4, 15, 15,  62, 275  },
+        { 0, 0 }
+      };
     init_rank( ranks );
 
     base_cost      = p -> resource_base[ RESOURCE_MANA ] * 0.11;
@@ -2138,10 +2137,10 @@ struct flametongue_totem_t : public shaman_spell_t
     {
       flametongue_totem_t* totem;
 
-      expiration_t( sim_t* sim, player_t* player, flametongue_totem_t* t ) : event_t( sim, player ), totem(t)
+      expiration_t( sim_t* sim, player_t* player, flametongue_totem_t* t ) : event_t( sim, player ), totem( t )
       {
         name = "Flametongue Totem Expiration";
-        for( player_t* p = sim -> player_list; p; p = p -> next )
+        for ( player_t* p = sim -> player_list; p; p = p -> next )
         {
           p -> aura_gain( "Flametongue Totem" );
           p -> buffs.flametongue_totem = t -> bonus;
@@ -2151,7 +2150,7 @@ struct flametongue_totem_t : public shaman_spell_t
 
       virtual void execute()
       {
-        for( player_t* p = sim -> player_list; p; p = p -> next )
+        for ( player_t* p = sim -> player_list; p; p = p -> next )
         {
           p -> aura_loss( "Flametongue Totem" );
           p -> buffs.flametongue_totem = 0;
@@ -2159,7 +2158,7 @@ struct flametongue_totem_t : public shaman_spell_t
       }
     };
 
-    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
     new ( sim ) expiration_t( sim, player, this );
@@ -2167,13 +2166,13 @@ struct flametongue_totem_t : public shaman_spell_t
 
   virtual bool ready()
   {
-    if( ! shaman_spell_t::ready() )
+    if ( ! shaman_spell_t::ready() )
       return false;
 
     return( player -> buffs.flametongue_totem == 0 );
   }
 
-  virtual double gcd() { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
+virtual double gcd() { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
 };
 
 // Windfury Totem Spell =====================================================
@@ -2182,17 +2181,17 @@ struct windfury_totem_t : public shaman_spell_t
 {
   double bonus;
 
-  windfury_totem_t( player_t* player, const std::string& options_str ) : 
-    shaman_spell_t( "windfury_totem", player, SCHOOL_NATURE, TREE_ENHANCEMENT )
+  windfury_totem_t( player_t* player, const std::string& options_str ) :
+      shaman_spell_t( "windfury_totem", player, SCHOOL_NATURE, TREE_ENHANCEMENT )
   {
     shaman_t* p = player -> cast_shaman();
 
     option_t options[] =
-    {
-      { NULL }
-    };
+      {
+        { NULL }
+      };
     parse_options( options, options_str );
-      
+
     base_cost      = 275;
     duration_group = "air_totem";
     trigger_gcd    = 1.0;
@@ -2209,10 +2208,10 @@ struct windfury_totem_t : public shaman_spell_t
     {
       windfury_totem_t* totem;
 
-      expiration_t( sim_t* sim, player_t* player, windfury_totem_t* t ) : event_t( sim, player ), totem(t)
+      expiration_t( sim_t* sim, player_t* player, windfury_totem_t* t ) : event_t( sim, player ), totem( t )
       {
         name = "Windfury Totem Expiration";
-        for( player_t* p = sim -> player_list; p; p = p -> next )
+        for ( player_t* p = sim -> player_list; p; p = p -> next )
         {
           p -> aura_gain( "Windfury Totem" );
           p -> buffs.windfury_totem = t -> bonus;
@@ -2221,10 +2220,10 @@ struct windfury_totem_t : public shaman_spell_t
       }
       virtual void execute()
       {
-        for( player_t* p = sim -> player_list; p; p = p -> next )
+        for ( player_t* p = sim -> player_list; p; p = p -> next )
         {
           // Make sure it hasn't already been overriden by a more powerful totem.
-          if( totem -> bonus < p -> buffs.windfury_totem )
+          if ( totem -> bonus < p -> buffs.windfury_totem )
             continue;
 
           p -> aura_loss( "Windfury Totem" );
@@ -2233,7 +2232,7 @@ struct windfury_totem_t : public shaman_spell_t
       }
     };
 
-    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
     new ( sim ) expiration_t( sim, player, this );
@@ -2241,13 +2240,13 @@ struct windfury_totem_t : public shaman_spell_t
 
   virtual bool ready()
   {
-    if( ! shaman_spell_t::ready() )
+    if ( ! shaman_spell_t::ready() )
       return false;
 
     return( player -> buffs.windfury_totem < bonus );
   }
 
-  virtual double gcd() { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
+virtual double gcd() { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
 };
 
 // Flametongue Weapon Spell ===================================================
@@ -2257,33 +2256,33 @@ struct flametongue_weapon_t : public shaman_spell_t
   double bonus_power;
   int    main, off;
 
-  flametongue_weapon_t( player_t* player, const std::string& options_str ) : 
-    shaman_spell_t( "flametongue_weapon", player, SCHOOL_FIRE, TREE_ENHANCEMENT ), bonus_power(0), main(0), off(0)
+  flametongue_weapon_t( player_t* player, const std::string& options_str ) :
+      shaman_spell_t( "flametongue_weapon", player, SCHOOL_FIRE, TREE_ENHANCEMENT ), bonus_power( 0 ), main( 0 ), off( 0 )
   {
     shaman_t* p = player -> cast_shaman();
-    
+
     std::string weapon_str;
 
     option_t options[] =
-    {
-      { "weapon", OPT_STRING, &weapon_str },
-      { NULL }
-    };
+      {
+        { "weapon", OPT_STRING, &weapon_str },
+        { NULL }
+      };
     parse_options( options, options_str );
 
-    if( weapon_str.empty() ) 
+    if ( weapon_str.empty() )
     {
       main = off = 1;
     }
-    else if( weapon_str == "main" )
+    else if ( weapon_str == "main" )
     {
       main = 1;
     }
-    else if( weapon_str == "off" )
+    else if ( weapon_str == "off" )
     {
       off = 1;
     }
-    else if( weapon_str == "both" )
+    else if ( weapon_str == "both" )
     {
       main = 1;
       off = 1;
@@ -2291,7 +2290,7 @@ struct flametongue_weapon_t : public shaman_spell_t
     else
     {
       fprintf( sim -> output_file, "flametongue_weapon: weapon option must be one of main/off/both\n" );
-      assert(0);
+      assert( 0 );
     }
     trigger_gcd = 0;
 
@@ -2302,14 +2301,14 @@ struct flametongue_weapon_t : public shaman_spell_t
 
   virtual void execute()
   {
-    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
 
-    if( main ) 
+    if ( main )
     {
       player -> main_hand_weapon.buff = FLAMETONGUE;
       player -> main_hand_weapon.buff_bonus = bonus_power;
     }
-    if( off )
+    if ( off )
     {
       player -> off_hand_weapon.buff = FLAMETONGUE;
       player -> off_hand_weapon.buff_bonus = bonus_power;
@@ -2318,10 +2317,10 @@ struct flametongue_weapon_t : public shaman_spell_t
 
   virtual bool ready()
   {
-    if( main && ( player -> main_hand_weapon.buff != FLAMETONGUE ) )
+    if ( main && ( player -> main_hand_weapon.buff != FLAMETONGUE ) )
       return true;
 
-    if( off && ( player -> off_hand_weapon.buff != FLAMETONGUE ) )
+    if ( off && ( player -> off_hand_weapon.buff != FLAMETONGUE ) )
       return true;
 
     return false;
@@ -2335,32 +2334,32 @@ struct windfury_weapon_t : public shaman_spell_t
   double bonus_power;
   int    main, off;
 
-  windfury_weapon_t( player_t* player, const std::string& options_str ) : 
-    shaman_spell_t( "windfury_weapon", player, SCHOOL_NATURE, TREE_ENHANCEMENT ), bonus_power(0), main(0), off(0)
+  windfury_weapon_t( player_t* player, const std::string& options_str ) :
+      shaman_spell_t( "windfury_weapon", player, SCHOOL_NATURE, TREE_ENHANCEMENT ), bonus_power( 0 ), main( 0 ), off( 0 )
   {
     shaman_t* p = player -> cast_shaman();
 
     std::string weapon_str;
     option_t options[] =
-    {
-      { "weapon", OPT_STRING, &weapon_str },
-      { NULL }
-    };
+      {
+        { "weapon", OPT_STRING, &weapon_str },
+        { NULL }
+      };
     parse_options( options, options_str );
 
-    if( weapon_str.empty() ) 
+    if ( weapon_str.empty() )
     {
       main = off = 1;
     }
-    else if( weapon_str == "main" )
+    else if ( weapon_str == "main" )
     {
       main = 1;
     }
-    else if( weapon_str == "off" )
+    else if ( weapon_str == "off" )
     {
       off = 1;
     }
-    else if( weapon_str == "both" )
+    else if ( weapon_str == "both" )
     {
       main = 1;
       off = 1;
@@ -2368,7 +2367,7 @@ struct windfury_weapon_t : public shaman_spell_t
     else
     {
       fprintf( sim -> output_file, "windfury_weapon: weapon option must be one of main/off/both\n" );
-      assert(0);
+      assert( 0 );
     }
     trigger_gcd = 0;
 
@@ -2377,14 +2376,14 @@ struct windfury_weapon_t : public shaman_spell_t
 
   virtual void execute()
   {
-    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
 
-    if( main ) 
+    if ( main )
     {
       player -> main_hand_weapon.buff = WINDFURY;
       player -> main_hand_weapon.buff_bonus = bonus_power;
     }
-    if( off ) 
+    if ( off )
     {
       player -> off_hand_weapon.buff = WINDFURY;
       player -> off_hand_weapon.buff_bonus = bonus_power;
@@ -2393,10 +2392,10 @@ struct windfury_weapon_t : public shaman_spell_t
 
   virtual bool ready()
   {
-    if( main && ( player -> main_hand_weapon.buff != WINDFURY ) )
+    if ( main && ( player -> main_hand_weapon.buff != WINDFURY ) )
       return true;
 
-    if( off && ( player -> off_hand_weapon.buff != WINDFURY ) )
+    if ( off && ( player -> off_hand_weapon.buff != WINDFURY ) )
       return true;
 
     return false;
@@ -2409,8 +2408,8 @@ struct strength_of_earth_totem_t : public shaman_spell_t
 {
   double bonus;
 
-  strength_of_earth_totem_t( player_t* player, const std::string& options_str ) : 
-    shaman_spell_t( "strength_of_earth_totem", player, SCHOOL_NATURE, TREE_ENHANCEMENT ), bonus(0)
+  strength_of_earth_totem_t( player_t* player, const std::string& options_str ) :
+      shaman_spell_t( "strength_of_earth_totem", player, SCHOOL_NATURE, TREE_ENHANCEMENT ), bonus( 0 )
   {
     shaman_t* p = player -> cast_shaman();
 
@@ -2431,10 +2430,10 @@ struct strength_of_earth_totem_t : public shaman_spell_t
     {
       double bonus;
 
-      expiration_t( sim_t* sim, player_t* player, double b ) : event_t( sim, player ), bonus(b)
+      expiration_t( sim_t* sim, player_t* player, double b ) : event_t( sim, player ), bonus( b )
       {
         name = "Strength of Earth Totem Expiration";
-        for( player_t* p = sim -> player_list; p; p = p -> next )
+        for ( player_t* p = sim -> player_list; p; p = p -> next )
         {
           p -> aura_gain( "Strength of Earth Totem" );
           p -> buffs.strength_of_earth = bonus;
@@ -2443,10 +2442,10 @@ struct strength_of_earth_totem_t : public shaman_spell_t
       }
       virtual void execute()
       {
-        for( player_t* p = sim -> player_list; p; p = p -> next )
+        for ( player_t* p = sim -> player_list; p; p = p -> next )
         {
           // Make sure it hasn't already been overriden by a more powerful totem.
-          if( bonus < p -> buffs.strength_of_earth )
+          if ( bonus < p -> buffs.strength_of_earth )
             continue;
 
           p -> aura_loss( "Strength of Earth Totem" );
@@ -2455,7 +2454,7 @@ struct strength_of_earth_totem_t : public shaman_spell_t
       }
     };
 
-    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
     new ( sim ) expiration_t( sim, player, bonus );
@@ -2463,30 +2462,30 @@ struct strength_of_earth_totem_t : public shaman_spell_t
 
   virtual bool ready()
   {
-    if( ! shaman_spell_t::ready() )
+    if ( ! shaman_spell_t::ready() )
       return false;
 
     return( player -> buffs.strength_of_earth < bonus );
   }
 
-  virtual double gcd() { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
+virtual double gcd() { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
 };
 
 // Wrath of Air Totem Spell =================================================
 
 struct wrath_of_air_totem_t : public shaman_spell_t
 {
-  wrath_of_air_totem_t( player_t* player, const std::string& options_str ) : 
-    shaman_spell_t( "wrath_of_air_totem", player, SCHOOL_NATURE, TREE_ENHANCEMENT )
+  wrath_of_air_totem_t( player_t* player, const std::string& options_str ) :
+      shaman_spell_t( "wrath_of_air_totem", player, SCHOOL_NATURE, TREE_ENHANCEMENT )
   {
     shaman_t* p = player -> cast_shaman();
 
     option_t options[] =
-    {
-      { NULL }
-    };
+      {
+        { NULL }
+      };
     parse_options( options, options_str );
-      
+
     base_cost      = 320;
     duration_group = "air_totem";
     trigger_gcd    = 1.0;
@@ -2502,7 +2501,7 @@ struct wrath_of_air_totem_t : public shaman_spell_t
       expiration_t( sim_t* sim, player_t* player ) : event_t( sim, player )
       {
         name = "Wrath of Air Totem Expiration";
-        for( player_t* p = sim -> player_list; p; p = p -> next )
+        for ( player_t* p = sim -> player_list; p; p = p -> next )
         {
           p -> aura_gain( "Wrath of Air Totem" );
           p -> buffs.wrath_of_air = 1;
@@ -2511,7 +2510,7 @@ struct wrath_of_air_totem_t : public shaman_spell_t
       }
       virtual void execute()
       {
-        for( player_t* p = sim -> player_list; p; p = p -> next )
+        for ( player_t* p = sim -> player_list; p; p = p -> next )
         {
           p -> aura_loss( "Wrath of Air Totem" );
           p -> buffs.wrath_of_air = 0;
@@ -2519,7 +2518,7 @@ struct wrath_of_air_totem_t : public shaman_spell_t
       }
     };
 
-    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
     new ( sim ) expiration_t( sim, player );
@@ -2527,33 +2526,33 @@ struct wrath_of_air_totem_t : public shaman_spell_t
 
   virtual bool ready()
   {
-    if( ! shaman_spell_t::ready() )
+    if ( ! shaman_spell_t::ready() )
       return false;
 
     return( player -> buffs.wrath_of_air == 0 );
   }
 
-  virtual double gcd() { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
+virtual double gcd() { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
 };
 
 // Mana Tide Totem Spell ==================================================
 
 struct mana_tide_totem_t : public shaman_spell_t
 {
-  mana_tide_totem_t( player_t* player, const std::string& options_str ) : 
-    shaman_spell_t( "mana_tide_totem", player, SCHOOL_NATURE, TREE_RESTORATION )
+  mana_tide_totem_t( player_t* player, const std::string& options_str ) :
+      shaman_spell_t( "mana_tide_totem", player, SCHOOL_NATURE, TREE_RESTORATION )
   {
     shaman_t* p = player -> cast_shaman();
     assert( p -> talents.mana_tide_totem );
 
     option_t options[] =
-    {
-      { NULL }
-    };
+      {
+        { NULL }
+      };
     parse_options( options, options_str );
 
     harmful        = false;
-    base_tick_time = 3.0; 
+    base_tick_time = 3.0;
     num_ticks      = 4;
     cooldown       = 300.0;
     duration_group = "water_totem";
@@ -2564,24 +2563,24 @@ struct mana_tide_totem_t : public shaman_spell_t
                              p -> talents.mental_quickness * 0.02 );
   }
 
-  virtual void execute() 
+  virtual void execute()
   {
-    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     schedule_tick();
     update_ready();
   }
 
-  virtual void tick() 
+  virtual void tick()
   {
-    if( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
+    if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
 
     double pct = 0.06;
-    if( player -> cast_shaman() -> glyphs.mana_tide ) pct += 0.01;
+    if ( player -> cast_shaman() -> glyphs.mana_tide ) pct += 0.01;
 
-    for( player_t* p = sim -> player_list; p; p = p -> next )
+    for ( player_t* p = sim -> player_list; p; p = p -> next )
     {
-      if( p -> party == player -> party )
+      if ( p -> party == player -> party )
       {
         p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * pct, p -> gains.mana_tide );
       }
@@ -2590,13 +2589,13 @@ struct mana_tide_totem_t : public shaman_spell_t
 
   virtual bool ready()
   {
-    if( ! shaman_spell_t::ready() )
+    if ( ! shaman_spell_t::ready() )
       return false;
 
     return( player -> resource_current[ RESOURCE_MANA ] < ( 0.75 * player -> resource_max[ RESOURCE_MANA ] ) );
   }
 
-  virtual double gcd() { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
+virtual double gcd() { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
 };
 
 // Mana Spring Totem Spell ================================================
@@ -2605,15 +2604,15 @@ struct mana_spring_totem_t : public shaman_spell_t
 {
   double regen;
 
-  mana_spring_totem_t( player_t* player, const std::string& options_str ) : 
-    shaman_spell_t( "mana_spring_totem", player, SCHOOL_NATURE, TREE_RESTORATION ), regen(0)
+  mana_spring_totem_t( player_t* player, const std::string& options_str ) :
+      shaman_spell_t( "mana_spring_totem", player, SCHOOL_NATURE, TREE_RESTORATION ), regen( 0 )
   {
     shaman_t* p = player -> cast_shaman();
 
     option_t options[] =
-    {
-      { NULL }
-    };
+      {
+        { NULL }
+      };
     parse_options( options, options_str );
 
     harmful         = false;
@@ -2629,11 +2628,11 @@ struct mana_spring_totem_t : public shaman_spell_t
     regen *= 1.0 + util_t::talent_rank( p -> talents.restorative_totems, 3, 0.07, 0.12, 0.20 );
   }
 
-  virtual void execute() 
+  virtual void execute()
   {
-    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
-    for( player_t* p = sim -> player_list; p; p = p -> next )
+    for ( player_t* p = sim -> player_list; p; p = p -> next )
     {
       p -> buffs.mana_spring = regen;
     }
@@ -2642,13 +2641,13 @@ struct mana_spring_totem_t : public shaman_spell_t
 
   virtual bool ready()
   {
-    if( player -> buffs.mana_spring >= regen )
+    if ( player -> buffs.mana_spring >= regen )
       return false;
 
     return shaman_spell_t::ready();
   }
 
-  virtual double gcd() { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
+virtual double gcd() { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
 };
 
 // Bloodlust Spell ===========================================================
@@ -2657,16 +2656,16 @@ struct bloodlust_t : public shaman_spell_t
 {
   int target_pct;
 
-  bloodlust_t( player_t* player, const std::string& options_str ) : 
-    shaman_spell_t( "bloodlust", player, SCHOOL_NATURE, TREE_ENHANCEMENT ), target_pct(0)
+  bloodlust_t( player_t* player, const std::string& options_str ) :
+      shaman_spell_t( "bloodlust", player, SCHOOL_NATURE, TREE_ENHANCEMENT ), target_pct( 0 )
   {
     shaman_t* p = player -> cast_shaman();
 
     option_t options[] =
-    {
-      { "target_pct", OPT_DEPRECATED, (void*) "health_percentage<" },
-      { NULL }
-    };
+      {
+        { "target_pct", OPT_DEPRECATED, ( void* ) "health_percentage<" },
+        { NULL }
+      };
     parse_options( options, options_str );
 
     harmful = false;
@@ -2682,10 +2681,10 @@ struct bloodlust_t : public shaman_spell_t
       expiration_t( sim_t* sim, player_t* player ) : event_t( sim, player )
       {
         name = "Bloodlust Expiration";
-        for( player_t* p = sim -> player_list; p; p = p -> next )
+        for ( player_t* p = sim -> player_list; p; p = p -> next )
         {
           if ( p -> sleeping ) continue;
-          if( sim -> cooldown_ready( p -> cooldowns.bloodlust ) )
+          if ( sim -> cooldown_ready( p -> cooldowns.bloodlust ) )
           {
             p -> aura_gain( "Bloodlust" );
             p -> buffs.bloodlust = 1;
@@ -2696,9 +2695,9 @@ struct bloodlust_t : public shaman_spell_t
       }
       virtual void execute()
       {
-        for( player_t* p = sim -> player_list; p; p = p -> next )
+        for ( player_t* p = sim -> player_list; p; p = p -> next )
         {
-          if (p -> buffs.bloodlust > 0 )
+          if ( p -> buffs.bloodlust > 0 )
           {
             p -> aura_loss( "Bloodlust" );
             p -> buffs.bloodlust = 0;
@@ -2707,7 +2706,7 @@ struct bloodlust_t : public shaman_spell_t
       }
     };
 
-    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
     new ( sim ) expiration_t( sim, player );
@@ -2715,10 +2714,10 @@ struct bloodlust_t : public shaman_spell_t
 
   virtual bool ready()
   {
-    if( player -> buffs.bloodlust )
+    if ( player -> buffs.bloodlust )
       return false;
 
-    if( ! sim -> cooldown_ready( player -> cooldowns.bloodlust ) )
+    if ( ! sim -> cooldown_ready( player -> cooldowns.bloodlust ) )
       return false;
 
     return shaman_spell_t::ready();
@@ -2729,15 +2728,15 @@ struct bloodlust_t : public shaman_spell_t
 
 struct shamanistic_rage_t : public shaman_spell_t
 {
-  shamanistic_rage_t( player_t* player, const std::string& options_str ) : 
-    shaman_spell_t( "shamanistic_rage", player, SCHOOL_NATURE, TREE_ENHANCEMENT )
+  shamanistic_rage_t( player_t* player, const std::string& options_str ) :
+      shaman_spell_t( "shamanistic_rage", player, SCHOOL_NATURE, TREE_ENHANCEMENT )
   {
     option_t options[] =
-    {
-      { NULL }
-    };
+      {
+        { NULL }
+      };
     parse_options( options, options_str );
-     
+
     cooldown = 120;
   }
 
@@ -2761,14 +2760,14 @@ struct shamanistic_rage_t : public shaman_spell_t
       }
     };
 
-    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     update_ready();
     new ( sim ) expiration_t( sim, player );
   }
 
   virtual bool ready()
   {
-    if( ! shaman_spell_t::ready() )
+    if ( ! shaman_spell_t::ready() )
       return false;
 
     return( player -> resource_current[ RESOURCE_MANA ] < ( 0.10 * player -> resource_max[ RESOURCE_MANA ] ) );
@@ -2781,11 +2780,11 @@ struct lightning_shield_t : public shaman_spell_t
 {
   struct lightning_charge_t : public shaman_spell_t
   {
-    lightning_charge_t( player_t* player, double base_dmg ) : 
-      shaman_spell_t( "lightning_shield", player, SCHOOL_NATURE, TREE_ENHANCEMENT )
+    lightning_charge_t( player_t* player, double base_dmg ) :
+        shaman_spell_t( "lightning_shield", player, SCHOOL_NATURE, TREE_ENHANCEMENT )
     {
       // Use the same name "lightning_shield" to make sure the cost of refreshing the shield is included with the procs.
-    
+
       shaman_t* p = player -> cast_shaman();
 
       base_dd_min = base_dd_max = base_dmg;
@@ -2799,40 +2798,40 @@ struct lightning_shield_t : public shaman_spell_t
 
       base_crit_bonus_multiplier *= 1.0 + p -> talents.elemental_fury * 0.20;
 
-      if( p -> glyphs.lightning_shield ) base_multiplier *= 1.20;
+      if ( p -> glyphs.lightning_shield ) base_multiplier *= 1.20;
     }
     virtual void cancel()
     {
       shaman_t* p = player -> cast_shaman();
       p -> aura_loss( "Lightning Shield" );
       p -> _buffs.lightning_charges = 0;
-      p -> _buffs.lightning_shield = 0;    
+      p -> _buffs.lightning_shield = 0;
     }
   };
 
-  lightning_shield_t( player_t* player, const std::string& options_str ) : 
-    shaman_spell_t( "lightning_shield", player, SCHOOL_NATURE, TREE_ENHANCEMENT )
+  lightning_shield_t( player_t* player, const std::string& options_str ) :
+      shaman_spell_t( "lightning_shield", player, SCHOOL_NATURE, TREE_ENHANCEMENT )
   {
     shaman_t* p = player -> cast_shaman();
 
     option_t options[] =
-    {
-      { NULL }
-    };
+      {
+        { NULL }
+      };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-    {
-      { 80, 7, 380, 380, 0, 0 },
-      { 75, 6, 325, 325, 0, 0 },
-      { 70, 5, 287, 287, 0, 0 },
-      { 63, 4, 232, 232, 0, 0 },
-      { 56, 3, 198, 198, 0, 0 },
-      { 0, 0 }
-    };
+      {
+        { 80, 7, 380, 380, 0, 0 },
+        { 75, 6, 325, 325, 0, 0 },
+        { 70, 5, 287, 287, 0, 0 },
+        { 63, 4, 232, 232, 0, 0 },
+        { 56, 3, 198, 198, 0, 0 },
+        { 0, 0 }
+      };
     init_rank( ranks );
-    
-    if( ! p -> active_lightning_charge )
+
+    if ( ! p -> active_lightning_charge )
     {
       p -> active_lightning_charge = new lightning_charge_t( p, ( base_dd_min + base_dd_max ) / 2.0 ) ;
     }
@@ -2841,14 +2840,14 @@ struct lightning_shield_t : public shaman_spell_t
   virtual void execute()
   {
     shaman_t* p = player -> cast_shaman();
-    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
-    if( p -> _buffs.water_shield )
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
+    if ( p -> _buffs.water_shield )
     {
       p -> aura_loss( "Water Shield" );
       p -> _buffs.water_shield = 0;
     }
     p -> _buffs.lightning_charges = 3 + 2 * p -> talents.static_shock;
-    p -> _buffs.lightning_shield = 1;    
+    p -> _buffs.lightning_shield = 1;
     p -> aura_gain( "Lightning Shield" );
     consume_resource();
     update_ready();
@@ -2859,7 +2858,7 @@ struct lightning_shield_t : public shaman_spell_t
   {
     shaman_t* p = player -> cast_shaman();
 
-    if( p -> _buffs.lightning_shield )
+    if ( p -> _buffs.lightning_shield )
       return false;
 
     return shaman_spell_t::ready();
@@ -2870,23 +2869,23 @@ struct lightning_shield_t : public shaman_spell_t
 
 struct water_shield_t : public shaman_spell_t
 {
-  water_shield_t( player_t* player, const std::string& options_str ) : 
-    shaman_spell_t( "water_shield", player, SCHOOL_NATURE, TREE_ENHANCEMENT )
+  water_shield_t( player_t* player, const std::string& options_str ) :
+      shaman_spell_t( "water_shield", player, SCHOOL_NATURE, TREE_ENHANCEMENT )
   {
     option_t options[] =
-    {
-      { NULL }
-    };
+      {
+        { NULL }
+      };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-    {
-      { 76, 9, 0, 0, 0, 100 },
-      { 69, 8, 0, 0, 0,  50 },
-      { 62, 7, 0, 0, 0,  43 },
-      { 55, 6, 0, 0, 0,  38 },
-      { 0, 0 }
-    };
+      {
+        { 76, 9, 0, 0, 0, 100 },
+        { 69, 8, 0, 0, 0,  50 },
+        { 62, 7, 0, 0, 0,  43 },
+        { 55, 6, 0, 0, 0,  38 },
+        { 0, 0 }
+      };
     init_rank( ranks );
 
     trigger_gcd = 0;
@@ -2895,8 +2894,8 @@ struct water_shield_t : public shaman_spell_t
   virtual void execute()
   {
     shaman_t* p = player -> cast_shaman();
-    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
-    if( p -> _buffs.lightning_shield )
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
+    if ( p -> _buffs.lightning_shield )
     {
       p -> active_lightning_charge -> cancel();
     }
@@ -2908,7 +2907,7 @@ struct water_shield_t : public shaman_spell_t
   {
     shaman_t* p = player -> cast_shaman();
 
-    if( p -> _buffs.water_shield )
+    if ( p -> _buffs.water_shield )
       return false;
 
     return shaman_spell_t::ready();
@@ -2919,16 +2918,16 @@ struct water_shield_t : public shaman_spell_t
 
 struct thunderstorm_t : public shaman_spell_t
 {
-  thunderstorm_t( player_t* player, const std::string& options_str ) : 
-    shaman_spell_t( "thunderstorm", player, SCHOOL_NATURE, TREE_ELEMENTAL )
+  thunderstorm_t( player_t* player, const std::string& options_str ) :
+      shaman_spell_t( "thunderstorm", player, SCHOOL_NATURE, TREE_ELEMENTAL )
   {
     shaman_t* p = player -> cast_shaman();
     assert( p -> talents.thunderstorm );
     cooldown = 45.0;
-    if( p -> glyphs.thunderstorm ) cooldown -= 7.0;
+    if ( p -> glyphs.thunderstorm ) cooldown -= 7.0;
   }
 
-  virtual void execute() 
+  virtual void execute()
   {
     shaman_t* p = player -> cast_shaman();
     update_ready();
@@ -2937,7 +2936,7 @@ struct thunderstorm_t : public shaman_spell_t
 
   virtual bool ready()
   {
-    if( ! shaman_spell_t::ready() )
+    if ( ! shaman_spell_t::ready() )
       return false;
 
     return player -> resource_current[ RESOURCE_MANA ] < ( 0.92 * player -> resource_max[ RESOURCE_MANA ] );
@@ -2962,17 +2961,17 @@ struct spirit_wolf_spell_t : public shaman_spell_t
 
   int target_pct;
 
-  spirit_wolf_spell_t( player_t* player, const std::string& options_str ) : 
-    shaman_spell_t( "spirit_wolf", player, SCHOOL_NATURE, TREE_ENHANCEMENT ), target_pct(0)
+  spirit_wolf_spell_t( player_t* player, const std::string& options_str ) :
+      shaman_spell_t( "spirit_wolf", player, SCHOOL_NATURE, TREE_ENHANCEMENT ), target_pct( 0 )
   {
     shaman_t* p = player -> cast_shaman();
     assert( p -> talents.feral_spirit );
 
     option_t options[] =
-    {
-      { "trigger", OPT_INT, &target_pct },
-      { NULL }
-    };
+      {
+        { "trigger", OPT_INT, &target_pct },
+        { NULL }
+      };
     parse_options( options, options_str );
 
     cooldown   = 180.0;
@@ -2980,7 +2979,7 @@ struct spirit_wolf_spell_t : public shaman_spell_t
     base_cost  = p -> resource_max[ RESOURCE_MANA ] * 0.12;
   }
 
-  virtual void execute() 
+  virtual void execute()
   {
     consume_resource();
     update_ready();
@@ -2990,16 +2989,16 @@ struct spirit_wolf_spell_t : public shaman_spell_t
 
   virtual bool ready()
   {
-    if( ! shaman_spell_t::ready() )
+    if ( ! shaman_spell_t::ready() )
       return false;
 
     target_t* t = sim -> target;
 
-    if( t -> time_to_die() > 60 )
+    if ( t -> time_to_die() > 60 )
     {
-      if( target_pct > 0 )
+      if ( target_pct > 0 )
       {
-        if( t -> health_percentage() > target_pct )
+        if ( t -> health_percentage() > target_pct )
           return false;
       }
     }
@@ -3019,34 +3018,34 @@ struct spirit_wolf_spell_t : public shaman_spell_t
 action_t* shaman_t::create_action( const std::string& name,
                                    const std::string& options_str )
 {
-  if( name == "auto_attack"             ) return new              auto_attack_t( this, options_str );
-  if( name == "bloodlust"               ) return new                bloodlust_t( this, options_str );
-  if( name == "chain_lightning"         ) return new          chain_lightning_t( this, options_str );
-  if( name == "earth_shock"             ) return new              earth_shock_t( this, options_str );
-  if( name == "elemental_mastery"       ) return new        elemental_mastery_t( this, options_str );
-  if( name == "flame_shock"             ) return new              flame_shock_t( this, options_str );
-  if( name == "flametongue_totem"       ) return new        flametongue_totem_t( this, options_str );
-  if( name == "flametongue_weapon"      ) return new       flametongue_weapon_t( this, options_str );
-  if( name == "frost_shock"             ) return new              frost_shock_t( this, options_str );
-  if( name == "lava_burst"              ) return new               lava_burst_t( this, options_str );
-  if( name == "lava_lash"               ) return new                lava_lash_t( this, options_str );
-  if( name == "lightning_bolt"          ) return new           lightning_bolt_t( this, options_str );
-  if( name == "lightning_shield"        ) return new         lightning_shield_t( this, options_str );
-  if( name == "mana_spring_totem"       ) return new        mana_spring_totem_t( this, options_str );
-  if( name == "mana_tide_totem"         ) return new          mana_tide_totem_t( this, options_str );
-  if( name == "natures_swiftness"       ) return new        shamans_swiftness_t( this, options_str );
-  if( name == "searing_totem"           ) return new            searing_totem_t( this, options_str );
-  if( name == "magma_totem"             ) return new              magma_totem_t( this, options_str );
-  if( name == "shamanistic_rage"        ) return new         shamanistic_rage_t( this, options_str );
-  if( name == "spirit_wolf"             ) return new        spirit_wolf_spell_t( this, options_str );
-  if( name == "stormstrike"             ) return new              stormstrike_t( this, options_str );
-  if( name == "strength_of_earth_totem" ) return new  strength_of_earth_totem_t( this, options_str );
-  if( name == "thunderstorm"            ) return new             thunderstorm_t( this, options_str );
-  if( name == "totem_of_wrath"          ) return new           totem_of_wrath_t( this, options_str );
-  if( name == "water_shield"            ) return new             water_shield_t( this, options_str );
-  if( name == "windfury_totem"          ) return new           windfury_totem_t( this, options_str );
-  if( name == "windfury_weapon"         ) return new          windfury_weapon_t( this, options_str );
-  if( name == "wrath_of_air_totem"      ) return new       wrath_of_air_totem_t( this, options_str );
+  if ( name == "auto_attack"             ) return new              auto_attack_t( this, options_str );
+  if ( name == "bloodlust"               ) return new                bloodlust_t( this, options_str );
+  if ( name == "chain_lightning"         ) return new          chain_lightning_t( this, options_str );
+  if ( name == "earth_shock"             ) return new              earth_shock_t( this, options_str );
+  if ( name == "elemental_mastery"       ) return new        elemental_mastery_t( this, options_str );
+  if ( name == "flame_shock"             ) return new              flame_shock_t( this, options_str );
+  if ( name == "flametongue_totem"       ) return new        flametongue_totem_t( this, options_str );
+  if ( name == "flametongue_weapon"      ) return new       flametongue_weapon_t( this, options_str );
+  if ( name == "frost_shock"             ) return new              frost_shock_t( this, options_str );
+  if ( name == "lava_burst"              ) return new               lava_burst_t( this, options_str );
+  if ( name == "lava_lash"               ) return new                lava_lash_t( this, options_str );
+  if ( name == "lightning_bolt"          ) return new           lightning_bolt_t( this, options_str );
+  if ( name == "lightning_shield"        ) return new         lightning_shield_t( this, options_str );
+  if ( name == "mana_spring_totem"       ) return new        mana_spring_totem_t( this, options_str );
+  if ( name == "mana_tide_totem"         ) return new          mana_tide_totem_t( this, options_str );
+  if ( name == "natures_swiftness"       ) return new        shamans_swiftness_t( this, options_str );
+  if ( name == "searing_totem"           ) return new            searing_totem_t( this, options_str );
+  if ( name == "magma_totem"             ) return new              magma_totem_t( this, options_str );
+  if ( name == "shamanistic_rage"        ) return new         shamanistic_rage_t( this, options_str );
+  if ( name == "spirit_wolf"             ) return new        spirit_wolf_spell_t( this, options_str );
+  if ( name == "stormstrike"             ) return new              stormstrike_t( this, options_str );
+  if ( name == "strength_of_earth_totem" ) return new  strength_of_earth_totem_t( this, options_str );
+  if ( name == "thunderstorm"            ) return new             thunderstorm_t( this, options_str );
+  if ( name == "totem_of_wrath"          ) return new           totem_of_wrath_t( this, options_str );
+  if ( name == "water_shield"            ) return new             water_shield_t( this, options_str );
+  if ( name == "windfury_totem"          ) return new           windfury_totem_t( this, options_str );
+  if ( name == "windfury_weapon"         ) return new          windfury_weapon_t( this, options_str );
+  if ( name == "wrath_of_air_totem"      ) return new       wrath_of_air_totem_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -3055,7 +3054,7 @@ action_t* shaman_t::create_action( const std::string& name,
 
 pet_t* shaman_t::create_pet( const std::string& pet_name )
 {
-  if( pet_name == "spirit_wolf" ) return new spirit_wolf_pet_t( sim, this );
+  if ( pet_name == "spirit_wolf" ) return new spirit_wolf_pet_t( sim, this );
 
   return 0;
 }
@@ -3101,7 +3100,7 @@ void shaman_t::init_base()
 
   mp5_per_intellect = util_t::talent_rank( talents.unrelenting_storm, 3, 0.04 );
 
-  if( tiers.t6_2pc_elemental )
+  if ( tiers.t6_2pc_elemental )
   {
     // Simply assume the totems are out all the time.
 
@@ -3175,31 +3174,31 @@ void shaman_t::init_unique_gear()
 {
   player_t::init_unique_gear();
 
-  if( talents.dual_wield )
+  if ( talents.dual_wield )
   {
-    if( unique_gear -> tier4_2pc ) tiers.t4_2pc_enhancement = 1;
-    if( unique_gear -> tier4_4pc ) tiers.t4_4pc_enhancement = 1;
-    if( unique_gear -> tier5_2pc ) tiers.t5_2pc_enhancement = 1;
-    if( unique_gear -> tier5_4pc ) tiers.t5_4pc_enhancement = 1;
-    if( unique_gear -> tier6_2pc ) tiers.t6_2pc_enhancement = 1;
-    if( unique_gear -> tier6_4pc ) tiers.t6_4pc_enhancement = 1;
-    if( unique_gear -> tier7_2pc ) tiers.t7_2pc_enhancement = 1;
-    if( unique_gear -> tier7_4pc ) tiers.t7_4pc_enhancement = 1;
-    if( unique_gear -> tier8_2pc ) tiers.t8_2pc_enhancement = 1;
-    if( unique_gear -> tier8_4pc ) tiers.t8_4pc_enhancement = 1;
+    if ( unique_gear -> tier4_2pc ) tiers.t4_2pc_enhancement = 1;
+    if ( unique_gear -> tier4_4pc ) tiers.t4_4pc_enhancement = 1;
+    if ( unique_gear -> tier5_2pc ) tiers.t5_2pc_enhancement = 1;
+    if ( unique_gear -> tier5_4pc ) tiers.t5_4pc_enhancement = 1;
+    if ( unique_gear -> tier6_2pc ) tiers.t6_2pc_enhancement = 1;
+    if ( unique_gear -> tier6_4pc ) tiers.t6_4pc_enhancement = 1;
+    if ( unique_gear -> tier7_2pc ) tiers.t7_2pc_enhancement = 1;
+    if ( unique_gear -> tier7_4pc ) tiers.t7_4pc_enhancement = 1;
+    if ( unique_gear -> tier8_2pc ) tiers.t8_2pc_enhancement = 1;
+    if ( unique_gear -> tier8_4pc ) tiers.t8_4pc_enhancement = 1;
   }
   else
   {
-    if( unique_gear -> tier4_2pc ) tiers.t4_2pc_elemental = 1;
-    if( unique_gear -> tier4_4pc ) tiers.t4_4pc_elemental = 1;
-    if( unique_gear -> tier5_2pc ) tiers.t5_2pc_elemental = 1;
-    if( unique_gear -> tier5_4pc ) tiers.t5_4pc_elemental = 1;
-    if( unique_gear -> tier6_2pc ) tiers.t6_2pc_elemental = 1;
-    if( unique_gear -> tier6_4pc ) tiers.t6_4pc_elemental = 1;
-    if( unique_gear -> tier7_2pc ) tiers.t7_2pc_elemental = 1;
-    if( unique_gear -> tier7_4pc ) tiers.t7_4pc_elemental = 1;
-    if( unique_gear -> tier8_2pc ) tiers.t8_2pc_elemental = 1;
-    if( unique_gear -> tier8_4pc ) tiers.t8_4pc_elemental = 1;
+    if ( unique_gear -> tier4_2pc ) tiers.t4_2pc_elemental = 1;
+    if ( unique_gear -> tier4_4pc ) tiers.t4_4pc_elemental = 1;
+    if ( unique_gear -> tier5_2pc ) tiers.t5_2pc_elemental = 1;
+    if ( unique_gear -> tier5_4pc ) tiers.t5_4pc_elemental = 1;
+    if ( unique_gear -> tier6_2pc ) tiers.t6_2pc_elemental = 1;
+    if ( unique_gear -> tier6_4pc ) tiers.t6_4pc_elemental = 1;
+    if ( unique_gear -> tier7_2pc ) tiers.t7_2pc_elemental = 1;
+    if ( unique_gear -> tier7_4pc ) tiers.t7_4pc_elemental = 1;
+    if ( unique_gear -> tier8_2pc ) tiers.t8_2pc_elemental = 1;
+    if ( unique_gear -> tier8_4pc ) tiers.t8_4pc_elemental = 1;
   }
 }
 
@@ -3226,7 +3225,7 @@ double shaman_t::composite_attack_power()
 {
   double ap = player_t::composite_attack_power();
 
-  if( talents.mental_dexterity )
+  if ( talents.mental_dexterity )
   {
     ap += composite_attack_power_multiplier() * intellect() * talents.mental_dexterity / 3.0;
   }
@@ -3240,16 +3239,16 @@ double shaman_t::composite_spell_power( int school )
 {
   double sp = player_t::composite_spell_power( school );
 
-  if( talents.mental_quickness )
+  if ( talents.mental_quickness )
   {
     sp += composite_attack_power() * 0.30 * talents.mental_quickness / 3.0;
   }
 
-  if( main_hand_weapon.buff == FLAMETONGUE )
+  if ( main_hand_weapon.buff == FLAMETONGUE )
   {
     sp += main_hand_weapon.buff_bonus;
   }
-  if( off_hand_weapon.buff == FLAMETONGUE )
+  if ( off_hand_weapon.buff == FLAMETONGUE )
   {
     sp += off_hand_weapon.buff_bonus;
   }
@@ -3263,7 +3262,7 @@ void shaman_t::regen( double periodicity )
 {
   player_t::regen( periodicity );
 
-  if( _buffs.water_shield )
+  if ( _buffs.water_shield )
   {
     double water_shield_regen = periodicity * _buffs.water_shield / 5.0;
 
@@ -3277,79 +3276,79 @@ bool shaman_t::get_talent_trees( std::vector<int*>& elemental,
                                  std::vector<int*>& enhancement,
                                  std::vector<int*>& restoration )
 {
-  if( sim -> patch.after( 3, 1, 0 ) )
+  if ( sim -> patch.after( 3, 1, 0 ) )
   {
     talent_translation_t translation[][3] =
-    {
-      { {  1, &( talents.convection            ) }, {  1, &( talents.enhancing_totems          ) }, {  1, NULL                                  } },
-      { {  2, &( talents.concussion            ) }, {  2, NULL                                   }, {  2, &( talents.totemic_focus            ) } },
-      { {  3, &( talents.call_of_flame         ) }, {  3, &( talents.ancestral_knowledge       ) }, {  3, NULL                                  } },
-      { {  4, NULL                               }, {  4, NULL                                   }, {  4, NULL                                  } },
-      { {  5, &( talents.elemental_devastation ) }, {  5, &( talents.thundering_strikes        ) }, {  5, NULL                                  } },
-      { {  6, &( talents.reverberation         ) }, {  6, NULL                                   }, {  6, NULL                                  } },
-      { {  7, &( talents.elemental_focus       ) }, {  7, &( talents.improved_shields          ) }, {  7, NULL                                  } },
-      { {  8, &( talents.elemental_fury        ) }, {  8, &( talents.elemental_weapons         ) }, {  8, NULL                                  } },
-      { {  9, NULL                               }, {  9, &( talents.shamanistic_focus         ) }, {  9, NULL                                  } },
-      { { 10, NULL                               }, { 10, NULL                                   }, { 10, &( talents.restorative_totems       ) } },
-      { { 11, NULL                               }, { 11, &( talents.flurry                    ) }, { 11, &( talents.tidal_mastery            ) } },
-      { { 12, &( talents.call_of_thunder       ) }, { 12, NULL                                   }, { 12, NULL                                  } },
-      { { 13, &( talents.unrelenting_storm     ) }, { 13, &( talents.improved_windfury_totem   ) }, { 13, &( talents.natures_swiftness        ) } },
-      { { 14, &( talents.elemental_precision   ) }, { 14, &( talents.spirit_weapons            ) }, { 14, NULL                                  } },
-      { { 15, &( talents.lightning_mastery     ) }, { 15, &( talents.mental_dexterity          ) }, { 15, NULL                                  } },
-      { { 16, &( talents.elemental_mastery     ) }, { 16, &( talents.unleashed_rage            ) }, { 16, NULL                                  } },
-      { { 17, &( talents.storm_earth_and_fire  ) }, { 17, &( talents.weapon_mastery            ) }, { 17, &( talents.mana_tide_totem          ) } },
-      { { 18, &( talents.booming_echoes        ) }, { 18, &( talents.frozen_power              ) }, { 18, NULL                                  } },
-      { { 19, &( talents.elemental_oath        ) }, { 19, &( talents.dual_wield_specialization ) }, { 19, &( talents.blessing_of_the_eternals ) } },
-      { { 20, &( talents.lightning_overload    ) }, { 20, &( talents.dual_wield                ) }, { 20, NULL                                  } },
-      { { 21, NULL                               }, { 21, &( talents.stormstrike               ) }, { 21, NULL                                  } },
-      { { 22, &( talents.totem_of_wrath        ) }, { 22, &( talents.static_shock              ) }, { 22, NULL                                  } },
-      { { 23, &( talents.lava_flows            ) }, { 23, &( talents.lava_lash                 ) }, { 23, NULL                                  } },
-      { { 24, &( talents.shamanism             ) }, { 24, &( talents.improved_stormstrike      ) }, { 24, NULL                                  } },
-      { { 25, &( talents.thunderstorm          ) }, { 25, &( talents.mental_quickness          ) }, { 25, NULL                                  } },
-      { {  0, NULL                               }, { 26, &( talents.shamanistic_rage          ) }, { 26, NULL                                  } },
-      { {  0, NULL                               }, { 27, NULL                                   }, {  0, NULL                                  } },
-      { {  0, NULL                               }, { 28, &( talents.maelstrom_weapon          ) }, {  0, NULL                                  } },
-      { {  0, NULL                               }, { 29, &( talents.feral_spirit              ) }, {  0, NULL                                  } },
-      { {  0, NULL                               }, {  0, NULL                                   }, {  0, NULL                                  } }
-    };
-  
+      {
+        { {  1, &( talents.convection            ) }, {  1, &( talents.enhancing_totems          ) }, {  1, NULL                                  } },
+        { {  2, &( talents.concussion            ) }, {  2, NULL                                   }, {  2, &( talents.totemic_focus            ) } },
+        { {  3, &( talents.call_of_flame         ) }, {  3, &( talents.ancestral_knowledge       ) }, {  3, NULL                                  } },
+        { {  4, NULL                               }, {  4, NULL                                   }, {  4, NULL                                  } },
+        { {  5, &( talents.elemental_devastation ) }, {  5, &( talents.thundering_strikes        ) }, {  5, NULL                                  } },
+        { {  6, &( talents.reverberation         ) }, {  6, NULL                                   }, {  6, NULL                                  } },
+        { {  7, &( talents.elemental_focus       ) }, {  7, &( talents.improved_shields          ) }, {  7, NULL                                  } },
+        { {  8, &( talents.elemental_fury        ) }, {  8, &( talents.elemental_weapons         ) }, {  8, NULL                                  } },
+        { {  9, NULL                               }, {  9, &( talents.shamanistic_focus         ) }, {  9, NULL                                  } },
+        { { 10, NULL                               }, { 10, NULL                                   }, { 10, &( talents.restorative_totems       ) } },
+        { { 11, NULL                               }, { 11, &( talents.flurry                    ) }, { 11, &( talents.tidal_mastery            ) } },
+        { { 12, &( talents.call_of_thunder       ) }, { 12, NULL                                   }, { 12, NULL                                  } },
+        { { 13, &( talents.unrelenting_storm     ) }, { 13, &( talents.improved_windfury_totem   ) }, { 13, &( talents.natures_swiftness        ) } },
+        { { 14, &( talents.elemental_precision   ) }, { 14, &( talents.spirit_weapons            ) }, { 14, NULL                                  } },
+        { { 15, &( talents.lightning_mastery     ) }, { 15, &( talents.mental_dexterity          ) }, { 15, NULL                                  } },
+        { { 16, &( talents.elemental_mastery     ) }, { 16, &( talents.unleashed_rage            ) }, { 16, NULL                                  } },
+        { { 17, &( talents.storm_earth_and_fire  ) }, { 17, &( talents.weapon_mastery            ) }, { 17, &( talents.mana_tide_totem          ) } },
+        { { 18, &( talents.booming_echoes        ) }, { 18, &( talents.frozen_power              ) }, { 18, NULL                                  } },
+        { { 19, &( talents.elemental_oath        ) }, { 19, &( talents.dual_wield_specialization ) }, { 19, &( talents.blessing_of_the_eternals ) } },
+        { { 20, &( talents.lightning_overload    ) }, { 20, &( talents.dual_wield                ) }, { 20, NULL                                  } },
+        { { 21, NULL                               }, { 21, &( talents.stormstrike               ) }, { 21, NULL                                  } },
+        { { 22, &( talents.totem_of_wrath        ) }, { 22, &( talents.static_shock              ) }, { 22, NULL                                  } },
+        { { 23, &( talents.lava_flows            ) }, { 23, &( talents.lava_lash                 ) }, { 23, NULL                                  } },
+        { { 24, &( talents.shamanism             ) }, { 24, &( talents.improved_stormstrike      ) }, { 24, NULL                                  } },
+        { { 25, &( talents.thunderstorm          ) }, { 25, &( talents.mental_quickness          ) }, { 25, NULL                                  } },
+        { {  0, NULL                               }, { 26, &( talents.shamanistic_rage          ) }, { 26, NULL                                  } },
+        { {  0, NULL                               }, { 27, NULL                                   }, {  0, NULL                                  } },
+        { {  0, NULL                               }, { 28, &( talents.maelstrom_weapon          ) }, {  0, NULL                                  } },
+        { {  0, NULL                               }, { 29, &( talents.feral_spirit              ) }, {  0, NULL                                  } },
+        { {  0, NULL                               }, {  0, NULL                                   }, {  0, NULL                                  } }
+      };
+
     return player_t::get_talent_trees( elemental, enhancement, restoration, translation );
   }
   else
   {
     talent_translation_t translation[][3] =
-    {
-      { {  1, &( talents.convection            ) }, {  1, &( talents.enhancing_totems          ) }, {  1, NULL                                  } },
-      { {  2, &( talents.concussion            ) }, {  2, NULL                                   }, {  2, &( talents.totemic_focus            ) } },
-      { {  3, &( talents.call_of_flame         ) }, {  3, &( talents.ancestral_knowledge       ) }, {  3, NULL                                  } },
-      { {  4, NULL                               }, {  4, NULL                                   }, {  4, NULL                                  } },
-      { {  5, &( talents.elemental_devastation ) }, {  5, &( talents.thundering_strikes        ) }, {  5, NULL                                  } },
-      { {  6, &( talents.reverberation         ) }, {  6, NULL                                   }, {  6, NULL                                  } },
-      { {  7, &( talents.elemental_focus       ) }, {  7, &( talents.improved_shields          ) }, {  7, NULL                                  } },
-      { {  8, &( talents.elemental_fury        ) }, {  8, &( talents.elemental_weapons         ) }, {  8, NULL                                  } },
-      { {  9, NULL                               }, {  9, &( talents.shamanistic_focus         ) }, {  9, NULL                                  } },
-      { { 10, NULL                               }, { 10, NULL                                   }, { 10, &( talents.restorative_totems       ) } },
-      { { 11, NULL                               }, { 11, &( talents.flurry                    ) }, { 11, &( talents.tidal_mastery            ) } },
-      { { 12, &( talents.call_of_thunder       ) }, { 12, NULL                                   }, { 12, NULL                                  } },
-      { { 13, &( talents.unrelenting_storm     ) }, { 13, &( talents.improved_windfury_totem   ) }, { 13, &( talents.natures_swiftness        ) } },
-      { { 14, &( talents.elemental_precision   ) }, { 14, &( talents.spirit_weapons            ) }, { 14, NULL                                  } },
-      { { 15, &( talents.lightning_mastery     ) }, { 15, &( talents.mental_dexterity          ) }, { 15, NULL                                  } },
-      { { 16, &( talents.elemental_mastery     ) }, { 16, &( talents.unleashed_rage            ) }, { 16, NULL                                  } },
-      { { 17, &( talents.storm_earth_and_fire  ) }, { 17, &( talents.weapon_mastery            ) }, { 17, &( talents.mana_tide_totem          ) } },
-      { { 18, &( talents.elemental_oath        ) }, { 18, &( talents.dual_wield_specialization ) }, { 18, NULL                                  } },
-      { { 19, &( talents.lightning_overload    ) }, { 19, &( talents.dual_wield                ) }, { 19, &( talents.blessing_of_the_eternals ) } },
-      { { 20, NULL                               }, { 20, &( talents.stormstrike               ) }, { 20, NULL                                  } },
-      { { 21, &( talents.totem_of_wrath        ) }, { 21, &( talents.static_shock              ) }, { 21, NULL                                  } },
-      { { 22, &( talents.lava_flows            ) }, { 22, &( talents.lava_lash                 ) }, { 22, NULL                                  } },
-      { { 23, &( talents.shamanism             ) }, { 23, &( talents.improved_stormstrike      ) }, { 23, NULL                                  } },
-      { { 24, &( talents.thunderstorm          ) }, { 24, &( talents.mental_quickness          ) }, { 24, NULL                                  } },
-      { {  0, NULL                               }, { 25, &( talents.shamanistic_rage          ) }, { 25, NULL                                  } },
-      { {  0, NULL                               }, { 26, NULL                                   }, { 26, NULL                                  } },
-      { {  0, NULL                               }, { 27, &( talents.maelstrom_weapon          ) }, {  0, NULL                                  } },
-      { {  0, NULL                               }, { 28, &( talents.feral_spirit              ) }, {  0, NULL                                  } },
-      { {  0, NULL                               }, {  0, NULL                                   }, {  0, NULL                                  } }
-    };
-  
+      {
+        { {  1, &( talents.convection            ) }, {  1, &( talents.enhancing_totems          ) }, {  1, NULL                                  } },
+        { {  2, &( talents.concussion            ) }, {  2, NULL                                   }, {  2, &( talents.totemic_focus            ) } },
+        { {  3, &( talents.call_of_flame         ) }, {  3, &( talents.ancestral_knowledge       ) }, {  3, NULL                                  } },
+        { {  4, NULL                               }, {  4, NULL                                   }, {  4, NULL                                  } },
+        { {  5, &( talents.elemental_devastation ) }, {  5, &( talents.thundering_strikes        ) }, {  5, NULL                                  } },
+        { {  6, &( talents.reverberation         ) }, {  6, NULL                                   }, {  6, NULL                                  } },
+        { {  7, &( talents.elemental_focus       ) }, {  7, &( talents.improved_shields          ) }, {  7, NULL                                  } },
+        { {  8, &( talents.elemental_fury        ) }, {  8, &( talents.elemental_weapons         ) }, {  8, NULL                                  } },
+        { {  9, NULL                               }, {  9, &( talents.shamanistic_focus         ) }, {  9, NULL                                  } },
+        { { 10, NULL                               }, { 10, NULL                                   }, { 10, &( talents.restorative_totems       ) } },
+        { { 11, NULL                               }, { 11, &( talents.flurry                    ) }, { 11, &( talents.tidal_mastery            ) } },
+        { { 12, &( talents.call_of_thunder       ) }, { 12, NULL                                   }, { 12, NULL                                  } },
+        { { 13, &( talents.unrelenting_storm     ) }, { 13, &( talents.improved_windfury_totem   ) }, { 13, &( talents.natures_swiftness        ) } },
+        { { 14, &( talents.elemental_precision   ) }, { 14, &( talents.spirit_weapons            ) }, { 14, NULL                                  } },
+        { { 15, &( talents.lightning_mastery     ) }, { 15, &( talents.mental_dexterity          ) }, { 15, NULL                                  } },
+        { { 16, &( talents.elemental_mastery     ) }, { 16, &( talents.unleashed_rage            ) }, { 16, NULL                                  } },
+        { { 17, &( talents.storm_earth_and_fire  ) }, { 17, &( talents.weapon_mastery            ) }, { 17, &( talents.mana_tide_totem          ) } },
+        { { 18, &( talents.elemental_oath        ) }, { 18, &( talents.dual_wield_specialization ) }, { 18, NULL                                  } },
+        { { 19, &( talents.lightning_overload    ) }, { 19, &( talents.dual_wield                ) }, { 19, &( talents.blessing_of_the_eternals ) } },
+        { { 20, NULL                               }, { 20, &( talents.stormstrike               ) }, { 20, NULL                                  } },
+        { { 21, &( talents.totem_of_wrath        ) }, { 21, &( talents.static_shock              ) }, { 21, NULL                                  } },
+        { { 22, &( talents.lava_flows            ) }, { 22, &( talents.lava_lash                 ) }, { 22, NULL                                  } },
+        { { 23, &( talents.shamanism             ) }, { 23, &( talents.improved_stormstrike      ) }, { 23, NULL                                  } },
+        { { 24, &( talents.thunderstorm          ) }, { 24, &( talents.mental_quickness          ) }, { 24, NULL                                  } },
+        { {  0, NULL                               }, { 25, &( talents.shamanistic_rage          ) }, { 25, NULL                                  } },
+        { {  0, NULL                               }, { 26, NULL                                   }, { 26, NULL                                  } },
+        { {  0, NULL                               }, { 27, &( talents.maelstrom_weapon          ) }, {  0, NULL                                  } },
+        { {  0, NULL                               }, { 28, &( talents.feral_spirit              ) }, {  0, NULL                                  } },
+        { {  0, NULL                               }, {  0, NULL                                   }, {  0, NULL                                  } }
+      };
+
     return player_t::get_talent_trees( elemental, enhancement, restoration, translation );
   }
 }
@@ -3376,117 +3375,117 @@ bool shaman_t::parse_option( const std::string& name,
                              const std::string& value )
 {
   option_t options[] =
-  {
-    // @option_doc loc=skip
-    { "ancestral_knowledge",       OPT_INT,  &( talents.ancestral_knowledge       ) },
-    { "blessing_of_the_eternals",  OPT_INT,  &( talents.blessing_of_the_eternals  ) },
-    { "booming_echoes",            OPT_INT,  &( talents.booming_echoes            ) },
-    { "call_of_flame",             OPT_INT,  &( talents.call_of_flame             ) },
-    { "call_of_thunder",           OPT_INT,  &( talents.call_of_thunder           ) },
-    { "concussion",                OPT_INT,  &( talents.concussion                ) },
-    { "convection",                OPT_INT,  &( talents.convection                ) },
-    { "dual_wield",                OPT_INT,  &( talents.dual_wield                ) },
-    { "dual_wield_specialization", OPT_INT,  &( talents.dual_wield_specialization ) },
-    { "elemental_devastation",     OPT_INT,  &( talents.elemental_devastation     ) },
-    { "elemental_focus",           OPT_INT,  &( talents.elemental_focus           ) },
-    { "elemental_fury",            OPT_INT,  &( talents.elemental_fury            ) },
-    { "elemental_mastery",         OPT_INT,  &( talents.elemental_mastery         ) },
-    { "elemental_oath",            OPT_INT,  &( talents.elemental_oath            ) },
-    { "elemental_precision",       OPT_INT,  &( talents.elemental_precision       ) },
-    { "elemental_weapons",         OPT_INT,  &( talents.elemental_weapons         ) },
-    { "enhancing_totems",          OPT_INT,  &( talents.enhancing_totems          ) },
-    { "feral_spirit",              OPT_INT,  &( talents.feral_spirit              ) },
-    { "flurry",                    OPT_INT,  &( talents.flurry                    ) },
-    { "frozen_power",              OPT_INT,  &( talents.frozen_power              ) },
-    { "improved_shields",          OPT_INT,  &( talents.improved_shields          ) },
-    { "improved_stormstrike",      OPT_INT,  &( talents.improved_stormstrike      ) },
-    { "improved_windfury_totem",   OPT_INT,  &( talents.improved_windfury_totem   ) },
-    { "lava_flows",                OPT_INT,  &( talents.lava_flows                ) },
-    { "lava_lash",                 OPT_INT,  &( talents.lava_lash                 ) },
-    { "lightning_mastery",         OPT_INT,  &( talents.lightning_mastery         ) },
-    { "lightning_overload",        OPT_INT,  &( talents.lightning_overload        ) },
-    { "maelstrom_weapon",          OPT_INT,  &( talents.maelstrom_weapon          ) },
-    { "mana_tide_totem",           OPT_INT,  &( talents.mana_tide_totem           ) },
-    { "mental_dexterity",          OPT_INT,  &( talents.mental_dexterity          ) },
-    { "mental_quickness",          OPT_INT,  &( talents.mental_quickness          ) },
-    { "natures_swiftness",         OPT_INT,  &( talents.natures_swiftness         ) },
-    { "restorative_totems",        OPT_INT,  &( talents.restorative_totems        ) },
-    { "reverberation",             OPT_INT,  &( talents.reverberation             ) },
-    { "shamanism",                 OPT_INT,  &( talents.shamanism                 ) },
-    { "shamanistic_focus",         OPT_INT,  &( talents.shamanistic_focus         ) },
-    { "shamanistic_rage",          OPT_INT,  &( talents.shamanistic_rage          ) },
-    { "spirit_weapons",            OPT_INT,  &( talents.spirit_weapons            ) },
-    { "static_shock",              OPT_INT,  &( talents.static_shock              ) },
-    { "stormstrike",               OPT_INT,  &( talents.stormstrike               ) },
-    { "storm_earth_and_fire",      OPT_INT,  &( talents.storm_earth_and_fire      ) },
-    { "toughness",                 OPT_INT,  &( talents.toughness                 ) },
-    { "thundering_strikes",        OPT_INT,  &( talents.thundering_strikes        ) },
-    { "thunderstorm",              OPT_INT,  &( talents.thunderstorm              ) },
-    { "tidal_mastery",             OPT_INT,  &( talents.tidal_mastery             ) },
-    { "totem_of_wrath",            OPT_INT,  &( talents.totem_of_wrath            ) },
-    { "totemic_focus",             OPT_INT,  &( talents.totemic_focus             ) },
-    { "unrelenting_storm",         OPT_INT,  &( talents.unrelenting_storm         ) },
-    { "unleashed_rage",            OPT_INT,  &( talents.unleashed_rage            ) },
-    { "weapon_mastery",            OPT_INT,  &( talents.weapon_mastery            ) },
-    // @option_doc loc=player/shaman/glyphs title="Glyphs"
-    { "glyph_elemental_mastery",   OPT_BOOL, &( glyphs.elemental_mastery          ) },
-    { "glyph_feral_spirit",        OPT_BOOL, &( glyphs.feral_spirit               ) },
-    { "glyph_flame_shock",         OPT_BOOL, &( glyphs.flame_shock                ) },
-    { "glyph_flametongue_weapon",  OPT_BOOL, &( glyphs.flametongue_weapon         ) },
-    { "glyph_lava",                OPT_BOOL, &( glyphs.lava                       ) },
-    { "glyph_lava_lash",           OPT_BOOL, &( glyphs.lava_lash                  ) },
-    { "glyph_lightning_bolt",      OPT_BOOL, &( glyphs.lightning_bolt             ) },
-    { "glyph_lightning_shield",    OPT_BOOL, &( glyphs.lightning_shield           ) },
-    { "glyph_mana_tide",           OPT_BOOL, &( glyphs.mana_tide                  ) },
-    { "glyph_shocking",            OPT_BOOL, &( glyphs.shocking                   ) },
-    { "glyph_stormstrike",         OPT_BOOL, &( glyphs.stormstrike                ) },
-    { "glyph_thunderstorm",        OPT_BOOL, &( glyphs.thunderstorm               ) },
-    { "glyph_totem_of_wrath",      OPT_BOOL, &( glyphs.totem_of_wrath             ) },
-    { "glyph_windfury_weapon",     OPT_BOOL, &( glyphs.windfury_weapon            ) },
-    // @option_doc loc=player/shaman/totems title="Totems"
-    { "totem_of_dueling",          OPT_BOOL, &( totems.dueling                    ) },
-    { "totem_of_hex",              OPT_BOOL, &( totems.hex                        ) },
-    { "totem_of_the_dancing_flame",OPT_BOOL, &( totems.dancing_flame              ) },
-    { "thunderfall_totem",         OPT_BOOL, &( totems.thunderfall                ) },
-    // @option_doc loc=skip
-    { "tier4_2pc_elemental",       OPT_BOOL, &( tiers.t4_2pc_elemental            ) },
-    { "tier4_4pc_elemental",       OPT_BOOL, &( tiers.t4_4pc_elemental            ) },
-    { "tier5_2pc_elemental",       OPT_BOOL, &( tiers.t5_2pc_elemental            ) },
-    { "tier5_4pc_elemental",       OPT_BOOL, &( tiers.t5_4pc_elemental            ) },
-    { "tier6_2pc_elemental",       OPT_BOOL, &( tiers.t6_2pc_elemental            ) },
-    { "tier6_4pc_elemental",       OPT_BOOL, &( tiers.t6_4pc_elemental            ) },
-    { "tier7_2pc_elemental",       OPT_BOOL, &( tiers.t7_2pc_elemental            ) },
-    { "tier7_4pc_elemental",       OPT_BOOL, &( tiers.t7_4pc_elemental            ) },
-    { "tier4_2pc_enhancement",     OPT_BOOL, &( tiers.t4_2pc_enhancement          ) },
-    { "tier4_4pc_enhancement",     OPT_BOOL, &( tiers.t4_4pc_enhancement          ) },
-    { "tier5_2pc_enhancement",     OPT_BOOL, &( tiers.t5_2pc_enhancement          ) },
-    { "tier5_4pc_enhancement",     OPT_BOOL, &( tiers.t5_4pc_enhancement          ) },
-    { "tier6_2pc_enhancement",     OPT_BOOL, &( tiers.t6_2pc_enhancement          ) },
-    { "tier6_4pc_enhancement",     OPT_BOOL, &( tiers.t6_4pc_enhancement          ) },
-    { "tier7_2pc_enhancement",     OPT_BOOL, &( tiers.t7_2pc_enhancement          ) },
-    { "tier7_4pc_enhancement",     OPT_BOOL, &( tiers.t7_4pc_enhancement          ) },
-    { NULL, OPT_UNKNOWN }
-  };
+    {
+      // @option_doc loc=skip
+      { "ancestral_knowledge",       OPT_INT,  &( talents.ancestral_knowledge       ) },
+      { "blessing_of_the_eternals",  OPT_INT,  &( talents.blessing_of_the_eternals  ) },
+      { "booming_echoes",            OPT_INT,  &( talents.booming_echoes            ) },
+      { "call_of_flame",             OPT_INT,  &( talents.call_of_flame             ) },
+      { "call_of_thunder",           OPT_INT,  &( talents.call_of_thunder           ) },
+      { "concussion",                OPT_INT,  &( talents.concussion                ) },
+      { "convection",                OPT_INT,  &( talents.convection                ) },
+      { "dual_wield",                OPT_INT,  &( talents.dual_wield                ) },
+      { "dual_wield_specialization", OPT_INT,  &( talents.dual_wield_specialization ) },
+      { "elemental_devastation",     OPT_INT,  &( talents.elemental_devastation     ) },
+      { "elemental_focus",           OPT_INT,  &( talents.elemental_focus           ) },
+      { "elemental_fury",            OPT_INT,  &( talents.elemental_fury            ) },
+      { "elemental_mastery",         OPT_INT,  &( talents.elemental_mastery         ) },
+      { "elemental_oath",            OPT_INT,  &( talents.elemental_oath            ) },
+      { "elemental_precision",       OPT_INT,  &( talents.elemental_precision       ) },
+      { "elemental_weapons",         OPT_INT,  &( talents.elemental_weapons         ) },
+      { "enhancing_totems",          OPT_INT,  &( talents.enhancing_totems          ) },
+      { "feral_spirit",              OPT_INT,  &( talents.feral_spirit              ) },
+      { "flurry",                    OPT_INT,  &( talents.flurry                    ) },
+      { "frozen_power",              OPT_INT,  &( talents.frozen_power              ) },
+      { "improved_shields",          OPT_INT,  &( talents.improved_shields          ) },
+      { "improved_stormstrike",      OPT_INT,  &( talents.improved_stormstrike      ) },
+      { "improved_windfury_totem",   OPT_INT,  &( talents.improved_windfury_totem   ) },
+      { "lava_flows",                OPT_INT,  &( talents.lava_flows                ) },
+      { "lava_lash",                 OPT_INT,  &( talents.lava_lash                 ) },
+      { "lightning_mastery",         OPT_INT,  &( talents.lightning_mastery         ) },
+      { "lightning_overload",        OPT_INT,  &( talents.lightning_overload        ) },
+      { "maelstrom_weapon",          OPT_INT,  &( talents.maelstrom_weapon          ) },
+      { "mana_tide_totem",           OPT_INT,  &( talents.mana_tide_totem           ) },
+      { "mental_dexterity",          OPT_INT,  &( talents.mental_dexterity          ) },
+      { "mental_quickness",          OPT_INT,  &( talents.mental_quickness          ) },
+      { "natures_swiftness",         OPT_INT,  &( talents.natures_swiftness         ) },
+      { "restorative_totems",        OPT_INT,  &( talents.restorative_totems        ) },
+      { "reverberation",             OPT_INT,  &( talents.reverberation             ) },
+      { "shamanism",                 OPT_INT,  &( talents.shamanism                 ) },
+      { "shamanistic_focus",         OPT_INT,  &( talents.shamanistic_focus         ) },
+      { "shamanistic_rage",          OPT_INT,  &( talents.shamanistic_rage          ) },
+      { "spirit_weapons",            OPT_INT,  &( talents.spirit_weapons            ) },
+      { "static_shock",              OPT_INT,  &( talents.static_shock              ) },
+      { "stormstrike",               OPT_INT,  &( talents.stormstrike               ) },
+      { "storm_earth_and_fire",      OPT_INT,  &( talents.storm_earth_and_fire      ) },
+      { "toughness",                 OPT_INT,  &( talents.toughness                 ) },
+      { "thundering_strikes",        OPT_INT,  &( talents.thundering_strikes        ) },
+      { "thunderstorm",              OPT_INT,  &( talents.thunderstorm              ) },
+      { "tidal_mastery",             OPT_INT,  &( talents.tidal_mastery             ) },
+      { "totem_of_wrath",            OPT_INT,  &( talents.totem_of_wrath            ) },
+      { "totemic_focus",             OPT_INT,  &( talents.totemic_focus             ) },
+      { "unrelenting_storm",         OPT_INT,  &( talents.unrelenting_storm         ) },
+      { "unleashed_rage",            OPT_INT,  &( talents.unleashed_rage            ) },
+      { "weapon_mastery",            OPT_INT,  &( talents.weapon_mastery            ) },
+      // @option_doc loc=player/shaman/glyphs title="Glyphs"
+      { "glyph_elemental_mastery",   OPT_BOOL, &( glyphs.elemental_mastery          ) },
+      { "glyph_feral_spirit",        OPT_BOOL, &( glyphs.feral_spirit               ) },
+      { "glyph_flame_shock",         OPT_BOOL, &( glyphs.flame_shock                ) },
+      { "glyph_flametongue_weapon",  OPT_BOOL, &( glyphs.flametongue_weapon         ) },
+      { "glyph_lava",                OPT_BOOL, &( glyphs.lava                       ) },
+      { "glyph_lava_lash",           OPT_BOOL, &( glyphs.lava_lash                  ) },
+      { "glyph_lightning_bolt",      OPT_BOOL, &( glyphs.lightning_bolt             ) },
+      { "glyph_lightning_shield",    OPT_BOOL, &( glyphs.lightning_shield           ) },
+      { "glyph_mana_tide",           OPT_BOOL, &( glyphs.mana_tide                  ) },
+      { "glyph_shocking",            OPT_BOOL, &( glyphs.shocking                   ) },
+      { "glyph_stormstrike",         OPT_BOOL, &( glyphs.stormstrike                ) },
+      { "glyph_thunderstorm",        OPT_BOOL, &( glyphs.thunderstorm               ) },
+      { "glyph_totem_of_wrath",      OPT_BOOL, &( glyphs.totem_of_wrath             ) },
+      { "glyph_windfury_weapon",     OPT_BOOL, &( glyphs.windfury_weapon            ) },
+      // @option_doc loc=player/shaman/totems title="Totems"
+      { "totem_of_dueling",          OPT_BOOL, &( totems.dueling                    ) },
+      { "totem_of_hex",              OPT_BOOL, &( totems.hex                        ) },
+      { "totem_of_the_dancing_flame",OPT_BOOL, &( totems.dancing_flame              ) },
+      { "thunderfall_totem",         OPT_BOOL, &( totems.thunderfall                ) },
+      // @option_doc loc=skip
+      { "tier4_2pc_elemental",       OPT_BOOL, &( tiers.t4_2pc_elemental            ) },
+      { "tier4_4pc_elemental",       OPT_BOOL, &( tiers.t4_4pc_elemental            ) },
+      { "tier5_2pc_elemental",       OPT_BOOL, &( tiers.t5_2pc_elemental            ) },
+      { "tier5_4pc_elemental",       OPT_BOOL, &( tiers.t5_4pc_elemental            ) },
+      { "tier6_2pc_elemental",       OPT_BOOL, &( tiers.t6_2pc_elemental            ) },
+      { "tier6_4pc_elemental",       OPT_BOOL, &( tiers.t6_4pc_elemental            ) },
+      { "tier7_2pc_elemental",       OPT_BOOL, &( tiers.t7_2pc_elemental            ) },
+      { "tier7_4pc_elemental",       OPT_BOOL, &( tiers.t7_4pc_elemental            ) },
+      { "tier4_2pc_enhancement",     OPT_BOOL, &( tiers.t4_2pc_enhancement          ) },
+      { "tier4_4pc_enhancement",     OPT_BOOL, &( tiers.t4_4pc_enhancement          ) },
+      { "tier5_2pc_enhancement",     OPT_BOOL, &( tiers.t5_2pc_enhancement          ) },
+      { "tier5_4pc_enhancement",     OPT_BOOL, &( tiers.t5_4pc_enhancement          ) },
+      { "tier6_2pc_enhancement",     OPT_BOOL, &( tiers.t6_2pc_enhancement          ) },
+      { "tier6_4pc_enhancement",     OPT_BOOL, &( tiers.t6_4pc_enhancement          ) },
+      { "tier7_2pc_enhancement",     OPT_BOOL, &( tiers.t7_2pc_enhancement          ) },
+      { "tier7_4pc_enhancement",     OPT_BOOL, &( tiers.t7_4pc_enhancement          ) },
+      { NULL, OPT_UNKNOWN }
+    };
 
-  if( name.empty() )
+  if ( name.empty() )
   {
     player_t::parse_option( std::string(), std::string() );
     option_t::print( sim -> output_file, options );
     return false;
   }
 
-  if( option_t::parse( sim, options, name, value ) ) return true;
+  if ( option_t::parse( sim, options, name, value ) ) return true;
 
   return player_t::parse_option( name, value );
 }
 
 // player_t::create_shaman  =================================================
 
-player_t* player_t::create_shaman( sim_t* sim, const std::string& name ) 
+player_t* player_t::create_shaman( sim_t* sim, const std::string& name )
 {
   shaman_t* p = new shaman_t( sim, name );
 
   new spirit_wolf_pet_t( sim, p );
 
- return p;
+  return p;
 }

@@ -45,12 +45,12 @@ struct patch_t
   void set       ( int arch, int version, int revision ) {         mask = encode( arch, version, revision ); }
   bool before    ( int arch, int version, int revision ) { return mask <  encode( arch, version, revision ); }
   bool after     ( int arch, int version, int revision ) { return mask >= encode( arch, version, revision ); }
-  void decode( int* arch, int* version, int* revision ) 
-  { 
+  void decode( int* arch, int* version, int* revision )
+  {
     uint64_t m = mask;
-    *revision = (int) m % 100; m /= 100;
-    *version  = (int) m % 100; m /= 100;
-    *arch     = (int) m % 100;
+    *revision = ( int ) m % 100; m /= 100;
+    *version  = ( int ) m % 100; m /= 100;
+    *arch     = ( int ) m % 100;
   }
   patch_t() { mask = encode( 3, 1, 0 ); }
 };
@@ -98,7 +98,7 @@ struct roll_t;
 // Enumerations ==============================================================
 
 enum race_type {
-  RACE_NONE=0, 
+  RACE_NONE=0,
   // Target Races
   RACE_BEAST, RACE_DRAGONKIN, RACE_GIANT, RACE_HUMANOID,
   // Player Races
@@ -124,7 +124,7 @@ enum resource_type {
 
 enum result_type {
   RESULT_NONE=0,
-  RESULT_MISS,  RESULT_RESIST, RESULT_DODGE, RESULT_PARRY, 
+  RESULT_MISS,  RESULT_RESIST, RESULT_DODGE, RESULT_PARRY,
   RESULT_BLOCK, RESULT_GLANCE, RESULT_CRIT,  RESULT_HIT,
   RESULT_MAX
 };
@@ -244,24 +244,24 @@ enum position_type { POSITION_NONE=0, POSITION_FRONT, POSITION_BACK, POSITION_RA
 enum encoding_type { ENCODING_NONE=0, ENCODING_BLIZZARD, ENCODING_MMO, ENCODING_WOWHEAD, ENCODING_MAX };
 
 enum profession_type {
-   PROF_NONE=0,
-   PROF_ALCHEMY,
-   PROF_MINING,
-   PROF_HERBALISM,
-   PROF_LEATHERWORKING,
-   PROF_ENGINEERING,
-   PROF_BLACKSMITHING,
-   PROF_INSCRIPTION,
-   PROF_SKINNING,
-   PROF_TAILORING,
-   PROF_JEWELCRAFTING,
-   PROF_ENCHANTING,
-   PROF_MAX
-}; 
+  PROF_NONE=0,
+  PROF_ALCHEMY,
+  PROF_MINING,
+  PROF_HERBALISM,
+  PROF_LEATHERWORKING,
+  PROF_ENGINEERING,
+  PROF_BLACKSMITHING,
+  PROF_INSCRIPTION,
+  PROF_SKINNING,
+  PROF_TAILORING,
+  PROF_JEWELCRAFTING,
+  PROF_ENCHANTING,
+  PROF_MAX
+};
 
 enum role_type { ROLE_NONE=0, ROLE_ATTACK, ROLE_SPELL, ROLE_TANK, ROLE_HYBRID, ROLE_MAX };
 
-enum rng_type 
+enum rng_type
 {
   // Specifies the general class of RNG desired
   RNG_DEFAULT=0,    // Do not care/know where it will be used
@@ -279,7 +279,7 @@ enum rng_type
   RNG_MAX
 };
 
- 
+
 
 // Thread Wrappers ===========================================================
 
@@ -302,16 +302,16 @@ struct event_t
   int       canceled;
   const char* name;
   event_t( sim_t* s, player_t* p=0, const char* n=0 ) :
-    next(0), sim(s), player(p), reschedule_time(0), canceled(0), name(n)
+      next( 0 ), sim( s ), player( p ), reschedule_time( 0 ), canceled( 0 ), name( n )
   {
-    if( ! name ) name = "unknown";
+    if ( ! name ) name = "unknown";
   }
-  double occurs() { return reschedule_time != 0 ? reschedule_time : time; }
+double occurs() { return reschedule_time != 0 ? reschedule_time : time; }
   virtual void reschedule( double new_time );
-  virtual void execute() { printf( "%s\n", name ? name : "(no name)" ); assert(0); }
+  virtual void execute() { printf( "%s\n", name ? name : "(no name)" ); assert( 0 ); }
   virtual ~event_t() {}
-  static void cancel( event_t*& e ) { if( e ) { e -> canceled = 1;                 e=0; } }
-  static void  early( event_t*& e ) { if( e ) { e -> canceled = 1; e -> execute(); e=0; } }
+  static void cancel( event_t*& e ) { if ( e ) { e -> canceled = 1;                 e=0; } }
+  static void  early( event_t*& e ) { if ( e ) { e -> canceled = 1; e -> execute(); e=0; } }
   // Simple free-list memory manager.
   static void* operator new( size_t, sim_t* );
   static void* operator new( size_t ) throw();  // DO NOT USE!
@@ -322,7 +322,7 @@ struct event_t
 
 struct event_compare_t
 {
-  bool operator () (event_t* lhs, event_t* rhs ) const
+  bool operator () ( event_t* lhs, event_t* rhs ) const
   {
     return( lhs -> time == rhs -> time ) ? ( lhs -> id > rhs -> id ) : ( lhs -> time > rhs -> time );
   }
@@ -347,12 +347,12 @@ struct gear_stats_t
   double weapon_speed;
   double armor;
 
-  gear_stats_t() { memset( (void*) this, 0x00, sizeof( gear_stats_t ) ); }
+  gear_stats_t() { memset( ( void* ) this, 0x00, sizeof( gear_stats_t ) ); }
 
   void   set_stat( int stat, double value );
   void   add_stat( int stat, double value );
   double get_stat( int stat );
-  
+
   static double stat_mod( int stat );
 };
 
@@ -363,8 +363,7 @@ struct app_t
   virtual const char* name() = 0;
   virtual int  main( int argc, char** argv ) = 0;
   virtual bool parse_option( const std::string& name, const std::string& value ) { return false; }
-  virtual ~app_t() {}
-};
+  virtual ~app_t() {}};
 
 // Simulation Engine =========================================================
 
@@ -403,7 +402,7 @@ struct sim_t : public app_t
   int deterministic_roll, average_range, average_gauss;
 
   // Timing Wheel Event Management
-  event_t** timing_wheel; 
+  event_t** timing_wheel;
   int    wheel_seconds, wheel_size, wheel_mask, timing_slice;
   double wheel_granularity;
 
@@ -464,7 +463,7 @@ struct sim_t : public app_t
     int windfury_totem;
     int winters_chill;
     int wrath_of_air;
-    overrides_t() { memset( (void*) this, 0x0, sizeof( overrides_t ) ); }
+    overrides_t() { memset( ( void* ) this, 0x0, sizeof( overrides_t ) ); }
   };
   overrides_t overrides;
 
@@ -477,7 +476,7 @@ struct sim_t : public app_t
     int sanctified_retribution;
     int swift_retribution;
     int trueshot;
-    void reset() { memset( (void*) this, 0x00, sizeof( auras_t ) ); }
+    void reset() { memset( ( void* ) this, 0x00, sizeof( auras_t ) ); }
     auras_t() { reset(); }
   };
   auras_t auras;
@@ -489,7 +488,7 @@ struct sim_t : public app_t
     event_t* ferocious_inspiration;
     event_t* rampage;
     event_t* unleashed_rage;
-    void reset() { memset( (void*) this, 0x00, sizeof( expirations_t ) ); }
+    void reset() { memset( ( void* ) this, 0x00, sizeof( expirations_t ) ); }
     expirations_t() { reset(); }
   };
   expirations_t expirations;
@@ -520,7 +519,7 @@ struct sim_t : public app_t
   int  thread_index;
 
   sim_t( sim_t* parent=0, int thrdID=0 );
- ~sim_t();
+  ~sim_t();
 
   virtual const char* name() { return "simcraft"; }
   virtual int main( int argc, char** argv );
@@ -544,8 +543,8 @@ struct sim_t : public app_t
   void      execute();
   void      print_options();
   bool      parse_options( int argc, char** argv );
-  bool      time_to_think( double proc_time ) { if( proc_time == 0 ) return false; return current_time - proc_time > reaction_time; }
-  bool      cooldown_ready( double cooldown_time ) { return cooldown_time <= current_time; }
+  bool      time_to_think( double proc_time ) { if ( proc_time == 0 ) return false; return current_time - proc_time > reaction_time; }
+bool      cooldown_ready( double cooldown_time ) { return cooldown_time <= current_time; }
   int       roll( double chance );
   double    range( double min, double max );
   double    gauss( double mean, double stddev );
@@ -582,7 +581,7 @@ struct rating_t
   double  spell_haste,  spell_hit,  spell_crit;
   double attack_haste, attack_hit, attack_crit;
   double expertise, armor_penetration;
-  rating_t() { memset( this, 0x00, sizeof(rating_t) ); }
+  rating_t() { memset( this, 0x00, sizeof( rating_t ) ); }
   void init( int level );
   static double interpolate( int level, double val_60, double val_70, double val_80 );
 };
@@ -603,10 +602,9 @@ struct weapon_t
   double proc_chance_on_swing( double PPM, double adjusted_swing_time=0 );
 
   weapon_t( int t=WEAPON_NONE, double d=0, double st=2.0, int s=SCHOOL_PHYSICAL ) :
-    type(t), school(s), damage(d), swing_time(st),
-    enchant(WEAPON_ENCHANT_NONE), buff(WEAPON_BUFF_NONE),
-    enchant_bonus(0), buff_bonus(0), slot(SLOT_NONE) {}
-};
+      type( t ), school( s ), damage( d ), swing_time( st ),
+      enchant( WEAPON_ENCHANT_NONE ), buff( WEAPON_BUFF_NONE ),
+      enchant_bonus( 0 ), buff_bonus( 0 ), slot( SLOT_NONE ) {}};
 
 // Player ====================================================================
 
@@ -797,7 +795,7 @@ struct player_t
     int       tier6_2pc, tier6_4pc;
     int       tier7_2pc, tier7_4pc;
     int       tier8_2pc, tier8_4pc;
-    void reset() { memset( (void*) this, 0x0, sizeof( buff_t ) ); }
+    void reset() { memset( ( void* ) this, 0x0, sizeof( buff_t ) ); }
     buff_t() { reset(); }
   };
   buff_t buffs;
@@ -814,7 +812,7 @@ struct player_t
     event_t *tier6_2pc, *tier6_4pc;
     event_t *tier7_2pc, *tier7_4pc;
     event_t *tier8_2pc, *tier8_4pc;
-    void reset() { memset( (void*) this, 0x00, sizeof( expirations_t ) ); }
+    void reset() { memset( ( void* ) this, 0x00, sizeof( expirations_t ) ); }
     expirations_t() { reset(); }
   };
   expirations_t expirations;
@@ -827,7 +825,7 @@ struct player_t
     double tier6_2pc, tier6_4pc;
     double tier7_2pc, tier7_4pc;
     double tier8_2pc, tier8_4pc;
-    void reset() { memset( (void*) this, 0x00, sizeof( cooldowns_t ) ); }
+    void reset() { memset( ( void* ) this, 0x00, sizeof( cooldowns_t ) ); }
     cooldowns_t() { reset(); }
   };
   cooldowns_t cooldowns;
@@ -840,7 +838,7 @@ struct player_t
     uptime_t *tier6_2pc, *tier6_4pc;
     uptime_t *tier7_2pc, *tier7_4pc;
     uptime_t *tier8_2pc, *tier8_4pc;
-    void reset() { memset( (void*) this, 0x00, sizeof( uptimes_t ) ); }
+    void reset() { memset( ( void* ) this, 0x00, sizeof( uptimes_t ) ); }
     uptimes_t() { reset(); }
   };
   uptimes_t uptimes;
@@ -870,7 +868,7 @@ struct player_t
     gain_t *tier6_2pc, *tier6_4pc;
     gain_t *tier7_2pc, *tier7_4pc;
     gain_t *tier8_2pc, *tier8_4pc;
-    void reset() { memset( (void*) this, 0x00, sizeof( gains_t ) ); }
+    void reset() { memset( ( void* ) this, 0x00, sizeof( gains_t ) ); }
     gains_t() { reset(); }
   };
   gains_t gains;
@@ -884,13 +882,13 @@ struct player_t
     proc_t *tier6_2pc, *tier6_4pc;
     proc_t *tier7_2pc, *tier7_4pc;
     proc_t *tier8_2pc, *tier8_4pc;
-    void reset() { memset( (void*) this, 0x00, sizeof( procs_t ) ); }
+    void reset() { memset( ( void* ) this, 0x00, sizeof( procs_t ) ); }
     procs_t() { reset(); }
   };
   procs_t procs;
 
   rng_t* rng_list;
-  
+
   struct rngs_t
   {
     rng_t* lag_channel;
@@ -902,7 +900,7 @@ struct player_t
     rng_t *tier6_2pc, *tier6_4pc;
     rng_t *tier7_2pc, *tier7_4pc;
     rng_t *tier8_2pc, *tier8_4pc;
-    void reset() { memset( (void*) this, 0x00, sizeof( rngs_t ) ); }
+    void reset() { memset( ( void* ) this, 0x00, sizeof( rngs_t ) ); }
     rngs_t() { reset(); }
   };
   rngs_t rngs;
@@ -915,7 +913,7 @@ struct player_t
 
   virtual const char* name() { return name_str.c_str(); }
   virtual const char* id();
-  
+
   virtual void init();
   virtual void init_base() = 0;
   virtual void init_core();
@@ -1025,16 +1023,16 @@ struct player_t
 
   bool is_pet() { return type == PLAYER_PET || type == PLAYER_GUARDIAN; }
 
-  death_knight_t* cast_death_knight() { assert( type == DEATH_KNIGHT ); return (death_knight_t*) this; }
-  druid_t       * cast_druid       () { assert( type == DRUID        ); return (druid_t       *) this; }
-  hunter_t      * cast_hunter      () { assert( type == HUNTER       ); return (hunter_t      *) this; }
-  mage_t        * cast_mage        () { assert( type == MAGE         ); return (mage_t        *) this; }
-  priest_t      * cast_priest      () { assert( type == PRIEST       ); return (priest_t      *) this; }
-  rogue_t       * cast_rogue       () { assert( type == ROGUE        ); return (rogue_t       *) this; }
-  shaman_t      * cast_shaman      () { assert( type == SHAMAN       ); return (shaman_t      *) this; }
-  warlock_t     * cast_warlock     () { assert( type == WARLOCK      ); return (warlock_t     *) this; }
-  warrior_t     * cast_warrior     () { assert( type == WARRIOR      ); return (warrior_t     *) this; }
-  pet_t         * cast_pet         () { assert( is_pet()             ); return (pet_t         *) this; }
+  death_knight_t* cast_death_knight() { assert( type == DEATH_KNIGHT ); return ( death_knight_t* ) this; }
+  druid_t       * cast_druid       () { assert( type == DRUID        ); return ( druid_t       * ) this; }
+  hunter_t      * cast_hunter      () { assert( type == HUNTER       ); return ( hunter_t      * ) this; }
+  mage_t        * cast_mage        () { assert( type == MAGE         ); return ( mage_t        * ) this; }
+  priest_t      * cast_priest      () { assert( type == PRIEST       ); return ( priest_t      * ) this; }
+  rogue_t       * cast_rogue       () { assert( type == ROGUE        ); return ( rogue_t       * ) this; }
+  shaman_t      * cast_shaman      () { assert( type == SHAMAN       ); return ( shaman_t      * ) this; }
+  warlock_t     * cast_warlock     () { assert( type == WARLOCK      ); return ( warlock_t     * ) this; }
+  warrior_t     * cast_warrior     () { assert( type == WARRIOR      ); return ( warrior_t     * ) this; }
+  pet_t         * cast_pet         () { assert( is_pet()             ); return ( pet_t         * ) this; }
 
   bool      in_gcd() { return gcd_ready > sim -> current_time; }
   bool      recent_cast();
@@ -1103,7 +1101,7 @@ struct target_t
   struct cooldowns_t
   {
     double place_holder;
-    void reset() { memset( (void*) this, 0x00, sizeof( cooldowns_t ) ); }
+    void reset() { memset( ( void* ) this, 0x00, sizeof( cooldowns_t ) ); }
     cooldowns_t() { reset(); }
   };
   cooldowns_t cooldowns;
@@ -1140,7 +1138,7 @@ struct target_t
     int    totem_of_wrath;
     int    winters_chill;
     int    winters_grasp;
-    void reset() { memset( (void*) this, 0x0, sizeof( debuff_t ) ); }
+    void reset() { memset( ( void* ) this, 0x0, sizeof( debuff_t ) ); }
     debuff_t() { reset(); }
     bool snared() { return frozen || slow || snare || thunder_clap; }
   };
@@ -1154,7 +1152,7 @@ struct target_t
     event_t* frozen;
     event_t* earth_and_moon;
     event_t* hemorrhage;
-    event_t* hunters_mark; 
+    event_t* hunters_mark;
     event_t* improved_faerie_fire;
     event_t* improved_scorch;
     event_t* improved_shadow_bolt;
@@ -1163,7 +1161,7 @@ struct target_t
     event_t* shadow_weaving;
     event_t* winters_chill;
     event_t* winters_grasp;
-    void reset() { memset( (void*) this, 0x00, sizeof( expirations_t ) ); }
+    void reset() { memset( ( void* ) this, 0x00, sizeof( expirations_t ) ); }
     expirations_t() { reset(); }
   };
   expirations_t expirations;
@@ -1180,13 +1178,13 @@ struct target_t
     uptime_t* totem_of_wrath;
     uptime_t* winters_chill;
     uptime_t* winters_grasp;
-    void reset() { memset( (void*) this, 0x00, sizeof( uptimes_t ) ); }
+    void reset() { memset( ( void* ) this, 0x00, sizeof( uptimes_t ) ); }
     uptimes_t() { reset(); }
   };
   uptimes_t uptimes;
 
   target_t( sim_t* s );
- ~target_t();
+  ~target_t();
 
   void init();
   void reset();
@@ -1296,7 +1294,7 @@ struct action_t
   double base_dd_adder, player_dd_adder, target_dd_adder;
   double resource_consumed;
   double direct_dmg, tick_dmg;
-  double resisted_dmg, blocked_dmg; 
+  double resisted_dmg, blocked_dmg;
   int num_ticks, current_tick, added_ticks;
   int ticking;
   std::string cooldown_group, duration_group;
@@ -1324,8 +1322,8 @@ struct action_t
   action_t( int type, const char* name, player_t* p=0, int r=RESOURCE_NONE, int s=SCHOOL_NONE, int t=TREE_NONE, bool special=false );
   virtual ~action_t() {}
 
-  virtual void      base_parse_options( option_t*, const std::string& options_str);
-  virtual void      parse_options( option_t*, const std::string& options_str);
+  virtual void      base_parse_options( option_t*, const std::string& options_str );
+  virtual void      parse_options( option_t*, const std::string& options_str );
   virtual option_t* merge_options( std::vector<option_t>&, option_t*, option_t* );
   virtual rank_t*   init_rank( rank_t* rank_list, int id=0 );
 
@@ -1337,7 +1335,7 @@ struct action_t
   virtual double travel_time();
   virtual void   player_buff();
   virtual void   target_debuff( int dmg_type );
-  virtual void   calculate_result() { assert(0); }
+  virtual void   calculate_result() { assert( 0 ); }
   virtual bool   result_is_hit();
   virtual bool   result_is_miss();
   virtual double calculate_direct_damage();
@@ -1447,19 +1445,19 @@ struct action_callback_t
 {
   sim_t* sim;
   player_t* listener;
-  action_callback_t( sim_t* s, player_t* l ) : sim(s), listener(l) {}
+  action_callback_t( sim_t* s, player_t* l ) : sim( s ), listener( l ) {}
   virtual ~action_callback_t() {}
   virtual void trigger( action_t* ) = 0;
   virtual void reset() {}
   static void trigger( std::vector<action_callback_t*>& v, action_t* a )
   {
     std::vector<action_callback_t*>::size_type i = v.size();
-    while( i ) v[--i]->trigger(a);
+    while ( i ) v[--i]->trigger( a );
   }
   static void   reset( std::vector<action_callback_t*>& v )
   {
     std::vector<action_callback_t*>::size_type i = v.size();
-    while( i ) v[--i]->reset();
+    while ( i ) v[--i]->reset();
   }
 };
 
@@ -1504,8 +1502,8 @@ struct action_travel_event_t : public event_t
 
 struct regen_event_t : public event_t
 {
-   regen_event_t( sim_t* sim );
-   virtual void execute();
+  regen_event_t( sim_t* sim );
+  virtual void execute();
 };
 
 // Unique Gear ===============================================================
@@ -1559,8 +1557,8 @@ struct unique_gear_t
   int  timbals_crystal;
   int  wrath_of_cenarius;
 
-  unique_gear_t() { memset( (void*) this, 0x00, sizeof( unique_gear_t ) ); }
-  
+  unique_gear_t() { memset( ( void* ) this, 0x00, sizeof( unique_gear_t ) ); }
+
   static action_t* create_action( player_t*, const std::string& name, const std::string& options );
   static bool parse_option( player_t*, const std::string& name, const std::string& value );
   static void init( player_t* );
@@ -1574,7 +1572,7 @@ struct enchant_t
   gear_stats_t stats;
   int spellsurge;
 
-  enchant_t() { memset( (void*) this, 0x00, sizeof( enchant_t ) ); }
+  enchant_t() { memset( ( void* ) this, 0x00, sizeof( enchant_t ) ); }
 
   static bool parse_option( player_t*, const std::string& name, const std::string& value );
   static void init( player_t* );
@@ -1600,7 +1598,7 @@ struct gain_t
   double actual, overflow;
   int id;
   gain_t* next;
-  gain_t( const std::string& n, int _id=0 ) : name_str(n), actual(0), overflow(0), id(_id) {}
+  gain_t( const std::string& n, int _id=0 ) : name_str( n ), actual( 0 ), overflow( 0 ), id( _id ) {}
   void add( double a, double o=0 ) { actual += a; overflow += o; }
   void merge( gain_t* other ) { actual += other -> actual; overflow += other -> overflow; }
   const char* name() { return name_str.c_str(); }
@@ -1614,7 +1612,7 @@ struct proc_t
   double count;
   double frequency;
   proc_t* next;
-  proc_t( const std::string& n ) : name_str(n), count(0), frequency(0) {}
+  proc_t( const std::string& n ) : name_str( n ), count( 0 ), frequency( 0 ) {}
   void occur() { count++; }
   void merge( proc_t* other ) { count += other -> count; }
   const char* name() { return name_str.c_str(); }
@@ -1627,9 +1625,9 @@ struct uptime_t
   std::string name_str;
   int up, down;
   uptime_t* next;
-  uptime_t( const std::string& n ) : name_str(n), up(0), down(0) {}
-  void   update( bool is_up ) { if( is_up ) up++; else down++; }
-  double percentage() { return (up==0) ? 0 : (100.0*up/(up+down)); }
+  uptime_t( const std::string& n ) : name_str( n ), up( 0 ), down( 0 ) {}
+  void   update( bool is_up ) { if ( is_up ) up++; else down++; }
+double percentage() { return ( up==0 ) ? 0 : ( 100.0*up/( up+down ) ); }
   void   merge( uptime_t* other ) { up += other -> up; down += other -> down; }
   const char* name() { return name_str.c_str(); }
 };
@@ -1677,8 +1675,8 @@ struct talent_translation_t
 
 // Options ====================================================================
 
-enum option_type_t 
-{ 
+enum option_type_t
+{
   OPT_STRING=0,   // std::string*
   OPT_APPEND,     // std::string* (append)
   OPT_CHAR_P,     // char*
@@ -1686,8 +1684,8 @@ enum option_type_t
   OPT_INT,        // int
   OPT_FLT,        // double
   OPT_LIST,       // std::vector<std::string>*
-  OPT_DEPRECATED, 
-  OPT_UNKNOWN 
+  OPT_DEPRECATED,
+  OPT_UNKNOWN
 };
 
 struct option_t
@@ -1749,7 +1747,7 @@ struct rng_t
   static rng_t* create( sim_t*, const std::string& name, int type=RNG_STANDARD );
 };
 
-void testRng(sim_t* sim);
+void testRng( sim_t* sim );
 
 // Utilities =================================================================
 
@@ -1790,7 +1788,7 @@ struct util_t
   static int milliseconds();
 };
 
-bool parseArmory(sim_t* sim, std::string URL, bool parseName=true, bool parseTalents=true, bool parseGear=true);
+bool parseArmory( sim_t* sim, std::string URL, bool parseName=true, bool parseTalents=true, bool parseGear=true );
 
 
 

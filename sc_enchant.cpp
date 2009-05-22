@@ -16,8 +16,8 @@ struct spellsurge_callback_t : public action_callback_t
   {
     struct spellsurge_t : public spell_t
     {
-      spellsurge_t( player_t* p ) : 
-        spell_t( "spellsurge", p, RESOURCE_MANA, SCHOOL_ARCANE )
+      spellsurge_t( player_t* p ) :
+          spell_t( "spellsurge", p, RESOURCE_MANA, SCHOOL_ARCANE )
       {
         background     = true;
         base_tick_time = 1.0;
@@ -25,18 +25,18 @@ struct spellsurge_callback_t : public action_callback_t
         trigger_gcd    = 0;
         cooldown       = 60;
       }
-      virtual void execute() 
+      virtual void execute()
       {
         assert( current_tick == 0 );
         schedule_tick();
       }
       virtual void tick()
       {
-        for( player_t* p = sim -> player_list; p; p = p -> next )
+        for ( player_t* p = sim -> player_list; p; p = p -> next )
         {
-          if( p -> party == player -> party ) 
+          if ( p -> party == player -> party )
           {
-            if( sim -> log ) log_t::output( sim, "Player %s gains mana from %s 's Spellsurge.", p -> name(), player -> name() );
+            if ( sim -> log ) log_t::output( sim, "Player %s gains mana from %s 's Spellsurge.", p -> name(), player -> name() );
             p -> resource_gain( RESOURCE_MANA, 10.0, p -> gains.spellsurge );
           }
         }
@@ -49,24 +49,24 @@ struct spellsurge_callback_t : public action_callback_t
 
   virtual void trigger( action_t* a )
   {
-    if( spell -> ready() && rng -> roll( 0.15 ) )
+    if ( spell -> ready() && rng -> roll( 0.15 ) )
     {
-      for( player_t* p = a -> sim -> player_list; p; p = p -> next )
+      for ( player_t* p = a -> sim -> player_list; p; p = p -> next )
       {
         // Invalidate any existing Spellsurge procs.
 
-        if( p -> party == a -> player -> party ) 
+        if ( p -> party == a -> player -> party )
         {
           action_t* spellsurge = p -> find_action( "spellsurge" );
 
-          if( spellsurge && spellsurge -> ticking )
+          if ( spellsurge && spellsurge -> ticking )
           {
             spellsurge -> cancel();
             break;
           }
         }
       }
-    
+
       spell -> execute();
     }
   }
@@ -84,7 +84,7 @@ struct berserking_callback_t : public action_callback_t
   rng_t*    mh_rng;
   rng_t*    oh_rng;
 
-  berserking_callback_t( player_t* p ) : action_callback_t( p -> sim, p ), mh_buff(0), oh_buff(0), mh_expiration(0), oh_expiration(0) 
+  berserking_callback_t( player_t* p ) : action_callback_t( p -> sim, p ), mh_buff( 0 ), oh_buff( 0 ), mh_expiration( 0 ), oh_expiration( 0 )
   {
     mh_uptime = p -> get_uptime( "berserking_mh" );
     oh_uptime = p -> get_uptime( "berserking_oh" );
@@ -102,8 +102,8 @@ struct berserking_callback_t : public action_callback_t
       int&   buffs_berserking;
       event_t*& expirations_berserking;
 
-      berserking_expiration_t( sim_t* sim, player_t* player, int& b_m, event_t*& e_m ) : 
-        event_t( sim, player ), buffs_berserking( b_m ), expirations_berserking( e_m )
+      berserking_expiration_t( sim_t* sim, player_t* player, int& b_m, event_t*& e_m ) :
+          event_t( sim, player ), buffs_berserking( b_m ), expirations_berserking( e_m )
       {
         name = "Berserking Expiration";
         player -> aura_gain( "Berserking" );
@@ -122,9 +122,9 @@ struct berserking_callback_t : public action_callback_t
 
     player_t* p = a -> player;
     weapon_t* w = a -> weapon;
-    if( ! w ) return;
+    if ( ! w ) return;
     bool mh = ( w -> slot == SLOT_MAIN_HAND );
-    
+
     // Berserking has a 1.2 PPM (proc per minute) which translates into 1 proc every 50sec on average
     // We cannot use the base swing time because that would over-value haste.  Instead, we use
     // the hasted swing time which is represented in the "time_to_execute" field.  When this field
@@ -139,9 +139,9 @@ struct berserking_callback_t : public action_callback_t
     double PPM = 1.2;
     double swing_time = a -> time_to_execute;
 
-    if( r -> roll( w -> proc_chance_on_swing( PPM, swing_time ) ) )
+    if ( r -> roll( w -> proc_chance_on_swing( PPM, swing_time ) ) )
     {
-      if( e )
+      if ( e )
       {
         e -> reschedule( 15.0 );
       }
@@ -166,7 +166,7 @@ struct mongoose_callback_t : public action_callback_t
   rng_t*    mh_rng;
   rng_t*    oh_rng;
 
-  mongoose_callback_t( player_t* p ) : action_callback_t( p -> sim, p ), mh_expiration(0), oh_expiration(0) 
+  mongoose_callback_t( player_t* p ) : action_callback_t( p -> sim, p ), mh_expiration( 0 ), oh_expiration( 0 )
   {
     mh_uptime = p -> get_uptime( "mongoose_mh" );
     oh_uptime = p -> get_uptime( "mongoose_oh" );
@@ -184,8 +184,8 @@ struct mongoose_callback_t : public action_callback_t
       int& buffs_mongoose;
       event_t*& expirations_mongoose;
 
-      mongoose_expiration_t( sim_t* sim, player_t* player, int& b_m, event_t*& e_m ) : 
-        event_t( sim, player ), buffs_mongoose( b_m ), expirations_mongoose( e_m )
+      mongoose_expiration_t( sim_t* sim, player_t* player, int& b_m, event_t*& e_m ) :
+          event_t( sim, player ), buffs_mongoose( b_m ), expirations_mongoose( e_m )
       {
         name = "Mongoose Expiration";
         player -> aura_gain( "Mongoose Lightning Speed" );
@@ -204,7 +204,7 @@ struct mongoose_callback_t : public action_callback_t
 
     player_t* p = a -> player;
     weapon_t* w = a -> weapon;
-    if( ! w ) return;
+    if ( ! w ) return;
     bool mh = ( w -> slot == SLOT_MAIN_HAND );
 
     // Mongoose has a 1.2 PPM (proc per minute) which translates into 1 proc every 50sec on average
@@ -221,9 +221,9 @@ struct mongoose_callback_t : public action_callback_t
     double PPM = 1.2 - ( ( std::max( p -> level, 70 ) - 70 ) * 0.02 );
     double swing_time = a -> time_to_execute;
 
-    if( r -> roll( w -> proc_chance_on_swing( PPM, swing_time ) ) )
+    if ( r -> roll( w -> proc_chance_on_swing( PPM, swing_time ) ) )
     {
-      if( e )
+      if ( e )
       {
         e -> reschedule( 15.0 );
       }
@@ -246,7 +246,7 @@ struct executioner_callback_t : public action_callback_t
   uptime_t* uptime;
   rng_t*    rng;
 
-  executioner_callback_t( player_t* p ) : action_callback_t( p -> sim, p ), buff(0), expiration(0) 
+  executioner_callback_t( player_t* p ) : action_callback_t( p -> sim, p ), buff( 0 ), expiration( 0 )
   {
     uptime = p -> get_uptime( "executioner" );
     rng    = p -> get_rng( "executioner", RNG_DISTRIBUTED );
@@ -278,7 +278,7 @@ struct executioner_callback_t : public action_callback_t
 
     player_t* p = a -> player;
     weapon_t* w = a -> weapon;
-    if( ! w ) return;
+    if ( ! w ) return;
 
     // Executioner has a 1.2 PPM (proc per minute) which translates into 1 proc every 50sec on average
     // We cannot use the base swing time because that would over-value haste.  Instead, we use
@@ -288,9 +288,9 @@ struct executioner_callback_t : public action_callback_t
     double PPM = 1.2;
     double swing_time = a -> time_to_execute;
 
-    if( rng -> roll( w -> proc_chance_on_swing( PPM, swing_time ) ) )
+    if ( rng -> roll( w -> proc_chance_on_swing( PPM, swing_time ) ) )
     {
-      if( expiration )
+      if ( expiration )
       {
         expiration -> reschedule( 15.0 );
       }
@@ -311,38 +311,38 @@ struct executioner_callback_t : public action_callback_t
 // enchant_t::parse_option ==================================================
 
 bool enchant_t::parse_option( player_t*          p,
-                              const std::string& name, 
+                              const std::string& name,
                               const std::string& value )
 {
   option_t options[] =
-  {
-    // @option_doc loc=player/all/enchant/stats title="Stat Enchants"
-    { "enchant_strength",          OPT_FLT,  &( p -> enchant -> stats.attribute[ ATTR_STRENGTH  ] ) },
-    { "enchant_agility",           OPT_FLT,  &( p -> enchant -> stats.attribute[ ATTR_AGILITY   ] ) },
-    { "enchant_stamina",           OPT_FLT,  &( p -> enchant -> stats.attribute[ ATTR_STAMINA   ] ) },
-    { "enchant_intellect",         OPT_FLT,  &( p -> enchant -> stats.attribute[ ATTR_INTELLECT ] ) },
-    { "enchant_spirit",            OPT_FLT,  &( p -> enchant -> stats.attribute[ ATTR_SPIRIT    ] ) },
-    { "enchant_spell_power",       OPT_FLT,  &( p -> enchant -> stats.spell_power                 ) },
-    { "enchant_mp5",               OPT_FLT,  &( p -> enchant -> stats.mp5                         ) },
-    { "enchant_attack_power",      OPT_FLT,  &( p -> enchant -> stats.attack_power                ) },
-    { "enchant_expertise_rating",  OPT_FLT,  &( p -> enchant -> stats.expertise_rating            ) },
-    { "enchant_armor_penetration", OPT_FLT,  &( p -> enchant -> stats.armor_penetration_rating    ) },
-    { "enchant_armor",             OPT_FLT,  &( p -> enchant -> stats.armor                       ) },
-    { "enchant_haste_rating",      OPT_FLT,  &( p -> enchant -> stats.haste_rating                ) },
-    { "enchant_hit_rating",        OPT_FLT,  &( p -> enchant -> stats.hit_rating                  ) },
-    { "enchant_crit_rating",       OPT_FLT,  &( p -> enchant -> stats.crit_rating                 ) },
-    { "enchant_health",            OPT_FLT,  &( p -> enchant -> stats.resource[ RESOURCE_HEALTH ] ) },
-    { "enchant_mana",              OPT_FLT,  &( p -> enchant -> stats.resource[ RESOURCE_MANA   ] ) },
-    { "enchant_rage",              OPT_FLT,  &( p -> enchant -> stats.resource[ RESOURCE_RAGE   ] ) },
-    { "enchant_energy",            OPT_FLT,  &( p -> enchant -> stats.resource[ RESOURCE_ENERGY ] ) },
-    { "enchant_focus",             OPT_FLT,  &( p -> enchant -> stats.resource[ RESOURCE_FOCUS  ] ) },
-    { "enchant_runic",             OPT_FLT,  &( p -> enchant -> stats.resource[ RESOURCE_RUNIC  ] ) },
-    // @option_doc loc=player/all/enchant/procs title="Proc Enchants"
-    { "spellsurge",                OPT_BOOL, &( p -> enchant -> spellsurge ) },
-    { NULL, OPT_UNKNOWN }
-  };
-  
-  if( name.empty() )
+    {
+      // @option_doc loc=player/all/enchant/stats title="Stat Enchants"
+      { "enchant_strength",          OPT_FLT,  &( p -> enchant -> stats.attribute[ ATTR_STRENGTH  ] ) },
+      { "enchant_agility",           OPT_FLT,  &( p -> enchant -> stats.attribute[ ATTR_AGILITY   ] ) },
+      { "enchant_stamina",           OPT_FLT,  &( p -> enchant -> stats.attribute[ ATTR_STAMINA   ] ) },
+      { "enchant_intellect",         OPT_FLT,  &( p -> enchant -> stats.attribute[ ATTR_INTELLECT ] ) },
+      { "enchant_spirit",            OPT_FLT,  &( p -> enchant -> stats.attribute[ ATTR_SPIRIT    ] ) },
+      { "enchant_spell_power",       OPT_FLT,  &( p -> enchant -> stats.spell_power                 ) },
+      { "enchant_mp5",               OPT_FLT,  &( p -> enchant -> stats.mp5                         ) },
+      { "enchant_attack_power",      OPT_FLT,  &( p -> enchant -> stats.attack_power                ) },
+      { "enchant_expertise_rating",  OPT_FLT,  &( p -> enchant -> stats.expertise_rating            ) },
+      { "enchant_armor_penetration", OPT_FLT,  &( p -> enchant -> stats.armor_penetration_rating    ) },
+      { "enchant_armor",             OPT_FLT,  &( p -> enchant -> stats.armor                       ) },
+      { "enchant_haste_rating",      OPT_FLT,  &( p -> enchant -> stats.haste_rating                ) },
+      { "enchant_hit_rating",        OPT_FLT,  &( p -> enchant -> stats.hit_rating                  ) },
+      { "enchant_crit_rating",       OPT_FLT,  &( p -> enchant -> stats.crit_rating                 ) },
+      { "enchant_health",            OPT_FLT,  &( p -> enchant -> stats.resource[ RESOURCE_HEALTH ] ) },
+      { "enchant_mana",              OPT_FLT,  &( p -> enchant -> stats.resource[ RESOURCE_MANA   ] ) },
+      { "enchant_rage",              OPT_FLT,  &( p -> enchant -> stats.resource[ RESOURCE_RAGE   ] ) },
+      { "enchant_energy",            OPT_FLT,  &( p -> enchant -> stats.resource[ RESOURCE_ENERGY ] ) },
+      { "enchant_focus",             OPT_FLT,  &( p -> enchant -> stats.resource[ RESOURCE_FOCUS  ] ) },
+      { "enchant_runic",             OPT_FLT,  &( p -> enchant -> stats.resource[ RESOURCE_RUNIC  ] ) },
+      // @option_doc loc=player/all/enchant/procs title="Proc Enchants"
+      { "spellsurge",                OPT_BOOL, &( p -> enchant -> spellsurge ) },
+      { NULL, OPT_UNKNOWN }
+    };
+
+  if ( name.empty() )
   {
     option_t::print( p -> sim -> output_file, options );
     return false;
@@ -354,29 +354,28 @@ bool enchant_t::parse_option( player_t*          p,
 // enchant_t::init ==========================================================
 
 void enchant_t::init( player_t* p )
-{
-}
+{}
 
 // enchant_t::register_callbacks ============================================
 
 void enchant_t::register_callbacks( player_t* p )
 {
-  if( p -> main_hand_weapon.enchant == BERSERKING ||
-      p ->  off_hand_weapon.enchant == BERSERKING )
+  if ( p -> main_hand_weapon.enchant == BERSERKING ||
+       p ->  off_hand_weapon.enchant == BERSERKING )
   {
     p -> register_attack_result_callback( RESULT_HIT_MASK, new berserking_callback_t( p ) );
   }
-  if( p -> main_hand_weapon.enchant == EXECUTIONER ||
-      p ->  off_hand_weapon.enchant == EXECUTIONER )
+  if ( p -> main_hand_weapon.enchant == EXECUTIONER ||
+       p ->  off_hand_weapon.enchant == EXECUTIONER )
   {
     p -> register_attack_result_callback( RESULT_HIT_MASK, new executioner_callback_t( p ) );
   }
-  if( p -> main_hand_weapon.enchant == MONGOOSE ||
-      p ->  off_hand_weapon.enchant == MONGOOSE )
+  if ( p -> main_hand_weapon.enchant == MONGOOSE ||
+       p ->  off_hand_weapon.enchant == MONGOOSE )
   {
     p -> register_attack_result_callback( RESULT_HIT_MASK, new mongoose_callback_t( p ) );
   }
-  if( p -> enchant -> spellsurge )
+  if ( p -> enchant -> spellsurge )
   {
     p -> register_spell_result_callback( RESULT_ALL_MASK, new spellsurge_callback_t( p ) );
   }

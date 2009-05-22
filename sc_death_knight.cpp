@@ -32,9 +32,9 @@ struct dk_rune_t
   double cooldown_ready;
   int    type;
 
-  dk_rune_t() : cooldown_ready(0), type(RUNE_TYPE_NONE) {}
+  dk_rune_t() : cooldown_ready( 0 ), type( RUNE_TYPE_NONE ) {}
 
-  bool is_death(                     ) const { return (type & RUNE_TYPE_DEATH) != 0;  }
+  bool is_death(                     ) const { return ( type & RUNE_TYPE_DEATH ) != 0;  }
   bool is_ready( double current_time ) const { return cooldown_ready <= current_time; }
   int  get_type(                     ) const { return type & RUNE_TYPE_MASK;          }
 
@@ -42,8 +42,8 @@ struct dk_rune_t
   {
     assert ( current_time >= cooldown_ready );
 
-    cooldown_ready = (current_time <= (cooldown_ready + RUNE_GRACE_PERIOD) ? cooldown_ready : current_time) + cooldown;
-    type = type & RUNE_TYPE_MASK | type << 1 & RUNE_TYPE_WASDEATH | (convert ? RUNE_TYPE_DEATH : 0) ;
+    cooldown_ready = ( current_time <= ( cooldown_ready + RUNE_GRACE_PERIOD ) ? cooldown_ready : current_time ) + cooldown;
+    type = type & RUNE_TYPE_MASK | type << 1 & RUNE_TYPE_WASDEATH | ( convert ? RUNE_TYPE_DEATH : 0 ) ;
   }
 
   void refund()   { cooldown_ready = 0; type  = type & RUNE_TYPE_MASK | type >> 1 & RUNE_TYPE_DEATH; }
@@ -71,7 +71,7 @@ struct death_knight_t : public player_t
     double  butchery;
     int     scent_of_blood;
 
-    void reset() { memset( (void*) this, 0x00, sizeof( _buffs_t ) ); }
+    void reset() { memset( ( void* ) this, 0x00, sizeof( _buffs_t ) ); }
     _buffs_t() { reset(); }
   };
   _buffs_t _buffs;
@@ -82,7 +82,7 @@ struct death_knight_t : public player_t
     double  bloodworms;
     double  hysteria;
 
-    void reset() { memset( (void*) this, 0x00, sizeof( _cooldowns_t ) ); }
+    void reset() { memset( ( void* ) this, 0x00, sizeof( _cooldowns_t ) ); }
     _cooldowns_t() { reset(); }
   };
   _cooldowns_t _cooldowns;
@@ -94,7 +94,7 @@ struct death_knight_t : public player_t
     event_t* bloody_vengeance;
     event_t* scent_of_blood;
 
-    void reset() { memset( (void*) this, 0x00, sizeof( _expirations_t ) ); }
+    void reset() { memset( ( void* ) this, 0x00, sizeof( _expirations_t ) ); }
     _expirations_t() { reset(); }
   };
   _expirations_t _expirations;
@@ -111,14 +111,14 @@ struct death_knight_t : public player_t
   proc_t* procs_bloody_vengeance;
   proc_t* procs_scent_of_blood;
   proc_t* procs_sudden_doom;
-  
+
   // Up-Times
   uptime_t* uptimes_abominations_might;
   uptime_t* uptimes_bloodworms;
   uptime_t* uptimes_bloody_vengeance;
   uptime_t* uptimes_hysteria;
   uptime_t* uptimes_scent_of_blood;
-  
+
   // Auto-Attack
   attack_t* main_hand_attack;
   attack_t*  off_hand_attack;
@@ -138,7 +138,7 @@ struct death_knight_t : public player_t
   {
     int abominations_might;
     int bladed_armor;
-    int blood_gorged;       
+    int blood_gorged;
     int bloodworms;
     int bloody_strikes;
     int bloody_vengeance;
@@ -206,7 +206,7 @@ struct death_knight_t : public player_t
     int virulence;
     int wandering_plague;
 
-    talents_t() { memset( (void*) this, 0x0, sizeof( talents_t ) ); }
+    talents_t() { memset( ( void* ) this, 0x0, sizeof( talents_t ) ); }
   };
   talents_t talents;
 
@@ -235,7 +235,7 @@ struct death_knight_t : public player_t
     int unholy_blight;
     int the_ghoul;
 
-    glyphs_t() { memset( (void*) this, 0x0, sizeof( glyphs_t ) ); }
+    glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
   };
   glyphs_t glyphs;
 
@@ -243,15 +243,15 @@ struct death_knight_t : public player_t
   {
     dk_rune_t slot[RUNE_SLOT_MAX];
 
-    runes_t()    { for( int i = 0; i < RUNE_SLOT_MAX; ++i ) slot[i].type = RUNE_TYPE_BLOOD + (i >> 1); }
-    void reset() { for( int i = 0; i < RUNE_SLOT_MAX; ++i ) slot[i].reset();                           }
+    runes_t()    { for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) slot[i].type = RUNE_TYPE_BLOOD + ( i >> 1 ); }
+  void reset() { for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) slot[i].reset();                           }
   };
   runes_t _runes;
 
   death_knight_t( sim_t* sim, const std::string& name ) :
-    player_t( sim, DEATH_KNIGHT, name )
+      player_t( sim, DEATH_KNIGHT, name )
   {
-    assert ( sim ->patch.after(3,1,0) );
+    assert ( sim ->patch.after( 3,1,0 ) );
 
     // Active
     active_blood_plague      = NULL;
@@ -259,7 +259,7 @@ struct death_knight_t : public player_t
     diseases = 0;
 
     // Pets and Guardians
-    for( int i = MAX_BLOODWORMS; i ; ) active_bloodworms[--i] = NULL;
+    for ( int i = MAX_BLOODWORMS; i ; ) active_bloodworms[--i] = NULL;
 
     // Gains
     gains_rune_abilities     = get_gain( "rune_abilities" );
@@ -280,7 +280,7 @@ struct death_knight_t : public player_t
     uptimes_bloody_vengeance   = get_uptime( "bloody_vengeance" );
     uptimes_hysteria           = get_uptime( "hysteria" );
     uptimes_scent_of_blood     = get_uptime( "scent_of_blood" );
-  
+
     // Auto-Attack
     main_hand_attack         = NULL;
     off_hand_attack          = NULL;
@@ -309,7 +309,7 @@ struct death_knight_t : public player_t
   virtual bool      parse_option( const std::string& name, const std::string& value );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual action_t* execute_action();
-  virtual int       primary_resource() { return RESOURCE_RUNIC; }
+virtual int       primary_resource() { return RESOURCE_RUNIC; }
 
   // Utilities
   bool abort_execute_action;
@@ -325,8 +325,8 @@ struct bloodworm_pet_t : public pet_t
 
   struct melee_t : public attack_t
   {
-    melee_t( player_t* player ) : 
-      attack_t( "bloodworm_melee", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_NONE, false )
+    melee_t( player_t* player ) :
+        attack_t( "bloodworm_melee", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_NONE, false )
     {
       weapon = &( player -> main_hand_weapon );
       base_execute_time = weapon -> swing_time;
@@ -344,8 +344,8 @@ struct bloodworm_pet_t : public pet_t
 
   melee_t*  melee;
 
-  bloodworm_pet_t( sim_t* sim, player_t* owner, int num) :
-    pet_t( sim, owner, id[num - 1], true /*guardian*/ )
+  bloodworm_pet_t( sim_t* sim, player_t* owner, int num ) :
+      pet_t( sim, owner, id[num - 1], true /*guardian*/ )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.damage     = 20;
@@ -368,8 +368,8 @@ struct bloodworm_pet_t : public pet_t
   {
     death_knight_t* o = owner -> cast_death_knight();
     pet_t::summon();
-    for( int i = MAX_BLOODWORMS; i--; )
-      if( ! o -> active_bloodworms[i] )
+    for ( int i = MAX_BLOODWORMS; i--; )
+      if ( ! o -> active_bloodworms[i] )
       {
         o -> active_bloodworms[i] = this;
         break;
@@ -382,7 +382,8 @@ struct bloodworm_pet_t : public pet_t
 
 const char* bloodworm_pet_t::id[] = { "bloodworm#1", "bloodworm#2", "bloodworm#3", "bloodworm#4" };
 
-namespace { // ANONYMOUS NAMESPACE =========================================
+namespace
+{ // ANONYMOUS NAMESPACE =========================================
 
 // ==========================================================================
 // Death Knight Attack
@@ -402,24 +403,24 @@ struct death_knight_attack_t : public attack_t
   int    min_frost, max_frost, exact_frost;
   int    min_unholy, max_unholy, exact_unholy;
 
-  death_knight_attack_t( const char* n, player_t* player, int s=SCHOOL_PHYSICAL, int t=TREE_NONE ) : 
-    attack_t( n, player, RESOURCE_RUNIC, s, t ), 
-    requires_weapon(true),
-    cost_blood(0),cost_frost(0),cost_unholy(0),convert_runes(0),
-    execute_once(1),executed_once(0),
-    min_blood(-1), max_blood(-1), exact_blood(-1),
-    min_frost(-1), max_frost(-1), exact_frost(-1),
-    min_unholy(-1), max_unholy(-1), exact_unholy(-1)
+  death_knight_attack_t( const char* n, player_t* player, int s=SCHOOL_PHYSICAL, int t=TREE_NONE ) :
+      attack_t( n, player, RESOURCE_RUNIC, s, t ),
+      requires_weapon( true ),
+      cost_blood( 0 ),cost_frost( 0 ),cost_unholy( 0 ),convert_runes( 0 ),
+      execute_once( 1 ),executed_once( 0 ),
+      min_blood( -1 ), max_blood( -1 ), exact_blood( -1 ),
+      min_frost( -1 ), max_frost( -1 ), exact_frost( -1 ),
+      min_unholy( -1 ), max_unholy( -1 ), exact_unholy( -1 )
   {
     death_knight_t* p = player -> cast_death_knight();
-    for( int i = 0; i < RUNE_SLOT_MAX; ++i ) use[i] = false;
+    for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) use[i] = false;
     may_crit   = true;
     may_glance = false;
 
-    if( p -> talents.two_handed_weapon_spec )
-      weapon_multiplier *= 1 + (p -> talents.two_handed_weapon_spec * 0.02);
+    if ( p -> talents.two_handed_weapon_spec )
+      weapon_multiplier *= 1 + ( p -> talents.two_handed_weapon_spec * 0.02 );
 
-    if( p -> talents.dark_conviction )
+    if ( p -> talents.dark_conviction )
       base_crit += p -> talents.dark_conviction * 0.01;
   }
 
@@ -449,21 +450,21 @@ struct death_knight_spell_t : public spell_t
   int    min_frost, max_frost, exact_frost;
   int    min_unholy, max_unholy, exact_unholy;
 
-  death_knight_spell_t( const char* n, player_t* player, int s, int t ) : 
-    spell_t( n, player, RESOURCE_RUNIC, s, t ),
-    cost_blood(0),cost_frost(0),cost_unholy(0),convert_runes(false),
-    execute_once(1),executed_once(0),
-    min_blood(-1), max_blood(-1), exact_blood(-1),
-    min_frost(-1), max_frost(-1), exact_frost(-1),
-    min_unholy(-1), max_unholy(-1), exact_unholy(-1)
+  death_knight_spell_t( const char* n, player_t* player, int s, int t ) :
+      spell_t( n, player, RESOURCE_RUNIC, s, t ),
+      cost_blood( 0 ),cost_frost( 0 ),cost_unholy( 0 ),convert_runes( false ),
+      execute_once( 1 ),executed_once( 0 ),
+      min_blood( -1 ), max_blood( -1 ), exact_blood( -1 ),
+      min_frost( -1 ), max_frost( -1 ), exact_frost( -1 ),
+      min_unholy( -1 ), max_unholy( -1 ), exact_unholy( -1 )
   {
     death_knight_t* p = player -> cast_death_knight();
-    for( int i = 0; i < RUNE_SLOT_MAX; ++i ) use[i] = false;
+    for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) use[i] = false;
     may_crit = true;
     base_spell_power_multiplier = 0;
     base_attack_power_multiplier = 1;
 
-    if( p -> talents.dark_conviction )
+    if ( p -> talents.dark_conviction )
       base_crit += p -> talents.dark_conviction * 0.01;
   }
 
@@ -486,15 +487,15 @@ clear_execute_flags( player_t* player )
   death_knight_t* p = player -> cast_death_knight();
   for ( action_t* a = p -> action_list; a; a = a -> next )
   {
-    death_knight_attack_t* att = dynamic_cast<death_knight_attack_t*>(a);
-    if( att )
+    death_knight_attack_t* att = dynamic_cast<death_knight_attack_t*>( a );
+    if ( att )
     {
       att ->executed_once = false;
       continue;
     }
 
-    death_knight_spell_t* spl = dynamic_cast<death_knight_spell_t*>(a);
-    if( spl ) spl ->executed_once = false;
+    death_knight_spell_t* spl = dynamic_cast<death_knight_spell_t*>( a );
+    if ( spl ) spl ->executed_once = false;
   }
   return p -> action_list;
 }
@@ -507,13 +508,13 @@ count_runes( player_t* player )
   int count = 0;
 
   // Storing ready runes by type in 2 bit blocks with 0 value bit separator (11 bits total)
-  for( int i = 0; i < RUNE_SLOT_MAX; ++i )
-    if( p -> _runes.slot[i].is_ready(t) )
-      count |= 1 << (i + (i >> 1));
+  for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
+    if ( p -> _runes.slot[i].is_ready( t ) )
+      count |= 1 << ( i + ( i >> 1 ) );
 
   // Adding bits in each two-bit block (0xDB = 011 011 011)
   // NOTE: Use GET_XXX_RUNE_COUNT macros to process return value
-  return ((count & (count << 1)) | (count >> 1)) & 0xDB;
+  return ( ( count & ( count << 1 ) ) | ( count >> 1 ) ) & 0xDB;
 }
 
 static void
@@ -522,8 +523,8 @@ consume_runes( player_t* player, const bool* use, bool convert_runes = false )
   death_knight_t* p = player -> cast_death_knight();
   double t = p -> sim -> current_time;
 
-  for( int i = 0; i < RUNE_SLOT_MAX; ++i )
-    if( use[i] ) p -> _runes.slot[i].consume( t, 10.0, convert_runes );
+  for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
+    if ( use[i] ) p -> _runes.slot[i].consume( t, 10.0, convert_runes );
 }
 
 static bool
@@ -535,10 +536,10 @@ group_runes ( player_t* player, int blood, int frost, int unholy, bool* group )
   bool use[RUNE_SLOT_MAX] = { false };
 
   // Selecting available non-death runes to satisfy cost
-  for( int i = 0; i < RUNE_SLOT_MAX; ++i )
+  for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
   {
     dk_rune_t& r = p -> _runes.slot[i];
-    if( r.is_ready(t) && ! r.is_death() && cost[r.get_type()] > 0 )
+    if ( r.is_ready( t ) && ! r.is_death() && cost[r.get_type()] > 0 )
     {
       --cost[r.get_type()];
       --cost[0];
@@ -547,20 +548,20 @@ group_runes ( player_t* player, int blood, int frost, int unholy, bool* group )
   }
 
   // Selecting available death runes to satisfy remaining cost
-  for( int i = RUNE_SLOT_MAX; cost[0] > 0 && i--; )
+  for ( int i = RUNE_SLOT_MAX; cost[0] > 0 && i--; )
   {
     dk_rune_t& r = p -> _runes.slot[i];
-    if( r.is_ready(t) && r.is_death() )
+    if ( r.is_ready( t ) && r.is_death() )
     {
       --cost[0];
       use[i] = true;
     }
   }
 
-  if( cost[0] > 0 ) return false;
+  if ( cost[0] > 0 ) return false;
 
   // Storing rune slots selected
-  for( int i = 0; i < RUNE_SLOT_MAX; ++i) group[i] = use[i];
+  for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) group[i] = use[i];
 
   return true;
 }
@@ -578,8 +579,8 @@ static void
 refund_runes( player_t* player, const bool* use )
 {
   death_knight_t* p = player -> cast_death_knight();
-  for( int i = 0; i < RUNE_SLOT_MAX; ++i )
-    if( use[i] ) p -> _runes.slot[i].refund();
+  for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
+    if ( use[i] ) p -> _runes.slot[i].refund();
 }
 
 static void
@@ -594,9 +595,9 @@ trigger_abominations_might( action_t* a, double base_chance )
     }
     virtual void execute()
     {
-      for( player_t* p = sim -> player_list; p; p = p -> next )
+      for ( player_t* p = sim -> player_list; p; p = p -> next )
       {
-        if( p -> buffs.abominations_might )
+        if ( p -> buffs.abominations_might )
         {
           p -> aura_loss( "Abomination's Might" );
           p -> buffs.abominations_might = 0;
@@ -607,17 +608,17 @@ trigger_abominations_might( action_t* a, double base_chance )
   };
 
   death_knight_t* dk = a -> player -> cast_death_knight();
-  
-  if( ! a -> sim -> roll( base_chance * dk -> talents.abominations_might ) ) return;
-  
+
+  if ( ! a -> sim -> roll( base_chance * dk -> talents.abominations_might ) ) return;
+
   dk -> procs_abominations_might -> occur();
 
-  if( a -> sim -> overrides.abominations_might ) return;
+  if ( a -> sim -> overrides.abominations_might ) return;
 
-  for( player_t* p = a -> sim -> player_list; p; p = p -> next )
+  for ( player_t* p = a -> sim -> player_list; p; p = p -> next )
   {
-    if( p -> sleeping ) continue;
-    if( p -> buffs.abominations_might == 0 ) 
+    if ( p -> sleeping ) continue;
+    if ( p -> buffs.abominations_might == 0 )
     {
       p -> aura_gain( "Abomination's Might" );
       p -> buffs.abominations_might = 1;
@@ -626,7 +627,7 @@ trigger_abominations_might( action_t* a, double base_chance )
 
   event_t*& e = a -> sim -> expirations.abominations_might;
 
-  if( e )
+  if ( e )
   {
     e -> reschedule( 10.0 );
   }
@@ -649,8 +650,8 @@ trigger_bloodworms( action_t* a )
     virtual void execute()
     {
       death_knight_t* p = player -> cast_death_knight();
-      for( int i = MAX_BLOODWORMS; i--; )
-        if( p-> active_bloodworms[i] )
+      for ( int i = MAX_BLOODWORMS; i--; )
+        if ( p-> active_bloodworms[i] )
         {
           p -> active_bloodworms[i] -> dismiss();
           p -> active_bloodworms[i] = NULL;
@@ -662,15 +663,15 @@ trigger_bloodworms( action_t* a )
 
   death_knight_t* p = a -> player -> cast_death_knight();
 
-  if(   a -> sim -> current_time <= p->_cooldowns.bloodworms ||
-      ! a -> sim -> roll( p -> talents.bloodworms * 0.03 ) ) return;
-  
+  if (   a -> sim -> current_time <= p->_cooldowns.bloodworms ||
+         ! a -> sim -> roll( p -> talents.bloodworms * 0.03 ) ) return;
+
   p -> procs_bloodworms -> occur();
   p -> _cooldowns.bloodworms = a -> sim -> current_time + 20;
 
   // Forcing exactly 3 bloodworms for now
-  for( int i = 3; i; )
-    p->summon_pet(bloodworm_pet_t::id[--i]);
+  for ( int i = 3; i; )
+    p->summon_pet( bloodworm_pet_t::id[--i] );
 
   event_t*& e = p -> _expirations.bloodworms;
   assert( !e );
@@ -689,7 +690,7 @@ trigger_hysteria( player_t* player, player_t* target )
     }
     virtual void execute()
     {
-      if( player -> buffs.hysteria )
+      if ( player -> buffs.hysteria )
       {
         player -> aura_loss( "Hysteria" );
         player -> buffs.hysteria = 0;
@@ -698,14 +699,14 @@ trigger_hysteria( player_t* player, player_t* target )
       player -> expirations.hysteria = NULL;
     }
   };
-  
+
   target -> aura_gain( "Hysteria" );
   target -> buffs.hysteria = 1;
   player -> cast_death_knight() -> _cooldowns.hysteria = player -> sim -> current_time + 180;
 
   event_t*& e = target -> expirations.hysteria;
 
-  if( e )
+  if ( e )
   {
     e -> reschedule( 30.0 );
   }
@@ -731,7 +732,7 @@ trigger_scent_of_blood( player_t* player )
     {
       death_knight_t* p = player -> cast_death_knight();
 
-      if( p -> _buffs.scent_of_blood )
+      if ( p -> _buffs.scent_of_blood )
       {
         p -> aura_loss( "Scent of Blood" );
         p -> _buffs.scent_of_blood = 0;
@@ -742,16 +743,16 @@ trigger_scent_of_blood( player_t* player )
   };
 
   death_knight_t* p = player -> cast_death_knight();
-  
-  if( ! p -> talents.scent_of_blood || ! p -> sim -> roll( 0.15 ) ) return;
-  
+
+  if ( ! p -> talents.scent_of_blood || ! p -> sim -> roll( 0.15 ) ) return;
+
   p -> aura_gain( aura_string[ p -> talents.scent_of_blood - 1 ] );
   p -> _buffs.scent_of_blood = p -> talents.scent_of_blood;
   p -> procs_scent_of_blood -> occur();
 
   event_t*& e = p -> _expirations.scent_of_blood;
 
-  if( e )
+  if ( e )
   {
     e -> reschedule( 10.0 );
   }
@@ -766,7 +767,7 @@ trigger_sudden_doom( action_t* a )
 {
   death_knight_t* p = a -> player -> cast_death_knight();
 
-  if( ! p -> sim -> roll( p -> talents.sudden_doom * 0.05 ) ) return;
+  if ( ! p -> sim -> roll( p -> talents.sudden_doom * 0.05 ) ) return;
 
   p -> procs_sudden_doom -> occur();
   p -> sudden_doom -> execute();
@@ -791,22 +792,22 @@ stack_bloody_vengeance( action_t* a )
       p -> _expirations.bloody_vengeance = NULL;
     }
   };
-  
+
   death_knight_t* p = a -> player -> cast_death_knight();
 
-  if( p -> talents.bloody_vengeance )
+  if ( p -> talents.bloody_vengeance )
   {
-    if( p -> _buffs.bloody_vengeance == 1 )
+    if ( p -> _buffs.bloody_vengeance == 1 )
       p -> aura_gain( "Bloody Vengeance(2)" );
-    else if( p -> _buffs.bloody_vengeance == 2 )
+    else if ( p -> _buffs.bloody_vengeance == 2 )
       p -> aura_gain( "Bloody Vengeance(3)" );
 
-    if( p -> _buffs.bloody_vengeance < 3 ) p -> _buffs.bloody_vengeance++;
+    if ( p -> _buffs.bloody_vengeance < 3 ) p -> _buffs.bloody_vengeance++;
 
     event_t*& e = p -> _expirations.bloody_vengeance;
     p -> procs_bloody_vengeance -> occur();
 
-    if( e )
+    if ( e )
     {
       e -> reschedule( 30.0 );
     }
@@ -825,19 +826,19 @@ void
 death_knight_attack_t::parse_options( option_t* options, const std::string& options_str )
 {
   option_t base_options[] =
-  {
-    { "blood" ,  OPT_INT,  &exact_blood  },
-    { "blood>" , OPT_INT,  &min_blood  },
-    { "blood<" , OPT_INT,  &max_blood  },
-    { "frost" ,  OPT_INT,  &exact_frost  },
-    { "frost>" , OPT_INT,  &min_frost  },
-    { "frost<" , OPT_INT,  &max_frost  },
-    { "once"  ,  OPT_BOOL, &execute_once },
-    { "unholy",  OPT_INT,  &exact_unholy },
-    { "unholy>", OPT_INT,  &min_unholy },
-    { "unholy<", OPT_INT,  &max_unholy },
-    { NULL }
-  };
+    {
+      { "blood" ,  OPT_INT,  &exact_blood  },
+      { "blood>" , OPT_INT,  &min_blood  },
+      { "blood<" , OPT_INT,  &max_blood  },
+      { "frost" ,  OPT_INT,  &exact_frost  },
+      { "frost>" , OPT_INT,  &min_frost  },
+      { "frost<" , OPT_INT,  &max_frost  },
+      { "once"  ,  OPT_BOOL, &execute_once },
+      { "unholy",  OPT_INT,  &exact_unholy },
+      { "unholy>", OPT_INT,  &min_unholy },
+      { "unholy<", OPT_INT,  &max_unholy },
+      { NULL }
+    };
   std::vector<option_t> merged_options;
   attack_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
 }
@@ -845,7 +846,7 @@ death_knight_attack_t::parse_options( option_t* options, const std::string& opti
 void
 death_knight_attack_t::reset()
 {
-  for( int i = 0; i < RUNE_SLOT_MAX; ++i ) use[i] = false;
+  for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) use[i] = false;
   executed_once = false;
   action_t::reset();
 }
@@ -853,7 +854,7 @@ death_knight_attack_t::reset()
 void
 death_knight_attack_t::consume_resource()
 {
-  if( cost() > 0 ) attack_t::consume_resource();
+  if ( cost() > 0 ) attack_t::consume_resource();
   consume_runes( player, use, convert_runes == 0 ? false : sim->roll( convert_runes ) == 1 );
 }
 
@@ -863,24 +864,24 @@ death_knight_attack_t::execute()
   death_knight_t* p = player -> cast_death_knight();
 
   attack_t::execute();
-  
-  if( result_is_hit() )
+
+  if ( result_is_hit() )
   {
     executed_once = true;
 
     double gain = -cost();
-    if( gain > 0 ) p -> resource_gain( resource, gain, p -> gains_rune_abilities );
+    if ( gain > 0 ) p -> resource_gain( resource, gain, p -> gains_rune_abilities );
 
     trigger_bloodworms( this );
 
-    if( result == RESULT_CRIT )
+    if ( result == RESULT_CRIT )
     {
       stack_bloody_vengeance( this );
     }
   }
   else
   {
-    if( cost() > 0 ) executed_once = true;
+    if ( cost() > 0 ) executed_once = true;
     refund_power( this );
     refund_runes( p, use );
   }
@@ -893,7 +894,7 @@ death_knight_attack_t::player_buff()
 
   attack_t::player_buff();
 
-  if( school == SCHOOL_PHYSICAL )
+  if ( school == SCHOOL_PHYSICAL )
   {
     player_multiplier *= 1 + p-> talents.bloody_vengeance * 0.01 * p -> _buffs.bloody_vengeance;
     p -> uptimes_bloody_vengeance -> update( p -> _buffs.bloody_vengeance != 0 );
@@ -902,17 +903,17 @@ death_knight_attack_t::player_buff()
 
   p -> uptimes_abominations_might -> update( p -> buffs.abominations_might != 0 );
 
-  if( p->talents.blood_gorged )
+  if ( p->talents.blood_gorged )
   {
     player_penetration += p -> talents.blood_gorged * 0.02;
 
-    if( p->resource_current[ RESOURCE_HEALTH ] >= p->resource_max[ RESOURCE_HEALTH ] * 0.75  )
+    if ( p->resource_current[ RESOURCE_HEALTH ] >= p->resource_max[ RESOURCE_HEALTH ] * 0.75  )
       player_multiplier *= 1 + p -> talents.blood_gorged * 0.02;
   }
 
-  if( sim -> debug ) 
-    log_t::output( sim, "death_knight_attack_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f, p_mult=%.0f", 
-       name(), player_hit, player_crit, player_spell_power, player_penetration, player_multiplier );
+  if ( sim -> debug )
+    log_t::output( sim, "death_knight_attack_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f, p_mult=%.0f",
+                   name(), player_hit, player_crit, player_spell_power, player_penetration, player_multiplier );
 }
 
 bool
@@ -921,37 +922,37 @@ death_knight_attack_t::ready()
   death_knight_t* p = player -> cast_death_knight();
   p -> abort_execute_action = false;
 
-  if( execute_once && executed_once )
+  if ( execute_once && executed_once )
     return false;
 
-  if( execute_once && ! executed_once )
+  if ( execute_once && ! executed_once )
     p -> abort_execute_action = true;
 
-  if( ! attack_t::ready() )
+  if ( ! attack_t::ready() )
     return false;
 
-  if( requires_weapon )
-    if( ! weapon || weapon->group() == WEAPON_RANGED ) 
+  if ( requires_weapon )
+    if ( ! weapon || weapon->group() == WEAPON_RANGED )
       return false;
 
-  int count = count_runes(p);
-  int c = GET_BLOOD_RUNE_COUNT(count);
+  int count = count_runes( p );
+  int c = GET_BLOOD_RUNE_COUNT( count );
 
-  if( (exact_blood != -1 && c != exact_blood) ||
-      (min_blood != -1 && c < min_blood) ||
-      (max_blood != -1 && c > max_blood) ) return false;
+  if ( ( exact_blood != -1 && c != exact_blood ) ||
+       ( min_blood != -1 && c < min_blood ) ||
+       ( max_blood != -1 && c > max_blood ) ) return false;
 
-  c = GET_FROST_RUNE_COUNT(count);
-  if( (exact_frost != -1 && c != exact_frost) ||
-      (min_frost != -1 && c < min_frost) ||
-      (max_frost != -1 && c > max_frost) ) return false;
+  c = GET_FROST_RUNE_COUNT( count );
+  if ( ( exact_frost != -1 && c != exact_frost ) ||
+       ( min_frost != -1 && c < min_frost ) ||
+       ( max_frost != -1 && c > max_frost ) ) return false;
 
-  c = GET_UNHOLY_RUNE_COUNT(count);
-  if( (exact_unholy != -1 && c != exact_unholy) ||
-      (min_unholy != -1 && c < min_unholy) ||
-      (max_unholy != -1 && c > max_unholy) ) return false;
+  c = GET_UNHOLY_RUNE_COUNT( count );
+  if ( ( exact_unholy != -1 && c != exact_unholy ) ||
+       ( min_unholy != -1 && c < min_unholy ) ||
+       ( max_unholy != -1 && c > max_unholy ) ) return false;
 
-  return group_runes( p, cost_blood, cost_frost, cost_unholy, use);
+  return group_runes( p, cost_blood, cost_frost, cost_unholy, use );
 }
 
 // ==========================================================================
@@ -962,19 +963,19 @@ void
 death_knight_spell_t::parse_options( option_t* options, const std::string& options_str )
 {
   option_t base_options[] =
-  {
-    { "blood" ,  OPT_INT,  &exact_blood  },
-    { "blood>" , OPT_INT,  &min_blood  },
-    { "blood<" , OPT_INT,  &max_blood  },
-    { "frost" ,  OPT_INT,  &exact_frost  },
-    { "frost>" , OPT_INT,  &min_frost  },
-    { "frost<" , OPT_INT,  &max_frost  },
-    { "once"  ,  OPT_BOOL, &execute_once },
-    { "unholy",  OPT_INT,  &exact_unholy },
-    { "unholy>", OPT_INT,  &min_unholy },
-    { "unholy<", OPT_INT,  &max_unholy },
-    { NULL }
-  };
+    {
+      { "blood" ,  OPT_INT,  &exact_blood  },
+      { "blood>" , OPT_INT,  &min_blood  },
+      { "blood<" , OPT_INT,  &max_blood  },
+      { "frost" ,  OPT_INT,  &exact_frost  },
+      { "frost>" , OPT_INT,  &min_frost  },
+      { "frost<" , OPT_INT,  &max_frost  },
+      { "once"  ,  OPT_BOOL, &execute_once },
+      { "unholy",  OPT_INT,  &exact_unholy },
+      { "unholy>", OPT_INT,  &min_unholy },
+      { "unholy<", OPT_INT,  &max_unholy },
+      { NULL }
+    };
   std::vector<option_t> merged_options;
   spell_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
 }
@@ -982,7 +983,7 @@ death_knight_spell_t::parse_options( option_t* options, const std::string& optio
 void
 death_knight_spell_t::reset()
 {
-  for( int i = 0; i < RUNE_SLOT_MAX; ++i ) use[i] = false;
+  for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) use[i] = false;
   executed_once = false;
   action_t::reset();
 }
@@ -990,7 +991,7 @@ death_knight_spell_t::reset()
 void
 death_knight_spell_t::consume_resource()
 {
-  if( cost() > 0 ) spell_t::consume_resource();
+  if ( cost() > 0 ) spell_t::consume_resource();
   consume_runes( player, use, convert_runes == 0 ? false : sim->roll( convert_runes ) == 1 );
 }
 
@@ -1000,24 +1001,24 @@ death_knight_spell_t::execute()
   death_knight_t* p = player -> cast_death_knight();
 
   spell_t::execute();
-  
-  if( result_is_hit() )
+
+  if ( result_is_hit() )
   {
     executed_once = true;
 
     double gain = -cost();
-    if( gain > 0 ) p -> resource_gain( resource, gain, p -> gains_rune_abilities );
+    if ( gain > 0 ) p -> resource_gain( resource, gain, p -> gains_rune_abilities );
 
-    if( result == RESULT_CRIT )
+    if ( result == RESULT_CRIT )
     {
       stack_bloody_vengeance( this );
     }
   }
   else
   {
-    if( cost() > 0 ) execute_once = 1;
+    if ( cost() > 0 ) execute_once = 1;
     refund_power( this );
-    refund_runes(p, use);
+    refund_runes( p, use );
   }
 }
 
@@ -1028,7 +1029,7 @@ death_knight_spell_t::player_buff()
 
   spell_t::player_buff();
 
-  if( school == SCHOOL_PHYSICAL && p -> talents.bloody_vengeance )
+  if ( school == SCHOOL_PHYSICAL && p -> talents.bloody_vengeance )
   {
     player_multiplier *= 1 + p-> talents.bloody_vengeance * 0.01 * p -> _buffs.bloody_vengeance;
     p -> uptimes_bloody_vengeance -> update( p -> _buffs.bloody_vengeance != 0 );
@@ -1036,9 +1037,9 @@ death_knight_spell_t::player_buff()
 
   p -> uptimes_abominations_might -> update( p -> buffs.abominations_might != 0 );
 
-  if( sim -> debug ) 
-    log_t::output( sim, "death_knight_spell_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f, p_mult=%.0f", 
-       name(), player_hit, player_crit, player_spell_power, player_penetration, player_multiplier );
+  if ( sim -> debug )
+    log_t::output( sim, "death_knight_spell_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f, p_mult=%.0f",
+                   name(), player_hit, player_crit, player_spell_power, player_penetration, player_multiplier );
 }
 
 bool
@@ -1047,33 +1048,33 @@ death_knight_spell_t::ready()
   death_knight_t* p = player -> cast_death_knight();
   p -> abort_execute_action = false;
 
-  if( execute_once && executed_once )
+  if ( execute_once && executed_once )
     return false;
 
-  if( execute_once && ! executed_once )
+  if ( execute_once && ! executed_once )
     p -> abort_execute_action = true;
 
-  if( ! spell_t::ready() )
+  if ( ! spell_t::ready() )
     return false;
 
-  int count = count_runes(p);
-  int c = GET_BLOOD_RUNE_COUNT(count);
+  int count = count_runes( p );
+  int c = GET_BLOOD_RUNE_COUNT( count );
 
-  if( (exact_blood != -1 && c != exact_blood) ||
-      (min_blood != -1 && c < min_blood) ||
-      (max_blood != -1 && c > max_blood) ) return false;
+  if ( ( exact_blood != -1 && c != exact_blood ) ||
+       ( min_blood != -1 && c < min_blood ) ||
+       ( max_blood != -1 && c > max_blood ) ) return false;
 
-  c = GET_FROST_RUNE_COUNT(count);
-  if( (exact_frost != -1 && c != exact_frost) ||
-      (min_frost != -1 && c < min_frost) ||
-      (max_frost != -1 && c > max_frost) ) return false;
+  c = GET_FROST_RUNE_COUNT( count );
+  if ( ( exact_frost != -1 && c != exact_frost ) ||
+       ( min_frost != -1 && c < min_frost ) ||
+       ( max_frost != -1 && c > max_frost ) ) return false;
 
-  c = GET_UNHOLY_RUNE_COUNT(count);
-  if( (exact_unholy != -1 && c != exact_unholy) ||
-      (min_unholy != -1 && c < min_unholy) ||
-      (max_unholy != -1 && c > max_unholy) ) return false;
+  c = GET_UNHOLY_RUNE_COUNT( count );
+  if ( ( exact_unholy != -1 && c != exact_unholy ) ||
+       ( min_unholy != -1 && c < min_unholy ) ||
+       ( max_unholy != -1 && c > max_unholy ) ) return false;
 
-  return group_runes( player, cost_blood, cost_frost, cost_unholy, use);
+  return group_runes( player, cost_blood, cost_frost, cost_unholy, use );
 }
 
 double
@@ -1088,8 +1089,8 @@ death_knight_spell_t::total_crit_bonus()
 
 struct melee_t : public death_knight_attack_t
 {
-  melee_t( const char* name, player_t* player ) : 
-    death_knight_attack_t( name, player )
+  melee_t( const char* name, player_t* player ) :
+      death_knight_attack_t( name, player )
   {
     death_knight_t* p = player -> cast_death_knight();
 
@@ -1102,7 +1103,7 @@ struct melee_t : public death_knight_attack_t
     trigger_gcd     = 0;
     base_cost       = 0;
 
-    if( p -> dual_wield() ) base_hit -= 0.19;
+    if ( p -> dual_wield() ) base_hit -= 0.19;
   }
 
   void
@@ -1111,14 +1112,14 @@ struct melee_t : public death_knight_attack_t
     death_knight_t* p = player -> cast_death_knight();
 
     death_knight_attack_t::execute();
-    
-    if( result_is_hit() )
+
+    if ( result_is_hit() )
     {
       p -> uptimes_scent_of_blood -> update( p -> _buffs.scent_of_blood > 0 );
 
-      if( p -> _buffs.scent_of_blood )
+      if ( p -> _buffs.scent_of_blood )
       {
-        if( ! --p -> _buffs.scent_of_blood ) p -> aura_loss("Scent of Blood");
+        if ( ! --p -> _buffs.scent_of_blood ) p -> aura_loss( "Scent of Blood" );
         p -> resource_gain( resource, 10, p -> gains_scent_of_blood );
       }
     }
@@ -1127,8 +1128,8 @@ struct melee_t : public death_knight_attack_t
 
 struct auto_attack_t : public death_knight_attack_t
 {
-  auto_attack_t( player_t* player, const std::string& options_str ) : 
-    death_knight_attack_t( "auto_attack", player )
+  auto_attack_t( player_t* player, const std::string& options_str ) :
+      death_knight_attack_t( "auto_attack", player )
   {
     death_knight_t* p = player -> cast_death_knight();
 
@@ -1139,7 +1140,7 @@ struct auto_attack_t : public death_knight_attack_t
     p -> main_hand_attack -> weapon = &( p -> main_hand_weapon );
     p -> main_hand_attack -> base_execute_time = p -> main_hand_weapon.swing_time;
 
-    if( p -> off_hand_weapon.type != WEAPON_NONE )
+    if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
       p -> off_hand_attack = new melee_t( "melee_off_hand", player );
       p -> off_hand_attack -> weapon = &( p -> off_hand_weapon );
@@ -1153,7 +1154,7 @@ struct auto_attack_t : public death_knight_attack_t
   {
     death_knight_t* p = player -> cast_death_knight();
     p -> main_hand_attack -> schedule_execute();
-    if( p -> off_hand_attack ) p -> off_hand_attack -> schedule_execute();
+    if ( p -> off_hand_attack ) p -> off_hand_attack -> schedule_execute();
   }
 
   virtual bool ready()
@@ -1170,29 +1171,29 @@ struct auto_attack_t : public death_knight_attack_t
 
 struct death_knight_disease_t : public death_knight_spell_t
 {
-    death_knight_disease_t( const char* name, player_t* player, int s, int t) :
-      death_knight_spell_t( name, player, s, t)
-    {
-      //death_knight_t* p = player -> cast_death_knight();
+  death_knight_disease_t( const char* name, player_t* player, int s, int t ) :
+      death_knight_spell_t( name, player, s, t )
+  {
+    //death_knight_t* p = player -> cast_death_knight();
 
-      execute_once = 0;
-        
-      static rank_t ranks[] =
+    execute_once = 0;
+
+    static rank_t ranks[] =
       {
         { 1, 1, 0, 0, 1, 0 },
         { 0, 0 }
       };
-      init_rank( ranks );
-      
-      base_execute_time = 0;
-      may_crit          = false;
-      may_miss          = false;
-      cooldown          = 0.0;
-    
-      num_ticks         = 5;
-      base_tick_time    = 3.0;
-      tick_power_mod    = .055;
-    }
+    init_rank( ranks );
+
+    base_execute_time = 0;
+    may_crit          = false;
+    may_miss          = false;
+    cooldown          = 0.0;
+
+    num_ticks         = 5;
+    base_tick_time    = 3.0;
+    tick_power_mod    = .055;
+  }
 
   virtual bool ready()     { return false; }
   virtual void execute()   { player -> cast_death_knight() -> diseases++; death_knight_spell_t::execute();   }
@@ -1201,20 +1202,20 @@ struct death_knight_disease_t : public death_knight_spell_t
 
 struct blood_plague_t : public death_knight_disease_t
 {
-    blood_plague_t( player_t* player ) :
+  blood_plague_t( player_t* player ) :
       death_knight_disease_t( "blood_plague", player, SCHOOL_SHADOW, TREE_UNHOLY )
-    {
-      observer = &( player -> cast_death_knight() -> active_blood_plague );
-    }
+  {
+    observer = &( player -> cast_death_knight() -> active_blood_plague );
+  }
 };
 
 struct frost_fever_t : public death_knight_disease_t
 {
-    frost_fever_t( player_t* player ) :
+  frost_fever_t( player_t* player ) :
       death_knight_disease_t( "frost_fever", player, SCHOOL_FROST, TREE_FROST )
-    {
-      observer = &( player -> cast_death_knight() -> active_frost_fever );
-    }
+  {
+    observer = &( player -> cast_death_knight() -> active_frost_fever );
+  }
 };
 
 // ==========================================================================
@@ -1223,27 +1224,27 @@ struct frost_fever_t : public death_knight_disease_t
 
 struct blood_strike_t : public death_knight_attack_t
 {
-  blood_strike_t( player_t* player, const std::string& options_str  ) : 
-    death_knight_attack_t( "blood_strike", player, SCHOOL_PHYSICAL, TREE_BLOOD )
+  blood_strike_t( player_t* player, const std::string& options_str  ) :
+      death_knight_attack_t( "blood_strike", player, SCHOOL_PHYSICAL, TREE_BLOOD )
   {
     death_knight_t* p = player -> cast_death_knight();
 
     option_t options[] =
-    {
-      { NULL }
-    };
+      {
+        { NULL }
+      };
     parse_options( options, options_str );
-      
+
     static rank_t ranks[] =
-    {
-      { 80,  6, 305.6, 305.6, 0, -10 },
-      { 74,  5, 250,   250,   0, -10 },
-      { 69,  4, 164.4, 164.4, 0, -10 },
-      { 64,  3, 138.8, 138.8, 0, -10 },
-      { 59,  2, 118,   118,   0, -10 },
-      { 55,  1, 104,   104,   0, -10 },
-      { 0, 0 }
-    };
+      {
+        { 80,  6, 305.6, 305.6, 0, -10 },
+        { 74,  5, 250,   250,   0, -10 },
+        { 69,  4, 164.4, 164.4, 0, -10 },
+        { 64,  3, 138.8, 138.8, 0, -10 },
+        { 59,  2, 118,   118,   0, -10 },
+        { 55,  1, 104,   104,   0, -10 },
+        { 0, 0 }
+      };
     init_rank( ranks );
 
     cost_blood = 1;
@@ -1261,16 +1262,16 @@ struct blood_strike_t : public death_knight_attack_t
   target_debuff( int dmg_type )
   {
     death_knight_t* p = player -> cast_death_knight();
-    death_knight_attack_t::target_debuff( dmg_type);
+    death_knight_attack_t::target_debuff( dmg_type );
     target_multiplier *= 1 + p -> diseases * 0.125;
-    assert (p -> diseases <= 2);
+    assert ( p -> diseases <= 2 );
   }
 
   void
   execute()
   {
     death_knight_attack_t::execute();
-    if( result_is_hit() )
+    if ( result_is_hit() )
     {
       trigger_abominations_might( this, 0.25 );
       trigger_sudden_doom( this );
@@ -1280,26 +1281,26 @@ struct blood_strike_t : public death_knight_attack_t
 
 struct death_strike_t : public death_knight_attack_t
 {
-  death_strike_t( player_t* player, const std::string& options_str  ) : 
-    death_knight_attack_t( "death_strike", player, SCHOOL_PHYSICAL, TREE_UNHOLY )
+  death_strike_t( player_t* player, const std::string& options_str  ) :
+      death_knight_attack_t( "death_strike", player, SCHOOL_PHYSICAL, TREE_UNHOLY )
   {
     death_knight_t* p = player -> cast_death_knight();
 
     option_t options[] =
-    {
-      { NULL }
-    };
+      {
+        { NULL }
+      };
     parse_options( options, options_str );
-      
+
     static rank_t ranks[] =
-    {
-      { 80,  5, 222.75, 222.75, 0, -15 },
-      { 75,  4, 150,    150,    0, -15 },
-      { 70,  3, 123.75, 123.75, 0, -15 },
-      { 63,  2, 97.5,   97.5,   0, -15 },
-      { 56,  1, 84,     84,     0, -15 },
-      { 0, 0 }
-    };
+      {
+        { 80,  5, 222.75, 222.75, 0, -15 },
+        { 75,  4, 150,    150,    0, -15 },
+        { 70,  3, 123.75, 123.75, 0, -15 },
+        { 63,  2, 97.5,   97.5,   0, -15 },
+        { 56,  1, 84,     84,     0, -15 },
+        { 0, 0 }
+      };
     init_rank( ranks );
 
     cost_frost = 1;
@@ -1319,34 +1320,34 @@ struct death_strike_t : public death_knight_attack_t
   execute()
   {
     death_knight_attack_t::execute();
-    if( result_is_hit() ) trigger_abominations_might( this, 0.5 );
+    if ( result_is_hit() ) trigger_abominations_might( this, 0.5 );
   }
 };
 
 struct heart_strike_t : public death_knight_attack_t
 {
-  heart_strike_t( player_t* player, const std::string& options_str  ) : 
-    death_knight_attack_t( "heart_strike", player, SCHOOL_PHYSICAL, TREE_BLOOD )
+  heart_strike_t( player_t* player, const std::string& options_str  ) :
+      death_knight_attack_t( "heart_strike", player, SCHOOL_PHYSICAL, TREE_BLOOD )
   {
     death_knight_t* p = player -> cast_death_knight();
     assert( p -> talents.heart_strike == 1 );
 
     option_t options[] =
-    {
-      { NULL }
-    };
+      {
+        { NULL }
+      };
     parse_options( options, options_str );
-      
+
     static rank_t ranks[] =
-    {
-      { 80,  6, 368,   368,   0, -10 },
-      { 74,  5, 300.5, 300.5, 0, -10 },
-      { 69,  4, 197.5, 197.5, 0, -10 },
-      { 64,  3, 167,   167,   0, -10 },
-      { 59,  2, 142,   142,   0, -10 },
-      { 55,  1, 125,   125,   0, -10 },
-      { 0, 0 }
-    };
+      {
+        { 80,  6, 368,   368,   0, -10 },
+        { 74,  5, 300.5, 300.5, 0, -10 },
+        { 69,  4, 197.5, 197.5, 0, -10 },
+        { 64,  3, 167,   167,   0, -10 },
+        { 59,  2, 142,   142,   0, -10 },
+        { 55,  1, 125,   125,   0, -10 },
+        { 0, 0 }
+      };
     init_rank( ranks );
 
     cost_blood = 1;
@@ -1364,16 +1365,16 @@ struct heart_strike_t : public death_knight_attack_t
   target_debuff( int dmg_type )
   {
     death_knight_t* p = player -> cast_death_knight();
-    death_knight_attack_t::target_debuff( dmg_type);
+    death_knight_attack_t::target_debuff( dmg_type );
     target_multiplier *= 1 + p -> diseases * 0.1;
-    assert (p -> diseases <= 2);
+    assert ( p -> diseases <= 2 );
   }
 
   void
   execute()
   {
     death_knight_attack_t::execute();
-    if( result_is_hit() )
+    if ( result_is_hit() )
     {
       trigger_abominations_might( this, 0.25 );
       trigger_sudden_doom( this );
@@ -1383,16 +1384,16 @@ struct heart_strike_t : public death_knight_attack_t
 
 struct icy_touch_t : public death_knight_spell_t
 {
-    icy_touch_t(player_t* player, const std::string& options_str) :
-      death_knight_spell_t( "icy_touch", player, SCHOOL_FROST, TREE_FROST)
-    {
-      option_t options[] =
+  icy_touch_t( player_t* player, const std::string& options_str ) :
+      death_knight_spell_t( "icy_touch", player, SCHOOL_FROST, TREE_FROST )
+  {
+    option_t options[] =
       {
         { NULL }
       };
-      parse_options( options, options_str );
-        
-      static rank_t ranks[] =
+    parse_options( options, options_str );
+
+    static rank_t ranks[] =
       {
         { 78, 5, 227, 245, 0, -10 },
         { 73, 4, 187, 203, 0, -10 },
@@ -1401,44 +1402,44 @@ struct icy_touch_t : public death_knight_spell_t
         { 55, 1, 127, 137, 0, -10 },
         { 0, 0 }
       };
-      init_rank( ranks );
+    init_rank( ranks );
 
-      cost_frost = 1;
-      
-      base_execute_time = 0;
-      direct_power_mod  = 0.1;
-      cooldown          = 0.0;
-    }
+    cost_frost = 1;
+
+    base_execute_time = 0;
+    direct_power_mod  = 0.1;
+    cooldown          = 0.0;
+  }
 
   void
   execute()
-    {
-      death_knight_spell_t::execute();
-      if( result_is_hit() ) player -> cast_death_knight() -> frost_fever -> execute();
-    }
+  {
+    death_knight_spell_t::execute();
+    if ( result_is_hit() ) player -> cast_death_knight() -> frost_fever -> execute();
+  }
 };
 
 struct obliterate_t : public death_knight_attack_t
 {
-  obliterate_t( player_t* player, const std::string& options_str  ) : 
-    death_knight_attack_t( "obliterate", player, SCHOOL_PHYSICAL, TREE_FROST )
+  obliterate_t( player_t* player, const std::string& options_str  ) :
+      death_knight_attack_t( "obliterate", player, SCHOOL_PHYSICAL, TREE_FROST )
   {
     death_knight_t* p = player -> cast_death_knight();
 
     option_t options[] =
-    {
-      { NULL }
-    };
+      {
+        { NULL }
+      };
     parse_options( options, options_str );
-      
+
     static rank_t ranks[] =
-    {
-      { 79,  4, 467.2, 467.2, 0, -15 },
-      { 73,  3, 381.6, 381.6, 0, -15 },
-      { 67,  2, 244,   244,   0, -15 },
-      { 61,  1, 198.4, 198.4, 0, -15 },
-      { 0, 0 }
-    };
+      {
+        { 79,  4, 467.2, 467.2, 0, -15 },
+        { 73,  3, 381.6, 381.6, 0, -15 },
+        { 67,  2, 244,   244,   0, -15 },
+        { 61,  1, 198.4, 198.4, 0, -15 },
+        { 0, 0 }
+      };
     init_rank( ranks );
 
     cost_frost = 1;
@@ -1456,7 +1457,7 @@ struct obliterate_t : public death_knight_attack_t
   target_debuff( int dmg_type )
   {
     death_knight_t* p = player -> cast_death_knight();
-    death_knight_attack_t::target_debuff( dmg_type);
+    death_knight_attack_t::target_debuff( dmg_type );
     target_multiplier *= 1 + p -> diseases * 0.125;
     assert( p -> diseases >= 0 );
     assert( p -> diseases <= 2 );
@@ -1468,14 +1469,14 @@ struct obliterate_t : public death_knight_attack_t
     death_knight_t* p = player -> cast_death_knight();
 
     death_knight_attack_t::execute();
-    if( result_is_hit() )
+    if ( result_is_hit() )
     {
       trigger_abominations_might( this, 0.5 );
 
-      if( p -> active_blood_plague && p -> active_blood_plague -> ticking )
+      if ( p -> active_blood_plague && p -> active_blood_plague -> ticking )
         p -> active_blood_plague -> cancel();
 
-      if( p -> active_frost_fever && p -> active_frost_fever -> ticking )
+      if ( p -> active_frost_fever && p -> active_frost_fever -> ticking )
         p -> active_frost_fever -> cancel();
 
       assert( p -> diseases == 0 );
@@ -1485,27 +1486,27 @@ struct obliterate_t : public death_knight_attack_t
 
 struct plague_strike_t : public death_knight_attack_t
 {
-  plague_strike_t( player_t* player, const std::string& options_str  ) : 
-    death_knight_attack_t( "plague_strike", player, SCHOOL_PHYSICAL, TREE_UNHOLY )
+  plague_strike_t( player_t* player, const std::string& options_str  ) :
+      death_knight_attack_t( "plague_strike", player, SCHOOL_PHYSICAL, TREE_UNHOLY )
   {
     death_knight_t* p = player -> cast_death_knight();
 
     option_t options[] =
-    {
-      { NULL }
-    };
+      {
+        { NULL }
+      };
     parse_options( options, options_str );
-      
+
     static rank_t ranks[] =
-    {
-      { 80,  6, 189,  189,  0, -10 },
-      { 75,  5, 157,  157,  0, -10 },
-      { 70,  4, 108,  108,  0, -10 },
-      { 65,  3, 89,   89,   0, -10 },
-      { 60,  2, 75.5, 75.5, 0, -10 },
-      { 55,  1, 62.5, 62.5, 0, -10 },
-      { 0, 0 }
-    };
+      {
+        { 80,  6, 189,  189,  0, -10 },
+        { 75,  5, 157,  157,  0, -10 },
+        { 70,  4, 108,  108,  0, -10 },
+        { 65,  3, 89,   89,   0, -10 },
+        { 60,  2, 75.5, 75.5, 0, -10 },
+        { 55,  1, 62.5, 62.5, 0, -10 },
+        { 0, 0 }
+      };
     init_rank( ranks );
 
     cost_unholy = 1;
@@ -1517,33 +1518,33 @@ struct plague_strike_t : public death_knight_attack_t
 
   void
   execute()
-    {
-      death_knight_attack_t::execute();
-      if( result_is_hit() ) player -> cast_death_knight() -> blood_plague -> execute();
-    }
+  {
+    death_knight_attack_t::execute();
+    if ( result_is_hit() ) player -> cast_death_knight() -> blood_plague -> execute();
+  }
 };
 
 struct scourge_strike_t : public death_knight_attack_t
 {
-  scourge_strike_t( player_t* player, const std::string& options_str  ) : 
-    death_knight_attack_t( "scourge_strike", player, SCHOOL_SHADOW, TREE_UNHOLY )
+  scourge_strike_t( player_t* player, const std::string& options_str  ) :
+      death_knight_attack_t( "scourge_strike", player, SCHOOL_SHADOW, TREE_UNHOLY )
   {
     death_knight_t* p = player -> cast_death_knight();
 
     option_t options[] =
-    {
-      { NULL }
-    };
+      {
+        { NULL }
+      };
     parse_options( options, options_str );
-      
+
     static rank_t ranks[] =
-    {
-      { 79,  4, 357.188, 357.188, 0, -15 },
-      { 73,  3, 291.375, 291.375, 0, -15 },
-      { 67,  2, 186.75,  186.75,  0, -15 },
-      { 55,  1, 151.875, 151.875, 0, -15 },
-      { 0, 0 }
-    };
+      {
+        { 79,  4, 357.188, 357.188, 0, -15 },
+        { 73,  3, 291.375, 291.375, 0, -15 },
+        { 67,  2, 186.75,  186.75,  0, -15 },
+        { 55,  1, 151.875, 151.875, 0, -15 },
+        { 0, 0 }
+      };
     init_rank( ranks );
 
     cost_frost = 1;
@@ -1558,9 +1559,9 @@ struct scourge_strike_t : public death_knight_attack_t
   target_debuff( int dmg_type )
   {
     death_knight_t* p = player -> cast_death_knight();
-    death_knight_attack_t::target_debuff( dmg_type);
+    death_knight_attack_t::target_debuff( dmg_type );
     target_multiplier *= 1 + p -> diseases * 0.11;
-    assert (p -> diseases <= 2);
+    assert ( p -> diseases <= 2 );
   }
 };
 
@@ -1570,31 +1571,31 @@ struct scourge_strike_t : public death_knight_attack_t
 
 struct death_coil_t : public death_knight_spell_t
 {
-  death_coil_t(player_t* player, const std::string& options_str, bool sudden_doom = false ) :
-    death_knight_spell_t( "death_coil", player, SCHOOL_SHADOW, TREE_BLOOD)
+  death_coil_t( player_t* player, const std::string& options_str, bool sudden_doom = false ) :
+      death_knight_spell_t( "death_coil", player, SCHOOL_SHADOW, TREE_BLOOD )
   {
     option_t options[] =
-    {
-      { NULL }
-    };
+      {
+        { NULL }
+      };
     parse_options( options, options_str );
-      
+
     static rank_t ranks[] =
-    {
-      { 80, 5, 443, 443, 0, 40 },
-      { 76, 4, 381, 381, 0, 40 },
-      { 68, 3, 275, 275, 0, 40 },
-      { 62, 2, 208, 208, 0, 40 },
-      { 55, 1, 184, 184, 0, 40 },
-      { 0, 0 }
-    };
+      {
+        { 80, 5, 443, 443, 0, 40 },
+        { 76, 4, 381, 381, 0, 40 },
+        { 68, 3, 275, 275, 0, 40 },
+        { 62, 2, 208, 208, 0, 40 },
+        { 55, 1, 184, 184, 0, 40 },
+        { 0, 0 }
+      };
     init_rank( ranks );
-    
+
     base_execute_time = 0;
     direct_power_mod  = 0.15;
     cooldown          = 0.0;
 
-    if( sudden_doom )
+    if ( sudden_doom )
     {
       proc = true;
       base_cost = 0;
@@ -1603,10 +1604,10 @@ struct death_coil_t : public death_knight_spell_t
   }
   bool ready()
   {
-    if( proc ) return false;
+    if ( proc ) return false;
 
     bool ready = death_knight_spell_t::ready();
-    if( ! ready )
+    if ( ! ready )
     {
       player -> cast_death_knight() -> abort_execute_action = false;
       executed_once = true;
@@ -1617,27 +1618,27 @@ struct death_coil_t : public death_knight_spell_t
 
 struct frost_strike_t : public death_knight_attack_t
 {
-  frost_strike_t( player_t* player, const std::string& options_str  ) : 
-    death_knight_attack_t( "frost_strike", player, SCHOOL_FROST, TREE_FROST )
+  frost_strike_t( player_t* player, const std::string& options_str  ) :
+      death_knight_attack_t( "frost_strike", player, SCHOOL_FROST, TREE_FROST )
   {
     death_knight_t* p = player -> cast_death_knight();
 
     option_t options[] =
-    {
-      { NULL }
-    };
+      {
+        { NULL }
+      };
     parse_options( options, options_str );
-      
+
     static rank_t ranks[] =
-    {
-      { 80,  6, 150,   150,   0, 40 },
-      { 75,  5, 120.6, 120.6, 0, 40 },
-      { 70,  4, 85.2,  85.2,  0, 40 },
-      { 65,  3, 69,    69,    0, 40 },
-      { 60,  2, 61.8,  61.8,  0, 40 },
-      { 55,  1, 52.2,  52.2,  0, 40 },
-      { 0, 0 }
-    };
+      {
+        { 80,  6, 150,   150,   0, 40 },
+        { 75,  5, 120.6, 120.6, 0, 40 },
+        { 70,  4, 85.2,  85.2,  0, 40 },
+        { 65,  3, 69,    69,    0, 40 },
+        { 60,  2, 61.8,  61.8,  0, 40 },
+        { 55,  1, 52.2,  52.2,  0, 40 },
+        { 0, 0 }
+      };
     init_rank( ranks );
 
     weapon = &( p -> main_hand_weapon );
@@ -1647,7 +1648,7 @@ struct frost_strike_t : public death_knight_attack_t
   bool ready()
   {
     bool ready = death_knight_attack_t::ready();
-    if( ! ready )
+    if ( ! ready )
     {
       player -> cast_death_knight() -> abort_execute_action = false;
       executed_once = true;
@@ -1662,15 +1663,15 @@ struct frost_strike_t : public death_knight_attack_t
 
 struct hysteria_t : public action_t
 {
-  hysteria_t(player_t* player, const std::string& options_str) :
-    action_t( ACTION_OTHER, "hysteria", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_BLOOD )
+  hysteria_t( player_t* player, const std::string& options_str ) :
+      action_t( ACTION_OTHER, "hysteria", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_BLOOD )
   {
     assert( player -> cast_death_knight() -> talents.hysteria == 1 );
 
     option_t options[] =
-    {
-      { NULL }
-    };
+      {
+        { NULL }
+      };
     parse_options( options, options_str );
 
     trigger_gcd = 0;
@@ -1699,23 +1700,23 @@ struct hysteria_t : public action_t
 action_t*
 death_knight_t::create_action( const std::string& name, const std::string& options_str )
 {
-  if( name == "auto_attack"         ) return new auto_attack_t        ( this, options_str );
+  if ( name == "auto_attack"         ) return new auto_attack_t        ( this, options_str );
 
   // Rune Actions
-  if( name == "blood_strike"        ) return new blood_strike_t       ( this, options_str );
-  if( name == "death_strike"        ) return new death_strike_t       ( this, options_str );
-  if( name == "heart_strike"        ) return new heart_strike_t       ( this, options_str );
-  if( name == "icy_touch"           ) return new icy_touch_t          ( this, options_str );
-  if( name == "obliterate"          ) return new obliterate_t         ( this, options_str );
-  if( name == "plague_strike"       ) return new plague_strike_t      ( this, options_str );
-  if( name == "scourge_strike"      ) return new scourge_strike_t     ( this, options_str );
+  if ( name == "blood_strike"        ) return new blood_strike_t       ( this, options_str );
+  if ( name == "death_strike"        ) return new death_strike_t       ( this, options_str );
+  if ( name == "heart_strike"        ) return new heart_strike_t       ( this, options_str );
+  if ( name == "icy_touch"           ) return new icy_touch_t          ( this, options_str );
+  if ( name == "obliterate"          ) return new obliterate_t         ( this, options_str );
+  if ( name == "plague_strike"       ) return new plague_strike_t      ( this, options_str );
+  if ( name == "scourge_strike"      ) return new scourge_strike_t     ( this, options_str );
 
   // Runic Power Actions
-  if( name == "death_coil"          ) return new death_coil_t         ( this, options_str );
-  if( name == "frost_strike"        ) return new frost_strike_t       ( this, options_str );
+  if ( name == "death_coil"          ) return new death_coil_t         ( this, options_str );
+  if ( name == "frost_strike"        ) return new frost_strike_t       ( this, options_str );
 
   // Other Actions
-  if( name == "hysteria"            ) return new hysteria_t           ( this, options_str );
+  if ( name == "hysteria"            ) return new hysteria_t           ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -1730,10 +1731,10 @@ death_knight_t::init_base()
   attribute_base[ ATTR_SPIRIT    ] = 60;
 
   attribute_multiplier_initial[ ATTR_STRENGTH ] *= 1.0 +
-                                                     talents.veteran_of_the_third_war * 0.02 +
-                                                     talents.abominations_might * 0.01;
+      talents.veteran_of_the_third_war * 0.02 +
+      talents.abominations_might * 0.01;
   attribute_multiplier_initial[ ATTR_STAMINA ]  *= 1.0 +
-                                                     talents.veteran_of_the_third_war * 0.02;
+      talents.veteran_of_the_third_war * 0.02;
 
   base_attack_power = -20;
   initial_attack_power_per_strength = 2.0;
@@ -1759,24 +1760,24 @@ death_knight_t::execute_action()
 
   abort_execute_action = false;
 
-  for( action = action_list; action; action = (! action -> next && repass) ? clear_execute_flags(this) : action -> next )
+  for ( action = action_list; action; action = ( ! action -> next && repass ) ? clear_execute_flags( this ) : action -> next )
   {
-    if( action == action_list ) repass = ! repass;
+    if ( action == action_list ) repass = ! repass;
 
-    if( action -> background )
+    if ( action -> background )
       continue;
 
-    if( action -> ready() )
+    if ( action -> ready() )
       break;
 
-    if( abort_execute_action )
+    if ( abort_execute_action )
     {
       action = NULL;
       break;
     }
   }
 
-  if( action ) 
+  if ( action )
   {
     action -> schedule_execute();
   }
@@ -1787,9 +1788,9 @@ death_knight_t::execute_action()
 }
 
 void
-death_knight_t::init_resources(bool force)
+death_knight_t::init_resources( bool force )
 {
-  player_t::init_resources(force);
+  player_t::init_resources( force );
   resource_current[ RESOURCE_RUNIC ] = 0;
 }
 
@@ -1799,15 +1800,15 @@ death_knight_t::init_actions()
   player_t::init_actions();
   blood_plague = new blood_plague_t( this );
   frost_fever = new frost_fever_t( this );
-  if( talents.sudden_doom ) sudden_doom = new death_coil_t( this, "", true );
+  if ( talents.sudden_doom ) sudden_doom = new death_coil_t( this, "", true );
 }
 
 void
-death_knight_t::combat_begin() 
+death_knight_t::combat_begin()
 {
   player_t::combat_begin();
 
-  if( talents.scent_of_blood && scent_of_blood_interval > 0 )
+  if ( talents.scent_of_blood && scent_of_blood_interval > 0 )
   {
     struct scent_of_blood_proc_t : public event_t
     {
@@ -1830,19 +1831,19 @@ death_knight_t::combat_begin()
 double
 death_knight_t::composite_attack_power()
 {
-  return player_t::composite_attack_power() + (talents.bladed_armor ? talents.bladed_armor * composite_armor_snapshot() / 180 : 0); 
+  return player_t::composite_attack_power() + ( talents.bladed_armor ? talents.bladed_armor * composite_armor_snapshot() / 180 : 0 );
 }
 
 void
 death_knight_t::regen( double periodicity )
 {
   _buffs.butchery += periodicity;
-  if( _buffs.butchery >= 5.0 )
+  if ( _buffs.butchery >= 5.0 )
   {
     _buffs.butchery -= 5;
     resource_gain( RESOURCE_RUNIC, talents.butchery, cast_death_knight() -> gains_butchery );
   }
-  player_t::regen(periodicity);
+  player_t::regen( periodicity );
 }
 
 void
@@ -1856,7 +1857,7 @@ death_knight_t::reset()
   diseases            = 0;
 
   // Pets and Guardians
-  for( int i = MAX_BLOODWORMS; i ; ) active_bloodworms[--i] = NULL;
+  for ( int i = MAX_BLOODWORMS; i ; ) active_bloodworms[--i] = NULL;
 
   _buffs.reset();
   _cooldowns.reset();
@@ -1868,40 +1869,40 @@ bool
 death_knight_t::get_talent_trees( std::vector<int*>& blood, std::vector<int*>& frost, std::vector<int*>& unholy )
 {
   talent_translation_t translation[][3] =
-  {
-    { {  1, &( talents.butchery                 ) }, {  1, &( talents.improved_icy_touch      ) }, {  1, &( talents.vicious_strikes          ) } },
-    { {  2, &( talents.subversion               ) }, {  2, &( talents.runic_power_mastery     ) }, {  2, &( talents.virulence                ) } },
-    { {  3, NULL                                  }, {  3, &( talents.toughness               ) }, {  3, NULL                                  } },
-    { {  4, &( talents.bladed_armor             ) }, {  4, NULL                                 }, {  4, &( talents.epidemic                 ) } },
-    { {  5, &( talents.scent_of_blood           ) }, {  5, &( talents.black_ice               ) }, {  5, &( talents.morbidity                ) } },
-    { {  6, &( talents.two_handed_weapon_spec   ) }, {  6, &( talents.nerves_of_cold_steel    ) }, {  6, NULL                                  } },
-    { {  7, NULL                                  }, {  7, &( talents.icy_talons              ) }, {  7, &( talents.ravenous_dead            ) } },
-    { {  8, &( talents.dark_conviction          ) }, {  8, NULL                                 }, {  8, &( talents.outbreak                 ) } },
-    { {  9, &( talents.death_rune_mastery       ) }, {  9, &( talents.annihilation            ) }, {  9, &( talents.necrosis                 ) } },
-    { { 10, NULL                                  }, { 10, &( talents.killing_machine         ) }, { 10, &( talents.corpse_explosion         ) } },
-    { { 11, NULL                                  }, { 11, &( talents.chill_of_the_grave      ) }, { 11, NULL                                  } },
-    { { 12, NULL                                  }, { 12, &( talents.endless_winter          ) }, { 12, &( talents.blood_caked_blade        ) } },
-    { { 13, &( talents.bloody_strikes           ) }, { 13, NULL                                 }, { 13, &( talents.master_of_ghouls         ) } },
-    { { 14, &( talents.veteran_of_the_third_war ) }, { 14, &( talents.glacier_rot             ) }, { 14, &( talents.unholy_blight            ) } },
-    { { 15, NULL                                  }, { 15, &( talents.deathchill              ) }, { 15, &( talents.impurity                 ) } },
-    { { 16, &( talents.bloody_vengeance         ) }, { 16, &( talents.improved_icy_talons     ) }, { 16, &( talents.dirge                    ) } },
-    { { 17, &( talents.abominations_might       ) }, { 17, &( talents.merciless_combat        ) }, { 17, NULL                                  } },
-    { { 18, &( talents.bloodworms               ) }, { 18, &( talents.rime                    ) }, { 18, &( talents.reaping                  ) } },
-    { { 19, &( talents.hysteria                 ) }, { 19, &( talents.chilblains              ) }, { 19, &( talents.ghoul_frenzy             ) } },
-    { { 20, NULL                                  }, { 20, &( talents.hungering_cold          ) }, { 20, &( talents.desecration              ) } },
-    { { 21, &( talents.improved_death_strike    ) }, { 21, NULL                                 }, { 21, NULL                                  } },
-    { { 22, &( talents.sudden_doom              ) }, { 22, &( talents.blood_of_the_north      ) }, { 22, &( talents.improved_unholy_presence ) } },
-    { { 23, NULL                                  }, { 23, &( talents.unbreakable_armor       ) }, { 23, &( talents.night_of_the_dead        ) } },
-    { { 24, NULL                                  }, { 24, NULL                                 }, { 24, &( talents.crypt_fever              ) } },
-    { { 25, &( talents.heart_strike             ) }, { 25, &( talents.frost_strike            ) }, { 25, &( talents.bone_shield              ) } },
-    { { 26, &( talents.might_of_mograine        ) }, { 26, &( talents.guile_of_gorefiend      ) }, { 26, &( talents.wandering_plague         ) } },
-    { { 27, &( talents.blood_gorged             ) }, { 27, &( talents.tundra_stalker          ) }, { 27, &( talents.ebon_plaguebringer       ) } },
-    { { 28, &( talents.dancing_rune_weapon      ) }, { 28, &( talents.howling_blast           ) }, { 28, &( talents.scourge_strike           ) } },
-    { {  0, NULL                                  }, {  0, NULL                                 }, { 29, &( talents.rage_of_rivendare        ) } },
-    { {  0, NULL                                  }, {  0, NULL                                 }, { 30, &( talents.summon_gargoyle          ) } },
-    { {  0, NULL                                  }, {  0, NULL                                 }, {  0, NULL                                  } }
-  };
-  
+    {
+      { {  1, &( talents.butchery                 ) }, {  1, &( talents.improved_icy_touch      ) }, {  1, &( talents.vicious_strikes          ) } },
+      { {  2, &( talents.subversion               ) }, {  2, &( talents.runic_power_mastery     ) }, {  2, &( talents.virulence                ) } },
+      { {  3, NULL                                  }, {  3, &( talents.toughness               ) }, {  3, NULL                                  } },
+      { {  4, &( talents.bladed_armor             ) }, {  4, NULL                                 }, {  4, &( talents.epidemic                 ) } },
+      { {  5, &( talents.scent_of_blood           ) }, {  5, &( talents.black_ice               ) }, {  5, &( talents.morbidity                ) } },
+      { {  6, &( talents.two_handed_weapon_spec   ) }, {  6, &( talents.nerves_of_cold_steel    ) }, {  6, NULL                                  } },
+      { {  7, NULL                                  }, {  7, &( talents.icy_talons              ) }, {  7, &( talents.ravenous_dead            ) } },
+      { {  8, &( talents.dark_conviction          ) }, {  8, NULL                                 }, {  8, &( talents.outbreak                 ) } },
+      { {  9, &( talents.death_rune_mastery       ) }, {  9, &( talents.annihilation            ) }, {  9, &( talents.necrosis                 ) } },
+      { { 10, NULL                                  }, { 10, &( talents.killing_machine         ) }, { 10, &( talents.corpse_explosion         ) } },
+      { { 11, NULL                                  }, { 11, &( talents.chill_of_the_grave      ) }, { 11, NULL                                  } },
+      { { 12, NULL                                  }, { 12, &( talents.endless_winter          ) }, { 12, &( talents.blood_caked_blade        ) } },
+      { { 13, &( talents.bloody_strikes           ) }, { 13, NULL                                 }, { 13, &( talents.master_of_ghouls         ) } },
+      { { 14, &( talents.veteran_of_the_third_war ) }, { 14, &( talents.glacier_rot             ) }, { 14, &( talents.unholy_blight            ) } },
+      { { 15, NULL                                  }, { 15, &( talents.deathchill              ) }, { 15, &( talents.impurity                 ) } },
+      { { 16, &( talents.bloody_vengeance         ) }, { 16, &( talents.improved_icy_talons     ) }, { 16, &( talents.dirge                    ) } },
+      { { 17, &( talents.abominations_might       ) }, { 17, &( talents.merciless_combat        ) }, { 17, NULL                                  } },
+      { { 18, &( talents.bloodworms               ) }, { 18, &( talents.rime                    ) }, { 18, &( talents.reaping                  ) } },
+      { { 19, &( talents.hysteria                 ) }, { 19, &( talents.chilblains              ) }, { 19, &( talents.ghoul_frenzy             ) } },
+      { { 20, NULL                                  }, { 20, &( talents.hungering_cold          ) }, { 20, &( talents.desecration              ) } },
+      { { 21, &( talents.improved_death_strike    ) }, { 21, NULL                                 }, { 21, NULL                                  } },
+      { { 22, &( talents.sudden_doom              ) }, { 22, &( talents.blood_of_the_north      ) }, { 22, &( talents.improved_unholy_presence ) } },
+      { { 23, NULL                                  }, { 23, &( talents.unbreakable_armor       ) }, { 23, &( talents.night_of_the_dead        ) } },
+      { { 24, NULL                                  }, { 24, NULL                                 }, { 24, &( talents.crypt_fever              ) } },
+      { { 25, &( talents.heart_strike             ) }, { 25, &( talents.frost_strike            ) }, { 25, &( talents.bone_shield              ) } },
+      { { 26, &( talents.might_of_mograine        ) }, { 26, &( talents.guile_of_gorefiend      ) }, { 26, &( talents.wandering_plague         ) } },
+      { { 27, &( talents.blood_gorged             ) }, { 27, &( talents.tundra_stalker          ) }, { 27, &( talents.ebon_plaguebringer       ) } },
+      { { 28, &( talents.dancing_rune_weapon      ) }, { 28, &( talents.howling_blast           ) }, { 28, &( talents.scourge_strike           ) } },
+      { {  0, NULL                                  }, {  0, NULL                                 }, { 29, &( talents.rage_of_rivendare        ) } },
+      { {  0, NULL                                  }, {  0, NULL                                 }, { 30, &( talents.summon_gargoyle          ) } },
+      { {  0, NULL                                  }, {  0, NULL                                 }, {  0, NULL                                  } }
+    };
+
   return player_t::get_talent_trees( blood, frost, unholy, translation );
 }
 
@@ -1909,112 +1910,112 @@ bool
 death_knight_t::parse_option( const std::string& name, const std::string& value )
 {
   option_t options[] =
-  {
-    // @option_doc loc=skip
-    { "butchery",                 OPT_INT, &( talents.butchery                 ) },
-    { "subversion",               OPT_INT, &( talents.subversion               ) },
-    { "bladed_armor",             OPT_INT, &( talents.bladed_armor             ) },
-    { "scent_of_blood",           OPT_INT, &( talents.scent_of_blood           ) },
-    { "two_handed_weapon_spec",   OPT_INT, &( talents.two_handed_weapon_spec   ) },
-    { "dark_conviction",          OPT_INT, &( talents.dark_conviction          ) },
-    { "death_rune_mastery",       OPT_INT, &( talents.death_rune_mastery       ) },
-    { "bloody_strikes",           OPT_INT, &( talents.bloody_strikes           ) },
-    { "veteran_of_the_third_war", OPT_INT, &( talents.veteran_of_the_third_war ) },
-    { "bloody_vengeance",         OPT_INT, &( talents.bloody_vengeance         ) },
-    { "abominations_might",       OPT_INT, &( talents.abominations_might       ) },
-    { "bloodworms",               OPT_INT, &( talents.bloodworms               ) },
-    { "hysteria",                 OPT_INT, &( talents.hysteria                 ) },
-    { "improved_death_strike",    OPT_INT, &( talents.improved_death_strike    ) },
-    { "sudden_doom",              OPT_INT, &( talents.sudden_doom              ) },
-    { "heart_strike",             OPT_INT, &( talents.heart_strike             ) },
-    { "might_of_mograine",        OPT_INT, &( talents.might_of_mograine        ) },
-    { "blood_gorged",             OPT_INT, &( talents.blood_gorged             ) },
-    { "dancing_rune_weapon",      OPT_INT, &( talents.dancing_rune_weapon      ) },
-    { "improved_icy_touch",       OPT_INT, &( talents.improved_icy_touch       ) },
-    { "runic_power_mastery",      OPT_INT, &( talents.runic_power_mastery      ) },
-    { "toughness",                OPT_INT, &( talents.toughness                ) },
-    { "black_ice",                OPT_INT, &( talents.black_ice                ) },
-    { "nerves_of_cold_steel",     OPT_INT, &( talents.nerves_of_cold_steel     ) },
-    { "icy_talons",               OPT_INT, &( talents.icy_talons               ) },
-    { "annihilation",             OPT_INT, &( talents.annihilation             ) },
-    { "killing_machine",          OPT_INT, &( talents.killing_machine          ) },
-    { "chill_of_the_grave",       OPT_INT, &( talents.chill_of_the_grave       ) },
-    { "endless_winter",           OPT_INT, &( talents.endless_winter           ) },
-    { "glacier_rot",              OPT_INT, &( talents.glacier_rot              ) },
-    { "deathchill",               OPT_INT, &( talents.deathchill               ) },
-    { "improved_icy_talons",      OPT_INT, &( talents.improved_icy_talons      ) },
-    { "merciless_combat",         OPT_INT, &( talents.merciless_combat         ) },
-    { "rime",                     OPT_INT, &( talents.rime                     ) },
-    { "chilblains",               OPT_INT, &( talents.chilblains               ) },
-    { "hungering_cold",           OPT_INT, &( talents.hungering_cold           ) },
-    { "blood_of_the_north",       OPT_INT, &( talents.blood_of_the_north       ) },
-    { "unbreakable_armor",        OPT_INT, &( talents.unbreakable_armor        ) },
-    { "frost_strike",             OPT_INT, &( talents.frost_strike             ) },
-    { "guile_of_gorefiend",       OPT_INT, &( talents.guile_of_gorefiend       ) },
-    { "tundra_stalker",           OPT_INT, &( talents.tundra_stalker           ) },
-    { "howling_blast",            OPT_INT, &( talents.howling_blast            ) },
-    { "vicious_strikes",          OPT_INT, &( talents.vicious_strikes          ) },
-    { "virulence",                OPT_INT, &( talents.virulence                ) },
-    { "epidemic",                 OPT_INT, &( talents.epidemic                 ) },
-    { "morbidity",                OPT_INT, &( talents.morbidity                ) },
-    { "ravenous_dead",            OPT_INT, &( talents.ravenous_dead            ) },
-    { "outbreak",                 OPT_INT, &( talents.outbreak                 ) },
-    { "necrosis",                 OPT_INT, &( talents.necrosis                 ) },
-    { "corpse_explosion",         OPT_INT, &( talents.corpse_explosion         ) },
-    { "blood_caked_blade",        OPT_INT, &( talents.blood_caked_blade        ) },
-    { "master_of_ghouls",         OPT_INT, &( talents.master_of_ghouls         ) },
-    { "unholy_blight",            OPT_INT, &( talents.unholy_blight            ) },
-    { "impurity",                 OPT_INT, &( talents.impurity                 ) },
-    { "dirge",                    OPT_INT, &( talents.dirge                    ) },
-    { "reaping",                  OPT_INT, &( talents.reaping                  ) },
-    { "ghoul_frenzy",             OPT_INT, &( talents.ghoul_frenzy             ) },
-    { "desecration",              OPT_INT, &( talents.desecration              ) },
-    { "improved_unholy_presence", OPT_INT, &( talents.improved_unholy_presence ) },
-    { "night_of_the_dead",        OPT_INT, &( talents.night_of_the_dead        ) },
-    { "crypt_fever",              OPT_INT, &( talents.crypt_fever              ) },
-    { "bone_shield",              OPT_INT, &( talents.bone_shield              ) },
-    { "wandering_plague",         OPT_INT, &( talents.wandering_plague         ) },
-    { "ebon_plaguebringer",       OPT_INT, &( talents.ebon_plaguebringer       ) },
-    { "ebon_plaguebringer",       OPT_INT, &( talents.ebon_plaguebringer       ) },
-    { "rage_of_rivendare",        OPT_INT, &( talents.rage_of_rivendare        ) },
-    { "summon_gargoyle",          OPT_INT, &( talents.summon_gargoyle          ) },
+    {
+      // @option_doc loc=skip
+      { "butchery",                 OPT_INT, &( talents.butchery                 ) },
+      { "subversion",               OPT_INT, &( talents.subversion               ) },
+      { "bladed_armor",             OPT_INT, &( talents.bladed_armor             ) },
+      { "scent_of_blood",           OPT_INT, &( talents.scent_of_blood           ) },
+      { "two_handed_weapon_spec",   OPT_INT, &( talents.two_handed_weapon_spec   ) },
+      { "dark_conviction",          OPT_INT, &( talents.dark_conviction          ) },
+      { "death_rune_mastery",       OPT_INT, &( talents.death_rune_mastery       ) },
+      { "bloody_strikes",           OPT_INT, &( talents.bloody_strikes           ) },
+      { "veteran_of_the_third_war", OPT_INT, &( talents.veteran_of_the_third_war ) },
+      { "bloody_vengeance",         OPT_INT, &( talents.bloody_vengeance         ) },
+      { "abominations_might",       OPT_INT, &( talents.abominations_might       ) },
+      { "bloodworms",               OPT_INT, &( talents.bloodworms               ) },
+      { "hysteria",                 OPT_INT, &( talents.hysteria                 ) },
+      { "improved_death_strike",    OPT_INT, &( talents.improved_death_strike    ) },
+      { "sudden_doom",              OPT_INT, &( talents.sudden_doom              ) },
+      { "heart_strike",             OPT_INT, &( talents.heart_strike             ) },
+      { "might_of_mograine",        OPT_INT, &( talents.might_of_mograine        ) },
+      { "blood_gorged",             OPT_INT, &( talents.blood_gorged             ) },
+      { "dancing_rune_weapon",      OPT_INT, &( talents.dancing_rune_weapon      ) },
+      { "improved_icy_touch",       OPT_INT, &( talents.improved_icy_touch       ) },
+      { "runic_power_mastery",      OPT_INT, &( talents.runic_power_mastery      ) },
+      { "toughness",                OPT_INT, &( talents.toughness                ) },
+      { "black_ice",                OPT_INT, &( talents.black_ice                ) },
+      { "nerves_of_cold_steel",     OPT_INT, &( talents.nerves_of_cold_steel     ) },
+      { "icy_talons",               OPT_INT, &( talents.icy_talons               ) },
+      { "annihilation",             OPT_INT, &( talents.annihilation             ) },
+      { "killing_machine",          OPT_INT, &( talents.killing_machine          ) },
+      { "chill_of_the_grave",       OPT_INT, &( talents.chill_of_the_grave       ) },
+      { "endless_winter",           OPT_INT, &( talents.endless_winter           ) },
+      { "glacier_rot",              OPT_INT, &( talents.glacier_rot              ) },
+      { "deathchill",               OPT_INT, &( talents.deathchill               ) },
+      { "improved_icy_talons",      OPT_INT, &( talents.improved_icy_talons      ) },
+      { "merciless_combat",         OPT_INT, &( talents.merciless_combat         ) },
+      { "rime",                     OPT_INT, &( talents.rime                     ) },
+      { "chilblains",               OPT_INT, &( talents.chilblains               ) },
+      { "hungering_cold",           OPT_INT, &( talents.hungering_cold           ) },
+      { "blood_of_the_north",       OPT_INT, &( talents.blood_of_the_north       ) },
+      { "unbreakable_armor",        OPT_INT, &( talents.unbreakable_armor        ) },
+      { "frost_strike",             OPT_INT, &( talents.frost_strike             ) },
+      { "guile_of_gorefiend",       OPT_INT, &( talents.guile_of_gorefiend       ) },
+      { "tundra_stalker",           OPT_INT, &( talents.tundra_stalker           ) },
+      { "howling_blast",            OPT_INT, &( talents.howling_blast            ) },
+      { "vicious_strikes",          OPT_INT, &( talents.vicious_strikes          ) },
+      { "virulence",                OPT_INT, &( talents.virulence                ) },
+      { "epidemic",                 OPT_INT, &( talents.epidemic                 ) },
+      { "morbidity",                OPT_INT, &( talents.morbidity                ) },
+      { "ravenous_dead",            OPT_INT, &( talents.ravenous_dead            ) },
+      { "outbreak",                 OPT_INT, &( talents.outbreak                 ) },
+      { "necrosis",                 OPT_INT, &( talents.necrosis                 ) },
+      { "corpse_explosion",         OPT_INT, &( talents.corpse_explosion         ) },
+      { "blood_caked_blade",        OPT_INT, &( talents.blood_caked_blade        ) },
+      { "master_of_ghouls",         OPT_INT, &( talents.master_of_ghouls         ) },
+      { "unholy_blight",            OPT_INT, &( talents.unholy_blight            ) },
+      { "impurity",                 OPT_INT, &( talents.impurity                 ) },
+      { "dirge",                    OPT_INT, &( talents.dirge                    ) },
+      { "reaping",                  OPT_INT, &( talents.reaping                  ) },
+      { "ghoul_frenzy",             OPT_INT, &( talents.ghoul_frenzy             ) },
+      { "desecration",              OPT_INT, &( talents.desecration              ) },
+      { "improved_unholy_presence", OPT_INT, &( talents.improved_unholy_presence ) },
+      { "night_of_the_dead",        OPT_INT, &( talents.night_of_the_dead        ) },
+      { "crypt_fever",              OPT_INT, &( talents.crypt_fever              ) },
+      { "bone_shield",              OPT_INT, &( talents.bone_shield              ) },
+      { "wandering_plague",         OPT_INT, &( talents.wandering_plague         ) },
+      { "ebon_plaguebringer",       OPT_INT, &( talents.ebon_plaguebringer       ) },
+      { "ebon_plaguebringer",       OPT_INT, &( talents.ebon_plaguebringer       ) },
+      { "rage_of_rivendare",        OPT_INT, &( talents.rage_of_rivendare        ) },
+      { "summon_gargoyle",          OPT_INT, &( talents.summon_gargoyle          ) },
 
-    // @option_doc loc=player/death_knight/glyphs title="Glyphs"
-    { "glyph_blood_tap",           OPT_BOOL, &( glyphs.blood_tap           ) },
-    { "glyph_horn_of_winter",      OPT_BOOL, &( glyphs.horn_of_winter      ) },
-    { "glyph_heart_strike",        OPT_BOOL, &( glyphs.heart_strike        ) },
-    { "glyph_blood_strike",        OPT_BOOL, &( glyphs.blood_strike        ) },
-    { "glyph_chains_of_ice",       OPT_BOOL, &( glyphs.chains_of_ice       ) },
-    { "glyph_dancing_rune_weapon", OPT_BOOL, &( glyphs.dancing_rune_weapon ) },
-    { "glyph_dark_death",          OPT_BOOL, &( glyphs.dark_death          ) },
-    { "glyph_death_strike",        OPT_BOOL, &( glyphs.death_strike        ) },
-    { "glyph_death_and_decay",     OPT_BOOL, &( glyphs.death_and_decay     ) },
-    { "glyph_disease",             OPT_BOOL, &( glyphs.disease             ) },
-    { "glyph_frost_strike",        OPT_BOOL, &( glyphs.frost_strike        ) },
-    { "glyph_howling_blast",       OPT_BOOL, &( glyphs.howling_blast       ) },
-    { "glyph_hungering_cold",      OPT_BOOL, &( glyphs.hungering_cold      ) },
-    { "glyph_icy_touch",           OPT_BOOL, &( glyphs.icy_touch           ) },
-    { "glyph_obliterate",          OPT_BOOL, &( glyphs.obliterate          ) },
-    { "glyph_plague_strike",       OPT_BOOL, &( glyphs.plague_strike       ) },
-    { "glyph_rune_strike",         OPT_BOOL, &( glyphs.rune_strike         ) },
-    { "glyph_scourge_strike",      OPT_BOOL, &( glyphs.scourge_strike      ) },
-    { "glyph_strangulate",         OPT_BOOL, &( glyphs.strangulate         ) },
-    { "glyph_unholy_blight",       OPT_BOOL, &( glyphs.unholy_blight       ) },
-    { "glyph_the_ghoul",           OPT_BOOL, &( glyphs.the_ghoul           ) },
+      // @option_doc loc=player/death_knight/glyphs title="Glyphs"
+      { "glyph_blood_tap",           OPT_BOOL, &( glyphs.blood_tap           ) },
+      { "glyph_horn_of_winter",      OPT_BOOL, &( glyphs.horn_of_winter      ) },
+      { "glyph_heart_strike",        OPT_BOOL, &( glyphs.heart_strike        ) },
+      { "glyph_blood_strike",        OPT_BOOL, &( glyphs.blood_strike        ) },
+      { "glyph_chains_of_ice",       OPT_BOOL, &( glyphs.chains_of_ice       ) },
+      { "glyph_dancing_rune_weapon", OPT_BOOL, &( glyphs.dancing_rune_weapon ) },
+      { "glyph_dark_death",          OPT_BOOL, &( glyphs.dark_death          ) },
+      { "glyph_death_strike",        OPT_BOOL, &( glyphs.death_strike        ) },
+      { "glyph_death_and_decay",     OPT_BOOL, &( glyphs.death_and_decay     ) },
+      { "glyph_disease",             OPT_BOOL, &( glyphs.disease             ) },
+      { "glyph_frost_strike",        OPT_BOOL, &( glyphs.frost_strike        ) },
+      { "glyph_howling_blast",       OPT_BOOL, &( glyphs.howling_blast       ) },
+      { "glyph_hungering_cold",      OPT_BOOL, &( glyphs.hungering_cold      ) },
+      { "glyph_icy_touch",           OPT_BOOL, &( glyphs.icy_touch           ) },
+      { "glyph_obliterate",          OPT_BOOL, &( glyphs.obliterate          ) },
+      { "glyph_plague_strike",       OPT_BOOL, &( glyphs.plague_strike       ) },
+      { "glyph_rune_strike",         OPT_BOOL, &( glyphs.rune_strike         ) },
+      { "glyph_scourge_strike",      OPT_BOOL, &( glyphs.scourge_strike      ) },
+      { "glyph_strangulate",         OPT_BOOL, &( glyphs.strangulate         ) },
+      { "glyph_unholy_blight",       OPT_BOOL, &( glyphs.unholy_blight       ) },
+      { "glyph_the_ghoul",           OPT_BOOL, &( glyphs.the_ghoul           ) },
 
-    // @option_doc loc=player/death_knight/misc title="Misc"
-    { "scent_of_blood_interval",   OPT_INT, &( scent_of_blood_interval    ) },
-    { NULL, OPT_UNKNOWN }
-  };
+      // @option_doc loc=player/death_knight/misc title="Misc"
+      { "scent_of_blood_interval",   OPT_INT, &( scent_of_blood_interval    ) },
+      { NULL, OPT_UNKNOWN }
+    };
 
-  if( name.empty() )
+  if ( name.empty() )
   {
     player_t::parse_option( std::string(), std::string() );
     option_t::print( sim -> output_file, options );
     return false;
   }
 
-  if( player_t::parse_option( name, value ) ) return true;
+  if ( player_t::parse_option( name, value ) ) return true;
 
   return option_t::parse( sim, options, name, value );
 }
@@ -2022,7 +2023,7 @@ death_knight_t::parse_option( const std::string& name, const std::string& value 
 // player_t implementations ============================================
 
 player_t*
-player_t::create_death_knight( sim_t* sim, const std::string& name ) 
+player_t::create_death_knight( sim_t* sim, const std::string& name )
 {
   death_knight_t* p = new death_knight_t( sim, name );
 

@@ -6,13 +6,13 @@
 #include "simcraft.h"
 
 // ==========================================================================
-// Sequence Action 
+// Sequence Action
 // ==========================================================================
 
 // sequence_t::sequence_t ===================================================
 
 sequence_t::sequence_t( const char* n, player_t* p, const std::string& sub_action_str ) :
-  action_t( ACTION_SEQUENCE, n, p ), current_action(-1)
+    action_t( ACTION_SEQUENCE, n, p ), current_action( -1 )
 {
   trigger_gcd = 0;
 
@@ -20,21 +20,21 @@ sequence_t::sequence_t( const char* n, player_t* p, const std::string& sub_actio
   int size = util_t::string_split( splits, sub_action_str, ":" );
 
   // First token is sequence options, so skip
-  for( int i=1; i < size; i++ )  
+  for ( int i=1; i < size; i++ )
   {
     std::string action_name    = splits[ i ];
     std::string action_options = "";
 
-    std::string::size_type cut_pt = action_name.find_first_of( "," );       
+    std::string::size_type cut_pt = action_name.find_first_of( "," );
 
-    if( cut_pt != action_name.npos )
+    if ( cut_pt != action_name.npos )
     {
       action_options = action_name.substr( cut_pt + 1 );
       action_name    = action_name.substr( 0, cut_pt );
     }
 
     action_t* a = p -> create_action( action_name, action_options );
-    if( ! a )
+    if ( ! a )
     {
       printf( "sequence_t: Unknown action: %s\n", splits[ i ].c_str() );
       assert( false );
@@ -43,7 +43,7 @@ sequence_t::sequence_t( const char* n, player_t* p, const std::string& sub_actio
     a -> background = true;
     sub_actions.push_back( a );
   }
-  if( sub_actions.size() == 0 )
+  if ( sub_actions.size() == 0 )
   {
     printf( "sequence_t: No sub-actions!\n" );
     assert( false );
@@ -52,9 +52,9 @@ sequence_t::sequence_t( const char* n, player_t* p, const std::string& sub_actio
 
 // sequence_t::~sequence_t ===================================================
 
-sequence_t::~sequence_t() 
+sequence_t::~sequence_t()
 {
-  for( unsigned i=0; i < sub_actions.size(); i++ )
+  for ( unsigned i=0; i < sub_actions.size(); i++ )
   {
     delete sub_actions[ i ];
   }
@@ -72,12 +72,12 @@ void sequence_t::schedule_execute()
 void sequence_t::reset()
 {
   action_t::reset();
-  if( current_action == -1 )
+  if ( current_action == -1 )
   {
-    for( unsigned i=0; i < sub_actions.size(); i++ )
+    for ( unsigned i=0; i < sub_actions.size(); i++ )
     {
       action_t* a = sub_actions[ i ];
-      if( a -> wait_on_ready == -1 )
+      if ( a -> wait_on_ready == -1 )
       {
         a -> wait_on_ready = wait_on_ready;
       }
@@ -91,18 +91,18 @@ void sequence_t::reset()
 bool sequence_t::ready()
 {
   int size = sub_actions.size();
-  if( size == 0 ) return false;
+  if ( size == 0 ) return false;
 
   wait_on_ready = 0;
 
-  while( current_action < size )
+  while ( current_action < size )
   {
     action_t* a = sub_actions[ current_action ];
 
-    if( a -> ready() )
+    if ( a -> ready() )
       return true;
 
-    if( a -> wait_on_ready == 1 )
+    if ( a -> wait_on_ready == 1 )
     {
       wait_on_ready = 1;
       return false;

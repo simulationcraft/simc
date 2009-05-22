@@ -11,11 +11,11 @@
 
 // pet_t::pet_t =============================================================
 
-pet_t::pet_t( sim_t*             s, 
+pet_t::pet_t( sim_t*             s,
               player_t*          o,
               const std::string& n,
               bool               g ) :
-  player_t( s, g ? PLAYER_GUARDIAN : PLAYER_PET, n ), owner(o), next_pet(0)
+    player_t( s, g ? PLAYER_GUARDIAN : PLAYER_PET, n ), owner( o ), next_pet( 0 )
 {
   level = owner -> level;
   full_name_str = owner -> name_str + "_" + name_str;
@@ -26,7 +26,7 @@ pet_t::pet_t( sim_t*             s,
   base_spell_crit  = 0.05;
   base_attack_crit = 0.05;
 
-    stamina_per_owner = 0.75;
+  stamina_per_owner = 0.75;
   intellect_per_owner = 0.30;
 
   party = owner -> party;
@@ -61,7 +61,7 @@ double pet_t::intellect()
 
 const char* pet_t::id()
 {
-  if( id_str.empty() )
+  if ( id_str.empty() )
   {
     // create artifical unit ID, format type+subtype+id= TTTSSSSSSSIIIIII
     char buffer[ 1024 ];
@@ -93,7 +93,7 @@ void pet_t::reset()
 
 void pet_t::summon()
 {
-  if( sim -> log )
+  if ( sim -> log )
   {
     log_t::output( sim, "%s summons %s.", owner -> name(), name() );
     log_t::summon_event( this );
@@ -107,11 +107,11 @@ void pet_t::summon()
 
 void pet_t::dismiss()
 {
-  if( sim -> log ) log_t::output( sim, "%s dismisses %s", owner -> name(), name() );
+  if ( sim -> log ) log_t::output( sim, "%s dismisses %s", owner -> name(), name() );
 
   sleeping = 1;
 
-  for( action_t* a = action_list; a; a = a -> next )
+  for ( action_t* a = action_list; a; a = a -> next )
   {
     a -> cancel();
   }

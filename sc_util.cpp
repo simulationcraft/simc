@@ -7,55 +7,55 @@
 
 // util_t::talent_rank =====================================================
 
-double util_t::talent_rank( int    num, 
-                            int    max, 
+double util_t::talent_rank( int    num,
+                            int    max,
                             double increment )
 {
   assert( num >= 0 );
   assert( max > 0 );
 
-  if( num > max ) num = max;
+  if ( num > max ) num = max;
 
   return num * increment;
 }
 
 // util_t::talent_rank =====================================================
 
-int util_t::talent_rank( int num, 
-                         int max, 
+int util_t::talent_rank( int num,
+                         int max,
                          int increment )
 {
   assert( num >= 0 );
   assert( max > 0 );
 
-  if( num > max ) num = max;
+  if ( num > max ) num = max;
 
   return num * increment;
 }
 
 // util_t::talent_rank =====================================================
 
-double util_t::talent_rank( int    num, 
-                            int    max, 
-                            double first, 
+double util_t::talent_rank( int    num,
+                            int    max,
+                            double first,
                             double second, ... )
 {
   assert( num >= 0 );
   assert( max > 0 );
 
-  if( num > max ) num = max;
+  if ( num > max ) num = max;
 
-  if( num == 1 ) return first;
-  if( num == 2 ) return second;
+  if ( num == 1 ) return first;
+  if ( num == 2 ) return second;
 
   va_list vap;
   va_start( vap, second );
 
   double value=0;
 
-  for( int i=3; i <= num; i++ )
+  for ( int i=3; i <= num; i++ )
   {
-    value = (double) va_arg( vap, double );
+    value = ( double ) va_arg( vap, double );
   }
   va_end( vap );
 
@@ -64,27 +64,27 @@ double util_t::talent_rank( int    num,
 
 // util_t::talent_rank =====================================================
 
-int util_t::talent_rank( int num, 
-                         int max, 
-                         int first, 
+int util_t::talent_rank( int num,
+                         int max,
+                         int first,
                          int second, ... )
 {
   assert( num >= 0 );
   assert( max > 0 );
 
-  if( num > max ) num = max;
+  if ( num > max ) num = max;
 
-  if( num == 1 ) return first;
-  if( num == 2 ) return second;
+  if ( num == 1 ) return first;
+  if ( num == 2 ) return second;
 
   va_list vap;
   va_start( vap, second );
 
   int value=0;
 
-  for( int i=3; i <= num; i++ )
+  for ( int i=3; i <= num; i++ )
   {
-    value = (int) va_arg( vap, int );
+    value = ( int ) va_arg( vap, int );
   }
   va_end( vap );
 
@@ -93,19 +93,19 @@ int util_t::talent_rank( int num,
 
 // util_t::ability_rank ====================================================
 
-double util_t::ability_rank( int    player_level, 
-                             double ability_value, 
+double util_t::ability_rank( int    player_level,
+                             double ability_value,
                              int    ability_level, ... )
 {
   va_list vap;
   va_start( vap, ability_level );
 
-  while( player_level < ability_level )
+  while ( player_level < ability_level )
   {
-    ability_value = (double) va_arg( vap, double );
-    ability_level = (int) va_arg( vap, int );
+    ability_value = ( double ) va_arg( vap, double );
+    ability_level = ( int ) va_arg( vap, int );
   }
-  
+
   va_end( vap );
 
   return ability_value;
@@ -113,19 +113,19 @@ double util_t::ability_rank( int    player_level,
 
 // util_t::ability_rank ====================================================
 
-int util_t::ability_rank( int player_level, 
-                          int ability_value, 
+int util_t::ability_rank( int player_level,
+                          int ability_value,
                           int ability_level, ... )
 {
   va_list vap;
   va_start( vap, ability_level );
 
-  while( player_level < ability_level )
+  while ( player_level < ability_level )
   {
-    ability_value = (int)    va_arg( vap, int );
-    ability_level = (int) va_arg( vap, int );
+    ability_value = ( int )    va_arg( vap, int );
+    ability_level = ( int ) va_arg( vap, int );
   }
-  
+
   va_end( vap );
 
   return ability_value;
@@ -135,14 +135,14 @@ int util_t::ability_rank( int player_level,
 
 char* util_t::dup( const char *value )
 {
-   return strcpy( (char*) malloc( strlen( value ) + 1 ), value );
+  return strcpy( ( char* ) malloc( strlen( value ) + 1 ), value );
 }
 
 // util_t::race_type_string ================================================
 
 const char* util_t::race_type_string( int type )
 {
-  switch( type )
+  switch ( type )
   {
   case RACE_NONE:      return "none";
   case RACE_BEAST:     return "beast";
@@ -167,7 +167,7 @@ const char* util_t::race_type_string( int type )
 
 const char* util_t::profession_type_string( int type )
 {
-  switch( type )
+  switch ( type )
   {
   case PROF_NONE:           return "none";
   case PROF_ALCHEMY:        return "alchemy";
@@ -180,7 +180,7 @@ const char* util_t::profession_type_string( int type )
   case PROF_LEATHERWORKING: return "leatherworking";
   case PROF_MINING:         return "mining";
   case PROF_SKINNING:       return "skinning";
-  case PROF_TAILORING:      return "tailoring";  
+  case PROF_TAILORING:      return "tailoring";
   }
   return "unknown";
 }
@@ -189,7 +189,7 @@ const char* util_t::profession_type_string( int type )
 
 const char* util_t::player_type_string( int type )
 {
-  switch( type )
+  switch ( type )
   {
   case PLAYER_NONE:     return "none";
   case DEATH_KNIGHT:    return "death_knight";
@@ -212,7 +212,7 @@ const char* util_t::player_type_string( int type )
 
 const char* util_t::attribute_type_string( int type )
 {
-  switch( type )
+  switch ( type )
   {
   case ATTR_STRENGTH:  return "strength";
   case ATTR_AGILITY:   return "agility";
@@ -227,7 +227,7 @@ const char* util_t::attribute_type_string( int type )
 
 const char* util_t::dmg_type_string( int type )
 {
-  switch( type )
+  switch ( type )
   {
   case DMG_DIRECT:    return "hit";
   case DMG_OVER_TIME: return "tick";
@@ -239,7 +239,7 @@ const char* util_t::dmg_type_string( int type )
 
 const char* util_t::result_type_string( int type )
 {
-  switch( type )
+  switch ( type )
   {
   case RESULT_NONE:   return "none";
   case RESULT_MISS:   return "miss";
@@ -258,7 +258,7 @@ const char* util_t::result_type_string( int type )
 
 const char* util_t::resource_type_string( int type )
 {
-  switch( type )
+  switch ( type )
   {
   case RESOURCE_NONE:   return "none";
   case RESOURCE_HEALTH: return "health";
@@ -275,7 +275,7 @@ const char* util_t::resource_type_string( int type )
 
 const char* util_t::school_type_string( int school )
 {
-  switch( school )
+  switch ( school )
   {
   case SCHOOL_ARCANE:    return "arcane";
   case SCHOOL_BLEED:     return "bleed";
@@ -295,7 +295,7 @@ const char* util_t::school_type_string( int school )
 
 const char* util_t::talent_tree_string( int tree )
 {
-  switch( tree )
+  switch ( tree )
   {
   case TREE_BALANCE:     return "balance";
   case TREE_FERAL:       return "feral";
@@ -322,7 +322,7 @@ const char* util_t::talent_tree_string( int tree )
 
 const char* util_t::weapon_type_string( int weapon )
 {
-  switch( weapon )
+  switch ( weapon )
   {
   case WEAPON_NONE:     return "none";
   case WEAPON_DAGGER:   return "dagger";
@@ -349,7 +349,7 @@ const char* util_t::weapon_type_string( int weapon )
 
 const char* util_t::weapon_enchant_type_string( int enchant )
 {
-  switch( enchant )
+  switch ( enchant )
   {
   case WEAPON_ENCHANT_NONE: return "none";
   case BERSERKING:          return "berserking";
@@ -365,7 +365,7 @@ const char* util_t::weapon_enchant_type_string( int enchant )
 
 const char* util_t::weapon_buff_type_string( int buff )
 {
-  switch( buff )
+  switch ( buff )
   {
   case WEAPON_BUFF_NONE:  return "none";
   case ANESTHETIC_POISON: return "anesthetic_poison";
@@ -386,7 +386,7 @@ const char* util_t::weapon_buff_type_string( int buff )
 
 const char* util_t::flask_type_string( int flask )
 {
-  switch( flask )
+  switch ( flask )
   {
   case FLASK_NONE:               return "none";
   case FLASK_BLINDING_LIGHT:     return "blinding_light";
@@ -405,7 +405,7 @@ const char* util_t::flask_type_string( int flask )
 
 const char* util_t::food_type_string( int food )
 {
-  switch( food )
+  switch ( food )
   {
   case FOOD_NONE:                    return "none";
   case FOOD_SMOKED_SALMON:           return "smoked_salmon";
@@ -427,7 +427,7 @@ const char* util_t::food_type_string( int food )
 
 const char* util_t::stat_type_string( int stat )
 {
-  switch( stat )
+  switch ( stat )
   {
   case STAT_STRENGTH:  return "strength";
   case STAT_AGILITY:   return "agility";
@@ -459,7 +459,7 @@ const char* util_t::stat_type_string( int stat )
 
   case STAT_ARMOR: return "armor";
 
-  default: assert(0);
+  default: assert( 0 );
   }
   return 0;
 }
@@ -468,7 +468,7 @@ const char* util_t::stat_type_string( int stat )
 
 const char* util_t::stat_type_abbrev( int stat )
 {
-  switch( stat )
+  switch ( stat )
   {
   case STAT_STRENGTH:  return "Str";
   case STAT_AGILITY:   return "Agi";
@@ -500,29 +500,29 @@ const char* util_t::stat_type_abbrev( int stat )
 
   case STAT_ARMOR: return "Armor";
 
-  default: assert(0);
+  default: assert( 0 );
   }
   return 0;
 }
 
 // util_t::string_split ====================================================
 
-int util_t::string_split( std::vector<std::string>& results, 
+int util_t::string_split( std::vector<std::string>& results,
                           const std::string&        str,
                           const char*               delim )
 {
   std::string buffer = str;
   std::string::size_type cut_pt;
-  
-  while( ( cut_pt = buffer.find_first_of( delim ) ) != buffer.npos )
+
+  while ( ( cut_pt = buffer.find_first_of( delim ) ) != buffer.npos )
   {
-    if( cut_pt > 0 )
+    if ( cut_pt > 0 )
     {
       results.push_back( buffer.substr( 0, cut_pt ) );
     }
     buffer = buffer.substr( cut_pt + 1 );
   }
-  if( buffer.length() > 0 )
+  if ( buffer.length() > 0 )
   {
     results.push_back( buffer );
   }
@@ -533,7 +533,7 @@ int util_t::string_split( std::vector<std::string>& results,
 // util_t::string_split ====================================================
 
 int util_t::string_split( const std::string& str,
-                          const char*        delim, 
+                          const char*        delim,
                           const char*        format, ... )
 {
   std::vector<std::string>    str_splits;
@@ -542,21 +542,21 @@ int util_t::string_split( const std::string& str,
   int    str_size = util_t::string_split(    str_splits, str,    delim );
   int format_size = util_t::string_split( format_splits, format, " "   );
 
-  if( str_size == format_size )
+  if ( str_size == format_size )
   {
     va_list vap;
     va_start( vap, format );
 
-    for( int i=0; i < str_size; i++ )
+    for ( int i=0; i < str_size; i++ )
     {
       std::string& f = format_splits[ i ];
       const char*  s =    str_splits[ i ].c_str();
 
-      if     ( f == "i" ) *( (int*)         va_arg( vap, int*    ) ) = atoi( s );
-      else if( f == "f" ) *( (double*)      va_arg( vap, double* ) ) = atof( s );
-      else if( f == "d" ) *( (double*)      va_arg( vap, double* ) ) = atof( s );
-      else if( f == "s" ) strcpy( (char*)   va_arg( vap, char* ), s );
-      else if( f == "S" ) *( (std::string*) va_arg( vap, std::string* ) ) = s;
+      if     ( f == "i" ) *( ( int* )         va_arg( vap, int*    ) ) = atoi( s );
+      else if ( f == "f" ) *( ( double* )      va_arg( vap, double* ) ) = atof( s );
+      else if ( f == "d" ) *( ( double* )      va_arg( vap, double* ) ) = atof( s );
+      else if ( f == "s" ) strcpy( ( char* )   va_arg( vap, char* ), s );
+      else if ( f == "S" ) *( ( std::string* ) va_arg( vap, std::string* ) ) = s;
       else assert( 0 );
     }
     va_end( vap );
@@ -566,13 +566,14 @@ int util_t::string_split( const std::string& str,
 }
 
 
-int util_t::milliseconds(){
+int util_t::milliseconds()
+{
 
 #if defined( _MSC_VER )
-	return clock()/(CLOCKS_PER_SEC/1000);
+  return clock()/( CLOCKS_PER_SEC/1000 );
 #else
-	return clock()/(CLOCKS_PER_SEC/1000); //if this is not available to other compilers, use below
-	//return time( NULL )*1000;
+  return clock()/( CLOCKS_PER_SEC/1000 ); //if this is not available to other compilers, use below
+  //return time( NULL )*1000;
 #endif
 }
 

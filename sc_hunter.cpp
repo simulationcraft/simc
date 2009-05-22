@@ -43,7 +43,7 @@ struct hunter_t : public player_t
     double rapid_fire;
     int    trueshot_aura;
 
-    void reset() { memset( (void*) this, 0x00, sizeof( _buffs_t ) ); }
+    void reset() { memset( ( void* ) this, 0x00, sizeof( _buffs_t ) ); }
     _buffs_t() { reset(); }
   };
   _buffs_t _buffs;
@@ -53,7 +53,7 @@ struct hunter_t : public player_t
   {
     double lock_and_load;
 
-    void reset() { memset( (void*) this, 0x00, sizeof( _cooldowns_t ) ); }
+    void reset() { memset( ( void* ) this, 0x00, sizeof( _cooldowns_t ) ); }
     _cooldowns_t() { reset(); }
   };
   _cooldowns_t _cooldowns;
@@ -68,8 +68,8 @@ struct hunter_t : public player_t
     event_t* lock_and_load;
     event_t* master_tactician;
     event_t* rapid_fire;
-    
-    void reset() { memset( (void*) this, 0x00, sizeof( _expirations_t ) ); }
+
+    void reset() { memset( ( void* ) this, 0x00, sizeof( _expirations_t ) ); }
     _expirations_t() { reset(); }
   };
   _expirations_t _expirations;
@@ -187,7 +187,7 @@ struct hunter_t : public player_t
     int  survival_tactics;
     int  trap_mastery;
 
-    talents_t() { memset( (void*) this, 0x0, sizeof( talents_t ) ); }
+    talents_t() { memset( ( void* ) this, 0x0, sizeof( talents_t ) ); }
   };
   talents_t talents;
 
@@ -205,7 +205,7 @@ struct hunter_t : public player_t
     int  serpent_sting;
     int  steady_shot;
     int  trueshot_aura;
-    glyphs_t() { memset( (void*) this, 0x0, sizeof( glyphs_t ) ); }
+    glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
   };
   glyphs_t glyphs;
 
@@ -221,7 +221,7 @@ struct hunter_t : public player_t
     active_scorpid_sting   = 0;
     active_serpent_sting   = 0;
     active_viper_sting     = 0;
-    
+
     ammo_dps = 0;
     quiver_haste = 0.0;
     summon_pet_str = "cat";
@@ -250,15 +250,15 @@ struct hunter_t : public player_t
   // Utility
   void cancel_sting()
   {
-    if( active_scorpid_sting ) active_scorpid_sting -> cancel();
-    if( active_serpent_sting ) active_serpent_sting -> cancel();
-    if( active_viper_sting   ) active_viper_sting   -> cancel();
+    if ( active_scorpid_sting ) active_scorpid_sting -> cancel();
+    if ( active_serpent_sting ) active_serpent_sting -> cancel();
+    if ( active_viper_sting   ) active_viper_sting   -> cancel();
   }
   action_t* active_sting()
   {
-    if( active_scorpid_sting ) return active_scorpid_sting;
-    if( active_serpent_sting ) return active_serpent_sting;
-    if( active_viper_sting   ) return active_viper_sting;
+    if ( active_scorpid_sting ) return active_scorpid_sting;
+    if ( active_serpent_sting ) return active_serpent_sting;
+    if ( active_viper_sting   ) return active_viper_sting;
     return 0;
   }
   double ranged_weapon_specialization_multiplier()
@@ -334,8 +334,8 @@ struct hunter_pet_t : public pet_t
     int rabid;
     int rabid_power_stack;
     int savage_rend;
-    
-    void reset() { memset( (void*) this, 0x00, sizeof( _buffs_t ) ); }
+
+    void reset() { memset( ( void* ) this, 0x00, sizeof( _buffs_t ) ); }
     _buffs_t() { reset(); }
   };
   _buffs_t _buffs;
@@ -348,7 +348,7 @@ struct hunter_pet_t : public pet_t
     event_t* owls_focus;
     event_t* savage_rend;
 
-    void reset() { memset( (void*) this, 0x00, sizeof( _expirations_t ) ); }
+    void reset() { memset( ( void* ) this, 0x00, sizeof( _expirations_t ) ); }
     _expirations_t() { reset(); }
   };
   _expirations_t _expirations;
@@ -378,24 +378,24 @@ struct hunter_pet_t : public pet_t
     int wild_hunt;
     int wolverine_bite;
 
-    talents_t() { memset( (void*) this, 0x0, sizeof( talents_t ) ); }
+    talents_t() { memset( ( void* ) this, 0x0, sizeof( talents_t ) ); }
   };
   talents_t talents;
 
   hunter_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name, int pt ) :
-    pet_t( sim, owner, pet_name ), pet_type(pt), main_hand_attack(0)
+      pet_t( sim, owner, pet_name ), pet_type( pt ), main_hand_attack( 0 )
   {
     hunter_t* o = owner -> cast_hunter();
 
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.damage     = (51.0+78.0)/2; // FIXME only level 80 value
+    main_hand_weapon.damage     = ( 51.0+78.0 )/2; // FIXME only level 80 value
     main_hand_weapon.swing_time = 2.0;
 
     stamina_per_owner = 0.45;
 
     bool unsupported = false;
 
-    if( group() == PET_FEROCITY )
+    if ( group() == PET_FEROCITY )
     {
       talents.call_of_the_wild = 1;
       talents.cobra_reflexes   = 2;
@@ -406,25 +406,25 @@ struct hunter_pet_t : public pet_t
       talents.shark_attack = ( o -> talents.beast_mastery ) ? 2 : 0;
       talents.wild_hunt    = ( o -> talents.beast_mastery ) ? 2 : 1;
 
-      if( pet_type == PET_CAT )
+      if ( pet_type == PET_CAT )
       {
         action_list_str = "auto_attack/call_of_the_wild/rabid/rake/claw";
       }
-      else if( pet_type == PET_DEVILSAUR )
+      else if ( pet_type == PET_DEVILSAUR )
       {
         action_list_str = "auto_attack/monstrous_bite/call_of_the_wild/rabid/bite";
       }
-      else if( pet_type == PET_RAPTOR )
+      else if ( pet_type == PET_RAPTOR )
       {
         action_list_str = "auto_attack/savage_rend/call_of_the_wild/rabid/claw";
       }
-      else if( pet_type == PET_WOLF )
+      else if ( pet_type == PET_WOLF )
       {
         action_list_str = "auto_attack/furious_howl/call_of_the_wild/rabid/bite";
       }
       else unsupported = true;
     }
-    else if( group() == PET_CUNNING )
+    else if ( group() == PET_CUNNING )
     {
       talents.cobra_reflexes   = 2;
       talents.feeding_frenzy   = 2;
@@ -435,7 +435,7 @@ struct hunter_pet_t : public pet_t
 
       talents.wild_hunt = ( o -> talents.beast_mastery ) ? 2 : 1;
 
-      if( pet_type == PET_WIND_SERPENT )
+      if ( pet_type == PET_WIND_SERPENT )
       {
         action_list_str = "auto_attack/roar_of_recovery/wolverine_bite/lightning_breath/bite";
       }
@@ -446,7 +446,7 @@ struct hunter_pet_t : public pet_t
       unsupported = true;
     }
 
-    if( unsupported )
+    if ( unsupported )
     {
       fprintf( stdout, "simcraft: Pet %s is not yet supported.\n", pet_name.c_str() );
       exit( 0 );
@@ -463,9 +463,9 @@ struct hunter_pet_t : public pet_t
 
   virtual int group()
   {
-    if( pet_type < PET_FEROCITY ) return PET_FEROCITY;
-    if( pet_type < PET_TENACITY ) return PET_TENACITY;
-    if( pet_type < PET_CUNNING  ) return PET_CUNNING;
+    if ( pet_type < PET_FEROCITY ) return PET_FEROCITY;
+    if ( pet_type < PET_TENACITY ) return PET_TENACITY;
+    if ( pet_type < PET_CUNNING  ) return PET_CUNNING;
     return PET_NONE;
   }
 
@@ -520,16 +520,16 @@ struct hunter_pet_t : public pet_t
     double ap = player_t::composite_attack_power();
 
     ap += o -> stamina() * o -> talents.hunter_vs_wild * 0.1;
-    ap += o -> composite_attack_power() * 0.22 * (1 + talents.wild_hunt * 0.10);
+    ap += o -> composite_attack_power() * 0.22 * ( 1 + talents.wild_hunt * 0.10 );
     ap += _buffs.furious_howl;
 
-    if( o -> active_aspect == ASPECT_BEAST )
+    if ( o -> active_aspect == ASPECT_BEAST )
       ap *= 1.1;
 
-    if( _buffs.rabid_power_stack )
+    if ( _buffs.rabid_power_stack )
       ap *= 1.0 + _buffs.rabid_power_stack * 0.05;
 
-    if( _buffs.call_of_the_wild )
+    if ( _buffs.call_of_the_wild )
       ap *= 1.1;
 
     return ap;
@@ -549,30 +549,30 @@ struct hunter_pet_t : public pet_t
                              const std::string& value )
   {
     option_t options[] =
-    {
-      // Talents
-      { "cobra_reflexes",   OPT_INT, &( talents.cobra_reflexes   ) },
-      { "owls_focus",       OPT_INT, &( talents.owls_focus       ) },
-      { "shark_attack",     OPT_INT, &( talents.shark_attack     ) },
-      { "spiked_collar",    OPT_INT, &( talents.spiked_collar    ) },
-      { "feeding_frenzy",   OPT_INT, &( talents.feeding_frenzy   ) },
-      { "roar_of_recovery", OPT_INT, &( talents.roar_of_recovery ) },
-      { "wild_hunt",        OPT_INT, &( talents.wild_hunt        ) },
-      { "wolverine_bite",   OPT_INT, &( talents.wolverine_bite   ) },
-      { "spiders_bite",     OPT_INT, &( talents.spiders_bite     ) },
-      { "call_of_the_wild", OPT_INT, &( talents.call_of_the_wild ) },
-      { "rabid",            OPT_INT, &( talents.rabid            ) },
-      { NULL, OPT_UNKNOWN }
-    };
+      {
+        // Talents
+        { "cobra_reflexes",   OPT_INT, &( talents.cobra_reflexes   ) },
+        { "owls_focus",       OPT_INT, &( talents.owls_focus       ) },
+        { "shark_attack",     OPT_INT, &( talents.shark_attack     ) },
+        { "spiked_collar",    OPT_INT, &( talents.spiked_collar    ) },
+        { "feeding_frenzy",   OPT_INT, &( talents.feeding_frenzy   ) },
+        { "roar_of_recovery", OPT_INT, &( talents.roar_of_recovery ) },
+        { "wild_hunt",        OPT_INT, &( talents.wild_hunt        ) },
+        { "wolverine_bite",   OPT_INT, &( talents.wolverine_bite   ) },
+        { "spiders_bite",     OPT_INT, &( talents.spiders_bite     ) },
+        { "call_of_the_wild", OPT_INT, &( talents.call_of_the_wild ) },
+        { "rabid",            OPT_INT, &( talents.rabid            ) },
+        { NULL, OPT_UNKNOWN }
+      };
 
-    if( name.empty() )
+    if ( name.empty() )
     {
       pet_t::parse_option( std::string(), std::string() );
       option_t::print( sim -> output_file, options );
       return false;
     }
 
-    if( pet_t::parse_option( name, value ) ) return true;
+    if ( pet_t::parse_option( name, value ) ) return true;
 
     return option_t::parse( sim, options, name, value );
   }
@@ -587,7 +587,7 @@ struct hunter_pet_t : public pet_t
 struct hunter_attack_t : public attack_t
 {
   hunter_attack_t( const char* n, player_t* player, int s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) :
-    attack_t( n, player, RESOURCE_MANA, s, t, special )
+      attack_t( n, player, RESOURCE_MANA, s, t, special )
   {
     hunter_t* p = player -> cast_hunter();
 
@@ -595,7 +595,7 @@ struct hunter_attack_t : public attack_t
     base_crit += p -> talents.master_marksman * 0.01;
     base_crit += p -> talents.killer_instinct * 0.01;
 
-    if( p -> position == POSITION_RANGED )
+    if ( p -> position == POSITION_RANGED )
     {
       base_crit += p -> talents.lethal_shots * 0.01;
     }
@@ -619,7 +619,7 @@ struct hunter_attack_t : public attack_t
 
   virtual void add_scope()
   {
-    if( weapon -> enchant == SCOPE )
+    if ( weapon -> enchant == SCOPE )
     {
       double bonus_damage = weapon -> enchant_bonus * weapon_multiplier;
 
@@ -641,14 +641,14 @@ struct hunter_attack_t : public attack_t
 struct hunter_spell_t : public spell_t
 {
   hunter_spell_t( const char* n, player_t* p, int s, int t ) :
-    spell_t( n, p, RESOURCE_MANA, s, t )
-  {
-  }
+      spell_t( n, p, RESOURCE_MANA, s, t )
+  {}
 
   virtual double gcd();
 };
 
-namespace { // ANONYMOUS NAMESPACE ==========================================
+namespace
+{ // ANONYMOUS NAMESPACE ==========================================
 
 // trigger_aspect_of_the_viper ==============================================
 
@@ -656,12 +656,12 @@ static void trigger_aspect_of_the_viper( attack_t* a )
 {
   hunter_t* p = a -> player -> cast_hunter();
 
-  if( p -> active_aspect != ASPECT_VIPER )
+  if ( p -> active_aspect != ASPECT_VIPER )
     return;
 
   double gain = p -> resource_max[ RESOURCE_MANA ] * p -> ranged_weapon.swing_time / 100.0;
 
-  if( p -> glyphs.aspect_of_the_viper ) gain *= 1.10;
+  if ( p -> glyphs.aspect_of_the_viper ) gain *= 1.10;
 
   p -> resource_gain( RESOURCE_MANA, gain, p -> gains_viper_aspect_shot );
 }
@@ -712,13 +712,13 @@ static void trigger_cobra_strikes( attack_t* a )
 
 static void consume_cobra_strikes( action_t* a )
 {
-  hunter_pet_t* p = (hunter_pet_t*) a -> player -> cast_pet();
+  hunter_pet_t* p = ( hunter_pet_t* ) a -> player -> cast_pet();
   hunter_t*     o = p -> owner -> cast_hunter();
 
-  if( o -> _buffs.cobra_strikes )
+  if ( o -> _buffs.cobra_strikes )
   {
     o -> _buffs.cobra_strikes--;
-    if( ! o -> _buffs.cobra_strikes )
+    if ( ! o -> _buffs.cobra_strikes )
       event_t::early( o -> _expirations.cobra_strikes );
   }
 }
@@ -769,13 +769,13 @@ static void trigger_expose_weakness( attack_t* a )
 
 static void trigger_feeding_frenzy( action_t* a )
 {
-  hunter_pet_t* p = (hunter_pet_t*) a -> player -> cast_pet();
+  hunter_pet_t* p = ( hunter_pet_t* ) a -> player -> cast_pet();
 
-  if( p -> talents.feeding_frenzy )
+  if ( p -> talents.feeding_frenzy )
   {
     double target_pct = a -> sim -> target -> health_percentage();
 
-    if( target_pct < 35 )
+    if ( target_pct < 35 )
     {
       a -> player_multiplier *= 1.0 + p -> talents.feeding_frenzy * 0.06;
     }
@@ -799,7 +799,7 @@ static void trigger_ferocious_inspiration( action_t* a )
     }
     virtual void execute()
     {
-      for( player_t* p = sim -> player_list; p; p = p -> next )
+      for ( player_t* p = sim -> player_list; p; p = p -> next )
       {
         if ( p -> buffs.ferocious_inspiration )
         {
@@ -811,10 +811,10 @@ static void trigger_ferocious_inspiration( action_t* a )
     }
   };
 
-  for( player_t* p = a -> sim -> player_list; p; p = p -> next )
+  for ( player_t* p = a -> sim -> player_list; p; p = p -> next )
   {
-    if( p -> sleeping ) continue;
-    if( p -> buffs.ferocious_inspiration == 0 ) p -> aura_gain( "Ferocious Inspiration" );
+    if ( p -> sleeping ) continue;
+    if ( p -> buffs.ferocious_inspiration == 0 ) p -> aura_gain( "Ferocious Inspiration" );
     p -> buffs.ferocious_inspiration = 1;
   }
 
@@ -835,7 +835,7 @@ static void trigger_ferocious_inspiration( action_t* a )
 
 static void trigger_frenzy( action_t* a )
 {
-  hunter_pet_t* p = (hunter_pet_t*) a -> player -> cast_pet();
+  hunter_pet_t* p = ( hunter_pet_t* ) a -> player -> cast_pet();
   hunter_t*     o = p -> owner -> cast_hunter();
 
   if ( ! o -> talents.frenzy ) return;
@@ -852,7 +852,7 @@ static void trigger_frenzy( action_t* a )
     }
     virtual void execute()
     {
-      hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+      hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
       p -> aura_loss( "Frenzy" );
       p -> _buffs.frenzy = 0;
       p -> _expirations.frenzy = 0;
@@ -934,7 +934,7 @@ static void trigger_improved_aspect_of_the_hawk( attack_t* a )
 
   p -> _buffs.improved_aspect_of_the_hawk = 0.03 * p -> talents.improved_aspect_of_the_hawk;
 
-  if( p -> glyphs.improved_aspect_of_the_hawk )
+  if ( p -> glyphs.improved_aspect_of_the_hawk )
   {
     p -> _buffs.improved_aspect_of_the_hawk += 0.06;
   }
@@ -1003,13 +1003,13 @@ static void consume_improved_steady_shot( attack_t* a )
 
 static void trigger_invigoration( action_t* a )
 {
-  hunter_pet_t* p = (hunter_pet_t*) a -> player -> cast_pet();
+  hunter_pet_t* p = ( hunter_pet_t* ) a -> player -> cast_pet();
   hunter_t*     o = p -> owner -> cast_hunter();
 
-  if( ! o -> talents.invigoration )
+  if ( ! o -> talents.invigoration )
     return;
 
-  if( ! o -> rng_invigoration -> roll( o -> talents.invigoration * 0.50 ) )
+  if ( ! o -> rng_invigoration -> roll( o -> talents.invigoration * 0.50 ) )
     return;
 
   o -> resource_gain( RESOURCE_MANA, 0.01 * o -> resource_max[ RESOURCE_MANA ], o -> gains_invigoration );
@@ -1019,13 +1019,13 @@ static void trigger_invigoration( action_t* a )
 
 static void consume_kill_command( action_t* a )
 {
-  hunter_pet_t* p = (hunter_pet_t*) a -> player -> cast_pet();
+  hunter_pet_t* p = ( hunter_pet_t* ) a -> player -> cast_pet();
 
-  if( p -> _buffs.kill_command > 0 )
+  if ( p -> _buffs.kill_command > 0 )
   {
     p -> _buffs.kill_command--;
 
-    if( p -> _buffs.kill_command == 0 )
+    if ( p -> _buffs.kill_command == 0 )
     {
       p -> aura_loss( "Kill Command" );
     }
@@ -1038,11 +1038,11 @@ static void trigger_lock_and_load( attack_t* a )
 {
   hunter_t* p = a -> player -> cast_hunter();
 
-  if( ! p -> talents.lock_and_load )
+  if ( ! p -> talents.lock_and_load )
     return;
 
   double chance = 0;
-  if( a -> sim -> P312 )
+  if ( a -> sim -> P312 )
     chance = p -> talents.lock_and_load * 0.02;
   else
     // NB: talent calc says 3%,7%,10%, assuming it's really 10% * (1/3,2/3,3/3)
@@ -1089,11 +1089,11 @@ static void consume_lock_and_load( attack_t* a )
 {
   hunter_t* p = a -> player -> cast_hunter();
 
-  if( p -> _buffs.lock_and_load > 0 )
+  if ( p -> _buffs.lock_and_load > 0 )
   {
     p -> _buffs.lock_and_load--;
 
-    if( p -> _buffs.lock_and_load == 0 )
+    if ( p -> _buffs.lock_and_load == 0 )
     {
       event_t::early( p -> _expirations.lock_and_load );
     }
@@ -1147,13 +1147,13 @@ static void trigger_master_tactician( attack_t* a )
 
 static void trigger_owls_focus( action_t* a )
 {
-  hunter_pet_t* p = (hunter_pet_t*) a -> player -> cast_pet();
+  hunter_pet_t* p = ( hunter_pet_t* ) a -> player -> cast_pet();
   hunter_t* o = p -> owner -> cast_hunter();
 
-  if( ! p -> talents.owls_focus )
+  if ( ! p -> talents.owls_focus )
     return;
 
-  if( ! o -> rng_owls_focus -> roll( p -> talents.owls_focus * 0.15 ) )
+  if ( ! o -> rng_owls_focus -> roll( p -> talents.owls_focus * 0.15 ) )
     return;
 
   struct owls_focus_expiration_t : public event_t
@@ -1167,7 +1167,7 @@ static void trigger_owls_focus( action_t* a )
     }
     virtual void execute()
     {
-      hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+      hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
       p -> aura_loss( "Owls Focus" );
       p -> _buffs.owls_focus = 0;
       p -> _expirations.owls_focus = 0;
@@ -1176,7 +1176,7 @@ static void trigger_owls_focus( action_t* a )
 
   event_t*& e = p -> _expirations.owls_focus;
 
-  if( e )
+  if ( e )
   {
     e -> reschedule( 8.0 );
   }
@@ -1190,7 +1190,7 @@ static void trigger_owls_focus( action_t* a )
 
 static void consume_owls_focus( action_t* a )
 {
-  hunter_pet_t* p = (hunter_pet_t*) a -> player -> cast_pet();
+  hunter_pet_t* p = ( hunter_pet_t* ) a -> player -> cast_pet();
   event_t::early( p -> _expirations.owls_focus );
 }
 
@@ -1200,7 +1200,7 @@ static void trigger_piercing_shots( action_t* a )
 {
   hunter_t* p = a -> player -> cast_hunter();
 
-  if( ! p -> talents.piercing_shots )
+  if ( ! p -> talents.piercing_shots )
     return;
 
   struct piercing_shots_t : public attack_t
@@ -1220,9 +1220,9 @@ static void trigger_piercing_shots( action_t* a )
       tick_power_mod = 0;
     }
     void player_buff() {}
-    void target_debuff( int dmg_type ) 
+    void target_debuff( int dmg_type )
     {
-      if( sim -> target -> debuffs.mangle || sim -> target -> debuffs.trauma )
+      if ( sim -> target -> debuffs.mangle || sim -> target -> debuffs.trauma )
       {
         target_multiplier = 1.30;
       }
@@ -1231,9 +1231,9 @@ static void trigger_piercing_shots( action_t* a )
 
   double dmg = p -> talents.piercing_shots * 0.1 * a -> direct_dmg;
 
-  if( ! p -> active_piercing_shots ) p -> active_piercing_shots = new piercing_shots_t( p );
+  if ( ! p -> active_piercing_shots ) p -> active_piercing_shots = new piercing_shots_t( p );
 
-  if( p -> active_piercing_shots -> ticking )
+  if ( p -> active_piercing_shots -> ticking )
   {
     int num_ticks = p -> active_piercing_shots -> num_ticks;
     int remaining_ticks = num_ticks - p -> active_piercing_shots -> current_tick;
@@ -1250,7 +1250,7 @@ static void trigger_piercing_shots( action_t* a )
 
 static void trigger_rabid_power( attack_t* a )
 {
-  hunter_pet_t* p = (hunter_pet_t*) a -> player -> cast_pet();
+  hunter_pet_t* p = ( hunter_pet_t* ) a -> player -> cast_pet();
   hunter_t* o = p -> owner -> cast_hunter();
 
   if ( ! p -> talents.rabid )
@@ -1315,7 +1315,7 @@ static void trigger_tier8_4pc( attack_t* a )
 
   event_t*& e = p -> expirations.tier8_4pc;
 
-  if( e )
+  if ( e )
   {
     e -> reschedule( 15.0 );
   }
@@ -1331,16 +1331,16 @@ static void trigger_wild_quiver( attack_t* a )
 {
   hunter_t* p = a -> player -> cast_hunter();
 
-  if( a -> proc )
+  if ( a -> proc )
     return;
 
-  if( ! p -> talents.wild_quiver )
+  if ( ! p -> talents.wild_quiver )
     return;
 
   double chance = 0;
   chance = p -> talents.wild_quiver * 0.04;
 
-  if( p -> rng_wild_quiver -> roll( chance ) )
+  if ( p -> rng_wild_quiver -> roll( chance ) )
   {
     // FIXME! What hit/crit talents apply? At least Lethal Shots & Master Marksman
     // FIXME! Which proc-related talents can it trigger?
@@ -1367,7 +1367,7 @@ static void trigger_wild_quiver( attack_t* a )
       }
     };
 
-    if( ! p -> active_wild_quiver ) p -> active_wild_quiver = new wild_quiver_t( p );
+    if ( ! p -> active_wild_quiver ) p -> active_wild_quiver = new wild_quiver_t( p );
 
     p -> procs_wild_quiver -> occur();
     p -> active_wild_quiver -> execute();
@@ -1378,7 +1378,7 @@ static void trigger_wild_quiver( attack_t* a )
 
 static void trigger_wolverine_bite( attack_t* a )
 {
-  hunter_pet_t* p = (hunter_pet_t*) a -> player -> cast_pet();
+  hunter_pet_t* p = ( hunter_pet_t* ) a -> player -> cast_pet();
 
   if ( ! p -> talents.wolverine_bite )
     return;
@@ -1395,9 +1395,9 @@ static void trigger_wolverine_bite( attack_t* a )
 struct hunter_pet_attack_t : public attack_t
 {
   hunter_pet_attack_t( const char* n, player_t* player, int r=RESOURCE_FOCUS, int sc=SCHOOL_PHYSICAL, bool special=true ) :
-    attack_t( n, player, r, sc, TREE_BEAST_MASTERY, special )
+      attack_t( n, player, r, sc, TREE_BEAST_MASTERY, special )
   {
-    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
 
     may_crit = true;
@@ -1418,15 +1418,15 @@ struct hunter_pet_attack_t : public attack_t
 
   virtual double execute_time()
   {
-    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
 
     double t = attack_t::execute_time();
-    if( t == 0 ) return 0;
+    if ( t == 0 ) return 0;
 
-    if( o -> talents.frenzy )
+    if ( o -> talents.frenzy )
     {
-      if( p -> _buffs.frenzy ) t *= 1.0 / 1.3;
+      if ( p -> _buffs.frenzy ) t *= 1.0 / 1.3;
 
       p -> uptimes_frenzy -> update( p -> _buffs.frenzy > 0 );
     }
@@ -1436,9 +1436,9 @@ struct hunter_pet_attack_t : public attack_t
 
   virtual double cost()
   {
-    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
 
-    if( p -> _buffs.owls_focus ) return 0;
+    if ( p -> _buffs.owls_focus ) return 0;
 
     return attack_t::cost();
   }
@@ -1446,7 +1446,7 @@ struct hunter_pet_attack_t : public attack_t
   virtual void consume_resource()
   {
     attack_t::consume_resource();
-    if( special && base_cost > 0 )
+    if ( special && base_cost > 0 )
     {
       consume_owls_focus( this );
     }
@@ -1455,22 +1455,22 @@ struct hunter_pet_attack_t : public attack_t
   virtual void execute()
   {
     attack_t::execute();
-    if( result_is_hit() )
+    if ( result_is_hit() )
     {
       trigger_rabid_power( this );
 
-      if( result == RESULT_CRIT )
+      if ( result == RESULT_CRIT )
       {
         trigger_ferocious_inspiration( this );
         trigger_frenzy( this );
-        if( special ) trigger_invigoration( this );
+        if ( special ) trigger_invigoration( this );
       }
     }
     else if ( result == RESULT_DODGE )
     {
       trigger_wolverine_bite( this );
     }
-    if( special )
+    if ( special )
     {
       consume_cobra_strikes( this );
       consume_kill_command( this );
@@ -1480,14 +1480,14 @@ struct hunter_pet_attack_t : public attack_t
 
   virtual void player_buff()
   {
-    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
 
     attack_t::player_buff();
 
-    if( p -> _buffs.bestial_wrath ) player_multiplier *= 1.50;
+    if ( p -> _buffs.bestial_wrath ) player_multiplier *= 1.50;
 
-    if( p -> _buffs.savage_rend   ) player_multiplier *= 1.10;
+    if ( p -> _buffs.savage_rend   ) player_multiplier *= 1.10;
     p -> uptimes_savage_rend -> update( p -> _buffs.savage_rend != 0 );
 
     player_multiplier *= 1.0 + p -> _buffs.monstrous_bite * 0.03;
@@ -1495,11 +1495,11 @@ struct hunter_pet_attack_t : public attack_t
 
     trigger_feeding_frenzy( this );
 
-    if( special )
+    if ( special )
     {
-      if( o -> _buffs.cobra_strikes ) player_crit += 1.0;
+      if ( o -> _buffs.cobra_strikes ) player_crit += 1.0;
 
-      if( p -> _buffs.kill_command )
+      if ( p -> _buffs.kill_command )
       {
         player_multiplier *= 1.0 + p -> _buffs.kill_command * 0.20;
         player_crit       += o -> talents.focused_fire * 0.10;
@@ -1513,9 +1513,9 @@ struct hunter_pet_attack_t : public attack_t
 struct pet_melee_t : public hunter_pet_attack_t
 {
   pet_melee_t( player_t* player ) :
-    hunter_pet_attack_t( "melee", player, RESOURCE_NONE, SCHOOL_PHYSICAL, false )
+      hunter_pet_attack_t( "melee", player, RESOURCE_NONE, SCHOOL_PHYSICAL, false )
   {
-    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
 
     weapon = &( p -> main_hand_weapon );
@@ -1525,14 +1525,14 @@ struct pet_melee_t : public hunter_pet_attack_t
     repeating         = true;
     direct_power_mod  = 0;
 
-    if( p -> talents.cobra_reflexes )
+    if ( p -> talents.cobra_reflexes )
     {
       base_multiplier   *= ( 1.0 - p -> talents.cobra_reflexes * 0.075 );
       base_execute_time *= 1.0 / ( 1.0 + p -> talents.cobra_reflexes * 0.15 );
     }
     base_execute_time *= 1.0 / ( 1.0 + 0.04 * o -> talents.serpents_swiftness );
 
-    if( o -> unique_gear -> tier7_2pc ) base_multiplier *= 1.05;
+    if ( o -> unique_gear -> tier7_2pc ) base_multiplier *= 1.05;
   }
 };
 
@@ -1541,22 +1541,22 @@ struct pet_melee_t : public hunter_pet_attack_t
 struct pet_auto_attack_t : public hunter_pet_attack_t
 {
   pet_auto_attack_t( player_t* player, const std::string& options_str ) :
-    hunter_pet_attack_t( "auto_attack", player )
+      hunter_pet_attack_t( "auto_attack", player )
   {
-    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     p -> main_hand_attack = new pet_melee_t( player );
     trigger_gcd = 0;
   }
 
   virtual void execute()
   {
-    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     p -> main_hand_attack -> schedule_execute();
   }
 
   virtual bool ready()
   {
-    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     return( p -> main_hand_attack -> execute_event == 0 ); // not swinging
   }
 };
@@ -1566,7 +1566,7 @@ struct pet_auto_attack_t : public hunter_pet_attack_t
 struct focus_dump_t : public hunter_pet_attack_t
 {
   focus_dump_t( player_t* player, const std::string& options_str, const char* n ) :
-    hunter_pet_attack_t( n, player, RESOURCE_FOCUS, SCHOOL_PHYSICAL )
+      hunter_pet_attack_t( n, player, RESOURCE_FOCUS, SCHOOL_PHYSICAL )
   {
     parse_options( 0, options_str );
     base_dd_min = base_dd_max = 143;
@@ -1579,9 +1579,9 @@ struct focus_dump_t : public hunter_pet_attack_t
 struct rake_t : public hunter_pet_attack_t
 {
   rake_t( player_t* player, const std::string& options_str ) :
-    hunter_pet_attack_t( "rake", player, RESOURCE_FOCUS, SCHOOL_BLEED )
+      hunter_pet_attack_t( "rake", player, RESOURCE_FOCUS, SCHOOL_BLEED )
   {
-    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
 
     assert( p -> pet_type == PET_CAT );
@@ -1615,9 +1615,9 @@ struct rake_t : public hunter_pet_attack_t
 struct monstrous_bite_t : public hunter_pet_attack_t
 {
   monstrous_bite_t( player_t* player, const std::string& options_str ) :
-    hunter_pet_attack_t( "monstrous_bite", player, RESOURCE_FOCUS, SCHOOL_PHYSICAL )
+      hunter_pet_attack_t( "monstrous_bite", player, RESOURCE_FOCUS, SCHOOL_PHYSICAL )
   {
-    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
 
     assert( p -> pet_type == PET_DEVILSAUR );
@@ -1631,7 +1631,7 @@ struct monstrous_bite_t : public hunter_pet_attack_t
 
   virtual void execute()
   {
-    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
 
     hunter_pet_attack_t::execute();
 
@@ -1645,20 +1645,20 @@ struct monstrous_bite_t : public hunter_pet_attack_t
       }
       virtual void execute()
       {
-        hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+        hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
         p -> aura_loss( "Monstrous Bite" );
         p -> _buffs.monstrous_bite = 0;
       }
     };
 
-    if( p -> _buffs.monstrous_bite < 3 )
+    if ( p -> _buffs.monstrous_bite < 3 )
     {
       p -> _buffs.monstrous_bite++;
     }
 
     event_t*& e = p -> _expirations.monstrous_bite;
 
-    if( e )
+    if ( e )
     {
       e -> reschedule( 12.0 );
     }
@@ -1674,9 +1674,9 @@ struct monstrous_bite_t : public hunter_pet_attack_t
 struct savage_rend_t : public hunter_pet_attack_t
 {
   savage_rend_t( player_t* player, const std::string& options_str ) :
-    hunter_pet_attack_t( "savage_rend", player, RESOURCE_FOCUS, SCHOOL_BLEED )
+      hunter_pet_attack_t( "savage_rend", player, RESOURCE_FOCUS, SCHOOL_BLEED )
   {
-    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
 
     assert( p -> pet_type == PET_RAPTOR );
@@ -1697,7 +1697,7 @@ struct savage_rend_t : public hunter_pet_attack_t
 
   virtual void execute()
   {
-    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
 
     school = SCHOOL_PHYSICAL;
     hunter_pet_attack_t::execute();
@@ -1716,7 +1716,7 @@ struct savage_rend_t : public hunter_pet_attack_t
         }
         virtual void execute()
         {
-          hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+          hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
           p -> aura_loss( "Savage Rend" );
           p -> _buffs.savage_rend = 0;
           p -> _expirations.savage_rend = 0;
@@ -1742,9 +1742,9 @@ struct savage_rend_t : public hunter_pet_attack_t
 struct wolverine_bite_t : public hunter_pet_attack_t
 {
   wolverine_bite_t( player_t* player, const std::string& options_str ) :
-    hunter_pet_attack_t( "wolverine_bite", player, RESOURCE_FOCUS, SCHOOL_PHYSICAL )
+      hunter_pet_attack_t( "wolverine_bite", player, RESOURCE_FOCUS, SCHOOL_PHYSICAL )
   {
-    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
 
     assert( p -> talents.wolverine_bite );
@@ -1760,14 +1760,14 @@ struct wolverine_bite_t : public hunter_pet_attack_t
 
   virtual void execute()
   {
-    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     p -> _buffs.wolverine_bite = 0;
     hunter_pet_attack_t::execute();
   }
 
   virtual bool ready()
   {
-    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
 
     // This attack is only available after the target dodges
     if ( ! p -> _buffs.wolverine_bite )
@@ -1786,9 +1786,9 @@ struct wolverine_bite_t : public hunter_pet_attack_t
 struct hunter_pet_spell_t : public spell_t
 {
   hunter_pet_spell_t( const char* n, player_t* player, int r=RESOURCE_FOCUS, int s=SCHOOL_PHYSICAL ) :
-    spell_t( n, player, r, s )
+      spell_t( n, player, r, s )
   {
-    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
 
     base_multiplier *= 1.05;
     base_hit  += p -> owner -> cast_hunter() -> talents.focused_aim * 0.01;
@@ -1798,9 +1798,9 @@ struct hunter_pet_spell_t : public spell_t
 
   virtual double cost()
   {
-    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
 
-    if( p -> _buffs.owls_focus ) return 0;
+    if ( p -> _buffs.owls_focus ) return 0;
 
     return spell_t::cost();
   }
@@ -1808,7 +1808,7 @@ struct hunter_pet_spell_t : public spell_t
   virtual void consume_resource()
   {
     spell_t::consume_resource();
-    if( base_cost > 0 )
+    if ( base_cost > 0 )
     {
       consume_owls_focus( this );
     }
@@ -1817,9 +1817,9 @@ struct hunter_pet_spell_t : public spell_t
   virtual void execute()
   {
     spell_t::execute();
-    if( result_is_hit() )
+    if ( result_is_hit() )
     {
-      if( result == RESULT_CRIT )
+      if ( result == RESULT_CRIT )
       {
         trigger_invigoration( this );
       }
@@ -1831,18 +1831,18 @@ struct hunter_pet_spell_t : public spell_t
 
   virtual void player_buff()
   {
-    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
 
     spell_t::player_buff();
 
     player_spell_power += 0.125 * o -> composite_attack_power();
 
-    if( p -> _buffs.bestial_wrath ) player_multiplier *= 1.50;
+    if ( p -> _buffs.bestial_wrath ) player_multiplier *= 1.50;
 
-    if( o -> _buffs.cobra_strikes ) player_crit += 1.0;
+    if ( o -> _buffs.cobra_strikes ) player_crit += 1.0;
 
-    if( p -> _buffs.kill_command )
+    if ( p -> _buffs.kill_command )
     {
       player_multiplier *= 1.0 + p -> _buffs.kill_command * 0.20;
       player_crit       += o -> talents.focused_fire * 0.10;
@@ -1857,9 +1857,9 @@ struct hunter_pet_spell_t : public spell_t
 struct froststorm_breath_t : public hunter_pet_spell_t
 {
   froststorm_breath_t( player_t* player, const std::string& options_str ) :
-    hunter_pet_spell_t( "froststorm_breath", player, RESOURCE_FOCUS, SCHOOL_NATURE )
+      hunter_pet_spell_t( "froststorm_breath", player, RESOURCE_FOCUS, SCHOOL_NATURE )
   {
-    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
 
     assert( p -> pet_type == PET_CHIMERA );
@@ -1878,9 +1878,9 @@ struct froststorm_breath_t : public hunter_pet_spell_t
 struct lightning_breath_t : public hunter_pet_spell_t
 {
   lightning_breath_t( player_t* player, const std::string& options_str ) :
-    hunter_pet_spell_t( "lightning_breath", player, RESOURCE_FOCUS, SCHOOL_NATURE )
+      hunter_pet_spell_t( "lightning_breath", player, RESOURCE_FOCUS, SCHOOL_NATURE )
   {
-    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
 
     assert( p -> pet_type == PET_WIND_SERPENT );
@@ -1899,9 +1899,9 @@ struct lightning_breath_t : public hunter_pet_spell_t
 struct call_of_the_wild_t : public hunter_pet_spell_t
 {
   call_of_the_wild_t( player_t* player, const std::string& options_str ) :
-    hunter_pet_spell_t( "call_of_the_wild", player, RESOURCE_FOCUS )
+      hunter_pet_spell_t( "call_of_the_wild", player, RESOURCE_FOCUS )
   {
-    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
 
     assert( p -> talents.call_of_the_wild );
@@ -1915,7 +1915,7 @@ struct call_of_the_wild_t : public hunter_pet_spell_t
 
   virtual void execute()
   {
-    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
 
     struct expiration_t : public event_t
     {
@@ -1931,7 +1931,7 @@ struct call_of_the_wild_t : public hunter_pet_spell_t
       }
       virtual void execute()
       {
-        hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+        hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
         hunter_t*     o = p -> owner -> cast_hunter();
         p -> aura_loss( "Call of the Wild" );
         o -> aura_loss( "Call of the Wild" );
@@ -1940,7 +1940,7 @@ struct call_of_the_wild_t : public hunter_pet_spell_t
       }
     };
 
-    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     consume_resource();
     update_ready();
     new ( sim ) expiration_t( sim, p );
@@ -1952,9 +1952,9 @@ struct call_of_the_wild_t : public hunter_pet_spell_t
 struct furious_howl_t : public hunter_pet_spell_t
 {
   furious_howl_t( player_t* player, const std::string& options_str ) :
-    hunter_pet_spell_t( "furious_howl", player, RESOURCE_FOCUS )
+      hunter_pet_spell_t( "furious_howl", player, RESOURCE_FOCUS )
   {
-    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
 
     assert( p -> pet_type == PET_WOLF );
@@ -1968,7 +1968,7 @@ struct furious_howl_t : public hunter_pet_spell_t
 
   virtual void execute()
   {
-    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
 
     struct expiration_t : public event_t
     {
@@ -1984,7 +1984,7 @@ struct furious_howl_t : public hunter_pet_spell_t
       }
       virtual void execute()
       {
-        hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+        hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
         hunter_t*     o = p -> owner -> cast_hunter();
         p -> aura_loss( "Furious Howl" );
         o -> aura_loss( "Furious Howl" );
@@ -1993,7 +1993,7 @@ struct furious_howl_t : public hunter_pet_spell_t
       }
     };
 
-    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     consume_resource();
     update_ready();
     new ( sim ) expiration_t( sim, p );
@@ -2005,9 +2005,9 @@ struct furious_howl_t : public hunter_pet_spell_t
 struct rabid_t : public hunter_pet_spell_t
 {
   rabid_t( player_t* player, const std::string& options_str ) :
-    hunter_pet_spell_t( "rabid", player, RESOURCE_FOCUS )
+      hunter_pet_spell_t( "rabid", player, RESOURCE_FOCUS )
   {
-    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
 
     assert( p -> talents.rabid );
@@ -2021,7 +2021,7 @@ struct rabid_t : public hunter_pet_spell_t
 
   virtual void execute()
   {
-    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
 
     struct rabid_expiration_t : public event_t
     {
@@ -2035,14 +2035,14 @@ struct rabid_t : public hunter_pet_spell_t
       }
       virtual void execute()
       {
-        hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+        hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
         p -> aura_loss( "Rabid" );
         p -> _buffs.rabid = 0;
         p -> _buffs.rabid_power_stack = 0;
       }
     };
 
-    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     consume_resource();
     update_ready();
     new ( sim ) rabid_expiration_t( sim, p );
@@ -2054,9 +2054,9 @@ struct rabid_t : public hunter_pet_spell_t
 struct roar_of_recovery_t : public hunter_pet_spell_t
 {
   roar_of_recovery_t( player_t* player, const std::string& options_str ) :
-    hunter_pet_spell_t( "roar_of_recovery", player, RESOURCE_FOCUS )
+      hunter_pet_spell_t( "roar_of_recovery", player, RESOURCE_FOCUS )
   {
-    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
 
     assert( p -> talents.roar_of_recovery );
@@ -2072,7 +2072,7 @@ struct roar_of_recovery_t : public hunter_pet_spell_t
 
   virtual void tick()
   {
-    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
 
     o -> resource_gain( RESOURCE_MANA, 0.10 * o -> resource_max[ RESOURCE_MANA ], o -> gains_roar_of_recovery );
@@ -2080,11 +2080,11 @@ struct roar_of_recovery_t : public hunter_pet_spell_t
 
   virtual bool ready()
   {
-    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
 
-    if( ( o -> resource_current[ RESOURCE_MANA ] /
-          o -> resource_max    [ RESOURCE_MANA ] ) > 0.50 )
+    if ( ( o -> resource_current[ RESOURCE_MANA ] /
+           o -> resource_max    [ RESOURCE_MANA ] ) > 0.50 )
       return false;
 
     return hunter_pet_spell_t::ready();
@@ -2096,20 +2096,20 @@ struct roar_of_recovery_t : public hunter_pet_spell_t
 action_t* hunter_pet_t::create_action( const std::string& name,
                                        const std::string& options_str )
 {
-  if( name == "auto_attack"       ) return new   pet_auto_attack_t( this, options_str );
-  if( name == "bite"              ) return new        focus_dump_t( this, options_str, "bite" );
-  if( name == "call_of_the_wild"  ) return new  call_of_the_wild_t( this, options_str );
-  if( name == "claw"              ) return new        focus_dump_t( this, options_str, "claw" );
-  if( name == "froststorm_breath" ) return new froststorm_breath_t( this, options_str );
-  if( name == "furious_howl"      ) return new      furious_howl_t( this, options_str );
-  if( name == "lightning_breath"  ) return new  lightning_breath_t( this, options_str );
-  if( name == "monstrous_bite"    ) return new    monstrous_bite_t( this, options_str );
-  if( name == "rabid"             ) return new             rabid_t( this, options_str );
-  if( name == "rake"              ) return new              rake_t( this, options_str );
-  if( name == "roar_of_recovery"  ) return new  roar_of_recovery_t( this, options_str );
-  if( name == "savage_rend"       ) return new       savage_rend_t( this, options_str );
-  if( name == "smack"             ) return new        focus_dump_t( this, options_str, "smack" );
-  if( name == "wolverine_bite"    ) return new    wolverine_bite_t( this, options_str );
+  if ( name == "auto_attack"       ) return new   pet_auto_attack_t( this, options_str );
+  if ( name == "bite"              ) return new        focus_dump_t( this, options_str, "bite" );
+  if ( name == "call_of_the_wild"  ) return new  call_of_the_wild_t( this, options_str );
+  if ( name == "claw"              ) return new        focus_dump_t( this, options_str, "claw" );
+  if ( name == "froststorm_breath" ) return new froststorm_breath_t( this, options_str );
+  if ( name == "furious_howl"      ) return new      furious_howl_t( this, options_str );
+  if ( name == "lightning_breath"  ) return new  lightning_breath_t( this, options_str );
+  if ( name == "monstrous_bite"    ) return new    monstrous_bite_t( this, options_str );
+  if ( name == "rabid"             ) return new             rabid_t( this, options_str );
+  if ( name == "rake"              ) return new              rake_t( this, options_str );
+  if ( name == "roar_of_recovery"  ) return new  roar_of_recovery_t( this, options_str );
+  if ( name == "savage_rend"       ) return new       savage_rend_t( this, options_str );
+  if ( name == "smack"             ) return new        focus_dump_t( this, options_str, "smack" );
+  if ( name == "wolverine_bite"    ) return new    wolverine_bite_t( this, options_str );
 
   return pet_t::create_action( name, options_str );
 }
@@ -2124,9 +2124,9 @@ double hunter_attack_t::cost()
 {
   hunter_t* p = player -> cast_hunter();
   double c = attack_t::cost();
-  if( c == 0 ) return 0;
+  if ( c == 0 ) return 0;
   c *= 1.0 - p -> talents.efficiency * 0.03;
-  if( p -> _buffs.beast_within ) c *= 0.80;
+  if ( p -> _buffs.beast_within ) c *= 0.80;
   return c;
 }
 
@@ -2136,12 +2136,12 @@ void hunter_attack_t::execute()
 {
   attack_t::execute();
 
-  if( result_is_hit() )
+  if ( result_is_hit() )
   {
     trigger_aspect_of_the_viper( this );
     trigger_master_tactician( this );
 
-    if( result == RESULT_CRIT )
+    if ( result == RESULT_CRIT )
     {
       trigger_expose_weakness( this );
       trigger_go_for_the_throat( this );
@@ -2159,9 +2159,9 @@ double hunter_attack_t::execute_time()
   hunter_t* p = player -> cast_hunter();
 
   double t = attack_t::execute_time();
-  if( t == 0 ) return 0;
+  if ( t == 0 ) return 0;
 
-  if( p -> _buffs.rapid_fire )
+  if ( p -> _buffs.rapid_fire )
   {
     t *= 1.0 / ( 1.0 + p -> _buffs.rapid_fire );
   }
@@ -2187,27 +2187,27 @@ void hunter_attack_t::player_buff()
 
   attack_t::player_buff();
 
-  if( t -> debuffs.hunters_mark )
+  if ( t -> debuffs.hunters_mark )
   {
-    if( weapon && weapon -> group() == WEAPON_RANGED )
+    if ( weapon && weapon -> group() == WEAPON_RANGED )
     {
       // FIXME: This should be all shots, not just weapon-based shots
       player_multiplier *= 1.0 + p -> talents.marked_for_death * 0.01;
     }
   }
-  if( p -> _buffs.aspect_of_the_viper )
+  if ( p -> _buffs.aspect_of_the_viper )
   {
     player_multiplier *= p -> _buffs.aspect_of_the_viper;
   }
-  if( p -> _buffs.beast_within )
+  if ( p -> _buffs.beast_within )
   {
     player_multiplier *= 1.10;
   }
-  if( p -> active_sting() && p -> talents.noxious_stings )
+  if ( p -> active_sting() && p -> talents.noxious_stings )
   {
     player_multiplier *= 1.0 + p -> talents.noxious_stings * 0.01;
   }
-  if( p -> active_pet )
+  if ( p -> active_pet )
   {
     player_multiplier *= 1.0 + p -> talents.focused_fire * 0.01;
   }
@@ -2226,7 +2226,7 @@ struct ranged_t : public hunter_attack_t
   // but it would also triger Honor-Among-Thieves procs.......
 
   ranged_t( player_t* player ) :
-    hunter_attack_t( "ranged", player, SCHOOL_PHYSICAL, TREE_NONE, /*special*/false )
+      hunter_attack_t( "ranged", player, SCHOOL_PHYSICAL, TREE_NONE, /*special*/false )
   {
     hunter_t* p = player -> cast_hunter();
 
@@ -2252,7 +2252,7 @@ struct ranged_t : public hunter_attack_t
   {
     hunter_attack_t::execute();
 
-    if( result_is_hit() )
+    if ( result_is_hit() )
     {
       trigger_wild_quiver( this );
       trigger_improved_aspect_of_the_hawk( this );
@@ -2265,7 +2265,7 @@ struct ranged_t : public hunter_attack_t
 struct auto_shot_t : public hunter_attack_t
 {
   auto_shot_t( player_t* player, const std::string& options_str ) :
-    hunter_attack_t( "auto_shot", player )
+      hunter_attack_t( "auto_shot", player )
   {
     hunter_t* p = player -> cast_hunter();
     p -> ranged_attack = new ranged_t( player );
@@ -2292,27 +2292,27 @@ struct aimed_shot_t : public hunter_attack_t
   int improved_steady_shot;
 
   aimed_shot_t( player_t* player, const std::string& options_str ) :
-    hunter_attack_t( "aimed_shot", player, SCHOOL_PHYSICAL, TREE_MARKSMANSHIP ),
-    improved_steady_shot(0)
+      hunter_attack_t( "aimed_shot", player, SCHOOL_PHYSICAL, TREE_MARKSMANSHIP ),
+      improved_steady_shot( 0 )
   {
     hunter_t* p = player -> cast_hunter();
     assert( p -> talents.aimed_shot );
 
     option_t options[] =
-    {
-      { "improved_steady_shot", OPT_BOOL, &improved_steady_shot },
-      { NULL }
-    };
+      {
+        { "improved_steady_shot", OPT_BOOL, &improved_steady_shot },
+        { NULL }
+      };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-    {
-      { 80, 9, 408, 408, 0, 0.08 },
-      { 75, 8, 345, 345, 0, 0.08 },
-      { 70, 7, 205, 205, 0, 0.08 },
-      { 60, 6, 150, 150, 0, 0.12 },
-      { 0, 0 }
-    };
+      {
+        { 80, 9, 408, 408, 0, 0.08 },
+        { 75, 8, 345, 345, 0, 0.08 },
+        { 70, 7, 205, 205, 0, 0.08 },
+        { 60, 6, 150, 150, 0, 0.12 },
+        { 0, 0 }
+      };
     init_rank( ranks );
 
     weapon = &( p -> ranged_weapon );
@@ -2336,7 +2336,7 @@ struct aimed_shot_t : public hunter_attack_t
     add_ammunition();
     add_scope();
 
-    if( p -> glyphs.aimed_shot )
+    if ( p -> glyphs.aimed_shot )
     {
       cooldown -= 2;
     }
@@ -2346,7 +2346,7 @@ struct aimed_shot_t : public hunter_attack_t
   {
     hunter_t* p = player -> cast_hunter();
     double c = hunter_attack_t::cost();
-    if( p -> _buffs.improved_steady_shot ) c *= 0.80;
+    if ( p -> _buffs.improved_steady_shot ) c *= 0.80;
     return c;
   }
 
@@ -2354,8 +2354,8 @@ struct aimed_shot_t : public hunter_attack_t
   {
     hunter_t* p = player -> cast_hunter();
     hunter_attack_t::player_buff();
-    if( p -> _buffs.trueshot_aura && p -> glyphs.trueshot_aura ) player_crit += 0.10;
-    if( p -> _buffs.improved_steady_shot ) player_multiplier *= 1.15;
+    if ( p -> _buffs.trueshot_aura && p -> glyphs.trueshot_aura ) player_crit += 0.10;
+    if ( p -> _buffs.improved_steady_shot ) player_multiplier *= 1.15;
     p -> uptimes_improved_steady_shot -> update( p -> _buffs.improved_steady_shot != 0 );
   }
 
@@ -2363,7 +2363,7 @@ struct aimed_shot_t : public hunter_attack_t
   {
     hunter_attack_t::execute();
     consume_improved_steady_shot( this );
-    if( result == RESULT_CRIT )
+    if ( result == RESULT_CRIT )
     {
       trigger_piercing_shots( this );
     }
@@ -2373,8 +2373,8 @@ struct aimed_shot_t : public hunter_attack_t
   {
     hunter_t* p = player -> cast_hunter();
 
-    if( improved_steady_shot )
-      if( ! p -> _buffs.improved_steady_shot )
+    if ( improved_steady_shot )
+      if ( ! p -> _buffs.improved_steady_shot )
         return false;
 
     return hunter_attack_t::ready();
@@ -2388,28 +2388,28 @@ struct arcane_shot_t : public hunter_attack_t
   int improved_steady_shot;
   int lock_and_load;
 
-  arcane_shot_t(player_t* player, const std::string& options_str ) :
-    hunter_attack_t( "arcane_shot", player, SCHOOL_ARCANE, TREE_MARKSMANSHIP ),
-    improved_steady_shot(0), lock_and_load(0)
+  arcane_shot_t( player_t* player, const std::string& options_str ) :
+      hunter_attack_t( "arcane_shot", player, SCHOOL_ARCANE, TREE_MARKSMANSHIP ),
+      improved_steady_shot( 0 ), lock_and_load( 0 )
   {
     hunter_t* p = player -> cast_hunter();
 
     option_t options[] =
-    {
-      { "improved_steady_shot", OPT_BOOL, &improved_steady_shot },
-      { "lock_and_load",        OPT_BOOL, &lock_and_load        },
-      { NULL }
-    };
+      {
+        { "improved_steady_shot", OPT_BOOL, &improved_steady_shot },
+        { "lock_and_load",        OPT_BOOL, &lock_and_load        },
+        { NULL }
+      };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-    {
-      { 79, 11, 492, 492, 0, 0.05 },
-      { 73, 10, 402, 402, 0, 0.05 },
-      { 69, 9,  273, 273, 0, 0.05 },
-      { 60, 8,  200, 200, 0, 0.07 },
-      { 0, 0 }
-    };
+      {
+        { 79, 11, 492, 492, 0, 0.05 },
+        { 73, 10, 402, 402, 0, 0.05 },
+        { 69, 9,  273, 273, 0, 0.05 },
+        { 60, 8,  200, 200, 0, 0.07 },
+        { 0, 0 }
+      };
     init_rank( ranks );
 
     // To trigger ppm-based JoW
@@ -2438,7 +2438,7 @@ struct arcane_shot_t : public hunter_attack_t
     hunter_t* p = player -> cast_hunter();
     if ( p -> _buffs.lock_and_load ) return 0;
     double c = hunter_attack_t::cost();
-    if( p -> _buffs.improved_steady_shot ) c *= 0.80;
+    if ( p -> _buffs.improved_steady_shot ) c *= 0.80;
     return c;
   }
 
@@ -2446,14 +2446,14 @@ struct arcane_shot_t : public hunter_attack_t
   {
     hunter_t* p = player -> cast_hunter();
     hunter_attack_t::player_buff();
-    if( p -> _buffs.improved_steady_shot ) player_multiplier *= 1.15;
+    if ( p -> _buffs.improved_steady_shot ) player_multiplier *= 1.15;
     p -> uptimes_improved_steady_shot -> update( p -> _buffs.improved_steady_shot > 0 );
   }
 
   virtual void execute()
   {
     hunter_attack_t::execute();
-    if( result == RESULT_CRIT )
+    if ( result == RESULT_CRIT )
     {
       trigger_cobra_strikes( this );
       trigger_hunting_party( this );
@@ -2473,12 +2473,12 @@ struct arcane_shot_t : public hunter_attack_t
   {
     hunter_t* p = player -> cast_hunter();
 
-    if( improved_steady_shot )
-      if( ! p -> _buffs.improved_steady_shot )
+    if ( improved_steady_shot )
+      if ( ! p -> _buffs.improved_steady_shot )
         return false;
 
-    if( lock_and_load )
-      if( ! p -> _buffs.lock_and_load )
+    if ( lock_and_load )
+      if ( ! p -> _buffs.lock_and_load )
         return false;
 
     return hunter_attack_t::ready();
@@ -2490,21 +2490,21 @@ struct arcane_shot_t : public hunter_attack_t
 struct black_arrow_t : public hunter_attack_t
 {
   black_arrow_t( player_t* player, const std::string& options_str ) :
-    hunter_attack_t( "black_arrow", player, SCHOOL_SHADOW, TREE_SURVIVAL )
+      hunter_attack_t( "black_arrow", player, SCHOOL_SHADOW, TREE_SURVIVAL )
   {
     hunter_t* p = player -> cast_hunter();
     assert( p -> talents.black_arrow );
 
     static rank_t ranks[] =
-    {
-      { 80, 6, 0, 0, 2765/5.0, 0.06 },
-      { 75, 5, 0, 0, 2240/5.0, 0.06 },
-      { 69, 4, 0, 0, 1480/5.0, 0.06 },
-      { 63, 3, 0, 0, 1250/5.0, 0.06 },
-      { 57, 2, 0, 0,  940/5.0, 0.06 },
-      { 50, 1, 0, 0,  785/5.0, 0.06 },
-      { 0, 0 }
-    };
+      {
+        { 80, 6, 0, 0, 2765/5.0, 0.06 },
+        { 75, 5, 0, 0, 2240/5.0, 0.06 },
+        { 69, 4, 0, 0, 1480/5.0, 0.06 },
+        { 63, 3, 0, 0, 1250/5.0, 0.06 },
+        { 57, 2, 0, 0,  940/5.0, 0.06 },
+        { 50, 1, 0, 0,  785/5.0, 0.06 },
+        { 0, 0 }
+      };
     init_rank( ranks );
 
     base_tick_time   = 3.0;
@@ -2522,7 +2522,7 @@ struct black_arrow_t : public hunter_attack_t
   {
     hunter_t* p = player -> cast_hunter();
     hunter_attack_t::execute();
-    if( result_is_hit() )
+    if ( result_is_hit() )
       p -> active_black_arrow = 1;
   }
 
@@ -2548,18 +2548,18 @@ struct chimera_shot_t : public hunter_attack_t
   int improved_steady_shot;
 
   chimera_shot_t( player_t* player, const std::string& options_str ) :
-    hunter_attack_t( "chimera_shot", player, SCHOOL_NATURE, TREE_MARKSMANSHIP ),
-    active_sting(1), improved_steady_shot(0)
+      hunter_attack_t( "chimera_shot", player, SCHOOL_NATURE, TREE_MARKSMANSHIP ),
+      active_sting( 1 ), improved_steady_shot( 0 )
   {
     hunter_t* p = player -> cast_hunter();
     assert( p -> talents.chimera_shot );
 
     option_t options[] =
-    {
-      { "active_sting",         OPT_BOOL, &active_sting         },
-      { "improved_steady_shot", OPT_BOOL, &improved_steady_shot },
-      { NULL }
-    };
+      {
+        { "active_sting",         OPT_BOOL, &active_sting         },
+        { "improved_steady_shot", OPT_BOOL, &improved_steady_shot },
+        { NULL }
+      };
     parse_options( options, options_str );
 
     weapon = &( p -> ranged_weapon );
@@ -2582,7 +2582,7 @@ struct chimera_shot_t : public hunter_attack_t
     add_ammunition();
     add_scope();
 
-    if( p -> glyphs.chimera_shot )
+    if ( p -> glyphs.chimera_shot )
     {
       cooldown -= 1;
     }
@@ -2592,7 +2592,7 @@ struct chimera_shot_t : public hunter_attack_t
   {
     hunter_t* p = player -> cast_hunter();
     double c = hunter_attack_t::cost();
-    if( p -> _buffs.improved_steady_shot ) c *= 0.80;
+    if ( p -> _buffs.improved_steady_shot ) c *= 0.80;
     return c;
   }
 
@@ -2600,7 +2600,7 @@ struct chimera_shot_t : public hunter_attack_t
   {
     hunter_t* p = player -> cast_hunter();
     hunter_attack_t::player_buff();
-    if( p -> _buffs.improved_steady_shot ) player_multiplier *= 1.0 + 0.15;
+    if ( p -> _buffs.improved_steady_shot ) player_multiplier *= 1.0 + 0.15;
     p -> uptimes_improved_steady_shot -> update( p -> _buffs.improved_steady_shot > 0 );
   }
 
@@ -2612,13 +2612,13 @@ struct chimera_shot_t : public hunter_attack_t
 
     action_t* sting = p -> active_sting();
 
-    if( result_is_hit() && sting )
+    if ( result_is_hit() && sting )
     {
       sting -> refresh_duration();
 
       double sting_dmg = sting -> num_ticks * sting -> calculate_tick_damage();
 
-      if( p -> active_serpent_sting )
+      if ( p -> active_serpent_sting )
       {
         struct chimera_serpent_t : public hunter_attack_t
         {
@@ -2638,7 +2638,7 @@ struct chimera_shot_t : public hunter_attack_t
           }
         };
 
-        if( ! p -> active_chimera_serpent ) p -> active_chimera_serpent = new chimera_serpent_t( p );
+        if ( ! p -> active_chimera_serpent ) p -> active_chimera_serpent = new chimera_serpent_t( p );
 
         double base_dd = 0.40 * sting_dmg;
         p -> active_chimera_serpent -> base_dd_min = base_dd;
@@ -2646,13 +2646,13 @@ struct chimera_shot_t : public hunter_attack_t
         p -> active_chimera_serpent -> execute();
 
       }
-      else if( p -> active_viper_sting )
+      else if ( p -> active_viper_sting )
       {
         p -> resource_gain( RESOURCE_MANA, 0.60 * sting_dmg, p -> gains_chimera_viper );
       }
     }
     consume_improved_steady_shot( this );
-    if( result == RESULT_CRIT )
+    if ( result == RESULT_CRIT )
     {
       trigger_piercing_shots( this );
     }
@@ -2662,12 +2662,12 @@ struct chimera_shot_t : public hunter_attack_t
   {
     hunter_t* p = player -> cast_hunter();
 
-    if( active_sting )
-      if( ! p -> active_sting() )
+    if ( active_sting )
+      if ( ! p -> active_sting() )
         return false;
 
-    if( improved_steady_shot )
-      if( ! p -> _buffs.improved_steady_shot )
+    if ( improved_steady_shot )
+      if ( ! p -> _buffs.improved_steady_shot )
         return false;
 
     return hunter_attack_t::ready();
@@ -2679,18 +2679,18 @@ struct chimera_shot_t : public hunter_attack_t
 struct explosive_tick_t : public hunter_attack_t
 {
   explosive_tick_t( player_t* player ) :
-    hunter_attack_t( "explosive_shot", player, SCHOOL_FIRE, TREE_SURVIVAL )
+      hunter_attack_t( "explosive_shot", player, SCHOOL_FIRE, TREE_SURVIVAL )
   {
     hunter_t* p = player -> cast_hunter();
 
     static rank_t ranks[] =
-    {
-      { 80, 4,  386, 464, 0, 0 },
-      { 75, 3,  325, 391, 0, 0 },
-      { 70, 2,  221, 265, 0, 0 },
-      { 60, 1,  160, 192, 0, 0 },
-      { 0, 0 }
-    };
+      {
+        { 80, 4,  386, 464, 0, 0 },
+        { 75, 3,  325, 391, 0, 0 },
+        { 70, 2,  221, 265, 0, 0 },
+        { 60, 1,  160, 192, 0, 0 },
+        { 0, 0 }
+      };
     init_rank( ranks );
 
     // To trigger ppm-based JoW
@@ -2714,7 +2714,7 @@ struct explosive_tick_t : public hunter_attack_t
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.mortal_shots * 0.06;
 
-    if( p -> glyphs.explosive_shot )
+    if ( p -> glyphs.explosive_shot )
     {
       base_crit += 0.04;
     }
@@ -2726,7 +2726,7 @@ struct explosive_tick_t : public hunter_attack_t
     ticking = 1; // Prevent HAT procs
     tick_dmg = direct_dmg;
     update_stats( DMG_OVER_TIME );
-    if( result == RESULT_CRIT )
+    if ( result == RESULT_CRIT )
     {
       trigger_hunting_party( this );
     }
@@ -2739,17 +2739,17 @@ struct explosive_shot_t : public hunter_attack_t
   int lock_and_load;
 
   explosive_shot_t( player_t* player, const std::string& options_str ) :
-    hunter_attack_t( "explosive_shot", player, SCHOOL_FIRE, TREE_SURVIVAL ),
-    lock_and_load(0)
+      hunter_attack_t( "explosive_shot", player, SCHOOL_FIRE, TREE_SURVIVAL ),
+      lock_and_load( 0 )
   {
     hunter_t* p = player -> cast_hunter();
     assert( p -> talents.explosive_shot );
 
     option_t options[] =
-    {
-      { "lock_and_load", OPT_BOOL, &lock_and_load },
-      { NULL }
-    };
+      {
+        { "lock_and_load", OPT_BOOL, &lock_and_load },
+        { NULL }
+      };
     parse_options( options, options_str );
 
     base_cost = 0.07 * p -> resource_base[ RESOURCE_MANA ];
@@ -2773,7 +2773,7 @@ struct explosive_shot_t : public hunter_attack_t
 
   virtual void tick()
   {
-    if( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
+    if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
     explosive_tick -> execute();
     update_time( DMG_OVER_TIME );
   }
@@ -2789,8 +2789,8 @@ struct explosive_shot_t : public hunter_attack_t
   {
     hunter_t* p = player -> cast_hunter();
 
-    if( lock_and_load )
-      if( ! p -> _buffs.lock_and_load )
+    if ( lock_and_load )
+      if ( ! p -> _buffs.lock_and_load )
         return false;
 
     return hunter_attack_t::ready();
@@ -2802,17 +2802,17 @@ struct explosive_shot_t : public hunter_attack_t
 struct kill_shot_t : public hunter_attack_t
 {
   kill_shot_t( player_t* player, const std::string& options_str ) :
-    hunter_attack_t( "kill_shot", player, SCHOOL_PHYSICAL, TREE_MARKSMANSHIP )
+      hunter_attack_t( "kill_shot", player, SCHOOL_PHYSICAL, TREE_MARKSMANSHIP )
   {
     hunter_t* p = player -> cast_hunter();
 
     static rank_t ranks[] =
-    {
-      { 80, 3, 650, 650, 0, 0.07 },
-      { 75, 2, 500, 500, 0, 0.07 },
-      { 71, 1, 410, 410, 0, 0.07 },
-      { 0, 0 }
-    };
+      {
+        { 80, 3, 650, 650, 0, 0.07 },
+        { 75, 2, 500, 500, 0, 0.07 },
+        { 71, 1, 410, 410, 0, 0.07 },
+        { 0, 0 }
+      };
     init_rank( ranks );
 
     parse_options( 0, options_str );
@@ -2836,7 +2836,7 @@ struct kill_shot_t : public hunter_attack_t
     add_ammunition();
     add_scope();
 
-    if( p -> glyphs.kill_shot )
+    if ( p -> glyphs.kill_shot )
     {
       cooldown -= 6;
     }
@@ -2845,7 +2845,7 @@ struct kill_shot_t : public hunter_attack_t
   virtual void execute()
   {
     hunter_attack_t::execute();
-    if( result == RESULT_CRIT )
+    if ( result == RESULT_CRIT )
     {
       trigger_cobra_strikes( this );
     }
@@ -2853,7 +2853,7 @@ struct kill_shot_t : public hunter_attack_t
 
   virtual bool ready()
   {
-    if( sim -> target -> health_percentage() > 20 )
+    if ( sim -> target -> health_percentage() > 20 )
       return false;
 
     return hunter_attack_t::ready();
@@ -2864,20 +2864,20 @@ struct kill_shot_t : public hunter_attack_t
 
 struct multi_shot_t : public hunter_attack_t
 {
-  multi_shot_t(player_t* player, const std::string& options_str ) :
-    hunter_attack_t("multi_shot", player, SCHOOL_PHYSICAL, TREE_MARKSMANSHIP )
+  multi_shot_t( player_t* player, const std::string& options_str ) :
+      hunter_attack_t( "multi_shot", player, SCHOOL_PHYSICAL, TREE_MARKSMANSHIP )
   {
     hunter_t* p = player -> cast_hunter();
     assert( p -> ranged_weapon.type != WEAPON_NONE );
 
     static rank_t ranks[] =
-    {
-      { 80, 8, 408, 408, 0, 0.09 },
-      { 74, 7, 333, 333, 0, 0.09 },
-      { 67, 6, 205, 205, 0, 0.09 },
-      { 60, 5, 150, 150, 0, 0.13 },
-      { 0, 0 }
-    };
+      {
+        { 80, 8, 408, 408, 0, 0.09 },
+        { 74, 7, 333, 333, 0, 0.09 },
+        { 67, 6, 205, 205, 0, 0.09 },
+        { 60, 5, 150, 150, 0, 0.13 },
+        { 0, 0 }
+      };
     init_rank( ranks );
 
     parse_options( 0, options_str );
@@ -2906,8 +2906,8 @@ struct multi_shot_t : public hunter_attack_t
 
 struct scatter_shot_t : public hunter_attack_t
 {
-  scatter_shot_t(player_t* player, const std::string& options_str ) :
-    hunter_attack_t("scatter_shot", player, SCHOOL_PHYSICAL, TREE_SURVIVAL )
+  scatter_shot_t( player_t* player, const std::string& options_str ) :
+      hunter_attack_t( "scatter_shot", player, SCHOOL_PHYSICAL, TREE_SURVIVAL )
   {
     hunter_t* p = player -> cast_hunter();
     assert( p -> talents.scatter_shot );
@@ -2942,33 +2942,33 @@ struct serpent_sting_t : public hunter_attack_t
   int force;
 
   serpent_sting_t( player_t* player, const std::string& options_str ) :
-    hunter_attack_t( "serpent_sting", player, SCHOOL_NATURE, TREE_MARKSMANSHIP ),
-    force(0)
+      hunter_attack_t( "serpent_sting", player, SCHOOL_NATURE, TREE_MARKSMANSHIP ),
+      force( 0 )
   {
     hunter_t* p = player -> cast_hunter();
 
     option_t options[] =
-    {
-      { "force", OPT_BOOL, &force },
-      { NULL }
-    };
+      {
+        { "force", OPT_BOOL, &force },
+        { NULL }
+      };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-    {
-      { 79, 12, 0, 0, 1210/5.0, 0.09 },
-      { 73, 11, 0, 0,  990/5.0, 0.09 },
-      { 67, 10, 0, 0,  660/5.0, 0.09 },
-      { 60, 9,  0, 0,  555/5.0, 0.13 },
-      { 0, 0 }
-    };
+      {
+        { 79, 12, 0, 0, 1210/5.0, 0.09 },
+        { 73, 11, 0, 0,  990/5.0, 0.09 },
+        { 67, 10, 0, 0,  660/5.0, 0.09 },
+        { 60, 9,  0, 0,  555/5.0, 0.13 },
+        { 0, 0 }
+      };
     init_rank( ranks );
 
     base_tick_time   = 3.0;
     num_ticks        = p -> glyphs.serpent_sting ? 7 : 5;
     tick_power_mod   = 0.2 / 5.0;
     base_multiplier *= 1.0 + p -> talents.improved_stings * 0.1
-                           + p -> unique_gear -> tier8_2pc * 0.1;
+                       + p -> unique_gear -> tier8_2pc * 0.1;
 
     observer = &( p -> active_serpent_sting );
   }
@@ -2978,7 +2978,7 @@ struct serpent_sting_t : public hunter_attack_t
     hunter_t* p = player -> cast_hunter();
     p -> cancel_sting();
     hunter_attack_t::execute();
-    if( result_is_hit() ) sim -> target -> debuffs.poisoned++;
+    if ( result_is_hit() ) sim -> target -> debuffs.poisoned++;
   }
 
   virtual void last_tick()
@@ -2991,8 +2991,8 @@ struct serpent_sting_t : public hunter_attack_t
   {
     hunter_t* p = player -> cast_hunter();
 
-    if( ! force )
-      if( p -> active_sting() )
+    if ( ! force )
+      if ( p -> active_sting() )
         return false;
 
     return hunter_attack_t::ready();
@@ -3004,7 +3004,7 @@ struct serpent_sting_t : public hunter_attack_t
 struct silencing_shot_t : public hunter_attack_t
 {
   silencing_shot_t( player_t* player, const std::string& options_str ) :
-    hunter_attack_t( "silencing_shot", player, SCHOOL_PHYSICAL, TREE_MARKSMANSHIP )
+      hunter_attack_t( "silencing_shot", player, SCHOOL_PHYSICAL, TREE_MARKSMANSHIP )
   {
     hunter_t* p = player -> cast_hunter();
     assert( p -> talents.silencing_shot );
@@ -3038,18 +3038,18 @@ struct silencing_shot_t : public hunter_attack_t
 struct steady_shot_t : public hunter_attack_t
 {
   steady_shot_t( player_t* player, const std::string& options_str ) :
-    hunter_attack_t( "steady_shot", player, SCHOOL_PHYSICAL, TREE_MARKSMANSHIP )
+      hunter_attack_t( "steady_shot", player, SCHOOL_PHYSICAL, TREE_MARKSMANSHIP )
   {
     hunter_t* p = player -> cast_hunter();
 
     static rank_t ranks[] =
-    {
-      { 77, 4, 252, 252, 0, 0.05 },
-      { 71, 3, 198, 198, 0, 0.05 },
-      { 62, 2, 108, 108, 0, 0.05 },
-      { 50, 1,  45,  45, 0, 0.05 },
-      { 0, 0 }
-    };
+      {
+        { 77, 4, 252, 252, 0, 0.05 },
+        { 71, 3, 198, 198, 0, 0.05 },
+        { 62, 2, 108, 108, 0, 0.05 },
+        { 50, 1,  45,  45, 0, 0.05 },
+        { 0, 0 }
+      };
     init_rank( ranks );
 
     weapon = &( p -> ranged_weapon );
@@ -3079,12 +3079,12 @@ struct steady_shot_t : public hunter_attack_t
   void execute()
   {
     hunter_attack_t::execute();
-    if( result_is_hit() )
+    if ( result_is_hit() )
     {
       trigger_improved_steady_shot( this );
       trigger_tier8_4pc( this ); // FIXME: does it need to hit to proc?
 
-      if( result == RESULT_CRIT )
+      if ( result == RESULT_CRIT )
       {
         trigger_cobra_strikes( this );
         trigger_hunting_party( this );
@@ -3097,7 +3097,7 @@ struct steady_shot_t : public hunter_attack_t
   {
     hunter_t* p = player -> cast_hunter();
     hunter_attack_t::player_buff();
-    if( p -> glyphs.steady_shot && p -> active_sting() )
+    if ( p -> glyphs.steady_shot && p -> active_sting() )
     {
       player_multiplier *= 1.10;
     }
@@ -3128,20 +3128,20 @@ struct aspect_t : public hunter_spell_t
   double viper_multiplier;
 
   aspect_t( player_t* player, const std::string& options_str ) :
-    hunter_spell_t( "aspect", player, SCHOOL_NATURE, TREE_BEAST_MASTERY ),
-    beast_during_bw(0), hawk_always(0), viper_start(5), viper_stop(25),
-    hawk_bonus(0), viper_multiplier(0)
+      hunter_spell_t( "aspect", player, SCHOOL_NATURE, TREE_BEAST_MASTERY ),
+      beast_during_bw( 0 ), hawk_always( 0 ), viper_start( 5 ), viper_stop( 25 ),
+      hawk_bonus( 0 ), viper_multiplier( 0 )
   {
     hunter_t* p = player -> cast_hunter();
 
     option_t options[] =
-    {
-      { "beast_during_bw", OPT_BOOL, &beast_during_bw },
-      { "hawk_always",     OPT_BOOL, &hawk_always },
-      { "viper_start",     OPT_INT,  &viper_start },
-      { "viper_stop",      OPT_INT,  &viper_stop  },
-      { NULL }
-    };
+      {
+        { "beast_during_bw", OPT_BOOL, &beast_during_bw },
+        { "hawk_always",     OPT_BOOL, &hawk_always },
+        { "viper_start",     OPT_INT,  &viper_start },
+        { "viper_stop",      OPT_INT,  &viper_stop  },
+        { NULL }
+      };
     parse_options( options, options_str );
 
     cooldown         = 1.0;
@@ -3150,7 +3150,7 @@ struct aspect_t : public hunter_spell_t
     hawk_bonus       = util_t::ability_rank( p -> level, 300,80, 230,74, 155,68,  120,0 );
     viper_multiplier = 0.50;
 
-    if( p -> talents.aspect_mastery )
+    if ( p -> talents.aspect_mastery )
     {
       hawk_bonus       *= 1.30;
       viper_multiplier += 0.10;
@@ -3161,22 +3161,22 @@ struct aspect_t : public hunter_spell_t
   {
     hunter_t* p = player -> cast_hunter();
 
-    if( hawk_always ) return ASPECT_HAWK;
+    if ( hawk_always ) return ASPECT_HAWK;
 
     double mana_pct = p -> resource_current[ RESOURCE_MANA ] * 100.0 / p -> resource_max[ RESOURCE_MANA ];
 
-    if( p -> active_aspect != ASPECT_VIPER && mana_pct < viper_start )
+    if ( p -> active_aspect != ASPECT_VIPER && mana_pct < viper_start )
     {
       return ASPECT_VIPER;
     }
-    if( p -> active_aspect == ASPECT_VIPER && mana_pct <= viper_stop )
+    if ( p -> active_aspect == ASPECT_VIPER && mana_pct <= viper_stop )
     {
       return ASPECT_VIPER;
     }
-    if( beast_during_bw && p -> active_pet )
+    if ( beast_during_bw && p -> active_pet )
     {
-      hunter_pet_t* pet = (hunter_pet_t*) p -> active_pet -> cast_pet();
-      if( pet -> _buffs.bestial_wrath ) return ASPECT_BEAST;
+      hunter_pet_t* pet = ( hunter_pet_t* ) p -> active_pet -> cast_pet();
+      if ( pet -> _buffs.bestial_wrath ) return ASPECT_BEAST;
     }
     return ASPECT_HAWK;
   }
@@ -3187,25 +3187,25 @@ struct aspect_t : public hunter_spell_t
 
     int aspect = choose_aspect();
 
-    if( aspect != p -> active_aspect )
+    if ( aspect != p -> active_aspect )
     {
-      if( aspect == ASPECT_HAWK )
+      if ( aspect == ASPECT_HAWK )
       {
-        if( sim -> log ) log_t::output( sim, "%s performs Aspect of the Hawk", p -> name() );
+        if ( sim -> log ) log_t::output( sim, "%s performs Aspect of the Hawk", p -> name() );
         p -> active_aspect = ASPECT_HAWK;
         p -> _buffs.aspect_of_the_hawk = hawk_bonus;
         p -> _buffs.aspect_of_the_viper = 0;
       }
-      else if( aspect == ASPECT_VIPER )
+      else if ( aspect == ASPECT_VIPER )
       {
-        if( sim -> log ) log_t::output( sim, "%s performs Aspect of the Viper", p -> name() );
+        if ( sim -> log ) log_t::output( sim, "%s performs Aspect of the Viper", p -> name() );
         p -> active_aspect = ASPECT_VIPER;
         p -> _buffs.aspect_of_the_hawk = 0;
         p -> _buffs.aspect_of_the_viper = viper_multiplier;
       }
-      else if( aspect == ASPECT_BEAST )
+      else if ( aspect == ASPECT_BEAST )
       {
-        if( sim -> log ) log_t::output( sim, "%s performs Aspect of the Beast", p -> name() );
+        if ( sim -> log ) log_t::output( sim, "%s performs Aspect of the Beast", p -> name() );
         p -> active_aspect = ASPECT_BEAST;
         p -> _buffs.aspect_of_the_hawk = 0;
         p -> _buffs.aspect_of_the_viper = 0;
@@ -3232,13 +3232,13 @@ struct aspect_t : public hunter_spell_t
 struct bestial_wrath_t : public hunter_spell_t
 {
   bestial_wrath_t( player_t* player, const std::string& options_str ) :
-    hunter_spell_t( "bestial_wrath", player, SCHOOL_PHYSICAL, TREE_BEAST_MASTERY )
+      hunter_spell_t( "bestial_wrath", player, SCHOOL_PHYSICAL, TREE_BEAST_MASTERY )
   {
     hunter_t* p = player -> cast_hunter();
     assert( p -> talents.bestial_wrath );
 
     base_cost = 0.10 * p -> resource_base[ RESOURCE_MANA ];
-    cooldown = (120 - p -> glyphs.bestial_wrath * 20) * (1 - p -> talents.longevity * 0.1);
+    cooldown = ( 120 - p -> glyphs.bestial_wrath * 20 ) * ( 1 - p -> talents.longevity * 0.1 );
   }
 
   virtual void execute()
@@ -3253,7 +3253,7 @@ struct bestial_wrath_t : public hunter_spell_t
         hunter_t* p = player -> cast_hunter();
         hunter_pet_t* pet = p -> active_pet;
         name = "Bestial Wrath Expiration";
-        if( p -> talents.beast_within )
+        if ( p -> talents.beast_within )
           p -> _buffs.beast_within = 1;
         pet -> _buffs.bestial_wrath = 1;
         sim -> add_event( this, 18.0 );
@@ -3267,7 +3267,7 @@ struct bestial_wrath_t : public hunter_spell_t
       }
     };
 
-    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
     new ( sim ) expiration_t( sim, player );
@@ -3281,7 +3281,7 @@ struct hunters_mark_t : public hunter_spell_t
   double ap_bonus;
 
   hunters_mark_t( player_t* player, const std::string& options_str ) :
-    hunter_spell_t( "hunters_mark", player, SCHOOL_ARCANE, TREE_MARKSMANSHIP ), ap_bonus(0)
+      hunter_spell_t( "hunters_mark", player, SCHOOL_ARCANE, TREE_MARKSMANSHIP ), ap_bonus( 0 )
   {
     hunter_t* p = player -> cast_hunter();
 
@@ -3291,7 +3291,7 @@ struct hunters_mark_t : public hunter_spell_t
     ap_bonus = util_t::ability_rank( p -> level,  300,76,  110,0 );
 
     ap_bonus *= 1.0 + p -> talents.improved_hunters_mark * 0.10
-                  + ( p -> glyphs.hunters_mark ? 0.20 : 0 );
+                + ( p -> glyphs.hunters_mark ? 0.20 : 0 );
   }
 
   virtual void execute()
@@ -3299,7 +3299,7 @@ struct hunters_mark_t : public hunter_spell_t
     struct expiration_t : public event_t
     {
       expiration_t( sim_t* sim, player_t* p, double duration ) :
-        event_t( sim, p )
+          event_t( sim, p )
       {
         name = "Hunter's Mark Expiration";
         sim -> add_event( this, duration );
@@ -3312,7 +3312,7 @@ struct hunters_mark_t : public hunter_spell_t
       }
     };
 
-    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
 
     consume_resource();
 
@@ -3321,19 +3321,19 @@ struct hunters_mark_t : public hunter_spell_t
 
     t -> debuffs.hunters_mark = ap_bonus;
     double duration = 300.0;
-    if( e )
+    if ( e )
     {
       e -> reschedule( duration );
     }
     else
     {
-      e = new ( sim ) expiration_t( sim, player, duration);
+      e = new ( sim ) expiration_t( sim, player, duration );
     }
   }
 
   virtual bool ready()
   {
-    if( ! hunter_spell_t::ready() )
+    if ( ! hunter_spell_t::ready() )
       return false;
 
     return ap_bonus > sim -> target -> debuffs.hunters_mark;
@@ -3345,14 +3345,14 @@ struct hunters_mark_t : public hunter_spell_t
 struct kill_command_t : public hunter_spell_t
 {
   kill_command_t( player_t* player, const std::string& options_str ) :
-    hunter_spell_t( "kill_command", player, SCHOOL_PHYSICAL, TREE_BEAST_MASTERY )
+      hunter_spell_t( "kill_command", player, SCHOOL_PHYSICAL, TREE_BEAST_MASTERY )
   {
     hunter_t* p = player -> cast_hunter();
 
     option_t options[] =
-    {
-      { NULL }
-    };
+      {
+        { NULL }
+      };
     parse_options( options, options_str );
 
     base_cost = p -> resource_base[ RESOURCE_MANA ] * 0.03;
@@ -3363,7 +3363,7 @@ struct kill_command_t : public hunter_spell_t
   virtual void execute()
   {
     hunter_t* p = player -> cast_hunter();
-    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     assert( p -> active_pet -> _buffs.kill_command == 0 );
     p -> active_pet -> aura_gain( "Kill Command" );
     p -> active_pet -> _buffs.kill_command = 3;
@@ -3375,9 +3375,9 @@ struct kill_command_t : public hunter_spell_t
   {
     hunter_t* p = player -> cast_hunter();
 
-    if( ! p -> active_pet )
+    if ( ! p -> active_pet )
       return false;
-    if( p -> active_pet -> _buffs.kill_command != 0 )
+    if ( p -> active_pet -> _buffs.kill_command != 0 )
       return false;
 
     return hunter_spell_t::ready();
@@ -3391,15 +3391,15 @@ struct rapid_fire_t : public hunter_spell_t
   int viper;
 
   rapid_fire_t( player_t* player, const std::string& options_str ) :
-    hunter_spell_t( "rapid_fire", player, SCHOOL_PHYSICAL, TREE_MARKSMANSHIP ), viper(0)
+      hunter_spell_t( "rapid_fire", player, SCHOOL_PHYSICAL, TREE_MARKSMANSHIP ), viper( 0 )
   {
     hunter_t* p = player -> cast_hunter();
 
     option_t options[] =
-    {
-      { "viper", OPT_BOOL, &viper },
-      { NULL }
-    };
+      {
+        { "viper", OPT_BOOL, &viper },
+        { NULL }
+      };
     parse_options( options, options_str );
 
     base_cost = p -> resource_base[ RESOURCE_MANA ] * 0.03;
@@ -3428,7 +3428,7 @@ struct rapid_fire_t : public hunter_spell_t
       }
     };
 
-    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     p -> _buffs.rapid_fire = p -> glyphs.rapid_fire ? 0.48 : 0.40;
     consume_resource();
     update_ready();
@@ -3439,11 +3439,11 @@ struct rapid_fire_t : public hunter_spell_t
   {
     hunter_t* p = player -> cast_hunter();
 
-    if( p -> _buffs.rapid_fire )
+    if ( p -> _buffs.rapid_fire )
       return false;
 
-    if( viper )
-      if( p -> active_aspect != ASPECT_VIPER )
+    if ( viper )
+      if ( p -> active_aspect != ASPECT_VIPER )
         return false;
 
     return hunter_spell_t::ready();
@@ -3457,19 +3457,19 @@ struct readiness_t : public hunter_spell_t
   bool wait_for_rf;
 
   readiness_t( player_t* player, const std::string& options_str ) :
-    hunter_spell_t( "readiness", player, SCHOOL_PHYSICAL, TREE_MARKSMANSHIP ),
-    wait_for_rf(false)
+      hunter_spell_t( "readiness", player, SCHOOL_PHYSICAL, TREE_MARKSMANSHIP ),
+      wait_for_rf( false )
   {
     hunter_t* p = player -> cast_hunter();
     assert( p -> talents.readiness );
 
     option_t options[] =
-    {
-      // Only perform Readiness while Rapid Fire is up, allows the sequence
-      // Rapid Fire, Readiness, Rapid Fire, for better RF uptime
-      { "wait_for_rapid_fire", OPT_BOOL, &wait_for_rf },
-      { NULL }
-    };
+      {
+        // Only perform Readiness while Rapid Fire is up, allows the sequence
+        // Rapid Fire, Readiness, Rapid Fire, for better RF uptime
+        { "wait_for_rapid_fire", OPT_BOOL, &wait_for_rf },
+        { NULL }
+      };
     parse_options( options, options_str );
 
     cooldown = 180;
@@ -3479,9 +3479,9 @@ struct readiness_t : public hunter_spell_t
 
   virtual void execute()
   {
-    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
 
-    for( action_t* a = player -> action_list; a; a = a -> next )
+    for ( action_t* a = player -> action_list; a; a = a -> next )
     {
       a -> cooldown_ready = 0;
     }
@@ -3491,11 +3491,11 @@ struct readiness_t : public hunter_spell_t
 
   virtual bool ready()
   {
-    if( ! hunter_spell_t::ready() )
+    if ( ! hunter_spell_t::ready() )
       return false;
 
     hunter_t* p = player -> cast_hunter();
-    if( wait_for_rf && ! p -> _buffs.rapid_fire )
+    if ( wait_for_rf && ! p -> _buffs.rapid_fire )
       return false;
 
     return true;
@@ -3509,7 +3509,7 @@ struct summon_pet_t : public hunter_spell_t
   std::string pet_name;
 
   summon_pet_t( player_t* player, const std::string& options_str ) :
-    hunter_spell_t( "summon_pet", player, SCHOOL_PHYSICAL, TREE_BEAST_MASTERY )
+      hunter_spell_t( "summon_pet", player, SCHOOL_PHYSICAL, TREE_BEAST_MASTERY )
   {
     hunter_t* p = player -> cast_hunter();
     pet_name = ( options_str.size() > 0 ) ? options_str : p -> summon_pet_str;
@@ -3525,7 +3525,7 @@ struct summon_pet_t : public hunter_spell_t
   virtual bool ready()
   {
     hunter_t* p = player -> cast_hunter();
-    if( p -> active_pet ) return false;
+    if ( p -> active_pet ) return false;
     return true;
   }
 };
@@ -3535,7 +3535,7 @@ struct summon_pet_t : public hunter_spell_t
 struct trueshot_aura_t : public hunter_spell_t
 {
   trueshot_aura_t( player_t* player, const std::string& options_str ) :
-    hunter_spell_t( "trueshot_aura", player, SCHOOL_ARCANE, TREE_MARKSMANSHIP )
+      hunter_spell_t( "trueshot_aura", player, SCHOOL_ARCANE, TREE_MARKSMANSHIP )
   {
     hunter_t* p = player -> cast_hunter();
     assert( p -> talents.trueshot_aura );
@@ -3546,7 +3546,7 @@ struct trueshot_aura_t : public hunter_spell_t
   virtual void execute()
   {
     hunter_t* p = player -> cast_hunter();
-    if( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     p -> _buffs.trueshot_aura = 1;
     sim -> auras.trueshot = 1;
   }
@@ -3563,29 +3563,29 @@ struct trueshot_aura_t : public hunter_spell_t
 action_t* hunter_t::create_action( const std::string& name,
                                    const std::string& options_str )
 {
-  if( name == "auto_shot"             ) return new              auto_shot_t( this, options_str );
-  if( name == "aimed_shot"            ) return new             aimed_shot_t( this, options_str );
-  if( name == "arcane_shot"           ) return new            arcane_shot_t( this, options_str );
-  if( name == "aspect"                ) return new                 aspect_t( this, options_str );
-  if( name == "bestial_wrath"         ) return new          bestial_wrath_t( this, options_str );
-  if( name == "black_arrow"           ) return new            black_arrow_t( this, options_str );
-  if( name == "chimera_shot"          ) return new           chimera_shot_t( this, options_str );
-  if( name == "explosive_shot"        ) return new         explosive_shot_t( this, options_str );
-  if( name == "hunters_mark"          ) return new           hunters_mark_t( this, options_str );
-  if( name == "kill_command"          ) return new           kill_command_t( this, options_str );
-  if( name == "kill_shot"             ) return new              kill_shot_t( this, options_str );
+  if ( name == "auto_shot"             ) return new              auto_shot_t( this, options_str );
+  if ( name == "aimed_shot"            ) return new             aimed_shot_t( this, options_str );
+  if ( name == "arcane_shot"           ) return new            arcane_shot_t( this, options_str );
+  if ( name == "aspect"                ) return new                 aspect_t( this, options_str );
+  if ( name == "bestial_wrath"         ) return new          bestial_wrath_t( this, options_str );
+  if ( name == "black_arrow"           ) return new            black_arrow_t( this, options_str );
+  if ( name == "chimera_shot"          ) return new           chimera_shot_t( this, options_str );
+  if ( name == "explosive_shot"        ) return new         explosive_shot_t( this, options_str );
+  if ( name == "hunters_mark"          ) return new           hunters_mark_t( this, options_str );
+  if ( name == "kill_command"          ) return new           kill_command_t( this, options_str );
+  if ( name == "kill_shot"             ) return new              kill_shot_t( this, options_str );
 //if( name == "mongoose_bite"         ) return new          mongoose_bite_t( this, options_str );
-  if( name == "multi_shot"            ) return new             multi_shot_t( this, options_str );
-  if( name == "rapid_fire"            ) return new             rapid_fire_t( this, options_str );
+  if ( name == "multi_shot"            ) return new             multi_shot_t( this, options_str );
+  if ( name == "rapid_fire"            ) return new             rapid_fire_t( this, options_str );
 //if( name == "raptor_strike"         ) return new          raptor_strike_t( this, options_str );
-  if( name == "readiness"             ) return new              readiness_t( this, options_str );
-  if( name == "scatter_shot"          ) return new           scatter_shot_t( this, options_str );
+  if ( name == "readiness"             ) return new              readiness_t( this, options_str );
+  if ( name == "scatter_shot"          ) return new           scatter_shot_t( this, options_str );
 //if( name == "scorpid_sting"         ) return new          scorpid_sting_t( this, options_str );
-  if( name == "serpent_sting"         ) return new          serpent_sting_t( this, options_str );
-  if( name == "silencing_shot"        ) return new         silencing_shot_t( this, options_str );
-  if( name == "steady_shot"           ) return new            steady_shot_t( this, options_str );
-  if( name == "summon_pet"            ) return new             summon_pet_t( this, options_str );
-  if( name == "trueshot_aura"         ) return new          trueshot_aura_t( this, options_str );
+  if ( name == "serpent_sting"         ) return new          serpent_sting_t( this, options_str );
+  if ( name == "silencing_shot"        ) return new         silencing_shot_t( this, options_str );
+  if ( name == "steady_shot"           ) return new            steady_shot_t( this, options_str );
+  if ( name == "summon_pet"            ) return new             summon_pet_t( this, options_str );
+  if ( name == "trueshot_aura"         ) return new          trueshot_aura_t( this, options_str );
 //if( name == "viper_sting"           ) return new            viper_sting_t( this, options_str );
 
   return player_t::create_action( name, options_str );
@@ -3596,42 +3596,42 @@ action_t* hunter_t::create_action( const std::string& name,
 pet_t* hunter_t::create_pet( const std::string& pet_name )
 {
   // Ferocity
-  if( pet_name == "carrion_bird" ) return new hunter_pet_t( sim, this, pet_name, PET_CARRION_BIRD );
-  if( pet_name == "cat"          ) return new hunter_pet_t( sim, this, pet_name, PET_CAT          );
-  if( pet_name == "core_hound"   ) return new hunter_pet_t( sim, this, pet_name, PET_CORE_HOUND   );
-  if( pet_name == "devilsaur"    ) return new hunter_pet_t( sim, this, pet_name, PET_DEVILSAUR    );
-  if( pet_name == "hyena"        ) return new hunter_pet_t( sim, this, pet_name, PET_HYENA        );
-  if( pet_name == "moth"         ) return new hunter_pet_t( sim, this, pet_name, PET_MOTH         );
-  if( pet_name == "raptor"       ) return new hunter_pet_t( sim, this, pet_name, PET_RAPTOR       );
-  if( pet_name == "spirit_beast" ) return new hunter_pet_t( sim, this, pet_name, PET_SPIRIT_BEAST );
-  if( pet_name == "tallstrider"  ) return new hunter_pet_t( sim, this, pet_name, PET_TALLSTRIDER  );
-  if( pet_name == "wasp"         ) return new hunter_pet_t( sim, this, pet_name, PET_WASP         );
-  if( pet_name == "wolf"         ) return new hunter_pet_t( sim, this, pet_name, PET_WOLF         );
+  if ( pet_name == "carrion_bird" ) return new hunter_pet_t( sim, this, pet_name, PET_CARRION_BIRD );
+  if ( pet_name == "cat"          ) return new hunter_pet_t( sim, this, pet_name, PET_CAT          );
+  if ( pet_name == "core_hound"   ) return new hunter_pet_t( sim, this, pet_name, PET_CORE_HOUND   );
+  if ( pet_name == "devilsaur"    ) return new hunter_pet_t( sim, this, pet_name, PET_DEVILSAUR    );
+  if ( pet_name == "hyena"        ) return new hunter_pet_t( sim, this, pet_name, PET_HYENA        );
+  if ( pet_name == "moth"         ) return new hunter_pet_t( sim, this, pet_name, PET_MOTH         );
+  if ( pet_name == "raptor"       ) return new hunter_pet_t( sim, this, pet_name, PET_RAPTOR       );
+  if ( pet_name == "spirit_beast" ) return new hunter_pet_t( sim, this, pet_name, PET_SPIRIT_BEAST );
+  if ( pet_name == "tallstrider"  ) return new hunter_pet_t( sim, this, pet_name, PET_TALLSTRIDER  );
+  if ( pet_name == "wasp"         ) return new hunter_pet_t( sim, this, pet_name, PET_WASP         );
+  if ( pet_name == "wolf"         ) return new hunter_pet_t( sim, this, pet_name, PET_WOLF         );
 
   // Tenacity
-  if( pet_name == "bear"         ) return new hunter_pet_t( sim, this, pet_name, PET_BEAR         );
-  if( pet_name == "boar"         ) return new hunter_pet_t( sim, this, pet_name, PET_BOAR         );
-  if( pet_name == "crab"         ) return new hunter_pet_t( sim, this, pet_name, PET_CRAB         );
-  if( pet_name == "crocolisk"    ) return new hunter_pet_t( sim, this, pet_name, PET_CROCOLISK    );
-  if( pet_name == "gorilla"      ) return new hunter_pet_t( sim, this, pet_name, PET_GORILLA      );
-  if( pet_name == "rhino"        ) return new hunter_pet_t( sim, this, pet_name, PET_RHINO        );
-  if( pet_name == "scorpid"      ) return new hunter_pet_t( sim, this, pet_name, PET_SCORPID      );
-  if( pet_name == "turtle"       ) return new hunter_pet_t( sim, this, pet_name, PET_TURTLE       );
-  if( pet_name == "warp_stalker" ) return new hunter_pet_t( sim, this, pet_name, PET_WARP_STALKER );
-  if( pet_name == "worm"         ) return new hunter_pet_t( sim, this, pet_name, PET_WORM         );
+  if ( pet_name == "bear"         ) return new hunter_pet_t( sim, this, pet_name, PET_BEAR         );
+  if ( pet_name == "boar"         ) return new hunter_pet_t( sim, this, pet_name, PET_BOAR         );
+  if ( pet_name == "crab"         ) return new hunter_pet_t( sim, this, pet_name, PET_CRAB         );
+  if ( pet_name == "crocolisk"    ) return new hunter_pet_t( sim, this, pet_name, PET_CROCOLISK    );
+  if ( pet_name == "gorilla"      ) return new hunter_pet_t( sim, this, pet_name, PET_GORILLA      );
+  if ( pet_name == "rhino"        ) return new hunter_pet_t( sim, this, pet_name, PET_RHINO        );
+  if ( pet_name == "scorpid"      ) return new hunter_pet_t( sim, this, pet_name, PET_SCORPID      );
+  if ( pet_name == "turtle"       ) return new hunter_pet_t( sim, this, pet_name, PET_TURTLE       );
+  if ( pet_name == "warp_stalker" ) return new hunter_pet_t( sim, this, pet_name, PET_WARP_STALKER );
+  if ( pet_name == "worm"         ) return new hunter_pet_t( sim, this, pet_name, PET_WORM         );
 
   // Cunning
-  if( pet_name == "bat"          ) return new hunter_pet_t( sim, this, pet_name, PET_BAT          );
-  if( pet_name == "bird_of_prey" ) return new hunter_pet_t( sim, this, pet_name, PET_BIRD_OF_PREY );
-  if( pet_name == "chimera"      ) return new hunter_pet_t( sim, this, pet_name, PET_CHIMERA      );
-  if( pet_name == "dragonhawk"   ) return new hunter_pet_t( sim, this, pet_name, PET_DRAGONHAWK   );
-  if( pet_name == "nether_ray"   ) return new hunter_pet_t( sim, this, pet_name, PET_NETHER_RAY   );
-  if( pet_name == "ravager"      ) return new hunter_pet_t( sim, this, pet_name, PET_RAVAGER      );
-  if( pet_name == "serpent"      ) return new hunter_pet_t( sim, this, pet_name, PET_SERPENT      );
-  if( pet_name == "silithid"     ) return new hunter_pet_t( sim, this, pet_name, PET_SILITHID     );
-  if( pet_name == "spider"       ) return new hunter_pet_t( sim, this, pet_name, PET_SPIDER       );
-  if( pet_name == "sporebat"     ) return new hunter_pet_t( sim, this, pet_name, PET_SPOREBAT     );
-  if( pet_name == "wind_serpent" ) return new hunter_pet_t( sim, this, pet_name, PET_WIND_SERPENT );
+  if ( pet_name == "bat"          ) return new hunter_pet_t( sim, this, pet_name, PET_BAT          );
+  if ( pet_name == "bird_of_prey" ) return new hunter_pet_t( sim, this, pet_name, PET_BIRD_OF_PREY );
+  if ( pet_name == "chimera"      ) return new hunter_pet_t( sim, this, pet_name, PET_CHIMERA      );
+  if ( pet_name == "dragonhawk"   ) return new hunter_pet_t( sim, this, pet_name, PET_DRAGONHAWK   );
+  if ( pet_name == "nether_ray"   ) return new hunter_pet_t( sim, this, pet_name, PET_NETHER_RAY   );
+  if ( pet_name == "ravager"      ) return new hunter_pet_t( sim, this, pet_name, PET_RAVAGER      );
+  if ( pet_name == "serpent"      ) return new hunter_pet_t( sim, this, pet_name, PET_SERPENT      );
+  if ( pet_name == "silithid"     ) return new hunter_pet_t( sim, this, pet_name, PET_SILITHID     );
+  if ( pet_name == "spider"       ) return new hunter_pet_t( sim, this, pet_name, PET_SPIDER       );
+  if ( pet_name == "sporebat"     ) return new hunter_pet_t( sim, this, pet_name, PET_SPOREBAT     );
+  if ( pet_name == "wind_serpent" ) return new hunter_pet_t( sim, this, pet_name, PET_WIND_SERPENT );
 
   return 0;
 }
@@ -3642,7 +3642,7 @@ void hunter_t::init()
 {
   player_t::init();
 
-  if( ! pet_list )
+  if ( ! pet_list )
   {
     create_pet( "cat" );
     create_pet( "devilsaur" );
@@ -3756,7 +3756,7 @@ void hunter_t::init_scaling()
   scales_with[ STAT_STRENGTH  ] = 0;
   scales_with[ STAT_INTELLECT ] = 1;
 
-  if( talents.hunter_vs_wild ) scales_with[ STAT_STAMINA ] = 1;
+  if ( talents.hunter_vs_wild ) scales_with[ STAT_STAMINA ] = 1;
 
   scales_with[ STAT_EXPERTISE_RATING ] = 0;
 }
@@ -3774,7 +3774,7 @@ void hunter_t::reset()
   active_scorpid_sting  = 0;
   active_serpent_sting  = 0;
   active_viper_sting    = 0;
-  
+
   _buffs.reset();
   _cooldowns.reset();
   _expirations.reset();
@@ -3793,10 +3793,10 @@ double hunter_t::composite_attack_power()
   ap += _buffs.furious_howl;
   uptimes_furious_howl -> update( _buffs.furious_howl != 0 );
 
-  if( _buffs.expose_weakness ) ap += agility() * 0.25;
+  if ( _buffs.expose_weakness ) ap += agility() * 0.25;
   uptimes_expose_weakness -> update( _buffs.expose_weakness != 0 );
 
-  if( _buffs.call_of_the_wild )
+  if ( _buffs.call_of_the_wild )
     ap *= 1.1;
 
   return ap;
@@ -3808,13 +3808,13 @@ void hunter_t::regen( double periodicity )
 {
   player_t::regen( periodicity );
 
-  if( _buffs.aspect_of_the_viper )
+  if ( _buffs.aspect_of_the_viper )
   {
     double aspect_of_the_viper_regen = periodicity * 0.04 * resource_max[ RESOURCE_MANA ] / 3.0;
 
     resource_gain( RESOURCE_MANA, aspect_of_the_viper_regen, gains_viper_aspect_passive );
   }
-  if( _buffs.rapid_fire && talents.rapid_recuperation )
+  if ( _buffs.rapid_fire && talents.rapid_recuperation )
   {
     double rr_regen = periodicity * 0.02 * talents.rapid_recuperation * resource_max[ RESOURCE_MANA ] / 3.0;
 
@@ -3828,7 +3828,7 @@ bool hunter_t::get_talent_trees( std::vector<int*>& beastmastery,
                                  std::vector<int*>& marksmanship,
                                  std::vector<int*>& survival )
 {
-    talent_translation_t translation[][3] =
+  talent_translation_t translation[][3] =
     {
       { {  1, &( talents.improved_aspect_of_the_hawk ) }, {  1, NULL                                      }, {  1, &( talents.improved_tracking        ) } },
       { {  2, NULL                                     }, {  2, &( talents.focused_aim                  ) }, {  2, NULL                                  } },
@@ -3861,7 +3861,7 @@ bool hunter_t::get_talent_trees( std::vector<int*>& beastmastery,
       { {  0, NULL                                     }, {  0, NULL                                      }, {  0, NULL                                  } }
     };
 
-    return player_t::get_talent_trees( beastmastery, marksmanship, survival, translation );
+  return player_t::get_talent_trees( beastmastery, marksmanship, survival, translation );
 }
 
 
@@ -3871,98 +3871,98 @@ bool hunter_t::parse_option( const std::string& name,
                              const std::string& value )
 {
   option_t options[] =
-  {
-    // @option_doc loc=skip
-    { "aimed_shot",                        OPT_INT, &( talents.aimed_shot                   ) },
-    { "animal_handler",                    OPT_INT, &( talents.animal_handler               ) },
-    { "aspect_mastery",                    OPT_INT, &( talents.aspect_mastery               ) },
-    { "barrage",                           OPT_INT, &( talents.barrage                      ) },
-    { "beast_mastery",                     OPT_INT, &( talents.beast_mastery                ) },
-    { "beast_within",                      OPT_INT, &( talents.beast_within                 ) },
-    { "bestial_discipline",                OPT_INT, &( talents.bestial_discipline           ) },
-    { "bestial_wrath",                     OPT_INT, &( talents.bestial_wrath                ) },
-    { "careful_aim",                       OPT_INT, &( talents.careful_aim                  ) },
-    { "chimera_shot",                      OPT_INT, &( talents.chimera_shot                 ) },
-    { "cobra_strikes",                     OPT_INT, &( talents.cobra_strikes                ) },
-    { "combat_experience",                 OPT_INT, &( talents.combat_experience            ) },
-    { "efficiency",                        OPT_INT, &( talents.efficiency                   ) },
-    { "explosive_shot",                    OPT_INT, &( talents.explosive_shot               ) },
-    { "expose_weakness",                   OPT_INT, &( talents.expose_weakness              ) },
-    { "ferocious_inspiration",             OPT_INT, &( talents.ferocious_inspiration        ) },
-    { "ferocity",                          OPT_INT, &( talents.ferocity                     ) },
-    { "focused_aim",                       OPT_INT, &( talents.focused_aim                  ) },
-    { "focused_fire",                      OPT_INT, &( talents.focused_fire                 ) },
-    { "frenzy",                            OPT_INT, &( talents.frenzy                       ) },
-    { "go_for_the_throat",                 OPT_INT, &( talents.go_for_the_throat            ) },
-    { "hunter_vs_wild",                    OPT_INT, &( talents.hunter_vs_wild               ) },
-    { "hunting_party",                     OPT_INT, &( talents.hunting_party                ) },
-    { "improved_arcane_shot",              OPT_INT, &( talents.improved_arcane_shot         ) },
-    { "improved_aspect_of_the_hawk",       OPT_INT, &( talents.improved_aspect_of_the_hawk  ) },
-    { "improved_barrage",                  OPT_INT, &( talents.improved_barrage             ) },
-    { "improved_hunters_mark",             OPT_INT, &( talents.improved_hunters_mark        ) },
-    { "improved_steady_shot",              OPT_INT, &( talents.improved_steady_shot         ) },
-    { "improved_stings",                   OPT_INT, &( talents.improved_stings              ) },
-    { "improved_tracking",                 OPT_INT, &( talents.improved_tracking            ) },
-    { "invigoration",                      OPT_INT, &( talents.invigoration                 ) },
-    { "killer_instinct",                   OPT_INT, &( talents.killer_instinct              ) },
-    { "kindred_spirits",                   OPT_INT, &( talents.kindred_spirits              ) },
-    { "lethal_shots",                      OPT_INT, &( talents.lethal_shots                 ) },
-    { "lightning_reflexes",                OPT_INT, &( talents.lightning_reflexes           ) },
-    { "lock_and_load",                     OPT_INT, &( talents.lock_and_load                ) },
-    { "longevity",                         OPT_INT, &( talents.longevity                    ) },
-    { "marked_for_death",                  OPT_INT, &( talents.marked_for_death             ) },
-    { "master_marksman",                   OPT_INT, &( talents.master_marksman              ) },
-    { "master_tactician",                  OPT_INT, &( talents.master_tactician             ) },
-    { "mortal_shots",                      OPT_INT, &( talents.mortal_shots                 ) },
-    { "noxious_stings",                    OPT_INT, &( talents.noxious_stings               ) },
-    { "piercing_shots",                    OPT_INT, &( talents.piercing_shots               ) },
-    { "ranged_weapon_specialization",      OPT_INT, &( talents.ranged_weapon_specialization ) },
-    { "rapid_killing",                     OPT_INT, &( talents.rapid_killing                ) },
-    { "rapid_recuperation",                OPT_INT, &( talents.rapid_recuperation           ) },
-    { "readiness",                         OPT_INT, &( talents.readiness                    ) },
-    { "resourcefulness",                   OPT_INT, &( talents.resourcefulness              ) },
-    { "savage_strikes",                    OPT_INT, &( talents.savage_strikes               ) },
-    { "scatter_shot",                      OPT_INT, &( talents.scatter_shot                 ) },
-    { "serpents_swiftness",                OPT_INT, &( talents.serpents_swiftness           ) },
-    { "silencing_shot",                    OPT_INT, &( talents.silencing_shot               ) },
-    { "sniper_training",                   OPT_INT, &( talents.sniper_training              ) },
-    { "survival_instincts",                OPT_INT, &( talents.survival_instincts           ) },
-    { "survival_tactics",                  OPT_INT, &( talents.survival_tactics             ) },
-    { "survivalist",                       OPT_INT, &( talents.survivalist                  ) },
-    { "thrill_of_the_hunt",                OPT_INT, &( talents.thrill_of_the_hunt           ) },
-    { "tnt",                               OPT_INT, &( talents.tnt                          ) },
-    { "trueshot_aura",                     OPT_INT, &( talents.trueshot_aura                ) },
-    { "unleashed_fury",                    OPT_INT, &( talents.unleashed_fury               ) },
-    { "wild_quiver",                       OPT_INT, &( talents.wild_quiver                  ) },
-    // @option_doc loc=player/hunter/glyphs title="Glyphs"
-    { "glyph_aimed_shot",                  OPT_BOOL, &( glyphs.aimed_shot                   ) },
-    { "glyph_aspect_of_the_viper",         OPT_BOOL, &( glyphs.aspect_of_the_viper          ) },
-    { "glyph_bestial_wrath",               OPT_BOOL, &( glyphs.bestial_wrath                ) },
-    { "glyph_chimera_shot",                OPT_BOOL, &( glyphs.chimera_shot                 ) },
-    { "glyph_explosive_shot",              OPT_BOOL, &( glyphs.explosive_shot               ) },
-    { "glyph_hunters_mark",                OPT_BOOL, &( glyphs.hunters_mark                 ) },
-    { "glyph_improved_aspect_of_the_hawk", OPT_BOOL, &( glyphs.improved_aspect_of_the_hawk  ) },
-    { "glyph_kill_shot",                   OPT_BOOL, &( glyphs.kill_shot                    ) },
-    { "glyph_rapid_fire",                  OPT_BOOL, &( glyphs.rapid_fire                   ) },
-    { "glyph_serpent_sting",               OPT_BOOL, &( glyphs.serpent_sting                ) },
-    { "glyph_steady_shot",                 OPT_BOOL, &( glyphs.steady_shot                  ) },
-    { "glyph_trueshot_aura",               OPT_BOOL, &( glyphs.trueshot_aura                ) },
-    // @option_doc loc=player/hunter/misc title="Misc"
-    { "ammo_dps",                          OPT_FLT,    &( ammo_dps                          ) },
-    { "quiver_haste",                      OPT_FLT,    &( quiver_haste                      ) },
-    { "summon_pet",                        OPT_STRING, &( summon_pet_str                    ) },
+    {
+      // @option_doc loc=skip
+      { "aimed_shot",                        OPT_INT, &( talents.aimed_shot                   ) },
+      { "animal_handler",                    OPT_INT, &( talents.animal_handler               ) },
+      { "aspect_mastery",                    OPT_INT, &( talents.aspect_mastery               ) },
+      { "barrage",                           OPT_INT, &( talents.barrage                      ) },
+      { "beast_mastery",                     OPT_INT, &( talents.beast_mastery                ) },
+      { "beast_within",                      OPT_INT, &( talents.beast_within                 ) },
+      { "bestial_discipline",                OPT_INT, &( talents.bestial_discipline           ) },
+      { "bestial_wrath",                     OPT_INT, &( talents.bestial_wrath                ) },
+      { "careful_aim",                       OPT_INT, &( talents.careful_aim                  ) },
+      { "chimera_shot",                      OPT_INT, &( talents.chimera_shot                 ) },
+      { "cobra_strikes",                     OPT_INT, &( talents.cobra_strikes                ) },
+      { "combat_experience",                 OPT_INT, &( talents.combat_experience            ) },
+      { "efficiency",                        OPT_INT, &( talents.efficiency                   ) },
+      { "explosive_shot",                    OPT_INT, &( talents.explosive_shot               ) },
+      { "expose_weakness",                   OPT_INT, &( talents.expose_weakness              ) },
+      { "ferocious_inspiration",             OPT_INT, &( talents.ferocious_inspiration        ) },
+      { "ferocity",                          OPT_INT, &( talents.ferocity                     ) },
+      { "focused_aim",                       OPT_INT, &( talents.focused_aim                  ) },
+      { "focused_fire",                      OPT_INT, &( talents.focused_fire                 ) },
+      { "frenzy",                            OPT_INT, &( talents.frenzy                       ) },
+      { "go_for_the_throat",                 OPT_INT, &( talents.go_for_the_throat            ) },
+      { "hunter_vs_wild",                    OPT_INT, &( talents.hunter_vs_wild               ) },
+      { "hunting_party",                     OPT_INT, &( talents.hunting_party                ) },
+      { "improved_arcane_shot",              OPT_INT, &( talents.improved_arcane_shot         ) },
+      { "improved_aspect_of_the_hawk",       OPT_INT, &( talents.improved_aspect_of_the_hawk  ) },
+      { "improved_barrage",                  OPT_INT, &( talents.improved_barrage             ) },
+      { "improved_hunters_mark",             OPT_INT, &( talents.improved_hunters_mark        ) },
+      { "improved_steady_shot",              OPT_INT, &( talents.improved_steady_shot         ) },
+      { "improved_stings",                   OPT_INT, &( talents.improved_stings              ) },
+      { "improved_tracking",                 OPT_INT, &( talents.improved_tracking            ) },
+      { "invigoration",                      OPT_INT, &( talents.invigoration                 ) },
+      { "killer_instinct",                   OPT_INT, &( talents.killer_instinct              ) },
+      { "kindred_spirits",                   OPT_INT, &( talents.kindred_spirits              ) },
+      { "lethal_shots",                      OPT_INT, &( talents.lethal_shots                 ) },
+      { "lightning_reflexes",                OPT_INT, &( talents.lightning_reflexes           ) },
+      { "lock_and_load",                     OPT_INT, &( talents.lock_and_load                ) },
+      { "longevity",                         OPT_INT, &( talents.longevity                    ) },
+      { "marked_for_death",                  OPT_INT, &( talents.marked_for_death             ) },
+      { "master_marksman",                   OPT_INT, &( talents.master_marksman              ) },
+      { "master_tactician",                  OPT_INT, &( talents.master_tactician             ) },
+      { "mortal_shots",                      OPT_INT, &( talents.mortal_shots                 ) },
+      { "noxious_stings",                    OPT_INT, &( talents.noxious_stings               ) },
+      { "piercing_shots",                    OPT_INT, &( talents.piercing_shots               ) },
+      { "ranged_weapon_specialization",      OPT_INT, &( talents.ranged_weapon_specialization ) },
+      { "rapid_killing",                     OPT_INT, &( talents.rapid_killing                ) },
+      { "rapid_recuperation",                OPT_INT, &( talents.rapid_recuperation           ) },
+      { "readiness",                         OPT_INT, &( talents.readiness                    ) },
+      { "resourcefulness",                   OPT_INT, &( talents.resourcefulness              ) },
+      { "savage_strikes",                    OPT_INT, &( talents.savage_strikes               ) },
+      { "scatter_shot",                      OPT_INT, &( talents.scatter_shot                 ) },
+      { "serpents_swiftness",                OPT_INT, &( talents.serpents_swiftness           ) },
+      { "silencing_shot",                    OPT_INT, &( talents.silencing_shot               ) },
+      { "sniper_training",                   OPT_INT, &( talents.sniper_training              ) },
+      { "survival_instincts",                OPT_INT, &( talents.survival_instincts           ) },
+      { "survival_tactics",                  OPT_INT, &( talents.survival_tactics             ) },
+      { "survivalist",                       OPT_INT, &( talents.survivalist                  ) },
+      { "thrill_of_the_hunt",                OPT_INT, &( talents.thrill_of_the_hunt           ) },
+      { "tnt",                               OPT_INT, &( talents.tnt                          ) },
+      { "trueshot_aura",                     OPT_INT, &( talents.trueshot_aura                ) },
+      { "unleashed_fury",                    OPT_INT, &( talents.unleashed_fury               ) },
+      { "wild_quiver",                       OPT_INT, &( talents.wild_quiver                  ) },
+      // @option_doc loc=player/hunter/glyphs title="Glyphs"
+      { "glyph_aimed_shot",                  OPT_BOOL, &( glyphs.aimed_shot                   ) },
+      { "glyph_aspect_of_the_viper",         OPT_BOOL, &( glyphs.aspect_of_the_viper          ) },
+      { "glyph_bestial_wrath",               OPT_BOOL, &( glyphs.bestial_wrath                ) },
+      { "glyph_chimera_shot",                OPT_BOOL, &( glyphs.chimera_shot                 ) },
+      { "glyph_explosive_shot",              OPT_BOOL, &( glyphs.explosive_shot               ) },
+      { "glyph_hunters_mark",                OPT_BOOL, &( glyphs.hunters_mark                 ) },
+      { "glyph_improved_aspect_of_the_hawk", OPT_BOOL, &( glyphs.improved_aspect_of_the_hawk  ) },
+      { "glyph_kill_shot",                   OPT_BOOL, &( glyphs.kill_shot                    ) },
+      { "glyph_rapid_fire",                  OPT_BOOL, &( glyphs.rapid_fire                   ) },
+      { "glyph_serpent_sting",               OPT_BOOL, &( glyphs.serpent_sting                ) },
+      { "glyph_steady_shot",                 OPT_BOOL, &( glyphs.steady_shot                  ) },
+      { "glyph_trueshot_aura",               OPT_BOOL, &( glyphs.trueshot_aura                ) },
+      // @option_doc loc=player/hunter/misc title="Misc"
+      { "ammo_dps",                          OPT_FLT,    &( ammo_dps                          ) },
+      { "quiver_haste",                      OPT_FLT,    &( quiver_haste                      ) },
+      { "summon_pet",                        OPT_STRING, &( summon_pet_str                    ) },
 
-    { NULL, OPT_UNKNOWN }
-  };
+      { NULL, OPT_UNKNOWN }
+    };
 
-  if( name.empty() )
+  if ( name.empty() )
   {
     player_t::parse_option( std::string(), std::string() );
     option_t::print( sim -> output_file, options );
     return false;
   }
 
-  if( player_t::parse_option( name, value ) ) return true;
+  if ( player_t::parse_option( name, value ) ) return true;
 
   return option_t::parse( sim, options, name, value );
 }

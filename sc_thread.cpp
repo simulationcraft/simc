@@ -23,8 +23,7 @@ void thread_t::launch( sim_t* sim )
 // thread_t::wait ===========================================================
 
 void thread_t::wait( sim_t* sim )
-{
-}
+{}
 
 #elif defined( __MINGW32__ )
 
@@ -39,7 +38,7 @@ void thread_t::wait( sim_t* sim )
 
 static unsigned WINAPI thread_execute( LPVOID sim )
 {
-  ( (sim_t*) sim ) -> iterate();
+  ( ( sim_t* ) sim ) -> iterate();
 
   return 0;
 }
@@ -49,18 +48,18 @@ static unsigned WINAPI thread_execute( LPVOID sim )
 void thread_t::launch( sim_t* sim )
 {
   HANDLE* handle = new HANDLE();
-  sim -> thread_handle = (void*) handle;
+  sim -> thread_handle = ( void* ) handle;
   //MinGW wiki suggests using _beginthreadex over CreateThread
-  *handle = (HANDLE)_beginthreadex( NULL, 0, thread_execute, (void*) sim, 0, NULL);
+  *handle = ( HANDLE )_beginthreadex( NULL, 0, thread_execute, ( void* ) sim, 0, NULL );
 }
 
 // thread_t::wait ===========================================================
 
 void thread_t::wait( sim_t* sim )
 {
-  HANDLE* handle = (HANDLE*) ( sim -> thread_handle );
+  HANDLE* handle = ( HANDLE* ) ( sim -> thread_handle );
   WaitForSingleObject( *handle, INFINITE );
-  if( handle )
+  if ( handle )
     delete handle;
   sim -> thread_handle = NULL;
 }
@@ -77,7 +76,7 @@ void thread_t::wait( sim_t* sim )
 
 static DWORD WINAPI thread_execute( __in LPVOID sim )
 {
-  ( (sim_t*) sim ) -> iterate();
+  ( ( sim_t* ) sim ) -> iterate();
 
   return 0;
 }
@@ -87,17 +86,17 @@ static DWORD WINAPI thread_execute( __in LPVOID sim )
 void thread_t::launch( sim_t* sim )
 {
   HANDLE* handle = new HANDLE();
-  sim -> thread_handle = (void*) handle;
-  *handle = CreateThread( NULL, 0, thread_execute, (void*) sim, 0, NULL );
+  sim -> thread_handle = ( void* ) handle;
+  *handle = CreateThread( NULL, 0, thread_execute, ( void* ) sim, 0, NULL );
 }
 
 // thread_t::wait ===========================================================
 
 void thread_t::wait( sim_t* sim )
 {
-  HANDLE* handle = (HANDLE*) ( sim -> thread_handle );
+  HANDLE* handle = ( HANDLE* ) ( sim -> thread_handle );
   WaitForSingleObject( *handle, INFINITE );
-  if( handle )
+  if ( handle )
     delete handle;
   sim -> thread_handle = NULL;
 }
@@ -114,7 +113,7 @@ void thread_t::wait( sim_t* sim )
 
 static void* thread_execute( void* sim )
 {
-  ( (sim_t*) sim ) -> iterate();
+  ( ( sim_t* ) sim ) -> iterate();
 
   return NULL;
 }
@@ -124,17 +123,17 @@ static void* thread_execute( void* sim )
 void thread_t::launch( sim_t* sim )
 {
   pthread_t* pthread = new pthread_t();
-  sim -> thread_handle = (void*) pthread;
-  pthread_create( pthread, NULL, thread_execute, (void*) sim );
+  sim -> thread_handle = ( void* ) pthread;
+  pthread_create( pthread, NULL, thread_execute, ( void* ) sim );
 }
 
 // thread_t::wait ===========================================================
 
 void thread_t::wait( sim_t* sim )
 {
-  pthread_t* pthread = (pthread_t*) ( sim -> thread_handle );
+  pthread_t* pthread = ( pthread_t* ) ( sim -> thread_handle );
   pthread_join( *pthread, NULL );
-  if( pthread )
+  if ( pthread )
     delete pthread;
   sim -> thread_handle = NULL;
 }
