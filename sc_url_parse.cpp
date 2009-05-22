@@ -489,7 +489,7 @@ int  getSetTier(std::string setName);
 
 
 // call players parse option
-bool player_parse_option(sim_t* sim, std::string& name, const std::string& value){
+bool player_parse_option(sim_t* sim, const std::string& name, const std::string& value){
     if (!sim->active_player) return false;
 	bool ok=sim->active_player->parse_option(name,value);
     if (debug&&ok) printf("%s=%s\n",name.c_str(),value.c_str());
