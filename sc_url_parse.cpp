@@ -4,7 +4,7 @@
 // 1=regular debug
 // 2=more detailed debug, each item stat shown
 // 3=each URL read shown
-const int debug=3;
+const int debug=0;
 
 
 
@@ -908,7 +908,6 @@ bool parseArmory( sim_t* sim, std::string URL, bool parseName, bool parseTalents
       node= getNodeOne( src2,"talentGroup",2 );
     }
     optionStr+= chkValue( node, "talentSpec.value", "talents=http://worldofwarcraft?encoded=" );
-    if ( debug ) printf( "Parsing talents: %s", node.c_str() ); ;
   }
 
   // submit options so far, in order to create player, because following parses may need to call player->parse
