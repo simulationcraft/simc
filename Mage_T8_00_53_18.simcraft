@@ -3,37 +3,53 @@
 mage=Mage_T8_00_53_18
 level=80
 talents=http://ptr.wowhead.com/?talent=oZfVc0RhIuVubhstbIccoc
-actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/arcane_brilliance/molten_armor
+actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/arcane_brilliance
 actions+=/mana_gem,trigger=1000/speed_potion
 actions+=/scorch,debuff=1/mirror_image/combustion/icy_veins/living_bomb/pyroblast,hot_streak=1/frostfire_bolt
 actions+=/evocation
 
-# Gear: http://www.chardev.org/?template=182729 (+ Flare of the Heavens)
-gear_strength=10
-gear_agility=10
-gear_stamina=915
-gear_intellect=888
-gear_spirit=382
-gear_attack_power=0
-gear_expertise_rating=0
-gear_armor_penetration_rating=0
-gear_spell_power=2205  enchant_spell_power=75
-gear_hit_rating=293
-gear_crit_rating=566
-gear_haste_rating=514
-
-# Set Bonuses
+# Gear
+# http://www.wowhead.com/?compare=46130:46132:46133:46134:45133:45242:45446:45557:40399:45518:45308:45457:45294
+# http://eu.wowarmory.com/item-info.xml?i=45497
+# http://eu.wowarmory.com/item-info.xml?i=45537
+# http://eu.wowarmory.com/item-info.xml?i=45495
+gear_stamina=948
+gear_intellect=913
+gear_spirit=346
+gear_spell_power=1763
+gear_hit_rating=285
+gear_crit_rating=686 
+gear_haste_rating=376
 tier8_2pc=1
 tier8_4pc=1
-
-# Meta Gem
-chaotic_skyflare=1
-
-# Item Procs
+eye_of_the_broodmother=1
 flare_of_the_heavens=1
-illustration_of_the_dragon_soul=1
+
+# Gems and Socket Bonuses
+# http://www.wowhead.com/?compare=41285:39998:39998:39998:39998:39998:39998:40048:40048:40048:40048:40048:40048:40026:40026:40026:40026:40026:40026:40026
+chaotic_skyflare=1
+gem_intellect=4 
+gem_spirit=64
+gem_spell_power=257
+gem_hit_rating=4 
+gem_crit_rating=81
+gem_haste_rating=0
+
+# Enchants (including 75 spell_power profession bonus)
+enchant_strength=10
+enchant_agility=10
+enchant_stamina=10
+enchant_intellect=10
+enchant_spirit=30
+enchant_spell_power=320
+enchant_hit_rating=12
+enchant_crit_rating=47
+enchant_haste_rating=23 
 
 # Glyphs
 glyph_molten_armor=1
 glyph_frostfire=1
 glyph_living_bomb=1
+
+# Armor Type
+armor_type=molten
