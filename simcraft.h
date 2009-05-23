@@ -1624,7 +1624,7 @@ struct proc_t
 struct uptime_t
 {
   std::string name_str;
-  int up, down;
+  uint64_t up, down;
   uptime_t* next;
   uptime_t( const std::string& n ) : name_str( n ), up( 0 ), down( 0 ) {}
   void   update( bool is_up ) { if ( is_up ) up++; else down++; }
