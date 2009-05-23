@@ -585,7 +585,7 @@ void  addSetInfo( urlSplit_t& aURL, std::string setName, unsigned int setPieces,
   if ( !aURL.sim->active_player ) return;
   unsigned int tier= getSetTier( setName );
   // set tier option if any
-  if ( setPieces>aURL.setPieces[tier] )
+  if ( (tier>0)&& (setPieces>aURL.setPieces[tier]) )
   {
     char setOption[100];
     std::string strOption, strValue;
@@ -1040,14 +1040,11 @@ unsigned int  getSetTier( std::string setName )
                            //  DK sets
                            {"scourgeborne",7},
                            {"darkruned",8},
-                           //  sets
-                           {"",7},
-                           {"",8},
                            //end of list
                            {"",0}
                          };
   // find set tier based on name
-  unsigned int tier=6;
+  unsigned int tier=0;
   setName=" "+tolower(setName)+" ";
   for ( size_t i=0; setTiers[i].tier; i++ ){
     std::string tierName=" "+setTiers[i].setName+" ";
