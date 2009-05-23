@@ -559,12 +559,12 @@ struct rng_pre_fill_t : public rng_normalized_t
 
 struct distribution_t
 {
-  int size, total_count;
+  int size, last, total_count;
   double actual, expected;
   std::vector<double> chances, values, counts;
 
   distribution_t( int s ) :
-      size( s ), total_count( 0 ), actual( 0 ), expected( 0 )
+    size( s ), last( s-1 ), total_count( 0 ), actual( 0 ), expected( 0 )
   {
     chances.insert( chances.begin(), size, 0.0 );
     values .insert( values .begin(), size, 0.0 );
@@ -578,7 +578,7 @@ struct distribution_t
     int best_bucket = -1;
     double best_diff = 0;
 
-    for ( int i=0; i < size; i++ )
+    for ( int i=0; i <= last; i++ )
     {
       if ( counts[ i ] < total_count * chances[ i ] )
       {
@@ -592,7 +592,7 @@ struct distribution_t
       }
     }
 
-    if ( best_bucket < 0 ) best_bucket = size-1;
+    if ( best_bucket < 0 ) best_bucket = last;
 
     actual += values[ best_bucket ];
     counts[ best_bucket ]++;
@@ -603,6 +603,13 @@ struct distribution_t
   virtual double next_value()
   {
     return values[ next_bucket() ];
+  }
+
+  virtual bool verify()
+  {
+    double sum=0;
+    for( int i=0; i <= last; i++ ) sum += chances[ i ];
+    return fabs( sum - 1.0 ) < 0.001;
   }
 };
 
@@ -655,25 +662,26 @@ struct roll_distribution_t : public distribution_t
   int num_rolls;
   double avg_fill;
 
-  roll_distribution_t() : distribution_t( 100 ), distance( 0 ), num_rolls( 0 ), avg_fill( 0 ) {}
+  roll_distribution_t() : distribution_t( 200 ), distance( 0 ), num_rolls( 0 ), avg_fill( 0 ) {}
 
   virtual void fill()
   {
     double avg_expected = expected / num_rolls;
     if ( avg_fill > 0 && fabs( avg_expected - avg_fill ) < 0.01 ) return;
     double remainder = 1.0;
-    for ( int i=0; i < size-1; i++ )
+    for ( int i=0; i < size; i++ )
     {
+      last = i;
       values [ i ] = 1.0 - avg_expected * ( i + 1 );
       chances[ i ] = remainder * avg_expected;
       remainder -= chances[ i ];
+      if( remainder < 0.001 ) break;
     }
-    values [ size-1 ] = 1.0 - avg_expected * size;
-    chances[ size-1 ] = remainder;
+    chances[ last ] += remainder;
     avg_fill = avg_expected;
   }
 
-  virtual int next_roll( double chance )
+  virtual int reach( double chance )
   {
     num_rolls++;
     expected += chance;
@@ -682,11 +690,7 @@ struct roll_distribution_t : public distribution_t
       fill();
       distance = next_bucket();
     }
-    if ( distance == 0 )
-    {
-      return 1;
-    }
-    return 0;
+    return ( distance == 0 ) ? 1 : 0;
   }
 };
 
@@ -713,7 +717,7 @@ struct rng_distance_simple_t : public rng_normalized_t
     if ( chance >= 1 ) return 1;
     num_roll++;
     expected_roll += chance;
-    if ( roll_d.next_roll( chance ) )
+    if ( roll_d.reach( chance ) )
     {
       actual_roll++;
       return 1;
@@ -764,7 +768,7 @@ struct rng_distance_bands_t : public rng_distance_simple_t
     num_roll++;
     expected_roll += chance;
     int band = ( int ) floor( chance * 9.9999 );
-    if ( roll_bands[ band ].next_roll( chance ) )
+    if ( roll_bands[ band ].reach( chance ) )
     {
       actual_roll++;
       return 1;
