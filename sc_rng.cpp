@@ -561,14 +561,15 @@ struct distribution_t
 {
   int size, last, total_count;
   double actual, expected;
-  std::vector<double> chances, values, counts;
+  std::vector<double> chances, values;
+  std::vector<int> counts;
 
   distribution_t( int s ) :
     size( s ), last( s-1 ), total_count( 0 ), actual( 0 ), expected( 0 )
   {
     chances.insert( chances.begin(), size, 0.0 );
     values .insert( values .begin(), size, 0.0 );
-    counts .insert( counts .begin(), size, 0.0 );
+    counts .insert( counts .begin(), size, 0   );
   }
 
   virtual int next_bucket()
@@ -605,11 +606,27 @@ struct distribution_t
     return values[ next_bucket() ];
   }
 
-  virtual bool verify()
+  virtual void verify( rng_t* rng )
   {
+    printf( "distribution_t::verify:\n" );
     double sum=0;
     for( int i=0; i <= last; i++ ) sum += chances[ i ];
-    return fabs( sum - 1.0 ) < 0.001;
+    printf( "\tsum: %f\n", sum );
+    std::vector<int> rng_counts;
+    rng_counts.insert( rng_counts.begin(), size, 0.0 );
+    for( int i=0; i < total_count; i++ )
+    {
+      double p = rng -> real();
+      int index=0;
+      while( index < last ) 
+      {
+	p -= chances[ index ];
+	if( p < 0 ) break;
+	index++;
+      }
+      rng_counts[ index ]++;
+    }
+    for( int i=0; i <= last; i++ ) printf( "\t%d : %d\n", counts[ i ], rng_counts[ i ] );
   }
 };
 
@@ -811,9 +828,6 @@ rng_t* rng_t::create( sim_t*             sim,
 int main( int argc, char** argv )
 {
   range_distribution_t range_d;
-  gauss_distribution_t gauss_d;
-  roll_distribution_t roll_d;
-
   printf( "\nrange:\n" );
   for ( int i=1; i <= 100; i++ )
   {
@@ -821,6 +835,7 @@ int main( int argc, char** argv )
     if ( i % 10 == 0 ) printf( "\n" );
   }
 
+  gauss_distribution_t gauss_d;
   printf( "\ngauss:\n" );
   for ( int i=1; i <= 100; i++ )
   {
@@ -828,12 +843,30 @@ int main( int argc, char** argv )
     if ( i % 10 == 0 ) printf( "\n" );
   }
 
+  roll_distribution_t roll_d;
   printf( "\nroll:\n" );
   for ( int i=1; i <= 100; i++ )
   {
-    printf( "  %d", roll_d.next_roll( 0.30 ) );
+    printf( "  %d", roll_d.reach( 0.30 ) );
     if ( i % 10 == 0 ) printf( "\n" );
   }
+
+  rng_t* rng = new rng_sfmt_t( "global", false, false );
+
+  roll_distribution_t roll_d_05;
+  printf( "\nroll 5%%:\n" );
+  for( int i=0; i < 1000000; i++ ) roll_d_05.reach( 0.05 );
+  roll_d_05.verify( rng );
+
+  roll_distribution_t roll_d_30;
+  printf( "\nroll 30%%:\n" );
+  for( int i=0; i < 1000000; i++ ) roll_d_30.reach( 0.30 );
+  roll_d_30.verify( rng );
+
+  roll_distribution_t roll_d_80;
+  printf( "\nroll 80%%:\n" );
+  for( int i=0; i < 1000000; i++ ) roll_d_80.reach( 0.80 );
+  roll_d_80.verify( rng );
 }
 
 #endif
