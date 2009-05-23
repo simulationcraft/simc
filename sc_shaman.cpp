@@ -1260,7 +1260,7 @@ struct chain_lightning_t : public shaman_spell_t
     lightning_overload_stats = p -> get_stats( "lightning_overload" );
     lightning_overload_stats -> school = SCHOOL_NATURE;
 
-    lightning_overload_chance = util_t::talent_rank( p -> talents.lightning_overload, 3, 0.07, 0.14, 0.20 ) / 3.0;
+    lightning_overload_chance = util_t::talent_rank( p -> talents.lightning_overload, 3, 0.11, 0.22, 0.33 ) / 3.0;
   }
 
   virtual void execute()
@@ -1376,7 +1376,7 @@ struct lightning_bolt_t : public shaman_spell_t
     lightning_overload_stats = p -> get_stats( "lightning_overload" );
     lightning_overload_stats -> school = SCHOOL_NATURE;
 
-    lightning_overload_chance = util_t::talent_rank( p -> talents.lightning_overload, 3, 0.07, 0.14, 0.20 );
+    lightning_overload_chance = util_t::talent_rank( p -> talents.lightning_overload, 3, 0.11, 0.22, 0.33 );
 
     tier8_4pc_elemental = ( p -> tiers.t8_4pc_elemental == 1 );
   }

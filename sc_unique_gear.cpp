@@ -199,6 +199,7 @@ struct attack_power_trinket_t : public action_t
     }
     trigger_gcd = 0;
     harmful = false;
+    cooldown_group = "use_trinket";
   }
 
   virtual void execute()
@@ -260,6 +261,7 @@ struct spell_power_trinket_t : public action_t
     }
     trigger_gcd = 0;
     harmful = false;
+    cooldown_group = "use_trinket";
   }
 
   virtual void execute()
@@ -322,6 +324,7 @@ struct haste_trinket_t : public action_t
     }
     trigger_gcd = 0;
     harmful = false;
+    cooldown_group = "use_trinket";
   }
 
   virtual void execute()
