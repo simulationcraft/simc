@@ -376,6 +376,7 @@ struct sim_t : public app_t
   bool        P309;
   bool        P312;
   rng_t*      rng;
+  rng_t*      deterministic_rng;
   event_t*    free_list;
   target_t*   target;
   player_t*   player_list;

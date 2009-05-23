@@ -183,7 +183,7 @@ struct rng_sfmt_t : public rng_t
 
   int idx; // index counter to the 32-bit internal state array
 
-  rng_sfmt_t( const std::string& name, bool avg_range, bool avg_gauss );
+  rng_sfmt_t( const std::string& name, bool avg_range=false, bool avg_gauss=false );
 
   virtual ~rng_sfmt_t() {}
   virtual int type() { return RNG_MERSENNE_TWISTER; }
@@ -369,7 +369,7 @@ struct rng_normalized_t : public rng_t
 {
   rng_t* base;
 
-  rng_normalized_t( const std::string& name, rng_t* b, bool avg_range, bool avg_gauss ) :
+  rng_normalized_t( const std::string& name, rng_t* b, bool avg_range=false, bool avg_gauss=false ) :
       rng_t( name, avg_range, avg_gauss ), base( b ) {}
   virtual ~rng_normalized_t() {}
 
@@ -390,7 +390,7 @@ struct rng_phase_shift_t : public rng_normalized_t
   double gauss_distribution[ size ];
   int range_index, gauss_index;
 
-  rng_phase_shift_t( const std::string& name, rng_t* b, bool det_roll, bool avg_range, bool avg_gauss ) :
+  rng_phase_shift_t( const std::string& name, rng_t* b, bool avg_range=false, bool avg_gauss=false ) :
       rng_normalized_t( name, b, avg_range, avg_gauss )
   {
     for ( int i=0; i < size/2; i++ )
@@ -402,7 +402,7 @@ struct rng_phase_shift_t : public rng_normalized_t
     }
     range_index = ( int ) real() * size;
     gauss_index = ( int ) real() * size;
-    actual_roll = det_roll ? 0.5 : real();
+    actual_roll = real();
   }
   virtual ~rng_phase_shift_t() {}
   virtual int type() { return RNG_PHASE_SHIFT; }
@@ -454,24 +454,19 @@ struct rng_pre_fill_t : public rng_normalized_t
   double gauss_distribution[ size ];
   int roll_index, range_index, gauss_index;
 
-  rng_pre_fill_t( const std::string& name, rng_t* b, bool det_roll, bool avg_range, bool avg_gauss ) :
+  rng_pre_fill_t( const std::string& name, rng_t* b, bool avg_range=false, bool avg_gauss=false ) :
       rng_normalized_t( name, b, avg_range, avg_gauss )
   {
     for ( int i=0; i < size/2; i++ )
     {
-      range_distribution[ i*2   ] = (   i ) * 1.0/size + 1.0/( size*2 );
+      range_distribution[ i*2   ] = (    i ) * 1.0/size + 1.0/( size*2 );
       range_distribution[ i*2+1 ] = ( 10-i ) * 1.0/size - 1.0/( size*2 );
       gauss_distribution[ i*2   ] = -2.0 / ( 1<<i );
       gauss_distribution[ i*2+1 ] = +2.0 / ( 1<<i );
     }
-    range_index = det_roll ? 0 : ( ( int ) real() * size );
-    gauss_index = det_roll ? 0 : ( ( int ) real() * size );
+    range_index = ( int ) real() * size;
+    gauss_index = ( int ) real() * size;
     roll_index = size;
-    if ( det_roll )
-    {
-      base = new rng_sfmt_t( name + "_base", avg_range, avg_gauss );
-      base -> seed( 314159 );
-    }
   }
   virtual ~rng_pre_fill_t() {}
   virtual int type() { return RNG_PRE_FILL; }
@@ -721,7 +716,7 @@ struct rng_distance_simple_t : public rng_normalized_t
   range_distribution_t range_d;
   gauss_distribution_t gauss_d;
 
-  rng_distance_simple_t( const std::string& name, rng_t* b, bool det_roll, bool avg_range, bool avg_gauss ) :
+  rng_distance_simple_t( const std::string& name, rng_t* b, bool avg_range=false, bool avg_gauss=false ) :
       rng_normalized_t( name, b, avg_range, avg_gauss )
   {
     // FIXME! Currently, it is -always- deterministic.
@@ -771,8 +766,8 @@ struct rng_distance_bands_t : public rng_distance_simple_t
 {
   roll_distribution_t roll_bands[ 10 ];
 
-  rng_distance_bands_t( const std::string& name, rng_t* b, bool det_roll, bool avg_range, bool avg_gauss ) :
-      rng_distance_simple_t( name, b, det_roll, avg_range, avg_gauss )
+  rng_distance_bands_t( const std::string& name, rng_t* b, bool avg_range=false, bool avg_gauss=false ) :
+      rng_distance_simple_t( name, b, avg_range, avg_gauss )
   {
     // FIXME! Currently, it is -always- deterministic.
   }
@@ -802,18 +797,19 @@ rng_t* rng_t::create( sim_t*             sim,
                       const std::string& name,
                       int                rng_type )
 {
-  bool dr = sim -> deterministic_roll;
+  rng_t* b = sim -> deterministic_roll ? sim -> deterministic_rng : sim -> rng;
+
   bool ar = sim -> average_range;
   bool ag = sim -> average_gauss;
 
   switch ( rng_type )
   {
-  case RNG_STANDARD:         return new rng_t                ( name,                 ar, ag );
-  case RNG_MERSENNE_TWISTER: return new rng_sfmt_t           ( name,                 ar, ag );
-  case RNG_PHASE_SHIFT:      return new rng_phase_shift_t    ( name, sim -> rng, dr, ar, ag );
-  case RNG_PRE_FILL:         return new rng_pre_fill_t       ( name, sim -> rng, dr, ar, ag );
-  case RNG_DISTANCE_SIMPLE:  return new rng_distance_simple_t( name, sim -> rng, dr, ar, ag );
-  case RNG_DISTANCE_BANDS:   return new rng_distance_bands_t ( name, sim -> rng, dr, ar, ag );
+  case RNG_STANDARD:         return new rng_t                ( name,    ar, ag );
+  case RNG_MERSENNE_TWISTER: return new rng_sfmt_t           ( name,    ar, ag );
+  case RNG_PHASE_SHIFT:      return new rng_phase_shift_t    ( name, b, ar, ag );
+  case RNG_PRE_FILL:         return new rng_pre_fill_t       ( name, b, ar, ag );
+  case RNG_DISTANCE_SIMPLE:  return new rng_distance_simple_t( name, b, ar, ag );
+  case RNG_DISTANCE_BANDS:   return new rng_distance_bands_t ( name, b, ar, ag );
   }
   assert( 0 );
   return 0;
