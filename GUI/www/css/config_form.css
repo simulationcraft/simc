@@ -135,6 +135,7 @@ div#sidebar {
 	position: absolute;	/* Take the sidebar out of the flow model */
 	text-align: center;
 	margin-left: 5px;
+	padding-bottom: 5em;
 }
 
 	/* Explanatory instructions */

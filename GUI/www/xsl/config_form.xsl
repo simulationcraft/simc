@@ -122,8 +122,8 @@
 											<xsl:sort select="@region" />
 											<xsl:sort select="@label" />
 											<option>
-												<xsl:attribute name="value"><xsl:value-of select="@region" />:<xsl:value-of select="@name" /></xsl:attribute>
-												<xsl:if test="@name=/xml/options/@selected_server">
+												<xsl:attribute name="value"><xsl:value-of select="concat(@region, ':', @name)" /></xsl:attribute>
+												<xsl:if test="/xml/options/@selected_server = concat(@region, ':', @name)">
 													<xsl:attribute name="selected">selected</xsl:attribute>
 												</xsl:if>
 												<xsl:value-of select="@name" /> (<xsl:value-of select="@region" />)</option>
