@@ -3026,7 +3026,11 @@ struct tricks_of_the_trade_t : public spell_t
     cooldown  = 30.0;
     cooldown -= p -> talents.filthy_tricks * 5.0;
 
-    if ( target_str.empty() )
+    if( target_str.empty() || target_str == "none" )
+    {
+      tricks_target = 0;
+    }
+    else if( target_str == "self" )
     {
       tricks_target = p;
     }
@@ -3055,6 +3059,8 @@ struct tricks_of_the_trade_t : public spell_t
 
   virtual bool ready()
   {
+    if( ! tricks_target ) return false;
+
     if ( tricks_target -> buffs.tricks_of_the_trade )
       return false;
 

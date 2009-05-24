@@ -16,36 +16,9 @@ actions+=/cold_blood,sync=envenom
 actions+=/envenom,min_combo_points=4,no_buff=1
 actions+=/tricks_of_the_trade
 actions+=/mutilate,max_combo_points=3
-
-# Gear: http://www.chardev.org/?template=147364 with SR offhand
-gear_stamina=951
-gear_strength=10
-gear_agility=1075
-gear_intellect=10
-gear_spirit=10
-gear_attack_power=2149
-gear_expertise_rating=209
-gear_armor_penetration_rating=94
-gear_hit_rating=266
-gear_crit_rating=513
-gear_haste_rating=303
-
-# Set Bonuses
-tier7_2pc=1
-tier7_4pc=1
-
-# Meta Gem
-relentless_earthstorm=1
-
-# Weapons
-main_hand=dagger,dps=171,speed=1.8,enchant=berserking
-off_hand=dagger,dps=171,speed=1.8,enchant=berserking
-
-# Item Procs
-darkmoon_greatness=1
-fury_of_the_five_flights=1
-
-# Glyphs
+Rogue_T8_Mutilate_Gear.simcraft
+main_hand=dagger,dps=188,speed=1.8,enchant=berserking
+off_hand=dagger,dps=188,speed=1.4,enchant=berserking
 glyph_slice_and_dice=1
 glyph_hunger_for_blood=1
 glyph_mutilate=1

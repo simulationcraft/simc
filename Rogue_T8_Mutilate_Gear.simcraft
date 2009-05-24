@@ -1,0 +1,34 @@
+
+# Gear http://www.wowhead.com/?compare=46123:46124:46125:46126:45245:46032:45108:46095:45564:45503:45456:45931:45522:45607
+# http://eu.wowarmory.com/item-info.xml?i=45517
+# http://eu.wowarmory.com/item-info.xml?i=45570
+# http://eu.wowarmory.com/item-info.xml?i=45484
+gear_stamina=960
+gear_agility=1094
+gear_attack_power=1566
+gear_expertise_rating=179
+gear_armor_penetration_rating=30
+gear_hit_rating=288
+gear_crit_rating=763
+gear_haste_rating=345
+blood_of_the_old_god=1
+mjolnir_runestone=1
+tier8_2pc=1
+tier8_4pc=1
+
+# Gems and Socket Bonuses
+relentless_earthsiege=1
+gem_agility=304
+gem_attack_power=36
+gem_hit_rating=6 
+gem_crit_rating=24
+
+# Enchants
+enchant_stamina=10
+enchant_strength=10
+enchant_agility=32
+enchant_intellect=10
+enchant_spirit=10
+enchant_attack_power=259
+enchant_hit_rating=12 
+enchant_crit_rating=69
