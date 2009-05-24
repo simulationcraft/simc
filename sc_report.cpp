@@ -129,7 +129,7 @@ static void print_core_stats( FILE* file, player_t* p )
 static void print_spell_stats( FILE* file, player_t* p )
 {
   fprintf( file,
-           "  Spell Stats:  power=%.0f  hit=%.1f%%  crit=%.1f%%  penetration=%.0f  haste=%.1f%%  mp5=%.0f\n",
+           "  Spell Stats:  power=%.0f  hit=%.2f%%  crit=%.2f%%  penetration=%.0f  haste=%.2f%%  mp5=%.0f\n",
            p -> composite_spell_power( SCHOOL_MAX ) * p -> composite_spell_power_multiplier(),
            p -> composite_spell_hit()  * 100.0,
            p -> composite_spell_crit() * 100.0,
@@ -143,7 +143,7 @@ static void print_spell_stats( FILE* file, player_t* p )
 static void print_attack_stats( FILE* file, player_t* p )
 {
   fprintf( file,
-           "  Attack Stats  power=%.0f  hit=%.1f%%  crit=%.1f%%  expertise=%.1f  penetration=%.1f%%  haste=%.1f%%\n",
+           "  Attack Stats  power=%.0f  hit=%.2f%%  crit=%.2f%%  expertise=%.2f  penetration=%.2f%%  haste=%.2f%%\n",
            p -> composite_attack_power() * p -> composite_attack_power_multiplier(),
            p -> composite_attack_hit()         * 100.0,
            p -> composite_attack_crit()        * 100.0,

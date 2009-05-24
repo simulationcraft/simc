@@ -4532,11 +4532,11 @@ pet_t* warlock_t::create_pet( const std::string& pet_name )
 
 void warlock_t::init_base()
 {
-  attribute_base[ ATTR_STRENGTH  ] =  54;
-  attribute_base[ ATTR_AGILITY   ] =  55;
-  attribute_base[ ATTR_STAMINA   ] =  78;
-  attribute_base[ ATTR_INTELLECT ] = 130;
-  attribute_base[ ATTR_SPIRIT    ] = 142;
+  attribute_base[ ATTR_STRENGTH  ] =  58; //54;
+  attribute_base[ ATTR_AGILITY   ] =  65; //55;
+  attribute_base[ ATTR_STAMINA   ] =  90; //78;
+  attribute_base[ ATTR_INTELLECT ] = 157; //130;
+  attribute_base[ ATTR_SPIRIT    ] = 171; //142;
 
   attribute_multiplier_initial[ ATTR_STAMINA ] *= 1.0 + talents.demonic_embrace * 0.03
       + ( ( talents.demonic_embrace ) ? 0.01 : 0 );
@@ -4550,7 +4550,7 @@ void warlock_t::init_base()
   initial_attack_crit_per_agility = rating_t::interpolate( level, 0.01/16.0, 0.01/24.9, 0.01/50.01500 );
 
   // FIXME! Make this level-specific.
-  resource_base[ RESOURCE_HEALTH ] = 3200;
+  resource_base[ RESOURCE_HEALTH ] = 7164; //3200;
   resource_base[ RESOURCE_MANA   ] = rating_t::interpolate( level, 1383, 2620, 3863 );
 
   health_per_stamina = 10;
