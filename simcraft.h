@@ -512,6 +512,7 @@ struct sim_t : public app_t
   std::string output_file_str, log_file_str, html_file_str, wiki_file_str;
   FILE* output_file;
   FILE* log_file;
+  bool       clear_url_cache;
 
   // Multi-Threading
   int threads;

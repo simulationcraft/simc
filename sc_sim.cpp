@@ -156,7 +156,7 @@ sim_t::sim_t( sim_t* p, int index ) :
     raid_dps( 0 ), total_dmg( 0 ),
     total_seconds( 0 ), elapsed_cpu_seconds( 0 ),
     merge_ignite( 0 ), report_progress( 1 ),
-    output_file( stdout ), log_file( 0 ), threads( 0 ),
+    output_file( stdout ), log_file( 0 ), clear_url_cache(0), threads( 0 ),
     thread_handle( 0 ), thread_index( index )
 {
 
@@ -1056,6 +1056,7 @@ bool sim_t::parse_option( const std::string& name,
       { "seed",                             OPT_INT,    &( seed                                     ) },
       { "wheel_granularity",                OPT_FLT,    &( wheel_granularity                        ) },
       { "wheel_seconds",                    OPT_INT,    &( wheel_seconds                            ) },
+      { "clear_url_cache",                  OPT_BOOL,   &( clear_url_cache                          ) },
       { NULL, OPT_UNKNOWN }
     };
 
