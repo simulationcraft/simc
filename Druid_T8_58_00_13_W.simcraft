@@ -9,30 +9,25 @@ actions+=/treants
 actions+=/starfall,skip_on_eclipse=1
 actions+=/moonfire,skip_on_eclipse=-1
 actions+=/insect_swarm,eclipse_left>=12
+actions+=/haste_trinket,name=scale_of_fates,length=20,rating=850,cooldown=120
+actions+=/starfire,eclipse=trigger
 actions+=/wrath,eclipse=benefit
 actions+=/starfire
 
-# Standard Gear Attributes http://www.chardev.org/?template=148722
-gear_stamina=800
-gear_intellect=802
-gear_spirit=234
-gear_spell_power=2079
-gear_hit_rating=263
-#gear_hit_rating=275 Actual rating from profile, would distort hit-rating-scale.
-gear_crit_rating=364
-gear_haste_rating=607
-gear_mp5=15
-
-# Set Bonuses
-tier7_2pc=1
-tier7_4pc=1
+# Standard Gear Attributes http://www.chardev.org/?template=176626
+gear_stamina=958
+gear_intellect=1005
+gear_spirit=464
+gear_spell_power=2361
+gear_hit_rating=261
+gear_crit_rating=614
+gear_haste_rating=349
 
 # Meta Gem
 chaotic_skyflare=1
 
 # Item Procs
-illustration_of_the_dragon_soul=1
-dying_curse=1
+elemental_focus_stone=1
 
 # Glyphs
 glyph_moonfire=1
