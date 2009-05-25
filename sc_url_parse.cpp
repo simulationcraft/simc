@@ -203,7 +203,7 @@ void SaveCache()
   }
   //mark expired and count all
   unsigned int n=0;
-  double nowTime= time( NULL );
+  double nowTime= (double) time( NULL );
   for ( size_t i=1; i<=N_cache; i++ )
   {
     bool expired = nowTime - urlCache[i].time > expirationSeconds;
@@ -297,7 +297,7 @@ std::string getURLData( std::string URL )
         found=i;
         break;
       }
-  double nowTime= time( NULL );
+  double nowTime= (double) time( NULL );
   bool expired = ( !found ) || ( nowTime-urlCache[found].time > expirationSeconds );
   if ( expired )
   {

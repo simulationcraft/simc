@@ -493,7 +493,7 @@ struct rng_pre_fill_t : public rng_normalized_t
       for ( int i=0; i < size; i++ ) roll_distribution[ i ] = down;
       while ( num_procs > 0 )
       {
-        int index = (int) real() * size * 0.9999;
+        int index = (int) ( real() * size * 0.9999 );
         if ( roll_distribution[ index ] == up ) continue;
         roll_distribution[ index ] = up;
         num_procs--;
@@ -516,7 +516,7 @@ struct rng_pre_fill_t : public rng_normalized_t
     {
       for ( int i=0; i < size; i++ )
       {
-        int other = ( int ) real() * size * 0.999;
+        int other = ( int ) ( real() * size * 0.999 );
         std::swap( range_distribution[ i ], range_distribution[ other ] );
       }
       range_index = 0;
@@ -535,7 +535,7 @@ struct rng_pre_fill_t : public rng_normalized_t
     {
       for ( int i=0; i < size; i++ )
       {
-        int other = ( int ) real() * size * 0.999;
+        int other = ( int ) ( real() * size * 0.999 );
         std::swap( gauss_distribution[ i ], gauss_distribution[ other ] );
       }
       gauss_index = 0;
@@ -566,6 +566,8 @@ struct distribution_t
     values .insert( values .begin(), size, 0.0 );
     counts .insert( counts .begin(), size, 0   );
   }
+
+  virtual ~distribution_t() {}
 
   virtual int next_bucket()
   {
@@ -608,7 +610,7 @@ struct distribution_t
     for( int i=0; i <= last; i++ ) sum += chances[ i ];
     printf( "\tsum: %f\n", sum );
     std::vector<int> rng_counts;
-    rng_counts.insert( rng_counts.begin(), size, 0.0 );
+    rng_counts.insert( rng_counts.begin(), size, 0 );
     for( int i=0; i < total_count; i++ )
     {
       double p = rng -> real();
@@ -801,8 +803,8 @@ rng_t* rng_t::create( sim_t*             sim,
 {
   rng_t* b = sim -> deterministic_roll ? sim -> deterministic_rng : sim -> rng;
 
-  bool ar = sim -> average_range;
-  bool ag = sim -> average_gauss;
+  bool ar = ( bool ) ( sim -> average_range != 0 );
+  bool ag = ( bool ) ( sim -> average_gauss != 0 );
 
   switch ( rng_type )
   {
