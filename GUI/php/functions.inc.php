@@ -254,7 +254,91 @@ function add_wow_servers( SimpleXMLElement $xml )
 	}
 } 
 
-// === EXPORTING CONFIG FILE ===
+// === EXPORTING CONFIG FILE, BUILDING SIMCRAFT COMMAND ===
+
+/**
+ * Generate a flat array of key/value pairs, suitable for a config file or generating the simcraft command
+ * @param $arr_options
+ * @return array
+ */
+function generate_config_array( array $arr_options )
+{
+	// Fetch the possible config values
+	$xml_options = new SimpleXMLElement(read_cache_value('config_options_xml'));
+	
+	// Prime the output array
+	$return_array = array();
+	
+	// If the array of values contains a 'globals' sub-array
+	if( is_array($arr_options['globals']) ) {
+		$return_array['#'.count($return_array)] = "GLOBAL SETTINGS";
+		
+		// Loop over the globals options, as they were defined for the form's creation
+		foreach( $xml_options->global_options[0]->option as $xml_option) {
+			
+			// Pull out some useful attributes of the xml elements
+			$option_name = (string)$xml_option['name'];
+			$option_cpp_type = (string)$xml_option['cpp_type'];
+			$submitted_value = $arr_options['globals'][$option_name];
+			
+			// If the option is a boolean type, and no value was submitted (a checkbox with no submitted value)
+			if( $option_cpp_type==='OPT_BOOL' && is_null($submitted_value) ) {
+				$submitted_value = 0;
+			}
+			
+			// If the submitted value is not empty, add it to the config array
+			if( $submitted_value!=='' ) {
+				$return_array[$option_name] = $submitted_value;
+			}
+		}
+	}	
+	
+
+	
+	// If the array of values contains a 'raider' sub-array
+	if( is_array($arr_options['raider']) ) {
+		$return_array['#'.count($return_array)] = "CHARACTER DEFINITIONS";
+		
+		// Loop over each of the submitted raider characters
+		foreach($arr_options['raider'] as $arr_values ) {
+			
+			$return_array['#'.count($return_array)] = "CHARACTER  {$arr_values['name']} ({$arr_values['class']})";			
+			
+			// Pull out the options that go with this raider's class, including the options all classes share
+			$class_options = $xml_options->supported_classes->xpath("class[@class='all_classes' or @class='{$arr_values['class']}']/option");
+			
+			// Add the atypical class=character_name option (doesn't actually appear in the config list, for obvious reasons)
+			$return_array[$arr_values['class']] = $arr_values['name'];
+			
+			// Loop over the raider's options, as they were defined for the form's creation
+			foreach( $class_options as $xml_option) {
+			
+				// Pull out some useful attributes of the xml elements
+				$option_name = (string)$xml_option['name'];
+				$option_cpp_type = (string)$xml_option['cpp_type'];
+				$submitted_value = $arr_values[$option_name];
+				
+				// If the attribute name is 'class' or 'name', skip it; it was already handled
+				if( $option_name=='class' || $option_name=='name' ) {
+					continue;
+				}
+				
+				// If the option is a boolean type, and no value was submitted (a checkbox with no submitted value)
+				if( $option_cpp_type==='OPT_BOOL' && is_null($submitted_value) ) {
+					$submitted_value = 0;
+				}
+				
+				// If the submitted value is not empty, add it to the config array
+				if( $submitted_value!=='' ) {
+					$return_array[$option_name] = $submitted_value;
+				}
+			}
+		}
+	}
+	
+	// Return the output
+	return $return_array;	
+}
 
 /**
  * Build a .simcraft config file from an array of options
@@ -267,44 +351,26 @@ function build_config_file_from_array( array $arr_options )
 	// Prime the output string
 	$return_string = "#!simcraft\n\n";
 	
-	// Append each of the globals values that was present in the array
-	if( is_array($arr_options['globals']) ) {
-		$return_string .= "# GLOBAL SETTINGS\n";
-		foreach($arr_options['globals'] as $index => $value ) {
-			if( $value!=='' ) {
-				$return_string .= "$index=$value\n";
-			}
-		}
-		$return_string .= "\n\n";
-	}
+	// Fetch the configuration array, given the array of options
+	$arr_settings = generate_config_array($arr_options);
 	
-	// For each of the raiders, add a new raider with those attributes
-	if( is_array($arr_options['raider']) ) {
-		$return_string .= "# CHARACTER DEFINITIONS\n";
-		foreach($arr_options['raider'] as $arr_values ) {
-			foreach($arr_values as $index => $value ) {
-				
-				// If the attribute name is 'class', handle the special class=name attribute
-				if( $index=='class' ) {
-					$index=$value;
-					$value = $arr_values['name'];
-				}
-				
-				// Be sure to skip the 'name' attribute too, since it's handled specially with the class attribute above
-				if( $value!=='' && $index!='name' ) {
-					$return_string .= "$index=$value\n";
-				}
-			}
-			$return_string .= "\n\n";
+	// Loop over the options, building the config file
+	foreach( $arr_settings as $key=>$value ) {
+		
+		// If the attribute is a comment, add the comment line
+		if( $key[0]=='#' ) {
+			$return_string .= "\n# " . ltrim($value, '# ') . "\n";
 		}
-		$return_string .= "\n\n";
+		
+		// Else, add the configuration value
+		else {
+			$return_string .= "$key=$value\n";
+		}
 	}
 	
 	// Return the output
 	return $return_string;
-} 
-
-// === BUILDING THE SIMCRAFT COMMAND ===
+}
 
 /**
  * Generate the simcraft system command, from the given array of options
@@ -313,66 +379,35 @@ function build_config_file_from_array( array $arr_options )
  */
 function generate_simcraft_command( array $arr_options, $output_file=null )
 {
-	// Start with the simcraft invocation
-	$simcraft_command = './simcraft';
+	// Prime the output string
+	$return_string = './simcraft';
 
-	// Add the options from 'globals' and 'raider' sub-arrays
-	$simcraft_command .= recursive_build_option_string($arr_options['globals']);	
-	$simcraft_command .= recursive_build_option_string($arr_options['raider']);		
+	// Fetch the configuration array, given the array of options
+	$arr_settings = generate_config_array($arr_options);
+	
+	// Loop over the options, building the config file
+	foreach( $arr_settings as $key=>$value ) {
+		
+		// If the attribute is a comment, add the comment line
+		if( $key[0]=='#' ) {
+			continue;
+		}
+		
+		// Else, add the configuration value
+		else {
+			$return_string .= " $key='$value'";
+		}
+	}
 	
 	// Add the output directives
 	if( !is_null($output_file) ) {
-		$simcraft_command .= " html='$output_file'";
+		$return_string .= " html='$output_file'";
 	}
-	
-	// Return the assembled command
-	return $simcraft_command;
-}
-
-/**
- * Recursively construct the options string
- * 
- * The array passed into this function is ultimately derived from the HTML form's fields
- * @param $array
- * @return string
- */
-function recursive_build_option_string( array $array=null )
-{
-	// Init this array's string
-	$str_return = '';
-	
-	// Loop over the elements of this array
-	if( is_array($array) ) {
-		foreach($array as $index => $element) {
-	
-			// If the element is an array, recurse for deeper options 
-			if( is_array($element) ) {
-				$str_return .= recursive_build_option_string($element);
-			}
-			
-			// Else, just append this element
-			else {
-				
-				// If the element name is class, this is a special attribute that we inserted manually, handle it separately
-				if( $index === 'class' ) {
-					$str_return .= ' ' . $element . "='" . $array['name']."'";
-				}
-				
-				// Since class and name are handled together, if this element is name, skip it
-				else if( $index === 'name' ) {
-				}
-				
-				// Otherwise, if the element isn't empty, append it to the string
-				else if( $element !== '' ) {
-					$str_return .= ' ' . $index . "='" . $element . "'";
-				}
-			}
-		}
-	} 
-	
-	// Return the created string
-	return $str_return;
+		
+	// Return the output
+	return $return_string;
 } 
+
 
 // === SUPPORT FUNCTIONS ===
 
@@ -403,7 +438,7 @@ function get_valid_path( $path )
 }
 
 /**
- * Simple helper function to speed up the laborious xpath process with SimpleXMLElement
+ * Simple helper function to simplify the laborious xpath process with SimpleXMLElement
  * @param $xml
  * @param $str_xpath
  * @return unknown_type
@@ -436,10 +471,11 @@ function set_single_xml_xpath_property( SimpleXMLElement $xml, $str_xpath, $attr
 }
 
 /**
+ * Append one SimpleXMLElement element to another
+ * 
  * Thanks to l dot j dot peters at student dot utwente dot nl 
  * from http://us.php.net/manual/en/function.simplexml-element-addChild.php
  * 
- * Append one element to another.
  * @param $parent
  * @param $new_child
  * @return unknown_type
@@ -454,14 +490,15 @@ function simplexml_append( SimpleXMLElement $parent, SimpleXMLElement $new_child
 
 /**
  * Convert php ini directive shorthand byte-counts into integers
- * @param string $val
+ * @param mixed $val
  * @return integer
  */
 function return_bytes( $val ) 
 {
 	$val = trim($val);
-	$last = strtolower($val[strlen($val)-1]);
-	switch($last) {
+
+	// Interpret the value, based on the final character (g, m, or k)
+	switch( strtolower($val[strlen($val)-1]) ) {
 		// The 'G' modifier is available since PHP 5.1.0
 		case 'g':
 			$val *= 1024;
@@ -471,7 +508,8 @@ function return_bytes( $val )
 			$val *= 1024;
 	}
 	
-	return $val;
+	// Return the value
+	return (int)$val;
 }  
 
 // === DATA CACHING ===
@@ -545,8 +583,25 @@ function build_simulation_config_options()
 	}
 	
 	
+	// Add the options for all-classes
+	$xml_player_options = $xml->addChild('supported_classes');	
+	$xml_all_class_options = $xml_player_options->addChild('class');
+	$xml_all_class_options->addAttribute('class', 'all_classes');
+	$xml_all_class_options->addAttribute('label', ucwords(strtolower(str_replace('_', ' ', 'all_classes'))));
+	foreach($ARR_PLAYER_RELATED_SOURCE_FILES as $file_name ) {
+		
+		// Remove this class's file from the array of source file names - it's already been handled
+		unset($arr_source_files[array_search($file_name, $arr_source_files)]);
+
+		// Fetch the options for this class type
+		if( !empty($file_name) ) {
+			$arr_options = parse_source_file_for_options( get_valid_path(SIMULATIONCRAFT_PATH) . $file_name );
+			add_options_to_XML( $arr_options, $xml_all_class_options);
+		}		
+	}
+	
+	
 	// Add the options from the individual character-class files
-	$xml_player_options = $xml->addChild('supported_classes');
 	foreach($ARR_SUPPORTED_CLASSES as $class_name => $class_array ) {
 		
 		// Remove this class's file from the array of source file names - it's already been handled
@@ -563,24 +618,7 @@ function build_simulation_config_options()
 			add_options_to_XML( $arr_options, $new_class);
 		}		
 	}
-
 	
-	// Add the options for all-classes
-	$xml_all_class_options = $xml_player_options->addChild('class');
-	$xml_all_class_options->addAttribute('class', 'all_classes');
-	$xml_all_class_options->addAttribute('label', ucwords(strtolower(str_replace('_', ' ', 'all_classes'))));
-	foreach($ARR_PLAYER_RELATED_SOURCE_FILES as $file_name ) {
-		
-		// Remove this class's file from the array of source file names - it's already been handled
-		unset($arr_source_files[array_search($file_name, $arr_source_files)]);
-
-		// Fetch the options for this class type
-		if( !empty($file_name) ) {
-			$arr_options = parse_source_file_for_options( get_valid_path(SIMULATIONCRAFT_PATH) . $file_name );
-			add_options_to_XML( $arr_options, $xml_all_class_options);
-		}		
-	}
-		
 	
 	// Add the global simulation options (the options in the files that weren't handled above)
 	$xml_global_options = $xml->addChild('global_options');
