@@ -30,6 +30,7 @@ const size_t maxCache=1000;
 const int expirationSeconds=3*60*60;
 const char* urlCacheFile="url_cache.dat";
 bool clear_url_cache=false;
+double url_cache_throttle=0;
 
 
 
@@ -63,8 +64,27 @@ static int writer( char *data, size_t size, size_t nmemb, std::string *buffer )
 // this should wait if several threads are entering same critical section 
 // NOT ideal replacement for Critical Section, so use of BOOL variable should be
 // replaced by calling of platform independent crit cestion code
-int inCritSection=0;
+#ifdef _MSC_VER
+
+CRITICAL_SECTION msvcCritSection;
 void EnterCritSection(){
+    EnterCriticalSection(&msvcCritSection);
+}
+
+void LeaveCritSection(){
+    LeaveCriticalSection(&msvcCritSection);
+}
+
+void initArmoryCaches(){
+    InitializeCriticalSection(&msvcCritSection);
+}
+
+#else
+
+int inCritSection=0;
+
+void EnterCritSection(){
+    EnterCriticalSection(
     if (inCritSection>0){
         double t0=time(NULL);
         while (inCritSection && (time(NULL)-t0<10.0) ) ;
@@ -77,6 +97,12 @@ void EnterCritSection(){
 void LeaveCritSection(){
     inCritSection--;
 }
+
+void initArmoryCaches(){
+}
+
+#endif
+
 
 std::string getURLsource( std::string URL )
 {
@@ -276,7 +302,8 @@ std::string getURLData( std::string URL )
   if ( expired )
   {
     //check if last request was more than 2sec ago
-    while ( ( lastReqTime<nowTime )&&( time( NULL )-lastReqTime<1 ) );
+    if (url_cache_throttle>0)
+        while ( ( lastReqTime<nowTime )&&( time( NULL )-lastReqTime<url_cache_throttle ) );
     // HTTP request
     if (debug>2) printf( "Loading URL: %s\n",URL.c_str() );
     printf("@"); // visual indicator because wait can be long
@@ -914,7 +941,8 @@ bool parseArmory( sim_t* sim, std::string URL, bool parseName, bool parseTalents
   urlSplit_t aURL;
   if ( !splitURL( URL,aURL ) ) return false;
   aURL.sim=sim;
-  clear_url_cache = sim->clear_url_cache;
+  clear_url_cache = sim->url_cache_clear;
+  url_cache_throttle= sim->url_cache_throttle;
   // retrieve armory gear data (XML) for this player
   std::string src= getArmoryData( aURL,UPG_GEAR );
   if ( src=="" ) return false;

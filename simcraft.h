@@ -512,7 +512,8 @@ struct sim_t : public app_t
   std::string output_file_str, log_file_str, html_file_str, wiki_file_str;
   FILE* output_file;
   FILE* log_file;
-  bool       clear_url_cache;
+  bool       url_cache_clear;
+  double     url_cache_throttle;  
 
   // Multi-Threading
   int threads;
@@ -1790,6 +1791,7 @@ struct util_t
   static int milliseconds();
 };
 
+void initArmoryCaches();
 bool parseArmory( sim_t* sim, std::string URL, bool parseName=true, bool parseTalents=true, bool parseGear=true );
 
 
