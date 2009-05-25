@@ -29,6 +29,7 @@ struct shaman_t : public player_t
     int    elemental_focus;
     int    elemental_mastery;
     int    flurry;
+    int    indomitability;
     int    lightning_charges;
     int    lightning_shield;
     int    maelstrom_weapon;
@@ -60,6 +61,7 @@ struct shaman_t : public player_t
   {
     event_t* elemental_devastation;
     event_t* elemental_oath;
+    event_t* indomitability;
     event_t* maelstrom_weapon;
     event_t* nature_vulnerability;
 
@@ -183,6 +185,7 @@ struct shaman_t : public player_t
   {
     int dueling;
     int hex;
+    int indomitability;
     int dancing_flame;
     int thunderfall;
 
@@ -841,6 +844,42 @@ static void trigger_totem_of_dueling( attack_t* a )
   }
 }
 
+// trigger_totem_of_indomitability ===============================================
+
+static void trigger_totem_of_indomitability( attack_t* a )
+{
+  shaman_t* p = a -> player -> cast_shaman();
+
+  if ( ! p -> totems.indomitability ) return;
+
+  struct indomitability_expiration_t : public event_t
+  {
+    indomitability_expiration_t( sim_t* sim, shaman_t* p ) : event_t( sim, p )
+    {
+      name = "Indomitability Expiration";
+      p -> _buffs.indomitability = 1;
+      sim -> add_event( this, 10.0 );
+    }
+    virtual void execute()
+    {
+      shaman_t* p = player -> cast_shaman();
+      p -> _buffs.indomitability = 0;
+      p -> _expirations.indomitability = 0;
+    }
+  };
+
+  event_t*& e = p -> _expirations.indomitability;
+
+  if ( e )
+  {
+    e -> reschedule( 10.0 );
+  }
+  else
+  {
+    e = new ( a -> sim ) indomitability_expiration_t( a -> sim, p );
+  }
+}
+
 // =========================================================================
 // Shaman Attack
 // =========================================================================
@@ -1004,6 +1043,12 @@ struct lava_lash_t : public shaman_attack_t
     cooldown    = 6;
     base_cost   = p -> resource_base[ RESOURCE_MANA ] * 0.04;
     if ( p -> tiers.t8_2pc_enhancement ) base_multiplier *= 1.0 + 0.20;
+  }
+
+  virtual void execute()
+  {
+    shaman_attack_t::execute();
+    trigger_totem_of_indomitability( this );
   }
 
   virtual void player_buff()
@@ -3230,6 +3275,8 @@ double shaman_t::composite_attack_power()
     ap += composite_attack_power_multiplier() * intellect() * talents.mental_dexterity / 3.0;
   }
 
+  if ( _buffs.indomitability ) ap += 120;
+
   return ap;
 }
 
@@ -3445,6 +3492,7 @@ bool shaman_t::parse_option( const std::string& name,
       // @option_doc loc=player/shaman/totems title="Totems"
       { "totem_of_dueling",          OPT_BOOL, &( totems.dueling                    ) },
       { "totem_of_hex",              OPT_BOOL, &( totems.hex                        ) },
+      { "totem_of_indomitability",   OPT_BOOL, &( totems.indomitability             ) },
       { "totem_of_the_dancing_flame",OPT_BOOL, &( totems.dancing_flame              ) },
       { "thunderfall_totem",         OPT_BOOL, &( totems.thunderfall                ) },
       // @option_doc loc=skip

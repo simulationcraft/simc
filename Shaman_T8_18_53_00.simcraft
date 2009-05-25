@@ -5,37 +5,44 @@ level=80
 talents=http://ptr.wowhead.com/?talent=hVhGVZhbxIoxdIhusouVo
 actions=flask,type=endless_rage/food,type=fish_feast/windfury_weapon,weapon=main/flametongue_weapon,weapon=off
 actions+=/strength_of_earth_totem/windfury_totem/bloodlust,time_to_die<=60
+actions+=/attack_power_trinket,name=wrathstone,power=856,length=20,cooldown=120
 actions+=/auto_attack/lightning_bolt,maelstrom=5/shamanistic_rage/stormstrike/earth_shock/magma_totem/lightning_shield/lava_lash/spirit_wolf
 
-# TODO: http://www.wowhead.com/?compare=45132:45463:46205:46212:46203:46208:45553:45244:45454:45461:45480:45525:45503:42608:46200:45931:44253
+# Gear
+# http://www.wowhead.com/?compare=45132:46097:46205:46212:46203:46208:45553:45244:45454:45444:45461:45480:45456:45503:42607:45931:45263
+gear_stamina=850
+gear_agility=811
+gear_intellect=398
+gear_attack_power=1788
+gear_expertise_rating=66
+gear_hit_rating=367
+gear_crit_rating=670
+gear_haste_rating=386
+mjolnir_runestone=1
+tier8_2pc=1
+tier8_4pc=1
 
-# Gear: http://www.chardev.org/ptr/?template=159696
-gear_stamina=858
-gear_strength=10
-gear_agility=760
-gear_intellect=380
-gear_spirit=10
-gear_attack_power=2255
-gear_expertise_rating=138
-gear_armor_penetration_rating=68
-gear_hit_rating=371
-gear_crit_rating=682
-gear_haste_rating=201
-
-# Set Bonuses
-tier7_2pc=1
-tier7_4pc=1
-
-# Meta Gem
+# Gems and Socket Bonuses
 relentless_earthstorm=1
+gem_agility=158
+gem_attack_power=40
+gem_expertise_rating=64
+gem_hit_rating=10
+gem_crit_rating=57
+
+# Enchants (including 128AP profession bonus)
+enchant_stamina=10
+enchant_strength=10
+enchant_agility=32
+enchant_intellect=10
+enchant_spirit=10
+enchant_attack_power=387
+enchant_hit_rating=12 
+enchant_crit_rating=69
 
 # Weapons
-main_hand=fist,dps=171.3,speed=2.6,enchant=berserking
-off_hand=mace,dps=156.6,speed=2.5,enchant=berserking
-
-# Item Procs
-grim_toll=1
-mirror_of_truth=1
+main_hand=fist,dps=188,speed=2.7,enchant=berserking
+off_hand=mace,dps=171,speed=2.6,enchant=berserking
 
 # Glyphs
 glyph_windfury_weapon=1
@@ -43,4 +50,4 @@ glyph_stormstrike=1
 glyph_feral_spirit=1
 
 # Totem
-totem_of_dueling=1
+totem_of_indomitability=1
