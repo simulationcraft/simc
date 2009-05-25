@@ -23,6 +23,9 @@ gear_hit_rating=261
 gear_crit_rating=614
 gear_haste_rating=349
 
+tier8_2pc=1
+tier8_4pc=1
+
 # Meta Gem
 chaotic_skyflare=1
 
