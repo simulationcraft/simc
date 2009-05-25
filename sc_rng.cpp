@@ -402,7 +402,7 @@ struct rng_phase_shift_t : public rng_normalized_t
     }
     range_index = ( int ) real() * size;
     gauss_index = ( int ) real() * size;
-    actual_roll = real();
+    actual_roll = real() - 0.5;
   }
   virtual ~rng_phase_shift_t() {}
   virtual int type() { return RNG_PHASE_SHIFT; }
@@ -493,7 +493,7 @@ struct rng_pre_fill_t : public rng_normalized_t
       for ( int i=0; i < size; i++ ) roll_distribution[ i ] = down;
       while ( num_procs > 0 )
       {
-        int index = real() * size;
+        int index = (int) real() * size * 0.9999;
         if ( roll_distribution[ index ] == up ) continue;
         roll_distribution[ index ] = up;
         num_procs--;
@@ -712,14 +712,16 @@ struct roll_distribution_t : public distribution_t
 
 struct rng_distance_simple_t : public rng_normalized_t
 {
-  roll_distribution_t  roll_d;
+   roll_distribution_t  roll_d;
   range_distribution_t range_d;
   gauss_distribution_t gauss_d;
 
   rng_distance_simple_t( const std::string& name, rng_t* b, bool avg_range=false, bool avg_gauss=false ) :
       rng_normalized_t( name, b, avg_range, avg_gauss )
   {
-    // FIXME! Currently, it is -always- deterministic.
+     roll_d.actual = real() - 0.5;
+    range_d.actual = real() - 0.5;
+    gauss_d.actual = ( real() - 0.5 ) * 5.0;
   }
   virtual int type() { return RNG_DISTANCE_SIMPLE; }
 
@@ -769,7 +771,7 @@ struct rng_distance_bands_t : public rng_distance_simple_t
   rng_distance_bands_t( const std::string& name, rng_t* b, bool avg_range=false, bool avg_gauss=false ) :
       rng_distance_simple_t( name, b, avg_range, avg_gauss )
   {
-    // FIXME! Currently, it is -always- deterministic.
+    for( int i=0; i < 10; i++ ) roll_bands[ i ].actual = real() - 0.5;
   }
   virtual int type() { return RNG_DISTANCE_BANDS; }
 
