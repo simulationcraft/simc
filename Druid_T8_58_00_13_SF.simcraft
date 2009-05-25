@@ -10,7 +10,7 @@ actions+=/starfall,skip_on_eclipse=1
 actions+=/moonfire,eclipse_left>=12
 actions+=/insect_swarm,skip_on_eclipse=1
 actions+=/wrath,eclipse=trigger
-actions+=/haste_trinket,name=scale_of_fates,length=20,rating=850,cooldown=120
+actions+=/haste_trinket,name=scale_of_fates,length=20,rating=432,cooldown=120
 actions+=/starfire 
 
 # Standard Gear Attributes http://www.chardev.org/?template=176626

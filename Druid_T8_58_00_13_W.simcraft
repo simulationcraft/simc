@@ -9,7 +9,7 @@ actions+=/treants
 actions+=/starfall,skip_on_eclipse=1
 actions+=/moonfire,skip_on_eclipse=-1
 actions+=/insect_swarm,eclipse_left>=12
-actions+=/haste_trinket,name=scale_of_fates,length=20,rating=850,cooldown=120
+actions+=/haste_trinket,name=scale_of_fates,length=20,rating=432,cooldown=120
 actions+=/starfire,eclipse=trigger
 actions+=/wrath,eclipse=benefit
 actions+=/starfire
@@ -30,7 +30,7 @@ tier8_4pc=1
 chaotic_skyflare=1
 
 # Item Procs
-elemental_focus_stone=1
+flare_of_the_heavens=1
 
 # Glyphs
 glyph_moonfire=1
