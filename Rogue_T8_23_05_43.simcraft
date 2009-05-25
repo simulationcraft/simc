@@ -1,8 +1,18 @@
-#!simcraft max_time=300 optimal_raid=1
+#RAID and Globals
+optimal_raid=1
+Globals_T8.simcraft
 
-# When using this profile in the context of a raid:
-# set honor_among_thieves_interval=0
-# set tricks_of_the_trade=a_player_name
+#override globals
+patch=3.1.2
+infinite_mana=1
+debug=0
+target_level=83
+threads=2
+log=0
+calculate_scale_factors=1
+normalized_roll=1
+iterations=1000
+
 
 rogue=Rogue_T8_23_05_43
 level=80

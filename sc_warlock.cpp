@@ -1846,7 +1846,7 @@ void warlock_spell_t::player_buff()
 
     if ( p -> talents.demonic_tactics )
     {
-      player_crit += p -> talents.demonic_tactics * 0.02;
+      //player_crit += p -> talents.demonic_tactics * 0.02;
     }
 
     if ( p -> _buffs.demonic_empathy ) player_multiplier *= 1.0 + p -> talents.demonic_empathy * 0.01;
@@ -2285,7 +2285,6 @@ struct shadow_bolt_t : public warlock_spell_t
     base_crit         += p -> talents.devastation * 0.05;
     if ( p -> unique_gear -> tier8_4pc )
       base_crit       += 0.05;
-    base_crit         += p -> talents.backlash * 0.01;
     direct_power_mod  *= 1.0 + p -> talents.shadow_and_flame * 0.04;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
@@ -2435,7 +2434,6 @@ struct chaos_bolt_t : public warlock_spell_t
     base_execute_time -=  p -> talents.bane * 0.1;
     base_multiplier   *= 1.0 + p -> talents.emberstorm  * 0.03;
     base_crit         += p -> talents.devastation * 0.05;
-    base_crit         += p -> talents.backlash * 0.01;
     direct_power_mod  *= 1.0 + p -> talents.shadow_and_flame * 0.04;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
@@ -3089,7 +3087,6 @@ struct immolate_t : public warlock_spell_t
 
     base_execute_time -= p -> talents.bane * 0.1;
     base_crit         += p -> talents.devastation * 0.05;
-    base_crit         += p -> talents.backlash * 0.01;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
     base_dd_multiplier *= 1.0 + ( p -> talents.emberstorm        * 0.03 +
@@ -3174,7 +3171,6 @@ struct shadowflame_t : public warlock_spell_t
     base_cost       *= 1.0 - ( p -> talents.cataclysm * 0.03
                                + ( ( p -> talents.cataclysm ) ? 0.01 : 0 ) );
     base_crit += p -> talents.devastation * 0.05;
-    base_crit += p -> talents.backlash * 0.01;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
 
@@ -3261,7 +3257,6 @@ struct conflagrate_t : public warlock_spell_t
 
     base_multiplier  *= 1.0 + p -> talents.emberstorm * 0.03 + p -> unique_gear -> tier8_2pc * 0.10 ;
     base_crit        += p -> talents.devastation * 0.05;
-    base_crit        += p -> talents.backlash * 0.01;
 
     if ( sim -> P312 ) base_crit += p -> talents.fire_and_brimstone * 0.05;
 
@@ -3423,7 +3418,6 @@ struct incinerate_t : public warlock_spell_t
                                  p -> unique_gear -> tier6_4pc * 0.06 +
                                  p -> glyphs.incinerate        * 0.05 );
     base_crit         += p -> talents.devastation * 0.05;
-    base_crit         += p -> talents.backlash * 0.01;
     if ( p -> unique_gear -> tier8_4pc )
       base_crit       += 0.05;
     direct_power_mod  *= 1.0 + p -> talents.shadow_and_flame * 0.04;
@@ -3533,7 +3527,6 @@ struct searing_pain_t : public warlock_spell_t
 
     base_multiplier *= 1.0 + p -> talents.emberstorm  * 0.03;
     base_crit       += p -> talents.devastation * 0.05;
-    base_crit       += p -> talents.backlash * 0.01;
     base_crit       += p -> talents.improved_searing_pain * 0.03
                        + ( ( p -> talents.improved_searing_pain ) ? 0.01 : 0 );
 
@@ -3594,7 +3587,6 @@ struct soul_fire_t : public warlock_spell_t
     base_execute_time -= p -> talents.bane * 0.4;
     base_multiplier   *= 1.0 + p -> talents.emberstorm  * 0.03;
     base_crit         += p -> talents.devastation * 0.05;
-    base_crit         += p -> talents.backlash * 0.01;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
   }
@@ -4542,6 +4534,7 @@ void warlock_t::init_base()
       + ( ( talents.demonic_embrace ) ? 0.01 : 0 );
 
   base_spell_crit = 0.0169966;
+  base_spell_crit+= talents.demonic_tactics * 0.02 + talents.backlash * 0.01;
   initial_spell_crit_per_intellect = rating_t::interpolate( level, 0.01/60.0, 0.01/80.0, 0.01/166.79732 );
 
   base_attack_power = -10;
