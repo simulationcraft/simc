@@ -64,7 +64,7 @@ static int writer( char *data, size_t size, size_t nmemb, std::string *buffer )
 // this should wait if several threads are entering same critical section 
 // NOT ideal replacement for Critical Section, so use of BOOL variable should be
 // replaced by calling of platform independent crit cestion code
-#ifdef _MSC_VER
+#if defined(_MSC_VER) && ! defined(__MINGW32__)
 
 CRITICAL_SECTION msvcCritSection;
 void EnterCritSection(){
@@ -84,7 +84,6 @@ void initArmoryCaches(){
 int inCritSection=0;
 
 void EnterCritSection(){
-    EnterCriticalSection(
     if (inCritSection>0){
         double t0=time(NULL);
         while (inCritSection && (time(NULL)-t0<10.0) ) ;
