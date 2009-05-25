@@ -7,8 +7,6 @@
 rogue=Rogue_T8_23_05_43
 level=80
 talents=http://ptr.wowhead.com/?talent=fheb0fxZ0xZxbrbhGzdAzqc
-
-# Action queue
 actions=flask,type=endless_rage/food,type=fish_feast/apply_poison,main_hand=instant,off_hand=deadly
 actions+=/auto_attack
 actions+=/pool_energy,for_next=1/slice_and_dice,min_combo_points=4,snd<=3
@@ -18,36 +16,9 @@ actions+=/rupture,min_combo_points=4
 actions+=/envenom,min_combo_points=4,env<=1
 actions+=/eviscerate,min_combo_points=4
 actions+=/hemorrhage,max_combo_points=2,energy>=80
-
-# Gear: http://www.chardev.org/?template=158141
-gear_stamina=963
-gear_strength=10
-gear_agility=1013
-gear_intellect=10
-gear_spirit=10
-gear_attack_power=2181
-gear_expertise_rating=217
-gear_armor_penetration_rating=94
-gear_hit_rating=363
-gear_crit_rating=517
-gear_haste_rating=289
-
-# Set Bonuses
-tier7_2pc=1
-tier7_4pc=0
-
-# Meta Gem
-relentless_earthstorm=1
-
-# Weapons
-main_hand=fist,dps=171,speed=2.6,enchant=berserking
-off_hand=dagger,dps=157,speed=1.4,enchant=berserking
-
-# Item Procs
-darkmoon_greatness=1
-fury_of_the_five_flights=1
-
-# Glyphs
+Rogue_T8_Mutilate_Gear.simcraft
+main_hand=fist,dps=188,speed=2.7,enchant=berserking
+off_hand=dagger,dps=188,speed=1.4,enchant=berserking
 glyph_rupture=1
 glyph_eviscerate=1
 glyph_slice_and_dice=1

@@ -6,8 +6,6 @@
 rogue=Rogue_T8_18_51_02_S
 level=80
 talents=http://ptr.wowhead.com/?talent=f0eb0eZMgVo0cxqru0xRtb
-
-# Action queue
 actions=flask,type=endless_rage/food,type=fish_feast/apply_poison,main_hand=wound,off_hand=deadly
 actions+=/auto_attack
 actions+=/slice_and_dice,min_combo_points=1,snd<=2,time<=4
@@ -20,36 +18,9 @@ actions+=/eviscerate,min_combo_points=4,rup>=5,snd>=3,energy>=40
 actions+=/eviscerate,min_combo_points=5,time_to_die<=10
 actions+=/sinister_strike,max_combo_points=4
 actions+=/adrenaline_rush
-
-# Gear
-gear_stamina=933
-gear_strength=10
-gear_agility=1072
-gear_intellect=10
-gear_spirit=10
-gear_attack_power=2143
-gear_expertise_rating=125
-gear_armor_penetration_rating=144
-gear_hit_rating=296
-gear_crit_rating=560
-gear_haste_rating=233
-
-# Set Bonuses
-tier7_2pc=1
-tier7_4pc=1
-
-# Meta Gem
-relentless_earthstorm=1
-
-# Weapons
-main_hand=sword,dps=157,speed=2.5,enchant=berserking
-off_hand=sword,dps=157,speed=1.5,enchant=berserking
-
-# Item Procs
-darkmoon_greatness=1
-fury_of_the_five_flights=1
-
-# Glyphs
+Rogue_T8_Combat_Gear.simcraft
+main_hand=sword,dps=179,speed=2.5,enchant=berserking
+off_hand=sword,dps=179,speed=1.5,enchant=berserking
 glyph_rupture=1
 glyph_slice_and_dice=1
 glyph_sinister_strike=1

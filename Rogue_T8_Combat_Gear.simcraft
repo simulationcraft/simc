@@ -1,32 +1,33 @@
 # Taken from http://elitistjerks.com/f78/t37112-wotlk_rogue_gear_discussion/p29/#post1241291
 
-# Gear http://www.wowhead.com/?compare=46123:46124:46125:46126:45245:46032:45108:46095:45564:45503:45456:45931:45522:45607
+# Gear 
+# http://www.wowhead.com/?compare=46123:46124:46125:45245:46032:46095:45564:45503:45456:45931:44253:45261:45132:46127
 # http://eu.wowarmory.com/item-info.xml?i=45517
-# http://eu.wowarmory.com/item-info.xml?i=45570
 # http://eu.wowarmory.com/item-info.xml?i=45484
-gear_stamina=960
-gear_agility=1094
-gear_attack_power=1566
+# http://eu.wowarmory.com/item-info.xml?i=45536
+gear_stamina=995
+gear_agility=1200
+gear_attack_power=1606
 gear_expertise_rating=179
-gear_armor_penetration_rating=30
-gear_hit_rating=288
-gear_crit_rating=763
-gear_haste_rating=345
-blood_of_the_old_god=1
+gear_armor_penetration_rating=117
+gear_hit_rating=253
+gear_crit_rating=719
+gear_haste_rating=264
+darkmoon_greatness=1
 mjolnir_runestone=1
 tier8_2pc=1
 tier8_4pc=1
 
 # Weapons
-main_hand=dagger,dps=188,speed=1.8,enchant=berserking
+main_hand=fist,dps=188,speed=2.7,enchant=berserking
 off_hand=dagger,dps=188,speed=1.4,enchant=berserking
 
 # Gems and Socket Bonuses
 relentless_earthsiege=1
-gem_agility=304
-gem_attack_power=36
-gem_hit_rating=6 
-gem_crit_rating=24
+gem_agility=318
+gem_attack_power=44
+gem_hit_rating=10
+gem_crit_rating=32
 
 # Enchants
 enchant_stamina=10
