@@ -395,7 +395,7 @@ struct rng_phase_shift_t : public rng_normalized_t
   {
     for ( int i=0; i < size/2; i++ )
     {
-      range_distribution[ i*2   ] = (   i ) * 1.0/size + 1.0/( size*2 );
+      range_distribution[ i*2   ] = (    i ) * 1.0/size + 1.0/( size*2 );
       range_distribution[ i*2+1 ] = ( 10-i ) * 1.0/size - 1.0/( size*2 );
       gauss_distribution[ i*2   ] = -2.0 / ( 1<<i );
       gauss_distribution[ i*2+1 ] = +2.0 / ( 1<<i );

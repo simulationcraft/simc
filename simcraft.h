@@ -287,6 +287,8 @@ struct thread_t
 {
   static void launch( sim_t* );
   static void wait( sim_t* );
+  static void lock();
+  static void unlock();
 };
 
 // Event =====================================================================

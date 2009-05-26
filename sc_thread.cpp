@@ -34,6 +34,9 @@ void thread_t::wait( sim_t* sim )
 #include <windows.h>
 #include <process.h>
 
+static CRITICAL_SECTION global_lock;
+static bool global_lock_initialized = false;
+
 // thread_execute ===========================================================
 
 static unsigned WINAPI thread_execute( LPVOID sim )
@@ -47,6 +50,11 @@ static unsigned WINAPI thread_execute( LPVOID sim )
 
 void thread_t::launch( sim_t* sim )
 {
+  if( ! global_lock_initialized )
+  {
+    InitializeCriticalSection( &global_lock );
+    global_lock_initialized = true;
+  }
   HANDLE* handle = new HANDLE();
   sim -> thread_handle = ( void* ) handle;
   //MinGW wiki suggests using _beginthreadex over CreateThread
@@ -64,6 +72,20 @@ void thread_t::wait( sim_t* sim )
   sim -> thread_handle = NULL;
 }
 
+// thread_t::lock ===========================================================
+
+void thread_t::lock()
+{
+  EnterCriticalSection( &global_lock );
+}
+
+// thread_t::unlock =========================================================
+
+void thread_t::unlock()
+{
+  LeaveCriticalSection( &global_lock );
+}
+
 #elif defined( _MSC_VER )
 
 // ==========================================================================
@@ -71,6 +93,9 @@ void thread_t::wait( sim_t* sim )
 // ==========================================================================
 
 #include <windows.h>
+
+static CRITICAL_SECTION global_lock;
+static bool global_lock_initialized = false;
 
 // thread_execute ===========================================================
 
@@ -85,6 +110,11 @@ static DWORD WINAPI thread_execute( __in LPVOID sim )
 
 void thread_t::launch( sim_t* sim )
 {
+  if( ! global_lock_initialized )
+  {
+    InitializeCriticalSection( &global_lock );
+    global_lock_initialized = true;
+  }
   HANDLE* handle = new HANDLE();
   sim -> thread_handle = ( void* ) handle;
   *handle = CreateThread( NULL, 0, thread_execute, ( void* ) sim, 0, NULL );
@@ -101,6 +131,20 @@ void thread_t::wait( sim_t* sim )
   sim -> thread_handle = NULL;
 }
 
+// thread_t::lock ===========================================================
+
+void thread_t::lock()
+{
+  EnterCriticalSection( &global_lock );
+}
+
+// thread_t::unlock =========================================================
+
+void thread_t::unlock()
+{
+  LeaveCriticalSection( &global_lock );
+}
+
 #else
 
 // ==========================================================================
@@ -108,6 +152,8 @@ void thread_t::wait( sim_t* sim )
 // ==========================================================================
 
 #include <pthread.h>
+
+static pthread_mutex_t global_lock = PTHREAD_MUTEX_INITIALIZER;
 
 // thread_execute ===========================================================
 
@@ -136,6 +182,20 @@ void thread_t::wait( sim_t* sim )
   if ( pthread )
     delete pthread;
   sim -> thread_handle = NULL;
+}
+
+// thread_t::lock ===========================================================
+
+void thread_t::lock()
+{
+  pthread_mutex_lock( &global_lock );
+}
+
+// thread_t::unlock =========================================================
+
+void thread_t::unlock()
+{
+  pthread_mutex_unlock( &global_lock );
 }
 
 #endif
