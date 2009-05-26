@@ -48,7 +48,7 @@ infinite_mana=0
 # improvement is worth the slight inaccuracy.
 regen_periodicity=1.0
 
-# Patch 3.1.0 WotLK boss armor
+# WotLK boss armor
 target_armor=10643
 
 # Target race
