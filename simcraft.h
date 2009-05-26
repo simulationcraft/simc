@@ -344,6 +344,8 @@ struct raid_event_t{
     double period;
     double duration;
     double stddev;
+    double start;
+    double end;
     bool can_not_dps;
     bool invulnerable;
     double distance;

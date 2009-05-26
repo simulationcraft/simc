@@ -460,6 +460,15 @@ bool  sim_t::init_raid_events(){
                 if (opt=="duration"){
                     re->duration=fVal;
                 }else
+                if (opt=="start"){
+                    re->start=fVal;
+                }else
+                if (opt=="end"){
+                    re->end=fVal;
+                }else
+                if (opt=="stddev"){
+                    re->stddev=fVal;
+                }else
                 if (opt=="can_not_dps"){
                     re->can_not_dps=(int)fVal;
                 }else
@@ -476,14 +485,24 @@ bool  sim_t::init_raid_events(){
             //check if mandatory options were given
             if (re->period>0){
                 // create periods
-                re->n_periods= maxTime/ re->period  +2;
-                re->periods= new raid_event_period_t[re->n_periods+1];
-                double t=re->period/2;
-                for (int i=1; i<=re->n_periods; i++){
-                    re->periods[i].time_from=t;
-                    re->periods[i].time_to=t+re->duration;
-                    t+=re->period;
-                }
+                if (re->end<=0) re->end=maxTime;
+                if (re->start<=0) re->start=re->period/2;
+                re->n_periods= (re->end-re->start)/ re->period + 1;
+                if (re->n_periods>0){
+                    re->periods= new raid_event_period_t[re->n_periods+1];
+                    double t=re->start;
+                    for (int i=1; i<=re->n_periods; i++){
+                        double shift=0;
+                        if (re->stddev>0){
+                            shift= gauss(0,re->stddev);
+                            if (abs(shift)>re->period/2) shift=0;
+                        }
+                        re->periods[i].time_from=t+shift;
+                        re->periods[i].time_to=t+shift+re->duration;
+                        t+=re->period;
+                    }
+                }else
+                    N_raid_events--;
             }else{
                 // if not , go back one step
                 N_raid_events--;
