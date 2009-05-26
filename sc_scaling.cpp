@@ -225,6 +225,7 @@ bool scaling_t::parse_option( const std::string& name,
       { "scale_crit_rating",              OPT_FLT,  &( stats.crit_rating                    ) },
       { "scale_haste_rating",             OPT_FLT,  &( stats.haste_rating                   ) },
       { "scale_weapon_dps",               OPT_FLT,  &( stats.weapon_dps                     ) },
+      { "normalize_scale_factors",        OPT_BOOL, &( normalize_scale_factors              ) },
       { NULL, OPT_UNKNOWN }
     };
 

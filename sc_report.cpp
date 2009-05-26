@@ -320,11 +320,19 @@ static void print_scale_factors( FILE* file, sim_t* sim )
 
     fprintf( file, "  %-25s", p -> name() );
 
+    double norm_div=1.0;
+    if ( sim->scaling->normalize_scale_factors){ 
+        norm_div= p -> scaling.get_stat( STAT_SPELL_POWER );
+        if ( norm_div<  p -> scaling.get_stat( STAT_ATTACK_POWER ) )
+            norm_div =  p -> scaling.get_stat( STAT_ATTACK_POWER );
+        if (norm_div<=0) norm_div=1;
+    }
+
     for ( int j=0; j < STAT_MAX; j++ )
     {
       if ( sim -> scaling -> stats.get_stat( j ) != 0 && p -> scales_with[ j ]  )
       {
-        fprintf( file, "  %s=%.2f", util_t::stat_type_abbrev( j ), p -> scaling.get_stat( j ) );
+        fprintf( file, "  %s=%.2f", util_t::stat_type_abbrev( j ), p -> scaling.get_stat( j )/norm_div );
       }
     }
     fprintf( file, "  Lag=%.2f\n", p -> scaling_lag );

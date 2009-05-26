@@ -595,6 +595,7 @@ struct scaling_t
   int    center_scale_delta;
   int    scale_lag;
   double scale_factor_noise;
+  int    normalize_scale_factors;
 
   // Gear delta for determining scale factors
   gear_stats_t stats;

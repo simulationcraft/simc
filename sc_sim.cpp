@@ -422,7 +422,7 @@ bool  sim_t::init_raid_events(){
         std::vector<std::string> splitsEvents;
         if (debug ) log_t::output( this, "Raid_events_str=%s",  raid_events_str.c_str() );
         //split to multiple events, 
-        int sizeEvt = util_t::string_split( splitsEvents, raid_events_str, "/" );
+        int sizeEvt = util_t::string_split( splitsEvents, raid_events_str, "/\\" );
         N_raid_events=0;
         raid_events= new raid_event_t[sizeEvt+2];
         memset(raid_events,0,(sizeEvt+2)*sizeof(raid_event_t));
@@ -463,6 +463,9 @@ bool  sim_t::init_raid_events(){
                 if (opt=="start"){
                     re->start=fVal;
                 }else
+                if (opt=="n"){
+                    re->n_periods=(int)fVal;
+                }else
                 if (opt=="end"){
                     re->end=fVal;
                 }else
@@ -471,6 +474,9 @@ bool  sim_t::init_raid_events(){
                 }else
                 if (opt=="can_not_dps"){
                     re->can_not_dps=(int)fVal;
+                }else
+                if (opt=="can_dps"){
+                    re->can_not_dps=!(int)fVal;
                 }else
                 if ((opt=="invulnerable")||(opt=="invul")){
                     re->invulnerable=(int)fVal;
@@ -483,11 +489,15 @@ bool  sim_t::init_raid_events(){
                 };
             }
             //check if mandatory options were given
-            if (re->period>0){
+            if ((re->period>0)||(re->n_periods==1)) {
                 // create periods
-                if (re->end<=0) re->end=maxTime;
                 if (re->start<=0) re->start=re->period/2;
-                re->n_periods= (re->end-re->start)/ re->period + 1;
+                if (re->n_periods<=0){
+                    if (re->end<=0) re->end=maxTime;
+                    re->n_periods= (re->end-re->start)/ re->period + 1;
+                }else{
+                    re->end=re->start+re->n_periods*re->period;
+                }
                 if (re->n_periods>0){
                     re->periods= new raid_event_period_t[re->n_periods+1];
                     double t=re->start;

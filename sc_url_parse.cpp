@@ -27,7 +27,7 @@ using namespace std;
 
 const bool ParseEachItem=true;
 const size_t maxCache=1000;
-const int expirationSeconds=3*60*60;
+const int expirationSeconds=6*60*60;
 const char* urlCacheFile="url_cache.dat";
 bool clear_url_cache=false;
 double url_cache_throttle=0;
