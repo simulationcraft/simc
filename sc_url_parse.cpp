@@ -377,7 +377,7 @@ std::string getArmoryData( urlSplit_t aURL, url_page_t pgt, std::string morePara
       break;
   }
   URL+="?r="+aURL.realm+"&n="+aURL.player+moreParams;
-  return getURLData( URL , chk, 0, url_cache_throttle );
+  return getURLData( URL , chk, timeout, url_cache_throttle );
 }
 
 
