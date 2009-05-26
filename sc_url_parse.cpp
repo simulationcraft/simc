@@ -285,7 +285,8 @@ void LoadCache()
 
 
 //wrapper for getURLsource, support for throttling and cache
-std::string getURLData( std::string URL )
+// if chkResult is specified, result is only valid if it contains that string
+std::string getURLData( std::string URL,  std::string chkResult="", double timeout=0, double throttle=0 )
 {
   std::string data="";
   //check cache
@@ -301,33 +302,46 @@ std::string getURLData( std::string URL )
   if ( expired )
   {
     //check if last request was more than 2sec ago
-    if (url_cache_throttle>0)
-        while ( ( lastReqTime<nowTime )&&( time( NULL )-lastReqTime<url_cache_throttle ) );
+    if (throttle>0)
+        while ( ( lastReqTime<nowTime )&&( time( NULL )-lastReqTime<throttle ) );
     // HTTP request
     if (debug>2) printf( "Loading URL: %s\n",URL.c_str() );
     printf("@"); // visual indicator because wait can be long
     data= getURLsource( URL );
     // if there was timeout/error in this fetch, and we have old data, use it
-    if ( found && ( data=="" ) ) data=urlCache[found].data;
-    //add to cache
-    if ( found )
-    {
-      urlCache[found].time= nowTime;
-      urlCache[found].data=data;
+    if ( found && ( data=="" ) ){
+        data=urlCache[found].data;
+        printf("x");
     }
-    else{
-      EnterCritSection();
-      if ( N_cache<maxCache ) 
-      {
-          // check if someone inserted this very URL while i was loading it
-          if ((N_cache==0)||(urlCache[N_cache].url!=URL)){
-            N_cache++;
-            urlCache[N_cache].time=nowTime;
-            urlCache[N_cache].url= URL;
-            urlCache[N_cache].data= data;
+    //add to cache
+    if ((chkResult=="")||(data.find(chkResult)!=string::npos)){
+        if ( found )
+        {
+          urlCache[found].time= nowTime;
+          urlCache[found].data=data;
+        }
+        else{
+          EnterCritSection();
+          if ( N_cache<maxCache ) 
+          {
+              // check if someone inserted this very URL while i was loading it
+              if ((N_cache==0)||(urlCache[N_cache].url!=URL)){
+                N_cache++;
+                urlCache[N_cache].time=nowTime;
+                urlCache[N_cache].url= URL;
+                urlCache[N_cache].data= data;
+              }
           }
-      }
-      LeaveCritSection();
+          LeaveCritSection();
+        }
+    }else
+    // if not correctly found, return from previous cached if exists
+    if (chkResult!=""){
+        if (found){
+            printf("X");
+            data=urlCache[found].data;
+        }else
+            printf("-");
     }
     return data;
   }
@@ -342,15 +356,28 @@ std::string getURLData( std::string URL )
 std::string getArmoryData( urlSplit_t aURL, url_page_t pgt, std::string moreParams="" )
 {
   std::string URL=aURL.wwwAdr;
+  std::string chk="";
+  double timeout=0;
+  double throttle=url_cache_throttle;
   switch ( pgt )
   {
-  case UPG_GEAR:      URL+= "/character-sheet.xml"; break;
-  case UPG_TALENTS:   URL+= "/character-talents.xml"; break;
-  case UPG_ITEM:      URL+= "/item-tooltip.xml"; break;
-  default:            URL+= "/character-sheet.xml"; break;
+    case UPG_TALENTS:   
+      URL+= "/character-talents.xml";   
+      chk="</talentGroup>";   
+      break;
+    case UPG_ITEM:      
+      URL+= "/item-tooltip.xml";        
+      chk="</itemTooltip>";   
+      break;
+    case UPG_GEAR:      
+    default:            
+      URL+= "/character-sheet.xml";     
+      chk="</characterTab>";  
+      throttle+=1;
+      break;
   }
   URL+="?r="+aURL.realm+"&n="+aURL.player+moreParams;
-  return getURLData( URL );
+  return getURLData( URL , chk, 0, url_cache_throttle );
 }
 
 

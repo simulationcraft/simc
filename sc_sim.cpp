@@ -152,6 +152,7 @@ sim_t::sim_t( sim_t* p, int index ) :
     jow_chance( 0 ), jow_ppm( 15.0 ),
     normalized_rng( 0 ), normalized_sf( 0 ), deterministic_roll( 0 ), average_range( 1 ), average_gauss( 0 ),
     timing_wheel( 0 ), wheel_seconds( 0 ), wheel_size( 0 ), wheel_mask( 0 ), timing_slice( 0 ), wheel_granularity( 0.0 ),
+    raid_events(0), N_raid_events(0),
     replenishment_targets( 0 ),
     raid_dps( 0 ), total_dmg( 0 ),
     total_seconds( 0 ), elapsed_cpu_seconds( 0 ),
@@ -412,6 +413,34 @@ void sim_t::combat_end()
   }
 }
 
+
+// sim_t::init_raid_events ==================================================
+bool  sim_t::init_raid_events(){
+    if (raid_events_str!=""){
+        N_raid_events=1;
+        raid_events= new raid_event_t[N_raid_events+1];
+        // test fill parameters (need parse later on)
+        double maxTime= max_time;
+        if (maxTime<=0) maxTime=15*60;
+        raid_event_t* re=&raid_events[1];
+        re->period=30;
+        re->duration=10;
+        re->can_not_dps=false;
+        re->distance=0;
+        // set periods
+        re->n_periods= maxTime/ re->period  +2;
+        re->periods= new raid_event_period_t[re->n_periods+1];
+        double t=re->period/2;
+        for (int i=1; i<=re->n_periods; i++){
+            re->periods[i].time_from=t;
+            re->periods[i].time_to=t+re->duration;
+            t+=re->period;
+        }
+    }
+    return true;
+}
+
+
 // sim_t::init ==============================================================
 
 bool sim_t::init()
@@ -507,6 +536,8 @@ bool sim_t::init()
   {
     p -> register_callbacks();
   }
+
+  init_raid_events();
 
   return true;
 }
@@ -1058,6 +1089,8 @@ bool sim_t::parse_option( const std::string& name,
       { "wheel_seconds",                    OPT_INT,    &( wheel_seconds                            ) },
       { "url_cache_clear",                  OPT_BOOL,   &( url_cache_clear                          ) },
       { "url_cache_throttle",               OPT_FLT,    &( url_cache_throttle                       ) },
+      { "raid_event",                       OPT_STRING, &( raid_events_str                          ) },
+      { "raid_event+",                      OPT_APPEND, &( raid_events_str                          ) },
       { NULL, OPT_UNKNOWN }
     };
 

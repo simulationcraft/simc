@@ -345,7 +345,7 @@ player_t::player_t( sim_t*             s,
     flask( FLASK_NONE ),
     food( FOOD_NONE ),
     // Events
-    executing( 0 ), channeling( 0 ), in_combat( false ),
+    executing( 0 ), channeling( 0 ), in_combat( false ), is_moving(0),
     // Actions
     action_list( 0 ),
     // Reporting
@@ -413,7 +413,6 @@ player_t::player_t( sim_t*             s,
   off_hand_weapon.slot = SLOT_OFF_HAND;
   ranged_weapon.slot = SLOT_RANGED;
 
-  for ( int i=0; i<20; i++ ) setCounters[i]=0;
 }
 
 // player_t::~player_t =====================================================
@@ -1551,14 +1550,40 @@ void player_t::schedule_ready( double delta_time,
   new ( sim ) player_ready_event_t( sim, this, delta_time );
 }
 
+
+// player_t::checkMoving =================================================
+void player_t::checkMoving(){
+    is_moving=0; //0==not moving; 1== move but can use instas; 2== can not dps at all
+    if (!sim->raid_events) return;
+    for (int ei=1; ei<=sim->N_raid_events; ei++){
+        raid_event_t* e = &sim->raid_events[ei];
+        // check interrupt/break periods
+        for (int i=1; i<=e->n_periods; i++){
+            if ((sim -> current_time>= e->periods[i].time_from)&&
+                (sim -> current_time<= e->periods[i].time_to)){
+                    if (e->can_not_dps) 
+                        is_moving=2;
+                    else
+                        if (is_moving==0) is_moving=1;
+            }
+        }
+    }
+}
+
+
 // player_t::execute_action =================================================
 
 action_t* player_t::execute_action()
 {
   action_t* action=0;
+  checkMoving();
 
   for ( action = action_list; action; action = action -> next )
   {
+
+    if ((is_moving && !action->can_use_moving) ||( is_moving>1))
+      continue;
+
     if ( action -> background )
       continue;
 

@@ -93,6 +93,7 @@ struct warlock_t;
 struct warrior_t;
 struct weapon_t;
 struct roll_t;
+struct raid_event_t;
 
 
 // Enumerations ==============================================================
@@ -330,6 +331,24 @@ struct event_compare_t
   }
 };
 
+// raid events
+struct raid_event_period_t{
+    double time_from;
+    double time_to;
+};
+
+struct raid_event_t{
+    // parameters
+    double period;
+    double duration;
+    double stddev;
+    bool can_not_dps;
+    double distance;
+    // occurences
+    int n_periods;
+    raid_event_period_t* periods;
+};
+
 // Gear Stats ================================================================
 
 struct gear_stats_t
@@ -413,6 +432,11 @@ struct sim_t : public app_t
   gear_stats_t gear_default;
   gear_stats_t gear_delta;
 
+  // raid events/interrupts
+  std::string  raid_events_str;
+  raid_event_t* raid_events;
+  int N_raid_events;
+  
   // Buffs and Debuffs Overrides
   struct overrides_t
   {
@@ -539,6 +563,7 @@ struct sim_t : public app_t
   void      cancel_events( player_t* );
   event_t*  next_event();
   void      reset();
+  bool      init_raid_events();
   bool      init();
   void      analyze();
   void      merge( sim_t& other_sim );
@@ -549,7 +574,7 @@ struct sim_t : public app_t
   void      print_options();
   bool      parse_options( int argc, char** argv );
   bool      time_to_think( double proc_time ) { if ( proc_time == 0 ) return false; return current_time - proc_time > reaction_time; }
-bool      cooldown_ready( double cooldown_time ) { return cooldown_time <= current_time; }
+  bool      cooldown_ready( double cooldown_time ) { return cooldown_time <= current_time; }
   int       roll( double chance );
   double    range( double min, double max );
   double    gauss( double mean, double stddev );
@@ -704,6 +729,7 @@ struct player_t
   event_t* executing;
   event_t* channeling;
   bool     in_combat;
+  int      is_moving;
 
   // Callbacks
   std::vector<action_callback_t*> resource_gain_callbacks[ RESOURCE_MAX ];
@@ -910,7 +936,6 @@ struct player_t
   };
   rngs_t rngs;
 
-  int setCounters[20];
 
   player_t( sim_t* sim, int type, const std::string& name );
 
@@ -970,6 +995,7 @@ struct player_t
   virtual double spirit();
 
   virtual void      schedule_ready( double delta_time=0, bool waiting=false );
+  virtual void      checkMoving();
   virtual action_t* execute_action();
 
   virtual void   regen( double periodicity=2.0 );
@@ -1319,6 +1345,7 @@ struct action_t
   double min_time_to_die, max_time_to_die;
   double min_health_percentage, max_health_percentage;
   int wait_on_ready;
+  int can_use_moving;
   std::string sync_str;
   action_t*   sync_action;
   action_t** observer;
