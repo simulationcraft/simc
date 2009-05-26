@@ -46,7 +46,8 @@ scaling_t::scaling_t( sim_t* s ) :
     calculate_scale_factors( 0 ),
     center_scale_delta( 0 ),
     scale_lag( 1 ),
-    scale_factor_noise( 0 )
+    scale_factor_noise( 0 ),
+    normalize_scale_factors(0)
 {}
 
 // scaling_t::init_deltas ===================================================
