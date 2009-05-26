@@ -1,27 +1,28 @@
+
 # Gear: http://www.chardev.org/?template=157145
 # Added 75 spell power to account for profession-specific bonuses
 gear_strength=10
 gear_agility=10
-gear_stamina=903
-gear_intellect=791
+gear_stamina=975
+gear_intellect=896
 gear_spirit=10
 gear_attack_power=0
 gear_expertise_rating=0
 gear_armor_penetration_rating=0
-gear_spell_power=2033
-gear_hit_rating=288
-gear_crit_rating=556
-gear_haste_rating=466
+gear_spell_power=2269
+gear_hit_rating=286
+gear_crit_rating=738
+gear_haste_rating=534
 
 # Set Bonuses
-tier7_2pc=1
-tier7_4pc=1
+tier8_2pc=1
+tier8_4pc=1
 
 # Meta Gem
 chaotic_skyflare=1
 
 # Item Procs
-dying_curse=1
+flare_of_the_heavens=1
 illustration_of_the_dragon_soul=1
 
 # Glyphs
