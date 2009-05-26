@@ -385,23 +385,30 @@ struct rng_normalized_t : public rng_t
 
 struct rng_phase_shift_t : public rng_normalized_t
 {
-  static const int size = 10; // must be even number
-  double range_distribution[ size ];
-  double gauss_distribution[ size ];
+  std::vector<double> range_distribution;
+  std::vector<double> gauss_distribution;
   int range_index, gauss_index;
 
   rng_phase_shift_t( const std::string& name, rng_t* b, bool avg_range=false, bool avg_gauss=false ) :
       rng_normalized_t( name, b, avg_range, avg_gauss )
   {
-    for ( int i=0; i < size/2; i++ )
+    range_distribution.resize( 10 );
+    for( int i=0; i < 5; i++ ) 
     {
-      range_distribution[ i*2   ] = (    i ) * 1.0/size + 1.0/( size*2 );
-      range_distribution[ i*2+1 ] = ( 10-i ) * 1.0/size - 1.0/( size*2 );
-      gauss_distribution[ i*2   ] = -2.0 / ( 1<<i );
-      gauss_distribution[ i*2+1 ] = +2.0 / ( 1<<i );
+      range_distribution[ i*2   ] = 0.5 + ( i + 0.5 );
+      range_distribution[ i*2+1 ] = 0.5 - ( i + 0.5 );
     }
-    range_index = ( int ) real() * size;
-    gauss_index = ( int ) real() * size;
+    range_index = ( int ) real() * 10;
+
+    double gauss_offset[] = { 0.3, 0.5, 0.8, 1.3, 2.1 };
+    gauss_distribution.resize( 10 );
+    for ( int i=0; i < 5; i++ )
+    {
+      gauss_distribution[ i*2   ] = 0.0 + gauss_offset[ i ];
+      gauss_distribution[ i*2+1 ] = 0.0 - gauss_offset[ i ];
+    }
+    gauss_index = ( int ) real() * 10;
+
     actual_roll = real() - 0.5;
   }
   virtual ~rng_phase_shift_t() {}
@@ -411,6 +418,7 @@ struct rng_phase_shift_t : public rng_normalized_t
   {
     if ( average_range ) return ( min + max ) / 2.0;
     num_range++;
+    int size = range_distribution.size();
     if ( ++range_index >= size ) range_index = 0;
     double result = min + range_distribution[ range_index ] * ( max - min );
     expected_range += ( max - min ) / 2.0;
@@ -421,6 +429,7 @@ struct rng_phase_shift_t : public rng_normalized_t
   {
     if ( average_gauss ) return mean;
     num_gauss++;
+    int size = gauss_distribution.size();
     if ( ++gauss_index >= size ) gauss_index = 0;
     double result = mean + gauss_distribution[ gauss_index ] * stddev;
     expected_gauss += mean;
@@ -448,25 +457,33 @@ struct rng_phase_shift_t : public rng_normalized_t
 
 struct rng_pre_fill_t : public rng_normalized_t
 {
-  static const int size = 10; // must be even number
-  double  roll_distribution[ size ];
-  double range_distribution[ size ];
-  double gauss_distribution[ size ];
+  std::vector<double>  roll_distribution;
+  std::vector<double> range_distribution;
+  std::vector<double> gauss_distribution;
   int roll_index, range_index, gauss_index;
 
   rng_pre_fill_t( const std::string& name, rng_t* b, bool avg_range=false, bool avg_gauss=false ) :
       rng_normalized_t( name, b, avg_range, avg_gauss )
   {
-    for ( int i=0; i < size/2; i++ )
+    range_distribution.resize( 10 );
+    for( int i=0; i < 5; i++ ) 
     {
-      range_distribution[ i*2   ] = (    i ) * 1.0/size + 1.0/( size*2 );
-      range_distribution[ i*2+1 ] = ( 10-i ) * 1.0/size - 1.0/( size*2 );
-      gauss_distribution[ i*2   ] = -2.0 / ( 1<<i );
-      gauss_distribution[ i*2+1 ] = +2.0 / ( 1<<i );
+      range_distribution[ i*2   ] = 0.5 + ( i + 0.5 );
+      range_distribution[ i*2+1 ] = 0.5 - ( i + 0.5 );
     }
-    range_index = ( int ) real() * size;
-    gauss_index = ( int ) real() * size;
-    roll_index = size;
+    range_index = ( int ) real() * 10;
+
+    double gauss_offset[] = { 0.3, 0.5, 0.8, 1.3, 2.1 };
+    gauss_distribution.resize( 10 );
+    for ( int i=0; i < 5; i++ )
+    {
+      gauss_distribution[ i*2   ] = 0.0 + gauss_offset[ i ];
+      gauss_distribution[ i*2+1 ] = 0.0 - gauss_offset[ i ];
+    }
+    gauss_index = ( int ) real() * 10;
+
+    roll_distribution.resize( 10 );
+    roll_index = 10;
   }
   virtual ~rng_pre_fill_t() {}
   virtual int type() { return RNG_PRE_FILL; }
@@ -477,6 +494,7 @@ struct rng_pre_fill_t : public rng_normalized_t
     if ( chance >= 1 ) return 1;
     double avg_chance = ( num_roll > 0 ) ? ( expected_roll / num_roll ) : chance;
     num_roll++;
+    int size = roll_distribution.size();
     if ( ++roll_index >= size )
     {
       double exact_procs = avg_chance * size + expected_roll - actual_roll;
@@ -512,6 +530,7 @@ struct rng_pre_fill_t : public rng_normalized_t
   virtual double range( double min, double max )
   {
     if ( average_range ) return ( min + max ) / 2.0;
+    int size = range_distribution.size();
     if ( ++range_index >= size )
     {
       for ( int i=0; i < size; i++ )
@@ -531,6 +550,7 @@ struct rng_pre_fill_t : public rng_normalized_t
   virtual double gauss( double mean, double stddev )
   {
     if ( average_gauss ) return mean;
+    int size = gauss_distribution.size();
     if ( ++gauss_index >= size )
     {
       for ( int i=0; i < size; i++ )

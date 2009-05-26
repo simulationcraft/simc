@@ -12,5 +12,6 @@ Rogue_T7_18_51_02_M.simcraft  tricks_of_the_trade_target=Rogue_T7_18_51_02_FD
 Rogue_T7_18_51_02_FD.simcraft tricks_of_the_trade_target=Rogue_T7_20_51_00
 Rogue_T7_20_51_00.simcraft    tricks_of_the_trade_target=Rogue_T7_23_05_43
 Rogue_T7_23_05_43.simcraft    tricks_of_the_trade_target=Rogue_T7_51_13_07
-Rogue_T7_51_13_07.simcraft    tricks_of_the_trade_target=Rogue_T7_51_18_02
+Rogue_T7_51_13_07.simcraft    tricks_of_the_trade_target=Rogue_T7_51_13_07_NoM
+Rogue_T7_51_13_07.simcraft    tricks_of_the_trade_target=Rogue_T7_51_18_02      name=Rogue_T7_51_13_07_NoM murder=0
 Rogue_T7_51_18_02.simcraft    tricks_of_the_trade_target=Rogue_T7_07_51_13

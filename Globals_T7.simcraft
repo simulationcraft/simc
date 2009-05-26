@@ -52,7 +52,7 @@ regen_periodicity=1.0
 target_armor=10643
 
 # Target race
-target_race=none
+target_race=humanoid
 
 # Support for Feral Bear does not yet exist
 faerie_fire=1
