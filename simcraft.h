@@ -281,6 +281,7 @@ enum rng_type
 };
 
 
+enum raid_event_type { REVT_NONE, REVT_PERIOD, REVT_MAX };
 
 // Thread Wrappers ===========================================================
 
@@ -339,10 +340,12 @@ struct raid_event_period_t{
 
 struct raid_event_t{
     // parameters
+    raid_event_type type;
     double period;
     double duration;
     double stddev;
     bool can_not_dps;
+    bool invulnerable;
     double distance;
     // occurences
     int n_periods;
@@ -729,7 +732,6 @@ struct player_t
   event_t* executing;
   event_t* channeling;
   bool     in_combat;
-  int      is_moving;
 
   // Callbacks
   std::vector<action_callback_t*> resource_gain_callbacks[ RESOURCE_MAX ];
@@ -995,7 +997,7 @@ struct player_t
   virtual double spirit();
 
   virtual void      schedule_ready( double delta_time=0, bool waiting=false );
-  virtual void      checkMoving();
+  virtual int       checkMoving(double tm);
   virtual action_t* execute_action();
 
   virtual void   regen( double periodicity=2.0 );
@@ -1345,7 +1347,6 @@ struct action_t
   double min_time_to_die, max_time_to_die;
   double min_health_percentage, max_health_percentage;
   int wait_on_ready;
-  int can_use_moving;
   std::string sync_str;
   action_t*   sync_action;
   action_t** observer;
@@ -1389,6 +1390,7 @@ struct action_t
   virtual void   update_ready();
   virtual void   update_stats( int type );
   virtual void   update_time( int type );
+  virtual int    processMoving(int is_moving) {return 0; };
   virtual bool   ready();
   virtual void   reset();
   virtual void   cancel();
@@ -1820,6 +1822,7 @@ struct util_t
   static int milliseconds();
 };
 
+std::string tolower( std::string src );
 void initArmoryCaches();
 bool parseArmory( sim_t* sim, std::string URL, bool parseName=true, bool parseTalents=true, bool parseGear=true );
 

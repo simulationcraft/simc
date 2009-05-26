@@ -345,7 +345,7 @@ player_t::player_t( sim_t*             s,
     flask( FLASK_NONE ),
     food( FOOD_NONE ),
     // Events
-    executing( 0 ), channeling( 0 ), in_combat( false ), is_moving(0),
+    executing( 0 ), channeling( 0 ), in_combat( false ),
     // Actions
     action_list( 0 ),
     // Reporting
@@ -1550,25 +1550,33 @@ void player_t::schedule_ready( double delta_time,
   new ( sim ) player_ready_event_t( sim, this, delta_time );
 }
 
-
 // player_t::checkMoving =================================================
-void player_t::checkMoving(){
-    is_moving=0; //0==not moving; 1== move but can use instas; 2== can not dps at all
-    if (!sim->raid_events) return;
+// check if player is moving at one specific point in time
+    //0== not moving; 
+    //1== regular moving : move but can use instas; 
+    //2== stunned : can not dps at all; 
+    //3== invulnerable target: can not dps, and need to cancel spells
+int player_t::checkMoving(double tm){
+    int is_moving=0; 
+    if (!sim->raid_events) return 0;
     for (int ei=1; ei<=sim->N_raid_events; ei++){
         raid_event_t* e = &sim->raid_events[ei];
-        // check interrupt/break periods
+        // check if they apply to this player
+        bool ok=(e->type== REVT_PERIOD);
+        if ((e->distance>0)&&(e->distance < distance)) ok=false;
+        // check interrupt/break periods, if they apply to this player
+        if (ok)
         for (int i=1; i<=e->n_periods; i++){
-            if ((sim -> current_time>= e->periods[i].time_from)&&
-                (sim -> current_time<= e->periods[i].time_to)){
-                    if (e->can_not_dps) 
-                        is_moving=2;
-                    else
-                        if (is_moving==0) is_moving=1;
+            if ((tm >= e->periods[i].time_from)&&
+                (tm <= e->periods[i].time_to)){
+                    int ism= e->invulnerable? 3: e->can_not_dps? 2: 1;
+                    if (ism>is_moving) is_moving=ism;
             }
         }
     }
+    return is_moving;
 }
+
 
 
 // player_t::execute_action =================================================
@@ -1576,17 +1584,25 @@ void player_t::checkMoving(){
 action_t* player_t::execute_action()
 {
   action_t* action=0;
-  checkMoving();
+  int is_moving= checkMoving(sim -> current_time);
 
   for ( action = action_list; action; action = action -> next )
   {
 
-    if ((is_moving && !action->can_use_moving) ||( is_moving>1))
-      continue;
-
     if ( action -> background )
       continue;
+    
+    // default moving check - for those actions that do not check on their own
+    if ((is_moving && (action->channeled || action->execute_time()>0)) ||( is_moving>1)){
+      // give action chance to do additional stuff if moving
+      action -> processMoving(is_moving);
+      // cancel spell if channeled or target invul
+      if ( (action->num_ticks>0) && (action->channeled || (is_moving>2)) )
+            action->cancel(); 
+      continue;
+    }
 
+    // regular check if action is ready
     if ( action -> ready() )
       break;
 

@@ -414,27 +414,81 @@ void sim_t::combat_end()
 }
 
 
+
 // sim_t::init_raid_events ==================================================
 bool  sim_t::init_raid_events(){
+    // raid_event=break,period=30,duration=5,can_not_dps=1/break,period=60,duration=10,distance<=15
     if (raid_events_str!=""){
-        N_raid_events=1;
-        raid_events= new raid_event_t[N_raid_events+1];
-        // test fill parameters (need parse later on)
+        std::vector<std::string> splitsEvents;
+        if (debug ) log_t::output( this, "Raid_events_str=%s",  raid_events_str.c_str() );
+        //split to multiple events, 
+        int sizeEvt = util_t::string_split( splitsEvents, raid_events_str, "/" );
+        N_raid_events=0;
+        raid_events= new raid_event_t[sizeEvt+2];
+        memset(raid_events,0,(sizeEvt+2)*sizeof(raid_event_t));
         double maxTime= max_time;
         if (maxTime<=0) maxTime=15*60;
-        raid_event_t* re=&raid_events[1];
-        re->period=30;
-        re->duration=10;
-        re->can_not_dps=false;
-        re->distance=0;
-        // set periods
-        re->n_periods= maxTime/ re->period  +2;
-        re->periods= new raid_event_period_t[re->n_periods+1];
-        double t=re->period/2;
-        for (int i=1; i<=re->n_periods; i++){
-            re->periods[i].time_from=t;
-            re->periods[i].time_to=t+re->duration;
-            t+=re->period;
+        // process each event
+        for ( int ei=0; ei < sizeEvt; ei++ )
+        {
+            N_raid_events++;
+            raid_event_t* re=&raid_events[N_raid_events];
+            bool ok=true;
+            re->type=REVT_NONE;
+            //split options for this event
+            std::vector<std::string> splitsOptions;
+            int sizeOpt = util_t::string_split( splitsOptions, splitsEvents[ei], "," );
+            for (int i=0; i< sizeOpt; i++){
+                std::string opt= tolower(splitsOptions[i]);
+                std::string optValue="";
+                double fVal=0;
+                int cpos= opt.find("=");
+                if (cpos!=std::string::npos){
+                    optValue= opt.substr(cpos+1);
+                    opt= opt.substr(0,cpos);
+                    fVal=atof(optValue.c_str());
+                }
+                // raid event types
+                if (opt=="break"){
+                    re->type=REVT_PERIOD;
+                }else
+                // period options
+                if (opt=="period"){
+                    re->type=REVT_PERIOD;
+                    re->period=fVal;
+                }else
+                if (opt=="duration"){
+                    re->duration=fVal;
+                }else
+                if (opt=="can_not_dps"){
+                    re->can_not_dps=(int)fVal;
+                }else
+                if ((opt=="invulnerable")||(opt=="invul")){
+                    re->invulnerable=(int)fVal;
+                }else
+                if ((opt=="distance")||(opt=="distance<")){
+                    re->distance=fVal;
+                }else{
+                    printf( "sim_t: Unknown raid event: %s\n", opt.c_str() );
+                    assert( false );
+                };
+            }
+            //check if mandatory options were given
+            if (re->period>0){
+                // create periods
+                re->n_periods= maxTime/ re->period  +2;
+                re->periods= new raid_event_period_t[re->n_periods+1];
+                double t=re->period/2;
+                for (int i=1; i<=re->n_periods; i++){
+                    re->periods[i].time_from=t;
+                    re->periods[i].time_to=t+re->duration;
+                    t+=re->period;
+                }
+            }else{
+                // if not , go back one step
+                N_raid_events--;
+            }
+
         }
     }
     return true;

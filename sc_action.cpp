@@ -52,7 +52,7 @@ action_t::action_t( int         ty,
     min_current_time( 0 ), max_current_time( 0 ),
     min_time_to_die( 0 ), max_time_to_die( 0 ),
     min_health_percentage( 0 ), max_health_percentage( 0 ),
-    wait_on_ready( -1 ), can_use_moving(0),
+    wait_on_ready( -1 ), 
     sync_action( 0 ), observer( 0 ), next( 0 )
 {
   if ( sim -> debug ) log_t::output( sim, "Player %s creates action %s", p -> name(), name() );
