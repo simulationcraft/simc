@@ -280,7 +280,6 @@ enum rng_type
   RNG_MAX
 };
 
-
 enum raid_event_type { REVT_NONE, REVT_PERIOD, REVT_MAX };
 
 // Thread Wrappers ===========================================================
@@ -291,6 +290,16 @@ struct thread_t
   static void wait( sim_t* );
   static void lock();
   static void unlock();
+};
+
+// HTTP Download  ============================================================
+
+struct http_t
+{
+  static bool load_cache( const std::string& file );
+  static bool save_cache( const std::string& file );
+  static bool download( std::string& result, const std::string& url );
+  static bool get     ( std::string& result, const std::string& url );
 };
 
 // Event =====================================================================

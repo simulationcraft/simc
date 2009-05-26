@@ -60,6 +60,7 @@ SRC =\
 	sc_event.cpp		\
 	sc_gear_stats.cpp	\
 	sc_hunter.cpp		\
+	sc_http.cpp		\
 	sc_log.cpp		\
 	sc_mage.cpp		\
 	sc_main.cpp		\

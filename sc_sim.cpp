@@ -433,7 +433,6 @@ bool  sim_t::init_raid_events(){
         {
             N_raid_events++;
             raid_event_t* re=&raid_events[N_raid_events];
-            bool ok=true;
             re->type=REVT_NONE;
             //split options for this event
             std::vector<std::string> splitsOptions;
@@ -442,7 +441,7 @@ bool  sim_t::init_raid_events(){
                 std::string opt= tolower(splitsOptions[i]);
                 std::string optValue="";
                 double fVal=0;
-                int cpos= opt.find("=");
+		std::string::size_type cpos= opt.find("=");
                 if (cpos!=std::string::npos){
                     optValue= opt.substr(cpos+1);
                     opt= opt.substr(0,cpos);

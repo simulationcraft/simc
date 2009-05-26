@@ -264,8 +264,7 @@ struct rogue_t : public player_t
   }
 };
 
-namespace
-{ // ANONYMOUS NAMESPACE =========================================
+namespace { // ANONYMOUS NAMESPACE =========================================
 
 // ==========================================================================
 // Rogue Attack
