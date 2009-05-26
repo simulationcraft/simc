@@ -76,14 +76,20 @@ void thread_t::wait( sim_t* sim )
 
 void thread_t::lock()
 {
-  EnterCriticalSection( &global_lock );
+  if( global_lock_initialized )
+  {
+    EnterCriticalSection( &global_lock );
+  }
 }
 
 // thread_t::unlock =========================================================
 
 void thread_t::unlock()
 {
-  LeaveCriticalSection( &global_lock );
+  if( global_lock_initialized )
+  {
+    LeaveCriticalSection( &global_lock );
+  }
 }
 
 #elif defined( _MSC_VER )
@@ -135,14 +141,20 @@ void thread_t::wait( sim_t* sim )
 
 void thread_t::lock()
 {
-  EnterCriticalSection( &global_lock );
+  if( global_lock_initialized )
+  {
+    EnterCriticalSection( &global_lock );
+  }
 }
 
 // thread_t::unlock =========================================================
 
 void thread_t::unlock()
 {
-  LeaveCriticalSection( &global_lock );
+  if( global_lock_initialized )
+  {
+    LeaveCriticalSection( &global_lock );
+  }
 }
 
 #else
@@ -154,6 +166,7 @@ void thread_t::unlock()
 #include <pthread.h>
 
 static pthread_mutex_t global_lock = PTHREAD_MUTEX_INITIALIZER;
+static bool global_lock_initialized = false;
 
 // thread_execute ===========================================================
 
@@ -168,6 +181,7 @@ static void* thread_execute( void* sim )
 
 void thread_t::launch( sim_t* sim )
 {
+  global_lock_initialized = true;
   pthread_t* pthread = new pthread_t();
   sim -> thread_handle = ( void* ) pthread;
   pthread_create( pthread, NULL, thread_execute, ( void* ) sim );
@@ -188,14 +202,20 @@ void thread_t::wait( sim_t* sim )
 
 void thread_t::lock()
 {
-  pthread_mutex_lock( &global_lock );
+  if( global_lock_initialized )
+  {
+    pthread_mutex_lock( &global_lock );
+  }
 }
 
 // thread_t::unlock =========================================================
 
 void thread_t::unlock()
 {
-  pthread_mutex_unlock( &global_lock );
+  if( global_lock_initialized )
+  {
+    pthread_mutex_unlock( &global_lock );
+  }
 }
 
 #endif
