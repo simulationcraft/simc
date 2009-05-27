@@ -827,7 +827,7 @@ bool  parseItemStats( urlSplit_t& aURL, gear_stats_t& gs,  std::string& item_id,
 // main procedure that parse armory info from giuven player URL (URL must have realm/player inside)
 // it set options either by building option string and calling parse_line(), or by directly calling
 // player->parse_option()
-bool parseArmory( sim_t* sim, std::string URL, bool parseName, bool parseTalents, bool parseGear )
+bool parseArmory( sim_t* sim, std::string URL, bool inactiveTalents, bool gearOnly )
 {
   std::string optionStr="";
   // split URL
@@ -843,15 +843,18 @@ bool parseArmory( sim_t* sim, std::string URL, bool parseName, bool parseTalents
   // each recognized option add to optionStr
   std::string node;
   node= getValue( src,"character.class" );
-  if ( parseName&&( node!="" ) )
+  if ( (!gearOnly)&&( node!="" ) )
   {
     node[0]=tolower( node[0] );
-    optionStr+= chkValue( src,"character.name",node+"=" );
+    std::string charName= getValue(src,"character.name");
+    if (inactiveTalents) charName+="_inactive";
+    optionStr+= node+"="+charName+"\n";
+    //optionStr+= chkValue( src,"character.name",node+"=" );
     optionStr+= chkValue( src,"character.level","level=" );
   }
 
   //gear stats from summary tabs
-  if ( parseGear&&!ParseEachItem )
+  if ( !ParseEachItem )
   {
     optionStr+= chkValue( src,"baseStats.strength.effective","gear_strength=" );
     optionStr+= chkValue( src,"baseStats.agility.effective","gear_agility=" );
@@ -868,25 +871,25 @@ bool parseArmory( sim_t* sim, std::string URL, bool parseName, bool parseTalents
     optionStr+= chkMaxValue( src,"spell.hasteRating.hasteRating,melee.mainHandSpeed.hasteRating,ranged.speed.hasteRating","gear_haste_rating=" );
     optionStr+= chkMaxValue( src,"spell.hitRating.value,melee.hitRating.value,ranged.hitRating.value","gear_hit_rating=" );
     optionStr+= chkMaxValue( src,"spell.critChance.rating,melee.critChance.rating,ranged.critChance.rating","gear_crit_rating=" );
-
-    //optionStr+= chkValue(src,"characterBars.health.effective","gear_health=");
-    //node= getValue(src, "characterBars.secondBar.type");
-    //if (node=="m")  optionStr+= chkValue(src,"characterBars.secondBar.effective","gear_mana=");
   }
 
+  std::string glyphs="";
 
   // retrieve armory talents data (XML) for this player
-  if ( parseTalents )
+  if ( !gearOnly )
   {
     std::string src2= getArmoryData( aURL, UPG_TALENTS );
     src2= getNode( src2, "talentGroups" );
     node= getNode( src2,"talentGroup" );
     std::string active= getValue( node,"active" );
-    if ( active!="1" )
+    if ( ((active!="1")&&!inactiveTalents)|| ((active=="1")&&inactiveTalents) )
     {
       node= getNodeOne( src2,"talentGroup",2 );
     }
     optionStr+= chkValue( node, "talentSpec.value", "talents=http://worldofwarcraft?encoded=" );
+    glyphs = getNode( node, "glyphs" );
+  }else{
+    glyphs = getNode( src, "characterTab.glyphs" );
   }
 
   // submit options so far, in order to create player, because following parses may need to call player->parse
@@ -901,13 +904,12 @@ bool parseArmory( sim_t* sim, std::string URL, bool parseName, bool parseTalents
   };
 
   // parse for glyphs
-  node = getNode( src, "characterTab.glyphs" );
-  if ( ( node!="" )&&( sim->active_player ) )
+  if ( ( glyphs!="" )&&( sim->active_player ) )
   {
     std::string glyph_node, glyph_name;
     for ( unsigned int i=1; i<=3; i++ )
     {
-      glyph_node= getNodeOne( node, "glyph",i );
+      glyph_node= getNodeOne( glyphs, "glyph",i );
       if ( glyph_node!="" )
       {
         glyph_name= getValue( glyph_node, "name" );
@@ -936,7 +938,7 @@ bool parseArmory( sim_t* sim, std::string URL, bool parseName, bool parseTalents
       addItemGlyphOption( sim, item_node, "gem2Id" );
       addItemGlyphOption( sim, item_node, "permanentenchant" );
       // if we parse each item for stats , do it here
-      if ( parseGear&&ParseEachItem&&( item_node!="" ) )
+      if ( ParseEachItem&&( item_node!="" ) )
       {
         std::string  item_id= getValue( item_node, "id" );
         std::string  item_slot= getValue( item_node, "slot" );
@@ -950,13 +952,13 @@ bool parseArmory( sim_t* sim, std::string URL, bool parseName, bool parseTalents
       }
     }
     //copy gear stats if needed
-    if ( ( nGs>0 )&&parseGear&&ParseEachItem )
+    if ( ( nGs>0 )&& ParseEachItem )
       sim->active_player->gear_stats = gs;
   }
 
   // save url caches
   SaveCache();
-  if ( debug ) displayStats( sim->active_player->gear_stats );
+  if ( debug && sim->active_player) displayStats( sim->active_player->gear_stats );
   // now parse remaining options, if any
   if ( optionStr!="" )
   {
@@ -971,6 +973,28 @@ bool parseArmory( sim_t* sim, std::string URL, bool parseName, bool parseTalents
     char c;
     printf( "<debug> Press any key ...\n" );
     scanf( "%c",&c );
+  }
+  return true;
+}
+
+bool parseArmoryPlayers( sim_t* sim, std::string URL ){
+  std::vector<std::string> splits;
+  unsigned int num = util_t::string_split( splits, URL, "," );
+  if (num<2) return false;
+  std::string srvURL=splits[0];
+  for ( unsigned int i=1; i < num; i++ )
+  {
+    std::string player=splits[i];
+    bool inactiveTalents=false;
+    if (player!=""){
+        //check if !Name is passed to require alternate talents
+        if (player[0]=='!'){
+            inactiveTalents=true;
+            player=player.substr(1);
+        }
+        //call parse of one player
+        parseArmory( sim, srvURL+"&n="+player, inactiveTalents );
+    }
   }
   return true;
 }

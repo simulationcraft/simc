@@ -1836,7 +1836,8 @@ struct util_t
 };
 
 std::string tolower( std::string src );
-bool parseArmory( sim_t* sim, std::string URL, bool parseName=true, bool parseTalents=true, bool parseGear=true );
+bool parseArmory( sim_t* sim, std::string URL, bool inactiveTalents=false, bool gearOnly=false );
+bool parseArmoryPlayers( sim_t* sim, std::string URL );
 
 
 

@@ -1188,8 +1188,9 @@ bool sim_t::parse_option( const std::string& name,
   if ( parse_optimal_raid( this, name, value ) ) return true;
 
   if ( player_t::create( this, name, value ) ) return true;
-  if ( name=="player" )   return parseArmory( this, value );
-  if ( name=="gear" )     return parseArmory( this, value,false,false );
+  if ( name=="player" )             return parseArmory( this, value);
+  if ( name=="gear" )               return parseArmory( this, value, false, true );
+  if ( name=="armory" )             return parseArmoryPlayers( this, value);
 
   if ( target  -> parse_option( name, value ) ) return true;
   if ( scaling -> parse_option( name, value ) ) return true;
