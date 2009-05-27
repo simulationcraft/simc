@@ -4398,44 +4398,54 @@ void imp_pet_t::fire_bolt_t::execute()
 std::string warlock_t::get_default_actions()
 {
   std::string actions="";
+  // common stuff, food, flasks etc
+  actions+="flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/spell_stone/fel_armor/summon_pet,";
+  // select appropriate pet
+  if (talents.summon_felguard) actions+="felguard"; else actions+="imp";
+
+  // select best rotation/priorities for dots, cooldowns and executes
+  // pure builds
   if ( talents.haunt )
   { // 53_00_18
-    actions+="flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/spell_stone/fel_armor/summon_pet,imp";
     actions+="/haunt,debuff=1/corruption/curse_of_agony/unstable_affliction/haunt";
-    actions+="/drain_soul,health_percentage<=25,interrupt=1/shadow_bolt/life_tap";
+    actions+="/drain_soul,health_percentage<=25,interrupt=1";
   }
   else
-    if ( talents.metamorphosis )
-    {  // 00_56_15
-      actions+="flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/spell_stone/fel_armor/summon_pet,felguard";
-      actions+="/demonic_empowerment/life_tap,trigger=10000,health_percentage>=35,metamorphosis=-1";
-      actions+="/soul_fire,decimation=1/life_tap,glyph=1/metamorphosis/curse_of_doom,time_to_die>=90";
-      actions+="/immolation,health_percentage>=35/immolate/corruption,health_percentage>=35/shadow_bolt/life_tap";
-    }
-    else
-      if ( talents.summon_felguard && talents.emberstorm && talents.decimation )
-      {  // 00_41_30
-        actions+="flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/spell_stone/fel_armor/summon_pet,felguard";
-        actions+="/soul_fire,decimation=1/life_tap,glyph=1/immolate/curse_of_agony/corruption,health_percentage>=35/incinerate/life_tap";
-      }
-      else
-        if ( talents.decimation && talents.conflagrate )
-        {  // 00_40_31
-          actions+="flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/spell_stone/fel_armor/summon_pet,imp";
-          actions+="/soul_fire,decimation=1/life_tap,glyph=1/immolate/conflagrate";
-          actions+="/curse_of_agony/corruption,health_percentage>=35/incinerate/life_tap";
-        }
-        else
-          if ( talents.chaos_bolt )
-          {  // 00_13_58
-            actions+="flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/fire_stone/fel_armor/summon_pet,imp";
-            actions+="/curse_of_doom,time_to_die>=90/immolate/conflagrate/chaos_bolt/incinerate/life_tap";
-          }
-          else
-          { // generic
-            actions+="flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/spell_stone/fel_armor/summon_pet,imp";
-            actions+="/corruption/curse_of_agony/immolate/shadow_bolt/life_tap";
-          }
+  if ( talents.chaos_bolt )
+  {  // 00_13_58
+    actions+="/curse_of_doom,time_to_die>=90/immolate/conflagrate/chaos_bolt";
+  }
+  else
+  if ( talents.metamorphosis )
+  {  // 00_56_15
+    actions+="/demonic_empowerment/life_tap,trigger=10000,health_percentage>=35,metamorphosis=-1";
+    actions+="/soul_fire,decimation=1/life_tap,glyph=1/metamorphosis/curse_of_doom,time_to_die>=90";
+    actions+="/immolation,health_percentage>=35/immolate/corruption,health_percentage>=35";
+  }
+  else
+  // Hybrid builds
+  if ( talents.summon_felguard && talents.emberstorm && talents.decimation )
+  {  // 00_41_30
+    actions+="/soul_fire,decimation=1/life_tap,glyph=1/immolate/curse_of_agony/corruption,health_percentage>=35";
+  }
+  else
+  if ( talents.decimation && talents.conflagrate )
+  {  // 00_40_31
+    actions+="/soul_fire,decimation=1/life_tap,glyph=1/immolate/conflagrate";
+    actions+="/curse_of_agony/corruption,health_percentage>=35";
+  }
+  else
+  // generic
+  { 
+    actions+="/corruption/curse_of_agony/immolate";
+    if ( sim->debug ) log_t::output( sim, "DEFAULT action NOT found, using generic.\n " );
+  }
+
+  // select filler nuke
+  if (talents.emberstorm) actions+="/incinerate"; else actions+="/shadow_bolt";
+  // comon lowest priority stuff
+  actions+="/life_tap";
+  //return result
   return actions;
 }
 

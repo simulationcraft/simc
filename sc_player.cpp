@@ -912,7 +912,7 @@ void player_t::init_actions()
   if ( action_list_str.empty() && !is_pet()  )
   {
     action_list_str= get_default_actions();
-    if ( sim->debug ) log_t::output( sim, "Player %s: DEFAULT action_list_str", name() );
+    if ( sim->debug ) log_t::output( sim, "Player %s, DEFAULT action_list_str:\n %s \n ", name(),action_list_str.c_str()  );
   }
   // parse actions
   if ( ! action_list_prefix.empty() ||

@@ -429,7 +429,7 @@ struct sim_t : public app_t
   int         seed, id, iterations, current_iteration;
   int         infinite_resource[ RESOURCE_MAX ];
   int         armor_update_interval, potion_sickness;
-  int         optimal_raid, log, debug;
+  int         optimal_raid, log, debug, debug_armory;
   double      jow_chance, jow_ppm;
 
   std::vector<std::string> party_encoding;

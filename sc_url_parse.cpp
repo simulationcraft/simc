@@ -1,10 +1,9 @@
-
 // internal debug flag, only for this unit
 // 0=off
 // 1=regular debug
 // 2=more detailed debug, each item stat shown
 // 3=each URL read shown
-const int debug=0;
+int debug=0;
 
 
 
@@ -63,6 +62,7 @@ std::string tolower( std::string src )
     dest[i]=tolower( dest[i] );
   return dest;
 }
+
 
 void SaveCache()
 {
@@ -835,6 +835,7 @@ bool parseArmory( sim_t* sim, std::string URL, bool inactiveTalents, bool gearOn
   if ( !splitURL( URL,aURL ) ) return false;
   aURL.sim=sim;
   clear_url_cache = sim->url_cache_clear;
+  debug=sim->debug_armory;
   // retrieve armory gear data (XML) for this player
   std::string src= getArmoryData( aURL,UPG_GEAR );
   if ( src=="" ) return false;
@@ -982,7 +983,12 @@ bool parseArmoryPlayers( sim_t* sim, std::string URL ){
   unsigned int num = util_t::string_split( splits, URL, "," );
   if (num<2) return false;
   std::string srvURL=splits[0];
-  for ( unsigned int i=1; i < num; i++ )
+  unsigned int i=1;
+  if (srvURL.find("?r=")==string::npos){
+      srvURL+="/?r="+splits[1];
+      i++;
+  }
+  while ( i < num )
   {
     std::string player=splits[i];
     bool inactiveTalents=false;
@@ -995,6 +1001,7 @@ bool parseArmoryPlayers( sim_t* sim, std::string URL ){
         //call parse of one player
         parseArmory( sim, srvURL+"&n="+player, inactiveTalents );
     }
+    i++;
   }
   return true;
 }
@@ -1068,4 +1075,5 @@ unsigned int  getSetTier( std::string setName )
   }
   return tier;
 }
+
 
