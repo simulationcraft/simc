@@ -1263,7 +1263,6 @@ bool sim_t::parse_options( int    _argc,
 
 int sim_t::main( int argc, char** argv )
 {
-  initArmoryCaches();
 
   http_t::load_cache();
 

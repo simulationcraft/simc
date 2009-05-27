@@ -210,6 +210,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\sc_http.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\sc_hunter.cpp"
 			>
 		</File>

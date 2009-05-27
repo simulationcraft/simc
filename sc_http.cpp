@@ -13,8 +13,8 @@
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
-static const char* user_agent = "Firefox/3.0";
-static const char* url_cache_file = "url_cache";
+static const char* user_agent       = "Firefox/3.0";
+static const char* url_cache_file   = "url_cache";
 static const uint32_t expiration_seconds = 15 * 60;
 
 struct url_cache_t
@@ -357,34 +357,42 @@ bool http_t::download( std::string& result,
 bool http_t::download( std::string& result,
 		       const std::string& url )
 {
+  bool ok=false;
   HINTERNET hINet, hFile;
+  std::string sc_agent=user_agent;
+  std::wstring wAgent( sc_agent.length(), L' ' );
+  std::copy( sc_agent.begin(), sc_agent.end(), wAgent.begin() );
 
-  hINet = InternetOpen( user_agent, INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0 );
+  hINet = InternetOpen( wAgent.c_str(), INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0 );
   if ( ! hINet )  return false;
 
   char buffer[ 2048 ];
   strcpy( buffer, url.c_str() );
 
-  hFile = InternetOpenUrl( hINet, buffer, NULL, 0, INTERNET_FLAG_RELOAD, 0 );
-  if ( ! hFile ) return false;
+  std::wstring wURL( url.length(), L' ' );
+  std::copy( url.begin(), url.end(), wURL.begin() );
 
-  result = "";
+  hFile = InternetOpenUrl( hINet, wURL.c_str(), NULL, 0, INTERNET_FLAG_RELOAD, 0 );
+  if ( hFile ){
+      result = "";
+      DWORD amount;
+      while( InternetReadFile( hFile, buffer, sizeof( buffer ), &amount ) )
+      {
+        if( amount > 0 )
+        {
+          buffer[ amount ] = '\0';
+          result += buffer;
+        }
+        else break;
+      }
 
-  DWORD amount;
-  while( InternetReadFile( hFile, buffer, sizeof( buffer ), &amount ) )
-  {
-    if( amount > 0 )
-    {
-      buffer[ amount ] = '\0';
-      result += buffer;
-    }
-    else break;
+      ok=result.size() > 0;
+
+      InternetCloseHandle( hFile );
   }
-
-  InternetCloseHandle( hFile );
   InternetCloseHandle( hINet );
 
-  return result.size() > 0;
+  return  ok;
 }
 
 #else

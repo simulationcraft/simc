@@ -1836,7 +1836,6 @@ struct util_t
 };
 
 std::string tolower( std::string src );
-void initArmoryCaches();
 bool parseArmory( sim_t* sim, std::string URL, bool parseName=true, bool parseTalents=true, bool parseGear=true );
 
 

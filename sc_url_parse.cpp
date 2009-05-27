@@ -30,85 +30,18 @@ const size_t maxCache=1000;
 const int expirationSeconds=6*60*60;
 const char* urlCacheFile="url_cache.dat";
 bool clear_url_cache=false;
-double url_cache_throttle=0;
 
 
-
-#ifdef _MSC_VER
-#define USER_AGENT_FOR_XML L"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.1) Gecko/20061204 Firefox/2.0.0.1"
-#else
-#define USER_AGENT_FOR_XML "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.1) Gecko/20061204 Firefox/2.0.0.1"
-#endif
-
-#ifdef USE_CURL
-// This is the writer call back function used by curl
-static int writer( char *data, size_t size, size_t nmemb, std::string *buffer )
-{
-  int result = 0;
-
-  // Is there anything in the buffer?
-  if ( buffer != NULL )
-  {
-    // Append the data to the buffer
-    buffer->append( data, size * nmemb );
-    // How much did we write?
-    result = size * nmemb;
-  }
-
-  return result;
-}
-
-#endif
-
-
-// this should wait if several threads are entering same critical section 
-// NOT ideal replacement for Critical Section, so use of BOOL variable should be
-// replaced by calling of platform independent crit cestion code
-#if defined(_MSC_VER) && ! defined(__MINGW32__)
-
-CRITICAL_SECTION msvcCritSection;
-void EnterCritSection(){
-    EnterCriticalSection(&msvcCritSection);
-}
-
-void LeaveCritSection(){
-    LeaveCriticalSection(&msvcCritSection);
-}
-
-void initArmoryCaches(){
-    InitializeCriticalSection(&msvcCritSection);
-}
-
-#else
-
-int inCritSection=0;
-
-void EnterCritSection(){
-    if (inCritSection>0){
-        double t0=time(NULL);
-        while (inCritSection && (time(NULL)-t0<10.0) ) ;
-    }
-    inCritSection++; 
-    //will work (of sorts) even if multiple entrance in crit section, but print warning
-    if (inCritSection>1) printf("Warning: several (%d) threads entered critical section.\n",inCritSection);
-}
-
-void LeaveCritSection(){
-    inCritSection--;
-}
-
-void initArmoryCaches(){
-}
-
-#endif
 
 
 std::string getURLsource( std::string URL )
 {
   std::string res="";
+
 #if defined( _MSC_VER )
   HINTERNET hINet, hFile;
-  hINet = InternetOpen( USER_AGENT_FOR_XML, INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0 );
+  hINet = InternetOpen( L"Firefox/2.0.0.1", 
+                        INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0 );
   if ( !hINet )  return res;
   std::wstring wURL( URL.length(), L' ' );
   std::copy( URL.begin(), URL.end(), wURL.begin() );
@@ -118,7 +51,6 @@ std::string getURLsource( std::string URL )
     const size_t bufSz=20000;
     CHAR buffer[bufSz];
     DWORD dwRead=bufSz;
-    //if (HttpQueryInfo(hFile, HTTP_QUERY_RAW_HEADERS_CRLF, buffer, &dwRead, NULL)) res+=buffer;
     while ( InternetReadFile( hFile, buffer, bufSz-2, &dwRead ) )
     {
       if ( dwRead == 0 )   break;
@@ -128,22 +60,8 @@ std::string getURLsource( std::string URL )
     InternetCloseHandle( hFile );
   }
   InternetCloseHandle( hINet );
-#elif defined(USE_CURL)
-  CURL *curl;
-  curl = curl_easy_init();
-  if ( curl )
-  {
-    curl_easy_setopt( curl, CURLOPT_URL, URL.c_str() );
-    curl_easy_setopt( curl, CURLOPT_USERAGENT, USER_AGENT_FOR_XML );
-    curl_easy_setopt( curl, CURLOPT_HEADER, 0 );
-    curl_easy_setopt( curl, CURLOPT_FOLLOWLOCATION, 1 );
-    curl_easy_setopt( curl, CURLOPT_WRITEFUNCTION, writer );
-    curl_easy_setopt( curl, CURLOPT_WRITEDATA, &res );
-
-    curl_easy_perform( curl );
-
-    curl_easy_cleanup( curl );
-  }
+#else
+  http_t::download(res, URL);
 #endif
   return res;
 }
@@ -194,10 +112,10 @@ std::string tolower( std::string src )
 void SaveCache()
 {
   if ( ( !urlCache )||( N_cache==0 ) ) return;
-  EnterCritSection();
+  thread_t::lock();
   FILE* file = fopen( urlCacheFile , "wb" );
   if ( file==NULL ){
-      LeaveCritSection();
+      thread_t::unlock();
       return;
   }
   //mark expired and count all
@@ -233,7 +151,7 @@ void SaveCache()
   }
   delete buffer;
   fclose( file );
-  LeaveCritSection();
+  thread_t::unlock();
 }
 
 
@@ -241,7 +159,7 @@ void SaveCache()
 void LoadCache()
 {
   if (urlCache) return;
-  EnterCritSection();
+  thread_t::lock();
   urlCache_t* newCache=new urlCache_t[maxCache+2];
   int newN_cache    =0;
   if (!clear_url_cache){
@@ -279,7 +197,7 @@ void LoadCache()
   //set pointers to new cache
   N_cache= newN_cache;
   urlCache=newCache;
-  LeaveCritSection();
+  thread_t::unlock();
 }
 
 
@@ -308,20 +226,15 @@ std::string getURLData( std::string URL,  std::string chkResult="", double timeo
     if (debug>2) printf( "Loading URL: %s\n",URL.c_str() );
     printf("@"); // visual indicator because wait can be long
     data= getURLsource( URL );
-    // if there was timeout/error in this fetch, and we have old data, use it
-    if ( found && ( data=="" ) ){
-        data=urlCache[found].data;
-        printf("x");
-    }
     //add to cache
-    if ((chkResult=="")||(data.find(chkResult)!=string::npos)){
+    if (( data!="") && ((chkResult=="")||(data.find(chkResult)!=string::npos)) ){
         if ( found )
         {
           urlCache[found].time= nowTime;
           urlCache[found].data=data;
         }
         else{
-          EnterCritSection();
+          thread_t::lock();
           if ( N_cache<maxCache ) 
           {
               // check if someone inserted this very URL while i was loading it
@@ -332,11 +245,10 @@ std::string getURLData( std::string URL,  std::string chkResult="", double timeo
                 urlCache[N_cache].data= data;
               }
           }
-          LeaveCritSection();
+          thread_t::unlock();
         }
-    }else
-    // if not correctly found, return from previous cached if exists
-    if (chkResult!=""){
+    }else{
+    // if there was timeout/error in this fetch, and we have old data, use it
         if (found){
             printf("X");
             data=urlCache[found].data;
@@ -358,7 +270,7 @@ std::string getArmoryData( urlSplit_t aURL, url_page_t pgt, std::string morePara
   std::string URL=aURL.wwwAdr;
   std::string chk="";
   double timeout=0;
-  double throttle=url_cache_throttle;
+  double throttle=aURL.sim->url_cache_throttle;
   switch ( pgt )
   {
     case UPG_TALENTS:   
@@ -377,7 +289,7 @@ std::string getArmoryData( urlSplit_t aURL, url_page_t pgt, std::string morePara
       break;
   }
   URL+="?r="+aURL.realm+"&n="+aURL.player+moreParams;
-  return getURLData( URL , chk, timeout, url_cache_throttle );
+  return getURLData( URL , chk, timeout, throttle );
 }
 
 
@@ -968,7 +880,6 @@ bool parseArmory( sim_t* sim, std::string URL, bool parseName, bool parseTalents
   if ( !splitURL( URL,aURL ) ) return false;
   aURL.sim=sim;
   clear_url_cache = sim->url_cache_clear;
-  url_cache_throttle= sim->url_cache_throttle;
   // retrieve armory gear data (XML) for this player
   std::string src= getArmoryData( aURL,UPG_GEAR );
   if ( src=="" ) return false;
