@@ -1014,40 +1014,47 @@ struct set_tiers_t
 // set names should be same as on Armory - case sensitive, and common for 10man/25man
 unsigned int  getSetTier( std::string setName )
 {
-  set_tiers_t setTiers[]={
-                           // warlock sets
-                           {"felheart",1},
-                           {"nemesis",2},
-                           {"plagueheart raiment",3},
-                           {"voidheart",4},
-                           {"corruptor",5},
-                           {"malefic",6},
-                           {"plagueheart",7},
-                           {"deathbringer",8},
-                           // rogue sets
-                           {"bonescythe",7},
-                           {"terrorblade",8},
-                           // mage sets
-                           {"frostfire",7},
-                           {"kirin'dor",8},
-                           // druid sets
-                           {"Dreamwalker",7},
-                           {"nightsong ",8},
-                           // shaman sets
-                           {"earthshatter",7},
-                           {"worldbreaker",8},
-                           //  priest sets
-                           {"faith",7},
-                           {"sanctification",8},
-                           //  hunter sets
-                           {"cryptstalker",7},
-                           {"scourgestalker",8},
-                           //  DK sets
-                           {"scourgeborne",7},
-                           {"darkruned",8},
-                           //end of list
-                           {"",0}
-                         };
+  set_tiers_t setTiers[]=
+  {
+    // death knight sets
+    {"scourgeborne",7},
+    {"darkruned",8},
+    // druid sets
+    {"malorne",4},
+    {"nordrassil",5},
+    {"thunderheart",6},
+    {"dreamwalker",7},
+    {"nightsong",8},
+    // hunter sets
+    {"cryptstalker",7},
+    {"scourgestalker",8},
+    // mage sets
+    {"frostfire",7},
+    {"kirin'dor",8},
+    // priest sets
+    {"faith",7},
+    {"sanctification",8},
+    // rogue sets
+    {"bonescythe",7},
+    {"terrorblade",8},
+    // shaman sets
+    {"earthshatter",7},
+    {"worldbreaker",8},
+    // warlock sets
+    {"felheart",1},
+    {"nemesis",2},
+    {"plagueheart raiment",3},
+    {"voidheart",4},
+    {"corruptor",5},
+    {"malefic",6},
+    {"plagueheart",7},
+    {"deathbringer",8},
+    // warrior sets
+    {"dreadnaught",7},
+    {"siegebreaker",8},
+    //end of list
+    {"",0}
+  };
   // find set tier based on name
   unsigned int tier=0;
   setName=" "+tolower(setName)+" ";
