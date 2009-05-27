@@ -177,14 +177,13 @@ bool http_t::download( std::string& result,
   a.sin_addr = *(in_addr *)h->h_addr_list[0];
   a.sin_port = htons( port );
 
-  int s;
+  int32_t s;
   s = ::socket( AF_INET, SOCK_STREAM, getprotobyname( "tcp" ) -> p_proto );
   if( s == 0xffffffffU ) return false;
 
   int r = ::connect( s, (sockaddr *)&a, sizeof( a ) );
   if( r < 0 )
   {
-    close( s );
     return false;
   }
   
@@ -193,7 +192,6 @@ bool http_t::download( std::string& result,
   r = ::send( s, buffer, int( strlen( buffer ) ), 0 );
   if( r != (int) strlen( buffer ) )
   {
-    close( s );
     return false;
   }
 
@@ -210,8 +208,6 @@ bool http_t::download( std::string& result,
     else break;
   }
   
-  ::close( s );
-
   std::string::size_type pos = result.find( "\r\n\r\n" );
   if( pos == result.npos ) 
   {

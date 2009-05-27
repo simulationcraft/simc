@@ -43,7 +43,7 @@ ifeq (WINDOWS,${OS})
 CXX        = g++
 CPP_FLAGS  = -Wall -malign-double
 LINK_FLAGS = 
-LINK_LIBS  =
+LINK_LIBS  = -lwsock32
 OPTS       = -O3
 BITS       = 32
 endif
