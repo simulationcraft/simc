@@ -218,6 +218,8 @@ bool http_t::save_cache()
     fwrite( c.result.c_str(), sizeof( char ), result_size, file );
   }  
 
+  fclose( file );
+
   thread_t::unlock();
 
   return true;
