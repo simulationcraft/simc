@@ -841,10 +841,6 @@ rng_t* rng_t::create( sim_t*             sim,
 
 #ifdef UNIT_TEST
 
-// ==========================================================================
-// test for speed of convergence and correct distribution of possible values
-// ==========================================================================
-
 int main( int argc, char** argv )
 {
   range_distribution_t range_d;

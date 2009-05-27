@@ -35,7 +35,7 @@ static bool parse_url( std::string& host,
 		       short&       port,
 		       const char*  url )
 {
-  if( ! strncmp( url, "http://", 7 ) ) return false;
+  if( strncmp( url, "http://", 7 ) ) return false;
 
   char* buffer = (char*) alloca( strlen( url ) + 1 );
   strcpy( buffer, url+7 );
@@ -81,6 +81,12 @@ static void throttle( int seconds )
 
 bool http_t::load_cache( const std::string& file_name )
 {
+  thread_t::lock();
+
+  // something interesting
+
+  thread_t::unlock();
+
   return false;
 }
 
@@ -88,6 +94,12 @@ bool http_t::load_cache( const std::string& file_name )
 
 bool http_t::save_cache( const std::string& file_name )
 {
+  thread_t::lock();
+
+  // something interesting
+
+  thread_t::unlock();
+
   return false;
 }
 
@@ -255,7 +267,11 @@ bool http_t::download( std::string& result,
   ::close( s );
 
   std::string::size_type pos = result.find( "\r\n\r\n" );
-  if( pos == result.npos ) return false;
+  if( pos == result.npos ) 
+  {
+    result.clear();
+    return false;
+  }
 
   result.erase( result.begin(), result.begin() + pos + 4 );
   
@@ -264,4 +280,29 @@ bool http_t::download( std::string& result,
 
 #endif
 
+#ifdef UNIT_TEST
+
+void thread_t::lock() {}
+void thread_t::unlock() {}
+
+int main( int argc, char** argv )
+{
+  std::string result;
+
+  if( http_t::get( result, "http://www.wowarmory.com/character-sheet.xml?r=Llane&n=Pagezero" ) )
+  {
+    printf( "%s\n", result.c_str() );
+  }
+  else printf( "Unable to download armory data.\n" );
+
+  if( http_t::get( result, "http://www.wowhead.com/?item=40328&xml" ) )
+  {
+    printf( "%s\n", result.c_str() );
+  }
+  else printf( "Unable to download wowhead data.\n" );
+
+  return 0;
+}
+
+#endif
 
