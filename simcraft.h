@@ -296,8 +296,8 @@ struct thread_t
 
 struct http_t
 {
-  static bool load_cache( const std::string& file );
-  static bool save_cache( const std::string& file );
+  static bool load_cache();
+  static bool save_cache();
   static bool download( std::string& result, const std::string& url );
   static bool get     ( std::string& result, const std::string& url );
 };

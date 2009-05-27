@@ -1264,6 +1264,8 @@ int sim_t::main( int argc, char** argv )
 {
   initArmoryCaches();
 
+  http_t::load_cache();
+
   if ( ! parse_options( argc, argv ) )
   {
     printf( "simcraft: ERROR! Incorrect option format..\n" );
@@ -1293,6 +1295,8 @@ int sim_t::main( int argc, char** argv )
 
   if ( output_file != stdout ) fclose( output_file );
   if ( log_file ) fclose( log_file );
+
+  http_t::save_cache();
 
   return 0;
 }

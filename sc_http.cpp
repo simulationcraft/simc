@@ -11,23 +11,71 @@
 // PLATFORM INDEPENDENT SECTION
 // ==========================================================================
 
-static const char* user_agent = "Firefox/3.0";
-
 namespace { // ANONYMOUS NAMESPACE ==========================================
+
+static const char* user_agent = "Firefox/3.0";
+static const char* url_cache_file = "url_cache";
+static const uint32_t expiration_seconds = 15 * 60;
+
+struct url_cache_t
+{
+  std::string url;
+  std::string result;
+  uint32_t timestamp;
+  url_cache_t() : timestamp(0) {}
+  url_cache_t( const std::string& u, const std::string& r, uint32_t t ) : url(u), result(r), timestamp(t) {}
+};
+
+static std::vector<url_cache_t> url_cache_db;
 
 // get_cache ================================================================
 
-static bool get_cache( const std::string& result,
+static bool get_cache( std::string& result,
 		       const std::string& url )
 {
+  uint32_t now = time( NULL );
+
+  int num_records = url_cache_db.size();
+  for( int i=0; i < num_records; i++ )
+  {
+    url_cache_t& c = url_cache_db[ i ];
+
+    if( url == c.url )
+    {
+      if( ( now - c.timestamp ) > expiration_seconds ) 
+	return false;
+
+      result = c.result;
+      return true;
+    }
+  }
+
   return false;
 }
 
 // set_cache ================================================================
 
-static void set_cache( const std::string& result,
-		       const std::string& url )
+static void set_cache( const std::string& url,
+		       const std::string& result,
+		       uint32_t           timestamp )
 {
+  if( timestamp == 0 ) timestamp = time( NULL );
+
+  int num_records = url_cache_db.size();
+  for( int i=0; i < num_records; i++ )
+  {
+    url_cache_t& c = url_cache_db[ i ];
+
+    if( url == c.url )
+    {
+      c.url = url;
+      c.result = result;
+      c.timestamp = timestamp;
+      return;
+    }
+  }
+
+  url_cache_db.push_back( url_cache_t( url, result, timestamp ) );
 }
 
 // parse_url ================================================================
@@ -78,28 +126,101 @@ static void throttle( int seconds )
 
 // http_t::load_cache =======================================================
 
-bool http_t::load_cache( const std::string& file_name )
+bool http_t::load_cache()
 {
   thread_t::lock();
 
-  // something interesting
+  FILE* file = fopen( url_cache_file, "rb" );
+  if( ! file ) return false;
+
+  uint32_t num_records, max_size;
+
+  if( fread( &num_records, sizeof( uint32_t ), 1, file ) &&
+      fread( &max_size,    sizeof( uint32_t ), 1, file ) )
+  {
+    std::string url, result;
+    char* buffer = new char[ max_size ];
+    
+    for( unsigned i=0; i < num_records; i++ )
+    {
+      uint32_t timestamp, url_size, result_size;
+
+      if( fread( &timestamp,   sizeof( uint32_t ), 1, file ) &&
+	  fread( &url_size,    sizeof( uint32_t ), 1, file ) &&
+	  fread( &result_size, sizeof( uint32_t ), 1, file ) )
+      {
+	assert( url_size > 0 && result_size > 0 );
+
+	if( fread( buffer, sizeof( char ), url_size, file ) )
+	{
+	  buffer[ url_size ] = '\0';
+	  url = buffer;
+	}
+	else break;
+
+	if( fread( buffer, sizeof( char ), result_size, file ) )
+	{
+	  buffer[ result_size ] = '\0';
+	  result = buffer;
+	}
+	else break;
+
+	set_cache( url, result, timestamp );
+      }
+      else break;
+    }
+
+    delete buffer;
+  }
+
+  fclose( file );
 
   thread_t::unlock();
 
-  return false;
+  return true;
 }
 
 // http_t::save_cache =======================================================
 
-bool http_t::save_cache( const std::string& file_name )
+bool http_t::save_cache()
 {
   thread_t::lock();
 
-  // something interesting
+  FILE* file = fopen( url_cache_file, "wb" );
+  if( ! file ) return false;
+
+  uint32_t num_records = url_cache_db.size();
+  uint32_t max_size=0;
+
+  for( unsigned i=0; i < num_records; i++ )
+  {
+    url_cache_t& c = url_cache_db[ i ];
+    uint32_t size = std::max( c.url.size(), c.result.size() );
+    if( size > max_size ) max_size = size;
+  }
+
+  fwrite( &num_records, sizeof( uint32_t ), 1, file );
+  fwrite( &max_size,    sizeof( uint32_t ), 1, file );
+
+  for( unsigned i=0; i < num_records; i++ )
+  {
+    url_cache_t& c = url_cache_db[ i ];
+
+    fwrite( &( c.timestamp ), sizeof( uint32_t ), 1, file );
+
+    uint32_t    url_size = c.   url.size();
+    uint32_t result_size = c.result.size();
+
+    fwrite(    &url_size, sizeof( uint32_t ), 1, file );
+    fwrite( &result_size, sizeof( uint32_t ), 1, file );
+
+    fwrite( c.   url.c_str(), sizeof( char ),    url_size, file );
+    fwrite( c.result.c_str(), sizeof( char ), result_size, file );
+  }  
 
   thread_t::unlock();
 
-  return false;
+  return true;
 }
 
 // http_t::get ==============================================================
@@ -117,7 +238,7 @@ bool http_t::get( std::string& result,
 
     if( download( result, url ) )
     {
-      set_cache( result, url );
+      set_cache( url, result, 0 );
     }
   }
 
@@ -349,6 +470,8 @@ void thread_t::unlock() {}
 
 int main( int argc, char** argv )
 {
+  http_t::load_cache();
+
   std::string result;
 
   if( http_t::get( result, "http://www.wowarmory.com/character-sheet.xml?r=Llane&n=Pagezero" ) )
@@ -362,6 +485,8 @@ int main( int argc, char** argv )
     printf( "%s\n", result.c_str() );
   }
   else printf( "Unable to download wowhead data.\n" );
+
+  http_t::save_cache();
 
   return 0;
 }
