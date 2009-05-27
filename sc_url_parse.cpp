@@ -10,19 +10,7 @@ const int debug=0;
 
 
 #include "simcraft.h"
-
-#if defined( _MSC_VER )
-#include <windows.h>
-#include <wininet.h>
-#endif
-
-#if defined(USE_CURL)
-#include <curl/curl.h>
-#endif
-
-#include <algorithm>
 using namespace std;
-
 
 
 const bool ParseEachItem=true;
@@ -32,39 +20,6 @@ const char* urlCacheFile="url_cache.dat";
 bool clear_url_cache=false;
 
 
-
-
-std::string getURLsource( std::string URL )
-{
-  std::string res="";
-
-#if defined( _MSC_VER )
-  HINTERNET hINet, hFile;
-  hINet = InternetOpen( L"Firefox/2.0.0.1", 
-                        INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0 );
-  if ( !hINet )  return res;
-  std::wstring wURL( URL.length(), L' ' );
-  std::copy( URL.begin(), URL.end(), wURL.begin() );
-  hFile = InternetOpenUrl( hINet, wURL.c_str(), NULL, 0, INTERNET_FLAG_RELOAD, 0 );
-  if ( hFile )
-  {
-    const size_t bufSz=20000;
-    CHAR buffer[bufSz];
-    DWORD dwRead=bufSz;
-    while ( InternetReadFile( hFile, buffer, bufSz-2, &dwRead ) )
-    {
-      if ( dwRead == 0 )   break;
-      buffer[dwRead] = 0;
-      res+=buffer;
-    }
-    InternetCloseHandle( hFile );
-  }
-  InternetCloseHandle( hINet );
-#else
-  http_t::download(res, URL);
-#endif
-  return res;
-}
 
 struct cacheHeader_t
 {
@@ -225,7 +180,7 @@ std::string getURLData( std::string URL,  std::string chkResult="", double timeo
     // HTTP request
     if (debug>2) printf( "Loading URL: %s\n",URL.c_str() );
     printf("@"); // visual indicator because wait can be long
-    data= getURLsource( URL );
+    http_t::download(data, URL);
     //add to cache
     if (( data!="") && ((chkResult=="")||(data.find(chkResult)!=string::npos)) ){
         if ( found )

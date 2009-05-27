@@ -13,9 +13,9 @@
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
-static const char* user_agent       = "Firefox/3.0";
-static const char* url_cache_file   = "url_cache";
-static const uint32_t expiration_seconds = 15 * 60;
+static const char*      user_agent       = "Firefox/3.0";
+static const char*      url_cache_file   = "url_cache";
+static const uint32_t   expiration_seconds = 15 * 60;
 
 struct url_cache_t
 {
@@ -358,41 +358,31 @@ bool http_t::download( std::string& result,
 		       const std::string& url )
 {
   bool ok=false;
+  result = "";
   HINTERNET hINet, hFile;
-  std::string sc_agent=user_agent;
-  std::wstring wAgent( sc_agent.length(), L' ' );
-  std::copy( sc_agent.begin(), sc_agent.end(), wAgent.begin() );
-
-  hINet = InternetOpen( wAgent.c_str(), INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0 );
-  if ( ! hINet )  return false;
-
-  char buffer[ 2048 ];
-  strcpy( buffer, url.c_str() );
-
-  std::wstring wURL( url.length(), L' ' );
-  std::copy( url.begin(), url.end(), wURL.begin() );
-
-  hFile = InternetOpenUrl( hINet, wURL.c_str(), NULL, 0, INTERNET_FLAG_RELOAD, 0 );
-  if ( hFile ){
-      result = "";
-      DWORD amount;
-      while( InternetReadFile( hFile, buffer, sizeof( buffer ), &amount ) )
-      {
-        if( amount > 0 )
-        {
-          buffer[ amount ] = '\0';
-          result += buffer;
-        }
-        else break;
+  hINet = InternetOpen( L"Firefox/3.0", INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0 );
+  if (hINet ){
+      std::wstring wURL( url.length(), L' ' );
+      std::copy( url.begin(), url.end(), wURL.begin() );
+      hFile = InternetOpenUrl( hINet, wURL.c_str(), NULL, 0, INTERNET_FLAG_RELOAD, 0 );
+      if ( hFile ){
+          const size_t bufSz=20000;
+          char buffer[ bufSz ];
+          DWORD amount=bufSz;
+          while( InternetReadFile( hFile, buffer, bufSz-2, &amount ) )
+          {
+            if( amount > 0 )
+            {
+              buffer[ amount ] = '\0';
+              result += buffer;
+            }
+            else break;
+          }
+          InternetCloseHandle( hFile );
       }
-
-      ok=result.size() > 0;
-
-      InternetCloseHandle( hFile );
+      InternetCloseHandle( hINet );
   }
-  InternetCloseHandle( hINet );
-
-  return  ok;
+  return result.size() > 0;
 }
 
 #else
