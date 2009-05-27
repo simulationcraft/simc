@@ -2323,6 +2323,9 @@ struct aimed_shot_t : public hunter_attack_t
 
     cooldown = 10;
     cooldown_group = "aimed_multi";
+    
+    if( sim -> P313 )
+      base_cost *= 1.0 - p -> talents.master_marksman * 0.05;
 
     base_multiplier *= 1.0 + p -> talents.barrage                      * 0.04;
     base_multiplier *= 1.0 + p -> talents.sniper_training              * 0.02;
@@ -2569,6 +2572,9 @@ struct chimera_shot_t : public hunter_attack_t
     base_dd_min = 1;
     base_dd_max = 1;
     base_cost   = p -> resource_base[ RESOURCE_MANA ] * 0.12;
+    if( sim -> P313 )
+      base_cost *= 1.0 - p -> talents.master_marksman * 0.05;
+
 
     normalize_weapon_speed = true;
     weapon_multiplier      = 1.25;
@@ -3287,8 +3293,11 @@ struct hunters_mark_t : public hunter_spell_t
 
     base_cost = 0.02 * p -> resource_base[ RESOURCE_MANA ];
     base_cost *= 1.0 - p -> talents.improved_hunters_mark / 3.0;
-
-    ap_bonus = util_t::ability_rank( p -> level,  300,76,  110,0 );
+    
+    if( sim -> P313 )
+      ap_bonus = util_t::ability_rank( p -> level,  500,76,  110,0 );
+    else
+      ap_bonus = util_t::ability_rank( p -> level,  300,76,  110,0 );
 
     ap_bonus *= 1.0 + p -> talents.improved_hunters_mark * 0.10
                 + ( p -> glyphs.hunters_mark ? 0.20 : 0 );

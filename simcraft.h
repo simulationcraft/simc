@@ -410,6 +410,7 @@ struct sim_t : public app_t
   patch_t     patch;
   bool        P309;
   bool        P312;
+  bool        P313;
   rng_t*      rng;
   rng_t*      deterministic_rng;
   event_t*    free_list;

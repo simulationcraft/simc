@@ -1039,8 +1039,11 @@ struct melee_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
 
     double h = warrior_attack_t::haste();
-
-    h *= 1.0 / ( 1.0 + p -> talents.blood_frenzy * 0.03 );
+      
+    if( sim -> P313 )
+      h *= 1.0 / ( 1.0 + p -> talents.blood_frenzy * 0.03 );
+    else
+      h *= 1.0 / ( 1.0 + p -> talents.blood_frenzy * 0.05 );
 
     return h;
   }
@@ -1336,8 +1339,16 @@ struct bloodthirst_t : public warrior_attack_t
     base_dd_min = base_dd_max = 1;
 
     may_crit          = true;
-    cooldown          = 5.0;
-    base_cost         = 30;
+    if( sim -> P313 )
+    {
+      cooldown          = 4.0;
+      base_cost         = 20;
+    }
+    else
+    {
+      cooldown          = 5.0;
+      base_cost         = 30;
+    }
     base_multiplier  *= 1 + p -> talents.unending_fury * 0.02;
     direct_power_mod  = 0.50;
     if ( p -> unique_gear -> tier8_4pc )

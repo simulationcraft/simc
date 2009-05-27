@@ -724,7 +724,7 @@ static void trigger_t8_4pc_balance( spell_t* s )
   druid_t* p = s -> player -> cast_druid();
 
   // http://thottbot.com/test/s64824
-  double chance = 0.15;
+  double chance = (s -> sim -> P313 ? 0.08 : 0.15);
   if ( ! p -> rngs.tier8_4pc -> roll( chance ) )
     return;
 
@@ -2560,13 +2560,24 @@ struct starfire_t : public druid_spell_t
       }
     }
   }
+  
+  virtual void schedule_execute()
+  {
+    druid_spell_t::schedule_execute();
+    if( sim -> P313 )
+    {
+      druid_t* p = player -> cast_druid();
+      event_t::early( p -> _expirations.t8_4pc_balance );
+    }
+  }
 
   virtual void execute()
   {
     druid_t* p = player -> cast_druid();
     druid_spell_t::execute();
-
-    event_t::early( p -> _expirations.t8_4pc_balance );
+    
+    if( ! sim -> P313 )
+      event_t::early( p -> _expirations.t8_4pc_balance );
 
     if ( result_is_hit() )
     {

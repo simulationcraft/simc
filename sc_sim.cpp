@@ -136,7 +136,7 @@ static bool parse_optimal_raid( sim_t*             sim,
 // sim_t::sim_t =============================================================
 
 sim_t::sim_t( sim_t* p, int index ) :
-    parent( p ), P309( false ), P312( false ), rng( 0 ), deterministic_rng( 0 ), 
+    parent( p ), P309( false ), P312( false ), P313( false ), rng( 0 ), deterministic_rng( 0 ), 
     free_list( 0 ), player_list( 0 ), active_player( 0 ), num_players( 0 ),
     queue_lag( 0.075 ), queue_lag_range( 0 ),
     gcd_lag( 0.150 ), gcd_lag_range( 0 ),
@@ -534,6 +534,7 @@ bool sim_t::init()
 
   P309 = patch.before( 3, 1, 0 );
   P312 = patch.after ( 3, 1, 2 );
+  P313 = patch.after ( 3, 1, 3 );
 
   // Timing wheel depth defaults to 10 minutes with a granularity of 10 buckets per second.
   if ( wheel_seconds     <= 0 ) wheel_seconds     = 600;
