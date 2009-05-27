@@ -177,7 +177,7 @@ bool http_t::download( std::string& result,
   a.sin_addr = *(in_addr *)h->h_addr_list[0];
   a.sin_port = htons( port );
 
-  int32_t s;
+  uint32_t s;
   s = ::socket( AF_INET, SOCK_STREAM, getprotobyname( "tcp" ) -> p_proto );
   if( s == 0xffffffffU ) return false;
 
