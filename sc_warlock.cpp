@@ -251,6 +251,7 @@ struct warlock_t : public player_t
   virtual void      init_procs();
   virtual void      init_uptimes();
   virtual void      init_rng();
+  virtual void      init_actions();
   virtual void      reset();
   virtual bool      get_talent_trees( std::vector<int*>& affliction, std::vector<int*>& demonology, std::vector<int*>& destruction );
   virtual bool      parse_option ( const std::string& name, const std::string& value );
@@ -259,8 +260,6 @@ struct warlock_t : public player_t
   virtual int       primary_resource() { return RESOURCE_MANA; }
   virtual int       primary_role()     { return ROLE_SPELL; }
   virtual double    composite_spell_power( int school );
-  virtual std::string get_default_actions();
-
 
   // Event Tracking
   virtual void regen( double periodicity );
@@ -4469,61 +4468,6 @@ void imp_pet_t::fire_bolt_t::execute()
 // Warlock Character Definition
 // ==========================================================================
 
-std::string warlock_t::get_default_actions()
-{
-  std::string actions="";
-  // common stuff, food, flasks etc
-  actions+="flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/spell_stone/fel_armor/summon_pet,";
-  // select appropriate pet
-  if (talents.summon_felguard) actions+="felguard"; else actions+="imp";
-
-  // select best rotation/priorities for dots, cooldowns and executes
-  // pure builds
-  if ( talents.haunt )
-  { // 53_00_18
-    actions+="/haunt,debuff=1/corruption/curse_of_agony/unstable_affliction/haunt";
-    actions+="/drain_soul,health_percentage<=25,interrupt=1";
-  }
-  else
-  if ( talents.chaos_bolt )
-  {  // 00_13_58
-    actions+="/curse_of_doom,time_to_die>=90/immolate/conflagrate/chaos_bolt";
-  }
-  else
-  if ( talents.metamorphosis )
-  {  // 00_56_15
-    actions+="/demonic_empowerment/life_tap,trigger=10000,health_percentage>=35,metamorphosis=-1";
-    actions+="/soul_fire,decimation=1/life_tap,glyph=1/metamorphosis/curse_of_doom,time_to_die>=90";
-    actions+="/immolation,health_percentage>=35/immolate/corruption,health_percentage>=35";
-  }
-  else
-  // Hybrid builds
-  if ( talents.summon_felguard && talents.emberstorm && talents.decimation )
-  {  // 00_41_30
-    actions+="/soul_fire,decimation=1/life_tap,glyph=1/immolate/curse_of_agony/corruption,health_percentage>=35";
-  }
-  else
-  if ( talents.decimation && talents.conflagrate )
-  {  // 00_40_31
-    actions+="/soul_fire,decimation=1/life_tap,glyph=1/immolate/conflagrate";
-    actions+="/curse_of_agony/corruption,health_percentage>=35";
-  }
-  else
-  // generic
-  { 
-    actions+="/corruption/curse_of_agony/immolate";
-    if ( sim->debug ) log_t::output( sim, "DEFAULT action NOT found, using generic.\n " );
-  }
-
-  // select filler nuke
-  if (talents.emberstorm) actions+="/incinerate"; else actions+="/shadow_bolt";
-  // comon lowest priority stuff
-  actions+="/life_tap";
-  //return result
-  return actions;
-}
-
-
 // warlock_t::composite_spell_power =========================================
 
 double warlock_t::composite_spell_power( int school )
@@ -4712,6 +4656,57 @@ void warlock_t::init_rng()
   rng_eradication   = get_rng( "eradication",   RNG_DISTRIBUTED );
   rng_molten_core   = get_rng( "molten_core",   RNG_DISTRIBUTED );
 }
+
+// warlock_t::init_actions ===================================================
+
+void warlock_t::init_actions()
+{
+  if( action_list_str.empty() )
+  {
+    action_list_str+="flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/spell_stone/fel_armor/summon_pet,";
+
+    if (talents.summon_felguard) action_list_str+="felguard"; else action_list_str+="imp";
+
+    if ( talents.haunt ) // 53_00_18
+    { 
+      action_list_str+="/haunt,debuff=1/corruption/curse_of_agony/unstable_affliction/haunt";
+      action_list_str+="/drain_soul,health_percentage<=25,interrupt=1";
+    }
+    else if ( talents.chaos_bolt ) // 00_13_58
+    {  
+      action_list_str+="/curse_of_doom,time_to_die>=90/immolate/conflagrate/chaos_bolt";
+    }
+    else if ( talents.metamorphosis ) // 00_56_15
+    {  
+      action_list_str+="/demonic_empowerment/life_tap,trigger=10000,health_percentage>=35,metamorphosis=-1";
+      action_list_str+="/soul_fire,decimation=1/life_tap,glyph=1/metamorphosis/curse_of_doom,time_to_die>=90";
+      action_list_str+="/immolation,health_percentage>=35/immolate/corruption,health_percentage>=35";
+    }
+    else if ( talents.summon_felguard && talents.emberstorm && talents.decimation ) // 00_41_30
+    {  
+      action_list_str+="/soul_fire,decimation=1/life_tap,glyph=1/immolate/curse_of_agony/corruption,health_percentage>=35";
+    }
+    else if ( talents.decimation && talents.conflagrate ) // 00_40_31
+    {  
+      action_list_str+="/soul_fire,decimation=1/life_tap,glyph=1/immolate/conflagrate";
+      action_list_str+="/curse_of_agony/corruption,health_percentage>=35";
+    }
+    else // generic
+    { 
+      action_list_str+="/corruption/curse_of_agony/immolate";
+      if ( sim->debug ) log_t::output( sim, "Using generic action string for %s.", name() );
+    }
+
+    if (talents.emberstorm) action_list_str+="/incinerate"; else action_list_str+="/shadow_bolt";
+
+    action_list_str+="/life_tap";
+
+    if ( sim -> debug ) log_t::output( sim, "Player %s using default actions: %s", name(), action_list_str.c_str()  );
+  }
+
+  player_t::init_actions();
+}
+
 
 // warlock_t::reset ==========================================================
 

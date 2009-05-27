@@ -908,13 +908,6 @@ void player_t::init_professions()
 
 void player_t::init_actions()
 {
-  // if no actions submitted, see if there is class/build default action
-  if ( action_list_str.empty() && !is_pet()  )
-  {
-    action_list_str= get_default_actions();
-    if ( sim->debug ) log_t::output( sim, "Player %s, DEFAULT action_list_str:\n %s \n ", name(),action_list_str.c_str()  );
-  }
-  // parse actions
   if ( ! action_list_prefix.empty() ||
        ! action_list_str.empty()    ||
        ! action_list_postfix.empty() )

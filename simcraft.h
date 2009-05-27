@@ -1052,8 +1052,6 @@ struct player_t
   virtual pet_t*    find_pet     ( const std::string& name );
 
   virtual void trigger_replenishment();
-  virtual std::string get_default_actions() { return "";};
-
 
   // Class-Specific Methods
 
