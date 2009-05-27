@@ -472,13 +472,13 @@ bool  sim_t::init_raid_events(){
                     re->stddev=fVal;
                 }else
                 if (opt=="can_not_dps"){
-                    re->can_not_dps=(int)fVal;
+                    re->can_not_dps=(int)fVal != 0;
                 }else
                 if (opt=="can_dps"){
                     re->can_not_dps=!(int)fVal;
                 }else
                 if ((opt=="invulnerable")||(opt=="invul")){
-                    re->invulnerable=(int)fVal;
+                    re->invulnerable=(int)fVal != 0;
                 }else
                 if ((opt=="distance")||(opt=="distance<")){
                     re->distance=fVal;
@@ -493,7 +493,7 @@ bool  sim_t::init_raid_events(){
                 if (re->start<=0) re->start=re->period/2;
                 if (re->n_periods<=0){
                     if (re->end<=0) re->end=maxTime;
-                    re->n_periods= (re->end-re->start)/ re->period + 1;
+                    re->n_periods= (int) ((re->end-re->start)/ re->period + 1);
                 }else{
                     re->end=re->start+re->n_periods*re->period;
                 }
@@ -504,7 +504,7 @@ bool  sim_t::init_raid_events(){
                         double shift=0;
                         if (re->stddev>0){
                             shift= gauss(0,re->stddev);
-                            if (abs(shift)>re->period/2) shift=0;
+                            if (fabs(shift)>re->period/2.0) shift=0;
                         }
                         re->periods[i].time_from=t+shift;
                         re->periods[i].time_to=t+shift+re->duration;
