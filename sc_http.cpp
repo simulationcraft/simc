@@ -13,9 +13,8 @@
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
-static const char*      user_agent       = "Firefox/3.0";
-static const char*      url_cache_file   = "url_cache";
-static const uint32_t   expiration_seconds = 15 * 60;
+static const char* url_cache_file = "url_cache.dat";
+static const uint32_t expiration_seconds = 6 * 60 * 60;
 
 struct url_cache_t
 {
@@ -27,56 +26,6 @@ struct url_cache_t
 };
 
 static std::vector<url_cache_t> url_cache_db;
-
-// get_cache ================================================================
-
-static bool get_cache( std::string& result,
-		       const std::string& url )
-{
-  uint32_t now = time( NULL );
-
-  int num_records = url_cache_db.size();
-  for( int i=0; i < num_records; i++ )
-  {
-    url_cache_t& c = url_cache_db[ i ];
-
-    if( url == c.url )
-    {
-      if( ( now - c.timestamp ) > expiration_seconds ) 
-	return false;
-
-      result = c.result;
-      return true;
-    }
-  }
-
-  return false;
-}
-
-// set_cache ================================================================
-
-static void set_cache( const std::string& url,
-		       const std::string& result,
-		       uint32_t           timestamp )
-{
-  if( timestamp == 0 ) timestamp = time( NULL );
-
-  int num_records = url_cache_db.size();
-  for( int i=0; i < num_records; i++ )
-  {
-    url_cache_t& c = url_cache_db[ i ];
-
-    if( url == c.url )
-    {
-      c.url = url;
-      c.result = result;
-      c.timestamp = timestamp;
-      return;
-    }
-  }
-
-  url_cache_db.push_back( url_cache_t( url, result, timestamp ) );
-}
 
 // parse_url ================================================================
 
@@ -124,9 +73,9 @@ static void throttle( int seconds )
 
 } // ANONYMOUS NAMESPACE ====================================================
 
-// http_t::load_cache =======================================================
+// http_t::cache_load =======================================================
 
-bool http_t::load_cache()
+bool http_t::cache_load()
 {
   thread_t::lock();
 
@@ -165,7 +114,7 @@ bool http_t::load_cache()
 	}
 	else break;
 
-	set_cache( url, result, timestamp );
+	cache_set( url, result, timestamp, false );
       }
       else break;
     }
@@ -180,9 +129,9 @@ bool http_t::load_cache()
   return true;
 }
 
-// http_t::save_cache =======================================================
+// http_t::cache_save =======================================================
 
-bool http_t::save_cache()
+bool http_t::cache_save()
 {
   thread_t::lock();
 
@@ -225,28 +174,113 @@ bool http_t::save_cache()
   return true;
 }
 
+// http_t::cache_clear ======================================================
+
+void http_t::cache_clear()
+{
+  thread_t::lock();
+  url_cache_db.clear();
+  thread_t::unlock();
+}
+
+// http_t::cache_get ========================================================
+
+bool http_t::cache_get( std::string& result,
+			const std::string& url,
+			bool force,
+			bool lock )
+{
+  if( lock ) thread_t::lock();
+
+  uint32_t now = time( NULL );
+
+  int num_records = url_cache_db.size();
+  for( int i=0; i < num_records; i++ )
+  {
+    url_cache_t& c = url_cache_db[ i ];
+
+    if( url == c.url )
+    {
+      if( ! force )
+	if( ( now - c.timestamp ) > expiration_seconds ) 
+	  return false;
+
+      result = c.result;
+      return true;
+    }
+  }
+
+  if( lock ) thread_t::unlock();
+
+  return false;
+}
+
+// http_t::cache_set ========================================================
+
+void http_t::cache_set( const std::string& url,
+			const std::string& result,
+			uint32_t           timestamp,
+			bool               lock )
+{
+  if( lock ) thread_t::lock();
+
+  if( timestamp == 0 ) timestamp = time( NULL );
+
+  int num_records = url_cache_db.size();
+  for( int i=0; i < num_records; i++ )
+  {
+    url_cache_t& c = url_cache_db[ i ];
+
+    if( url == c.url )
+    {
+      c.url = url;
+      c.result = result;
+      c.timestamp = timestamp;
+      return;
+    }
+  }
+
+  url_cache_db.push_back( url_cache_t( url, result, timestamp ) );
+
+  if( lock ) thread_t::unlock();
+}
+
 // http_t::get ==============================================================
 
 bool http_t::get( std::string& result,
-		  const std::string& url )
+		  const std::string& url,
+		  const std::string& confirmation,
+		  int throttle_seconds )
 {
-  result.clear();
-
   thread_t::lock();
 
-  if( ! get_cache( result, url ) )
-  {
-    throttle( 1 );
+  result.clear();
 
-    if( download( result, url ) )
+  bool success = cache_get( result, url, false, false );
+
+  if( ! success )
+  {
+    printf( "@" ); fflush( stdout );
+    throttle( throttle_seconds );
+    success = download( result, url, false );
+
+    if( success )
     {
-      set_cache( url, result, 0 );
+      if( confirmation.size() > 0 && ! result.find( confirmation ) )
+      {
+	printf( "X" ); fflush( stdout );
+	success = cache_get( result, url, true, false );
+      }
+      else
+      {
+	cache_set( url, result, 0, false );
+      }
     }
   }
 
   thread_t::unlock();
 
-  return ! result.empty();
+  return success;
 }
 
 #if defined( NO_HTTP )
@@ -258,7 +292,8 @@ bool http_t::get( std::string& result,
 // http_t::download =========================================================
 
 bool http_t::download( std::string& result,
-		       const std::string& url )
+		       const std::string& url,
+		       bool lock )
 {
   return false;
 }
@@ -276,8 +311,11 @@ bool http_t::download( std::string& result,
 // http_t::download =========================================================
 
 bool http_t::download( std::string& result,
-		       const std::string& url )
+		       const std::string& url,
+		       bool lock )
 {
+  if( lock ) thread_t::lock();
+
   static bool initialized = false;
   if( ! initialized )
   {
@@ -311,7 +349,7 @@ bool http_t::download( std::string& result,
   }
   
   char buffer[2048];
-  sprintf( buffer, "GET %s HTTP/1.0\r\nUser-Agent: %s\r\nAccept: */*\r\nHost: %s\r\nConnection: close\r\n\r\n", path.c_str(), user_agent, host.c_str() );
+  sprintf( buffer, "GET %s HTTP/1.0\r\nUser-Agent: Firefox/3.0\r\nAccept: */*\r\nHost: %s\r\nConnection: close\r\n\r\n", path.c_str(), host.c_str() );
   r = ::send( s, buffer, int( strlen( buffer ) ), 0 );
   if( r != (int) strlen( buffer ) )
   {
@@ -340,6 +378,8 @@ bool http_t::download( std::string& result,
 
   result.erase( result.begin(), result.begin() + pos + 4 );
   
+  if( lock ) thread_t::unlock();
+
   return true;
 }
 
@@ -355,9 +395,10 @@ bool http_t::download( std::string& result,
 // http_t::download =========================================================
 
 bool http_t::download( std::string& result,
-		       const std::string& url )
+		       const std::string& url,
+		       bool lock )
 {
-  bool ok=false;
+  if( lock ) thread_t::lock();
   result = "";
   HINTERNET hINet, hFile;
   hINet = InternetOpen( L"Firefox/3.0", INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0 );
@@ -366,10 +407,9 @@ bool http_t::download( std::string& result,
       std::copy( url.begin(), url.end(), wURL.begin() );
       hFile = InternetOpenUrl( hINet, wURL.c_str(), NULL, 0, INTERNET_FLAG_RELOAD, 0 );
       if ( hFile ){
-          const size_t bufSz=20000;
-          char buffer[ bufSz ];
-          DWORD amount=bufSz;
-          while( InternetReadFile( hFile, buffer, bufSz-2, &amount ) )
+          char buffer[ 20000 ];
+          DWORD amount;
+          while( InternetReadFile( hFile, buffer, sizeof(buffer)-2, &amount ) )
           {
             if( amount > 0 )
             {
@@ -382,6 +422,7 @@ bool http_t::download( std::string& result,
       }
       InternetCloseHandle( hINet );
   }
+  if( lock ) thread_t::unlock();
   return result.size() > 0;
 }
 
@@ -398,8 +439,11 @@ bool http_t::download( std::string& result,
 // http_t::download =========================================================
 
 bool http_t::download( std::string& result,
-		       const std::string& url )
+		       const std::string& url,
+		       bool lock )
 {
+  if( lock ) thread_t::lock();
+
   std::string host;
   std::string path;
   short port;
@@ -426,7 +470,7 @@ bool http_t::download( std::string& result,
   }
   
   char buffer[2048];
-  sprintf( buffer, "GET %s HTTP/1.0\r\nUser-Agent: %s\r\nAccept: */*\r\nHost: %s\r\nConnection: close\r\n\r\n", path.c_str(), user_agent, host.c_str() );
+  sprintf( buffer, "GET %s HTTP/1.0\r\nUser-Agent: Firefox/3.0\r\nAccept: */*\r\nHost: %s\r\nConnection: close\r\n\r\n", path.c_str(), host.c_str() );
   r = ::send( s, buffer, int( strlen( buffer ) ), MSG_WAITALL );
   if( r != (int) strlen( buffer ) )
   {
@@ -458,6 +502,8 @@ bool http_t::download( std::string& result,
 
   result.erase( result.begin(), result.begin() + pos + 4 );
   
+  if( lock ) thread_t::unlock();
+
   return true;
 }
 

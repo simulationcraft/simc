@@ -5,8 +5,7 @@
 
 #include "simcraft.h"
 
-namespace
-{ // ANONYMOUS NAMESPACE ==========================================
+namespace { // ANONYMOUS NAMESPACE ==========================================
 
 // parse_patch ==============================================================
 
@@ -157,7 +156,7 @@ sim_t::sim_t( sim_t* p, int index ) :
     raid_dps( 0 ), total_dmg( 0 ),
     total_seconds( 0 ), elapsed_cpu_seconds( 0 ),
     merge_ignite( 0 ), report_progress( 1 ),
-    output_file( stdout ), log_file( 0 ), url_cache_clear(0), url_cache_throttle(0), threads( 0 ),
+    output_file( stdout ), log_file( 0 ), http_throttle(0), threads( 0 ),
     thread_handle( 0 ), thread_index( index )
 {
 
@@ -530,7 +529,7 @@ bool sim_t::init()
   rng = rng_t::create( this, "global", RNG_MERSENNE_TWISTER );
 
   deterministic_rng = rng_t::create( this, "global_deterministic", RNG_MERSENNE_TWISTER );
-  deterministic_rng -> seed( 31459 );
+  deterministic_rng -> seed( 31459 + thread_index );
 
   P309 = patch.before( 3, 1, 0 );
   P312 = patch.after ( 3, 1, 2 );
@@ -1170,8 +1169,7 @@ bool sim_t::parse_option( const std::string& name,
       { "seed",                             OPT_INT,    &( seed                                     ) },
       { "wheel_granularity",                OPT_FLT,    &( wheel_granularity                        ) },
       { "wheel_seconds",                    OPT_INT,    &( wheel_seconds                            ) },
-      { "url_cache_clear",                  OPT_BOOL,   &( url_cache_clear                          ) },
-      { "url_cache_throttle",               OPT_FLT,    &( url_cache_throttle                       ) },
+      { "http_throttle",                    OPT_INT,    &( http_throttle                            ) },
       { "debug_armory",                     OPT_BOOL,   &( debug_armory                             ) },
       { "raid_event",                       OPT_STRING, &( raid_events_str                          ) },
       { "raid_event+",                      OPT_APPEND, &( raid_events_str                          ) },
@@ -1265,8 +1263,7 @@ bool sim_t::parse_options( int    _argc,
 
 int sim_t::main( int argc, char** argv )
 {
-
-  http_t::load_cache();
+  http_t::cache_load();
 
   if ( ! parse_options( argc, argv ) )
   {
@@ -1298,7 +1295,7 @@ int sim_t::main( int argc, char** argv )
   if ( output_file != stdout ) fclose( output_file );
   if ( log_file ) fclose( log_file );
 
-  http_t::save_cache();
+  http_t::cache_save();
 
   return 0;
 }

@@ -3,37 +3,13 @@
 // 1=regular debug
 // 2=more detailed debug, each item stat shown
 // 3=each URL read shown
-int debug=0;
-
-
+static int debug=0;
 
 
 #include "simcraft.h"
 using namespace std;
 
-
 const bool ParseEachItem=true;
-const size_t maxCache=1000;
-const int expirationSeconds=6*60*60;
-const char* urlCacheFile="url_cache.dat";
-bool clear_url_cache=false;
-
-
-
-struct cacheHeader_t
-{
-  size_t n;
-  size_t sz1;
-  size_t sz2;
-  double t;
-};
-
-struct urlCache_t
-{
-  std::string url;
-  double time;
-  std::string data;
-};
 
 struct urlSplit_t
 {
@@ -45,15 +21,7 @@ struct urlSplit_t
   unsigned int setPieces[20];
 };
 
-
 enum url_page_t {  UPG_GEAR, UPG_TALENTS, UPG_ITEM  };
-
-
-size_t N_cache=0;
-urlCache_t* urlCache=0;
-double lastReqTime=0;
-const size_t maxBufSz=100000;
-
 
 std::string tolower( std::string src )
 {
@@ -63,169 +31,12 @@ std::string tolower( std::string src )
   return dest;
 }
 
-
-void SaveCache()
-{
-  if ( ( !urlCache )||( N_cache==0 ) ) return;
-  thread_t::lock();
-  FILE* file = fopen( urlCacheFile , "wb" );
-  if ( file==NULL ){
-      thread_t::unlock();
-      return;
-  }
-  //mark expired and count all
-  unsigned int n=0;
-  double nowTime= (double) time( NULL );
-  for ( size_t i=1; i<=N_cache; i++ )
-  {
-    bool expired = nowTime - urlCache[i].time > expirationSeconds;
-    if ( expired || ( urlCache[i].data.length()>=( unsigned )maxBufSz ) )
-      urlCache[i].time=0;
-    else
-      n++;
-  }
-  //save to file
-  cacheHeader_t hdr;
-  hdr.n=n;
-  char* buffer= new char[maxBufSz];
-  if ( fwrite( &hdr,sizeof( hdr ),1,file ) )
-  {
-    for ( size_t i=1; i<=N_cache; i++ )
-      if ( urlCache[i].time>0 )
-      {
-        hdr.n=i;
-        hdr.sz1= urlCache[i].url.length()+1;
-        hdr.sz2= urlCache[i].data.length()+1;
-        hdr.t= urlCache[i].time;
-        if ( !fwrite( &hdr,sizeof( hdr ),1,file ) ) break;
-        strcpy( buffer,urlCache[i].url.c_str() );
-        fwrite( buffer, hdr.sz1,1,file );
-        strcpy( buffer,urlCache[i].data.c_str() );
-        fwrite( buffer, hdr.sz2,1,file );
-      }
-  }
-  delete buffer;
-  fclose( file );
-  thread_t::unlock();
-}
-
-
-
-void LoadCache()
-{
-  if (urlCache) return;
-  thread_t::lock();
-  urlCache_t* newCache=new urlCache_t[maxCache+2];
-  int newN_cache    =0;
-  if (!clear_url_cache){
-      //load cache from file
-      FILE* file = fopen( urlCacheFile, "rb" );
-      if ( file!=NULL ){
-          cacheHeader_t hdr;
-          char* buffer=new char[maxBufSz];
-          if ( fread( &hdr,sizeof( hdr ),1,file ) )
-          {
-            size_t nel= hdr.n;
-            for ( size_t i=1; ( i<=nel )&&!feof( file ); i++ )
-            {
-              if ( fread( &hdr,sizeof( hdr ),1,file )&&(max(hdr.sz1,hdr.sz2)<maxBufSz) )
-              {
-                newN_cache++;
-                newCache[newN_cache].time= hdr.t;
-                fread( buffer, hdr.sz1,1,file ); // url
-                buffer[hdr.sz1]=0;
-                newCache[newN_cache].url=buffer;
-                fread( buffer, hdr.sz2,1,file ); // data
-                buffer[hdr.sz2]=0;
-                newCache[newN_cache].data=buffer;
-              }
-            }
-          }
-          delete buffer;
-          fclose( file );
-      }
-  }else{
-      // if there was clear cache request, just skip loading cache from file
-      // this will ensure juat ONE cache clear per simulation run
-      clear_url_cache=false;
-  }
-  //set pointers to new cache
-  N_cache= newN_cache;
-  urlCache=newCache;
-  thread_t::unlock();
-}
-
-
-
-//wrapper for getURLsource, support for throttling and cache
-// if chkResult is specified, result is only valid if it contains that string
-std::string getURLData( std::string URL,  std::string chkResult="", double timeout=0, double throttle=0 )
-{
-  std::string data="";
-  //check cache
-  LoadCache();
-  unsigned int found=0;
-  for ( size_t i=1; ( i<=N_cache ) && ( !found ); i++ )
-      if ( urlCache[i].url==URL ){
-        found=i;
-        break;
-      }
-  double nowTime= (double) time( NULL );
-  bool expired = ( !found ) || ( nowTime-urlCache[found].time > expirationSeconds );
-  if ( expired )
-  {
-    //check if last request was more than 2sec ago
-    if (throttle>0)
-        while ( ( lastReqTime<nowTime )&&( time( NULL )-lastReqTime<throttle ) );
-    // HTTP request
-    if (debug>2) printf( "Loading URL: %s\n",URL.c_str() );
-    printf("@"); // visual indicator because wait can be long
-    http_t::download(data, URL);
-    //add to cache
-    if (( data!="") && ((chkResult=="")||(data.find(chkResult)!=string::npos)) ){
-        if ( found )
-        {
-          urlCache[found].time= nowTime;
-          urlCache[found].data=data;
-        }
-        else{
-          thread_t::lock();
-          if ( N_cache<maxCache ) 
-          {
-              // check if someone inserted this very URL while i was loading it
-              if ((N_cache==0)||(urlCache[N_cache].url!=URL)){
-                N_cache++;
-                urlCache[N_cache].time=nowTime;
-                urlCache[N_cache].url= URL;
-                urlCache[N_cache].data= data;
-              }
-          }
-          thread_t::unlock();
-        }
-    }else{
-    // if there was timeout/error in this fetch, and we have old data, use it
-        if (found){
-            printf("X");
-            data=urlCache[found].data;
-        }else
-            printf("-");
-    }
-    return data;
-  }
-  else
-  {
-    //return from cache
-    return  urlCache[found].data;
-  }
-}
-
 //wrapper supporting differnt armory pages
 std::string getArmoryData( urlSplit_t aURL, url_page_t pgt, std::string moreParams="" )
 {
   std::string URL=aURL.wwwAdr;
   std::string chk="";
-  double timeout=0;
-  double throttle=aURL.sim->url_cache_throttle;
+  int throttle=aURL.sim->http_throttle;
   switch ( pgt )
   {
     case UPG_TALENTS:   
@@ -244,7 +55,9 @@ std::string getArmoryData( urlSplit_t aURL, url_page_t pgt, std::string morePara
       break;
   }
   URL+="?r="+aURL.realm+"&n="+aURL.player+moreParams;
-  return getURLData( URL , chk, timeout, throttle );
+  std::string result;
+  if( ! http_t::get( result, URL, chk, throttle ) ) result = "";
+  return result;
 }
 
 
@@ -834,7 +647,6 @@ bool parseArmory( sim_t* sim, std::string URL, bool inactiveTalents, bool gearOn
   urlSplit_t aURL;
   if ( !splitURL( URL,aURL ) ) return false;
   aURL.sim=sim;
-  clear_url_cache = sim->url_cache_clear;
   debug=sim->debug_armory;
   // retrieve armory gear data (XML) for this player
   std::string src= getArmoryData( aURL,UPG_GEAR );
@@ -957,8 +769,6 @@ bool parseArmory( sim_t* sim, std::string URL, bool inactiveTalents, bool gearOn
       sim->active_player->gear_stats = gs;
   }
 
-  // save url caches
-  SaveCache();
   if ( debug && sim->active_player) displayStats( sim->active_player->gear_stats );
   // now parse remaining options, if any
   if ( optionStr!="" )
@@ -1005,9 +815,6 @@ bool parseArmoryPlayers( sim_t* sim, std::string URL ){
   }
   return true;
 }
-
-
-void clear_armory_cache(){    clear_url_cache=true;}//
 
 
 struct set_tiers_t

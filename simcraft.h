@@ -296,10 +296,13 @@ struct thread_t
 
 struct http_t
 {
-  static bool load_cache();
-  static bool save_cache();
-  static bool download( std::string& result, const std::string& url );
-  static bool get     ( std::string& result, const std::string& url );
+  static bool cache_load();
+  static bool cache_save();
+  static void cache_clear();
+  static void cache_set( const std::string& url, const std::string& result, uint32_t timestamp=0, bool lock=true );
+  static bool cache_get( std::string& result, const std::string& url, bool force=false, bool lock=true );
+  static bool download( std::string& result, const std::string& url, bool lock=true );
+  static bool get( std::string& result, const std::string& url, const std::string& confirmation=std::string(), int throttle_seconds=0 );
 };
 
 // Event =====================================================================
@@ -553,8 +556,7 @@ struct sim_t : public app_t
   std::string output_file_str, log_file_str, html_file_str, wiki_file_str;
   FILE* output_file;
   FILE* log_file;
-  bool       url_cache_clear;
-  double     url_cache_throttle;  
+  int http_throttle;  
 
   // Multi-Threading
   int threads;
