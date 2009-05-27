@@ -192,6 +192,7 @@ struct warlock_t : public player_t
     int  shadow_and_flame;
     int  shadow_burn;
     int  shadow_embrace;
+    int  shadowfury;
     int  shadow_mastery;
     int  siphon_life;
     int  soul_leech;
@@ -2606,6 +2607,79 @@ struct shadow_burn_t : public warlock_spell_t
   }
 };
 
+
+// Shadowfury Spell ===========================================================
+
+struct shadowfury_t : public warlock_spell_t
+{
+  int backdraft;
+  double cast_gcd;
+
+  shadowfury_t( player_t* player, const std::string& options_str ) :
+      warlock_spell_t( "shadowfury", player, SCHOOL_FIRE, TREE_DESTRUCTION ), backdraft( 0 ), cast_gcd(-1)
+  {
+    warlock_t* p = player -> cast_warlock();
+
+    option_t options[] =
+      {
+        { "backdraft",   OPT_BOOL, &backdraft   },
+        { "cast_gcd",    OPT_FLT,  &cast_gcd    },
+        { NULL }
+      };
+    parse_options( options, options_str );
+
+    rank_t ranks[] =
+      {
+        { 80, 4, 968, 1152, 0, 0.27 },
+        { 75, 3, 822,  978, 0, 0.27 },
+        { 70, 2, 612,  728, 0, 0.27 },
+        { 60, 1, 459,  547, 0, 0.37 },
+        { 0, 0 }
+      };
+
+
+    init_rank( ranks );
+
+
+    base_execute_time = 0;
+    may_crit          = true;
+    direct_power_mod  = ( 1.5/3.5 );
+    cooldown          = 20;
+    trigger_gcd = 0.5; // estimate - measured at ~0.6sec, but lag in there too, plus you need to mouse-click
+    if (cast_gcd>=0) trigger_gcd=cast_gcd;
+
+
+    base_hit        += p -> talents.suppression * 0.01;
+    base_cost       *= 1.0 - ( p -> talents.cataclysm * 0.03
+                               + ( ( p -> talents.cataclysm ) ? 0.01 : 0 ) );
+
+    base_multiplier   *= 1.0 + p -> talents.emberstorm  * 0.03;
+    base_crit         += p -> talents.devastation * 0.05;
+
+    base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
+  }
+
+
+
+  virtual bool ready()
+  {
+    warlock_t* p = player -> cast_warlock();
+
+    if (!p->talents.shadowfury) 
+      return false;
+
+    if ( ! warlock_spell_t::ready() )
+      return false;
+
+    if ( backdraft )
+      if ( ! p -> _buffs.backdraft )
+        return false;
+
+    return true;
+  }
+};
+
+
 // Corruption Spell ===========================================================
 
 struct corruption_t : public warlock_spell_t
@@ -4503,6 +4577,7 @@ action_t* warlock_t::create_action( const std::string& name,
   if ( name == "sacrifice_pet"       ) return new       sacrifice_pet_t( this, options_str );
   if ( name == "shadow_bolt"         ) return new         shadow_bolt_t( this, options_str );
   if ( name == "shadow_burn"         ) return new         shadow_burn_t( this, options_str );
+  if ( name == "shadowfury"          ) return new          shadowfury_t( this, options_str );
   if ( name == "searing_pain"        ) return new        searing_pain_t( this, options_str );
   if ( name == "soul_fire"           ) return new           soul_fire_t( this, options_str );
   if ( name == "summon_pet"          ) return new          summon_pet_t( this, options_str );
@@ -4704,7 +4779,7 @@ bool warlock_t::get_talent_trees( std::vector<int*>& affliction,
       { { 20, &( talents.contagion               ) }, { 20, &( talents.demonic_knowledge        ) }, { 20, &( talents.shadow_and_flame      ) } },
       { { 21, &( talents.dark_pact               ) }, { 21, &( talents.demonic_tactics          ) }, { 21, &( talents.improved_soul_leech   ) } },
       { { 22, NULL                                 }, { 22, &( talents.decimation               ) }, { 22, &( talents.backdraft             ) } },
-      { { 23, &( talents.malediction             ) }, { 23, &( talents.improved_demonic_tactics ) }, { 23, NULL                               } },
+      { { 23, &( talents.malediction             ) }, { 23, &( talents.improved_demonic_tactics ) }, { 23, &( talents.shadowfury            ) } },
       { { 24, &( talents.deaths_embrace          ) }, { 24, &( talents.summon_felguard          ) }, { 24, &( talents.empowered_imp         ) } },
       { { 25, &( talents.unstable_affliction     ) }, { 25, &( talents.nemesis                  ) }, { 25, &( talents.fire_and_brimstone    ) } },
       { { 26, &( talents.pandemic                ) }, { 26, &( talents.demonic_pact             ) }, { 26, &( talents.chaos_bolt            ) } },
