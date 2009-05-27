@@ -11,6 +11,8 @@
 // PLATFORM INDEPENDENT SECTION
 // ==========================================================================
 
+static const char* user_agent = "Firefox/3.0";
+
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
 // get_cache ================================================================
@@ -37,7 +39,7 @@ static bool parse_url( std::string& host,
 {
   if( strncmp( url, "http://", 7 ) ) return false;
 
-  char* buffer = (char*) alloca( strlen( url ) + 1 );
+  char buffer[ 2048 ];
   strcpy( buffer, url+7 );
 
   char* port_start = strstr( buffer, ":" );
@@ -67,12 +69,9 @@ static bool parse_url( std::string& host,
 static void throttle( int seconds )
 {
   static int64_t last = 0;
-  int64_t now = time( NULL );
-  if( ( now - last ) < seconds ) 
-  {
-    sleep( 1 );
-    last = time( NULL );
-  }
+  int64_t now;
+  do { now = time( NULL ); } while( ( now - last ) < seconds );
+  last = now;
 }
 
 } // ANONYMOUS NAMESPACE ====================================================
@@ -149,13 +148,80 @@ bool http_t::download( std::string& result,
 
 #include <windows.h>
 #include <wininet.h>
+#include <Winsock2.h>
 
 // http_t::download =========================================================
 
 bool http_t::download( std::string& result,
 		       const std::string& url )
 {
-  return false;
+  static bool initialized = false;
+  if( ! initialized )
+  {
+    WSADATA wsa_data; 
+    WSAStartup( MAKEWORD(2,2), &wsa_data );
+    initialized = true;
+  }
+
+  std::string host;
+  std::string path;
+  short port;
+
+  if( ! parse_url( host, path, port, url.c_str() ) ) return false;
+
+  struct hostent* h = gethostbyname( host.c_str() );
+  if( ! h ) return false;
+
+  sockaddr_in a;
+  a.sin_family = AF_INET;
+  a.sin_addr = *(in_addr *)h->h_addr_list[0];
+  a.sin_port = htons( port );
+
+  int s;
+  s = ::socket( AF_INET, SOCK_STREAM, getprotobyname( "tcp" ) -> p_proto );
+  if( s == 0xffffffffU ) return false;
+
+  int r = ::connect( s, (sockaddr *)&a, sizeof( a ) );
+  if( r < 0 )
+  {
+    close( s );
+    return false;
+  }
+  
+  char buffer[2048];
+  sprintf( buffer, "GET %s HTTP/1.0\r\nUser-Agent: %s\r\nAccept: */*\r\nHost: %s\r\nConnection: close\r\n\r\n", path.c_str(), user_agent, host.c_str() );
+  r = ::send( s, buffer, int( strlen( buffer ) ), 0 );
+  if( r != (int) strlen( buffer ) )
+  {
+    close( s );
+    return false;
+  }
+
+  result = "";
+
+  while( 1 )
+  {
+    r = ::recv( s, buffer, sizeof(buffer)-1, 0 );
+    if( r > 0 )
+    {
+      buffer[ r ] = '\0';
+      result += buffer;
+    }
+    else break;
+  }
+  
+  ::close( s );
+
+  std::string::size_type pos = result.find( "\r\n\r\n" );
+  if( pos == result.npos ) 
+  {
+    result.clear();
+    return false;
+  }
+
+  result.erase( result.begin(), result.begin() + pos + 4 );
+  
+  return true;
 }
 
 #elif defined( _MSC_VER )
@@ -243,7 +309,7 @@ bool http_t::download( std::string& result,
   }
   
   char buffer[2048];
-  sprintf( buffer, "GET %s HTTP/1.0\r\nUser-Agent: Firefox/3.0\r\nAccept: */*\r\nHost: %s\r\nConnection: close\r\n\r\n", path.c_str(), host.c_str() );
+  sprintf( buffer, "GET %s HTTP/1.0\r\nUser-Agent: %s\r\nAccept: */*\r\nHost: %s\r\nConnection: close\r\n\r\n", path.c_str(), user_agent, host.c_str() );
   r = ::send( s, buffer, int( strlen( buffer ) ), MSG_WAITALL );
   if( r != (int) strlen( buffer ) )
   {
