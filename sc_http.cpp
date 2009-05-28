@@ -393,6 +393,15 @@ bool http_t::download( std::string& result,
 #include <windows.h>
 #include <wininet.h>
 
+#if _MSC_VER >= 1500
+#define BROWSER_AGENT  L"Firefix/3.0"
+#define URL_STRING     std::wstring
+#else
+#define BROWSER_AGENT  "Firefix/3.0"
+#define URL_STRING     std::string
+#endif
+
+
 // http_t::download =========================================================
 
 bool http_t::download( std::string& result,
@@ -400,10 +409,10 @@ bool http_t::download( std::string& result,
 {
   result = "";
   HINTERNET hINet, hFile;
-  hINet = InternetOpen( L"Firefox/3.0", INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0 );
+  hINet = InternetOpen( BROWSER_AGENT, INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0 );
   if( hINet )
   {
-    std::wstring wURL( url.length(), L' ' );
+    URL_STRING wURL( url.length(), L' ' );
     std::copy( url.begin(), url.end(), wURL.begin() );
     hFile = InternetOpenUrl( hINet, wURL.c_str(), NULL, 0, INTERNET_FLAG_RELOAD, 0 );
     if ( hFile )
