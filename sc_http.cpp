@@ -400,7 +400,7 @@ bool http_t::download( std::string& result,
 {
   result = "";
   HINTERNET hINet, hFile;
-  hINet = InternetOpen( L"Firefix/3.0", INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0 );
+  hINet = InternetOpen( L"Firefox/3.0", INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0 );
   if( hINet )
   {
     std::wstring wURL( url.length(), L' ' );
