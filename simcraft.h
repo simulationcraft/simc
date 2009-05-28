@@ -301,7 +301,7 @@ struct http_t
   static void cache_clear();
   static void cache_set( const std::string& url, const std::string& result, uint32_t timestamp=0, bool lock=true );
   static bool cache_get( std::string& result, const std::string& url, bool force=false, bool lock=true );
-  static bool download( std::string& result, const std::string& url, bool lock=true );
+  static bool download( std::string& result, const std::string& url );
   static bool get( std::string& result, const std::string& url, const std::string& confirmation=std::string(), int throttle_seconds=0 );
 };
 
@@ -664,7 +664,7 @@ struct player_t
   int         index, type, level, party, member;
   double      distance;
   double      gcd_ready, base_gcd;
-  int         sleeping, initialized;
+  int         stunned, moving, sleeping, initialized;
   rating_t    rating;
   pet_t*      pet_list;
 
@@ -1140,6 +1140,7 @@ struct target_t
   int initial_armor, armor;
   int block_value;
   int shield;
+  int invulnerable;
   double initial_health, current_health;
   double total_dmg;
   uptime_t* uptime_list;

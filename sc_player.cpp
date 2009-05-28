@@ -305,8 +305,11 @@ static void replenish_raid( player_t* provider )
 player_t::player_t( sim_t*             s,
                     int                t,
                     const std::string& n ) :
-    sim( s ), name_str( n ), next( 0 ), index( -1 ), type( t ), level( 80 ), party( 0 ), member( 0 ),
-    distance( 0 ), gcd_ready( 0 ), base_gcd( 1.5 ), sleeping( 0 ), initialized( 0 ), pet_list( 0 ),
+    sim( s ), name_str( n ), next( 0 ), index( -1 ), type( t ), level( 80 ), 
+    party( 0 ), member( 0 ),
+    distance( 0 ), gcd_ready( 0 ), base_gcd( 1.5 ), 
+    stunned( 0 ), moving( 0 ), sleeping( 0 ), initialized( 0 ), 
+    pet_list( 0 ),
     // Haste
     base_haste_rating( 0 ), initial_haste_rating( 0 ), haste_rating( 0 ), spell_haste( 1.0 ), attack_haste( 1.0 ),
     // Spell Mechanics

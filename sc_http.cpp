@@ -80,49 +80,51 @@ bool http_t::cache_load()
   thread_t::lock();
 
   FILE* file = fopen( url_cache_file, "rb" );
-  if( ! file ) return false;
 
-  uint32_t num_records, max_size;
-
-  if( fread( &num_records, sizeof( uint32_t ), 1, file ) &&
-      fread( &max_size,    sizeof( uint32_t ), 1, file ) )
+  if( file )
   {
-    std::string url, result;
-    char* buffer = new char[ max_size ];
-    
-    for( unsigned i=0; i < num_records; i++ )
+    uint32_t num_records, max_size;
+
+    if( fread( &num_records, sizeof( uint32_t ), 1, file ) &&
+	fread( &max_size,    sizeof( uint32_t ), 1, file ) )
     {
-      uint32_t timestamp, url_size, result_size;
-
-      if( fread( &timestamp,   sizeof( uint32_t ), 1, file ) &&
-	  fread( &url_size,    sizeof( uint32_t ), 1, file ) &&
-	  fread( &result_size, sizeof( uint32_t ), 1, file ) )
+      std::string url, result;
+      char* buffer = new char[ max_size+1 ];
+    
+      for( unsigned i=0; i < num_records; i++ )
       {
-	assert( url_size > 0 && result_size > 0 );
+	uint32_t timestamp, url_size, result_size;
 
-	if( fread( buffer, sizeof( char ), url_size, file ) )
+	if( fread( &timestamp,   sizeof( uint32_t ), 1, file ) &&
+	    fread( &url_size,    sizeof( uint32_t ), 1, file ) &&
+	    fread( &result_size, sizeof( uint32_t ), 1, file ) )
 	{
-	  buffer[ url_size ] = '\0';
-	  url = buffer;
+	  assert( url_size > 0 && result_size > 0 );
+
+	  if( fread( buffer, sizeof( char ), url_size, file ) )
+	  {
+	    buffer[ url_size ] = '\0';
+	    url = buffer;
+	  }
+	  else break;
+
+	  if( fread( buffer, sizeof( char ), result_size, file ) )
+	  {
+	    buffer[ result_size ] = '\0';
+	    result = buffer;
+	  }
+	  else break;
+
+	  cache_set( url, result, timestamp, false );
 	}
 	else break;
-
-	if( fread( buffer, sizeof( char ), result_size, file ) )
-	{
-	  buffer[ result_size ] = '\0';
-	  result = buffer;
-	}
-	else break;
-
-	cache_set( url, result, timestamp, false );
       }
-      else break;
+
+      delete buffer;
     }
 
-    delete buffer;
+    fclose( file );
   }
-
-  fclose( file );
 
   thread_t::unlock();
 
@@ -136,38 +138,39 @@ bool http_t::cache_save()
   thread_t::lock();
 
   FILE* file = fopen( url_cache_file, "wb" );
-  if( ! file ) return false;
-
-  uint32_t num_records = url_cache_db.size();
-  uint32_t max_size=0;
-
-  for( unsigned i=0; i < num_records; i++ )
+  if( file )
   {
-    url_cache_t& c = url_cache_db[ i ];
-    uint32_t size = std::max( c.url.size(), c.result.size() );
-    if( size > max_size ) max_size = size;
+    uint32_t num_records = url_cache_db.size();
+    uint32_t max_size=0;
+
+    for( unsigned i=0; i < num_records; i++ )
+    {
+      url_cache_t& c = url_cache_db[ i ];
+      uint32_t size = std::max( c.url.size(), c.result.size() );
+      if( size > max_size ) max_size = size;
+    }
+
+    fwrite( &num_records, sizeof( uint32_t ), 1, file );
+    fwrite( &max_size,    sizeof( uint32_t ), 1, file );
+
+    for( unsigned i=0; i < num_records; i++ )
+    {
+      url_cache_t& c = url_cache_db[ i ];
+      
+      fwrite( &( c.timestamp ), sizeof( uint32_t ), 1, file );
+      
+      uint32_t    url_size = c.   url.size();
+      uint32_t result_size = c.result.size();
+
+      fwrite(    &url_size, sizeof( uint32_t ), 1, file );
+      fwrite( &result_size, sizeof( uint32_t ), 1, file );
+
+      fwrite( c.   url.c_str(), sizeof( char ),    url_size, file );
+      fwrite( c.result.c_str(), sizeof( char ), result_size, file );
+    }  
+
+    fclose( file );
   }
-
-  fwrite( &num_records, sizeof( uint32_t ), 1, file );
-  fwrite( &max_size,    sizeof( uint32_t ), 1, file );
-
-  for( unsigned i=0; i < num_records; i++ )
-  {
-    url_cache_t& c = url_cache_db[ i ];
-
-    fwrite( &( c.timestamp ), sizeof( uint32_t ), 1, file );
-
-    uint32_t    url_size = c.   url.size();
-    uint32_t result_size = c.result.size();
-
-    fwrite(    &url_size, sizeof( uint32_t ), 1, file );
-    fwrite( &result_size, sizeof( uint32_t ), 1, file );
-
-    fwrite( c.   url.c_str(), sizeof( char ),    url_size, file );
-    fwrite( c.result.c_str(), sizeof( char ), result_size, file );
-  }  
-
-  fclose( file );
 
   thread_t::unlock();
 
@@ -193,9 +196,10 @@ bool http_t::cache_get( std::string& result,
   if( lock ) thread_t::lock();
 
   uint32_t now = time( NULL );
+  bool success = false;
 
   int num_records = url_cache_db.size();
-  for( int i=0; i < num_records; i++ )
+  for( int i=0; i < num_records && ! success; i++ )
   {
     url_cache_t& c = url_cache_db[ i ];
 
@@ -203,16 +207,16 @@ bool http_t::cache_get( std::string& result,
     {
       if( ! force )
 	if( ( now - c.timestamp ) > expiration_seconds ) 
-	  return false;
+	  break;
 
       result = c.result;
-      return true;
+      success = true;
     }
   }
 
   if( lock ) thread_t::unlock();
 
-  return false;
+  return success;
 }
 
 // http_t::cache_set ========================================================
@@ -227,6 +231,8 @@ void http_t::cache_set( const std::string& url,
   if( timestamp == 0 ) timestamp = time( NULL );
 
   int num_records = url_cache_db.size();
+  bool success = false;
+
   for( int i=0; i < num_records; i++ )
   {
     url_cache_t& c = url_cache_db[ i ];
@@ -236,11 +242,12 @@ void http_t::cache_set( const std::string& url,
       c.url = url;
       c.result = result;
       c.timestamp = timestamp;
-      return;
+      success = true;
+      break;
     }
   }
 
-  url_cache_db.push_back( url_cache_t( url, result, timestamp ) );
+  if( ! success ) url_cache_db.push_back( url_cache_t( url, result, timestamp ) );
 
   if( lock ) thread_t::unlock();
 }
@@ -262,7 +269,7 @@ bool http_t::get( std::string& result,
   {
     printf( "@" ); fflush( stdout );
     throttle( throttle_seconds );
-    success = download( result, url, false );
+    success = download( result, url );
 
     if( success )
     {
@@ -292,8 +299,7 @@ bool http_t::get( std::string& result,
 // http_t::download =========================================================
 
 bool http_t::download( std::string& result,
-		       const std::string& url,
-		       bool lock )
+		       const std::string& url )
 {
   return false;
 }
@@ -311,11 +317,8 @@ bool http_t::download( std::string& result,
 // http_t::download =========================================================
 
 bool http_t::download( std::string& result,
-		       const std::string& url,
-		       bool lock )
+		       const std::string& url )
 {
-  if( lock ) thread_t::lock();
-
   static bool initialized = false;
   if( ! initialized )
   {
@@ -378,8 +381,6 @@ bool http_t::download( std::string& result,
 
   result.erase( result.begin(), result.begin() + pos + 4 );
   
-  if( lock ) thread_t::unlock();
-
   return true;
 }
 
@@ -395,34 +396,33 @@ bool http_t::download( std::string& result,
 // http_t::download =========================================================
 
 bool http_t::download( std::string& result,
-		       const std::string& url,
-		       bool lock )
+		       const std::string& url )
 {
-  if( lock ) thread_t::lock();
   result = "";
   HINTERNET hINet, hFile;
   hINet = InternetOpen( L"Firefox/3.0", INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0 );
-  if (hINet ){
-      std::wstring wURL( url.length(), L' ' );
-      std::copy( url.begin(), url.end(), wURL.begin() );
-      hFile = InternetOpenUrl( hINet, wURL.c_str(), NULL, 0, INTERNET_FLAG_RELOAD, 0 );
-      if ( hFile ){
-          char buffer[ 20000 ];
-          DWORD amount;
-          while( InternetReadFile( hFile, buffer, sizeof(buffer)-2, &amount ) )
-          {
-            if( amount > 0 )
-            {
-              buffer[ amount ] = '\0';
-              result += buffer;
-            }
-            else break;
-          }
-          InternetCloseHandle( hFile );
+  if( hINet )
+  {
+    std::wstring wURL( url.length(), L' ' );
+    std::copy( url.begin(), url.end(), wURL.begin() );
+    hFile = InternetOpenUrl( hINet, wURL.c_str(), NULL, 0, INTERNET_FLAG_RELOAD, 0 );
+    if ( hFile )
+    {
+      char buffer[ 20000 ];
+      DWORD amount;
+      while( InternetReadFile( hFile, buffer, sizeof(buffer)-2, &amount ) )
+      {
+	if( amount > 0 )
+	{
+	  buffer[ amount ] = '\0';
+	  result += buffer;
+	}
+	else break;
       }
-      InternetCloseHandle( hINet );
+      InternetCloseHandle( hFile );
+    }
+    InternetCloseHandle( hINet );
   }
-  if( lock ) thread_t::unlock();
   return result.size() > 0;
 }
 
@@ -439,11 +439,8 @@ bool http_t::download( std::string& result,
 // http_t::download =========================================================
 
 bool http_t::download( std::string& result,
-		       const std::string& url,
-		       bool lock )
+		       const std::string& url )
 {
-  if( lock ) thread_t::lock();
-
   std::string host;
   std::string path;
   short port;
@@ -502,8 +499,6 @@ bool http_t::download( std::string& result,
 
   result.erase( result.begin(), result.begin() + pos + 4 );
   
-  if( lock ) thread_t::unlock();
-
   return true;
 }
 

@@ -835,7 +835,7 @@ void sim_t::iterate()
 
   for ( int i=0; i < iterations; i++ )
   {
-    if ( report_progress && ( message_interval > 0 ) && ( i % message_interval == 0 ) )
+    if ( report_progress && ( message_interval > 0 ) && ( i % message_interval == 0 ) && ( message_index > 0 ) )
     {
       fprintf( stdout, "%d... ", message_index-- );
       fflush( stdout );
