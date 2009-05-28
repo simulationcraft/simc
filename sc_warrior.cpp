@@ -1112,7 +1112,9 @@ struct melee_t : public warrior_attack_t
       if ( weapon -> slot == SLOT_OFF_HAND )
         hitfactor /= 2.0;
 
-      double rage_gained = 15.0 * direct_dmg / ( 4.0 * rage_conversion_value ) + time_to_execute * hitfactor / 2.0;
+      // double rage_gained = 15.0 * direct_dmg / ( 4.0 * rage_conversion_value ) + time_to_execute * hitfactor / 2.0;
+      // http://elitistjerks.com/f81/t60632-rage_generation_changed/
+      double rage_gained = 3.0/8.0 * ( weapon -> swing_time * hitfactor  + 7.5 * direct_dmg / rage_conversion_value );
 
       if ( p -> talents.endless_rage )
         rage_gained *= 1.25;
