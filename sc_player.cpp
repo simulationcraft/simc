@@ -348,7 +348,7 @@ player_t::player_t( sim_t*             s,
     flask( FLASK_NONE ),
     food( FOOD_NONE ),
     // Events
-    executing( 0 ), channeling( 0 ), in_combat( false ),
+    executing( 0 ), channeling( 0 ), readying( 0 ), in_combat( false ),
     // Actions
     action_list( 0 ),
     // Reporting
@@ -1446,6 +1446,7 @@ void player_t::reset()
 
   executing = 0;
   channeling = 0;
+  readying = 0;
   in_combat = false;
   iteration_dmg = 0;
 
@@ -1488,6 +1489,9 @@ void player_t::reset()
   {
     a -> reset();
   }
+
+  moving = 0;
+  stunned = 0;
 
   if ( sleeping ) quiet = 1;
 }
@@ -1543,62 +1547,57 @@ void player_t::schedule_ready( double delta_time,
 
   if ( delta_time == 0 ) delta_time = 0.000001;
 
-  new ( sim ) player_ready_event_t( sim, this, delta_time );
+  readying = new ( sim ) player_ready_event_t( sim, this, delta_time );
 }
 
-// player_t::checkMoving =================================================
-// check if player is moving at one specific point in time
-    //0== not moving; 
-    //1== regular moving : move but can use instas; 
-    //2== stunned : can not dps at all; 
-    //3== invulnerable target: can not dps, and need to cancel spells
-int player_t::checkMoving(double tm){
-    int is_moving=0; 
-    if (!sim->raid_events) return 0;
-    for (int ei=1; ei<=sim->N_raid_events; ei++){
-        raid_event_t* e = &sim->raid_events[ei];
-        // check if they apply to this player
-        bool ok=(e->type== REVT_PERIOD);
-        if ((e->distance>0)&&(e->distance < distance)) ok=false;
-        // check interrupt/break periods, if they apply to this player
-        if (ok)
-        for (int i=1; i<=e->n_periods; i++){
-            if ((tm >= e->periods[i].time_from)&&
-                (tm <= e->periods[i].time_to)){
-                    int ism= e->invulnerable? 3: e->can_not_dps? 2: 1;
-                    if (ism>is_moving) is_moving=ism;
-            }
-        }
-    }
-    return is_moving;
+// player_t::interrupt ======================================================
+
+void player_t::interrupt()
+{
+  // FIXME! Players will need to override this to handle background repeating actions.
+
+  if( sim -> log ) log_t::output( sim, "%s is interrupted", name() );
+
+  if( executing  ) executing  -> cancel();
+  if( channeling ) channeling -> cancel();
+
+  if( stunned )
+  {
+    if( readying ) event_t::cancel( readying );
+  }
+  else
+  {
+    if( ! readying && ! sleeping ) schedule_ready();
+  }
 }
 
+// player_t::clear_debuffs===================================================
 
+void player_t::clear_debuffs()
+{
+  // FIXME! At the moment we are just clearing DoTs
+
+  if( sim -> log ) log_t::output( sim, "%s clears debuffs from %s", name(), sim -> target -> name() );
+
+  for( action_t* a = action_list; a; a = a -> next )
+  {
+    if( a -> ticking ) a -> cancel();
+  }
+}
 
 // player_t::execute_action =================================================
 
 action_t* player_t::execute_action()
 {
+  readying = 0;
+
   action_t* action=0;
-  int is_moving= checkMoving(sim -> current_time);
 
   for ( action = action_list; action; action = action -> next )
   {
-
     if ( action -> background )
       continue;
     
-    // default moving check - for those actions that do not check on their own
-    if ((is_moving && (action->channeled || action->execute_time()>0)) ||( is_moving>1)){
-      // give action chance to do additional stuff if moving
-      action -> processMoving(is_moving);
-      // cancel spell if channeled or target invul
-      if ( (action->num_ticks>0) && (action->channeled || (is_moving>2)) )
-            action->cancel(); 
-      continue;
-    }
-
-    // regular check if action is ready
     if ( action -> ready() )
       break;
 
@@ -2071,7 +2070,7 @@ void player_t::aura_gain( const char* aura_name , int aura_id )
 {
   if ( sim -> log && ! sleeping )
   {
-    log_t::output( sim, "Player %s gains %s", name(), aura_name );
+    log_t::output( sim, "%s gains %s", name(), aura_name );
     log_t::aura_gain_event( this, aura_name, aura_id );
   }
 
@@ -2083,7 +2082,7 @@ void player_t::aura_loss( const char* aura_name , int aura_id )
 {
   if ( sim -> log && ! sleeping )
   {
-    log_t::output( sim, "Player %s loses %s", name(), aura_name );
+    log_t::output( sim, "%s loses %s", name(), aura_name );
     log_t::aura_loss_event( this, aura_name, aura_id );
   }
 }

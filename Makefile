@@ -68,6 +68,7 @@ SRC =\
 	sc_pet.cpp		\
 	sc_player.cpp		\
 	sc_priest.cpp		\
+	sc_raid_event.cpp	\
 	sc_rating.cpp		\
 	sc_report.cpp		\
 	sc_rng.cpp		\

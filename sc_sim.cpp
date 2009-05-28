@@ -151,7 +151,6 @@ sim_t::sim_t( sim_t* p, int index ) :
     jow_chance( 0 ), jow_ppm( 15.0 ),
     normalized_rng( 0 ), normalized_sf( 0 ), deterministic_roll( 0 ), average_range( 1 ), average_gauss( 0 ),
     timing_wheel( 0 ), wheel_seconds( 0 ), wheel_size( 0 ), wheel_mask( 0 ), timing_slice( 0 ), wheel_granularity( 0.0 ),
-    raid_events(0), N_raid_events(0),
     replenishment_targets( 0 ),
     raid_dps( 0 ), total_dmg( 0 ),
     total_seconds( 0 ), elapsed_cpu_seconds( 0 ),
@@ -367,6 +366,12 @@ void sim_t::reset()
   {
     p -> reset();
   }
+
+  int num_events = raid_events.size();
+  for( int i=0; i < num_events; i++ )
+  {
+    raid_events[ i ] -> reset();
+  }
 }
 
 // sim_t::combat_begin ======================================================
@@ -391,6 +396,12 @@ void sim_t::combat_begin()
     p -> combat_begin();
   }
   new ( this ) regen_event_t( this );
+
+  int num_events = raid_events.size();
+  for( int i=0; i < num_events; i++ )
+  {
+    raid_events[ i ] -> schedule();
+  }
 }
 
 // sim_t::combat_end ========================================================
@@ -411,116 +422,6 @@ void sim_t::combat_end()
     p -> combat_end();
   }
 }
-
-
-
-// sim_t::init_raid_events ==================================================
-bool  sim_t::init_raid_events(){
-    // raid_event=break,period=30,duration=5,can_not_dps=1/break,period=60,duration=10,distance<=15
-    if (raid_events_str!=""){
-        std::vector<std::string> splitsEvents;
-        if (debug ) log_t::output( this, "Raid_events_str=%s",  raid_events_str.c_str() );
-        //split to multiple events, 
-        int sizeEvt = util_t::string_split( splitsEvents, raid_events_str, "/\\" );
-        N_raid_events=0;
-        raid_events= new raid_event_t[sizeEvt+2];
-        memset(raid_events,0,(sizeEvt+2)*sizeof(raid_event_t));
-        double maxTime= max_time;
-        if (maxTime<=0) maxTime=15*60;
-        // process each event
-        for ( int ei=0; ei < sizeEvt; ei++ )
-        {
-            N_raid_events++;
-            raid_event_t* re=&raid_events[N_raid_events];
-            re->type=REVT_NONE;
-            //split options for this event
-            std::vector<std::string> splitsOptions;
-            int sizeOpt = util_t::string_split( splitsOptions, splitsEvents[ei], "," );
-            for (int i=0; i< sizeOpt; i++){
-                std::string opt= tolower(splitsOptions[i]);
-                std::string optValue="";
-                double fVal=0;
-		std::string::size_type cpos= opt.find("=");
-                if (cpos!=std::string::npos){
-                    optValue= opt.substr(cpos+1);
-                    opt= opt.substr(0,cpos);
-                    fVal=atof(optValue.c_str());
-                }
-                // raid event types
-                if (opt=="break"){
-                    re->type=REVT_PERIOD;
-                }else
-                // period options
-                if (opt=="period"){
-                    re->type=REVT_PERIOD;
-                    re->period=fVal;
-                }else
-                if (opt=="duration"){
-                    re->duration=fVal;
-                }else
-                if (opt=="start"){
-                    re->start=fVal;
-                }else
-                if (opt=="n"){
-                    re->n_periods=(int)fVal;
-                }else
-                if (opt=="end"){
-                    re->end=fVal;
-                }else
-                if (opt=="stddev"){
-                    re->stddev=fVal;
-                }else
-                if (opt=="can_not_dps"){
-                    re->can_not_dps=(int)fVal != 0;
-                }else
-                if (opt=="can_dps"){
-                    re->can_not_dps=!(int)fVal;
-                }else
-                if ((opt=="invulnerable")||(opt=="invul")){
-                    re->invulnerable=(int)fVal != 0;
-                }else
-                if ((opt=="distance")||(opt=="distance<")){
-                    re->distance=fVal;
-                }else{
-                    printf( "sim_t: Unknown raid event: %s\n", opt.c_str() );
-                    assert( false );
-                };
-            }
-            //check if mandatory options were given
-            if ((re->period>0)||(re->n_periods==1)) {
-                // create periods
-                if (re->start<=0) re->start=re->period/2;
-                if (re->n_periods<=0){
-                    if (re->end<=0) re->end=maxTime;
-                    re->n_periods= (int) ((re->end-re->start)/ re->period + 1);
-                }else{
-                    re->end=re->start+re->n_periods*re->period;
-                }
-                if (re->n_periods>0){
-                    re->periods= new raid_event_period_t[re->n_periods+1];
-                    double t=re->start;
-                    for (int i=1; i<=re->n_periods; i++){
-                        double shift=0;
-                        if (re->stddev>0){
-                            shift= gauss(0,re->stddev);
-                            if (fabs(shift)>re->period/2.0) shift=0;
-                        }
-                        re->periods[i].time_from=t+shift;
-                        re->periods[i].time_to=t+shift+re->duration;
-                        t+=re->period;
-                    }
-                }else
-                    N_raid_events--;
-            }else{
-                // if not , go back one step
-                N_raid_events--;
-            }
-
-        }
-    }
-    return true;
-}
-
 
 // sim_t::init ==============================================================
 
@@ -567,7 +468,11 @@ bool sim_t::init()
     if ( ! p -> quiet ) too_quiet = false;
   }
 
-  if ( too_quiet && ! debug ) exit( 0 );
+  if ( too_quiet && ! debug ) 
+  {
+    printf( "simcraft: No active players in sim.\n" );
+    assert( false );
+  }
 
   // Defer party creation after player_t::init() calls to handle any pets created there.
 
@@ -619,7 +524,7 @@ bool sim_t::init()
     p -> register_callbacks();
   }
 
-  init_raid_events();
+  raid_event_t::init( this );
 
   return true;
 }
@@ -1171,8 +1076,8 @@ bool sim_t::parse_option( const std::string& name,
       { "wheel_seconds",                    OPT_INT,    &( wheel_seconds                            ) },
       { "http_throttle",                    OPT_INT,    &( http_throttle                            ) },
       { "debug_armory",                     OPT_BOOL,   &( debug_armory                             ) },
-      { "raid_event",                       OPT_STRING, &( raid_events_str                          ) },
-      { "raid_event+",                      OPT_APPEND, &( raid_events_str                          ) },
+      { "raid_events",                      OPT_STRING, &( raid_events_str                          ) },
+      { "raid_events+",                     OPT_APPEND, &( raid_events_str                          ) },
       { NULL, OPT_UNKNOWN }
     };
 

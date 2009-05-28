@@ -191,6 +191,7 @@ void target_t::reset()
   debuffs.reset();
   expirations.reset();
   cooldowns.reset();
+  invulnerable = 0;
 }
 
 // target_t::combat_begin ====================================================
@@ -209,7 +210,7 @@ void target_t::combat_begin()
   if ( sim -> overrides.judgement_of_wisdom   ) debuffs.judgement_of_wisdom = 1;
   if ( sim -> overrides.mangle                ) debuffs.mangle = 1;
   if ( sim -> overrides.master_poisoner       ) debuffs.master_poisoner = 1;
-if ( sim -> overrides.misery                ) { debuffs.misery = 3; debuffs.misery_stack = 1; }
+  if ( sim -> overrides.misery                ) { debuffs.misery = 3; debuffs.misery_stack = 1; }
   if ( sim -> overrides.poisoned              ) debuffs.poisoned = 1;
   if ( sim -> overrides.razorice              ) debuffs.razorice = 1;
   if ( sim -> overrides.savage_combat         ) debuffs.savage_combat = 1;

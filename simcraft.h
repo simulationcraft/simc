@@ -75,6 +75,7 @@ struct pet_t;
 struct player_t;
 struct priest_t;
 struct proc_t;
+struct raid_event_t;
 struct rank_t;
 struct rating_t;
 struct report_t;
@@ -92,9 +93,6 @@ struct uptime_t;
 struct warlock_t;
 struct warrior_t;
 struct weapon_t;
-struct roll_t;
-struct raid_event_t;
-
 
 // Enumerations ==============================================================
 
@@ -265,10 +263,11 @@ enum role_type { ROLE_NONE=0, ROLE_ATTACK, ROLE_SPELL, ROLE_TANK, ROLE_HYBRID, R
 enum rng_type
 {
   // Specifies the general class of RNG desired
-  RNG_DEFAULT=0,    // Do not care/know where it will be used
-  RNG_GLOBAL,       // Returns reference to global RNG on sim_t
-  RNG_CYCLIC,       // Normalized even/periodical results are acceptable
-  RNG_DISTRIBUTED,  // Normalized variable/distributed values should be returned
+  RNG_DEFAULT=0,     // Do not care/know where it will be used
+  RNG_GLOBAL,        // Returns reference to global RNG on sim_t
+  RNG_DETERMINISTIC, // Returns reference to global deterministic RNG on sim_t
+  RNG_CYCLIC,        // Normalized even/periodical results are acceptable
+  RNG_DISTRIBUTED,   // Normalized variable/distributed values should be returned
 
   // Specifies a particular RNG desired
   RNG_STANDARD,          // Creates RNG using srand() and rand()
@@ -279,8 +278,6 @@ enum rng_type
   RNG_PRE_FILL,          // Deterministic number of procs with random distribution
   RNG_MAX
 };
-
-enum raid_event_type { REVT_NONE, REVT_PERIOD, REVT_MAX };
 
 // Thread Wrappers ===========================================================
 
@@ -344,26 +341,40 @@ struct event_compare_t
   }
 };
 
-// raid events
-struct raid_event_period_t{
-    double time_from;
-    double time_to;
-};
+// Raid Event
 
-struct raid_event_t{
-    // parameters
-    raid_event_type type;
-    double period;
-    double duration;
-    double stddev;
-    double start;
-    double end;
-    bool can_not_dps;
-    bool invulnerable;
-    double distance;
-    // occurences
-    int n_periods;
-    raid_event_period_t* periods;
+struct raid_event_t
+{
+  sim_t* sim;
+  std::string name_str;
+  int num_starts;
+  double first, last;
+  double cooldown;
+  double cooldown_stddev;
+  double cooldown_min;
+  double cooldown_max;
+  double duration;
+  double duration_stddev;
+  double duration_min;
+  double duration_max;
+  double distance_min;
+  double distance_max;
+  rng_t* rng;
+  std::vector<player_t*> affected_players;
+
+  raid_event_t( sim_t*, const char* name );
+ ~raid_event_t() {}
+
+  virtual double cooldown_time();
+  virtual double duration_time();
+  virtual void schedule();
+  virtual void reset();
+  virtual void start();
+  virtual void finish() {}
+  virtual void parse_options( option_t*, const std::string& options_str );
+  virtual const char* name() { return name_str.c_str(); }
+  static raid_event_t* create( sim_t* sim, const std::string& name, const std::string& options_str );
+  static void init( sim_t* );
 };
 
 // Gear Stats ================================================================
@@ -450,10 +461,9 @@ struct sim_t : public app_t
   gear_stats_t gear_default;
   gear_stats_t gear_delta;
 
-  // raid events/interrupts
-  std::string  raid_events_str;
-  raid_event_t* raid_events;
-  int N_raid_events;
+  // Raid Events
+  std::vector<raid_event_t*> raid_events;
+  std::string raid_events_str;
   
   // Buffs and Debuffs Overrides
   struct overrides_t
@@ -580,7 +590,6 @@ struct sim_t : public app_t
   void      cancel_events( player_t* );
   event_t*  next_event();
   void      reset();
-  bool      init_raid_events();
   bool      init();
   void      analyze();
   void      merge( sim_t& other_sim );
@@ -744,9 +753,10 @@ struct player_t
   int food;
 
   // Events
-  event_t* executing;
-  event_t* channeling;
-  bool     in_combat;
+  action_t* executing;
+  action_t* channeling;
+  event_t*  readying;
+  bool      in_combat;
 
   // Callbacks
   std::vector<action_callback_t*> resource_gain_callbacks[ RESOURCE_MAX ];
@@ -1011,8 +1021,9 @@ struct player_t
   virtual double intellect();
   virtual double spirit();
 
+  virtual void      interrupt();
+  virtual void      clear_debuffs();
   virtual void      schedule_ready( double delta_time=0, bool waiting=false );
-  virtual int       checkMoving(double tm);
   virtual action_t* execute_action();
 
   virtual void   regen( double periodicity=2.0 );
@@ -1404,7 +1415,6 @@ struct action_t
   virtual void   update_ready();
   virtual void   update_stats( int type );
   virtual void   update_time( int type );
-  virtual int    processMoving(int is_moving) {return 0; };
   virtual bool   ready();
   virtual void   reset();
   virtual void   cancel();

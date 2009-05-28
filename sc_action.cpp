@@ -833,7 +833,7 @@ void action_t::schedule_execute()
   if ( ! background )
   {
     player -> gcd_ready = sim -> current_time + gcd();
-    player -> executing = execute_event;
+    player -> executing = this;
   }
 }
 
@@ -860,7 +860,7 @@ void action_t::schedule_tick()
 
   tick_event = new ( sim ) action_tick_event_t( sim, this, time_to_tick );
 
-  if ( channeled ) player -> channeling = tick_event;
+  if ( channeled ) player -> channeling = this;
 
   if ( observer ) *observer = this;
 }
@@ -1019,6 +1019,14 @@ bool action_t::ready()
   if ( sync_action && ! sync_action -> ready() )
     return false;
 
+  if( sim -> target -> invulnerable )
+    if( harmful )
+      return false;
+
+  if ( player -> moving )
+    if( channeled || execute_time() > 0 )
+      return false;
+
   return true;
 }
 
@@ -1056,7 +1064,8 @@ void action_t::cancel()
 {
   if ( ticking ) last_tick();
 
-  if ( player -> channeling == tick_event ) player -> channeling = 0;
+  if ( player -> executing  == this ) player -> executing  = 0;
+  if ( player -> channeling == this ) player -> channeling = 0;
 
   event_t::cancel( execute_event );
   event_t::cancel(    tick_event );

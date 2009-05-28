@@ -498,7 +498,7 @@ bool http_t::download( std::string& result,
   }
 
   result.erase( result.begin(), result.begin() + pos + 4 );
-  
+
   return true;
 }
 
