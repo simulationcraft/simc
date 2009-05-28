@@ -13,7 +13,8 @@
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
-static const char* url_cache_file = "url_cache.dat";
+static const char*  url_cache_file = "url_cache.dat";
+static const double url_cache_version = 1.0;
 static const uint32_t expiration_seconds = 6 * 60 * 60;
 
 struct url_cache_t
@@ -83,46 +84,49 @@ bool http_t::cache_load()
 
   if( file )
   {
+    double version;
     uint32_t num_records, max_size;
 
-    if( fread( &num_records, sizeof( uint32_t ), 1, file ) &&
+    if( fread( &version,     sizeof( double   ), 1, file ) &&
+	fread( &num_records, sizeof( uint32_t ), 1, file ) &&
 	fread( &max_size,    sizeof( uint32_t ), 1, file ) )
     {
-      std::string url, result;
-      char* buffer = new char[ max_size+1 ];
-    
-      for( unsigned i=0; i < num_records; i++ )
+      if( version == url_cache_version )
       {
-	uint32_t timestamp, url_size, result_size;
-
-	if( fread( &timestamp,   sizeof( uint32_t ), 1, file ) &&
-	    fread( &url_size,    sizeof( uint32_t ), 1, file ) &&
-	    fread( &result_size, sizeof( uint32_t ), 1, file ) )
-	{
-	  assert( url_size > 0 && result_size > 0 );
-
-	  if( fread( buffer, sizeof( char ), url_size, file ) )
+	std::string url, result;
+	char* buffer = new char[ max_size+1 ];
+    
+	for( unsigned i=0; i < num_records; i++ )
+        {
+	  uint32_t timestamp, url_size, result_size;
+	  
+	  if( fread( &timestamp,   sizeof( uint32_t ), 1, file ) &&
+	      fread( &url_size,    sizeof( uint32_t ), 1, file ) &&
+	      fread( &result_size, sizeof( uint32_t ), 1, file ) )
 	  {
-	    buffer[ url_size ] = '\0';
-	    url = buffer;
+	    assert( url_size > 0 && result_size > 0 );
+
+	    if( fread( buffer, sizeof( char ), url_size, file ) )
+	    {
+	      buffer[ url_size ] = '\0';
+	      url = buffer;
+	    }
+	    else break;
+
+	    if( fread( buffer, sizeof( char ), result_size, file ) )
+	    {
+	      buffer[ result_size ] = '\0';
+	      result = buffer;
+	    }
+	    else break;
+
+	    cache_set( url, result, timestamp, false );
 	  }
 	  else break;
-
-	  if( fread( buffer, sizeof( char ), result_size, file ) )
-	  {
-	    buffer[ result_size ] = '\0';
-	    result = buffer;
-	  }
-	  else break;
-
-	  cache_set( url, result, timestamp, false );
 	}
-	else break;
+	delete buffer;
       }
-
-      delete buffer;
     }
-
     fclose( file );
   }
 
@@ -150,8 +154,9 @@ bool http_t::cache_save()
       if( size > max_size ) max_size = size;
     }
 
-    fwrite( &num_records, sizeof( uint32_t ), 1, file );
-    fwrite( &max_size,    sizeof( uint32_t ), 1, file );
+    fwrite( &url_cache_version, sizeof( double   ), 1, file );
+    fwrite( &num_records,       sizeof( uint32_t ), 1, file );
+    fwrite( &max_size,          sizeof( uint32_t ), 1, file );
 
     for( unsigned i=0; i < num_records; i++ )
     {
