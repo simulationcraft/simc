@@ -246,6 +246,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\sc_raid_event.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\sc_rating.cpp"
 			>
 		</File>

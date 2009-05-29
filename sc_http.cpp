@@ -278,14 +278,14 @@ bool http_t::get( std::string& result,
 
     if( success )
     {
-      if( confirmation.size() > 0 && ! result.find( confirmation ) )
+      if( confirmation.size() > 0 && (result.find( confirmation )!=result::npos) )
       {
-	printf( "X" ); fflush( stdout );
-	success = cache_get( result, url, true, false );
+        printf( "X" ); fflush( stdout );
+        success = cache_get( result, url, true, false );
       }
       else
       {
-	cache_set( url, result, 0, false );
+        cache_set( url, result, 0, false );
       }
     }
   }

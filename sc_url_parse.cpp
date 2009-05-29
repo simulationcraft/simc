@@ -656,13 +656,17 @@ bool parseArmory( sim_t* sim, std::string URL, bool inactiveTalents, bool gearOn
   // each recognized option add to optionStr
   std::string node;
   node= getValue( src,"character.class" );
+  if (node==""){
+    printf("No <character.class> in Armory parse !\n");
+    if (debug) printf("Src=%s\n",src.c_str());
+    return true;
+  }
+  std::string charName= getValue(src,"character.name");
+  if (inactiveTalents) charName+="_inactive";
   if ( (!gearOnly)&&( node!="" ) )
   {
     node[0]=tolower( node[0] );
-    std::string charName= getValue(src,"character.name");
-    if (inactiveTalents) charName+="_inactive";
     optionStr+= node+"="+charName+"\n";
-    //optionStr+= chkValue( src,"character.name",node+"=" );
     optionStr+= chkValue( src,"character.level","level=" );
   }
 
@@ -716,6 +720,12 @@ bool parseArmory( sim_t* sim, std::string URL, bool inactiveTalents, bool gearOn
     optionStr="";
   };
 
+  // check if we have active player. It either should be set from before, or after last parse of "player="
+  if ( !sim->active_player ){
+    printf("No active player in Armory parse ! Last player name: %s\n",charName.c_str());
+    return true;
+  }
+
   // parse for glyphs
   if ( ( glyphs!="" )&&( sim->active_player ) )
   {
@@ -767,6 +777,8 @@ bool parseArmory( sim_t* sim, std::string URL, bool inactiveTalents, bool gearOn
     //copy gear stats if needed
     if ( ( nGs>0 )&& ParseEachItem )
       sim->active_player->gear_stats = gs;
+  }else{
+    printf("No <characterTab.items> found in Armory for player: %s\n",charName.c_str());
   }
 
   if ( debug && sim->active_player) displayStats( sim->active_player->gear_stats );
