@@ -650,7 +650,10 @@ bool parseArmory( sim_t* sim, std::string URL, bool inactiveTalents, bool gearOn
   debug=sim->debug_armory;
   // retrieve armory gear data (XML) for this player
   std::string src= getArmoryData( aURL,UPG_GEAR );
-  if ( src=="" ) return false;
+  if ( src=="" ){
+    printf("Armory parse error for: %s\n",URL.c_str());
+    return false;
+  }
 
   // parse that XML and search for available data
   // each recognized option add to optionStr

@@ -278,7 +278,7 @@ bool http_t::get( std::string& result,
 
     if( success )
     {
-      if( confirmation.size() > 0 && (result.find( confirmation )!=result::npos) )
+      if( confirmation.size() > 0 && (result.find( confirmation )==std::string::npos) )
       {
         printf( "X" ); fflush( stdout );
         success = cache_get( result, url, true, false );
