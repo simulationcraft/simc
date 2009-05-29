@@ -3759,7 +3759,6 @@ struct dark_pact_t : public warlock_spell_t
   dark_pact_t( player_t* player, const std::string& options_str ) :
       warlock_spell_t( "dark_pact", player, SCHOOL_SHADOW, TREE_AFFLICTION )
   {
-    warlock_t* p = player -> cast_warlock();
     option_t options[] =
       {
         { NULL }
@@ -3858,7 +3857,6 @@ struct sacrifice_pet_t : public warlock_spell_t
   sacrifice_pet_t( player_t* player, const std::string& options_str ) :
       warlock_spell_t( "sacrifice_pet", player, SCHOOL_SHADOW, TREE_DEMONOLOGY )
   {
-    warlock_t* p = player -> cast_warlock();
     harmful = false;
     trigger_gcd = 0;
   }
@@ -4092,8 +4090,9 @@ struct metamorphosis_t : public warlock_spell_t
 struct demonic_empowerment_t : public warlock_spell_t
 {
   int demonic_frenzy;
+
   demonic_empowerment_t( player_t* player, const std::string& options_str ) :
-      warlock_spell_t( "demonic_empowerment", player, SCHOOL_SHADOW, TREE_DEMONOLOGY )
+    warlock_spell_t( "demonic_empowerment", player, SCHOOL_SHADOW, TREE_DEMONOLOGY ), demonic_frenzy(0)
   {
     warlock_t* p = player -> cast_warlock();
 
