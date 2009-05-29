@@ -2460,6 +2460,8 @@ struct chaos_bolt_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
 
+    if (!p->talents.chaos_bolt) return false;
+
     if ( ! warlock_spell_t::ready() )
       return false;
 
@@ -3042,6 +3044,14 @@ struct unstable_affliction_t : public warlock_spell_t
     p -> active_dots--;;
     p -> affliction_effects--;
   }
+
+  virtual bool ready()
+  {
+    warlock_t* p = player -> cast_warlock();
+    if (!p->talents.unstable_affliction ) return false;
+    return warlock_spell_t::ready();
+  }
+
 };
 
 // Haunt Spell ==============================================================
@@ -3108,6 +3118,8 @@ struct haunt_t : public warlock_spell_t
   virtual bool ready()
   {
     warlock_t* p = player -> cast_warlock();
+
+    if (!p->talents.haunt) return false;
 
     if ( ! warlock_spell_t::ready() )
       return false;
@@ -3415,6 +3427,8 @@ struct conflagrate_t : public warlock_spell_t
   virtual bool ready()
   {
     warlock_t* p = player -> cast_warlock();
+
+    if (!p->talents.conflagrate) return false;
 
     if ( ! spell_t::ready() )
       return false;
@@ -4106,6 +4120,14 @@ struct metamorphosis_t : public warlock_spell_t
     update_ready();
     new ( sim ) expiration_t( sim, p );
   }
+
+  virtual bool ready()
+  {
+    warlock_t* p = player -> cast_warlock();
+    if (!p->talents.metamorphosis ) return false;
+    return warlock_spell_t::ready();
+  }
+
 };
 
 // Demonic Empowerment Spell ================================================
@@ -4287,6 +4309,8 @@ struct wait_for_decimation_t : public action_t
   virtual bool ready()
   {
     warlock_t* p = player -> cast_warlock();
+
+    if (!p->talents.decimation) return false;
 
     if ( sim -> target -> health_percentage() <= 35 )
       if ( ! p -> _buffs.decimation )

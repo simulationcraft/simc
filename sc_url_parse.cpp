@@ -123,6 +123,8 @@ bool splitURL( std::string URL, urlSplit_t& aURL )
   }
   else
     return false;
+  // post proccessing
+  if (aURL.wwwAdr.length()<=3) aURL.wwwAdr+=".wowarmory.com";
   if ( string::npos == id_http ) aURL.wwwAdr="http://"+aURL.wwwAdr;
 
   for ( unsigned int i=0; i<20; i++ )  aURL.setPieces[i]=0;
@@ -640,18 +642,22 @@ bool  parseItemStats( urlSplit_t& aURL, gear_stats_t& gs,  std::string& item_id,
 // main procedure that parse armory info from giuven player URL (URL must have realm/player inside)
 // it set options either by building option string and calling parse_line(), or by directly calling
 // player->parse_option()
-bool parseArmory( sim_t* sim, std::string URL, bool inactiveTalents, bool gearOnly )
+bool parseArmory( sim_t* sim, std::string URL, bool inactiveTalents=false, bool gearOnly=false )
 {
   std::string optionStr="";
   // split URL
   urlSplit_t aURL;
-  if ( !splitURL( URL,aURL ) ) return false;
+  if ( !splitURL( URL,aURL ) ){
+    printf("\nArmory parse wrong URL: %s\n",URL.c_str());
+    return false;
+  }
   aURL.sim=sim;
   debug=sim->debug_armory;
   // retrieve armory gear data (XML) for this player
   std::string src= getArmoryData( aURL,UPG_GEAR );
   if ( src=="" ){
-    printf("Armory parse error for: %s\n",URL.c_str());
+    printf("\nArmory parse incorrect page for: \narmory=%s , realm=%s , player=%s\n",
+           aURL.wwwAdr.c_str(), aURL.realm.c_str(),aURL.player.c_str());
     return false;
   }
 
@@ -660,7 +666,7 @@ bool parseArmory( sim_t* sim, std::string URL, bool inactiveTalents, bool gearOn
   std::string node;
   node= getValue( src,"character.class" );
   if (node==""){
-    printf("No <character.class> in Armory parse !\n");
+    printf("\nNo <character.class> in Armory parse !\n");
     if (debug) printf("Src=%s\n",src.c_str());
     return true;
   }
@@ -830,6 +836,19 @@ bool parseArmoryPlayers( sim_t* sim, std::string URL ){
   }
   return true;
 }
+
+
+bool armory_option_parse(sim_t* sim,  const std::string& name, const std::string& value){
+  if ( name=="player" )             return parseArmory( sim, value);
+  if ( name=="gear" )               return parseArmory( sim, value, false, true );
+  if ( name=="armory" )             return parseArmoryPlayers( sim, value);
+  if ( name=="http_cache_clear") {
+    http_t::cache_clear();
+    return true;
+  }
+  return false;
+}
+
 
 
 struct set_tiers_t

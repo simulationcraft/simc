@@ -1847,9 +1847,8 @@ struct util_t
 };
 
 std::string tolower( std::string src );
-bool parseArmory( sim_t* sim, std::string URL, bool inactiveTalents=false, bool gearOnly=false );
-bool parseArmoryPlayers( sim_t* sim, std::string URL );
 
+bool armory_option_parse( sim_t* sim, const std::string& name, const std::string& value);
 
 
 #endif // __SIMCRAFT_H
