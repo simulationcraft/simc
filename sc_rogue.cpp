@@ -241,6 +241,7 @@ struct rogue_t : public player_t
   virtual void      init_procs();
   virtual void      init_uptimes();
   virtual void      init_rng();
+  virtual void      init_actions();
   virtual void      register_callbacks();
   virtual void      combat_begin();
   virtual void      reset();
@@ -374,41 +375,42 @@ static void break_stealth( rogue_t* p )
     {
       struct master_of_subtlety_expiration_t : public event_t
       {
-	master_of_subtlety_expiration_t( sim_t* sim, rogue_t* p ) : event_t( sim, p )
+        master_of_subtlety_expiration_t( sim_t* sim, rogue_t* p ) : event_t( sim, p )
         {
-	  name = "Recent Stealth Expiration";
-	  sim -> add_event( this, 6.0 );
-	}
-	virtual void execute()
+          name = "Master of Subtlety Expiration";
+          sim -> add_event( this, 6.0 );
+        }
+        virtual void execute()
         {
-	  rogue_t* p = player -> cast_rogue();
-	  if ( p -> _buffs.master_of_subtlety )
-	  {
-	    p -> aura_loss( "Master of Subtlety" );
-	    p -> _buffs.master_of_subtlety = 0;
-	  }
-	}
+          rogue_t* p = player -> cast_rogue();
+          if ( p -> _buffs.master_of_subtlety )
+          {
+            p -> aura_loss( "Master of Subtlety" );
+            p -> _buffs.master_of_subtlety = 0;
+          }
+        }
       };
       new ( p -> sim ) master_of_subtlety_expiration_t( p -> sim, p );
     }
+
     if( p -> _buffs.overkill )
     {
       struct overkill_expiration_t : public event_t
       {
-	overkill_expiration_t( sim_t* sim, rogue_t* p ) : event_t( sim, p )
+        overkill_expiration_t( sim_t* sim, rogue_t* p ) : event_t( sim, p )
         {
-	  name = "Recent Stealth Expiration";
-	  sim -> add_event( this, sim -> P313 ? 20.0 : 6.0 );
-	}
-	virtual void execute()
+          name = "Overkill Expiration";
+          sim -> add_event( this, sim -> P313 ? 20.0 : 6.0 );
+        }
+        virtual void execute()
         {
-	  rogue_t* p = player -> cast_rogue();
-	  if ( p -> _buffs.overkill )
+          rogue_t* p = player -> cast_rogue();
+          if ( p -> _buffs.overkill )
           {
-	    p -> aura_loss( "Overkill" );
-	    p -> _buffs.overkill = 0;
-	  }
-	}
+            p -> aura_loss( "Overkill" );
+            p -> _buffs.overkill = 0;
+          }
+        }
       };
       new ( p -> sim ) overkill_expiration_t( p -> sim, p );
     }
@@ -715,12 +717,12 @@ static void trigger_tricks_of_the_trade( rogue_attack_t* a )
   {
     struct expiration_t : public event_t
     {
-      expiration_t( sim_t* sim, rogue_t* p, player_t* t ) : event_t( sim, t )
+      expiration_t( sim_t* sim, rogue_t* p, player_t* t, double duration ) : event_t( sim, t )
       {
         name = "Tricks of the Trade Expiration";
         t -> aura_gain( "Tricks of the Trade" );
-        t -> buffs.tricks_of_the_trade = p -> glyphs.tricks_of_the_trade ? 25 : 15;
-        sim -> add_event( this, 6.0 );
+        t -> buffs.tricks_of_the_trade = 15;
+        sim -> add_event( this, duration );
       }
       virtual void execute()
       {
@@ -733,14 +735,17 @@ static void trigger_tricks_of_the_trade( rogue_attack_t* a )
 
     player_t* t = p -> _buffs.tricks_target;
     event_t*& e = t -> expirations.tricks_of_the_trade;
+    double duration = 6;
+	if ( p -> glyphs.tricks_of_the_trade ) duration += 4;
 
     if ( e )
     {
-      e -> reschedule( 6.0 );
+      // FIXME: Do different tricks actually refresh the buff on the target?
+      e -> reschedule( duration );
     }
     else
     {
-      e = new ( a -> sim ) expiration_t( a -> sim, p, t );
+      e = new ( a -> sim ) expiration_t( a -> sim, p, t, duration );
     }
 
     p -> _buffs.tricks_ready = 0;
@@ -852,7 +857,10 @@ void rogue_attack_t::execute()
 
   break_stealth( p );
 
-  p -> _buffs.cold_blood = 0;
+  // Prevent non-critting abilities (Rupture, Garrote, Shiv; maybe something else) from eating Cold Blood
+  if ( may_crit )
+    p -> _buffs.cold_blood = 0;
+
   p -> _buffs.shadowstep = 0;
 }
 
@@ -1115,6 +1123,52 @@ struct auto_attack_t : public rogue_attack_t
   {
     rogue_t* p = player -> cast_rogue();
     return( p -> main_hand_attack -> execute_event == 0 ); // not swinging
+  }
+};
+
+// Adrenaline Rush ==========================================================
+
+struct adrenaline_rush_t : public rogue_attack_t
+{
+  adrenaline_rush_t( player_t* player, const std::string& options_str ) :
+      rogue_attack_t( "adrenaline_rush", player, SCHOOL_PHYSICAL, TREE_COMBAT )
+  {
+    rogue_t* p = player -> cast_rogue();
+    assert( p -> talents.adrenaline_rush );
+
+    option_t options[] =
+      {
+        { NULL }
+      };
+    parse_options( options, options_str );
+
+    cooldown = 180;
+    trigger_gcd = 0;
+  }
+
+  virtual void execute()
+  {
+    struct expiration_t : public event_t
+    {
+      expiration_t( sim_t* sim, rogue_t* p ) : event_t( sim, p )
+      {
+        name = "Adrenaline Rush Expiration";
+        p -> aura_gain( "Adrenaline Rush" );
+        p -> _buffs.adrenaline_rush = 1;
+        sim -> add_event( this, p -> glyphs.adrenaline_rush ? 20.0 : 15.0 );
+      }
+      virtual void execute()
+      {
+        rogue_t* p = player -> cast_rogue();
+        p -> aura_loss( "Adrenaline Rush" );
+        p -> _buffs.adrenaline_rush = 0;
+      }
+    };
+
+    rogue_t* p = player -> cast_rogue();
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
+    update_ready();
+    new ( sim ) expiration_t( sim, p );
   }
 };
 
@@ -1505,18 +1559,9 @@ struct expose_armor_t : public rogue_attack_t
       };
     parse_options( options, options_str );
 
-    static rank_t ranks[] =
-      {
-        { 77, 7, 0, 0, 785, 25 },
-        { 66, 6, 0, 0, 520, 25 },
-        { 56, 5, 0, 0, 450, 25 },
-        { 0, 0 }
-      };
-    init_rank( ranks );
-
     weapon = &( p -> main_hand_weapon );
     requires_combo_points = true;
-    base_cost -= p -> talents.improved_expose_armor * 5;
+    base_cost = 25 - p -> talents.improved_expose_armor * 5;
 
     if ( p -> talents.surprise_attacks ) may_dodge = false;
   }
@@ -2445,6 +2490,157 @@ struct pool_energy_t : public rogue_attack_t
   }
 };
 
+// Shadow Dance =============================================================
+
+struct shadow_dance_t : public rogue_attack_t
+{
+  shadow_dance_t( player_t* player, const std::string& options_str ) :
+      rogue_attack_t( "shadow_dance", player, SCHOOL_PHYSICAL, TREE_SUBTLETY )
+  {
+    rogue_t* p = player -> cast_rogue();
+    assert( p -> talents.shadow_dance );
+
+    option_t options[] =
+      {
+        { NULL }
+      };
+    parse_options( options, options_str );
+
+    trigger_gcd = 0;
+    cooldown = 120;
+  }
+
+  virtual void execute()
+  {
+    struct expiration_t : public event_t
+    {
+      expiration_t( sim_t* sim, rogue_t* p ) : event_t( sim, p )
+      {
+        name = "Shadow Dance Expiration";
+        p -> aura_gain( "Shadow Dance" );
+        p -> _buffs.shadow_dance = 1;
+        sim -> add_event( this, p -> glyphs.shadow_dance ? 14.0 : 10.0 );
+      }
+      virtual void execute()
+      {
+        rogue_t* p = player -> cast_rogue();
+        p -> aura_loss( "Shadow Dance" );
+        p -> _buffs.shadow_dance = 0;
+      }
+    };
+
+    rogue_t* p = player -> cast_rogue();
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
+    update_ready();
+    new ( sim ) expiration_t( sim, p );
+  }
+};
+
+// Tricks of the Trade =======================================================
+
+struct tricks_of_the_trade_t : public rogue_attack_t
+{
+  player_t* tricks_target;
+
+  tricks_of_the_trade_t( player_t* player, const std::string& options_str ) :
+      rogue_attack_t( "tricks_target", player, SCHOOL_PHYSICAL, TREE_SUBTLETY )
+  {
+    rogue_t* p = player -> cast_rogue();
+
+    std::string target_str = p -> tricks_of_the_trade_target_str;
+
+    option_t options[] =
+      {
+        { "target", OPT_STRING, &target_str },
+        { NULL }
+      };
+    parse_options( options, options_str );
+
+    trigger_gcd = 0;
+
+    base_cost = 15;
+    cooldown  = 30.0 - p -> talents.filthy_tricks * 5.0;
+
+    if( target_str.empty() || target_str == "none" )
+    {
+      tricks_target = 0;
+    }
+    else if( target_str == "self" )
+    {
+      tricks_target = p;
+    }
+    else
+    {
+      tricks_target = sim -> find_player( target_str );
+
+      assert ( tricks_target != 0 );
+      assert ( tricks_target != player );
+    }
+  }
+
+  virtual void execute()
+  {
+    rogue_t* p = player -> cast_rogue();
+
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
+    if ( sim -> log ) log_t::output( sim, "%s grants %s Tricks of the Trade", p -> name(), tricks_target -> name() );
+
+    consume_resource();
+    update_ready();
+
+    p -> _buffs.tricks_target = tricks_target;
+    p -> _buffs.tricks_ready  = 1;
+  }
+
+  virtual bool ready()
+  {
+    if( ! tricks_target ) return false;
+
+    if ( tricks_target -> buffs.tricks_of_the_trade )
+      return false;
+
+    return rogue_attack_t::ready();
+  }
+};
+
+// Vanish ===================================================================
+
+struct vanish_t : public rogue_attack_t
+{
+  vanish_t( player_t* player, const std::string& options_str ) :
+      rogue_attack_t( "vanish", player, SCHOOL_PHYSICAL, TREE_SUBTLETY )
+  {
+    option_t options[] =
+      {
+        { NULL }
+      };
+    parse_options( options, options_str );
+
+    trigger_gcd = 0;
+    cooldown = 180;
+  }
+
+  virtual void execute()
+  {
+    rogue_t* p = player -> cast_rogue();
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
+
+    update_ready();
+
+    enter_stealth( p );
+  }
+
+  virtual bool ready()
+  {
+    rogue_t* p = player -> cast_rogue();
+
+    if ( p -> _buffs.stealthed > 0 )
+      return false;
+
+    return rogue_attack_t::ready();
+  }
+};
+
 // =========================================================================
 // Rogue Poisons
 // =========================================================================
@@ -2548,8 +2744,7 @@ struct deadly_poison_t : public rogue_poison_t
       chance += p -> talents.improved_poisons * 0.02;
       if ( p -> _buffs.envenom )
       {
-        chance += 0.15;
-        chance += p -> talents.master_poisoner * 0.15;
+        chance += 0.15 + p -> talents.master_poisoner * 0.15;
       }
       p -> uptimes_envenom -> update( p -> _buffs.envenom != 0 );
       success = p -> rng_deadly_poison -> roll( chance );
@@ -2638,7 +2833,7 @@ struct instant_poison_t : public rogue_poison_t
     {
       double PPM = 8.57;
       PPM *= 1.0 + ( ( p -> talents.improved_poisons * 0.10 ) +
-		     ( p -> _buffs.envenom ? 0.75 : 0.00    ) );
+                     ( p -> _buffs.envenom ? 0.75 : 0.00    ) );
       chance = weapon -> proc_chance_on_swing( PPM );
       may_crit = true;
     }
@@ -2799,52 +2994,6 @@ struct apply_poison_t : public rogue_poison_t
 // Rogue Spells
 // =========================================================================
 
-// Adrenaline Rush ==========================================================
-
-struct adrenaline_rush_t : public spell_t
-{
-  adrenaline_rush_t( player_t* player, const std::string& options_str ) :
-      spell_t( "adrenaline_rush", player )
-  {
-    rogue_t* p = player -> cast_rogue();
-    assert( p -> talents.adrenaline_rush );
-
-    option_t options[] =
-      {
-        { NULL }
-      };
-    parse_options( options, options_str );
-
-    cooldown = 180;
-    trigger_gcd = 0;
-  }
-
-  virtual void execute()
-  {
-    struct expiration_t : public event_t
-    {
-      expiration_t( sim_t* sim, rogue_t* p ) : event_t( sim, p )
-      {
-        name = "Adrenaline Rush Expiration";
-        p -> aura_gain( "Adrenaline Rush" );
-        p -> _buffs.adrenaline_rush = 1;
-        sim -> add_event( this, p -> glyphs.adrenaline_rush ? 20.0 : 15.0 );
-      }
-      virtual void execute()
-      {
-        rogue_t* p = player -> cast_rogue();
-        p -> aura_loss( "Adrenaline Rush" );
-        p -> _buffs.adrenaline_rush = 0;
-      }
-    };
-
-    rogue_t* p = player -> cast_rogue();
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
-    update_ready();
-    new ( sim ) expiration_t( sim, p );
-  }
-};
-
 // Cold Blood ==============================================================
 
 struct cold_blood_t : public spell_t
@@ -2913,52 +3062,6 @@ struct preparation_t : public spell_t
   }
 };
 
-// Shadow Dance =============================================================
-
-struct shadow_dance_t : public spell_t
-{
-  shadow_dance_t( player_t* player, const std::string& options_str ) :
-      spell_t( "shadow_dance", player )
-  {
-    rogue_t* p = player -> cast_rogue();
-    assert( p -> talents.shadow_dance );
-
-    option_t options[] =
-      {
-        { NULL }
-      };
-    parse_options( options, options_str );
-
-    trigger_gcd = 0;
-    cooldown = 120;
-  }
-
-  virtual void execute()
-  {
-    struct expiration_t : public event_t
-    {
-      expiration_t( sim_t* sim, rogue_t* p ) : event_t( sim, p )
-      {
-        name = "Shadow Dance Expiration";
-        p -> aura_gain( "Shadow Dance" );
-        p -> _buffs.shadow_dance = 1;
-        sim -> add_event( this, p -> glyphs.shadow_dance ? 14.0 : 10.0 );
-      }
-      virtual void execute()
-      {
-        rogue_t* p = player -> cast_rogue();
-        p -> aura_loss( "Shadow Dance" );
-        p -> _buffs.shadow_dance = 0;
-      }
-    };
-
-    rogue_t* p = player -> cast_rogue();
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
-    update_ready();
-    new ( sim ) expiration_t( sim, p );
-  }
-};
-
 // Stealth ==================================================================
 
 struct stealth_t : public spell_t
@@ -2983,110 +3086,68 @@ struct stealth_t : public spell_t
   }
 };
 
-// Tricks of the Trade =======================================================
-
-struct tricks_of_the_trade_t : public spell_t
-{
-  player_t* tricks_target;
-
-  tricks_of_the_trade_t( player_t* player, const std::string& options_str ) :
-      spell_t( "tricks_target", player, RESOURCE_ENERGY )
-  {
-    rogue_t* p = player -> cast_rogue();
-
-    std::string target_str = p -> tricks_of_the_trade_target_str;
-
-    option_t options[] =
-      {
-        { "target", OPT_STRING, &target_str },
-        { NULL }
-      };
-    parse_options( options, options_str );
-
-    trigger_gcd = 0;
-
-    base_cost = 15;
-    cooldown  = 30.0;
-    cooldown -= p -> talents.filthy_tricks * 5.0;
-
-    if( target_str.empty() || target_str == "none" )
-    {
-      tricks_target = 0;
-    }
-    else if( target_str == "self" )
-    {
-      tricks_target = p;
-    }
-    else
-    {
-      tricks_target = sim -> find_player( target_str );
-
-      assert ( tricks_target != 0 );
-      assert ( tricks_target != player );
-    }
-  }
-
-  virtual void execute()
-  {
-    rogue_t* p = player -> cast_rogue();
-
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
-    if ( sim -> log ) log_t::output( sim, "%s grants %s Tricks of the Trade", p -> name(), tricks_target -> name() );
-
-    consume_resource();
-    update_ready();
-
-    p -> _buffs.tricks_target = tricks_target;
-    p -> _buffs.tricks_ready  = 1;
-  }
-
-  virtual bool ready()
-  {
-    if( ! tricks_target ) return false;
-
-    if ( tricks_target -> buffs.tricks_of_the_trade )
-      return false;
-
-    return spell_t::ready();
-  }
-};
-
-// Vanish ===================================================================
-
-struct vanish_t : public spell_t
-{
-  vanish_t( player_t* player, const std::string& options_str ) :
-      spell_t( "vanish", player )
-  {
-    option_t options[] =
-      {
-        { NULL }
-      };
-    parse_options( options, options_str );
-
-    trigger_gcd = 0;
-    cooldown = 180;
-  }
-
-  virtual void execute()
-  {
-    rogue_t* p = player -> cast_rogue();
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
-    enter_stealth( p );
-  }
-
-  virtual bool ready()
-  {
-    rogue_t* p = player -> cast_rogue();
-    return p -> _buffs.stealthed < 1;
-  }
-};
-
 } // ANONYMOUS NAMESPACE ===================================================
 
 // =========================================================================
 // Rogue Character Definition
 // =========================================================================
+
+// rogue_t::init_actions ===================================================
+
+void rogue_t::init_actions()
+{
+  if( action_list_str.empty() )
+  {
+    action_list_str += "flask,type=endless_rage/food,type=blackened_dragonfin/apply_poison,main_hand=";
+    action_list_str += talents.improved_poisons > 2 ? "instant" : "wound";
+    action_list_str += ",off_hand=deadly";
+
+    if ( talents.hunger_for_blood )
+    {
+      action_list_str += "/stealth/auto_attack";
+      action_list_str += "/pool_energy,for_next=1/hunger_for_blood,refresh_at=2";
+      action_list_str += "/slice_and_dice,min_combo_points=1,snd<=1";
+      action_list_str += "/rupture,min_combo_points=4,time_to_die>=15,time>=10,snd>=11";
+      action_list_str += "/cold_blood,sync=envenom";
+      action_list_str += "/envenom,min_combo_points=4,no_buff=1";
+      action_list_str += "/envenom,min_combo_points=4,energy>=90";
+      action_list_str += "/envenom,min_combo_points=2,snd<=2";
+      action_list_str += "/tricks_of_the_trade";
+      action_list_str += "/mutilate,max_combo_points=3";
+      action_list_str += "/vanish,time>=30,energy>=50,max_combo_points=1";
+    }
+    else if ( talents.killing_spree )
+    {
+      action_list_str += "/auto_attack";
+      action_list_str += "/slice_and_dice,min_combo_points=1,time<=4";
+      action_list_str += "/pool_energy,energy<=60,snd<=5/slice_and_dice,min_combo_points=3,snd<=2";
+      action_list_str += "/tricks_of_the_trade";
+      action_list_str += "/killing_spree,energy<=20/blade_flurry";
+      action_list_str += "/rupture,min_combo_points=5,time_to_die>=10";
+      action_list_str += "/eviscerate,min_combo_points=5,rup>=5,snd>=5";
+      action_list_str += "/eviscerate,min_combo_points=4,rup>=5,snd>=3,energy>=40";
+      action_list_str += "/eviscerate,min_combo_points=5,time_to_die<=10";
+      action_list_str += "/sinister_strike,max_combo_points=4";
+      action_list_str += "/adrenaline_rush,energy<=20";
+    }
+    else if ( talents.honor_among_thieves )
+    {        
+      action_list_str += "/stealth/auto_attack";
+      action_list_str += "/pool_energy,for_next=1/slice_and_dice,min_combo_points=4,snd<=3";
+      action_list_str += "/tricks_of_the_trade";
+      // CP conditionals track reaction time, so responding when you see CP=4 will often result in CP=5 finishers
+      action_list_str += "/rupture,min_combo_points=4";
+    
+      if ( talents.improved_poisons )
+          action_list_str += "/envenom,min_combo_points=4,env<=1";
+    
+      action_list_str += "/eviscerate,min_combo_points=4";
+      action_list_str += "/hemorrhage,max_combo_points=2,energy>=80";
+    }
+  }
+
+  player_t::init_actions();
+}
 
 // rogue_t::create_action  =================================================
 
