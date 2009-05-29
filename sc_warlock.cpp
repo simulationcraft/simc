@@ -965,10 +965,13 @@ namespace
 
 struct warlock_spell_t : public spell_t
 {
+  //common options based on active effects
   int metamorphosis;
+  int backdraft, backdraft_skip;
+  int molten_core;
 
   warlock_spell_t( const char* n, player_t* player, int s, int t ) :
-      spell_t( n, player, RESOURCE_MANA, s, t ), metamorphosis( 0 )
+      spell_t( n, player, RESOURCE_MANA, s, t ), metamorphosis( 0 ), backdraft(0), backdraft_skip(0), molten_core(0)
   {}
 
   // Overridden Methods
@@ -1966,7 +1969,11 @@ void warlock_spell_t::parse_options( option_t*          options,
 {
   option_t base_options[] =
     {
-      { "metamorphosis", OPT_INT, &metamorphosis },
+      { "metamorphosis",  OPT_INT,  &metamorphosis  },
+      { "backdraft",      OPT_BOOL, &backdraft      },
+      { "no_backdraft",   OPT_BOOL, &backdraft_skip },
+      { "backdraft_skip", OPT_BOOL, &backdraft_skip },
+      { "molten_core",    OPT_BOOL, &molten_core    },
       { NULL }
     };
   std::vector<option_t> merged_options;
@@ -1986,6 +1993,24 @@ bool warlock_spell_t::ready()
     return( p -> _buffs.metamorphosis != 0 );
   else if ( metamorphosis < 0 )
     return( p -> _buffs.metamorphosis == 0 );
+
+  if ( backdraft )
+     if ( ! p -> _buffs.backdraft )
+        return false;
+
+  if ( backdraft_skip )
+     if ( p -> _buffs.backdraft )
+        return false;
+
+  if ( molten_core )
+  {
+    if ( ! sim -> time_to_think( p -> _buffs.molten_core ) )
+      return false;
+
+    if ( sim -> current_time + execute_time() > p -> _expirations.molten_core -> occurs() )
+      return false;
+  }
+
 
   return true;
 }
@@ -2234,13 +2259,12 @@ struct curse_of_doom_t : public warlock_spell_t
 struct shadow_bolt_t : public warlock_spell_t
 {
   int shadow_trance;
-  int backdraft;
   int isb_benefit;
   int isb_trigger;
 
   shadow_bolt_t( player_t* player, const std::string& options_str ) :
       warlock_spell_t( "shadow_bolt", player, SCHOOL_SHADOW, TREE_DESTRUCTION ),
-      shadow_trance( 0 ), backdraft( 0 ), isb_benefit( 0 ), isb_trigger( 0 )
+      shadow_trance( 0 ), isb_benefit( 0 ), isb_trigger( 0 )
   {
     warlock_t* p = player -> cast_warlock();
 
@@ -2248,7 +2272,6 @@ struct shadow_bolt_t : public warlock_spell_t
     option_t options[] =
       {
         { "shadow_trance", OPT_BOOL, &shadow_trance },
-        { "backdraft",     OPT_BOOL, &backdraft     },
         { "isb_benefit",   OPT_BOOL, &isb_benefit   },
         { "isb_trigger",   OPT_BOOL, &isb_trigger   },
         { NULL }
@@ -2358,10 +2381,6 @@ struct shadow_bolt_t : public warlock_spell_t
       if ( ! p -> _buffs.shadow_trance )
         return false;
 
-    if ( backdraft )
-      if ( ! p -> _buffs.backdraft )
-        return false;
-
     if ( isb_benefit )
       if ( ! sim -> time_to_think( p -> _buffs.shadow_vulnerability ) )
         return false;
@@ -2378,21 +2397,17 @@ struct shadow_bolt_t : public warlock_spell_t
 
 struct chaos_bolt_t : public warlock_spell_t
 {
-  int backdraft;
-  int molten_core;
 
   chaos_bolt_t( player_t* player, const std::string& options_str ) :
-      warlock_spell_t( "chaos_bolt", player, SCHOOL_FIRE, TREE_DESTRUCTION ), backdraft( 0 ), molten_core( 0 )
+      warlock_spell_t( "chaos_bolt", player, SCHOOL_FIRE, TREE_DESTRUCTION )
   {
     warlock_t* p = player -> cast_warlock();
-
     option_t options[] =
       {
-        { "backdraft",   OPT_BOOL, &backdraft   },
-        { "molten_core", OPT_BOOL, &molten_core },
         { NULL }
       };
     parse_options( options, options_str );
+
 
     rank_t ranks[] =
       {
@@ -2449,19 +2464,6 @@ struct chaos_bolt_t : public warlock_spell_t
 
     if ( ! warlock_spell_t::ready() )
       return false;
-
-    if ( backdraft )
-      if ( ! p -> _buffs.backdraft )
-        return false;
-
-    if ( molten_core )
-    {
-      if ( ! sim -> time_to_think( p -> _buffs.molten_core ) )
-        return false;
-
-      if ( sim -> current_time + execute_time() > p -> _expirations.molten_core -> occurs() )
-        return false;
-    }
 
     return true;
   }
@@ -2533,8 +2535,6 @@ struct shadow_burn_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
 
-    assert( p -> talents.shadow_burn );
-
     option_t options[] =
       {
         { NULL }
@@ -2591,24 +2591,31 @@ struct shadow_burn_t : public warlock_spell_t
       }
     }
   }
+
+  virtual bool ready()
+  {
+    warlock_t* p = player -> cast_warlock();
+    if (!p->talents.shadow_burn)         return false;
+    return warlock_spell_t::ready();
+  }
 };
+
+
 
 
 // Shadowfury Spell ===========================================================
 
 struct shadowfury_t : public warlock_spell_t
 {
-  int backdraft;
   double cast_gcd;
 
   shadowfury_t( player_t* player, const std::string& options_str ) :
-      warlock_spell_t( "shadowfury", player, SCHOOL_FIRE, TREE_DESTRUCTION ), backdraft( 0 ), cast_gcd(-1)
+      warlock_spell_t( "shadowfury", player, SCHOOL_FIRE, TREE_DESTRUCTION ), cast_gcd(-1)
   {
     warlock_t* p = player -> cast_warlock();
 
     option_t options[] =
       {
-        { "backdraft",   OPT_BOOL, &backdraft   },
         { "cast_gcd",    OPT_FLT,  &cast_gcd    },
         { NULL }
       };
@@ -2656,10 +2663,6 @@ struct shadowfury_t : public warlock_spell_t
 
     if ( ! warlock_spell_t::ready() )
       return false;
-
-    if ( backdraft )
-      if ( ! p -> _buffs.backdraft )
-        return false;
 
     return true;
   }
@@ -2964,8 +2967,6 @@ struct unstable_affliction_t : public warlock_spell_t
       warlock_spell_t( "unstable_affliction", player, SCHOOL_SHADOW, TREE_AFFLICTION )
   {
     warlock_t* p = player -> cast_warlock();
-    assert( p -> talents.unstable_affliction );
-
     option_t options[] =
       {
         { NULL }
@@ -3049,7 +3050,6 @@ struct haunt_t : public warlock_spell_t
       warlock_spell_t( "haunt", player, SCHOOL_SHADOW, TREE_AFFLICTION ), debuff( 0 )
   {
     warlock_t* p = player -> cast_warlock();
-    assert( p -> talents.haunt );
 
     option_t options[] =
       {
@@ -3283,22 +3283,18 @@ struct shadowflame_t : public warlock_spell_t
 
 struct conflagrate_t : public warlock_spell_t
 {
-  int  no_backdraft;
   int  ticks_lost;
   bool cancel_dot;
 
   action_t** dot_spell;
 
   conflagrate_t( player_t* player, const std::string& options_str ) :
-      warlock_spell_t( "conflagrate", player, SCHOOL_FIRE, TREE_DESTRUCTION ), no_backdraft( 0 ), ticks_lost( 0 ), cancel_dot( true )
+      warlock_spell_t( "conflagrate", player, SCHOOL_FIRE, TREE_DESTRUCTION ), ticks_lost( 0 ), cancel_dot( true )
   {
     warlock_t* p = player -> cast_warlock();
 
-    assert( p -> talents.conflagrate );
-
     option_t options[] =
       {
-        { "no_backdraft", OPT_BOOL, &no_backdraft },
         { "ticks_lost",   OPT_INT,  &ticks_lost   },
         { NULL }
       };
@@ -3449,20 +3445,17 @@ struct conflagrate_t : public warlock_spell_t
 
 struct incinerate_t : public warlock_spell_t
 {
-  int    backdraft;
-  int    molten_core;
   double immolate_bonus;
 
   incinerate_t( player_t* player, const std::string& options_str ) :
-      warlock_spell_t( "incinerate", player, SCHOOL_FIRE, TREE_DESTRUCTION ), backdraft( 0 ), molten_core( 0 ), immolate_bonus( 0 )
+      warlock_spell_t( "incinerate", player, SCHOOL_FIRE, TREE_DESTRUCTION ), immolate_bonus( 0 )
   {
     warlock_t* p = player -> cast_warlock();
 
     travel_speed = 21.0; // set before options to allow override
+
     option_t options[] =
       {
-        { "backdraft",   OPT_BOOL, &backdraft   },
-        { "molten_core", OPT_BOOL, &molten_core },
         { NULL }
       };
     parse_options( options, options_str );
@@ -3539,28 +3532,6 @@ struct incinerate_t : public warlock_spell_t
     p -> uptimes_demonic_soul -> update( p -> buffs.tier7_2pc != 0 );
   }
 
-  virtual bool ready()
-  {
-    warlock_t* p = player -> cast_warlock();
-
-    if ( ! warlock_spell_t::ready() )
-      return false;
-
-    if ( backdraft )
-      if ( ! p -> _buffs.backdraft )
-        return false;
-
-    if ( molten_core )
-    {
-      if ( ! sim -> time_to_think( p -> _buffs.molten_core ) )
-        return false;
-
-      if ( sim -> current_time + execute_time() > p -> _expirations.molten_core -> occurs() )
-        return false;
-    }
-
-    return true;
-  }
 };
 
 // Searing Pain Spell =========================================================
@@ -3621,17 +3592,15 @@ struct searing_pain_t : public warlock_spell_t
 
 struct soul_fire_t : public warlock_spell_t
 {
-  int backdraft;
   int decimation;
 
   soul_fire_t( player_t* player, const std::string& options_str ) :
-      warlock_spell_t( "soul_fire", player, SCHOOL_FIRE, TREE_DESTRUCTION ), backdraft( 0 ), decimation( 0 )
+      warlock_spell_t( "soul_fire", player, SCHOOL_FIRE, TREE_DESTRUCTION ), decimation( 0 )
   {
     warlock_t* p = player -> cast_warlock();
 
     option_t options[] =
       {
-        { "backdraft",  OPT_BOOL, &backdraft  },
         { "decimation", OPT_BOOL, &decimation },
         { NULL }
       };
@@ -3694,10 +3663,6 @@ struct soul_fire_t : public warlock_spell_t
 
     if ( ! warlock_spell_t::ready() )
       return false;
-
-    if ( backdraft )
-      if ( ! p -> _buffs.backdraft )
-        return false;
 
     if ( decimation )
     {
@@ -3795,7 +3760,11 @@ struct dark_pact_t : public warlock_spell_t
       warlock_spell_t( "dark_pact", player, SCHOOL_SHADOW, TREE_AFFLICTION )
   {
     warlock_t* p = player -> cast_warlock();
-    assert( p -> talents.dark_pact );
+    option_t options[] =
+      {
+        { NULL }
+      };
+    parse_options( options, options_str );
 
     static rank_t ranks[] =
       {
@@ -3824,6 +3793,9 @@ struct dark_pact_t : public warlock_spell_t
 
   virtual bool ready()
   {
+    warlock_t* p = player -> cast_warlock();
+    if (!p->talents.dark_pact) return false;
+
     if ( ! warlock_spell_t::ready() )
       return false;
 
@@ -3841,6 +3813,7 @@ struct fel_armor_t : public warlock_spell_t
       warlock_spell_t( "fel_armor", player, SCHOOL_SHADOW, TREE_DEMONOLOGY ), bonus_spell_power( 0 )
   {
     warlock_t* p = player -> cast_warlock();
+
     harmful = false;
     trigger_gcd = 0;
     bonus_spell_power = util_t::ability_rank( p -> level,  180.0,78,  150.0,73,  100.0,67,  50.0,62,  0.0,0 );
@@ -3886,7 +3859,6 @@ struct sacrifice_pet_t : public warlock_spell_t
       warlock_spell_t( "sacrifice_pet", player, SCHOOL_SHADOW, TREE_DEMONOLOGY )
   {
     warlock_t* p = player -> cast_warlock();
-    assert( p -> talents.demonic_sacrifice );
     harmful = false;
     trigger_gcd = 0;
   }
@@ -3903,6 +3875,7 @@ struct sacrifice_pet_t : public warlock_spell_t
   virtual bool ready()
   {
     warlock_t* p = player -> cast_warlock();
+    if (!p -> talents.demonic_sacrifice ) return false;
     return p -> active_pet != 0;
   }
 };
@@ -4065,7 +4038,6 @@ struct metamorphosis_t : public warlock_spell_t
       warlock_spell_t( "metamorphosis", player, SCHOOL_SHADOW, TREE_DEMONOLOGY )
   {
     warlock_t* p = player -> cast_warlock();
-    assert( p -> talents.metamorphosis );
 
     option_t options[] =
       {
@@ -4124,7 +4096,6 @@ struct demonic_empowerment_t : public warlock_spell_t
       warlock_spell_t( "demonic_empowerment", player, SCHOOL_SHADOW, TREE_DEMONOLOGY )
   {
     warlock_t* p = player -> cast_warlock();
-    assert( p -> talents.demonic_empowerment );
 
     option_t options[] =
       {
@@ -4170,6 +4141,7 @@ struct demonic_empowerment_t : public warlock_spell_t
   virtual bool ready()
   {
     warlock_t* p = player -> cast_warlock();
+    if ( !p -> talents.demonic_empowerment ) return false;
 
     if ( ! p -> active_pet )
       return false;
@@ -4708,7 +4680,8 @@ void warlock_t::init_actions()
 
     if (talents.emberstorm) action_list_str+="/incinerate"; else action_list_str+="/shadow_bolt";
 
-    action_list_str+="/life_tap";
+    action_list_str+="/corruption/shadow_burn/shadowfury"; // instas, to use when moving if possible
+    action_list_str+="/life_tap"; // to use when no mana or nothing else is possible
 
     if ( sim -> debug ) log_t::output( sim, "Player %s using default actions: %s", name(), action_list_str.c_str()  );
   }

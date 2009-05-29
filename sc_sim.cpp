@@ -1093,7 +1093,8 @@ bool sim_t::parse_option( const std::string& name,
   if ( parse_active      ( this, name, value ) ) return true;
   if ( parse_optimal_raid( this, name, value ) ) return true;
 
-  if ( player_t::create( this, name, value ) ) return true;
+  if ( player_t::create( this, name, value ) )   return true;
+  if ( raid_event_t::create(this, name, value) ) return true;
 
   if ( armory_option_parse(this, name, value) ) return true;
 
