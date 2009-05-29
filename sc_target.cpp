@@ -171,6 +171,7 @@ void target_t::init()
   uptimes.blood_frenzy         = get_uptime( "blood_frenzy"         );
   uptimes.improved_scorch      = get_uptime( "improved_scorch"      );
   uptimes.improved_shadow_bolt = get_uptime( "improved_shadow_bolt" );
+  uptimes.invulnerable         = get_uptime( "invulnerable"         );
   uptimes.mangle               = get_uptime( "mangle"               );
   uptimes.master_poisoner      = get_uptime( "master_poisoner"      );
   uptimes.savage_combat        = get_uptime( "savage_combat"        );

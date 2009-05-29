@@ -206,12 +206,17 @@ regen_event_t::regen_event_t( sim_t* sim ) : event_t( sim )
 
 void regen_event_t::execute()
 {
+  sim -> target -> uptimes.invulnerable -> update( sim -> target -> invulnerable != 0 );
+
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
     if ( p -> sleeping ) continue;
     if ( p -> primary_resource() == RESOURCE_NONE ) continue;
 
     p -> regen( sim -> regen_periodicity );
+
+    p -> uptimes.moving  -> update( p -> moving  != 0 );
+    p -> uptimes.stunned -> update( p -> stunned != 0 );
   }
 
   new ( sim ) regen_event_t( sim );

@@ -1031,7 +1031,9 @@ void player_t::init_procs()
 
 void player_t::init_uptimes()
 {
+  uptimes.moving        = get_uptime( "moving" );
   uptimes.replenishment = get_uptime( "replenishment" );
+  uptimes.stunned       = get_uptime( "stunned" );
   uptimes.tier4_2pc = get_uptime( "tier4_2pc" );
   uptimes.tier4_4pc = get_uptime( "tier4_4pc" );
   uptimes.tier5_2pc = get_uptime( "tier5_2pc" );

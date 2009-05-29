@@ -889,7 +889,9 @@ struct player_t
 
   struct uptimes_t
   {
+    uptime_t* moving;
     uptime_t* replenishment;
+    uptime_t* stunned;
     uptime_t *tier4_2pc, *tier4_4pc;
     uptime_t *tier5_2pc, *tier5_4pc;
     uptime_t *tier6_2pc, *tier6_4pc;
@@ -1227,6 +1229,7 @@ struct target_t
     uptime_t* blood_frenzy;
     uptime_t* improved_scorch;
     uptime_t* improved_shadow_bolt;
+    uptime_t* invulnerable;
     uptime_t* mangle;
     uptime_t* master_poisoner;
     uptime_t* savage_combat;
