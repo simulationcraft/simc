@@ -25,22 +25,7 @@ struct stat_proc_callback_t : public action_callback_t
     if ( proc_chance )
     {
       proc = p -> get_proc( name_str.c_str() );
-      if ( rng_type == RNG_DEFAULT )
-      {
-        // simple periodic/cyclic is enough if:
-        // -it can stack, or
-        // -does not have duration, or
-        // -duration is shorter than cooldown, or
-        // -high proc probability
-        if ( ( ms>1 )||( d<=0 )||( cd>=d )||( pc>=0.50 ) )
-        {
-          rng_type = RNG_CYCLIC;
-        }
-        else
-        {
-          rng_type = RNG_DISTRIBUTED;
-        }
-      }
+      if ( rng_type == RNG_DEFAULT ) rng_type = RNG_DISTRIBUTED;
       rng  = p -> get_rng ( name_str.c_str(), rng_type );
     }
   }

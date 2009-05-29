@@ -105,7 +105,6 @@ static bool parse_optimal_raid( sim_t*             sim,
   sim -> overrides.moonkin_aura           = sim -> optimal_raid;
   sim -> overrides.poisoned               = sim -> optimal_raid;
   sim -> overrides.rampage                = sim -> optimal_raid;
-  sim -> overrides.razorice               = sim -> optimal_raid;
   sim -> overrides.replenishment          = sim -> optimal_raid;
   sim -> overrides.sanctified_retribution = sim -> optimal_raid;
   sim -> overrides.savage_combat          = sim -> optimal_raid;
@@ -135,7 +134,7 @@ static bool parse_optimal_raid( sim_t*             sim,
 // sim_t::sim_t =============================================================
 
 sim_t::sim_t( sim_t* p, int index ) :
-    parent( p ), P309( false ), P312( false ), P313( false ), rng( 0 ), deterministic_rng( 0 ), 
+    parent( p ), P312( false ), P313( false ), rng( 0 ), deterministic_rng( 0 ), 
     free_list( 0 ), player_list( 0 ), active_player( 0 ), num_players( 0 ),
     queue_lag( 0.075 ), queue_lag_range( 0 ),
     gcd_lag( 0.150 ), gcd_lag_range( 0 ),
@@ -149,7 +148,7 @@ sim_t::sim_t( sim_t* p, int index ) :
     armor_update_interval( 20 ), potion_sickness( 1 ),
     optimal_raid( 0 ), log( 0 ), debug( 0 ), debug_armory(0),
     jow_chance( 0 ), jow_ppm( 15.0 ),
-    normalized_rng( 0 ), normalized_sf( 0 ), deterministic_roll( 0 ), average_range( 1 ), average_gauss( 0 ),
+    smooth_rng( 0 ), deterministic_roll( 0 ), average_range( 1 ), average_gauss( 0 ),
     timing_wheel( 0 ), wheel_seconds( 0 ), wheel_size( 0 ), wheel_mask( 0 ), timing_slice( 0 ), wheel_granularity( 0.0 ),
     replenishment_targets( 0 ),
     raid_dps( 0 ), total_dmg( 0 ),
@@ -198,6 +197,12 @@ sim_t::~sim_t()
   if ( rng     ) delete rng;
   if ( target  ) delete target;
   if ( scaling ) delete scaling;
+
+  int num_events = raid_events.size();
+  for( int i=0; i < num_events; i++ )
+  {
+    delete raid_events[ i ];
+  }
 
   int num_children = children.size();
   for ( int i=0; i < num_children; i++ )
@@ -432,7 +437,6 @@ bool sim_t::init()
   deterministic_rng = rng_t::create( this, "global_deterministic", RNG_MERSENNE_TWISTER );
   deterministic_rng -> seed( 31459 + thread_index );
 
-  P309 = patch.before( 3, 1, 0 );
   P312 = patch.after ( 3, 1, 2 );
   P313 = patch.after ( 3, 1, 3 );
 
@@ -987,7 +991,6 @@ bool sim_t::parse_option( const std::string& name,
       { "misery",                           OPT_BOOL,   &( overrides.misery                         ) },
       { "moonkin_aura",                     OPT_BOOL,   &( overrides.moonkin_aura                   ) },
       { "poisoned",                         OPT_BOOL,   &( overrides.poisoned                       ) },
-      { "razorice",                         OPT_BOOL,   &( overrides.razorice                       ) },
       { "replenishment",                    OPT_BOOL,   &( overrides.replenishment                  ) },
       { "sanctified_retribution",           OPT_BOOL,   &( overrides.sanctified_retribution         ) },
       { "savage_combat",                    OPT_BOOL,   &( overrides.savage_combat                  ) },
@@ -1012,9 +1015,8 @@ bool sim_t::parse_option( const std::string& name,
       { "infinite_rage",                    OPT_BOOL,   &( infinite_resource[ RESOURCE_RAGE   ]     ) },
       { "infinite_runic",                   OPT_BOOL,   &( infinite_resource[ RESOURCE_RUNIC  ]     ) },
       { "regen_periodicity",                OPT_FLT,    &( regen_periodicity                        ) },
-      // @option_doc loc=global/rng title="Normalized RNG"
-      { "normalized_rng",                   OPT_BOOL,   &( normalized_rng                           ) },
-      { "normalized_sf",                    OPT_BOOL,   &( normalized_sf                            ) },
+      // @option_doc loc=global/rng title="Smooth RNG"
+      { "smooth_rng",                       OPT_BOOL,   &( smooth_rng                               ) },
       { "deterministic_roll",               OPT_BOOL,   &( deterministic_roll                       ) },
       { "average_range",                    OPT_BOOL,   &( average_range                            ) },
       { "average_gauss",                    OPT_BOOL,   &( average_gauss                            ) },
@@ -1182,8 +1184,8 @@ int sim_t::main( int argc, char** argv )
   patch.decode( &arch, &version, &revision );
 
   fprintf( output_file,
-           "\nSimulationCraft for World of Warcraft build %d.%d.%d ( iterations=%d, max_time=%.0f, optimal_raid=%d, normalized_rng=%d )\n",
-           arch, version, revision, iterations, max_time, optimal_raid, normalized_rng );
+           "\nSimulationCraft for World of Warcraft build %d.%d.%d ( iterations=%d, max_time=%.0f, optimal_raid=%d, smooth_rng=%d )\n",
+           arch, version, revision, iterations, max_time, optimal_raid, smooth_rng );
   fflush( output_file );
 
   fprintf( stdout, "\nGenerating baseline... \n" ); fflush( stdout );

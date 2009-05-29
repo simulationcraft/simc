@@ -973,11 +973,6 @@ void player_t::init_actions()
 void player_t::init_rating()
 {
   rating.init( level );
-
-  if ( sim -> P309 )
-  {
-    rating.armor_penetration *= 1.25;
-  }
 }
 
 // player_t::init_gains ====================================================
@@ -1333,7 +1328,7 @@ void player_t::combat_begin()
   if ( sim -> overrides.ferocious_inspiration  ) buffs.ferocious_inspiration = 1;
   if ( sim -> overrides.fortitude              ) buffs.fortitude = 215;
   if ( sim -> overrides.improved_divine_spirit ) buffs.improved_divine_spirit = 80;
-  if ( sim -> overrides.mana_spring            ) buffs.mana_spring = ( sim -> P309 ? 42.5 : 91.0*1.2 );
+  if ( sim -> overrides.mana_spring            ) buffs.mana_spring = 91.0 * 1.2;
   if ( sim -> overrides.mark_of_the_wild       ) buffs.mark_of_the_wild = 52;
   if ( sim -> overrides.rampage                ) buffs.rampage = 1;
   if ( sim -> overrides.replenishment          ) buffs.replenishment = 1;
@@ -1668,21 +1663,14 @@ void player_t::regen( double periodicity )
       }
       uptimes.replenishment -> update( buffs.replenishment != 0 );
 
-      if ( sim -> P309 && buffs.water_elemental )
-      {
-        double water_elemental_regen = periodicity * resource_max[ resource_type ] * 0.006 / 5.0;
-
-        resource_gain( resource_type, water_elemental_regen, gains.water_elemental );
-      }
-
-      if ( sim -> P309 || ( buffs.blessing_of_wisdom >= buffs.mana_spring ) )
+      if ( buffs.blessing_of_wisdom >= buffs.mana_spring )
       {
         double wisdom_regen = periodicity * buffs.blessing_of_wisdom / 5.0;
 
         resource_gain( resource_type, wisdom_regen, gains.blessing_of_wisdom );
       }
 
-      if ( sim -> P309 || ( buffs.mana_spring > buffs.blessing_of_wisdom ) )
+      if ( buffs.mana_spring > buffs.blessing_of_wisdom )
       {
         double mana_spring_regen = periodicity * buffs.mana_spring / 2.0;
 
@@ -2202,7 +2190,9 @@ rng_t* player_t::get_rng( const std::string& n, int type )
 {
   assert( sim -> rng );
 
-  if ( ! sim -> normalized_rng || type == RNG_GLOBAL ) return sim -> rng;
+  if ( ! sim -> smooth_rng || type == RNG_GLOBAL ) return sim -> rng;
+
+  if( type == RNG_DETERMINISTIC ) return sim -> deterministic_rng;
 
   if ( type == RNG_DEFAULT     ) type = RNG_PHASE_SHIFT;
   if ( type == RNG_CYCLIC      ) type = RNG_PHASE_SHIFT;

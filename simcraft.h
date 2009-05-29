@@ -363,7 +363,7 @@ struct raid_event_t
   std::vector<player_t*> affected_players;
 
   raid_event_t( sim_t*, const char* name );
- ~raid_event_t() {}
+  virtual ~raid_event_t() {}
 
   virtual double cooldown_time();
   virtual double duration_time();
@@ -422,7 +422,6 @@ struct sim_t : public app_t
   char**      argv;
   sim_t*      parent;
   patch_t     patch;
-  bool        P309;
   bool        P312;
   bool        P313;
   rng_t*      rng;
@@ -448,9 +447,8 @@ struct sim_t : public app_t
 
   std::vector<std::string> party_encoding;
 
-  // Normalized Random Number Generation
-  int normalized_rng, normalized_sf;
-  int deterministic_roll, average_range, average_gauss;
+  // Smooth Random Number Generation
+  int smooth_rng, deterministic_roll, average_range, average_gauss;
 
   // Timing Wheel Event Management
   event_t** timing_wheel;
@@ -475,7 +473,6 @@ struct sim_t : public app_t
     int blessing_of_wisdom;
     int crypt_fever;
     int judgement_of_wisdom;
-    int razorice;
     int sanctified_retribution;
     int snare;
     int sunder_armor;
@@ -617,6 +614,7 @@ struct scaling_t
   int    scale_lag;
   double scale_factor_noise;
   int    normalize_scale_factors;
+  int    smooth_scale_factors;
 
   // Gear delta for determining scale factors
   gear_stats_t stats;
@@ -1186,7 +1184,6 @@ struct target_t
     int    misery_stack;
     int    earth_and_moon;
     int    poisoned;
-    int    razorice;
     int    savage_combat;
     int    slow;
     int    snare;

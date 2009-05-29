@@ -153,7 +153,7 @@ uptime_t* target_t::get_uptime( const std::string& name )
 
 void target_t::init()
 {
-  if ( initial_armor < 0 ) initial_armor = sim -> P309 ? 13000 : 10643;
+  if ( initial_armor < 0 ) initial_armor = 10643;
 
   if ( ! race_str.empty() )
   {
@@ -203,7 +203,7 @@ void target_t::combat_begin()
   if ( sim -> overrides.crypt_fever           ) debuffs.crypt_fever = 1;
   if ( sim -> overrides.curse_of_elements     ) debuffs.curse_of_elements = 13;
   if ( sim -> overrides.earth_and_moon        ) debuffs.earth_and_moon = 13;
-  if ( sim -> overrides.faerie_fire           ) debuffs.faerie_fire = sim -> P309 ? 1260 : 0.05;
+  if ( sim -> overrides.faerie_fire           ) debuffs.faerie_fire = 0.05;
   if ( sim -> overrides.hunters_mark          ) debuffs.hunters_mark = (sim -> P313 ? 500 : 300) * 1.5;
   if ( sim -> overrides.improved_scorch       ) debuffs.improved_scorch = 5;
   if ( sim -> overrides.improved_shadow_bolt  ) debuffs.improved_shadow_bolt = 5;
@@ -212,10 +212,9 @@ void target_t::combat_begin()
   if ( sim -> overrides.master_poisoner       ) debuffs.master_poisoner = 1;
   if ( sim -> overrides.misery                ) { debuffs.misery = 3; debuffs.misery_stack = 1; }
   if ( sim -> overrides.poisoned              ) debuffs.poisoned = 1;
-  if ( sim -> overrides.razorice              ) debuffs.razorice = 1;
   if ( sim -> overrides.savage_combat         ) debuffs.savage_combat = 1;
   if ( sim -> overrides.snare                 ) debuffs.snare = 1;
-  if ( sim -> overrides.sunder_armor          ) debuffs.sunder_armor = sim -> P309 ? 3925 : 0.20;
+  if ( sim -> overrides.sunder_armor          ) debuffs.sunder_armor = 0.20;
   if ( sim -> overrides.thunder_clap          ) debuffs.thunder_clap = 1;
   if ( sim -> overrides.totem_of_wrath        ) debuffs.totem_of_wrath = 1;
   if ( sim -> overrides.trauma                ) debuffs.trauma = 1;
@@ -237,7 +236,7 @@ void target_t::combat_begin()
           {
             p -> aura_gain( "Bloodlust" );
             p -> buffs.bloodlust = 1;
-            p -> cooldowns.bloodlust = sim -> current_time + ( sim -> P309 ? 300 : 600 );
+            p -> cooldowns.bloodlust = sim -> current_time + 600;
           }
         }
         sim -> add_event( this, 40.0 );

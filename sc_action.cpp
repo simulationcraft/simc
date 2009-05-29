@@ -347,7 +347,7 @@ void action_t::target_debuff( int dmg_type )
     if ( t -> debuffs.blood_frenzy  ||
          t -> debuffs.savage_combat )
     {
-      target_multiplier *= sim -> P309 ? 1.02 : 1.04;
+      target_multiplier *= 1.04;
     }
     t -> uptimes.blood_frenzy  -> update( t -> debuffs.blood_frenzy  != 0 );
     t -> uptimes.savage_combat -> update( t -> debuffs.savage_combat != 0 );
@@ -366,15 +366,6 @@ void action_t::target_debuff( int dmg_type )
     }
     t -> uptimes.mangle -> update( t -> debuffs.mangle != 0 );
     t -> uptimes.trauma -> update( t -> debuffs.trauma != 0 );
-  }
-
-  if ( sim -> P309 && t -> debuffs.razorice )
-  {
-    if ( school == SCHOOL_FROST ||
-         school == SCHOOL_FROSTFIRE )
-    {
-      target_multiplier *= 1.05;
-    }
   }
 
   if ( school == SCHOOL_PHYSICAL )
@@ -439,16 +430,8 @@ double action_t::armor()
 
   double adjusted_armor =  t -> base_armor();
 
-  if ( sim -> P309 )
-  {
-    adjusted_armor -= std::max( t -> debuffs.sunder_armor, t -> debuffs.expose_armor );
-    adjusted_armor -= t -> debuffs.faerie_fire;
-  }
-  else
-  {
-    adjusted_armor *= 1.0 - std::max( t -> debuffs.sunder_armor, t -> debuffs.expose_armor );
-    adjusted_armor *= 1.0 - t -> debuffs.faerie_fire;
-  }
+  adjusted_armor *= 1.0 - std::max( t -> debuffs.sunder_armor, t -> debuffs.expose_armor );
+  adjusted_armor *= 1.0 - t -> debuffs.faerie_fire;
 
   return adjusted_armor;
 }
@@ -472,12 +455,7 @@ double action_t::resistance()
   {
     double half_reduction = 400 + 85.0 * ( player -> level + 4.5 * ( player -> level - 59 ) );
     double reduced_armor = armor();
-    double penetration_max = reduced_armor;
-
-    if ( ! sim -> P309 )
-    {
-      penetration_max = std::min( reduced_armor, ( reduced_armor + half_reduction ) / 3.0 );
-    }
+    double penetration_max = std::min( reduced_armor, ( reduced_armor + half_reduction ) / 3.0 );
 
     double adjusted_armor = reduced_armor - penetration_max * penetration;
 

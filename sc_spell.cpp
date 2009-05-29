@@ -116,7 +116,7 @@ void spell_t::target_debuff( int dmg_type )
 
   int crit_debuff = std::max( t -> debuffs.winters_chill, t -> debuffs.improved_scorch );
   crit_debuff = std::max( crit_debuff, t -> debuffs.improved_shadow_bolt );
-  target_crit += crit_debuff * ( sim -> P309 ? 0.02 : 0.01 );
+  target_crit += crit_debuff * 0.01;
 
   t -> uptimes.winters_chill        -> update( t -> debuffs.winters_chill        != 0 );
   t -> uptimes.improved_scorch      -> update( t -> debuffs.improved_scorch      != 0 );

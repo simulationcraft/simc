@@ -43,11 +43,12 @@ static bool stat_may_cap( int stat )
 
 scaling_t::scaling_t( sim_t* s ) :
     sim( s ),
-    calculate_scale_factors( 0 ),
-    center_scale_delta( 0 ),
-    scale_lag( 1 ),
-    scale_factor_noise( 0 ),
-    normalize_scale_factors(0)
+    calculate_scale_factors(0),
+    center_scale_delta(0),
+    scale_lag(1),
+    scale_factor_noise(0),
+    normalize_scale_factors(0),
+    smooth_scale_factors(0)
 {}
 
 // scaling_t::init_deltas ===================================================
@@ -56,20 +57,20 @@ void scaling_t::init_deltas()
 {
   for ( int i=ATTRIBUTE_NONE+1; i < ATTRIBUTE_MAX; i++ )
   {
-    if ( stats.attribute[ i ] == 0 ) stats.attribute[ i ] = sim -> normalized_sf ? 100 : 250;
+    if ( stats.attribute[ i ] == 0 ) stats.attribute[ i ] = smooth_scale_factors ? 100 : 250;
   }
 
-  if ( stats.spell_power == 0 ) stats.spell_power = sim -> normalized_sf ? 100 : 250;
+  if ( stats.spell_power == 0 ) stats.spell_power = smooth_scale_factors ? 100 : 250;
 
-  if ( stats.attack_power             == 0 ) stats.attack_power             =  sim -> normalized_sf ?  100 :  250;
-  if ( stats.armor_penetration_rating == 0 ) stats.armor_penetration_rating =  sim -> normalized_sf ?  100 :  250;
-  if ( stats.expertise_rating         == 0 ) stats.expertise_rating         =  sim -> normalized_sf ?  -75 : -150;
+  if ( stats.attack_power             == 0 ) stats.attack_power             =  smooth_scale_factors ?  100 :  250;
+  if ( stats.armor_penetration_rating == 0 ) stats.armor_penetration_rating =  smooth_scale_factors ?  100 :  250;
+  if ( stats.expertise_rating         == 0 ) stats.expertise_rating         =  smooth_scale_factors ?  -75 : -150;
 
-  if ( stats.hit_rating   == 0 ) stats.hit_rating   = sim -> normalized_sf ? -100 : -200;
-  if ( stats.crit_rating  == 0 ) stats.crit_rating  = sim -> normalized_sf ?  100 :  250;
-  if ( stats.haste_rating == 0 ) stats.haste_rating = sim -> normalized_sf ?  100 :  250;
+  if ( stats.hit_rating   == 0 ) stats.hit_rating   = smooth_scale_factors ? -100 : -200;
+  if ( stats.crit_rating  == 0 ) stats.crit_rating  = smooth_scale_factors ?  100 :  250;
+  if ( stats.haste_rating == 0 ) stats.haste_rating = smooth_scale_factors ?  100 :  250;
 
-  if ( stats.weapon_dps == 0 ) stats.weapon_dps = sim -> normalized_sf ? 25 : 50;
+  if ( stats.weapon_dps == 0 ) stats.weapon_dps = smooth_scale_factors ? 25 : 50;
 }
 
 // scaling_t::analyze_stats =================================================
@@ -95,19 +96,17 @@ void scaling_t::analyze_stats()
 
     sim_t* child_sim = new sim_t( sim );
     child_sim -> gear_delta.set_stat( i, +scale_delta / ( center ? 2 : 1 ) );
-    child_sim -> normalized_rng     += sim -> normalized_sf;
-    child_sim -> deterministic_roll += sim -> normalized_sf;
-    child_sim -> average_range      += sim -> normalized_sf;
+    child_sim -> smooth_rng    += smooth_scale_factors;
+    child_sim -> average_range += smooth_scale_factors;
     child_sim -> execute();
 
     sim_t* ref_sim = sim;
-    if ( center || sim -> normalized_sf )
+    if ( center || smooth_scale_factors )
     {
       ref_sim = new sim_t( sim );
       ref_sim -> gear_delta.set_stat( i, center ? -( scale_delta / 2 ) : 0 );
-      ref_sim -> normalized_rng     += sim -> normalized_sf;
-      ref_sim -> deterministic_roll += sim -> normalized_sf;
-      ref_sim -> average_range      += sim -> normalized_sf;
+      ref_sim -> smooth_rng    += smooth_scale_factors;
+      ref_sim -> average_range += smooth_scale_factors;
       ref_sim -> execute();
     }
 
@@ -146,18 +145,16 @@ void scaling_t::analyze_lag()
   child_sim ->   queue_lag *= 1.100;
   child_sim ->     gcd_lag *= 1.100;
   child_sim -> channel_lag *= 1.100;
-  child_sim -> normalized_rng     += sim -> normalized_sf;
-  child_sim -> deterministic_roll += sim -> normalized_sf;
-  child_sim -> average_range      += sim -> normalized_sf;
+  child_sim -> smooth_rng    += smooth_scale_factors;
+  child_sim -> average_range += smooth_scale_factors;
   child_sim -> execute();
 
   sim_t* ref_sim = sim;
-  if ( sim -> normalized_sf )
+  if ( smooth_scale_factors )
   {
     ref_sim = new sim_t( sim );
-    ref_sim -> normalized_rng     += sim -> normalized_sf;
-    ref_sim -> deterministic_roll += sim -> normalized_sf;
-    ref_sim -> average_range      += sim -> normalized_sf;
+    ref_sim -> smooth_rng    += smooth_scale_factors;
+    ref_sim -> average_range += smooth_scale_factors;
     ref_sim -> execute();
   }
 
@@ -210,6 +207,8 @@ bool scaling_t::parse_option( const std::string& name,
     {
       // @option_doc loc=global/scale_factors title="Scale Factors"
       { "calculate_scale_factors",        OPT_BOOL, &( calculate_scale_factors              ) },
+      { "smooth_scale_factors",           OPT_BOOL, &( smooth_scale_factors                 ) },
+      { "normalize_scale_factors",        OPT_BOOL, &( normalize_scale_factors              ) },
       { "center_scale_delta",             OPT_BOOL, &( center_scale_delta                   ) },
       { "scale_lag",                      OPT_BOOL, &( scale_lag                            ) },
       { "scale_factor_noise",             OPT_FLT,  &( scale_factor_noise                   ) },
@@ -226,7 +225,6 @@ bool scaling_t::parse_option( const std::string& name,
       { "scale_crit_rating",              OPT_FLT,  &( stats.crit_rating                    ) },
       { "scale_haste_rating",             OPT_FLT,  &( stats.haste_rating                   ) },
       { "scale_weapon_dps",               OPT_FLT,  &( stats.weapon_dps                     ) },
-      { "normalize_scale_factors",        OPT_BOOL, &( normalize_scale_factors              ) },
       { NULL, OPT_UNKNOWN }
     };
 

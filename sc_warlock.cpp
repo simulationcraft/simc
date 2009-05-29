@@ -1222,12 +1222,9 @@ static void trigger_soul_leech( spell_t* s )
         p -> resource_gain( RESOURCE_MANA, amount, p -> gains_soul_leech );
         if ( p -> talents.mana_feed ) p -> active_pet -> resource_gain( RESOURCE_MANA, amount );
 
-        if ( ! s -> sim -> P309 )
+	if ( p -> rng_improved_soul_leech -> roll( 0.5 * p -> talents.improved_soul_leech ) )
         {
-          if ( p -> rng_improved_soul_leech -> roll( 0.5 * p -> talents.improved_soul_leech ) )
-          {
-            p -> trigger_replenishment();
-          }
+	  p -> trigger_replenishment();
         }
       }
     }
@@ -2405,18 +2402,6 @@ struct chaos_bolt_t : public warlock_spell_t
         { 60, 1,  837, 1061, 0, 0.09 },
         { 0, 0 }
       };
-
-    if ( sim -> P309 )
-    {
-      ranks[0].dd_min = 1243;
-      ranks[0].dd_max = 1577;
-      ranks[1].dd_min = 882;
-      ranks[1].dd_max = 1120;
-      ranks[2].dd_min = 781;
-      ranks[2].dd_max = 991;
-      ranks[3].dd_min = 607;
-      ranks[3].dd_max = 769;
-    }
 
     init_rank( ranks );
 
