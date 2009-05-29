@@ -43,10 +43,10 @@ struct dk_rune_t
     assert ( current_time >= cooldown_ready );
 
     cooldown_ready = ( current_time <= ( cooldown_ready + RUNE_GRACE_PERIOD ) ? cooldown_ready : current_time ) + cooldown;
-    type = type & RUNE_TYPE_MASK | type << 1 & RUNE_TYPE_WASDEATH | ( convert ? RUNE_TYPE_DEATH : 0 ) ;
+    type = ( type & RUNE_TYPE_MASK ) | ( ( type << 1 ) & RUNE_TYPE_WASDEATH ) | ( convert ? RUNE_TYPE_DEATH : 0 ) ;
   }
 
-  void refund()   { cooldown_ready = 0; type  = type & RUNE_TYPE_MASK | type >> 1 & RUNE_TYPE_DEATH; }
+  void refund()   { cooldown_ready = 0; type  = ( type & RUNE_TYPE_MASK ) | ( ( type >> 1 ) & RUNE_TYPE_DEATH ); }
   void reset()    { cooldown_ready = -RUNE_GRACE_PERIOD - 1; type  = type & RUNE_TYPE_MASK;                               }
 };
 
