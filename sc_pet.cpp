@@ -101,6 +101,15 @@ void pet_t::summon()
   sleeping = 0;
   init_resources( true );
   summon_time = sim -> current_time;
+
+  for( action_t* a = action_list; a; a = a -> next )
+  {
+    if( ! a -> background )
+    {
+      schedule_ready();
+      break;
+    }
+  }
 }
 
 // pet_t::dismiss ===========================================================
@@ -109,6 +118,7 @@ void pet_t::dismiss()
 {
   if ( sim -> log ) log_t::output( sim, "%s dismisses %s", owner -> name(), name() );
 
+  readying = 0;
   sleeping = 1;
 
   for ( action_t* a = action_list; a; a = a -> next )

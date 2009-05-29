@@ -274,8 +274,9 @@ enum pet_type_t { PET_NONE=0, PET_FELGUARD, PET_FELHUNTER, PET_IMP,
 
 struct warlock_pet_t : public pet_t
 {
-  int    pet_type;
-  double damage_modifier;
+  int       pet_type;
+  double    damage_modifier;
+  attack_t* melee;
 
   struct _buffs_t
   {
@@ -299,7 +300,7 @@ struct warlock_pet_t : public pet_t
   _expirations_t _expirations;
 
   warlock_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name, int pt ) :
-      pet_t( sim, owner, pet_name ), pet_type( pt ), damage_modifier( 1.0 )
+    pet_t( sim, owner, pet_name ), pet_type( pt ), damage_modifier( 1.0 ), melee( 0 )
   {}
 
   virtual void init_base()
@@ -336,6 +337,17 @@ struct warlock_pet_t : public pet_t
     _expirations.reset();
   }
 
+  virtual void schedule_ready( double delta_time=0,
+			       bool   waiting=false )
+  {
+    if( melee && ! melee -> execute_event )
+    {
+      melee -> schedule_execute();
+    }
+
+    pet_t::schedule_ready( delta_time, waiting );
+  }
+
   virtual void summon()
   {
     warlock_t* o = owner -> cast_warlock();
@@ -344,6 +356,12 @@ struct warlock_pet_t : public pet_t
 
     _buffs.reset();
     _expirations.reset();
+  }
+
+  virtual void interrupt()
+  {
+    pet_t::interrupt();
+    if( melee ) melee -> cancel();
   }
 
   void adjust_base_modifiers( action_t* a )
@@ -568,12 +586,6 @@ struct imp_pet_t : public warlock_pet_t
     base_mp5 = -257;
   }
 
-  virtual void summon()
-  {
-    warlock_pet_t::summon();
-    schedule_ready();
-  }
-
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str )
   {
@@ -650,10 +662,8 @@ struct felguard_pet_t : public warlock_pet_t
     }
   };
 
-  melee_t*  melee;
-
   felguard_pet_t( sim_t* sim, player_t* owner ) :
-      warlock_pet_t( sim, owner, "felguard", PET_FELGUARD ), melee( 0 )
+      warlock_pet_t( sim, owner, "felguard", PET_FELGUARD )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.damage     = 412.5;
@@ -673,12 +683,6 @@ struct felguard_pet_t : public warlock_pet_t
     base_attack_power = -20;
 
     melee = new melee_t( this );
-  }
-  virtual void summon()
-  {
-    warlock_pet_t::summon();
-    melee -> schedule_execute();
-    schedule_ready();
   }
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str )
@@ -723,10 +727,8 @@ struct felhunter_pet_t : public warlock_pet_t
     }
   };
 
-  warlock_pet_melee_t* melee;
-
   felhunter_pet_t( sim_t* sim, player_t* owner ) :
-      warlock_pet_t( sim, owner, "felhunter", PET_FELHUNTER ), melee( 0 )
+      warlock_pet_t( sim, owner, "felhunter", PET_FELHUNTER )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.damage     = 412.5;
@@ -746,12 +748,6 @@ struct felhunter_pet_t : public warlock_pet_t
     resource_base[ RESOURCE_MANA   ] = 1559;
 
     melee = new warlock_pet_melee_t( this, "felhunter_melee" );
-  }
-  virtual void summon()
-  {
-    warlock_pet_t::summon();
-    melee -> schedule_execute();
-    schedule_ready();
   }
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str )
@@ -794,10 +790,8 @@ struct succubus_pet_t : public warlock_pet_t
     }
   };
 
-  warlock_pet_melee_t* melee;
-
   succubus_pet_t( sim_t* sim, player_t* owner ) :
-      warlock_pet_t( sim, owner, "succubus", PET_SUCCUBUS ), melee( 0 )
+      warlock_pet_t( sim, owner, "succubus", PET_SUCCUBUS )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.damage     = 412.5;
@@ -817,12 +811,6 @@ struct succubus_pet_t : public warlock_pet_t
     resource_base[ RESOURCE_MANA   ] = 1559;
 
     melee = new warlock_pet_melee_t( this, "succubus_melee" );
-  }
-  virtual void summon()
-  {
-    warlock_pet_t::summon();
-    melee -> schedule_execute();
-    schedule_ready();
   }
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str )
@@ -866,11 +854,10 @@ struct infernal_pet_t : public warlock_pet_t
     }
   };
 
-  warlock_pet_melee_t*   melee;
   infernal_immolation_t* immolation;
 
   infernal_pet_t( sim_t* sim, player_t* owner ) :
-      warlock_pet_t( sim, owner, "infernal", PET_INFERNAL ), melee( 0 )
+      warlock_pet_t( sim, owner, "infernal", PET_INFERNAL )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.damage     = 412.5;
@@ -896,14 +883,11 @@ struct infernal_pet_t : public warlock_pet_t
     melee      = new   warlock_pet_melee_t( this, "infernal_melee" );
     immolation = new infernal_immolation_t( this );
   }
-  virtual void reset()
+  virtual void schedule_ready( double delta_time=0, 
+			       bool   waiting=false )
   {
-    pet_t::reset();
-  }
-  virtual void summon()
-  {
-    warlock_pet_t::summon();
-    melee      -> schedule_execute();
+    warlock_pet_t::schedule_ready( delta_time, waiting );
+
     immolation -> schedule_execute();
   }
   virtual double composite_attack_hit() { return 0; }
@@ -916,10 +900,8 @@ struct infernal_pet_t : public warlock_pet_t
 
 struct doomguard_pet_t : public warlock_pet_t
 {
-  warlock_pet_melee_t* melee;
-
   doomguard_pet_t( sim_t* sim, player_t* owner ) :
-      warlock_pet_t( sim, owner, "doomguard", PET_DOOMGUARD ), melee( 0 )
+      warlock_pet_t( sim, owner, "doomguard", PET_DOOMGUARD )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.damage     = 412.5;
@@ -939,16 +921,6 @@ struct doomguard_pet_t : public warlock_pet_t
 
     melee = new warlock_pet_melee_t( this, "doomguard_melee" );
   }
-  virtual void reset()
-  {
-    pet_t::reset();
-  }
-  virtual void summon()
-  {
-    warlock_pet_t::summon();
-    melee -> schedule_execute();
-    schedule_ready();
-  }
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str )
   {
@@ -956,8 +928,7 @@ struct doomguard_pet_t : public warlock_pet_t
   }
 };
 
-namespace
-{ // ANONYMOUS NAMESPACE ==========================================
+namespace { // ANONYMOUS NAMESPACE ==========================================
 
 // ==========================================================================
 // Warlock Spell

@@ -195,6 +195,7 @@ struct warrior_t : public player_t
   virtual void      combat_begin();
   virtual double    composite_attribute_multiplier( int attr );
   virtual void      reset();
+  virtual void      interrupt();
   virtual void      regen( double periodicity );
   virtual bool      get_talent_trees( std::vector<int*>& arms, std::vector<int*>& fury, std::vector<int*>& protection );
   virtual bool      parse_option( const std::string& name, const std::string& value );
@@ -2313,6 +2314,16 @@ void warrior_t::reset()
   _buffs.reset();
   _cooldowns.reset();
   _expirations.reset();
+}
+
+// warrior_t::interrupt ======================================================
+
+void warrior_t::interrupt()
+{
+  player_t::interrupt();
+
+  if( main_hand_attack ) main_hand_attack -> cancel();
+  if(  off_hand_attack )  off_hand_attack -> cancel();
 }
 
 // warrior_t::regen ==========================================================

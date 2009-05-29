@@ -239,10 +239,16 @@ struct shadow_fiend_pet_t : public pet_t
     ap += 0.57 * owner -> composite_spell_power( SCHOOL_SHADOW );
     return ap;
   }
-  virtual void summon()
+  virtual void schedule_ready( double delta_time=0,
+			       bool   waiting=false )
   {
-    pet_t::summon();
-    melee -> execute(); // Kick-off repeating attack
+    pet_t::schedule_ready( delta_time, waiting );
+    if( ! melee -> execute_event ) melee -> execute();
+  }
+  virtual void interrupt()
+  {
+    pet_t::interrupt();
+    melee -> cancel();
   }
 };
 

@@ -337,13 +337,15 @@ raid_event_t* raid_event_t::create( sim_t* sim,
 				    const std::string& name, 
 				    const std::string& options_str )
 {
-  if ((name == "invulnerable") ||(name=="invul"))
-    return new  invulnerable_event_t( sim, options_str );
-  if((name == "movement")||(name=="moving"))
-    return new      movement_event_t( sim, options_str );
+  if( name == "invulnerable" ) return new invulnerable_event_t( sim, options_str );
+  if( name == "invul"        ) return new invulnerable_event_t( sim, options_str );
+
+  if( name == "movement" ) return new movement_event_t( sim, options_str );
+  if( name == "moving"   ) return new movement_event_t( sim, options_str );
+
   //if( name == "splash_damage" ) return new splash_damage_event_t( sim, options_str );
-  if( name == "stun"          ) 
-    return new          stun_event_t( sim, options_str );
+
+  if( name == "stun" ) return new stun_event_t( sim, options_str );
 
   return 0;
 }

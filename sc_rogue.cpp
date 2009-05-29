@@ -245,6 +245,7 @@ struct rogue_t : public player_t
   virtual void      register_callbacks();
   virtual void      combat_begin();
   virtual void      reset();
+  virtual void      interrupt();
   virtual void      regen( double periodicity );
   virtual bool      get_talent_trees( std::vector<int*>& assassination, std::vector<int*>& combat, std::vector<int*>& subtlety );
   virtual bool      parse_talents_mmo( const std::string& talent_string );
@@ -3400,6 +3401,16 @@ void rogue_t::reset()
   _buffs.reset();
   _cooldowns.reset();
   _expirations.reset();
+}
+
+// rogue_t::interrupt ======================================================
+
+void rogue_t::interrupt()
+{
+  player_t::interrupt();
+
+  if( main_hand_attack ) main_hand_attack -> cancel();
+  if(  off_hand_attack )  off_hand_attack -> cancel();
 }
 
 // rogue_t::regen ==========================================================

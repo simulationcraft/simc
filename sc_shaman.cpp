@@ -251,6 +251,7 @@ struct shaman_t : public player_t
   virtual void      init_rng();
   virtual void      init_unique_gear();
   virtual void      reset();
+  virtual void      interrupt();
   virtual double    composite_attack_power();
   virtual double    composite_spell_power( int school );
   virtual bool      get_talent_trees( std::vector<int*>& elemental, std::vector<int*>& enhancement, std::vector<int*>& restoration );
@@ -3262,6 +3263,16 @@ void shaman_t::reset()
   _buffs.reset();
   _cooldowns.reset();
   _expirations.reset();
+}
+
+// shaman_t::interrupt =======================================================
+
+void shaman_t::interrupt()
+{
+  player_t::interrupt();
+
+  if( main_hand_attack ) main_hand_attack -> cancel();
+  if(  off_hand_attack )  off_hand_attack -> cancel();
 }
 
 // shaman_t::composite_attack_power ==========================================

@@ -244,6 +244,7 @@ struct druid_t : public player_t
   virtual void      init_unique_gear();
   virtual void      init_uptimes();
   virtual void      reset();
+  virtual void      interrupt();
   virtual void      regen( double periodicity );
   virtual double    composite_attack_power();
   virtual double    composite_attack_power_multiplier();
@@ -381,10 +382,16 @@ struct treants_pet_t : public pet_t
     ap += 0.57 * owner -> composite_spell_power( SCHOOL_MAX );
     return ap;
   }
-  virtual void summon()
+  virtual void schedule_ready( double delta_time=0,
+			       bool   waiting=false )
   {
-    pet_t::summon();
-    melee -> execute(); // Kick-off repeating attack
+    pet_t::schedule_ready( delta_time, waiting );
+    if( ! melee -> execute_event ) melee -> execute();
+  }
+  virtual void interrupt()
+  {
+    pet_t::interrupt();
+    melee -> cancel();
   }
 };
 
@@ -3310,6 +3317,15 @@ void druid_t::reset()
   _expirations.reset();
 
   base_gcd = 1.5;
+}
+
+// druid_t::interrupt =======================================================
+
+void druid_t::interrupt()
+{
+  player_t::interrupt();
+
+  if( melee_attack ) melee_attack -> cancel();
 }
 
 // druid_t::reset ===========================================================

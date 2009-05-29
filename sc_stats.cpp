@@ -106,9 +106,8 @@ void stats_t::add( double amount,
   int index = ( int ) ( sim -> current_time );
   if ( index >= num_buckets )
   {
-    int add_size= std::max (num_buckets, index-num_buckets+10);
-    timeline_dmg.insert( timeline_dmg.begin() + num_buckets, add_size, 0 );
-    num_buckets += add_size;
+    timeline_dmg.insert( timeline_dmg.begin() + num_buckets, index, 0 );
+    num_buckets += index;
   }
 
   timeline_dmg[ index ] += amount;

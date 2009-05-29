@@ -372,8 +372,6 @@ struct water_elemental_pet_t : public pet_t
         p -> buffs.water_elemental++;
       }
     }
-
-    schedule_ready();
   }
   virtual void dismiss()
   {
@@ -410,6 +408,7 @@ struct mirror_image_pet_t : public pet_t
   int num_images;
   int num_rotations;
   std::vector<action_t*> sequences;
+  int sequence_finished;
 
   struct mirror_blast_t : public spell_t
   {
@@ -442,7 +441,16 @@ struct mirror_image_pet_t : public pet_t
       {
         stack_winters_chill( this, 1.00 );
       }
-      if ( next_in_sequence ) next_in_sequence -> schedule_execute();
+      if( next_in_sequence ) 
+      {
+	next_in_sequence -> schedule_execute();
+      }
+      else
+      {
+	mirror_image_pet_t* mi = (mirror_image_pet_t*) player;
+	mi -> sequence_finished++;
+	if( mi -> sequence_finished == mi -> num_images ) mi -> dismiss();
+      }
     }
   };
 
@@ -465,7 +473,16 @@ struct mirror_image_pet_t : public pet_t
     virtual void execute()
     {
       spell_t::execute();
-      if ( next_in_sequence ) next_in_sequence -> schedule_execute();
+      if( next_in_sequence ) 
+      {
+	next_in_sequence -> schedule_execute();
+      }
+      else
+      {
+	mirror_image_pet_t* mi = (mirror_image_pet_t*) player;
+	mi -> sequence_finished++;
+	if( mi -> sequence_finished == mi -> num_images ) mi -> dismiss();
+      }
     }
     virtual void player_buff()
     {
@@ -476,7 +493,7 @@ struct mirror_image_pet_t : public pet_t
   };
 
   mirror_image_pet_t( sim_t* sim, player_t* owner ) :
-      pet_t( sim, owner, "mirror_image", true /*guardian*/ ), num_images( 3 ), num_rotations( 4 )
+    pet_t( sim, owner, "mirror_image", true /*guardian*/ ), num_images( 3 ), num_rotations( 4 ), sequence_finished( 0 )
   {}
   virtual void init_base()
   {
@@ -507,10 +524,19 @@ struct mirror_image_pet_t : public pet_t
   virtual void summon()
   {
     pet_t::summon();
+
+    sequence_finished = 0;
+
     for ( int i=0; i < num_images; i++ )
     {
       sequences[ i ] -> schedule_execute();
     }
+  }
+  virtual void interrupt()
+  {
+    pet_t::interrupt();
+
+    dismiss(); // FIXME! Interrupting them is too hard, just dismiss for now.
   }
 };
 

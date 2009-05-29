@@ -1498,6 +1498,8 @@ void player_t::reset()
 void player_t::schedule_ready( double delta_time,
                                bool   waiting )
 {
+  assert( ! readying );
+
   executing = 0;
   channeling = 0;
 

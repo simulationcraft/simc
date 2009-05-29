@@ -222,6 +222,7 @@ struct hunter_t : public player_t
     active_serpent_sting   = 0;
     active_viper_sting     = 0;
 
+    ranged_attack = 0;
     ammo_dps = 0;
     quiver_haste = 0.0;
     summon_pet_str = "cat";
@@ -236,6 +237,7 @@ struct hunter_t : public player_t
   virtual void      init_rng();
   virtual void      init_scaling();
   virtual void      reset();
+  virtual void      interrupt();
   virtual double    composite_attack_power();
   virtual bool      get_talent_trees( std::vector<int*>& beastmastery, std::vector<int*>& marksmanship, std::vector<int*>& survival );
   virtual bool      parse_option( const std::string& name, const std::string& value );
@@ -539,8 +541,13 @@ struct hunter_pet_t : public pet_t
   {
     hunter_t* o = owner -> cast_hunter();
     pet_t::summon();
-    schedule_ready();
     o -> active_pet = this;
+  }
+
+  virtual void interrupt()
+  {
+    pet_t::interrupt();
+    if( main_hand_attack ) main_hand_attack -> cancel();
   }
 
   virtual int primary_resource() { return RESOURCE_FOCUS; }
@@ -647,8 +654,7 @@ struct hunter_spell_t : public spell_t
   virtual double gcd();
 };
 
-namespace
-{ // ANONYMOUS NAMESPACE ==========================================
+namespace { // ANONYMOUS NAMESPACE ==========================================
 
 // trigger_aspect_of_the_viper ==============================================
 
@@ -1648,6 +1654,7 @@ struct monstrous_bite_t : public hunter_pet_attack_t
         hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
         p -> aura_loss( "Monstrous Bite" );
         p -> _buffs.monstrous_bite = 0;
+	p -> _expirations.monstrous_bite = 0;
       }
     };
 
@@ -3787,6 +3794,15 @@ void hunter_t::reset()
   _buffs.reset();
   _cooldowns.reset();
   _expirations.reset();
+}
+
+// hunter_t::interrupt =======================================================
+
+void hunter_t::interrupt()
+{
+  player_t::interrupt();
+
+  if( ranged_attack ) ranged_attack -> cancel();
 }
 
 // hunter_t::composite_attack_power ==========================================
