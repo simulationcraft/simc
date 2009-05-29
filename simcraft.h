@@ -1152,7 +1152,9 @@ struct target_t
   int initial_armor, armor;
   int block_value;
   int shield;
+  int vulnerable;
   int invulnerable;
+  int casting;
   double initial_health, current_health;
   double total_dmg;
   uptime_t* uptime_list;
@@ -1235,6 +1237,7 @@ struct target_t
     uptime_t* savage_combat;
     uptime_t* trauma;
     uptime_t* totem_of_wrath;
+    uptime_t* vulnerable;
     uptime_t* winters_chill;
     uptime_t* winters_grasp;
     void reset() { memset( ( void* ) this, 0x00, sizeof( uptimes_t ) ); }
@@ -1372,7 +1375,7 @@ struct action_t
   double min_current_time, max_current_time;
   double min_time_to_die, max_time_to_die;
   double min_health_percentage, max_health_percentage;
-  int wait_on_ready;
+  int vulnerable, invulnerable, wait_on_ready;
   std::string sync_str;
   action_t*   sync_action;
   action_t** observer;
@@ -1506,12 +1509,12 @@ struct action_callback_t
   player_t* listener;
   action_callback_t( sim_t* s, player_t* l ) : sim( s ), listener( l ) {}
   virtual ~action_callback_t() {}
-  virtual void trigger( action_t* ) = 0;
+  virtual void trigger( action_t*, void* call_data=0 ) = 0;
   virtual void reset() {}
-  static void trigger( std::vector<action_callback_t*>& v, action_t* a )
+  static void trigger( std::vector<action_callback_t*>& v, action_t* a, void* call_data=0 )
   {
     std::vector<action_callback_t*>::size_type i = v.size();
-    while ( i ) v[--i]->trigger( a );
+    while ( i ) v[--i]->trigger( a, call_data );
   }
   static void   reset( std::vector<action_callback_t*>& v )
   {

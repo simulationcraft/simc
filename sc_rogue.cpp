@@ -3302,7 +3302,7 @@ struct honor_among_thieves_callback_t : public action_callback_t
 {
   honor_among_thieves_callback_t( rogue_t* r ) : action_callback_t( r -> sim, r ) {}
 
-  virtual void trigger( action_t* a )
+  virtual void trigger( action_t* a, void* call_data )
   {
     if ( ! a -> special || a -> ticking || a -> proc ) return;
 

@@ -9,6 +9,34 @@
 // Raid Events
 // ==========================================================================
 
+// Casting ==================================================================
+
+struct casting_event_t : public raid_event_t
+{
+  casting_event_t( sim_t* s, const std::string& options_str ) : 
+    raid_event_t( s, "casting" )
+  {
+    parse_options( NULL, options_str );
+  }
+  virtual void start()
+  {
+    target_t* t = sim -> target;
+    raid_event_t::start();
+    t -> casting++;
+    if( sim -> log ) log_t::output( sim, "%s is casting (%d).", t -> name(), t -> casting );
+  }
+  virtual void finish()
+  {
+    target_t* t = sim -> target;
+    t -> casting--;
+    if( ! t -> casting )
+    {
+      if( sim -> log ) log_t::output( sim, "%s is no longer casting.", t -> name() );
+    }
+    raid_event_t::finish();
+  }
+};
+
 // Invulnerable =============================================================
 
 struct invulnerable_event_t : public raid_event_t
@@ -131,6 +159,69 @@ struct stun_event_t : public raid_event_t
   }
 };
 
+// Damage ===================================================================
+
+struct damage_event_t : public raid_event_t
+{
+  double amount;
+  double amount_stddev;
+
+  damage_event_t( sim_t* s, const std::string& options_str ) : 
+    raid_event_t( s, "damage" ), amount(1), amount_stddev(0)
+  {
+    option_t options[] =
+    {
+      { "amount",        OPT_FLT, &amount        },
+      { "amount_stddev", OPT_FLT, &amount_stddev },
+      { NULL }
+    };
+    parse_options( options, options_str );
+
+    assert( duration == 0 );
+  }
+  virtual void start()
+  {
+    raid_event_t::start();
+    int num_affected = affected_players.size();
+    for( int i=0; i < num_affected; i++ )
+    {
+      player_t* p = affected_players[ i ];
+      if( p -> sleeping ) continue;
+      p -> interrupt();
+      if( sim -> log ) log_t::output( sim, "%s takes raid damage.", p -> name() );
+      p -> resource_loss( RESOURCE_HEALTH, rng -> gauss( amount, amount_stddev ) );
+    }
+  }
+};
+
+// Vulnerable ===============================================================
+
+struct vulnerable_event_t : public raid_event_t
+{
+  vulnerable_event_t( sim_t* s, const std::string& options_str ) : 
+    raid_event_t( s, "vulnerable" )
+  {
+    parse_options( NULL, options_str );
+  }
+  virtual void start()
+  {
+    target_t* t = sim -> target;
+    raid_event_t::start();
+    t -> vulnerable++;
+    if( sim -> log ) log_t::output( sim, "%s is vulnerable (%d).", t -> name(), t -> vulnerable );
+  }
+  virtual void finish()
+  {
+    target_t* t = sim -> target;
+    t -> vulnerable--;
+    if( ! t -> vulnerable )
+    {
+      if( sim -> log ) log_t::output( sim, "%s is no longer vulnerable.", t -> name() );
+    }
+    raid_event_t::finish();
+  }
+};
+
 // raid_event_t::raid_event_t ===============================================
 
 raid_event_t::raid_event_t( sim_t* s, const char* n ) :
@@ -209,8 +300,6 @@ void raid_event_t::schedule()
 {
   if( sim -> debug ) log_t::output( sim, "Scheduling raid event: %s", name() );
     
-  assert( cooldown > 0 && duration > 0 );
-
   struct duration_event_t : public event_t
   {
     raid_event_t* raid_event;
@@ -243,7 +332,11 @@ void raid_event_t::schedule()
       double ct = raid_event -> cooldown_time();
       if( ct <= dt ) ct = dt + 0.01;
 
-      new ( sim ) duration_event_t( sim, raid_event, dt );
+      if( dt > 0 )
+      {
+	new ( sim ) duration_event_t( sim, raid_event, dt );
+      }
+      else raid_event -> finish();
 
       if( raid_event -> last <= 0 || 
 	  raid_event -> last > ( sim -> current_time + ct ) )
@@ -337,15 +430,14 @@ raid_event_t* raid_event_t::create( sim_t* sim,
 				    const std::string& name, 
 				    const std::string& options_str )
 {
-  if( name == "invulnerable" ) return new invulnerable_event_t( sim, options_str );
+  if( name == "casting"      ) return new      casting_event_t( sim, options_str );
   if( name == "invul"        ) return new invulnerable_event_t( sim, options_str );
-
-  if( name == "movement" ) return new movement_event_t( sim, options_str );
-  if( name == "moving"   ) return new movement_event_t( sim, options_str );
-
-  //if( name == "splash_damage" ) return new splash_damage_event_t( sim, options_str );
-
-  if( name == "stun" ) return new stun_event_t( sim, options_str );
+  if( name == "invulnerable" ) return new invulnerable_event_t( sim, options_str );
+  if( name == "movement"     ) return new     movement_event_t( sim, options_str );
+  if( name == "moving"       ) return new     movement_event_t( sim, options_str );
+  if( name == "damage"       ) return new       damage_event_t( sim, options_str );
+  if( name == "stun"         ) return new         stun_event_t( sim, options_str );
+  if( name == "vulnerable"   ) return new   vulnerable_event_t( sim, options_str );
 
   return 0;
 }
@@ -372,14 +464,18 @@ void raid_event_t::init( sim_t* sim )
       name    = name.substr( 0, cut_pt );
     }
 
-    raid_event_t* event = create( sim, name, options );
+    raid_event_t* e = create( sim, name, options );
 
-    if( ! event )
+    if( ! e )
     {
       printf( "simcraft: Unknown raid event: %s\n", splits[ i ].c_str() );
       assert( false );
     }
 
-    sim -> raid_events.push_back( event );
+    assert( e -> cooldown > 0 );
+    assert( e -> cooldown > e -> cooldown_stddev );
+    assert( e -> cooldown > e -> duration );
+
+    sim -> raid_events.push_back( e );
   }
 }

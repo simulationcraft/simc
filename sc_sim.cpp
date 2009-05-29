@@ -162,6 +162,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   {
     infinite_resource[ i ] = false;
   }
+  infinite_resource[ RESOURCE_HEALTH ] = true;
 
   target  = new  target_t( this );
   scaling = new scaling_t( this );

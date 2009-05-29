@@ -52,7 +52,7 @@ action_t::action_t( int         ty,
     min_current_time( 0 ), max_current_time( 0 ),
     min_time_to_die( 0 ), max_time_to_die( 0 ),
     min_health_percentage( 0 ), max_health_percentage( 0 ),
-    wait_on_ready( -1 ), 
+    vulnerable( 0 ), invulnerable( 0 ), wait_on_ready( -1 ), 
     sync_action( 0 ), observer( 0 ), next( 0 )
 {
   if ( sim -> debug ) log_t::output( sim, "Player %s creates action %s", p -> name(), name() );
@@ -158,6 +158,8 @@ void action_t::parse_options( option_t*          options,
       { "health_percentage<", OPT_FLT,    &max_health_percentage },
       { "bloodlust",          OPT_BOOL,   &bloodlust_active      },
       { "travel_speed",       OPT_FLT,    &travel_speed          },
+      { "vulnerable",         OPT_BOOL,   &vulnerable            },
+      { "invulnerable",       OPT_BOOL,   &invulnerable          },
       { "wait_on_ready",      OPT_BOOL,   &wait_on_ready         },
       { NULL }
     };
@@ -390,6 +392,8 @@ void action_t::target_debuff( int dmg_type )
   {
     // no spell power based debuffs at this time
   }
+
+  if( t -> vulnerable ) target_multiplier *= 2.0;
 
   t -> uptimes.totem_of_wrath  -> update( t -> debuffs.totem_of_wrath  != 0 );
   t -> uptimes.master_poisoner -> update( t -> debuffs.master_poisoner != 0 );
@@ -784,11 +788,11 @@ void action_t::assess_damage( double amount,
 
   if ( dmg_type == DMG_DIRECT )
   {
-    action_callback_t::trigger( player -> direct_damage_callbacks, this );
+    action_callback_t::trigger( player -> direct_damage_callbacks, this, &amount );
   }
   else // DMG_OVER_TIME
   {
-    action_callback_t::trigger( player -> tick_damage_callbacks, this );
+    action_callback_t::trigger( player -> tick_damage_callbacks, this, &amount );
   }
 }
 
@@ -952,6 +956,8 @@ void action_t::update_time( int type )
 
 bool action_t::ready()
 {
+  target_t* t = sim -> target;
+
   if ( duration_ready > 0 )
     if ( duration_ready > ( sim -> current_time + execute_time() ) )
       return false;
@@ -1003,6 +1009,14 @@ bool action_t::ready()
 
   if ( player -> moving )
     if( channeled || execute_time() > 0 )
+      return false;
+
+  if ( vulnerable )
+    if( ! t -> vulnerable )
+      return false;
+
+  if ( invulnerable )
+    if( ! t -> invulnerable )
       return false;
 
   return true;

@@ -13,7 +13,8 @@
 
 target_t::target_t( sim_t* s ) :
     sim( s ), name_str( "Fluffy Pillow" ), race( RACE_HUMANOID ), level( 83 ),
-    initial_armor( -1 ), armor( 0 ), block_value( 0 ), shield( 0 ), invulnerable( 0 ),
+    initial_armor( -1 ), armor( 0 ), block_value( 0 ), shield( 0 ), 
+    vulnerable( 0 ), invulnerable( 0 ), casting( 0 ),
     initial_health( 0 ), current_health( 0 ), total_dmg( 0 ), uptime_list( 0 )
 {
   for ( int i=0; i < SCHOOL_MAX; i++ ) spell_resistance[ i ] = 0;
@@ -181,6 +182,7 @@ void target_t::init()
   uptimes.savage_combat        = get_uptime( "savage_combat"        );
   uptimes.trauma               = get_uptime( "trauma"               );
   uptimes.totem_of_wrath       = get_uptime( "totem_of_wrath"       );
+  uptimes.vulnerable           = get_uptime( "vulnerable"           );
   uptimes.winters_chill        = get_uptime( "winters_chill"        );
   uptimes.winters_grasp        = get_uptime( "winters_grasp"        );
 }
@@ -197,6 +199,8 @@ void target_t::reset()
   expirations.reset();
   cooldowns.reset();
   invulnerable = 0;
+  vulnerable = 0;
+  casting = 0;
 }
 
 // target_t::combat_begin ====================================================

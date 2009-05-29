@@ -32,7 +32,7 @@ struct stat_proc_callback_t : public action_callback_t
 
   virtual void reset() { stacks=0; cooldown_ready=0; expiration=0; }
 
-  virtual void trigger( action_t* a )
+  virtual void trigger( action_t* a, void* call_data )
   {
     if ( cooldown )
       if ( sim -> current_time < cooldown_ready )
@@ -127,7 +127,7 @@ struct discharge_proc_callback_t : public action_callback_t
 
   virtual void reset() { stacks=0; cooldown_ready=0; }
 
-  virtual void trigger( action_t* a )
+  virtual void trigger( action_t* a, void* call_data )
   {
     if ( cooldown )
       if ( sim -> current_time < cooldown_ready )
