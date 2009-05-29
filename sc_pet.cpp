@@ -102,14 +102,7 @@ void pet_t::summon()
   init_resources( true );
   summon_time = sim -> current_time;
 
-  for( action_t* a = action_list; a; a = a -> next )
-  {
-    if( ! a -> background )
-    {
-      schedule_ready();
-      break;
-    }
-  }
+  schedule_ready();
 }
 
 // pet_t::dismiss ===========================================================

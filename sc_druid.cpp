@@ -2173,19 +2173,16 @@ struct innervate_t : public druid_spell_t
 struct insect_swarm_t : public druid_spell_t
 {
   double min_eclipse_left;
-  int wrath_ready;
-  action_t* active_wrath;
 
   insect_swarm_t( player_t* player, const std::string& options_str ) :
-      druid_spell_t( "insect_swarm", player, SCHOOL_NATURE, TREE_BALANCE ), wrath_ready( 0 ), active_wrath( 0 )
+    druid_spell_t( "insect_swarm", player, SCHOOL_NATURE, TREE_BALANCE ), min_eclipse_left(0)
   {
     druid_t* p = player -> cast_druid();
     assert( p -> talents.insect_swarm );
 
     option_t options[] =
       {
-        { "wrath_ready",     OPT_BOOL, &wrath_ready      },
-        { "eclipse_left>",   OPT_FLT,  &min_eclipse_left },
+        { "eclipse_left>", OPT_FLT, &min_eclipse_left },
         { NULL }
       };
     parse_options( options, options_str );
@@ -2232,30 +2229,21 @@ struct insect_swarm_t : public druid_spell_t
     if ( ! druid_spell_t::ready() )
       return false;
 
-    if ( wrath_ready && ! active_wrath )
-    {
-      for ( active_wrath = next; active_wrath; active_wrath = active_wrath -> next )
-        if ( active_wrath -> name_str == "wrath" )
-          break;
-
-      if ( ! active_wrath ) wrath_ready = 0;
-    }
-
-    if ( wrath_ready )
-      if ( ! active_wrath -> ready() )
-        return false;
-
     druid_t* p = player -> cast_druid();
 
     if ( skip_on_eclipse < 0 )
       if ( p -> _buffs.eclipse_starfire )
         return false;
 
-    // p  -> _buffs.eclipse_wrath: the time eclipse proced, but 0 if eclipse is not up.
-    if ( min_eclipse_left > 0 && p  -> _buffs.eclipse_wrath )
-      //                     ( 15   -   time elapsed on eclipse  ) = time left on eclipse buff
-      if ( min_eclipse_left < ( 15.0 - ( sim -> current_time - p -> _buffs.eclipse_wrath ) ) )
+    // "_buffs.eclipse_starfire" is the time eclipse proc'd (0 if eclipse is not currently up)
+
+    if ( min_eclipse_left > 0 && p  -> _buffs.eclipse_starfire > 0 )
+    {
+      double time_remaining = 15.0 - ( sim -> current_time - p -> _buffs.eclipse_starfire );
+
+      if ( min_eclipse_left > time_remaining )
         return false;
+    }
 
     return true;
   }
@@ -2266,8 +2254,9 @@ struct insect_swarm_t : public druid_spell_t
 struct moonfire_t : public druid_spell_t
 {
   double min_eclipse_left;
+
   moonfire_t( player_t* player, const std::string& options_str ) :
-      druid_spell_t( "moonfire", player, SCHOOL_ARCANE, TREE_BALANCE )
+    druid_spell_t( "moonfire", player, SCHOOL_ARCANE, TREE_BALANCE ), min_eclipse_left(0)
   {
     druid_t* p = player -> cast_druid();
 
@@ -2342,11 +2331,15 @@ struct moonfire_t : public druid_spell_t
       if ( p -> _buffs.eclipse_wrath )
         return false;
 
-    // p  -> _buffs.eclipse_starfire the time eclipse proced, but 0 if eclipse is not up.
-    if ( min_eclipse_left > 0 && p  -> _buffs.eclipse_starfire )
-      //                     ( 15   -   time elapsed on eclipse  ) = time left on eclipse buff
-      if ( min_eclipse_left < ( 15.0 - ( sim -> current_time - p -> _buffs.eclipse_starfire ) ) )
+    // "_buffs.eclipse_starfire" is the time eclipse proc'd (0 if eclipse is not currently up)
+
+    if ( min_eclipse_left > 0 && p  -> _buffs.eclipse_starfire > 0 )
+    {
+      double time_remaining = 15.0 - ( sim -> current_time - p -> _buffs.eclipse_starfire );
+
+      if ( min_eclipse_left > time_remaining )
         return false;
+    }
 
     return true;
   }
@@ -2811,6 +2804,7 @@ struct wrath_t : public druid_spell_t
 struct starfall_t : public druid_spell_t
 {
   spell_t* starfall_star;
+
   starfall_t( player_t* player, const std::string& options_str ) :
       druid_spell_t( "starfall", player, SCHOOL_ARCANE, TREE_BALANCE )
   {
@@ -2971,17 +2965,14 @@ struct mark_of_the_wild_t : public druid_spell_t
 
 struct treants_spell_t : public druid_spell_t
 {
-  int target_pct;
-
   treants_spell_t( player_t* player, const std::string& options_str ) :
-      druid_spell_t( "treants", player, SCHOOL_NATURE, TREE_BALANCE ), target_pct( 0 )
+      druid_spell_t( "treants", player, SCHOOL_NATURE, TREE_BALANCE )
   {
     druid_t* p = player -> cast_druid();
     assert( p -> talents.force_of_nature );
 
     option_t options[] =
       {
-        { "target_pct", OPT_DEPRECATED, ( void* ) "health_percentage<" },
         { NULL }
       };
     parse_options( options, options_str );
@@ -3009,18 +3000,6 @@ struct treants_spell_t : public druid_spell_t
     update_ready();
     player -> summon_pet( "treants" );
     new ( sim ) treants_expiration_t( sim, player );
-  }
-
-  virtual bool ready()
-  {
-    if ( ! druid_spell_t::ready() )
-      return false;
-
-    if ( target_pct > 0 )
-      if ( sim -> target -> health_percentage() > target_pct )
-        return false;
-
-    return true;
   }
 };
 
