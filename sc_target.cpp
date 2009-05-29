@@ -83,15 +83,14 @@ void target_t::recalculate_health()
   }
   else
   {
-    //BAD- resulted in negatives
-    //double delta_time = sim -> max_time - sim -> current_time;
-    //double adjust = initial_health * delta_time / sim -> max_time;
-    //adjust /= sim -> current_iteration + 1; // dampening factor
-    //initial_health += adjust;
     double delta_time = sim -> current_time - sim -> max_time;
-    delta_time/=sim -> current_iteration + 1; // dampening factor
-    double factor=1+delta_time/sim -> max_time;
-    if (factor>0)  initial_health /= factor;
+    delta_time /= sim -> current_iteration + 1; // dampening factor
+
+    double factor = 1 - ( delta_time / sim -> max_time );
+    if( factor > 1.5 ) factor = 1.5;
+    if( factor < 0.5 ) factor = 0.5;
+
+    initial_health *= factor;
   }
 
   if ( sim -> debug ) log_t::output( sim, "Target initial health calculated to be %.0f", initial_health );

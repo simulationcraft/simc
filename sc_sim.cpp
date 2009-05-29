@@ -325,7 +325,14 @@ void sim_t::combat( int iteration )
   {
     current_time = e -> time;
 
-    if ( (target -> initial_health != 0) && (target -> current_health <= 0) )
+    if( max_time > 0 && current_time > ( max_time * 2.0 ) )
+    {
+      target -> recalculate_health();
+      if ( debug ) log_t::output( this, "Target proving tough to kill, ending simulation" );
+      delete e;
+      break;
+    }
+    if ( ( target -> initial_health != 0 ) && ( target -> current_health <= 0 ) )
     {
       target -> recalculate_health();
       if ( debug ) log_t::output( this, "Target has died, ending simulation" );
