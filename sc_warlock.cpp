@@ -4654,7 +4654,7 @@ void warlock_t::init_actions()
     }
     else if ( talents.chaos_bolt ) // 00_13_58
     {  
-      action_list_str+="/curse_of_doom,time_to_die>=90/immolate/conflagrate/chaos_bolt";
+      action_list_str+="/curse_of_doom,time_to_die>=70/immolate/conflagrate/chaos_bolt";
     }
     else if ( talents.metamorphosis ) // 00_56_15
     {  
@@ -4679,7 +4679,7 @@ void warlock_t::init_actions()
 
     if (talents.emberstorm) action_list_str+="/incinerate"; else action_list_str+="/shadow_bolt";
 
-    action_list_str+="/corruption/shadow_burn/shadowfury"; // instas, to use when moving if possible
+    action_list_str+="/curse_of_agony,time_to_die>=30/corruption,time_to_die>=20/shadow_burn/shadowfury/corruption/curse_of_agony"; // instas, to use when moving if possible
     action_list_str+="/life_tap"; // to use when no mana or nothing else is possible
 
     if ( sim -> debug ) log_t::output( sim, "Player %s using default actions: %s", name(), action_list_str.c_str()  );
