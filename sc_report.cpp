@@ -773,18 +773,23 @@ static void print_wiki_text( FILE*  file,
 // Report
 // ===========================================================================
 
-void report_t::print_text( FILE* file, sim_t* sim )
+// report_t::print_test ======================================================
+
+void report_t::print_text( FILE* file, sim_t* sim, bool detail )
 {
   if ( sim -> total_seconds == 0 ) return;
 
   int num_players = sim -> players_by_rank.size();
 
-  fprintf( file, "\nDPS Ranking:\n" );
-  fprintf( file, "%7.0f 100.0%%  Raid\n", sim -> raid_dps );
-  for ( int i=0; i < num_players; i++ )
+  if( detail )
   {
-    player_t* p = sim -> players_by_rank[ i ];
-    fprintf( file, "%7.0f  %4.1f%%  %s\n", p -> dps, 100 * p -> total_dmg / sim -> total_dmg, p -> name() );
+    fprintf( file, "\nDPS Ranking:\n" );
+    fprintf( file, "%7.0f 100.0%%  Raid\n", sim -> raid_dps );
+    for ( int i=0; i < num_players; i++ )
+    {
+      player_t* p = sim -> players_by_rank[ i ];
+      fprintf( file, "%7.0f  %4.1f%%  %s\n", p -> dps, 100 * p -> total_dmg / sim -> total_dmg, p -> name() );
+    }
   }
 
   for ( int i=0; i < num_players; i++ )
@@ -810,12 +815,15 @@ void report_t::print_text( FILE* file, sim_t* sim )
     print_actions      ( file, p );
   }
 
-  print_gains        ( file, sim );
-  print_procs        ( file, sim );
-  print_uptime       ( file, sim );
-  print_waiting      ( file, sim );
-  print_performance  ( file, sim );
-  print_scale_factors( file, sim );
+  if( detail )
+  {
+    print_gains        ( file, sim );
+    print_procs        ( file, sim );
+    print_uptime       ( file, sim );
+    print_waiting      ( file, sim );
+    print_performance  ( file, sim );
+    print_scale_factors( file, sim );
+  }
 
   fprintf( file, "\n" );
 }

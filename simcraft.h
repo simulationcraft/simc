@@ -615,6 +615,7 @@ struct scaling_t
   double scale_factor_noise;
   int    normalize_scale_factors;
   int    smooth_scale_factors;
+  int    debug_scale_factors;
 
   // Gear delta for determining scale factors
   gear_stats_t stats;
@@ -1691,7 +1692,7 @@ double percentage() { return ( up==0 ) ? 0 : ( 100.0*up/( up+down ) ); }
 
 struct report_t
 {
-  static void print_text( FILE*, sim_t* );
+  static void print_text( FILE*, sim_t*, bool detail=true );
   static void print_html( sim_t* );
   static void print_wiki( sim_t* );
   static void print_suite( sim_t* );

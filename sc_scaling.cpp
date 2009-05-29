@@ -48,7 +48,8 @@ scaling_t::scaling_t( sim_t* s ) :
     scale_lag(1),
     scale_factor_noise(0),
     normalize_scale_factors(0),
-    smooth_scale_factors(0)
+    smooth_scale_factors(0),
+    debug_scale_factors(0)
 {}
 
 // scaling_t::init_deltas ===================================================
@@ -122,6 +123,12 @@ void scaling_t::analyze_stats()
       double f = ( child_p -> dps - ref_p -> dps ) / scale_delta;
 
       if ( f >= scale_factor_noise ) p -> scaling.set_stat( i, f );
+    }
+
+    if( debug_scale_factors )
+    {
+      report_t::print_text( sim -> output_file,   ref_sim, false );
+      report_t::print_text( sim -> output_file, child_sim, false );
     }
 
     if ( ref_sim != sim ) delete ref_sim;
@@ -209,6 +216,7 @@ bool scaling_t::parse_option( const std::string& name,
       { "calculate_scale_factors",        OPT_BOOL, &( calculate_scale_factors              ) },
       { "smooth_scale_factors",           OPT_BOOL, &( smooth_scale_factors                 ) },
       { "normalize_scale_factors",        OPT_BOOL, &( normalize_scale_factors              ) },
+      { "debug_scale_factors",            OPT_BOOL, &( debug_scale_factors                  ) },
       { "center_scale_delta",             OPT_BOOL, &( center_scale_delta                   ) },
       { "scale_lag",                      OPT_BOOL, &( scale_lag                            ) },
       { "scale_factor_noise",             OPT_FLT,  &( scale_factor_noise                   ) },
