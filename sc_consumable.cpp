@@ -196,7 +196,6 @@ struct destruction_potion_t : public action_t
   {
     option_t options[] =
       {
-        { "sync", OPT_STRING, &sync_str },
         { NULL }
       };
     parse_options( options, options_str );
@@ -262,9 +261,6 @@ struct speed_potion_t : public action_t
   {
     option_t options[] =
       {
-        { "sync",               OPT_STRING,     &sync_str                    },
-        { "health_percentage<", OPT_FLT,        &max_health_percentage       },
-        { "target_pct",         OPT_DEPRECATED, ( void* ) "health_percentage<" },
         { NULL }
       };
     parse_options( options, options_str );
@@ -334,9 +330,6 @@ struct wild_magic_potion_t : public action_t
   {
     option_t options[] =
       {
-        { "sync",               OPT_STRING,     &sync_str                    },
-        { "health_percentage<", OPT_FLT,        &max_health_percentage       },
-        { "target_pct",         OPT_DEPRECATED, ( void* ) "health_percentage<" },
         { NULL }
       };
     parse_options( options, options_str );
