@@ -235,13 +235,14 @@ struct druid_t : public player_t
   }
 
   // Character Definition
-  virtual void      init_rating();
+  virtual void      init_actions();
   virtual void      init_base();
   virtual void      init_gains();
   virtual void      init_procs();
-  virtual void      init_uptimes();
+  virtual void      init_rating();
   virtual void      init_rng();
   virtual void      init_unique_gear();
+  virtual void      init_uptimes();
   virtual void      reset();
   virtual void      regen( double periodicity );
   virtual double    composite_attack_power();
@@ -3217,7 +3218,7 @@ void druid_t::init_rng()
   rng_omen_of_clarity = get_rng( "omen_of_clarity" );
   rng_primal_fury     = get_rng( "primal_fury"     );
   rng_unseen_moon     = get_rng( "unseen_moon"     );
-}
+} 
 
 // druid_t::init_unique_gear ================================================
 
@@ -3253,6 +3254,43 @@ void druid_t::init_unique_gear()
 
     equipped_weapon_dps = main_hand_weapon.damage / main_hand_weapon.swing_time;
   }
+}
+
+// druid_t::init_actions ====================================================
+
+void druid_t::init_actions()
+{
+  if( action_list_str.empty() )
+  {
+    if( talents.moonkin_form )
+    {
+      // Assume balance
+      action_list_str+="flask,type=frost_wyrm/food,type=fish_feast/mark_of_the_wild/moonkin_form/mana_potion";
+      action_list_str+="/innervate,trigger=19000";
+      if( talents.force_of_nature ) 
+        action_list_str+="/treants";
+      if( talents.starfall ) 
+        action_list_str+="/starfall,skip_on_eclipse=1";
+      action_list_str+="/moonfire,eclipse_left>=12";
+      if( talents.insect_swarm )
+        action_list_str+="/insect_swarm,skip_on_eclipse=1";
+      action_list_str+="/wrath,eclipse=trigger/starfire";
+    }
+    else if( talents.mangle )
+    {
+      // Assume feral
+      action_list_str+="flask,type=endless_rage/food,type=blackened_dragonfin";
+      action_list_str+="/cat_form/auto_attack/shred,omen_of_clarity=1/tigers_fury,energy<=40";
+      if( talents.berserk )
+        action_list_str+="/berserk,tigers_fury=1";
+      action_list_str+="/savage_roar,cp>=1,savage_roar<=4/rip,cp>=5,time_to_die>=10";
+      action_list_str+="/ferocious_bite,cp>=5,rip>=5,savage_roar>=6/mangle_cat,mangle<=2/rake/shred";
+    }
+
+    if ( sim -> debug ) log_t::output( sim, "Player %s using default actions: %s", name(), action_list_str.c_str()  );
+  }
+
+  player_t::init_actions();
 }
 
 // druid_t::reset ===========================================================
