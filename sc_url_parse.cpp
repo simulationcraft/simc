@@ -344,6 +344,11 @@ void addItemGlyphOption( sim_t* sim, std::string&  node, std::string name )
     std::string itemID= getValue( node, name );
     if ( itemID !="" )
     {
+      //rename few well known gems, to be more readable
+      if (itemID=="41285") itemID="chaotic_skyflare"; else
+      if (itemID=="41333") itemID="ember_skyflare"; else
+      itemID="item_"+itemID;
+      //call parse to check if this item option exists
       player_parse_option( sim,itemID,"1" );
     }
   }
