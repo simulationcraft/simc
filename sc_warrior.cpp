@@ -1033,7 +1033,10 @@ struct melee_t : public warrior_attack_t
 
     if ( p -> dual_wield() ) base_hit -= 0.19;
     // Rage Conversion Value, needed for: damage done => rage gained
-    rage_conversion_value = 0.0091107836 * p -> level * p -> level + 3.225598133* p -> level + 4.2652911;
+    if( p -> level == 80 )
+      rage_conversion_value = 453.3;
+    else
+      rage_conversion_value = 0.0091107836 * p -> level * p -> level + 3.225598133* p -> level + 4.2652911;
   }
   virtual double haste()
   {
@@ -1114,13 +1117,21 @@ struct melee_t : public warrior_attack_t
         hitfactor /= 2.0;
 
       // double rage_gained = 15.0 * direct_dmg / ( 4.0 * rage_conversion_value ) + time_to_execute * hitfactor / 2.0;
+      
       // http://elitistjerks.com/f81/t60632-rage_generation_changed/
-      double rage_gained = 3.0/8.0 * ( weapon -> swing_time * hitfactor  + 7.5 * direct_dmg / rage_conversion_value );
+      // double rage_gained = 3.0/8.0 * ( weapon -> swing_time * hitfactor  + 7.5 * direct_dmg / rage_conversion_value );
+      
+      // http://forums.worldofwarcraft.com/thread.html?topicId=17367760070&sid=1&pageNo=13#250
+      // 
+      double rage_gain = ( weapon -> swing_time * hitfactor  + 7.5 * direct_dmg / rage_conversion_value ) / 2.0;
+      double rage_gain_max = 7.5 * direct_dmg / rage_conversion_value * 2.0;
+      
+      double real_rage_gain = std::min( rage_gain, rage_gain_max );
 
       if ( p -> talents.endless_rage )
-        rage_gained *= 1.25;
+        real_rage_gain *= 1.25;
 
-      p -> resource_gain( RESOURCE_RAGE, rage_gained, weapon -> slot == SLOT_OFF_HAND ? p -> gains_oh_attack : p -> gains_mh_attack );
+      p -> resource_gain( RESOURCE_RAGE, real_rage_gain, weapon -> slot == SLOT_OFF_HAND ? p -> gains_oh_attack : p -> gains_mh_attack );
     }
     trigger_unbridled_wrath( this );
   }
