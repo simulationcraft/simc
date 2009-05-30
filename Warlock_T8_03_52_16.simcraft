@@ -6,7 +6,8 @@ talents=http://talent.mmo-champion.com/?warlock=03000000000000000000000000000032
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/spell_stone/fel_armor/summon_pet,felguard
 actions+=/demonic_empowerment/life_tap,trigger=10000,health_percentage>=35,metamorphosis=-1
 actions+=/soul_fire,decimation=1/life_tap,glyph=1/metamorphosis/curse_of_doom,time_to_die>=90
-actions+=/immolation,health_percentage>=35/immolate/corruption,health_percentage>=35/shadow_bolt/life_tap
+actions+=/immolation,health_percentage>=35/immolate/corruption,health_percentage>=35/shadow_bolt
+Warlock_Filler.simcraft
 Warlock_T8_Gear.simcraft
 glyph_life_tap=1
 glyph_felguard=1

@@ -1,0 +1,5 @@
+actions+=/life_tap,mana_perc<=20,glyph_skip=1,tier7_4pc_skip=1
+actions+=/corruption,time_to_die>=20/curse_of_agony,time_to_die>=30
+actions+=/shadow_burn/shadowfury
+actions+=/corruption/curse_of_agony
+actions+=/life_tap
