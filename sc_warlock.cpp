@@ -3660,7 +3660,8 @@ struct life_tap_t : public warlock_spell_t
   double mana_perc;
 
   life_tap_t( player_t* player, const std::string& options_str ) :
-      warlock_spell_t( "life_tap", player, SCHOOL_SHADOW, TREE_AFFLICTION ), trigger( 1000 ), inferno( 0 ), glyph( 0 ), tier7_4pc( 0 ), max( 0 ), base_tap( 0 )
+      warlock_spell_t( "life_tap", player, SCHOOL_SHADOW, TREE_AFFLICTION ), 
+                       trigger( 2000 ), inferno( 0 ), glyph( 0 ), tier7_4pc( 0 ), max( 0 ), base_tap( 0 ), mana_perc(0)
   {
     id = 57946;
 
