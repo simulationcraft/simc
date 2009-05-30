@@ -1128,7 +1128,7 @@ const char* chart_t::gear_weights_pawn( std::string& s,
     case STAT_INTELLECT:                name = "Intellect";        break;
     case STAT_SPIRIT:                   name = "Spirit";           break;
     case STAT_SPELL_POWER:              name = "SpellDamage";      break;
-    case STAT_ATTACK_POWER:             name = "AP";               break;
+    case STAT_ATTACK_POWER:             name = "Ap";               break;
     case STAT_EXPERTISE_RATING:         name = "ExpertiseRating";  break;
     case STAT_ARMOR_PENETRATION_RATING: name = "ArmorPenetration"; break;
     case STAT_HIT_RATING:               name = "HitRating";        break;
