@@ -376,6 +376,7 @@ void raid_event_t::parse_options( option_t*          options,
   {
     { "first",           OPT_FLT, &first           },
     { "last",            OPT_FLT, &last            },
+    { "period",          OPT_FLT, &cooldown        },
     { "cooldown",        OPT_FLT, &cooldown        },
     { "cooldown_stddev", OPT_FLT, &cooldown_stddev },
     { "cooldown>",       OPT_FLT, &cooldown_min    },

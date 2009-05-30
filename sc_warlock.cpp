@@ -3657,6 +3657,7 @@ struct life_tap_t : public warlock_spell_t
   int    tier7_4pc;
   int    max;
   double base_tap;
+  double mana_perc;
 
   life_tap_t( player_t* player, const std::string& options_str ) :
       warlock_spell_t( "life_tap", player, SCHOOL_SHADOW, TREE_AFFLICTION ), trigger( 1000 ), inferno( 0 ), glyph( 0 ), tier7_4pc( 0 ), max( 0 ), base_tap( 0 )
@@ -3670,6 +3671,8 @@ struct life_tap_t : public warlock_spell_t
         { "glyph",     OPT_BOOL, &glyph     },
         { "tier7_4pc", OPT_BOOL, &tier7_4pc },
         { "max",       OPT_BOOL, &max       },
+        { "mana_perc<",OPT_FLT,  &mana_perc },
+        { "mana_perc", OPT_FLT,  &mana_perc },
         { NULL }
       };
     parse_options( options, options_str );
@@ -3715,6 +3718,9 @@ struct life_tap_t : public warlock_spell_t
 
     if ( glyph && p -> glyphs.life_tap )
       return( ! p -> _buffs.life_tap_glyph );
+
+    if ( mana_perc )
+      return (p->resource_current[ RESOURCE_MANA ]/p -> resource_max[ RESOURCE_MANA ]*100<=mana_perc);
 
     if ( max )
       trigger = ( int ) ( p -> resource_max[ RESOURCE_MANA ] - ( base_tap + 3.0 * p -> spirit() ) * ( 1.0 + p -> talents.improved_life_tap * 0.10 ) );
@@ -4650,7 +4656,7 @@ void warlock_t::init_actions()
 
     if (talents.emberstorm) action_list_str+="/incinerate"; else action_list_str+="/shadow_bolt";
 
-    action_list_str+="/curse_of_agony,time_to_die>=30/corruption,time_to_die>=20/shadow_burn/shadowfury/corruption/curse_of_agony"; // instas, to use when moving if possible
+    action_list_str+="/life_tap,mana_perc<=20/corruption,time_to_die>=20/curse_of_agony,time_to_die>=30/shadow_burn/shadowfury/corruption/curse_of_agony"; // instas, to use when moving if possible
     action_list_str+="/life_tap"; // to use when no mana or nothing else is possible
 
     if ( sim -> debug ) log_t::output( sim, "Player %s using default actions: %s", name(), action_list_str.c_str()  );
