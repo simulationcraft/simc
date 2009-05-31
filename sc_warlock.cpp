@@ -3654,14 +3654,17 @@ struct life_tap_t : public warlock_spell_t
   int    trigger;
   int    inferno;
   int    glyph;
+  int    glyph_skip;
   int    tier7_4pc;
+  int    tier7_4pc_skip;
   int    max;
   double base_tap;
   double mana_perc;
 
   life_tap_t( player_t* player, const std::string& options_str ) :
       warlock_spell_t( "life_tap", player, SCHOOL_SHADOW, TREE_AFFLICTION ), 
-                       trigger( 0 ), inferno( 0 ), glyph( 0 ), tier7_4pc( 0 ), max( 0 ), base_tap( 0 ), mana_perc(0)
+                       trigger( 0 ), inferno( 0 ), glyph( 0 ), tier7_4pc( 0 ), max( 0 ), base_tap( 0 ), mana_perc(0),
+                       glyph_skip( 0 ), tier7_4pc_skip( 0 )
   {
     id = 57946;
 
@@ -3670,9 +3673,9 @@ struct life_tap_t : public warlock_spell_t
         { "trigger",   OPT_INT,  &trigger   },
         { "inferno",   OPT_BOOL, &inferno   },
         { "glyph",     OPT_BOOL, &glyph     },
-        { "glyph_skip",OPT_BOOL, &glyph     },
+        { "glyph_skip",OPT_BOOL, &glyph_skip},
         { "tier7_4pc", OPT_BOOL, &tier7_4pc },
-        { "tier7_4pc_skip", OPT_BOOL, &tier7_4pc },
+        { "tier7_4pc_skip", OPT_BOOL, &tier7_4pc_skip },
         { "max",       OPT_BOOL, &max       },
         { "mana_perc<",OPT_FLT,  &mana_perc },
         { "mana_perc", OPT_FLT,  &mana_perc },
@@ -3706,14 +3709,20 @@ struct life_tap_t : public warlock_spell_t
     if ( ! warlock_spell_t::ready() )
       return false;
 
-    // skip if more mana than 'mana_perc' %, but otherwise check other conditions too
+    // skip if more mana than 'mana_perc' %
     if ( (mana_perc>0) && (p->resource_current[ RESOURCE_MANA ]/p -> resource_max[ RESOURCE_MANA ]*100 > mana_perc) )
       return false; 
-    // skip if tier7_4pc buff is up, but otherwise check other conditions too
-    if ( tier7_4pc && p -> unique_gear -> tier7_4pc && p -> buffs.tier7_4pc )
+    // skip if tier7_4pc buff is up
+    if ( tier7_4pc_skip && p -> buffs.tier7_4pc )
       return false; 
-    // skip if life_tap Glyph buff is up, but otherwise check other conditions too
-    if ( glyph && p -> glyphs.life_tap && p -> _buffs.life_tap_glyph )
+    // skip if tier7_4pc buff is up, OR player do not have  t7_4pc
+    if ( tier7_4pc && (p -> buffs.tier7_4pc || !p -> unique_gear -> tier7_4pc) )
+      return false; 
+    // skip if life_tap Glyph buff is up
+    if ( glyph_skip && p -> _buffs.life_tap_glyph )
+      return false; 
+    // skip if life_tap Glyph buff is up, OR player do not have glyph
+    if ( glyph && ( p -> _buffs.life_tap_glyph || !p -> glyphs.life_tap)  )
       return false; 
     // skip if LifeTap would overflow mana over maximum
     if ( max ){
@@ -3735,7 +3744,6 @@ struct life_tap_t : public warlock_spell_t
           return false;
       }
     }
-
 
     // if no condition was negative, ready for Life Tap
     return true;
@@ -4638,7 +4646,9 @@ void warlock_t::init_actions()
   {
     action_list_str+="flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/spell_stone/fel_armor/summon_pet,";
 
-    if (talents.summon_felguard) action_list_str+="felguard"; else action_list_str+="imp";
+    if (talents.summon_felguard) action_list_str+="felguard"; else 
+      if (talents.empowered_imp || talents.improved_imp) action_list_str+="imp"; else 
+        action_list_str+="succubus";
 
     if ( talents.haunt ) // 53_00_18
     { 
@@ -4652,16 +4662,16 @@ void warlock_t::init_actions()
     else if ( talents.metamorphosis ) // 00_56_15
     {  
       action_list_str+="/demonic_empowerment/life_tap,trigger=10000,health_percentage>=35,metamorphosis=-1";
-      action_list_str+="/soul_fire,decimation=1/life_tap,glyph=1/metamorphosis/curse_of_doom,time_to_die>=90";
+      action_list_str+="/soul_fire,decimation=1/metamorphosis/curse_of_doom,time_to_die>=90";
       action_list_str+="/immolation,health_percentage>=35/immolate/corruption,health_percentage>=35";
     }
     else if ( talents.summon_felguard && talents.emberstorm && talents.decimation ) // 00_41_30
     {  
-      action_list_str+="/soul_fire,decimation=1/life_tap,glyph=1/immolate/curse_of_agony/corruption,health_percentage>=35";
+      action_list_str+="/soul_fire,decimation=1/immolate/curse_of_agony/corruption,health_percentage>=35";
     }
     else if ( talents.decimation && talents.conflagrate ) // 00_40_31
     {  
-      action_list_str+="/soul_fire,decimation=1/life_tap,glyph=1/immolate/conflagrate";
+      action_list_str+="/soul_fire,decimation=1/immolate/conflagrate";
       action_list_str+="/curse_of_agony/corruption,health_percentage>=35";
     }
     else // generic
