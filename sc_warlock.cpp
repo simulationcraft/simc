@@ -4557,8 +4557,11 @@ void warlock_t::init_base()
 void warlock_t::init_scaling()
 {
   player_t::init_scaling();
-
-  if ( talents.demonic_knowledge ) scales_with[ STAT_STAMINA ] = 1;
+  
+  if ( talents.demonic_knowledge ) 
+    scales_with[ STAT_STAMINA ] = 1;
+  else
+    scales_with[ STAT_STAMINA ] = -1; // show 0.00
 }
 
 // warlock_t::init_gains =====================================================
