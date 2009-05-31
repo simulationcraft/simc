@@ -72,7 +72,6 @@ sanctified_retribution=1
 swift_retribution=1
 
 # Support for Death Knights does not yet exist.
-razorice=1
 crypt_fever=1
 
 # To generate scale factors, set calculate_scale_factors=1
