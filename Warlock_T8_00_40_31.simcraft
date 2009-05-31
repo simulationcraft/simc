@@ -1,6 +1,6 @@
 #!simcraft max_time=300 optimal_raid=1
 
-warlock=Warlock_T8_DMO_00_40_31
+warlock=Warlock_T8_dm_00_40_31
 level=80
 talents=http://talent.mmo-champion.com/?warlock=000000000000000000000000000003320030113520253003220000005203205210131051000000000
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/spell_stone/fel_armor/summon_pet,imp
