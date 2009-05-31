@@ -271,7 +271,7 @@ function generate_config_array( array $arr_options )
 	
 	// If the array of values contains a 'globals' sub-array
 	if( is_array($arr_options['globals']) ) {
-		$return_array['#'.count($return_array)] = "GLOBAL SETTINGS";
+		$return_array[] = "GLOBAL SETTINGS";
 		
 		// Loop over the globals options, as they were defined for the form's creation
 		foreach( $xml_options->global_options[0]->option as $xml_option) {
@@ -288,7 +288,7 @@ function generate_config_array( array $arr_options )
 			
 			// If the submitted value is not empty, add it to the config array
 			if( $submitted_value!=='' ) {
-				$return_array[$option_name] = $submitted_value;
+				$return_array[] = array($option_name => $submitted_value);
 			}
 		}
 	}	
@@ -297,18 +297,18 @@ function generate_config_array( array $arr_options )
 	
 	// If the array of values contains a 'raider' sub-array
 	if( is_array($arr_options['raider']) ) {
-		$return_array['#'.count($return_array)] = "CHARACTER DEFINITIONS";
+		$return_array[] = "CHARACTER DEFINITIONS";
 		
 		// Loop over each of the submitted raider characters
 		foreach($arr_options['raider'] as $arr_values ) {
 			
-			$return_array['#'.count($return_array)] = "CHARACTER  {$arr_values['name']} ({$arr_values['class']})";			
+			$return_array[] = "CHARACTER  {$arr_values['name']} ({$arr_values['class']})";			
 			
 			// Pull out the options that go with this raider's class, including the options all classes share
 			$class_options = $xml_options->supported_classes->xpath("class[@class='all_classes' or @class='{$arr_values['class']}']/option");
 			
 			// Add the atypical class=character_name option (doesn't actually appear in the config list, for obvious reasons)
-			$return_array[$arr_values['class']] = $arr_values['name'];
+			$return_array[] = array($arr_values['class'] => $arr_values['name']);
 			
 			// Loop over the raider's options, as they were defined for the form's creation
 			foreach( $class_options as $xml_option) {
@@ -330,12 +330,12 @@ function generate_config_array( array $arr_options )
 				
 				// If the submitted value is not empty, add it to the config array
 				if( $submitted_value!=='' ) {
-					$return_array[$option_name] = $submitted_value;
+					$return_array[] = array($option_name => $submitted_value);
 				}
 			}
 		}
 	}
-	
+
 	// Return the output
 	return $return_array;	
 }
@@ -355,16 +355,18 @@ function build_config_file_from_array( array $arr_options )
 	$arr_settings = generate_config_array($arr_options);
 	
 	// Loop over the options, building the config file
-	foreach( $arr_settings as $key=>$value ) {
+	foreach( $arr_settings as $value ) {
 		
 		// If the attribute is a comment, add the comment line
-		if( $key[0]=='#' ) {
+		if( !is_array($value) ) {
 			$return_string .= "\n# " . ltrim($value, '# ') . "\n";
 		}
 		
 		// Else, add the configuration value
 		else {
-			$return_string .= "$key=$value\n";
+			$opt_name = array_keys($value);
+			$opt_value = array_values($value);
+			$return_string .= "{$opt_name[0]}={$opt_value[0]}\n";
 		}
 	}
 	
@@ -386,16 +388,18 @@ function generate_simcraft_command( array $arr_options, $output_file=null )
 	$arr_settings = generate_config_array($arr_options);
 	
 	// Loop over the options, building the config file
-	foreach( $arr_settings as $key=>$value ) {
+	foreach( $arr_settings as $value ) {
 		
 		// If the attribute is a comment, add the comment line
-		if( $key[0]=='#' ) {
+		if( !is_array($value) ) {
 			continue;
 		}
 		
 		// Else, add the configuration value
 		else {
-			$return_string .= " $key='$value'";
+			$opt_name = array_keys($value);
+			$opt_value = array_values($value);
+			$return_string .= " {$opt_name[0]}='{$opt_value[0]}'";
 		}
 	}
 	
