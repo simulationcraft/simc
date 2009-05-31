@@ -14,19 +14,21 @@ static void print_action( FILE* file, stats_t* s )
 {
   if ( s -> total_dmg == 0 ) return;
 
-  double total_dmg;
+  double total_dmg, DPS;
 
   if ( s -> player -> is_pet() )
   {
     total_dmg = s -> player -> cast_pet() -> owner ->  total_dmg;
+    DPS= s -> total_dmg  / total_dmg * s -> player -> cast_pet() -> owner -> dps;
   }
   else
   {
     total_dmg = s -> player -> total_dmg;
+    DPS= s -> total_dmg  / total_dmg * s -> player -> dps;
   }
 
   fprintf( file,
-           "    %-20s  Count=%5.1f|%4.1fsec  DPE=%5.0f|%2.0f%%  DPET=%5.0f  DPR=%6.1f",
+           "    %-20s  Count=%5.1f|%4.1fsec  DPE=%6.0f|%2.0f%%  DPET=%6.0f  DPR=%6.1f",
            s -> name_str.c_str(),
            s -> num_executes,
            s -> frequency,
@@ -34,6 +36,9 @@ static void print_action( FILE* file, stats_t* s )
            s -> total_dmg * 100.0 / total_dmg,
            s -> dpet,
            s -> dpr );
+
+  if (s->sim->scaling->normalize_scale_factors)
+    fprintf( file, "  DPS=%5.0f", DPS);
 
   fprintf( file, "  Miss=%.1f%%", s -> execute_results[ RESULT_MISS ].count * 100.0 / s -> num_executes );
 
