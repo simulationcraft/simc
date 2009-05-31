@@ -1,14 +1,17 @@
 #!simcraft 
 
-optimal_raid=1
-
-Globals_T8.simcraft
+# "_mov" version is for generic movement raid
+#opt_raid_mov.simcraft
+opt_raid.simcraft
 
 Warlock_T8_00_13_58.simcraft
 Warlock_T8_00_40_31.simcraft
 Warlock_T8_00_41_30.simcraft
 Warlock_T8_03_52_16.simcraft
-Warlock_T8_00_56_15.simcraft
 Warlock_T8_03_13_55.simcraft
 Warlock_T8_53_00_18.simcraft
 Warlock_T8_53_00_18_DG.simcraft
+
+#Demonic Pact inflate DPS and SP values
+#so 00_56_15 sim should be run alone
+#Warlock_T8_00_56_15.simcraft
