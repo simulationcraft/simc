@@ -2719,6 +2719,13 @@ struct icy_veins_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
     assert( p -> talents.icy_veins );
+
+    option_t options[] =
+    {
+      { NULL }
+    };
+    parse_options( options, options_str );
+
     base_cost = 200;
     trigger_gcd = 0;
     cooldown = 180.0;
@@ -2751,6 +2758,13 @@ struct cold_snap_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
     assert( p -> talents.cold_snap );
+
+    option_t options[] =
+    {
+      { NULL }
+    };
+    parse_options( options, options_str );
+
     cooldown = 600;
     cooldown *= 1.0 - p -> talents.cold_as_ice * 0.10;
   }
@@ -2850,6 +2864,34 @@ struct arcane_brilliance_t : public mage_spell_t
   }
 };
 
+// Counterspell ============================================================
+
+struct counterspell_t : public mage_spell_t
+{
+  counterspell_t( player_t* player, const std::string& options_str ) :
+      mage_spell_t( "counterspell", player, SCHOOL_ARCANE, TREE_ARCANE )
+  {
+    option_t options[] =
+    {
+      { NULL }
+    };
+    parse_options( options, options_str );
+
+    trigger_gcd = 0;
+    base_dd_min = base_dd_max = 1;
+    may_miss = may_resist = false;
+    base_cost = player -> resource_base[ RESOURCE_MANA ] * 0.09;
+    base_spell_power_multiplier = 0;
+    cooldown = 24;
+  }
+
+  virtual bool ready()
+  {
+    if( ! sim -> target -> casting ) return false;
+    return mage_spell_t::ready();
+  }
+};
+
 // Water Elemental Spell ================================================
 
 struct water_elemental_spell_t : public mage_spell_t
@@ -2873,6 +2915,12 @@ struct water_elemental_spell_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
     assert( p -> talents.summon_water_elemental );
+
+    option_t options[] =
+    {
+      { NULL }
+    };
+    parse_options( options, options_str );
 
     base_cost  = p -> resource_base[ RESOURCE_MANA ] * 0.16;
     base_cost *= 1.0 - p -> talents.frost_channeling * ( 0.1/3 );
@@ -2905,6 +2953,12 @@ struct mirror_image_spell_t : public mage_spell_t
       mage_spell_t( "mirror_image", player, SCHOOL_ARCANE, TREE_ARCANE )
   {
     mage_t* p = player -> cast_mage();
+
+    option_t options[] =
+    {
+      { NULL }
+    };
+    parse_options( options, options_str );
 
     base_cost   = p -> resource_base[ RESOURCE_MANA ] * 0.10;
     base_cost  *= 1.0 - p -> talents.frost_channeling * ( 0.1/3 );
@@ -3138,6 +3192,7 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "choose_rotation"   ) return new         choose_rotation_t( this, options_str );
   if ( name == "cold_snap"         ) return new               cold_snap_t( this, options_str );
   if ( name == "combustion"        ) return new              combustion_t( this, options_str );
+  if ( name == "counterspell"      ) return new            counterspell_t( this, options_str );
   if ( name == "evocation"         ) return new               evocation_t( this, options_str );
   if ( name == "fire_ball"         ) return new               fire_ball_t( this, options_str );
   if ( name == "fire_blast"        ) return new              fire_blast_t( this, options_str );

@@ -1942,8 +1942,36 @@ struct hunger_for_blood_t : public rogue_attack_t
   // Rogues can stack the buff prior to entering combat, so if they have yet to use an
   // offensive ability, then this action will not trigger the GCD nor will it cost any energy.
 
-virtual double gcd()  { return player -> in_combat ? rogue_attack_t::gcd()  : 0; }
+  virtual double gcd()  { return player -> in_combat ? rogue_attack_t::gcd()  : 0; }
   virtual double cost() { return player -> in_combat ? rogue_attack_t::cost() : 0; }
+};
+
+// Kick =====================================================================
+
+struct kick_t : public rogue_attack_t
+{
+  kick_t( player_t* player, const std::string& options_str ) :
+      rogue_attack_t( "kick", player, SCHOOL_PHYSICAL, TREE_COMBAT )
+  {
+    option_t options[] =
+      {
+	{ NULL }
+      };
+    parse_options( options, options_str );
+
+    trigger_gcd = 0;
+    base_cost = 25.0;
+    base_dd_min = base_dd_max = 1;
+    may_miss = may_resist = may_glance = may_block = may_dodge = may_crit = false;
+    base_attack_power_multiplier = 0;
+    cooldown = 10;
+  }
+
+  virtual bool ready()
+  {
+    if( ! sim -> target -> casting ) return false;
+    return rogue_attack_t::ready();
+  }
 };
 
 // Killing Spree ============================================================
@@ -3171,6 +3199,7 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "ghostly_strike"      ) return new ghostly_strike_t     ( this, options_str );
   if ( name == "hemorrhage"          ) return new hemorrhage_t         ( this, options_str );
   if ( name == "hunger_for_blood"    ) return new hunger_for_blood_t   ( this, options_str );
+  if ( name == "kick"                ) return new kick_t               ( this, options_str );
   if ( name == "killing_spree"       ) return new killing_spree_t      ( this, options_str );
   if ( name == "mutilate"            ) return new mutilate_t           ( this, options_str );
   if ( name == "pool_energy"         ) return new pool_energy_t        ( this, options_str );

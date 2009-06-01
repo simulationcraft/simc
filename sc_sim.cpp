@@ -154,7 +154,7 @@ sim_t::sim_t( sim_t* p, int index ) :
     raid_dps( 0 ), total_dmg( 0 ),
     total_seconds( 0 ), elapsed_cpu_seconds( 0 ),
     merge_ignite( 0 ), report_progress( 1 ),
-    output_file( stdout ), log_file( 0 ), http_throttle(0), extend_spell_info(0),
+    output_file( stdout ), log_file( 0 ), http_throttle(0),
     threads( 0 ), thread_handle( 0 ), thread_index( index )
 {
 
@@ -608,14 +608,15 @@ void sim_t::analyze()
       p -> total_dmg += s -> total_dmg;
     }
 
+    p -> dps = p -> total_dmg / p -> total_seconds;
+
     for ( int i=0; i < num_stats; i++ )
     {
       stats_t* s = stats_list[ i ];
 
       s -> portion_dmg = s -> total_dmg / p -> total_dmg;
+      s -> portion_dps = s -> portion_dmg * p -> dps;
     }
-
-    p -> dps = p -> total_dmg / p -> total_seconds;
 
     if ( p -> quiet ) continue;
 
@@ -1101,7 +1102,6 @@ bool sim_t::parse_option( const std::string& name,
       { "wheel_granularity",                OPT_FLT,    &( wheel_granularity                        ) },
       { "wheel_seconds",                    OPT_INT,    &( wheel_seconds                            ) },
       { "http_throttle",                    OPT_INT,    &( http_throttle                            ) },
-      { "extend_spell_info",                OPT_INT,    &( extend_spell_info                        ) },
       { "debug_armory",                     OPT_BOOL,   &( debug_armory                             ) },
       { "raid_events",                      OPT_STRING, &( raid_events_str                          ) },
       { "raid_events+",                     OPT_APPEND, &( raid_events_str                          ) },

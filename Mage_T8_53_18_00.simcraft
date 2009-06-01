@@ -4,6 +4,7 @@ mage=Mage_T8_53_18_00
 level=80
 talents=http://ptr.wowhead.com/?talent=of0Vcd0IzxGu0xedfVczo0h
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/arcane_brilliance/focus_magic
+actions+=/counterspell
 actions+=/mirror_image/arcane_power
 actions+=/haste_trinket,name=scale_of_fates,rating=432,length=20,cooldown=120
 actions+=/presence_of_mind,pyroblast

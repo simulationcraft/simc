@@ -1302,6 +1302,51 @@ struct faerie_fire_feral_t : public druid_attack_t
   }
 };
 
+// Maim ======================================================================
+
+struct maim_t : public druid_attack_t
+{
+  double* combo_point_dmg;
+
+  maim_t( player_t* player, const std::string& options_str ) :
+      druid_attack_t( "maim", player, SCHOOL_PHYSICAL, TREE_FERAL )
+  {
+    druid_t* p = player -> cast_druid();
+
+    option_t options[] =
+      {
+        { NULL }
+      };
+    parse_options( options, options_str );
+
+    weapon = &( p -> main_hand_weapon );
+    weapon_power_mod = 0;
+
+    may_crit = true;
+    requires_combo_points = true;
+    base_cost = 35;
+    cooldown = 10;
+
+    static double dmg_74[] = { 224, 382, 540, 698, 856 };
+    static double dmg_62[] = { 129, 213, 297, 381, 465 };
+
+    combo_point_dmg = ( p -> level >= 74 ? dmg_74 : dmg_62 );
+  }
+
+  virtual void execute()
+  {
+    druid_t* p = player -> cast_druid();
+    base_dd_min = base_dd_max = combo_point_dmg[ p -> _buffs.combo_points - 1 ];
+    druid_attack_t::execute();
+  }
+
+  virtual bool ready()
+  {
+    if( ! sim -> target -> casting ) return false;
+    return druid_attack_t::ready();
+  }
+};
+
 // Mangle (Cat) ============================================================
 
 struct mangle_cat_t : public druid_attack_t
@@ -3048,6 +3093,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "ferocious_bite"    ) return new    ferocious_bite_t( this, options_str );
   if ( name == "insect_swarm"      ) return new      insect_swarm_t( this, options_str );
   if ( name == "innervate"         ) return new         innervate_t( this, options_str );
+  if ( name == "maim"              ) return new              maim_t( this, options_str );
   if ( name == "mangle_cat"        ) return new        mangle_cat_t( this, options_str );
   if ( name == "mark_of_the_wild"  ) return new  mark_of_the_wild_t( this, options_str );
   if ( name == "moonfire"          ) return new          moonfire_t( this, options_str );

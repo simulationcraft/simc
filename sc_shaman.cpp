@@ -1864,6 +1864,30 @@ struct flame_shock_t : public shaman_spell_t
   }
 };
 
+// Wind Shock Spell ========================================================
+
+struct wind_shock_t : public shaman_spell_t
+{
+  wind_shock_t( player_t* player, const std::string& options_str ) :
+      shaman_spell_t( "wind_shock", player, SCHOOL_NATURE, TREE_ELEMENTAL )
+  {
+    shaman_t* p = player -> cast_shaman();
+    trigger_gcd = 0;
+    base_dd_min = base_dd_max = 1;
+    may_miss = may_resist = false;
+    base_cost = player -> resource_base[ RESOURCE_MANA ] * 0.09;
+    base_spell_power_multiplier = 0;
+    cooldown_group = "shock";
+    cooldown = 6.0 - ( p -> talents.reverberation * 0.2 );
+  }
+
+  virtual bool ready()
+  {
+    if( ! sim -> target -> casting ) return false;
+    return shaman_spell_t::ready();
+  }
+};
+
 // Searing Totem Spell =======================================================
 
 struct searing_totem_t : public shaman_spell_t
@@ -3090,6 +3114,7 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "thunderstorm"            ) return new             thunderstorm_t( this, options_str );
   if ( name == "totem_of_wrath"          ) return new           totem_of_wrath_t( this, options_str );
   if ( name == "water_shield"            ) return new             water_shield_t( this, options_str );
+  if ( name == "wind_shock"              ) return new               wind_shock_t( this, options_str );
   if ( name == "windfury_totem"          ) return new           windfury_totem_t( this, options_str );
   if ( name == "windfury_weapon"         ) return new          windfury_weapon_t( this, options_str );
   if ( name == "wrath_of_air_totem"      ) return new       wrath_of_air_totem_t( this, options_str );

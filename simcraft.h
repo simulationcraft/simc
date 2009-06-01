@@ -564,7 +564,6 @@ struct sim_t : public app_t
   FILE* output_file;
   FILE* log_file;
   int http_throttle;
-  int extend_spell_info;
 
   // Multi-Threading
   int threads;
@@ -1286,8 +1285,7 @@ struct stats_t
   double frequency, num_executes, num_ticks;
   double total_execute_time, total_tick_time;
   double total_dmg, portion_dmg;
-  double dps, dpe, dpet, dpr;
-  double r_dps, dpe_perc;
+  double dps, portion_dps, dpe, dpet, dpr;
   double total_intervals, num_intervals;
   double last_execute;
 

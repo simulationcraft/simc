@@ -6,6 +6,7 @@ talents=http://ptr.wowhead.com/?talent=0ZEGMcfrz0eR0huVkbAczb
 actions=flask,type=endless_rage/food,type=blackened_dragonfin
 actions+=/cat_form
 actions+=/auto_attack
+actions+=/maim
 actions+=/shred,omen_of_clarity=1
 actions+=/tigers_fury,energy<=40
 actions+=/berserk,tigers_fury=1

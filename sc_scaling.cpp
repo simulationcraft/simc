@@ -225,35 +225,6 @@ void scaling_t::normalize()
   }
 }
 
-
-// scaling_t::derive =====================================================
-
-void scaling_t::derive()
-{
-  for ( player_t* p = sim -> player_list; p; p = p -> next )
-  {
-    if ( p -> quiet ) continue;
-    // calculate derived stat_t values:  rDPS and DPE_perc
-    double player_dmg= p -> total_dmg;
-    double player_DPS= p -> dps;
-    if ( player_dmg>0){
-      for ( stats_t* s = p -> stats_list; s; s = s -> next )
-      {
-        s->r_dps    = s->total_dmg / player_dmg * player_DPS;
-        s->dpe_perc = s->total_dmg / player_dmg * 100.0;
-      }
-
-      for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
-        for ( stats_t* s = pet -> stats_list; s; s = s -> next )
-        {
-          s->r_dps    = s->total_dmg / player_dmg * player_DPS;
-          s->dpe_perc = s->total_dmg / player_dmg * 100.0;
-        }
-    }
-  }
-}
-
-
 // scaling_t::analyze =======================================================
 
 void scaling_t::analyze()
@@ -263,7 +234,6 @@ void scaling_t::analyze()
   analyze_lag();
   analyze_gear_weights();
   normalize();
-  derive();
 }
 
 // scaling_t::parse_option ==================================================

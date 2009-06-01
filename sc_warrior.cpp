@@ -1826,6 +1826,35 @@ struct whirlwind_t : public warrior_attack_t
 };
 
 
+// Pummel ==================================================================
+
+struct pummel_t : public warrior_attack_t
+{
+  pummel_t( player_t* player, const std::string& options_str ) :
+      warrior_attack_t( "pummel",  player, SCHOOL_PHYSICAL, TREE_FURY )
+  {
+    option_t options[] =
+      {
+        { NULL }
+      };
+    parse_options( options, options_str );
+
+    trigger_gcd = 0;
+    base_cost = 10.0;
+    base_dd_min = base_dd_max = 1;
+    may_miss = may_resist = may_glance = may_block = may_dodge = may_crit = false;
+    base_attack_power_multiplier = 0;
+    cooldown = 10;
+  }
+
+  virtual bool ready()
+  {
+    if( ! sim -> target -> casting ) return false;
+    return warrior_attack_t::ready();
+  }
+};
+
+
 // =========================================================================
 // Warrior Spells
 // =========================================================================
@@ -2203,6 +2232,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "heroic_strike"       ) return new heroic_strike_t ( this, options_str );
   if ( name == "mortal_strike"       ) return new mortal_strike_t ( this, options_str );
   if ( name == "overpower"           ) return new overpower_t     ( this, options_str );
+  if ( name == "pummel"              ) return new pummel_t        ( this, options_str );
   if ( name == "recklessness"        ) return new recklessness_t  ( this, options_str );
   if ( name == "rend"                ) return new rend_t          ( this, options_str );
   if ( name == "slam"                ) return new slam_t          ( this, options_str );
