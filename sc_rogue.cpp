@@ -253,6 +253,7 @@ struct rogue_t : public player_t
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual int       primary_resource() { return RESOURCE_ENERGY; }
   virtual int       primary_role()     { return ROLE_ATTACK; }
+  virtual int       primary_tree();
 
   // Utilities
   double combo_point_rank( double* cp_list )
@@ -3122,6 +3123,17 @@ struct stealth_t : public spell_t
 // Rogue Character Definition
 // =========================================================================
 
+// rogue_t::primary_tree ===================================================
+
+int rogue_t::primary_tree()
+{
+  if( talents.mutilate            ) return TREE_ASSASSINATION;
+  if( talents.killing_spree       ) return TREE_COMBAT;
+  if( talents.honor_among_thieves ) return TREE_SUBTLETY;
+
+  return TALENT_TREE_MAX;
+}
+
 // rogue_t::init_actions ===================================================
 
 void rogue_t::init_actions()
@@ -3131,38 +3143,39 @@ void rogue_t::init_actions()
     action_list_str += "flask,type=endless_rage/food,type=blackened_dragonfin/apply_poison,main_hand=";
     action_list_str += talents.improved_poisons > 2 ? "instant" : "wound";
     action_list_str += ",off_hand=deadly";
-
-    if ( talents.hunger_for_blood )
+	if( talents.overkill || talents.master_of_subtlety ) action_list_str += "/stealth";
+	action_list_str += "/auto_attack/kick";
+	
+    if( primary_tree() == TREE_ASSASSINATION )
     {
-      action_list_str += "/stealth/auto_attack";
-      action_list_str += "/pool_energy,for_next=1/hunger_for_blood,refresh_at=2";
+      if( talents.hunger_for_blood ) action_list_str += "/pool_energy,for_next=1/hunger_for_blood,refresh_at=2";
       action_list_str += "/slice_and_dice,min_combo_points=1,snd<=1";
+	  if( ! talents.cut_to_the_chase ) action_list_str += "/pool_energy,energy<=60,snd<=5/slice_and_dice,min_combo_points=3,snd<=2";
       action_list_str += "/rupture,min_combo_points=4,time_to_die>=15,time>=10,snd>=11";
-      action_list_str += "/cold_blood,sync=envenom";
+      if( talents.cold_blood ) action_list_str += "/cold_blood,sync=envenom";
       action_list_str += "/envenom,min_combo_points=4,no_buff=1";
       action_list_str += "/envenom,min_combo_points=4,energy>=90";
       action_list_str += "/envenom,min_combo_points=2,snd<=2";
       action_list_str += "/tricks_of_the_trade";
       action_list_str += "/mutilate,max_combo_points=3";
-      action_list_str += "/vanish,time>=30,energy>=50,max_combo_points=1";
+      if( talents.overkill ) action_list_str += "/vanish,time>=30,energy>=50,max_combo_points=1";
     }
-    else if ( talents.killing_spree )
+    else if( primary_tree() == TREE_COMBAT )
     {
-      action_list_str += "/auto_attack";
       action_list_str += "/slice_and_dice,min_combo_points=1,time<=4";
       action_list_str += "/pool_energy,energy<=60,snd<=5/slice_and_dice,min_combo_points=3,snd<=2";
       action_list_str += "/tricks_of_the_trade";
-      action_list_str += "/killing_spree,energy<=20/blade_flurry";
+      action_list_str += "/killing_spree,energy<=20";
+      if( talents.blade_flurry) action_list_str += "/blade_flurry";
       action_list_str += "/rupture,min_combo_points=5,time_to_die>=10";
       action_list_str += "/eviscerate,min_combo_points=5,rup>=5,snd>=5";
       action_list_str += "/eviscerate,min_combo_points=4,rup>=5,snd>=3,energy>=40";
       action_list_str += "/eviscerate,min_combo_points=5,time_to_die<=10";
       action_list_str += "/sinister_strike,max_combo_points=4";
-      action_list_str += "/adrenaline_rush,energy<=20";
+      if( talents.adrenaline_rush) action_list_str += "/adrenaline_rush,energy<=20";
     }
-    else if ( talents.honor_among_thieves )
-    {        
-      action_list_str += "/stealth/auto_attack";
+    else if( primary_tree() == TREE_SUBTLETY )
+    {
       action_list_str += "/pool_energy,for_next=1/slice_and_dice,min_combo_points=4,snd<=3";
       action_list_str += "/tricks_of_the_trade";
       // CP conditionals track reaction time, so responding when you see CP=4 will often result in CP=5 finishers
@@ -3172,7 +3185,14 @@ void rogue_t::init_actions()
           action_list_str += "/envenom,min_combo_points=4,env<=1";
     
       action_list_str += "/eviscerate,min_combo_points=4";
-      action_list_str += "/hemorrhage,max_combo_points=2,energy>=80";
+
+      action_list_str += talents.hemorrhage ? "/hemorrhage" : "/sinister_strike";
+      action_list_str += ",max_combo_points=2,energy>=80";
+    }
+    else
+    {
+      action_list_str += "/pool_energy,energy<=60,snd<=5/slice_and_dice,min_combo_points=3,snd<=2";
+	  action_list_str += "/sinister_strike,max_combo_points=4";
     }
   }
 
