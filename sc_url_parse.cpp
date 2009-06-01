@@ -18,6 +18,7 @@ struct urlSplit_t
   std::string player;
   int srvType;
   sim_t* sim;
+  std::string generated_options;
   unsigned int setPieces[20];
 };
 
@@ -30,6 +31,14 @@ std::string tolower( std::string src )
     dest[i]=tolower( dest[i] );
   return dest;
 }
+
+void replace_char( std::string& src, char old_c, char new_c  )
+{
+  for (int i=0; i<src.length(); i++)
+    if (src[i]==old_c)
+      src[i]=new_c;
+}
+
 
 //wrapper supporting differnt armory pages
 std::string getArmoryData( urlSplit_t aURL, url_page_t pgt, std::string moreParams="" )
@@ -110,6 +119,7 @@ bool splitURL( std::string URL, urlSplit_t& aURL )
   aURL.realm="";
   aURL.player="";
   aURL.srvType=1;
+  aURL.generated_options="";
   if ( id_name != string::npos )
   {
     //extract url, realm and player names
@@ -326,18 +336,22 @@ unsigned int  getSetTier( std::string setName );
 
 
 // call players parse option
-bool player_parse_option( sim_t* sim, const std::string& name, const std::string& value )
+bool player_parse_option( urlSplit_t& aURL, const std::string& name, const std::string& value )
 {
-  if ( !sim->active_player ) return false;
-  bool ok=sim->active_player->parse_option( name,value );
-  if ( debug&&ok ) printf( "%s=%s\n",name.c_str(),value.c_str() );
+  if ( !aURL.sim->active_player ) return false;
+  bool ok=aURL.sim->active_player->parse_option( name,value );
+  if (ok){
+    std::string opt_str= name +"="+ value +"\n";
+    aURL.generated_options+=opt_str;
+    if ( debug ) printf("%s",opt_str.c_str() );
+  }
   return ok;
 }
 
 // call player_parse_option for every item, if special option exists
 // useful only for GEMs and ENCHANTs
 // since for items and glyphs "proper names" are generated and tried as options
-void addItemGlyphOption( sim_t* sim, std::string&  node, std::string name )
+void addItemGlyphOption( urlSplit_t& aURL, std::string&  node, std::string name )
 {
   if ( node!="" )
   {
@@ -349,7 +363,7 @@ void addItemGlyphOption( sim_t* sim, std::string&  node, std::string name )
       if (itemID=="41333") itemID="ember_skyflare"; else
       itemID="item_"+itemID;
       //call parse to check if this item option exists
-      player_parse_option( sim,itemID,"1" );
+      player_parse_option( aURL,itemID,"1" );
     }
   }
 }
@@ -388,13 +402,13 @@ void  addSetInfo( urlSplit_t& aURL, std::string setName, unsigned int setPieces,
     {
       sprintf( setOption,"tier%d_2pc",tier );
       strOption=setOption;
-      player_parse_option( aURL.sim,strOption,strValue );
+      player_parse_option( aURL,strOption,strValue );
     }
     if ( ( setPieces>=4 )&&( aURL.setPieces[tier]<4 ) )
     {
       sprintf( setOption,"tier%d_4pc",tier );
       strOption=setOption;
-      player_parse_option( aURL.sim,strOption,strValue );
+      player_parse_option( aURL,strOption,strValue );
     }
     aURL.setPieces[tier]= setPieces;
   }
@@ -630,14 +644,52 @@ bool  parseItemStats( urlSplit_t& aURL, gear_stats_t& gs,  std::string& item_id,
       wpnValue+= ",dps="+getNode( src, "damageData.dps" );
       wpnValue+= ",speed="+getNode( src, "damageData.speed" );
       wpnValue+= ",enchant="+getNode( src, "enchant" );
-      player_parse_option( aURL.sim,wpnName,wpnValue );
+      player_parse_option( aURL,wpnName,wpnValue );
     }
   }
   // check if there is any option for this item
   std::string item_name=getNode( src, "itemTooltip.name" );
   if ( item_name!="" )
-    player_parse_option( aURL.sim, proper_option_name( item_name ),"1" );
+    player_parse_option( aURL, proper_option_name( item_name ),"1" );
 
+  return true;
+}
+
+
+// copy gear stats toplayer and form option str
+bool  copy_gear_to_player(urlSplit_t& aURL, gear_stats_t& gs){
+  if (!aURL.sim->active_player) return false;
+  aURL.sim->active_player->gear_stats = gs;
+  //form option string
+  std::string opt="";
+  for ( unsigned int i=STAT_NONE; i<STAT_MAX; i++ )
+  {
+    double val=gs.get_stat( i );
+    if ( val!=0 ){
+       char buffer[1000];
+       sprintf(buffer, "gear_%s=%1.0lf\n",util_t::stat_type_string( i ), val );
+       opt=buffer;
+       if (debug) printf(opt.c_str());
+       aURL.generated_options+=opt;
+    }
+  }
+
+
+}
+
+
+// save simcraft file based on parsed player
+bool save_player_simcraft(urlSplit_t& aURL)
+{
+  thread_t::lock();
+  std::string file_name="armory_"+aURL.player+".simcraft";
+  FILE* file = fopen( file_name.c_str(), "w" );
+  if( file )
+  {
+    fwrite( aURL.generated_options.c_str(), aURL.generated_options.length()+1, 1, file );
+    fclose( file );
+  }
+  thread_t::unlock();
   return true;
 }
 
@@ -647,7 +699,7 @@ bool  parseItemStats( urlSplit_t& aURL, gear_stats_t& gs,  std::string& item_id,
 // main procedure that parse armory info from giuven player URL (URL must have realm/player inside)
 // it set options either by building option string and calling parse_line(), or by directly calling
 // player->parse_option()
-bool parseArmory( sim_t* sim, std::string URL, bool inactiveTalents=false, bool gearOnly=false )
+bool parseArmory( sim_t* sim, std::string URL, bool inactiveTalents=false, bool gearOnly=false, bool save_player=false )
 {
   std::string optionStr="";
   // split URL
@@ -731,6 +783,7 @@ bool parseArmory( sim_t* sim, std::string URL, bool inactiveTalents=false, bool 
     strcpy( buffer,optionStr.c_str() );
     option_t::parse_line( sim, buffer );
     delete buffer;
+    aURL.generated_options+=optionStr;
     optionStr="";
   };
 
@@ -753,7 +806,7 @@ bool parseArmory( sim_t* sim, std::string URL, bool inactiveTalents=false, bool 
         if ( glyph_name !="" )
         {
           // call directly to set option. It should NOT return error if not found
-          player_parse_option( sim, proper_option_name( glyph_name ),"1" );
+          player_parse_option( aURL, proper_option_name( glyph_name ),"1" );
         }
       }
     }
@@ -769,11 +822,11 @@ bool parseArmory( sim_t* sim, std::string URL, bool inactiveTalents=false, bool 
     for ( unsigned int i=1; i<=18; i++ )
     {
       item_node= getNodeOne( node, "item",i );
-      addItemGlyphOption( sim, item_node, "id" );
-      addItemGlyphOption( sim, item_node, "gem0Id" );
-      addItemGlyphOption( sim, item_node, "gem1Id" );
-      addItemGlyphOption( sim, item_node, "gem2Id" );
-      addItemGlyphOption( sim, item_node, "permanentenchant" );
+      addItemGlyphOption( aURL, item_node, "id" );
+      addItemGlyphOption( aURL, item_node, "gem0Id" );
+      addItemGlyphOption( aURL, item_node, "gem1Id" );
+      addItemGlyphOption( aURL, item_node, "gem2Id" );
+      addItemGlyphOption( aURL, item_node, "permanentenchant" );
       // if we parse each item for stats , do it here
       if ( ParseEachItem&&( item_node!="" ) )
       {
@@ -789,8 +842,9 @@ bool parseArmory( sim_t* sim, std::string URL, bool inactiveTalents=false, bool 
       }
     }
     //copy gear stats if needed
-    if ( ( nGs>0 )&& ParseEachItem )
-      sim->active_player->gear_stats = gs;
+    if ( ( nGs>0 )&& ParseEachItem ){
+      copy_gear_to_player(aURL, gs);
+    }
   }else{
     printf("No <characterTab.items> found in Armory for player: %s\n",charName.c_str());
   }
@@ -804,7 +858,11 @@ bool parseArmory( sim_t* sim, std::string URL, bool inactiveTalents=false, bool 
     strcpy( buffer,optionStr.c_str() );
     option_t::parse_line( sim, buffer );
     delete buffer;
+    aURL.generated_options+=optionStr;
   }
+  //save player simcraft if requested
+  if (save_player) save_player_simcraft(aURL);
+  //return
   if ( debug )
   {
     char c;
@@ -814,6 +872,7 @@ bool parseArmory( sim_t* sim, std::string URL, bool inactiveTalents=false, bool 
   return true;
 }
 
+// parse multiple players in same line, or alternate armory profile (!)
 bool parseArmoryPlayers( sim_t* sim, std::string URL ){
   std::vector<std::string> splits;
   unsigned int num = util_t::string_split( splits, URL, "," );
@@ -824,9 +883,18 @@ bool parseArmoryPlayers( sim_t* sim, std::string URL ){
       srvURL+="/?r="+splits[1];
       i++;
   }
+  // parse players
   while ( i < num )
   {
     std::string player=splits[i];
+    //check if save request
+    bool toSave=false;
+    if (tolower(splits[i])=="save") {
+      i++;
+      toSave=true;
+      if (i>=num) break;
+      player=splits[i];
+    }
     bool inactiveTalents=false;
     if (player!=""){
         //check if !Name is passed to require alternate talents
@@ -835,7 +903,7 @@ bool parseArmoryPlayers( sim_t* sim, std::string URL ){
             player=player.substr(1);
         }
         //call parse of one player
-        parseArmory( sim, srvURL+"&n="+player, inactiveTalents );
+        parseArmory( sim, srvURL+"&n="+player, inactiveTalents, false, toSave );
     }
     i++;
   }
@@ -843,10 +911,65 @@ bool parseArmoryPlayers( sim_t* sim, std::string URL ){
 }
 
 
+bool  replace_item(sim_t* sim, std::string& new_id_str,std::string& opt_slot,std::string& opt_gems,std::string& opt_ench){
+  printf("Replacing ID=%s , slot=%s , gems=\"%s\" , ench=\"%s\" \n",new_id_str.c_str(), opt_slot.c_str(), opt_gems.c_str(), opt_ench.c_str());
+  return true;
+}
+
+
+// replace previously parsed item(s) with new one
+bool parseItemReplacement(sim_t* sim,  const std::string& item_list){
+  std::vector<std::string> splits;
+  unsigned int num = util_t::string_split( splits, item_list, "/\\" );
+  for (int i=0; i < num ; i++)
+  if (splits[i]!="")
+  {
+    //split one item to options
+    std::vector<std::string> options;
+    unsigned int num_opt = util_t::string_split( options, splits[i], "," );
+    if (num_opt<=0) continue;
+    // get new id
+    std::string new_id_str=options[0];
+    int new_id=atoi(new_id_str.c_str());
+    if (new_id<=0){
+      // try to find new id in URL, after ?i= or &i=
+      
+    }
+    // check options
+    std::string opt_slot="";
+    std::string opt_gems="";
+    std::string opt_ench="";
+    for (int u=1; u<num_opt; u++){
+      std::string opt= options[u];
+      int idx= opt.find("=");
+      if (idx!=string::npos){
+        std::string value= opt.substr(idx+1);
+        opt.erase(idx);
+        opt= tolower(opt);
+        if (opt=="slot") opt_slot=value; else
+          if ((opt=="gem")||(opt=="gems"))  opt_gems+=(opt_gems!=""?" and ":"")+value; else
+        if ((opt=="ench")||(opt=="enchant"))  opt_ench+=(opt_ench!=""?" and ":"")+value; else
+        {
+          printf("Unknown option: %s in %s\n", options[u].c_str(), splits[i].c_str());
+          assert(0);
+        }
+      }
+    }
+    //replace underscores with spaces (since spaces are not allowed in simcraft options)
+    replace_char( opt_slot ,'_',' ');
+    replace_char( opt_gems ,'_',' ');
+    replace_char( opt_ench ,'_',' ');
+    // now parse and replace new item
+    replace_item(sim, new_id_str, opt_slot, opt_gems, opt_ench);
+  }
+  return true;
+}
+
 bool armory_option_parse(sim_t* sim,  const std::string& name, const std::string& value){
   if ( name=="player" )             return parseArmory( sim, value);
   if ( name=="gear" )               return parseArmory( sim, value, false, true );
   if ( name=="armory" )             return parseArmoryPlayers( sim, value);
+  if ( name=="new_item_id" )        return parseItemReplacement( sim, value);
   if ( name=="http_cache_clear") {
     http_t::cache_clear();
     return true;
