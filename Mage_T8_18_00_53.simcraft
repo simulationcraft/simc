@@ -41,3 +41,6 @@ flare_of_the_heavens=1
 glyph_molten_armor=1
 glyph_frost_bolt=1
 glyph_water_elemental=1
+
+# Armor Type
+armor_type=molten

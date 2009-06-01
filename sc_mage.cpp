@@ -211,6 +211,7 @@ struct mage_t : public player_t
   virtual void      init_procs();
   virtual void      init_uptimes();
   virtual void      init_rng();
+  virtual void      init_actions();
   virtual void      combat_begin();
   virtual void      reset();
   virtual bool      get_talent_trees( std::vector<int*>& arcane, std::vector<int*>& fire, std::vector<int*>& frost );
@@ -220,6 +221,7 @@ struct mage_t : public player_t
   virtual pet_t*    create_pet   ( const std::string& name );
   virtual int       primary_resource() { return RESOURCE_MANA; }
   virtual int       primary_role()     { return ROLE_SPELL; }
+  virtual int       primary_tree();
 
   // Event Tracking
   virtual void   regen( double periodicity );
@@ -3322,6 +3324,78 @@ void mage_t::init_rng()
 
   rng_hot_streak      = get_rng( "hot_streak"      );
   rng_missile_barrage = get_rng( "missile_barrage" );
+}
+
+// mage_t::init_actions ======================================================
+
+void mage_t::init_actions()
+{
+  if( action_list_str.empty() )
+  {
+    action_list_str = "flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/arcane_brilliance";
+    if( talents.focus_magic ) action_list_str += "/focus_magic";
+    action_list_str += "/counterspell/mirror_image";
+    if( talents.combustion   ) action_list_str += "/combustion";
+    if( talents.arcane_power ) action_list_str += "/arcane_power";
+    if( talents.icy_veins    ) action_list_str += "/icy_veins";
+    if( talents.presence_of_mind ) 
+    {
+      action_list_str += "/presence_of_mind,";
+      action_list_str += ( talents.pyroblast ) ? "pyroblast" : "arcane_blast";
+    }
+    if( primary_tree() == TREE_ARCANE )
+    {
+      action_list_str += "/mana_gem/evocation";
+      action_list_str += "/choose_rotation";
+      action_list_str += "/arcane_blast,max=2";
+      action_list_str += "/arcane_blast,max=3,arcane_power=1";
+      action_list_str += "/arcane_blast,max=3,dps=1";
+      action_list_str += "/arcane_missiles,barrage=1";
+      action_list_str += "/arcane_blast,arcane_power=1";
+      action_list_str += "/arcane_missiles";
+      action_list_str += "/mana_potion";
+    }
+    else if( primary_tree() == TREE_FROST )
+    {
+      action_list_str += "/mana_gem,trigger=1000/speed_potion";
+      action_list_str += "/ice_lance,frozen=1,fb_priority=1";
+      if( talents.summon_water_elemental ) action_list_str += "/water_elemental";
+      if( talents.cold_snap              ) action_list_str += "/cold_snap";
+      action_list_str += "/fire_ball,brain_freeze=1/frost_bolt";
+    }
+    else if( primary_tree() == TREE_FIRE )
+    {
+      action_list_str += "/mana_gem,trigger=1000/speed_potion";
+      if( talents.living_bomb ) action_list_str += "/living_bomb";
+      if( talents.hot_streak  ) action_list_str += "/pyroblast,hot_streak=1";
+      if( talents.piercing_ice && talents.ice_shards )
+      {
+	action_list_str += "/frostfire_bolt";
+      }
+      else
+      {
+	action_list_str += "/fire_ball";
+      }
+    }
+    else action_list_str = "/arcane_missiles";
+
+    action_list_str += "/evocation";
+
+    if ( sim -> debug ) log_t::output( sim, "Player %s using default actions: %s", name(), action_list_str.c_str()  );
+  }
+
+  player_t::init_actions();
+}
+
+// mage_t::primary_tree ====================================================
+
+int mage_t::primary_tree()
+{
+  if( talents.arcane_empowerment   ) return TREE_ARCANE;
+  if( talents.empowered_fire       ) return TREE_FIRE;
+  if( talents.empowered_frost_bolt ) return TREE_FROST;
+
+  return TALENT_TREE_MAX;
 }
 
 // mage_t::combat_begin ====================================================
