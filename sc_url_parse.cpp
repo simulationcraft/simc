@@ -34,7 +34,7 @@ std::string tolower( std::string src )
 
 void replace_char( std::string& src, char old_c, char new_c  )
 {
-  for (int i=0; i<src.length(); i++)
+  for (int i=0; i<(int)src.length(); i++)
     if (src[i]==old_c)
       src[i]=new_c;
 }
@@ -674,7 +674,7 @@ bool  copy_gear_to_player(urlSplit_t& aURL, gear_stats_t& gs){
     }
   }
 
-
+  return true;
 }
 
 
@@ -920,13 +920,13 @@ bool  replace_item(sim_t* sim, std::string& new_id_str,std::string& opt_slot,std
 // replace previously parsed item(s) with new one
 bool parseItemReplacement(sim_t* sim,  const std::string& item_list){
   std::vector<std::string> splits;
-  unsigned int num = util_t::string_split( splits, item_list, "/\\" );
+  int num = util_t::string_split( splits, item_list, "/\\" );
   for (int i=0; i < num ; i++)
   if (splits[i]!="")
   {
     //split one item to options
     std::vector<std::string> options;
-    unsigned int num_opt = util_t::string_split( options, splits[i], "," );
+    int num_opt = util_t::string_split( options, splits[i], "," );
     if (num_opt<=0) continue;
     // get new id
     std::string new_id_str=options[0];
@@ -941,7 +941,7 @@ bool parseItemReplacement(sim_t* sim,  const std::string& item_list){
     std::string opt_ench="";
     for (int u=1; u<num_opt; u++){
       std::string opt= options[u];
-      int idx= opt.find("=");
+      std::string::size_type idx= opt.find("=");
       if (idx!=string::npos){
         std::string value= opt.substr(idx+1);
         opt.erase(idx);

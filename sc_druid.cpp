@@ -258,6 +258,7 @@ struct druid_t : public player_t
   virtual pet_t*    create_pet   ( const std::string& name );
   virtual int       primary_resource() { return talents.moonkin_form ? RESOURCE_MANA : RESOURCE_ENERGY; }
   virtual int       primary_role()     { return talents.moonkin_form ? ROLE_SPELL    : ROLE_ATTACK;     }
+  virtual int       primary_tree()     { return talents.moonkin_form ? TREE_BALANCE  : TREE_FERAL;      }
 
   // Utilities
   double combo_point_rank( double* cp_list )
