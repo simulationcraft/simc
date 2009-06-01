@@ -13,26 +13,19 @@ static void print_action( FILE* file, stats_t* s )
 {
   if ( s -> total_dmg == 0 ) return;
 
-  double total_dmg;
-
-  if ( s -> player -> is_pet() )
-  {
-    total_dmg = s -> player -> cast_pet() -> owner ->  total_dmg;
-  }
-  else
-  {
-    total_dmg = s -> player -> total_dmg;
-  }
-
   fprintf( file,
            "    %-20s  Count=%5.1f|%4.1fsec  DPE=%6.0f|%2.0f%%  DPET=%6.0f  DPR=%6.1f",
            s -> name_str.c_str(),
            s -> num_executes,
            s -> frequency,
            s -> dpe,
-           s -> portion_dmg * 100.0,
+           s -> dpe_perc,
            s -> dpet,
            s -> dpr );
+
+  if (s->sim->extend_spell_info){
+    fprintf( file, "  DPS=%5.0f", s->r_dps);
+  }
 
   fprintf( file, "  Miss=%.1f%%", s -> execute_results[ RESULT_MISS ].count * 100.0 / s -> num_executes );
 
