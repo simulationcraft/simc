@@ -5,8 +5,7 @@
 
 #include "simcraft.h"
 
-namespace
-{ // ANONYMOUS NAMESPACE ==========================================
+namespace { // ANONYMOUS NAMESPACE ==========================================
 
 // print_action ==============================================================
 
@@ -14,17 +13,15 @@ static void print_action( FILE* file, stats_t* s )
 {
   if ( s -> total_dmg == 0 ) return;
 
-  double total_dmg, DPS;
+  double total_dmg;
 
   if ( s -> player -> is_pet() )
   {
     total_dmg = s -> player -> cast_pet() -> owner ->  total_dmg;
-    DPS= s -> total_dmg  / total_dmg * s -> player -> cast_pet() -> owner -> dps;
   }
   else
   {
     total_dmg = s -> player -> total_dmg;
-    DPS= s -> total_dmg  / total_dmg * s -> player -> dps;
   }
 
   fprintf( file,
@@ -36,9 +33,6 @@ static void print_action( FILE* file, stats_t* s )
            s -> total_dmg * 100.0 / total_dmg,
            s -> dpet,
            s -> dpr );
-
-  if (s->sim->scaling->normalize_scale_factors)
-    fprintf( file, "  DPS=%5.0f", DPS);
 
   fprintf( file, "  Miss=%.1f%%", s -> execute_results[ RESULT_MISS ].count * 100.0 / s -> num_executes );
 
@@ -325,29 +319,20 @@ static void print_scale_factors( FILE* file, sim_t* sim )
 
     fprintf( file, "  %-25s", p -> name() );
 
-    double norm_div=1.0;
-    char* norm_DPS="";
-    if ( sim->scaling->normalize_scale_factors){
-        norm_div= p -> scaling.get_stat( STAT_SPELL_POWER );
-        norm_DPS="DPS/SP";
-        if ( norm_div<  p -> scaling.get_stat( STAT_ATTACK_POWER ) ){
-            norm_DPS="DPS/AP";
-            norm_div =  p -> scaling.get_stat( STAT_ATTACK_POWER );
-        }
-        if (norm_div<=0) norm_div=1;
-    }
+    gear_stats_t& sf = ( sim -> scaling -> normalize_scale_factors ) ? p -> normalized_scaling : p -> scaling;
 
     for ( int j=0; j < STAT_MAX; j++ )
     {
-        if (p -> scales_with[ j ]>0)
-          fprintf( file, "  %s=%.2f", util_t::stat_type_abbrev( j ), p -> scaling.get_stat( j )/norm_div );
-        else
-          if (p -> scales_with[ j ]<0)
-            fprintf( file, "  %s=0.00", util_t::stat_type_abbrev( j ) );
+      if( p -> scales_with[ j ] != 0 )
+      {
+	fprintf( file, "  %s=%.2f", util_t::stat_type_abbrev( j ), sf.get_stat( j ) );
+      }
     }
 
-    if (sim->scaling->normalize_scale_factors)
-      fprintf( file, "  %s=%.2f",norm_DPS, norm_div);
+    if( sim -> scaling -> normalize_scale_factors ) 
+    {
+      fprintf( file, "  DPS/%s=%.2f", util_t::stat_type_abbrev( p -> normalized_to ), p -> scaling.get_stat( p -> normalized_to ) );
+    }
 
     fprintf( file, "  Lag=%.2f", p -> scaling_lag );
 

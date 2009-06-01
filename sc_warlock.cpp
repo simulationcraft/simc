@@ -259,6 +259,7 @@ struct warlock_t : public player_t
   virtual pet_t*    create_pet   ( const std::string& name );
   virtual int       primary_resource() { return RESOURCE_MANA; }
   virtual int       primary_role()     { return ROLE_SPELL; }
+  virtual int       primary_tree();
   virtual double    composite_spell_power( int school );
 
   // Event Tracking
@@ -3663,8 +3664,10 @@ struct life_tap_t : public warlock_spell_t
 
   life_tap_t( player_t* player, const std::string& options_str ) :
       warlock_spell_t( "life_tap", player, SCHOOL_SHADOW, TREE_AFFLICTION ), 
-                       trigger( 0 ), inferno( 0 ), glyph( 0 ), tier7_4pc( 0 ), max( 0 ), base_tap( 0 ), mana_perc(0),
-                       glyph_skip( 0 ), tier7_4pc_skip( 0 )
+      trigger( 0 ), inferno( 0 ), 
+      glyph( 0 ), glyph_skip( 0 ), 
+      tier7_4pc( 0 ), tier7_4pc_skip( 0 ), 
+      max( 0 ), base_tap( 0 ), mana_perc(0)
   {
     id = 57946;
 
@@ -4726,6 +4729,17 @@ void warlock_t::regen( double periodicity )
 
     resource_gain( RESOURCE_MANA, felhunter_regen, gains_felhunter );
   }
+}
+
+// warlock_t::primary_tree =================================================
+
+int warlock_t::primary_tree()
+{
+  if( talents.unstable_affliction ) return TREE_AFFLICTION;
+  if( talents.decimation          ) return TREE_DEMONOLOGY;
+  if( talents.shadow_and_flame    ) return TREE_DESTRUCTION;
+
+  return TALENT_TREE_MAX;
 }
 
 // warlock_t::get_talent_trees =============================================

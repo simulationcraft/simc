@@ -555,6 +555,14 @@ struct compare_name
 {
   bool operator()( player_t* l, player_t* r ) const
   {
+    if( l -> type != r -> type ) 
+    {
+      return l -> type < r -> type;
+    }
+    if( l -> primary_tree() != r -> primary_tree() )
+    {
+      return l -> primary_tree() < r -> primary_tree();
+    }
     return l -> name_str < r -> name_str;
   }
 };

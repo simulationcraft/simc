@@ -199,6 +199,32 @@ void scaling_t::analyze_gear_weights()
   }
 }
 
+// scaling_t::normalize =====================================================
+
+void scaling_t::normalize()
+{
+  for ( player_t* p = sim -> player_list; p; p = p -> next )
+  {
+    if ( p -> quiet ) continue;
+
+    double sp = p -> scaling.get_stat( STAT_SPELL_POWER );
+    double ap = p -> scaling.get_stat( STAT_ATTACK_POWER );
+
+    p -> normalized_to = ( sp > ap ) ? STAT_SPELL_POWER : STAT_ATTACK_POWER; 
+
+    double divisor = p -> scaling.get_stat( p -> normalized_to );
+
+    if( divisor == 0 ) continue;
+
+    for ( int i=0; i < STAT_MAX; i++ )
+    {
+      if( p -> scales_with[ i ] == 0 ) continue;
+
+      p -> normalized_scaling.set_stat( i, p -> scaling.get_stat( i ) / divisor );
+    }
+  }
+}
+
 // scaling_t::analyze =======================================================
 
 void scaling_t::analyze()
@@ -207,6 +233,7 @@ void scaling_t::analyze()
   analyze_stats();
   analyze_lag();
   analyze_gear_weights();
+  normalize();
 }
 
 // scaling_t::parse_option ==================================================

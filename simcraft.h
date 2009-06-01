@@ -627,6 +627,7 @@ struct scaling_t
   void analyze_stats();
   void analyze_lag();
   void analyze_gear_weights();
+  void normalize();
   bool parse_option( const std::string& name, const std::string& value );
 };
 
@@ -805,8 +806,10 @@ struct player_t
 
   // Scale Factors
   gear_stats_t scaling;
-  double scaling_lag;
-  int scales_with[ STAT_MAX ];
+  gear_stats_t normalized_scaling;
+  int          normalized_to;
+  double       scaling_lag;
+  int          scales_with[ STAT_MAX ];
 
   struct buff_t
   {
@@ -1033,6 +1036,7 @@ struct player_t
   virtual bool   resource_available( int resource, double cost );
   virtual int    primary_resource() { return RESOURCE_NONE; }
   virtual int    primary_role()     { return ROLE_HYBRID; }
+  virtual int    primary_tree()     { return TALENT_TREE_MAX; }
 
   virtual void stat_gain( int stat, double amount );
   virtual void stat_loss( int stat, double amount );
