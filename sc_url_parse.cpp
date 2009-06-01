@@ -643,7 +643,14 @@ bool  parseItemStats( urlSplit_t& aURL, gear_stats_t& gs,  std::string& item_id,
     {
       wpnValue+= ",dps="+getNode( src, "damageData.dps" );
       wpnValue+= ",speed="+getNode( src, "damageData.speed" );
-      wpnValue+= ",enchant="+getNode( src, "enchant" );
+      std::string ench=tolower(getNode( src, "enchant" ));
+      for (int i=0; i<WEAPON_ENCHANT_MAX; i++){
+        std::string reg_ench=util_t::weapon_enchant_type_string(i);
+        if (ench.find(reg_ench)!= string::npos){
+          wpnValue+= ",enchant="+reg_ench;
+          break;
+        }
+      }
       player_parse_option( aURL,wpnName,wpnValue );
     }
   }
