@@ -327,7 +327,7 @@ static void print_scale_factors( FILE* file, sim_t* sim )
 
     double norm_div=1.0;
     char* norm_DPS="";
-    if ( sim->scaling->normalize_scale_factors){ 
+    if ( sim->scaling->normalize_scale_factors){
         norm_div= p -> scaling.get_stat( STAT_SPELL_POWER );
         norm_DPS="DPS/SP";
         if ( norm_div<  p -> scaling.get_stat( STAT_ATTACK_POWER ) ){
@@ -357,8 +357,7 @@ static void print_scale_factors( FILE* file, sim_t* sim )
 
 // print_html_menu_definition ================================================
 
-static void print_html_menu_definition( FILE*  file,
-                                        sim_t* sim )
+static void print_html_menu_definition( FILE*  file, sim_t* sim )
 {
   fprintf( file, "<script type=\"text/javascript\">\n"
            "function hideElement(el) {if (el) el.style.display='none';}\n"
@@ -374,56 +373,54 @@ static void print_html_menu_definition( FILE*  file,
 
 // print_html_menu_triggers ==================================================
 
-static void print_html_menu_triggers( FILE*  file,
-                                      sim_t* sim )
+static void print_html_menu_triggers( FILE*  file, sim_t* sim )
 {
   fprintf( file, "<a href=\"javascript:hideElement(document.getElementById('trigger_menu'));\">-</a> " );
   fprintf( file, "<a href=\"javascript:showElement(document.getElementById('trigger_menu'));\">+</a> " );
   fprintf( file, "Menu\n" );
 
-  fprintf( file, "<div id=\"trigger_menu\" style=\"display:none;\">" );
+  fprintf( file, "<div id=\"trigger_menu\" style=\"display:none;\">\n" );
 
-  fprintf( file, "<a href=\"javascript:hideElements(document.getElementById('players').getElementsByTagName('img'));\">-</a> " );
+  fprintf( file, "  <a href=\"javascript:hideElements(document.getElementById('players').getElementsByTagName('img'));\">-</a> " );
   fprintf( file, "<a href=\"javascript:showElements(document.getElementById('players').getElementsByTagName('img'));\">+</a> " );
-  fprintf( file, "All Charts<br/>\n" );
+  fprintf( file, "All Charts<br />\n" );
 
-  fprintf( file, "<a href=\"javascript:hideElements(document.getElementsByName('chart_dpet'));\">-</a> " );
+  fprintf( file, "  <a href=\"javascript:hideElements(document.getElementsByName('chart_dpet'));\">-</a> " );
   fprintf( file, "<a href=\"javascript:showElements(document.getElementsByName('chart_dpet'));\">+</a> " );
-  fprintf( file, "DamagePerExecutionTime<br/>\n" );
+  fprintf( file, "DamagePerExecutionTime<br />\n" );
 
-  fprintf( file, "<a href=\"javascript:hideElements(document.getElementsByName('chart_uptimes'));\">-</a> " );
+  fprintf( file, "  <a href=\"javascript:hideElements(document.getElementsByName('chart_uptimes'));\">-</a> " );
   fprintf( file, "<a href=\"javascript:showElements(document.getElementsByName('chart_uptimes'));\">+</a> " );
-  fprintf( file, "Up-Times and Procs<br/>\n" );
+  fprintf( file, "Up-Times and Procs<br />\n" );
 
-  fprintf( file, "<a href=\"javascript:hideElements(document.getElementsByName('chart_sources'));\">-</a> " );
+  fprintf( file, "  <a href=\"javascript:hideElements(document.getElementsByName('chart_sources'));\">-</a> " );
   fprintf( file, "<a href=\"javascript:showElements(document.getElementsByName('chart_sources'));\">+</a> " );
-  fprintf( file, "Damage Sources<br/>\n" );
+  fprintf( file, "Damage Sources<br />\n" );
 
-  fprintf( file, "<a href=\"javascript:hideElements(document.getElementsByName('chart_gains'));\">-</a> " );
+  fprintf( file, "  <a href=\"javascript:hideElements(document.getElementsByName('chart_gains'));\">-</a> " );
   fprintf( file, "<a href=\"javascript:showElements(document.getElementsByName('chart_gains'));\">+</a> " );
-  fprintf( file, "Resource Gains<br/>\n" );
+  fprintf( file, "Resource Gains<br />\n" );
 
-  fprintf( file, "<a href=\"javascript:hideElements(document.getElementsByName('chart_dps_timeline'));\">-</a> " );
+  fprintf( file, "  <a href=\"javascript:hideElements(document.getElementsByName('chart_dps_timeline'));\">-</a> " );
   fprintf( file, "<a href=\"javascript:showElements(document.getElementsByName('chart_dps_timeline'));\">+</a> " );
-  fprintf( file, "DPS Timeline<br/>\n" );
+  fprintf( file, "DPS Timeline<br />\n" );
 
-  fprintf( file, "<a href=\"javascript:hideElements(document.getElementsByName('chart_dps_distribution'));\">-</a> " );
+  fprintf( file, "  <a href=\"javascript:hideElements(document.getElementsByName('chart_dps_distribution'));\">-</a> " );
   fprintf( file, "<a href=\"javascript:showElements(document.getElementsByName('chart_dps_distribution'));\">+</a> " );
-  fprintf( file, "DPS Distribution<br/>\n" );
+  fprintf( file, "DPS Distribution<br />\n" );
 
-  fprintf( file, "<a href=\"javascript:hideElements(document.getElementsByName('chart_resource_timeline'));\">-</a> " );
+  fprintf( file, "  <a href=\"javascript:hideElements(document.getElementsByName('chart_resource_timeline'));\">-</a> " );
   fprintf( file, "<a href=\"javascript:showElements(document.getElementsByName('chart_resource_timeline'));\">+</a> " );
-  fprintf( file, "Resource Timeline<br/>\n" );
+  fprintf( file, "Resource Timeline<br />\n" );
 
-  fprintf( file, "</div>" );//trigger_menu
+  fprintf( file, "</div>\n" );//trigger_menu
 
-  fprintf( file, "<hr>\n" );
+  fprintf( file, "<hr />\n" );
 }
 
 // print_html_raid ===========================================================
 
-static void print_html_raid( FILE*  file,
-                             sim_t* sim )
+static void print_html_raid( FILE*  file, sim_t* sim )
 {
   fprintf( file, "<h1>Raid</h1>\n" );
 
@@ -433,53 +430,54 @@ static void print_html_raid( FILE*  file,
   int count = sim -> dps_charts.size();
   for ( int i=0; i < count; i++ )
   {
-    fprintf( file, "\n<! DPS Ranking: >\n" );
+    fprintf( file, "\n<!-- DPS Ranking: -->\n" );
     fprintf( file, "<img src=\"%s\" />\n", sim -> dps_charts[ i ].c_str() );
 
-    fprintf( file, "\n<! Gear Overview: >\n" );
-    fprintf( file, "<img src=\"%s\" />", sim -> gear_charts[ i ].c_str() );
+    fprintf( file, "\n<!-- Gear Overview: -->\n" );
+    fprintf( file, "<img src=\"%s\" />\n", sim -> gear_charts[ i ].c_str() );
   }
 
   if ( ! sim -> downtime_chart.empty() )
   {
-    fprintf( file, "\n<! Raid Downtime: >\n" );
-    fprintf( file, "<img src=\"%s\" />", sim -> downtime_chart.c_str() );
+    fprintf( file, "\n<!-- Raid Downtime: -->\n" );
+    fprintf( file, "<img src=\"%s\" />\n", sim -> downtime_chart.c_str() );
   }
 
   if ( ! sim -> uptimes_chart.empty() )
   {
-    fprintf( file, "\n<! Global Up-Times: >\n" );
-    fprintf( file, "<img src=\"%s\" />", sim -> uptimes_chart.c_str() );
+    fprintf( file, "\n<!-- Global Up-Times: -->\n" );
+    fprintf( file, "<img src=\"%s\" />\n", sim -> uptimes_chart.c_str() );
   }
 
   count = sim -> dpet_charts.size();
   for ( int i=0; i < count; i++ )
   {
-    fprintf( file, "\n<! Raid Damage Per Execute Time: >\n" );
-    fprintf( file, "<img src=\"%s\" />", sim -> dpet_charts[ i ].c_str() );
+    fprintf( file, "\n<!-- Raid Damage Per Execute Time: -->\n" );
+    fprintf( file, "<img src=\"%s\" />\n", sim -> dpet_charts[ i ].c_str() );
   }
-  fprintf( file, "<hr>\n" );
+  fprintf( file, "<hr />\n" );
 }
 
 // print_html_scale_factors ===================================================
 
-static void print_html_scale_factors( FILE*  file,
-                                      sim_t* sim )
+static void print_html_scale_factors( FILE*  file, sim_t* sim )
 {
   if ( ! sim -> scaling -> calculate_scale_factors ) return;
 
   fprintf( file, "<h1>DPS Scale Factors (dps increase per unit stat)</h1>\n" );
 
-  fprintf( file, "<TABLE BORDER CELLPADDING=4>\n" );
-  fprintf( file, "<TR> <TH>profile</TH>" );
+  fprintf( file, "<style type=\"text/css\">\n  table.scale_factors td, table.scale_factors th { padding: 4px; border: 1px inset; }\n  table.scale_factors { border: 1px outset; }</style>\n" );
+
+  fprintf( file, "<table class=\"scale_factors\">\n" );
+  fprintf( file, "  <tr>\n    <th>profile</th>\n" );
   for ( int i=0; i < STAT_MAX; i++ )
   {
     if ( sim -> scaling -> stats.get_stat( i ) != 0 )
     {
-      fprintf( file, " <TH>%s</TH>", util_t::stat_type_abbrev( i ) );
+      fprintf( file, "    <th>%s</th>\n", util_t::stat_type_abbrev( i ) );
     }
   }
-  fprintf( file, " <TH>Lag</TH> <TH>lootrank</TH> <TH>wowhead</TH> <TH>pawn</TH> </TR>\n" );
+  fprintf( file, "    <th>Lag</th>\n    <th>lootrank</th>\n    <th>wowhead</th>\n    <th>pawn</th>\n  </tr>\n" );
 
   std::string buffer;
   int num_players = sim -> players_by_name.size();
@@ -488,22 +486,22 @@ static void print_html_scale_factors( FILE*  file,
   {
     player_t* p = sim -> players_by_name[ i ];
 
-    fprintf( file, "<TR> <TD>%s</TD>", p -> name() );
+    fprintf( file, "  <tr>\n    <td>%s</td>\n", p -> name() );
 
     for ( int j=0; j < STAT_MAX; j++ )
     {
       if ( sim -> scaling -> stats.get_stat( j ) != 0 )
       {
-        fprintf( file, " <TD>%.2f</TD>", p -> scaling.get_stat( j ) );
+        fprintf( file, "    <td>%.2f</td>\n", p -> scaling.get_stat( j ) );
       }
     }
 
-    fprintf( file, " <TD>%.2f</TD>", p -> scaling_lag );
-    fprintf( file, " <TD><a href=\"%s\"> lootrank</a></TD>", p -> gear_weights_lootrank_link.c_str() );
-    fprintf( file, " <TD><a href=\"%s\"> wowhead </a></TD>", p -> gear_weights_wowhead_link.c_str() );
+    fprintf( file, "    <td>%.2f</td>\n", p -> scaling_lag );
+    fprintf( file, "    <td><a href=\"%s\"> lootrank</a></td>\n", p -> gear_weights_lootrank_link.c_str() );
+    fprintf( file, "    <td><a href=\"%s\"> wowhead </a></td>\n", p -> gear_weights_wowhead_link.c_str() );
     fprintf( file,
-             " <TD><div style=\"margin:1px; margin-top:1px\">"
-             "<pre class=\"alt2\" dir=\"ltr\" style=\""
+             "    <td>\n      <div style=\"margin:1px; margin-top:1px\">\n"
+             "        <pre class=\"alt2\" dir=\"ltr\" style=\""
              "margin: 0px;"
              "padding: 3px;"
              "border: 1px inset;"
@@ -511,82 +509,252 @@ static void print_html_scale_factors( FILE*  file,
              "height: 30px;"
              "text-align: left;"
              "overflow: auto\">%s"
-             "</pre>"
-             "</div></TD> ",
+             "</pre>\n"
+             "      </div>\n    </td>\n",
              p -> gear_weights_pawn_string.c_str() );
 
-    fprintf( file, " </TR>\n" );
+    fprintf( file, "  </tr>\n" );
   }
-  fprintf( file, "</TABLE>\n" );
+  fprintf( file, "</table>\n" );
 
-  fprintf( file, "<hr>\n" );
+  fprintf( file, "<hr />\n" );
 }
 
 // print_html_player =========================================================
 
-static void print_html_player( FILE*     file,
-                               player_t* p )
+static void print_html_player( FILE* file, player_t* p )
 {
   fprintf( file, "<h1><a href=\"%s\">%s</a></h1>\n", p -> talents_str.c_str(), p -> name() );
 
   if ( ! p -> action_dpet_chart.empty() )
   {
-    fprintf( file, "\n<! %s Damage Per Execute Time: >\n", p -> name() );
-    fprintf( file, "<img name=\"chart_dpet\" src=\"%s\" />", p -> action_dpet_chart.c_str() );
+    fprintf( file, "\n<!-- %s Damage Per Execute Time: -->\n", p -> name() );
+    fprintf( file, "<img name=\"chart_dpet\" src=\"%s\" />\n", p -> action_dpet_chart.c_str() );
   }
 
   if ( ! p -> uptimes_and_procs_chart.empty() )
   {
-    fprintf( file, "\n<! %s Up-Times and Procs: >\n", p -> name() );
-    fprintf( file, "<img name=\"chart_uptimes\" src=\"%s\" />", p -> uptimes_and_procs_chart.c_str() );
+    fprintf( file, "\n<!-- %s Up-Times and Procs: -->\n", p -> name() );
+    fprintf( file, "<img name=\"chart_uptimes\" src=\"%s\" />\n", p -> uptimes_and_procs_chart.c_str() );
   }
-  fprintf( file, "<br>\n" );
+  fprintf( file, "<br />\n" );
 
   if ( ! p -> action_dmg_chart.empty() )
   {
-    fprintf( file, "\n<! %s Damage Sources: >\n", p -> name() );
-    fprintf( file, "<img name=\"chart_sources\" src=\"%s\" />", p -> action_dmg_chart.c_str() );
+    fprintf( file, "\n<!-- %s Damage Sources: -->\n", p -> name() );
+    fprintf( file, "<img name=\"chart_sources\" src=\"%s\" />\n", p -> action_dmg_chart.c_str() );
   }
 
   if ( ! p -> gains_chart.empty() )
   {
-    fprintf( file, "\n<! %s Resource Gains: >\n", p -> name() );
-    fprintf( file, "<img name=\"chart_gains\" src=\"%s\" />", p -> gains_chart.c_str() );
+    fprintf( file, "\n<!-- %s Resource Gains: -->\n", p -> name() );
+    fprintf( file, "<img name=\"chart_gains\" src=\"%s\" />\n", p -> gains_chart.c_str() );
   }
-  fprintf( file, "<br>\n" );
+  fprintf( file, "<br />\n" );
 
-  fprintf( file, "\n<! %s DPS Timeline: >\n", p -> name() );
+  fprintf( file, "\n<!-- %s DPS Timeline: -->\n", p -> name() );
   fprintf( file, "<img name=\"chart_dps_timeline\" src=\"%s\" />\n", p -> timeline_dps_chart.c_str() );
 
-  fprintf( file, "\n<! %s DPS Distribution: >\n", p -> name() );
+  fprintf( file, "\n<!-- %s DPS Distribution: -->\n", p -> name() );
   fprintf( file, "<img name=\"chart_dps_distribution\" src=\"%s\" />\n", p -> distribution_dps_chart.c_str() );
 
-  fprintf( file, "\n<! %s Resource Timeline: >\n", p -> name() );
+  fprintf( file, "\n<!-- %s Resource Timeline: -->\n", p -> name() );
   fprintf( file, "<img name=\"chart_resource_timeline\" src=\"%s\" />\n", p -> timeline_resource_chart.c_str() );
 
-  fprintf( file, "<hr>\n" );
+  fprintf( file, "<hr />\n" );
 }
 
 // print_html_text ===========================================================
 
-static void print_html_text( FILE*  file,
-                             sim_t* sim )
+static void print_html_text( FILE*  file, sim_t* sim )
 {
   fprintf( file, "<h1>Raw Text Output</h1>\n" );
 
   fprintf( file, "%s",
            "<ul>\n"
-           " <li><b>DPS=Num:</b> <i>Num</i> is the <i>damage per second</i>\n"
-           " <li><b>DPR=Num:</b> <i>Num</i> is the <i>damage per resource</i>\n"
-           " <li><b>RPS=Num1/Num2:</b> <i>Num1</i> is the <i>resource consumed per second</i> and <i>Num2</i> is the <i>resource regenerated per second</i>\n"
-           " <li><b>Count=Num|Time:</b> <i>Num</i> is number of casts per fight and <i>Time</i> is average time between casts\n"
-           " <li><b>DPE=Num:</b> <i>Num</i> is the <i>damage per execute</i>\n"
-           " <li><b>DPET=Num:</b> <i>Num</i> is the <i>damage per execute</i> divided by the <i>time to execute</i> (this value includes GCD costs and Lag in the calculation of <i>time to execute</i>)\n"
-           " <li><b>Hit=Num:</b> <i>Num</i> is the average damage per non-crit hit\n"
-           " <li><b>Crit=Num1|Num2|Pct:</b> <i>Num1</i> is average crit damage, <i>Num2</i> is the max crit damage, and <i>Pct</i> is the percentage of crits <i>per execute</i> (not <i>per hit</i>)\n"
-           " <li><b>Tick=Num:</b> <i>Num</i> is the average tick of damage for the <i>damage over time</i> portion of actions\n"
-           " <li><b>Up-Time:</b> This is <i>not</i> the percentage of time the buff/debuff is present, but rather the ratio of <i>actions it affects</i> over <i>total number of actions it could affect</i>.  If spell S is cast 10 times and buff B is present for 3 of those casts, then buff B has an up-time of 30%.\n"
-           " <li><b>Waiting</b>: This is percentage of total time not doing anything (except auto-attack in the case of physical dps classes).  This can occur because the player is resource constrained (Mana, Energy, Rage) or cooldown constrained (as in the case of Enhancement Shaman).\n"
+           " <li><b>DPS=Num:</b> <i>Num</i> is the <i>damage per second</i></li>\n"
+           " <li><b>DPR=Num:</b> <i>Num</i> is the <i>damage per resource</i></li>\n"
+           " <li><b>RPS=Num1/Num2:</b> <i>Num1</i> is the <i>resource consumed per second</i> and <i>Num2</i> is the <i>resource regenerated per second</i></li>\n"
+           " <li><b>Count=Num|Time:</b> <i>Num</i> is number of casts per fight and <i>Time</i> is average time between casts</li>\n"
+           " <li><b>DPE=Num:</b> <i>Num</i> is the <i>damage per execute</i></li>\n"
+           " <li><b>DPET=Num:</b> <i>Num</i> is the <i>damage per execute</i> divided by the <i>time to execute</i> (this value includes GCD costs and Lag in the calculation of <i>time to execute</i>)</li>\n"
+           " <li><b>Hit=Num:</b> <i>Num</i> is the average damage per non-crit hit</li>\n"
+           " <li><b>Crit=Num1|Num2|Pct:</b> <i>Num1</i> is average crit damage, <i>Num2</i> is the max crit damage, and <i>Pct</i> is the percentage of crits <i>per execute</i> (not <i>per hit</i>)</li>\n"
+           " <li><b>Tick=Num:</b> <i>Num</i> is the average tick of damage for the <i>damage over time</i> portion of actions</li>\n"
+           " <li><b>Up-Time:</b> This is <i>not</i> the percentage of time the buff/debuff is present, but rather the ratio of <i>actions it affects</i> over <i>total number of actions it could affect</i>.  If spell S is cast 10 times and buff B is present for 3 of those casts, then buff B has an up-time of 30%.</li>\n"
+           " <li><b>Waiting</b>: This is percentage of total time not doing anything (except auto-attack in the case of physical dps classes).  This can occur because the player is resource constrained (Mana, Energy, Rage) or cooldown constrained (as in the case of Enhancement Shaman).</li>\n"
+           "</ul>\n" );
+
+  fprintf( file, "<pre>\n" );
+  report_t::print_text( file, sim );
+  fprintf( file, "</pre>\n" );
+}
+
+// print_xml_raid ===========================================================
+
+static void print_xml_raid( FILE*  file, sim_t* sim )
+{
+  fprintf( file, "<h1>Raid</h1>\n" );
+
+  assert( sim ->  dps_charts.size() ==
+          sim -> gear_charts.size() );
+
+  int count = sim -> dps_charts.size();
+  for ( int i=0; i < count; i++ )
+  {
+    fprintf( file, "\n<!-- DPS Ranking: -->\n" );
+    fprintf( file, "<img src=\"%s\" />\n", sim -> dps_charts[ i ].c_str() );
+
+    fprintf( file, "\n<!-- Gear Overview: -->\n" );
+    fprintf( file, "<img src=\"%s\" />\n", sim -> gear_charts[ i ].c_str() );
+  }
+
+  if ( ! sim -> downtime_chart.empty() )
+  {
+    fprintf( file, "\n<!-- Raid Downtime: -->\n" );
+    fprintf( file, "<img src=\"%s\" />\n", sim -> downtime_chart.c_str() );
+  }
+
+  if ( ! sim -> uptimes_chart.empty() )
+  {
+    fprintf( file, "\n<!-- Global Up-Times: -->\n" );
+    fprintf( file, "<img src=\"%s\" />\n", sim -> uptimes_chart.c_str() );
+  }
+
+  count = sim -> dpet_charts.size();
+  for ( int i=0; i < count; i++ )
+  {
+    fprintf( file, "\n<!-- Raid Damage Per Execute Time: -->\n" );
+    fprintf( file, "<img src=\"%s\" />\n", sim -> dpet_charts[ i ].c_str() );
+  }
+  fprintf( file, "<hr />\n" );
+}
+
+// print_xml_scale_factors ===================================================
+
+static void print_xml_scale_factors( FILE*  file, sim_t* sim )
+{
+  if ( ! sim -> scaling -> calculate_scale_factors ) return;
+
+  fprintf( file, "<h1>DPS Scale Factors (dps increase per unit stat)</h1>\n" );
+
+  fprintf( file, "<style type=\"text/css\">\n  table.scale_factors td, table.scale_factors th { padding: 4px; border: 1px inset; }\n  table.scale_factors { border: 1px outset; }</style>\n" );
+
+  fprintf( file, "<table class=\"scale_factors\">\n" );
+  fprintf( file, "  <tr>\n    <th>profile</th>\n" );
+  for ( int i=0; i < STAT_MAX; i++ )
+  {
+    if ( sim -> scaling -> stats.get_stat( i ) != 0 )
+    {
+      fprintf( file, "    <th>%s</th>\n", util_t::stat_type_abbrev( i ) );
+    }
+  }
+  fprintf( file, "    <th>Lag</th>\n    <th>lootrank</th>\n    <th>wowhead</th>\n    <th>pawn</th>\n  </tr>\n" );
+
+  std::string buffer;
+  int num_players = sim -> players_by_name.size();
+
+  for ( int i=0; i < num_players; i++ )
+  {
+    player_t* p = sim -> players_by_name[ i ];
+
+    fprintf( file, "  <tr>\n    <td>%s</td>\n", p -> name() );
+
+    for ( int j=0; j < STAT_MAX; j++ )
+    {
+      if ( sim -> scaling -> stats.get_stat( j ) != 0 )
+      {
+        fprintf( file, "    <td>%.2f</td>\n", p -> scaling.get_stat( j ) );
+      }
+    }
+
+    fprintf( file, "    <td>%.2f</td>\n", p -> scaling_lag );
+    fprintf( file, "    <td><a href=\"%s\"> lootrank</a></td>\n", p -> gear_weights_lootrank_link.c_str() );
+    fprintf( file, "    <td><a href=\"%s\"> wowhead </a></td>\n", p -> gear_weights_wowhead_link.c_str() );
+    fprintf( file,
+             "    <td>\n      <div style=\"margin:1px; margin-top:1px\">\n"
+             "        <pre class=\"alt2\" dir=\"ltr\" style=\""
+             "margin: 0px;"
+             "padding: 3px;"
+             "border: 1px inset;"
+             "width: 64px;"
+             "height: 30px;"
+             "text-align: left;"
+             "overflow: auto\">%s"
+             "</pre>\n"
+             "      </div>\n    </td>\n",
+             p -> gear_weights_pawn_string.c_str() );
+
+    fprintf( file, "  </tr>\n" );
+  }
+  fprintf( file, "</table>\n" );
+
+  fprintf( file, "<hr />\n" );
+}
+
+// print_xml_player =========================================================
+
+static void print_xml_player( FILE* file, player_t* p )
+{
+  fprintf( file, "<h1><a href=\"%s\">%s</a></h1>\n", p -> talents_str.c_str(), p -> name() );
+
+  if ( ! p -> action_dpet_chart.empty() )
+  {
+    fprintf( file, "\n<!-- %s Damage Per Execute Time: -->\n", p -> name() );
+    fprintf( file, "<img name=\"chart_dpet\" src=\"%s\" />\n", p -> action_dpet_chart.c_str() );
+  }
+
+  if ( ! p -> uptimes_and_procs_chart.empty() )
+  {
+    fprintf( file, "\n<!-- %s Up-Times and Procs: -->\n", p -> name() );
+    fprintf( file, "<img name=\"chart_uptimes\" src=\"%s\" />\n", p -> uptimes_and_procs_chart.c_str() );
+  }
+  fprintf( file, "<br />\n" );
+
+  if ( ! p -> action_dmg_chart.empty() )
+  {
+    fprintf( file, "\n<!-- %s Damage Sources: -->\n", p -> name() );
+    fprintf( file, "<img name=\"chart_sources\" src=\"%s\" />\n", p -> action_dmg_chart.c_str() );
+  }
+
+  if ( ! p -> gains_chart.empty() )
+  {
+    fprintf( file, "\n<!-- %s Resource Gains: -->\n", p -> name() );
+    fprintf( file, "<img name=\"chart_gains\" src=\"%s\" />\n", p -> gains_chart.c_str() );
+  }
+  fprintf( file, "<br />\n" );
+
+  fprintf( file, "\n<!-- %s DPS Timeline: -->\n", p -> name() );
+  fprintf( file, "<img name=\"chart_dps_timeline\" src=\"%s\" />\n", p -> timeline_dps_chart.c_str() );
+
+  fprintf( file, "\n<!-- %s DPS Distribution: -->\n", p -> name() );
+  fprintf( file, "<img name=\"chart_dps_distribution\" src=\"%s\" />\n", p -> distribution_dps_chart.c_str() );
+
+  fprintf( file, "\n<!-- %s Resource Timeline: -->\n", p -> name() );
+  fprintf( file, "<img name=\"chart_resource_timeline\" src=\"%s\" />\n", p -> timeline_resource_chart.c_str() );
+
+  fprintf( file, "<hr />\n" );
+}
+
+// print_xml_text ===========================================================
+
+static void print_xml_text( FILE*  file, sim_t* sim )
+{
+  fprintf( file, "<h1>Raw Text Output</h1>\n" );
+
+  fprintf( file, "%s",
+           "<ul>\n"
+           " <li><b>DPS=Num:</b> <i>Num</i> is the <i>damage per second</i></li>\n"
+           " <li><b>DPR=Num:</b> <i>Num</i> is the <i>damage per resource</i></li>\n"
+           " <li><b>RPS=Num1/Num2:</b> <i>Num1</i> is the <i>resource consumed per second</i> and <i>Num2</i> is the <i>resource regenerated per second</i></li>\n"
+           " <li><b>Count=Num|Time:</b> <i>Num</i> is number of casts per fight and <i>Time</i> is average time between casts</li>\n"
+           " <li><b>DPE=Num:</b> <i>Num</i> is the <i>damage per execute</i></li>\n"
+           " <li><b>DPET=Num:</b> <i>Num</i> is the <i>damage per execute</i> divided by the <i>time to execute</i> (this value includes GCD costs and Lag in the calculation of <i>time to execute</i>)</li>\n"
+           " <li><b>Hit=Num:</b> <i>Num</i> is the average damage per non-crit hit</li>\n"
+           " <li><b>Crit=Num1|Num2|Pct:</b> <i>Num1</i> is average crit damage, <i>Num2</i> is the max crit damage, and <i>Pct</i> is the percentage of crits <i>per execute</i> (not <i>per hit</i>)</li>\n"
+           " <li><b>Tick=Num:</b> <i>Num</i> is the average tick of damage for the <i>damage over time</i> portion of actions</li>\n"
+           " <li><b>Up-Time:</b> This is <i>not</i> the percentage of time the buff/debuff is present, but rather the ratio of <i>actions it affects</i> over <i>total number of actions it could affect</i>.  If spell S is cast 10 times and buff B is present for 3 of those casts, then buff B has an up-time of 30%.</li>\n"
+           " <li><b>Waiting</b>: This is percentage of total time not doing anything (except auto-attack in the case of physical dps classes).  This can occur because the player is resource constrained (Mana, Energy, Rage) or cooldown constrained (as in the case of Enhancement Shaman).</li>\n"
            "</ul>\n" );
 
   fprintf( file, "<pre>\n" );
@@ -861,7 +1029,7 @@ void report_t::print_html( sim_t* sim )
     exit( 0 );
   }
 
-  fprintf( file, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n" );
+  fprintf( file, "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n" );
   fprintf( file, "<html>\n" );
 
   fprintf( file, "<head>\n" );
@@ -926,6 +1094,47 @@ void report_t::print_wiki( sim_t* sim )
   fclose( file );
 }
 
+// report_t::print_xml ======================================================
+
+void report_t::print_xml( sim_t* sim )
+{
+  int num_players = sim -> players_by_name.size();
+
+  if ( num_players == 0 ) return;
+  if ( sim -> total_seconds == 0 ) return;
+  if ( sim -> xml_file_str.empty() ) return;
+
+  FILE* file = fopen( sim -> xml_file_str.c_str(), "w" );
+  if ( ! file )
+  {
+	fprintf( stderr, "simcraft: Unable to open html file '%s'\n", sim -> xml_file_str.c_str() );
+	exit( 0 );
+  }
+
+  fprintf( file, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" );
+  fprintf( file, "<xml>\n" );
+
+  // Add the overall raid summary data
+  if ( num_players > 1 ) print_xml_raid( file, sim );
+
+  // Add the scale factors for each character
+  print_xml_scale_factors( file, sim );
+
+  // Loop over the players in the simulation, and print each's simulation results
+  for ( int i=0; i < num_players; i++ )
+  {
+	print_xml_player( file, sim -> players_by_name[ i ] );
+  }
+
+  // Print the final, raw simulation response
+  print_xml_text( file, sim );
+
+
+  fprintf( file, "</xml>" );
+
+  fclose( file );
+}
+
 // report_t::print_suite =====================================================
 
 void report_t::print_suite( sim_t* sim )
@@ -933,4 +1142,5 @@ void report_t::print_suite( sim_t* sim )
   report_t::print_text( sim -> output_file, sim );
   report_t::print_html( sim );
   report_t::print_wiki( sim );
+  report_t::print_xml( sim );
 }

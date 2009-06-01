@@ -462,7 +462,7 @@ struct sim_t : public app_t
   // Raid Events
   std::vector<raid_event_t*> raid_events;
   std::string raid_events_str;
-  
+
   // Buffs and Debuffs Overrides
   struct overrides_t
   {
@@ -560,10 +560,10 @@ struct sim_t : public app_t
   std::vector<std::string> id_dictionary;
   std::vector<std::string> dps_charts, gear_charts, dpet_charts;
   std::string downtime_chart, uptimes_chart;
-  std::string output_file_str, log_file_str, html_file_str, wiki_file_str;
+  std::string output_file_str, log_file_str, html_file_str, wiki_file_str, xml_file_str;
   FILE* output_file;
   FILE* log_file;
-  int http_throttle;  
+  int http_throttle;
 
   // Multi-Threading
   int threads;
@@ -1701,6 +1701,7 @@ struct report_t
   static void print_text( FILE*, sim_t*, bool detail=true );
   static void print_html( sim_t* );
   static void print_wiki( sim_t* );
+  static void print_xml( sim_t* );
   static void print_suite( sim_t* );
 };
 

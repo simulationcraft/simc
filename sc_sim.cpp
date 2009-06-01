@@ -134,7 +134,7 @@ static bool parse_optimal_raid( sim_t*             sim,
 // sim_t::sim_t =============================================================
 
 sim_t::sim_t( sim_t* p, int index ) :
-    parent( p ), P312( false ), P313( false ), rng( 0 ), deterministic_rng( 0 ), 
+    parent( p ), P312( false ), P313( false ), rng( 0 ), deterministic_rng( 0 ),
     free_list( 0 ), player_list( 0 ), active_player( 0 ), num_players( 0 ),
     queue_lag( 0.075 ), queue_lag_range( 0 ),
     gcd_lag( 0.150 ), gcd_lag_range( 0 ),
@@ -480,7 +480,7 @@ bool sim_t::init()
     if ( ! p -> quiet ) too_quiet = false;
   }
 
-  if ( too_quiet && ! debug ) 
+  if ( too_quiet && ! debug )
   {
     printf( "simcraft: No active players in sim.\n" );
     assert( false );
@@ -964,6 +964,7 @@ bool sim_t::parse_option( const std::string& name,
       { "combat_log",                       OPT_STRING, &( log_file_str                             ) },
       { "debug",                            OPT_BOOL,   &( debug                                    ) },
       { "html",                             OPT_STRING, &( html_file_str                            ) },
+      { "xml",                              OPT_STRING, &( xml_file_str                             ) },
       { "log",                              OPT_BOOL,   &( log                                      ) },
       { "output",                           OPT_STRING, &( output_file_str                          ) },
       { "wiki",                             OPT_STRING, &( wiki_file_str                            ) },

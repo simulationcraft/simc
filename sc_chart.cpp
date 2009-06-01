@@ -115,11 +115,11 @@ int chart_t::raid_dps( std::vector<std::string>& images,
 
     s = "http://chart.apis.google.com/chart?";
     snprintf( buffer, sizeof( buffer ), "chs=450x%d", num_players * 20 + 30 ); s += buffer;
-    s += "&";
+    s += "&amp;";
     s += "cht=bhg";
-    s += "&";
+    s += "&amp;";
     s += "chbh=15";
-    s += "&";
+    s += "&amp;";
     s += "chd=t:";
 
     for ( int i=0; i < num_players; i++ )
@@ -127,25 +127,25 @@ int chart_t::raid_dps( std::vector<std::string>& images,
       player_t* p = player_list[ i ];
       snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i?"|":"" ), p -> dps ); s += buffer;
     }
-    s += "&";
+    s += "&amp;";
     snprintf( buffer, sizeof( buffer ), "chds=0,%.0f", max_dps * 2.5 ); s += buffer;
-    s += "&";
+    s += "&amp;";
     s += "chco=";
     for ( int i=0; i < num_players; i++ )
     {
       if ( i ) s += ",";
       s += get_color( player_list[ i ] );
     }
-    s += "&";
+    s += "&amp;";
     s += "chm=";
     for ( int i=0; i < num_players; i++ )
     {
       player_t* p = player_list[ i ];
       snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s,%s,%d,0,15", ( i?"|":"" ), p -> dps, p -> name(), get_color( p ), i ); s += buffer;
     }
-    s += "&";
+    s += "&amp;";
     s += "chtt=DPS+Ranking";
-    s += "&";
+    s += "&amp;";
     s += "chts=000000,20";
 
     images.push_back( s );
@@ -222,11 +222,11 @@ int chart_t::raid_gear( std::vector<std::string>& images,
 
     s = "http://chart.apis.google.com/chart?";
     snprintf( buffer, sizeof( buffer ), "chs=450x%d", num_players * 20 + 30 ); s += buffer;
-    s += "&";
+    s += "&amp;";
     s += "cht=bhs";
-    s += "&";
+    s += "&amp;";
     s += "chbh=15";
-    s += "&";
+    s += "&amp;";
     s += "chd=t:";
     first = true;
     for ( int i=0; i < STAT_MAX; i++ )
@@ -239,9 +239,9 @@ int chart_t::raid_gear( std::vector<std::string>& images,
         snprintf( buffer, sizeof( buffer ), "%s%.0f", ( j?",":"" ), data_points[ i ][ j ] ); s += buffer;
       }
     }
-    s += "&";
+    s += "&amp;";
     snprintf( buffer, sizeof( buffer ), "chds=0,%.0f", max_total ); s += buffer;
-    s += "&";
+    s += "&amp;";
     s += "chco=";
     first = true;
     for ( int i=0; i < STAT_MAX; i++ )
@@ -251,18 +251,18 @@ int chart_t::raid_gear( std::vector<std::string>& images,
       first = false;
       s += colors[ i ];
     }
-    s += "&";
+    s += "&amp;";
     s += "chxt=y";
-    s += "&";
+    s += "&amp;";
     s += "chxl=0:";
     for ( int i = num_players-1; i >= 0; i-- )
     {
       s += "|";
       s += player_list[ i ] -> name();
     }
-    s += "&";
+    s += "&amp;";
     s += "chxs=0,000000,15";
-    s += "&";
+    s += "&amp;";
     s += "chdl=";
     first = true;
     for ( int i=0; i < STAT_MAX; i++ )
@@ -272,9 +272,9 @@ int chart_t::raid_gear( std::vector<std::string>& images,
       first = false;
       s += util_t::stat_type_abbrev( i );
     }
-    s += "&";
+    s += "&amp;";
     s += "chtt=Gear+Overview";
-    s += "&";
+    s += "&amp;";
     s += "chts=000000,20";
 
     images.push_back( s );
@@ -319,9 +319,9 @@ const char* chart_t::raid_downtime( std::string& s,
 
   s = "http://chart.apis.google.com/chart?";
   snprintf( buffer, sizeof( buffer ), "chs=500x%d", num_waiting * 30 + 30 ); s += buffer;
-  s += "&";
+  s += "&amp;";
   s += "cht=bhg";
-  s += "&";
+  s += "&amp;";
   s += "chd=t:";
   double max_waiting=0;
   for ( int i=0; i < num_waiting; i++ )
@@ -331,25 +331,25 @@ const char* chart_t::raid_downtime( std::string& s,
     if ( waiting > max_waiting ) max_waiting = waiting;
     snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i?"|":"" ), waiting ); s += buffer;
   }
-  s += "&";
+  s += "&amp;";
   snprintf( buffer, sizeof( buffer ), "chds=0,%.0f", max_waiting * 2 ); s += buffer;
-  s += "&";
+  s += "&amp;";
   s += "chco=";
   for ( int i=0; i < num_waiting; i++ )
   {
     if ( i ) s += ",";
     s += get_color( waiting_list[ i ] );
   }
-  s += "&";
+  s += "&amp;";
   s += "chm=";
   for ( int i=0; i < num_waiting; i++ )
   {
     player_t* p = waiting_list[ i ];
     snprintf( buffer, sizeof( buffer ), "%st++%.0f%%++%s,%s,%d,0,15", ( i?"|":"" ), 100.0 * p -> total_waiting / p -> total_seconds, p -> name(), get_color( p ), i ); s += buffer;
   }
-  s += "&";
+  s += "&amp;";
   s += "chtt=Raid+Down-Time";
-  s += "&";
+  s += "&amp;";
   s += "chts=000000,20";
 
   return s.c_str();
@@ -375,27 +375,27 @@ const char* chart_t::raid_uptimes( std::string& s,
 
   s = "http://chart.apis.google.com/chart?";
   snprintf( buffer, sizeof( buffer ), "chs=500x%d", num_uptimes * 30 + 30 ); s += buffer;
-  s += "&";
+  s += "&amp;";
   s += "cht=bhs";
-  s += "&";
+  s += "&amp;";
   s += "chd=t:";
   for ( int i=0; i < num_uptimes; i++ )
   {
     uptime_t* u = uptime_list[ i ];
     snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i?",":"" ), u -> percentage() ); s += buffer;
   }
-  s += "&";
+  s += "&amp;";
   s += "chds=0,200";
-  s += "&";
+  s += "&amp;";
   s += "chm=";
   for ( int i=0; i < num_uptimes; i++ )
   {
     uptime_t* u = uptime_list[ i ];
     snprintf( buffer, sizeof( buffer ), "%st++%.0f%%++%s,000000,0,%d,15", ( i?"|":"" ), u -> percentage(), u -> name(), i ); s += buffer;
   }
-  s += "&";
+  s += "&amp;";
   s += "chtt=Global+Up-Times";
-  s += "&";
+  s += "&amp;";
   s += "chts=000000,20";
 
   return s.c_str();
@@ -452,27 +452,27 @@ int chart_t::raid_dpet( std::vector<std::string>& images,
 
     s = "http://chart.apis.google.com/chart?";
     snprintf( buffer, sizeof( buffer ), "chs=500x%d", num_stats * 15 + 30 ); s += buffer;
-    s += "&";
+    s += "&amp;";
     s += "cht=bhg";
-    s += "&";
+    s += "&amp;";
     s += "chbh=10";
-    s += "&";
+    s += "&amp;";
     s += "chd=t:";
     for ( int i=0; i < num_stats; i++ )
     {
       stats_t* st = stats_list[ i ];
       snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i?"|":"" ), st -> dpet ); s += buffer;
     }
-    s += "&";
+    s += "&amp;";
     snprintf( buffer, sizeof( buffer ), "chds=0,%.0f", max_dpet * 2.5 ); s += buffer;
-    s += "&";
+    s += "&amp;";
     s += "chco=";
     for ( int i=0; i < num_stats; i++ )
     {
       if ( i ) s += ",";
       s += get_color( stats_list[ i ] -> player );
     }
-    s += "&";
+    s += "&amp;";
     s += "chm=";
     for ( int i=0; i < num_stats; i++ )
     {
@@ -480,9 +480,9 @@ int chart_t::raid_dpet( std::vector<std::string>& images,
       snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s+(%s),%s,%d,0,10", ( i?"|":"" ),
                 st -> dpet, st -> name_str.c_str(), st -> player -> name(), get_color( st -> player ), i ); s += buffer;
     }
-    s += "&";
+    s += "&amp;";
     s += "chtt=Raid+Damage+Per+Execute+Time";
-    s += "&";
+    s += "&amp;";
     s += "chts=000000,20";
 
     images.push_back( s );
@@ -532,9 +532,9 @@ const char* chart_t::action_dpet( std::string& s,
 
   s = "http://chart.apis.google.com/chart?";
   snprintf( buffer, sizeof( buffer ), "chs=500x%d", num_stats * 30 + 65 ); s += buffer;
-  s += "&";
+  s += "&amp;";
   s += "cht=bhg";
-  s += "&";
+  s += "&amp;";
   s += "chd=t:";
   double max_dpet=0;
   for ( int i=0; i < num_stats; i++ )
@@ -543,25 +543,25 @@ const char* chart_t::action_dpet( std::string& s,
     snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i?"|":"" ), st -> dpet ); s += buffer;
     if ( st -> dpet > max_dpet ) max_dpet = st -> dpet;
   }
-  s += "&";
+  s += "&amp;";
   snprintf( buffer, sizeof( buffer ), "chds=0,%.0f", max_dpet * 2 ); s += buffer;
-  s += "&";
+  s += "&amp;";
   s += "chco=";
   for ( int i=0; i < num_stats; i++ )
   {
     if ( i ) s += ",";
     s += school_color( stats_list[ i ] -> school );
   }
-  s += "&";
+  s += "&amp;";
   s += "chm=";
   for ( int i=0; i < num_stats; i++ )
   {
     stats_t* st = stats_list[ i ];
     snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s,%s,%d,0,15", ( i?"|":"" ), st -> dpet, st -> name_str.c_str(), school_color( st -> school ), i ); s += buffer;
   }
-  s += "&";
+  s += "&amp;";
   snprintf( buffer, sizeof( buffer ), "chtt=%s|Damage+Per+Execute+Time", p -> name() ); s += buffer;
-  s += "&";
+  s += "&amp;";
   s += "chts=000000,20";
 
   return s.c_str();
@@ -606,34 +606,34 @@ const char* chart_t::action_dmg( std::string& s,
 
   s = "http://chart.apis.google.com/chart?";
   snprintf( buffer, sizeof( buffer ), "chs=500x%d", 200 + num_stats * 10 ); s += buffer;
-  s += "&";
+  s += "&amp;";
   s += "cht=p";
-  s += "&";
+  s += "&amp;";
   s += "chd=t:";
   for ( int i=0; i < num_stats; i++ )
   {
     stats_t* st = stats_list[ i ];
     snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i?",":"" ), 100.0 * st -> total_dmg / p -> total_dmg ); s += buffer;
   }
-  s += "&";
+  s += "&amp;";
   s += "chds=0,100";
-  s += "&";
+  s += "&amp;";
   s += "chco=";
   for ( int i=0; i < num_stats; i++ )
   {
     if ( i ) s += ",";
     s += school_color( stats_list[ i ] -> school );
   }
-  s += "&";
+  s += "&amp;";
   s += "chl=";
   for ( int i=0; i < num_stats; i++ )
   {
     if ( i ) s += "|";
     s += stats_list[ i ] -> name_str.c_str();
   }
-  s += "&";
+  s += "&amp;";
   snprintf( buffer, sizeof( buffer ), "chtt=%s+Damage+Sources", p -> name() ); s += buffer;
-  s += "&";
+  s += "&amp;";
   s += "chts=000000,20";
 
   return s.c_str();
@@ -671,30 +671,30 @@ const char* chart_t::gains( std::string& s,
 
   s = "http://chart.apis.google.com/chart?";
   snprintf( buffer, sizeof( buffer ), "chs=550x%d", 200 + num_gains * 10 ); s += buffer;
-  s += "&";
+  s += "&amp;";
   s += "cht=p";
-  s += "&";
+  s += "&amp;";
   s += "chd=t:";
   for ( int i=0; i < num_gains; i++ )
   {
     gain_t* g = gains_list[ i ];
     snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i?",":"" ), 100.0 * g -> actual / total_gain ); s += buffer;
   }
-  s += "&";
+  s += "&amp;";
   s += "chds=0,100";
-  s += "&";
+  s += "&amp;";
   s += "chco=";
   s += get_color( p );
-  s += "&";
+  s += "&amp;";
   s += "chl=";
   for ( int i=0; i < num_gains; i++ )
   {
     if ( i ) s += "|";
     s += gains_list[ i ] -> name();
   }
-  s += "&";
+  s += "&amp;";
   snprintf( buffer, sizeof( buffer ), "chtt=%s+Resource+Gains", p -> name() ); s += buffer;
-  s += "&";
+  s += "&amp;";
   s += "chts=000000,20";
 
   return s.c_str();
@@ -732,9 +732,9 @@ const char* chart_t::uptimes_and_procs( std::string& s,
 
   s = "http://chart.apis.google.com/chart?";
   snprintf( buffer, sizeof( buffer ), "chs=500x%d", ( num_uptimes + num_procs ) * 30 + 65 ); s += buffer;
-  s += "&";
+  s += "&amp;";
   s += "cht=bhg";
-  s += "&";
+  s += "&amp;";
   s += "chd=t:";
   for ( int i=0; i < num_uptimes; i++ )
   {
@@ -746,9 +746,9 @@ const char* chart_t::uptimes_and_procs( std::string& s,
     proc_t* proc = proc_list[ i ];
     snprintf( buffer, sizeof( buffer ), "%s%.0f", ( ( num_uptimes+i )?"|":"" ), 100 * proc -> count / max_proc_count ); s += buffer;
   }
-  s += "&";
+  s += "&amp;";
   s += "chds=0,200";
-  s += "&";
+  s += "&amp;";
   s += "chco=";
   for ( int i=0; i < num_uptimes; i++ )
   {
@@ -760,7 +760,7 @@ const char* chart_t::uptimes_and_procs( std::string& s,
     if ( num_uptimes+i ) s += ",";
     s += "FF0000";
   }
-  s += "&";
+  s += "&amp;";
   s += "chm=";
   for ( int i=0; i < num_uptimes; i++ )
   {
@@ -773,9 +773,9 @@ const char* chart_t::uptimes_and_procs( std::string& s,
     snprintf( buffer, sizeof( buffer ), "%st++%.0f+(%.2fsec)++%s,000000,%d,0,15", ( ( num_uptimes+i )?"|":"" ),
               proc -> count, proc -> frequency, proc -> name(), num_uptimes+i ); s += buffer;
   }
-  s += "&";
+  s += "&amp;";
   snprintf( buffer, sizeof( buffer ), "chtt=%s|Up-Times+and+Procs+(%.0fsec)", p -> name(), p -> sim -> total_seconds ); s += buffer;
-  s += "&";
+  s += "&amp;";
   s += "chts=000000,20";
 
   return s.c_str();
@@ -814,25 +814,25 @@ const char* chart_t::timeline_dps( std::string& s,
 
   s = "http://chart.apis.google.com/chart?";
   s += "chs=425x130";
-  s += "&";
+  s += "&amp;";
   s += "cht=lc";
-  s += "&";
+  s += "&amp;";
   s += "chd=s:";
   for ( int i=0; i < max_buckets; i += increment )
   {
     s += simple_encoding( ( int ) ( p -> timeline_dps[ i ] * dps_adjust ) );
   }
-  s += "&";
+  s += "&amp;";
   snprintf( buffer, sizeof( buffer ), "chds=0,%.0f", dps_range ); s += buffer;
-  s += "&";
+  s += "&amp;";
   s += "chxt=x,y";
-  s += "&";
+  s += "&amp;";
   snprintf( buffer, sizeof( buffer ), "chxl=0:|0|sec=%d|1:|0|avg=%.0f|max=%.0f", max_buckets, p -> dps, dps_max ); s += buffer;
-  s += "&";
+  s += "&amp;";
   snprintf( buffer, sizeof( buffer ), "chxp=1,1,%.0f,100", 100.0 * p -> dps / dps_max ); s += buffer;
-  s += "&";
+  s += "&amp;";
   snprintf( buffer, sizeof( buffer ), "chtt=%s+DPS+Timeline", p -> name() ); s += buffer;
-  s += "&";
+  s += "&amp;";
   s += "chts=000000,20";
 
   return s.c_str();
@@ -875,23 +875,23 @@ const char* chart_t::timeline_resource( std::string& s,
 
   s = "http://chart.apis.google.com/chart?";
   s += "chs=425x150";
-  s += "&";
+  s += "&amp;";
   s += "cht=lc";
-  s += "&";
+  s += "&amp;";
   s += "chd=s:";
   for ( int i=0; i < max_buckets; i += increment )
   {
     s += simple_encoding( ( int ) ( p -> timeline_resource[ i ] * resource_adjust ) );
   }
-  s += "&";
+  s += "&amp;";
   snprintf( buffer, sizeof( buffer ), "chds=0,%.0f", resource_range ); s += buffer;
-  s += "&";
+  s += "&amp;";
   s += "chxt=x,y";
-  s += "&";
+  s += "&amp;";
   snprintf( buffer, sizeof( buffer ), "chxl=0:|0|sec=%d|1:|0|max=%.0f", max_buckets, resource_max ); s += buffer;
-  s += "&";
+  s += "&amp;";
   snprintf( buffer, sizeof( buffer ), "chtt=%s|Resource+(%s)+Timeline", p -> name(), util_t::resource_type_string( p -> primary_resource() ) ); s += buffer;
-  s += "&";
+  s += "&amp;";
   s += "chts=000000,20";
 
   return s.c_str();
@@ -917,27 +917,27 @@ const char* chart_t::distribution_dps( std::string& s,
 
   s = "http://chart.apis.google.com/chart?";
   s += "chs=525x130";
-  s += "&";
+  s += "&amp;";
   s += "cht=bvs";
-  s += "&";
+  s += "&amp;";
   s += "chd=t:";
   for ( int i=0; i < max_buckets; i++ )
   {
     snprintf( buffer, sizeof( buffer ), "%s%d", ( i?",":"" ), p -> distribution_dps[ i ] ); s += buffer;
   }
-  s += "&";
+  s += "&amp;";
   snprintf( buffer, sizeof( buffer ), "chds=0,%d", count_max ); s += buffer;
-  s += "&";
+  s += "&amp;";
   s += "chbh=5";
-  s += "&";
+  s += "&amp;";
   s += "chxt=x";
-  s += "&";
+  s += "&amp;";
   snprintf( buffer, sizeof( buffer ), "chxl=0:|min=%.0f|avg=%.0f|max=%.0f", p -> dps_min, p -> dps, p -> dps_max ); s += buffer;
-  s += "&";
+  s += "&amp;";
   snprintf( buffer, sizeof( buffer ), "chxp=0,1,%.0f,100", 100.0 * ( p -> dps - p -> dps_min ) / ( p -> dps_max - p -> dps_min ) ); s += buffer;
-  s += "&";
+  s += "&amp;";
   snprintf( buffer, sizeof( buffer ), "chtt=%s+DPS+Distribution", p -> name() ); s += buffer;
-  s += "&";
+  s += "&amp;";
   s += "chts=000000,20";
 
   return s.c_str();
@@ -954,7 +954,7 @@ const char* chart_t::gear_weights_lootrank( std::string& s,
 
   // Restrict lootrank to rare gems until epic gems become available
   // Gem: Not Set = Epic, 2=Common, 3=Rare
-  s += "Gem=3&";
+  s += "Gem=3&amp;";
 
   switch ( p -> type )
   {
@@ -997,12 +997,12 @@ const char* chart_t::gear_weights_lootrank( std::string& s,
 
     if ( name )
     {
-      snprintf( buffer, sizeof( buffer ), "&%s=%.2f", name, value );
+      snprintf( buffer, sizeof( buffer ), "&amp;%s=%.2f", name, value );
       s += buffer;
     }
   }
 
-  s += "&Ver=6&usr=&ser=&grp=www";
+  s += "&amp;Ver=6&amp;usr=&amp;ser=&amp;grp=www";
 
   return s.c_str();
 }
@@ -1015,7 +1015,7 @@ const char* chart_t::gear_weights_wowhead( std::string& s,
   char buffer[ 1024 ];
   bool first=true;
 
-  s = "http://www.wowhead.com/?items&filter=";
+  s = "http://www.wowhead.com/?items&amp;filter=";
 
   switch ( p -> type )
   {
