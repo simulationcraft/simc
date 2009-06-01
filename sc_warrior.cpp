@@ -192,6 +192,7 @@ struct warrior_t : public player_t
   virtual void      init_procs();
   virtual void      init_uptimes();
   virtual void      init_rng();
+  virtual void      init_actions();
   virtual void      combat_begin();
   virtual double    composite_attribute_multiplier( int attr );
   virtual void      reset();
@@ -202,6 +203,7 @@ struct warrior_t : public player_t
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual int       primary_resource() { return RESOURCE_RAGE; }
   virtual int       primary_role()     { return ROLE_ATTACK; }
+  virtual int       primary_tree();
 };
 
 // warrior_t::composite_attribute_multiplier ===============================
@@ -218,7 +220,6 @@ double warrior_t::composite_attribute_multiplier( int attr )
   }
   return m;
 }
-
 
 namespace
 { // ANONYMOUS NAMESPACE =========================================
@@ -2332,6 +2333,67 @@ void warrior_t::init_rng()
   // also useful for frequent checks with low probability of proc and timed effect
 
   rng_sudden_death = get_rng( "sudden_death", RNG_DISTRIBUTED );
+}
+
+// warrior_t::init_actions =====================================================
+
+void warrior_t::init_actions()
+{
+  if( action_list_str.empty() )
+  {
+    action_list_str = "flask,type=endless_rage/food,type=dragonfin_filet";
+
+    if( primary_tree() == TREE_ARMS )
+    {
+      action_list_str += "/stance,choose=battle/auto_attack";
+      action_list_str += "/bloodrage,rage<=85";
+      action_list_str += "/heroic_strike,rage>=95";
+      action_list_str += "/mortal_strike";
+      action_list_str += "/rend";
+      action_list_str += "/overpower";
+      action_list_str += "/bladestorm";
+      action_list_str += "/execute";
+      action_list_str += "/slam,rage>=40";
+    }
+    else if ( primary_tree() == TREE_FURY )
+    {
+      action_list_str += "/stance,choose=berserker/auto_attack";
+      action_list_str += "/bloodrage,rage<=85";
+      action_list_str += "/heroic_strike,rage>=75,health_percentage<=20";
+      action_list_str += "/whirlwind,rage<=95,health_percentage<=20";
+      action_list_str += "/bloodthirst,rage<=75,health_percentage<=20";
+      action_list_str += "/slam,bloodsurge=1,rage<=45,health_percentage<=20";
+      action_list_str += "/death_wish,health_percentage<=20";
+      action_list_str += "/execute";
+      action_list_str += "/recklessness,health_percentage<=20";
+      action_list_str += "/heroic_strike,rage>=42,health_percentage>=20";
+      action_list_str += "/whirlwind,health_percentage>=20";
+      action_list_str += "/bloodthirst,health_percentage>=20";
+      action_list_str += "/slam,bloodsurge=1,health_percentage>=20";
+      action_list_str += "/death_wish,time>=10,health_percentage>=20,time_to_die>=135";
+      action_list_str += "/recklessness,health_percentage>=20,time_to_die>=230";
+      action_list_str += "/berserker_rage";
+    }
+    else
+    {
+      action_list_str += "/stance,choose=berserker/auto_attack";
+    }
+
+    if ( sim -> debug ) log_t::output( sim, "Player %s using default actions: %s", name(), action_list_str.c_str()  );
+  }
+
+  player_t::init_actions();
+}
+
+// mage_t::primary_tree ====================================================
+
+int warrior_t::primary_tree()
+{
+  if( talents.mortal_strike        ) return TREE_ARMS;
+  if( talents.bloodthirst          ) return TREE_FURY;
+  if( talents.devastate            ) return TREE_PROTECTION;
+
+  return TALENT_TREE_MAX;
 }
 
 // warrior_t::combat_begin =====================================================
