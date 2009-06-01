@@ -1341,7 +1341,7 @@ struct action_t
   bool dual, special, binary, channeled, background, repeating, aoe, harmful, proc;
   bool may_miss, may_resist, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
   bool tick_may_crit, tick_zero, clip_dot;
-  double min_gcd, trigger_gcd;
+  double min_gcd, trigger_gcd, range;
   double weapon_power_mod, direct_power_mod, tick_power_mod;
   double base_execute_time, base_tick_time, base_cost;
   double base_dd_min, base_dd_max, base_td, base_td_init;

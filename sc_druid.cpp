@@ -1215,6 +1215,7 @@ struct auto_attack_t : public druid_attack_t
   virtual bool ready()
   {
     druid_t* p = player -> cast_druid();
+    if( p -> moving ) return false;
     return( p -> melee_attack -> execute_event == 0 ); // not swinging
   }
 };

@@ -23,7 +23,7 @@ action_t::action_t( int         ty,
     may_miss( false ), may_resist( false ), may_dodge( false ), may_parry( false ),
     may_glance( false ), may_block( false ), may_crush( false ), may_crit( false ),
     tick_may_crit( false ), tick_zero( false ), clip_dot( false ),
-    min_gcd( 0 ), trigger_gcd( 0 ),
+    min_gcd( 0 ), trigger_gcd( 0 ), range( -1 ),
     weapon_power_mod( 1.0/14 ), direct_power_mod( 0 ), tick_power_mod( 0 ),
     base_execute_time( 0 ), base_tick_time( 0 ), base_cost( 0 ),
     base_dd_min( 0 ), base_dd_max( 0 ), base_td( 0 ), base_td_init( 0 ),
@@ -1008,7 +1008,7 @@ bool action_t::ready()
       return false;
 
   if ( player -> moving )
-    if( channeled || execute_time() > 0 )
+    if( channeled || ( range == 0 ) || ( execute_time() > 0 ) )
       return false;
 
   if ( vulnerable )

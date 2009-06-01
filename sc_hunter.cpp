@@ -608,6 +608,8 @@ struct hunter_attack_t : public attack_t
     }
 
     base_multiplier *= 1.0 + p -> talents.improved_tracking * 0.01;
+
+    range = -1; // unlimited
   }
 
   virtual void add_ammunition()
@@ -2288,6 +2290,7 @@ struct auto_shot_t : public hunter_attack_t
   virtual bool ready()
   {
     hunter_t* p = player -> cast_hunter();
+    if( p -> moving ) return false;
     return( p -> ranged_attack -> execute_event == 0 ); // not swinging
   }
 };

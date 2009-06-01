@@ -37,6 +37,8 @@ attack_t::attack_t( const char* n, player_t* p, int resource, int school, int tr
 
   trigger_gcd = p -> base_gcd;
   min_gcd = 1.0;
+
+  range = 0; // Prevent action from being scheduled when player_t::moving!=0
 }
 
 // attack_t::haste ==========================================================

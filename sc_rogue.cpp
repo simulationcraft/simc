@@ -1123,6 +1123,7 @@ struct auto_attack_t : public rogue_attack_t
   virtual bool ready()
   {
     rogue_t* p = player -> cast_rogue();
+    if( p -> moving ) return false;
     return( p -> main_hand_attack -> execute_event == 0 ); // not swinging
   }
 };
