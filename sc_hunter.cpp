@@ -225,7 +225,7 @@ struct hunter_t : public player_t
     ranged_attack = 0;
     ammo_dps = 0;
     quiver_haste = 0.0;
-    summon_pet_str = "cat";
+    summon_pet_str = "wolf";
   }
 
   // Character Definition

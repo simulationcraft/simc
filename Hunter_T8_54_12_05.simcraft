@@ -42,4 +42,4 @@ ammo_dps=67.5
 quiver_haste=15
 
 # Pet (cat|devilsaur|raptor|wind_serpent|wolf)
-summon_pet=devilsaur
+summon_pet=wolf
