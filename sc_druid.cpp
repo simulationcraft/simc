@@ -235,14 +235,14 @@ struct druid_t : public player_t
   }
 
   // Character Definition
-  virtual void      init_actions();
   virtual void      init_base();
   virtual void      init_gains();
   virtual void      init_procs();
+  virtual void      init_uptimes();
   virtual void      init_rating();
   virtual void      init_rng();
   virtual void      init_unique_gear();
-  virtual void      init_uptimes();
+  virtual void      init_actions();
   virtual void      reset();
   virtual void      interrupt();
   virtual void      regen( double periodicity );

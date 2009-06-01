@@ -236,6 +236,7 @@ struct hunter_t : public player_t
   virtual void      init_uptimes();
   virtual void      init_rng();
   virtual void      init_scaling();
+  virtual void      init_actions();
   virtual void      reset();
   virtual void      interrupt();
   virtual double    composite_attack_power();
@@ -245,6 +246,7 @@ struct hunter_t : public player_t
   virtual pet_t*    create_pet( const std::string& name );
   virtual int       primary_resource() { return RESOURCE_MANA; }
   virtual int       primary_role()     { return ROLE_ATTACK; }
+  virtual int       primary_tree();
 
   // Event Tracking
   virtual void regen( double periodicity );
@@ -3778,6 +3780,50 @@ void hunter_t::init_scaling()
   if ( talents.hunter_vs_wild ) scales_with[ STAT_STAMINA ] = 1;
 
   scales_with[ STAT_EXPERTISE_RATING ] = 0;
+}
+
+// hunter_t::init_actions ====================================================
+
+void hunter_t::init_actions()
+{
+  if( action_list_str.empty() )
+  {
+    action_list_str = "flask,type=endless_rage/food,type=blackened_dragonfin/hunters_mark";
+    if( talents.trueshot_aura ) action_list_str += "/trueshot_aura";
+    action_list_str += ( primary_tree() == TREE_BEAST_MASTERY ) ? "/summon_pet,devilsaur" : "/summon_pet,wolf";
+    action_list_str += "/auto_shot";
+    if( talents.bestial_wrath ) action_list_str += "/kill_command,sync=bestial_wrath/bestial_wrath";
+    action_list_str += "/aspect";
+    if( talents.chimera_shot ) action_list_str += "/serpent_sting";
+    action_list_str += "/rapid_fire";
+    action_list_str += "/kill_shot";
+    if( ! talents.bestial_wrath  ) action_list_str += "/kill_command";
+    if(   talents.silencing_shot ) action_list_str += "/silencing_shot";
+    if(   talents.chimera_shot   ) action_list_str += "/chimera_shot";
+    if(   talents.explosive_shot ) action_list_str += "/explosive_shot";
+    if(   talents.black_arrow    ) action_list_str += "/black_arrow";
+    if( ! talents.chimera_shot   ) action_list_str += "/serpent_sting";
+    if( ! talents.explosive_shot ) action_list_str += "/arcane_shot";
+    if(   talents.readiness      ) action_list_str += "/readiness,wait_for_rapid_fire=1";
+    if(   talents.aimed_shot     ) action_list_str += "/aimed_shot";
+    if( ! talents.aimed_shot     ) action_list_str += "/multi_shot";
+    action_list_str += "/steady_shot";
+
+    if ( sim -> debug ) log_t::output( sim, "Player %s using default actions: %s", name(), action_list_str.c_str()  );
+  }
+
+  player_t::init_actions();
+}
+
+// hunter_t::primary_tree() ==================================================
+
+int hunter_t::primary_tree()
+{
+  if( talents.serpents_swiftness || talents.beast_within ) return TREE_BEAST_MASTERY;
+  if( talents.master_marksman ) return TREE_MARKSMANSHIP;
+  if( talents.black_arrow ) return TREE_SURVIVAL;
+  
+  return TALENT_TREE_MAX;
 }
 
 // hunter_t::reset ===========================================================
