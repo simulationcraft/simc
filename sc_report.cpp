@@ -30,7 +30,7 @@ static void print_action( FILE* file, stats_t* s )
            s -> num_executes,
            s -> frequency,
            s -> dpe,
-           s -> total_dmg * 100.0 / total_dmg,
+           s -> portion_dmg * 100.0,
            s -> dpet,
            s -> dpr );
 
@@ -104,7 +104,7 @@ static void print_actions( FILE* file, player_t* p )
       {
         if ( first )
         {
-          fprintf( file, "   %s\n", pet -> name_str.c_str() );
+          fprintf( file, "   %s  (DPS=%.1f)\n", pet -> name_str.c_str(), pet -> dps );
           first = false;
         }
         print_action( file, s );

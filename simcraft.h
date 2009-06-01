@@ -1283,7 +1283,7 @@ struct stats_t
   double resource_consumed;
   double frequency, num_executes, num_ticks;
   double total_execute_time, total_tick_time;
-  double total_dmg;
+  double total_dmg, portion_dmg;
   double dps, dpe, dpet, dpr;
   double total_intervals, num_intervals;
   double last_execute;

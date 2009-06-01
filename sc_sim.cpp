@@ -583,11 +583,6 @@ void sim_t::analyze()
 
   for ( player_t* p = player_list; p; p = p -> next )
   {
-    if ( p -> quiet ) continue;
-
-    players_by_rank.push_back( p );
-    players_by_name.push_back( p );
-
     std::vector<stats_t*> stats_list;
 
     for ( stats_t* s = p -> stats_list; s; s = s -> next )
@@ -613,7 +608,19 @@ void sim_t::analyze()
       p -> total_dmg += s -> total_dmg;
     }
 
+    for ( int i=0; i < num_stats; i++ )
+    {
+      stats_t* s = stats_list[ i ];
+
+      s -> portion_dmg = s -> total_dmg / p -> total_dmg;
+    }
+
     p -> dps = p -> total_dmg / p -> total_seconds;
+
+    if ( p -> quiet ) continue;
+
+    players_by_rank.push_back( p );
+    players_by_name.push_back( p );
 
     // Avoid double-counting of pet damage
     if ( ! p -> is_pet() ) total_dmg += p -> total_dmg;
