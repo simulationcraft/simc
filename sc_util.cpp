@@ -297,23 +297,31 @@ const char* util_t::talent_tree_string( int tree )
 {
   switch ( tree )
   {
-  case TREE_BALANCE:     return "balance";
-  case TREE_FERAL:       return "feral";
-  case TREE_RESTORATION: return "restoration";
-  case TREE_ARCANE:      return "arcane";
-  case TREE_FIRE:        return "fire";
-  case TREE_FROST:       return "frost";
-  case TREE_DISCIPLINE:  return "discipline";
-  case TREE_HOLY:        return "holy";
-  case TREE_SHADOW:      return "shadow";
-  case TREE_ELEMENTAL:   return "elemental";
-  case TREE_ENHANCEMENT: return "enhancement";
-  case TREE_AFFLICTION:  return "affliction";
-  case TREE_DEMONOLOGY:  return "demonology";
-  case TREE_DESTRUCTION: return "destruction";
-  case TREE_ARMS:        return "arms";
-  case TREE_FURY:        return "fury";
-  case TREE_PROTECTION:  return "protection";
+  case TREE_BLOOD:         return "blood";
+  case TREE_UNHOLY:        return "unholy";
+  case TREE_BALANCE:       return "balance";
+  case TREE_FERAL:         return "feral";
+  case TREE_RESTORATION:   return "restoration";
+  case TREE_BEAST_MASTERY: return "beast_mastery";
+  case TREE_MARKSMANSHIP:  return "marksmanship";
+  case TREE_SURVIVAL:      return "survival";
+  case TREE_ARCANE:        return "arcane";
+  case TREE_FIRE:          return "fire";
+  case TREE_FROST:         return "frost";
+  case TREE_DISCIPLINE:    return "discipline";
+  case TREE_HOLY:          return "holy";
+  case TREE_SHADOW:        return "shadow";
+  case TREE_ASSASSINATION: return "assassination";
+  case TREE_COMBAT:        return "combat";
+  case TREE_SUBTLETY:      return "subtlety";
+  case TREE_ELEMENTAL:     return "elemental";
+  case TREE_ENHANCEMENT:   return "enhancement";
+  case TREE_AFFLICTION:    return "affliction";
+  case TREE_DEMONOLOGY:    return "demonology";
+  case TREE_DESTRUCTION:   return "destruction";
+  case TREE_ARMS:          return "arms";
+  case TREE_FURY:          return "fury";
+  case TREE_PROTECTION:    return "protection";
   }
   return "unknown";
 }

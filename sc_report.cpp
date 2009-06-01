@@ -872,8 +872,9 @@ void report_t::print_text( FILE* file, sim_t* sim, bool detail )
   {
     player_t* p = sim -> players_by_name[ i ];
 
-    fprintf( file, "\nPlayer=%s  DPS=%.1f (Error=+/-%.1f Range=+/-%.0f)",
-             p -> name(), p -> dps, p -> dps_error, ( p -> dps_max - p -> dps_min ) / 2.0 );
+    fprintf( file, "\nPlayer=%s (%s)  DPS=%.1f (Error=+/-%.1f Range=+/-%.0f)",
+             p -> name(), util_t::talent_tree_string( p -> primary_tree() ), 
+	     p -> dps, p -> dps_error, ( p -> dps_max - p -> dps_min ) / 2.0 );
 
     if ( p -> rps_loss > 0 )
     {
