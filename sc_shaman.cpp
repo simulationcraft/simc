@@ -250,6 +250,7 @@ struct shaman_t : public player_t
   virtual void      init_uptimes();
   virtual void      init_rng();
   virtual void      init_unique_gear();
+  virtual void      init_actions();
   virtual void      reset();
   virtual void      interrupt();
   virtual double    composite_attack_power();
@@ -260,7 +261,8 @@ struct shaman_t : public player_t
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
   virtual int       primary_resource() { return RESOURCE_MANA; }
-  virtual int       primary_role()     { return talents.dual_wield ? ROLE_HYBRID : ROLE_SPELL; }
+  virtual int       primary_role()     { return talents.dual_wield ? ROLE_HYBRID      : ROLE_SPELL;     }
+  virtual int       primary_tree()     { return talents.dual_wield ? TREE_ENHANCEMENT : TREE_ELEMENTAL; }
 
   // Event Tracking
   virtual void regen( double periodicity );
@@ -3272,6 +3274,40 @@ void shaman_t::init_unique_gear()
     if ( unique_gear -> tier8_2pc ) tiers.t8_2pc_elemental = 1;
     if ( unique_gear -> tier8_4pc ) tiers.t8_4pc_elemental = 1;
   }
+}
+
+// shaman_t::init_actions =====================================================
+
+void shaman_t::init_actions()
+{
+  if( action_list_str.empty() )
+  {
+    if( primary_tree() == TREE_ENHANCEMENT )
+    {
+      action_list_str  = "flask,type=endless_rage/food,type=fish_feast/windfury_weapon,weapon=main/flametongue_weapon,weapon=off";
+      action_list_str += "/wind_shock/strength_of_earth_totem/windfury_totem/bloodlust,time_to_die<=60";
+      action_list_str += "/auto_attack/lightning_bolt,maelstrom=5";
+      if( talents.shamanistic_rage ) action_list_str += "/shamanistic_rage";
+      if( talents.stormstrike      ) action_list_str += "/stormstrike";
+      action_list_str += "/earth_shock/magma_totem/lightning_shield";
+      if( talents.lava_lash    ) action_list_str += "/lava_lash";
+      if( talents.feral_spirit ) action_list_str += "/spirit_wolf";
+    }
+    else
+    {
+      action_list_str  = "flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/flametongue_weapon,weapon=main/water_shield";
+      action_list_str += "/wind_shock/mana_spring_totem";
+      if( talents.totem_of_wrath ) action_list_str += "/wrath_of_air_totem";
+      action_list_str += "/speed_potion";
+      if( talents.elemental_mastery ) action_list_str += "/elemental_mastery";
+      action_list_str += "/flame_shock/lava_burst,flame_shock=1/searing_totem/chain_lightning,lvb_cd<=1.5/lightning_bolt";
+      if( talents.thunderstorm ) action_list_str += "/thunderstorm";
+    }
+
+    if ( sim -> debug ) log_t::output( sim, "Player %s using default actions: %s", name(), action_list_str.c_str()  );
+  }
+
+  player_t::init_actions();
 }
 
 // shaman_t::reset ===========================================================
