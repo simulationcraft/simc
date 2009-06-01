@@ -145,6 +145,7 @@ struct priest_t : public player_t
   virtual void      init_gains();
   virtual void      init_uptimes();
   virtual void      init_rng();
+  virtual void      init_actions();
   virtual void      reset();
   virtual bool      get_talent_trees( std::vector<int*>& discipline, std::vector<int*>& holy, std::vector<int*>& shadow );
   virtual bool      parse_option ( const std::string& name, const std::string& value );
@@ -152,6 +153,7 @@ struct priest_t : public player_t
   virtual pet_t*    create_pet   ( const std::string& name );
   virtual int       primary_resource() { return RESOURCE_MANA; }
   virtual int       primary_role()     { return ROLE_SPELL; }
+  virtual int       primary_tree()     { return talents.shadow_form ? TREE_SHADOW : TREE_HOLY; }
   virtual void      regen( double periodicity );
 };
 
@@ -1967,6 +1969,36 @@ void priest_t::init_rng()
   rng_pain_and_suffering = get_rng( "pain_and_suffering" );
   rng_shadow_weaving     = get_rng( "shadow_weaving" );
   rng_surge_of_light     = get_rng( "surge_of_light" );
+}
+
+// priest_t::init_actions =====================================================
+
+void priest_t::init_actions()
+{
+  if( action_list_str.empty() )
+  {
+    action_list_str = "flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/fortitude/divine_spirit/inner_fire";
+
+    if( primary_tree() == TREE_SHADOW )
+    {
+      action_list_str += "/shadow_form/shadow_fiend/dispersion/speed_potion";
+      action_list_str += "/shadow_word_pain,shadow_weaving_wait=1";
+      if( talents.vampiric_touch ) action_list_str += "/vampiric_touch";
+      action_list_str += "/devouring_plague/mind_blast/mind_flay";
+    }
+    else
+    {
+      action_list_str += "/mana_potion/shadow_fiend,trigger=10000";
+      if( talents.inner_focus ) action_list_str += "/inner_focus,shadow_word_pain";
+      action_list_str += "/shadow_word_pain";
+      if( talents.power_infusion ) action_list_str += "/power_infusion";
+      action_list_str += "/holy_fire/mind_blast/smite";
+    }
+
+    if ( sim -> debug ) log_t::output( sim, "Player %s using default actions: %s", name(), action_list_str.c_str()  );
+  }
+
+  player_t::init_actions();
 }
 
 // priest_t::reset ===========================================================
