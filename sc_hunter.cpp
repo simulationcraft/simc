@@ -3788,9 +3788,8 @@ void hunter_t::init_actions()
 {
   if( action_list_str.empty() )
   {
-    action_list_str = "flask,type=endless_rage/food,type=blackened_dragonfin/hunters_mark";
+    action_list_str = "flask,type=endless_rage/food,type=blackened_dragonfin/hunters_mark/summon_pet";
     if( talents.trueshot_aura ) action_list_str += "/trueshot_aura";
-    action_list_str += ( primary_tree() == TREE_BEAST_MASTERY ) ? "/summon_pet,devilsaur" : "/summon_pet,wolf";
     action_list_str += "/auto_shot";
     if( talents.bestial_wrath ) action_list_str += "/kill_command,sync=bestial_wrath/bestial_wrath";
     action_list_str += "/aspect";
