@@ -405,7 +405,7 @@ function generate_simcraft_command( array $arr_options, $output_file=null )
 	
 	// Add the output directives
 	if( !is_null($output_file) ) {
-		$return_string .= " html='$output_file'";
+		$return_string .= " xml='$output_file'";
 	}
 		
 	// Return the output

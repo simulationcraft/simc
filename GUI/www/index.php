@@ -11,9 +11,6 @@ require_once 'wow_functions.inc.php';
 // If the 'simulate' button was pressed, run the simulation
 if( isset($_POST['simulate']) && ALLOW_SIMULATION===true ) {
 
-	// Create the output XML object
-	$xml = new SimpleXMLElement_XSL('<xml></xml>');
-	
 	// Develop the simcraft command from the form input, with a random file name for the output catcher
 	$output_file = tempnam('/tmp', 'simcraft_output');
 	$simcraft_command = generate_simcraft_command( $_POST, $output_file );
@@ -24,8 +21,19 @@ if( isset($_POST['simulate']) && ALLOW_SIMULATION===true ) {
 	// Call the simcraft execution
 	$simcraft_output = shell_exec( $simcraft_command );
 
-	// FIXME temporarily, just print the html, since the generated html isn't XHTML compliant and won't fit in an XML file
-	print file_get_contents($output_file);
+	// Fetch the result as an XML object
+	$xml = new SimpleXMLElement_XSL(file_get_contents($output_file));
+	
+	// Send the page header for xml content
+	header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+	header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
+	header('Cache-Control: no-store, no-cache, must-revalidate'); // HTTP/1.1
+	header('Cache-Control: post-check=0, pre-check=0', false); // HTTP/1.1
+	header('Pragma: no-cache'); // HTTP/1.0
+	header('Content-type: text/xml');
+	
+	// Send the output string
+	echo $xml->asXML_with_XSL('xsl/results.xsl');
 }
 
 

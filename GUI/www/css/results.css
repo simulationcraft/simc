@@ -1,0 +1,21 @@
+
+table.scale_factors td, table.scale_factors th { 
+	padding: 4px; 
+	border: 1px inset; 
+}
+
+table.scale_factors { 
+	border: 1px outset; 
+}
+
+table.scale_factors td.pawn {
+	display: block;
+	width: 64px;
+	height: 30px;
+	border: 1px inset;
+	margin: 0px;
+	padding: 3px;
+	white-space: pre;	
+	text-align: left;
+	overflow: auto;
+}

@@ -339,7 +339,7 @@ static void print_scale_factors( FILE* file, sim_t* sim )
       }
     }
 
-    if( sim -> scaling -> normalize_scale_factors ) 
+    if( sim -> scaling -> normalize_scale_factors )
     {
       fprintf( file, "  DPS/%s=%.2f", util_t::stat_type_abbrev( p -> normalized_to ), p -> scaling.get_stat( p -> normalized_to ) );
     }
@@ -893,7 +893,7 @@ void report_t::print_text( FILE* file, sim_t* sim, bool detail )
     player_t* p = sim -> players_by_name[ i ];
 
     fprintf( file, "\nPlayer=%s (%s)  DPS=%.1f (Error=+/-%.1f Range=+/-%.0f)",
-             p -> name(), util_t::talent_tree_string( p -> primary_tree() ), 
+             p -> name(), util_t::talent_tree_string( p -> primary_tree() ),
              p -> dps, p -> dps_error, ( p -> dps_max - p -> dps_min ) / 2.0 );
 
     if ( p -> rps_loss > 0 )
@@ -1020,7 +1020,7 @@ void report_t::print_xml( sim_t* sim )
   FILE* file = fopen( sim -> xml_file_str.c_str(), "w" );
   if ( ! file )
   {
-        fprintf( stderr, "simcraft: Unable to open html file '%s'\n", sim -> xml_file_str.c_str() );
+        fprintf( stderr, "simcraft: Unable to open xml file '%s'\n", sim -> xml_file_str.c_str() );
         exit( 0 );
   }
 

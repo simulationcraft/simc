@@ -168,12 +168,12 @@
 						<input name="MAX_FILE_SIZE" type="hidden" value="30000">
 							<xsl:attribute name="value"><xsl:value-of select="/xml/options/@max_file_size" /></xsl:attribute>
 						</input>					
-						<input type="file" name="import_file_path" title="Which file should be imported?" />
+						<input type="file" name="import_file_path" id="import_file_path" title="Which file should be imported?" />
 					</li>
 					
 					<li>
 						<label for="clear_before_import">Clear Form?</label>
-						<input name="clear_before_import" type="checkbox" value="1" title="Should the current simulation be cleared before adding this file's configuration?" />
+						<input name="clear_before_import" id="clear_before_import" type="checkbox" value="1" title="Should the current simulation be cleared before adding this file's configuration?" />
 					</li>
 								
 					<li>
