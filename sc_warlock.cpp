@@ -4347,6 +4347,10 @@ struct demonic_pact_callback_t : public action_callback_t
         warlock_t* o = pet -> owner -> cast_warlock();
         for ( player_t* p = sim -> player_list; p; p = p -> next )
         {
+	  if( sim -> scaling -> calculate_scale_factors ) // DP can inflate SP-scaling
+	    if( p != o )
+	      continue;
+
           p -> aura_gain( "Demonic Pact", 47235 + o -> talents.demonic_pact );
           p -> buffs.demonic_pact = buff;
           p -> buffs.demonic_pact_pet = pet;
@@ -4359,6 +4363,10 @@ struct demonic_pact_callback_t : public action_callback_t
         warlock_t* o = pet -> owner -> cast_warlock();
         for ( player_t* p = sim -> player_list; p; p = p -> next )
         {
+	  if( sim -> scaling -> calculate_scale_factors ) // DP can inflate SP-scaling
+	    if( p != o )
+	      continue;
+
           p -> aura_loss( "Demonic Pact", 47235 + o -> talents.demonic_pact );
           p -> buffs.demonic_pact = 0;
           p -> buffs.demonic_pact_pet = 0;

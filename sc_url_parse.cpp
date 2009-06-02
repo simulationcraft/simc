@@ -23,6 +23,7 @@ struct armory_item_t{
   gear_stats_t gems[6];
   bool has_bonus;
   gear_stats_t gem_bonus;
+  armory_item_t() : slot(0), has_enchants(false), n_gems(0), has_bonus(false) {}
 };
 
 struct urlSplit_t
@@ -37,7 +38,10 @@ struct urlSplit_t
   player_t* active_player;
   armory_item_t item_stats[20];
   bool saved;
-
+  urlSplit_t() : srvType(0), sim(0), active_player(0), saved(false)
+  {
+    memset( setPieces, 0x00, sizeof(setPieces) );
+  }
 };
 
 enum url_page_t {  UPG_GEAR, UPG_TALENTS, UPG_ITEM  };
@@ -61,7 +65,7 @@ void replace_char( std::string& src, char old_c, char new_c  )
 
 
 //wrapper supporting differnt armory pages
-std::string getArmoryData( urlSplit_t aURL, url_page_t pgt, std::string moreParams="" )
+std::string getArmoryData( urlSplit_t& aURL, url_page_t pgt, std::string moreParams="" )
 {
   std::string URL=aURL.wwwAdr;
   std::string chk="";
@@ -94,7 +98,7 @@ std::string getArmoryData( urlSplit_t aURL, url_page_t pgt, std::string morePara
 // convert full descriptive name into "option name"
 // spaces become underscores, all lower letters
 // remove apostrophes
-std::string proper_option_name( std::string& full_name )
+std::string proper_option_name( const std::string& full_name )
 {
   if ( full_name=="" ) return full_name;
   // first to lower letters and _ for spaces
@@ -119,9 +123,8 @@ std::string proper_option_name( std::string& full_name )
 
 
 //split URL to server, realm, player
-bool splitURL( std::string URL, urlSplit_t& aURL )
+bool splitURL( const std::string& URL, urlSplit_t& aURL )
 {
-  memset(&aURL,0, sizeof(aURL));
   size_t iofs=0;
   size_t id_http= URL.find( "http://",iofs );
   if ( id_http != string::npos ) iofs=7;
@@ -164,7 +167,7 @@ bool splitURL( std::string URL, urlSplit_t& aURL )
 // retrieve node from XML
 // every node must start with <name , and then there are options:
 // <name> xxxx </name> or  <name  a,b,c /> or  <name/>
-std::string getNodeOne( std::string& src, std::string name, int occurence=1 )
+std::string getNodeOne( const std::string& src, const std::string& name, int occurence=1 )
 {
   std::string nstart="<"+name;
   //fint n-th occurence of node
@@ -222,7 +225,7 @@ std::string getNodeOne( std::string& src, std::string name, int occurence=1 )
 
 
 // allow node path to get subnodes, from nodeList= "node1.node2.node3"
-std::string getNode( std::string& src, std::string nodeList )
+std::string getNode( const std::string& src, const std::string& nodeList )
 {
   std::string res=src;
   std::string node2;
@@ -245,7 +248,7 @@ std::string getNode( std::string& src, std::string nodeList )
 
 // retrieve string value from XML single line node.
 // example: increasedHitPercent="12.47" penetration="0" reducedResist="0" value="327"
-std::string getValueOne( std::string& node, std::string name )
+std::string getValueOne( const std::string& node, const std::string& name )
 {
   std::string res="";
   std::string src=" "+node;
@@ -266,7 +269,7 @@ std::string getValueOne( std::string& node, std::string name )
 //return parameter value, given path to parameter
 // example:  spell.bonusDamage.petBonus.damage
 // where last is name of parameter
-std::string getValue( std::string& src, std::string path )
+std::string getValue( const std::string& src, std::string path )
 {
   //find parameter name (last)
   size_t idx=path.rfind( "." );
@@ -288,7 +291,7 @@ std::string getValue( std::string& src, std::string path )
 
 // get max value out of list of paths, separated by ,
 //example:  "spell.power,melee.power"
-std::string getMaxValue( std::string& src, std::string path )
+std::string getMaxValue( const std::string& src, const std::string& path )
 {
   std::string res="";
   double best=0;
@@ -311,14 +314,14 @@ std::string getMaxValue( std::string& src, std::string path )
 }
 
 //get float value from param inside node
-double getParamFloat( std::string& src, std::string path )
+double getParamFloat( const std::string& src, const std::string& path )
 {
   std::string res= getValue( src, path );
   return atof( res.c_str() );
 }
 
 //get float value from entire node
-double getNodeFloat( std::string& src, std::string path )
+double getNodeFloat( const std::string& src, const std::string& path )
 {
   std::string res= getNode( src, path );
   size_t idB= res.find( ">" ); // for <armor armorBonus="0">155</armor>
@@ -328,7 +331,7 @@ double getNodeFloat( std::string& src, std::string path )
 }
 
 
-std::string chkValue( std::string& src, std::string path, std::string option )
+std::string chkValue( const std::string& src, const std::string& path, const std::string& option )
 {
   std::string res=getValue( src, path );
   if ( res!="" )
@@ -337,7 +340,7 @@ std::string chkValue( std::string& src, std::string path, std::string option )
     return "";
 }
 
-std::string chkMaxValue( std::string& src, std::string path, std::string option )
+std::string chkMaxValue( const std::string& src, const std::string& path, const std::string& option )
 {
   std::string res=getMaxValue( src, path );
   if ( res!="" )
@@ -369,7 +372,7 @@ std::string player_parse_option( urlSplit_t& aURL, const std::string& name, cons
 // call player_parse_option for every item, if special option exists
 // useful only for GEMs and ENCHANTs
 // since for items and glyphs "proper names" are generated and tried as options
-void addItemGlyphOption( urlSplit_t& aURL, std::string&  node, std::string name, std::string opt_value="1" )
+void addItemGlyphOption( urlSplit_t& aURL, const std::string&  node, const std::string& name, std::string opt_value="1" )
 {
   if ( node!="" )
   {
@@ -390,7 +393,7 @@ void addItemGlyphOption( urlSplit_t& aURL, std::string&  node, std::string name,
 
 
 // display all stats
-void displayStats_one( std::string comment, gear_stats_t& gs )
+void displayStats_one( const std::string& comment, gear_stats_t& gs )
 {
   char buff[200];
   sprintf(buff,"   %10s : ",comment.c_str());
@@ -431,7 +434,7 @@ void displayStats( armory_item_t& gs )
 
 
 // adds option for set bonuses
-void  addSetInfo( urlSplit_t& aURL, std::string setName, unsigned int setPieces,std::string  item_id )
+void  addSetInfo( urlSplit_t& aURL, const std::string& setName, unsigned int setPieces, const std::string& item_id )
 {
   if ( !aURL.sim->active_player ) return;
   unsigned int tier= getSetTier( setName );
@@ -467,7 +470,7 @@ bool my_isdigit( char c )
 }
 
 // find value/pattern pair
-double oneTxtStat( std::string& txt, std::string fullpat, int dir, int type  )
+double oneTxtStat( std::string txt, const std::string& fullpat, int dir, int type  )
 {
   size_t idx=0;
   double value=0;
@@ -521,7 +524,7 @@ double oneTxtStat( std::string& txt, std::string fullpat, int dir, int type  )
 
 // Try to find txt pattern and value pair.  This looks for "+X to All Stats" and adds all the stats
 // If found, it will remove the pattern/value from txt
-const bool chkAllStatsBonus( gear_stats_t& gs, std::string& txt, int type , const std::string& pattern)
+const bool chkAllStatsBonus( gear_stats_t& gs, const std::string& txt, int type , const std::string& pattern)
 {
   bool ok=false;
   
@@ -545,7 +548,7 @@ const bool chkAllStatsBonus( gear_stats_t& gs, std::string& txt, int type , cons
 //try to find txt pattern and value pair. Patterns are expected in lower cases
 // it will try first: "pattern by XX", then "+XX pattern"
 // if found, it will remove pattern/value from txt
-bool chkOneTxtStat( gear_stats_t& gs, std::string& txt, int type , int statID, std::string pattern )
+bool chkOneTxtStat( gear_stats_t& gs, const std::string& txt, int type , int statID, const std::string& pattern )
 {
   bool ok=false;
 
@@ -619,7 +622,7 @@ void addTextStats( gear_stats_t& gs, std::string txt, int type )
 
 // parse stats from one item and adds it to total stats in "gs"
 // also should parse weapon stats
-bool  parseItemStats( urlSplit_t& aURL, armory_item_t& gs,  std::string& item_id, std::string& item_slot )
+bool  parseItemStats( urlSplit_t& aURL, armory_item_t& gs,  const std::string& item_id, const std::string& item_slot )
 {
   if ( item_id=="" ) return false;
   std::string ref= "&i="+item_id;
@@ -786,7 +789,7 @@ bool save_player_simcraft(urlSplit_t& aURL)
 // main procedure that parse armory info from giuven player URL (URL must have realm/player inside)
 // it set options either by building option string and calling parse_line(), or by directly calling
 // player->parse_option()
-bool parseArmory( sim_t* sim, std::string URL, bool inactiveTalents=false, bool gearOnly=false, bool save_player=false )
+bool parseArmory( sim_t* sim, const std::string& URL, bool inactiveTalents=false, bool gearOnly=false, bool save_player=false )
 {
   if (!sim) return false;
   std::string optionStr="";
@@ -923,7 +926,6 @@ bool parseArmory( sim_t* sim, std::string URL, bool inactiveTalents=false, bool 
         int slot=atoi(item_slot.c_str());
         if ((slot>=0)&&(slot<20)){
           armory_item_t item_stats;
-          memset(&item_stats,0, sizeof(item_stats));
           if ( parseItemStats( aURL, item_stats, item_id, item_slot ) ){
             nGs++;
             aURL.item_stats[slot]=item_stats;
@@ -969,7 +971,7 @@ bool parseArmory( sim_t* sim, std::string URL, bool inactiveTalents=false, bool 
 }
 
 // parse multiple players in same line, or alternate armory profile (!)
-bool parseArmoryPlayers( sim_t* sim, std::string URL ){
+bool parseArmoryPlayers( sim_t* sim, const std::string& URL ){
   std::vector<std::string> splits;
   unsigned int num = util_t::string_split( splits, URL, "," );
   if (num<2) return false;
@@ -1007,7 +1009,7 @@ bool parseArmoryPlayers( sim_t* sim, std::string URL ){
 }
 
 
-bool  replace_item(sim_t* sim, std::string& new_id_str, std::string& opt_old_id, std::string opt_slot,std::string& opt_gems,std::string& opt_ench){
+bool  replace_item(sim_t* sim, const std::string& new_id_str, const std::string& opt_old_id, std::string opt_slot, const std::string& opt_gems, const std::string& opt_ench){
   if ((new_id_str=="")||(!sim)) return false;
   urlSplit_t* aURL=sim->last_armory_player;
   if (!aURL) return false;
@@ -1035,7 +1037,6 @@ bool  replace_item(sim_t* sim, std::string& new_id_str, std::string& opt_old_id,
     }
   }
   armory_item_t item_stats;
-  memset(&item_stats,0, sizeof(item_stats));
   aURL->generated_options+="# New_item="+new_id_str+", slot="+opt_slot.c_str()+", old_item="+opt_old_id.c_str()+"\n";
 
   if ( parseItemStats( *aURL, item_stats, new_id_str, opt_slot ) ){
@@ -1066,14 +1067,12 @@ bool  replace_item(sim_t* sim, std::string& new_id_str, std::string& opt_old_id,
     gear_stats_t gs;
     // if we have specified enchants
     if (opt_ench!=""){
-      memset(&gs,0,sizeof(gs));
       addTextStats( gs, opt_ench,1 );
       item_place->enchants=gs;
       item_place->has_enchants=true;
     }
     // if we have specified gems
     if (opt_gems!=""){
-      memset(&gs,0,sizeof(gs));
       addTextStats( gs, opt_gems,3 );
       item_place->gems[1]=gs;
       item_place->n_gems=1;
