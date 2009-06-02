@@ -15,7 +15,7 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 
 static const char*  url_cache_file = "url_cache.dat";
 static const double url_cache_version = 1.0;
-static const uint32_t expiration_seconds = 6 * 60 * 60;
+static const uint32_t expiration_seconds = 12 * 60 * 60;
 
 struct url_cache_t
 {

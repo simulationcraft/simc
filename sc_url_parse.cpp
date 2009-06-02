@@ -15,6 +15,7 @@ struct armory_item_t{
   std::string id;
   std::string name;
   int slot;
+  std::string inv_type;
   gear_stats_t gear;
   bool has_enchants;
   gear_stats_t enchants;
@@ -35,6 +36,7 @@ struct urlSplit_t
   unsigned int setPieces[20];
   player_t* active_player;
   armory_item_t item_stats[20];
+  bool saved;
 
 };
 
@@ -351,22 +353,23 @@ unsigned int  getSetTier( std::string setName );
 
 
 // call players parse option
-bool player_parse_option( urlSplit_t& aURL, const std::string& name, const std::string& value )
+std::string player_parse_option( urlSplit_t& aURL, const std::string& name, const std::string& value )
 {
-  if ( !aURL.sim->active_player ) return false;
+  std::string opt_str="";
+  if ( !aURL.sim->active_player ) return opt_str;
   bool ok=aURL.sim->active_player->parse_option( name,value );
   if (ok){
-    std::string opt_str= name +"="+ value +"\n";
+    opt_str= name +"="+ value +"\n";
     aURL.generated_options+=opt_str;
     if ( debug ) printf("%s",opt_str.c_str() );
   }
-  return ok;
+  return opt_str;
 }
 
 // call player_parse_option for every item, if special option exists
 // useful only for GEMs and ENCHANTs
 // since for items and glyphs "proper names" are generated and tried as options
-void addItemGlyphOption( urlSplit_t& aURL, std::string&  node, std::string name )
+void addItemGlyphOption( urlSplit_t& aURL, std::string&  node, std::string name, std::string opt_value="1" )
 {
   if ( node!="" )
   {
@@ -378,7 +381,7 @@ void addItemGlyphOption( urlSplit_t& aURL, std::string&  node, std::string name 
       if (itemID=="41333") itemID="ember_skyflare"; else
       itemID="item_"+itemID;
       //call parse to check if this item option exists
-      player_parse_option( aURL,itemID,"1" );
+      player_parse_option( aURL,itemID,opt_value );
     }
   }
 }
@@ -619,10 +622,16 @@ void addTextStats( gear_stats_t& gs, std::string txt, int type )
 bool  parseItemStats( urlSplit_t& aURL, armory_item_t& gs,  std::string& item_id, std::string& item_slot )
 {
   if ( item_id=="" ) return false;
-  std::string src= getArmoryData( aURL,UPG_ITEM, "&i="+item_id+"&s="+item_slot );
-  if ( src=="" )  return false;
+  std::string ref= "&i="+item_id;
+  if (item_slot!="") ref+="&s="+item_slot;
+  std::string src= getArmoryData( aURL,UPG_ITEM, ref );
+  if ( src=="" ){
+    printf("\nFailed to read web page: %s\n",aURL.wwwAdr.c_str());
+    return false;
+  }
   gs.id=item_id;
   gs.name= getNode(src, "name"); 
+  gs.inv_type= getNode(src, "equipData.inventoryType"); 
   gs.slot= atoi(item_slot.c_str());
   // add fixed stats
   gs.gear.add_stat( STAT_STRENGTH,                  getNodeFloat( src, "bonusStrength" ) );
@@ -766,6 +775,7 @@ bool save_player_simcraft(urlSplit_t& aURL)
     fwrite( aURL.generated_options.c_str(), aURL.generated_options.length()+1, 1, file );
     fclose( file );
   }
+  aURL.saved=true;
   thread_t::unlock();
   return true;
 }
@@ -997,11 +1007,109 @@ bool parseArmoryPlayers( sim_t* sim, std::string URL ){
 }
 
 
-bool  replace_item(sim_t* sim, std::string& new_id_str, std::string& opt_old_id, std::string& opt_slot,std::string& opt_gems,std::string& opt_ench){
-  if (new_id_str=="") return false;
-  printf("Replacing ID=%s , slot=%s (or old_id=%s ) , gems=\"%s\" , ench=\"%s\" \n",
-         new_id_str.c_str(), opt_old_id.c_str(), opt_slot.c_str(), opt_gems.c_str(), opt_ench.c_str());
+bool  replace_item(sim_t* sim, std::string& new_id_str, std::string& opt_old_id, std::string opt_slot,std::string& opt_gems,std::string& opt_ench){
+  if ((new_id_str=="")||(!sim)) return false;
+  urlSplit_t* aURL=sim->last_armory_player;
+  if (!aURL) return false;
+  // define slot
+  char buff[200];
+  int slot=-1;
+  if (opt_slot==""){
+    // if old item id is given, search for it in list
+    if (opt_old_id!=""){
+      for (int i=0; i<20; i++)
+        if (aURL->item_stats[i].id==opt_old_id){
+          slot=i;
+          break;
+        }
+    }
+    if (slot>=0){
+      sprintf(buff,"%d",slot);
+      opt_slot=buff;
+    }
+  }else{
+    slot=atoi(opt_slot.c_str());
+    if (slot>=20){
+      printf("Slot number too big: %s in %s\n",opt_slot.c_str(), new_id_str.c_str());
+      return false;
+    }
+  }
+  armory_item_t item_stats;
+  memset(&item_stats,0, sizeof(item_stats));
+  aURL->generated_options+="# New_item="+new_id_str+", slot="+opt_slot.c_str()+", old_item="+opt_old_id.c_str()+"\n";
 
+  if ( parseItemStats( *aURL, item_stats, new_id_str, opt_slot ) ){
+    // if slot was not found before, try to find based on inventory type
+    if (slot<0){
+      if (item_stats.inv_type!=""){
+        for (int i=0; i<20; i++)
+          if (aURL->item_stats[i].inv_type==item_stats.inv_type){
+            slot=i;
+            break;
+          }
+      }
+      if (slot<0){
+        printf("Could not find slot where to replace new item: (%s) %s\n",new_id_str.c_str(), item_stats.name.c_str());
+        return false;
+      }
+    }
+    // replace item
+    armory_item_t* item_place= &aURL->item_stats[slot];
+    armory_item_t old_stats= *item_place;
+    if (item_place->name!="")
+      player_parse_option( *aURL, proper_option_name( item_place->name ),"0" );
+    item_place->id=item_stats.id;
+    item_place->name=item_stats.name;
+    item_place->inv_type=item_stats.inv_type;
+    item_place->gear=item_stats.gear;
+    item_place->slot=slot;
+    gear_stats_t gs;
+    // if we have specified enchants
+    if (opt_ench!=""){
+      memset(&gs,0,sizeof(gs));
+      addTextStats( gs, opt_ench,1 );
+      item_place->enchants=gs;
+      item_place->has_enchants=true;
+    }
+    // if we have specified gems
+    if (opt_gems!=""){
+      memset(&gs,0,sizeof(gs));
+      addTextStats( gs, opt_gems,3 );
+      item_place->gems[1]=gs;
+      item_place->n_gems=1;
+      item_place->has_bonus=false;
+    }else{
+      // if we keep old gems, limit to same number of gems
+      //or fill up with +19SP
+      if (item_stats.n_gems>item_place->n_gems)
+        for (int i=item_place->n_gems+1; i<=item_stats.n_gems; i++){
+          memset(&gs,0,sizeof(gs));
+          addTextStats( gs, "+19 spell power",3 );
+          item_place->gems[i]=gs;
+        }
+      item_place->n_gems=item_stats.n_gems;
+    }
+
+    // options comment
+    sprintf(buff,"# Replaced ITEM=%s/%d : %s \n",old_stats.id.c_str(), old_stats.slot, old_stats.name.c_str());
+    if (debug){
+      printf(buff);
+      displayStats( old_stats);
+    }
+    aURL->generated_options+=buff;
+    sprintf(buff,"# with new ITEM=%s/%d : %s \n",item_place->id.c_str(), item_place->slot, item_place->name.c_str());
+    if (debug){
+      printf(buff);
+      displayStats( *item_place);
+    }
+    aURL->generated_options+=buff;
+
+    // now recalculate total stats
+    copy_gear_to_player(*aURL);
+
+    //save if it was previously saved
+    if (aURL->saved) save_player_simcraft(*aURL);
+  }
   return true;
 }
 
@@ -1009,7 +1117,7 @@ bool  replace_item(sim_t* sim, std::string& new_id_str, std::string& opt_old_id,
 // replace previously parsed item(s) with new one
 bool parseItemReplacement(sim_t* sim,  const std::string& item_list){
   std::vector<std::string> splits;
-  int num = util_t::string_split( splits, item_list, "/\\" );
+  int num = util_t::string_split( splits, item_list, "\\" );
   for (int i=0; i < num ; i++)
   if (splits[i]!="")
   {
@@ -1022,7 +1130,26 @@ bool parseItemReplacement(sim_t* sim,  const std::string& item_list){
     int new_id=atoi(new_id_str.c_str());
     if (new_id<=0){
       // try to find new id in URL, after ?i= or &i=
-      
+      std::string new_id2=tolower(new_id_str);
+      size_t idx=new_id2.find("?i=");
+      if (idx==string::npos)
+        idx=new_id2.find("&i=");
+      if (idx!=string::npos){
+        idx+=3;
+        new_id2.erase(0,idx);
+        size_t idx2= new_id2.find("&",idx);
+        if (idx2!=string::npos) new_id2.erase(idx2);
+        new_id=atoi(new_id2.c_str());
+      }
+      // if still didnt find ID, error
+      if (new_id<=0){
+        printf("Wrong Item ID %s in %s\n", new_id_str.c_str(), item_list.c_str());
+        return false;
+      }else{
+        char buff[200];
+        sprintf(buff,"%d",new_id);
+        new_id_str=buff;
+      }
     }
     // check options
     std::string opt_slot="";
@@ -1037,7 +1164,7 @@ bool parseItemReplacement(sim_t* sim,  const std::string& item_list){
         opt.erase(idx);
         opt= tolower(opt);
         if (opt=="slot") opt_slot=value; else
-        if ((opt=="oldid")||(opt=="old_id")) opt_oldid=value; else
+        if ((opt=="oldid")||(opt=="old_id")||(opt=="old_item")) opt_oldid=value; else
         if ((opt=="gem")||(opt=="gems"))  opt_gems+=(opt_gems!=""?" and ":"")+value; else
         if ((opt=="ench")||(opt=="enchant"))  opt_ench+=(opt_ench!=""?" and ":"")+value; else
         {
@@ -1052,7 +1179,7 @@ bool parseItemReplacement(sim_t* sim,  const std::string& item_list){
     replace_char( opt_ench ,'_',' ');
     // now parse and replace new item
     if (new_id>0)
-      replace_item(sim, new_id_str, opt_slot, opt_oldid, opt_gems, opt_ench);
+      replace_item(sim, new_id_str, opt_oldid, opt_slot, opt_gems, opt_ench);
   }
   //return
   if ( debug )
@@ -1068,7 +1195,7 @@ bool armory_option_parse(sim_t* sim,  const std::string& name, const std::string
   if ( name=="player" )             return parseArmory( sim, value);
   if ( name=="gear" )               return parseArmory( sim, value, false, true );
   if ( name=="armory" )             return parseArmoryPlayers( sim, value);
-  if ( name=="new_item_id" )        return parseItemReplacement( sim, value);
+  if ( name=="new_item" )           return parseItemReplacement( sim, value);
   if ( name=="http_cache_clear") {
     http_t::cache_clear();
     return true;
