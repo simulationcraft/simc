@@ -555,7 +555,7 @@ struct compare_name
 {
   bool operator()( player_t* l, player_t* r ) const
   {
-    if( l -> type != r -> type ) 
+    if( l -> type != r -> type )
     {
       return l -> type < r -> type;
     }
@@ -976,7 +976,7 @@ bool sim_t::parse_option( const std::string& name,
       { "queue_lag_range",                  OPT_FLT,    &( queue_lag_range                          ) },
       { "reaction_time",                    OPT_FLT,    &( reaction_time                            ) },
       { "travel_variance",                  OPT_FLT,    &( travel_variance                          ) },
-      // @option_doc loc=global/output title="Output"
+      // @option_doc loc=skip
       { "combat_log",                       OPT_STRING, &( log_file_str                             ) },
       { "debug",                            OPT_BOOL,   &( debug                                    ) },
       { "html",                             OPT_STRING, &( html_file_str                            ) },
