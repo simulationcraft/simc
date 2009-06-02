@@ -11,6 +11,19 @@ using namespace std;
 
 const bool ParseEachItem=true;
 
+struct armory_item_t{
+  std::string id;
+  std::string name;
+  int slot;
+  gear_stats_t gear;
+  bool has_enchants;
+  gear_stats_t enchants;
+  int n_gems;
+  gear_stats_t gems[6];
+  bool has_bonus;
+  gear_stats_t gem_bonus;
+};
+
 struct urlSplit_t
 {
   std::string wwwAdr;
@@ -20,10 +33,15 @@ struct urlSplit_t
   sim_t* sim;
   std::string generated_options;
   unsigned int setPieces[20];
+  player_t* active_player;
+  armory_item_t item_stats[20];
+
 };
 
 enum url_page_t {  UPG_GEAR, UPG_TALENTS, UPG_ITEM  };
 
+
+// utility functions
 std::string tolower( std::string src )
 {
   std::string dest=src;
@@ -101,6 +119,7 @@ std::string proper_option_name( std::string& full_name )
 //split URL to server, realm, player
 bool splitURL( std::string URL, urlSplit_t& aURL )
 {
+  memset(&aURL,0, sizeof(aURL));
   size_t iofs=0;
   size_t id_http= URL.find( "http://",iofs );
   if ( id_http != string::npos ) iofs=7;
@@ -115,11 +134,7 @@ bool splitURL( std::string URL, urlSplit_t& aURL )
     id_name= URL.find( "&n=",iofs );
     id_name_sz=3;
   }
-  aURL.wwwAdr="";
-  aURL.realm="";
-  aURL.player="";
   aURL.srvType=1;
-  aURL.generated_options="";
   if ( id_name != string::npos )
   {
     //extract url, realm and player names
@@ -372,17 +387,42 @@ void addItemGlyphOption( urlSplit_t& aURL, std::string&  node, std::string name 
 
 
 // display all stats
-void displayStats( gear_stats_t& gs, gear_stats_t* gsDiff=0 )
+void displayStats_one( std::string comment, gear_stats_t& gs )
 {
-  if ( gsDiff ) printf( "Gear Stats Difference:\n" ); else printf( "Gear Stats:\n" );
+  char buff[200];
+  sprintf(buff,"   %10s : ",comment.c_str());
+  std::string s=buff;
+  int old_len=0;
   for ( unsigned int i=STAT_NONE; i<STAT_MAX; i++ )
   {
-    double oldVal=0;
-    if ( gsDiff ) oldVal=gsDiff->get_stat( i );
-    double val=gs.get_stat( i )- oldVal;
-    if ( val!=0 )
-      printf( "    %s = %lf\n",util_t::stat_type_string( i ), val );
+    double val=gs.get_stat( i );
+    if ( val!=0 ){
+      sprintf( buff, "%s=%1.0lf, ",util_t::stat_type_string( i ), val );
+      if (strlen(buff)+s.length()-old_len>78){
+        old_len=s.length();
+        s+="\n                ";
+      }
+      s+=buff;
+    }
   }
+  printf("%s\n",s.c_str());
+}
+
+void displayStats( armory_item_t& gs )
+{
+  printf( "ITEM=%6s/%2d: %s\n", gs.id.c_str(), gs.slot, gs.name.c_str() );
+  displayStats_one("gear", gs.gear);
+  if (gs.has_enchants)
+    displayStats_one("enchants", gs.enchants);
+  if (gs.n_gems>0){
+    gear_stats_t sum_gems;
+    char buff[200];
+    for (int i=1; i<=gs.n_gems; i++) sum_gems+=gs.gems[i];
+    sum_gems+=gs.gem_bonus;
+    sprintf(buff,"gems(%d)",gs.n_gems);
+    displayStats_one(buff, sum_gems);
+  }
+  printf("\n");
 }
 
 
@@ -576,29 +616,33 @@ void addTextStats( gear_stats_t& gs, std::string txt, int type )
 
 // parse stats from one item and adds it to total stats in "gs"
 // also should parse weapon stats
-bool  parseItemStats( urlSplit_t& aURL, gear_stats_t& gs,  std::string& item_id, std::string& item_slot )
+bool  parseItemStats( urlSplit_t& aURL, armory_item_t& gs,  std::string& item_id, std::string& item_slot )
 {
   if ( item_id=="" ) return false;
   std::string src= getArmoryData( aURL,UPG_ITEM, "&i="+item_id+"&s="+item_slot );
   if ( src=="" )  return false;
+  gs.id=item_id;
+  gs.name= getNode(src, "name"); 
+  gs.slot= atoi(item_slot.c_str());
   // add fixed stats
-  gs.add_stat( STAT_STRENGTH,                  getNodeFloat( src, "bonusStrength" ) );
-  gs.add_stat( STAT_AGILITY,                   getNodeFloat( src, "bonusAgility" ) );
-  gs.add_stat( STAT_STAMINA,                   getNodeFloat( src, "bonusStamina" ) );
-  gs.add_stat( STAT_INTELLECT,                 getNodeFloat( src, "bonusIntellect" ) );
-  gs.add_stat( STAT_SPIRIT,                    getNodeFloat( src, "bonusSpirit" ) );
-  gs.add_stat( STAT_SPELL_POWER,               getNodeFloat( src, "bonusSpellPower" ) );
-  gs.add_stat( STAT_MP5,                       getNodeFloat( src, "bonusManaRegen" ) );
-  gs.add_stat( STAT_ATTACK_POWER,              getNodeFloat( src, "bonusAttackPower" ) );
-  gs.add_stat( STAT_EXPERTISE_RATING,          getNodeFloat( src, "bonusExpertiseRating" ) );
-  gs.add_stat( STAT_ARMOR_PENETRATION_RATING,  getNodeFloat( src, "bonusArmorPenetration" ) );
-  gs.add_stat( STAT_HASTE_RATING,              getNodeFloat( src, "bonusHasteRating" ) );
-  gs.add_stat( STAT_HIT_RATING,                getNodeFloat( src, "bonusHitRating" ) );
-  gs.add_stat( STAT_CRIT_RATING,               getNodeFloat( src, "bonusCritRating" ) );
-  gs.add_stat( STAT_ARMOR,                     getNodeFloat( src, "armor" ) );
+  gs.gear.add_stat( STAT_STRENGTH,                  getNodeFloat( src, "bonusStrength" ) );
+  gs.gear.add_stat( STAT_AGILITY,                   getNodeFloat( src, "bonusAgility" ) );
+  gs.gear.add_stat( STAT_STAMINA,                   getNodeFloat( src, "bonusStamina" ) );
+  gs.gear.add_stat( STAT_INTELLECT,                 getNodeFloat( src, "bonusIntellect" ) );
+  gs.gear.add_stat( STAT_SPIRIT,                    getNodeFloat( src, "bonusSpirit" ) );
+  gs.gear.add_stat( STAT_SPELL_POWER,               getNodeFloat( src, "bonusSpellPower" ) );
+  gs.gear.add_stat( STAT_MP5,                       getNodeFloat( src, "bonusManaRegen" ) );
+  gs.gear.add_stat( STAT_ATTACK_POWER,              getNodeFloat( src, "bonusAttackPower" ) );
+  gs.gear.add_stat( STAT_EXPERTISE_RATING,          getNodeFloat( src, "bonusExpertiseRating" ) );
+  gs.gear.add_stat( STAT_ARMOR_PENETRATION_RATING,  getNodeFloat( src, "bonusArmorPenetration" ) );
+  gs.gear.add_stat( STAT_HASTE_RATING,              getNodeFloat( src, "bonusHasteRating" ) );
+  gs.gear.add_stat( STAT_HIT_RATING,                getNodeFloat( src, "bonusHitRating" ) );
+  gs.gear.add_stat( STAT_CRIT_RATING,               getNodeFloat( src, "bonusCritRating" ) );
+  gs.gear.add_stat( STAT_ARMOR,                     getNodeFloat( src, "armor" ) );
   // add textual - descriptive - stats
-  addTextStats( gs, getNode( src, "enchant" ),1 );
-  addTextStats( gs, getNode( src, "spellData.desc" ),2 );
+  addTextStats( gs.enchants, getNode( src, "enchant" ),1 );
+  gs.has_enchants= (getNode( src, "enchant" )!="");
+  addTextStats( gs.gear, getNode( src, "spellData.desc" ),2 );
   // parse gems and sockets
   std::string node= getNode( src, "socketData" );
   bool allMatch=true;
@@ -607,14 +651,16 @@ bool  parseItemStats( urlSplit_t& aURL, gear_stats_t& gs,  std::string& item_id,
     std::string gem= getNodeOne( node, "socket" ,i );
     if ( gem!="" )
     {
-      addTextStats( gs, getValue( gem, "enchant" ),3 );
+      gs.n_gems++;
+      addTextStats( gs.gems[gs.n_gems], getValue( gem, "enchant" ),3 );
       if ( getValue( gem, "match" )!="1" ) allMatch=false;
     }
   }
   // add socket bonus if all match
   if ( allMatch )
   {
-    addTextStats( gs, getNode( node, "socketMatchEnchant" ),4 );
+    addTextStats( gs.gem_bonus, getNode( node, "socketMatchEnchant" ),4 );
+    gs.has_bonus=true;
   }
   // parse set bonus
   node= getNode( src, "setData" );
@@ -638,7 +684,23 @@ bool  parseItemStats( urlSplit_t& aURL, gear_stats_t& gs,  std::string& item_id,
       if ( item_slot=="17" ) wpnName="ranged";
   if ( wpnName!="" )
   {
-    std::string wpnValue= tolower( getNode( src, "equipData.subclassName" ) );
+    std::string wpnValue= "";
+    std::string wpnClass=tolower( getNode( src, "equipData.subclassName" ) );
+    // try to match wpn class name to our names
+    size_t idx=wpnClass.find(" ");
+    if ( idx != string::npos) wpnClass.erase(idx);
+    bool is_2h= getNode( src, "equipData.inventoryType" ) == "17";
+    if (is_2h){ // try first to find _2H version if Two Hander
+      std::string wpnClass_2h=wpnClass+"_2h";
+      for (int i=0; i<WEAPON_MAX && wpnValue==""; i++)
+        if (util_t::weapon_type_string(i)==wpnClass_2h)
+          wpnValue=wpnClass_2h;
+    }
+    if (wpnValue=="") // if not 2H, or not named (staff_2h), try without
+      for (int i=0; i<WEAPON_MAX && wpnValue==""; i++)
+        if (util_t::weapon_type_string(i)==wpnClass)
+          wpnValue=wpnClass;
+    //add rest of weapon data
     if ( wpnValue!="" )
     {
       wpnValue+= ",dps="+getNode( src, "damageData.dps" );
@@ -662,10 +724,19 @@ bool  parseItemStats( urlSplit_t& aURL, gear_stats_t& gs,  std::string& item_id,
   return true;
 }
 
+gear_stats_t sum_item_stats(armory_item_t& aitem){
+  gear_stats_t gs=aitem.gear;
+  gs+=aitem.enchants;
+  for (int i=1; i<=aitem.n_gems; i++) gs+=aitem.gems[i];
+  gs+=aitem.gem_bonus;
+  return gs;
+}
 
 // copy gear stats toplayer and form option str
-bool  copy_gear_to_player(urlSplit_t& aURL, gear_stats_t& gs){
+bool  copy_gear_to_player(urlSplit_t& aURL){
   if (!aURL.sim->active_player) return false;
+  gear_stats_t gs;
+  for (int i=0; i<20; i++) gs+= sum_item_stats(aURL.item_stats[i]);
   aURL.sim->active_player->gear_stats = gs;
   //form option string
   std::string opt="";
@@ -680,7 +751,6 @@ bool  copy_gear_to_player(urlSplit_t& aURL, gear_stats_t& gs){
        aURL.generated_options+=opt;
     }
   }
-
   return true;
 }
 
@@ -708,6 +778,7 @@ bool save_player_simcraft(urlSplit_t& aURL)
 // player->parse_option()
 bool parseArmory( sim_t* sim, std::string URL, bool inactiveTalents=false, bool gearOnly=false, bool save_player=false )
 {
+  if (!sim) return false;
   std::string optionStr="";
   // split URL
   urlSplit_t aURL;
@@ -799,6 +870,7 @@ bool parseArmory( sim_t* sim, std::string URL, bool inactiveTalents=false, bool 
     printf("No active player in Armory parse ! Last player name: %s\n",charName.c_str());
     return true;
   }
+  aURL.active_player= sim->active_player;
 
   // parse for glyphs
   if ( ( glyphs!="" )&&( sim->active_player ) )
@@ -823,7 +895,6 @@ bool parseArmory( sim_t* sim, std::string URL, bool inactiveTalents=false, bool 
   node = getNode( src, "characterTab.items" );
   if ( ( node!="" )&&( sim->active_player ) )
   {
-    gear_stats_t gs, oldGS;
     unsigned int nGs=0;
     std::string item_node, item_id;
     for ( unsigned int i=1; i<=18; i++ )
@@ -839,24 +910,29 @@ bool parseArmory( sim_t* sim, std::string URL, bool inactiveTalents=false, bool 
       {
         std::string  item_id= getValue( item_node, "id" );
         std::string  item_slot= getValue( item_node, "slot" );
-        if ( parseItemStats( aURL, gs, item_id, item_slot ) ) nGs++;
-        if ( debug>1 )
-        { // detailed, show every item stat gains
-          printf( "ITEM= %s & slot=%s\n", item_id.c_str(),item_slot.c_str() );
-          displayStats( gs, &oldGS );
-          oldGS=gs;
+        int slot=atoi(item_slot.c_str());
+        if ((slot>=0)&&(slot<20)){
+          armory_item_t item_stats;
+          memset(&item_stats,0, sizeof(item_stats));
+          if ( parseItemStats( aURL, item_stats, item_id, item_slot ) ){
+            nGs++;
+            aURL.item_stats[slot]=item_stats;
+          }
+          if ( debug>1 )
+          { // detailed, show every item stat gains
+            displayStats( item_stats);
+          }
         }
       }
     }
     //copy gear stats if needed
     if ( ( nGs>0 )&& ParseEachItem ){
-      copy_gear_to_player(aURL, gs);
+      copy_gear_to_player(aURL);
     }
   }else{
     printf("No <characterTab.items> found in Armory for player: %s\n",charName.c_str());
   }
 
-  if ( debug && sim->active_player) displayStats( sim->active_player->gear_stats );
   // now parse remaining options, if any
   if ( optionStr!="" )
   {
@@ -869,11 +945,14 @@ bool parseArmory( sim_t* sim, std::string URL, bool inactiveTalents=false, bool 
   }
   //save player simcraft if requested
   if (save_player) save_player_simcraft(aURL);
+  if (!sim->last_armory_player)
+    sim->last_armory_player= new urlSplit_t;
+  *sim->last_armory_player= aURL;
   //return
   if ( debug )
   {
     char c;
-    printf( "<debug> Press any key ...\n" );
+    printf( "<debug Armory Parse> Press any key ...\n" );
     scanf( "%c",&c );
   }
   return true;
@@ -918,8 +997,11 @@ bool parseArmoryPlayers( sim_t* sim, std::string URL ){
 }
 
 
-bool  replace_item(sim_t* sim, std::string& new_id_str,std::string& opt_slot,std::string& opt_gems,std::string& opt_ench){
-  printf("Replacing ID=%s , slot=%s , gems=\"%s\" , ench=\"%s\" \n",new_id_str.c_str(), opt_slot.c_str(), opt_gems.c_str(), opt_ench.c_str());
+bool  replace_item(sim_t* sim, std::string& new_id_str, std::string& opt_old_id, std::string& opt_slot,std::string& opt_gems,std::string& opt_ench){
+  if (new_id_str=="") return false;
+  printf("Replacing ID=%s , slot=%s (or old_id=%s ) , gems=\"%s\" , ench=\"%s\" \n",
+         new_id_str.c_str(), opt_old_id.c_str(), opt_slot.c_str(), opt_gems.c_str(), opt_ench.c_str());
+
   return true;
 }
 
@@ -944,6 +1026,7 @@ bool parseItemReplacement(sim_t* sim,  const std::string& item_list){
     }
     // check options
     std::string opt_slot="";
+    std::string opt_oldid="";
     std::string opt_gems="";
     std::string opt_ench="";
     for (int u=1; u<num_opt; u++){
@@ -954,7 +1037,8 @@ bool parseItemReplacement(sim_t* sim,  const std::string& item_list){
         opt.erase(idx);
         opt= tolower(opt);
         if (opt=="slot") opt_slot=value; else
-          if ((opt=="gem")||(opt=="gems"))  opt_gems+=(opt_gems!=""?" and ":"")+value; else
+        if ((opt=="oldid")||(opt=="old_id")) opt_oldid=value; else
+        if ((opt=="gem")||(opt=="gems"))  opt_gems+=(opt_gems!=""?" and ":"")+value; else
         if ((opt=="ench")||(opt=="enchant"))  opt_ench+=(opt_ench!=""?" and ":"")+value; else
         {
           printf("Unknown option: %s in %s\n", options[u].c_str(), splits[i].c_str());
@@ -967,7 +1051,15 @@ bool parseItemReplacement(sim_t* sim,  const std::string& item_list){
     replace_char( opt_gems ,'_',' ');
     replace_char( opt_ench ,'_',' ');
     // now parse and replace new item
-    replace_item(sim, new_id_str, opt_slot, opt_gems, opt_ench);
+    if (new_id>0)
+      replace_item(sim, new_id_str, opt_slot, opt_oldid, opt_gems, opt_ench);
+  }
+  //return
+  if ( debug )
+  {
+    char c;
+    printf( "<debug Replace Item> Press any key ...\n" );
+    scanf( "%c",&c );
   }
   return true;
 }

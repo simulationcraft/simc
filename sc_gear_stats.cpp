@@ -94,6 +94,35 @@ void gear_stats_t::add_stat( int    stat,
 }
 
 
+gear_stats_t& gear_stats_t::operator+=(const gear_stats_t& rhs)
+{
+  for (int i=0; i<ATTRIBUTE_MAX; i++) attribute[i]+= rhs.attribute[i];
+  for (int i=0; i<RESOURCE_MAX; i++)  resource[i] += rhs.resource[i];
+  spell_power               +=rhs.spell_power;
+  spell_penetration         +=rhs.spell_penetration;
+  mp5                       +=rhs.mp5;
+  attack_power              +=rhs.attack_power;
+  expertise_rating          +=rhs.expertise_rating;
+  armor_penetration_rating  +=rhs.armor_penetration_rating;
+  hit_rating                +=rhs.hit_rating;
+  crit_rating               +=rhs.crit_rating;
+  haste_rating              +=rhs.haste_rating;
+  weapon_dps                +=rhs.weapon_dps;
+  weapon_speed              +=rhs.weapon_speed; //!!??
+  armor                     +=rhs.armor;
+  return *this;
+
+}
+
+gear_stats_t gear_stats_t::operator+(const gear_stats_t& rhs) const
+{
+  gear_stats_t temp = *this;  // Copy 'this' which has not to be modified 
+  temp+=rhs;                  // add to it right hand side
+  return temp;                // return temp
+}
+
+
+
 // gear_stats_t::get_stat ===================================================
 
 double gear_stats_t::get_stat( int stat )

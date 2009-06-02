@@ -93,6 +93,8 @@ struct uptime_t;
 struct warlock_t;
 struct warrior_t;
 struct weapon_t;
+struct urlSplit_t;
+
 
 // Enumerations ==============================================================
 
@@ -403,6 +405,9 @@ struct gear_stats_t
   double get_stat( int stat );
 
   static double stat_mod( int stat );
+  gear_stats_t& operator+=(const gear_stats_t& rhs);
+  gear_stats_t operator+(const gear_stats_t& rhs) const;
+
 };
 
 // Application ===============================================================
@@ -444,6 +449,7 @@ struct sim_t : public app_t
   int         armor_update_interval, potion_sickness;
   int         optimal_raid, log, debug, debug_armory;
   double      jow_chance, jow_ppm;
+  urlSplit_t* last_armory_player;
 
   std::vector<std::string> party_encoding;
 
