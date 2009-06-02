@@ -7,6 +7,9 @@ require_once 'defines.inc.php';
 require_once 'functions.inc.php';
 require_once 'wow_functions.inc.php';
 
+// Set the error and exception handler
+set_exception_handler('custom_exception_handler');
+
 
 // If the 'simulate' button was pressed, run the simulation
 if( isset($_POST['simulate']) && ALLOW_SIMULATION===true ) {

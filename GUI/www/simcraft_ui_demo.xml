@@ -3,137 +3,6 @@
 <xml>
   <options max_file_size="1048576" allow_simulation="1">
     <supported_classes>
-      <class class="druid" label="Druid">
-        <option name="glyph_berserk" label="Glyph Berserk" type="boolean" cpp_type="OPT_BOOL" file="sc_druid.cpp" optdoc_loc="player/druid/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_insect_swarm" label="Glyph Insect Swarm" type="boolean" cpp_type="OPT_BOOL" file="sc_druid.cpp" optdoc_loc="player/druid/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_innervate" label="Glyph Innervate" type="boolean" cpp_type="OPT_BOOL" file="sc_druid.cpp" optdoc_loc="player/druid/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_mangle" label="Glyph Mangle" type="boolean" cpp_type="OPT_BOOL" file="sc_druid.cpp" optdoc_loc="player/druid/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_moonfire" label="Glyph Moonfire" type="boolean" cpp_type="OPT_BOOL" file="sc_druid.cpp" optdoc_loc="player/druid/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_rip" label="Glyph Rip" type="boolean" cpp_type="OPT_BOOL" file="sc_druid.cpp" optdoc_loc="player/druid/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_savage_roar" label="Glyph Savage Roar" type="boolean" cpp_type="OPT_BOOL" file="sc_druid.cpp" optdoc_loc="player/druid/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_shred" label="Glyph Shred" type="boolean" cpp_type="OPT_BOOL" file="sc_druid.cpp" optdoc_loc="player/druid/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_starfire" label="Glyph Starfire" type="boolean" cpp_type="OPT_BOOL" file="sc_druid.cpp" optdoc_loc="player/druid/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_starfall" label="Glyph Starfall" type="boolean" cpp_type="OPT_BOOL" file="sc_druid.cpp" optdoc_loc="player/druid/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="idol_of_the_corruptor" label="Idol Of The Corruptor" type="boolean" cpp_type="OPT_BOOL" file="sc_druid.cpp" optdoc_loc="player/druid/idols" optdoc_title="Idols" value=""/>
-        <option name="idol_of_the_crying_wind" label="Idol Of The Crying Wind" type="boolean" cpp_type="OPT_BOOL" file="sc_druid.cpp" optdoc_loc="player/druid/idols" optdoc_title="Idols" value=""/>
-        <option name="idol_of_the_ravenous_beast" label="Idol Of The Ravenous Beast" type="boolean" cpp_type="OPT_BOOL" file="sc_druid.cpp" optdoc_loc="player/druid/idols" optdoc_title="Idols" value=""/>
-        <option name="idol_of_steadfast_renewal" label="Idol Of Steadfast Renewal" type="boolean" cpp_type="OPT_BOOL" file="sc_druid.cpp" optdoc_loc="player/druid/idols" optdoc_title="Idols" value=""/>
-        <option name="idol_of_the_shooting_star" label="Idol Of The Shooting Star" type="boolean" cpp_type="OPT_BOOL" file="sc_druid.cpp" optdoc_loc="player/druid/idols" optdoc_title="Idols" value=""/>
-        <option name="idol_of_the_unseen_moon" label="Idol Of The Unseen Moon" type="boolean" cpp_type="OPT_BOOL" file="sc_druid.cpp" optdoc_loc="player/druid/idols" optdoc_title="Idols" value=""/>
-        <option name="idol_of_worship" label="Idol Of Worship" type="boolean" cpp_type="OPT_BOOL" file="sc_druid.cpp" optdoc_loc="player/druid/idols" optdoc_title="Idols" value=""/>
-      </class>
-      <class class="hunter" label="Hunter">
-        <option name="glyph_aimed_shot" label="Glyph Aimed Shot" type="boolean" cpp_type="OPT_BOOL" file="sc_hunter.cpp" optdoc_loc="player/hunter/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_aspect_of_the_viper" label="Glyph Aspect Of The Viper" type="boolean" cpp_type="OPT_BOOL" file="sc_hunter.cpp" optdoc_loc="player/hunter/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_bestial_wrath" label="Glyph Bestial Wrath" type="boolean" cpp_type="OPT_BOOL" file="sc_hunter.cpp" optdoc_loc="player/hunter/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_chimera_shot" label="Glyph Chimera Shot" type="boolean" cpp_type="OPT_BOOL" file="sc_hunter.cpp" optdoc_loc="player/hunter/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_explosive_shot" label="Glyph Explosive Shot" type="boolean" cpp_type="OPT_BOOL" file="sc_hunter.cpp" optdoc_loc="player/hunter/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_hunters_mark" label="Glyph Hunters Mark" type="boolean" cpp_type="OPT_BOOL" file="sc_hunter.cpp" optdoc_loc="player/hunter/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_improved_aspect_of_the_hawk" label="Glyph Improved Aspect Of The Hawk" type="boolean" cpp_type="OPT_BOOL" file="sc_hunter.cpp" optdoc_loc="player/hunter/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_kill_shot" label="Glyph Kill Shot" type="boolean" cpp_type="OPT_BOOL" file="sc_hunter.cpp" optdoc_loc="player/hunter/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_rapid_fire" label="Glyph Rapid Fire" type="boolean" cpp_type="OPT_BOOL" file="sc_hunter.cpp" optdoc_loc="player/hunter/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_serpent_sting" label="Glyph Serpent Sting" type="boolean" cpp_type="OPT_BOOL" file="sc_hunter.cpp" optdoc_loc="player/hunter/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_steady_shot" label="Glyph Steady Shot" type="boolean" cpp_type="OPT_BOOL" file="sc_hunter.cpp" optdoc_loc="player/hunter/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_trueshot_aura" label="Glyph Trueshot Aura" type="boolean" cpp_type="OPT_BOOL" file="sc_hunter.cpp" optdoc_loc="player/hunter/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="ammo_dps" label="Ammo Dps" type="float" cpp_type="OPT_FLT" file="sc_hunter.cpp" optdoc_loc="player/hunter/misc" optdoc_title="Misc" value=""/>
-        <option name="quiver_haste" label="Quiver Haste" type="float" cpp_type="OPT_FLT" file="sc_hunter.cpp" optdoc_loc="player/hunter/misc" optdoc_title="Misc" value=""/>
-        <option name="summon_pet" label="Summon Pet" type="string" cpp_type="OPT_STRING" file="sc_hunter.cpp" optdoc_loc="player/hunter/misc" optdoc_title="Misc" value=""/>
-      </class>
-      <class class="mage" label="Mage">
-        <option name="glyph_arcane_barrage" label="Glyph Arcane Barrage" type="boolean" cpp_type="OPT_BOOL" file="sc_mage.cpp" optdoc_loc="player/mage/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_arcane_blast" label="Glyph Arcane Blast" type="boolean" cpp_type="OPT_BOOL" file="sc_mage.cpp" optdoc_loc="player/mage/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_arcane_missiles" label="Glyph Arcane Missiles" type="boolean" cpp_type="OPT_BOOL" file="sc_mage.cpp" optdoc_loc="player/mage/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_arcane_power" label="Glyph Arcane Power" type="boolean" cpp_type="OPT_BOOL" file="sc_mage.cpp" optdoc_loc="player/mage/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_fire_ball" label="Glyph Fire Ball" type="boolean" cpp_type="OPT_BOOL" file="sc_mage.cpp" optdoc_loc="player/mage/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_frost_bolt" label="Glyph Frost Bolt" type="boolean" cpp_type="OPT_BOOL" file="sc_mage.cpp" optdoc_loc="player/mage/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_ice_lance" label="Glyph Ice Lance" type="boolean" cpp_type="OPT_BOOL" file="sc_mage.cpp" optdoc_loc="player/mage/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_improved_scorch" label="Glyph Improved Scorch" type="boolean" cpp_type="OPT_BOOL" file="sc_mage.cpp" optdoc_loc="player/mage/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_living_bomb" label="Glyph Living Bomb" type="boolean" cpp_type="OPT_BOOL" file="sc_mage.cpp" optdoc_loc="player/mage/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_mage_armor" label="Glyph Mage Armor" type="boolean" cpp_type="OPT_BOOL" file="sc_mage.cpp" optdoc_loc="player/mage/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_mana_gem" label="Glyph Mana Gem" type="boolean" cpp_type="OPT_BOOL" file="sc_mage.cpp" optdoc_loc="player/mage/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_mirror_image" label="Glyph Mirror Image" type="boolean" cpp_type="OPT_BOOL" file="sc_mage.cpp" optdoc_loc="player/mage/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_molten_armor" label="Glyph Molten Armor" type="boolean" cpp_type="OPT_BOOL" file="sc_mage.cpp" optdoc_loc="player/mage/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_water_elemental" label="Glyph Water Elemental" type="boolean" cpp_type="OPT_BOOL" file="sc_mage.cpp" optdoc_loc="player/mage/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_frostfire" label="Glyph Frostfire" type="boolean" cpp_type="OPT_BOOL" file="sc_mage.cpp" optdoc_loc="player/mage/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="armor_type" label="Armor Type" type="string" cpp_type="OPT_STRING" file="sc_mage.cpp" optdoc_loc="player/mage/misc" optdoc_title="Misc" value=""/>
-        <option name="focus_magic_target" label="Focus Magic Target" type="string" cpp_type="OPT_STRING" file="sc_mage.cpp" optdoc_loc="player/mage/misc" optdoc_title="Misc" value=""/>
-      </class>
-      <class class="priest" label="Priest">
-        <option name="glyph_shadow_word_death" label="Glyph Shadow Word Death" type="boolean" cpp_type="OPT_BOOL" file="sc_priest.cpp" optdoc_loc="player/priest/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_shadow_word_pain" label="Glyph Shadow Word Pain" type="boolean" cpp_type="OPT_BOOL" file="sc_priest.cpp" optdoc_loc="player/priest/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_shadow" label="Glyph Shadow" type="boolean" cpp_type="OPT_BOOL" file="sc_priest.cpp" optdoc_loc="player/priest/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="devious_mind_delay" label="Devious Mind Delay" type="float" cpp_type="OPT_FLT" file="sc_priest.cpp" optdoc_loc="player/priest/misc" optdoc_title="Misc" value=""/>
-      </class>
-      <class class="rogue" label="Rogue">
-        <option name="glyph_adrenaline_rush" label="Glyph Adrenaline Rush" type="boolean" cpp_type="OPT_BOOL" file="sc_rogue.cpp" optdoc_loc="player/rogue/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_backstab" label="Glyph Backstab" type="boolean" cpp_type="OPT_BOOL" file="sc_rogue.cpp" optdoc_loc="player/rogue/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_blade_flurry" label="Glyph Blade Flurry" type="boolean" cpp_type="OPT_BOOL" file="sc_rogue.cpp" optdoc_loc="player/rogue/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_eviscerate" label="Glyph Eviscerate" type="boolean" cpp_type="OPT_BOOL" file="sc_rogue.cpp" optdoc_loc="player/rogue/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_expose_armor" label="Glyph Expose Armor" type="boolean" cpp_type="OPT_BOOL" file="sc_rogue.cpp" optdoc_loc="player/rogue/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_feint" label="Glyph Feint" type="boolean" cpp_type="OPT_BOOL" file="sc_rogue.cpp" optdoc_loc="player/rogue/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_ghostly_strike" label="Glyph Ghostly Strike" type="boolean" cpp_type="OPT_BOOL" file="sc_rogue.cpp" optdoc_loc="player/rogue/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_hemorrhage" label="Glyph Hemorrhage" type="boolean" cpp_type="OPT_BOOL" file="sc_rogue.cpp" optdoc_loc="player/rogue/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_hunger_for_blood" label="Glyph Hunger For Blood" type="boolean" cpp_type="OPT_BOOL" file="sc_rogue.cpp" optdoc_loc="player/rogue/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_killing_spree" label="Glyph Killing Spree" type="boolean" cpp_type="OPT_BOOL" file="sc_rogue.cpp" optdoc_loc="player/rogue/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_mutilate" label="Glyph Mutilate" type="boolean" cpp_type="OPT_BOOL" file="sc_rogue.cpp" optdoc_loc="player/rogue/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_preparation" label="Glyph Preparation" type="boolean" cpp_type="OPT_BOOL" file="sc_rogue.cpp" optdoc_loc="player/rogue/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_rupture" label="Glyph Rupture" type="boolean" cpp_type="OPT_BOOL" file="sc_rogue.cpp" optdoc_loc="player/rogue/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_shadow_dance" label="Glyph Shadow Dance" type="boolean" cpp_type="OPT_BOOL" file="sc_rogue.cpp" optdoc_loc="player/rogue/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_sinister_strike" label="Glyph Sinister Strike" type="boolean" cpp_type="OPT_BOOL" file="sc_rogue.cpp" optdoc_loc="player/rogue/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_slice_and_dice" label="Glyph Slice And Dice" type="boolean" cpp_type="OPT_BOOL" file="sc_rogue.cpp" optdoc_loc="player/rogue/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_tricks_of_the_trade" label="Glyph Tricks Of The Trade" type="boolean" cpp_type="OPT_BOOL" file="sc_rogue.cpp" optdoc_loc="player/rogue/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_vigor" label="Glyph Vigor" type="boolean" cpp_type="OPT_BOOL" file="sc_rogue.cpp" optdoc_loc="player/rogue/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="honor_among_thieves_interval" label="Honor Among Thieves Interval" type="float" cpp_type="OPT_FLT" file="sc_rogue.cpp" optdoc_loc="player/rogue/misc" optdoc_title="Misc" value=""/>
-        <option name="tricks_of_the_trade_target" label="Tricks Of The Trade Target" type="string" cpp_type="OPT_STRING" file="sc_rogue.cpp" optdoc_loc="player/rogue/misc" optdoc_title="Misc" value=""/>
-      </class>
-      <class class="shaman" label="Shaman">
-        <option name="glyph_elemental_mastery" label="Glyph Elemental Mastery" type="boolean" cpp_type="OPT_BOOL" file="sc_shaman.cpp" optdoc_loc="player/shaman/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_feral_spirit" label="Glyph Feral Spirit" type="boolean" cpp_type="OPT_BOOL" file="sc_shaman.cpp" optdoc_loc="player/shaman/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_flame_shock" label="Glyph Flame Shock" type="boolean" cpp_type="OPT_BOOL" file="sc_shaman.cpp" optdoc_loc="player/shaman/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_flametongue_weapon" label="Glyph Flametongue Weapon" type="boolean" cpp_type="OPT_BOOL" file="sc_shaman.cpp" optdoc_loc="player/shaman/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_lava" label="Glyph Lava" type="boolean" cpp_type="OPT_BOOL" file="sc_shaman.cpp" optdoc_loc="player/shaman/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_lava_lash" label="Glyph Lava Lash" type="boolean" cpp_type="OPT_BOOL" file="sc_shaman.cpp" optdoc_loc="player/shaman/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_lightning_bolt" label="Glyph Lightning Bolt" type="boolean" cpp_type="OPT_BOOL" file="sc_shaman.cpp" optdoc_loc="player/shaman/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_lightning_shield" label="Glyph Lightning Shield" type="boolean" cpp_type="OPT_BOOL" file="sc_shaman.cpp" optdoc_loc="player/shaman/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_mana_tide" label="Glyph Mana Tide" type="boolean" cpp_type="OPT_BOOL" file="sc_shaman.cpp" optdoc_loc="player/shaman/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_shocking" label="Glyph Shocking" type="boolean" cpp_type="OPT_BOOL" file="sc_shaman.cpp" optdoc_loc="player/shaman/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_stormstrike" label="Glyph Stormstrike" type="boolean" cpp_type="OPT_BOOL" file="sc_shaman.cpp" optdoc_loc="player/shaman/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_thunderstorm" label="Glyph Thunderstorm" type="boolean" cpp_type="OPT_BOOL" file="sc_shaman.cpp" optdoc_loc="player/shaman/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_totem_of_wrath" label="Glyph Totem Of Wrath" type="boolean" cpp_type="OPT_BOOL" file="sc_shaman.cpp" optdoc_loc="player/shaman/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_windfury_weapon" label="Glyph Windfury Weapon" type="boolean" cpp_type="OPT_BOOL" file="sc_shaman.cpp" optdoc_loc="player/shaman/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="totem_of_dueling" label="Totem Of Dueling" type="boolean" cpp_type="OPT_BOOL" file="sc_shaman.cpp" optdoc_loc="player/shaman/totems" optdoc_title="Totems" value=""/>
-        <option name="totem_of_hex" label="Totem Of Hex" type="boolean" cpp_type="OPT_BOOL" file="sc_shaman.cpp" optdoc_loc="player/shaman/totems" optdoc_title="Totems" value=""/>
-        <option name="totem_of_the_dancing_flame" label="Totem Of The Dancing Flame" type="boolean" cpp_type="OPT_BOOL" file="sc_shaman.cpp" optdoc_loc="player/shaman/totems" optdoc_title="Totems" value=""/>
-        <option name="thunderfall_totem" label="Thunderfall Totem" type="boolean" cpp_type="OPT_BOOL" file="sc_shaman.cpp" optdoc_loc="player/shaman/totems" optdoc_title="Totems" value=""/>
-      </class>
-      <class class="warlock" label="Warlock">
-        <option name="glyph_chaos_bolt" label="Glyph Chaos Bolt" type="boolean" cpp_type="OPT_BOOL" file="sc_warlock.cpp" optdoc_loc="player/warlock/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_conflagrate" label="Glyph Conflagrate" type="boolean" cpp_type="OPT_BOOL" file="sc_warlock.cpp" optdoc_loc="player/warlock/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_corruption" label="Glyph Corruption" type="boolean" cpp_type="OPT_BOOL" file="sc_warlock.cpp" optdoc_loc="player/warlock/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_curse_of_agony" label="Glyph Curse Of Agony" type="boolean" cpp_type="OPT_BOOL" file="sc_warlock.cpp" optdoc_loc="player/warlock/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_felguard" label="Glyph Felguard" type="boolean" cpp_type="OPT_BOOL" file="sc_warlock.cpp" optdoc_loc="player/warlock/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_felhunter" label="Glyph Felhunter" type="boolean" cpp_type="OPT_BOOL" file="sc_warlock.cpp" optdoc_loc="player/warlock/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_haunt" label="Glyph Haunt" type="boolean" cpp_type="OPT_BOOL" file="sc_warlock.cpp" optdoc_loc="player/warlock/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_immolate" label="Glyph Immolate" type="boolean" cpp_type="OPT_BOOL" file="sc_warlock.cpp" optdoc_loc="player/warlock/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_imp" label="Glyph Imp" type="boolean" cpp_type="OPT_BOOL" file="sc_warlock.cpp" optdoc_loc="player/warlock/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_incinerate" label="Glyph Incinerate" type="boolean" cpp_type="OPT_BOOL" file="sc_warlock.cpp" optdoc_loc="player/warlock/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_life_tap" label="Glyph Life Tap" type="boolean" cpp_type="OPT_BOOL" file="sc_warlock.cpp" optdoc_loc="player/warlock/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_metamorphosis" label="Glyph Metamorphosis" type="boolean" cpp_type="OPT_BOOL" file="sc_warlock.cpp" optdoc_loc="player/warlock/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_searing_pain" label="Glyph Searing Pain" type="boolean" cpp_type="OPT_BOOL" file="sc_warlock.cpp" optdoc_loc="player/warlock/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_shadow_bolt" label="Glyph Shadow Bolt" type="boolean" cpp_type="OPT_BOOL" file="sc_warlock.cpp" optdoc_loc="player/warlock/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_shadow_burn" label="Glyph Shadow Burn" type="boolean" cpp_type="OPT_BOOL" file="sc_warlock.cpp" optdoc_loc="player/warlock/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_siphon_life" label="Glyph Siphon Life" type="boolean" cpp_type="OPT_BOOL" file="sc_warlock.cpp" optdoc_loc="player/warlock/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_unstable_affliction" label="Glyph Unstable Affliction" type="boolean" cpp_type="OPT_BOOL" file="sc_warlock.cpp" optdoc_loc="player/warlock/glyphs" optdoc_title="Glyphs" value=""/>
-      </class>
-      <class class="warrior" label="Warrior">
-        <option name="glyph_of_bladestorm" label="Glyph Of Bladestorm" type="boolean" cpp_type="OPT_BOOL" file="sc_warrior.cpp" optdoc_loc="player/warrior/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_of_execution" label="Glyph Of Execution" type="boolean" cpp_type="OPT_BOOL" file="sc_warrior.cpp" optdoc_loc="player/warrior/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_of_heroic_strike" label="Glyph Of Heroic Strike" type="boolean" cpp_type="OPT_BOOL" file="sc_warrior.cpp" optdoc_loc="player/warrior/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_of_mortal_strike" label="Glyph Of Mortal Strike" type="boolean" cpp_type="OPT_BOOL" file="sc_warrior.cpp" optdoc_loc="player/warrior/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_of_overpower" label="Glyph Of Overpower" type="boolean" cpp_type="OPT_BOOL" file="sc_warrior.cpp" optdoc_loc="player/warrior/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_of_rending" label="Glyph Of Rending" type="boolean" cpp_type="OPT_BOOL" file="sc_warrior.cpp" optdoc_loc="player/warrior/glyphs" optdoc_title="Glyphs" value=""/>
-        <option name="glyph_of_whirlwind" label="Glyph Of Whirlwind" type="boolean" cpp_type="OPT_BOOL" file="sc_warrior.cpp" optdoc_loc="player/warrior/glyphs" optdoc_title="Glyphs" value=""/>
-      </class>
       <class class="all_classes" label="All Classes">
         <option name="name" label="Name" type="string" cpp_type="OPT_STRING" file="sc_player.cpp" optdoc_loc="player/all/general" optdoc_title="General" value=""/>
         <option name="race" label="Race" type="string" cpp_type="OPT_STRING" file="sc_player.cpp" optdoc_loc="player/all/general" optdoc_title="General" value=""/>
@@ -248,15 +117,19 @@
         <option name="tier8_2pc" label="Tier8 2pc" type="boolean" cpp_type="OPT_BOOL" file="sc_unique_gear.cpp" optdoc_loc="player/all/tier" optdoc_title="Tier Bonuses" value=""/>
         <option name="tier8_4pc" label="Tier8 4pc" type="boolean" cpp_type="OPT_BOOL" file="sc_unique_gear.cpp" optdoc_loc="player/all/tier" optdoc_title="Tier Bonuses" value=""/>
         <option name="bandits_insignia" label="Bandits Insignia" type="boolean" cpp_type="OPT_BOOL" file="sc_unique_gear.cpp" optdoc_loc="player/all/procs" optdoc_title="Unique Gear/Gem Effects" value=""/>
+        <option name="blood_of_the_old_god" label="Blood Of The Old God" type="boolean" cpp_type="OPT_BOOL" file="sc_unique_gear.cpp" optdoc_loc="player/all/procs" optdoc_title="Unique Gear/Gem Effects" value=""/>
         <option name="chaotic_skyfire" label="Chaotic Skyfire" type="boolean" cpp_type="OPT_BOOL" file="sc_unique_gear.cpp" optdoc_loc="player/all/procs" optdoc_title="Unique Gear/Gem Effects" value=""/>
         <option name="chaotic_skyflare" label="Chaotic Skyflare" type="boolean" cpp_type="OPT_BOOL" file="sc_unique_gear.cpp" optdoc_loc="player/all/procs" optdoc_title="Unique Gear/Gem Effects" value=""/>
+        <option name="item_41285" label="Item 41285" type="boolean" cpp_type="OPT_BOOL" file="sc_unique_gear.cpp" optdoc_loc="player/all/procs" optdoc_title="Unique Gear/Gem Effects" value=""/>
         <option name="darkmoon_crusade" label="Darkmoon Crusade" type="boolean" cpp_type="OPT_BOOL" file="sc_unique_gear.cpp" optdoc_loc="player/all/procs" optdoc_title="Unique Gear/Gem Effects" value=""/>
         <option name="darkmoon_greatness" label="Darkmoon Greatness" type="boolean" cpp_type="OPT_BOOL" file="sc_unique_gear.cpp" optdoc_loc="player/all/procs" optdoc_title="Unique Gear/Gem Effects" value=""/>
+        <option name="dark_matter" label="Dark Matter" type="boolean" cpp_type="OPT_BOOL" file="sc_unique_gear.cpp" optdoc_loc="player/all/procs" optdoc_title="Unique Gear/Gem Effects" value=""/>
         <option name="dying_curse" label="Dying Curse" type="boolean" cpp_type="OPT_BOOL" file="sc_unique_gear.cpp" optdoc_loc="player/all/procs" optdoc_title="Unique Gear/Gem Effects" value=""/>
         <option name="egg_of_mortal_essence" label="Egg Of Mortal Essence" type="boolean" cpp_type="OPT_BOOL" file="sc_unique_gear.cpp" optdoc_loc="player/all/procs" optdoc_title="Unique Gear/Gem Effects" value=""/>
         <option name="elder_scribes" label="Elder Scribes" type="boolean" cpp_type="OPT_BOOL" file="sc_unique_gear.cpp" optdoc_loc="player/all/procs" optdoc_title="Unique Gear/Gem Effects" value=""/>
         <option name="elemental_focus_stone" label="Elemental Focus Stone" type="boolean" cpp_type="OPT_BOOL" file="sc_unique_gear.cpp" optdoc_loc="player/all/procs" optdoc_title="Unique Gear/Gem Effects" value=""/>
         <option name="ember_skyflare" label="Ember Skyflare" type="boolean" cpp_type="OPT_BOOL" file="sc_unique_gear.cpp" optdoc_loc="player/all/procs" optdoc_title="Unique Gear/Gem Effects" value=""/>
+        <option name="item_41333" label="Item 41333" type="boolean" cpp_type="OPT_BOOL" file="sc_unique_gear.cpp" optdoc_loc="player/all/procs" optdoc_title="Unique Gear/Gem Effects" value=""/>
         <option name="embrace_of_the_spider" label="Embrace Of The Spider" type="boolean" cpp_type="OPT_BOOL" file="sc_unique_gear.cpp" optdoc_loc="player/all/procs" optdoc_title="Unique Gear/Gem Effects" value=""/>
         <option name="eternal_sage" label="Eternal Sage" type="boolean" cpp_type="OPT_BOOL" file="sc_unique_gear.cpp" optdoc_loc="player/all/procs" optdoc_title="Unique Gear/Gem Effects" value=""/>
         <option name="extract_of_necromatic_power" label="Extract Of Necromatic Power" type="boolean" cpp_type="OPT_BOOL" file="sc_unique_gear.cpp" optdoc_loc="player/all/procs" optdoc_title="Unique Gear/Gem Effects" value=""/>
@@ -269,12 +142,14 @@
         <option name="illustration_of_the_dragon_soul" label="Illustration Of The Dragon Soul" type="boolean" cpp_type="OPT_BOOL" file="sc_unique_gear.cpp" optdoc_loc="player/all/procs" optdoc_title="Unique Gear/Gem Effects" value=""/>
         <option name="lightning_capacitor" label="Lightning Capacitor" type="boolean" cpp_type="OPT_BOOL" file="sc_unique_gear.cpp" optdoc_loc="player/all/procs" optdoc_title="Unique Gear/Gem Effects" value=""/>
         <option name="mirror_of_truth" label="Mirror Of Truth" type="boolean" cpp_type="OPT_BOOL" file="sc_unique_gear.cpp" optdoc_loc="player/all/procs" optdoc_title="Unique Gear/Gem Effects" value=""/>
+        <option name="mjolnir_runestone" label="Mjolnir Runestone" type="boolean" cpp_type="OPT_BOOL" file="sc_unique_gear.cpp" optdoc_loc="player/all/procs" optdoc_title="Unique Gear/Gem Effects" value=""/>
         <option name="mark_of_defiance" label="Mark Of Defiance" type="boolean" cpp_type="OPT_BOOL" file="sc_unique_gear.cpp" optdoc_loc="player/all/procs" optdoc_title="Unique Gear/Gem Effects" value=""/>
         <option name="mystical_skyfire" label="Mystical Skyfire" type="boolean" cpp_type="OPT_BOOL" file="sc_unique_gear.cpp" optdoc_loc="player/all/procs" optdoc_title="Unique Gear/Gem Effects" value=""/>
         <option name="pandoras_plea" label="Pandoras Plea" type="boolean" cpp_type="OPT_BOOL" file="sc_unique_gear.cpp" optdoc_loc="player/all/procs" optdoc_title="Unique Gear/Gem Effects" value=""/>
         <option name="pyrite_infuser" label="Pyrite Infuser" type="boolean" cpp_type="OPT_BOOL" file="sc_unique_gear.cpp" optdoc_loc="player/all/procs" optdoc_title="Unique Gear/Gem Effects" value=""/>
         <option name="quagmirrans_eye" label="Quagmirrans Eye" type="boolean" cpp_type="OPT_BOOL" file="sc_unique_gear.cpp" optdoc_loc="player/all/procs" optdoc_title="Unique Gear/Gem Effects" value=""/>
         <option name="relentless_earthstorm" label="Relentless Earthstorm" type="boolean" cpp_type="OPT_BOOL" file="sc_unique_gear.cpp" optdoc_loc="player/all/procs" optdoc_title="Unique Gear/Gem Effects" value=""/>
+        <option name="relentless_earthsiege" label="Relentless Earthsiege" type="boolean" cpp_type="OPT_BOOL" file="sc_unique_gear.cpp" optdoc_loc="player/all/procs" optdoc_title="Unique Gear/Gem Effects" value=""/>
         <option name="sextant_of_unstable_currents" label="Sextant Of Unstable Currents" type="boolean" cpp_type="OPT_BOOL" file="sc_unique_gear.cpp" optdoc_loc="player/all/procs" optdoc_title="Unique Gear/Gem Effects" value=""/>
         <option name="shiffars_nexus_horn" label="Shiffars Nexus Horn" type="boolean" cpp_type="OPT_BOOL" file="sc_unique_gear.cpp" optdoc_loc="player/all/procs" optdoc_title="Unique Gear/Gem Effects" value=""/>
         <option name="spellstrike" label="Spellstrike" type="boolean" cpp_type="OPT_BOOL" file="sc_unique_gear.cpp" optdoc_loc="player/all/procs" optdoc_title="Unique Gear/Gem Effects" value=""/>
@@ -284,10 +159,146 @@
         <option name="wrath_of_cenarius" label="Wrath Of Cenarius" type="boolean" cpp_type="OPT_BOOL" file="sc_unique_gear.cpp" optdoc_loc="player/all/procs" optdoc_title="Unique Gear/Gem Effects" value=""/>
         <option name="talents" label="Talents" type="string" cpp_type="OPT_STRING" file="meta_options" value=""/>
       </class>
+      <class class="druid" label="Druid">
+        <option name="glyph_berserk" label="Glyph Berserk" type="boolean" cpp_type="OPT_BOOL" file="sc_druid.cpp" optdoc_loc="player/druid/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_insect_swarm" label="Glyph Insect Swarm" type="boolean" cpp_type="OPT_BOOL" file="sc_druid.cpp" optdoc_loc="player/druid/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_innervate" label="Glyph Innervate" type="boolean" cpp_type="OPT_BOOL" file="sc_druid.cpp" optdoc_loc="player/druid/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_mangle" label="Glyph Mangle" type="boolean" cpp_type="OPT_BOOL" file="sc_druid.cpp" optdoc_loc="player/druid/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_moonfire" label="Glyph Moonfire" type="boolean" cpp_type="OPT_BOOL" file="sc_druid.cpp" optdoc_loc="player/druid/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_rip" label="Glyph Rip" type="boolean" cpp_type="OPT_BOOL" file="sc_druid.cpp" optdoc_loc="player/druid/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_savage_roar" label="Glyph Savage Roar" type="boolean" cpp_type="OPT_BOOL" file="sc_druid.cpp" optdoc_loc="player/druid/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_shred" label="Glyph Shred" type="boolean" cpp_type="OPT_BOOL" file="sc_druid.cpp" optdoc_loc="player/druid/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_starfire" label="Glyph Starfire" type="boolean" cpp_type="OPT_BOOL" file="sc_druid.cpp" optdoc_loc="player/druid/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_starfall" label="Glyph Starfall" type="boolean" cpp_type="OPT_BOOL" file="sc_druid.cpp" optdoc_loc="player/druid/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="idol_of_the_corruptor" label="Idol Of The Corruptor" type="boolean" cpp_type="OPT_BOOL" file="sc_druid.cpp" optdoc_loc="player/druid/idols" optdoc_title="Idols" value=""/>
+        <option name="idol_of_the_crying_wind" label="Idol Of The Crying Wind" type="boolean" cpp_type="OPT_BOOL" file="sc_druid.cpp" optdoc_loc="player/druid/idols" optdoc_title="Idols" value=""/>
+        <option name="idol_of_the_ravenous_beast" label="Idol Of The Ravenous Beast" type="boolean" cpp_type="OPT_BOOL" file="sc_druid.cpp" optdoc_loc="player/druid/idols" optdoc_title="Idols" value=""/>
+        <option name="idol_of_steadfast_renewal" label="Idol Of Steadfast Renewal" type="boolean" cpp_type="OPT_BOOL" file="sc_druid.cpp" optdoc_loc="player/druid/idols" optdoc_title="Idols" value=""/>
+        <option name="idol_of_the_shooting_star" label="Idol Of The Shooting Star" type="boolean" cpp_type="OPT_BOOL" file="sc_druid.cpp" optdoc_loc="player/druid/idols" optdoc_title="Idols" value=""/>
+        <option name="idol_of_the_unseen_moon" label="Idol Of The Unseen Moon" type="boolean" cpp_type="OPT_BOOL" file="sc_druid.cpp" optdoc_loc="player/druid/idols" optdoc_title="Idols" value=""/>
+        <option name="idol_of_worship" label="Idol Of Worship" type="boolean" cpp_type="OPT_BOOL" file="sc_druid.cpp" optdoc_loc="player/druid/idols" optdoc_title="Idols" value=""/>
+      </class>
+      <class class="hunter" label="Hunter">
+        <option name="glyph_aimed_shot" label="Glyph Aimed Shot" type="boolean" cpp_type="OPT_BOOL" file="sc_hunter.cpp" optdoc_loc="player/hunter/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_aspect_of_the_viper" label="Glyph Aspect Of The Viper" type="boolean" cpp_type="OPT_BOOL" file="sc_hunter.cpp" optdoc_loc="player/hunter/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_bestial_wrath" label="Glyph Bestial Wrath" type="boolean" cpp_type="OPT_BOOL" file="sc_hunter.cpp" optdoc_loc="player/hunter/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_chimera_shot" label="Glyph Chimera Shot" type="boolean" cpp_type="OPT_BOOL" file="sc_hunter.cpp" optdoc_loc="player/hunter/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_explosive_shot" label="Glyph Explosive Shot" type="boolean" cpp_type="OPT_BOOL" file="sc_hunter.cpp" optdoc_loc="player/hunter/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_hunters_mark" label="Glyph Hunters Mark" type="boolean" cpp_type="OPT_BOOL" file="sc_hunter.cpp" optdoc_loc="player/hunter/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_improved_aspect_of_the_hawk" label="Glyph Improved Aspect Of The Hawk" type="boolean" cpp_type="OPT_BOOL" file="sc_hunter.cpp" optdoc_loc="player/hunter/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_kill_shot" label="Glyph Kill Shot" type="boolean" cpp_type="OPT_BOOL" file="sc_hunter.cpp" optdoc_loc="player/hunter/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_rapid_fire" label="Glyph Rapid Fire" type="boolean" cpp_type="OPT_BOOL" file="sc_hunter.cpp" optdoc_loc="player/hunter/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_serpent_sting" label="Glyph Serpent Sting" type="boolean" cpp_type="OPT_BOOL" file="sc_hunter.cpp" optdoc_loc="player/hunter/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_steady_shot" label="Glyph Steady Shot" type="boolean" cpp_type="OPT_BOOL" file="sc_hunter.cpp" optdoc_loc="player/hunter/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_trueshot_aura" label="Glyph Trueshot Aura" type="boolean" cpp_type="OPT_BOOL" file="sc_hunter.cpp" optdoc_loc="player/hunter/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="ammo_dps" label="Ammo Dps" type="float" cpp_type="OPT_FLT" file="sc_hunter.cpp" optdoc_loc="player/hunter/misc" optdoc_title="Misc" value=""/>
+        <option name="quiver_haste" label="Quiver Haste" type="float" cpp_type="OPT_FLT" file="sc_hunter.cpp" optdoc_loc="player/hunter/misc" optdoc_title="Misc" value=""/>
+        <option name="summon_pet" label="Summon Pet" type="string" cpp_type="OPT_STRING" file="sc_hunter.cpp" optdoc_loc="player/hunter/misc" optdoc_title="Misc" value=""/>
+      </class>
+      <class class="mage" label="Mage">
+        <option name="glyph_arcane_barrage" label="Glyph Arcane Barrage" type="boolean" cpp_type="OPT_BOOL" file="sc_mage.cpp" optdoc_loc="player/mage/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_arcane_blast" label="Glyph Arcane Blast" type="boolean" cpp_type="OPT_BOOL" file="sc_mage.cpp" optdoc_loc="player/mage/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_arcane_missiles" label="Glyph Arcane Missiles" type="boolean" cpp_type="OPT_BOOL" file="sc_mage.cpp" optdoc_loc="player/mage/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_arcane_power" label="Glyph Arcane Power" type="boolean" cpp_type="OPT_BOOL" file="sc_mage.cpp" optdoc_loc="player/mage/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_fire_ball" label="Glyph Fire Ball" type="boolean" cpp_type="OPT_BOOL" file="sc_mage.cpp" optdoc_loc="player/mage/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_frost_bolt" label="Glyph Frost Bolt" type="boolean" cpp_type="OPT_BOOL" file="sc_mage.cpp" optdoc_loc="player/mage/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_ice_lance" label="Glyph Ice Lance" type="boolean" cpp_type="OPT_BOOL" file="sc_mage.cpp" optdoc_loc="player/mage/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_improved_scorch" label="Glyph Improved Scorch" type="boolean" cpp_type="OPT_BOOL" file="sc_mage.cpp" optdoc_loc="player/mage/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_living_bomb" label="Glyph Living Bomb" type="boolean" cpp_type="OPT_BOOL" file="sc_mage.cpp" optdoc_loc="player/mage/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_mage_armor" label="Glyph Mage Armor" type="boolean" cpp_type="OPT_BOOL" file="sc_mage.cpp" optdoc_loc="player/mage/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_mana_gem" label="Glyph Mana Gem" type="boolean" cpp_type="OPT_BOOL" file="sc_mage.cpp" optdoc_loc="player/mage/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_mirror_image" label="Glyph Mirror Image" type="boolean" cpp_type="OPT_BOOL" file="sc_mage.cpp" optdoc_loc="player/mage/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_molten_armor" label="Glyph Molten Armor" type="boolean" cpp_type="OPT_BOOL" file="sc_mage.cpp" optdoc_loc="player/mage/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_water_elemental" label="Glyph Water Elemental" type="boolean" cpp_type="OPT_BOOL" file="sc_mage.cpp" optdoc_loc="player/mage/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_frostfire" label="Glyph Frostfire" type="boolean" cpp_type="OPT_BOOL" file="sc_mage.cpp" optdoc_loc="player/mage/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="armor_type" label="Armor Type" type="string" cpp_type="OPT_STRING" file="sc_mage.cpp" optdoc_loc="player/mage/misc" optdoc_title="Misc" value=""/>
+        <option name="focus_magic_target" label="Focus Magic Target" type="string" cpp_type="OPT_STRING" file="sc_mage.cpp" optdoc_loc="player/mage/misc" optdoc_title="Misc" value=""/>
+      </class>
+      <class class="priest" label="Priest">
+        <option name="glyph_shadow_word_death" label="Glyph Shadow Word Death" type="boolean" cpp_type="OPT_BOOL" file="sc_priest.cpp" optdoc_loc="player/priest/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_shadow_word_pain" label="Glyph Shadow Word Pain" type="boolean" cpp_type="OPT_BOOL" file="sc_priest.cpp" optdoc_loc="player/priest/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_shadow" label="Glyph Shadow" type="boolean" cpp_type="OPT_BOOL" file="sc_priest.cpp" optdoc_loc="player/priest/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="devious_mind_delay" label="Devious Mind Delay" type="float" cpp_type="OPT_FLT" file="sc_priest.cpp" optdoc_loc="player/priest/misc" optdoc_title="Misc" value=""/>
+      </class>
+      <class class="rogue" label="Rogue">
+        <option name="glyph_adrenaline_rush" label="Glyph Adrenaline Rush" type="boolean" cpp_type="OPT_BOOL" file="sc_rogue.cpp" optdoc_loc="player/rogue/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_backstab" label="Glyph Backstab" type="boolean" cpp_type="OPT_BOOL" file="sc_rogue.cpp" optdoc_loc="player/rogue/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_blade_flurry" label="Glyph Blade Flurry" type="boolean" cpp_type="OPT_BOOL" file="sc_rogue.cpp" optdoc_loc="player/rogue/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_eviscerate" label="Glyph Eviscerate" type="boolean" cpp_type="OPT_BOOL" file="sc_rogue.cpp" optdoc_loc="player/rogue/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_expose_armor" label="Glyph Expose Armor" type="boolean" cpp_type="OPT_BOOL" file="sc_rogue.cpp" optdoc_loc="player/rogue/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_feint" label="Glyph Feint" type="boolean" cpp_type="OPT_BOOL" file="sc_rogue.cpp" optdoc_loc="player/rogue/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_ghostly_strike" label="Glyph Ghostly Strike" type="boolean" cpp_type="OPT_BOOL" file="sc_rogue.cpp" optdoc_loc="player/rogue/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_hemorrhage" label="Glyph Hemorrhage" type="boolean" cpp_type="OPT_BOOL" file="sc_rogue.cpp" optdoc_loc="player/rogue/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_hunger_for_blood" label="Glyph Hunger For Blood" type="boolean" cpp_type="OPT_BOOL" file="sc_rogue.cpp" optdoc_loc="player/rogue/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_killing_spree" label="Glyph Killing Spree" type="boolean" cpp_type="OPT_BOOL" file="sc_rogue.cpp" optdoc_loc="player/rogue/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_mutilate" label="Glyph Mutilate" type="boolean" cpp_type="OPT_BOOL" file="sc_rogue.cpp" optdoc_loc="player/rogue/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_preparation" label="Glyph Preparation" type="boolean" cpp_type="OPT_BOOL" file="sc_rogue.cpp" optdoc_loc="player/rogue/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_rupture" label="Glyph Rupture" type="boolean" cpp_type="OPT_BOOL" file="sc_rogue.cpp" optdoc_loc="player/rogue/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_shadow_dance" label="Glyph Shadow Dance" type="boolean" cpp_type="OPT_BOOL" file="sc_rogue.cpp" optdoc_loc="player/rogue/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_sinister_strike" label="Glyph Sinister Strike" type="boolean" cpp_type="OPT_BOOL" file="sc_rogue.cpp" optdoc_loc="player/rogue/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_slice_and_dice" label="Glyph Slice And Dice" type="boolean" cpp_type="OPT_BOOL" file="sc_rogue.cpp" optdoc_loc="player/rogue/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_tricks_of_the_trade" label="Glyph Tricks Of The Trade" type="boolean" cpp_type="OPT_BOOL" file="sc_rogue.cpp" optdoc_loc="player/rogue/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_vigor" label="Glyph Vigor" type="boolean" cpp_type="OPT_BOOL" file="sc_rogue.cpp" optdoc_loc="player/rogue/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="honor_among_thieves_interval" label="Honor Among Thieves Interval" type="float" cpp_type="OPT_FLT" file="sc_rogue.cpp" optdoc_loc="player/rogue/misc" optdoc_title="Misc" value=""/>
+        <option name="tricks_of_the_trade_target" label="Tricks Of The Trade Target" type="string" cpp_type="OPT_STRING" file="sc_rogue.cpp" optdoc_loc="player/rogue/misc" optdoc_title="Misc" value=""/>
+      </class>
+      <class class="shaman" label="Shaman">
+        <option name="glyph_elemental_mastery" label="Glyph Elemental Mastery" type="boolean" cpp_type="OPT_BOOL" file="sc_shaman.cpp" optdoc_loc="player/shaman/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_feral_spirit" label="Glyph Feral Spirit" type="boolean" cpp_type="OPT_BOOL" file="sc_shaman.cpp" optdoc_loc="player/shaman/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_flame_shock" label="Glyph Flame Shock" type="boolean" cpp_type="OPT_BOOL" file="sc_shaman.cpp" optdoc_loc="player/shaman/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_flametongue_weapon" label="Glyph Flametongue Weapon" type="boolean" cpp_type="OPT_BOOL" file="sc_shaman.cpp" optdoc_loc="player/shaman/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_lava" label="Glyph Lava" type="boolean" cpp_type="OPT_BOOL" file="sc_shaman.cpp" optdoc_loc="player/shaman/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_lava_lash" label="Glyph Lava Lash" type="boolean" cpp_type="OPT_BOOL" file="sc_shaman.cpp" optdoc_loc="player/shaman/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_lightning_bolt" label="Glyph Lightning Bolt" type="boolean" cpp_type="OPT_BOOL" file="sc_shaman.cpp" optdoc_loc="player/shaman/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_lightning_shield" label="Glyph Lightning Shield" type="boolean" cpp_type="OPT_BOOL" file="sc_shaman.cpp" optdoc_loc="player/shaman/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_mana_tide" label="Glyph Mana Tide" type="boolean" cpp_type="OPT_BOOL" file="sc_shaman.cpp" optdoc_loc="player/shaman/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_shocking" label="Glyph Shocking" type="boolean" cpp_type="OPT_BOOL" file="sc_shaman.cpp" optdoc_loc="player/shaman/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_stormstrike" label="Glyph Stormstrike" type="boolean" cpp_type="OPT_BOOL" file="sc_shaman.cpp" optdoc_loc="player/shaman/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_thunderstorm" label="Glyph Thunderstorm" type="boolean" cpp_type="OPT_BOOL" file="sc_shaman.cpp" optdoc_loc="player/shaman/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_totem_of_wrath" label="Glyph Totem Of Wrath" type="boolean" cpp_type="OPT_BOOL" file="sc_shaman.cpp" optdoc_loc="player/shaman/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_windfury_weapon" label="Glyph Windfury Weapon" type="boolean" cpp_type="OPT_BOOL" file="sc_shaman.cpp" optdoc_loc="player/shaman/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="totem_of_dueling" label="Totem Of Dueling" type="boolean" cpp_type="OPT_BOOL" file="sc_shaman.cpp" optdoc_loc="player/shaman/totems" optdoc_title="Totems" value=""/>
+        <option name="totem_of_hex" label="Totem Of Hex" type="boolean" cpp_type="OPT_BOOL" file="sc_shaman.cpp" optdoc_loc="player/shaman/totems" optdoc_title="Totems" value=""/>
+        <option name="totem_of_indomitability" label="Totem Of Indomitability" type="boolean" cpp_type="OPT_BOOL" file="sc_shaman.cpp" optdoc_loc="player/shaman/totems" optdoc_title="Totems" value=""/>
+        <option name="totem_of_the_dancing_flame" label="Totem Of The Dancing Flame" type="boolean" cpp_type="OPT_BOOL" file="sc_shaman.cpp" optdoc_loc="player/shaman/totems" optdoc_title="Totems" value=""/>
+        <option name="thunderfall_totem" label="Thunderfall Totem" type="boolean" cpp_type="OPT_BOOL" file="sc_shaman.cpp" optdoc_loc="player/shaman/totems" optdoc_title="Totems" value=""/>
+      </class>
+      <class class="warlock" label="Warlock">
+        <option name="glyph_chaos_bolt" label="Glyph Chaos Bolt" type="boolean" cpp_type="OPT_BOOL" file="sc_warlock.cpp" optdoc_loc="player/warlock/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_conflagrate" label="Glyph Conflagrate" type="boolean" cpp_type="OPT_BOOL" file="sc_warlock.cpp" optdoc_loc="player/warlock/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_corruption" label="Glyph Corruption" type="boolean" cpp_type="OPT_BOOL" file="sc_warlock.cpp" optdoc_loc="player/warlock/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_curse_of_agony" label="Glyph Curse Of Agony" type="boolean" cpp_type="OPT_BOOL" file="sc_warlock.cpp" optdoc_loc="player/warlock/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_felguard" label="Glyph Felguard" type="boolean" cpp_type="OPT_BOOL" file="sc_warlock.cpp" optdoc_loc="player/warlock/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_felhunter" label="Glyph Felhunter" type="boolean" cpp_type="OPT_BOOL" file="sc_warlock.cpp" optdoc_loc="player/warlock/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_haunt" label="Glyph Haunt" type="boolean" cpp_type="OPT_BOOL" file="sc_warlock.cpp" optdoc_loc="player/warlock/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_immolate" label="Glyph Immolate" type="boolean" cpp_type="OPT_BOOL" file="sc_warlock.cpp" optdoc_loc="player/warlock/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_imp" label="Glyph Imp" type="boolean" cpp_type="OPT_BOOL" file="sc_warlock.cpp" optdoc_loc="player/warlock/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_incinerate" label="Glyph Incinerate" type="boolean" cpp_type="OPT_BOOL" file="sc_warlock.cpp" optdoc_loc="player/warlock/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_life_tap" label="Glyph Life Tap" type="boolean" cpp_type="OPT_BOOL" file="sc_warlock.cpp" optdoc_loc="player/warlock/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_metamorphosis" label="Glyph Metamorphosis" type="boolean" cpp_type="OPT_BOOL" file="sc_warlock.cpp" optdoc_loc="player/warlock/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_searing_pain" label="Glyph Searing Pain" type="boolean" cpp_type="OPT_BOOL" file="sc_warlock.cpp" optdoc_loc="player/warlock/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_shadow_bolt" label="Glyph Shadow Bolt" type="boolean" cpp_type="OPT_BOOL" file="sc_warlock.cpp" optdoc_loc="player/warlock/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_shadow_burn" label="Glyph Shadow Burn" type="boolean" cpp_type="OPT_BOOL" file="sc_warlock.cpp" optdoc_loc="player/warlock/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_siphon_life" label="Glyph Siphon Life" type="boolean" cpp_type="OPT_BOOL" file="sc_warlock.cpp" optdoc_loc="player/warlock/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_unstable_affliction" label="Glyph Unstable Affliction" type="boolean" cpp_type="OPT_BOOL" file="sc_warlock.cpp" optdoc_loc="player/warlock/glyphs" optdoc_title="Glyphs" value=""/>
+      </class>
+      <class class="warrior" label="Warrior">
+        <option name="glyph_of_bladestorm" label="Glyph Of Bladestorm" type="boolean" cpp_type="OPT_BOOL" file="sc_warrior.cpp" optdoc_loc="player/warrior/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_of_execution" label="Glyph Of Execution" type="boolean" cpp_type="OPT_BOOL" file="sc_warrior.cpp" optdoc_loc="player/warrior/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_of_heroic_strike" label="Glyph Of Heroic Strike" type="boolean" cpp_type="OPT_BOOL" file="sc_warrior.cpp" optdoc_loc="player/warrior/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_of_mortal_strike" label="Glyph Of Mortal Strike" type="boolean" cpp_type="OPT_BOOL" file="sc_warrior.cpp" optdoc_loc="player/warrior/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_of_overpower" label="Glyph Of Overpower" type="boolean" cpp_type="OPT_BOOL" file="sc_warrior.cpp" optdoc_loc="player/warrior/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_of_rending" label="Glyph Of Rending" type="boolean" cpp_type="OPT_BOOL" file="sc_warrior.cpp" optdoc_loc="player/warrior/glyphs" optdoc_title="Glyphs" value=""/>
+        <option name="glyph_of_whirlwind" label="Glyph Of Whirlwind" type="boolean" cpp_type="OPT_BOOL" file="sc_warrior.cpp" optdoc_loc="player/warrior/glyphs" optdoc_title="Glyphs" value=""/>
+      </class>
     </supported_classes>
     <global_options>
       <option name="calculate_scale_factors" label="Calculate Scale Factors" type="boolean" cpp_type="OPT_BOOL" file="sc_scaling.cpp" optdoc_loc="global/scale_factors" optdoc_title="Scale Factors" value="0"/>
+      <option name="smooth_scale_factors" label="Smooth Scale Factors" type="boolean" cpp_type="OPT_BOOL" file="sc_scaling.cpp" optdoc_loc="global/scale_factors" optdoc_title="Scale Factors" value=""/>
+      <option name="normalize_scale_factors" label="Normalize Scale Factors" type="boolean" cpp_type="OPT_BOOL" file="sc_scaling.cpp" optdoc_loc="global/scale_factors" optdoc_title="Scale Factors" value=""/>
+      <option name="debug_scale_factors" label="Debug Scale Factors" type="boolean" cpp_type="OPT_BOOL" file="sc_scaling.cpp" optdoc_loc="global/scale_factors" optdoc_title="Scale Factors" value=""/>
       <option name="center_scale_delta" label="Center Scale Delta" type="boolean" cpp_type="OPT_BOOL" file="sc_scaling.cpp" optdoc_loc="global/scale_factors" optdoc_title="Scale Factors" value=""/>
+      <option name="scale_lag" label="Scale Lag" type="boolean" cpp_type="OPT_BOOL" file="sc_scaling.cpp" optdoc_loc="global/scale_factors" optdoc_title="Scale Factors" value=""/>
       <option name="scale_factor_noise" label="Scale Factor Noise" type="float" cpp_type="OPT_FLT" file="sc_scaling.cpp" optdoc_loc="global/scale_factors" optdoc_title="Scale Factors" value=""/>
       <option name="scale_strength" label="Scale Strength" type="float" cpp_type="OPT_FLT" file="sc_scaling.cpp" optdoc_loc="global/scale_factors" optdoc_title="Scale Factors" value=""/>
       <option name="scale_agility" label="Scale Agility" type="float" cpp_type="OPT_FLT" file="sc_scaling.cpp" optdoc_loc="global/scale_factors" optdoc_title="Scale Factors" value=""/>
@@ -313,12 +324,6 @@
       <option name="queue_lag_range" label="Queue Lag Range" type="float" cpp_type="OPT_FLT" file="sc_sim.cpp" optdoc_loc="global/lag" optdoc_title="Lag" value=""/>
       <option name="reaction_time" label="Reaction Time" type="float" cpp_type="OPT_FLT" file="sc_sim.cpp" optdoc_loc="global/lag" optdoc_title="Lag" value=""/>
       <option name="travel_variance" label="Travel Variance" type="float" cpp_type="OPT_FLT" file="sc_sim.cpp" optdoc_loc="global/lag" optdoc_title="Lag" value=""/>
-      <option name="combat_log" label="Combat Log" type="string" cpp_type="OPT_STRING" file="sc_sim.cpp" optdoc_loc="global/output" optdoc_title="Output" value=""/>
-      <option name="debug" label="Debug" type="boolean" cpp_type="OPT_BOOL" file="sc_sim.cpp" optdoc_loc="global/output" optdoc_title="Output" value=""/>
-      <option name="html" label="Html" type="string" cpp_type="OPT_STRING" file="sc_sim.cpp" optdoc_loc="global/output" optdoc_title="Output" value=""/>
-      <option name="log" label="Log" type="boolean" cpp_type="OPT_BOOL" file="sc_sim.cpp" optdoc_loc="global/output" optdoc_title="Output" value=""/>
-      <option name="output" label="Output" type="string" cpp_type="OPT_STRING" file="sc_sim.cpp" optdoc_loc="global/output" optdoc_title="Output" value=""/>
-      <option name="wiki" label="Wiki" type="string" cpp_type="OPT_STRING" file="sc_sim.cpp" optdoc_loc="global/output" optdoc_title="Output" value=""/>
       <option name="abominations_might" label="Abominations Might" type="boolean" cpp_type="OPT_BOOL" file="sc_sim.cpp" optdoc_loc="global/overrides" optdoc_title="Buff/Debuff Overrides" value=""/>
       <option name="arcane_brilliance" label="Arcane Brilliance" type="boolean" cpp_type="OPT_BOOL" file="sc_sim.cpp" optdoc_loc="global/overrides" optdoc_title="Buff/Debuff Overrides" value=""/>
       <option name="battle_shout" label="Battle Shout" type="boolean" cpp_type="OPT_BOOL" file="sc_sim.cpp" optdoc_loc="global/overrides" optdoc_title="Buff/Debuff Overrides" value="1"/>
@@ -350,7 +355,6 @@
       <option name="misery" label="Misery" type="boolean" cpp_type="OPT_BOOL" file="sc_sim.cpp" optdoc_loc="global/overrides" optdoc_title="Buff/Debuff Overrides" value=""/>
       <option name="moonkin_aura" label="Moonkin Aura" type="boolean" cpp_type="OPT_BOOL" file="sc_sim.cpp" optdoc_loc="global/overrides" optdoc_title="Buff/Debuff Overrides" value=""/>
       <option name="poisoned" label="Poisoned" type="boolean" cpp_type="OPT_BOOL" file="sc_sim.cpp" optdoc_loc="global/overrides" optdoc_title="Buff/Debuff Overrides" value=""/>
-      <option name="razorice" label="Razorice" type="boolean" cpp_type="OPT_BOOL" file="sc_sim.cpp" optdoc_loc="global/overrides" optdoc_title="Buff/Debuff Overrides" value=""/>
       <option name="replenishment" label="Replenishment" type="boolean" cpp_type="OPT_BOOL" file="sc_sim.cpp" optdoc_loc="global/overrides" optdoc_title="Buff/Debuff Overrides" value=""/>
       <option name="sanctified_retribution" label="Sanctified Retribution" type="boolean" cpp_type="OPT_BOOL" file="sc_sim.cpp" optdoc_loc="global/overrides" optdoc_title="Buff/Debuff Overrides" value="1"/>
       <option name="savage_combat" label="Savage Combat" type="boolean" cpp_type="OPT_BOOL" file="sc_sim.cpp" optdoc_loc="global/overrides" optdoc_title="Buff/Debuff Overrides" value=""/>
@@ -374,11 +378,10 @@
       <option name="infinite_rage" label="Infinite Rage" type="boolean" cpp_type="OPT_BOOL" file="sc_sim.cpp" optdoc_loc="global/regen" optdoc_title="Regen" value=""/>
       <option name="infinite_runic" label="Infinite Runic" type="boolean" cpp_type="OPT_BOOL" file="sc_sim.cpp" optdoc_loc="global/regen" optdoc_title="Regen" value=""/>
       <option name="regen_periodicity" label="Regen Periodicity" type="float" cpp_type="OPT_FLT" file="sc_sim.cpp" optdoc_loc="global/regen" optdoc_title="Regen" value="1"/>
-      <option name="normalized_roll" label="Normalized Roll" type="boolean" cpp_type="OPT_BOOL" file="sc_sim.cpp" optdoc_loc="global/rng" optdoc_title="Normalized RNG" value=""/>
-      <option name="normalized_roll_sf" label="Normalized Roll Sf" type="boolean" cpp_type="OPT_BOOL" file="sc_sim.cpp" optdoc_loc="global/rng" optdoc_title="Normalized RNG" value=""/>
-      <option name="normalized_range" label="Normalized Range" type="boolean" cpp_type="OPT_BOOL" file="sc_sim.cpp" optdoc_loc="global/rng" optdoc_title="Normalized RNG" value=""/>
-      <option name="normalized_gauss" label="Normalized Gauss" type="boolean" cpp_type="OPT_BOOL" file="sc_sim.cpp" optdoc_loc="global/rng" optdoc_title="Normalized RNG" value=""/>
-      <option name="variable_phase_shift" label="Variable Phase Shift" type="integer" cpp_type="OPT_INT" file="sc_sim.cpp" optdoc_loc="global/rng" optdoc_title="Normalized RNG" value=""/>
+      <option name="smooth_rng" label="Smooth Rng" type="boolean" cpp_type="OPT_BOOL" file="sc_sim.cpp" optdoc_loc="global/rng" optdoc_title="Smooth RNG" value=""/>
+      <option name="deterministic_roll" label="Deterministic Roll" type="boolean" cpp_type="OPT_BOOL" file="sc_sim.cpp" optdoc_loc="global/rng" optdoc_title="Smooth RNG" value=""/>
+      <option name="average_range" label="Average Range" type="boolean" cpp_type="OPT_BOOL" file="sc_sim.cpp" optdoc_loc="global/rng" optdoc_title="Smooth RNG" value=""/>
+      <option name="average_gauss" label="Average Gauss" type="boolean" cpp_type="OPT_BOOL" file="sc_sim.cpp" optdoc_loc="global/rng" optdoc_title="Smooth RNG" value=""/>
       <option name="target_name" label="Target Name" type="string" cpp_type="OPT_STRING" file="sc_target.cpp" optdoc_loc="global/target/general" optdoc_title="Target General" value=""/>
       <option name="target_race" label="Target Race" type="string" cpp_type="OPT_STRING" file="sc_target.cpp" optdoc_loc="global/target/general" optdoc_title="Target General" value="none"/>
       <option name="target_level" label="Target Level" type="integer" cpp_type="OPT_INT" file="sc_target.cpp" optdoc_loc="global/target/general" optdoc_title="Target General" value="83"/>

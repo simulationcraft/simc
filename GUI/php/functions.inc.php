@@ -820,5 +820,36 @@ function add_options_to_XML( array $arr_options, SimpleXMLElement $xml_object )
 		}
 		$xml_new->addAttribute('value', '');		
 	}
+} 
+
+// === ERROR HANDLING ===
+
+/**
+ * A custom exception handler for uncaught exceptions
+ * @param Exception $exception the thrown exception
+ * @return null
+ */
+function custom_exception_handler( $exception ) 
+{
+	// Create the error xml object
+	$xml = new SimpleXMLElement_XSL('<xml></xml>');
+	
+	// Add the exception description to the XML
+	$xml_exc = $xml->addChild('exception');
+	$xml_exc->addAttribute('code', $exception->getCode() );
+	$xml_exc->addAttribute('message', $exception->getMessage() );
+	
+	// Send the page header for xml content
+	header('HTTP/1.1 500 Internal Server Error');
+	header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+	header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
+	header('Cache-Control: no-store, no-cache, must-revalidate'); // HTTP/1.1
+	header('Cache-Control: post-check=0, pre-check=0', false); // HTTP/1.1
+	header('Pragma: no-cache'); // HTTP/1.0
+	header('Content-type: text/xml');
+	
+	// Send the output string
+	echo $xml->asXML_with_XSL('xsl/error.xsl');
+	exit(1);
 }
 ?>
