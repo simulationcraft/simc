@@ -83,8 +83,8 @@ std::string proper_option_name( std::string& full_name )
   for ( size_t i=0; i<full_name.length(); i++ )
   {
     char c=full_name[i];
-    c= tolower( c );		// lower case
-    if ( c==' ' ) c='_';	// spaces to underscores
+    c= tolower( c );            // lower case
+    if ( c==' ' ) c='_';        // spaces to underscores
     if ( c!='\'' )      // remove apostrophes
       newName+=c;
   }
@@ -1043,7 +1043,7 @@ unsigned int  getSetTier( std::string setName )
   setName=" "+tolower(setName)+" ";
   for ( size_t i=0; setTiers[i].tier; i++ ){
     std::string tierName=" "+setTiers[i].setName+" ";
-  	if ( setName.find(tierName)!=string::npos )
+        if ( setName.find(tierName)!=string::npos )
     {
       tier=setTiers[i].tier;
       break;

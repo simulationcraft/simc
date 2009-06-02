@@ -339,7 +339,7 @@ struct warlock_pet_t : public pet_t
   }
 
   virtual void schedule_ready( double delta_time=0,
-			       bool   waiting=false )
+                               bool   waiting=false )
   {
     if( melee && ! melee -> execute_event )
     {
@@ -885,7 +885,7 @@ struct infernal_pet_t : public warlock_pet_t
     immolation = new infernal_immolation_t( this );
   }
   virtual void schedule_ready( double delta_time=0, 
-			       bool   waiting=false )
+                               bool   waiting=false )
   {
     warlock_pet_t::schedule_ready( delta_time, waiting );
 
@@ -1197,9 +1197,9 @@ static void trigger_soul_leech( spell_t* s )
         p -> resource_gain( RESOURCE_MANA, amount, p -> gains_soul_leech );
         if ( p -> talents.mana_feed ) p -> active_pet -> resource_gain( RESOURCE_MANA, amount );
 
-	if ( p -> rng_improved_soul_leech -> roll( 0.5 * p -> talents.improved_soul_leech ) )
+        if ( p -> rng_improved_soul_leech -> roll( 0.5 * p -> talents.improved_soul_leech ) )
         {
-	  p -> trigger_replenishment();
+          p -> trigger_replenishment();
         }
       }
     }
@@ -4685,10 +4685,11 @@ void warlock_t::init_actions()
 
     if (talents.emberstorm) action_list_str+="/incinerate"; else action_list_str+="/shadow_bolt";
 
-    action_list_str+="/life_tap,mana_perc<=20,glyph_skip=1,tier7_4pc_skip=1/corruption,time_to_die>=20/curse_of_agony,time_to_die>=30/shadow_burn/shadowfury/corruption/curse_of_agony"; // instas, to use when moving if possible
+    // instants to use when moving if possible
+    action_list_str+="/life_tap,mana_perc<=20,glyph_skip=1,tier7_4pc_skip=1/corruption,time_to_die>=20/curse_of_agony,time_to_die>=30/shadow_burn/shadowfury/corruption/curse_of_agony"; 
     action_list_str+="/life_tap"; // to use when no mana or nothing else is possible
 
-    if ( sim -> debug ) log_t::output( sim, "Player %s using default actions: %s", name(), action_list_str.c_str()  );
+    action_list_default = 1;
   }
 
   player_t::init_actions();

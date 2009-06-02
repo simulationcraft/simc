@@ -2,7 +2,7 @@
 
 shaman=Shaman_T8_18_53_00
 level=80
-talents=http://ptr.wowhead.com/?talent=hVhGVZhbxIoxdIhusouVo
+talents=http://www.wowhead.com/?talent#hVhGVZhbxIoxdIhusouVo
 actions=flask,type=endless_rage/food,type=fish_feast/windfury_weapon,weapon=main/flametongue_weapon,weapon=off
 actions+=/wind_shock
 actions+=/strength_of_earth_totem/windfury_totem/bloodlust,time_to_die<=60

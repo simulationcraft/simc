@@ -5,8 +5,7 @@
 
 #include "simcraft.h"
 
-namespace
-{ // ANONYMOUS NAMESPACE ==========================================
+namespace { // ANONYMOUS NAMESPACE ==========================================
 
 // trigger_judgement_of_wisdom ==============================================
 
@@ -350,7 +349,7 @@ player_t::player_t( sim_t*             s,
     // Events
     executing( 0 ), channeling( 0 ), readying( 0 ), in_combat( false ),
     // Actions
-    action_list( 0 ),
+    action_list( 0 ), action_list_default( 0 ),
     // Reporting
     quiet( 0 ), last_foreground_action( 0 ),
     last_action_time( 0 ), total_seconds( 0 ), total_waiting( 0 ), iteration_dmg( 0 ), total_dmg( 0 ),
@@ -916,6 +915,8 @@ void player_t::init_actions()
        ! action_list_str.empty()    ||
        ! action_list_postfix.empty() )
   {
+    if ( action_list_default && sim -> debug ) log_t::output( sim, "Player %s using default actions: %s", name(), action_list_str.c_str()  );
+
     std::vector<std::string> splits;
     int size = 0;
 

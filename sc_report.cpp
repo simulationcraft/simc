@@ -22,7 +22,7 @@ static void print_action( FILE* file, stats_t* s )
            s -> portion_dmg,
            s -> dpet,
            s -> dpr,
-	   s -> portion_dps );
+           s -> portion_dps );
 
   fprintf( file, "  Miss=%.1f%%", s -> execute_results[ RESULT_MISS ].count * 100.0 / s -> num_executes );
 
@@ -75,6 +75,26 @@ static void print_action( FILE* file, stats_t* s )
 
 static void print_actions( FILE* file, player_t* p )
 {
+  if( p -> action_list_default )
+  {
+    fprintf( file, "  Priorities:\n" );
+
+    std::vector<std::string> action_list;
+    int num_actions = util_t::string_split( action_list, p -> action_list_str, "/" );
+    int length = 0;
+    for( int i=0; i < num_actions; i++ )
+    {
+      if( length > 80 )
+      {
+        fprintf( file, "\n" );
+        length = 0;
+      }
+      fprintf( file, "%s%s", ( ( length > 0 ) ? "/" : "    " ), action_list[ i ].c_str() );
+      length += action_list[ i ].size();
+    }
+    fprintf( file, "\n" );
+  }
+
   fprintf( file, "  Actions:\n" );
 
   for ( stats_t* s = p -> stats_list; s; s = s -> next )
@@ -315,7 +335,7 @@ static void print_scale_factors( FILE* file, sim_t* sim )
     {
       if( p -> scales_with[ j ] != 0 )
       {
-	fprintf( file, "  %s=%.2f", util_t::stat_type_abbrev( j ), sf.get_stat( j ) );
+        fprintf( file, "  %s=%.2f", util_t::stat_type_abbrev( j ), sf.get_stat( j ) );
       }
     }
 
@@ -874,7 +894,7 @@ void report_t::print_text( FILE* file, sim_t* sim, bool detail )
 
     fprintf( file, "\nPlayer=%s (%s)  DPS=%.1f (Error=+/-%.1f Range=+/-%.0f)",
              p -> name(), util_t::talent_tree_string( p -> primary_tree() ), 
-	     p -> dps, p -> dps_error, ( p -> dps_max - p -> dps_min ) / 2.0 );
+             p -> dps, p -> dps_error, ( p -> dps_max - p -> dps_min ) / 2.0 );
 
     if ( p -> rps_loss > 0 )
     {
@@ -1000,8 +1020,8 @@ void report_t::print_xml( sim_t* sim )
   FILE* file = fopen( sim -> xml_file_str.c_str(), "w" );
   if ( ! file )
   {
-	fprintf( stderr, "simcraft: Unable to open html file '%s'\n", sim -> xml_file_str.c_str() );
-	exit( 0 );
+        fprintf( stderr, "simcraft: Unable to open html file '%s'\n", sim -> xml_file_str.c_str() );
+        exit( 0 );
   }
 
   // Start the XML file
@@ -1017,18 +1037,18 @@ void report_t::print_xml( sim_t* sim )
   // Loop over the players in the simulation, and print each's simulation results
   fprintf( file, "  <players>\n" );
   for ( int i=0; i < num_players; i++ ) {
-	fprintf( file, "    <player name=\"%s\" talent_url=\"%s\">\n",
-			sim -> players_by_name[ i ] -> name(),
-			sim -> players_by_name[ i ] -> talents_str.c_str()
-		);
+        fprintf( file, "    <player name=\"%s\" talent_url=\"%s\">\n",
+                        sim -> players_by_name[ i ] -> name(),
+                        sim -> players_by_name[ i ] -> talents_str.c_str()
+                );
 
-	// Print the player results
-	print_xml_player( file, sim -> players_by_name[ i ] );
+        // Print the player results
+        print_xml_player( file, sim -> players_by_name[ i ] );
 
-	// Add the scale factors for the player
-	print_xml_player_scale_factors( file, sim, sim -> players_by_name[ i ] );
+        // Add the scale factors for the player
+        print_xml_player_scale_factors( file, sim, sim -> players_by_name[ i ] );
 
-	fprintf( file, "    </player>\n" );
+        fprintf( file, "    </player>\n" );
   }
   fprintf( file, "  </players>\n" );
 

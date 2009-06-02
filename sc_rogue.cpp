@@ -738,7 +738,7 @@ static void trigger_tricks_of_the_trade( rogue_attack_t* a )
     player_t* t = p -> _buffs.tricks_target;
     event_t*& e = t -> expirations.tricks_of_the_trade;
     double duration = 6;
-	if ( p -> glyphs.tricks_of_the_trade ) duration += 4;
+        if ( p -> glyphs.tricks_of_the_trade ) duration += 4;
 
     if ( e )
     {
@@ -1956,7 +1956,7 @@ struct kick_t : public rogue_attack_t
   {
     option_t options[] =
       {
-	{ NULL }
+        { NULL }
       };
     parse_options( options, options_str );
 
@@ -3143,14 +3143,14 @@ void rogue_t::init_actions()
     action_list_str += "flask,type=endless_rage/food,type=blackened_dragonfin/apply_poison,main_hand=";
     action_list_str += talents.improved_poisons > 2 ? "instant" : "wound";
     action_list_str += ",off_hand=deadly";
-	if( talents.overkill || talents.master_of_subtlety ) action_list_str += "/stealth";
-	action_list_str += "/auto_attack/kick";
-	
+    if( talents.overkill || talents.master_of_subtlety ) action_list_str += "/stealth";
+    action_list_str += "/auto_attack/kick";
+        
     if( primary_tree() == TREE_ASSASSINATION )
     {
       if( talents.hunger_for_blood ) action_list_str += "/pool_energy,for_next=1/hunger_for_blood,refresh_at=2";
       action_list_str += "/slice_and_dice,min_combo_points=1,snd<=1";
-	  if( ! talents.cut_to_the_chase ) action_list_str += "/pool_energy,energy<=60,snd<=5/slice_and_dice,min_combo_points=3,snd<=2";
+      if( ! talents.cut_to_the_chase ) action_list_str += "/pool_energy,energy<=60,snd<=5/slice_and_dice,min_combo_points=3,snd<=2";
       action_list_str += "/rupture,min_combo_points=4,time_to_die>=15,time>=10,snd>=11";
       if( talents.cold_blood ) action_list_str += "/cold_blood,sync=envenom";
       action_list_str += "/envenom,min_combo_points=4,no_buff=1";
@@ -3180,20 +3180,18 @@ void rogue_t::init_actions()
       action_list_str += "/tricks_of_the_trade";
       // CP conditionals track reaction time, so responding when you see CP=4 will often result in CP=5 finishers
       action_list_str += "/rupture,min_combo_points=4";
-    
-      if ( talents.improved_poisons )
-          action_list_str += "/envenom,min_combo_points=4,env<=1";
-    
+      if ( talents.improved_poisons ) action_list_str += "/envenom,min_combo_points=4,env<=1";
       action_list_str += "/eviscerate,min_combo_points=4";
-
       action_list_str += talents.hemorrhage ? "/hemorrhage" : "/sinister_strike";
       action_list_str += ",max_combo_points=2,energy>=80";
     }
     else
     {
       action_list_str += "/pool_energy,energy<=60,snd<=5/slice_and_dice,min_combo_points=3,snd<=2";
-	  action_list_str += "/sinister_strike,max_combo_points=4";
+      action_list_str += "/sinister_strike,max_combo_points=4";
     }
+
+    action_list_default = 1;
   }
 
   player_t::init_actions();

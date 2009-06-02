@@ -1658,7 +1658,7 @@ struct monstrous_bite_t : public hunter_pet_attack_t
         hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
         p -> aura_loss( "Monstrous Bite" );
         p -> _buffs.monstrous_bite = 0;
-	p -> _expirations.monstrous_bite = 0;
+        p -> _expirations.monstrous_bite = 0;
       }
     };
 
@@ -3808,7 +3808,7 @@ void hunter_t::init_actions()
     if( ! talents.aimed_shot     ) action_list_str += "/multi_shot";
     action_list_str += "/steady_shot";
 
-    if ( sim -> debug ) log_t::output( sim, "Player %s using default actions: %s", name(), action_list_str.c_str()  );
+    action_list_default = 1;
   }
 
   player_t::init_actions();

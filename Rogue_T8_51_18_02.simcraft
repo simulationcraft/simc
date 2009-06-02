@@ -5,7 +5,7 @@
 
 rogue=Rogue_T8_51_18_02
 level=80
-talents=http://ptr.wowhead.com/?talent=f0ec0egoVboIuVo0xV0xcZ0b
+talents=http://www.wowhead.com/?talent#f0ec0egoVboIuVo0xV0xcZ0b
 actions=flask,type=endless_rage/food,type=fish_feast/apply_poison,main_hand=instant,off_hand=deadly
 actions+=/auto_attack
 actions+=/kick

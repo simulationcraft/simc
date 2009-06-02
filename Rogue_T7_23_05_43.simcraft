@@ -6,7 +6,7 @@
 
 rogue=Rogue_T7_23_05_43
 level=80
-talents=http://ptr.wowhead.com/?talent=fheb0fxZ0xZxbrbhGzdAzqc
+talents=http://www.wowhead.com/?talent#fheb0fxZ0xZxbrbhGzdAzqc
 
 # Action queue
 actions=flask,type=endless_rage/food,type=fish_feast/apply_poison,main_hand=instant,off_hand=deadly

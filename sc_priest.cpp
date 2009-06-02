@@ -159,8 +159,7 @@ struct priest_t : public player_t
 
 enum devious_mind_states_t { DEVIOUS_MIND_STATE_NONE=0, DEVIOUS_MIND_STATE_WAITING, DEVIOUS_MIND_STATE_ACTIVE };
 
-namespace
-{ // ANONYMOUS NAMESPACE ==========================================
+namespace { // ANONYMOUS NAMESPACE ==========================================
 
 // ==========================================================================
 // Priest Spell
@@ -242,7 +241,7 @@ struct shadow_fiend_pet_t : public pet_t
     return ap;
   }
   virtual void schedule_ready( double delta_time=0,
-			       bool   waiting=false )
+                               bool   waiting=false )
   {
     pet_t::schedule_ready( delta_time, waiting );
     if( ! melee -> execute_event ) melee -> execute();
@@ -1995,7 +1994,7 @@ void priest_t::init_actions()
       action_list_str += "/holy_fire/mind_blast/smite";
     }
 
-    if ( sim -> debug ) log_t::output( sim, "Player %s using default actions: %s", name(), action_list_str.c_str()  );
+    action_list_default = 1;
   }
 
   player_t::init_actions();

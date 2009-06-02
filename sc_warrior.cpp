@@ -221,8 +221,7 @@ double warrior_t::composite_attribute_multiplier( int attr )
   return m;
 }
 
-namespace
-{ // ANONYMOUS NAMESPACE =========================================
+namespace { // ANONYMOUS NAMESPACE =========================================
 
 // ==========================================================================
 // Warrior Attack
@@ -2379,7 +2378,7 @@ void warrior_t::init_actions()
       action_list_str += "/stance,choose=berserker/auto_attack";
     }
 
-    if ( sim -> debug ) log_t::output( sim, "Player %s using default actions: %s", name(), action_list_str.c_str()  );
+    action_list_default = 1;
   }
 
   player_t::init_actions();

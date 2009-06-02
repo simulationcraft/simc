@@ -384,7 +384,7 @@ struct treants_pet_t : public pet_t
     return ap;
   }
   virtual void schedule_ready( double delta_time=0,
-			       bool   waiting=false )
+                               bool   waiting=false )
   {
     pet_t::schedule_ready( delta_time, waiting );
     if( ! melee -> execute_event ) melee -> execute();
@@ -3320,8 +3320,7 @@ void druid_t::init_actions()
       action_list_str+="/savage_roar,cp>=1,savage_roar<=4/rip,cp>=5,time_to_die>=10";
       action_list_str+="/ferocious_bite,cp>=5,rip>=5,savage_roar>=6/mangle_cat,mangle<=2/rake/shred";
     }
-
-    if ( sim -> debug ) log_t::output( sim, "Player %s using default actions: %s", name(), action_list_str.c_str()  );
+    action_list_default = 1;
   }
 
   player_t::init_actions();

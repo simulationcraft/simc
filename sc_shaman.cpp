@@ -268,8 +268,7 @@ struct shaman_t : public player_t
   virtual void regen( double periodicity );
 };
 
-namespace
-{ // ANONYMOUS NAMESPACE ==========================================
+namespace { // ANONYMOUS NAMESPACE ==========================================
 
 // ==========================================================================
 // Shaman Attack
@@ -3304,7 +3303,7 @@ void shaman_t::init_actions()
       if( talents.thunderstorm ) action_list_str += "/thunderstorm";
     }
 
-    if ( sim -> debug ) log_t::output( sim, "Player %s using default actions: %s", name(), action_list_str.c_str()  );
+    action_list_default = 1;
   }
 
   player_t::init_actions();

@@ -229,8 +229,7 @@ struct mage_t : public player_t
   virtual double resource_loss( int resource, double amount, action_t* action=0 );
 };
 
-namespace
-{ // ANONYMOUS NAMESPACE ==========================================
+namespace { // ANONYMOUS NAMESPACE ==========================================
 
 // stack_winters_chill =====================================================
 
@@ -445,13 +444,13 @@ struct mirror_image_pet_t : public pet_t
       }
       if( next_in_sequence ) 
       {
-	next_in_sequence -> schedule_execute();
+        next_in_sequence -> schedule_execute();
       }
       else
       {
-	mirror_image_pet_t* mi = (mirror_image_pet_t*) player;
-	mi -> sequence_finished++;
-	if( mi -> sequence_finished == mi -> num_images ) mi -> dismiss();
+        mirror_image_pet_t* mi = (mirror_image_pet_t*) player;
+        mi -> sequence_finished++;
+        if( mi -> sequence_finished == mi -> num_images ) mi -> dismiss();
       }
     }
   };
@@ -477,13 +476,13 @@ struct mirror_image_pet_t : public pet_t
       spell_t::execute();
       if( next_in_sequence ) 
       {
-	next_in_sequence -> schedule_execute();
+        next_in_sequence -> schedule_execute();
       }
       else
       {
-	mirror_image_pet_t* mi = (mirror_image_pet_t*) player;
-	mi -> sequence_finished++;
-	if( mi -> sequence_finished == mi -> num_images ) mi -> dismiss();
+        mirror_image_pet_t* mi = (mirror_image_pet_t*) player;
+        mi -> sequence_finished++;
+        if( mi -> sequence_finished == mi -> num_images ) mi -> dismiss();
       }
     }
     virtual void player_buff()
@@ -3370,18 +3369,18 @@ void mage_t::init_actions()
       if( talents.hot_streak  ) action_list_str += "/pyroblast,hot_streak=1";
       if( talents.piercing_ice && talents.ice_shards )
       {
-	action_list_str += "/frostfire_bolt";
+        action_list_str += "/frostfire_bolt";
       }
       else
       {
-	action_list_str += "/fire_ball";
+        action_list_str += "/fire_ball";
       }
     }
     else action_list_str = "/arcane_missiles";
 
     action_list_str += "/evocation";
 
-    if ( sim -> debug ) log_t::output( sim, "Player %s using default actions: %s", name(), action_list_str.c_str()  );
+    action_list_default = 1;
   }
 
   player_t::init_actions();

@@ -2,7 +2,7 @@
 
 shaman=Shaman_T8_57_14_00_noToW
 level=80
-talents=http://ptr.wowhead.com/?talent=hEh0qcdItGfzAo0xxco
+talents=http://www.wowhead.com/?talent#hEh0qcdItGfzAo0xxco
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/flametongue_weapon,weapon=main/water_shield
 actions+=/wind_shock
 actions+=/mana_spring_totem/wrath_of_air_totem/speed_potion

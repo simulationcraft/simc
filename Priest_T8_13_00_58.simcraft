@@ -2,7 +2,7 @@
 
 priest=Priest_T8_13_00_58
 level=80
-talents=http://ptr.wowhead.com/?talent=bVcbhZZGxfVRfzcfqfzAo
+talents=http://www.wowhead.com/?talent#bVcbhZZGxfVRfzcfqfzAo
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/fortitude/divine_spirit/inner_fire/shadow_form
 actions+=/shadow_fiend/dispersion
 actions+=/shadow_word_pain,shadow_weaving_wait=1/speed_potion/vampiric_touch/devouring_plague/mind_blast/mind_flay

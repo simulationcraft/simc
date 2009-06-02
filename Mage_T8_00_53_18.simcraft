@@ -2,7 +2,7 @@
 
 mage=Mage_T8_00_53_18
 level=80
-talents=http://ptr.wowhead.com/?talent=oZfVc0RhIuVubhstbIccoc
+talents=http://www.wowhead.com/?talent#oZfVc0RhIuVubhstbIccoc
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/arcane_brilliance
 actions+=/counterspell
 actions+=/mana_gem,trigger=1000/speed_potion

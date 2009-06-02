@@ -774,6 +774,7 @@ struct player_t
   std::string action_list_str;
   std::string action_list_postfix;
   std::string action_list_skip;
+  int         action_list_default;
 
   // Reporting
   int    quiet;

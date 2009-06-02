@@ -31,9 +31,9 @@ static std::vector<url_cache_t> url_cache_db;
 // parse_url ================================================================
 
 static bool parse_url( std::string& host,
-		       std::string& path,
-		       short&       port,
-		       const char*  url )
+                       std::string& path,
+                       short&       port,
+                       const char*  url )
 {
   if( strncmp( url, "http://", 7 ) ) return false;
 
@@ -88,43 +88,43 @@ bool http_t::cache_load()
     uint32_t num_records, max_size;
 
     if( fread( &version,     sizeof( double   ), 1, file ) &&
-	fread( &num_records, sizeof( uint32_t ), 1, file ) &&
-	fread( &max_size,    sizeof( uint32_t ), 1, file ) )
+        fread( &num_records, sizeof( uint32_t ), 1, file ) &&
+        fread( &max_size,    sizeof( uint32_t ), 1, file ) )
     {
       if( version == url_cache_version )
       {
-	std::string url, result;
-	char* buffer = new char[ max_size+1 ];
+        std::string url, result;
+        char* buffer = new char[ max_size+1 ];
     
-	for( unsigned i=0; i < num_records; i++ )
+        for( unsigned i=0; i < num_records; i++ )
         {
-	  uint32_t timestamp, url_size, result_size;
-	  
-	  if( fread( &timestamp,   sizeof( uint32_t ), 1, file ) &&
-	      fread( &url_size,    sizeof( uint32_t ), 1, file ) &&
-	      fread( &result_size, sizeof( uint32_t ), 1, file ) )
-	  {
-	    assert( url_size > 0 && result_size > 0 );
+          uint32_t timestamp, url_size, result_size;
+          
+          if( fread( &timestamp,   sizeof( uint32_t ), 1, file ) &&
+              fread( &url_size,    sizeof( uint32_t ), 1, file ) &&
+              fread( &result_size, sizeof( uint32_t ), 1, file ) )
+          {
+            assert( url_size > 0 && result_size > 0 );
 
-	    if( fread( buffer, sizeof( char ), url_size, file ) )
-	    {
-	      buffer[ url_size ] = '\0';
-	      url = buffer;
-	    }
-	    else break;
+            if( fread( buffer, sizeof( char ), url_size, file ) )
+            {
+              buffer[ url_size ] = '\0';
+              url = buffer;
+            }
+            else break;
 
-	    if( fread( buffer, sizeof( char ), result_size, file ) )
-	    {
-	      buffer[ result_size ] = '\0';
-	      result = buffer;
-	    }
-	    else break;
+            if( fread( buffer, sizeof( char ), result_size, file ) )
+            {
+              buffer[ result_size ] = '\0';
+              result = buffer;
+            }
+            else break;
 
-	    cache_set( url, result, timestamp, false );
-	  }
-	  else break;
-	}
-	delete buffer;
+            cache_set( url, result, timestamp, false );
+          }
+          else break;
+        }
+        delete buffer;
       }
     }
     fclose( file );
@@ -194,9 +194,9 @@ void http_t::cache_clear()
 // http_t::cache_get ========================================================
 
 bool http_t::cache_get( std::string& result,
-			const std::string& url,
-			bool force,
-			bool lock )
+                        const std::string& url,
+                        bool force,
+                        bool lock )
 {
   if( lock ) thread_t::lock();
 
@@ -211,8 +211,8 @@ bool http_t::cache_get( std::string& result,
     if( url == c.url )
     {
       if( ! force )
-	if( ( now - c.timestamp ) > expiration_seconds ) 
-	  break;
+        if( ( now - c.timestamp ) > expiration_seconds ) 
+          break;
 
       result = c.result;
       success = true;
@@ -227,9 +227,9 @@ bool http_t::cache_get( std::string& result,
 // http_t::cache_set ========================================================
 
 void http_t::cache_set( const std::string& url,
-			const std::string& result,
-			uint32_t           timestamp,
-			bool               lock )
+                        const std::string& result,
+                        uint32_t           timestamp,
+                        bool               lock )
 {
   if( lock ) thread_t::lock();
 
@@ -260,9 +260,9 @@ void http_t::cache_set( const std::string& url,
 // http_t::get ==============================================================
 
 bool http_t::get( std::string& result,
-		  const std::string& url,
-		  const std::string& confirmation,
-		  int throttle_seconds )
+                  const std::string& url,
+                  const std::string& confirmation,
+                  int throttle_seconds )
 {
   thread_t::lock();
 
@@ -304,7 +304,7 @@ bool http_t::get( std::string& result,
 // http_t::download =========================================================
 
 bool http_t::download( std::string& result,
-		       const std::string& url )
+                       const std::string& url )
 {
   return false;
 }
@@ -322,7 +322,7 @@ bool http_t::download( std::string& result,
 // http_t::download =========================================================
 
 bool http_t::download( std::string& result,
-		       const std::string& url )
+                       const std::string& url )
 {
   static bool initialized = false;
   if( ! initialized )
@@ -401,7 +401,7 @@ bool http_t::download( std::string& result,
 // http_t::download =========================================================
 
 bool http_t::download( std::string& result,
-		       const std::string& url )
+                       const std::string& url )
 {
   result = "";
   HINTERNET hINet, hFile;
@@ -417,12 +417,12 @@ bool http_t::download( std::string& result,
       DWORD amount;
       while( InternetReadFile( hFile, buffer, sizeof(buffer)-2, &amount ) )
       {
-	if( amount > 0 )
-	{
-	  buffer[ amount ] = '\0';
-	  result += buffer;
-	}
-	else break;
+        if( amount > 0 )
+        {
+          buffer[ amount ] = '\0';
+          result += buffer;
+        }
+        else break;
       }
       InternetCloseHandle( hFile );
     }
@@ -444,7 +444,7 @@ bool http_t::download( std::string& result,
 // http_t::download =========================================================
 
 bool http_t::download( std::string& result,
-		       const std::string& url )
+                       const std::string& url )
 {
   std::string host;
   std::string path;

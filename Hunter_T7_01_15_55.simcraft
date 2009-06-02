@@ -2,7 +2,7 @@
 
 hunter=Hunter_T7_01_15_55
 level=80
-talents=http://ptr.wowhead.com/?talent=coZ0eVooZx0ci0cIhedAhsk
+talents=http://www.wowhead.com/?talent#coZ0eVooZx0ci0cIhedAhsk
 
 # Action queue
 actions=flask,type=endless_rage/food,type=blackened_dragonfin/summon_pet/hunters_mark
