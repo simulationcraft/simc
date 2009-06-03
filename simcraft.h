@@ -601,7 +601,7 @@ struct sim_t
   int  thread_index;
 
   sim_t( sim_t* parent=0, int thrdID=0 );
-  ~sim_t();
+  virtual ~sim_t();
 
   virtual const char* name() { return "simcraft"; }
   virtual int main( int argc, char** argv );

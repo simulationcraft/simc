@@ -200,7 +200,7 @@ bool http_t::cache_get( std::string& result,
 {
   if( lock ) thread_t::lock();
 
-  uint32_t now = time( NULL );
+  uint32_t now = (uint32_t) time( NULL );
   bool success = false;
 
   int num_records = url_cache_db.size();
@@ -233,7 +233,7 @@ void http_t::cache_set( const std::string& url,
 {
   if( lock ) thread_t::lock();
 
-  if( timestamp == 0 ) timestamp = time( NULL );
+  if( timestamp == 0 ) timestamp = (uint32_t) time( NULL );
 
   int num_records = url_cache_db.size();
   bool success = false;
@@ -394,7 +394,9 @@ bool http_t::download( std::string& result,
 // ==========================================================================
 // HTTP-DOWNLOAD FOR WINDOWS (MS Visual C++ Only)
 // ==========================================================================
+#ifndef UNICODE
 #define UNICODE
+#endif
 #include <windows.h>
 #include <wininet.h>
 
