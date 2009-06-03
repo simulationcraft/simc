@@ -108,13 +108,13 @@ void action_t::base_parse_options( option_t*          options,
 
     if ( 2 != util_t::string_split( splits[ i ], "=", "S S", &n, &v ) )
     {
-      fprintf( sim -> output_file, "util_t::action: %s: Unexpected parameter '%s'.  Expected format: name=value\n", name(), splits[ i ].c_str() );
+      fprintf( sim -> output_file, "action_t::parse_options %s: Unexpected parameter '%s'.  Expected format: name=value\n", name(), splits[ i ].c_str() );
       assert( false );
     }
 
     if ( ! option_t::parse( sim, options, n, v ) )
     {
-      fprintf( sim -> output_file, "util_t::spell: %s: Unexpected parameter '%s'.\n", name(), n.c_str() );
+      fprintf( sim -> output_file, "action_t::parse_options: %s: Unexpected parameter '%s'.\n", name(), n.c_str() );
       assert( false );
     }
   }

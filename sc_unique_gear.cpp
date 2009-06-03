@@ -405,7 +405,7 @@ bool unique_gear_t::parse_option( player_t*          p,
       { "item_41333",                           OPT_BOOL,  &( p -> unique_gear -> ember_skyflare                  ) },
       { "embrace_of_the_spider",                OPT_BOOL,  &( p -> unique_gear -> embrace_of_the_spider           ) },
       { "eternal_sage",                         OPT_BOOL,  &( p -> unique_gear -> eternal_sage                    ) },
-      { "extract_of_necromatic_power",          OPT_BOOL,  &( p -> unique_gear -> extract_of_necromatic_power     ) },
+      { "extract_of_necromatic_power",          OPT_BOOL,  &( p -> unique_gear -> extract_of_necromantic_power    ) },
       { "eye_of_magtheridon",                   OPT_BOOL,  &( p -> unique_gear -> eye_of_magtheridon              ) },
       { "eye_of_the_broodmother",               OPT_BOOL,  &( p -> unique_gear -> eye_of_the_broodmother          ) },
       { "flare_of_the_heavens",                 OPT_BOOL,  &( p -> unique_gear -> flare_of_the_heavens            ) },
@@ -682,9 +682,9 @@ void unique_gear_t::register_callbacks( player_t* p )
     p -> register_attack_result_callback( RESULT_HIT_MASK, cb );
   }
   //---------------------------------------------------------------------------------------------------------
-  if ( p -> unique_gear -> extract_of_necromatic_power )
+  if ( p -> unique_gear -> extract_of_necromantic_power )
   {
-    cb = new discharge_proc_callback_t( "extract_of_necromatic_power", p, 1, SCHOOL_SHADOW, 1050, 1050, 0.10, 15 );
+    cb = new discharge_proc_callback_t( "extract_of_necromantic_power", p, 1, SCHOOL_SHADOW, 1050, 1050, 0.10, 15 );
     p -> register_tick_callback( cb );
   }
   //---------------------------------------------------------------------------------------------------------

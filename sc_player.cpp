@@ -293,6 +293,70 @@ static void replenish_raid( player_t* provider )
   }
 }
 
+// parse_talent_url =========================================================
+
+static bool parse_talent_url( sim_t* sim,
+			      const std::string& name,
+			      const std::string& url )
+{
+  assert( name == "talents" );
+  
+  player_t* p = sim -> active_player;
+
+  p -> talents_str = url;
+
+  std::string talent_string, address_string;
+  int encoding = ENCODING_NONE;
+
+  std::string::size_type cut_pt;
+  if ( ( cut_pt = url.find_first_of( "=#" ) ) != url.npos )
+  {
+    talent_string = url.substr( cut_pt + 1 );
+    address_string = url.substr( 0, cut_pt );
+
+    if ( address_string.find( "worldofwarcraft" ) != url.npos )
+    {
+      encoding = ENCODING_BLIZZARD;
+    }
+    else if ( address_string.find( "mmo-champion" ) != url.npos )
+    {
+      encoding = ENCODING_MMO;
+
+      std::vector<std::string> parts;
+      int part_count = util_t::string_split( parts, talent_string, "&" );
+
+      talent_string = parts[ 0 ];
+      for ( int i = 1; i < part_count; i++ )
+      {
+        std::string part_name, part_url;
+        if ( 2 == util_t::string_split( parts[i], "=", "S S", &part_name, &part_url ) )
+        {
+          if ( part_name == "glyph" )
+          {
+            //FIXME: ADD GLYPH SUPPORT?
+          }
+          else if ( part_name == "version" )
+          {
+            //FIXME: WHAT TO DO WITH VERSION NUMBER?
+          }
+        }
+      }
+    }
+    else if ( address_string.find( "wowhead" ) != url.npos )
+    {
+      encoding = ENCODING_WOWHEAD;
+    }
+  }
+
+  if ( encoding == ENCODING_NONE || ! p -> parse_talents( talent_string, encoding ) )
+  {
+    printf( "simcraft: Unable to decode talent string %s for %s\n", url.c_str(), p -> name() );
+    return false;
+  }
+
+  return true;
+}
+
 } // ANONYMOUS NAMESPACE ===================================================
 
 // ==========================================================================
@@ -2585,62 +2649,13 @@ bool player_t::parse_talents( const std::string& talent_string,
   return false;
 }
 
-// player_t::parse_talent_url ===============================================
+// player_t::get_options ====================================================
 
-bool player_t::parse_talent_url( const std::string& url )
+std::vector<option_t>& player_t::get_options()
 {
-  talents_str = url;
+  // Place-holder for now.
 
-  std::string talent_string, address_string;
-  int encoding = ENCODING_NONE;
-
-  std::string::size_type cut_pt;
-  if ( ( cut_pt = url.find_first_of( "=#" ) ) != url.npos )
-  {
-    talent_string = url.substr( cut_pt + 1 );
-    address_string = url.substr( 0, cut_pt );
-
-    if ( address_string.find( "worldofwarcraft" ) != url.npos )
-    {
-      encoding = ENCODING_BLIZZARD;
-    }
-    else if ( address_string.find( "mmo-champion" ) != url.npos )
-    {
-      encoding = ENCODING_MMO;
-
-      std::vector<std::string> parts;
-      int part_count = util_t::string_split( parts, talent_string, "&" );
-
-      talent_string = parts[ 0 ];
-      for ( int i = 1; i < part_count; i++ )
-      {
-        std::string part_name, part_url;
-        if ( 2 == util_t::string_split( parts[i], "=", "S S", &part_name, &part_url ) )
-        {
-          if ( part_name == "glyph" )
-          {
-            //FIXME: ADD GLYPH SUPPORT?
-          }
-          else if ( part_name == "version" )
-          {
-            //FIXME: WHAT TO DO WITH VERSION NUMBER?
-          }
-        }
-      }
-    }
-    else if ( address_string.find( "wowhead" ) != url.npos )
-    {
-      encoding = ENCODING_WOWHEAD;
-    }
-  }
-
-  if ( encoding == ENCODING_NONE || ! parse_talents( talent_string, encoding ) )
-  {
-    printf( "simcraft: Unable to decode talent string %s for %s\n", url.c_str(), name() );
-    return false;
-  }
-
-  return true;
+  return option_vector;
 }
 
 // player_t::parse_option ===================================================
@@ -2652,13 +2667,14 @@ bool player_t::parse_option( const std::string& name,
     {
       // @option_doc loc=player/all/general title="General"
       { "name",                                 OPT_STRING, &( name_str                                       ) },
+      { "talents",                              OPT_FUNC,   (void*) parse_talent_url                            },
       { "race",                                 OPT_STRING, &( race_str                                       ) },
       { "level",                                OPT_INT,    &( level                                          ) },
       { "distance",                             OPT_FLT,    &( distance                                       ) },
       { "professions",                          OPT_STRING, &( professions_str                                ) },
       { "actions",                              OPT_STRING, &( action_list_str                                ) },
       { "sleeping",                             OPT_BOOL,   &( sleeping                                       ) },
-      { "quiet",                                OPT_BOOL,   &( quiet                                            ) },
+      { "quiet",                                OPT_BOOL,   &( quiet                                          ) },
       // @option_doc loc=player/all/weapons title="Weapon Descriptions"
       { "main_hand",                            OPT_STRING, &( main_hand_str                                  ) },
       { "off_hand",                             OPT_STRING, &( off_hand_str                                   ) },
@@ -2791,8 +2807,6 @@ bool player_t::parse_option( const std::string& name,
     option_t::print( sim -> output_file, options );
     return false;
   }
-
-  if ( name == "talents" ) return parse_talent_url( value );
 
   if ( unique_gear_t::parse_option( this, name, value ) ) return true;
 

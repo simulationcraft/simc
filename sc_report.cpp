@@ -19,7 +19,7 @@ static void print_action( FILE* file, stats_t* s )
            s -> num_executes,
            s -> frequency,
            s -> dpe,
-           s -> portion_dmg,
+           s -> portion_dmg * 100.0,
            s -> dpet,
            s -> dpr,
            s -> portion_dps );

@@ -157,7 +157,6 @@ sim_t::sim_t( sim_t* p, int index ) :
     output_file( stdout ), log_file( 0 ), http_throttle(0),
     threads( 0 ), thread_handle( 0 ), thread_index( index )
 {
-
   for ( int i=0; i < RESOURCE_MAX; i++ )
   {
     infinite_resource[ i ] = false;
@@ -610,6 +609,8 @@ void sim_t::analyze()
 
     p -> dps = p -> total_dmg / p -> total_seconds;
 
+    if ( p -> quiet ) continue;
+
     for ( int i=0; i < num_stats; i++ )
     {
       stats_t* s = stats_list[ i ];
@@ -617,8 +618,6 @@ void sim_t::analyze()
       s -> portion_dmg = s -> total_dmg / p -> total_dmg;
       s -> portion_dps = s -> portion_dmg * p -> dps;
     }
-
-    if ( p -> quiet ) continue;
 
     players_by_rank.push_back( p );
     players_by_name.push_back( p );

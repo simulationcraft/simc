@@ -5,8 +5,7 @@
 
 #include "simcraft.h"
 
-namespace
-{ // ANONYMOUS NAMESPACE ==========================================
+namespace { // ANONYMOUS NAMESPACE ==========================================
 
 // is_white_space ===========================================================
 
@@ -76,6 +75,7 @@ void option_t::print( FILE* file, option_t* options )
       fprintf( file, "\n" );
     }
     break;
+    case OPT_FUNC:       break;
     case OPT_APPEND:     break;
     case OPT_DEPRECATED: break;
     default: assert( 0 );
@@ -83,10 +83,27 @@ void option_t::print( FILE* file, option_t* options )
   }
 }
 
+// option_t::copy ===========================================================
+
+void option_t::copy( std::vector<option_t>& opt_vector,
+		     option_t*              opt_array )
+{
+  int vector_size = opt_vector.size();
+  int  array_size = 0;
+
+  for( int i=0; opt_array[ i ].name; i++ ) array_size++;
+  opt_vector.resize( vector_size + array_size );
+
+  for( int i=0; i < array_size; i++ )
+  {
+    opt_vector[ vector_size + i ]  = opt_array[ i ];
+  }  
+}
+
 // option_t::parse ==========================================================
 
-bool option_t::parse( app_t*             app,
-                      option_t*          options,
+bool option_t::parse( sim_t*             sim,
+		      option_t*          options,
                       const std::string& name,
                       const std::string& value )
 {
@@ -106,11 +123,12 @@ bool option_t::parse( app_t*             app,
       case OPT_LIST:   ( ( std::vector<std::string>* ) o.address ) -> push_back( value );      break;
       case OPT_BOOL:
         *( ( int* ) o.address ) = atoi( value.c_str() ) ? 1 : 0;
-        if ( value != "0" && value != "1" ) printf( "%s: Acceptable values for '%s' are '1' or '0'\n", app -> name(), name.c_str() );
+        if ( value != "0" && value != "1" ) printf( "simcraft: Acceptable values for '%s' are '1' or '0'\n", name.c_str() );
         break;
+      case OPT_FUNC: return ( (option_function_t) o.address )( sim, name, value );
       case OPT_DEPRECATED:
-        printf( "%s: option '%s' has been deprecated.\n", app -> name(), o.name );
-        if ( o.address ) printf( "%s: please use '%s' instead.\n", app -> name(), ( char* ) o.address );
+        printf( "simcraft: option '%s' has been deprecated.\n", o.name );
+        if ( o.address ) printf( "simcraft: please use '%s' instead.\n", ( char* ) o.address );
         exit( 0 );
       default: assert( 0 );
       }
@@ -123,7 +141,7 @@ bool option_t::parse( app_t*             app,
 
 // option_t::parse_file =====================================================
 
-bool option_t::parse_file( app_t* app,
+bool option_t::parse_file( sim_t* sim,
                            FILE*  file )
 {
   char buffer[ 1024 ];
@@ -131,14 +149,14 @@ bool option_t::parse_file( app_t* app,
   {
     if ( *buffer == '#' ) continue;
     if ( only_white_space( buffer ) ) continue;
-    option_t::parse_line( app, buffer );
+    option_t::parse_line( sim, buffer );
   }
   return true;
 }
 
 // option_t::parse_line =====================================================
 
-bool option_t::parse_line( app_t* app,
+bool option_t::parse_line( sim_t* sim,
                            char*  line )
 {
   std::string buffer;
@@ -150,7 +168,7 @@ bool option_t::parse_line( app_t* app,
   int num_tokens = util_t::string_split( tokens, buffer, " \t\n" );
 
   for ( int i=0; i < num_tokens; i++ )
-    if ( ! parse_token( app, tokens[ i ] ) )
+    if ( ! parse_token( sim, tokens[ i ] ) )
       return false;
 
   return true;
@@ -158,12 +176,12 @@ bool option_t::parse_line( app_t* app,
 
 // option_t::parse_token ====================================================
 
-bool option_t::parse_token( app_t*       app,
+bool option_t::parse_token( sim_t*       sim,
                             std::string& token )
 {
   if ( token == "-" )
   {
-    parse_file( app, stdin );
+    parse_file( sim, stdin );
     return true;
   }
 
@@ -174,9 +192,9 @@ bool option_t::parse_token( app_t*       app,
     FILE* file = fopen( token.c_str(), "r" );
     if ( ! file )
     {
-      printf( "%s: Unexpected parameter '%s'.  Expected format: name=value\n", app -> name(), token.c_str() );
+      printf( "simcraft: Unexpected parameter '%s'.  Expected format: name=value\n", token.c_str() );
     }
-    parse_file( app, file );
+    parse_file( sim, file );
     fclose( file );
     return true;
   }
@@ -191,17 +209,16 @@ bool option_t::parse_token( app_t*       app,
     FILE* file = fopen( value.c_str(), "r" );
     if ( ! file )
     {
-      printf( "%s: Unable to open input parameter file '%s'\n", app -> name(), value.c_str() );
+      printf( "simcraft: Unable to open input parameter file '%s'\n", value.c_str() );
     }
-    parse_file( app, file );
+    parse_file( sim, file );
     fclose( file );
   }
-  else if ( ! app -> parse_option( name, value ) )
+  else if ( ! sim -> parse_option( name, value ) )
   {
-    printf( "%s: Unknown option/value pair: '%s' : '%s'\n", app -> name(), name.c_str(), value.c_str() );
+    printf( "simcraft: Unknown option/value pair: '%s' : '%s'\n", name.c_str(), value.c_str() );
     return false;
   }
 
   return true;
 }
-

@@ -410,18 +410,41 @@ struct gear_stats_t
 
 };
 
-// Application ===============================================================
+// Options ====================================================================
 
-struct app_t
+enum option_type_t
 {
-  virtual const char* name() = 0;
-  virtual int  main( int argc, char** argv ) = 0;
-  virtual bool parse_option( const std::string& name, const std::string& value ) { return false; }
-  virtual ~app_t() {}};
+  OPT_STRING=0,   // std::string*
+  OPT_APPEND,     // std::string* (append)
+  OPT_CHAR_P,     // char*
+  OPT_BOOL,       // int (only valid values are 1 and 0)
+  OPT_INT,        // int
+  OPT_FLT,        // double
+  OPT_LIST,       // std::vector<std::string>*
+  OPT_FUNC,       // function pointer
+  OPT_DEPRECATED,
+  OPT_UNKNOWN
+};
+
+typedef bool (*option_function_t)( sim_t* sim, const std::string& name, const std::string& value );
+
+struct option_t
+{
+  const char* name;
+  int type;
+  void*  address;
+
+  static void print( FILE*, option_t* );
+  static void copy( std::vector<option_t>& opt_vector, option_t* opt_array );
+  static bool parse( sim_t*, option_t*, const std::string& name, const std::string& value );
+  static bool parse_file( sim_t*, FILE* file );
+  static bool parse_line( sim_t*, char* line );
+  static bool parse_token( sim_t*, std::string& token );
+};
 
 // Simulation Engine =========================================================
 
-struct sim_t : public app_t
+struct sim_t
 {
   int         argc;
   char**      argv;
@@ -683,6 +706,8 @@ struct player_t
   int         stunned, moving, sleeping, initialized;
   rating_t    rating;
   pet_t*      pet_list;
+
+  std::vector<option_t> option_vector;
 
   // Profs
   std::string   professions_str;
@@ -1069,9 +1094,10 @@ struct player_t
   virtual bool parse_talents_mmo( const std::string& talent_string );
   virtual bool parse_talents_wowhead( const std::string& talent_string );
   virtual bool parse_talents( const std::string& talent_string, int encoding );
-  virtual bool parse_talent_url( const std::string& url );
 
-  virtual bool      parse_option ( const std::string& name, const std::string& value );
+  virtual std::vector<option_t>& get_options();
+  virtual bool parse_option( const std::string& name, const std::string& value );
+
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name ) { return 0; }
   virtual pet_t*    find_pet     ( const std::string& name );
@@ -1607,7 +1633,7 @@ struct unique_gear_t
   int  ember_skyflare;
   int  embrace_of_the_spider;
   int  eternal_sage;
-  int  extract_of_necromatic_power;
+  int  extract_of_necromantic_power;
   int  eye_of_magtheridon;
   int  eye_of_the_broodmother;
   int  flare_of_the_heavens;
@@ -1748,37 +1774,6 @@ struct talent_translation_t
   int  index;
   int* address;
 };
-
-// Options ====================================================================
-
-enum option_type_t
-{
-  OPT_STRING=0,   // std::string*
-  OPT_APPEND,     // std::string* (append)
-  OPT_CHAR_P,     // char*
-  OPT_BOOL,       // int (only valid values are 1 and 0)
-  OPT_INT,        // int
-  OPT_FLT,        // double
-  OPT_LIST,       // std::vector<std::string>*
-  OPT_DEPRECATED,
-  OPT_UNKNOWN
-};
-
-struct option_t
-{
-  const char* name;
-  int type;
-  void*  address;
-
-  static void print( FILE*, option_t* );
-  static bool parse( app_t*, option_t*, const std::string& name, const std::string& value );
-  static bool parse_file( app_t*, FILE* file );
-  static bool parse_line( app_t*, char* line );
-  static bool parse_token( app_t*, std::string& token );
-};
-
-
-
 
 // Log =======================================================================
 
