@@ -23,6 +23,7 @@ struct armory_item_t{
   gear_stats_t gems[6];
   bool has_bonus;
   gear_stats_t gem_bonus;
+  std::string clicky_str;
   armory_item_t() : slot(0), has_enchants(false), n_gems(0), has_bonus(false) {}
 };
 
@@ -733,6 +734,7 @@ bool  parseItemStats( urlSplit_t& aURL, armory_item_t& gs,  const std::string& i
             //set option
             if (clicky_val!=""){
               player_parse_option( aURL,clicky_str, clicky_val );
+              gs.clicky_str=clicky_str;
             }
           }else{
             printf("Too many clickies for player %s\n",aURL.active_player->name());
@@ -1127,6 +1129,7 @@ bool  replace_item(sim_t* sim, const std::string& new_id_str, const std::string&
   armory_item_t item_stats;
   aURL->generated_options+="# New_item="+new_id_str+", slot="+opt_slot.c_str()+", old_item="+opt_old_id.c_str()+"\n";
 
+  // this will parse new item, and also insert all item related options (name,clicky,weapons...)
   if ( parseItemStats( *aURL, item_stats, new_id_str, opt_slot ) ){
     // if slot was not found before, try to find based on inventory type
     if (slot<0){
@@ -1142,11 +1145,12 @@ bool  replace_item(sim_t* sim, const std::string& new_id_str, const std::string&
         return false;
       }
     }
-    // replace item
+    // replace item, and try to turn off old options
     armory_item_t* item_place= &aURL->item_stats[slot];
     armory_item_t old_stats= *item_place;
-    if (item_place->name!="")
-      player_parse_option( *aURL, proper_option_name( item_place->name ),"0" );
+    if (item_place->name!="")   player_parse_option( *aURL, proper_option_name( item_place->name ),"0" );
+    if (item_place->clicky_str!="") player_parse_option( *aURL, item_place->clicky_str,"" );
+    //set new values
     item_place->id=item_stats.id;
     item_place->name=item_stats.name;
     item_place->inv_type=item_stats.inv_type;
