@@ -811,6 +811,7 @@ struct player_t
   gear_stats_t gem_stats;
   enchant_t* enchant;
   unique_gear_t* unique_gear;
+  std::string clicky_1, clicky_2, clicky_3;
 
   // Scale Factors
   gear_stats_t scaling;

@@ -2779,6 +2779,9 @@ bool player_t::parse_option( const std::string& name,
       { "stamina_multiplier",                   OPT_FLT,    &( attribute_multiplier_initial[ ATTR_STAMINA   ] ) },
       { "strength",                             OPT_FLT,    &( attribute_initial[ ATTR_STRENGTH  ]            ) },
       { "strength_multiplier",                  OPT_FLT,    &( attribute_multiplier_initial[ ATTR_STRENGTH  ] ) },
+      { "clicky_1",                             OPT_STRING, &( clicky_1                                       ) },
+      { "clicky_2",                             OPT_STRING, &( clicky_2                                       ) },
+      { "clicky_3",                             OPT_STRING, &( clicky_3                                       ) },
       { NULL, OPT_UNKNOWN }
     };
 

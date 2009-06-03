@@ -4661,6 +4661,10 @@ void warlock_t::init_actions()
       if (talents.empowered_imp || talents.improved_imp) action_list_str+="imp"; else 
         action_list_str+="succubus";
 
+    if (clicky_1!="") action_list_str+="/"+clicky_1;
+    if (clicky_2!="") action_list_str+="/"+clicky_2;
+    if (clicky_3!="") action_list_str+="/"+clicky_3;
+
     if ( talents.haunt ) // 53_00_18
     { 
       action_list_str+="/haunt,debuff=1/corruption/curse_of_agony/unstable_affliction/haunt";
