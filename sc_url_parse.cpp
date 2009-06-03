@@ -382,6 +382,7 @@ void addItemGlyphOption( urlSplit_t& aURL, const std::string&  node, const std::
       //rename few well known gems, to be more readable
       if (itemID=="41285") itemID="chaotic_skyflare"; else
       if (itemID=="41333") itemID="ember_skyflare"; else
+      if (itemID=="41398") itemID="relentless_earthstorm"; else
       itemID="item_"+itemID;
       //call parse to check if this item option exists
       player_parse_option( aURL,itemID,opt_value );
@@ -889,7 +890,7 @@ bool parseArmory( sim_t* sim, const std::string& URL, bool inactiveTalents=false
   if ( ( glyphs!="" )&&( sim->active_player ) )
   {
     std::string glyph_node, glyph_name;
-    for ( unsigned int i=1; i<=3; i++ )
+    for ( unsigned int i=1; i<=6; i++ )
     {
       glyph_node= getNodeOne( glyphs, "glyph",i );
       if ( glyph_node!="" )
