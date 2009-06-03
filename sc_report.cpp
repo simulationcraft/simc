@@ -1064,6 +1064,45 @@ void report_t::print_xml( sim_t* sim )
   fclose( file );
 }
 
+// report_t::print_profiles ==================================================
+
+void report_t::print_profiles( sim_t* sim )
+{
+  for ( player_t* p = sim -> player_list; p; p = p -> next )
+  {
+    if( p -> is_pet() ) continue;
+
+    std::string file_name = p -> save_str;
+
+    if( file_name.empty() && sim -> save_profiles )
+    {
+      file_name = p -> name_str;
+      file_name += ".simcraft";
+    }
+
+    if( file_name.empty() ) continue;
+
+    FILE* file = fopen( file_name.c_str(), "w" );
+    if( ! file )
+    {
+      printf( "simcraft: Unable to save profile %s for player %s\n", file_name.c_str(), p -> name() );
+      continue;
+    }
+
+    fprintf( file, "%s=%s\n", util_t::player_type_string( p -> type ), p -> name() );
+
+    std::vector<option_t>& options = p -> get_options();
+    int num_options = options.size();
+
+    for( int i=0; i < num_options; i++ ) 
+    {
+      options[ i ].save( file );
+    }
+
+    fclose( file );
+  }
+}
+
 // report_t::print_suite =====================================================
 
 void report_t::print_suite( sim_t* sim )
@@ -1072,4 +1111,5 @@ void report_t::print_suite( sim_t* sim )
   report_t::print_html( sim );
   report_t::print_wiki( sim );
   report_t::print_xml( sim );
+  report_t::print_profiles( sim );
 }

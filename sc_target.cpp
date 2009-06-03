@@ -294,10 +294,9 @@ void target_t::combat_begin()
 void target_t::combat_end()
 {}
 
-// target_t::parse_option ======================================================
+// target_t::get_options =======================================================
 
-bool target_t::parse_option( const std::string& name,
-                             const std::string& value )
+int target_t::get_options( std::vector<option_t>& option_vector )
 {
   option_t options[] =
     {
@@ -320,12 +319,8 @@ bool target_t::parse_option( const std::string& name,
       { NULL, OPT_UNKNOWN }
     };
 
-  if ( name.empty() )
-  {
-    option_t::print( sim -> output_file, options );
-    return false;
-  }
+  option_t::copy( option_vector, options );
 
-  return option_t::parse( sim, options, name, value );
+  return option_vector.size();
 }
 

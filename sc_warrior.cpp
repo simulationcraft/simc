@@ -199,7 +199,7 @@ struct warrior_t : public player_t
   virtual void      interrupt();
   virtual void      regen( double periodicity );
   virtual bool      get_talent_trees( std::vector<int*>& arms, std::vector<int*>& fury, std::vector<int*>& protection );
-  virtual bool      parse_option( const std::string& name, const std::string& value );
+  virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual int       primary_resource() { return RESOURCE_RAGE; }
   virtual int       primary_role()     { return ROLE_ATTACK; }
@@ -2494,12 +2494,15 @@ bool warrior_t::get_talent_trees( std::vector<int*>& arms,
   return player_t::get_talent_trees( arms, fury, protection, translation );
 }
 
-// warrior_t::parse_option  ==============================================
+// warrior_t::get_options ================================================
 
-bool warrior_t::parse_option( const std::string& name,
-                              const std::string& value )
+std::vector<option_t>& warrior_t::get_options()
 {
-  option_t options[] =
+  if( option_vector.empty() )
+  {
+    player_t::get_options();
+
+    option_t options[] =
     {
       // @option_doc loc=skip
       { "armored_to_the_teeth",            OPT_INT, &( talents.armored_to_the_teeth            ) },
@@ -2572,16 +2575,10 @@ bool warrior_t::parse_option( const std::string& name,
       { NULL, OPT_UNKNOWN }
     };
 
-  if ( name.empty() )
-  {
-    player_t::parse_option( std::string(), std::string() );
-    option_t::print( sim -> output_file, options );
-    return false;
+    option_t::copy( option_vector, options );
   }
 
-  if ( player_t::parse_option( name, value ) ) return true;
-
-  return option_t::parse( sim, options, name, value );
+  return option_vector;
 }
 
 // player_t::create_warrior ===============================================

@@ -241,7 +241,7 @@ struct hunter_t : public player_t
   virtual void      interrupt();
   virtual double    composite_attack_power();
   virtual bool      get_talent_trees( std::vector<int*>& beastmastery, std::vector<int*>& marksmanship, std::vector<int*>& survival );
-  virtual bool      parse_option( const std::string& name, const std::string& value );
+  virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet( const std::string& name );
   virtual int       primary_resource() { return RESOURCE_MANA; }
@@ -573,13 +573,6 @@ struct hunter_pet_t : public pet_t
         { "rabid",            OPT_INT, &( talents.rabid            ) },
         { NULL, OPT_UNKNOWN }
       };
-
-    if ( name.empty() )
-    {
-      pet_t::parse_option( std::string(), std::string() );
-      option_t::print( sim -> output_file, options );
-      return false;
-    }
 
     if ( pet_t::parse_option( name, value ) ) return true;
 
@@ -3938,12 +3931,15 @@ bool hunter_t::get_talent_trees( std::vector<int*>& beastmastery,
 }
 
 
-// hunter_t::parse_option  ==================================================
+// hunter_t::get_options ====================================================
 
-bool hunter_t::parse_option( const std::string& name,
-                             const std::string& value )
+std::vector<option_t>& hunter_t::get_options()
 {
-  option_t options[] =
+  if( option_vector.empty() )
+  {
+    player_t::get_options();
+
+    option_t options[] =
     {
       // @option_doc loc=skip
       { "aimed_shot",                        OPT_INT, &( talents.aimed_shot                   ) },
@@ -4028,16 +4024,10 @@ bool hunter_t::parse_option( const std::string& name,
       { NULL, OPT_UNKNOWN }
     };
 
-  if ( name.empty() )
-  {
-    player_t::parse_option( std::string(), std::string() );
-    option_t::print( sim -> output_file, options );
-    return false;
+    option_t::copy( option_vector, options );
   }
 
-  if ( player_t::parse_option( name, value ) ) return true;
-
-  return option_t::parse( sim, options, name, value );
+  return option_vector;
 }
 
 // player_t::create_hunter  =================================================

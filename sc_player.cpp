@@ -296,8 +296,8 @@ static void replenish_raid( player_t* provider )
 // parse_talent_url =========================================================
 
 static bool parse_talent_url( sim_t* sim,
-			      const std::string& name,
-			      const std::string& url )
+                              const std::string& name,
+                              const std::string& url )
 {
   assert( name == "talents" );
   
@@ -569,22 +569,22 @@ void player_t::init()
 
 void player_t::init_core()
 {
-  equip_stats.  hit_rating = gear_stats.  hit_rating + gem_stats.  hit_rating + enchant -> stats.  hit_rating;
-  equip_stats. crit_rating = gear_stats. crit_rating + gem_stats. crit_rating + enchant -> stats. crit_rating;
-  equip_stats.haste_rating = gear_stats.haste_rating + gem_stats.haste_rating + enchant -> stats.haste_rating;
+  stats.  hit_rating = gear_stats.  hit_rating + gem_stats.  hit_rating + enchant -> stats.  hit_rating;
+  stats. crit_rating = gear_stats. crit_rating + gem_stats. crit_rating + enchant -> stats. crit_rating;
+  stats.haste_rating = gear_stats.haste_rating + gem_stats.haste_rating + enchant -> stats.haste_rating;
 
   if ( initial_haste_rating == 0 )
   {
-    initial_haste_rating = equip_stats.haste_rating;
+    initial_haste_rating = stats.haste_rating;
   }
 
   for ( int i=0; i < ATTRIBUTE_MAX; i++ )
   {
-    equip_stats.attribute[ i ] = gear_stats.attribute[ i ] + gem_stats.attribute[ i ] + enchant -> stats.attribute[ i ];
+    stats.attribute[ i ] = gear_stats.attribute[ i ] + gem_stats.attribute[ i ] + enchant -> stats.attribute[ i ];
 
     if ( attribute_initial[ i ] == 0 )
     {
-      attribute_initial[ i ] = attribute_base[ i ] + equip_stats.attribute[ i ];
+      attribute_initial[ i ] = attribute_base[ i ] + stats.attribute[ i ];
     }
   }
 
@@ -625,30 +625,30 @@ void player_t::init_race()
 
 void player_t::init_spell()
 {
-  equip_stats.spell_power       = gear_stats.spell_power       + gem_stats.spell_power       + enchant -> stats.spell_power;
-  equip_stats.spell_penetration = gear_stats.spell_penetration + gem_stats.spell_penetration + enchant -> stats.spell_penetration;
-  equip_stats.mp5               = gear_stats.mp5               + gem_stats.mp5               + enchant -> stats.mp5;
+  stats.spell_power       = gear_stats.spell_power       + gem_stats.spell_power       + enchant -> stats.spell_power;
+  stats.spell_penetration = gear_stats.spell_penetration + gem_stats.spell_penetration + enchant -> stats.spell_penetration;
+  stats.mp5               = gear_stats.mp5               + gem_stats.mp5               + enchant -> stats.mp5;
 
   if ( initial_spell_power[ SCHOOL_MAX ] == 0 )
   {
-    initial_spell_power[ SCHOOL_MAX ] = base_spell_power + equip_stats.spell_power;
+    initial_spell_power[ SCHOOL_MAX ] = base_spell_power + stats.spell_power;
   }
 
   if ( initial_spell_hit == 0 )
   {
-    initial_spell_hit = base_spell_hit + equip_stats.hit_rating / rating.spell_hit;
+    initial_spell_hit = base_spell_hit + stats.hit_rating / rating.spell_hit;
   }
   if ( initial_spell_crit == 0 )
   {
-    initial_spell_crit = base_spell_crit + equip_stats.crit_rating / rating.spell_crit;
+    initial_spell_crit = base_spell_crit + stats.crit_rating / rating.spell_crit;
   }
   if ( initial_spell_penetration == 0 )
   {
-    initial_spell_penetration = base_spell_penetration + equip_stats.spell_penetration;
+    initial_spell_penetration = base_spell_penetration + stats.spell_penetration;
   }
   if ( initial_mp5 == 0 )
   {
-    initial_mp5 = base_mp5 + equip_stats.mp5;
+    initial_mp5 = base_mp5 + stats.mp5;
   }
 
   if ( ! is_pet() )
@@ -680,33 +680,32 @@ void player_t::init_spell()
 
 void player_t::init_attack()
 {
-  equip_stats.attack_power     = gear_stats.    attack_power + gem_stats.    attack_power + enchant -> stats.attack_power;
-  equip_stats.expertise_rating = gear_stats.expertise_rating + gem_stats.expertise_rating + enchant -> stats.expertise_rating;
+  stats.attack_power     = gear_stats.    attack_power + gem_stats.    attack_power + enchant -> stats.attack_power;
+  stats.expertise_rating = gear_stats.expertise_rating + gem_stats.expertise_rating + enchant -> stats.expertise_rating;
 
-  equip_stats.armor_penetration_rating =
-    gear_stats.armor_penetration_rating +
-    gem_stats.armor_penetration_rating +
-    enchant -> stats.armor_penetration_rating;
+  stats.armor_penetration_rating = ( gear_stats.armor_penetration_rating +
+                                      gem_stats.armor_penetration_rating +
+                               enchant -> stats.armor_penetration_rating );
 
   if ( initial_attack_power == 0 )
   {
-    initial_attack_power = base_attack_power + equip_stats.attack_power;
+    initial_attack_power = base_attack_power + stats.attack_power;
   }
   if ( initial_attack_hit == 0 )
   {
-    initial_attack_hit = base_attack_hit + equip_stats.hit_rating / rating.attack_hit;
+    initial_attack_hit = base_attack_hit + stats.hit_rating / rating.attack_hit;
   }
   if ( initial_attack_crit == 0 )
   {
-    initial_attack_crit = base_attack_crit + equip_stats.crit_rating / rating.attack_crit;
+    initial_attack_crit = base_attack_crit + stats.crit_rating / rating.attack_crit;
   }
   if ( initial_attack_expertise == 0 )
   {
-    initial_attack_expertise = base_attack_expertise + equip_stats.expertise_rating / rating.expertise;
+    initial_attack_expertise = base_attack_expertise + stats.expertise_rating / rating.expertise;
   }
   if ( initial_attack_penetration == 0 )
   {
-    initial_attack_penetration = base_attack_penetration + equip_stats.armor_penetration_rating / rating.armor_penetration;
+    initial_attack_penetration = base_attack_penetration + stats.armor_penetration_rating / rating.armor_penetration;
   }
 
   if ( ! is_pet() )
@@ -723,11 +722,11 @@ void player_t::init_attack()
 
 void player_t::init_defense()
 {
-  equip_stats.armor = gear_stats.armor + gem_stats.armor + enchant -> stats.armor;
+  stats.armor = gear_stats.armor + gem_stats.armor + enchant -> stats.armor;
 
   if ( initial_armor == 0 )
   {
-    initial_armor = base_armor + equip_stats.armor;
+    initial_armor = base_armor + stats.armor;
   }
 
   if ( ! is_pet() )
@@ -2653,28 +2652,21 @@ bool player_t::parse_talents( const std::string& talent_string,
 
 std::vector<option_t>& player_t::get_options()
 {
-  // Place-holder for now.
-
-  return option_vector;
-}
-
-// player_t::parse_option ===================================================
-
-bool player_t::parse_option( const std::string& name,
-                             const std::string& value )
-{
-  option_t options[] =
+  if( option_vector.empty() )
+  {
+    option_t options[] =
     {
       // @option_doc loc=player/all/general title="General"
-      { "name",                                 OPT_STRING, &( name_str                                       ) },
-      { "talents",                              OPT_FUNC,   (void*) parse_talent_url                            },
-      { "race",                                 OPT_STRING, &( race_str                                       ) },
-      { "level",                                OPT_INT,    &( level                                          ) },
-      { "distance",                             OPT_FLT,    &( distance                                       ) },
-      { "professions",                          OPT_STRING, &( professions_str                                ) },
-      { "actions",                              OPT_STRING, &( action_list_str                                ) },
-      { "sleeping",                             OPT_BOOL,   &( sleeping                                       ) },
-      { "quiet",                                OPT_BOOL,   &( quiet                                          ) },
+      { "name",                                 OPT_STRING_Q, &( name_str                                     ) },
+      { "talents",                              OPT_FUNC,     (void*) parse_talent_url                          },
+      { "race",                                 OPT_STRING,   &( race_str                                     ) },
+      { "level",                                OPT_INT,      &( level                                        ) },
+      { "distance",                             OPT_FLT,      &( distance                                     ) },
+      { "professions",                          OPT_STRING,   &( professions_str                              ) },
+      { "actions",                              OPT_STRING,   &( action_list_str                              ) },
+      { "sleeping",                             OPT_BOOL,     &( sleeping                                     ) },
+      { "quiet",                                OPT_BOOL,     &( quiet                                        ) },
+      { "save",                                 OPT_STRING_Q, &( save_str                                     ) },
       // @option_doc loc=player/all/weapons title="Weapon Descriptions"
       { "main_hand",                            OPT_STRING, &( main_hand_str                                  ) },
       { "off_hand",                             OPT_STRING, &( off_hand_str                                   ) },
@@ -2722,97 +2714,100 @@ bool player_t::parse_option( const std::string& name,
       { "gem_runic",                            OPT_FLT,  &( gem_stats.resource[ RESOURCE_RUNIC  ]            ) },
       { "gem_armor",                            OPT_FLT,  &( gem_stats.armor                                  ) },
       // @option_doc loc=player/all/base title="Base Stats"
-      { "base_strength",                        OPT_FLT,    &( attribute_base[ ATTR_STRENGTH  ]               ) },
-      { "base_agility",                         OPT_FLT,    &( attribute_base[ ATTR_AGILITY   ]               ) },
-      { "base_stamina",                         OPT_FLT,    &( attribute_base[ ATTR_STAMINA   ]               ) },
-      { "base_intellect",                       OPT_FLT,    &( attribute_base[ ATTR_INTELLECT ]               ) },
-      { "base_spirit",                          OPT_FLT,    &( attribute_base[ ATTR_SPIRIT    ]               ) },
-      { "base_energy",                          OPT_FLT,    &( resource_base[ RESOURCE_ENERGY ]               ) },
-      { "base_focus",                           OPT_FLT,    &( resource_base[ RESOURCE_FOCUS  ]               ) },
-      { "base_health",                          OPT_FLT,    &( resource_base[ RESOURCE_HEALTH ]               ) },
-      { "base_mana",                            OPT_FLT,    &( resource_base[ RESOURCE_MANA   ]               ) },
-      { "base_rage",                            OPT_FLT,    &( resource_base[ RESOURCE_RAGE   ]               ) },
-      { "base_runic",                           OPT_FLT,    &( resource_base[ RESOURCE_RUNIC  ]               ) },
-      { "base_armor",                           OPT_FLT,    &( base_armor                                     ) },
-      { "base_attack_crit",                     OPT_FLT,    &( base_attack_crit                               ) },
-      { "base_attack_expertise",                OPT_FLT,    &( base_attack_expertise                          ) },
-      { "base_attack_hit",                      OPT_FLT,    &( base_attack_hit                                ) },
-      { "base_attack_penetration",              OPT_FLT,    &( base_attack_penetration                        ) },
-      { "base_attack_power",                    OPT_FLT,    &( base_attack_power                              ) },
-      { "base_mp5",                             OPT_FLT,    &( base_mp5                                       ) },
-      { "base_spell_crit",                      OPT_FLT,    &( base_spell_crit                                ) },
-      { "base_spell_hit",                       OPT_FLT,    &( base_spell_hit                                 ) },
-      { "base_spell_penetration",               OPT_FLT,    &( base_spell_penetration                         ) },
-      { "base_spell_power",                     OPT_FLT,    &( base_spell_power                               ) },
-      { "armor_per_agility",                    OPT_FLT,    &( armor_per_agility                              ) },
-      { "attack_crit_per_agility",              OPT_FLT,    &( attack_crit_per_agility                        ) },
-      { "attack_power_per_agility",             OPT_FLT,    &( attack_power_per_agility                       ) },
-      { "attack_power_per_strength",            OPT_FLT,    &( attack_power_per_strength                      ) },
-      { "spell_crit_per_intellect",             OPT_FLT,    &( spell_crit_per_intellect                       ) },
-      { "gcd",                                  OPT_FLT,    &( base_gcd                                       ) },
+      { "base_strength",                        OPT_FLT_Q,  &( attribute_base[ ATTR_STRENGTH  ]               ) },
+      { "base_agility",                         OPT_FLT_Q,  &( attribute_base[ ATTR_AGILITY   ]               ) },
+      { "base_stamina",                         OPT_FLT_Q,  &( attribute_base[ ATTR_STAMINA   ]               ) },
+      { "base_intellect",                       OPT_FLT_Q,  &( attribute_base[ ATTR_INTELLECT ]               ) },
+      { "base_spirit",                          OPT_FLT_Q,  &( attribute_base[ ATTR_SPIRIT    ]               ) },
+      { "base_energy",                          OPT_FLT_Q,  &( resource_base[ RESOURCE_ENERGY ]               ) },
+      { "base_focus",                           OPT_FLT_Q,  &( resource_base[ RESOURCE_FOCUS  ]               ) },
+      { "base_health",                          OPT_FLT_Q,  &( resource_base[ RESOURCE_HEALTH ]               ) },
+      { "base_mana",                            OPT_FLT_Q,  &( resource_base[ RESOURCE_MANA   ]               ) },
+      { "base_rage",                            OPT_FLT_Q,  &( resource_base[ RESOURCE_RAGE   ]               ) },
+      { "base_runic",                           OPT_FLT_Q,  &( resource_base[ RESOURCE_RUNIC  ]               ) },
+      { "base_armor",                           OPT_FLT_Q,  &( base_armor                                     ) },
+      { "base_attack_crit",                     OPT_FLT_Q,  &( base_attack_crit                               ) },
+      { "base_attack_expertise",                OPT_FLT_Q,  &( base_attack_expertise                          ) },
+      { "base_attack_hit",                      OPT_FLT_Q,  &( base_attack_hit                                ) },
+      { "base_attack_penetration",              OPT_FLT_Q,  &( base_attack_penetration                        ) },
+      { "base_attack_power",                    OPT_FLT_Q,  &( base_attack_power                              ) },
+      { "base_mp5",                             OPT_FLT_Q,  &( base_mp5                                       ) },
+      { "base_spell_crit",                      OPT_FLT_Q,  &( base_spell_crit                                ) },
+      { "base_spell_hit",                       OPT_FLT_Q,  &( base_spell_hit                                 ) },
+      { "base_spell_penetration",               OPT_FLT_Q,  &( base_spell_penetration                         ) },
+      { "base_spell_power",                     OPT_FLT_Q,  &( base_spell_power                               ) },
+      { "armor_per_agility",                    OPT_FLT_Q,  &( armor_per_agility                              ) },
+      { "attack_crit_per_agility",              OPT_FLT_Q,  &( attack_crit_per_agility                        ) },
+      { "attack_power_per_agility",             OPT_FLT_Q,  &( attack_power_per_agility                       ) },
+      { "attack_power_per_strength",            OPT_FLT_Q,  &( attack_power_per_strength                      ) },
+      { "spell_crit_per_intellect",             OPT_FLT_Q,  &( spell_crit_per_intellect                       ) },
+      { "gcd",                                  OPT_FLT_Q,  &( base_gcd                                       ) },
       { "id",                                   OPT_STRING, &( id_str                                         ) },
       // @option_doc loc=skip
       { "actions+",                             OPT_APPEND, &( action_list_str                                ) },
-      { "agility",                              OPT_FLT,    &( attribute_initial[ ATTR_AGILITY   ]            ) },
-      { "agility_multiplier",                   OPT_FLT,    &( attribute_multiplier_initial[ ATTR_AGILITY   ] ) },
-      { "armor",                                OPT_FLT,    &( initial_armor                                  ) },
-      { "attack_crit",                          OPT_FLT,    &( initial_attack_crit                            ) },
-      { "attack_expertise",                     OPT_FLT,    &( initial_attack_expertise                       ) },
-      { "attack_hit",                           OPT_FLT,    &( initial_attack_hit                             ) },
-      { "attack_penetration",                   OPT_FLT,    &( initial_attack_penetration                     ) },
-      { "attack_power",                         OPT_FLT,    &( initial_attack_power                           ) },
+      { "agility",                              OPT_FLT_Q,  &( attribute_initial[ ATTR_AGILITY   ]            ) },
+      { "agility_multiplier",                   OPT_FLT_Q,  &( attribute_multiplier_initial[ ATTR_AGILITY   ] ) },
+      { "armor",                                OPT_FLT_Q,  &( initial_armor                                  ) },
+      { "attack_crit",                          OPT_FLT_Q,  &( initial_attack_crit                            ) },
+      { "attack_expertise",                     OPT_FLT_Q,  &( initial_attack_expertise                       ) },
+      { "attack_hit",                           OPT_FLT_Q,  &( initial_attack_hit                             ) },
+      { "attack_penetration",                   OPT_FLT_Q,  &( initial_attack_penetration                     ) },
+      { "attack_power",                         OPT_FLT_Q,  &( initial_attack_power                           ) },
       { "elixirs",                              OPT_STRING, &( elixirs_str                                    ) },
-      { "energy",                               OPT_FLT,    &( resource_initial[ RESOURCE_ENERGY ]            ) },
+      { "energy",                               OPT_FLT_Q,  &( resource_initial[ RESOURCE_ENERGY ]            ) },
       { "flask",                                OPT_STRING, &( flask_str                                      ) },
-      { "focus",                                OPT_FLT,    &( resource_initial[ RESOURCE_FOCUS  ]            ) },
+      { "focus",                                OPT_FLT_Q,  &( resource_initial[ RESOURCE_FOCUS  ]            ) },
       { "food",                                 OPT_STRING, &( food_str                                       ) },
-      { "haste_rating",                         OPT_FLT,    &( initial_haste_rating                           ) },
-      { "health",                               OPT_FLT,    &( resource_initial[ RESOURCE_HEALTH ]            ) },
-      { "intellect",                            OPT_FLT,    &( attribute_initial[ ATTR_INTELLECT ]            ) },
-      { "intellect_multiplier",                 OPT_FLT,    &( attribute_multiplier_initial[ ATTR_INTELLECT ] ) },
-      { "mana",                                 OPT_FLT,    &( resource_initial[ RESOURCE_MANA   ]            ) },
-      { "mp5",                                  OPT_FLT,    &( initial_mp5                                    ) },
+      { "haste_rating",                         OPT_FLT_Q,  &( initial_haste_rating                           ) },
+      { "health",                               OPT_FLT_Q,  &( resource_initial[ RESOURCE_HEALTH ]            ) },
+      { "intellect",                            OPT_FLT_Q,  &( attribute_initial[ ATTR_INTELLECT ]            ) },
+      { "intellect_multiplier",                 OPT_FLT_Q,  &( attribute_multiplier_initial[ ATTR_INTELLECT ] ) },
+      { "mana",                                 OPT_FLT_Q,  &( resource_initial[ RESOURCE_MANA   ]            ) },
+      { "mp5",                                  OPT_FLT_Q,  &( initial_mp5                                    ) },
       { "post_actions",                         OPT_STRING, &( action_list_postfix                            ) },
       { "pre_actions",                          OPT_STRING, &( action_list_prefix                             ) },
-      { "rage",                                 OPT_FLT,    &( resource_initial[ RESOURCE_RAGE   ]            ) },
-      { "runic",                                OPT_FLT,    &( resource_initial[ RESOURCE_RUNIC  ]            ) },
+      { "rage",                                 OPT_FLT_Q,  &( resource_initial[ RESOURCE_RAGE   ]            ) },
+      { "runic",                                OPT_FLT_Q,  &( resource_initial[ RESOURCE_RUNIC  ]            ) },
       { "skip_actions",                         OPT_STRING, &( action_list_skip                               ) },
-      { "spell_crit",                           OPT_FLT,    &( initial_spell_crit                             ) },
-      { "spell_hit",                            OPT_FLT,    &( initial_spell_hit                              ) },
-      { "spell_penetration",                    OPT_FLT,    &( initial_spell_penetration                      ) },
-      { "spell_power",                          OPT_FLT,    &( initial_spell_power[ SCHOOL_MAX    ]           ) },
-      { "spell_power_arcane",                   OPT_FLT,    &( initial_spell_power[ SCHOOL_ARCANE ]           ) },
-      { "spell_power_fire",                     OPT_FLT,    &( initial_spell_power[ SCHOOL_FIRE   ]           ) },
-      { "spell_power_frost",                    OPT_FLT,    &( initial_spell_power[ SCHOOL_FROST  ]           ) },
-      { "spell_power_holy",                     OPT_FLT,    &( initial_spell_power[ SCHOOL_HOLY   ]           ) },
-      { "spell_power_nature",                   OPT_FLT,    &( initial_spell_power[ SCHOOL_NATURE ]           ) },
-      { "spell_power_per_intellect",            OPT_FLT,    &( spell_power_per_intellect                      ) },
-      { "spell_power_per_spirit",               OPT_FLT,    &( spell_power_per_spirit                         ) },
-      { "spell_power_shadow",                   OPT_FLT,    &( initial_spell_power[ SCHOOL_SHADOW ]           ) },
-      { "spirit",                               OPT_FLT,    &( attribute_initial[ ATTR_SPIRIT    ]            ) },
-      { "spirit_multiplier",                    OPT_FLT,    &( attribute_multiplier_initial[ ATTR_SPIRIT    ] ) },
-      { "stamina",                              OPT_FLT,    &( attribute_initial[ ATTR_STAMINA   ]            ) },
-      { "stamina_multiplier",                   OPT_FLT,    &( attribute_multiplier_initial[ ATTR_STAMINA   ] ) },
-      { "strength",                             OPT_FLT,    &( attribute_initial[ ATTR_STRENGTH  ]            ) },
-      { "strength_multiplier",                  OPT_FLT,    &( attribute_multiplier_initial[ ATTR_STRENGTH  ] ) },
+      { "spell_crit",                           OPT_FLT_Q,  &( initial_spell_crit                             ) },
+      { "spell_hit",                            OPT_FLT_Q,  &( initial_spell_hit                              ) },
+      { "spell_penetration",                    OPT_FLT_Q,  &( initial_spell_penetration                      ) },
+      { "spell_power",                          OPT_FLT_Q,  &( initial_spell_power[ SCHOOL_MAX    ]           ) },
+      { "spell_power_arcane",                   OPT_FLT_Q,  &( initial_spell_power[ SCHOOL_ARCANE ]           ) },
+      { "spell_power_fire",                     OPT_FLT_Q,  &( initial_spell_power[ SCHOOL_FIRE   ]           ) },
+      { "spell_power_frost",                    OPT_FLT_Q,  &( initial_spell_power[ SCHOOL_FROST  ]           ) },
+      { "spell_power_holy",                     OPT_FLT_Q,  &( initial_spell_power[ SCHOOL_HOLY   ]           ) },
+      { "spell_power_nature",                   OPT_FLT_Q,  &( initial_spell_power[ SCHOOL_NATURE ]           ) },
+      { "spell_power_per_intellect",            OPT_FLT_Q,  &( spell_power_per_intellect                      ) },
+      { "spell_power_per_spirit",               OPT_FLT_Q,  &( spell_power_per_spirit                         ) },
+      { "spell_power_shadow",                   OPT_FLT_Q,  &( initial_spell_power[ SCHOOL_SHADOW ]           ) },
+      { "spirit",                               OPT_FLT_Q,  &( attribute_initial[ ATTR_SPIRIT    ]            ) },
+      { "spirit_multiplier",                    OPT_FLT_Q,  &( attribute_multiplier_initial[ ATTR_SPIRIT    ] ) },
+      { "stamina",                              OPT_FLT_Q,  &( attribute_initial[ ATTR_STAMINA   ]            ) },
+      { "stamina_multiplier",                   OPT_FLT_Q,  &( attribute_multiplier_initial[ ATTR_STAMINA   ] ) },
+      { "strength",                             OPT_FLT_Q,  &( attribute_initial[ ATTR_STRENGTH  ]            ) },
+      { "strength_multiplier",                  OPT_FLT_Q,  &( attribute_multiplier_initial[ ATTR_STRENGTH  ] ) },
       { "clicky_1",                             OPT_STRING, &( clicky_1                                       ) },
       { "clicky_2",                             OPT_STRING, &( clicky_2                                       ) },
       { "clicky_3",                             OPT_STRING, &( clicky_3                                       ) },
       { NULL, OPT_UNKNOWN }
     };
 
-  if ( name.empty() )
-  {
-    unique_gear_t::parse_option( this, name, value );
-    option_t::print( sim -> output_file, options );
-    return false;
+    option_t::copy( option_vector, options );
+
+    unique_gear_t::get_options( option_vector, this );
+    enchant_t    ::get_options( option_vector, this );
+    
   }
+  return option_vector;
+}
 
-  if ( unique_gear_t::parse_option( this, name, value ) ) return true;
+// player_t::parse_option ===================================================
 
-  if ( enchant_t::parse_option( this, name, value ) ) return true;
-
-  return option_t::parse( sim, options, name, value );
+bool player_t::parse_option( const std::string& name,
+                             const std::string& value )
+{
+  return option_t::parse( sim, get_options(), name, value );
 }
 
 // player_t::create =========================================================

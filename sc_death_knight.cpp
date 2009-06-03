@@ -306,7 +306,7 @@ struct death_knight_t : public player_t
   virtual void      regen( double periodicity );
   virtual void      reset();
   virtual bool      get_talent_trees( std::vector<int*>& blood, std::vector<int*>& frost, std::vector<int*>& unholy );
-  virtual bool      parse_option( const std::string& name, const std::string& value );
+  virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual action_t* execute_action();
 virtual int       primary_resource() { return RESOURCE_RUNIC; }
@@ -1906,10 +1906,13 @@ death_knight_t::get_talent_trees( std::vector<int*>& blood, std::vector<int*>& f
   return player_t::get_talent_trees( blood, frost, unholy, translation );
 }
 
-bool
-death_knight_t::parse_option( const std::string& name, const std::string& value )
+std::vector<option_t>& death_knight_t::get_options()
 {
-  option_t options[] =
+  if( option_vector.empty() )
+  {
+    player_t::get_options();
+
+    option_t options[] =
     {
       // @option_doc loc=skip
       { "butchery",                 OPT_INT, &( talents.butchery                 ) },
@@ -2008,16 +2011,10 @@ death_knight_t::parse_option( const std::string& name, const std::string& value 
       { NULL, OPT_UNKNOWN }
     };
 
-  if ( name.empty() )
-  {
-    player_t::parse_option( std::string(), std::string() );
-    option_t::print( sim -> output_file, options );
-    return false;
+    option_t::copy( option_vector, options );
   }
 
-  if ( player_t::parse_option( name, value ) ) return true;
-
-  return option_t::parse( sim, options, name, value );
+  return option_vector;
 }
 
 // player_t implementations ============================================

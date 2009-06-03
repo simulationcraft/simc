@@ -49,36 +49,84 @@ static void remove_white_space( std::string& buffer,
 
 // option_t::print ==========================================================
 
-void option_t::print( FILE* file, option_t* options )
+void option_t::print( FILE* file )
 {
-  for ( int i=0; options[ i ].name; i++ )
+  if( type == OPT_STRING ||
+      type == OPT_STRING_Q )
   {
-    option_t& o = options[ i ];
+    std::string& v = *( ( std::string* ) address );
+    fprintf( file, "%s=%s\n", name, v.empty() ? "" : v.c_str() );
+  }
+  else if( type == OPT_CHARP ||
+	   type == OPT_CHARP_Q )
+  {
+    const char* v = *( ( char** ) address );
+    fprintf( file, "%s=%s\n", name, v ? v : "" );
+  }
+  else if( type == OPT_BOOL ||
+	   type == OPT_BOOL_Q )
+  {
+    int v = *( ( int* ) address );
+    fprintf( file, "%s=%d\n", name, (v>0) ? 1 : 0 );
+  }
+  else if( type == OPT_INT ||
+	   type == OPT_INT_Q )
+  {
+    int v = *( ( int* ) address );
+    fprintf( file, "%s=%d\n", name, v );
+  }
+  else if( type == OPT_FLT ||
+	   type == OPT_FLT_Q )
+  {
+    double v = *( ( double* ) address );
+    fprintf( file, "%s=%.2f\n", name, v );
+  }
+  else if( type == OPT_LIST )
+  {
+    std::vector<std::string>& v = *( ( std::vector<std::string>* ) address );
+    fprintf( file, "%s=", name );
+    for ( unsigned i=0; i < v.size(); i++ ) fprintf( file, "%s%s", ( i?" ":"" ), v[ i ].c_str() );
+    fprintf( file, "\n" );
+  }
+}
 
-    if ( o.type != OPT_APPEND &&
-         o.type != OPT_DEPRECATED )
-    {
-      fprintf( file, "\t%s : ", o.name );
-    }
+// option_t::save ===========================================================
 
-    switch ( o.type )
+void option_t::save( FILE* file )
+{
+  if( type == OPT_STRING )
+  {
+    std::string& v = *( ( std::string* ) address );
+    if( ! v.empty() ) fprintf( file, "%s=%s\n", name, v.c_str() );
+  }
+  else if( type == OPT_CHARP )
+  {
+    const char* v = *( ( char** ) address );
+    if( v ) fprintf( file, "%s=%s\n", name, v );
+  }
+  else if( type == OPT_BOOL )
+  {
+    int v = *( ( int* ) address );
+    if( v > 0 ) fprintf( file, "%s=1\n", name );
+  }
+  else if( type == OPT_INT )
+  {
+    int v = *( ( int* ) address );
+    if( v != 0 ) fprintf( file, "%s=%d\n", name, v );
+  }
+  else if( type == OPT_FLT )
+  {
+    double v = *( ( double* ) address );
+    if( v != 0 ) fprintf( file, "%s=%.2f\n", name, v );
+  }
+  else if( type == OPT_LIST )
+  {
+    std::vector<std::string>& v = *( ( std::vector<std::string>* ) address );
+    if( ! v.empty() )
     {
-    case OPT_STRING: fprintf( file, "%s\n",    ( ( std::string* ) o.address ) -> c_str()         ); break;
-    case OPT_CHAR_P: fprintf( file, "%s\n",   *( ( char** )       o.address )                    ); break;
-    case OPT_BOOL:   fprintf( file, "%d\n",   *( ( int* )         o.address ) ? 1 : 0            ); break;
-    case OPT_INT:    fprintf( file, "%d\n",   *( ( int* )         o.address )                    ); break;
-    case OPT_FLT:    fprintf( file, "%.2f\n", *( ( double* )      o.address )                    ); break;
-    case OPT_LIST:
-    {
-      std::vector<std::string>& v = *( ( std::vector<std::string>* ) o.address );
+      fprintf( file, "%s=", name );
       for ( unsigned i=0; i < v.size(); i++ ) fprintf( file, "%s%s", ( i?" ":"" ), v[ i ].c_str() );
       fprintf( file, "\n" );
-    }
-    break;
-    case OPT_FUNC:       break;
-    case OPT_APPEND:     break;
-    case OPT_DEPRECATED: break;
-    default: assert( 0 );
     }
   }
 }
@@ -103,38 +151,67 @@ void option_t::copy( std::vector<option_t>& opt_vector,
 // option_t::parse ==========================================================
 
 bool option_t::parse( sim_t*             sim,
+                      const std::string& n,
+                      const std::string& v )
+{
+  if ( n == name )
+  {
+    switch ( type )
+    {
+    case OPT_STRING:
+    case OPT_STRING_Q: *( ( std::string* ) address ) = v;                         break;
+    case OPT_APPEND:   *( ( std::string* ) address ) += v;                        break;
+    case OPT_CHARP:   
+    case OPT_CHARP_Q:  *( ( char** )       address ) = util_t::dup( v.c_str() );  break;
+    case OPT_INT:      
+    case OPT_INT_Q:    *( ( int* )         address ) = atoi( v.c_str() );         break;
+    case OPT_FLT:    
+    case OPT_FLT_Q:    *( ( double* )      address ) = atof( v.c_str() );         break;
+    case OPT_BOOL:
+    case OPT_BOOL_Q:
+      *( ( int* ) address ) = atoi( v.c_str() ) ? 1 : 0;
+      if ( v != "0" && v != "1" ) printf( "simcraft: Acceptable values for '%s' are '1' or '0'\n", name );
+      break;
+    case OPT_FUNC: return ( (option_function_t) address )( sim, n, v );
+    case OPT_LIST:   ( ( std::vector<std::string>* ) address ) -> push_back( v ); break;
+    case OPT_DEPRECATED:
+      printf( "simcraft: option '%s' has been deprecated.\n", name );
+      if ( address ) printf( "simcraft: please use '%s' instead.\n", ( char* ) address );
+      exit( 0 );
+    default: assert( 0 );
+    }
+    return true;
+  }
+
+  return false;
+}
+
+// option_t::parse ==========================================================
+
+bool option_t::parse( sim_t*                 sim,
+		      std::vector<option_t>& options,
+                      const std::string&     name,
+                      const std::string&     value )
+{
+  int num_options = options.size();
+
+  for ( int i=0; i < num_options; i++ )
+    if( options[ i ].parse( sim, name, value ) )
+      return true;
+
+  return false;
+}
+
+// option_t::parse ==========================================================
+
+bool option_t::parse( sim_t*             sim,
 		      option_t*          options,
                       const std::string& name,
                       const std::string& value )
 {
   for ( int i=0; options[ i ].name; i++ )
-  {
-    option_t& o = options[ i ];
-
-    if ( name == o.name )
-    {
-      switch ( o.type )
-      {
-      case OPT_STRING: *( ( std::string* ) o.address ) = value;                                break;
-      case OPT_APPEND: *( ( std::string* ) o.address ) += value;                               break;
-      case OPT_CHAR_P: *( ( char** )       o.address ) = util_t::dup( value.c_str() );         break;
-      case OPT_INT:    *( ( int* )         o.address ) = atoi( value.c_str() );                break;
-      case OPT_FLT:    *( ( double* )      o.address ) = atof( value.c_str() );                break;
-      case OPT_LIST:   ( ( std::vector<std::string>* ) o.address ) -> push_back( value );      break;
-      case OPT_BOOL:
-        *( ( int* ) o.address ) = atoi( value.c_str() ) ? 1 : 0;
-        if ( value != "0" && value != "1" ) printf( "simcraft: Acceptable values for '%s' are '1' or '0'\n", name.c_str() );
-        break;
-      case OPT_FUNC: return ( (option_function_t) o.address )( sim, name, value );
-      case OPT_DEPRECATED:
-        printf( "simcraft: option '%s' has been deprecated.\n", o.name );
-        if ( o.address ) printf( "simcraft: please use '%s' instead.\n", ( char* ) o.address );
-        exit( 0 );
-      default: assert( 0 );
-      }
+    if( options[ i ].parse( sim, name, value ) )
       return true;
-    }
-  }
 
   return false;
 }

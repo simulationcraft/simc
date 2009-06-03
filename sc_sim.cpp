@@ -146,7 +146,7 @@ sim_t::sim_t( sim_t* p, int index ) :
     events_processed( 0 ), total_events_processed( 0 ),
     seed( 0 ), id( 0 ), iterations( 1000 ), current_iteration( 0 ),
     armor_update_interval( 20 ), potion_sickness( 1 ),
-    optimal_raid( 0 ), log( 0 ), debug( 0 ), debug_armory(0),
+    optimal_raid( 0 ), log( 0 ), debug( 0 ), debug_armory(0), save_profiles(0),
     jow_chance( 0 ), jow_ppm( 15.0 ), last_armory_player(0),
     smooth_rng( 0 ), deterministic_roll( 0 ), average_range( 1 ), average_gauss( 0 ),
     timing_wheel( 0 ), wheel_seconds( 0 ), wheel_size( 0 ), wheel_mask( 0 ), timing_slice( 0 ), wheel_granularity( 0.0 ),
@@ -939,28 +939,32 @@ void sim_t::print_options()
 {
   fprintf( output_file, "\nWorld of Warcraft Raid Simulator Options:\n" );
 
+  std::vector<option_t>& options = get_options();
+  int num_options = options.size();
+  
   fprintf( output_file, "\nSimulation Engine:\n" );
-  parse_option( std::string(), std::string() );
-
-  fprintf( output_file, "\nTarget: %s\n", target -> name() );
-  target -> parse_option( std::string(), std::string() );
+  for( int i=0; i < num_options; i++ ) options[ i ].print( output_file );
 
   for ( player_t* p = player_list; p; p = p -> next )
   {
+    std::vector<option_t>& options = p -> get_options();
+    int num_options = options.size();
+
     fprintf( output_file, "\nPlayer: %s (%s)\n", p -> name(), util_t::player_type_string( p -> type ) );
-    p -> parse_option( std::string(), std::string() );
+    for( int i=0; i < num_options; i++ ) options[ i ].print( output_file );
   }
 
   fprintf( output_file, "\n" );
   fflush( output_file );
 }
 
-// sim_t::parse_option ======================================================
+// sim_t::get_options =======================================================
 
-bool sim_t::parse_option( const std::string& name,
-                          const std::string& value )
+std::vector<option_t>& sim_t::get_options()
 {
-  option_t options[] =
+  if( option_vector.empty() )
+  {
+    option_t options[] =
     {
       // @option_doc loc=global/general title="General"
       { "iterations",                       OPT_INT,    &( iterations                               ) },
@@ -1104,29 +1108,48 @@ bool sim_t::parse_option( const std::string& name,
       { "debug_armory",                     OPT_INT,    &( debug_armory                             ) },
       { "raid_events",                      OPT_STRING, &( raid_events_str                          ) },
       { "raid_events+",                     OPT_APPEND, &( raid_events_str                          ) },
+      // @option_doc loc=skip
+      { "patch",                            OPT_FUNC,   (void*) parse_patch                           },
+      { "active",                           OPT_FUNC,   (void*) parse_active                          },
+      { "optimal_raid",                     OPT_FUNC,   (void*) parse_optimal_raid                    },
+      // @option_doc loc=skip
+      { "death_knight",                     OPT_FUNC,   (void*) player_t::create                      },
+      { "druid",                            OPT_FUNC,   (void*) player_t::create                      },
+      { "hunter",                           OPT_FUNC,   (void*) player_t::create                      },
+      { "mage",                             OPT_FUNC,   (void*) player_t::create                      },
+      { "priest",                           OPT_FUNC,   (void*) player_t::create                      },
+      { "paladin",                          OPT_FUNC,   (void*) player_t::create                      },
+      { "rogue",                            OPT_FUNC,   (void*) player_t::create                      },
+      { "shaman",                           OPT_FUNC,   (void*) player_t::create                      },
+      { "warlock",                          OPT_FUNC,   (void*) player_t::create                      },
+      { "warrior",                          OPT_FUNC,   (void*) player_t::create                      },
+      { "pet",                              OPT_FUNC,   (void*) player_t::create                      },
+      // @option_doc loc=skip
+      { "armory",                           OPT_FUNC,   (void*) armory_option_parse                   },
+      { "gear",                             OPT_FUNC,   (void*) armory_option_parse                   },
+      { "player",                           OPT_FUNC,   (void*) armory_option_parse                   },
+      { "new_item",                         OPT_FUNC,   (void*) armory_option_parse                   },
+      { "http_cache_clear",                 OPT_FUNC,   (void*) armory_option_parse                   },
       { NULL, OPT_UNKNOWN }
     };
 
-  if ( name.empty() )
-  {
-    option_t::print( output_file, options );
-    return false;
+    option_t::copy( option_vector, options );
+
+    target  -> get_options( option_vector );
+    scaling -> get_options( option_vector );
   }
 
-  if ( parse_patch       ( this, name, value ) ) return true;
-  if ( parse_active      ( this, name, value ) ) return true;
-  if ( parse_optimal_raid( this, name, value ) ) return true;
+  return option_vector;
+}
 
-  if ( player_t::create( this, name, value ) )   return true;
+// sim_t::parse_option ======================================================
 
-  if ( armory_option_parse(this, name, value) ) return true;
+bool sim_t::parse_option( const std::string& name,
+			  const std::string& value )
+{
+  if( active_player && active_player -> parse_option( name, value ) ) return true;
 
-  if ( target  -> parse_option( name, value ) ) return true;
-  if ( scaling -> parse_option( name, value ) ) return true;
-
-  if ( active_player && active_player -> parse_option( name, value ) ) return true;
-
-  return option_t::parse( this, options, name, value );
+  return option_t::parse( this, get_options(), name, value );
 }
 
 // sim_t::parse_options =====================================================

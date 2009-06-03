@@ -249,7 +249,7 @@ struct rogue_t : public player_t
   virtual void      regen( double periodicity );
   virtual bool      get_talent_trees( std::vector<int*>& assassination, std::vector<int*>& combat, std::vector<int*>& subtlety );
   virtual bool      parse_talents_mmo( const std::string& talent_string );
-  virtual bool      parse_option( const std::string& name, const std::string& value );
+  virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual int       primary_resource() { return RESOURCE_ENERGY; }
   virtual int       primary_role()     { return ROLE_ATTACK; }
@@ -3550,12 +3550,15 @@ bool rogue_t::parse_talents_mmo( const std::string& talent_string )
   return parse_talents( assassination_string + combat_string + subtlety_string );
 }
 
-// rogue_t::parse_option  ==============================================
+// rogue_t::get_options ================================================
 
-bool rogue_t::parse_option( const std::string& name,
-                            const std::string& value )
+std::vector<option_t>& rogue_t::get_options()
 {
-  option_t options[] =
+  if( option_vector.empty() )
+  {
+    player_t::get_options();
+    
+    option_t options[] =
     {
       // @option_doc loc=skip
       { "adrenaline_rush",            OPT_INT, &( talents.adrenaline_rush            ) },
@@ -3643,16 +3646,10 @@ bool rogue_t::parse_option( const std::string& name,
       { NULL, OPT_UNKNOWN }
     };
 
-  if ( name.empty() )
-  {
-    player_t::parse_option( std::string(), std::string() );
-    option_t::print( sim -> output_file, options );
-    return false;
+    option_t::copy( option_vector, options );
   }
 
-  if ( player_t::parse_option( name, value ) ) return true;
-
-  return option_t::parse( sim, options, name, value );
+  return option_vector;
 }
 
 // player_t::create_rogue  =================================================

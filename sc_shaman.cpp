@@ -257,7 +257,7 @@ struct shaman_t : public player_t
   virtual double    composite_spell_power( int school );
   virtual bool      get_talent_trees( std::vector<int*>& elemental, std::vector<int*>& enhancement, std::vector<int*>& restoration );
   virtual bool      parse_talents_mmo( const std::string& talent_string );
-  virtual bool      parse_option( const std::string& name, const std::string& value );
+  virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
   virtual int       primary_resource() { return RESOURCE_MANA; }
@@ -3488,12 +3488,15 @@ bool shaman_t::parse_talents_mmo( const std::string& talent_string )
   return parse_talents( elemental_string + enhancement_string + restoration_string );
 }
 
-// shaman_t::parse_option  ==============================================
+// shaman_t::get_options ================================================
 
-bool shaman_t::parse_option( const std::string& name,
-                             const std::string& value )
+std::vector<option_t>& shaman_t::get_options()
 {
-  option_t options[] =
+  if( option_vector.empty() )
+  {
+    player_t::get_options();
+
+    option_t options[] =
     {
       // @option_doc loc=skip
       { "ancestral_knowledge",       OPT_INT,  &( talents.ancestral_knowledge       ) },
@@ -3587,16 +3590,10 @@ bool shaman_t::parse_option( const std::string& name,
       { NULL, OPT_UNKNOWN }
     };
 
-  if ( name.empty() )
-  {
-    player_t::parse_option( std::string(), std::string() );
-    option_t::print( sim -> output_file, options );
-    return false;
+    option_t::copy( option_vector, options );
   }
 
-  if ( option_t::parse( sim, options, name, value ) ) return true;
-
-  return player_t::parse_option( name, value );
+  return option_vector;
 }
 
 // player_t::create_shaman  =================================================

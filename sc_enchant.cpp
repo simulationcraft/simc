@@ -308,11 +308,9 @@ struct executioner_callback_t : public action_callback_t
 // Enchant
 // ==========================================================================
 
-// enchant_t::parse_option ==================================================
+// enchant_t::get_options ===================================================
 
-bool enchant_t::parse_option( player_t*          p,
-                              const std::string& name,
-                              const std::string& value )
+int enchant_t::get_options( std::vector<option_t>& option_vector, player_t* p )
 {
   option_t options[] =
     {
@@ -342,13 +340,9 @@ bool enchant_t::parse_option( player_t*          p,
       { NULL, OPT_UNKNOWN }
     };
 
-  if ( name.empty() )
-  {
-    option_t::print( p -> sim -> output_file, options );
-    return false;
-  }
+  option_t::copy( option_vector, options );
 
-  return option_t::parse( p -> sim, options, name, value );
+  return option_vector.size();
 }
 
 // enchant_t::init ==========================================================

@@ -176,7 +176,7 @@ int chart_t::raid_gear( std::vector<std::string>& images,
     {
       player_t* p = sim -> players_by_rank[ j ];
 
-      data_points[ i ][ j ] = p -> equip_stats.get_stat( i ) * gear_stats_t::stat_mod( i );
+      data_points[ i ][ j ] = p -> stats.get_stat( i ) * gear_stats_t::stat_mod( i );
     }
   }
 

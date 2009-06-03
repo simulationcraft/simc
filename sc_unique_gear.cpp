@@ -367,12 +367,10 @@ struct hand_mounted_pyro_rocket_t : public spell_t
 };
 
 // ==========================================================================
-// unique_gear_t::parse_option
+// unique_gear_t::get_options
 // ==========================================================================
 
-bool unique_gear_t::parse_option( player_t*          p,
-                                  const std::string& name,
-                                  const std::string& value )
+int unique_gear_t::get_options( std::vector<option_t>& option_vector, player_t* p )
 {
   option_t options[] =
     {
@@ -389,57 +387,53 @@ bool unique_gear_t::parse_option( player_t*          p,
       { "tier8_2pc",                            OPT_BOOL, &( p -> unique_gear -> tier8_2pc                        ) },
       { "tier8_4pc",                            OPT_BOOL, &( p -> unique_gear -> tier8_4pc                        ) },
       // @option_doc loc=player/all/procs title="Unique Gear/Gem Effects"
-      { "bandits_insignia",                     OPT_BOOL,  &( p -> unique_gear -> bandits_insignia                ) },
-      { "blood_of_the_old_god",                 OPT_BOOL,  &( p -> unique_gear -> blood_of_the_old_god            ) },
-      { "chaotic_skyfire",                      OPT_BOOL,  &( p -> unique_gear -> chaotic_skyflare                ) },
-      { "chaotic_skyflare",                     OPT_BOOL,  &( p -> unique_gear -> chaotic_skyflare                ) },
-      { "item_41285",                           OPT_BOOL,  &( p -> unique_gear -> chaotic_skyflare                ) },
-      { "darkmoon_crusade",                     OPT_BOOL,  &( p -> unique_gear -> darkmoon_crusade                ) },
-      { "darkmoon_greatness",                   OPT_BOOL,  &( p -> unique_gear -> darkmoon_greatness              ) },
-      { "dark_matter",                          OPT_BOOL,  &( p -> unique_gear -> dark_matter                     ) },
-      { "dying_curse",                          OPT_BOOL,  &( p -> unique_gear -> dying_curse                     ) },
-      { "egg_of_mortal_essence",                OPT_BOOL,  &( p -> unique_gear -> egg_of_mortal_essence           ) },
-      { "elder_scribes",                        OPT_BOOL,  &( p -> unique_gear -> elder_scribes                   ) },
-      { "elemental_focus_stone",                OPT_BOOL,  &( p -> unique_gear -> elemental_focus_stone           ) },
-      { "ember_skyflare",                       OPT_BOOL,  &( p -> unique_gear -> ember_skyflare                  ) },
-      { "item_41333",                           OPT_BOOL,  &( p -> unique_gear -> ember_skyflare                  ) },
-      { "embrace_of_the_spider",                OPT_BOOL,  &( p -> unique_gear -> embrace_of_the_spider           ) },
-      { "eternal_sage",                         OPT_BOOL,  &( p -> unique_gear -> eternal_sage                    ) },
-      { "extract_of_necromatic_power",          OPT_BOOL,  &( p -> unique_gear -> extract_of_necromantic_power    ) },
-      { "eye_of_magtheridon",                   OPT_BOOL,  &( p -> unique_gear -> eye_of_magtheridon              ) },
-      { "eye_of_the_broodmother",               OPT_BOOL,  &( p -> unique_gear -> eye_of_the_broodmother          ) },
-      { "flare_of_the_heavens",                 OPT_BOOL,  &( p -> unique_gear -> flare_of_the_heavens            ) },
-      { "forge_ember",                          OPT_BOOL,  &( p -> unique_gear -> forge_ember                     ) },
-      { "fury_of_the_five_flights",             OPT_BOOL,  &( p -> unique_gear -> fury_of_the_five_flights        ) },
-      { "grim_toll",                            OPT_BOOL,  &( p -> unique_gear -> grim_toll                       ) },
-      { "illustration_of_the_dragon_soul",      OPT_BOOL,  &( p -> unique_gear -> illustration_of_the_dragon_soul ) },
-      { "lightning_capacitor",                  OPT_BOOL,  &( p -> unique_gear -> lightning_capacitor             ) },
-      { "mirror_of_truth",                      OPT_BOOL,  &( p -> unique_gear -> mirror_of_truth                 ) },
-      { "mjolnir_runestone",                    OPT_BOOL,  &( p -> unique_gear -> mjolnir_runestone               ) },
-      { "mark_of_defiance",                     OPT_BOOL,  &( p -> unique_gear -> mark_of_defiance                ) },
-      { "mystical_skyfire",                     OPT_BOOL,  &( p -> unique_gear -> mystical_skyfire                ) },
-      { "pandoras_plea",                        OPT_BOOL,  &( p -> unique_gear -> pandoras_plea                   ) },
-      { "pyrite_infuser",                       OPT_BOOL,  &( p -> unique_gear -> pyrite_infuser                  ) },
-      { "quagmirrans_eye",                      OPT_BOOL,  &( p -> unique_gear -> quagmirrans_eye                 ) },
-      { "relentless_earthstorm",                OPT_BOOL,  &( p -> unique_gear -> relentless_earthstorm           ) },
-      { "relentless_earthsiege",                OPT_BOOL,  &( p -> unique_gear -> relentless_earthstorm           ) },
-      { "sextant_of_unstable_currents",         OPT_BOOL,  &( p -> unique_gear -> sextant_of_unstable_currents    ) },
-      { "shiffars_nexus_horn",                  OPT_BOOL,  &( p -> unique_gear -> shiffars_nexus_horn             ) },
-      { "spellstrike",                          OPT_BOOL,  &( p -> unique_gear -> spellstrike                     ) },
-      { "sundial_of_the_exiled",                OPT_BOOL,  &( p -> unique_gear -> sundial_of_the_exiled           ) },
-      { "thunder_capacitor",                    OPT_BOOL,  &( p -> unique_gear -> thunder_capacitor               ) },
-      { "timbals_crystal",                      OPT_BOOL,  &( p -> unique_gear -> timbals_crystal                 ) },
-      { "wrath_of_cenarius",                    OPT_BOOL,  &( p -> unique_gear -> wrath_of_cenarius               ) },
+      { "bandits_insignia",                     OPT_BOOL,    &( p -> unique_gear -> bandits_insignia                ) },
+      { "blood_of_the_old_god",                 OPT_BOOL,    &( p -> unique_gear -> blood_of_the_old_god            ) },
+      { "chaotic_skyfire",                      OPT_BOOL_Q,  &( p -> unique_gear -> chaotic_skyflare                ) },
+      { "chaotic_skyflare",                     OPT_BOOL,    &( p -> unique_gear -> chaotic_skyflare                ) },
+      { "item_41285",                           OPT_BOOL_Q,  &( p -> unique_gear -> chaotic_skyflare                ) },
+      { "darkmoon_crusade",                     OPT_BOOL,    &( p -> unique_gear -> darkmoon_crusade                ) },
+      { "darkmoon_greatness",                   OPT_BOOL,    &( p -> unique_gear -> darkmoon_greatness              ) },
+      { "dark_matter",                          OPT_BOOL,    &( p -> unique_gear -> dark_matter                     ) },
+      { "dying_curse",                          OPT_BOOL,    &( p -> unique_gear -> dying_curse                     ) },
+      { "egg_of_mortal_essence",                OPT_BOOL,    &( p -> unique_gear -> egg_of_mortal_essence           ) },
+      { "elder_scribes",                        OPT_BOOL,    &( p -> unique_gear -> elder_scribes                   ) },
+      { "elemental_focus_stone",                OPT_BOOL,    &( p -> unique_gear -> elemental_focus_stone           ) },
+      { "ember_skyflare",                       OPT_BOOL,    &( p -> unique_gear -> ember_skyflare                  ) },
+      { "item_41333",                           OPT_BOOL_Q,  &( p -> unique_gear -> ember_skyflare                  ) },
+      { "embrace_of_the_spider",                OPT_BOOL,    &( p -> unique_gear -> embrace_of_the_spider           ) },
+      { "eternal_sage",                         OPT_BOOL,    &( p -> unique_gear -> eternal_sage                    ) },
+      { "extract_of_necromatic_power",          OPT_BOOL,    &( p -> unique_gear -> extract_of_necromantic_power    ) },
+      { "eye_of_magtheridon",                   OPT_BOOL,    &( p -> unique_gear -> eye_of_magtheridon              ) },
+      { "eye_of_the_broodmother",               OPT_BOOL,    &( p -> unique_gear -> eye_of_the_broodmother          ) },
+      { "flare_of_the_heavens",                 OPT_BOOL,    &( p -> unique_gear -> flare_of_the_heavens            ) },
+      { "forge_ember",                          OPT_BOOL,    &( p -> unique_gear -> forge_ember                     ) },
+      { "fury_of_the_five_flights",             OPT_BOOL,    &( p -> unique_gear -> fury_of_the_five_flights        ) },
+      { "grim_toll",                            OPT_BOOL,    &( p -> unique_gear -> grim_toll                       ) },
+      { "illustration_of_the_dragon_soul",      OPT_BOOL,    &( p -> unique_gear -> illustration_of_the_dragon_soul ) },
+      { "lightning_capacitor",                  OPT_BOOL,    &( p -> unique_gear -> lightning_capacitor             ) },
+      { "mirror_of_truth",                      OPT_BOOL,    &( p -> unique_gear -> mirror_of_truth                 ) },
+      { "mjolnir_runestone",                    OPT_BOOL,    &( p -> unique_gear -> mjolnir_runestone               ) },
+      { "mark_of_defiance",                     OPT_BOOL,    &( p -> unique_gear -> mark_of_defiance                ) },
+      { "mystical_skyfire",                     OPT_BOOL,    &( p -> unique_gear -> mystical_skyfire                ) },
+      { "pandoras_plea",                        OPT_BOOL,    &( p -> unique_gear -> pandoras_plea                   ) },
+      { "pyrite_infuser",                       OPT_BOOL,    &( p -> unique_gear -> pyrite_infuser                  ) },
+      { "quagmirrans_eye",                      OPT_BOOL,    &( p -> unique_gear -> quagmirrans_eye                 ) },
+      { "relentless_earthstorm",                OPT_BOOL_Q,  &( p -> unique_gear -> relentless_earthstorm           ) },
+      { "relentless_earthsiege",                OPT_BOOL,    &( p -> unique_gear -> relentless_earthstorm           ) },
+      { "sextant_of_unstable_currents",         OPT_BOOL,    &( p -> unique_gear -> sextant_of_unstable_currents    ) },
+      { "shiffars_nexus_horn",                  OPT_BOOL,    &( p -> unique_gear -> shiffars_nexus_horn             ) },
+      { "spellstrike",                          OPT_BOOL,    &( p -> unique_gear -> spellstrike                     ) },
+      { "sundial_of_the_exiled",                OPT_BOOL,    &( p -> unique_gear -> sundial_of_the_exiled           ) },
+      { "thunder_capacitor",                    OPT_BOOL,    &( p -> unique_gear -> thunder_capacitor               ) },
+      { "timbals_crystal",                      OPT_BOOL,    &( p -> unique_gear -> timbals_crystal                 ) },
+      { "wrath_of_cenarius",                    OPT_BOOL,    &( p -> unique_gear -> wrath_of_cenarius               ) },
       { NULL, OPT_UNKNOWN }
     };
 
-  if ( name.empty() )
-  {
-    option_t::print( p -> sim -> output_file, options );
-    return false;
-  }
+  option_t::copy( option_vector, options );
 
-  return option_t::parse( p -> sim, options, name, value );
+  return option_vector.size();
 }
 
 // ==========================================================================

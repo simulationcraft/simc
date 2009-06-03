@@ -304,6 +304,48 @@ struct http_t
   static bool get( std::string& result, const std::string& url, const std::string& confirmation=std::string(), int throttle_seconds=0 );
 };
 
+// Options ====================================================================
+
+enum option_type_t
+{
+  OPT_NONE=0,
+  OPT_STRING,     // std::string*
+  OPT_APPEND,     // std::string* (append)
+  OPT_CHARP,      // char*
+  OPT_BOOL,       // int (only valid values are 1 and 0)
+  OPT_INT,        // int
+  OPT_FLT,        // double
+  OPT_LIST,       // std::vector<std::string>*
+  OPT_FUNC,       // function pointer
+  OPT_STRING_Q,   // same as above, but do not save
+  OPT_CHARP_Q,    // same as above, but do not save
+  OPT_BOOL_Q,     // same as above, but do not save
+  OPT_INT_Q,      // same as above, but do not save
+  OPT_FLT_Q,      // same as above, but do not save
+  OPT_DEPRECATED,
+  OPT_UNKNOWN
+};
+
+typedef bool (*option_function_t)( sim_t* sim, const std::string& name, const std::string& value );
+
+struct option_t
+{
+  const char* name;
+  int type;
+  void* address;
+
+  void print( FILE* );
+  void save ( FILE* );
+  bool parse( sim_t*, const std::string& name, const std::string& value );
+
+  static void copy( std::vector<option_t>& opt_vector, option_t* opt_array );
+  static bool parse( sim_t*, std::vector<option_t>&, const std::string& name, const std::string& value );
+  static bool parse( sim_t*, option_t*,              const std::string& name, const std::string& value );
+  static bool parse_file( sim_t*, FILE* file );
+  static bool parse_line( sim_t*, char* line );
+  static bool parse_token( sim_t*, std::string& token );
+};
+
 // Event =====================================================================
 
 struct event_t
@@ -410,38 +452,6 @@ struct gear_stats_t
 
 };
 
-// Options ====================================================================
-
-enum option_type_t
-{
-  OPT_STRING=0,   // std::string*
-  OPT_APPEND,     // std::string* (append)
-  OPT_CHAR_P,     // char*
-  OPT_BOOL,       // int (only valid values are 1 and 0)
-  OPT_INT,        // int
-  OPT_FLT,        // double
-  OPT_LIST,       // std::vector<std::string>*
-  OPT_FUNC,       // function pointer
-  OPT_DEPRECATED,
-  OPT_UNKNOWN
-};
-
-typedef bool (*option_function_t)( sim_t* sim, const std::string& name, const std::string& value );
-
-struct option_t
-{
-  const char* name;
-  int type;
-  void*  address;
-
-  static void print( FILE*, option_t* );
-  static void copy( std::vector<option_t>& opt_vector, option_t* opt_array );
-  static bool parse( sim_t*, option_t*, const std::string& name, const std::string& value );
-  static bool parse_file( sim_t*, FILE* file );
-  static bool parse_line( sim_t*, char* line );
-  static bool parse_token( sim_t*, std::string& token );
-};
-
 // Simulation Engine =========================================================
 
 struct sim_t
@@ -471,9 +481,11 @@ struct sim_t
   int         infinite_resource[ RESOURCE_MAX ];
   int         armor_update_interval, potion_sickness;
   int         optimal_raid, log, debug, debug_armory;
+  int         save_profiles;
   double      jow_chance, jow_ppm;
   urlSplit_t* last_armory_player;
 
+  std::vector<option_t> option_vector;
   std::vector<std::string> party_encoding;
 
   // Smooth Random Number Generation
@@ -603,10 +615,7 @@ struct sim_t
   sim_t( sim_t* parent=0, int thrdID=0 );
   virtual ~sim_t();
 
-  virtual const char* name() { return "simcraft"; }
-  virtual int main( int argc, char** argv );
-  virtual bool parse_option( const std::string& name, const std::string& value );
-
+  int       main( int argc, char** argv );
   void      combat( int iteration );
   void      combat_begin();
   void      combat_end();
@@ -624,6 +633,8 @@ struct sim_t
   void      partition();
   void      execute();
   void      print_options();
+  std::vector<option_t>& get_options();
+  bool      parse_option( const std::string& name, const std::string& value );
   bool      parse_options( int argc, char** argv );
   bool      time_to_think( double proc_time ) { if ( proc_time == 0 ) return false; return current_time - proc_time > reaction_time; }
   bool      cooldown_ready( double cooldown_time ) { return cooldown_time <= current_time; }
@@ -658,7 +669,7 @@ struct scaling_t
   void analyze_gear_weights();
   void normalize();
   void derive();
-  bool parse_option( const std::string& name, const std::string& value );
+  int  get_options( std::vector<option_t>& );
 };
 
 // Gear Rating Conversions ===================================================
@@ -829,9 +840,10 @@ struct player_t
   std::string action_dpet_chart, action_dmg_chart, gains_chart, uptimes_and_procs_chart;
   std::string timeline_resource_chart, timeline_dps_chart, distribution_dps_chart;
   std::string gear_weights_lootrank_link, gear_weights_wowhead_link, gear_weights_pawn_string;
+  std::string save_str;
 
   // Gear
-  gear_stats_t equip_stats;
+  gear_stats_t stats;
   gear_stats_t gear_stats;
   gear_stats_t gem_stats;
   enchant_t* enchant;
@@ -1297,7 +1309,7 @@ struct target_t
   double health_percentage();
   double base_armor();
   uptime_t* get_uptime( const std::string& name );
-  bool parse_option( const std::string& name, const std::string& value );
+  int get_options( std::vector<option_t>& );
   const char* name() { return name_str.c_str(); }
   const char* id();
 };
@@ -1661,7 +1673,7 @@ struct unique_gear_t
   unique_gear_t() { memset( ( void* ) this, 0x00, sizeof( unique_gear_t ) ); }
 
   static action_t* create_action( player_t*, const std::string& name, const std::string& options );
-  static bool parse_option( player_t*, const std::string& name, const std::string& value );
+  static int get_options( std::vector<option_t>&, player_t* );
   static void init( player_t* );
   static void register_callbacks( player_t* );
 };
@@ -1675,7 +1687,7 @@ struct enchant_t
 
   enchant_t() { memset( ( void* ) this, 0x00, sizeof( enchant_t ) ); }
 
-  static bool parse_option( player_t*, const std::string& name, const std::string& value );
+  static int get_options( std::vector<option_t>&, player_t* );
   static void init( player_t* );
   static void register_callbacks( player_t* );
 };
@@ -1737,6 +1749,7 @@ double percentage() { return ( up==0 ) ? 0 : ( 100.0*up/( up+down ) ); }
 
 struct report_t
 {
+  static void print_profiles( sim_t* );
   static void print_text( FILE*, sim_t*, bool detail=true );
   static void print_html( sim_t* );
   static void print_wiki( sim_t* );

@@ -236,10 +236,9 @@ void scaling_t::analyze()
   normalize();
 }
 
-// scaling_t::parse_option ==================================================
+// scaling_t::get_options ===================================================
 
-bool scaling_t::parse_option( const std::string& name,
-                              const std::string& value )
+int scaling_t::get_options( std::vector<option_t>& option_vector )
 {
   option_t options[] =
     {
@@ -267,11 +266,7 @@ bool scaling_t::parse_option( const std::string& name,
       { NULL, OPT_UNKNOWN }
     };
 
-  if ( name.empty() )
-  {
-    option_t::print( sim -> output_file, options );
-    return false;
-  }
+  option_t::copy( option_vector, options );
 
-  return option_t::parse( sim, options, name, value );
+  return option_vector.size();
 }
