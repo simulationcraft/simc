@@ -38,7 +38,8 @@ struct urlSplit_t
   player_t* active_player;
   armory_item_t item_stats[20];
   bool saved;
-  urlSplit_t() : srvType(0), sim(0), active_player(0), saved(false)
+  int n_clickies;
+  urlSplit_t() : srvType(0), sim(0), active_player(0), saved(false), n_clickies(0)
   {
     memset( setPieces, 0x00, sizeof(setPieces) );
   }
@@ -471,18 +472,19 @@ bool my_isdigit( char c )
 }
 
 // find value/pattern pair
-double oneTxtStat( std::string txt, const std::string& fullpat, int dir, int type  )
+double oneTxtStat( std::string txt, const std::string& fullpat, int dir, int type, double* for_value=0  )
 {
   size_t idx=0;
   double value=0;
+  size_t idL, idR;
   //support multiple occurences of same pattern
   while ( idx != string::npos )
   {
     idx= txt.find( fullpat );
     if ( idx != string::npos )
     {
-      size_t idL=idx;
-      size_t idR=idx+fullpat.length();
+      idL=idx;
+      idR=idx+fullpat.length();
       std::string strVal="";
       size_t dL=0;
       size_t dR=0;
@@ -520,6 +522,34 @@ double oneTxtStat( std::string txt, const std::string& fullpat, int dir, int typ
       txt.erase( idL,idR-idL );
     }
   }
+  // if this was "Use:" type, check if there is duration, " for 20 sec." 
+  if (for_value){
+    *for_value=0;
+    if ((value!=0)&&(dir>0)){
+      std::string for_str;
+      int found_sz=-1;
+      //try to find any variation of "for XX seconds"
+      for_str=" for the next ";
+      if ((found_sz<0)&&(txt.substr(0,for_str.length())==for_str)) found_sz=for_str.length();
+      for_str=" for next ";
+      if ((found_sz<0)&&(txt.substr(0,for_str.length())==for_str)) found_sz=for_str.length();
+      for_str=" for ";
+      if ((found_sz<0)&&(txt.substr(0,for_str.length())==for_str)) found_sz=for_str.length();
+      // if found, extract value
+      if (found_sz>0){
+        txt.erase(0,found_sz);
+        size_t dL=0;
+        size_t dR=0;
+        size_t p=0;
+        while ( ( p<txt.length() )&&( txt[p]==' ' ) ) p++; //skip spaces
+        dL=dR=p;
+        while ( ( p<txt.length() )&& my_isdigit( txt[p] ) ) p++; //walk over number
+        dR=p;
+        //place result
+        *for_value= atof (txt.substr( dL,dR-dL ).c_str());
+      }
+    }
+  }
   return value;
 }
 
@@ -549,26 +579,33 @@ const bool chkAllStatsBonus( gear_stats_t& gs, const std::string& txt, int type 
 //try to find txt pattern and value pair. Patterns are expected in lower cases
 // it will try first: "pattern by XX", then "+XX pattern"
 // if found, it will remove pattern/value from txt
-bool chkOneTxtStat( gear_stats_t& gs, const std::string& txt, int type , int statID, const std::string& pattern )
+bool chkOneTxtStat( gear_stats_t& gs, const std::string& txt, int type , double* for_value, int statID, const std::string& pattern )
 {
   bool ok=false;
 
   std::string pat;
-  double val;
+  double val=0;
   // this patterns should increase stat
-  pat= " improves "+pattern+" by ";
-  val= oneTxtStat( txt, pat, +1, type );
-  if ( val )
+  std::string pref_patterns[]=
   {
-    gs.add_stat( statID,  val );
-    ok=true;
-  }
-  pat= " increases "+pattern+" by ";
-  val= oneTxtStat( txt, pat, +1, type );
-  if ( val )
-  {
-    gs.add_stat( statID,  val );
-    ok=true;
+    " improves your ",
+    " improves ",
+    " increases your ",
+    " increases ",
+    ""
+  };
+  int i=0;
+  while ((!ok)&&(pref_patterns[i]!="")){
+    pat= pref_patterns[i]+pattern+" by ";
+    double for_val_tmp=0;
+    val= oneTxtStat( txt, pat, +1, type, &for_val_tmp );
+    if ( val )
+    {
+      gs.add_stat( statID,  val );
+      if (for_value) *for_value=for_val_tmp;
+      ok=true;
+    }
+    i++;
   }
   // this pattern oncrease stat ONLY if number to the left start with +
   // it STILL has risk to admit some "chance to do +25 spell dmg", but in all texts so far
@@ -586,37 +623,37 @@ bool chkOneTxtStat( gear_stats_t& gs, const std::string& txt, int type , int sta
 // parse text and search for stats to add
 // type is source of text, needed to decide when "+" is needed
 // type: 1==enchant, 2==spellData(Equip:), 3==gem, 4==socketBonus
-void addTextStats( gear_stats_t& gs, std::string txt, int type )
+void addTextStats( gear_stats_t& gs, std::string txt, int type, double* for_value=0 )
 {
   if ( txt=="" ) return;
   txt= " "+tolower( txt )+" ";
 
   //chkOneTxtStat(gs,txt, STAT_SPELL_POWER,               "shadow spell damage"); //problem: item may have shdw+frost+fire...
   chkAllStatsBonus( gs,txt,type,                              "all stats" );
-  chkOneTxtStat( gs,txt,type, STAT_SPELL_POWER,               "spell power" );
-  chkOneTxtStat( gs,txt,type, STAT_MP5,                       "mana regen" );
-  chkOneTxtStat( gs,txt,type, STAT_MP5,                       "mana every" );
-  chkOneTxtStat( gs,txt,type, STAT_MP5,                       "mana per" );
-  chkOneTxtStat( gs,txt,type, STAT_MP5,                       "mana restored per" );
-  chkOneTxtStat( gs,txt,type, STAT_MP5,                       "mana/5" );
-  chkOneTxtStat( gs,txt,type, STAT_ATTACK_POWER,              "attack power" );
-  chkOneTxtStat( gs,txt,type, STAT_EXPERTISE_RATING,          "expertise rating" );
-  chkOneTxtStat( gs,txt,type, STAT_ARMOR_PENETRATION_RATING,  "armor penetration" );
-  chkOneTxtStat( gs,txt,type, STAT_HASTE_RATING,              "haste rating" );
-  chkOneTxtStat( gs,txt,type, STAT_HIT_RATING,                "ranged hit rating" ); //we dont have them separate
-  chkOneTxtStat( gs,txt,type, STAT_HIT_RATING,                "hit rating" );
-  chkOneTxtStat( gs,txt,type, STAT_CRIT_RATING,               "ranged critical strike" );
-  chkOneTxtStat( gs,txt,type, STAT_CRIT_RATING,               "critical strike rating" );
-  chkOneTxtStat( gs,txt,type, STAT_CRIT_RATING,               "crit rating" );
-  chkOneTxtStat( gs,txt,type, STAT_STRENGTH,                  "strength" );
-  chkOneTxtStat( gs,txt,type, STAT_AGILITY,                   "agility" );
-  chkOneTxtStat( gs,txt,type, STAT_STAMINA,                   "stamina" );
-  chkOneTxtStat( gs,txt,type, STAT_INTELLECT,                 "intellect" );
-  chkOneTxtStat( gs,txt,type, STAT_SPIRIT,                    "spirit" );
+  chkOneTxtStat( gs,txt,type,for_value, STAT_SPELL_POWER,               "spell power" );
+  chkOneTxtStat( gs,txt,type,for_value, STAT_MP5,                       "mana regen" );
+  chkOneTxtStat( gs,txt,type,for_value, STAT_MP5,                       "mana every" );
+  chkOneTxtStat( gs,txt,type,for_value, STAT_MP5,                       "mana per" );
+  chkOneTxtStat( gs,txt,type,for_value, STAT_MP5,                       "mana restored per" );
+  chkOneTxtStat( gs,txt,type,for_value, STAT_MP5,                       "mana/5" );
+  chkOneTxtStat( gs,txt,type,for_value, STAT_ATTACK_POWER,              "attack power" );
+  chkOneTxtStat( gs,txt,type,for_value, STAT_EXPERTISE_RATING,          "expertise rating" );
+  chkOneTxtStat( gs,txt,type,for_value, STAT_ARMOR_PENETRATION_RATING,  "armor penetration" );
+  chkOneTxtStat( gs,txt,type,for_value, STAT_HASTE_RATING,              "haste rating" );
+  chkOneTxtStat( gs,txt,type,for_value, STAT_HIT_RATING,                "ranged hit rating" ); //we dont have them separate
+  chkOneTxtStat( gs,txt,type,for_value, STAT_HIT_RATING,                "hit rating" );
+  chkOneTxtStat( gs,txt,type,for_value, STAT_CRIT_RATING,               "ranged critical strike" );
+  chkOneTxtStat( gs,txt,type,for_value, STAT_CRIT_RATING,               "critical strike rating" );
+  chkOneTxtStat( gs,txt,type,for_value, STAT_CRIT_RATING,               "crit rating" );
+  chkOneTxtStat( gs,txt,type,for_value, STAT_STRENGTH,                  "strength" );
+  chkOneTxtStat( gs,txt,type,for_value, STAT_AGILITY,                   "agility" );
+  chkOneTxtStat( gs,txt,type,for_value, STAT_STAMINA,                   "stamina" );
+  chkOneTxtStat( gs,txt,type,for_value, STAT_INTELLECT,                 "intellect" );
+  chkOneTxtStat( gs,txt,type,for_value, STAT_SPIRIT,                    "spirit" );
   //shorter, less safe parses
-  chkOneTxtStat( gs,txt,type, STAT_ARMOR,                     "armor" );
-  chkOneTxtStat( gs,txt,type, STAT_HEALTH,                    "health" );
-  chkOneTxtStat( gs,txt,type, STAT_MANA,                      "mana" );
+  chkOneTxtStat( gs,txt,type,for_value, STAT_ARMOR,                     "armor" );
+  chkOneTxtStat( gs,txt,type,for_value, STAT_HEALTH,                    "health" );
+  chkOneTxtStat( gs,txt,type,for_value, STAT_MANA,                      "mana" );
 
 }
 
@@ -655,9 +692,59 @@ bool  parseItemStats( urlSplit_t& aURL, armory_item_t& gs,  const std::string& i
   // add textual - descriptive - stats
   addTextStats( gs.enchants, getNode( src, "enchant" ),1 );
   gs.has_enchants= (getNode( src, "enchant" )!="");
-  addTextStats( gs.gear, getNode( src, "spellData.desc" ),2 );
+  // spell data- can have multiple spells, both "Equip" or "Use"
+  std::string node= getNode( src, "spellData" );
+  for ( unsigned int i=1; i<=5; i++ )
+  {
+    std::string spell= getNodeOne( node, "spell" ,i );
+    if ( spell!="" )
+    {
+      if (getNode(spell,"trigger")=="1"){
+        // Equip: parse stats, but avoid "have chance to" - by including only those starting with "increases.."
+        addTextStats( gs.gear, getNode( spell, "desc" ),2 );
+      }else{
+        //Use: try to recognize if it is increase of some stat for XX seconds on use, to put in Clicky_X
+        gear_stats_t tmp_gear;
+        double for_value=0;
+        addTextStats( tmp_gear, getNode( spell, "desc" ),5, &for_value );
+        if (for_value>0){
+          // if found, check for recognizable stats to form "trigger" action
+          std::string clicky_str="";
+          std::string clicky_val="";
+          if (aURL.active_player->clicky_1=="") clicky_str="clicky_1"; else
+          if (aURL.active_player->clicky_2=="") clicky_str="clicky_2"; else
+          if (aURL.active_player->clicky_3=="") clicky_str="clicky_3"; 
+          if (clicky_str!=""){
+            char buff[200];
+            sprintf(buff,",length=%d,cooldown=120",(int)for_value);
+            std::string clicky=buff;
+            if (tmp_gear.spell_power>0){
+              sprintf(buff,"spell_power_trinket,power=%d", (int) tmp_gear.spell_power);
+              clicky_val=buff+clicky;
+            }else
+            if (tmp_gear.attack_power>0){
+              sprintf(buff,"attack_power_trinket,power=%d", (int) tmp_gear.attack_power);
+              clicky_val=buff+clicky;
+            }else
+            if (tmp_gear.haste_rating>0){
+              sprintf(buff,"haste_trinket,rating=%d", (int) tmp_gear.haste_rating);
+              clicky_val=buff+clicky;
+            };
+            //set option
+            if (clicky_val!=""){
+              player_parse_option( aURL,clicky_str, clicky_val );
+            }
+          }else{
+            printf("Too many clickies for player %s\n",aURL.active_player->name());
+          }
+        }
+
+      }
+    }else
+      break;
+  }
   // parse gems and sockets
-  std::string node= getNode( src, "socketData" );
+  node= getNode( src, "socketData" );
   bool allMatch=true;
   for ( unsigned int i=1; i<=5; i++ )
   {
