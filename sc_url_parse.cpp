@@ -382,7 +382,7 @@ void addItemGlyphOption( urlSplit_t& aURL, const std::string&  node, const std::
       //rename few well known gems, to be more readable
       if (itemID=="41285") itemID="chaotic_skyflare"; else
       if (itemID=="41333") itemID="ember_skyflare"; else
-      if (itemID=="41398") itemID="relentless_earthstorm"; else
+      if (itemID=="41398") itemID="relentless_earthsiege"; else
       itemID="item_"+itemID;
       //call parse to check if this item option exists
       player_parse_option( aURL,itemID,opt_value );
