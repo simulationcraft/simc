@@ -305,45 +305,43 @@ static bool parse_talent_url( sim_t* sim,
 
   p -> talents_str = url;
 
-  std::string talent_string, address_string;
+  std::string::size_type cut_pt;
+  std::string talent_string;
   int encoding = ENCODING_NONE;
 
-  std::string::size_type cut_pt;
-  if ( ( cut_pt = url.find_first_of( "=#" ) ) != url.npos )
+  if( url.find( "worldofwarcraft" ) != url.npos )
   {
-    talent_string = url.substr( cut_pt + 1 );
-    address_string = url.substr( 0, cut_pt );
-
-    if ( address_string.find( "worldofwarcraft" ) != url.npos )
+    if( ( cut_pt = url.find_first_of( "=" ) ) != url.npos )
     {
+      talent_string = url.substr( cut_pt + 1 );
       encoding = ENCODING_BLIZZARD;
     }
-    else if ( address_string.find( "mmo-champion" ) != url.npos )
+  }
+  else if( url.find( "wowarmory" ) != url.npos )
+  {
+    if( ( cut_pt = url.find_last_of( "=" ) ) != url.npos )
     {
-      encoding = ENCODING_MMO;
-
-      std::vector<std::string> parts;
-      int part_count = util_t::string_split( parts, talent_string, "&" );
-
-      talent_string = parts[ 0 ];
-      for ( int i = 1; i < part_count; i++ )
-      {
-        std::string part_name, part_url;
-        if ( 2 == util_t::string_split( parts[i], "=", "S S", &part_name, &part_url ) )
-        {
-          if ( part_name == "glyph" )
-          {
-            //FIXME: ADD GLYPH SUPPORT?
-          }
-          else if ( part_name == "version" )
-          {
-            //FIXME: WHAT TO DO WITH VERSION NUMBER?
-          }
-        }
-      }
+      talent_string = url.substr( cut_pt + 1 );
+      encoding = ENCODING_BLIZZARD;
     }
-    else if ( address_string.find( "wowhead" ) != url.npos )
+  }
+  else if( url.find( "mmo-champion" ) != url.npos )
+  {
+    std::vector<std::string> parts;
+    int part_count = util_t::string_split( parts, url, "&" );
+    assert( part_count > 0 );
+
+    if( ( cut_pt = parts[ 0 ].find_first_of( "=" ) ) != parts[ 0 ].npos )
     {
+      talent_string = parts[ 0 ].substr( cut_pt + 1 );
+      encoding = ENCODING_MMO;
+    }
+  }
+  else if( url.find( "wowhead" ) != url.npos )
+  {
+    if( ( cut_pt = url.find_first_of( "#=" ) ) != url.npos )
+    {
+      talent_string = url.substr( cut_pt + 1 );
       encoding = ENCODING_WOWHEAD;
     }
   }
@@ -2595,6 +2593,8 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
     }
 
     char c = talent_string[ i ];
+
+    if ( c == ':' ) break; // glyph encoding follows
 
     if ( c == 'Z' )
     {
