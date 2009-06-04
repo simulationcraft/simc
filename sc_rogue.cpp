@@ -702,10 +702,8 @@ static void trigger_sword_specialization( rogue_attack_t* a )
   if ( p -> rng_sword_specialization -> roll( p -> talents.sword_specialization * 0.01 ) )
   {
     p -> main_hand_attack -> proc = true;
-    p -> main_hand_attack -> special = true; // cannot glance
     p -> main_hand_attack -> execute();
     p -> main_hand_attack -> proc = false;
-    p -> main_hand_attack -> special = false;
     p -> procs_sword_specialization -> occur();
   }
 }
