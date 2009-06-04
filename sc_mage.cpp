@@ -215,7 +215,6 @@ struct mage_t : public player_t
   virtual void      combat_begin();
   virtual void      reset();
   virtual bool      get_talent_trees( std::vector<int*>& arcane, std::vector<int*>& fire, std::vector<int*>& frost );
-  virtual bool      parse_talents_mmo( const std::string& talent_string );
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
@@ -3536,22 +3535,6 @@ bool mage_t::get_talent_trees( std::vector<int*>& arcane,
     };
 
   return player_t::get_talent_trees( arcane, fire, frost, translation );
-}
-
-// mage_t::parse_talents_mmo ==============================================
-
-bool mage_t::parse_talents_mmo( const std::string& talent_string )
-{
-  // mage mmo encoding: Fire-Frost-Arcane
-
-  int size1 = 28;
-  int size2 = 28;
-
-  std::string   fire_string( talent_string,     0,  size1 );
-  std::string  frost_string( talent_string, size1,  size2 );
-  std::string arcane_string( talent_string, size1 + size2 );
-
-  return parse_talents( arcane_string + fire_string + frost_string );
 }
 
 // mage_t::get_options ====================================================

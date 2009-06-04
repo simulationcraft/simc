@@ -252,7 +252,6 @@ struct druid_t : public player_t
   virtual double    composite_spell_hit();
   virtual double    composite_spell_crit();
   virtual bool      get_talent_trees( std::vector<int*>& balance, std::vector<int*>& feral, std::vector<int*>& restoration );
-  virtual bool      parse_talents_mmo( const std::string& talent_string );
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
@@ -3483,22 +3482,6 @@ bool druid_t::get_talent_trees( std::vector<int*>& balance,
     };
 
   return player_t::get_talent_trees( balance, feral, restoration, translation );
-}
-
-// druid_t::parse_talents_mmo =============================================
-
-bool druid_t::parse_talents_mmo( const std::string& talent_string )
-{
-  // druid mmo encoding: Feral-Restoration-Balance
-
-  int size1 = 29;
-  int size2 = 26;
-
-  std::string       feral_string( talent_string,     0,  size1 );
-  std::string restoration_string( talent_string, size1,  size2 );
-  std::string     balance_string( talent_string, size1 + size2 );
-
-  return parse_talents( balance_string + feral_string + restoration_string );
 }
 
 // druid_t::get_options ================================================

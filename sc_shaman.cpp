@@ -256,7 +256,6 @@ struct shaman_t : public player_t
   virtual double    composite_attack_power();
   virtual double    composite_spell_power( int school );
   virtual bool      get_talent_trees( std::vector<int*>& elemental, std::vector<int*>& enhancement, std::vector<int*>& restoration );
-  virtual bool      parse_talents_mmo( const std::string& talent_string );
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
@@ -3470,22 +3469,6 @@ bool shaman_t::get_talent_trees( std::vector<int*>& elemental,
 
     return player_t::get_talent_trees( elemental, enhancement, restoration, translation );
   }
-}
-
-// shaman_t::parse_talents_mmo =============================================
-
-bool shaman_t::parse_talents_mmo( const std::string& talent_string )
-{
-  // shaman mmo encoding: Elemental-Restoration-Enhancement
-
-  int size1 = 25;
-  int size2 = 26;
-
-  std::string   elemental_string( talent_string,     0,  size1 );
-  std::string restoration_string( talent_string, size1,  size2 );
-  std::string enhancement_string( talent_string, size1 + size2  );
-
-  return parse_talents( elemental_string + enhancement_string + restoration_string );
 }
 
 // shaman_t::get_options ================================================

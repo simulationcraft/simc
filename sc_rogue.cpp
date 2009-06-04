@@ -248,7 +248,6 @@ struct rogue_t : public player_t
   virtual void      interrupt();
   virtual void      regen( double periodicity );
   virtual bool      get_talent_trees( std::vector<int*>& assassination, std::vector<int*>& combat, std::vector<int*>& subtlety );
-  virtual bool      parse_talents_mmo( const std::string& talent_string );
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual int       primary_resource() { return RESOURCE_ENERGY; }
@@ -3532,22 +3531,6 @@ bool rogue_t::get_talent_trees( std::vector<int*>& assassination,
     };
 
   return player_t::get_talent_trees( assassination, combat, subtlety, translation );
-}
-
-// rogue_t::parse_talents_mmo =============================================
-
-bool rogue_t::parse_talents_mmo( const std::string& talent_string )
-{
-  // rogue mmo encoding: Combat-Assassination-Subtlety
-
-  int size1 = 28;
-  int size2 = 27;
-
-  std::string        combat_string( talent_string,     0,  size1 );
-  std::string assassination_string( talent_string, size1,  size2 );
-  std::string      subtlety_string( talent_string, size1 + size2  );
-
-  return parse_talents( assassination_string + combat_string + subtlety_string );
 }
 
 // rogue_t::get_options ================================================
