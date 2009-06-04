@@ -1076,7 +1076,8 @@ void report_t::print_profiles( sim_t* sim )
 
     if( file_name.empty() && sim -> save_profiles )
     {
-      file_name = p -> name_str;
+      file_name  = "save_";
+      file_name += p -> name_str;
       file_name += ".simcraft";
     }
 
@@ -1090,6 +1091,8 @@ void report_t::print_profiles( sim_t* sim )
     }
 
     fprintf( file, "%s=%s\n", util_t::player_type_string( p -> type ), p -> name() );
+
+    fprintf( file, "#talents=%s\n", ( p -> talents_str.empty() ? "" : p -> talents_str.c_str() ) );
 
     std::vector<option_t>& options = p -> get_options();
     int num_options = options.size();
