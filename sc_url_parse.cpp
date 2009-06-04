@@ -99,7 +99,7 @@ std::string getArmoryData( urlSplit_t& aURL, url_page_t pgt, std::string morePar
 
 // convert full descriptive name into "option name"
 // spaces become underscores, all lower letters
-// remove apostrophes
+// remove apostrophes and colons
 std::string proper_option_name( const std::string& full_name )
 {
   if ( full_name=="" ) return full_name;
@@ -111,7 +111,7 @@ std::string proper_option_name( const std::string& full_name )
     char c=full_name[i];
     c= tolower( c );            // lower case
     if ( c==' ' ) c='_';        // spaces to underscores
-    if ( c!='\'' )      // remove apostrophes
+    if ( c!='\'' && c!=':' )      // remove apostrophes and colons
       newName+=c;
   }
   // then remove first "of" for glyphs (legacy)
@@ -120,7 +120,25 @@ std::string proper_option_name( const std::string& full_name )
   return newName;
 }
 
-
+// convert full descriptive name into "option name"
+// spaces become underscores, all lower letters
+// remove apostrophes
+std::string talent_calc_class_name( const std::string& full_name )
+{
+  if ( full_name=="" ) return full_name;
+  // first to lower letters and _ for spaces
+  std::string newName( full_name.length(),' ' );
+  newName="";
+  for ( size_t i=0; i<full_name.length(); i++ )
+  {
+    char c=full_name[i];
+    c= tolower( c );            // lower case
+    if ( c!='\'' && c!=':' && c!=' ' )      // remove apostrophes
+      newName+=c;
+  }
+  // return result
+  return newName;
+}
 
 
 
@@ -908,6 +926,7 @@ bool parseArmory( sim_t* sim, const std::string& URL, bool inactiveTalents=false
     if (debug) printf("Src=%s\n",src.c_str());
     return true;
   }
+  std::string className= talent_calc_class_name( node );
   std::string charName= getValue(src,"character.name");
   if (inactiveTalents) charName+="_inactive";
   if ( (!gearOnly)&&( node!="" ) )
@@ -950,7 +969,8 @@ bool parseArmory( sim_t* sim, const std::string& URL, bool inactiveTalents=false
     {
       node= getNodeOne( src2,"talentGroup",2 );
     }
-    optionStr+= chkValue( node, "talentSpec.value", "talents=http://worldofwarcraft?encoded=" );
+    std::string talentCalcString = "talents=http://talent.mmo-champion.com?" + className + "=";
+    optionStr+= chkValue( node, "talentSpec.value", talentCalcString );
     glyphs = getNode( node, "glyphs" );
   }else{
     glyphs = getNode( src, "characterTab.glyphs" );
