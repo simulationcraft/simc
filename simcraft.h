@@ -176,7 +176,28 @@ enum weapon_buff_type {
   WEAPON_BUFF_MAX
 };
 
-enum slot_type { SLOT_NONE=0, SLOT_MAIN_HAND, SLOT_OFF_HAND, SLOT_RANGED, SLOT_MAX };
+enum slot_type { // these enum values match armory settings
+  SLOT_NONE      = -1, 
+  SLOT_HEAD      = 0,
+  SLOT_NECK      = 1,
+  SLOT_SHOULDER  = 2,
+  SLOT_SHIRT     = 3,
+  SLOT_CHEST     = 4,
+  SLOT_WAIST     = 5,
+  SLOT_LEGS      = 6,
+  SLOT_FEET      = 7,
+  SLOT_WRISTS    = 8,
+  SLOT_HANDS     = 9,
+  SLOT_FINGER_1  = 10,
+  SLOT_FINGER_2  = 11,
+  SLOT_TRINKET_1 = 12,
+  SLOT_TRINKET_2 = 13,
+  SLOT_BACK      = 14,
+  SLOT_MAIN_HAND = 15, 
+  SLOT_OFF_HAND  = 16, 
+  SLOT_RANGED    = 17, 
+  SLOT_MAX       = 18 
+};
 
 enum stat_type {
   STAT_NONE=0,
@@ -703,6 +724,24 @@ struct weapon_t
       type( t ), school( s ), damage( d ), swing_time( st ),
       enchant( WEAPON_ENCHANT_NONE ), buff( WEAPON_BUFF_NONE ),
       enchant_bonus( 0 ), buff_bonus( 0 ), slot( SLOT_NONE ) {}};
+
+// Item ======================================================================
+
+struct item_t
+{
+  int slot;
+  std::string name_str, bonus_str, equip_str, use_str, enchant_str;
+  std::vector<std::string> gem_strs;
+  gear_stats_t stats, enchant_stats, bonus_stats;
+  std::vector<gear_stats_t> gem_stats;
+  std::string encoded_name_str;
+  std::string encoded_equip_str;
+  std::string encoded_use_str;
+  std::string encoded_enchant_str;
+  std::string encoded_stats_str;
+  std::string encoded_gems_str;
+  std::string encoded_str;
+};
 
 // Player ====================================================================
 
@@ -1635,8 +1674,8 @@ struct unique_gear_t
   int  bandits_insignia;
   int  blood_of_the_old_god;
   int  chaotic_skyflare;
-  int  darkmoon_crusade;
-  int  darkmoon_greatness;
+  int  darkmoon_card_crusade;
+  int  darkmoon_card_greatness;
   int  dark_matter;
   int  dying_curse;
   int  egg_of_mortal_essence;

@@ -392,8 +392,10 @@ int unique_gear_t::get_options( std::vector<option_t>& option_vector, player_t* 
       { "chaotic_skyfire",                      OPT_BOOL_Q,  &( p -> unique_gear -> chaotic_skyflare                ) },
       { "chaotic_skyflare",                     OPT_BOOL,    &( p -> unique_gear -> chaotic_skyflare                ) },
       { "item_41285",                           OPT_BOOL_Q,  &( p -> unique_gear -> chaotic_skyflare                ) },
-      { "darkmoon_crusade",                     OPT_BOOL,    &( p -> unique_gear -> darkmoon_crusade                ) },
-      { "darkmoon_greatness",                   OPT_BOOL,    &( p -> unique_gear -> darkmoon_greatness              ) },
+      { "darkmoon_card_crusade",                OPT_BOOL,    &( p -> unique_gear -> darkmoon_card_crusade           ) },
+      { "darkmoon_card_greatness",              OPT_BOOL,    &( p -> unique_gear -> darkmoon_card_greatness         ) },
+      { "darkmoon_crusade",                     OPT_BOOL_Q,  &( p -> unique_gear -> darkmoon_card_crusade           ) },
+      { "darkmoon_greatness",                   OPT_BOOL_Q,  &( p -> unique_gear -> darkmoon_card_greatness         ) },
       { "dark_matter",                          OPT_BOOL,    &( p -> unique_gear -> dark_matter                     ) },
       { "dying_curse",                          OPT_BOOL,    &( p -> unique_gear -> dying_curse                     ) },
       { "egg_of_mortal_essence",                OPT_BOOL,    &( p -> unique_gear -> egg_of_mortal_essence           ) },
@@ -487,13 +489,13 @@ void unique_gear_t::register_callbacks( player_t* p )
     p -> register_attack_result_callback( RESULT_HIT_MASK, cb );
   }
   //---------------------------------------------------------------------------------------------------------
-  if ( p -> unique_gear -> darkmoon_crusade )
+  if ( p -> unique_gear -> darkmoon_card_crusade )
   {
-    cb = new stat_proc_callback_t( "darkmoon_crusade", p, STAT_SPELL_POWER, 10, 8, 0.0, 10.0, 0.0 );
+    cb = new stat_proc_callback_t( "darkmoon_card_crusade", p, STAT_SPELL_POWER, 10, 8, 0.0, 10.0, 0.0 );
     p -> register_spell_result_callback( RESULT_HIT_MASK, cb );
   }
   //---------------------------------------------------------------------------------------------------------
-  if ( p -> unique_gear -> darkmoon_greatness )
+  if ( p -> unique_gear -> darkmoon_card_greatness )
   {
     int attr[] = { ATTR_STRENGTH, ATTR_AGILITY, ATTR_INTELLECT, ATTR_SPIRIT };
     int stat[] = { STAT_STRENGTH, STAT_AGILITY, STAT_INTELLECT, STAT_SPIRIT };
@@ -509,7 +511,7 @@ void unique_gear_t::register_callbacks( player_t* p )
         max_stat = stat[ i ];
       }
     }
-    cb = new stat_proc_callback_t( "darkmoon_greatness", p, max_stat, 1, 300, 0.35, 15.0, 45.0 );
+    cb = new stat_proc_callback_t( "darkmoon_card_greatness", p, max_stat, 1, 300, 0.35, 15.0, 45.0 );
 
     p -> register_tick_damage_callback( cb );
     p -> register_direct_damage_callback( cb );
