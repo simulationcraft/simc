@@ -980,6 +980,7 @@ std::vector<option_t>& sim_t::get_options()
       { "reaction_time",                    OPT_FLT,    &( reaction_time                            ) },
       { "travel_variance",                  OPT_FLT,    &( travel_variance                          ) },
       // @option_doc loc=skip
+      { "save_profiles",                    OPT_BOOL,   &( save_profiles                            ) },
       { "combat_log",                       OPT_STRING, &( log_file_str                             ) },
       { "debug",                            OPT_BOOL,   &( debug                                    ) },
       { "html",                             OPT_STRING, &( html_file_str                            ) },
