@@ -2861,7 +2861,7 @@ player_t* player_t::create( sim_t*             sim,
   {
     sim -> active_player = sim -> active_player -> create_pet( name );
   }
-  else return false;
+  else return 0;
 
   assert( sim -> active_player );
 

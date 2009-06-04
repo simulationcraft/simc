@@ -4,14 +4,15 @@ optimal_raid=1
 
 Globals_T8.simcraft
 
-Rogue_T8_07_51_13.simcraft    tricks_of_the_trade_target=Rogue_T8_08_20_43
-Rogue_T8_08_20_43.simcraft    tricks_of_the_trade_target=Rogue_T8_18_51_02_BS
-Rogue_T8_18_51_02_BS.simcraft tricks_of_the_trade_target=Rogue_T8_18_51_02_S
-Rogue_T8_18_51_02_S.simcraft  tricks_of_the_trade_target=Rogue_T8_18_51_02_M
-Rogue_T8_18_51_02_M.simcraft  tricks_of_the_trade_target=Rogue_T8_18_51_02_FD
-Rogue_T8_18_51_02_FD.simcraft tricks_of_the_trade_target=Rogue_T8_20_51_00
-Rogue_T8_20_51_00.simcraft    tricks_of_the_trade_target=Rogue_T8_23_05_43
-Rogue_T8_23_05_43.simcraft    tricks_of_the_trade_target=Rogue_T8_51_13_07
-Rogue_T8_51_13_07.simcraft    tricks_of_the_trade_target=Rogue_T8_51_13_07_NoM
-Rogue_T8_51_13_07.simcraft    tricks_of_the_trade_target=Rogue_T8_51_18_02      name=Rogue_T8_51_13_07_NoM murder=0
-Rogue_T8_51_18_02.simcraft    tricks_of_the_trade_target=Rogue_T8_07_51_13
+Rogue_T8_07_51_13_FD.simcraft  tricks_of_the_trade_target=Rogue_T8_08_20_43
+Rogue_T8_08_20_43.simcraft     tricks_of_the_trade_target=Rogue_T8_15_51_05_FD
+Rogue_T8_15_51_05_FD.simcraft  tricks_of_the_trade_target=Rogue_T8_15_51_05_M
+Rogue_T8_15_51_05_M.simcraft   tricks_of_the_trade_target=Rogue_T8_15_51_05_S
+Rogue_T8_15_51_05_S.simcraft   tricks_of_the_trade_target=Rogue_T8_18_51_02_BS
+Rogue_T8_18_51_02_BS.simcraft  tricks_of_the_trade_target=Rogue_T8_18_51_02_FD
+Rogue_T8_18_51_02_FD.simcraft  tricks_of_the_trade_target=Rogue_T8_23_05_43
+Rogue_T8_23_05_43.simcraft     tricks_of_the_trade_target=Rogue_T8_51_07_13
+Rogue_T8_51_07_13.simcraft     tricks_of_the_trade_target=Rogue_T8_51_07_13_NoM
+Rogue_T8_51_07_13.simcraft     tricks_of_the_trade_target=Rogue_T8_51_13_07     name=Rogue_T8_51_07_13_NoM murder=0
+Rogue_T8_51_13_07.simcraft     tricks_of_the_trade_target=Rogue_T8_51_13_07_NoM
+Rogue_T8_51_13_07.simcraft     tricks_of_the_trade_target=Rogue_T8_07_51_13_FD  name=Rogue_T8_51_13_07_NoM murder=0

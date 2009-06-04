@@ -125,6 +125,15 @@ static bool parse_optimal_raid( sim_t*             sim,
   return true;
 }
 
+// parse_player =============================================================
+
+static bool parse_player( sim_t*             sim,
+			  const std::string& name,
+			  const std::string& value )
+{
+  return player_t::create( sim, name, value ) != 0;
+}
+
 } // ANONYMOUS NAMESPACE ===================================================
 
 // ==========================================================================
@@ -1114,17 +1123,17 @@ std::vector<option_t>& sim_t::get_options()
       { "active",                           OPT_FUNC,   (void*) parse_active                          },
       { "optimal_raid",                     OPT_FUNC,   (void*) parse_optimal_raid                    },
       // @option_doc loc=skip
-      { "death_knight",                     OPT_FUNC,   (void*) player_t::create                      },
-      { "druid",                            OPT_FUNC,   (void*) player_t::create                      },
-      { "hunter",                           OPT_FUNC,   (void*) player_t::create                      },
-      { "mage",                             OPT_FUNC,   (void*) player_t::create                      },
-      { "priest",                           OPT_FUNC,   (void*) player_t::create                      },
-      { "paladin",                          OPT_FUNC,   (void*) player_t::create                      },
-      { "rogue",                            OPT_FUNC,   (void*) player_t::create                      },
-      { "shaman",                           OPT_FUNC,   (void*) player_t::create                      },
-      { "warlock",                          OPT_FUNC,   (void*) player_t::create                      },
-      { "warrior",                          OPT_FUNC,   (void*) player_t::create                      },
-      { "pet",                              OPT_FUNC,   (void*) player_t::create                      },
+      { "death_knight",                     OPT_FUNC,   (void*) parse_player                          },
+      { "druid",                            OPT_FUNC,   (void*) parse_player                          },
+      { "hunter",                           OPT_FUNC,   (void*) parse_player                          },
+      { "mage",                             OPT_FUNC,   (void*) parse_player                          },
+      { "priest",                           OPT_FUNC,   (void*) parse_player                          },
+      { "paladin",                          OPT_FUNC,   (void*) parse_player                          },
+      { "rogue",                            OPT_FUNC,   (void*) parse_player                          },
+      { "shaman",                           OPT_FUNC,   (void*) parse_player                          },
+      { "warlock",                          OPT_FUNC,   (void*) parse_player                          },
+      { "warrior",                          OPT_FUNC,   (void*) parse_player                          },
+      { "pet",                              OPT_FUNC,   (void*) parse_player                          },
       // @option_doc loc=skip
       { "armory",                           OPT_FUNC,   (void*) armory_option_parse                   },
       { "gear",                             OPT_FUNC,   (void*) armory_option_parse                   },
