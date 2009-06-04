@@ -969,7 +969,7 @@ bool parseArmory( sim_t* sim, const std::string& URL, bool inactiveTalents=false
     {
       node= getNodeOne( src2,"talentGroup",2 );
     }
-    std::string talentCalcString = "talents=http://talent.mmo-champion.com?" + className + "=";
+    std::string talentCalcString = "talents=http://talent.mmo-champion.com/?" + className + "=";
     optionStr+= chkValue( node, "talentSpec.value", talentCalcString );
     glyphs = getNode( node, "glyphs" );
   }else{
