@@ -2067,7 +2067,7 @@ bool priest_t::get_talent_trees( std::vector<int*>& discipline,
         { { 24, NULL                                       }, { 24, NULL                              }, { 24, &( talents.vampiric_touch )            } },
         { { 25, NULL                                       }, { 25, NULL                              }, { 25, &( talents.pain_and_suffering )        } },
         { { 26, NULL                                       }, { 26, NULL                              }, { 26, &( talents.twisted_faith )             } },
-        { { 27, NULL                                       }, {  0, NULL                              }, { 27, &( talents.dispersion )                } },
+        { { 27, NULL                                       }, { 27, NULL                              }, { 27, &( talents.dispersion )                } },
         { { 28, &( talents.penance )                       }, {  0, NULL                              }, {  0, NULL                                   } },
         { {  0, NULL                                       }, {  0, NULL                              }, {  0, NULL                                   } }
       };
