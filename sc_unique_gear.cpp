@@ -523,11 +523,13 @@ void unique_gear_t::register_callbacks( player_t* p )
     p -> register_spell_result_callback( RESULT_HIT_MASK, cb );
   }
   //---------------------------------------------------------------------------------------------------------
+  /*---- EGG is not proccing off anything but spell cast HOTs and direct heals.  Fel armor, etc no longer proc it in game
   if ( p -> unique_gear -> egg_of_mortal_essence )
   {
     cb = new stat_proc_callback_t( "egg_of_mortal_essence", p, STAT_HASTE_RATING, 1, 505, 0.10, 10.0, 45.0 );
     p -> register_resource_gain_callback( RESOURCE_HEALTH, cb );
   }
+  -----*/
   //---------------------------------------------------------------------------------------------------------
   if ( p -> unique_gear -> elder_scribes )
   {
