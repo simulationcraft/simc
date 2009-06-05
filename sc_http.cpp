@@ -124,7 +124,7 @@ bool http_t::cache_load()
           }
           else break;
         }
-        delete buffer;
+        delete[] buffer;
       }
     }
     fclose( file );

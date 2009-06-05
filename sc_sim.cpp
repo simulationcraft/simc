@@ -217,7 +217,7 @@ sim_t::~sim_t()
   {
     delete children[ i ];
   }
-  if ( timing_wheel ) delete timing_wheel;
+  if ( timing_wheel ) delete[] timing_wheel;
 }
 
 // sim_t::add_event ==========================================================
