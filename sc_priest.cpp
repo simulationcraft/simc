@@ -74,14 +74,12 @@ struct priest_t : public player_t
     int  darkness;
     int  dispersion;
     int  divine_fury;
-    int  divine_spirit;
     int  enlightenment;
     int  focused_mind;
     int  focused_power;
     int  force_of_will;
     int  holy_specialization;
     int  improved_devouring_plague;
-    int  improved_divine_spirit;
     int  improved_inner_fire;
     int  improved_mind_blast;
     int  improved_power_word_fortitude;
@@ -1660,18 +1658,12 @@ struct inner_focus_t : public priest_spell_t
 
 struct divine_spirit_t : public priest_spell_t
 {
-  int    improved;
   double bonus;
 
   divine_spirit_t( player_t* player, const std::string& options_str ) :
-      priest_spell_t( "divine_spirit", player, SCHOOL_HOLY, TREE_DISCIPLINE ), improved( 0 ), bonus( 0 )
+      priest_spell_t( "divine_spirit", player, SCHOOL_HOLY, TREE_DISCIPLINE ), bonus( 0 )
   {
-    priest_t* p = player -> cast_priest();
-
     trigger_gcd = 0;
-
-    improved = p -> talents.improved_divine_spirit;
-
     bonus = util_t::ability_rank( player -> level,  80.0,80,  50.0,70,  40.0,0 );
   }
 
@@ -1683,17 +1675,11 @@ struct divine_spirit_t : public priest_spell_t
     {
       p -> buffs.divine_spirit = bonus;
       p -> init_resources( true );
-
-      if ( improved > 0 )
-      {
-        p -> buffs.improved_divine_spirit = bonus * improved / 2.0;
-      }
     }
   }
 
   virtual bool ready()
   {
-    if ( improved ) return ! player -> buffs.improved_divine_spirit;
     return player -> buffs.divine_spirit < bonus;
   }
 };
@@ -2084,15 +2070,15 @@ bool priest_t::get_talent_trees( std::vector<int*>& discipline,
         { {  4, &( talents.improved_inner_fire )           }, {  4, NULL                              }, {  4, &( talents.shadow_affinity )           } },
         { {  5, &( talents.improved_power_word_fortitude ) }, {  5, &( talents.divine_fury )          }, {  5, &( talents.improved_shadow_word_pain ) } },
         { {  6, NULL                                       }, {  6, NULL                              }, {  6, &( talents.shadow_focus )              } },
-        { {  7, NULL                                       }, {  7, NULL                              }, {  7, NULL                                   } },
+        { {  7, &( talents.meditation )                    }, {  7, NULL                              }, {  7, NULL                                   } },
         { {  8, &( talents.inner_focus )                   }, {  8, NULL                              }, {  8, &( talents.improved_mind_blast )       } },
-        { {  9, &( talents.meditation )                    }, {  9, NULL                              }, {  9, &( talents.mind_flay )                 } },
+        { {  9, NULL                                       }, {  9, NULL                              }, {  9, &( talents.mind_flay )                 } },
         { { 10, NULL                                       }, { 10, NULL                              }, { 10, &( talents.veiled_shadows )            } },
         { { 11, &( talents.mental_agility )                }, { 11, &( talents.searing_light )        }, { 11, NULL                                   } },
         { { 12, NULL                                       }, { 12, NULL                              }, { 12, &( talents.shadow_weaving )            } },
-        { { 13, &( talents.mental_strength )               }, { 13, &( talents.spirit_of_redemption ) }, { 13, NULL                                   } },
-        { { 14, &( talents.divine_spirit )                 }, { 14, &( talents.spiritual_guidance )   }, { 14, &( talents.vampiric_embrace )          } },
-        { { 15, &( talents.improved_divine_spirit )        }, { 15, &( talents.surge_of_light )       }, { 15, &( talents.improved_vampiric_embrace ) } },
+        { { 13, NULL                                       }, { 13, &( talents.spirit_of_redemption ) }, { 13, NULL                                   } },
+        { { 14, &( talents.mental_strength )               }, { 14, &( talents.spiritual_guidance )   }, { 14, &( talents.vampiric_embrace )          } },
+        { { 15, NULL                                       }, { 15, &( talents.surge_of_light )       }, { 15, &( talents.improved_vampiric_embrace ) } },
         { { 16, &( talents.focused_power )                 }, { 16, NULL                              }, { 16, &( talents.focused_mind )              } },
         { { 17, &( talents.enlightenment )                 }, { 17, NULL                              }, { 17, &( talents.mind_melt )                 } },
         { { 18, NULL                                       }, { 18, NULL                              }, { 18, &( talents.darkness )                  } },
@@ -2133,9 +2119,7 @@ std::vector<option_t>& priest_t::get_options()
       { "focused_power",                 OPT_INT,  &( talents.focused_power                 ) },
       { "force_of_will",                 OPT_INT,  &( talents.force_of_will                 ) },
       { "holy_specialization",           OPT_INT,  &( talents.holy_specialization           ) },
-      { "divine_spirit",                 OPT_INT,  &( talents.divine_spirit                 ) },
       { "improved_devouring_plague",     OPT_INT,  &( talents.improved_devouring_plague     ) },
-      { "improved_divine_spirit",        OPT_INT,  &( talents.improved_divine_spirit        ) },
       { "improved_inner_fire",           OPT_INT,  &( talents.improved_inner_fire           ) },
       { "improved_mind_blast",           OPT_INT,  &( talents.improved_mind_blast           ) },
       { "improved_power_word_fortitude", OPT_INT,  &( talents.improved_power_word_fortitude ) },

@@ -94,7 +94,7 @@ struct warlock_t;
 struct warrior_t;
 struct weapon_t;
 struct urlSplit_t;
-
+struct xml_node_t;
 
 // Enumerations ==============================================================
 
@@ -554,7 +554,6 @@ struct sim_t
     int ferocious_inspiration;
     int fortitude;
     int hunters_mark;
-    int improved_divine_spirit;
     int improved_moonkin_aura;
     int improved_scorch;
     int improved_shadow_bolt;
@@ -730,10 +729,15 @@ struct weapon_t
 struct item_t
 {
   int slot;
-  std::string name_str, bonus_str, equip_str, use_str, enchant_str;
-  std::vector<std::string> gem_strs;
-  gear_stats_t stats, enchant_stats, bonus_stats;
-  std::vector<gear_stats_t> gem_stats;
+  sim_t* sim;
+  player_t* player;
+
+  // Raw data from Armory
+  xml_node_t* slot_xml;
+  xml_node_t* item_xml;
+  std::string name_str, id_str;
+
+  // Encoded data from profiles
   std::string encoded_name_str;
   std::string encoded_equip_str;
   std::string encoded_use_str;
@@ -741,6 +745,25 @@ struct item_t
   std::string encoded_stats_str;
   std::string encoded_gems_str;
   std::string encoded_str;
+
+  // Extracted data
+  gear_stats_t stats, gem_stats, enchant_stats;
+  struct use_t {
+    int stat;
+    double amount, duration, cooldown;
+  } use;
+  struct equip_t {
+    int stat, school, max_stacks;
+    double amount, proc_chance, duration, cooldown;
+  } equip;
+
+  item_t() : slot(SLOT_NONE) { memset( &use, 0x00, sizeof(use_t) );  memset( &equip, 0x00, sizeof(equip_t) ); }
+  bool active();
+  bool encode();
+  bool decode();
+  bool download( const std::string& id_str );
+  bool replace ( const std::string& id_str );
+  const char* name();
 };
 
 // Player ====================================================================
@@ -758,6 +781,7 @@ struct player_t
   pet_t*      pet_list;
 
   std::vector<option_t> option_vector;
+  std::vector<item_t> items;
 
   // Profs
   std::string   professions_str;
@@ -915,7 +939,6 @@ struct player_t
     player_t* focus_magic;
     int       focus_magic_feedback;
     double    fortitude;
-    double    improved_divine_spirit;
     double    innervate;
     double    glyph_of_innervate;
     int       hysteria;

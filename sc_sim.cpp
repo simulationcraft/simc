@@ -91,7 +91,6 @@ static bool parse_optimal_raid( sim_t*             sim,
   sim -> overrides.ferocious_inspiration  = sim -> optimal_raid;
   sim -> overrides.fortitude              = sim -> optimal_raid;
   sim -> overrides.hunters_mark           = sim -> optimal_raid;
-  sim -> overrides.improved_divine_spirit = sim -> optimal_raid;
   sim -> overrides.improved_moonkin_aura  = sim -> optimal_raid;
   sim -> overrides.improved_scorch        = sim -> optimal_raid;
   sim -> overrides.improved_shadow_bolt   = sim -> optimal_raid;
@@ -1016,7 +1015,6 @@ std::vector<option_t>& sim_t::get_options()
       { "ferocious_inspiration",            OPT_BOOL,   &( overrides.ferocious_inspiration          ) },
       { "fortitude",                        OPT_BOOL,   &( overrides.fortitude                      ) },
       { "hunters_mark",                     OPT_BOOL,   &( overrides.hunters_mark                   ) },
-      { "improved_divine_spirit",           OPT_BOOL,   &( overrides.improved_divine_spirit         ) },
       { "improved_moonkin_aura",            OPT_BOOL,   &( overrides.improved_moonkin_aura          ) },
       { "improved_scorch",                  OPT_BOOL,   &( overrides.improved_scorch                ) },
       { "improved_shadow_bolt",             OPT_BOOL,   &( overrides.improved_shadow_bolt           ) },

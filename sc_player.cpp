@@ -1256,10 +1256,6 @@ double player_t::composite_spell_power( int school )
     {
       if ( best_buff < buffs.demonic_pact ) best_buff = buffs.demonic_pact;
     }
-    if ( buffs.improved_divine_spirit )
-    {
-      if ( best_buff < buffs.improved_divine_spirit ) best_buff = buffs.improved_divine_spirit;
-    }
     sp += best_buff;
   }
 
@@ -1392,7 +1388,6 @@ void player_t::combat_begin()
   if ( sim -> overrides.divine_spirit          ) buffs.divine_spirit = 80;
   if ( sim -> overrides.ferocious_inspiration  ) buffs.ferocious_inspiration = 1;
   if ( sim -> overrides.fortitude              ) buffs.fortitude = 215;
-  if ( sim -> overrides.improved_divine_spirit ) buffs.improved_divine_spirit = 80;
   if ( sim -> overrides.mana_spring            ) buffs.mana_spring = 91.0 * 1.2;
   if ( sim -> overrides.mark_of_the_wild       ) buffs.mark_of_the_wild = 52;
   if ( sim -> overrides.rampage                ) buffs.rampage = 1;
@@ -1730,7 +1725,7 @@ void player_t::regen( double periodicity )
       }
       uptimes.replenishment -> update( buffs.replenishment != 0 );
 
-      if ( buffs.blessing_of_wisdom >= buffs.mana_spring )
+      if ( buffs.blessing_of_wisdom && ( buffs.blessing_of_wisdom >= buffs.mana_spring ) )
       {
         double wisdom_regen = periodicity * buffs.blessing_of_wisdom / 5.0;
 
