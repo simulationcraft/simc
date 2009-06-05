@@ -401,7 +401,7 @@ static void break_stealth( rogue_t* p )
         overkill_expiration_t( sim_t* sim, rogue_t* p ) : event_t( sim, p )
         {
           name = "Overkill Expiration";
-          sim -> add_event( this, sim -> P313 ? 20.0 : 6.0 );
+          sim -> add_event( this, 20.0 );
         }
         virtual void execute()
         {
@@ -737,7 +737,7 @@ static void trigger_tricks_of_the_trade( rogue_attack_t* a )
     player_t* t = p -> _buffs.tricks_target;
     event_t*& e = t -> expirations.tricks_of_the_trade;
     double duration = 6;
-        if ( p -> glyphs.tricks_of_the_trade ) duration += 4;
+    if ( p -> glyphs.tricks_of_the_trade ) duration += 4;
 
     if ( e )
     {
@@ -816,9 +816,7 @@ double rogue_attack_t::cost()
 {
   rogue_t* p = player -> cast_rogue();
   double c = attack_t::cost();
-  if ( c == 0 ) return 0;
-  if ( p -> _buffs.overkill && ! sim -> P313 ) c -= 10;
-  if ( c < 0 ) c = 0;
+  if ( c <= 0 ) return 0;
   if ( adds_combo_points && p -> unique_gear -> tier7_4pc ) c *= 0.95;
   return c;
 }
@@ -2735,7 +2733,6 @@ struct anesthetic_poison_t : public rogue_poison_t
   virtual void execute()
   {
     rogue_t* p = player -> cast_rogue();
-    // Anesthtic is not on PPM on PTR
     double chance = p -> _buffs.shiv ? 1.0 : .5;
     may_crit = ( p -> _buffs.shiv ) ? false : true;
     if ( p -> rng_anesthetic_poison -> roll( chance ) )
@@ -3165,13 +3162,13 @@ void rogue_t::init_actions()
       action_list_str += "/pool_energy,energy<=60,snd<=5/slice_and_dice,min_combo_points=3,snd<=2";
       action_list_str += "/tricks_of_the_trade";
       action_list_str += "/killing_spree,energy<=20";
-      if( talents.blade_flurry) action_list_str += "/blade_flurry";
+      if( talents.blade_flurry ) action_list_str += "/blade_flurry";
       action_list_str += "/rupture,min_combo_points=5,time_to_die>=10";
       action_list_str += "/eviscerate,min_combo_points=5,rup>=5,snd>=5";
       action_list_str += "/eviscerate,min_combo_points=4,rup>=5,snd>=3,energy>=40";
       action_list_str += "/eviscerate,min_combo_points=5,time_to_die<=10";
       action_list_str += "/sinister_strike,max_combo_points=4";
-      if( talents.adrenaline_rush) action_list_str += "/adrenaline_rush,energy<=20";
+      if( talents.adrenaline_rush ) action_list_str += "/adrenaline_rush,energy<=20";
     }
     else if( primary_tree() == TREE_SUBTLETY )
     {
@@ -3475,7 +3472,7 @@ void rogue_t::regen( double periodicity )
       resource_gain( RESOURCE_ENERGY, energy_regen, gains_adrenaline_rush );
     }
   }
-  if ( _buffs.overkill && sim -> P313 )
+  if ( _buffs.overkill )
   {
     if ( sim -> infinite_resource[ RESOURCE_ENERGY ] == 0 )
     {

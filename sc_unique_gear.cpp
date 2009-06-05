@@ -479,7 +479,7 @@ void unique_gear_t::register_callbacks( player_t* p )
   //---------------------------------------------------------------------------------------------------------
   if ( p -> unique_gear -> blood_of_the_old_god )
   {
-    cb = new stat_proc_callback_t( "blood_of_the_old_god", p, STAT_ATTACK_POWER, 1, 1284, 0.10, 10.0, 45.0 );
+    cb = new stat_proc_callback_t( "blood_of_the_old_god", p, STAT_ATTACK_POWER, 1, 1284, 0.10, 10.0, 50.0 );
     p -> register_attack_result_callback( RESULT_CRIT_MASK, cb );
   }
   //---------------------------------------------------------------------------------------------------------
@@ -628,7 +628,7 @@ void unique_gear_t::register_callbacks( player_t* p )
   //---------------------------------------------------------------------------------------------------------
   if ( p -> unique_gear -> pyrite_infuser )
   {
-    cb = new stat_proc_callback_t( "pyrite_infuser", p, STAT_ATTACK_POWER, 1, 1234, 0.10, 10.0, 45.0 );
+    cb = new stat_proc_callback_t( "pyrite_infuser", p, STAT_ATTACK_POWER, 1, 1234, 0.10, 10.0, 50.0 );
     p -> register_attack_result_callback( RESULT_CRIT_MASK, cb );
   }
   //---------------------------------------------------------------------------------------------------------

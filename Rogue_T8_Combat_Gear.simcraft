@@ -1,9 +1,8 @@
 # Taken from http://elitistjerks.com/f78/t37112-wotlk_rogue_gear_discussion/p29/#post1241291
 
-# Gear http://www.wowhead.com/?compare=46123:46124:46125:46032:46095:45564:45931:44253:45132:46127:45536:45296:45517:45869
-# http://eu.wowarmory.com/item-info.xml?i=45484
-# http://static.mmo-champion.com/mmoc/images/news/2009/may/algalon_10_9901_12.jpg
+# Gear http://www.wowhead.com/?compare=46123:46124:46125:46032:46095:45564:45931:44253:45132:46127:45536:45296:45517:45869:45484:46048
 # http://static.mmo-champion.com/mmoc/images/news/2009/april/algalon25-man.jpg (Brann's Signet Ring)
+
 gear_stamina=933
 gear_agility=1157
 gear_attack_power=1590
@@ -12,8 +11,10 @@ gear_armor_penetration_rating=218
 gear_hit_rating=312
 gear_crit_rating=674
 gear_haste_rating=169
+
 darkmoon_greatness=1
 mjolnir_runestone=1
+
 tier8_2pc=1
 tier8_4pc=1
 
@@ -22,13 +23,14 @@ main_hand=fist,dps=188,speed=2.7,enchant=berserking
 off_hand=dagger,dps=188,speed=1.4,enchant=berserking
 
 # Gems and Socket Bonuses (Assumed Prysmatic Dragon's Eyes for now)
-# Agility = 192 (10 red + 2 blue) + 81 (3 DY blues) + 20 (11th SJ red) + 21 (meta) + 40 (5 yellow) + 4 (Gloves) + 
-#           8 (Legs) + 4 (Ranged) + 4 (Neck) + 4 (Bracers) + 6 (Back) + 6 (Boots) + 4 (Ring) = 394
+# Total Sockets: 11 Red | 5 Blue | 5 Yellow | 1 Prysmatic (belt)
+# Agility = 208 (10 red + 2 blue + 1 prysmatic) + 81 (3 DY blues) + 20 (11th SJ red) + 21 (meta) + 40 (5 yellow) + 
+#           4 (Gloves) + 8 (Legs) + 4 (Ranged) + 4 (Neck) + 4 (Bracers) + 6 (Back) + 6 (Boots) + 4 (Ring) = 410
 # AP = 12 (belt) + 16 (head) + 8 (shoulders) = 36
 # Crit = 40 (5 yellow)
 # Hit = 6 (Chest) + 4 (MH) = 10
 relentless_earthsiege=1
-gem_agility=394
+gem_agility=410
 gem_attack_power=36
 gem_hit_rating=10
 gem_crit_rating=40
