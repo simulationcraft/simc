@@ -71,6 +71,7 @@ struct gain_t;
 struct hunter_t;
 struct mage_t;
 struct option_t;
+struct paladin_t;
 struct pet_t;
 struct player_t;
 struct priest_t;
@@ -150,6 +151,7 @@ enum talent_tree_type {
   TREE_BALANCE,       TREE_FERAL,        TREE_RESTORATION, // DRUID
   TREE_BEAST_MASTERY, TREE_MARKSMANSHIP, TREE_SURVIVAL,    // HUNTER
   TREE_ARCANE,        TREE_FIRE,         TREE_FROST,       // MAGE
+                                         TREE_RETRIBUTION, // PALADIN
   TREE_DISCIPLINE,    TREE_HOLY,         TREE_SHADOW,      // PRIEST
   TREE_ASSASSINATION, TREE_COMBAT,       TREE_SUBTLETY,    // ROGUE
   TREE_ELEMENTAL,     TREE_ENHANCEMENT,                    // SHAMAN
@@ -1186,6 +1188,7 @@ struct player_t
   static player_t * create_druid       ( sim_t* sim, const std::string& name );
   static player_t * create_hunter      ( sim_t* sim, const std::string& name );
   static player_t * create_mage        ( sim_t* sim, const std::string& name );
+  static player_t * create_paladin     ( sim_t* sim, const std::string& name );
   static player_t * create_priest      ( sim_t* sim, const std::string& name );
   static player_t * create_rogue       ( sim_t* sim, const std::string& name );
   static player_t * create_shaman      ( sim_t* sim, const std::string& name );
@@ -1198,6 +1201,7 @@ struct player_t
   druid_t       * cast_druid       () { assert( type == DRUID        ); return ( druid_t       * ) this; }
   hunter_t      * cast_hunter      () { assert( type == HUNTER       ); return ( hunter_t      * ) this; }
   mage_t        * cast_mage        () { assert( type == MAGE         ); return ( mage_t        * ) this; }
+  paladin_t     * cast_paladin     () { assert( type == PALADIN      ); return ( paladin_t     * ) this; }
   priest_t      * cast_priest      () { assert( type == PRIEST       ); return ( priest_t      * ) this; }
   rogue_t       * cast_rogue       () { assert( type == ROGUE        ); return ( rogue_t       * ) this; }
   shaman_t      * cast_shaman      () { assert( type == SHAMAN       ); return ( shaman_t      * ) this; }

@@ -2833,8 +2833,7 @@ player_t* player_t::create( sim_t*             sim,
   }
   else if ( type == "paladin" )
   {
-    printf( "simcraft: Paladin class NYI.\n" );
-    sim -> active_player = 0; // player_t::create_paladin( sim, name );
+    sim -> active_player = player_t::create_paladin( sim, name );
   }
   else if ( type == "rogue" )
   {

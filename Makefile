@@ -65,6 +65,7 @@ SRC =\
 	sc_mage.cpp		\
 	sc_main.cpp		\
 	sc_option.cpp		\
+	sc_paladin.cpp          \
 	sc_pet.cpp		\
 	sc_player.cpp		\
 	sc_priest.cpp		\
