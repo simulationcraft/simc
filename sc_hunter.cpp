@@ -224,7 +224,7 @@ struct hunter_t : public player_t
 
     ranged_attack = 0;
     ammo_dps = 0;
-    quiver_haste = 0.0;
+    quiver_haste = 1.15;
     summon_pet_str = "wolf";
   }
 
@@ -2170,7 +2170,7 @@ double hunter_attack_t::execute_time()
     t *= 1.0 / ( 1.0 + p -> _buffs.rapid_fire );
   }
 
-  t *= 1.0 / ( 1.0 + 0.01 * p -> quiver_haste );
+  t *= 1.0 / p -> quiver_haste;
 
   t *= 1.0 / ( 1.0 + 0.04 * p -> talents.serpents_swiftness );
 
@@ -4018,7 +4018,7 @@ std::vector<option_t>& hunter_t::get_options()
       { "glyph_trueshot_aura",               OPT_BOOL, &( glyphs.trueshot_aura                ) },
       // @option_doc loc=player/hunter/misc title="Misc"
       { "ammo_dps",                          OPT_FLT,    &( ammo_dps                          ) },
-      { "quiver_haste",                      OPT_FLT,    &( quiver_haste                      ) },
+      { "quiver_haste",                      OPT_DEPRECATED, NULL                               },
       { "summon_pet",                        OPT_STRING, &( summon_pet_str                    ) },
 
       { NULL, OPT_UNKNOWN }
