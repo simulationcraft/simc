@@ -1376,6 +1376,212 @@ struct bloodthirst_t : public warrior_attack_t
   }
 };
 
+// Concussion Blow ===============================================================
+
+struct concussion_blow_t : public warrior_attack_t
+{
+  concussion_blow_t( player_t* player, const std::string& options_str ) :
+      warrior_attack_t( "concussion blow",  player, SCHOOL_PHYSICAL, TREE_PROTECTION )
+  {
+    warrior_t* p = player -> cast_warrior();
+    assert( p -> talents.concussion_blow );
+    option_t options[] =
+      {
+        { NULL }
+      };
+    parse_options( options, options_str );
+
+    weapon = &( p -> main_hand_weapon );
+    weapon_multiplier = 0;
+
+    base_dd_min = base_dd_max = 1;
+
+    may_crit          = true;
+    cooldown          = 30.0;
+    base_cost         = 15;
+    direct_power_mod  = 0.75;
+  }
+};
+
+// Shockwave ===============================================================
+
+struct shockwave_t : public warrior_attack_t
+{
+  shockwave_t( player_t* player, const std::string& options_str ) :
+      warrior_attack_t( "shockwave",  player, SCHOOL_PHYSICAL, TREE_PROTECTION )
+  {
+    warrior_t* p = player -> cast_warrior();
+    assert( p -> talents.shockwave );
+    option_t options[] =
+      {
+        { NULL }
+      };
+    parse_options( options, options_str );
+
+    weapon = &( p -> main_hand_weapon );
+    weapon_multiplier = 0;
+
+    base_dd_min = base_dd_max = 1;
+
+    may_crit          = true;
+    cooldown          = 20.0;
+    base_cost         = 15;
+    direct_power_mod  = 0.75;
+    may_dodge         = false;
+    may_parry         = false;
+    may_block         = false;
+  }
+};
+
+// Devastate ===============================================================
+
+struct devastate_t : public warrior_attack_t
+{
+  devastate_t( player_t* player, const std::string& options_str ) :
+      warrior_attack_t( "devastate",  player, SCHOOL_PHYSICAL, TREE_PROTECTION )
+  {
+    warrior_t* p = player -> cast_warrior();
+    assert( p -> talents.devastate );
+    option_t options[] =
+      {
+        { NULL }
+      };
+    parse_options( options, options_str );
+
+    static rank_t ranks[] =
+    {
+      { 80, 5, 505, 505, 0, 15 },
+      { 75, 4, 425, 425, 0, 15 },
+      { 70, 3, 280, 280, 0, 15 },
+      { 0, 0 }
+    };
+    init_rank( ranks );
+
+
+    weapon = &( p -> main_hand_weapon );
+    weapon_multiplier = 0.50;
+
+    may_crit          = true;
+    base_cost        -= p -> talents.puncture;
+    base_crit        += ( p -> talents.sword_and_board * 5 );
+  }
+};
+
+// Revenge ===============================================================
+
+struct revenge_t : public warrior_attack_t
+{
+  revenge_t( player_t* player, const std::string& options_str ) :
+      warrior_attack_t( "revenge",  player, SCHOOL_PHYSICAL, TREE_PROTECTION )
+  {
+    warrior_t* p = player -> cast_warrior();
+    option_t options[] =
+      {
+        { NULL }
+      };
+    parse_options( options, options_str );
+
+    static rank_t ranks[] =
+    {
+      { 80, 9, 1454, 1776, 0, 5 },
+      { 70, 8, 855, 1045, 0, 5 },
+      { 63, 7, 699, 853, 0, 5 },
+      { 60, 6, 643, 785, 0, 5 },
+      { 54, 5, 498, 608, 0, 5 },
+      { 0, 0 }
+    };
+    init_rank( ranks );
+
+    weapon = &( p -> main_hand_weapon );
+    weapon_multiplier = 0;
+
+    may_crit          = true;
+    cooldown          = 5.0;
+    direct_power_mod  = 0.207;
+    base_multiplier  *= 1 + p -> talents.improved_revenge * 0.1;
+    if( p -> talents.unrelenting_assault )
+    {
+      base_multiplier *= 1 + p -> talents.unrelenting_assault * 0.1;
+      cooldown -= ( p -> talents.unrelenting_assault * 2 );
+    }
+  }
+};
+
+// Shield Slam ===============================================================
+
+struct shield_slam_t : public warrior_attack_t
+{
+  shield_slam_t( player_t* player, const std::string& options_str ) :
+      warrior_attack_t( "shield slam",  player, SCHOOL_PHYSICAL, TREE_PROTECTION )
+  {
+    warrior_t* p = player -> cast_warrior();
+    option_t options[] =
+      {
+        { NULL }
+      };
+    parse_options( options, options_str );
+
+    static rank_t ranks[] =
+    {
+      { 80, 8, 990, 1040, 0, 20 },
+      { 75, 7, 837, 879, 0, 20 },
+      { 70, 6, 549, 577, 0, 20 },
+      { 66, 5, 499, 523, 0, 20 },
+      { 60, 4, 447, 469, 0, 20 },
+      { 0, 0 }
+    };
+    init_rank( ranks );
+
+
+    weapon = &( p -> main_hand_weapon );
+    weapon_multiplier = 0;
+
+    may_crit          = true;
+    cooldown          = 6.0;
+    base_multiplier   *= 1 + ( p -> talents.gag_order * 0.05 );
+    base_crit         += ( p -> talents.critical_block * 0.05 );
+  }
+};
+
+// Thunderclap ===============================================================
+
+struct thunderclap_t : public warrior_attack_t
+{
+  thunderclap_t( player_t* player, const std::string& options_str ) :
+      warrior_attack_t( "thunderclap",  player, SCHOOL_PHYSICAL, TREE_PROTECTION )
+  {
+    warrior_t* p = player -> cast_warrior();
+    option_t options[] =
+      {
+        { NULL }
+      };
+    parse_options( options, options_str );
+
+    static rank_t ranks[] =
+    {
+      { 78, 9, 300, 300, 0, 20 },
+      { 73, 8, 247, 247, 0, 20 },
+      { 67, 7, 123, 123, 0, 20 },
+      { 58, 6, 103, 103, 0, 20 },
+      { 48, 5, 82, 82, 0, 20 },
+      { 0, 0 }
+    };
+    init_rank( ranks );
+
+    weapon = &( p -> main_hand_weapon );
+    weapon_multiplier = 0;
+
+    may_crit          = true;
+    cooldown          = 6.0;
+    direct_power_mod  = 0.12;
+    may_dodge         = false;
+    may_parry         = false;
+    may_block         = false;
+    base_multiplier  *= 1 + p -> talents.improved_thunderclap * 0.1;
+    base_crit        += p -> talents.incite * 0.05;
+  }
+};
+
 // Execute ===================================================================
 
 struct execute_t : public warrior_attack_t
@@ -2238,6 +2444,12 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "slam"                ) return new slam_t          ( this, options_str );
   if ( name == "stance"              ) return new stance_t        ( this, options_str );
   if ( name == "whirlwind"           ) return new whirlwind_t     ( this, options_str );
+  if ( name == "concussion_blow"     ) return new concussion_blow_t( this, options_str );
+  if ( name == "devastate"           ) return new devastate_t     ( this, options_str );
+  if ( name == "shockwave"           ) return new shockwave_t     ( this, options_str );
+  if ( name == "revenge"             ) return new revenge_t       ( this, options_str );
+  if ( name == "shield_slam"         ) return new shield_slam_t   ( this, options_str );
+  if ( name == "thunderclap"         ) return new thunderclap_t   ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
