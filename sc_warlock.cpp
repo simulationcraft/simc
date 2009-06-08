@@ -490,6 +490,7 @@ struct warlock_pet_attack_t : public attack_t
 
 struct warlock_pet_spell_t : public spell_t
 {
+
   warlock_pet_spell_t( const char* n, player_t* player, int r=RESOURCE_MANA, int s=SCHOOL_SHADOW ) :
       spell_t( n, player, r, s )
   {
@@ -541,15 +542,17 @@ struct imp_pet_t : public warlock_pet_t
           { 0,  0 }
         };
       init_rank( ranks, 47964 );
+      // improved_imp does not influence +SP from player
+      base_dd_min*=1.0 +  o -> talents.improved_imp  * 0.10;
+      base_dd_max*=1.0 +  o -> talents.improved_imp  * 0.10;
 
       base_execute_time = 2.5;
-      direct_power_mod  = ( 2.0 / 3.5 );
+      direct_power_mod  = ( base_execute_time / 3.5 ); // was 2.0/3.5
       may_crit          = true;
 
       base_execute_time -= 0.25 * ( o -> talents.improved_fire_bolt + o -> talents.demonic_power );
 
-      base_multiplier *= 1.0 + ( o -> talents.improved_imp  * 0.10 +
-                                 o -> talents.empowered_imp * 0.05 +
+      base_multiplier *= 1.0 + ( o -> talents.empowered_imp * 0.05 + // o -> talents.improved_imp moved up
                                  o -> glyphs.imp            * 0.20 );
     }
     virtual void execute();

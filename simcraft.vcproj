@@ -242,6 +242,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\sc_paladin.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\sc_pet.cpp"
 			>
 		</File>
