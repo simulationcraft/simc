@@ -1538,7 +1538,7 @@ struct shield_slam_t : public warrior_attack_t
 
     may_crit          = true;
     cooldown          = 6.0;
-    base_multiplier   *= 1 + ( p -> talents.gag_order * 0.05 );
+    base_multiplier   *= 1 + ( p -> talents.gag_order * 0.05 ) + ( p -> unique_gear -> tier7_2pc ? 0.10 : 0.0 );
     base_crit         += ( p -> talents.critical_block * 0.05 );
   }
 };
