@@ -1463,7 +1463,7 @@ struct devastate_t : public warrior_attack_t
 
     may_crit          = true;
     base_cost        -= p -> talents.puncture;
-    base_crit        += ( p -> talents.sword_and_board * 5 );
+    base_crit        += ( p -> talents.sword_and_board * 5 +  p -> unique_gear -> tier8_2pc ? 0.10 : 0.0 );
   }
 };
 
