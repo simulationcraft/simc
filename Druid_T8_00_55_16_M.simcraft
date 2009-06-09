@@ -2,8 +2,8 @@
 
 druid=Druid_T8_00_55_16_M
 level=80
-talents=http://www.wowhead.com/?talent#0ZEMMcfrz0eR0huAkbAczb
-actions=flask,type=endless_rage/food,type=blackened_dragonfin
+talents=http://www.wowhead.com/?talent#0ZEGMcfrz0eR0huVkbAczb
+actions=flask,type=endless_rage/food,type=hearty_rhino
 actions+=/cat_form
 actions+=/auto_attack
 actions+=/shred,omen_of_clarity=1
@@ -13,49 +13,39 @@ actions+=/savage_roar,cp>=1,savage_roar<=4
 actions+=/attack_power_trinket,name=wrathstone,power=856,length=20,cooldown=120,sync=rip
 actions+=/rip,cp>=5,time_to_die>=10
 actions+=/ferocious_bite,cp>=5,rip>=5,savage_roar>=6
-actions+=/mangle_cat,mangle<=2
 actions+=/rake
 actions+=/shred
 
-# Gear (chardev isn't up to date yet, link follows later...)
-# Valorous Nightsong Headguard, 16 ArPen, Relentless meta
-# Broach of the Wailing Night
-# Valorous Dreamwalker Shoulderpads, 16 ArPen
-# Tunic of the Limber Stalker
-# Death-warmed Belt, 8 ArPen/12 Sta, 2x16 Expertise Rating
-# Valorous Dreamwalker Legguards, 2x16 ArPen
-# Runed Ironhide Boots, 16 ArPen
-# Mechanist's Bindings
-# Valorous Nightsong Handgrips, 8 Agi/8 Hit
-# Metallic Loop of the Sufferer
-# Strength of the Automation
-# Darkmoon Card: Greatness (Agi)
-# Wrathstone
-# Drape of Icy Intent, 8 Agi/8 Hit
-# Twisted Visage
-# Idol of Worship
+# Gear http://www.chardev.org/?template=205367
+# + http://www.wowdb.com/item.aspx?id=45611 + 16 Agi + 50 AP
+# +86+50 = 136 AP
+# +64+16 =  80 AGI 
+#    +48 =  48 HASTE
+#    +47 =  47 EXPERTISE
 
-gear_stamina=1150
-gear_strength=82
-gear_agility=1241
-gear_attack_power=2438
-gear_expertise_rating=130
-gear_armor_penetration_rating=414
-gear_hit_rating=259
-gear_crit_rating=720
-gear_haste_rating=151
-tier7_2pc=1
+gear_stamina=996
+gear_strength=10
+gear_agility=1169
+gear_attack_power=2850
+gear_expertise_rating=95
+gear_armor_penetration_rating=570
+gear_hit_rating=263
+gear_crit_rating=713
+gear_haste_rating=244
 tier8_2pc=1
+tier8_4pc=1
+
 relentless_earthstorm=1
 
 # Generic profession bonus
 enchant_attack_power=128
 
 # Trinket Procs
-darkmoon_greatness=1
+mjolnir_runestone=1
+blood_of_the_old_god=1
 
 # Weapon
-main_hand=staff,dps=232.5,speed=2.4,enchant=berserking
+main_hand=staff,dps=244.6,speed=2.4,enchant=berserking
 
 # Glyphs
 glyph_rip=1
@@ -63,6 +53,4 @@ glyph_savage_roar=1
 glyph_shred=1
 
 # Relic
-idol_of_worship=1
-
-
+idol_of_the_ravenous_beast=1
