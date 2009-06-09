@@ -3159,13 +3159,13 @@ void rogue_t::init_actions()
     else if( primary_tree() == TREE_COMBAT )
     {
       action_list_str += "/slice_and_dice,min_combo_points=1,time<=4";
-      action_list_str += "/pool_energy,energy<=60,snd<=5/slice_and_dice,min_combo_points=3,snd<=2";
+      action_list_str += "/slice_and_dice,min_combo_points=3,snd<=2";
       action_list_str += "/tricks_of_the_trade";
-      action_list_str += "/killing_spree,energy<=20";
-      if( talents.blade_flurry ) action_list_str += "/blade_flurry";
+      action_list_str += "/killing_spree,energy<=20,snd>=5";
+      if( talents.blade_flurry ) action_list_str += "/blade_flurry,snd>=5";
       action_list_str += "/rupture,min_combo_points=5,time_to_die>=10";
-      action_list_str += "/eviscerate,min_combo_points=5,rup>=5,snd>=5";
-      action_list_str += "/eviscerate,min_combo_points=4,rup>=5,snd>=3,energy>=40";
+      action_list_str += "/eviscerate,min_combo_points=5,rup>=6,snd>=7";
+      action_list_str += "/eviscerate,min_combo_points=4,rup>=5,snd>=4,energy>=40";
       action_list_str += "/eviscerate,min_combo_points=5,time_to_die<=10";
       action_list_str += "/sinister_strike,max_combo_points=4";
       if( talents.adrenaline_rush ) action_list_str += "/adrenaline_rush,energy<=20";
