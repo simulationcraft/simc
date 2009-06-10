@@ -23,15 +23,16 @@ actions+=/shred
 #    +48 =  48 HASTE
 #    +47 =  47 EXPERTISE
 
-gear_stamina=996
+gear_stamina=992
 gear_strength=10
-gear_agility=1169
-gear_attack_power=2850
-gear_expertise_rating=95
+gear_agility=1206+80
+gear_attack_power=1761
+gear_expertise_rating=151
 gear_armor_penetration_rating=570
 gear_hit_rating=263
-gear_crit_rating=713
-gear_haste_rating=244
+gear_crit_rating=704
+gear_haste_rating=208
+
 tier8_2pc=1
 tier8_4pc=1
 
