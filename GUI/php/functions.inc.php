@@ -454,10 +454,10 @@ function fetch_single_XML_xpath( SimpleXMLElement $xml, $str_xpath )
 	
 	// One and only one match must be made
 	if( !is_array($match) || count($match) == 0) {
-		throw new Exception("No Elements were found that match the xpath search");
+		throw new Exception("No Elements were found that match the xpath search ($str_xpath)");
 	}
 	else if( count($match) > 1) {
-		throw new Exception("More than one result was matched on this XML element");
+		throw new Exception("More than one result was matched on this xpath search ($str_xpath)");
 	}
 	
 	// Return the valid match
