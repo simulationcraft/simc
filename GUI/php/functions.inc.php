@@ -451,7 +451,7 @@ function fetch_single_XML_xpath( SimpleXMLElement $xml, $str_xpath )
 {
 	// Attempt to match the element
 	$match = $xml->xpath($str_xpath);
-
+	
 	// One and only one match must be made
 	if( !is_array($match) || count($match) == 0) {
 		throw new Exception("No Elements were found that match the xpath search");
@@ -711,7 +711,8 @@ function parse_source_file_for_options( $file_path )
 	$file_contents = file_get_contents( $file_path );
 	
 	// Match the file contents for the parse_option() method
-	preg_match('/^bool\s+[-_A-Za-z0-9]+::parse_option\(.*{.*options\[\]\s*=\s*{(.*)};$/Usm', $file_contents, $parse_matches);
+	//preg_match('/^bool\s+[-_A-Za-z0-9]+::parse_option\(.*{.*options\[\]\s*=\s*{(.*)};$/Usm', $file_contents, $parse_matches);	// This was obsoleted in r2550's *.cpp changes
+	preg_match('/^\s*option_t\s+options\[\]\s*=\s*[^;]*{(.*)};$/Usm', $file_contents, $parse_matches);
 	$options = $parse_matches[1];
 	
 	// Match the parse_option method for individual option or option_doc strings
@@ -722,7 +723,7 @@ function parse_source_file_for_options( $file_path )
 	$last_loc = null;
 	$last_title = null;
 	foreach($parse_matches as $array) {
-
+		
 		// If this is a comment line, assume its an optiondoc, set the new last-loc and last-title
 		if( substr(trim($array[0]), 0, 2)=='//' ) {
 			
@@ -754,8 +755,8 @@ function parse_source_file_for_options( $file_path )
 				);
 		}
 	}
-			
-	// Return the array of matches	
+
+	// Return the array of matches
 	return $arr_output;
 }
 
