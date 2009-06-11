@@ -43,11 +43,11 @@ define('SIMULATIONCRAFT_PATH', '../../');
  * @var array
  */
 $ARR_SUPPORTED_CLASSES = array(
-		//'death_knight' 		=> array('source_file'=>'sc_death_knight.cpp' ),
+		'death_knight' 		=> array('source_file'=>'sc_death_knight.cpp' ),
 		'druid' 					=> array('source_file'=>'sc_druid.cpp' ),
 		'hunter' 					=> array('source_file'=>'sc_hunter.cpp' ),
 		'mage' 						=> array('source_file'=>'sc_mage.cpp' ),
-		//'paladin' 				=> array('source_file'=>'sc_paladin.cpp' ),
+		'paladin' 				=> array('source_file'=>'sc_paladin.cpp' ),
 		'priest' 					=> array('source_file'=>'sc_priest.cpp' ),
 		'rogue' 					=> array('source_file'=>'sc_rogue.cpp' ),
 		'shaman' 					=> array('source_file'=>'sc_shaman.cpp' ),
