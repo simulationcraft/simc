@@ -30,6 +30,7 @@ struct warrior_t : public player_t
     double overpower;
     int    recklessness;
     double sudden_death;
+    double sword_and_board;
     double titans_grip;
     double wrecking_crew;
     void reset() { memset( ( void* ) this, 0x00, sizeof( _buffs_t ) ); }
@@ -56,6 +57,7 @@ struct warrior_t : public player_t
     event_t* recklessness;
     event_t* trauma;
     event_t* wrecking_crew;
+    event_t* sword_and_board;
 
     void reset() { memset( ( void* ) this, 0x00, sizeof( _expirations_t ) ); }
     _expirations_t() { reset(); }
@@ -71,12 +73,14 @@ struct warrior_t : public player_t
   gain_t* gains_mh_attack;
   gain_t* gains_oh_attack;
   gain_t* gains_sudden_death;
+  gain_t* gains_sword_and_board;
   gain_t* gains_unbridled_wrath;
 
   // Procs
   proc_t* procs_bloodsurge;
   proc_t* procs_glyph_overpower;
   proc_t* procs_sudden_death;
+  proc_t* procs_sword_and_board;
   proc_t* procs_sword_specialization;
   proc_t* procs_taste_for_blood;
 
@@ -88,6 +92,7 @@ struct warrior_t : public player_t
   // Random Number Generation
   rng_t* rng_bloodsurge;
   rng_t* rng_sudden_death;
+  rng_t* rng_sword_and_board;
   rng_t* rng_sword_specialization;
   rng_t* rng_taste_for_blood;
   rng_t* rng_unbridled_wrath;
@@ -550,6 +555,53 @@ static void trigger_sudden_death( attack_t* a )
   }
 }
 
+// trigger_sword_and_board =====================================================
+
+static void trigger_sword_and_board( attack_t* a )
+{
+  warrior_t* p = a -> player -> cast_warrior();
+  if ( a -> result_is_miss() )
+    return;
+
+  // If the action did not deal direct damage it should not trigger SD
+  // E.g. Deep Wounds, Rend, ...
+  if ( ! ( a -> direct_dmg > 0 ) )
+    return;
+
+  if ( p -> rng_sword_and_board -> roll( p -> talents.sword_and_board * 0.10 ) )
+  {
+    p -> procs_sword_and_board -> occur();
+    struct sword_and_board_expiration_t : public event_t
+    {
+      sword_and_board_expiration_t( sim_t* sim, warrior_t* player ) : event_t( sim, player )
+      {
+        name = "Sword and Board Expiration";
+        player -> aura_gain( "Sword and Board" );
+        player -> _buffs.sword_and_board = sim -> current_time;
+        sim -> add_event( this, 5.0 );
+      }
+      virtual void execute()
+      {
+        warrior_t* p = player -> cast_warrior();
+        p -> aura_loss( "Sword and Board" );
+        p -> _buffs.sword_and_board = 0;
+        p -> _expirations.sword_and_board = 0;
+      }
+    };
+
+    event_t*& e = p -> _expirations.sword_and_board;
+
+    if ( e )
+    {
+      e -> reschedule( 5.0 );
+    }
+    else
+    {
+      e = new ( a -> sim ) sword_and_board_expiration_t( a -> sim, p );
+    }
+  }
+}
+
 // trigger_sword_specialization =============================================
 
 static void trigger_sword_specialization( attack_t* a )
@@ -959,6 +1011,10 @@ void warrior_attack_t::player_buff()
     {
       player_multiplier *= 1.0 + p -> talents.twohanded_weapon_specialization * 0.02;
     }
+    if ( weapon -> group() == WEAPON_1H )
+    {
+      player_multiplier *= 1.0 + p -> talents.onhanded_weapon_specialization * 0.02;
+    }
   }
   if ( p -> active_stance == STANCE_BATTLE )
   {
@@ -971,7 +1027,7 @@ void warrior_attack_t::player_buff()
   }
   else if ( p -> active_stance == STANCE_DEFENSE )
   {
-    player_multiplier *= 1.0 - 0.1;
+    player_multiplier *= 1.0 - 0.05;
   }
 
   player_multiplier *= 1.0 + p -> _buffs.death_wish;
@@ -1465,6 +1521,12 @@ struct devastate_t : public warrior_attack_t
     base_cost        -= p -> talents.puncture;
     base_crit        += ( p -> talents.sword_and_board * 5 +  p -> unique_gear -> tier8_2pc ? 0.10 : 0.0 );
   }
+  virtual void execute()
+  {
+    warrior_attack_t::execute();
+    trigger_sword_and_board( this );
+    update_ready();
+  }
 };
 
 // Revenge ===============================================================
@@ -1505,18 +1567,27 @@ struct revenge_t : public warrior_attack_t
       cooldown -= ( p -> talents.unrelenting_assault * 2 );
     }
   }
+  virtual void execute()
+  {
+    warrior_attack_t::execute();
+    trigger_sword_and_board( this );
+    update_ready();
+  }
 };
 
 // Shield Slam ===============================================================
 
 struct shield_slam_t : public warrior_attack_t
 {
+  int sword_and_board;
   shield_slam_t( player_t* player, const std::string& options_str ) :
-      warrior_attack_t( "shield slam",  player, SCHOOL_PHYSICAL, TREE_PROTECTION )
+      warrior_attack_t( "shield slam",  player, SCHOOL_PHYSICAL, TREE_PROTECTION ),
+      sword_and_board( 0 )
   {
     warrior_t* p = player -> cast_warrior();
     option_t options[] =
       {
+        { "sword_and_board", OPT_BOOL, &sword_and_board },
         { NULL }
       };
     parse_options( options, options_str );
@@ -1532,15 +1603,54 @@ struct shield_slam_t : public warrior_attack_t
     };
     init_rank( ranks );
 
-
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
 
     may_crit          = true;
     cooldown          = 6.0;
+    direct_power_mod  = 0.0;
     base_multiplier   *= 1 + ( p -> talents.gag_order * 0.05 ) + ( p -> unique_gear -> tier7_2pc ? 0.10 : 0.0 );
     base_crit         += ( p -> talents.critical_block * 0.05 );
+
+    //FIXME Ugly hack for 1200 baseline block value, change when block value is included in player data
+    base_dd_min += 1200;
+    base_dd_max += 1200;
   }
+  virtual void execute()
+  {
+    warrior_t* p = player -> cast_warrior();
+
+    warrior_attack_t::consume_resource();
+
+    warrior_attack_t::execute();
+    if ( p -> _expirations.sword_and_board )
+    {
+      event_t::early( p -> _expirations.sword_and_board );
+    }
+  }
+
+  virtual double cost()
+  {
+    warrior_t* p = player -> cast_warrior();
+    if ( p -> _buffs.sword_and_board ) return 0;
+    double c = warrior_attack_t::cost();
+    return c;
+  }
+
+  virtual bool ready()
+  {
+    warrior_t* p = player -> cast_warrior();
+
+    if( sword_and_board )
+      if ( ! p -> _buffs.sword_and_board )
+        return false;
+
+    if( p -> _buffs.sword_and_board )
+      return true;
+
+    return warrior_attack_t::ready();
+  }
+
 };
 
 // Thunderclap ===============================================================
@@ -2500,6 +2610,7 @@ void warrior_t::init_gains()
   gains_oh_attack              = get_gain( "oh_attack" );
   gains_sudden_death           = get_gain( "sudden_death" );
   gains_unbridled_wrath        = get_gain( "unbridled_wrath" );
+  gains_unbridled_wrath        = get_gain( "sword_and_board" );
 }
 
 // warrior_t::init_procs =======================================================
@@ -2511,6 +2622,7 @@ void warrior_t::init_procs()
   procs_bloodsurge           = get_proc( "bloodsurge" );
   procs_glyph_overpower      = get_proc( "glyph_of_overpower" );
   procs_sudden_death         = get_proc( "sudden_death" );
+  procs_sword_and_board      = get_proc( "sword_and_board" );
   procs_sword_specialization = get_proc( "sword_specialization" );
   procs_taste_for_blood      = get_proc( "taste_for_blood" );
 }
@@ -2544,6 +2656,7 @@ void warrior_t::init_rng()
   // also useful for frequent checks with low probability of proc and timed effect
 
   rng_sudden_death = get_rng( "sudden_death", RNG_DISTRIBUTED );
+  rng_sword_and_board = get_rng( "sword_and_board", RNG_DISTRIBUTED );
 }
 
 // warrior_t::init_actions =====================================================
@@ -2584,6 +2697,15 @@ void warrior_t::init_actions()
       action_list_str += "/death_wish,time>=10,health_percentage>=20,time_to_die>=135";
       action_list_str += "/recklessness,health_percentage>=20,time_to_die>=230";
       action_list_str += "/berserker_rage";
+    }
+    else if ( primary_tree() == TREE_PROTECTION )
+    {
+      action_list_str += "/stance,choose=defensive/auto_attack";
+      action_list_str += "/bloodrage,rage<=85";
+      action_list_str += "/heroic_strike,rage>=75";
+      action_list_str += "/shield_slam";
+      action_list_str += "/revenge";
+      action_list_str += "/devastate";
     }
     else
     {
