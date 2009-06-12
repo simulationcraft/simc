@@ -1221,7 +1221,7 @@ double player_t::composite_attack_crit()
 
 double player_t::composite_armor()
 {
-  return armor + armor_per_agility * agility();
+  return (armor * (1 + (unique_gear -> austere_earthsiege ? 0.02 : 0.0 ))) + armor_per_agility * agility();
 }
 
 // player_t::composite_spell_power ========================================

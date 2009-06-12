@@ -1737,6 +1737,7 @@ struct unique_gear_t
   int  thunder_capacitor;
   int  timbals_crystal;
   int  wrath_of_cenarius;
+  int  austere_earthsiege;
 
   unique_gear_t() { memset( ( void* ) this, 0x00, sizeof( unique_gear_t ) ); }
 

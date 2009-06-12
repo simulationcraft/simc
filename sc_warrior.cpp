@@ -187,6 +187,8 @@ struct warrior_t : public player_t
     active_heroic_strike     = 0;
     active_stance            = STANCE_BATTLE;
 
+    use_armor_snapshot       = true;
+
     // Auto-Attack
     main_hand_attack = 0;
     off_hand_attack  = 0;
@@ -201,6 +203,8 @@ struct warrior_t : public player_t
   virtual void      init_actions();
   virtual void      combat_begin();
   virtual double    composite_attribute_multiplier( int attr );
+  virtual double    composite_attack_power();
+  virtual double    composite_armor();
   virtual void      reset();
   virtual void      interrupt();
   virtual void      regen( double periodicity );
@@ -2762,6 +2766,23 @@ void warrior_t::interrupt()
 
   if( main_hand_attack ) main_hand_attack -> cancel();
   if(  off_hand_attack )  off_hand_attack -> cancel();
+}
+
+// warrior_t::composite_attack_power =========================================
+
+double warrior_t::composite_attack_power()
+{
+  return player_t::composite_attack_power() + ( talents.armored_to_the_teeth ? talents.armored_to_the_teeth * composite_armor_snapshot() / 180 : 0 );
+}
+
+// warrior_t::composite_armor ================================================
+
+double warrior_t::composite_armor()
+{
+  double final_armor = player_t::composite_armor() - armor_per_agility * agility();
+  final_armor *= 1 +  ( talents.toughness ? talents.toughness * 0.02 : 0 );
+  final_armor += armor_per_agility * agility();
+  return final_armor;
 }
 
 // warrior_t::regen ==========================================================

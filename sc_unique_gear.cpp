@@ -431,6 +431,7 @@ int unique_gear_t::get_options( std::vector<option_t>& option_vector, player_t* 
       { "thunder_capacitor",                    OPT_BOOL,    &( p -> unique_gear -> thunder_capacitor               ) },
       { "timbals_crystal",                      OPT_BOOL,    &( p -> unique_gear -> timbals_crystal                 ) },
       { "wrath_of_cenarius",                    OPT_BOOL,    &( p -> unique_gear -> wrath_of_cenarius               ) },
+      { "austere_earthsiege",                   OPT_BOOL,    &( p -> unique_gear -> austere_earthsiege              ) },
       { NULL, OPT_UNKNOWN }
     };
 
