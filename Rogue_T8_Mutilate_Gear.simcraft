@@ -1,17 +1,16 @@
-# Taken from http://elitistjerks.com/f78/t37112-wotlk_rogue_gear_discussion/p29/#post1241291
-
-# Gear http://www.wowhead.com/?compare=46123:46124:46125:46032:46095:45564:45931:45522:45607:45517:45525:45484:45536:46127:45296:45608
+# Gear http://www.wowhead.com/?compare=46123:46124:46125:46032:46095:45564:45607:45517:45525:45484:45536:46127:45296:45608:45931
 # http://static.mmo-champion.com/mmoc/images/news/2009/may/solarbindings.jpg
+# http://static.mmo-champion.com/mmoc/images/news/2009/june/cometstrail.jpg
 gear_stamina=970
 gear_agility=1072
-gear_attack_power=1618
+gear_attack_power=1858
 gear_expertise_rating=215
-gear_armor_penetration_rating=156
-gear_hit_rating=288
+gear_armor_penetration_rating=157
+gear_hit_rating=180
 gear_crit_rating=745
 gear_haste_rating=209
 
-blood_of_the_old_god=1
+comets_trail=1
 mjolnir_runestone=1
 
 tier8_2pc=1
@@ -26,13 +25,11 @@ off_hand=dagger,dps=188,speed=1.4,enchant=berserking
 # Agility = 192 (9 red + 2 blue + 1 prysmatic) + 81 (3 DY blues) + 20 (9th SJ red) + 21 (meta) + 40 (5 yellow) +
 #           4 (Gloves) + 8 (Legs) + 6 (Back) + 6 (Boots) + 4 (MH) + 4 (Neck) + 4 (Bracers) + 4 (Ranged) = 394
 # AP = 12 (Belt) + 16 (Head) + 8 (Shoulders) = 36
-# Crit = 40 (5 yellow)
-# Hit = 6 (Chest)
+# Hit = 40 (5 yellow) + 6 (Chest) = 46
 relentless_earthsiege=1
 gem_agility=394
 gem_attack_power=36
-gem_hit_rating=6
-gem_crit_rating=40
+gem_hit_rating=46
 
 # Enchants
 # AP = 50 (Head) + 40 (Shoulders) + 44 (Hands) + 75 (Legs) + 114 (Bracers) = 323

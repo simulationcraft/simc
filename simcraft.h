@@ -1702,6 +1702,7 @@ struct unique_gear_t
   int  bandits_insignia;
   int  blood_of_the_old_god;
   int  chaotic_skyflare;
+  int  comets_trail;
   int  darkmoon_card_crusade;
   int  darkmoon_card_greatness;
   int  dark_matter;

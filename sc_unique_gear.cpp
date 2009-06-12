@@ -392,6 +392,7 @@ int unique_gear_t::get_options( std::vector<option_t>& option_vector, player_t* 
       { "chaotic_skyfire",                      OPT_BOOL_Q,  &( p -> unique_gear -> chaotic_skyflare                ) },
       { "chaotic_skyflare",                     OPT_BOOL,    &( p -> unique_gear -> chaotic_skyflare                ) },
       { "item_41285",                           OPT_BOOL_Q,  &( p -> unique_gear -> chaotic_skyflare                ) },
+      { "comets_trail",                         OPT_BOOL,    &( p -> unique_gear -> comets_trail                    ) },
       { "darkmoon_card_crusade",                OPT_BOOL,    &( p -> unique_gear -> darkmoon_card_crusade           ) },
       { "darkmoon_card_greatness",              OPT_BOOL,    &( p -> unique_gear -> darkmoon_card_greatness         ) },
       { "darkmoon_crusade",                     OPT_BOOL_Q,  &( p -> unique_gear -> darkmoon_card_crusade           ) },
@@ -486,6 +487,12 @@ void unique_gear_t::register_callbacks( player_t* p )
   if ( p -> unique_gear -> dark_matter )
   {
     cb = new stat_proc_callback_t( "dark_matter", p, STAT_CRIT_RATING, 1, 612, 0.15, 10.0, 45.0 );
+    p -> register_attack_result_callback( RESULT_HIT_MASK, cb );
+  }
+  //---------------------------------------------------------------------------------------------------------
+  if ( p -> unique_gear -> comets_trail )
+  {
+    cb = new stat_proc_callback_t( "comets_trail", p, STAT_HASTE_RATING, 1, 726, 0.15, 10.0, 45.0 );
     p -> register_attack_result_callback( RESULT_HIT_MASK, cb );
   }
   //---------------------------------------------------------------------------------------------------------
