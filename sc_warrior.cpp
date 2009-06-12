@@ -175,6 +175,7 @@ struct warrior_t : public player_t
     int overpower;
     int rending;
     int whirlwind;
+    int blocking;
     glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
   };
   glyphs_t glyphs;
@@ -1609,7 +1610,7 @@ struct shield_slam_t : public warrior_attack_t
     may_crit          = true;
     cooldown          = 6.0;
     direct_power_mod  = 0.0;
-    base_multiplier   *= 1 + ( p -> talents.gag_order * 0.05 ) + ( p -> unique_gear -> tier7_2pc ? 0.10 : 0.0 );
+    base_multiplier   *= 1 + ( p -> talents.gag_order * 0.05 ) + ( p -> unique_gear -> tier7_2pc ? 0.10 : 0.0 ) + ( p -> glyphs.blocking ? 0.10 : 0.0 );
     base_crit         += ( p -> talents.critical_block * 0.05 );
 
     //FIXME Ugly hack for 1200 baseline block value, change when block value is included in player data
@@ -2906,6 +2907,7 @@ std::vector<option_t>& warrior_t::get_options()
       { "glyph_of_overpower",              OPT_BOOL, &( glyphs.overpower                       ) },
       { "glyph_of_rending",                OPT_BOOL, &( glyphs.rending                         ) },
       { "glyph_of_whirlwind",              OPT_BOOL, &( glyphs.whirlwind                       ) },
+      { "glyph_of_blocking",               OPT_BOOL, &( glyphs.blocking                        ) },
       { NULL, OPT_UNKNOWN }
     };
 
