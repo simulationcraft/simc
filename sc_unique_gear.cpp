@@ -405,7 +405,7 @@ int unique_gear_t::get_options( std::vector<option_t>& option_vector, player_t* 
       { "item_41333",                           OPT_BOOL_Q,  &( p -> unique_gear -> ember_skyflare                  ) },
       { "embrace_of_the_spider",                OPT_BOOL,    &( p -> unique_gear -> embrace_of_the_spider           ) },
       { "eternal_sage",                         OPT_BOOL,    &( p -> unique_gear -> eternal_sage                    ) },
-      { "extract_of_necromatic_power",          OPT_BOOL,    &( p -> unique_gear -> extract_of_necromantic_power    ) },
+      { "extract_of_necromantic_power",         OPT_BOOL,    &( p -> unique_gear -> extract_of_necromantic_power    ) },
       { "eye_of_magtheridon",                   OPT_BOOL,    &( p -> unique_gear -> eye_of_magtheridon              ) },
       { "eye_of_the_broodmother",               OPT_BOOL,    &( p -> unique_gear -> eye_of_the_broodmother          ) },
       { "flare_of_the_heavens",                 OPT_BOOL,    &( p -> unique_gear -> flare_of_the_heavens            ) },

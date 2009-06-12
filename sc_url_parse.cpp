@@ -1146,81 +1146,98 @@ bool  replace_item(sim_t* sim, const std::string& new_id_str, const std::string&
       return false;
     }
   }
+  // replace old item, and try to turn off old options, if slot is known here
   armory_item_t item_stats;
   aURL->generated_options+="# New_item="+new_id_str+", slot="+opt_slot.c_str()+", old_item="+opt_old_id.c_str()+"\n";
-
-  // this will parse new item, and also insert all item related options (name,clicky,weapons...)
-  if ( parseItemStats( *aURL, item_stats, new_id_str, opt_slot ) ){
-    // if slot was not found before, try to find based on inventory type
-    if (slot<0){
-      if (item_stats.inv_type!=""){
-        for (int i=0; i<20; i++)
-          if (aURL->item_stats[i].inv_type==item_stats.inv_type){
-            slot=i;
-            break;
-          }
-      }
-      if (slot<0){
-        printf("Could not find slot where to replace new item: (%s) %s\n",new_id_str.c_str(), item_stats.name.c_str());
-        return false;
-      }
-    }
-    // replace item, and try to turn off old options
-    armory_item_t* item_place= &aURL->item_stats[slot];
-    armory_item_t old_stats= *item_place;
+  armory_item_t* item_place=0;
+  armory_item_t old_stats;
+  if (slot>=0){
+    item_place= &aURL->item_stats[slot];
+    old_stats= *item_place;
     if (item_place->name!="")   player_parse_option( *aURL, proper_option_name( item_place->name ),"0" );
     if (item_place->clicky_str!="") player_parse_option( *aURL, item_place->clicky_str,"" );
-    //set new values
-    item_place->id=item_stats.id;
-    item_place->name=item_stats.name;
-    item_place->inv_type=item_stats.inv_type;
-    item_place->gear=item_stats.gear;
-    item_place->slot=slot;
-    gear_stats_t gs;
-    // if we have specified enchants
-    if (opt_ench!=""){
-      addTextStats( gs, opt_ench,1 );
-      item_place->enchants=gs;
-      item_place->has_enchants=true;
-    }
-    // if we have specified gems
-    if (opt_gems!=""){
-      addTextStats( gs, opt_gems,3 );
-      item_place->gems[1]=gs;
-      item_place->n_gems=1;
-      item_place->has_bonus=false;
-    }else{
-      // if we keep old gems, limit to same number of gems
-      //or fill up with +19SP
-      if (item_stats.n_gems>item_place->n_gems)
-        for (int i=item_place->n_gems+1; i<=item_stats.n_gems; i++){
-          memset(&gs,0,sizeof(gs));
-          addTextStats( gs, "+19 spell power",3 );
-          item_place->gems[i]=gs;
-        }
-      item_place->n_gems=item_stats.n_gems;
-    }
-
-    // options comment
-    sprintf(buff,"# Replaced ITEM=%s/%d : %s \n",old_stats.id.c_str(), old_stats.slot, old_stats.name.c_str());
-    if (debug){
-      printf(buff);
-      displayStats( old_stats);
-    }
-    aURL->generated_options+=buff;
-    sprintf(buff,"# with new ITEM=%s/%d : %s \n",item_place->id.c_str(), item_place->slot, item_place->name.c_str());
-    if (debug){
-      printf(buff);
-      displayStats( *item_place);
-    }
-    aURL->generated_options+=buff;
-
-    // now recalculate total stats
-    copy_gear_to_player(*aURL);
-
-    //save if it was previously saved
-    if (aURL->saved) save_player_simcraft(*aURL);
   }
+  if (new_id_str!="0"){
+    // this will parse new item, and also insert all item related options (name,clicky,weapons...)
+    if ( parseItemStats( *aURL, item_stats, new_id_str, opt_slot ) ){
+      // if slot was not found before, try to find based on inventory type
+      if (slot<0){
+        if (item_stats.inv_type!=""){
+          for (int i=0; i<20; i++)
+            if (aURL->item_stats[i].inv_type==item_stats.inv_type){
+              slot=i;
+              break;
+            }
+        }
+        if (slot<0){
+          printf("Could not find slot where to replace new item: (%s) %s\n",new_id_str.c_str(), item_stats.name.c_str());
+          return false;
+        }
+      }
+      // replace old item, and try to turn off old options, if slot was not known before
+      if (!item_place){
+        item_place= &aURL->item_stats[slot];
+        old_stats= *item_place;
+        if (item_place->name!="")   player_parse_option( *aURL, proper_option_name( item_place->name ),"0" );
+        if (item_place->clicky_str!="") player_parse_option( *aURL, item_place->clicky_str,"" );
+      }
+      //set new values
+      item_place->id=item_stats.id;
+      item_place->name=item_stats.name;
+      item_place->inv_type=item_stats.inv_type;
+      item_place->gear=item_stats.gear;
+      item_place->slot=slot;
+      gear_stats_t gs;
+      // if we have specified enchants
+      if (opt_ench!=""){
+        addTextStats( gs, opt_ench,1 );
+        item_place->enchants=gs;
+        item_place->has_enchants=true;
+      }
+      // if we have specified gems
+      if (opt_gems!=""){
+        addTextStats( gs, opt_gems,3 );
+        item_place->gems[1]=gs;
+        item_place->n_gems=1;
+        item_place->has_bonus=false;
+      }else{
+        // if we keep old gems, limit to same number of gems
+        //or fill up with +19SP
+        if (item_stats.n_gems>item_place->n_gems)
+          for (int i=item_place->n_gems+1; i<=item_stats.n_gems; i++){
+            memset(&gs,0,sizeof(gs));
+            addTextStats( gs, "+19 spell power",3 );
+            item_place->gems[i]=gs;
+          }
+        item_place->n_gems=item_stats.n_gems;
+      }
+
+      // options comment
+      sprintf(buff,"# Replaced ITEM=%s/%d : %s \n",old_stats.id.c_str(), old_stats.slot, old_stats.name.c_str());
+      if (debug){
+        printf(buff);
+        displayStats( old_stats);
+      }
+      aURL->generated_options+=buff;
+      sprintf(buff,"# with new ITEM=%s/%d : %s \n",item_place->id.c_str(), item_place->slot, item_place->name.c_str());
+      if (debug){
+        printf(buff);
+        displayStats( *item_place);
+      }
+      aURL->generated_options+=buff;
+
+    }
+  }else{
+    // if no new id was given, just remove old item at slot
+    if (slot>=0){
+      aURL->item_stats[slot]=item_stats;
+    }
+  }
+  // now recalculate total stats
+  copy_gear_to_player(*aURL);
+
+  //save if it was previously saved
+  if (aURL->saved) save_player_simcraft(*aURL);
   return true;
 }
 
@@ -1239,7 +1256,7 @@ bool parseItemReplacement(sim_t* sim,  const std::string& item_list){
     // get new id
     std::string new_id_str=options[0];
     int new_id=atoi(new_id_str.c_str());
-    if (new_id<=0){
+    if ((new_id<=0)&&(new_id_str!="0")){
       // try to find new id in URL, after ?i= or &i=
       std::string new_id2=tolower(new_id_str);
       size_t idx=new_id2.find("?i=");
@@ -1289,7 +1306,7 @@ bool parseItemReplacement(sim_t* sim,  const std::string& item_list){
     replace_char( opt_gems ,'_',' ');
     replace_char( opt_ench ,'_',' ');
     // now parse and replace new item
-    if (new_id>0)
+    if ((new_id>0)||(new_id_str=="0"))
       replace_item(sim, new_id_str, opt_oldid, opt_slot, opt_gems, opt_ench);
   }
   //return
