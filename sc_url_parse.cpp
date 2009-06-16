@@ -710,10 +710,12 @@ bool  parseItemStats( urlSplit_t& aURL, armory_item_t& gs,  const std::string& i
   gs.gear.add_stat( STAT_CRIT_RATING,               getNodeFloat( src, "bonusCritRating" ) );
   gs.gear.add_stat( STAT_ARMOR,                     getNodeFloat( src, "armor" ) );
   // add textual - descriptive - stats
-  addTextStats( gs.enchants, getNode( src, "enchant" ),1 );
-  gs.has_enchants= (getNode( src, "enchant" )!="");
+  std::string node= getNode( src, "enchant" );
+  addTextStats( gs.enchants, node,1 );
+  player_parse_option( aURL, proper_option_name(node), "1" ); // for named enchants like "Lightweave Embroidery"
+  gs.has_enchants= (node!="");
   // spell data- can have multiple spells, both "Equip" or "Use"
-  std::string node= getNode( src, "spellData" );
+  node= getNode( src, "spellData" );
   for ( unsigned int i=1; i<=5; i++ )
   {
     std::string spell= getNodeOne( node, "spell" ,i );

@@ -415,6 +415,7 @@ int unique_gear_t::get_options( std::vector<option_t>& option_vector, player_t* 
       { "grim_toll",                            OPT_BOOL,    &( p -> unique_gear -> grim_toll                       ) },
       { "illustration_of_the_dragon_soul",      OPT_BOOL,    &( p -> unique_gear -> illustration_of_the_dragon_soul ) },
       { "lightning_capacitor",                  OPT_BOOL,    &( p -> unique_gear -> lightning_capacitor             ) },
+      { "lightweave_embroidery",                OPT_BOOL,    &( p -> unique_gear -> lightweave_embroidery           ) },
       { "mirror_of_truth",                      OPT_BOOL,    &( p -> unique_gear -> mirror_of_truth                 ) },
       { "mjolnir_runestone",                    OPT_BOOL,    &( p -> unique_gear -> mjolnir_runestone               ) },
       { "mark_of_defiance",                     OPT_BOOL,    &( p -> unique_gear -> mark_of_defiance                ) },
@@ -603,6 +604,12 @@ void unique_gear_t::register_callbacks( player_t* p )
   {
     cb = new stat_proc_callback_t( "illustration_of_the_dragon_soul", p, STAT_SPELL_POWER, 10, 20, 0.0, 10.0, 0.0 );
     p -> register_spell_result_callback( RESULT_HIT_MASK, cb );
+  }
+  //---------------------------------------------------------------------------------------------------------
+  if ( p -> unique_gear -> lightweave_embroidery )
+  {
+    cb = new stat_proc_callback_t( "lightweave_embroidery", p, STAT_SPELL_POWER, 1, 250, 0.50, 15.0, 45.0 );
+    p -> register_spell_result_callback( RESULT_ALL_MASK, cb );
   }
   //---------------------------------------------------------------------------------------------------------
   if ( p -> unique_gear -> mark_of_defiance )

@@ -1738,6 +1738,7 @@ struct unique_gear_t
   int  timbals_crystal;
   int  wrath_of_cenarius;
   int  austere_earthsiege;
+  int  lightweave_embroidery;
 
   unique_gear_t() { memset( ( void* ) this, 0x00, sizeof( unique_gear_t ) ); }
 
