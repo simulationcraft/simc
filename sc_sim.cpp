@@ -162,7 +162,7 @@ sim_t::sim_t( sim_t* p, int index ) :
     raid_dps( 0 ), total_dmg( 0 ),
     total_seconds( 0 ), elapsed_cpu_seconds( 0 ),
     merge_ignite( 0 ), report_progress( 1 ),
-    output_file( stdout ), log_file( 0 ), http_throttle(0),
+    output_file( stdout ), log_file( 0 ), http_throttle(0), duration_uptimes(0),
     threads( 0 ), thread_handle( 0 ), thread_index( index )
 {
   for ( int i=0; i < RESOURCE_MAX; i++ )
@@ -1113,6 +1113,7 @@ std::vector<option_t>& sim_t::get_options()
       { "wheel_granularity",                OPT_FLT,    &( wheel_granularity                        ) },
       { "wheel_seconds",                    OPT_INT,    &( wheel_seconds                            ) },
       { "http_throttle",                    OPT_INT,    &( http_throttle                            ) },
+      { "duration_uptimes",                 OPT_INT,    &( duration_uptimes                         ) },
       { "debug_armory",                     OPT_INT,    &( debug_armory                             ) },
       { "raid_events",                      OPT_STRING, &( raid_events_str                          ) },
       { "raid_events+",                     OPT_APPEND, &( raid_events_str                          ) },

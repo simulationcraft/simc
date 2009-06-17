@@ -5,7 +5,9 @@
 
 #include "simcraft.h"
 
+
 namespace { // ANONYMOUS NAMESPACE ==========================================
+
 
 // trigger_judgement_of_wisdom ==============================================
 
@@ -356,6 +358,78 @@ static bool parse_talent_url( sim_t* sim,
 }
 
 } // ANONYMOUS NAMESPACE ===================================================
+
+
+
+
+// Uptime methods
+uptime_t::uptime_t( const std::string& n, sim_t* the_sim) : name_str( n ), up( 0 ), down( 0 ), 
+                    type(0), sim(the_sim), last_check(0), total_time(0),last_status(false), up_time(0), n_rewind(0), avg_up(0), avg_dur(0)
+{ 
+  if ((sim!=0)&&(sim->duration_uptimes)) 
+    type=1; 
+}
+
+void   uptime_t::update( bool is_up ) 
+{ 
+  if (type==1){
+    double t_span= sim->current_time - last_check;
+    if (t_span>=0){
+      if (last_status) 
+        up_time+= t_span;
+      total_time+= t_span;
+      if (is_up&&!last_status) up++;
+      if (last_status&&!is_up) down++;
+    }else{
+      // check if rewind (back more than 80% of max_time)
+      if (abs(t_span) > sim->max_time*0.8){
+        n_rewind++;
+        if (last_status&&(up>down)){
+          down++;
+          if (sim->max_time-last_check>0) up_time+= sim->max_time-last_check;
+        }
+      }
+    }
+    last_check=sim->current_time;
+    last_status=is_up;
+  }else{
+    if ( is_up ) up++; else down++; 
+  }
+}
+
+double uptime_t::percentage() 
+{ 
+  if (type==1){
+    avg_up= (up+down)/2.0;
+    if (avg_up>0) avg_dur=up_time/avg_up;
+    if (n_rewind>0){
+      avg_up/=n_rewind;
+      if (avg_dur> total_time/n_rewind)
+        avg_dur=total_time/n_rewind;
+    }
+    return (total_time==0)? 0 : (100.0* up_time/total_time);
+  }else
+    return ( up==0 ) ? 0 : ( 100.0*up/( up+down ) ); 
+}
+
+void   uptime_t::merge( uptime_t* other ) 
+{ 
+  if (type==1){
+    up_time+=other->up_time;
+    total_time+=other->total_time;
+  }else{
+    up += other -> up; 
+    down += other -> down; 
+  }
+}
+
+const char* uptime_t::name() 
+{ 
+  return name_str.c_str(); 
+}
+
+
+
 
 // ==========================================================================
 // Player
@@ -2225,7 +2299,7 @@ uptime_t* player_t::get_uptime( const std::string& name )
       return u;
   }
 
-  u = new uptime_t( name );
+  u = new uptime_t( name, sim );
 
   uptime_t** tail = &uptime_list;
 

@@ -628,6 +628,7 @@ struct sim_t
   FILE* output_file;
   FILE* log_file;
   int http_throttle;
+  int duration_uptimes;
 
   // Multi-Threading
   int threads;
@@ -1801,19 +1802,28 @@ struct proc_t
   const char* name() { return name_str.c_str(); }
 };
 
-// Up-Time ===================================================================
+// Uptime ======================================================================
 
 struct uptime_t
 {
   std::string name_str;
   uint64_t up, down;
   uptime_t* next;
-  uptime_t( const std::string& n ) : name_str( n ), up( 0 ), down( 0 ) {}
-  void   update( bool is_up ) { if ( is_up ) up++; else down++; }
-double percentage() { return ( up==0 ) ? 0 : ( 100.0*up/( up+down ) ); }
-  void   merge( uptime_t* other ) { up += other -> up; down += other -> down; }
-  const char* name() { return name_str.c_str(); }
+  int type;
+  sim_t* sim;
+  double last_check;
+  double total_time;
+  bool last_status;
+  double up_time;
+  int n_rewind;
+  double avg_up, avg_dur;
+  uptime_t( const std::string& n, sim_t* the_sim=0 );
+  void   update( bool is_up );
+  double percentage();
+  void   merge( uptime_t* other );
+  const char* name();
 };
+
 
 // Report =====================================================================
 

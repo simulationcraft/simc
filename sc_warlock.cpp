@@ -1473,6 +1473,7 @@ static void trigger_pyroclasm( spell_t* s )
       name = "Pyroclasm Expiration";
       p -> aura_gain( "Pyroclasm", aura_id[p->talents.pyroclasm%4] );
       p -> _buffs.pyroclasm = 1;
+      p -> uptimes_pyroclasm -> update( p -> _buffs.pyroclasm != 0 );
       sim -> add_event( this, 10.0 );
     }
     virtual void execute()
@@ -1480,6 +1481,7 @@ static void trigger_pyroclasm( spell_t* s )
       warlock_t* p = player -> cast_warlock();
       p -> aura_loss( "Pyroclasm", aura_id[p->talents.pyroclasm%4] );
       p -> _buffs.pyroclasm = 0;
+      p -> uptimes_pyroclasm -> update( p -> _buffs.pyroclasm != 0 );
       p -> _expirations.pyroclasm = 0;
     }
   };

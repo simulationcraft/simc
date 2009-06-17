@@ -236,14 +236,17 @@ static void print_uptime( FILE* file, sim_t* sim )
   bool first=true;
   for ( uptime_t* u = sim -> target -> uptime_list; u; u = u -> next )
   {
-    if ( u -> up > 0 )
+    if ( u -> percentage() > 0 )
     {
       if ( first )
       {
         fprintf( file, "\n    Global:\n" );
         first = false;
       }
-      fprintf( file, "        %4.1f%% : %s\n", u -> percentage(), u -> name() );
+      fprintf( file, "        %4.1f%% : %s", u -> percentage(), u -> name() );
+      if (u->type==1)
+        fprintf( file, "  ( %4.1f times for %4.1f sec )", u->avg_up, u->avg_dur );
+      fprintf( file, "\n");
     }
   }
 
@@ -255,14 +258,17 @@ static void print_uptime( FILE* file, sim_t* sim )
     first=true;
     for ( uptime_t* u = p -> uptime_list; u; u = u -> next )
     {
-      if ( u -> up > 0 )
+      if ( u -> percentage() > 0 )
       {
         if ( first )
         {
           fprintf( file, "\n    %s:\n", p -> name() );
           first = false;
         }
-        fprintf( file, "        %4.1f%% : %s\n", u -> percentage(), u -> name() );
+        fprintf( file, "        %4.1f%% : %s", u -> percentage(), u -> name() );
+        if (u->type==1)
+          fprintf( file, "  ( %4.1f times for %4.1f sec )", u->avg_up, u->avg_dur );
+        fprintf( file, "\n");
       }
     }
   }
