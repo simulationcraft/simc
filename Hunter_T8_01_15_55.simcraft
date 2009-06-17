@@ -40,7 +40,6 @@ glyph_explosive_shot=1
 # Weapons
 ranged=bow,dps=200.4,speed=2.8
 ammo_dps=67.5
-quiver_haste=15
 
 # Pet (cat|devilsaur|raptor|wind_serpent|wolf)
 summon_pet=wolf
