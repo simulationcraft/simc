@@ -378,6 +378,7 @@ static bool parse_talent_url( sim_t* sim,
     value=t_value;
     expiration=0;
     next=0;
+    n_triggers=0;
     uptime_cnt= player->get_uptime(name); 
     player->buff_list.add_buff(this);
   }
@@ -386,19 +387,24 @@ static bool parse_talent_url( sim_t* sim,
     expiration=0;
   }
   // trigger buff. Will use duration from buff constructor if none supplied here
-  void pbuff_t::trigger(double val, double duration,int aura_idx){
+  void pbuff_t::trigger(double val, double b_duration,int aura_idx){
     if (ignore) return;
 
     buff_value=val;
+    n_triggers++;
+
     uptime_cnt -> update( 1 );
+
+    if (b_duration==0) b_duration=buff_duration;
 
     if ( expiration )
     {
-      expiration -> reschedule( duration );
+      expiration -> reschedule( b_duration );
+      expiration->n_trig= n_triggers;
     }
     else
     {
-      expiration = new (player->sim) buff_expiration_t( this, duration, aura_idx );
+      expiration = new (player->sim) buff_expiration_t( this, b_duration, aura_idx );
     } 
   }
   // check if buff is up, without updating counters
@@ -409,6 +415,11 @@ static bool parse_talent_url( sim_t* sim,
   bool pbuff_t::is_up(){
     uptime_cnt -> update( buff_value!=0 ); 
     return (buff_value!=0);
+  }
+  // decrement buff stack for one, return if buff still up
+  bool pbuff_t::dec_buff(){
+    if (buff_value>=1) buff_value--;
+    return is_up_silent();
   }
   // if buff is up, return "value", otherwise return 1
   double pbuff_t::mul_value(){
@@ -434,17 +445,21 @@ static bool parse_talent_url( sim_t* sim,
     pbuff=p_buff;
     aura_id=aura_idx;
     if (aura_id==0) aura_id= pbuff->aura_id;
-    if (b_duration==0) b_duration=pbuff->buff_duration;
     std::string name = pbuff->name_str+" Expiration";
     player -> aura_gain( name.c_str(), aura_id);
+    n_trig= pbuff->n_triggers;
     sim -> add_event( this, b_duration );
   }
 
   void buff_expiration_t::execute()
   {
-    player -> aura_loss( pbuff->name_str.c_str(), aura_id );
-    pbuff->buff_value=0;
-    pbuff->uptime_cnt -> update( 0 );
+    if (pbuff->n_triggers== n_trig){
+      player -> aura_loss( pbuff->name_str.c_str(), aura_id );
+      pbuff->buff_value=0;
+      pbuff->uptime_cnt -> update( 0 );
+    }else{
+      //new buff was casted while old one was expiring
+    }
     pbuff->expiration=0;
   }
 

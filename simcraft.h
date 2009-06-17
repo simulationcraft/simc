@@ -483,6 +483,7 @@ struct buff_expiration_t : public event_t
 {
   pbuff_t* pbuff;
   int aura_id;
+  int n_trig;
   buff_expiration_t( pbuff_t* p_buff, double b_duration=0, int aura_idx=0 ) ;
   virtual void execute();
 };
@@ -499,11 +500,13 @@ struct pbuff_t{
   double buff_duration;
   bool ignore; // if he can not obtain this buff (no talents etc)
   pbuff_t* next;
+  int n_triggers;
   // methods
   pbuff_t(player_t* plr, std::string name, double duration=0, int aura_idx=0, bool t_ignore=false, double t_value=0 );
   void reset();
-  void trigger(double val=1, double duration=0,int aura_idx=0);
+  void trigger(double val=1, double b_duration=0,int aura_idx=0);
   bool is_up();
+  bool dec_buff();
   bool is_up_silent();
   double mul_value();
   double add_value();

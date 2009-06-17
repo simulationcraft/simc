@@ -28,7 +28,7 @@ struct warlock_t : public player_t
   // Buffs
   struct _buffs_t
   {
-    int    backdraft;
+    //int    backdraft;
     int    decimation;
     int    demon_armor;
     int    demonic_empathy;
@@ -67,7 +67,7 @@ struct warlock_t : public player_t
   // Expirations
   struct _expirations_t
   {
-    event_t* backdraft;
+    //event_t* backdraft;
     event_t* decimation;
     event_t* demonic_empathy;
     event_t* empowered_imp;
@@ -101,7 +101,7 @@ struct warlock_t : public player_t
   proc_t* procs_shadow_trance;
 
   // Up-Times
-  uptime_t* uptimes_backdraft;
+  //uptime_t* uptimes_backdraft;
   uptime_t* uptimes_demonic_empathy;
   uptime_t* uptimes_demonic_pact;
   uptime_t* uptimes_demonic_soul;
@@ -231,6 +231,7 @@ struct warlock_t : public player_t
   };
   glyphs_t glyphs;
 
+  pbuff_t* backdraft;
   pbuff_t* pyroclasm;
 
 
@@ -1216,6 +1217,7 @@ static void trigger_soul_leech( spell_t* s )
 
 // trigger_backdraft ========================================================
 
+/*
 static void trigger_backdraft( spell_t* s )
 {
 
@@ -1254,6 +1256,8 @@ static void trigger_backdraft( spell_t* s )
     }
   }
 }
+
+*/
 
 // trigger_haunt ========================================================
 
@@ -1741,9 +1745,10 @@ double warlock_spell_t::execute_time()
   double t = spell_t::execute_time();
   if ( t > 0 )
   {
-    p -> uptimes_backdraft   -> update( p -> _buffs.backdraft   != 0 );
     p -> uptimes_eradication -> update( p -> _buffs.eradication != 0 );
-    if ( p -> _buffs.backdraft && tree == TREE_DESTRUCTION ) t *= 1.0 - p -> talents.backdraft * 0.10;
+    //p -> uptimes_backdraft   -> update( p -> _buffs.backdraft   != 0 );
+    //if ( p -> _buffs.backdraft && tree == TREE_DESTRUCTION ) t *= 1.0 - p -> talents.backdraft * 0.10;
+    t*= p->backdraft->mul_value();
   }
   return t;
 }
@@ -1754,7 +1759,8 @@ double warlock_spell_t::gcd()
 {
   double t = spell_t::gcd();
   warlock_t* p = player -> cast_warlock();
-  if ( p -> _buffs.backdraft && tree == TREE_DESTRUCTION ) t *= 1.0 - p -> talents.backdraft * 0.10;
+  //if ( p -> _buffs.backdraft && tree == TREE_DESTRUCTION ) t *= 1.0 - p -> talents.backdraft * 0.10;
+  t*= p->backdraft->mul_value();
   return t;
 }
 
@@ -1910,7 +1916,8 @@ void warlock_spell_t::execute()
 
   if ( time_to_execute > 0 && tree == TREE_DESTRUCTION )
   {
-    if ( p -> _buffs.backdraft > 0 ) p -> _buffs.backdraft--;
+    //if ( p -> _buffs.backdraft > 0 ) p -> _buffs.backdraft--;
+    p->backdraft->dec_buff();
   }
   if ( p -> _buffs.demonic_empathy > 0 )
   {
@@ -1979,11 +1986,13 @@ bool warlock_spell_t::ready()
     return( p -> _buffs.metamorphosis == 0 );
 
   if ( backdraft )
-     if ( ! p -> _buffs.backdraft )
+     //if ( ! p -> _buffs.backdraft )
+     if (!p->backdraft->is_up())
         return false;
 
   if ( backdraft_skip )
-     if ( p -> _buffs.backdraft )
+     //if ( p -> _buffs.backdraft )
+     if (p->backdraft->is_up())
         return false;
 
   if ( molten_core )
@@ -3361,7 +3370,8 @@ struct conflagrate_t : public warlock_spell_t
     {
       if ( result == RESULT_CRIT ) p->pyroclasm->trigger();
       trigger_soul_leech( this );
-      trigger_backdraft( this );
+      //trigger_backdraft( this );
+      p->backdraft->trigger(3);
 
       if ( cancel_dot )
       {
@@ -4628,11 +4638,11 @@ void warlock_t::init_uptimes()
 {
   player_t::init_uptimes();
 
-  static int aura_id[]={ 0, 18096, 18073, 63245 };
-  pyroclasm= new pbuff_t(this, "pyroclasm",10,aura_id[talents.pyroclasm%4],!talents.pyroclasm, 1.0 + talents.pyroclasm * 0.02 );
+  static int aura_id_pyro[]={ 0, 18096, 18073, 63245 };
+  pyroclasm= new pbuff_t(this, "pyroclasm",10,aura_id_pyro[talents.pyroclasm%4],!talents.pyroclasm, 1.0 + talents.pyroclasm * 0.02 );
+  backdraft= new pbuff_t(this, "backdraft",15, 47257+ talents.backdraft, !talents.backdraft, 1.0 - talents.backdraft * 0.10);
 
-
-  uptimes_backdraft             = get_uptime( "backdraft"             );
+  //uptimes_backdraft             = get_uptime( "backdraft"             );
   uptimes_demonic_empathy       = get_uptime( "demonic_empathy"       );
   uptimes_demonic_pact          = get_uptime( "demonic_pact"          );
   uptimes_demonic_soul          = get_uptime( "demonic_soul"          );
