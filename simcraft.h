@@ -62,6 +62,7 @@ struct action_callback_t;
 struct attack_t;
 struct spell_tick_t;
 struct base_stats_t;
+struct buff_expiration_t;
 struct callback_t;
 struct death_knight_t;
 struct druid_t;
@@ -72,6 +73,7 @@ struct hunter_t;
 struct mage_t;
 struct option_t;
 struct paladin_t;
+struct pbuff_t;
 struct pet_t;
 struct player_t;
 struct priest_t;
@@ -474,6 +476,45 @@ struct gear_stats_t
   gear_stats_t& operator+=(const gear_stats_t& rhs);
   gear_stats_t operator+(const gear_stats_t& rhs) const;
 
+};
+
+// buffs
+struct buff_expiration_t : public event_t
+{
+  pbuff_t* pbuff;
+  int aura_id;
+  buff_expiration_t( pbuff_t* p_buff, double b_duration=0, int aura_idx=0 ) ;
+  virtual void execute();
+};
+
+
+struct pbuff_t{
+  std::string name_str;
+  player_t*  player;
+  double buff_value; 
+  double value; 
+  buff_expiration_t* expiration; 
+  uptime_t* uptime_cnt; 
+  int aura_id;
+  double buff_duration;
+  bool ignore; // if he can not obtain this buff (no talents etc)
+  pbuff_t* next;
+  // methods
+  pbuff_t(player_t* plr, std::string name, double duration=0, int aura_idx=0, bool t_ignore=false, double t_value=0 );
+  void reset();
+  void trigger(double val=1, double duration=0,int aura_idx=0);
+  bool is_up();
+  bool is_up_silent();
+  double mul_value();
+  double add_value();
+};
+
+struct buff_list_t{
+  int n_buffs;
+  pbuff_t* first;
+  buff_list_t();
+  void add_buff(pbuff_t* new_buff);
+  void reset_buffs();
 };
 
 // Simulation Engine =========================================================
@@ -1060,6 +1101,8 @@ struct player_t
     procs_t() { reset(); }
   };
   procs_t procs;
+
+  buff_list_t buff_list;
 
   rng_t* rng_list;
 

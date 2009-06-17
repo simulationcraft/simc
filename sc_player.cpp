@@ -360,6 +360,117 @@ static bool parse_talent_url( sim_t* sim,
 } // ANONYMOUS NAMESPACE ===================================================
 
 
+//
+//  BUFFS and UPTIMES
+//
+
+
+  // 
+  // pbuff_t  implementation
+
+  pbuff_t::pbuff_t(player_t* plr, std::string name, double duration, int aura_idx, bool t_ignore, double t_value ){
+    player=plr;
+    name_str=name;
+    buff_value=0;
+    aura_id=aura_idx;
+    buff_duration=duration;
+    ignore=t_ignore;
+    value=t_value;
+    expiration=0;
+    next=0;
+    uptime_cnt= player->get_uptime(name); 
+    player->buff_list.add_buff(this);
+  }
+  //reset buff, called at end of iteration  
+  void pbuff_t::reset(){
+    expiration=0;
+  }
+  // trigger buff. Will use duration from buff constructor if none supplied here
+  void pbuff_t::trigger(double val, double duration,int aura_idx){
+    if (ignore) return;
+
+    buff_value=val;
+    uptime_cnt -> update( 1 );
+
+    if ( expiration )
+    {
+      expiration -> reschedule( duration );
+    }
+    else
+    {
+      expiration = new (player->sim) buff_expiration_t( this, duration, aura_idx );
+    } 
+  }
+  // check if buff is up, without updating counters
+  bool pbuff_t::is_up_silent(){
+    return (buff_value!=0);
+  }
+  // check if buff is up, and update counters
+  bool pbuff_t::is_up(){
+    uptime_cnt -> update( buff_value!=0 ); 
+    return (buff_value!=0);
+  }
+  // if buff is up, return "value", otherwise return 1
+  double pbuff_t::mul_value(){
+    if (is_up())
+      return value;
+    else
+      return 1;
+  }
+  // if buff is up, return "value", otherwise return 0
+  double pbuff_t::add_value(){
+    if (is_up())
+      return value;
+    else
+      return 0;
+  }
+
+  // 
+  // buff_expiration_t  implementation
+
+  buff_expiration_t::buff_expiration_t( pbuff_t* p_buff, double b_duration, int aura_idx ) 
+    : event_t( p_buff->player->sim, p_buff->player )
+  {
+    pbuff=p_buff;
+    aura_id=aura_idx;
+    if (aura_id==0) aura_id= pbuff->aura_id;
+    if (b_duration==0) b_duration=pbuff->buff_duration;
+    std::string name = pbuff->name_str+" Expiration";
+    player -> aura_gain( name.c_str(), aura_id);
+    sim -> add_event( this, b_duration );
+  }
+
+  void buff_expiration_t::execute()
+  {
+    player -> aura_loss( pbuff->name_str.c_str(), aura_id );
+    pbuff->buff_value=0;
+    pbuff->uptime_cnt -> update( 0 );
+    pbuff->expiration=0;
+  }
+
+  // 
+  // buff_list_t  implementation
+
+  buff_list_t::buff_list_t(): n_buffs(0),first(0)
+  {
+  }
+
+  void buff_list_t::add_buff(pbuff_t* new_buff)
+  {
+    new_buff->next=first;
+    first= new_buff;
+    n_buffs++;
+  }
+
+  void buff_list_t::reset_buffs()
+  {
+    for (pbuff_t* p=first; p; p=p->next){
+      p->reset();
+    }
+      
+  }
+
+
 
 
 // Uptime methods
@@ -374,26 +485,30 @@ void   uptime_t::update( bool is_up )
 { 
   if (type==1){
     double t_span= sim->current_time - last_check;
+    // check if rewind (back more than 80% of max_time)
+    if ((t_span<0)&&(abs(t_span) > sim->max_time*0.8)){
+      n_rewind++;
+      if (last_status&&(up>down)) down++;
+      last_status=false;
+      last_check=0;
+      t_span=sim->current_time;
+    }
+    //now process positive span
     if (t_span>=0){
       if (last_status) 
         up_time+= t_span;
       total_time+= t_span;
       if (is_up&&!last_status) up++;
       if (last_status&&!is_up) down++;
-    }else{
-      // check if rewind (back more than 80% of max_time)
-      if (abs(t_span) > sim->max_time*0.8){
-        n_rewind++;
-        if (last_status&&(up>down)){
-          down++;
-          if (sim->max_time-last_check>0) up_time+= sim->max_time-last_check;
-        }
-      }
     }
+    //store new values
     last_check=sim->current_time;
     last_status=is_up;
   }else{
-    if ( is_up ) up++; else down++; 
+    if ( is_up ) 
+      up++; 
+    else 
+      down++; 
   }
 }
 
@@ -1623,6 +1738,8 @@ void player_t::reset()
   stunned = 0;
 
   if ( sleeping ) quiet = 1;
+
+  buff_list.reset_buffs();
 }
 
 // player_t::schedule_ready =================================================

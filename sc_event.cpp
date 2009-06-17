@@ -16,7 +16,7 @@ void* event_t::operator new( size_t size,
 {
   // This override of ::new is ONLY for event_t memory management!
 
-  static size_t SIZE = 2 * sizeof( event_t );
+  static size_t SIZE = 3 * sizeof( event_t );
   assert( SIZE > size );
 
   event_t* new_event = sim -> free_list;

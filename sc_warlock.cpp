@@ -2,8 +2,8 @@
 // Dedmonwakeen's DPS-DPM Simulator.
 // Send questions to natehieter@gmail.com
 // ==========================================================================
-
 #include "simcraft.h"
+
 
 // ==========================================================================
 // Warlock
@@ -41,7 +41,7 @@ struct warlock_t : public player_t
     int    metamorphosis;
     double molten_core;
     int    pet_sacrifice;
-    double pyroclasm;
+    //double pyroclasm;
     int    shadow_embrace;
     int    shadow_flame;
     int    shadow_trance;
@@ -52,6 +52,7 @@ struct warlock_t : public player_t
     _buffs_t() { reset(); }
   };
   _buffs_t _buffs;
+
 
   // Cooldowns
   struct _cooldowns_t
@@ -76,7 +77,7 @@ struct warlock_t : public player_t
     event_t* infernal;
     event_t* life_tap_glyph;
     event_t* molten_core;
-    event_t* pyroclasm;
+    //event_t* pyroclasm;
     event_t* shadow_embrace;
     event_t* shadow_flame;
     event_t* shadow_vulnerability;
@@ -107,7 +108,7 @@ struct warlock_t : public player_t
   uptime_t* uptimes_empowered_imp;
   uptime_t* uptimes_eradication;
   uptime_t* uptimes_molten_core;
-  uptime_t* uptimes_pyroclasm;
+  //uptime_t* uptimes_pyroclasm;
   uptime_t* uptimes_shadow_flame;
   uptime_t* uptimes_flame_shadow;
   uptime_t* uptimes_shadow_trance;
@@ -230,6 +231,9 @@ struct warlock_t : public player_t
   };
   glyphs_t glyphs;
 
+  pbuff_t* pyroclasm;
+
+
   warlock_t( sim_t* sim, const std::string& name ) : player_t( sim, WARLOCK, name )
   {
     distance = 30;
@@ -242,6 +246,7 @@ struct warlock_t : public player_t
     active_pandemic    = 0;
     active_dots        = 0;
     affliction_effects = 0;
+
   }
 
   // Character Definition
@@ -1461,9 +1466,11 @@ static void trigger_everlasting_affliction( spell_t* s )
 }
 
 // trigger_pyroclasm =====================================================
+/*
 
 static void trigger_pyroclasm( spell_t* s )
 {
+
   static int aura_id[]={ 0, 18096, 18073, 63245 };
 
   struct expiration_t : public event_t
@@ -1487,9 +1494,6 @@ static void trigger_pyroclasm( spell_t* s )
   };
 
   warlock_t* p = s -> player -> cast_warlock();
-
-  if ( ! p -> talents.pyroclasm ) return;
-
   event_t*&  e = p -> _expirations.pyroclasm;
 
   if ( e )
@@ -1501,6 +1505,7 @@ static void trigger_pyroclasm( spell_t* s )
     e = new ( s -> sim ) expiration_t( s -> sim, p );
   }
 }
+  */
 
 // trigger_empowered_imp ====================================================
 
@@ -1775,8 +1780,9 @@ void warlock_spell_t::player_buff()
     if ( p -> _buffs.flame_shadow ) player_spell_power += 135;
     p -> uptimes_flame_shadow -> update( p -> _buffs.flame_shadow != 0 );
 
-    if ( p -> _buffs.pyroclasm ) player_multiplier *= 1.0 + p -> talents.pyroclasm * 0.02;
-    p -> uptimes_pyroclasm -> update( p -> _buffs.pyroclasm != 0 );
+    //if ( p -> _buffs.pyroclasm ) player_multiplier *= 1.0 + p -> talents.pyroclasm * 0.02;
+    //p -> uptimes_pyroclasm -> update( p -> _buffs.pyroclasm != 0 );
+    player_multiplier *= p->pyroclasm->mul_value();
   }
   else if ( school == SCHOOL_FIRE )
   {
@@ -1789,8 +1795,9 @@ void warlock_spell_t::player_buff()
     if ( p -> _buffs.molten_core ) player_multiplier *= 1.10;
     p -> uptimes_molten_core -> update( p -> _buffs.molten_core != 0 );
 
-    if ( p -> _buffs.pyroclasm ) player_multiplier *= 1.0 + p -> talents.pyroclasm * 0.02;
-    p -> uptimes_pyroclasm -> update( p -> _buffs.pyroclasm != 0 );
+    //if ( p -> _buffs.pyroclasm ) player_multiplier *= 1.0 + p -> talents.pyroclasm * 0.02;
+    //p -> uptimes_pyroclasm -> update( p -> _buffs.pyroclasm != 0 );
+    player_multiplier *= p->pyroclasm->mul_value();
   }
 
   p -> uptimes_spirits_of_the_damned -> update( p -> buffs.tier7_4pc != 0 );
@@ -3349,9 +3356,10 @@ struct conflagrate_t : public warlock_spell_t
   virtual void execute()
   {
     warlock_spell_t::execute();
+    warlock_t* p = player -> cast_warlock();
     if ( result_is_hit() )
     {
-      if ( result == RESULT_CRIT ) trigger_pyroclasm( this );
+      if ( result == RESULT_CRIT ) p->pyroclasm->trigger();
       trigger_soul_leech( this );
       trigger_backdraft( this );
 
@@ -3557,9 +3565,10 @@ struct searing_pain_t : public warlock_spell_t
   virtual void execute()
   {
     warlock_spell_t::execute();
+    warlock_t* p = player -> cast_warlock();
     if ( result_is_hit() )
     {
-      if ( result == RESULT_CRIT ) trigger_pyroclasm( this );
+      if ( result == RESULT_CRIT ) p->pyroclasm->trigger();
       trigger_soul_leech( this );
     }
   }
@@ -4619,6 +4628,10 @@ void warlock_t::init_uptimes()
 {
   player_t::init_uptimes();
 
+  static int aura_id[]={ 0, 18096, 18073, 63245 };
+  pyroclasm= new pbuff_t(this, "pyroclasm",10,aura_id[talents.pyroclasm%4],!talents.pyroclasm, 1.0 + talents.pyroclasm * 0.02 );
+
+
   uptimes_backdraft             = get_uptime( "backdraft"             );
   uptimes_demonic_empathy       = get_uptime( "demonic_empathy"       );
   uptimes_demonic_pact          = get_uptime( "demonic_pact"          );
@@ -4627,7 +4640,7 @@ void warlock_t::init_uptimes()
   uptimes_eradication           = get_uptime( "eradication"           );
   uptimes_flame_shadow          = get_uptime( "flame_shadow"          );
   uptimes_molten_core           = get_uptime( "molten_core"           );
-  uptimes_pyroclasm             = get_uptime( "pyroclasm"             );
+  //uptimes_pyroclasm             = get_uptime( "pyroclasm"             );
   uptimes_shadow_flame          = get_uptime( "shadow_flame"          );
   uptimes_shadow_trance         = get_uptime( "shadow_trance"         );
   uptimes_shadow_vulnerability  = get_uptime( "shadow_vulnerability"  );
