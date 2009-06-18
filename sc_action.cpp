@@ -161,6 +161,8 @@ void action_t::parse_options( option_t*          options,
       { "vulnerable",         OPT_BOOL,   &vulnerable            },
       { "invulnerable",       OPT_BOOL,   &invulnerable          },
       { "wait_on_ready",      OPT_BOOL,   &wait_on_ready         },
+      { "if_buff",            OPT_STRING, &if_buff               },
+      { "if_not_buff",        OPT_STRING, &if_not_buff           },
       { NULL }
     };
   std::vector<option_t> merged_options;
@@ -1017,6 +1019,16 @@ bool action_t::ready()
 
   if ( invulnerable )
     if( ! t -> invulnerable )
+      return false;
+
+  //generic buff checks "if_buff=buffname"
+  if (if_buff!="")
+    if (! player->buff_list.chk_buff(if_buff))
+      return false;
+
+  //generic buff checks "if_not_buff=buffname"
+  if (if_not_buff!="")
+    if (player->buff_list.chk_buff(if_not_buff))
       return false;
 
   return true;

@@ -485,25 +485,34 @@ static bool parse_talent_url( sim_t* sim,
       
   }
 
+  bool buff_list_t::chk_buff(std::string name){
+    bool present=false;
+    for (pbuff_t* p=first; p; p=p->next){
+      if (tolower(p->name_str)==tolower(name))
+        if (p->is_up_silent())
+          present=true;
+    }
+    return present;
+  }
 
 
 
 // Uptime methods
 uptime_t::uptime_t( const std::string& n, sim_t* the_sim) : name_str( n ), up( 0 ), down( 0 ), 
-                    type(0), sim(the_sim), last_check(0), total_time(0),last_status(false), up_time(0), n_rewind(0), avg_up(0), avg_dur(0)
+                    type(0), sim(the_sim), last_check(0), total_time(0),last_status(false), up_time(0), n_rewind(0), n_up(0), n_down(0),
+                    avg_up(0), avg_dur(0)
 { 
-  if ((sim!=0)&&(sim->duration_uptimes)) 
-    type=1; 
 }
 
 void   uptime_t::update( bool is_up ) 
 { 
-  if (type==1){
+  // this is "duration, time based" statistics
+  if (sim){
     double t_span= sim->current_time - last_check;
     // check if rewind (back more than 80% of max_time)
     if ((t_span<0)&&(abs(t_span) > sim->max_time*0.8)){
       n_rewind++;
-      if (last_status&&(up>down)) down++;
+      if (last_status&&(n_up>n_down)) n_down++;
       last_status=false;
       last_check=0;
       t_span=sim->current_time;
@@ -513,44 +522,52 @@ void   uptime_t::update( bool is_up )
       if (last_status) 
         up_time+= t_span;
       total_time+= t_span;
-      if (is_up&&!last_status) up++;
-      if (last_status&&!is_up) down++;
+      if (is_up&&!last_status) n_up++;
+      if (last_status&&!is_up) n_down++;
     }
     //store new values
     last_check=sim->current_time;
     last_status=is_up;
-  }else{
-    if ( is_up ) 
-      up++; 
-    else 
-      down++; 
   }
+  // this is "on use" statistics
+  if ( is_up ) 
+    up++; 
+  else 
+    down++; 
 }
 
-double uptime_t::percentage() 
+//return uptime statistics (not all are percentages)
+double uptime_t::percentage(int p_type) 
 { 
-  if (type==1){
-    avg_up= (up+down)/2.0;
-    if (avg_up>0) avg_dur=up_time/avg_up;
-    if (n_rewind>0){
-      avg_up/=n_rewind;
-      if (avg_dur> total_time/n_rewind)
-        avg_dur=total_time/n_rewind;
-    }
-    return (total_time==0)? 0 : (100.0* up_time/total_time);
-  }else
-    return ( up==0 ) ? 0 : ( 100.0*up/( up+down ) ); 
+  //calculate result for default, usage based
+  double p_usage=( up==0 ) ? 0 : ( 100.0*up/( up+down ) );
+  // calculate for other types
+  if (n_down<n_up/4) n_down=n_up; // for those never turned off
+  avg_up= (n_up+n_down)/2.0;
+  if (avg_up>0) avg_dur=up_time/avg_up;
+  if (n_rewind>0){
+    avg_up/=n_rewind;
+    if (avg_dur> total_time/n_rewind)
+      avg_dur=total_time/n_rewind;
+  }
+  double p_time=(total_time==0)? 0 : (100.0* up_time/total_time);
+  // return result
+  switch (p_type){
+    case 1: return p_usage;   break;
+    case 2: return p_time;    break;
+    case 3: return avg_dur;   break;
+    case 4: return avg_up;    break;
+  }
+  //default result
+  return p_usage;
 }
 
 void   uptime_t::merge( uptime_t* other ) 
 { 
-  if (type==1){
-    up_time+=other->up_time;
-    total_time+=other->total_time;
-  }else{
-    up += other -> up; 
-    down += other -> down; 
-  }
+  up_time+=other->up_time;
+  total_time+=other->total_time;
+  up += other -> up; 
+  down += other -> down; 
 }
 
 const char* uptime_t::name() 

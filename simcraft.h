@@ -518,6 +518,7 @@ struct buff_list_t{
   buff_list_t();
   void add_buff(pbuff_t* new_buff);
   void reset_buffs();
+  bool chk_buff(std::string name);
 };
 
 // Simulation Engine =========================================================
@@ -1541,6 +1542,7 @@ struct action_t
   double min_time_to_die, max_time_to_die;
   double min_health_percentage, max_health_percentage;
   int vulnerable, invulnerable, wait_on_ready;
+  std::string if_buff, if_not_buff;
   std::string sync_str;
   action_t*   sync_action;
   action_t** observer;
@@ -1861,11 +1863,11 @@ struct uptime_t
   double total_time;
   bool last_status;
   double up_time;
-  int n_rewind;
+  int n_rewind, n_up, n_down;
   double avg_up, avg_dur;
   uptime_t( const std::string& n, sim_t* the_sim=0 );
   void   update( bool is_up );
-  double percentage();
+  double percentage(int p_type=0);
   void   merge( uptime_t* other );
   const char* name();
 };
