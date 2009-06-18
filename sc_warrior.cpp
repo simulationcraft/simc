@@ -568,7 +568,7 @@ static void trigger_sword_and_board( attack_t* a )
   if ( a -> result_is_miss() )
     return;
 
-  // If the action did not deal direct damage it should not trigger SD
+  // If the action did not deal direct damage it should not trigger S&B
   // E.g. Deep Wounds, Rend, ...
   if ( ! ( a -> direct_dmg > 0 ) )
     return;
@@ -1530,7 +1530,6 @@ struct devastate_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
     trigger_sword_and_board( this );
-    update_ready();
   }
 };
 
@@ -1571,12 +1570,12 @@ struct revenge_t : public warrior_attack_t
       base_multiplier *= 1 + p -> talents.unrelenting_assault * 0.1;
       cooldown -= ( p -> talents.unrelenting_assault * 2 );
     }
+    stancemask = STANCE_DEFENSE;
   }
   virtual void execute()
   {
     warrior_attack_t::execute();
     trigger_sword_and_board( this );
-    update_ready();
   }
 };
 
@@ -1624,8 +1623,6 @@ struct shield_slam_t : public warrior_attack_t
   virtual void execute()
   {
     warrior_t* p = player -> cast_warrior();
-
-    warrior_attack_t::consume_resource();
 
     warrior_attack_t::execute();
     if ( p -> _expirations.sword_and_board )
@@ -2772,6 +2769,9 @@ void warrior_t::interrupt()
 
 double warrior_t::composite_attack_power()
 {
+  if ( sim -> P320 )
+    return player_t::composite_attack_power() + ( talents.armored_to_the_teeth ? talents.armored_to_the_teeth * composite_armor_snapshot() / 108 : 0 );
+
   return player_t::composite_attack_power() + ( talents.armored_to_the_teeth ? talents.armored_to_the_teeth * composite_armor_snapshot() / 180 : 0 );
 }
 
