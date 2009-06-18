@@ -45,6 +45,8 @@ struct druid_t : public player_t
   struct _cooldowns_t
   {
     double eclipse;
+    double eclipse_starfire;
+    double eclipse_wrath;
 
     void reset() { memset( ( void* ) this, 0x00, sizeof( _cooldowns_t ) ); }
     _cooldowns_t() { reset(); }
@@ -669,7 +671,8 @@ static void trigger_eclipse_wrath( spell_t* s )
       name = "Eclipse Wrath Expiration";
       p -> aura_gain( "Eclipse Wrath" );
       p -> _buffs.eclipse_wrath = sim -> current_time;
-      p -> _cooldowns.eclipse = sim -> current_time + 30;
+      p -> _cooldowns.eclipse_wrath = sim -> current_time + 30;
+      p -> _cooldowns.eclipse_starfire = sim -> current_time + ( sim -> P320 ? 15 : 30 );
       sim -> add_event( this, 15.0 );
     }
     virtual void execute()
@@ -684,7 +687,7 @@ static void trigger_eclipse_wrath( spell_t* s )
   druid_t* p = s -> player -> cast_druid();
 
   if ( p -> talents.eclipse != 0 &&
-       s -> sim -> cooldown_ready( p -> _cooldowns.eclipse ) &&
+       s -> sim -> cooldown_ready( p -> _cooldowns.eclipse_wrath ) &&
        p -> rng_eclipse -> roll( p -> talents.eclipse * 1.0/3 ) )
   {
     p -> _expirations.eclipse = new ( s -> sim ) expiration_t( s -> sim, p );
@@ -702,7 +705,8 @@ static void trigger_eclipse_starfire( spell_t* s )
       name = "Eclipse Starfire Expiration";
       p -> aura_gain( "Eclipse Starfire" );
       p -> _buffs.eclipse_starfire = sim -> current_time;
-      p -> _cooldowns.eclipse = sim -> current_time + 30;
+      p -> _cooldowns.eclipse_starfire = sim -> current_time + 30;
+      p -> _cooldowns.eclipse_wrath = sim -> current_time + ( sim -> P320 ? 15 : 30 );
       sim -> add_event( this, 15.0 );
     }
     virtual void execute()
@@ -717,7 +721,7 @@ static void trigger_eclipse_starfire( spell_t* s )
   druid_t* p = s -> player -> cast_druid();
 
   if ( p -> talents.eclipse != 0 &&
-       s -> sim -> cooldown_ready( p -> _cooldowns.eclipse ) &&
+       s -> sim -> cooldown_ready( p -> _cooldowns.eclipse_starfire ) &&
        p -> rng_eclipse -> roll( p -> talents.eclipse * 0.2 ) )
   {
     p -> _expirations.eclipse = new ( s -> sim ) expiration_t( s -> sim, p );
@@ -2142,7 +2146,11 @@ struct innervate_t : public druid_spell_t
 
     base_cost = 0.0;
     base_execute_time = 0;
-    cooldown  = 480;
+    if( sim -> P320 )
+      cooldown  = 240;
+    else
+      cooldown  = 480;
+
     harmful   = false;
     if ( p -> tiers.t4_4pc_balance ) cooldown -= 48.0;
 
@@ -2157,7 +2165,10 @@ struct innervate_t : public druid_spell_t
     {
       expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
       {
-        sim -> add_event( this, 20.0 );
+        if( sim -> P320 )
+          sim -> add_event( this, 10.0 );
+        else
+          sim -> add_event( this, 20.0 );
       }
       virtual void execute()
       {
@@ -2169,7 +2180,10 @@ struct innervate_t : public druid_spell_t
     {
       expiration_glyph_t( sim_t* sim, player_t* p ) : event_t( sim, p )
       {
-        sim -> add_event( this, 20.0 );
+        if( sim -> P320 )
+          sim -> add_event( this, 10.0 );
+        else
+          sim -> add_event( this, 20.0 );
       }
       virtual void execute()
       {
@@ -2188,6 +2202,9 @@ struct innervate_t : public druid_spell_t
     // Per second: player -> resource_base[ RESOURCE_MANA ]* 0.9 / 20.0
     // In ::regen() we then just give the player:
     // buffs.innervate * periodicity mana
+    //
+    // 3.2.0: The ManaPerSecond from Innervate is the same, but duration
+    // and cooldown got halfed. 
 
     innervate_target -> buffs.innervate = player -> resource_base[ RESOURCE_MANA ]* 4.5 / 20.0;
     innervate_target -> aura_gain( "Innervate", 29166 );
@@ -2675,7 +2692,7 @@ struct starfire_t : public druid_spell_t
       if ( p -> talents.eclipse == 0 )
         return false;
 
-      if ( sim -> current_time + 1.5 < p -> _cooldowns.eclipse )
+      if ( sim -> current_time + 1.5 < p -> _cooldowns.eclipse_wrath )
       {
         // Did the player have enough time by now to realise he procced eclipse?
         // If so, return false as we only want to cast to procc
@@ -2815,7 +2832,7 @@ struct wrath_t : public druid_spell_t
       if ( p -> talents.eclipse == 0 )
         return false;
 
-      if ( sim -> current_time + 3.0 < p -> _cooldowns.eclipse )
+      if ( sim -> current_time + 3.0 < p -> _cooldowns.eclipse_starfire )
       {
         // Did the player have enough time by now to realise he procced eclipse?
         // If so, return false as we only want to cast to procc
