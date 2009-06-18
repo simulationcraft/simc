@@ -32,8 +32,8 @@ struct warlock_t : public player_t
     int    decimation;
     int    demon_armor;
     int    demonic_empathy;
-    int    empowered_imp;
-    double eradication;
+    //int    empowered_imp;
+    //double eradication;
     double fel_armor;
     int    flame_shadow;
     int    haunted;
@@ -55,6 +55,7 @@ struct warlock_t : public player_t
 
 
   // Cooldowns
+  /*
   struct _cooldowns_t
   {
     double eradication;
@@ -63,6 +64,7 @@ struct warlock_t : public player_t
     _cooldowns_t() { reset(); }
   };
   _cooldowns_t _cooldowns;
+  */
 
   // Expirations
   struct _expirations_t
@@ -70,8 +72,8 @@ struct warlock_t : public player_t
     //event_t* backdraft;
     event_t* decimation;
     event_t* demonic_empathy;
-    event_t* empowered_imp;
-    event_t* eradication;
+    //event_t* empowered_imp;
+    //event_t* eradication;
     event_t* flame_shadow;
     event_t* haunted;
     event_t* infernal;
@@ -105,8 +107,8 @@ struct warlock_t : public player_t
   uptime_t* uptimes_demonic_empathy;
   uptime_t* uptimes_demonic_pact;
   uptime_t* uptimes_demonic_soul;
-  uptime_t* uptimes_empowered_imp;
-  uptime_t* uptimes_eradication;
+  //uptime_t* uptimes_empowered_imp;
+  //uptime_t* uptimes_eradication;
   uptime_t* uptimes_molten_core;
   //uptime_t* uptimes_pyroclasm;
   uptime_t* uptimes_shadow_flame;
@@ -121,9 +123,9 @@ struct warlock_t : public player_t
   rng_t* rng_soul_leech;
   rng_t* rng_improved_soul_leech;
   rng_t* rng_molten_core;
-  rng_t* rng_eradication;
+  //rng_t* rng_eradication;
   rng_t* rng_everlasting_affliction;
-  rng_t* rng_empowered_imp;
+  //rng_t* rng_empowered_imp;
 
   struct talents_t
   {
@@ -233,6 +235,8 @@ struct warlock_t : public player_t
 
   pbuff_t* backdraft;
   pbuff_t* pyroclasm;
+  pbuff_t* eradication;
+  pbuff_t* empowered_imp;
 
 
   warlock_t( sim_t* sim, const std::string& name ) : player_t( sim, WARLOCK, name )
@@ -1397,9 +1401,10 @@ static void trigger_decimation( warlock_spell_t* s,
 }
 
 // trigger_eradication =====================================================
-
+/*
 static void trigger_eradication( spell_t* s )
 {
+
   struct expiration_t : public event_t
   {
     expiration_t( sim_t* sim, warlock_t* p ) : event_t( sim, p )
@@ -1436,6 +1441,7 @@ static void trigger_eradication( spell_t* s )
     }
   }
 }
+*/
 
 // trigger_deaths_embrace ===================================================
 
@@ -1513,6 +1519,7 @@ static void trigger_pyroclasm( spell_t* s )
 
 // trigger_empowered_imp ====================================================
 
+/*
 static void trigger_empowered_imp( spell_t* s )
 {
   static int eimp_ids[]={0,47220,47221,47223};
@@ -1554,6 +1561,7 @@ static void trigger_empowered_imp( spell_t* s )
     }
   }
 }
+*/
 
 // trigger_demonic_empathy_on_pet ==========================================
 
@@ -1728,12 +1736,13 @@ double warlock_spell_t::haste()
 {
   warlock_t* p = player -> cast_warlock();
   double h = spell_t::haste();
-  if ( p -> _buffs.eradication )
-  {
-    double mod = 1 + p -> talents.eradication * 0.06;
-    if ( p -> talents.eradication == 3 ) mod += 0.02;
-    h *= ( 1.0 / mod );
-  }
+  //if ( p -> _buffs.eradication )
+  //{
+  //  double mod = 1 + p -> talents.eradication * 0.06;
+  //  if ( p -> talents.eradication == 3 ) mod += 0.02;
+  //  h *= ( 1.0 / mod );
+  //}
+  h*= p->eradication->mul_value();
   return h;
 }
 
@@ -1745,9 +1754,10 @@ double warlock_spell_t::execute_time()
   double t = spell_t::execute_time();
   if ( t > 0 )
   {
-    p -> uptimes_eradication -> update( p -> _buffs.eradication != 0 );
+    //p -> uptimes_eradication -> update( p -> _buffs.eradication != 0 );
     //p -> uptimes_backdraft   -> update( p -> _buffs.backdraft   != 0 );
     //if ( p -> _buffs.backdraft && tree == TREE_DESTRUCTION ) t *= 1.0 - p -> talents.backdraft * 0.10;
+    p->eradication->update_uptime();
     t*= p->backdraft->mul_value();
   }
   return t;
@@ -1844,8 +1854,9 @@ void warlock_spell_t::player_buff()
 
     if ( may_crit )
     {
-      if ( p -> _buffs.empowered_imp ) player_crit += 0.20;
-      p -> uptimes_empowered_imp -> update( p -> _buffs.empowered_imp != 0 );
+      //if ( p -> _buffs.empowered_imp ) player_crit += 0.20;
+      //p -> uptimes_empowered_imp -> update( p -> _buffs.empowered_imp != 0 );
+      player_crit += p->empowered_imp->add_value();
     }
 
     if ( p -> talents.demonic_pact )
@@ -1938,10 +1949,9 @@ void warlock_spell_t::execute()
     }
   }
 
-  if ( may_crit && p -> _expirations.empowered_imp )
-  {
-    event_t::early( p -> _expirations.empowered_imp );
-  }
+  //if ( may_crit && p -> _expirations.empowered_imp )
+  //  event_t::early( p -> _expirations.empowered_imp );
+  if (may_crit) p->empowered_imp->dec_buff();
 }
 
 // warlock_spell_t::tick =====================================================
@@ -2728,8 +2738,10 @@ struct corruption_t : public warlock_spell_t
 
   virtual void tick()
   {
+    warlock_t* p = player -> cast_warlock();
     warlock_spell_t::tick();
-    trigger_eradication( this );
+    //trigger_eradication( this );
+    p->eradication->trigger();
     trigger_nightfall( this );
     trigger_corruption_glyph( this );
     trigger_ashtongue_talisman( this );
@@ -4473,7 +4485,9 @@ void imp_pet_t::fire_bolt_t::execute()
 
   if ( result == RESULT_CRIT )
   {
-    trigger_empowered_imp( this );
+    //trigger_empowered_imp( this );
+    warlock_t* p = (( imp_pet_t* ) player -> cast_pet()) -> owner -> cast_warlock();
+    p->empowered_imp->trigger();
   }
 }
 
@@ -4639,15 +4653,22 @@ void warlock_t::init_uptimes()
   player_t::init_uptimes();
 
   static int aura_id_pyro[]={ 0, 18096, 18073, 63245 };
-  pyroclasm= new pbuff_t(this, "pyroclasm",10,aura_id_pyro[talents.pyroclasm%4],!talents.pyroclasm, 1.0 + talents.pyroclasm * 0.02 );
-  backdraft= new pbuff_t(this, "backdraft",15, 47257+ talents.backdraft, !talents.backdraft, 1.0 - talents.backdraft * 0.10);
+  pyroclasm= new pbuff_t(this, "pyroclasm",10,0,aura_id_pyro[talents.pyroclasm%4], 1.0 + talents.pyroclasm * 0.02, !talents.pyroclasm );
+  backdraft= new pbuff_t(this, "backdraft",15,0, 47257+ talents.backdraft, 1.0 - talents.backdraft * 0.10, !talents.backdraft);
+  eradication= new pbuff_t(this, "eradication",10,0, 47195 + talents.eradication, 
+                           1.0/ ( 1 + talents.eradication * 0.06 + (talents.eradication == 3? 0.02:0) ), !talents.eradication, 0.06);
+  eradication->be_silent=true; // since it is queried on haste() many times, but used only if spell passed
+  static int aura_id_eimp[]={0,47220,47221,47223};
+  empowered_imp= new pbuff_t(this, "empowered_imp",8,0, aura_id_eimp[talents.empowered_imp%4], 0.20, !talents.empowered_imp, -talents.empowered_imp / 3.0);
+
+
 
   //uptimes_backdraft             = get_uptime( "backdraft"             );
   uptimes_demonic_empathy       = get_uptime( "demonic_empathy"       );
   uptimes_demonic_pact          = get_uptime( "demonic_pact"          );
   uptimes_demonic_soul          = get_uptime( "demonic_soul"          );
-  uptimes_empowered_imp         = get_uptime( "empowered_imp"         );
-  uptimes_eradication           = get_uptime( "eradication"           );
+  //uptimes_empowered_imp         = get_uptime( "empowered_imp"         );
+  //uptimes_eradication           = get_uptime( "eradication"           );
   uptimes_flame_shadow          = get_uptime( "flame_shadow"          );
   uptimes_molten_core           = get_uptime( "molten_core"           );
   //uptimes_pyroclasm             = get_uptime( "pyroclasm"             );
@@ -4672,8 +4693,8 @@ void warlock_t::init_rng()
 
   rng_nightfall     = get_rng( "nightfall",     RNG_DISTRIBUTED );
   rng_shadow_trance = get_rng( "shadow_trance", RNG_DISTRIBUTED );
-  rng_empowered_imp = get_rng( "empowered_imp", RNG_DISTRIBUTED );
-  rng_eradication   = get_rng( "eradication",   RNG_DISTRIBUTED );
+  //rng_empowered_imp = get_rng( "empowered_imp", RNG_DISTRIBUTED );
+  //rng_eradication   = get_rng( "eradication",   RNG_DISTRIBUTED );
   rng_molten_core   = get_rng( "molten_core",   RNG_DISTRIBUTED );
 }
 
@@ -4754,7 +4775,7 @@ void warlock_t::reset()
   while ( ! decimation_queue.empty() ) decimation_queue.pop();
 
   _buffs.reset();
-  _cooldowns.reset();
+  //_cooldowns.reset();
   _expirations.reset();
 }
 

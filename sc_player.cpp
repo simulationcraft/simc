@@ -368,35 +368,61 @@ static bool parse_talent_url( sim_t* sim,
   // 
   // pbuff_t  implementation
 
-  pbuff_t::pbuff_t(player_t* plr, std::string name, double duration, int aura_idx, bool t_ignore, double t_value ){
+  pbuff_t::pbuff_t(player_t* plr, std::string name, double duration, double cooldown, int aura_idx, double use_value, bool t_ignore, double t_chance ){
     player=plr;
     name_str=name;
     buff_value=0;
     aura_id=aura_idx;
     buff_duration=duration;
+    buff_cooldown=cooldown;
     ignore=t_ignore;
-    value=t_value;
+    chance=t_chance;
+    rng_chance=0;
+    value=use_value;
     expiration=0;
+    last_trigger=0;
     next=0;
     n_triggers=0;
+    n_trg_tries=0;
+    if (chance!=0){
+      int rng_type=RNG_DISTRIBUTED;
+      // if "negative" chance, use simple random
+      if (chance<0){
+        chance=-chance;
+        rng_type=RNG_CYCLIC;
+      }
+      rng_chance   = player->get_rng( name+"_buff",   rng_type );
+    }
     uptime_cnt= player->get_uptime(name); 
+    be_silent=false;
     player->buff_list.add_buff(this);
   }
   //reset buff, called at end of iteration  
   void pbuff_t::reset(){
     expiration=0;
+    last_trigger=0;
+    uptime_cnt->rewind();
   }
-  // trigger buff. Will use duration from buff constructor if none supplied here
-  void pbuff_t::trigger(double val, double b_duration,int aura_idx){
-    if (ignore) return;
-
-    buff_value=val;
+  // trigger buff if conditions are met (return false otherwise)
+  // will use duration and chance from buff constructor if none supplied here
+  bool pbuff_t::trigger(double val, double b_duration,int aura_idx){
+    n_trg_tries++;
+    // if talents or other reasons do not allow this buff, skip it
+    if (ignore) return false;
+    // check cooldown if any
+    if (player->sim->current_time <= last_trigger+buff_cooldown) return false; 
+    // if chance is supplied, check it
+    if (chance>0) 
+        if ( !rng_chance -> roll( chance ) ) return false;
+    // if we passed all checks, trigger buff
     n_triggers++;
-
-    uptime_cnt -> update( 1 );
-
+    uptime_cnt->n_triggers= n_triggers;
+    last_trigger=player->sim->current_time;
+    // set value and update counters
+    buff_value=val;
+    uptime_cnt -> update( 1, true );
+    // create and launch expiration event
     if (b_duration==0) b_duration=buff_duration;
-
     if ( expiration )
     {
       expiration -> reschedule( b_duration );
@@ -406,35 +432,63 @@ static bool parse_talent_url( sim_t* sim,
     {
       expiration = new (player->sim) buff_expiration_t( this, b_duration, aura_idx );
     } 
+    return true;
   }
   // check if buff is up, without updating counters
   bool pbuff_t::is_up_silent(){
     return (buff_value!=0);
   }
-  // check if buff is up, and update counters
-  bool pbuff_t::is_up(){
-    uptime_cnt -> update( buff_value!=0 ); 
-    return (buff_value!=0);
-  }
-  // decrement buff stack for one, return if buff still up
-  bool pbuff_t::dec_buff(){
-    if (buff_value>=1) buff_value--;
-    return is_up_silent();
-  }
   // if buff is up, return "value", otherwise return 1
-  double pbuff_t::mul_value(){
-    if (is_up())
+  double pbuff_t::mul_value_silent()
+  {
+    if (is_up_silent())
       return value;
     else
       return 1;
   }
   // if buff is up, return "value", otherwise return 0
-  double pbuff_t::add_value(){
-    if (is_up())
+  double pbuff_t::add_value_silent()
+  {
+    if (is_up_silent())
       return value;
     else
       return 0;
   }
+  // update uptime counters
+  void pbuff_t::update_uptime(bool skip_usage)
+  {
+    uptime_cnt -> update( is_up_silent(), skip_usage ); 
+  }
+  // decrement buff stack for one, return if buff still up
+  bool pbuff_t::dec_buff(){
+    if (buff_value>=1){
+      buff_value--;
+      if (expiration&&!is_up_silent()){
+        //event_t::early(expiration);
+        expiration -> canceled = 1; 
+        expiration -> execute(); 
+        expiration=0;
+        update_uptime(true);
+      }
+    }
+    return is_up_silent();
+  }
+
+  // now same versions that do change uptime counters
+  bool pbuff_t::is_up(){
+    update_uptime(be_silent);
+    return is_up_silent();
+  }
+  double pbuff_t::mul_value(){
+    update_uptime(be_silent);
+    return mul_value_silent();
+
+  }
+  double pbuff_t::add_value(){
+    update_uptime(be_silent);
+    return add_value_silent();
+  }
+
 
   // 
   // buff_expiration_t  implementation
@@ -456,7 +510,7 @@ static bool parse_talent_url( sim_t* sim,
     if (pbuff->n_triggers== n_trig){
       player -> aura_loss( pbuff->name_str.c_str(), aura_id );
       pbuff->buff_value=0;
-      pbuff->uptime_cnt -> update( 0 );
+      pbuff->uptime_cnt -> update( 0, true );
     }else{
       //new buff was casted while old one was expiring
     }
@@ -499,22 +553,27 @@ static bool parse_talent_url( sim_t* sim,
 
 // Uptime methods
 uptime_t::uptime_t( const std::string& n, sim_t* the_sim) : name_str( n ), up( 0 ), down( 0 ), 
-                    type(0), sim(the_sim), last_check(0), total_time(0),last_status(false), up_time(0), n_rewind(0), n_up(0), n_down(0),
+                    type(0), sim(the_sim), last_check(0), total_time(0),last_status(false), up_time(0), n_rewind(0), n_up(0), n_down(0), n_triggers(0),
                     avg_up(0), avg_dur(0)
 { 
 }
 
-void   uptime_t::update( bool is_up ) 
+void uptime_t::rewind()
+{
+  n_rewind++;
+  if (last_status&&(n_up>n_down)) n_down++;
+  last_status=false;
+  last_check=0;
+}
+
+void   uptime_t::update( bool is_up, bool skip_usage ) 
 { 
   // this is "duration, time based" statistics
   if (sim){
     double t_span= sim->current_time - last_check;
     // check if rewind (back more than 80% of max_time)
     if ((t_span<0)&&(abs(t_span) > sim->max_time*0.8)){
-      n_rewind++;
-      if (last_status&&(n_up>n_down)) n_down++;
-      last_status=false;
-      last_check=0;
+      rewind();
       t_span=sim->current_time;
     }
     //now process positive span
@@ -530,10 +589,12 @@ void   uptime_t::update( bool is_up )
     last_status=is_up;
   }
   // this is "on use" statistics
-  if ( is_up ) 
-    up++; 
-  else 
-    down++; 
+  if (!skip_usage){
+    if ( is_up ) 
+      up++; 
+    else 
+      down++; 
+  }
 }
 
 //return uptime statistics (not all are percentages)
@@ -551,12 +612,14 @@ double uptime_t::percentage(int p_type)
       avg_dur=total_time/n_rewind;
   }
   double p_time=(total_time==0)? 0 : (100.0* up_time/total_time);
+  double buff_triggers= n_rewind>0?n_triggers/n_rewind: n_triggers;
   // return result
   switch (p_type){
-    case 1: return p_usage;   break;
-    case 2: return p_time;    break;
-    case 3: return avg_dur;   break;
-    case 4: return avg_up;    break;
+    case 1: return p_usage;       break;
+    case 2: return p_time;        break;
+    case 3: return avg_dur;       break;
+    case 4: return avg_up;        break;
+    case 5: return buff_triggers; break;
   }
   //default result
   return p_usage;

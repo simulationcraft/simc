@@ -495,19 +495,26 @@ struct pbuff_t{
   double buff_value; 
   double value; 
   buff_expiration_t* expiration; 
+  double last_trigger;
   uptime_t* uptime_cnt; 
+  bool be_silent;
   int aura_id;
-  double buff_duration;
+  double chance;
+  rng_t* rng_chance;
+  double buff_duration, buff_cooldown;
   bool ignore; // if he can not obtain this buff (no talents etc)
   pbuff_t* next;
-  int n_triggers;
+  int n_triggers, n_trg_tries;
   // methods
-  pbuff_t(player_t* plr, std::string name, double duration=0, int aura_idx=0, bool t_ignore=false, double t_value=0 );
+  pbuff_t(player_t* plr, std::string name, double duration=0, double cooldown=0, int aura_idx=0, double use_value=0, bool t_ignore=false, double t_chance=0 );
   void reset();
-  void trigger(double val=1, double b_duration=0,int aura_idx=0);
-  bool is_up();
+  bool trigger(double val=1, double b_duration=0,int aura_idx=0);
   bool dec_buff();
   bool is_up_silent();
+  double mul_value_silent();
+  double add_value_silent();
+  void update_uptime(bool skip_usage=false);
+  bool is_up();
   double mul_value();
   double add_value();
 };
@@ -1864,12 +1871,14 @@ struct uptime_t
   bool last_status;
   double up_time;
   int n_rewind, n_up, n_down;
+  double n_triggers;
   double avg_up, avg_dur;
   uptime_t( const std::string& n, sim_t* the_sim=0 );
-  void   update( bool is_up );
+  void   update( bool is_up, bool skip_usage=false );
   double percentage(int p_type=0);
   void   merge( uptime_t* other );
   const char* name();
+  void rewind();
 };
 
 
