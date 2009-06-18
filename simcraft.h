@@ -538,6 +538,7 @@ struct sim_t
   patch_t     patch;
   bool        P312;
   bool        P313;
+  bool        P320;
   rng_t*      rng;
   rng_t*      deterministic_rng;
   event_t*    free_list;
