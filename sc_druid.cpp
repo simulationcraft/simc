@@ -44,7 +44,6 @@ struct druid_t : public player_t
   // Cooldowns
   struct _cooldowns_t
   {
-    double eclipse;
     double eclipse_starfire;
     double eclipse_wrath;
 
@@ -1944,7 +1943,7 @@ bool druid_spell_t::ready()
   druid_t*  p = player -> cast_druid();
 
   if ( skip_on_eclipse > 0 )
-    if ( p -> _buffs.eclipse_starfire || p -> _buffs.eclipse_wrath )
+    if ( sim -> time_to_think( p -> _buffs.eclipse_starfire ) || sim -> time_to_think( p -> _buffs.eclipse_wrath ) )
       return false;
 
   return true;

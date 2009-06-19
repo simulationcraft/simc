@@ -1,0 +1,44 @@
+#!simcraft max_time=300 optimal_raid=1
+
+druid=Druid_T8_58_00_13_W
+level=80
+talents=http://www.wowhead.com/?talent#0xRbuiIsfdIVhouZbxczb
+actions=flask,type=frost_wyrm/food,type=fish_feast/mark_of_the_wild/moonkin_form/mana_potion
+actions+=/innervate,trigger=19000
+actions+=/treants
+actions+=/starfall,skip_on_eclipse=1
+actions+=/moonfire,eclipse_left>=12,skip_on_eclipse=-1
+actions+=/insect_swarm,eclipse_left>=12,skip_on_eclipse=-1
+actions+=/wrath,eclipse=benefit
+actions+=/wrath,eclipse=trigger
+actions+=/haste_trinket,name=scale_of_fates,length=20,rating=432,cooldown=120
+actions+=/starfire,eclipse=benefit
+actions+=/starfire,eclipse=trigger
+
+
+
+# Standard Gear Attributes http://www.chardev.org/?template=176626
+gear_stamina=958
+gear_intellect=1005
+gear_spirit=464
+gear_spell_power=2361
+gear_hit_rating=261
+gear_crit_rating=614
+gear_haste_rating=349
+
+tier8_2pc=1
+tier8_4pc=1
+
+# Meta Gem
+chaotic_skyflare=1
+
+# Item Procs
+flare_of_the_heavens=1
+
+# Glyphs
+glyph_moonfire=1
+glyph_starfire=1
+glyph_insect_swarm=1
+
+# Relic
+idol_of_the_shooting_star=1
