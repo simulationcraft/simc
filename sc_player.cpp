@@ -222,7 +222,7 @@ static void replenish_targets( player_t* provider )
         player_t* p = player -> replenishment_targets[ i ];
         if ( p -> sleeping ) continue;
 
-        p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.0025, p -> gains.replenishment );
+        p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * ( sim -> P320 ? 0.0020 : 0.0025 ), p -> gains.replenishment );
       }
 
       event_t*& e = player -> expirations.replenishment;
@@ -585,7 +585,7 @@ void   uptime_t::update( bool is_up, bool skip_usage )
   if (sim){
     double t_span= sim->current_time - last_check;
     // check if rewind (back more than 80% of max_time)
-    if ((t_span<0)&&(abs(t_span) > sim->max_time*0.8)){
+    if ((t_span<0)&&(fabs(t_span) > sim->max_time*0.8)){
       rewind();
       t_span=sim->current_time;
     }

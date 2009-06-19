@@ -1,48 +1,68 @@
 
-# This is a default gear profile for Tier-8 Best-In-Slot Shadow Priests
-# This will be updated as better gear is discovered.
-# Based on this gear set: (waiting for chardev to update site before providing link)
-# Added 75 spell power to account for profession-specific bonuses
+# This is the default gear profile for Tier-8 Best-In-Slot Shadow Priests.
+# It includes loot from all hardmodes in both 10 and 25mans.
+# It also includes 76 spellpower from "profession bonuses"
 
 # Standard Gear Attributes
-gear_stamina=985
+gear_stamina=947
 gear_strength=0
 gear_agility=0
-gear_intellect=918
-gear_spirit=381
+gear_intellect=863
+gear_spirit=297
 gear_attack_power=0
 gear_expertise_rating=0
 gear_armor_penetration_rating=0
-gear_spell_power=2375
-gear_hit_rating=294
-gear_crit_rating=621
-gear_haste_rating=475
+gear_spell_power=1828
+gear_hit_rating=275
+gear_crit_rating=690
+gear_haste_rating=361
 gear_mp5=0
+
+illustration_of_the_dragon_soul=1
+flare_of_the_heavens=1
 
 tier8_2pc=1
 tier8_4pc=1
 
-# Meta Gem
+# Gems and Socket Bonuses
+# Total Sockets: 5 Red | 5 Blue | 8 Yellow | 1 Prysmatic (belt) | 1 meta
+# Spellpower = 266 ( 14 * Runed Scarlet Ruby ) + 18 ( 2 * Purified Twilight Opals) + 18 ( 2 * Potent Monarch Topaz) + 
+#	       23 ( 1 * Runed Stormjewel ) + 5 (Shoulders) + 5 (Back) + 7 (Feet) + 5 (Finger) == 347
+# Crit       = 21 (meta) + 16 ( 2 * Potent Monarch Topaz) == 37
+# Intellect  = 8 (helm) == 8
+# Spirit     = 16 ( 2 * Purified Twilight Opals ) + 4 (wrists) == 20
+# Hit	     = 4 ( gloves) == 4
+#	       
 chaotic_skyflare=1
+gem_spell_power=347
+gem_crit_rating=37
+gem_intellect=8
+gem_spirit=20
+gem_hit_rating=4
 
-# Item Procs
-illustration_of_the_dragon_soul=1
-flare_of_the_heavens=1
+# Enchants
+# Spellpower = 30 (Head) + 24 (shoulders) + 30 (Wrists) + 28 (Hands) + 50 (Legs) +
+#	       63 (Weapon) + 76 (2 Professions) == 301
+# Crit	     = 20 (Head) + 15 (Shoulders) + 12 (Feet) == 47
+# Intellect  = 10 (Chest) == 10
+# Spirit     = 10 (Chest) + 20 (Legs) == 30
+# Hit	     = 12 (Feet)  == 12
+# Stamina    = 10 (Chest) == 10
+# Agility    = 10 (Chest) == 10
+# Strength   = 10 (Chest) == 10
+# Haste	     = 23 (Back)  == 23
+enchant_stamina=10
+enchant_strength=10
+enchant_agility=10
+enchant_intellect=10
+enchant_spirit=30
+enchant_spell_power=301
+enchant_hit_rating=12 
+enchant_crit_rating=47
+enchant_haste_rating=23
 
-# Gear List until chardev.org is updated.
-# Helm: [url=http://ptr.wowhead.com/?item=46172]Conqueror's Circlet of Sanctification[/url] with CSD + Runed Scarlet Ruby + sp/crit enchant.
-# Neck: [url=http://ptr.wowhead.com/?item=45133]Pendant of Fiery Havoc[/url] + Potent Monarch Topaz.  46 hit.
-# Shoulder: [url=http://ptr.wowhead.com/?item=46165]Conqueror's Mantle of Sanctification[/url] + Runed Scarlet Ruby + sp/crit enchant. 
-# Back: [url=http://ptr.wowhead.com/?item=45242]Drape of Mortal Downfall[/url] + Potent Monarch Topaz. +23 haste enchant. 41 hit.
-# Chest: [url=http://ptr.wowhead.com/?item=46168]Conqueror's Raiments of Sanctification[/url] + 2 * Runed Scarlet Ruby. +10stats enchant. 74 hit. 
-# Wrist: [url=http://ptr.wowhead.com/?item=45275]Bracers of Unleashed Magic[/url] +30sp enchant. 36 hit.
-# Hands: [url=http://ptr.wowhead.com/?item=45520]Handwraps of the Vigilant[/url] + 2*Runed Scarlet Ruby. +28sp enchant.
-# Waist: [url=http://ptr.wowhead.com/?item=45557]Sash of Ancient Power[/url] + 2*Runed Scarlet Ruby. Eternal Belt Buckle + Runed Scarlet Ruby. 43 hit.
-# Legs: [url=http://ptr.wowhead.com/?item=46170]Conqueror's Pants of Sanctification[/url] + 2 * Runed Scarlet Ruby. 50sp/20spi enchant.
-# Feet: [url=http://ptr.wowhead.com/?item=45135]Boots of Fiery Resolution[/url] + 2*Runed Scarlet Ruby. Icewalker enchant. 
-# Finger1: [url=http://ptr.wowhead.com/?item=40399]Signet of Manifested Pain[/url]. 
-# Finger2: [url=http://ptr.wowhead.com/?item=45297]Shimmering Seal[/url]. 
-# Trinket1: [url=http://ptr.wowhead.com/?item=45518]Flare of Heavens[/url]. 
-# Trinket2: [url=http://ptr.wowhead.com/?item=40432]Illustration of the Dragon Soul[/url]. 
-# Mainhand: [url=http://ptr.wowhead.com/?item=45457]Staff of Endless Winter[/url] + 2 * Purified Twilight Opals. +81 spellpower enchant.
-# Ranged: [url=http://ptr.wowhead.com/?item=45511]Scepter of Lost Souls[/url]. 
+# Gear used:
+# http://www.wowhead.com/?compare=46172:46163:46165:46168:45933:45242:45446:45537:45495:46046:45518:40432:45620:45511:45488
+# Plus: http://static.mmo-champion.com/mmoc/images/news/2009/june/starwatchersbinding.jpg
+#	http://static.mmo-champion.com/mmoc/images/news/2009/may/cosmos.jpg
+

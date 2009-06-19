@@ -120,6 +120,7 @@ struct priest_t : public player_t
     int shadow_word_death;
     int shadow_word_pain;
     int shadow;
+    int penance;
     glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
   };
   glyphs_t glyphs;
@@ -838,7 +839,20 @@ struct penance_t : public priest_spell_t
     tick_zero         = true;
     num_ticks         = 2;
     base_tick_time    = 1.0;
-    cooldown          = 10;
+    
+    if ( sim -> P320 )
+    {
+      cooldown        = 12;
+    }
+    else
+    {
+      cooldown        = 10;
+    }
+    if ( p -> glyphs.penance )
+    {
+      cooldown       -= 2;
+    }
+
     cooldown         *= 1.0 - p -> talents.aspiration * 0.10;
 
     penance_tick = new penance_tick_t( p );
@@ -2154,6 +2168,7 @@ std::vector<option_t>& priest_t::get_options()
       { "glyph_shadow_word_death",       OPT_BOOL, &( glyphs.shadow_word_death              ) },
       { "glyph_shadow_word_pain",        OPT_BOOL, &( glyphs.shadow_word_pain               ) },
       { "glyph_shadow",                  OPT_BOOL, &( glyphs.shadow                         ) },
+      { "glyph_penance",                 OPT_BOOL, &( glyphs.penance                        ) },
       // @option_doc loc=player/priest/misc title="Misc"
       { "devious_mind_delay",            OPT_FLT,  &( devious_mind_delay                    ) },
       // Deprecated

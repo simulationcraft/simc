@@ -509,6 +509,7 @@ struct pbuff_t{
   int n_triggers, n_trg_tries;
   // methods
   pbuff_t(player_t* plr, std::string name, double duration=0, double cooldown=0, int aura_idx=0, double use_value=0, bool t_ignore=false, double t_chance=0 );
+  virtual ~pbuff_t() { };
   virtual void reset();
   virtual bool trigger(double val=1, double b_duration=0,int aura_idx=0);
   virtual bool dec_buff();
