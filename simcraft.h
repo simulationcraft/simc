@@ -497,7 +497,7 @@ struct pbuff_t{
   buff_expiration_t* expiration; 
   int (*callback_expiration)(); //if set, will be called upon expiration
   int *trigger_counter;  // if set, will be incremented/decremented when buff is up/down
-  double last_trigger;
+  double last_trigger, expected_end;
   uptime_t* uptime_cnt; 
   bool be_silent;
   int aura_id;
@@ -520,6 +520,7 @@ struct pbuff_t{
   virtual bool is_up();
   virtual double mul_value();
   virtual double add_value();
+  virtual double  __cdecl expiration_time();
 };
 
 struct buff_list_t{
@@ -539,9 +540,12 @@ struct act_expression_t{
   act_expression_t* operand_1;
   act_expression_t* operand_2;
   act_expression_t();
-  static act_expression_t* parse(action_t* action, std::string expression);
   virtual double evaluate();
   virtual bool   ok();
+  static act_expression_t* create(action_t* action, std::string expression);
+  static void warn(int severity, action_t* action, std::string msg);
+  static act_expression_t* find_operator(action_t* action, std::string expression, std::string op_str, int op_type, bool binary);
+
 };
 
 // Simulation Engine =========================================================
@@ -2028,6 +2032,7 @@ struct util_t
 };
 
 std::string tolower( std::string src );
+std::string trim( std::string src );
 std::string proper_option_name( const std::string& full_name );
 
 bool armory_option_parse( sim_t* sim, const std::string& name, const std::string& value);

@@ -1023,7 +1023,7 @@ bool action_t::ready()
 
   //initialize expression if not already done -> should be done in some init_expressions()
   if (has_if_exp<0){
-    if (if_expression!="")   if_exp=act_expression_t::parse(this, if_expression);
+    if (if_expression!="")   if_exp=act_expression_t::create(this, if_expression);
     has_if_exp= (if_exp!=0);
   }
   //check action expression if any
@@ -1082,11 +1082,21 @@ void action_t::cancel()
 // Expressions 
 //
 
-  enum exp_type { AEXP_NONE=0, AEXP_AND, AEXP_OR, AEXP_NOT, AEXP_EQ, AEXP_GREATER, AEXP_LESS, AEXP_GE, AEXP_LE, 
-                  AEXP_PLUS, AEXP_MINUS, AEXP_NEGATE,
-                  AEXP_VALUE, AEXP_INT_PTR, AEXP_DOUBLE_PTR
+  enum exp_type { AEXP_NONE=0, 
+                  AEXP_AND, AEXP_OR, AEXP_NOT, AEXP_EQ, AEXP_GREATER, AEXP_LESS, AEXP_GE, AEXP_LE, // these operations result in boolean
+                  AEXP_PLUS, AEXP_MINUS, AEXP_MUL, AEXP_DIV, // these operations result in double
+                  AEXP_VALUE, AEXP_INT_PTR, AEXP_DOUBLE_PTR, // these are "direct" value return (no operations)
+                  AEXP_CUSTOM, // this one presume overriden class
+                  AEXP_MAX
   };
 
+
+  struct pbuff_expression: public act_expression_t{
+    pbuff_t* buff;
+    virtual double evaluate() {
+      return buff->expiration_time();
+    }
+  };
 
   // exp.class that evaluate to constant value
   struct expression_value_t: public act_expression_t
@@ -1119,15 +1129,25 @@ void action_t::cancel()
     value=0;
   }
 
+  // evaluate expressions based on 2 or 1 operand
   double act_expression_t::evaluate()
   {
     switch (type){
-      case AEXP_VALUE:      return value;  
-      case AEXP_DOUBLE_PTR: return *((double*)p_value);  
-      case AEXP_INT_PTR:    return *((int*)p_value);  
-      case AEXP_NOT:        return !operand_1->ok();  
-      case AEXP_NEGATE:     return -operand_1->evaluate();  
       case AEXP_AND:        return operand_1->ok() && operand_2->ok();  
+      case AEXP_OR:         return operand_1->ok() || operand_2->ok();  
+      case AEXP_NOT:        return !operand_1->ok();  
+      case AEXP_EQ:         return operand_1->evaluate() == operand_2->evaluate();  
+      case AEXP_GREATER:    return operand_1->evaluate() >  operand_2->evaluate();    
+      case AEXP_LESS:       return operand_1->evaluate() <  operand_2->evaluate();  
+      case AEXP_GE:         return operand_1->evaluate() >= operand_2->evaluate();    
+      case AEXP_LE:         return operand_1->evaluate() <= operand_2->evaluate();  
+      case AEXP_PLUS:       return operand_1->evaluate() +  operand_2->evaluate();  
+      case AEXP_MINUS:      return operand_1->evaluate() -  operand_2->evaluate();  
+      case AEXP_MUL:        return operand_1->evaluate() *  operand_2->evaluate();  
+      case AEXP_DIV:        return operand_2->evaluate()? operand_1->evaluate()/  operand_2->evaluate() : 0 ;  
+      case AEXP_VALUE:      return value;  
+      case AEXP_INT_PTR:    return *((int*)p_value);  
+      case AEXP_DOUBLE_PTR: return *((double*)p_value);  
     }
     return 0;
   }
@@ -1137,18 +1157,99 @@ void action_t::cancel()
     return evaluate()!=0; 
   }
 
+  //handle warnings/eeor reporting, mainly in parse phase
+  // Severity:  0= ignore warning
+  //            1= just warning
+  //            2= report error, but do not break
+  //            3= breaking error, assert
+  void act_expression_t::warn(int severity, action_t* action, std::string msg)
+  {
+    std::string e_msg;
+    if (severity<2)  e_msg="Warning";  else  e_msg="Error";
+    e_msg+="("+action->name_str+"): "+msg;
+    printf("%s\n", e_msg.c_str());
+    if ( action->sim -> debug ) log_t::output( action->sim, "Exp.parser warning: %s", e_msg.c_str() );
+    if (severity==3)
+      assert("Expression parser "==" breaking error");
+  }
+
+
+  act_expression_t* act_expression_t::find_operator(action_t* action, std::string expression, std::string op_str, int op_type, bool binary)
+  {
+    act_expression_t* node=0;
+    size_t p=0;
+    p=expression.find(op_str);
+    if (p!=std::string::npos){
+      std::string left=trim(expression.substr(0,p));
+      std::string right=trim(expression.substr(p+1));
+      act_expression_t* op1= 0;
+      act_expression_t* op2= 0;
+      if (binary){
+        op1= act_expression_t::create(action, left);
+        op2= act_expression_t::create(action, right);
+      }else{
+        op1= act_expression_t::create(action, right);
+        if (left!="") warn(2,action,"text to the left of unary operator "+op_str+" missing in : "+expression);
+      }
+      // error handling
+      if ((op1==0)||((op2==0)&&binary))
+        warn(3,action,"left or right operand for "+op_str+" missing in : "+expression);
+      // create new node
+      node= new act_expression_t();
+      node->type= op_type;
+      node->operand_1=op1;
+      node->operand_2=op2;
+    }
+    return node;
+  }
+
+
   // this parse expression string and create needed exp.tree
   // using different types of "expression nodes"
-  act_expression_t* act_expression_t::parse(action_t* action, std::string expression)
+  act_expression_t* act_expression_t::create(action_t* action, std::string expression)
   {
     act_expression_t* root=0;
-    // search for buff
-    pbuff_t* buff=action->player->buff_list.find_buff(expression);
-    if (buff){
-      root= new act_expression_t();
-      root->type=AEXP_DOUBLE_PTR;
-      root->p_value= &buff->buff_value;
+    std::string e=trim(expression);
+    // search for operators, starting with lowest priority operator
+    if (!root) root=find_operator(action,e, "&&", AEXP_AND,     true);
+    if (!root) root=find_operator(action,e, "&",  AEXP_AND,     true);
+    if (!root) root=find_operator(action,e, "||", AEXP_OR,      true);
+    if (!root) root=find_operator(action,e, "&",  AEXP_OR,      true);
+    if (!root) root=find_operator(action,e, "!",  AEXP_NOT,     false);
+    if (!root) root=find_operator(action,e, "==", AEXP_EQ,      true);
+    if (!root) root=find_operator(action,e, ">",  AEXP_GREATER, true);
+    if (!root) root=find_operator(action,e, "<",  AEXP_LESS,    true);
+    if (!root) root=find_operator(action,e, ">=", AEXP_GE,      true);
+    if (!root) root=find_operator(action,e, "<=", AEXP_LE,      true);
+    if (!root) root=find_operator(action,e, "+",  AEXP_PLUS,    true);
+    if (!root) root=find_operator(action,e, "-",  AEXP_MINUS,   true);
+    if (!root) root=find_operator(action,e, "*",  AEXP_MUL,     true);
+    if (!root) root=find_operator(action,e, "*",  AEXP_DIV,     true);
+
+    // search for buff name, if no operators found
+    if (!root){
+      pbuff_t* buff=action->player->buff_list.find_buff(e);
+      if (buff){
+        pbuff_expression* e_buff= new pbuff_expression();
+        e_buff->type=AEXP_CUSTOM;
+        e_buff->buff= buff;
+        root= e_buff;
+        //double (Foo::*funcPtr)( long ) = &Foo::One; 
+        //root->func_exp= &buff->expiration_time;
+      }
     }
+
+    // check if this is fixed value if nothing of above found
+    if (!root){
+      double val=atof(e.c_str());
+      if ((e=="0")||(val!=0)){
+        root= new act_expression_t();
+        root->type=AEXP_VALUE;
+        root->value= val;
+      }
+    }
+    //return result
     return root;
   }
+
 

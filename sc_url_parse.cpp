@@ -60,9 +60,10 @@ std::string tolower( std::string src )
 
 std::string trim( std::string src )
 {
+  if (src=="") return "";
   std::string dest=src;
   //remove left
-  size_t p=0;
+  int p=0;
   while ((p<dest.length())&&(dest[p]==' ')) p++;
   if (p>0) 
     dest.erase(0,p);

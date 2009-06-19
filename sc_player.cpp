@@ -381,6 +381,7 @@ static bool parse_talent_url( sim_t* sim,
     value=use_value;
     expiration=0;
     last_trigger=0;
+    expected_end=0;
     next=0;
     n_triggers=0;
     n_trg_tries=0;
@@ -403,6 +404,7 @@ static bool parse_talent_url( sim_t* sim,
   void pbuff_t::reset(){
     expiration=0;
     last_trigger=0;
+    expected_end=0;
     uptime_cnt->rewind();
   }
   // trigger buff if conditions are met (return false otherwise)
@@ -426,6 +428,7 @@ static bool parse_talent_url( sim_t* sim,
     uptime_cnt -> update( 1, true );
     // create and launch expiration event
     if (b_duration==0) b_duration=buff_duration;
+    expected_end=last_trigger+b_duration;
     if ( expiration )
     {
       expiration -> reschedule( b_duration );
@@ -437,6 +440,18 @@ static bool parse_talent_url( sim_t* sim,
     } 
     return true;
   }
+  //return time till expiration (or 0 if expired). Used as function pointer in expressions
+  double  pbuff_t::expiration_time()
+  {
+    if (!is_up_silent()) return 0; 
+    double remains= expected_end - player->sim->current_time;
+    if (remains<0) remains=0;
+    if ((remains<=0)&& is_up_silent())
+      remains=1; // fixing when buff is set outside without triggers - will report as 1sec remaining
+    return remains;
+  }
+
+
   // check if buff is up, without updating counters
   bool pbuff_t::is_up_silent(){
     return (buff_value!=0);
@@ -513,6 +528,7 @@ static bool parse_talent_url( sim_t* sim,
     if (pbuff->n_triggers== n_trig){
       player -> aura_loss( pbuff->name_str.c_str(), aura_id );
       pbuff->buff_value=0;
+      pbuff->expected_end=0;
       pbuff->uptime_cnt -> update( 0, true );
       if (pbuff->trigger_counter) *pbuff->trigger_counter--;
       if (pbuff->callback_expiration) pbuff->callback_expiration();
