@@ -1,6 +1,6 @@
 #!simcraft max_time=300 optimal_raid=1
 
-druid=Druid_T8_58_00_13_W
+druid=Druid_T8_58_00_13_PTR
 level=80
 talents=http://www.wowhead.com/?talent#0xRbuiIsfdIVhouZbxczb
 actions=flask,type=frost_wyrm/food,type=fish_feast/mark_of_the_wild/moonkin_form/mana_potion
