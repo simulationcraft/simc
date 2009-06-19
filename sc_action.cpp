@@ -52,7 +52,7 @@ action_t::action_t( int         ty,
     min_current_time( 0 ), max_current_time( 0 ),
     min_time_to_die( 0 ), max_time_to_die( 0 ),
     min_health_percentage( 0 ), max_health_percentage( 0 ),
-    vulnerable( 0 ), invulnerable( 0 ), wait_on_ready( -1 ), has_if_exp(-1), if_exp(NULL),
+    vulnerable( 0 ), invulnerable( 0 ), wait_on_ready( -1 ), has_if_exp(-1), is_ifall(0), if_exp(NULL),
     sync_action( 0 ), observer( 0 ), next( 0 )
 {
   if ( sim -> debug ) log_t::output( sim, "Player %s creates action %s", p -> name(), name() );
@@ -146,6 +146,7 @@ option_t* action_t::merge_options( std::vector<option_t>& merged_options,
 void action_t::parse_options( option_t*          options,
                               const std::string& options_str )
 {
+  std::string if_all;
   option_t base_options[] =
     {
       { "rank",               OPT_INT,    &rank_index            },
@@ -163,10 +164,16 @@ void action_t::parse_options( option_t*          options,
       { "wait_on_ready",      OPT_BOOL,   &wait_on_ready         },
       { "if_buff",            OPT_STRING, &if_expression         },
       { "if",                 OPT_STRING, &if_expression         },
+      { "ifall",              OPT_STRING, &if_all                },
+      { "if_all",             OPT_STRING, &if_all                },
       { NULL }
     };
   std::vector<option_t> merged_options;
   action_t::base_parse_options( merge_options( merged_options, options, base_options ), options_str );
+  if (if_all!=""){
+    is_ifall=1;
+    if (if_expression=="") if_expression=if_all;
+  }
 }
 
 // action_t::init_rank ======================================================
@@ -960,7 +967,7 @@ bool action_t::ready()
 {
   target_t* t = sim -> target;
 
-  if ( duration_ready > 0 )
+  if (( duration_ready > 0 )&&(!is_ifall))
     if ( duration_ready > ( sim -> current_time + execute_time() ) )
       return false;
 
@@ -1090,13 +1097,43 @@ void action_t::cancel()
                   AEXP_MAX
   };
 
+  enum exp_func_glob { EFG_NONE=0, EFG_GCD, EFG_TIME, EFG_TTD, EFG_HP, EFG_VULN, EFG_INVUL, 
+                       EFG_TICKING, EFG_CTICK,EFG_NTICKS, EFG_EXPIRE, EFG_REMAINS, EFG_TCAST, EFG_MOVING, EFG_MAX };
 
+  // custom class to invoke pbuff_t expiration
   struct pbuff_expression: public act_expression_t{
     pbuff_t* buff;
     virtual double evaluate() {
       return buff->expiration_time();
     }
   };
+
+  //custom class to return global functions
+  struct global_expression_t: public act_expression_t{
+    action_t* action;
+    virtual double evaluate() {
+      switch (type){
+        case EFG_GCD:        return action->gcd();  
+        case EFG_TIME:       return action->sim->current_time; 
+        case EFG_TTD:        return action->sim -> target ->time_to_die(); 
+        case EFG_HP:         return action->sim -> target -> health_percentage();  
+        case EFG_VULN:       return action->sim -> target ->vulnerable;  
+        case EFG_INVUL:      return action->sim -> target ->invulnerable;  
+        case EFG_TICKING:    return action->ticking;
+        case EFG_CTICK:      return action->current_tick;
+        case EFG_NTICKS:     return action->num_ticks;
+        case EFG_EXPIRE:     return action->duration_ready;
+        case EFG_REMAINS:    {
+                                double rem=action->duration_ready-action->sim->current_time;
+                                return rem>0? rem:0;
+                             }
+        case EFG_TCAST:      return action->execute_time();
+        case EFG_MOVING:     return action->player->moving;
+      }
+      return 0;
+    }
+  };
+
 
   // exp.class that evaluate to constant value
   struct expression_value_t: public act_expression_t
@@ -1209,7 +1246,7 @@ void action_t::cancel()
   act_expression_t* act_expression_t::create(action_t* action, std::string expression)
   {
     act_expression_t* root=0;
-    std::string e=trim(expression);
+    std::string e=trim(tolower(expression));
     // search for operators, starting with lowest priority operator
     if (!root) root=find_operator(action,e, "&&", AEXP_AND,     true);
     if (!root) root=find_operator(action,e, "&",  AEXP_AND,     true);
@@ -1226,17 +1263,97 @@ void action_t::cancel()
     if (!root) root=find_operator(action,e, "*",  AEXP_MUL,     true);
     if (!root) root=find_operator(action,e, "*",  AEXP_DIV,     true);
 
-    // search for buff name, if no operators found
+    // search for "named value", if no operators found
     if (!root){
-      pbuff_t* buff=action->player->buff_list.find_buff(e);
-      if (buff){
-        pbuff_expression* e_buff= new pbuff_expression();
-        e_buff->type=AEXP_CUSTOM;
-        e_buff->buff= buff;
-        root= e_buff;
-        //double (Foo::*funcPtr)( long ) = &Foo::One; 
-        //root->func_exp= &buff->expiration_time;
+      std::vector<std::string> parts;
+      unsigned int num_parts = util_t::string_split( parts, e, "." );
+      // check for known suffix
+      int suffix=0;
+      if (num_parts>1){
+        std::string sfx_candidate=parts[num_parts-1];
+        if (sfx_candidate=="duration") suffix=1;
+        if (sfx_candidate=="dur") suffix=1;
+        if (sfx_candidate=="time") suffix=1;
+        if (sfx_candidate=="value") suffix=2;
+        if (sfx_candidate=="buff") suffix=2;
+        if (sfx_candidate=="stacks") suffix=2;
       }
+      if (suffix>0) num_parts--; // if recognized, remove from list
+      // check for known prefix
+      int prefix=0;
+      if (num_parts>1){
+        std::string pfx_candidate=parts[0];
+        if (pfx_candidate=="buff") prefix=1;
+        if (pfx_candidate=="buffs") prefix=1;
+        if (pfx_candidate=="talent") prefix=2;
+        if (pfx_candidate=="talents") prefix=2;
+        if (pfx_candidate=="gear") prefix=3;
+        if (pfx_candidate=="option") prefix=4;
+        if (pfx_candidate=="options") prefix=4;
+        if (pfx_candidate=="global") prefix=5;
+      }
+      // get name of value
+      std::string name="";
+      if ((prefix>0)&&(num_parts==2)) 
+        name=parts[1]; 
+      else
+        if (num_parts==1) 
+          name=parts[0]; 
+        else{
+          if (atof(e.c_str())==0) //dont warn if this is number, like 3.5
+            warn(3,action,"wrong prefix.sufix combination for : "+e);
+        }
+      // now search for name in categories
+      if (name!=""){
+        // Buffs
+        if ( ((prefix==1)||(prefix==0)) && !root) {
+          pbuff_t* buff=action->player->buff_list.find_buff(name);
+          if (buff){
+            if (suffix!=2){
+              pbuff_expression* e_buff= new pbuff_expression();
+              e_buff->type=AEXP_CUSTOM;
+              e_buff->buff= buff;
+              root= e_buff;
+            }else{
+              root= new act_expression_t();
+              root->type= AEXP_DOUBLE_PTR;
+              root->p_value= &buff->buff_value;
+            }
+          }
+        }
+        // Global
+        if ( ((prefix==5)||(prefix==0)) && !root) {
+          int glob_type=0;
+          if (name=="gcd") glob_type=EFG_GCD;
+          if (name=="time") glob_type=EFG_TIME;
+          if (name=="time_to_die") glob_type=EFG_TTD;
+          if (name=="health_percentage") glob_type=EFG_HP;
+          if (name=="vulnerable") glob_type=EFG_VULN;
+          if (name=="invulnerable") glob_type=EFG_INVUL;
+          if (name=="active") glob_type=EFG_TICKING;
+          if (name=="ticking") glob_type=EFG_TICKING;
+          if (name=="current_tick") glob_type=EFG_CTICK;
+          if (name=="tick") glob_type=EFG_CTICK;
+          if (name=="num_ticks") glob_type=EFG_NTICKS;
+          if (name=="expire_time") glob_type=EFG_EXPIRE;
+          if (name=="expire") glob_type=EFG_EXPIRE;
+          if (name=="remains_time") glob_type=EFG_REMAINS;
+          if (name=="remains") glob_type=EFG_REMAINS;
+          if (name=="cast_time") glob_type=EFG_TCAST;
+          if (name=="execute_time") glob_type=EFG_TCAST;
+          if (name=="cast") glob_type=EFG_TCAST;
+          if (name=="moving") glob_type=EFG_MOVING;
+          if (name=="move") glob_type=EFG_MOVING;
+          // now create node if known global value
+          if (glob_type>0){
+            global_expression_t* g_func= new global_expression_t();
+            g_func->type= glob_type;
+            g_func->action=action;
+            root= g_func;
+          }
+        }
+      }
+
     }
 
     // check if this is fixed value if nothing of above found
