@@ -947,7 +947,7 @@ void player_t::init_spell()
 
   if ( initial_spell_hit == 0 )
   {
-    initial_spell_hit = base_spell_hit + stats.hit_rating / rating.spell_hit;
+    initial_spell_hit = base_spell_hit + stats.hit_rating / rating.spell_hit + ( sim -> overrides.heroic_presence ? 0.01 : 0.00 );
   }
   if ( initial_spell_crit == 0 )
   {

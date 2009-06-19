@@ -64,13 +64,13 @@ std::string trim( std::string src )
   std::string dest=src;
   //remove left
   int p=0;
-  while ((p<dest.length())&&(dest[p]==' ')) p++;
+  while ((p<(int)dest.length())&&(dest[p]==' ')) p++;
   if (p>0) 
     dest.erase(0,p);
   //remove right
   p=dest.length()-1;
   while ((p>=0)&&(dest[p]==' ')) p--;
-  if (p<dest.length()-1) 
+  if (p<(int)dest.length()-1) 
     dest.erase(p+1);
   //return trimmed string
   return dest;

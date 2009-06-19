@@ -1016,6 +1016,7 @@ std::vector<option_t>& sim_t::get_options()
       { "faerie_fire",                      OPT_BOOL,   &( overrides.faerie_fire                    ) },
       { "ferocious_inspiration",            OPT_BOOL,   &( overrides.ferocious_inspiration          ) },
       { "fortitude",                        OPT_BOOL,   &( overrides.fortitude                      ) },
+      { "heroic_presence",                  OPT_BOOL,   &( overrides.heroic_presence                ) },
       { "hunters_mark",                     OPT_BOOL,   &( overrides.hunters_mark                   ) },
       { "improved_moonkin_aura",            OPT_BOOL,   &( overrides.improved_moonkin_aura          ) },
       { "improved_scorch",                  OPT_BOOL,   &( overrides.improved_scorch                ) },

@@ -629,6 +629,7 @@ struct sim_t
     int faerie_fire;
     int ferocious_inspiration;
     int fortitude;
+    int heroic_presence;
     int hunters_mark;
     int improved_moonkin_aura;
     int improved_scorch;

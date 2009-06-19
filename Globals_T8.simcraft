@@ -54,6 +54,9 @@ target_armor=10643
 # Target race
 target_race=humanoid
 
+# Faction specific
+heroic_presence=0
+
 # Support for Feral Bear does not yet exist
 faerie_fire=1
 mangle=1
