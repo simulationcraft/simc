@@ -84,6 +84,19 @@ void replace_char( std::string& src, char old_c, char new_c  )
       src[i]=new_c;
 }
 
+void replace_str( std::string& src, std::string old_str, std::string new_str  )
+{
+  if (old_str=="") return;
+  std::string dest="";
+  size_t p;
+  while ((p=src.find(old_str))!=std::string::npos){
+    dest+=src.substr(0,p)+new_str;
+    src.erase(0,p+old_str.length());
+  }
+  dest+=src;
+  src=dest;
+}
+
 
 //wrapper supporting differnt armory pages
 std::string getArmoryData( urlSplit_t& aURL, url_page_t pgt, std::string moreParams="" )

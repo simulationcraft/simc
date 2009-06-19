@@ -2034,6 +2034,8 @@ struct util_t
 
 std::string tolower( std::string src );
 std::string trim( std::string src );
+void replace_char( std::string& src, char old_c, char new_c  );
+void replace_str( std::string& src, std::string old_str, std::string new_str  );
 std::string proper_option_name( const std::string& full_name );
 
 bool armory_option_parse( sim_t* sim, const std::string& name, const std::string& value);

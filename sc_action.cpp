@@ -1090,7 +1090,7 @@ void action_t::cancel()
 //
 
   enum exp_type { AEXP_NONE=0, 
-                  AEXP_AND, AEXP_OR, AEXP_NOT, AEXP_EQ, AEXP_GREATER, AEXP_LESS, AEXP_GE, AEXP_LE, // these operations result in boolean
+                  AEXP_AND, AEXP_OR, AEXP_NOT, AEXP_EQ, AEXP_NEQ, AEXP_GREATER, AEXP_LESS, AEXP_GE, AEXP_LE, // these operations result in boolean
                   AEXP_PLUS, AEXP_MINUS, AEXP_MUL, AEXP_DIV, // these operations result in double
                   AEXP_VALUE, AEXP_INT_PTR, AEXP_DOUBLE_PTR, // these are "direct" value return (no operations)
                   AEXP_CUSTOM, // this one presume overriden class
@@ -1174,6 +1174,7 @@ void action_t::cancel()
       case AEXP_OR:         return operand_1->ok() || operand_2->ok();  
       case AEXP_NOT:        return !operand_1->ok();  
       case AEXP_EQ:         return operand_1->evaluate() == operand_2->evaluate();  
+      case AEXP_NEQ:        return operand_1->evaluate() != operand_2->evaluate();  
       case AEXP_GREATER:    return operand_1->evaluate() >  operand_2->evaluate();    
       case AEXP_LESS:       return operand_1->evaluate() <  operand_2->evaluate();  
       case AEXP_GE:         return operand_1->evaluate() >= operand_2->evaluate();    
@@ -1218,7 +1219,7 @@ void action_t::cancel()
     p=expression.find(op_str);
     if (p!=std::string::npos){
       std::string left=trim(expression.substr(0,p));
-      std::string right=trim(expression.substr(p+1));
+      std::string right=trim(expression.substr(p+op_str.length()));
       act_expression_t* op1= 0;
       act_expression_t* op2= 0;
       if (binary){
@@ -1247,21 +1248,25 @@ void action_t::cancel()
   {
     act_expression_t* root=0;
     std::string e=trim(tolower(expression));
+    replace_char(e,'~','=');  // since options do not allow =, so ~ can be used instead
+    replace_str(e,"!=","<>"); // since ! has to be searched before !=
     // search for operators, starting with lowest priority operator
     if (!root) root=find_operator(action,e, "&&", AEXP_AND,     true);
     if (!root) root=find_operator(action,e, "&",  AEXP_AND,     true);
     if (!root) root=find_operator(action,e, "||", AEXP_OR,      true);
-    if (!root) root=find_operator(action,e, "&",  AEXP_OR,      true);
+    if (!root) root=find_operator(action,e, "|",  AEXP_OR,      true);
     if (!root) root=find_operator(action,e, "!",  AEXP_NOT,     false);
     if (!root) root=find_operator(action,e, "==", AEXP_EQ,      true);
-    if (!root) root=find_operator(action,e, ">",  AEXP_GREATER, true);
-    if (!root) root=find_operator(action,e, "<",  AEXP_LESS,    true);
+    if (!root) root=find_operator(action,e, "<>", AEXP_NEQ,     true);
     if (!root) root=find_operator(action,e, ">=", AEXP_GE,      true);
     if (!root) root=find_operator(action,e, "<=", AEXP_LE,      true);
+    if (!root) root=find_operator(action,e, ">",  AEXP_GREATER, true);
+    if (!root) root=find_operator(action,e, "<",  AEXP_LESS,    true);
     if (!root) root=find_operator(action,e, "+",  AEXP_PLUS,    true);
     if (!root) root=find_operator(action,e, "-",  AEXP_MINUS,   true);
     if (!root) root=find_operator(action,e, "*",  AEXP_MUL,     true);
-    if (!root) root=find_operator(action,e, "*",  AEXP_DIV,     true);
+    if (!root) root=find_operator(action,e, "/",  AEXP_DIV,     true);
+    if (!root) root=find_operator(action,e, ":",  AEXP_DIV,     true);
 
     // search for "named value", if no operators found
     if (!root){
