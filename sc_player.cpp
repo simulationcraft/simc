@@ -384,6 +384,8 @@ static bool parse_talent_url( sim_t* sim,
     next=0;
     n_triggers=0;
     n_trg_tries=0;
+    callback_expiration=NULL;
+    trigger_counter=NULL;
     if (chance!=0){
       int rng_type=RNG_DISTRIBUTED;
       // if "negative" chance, use simple random
@@ -418,6 +420,7 @@ static bool parse_talent_url( sim_t* sim,
     n_triggers++;
     uptime_cnt->n_triggers= n_triggers;
     last_trigger=player->sim->current_time;
+    if (trigger_counter) *trigger_counter++;
     // set value and update counters
     buff_value=val;
     uptime_cnt -> update( 1, true );
@@ -511,6 +514,8 @@ static bool parse_talent_url( sim_t* sim,
       player -> aura_loss( pbuff->name_str.c_str(), aura_id );
       pbuff->buff_value=0;
       pbuff->uptime_cnt -> update( 0, true );
+      if (pbuff->trigger_counter) *pbuff->trigger_counter--;
+      if (pbuff->callback_expiration) pbuff->callback_expiration();
     }else{
       //new buff was casted while old one was expiring
     }

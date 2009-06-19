@@ -495,6 +495,8 @@ struct pbuff_t{
   double buff_value; 
   double value; 
   buff_expiration_t* expiration; 
+  int (*callback_expiration)(); //if set, will be called upon expiration
+  int *trigger_counter;  // if set, will be incremented/decremented when buff is up/down
   double last_trigger;
   uptime_t* uptime_cnt; 
   bool be_silent;
@@ -507,16 +509,16 @@ struct pbuff_t{
   int n_triggers, n_trg_tries;
   // methods
   pbuff_t(player_t* plr, std::string name, double duration=0, double cooldown=0, int aura_idx=0, double use_value=0, bool t_ignore=false, double t_chance=0 );
-  void reset();
-  bool trigger(double val=1, double b_duration=0,int aura_idx=0);
-  bool dec_buff();
-  bool is_up_silent();
-  double mul_value_silent();
-  double add_value_silent();
-  void update_uptime(bool skip_usage=false);
-  bool is_up();
-  double mul_value();
-  double add_value();
+  virtual void reset();
+  virtual bool trigger(double val=1, double b_duration=0,int aura_idx=0);
+  virtual bool dec_buff();
+  virtual bool is_up_silent();
+  virtual double mul_value_silent();
+  virtual double add_value_silent();
+  virtual void update_uptime(bool skip_usage=false);
+  virtual bool is_up();
+  virtual double mul_value();
+  virtual double add_value();
 };
 
 struct buff_list_t{

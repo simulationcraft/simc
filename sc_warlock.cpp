@@ -42,7 +42,7 @@ struct warlock_t : public player_t
     double molten_core;
     int    pet_sacrifice;
     //double pyroclasm;
-    int    shadow_embrace;
+    //int    shadow_embrace;
     int    shadow_flame;
     int    shadow_trance;
     double shadow_vulnerability;
@@ -80,7 +80,7 @@ struct warlock_t : public player_t
     event_t* life_tap_glyph;
     event_t* molten_core;
     //event_t* pyroclasm;
-    event_t* shadow_embrace;
+    //event_t* shadow_embrace;
     event_t* shadow_flame;
     event_t* shadow_vulnerability;
 
@@ -234,9 +234,10 @@ struct warlock_t : public player_t
   glyphs_t glyphs;
 
   pbuff_t* backdraft;
-  pbuff_t* pyroclasm;
-  pbuff_t* eradication;
   pbuff_t* empowered_imp;
+  pbuff_t* eradication;
+  pbuff_t* pyroclasm;
+  pbuff_t* shadow_embrace;
 
 
   warlock_t( sim_t* sim, const std::string& name ) : player_t( sim, WARLOCK, name )
@@ -1117,8 +1118,15 @@ static void trigger_improved_shadow_bolt( spell_t* s )
 
 // stack_shadow_embrace =====================================================
 
+
 static void stack_shadow_embrace( spell_t* s )
 {
+  warlock_t* p = s -> player -> cast_warlock();
+  double new_value= p->shadow_embrace->buff_value+1;
+  if (new_value>2) new_value=2;
+  p->shadow_embrace->trigger(new_value);
+
+/*
   struct expiration_t : public event_t
   {
     expiration_t( sim_t* sim, warlock_t* p ) : event_t( sim, p )
@@ -1155,6 +1163,8 @@ static void stack_shadow_embrace( spell_t* s )
       e = new ( s -> sim ) expiration_t( s -> sim, p );
     }
   }
+*/
+
 }
 
 // trigger_nightfall ========================================================
@@ -1758,7 +1768,7 @@ double warlock_spell_t::execute_time()
     //p -> uptimes_backdraft   -> update( p -> _buffs.backdraft   != 0 );
     //if ( p -> _buffs.backdraft && tree == TREE_DESTRUCTION ) t *= 1.0 - p -> talents.backdraft * 0.10;
     p->eradication->update_uptime();
-    t*= p->backdraft->mul_value();
+    if ( tree == TREE_DESTRUCTION ) t*= p->backdraft->mul_value();
   }
   return t;
 }
@@ -1770,7 +1780,7 @@ double warlock_spell_t::gcd()
   double t = spell_t::gcd();
   warlock_t* p = player -> cast_warlock();
   //if ( p -> _buffs.backdraft && tree == TREE_DESTRUCTION ) t *= 1.0 - p -> talents.backdraft * 0.10;
-  t*= p->backdraft->mul_value();
+  if ( tree == TREE_DESTRUCTION ) t*= p->backdraft->mul_value();
   return t;
 }
 
@@ -1878,10 +1888,11 @@ void warlock_spell_t::target_debuff( int dmg_type )
 
   if ( dmg_type == DMG_OVER_TIME )
   {
-    if ( p -> _buffs.shadow_embrace && school == SCHOOL_SHADOW )
-    {
-      target_multiplier *= 1.0 + p -> _buffs.shadow_embrace * p -> talents.shadow_embrace * 0.01;
-    }
+    //if ( p -> _buffs.shadow_embrace && school == SCHOOL_SHADOW )
+    //  target_multiplier *= 1.0 + p -> _buffs.shadow_embrace * p -> talents.shadow_embrace * 0.01;
+    if ( p -> shadow_embrace->is_up() && school == SCHOOL_SHADOW )
+      target_multiplier *= 1.0 + p -> shadow_embrace->buff_value * p -> talents.shadow_embrace * 0.01;
+
     if ( p -> _buffs.haunted && school == SCHOOL_SHADOW )
     {
       target_multiplier *= ( p -> glyphs.haunt ) ? 1.23 : 1.20;
@@ -4660,8 +4671,8 @@ void warlock_t::init_uptimes()
   eradication->be_silent=true; // since it is queried on haste() many times, but used only if spell passed
   static int aura_id_eimp[]={0,47220,47221,47223};
   empowered_imp= new pbuff_t(this, "empowered_imp",8,0, aura_id_eimp[talents.empowered_imp%4], 0.20, !talents.empowered_imp, -talents.empowered_imp / 3.0);
-
-
+  shadow_embrace= new pbuff_t(this, "shadow_embrace",12,0, 32391, 000, !talents.shadow_embrace);
+  shadow_embrace->trigger_counter=&affliction_effects; // in order to update on expiration also (easier than callback)
 
   //uptimes_backdraft             = get_uptime( "backdraft"             );
   uptimes_demonic_empathy       = get_uptime( "demonic_empathy"       );
