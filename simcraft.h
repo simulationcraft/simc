@@ -527,7 +527,20 @@ struct buff_list_t{
   buff_list_t();
   void add_buff(pbuff_t* new_buff);
   void reset_buffs();
-  bool chk_buff(std::string name);
+  pbuff_t* find_buff(std::string name);
+  bool     chk_buff(std::string name);
+};
+
+struct act_expression_t{
+  int    type;
+  double value;
+  void   *p_value;
+  act_expression_t* operand_1;
+  act_expression_t* operand_2;
+  act_expression_t();
+  static act_expression_t* parse(action_t* action, std::string expression);
+  virtual double evaluate();
+  virtual bool   ok();
 };
 
 // Simulation Engine =========================================================
@@ -1551,8 +1564,9 @@ struct action_t
   double min_current_time, max_current_time;
   double min_time_to_die, max_time_to_die;
   double min_health_percentage, max_health_percentage;
-  int vulnerable, invulnerable, wait_on_ready;
-  std::string if_buff, if_not_buff;
+  int vulnerable, invulnerable, wait_on_ready,has_if_exp;
+  act_expression_t* if_exp;
+  std::string if_expression;
   std::string sync_str;
   action_t*   sync_action;
   action_t** observer;
@@ -2013,6 +2027,7 @@ struct util_t
 };
 
 std::string tolower( std::string src );
+std::string proper_option_name( const std::string& full_name );
 
 bool armory_option_parse( sim_t* sim, const std::string& name, const std::string& value);
 

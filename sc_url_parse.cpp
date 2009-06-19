@@ -58,6 +58,24 @@ std::string tolower( std::string src )
   return dest;
 }
 
+std::string trim( std::string src )
+{
+  std::string dest=src;
+  //remove left
+  size_t p=0;
+  while ((p<dest.length())&&(dest[p]==' ')) p++;
+  if (p>0) 
+    dest.erase(0,p);
+  //remove right
+  p=dest.length()-1;
+  while ((p>=0)&&(dest[p]==' ')) p--;
+  if (p<dest.length()-1) 
+    dest.erase(p+1);
+  //return trimmed string
+  return dest;
+}
+
+
 void replace_char( std::string& src, char old_c, char new_c  )
 {
   for (int i=0; i<(int)src.length(); i++)

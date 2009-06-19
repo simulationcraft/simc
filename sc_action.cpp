@@ -52,7 +52,7 @@ action_t::action_t( int         ty,
     min_current_time( 0 ), max_current_time( 0 ),
     min_time_to_die( 0 ), max_time_to_die( 0 ),
     min_health_percentage( 0 ), max_health_percentage( 0 ),
-    vulnerable( 0 ), invulnerable( 0 ), wait_on_ready( -1 ), 
+    vulnerable( 0 ), invulnerable( 0 ), wait_on_ready( -1 ), has_if_exp(-1), if_exp(NULL),
     sync_action( 0 ), observer( 0 ), next( 0 )
 {
   if ( sim -> debug ) log_t::output( sim, "Player %s creates action %s", p -> name(), name() );
@@ -161,8 +161,8 @@ void action_t::parse_options( option_t*          options,
       { "vulnerable",         OPT_BOOL,   &vulnerable            },
       { "invulnerable",       OPT_BOOL,   &invulnerable          },
       { "wait_on_ready",      OPT_BOOL,   &wait_on_ready         },
-      { "if_buff",            OPT_STRING, &if_buff               },
-      { "if_not_buff",        OPT_STRING, &if_not_buff           },
+      { "if_buff",            OPT_STRING, &if_expression         },
+      { "if",                 OPT_STRING, &if_expression         },
       { NULL }
     };
   std::vector<option_t> merged_options;
@@ -1021,14 +1021,14 @@ bool action_t::ready()
     if( ! t -> invulnerable )
       return false;
 
-  //generic buff checks "if_buff=buffname"
-  if (if_buff!="")
-    if (! player->buff_list.chk_buff(if_buff))
-      return false;
-
-  //generic buff checks "if_not_buff=buffname"
-  if (if_not_buff!="")
-    if (player->buff_list.chk_buff(if_not_buff))
+  //initialize expression if not already done -> should be done in some init_expressions()
+  if (has_if_exp<0){
+    if (if_expression!="")   if_exp=act_expression_t::parse(this, if_expression);
+    has_if_exp= (if_exp!=0);
+  }
+  //check action expression if any
+  if (has_if_exp) 
+    if (! if_exp->ok())
       return false;
 
   return true;
@@ -1076,3 +1076,79 @@ void action_t::cancel()
 
   reset();
 }
+
+
+//
+// Expressions 
+//
+
+  enum exp_type { AEXP_NONE=0, AEXP_AND, AEXP_OR, AEXP_NOT, AEXP_EQ, AEXP_GREATER, AEXP_LESS, AEXP_GE, AEXP_LE, 
+                  AEXP_PLUS, AEXP_MINUS, AEXP_NEGATE,
+                  AEXP_VALUE, AEXP_INT_PTR, AEXP_DOUBLE_PTR
+  };
+
+
+  // exp.class that evaluate to constant value
+  struct expression_value_t: public act_expression_t
+  {
+    double value;
+    virtual double evaluate(){ return value;}
+  };
+
+  // exp.class that evaluate to value from pointer to double
+  struct expression_double_prt_t: public act_expression_t
+  {
+    double* p_value;
+    virtual double evaluate(){ return *p_value;}
+  };
+
+  // exp.class that evaluate to value from pointer to int
+  struct expression_int_prt_t: public act_expression_t
+  {
+    int* p_value;
+    virtual double evaluate(){ return *p_value;}
+  };
+
+
+  act_expression_t::act_expression_t()
+  {
+    type=AEXP_NONE;
+    operand_1=NULL;
+    operand_2=NULL;
+    p_value=NULL;
+    value=0;
+  }
+
+  double act_expression_t::evaluate()
+  {
+    switch (type){
+      case AEXP_VALUE:      return value;  
+      case AEXP_DOUBLE_PTR: return *((double*)p_value);  
+      case AEXP_INT_PTR:    return *((int*)p_value);  
+      case AEXP_NOT:        return !operand_1->ok();  
+      case AEXP_NEGATE:     return -operand_1->evaluate();  
+      case AEXP_AND:        return operand_1->ok() && operand_2->ok();  
+    }
+    return 0;
+  }
+
+  bool   act_expression_t::ok()
+  {
+    return evaluate()!=0; 
+  }
+
+  // this parse expression string and create needed exp.tree
+  // using different types of "expression nodes"
+  act_expression_t* act_expression_t::parse(action_t* action, std::string expression)
+  {
+    act_expression_t* root=0;
+    // search for buff
+    pbuff_t* buff=action->player->buff_list.find_buff(expression);
+    if (buff){
+      root= new act_expression_t();
+      root->type=AEXP_DOUBLE_PTR;
+      root->p_value= &buff->buff_value;
+    }
+    return root;
+  }
+

@@ -544,14 +544,22 @@ static bool parse_talent_url( sim_t* sim,
       
   }
 
-  bool buff_list_t::chk_buff(std::string name){
-    bool present=false;
-    for (pbuff_t* p=first; p; p=p->next){
-      if (tolower(p->name_str)==tolower(name))
-        if (p->is_up_silent())
-          present=true;
+  pbuff_t* buff_list_t::find_buff(std::string name){
+    pbuff_t* res=0;
+    name=proper_option_name(name);
+    for (pbuff_t* p=first; p && !res; p=p->next){
+      if (proper_option_name(p->name_str)==name)
+        res=p;
     }
-    return present;
+    return res;
+  }
+
+  bool buff_list_t::chk_buff(std::string name){
+    pbuff_t* buff= find_buff(name);
+    if (buff) 
+      return buff->is_up_silent();
+    else
+      return false;
   }
 
 
