@@ -544,7 +544,7 @@ struct act_expression_t{
   virtual bool   ok();
   static act_expression_t* create(action_t* action, std::string expression);
   static void warn(int severity, action_t* action, std::string msg);
-  static act_expression_t* find_operator(action_t* action, std::string unmasked, std::string expression, std::string op_str, int op_type, bool binary);
+  static act_expression_t* find_operator(action_t* action, std::string unmasked, std::string expression, std::string op_str, int op_type, bool binary, bool can_miss_left=false);
 
 };
 
@@ -2036,6 +2036,7 @@ std::string tolower( std::string src );
 std::string trim( std::string src );
 void replace_char( std::string& src, char old_c, char new_c  );
 void replace_str( std::string& src, std::string old_str, std::string new_str  );
+bool str_to_float(std::string src, double& dest );
 std::string proper_option_name( const std::string& full_name );
 
 bool armory_option_parse( sim_t* sim, const std::string& name, const std::string& value);

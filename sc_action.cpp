@@ -1215,7 +1215,8 @@ void action_t::cancel()
   }
 
 
-  act_expression_t* act_expression_t::find_operator(action_t* action, std::string unmasked, std::string expression, std::string op_str, int op_type, bool binary)
+  act_expression_t* act_expression_t::find_operator(action_t* action, std::string unmasked, std::string expression, std::string op_str, 
+                                                    int op_type, bool binary, bool can_miss_left)
   {
     act_expression_t* node=0;
     size_t p=0;
@@ -1230,16 +1231,30 @@ void action_t::cancel()
         op2= act_expression_t::create(action, right);
       }else{
         op1= act_expression_t::create(action, right);
-        if (left!="") warn(2,action,"text to the left of unary operator "+op_str+" missing in : "+unmasked);
+        if (left!="") warn(2,action,"Unexpected text to the left of unary operator "+op_str+" in : "+unmasked);
+      }
+      //check allowed cases to miss left operand
+      if (binary && (op1==0) && can_miss_left){
+        op1= new act_expression_t();
+        op1->type=AEXP_VALUE;
+        op1->value= 0;
       }
       // error handling
       if ((op1==0)||((op2==0)&&binary))
-        warn(3,action,"left or right operand for "+op_str+" missing in : "+unmasked);
+        warn(3,action,"Left or right operand for "+op_str+" missing in : "+unmasked);
       // create new node
       node= new act_expression_t();
       node->type= op_type;
       node->operand_1=op1;
       node->operand_2=op2;
+      // optimize if both operands are constants
+      if ( (op1->type==AEXP_VALUE) && ((!binary)||(op2->type==AEXP_VALUE)) ){
+        double val= node->evaluate();
+        delete node;
+        node= new act_expression_t();
+        node->type=AEXP_VALUE;
+        node->value= val;
+      }
     }
     return node;
   }
@@ -1275,6 +1290,7 @@ void action_t::cancel()
   {
     act_expression_t* root=0;
     std::string e=trim(tolower(expression));
+    if (e=="") return root;   // if empty expression, fail
     replace_char(e,'~','=');  // since options do not allow =, so ~ can be used instead
     replace_str(e,"!=","<>"); // since ! has to be searched before !=
     // process parenthesses
@@ -1308,13 +1324,24 @@ void action_t::cancel()
     if (!root) root=find_operator(action,e,mask, "<=", AEXP_LE,      true);
     if (!root) root=find_operator(action,e,mask, ">",  AEXP_GREATER, true);
     if (!root) root=find_operator(action,e,mask, "<",  AEXP_LESS,    true);
-    if (!root) root=find_operator(action,e,mask, "+",  AEXP_PLUS,    true);
-    if (!root) root=find_operator(action,e,mask, "-",  AEXP_MINUS,   true);
+    if (!root) root=find_operator(action,e,mask, "+",  AEXP_PLUS,    true,true);
+    if (!root) root=find_operator(action,e,mask, "-",  AEXP_MINUS,   true,true);
     if (!root) root=find_operator(action,e,mask, "*",  AEXP_MUL,     true);
     if (!root) root=find_operator(action,e,mask, "/",  AEXP_DIV,     true);
     if (!root) root=find_operator(action,e,mask, "\\", AEXP_DIV,     true);
 
-    // search for "named value", if no operators found
+
+    // check if this is fixed value/number 
+    if (!root){
+      double val;
+      if (str_to_float(e, val)){
+        root= new act_expression_t();
+        root->type=AEXP_VALUE;
+        root->value= val;
+      }
+    }
+
+    // search for "named value", if nothing above found
     if (!root){
       std::vector<std::string> parts;
       unsigned int num_parts = util_t::string_split( parts, e, "." );
@@ -1322,12 +1349,12 @@ void action_t::cancel()
       int suffix=0;
       if (num_parts>1){
         std::string sfx_candidate=parts[num_parts-1];
-        if (sfx_candidate=="duration") suffix=1;
-        if (sfx_candidate=="dur") suffix=1;
-        if (sfx_candidate=="time") suffix=1;
-        if (sfx_candidate=="value") suffix=2;
+        if (sfx_candidate=="value") suffix=1;
         if (sfx_candidate=="buff") suffix=2;
         if (sfx_candidate=="stacks") suffix=2;
+        if (sfx_candidate=="duration") suffix=3;
+        if (sfx_candidate=="dur") suffix=3;
+        if (sfx_candidate=="time") suffix=3;
       }
       if (suffix>0) num_parts--; // if recognized, remove from list
       // check for known prefix
@@ -1350,17 +1377,15 @@ void action_t::cancel()
       else
         if (num_parts==1) 
           name=parts[0]; 
-        else{
-          if (atof(e.c_str())==0) //dont warn if this is number, like 3.5
-            warn(3,action,"wrong prefix.sufix combination for : "+e);
-        }
+        else
+          warn(3,action,"wrong prefix.sufix combination for : "+e);
       // now search for name in categories
       if (name!=""){
         // Buffs
         if ( ((prefix==1)||(prefix==0)) && !root) {
           pbuff_t* buff=action->player->buff_list.find_buff(name);
           if (buff){
-            if (suffix!=2){
+            if ((suffix==0)||(suffix==3)){
               pbuff_expression* e_buff= new pbuff_expression();
               e_buff->type=AEXP_CUSTOM;
               e_buff->buff= buff;
@@ -1413,15 +1438,6 @@ void action_t::cancel()
 
     }
 
-    // check if this is fixed value if nothing of above found
-    if (!root){
-      double val=atof(e.c_str());
-      if ((e=="0")||(val!=0)){
-        root= new act_expression_t();
-        root->type=AEXP_VALUE;
-        root->value= val;
-      }
-    }
     //return result
     return root;
   }

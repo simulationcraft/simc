@@ -523,6 +523,39 @@ bool my_isdigit( char c )
   return isdigit( c )!=0;
 }
 
+bool str_to_float(std::string src, double& dest )
+{
+  bool was_sign=false;
+  bool was_digit=false;
+  bool was_dot=false;
+  bool res=true;
+  //check each char
+  for (size_t p=0; res&&(p<src.length()); p++){
+    char ch=src[p];
+    if (ch==' ') continue;
+    if (((ch=='+')||(ch=='-'))&& !(was_sign||was_digit)){
+      was_sign=true;
+      continue;
+    }
+    if ((ch=='.')&& was_digit && !was_dot){
+      was_dot=true;
+      continue;
+    }
+    if ((ch>='0')&&(ch<='9')){
+      was_digit=true;
+      continue;
+    }
+    //if none of above, fail
+    res=false;
+  }
+  //check if we had at least one digit
+  if (!was_digit) res=false;
+  //return result
+  dest=atof(src.c_str());
+  return res;
+}
+
+
 // find value/pattern pair
 double oneTxtStat( std::string txt, const std::string& fullpat, int dir, int type, double* for_value=0  )
 {
