@@ -520,7 +520,7 @@ struct pbuff_t{
   virtual bool is_up();
   virtual double mul_value();
   virtual double add_value();
-  virtual double  __cdecl expiration_time();
+  virtual double expiration_time();
 };
 
 struct buff_list_t{
