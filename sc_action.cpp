@@ -1286,7 +1286,7 @@ void action_t::cancel()
       if (m_err!="")  warn(3,action,m_err);
       //remove enclosing parentheses if any
       if (mask.length()>1){
-        int start_bracket= (mask[0]<0)||(mask[0]>240)?mask[0]:0;
+        int start_bracket= (mask[0]<0)||((unsigned char)mask[0]>240)?mask[0]:0;
         if (start_bracket && (mask[mask.length()-1]==start_bracket)){
           is_all_enclosed=true;
           e.erase(0,1);
