@@ -405,6 +405,7 @@ static bool parse_talent_url( sim_t* sim,
     expiration=0;
     last_trigger=0;
     expected_end=0;
+    buff_value=0; 
     uptime_cnt->rewind();
   }
   // trigger buff if conditions are met (return false otherwise)
