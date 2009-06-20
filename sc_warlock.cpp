@@ -3562,8 +3562,13 @@ struct incinerate_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::player_buff();
     if ( p -> buffs.tier7_2pc ) player_crit += 0.10;
-    if ( p -> active_immolate && sim -> P312 )
-      player_multiplier *= 1 + 0.03 * p -> talents.fire_and_brimstone;
+    if ( p -> active_immolate){
+      if (sim->patch.after(3,2,0))
+        player_multiplier *= 1 + 0.02 * p -> talents.fire_and_brimstone;
+      else
+      if (sim -> P312 )
+        player_multiplier *= 1 + 0.03 * p -> talents.fire_and_brimstone;
+    }
     p -> uptimes_demonic_soul -> update( p -> buffs.tier7_2pc != 0 );
   }
 
