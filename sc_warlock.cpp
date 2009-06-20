@@ -37,7 +37,7 @@ struct warlock_t : public player_t
     double fel_armor;
     int    flame_shadow;
     int    haunted;
-    double life_tap_glyph;
+    //double life_tap_glyph;
     int    metamorphosis;
     double molten_core;
     int    pet_sacrifice;
@@ -77,7 +77,7 @@ struct warlock_t : public player_t
     event_t* flame_shadow;
     event_t* haunted;
     event_t* infernal;
-    event_t* life_tap_glyph;
+    //event_t* life_tap_glyph;
     event_t* molten_core;
     //event_t* pyroclasm;
     //event_t* shadow_embrace;
@@ -236,6 +236,7 @@ struct warlock_t : public player_t
   pbuff_t* backdraft;
   pbuff_t* empowered_imp;
   pbuff_t* eradication;
+  pbuff_t* life_tap_glyph;
   pbuff_t* pyroclasm;
   pbuff_t* shadow_embrace;
 
@@ -1657,8 +1658,10 @@ static void trigger_tier7_4pc( spell_t* s )
 
 // trigger_life_tap_glyph ===============================================
 
+/*
 static void trigger_life_tap_glyph( spell_t* s )
 {
+
   struct expiration_t : public event_t
   {
     expiration_t( sim_t* sim, warlock_t* p ) : event_t( sim, p )
@@ -1694,6 +1697,9 @@ static void trigger_life_tap_glyph( spell_t* s )
     }
   }
 }
+
+*/
+
 
 // trigger_ashtongue_talisman ===============================================
 
@@ -2466,8 +2472,13 @@ struct chaos_bolt_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::player_buff();
-    if ( p -> active_immolate && sim -> P312 )
-      player_multiplier *= 1 + 0.03 * p -> talents.fire_and_brimstone;
+    if ( p -> active_immolate){
+      if (sim->patch.after(3,2,0))
+        player_multiplier *= 1 + 0.03 * p -> talents.fire_and_brimstone;
+      else
+      if (sim -> P312 )
+        player_multiplier *= 1 + 0.02 * p -> talents.fire_and_brimstone;
+    }
   }
 
   virtual bool ready()
@@ -3090,6 +3101,12 @@ struct haunt_t : public warlock_spell_t
     direct_power_mod  = base_execute_time / 3.5;
     cooldown          = 8.0;
     may_crit          = true;
+
+    if ( p -> talents.pandemic && sim->patch.after(3,2,0) )
+    {
+      base_crit_bonus_multiplier = 2;
+    }
+
 
     base_cost        *= 1.0 - p -> talents.suppression * 0.02;
     base_hit         +=       p -> talents.suppression * 0.01;
@@ -3748,7 +3765,8 @@ struct life_tap_t : public warlock_spell_t
     mana *= ( 1.0 + p -> talents.improved_life_tap * 0.10 );
     p -> resource_gain( RESOURCE_MANA, mana, p -> gains_life_tap );
     if ( p -> talents.mana_feed ) p -> active_pet -> resource_gain( RESOURCE_MANA, mana );
-    trigger_life_tap_glyph( this );
+    //trigger_life_tap_glyph( this );
+    p->life_tap_glyph->trigger();
     trigger_tier7_4pc( this );
   }
 
@@ -3769,10 +3787,10 @@ struct life_tap_t : public warlock_spell_t
     if ( tier7_4pc && (p -> buffs.tier7_4pc || !p -> unique_gear -> tier7_4pc) )
       return false; 
     // skip if life_tap Glyph buff is up
-    if ( glyph_skip && p -> _buffs.life_tap_glyph )
+    if ( glyph_skip && p -> life_tap_glyph->is_up() )
       return false; 
     // skip if life_tap Glyph buff is up, OR player do not have glyph
-    if ( glyph && ( p -> _buffs.life_tap_glyph || !p -> glyphs.life_tap)  )
+    if ( glyph && ( p -> life_tap_glyph->is_up() || !p -> glyphs.life_tap)  )
       return false; 
     // skip if LifeTap would overflow mana over maximum
     if ( max ){
@@ -4433,7 +4451,7 @@ struct demonic_pact_callback_t : public action_callback_t
     buff -= o -> spell_power_per_spirit * o -> spirit();
 
     if ( o -> _buffs.fel_armor      ) buff += o -> spirit() * 0.3;
-    if ( o -> _buffs.life_tap_glyph ) buff -= o -> spirit() * 0.2;
+    buff -= o -> spirit() * o -> life_tap_glyph->add_value();
 
     buff *= 0.10;
 
@@ -4514,10 +4532,7 @@ double warlock_t::composite_spell_power( int school )
 
   sp += _buffs.fel_armor;
 
-  if ( _buffs.life_tap_glyph )
-  {
-    sp += spirit() * 0.2;
-  }
+  sp += spirit() * life_tap_glyph->add_value();
 
   if ( active_pet && talents.demonic_knowledge && active_pet -> pet_type != PET_INFERNAL
        && active_pet -> pet_type != PET_DOOMGUARD )
@@ -4663,14 +4678,17 @@ void warlock_t::init_uptimes()
 {
   player_t::init_uptimes();
 
-  static int aura_id_pyro[]={ 0, 18096, 18073, 63245 };
-  pyroclasm= new pbuff_t(this, "pyroclasm",10,0,aura_id_pyro[talents.pyroclasm%4], 1.0 + talents.pyroclasm * 0.02, !talents.pyroclasm );
   backdraft= new pbuff_t(this, "backdraft",15,0, 47257+ talents.backdraft, 1.0 - talents.backdraft * 0.10, !talents.backdraft);
+  static int aura_id_eimp[]={0,47220,47221,47223};
+  empowered_imp= new pbuff_t(this, "empowered_imp",8,0, aura_id_eimp[talents.empowered_imp%4], sim->patch.after(3,2,0)? 1.00 : 0.20, 
+                             !talents.empowered_imp, -talents.empowered_imp / 3.0);
   eradication= new pbuff_t(this, "eradication",10,0, 47195 + talents.eradication, 
                            1.0/ ( 1 + talents.eradication * 0.06 + (talents.eradication == 3? 0.02:0) ), !talents.eradication, 0.06);
   eradication->be_silent=true; // since it is queried on haste() many times, but used only if spell passed
-  static int aura_id_eimp[]={0,47220,47221,47223};
-  empowered_imp= new pbuff_t(this, "empowered_imp",8,0, aura_id_eimp[talents.empowered_imp%4], 0.20, !talents.empowered_imp, -talents.empowered_imp / 3.0);
+
+  life_tap_glyph= new pbuff_t(this, "life_tap_glyph", sim->patch.after(3,2,0)?40:20 ,0, 63941, 0.2 , !glyphs.life_tap);
+  static int aura_id_pyro[]={ 0, 18096, 18073, 63245 };
+  pyroclasm= new pbuff_t(this, "pyroclasm",10,0,aura_id_pyro[talents.pyroclasm%4], 1.0 + talents.pyroclasm * 0.02, !talents.pyroclasm );
   shadow_embrace= new pbuff_t(this, "shadow_embrace",12,0, 32391, 000, !talents.shadow_embrace);
   shadow_embrace->trigger_counter=&affliction_effects; // in order to update on expiration also (easier than callback)
 
