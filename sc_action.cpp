@@ -105,12 +105,15 @@ void action_t::base_parse_options( option_t*          options,
   {
     std::string n;
     std::string v;
-
-    if ( 2 != util_t::string_split( splits[ i ], "=", "S S", &n, &v ) )
+    n=splits[i];
+    size_t p=n.find("=");
+    if (p==std::string::npos)
     {
       fprintf( sim -> output_file, "action_t::parse_options %s: Unexpected parameter '%s'.  Expected format: name=value\n", name(), splits[ i ].c_str() );
       assert( false );
     }
+    v=n.substr(p+1);
+    n.erase(p);
 
     if ( ! option_t::parse( sim, options, n, v ) )
     {
@@ -164,8 +167,8 @@ void action_t::parse_options( option_t*          options,
       { "wait_on_ready",      OPT_BOOL,   &wait_on_ready         },
       { "if_buff",            OPT_STRING, &if_expression         },
       { "if",                 OPT_STRING, &if_expression         },
-      { "ifall",              OPT_STRING, &if_all                },
-      { "if_all",             OPT_STRING, &if_all                },
+      { "allow_early_recast", OPT_INT,    &is_ifall              },
+      { "allow_early_cast",   OPT_INT,    &is_ifall              },
       { NULL }
     };
   std::vector<option_t> merged_options;
@@ -1212,14 +1215,14 @@ void action_t::cancel()
   }
 
 
-  act_expression_t* act_expression_t::find_operator(action_t* action, std::string expression, std::string op_str, int op_type, bool binary)
+  act_expression_t* act_expression_t::find_operator(action_t* action, std::string unmasked, std::string expression, std::string op_str, int op_type, bool binary)
   {
     act_expression_t* node=0;
     size_t p=0;
     p=expression.find(op_str);
     if (p!=std::string::npos){
-      std::string left=trim(expression.substr(0,p));
-      std::string right=trim(expression.substr(p+op_str.length()));
+      std::string left =trim(unmasked.substr(0,p));
+      std::string right=trim(unmasked.substr(p+op_str.length()));
       act_expression_t* op1= 0;
       act_expression_t* op2= 0;
       if (binary){
@@ -1227,11 +1230,11 @@ void action_t::cancel()
         op2= act_expression_t::create(action, right);
       }else{
         op1= act_expression_t::create(action, right);
-        if (left!="") warn(2,action,"text to the left of unary operator "+op_str+" missing in : "+expression);
+        if (left!="") warn(2,action,"text to the left of unary operator "+op_str+" missing in : "+unmasked);
       }
       // error handling
       if ((op1==0)||((op2==0)&&binary))
-        warn(3,action,"left or right operand for "+op_str+" missing in : "+expression);
+        warn(3,action,"left or right operand for "+op_str+" missing in : "+unmasked);
       // create new node
       node= new act_expression_t();
       node->type= op_type;
@@ -1239,6 +1242,30 @@ void action_t::cancel()
       node->operand_2=op2;
     }
     return node;
+  }
+
+  // mark bracket "groups" as special chars (255..128, ie negative chars)
+  std::string bracket_mask(std::string& src, std::string& dst){
+    std::string err="";
+    dst="";
+    int b_lvl=0;
+    char b_num=0;
+    for (size_t p=0; p<src.length(); p++){
+      char ch=src[p];
+      if (ch=='('){
+        b_lvl++;
+        if (b_lvl==1) b_num--;
+      }
+      if (b_lvl>50) return "too many opening brackets!";
+      if (b_lvl==0)
+        dst+=ch;
+      else
+        dst+=b_num;
+      if (ch==')') b_lvl--;
+      if (b_lvl<0)  return "Too many closing brackets!";
+    }
+    if (b_lvl!=0) return "Brackets not closed!";
+    return "";
   }
 
 
@@ -1250,23 +1277,42 @@ void action_t::cancel()
     std::string e=trim(tolower(expression));
     replace_char(e,'~','=');  // since options do not allow =, so ~ can be used instead
     replace_str(e,"!=","<>"); // since ! has to be searched before !=
+    // process parenthesses
+    std::string m_err, mask;
+    bool is_all_enclosed;
+    do{
+      is_all_enclosed=false;
+      m_err= bracket_mask(e,mask);
+      if (m_err!="")  warn(3,action,m_err);
+      //remove enclosing parentheses if any
+      if (mask.length()>1){
+        int start_bracket= (mask[0]<0)||(mask[0]>240)?mask[0]:0;
+        if (start_bracket && (mask[mask.length()-1]==start_bracket)){
+          is_all_enclosed=true;
+          e.erase(0,1);
+          e.erase(e.length()-1);
+          e=trim(e);
+        }
+      }
+    } while (is_all_enclosed);
+
     // search for operators, starting with lowest priority operator
-    if (!root) root=find_operator(action,e, "&&", AEXP_AND,     true);
-    if (!root) root=find_operator(action,e, "&",  AEXP_AND,     true);
-    if (!root) root=find_operator(action,e, "||", AEXP_OR,      true);
-    if (!root) root=find_operator(action,e, "|",  AEXP_OR,      true);
-    if (!root) root=find_operator(action,e, "!",  AEXP_NOT,     false);
-    if (!root) root=find_operator(action,e, "==", AEXP_EQ,      true);
-    if (!root) root=find_operator(action,e, "<>", AEXP_NEQ,     true);
-    if (!root) root=find_operator(action,e, ">=", AEXP_GE,      true);
-    if (!root) root=find_operator(action,e, "<=", AEXP_LE,      true);
-    if (!root) root=find_operator(action,e, ">",  AEXP_GREATER, true);
-    if (!root) root=find_operator(action,e, "<",  AEXP_LESS,    true);
-    if (!root) root=find_operator(action,e, "+",  AEXP_PLUS,    true);
-    if (!root) root=find_operator(action,e, "-",  AEXP_MINUS,   true);
-    if (!root) root=find_operator(action,e, "*",  AEXP_MUL,     true);
-    if (!root) root=find_operator(action,e, "/",  AEXP_DIV,     true);
-    if (!root) root=find_operator(action,e, ":",  AEXP_DIV,     true);
+    if (!root) root=find_operator(action,e,mask, "&&", AEXP_AND,     true);
+    if (!root) root=find_operator(action,e,mask, "&",  AEXP_AND,     true);
+    if (!root) root=find_operator(action,e,mask, "||", AEXP_OR,      true);
+    if (!root) root=find_operator(action,e,mask, "|",  AEXP_OR,      true);
+    if (!root) root=find_operator(action,e,mask, "!",  AEXP_NOT,     false);
+    if (!root) root=find_operator(action,e,mask, "==", AEXP_EQ,      true);
+    if (!root) root=find_operator(action,e,mask, "<>", AEXP_NEQ,     true);
+    if (!root) root=find_operator(action,e,mask, ">=", AEXP_GE,      true);
+    if (!root) root=find_operator(action,e,mask, "<=", AEXP_LE,      true);
+    if (!root) root=find_operator(action,e,mask, ">",  AEXP_GREATER, true);
+    if (!root) root=find_operator(action,e,mask, "<",  AEXP_LESS,    true);
+    if (!root) root=find_operator(action,e,mask, "+",  AEXP_PLUS,    true);
+    if (!root) root=find_operator(action,e,mask, "-",  AEXP_MINUS,   true);
+    if (!root) root=find_operator(action,e,mask, "*",  AEXP_MUL,     true);
+    if (!root) root=find_operator(action,e,mask, "/",  AEXP_DIV,     true);
+    if (!root) root=find_operator(action,e,mask, "\\", AEXP_DIV,     true);
 
     // search for "named value", if no operators found
     if (!root){
@@ -1329,6 +1375,12 @@ void action_t::cancel()
         // Global
         if ( ((prefix==5)||(prefix==0)) && !root) {
           int glob_type=0;
+          //first names that are not expressions, but option settings
+          if (name=="allow_early_recast"){
+            action->is_ifall=1;
+            e="1";
+          }
+          // now regular names
           if (name=="gcd") glob_type=EFG_GCD;
           if (name=="time") glob_type=EFG_TIME;
           if (name=="time_to_die") glob_type=EFG_TTD;
