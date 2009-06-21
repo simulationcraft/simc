@@ -66,6 +66,7 @@
 	<!-- === ERRORS === -->
 	<xsl:template match="exceptions">
 		<div id="error_report">
+			<div class="close_button" title="Close this error box">Close</div>
 			<ul>
 			<xsl:for-each select="exception">
 				<li><xsl:value-of select="@message" /></li>

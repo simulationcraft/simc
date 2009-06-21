@@ -248,18 +248,23 @@ class XML_SimcraftConfigForm extends SimpleXMLElement_XSL
 		// Get the all-classes options tag
 		$all_classes = $this->options->supported_classes->fetch_single_XML_xpath("class[@class='all_classes']");
 		
-		// Most of these were lifted from the Globals_T7 file
-		$global_options->set_single_xml_xpath_property("option[@name='patch']", 'value', '3.1.0');
+		// Most of these were lifted from the Globals_T8 file
+		$global_options->set_single_xml_xpath_property("option[@name='optimal_raid']", 'value', 1);
+		$global_options->set_single_xml_xpath_property("option[@name='smooth_rng']", 'value', 1);
+		$global_options->set_single_xml_xpath_property("option[@name='normalize_scale_factors']", 'value', 1);
+		$global_options->set_single_xml_xpath_property("option[@name='threads']", 'value', 2);
 		$global_options->set_single_xml_xpath_property("option[@name='queue_lag']", 'value', 0.075);
 		$global_options->set_single_xml_xpath_property("option[@name='gcd_lag']", 'value', 0.150);
 		$global_options->set_single_xml_xpath_property("option[@name='channel_lag']", 'value', 0.250);
+		$global_options->set_single_xml_xpath_property("option[@name='travel_variance']", 'value', 0.075);
 		$global_options->set_single_xml_xpath_property("option[@name='target_level']", 'value', 83);
 		$global_options->set_single_xml_xpath_property("option[@name='max_time']", 'value', 300);
 		$global_options->set_single_xml_xpath_property("option[@name='iterations']", 'value', 1000);
 		$global_options->set_single_xml_xpath_property("option[@name='infinite_mana']", 'value', 0);
 		$global_options->set_single_xml_xpath_property("option[@name='regen_periodicity']", 'value', 1.0);
 		$global_options->set_single_xml_xpath_property("option[@name='target_armor']", 'value', 10643);
-		$global_options->set_single_xml_xpath_property("option[@name='target_race']", 'value', none);
+		$global_options->set_single_xml_xpath_property("option[@name='target_race']", 'value', 'humanoid');
+		$global_options->set_single_xml_xpath_property("option[@name='heroic_presence']", 'value', 0);
 		$global_options->set_single_xml_xpath_property("option[@name='faerie_fire']", 'value', 1);
 		$global_options->set_single_xml_xpath_property("option[@name='mangle']", 'value', 1);
 		$global_options->set_single_xml_xpath_property("option[@name='battle_shout']", 'value', 1);
@@ -272,8 +277,7 @@ class XML_SimcraftConfigForm extends SimpleXMLElement_XSL
 		$global_options->set_single_xml_xpath_property("option[@name='sanctified_retribution']", 'value', 1);
 		$global_options->set_single_xml_xpath_property("option[@name='swift_retribution']", 'value', 1);
 		$global_options->set_single_xml_xpath_property("option[@name='crypt_fever']", 'value', 1);
-		$global_options->set_single_xml_xpath_property("option[@name='calculate_scale_factors']", 'value', 0);
-		$global_options->set_single_xml_xpath_property("option[@name='optimal_raid']", 'value', 1);
+		$global_options->set_single_xml_xpath_property("option[@name='calculate_scale_factors']", 'value', 1);
 	}
 			
 	/**
@@ -423,7 +427,7 @@ class XML_SimcraftConfigForm extends SimpleXMLElement_XSL
 		$simcraft_command = "./simcraft iterations=0 max_time=1 armory=" . escapeshellarg("$region_name,$server_name,$character_name") . " save=%s";
 		
 		// Execute the command
-		list($file_contents, $output) = execute_simcraft_command($simcraft_command);
+		list($file_contents, $simcraft_output) = execute_simcraft_command($simcraft_command);
 		
 		// Add the raider definition in the config file to the XML
 		$this->set_option_values_from_file_contents($file_contents, true);

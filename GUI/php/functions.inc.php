@@ -189,7 +189,7 @@ function execute_simcraft_command( $simcraft_command )
 	// Fetch the output file contents
 	$file_contents = file_get_contents($output_file);
 	if( $file_contents === false ) {
-		throw new Exception("Error reading the simcraft output file.\nsimcract command:$simcraft_command\n simcraft STDOUT: $simcraft_output");
+		throw new Exception("Error reading the simcraft output file.\n\nsimcraft command:\n$simcraft_command\n\n simcraft STDOUT:\n$simcraft_output");
 	}
 	
 	// Return the output

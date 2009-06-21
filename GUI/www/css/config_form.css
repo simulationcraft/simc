@@ -101,6 +101,36 @@ fieldset.foldable.folded legend {
 
 
 
+/* === ERRORS === */
+div#error_report {
+		position: absolute;
+		z-index: 100;
+		top: 20px;
+		left: 50%;
+		width: 1200px;
+		margin-left: -600px;
+		padding: 5px;
+		padding-top: 22px;
+		overflow: auto;
+		font-size: 80%;
+		white-space: pre;
+		border: 1px solid red;
+		background-color: #FFEEEE;
+}
+
+	div#error_report div.close_button {
+		position: absolute;
+		top: 2px;
+		font-size: 0px;
+		width: 22px;
+		height: 22px;
+		cursor: pointer;
+		right: 2px;
+		background: url(../images/button_cancel.png) no-repeat 0 0;			
+	}
+
+
+
 /* === TITLE BAR === */
 div#title_bar {
 	color: white;

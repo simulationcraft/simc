@@ -46,6 +46,9 @@ $( function() {
 	
 	// Reset the event handlers
 	reset_list_elements();
+	
+	// Error box close button
+	$('div#error_report div.close_button').click( function() { $(this).parent().hide(); });
 });
 
 

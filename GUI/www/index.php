@@ -17,11 +17,16 @@ if( isset($_POST['simulate']) && ALLOW_SIMULATION===true ) {
 	$simcraft_command = generate_simcraft_command( $_POST );
 	
 	// Execute the command
-	list($file_contents, ) = execute_simcraft_command($simcraft_command);
+	list($file_contents, $simcraft_output) = execute_simcraft_command($simcraft_command);
 	
 	// Fetch the result as an XML object, and release it to the browser as output
-	$xml = new SimpleXMLElement_XSL($file_contents);
-	$xml->release_to_browser('xsl/results.xsl');	
+	try {
+		$xml = new SimpleXMLElement_XSL($file_contents);
+		$xml->release_to_browser('xsl/results.xsl');
+	}
+	catch( Exception $e) {
+		throw new Exception("Simcraft did not return valid XML.\n\nsimcraft command:\n$simcraft_command\n\nsimcraft STDOUT:\n$simcraft_output\n\nsimcraft file content:\n$file_contents");
+	}	
 }
 
 

@@ -292,9 +292,9 @@
       </class>
     </supported_classes>
     <global_options>
-      <option name="calculate_scale_factors" label="Calculate Scale Factors" type="boolean" cpp_type="OPT_BOOL" file="sc_scaling.cpp" optdoc_loc="global/scale_factors" optdoc_title="Scale Factors" value="0"/>
+      <option name="calculate_scale_factors" label="Calculate Scale Factors" type="boolean" cpp_type="OPT_BOOL" file="sc_scaling.cpp" optdoc_loc="global/scale_factors" optdoc_title="Scale Factors" value="1"/>
       <option name="smooth_scale_factors" label="Smooth Scale Factors" type="boolean" cpp_type="OPT_BOOL" file="sc_scaling.cpp" optdoc_loc="global/scale_factors" optdoc_title="Scale Factors" value=""/>
-      <option name="normalize_scale_factors" label="Normalize Scale Factors" type="boolean" cpp_type="OPT_BOOL" file="sc_scaling.cpp" optdoc_loc="global/scale_factors" optdoc_title="Scale Factors" value=""/>
+      <option name="normalize_scale_factors" label="Normalize Scale Factors" type="boolean" cpp_type="OPT_BOOL" file="sc_scaling.cpp" optdoc_loc="global/scale_factors" optdoc_title="Scale Factors" value="1"/>
       <option name="debug_scale_factors" label="Debug Scale Factors" type="boolean" cpp_type="OPT_BOOL" file="sc_scaling.cpp" optdoc_loc="global/scale_factors" optdoc_title="Scale Factors" value=""/>
       <option name="center_scale_delta" label="Center Scale Delta" type="boolean" cpp_type="OPT_BOOL" file="sc_scaling.cpp" optdoc_loc="global/scale_factors" optdoc_title="Scale Factors" value=""/>
       <option name="scale_lag" label="Scale Lag" type="boolean" cpp_type="OPT_BOOL" file="sc_scaling.cpp" optdoc_loc="global/scale_factors" optdoc_title="Scale Factors" value=""/>
@@ -314,7 +314,7 @@
       <option name="scale_weapon_dps" label="Scale Weapon Dps" type="float" cpp_type="OPT_FLT" file="sc_scaling.cpp" optdoc_loc="global/scale_factors" optdoc_title="Scale Factors" value=""/>
       <option name="iterations" label="Iterations" type="integer" cpp_type="OPT_INT" file="sc_sim.cpp" optdoc_loc="global/general" optdoc_title="General" value="1000"/>
       <option name="max_time" label="Max Time" type="float" cpp_type="OPT_FLT" file="sc_sim.cpp" optdoc_loc="global/general" optdoc_title="General" value="300"/>
-      <option name="threads" label="Threads" type="integer" cpp_type="OPT_INT" file="sc_sim.cpp" optdoc_loc="global/general" optdoc_title="General" value=""/>
+      <option name="threads" label="Threads" type="integer" cpp_type="OPT_INT" file="sc_sim.cpp" optdoc_loc="global/general" optdoc_title="General" value="2"/>
       <option name="channel_lag" label="Channel Lag" type="float" cpp_type="OPT_FLT" file="sc_sim.cpp" optdoc_loc="global/lag" optdoc_title="Lag" value="0.25"/>
       <option name="channel_lag_range" label="Channel Lag Range" type="float" cpp_type="OPT_FLT" file="sc_sim.cpp" optdoc_loc="global/lag" optdoc_title="Lag" value=""/>
       <option name="gcd_lag" label="Gcd Lag" type="float" cpp_type="OPT_FLT" file="sc_sim.cpp" optdoc_loc="global/lag" optdoc_title="Lag" value="0.15"/>
@@ -322,7 +322,7 @@
       <option name="queue_lag" label="Queue Lag" type="float" cpp_type="OPT_FLT" file="sc_sim.cpp" optdoc_loc="global/lag" optdoc_title="Lag" value="0.075"/>
       <option name="queue_lag_range" label="Queue Lag Range" type="float" cpp_type="OPT_FLT" file="sc_sim.cpp" optdoc_loc="global/lag" optdoc_title="Lag" value=""/>
       <option name="reaction_time" label="Reaction Time" type="float" cpp_type="OPT_FLT" file="sc_sim.cpp" optdoc_loc="global/lag" optdoc_title="Lag" value=""/>
-      <option name="travel_variance" label="Travel Variance" type="float" cpp_type="OPT_FLT" file="sc_sim.cpp" optdoc_loc="global/lag" optdoc_title="Lag" value=""/>
+      <option name="travel_variance" label="Travel Variance" type="float" cpp_type="OPT_FLT" file="sc_sim.cpp" optdoc_loc="global/lag" optdoc_title="Lag" value="0.075"/>
       <option name="abominations_might" label="Abominations Might" type="boolean" cpp_type="OPT_BOOL" file="sc_sim.cpp" optdoc_loc="global/overrides" optdoc_title="Buff/Debuff Overrides" value=""/>
       <option name="arcane_brilliance" label="Arcane Brilliance" type="boolean" cpp_type="OPT_BOOL" file="sc_sim.cpp" optdoc_loc="global/overrides" optdoc_title="Buff/Debuff Overrides" value=""/>
       <option name="battle_shout" label="Battle Shout" type="boolean" cpp_type="OPT_BOOL" file="sc_sim.cpp" optdoc_loc="global/overrides" optdoc_title="Buff/Debuff Overrides" value="1"/>
@@ -340,7 +340,7 @@
       <option name="faerie_fire" label="Faerie Fire" type="boolean" cpp_type="OPT_BOOL" file="sc_sim.cpp" optdoc_loc="global/overrides" optdoc_title="Buff/Debuff Overrides" value="1"/>
       <option name="ferocious_inspiration" label="Ferocious Inspiration" type="boolean" cpp_type="OPT_BOOL" file="sc_sim.cpp" optdoc_loc="global/overrides" optdoc_title="Buff/Debuff Overrides" value=""/>
       <option name="fortitude" label="Fortitude" type="boolean" cpp_type="OPT_BOOL" file="sc_sim.cpp" optdoc_loc="global/overrides" optdoc_title="Buff/Debuff Overrides" value=""/>
-      <option name="heroic_presence" label="Heroic Presence" type="boolean" cpp_type="OPT_BOOL" file="sc_sim.cpp" optdoc_loc="global/overrides" optdoc_title="Buff/Debuff Overrides" value=""/>
+      <option name="heroic_presence" label="Heroic Presence" type="boolean" cpp_type="OPT_BOOL" file="sc_sim.cpp" optdoc_loc="global/overrides" optdoc_title="Buff/Debuff Overrides" value="0"/>
       <option name="hunters_mark" label="Hunters Mark" type="boolean" cpp_type="OPT_BOOL" file="sc_sim.cpp" optdoc_loc="global/overrides" optdoc_title="Buff/Debuff Overrides" value=""/>
       <option name="improved_moonkin_aura" label="Improved Moonkin Aura" type="boolean" cpp_type="OPT_BOOL" file="sc_sim.cpp" optdoc_loc="global/overrides" optdoc_title="Buff/Debuff Overrides" value=""/>
       <option name="improved_scorch" label="Improved Scorch" type="boolean" cpp_type="OPT_BOOL" file="sc_sim.cpp" optdoc_loc="global/overrides" optdoc_title="Buff/Debuff Overrides" value=""/>
@@ -377,12 +377,12 @@
       <option name="infinite_rage" label="Infinite Rage" type="boolean" cpp_type="OPT_BOOL" file="sc_sim.cpp" optdoc_loc="global/regen" optdoc_title="Regen" value=""/>
       <option name="infinite_runic" label="Infinite Runic" type="boolean" cpp_type="OPT_BOOL" file="sc_sim.cpp" optdoc_loc="global/regen" optdoc_title="Regen" value=""/>
       <option name="regen_periodicity" label="Regen Periodicity" type="float" cpp_type="OPT_FLT" file="sc_sim.cpp" optdoc_loc="global/regen" optdoc_title="Regen" value="1"/>
-      <option name="smooth_rng" label="Smooth Rng" type="boolean" cpp_type="OPT_BOOL" file="sc_sim.cpp" optdoc_loc="global/rng" optdoc_title="Smooth RNG" value=""/>
+      <option name="smooth_rng" label="Smooth Rng" type="boolean" cpp_type="OPT_BOOL" file="sc_sim.cpp" optdoc_loc="global/rng" optdoc_title="Smooth RNG" value="1"/>
       <option name="deterministic_roll" label="Deterministic Roll" type="boolean" cpp_type="OPT_BOOL" file="sc_sim.cpp" optdoc_loc="global/rng" optdoc_title="Smooth RNG" value=""/>
       <option name="average_range" label="Average Range" type="boolean" cpp_type="OPT_BOOL" file="sc_sim.cpp" optdoc_loc="global/rng" optdoc_title="Smooth RNG" value=""/>
       <option name="average_gauss" label="Average Gauss" type="boolean" cpp_type="OPT_BOOL" file="sc_sim.cpp" optdoc_loc="global/rng" optdoc_title="Smooth RNG" value=""/>
       <option name="target_name" label="Target Name" type="string" cpp_type="OPT_STRING" file="sc_target.cpp" optdoc_loc="global/target/general" optdoc_title="Target General" value=""/>
-      <option name="target_race" label="Target Race" type="string" cpp_type="OPT_STRING" file="sc_target.cpp" optdoc_loc="global/target/general" optdoc_title="Target General" value="none"/>
+      <option name="target_race" label="Target Race" type="string" cpp_type="OPT_STRING" file="sc_target.cpp" optdoc_loc="global/target/general" optdoc_title="Target General" value="humanoid"/>
       <option name="target_level" label="Target Level" type="integer" cpp_type="OPT_INT" file="sc_target.cpp" optdoc_loc="global/target/general" optdoc_title="Target General" value="83"/>
       <option name="target_health" label="Target Health" type="float" cpp_type="OPT_FLT" file="sc_target.cpp" optdoc_loc="global/target/general" optdoc_title="Target General" value=""/>
       <option name="target_id" label="Target Id" type="string" cpp_type="OPT_STRING" file="sc_target.cpp" optdoc_loc="global/target/general" optdoc_title="Target General" value=""/>
@@ -396,7 +396,7 @@
       <option name="target_shield" label="Target Shield" type="integer" cpp_type="OPT_INT" file="sc_target.cpp" optdoc_loc="global/target/defense" optdoc_title="Target Defense" value=""/>
       <option name="target_block" label="Target Block" type="integer" cpp_type="OPT_INT" file="sc_target.cpp" optdoc_loc="global/target/defense" optdoc_title="Target Defense" value=""/>
       <option name="optimal_raid" label="Optimal Raid" type="boolean" cpp_type="OPT_BOOL" file="meta_options" value="1"/>
-      <option name="patch" label="Patch" type="string" cpp_type="OPT_STRING" file="meta_options" value="3.1.0"/>
+      <option name="patch" label="Patch" type="string" cpp_type="OPT_STRING" file="meta_options" value=""/>
     </global_options>
   </options>
   <servers>
