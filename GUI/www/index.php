@@ -72,7 +72,7 @@ else {
 	add_wow_servers($xml);
 		
 	// If a request was passed to add a raid member from the armory
-	if( isset($_POST['add_from_armory']) ) {
+	if( isset($_POST['import_from_armory']) ) {
 		
 		// Re-set any submitted form values (to preserve the form's state)
 		set_values_from_array($xml, $_POST);

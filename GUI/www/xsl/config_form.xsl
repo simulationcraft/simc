@@ -35,6 +35,8 @@
 			<!-- Call the template defined below, which handles initializing the prototypical new-raiders in javascript -->
 			<xsl:call-template name="javascript_prefill" />
 
+			<xsl:apply-templates select="exceptions" />
+
 			<!-- The overall page content -->		
 			<div id="content_wrapper">
 				
@@ -60,6 +62,19 @@
 	</xsl:template>
 
 
+
+	<!-- === ERRORS === -->
+	<xsl:template match="exceptions">
+		<div id="error_report">
+			<ul>
+			<xsl:for-each select="exception">
+				<li><xsl:value-of select="@message" /></li>
+			</xsl:for-each>
+			</ul>
+		</div>
+	</xsl:template>
+	
+	
 
 	<!-- === TITLE === -->
 	<xsl:template name="titlebar">

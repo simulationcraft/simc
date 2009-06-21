@@ -833,12 +833,40 @@ function custom_exception_handler( $exception )
 {
 	// Create the error xml object
 	$xml = new SimpleXMLElement_XSL('<xml></xml>');
-	
+
 	// Add the exception description to the XML
-	$xml_exc = $xml->addChild('exception');
+	$exceptions = $xml->exceptions ? $xml->exceptions : $xml->addChild('exceptions');
+	$xml_exc = $exceptions->addChild('exception');
 	$xml_exc->addAttribute('code', $exception->getCode() );
 	$xml_exc->addAttribute('message', $exception->getMessage() );
+
+	// Attempt to recover the form contents, as much as possible
+	try {
+
+		// Add the simulation config form XML to the outgoing XML object
+		append_simulation_config_form($xml);
 	
+		// Add the wow servers
+		add_wow_servers($xml);
+		
+		// Make sure the user's settings stay preserved
+		if( !empty($_POST) ) {
+			set_values_from_array($xml, $_POST);
+		}
+		
+		// else just use the default values
+		else {
+			set_default_values($xml);
+		}
+	}
+	
+	// If the attempt to recover the form contents failed, add an additional error message for the user - hey, we tried
+	catch( Exception $e) {
+		$exceptions = $xml->exceptions ? $xml->exceptions : $xml->addChild('exceptions');
+		$xml_exc = $exceptions->addChild('exception');
+		$xml_exc->addAttribute('message', 'An attempt was made to recover the form contents, but failed.' );
+	}
+		
 	// Send the page header for xml content
 	header('HTTP/1.1 500 Internal Server Error');
 	header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
@@ -849,7 +877,7 @@ function custom_exception_handler( $exception )
 	header('Content-type: text/xml');
 	
 	// Send the output string
-	echo $xml->asXML_with_XSL('xsl/error.xsl');
+	echo $xml->asXML_with_XSL('xsl/config_form.xsl');
 	exit(1);
 }
 ?>
