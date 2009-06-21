@@ -127,7 +127,7 @@ function build_file_from_config_array( array $arr_options )
  * @param array $arr_options
  * @return string
  */
-function generate_simcraft_command( array $arr_options, $output_file=null )
+function generate_simcraft_command( array $arr_options )
 {
 	// Prime the output string
 	$return_string = './simcraft';
@@ -147,17 +147,53 @@ function generate_simcraft_command( array $arr_options, $output_file=null )
 		else {
 			$opt_name = array_keys($value);
 			$opt_value = array_values($value);
-			$return_string .= " {$opt_name[0]}='{$opt_value[0]}'";
+			$return_string .= " ".escapeshellcmd($opt_name[0]).'='.escapeshellarg($opt_value[0]);
 		}
 	}
 	
 	// Add the output directives
-	if( !is_null($output_file) ) {
-		$return_string .= " xml='$output_file'";
-	}
+	$return_string .= " xml=%s";
 		
 	// Return the output
 	return $return_string;
+}
+
+/**
+ * Execite a simcraft command, and return the results
+ * 
+ * The simcraft command that is passed should have a %s in place of an output file,
+ * suitable for handing off to an sprintf replacement action.
+ * @param string $simcraft_command
+ * @return array
+ */
+function execute_simcraft_command( $simcraft_command )
+{
+	// Remember the current working directory
+	$current_dir = get_valid_path( getcwd() );
+		
+	// Change to the simulationcraft directory
+	chdir( get_valid_path(SIMULATIONCRAFT_PATH) );
+	
+	// Develop the simcraft command from the form input, with a random file name for the output catcher
+	$output_file = tempnam('/tmp', 'simcraft_output');
+	
+	// Replace the file name in the simcraft command template
+	$simcraft_command = sprintf($simcraft_command, escapeshellarg($output_file) );
+	
+	// Call the simcraft execution
+	$simcraft_output = shell_exec( $simcraft_command );
+
+	// Return to the previous working directory
+	chdir($current_dir);	
+	
+	// Fetch the output file contents
+	$file_contents = file_get_contents($output_file);
+	if( $file_contents === false ) {
+		throw new Exception("Error reading the simcraft output file.\nsimcract command:$simcraft_command\n simcraft STDOUT: $simcraft_output");
+	}
+	
+	// Return the output
+	return array($file_contents, $simcraft_output);
 } 
 
 // === GENERATING CONFIG OPTIONS FROM C++ SOURCE ===
@@ -274,6 +310,91 @@ function read_cache_value( $name )
 	// Else, there's no cache value to report, return null
 	else {
 		return null;
+	}
+} 
+
+// === REMOTE DATA ===
+/**
+ * Fetch the array of WoW servers, with the option to cache them locally
+ * 
+ * @param $only_active_servers
+ * @return unknown_type
+ */
+function get_arr_wow_servers( )
+{
+	// If we're to use the cached values, use them if they exist
+	$arr_cached_servers = read_cache_value('arr_wow_servers');
+	if( USE_CACHE_WOW_DATA === true && !is_null($arr_cached_servers) ) {
+		
+		// Return the cached value
+		return $arr_cached_servers;
+	}
+	
+	// Otherwise, fetch the servers from the internet, and cache them
+	else {
+		
+		// Build the array of target regions
+		$realm_list = array();
+		$realm_list['US'] = 'http://www.worldofwarcraft.com/realmstatus/index.xml';
+		$realm_list['EU'] = 'http://www.wow-europe.com/realmstatus/index.xml';
+		
+		// Loop over the various realm lists
+		$arr_return = array();
+		foreach($realm_list as $list_name => $url) {
+			
+			// create curl resource
+			$ch = curl_init();
+			
+			// set url
+			curl_setopt($ch, CURLOPT_URL, $url);
+			
+			// return the transfer as a string
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+			
+			// Pretend to be a browser that understands XML
+			curl_setopt($ch, CURLOPT_USERAGENT,  "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.2) Gecko/20070319 Firefox/2.0.0.3");
+		
+			// $output contains the output string
+			$response_xml = curl_exec($ch);
+			
+			// close curl resource to free up system resources
+			curl_close($ch);
+			
+			// Create an XML object of the response (cleaning up the badly formed XML...)
+			$xml = new SimpleXMLElement_XSL(preg_replace(array('/<\?.*\?>/', '/&nbsp;/'), array('', '&#160;'), $response_xml) );
+			
+			// Assemble the array
+			$arr_return[$list_name] = array();
+			foreach($xml->xpath('channel/item') as $realm) {
+				
+				// The EU RSS is annoyingly different
+				if( $realm->title && $realm->title=='Alert') {
+					continue;
+				}
+				
+				// Pull out the realm info
+				$realm_name = (string) $realm->link;
+
+				// Clean up the realm name
+				if( strpos($realm_name, 'r=')!==false ) {
+					$realm_name = substr( $realm_name, strpos($realm_name, 'r=')+2 );
+				}
+				else if( strpos($realm_name, '#')!==false ) {
+					$realm_name = substr( $realm_name, strpos($realm_name, '#')+1 );
+				}
+				
+				// Add the realm to the list
+				$arr_return[$list_name][] = array( 
+						'name' => $realm_name
+					);
+			}
+		}
+		
+		// cache these values for future reference
+		write_cache_value('arr_wow_servers', $arr_return);
+		
+		// Return the array of servers
+		return $arr_return;
 	}
 } 
 

@@ -308,16 +308,28 @@ class XML_SimcraftConfigForm extends SimpleXMLElement_XSL
 	 * @param string $file_path the file path
 	 * @return null
 	 */
-	public function set_option_values_from_file( $file_path )
+	public function set_option_values_from_file( $file_path, $just_raiders=false)
 	{
-		// We need the 'supported classes' define for this one
-		global $ARR_SUPPORTED_CLASSES;
-		
 		// Fetch the file's contents
 		$file_content = file_get_contents($file_path);
 		if( $file_content === false ) {
 			throw new Exception("File read failed for file ($file_path)");
 		}
+		
+		// Set the options from the file's contents, and return whatever set_option_values_from_file_contents() returns
+		return $this->set_option_values_from_file_contents($file_content, $just_raiders);
+	}
+	
+	/**
+	 * Set the options values in this xml object from the contents of a file
+	 * @param $file_content
+	 * @param $just_raiders
+	 * @return unknown_type
+	 */
+	protected function set_option_values_from_file_contents( $file_content, $just_raiders=false)
+	{
+		// We need the 'supported classes' define for this one
+		global $ARR_SUPPORTED_CLASSES;
 		
 		// match the file for assignment statements
 		preg_match_all('/^([^#]*)=(.*)$/Um', $file_content, $arr_matches, PREG_SET_ORDER);
@@ -372,11 +384,13 @@ class XML_SimcraftConfigForm extends SimpleXMLElement_XSL
 		}
 	
 		// Commit the global values
-		foreach($arr_options['globals'] as $field_name => $field_value ) {
-				$xpath_result = $this->xpath("//options/global_options/option[@name='$field_name']");
-				if( is_array($xpath_result) && count($xpath_result) > 0 ) {
-					$xpath_result[0]['value'] = $field_value;
-				}		
+		if( $just_raiders !== true ) {
+			foreach($arr_options['globals'] as $field_name => $field_value ) {
+					$xpath_result = $this->xpath("//options/global_options/option[@name='$field_name']");
+					if( is_array($xpath_result) && count($xpath_result) > 0 ) {
+						$xpath_result[0]['value'] = $field_value;
+					}		
+			}
 		}
 		
 	}
@@ -387,22 +401,32 @@ class XML_SimcraftConfigForm extends SimpleXMLElement_XSL
 	 * This involves fetching the character from the armory, and then fetching any additional information
 	 * from various sources
 	 * 
-	 * FIXME: Currently, this function only pulls the output of fetch_character_from_armory().  This is incomplete
-	 * since the armory doesn't contain all the necessary data for a simulation member
 	 * @param $character_name
 	 * @param $server_name
 	 * @return unknown_type
 	 */
 	public function add_raider_from_web( $character_name, $server_name )
 	{
-		// Fetch the given character from the armory
-		$arr_character = fetch_character_from_armory($character_name, $server_name);
-		if( $arr_character === false ) {
-			return false;
+		// If one of the values is missing, don't even bother
+		if( empty($character_name) || empty($server_name) ) {
+			throw new Exception("Either the character name ($character_name) or the server name ($server_name) are empty, and therefore invalid.");
 		}
 		
-		// Add the raider to the xml, with the given values
-		$this->add_raider_from_array($arr_character);
+		// Attempt to pull out the region from the server name (if its there)
+		$region_name = 'us';
+		if( strpos($server_name, ':')) {
+			list($region_name, $server_name) = explode(':', $server_name);
+			$region_name = strtolower($region_name);
+		}
+		
+		// Develop the simcraft command from the form input
+		$simcraft_command = "./simcraft iterations=0 max_time=1 armory=" . escapeshellarg("$region_name,$server_name,$character_name") . " save=%s";
+		
+		// Execute the command
+		list($file_contents, $output) = execute_simcraft_command($simcraft_command);
+		
+		// Add the raider definition in the config file to the XML
+		$this->set_option_values_from_file_contents($file_contents, true);
 	}
 	
 	/**

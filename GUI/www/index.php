@@ -5,7 +5,6 @@ set_include_path( get_include_path().PATH_SEPARATOR.'../php' );
 // Require the support files
 require_once 'defines.inc.php';
 require_once 'functions.inc.php';
-require_once 'wow_functions.inc.php';
 
 // Set the error and exception handler
 set_exception_handler('custom_exception_handler');
@@ -14,24 +13,14 @@ set_exception_handler('custom_exception_handler');
 // If the 'simulate' button was pressed, run the simulation
 if( isset($_POST['simulate']) && ALLOW_SIMULATION===true ) {
 
-	// Develop the simcraft command from the form input, with a random file name for the output catcher
-	$output_file = tempnam('/tmp', 'simcraft_output');
-	$simcraft_command = generate_simcraft_command( $_POST, $output_file );
+	// Develop the simcraft command from the form input
+	$simcraft_command = generate_simcraft_command( $_POST );
 	
-	// Remember the current working directory
-	$current_dir = get_valid_path( getcwd() );
-		
-	// Change to the simulationcraft directory
-	chdir( get_valid_path(SIMULATIONCRAFT_PATH) );
-	
-	// Call the simcraft execution
-	$simcraft_output = shell_exec( $simcraft_command );
-
-	// Return to the previous working directory
-	chdir($current_dir);	
+	// Execute the command
+	list($file_contents, ) = execute_simcraft_command($simcraft_command);
 	
 	// Fetch the result as an XML object, and release it to the browser as output
-	$xml = new SimpleXMLElement_XSL(file_get_contents($output_file));
+	$xml = new SimpleXMLElement_XSL($file_contents);
 	$xml->release_to_browser('xsl/results.xsl');	
 }
 
