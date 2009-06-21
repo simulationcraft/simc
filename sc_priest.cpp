@@ -193,13 +193,20 @@ struct shadow_fiend_pet_t : public pet_t
     {
       weapon = &( player -> main_hand_weapon );
       base_execute_time = weapon -> swing_time;
-      base_dd_min = base_dd_max = 1;
+      weapon_multiplier = 0;
+      direct_power_mod = 0.3787;
+      base_spell_power_multiplier = 1.0;
+      base_attack_power_multiplier = 0.0;
+      base_dd_multiplier = 1.15; // Shadowcrawl
+      base_dd_min = 101;
+      base_dd_max = 211;
       background = true;
       repeating  = true;
       may_dodge  = false;
       may_miss   = false;
       may_parry  = false;
       may_crit   = true;
+      may_block  = true;
     }
     void assess_damage( double amount, int dmg_type )
     {
@@ -215,9 +222,12 @@ struct shadow_fiend_pet_t : public pet_t
       pet_t( sim, owner, "shadow_fiend" ), melee( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.damage     = 110;
+    main_hand_weapon.damage     = 100;
     main_hand_weapon.swing_time = 1.5;
     main_hand_weapon.school     = SCHOOL_SHADOW;
+
+    stamina_per_owner = 0.51;
+    intellect_per_owner = 0.30;
   }
   virtual void init_base()
   {
@@ -233,11 +243,11 @@ struct shadow_fiend_pet_t : public pet_t
 
     melee = new melee_t( this );
   }
-  virtual double composite_attack_power()
+  virtual double composite_spell_power( int school )
   {
-    double ap = pet_t::composite_attack_power();
-    ap += 0.57 * owner -> composite_spell_power( SCHOOL_SHADOW );
-    return ap;
+    double sp = owner -> composite_spell_power( school );
+    sp -= owner -> spell_power_per_spirit * owner -> spirit();
+    return sp;  
   }
   virtual void schedule_ready( double delta_time=0,
                                bool   waiting=false )
@@ -1161,7 +1171,7 @@ struct vampiric_embrace_t : public priest_spell_t
 
     static rank_t ranks[] =
       {
-        { 1, 1, 0, 0, 0, 0.02 },
+        { 1, 1, 0, 0, 0, 0.00 },
         { 0, 0 }
       };
     init_rank( ranks );
@@ -1821,7 +1831,7 @@ struct shadow_fiend_spell_t : public priest_spell_t
 
     static rank_t ranks[] =
       {
-        { 1, 1, 0, 0, 0, 0.06 },
+        { 1, 1, 0, 0, 0, 0.00 },
         { 0, 0 }
       };
     init_rank( ranks );
