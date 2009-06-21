@@ -59,7 +59,7 @@ else if( isset($_POST['export_file']) ) {
 }
 
 
-// Else, show the simulation configuration form
+// Else, show the simulation configuration form, and handle any requests to mod that form's content
 else {
 
 	// Create the output XML object
@@ -70,9 +70,23 @@ else {
 
 	// Add the wow servers
 	add_wow_servers($xml);
+		
+	// If a request was passed to add a raid member from the armory
+	if( isset($_POST['add_from_armory']) ) {
+		
+		// Re-set any submitted form values (to preserve the form's state)
+		set_values_from_array($xml, $_POST);
+		
+		// Add the raider, importing them from the web
+		add_raider_from_web($xml, $_POST['add_from_armory']['name'], $_POST['add_from_armory']['server'] );
+		
+		// Add the 'selected' server to the xml, for conveniently re-setting the selected value after reload
+		$xml->options->addAttribute('selected_server', $_POST['add_from_armory']['server']);
+	}
 	
-	// If a file import was requested, import the file's contents
-	if( isset($_POST['import_file']) ) {
+	
+	// Else, if a file import was requested, import the file's contents
+	else if( isset($_POST['import_file']) ) {
 		
 		// Unless we should clear the form before importing, go ahead and load the submitted field values again 
 		if(!$_POST['clear_before_import']) {
@@ -93,16 +107,7 @@ else {
 		set_default_values($xml);
 	}
 		
-	// If a request was passed to add a raid member from the armory, do it now
-	if( isset($_POST['add_from_armory']) ) {
-		
-		// Add the 'selected' server to the xml, for conveniently re-setting the selected value after reload
-		$xml->options->addAttribute('selected_server', $_POST['add_from_armory']['server']);
-		
-		// Add the raider, importing them from the web
-		add_raider_from_web($xml, $_POST['add_from_armory']['name'], $_POST['add_from_armory']['server'] );
-	}
-
+	
 	// Send the page header for xml content
 	header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
 	header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified

@@ -711,8 +711,7 @@ function parse_source_file_for_options( $file_path )
 	$file_contents = file_get_contents( $file_path );
 	
 	// Match the file contents for the parse_option() method
-	//preg_match('/^bool\s+[-_A-Za-z0-9]+::parse_option\(.*{.*options\[\]\s*=\s*{(.*)};$/Usm', $file_contents, $parse_matches);	// This was obsoleted in r2550's *.cpp changes
-	preg_match('/^\s*option_t\s+options\[\]\s*=\s*[^;]*{(.*)};$/Usm', $file_contents, $parse_matches);
+	preg_match('/^[^\n\r]+::get_options\([^)]*\)\s*{.*option_t\s+options\[\]\s*=\s*[^;]*{(.*)}\s*;\s*$/Usm', $file_contents, $parse_matches);
 	$options = $parse_matches[1];
 	
 	// Match the parse_option method for individual option or option_doc strings
