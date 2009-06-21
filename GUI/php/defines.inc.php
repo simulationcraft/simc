@@ -24,7 +24,7 @@ define('ALLOW_SIMULATION', true);
  * note that this file needs to be read/writeable by the user which this script will run as
  * @var string
  */
-define('CACHE_FILE_PATH', realpath('../data/cachefile.dat') );
+define('CACHE_FILE_PATH', '../data/cachefile.dat' );
 
 /**
  * Where is the simulationcraft executable directory (relative to the index.php script)

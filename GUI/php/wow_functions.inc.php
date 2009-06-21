@@ -46,7 +46,7 @@ function get_arr_wow_servers( )
 			curl_close($ch);
 			
 			// Create an XML object of the response (cleaning up the badly formed XML...)
-			$xml = new SimpleXMLElement(preg_replace(array('/<\?.*\?>/', '/&nbsp;/'), array('', '&#160;'), $response_xml) );
+			$xml = new SimpleXMLElement_XSL(preg_replace(array('/<\?.*\?>/', '/&nbsp;/'), array('', '&#160;'), $response_xml) );
 			
 			// Assemble the array
 			$arr_return[$list_name] = array();
@@ -123,7 +123,7 @@ function fetch_character_from_armory($character_name, $server_name)
 	curl_setopt($ch, CURLOPT_USERAGENT,  "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.2) Gecko/20070319 Firefox/2.0.0.3");
 	$response_xml = curl_exec($ch);
 	curl_close($ch);
-	$character_xml = new SimpleXMLElement(preg_replace('/<\?.*\?>/', '', $response_xml));
+	$character_xml = new SimpleXMLElement_XSL(preg_replace('/<\?.*\?>/', '', $response_xml));
 	if(count($character_xml->xpath('//errorhtml')) > 0) {
 		return false;
 	}
@@ -135,14 +135,14 @@ function fetch_character_from_armory($character_name, $server_name)
 	curl_setopt($ch, CURLOPT_USERAGENT,  "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.2) Gecko/20070319 Firefox/2.0.0.3");
 	$response_xml = curl_exec($ch);
 	curl_close($ch);
-	$talent_xml = new SimpleXMLElement(preg_replace('/<\?.*\?>/', '', $response_xml));
+	$talent_xml = new SimpleXMLElement_XSL(preg_replace('/<\?.*\?>/', '', $response_xml));
 	if(count($talent_xml->xpath('//errorhtml')) > 0) {
 		return false;
 	}
 
 	// Pull out some useful values
-	$class_id = (string)fetch_single_XML_xpath($character_xml, 'characterInfo/character/@classId');
-	$talent_string = (string)fetch_single_XML_xpath($talent_xml, 'characterInfo/talentGroups/talentGroup[@active="1"]/talentSpec/@value');
+	$class_id = (string)$character_xml->fetch_single_XML_xpath('characterInfo/character/@classId');
+	$talent_string = (string)$talent_xml->fetch_single_XML_xpath('characterInfo/talentGroups/talentGroup[@active="1"]/talentSpec/@value');
 	
 	
 	// === PREPARE THE CHARACTER OUTPUT ARRAY ===
@@ -150,9 +150,9 @@ function fetch_character_from_armory($character_name, $server_name)
 	$arr_character = array();
 	
 	// base stats
-	$arr_character['class'] = strtolower((string)fetch_single_XML_xpath($character_xml, 'characterInfo/character/@class'));
-	$arr_character['name'] = strtolower((string)fetch_single_XML_xpath($character_xml, 'characterInfo/character/@name'));
-	$arr_character['race'] = strtolower((string)fetch_single_XML_xpath($character_xml, 'characterInfo/character/@race'));
+	$arr_character['class'] = strtolower((string)$character_xml->fetch_single_XML_xpath('characterInfo/character/@class'));
+	$arr_character['name'] = strtolower((string)$character_xml->fetch_single_XML_xpath('characterInfo/character/@name'));
+	$arr_character['race'] = strtolower((string)$character_xml->fetch_single_XML_xpath('characterInfo/character/@race'));
 	$arr_character['talents'] = "http://www.wowarmory.com/talent-calc.xml?cid=$class_id&tal=$talent_string";
 
 	// glyphs
