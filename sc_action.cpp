@@ -106,7 +106,6 @@ option_t* action_t::merge_options( std::vector<option_t>& merged_options,
 void action_t::parse_options( option_t*          options,
                               const std::string& options_str )
 {
-  std::string if_all;
   option_t base_options[] =
     {
       { "rank",               OPT_INT,    &rank_index            },
@@ -148,10 +147,6 @@ void action_t::parse_options( option_t*          options,
   {
     fprintf( sim -> output_file, "action_t: %s: Unable to parse options str '%s'.\n", name(), options_str.c_str() );
     assert( false );
-  }
-  if (if_all!=""){
-    is_ifall=1;
-    if (if_expression=="") if_expression=if_all;
   }
 }
 
@@ -1325,50 +1320,48 @@ void action_t::cancel()
     }
 
     // search for "named value", if nothing above found
-    if (!root){
+    if (!root&&(e!="")){
       std::vector<std::string> parts;
       unsigned int num_parts = util_t::string_split( parts, e, "." );
-      // check for known suffix
-      int suffix=0;
-      if (num_parts>1){
-        std::string sfx_candidate=parts[num_parts-1];
-        if (sfx_candidate=="value") suffix=1;
-        if (sfx_candidate=="buff") suffix=2;
-        if (sfx_candidate=="stacks") suffix=2;
-        if (sfx_candidate=="duration") suffix=3;
-        if (sfx_candidate=="dur") suffix=3;
-        if (sfx_candidate=="time") suffix=3;
-      }
-      if (suffix>0) num_parts--; // if recognized, remove from list
-      // check for known prefix
+      if ((num_parts>3)||(num_parts==0)) warn(3,action,"Wrong number of parts(.) in : "+e);
+      // check for known prefix (optional for now)
       int prefix=0;
-      if (num_parts>1){
-        std::string pfx_candidate=parts[0];
-        if (pfx_candidate=="buff") prefix=1;
-        if (pfx_candidate=="buffs") prefix=1;
-        if (pfx_candidate=="talent") prefix=2;
-        if (pfx_candidate=="talents") prefix=2;
-        if (pfx_candidate=="gear") prefix=3;
-        if (pfx_candidate=="option") prefix=4;
-        if (pfx_candidate=="options") prefix=4;
-        if (pfx_candidate=="global") prefix=5;
-      }
-      // get name of value
+      std::string pfx_candidate=parts[0];
+      if (pfx_candidate=="buff") prefix=1;
+      if (pfx_candidate=="buffs") prefix=1;
+      if (pfx_candidate=="talent") prefix=2;
+      if (pfx_candidate=="talents") prefix=2;
+      if (pfx_candidate=="global") prefix=5;
+      if (pfx_candidate=="action") prefix=6;
+      if (pfx_candidate=="spell") prefix=6;
+      if (pfx_candidate=="dot") prefix=6; 
+      if (pfx_candidate=="this") prefix=7;
+      if (pfx_candidate=="option") prefix=10;
+      if (pfx_candidate=="options") prefix=10;
+      if (pfx_candidate=="talent") prefix=10; //for now, same as options
+      if (pfx_candidate=="glyph") prefix=12;
+      if (pfx_candidate=="gear") prefix=13; // for now, same as items
+      if (pfx_candidate=="item") prefix=13;
+      // get name of value, and suffix
       std::string name="";
-      if ((prefix>0)&&(num_parts==2)) 
-        name=parts[1]; 
-      else
-        if (num_parts==1) 
-          name=parts[0]; 
-        else
-          warn(3,action,"wrong prefix.sufix combination for : "+e);
+      std::string suffix="";
+      unsigned int p_name=prefix ? 1:0;
+      if (p_name<num_parts)   name=parts[p_name]; 
+      if (p_name+1<num_parts) suffix=parts[p_name+1]; 
+      if (name=="")
+        warn(3,action,"Wrong prefix.sufix combination for : "+e);
+
       // now search for name in categories
       if (name!=""){
         // Buffs
         if ( ((prefix==1)||(prefix==0)) && !root) {
           pbuff_t* buff=action->player->buff_list.find_buff(name);
           if (buff){
-            if ((suffix==0)||(suffix==3)){
+            bool sfx_stacks=false;
+            if (suffix=="value")  sfx_stacks=true;
+            if (suffix=="buff")   sfx_stacks=true;
+            if (suffix=="stacks") sfx_stacks=true;
+            if (!sfx_stacks){
               pbuff_expression* e_buff= new pbuff_expression();
               e_buff->type=AEXP_CUSTOM;
               e_buff->buff= buff;
@@ -1380,7 +1373,49 @@ void action_t::cancel()
             }
           }
         }
-        // Global
+        // actions, prefix either "cast"(0) or "this.gcd"(7) or "dot.immolate.remains"(6)
+        if ( ((prefix==6)||(prefix==7)||(prefix==0)) && !root) {
+          // find action in question
+          action_t* act=0;
+          std::string func_name="";
+          if ((prefix==7)||(prefix==0)){ 
+            act=action; 
+            func_name=name;
+          }else{
+            func_name=suffix;
+            for (action_t* p_act=action->player->action_list; p_act && !act; p_act=p_act->next){
+              if (proper_option_name(name)==proper_option_name(p_act->name_str))
+                act=p_act;
+            }
+          }
+          if (!act) 
+            warn(3,action,"Could not find action ("+name+") for "+e);
+          // now create execution node
+          int func_type=0;
+          if (func_name=="gcd") func_type=EFG_GCD;
+          if (func_name=="active") func_type=EFG_TICKING;
+          if (func_name=="ticking") func_type=EFG_TICKING;
+          if (func_name=="current_tick") func_type=EFG_CTICK;
+          if (func_name=="tick") func_type=EFG_CTICK;
+          if (func_name=="num_ticks") func_type=EFG_NTICKS;
+          if (func_name=="expire_time") func_type=EFG_EXPIRE;
+          if (func_name=="expire") func_type=EFG_EXPIRE;
+          if (func_name=="remains_time") func_type=EFG_REMAINS;
+          if (func_name=="remains") func_type=EFG_REMAINS;
+          if (func_name=="cast_time") func_type=EFG_TCAST;
+          if (func_name=="execute_time") func_type=EFG_TCAST;
+          if (func_name=="cast") func_type=EFG_TCAST;
+          // now create node if known global value
+          if (func_type>0){
+            global_expression_t* g_func= new global_expression_t();
+            g_func->type= func_type;
+            g_func->action=act;
+            root= g_func;
+          }else
+            if (prefix!=0)
+              warn(3,action,"Could not find value/function ("+name+") for "+e);
+        }
+        // Global functions, player, target or sim related
         if ( ((prefix==5)||(prefix==0)) && !root) {
           int glob_type=0;
           //first names that are not expressions, but option settings
@@ -1389,24 +1424,11 @@ void action_t::cancel()
             e="1";
           }
           // now regular names
-          if (name=="gcd") glob_type=EFG_GCD;
           if (name=="time") glob_type=EFG_TIME;
           if (name=="time_to_die") glob_type=EFG_TTD;
           if (name=="health_percentage") glob_type=EFG_HP;
           if (name=="vulnerable") glob_type=EFG_VULN;
           if (name=="invulnerable") glob_type=EFG_INVUL;
-          if (name=="active") glob_type=EFG_TICKING;
-          if (name=="ticking") glob_type=EFG_TICKING;
-          if (name=="current_tick") glob_type=EFG_CTICK;
-          if (name=="tick") glob_type=EFG_CTICK;
-          if (name=="num_ticks") glob_type=EFG_NTICKS;
-          if (name=="expire_time") glob_type=EFG_EXPIRE;
-          if (name=="expire") glob_type=EFG_EXPIRE;
-          if (name=="remains_time") glob_type=EFG_REMAINS;
-          if (name=="remains") glob_type=EFG_REMAINS;
-          if (name=="cast_time") glob_type=EFG_TCAST;
-          if (name=="execute_time") glob_type=EFG_TCAST;
-          if (name=="cast") glob_type=EFG_TCAST;
           if (name=="moving") glob_type=EFG_MOVING;
           if (name=="move") glob_type=EFG_MOVING;
           // now create node if known global value
@@ -1416,6 +1438,65 @@ void action_t::cancel()
             g_func->action=action;
             root= g_func;
           }
+        }
+        // Options(10), Glyphs(12), Items(13) - just existence, so "glyph.life_tap"
+        if ( (prefix>=10)&&(prefix<=13) && !root) {
+          double item_value=0;
+          if (prefix==12){ //glyphs
+            std::vector<std::string> glyph_names;
+            int num_glyphs = util_t::string_split( glyph_names, action->player->glyphs_str, ",/" );
+            for( int i=0; i < num_glyphs; i++ )
+              if ( glyph_names[ i ] == name ) item_value=1;
+          }else
+          if (prefix==13){ //items
+            for( int i=0; i < SLOT_MAX; i++ )
+            {
+              item_t& item = action->player->items[ i ];
+              if( item.active()&& ( (item.encoded_name_str==name) || (strcmp(item.slot_name(),name.c_str())==0) ))
+              {
+                //if suffix present, return stat value, like "item.head.hit>35", but no need atm...
+                int sfx_idx=0;
+                if (suffix!=""){
+                  for (int i=1; i<STAT_MAX; i++) 
+                    if (tolower(util_t::stat_type_abbrev(i))==suffix)
+                      sfx_idx=i;
+                }
+                if (sfx_idx)
+                  item_value=item.stats.get_stat(sfx_idx);
+                else
+                  item_value=1;
+              }
+            }
+          }else
+          { //other options
+            option_t* opt_found=0;
+            //first look in player options
+            for (unsigned int i=0; (i<action->player->options.size())&&!opt_found; i++){
+              option_t& opt=action->player->options[i];
+              if ((opt.name==name)&&(opt.address))   opt_found=&opt;
+            }
+            // if not found, check sim options
+            if (!opt_found)
+            for (unsigned int i=0; (i<action->sim->options.size())&&!opt_found; i++){
+              option_t& opt=action->sim->options[i];
+              if ((opt.name==name)&&(opt.address))   opt_found=&opt;
+            }
+            // now get value
+            if (opt_found){
+              switch ( opt_found->type )
+              {
+                case OPT_APPEND: 
+                case OPT_STRING: if (""!=*( ( std::string* ) opt_found->address ))  item_value=1;      break;
+                case OPT_BOOL:
+                case OPT_INT:    item_value=*( ( int* ) opt_found->address ) ;                         break;
+                case OPT_FLT:    item_value=*( ( double* ) opt_found->address ) ;                      break;
+              }
+            }
+          };
+          //create constant node with this
+          root= new act_expression_t();
+          root->type=AEXP_VALUE;
+          root->value= item_value;
         }
       }
 
