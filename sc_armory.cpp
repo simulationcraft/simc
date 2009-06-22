@@ -69,6 +69,18 @@ static void stat_search( std::string&              encoding_str,
   }
 }
 
+// is_proc_description ======================================================
+
+static bool is_proc_description( const std::string& description_str )
+{
+  if( description_str.find( "chance" ) != std::string::npos ) return true;
+  if( description_str.find( "stack"  ) != std::string::npos ) return true;
+  if( description_str.find( "time"   ) != std::string::npos ) return true;
+  if( description_str.find( "_sec"   ) != std::string::npos ) return true;
+
+  return false;
+}
+
 // fuzzy_search =============================================================
 
 static void fuzzy_search( std::string&       encoding_str,
@@ -79,7 +91,7 @@ static void fuzzy_search( std::string&       encoding_str,
   std::string buffer = description_str;
   armory_t::format( buffer );
 
-  if( buffer.find( "chance" ) != std::string::npos )
+  if( is_proc_description( buffer ) )
     return;
 
   std::vector<std::string> splits;

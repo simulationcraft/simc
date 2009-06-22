@@ -1268,27 +1268,26 @@ int sim_t::main( int argc, char** argv )
 
   if( save_profiles )
   {
-    fprintf( stdout, "\nGenerating profiles... \n" ); fflush( stdout );
     init();
+
+    fprintf( stdout, "\nGenerating profiles... \n" ); fflush( stdout );
     report_t::print_profiles( this );
-    exit( 0 );
   }
-
-  if ( max_time <= 0 && target -> initial_health <= 0 )
+  else
   {
-    printf( "simcraft: One of -max_time or -target_health must be specified.\n" );
-    exit( 0 );
+    if ( max_time <= 0 && target -> initial_health <= 0 )
+    {
+      printf( "simcraft: One of -max_time or -target_health must be specified.\n" );
+      exit( 0 );
+    }
+
+    fprintf( stdout, "\nGenerating baseline... \n" ); fflush( stdout );
+    execute();
+    scaling -> analyze();
+
+    fprintf( stdout, "\nGenerating reports...\n" ); fflush( stdout );
+    report_t::print_suite( this );
   }
-
-  fprintf( stdout, "\nGenerating baseline... \n" ); fflush( stdout );
-
-  execute();
-
-  scaling -> analyze();
-
-  fprintf( stdout, "\nGenerating reports...\n" ); fflush( stdout );
-
-  report_t::print_suite( this );
 
   if ( output_file != stdout ) fclose( output_file );
   if ( log_file ) fclose( log_file );
