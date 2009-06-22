@@ -86,7 +86,6 @@ SRC =\
 	sc_target.cpp		\
 	sc_thread.cpp		\
 	sc_unique_gear.cpp	\
-	sc_url_parse.cpp	\
 	sc_util.cpp		\
 	sc_warlock.cpp		\
 	sc_warrior.cpp		\
