@@ -475,6 +475,7 @@ const char* util_t::slot_type_string( int slot )
   case SLOT_MAIN_HAND: return "main_hand";
   case SLOT_OFF_HAND:  return "off_hand";
   case SLOT_RANGED:    return "ranged";
+  case SLOT_TABARD:    return "tabard";
   }
   return "unknown";
 }

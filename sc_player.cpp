@@ -3091,6 +3091,7 @@ std::vector<option_t>& player_t::get_options()
       { "main_hand",                            OPT_STRING,   &( items[ SLOT_MAIN_HAND ].options_str          ) },
       { "off_hand",                             OPT_STRING,   &( items[ SLOT_OFF_HAND  ].options_str          ) },
       { "ranged",                               OPT_STRING,   &( items[ SLOT_RANGED    ].options_str          ) },
+      { "tabard",                               OPT_STRING,   &( items[ SLOT_TABARD    ].options_str          ) },
       { "tier4_2pc",                            OPT_BOOL,     &( set_bonus.count[ SET_T4_2PC ]                ) },
       { "tier4_4pc",                            OPT_BOOL,     &( set_bonus.count[ SET_T4_4PC ]                ) },
       { "tier5_2pc",                            OPT_BOOL,     &( set_bonus.count[ SET_T5_2PC ]                ) },

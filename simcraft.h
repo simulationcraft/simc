@@ -205,7 +205,8 @@ enum slot_type { // these enum values match armory settings
   SLOT_MAIN_HAND = 15, 
   SLOT_OFF_HAND  = 16, 
   SLOT_RANGED    = 17, 
-  SLOT_MAX       = 18 
+  SLOT_TABARD    = 18, 
+  SLOT_MAX       = 19 
 };
 
 enum set_type {
