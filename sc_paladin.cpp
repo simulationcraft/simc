@@ -67,10 +67,9 @@ struct paladin_t : public player_t
     int divine_strength;
     int fanaticism;             // +6/12/18% crit on judgement
     int improved_judgements;    // -1/2 cd on judgements
-    int judgements_of_the_wise; // 15% basemana
+    int judgements_of_the_wise; // 25% basemana
     int righteous_vengeance;    // judgement/DS crit -> 30% damage over 8s
     int sanctity_of_battle;     // +1-3% crit, +5-15% dmg on exorcism/CS
-    int seal_of_command;
     int sheath_of_light;        // 10/20/30% AP as SP
     int the_art_of_war;         // +5-10% dmg on judgement, CS, DS
     int two_handed_weapon_spec; // +2-6% dmg with 2h weapons
@@ -81,6 +80,7 @@ struct paladin_t : public player_t
     int improved_bom;           // +12/25% on BoM
     int sanctified_retribution; // aura gives +3% dmg
     int sanctified_wrath;       // +25/50% crit on HoW, -30/60s AW cd
+    int seal_of_command;
     int swift_retribution;      // auras give 1-3% haste
     talents_t() { memset( (void*) this, 0x0, sizeof( talents_t ) ); }
   };
