@@ -1340,8 +1340,8 @@ void action_t::cancel()
       if (pfx_candidate=="options") prefix=10;
       if (pfx_candidate=="talent") prefix=10; //for now, same as options
       if (pfx_candidate=="glyph") prefix=12;
-      if (pfx_candidate=="gear") prefix=13; // for now, same as items
       if (pfx_candidate=="item") prefix=13;
+      if (pfx_candidate=="gear") prefix=14; 
       // get name of value, and suffix
       std::string name="";
       std::string suffix="";
@@ -1439,21 +1439,26 @@ void action_t::cancel()
             root= g_func;
           }
         }
-        // Options(10), Glyphs(12), Items(13) - just existence, so "glyph.life_tap"
-        if ( (prefix>=10)&&(prefix<=13) && !root) {
+        // Options(10), Glyphs(12), Items(13), Gear(14) - just existence, so "glyph.life_tap"
+        if ( (prefix>=10)&&(prefix<=14) && !root) {
           double item_value=0;
-          if (prefix==12){ //glyphs
+          bool item_found=false;
+          if (((prefix==12)||(prefix==14)) && !item_found) { //glyphs
             std::vector<std::string> glyph_names;
             int num_glyphs = util_t::string_split( glyph_names, action->player->glyphs_str, ",/" );
             for( int i=0; i < num_glyphs; i++ )
-              if ( glyph_names[ i ] == name ) item_value=1;
-          }else
-          if (prefix==13){ //items
+              if ( glyph_names[ i ] == name ){
+                item_value=1;
+                item_found=true;
+              }
+          };
+          if (((prefix==13)||(prefix==14)) && !item_found){ //items
             for( int i=0; i < SLOT_MAX; i++ )
             {
               item_t& item = action->player->items[ i ];
               if( item.active()&& ( (item.encoded_name_str==name) || (strcmp(item.slot_name(),name.c_str())==0) ))
               {
+                item_found=true;
                 //if suffix present, return stat value, like "item.head.hit>35", but no need atm...
                 int sfx_idx=0;
                 if (suffix!=""){
@@ -1467,7 +1472,8 @@ void action_t::cancel()
                   item_value=1;
               }
             }
-          }else
+          };
+          if (!item_found)
           { //other options
             option_t* opt_found=0;
             //first look in player options
@@ -1483,6 +1489,7 @@ void action_t::cancel()
             }
             // now get value
             if (opt_found){
+              item_found=true;
               switch ( opt_found->type )
               {
                 case OPT_APPEND: 
@@ -1493,7 +1500,7 @@ void action_t::cancel()
               }
             }
           };
-          //create constant node with this
+          //create constant node with this. Value will be zero(false) if not found
           root= new act_expression_t();
           root->type=AEXP_VALUE;
           root->value= item_value;
