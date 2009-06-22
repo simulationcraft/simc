@@ -1048,6 +1048,8 @@ static void trigger_lock_and_load( attack_t* a )
 
   if ( ! p -> talents.lock_and_load )
     return;
+  if ( a -> sim -> P320 && ! a -> sim -> cooldown_ready( p -> _cooldowns.lock_and_load ) )
+    return;
 
   double chance = 0;
   if ( a -> sim -> P312 )
@@ -1064,7 +1066,7 @@ static void trigger_lock_and_load( attack_t* a )
     {
       name = "Lock and Load Expiration";
       p -> aura_gain( "Lock and Load" );
-      p -> _cooldowns.lock_and_load = sim -> current_time + 30;
+      p -> _cooldowns.lock_and_load = sim -> current_time + 22;
       sim -> add_event( this, 12.0 );
     }
     virtual void execute()
