@@ -1084,6 +1084,7 @@ void action_t::cancel()
   // custom class to invoke pbuff_t expiration
   struct pbuff_expression: public act_expression_t{
     pbuff_t* buff;
+    virtual ~pbuff_expression(){};
     virtual double evaluate() {
       return buff->expiration_time();
     }
@@ -1092,6 +1093,7 @@ void action_t::cancel()
   //custom class to return global functions
   struct global_expression_t: public act_expression_t{
     action_t* action;
+    virtual ~global_expression_t(){};
     virtual double evaluate() {
       switch (type){
         case EFG_GCD:        return action->gcd();  

@@ -539,6 +539,7 @@ struct act_expression_t{
   act_expression_t* operand_1;
   act_expression_t* operand_2;
   act_expression_t();
+  virtual ~act_expression_t() {}
   virtual double evaluate();
   virtual bool   ok();
   static act_expression_t* create(action_t* action, std::string expression);
@@ -2013,6 +2014,15 @@ struct util_t
   static int milliseconds();
 };
 
+// String utils =================================================================
+
+std::string tolower( std::string src );
+std::string trim( std::string src );
+void replace_char( std::string& src, char old_c, char new_c  );
+void replace_str( std::string& src, std::string old_str, std::string new_str  );
+bool str_to_float(std::string src, double& dest );
+std::string proper_option_name( const std::string& full_name );
+
 // Thread Wrappers ===========================================================
 
 struct thread_t
@@ -2069,14 +2079,6 @@ struct xml_t
   static void print( xml_node_t* root, FILE*, int spacing=0 );
 };
 
-// Deprecated =================================================================
-
-std::string tolower( std::string src );
-std::string trim( std::string src );
-void replace_char( std::string& src, char old_c, char new_c  );
-void replace_str( std::string& src, std::string old_str, std::string new_str  );
-bool str_to_float(std::string src, double& dest );
-std::string proper_option_name( const std::string& full_name );
 
 #endif // __SIMCRAFT_H
 

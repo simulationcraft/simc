@@ -322,10 +322,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\sc_url_parse.cpp"
-			>
-		</File>
-		<File
 			RelativePath=".\sc_util.cpp"
 			>
 		</File>
