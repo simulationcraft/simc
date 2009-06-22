@@ -3274,6 +3274,9 @@ void rogue_t::init_glyphs()
     else if( n == "slice_and_dice"      ) glyphs.slice_and_dice = 1;
     else if( n == "tricks_of_the_trade" ) glyphs.tricks_of_the_trade = 1;
     else if( n == "vigor"               ) glyphs.vigor = 1;
+    else if( n == "safe_fall"           ) ;
+    else if( n == "pick_lock"           ) ;
+    else if( n == "blurred_speed"       ) ;
     else if( ! sim -> parent ) printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
   }
 }
