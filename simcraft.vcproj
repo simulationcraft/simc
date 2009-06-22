@@ -186,6 +186,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\sc_armory.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\sc_attack.cpp"
 			>
 		</File>
@@ -223,6 +227,10 @@
 		</File>
 		<File
 			RelativePath=".\sc_hunter.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\sc_item.cpp"
 			>
 		</File>
 		<File
@@ -282,6 +290,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\sc_set_bonus.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\sc_shaman.cpp"
 			>
 		</File>
@@ -327,6 +339,10 @@
 		</File>
 		<File
 			RelativePath=".\sc_weapon.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\sc_xml.cpp"
 			>
 		</File>
 		<File

@@ -117,7 +117,7 @@ void thread_t::mutex_lock( void*& mutex )
 
 // thread_t::mutex_unlock ===================================================
 
-void thread_t::unlock( void*& mutex )
+void thread_t::mutex_unlock( void*& mutex )
 {
   LeaveCriticalSection( (CRITICAL_SECTION*) mutex );
 }
@@ -195,7 +195,7 @@ void thread_t::mutex_lock( void*& mutex )
 
 // thread_t::mutex_unlock ===================================================
 
-void thread_t::unlock( void*& mutex )
+void thread_t::mutex_unlock( void*& mutex )
 {
   LeaveCriticalSection( (CRITICAL_SECTION*) mutex );
 }

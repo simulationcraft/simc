@@ -1884,6 +1884,7 @@ void priest_t::init_glyphs()
     if     ( n == "shadow_word_death" ) glyphs.shadow_word_death = 1;
     else if( n == "shadow_word_pain"  ) glyphs.shadow_word_pain = 1;
     else if( n == "shadow"            ) glyphs.shadow = 1;
+    else if( n == "penance"           ) glyphs.penance = 1;
     else if( ! sim -> parent ) printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
   }
 }
