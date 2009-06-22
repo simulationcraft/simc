@@ -70,6 +70,7 @@ struct enchant_t;
 struct event_t;
 struct gain_t;
 struct hunter_t;
+struct item_t;
 struct mage_t;
 struct option_t;
 struct paladin_t;
@@ -96,7 +97,6 @@ struct uptime_t;
 struct warlock_t;
 struct warrior_t;
 struct weapon_t;
-struct urlSplit_t;
 struct xml_node_t;
 
 // Enumerations ==============================================================
@@ -165,13 +165,18 @@ enum talent_tree_type {
 enum weapon_type {
   WEAPON_NONE=0,
   WEAPON_DAGGER,                                                                                   WEAPON_SMALL,
-  WEAPON_BEAST,    WEAPON_SWORD,    WEAPON_MACE,     WEAPON_AXE,   WEAPON_FIST,                    WEAPON_1H,
+  WEAPON_BEAST,    WEAPON_SWORD,    WEAPON_MACE,     WEAPON_AXE,    WEAPON_FIST,                   WEAPON_1H,
   WEAPON_BEAST_2H, WEAPON_SWORD_2H, WEAPON_MACE_2H,  WEAPON_AXE_2H, WEAPON_STAFF,  WEAPON_POLEARM, WEAPON_2H,
   WEAPON_BOW,      WEAPON_CROSSBOW, WEAPON_GUN,      WEAPON_WAND,   WEAPON_THROWN,                 WEAPON_RANGED,
   WEAPON_MAX
 };
 
-enum weapon_enchant_type { WEAPON_ENCHANT_NONE=0, BERSERKING, MONGOOSE, EXECUTIONER, DEATH_FROST, SCOPE, WEAPON_ENCHANT_MAX };
+enum enchant_type { 
+  ENCHANT_NONE=0, 
+  ENCHANT_BERSERKING, ENCHANT_MONGOOSE, ENCHANT_EXECUTIONER, ENCHANT_DEATH_FROST, ENCHANT_SCOPE, 
+  ENCHANT_LIGHTWEAVE, ENCHANT_SPELLSURGE, 
+  ENCHANT_MAX 
+};
 
 enum weapon_buff_type {
   WEAPON_BUFF_NONE=0,
@@ -184,7 +189,7 @@ enum slot_type { // these enum values match armory settings
   SLOT_NONE      = -1, 
   SLOT_HEAD      = 0,
   SLOT_NECK      = 1,
-  SLOT_SHOULDER  = 2,
+  SLOT_SHOULDERS = 2,
   SLOT_SHIRT     = 3,
   SLOT_CHEST     = 4,
   SLOT_WAIST     = 5,
@@ -201,6 +206,29 @@ enum slot_type { // these enum values match armory settings
   SLOT_OFF_HAND  = 16, 
   SLOT_RANGED    = 17, 
   SLOT_MAX       = 18 
+};
+
+enum set_type {
+  SET_NONE = 0,
+  SET_T4, SET_T4_2PC, SET_T4_4PC,
+  SET_T5, SET_T5_2PC, SET_T5_4PC,
+  SET_T6, SET_T6_2PC, SET_T6_4PC,
+  SET_T7, SET_T7_2PC, SET_T7_4PC,
+  SET_T8, SET_T8_2PC, SET_T8_4PC,
+  SET_SPELLSTRIKE,
+  SET_MAX
+};
+
+enum meta_gem_type {
+  META_GEM_NONE=0,
+  META_AUSTERE_EARTHSIEGE,
+  META_CHAOTIC_SKYFIRE,
+  META_CHAOTIC_SKYFLARE,
+  META_EMBER_SKYFLARE,
+  META_RELENTLESS_EARTHSIEGE,
+  META_RELENTLESS_EARTHSTORM,
+  META_MYSTICAL_SKYFIRE,
+  META_GEM_MAX
 };
 
 enum stat_type {
@@ -307,29 +335,6 @@ enum rng_type
   RNG_MAX
 };
 
-// Thread Wrappers ===========================================================
-
-struct thread_t
-{
-  static void launch( sim_t* );
-  static void wait( sim_t* );
-  static void lock();
-  static void unlock();
-};
-
-// HTTP Download  ============================================================
-
-struct http_t
-{
-  static bool cache_load();
-  static bool cache_save();
-  static void cache_clear();
-  static void cache_set( const std::string& url, const std::string& result, uint32_t timestamp=0, bool lock=true );
-  static bool cache_get( std::string& result, const std::string& url, bool force=false, bool lock=true );
-  static bool download( std::string& result, const std::string& url );
-  static bool get( std::string& result, const std::string& url, const std::string& confirmation=std::string(), int throttle_seconds=0 );
-};
-
 // Options ====================================================================
 
 enum option_type_t
@@ -343,11 +348,6 @@ enum option_type_t
   OPT_FLT,        // double
   OPT_LIST,       // std::vector<std::string>*
   OPT_FUNC,       // function pointer
-  OPT_STRING_Q,   // same as above, but do not save
-  OPT_CHARP_Q,    // same as above, but do not save
-  OPT_BOOL_Q,     // same as above, but do not save
-  OPT_INT_Q,      // same as above, but do not save
-  OPT_FLT_Q,      // same as above, but do not save
   OPT_DEPRECATED,
   OPT_UNKNOWN
 };
@@ -366,7 +366,8 @@ struct option_t
 
   static void copy( std::vector<option_t>& opt_vector, option_t* opt_array );
   static bool parse( sim_t*, std::vector<option_t>&, const std::string& name, const std::string& value );
-  static bool parse( sim_t*, option_t*,              const std::string& name, const std::string& value );
+  static bool parse( sim_t*, const char* context, std::vector<option_t>&, const std::string& options_str );
+  static bool parse( sim_t*, const char* context, option_t*,              const std::string& options_str );
   static bool parse_file( sim_t*, FILE* file );
   static bool parse_line( sim_t*, char* line );
   static bool parse_token( sim_t*, std::string& token );
@@ -468,14 +469,11 @@ struct gear_stats_t
 
   gear_stats_t() { memset( ( void* ) this, 0x00, sizeof( gear_stats_t ) ); }
 
-  void   set_stat( int stat, double value );
   void   add_stat( int stat, double value );
+  void   set_stat( int stat, double value );
   double get_stat( int stat );
-
+  void   print( FILE* );
   static double stat_mod( int stat );
-  gear_stats_t& operator+=(const gear_stats_t& rhs);
-  gear_stats_t operator+(const gear_stats_t& rhs) const;
-
 };
 
 // buffs
@@ -529,8 +527,8 @@ struct buff_list_t{
   buff_list_t();
   void add_buff(pbuff_t* new_buff);
   void reset_buffs();
-  pbuff_t* find_buff(std::string name);
-  bool     chk_buff(std::string name);
+  pbuff_t* find_buff(std::string& name);
+  bool     chk_buff(std::string& name);
 };
 
 struct act_expression_t{
@@ -576,13 +574,11 @@ struct sim_t
   int         events_processed, total_events_processed;
   int         seed, id, iterations, current_iteration;
   int         infinite_resource[ RESOURCE_MAX ];
-  int         armor_update_interval, potion_sickness;
-  int         optimal_raid, log, debug, debug_armory;
-  int         save_profiles;
-  double      jow_chance, jow_ppm;
-  urlSplit_t* last_armory_player;
+  int         armor_update_interval;
+  int         optimal_raid, log, debug, save_profiles;
+  std::string default_region_str, default_server_str;
 
-  std::vector<option_t> option_vector;
+  std::vector<option_t> options;
   std::vector<std::string> party_encoding;
 
   // Smooth Random Number Generation
@@ -592,10 +588,6 @@ struct sim_t
   event_t** timing_wheel;
   int    wheel_seconds, wheel_size, wheel_mask, timing_slice;
   double wheel_granularity;
-
-  // Global Gear Stats
-  gear_stats_t gear_default;
-  gear_stats_t gear_delta;
 
   // Raid Events
   std::vector<raid_event_t*> raid_events;
@@ -740,6 +732,7 @@ struct sim_t
   double    range( double min, double max );
   double    gauss( double mean, double stddev );
   player_t* find_player( const std::string& name );
+  void      use_optimal_buffs_and_debuffs( int value );
 };
 
 // Scaling ===================================================================
@@ -747,6 +740,8 @@ struct sim_t
 struct scaling_t
 {
   sim_t* sim;
+  int    scale_stat;
+  double scale_value;
   int    calculate_scale_factors;
   int    center_scale_delta;
   int    scale_lag;
@@ -787,7 +782,7 @@ struct rating_t
 struct weapon_t
 {
   int    type, school;
-  double damage;
+  double damage, dps;
   double swing_time;
   int    enchant, buff;
   double enchant_bonus, buff_bonus;
@@ -799,49 +794,98 @@ struct weapon_t
 
   weapon_t( int t=WEAPON_NONE, double d=0, double st=2.0, int s=SCHOOL_PHYSICAL ) :
       type( t ), school( s ), damage( d ), swing_time( st ),
-      enchant( WEAPON_ENCHANT_NONE ), buff( WEAPON_BUFF_NONE ),
+      enchant( ENCHANT_NONE ), buff( WEAPON_BUFF_NONE ),
       enchant_bonus( 0 ), buff_bonus( 0 ), slot( SLOT_NONE ) {}};
 
 // Item ======================================================================
 
 struct item_t
 {
-  int slot;
   sim_t* sim;
   player_t* player;
+  int slot, enchant;
+  bool unique;
 
-  // Raw data from Armory
-  xml_node_t* slot_xml;
-  xml_node_t* item_xml;
-  std::string name_str, id_str;
+  // Option Data
+  std::string option_name_str;
+  std::string option_id_str;
+  std::string option_stats_str;
+  std::string option_gems_str;
+  std::string option_enchant_str;
+  std::string option_equip_str;
+  std::string option_use_str;
+  std::string option_weapon_str;
+  std::string options_str;
 
-  // Encoded data from profiles
+  // Armory Data
+  std::string armory_name_str;
+  std::string armory_id_str;
+  std::string armory_stats_str;
+  std::string armory_gems_str;
+  std::string armory_enchant_str;
+  std::string armory_weapon_str;
+
+  // Encoded Data
   std::string encoded_name_str;
-  std::string encoded_equip_str;
-  std::string encoded_use_str;
-  std::string encoded_enchant_str;
   std::string encoded_stats_str;
   std::string encoded_gems_str;
-  std::string encoded_str;
+  std::string encoded_enchant_str;
+  std::string encoded_equip_str;
+  std::string encoded_use_str;
+  std::string encoded_weapon_str;
 
   // Extracted data
-  gear_stats_t stats, gem_stats, enchant_stats;
+  gear_stats_t stats;
   struct use_t {
-    int stat;
+    int stat, school;
     double amount, duration, cooldown;
+    use_t() : stat(0), school(0), amount(0), duration(0), cooldown(0) {}
+    bool active() { return stat || school; }
   } use;
   struct equip_t {
+    std::string trigger;
     int stat, school, max_stacks;
     double amount, proc_chance, duration, cooldown;
+    equip_t() : stat(0), school(0), max_stacks(0), amount(0), proc_chance(0), duration(0), cooldown(0) {}
+    bool active() { return stat || school; }
   } equip;
 
-  item_t() : slot(SLOT_NONE) { memset( &use, 0x00, sizeof(use_t) );  memset( &equip, 0x00, sizeof(equip_t) ); }
+  item_t() : sim(0), player(0), slot(SLOT_NONE), enchant(ENCHANT_NONE), unique(false) {}
+  item_t( player_t*, const std::string& options_str );
   bool active();
-  bool encode();
-  bool decode();
-  bool download( const std::string& id_str );
-  bool replace ( const std::string& id_str );
   const char* name();
+  const char* slot_name();
+  weapon_t* weapon();
+  bool init();
+  bool parse_options();
+  void encode_options();
+  bool decode_stats();
+  bool decode_gems();
+  bool decode_enchant();
+  bool decode_equip();
+  bool decode_use();
+  bool decode_weapon();
+};
+
+// Set Bonus =================================================================
+
+struct set_bonus_t
+{
+  int count[ SET_MAX ];
+  int tier4_2pc();
+  int tier4_4pc();
+  int tier5_2pc();
+  int tier5_4pc();
+  int tier6_2pc();
+  int tier6_4pc();
+  int tier7_2pc();
+  int tier7_4pc();
+  int tier8_2pc();
+  int tier8_4pc();
+  int spellstrike();
+  int decode( const std::string& item_name );
+  bool init( player_t* );
+  set_bonus_t() { memset( (void*) this, 0x00, sizeof( set_bonus_t ) ); }
 };
 
 // Player ====================================================================
@@ -849,25 +893,25 @@ struct item_t
 struct player_t
 {
   sim_t*      sim;
-  std::string name_str, talents_str, id_str;
+  std::string name_str, talents_str, glyphs_str, id_str;
+  std::string region_str, server_str;
   player_t*   next;
   int         index, type, level, party, member;
-  double      distance;
-  double      gcd_ready, base_gcd;
-  int         stunned, moving, sleeping, initialized;
+  double      distance, gcd_ready, base_gcd;
+  int         potion_used, stunned, moving, sleeping, initialized;
   rating_t    rating;
   pet_t*      pet_list;
 
-  std::vector<option_t> option_vector;
-  std::vector<item_t> items;
+  // Option Parsing
+  std::vector<option_t> options;
 
   // Profs
-  std::string   professions_str;
-  double profession [ PROF_MAX ];
+  std::string professions_str;
+  int profession[ PROF_MAX ];
 
   // Race
   std::string race_str;
-  int         race;
+  int race;
 
   // Haste
   double base_haste_rating, initial_haste_rating, haste_rating;
@@ -915,8 +959,9 @@ struct player_t
   bool   use_armor_snapshot;
 
   // Weapons
-  std::string main_hand_str,    off_hand_str,    ranged_str;
-  weapon_t    main_hand_weapon, off_hand_weapon, ranged_weapon;
+  weapon_t main_hand_weapon;
+  weapon_t off_hand_weapon;
+  weapon_t ranged_weapon;
 
   // Resources
   double  resource_base   [ RESOURCE_MAX ];
@@ -953,9 +998,7 @@ struct player_t
 
   // Action Priority List
   action_t*   action_list;
-  std::string action_list_prefix;
   std::string action_list_str;
-  std::string action_list_postfix;
   std::string action_list_skip;
   int         action_list_default;
 
@@ -984,12 +1027,11 @@ struct player_t
   std::string save_str;
 
   // Gear
-  gear_stats_t stats;
-  gear_stats_t gear_stats;
-  gear_stats_t gem_stats;
-  enchant_t* enchant;
-  unique_gear_t* unique_gear;
-  std::string clicky_1, clicky_2, clicky_3;
+  std::string items_str, meta_gem_str;
+  std::vector<item_t> items;
+  gear_stats_t stats, gear, enchant;
+  set_bonus_t set_bonus;
+  int meta_gem;
 
   // Scale Factors
   gear_stats_t scaling;
@@ -1048,7 +1090,6 @@ struct player_t
 
   struct expirations_t
   {
-    event_t* ashtongue_talisman;
     event_t* focus_magic_feedback;
     event_t* hysteria;
     event_t* replenishment;
@@ -1093,7 +1134,6 @@ struct player_t
 
   struct gains_t
   {
-    gain_t* ashtongue_talisman;
     gain_t* blessing_of_wisdom;
     gain_t* dark_rune;
     gain_t* energy_regen;
@@ -1123,7 +1163,6 @@ struct player_t
 
   struct procs_t
   {
-    proc_t* ashtongue_talisman;
     proc_t* honor_among_thieves_donor;
     proc_t *tier4_2pc, *tier4_4pc;
     proc_t *tier5_2pc, *tier5_4pc;
@@ -1144,7 +1183,6 @@ struct player_t
     rng_t* lag_channel;
     rng_t* lag_gcd;
     rng_t* lag_queue;
-    rng_t* ashtongue_talisman;
     rng_t *tier4_2pc, *tier4_4pc;
     rng_t *tier5_2pc, *tier5_4pc;
     rng_t *tier6_2pc, *tier6_4pc;
@@ -1164,13 +1202,15 @@ struct player_t
   virtual const char* id();
 
   virtual void init();
+  virtual void init_glyphs() {}
   virtual void init_base() = 0;
+  virtual void init_items();
   virtual void init_core();
   virtual void init_race();
   virtual void init_spell();
   virtual void init_attack();
   virtual void init_defense();
-  virtual void init_weapon( weapon_t*, std::string& );
+  virtual void init_weapon( weapon_t* );
   virtual void init_unique_gear();
   virtual void init_enchant();
   virtual void init_resources( bool force = false );
@@ -1248,9 +1288,9 @@ struct player_t
   virtual bool parse_talents_mmo( const std::string& talent_string );
   virtual bool parse_talents_wowhead( const std::string& talent_string );
   virtual bool parse_talents( const std::string& talent_string, int encoding );
-
+  
   virtual std::vector<option_t>& get_options();
-  virtual bool parse_option( const std::string& name, const std::string& value );
+  virtual bool save( FILE* );
 
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name ) { return 0; }
@@ -1289,6 +1329,7 @@ struct player_t
 
   bool      in_gcd() { return gcd_ready > sim -> current_time; }
   bool      recent_cast();
+  item_t*   find_item( const std::string& );
   action_t* find_action( const std::string& );
   void      share_cooldown( const std::string& name, double ready );
   void      share_duration( const std::string& name, double ready );
@@ -1518,8 +1559,6 @@ struct base_stats_t
   double spell_crit, melee_crit;
 };
 
-
-
 // Action ====================================================================
 
 struct action_t
@@ -1581,7 +1620,6 @@ struct action_t
   action_t( int type, const char* name, player_t* p=0, int r=RESOURCE_NONE, int s=SCHOOL_NONE, int t=TREE_NONE, bool special=false );
   virtual ~action_t() {}
 
-  virtual void      base_parse_options( option_t*, const std::string& options_str );
   virtual void      parse_options( option_t*, const std::string& options_str );
   virtual option_t* merge_options( std::vector<option_t>&, option_t*, option_t* );
   virtual rank_t*   init_rank( rank_t* rank_list, int id=0 );
@@ -1769,74 +1807,16 @@ struct regen_event_t : public event_t
 
 struct unique_gear_t
 {
-  // Tier Gear
-  int  ashtongue_talisman;
-  int  tier4_2pc, tier4_4pc;
-  int  tier5_2pc, tier5_4pc;
-  int  tier6_2pc, tier6_4pc;
-  int  tier7_2pc, tier7_4pc;
-  int  tier8_2pc, tier8_4pc;
-
-  // Specific Gear
-  int  bandits_insignia;
-  int  blood_of_the_old_god;
-  int  chaotic_skyflare;
-  int  comets_trail;
-  int  darkmoon_card_crusade;
-  int  darkmoon_card_greatness;
-  int  dark_matter;
-  int  dying_curse;
-  int  egg_of_mortal_essence;
-  int  elder_scribes;
-  int  elemental_focus_stone;
-  int  ember_skyflare;
-  int  embrace_of_the_spider;
-  int  eternal_sage;
-  int  extract_of_necromantic_power;
-  int  eye_of_magtheridon;
-  int  eye_of_the_broodmother;
-  int  flare_of_the_heavens;
-  int  forge_ember;
-  int  fury_of_the_five_flights;
-  int  grim_toll;
-  int  illustration_of_the_dragon_soul;
-  int  lightning_capacitor;
-  int  mark_of_defiance;
-  int  mirror_of_truth;
-  int  mjolnir_runestone;
-  int  mystical_skyfire;
-  int  pandoras_plea;
-  int  pyrite_infuser;
-  int  quagmirrans_eye;
-  int  relentless_earthstorm;
-  int  sextant_of_unstable_currents;
-  int  shiffars_nexus_horn;
-  int  spellstrike;
-  int  sundial_of_the_exiled;
-  int  thunder_capacitor;
-  int  timbals_crystal;
-  int  wrath_of_cenarius;
-  int  austere_earthsiege;
-  int  lightweave_embroidery;
-
-  unique_gear_t() { memset( ( void* ) this, 0x00, sizeof( unique_gear_t ) ); }
-
-  static action_t* create_action( player_t*, const std::string& name, const std::string& options );
-  static int get_options( std::vector<option_t>&, player_t* );
   static void init( player_t* );
   static void register_callbacks( player_t* );
+  static bool get_equip_encoding( std::string& encoding, const std::string& item_name );
+  static bool get_use_encoding  ( std::string& encoding, const std::string& item_name );
 };
 
 // Enchants ===================================================================
 
 struct enchant_t
 {
-  gear_stats_t stats;
-  int spellsurge;
-
-  enchant_t() { memset( ( void* ) this, 0x00, sizeof( enchant_t ) ); }
-
-  static int get_options( std::vector<option_t>&, player_t* );
   static void init( player_t* );
   static void register_callbacks( player_t* );
 };
@@ -1991,8 +1971,6 @@ struct rng_t
   static rng_t* create( sim_t*, const std::string& name, int type=RNG_STANDARD );
 };
 
-void testRng( sim_t* sim );
-
 // Utilities =================================================================
 
 struct util_t
@@ -2011,19 +1989,21 @@ struct util_t
   static const char* attribute_type_string     ( int type );
   static const char* dmg_type_string           ( int type );
   static const char* elixir_type_string        ( int type );
+  static const char* enchant_type_string       ( int type );
   static const char* flask_type_string         ( int type );
   static const char* food_type_string          ( int type );
+  static const char* meta_gem_type_string      ( int type );
   static const char* player_type_string        ( int type );
   static const char* profession_type_string    ( int type );
   static const char* race_type_string          ( int type );
   static const char* resource_type_string      ( int type );
   static const char* result_type_string        ( int type );
   static const char* school_type_string        ( int type );
+  static const char* slot_type_string          ( int type );
   static const char* stat_type_string          ( int type );
   static const char* stat_type_abbrev          ( int type );
   static const char* talent_tree_string        ( int tree );
   static const char* weapon_buff_type_string   ( int type );
-  static const char* weapon_enchant_type_string( int type );
   static const char* weapon_type_string        ( int type );
 
   static int string_split( std::vector<std::string>& results, const std::string& str, const char* delim );
@@ -2032,15 +2012,70 @@ struct util_t
   static int milliseconds();
 };
 
+// Thread Wrappers ===========================================================
+
+struct thread_t
+{
+  static void init();
+  static void launch( sim_t* );
+  static void wait( sim_t* );
+  static void mutex_init( void*& mutex );
+  static void mutex_lock( void*& mutex );
+  static void mutex_unlock( void*& mutex );
+};
+
+// Armory ====================================================================
+
+struct armory_t
+{
+  static player_t* download_player( sim_t* sim,
+				    const std::string& region, 
+				    const std::string& server, 
+				    const std::string& name,
+				    bool active_talents=true );
+
+  static bool download_slot( item_t&, const std::string& id_str );
+  static bool download_item( item_t&, const std::string& id_str );
+
+  static std::string& format( std::string& name );
+  static bool clear_cache( sim_t*, const std::string& name, const std::string& value );
+};
+
+// HTTP Download  ============================================================
+
+struct http_t
+{
+  static bool cache_load();
+  static bool cache_save();
+  static void cache_clear();
+  static void cache_set( const std::string& url, const std::string& result, uint32_t timestamp=0 );
+  static bool cache_get( std::string& result, const std::string& url, bool force=false );
+  static bool download( std::string& result, const std::string& url );
+  static bool get( std::string& result, const std::string& url, const std::string& confirmation=std::string(), int throttle_seconds=0 );
+};
+
+// XML =======================================================================
+
+struct xml_t
+{
+  static xml_node_t* get_node( xml_node_t* root, const std::string& name );
+  static int  get_nodes( std::vector<xml_node_t*>&, xml_node_t* root, const std::string& name );
+  static bool get_value( std::string& value, xml_node_t* root, const std::string& path = std::string() );
+  static bool get_value( int&         value, xml_node_t* root, const std::string& path = std::string() );
+  static bool get_value( double&      value, xml_node_t* root, const std::string& path = std::string() );
+  static xml_node_t* download( const std::string& url, const std::string& confirmation=std::string(), int throttle_seconds=0 );
+  static xml_node_t* create( const std::string& buffer );
+  static void print( xml_node_t* root, FILE*, int spacing=0 );
+};
+
+// Deprecated =================================================================
+
 std::string tolower( std::string src );
 std::string trim( std::string src );
 void replace_char( std::string& src, char old_c, char new_c  );
 void replace_str( std::string& src, std::string old_str, std::string new_str  );
 bool str_to_float(std::string src, double& dest );
 std::string proper_option_name( const std::string& full_name );
-
-bool armory_option_parse( sim_t* sim, const std::string& name, const std::string& value);
-
 
 #endif // __SIMCRAFT_H
 

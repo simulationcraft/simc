@@ -92,8 +92,8 @@ void attack_t::player_buff()
   player_expertise = p -> composite_attack_expertise();
   player_crit      = p -> composite_attack_crit();
 
-  if ( p -> unique_gear -> chaotic_skyflare      ||
-       p -> unique_gear -> relentless_earthstorm )
+  if ( p -> meta_gem == META_CHAOTIC_SKYFLARE ||
+       p -> meta_gem == META_RELENTLESS_EARTHSIEGE )
   {
     player_crit_multiplier *= 1.03;
   }

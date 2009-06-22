@@ -8,9 +8,9 @@ actions+=/strength_of_earth_totem/windfury_totem/bloodlust,time_to_die<=60
 actions+=/auto_attack/lightning_bolt,maelstrom=5/shamanistic_rage/stormstrike/earth_shock/magma_totem/lightning_shield/lava_lash/spirit_wolf
 
 # Gear: http://www.chardev.org/?template=159696
-gear_stamina=858
 gear_strength=10
 gear_agility=760
+gear_stamina=858
 gear_intellect=380
 gear_spirit=10
 gear_attack_power=2255
@@ -25,20 +25,17 @@ tier7_2pc=1
 tier7_4pc=1
 
 # Meta Gem
-relentless_earthstorm=1
+meta_gem=relentless_earthstorm
 
 # Weapons
-main_hand=fist,dps=171.3,speed=2.6,enchant=berserking
-off_hand=mace,dps=156.6,speed=2.5,enchant=berserking
+main_hand=calamitys_grasp,weapon=fist_171dps_2.7speed,enchant=berserking
+off_hand=angry_dread,weapon=mace_157dps_2.5speed,enchant=berserking
 
 # Item Procs
-grim_toll=1
-mirror_of_truth=1
+items=grim_toll/mirror_of_truth
 
 # Glyphs
-glyph_windfury_weapon=1
-glyph_stormstrike=1
-glyph_feral_spirit=1
+glyphs=windfury_weapon/stormstrike/feral_spirit
 
 # Totem
-totem_of_dueling=1
+totem=totem_of_dueling

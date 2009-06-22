@@ -28,16 +28,13 @@ tier7_2pc=1
 tier7_4pc=1
 
 # Meta Gem
-chaotic_skyflare=1
+meta_gem=chaotic_skyflare
 
 # Item Procs
-illustration_of_the_dragon_soul=1
-dying_curse=1
+items=illustration_of_the_dragon_soul/dying_curse
 
 # Glyphs
-glyph_moonfire=1
-glyph_starfire=1
-glyph_insect_swarm=1
+glyphs=moonfire/starfire/insect_swarm
 
 # Relic
-idol_of_the_shooting_star=1
+idol=idol_of_the_shooting_star

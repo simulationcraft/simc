@@ -195,6 +195,7 @@ struct warrior_t : public player_t
   }
 
   // Character Definition
+  virtual void      init_glyphs();
   virtual void      init_base();
   virtual void      init_gains();
   virtual void      init_procs();
@@ -377,7 +378,7 @@ static void trigger_tier7_4pc( action_t* a )
 {
   warrior_t* p = a -> player -> cast_warrior();
 
-  if ( ! p -> unique_gear -> tier7_4pc )
+  if ( ! p -> set_bonus.tier7_4pc() )
     return;
 
   if ( ! p -> rngs.tier7_4pc -> roll( 0.10 ) )
@@ -759,7 +760,7 @@ static void trigger_tier8_2pc( action_t* a )
   if ( a -> result != RESULT_CRIT )
     return;
 
-  if ( ! p -> unique_gear -> tier8_2pc )
+  if ( ! p -> set_bonus.tier8_2pc() )
     return;
 
   if ( ! p -> rngs.tier8_2pc -> roll( 0.40 ) )
@@ -1414,20 +1415,20 @@ struct bloodthirst_t : public warrior_attack_t
 
     base_dd_min = base_dd_max = 1;
 
-    may_crit          = true;
+    may_crit = true;
     if( sim -> P313 )
     {
-      cooldown          = 4.0;
-      base_cost         = 20;
+      cooldown  = 4.0;
+      base_cost = 20;
     }
     else
     {
-      cooldown          = 5.0;
-      base_cost         = 30;
+      cooldown  = 5.0;
+      base_cost = 30;
     }
-    base_multiplier  *= 1 + p -> talents.unending_fury * 0.02;
-    direct_power_mod  = 0.50;
-    if ( p -> unique_gear -> tier8_4pc )
+    base_multiplier *= 1 + p -> talents.unending_fury * 0.02;
+    direct_power_mod = 0.50;
+    if ( p -> set_bonus.tier8_4pc() )
       base_crit += 0.10;
   }
   virtual void execute()
@@ -1522,9 +1523,10 @@ struct devastate_t : public warrior_attack_t
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier = 0.50;
 
-    may_crit          = true;
-    base_cost        -= p -> talents.puncture;
-    base_crit        += ( p -> talents.sword_and_board * 5 +  p -> unique_gear -> tier8_2pc ? 0.10 : 0.0 );
+    may_crit   = true;
+    base_cost -= p -> talents.puncture;
+    base_crit += ( p -> talents.sword_and_board * 5 +  
+		   p -> set_bonus.tier8_2pc() ? 0.10 : 0.0 );
   }
   virtual void execute()
   {
@@ -1613,7 +1615,7 @@ struct shield_slam_t : public warrior_attack_t
     may_crit          = true;
     cooldown          = 6.0;
     direct_power_mod  = 0.0;
-    base_multiplier   *= 1 + ( p -> talents.gag_order * 0.05 ) + ( p -> unique_gear -> tier7_2pc ? 0.10 : 0.0 ) + ( p -> glyphs.blocking ? 0.10 : 0.0 );
+    base_multiplier   *= 1 + ( p -> talents.gag_order * 0.05 ) + ( p -> set_bonus.tier7_2pc() ? 0.10 : 0.0 ) + ( p -> glyphs.blocking ? 0.10 : 0.0 );
     base_crit         += ( p -> talents.critical_block * 0.05 );
 
     //FIXME Ugly hack for 1200 baseline block value, change when block value is included in player data
@@ -1852,7 +1854,7 @@ struct mortal_strike_t : public warrior_attack_t
     cooldown         = 6.0 - ( p -> talents.improved_mortal_strike / 3.0 );
     base_multiplier *= 1 + util_t::talent_rank( p -> talents.improved_mortal_strike, 3, 0.03, 0.06, 0.10 )
                        + ( p -> glyphs.mortal_strike ? 0.10 : 0 );
-    if ( p -> unique_gear -> tier8_4pc )
+    if ( p -> set_bonus.tier8_4pc() )
       base_crit += 0.10;
 
     weapon_multiplier = 1;
@@ -2006,7 +2008,7 @@ struct slam_t : public warrior_attack_t
     may_crit = true;
 
     base_execute_time  = 1.5 - p -> talents.improved_slam * 0.5;
-    base_multiplier   *= 1 + p -> talents.unending_fury * 0.02 + ( p -> unique_gear -> tier7_2pc ? 0.10 : 0.0 );
+    base_multiplier   *= 1 + p -> talents.unending_fury * 0.02 + ( p -> set_bonus.tier7_2pc() ? 0.10 : 0.0 );
 
     normalize_weapon_speed = false;
     weapon = &( p -> main_hand_weapon );
@@ -2566,6 +2568,30 @@ action_t* warrior_t::create_action( const std::string& name,
   return player_t::create_action( name, options_str );
 }
 
+// warrior_t::init_glyphs =====================================================
+
+void warrior_t::init_glyphs()
+{
+  memset( ( void* ) &glyphs, 0x0, sizeof( glyphs_t ) );
+
+  std::vector<std::string> glyph_names;
+  int num_glyphs = util_t::string_split( glyph_names, glyphs_str, ",/" );
+  
+  for( int i=0; i < num_glyphs; i++ )
+  {
+    std::string& n = glyph_names[ i ];
+
+    if     ( n == "bladestorm"    ) glyphs.bladestorm = 1;
+    else if( n == "execution"     ) glyphs.execution = 1;
+    else if( n == "heroic_strike" ) glyphs.heroic_strike = 1;
+    else if( n == "mortal_strike" ) glyphs.mortal_strike = 1;
+    else if( n == "overpower"     ) glyphs.overpower = 1;
+    else if( n == "rending"       ) glyphs.rending = 1;
+    else if( n == "whirlwind"     ) glyphs.whirlwind = 1;
+    else if( ! sim -> parent ) printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
+  }
+}
+
 // warrior_t::init_base ========================================================
 
 void warrior_t::init_base()
@@ -2668,6 +2694,16 @@ void warrior_t::init_actions()
   if( action_list_str.empty() )
   {
     action_list_str = "flask,type=endless_rage/food,type=dragonfin_filet";
+
+    int num_items = items.size();
+    for( int i=0; i < num_items; i++ )
+    {
+      if( items[ i ].use.active() )
+      {
+	action_list_str += "/use_item,name=";
+	action_list_str += items[ i ].name();
+      }
+    }
 
     if( primary_tree() == TREE_ARMS )
     {
@@ -2854,13 +2890,13 @@ bool warrior_t::get_talent_trees( std::vector<int*>& arms,
 
 std::vector<option_t>& warrior_t::get_options()
 {
-  if( option_vector.empty() )
+  if( options.empty() )
   {
     player_t::get_options();
 
-    option_t options[] =
+    option_t warrior_options[] =
     {
-      // @option_doc loc=skip
+      // @option_doc loc=player/warrior/talents title="Talents"
       { "armored_to_the_teeth",            OPT_INT, &( talents.armored_to_the_teeth            ) },
       { "anger_management",                OPT_INT, &( talents.anger_management                ) },
       { "bladestorm",                      OPT_INT, &( talents.bladestorm                      ) },
@@ -2920,22 +2956,14 @@ std::vector<option_t>& warrior_t::get_options()
       { "vitality",                        OPT_INT, &( talents.vitality                        ) },
       { "weapon_mastery",                  OPT_INT, &( talents.weapon_mastery                  ) },
       { "wrecking_crew",                   OPT_INT, &( talents.wrecking_crew                   ) },
-      // @option_doc loc=player/warrior/glyphs title="Glyphs"
-      { "glyph_of_bladestorm",             OPT_BOOL, &( glyphs.bladestorm                      ) },
-      { "glyph_of_execution",              OPT_BOOL, &( glyphs.execution                       ) },
-      { "glyph_of_heroic_strike",          OPT_BOOL, &( glyphs.heroic_strike                   ) },
-      { "glyph_of_mortal_strike",          OPT_BOOL, &( glyphs.mortal_strike                   ) },
-      { "glyph_of_overpower",              OPT_BOOL, &( glyphs.overpower                       ) },
-      { "glyph_of_rending",                OPT_BOOL, &( glyphs.rending                         ) },
-      { "glyph_of_whirlwind",              OPT_BOOL, &( glyphs.whirlwind                       ) },
       { "glyph_of_blocking",               OPT_BOOL, &( glyphs.blocking                        ) },
       { NULL, OPT_UNKNOWN }
     };
 
-    option_t::copy( option_vector, options );
+    option_t::copy( options, warrior_options );
   }
 
-  return option_vector;
+  return options;
 }
 
 // player_t::create_warrior ===============================================

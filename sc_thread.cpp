@@ -5,6 +5,8 @@
 
 #include "simcraft.h"
 
+static bool thread_initialized = false;
+
 // Cross-Platform Support for Multi-Threading ===============================
 
 #if defined( NO_THREADS )
@@ -12,6 +14,10 @@
 // ==========================================================================
 // NO MULTI-THREADING SUPPORT
 // ==========================================================================
+
+// thread_t::init ===========================================================
+
+void thread_t::init() {}
 
 // thread_t::launch =========================================================
 
@@ -22,8 +28,19 @@ void thread_t::launch( sim_t* sim )
 
 // thread_t::wait ===========================================================
 
-void thread_t::wait( sim_t* sim )
-{}
+void thread_t::wait( sim_t* sim ) {}
+
+// thread_t::mutex_init =====================================================
+
+void thread_t::mutex_init( void*& mutex ) {}
+
+// thread_t::mutex_lock =====================================================
+
+void thread_t::mutex_lock( void* mutex ) {}
+
+// thread_t::mutex_unlock ===================================================
+
+void thread_t::mutex_unlock( void* mutex ) {}
 
 #elif defined( __MINGW32__ )
 
@@ -34,8 +51,7 @@ void thread_t::wait( sim_t* sim )
 #include <windows.h>
 #include <process.h>
 
-static CRITICAL_SECTION global_lock;
-static bool global_lock_initialized = false;
+static CRITICAL_SECTION global_mutex;
 
 // thread_execute ===========================================================
 
@@ -46,15 +62,19 @@ static unsigned WINAPI thread_execute( LPVOID sim )
   return 0;
 }
 
+// thread_t::init ===========================================================
+
+void thread_t::init() 
+{
+  InitializeCriticalSection( &global_mutex );
+  thread_initialized = true;
+}
+
 // thread_t::launch =========================================================
 
 void thread_t::launch( sim_t* sim )
 {
-  if( ! global_lock_initialized )
-  {
-    InitializeCriticalSection( &global_lock );
-    global_lock_initialized = true;
-  }
+  assert( thread_initialized );
   HANDLE* handle = new HANDLE();
   sim -> thread_handle = ( void* ) handle;
   //MinGW wiki suggests using _beginthreadex over CreateThread
@@ -67,29 +87,39 @@ void thread_t::wait( sim_t* sim )
 {
   HANDLE* handle = ( HANDLE* ) ( sim -> thread_handle );
   WaitForSingleObject( *handle, INFINITE );
-  if ( handle )
-    delete handle;
+  if ( handle ) delete handle;
   sim -> thread_handle = NULL;
 }
 
-// thread_t::lock ===========================================================
+// thread_t::mutex_init =====================================================
 
-void thread_t::lock()
+void thread_t::mutex_init( void*& mutex )
 {
-  if( global_lock_initialized )
+  EnterCriticalSection( &global_mutex );
+
+  if( ! mutex )
   {
-    EnterCriticalSection( &global_lock );
+    CRITICAL_SECTION* cs = new CRITICAL_SECTION();
+    InitializeCriticalSection( cs );
+    mutex = cs;
   }
+
+  LeaveCriticalSection( &global_mutex );
 }
 
-// thread_t::unlock =========================================================
+// thread_t::mutex_lock =====================================================
 
-void thread_t::unlock()
+void thread_t::mutex_lock( void*& mutex )
 {
-  if( global_lock_initialized )
-  {
-    LeaveCriticalSection( &global_lock );
-  }
+  if( ! mutex ) mutex_init( mutex );
+  EnterCriticalSection( (CRITICAL_SECTION*) mutex );
+}
+
+// thread_t::mutex_unlock ===================================================
+
+void thread_t::unlock( void*& mutex )
+{
+  LeaveCriticalSection( (CRITICAL_SECTION*) mutex );
 }
 
 #elif defined( _MSC_VER )
@@ -100,8 +130,7 @@ void thread_t::unlock()
 
 #include <windows.h>
 
-static CRITICAL_SECTION global_lock;
-static bool global_lock_initialized = false;
+static CRITICAL_SECTION global_mutex;
 
 // thread_execute ===========================================================
 
@@ -112,15 +141,19 @@ static DWORD WINAPI thread_execute( __in LPVOID sim )
   return 0;
 }
 
+// thread_t::init ===========================================================
+
+void thread_t::init() 
+{
+  InitializeCriticalSection( &global_mutex );
+  thread_initialized = true;
+}
+
 // thread_t::launch =========================================================
 
 void thread_t::launch( sim_t* sim )
 {
-  if( ! global_lock_initialized )
-  {
-    InitializeCriticalSection( &global_lock );
-    global_lock_initialized = true;
-  }
+  assert( thread_initialized );
   HANDLE* handle = new HANDLE();
   sim -> thread_handle = ( void* ) handle;
   *handle = CreateThread( NULL, 0, thread_execute, ( void* ) sim, 0, NULL );
@@ -132,29 +165,39 @@ void thread_t::wait( sim_t* sim )
 {
   HANDLE* handle = ( HANDLE* ) ( sim -> thread_handle );
   WaitForSingleObject( *handle, INFINITE );
-  if ( handle )
-    delete handle;
+  if ( handle ) delete handle;
   sim -> thread_handle = NULL;
 }
 
-// thread_t::lock ===========================================================
+// thread_t::mutex_init =====================================================
 
-void thread_t::lock()
+void thread_t::mutex_init( void*& mutex )
 {
-  if( global_lock_initialized )
+  EnterCriticalSection( &global_mutex );
+
+  if( ! mutex )
   {
-    EnterCriticalSection( &global_lock );
+    CRITICAL_SECTION* cs = new CRITICAL_SECTION();
+    InitializeCriticalSection( cs );
+    mutex = cs;
   }
+
+  LeaveCriticalSection( &global_mutex );
 }
 
-// thread_t::unlock =========================================================
+// thread_t::mutex_lock =====================================================
 
-void thread_t::unlock()
+void thread_t::mutex_lock( void*& mutex )
 {
-  if( global_lock_initialized )
-  {
-    LeaveCriticalSection( &global_lock );
-  }
+  if( ! mutex ) mutex_init( mutex );
+  EnterCriticalSection( (CRITICAL_SECTION*) mutex );
+}
+
+// thread_t::mutex_unlock ===================================================
+
+void thread_t::unlock( void*& mutex )
+{
+  LeaveCriticalSection( (CRITICAL_SECTION*) mutex );
 }
 
 #else
@@ -165,8 +208,7 @@ void thread_t::unlock()
 
 #include <pthread.h>
 
-static pthread_mutex_t global_lock = PTHREAD_MUTEX_INITIALIZER;
-static bool global_lock_initialized = false;
+static pthread_mutex_t global_mutex;
 
 // thread_execute ===========================================================
 
@@ -177,11 +219,19 @@ static void* thread_execute( void* sim )
   return NULL;
 }
 
+// thread_t::init ===========================================================
+
+void thread_t::init() 
+{
+  pthread_mutex_init( &global_mutex, NULL );
+  thread_initialized = true;
+}
+
 // thread_t::launch =========================================================
 
 void thread_t::launch( sim_t* sim )
 {
-  global_lock_initialized = true;
+  assert( thread_initialized );
   pthread_t* pthread = new pthread_t();
   sim -> thread_handle = ( void* ) pthread;
   pthread_create( pthread, NULL, thread_execute, ( void* ) sim );
@@ -193,29 +243,39 @@ void thread_t::wait( sim_t* sim )
 {
   pthread_t* pthread = ( pthread_t* ) ( sim -> thread_handle );
   pthread_join( *pthread, NULL );
-  if ( pthread )
-    delete pthread;
+  if ( pthread ) delete pthread;
   sim -> thread_handle = NULL;
 }
 
-// thread_t::lock ===========================================================
+// thread_t::mutex_init =====================================================
 
-void thread_t::lock()
+void thread_t::mutex_init( void*& mutex )
 {
-  if( global_lock_initialized )
+  pthread_mutex_lock( &global_mutex );
+
+  if( ! mutex )
   {
-    pthread_mutex_lock( &global_lock );
+    pthread_mutex_t* m = new pthread_mutex_t();
+    pthread_mutex_init( m, NULL );
+    mutex = m;
   }
+
+  pthread_mutex_unlock( &global_mutex );
 }
 
-// thread_t::unlock =========================================================
+// thread_t::mutex_lock =====================================================
 
-void thread_t::unlock()
+void thread_t::mutex_lock( void*& mutex )
 {
-  if( global_lock_initialized )
-  {
-    pthread_mutex_unlock( &global_lock );
-  }
+  if( ! mutex ) mutex_init( mutex );
+  pthread_mutex_lock( (pthread_mutex_t*) mutex );
+}
+
+// thread_t::mutex_unlock ===================================================
+
+void thread_t::mutex_unlock( void*& mutex )
+{
+  pthread_mutex_unlock( (pthread_mutex_t*) mutex );
 }
 
 #endif

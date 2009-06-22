@@ -3,54 +3,47 @@
 mage=Mage_T8_20_51_00
 level=80
 talents=http://www.wowhead.com/?talent#of0Vck0fZ0Ec0RhIhVubhct
+glyphs=fire_ball/molten_armor/living_bomb
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/arcane_brilliance/focus_magic
 actions+=/counterspell
 actions+=/mana_gem,trigger=1000/speed_potion
-actions+=/haste_trinket,name=scale_of_fates,rating=432,length=20,cooldown=120
+actions+=/use_item,name=scale_of_fates
 actions+=/mirror_image/combustion
 actions+=/living_bomb/pyroblast,hot_streak=1/fire_ball
 actions+=/evocation
 
-# Gear
-# http://www.wowhead.com/?compare=46129:46130:46133:46134:45133:45242:45446:45520:45557:45135:40399:45518:45466:45271:45294
-# http://eu.wowarmory.com/item-info.xml?i=45620
-# http://eu.wowarmory.com/item-info.xml?i=45495
-gear_stamina=888
-gear_intellect=895
-gear_spirit=474
-gear_spell_power=1946
-gear_hit_rating=333
-gear_crit_rating=439
-gear_haste_rating=373
+# Gear summary
+gear_strength=10
+gear_agility=10
+gear_stamina=917
+gear_intellect=905
+gear_spirit=483
+gear_spell_power=2551
+gear_hit_rating=369
+gear_crit_rating=595
+gear_haste_rating=408
+gear_armor=1811
+meta_gem=chaotic_skyflare
 tier8_2pc=1
 tier8_4pc=1
-flare_of_the_heavens=1
+back=drape_of_mortal_downfall,enchant=lightweave
+items=flare_of_the_heavens/scale_of_fates
 
-# Gems and Socket Bonuses
-# http://www.wowhead.com/?compare=41285:39998:39998:39998:39998:39998:39998:40026:40026:40026:40026:40026:40014:40014:40014:40014:40051:40051:40051:40051
-chaotic_skyflare=1
-gem_intellect=4 
-gem_spirit=48
-gem_spell_power=258
-gem_hit_rating=16
-gem_crit_rating=54
-gem_haste_rating=62
-
-# Enchants (including 75 spell_power profession bonus)
-enchant_strength=10
-enchant_agility=10
-enchant_stamina=10
-enchant_intellect=10
-enchant_spirit=30
-enchant_spell_power=300
-enchant_hit_rating=12
-enchant_crit_rating=47
-enchant_haste_rating=23 
-
-# Glyphs
-glyph_fire_ball=1
-glyph_molten_armor=1
-glyph_living_bomb=1
-
-# Armor Type
-armor_type=molten
+# Gear summary generated from:
+# head=conquerors_kirin_tor_hood,id=46129,gems=chaotic_skyflare_19SP_9SP,enchant=30SP_20Crit
+# neck=pendant_of_fiery_havoc,id=45133,gems=9SP_8Haste_5SP
+# shoulder=conquerors_kirin_tor_shoulderpads,id=46134,gems=19SP,enchant=24SP_15Crit
+# back=drape_of_mortal_downfall,id=45242,gems=9SP_8Haste_5SP,enchant=lightweave
+# chest=conquerors_kirin_tor_tunic,id=46130,gems=19SP_19SP,enchant=10All
+# wrists=grasps_of_reason,id=45446,gems=19SP_4Spi,enchant=30SP
+# hands=pharos_gloves,id=45665,gems=19SP_19SP,enchant=28SP
+# waist=starwatchers_binding,stats=82Sta_69Int_64Spi_92SP_47Crit,gems=9SP_8Hit_9SP_8Hit_19SP_7SP
+# legs=conquerors_kirin_tor_leggings,id=46133,gems=19SP_9SP_8Spi_6Crit,enchant=50SP_20Spi
+# feet=boots_of_fiery_resolution,id=45135,gems=19SP_9SP_8Haste_6Haste,enchant=12Hit_12Crit
+# finger1=nebula_band,id=46046,gems=9SP_8Haste_4Crit,enchant=19SP
+# finger2=conductive_seal,id=45495,gems=19SP,enchant=19SP
+# trinket1=flare_of_the_heavens,id=45518
+# trinket2=scale_of_fates,id=45466
+# main_hand=starshard_edge,id=45620,gems=9SP_8Spi_5SP,enchant=63SP
+# off_hand=cosmos,stats=52Sta_55Int_84SP_41Crit_51Hit
+# ranged=petrified_ivy_spring,id=45294,gems=9SP_8Haste_4Spi

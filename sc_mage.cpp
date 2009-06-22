@@ -203,10 +203,14 @@ struct mage_t : public player_t
     // Active
     active_ignite          = 0;
     active_water_elemental = 0;
+    
+    // Valid values: molten|mage
+    armor_type_str = "molten";
   }
 
   // Character Definition
   virtual void      init_base();
+  virtual void      init_glyphs();
   virtual void      init_gains();
   virtual void      init_procs();
   virtual void      init_uptimes();
@@ -216,6 +220,7 @@ struct mage_t : public player_t
   virtual void      reset();
   virtual bool      get_talent_trees( std::vector<int*>& arcane, std::vector<int*>& fire, std::vector<int*>& frost );
   virtual std::vector<option_t>& get_options();
+  virtual bool      save( FILE* file );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
   virtual int       primary_resource() { return RESOURCE_MANA; }
@@ -563,7 +568,7 @@ static void trigger_tier5_4pc( spell_t* s )
 
   mage_t* p = s -> player -> cast_mage();
 
-  if ( p -> unique_gear -> tier5_4pc )
+  if ( p -> set_bonus.tier5_4pc() )
   {
     p -> procs.tier5_4pc -> occur();
 
@@ -586,7 +591,7 @@ static void trigger_tier8_2pc( spell_t* s )
 {
   mage_t* p = s -> player -> cast_mage();
 
-  if ( ! p -> unique_gear -> tier8_2pc )
+  if ( ! p -> set_bonus.tier8_2pc() )
     return;
 
   // http://ptr.wowhead.com/?spell=64867
@@ -636,7 +641,7 @@ static bool trigger_tier8_4pc( spell_t* s )
 {
   mage_t* p = s -> player -> cast_mage();
 
-  if ( ! p -> unique_gear -> tier8_4pc )
+  if ( ! p -> set_bonus.tier8_4pc() )
     return false;
 
   if ( ! p -> rngs.tier8_4pc -> roll( 0.10 ) )
@@ -1157,49 +1162,6 @@ static void trigger_replenishment( spell_t* s )
   p -> trigger_replenishment();
 }
 
-// trigger_ashtongue_talisman ======================================================
-
-static void trigger_ashtongue_talisman( spell_t* s )
-{
-  struct expiration_t : public event_t
-  {
-    expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      name = "Ashtongue Talisman Expiration";
-      player -> aura_gain( "Ashtongue Talisman" );
-      player -> haste_rating += 145;
-      player -> recalculate_haste();
-      sim -> add_event( this, 5.0 );
-    }
-    virtual void execute()
-    {
-      player -> aura_loss( "Ashtongue Talisman" );
-      player -> haste_rating -= 145;
-      player -> recalculate_haste();
-      player -> expirations.ashtongue_talisman = 0;
-    }
-  };
-
-  player_t* p = s -> player;
-
-  if ( p -> unique_gear -> ashtongue_talisman &&
-       p -> rngs.ashtongue_talisman -> roll( 0.50 ) )
-  {
-    p -> procs.ashtongue_talisman -> occur();
-
-    event_t*& e = p -> expirations.ashtongue_talisman;
-
-    if ( e )
-    {
-      e -> reschedule( 5.0 );
-    }
-    else
-    {
-      e = new ( s -> sim ) expiration_t( s -> sim, p );
-    }
-  }
-}
-
 // =========================================================================
 // Mage Spell
 // =========================================================================
@@ -1301,7 +1263,6 @@ void mage_spell_t::execute()
       trigger_ignite( this, direct_dmg );
       trigger_master_of_elements( this, 1.0 );
       trigger_tier5_4pc( this );
-      trigger_ashtongue_talisman( this );
     }
   }
   trigger_combustion( this );
@@ -1431,7 +1392,7 @@ struct arcane_barrage_t : public mage_spell_t
 
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) +
                                           ( p -> talents.burnout     * 0.10 ) +
-                                          ( p -> unique_gear -> tier7_4pc ? 0.05 : 0.00 ) );
+                                          ( p -> set_bonus.tier7_4pc() ? 0.05 : 0.00 ) );
   }
 
   virtual void player_buff()
@@ -1504,9 +1465,9 @@ struct arcane_blast_t : public mage_spell_t
 
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25   ) +
                                           ( p -> talents.burnout     * 0.10   ) +
-                                          ( p -> unique_gear -> tier7_4pc ? 0.05 : 0.00 ) );
+                                          ( p -> set_bonus.tier7_4pc() ? 0.05 : 0.00 ) );
 
-    if ( p -> unique_gear -> tier5_2pc ) base_multiplier *= 1.05;
+    if ( p -> set_bonus.tier5_2pc() ) base_multiplier *= 1.05;
   }
 
   virtual double cost()
@@ -1516,7 +1477,7 @@ struct arcane_blast_t : public mage_spell_t
     if ( c != 0 )
     {
       if ( p -> _buffs.arcane_blast ) c += base_cost * p -> _buffs.arcane_blast * 2.00;
-      if ( p -> unique_gear -> tier5_2pc      ) c += base_cost * 0.05;
+      if ( p -> set_bonus.tier5_2pc() ) c += base_cost * 0.05;
     }
     return c;
   }
@@ -1634,9 +1595,9 @@ struct arcane_missiles_tick_t : public mage_spell_t
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) +
                                           ( p -> talents.burnout     * 0.10 ) +
                                           ( p -> glyphs.arcane_missiles ? 0.25 : 0.00 ) +
-                                          ( p -> unique_gear -> tier7_4pc         ? 0.05 : 0.00 ) );
+                                          ( p -> set_bonus.tier7_4pc()  ? 0.05 : 0.00 ) );
 
-    if ( p -> unique_gear -> tier6_4pc ) base_multiplier *= 1.05;
+    if ( p -> set_bonus.tier6_4pc() ) base_multiplier *= 1.05;
   }
 
   virtual void player_buff()
@@ -1668,7 +1629,6 @@ struct arcane_missiles_tick_t : public mage_spell_t
     {
       trigger_master_of_elements( this, 0.20 );
       trigger_tier5_4pc( this );
-      trigger_ashtongue_talisman( this );
     }
   }
 };
@@ -1925,7 +1885,7 @@ struct evocation_t : public mage_spell_t
     cooldown      -= p -> talents.arcane_flows * 60.0;
     harmful        = false;
 
-    if ( p -> unique_gear -> tier6_2pc ) num_ticks++;
+    if ( p -> set_bonus.tier6_2pc() ) num_ticks++;
   }
 
   virtual void tick()
@@ -1958,7 +1918,7 @@ struct presence_of_mind_t : public mage_spell_t
     assert( p -> talents.presence_of_mind );
 
     cooldown = 120.0;
-    if ( p -> unique_gear -> tier4_4pc ) cooldown -= 24.0;
+    if ( p -> set_bonus.tier4_4pc() ) cooldown -= 24.0;
     cooldown *= 1.0 - p -> talents.arcane_flows * 0.15;
 
     if ( options_str.empty() )
@@ -2047,11 +2007,11 @@ struct fire_ball_t : public mage_spell_t
 
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) +
                                           ( p -> talents.burnout     * 0.10 ) +
-                                          ( p -> unique_gear -> tier7_4pc ? 0.05 : 0.00 ) );
+                                          ( p -> set_bonus.tier7_4pc() ? 0.05 : 0.00 ) );
 
     base_crit += p -> talents.improved_scorch * 0.01;
 
-    if ( p -> unique_gear -> tier6_4pc   ) base_multiplier *= 1.05;
+    if ( p -> set_bonus.tier6_4pc() ) base_multiplier *= 1.05;
     if ( p -> glyphs.fire_ball ) base_crit += 0.05;
   }
 
@@ -2151,7 +2111,7 @@ struct fire_blast_t : public mage_spell_t
 
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) +
                                           ( p -> talents.burnout     * 0.10 ) +
-                                          ( p -> unique_gear -> tier7_4pc ? 0.05 : 0.00 ) );
+                                          ( p -> set_bonus.tier7_4pc() ? 0.05 : 0.00 ) );
   }
   virtual void execute()
   {
@@ -2205,7 +2165,7 @@ struct living_bomb_t : public mage_spell_t
 
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) +
                                           ( p -> talents.burnout     * 0.10 ) +
-                                          ( p -> unique_gear -> tier7_4pc ? 0.05 : 0.00 ) );
+                                          ( p -> set_bonus.tier7_4pc() ? 0.05 : 0.00 ) );
   }
 
   // Odd thing to handle: The direct-damage comes at the last tick instead of the beginning of the spell.
@@ -2289,7 +2249,7 @@ struct pyroblast_t : public mage_spell_t
 
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) +
                                           ( p -> talents.burnout     * 0.10 ) +
-                                          ( p -> unique_gear -> tier7_4pc ? 0.05 : 0.00 ) );
+                                          ( p -> set_bonus.tier7_4pc() ? 0.05 : 0.00 ) );
   }
 
   virtual void execute()
@@ -2373,7 +2333,7 @@ struct scorch_t : public mage_spell_t
 
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) +
                                           ( p -> talents.burnout     * 0.10 ) +
-                                          ( p -> unique_gear -> tier7_4pc ? 0.05 : 0.00 ) );
+                                          ( p -> set_bonus.tier7_4pc() ? 0.05 : 0.00 ) );
 
     base_crit += p -> talents.improved_scorch * 0.01;
 
@@ -2479,11 +2439,11 @@ struct frost_bolt_t : public mage_spell_t
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.ice_shards  * 1.0/3 ) +
                                           ( p -> talents.spell_power * 0.25  ) +
                                           ( p -> talents.burnout     * 0.10  ) +
-                                          ( p -> unique_gear -> tier7_4pc ? 0.05 : 0.00 ) );
+                                          ( p -> set_bonus.tier7_4pc() ? 0.05 : 0.00 ) );
 
     base_crit += p -> talents.winters_chill * 0.01;
 
-    if ( p -> unique_gear -> tier6_4pc    ) base_multiplier *= 1.05;
+    if ( p -> set_bonus.tier6_4pc() ) base_multiplier *= 1.05;
     if ( p -> glyphs.frost_bolt ) base_multiplier *= 1.05;
   }
 
@@ -2552,7 +2512,7 @@ struct ice_lance_t : public mage_spell_t
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.ice_shards  * 1.0/3 ) +
                                           ( p -> talents.spell_power * 0.25  ) +
                                           ( p -> talents.burnout     * 0.10  ) +
-                                          ( p -> unique_gear -> tier7_4pc ? 0.05 : 0.00 ) );
+                                          ( p -> set_bonus.tier7_4pc() ? 0.05 : 0.00 ) );
   }
 
   virtual void player_buff()
@@ -2660,7 +2620,7 @@ struct frostfire_bolt_t : public mage_spell_t
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.ice_shards  * 1.0/3 ) +
                                           ( p -> talents.spell_power * 0.25  ) +
                                           ( p -> talents.burnout     * 0.10  ) +
-                                          ( p -> unique_gear -> tier7_4pc ? 0.05 : 0.00 ) );
+                                          ( p -> set_bonus.tier7_4pc() ? 0.05 : 0.00 ) );
 
     base_crit += p -> talents.improved_scorch * 0.01;
 
@@ -3011,7 +2971,7 @@ struct mana_gem_t : public action_t
       max *= 1.40;
       trigger *= 1.40;
     }
-    if ( p -> unique_gear -> tier7_2pc )
+    if ( p -> set_bonus.tier7_2pc() )
     {
       min *= 1.40;
       max *= 1.40;
@@ -3032,7 +2992,7 @@ struct mana_gem_t : public action_t
 
     double gain = sim -> rng -> range( min, max );
 
-    if ( p -> unique_gear -> tier7_2pc )
+    if ( p -> set_bonus.tier7_2pc() )
     {
       struct expiration_t : public event_t
       {
@@ -3111,7 +3071,7 @@ struct choose_rotation_t : public action_t
     regen_rate += p -> resource_max[ RESOURCE_MANA ] * 0.60 / ( 240.0 - p -> talents.arcane_flows * 60.0 );
 
     // Mana Gem
-    regen_rate += 3400 * ( 1.0 + p -> glyphs.mana_gem * 0.40 ) * ( 1.0 + p -> unique_gear -> tier7_2pc * 0.40 ) / 120.0;
+    regen_rate += 3400 * ( 1.0 + p -> glyphs.mana_gem * 0.40 ) * ( 1.0 + p -> set_bonus.tier7_2pc() * 0.40 ) / 120.0;
 
     if ( p -> rotation.current == ROTATION_DPS )
     {
@@ -3229,6 +3189,38 @@ pet_t* mage_t::create_pet( const std::string& pet_name )
   return 0;
 }
 
+// mage_t::init_glyphs ====================================================
+
+void mage_t::init_glyphs()
+{
+  memset( ( void* ) &glyphs, 0x0, sizeof( glyphs_t ) );
+
+  std::vector<std::string> glyph_names;
+  int num_glyphs = util_t::string_split( glyph_names, glyphs_str, ",/" );
+  
+  for( int i=0; i < num_glyphs; i++ )
+  {
+    std::string& n = glyph_names[ i ];
+
+    if     ( n == "arcane_barrage"  ) glyphs.arcane_barrage = 1;
+    else if( n == "arcane_blast"    ) glyphs.arcane_blast = 1;
+    else if( n == "arcane_missiles" ) glyphs.arcane_missiles = 1;
+    else if( n == "arcane_power"    ) glyphs.arcane_power = 1;
+    else if( n == "fire_ball"       ) glyphs.fire_ball = 1;
+    else if( n == "frost_bolt"      ) glyphs.frost_bolt = 1;
+    else if( n == "ice_lance"       ) glyphs.ice_lance = 1;
+    else if( n == "improved_scorch" ) glyphs.improved_scorch = 1;
+    else if( n == "living_bomb"     ) glyphs.living_bomb = 1;
+    else if( n == "mage_armor"      ) glyphs.mage_armor = 1;
+    else if( n == "mana_gem"        ) glyphs.mana_gem = 1;
+    else if( n == "mirror_image"    ) glyphs.mirror_image = 1;
+    else if( n == "molten_armor"    ) glyphs.molten_armor = 1;
+    else if( n == "water_elemental" ) glyphs.water_elemental = 1;
+    else if( n == "frostfire"       ) glyphs.frostfire = 1;
+    else if( ! sim -> parent ) printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
+  }
+}
+
 // mage_t::init_base =======================================================
 
 void mage_t::init_base()
@@ -3333,6 +3325,15 @@ void mage_t::init_actions()
     action_list_str = "flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/arcane_brilliance";
     if( talents.focus_magic ) action_list_str += "/focus_magic";
     action_list_str += "/counterspell/mirror_image";
+    int num_items = items.size();
+    for( int i=0; i < num_items; i++ )
+    {
+      if( items[ i ].use.active() )
+      {
+	action_list_str += "/use_item,name=";
+	action_list_str += items[ i ].name();
+      }
+    }
     if( talents.combustion   ) action_list_str += "/combustion";
     if( talents.arcane_power ) action_list_str += "/arcane_power";
     if( talents.icy_veins    ) action_list_str += "/icy_veins";
@@ -3541,13 +3542,13 @@ bool mage_t::get_talent_trees( std::vector<int*>& arcane,
 
 std::vector<option_t>& mage_t::get_options()
 {
-  if( option_vector.empty() )
+  if( options.empty() )
   {
     player_t::get_options();
 
-    option_t options[] =
+    option_t mage_options[] =
     {
-      // @option_doc loc=skip
+      // @option_doc loc=player/mage/talents title="Talents"
       { "arcane_barrage",            OPT_INT,   &( talents.arcane_barrage            ) },
       { "arcane_concentration",      OPT_INT,   &( talents.arcane_concentration      ) },
       { "arcane_empowerment",        OPT_INT,   &( talents.arcane_empowerment        ) },
@@ -3570,7 +3571,6 @@ std::vector<option_t>& mage_t::get_options()
       { "combustion",                OPT_INT,   &( talents.combustion                ) },
       { "critical_mass",             OPT_INT,   &( talents.critical_mass             ) },
       { "deep_freeze",               OPT_INT,   &( talents.deep_freeze               ) },
-      { "elemental_precision",       OPT_INT,   &( talents.precision                 ) }, // deprecated
       { "empowered_arcane_missiles", OPT_INT,   &( talents.empowered_arcane_missiles ) },
       { "empowered_fire",            OPT_INT,   &( talents.empowered_fire            ) },
       { "empowered_frost_bolt",      OPT_INT,   &( talents.empowered_frost_bolt      ) },
@@ -3611,32 +3611,29 @@ std::vector<option_t>& mage_t::get_options()
       { "winters_chill",             OPT_INT,   &( talents.winters_chill             ) },
       { "winters_grasp",             OPT_INT,   &( talents.winters_grasp             ) },
       { "world_in_flames",           OPT_INT,   &( talents.world_in_flames           ) },
-      // @option_doc loc=player/mage/glyphs title="Glyphs"
-      { "glyph_arcane_barrage",      OPT_BOOL,   &( glyphs.arcane_barrage            ) },
-      { "glyph_arcane_blast",        OPT_BOOL,   &( glyphs.arcane_blast              ) },
-      { "glyph_arcane_missiles",     OPT_BOOL,   &( glyphs.arcane_missiles           ) },
-      { "glyph_arcane_power",        OPT_BOOL,   &( glyphs.arcane_power              ) },
-      { "glyph_fire_ball",           OPT_BOOL,   &( glyphs.fire_ball                 ) },
-      { "glyph_frost_bolt",          OPT_BOOL,   &( glyphs.frost_bolt                ) },
-      { "glyph_ice_lance",           OPT_BOOL,   &( glyphs.ice_lance                 ) },
-      { "glyph_improved_scorch",     OPT_BOOL,   &( glyphs.improved_scorch           ) },
-      { "glyph_living_bomb",         OPT_BOOL,   &( glyphs.living_bomb               ) },
-      { "glyph_mage_armor",          OPT_BOOL,   &( glyphs.mage_armor                ) },
-      { "glyph_mana_gem",            OPT_BOOL,   &( glyphs.mana_gem                  ) },
-      { "glyph_mirror_image",        OPT_BOOL,   &( glyphs.mirror_image              ) },
-      { "glyph_molten_armor",        OPT_BOOL,   &( glyphs.molten_armor              ) },
-      { "glyph_water_elemental",     OPT_BOOL,   &( glyphs.water_elemental           ) },
-      { "glyph_frostfire",           OPT_BOOL,   &( glyphs.frostfire                 ) },
       // @option_doc loc=player/mage/misc title="Misc"
       { "armor_type",                OPT_STRING, &( armor_type_str                   ) },
       { "focus_magic_target",        OPT_STRING, &( focus_magic_target_str           ) },
       { NULL, OPT_UNKNOWN }
     };
 
-    option_t::copy( option_vector, options );
+    option_t::copy( options, mage_options );
   }
 
-  return option_vector;
+  return options;
+}
+
+// mage_t::save =============================================================
+
+bool mage_t::save( FILE* file )
+{
+  player_t::save( file );
+
+  if( ! armor_type_str.empty() ) fprintf( file, "armor_type=%s\n", armor_type_str.c_str() );
+
+  if( ! focus_magic_target_str.empty() ) fprintf( file, "focus_magic_target=%s\n", focus_magic_target_str.c_str() );
+
+  return true;
 }
 
 // player_t::create_mage  ===================================================

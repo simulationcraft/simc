@@ -9,6 +9,4 @@ actions+=/soul_fire,decimation=1/life_tap,glyph=1/metamorphosis/curse_of_doom,ti
 actions+=/immolation,health_percentage>=35/immolate/corruption,health_percentage>=35/shadow_bolt
 Warlock_Filler.simcraft
 Warlock_T8_Gear.simcraft
-glyph_life_tap=1
-glyph_felguard=1
-glyph_metamorphosis=1
+glyphs=life_tap/felguard/metamorphosis

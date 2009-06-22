@@ -6,49 +6,32 @@ talents=http://www.wowhead.com/?talent#hVhGVZhbxIoxdIhusouVo
 actions=flask,type=endless_rage/food,type=fish_feast/windfury_weapon,weapon=main/flametongue_weapon,weapon=off
 actions+=/wind_shock
 actions+=/strength_of_earth_totem/windfury_totem/bloodlust,time_to_die<=60
-actions+=/attack_power_trinket,name=wrathstone,power=856,length=20,cooldown=120
+actions+=/use_item,name=wrathstone
 actions+=/auto_attack/lightning_bolt,maelstrom=5/shamanistic_rage/stormstrike/earth_shock/magma_totem/lightning_shield/lava_lash/spirit_wolf
 
-# Gear
+# Gear (including 128AP profession bonus)
 # http://www.wowhead.com/?compare=45132:46097:46205:46212:46203:46208:45553:45244:45454:45444:45461:45480:45456:45503:42607:45931:45263
-gear_stamina=850
-gear_agility=811
-gear_intellect=398
-gear_attack_power=1788
-gear_expertise_rating=66
-gear_hit_rating=367
-gear_crit_rating=670
+gear_strength=10
+gear_agility=1001
+gear_stamina=860
+gear_intellect=408
+gear_spirit=10
+gear_attack_power=2215
+gear_expertise_rating=130
+gear_hit_rating=389
+gear_crit_rating=796
 gear_haste_rating=386
-mjolnir_runestone=1
 tier8_2pc=1
 tier8_4pc=1
-
-# Gems and Socket Bonuses
-relentless_earthstorm=1
-gem_agility=158
-gem_attack_power=40
-gem_expertise_rating=64
-gem_hit_rating=10
-gem_crit_rating=57
-
-# Enchants (including 128AP profession bonus)
-enchant_stamina=10
-enchant_strength=10
-enchant_agility=32
-enchant_intellect=10
-enchant_spirit=10
-enchant_attack_power=387
-enchant_hit_rating=12 
-enchant_crit_rating=69
+items=mjolnir_runestone/wrathstone
+meta_gem=relentless_earthstorm
 
 # Weapons
-main_hand=fist,dps=188,speed=2.7,enchant=berserking
-off_hand=mace,dps=171,speed=2.6,enchant=berserking
+main_hand=golden_saronite_dragon,weapon=fist_188dps_2.7speed,enchant=berserking
+off_hand=caress_of_insanity,weapon=mace_179dps_2.7speed,enchant=berserking
 
 # Glyphs
-glyph_windfury_weapon=1
-glyph_stormstrike=1
-glyph_feral_spirit=1
+glyphs=windfury_weapon/stormstrike/feral_spirit
 
 # Totem
-totem_of_indomitability=1
+totem=totem_of_indomitability

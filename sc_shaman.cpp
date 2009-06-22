@@ -243,13 +243,14 @@ struct shaman_t : public player_t
 
   // Character Definition
   virtual void      init_rating();
+  virtual void      init_glyphs();
   virtual void      init_base();
+  virtual void      init_items();
   virtual void      init_scaling();
   virtual void      init_gains();
   virtual void      init_procs();
   virtual void      init_uptimes();
   virtual void      init_rng();
-  virtual void      init_unique_gear();
   virtual void      init_actions();
   virtual void      reset();
   virtual void      interrupt();
@@ -673,19 +674,6 @@ static void trigger_tier8_4pc_elemental( spell_t* s )
 
   p -> active_lightning_bolt_dot -> base_td = dmg / 4;
   p -> active_lightning_bolt_dot -> schedule_tick();
-}
-
-// trigger_ashtongue_talisman ===============================================
-
-static void trigger_ashtongue_talisman( spell_t* s )
-{
-  shaman_t* p = s -> player -> cast_shaman();
-
-  if ( p -> unique_gear -> ashtongue_talisman &&
-       p -> rngs.ashtongue_talisman -> roll( 0.15 ) )
-  {
-    p -> resource_gain( RESOURCE_MANA, 110.0, p -> gains.ashtongue_talisman );
-  }
 }
 
 // trigger_lightning_overload ===============================================
@@ -1439,7 +1427,6 @@ struct lightning_bolt_t : public shaman_spell_t
     }
     if ( result_is_hit() )
     {
-      trigger_ashtongue_talisman( this );
       trigger_lightning_overload( this, lightning_overload_stats, lightning_overload_chance );
       trigger_tier5_4pc_elemental( this );
       if ( result == RESULT_CRIT && tier8_4pc_elemental )
@@ -3140,6 +3127,37 @@ void shaman_t::init_rating()
   rating.attack_haste *= 1.0 / 1.30;
 }
 
+// shaman_t::init_glyphs ======================================================
+
+void shaman_t::init_glyphs()
+{
+  memset( ( void* ) &glyphs, 0x0, sizeof( glyphs_t ) );
+
+  std::vector<std::string> glyph_names;
+  int num_glyphs = util_t::string_split( glyph_names, glyphs_str, ",/" );
+  
+  for( int i=0; i < num_glyphs; i++ )
+  {
+    std::string& n = glyph_names[ i ];
+
+    if     ( n == "elemental_mastery"  ) glyphs.elemental_mastery = 1;
+    else if( n == "feral_spirit"       ) glyphs.feral_spirit = 1;
+    else if( n == "flame_shock"        ) glyphs.flame_shock = 1;
+    else if( n == "flametongue_weapon" ) glyphs.flametongue_weapon = 1;
+    else if( n == "lava"               ) glyphs.lava = 1;
+    else if( n == "lava_lash"          ) glyphs.lava_lash = 1;
+    else if( n == "lightning_bolt"     ) glyphs.lightning_bolt = 1;
+    else if( n == "lightning_shield"   ) glyphs.lightning_shield = 1;
+    else if( n == "mana_tide"          ) glyphs.mana_tide = 1;
+    else if( n == "shocking"           ) glyphs.shocking = 1;
+    else if( n == "stormstrike"        ) glyphs.stormstrike = 1;
+    else if( n == "thunderstorm"       ) glyphs.thunderstorm = 1;
+    else if( n == "totem_of_wrath"     ) glyphs.totem_of_wrath = 1;
+    else if( n == "windfury_weapon"    ) glyphs.windfury_weapon = 1;
+    else if( ! sim -> parent ) printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
+  }
+}
+
 // shaman_t::init_base ========================================================
 
 void shaman_t::init_base()
@@ -3176,9 +3194,55 @@ void shaman_t::init_base()
   {
     // Simply assume the totems are out all the time.
 
-    enchant -> stats.spell_power += 45;
-    enchant -> stats.crit_rating += 35;
-    enchant -> stats.mp5         += 15;
+    enchant.spell_power += 45;
+    enchant.crit_rating += 35;
+    enchant.mp5         += 15;
+  }
+}
+
+// shaman_t::init_items =====================================================
+
+void shaman_t::init_items()
+{
+  player_t::init_items();
+
+  std::string& totem = items[ SLOT_RANGED ].encoded_name_str;
+
+  if      ( totem == "totem_of_dueling"           ) totems.dueling = 1;
+  else if ( totem == "totem_of_hex"               ) totems.hex = 1;
+  else if ( totem == "totem_of_indomitability"    ) totems.indomitability = 1;
+  else if ( totem == "totem_of_the_dancing_flame" ) totems.dancing_flame = 1;
+  else if ( totem == "thunderfall_totem"          ) totems.thunderfall = 1;
+  else
+  {
+    printf( "simcraft: %s was unknown totem %s\n", name(), totem.c_str() );
+  }
+
+  if ( talents.dual_wield )
+  {
+    if ( set_bonus.tier4_2pc() ) tiers.t4_2pc_enhancement = 1;
+    if ( set_bonus.tier4_4pc() ) tiers.t4_4pc_enhancement = 1;
+    if ( set_bonus.tier5_2pc() ) tiers.t5_2pc_enhancement = 1;
+    if ( set_bonus.tier5_4pc() ) tiers.t5_4pc_enhancement = 1;
+    if ( set_bonus.tier6_2pc() ) tiers.t6_2pc_enhancement = 1;
+    if ( set_bonus.tier6_4pc() ) tiers.t6_4pc_enhancement = 1;
+    if ( set_bonus.tier7_2pc() ) tiers.t7_2pc_enhancement = 1;
+    if ( set_bonus.tier7_4pc() ) tiers.t7_4pc_enhancement = 1;
+    if ( set_bonus.tier8_2pc() ) tiers.t8_2pc_enhancement = 1;
+    if ( set_bonus.tier8_4pc() ) tiers.t8_4pc_enhancement = 1;
+  }
+  else
+  {
+    if ( set_bonus.tier4_2pc() ) tiers.t4_2pc_elemental = 1;
+    if ( set_bonus.tier4_4pc() ) tiers.t4_4pc_elemental = 1;
+    if ( set_bonus.tier5_2pc() ) tiers.t5_2pc_elemental = 1;
+    if ( set_bonus.tier5_4pc() ) tiers.t5_4pc_elemental = 1;
+    if ( set_bonus.tier6_2pc() ) tiers.t6_2pc_elemental = 1;
+    if ( set_bonus.tier6_4pc() ) tiers.t6_4pc_elemental = 1;
+    if ( set_bonus.tier7_2pc() ) tiers.t7_2pc_elemental = 1;
+    if ( set_bonus.tier7_4pc() ) tiers.t7_4pc_elemental = 1;
+    if ( set_bonus.tier8_2pc() ) tiers.t8_2pc_elemental = 1;
+    if ( set_bonus.tier8_4pc() ) tiers.t8_4pc_elemental = 1;
   }
 }
 
@@ -3240,40 +3304,6 @@ void shaman_t::init_rng()
   rng_windfury_weapon      = get_rng( "windfury_weapon"      );
 }
 
-// shaman_t::init_unique_gear ===============================================
-
-void shaman_t::init_unique_gear()
-{
-  player_t::init_unique_gear();
-
-  if ( talents.dual_wield )
-  {
-    if ( unique_gear -> tier4_2pc ) tiers.t4_2pc_enhancement = 1;
-    if ( unique_gear -> tier4_4pc ) tiers.t4_4pc_enhancement = 1;
-    if ( unique_gear -> tier5_2pc ) tiers.t5_2pc_enhancement = 1;
-    if ( unique_gear -> tier5_4pc ) tiers.t5_4pc_enhancement = 1;
-    if ( unique_gear -> tier6_2pc ) tiers.t6_2pc_enhancement = 1;
-    if ( unique_gear -> tier6_4pc ) tiers.t6_4pc_enhancement = 1;
-    if ( unique_gear -> tier7_2pc ) tiers.t7_2pc_enhancement = 1;
-    if ( unique_gear -> tier7_4pc ) tiers.t7_4pc_enhancement = 1;
-    if ( unique_gear -> tier8_2pc ) tiers.t8_2pc_enhancement = 1;
-    if ( unique_gear -> tier8_4pc ) tiers.t8_4pc_enhancement = 1;
-  }
-  else
-  {
-    if ( unique_gear -> tier4_2pc ) tiers.t4_2pc_elemental = 1;
-    if ( unique_gear -> tier4_4pc ) tiers.t4_4pc_elemental = 1;
-    if ( unique_gear -> tier5_2pc ) tiers.t5_2pc_elemental = 1;
-    if ( unique_gear -> tier5_4pc ) tiers.t5_4pc_elemental = 1;
-    if ( unique_gear -> tier6_2pc ) tiers.t6_2pc_elemental = 1;
-    if ( unique_gear -> tier6_4pc ) tiers.t6_4pc_elemental = 1;
-    if ( unique_gear -> tier7_2pc ) tiers.t7_2pc_elemental = 1;
-    if ( unique_gear -> tier7_4pc ) tiers.t7_4pc_elemental = 1;
-    if ( unique_gear -> tier8_2pc ) tiers.t8_2pc_elemental = 1;
-    if ( unique_gear -> tier8_4pc ) tiers.t8_4pc_elemental = 1;
-  }
-}
-
 // shaman_t::init_actions =====================================================
 
 void shaman_t::init_actions()
@@ -3283,6 +3313,15 @@ void shaman_t::init_actions()
     if( primary_tree() == TREE_ENHANCEMENT )
     {
       action_list_str  = "flask,type=endless_rage/food,type=fish_feast/windfury_weapon,weapon=main/flametongue_weapon,weapon=off";
+      int num_items = items.size();
+      for( int i=0; i < num_items; i++ )
+      {
+	if( items[ i ].use.active() )
+	{
+	  action_list_str += "/use_item,name=";
+	  action_list_str += items[ i ].name();
+	}
+      }
       action_list_str += "/wind_shock/strength_of_earth_totem/windfury_totem/bloodlust,time_to_die<=60";
       action_list_str += "/auto_attack/lightning_bolt,maelstrom=5";
       if( talents.shamanistic_rage ) action_list_str += "/shamanistic_rage";
@@ -3294,6 +3333,15 @@ void shaman_t::init_actions()
     else
     {
       action_list_str  = "flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/flametongue_weapon,weapon=main/water_shield";
+      int num_items = items.size();
+      for( int i=0; i < num_items; i++ )
+      {
+	if( items[ i ].use.active() )
+	{
+	  action_list_str += "/use_item,name=";
+	  action_list_str += items[ i ].name();
+	}
+      }
       action_list_str += "/wind_shock/mana_spring_totem";
       if( talents.totem_of_wrath ) action_list_str += "/wrath_of_air_totem";
       action_list_str += "/speed_potion";
@@ -3475,13 +3523,13 @@ bool shaman_t::get_talent_trees( std::vector<int*>& elemental,
 
 std::vector<option_t>& shaman_t::get_options()
 {
-  if( option_vector.empty() )
+  if( options.empty() )
   {
     player_t::get_options();
 
-    option_t options[] =
+    option_t shaman_options[] =
     {
-      // @option_doc loc=skip
+      // @option_doc loc=player/shaman/talents title="Talents"
       { "ancestral_knowledge",       OPT_INT,  &( talents.ancestral_knowledge       ) },
       { "blessing_of_the_eternals",  OPT_INT,  &( talents.blessing_of_the_eternals  ) },
       { "booming_echoes",            OPT_INT,  &( talents.booming_echoes            ) },
@@ -3532,51 +3580,15 @@ std::vector<option_t>& shaman_t::get_options()
       { "unrelenting_storm",         OPT_INT,  &( talents.unrelenting_storm         ) },
       { "unleashed_rage",            OPT_INT,  &( talents.unleashed_rage            ) },
       { "weapon_mastery",            OPT_INT,  &( talents.weapon_mastery            ) },
-      // @option_doc loc=player/shaman/glyphs title="Glyphs"
-      { "glyph_elemental_mastery",   OPT_BOOL, &( glyphs.elemental_mastery          ) },
-      { "glyph_feral_spirit",        OPT_BOOL, &( glyphs.feral_spirit               ) },
-      { "glyph_flame_shock",         OPT_BOOL, &( glyphs.flame_shock                ) },
-      { "glyph_flametongue_weapon",  OPT_BOOL, &( glyphs.flametongue_weapon         ) },
-      { "glyph_lava",                OPT_BOOL, &( glyphs.lava                       ) },
-      { "glyph_lava_lash",           OPT_BOOL, &( glyphs.lava_lash                  ) },
-      { "glyph_lightning_bolt",      OPT_BOOL, &( glyphs.lightning_bolt             ) },
-      { "glyph_lightning_shield",    OPT_BOOL, &( glyphs.lightning_shield           ) },
-      { "glyph_mana_tide",           OPT_BOOL, &( glyphs.mana_tide                  ) },
-      { "glyph_shocking",            OPT_BOOL, &( glyphs.shocking                   ) },
-      { "glyph_stormstrike",         OPT_BOOL, &( glyphs.stormstrike                ) },
-      { "glyph_thunderstorm",        OPT_BOOL, &( glyphs.thunderstorm               ) },
-      { "glyph_totem_of_wrath",      OPT_BOOL, &( glyphs.totem_of_wrath             ) },
-      { "glyph_windfury_weapon",     OPT_BOOL, &( glyphs.windfury_weapon            ) },
-      // @option_doc loc=player/shaman/totems title="Totems"
-      { "totem_of_dueling",          OPT_BOOL, &( totems.dueling                    ) },
-      { "totem_of_hex",              OPT_BOOL, &( totems.hex                        ) },
-      { "totem_of_indomitability",   OPT_BOOL, &( totems.indomitability             ) },
-      { "totem_of_the_dancing_flame",OPT_BOOL, &( totems.dancing_flame              ) },
-      { "thunderfall_totem",         OPT_BOOL, &( totems.thunderfall                ) },
-      // @option_doc loc=skip
-      { "tier4_2pc_elemental",       OPT_BOOL, &( tiers.t4_2pc_elemental            ) },
-      { "tier4_4pc_elemental",       OPT_BOOL, &( tiers.t4_4pc_elemental            ) },
-      { "tier5_2pc_elemental",       OPT_BOOL, &( tiers.t5_2pc_elemental            ) },
-      { "tier5_4pc_elemental",       OPT_BOOL, &( tiers.t5_4pc_elemental            ) },
-      { "tier6_2pc_elemental",       OPT_BOOL, &( tiers.t6_2pc_elemental            ) },
-      { "tier6_4pc_elemental",       OPT_BOOL, &( tiers.t6_4pc_elemental            ) },
-      { "tier7_2pc_elemental",       OPT_BOOL, &( tiers.t7_2pc_elemental            ) },
-      { "tier7_4pc_elemental",       OPT_BOOL, &( tiers.t7_4pc_elemental            ) },
-      { "tier4_2pc_enhancement",     OPT_BOOL, &( tiers.t4_2pc_enhancement          ) },
-      { "tier4_4pc_enhancement",     OPT_BOOL, &( tiers.t4_4pc_enhancement          ) },
-      { "tier5_2pc_enhancement",     OPT_BOOL, &( tiers.t5_2pc_enhancement          ) },
-      { "tier5_4pc_enhancement",     OPT_BOOL, &( tiers.t5_4pc_enhancement          ) },
-      { "tier6_2pc_enhancement",     OPT_BOOL, &( tiers.t6_2pc_enhancement          ) },
-      { "tier6_4pc_enhancement",     OPT_BOOL, &( tiers.t6_4pc_enhancement          ) },
-      { "tier7_2pc_enhancement",     OPT_BOOL, &( tiers.t7_2pc_enhancement          ) },
-      { "tier7_4pc_enhancement",     OPT_BOOL, &( tiers.t7_4pc_enhancement          ) },
+      // @option_doc loc=player/druid/misc title="Misc"
+      { "totem",                     OPT_STRING, &( items[ SLOT_RANGED ].options_str ) },
       { NULL, OPT_UNKNOWN }
     };
 
-    option_t::copy( option_vector, options );
+    option_t::copy( options, shaman_options );
   }
 
-  return option_vector;
+  return options;
 }
 
 // player_t::create_shaman  =================================================

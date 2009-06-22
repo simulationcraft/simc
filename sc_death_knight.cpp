@@ -1908,11 +1908,11 @@ death_knight_t::get_talent_trees( std::vector<int*>& blood, std::vector<int*>& f
 
 std::vector<option_t>& death_knight_t::get_options()
 {
-  if( option_vector.empty() )
+  if( options.empty() )
   {
     player_t::get_options();
 
-    option_t options[] =
+    option_t death_knight_options[] =
     {
       // @option_doc loc=skip
       { "butchery",                 OPT_INT, &( talents.butchery                 ) },
@@ -2011,10 +2011,10 @@ std::vector<option_t>& death_knight_t::get_options()
       { NULL, OPT_UNKNOWN }
     };
 
-    option_t::copy( option_vector, options );
+    option_t::copy( options, death_knight_options );
   }
 
-  return option_vector;
+  return options;
 }
 
 // player_t implementations ============================================

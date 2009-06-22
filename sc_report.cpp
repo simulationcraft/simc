@@ -75,6 +75,8 @@ static void print_action( FILE* file, stats_t* s )
 
 static void print_actions( FILE* file, player_t* p )
 {
+  fprintf( file, "  Glyphs: %s\n", p -> glyphs_str.c_str() );
+
   if( p -> action_list_default )
   {
     fprintf( file, "  Priorities:\n" );
@@ -1096,17 +1098,7 @@ void report_t::print_profiles( sim_t* sim )
       continue;
     }
 
-    fprintf( file, "%s=%s\n", util_t::player_type_string( p -> type ), p -> name() );
-
-    fprintf( file, "#talents=%s\n", ( p -> talents_str.empty() ? "" : p -> talents_str.c_str() ) );
-
-    std::vector<option_t>& options = p -> get_options();
-    int num_options = options.size();
-
-    for( int i=0; i < num_options; i++ ) 
-    {
-      options[ i ].save( file );
-    }
+    p -> save( file );
 
     fclose( file );
   }

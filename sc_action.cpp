@@ -80,49 +80,6 @@ action_t::action_t( int         ty,
   stats -> school = school;
 }
 
-// action_t::base_parse_options =============================================
-
-void action_t::base_parse_options( option_t*          options,
-                                   const std::string& options_str )
-{
-  std::string::size_type cut_pt = options_str.find_first_of( ":" );
-
-  std::string options_buffer;
-  if ( cut_pt != options_str.npos )
-  {
-    options_buffer = options_str.substr( cut_pt + 1 );
-  }
-  else options_buffer = options_str;
-
-  if ( options_buffer.empty()     ) return;
-  if ( options_buffer.size() == 0 ) return;
-
-  std::vector<std::string> splits;
-
-  int size = util_t::string_split( splits, options_buffer, "," );
-
-  for ( int i=0; i < size; i++ )
-  {
-    std::string n;
-    std::string v;
-    n=splits[i];
-    size_t p=n.find("=");
-    if (p==std::string::npos)
-    {
-      fprintf( sim -> output_file, "action_t::parse_options %s: Unexpected parameter '%s'.  Expected format: name=value\n", name(), splits[ i ].c_str() );
-      assert( false );
-    }
-    v=n.substr(p+1);
-    n.erase(p);
-
-    if ( ! option_t::parse( sim, options, n, v ) )
-    {
-      fprintf( sim -> output_file, "action_t::parse_options: %s: Unexpected parameter '%s'.\n", name(), n.c_str() );
-      assert( false );
-    }
-  }
-}
-
 // action_t::merge_options ==================================================
 
 option_t* action_t::merge_options( std::vector<option_t>& merged_options,
@@ -171,8 +128,27 @@ void action_t::parse_options( option_t*          options,
       { "allow_early_cast",   OPT_INT,    &is_ifall              },
       { NULL }
     };
+
   std::vector<option_t> merged_options;
-  action_t::base_parse_options( merge_options( merged_options, options, base_options ), options_str );
+  merge_options( merged_options, options, base_options );
+
+  std::string::size_type cut_pt = options_str.find_first_of( ":" );
+
+  std::string options_buffer;
+  if ( cut_pt != options_str.npos )
+  {
+    options_buffer = options_str.substr( cut_pt + 1 );
+  }
+  else options_buffer = options_str;
+
+  if ( options_buffer.empty()     ) return;
+  if ( options_buffer.size() == 0 ) return;
+
+  if( ! option_t::parse( sim, name(), merged_options, options_buffer ) )
+  {
+    fprintf( sim -> output_file, "action_t: %s: Unable to parse options str '%s'.\n", name(), options_str.c_str() );
+    assert( false );
+  }
   if (if_all!=""){
     is_ifall=1;
     if (if_expression=="") if_expression=if_all;
@@ -472,6 +448,8 @@ double action_t::resistance()
     double half_reduction = 400 + 85.0 * ( player -> level + 4.5 * ( player -> level - 59 ) );
     double reduced_armor = armor();
     double penetration_max = std::min( reduced_armor, ( reduced_armor + half_reduction ) / 3.0 );
+
+    //if ( penetration > 1 ) penetration = 1;
 
     double adjusted_armor = reduced_armor - penetration_max * penetration;
 
@@ -1211,7 +1189,10 @@ void action_t::cancel()
     printf("%s\n", e_msg.c_str());
     if ( action->sim -> debug ) log_t::output( action->sim, "Exp.parser warning: %s", e_msg.c_str() );
     if (severity==3)
-      assert("Expression parser "==" breaking error");
+    {
+      printf("Expression parser breaking error\n");
+      assert(false);
+    }
   }
 
 

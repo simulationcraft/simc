@@ -43,6 +43,8 @@ static bool stat_may_cap( int stat )
 
 scaling_t::scaling_t( sim_t* s ) :
     sim( s ),
+    scale_stat(STAT_NONE),
+    scale_value(0),
     calculate_scale_factors(0),
     center_scale_delta(0),
     scale_lag(1),
@@ -96,20 +98,16 @@ void scaling_t::analyze_stats()
     bool center = center_scale_delta && ! stat_may_cap( i );
 
     sim_t* child_sim = new sim_t( sim );
-    child_sim -> gear_delta.set_stat( i, +scale_delta / ( center ? 2 : 1 ) );
-    child_sim -> smooth_rng         += smooth_scale_factors;
-    child_sim -> average_range      += smooth_scale_factors;
-    child_sim -> deterministic_roll += smooth_scale_factors;
+    child_sim -> scaling -> scale_stat = i;
+    child_sim -> scaling -> scale_value = +scale_delta / ( center ? 2 : 1 );
     child_sim -> execute();
 
     sim_t* ref_sim = sim;
-    if ( center || smooth_scale_factors )
+    if ( center )
     {
       ref_sim = new sim_t( sim );
-      ref_sim -> gear_delta.set_stat( i, center ? -( scale_delta / 2 ) : 0 );
-      ref_sim -> smooth_rng         += smooth_scale_factors;
-      ref_sim -> average_range      += smooth_scale_factors;
-      ref_sim -> deterministic_roll += smooth_scale_factors;
+      ref_sim -> scaling -> scale_stat = i;
+      ref_sim -> scaling -> scale_value = center ? -( scale_delta / 2 ) : 0;
       ref_sim -> execute();
     }
 
@@ -154,20 +152,9 @@ void scaling_t::analyze_lag()
   child_sim ->   queue_lag *= 1.100;
   child_sim ->     gcd_lag *= 1.100;
   child_sim -> channel_lag *= 1.100;
-  child_sim -> smooth_rng         += smooth_scale_factors;
-  child_sim -> average_range      += smooth_scale_factors;
-  child_sim -> deterministic_roll += smooth_scale_factors;
   child_sim -> execute();
 
   sim_t* ref_sim = sim;
-  if ( smooth_scale_factors )
-  {
-    ref_sim = new sim_t( sim );
-    ref_sim -> smooth_rng         += smooth_scale_factors;
-    ref_sim -> average_range      += smooth_scale_factors;
-    ref_sim -> deterministic_roll += smooth_scale_factors;
-    ref_sim -> execute();
-  }
 
   for ( int i=0; i < num_players; i++ )
   {
@@ -238,9 +225,9 @@ void scaling_t::analyze()
 
 // scaling_t::get_options ===================================================
 
-int scaling_t::get_options( std::vector<option_t>& option_vector )
+int scaling_t::get_options( std::vector<option_t>& options )
 {
-  option_t options[] =
+  option_t scaling_options[] =
     {
       // @option_doc loc=global/scale_factors title="Scale Factors"
       { "calculate_scale_factors",        OPT_BOOL, &( calculate_scale_factors              ) },
@@ -266,7 +253,7 @@ int scaling_t::get_options( std::vector<option_t>& option_vector )
       { NULL, OPT_UNKNOWN }
     };
 
-  option_t::copy( option_vector, options );
+  option_t::copy( options, scaling_options );
 
-  return option_vector.size();
+  return options.size();
 }

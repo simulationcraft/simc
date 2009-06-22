@@ -236,6 +236,7 @@ struct rogue_t : public player_t
   }
 
   // Character Definition
+  virtual void      init_glyphs();
   virtual void      init_base();
   virtual void      init_gains();
   virtual void      init_procs();
@@ -817,7 +818,7 @@ double rogue_attack_t::cost()
   rogue_t* p = player -> cast_rogue();
   double c = attack_t::cost();
   if ( c <= 0 ) return 0;
-  if ( adds_combo_points && p -> unique_gear -> tier7_4pc ) c *= 0.95;
+  if ( adds_combo_points && p -> set_bonus.tier7_4pc() ) c *= 0.95;
   return c;
 }
 
@@ -1069,7 +1070,7 @@ struct melee_t : public rogue_attack_t
     }
 
     if ( p -> _buffs.blade_flurry   ) h *= 1.0 / ( 1.0 + 0.20 );
-    if ( p -> _buffs.slice_and_dice ) h *= 1.0 / ( 1.0 + 0.40 + ( p -> unique_gear -> tier6_2pc ? 0.05 : 0.00 ) );
+    if ( p -> _buffs.slice_and_dice ) h *= 1.0 / ( 1.0 + 0.40 + ( p -> set_bonus.tier6_2pc() ? 0.05 : 0.00 ) );
 
     p -> uptimes_blade_flurry   -> update( p -> _buffs.blade_flurry   != 0 );
     p -> uptimes_slice_and_dice -> update( p -> _buffs.slice_and_dice != 0 );
@@ -1276,7 +1277,7 @@ struct backstab_t : public rogue_attack_t
                                p -> talents.find_weakness    * 0.02 +
                                p -> talents.opportunity      * 0.10 +
                                p -> talents.surprise_attacks * 0.10 +
-                               p -> unique_gear -> tier6_4pc * 0.06 );
+                               p -> set_bonus.tier6_4pc()    * 0.06 );
 
     base_crit += ( p -> talents.puncturing_wounds * 0.10 +
                    p -> talents.turn_the_tables   * 0.02 );
@@ -1795,7 +1796,7 @@ struct hemorrhage_t : public rogue_attack_t
     weapon_multiplier          *= 1.10 + p -> talents.sinister_calling * 0.02;
     base_multiplier            *= 1.0 + ( p -> talents.find_weakness    * 0.02 +
                                           p -> talents.surprise_attacks * 0.10 +
-                                          p -> unique_gear -> tier6_4pc * 0.06 );
+                                          p -> set_bonus.tier6_4pc()    * 0.06 );
     base_crit                  += p -> talents.turn_the_tables * 0.02;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
 
@@ -2103,7 +2104,7 @@ struct mutilate_t : public rogue_attack_t
 
     base_multiplier  *= 1.0 + ( p -> talents.find_weakness    * 0.02 +
                                 p -> talents.opportunity      * 0.10 +
-                                p -> unique_gear -> tier6_4pc * 0.06 );
+                                p -> set_bonus.tier6_4pc()    * 0.06 );
 
     base_crit += ( p -> talents.puncturing_wounds * 0.05 +
                    p -> talents.turn_the_tables   * 0.02 );
@@ -2215,13 +2216,13 @@ struct rupture_t : public rogue_attack_t
     requires_combo_points = true;
     base_cost             = 25;
     base_tick_time        = 2.0;
-    base_multiplier      *= 1.0 + ( p -> talents.blood_spatter    * 0.15 +
-                                    p -> talents.find_weakness    * 0.02 +
-                                    p -> talents.serrated_blades  * 0.10 +
-                                    p -> unique_gear -> tier7_2pc * 0.10 );
+    base_multiplier      *= 1.0 + ( p -> talents.blood_spatter   * 0.15 +
+                                    p -> talents.find_weakness   * 0.02 +
+                                    p -> talents.serrated_blades * 0.10 +
+                                    p -> set_bonus.tier7_2pc()   * 0.10 );
 
     if ( p -> talents.surprise_attacks ) may_dodge = false;
-    if ( p -> unique_gear -> tier8_4pc ) tick_may_crit = true;
+    if ( p -> set_bonus.tier8_4pc() ) tick_may_crit = true;
 
     static double dmg_79[] = { 145, 163, 181, 199, 217 };
     static double dmg_74[] = { 122, 137, 152, 167, 182 };
@@ -2366,7 +2367,7 @@ struct sinister_strike_t : public rogue_attack_t
                                p -> talents.blade_twisting   * 0.05 +
                                p -> talents.find_weakness    * 0.02 +
                                p -> talents.surprise_attacks * 0.10 +
-                               p -> unique_gear -> tier6_4pc * 0.06 );
+                               p -> set_bonus.tier6_4pc()    * 0.06 );
 
     base_crit += p -> talents.turn_the_tables * 0.02;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
@@ -2814,7 +2815,7 @@ struct deadly_poison_t : public rogue_poison_t
   {
     rogue_t* p = player -> cast_rogue();
     rogue_poison_t::tick();
-    if ( p -> unique_gear -> tier8_2pc )
+    if ( p -> set_bonus.tier8_2pc() )
     {
       p -> resource_gain( RESOURCE_ENERGY, 1, p -> gains.tier8_2pc );
     }
@@ -3142,6 +3143,16 @@ void rogue_t::init_actions()
     if( talents.overkill || talents.master_of_subtlety ) action_list_str += "/stealth";
     action_list_str += "/auto_attack/kick";
         
+    int num_items = items.size();
+    for( int i=0; i < num_items; i++ )
+    {
+      if( items[ i ].use.active() )
+      {
+	action_list_str += "/use_item,name=";
+	action_list_str += items[ i ].name();
+      }
+    }
+
     if( primary_tree() == TREE_ASSASSINATION )
     {
       if( talents.hunger_for_blood ) action_list_str += "/pool_energy,for_next=1/hunger_for_blood,refresh_at=2";
@@ -3230,6 +3241,41 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "tricks_of_the_trade" ) return new tricks_of_the_trade_t( this, options_str );
 
   return player_t::create_action( name, options_str );
+}
+
+// rogue_t::init_glyphs ======================================================
+
+void rogue_t::init_glyphs()
+{
+  memset( ( void* ) &glyphs, 0x0, sizeof( glyphs_t ) );
+
+  std::vector<std::string> glyph_names;
+  int num_glyphs = util_t::string_split( glyph_names, glyphs_str, ",/" );
+  
+  for( int i=0; i < num_glyphs; i++ )
+  {
+    std::string& n = glyph_names[ i ];
+
+    if     ( n == "adrenaline_rush"     ) glyphs.adrenaline_rush = 1;
+    else if( n == "backstab"            ) glyphs.backstab = 1;
+    else if( n == "blade_flurry"        ) glyphs.blade_flurry = 1;
+    else if( n == "eviscerate"          ) glyphs.eviscerate = 1;
+    else if( n == "expose_armor"        ) glyphs.expose_armor = 1;
+    else if( n == "feint"               ) glyphs.feint = 1;
+    else if( n == "ghostly_strike"      ) glyphs.ghostly_strike = 1;
+    else if( n == "hemorrhage"          ) glyphs.hemorrhage = 1;
+    else if( n == "hunger_for_blood"    ) glyphs.hunger_for_blood = 1;
+    else if( n == "killing_spree"       ) glyphs.killing_spree = 1;
+    else if( n == "mutilate"            ) glyphs.mutilate = 1;
+    else if( n == "preparation"         ) glyphs.preparation = 1;
+    else if( n == "rupture"             ) glyphs.rupture = 1;
+    else if( n == "shadow_dance"        ) glyphs.shadow_dance = 1;
+    else if( n == "sinister_strike"     ) glyphs.sinister_strike = 1;
+    else if( n == "slice_and_dice"      ) glyphs.slice_and_dice = 1;
+    else if( n == "tricks_of_the_trade" ) glyphs.tricks_of_the_trade = 1;
+    else if( n == "vigor"               ) glyphs.vigor = 1;
+    else if( ! sim -> parent ) printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
+  }
 }
 
 // rogue_t::init_base ========================================================
@@ -3534,11 +3580,11 @@ bool rogue_t::get_talent_trees( std::vector<int*>& assassination,
 
 std::vector<option_t>& rogue_t::get_options()
 {
-  if( option_vector.empty() )
+  if( options.empty() )
   {
     player_t::get_options();
     
-    option_t options[] =
+    option_t rogue_options[] =
     {
       // @option_doc loc=skip
       { "adrenaline_rush",            OPT_INT, &( talents.adrenaline_rush            ) },
@@ -3601,35 +3647,16 @@ std::vector<option_t>& rogue_t::get_options()
       { "vile_poisons",               OPT_INT, &( talents.vile_poisons               ) },
       { "vitality",                   OPT_INT, &( talents.vitality                   ) },
       { "weapon_expertise",           OPT_INT, &( talents.weapon_expertise           ) },
-      // @option_doc loc=player/rogue/glyphs title="Glyphs"
-      { "glyph_adrenaline_rush",      OPT_BOOL, &( glyphs.adrenaline_rush            ) },
-      { "glyph_backstab",             OPT_BOOL, &( glyphs.backstab                   ) },
-      { "glyph_blade_flurry",         OPT_BOOL, &( glyphs.blade_flurry               ) },
-      { "glyph_eviscerate",           OPT_BOOL, &( glyphs.eviscerate                 ) },
-      { "glyph_expose_armor",         OPT_BOOL, &( glyphs.expose_armor               ) },
-      { "glyph_feint",                OPT_BOOL, &( glyphs.feint                      ) },
-      { "glyph_ghostly_strike",       OPT_BOOL, &( glyphs.ghostly_strike             ) },
-      { "glyph_hemorrhage",           OPT_BOOL, &( glyphs.hemorrhage                 ) },
-      { "glyph_hunger_for_blood",     OPT_BOOL, &( glyphs.hunger_for_blood           ) },
-      { "glyph_killing_spree",        OPT_BOOL, &( glyphs.killing_spree              ) },
-      { "glyph_mutilate",             OPT_BOOL, &( glyphs.mutilate                   ) },
-      { "glyph_preparation",          OPT_BOOL, &( glyphs.preparation                ) },
-      { "glyph_rupture",              OPT_BOOL, &( glyphs.rupture                    ) },
-      { "glyph_shadow_dance",         OPT_BOOL, &( glyphs.shadow_dance               ) },
-      { "glyph_sinister_strike",      OPT_BOOL, &( glyphs.sinister_strike            ) },
-      { "glyph_slice_and_dice",       OPT_BOOL, &( glyphs.slice_and_dice             ) },
-      { "glyph_tricks_of_the_trade",  OPT_BOOL, &( glyphs.tricks_of_the_trade        ) },
-      { "glyph_vigor",                OPT_BOOL, &( glyphs.vigor                      ) },
       // @option_doc loc=player/rogue/misc title="Misc"
       { "honor_among_thieves_interval", OPT_FLT,    &( honor_among_thieves_interval   ) },
       { "tricks_of_the_trade_target",   OPT_STRING, &( tricks_of_the_trade_target_str ) },
       { NULL, OPT_UNKNOWN }
     };
 
-    option_t::copy( option_vector, options );
+    option_t::copy( options, rogue_options );
   }
 
-  return option_vector;
+  return options;
 }
 
 // player_t::create_rogue  =================================================

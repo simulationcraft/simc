@@ -140,6 +140,7 @@ struct priest_t : public player_t
   }
 
   // Character Definition
+  virtual void      init_glyphs();
   virtual void      init_base();
   virtual void      init_gains();
   virtual void      init_uptimes();
@@ -239,7 +240,7 @@ struct shadow_fiend_pet_t : public pet_t
     base_attack_power = -20;
     initial_attack_power_per_strength = 2.0;
 
-    if ( owner -> unique_gear -> tier4_2pc ) attribute_base[ ATTR_STAMINA ] += 75;
+    if ( owner -> set_bonus.tier4_2pc() ) attribute_base[ ATTR_STAMINA ] += 75;
 
     melee = new melee_t( this );
   }
@@ -345,7 +346,7 @@ static void push_tier5_2pc( spell_t*s )
 
   assert( p -> buffs.tier5_2pc == 0 );
 
-  if ( p -> unique_gear -> tier5_2pc && p -> rngs.tier5_2pc -> roll( 0.06 ) )
+  if ( p -> set_bonus.tier5_2pc() && p -> rngs.tier5_2pc -> roll( 0.06 ) )
   {
     p -> buffs.tier5_2pc = 1;
     p -> buffs.mana_cost_reduction += 150;
@@ -374,7 +375,7 @@ static void push_tier5_4pc( spell_t*s )
   priest_t* p = s -> player -> cast_priest();
 
   if ( ! p -> buffs.tier5_4pc &&
-       p -> unique_gear -> tier5_4pc &&
+       p -> set_bonus.tier5_4pc() &&
        p -> rngs.tier5_4pc -> roll( 0.40 ) )
   {
     p -> buffs.tier5_4pc = 1;
@@ -393,47 +394,6 @@ static void pop_tier5_4pc( spell_t*s )
   {
     p -> buffs.tier5_4pc = 0;
     p -> spell_power[ SCHOOL_MAX ] -= 100;
-  }
-}
-
-// trigger_ashtongue_talisman ======================================================
-
-static void trigger_ashtongue_talisman( spell_t* s )
-{
-  struct expiration_t : public event_t
-  {
-    expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      name = "Ashtongue Talisman Expiration";
-      player -> aura_gain( "Ashtongue Talisman" );
-      player -> spell_power[ SCHOOL_MAX ] += 220;
-      sim -> add_event( this, 10.0 );
-    }
-    virtual void execute()
-    {
-      player -> aura_loss( "Ashtongue Talisman" );
-      player -> spell_power[ SCHOOL_MAX ] -= 220;
-      player -> expirations.ashtongue_talisman = 0;
-    }
-  };
-
-  player_t* p = s -> player;
-
-  if ( p -> unique_gear -> ashtongue_talisman &&
-       p -> rngs.ashtongue_talisman -> roll( 0.10 ) )
-  {
-    p -> procs.ashtongue_talisman -> occur();
-
-    event_t*& e = p -> expirations.ashtongue_talisman;
-
-    if ( e )
-    {
-      e -> reschedule( 10.0 );
-    }
-    else
-    {
-      e = new ( s -> sim ) expiration_t( s -> sim, p );
-    }
   }
 }
 
@@ -576,7 +536,7 @@ static void trigger_devious_mind( spell_t* s )
 
   priest_t* p = s -> player -> cast_priest();
 
-  if ( p -> unique_gear -> tier8_4pc )
+  if ( p -> set_bonus.tier8_4pc() )
   {
     if ( p -> devious_mind_delay < 0.01 )
     {
@@ -760,7 +720,7 @@ struct smite_t : public priest_spell_t
     base_multiplier   *= 1.0 + p -> talents.searing_light * 0.05;
     base_crit         += p -> talents.holy_specialization * 0.01;
 
-    if ( p -> unique_gear -> tier4_4pc ) base_multiplier *= 1.05;
+    if ( p -> set_bonus.tier4_4pc() ) base_multiplier *= 1.05;
   }
 
   virtual void execute()
@@ -918,7 +878,7 @@ struct shadow_word_pain_t : public priest_spell_t
     base_hit  += p -> talents.shadow_focus * 0.01;
     base_crit += p -> talents.mind_melt * 0.03;
 
-    if ( p -> unique_gear -> tier6_2pc ) num_ticks++;
+    if ( p -> set_bonus.tier6_2pc() ) num_ticks++;
 
     observer = &( p -> active_shadow_word_pain );
   }
@@ -939,7 +899,6 @@ struct shadow_word_pain_t : public priest_spell_t
   {
     priest_spell_t::tick();
     push_tier5_4pc( this );
-    trigger_ashtongue_talisman( this );
   }
 
   virtual void last_tick()
@@ -1045,6 +1004,7 @@ struct devouring_plague_burst_t : public priest_spell_t
     // burst = 5%-15% of total periodic damage from 8 ticks
 
     dual       = true;
+    proc       = true;
     background = true;
     may_crit   = true;
 
@@ -1056,7 +1016,7 @@ struct devouring_plague_burst_t : public priest_spell_t
     base_multiplier  *= 1.0 + ( p -> talents.darkness                  * 0.02 +
                                 p -> talents.twin_disciplines          * 0.01 +
                                 p -> talents.improved_devouring_plague * 0.05 +
-                                p -> unique_gear -> tier8_2pc          * 0.15 ); // FIX ME! Is tier8_2pc additive or multiplicative?
+                                p -> set_bonus.tier8_2pc()             * 0.15 ); // FIX ME! Is tier8_2pc additive or multiplicative?
 
     base_hit += p -> talents.shadow_focus * 0.01;
   }
@@ -1118,7 +1078,7 @@ struct devouring_plague_t : public priest_spell_t
     base_multiplier  *= 1.0 + ( p -> talents.darkness                  * 0.02 +
                                 p -> talents.twin_disciplines          * 0.01 +
                                 p -> talents.improved_devouring_plague * 0.05 +
-                                p -> unique_gear -> tier8_2pc          * 0.15 ); // FIX ME! Is tier8_2pc additive or multiplicative?
+                                p -> set_bonus.tier8_2pc()             * 0.15 ); // FIX ME! Is tier8_2pc additive or multiplicative?
     base_hit         += p -> talents.shadow_focus * 0.01;
     base_crit        += p -> talents.mind_melt * 0.03;
 
@@ -1224,7 +1184,7 @@ struct mind_blast_t : public priest_spell_t
 
     base_cost        *= 1.0 - ( p -> talents.focused_mind * 0.05 +
                                 p -> talents.shadow_focus * 0.02 +
-                                p -> unique_gear -> tier7_2pc ? 0.1 : 0.0  );
+                                p -> set_bonus.tier7_2pc() ? 0.1 : 0.0  );
     base_cost         = floor( base_cost );
     base_multiplier  *= 1.0 + p -> talents.darkness * 0.02;
     base_hit         += p -> talents.shadow_focus * 0.01;
@@ -1234,7 +1194,7 @@ struct mind_blast_t : public priest_spell_t
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.shadow_power * 0.20;
 
-    if ( p -> unique_gear -> tier6_4pc ) base_multiplier *= 1.10;
+    if ( p -> set_bonus.tier6_4pc() ) base_multiplier *= 1.10;
   }
 
   virtual void execute()
@@ -1308,7 +1268,7 @@ struct shadow_word_death_t : public priest_spell_t
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.shadow_power * 0.20;
 
-    if ( p -> unique_gear -> tier7_4pc ) base_crit += 0.1;
+    if ( p -> set_bonus.tier7_4pc() ) base_crit += 0.1;
   }
 
   virtual void execute()
@@ -1399,7 +1359,7 @@ struct mind_flay_tick_t : public priest_spell_t
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.shadow_power * 0.20;
 
-    if ( p -> unique_gear -> tier4_4pc ) base_multiplier *= 1.05;
+    if ( p -> set_bonus.tier4_4pc() ) base_multiplier *= 1.05;
   }
 
   virtual void execute()
@@ -1461,7 +1421,6 @@ struct mind_flay_t : public priest_spell_t
       };
     parse_options( options, options_str );
 
-    harmful        = false;
     channeled      = true;
     num_ticks      = 3;
     base_tick_time = 1.0;
@@ -1470,6 +1429,7 @@ struct mind_flay_t : public priest_spell_t
     base_cost *= 1.0 - ( p -> talents.focused_mind * 0.05 +
                          p -> talents.shadow_focus * 0.02 );
     base_cost  = floor( base_cost );
+    base_hit  += p -> talents.shadow_focus * 0.01;
 
     mind_flay_tick = new mind_flay_tick_t( p );
   }
@@ -1513,13 +1473,13 @@ struct mind_flay_t : public priest_spell_t
 
     if ( devious_mind_wait )
     {
-      if ( p -> unique_gear -> tier8_4pc && p -> _buffs.devious_mind == DEVIOUS_MIND_STATE_WAITING )
+      if ( p -> set_bonus.tier8_4pc() && p -> _buffs.devious_mind == DEVIOUS_MIND_STATE_WAITING )
         return false;
     }
 
     if ( devious_mind_priority )
     {
-      if ( p -> unique_gear -> tier8_4pc && p -> _buffs.devious_mind != DEVIOUS_MIND_STATE_ACTIVE )
+      if ( p -> set_bonus.tier8_4pc() && p -> _buffs.devious_mind != DEVIOUS_MIND_STATE_ACTIVE )
         return false;
     }
 
@@ -1806,7 +1766,7 @@ struct shadow_fiend_spell_t : public priest_spell_t
     shadow_fiend_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
     {
       double duration = 15.1;
-      if ( p -> unique_gear -> tier4_2pc ) duration += 3.0;
+      if ( p -> set_bonus.tier4_2pc() ) duration += 3.0;
       sim -> add_event( this, duration );
     }
     virtual void execute()
@@ -1908,6 +1868,26 @@ pet_t* priest_t::create_pet( const std::string& pet_name )
   return 0;
 }
 
+// priest_t::init_glyphs =====================================================
+
+void priest_t::init_glyphs()
+{
+  memset( ( void* ) &glyphs, 0x0, sizeof( glyphs_t ) );
+
+  std::vector<std::string> glyph_names;
+  int num_glyphs = util_t::string_split( glyph_names, glyphs_str, ",/" );
+  
+  for( int i=0; i < num_glyphs; i++ )
+  {
+    std::string& n = glyph_names[ i ];
+
+    if     ( n == "shadow_word_death" ) glyphs.shadow_word_death = 1;
+    else if( n == "shadow_word_pain"  ) glyphs.shadow_word_pain = 1;
+    else if( n == "shadow"            ) glyphs.shadow = 1;
+    else if( ! sim -> parent ) printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
+  }
+}
+
 // priest_t::init_base =======================================================
 
 void priest_t::init_base()
@@ -1987,6 +1967,16 @@ void priest_t::init_actions()
   if( action_list_str.empty() )
   {
     action_list_str = "flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/fortitude/divine_spirit/inner_fire";
+
+    int num_items = items.size();
+    for( int i=0; i < num_items; i++ )
+    {
+      if( items[ i ].use.active() )
+      {
+	action_list_str += "/use_item,name=";
+	action_list_str += items[ i ].name();
+      }
+    }
 
     if( primary_tree() == TREE_SHADOW )
     {
@@ -2127,13 +2117,13 @@ bool priest_t::get_talent_trees( std::vector<int*>& discipline,
 
 std::vector<option_t>& priest_t::get_options()
 {
-  if( option_vector.empty() )
+  if( options.empty() )
   {
     player_t::get_options();
 
-    option_t options[] =
+    option_t priest_options[] =
     {
-      // @option_doc loc=skip
+      // @option_doc loc=player/priest/talents title="Talents"
       { "aspiration",                    OPT_INT,  &( talents.aspiration                    ) },
       { "darkness",                      OPT_INT,  &( talents.darkness                      ) },
       { "dispersion",                    OPT_INT,  &( talents.dispersion                    ) },
@@ -2181,16 +2171,13 @@ std::vector<option_t>& priest_t::get_options()
       { "glyph_penance",                 OPT_BOOL, &( glyphs.penance                        ) },
       // @option_doc loc=player/priest/misc title="Misc"
       { "devious_mind_delay",            OPT_FLT,  &( devious_mind_delay                    ) },
-      // Deprecated
-      { "glyph_blue_promises",    OPT_DEPRECATED, NULL },
-      { "glyph_no_blue_promises", OPT_DEPRECATED, NULL },
       { NULL, OPT_UNKNOWN }
     };
 
-    option_t::copy( option_vector, options );
+    option_t::copy( options, priest_options );
   }
 
-  return option_vector;
+  return options;
 }
 
 // player_t::create_priest  =================================================

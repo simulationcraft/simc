@@ -296,9 +296,9 @@ void target_t::combat_end()
 
 // target_t::get_options =======================================================
 
-int target_t::get_options( std::vector<option_t>& option_vector )
+int target_t::get_options( std::vector<option_t>& options )
 {
-  option_t options[] =
+  option_t target_options[] =
     {
       // @option_doc loc=global/target/general title="Target General"
       { "target_name",           OPT_STRING, &( name_str                          ) },
@@ -319,8 +319,8 @@ int target_t::get_options( std::vector<option_t>& option_vector )
       { NULL, OPT_UNKNOWN }
     };
 
-  option_t::copy( option_vector, options );
+  option_t::copy( options, target_options );
 
-  return option_vector.size();
+  return options.size();
 }
 

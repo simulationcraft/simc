@@ -17,6 +17,8 @@ static const char*  url_cache_file = "url_cache.dat";
 static const double url_cache_version = 1.0;
 static const uint32_t expiration_seconds = 12 * 60 * 60;
 
+static void* cache_mutex = 0;
+
 struct url_cache_t
 {
   std::string url;
@@ -78,8 +80,6 @@ static void throttle( int seconds )
 
 bool http_t::cache_load()
 {
-  thread_t::lock();
-
   FILE* file = fopen( url_cache_file, "rb" );
 
   if( file )
@@ -120,7 +120,7 @@ bool http_t::cache_load()
             }
             else break;
 
-            cache_set( url, result, timestamp, false );
+            cache_set( url, result, timestamp );
           }
           else break;
         }
@@ -130,8 +130,6 @@ bool http_t::cache_load()
     fclose( file );
   }
 
-  thread_t::unlock();
-
   return true;
 }
 
@@ -139,8 +137,6 @@ bool http_t::cache_load()
 
 bool http_t::cache_save()
 {
-  thread_t::lock();
-
   FILE* file = fopen( url_cache_file, "wb" );
   if( file )
   {
@@ -177,8 +173,6 @@ bool http_t::cache_save()
     fclose( file );
   }
 
-  thread_t::unlock();
-
   return true;
 }
 
@@ -186,19 +180,18 @@ bool http_t::cache_save()
 
 void http_t::cache_clear()
 {
-  thread_t::lock();
+  thread_t::mutex_lock( cache_mutex );
   url_cache_db.clear();
-  thread_t::unlock();
+  thread_t::mutex_unlock( cache_mutex );
 }
 
 // http_t::cache_get ========================================================
 
 bool http_t::cache_get( std::string& result,
                         const std::string& url,
-                        bool force,
-                        bool lock )
+                        bool force )
 {
-  if( lock ) thread_t::lock();
+  thread_t::mutex_lock( cache_mutex );
 
   uint32_t now = (uint32_t) time( NULL );
   bool success = false;
@@ -219,7 +212,7 @@ bool http_t::cache_get( std::string& result,
     }
   }
 
-  if( lock ) thread_t::unlock();
+  thread_t::mutex_unlock( cache_mutex );
 
   return success;
 }
@@ -228,10 +221,9 @@ bool http_t::cache_get( std::string& result,
 
 void http_t::cache_set( const std::string& url,
                         const std::string& result,
-                        uint32_t           timestamp,
-                        bool               lock )
+                        uint32_t           timestamp )
 {
-  if( lock ) thread_t::lock();
+  thread_t::mutex_lock( cache_mutex );
 
   if( timestamp == 0 ) timestamp = (uint32_t) time( NULL );
 
@@ -254,7 +246,7 @@ void http_t::cache_set( const std::string& url,
 
   if( ! success ) url_cache_db.push_back( url_cache_t( url, result, timestamp ) );
 
-  if( lock ) thread_t::unlock();
+  thread_t::mutex_unlock( cache_mutex );
 }
 
 // http_t::get ==============================================================
@@ -264,11 +256,13 @@ bool http_t::get( std::string& result,
                   const std::string& confirmation,
                   int throttle_seconds )
 {
-  thread_t::lock();
+  static void* mutex = 0;
+
+  thread_t::mutex_lock( mutex );
 
   result.clear();
 
-  bool success = cache_get( result, url, false, false );
+  bool success = cache_get( result, url, false );
 
   if( ! success )
   {
@@ -278,19 +272,19 @@ bool http_t::get( std::string& result,
 
     if( success )
     {
-      if( confirmation.size() > 0 && (result.find( confirmation )==std::string::npos) )
+      if( confirmation.size() > 0 && ( result.find( confirmation ) == std::string::npos ) )
       {
         printf( "X" ); fflush( stdout );
-        success = cache_get( result, url, true, false );
+        success = cache_get( result, url, true );
       }
       else
       {
-        cache_set( url, result, 0, false );
+        cache_set( url, result, 0 );
       }
     }
   }
 
-  thread_t::unlock();
+  thread_t::mutex_unlock( mutex );
 
   return success;
 }

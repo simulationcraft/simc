@@ -399,29 +399,10 @@ void raid_event_t::parse_options( option_t*          options,
   for( int i=0; base_options[ i ].name; i++ ) 
     merged_options.push_back( base_options[ i ] );
 
-  option_t null_option;
-  null_option.name = 0;
-  merged_options.push_back( null_option );
-
-  std::vector<std::string> splits;
-  int num_splits = util_t::string_split( splits, options_str, "," );
-
-  for( int i=0; i < num_splits; i++ )
+  if( ! option_t::parse( sim, name(), merged_options, options_str ) )
   {
-    std::string n;
-    std::string v;
-
-    if( 2 != util_t::string_split( splits[ i ], "=", "S S", &n, &v ) )
-    {
-      fprintf( sim -> output_file, "raid_event_t: %s: Unexpected parameter '%s'.  Expected format: name=value\n", name(), splits[ i ].c_str() );
-      assert( false );
-    }
-
-    if( ! option_t::parse( sim, &( merged_options[ 0 ] ), n, v ) )
-    {
-      fprintf( sim -> output_file, "raid_event_t: %s: Unexpected parameter '%s'.\n", name(), n.c_str() );
-      assert( false );
-    }
+    fprintf( sim -> output_file, "raid_event_t: %s: Unable to parse options str '%s'.\n", name(), options_str.c_str() );
+    assert( false );
   }
 }
 

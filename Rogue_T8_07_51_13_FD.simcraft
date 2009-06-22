@@ -20,7 +20,4 @@ actions+=/eviscerate,min_combo_points=5,time_to_die<=10
 actions+=/sinister_strike,max_combo_points=4
 actions+=/adrenaline_rush,energy<=20
 Rogue_T8_Combat_Gear.simcraft
-glyph_rupture=1
-glyph_killing_spree=1
-glyph_sinister_strike=1
-
+glyphs=rupture/killing_spree/sinister_strike

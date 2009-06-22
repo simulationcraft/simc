@@ -35,22 +35,20 @@ struct judgement_of_wisdom_callback_t : public action_callback_t
 
     double base_mana = p -> resource_base[ RESOURCE_MANA ];
 
-    double proc_chance = sim -> jow_chance;
+    double PPM = 15.0;
+    double proc_chance = 0;
 
-    if ( sim -> jow_ppm )
+    if ( a -> weapon )
     {
-      if ( a -> weapon )
-      {
-        proc_chance = a -> weapon -> proc_chance_on_swing( sim -> jow_ppm,a -> time_to_execute );
-      }
-      else
-      {
-        double time_to_execute = a -> channeled ? a -> time_to_tick : a -> time_to_execute;
+      proc_chance = a -> weapon -> proc_chance_on_swing( PPM, a -> time_to_execute );
+    }
+    else
+    {
+      double time_to_execute = a -> channeled ? a -> time_to_tick : a -> time_to_execute;
 
-        if ( time_to_execute == 0 ) time_to_execute = p -> base_gcd;
+      if ( time_to_execute == 0 ) time_to_execute = p -> base_gcd;
 
-        proc_chance = sim -> jow_ppm * time_to_execute / 60.0;
-      }
+      proc_chance = PPM * time_to_execute / 60.0;
     }
 
     if ( ! rng -> roll( proc_chance ) )
@@ -561,7 +559,7 @@ static bool parse_talent_url( sim_t* sim,
       
   }
 
-  pbuff_t* buff_list_t::find_buff(std::string name){
+  pbuff_t* buff_list_t::find_buff(std::string& name){
     pbuff_t* res=0;
     name=proper_option_name(name);
     for (pbuff_t* p=first; p && !res; p=p->next){
@@ -571,7 +569,7 @@ static bool parse_talent_url( sim_t* sim,
     return res;
   }
 
-  bool buff_list_t::chk_buff(std::string name){
+  bool buff_list_t::chk_buff(std::string& name){
     pbuff_t* buff= find_buff(name);
     if (buff) 
       return buff->is_up_silent();
@@ -680,58 +678,60 @@ const char* uptime_t::name()
 player_t::player_t( sim_t*             s,
                     int                t,
                     const std::string& n ) :
-    sim( s ), name_str( n ), next( 0 ), index( -1 ), type( t ), level( 80 ), 
-    party( 0 ), member( 0 ),
-    distance( 0 ), gcd_ready( 0 ), base_gcd( 1.5 ), 
-    stunned( 0 ), moving( 0 ), sleeping( 0 ), initialized( 0 ), 
-    pet_list( 0 ),
-    // Haste
-    base_haste_rating( 0 ), initial_haste_rating( 0 ), haste_rating( 0 ), spell_haste( 1.0 ), attack_haste( 1.0 ),
-    // Spell Mechanics
-    base_spell_power( 0 ),
-    base_spell_hit( 0 ),         initial_spell_hit( 0 ),         spell_hit( 0 ),
-    base_spell_crit( 0 ),        initial_spell_crit( 0 ),        spell_crit( 0 ),
-    base_spell_penetration( 0 ), initial_spell_penetration( 0 ), spell_penetration( 0 ),
-    base_mp5( 0 ),               initial_mp5( 0 ),               mp5( 0 ),
-    spell_power_multiplier( 1.0 ),  initial_spell_power_multiplier( 1.0 ),
-    spell_power_per_intellect( 0 ), initial_spell_power_per_intellect( 0 ),
-    spell_power_per_spirit( 0 ),    initial_spell_power_per_spirit( 0 ),
-    spell_crit_per_intellect( 0 ),  initial_spell_crit_per_intellect( 0 ),
-    mp5_per_intellect( 0 ),
-    mana_regen_base( 0 ), mana_regen_while_casting( 0 ),
-    energy_regen_per_second( 0 ), focus_regen_per_second( 0 ),
-    last_cast( 0 ),
-    // Attack Mechanics
-    base_attack_power( 0 ),       initial_attack_power( 0 ),        attack_power( 0 ),
-    base_attack_hit( 0 ),         initial_attack_hit( 0 ),          attack_hit( 0 ),
-    base_attack_expertise( 0 ),   initial_attack_expertise( 0 ),    attack_expertise( 0 ),
-    base_attack_crit( 0 ),        initial_attack_crit( 0 ),         attack_crit( 0 ),
-    base_attack_penetration( 0 ), initial_attack_penetration( 0 ),  attack_penetration( 0 ),
-    attack_power_multiplier( 1.0 ), initial_attack_power_multiplier( 1.0 ),
-    attack_power_per_strength( 0 ), initial_attack_power_per_strength( 0 ),
-    attack_power_per_agility( 0 ),  initial_attack_power_per_agility( 0 ),
-    attack_crit_per_agility( 0 ),   initial_attack_crit_per_agility( 0 ),
-    position( POSITION_BACK ),
-    // Defense Mechanics
-    base_armor( 0 ), initial_armor( 0 ), armor( 0 ), armor_snapshot( 0 ),
-    armor_per_agility( 2.0 ), use_armor_snapshot( false ),
-    // Resources
-    mana_per_intellect( 0 ), health_per_stamina( 0 ),
-    // Consumables
-    elixir_guardian( ELIXIR_NONE ),
-    elixir_battle( ELIXIR_NONE ),
-    flask( FLASK_NONE ),
-    food( FOOD_NONE ),
-    // Events
-    executing( 0 ), channeling( 0 ), readying( 0 ), in_combat( false ),
-    // Actions
-    action_list( 0 ), action_list_default( 0 ),
-    // Reporting
-    quiet( 0 ), last_foreground_action( 0 ),
-    last_action_time( 0 ), total_seconds( 0 ), total_waiting( 0 ), iteration_dmg( 0 ), total_dmg( 0 ),
-    dps( 0 ), dps_min( 0 ), dps_max( 0 ), dps_std_dev( 0 ), dps_error( 0 ), dpr( 0 ), rps_gain( 0 ), rps_loss( 0 ),
-    proc_list( 0 ), gain_list( 0 ), stats_list( 0 ), uptime_list( 0 ), 
-    enchant( 0 ), unique_gear( 0 ), normalized_to( STAT_NONE ), scaling_lag( 0 ), rng_list( 0 )
+  sim(s), name_str(n), 
+  region_str(s->default_region_str), server_str(s->default_server_str), 
+  next(0), index(-1), type(t), level(80), 
+  party(0), member(0),
+  distance(0), gcd_ready(0), base_gcd(1.5), 
+  potion_used(0), stunned(0), moving(0), sleeping(0), initialized(0), 
+  pet_list(0),
+  // Haste
+  base_haste_rating(0), initial_haste_rating(0), haste_rating(0), spell_haste(1.0), attack_haste(1.0),
+  // Spell Mechanics
+  base_spell_power(0),
+  base_spell_hit(0),         initial_spell_hit(0),         spell_hit(0),
+  base_spell_crit(0),        initial_spell_crit(0),        spell_crit(0),
+  base_spell_penetration(0), initial_spell_penetration(0), spell_penetration(0),
+  base_mp5(0),               initial_mp5(0),               mp5(0),
+  spell_power_multiplier(1.0),  initial_spell_power_multiplier(1.0),
+  spell_power_per_intellect(0), initial_spell_power_per_intellect(0),
+  spell_power_per_spirit(0),    initial_spell_power_per_spirit(0),
+  spell_crit_per_intellect(0),  initial_spell_crit_per_intellect(0),
+  mp5_per_intellect(0),
+  mana_regen_base(0), mana_regen_while_casting(0),
+  energy_regen_per_second(0), focus_regen_per_second(0),
+  last_cast(0),
+  // Attack Mechanics
+  base_attack_power(0),       initial_attack_power(0),        attack_power(0),
+  base_attack_hit(0),         initial_attack_hit(0),          attack_hit(0),
+  base_attack_expertise(0),   initial_attack_expertise(0),    attack_expertise(0),
+  base_attack_crit(0),        initial_attack_crit(0),         attack_crit(0),
+  base_attack_penetration(0), initial_attack_penetration(0),  attack_penetration(0),
+  attack_power_multiplier(1.0), initial_attack_power_multiplier(1.0),
+  attack_power_per_strength(0), initial_attack_power_per_strength(0),
+  attack_power_per_agility(0),  initial_attack_power_per_agility(0),
+  attack_crit_per_agility(0),   initial_attack_crit_per_agility(0),
+  position( POSITION_BACK ),
+  // Defense Mechanics
+  base_armor(0), initial_armor(0), armor(0), armor_snapshot(0),
+  armor_per_agility(2.0), use_armor_snapshot(false),
+  // Resources
+  mana_per_intellect(0), health_per_stamina(0),
+  // Consumables
+  elixir_guardian( ELIXIR_NONE ),
+  elixir_battle( ELIXIR_NONE ),
+  flask( FLASK_NONE ),
+  food( FOOD_NONE ),
+  // Events
+  executing(0), channeling(0), readying(0), in_combat( false ),
+  // Actions
+  action_list(0), action_list_default(0),
+  // Reporting
+  quiet(0), last_foreground_action(0),
+  last_action_time(0), total_seconds(0), total_waiting(0), iteration_dmg(0), total_dmg(0),
+  dps(0), dps_min(0), dps_max(0), dps_std_dev(0), dps_error(0), dpr(0), rps_gain(0), rps_loss(0),
+  proc_list(0), gain_list(0), stats_list(0), uptime_list(0), 
+  meta_gem(META_GEM_NONE), normalized_to(STAT_NONE), scaling_lag(0), rng_list(0)
 {
   if ( sim -> debug ) log_t::output( sim, "Creating Player %s", name() );
   player_t** last = &( sim -> player_list );
@@ -739,9 +739,6 @@ player_t::player_t( sim_t*             s,
   *last = this;
   next = 0;
   index = ++( sim -> num_players );
-
-  unique_gear = new unique_gear_t();
-  enchant     = new enchant_t();
 
   for ( int i=0; i < ATTRIBUTE_MAX; i++ )
   {
@@ -764,28 +761,15 @@ player_t::player_t( sim_t*             s,
   for ( int i=0; i < PROF_MAX; i++ ) profession[ i ] = 0;
   for ( int i=0; i < STAT_MAX; i++ ) scales_with[ i ] = 0;
 
-  // Setup default gear profiles
-
   if ( ! is_pet() )
   {
-    for ( int i=0; i < ATTRIBUTE_MAX; i++ )
+    items.resize( SLOT_MAX );
+    for ( int i=0; i < SLOT_MAX; i++ )
     {
-      gear_stats.attribute[ i ] = sim -> gear_default.attribute[ i ];
+      items[ i ].slot = i;
+      items[ i ].sim = sim;
+      items[ i ].player = this;
     }
-    for ( int i=0; i < RESOURCE_MAX; i++ )
-    {
-      gear_stats.resource[ i ] = sim -> gear_default.resource[ i ];
-    }
-    gear_stats.spell_power              = sim -> gear_default.spell_power;
-    gear_stats.spell_penetration        = sim -> gear_default.spell_penetration;
-    gear_stats.mp5                      = sim -> gear_default.mp5;
-    gear_stats.attack_power             = sim -> gear_default.attack_power;
-    gear_stats.expertise_rating         = sim -> gear_default.expertise_rating;
-    gear_stats.armor_penetration_rating = sim -> gear_default.armor_penetration_rating;
-    gear_stats.hit_rating               = sim -> gear_default.hit_rating;
-    gear_stats.crit_rating              = sim -> gear_default.crit_rating;
-    gear_stats.haste_rating             = sim -> gear_default.haste_rating;
-    gear_stats.armor                    = sim -> gear_default.armor;
   }
 
   main_hand_weapon.slot = SLOT_MAIN_HAND;
@@ -854,21 +838,23 @@ void player_t::init()
   initialized = 1;
 
   init_rating();
+  init_glyphs();
   init_base();
+  init_items();
   init_core();
   init_race();
   init_spell();
   init_attack();
   init_defense();
-  init_weapon( &main_hand_weapon, main_hand_str );
-  init_weapon(  &off_hand_weapon,  off_hand_str );
-  init_weapon(    &ranged_weapon,    ranged_str );
+  init_weapon( &main_hand_weapon );
+  init_weapon( &off_hand_weapon );
+  init_weapon( &ranged_weapon );
   init_unique_gear();
   init_enchant();
   init_professions();
-  init_resources();
-  init_consumables();
   init_scaling();
+  init_consumables();
+  init_resources();
   init_actions();
   init_gains();
   init_procs();
@@ -877,42 +863,92 @@ void player_t::init()
   init_stats();
 }
 
+// player_t::init_items =====================================================
+
+void player_t::init_items()
+{
+  if( is_pet() ) return;
+
+  std::vector<std::string> splits;
+  int num_splits = util_t::string_split( splits, items_str, "/" );
+  for( int i=0; i < num_splits; i++ )
+  {
+    if( find_item( splits[ i ] ) )
+    {
+      printf( "simcraft: Player %s has multiple %s equipped.\n", name(), splits[ i ].c_str() );
+    }
+    items.push_back( item_t( this, splits[ i ] ) );
+  }
+
+  gear_stats_t item_stats;
+
+  int num_items = items.size();
+  for( int i=0; i < num_items; i++ )
+  {
+    item_t& item = items[ i ];
+
+    if( ! item.init() )
+    {
+      printf( "simcraft: Unable to initialize item '%s' on player '%s'\n", item.name(), name() );
+      assert( false );
+    }
+
+    for( int j=0; j < STAT_MAX; j++ )
+    {
+      item_stats.add_stat( j, item.stats.get_stat( j ) );
+    }
+  }
+
+  if     ( meta_gem == META_AUSTERE_EARTHSIEGE    ) item_stats.attribute[ ATTR_STAMINA ] += 32;
+  else if( meta_gem == META_CHAOTIC_SKYFLARE      ) item_stats.crit_rating += 21;
+  else if( meta_gem == META_CHAOTIC_SKYFIRE       ) item_stats.crit_rating += 12;
+  else if( meta_gem == META_RELENTLESS_EARTHSIEGE ) item_stats.attribute[ ATTR_AGILITY ] += 21;
+  else if( meta_gem == META_RELENTLESS_EARTHSTORM ) item_stats.attribute[ ATTR_AGILITY ] += 12;
+
+  for( int i=0; i < STAT_MAX; i++ )
+  {
+    if( gear.get_stat( i ) == 0 )
+    {
+      gear.set_stat( i, item_stats.get_stat( i ) );
+    }
+  }
+
+  if( sim -> debug )
+  {
+    log_t::output( sim, "%s gear:", name() );
+    gear.print( sim -> output_file );
+  }
+
+  set_bonus.init( this );
+
+  if( ! sim -> parent )
+  {
+    item_t& t1 = items[ SLOT_TRINKET_1 ];
+    item_t& t2 = items[ SLOT_TRINKET_2 ];
+
+    if( t1.active() && ! t1.equip.active() && ! t1.use.active() ) 
+      printf( "simcraft: Player %s has trinket '%s' which has no known 'equip' or 'use' attribute.\n", name(), t1.name() );
+
+    if( t2.active() && ! t2.equip.active() && ! t2.use.active() ) 
+      printf( "simcraft: Player %s has trinket '%s' which has no known 'equip' or 'use' attribute.\n", name(), t2.name() );
+  }
+}
+
 // player_t::init_core ======================================================
 
 void player_t::init_core()
 {
-  stats.  hit_rating = gear_stats.  hit_rating + gem_stats.  hit_rating + enchant -> stats.  hit_rating;
-  stats. crit_rating = gear_stats. crit_rating + gem_stats. crit_rating + enchant -> stats. crit_rating;
-  stats.haste_rating = gear_stats.haste_rating + gem_stats.haste_rating + enchant -> stats.haste_rating;
+  stats.  hit_rating = gear.  hit_rating + enchant.  hit_rating;
+  stats. crit_rating = gear. crit_rating + enchant. crit_rating;
+  stats.haste_rating = gear.haste_rating + enchant.haste_rating;
 
-  if ( initial_haste_rating == 0 )
-  {
-    initial_haste_rating = stats.haste_rating;
-  }
+  initial_haste_rating = stats.haste_rating;
 
   for ( int i=0; i < ATTRIBUTE_MAX; i++ )
   {
-    stats.attribute[ i ] = gear_stats.attribute[ i ] + gem_stats.attribute[ i ] + enchant -> stats.attribute[ i ];
+    stats.attribute[ i ] = gear.attribute[ i ] + enchant.attribute[ i ];
 
-    if ( attribute_initial[ i ] == 0 )
-    {
-      attribute_initial[ i ] = attribute_base[ i ] + stats.attribute[ i ];
-    }
-  }
-
-  if ( ! is_pet() )
-  {
-    initial_haste_rating += sim -> gear_delta.haste_rating;
-
-    for ( int i=0; i < ATTRIBUTE_MAX; i++ )
-    {
-      attribute_initial[ i ] += sim -> gear_delta.attribute[ i ];
-    }
-  }
-
-  for ( int i=0; i < ATTRIBUTE_MAX; i++ )
-  {
-    attribute[ i ] = attribute_initial[ i ];
+    attribute[ i ] = attribute_initial[ i ] = attribute_base[ i ] + stats.attribute[ i ];
   }
 }
 
@@ -920,16 +956,14 @@ void player_t::init_core()
 
 void player_t::init_race()
 {
-  int r;
-  for ( r=0; r < RACE_MAX; r++ )
+  for ( int r=0; r < RACE_MAX; r++ )
   {
     const char* name = util_t::race_type_string( r );
-    if ( race_str == name ) break;
-  }
-
-  if ( r < PROF_MAX )
-  {
-    race = r;
+    if ( race_str == name ) 
+    {
+      race = r;
+      break;
+    }
   }
 }
 
@@ -937,38 +971,19 @@ void player_t::init_race()
 
 void player_t::init_spell()
 {
-  stats.spell_power       = gear_stats.spell_power       + gem_stats.spell_power       + enchant -> stats.spell_power;
-  stats.spell_penetration = gear_stats.spell_penetration + gem_stats.spell_penetration + enchant -> stats.spell_penetration;
-  stats.mp5               = gear_stats.mp5               + gem_stats.mp5               + enchant -> stats.mp5;
+  stats.spell_power       = gear.spell_power       + enchant.spell_power;
+  stats.spell_penetration = gear.spell_penetration + enchant.spell_penetration;
+  stats.mp5               = gear.mp5               + enchant.mp5;
 
-  if ( initial_spell_power[ SCHOOL_MAX ] == 0 )
-  {
-    initial_spell_power[ SCHOOL_MAX ] = base_spell_power + stats.spell_power;
-  }
+  initial_spell_power[ SCHOOL_MAX ] = base_spell_power + stats.spell_power;
 
-  if ( initial_spell_hit == 0 )
-  {
-    initial_spell_hit = base_spell_hit + stats.hit_rating / rating.spell_hit + ( sim -> overrides.heroic_presence ? 0.01 : 0.00 );
-  }
-  if ( initial_spell_crit == 0 )
-  {
-    initial_spell_crit = base_spell_crit + stats.crit_rating / rating.spell_crit;
-  }
-  if ( initial_spell_penetration == 0 )
-  {
-    initial_spell_penetration = base_spell_penetration + stats.spell_penetration;
-  }
-  if ( initial_mp5 == 0 )
-  {
-    initial_mp5 = base_mp5 + stats.mp5;
-  }
+  initial_spell_hit = base_spell_hit + stats.hit_rating / rating.spell_hit + ( sim -> overrides.heroic_presence ? 0.01 : 0.00 );
 
-  if ( ! is_pet() )
-  {
-    initial_spell_power[ SCHOOL_MAX ] += sim -> gear_delta.spell_power;
-    initial_spell_hit  += sim -> gear_delta. hit_rating / rating.spell_hit;
-    initial_spell_crit += sim -> gear_delta.crit_rating / rating.spell_crit;
-  }
+  initial_spell_crit = base_spell_crit + stats.crit_rating / rating.spell_crit;
+
+  initial_spell_penetration = base_spell_penetration + stats.spell_penetration;
+
+  initial_mp5 = base_mp5 + stats.mp5;
 
   double base_60, base_70, base_80;
 
@@ -992,183 +1007,35 @@ void player_t::init_spell()
 
 void player_t::init_attack()
 {
-  stats.attack_power     = gear_stats.    attack_power + gem_stats.    attack_power + enchant -> stats.attack_power;
-  stats.expertise_rating = gear_stats.expertise_rating + gem_stats.expertise_rating + enchant -> stats.expertise_rating;
+  stats.attack_power             = gear.attack_power             + enchant.attack_power;
+  stats.expertise_rating         = gear.expertise_rating         + enchant.expertise_rating;
+  stats.armor_penetration_rating = gear.armor_penetration_rating + enchant.armor_penetration_rating;
 
-  stats.armor_penetration_rating = ( gear_stats.armor_penetration_rating +
-                                      gem_stats.armor_penetration_rating +
-                               enchant -> stats.armor_penetration_rating );
+  initial_attack_power = base_attack_power + stats.attack_power;
 
-  if ( initial_attack_power == 0 )
-  {
-    initial_attack_power = base_attack_power + stats.attack_power;
-  }
-  if ( initial_attack_hit == 0 )
-  {
-    initial_attack_hit = base_attack_hit + stats.hit_rating / rating.attack_hit;
-  }
-  if ( initial_attack_crit == 0 )
-  {
-    initial_attack_crit = base_attack_crit + stats.crit_rating / rating.attack_crit;
-  }
-  if ( initial_attack_expertise == 0 )
-  {
-    initial_attack_expertise = base_attack_expertise + stats.expertise_rating / rating.expertise;
-  }
-  if ( initial_attack_penetration == 0 )
-  {
-    initial_attack_penetration = base_attack_penetration + stats.armor_penetration_rating / rating.armor_penetration;
-  }
+  initial_attack_hit = base_attack_hit + stats.hit_rating / rating.attack_hit;
 
-  if ( ! is_pet() )
-  {
-    initial_attack_power       += sim -> gear_delta.attack_power;
-    initial_attack_hit         += sim -> gear_delta.hit_rating               / rating.attack_hit;
-    initial_attack_crit        += sim -> gear_delta.crit_rating              / rating.attack_crit;
-    initial_attack_expertise   += sim -> gear_delta.expertise_rating         / rating.expertise;
-    initial_attack_penetration += sim -> gear_delta.armor_penetration_rating / rating.armor_penetration;
-  }
+  initial_attack_crit = base_attack_crit + stats.crit_rating / rating.attack_crit;
+
+  initial_attack_expertise = base_attack_expertise + stats.expertise_rating / rating.expertise;
+
+  initial_attack_penetration = base_attack_penetration + stats.armor_penetration_rating / rating.armor_penetration;
 }
 
 // player_t::init_defense ====================================================
 
 void player_t::init_defense()
 {
-  stats.armor = gear_stats.armor + gem_stats.armor + enchant -> stats.armor;
+  stats.armor = gear.armor + enchant.armor;
 
-  if ( initial_armor == 0 )
-  {
-    initial_armor = base_armor + stats.armor;
-  }
-
-  if ( ! is_pet() )
-  {
-    initial_armor += sim -> gear_delta.armor;
-  }
+  initial_armor = base_armor + stats.armor;
 }
 
 // player_t::init_weapon ===================================================
 
-void player_t::init_weapon( weapon_t*    w,
-                            std::string& encoding )
+void player_t::init_weapon( weapon_t* w )
 {
-  if ( encoding.empty() ) return;
-
-  std::vector<std::string> splits;
-  int size = util_t::string_split( splits, encoding, "," );
-
-  double weapon_dps = 0;
-
-  for ( int i=0; i < size; i++ )
-  {
-    std::string& s = splits[ i ];
-    int t;
-
-    for ( t=0; t < WEAPON_MAX; t++ )
-    {
-      const char* name = util_t::weapon_type_string( t );
-      if ( s == name ) break;
-    }
-
-    if ( t < WEAPON_MAX )
-    {
-      w -> type = t;
-    }
-    else
-    {
-      std::string parm, value;
-      bool invalid = false;
-
-      if ( 2 != util_t::string_split( s, "=", "S S", &parm, &value ) )
-      {
-        invalid = true;
-      }
-      if ( parm == "dmg" || parm == "damage" )
-      {
-        w -> damage = atof( value.c_str() );
-        assert( w -> damage != 0 );
-      }
-      else if ( parm == "dps" )
-      {
-        weapon_dps = atof( value.c_str() );
-        assert( weapon_dps != 0 );
-      }
-      else if ( parm == "speed" )
-      {
-        w -> swing_time = atof( value.c_str() );
-        assert( w -> swing_time != 0 );
-      }
-      else if ( parm == "school" )
-      {
-        for ( int j=0; j <= SCHOOL_MAX; j++ )
-        {
-          if ( j == SCHOOL_MAX ) invalid = true;
-          if ( value == util_t::school_type_string( j ) )
-          {
-            w -> school = j;
-            break;
-          }
-        }
-      }
-      else if ( parm == "enchant" )
-      {
-        for ( int j=0; j <= WEAPON_ENCHANT_MAX; j++ )
-        {
-          //if( j == WEAPON_ENCHANT_MAX ) invalid = true;
-          if ( value == util_t::weapon_enchant_type_string( j ) )
-          {
-            w -> enchant = j;
-            break;
-          }
-        }
-      }
-      else if ( parm == "buff" )
-      {
-        for ( int j=0; j <= WEAPON_BUFF_MAX; j++ )
-        {
-          if ( j == WEAPON_BUFF_MAX ) invalid = true;
-          if ( value == util_t::weapon_buff_type_string( j ) )
-          {
-            w -> buff = j;
-            break;
-          }
-        }
-      }
-      else if ( parm == "enchant_bonus" )
-      {
-        w -> enchant_bonus = atoi( value.c_str() );
-      }
-      else if ( parm == "buff_bonus" )
-      {
-        w -> buff_bonus = atoi( value.c_str() );
-      }
-      else invalid = true;
-
-      if ( invalid )
-      {
-        if ( sim -> debug ) printf( "Invalid weapon encoding: %s\n", encoding.c_str() );
-        //assert(0);
-      }
-    }
-  }
-
-  if ( w -> enchant == SCOPE && w -> enchant_bonus == 0 )
-  {
-    w -> enchant_bonus = util_t::ability_rank( level, 15.0,72,  12.0,67,  7.0,0 );
-  }
-
-  if ( w -> swing_time == 0 ) w -> swing_time = sim -> gear_default.weapon_speed;
-  if ( w -> damage     == 0 ) w -> damage     = sim -> gear_default.weapon_dps * w -> swing_time;
-
-  if ( weapon_dps != 0 ) w -> damage = weapon_dps * w -> swing_time;
-
-  if ( w -> slot == SLOT_MAIN_HAND ||
-       w -> slot == SLOT_RANGED    )
-  {
-    // Stat deltas for scale factor generation.
-    w -> swing_time += sim -> gear_delta.weapon_speed;
-    w -> damage     += sim -> gear_delta.weapon_dps * w -> swing_time;
-  }
+  if ( w -> type == WEAPON_NONE ) return;
 
   if ( w -> slot == SLOT_MAIN_HAND ) assert( w -> type >= WEAPON_NONE && w -> type < WEAPON_2H );
   if ( w -> slot == SLOT_OFF_HAND  ) assert( w -> type >= WEAPON_NONE && w -> type < WEAPON_2H );
@@ -1201,11 +1068,7 @@ void player_t::init_resources( bool force )
   {
     if ( force || resource_initial[ i ] == 0 )
     {
-      resource_initial[ i ] =
-        resource_base[ i ] +
-        gear_stats.resource[ i ] +
-        gem_stats.resource[ i ] +
-        enchant -> stats.resource[ i ];
+      resource_initial[ i ] = resource_base[ i ] + gear.resource[ i ] + enchant.resource[ i ];
 
       if ( i == RESOURCE_MANA   ) resource_initial[ i ] += ( intellect() - adjust ) * mana_per_intellect + adjust;
       if ( i == RESOURCE_HEALTH ) resource_initial[ i ] += (   stamina() - adjust ) * health_per_stamina + adjust;
@@ -1240,23 +1103,28 @@ void player_t::init_professions()
   bool invalid = false;
 
   std::vector<std::string> splits;
-  int size = util_t::string_split( splits, professions_str, "," );
+  int size = util_t::string_split( splits, professions_str, ",/" );
 
   for ( int i=0; i<size; i++ )
   {
-    std::string& s = splits[ i ];
-    std::string parm, value;
-    if ( 2 != util_t::string_split( s, "=", "S S", &parm, &value ) ) invalid = true;
+    invalid = true;
 
-    int p;
-    for ( p=0; p < PROF_MAX; p++ )
+    std::string parm;
+    int value=0;
+
+    if( 2 == util_t::string_split( splits[ i ], "=", "S i", &parm, &value ) )
     {
-      const char* name = util_t::profession_type_string( p );
-      if ( parm == name ) break;
+      for ( int p=0; p < PROF_MAX && invalid; p++ )
+      {
+	if( parm == util_t::profession_type_string( p ) )
+	{
+	  profession[ p ] = value;
+	  invalid = false;
+	}
+      }
     }
 
-    if ( p < PROF_MAX ) profession[ p ] = atoi( value.c_str() );
-    else invalid = true;
+    if( invalid ) break;
   }
 
   if ( invalid )
@@ -1286,32 +1154,16 @@ void player_t::init_professions()
 
 void player_t::init_actions()
 {
-  if ( ! action_list_prefix.empty() ||
-       ! action_list_str.empty()    ||
-       ! action_list_postfix.empty() )
+  if ( ! action_list_str.empty() )
   {
-    if ( action_list_default && sim -> debug ) log_t::output( sim, "Player %s using default actions: %s", name(), action_list_str.c_str()  );
+    if ( action_list_default && sim -> debug ) log_t::output( sim, "Player %s using default actions", name() );
+
+    if ( sim -> debug ) log_t::output( sim, "Player %s: action_list_str=%s", name(), action_list_str.c_str() );
 
     std::vector<std::string> splits;
-    int size = 0;
+    int num_splits = util_t::string_split( splits, action_list_str, "/" );
 
-    if ( ! action_list_prefix.empty() )
-    {
-      if ( sim -> debug ) log_t::output( sim, "Player %s: action_list_prefix=%s", name(), action_list_prefix.c_str() );
-      size = util_t::string_split( splits, action_list_prefix, "/" );
-    }
-    if ( ! action_list_str.empty() )
-    {
-      if ( sim -> debug ) log_t::output( sim, "Player %s: action_list_str=%s", name(), action_list_str.c_str() );
-      size = util_t::string_split( splits, action_list_str, "/" );
-    }
-    if ( ! action_list_postfix.empty() )
-    {
-      if ( sim -> debug ) log_t::output( sim, "Player %s: action_list_postfix=%s", name(), action_list_postfix.c_str() );
-      size = util_t::string_split( splits, action_list_postfix, "/" );
-    }
-
-    for ( int i=0; i < size; i++ )
+    for ( int i=0; i < num_splits; i++ )
     {
       std::string action_name    = splits[ i ];
       std::string action_options = "";
@@ -1336,8 +1188,8 @@ void player_t::init_actions()
   {
     if ( sim -> debug ) log_t::output( sim, "Player %s: action_list_skip=%s", name(), action_list_skip.c_str() );
     std::vector<std::string> splits;
-    int size = util_t::string_split( splits, action_list_skip, "/" );
-    for ( int i=0; i < size; i++ )
+    int num_splits = util_t::string_split( splits, action_list_skip, "/" );
+    for ( int i=0; i < num_splits; i++ )
     {
       action_t* action = find_action( splits[ i ] );
       if ( action ) action -> background = true;
@@ -1356,7 +1208,6 @@ void player_t::init_rating()
 
 void player_t::init_gains()
 {
-  gains.ashtongue_talisman     = get_gain( "ashtongue_talisman" );
   gains.blessing_of_wisdom     = get_gain( "blessing_of_wisdom" );
   gains.dark_rune              = get_gain( "dark_rune" );
   gains.energy_regen           = get_gain( "energy_regen" );
@@ -1390,7 +1241,6 @@ void player_t::init_gains()
 
 void player_t::init_procs()
 {
-  procs.ashtongue_talisman        = get_proc( "ashtongue_talisman" );
   procs.honor_among_thieves_donor = ( is_pet() ? ( cast_pet() -> owner ) : this ) -> get_proc( "honor_among_thieves_donor" );
   procs.tier4_2pc = get_proc( "tier4_2pc" );
   procs.tier4_4pc = get_proc( "tier4_4pc" );
@@ -1427,7 +1277,6 @@ void player_t::init_uptimes()
 
 void player_t::init_rng()
 {
-  rngs.ashtongue_talisman = get_rng( "ashtongue_talisman" );
   rngs.tier4_2pc = get_rng( "tier4_2pc" );
   rngs.tier4_4pc = get_rng( "tier4_4pc" );
   rngs.tier5_2pc = get_rng( "tier5_2pc" );
@@ -1497,7 +1346,62 @@ void player_t::init_scaling()
     scales_with[ STAT_WEAPON_SPEED ] = 0;
 
     scales_with[ STAT_ARMOR ] = 0;
+
+    if( sim -> scaling -> scale_stat != STAT_NONE )
+    {
+      double v = sim -> scaling -> scale_value;
+
+      switch( sim -> scaling -> scale_stat )
+      {
+      case STAT_STRENGTH:  attribute_initial[ ATTR_STRENGTH  ] += v; break;
+      case STAT_AGILITY:   attribute_initial[ ATTR_AGILITY   ] += v; break;
+      case STAT_STAMINA:   attribute_initial[ ATTR_STAMINA   ] += v; break;
+      case STAT_INTELLECT: attribute_initial[ ATTR_INTELLECT ] += v; break;
+      case STAT_SPIRIT:    attribute_initial[ ATTR_SPIRIT    ] += v; break;
+
+      case STAT_SPELL_POWER:       initial_spell_power[ SCHOOL_MAX ] += v; break;
+      case STAT_SPELL_PENETRATION: initial_spell_penetration         += v; break;
+      case STAT_MP5:               initial_mp5                       += v; break;
+
+      case STAT_ATTACK_POWER:             initial_attack_power       += v;                            break;
+      case STAT_EXPERTISE_RATING:         initial_attack_expertise   += v / rating.expertise;         break;
+      case STAT_ARMOR_PENETRATION_RATING: initial_attack_penetration += v / rating.armor_penetration; break;
+
+      case STAT_HIT_RATING:
+	initial_attack_hit += v / rating.attack_hit;
+	initial_spell_hit  += v / rating.spell_hit;
+	break;
+
+      case STAT_CRIT_RATING:
+	initial_attack_crit += v / rating.attack_crit;
+	initial_spell_crit  += v / rating.spell_crit;
+	break;
+
+      case STAT_HASTE_RATING: initial_haste_rating += v; break;
+
+      case STAT_WEAPON_DPS: 
+	main_hand_weapon.damage += main_hand_weapon.swing_time * v;
+	ranged_weapon.damage    += ranged_weapon.swing_time * v;
+	break;
+
+      case STAT_ARMOR: initial_armor += v; break;
+
+      default: assert( 0 );
+      }
+    }
   }
+}
+
+// player_t::find_item ======================================================
+
+item_t* player_t::find_item( const std::string& str )
+{
+  int num_items = items.size();
+  for( int i=0; i < num_items; i++ )
+    if( str == items[ i ].name() )
+      return &( items[ i ] );
+
+  return 0;
 }
 
 // player_t::composite_attack_power ========================================
@@ -1535,7 +1439,13 @@ double player_t::composite_attack_crit()
 
 double player_t::composite_armor()
 {
-  return (armor * (1 + (unique_gear -> austere_earthsiege ? 0.02 : 0.0 ))) + armor_per_agility * agility();
+  double a = armor;
+
+  if( meta_gem == META_AUSTERE_EARTHSIEGE ) a *= 1.02;
+
+  a += armor_per_agility * agility();
+
+  return a;
 }
 
 // player_t::composite_spell_power ========================================
@@ -1798,7 +1708,7 @@ void player_t::reset()
   attack_penetration = initial_attack_penetration;
 
   armor              = initial_armor;
-  armor_snapshot     = 0;
+  armor_snapshot     = initial_armor;
 
   spell_power_multiplier    = initial_spell_power_multiplier;
   spell_power_per_intellect = initial_spell_power_per_intellect;
@@ -1859,8 +1769,9 @@ void player_t::reset()
     a -> reset();
   }
 
-  moving = 0;
+  potion_used = 0;
   stunned = 0;
+  moving = 0;
 
   if ( sleeping ) quiet = 1;
 
@@ -2740,6 +2651,110 @@ struct wait_until_ready_t : public action_t
   }
 };
 
+// Use Item Action ===========================================================
+
+struct use_item_t : public action_t
+{
+  item_t* item;
+  spell_t* spell;
+  proc_t* proc;
+
+  use_item_t( player_t* player, const std::string& options_str ) :
+    action_t( ACTION_OTHER, "use_item", player ), item(0), spell(0)
+  {
+    std::string item_name;
+    option_t options[] =
+      {
+        { "name", OPT_STRING, &item_name },
+        { NULL }
+      };
+    parse_options( options, options_str );
+
+    if( item_name.empty() )
+    {
+      printf( "simcraft: Player %s has 'use_item' action with no 'name=' option.\n", player -> name() );
+      assert( false );
+    }
+
+    item = player -> find_item( item_name );
+    if( ! item )
+    {
+      printf( "simcraft: Player %s attempting 'use_item' action with item '%s' which is not currently equipped.\n", player -> name(), item_name.c_str() );
+      assert( false );
+    }
+    if( ! item -> use.active() )
+    {
+      printf( "simcraft: Player %s attempting 'use_item' action with item '%s' which has no 'use=' encoding.\n", player -> name(), item_name.c_str() );
+      assert( false );
+    }
+
+    if( item -> use.school )
+    {
+      struct discharge_spell_t : public spell_t
+      {
+	discharge_spell_t( const char* n, player_t* p, double a, int s ) :
+          spell_t( n, p, RESOURCE_NONE, s )
+	{
+	  trigger_gcd = 0;
+	  base_dd_min = a;
+	  base_dd_max = a;
+	  may_crit    = true;
+	  background  = true;
+	  base_spell_power_multiplier = 0;
+	  reset();
+	}
+      };
+
+      spell = new discharge_spell_t( item -> name(), player, item -> use.amount, item -> use.school );
+    }
+
+    proc = player -> get_proc( item_name );
+    
+    cooldown = item -> use.cooldown;
+    trigger_gcd = 0;
+  }
+
+  virtual void execute()
+  {
+    proc -> occur();
+
+    if( spell )
+    {
+      spell -> execute();
+    }
+    else
+    {
+      if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
+
+      player -> aura_gain( item -> name() );
+      player -> stat_gain( item -> use.stat, item -> use.amount );
+      
+      if( item -> use.duration )
+      {
+        struct expiration_t : public event_t
+        {
+          item_t* item;
+
+          expiration_t( sim_t* sim, player_t* player, item_t* i ) : event_t( sim, player ), item( i )
+          {
+            name = item -> name();
+            sim -> add_event( this, item -> use.duration );
+          }
+          virtual void execute()
+          {
+            player -> aura_loss( item -> name() );
+            player -> stat_loss( item -> use.stat, item -> use.amount );
+          }
+        };
+
+        new ( sim ) expiration_t( sim, player, item );
+      }
+    }
+
+    update_ready();
+  }
+};
+
 // player_t::create_action ==================================================
 
 action_t* player_t::create_action( const std::string& name,
@@ -2748,14 +2763,10 @@ action_t* player_t::create_action( const std::string& name,
   if ( name == "cycle"            ) return new            cycle_t( this, options_str );
   if ( name == "restart_sequence" ) return new restart_sequence_t( this, options_str );
   if ( name == "restore_mana"     ) return new     restore_mana_t( this, options_str );
+  if ( name == "use_item"         ) return new         use_item_t( this, options_str );
   if ( name == "wait"             ) return new wait_until_ready_t( this, options_str );
 
-  action_t* a=0;
-
-  if ( ! a ) a = unique_gear_t::create_action( this, name, options_str );
-  if ( ! a ) a =  consumable_t::create_action( this, name, options_str );
-
-  return a;
+  return consumable_t::create_action( this, name, options_str );
 }
 
 // player_t::find_pet =======================================================
@@ -2959,166 +2970,200 @@ bool player_t::parse_talents( const std::string& talent_string,
   return false;
 }
 
+// player_t::save ===========================================================
+
+bool player_t::save( FILE* file )
+{
+  fprintf( file, "%s=%s\n", util_t::player_type_string( type ), name() );
+  fprintf( file, "level=%d\n", level );
+
+  if( ! talents_str.empty() )
+  {
+    fprintf( file, "talents=%s\n", talents_str.c_str() );
+  };
+  if( ! glyphs_str.empty() )
+  {
+    fprintf( file, "glyphs=%s\n", glyphs_str.c_str() );
+  }
+  if( ! action_list_str.empty() )
+  {
+    std::vector<std::string> splits;
+    int num_splits = util_t::string_split( splits, action_list_str, "/" );
+    for ( int i=0; i < num_splits; i++ )
+    {
+      fprintf( file, "actions%s%s\n", ( i ? "+=/" : "=" ), splits[ i ].c_str() );
+    }    
+  }
+  for( int i=0; i < SLOT_MAX; i++ )
+  {
+    item_t& item = items[ i ];
+
+    if( item.active() )
+    {
+      fprintf( file, "%s=%s\n", item.slot_name(), item.options_str.c_str() );
+    }
+  }
+  if( ! items_str.empty() )
+  {
+    fprintf( file, "items=%s\n", items_str.c_str() );
+  }
+
+  fprintf( file, "# Gear Summary\n" );
+  for( int i=0; i < STAT_MAX; i++ )
+  {
+    double value = stats.get_stat( i );
+    if( value != 0 ) fprintf( file, "# gear_%s=%.0f\n", util_t::stat_type_string( i ), value );
+  }
+  if( meta_gem != META_GEM_NONE ) fprintf( file, "# meta_gem=%s\n", util_t::meta_gem_type_string( meta_gem ) );
+  if( set_bonus.tier7_2pc() ) fprintf( file, "# tier7_2pc=1\n" );
+  if( set_bonus.tier7_4pc() ) fprintf( file, "# tier7_4pc=1\n" );
+  if( set_bonus.tier8_2pc() ) fprintf( file, "# tier8_2pc=1\n" );
+  if( set_bonus.tier8_4pc() ) fprintf( file, "# tier8_4pc=1\n" );
+
+  for( int i=0; i < SLOT_MAX; i++ )
+  {
+    item_t& item = items[ i ];
+    if( item.active() && ( ! item.encoded_weapon_str.empty() || item.enchant != ENCHANT_NONE ) )
+    {
+      fprintf( file, "# %s=%s", item.slot_name(), item.name() );
+      if( ! item.encoded_weapon_str.empty() ) fprintf( file, ",weapon=%s", item.encoded_weapon_str.c_str() );
+      if( item.enchant != ENCHANT_NONE ) fprintf( file, ",enchant=%s", util_t::enchant_type_string( item.enchant ) );
+      fprintf( file, "\n" );
+    }
+  }
+
+  bool first = true;
+  int num_items = items.size();
+  for( int i=0; i < num_items; i++ )
+  {
+    item_t& item = items[ i ];
+    if( item.active() && ( item.use.active() || item.equip.active() || item.unique ) )
+    {
+      fprintf( file, "%s%s", ( first ? "# items=" : "/" ), item.name() );
+      first = false;
+    }
+  }
+  if( ! first ) fprintf( file, "\n" );
+
+  return true;
+}
+
 // player_t::get_options ====================================================
 
 std::vector<option_t>& player_t::get_options()
 {
-  if( option_vector.empty() )
+  if( options.empty() )
   {
-    option_t options[] =
+    option_t player_options[] =
     {
       // @option_doc loc=player/all/general title="General"
-      { "name",                                 OPT_STRING_Q, &( name_str                                     ) },
-      { "talents",                              OPT_FUNC,     (void*) parse_talent_url                          },
+      { "name",                                 OPT_STRING,   &( name_str                                     ) },
+      { "id",                                   OPT_STRING,   &( id_str                                       ) },
+      { "talents",                              OPT_FUNC,     (void*) ::parse_talent_url                        },
+      { "glyphs",                               OPT_STRING,   &( glyphs_str                                   ) },
       { "race",                                 OPT_STRING,   &( race_str                                     ) },
       { "level",                                OPT_INT,      &( level                                        ) },
       { "distance",                             OPT_FLT,      &( distance                                     ) },
       { "professions",                          OPT_STRING,   &( professions_str                              ) },
       { "actions",                              OPT_STRING,   &( action_list_str                              ) },
+      { "actions+",                             OPT_APPEND,   &( action_list_str                              ) },
       { "sleeping",                             OPT_BOOL,     &( sleeping                                     ) },
       { "quiet",                                OPT_BOOL,     &( quiet                                        ) },
-      { "save",                                 OPT_STRING_Q, &( save_str                                     ) },
-      // @option_doc loc=player/all/weapons title="Weapon Descriptions"
-      { "main_hand",                            OPT_STRING, &( main_hand_str                                  ) },
-      { "off_hand",                             OPT_STRING, &( off_hand_str                                   ) },
-      { "ranged",                               OPT_STRING, &( ranged_str                                     ) },
-      // @option_doc loc=player/all/gear title="Gear Stats"
-      { "gear_strength",                        OPT_FLT,  &( gear_stats.attribute[ ATTR_STRENGTH  ]           ) },
-      { "gear_agility",                         OPT_FLT,  &( gear_stats.attribute[ ATTR_AGILITY   ]           ) },
-      { "gear_stamina",                         OPT_FLT,  &( gear_stats.attribute[ ATTR_STAMINA   ]           ) },
-      { "gear_intellect",                       OPT_FLT,  &( gear_stats.attribute[ ATTR_INTELLECT ]           ) },
-      { "gear_spirit",                          OPT_FLT,  &( gear_stats.attribute[ ATTR_SPIRIT    ]           ) },
-      { "gear_spell_power",                     OPT_FLT,  &( gear_stats.spell_power                           ) },
-      { "gear_mp5",                             OPT_FLT,  &( gear_stats.mp5                                   ) },
-      { "gear_attack_power",                    OPT_FLT,  &( gear_stats.attack_power                          ) },
-      { "gear_expertise_rating",                OPT_FLT,  &( gear_stats.expertise_rating                      ) },
-      { "gear_armor_penetration_rating",        OPT_FLT,  &( gear_stats.armor_penetration_rating              ) },
-      { "gear_haste_rating",                    OPT_FLT,  &( gear_stats.haste_rating                          ) },
-      { "gear_hit_rating",                      OPT_FLT,  &( gear_stats.hit_rating                            ) },
-      { "gear_crit_rating",                     OPT_FLT,  &( gear_stats.crit_rating                           ) },
-      { "gear_health",                          OPT_FLT,  &( gear_stats.resource[ RESOURCE_HEALTH ]           ) },
-      { "gear_mana",                            OPT_FLT,  &( gear_stats.resource[ RESOURCE_MANA   ]           ) },
-      { "gear_rage",                            OPT_FLT,  &( gear_stats.resource[ RESOURCE_RAGE   ]           ) },
-      { "gear_energy",                          OPT_FLT,  &( gear_stats.resource[ RESOURCE_ENERGY ]           ) },
-      { "gear_focus",                           OPT_FLT,  &( gear_stats.resource[ RESOURCE_FOCUS  ]           ) },
-      { "gear_runic",                           OPT_FLT,  &( gear_stats.resource[ RESOURCE_RUNIC  ]           ) },
-      { "gear_armor",                           OPT_FLT,  &( gear_stats.armor                                 ) },
-      // @option_doc loc=player/all/gems title="Gem Stats"
-      { "gem_strength",                         OPT_FLT,  &( gem_stats.attribute[ ATTR_STRENGTH  ]            ) },
-      { "gem_agility",                          OPT_FLT,  &( gem_stats.attribute[ ATTR_AGILITY   ]            ) },
-      { "gem_stamina",                          OPT_FLT,  &( gem_stats.attribute[ ATTR_STAMINA   ]            ) },
-      { "gem_intellect",                        OPT_FLT,  &( gem_stats.attribute[ ATTR_INTELLECT ]            ) },
-      { "gem_spirit",                           OPT_FLT,  &( gem_stats.attribute[ ATTR_SPIRIT    ]            ) },
-      { "gem_spell_power",                      OPT_FLT,  &( gem_stats.spell_power                            ) },
-      { "gem_mp5",                              OPT_FLT,  &( gem_stats.mp5                                    ) },
-      { "gem_attack_power",                     OPT_FLT,  &( gem_stats.attack_power                           ) },
-      { "gem_expertise_rating",                 OPT_FLT,  &( gem_stats.expertise_rating                       ) },
-      { "gem_armor_penetration_rating",         OPT_FLT,  &( gem_stats.armor_penetration_rating               ) },
-      { "gem_haste_rating",                     OPT_FLT,  &( gem_stats.haste_rating                           ) },
-      { "gem_hit_rating",                       OPT_FLT,  &( gem_stats.hit_rating                             ) },
-      { "gem_crit_rating",                      OPT_FLT,  &( gem_stats.crit_rating                            ) },
-      { "gem_health",                           OPT_FLT,  &( gem_stats.resource[ RESOURCE_HEALTH ]            ) },
-      { "gem_mana",                             OPT_FLT,  &( gem_stats.resource[ RESOURCE_MANA   ]            ) },
-      { "gem_rage",                             OPT_FLT,  &( gem_stats.resource[ RESOURCE_RAGE   ]            ) },
-      { "gem_energy",                           OPT_FLT,  &( gem_stats.resource[ RESOURCE_ENERGY ]            ) },
-      { "gem_focus",                            OPT_FLT,  &( gem_stats.resource[ RESOURCE_FOCUS  ]            ) },
-      { "gem_runic",                            OPT_FLT,  &( gem_stats.resource[ RESOURCE_RUNIC  ]            ) },
-      { "gem_armor",                            OPT_FLT,  &( gem_stats.armor                                  ) },
-      // @option_doc loc=player/all/base title="Base Stats"
-      { "base_strength",                        OPT_FLT_Q,  &( attribute_base[ ATTR_STRENGTH  ]               ) },
-      { "base_agility",                         OPT_FLT_Q,  &( attribute_base[ ATTR_AGILITY   ]               ) },
-      { "base_stamina",                         OPT_FLT_Q,  &( attribute_base[ ATTR_STAMINA   ]               ) },
-      { "base_intellect",                       OPT_FLT_Q,  &( attribute_base[ ATTR_INTELLECT ]               ) },
-      { "base_spirit",                          OPT_FLT_Q,  &( attribute_base[ ATTR_SPIRIT    ]               ) },
-      { "base_energy",                          OPT_FLT_Q,  &( resource_base[ RESOURCE_ENERGY ]               ) },
-      { "base_focus",                           OPT_FLT_Q,  &( resource_base[ RESOURCE_FOCUS  ]               ) },
-      { "base_health",                          OPT_FLT_Q,  &( resource_base[ RESOURCE_HEALTH ]               ) },
-      { "base_mana",                            OPT_FLT_Q,  &( resource_base[ RESOURCE_MANA   ]               ) },
-      { "base_rage",                            OPT_FLT_Q,  &( resource_base[ RESOURCE_RAGE   ]               ) },
-      { "base_runic",                           OPT_FLT_Q,  &( resource_base[ RESOURCE_RUNIC  ]               ) },
-      { "base_armor",                           OPT_FLT_Q,  &( base_armor                                     ) },
-      { "base_attack_crit",                     OPT_FLT_Q,  &( base_attack_crit                               ) },
-      { "base_attack_expertise",                OPT_FLT_Q,  &( base_attack_expertise                          ) },
-      { "base_attack_hit",                      OPT_FLT_Q,  &( base_attack_hit                                ) },
-      { "base_attack_penetration",              OPT_FLT_Q,  &( base_attack_penetration                        ) },
-      { "base_attack_power",                    OPT_FLT_Q,  &( base_attack_power                              ) },
-      { "base_mp5",                             OPT_FLT_Q,  &( base_mp5                                       ) },
-      { "base_spell_crit",                      OPT_FLT_Q,  &( base_spell_crit                                ) },
-      { "base_spell_hit",                       OPT_FLT_Q,  &( base_spell_hit                                 ) },
-      { "base_spell_penetration",               OPT_FLT_Q,  &( base_spell_penetration                         ) },
-      { "base_spell_power",                     OPT_FLT_Q,  &( base_spell_power                               ) },
-      { "armor_per_agility",                    OPT_FLT_Q,  &( armor_per_agility                              ) },
-      { "attack_crit_per_agility",              OPT_FLT_Q,  &( attack_crit_per_agility                        ) },
-      { "attack_power_per_agility",             OPT_FLT_Q,  &( attack_power_per_agility                       ) },
-      { "attack_power_per_strength",            OPT_FLT_Q,  &( attack_power_per_strength                      ) },
-      { "spell_crit_per_intellect",             OPT_FLT_Q,  &( spell_crit_per_intellect                       ) },
-      { "gcd",                                  OPT_FLT_Q,  &( base_gcd                                       ) },
-      { "id",                                   OPT_STRING, &( id_str                                         ) },
+      { "save",                                 OPT_STRING,   &( save_str                                     ) },
+      // @option_doc loc=player/all/items title="Items"
+      { "items",                                OPT_STRING,   &( items_str                                    ) },
+      { "items+",                               OPT_APPEND,   &( items_str                                    ) },
+      { "head",                                 OPT_STRING,   &( items[ SLOT_HEAD      ].options_str          ) },
+      { "neck",                                 OPT_STRING,   &( items[ SLOT_NECK      ].options_str          ) },
+      { "shoulders",                            OPT_STRING,   &( items[ SLOT_SHOULDERS ].options_str          ) },
+      { "shirt",                                OPT_STRING,   &( items[ SLOT_SHIRT     ].options_str          ) },
+      { "chest",                                OPT_STRING,   &( items[ SLOT_CHEST     ].options_str          ) },
+      { "waist",                                OPT_STRING,   &( items[ SLOT_WAIST     ].options_str          ) },
+      { "legs",                                 OPT_STRING,   &( items[ SLOT_LEGS      ].options_str          ) },
+      { "feet",                                 OPT_STRING,   &( items[ SLOT_FEET      ].options_str          ) },
+      { "wrists",                               OPT_STRING,   &( items[ SLOT_WRISTS    ].options_str          ) },
+      { "hands",                                OPT_STRING,   &( items[ SLOT_HANDS     ].options_str          ) },
+      { "finger1",                              OPT_STRING,   &( items[ SLOT_FINGER_1  ].options_str          ) },
+      { "finger2",                              OPT_STRING,   &( items[ SLOT_FINGER_2  ].options_str          ) },
+      { "trinket1",                             OPT_STRING,   &( items[ SLOT_TRINKET_1 ].options_str          ) },
+      { "trinket2",                             OPT_STRING,   &( items[ SLOT_TRINKET_2 ].options_str          ) },
+      { "back",                                 OPT_STRING,   &( items[ SLOT_BACK      ].options_str          ) },
+      { "main_hand",                            OPT_STRING,   &( items[ SLOT_MAIN_HAND ].options_str          ) },
+      { "off_hand",                             OPT_STRING,   &( items[ SLOT_OFF_HAND  ].options_str          ) },
+      { "ranged",                               OPT_STRING,   &( items[ SLOT_RANGED    ].options_str          ) },
+      { "tier4_2pc",                            OPT_BOOL,     &( set_bonus.count[ SET_T4_2PC ]                ) },
+      { "tier4_4pc",                            OPT_BOOL,     &( set_bonus.count[ SET_T4_4PC ]                ) },
+      { "tier5_2pc",                            OPT_BOOL,     &( set_bonus.count[ SET_T5_2PC ]                ) },
+      { "tier5_4pc",                            OPT_BOOL,     &( set_bonus.count[ SET_T5_4PC ]                ) },
+      { "tier6_2pc",                            OPT_BOOL,     &( set_bonus.count[ SET_T6_2PC ]                ) },
+      { "tier6_4pc",                            OPT_BOOL,     &( set_bonus.count[ SET_T6_4PC ]                ) },
+      { "tier7_2pc",                            OPT_BOOL,     &( set_bonus.count[ SET_T7_2PC ]                ) },
+      { "tier7_4pc",                            OPT_BOOL,     &( set_bonus.count[ SET_T7_4PC ]                ) },
+      { "tier8_2pc",                            OPT_BOOL,     &( set_bonus.count[ SET_T8_2PC ]                ) },
+      { "tier8_4pc",                            OPT_BOOL,     &( set_bonus.count[ SET_T8_4PC ]                ) },
+      { "meta_gem",                             OPT_STRING,   &( meta_gem_str                                 ) },
       // @option_doc loc=skip
-      { "actions+",                             OPT_APPEND, &( action_list_str                                ) },
-      { "agility",                              OPT_FLT_Q,  &( attribute_initial[ ATTR_AGILITY   ]            ) },
-      { "agility_multiplier",                   OPT_FLT_Q,  &( attribute_multiplier_initial[ ATTR_AGILITY   ] ) },
-      { "armor",                                OPT_FLT_Q,  &( initial_armor                                  ) },
-      { "attack_crit",                          OPT_FLT_Q,  &( initial_attack_crit                            ) },
-      { "attack_expertise",                     OPT_FLT_Q,  &( initial_attack_expertise                       ) },
-      { "attack_hit",                           OPT_FLT_Q,  &( initial_attack_hit                             ) },
-      { "attack_penetration",                   OPT_FLT_Q,  &( initial_attack_penetration                     ) },
-      { "attack_power",                         OPT_FLT_Q,  &( initial_attack_power                           ) },
-      { "elixirs",                              OPT_STRING, &( elixirs_str                                    ) },
-      { "energy",                               OPT_FLT_Q,  &( resource_initial[ RESOURCE_ENERGY ]            ) },
-      { "flask",                                OPT_STRING, &( flask_str                                      ) },
-      { "focus",                                OPT_FLT_Q,  &( resource_initial[ RESOURCE_FOCUS  ]            ) },
-      { "food",                                 OPT_STRING, &( food_str                                       ) },
-      { "haste_rating",                         OPT_FLT_Q,  &( initial_haste_rating                           ) },
-      { "health",                               OPT_FLT_Q,  &( resource_initial[ RESOURCE_HEALTH ]            ) },
-      { "intellect",                            OPT_FLT_Q,  &( attribute_initial[ ATTR_INTELLECT ]            ) },
-      { "intellect_multiplier",                 OPT_FLT_Q,  &( attribute_multiplier_initial[ ATTR_INTELLECT ] ) },
-      { "mana",                                 OPT_FLT_Q,  &( resource_initial[ RESOURCE_MANA   ]            ) },
-      { "mp5",                                  OPT_FLT_Q,  &( initial_mp5                                    ) },
-      { "post_actions",                         OPT_STRING, &( action_list_postfix                            ) },
-      { "pre_actions",                          OPT_STRING, &( action_list_prefix                             ) },
-      { "rage",                                 OPT_FLT_Q,  &( resource_initial[ RESOURCE_RAGE   ]            ) },
-      { "runic",                                OPT_FLT_Q,  &( resource_initial[ RESOURCE_RUNIC  ]            ) },
+      { "shoulder",                             OPT_STRING,   &( items[ SLOT_SHOULDERS ].options_str          ) },
+      { "leg",                                  OPT_STRING,   &( items[ SLOT_LEGS      ].options_str          ) },
+      { "foot",                                 OPT_STRING,   &( items[ SLOT_FEET      ].options_str          ) },
+      { "wrist",                                OPT_STRING,   &( items[ SLOT_WRISTS    ].options_str          ) },
+      { "hand",                                 OPT_STRING,   &( items[ SLOT_HANDS     ].options_str          ) },
+      { "ring1",                                OPT_STRING,   &( items[ SLOT_FINGER_1  ].options_str          ) },
+      { "ring2",                                OPT_STRING,   &( items[ SLOT_FINGER_2  ].options_str          ) },
+      // @option_doc loc=player/all/gear title="Gear Stats"
+      { "gear_strength",                        OPT_FLT,  &( gear.attribute[ ATTR_STRENGTH  ]                 ) },
+      { "gear_agility",                         OPT_FLT,  &( gear.attribute[ ATTR_AGILITY   ]                 ) },
+      { "gear_stamina",                         OPT_FLT,  &( gear.attribute[ ATTR_STAMINA   ]                 ) },
+      { "gear_intellect",                       OPT_FLT,  &( gear.attribute[ ATTR_INTELLECT ]                 ) },
+      { "gear_spirit",                          OPT_FLT,  &( gear.attribute[ ATTR_SPIRIT    ]                 ) },
+      { "gear_spell_power",                     OPT_FLT,  &( gear.spell_power                                 ) },
+      { "gear_mp5",                             OPT_FLT,  &( gear.mp5                                         ) },
+      { "gear_attack_power",                    OPT_FLT,  &( gear.attack_power                                ) },
+      { "gear_expertise_rating",                OPT_FLT,  &( gear.expertise_rating                            ) },
+      { "gear_armor_penetration_rating",        OPT_FLT,  &( gear.armor_penetration_rating                    ) },
+      { "gear_haste_rating",                    OPT_FLT,  &( gear.haste_rating                                ) },
+      { "gear_hit_rating",                      OPT_FLT,  &( gear.hit_rating                                  ) },
+      { "gear_crit_rating",                     OPT_FLT,  &( gear.crit_rating                                 ) },
+      { "gear_health",                          OPT_FLT,  &( gear.resource[ RESOURCE_HEALTH ]                 ) },
+      { "gear_mana",                            OPT_FLT,  &( gear.resource[ RESOURCE_MANA   ]                 ) },
+      { "gear_rage",                            OPT_FLT,  &( gear.resource[ RESOURCE_RAGE   ]                 ) },
+      { "gear_energy",                          OPT_FLT,  &( gear.resource[ RESOURCE_ENERGY ]                 ) },
+      { "gear_focus",                           OPT_FLT,  &( gear.resource[ RESOURCE_FOCUS  ]                 ) },
+      { "gear_runic",                           OPT_FLT,  &( gear.resource[ RESOURCE_RUNIC  ]                 ) },
+      { "gear_armor",                           OPT_FLT,  &( gear.armor                                       ) },
+      // @option_doc loc=player/all/enchant/stats title="Stat Enchants"
+      { "enchant_strength",                     OPT_FLT,  &( enchant.attribute[ ATTR_STRENGTH  ]              ) },
+      { "enchant_agility",                      OPT_FLT,  &( enchant.attribute[ ATTR_AGILITY   ]              ) },
+      { "enchant_stamina",                      OPT_FLT,  &( enchant.attribute[ ATTR_STAMINA   ]              ) },
+      { "enchant_intellect",                    OPT_FLT,  &( enchant.attribute[ ATTR_INTELLECT ]              ) },
+      { "enchant_spirit",                       OPT_FLT,  &( enchant.attribute[ ATTR_SPIRIT    ]              ) },
+      { "enchant_spell_power",                  OPT_FLT,  &( enchant.spell_power                              ) },
+      { "enchant_mp5",                          OPT_FLT,  &( enchant.mp5                                      ) },
+      { "enchant_attack_power",                 OPT_FLT,  &( enchant.attack_power                             ) },
+      { "enchant_expertise_rating",             OPT_FLT,  &( enchant.expertise_rating                         ) },
+      { "enchant_armor_penetration",            OPT_FLT,  &( enchant.armor_penetration_rating                 ) },
+      { "enchant_armor",                        OPT_FLT,  &( enchant.armor                                    ) },
+      { "enchant_haste_rating",                 OPT_FLT,  &( enchant.haste_rating                             ) },
+      { "enchant_hit_rating",                   OPT_FLT,  &( enchant.hit_rating                               ) },
+      { "enchant_crit_rating",                  OPT_FLT,  &( enchant.crit_rating                              ) },
+      { "enchant_health",                       OPT_FLT,  &( enchant.resource[ RESOURCE_HEALTH ]              ) },
+      { "enchant_mana",                         OPT_FLT,  &( enchant.resource[ RESOURCE_MANA   ]              ) },
+      { "enchant_rage",                         OPT_FLT,  &( enchant.resource[ RESOURCE_RAGE   ]              ) },
+      { "enchant_energy",                       OPT_FLT,  &( enchant.resource[ RESOURCE_ENERGY ]              ) },
+      { "enchant_focus",                        OPT_FLT,  &( enchant.resource[ RESOURCE_FOCUS  ]              ) },
+      { "enchant_runic",                        OPT_FLT,  &( enchant.resource[ RESOURCE_RUNIC  ]              ) },
+      // @option_doc loc=skip
       { "skip_actions",                         OPT_STRING, &( action_list_skip                               ) },
-      { "spell_crit",                           OPT_FLT_Q,  &( initial_spell_crit                             ) },
-      { "spell_hit",                            OPT_FLT_Q,  &( initial_spell_hit                              ) },
-      { "spell_penetration",                    OPT_FLT_Q,  &( initial_spell_penetration                      ) },
-      { "spell_power",                          OPT_FLT_Q,  &( initial_spell_power[ SCHOOL_MAX    ]           ) },
-      { "spell_power_arcane",                   OPT_FLT_Q,  &( initial_spell_power[ SCHOOL_ARCANE ]           ) },
-      { "spell_power_fire",                     OPT_FLT_Q,  &( initial_spell_power[ SCHOOL_FIRE   ]           ) },
-      { "spell_power_frost",                    OPT_FLT_Q,  &( initial_spell_power[ SCHOOL_FROST  ]           ) },
-      { "spell_power_holy",                     OPT_FLT_Q,  &( initial_spell_power[ SCHOOL_HOLY   ]           ) },
-      { "spell_power_nature",                   OPT_FLT_Q,  &( initial_spell_power[ SCHOOL_NATURE ]           ) },
-      { "spell_power_per_intellect",            OPT_FLT_Q,  &( spell_power_per_intellect                      ) },
-      { "spell_power_per_spirit",               OPT_FLT_Q,  &( spell_power_per_spirit                         ) },
-      { "spell_power_shadow",                   OPT_FLT_Q,  &( initial_spell_power[ SCHOOL_SHADOW ]           ) },
-      { "spirit",                               OPT_FLT_Q,  &( attribute_initial[ ATTR_SPIRIT    ]            ) },
-      { "spirit_multiplier",                    OPT_FLT_Q,  &( attribute_multiplier_initial[ ATTR_SPIRIT    ] ) },
-      { "stamina",                              OPT_FLT_Q,  &( attribute_initial[ ATTR_STAMINA   ]            ) },
-      { "stamina_multiplier",                   OPT_FLT_Q,  &( attribute_multiplier_initial[ ATTR_STAMINA   ] ) },
-      { "strength",                             OPT_FLT_Q,  &( attribute_initial[ ATTR_STRENGTH  ]            ) },
-      { "strength_multiplier",                  OPT_FLT_Q,  &( attribute_multiplier_initial[ ATTR_STRENGTH  ] ) },
-      { "clicky_1",                             OPT_STRING, &( clicky_1                                       ) },
-      { "clicky_2",                             OPT_STRING, &( clicky_2                                       ) },
-      { "clicky_3",                             OPT_STRING, &( clicky_3                                       ) },
+      { "elixirs",                              OPT_STRING, &( elixirs_str                                    ) },
+      { "flask",                                OPT_STRING, &( flask_str                                      ) },
+      { "food",                                 OPT_STRING, &( food_str                                       ) },
       { NULL, OPT_UNKNOWN }
     };
 
-    option_t::copy( option_vector, options );
-
-    unique_gear_t::get_options( option_vector, this );
-    enchant_t    ::get_options( option_vector, this );
-    
+    option_t::copy( options, player_options );
   }
-  return option_vector;
-}
 
-// player_t::parse_option ===================================================
-
-bool player_t::parse_option( const std::string& name,
-                             const std::string& value )
-{
-  return option_t::parse( sim, get_options(), name, value );
+  return options;
 }
 
 // player_t::create =========================================================
@@ -3129,52 +3174,48 @@ player_t* player_t::create( sim_t*             sim,
 {
   if ( type == "death_knight" )
   {
-    sim -> active_player = player_t::create_death_knight( sim, name );
+    return player_t::create_death_knight( sim, name );
   }
   else if ( type == "druid" )
   {
-    sim -> active_player = player_t::create_druid( sim, name );
+    return player_t::create_druid( sim, name );
   }
   else if ( type == "hunter" )
   {
-    sim -> active_player = player_t::create_hunter( sim, name );
+    return player_t::create_hunter( sim, name );
   }
   else if ( type == "mage" )
   {
-    sim -> active_player = player_t::create_mage( sim, name );
+    return player_t::create_mage( sim, name );
   }
   else if ( type == "priest" )
   {
-    sim -> active_player = player_t::create_priest( sim, name );
+    return player_t::create_priest( sim, name );
   }
   else if ( type == "paladin" )
   {
-    sim -> active_player = player_t::create_paladin( sim, name );
+    return player_t::create_paladin( sim, name );
   }
   else if ( type == "rogue" )
   {
-    sim -> active_player = player_t::create_rogue( sim, name );
+    return player_t::create_rogue( sim, name );
   }
   else if ( type == "shaman" )
   {
-    sim -> active_player = player_t::create_shaman( sim, name );
+    return player_t::create_shaman( sim, name );
   }
   else if ( type == "warlock" )
   {
-    sim -> active_player = player_t::create_warlock( sim, name );
+    return player_t::create_warlock( sim, name );
   }
   else if ( type == "warrior" )
   {
-    sim -> active_player = player_t::create_warrior( sim, name );
+    return player_t::create_warrior( sim, name );
   }
   else if ( type == "pet" )
   {
-    sim -> active_player = sim -> active_player -> create_pet( name );
+    return sim -> active_player -> create_pet( name );
   }
-  else return 0;
-
-  assert( sim -> active_player );
-
-  return sim -> active_player;
+  return 0;
 }
 

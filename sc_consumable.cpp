@@ -194,10 +194,8 @@ struct food_t : public action_t
 
 struct destruction_potion_t : public action_t
 {
-  int used;
-
   destruction_potion_t( player_t* p, const std::string& options_str ) :
-      action_t( ACTION_USE, "destruction_potion", p ), used( 0 )
+      action_t( ACTION_USE, "destruction_potion", p )
   {
     option_t options[] =
       {
@@ -205,8 +203,6 @@ struct destruction_potion_t : public action_t
       };
     parse_options( options, options_str );
 
-    cooldown = 60.0;
-    cooldown_group = "potion";
     trigger_gcd = 0;
     harmful = false;
   }
@@ -233,23 +229,16 @@ struct destruction_potion_t : public action_t
     };
 
     if ( sim -> log ) log_t::output( sim, "%s uses %s", player -> name(), name() );
-    player -> share_cooldown( cooldown_group, cooldown );
     new ( sim ) expiration_t( sim, player );
-    used = sim -> potion_sickness;
+    player -> potion_used = 1;
   }
 
   virtual bool ready()
   {
-    if ( used )
+    if ( player -> potion_used )
       return false;
 
-    return( cooldown_ready <= sim -> current_time );
-  }
-
-  virtual void reset()
-  {
-    action_t::reset();
-    used = 0;
+    return action_t::ready();
   }
 };
 
@@ -259,10 +248,8 @@ struct destruction_potion_t : public action_t
 
 struct speed_potion_t : public action_t
 {
-  int used;
-
   speed_potion_t( player_t* p, const std::string& options_str ) :
-      action_t( ACTION_USE, "speed_potion", p ), used( 0 )
+      action_t( ACTION_USE, "speed_potion", p )
   {
     option_t options[] =
       {
@@ -270,8 +257,6 @@ struct speed_potion_t : public action_t
       };
     parse_options( options, options_str );
 
-    cooldown = 120.0;
-    cooldown_group = "potion";
     trigger_gcd = 0;
     harmful = false;
   }
@@ -298,27 +283,16 @@ struct speed_potion_t : public action_t
     };
 
     if ( sim -> log ) log_t::output( sim, "%s uses %s", player -> name(), name() );
-    player -> share_cooldown( cooldown_group, cooldown );
     new ( sim ) expiration_t( sim, player );
-    used = sim -> potion_sickness;
+    player -> potion_used = 1;
   }
 
   virtual bool ready()
   {
-    if ( used )
+    if ( player -> potion_used )
       return false;
 
-    if ( max_health_percentage > 0 )
-      if ( sim -> target -> health_percentage() > max_health_percentage )
-        return false;
-
-    return( cooldown_ready <= sim -> current_time );
-  }
-
-  virtual void reset()
-  {
-    action_t::reset();
-    used = 0;
+    return action_t::ready();
   }
 };
 
@@ -328,10 +302,8 @@ struct speed_potion_t : public action_t
 
 struct wild_magic_potion_t : public action_t
 {
-  int used;
-
   wild_magic_potion_t( player_t* p, const std::string& options_str ) :
-      action_t( ACTION_USE, "wild_magic_potion", p ), used( 0 )
+      action_t( ACTION_USE, "wild_magic_potion", p )
   {
     option_t options[] =
       {
@@ -339,8 +311,6 @@ struct wild_magic_potion_t : public action_t
       };
     parse_options( options, options_str );
 
-    cooldown = 60.0;
-    cooldown_group = "potion";
     trigger_gcd = 0;
     harmful = false;
   }
@@ -369,27 +339,16 @@ struct wild_magic_potion_t : public action_t
     };
 
     if ( sim -> log ) log_t::output( sim, "%s uses %s", player -> name(), name() );
-    player -> share_cooldown( cooldown_group, cooldown );
     new ( sim ) expiration_t( sim, player );
-    used = sim -> potion_sickness;
+    player -> potion_used = 1;
   }
 
   virtual bool ready()
   {
-    if ( used )
+    if ( player -> potion_used )
       return false;
 
-    if ( max_health_percentage > 0 )
-      if ( sim -> target -> health_percentage() > max_health_percentage )
-        return false;
-
-    return( cooldown_ready <= sim -> current_time );
-  }
-
-  virtual void reset()
-  {
-    action_t::reset();
-    used = 0;
+    return action_t::ready();
   }
 };
 
@@ -402,10 +361,9 @@ struct mana_potion_t : public action_t
   int trigger;
   int min;
   int max;
-  int used;
 
   mana_potion_t( player_t* p, const std::string& options_str ) :
-      action_t( ACTION_USE, "mana_potion", p ), trigger( 0 ), min( 0 ), max( 0 ), used( 0 )
+      action_t( ACTION_USE, "mana_potion", p ), trigger( 0 ), min( 0 ), max( 0 )
   {
     option_t options[] =
       {
@@ -427,8 +385,6 @@ struct mana_potion_t : public action_t
     if ( trigger == 0 ) trigger = max;
     assert( max > 0 && trigger > 0 );
 
-    cooldown = 120.0;
-    cooldown_group = "potion";
     trigger_gcd = 0;
     harmful = false;
   }
@@ -438,26 +394,19 @@ struct mana_potion_t : public action_t
     if ( sim -> log ) log_t::output( sim, "%s uses Mana potion", player -> name() );
     double gain = sim -> rng -> range( min, max );
     player -> resource_gain( RESOURCE_MANA, gain, player -> gains.mana_potion );
-    player -> share_cooldown( cooldown_group, cooldown );
-    used = sim -> potion_sickness;
+    player -> potion_used = 1;
   }
 
   virtual bool ready()
   {
-    if ( used )
+    if ( player -> potion_used )
       return false;
 
-    if ( cooldown_ready > sim -> current_time )
+    if( ( player -> resource_max    [ RESOURCE_MANA ] -
+	  player -> resource_current[ RESOURCE_MANA ] ) < trigger )
       return false;
 
-    return( player -> resource_max    [ RESOURCE_MANA ] -
-            player -> resource_current[ RESOURCE_MANA ] ) > trigger;
-  }
-
-  virtual void reset()
-  {
-    action_t::reset();
-    used = 0;
+    return action_t::ready();
   }
 };
 
@@ -469,10 +418,9 @@ struct health_stone_t : public action_t
 {
   int trigger;
   int health;
-  int used;
 
   health_stone_t( player_t* p, const std::string& options_str ) :
-      action_t( ACTION_USE, "health_stone", p ), trigger( 0 ), health( 0 ), used( 0 )
+      action_t( ACTION_USE, "health_stone", p ), trigger( 0 ), health( 0 )
   {
     option_t options[] =
       {
@@ -486,7 +434,7 @@ struct health_stone_t : public action_t
     if ( trigger == 0 ) trigger = health;
     assert( health > 0 && trigger > 0 );
 
-    cooldown = 120.0;
+    cooldown = 15 * 60;
     cooldown_group = "rune";
     trigger_gcd = 0;
     harmful = false;
@@ -496,26 +444,15 @@ struct health_stone_t : public action_t
   {
     if ( sim -> log ) log_t::output( sim, "%s uses Health Stone", player -> name() );
     player -> resource_gain( RESOURCE_HEALTH, health );
-    player -> share_cooldown( cooldown_group, cooldown );
-    used = sim -> potion_sickness;
   }
 
   virtual bool ready()
   {
-    if ( used )
+    if( ( player -> resource_max    [ RESOURCE_HEALTH ] -
+	  player -> resource_current[ RESOURCE_HEALTH ] ) < trigger )
       return false;
 
-    if ( cooldown_ready > sim -> current_time )
-      return false;
-
-    return( player -> resource_max    [ RESOURCE_HEALTH ] -
-            player -> resource_current[ RESOURCE_HEALTH ] ) > trigger;
-  }
-
-  virtual void reset()
-  {
-    action_t::reset();
-    used = 0;
+    return action_t::ready();
   }
 };
 
@@ -528,10 +465,9 @@ struct dark_rune_t : public action_t
   int trigger;
   int health;
   int mana;
-  int used;
 
   dark_rune_t( player_t* p, const std::string& options_str ) :
-      action_t( ACTION_USE, "dark_rune", p ), trigger( 0 ), health( 0 ), mana( 0 ), used( 0 )
+      action_t( ACTION_USE, "dark_rune", p ), trigger( 0 ), health( 0 ), mana( 0 )
   {
     option_t options[] =
       {
@@ -546,7 +482,7 @@ struct dark_rune_t : public action_t
     if ( trigger == 0 ) trigger = mana;
     assert( mana > 0 && trigger > 0 );
 
-    cooldown = 120.0;
+    cooldown = 15 * 60;
     cooldown_group = "rune";
     trigger_gcd = 0;
     harmful = false;
@@ -557,29 +493,18 @@ struct dark_rune_t : public action_t
     if ( sim -> log ) log_t::output( sim, "%s uses Dark Rune", player -> name() );
     player -> resource_gain( RESOURCE_MANA,   mana, player -> gains.dark_rune );
     player -> resource_loss( RESOURCE_HEALTH, health );
-    player -> share_cooldown( cooldown_group, cooldown );
-    used = sim -> potion_sickness;
   }
 
   virtual bool ready()
   {
-    if ( used )
+    if( player -> resource_current[ RESOURCE_HEALTH ] <= health )
       return false;
 
-    if ( cooldown_ready > sim -> current_time )
+    if( ( player -> resource_max    [ RESOURCE_MANA ] -
+	  player -> resource_current[ RESOURCE_MANA ] ) < trigger )
       return false;
 
-    if ( player -> resource_current[ RESOURCE_HEALTH ] <= health )
-      return false;
-
-    return( player -> resource_max    [ RESOURCE_MANA ] -
-            player -> resource_current[ RESOURCE_MANA ] ) > trigger;
-  }
-
-  virtual void reset()
-  {
-    action_t::reset();
-    used = 0;
+    return action_t::ready();
   }
 };
 

@@ -8,6 +8,4 @@ actions+=/haunt,debuff=1/corruption/curse_of_agony/unstable_affliction/haunt
 actions+=/drain_soul,health_percentage<=25,interrupt=1/shadow_bolt
 Warlock_Filler.simcraft
 Warlock_T8_Gear.simcraft
-glyph_haunt=1
-glyph_curse_of_agony=1
-glyph_life_tap=1
+glyphs=haunt/curse_of_agony/life_tap

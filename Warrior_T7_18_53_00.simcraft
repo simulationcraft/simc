@@ -42,16 +42,13 @@ gear_haste_rating=228
 tier7_2pc=1
 
 # Meta Gem
-chaotic_skyflare=1
+meta_gem=chaotic_skyflare
 
 # Weapons
-main_hand=axe_2h,dps=222.9,speed=3.4,enchant=berserking
-off_hand=axe_2h,dps=222.9,speed=3.4,enchant=berserking
+main_hand=betrayer_of_humanity,weapon=axe2h_223dps_3.4speed,enchant=berserking
+off_hand=betrayer_of_humanity,weapon=axe2h_223dps_3.4speed,enchant=berserking
 
 # Item Procs
-darkmoon_greatness=1
-grim_toll=1
+items=darkmoon_card_greatness/grim_toll
 
-glyph_of_heroic_strike=1
-glyph_of_whirlwind=1
-glyph_of_execution=1
+glyphs=heroic_strike/whirlwind/execution

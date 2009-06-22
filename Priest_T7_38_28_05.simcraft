@@ -9,6 +9,4 @@ Priest_T7_Best_Shadow_Gear.simcraft
 enchant_crit_rating=+100
 enchant_hit_rating=+75
 enchant_haste_rating=-175
-glyph_shadow_word_death=1
-glyph_shadow_word_pain=1
-glyph_shadow=1
+glyphs=shadow_word_death/shadow_word_pain/shadow

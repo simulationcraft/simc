@@ -4,25 +4,26 @@
 # It also includes 76 spellpower from "profession bonuses"
 
 # Standard Gear Attributes
-gear_stamina=947
-gear_strength=0
-gear_agility=0
-gear_intellect=863
-gear_spirit=297
+gear_strength=10
+gear_agility=10
+gear_stamina=957
+gear_intellect=881
+gear_spirit=347
 gear_attack_power=0
 gear_expertise_rating=0
 gear_armor_penetration_rating=0
-gear_spell_power=1828
-gear_hit_rating=275
-gear_crit_rating=690
-gear_haste_rating=361
+gear_spell_power=2476
+gear_hit_rating=291
+gear_crit_rating=774
+gear_haste_rating=384
 gear_mp5=0
 
-illustration_of_the_dragon_soul=1
-flare_of_the_heavens=1
+items=illustration_of_the_dragon_soul/flare_of_the_heavens
 
 tier8_2pc=1
 tier8_4pc=1
+
+meta_gem=chaotic_skyflare
 
 # Gems and Socket Bonuses
 # Total Sockets: 5 Red | 5 Blue | 8 Yellow | 1 Prysmatic (belt) | 1 meta
@@ -33,12 +34,6 @@ tier8_4pc=1
 # Spirit     = 16 ( 2 * Purified Twilight Opals ) + 4 (wrists) == 20
 # Hit	     = 4 ( gloves) == 4
 #	       
-chaotic_skyflare=1
-gem_spell_power=347
-gem_crit_rating=37
-gem_intellect=8
-gem_spirit=20
-gem_hit_rating=4
 
 # Enchants
 # Spellpower = 30 (Head) + 24 (shoulders) + 30 (Wrists) + 28 (Hands) + 50 (Legs) +
@@ -51,15 +46,6 @@ gem_hit_rating=4
 # Agility    = 10 (Chest) == 10
 # Strength   = 10 (Chest) == 10
 # Haste	     = 23 (Back)  == 23
-enchant_stamina=10
-enchant_strength=10
-enchant_agility=10
-enchant_intellect=10
-enchant_spirit=30
-enchant_spell_power=301
-enchant_hit_rating=12 
-enchant_crit_rating=47
-enchant_haste_rating=23
 
 # Gear used:
 # http://www.wowhead.com/?compare=46172:46163:46165:46168:45933:45242:45446:45537:45495:46046:45518:40432:45620:45511:45488

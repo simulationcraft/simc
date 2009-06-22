@@ -72,54 +72,7 @@ static bool parse_optimal_raid( sim_t*             sim,
 {
   if ( name != "optimal_raid" ) return false;
 
-  sim -> optimal_raid = atoi( value.c_str() );
-
-  sim -> overrides.abominations_might     = sim -> optimal_raid;
-  sim -> overrides.arcane_brilliance      = sim -> optimal_raid;
-  sim -> overrides.battle_shout           = sim -> optimal_raid;
-  sim -> overrides.bleeding               = sim -> optimal_raid;
-  sim -> overrides.blessing_of_kings      = sim -> optimal_raid;
-  sim -> overrides.blessing_of_might      = sim -> optimal_raid;
-  sim -> overrides.blessing_of_wisdom     = sim -> optimal_raid;
-  sim -> overrides.blood_frenzy           = sim -> optimal_raid;
-  sim -> overrides.bloodlust              = sim -> optimal_raid;
-  sim -> overrides.crypt_fever            = sim -> optimal_raid;
-  sim -> overrides.curse_of_elements      = sim -> optimal_raid;
-  sim -> overrides.divine_spirit          = sim -> optimal_raid;
-  sim -> overrides.earth_and_moon         = sim -> optimal_raid;
-  sim -> overrides.faerie_fire            = sim -> optimal_raid;
-  sim -> overrides.ferocious_inspiration  = sim -> optimal_raid;
-  sim -> overrides.fortitude              = sim -> optimal_raid;
-  sim -> overrides.hunters_mark           = sim -> optimal_raid;
-  sim -> overrides.improved_moonkin_aura  = sim -> optimal_raid;
-  sim -> overrides.improved_scorch        = sim -> optimal_raid;
-  sim -> overrides.improved_shadow_bolt   = sim -> optimal_raid;
-  sim -> overrides.judgement_of_wisdom    = sim -> optimal_raid;
-  sim -> overrides.leader_of_the_pack     = sim -> optimal_raid;
-  sim -> overrides.mana_spring            = sim -> optimal_raid;
-  sim -> overrides.mangle                 = sim -> optimal_raid;
-  sim -> overrides.mark_of_the_wild       = sim -> optimal_raid;
-  sim -> overrides.master_poisoner        = sim -> optimal_raid;
-  sim -> overrides.misery                 = sim -> optimal_raid;
-  sim -> overrides.moonkin_aura           = sim -> optimal_raid;
-  sim -> overrides.poisoned               = sim -> optimal_raid;
-  sim -> overrides.rampage                = sim -> optimal_raid;
-  sim -> overrides.replenishment          = sim -> optimal_raid;
-  sim -> overrides.sanctified_retribution = sim -> optimal_raid;
-  sim -> overrides.savage_combat          = sim -> optimal_raid;
-  sim -> overrides.snare                  = sim -> optimal_raid;
-  sim -> overrides.strength_of_earth      = sim -> optimal_raid;
-  sim -> overrides.sunder_armor           = sim -> optimal_raid;
-  sim -> overrides.swift_retribution      = sim -> optimal_raid;
-  sim -> overrides.trauma                 = sim -> optimal_raid;
-  sim -> overrides.thunder_clap           = sim -> optimal_raid;
-  sim -> overrides.totem_of_wrath         = sim -> optimal_raid;
-  sim -> overrides.totem_of_wrath         = sim -> optimal_raid;
-  sim -> overrides.trueshot_aura          = sim -> optimal_raid;
-  sim -> overrides.unleashed_rage         = sim -> optimal_raid;
-  sim -> overrides.windfury_totem         = sim -> optimal_raid;
-  sim -> overrides.winters_chill          = sim -> optimal_raid;
-  sim -> overrides.wrath_of_air           = sim -> optimal_raid;
+  sim -> use_optimal_buffs_and_debuffs( atoi( value.c_str() ) );
 
   return true;
 }
@@ -130,7 +83,61 @@ static bool parse_player( sim_t*             sim,
 			  const std::string& name,
 			  const std::string& value )
 {
-  return player_t::create( sim, name, value ) != 0;
+  if( name == "player" ) 
+  {
+    std::string player_name = value;
+    std::string player_options = "";
+
+    std::string::size_type cut_pt = value.find_first_of( "," );
+
+    if ( cut_pt != value.npos )
+    {
+      player_options = value.substr( cut_pt + 1 );
+      player_name    = value.substr( 0, cut_pt );
+    }
+
+    std::string region = sim -> default_region_str;
+    std::string server = sim -> default_server_str;
+    std::string talents = "active";
+
+    option_t options[] =
+    {
+      { "region",  OPT_STRING, &region  },
+      { "server",  OPT_STRING, &server  },
+      { "talents", OPT_STRING, &talents },
+      { NULL }
+    };
+
+    option_t::parse( sim, "player", options, player_options );
+
+    sim -> active_player = armory_t::download_player( sim, region, server, player_name, ( talents == "active" ) );
+  }
+  else if( name == "armory" ) 
+  {
+    std::vector<std::string> splits;
+    int num_splits = util_t::string_split( splits, value, "," );
+
+    if( num_splits < 3 )
+    {
+      printf( "simcraft: Expected format is: armory=region,server,player1,player2,...\n" );
+      assert( false );
+    }
+
+    std::string region = splits[ 0 ];
+    std::string server = splits[ 1 ];
+
+    for( int i=2; i < num_splits; i++ )
+    {
+      sim -> active_player = armory_t::download_player( sim, region, server, splits[ i ] );
+      if( ! sim -> active_player ) return false;
+    }
+  }
+  else
+  {
+    sim -> active_player = player_t::create( sim, name, value );
+  }
+
+  return sim -> active_player != 0;
 }
 
 } // ANONYMOUS NAMESPACE ===================================================
@@ -149,13 +156,13 @@ sim_t::sim_t( sim_t* p, int index ) :
     channel_lag( 0.250 ), channel_lag_range( 0 ),
     travel_variance( 0 ),
     reaction_time( 0.5 ), regen_periodicity( 1.0 ),
-    current_time( 0 ), max_time( 0 ),
+    current_time( 0 ), max_time( 300 ),
     events_remaining( 0 ), max_events_remaining( 0 ),
     events_processed( 0 ), total_events_processed( 0 ),
     seed( 0 ), id( 0 ), iterations( 1000 ), current_iteration( 0 ),
-    armor_update_interval( 20 ), potion_sickness( 1 ),
-    optimal_raid( 0 ), log( 0 ), debug( 0 ), debug_armory(0), save_profiles(0),
-    jow_chance( 0 ), jow_ppm( 15.0 ), last_armory_player(0),
+    armor_update_interval( 20 ), 
+    optimal_raid( 0 ), log( 0 ), debug( 0 ), save_profiles(0),
+    default_region_str( "us" ),
     smooth_rng( 0 ), deterministic_roll( 0 ), average_range( 1 ), average_gauss( 0 ),
     timing_wheel( 0 ), wheel_seconds( 0 ), wheel_size( 0 ), wheel_mask( 0 ), timing_slice( 0 ), wheel_granularity( 0.0 ),
     replenishment_targets( 0 ),
@@ -174,13 +181,16 @@ sim_t::sim_t( sim_t* p, int index ) :
   target  = new  target_t( this );
   scaling = new scaling_t( this );
 
+  use_optimal_buffs_and_debuffs( 1 );
+
   if ( parent )
   {
     // Import the config file
     parse_options( parent -> argc, parent -> argv );
 
-    // Inherit 'delta_gear' settings from parent because these may be set outside of the config file
-    gear_delta = parent -> gear_delta;
+    // FIXME! Inherit 'scaling' settings from parent because these may be set outside of the config file
+    scaling -> scale_stat  = parent -> scaling -> scale_stat;
+    scaling -> scale_value = parent -> scaling -> scale_value;
   }
 }
 
@@ -451,6 +461,13 @@ bool sim_t::init()
 
   deterministic_rng = rng_t::create( this, "global_deterministic", RNG_MERSENNE_TWISTER );
   deterministic_rng -> seed( 31459 + thread_index );
+
+  if( scaling -> smooth_scale_factors )
+  {
+    smooth_rng = 1;
+    average_range = 1;
+    deterministic_roll = 1;
+  }
 
   P312 = patch.after ( 3, 1, 2 );
   P313 = patch.after ( 3, 1, 3 );
@@ -920,6 +937,60 @@ player_t* sim_t::find_player( const std::string& name )
   return 0;
 }
 
+// sim_t::use_optimal_buffs_and_debuffs =====================================
+
+void sim_t::use_optimal_buffs_and_debuffs( int value )
+{
+  optimal_raid = value;
+
+  overrides.abominations_might     = optimal_raid;
+  overrides.arcane_brilliance      = optimal_raid;
+  overrides.battle_shout           = optimal_raid;
+  overrides.bleeding               = optimal_raid;
+  overrides.blessing_of_kings      = optimal_raid;
+  overrides.blessing_of_might      = optimal_raid;
+  overrides.blessing_of_wisdom     = optimal_raid;
+  overrides.blood_frenzy           = optimal_raid;
+  overrides.bloodlust              = optimal_raid;
+  overrides.crypt_fever            = optimal_raid;
+  overrides.curse_of_elements      = optimal_raid;
+  overrides.divine_spirit          = optimal_raid;
+  overrides.earth_and_moon         = optimal_raid;
+  overrides.faerie_fire            = optimal_raid;
+  overrides.ferocious_inspiration  = optimal_raid;
+  overrides.fortitude              = optimal_raid;
+  overrides.hunters_mark           = optimal_raid;
+  overrides.improved_moonkin_aura  = optimal_raid;
+  overrides.improved_scorch        = optimal_raid;
+  overrides.improved_shadow_bolt   = optimal_raid;
+  overrides.judgement_of_wisdom    = optimal_raid;
+  overrides.leader_of_the_pack     = optimal_raid;
+  overrides.mana_spring            = optimal_raid;
+  overrides.mangle                 = optimal_raid;
+  overrides.mark_of_the_wild       = optimal_raid;
+  overrides.master_poisoner        = optimal_raid;
+  overrides.misery                 = optimal_raid;
+  overrides.moonkin_aura           = optimal_raid;
+  overrides.poisoned               = optimal_raid;
+  overrides.rampage                = optimal_raid;
+  overrides.replenishment          = optimal_raid;
+  overrides.sanctified_retribution = optimal_raid;
+  overrides.savage_combat          = optimal_raid;
+  overrides.snare                  = optimal_raid;
+  overrides.strength_of_earth      = optimal_raid;
+  overrides.sunder_armor           = optimal_raid;
+  overrides.swift_retribution      = optimal_raid;
+  overrides.trauma                 = optimal_raid;
+  overrides.thunder_clap           = optimal_raid;
+  overrides.totem_of_wrath         = optimal_raid;
+  overrides.totem_of_wrath         = optimal_raid;
+  overrides.trueshot_aura          = optimal_raid;
+  overrides.unleashed_rage         = optimal_raid;
+  overrides.windfury_totem         = optimal_raid;
+  overrides.winters_chill          = optimal_raid;
+  overrides.wrath_of_air           = optimal_raid;
+}
+
 // sim_t::roll ==============================================================
 
 int sim_t::roll( double chance )
@@ -972,13 +1043,15 @@ void sim_t::print_options()
 
 std::vector<option_t>& sim_t::get_options()
 {
-  if( option_vector.empty() )
+  if( options.empty() )
   {
-    option_t options[] =
+    option_t global_options[] =
     {
       // @option_doc loc=global/general title="General"
       { "iterations",                       OPT_INT,    &( iterations                               ) },
       { "max_time",                         OPT_FLT,    &( max_time                                 ) },
+      { "optimal_raid",                     OPT_FUNC,   (void*) ::parse_optimal_raid                  },
+      { "patch",                            OPT_FUNC,   (void*) ::parse_patch                         },
       { "threads",                          OPT_INT,    &( threads                                  ) },
       // @option_doc loc=global/lag title="Lag"
       { "channel_lag",                      OPT_FLT,    &( channel_lag                              ) },
@@ -1062,96 +1135,44 @@ std::vector<option_t>& sim_t::get_options()
       // @option_doc loc=global/party title="Party Composition"
       { "party",                            OPT_LIST,   &( party_encoding                           ) },
       // @option_doc loc=skip
-      { "default_strength",                 OPT_FLT,    &( gear_default.attribute[ ATTR_STRENGTH  ] ) },
-      { "default_agility",                  OPT_FLT,    &( gear_default.attribute[ ATTR_AGILITY   ] ) },
-      { "default_stamina",                  OPT_FLT,    &( gear_default.attribute[ ATTR_STAMINA   ] ) },
-      { "default_intellect",                OPT_FLT,    &( gear_default.attribute[ ATTR_INTELLECT ] ) },
-      { "default_spirit",                   OPT_FLT,    &( gear_default.attribute[ ATTR_SPIRIT    ] ) },
-      { "default_health",                   OPT_FLT,    &( gear_default.resource[ RESOURCE_HEALTH ] ) },
-      { "default_mana",                     OPT_FLT,    &( gear_default.resource[ RESOURCE_MANA   ] ) },
-      { "default_rage",                     OPT_FLT,    &( gear_default.resource[ RESOURCE_RAGE   ] ) },
-      { "default_energy",                   OPT_FLT,    &( gear_default.resource[ RESOURCE_ENERGY ] ) },
-      { "default_focus",                    OPT_FLT,    &( gear_default.resource[ RESOURCE_FOCUS  ] ) },
-      { "default_runic",                    OPT_FLT,    &( gear_default.resource[ RESOURCE_RUNIC  ] ) },
-      { "default_spell_power",              OPT_FLT,    &( gear_default.spell_power                 ) },
-      { "default_attack_power",             OPT_FLT,    &( gear_default.attack_power                ) },
-      { "default_expertise_rating",         OPT_FLT,    &( gear_default.expertise_rating            ) },
-      { "default_armor_penetration_rating", OPT_FLT,    &( gear_default.armor_penetration_rating    ) },
-      { "default_hit_rating",               OPT_FLT,    &( gear_default.hit_rating                  ) },
-      { "default_crit_rating",              OPT_FLT,    &( gear_default.crit_rating                 ) },
-      { "default_haste_rating",             OPT_FLT,    &( gear_default.haste_rating                ) },
-      { "default_weapon_dps",               OPT_FLT,    &( gear_default.weapon_dps                  ) },
-      { "default_weapon_speed",             OPT_FLT,    &( gear_default.weapon_speed                ) },
-      { "default_armor",                    OPT_FLT,    &( gear_default.armor                       ) },
-      // @option_doc loc=skip
-      { "delta_strength",                   OPT_FLT,    &( gear_delta.attribute[ ATTR_STRENGTH  ]   ) },
-      { "delta_agility",                    OPT_FLT,    &( gear_delta.attribute[ ATTR_AGILITY   ]   ) },
-      { "delta_stamina",                    OPT_FLT,    &( gear_delta.attribute[ ATTR_STAMINA   ]   ) },
-      { "delta_intellect",                  OPT_FLT,    &( gear_delta.attribute[ ATTR_INTELLECT ]   ) },
-      { "delta_spirit",                     OPT_FLT,    &( gear_delta.attribute[ ATTR_SPIRIT    ]   ) },
-      { "delta_health",                     OPT_FLT,    &( gear_delta.resource[ RESOURCE_HEALTH ]   ) },
-      { "delta_mana",                       OPT_FLT,    &( gear_delta.resource[ RESOURCE_MANA   ]   ) },
-      { "delta_rage",                       OPT_FLT,    &( gear_delta.resource[ RESOURCE_RAGE   ]   ) },
-      { "delta_energy",                     OPT_FLT,    &( gear_delta.resource[ RESOURCE_ENERGY ]   ) },
-      { "delta_focus",                      OPT_FLT,    &( gear_delta.resource[ RESOURCE_FOCUS  ]   ) },
-      { "delta_runic",                      OPT_FLT,    &( gear_delta.resource[ RESOURCE_RUNIC  ]   ) },
-      { "delta_spell_power",                OPT_FLT,    &( gear_delta.spell_power                   ) },
-      { "delta_attack_power",               OPT_FLT,    &( gear_delta.attack_power                  ) },
-      { "delta_expertise_rating",           OPT_FLT,    &( gear_delta.expertise_rating              ) },
-      { "delta_armor_penetration_rating",   OPT_FLT,    &( gear_delta.armor_penetration_rating      ) },
-      { "delta_hit_rating",                 OPT_FLT,    &( gear_delta.hit_rating                    ) },
-      { "delta_crit_rating",                OPT_FLT,    &( gear_delta.crit_rating                   ) },
-      { "delta_haste_rating",               OPT_FLT,    &( gear_delta.haste_rating                  ) },
-      { "delta_weapon_dps",                 OPT_FLT,    &( gear_delta.weapon_dps                    ) },
-      { "delta_weapon_speed",               OPT_FLT,    &( gear_delta.weapon_speed                  ) },
-      { "delta_armor",                      OPT_FLT,    &( gear_delta.armor                         ) },
-      // @option_doc loc=skip
+      { "active",                           OPT_FUNC,   (void*) ::parse_active                        },
       { "armor_update_internval",           OPT_INT,    &( armor_update_interval                    ) },
-      { "jow_chance",                       OPT_FLT,    &( jow_chance                               ) },
-      { "jow_ppm",                          OPT_FLT,    &( jow_ppm                                  ) },
       { "merge_ignite",                     OPT_BOOL,   &( merge_ignite                             ) },
-      { "potion_sickness",                  OPT_BOOL,   &( potion_sickness                          ) },
       { "replenishment_targets",            OPT_INT,    &( replenishment_targets                    ) },
       { "seed",                             OPT_INT,    &( seed                                     ) },
       { "wheel_granularity",                OPT_FLT,    &( wheel_granularity                        ) },
       { "wheel_seconds",                    OPT_INT,    &( wheel_seconds                            ) },
       { "http_throttle",                    OPT_INT,    &( http_throttle                            ) },
       { "duration_uptimes",                 OPT_INT,    &( duration_uptimes                         ) },
-      { "debug_armory",                     OPT_INT,    &( debug_armory                             ) },
       { "raid_events",                      OPT_STRING, &( raid_events_str                          ) },
       { "raid_events+",                     OPT_APPEND, &( raid_events_str                          ) },
       // @option_doc loc=skip
-      { "patch",                            OPT_FUNC,   (void*) parse_patch                           },
-      { "active",                           OPT_FUNC,   (void*) parse_active                          },
-      { "optimal_raid",                     OPT_FUNC,   (void*) parse_optimal_raid                    },
-      // @option_doc loc=skip
-      { "death_knight",                     OPT_FUNC,   (void*) parse_player                          },
-      { "druid",                            OPT_FUNC,   (void*) parse_player                          },
-      { "hunter",                           OPT_FUNC,   (void*) parse_player                          },
-      { "mage",                             OPT_FUNC,   (void*) parse_player                          },
-      { "priest",                           OPT_FUNC,   (void*) parse_player                          },
-      { "paladin",                          OPT_FUNC,   (void*) parse_player                          },
-      { "rogue",                            OPT_FUNC,   (void*) parse_player                          },
-      { "shaman",                           OPT_FUNC,   (void*) parse_player                          },
-      { "warlock",                          OPT_FUNC,   (void*) parse_player                          },
-      { "warrior",                          OPT_FUNC,   (void*) parse_player                          },
-      { "pet",                              OPT_FUNC,   (void*) parse_player                          },
-      // @option_doc loc=skip
-      { "armory",                           OPT_FUNC,   (void*) armory_option_parse                   },
-      { "gear",                             OPT_FUNC,   (void*) armory_option_parse                   },
-      { "player",                           OPT_FUNC,   (void*) armory_option_parse                   },
-      { "new_item",                         OPT_FUNC,   (void*) armory_option_parse                   },
-      { "http_cache_clear",                 OPT_FUNC,   (void*) armory_option_parse                   },
+      { "death_knight",                     OPT_FUNC,   (void*) ::parse_player                        },
+      { "druid",                            OPT_FUNC,   (void*) ::parse_player                        },
+      { "hunter",                           OPT_FUNC,   (void*) ::parse_player                        },
+      { "mage",                             OPT_FUNC,   (void*) ::parse_player                        },
+      { "priest",                           OPT_FUNC,   (void*) ::parse_player                        },
+      { "paladin",                          OPT_FUNC,   (void*) ::parse_player                        },
+      { "rogue",                            OPT_FUNC,   (void*) ::parse_player                        },
+      { "shaman",                           OPT_FUNC,   (void*) ::parse_player                        },
+      { "warlock",                          OPT_FUNC,   (void*) ::parse_player                        },
+      { "warrior",                          OPT_FUNC,   (void*) ::parse_player                        },
+      { "pet",                              OPT_FUNC,   (void*) ::parse_player                        },
+      { "player",                           OPT_FUNC,   (void*) ::parse_player                        },
+      { "armory",                           OPT_FUNC,   (void*) ::parse_player                        },
+      { "armory_cache_clear",               OPT_FUNC,   (void*) ::armory_t::clear_cache               },
+      { "default_region",                   OPT_STRING, &( default_region_str                       ) },
+      { "default_server",                   OPT_STRING, &( default_server_str                       ) },
       { NULL, OPT_UNKNOWN }
     };
 
-    option_t::copy( option_vector, options );
+    option_t::copy( options, global_options );
 
-    target  -> get_options( option_vector );
-    scaling -> get_options( option_vector );
+    target  -> get_options( options );
+    scaling -> get_options( options );
   }
 
-  return option_vector;
+  return options;
 }
 
 // sim_t::parse_option ======================================================
@@ -1159,7 +1180,9 @@ std::vector<option_t>& sim_t::get_options()
 bool sim_t::parse_option( const std::string& name,
 			  const std::string& value )
 {
-  if( active_player && active_player -> parse_option( name, value ) ) return true;
+  if( active_player )
+    if( option_t::parse( this, active_player -> get_options(), name, value ) ) 
+      return true;
 
   return option_t::parse( this, get_options(), name, value );
 }
@@ -1178,12 +1201,6 @@ bool sim_t::parse_options( int    _argc,
   {
     if ( ! option_t::parse_line( this, argv[ i ] ) )
       return false;
-  }
-
-  if ( max_time <= 0 && target -> initial_health <= 0 )
-  {
-    printf( "simcraft: One of -max_time or -target_health must be specified.\n" );
-    return false;
   }
 
   if ( parent )
@@ -1228,6 +1245,8 @@ bool sim_t::parse_options( int    _argc,
 
 int sim_t::main( int argc, char** argv )
 {
+  thread_t::init();
+
   http_t::cache_load();
 
   if ( ! parse_options( argc, argv ) )
@@ -1246,6 +1265,20 @@ int sim_t::main( int argc, char** argv )
            "\nSimulationCraft for World of Warcraft build %d.%d.%d ( iterations=%d, max_time=%.0f, optimal_raid=%d, smooth_rng=%d )\n",
            arch, version, revision, iterations, max_time, optimal_raid, smooth_rng );
   fflush( output_file );
+
+  if( save_profiles )
+  {
+    fprintf( stdout, "\nGenerating profiles... \n" ); fflush( stdout );
+    init();
+    report_t::print_profiles( this );
+    exit( 0 );
+  }
+
+  if ( max_time <= 0 && target -> initial_health <= 0 )
+  {
+    printf( "simcraft: One of -max_time or -target_health must be specified.\n" );
+    exit( 0 );
+  }
 
   fprintf( stdout, "\nGenerating baseline... \n" ); fflush( stdout );
 

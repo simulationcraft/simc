@@ -6,6 +6,4 @@ talents=http://talent.mmo-champion.com/?warlock=00000000000000000000000000000322
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/fire_stone/fel_armor/summon_pet,imp
 actions+=/curse_of_doom,time_to_die>=90/immolate/conflagrate/chaos_bolt/incinerate/life_tap
 Warlock_T7_Hit_Gear.simcraft
-glyph_conflagrate=1
-glyph_incinerate=1
-glyph_immolate=1
+glyphs=conflagrate/incinerate/immolate

@@ -6,7 +6,7 @@ talents=http://www.wowhead.com/?talent#of0Vcu0IzxGuMtedcZbGc0o
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/arcane_brilliance/focus_magic
 actions+=/counterspell
 actions+=/mirror_image/arcane_power/icy_veins
-actions+=/haste_trinket,name=scale_of_fates,rating=432,length=20,cooldown=120
+actions+=/use_item,name=scale_of_fates
 actions+=/presence_of_mind,arcane_blast
 actions+=/mana_gem
 actions+=/evocation
@@ -21,41 +21,19 @@ actions+=/mana_potion
 
 # Gear
 # http://www.wowhead.com/?compare=46134:46132:45446:44005:45272:45135:40399:45168:45150:45271:45488:45527:45466:45518:40561:45511:45243
-gear_stamina=966
-gear_intellect=889
-gear_spirit=285
-gear_spell_power=1917
-gear_hit_rating=181
-gear_crit_rating=427
-gear_haste_rating=677
-tier8_2pc=1
-flare_of_the_heavens=1
-
-# Gems and Socket Bonuses
 # http://www.wowhead.com/?compare=39998:39998:39998:39998:39998:40014:40048:40048:40048:40026:40026:40026:40026:41285
-chaotic_skyflare=1
-gem_spirit=49
-gem_intellect=4 
-gem_spell_power=186
-gem_hit_rating=20
-gem_crit_rating=45
-gem_haste_rating=20
-
-# Enchants (including 75 spell_power profession bonus)
-enchant_strength=10
-enchant_agility=10
-enchant_stamina=10
-enchant_intellect=10
-enchant_spirit=30
-enchant_spell_power=300
-enchant_hit_rating=12
-enchant_crit_rating=47
-enchant_haste_rating=23 
+gear_strength=10
+gear_agility=10
+gear_stamina=976
+gear_intellect=903
+gear_spirit=364
+gear_spell_power=2403
+gear_hit_rating=213
+gear_crit_rating=519
+gear_haste_rating=720
+tier8_2pc=1
+items=flare_of_the_heavens/scale_of_fates
+meta_gem=chaotic_skyflare
 
 # Glyphs
-glyph_arcane_missiles=1
-glyph_arcane_blast=1
-glyph_molten_armor=1
-
-# Armor Type
-armor_type=molten
+glyphs=arcane_missiles/arcane_blast/molten_armor

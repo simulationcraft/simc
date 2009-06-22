@@ -26,19 +26,16 @@ tier8_2pc=1
 tier8_4pc=1
 
 # Meta Gem
-relentless_earthstorm=1
+meta_gem=relentless_earthstorm
 
 # Procs
-darkmoon_greatness=1
-mjolnir_runestone=1
+items=darkmoon_card_greatness/mjolnir_runestone
 
 # Glyphs
-glyph_kill_shot=1
-glyph_serpent_sting=1
-glyph_explosive_shot=1
+glyphs=kill_shot/serpent_sting/explosive_shot
 
 # Weapons
-ranged=bow,dps=200.4,speed=2.8
+ranged=siresn_cry,weapon=bow_187dps_2.8speed
 ammo_dps=67.5
 
 # Pet (cat|devilsaur|raptor|wind_serpent|wolf)

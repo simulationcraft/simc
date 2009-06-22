@@ -308,68 +308,45 @@ struct executioner_callback_t : public action_callback_t
 // Enchant
 // ==========================================================================
 
-// enchant_t::get_options ===================================================
-
-int enchant_t::get_options( std::vector<option_t>& option_vector, player_t* p )
-{
-  option_t options[] =
-    {
-      // @option_doc loc=player/all/enchant/stats title="Stat Enchants"
-      { "enchant_strength",          OPT_FLT,  &( p -> enchant -> stats.attribute[ ATTR_STRENGTH  ] ) },
-      { "enchant_agility",           OPT_FLT,  &( p -> enchant -> stats.attribute[ ATTR_AGILITY   ] ) },
-      { "enchant_stamina",           OPT_FLT,  &( p -> enchant -> stats.attribute[ ATTR_STAMINA   ] ) },
-      { "enchant_intellect",         OPT_FLT,  &( p -> enchant -> stats.attribute[ ATTR_INTELLECT ] ) },
-      { "enchant_spirit",            OPT_FLT,  &( p -> enchant -> stats.attribute[ ATTR_SPIRIT    ] ) },
-      { "enchant_spell_power",       OPT_FLT,  &( p -> enchant -> stats.spell_power                 ) },
-      { "enchant_mp5",               OPT_FLT,  &( p -> enchant -> stats.mp5                         ) },
-      { "enchant_attack_power",      OPT_FLT,  &( p -> enchant -> stats.attack_power                ) },
-      { "enchant_expertise_rating",  OPT_FLT,  &( p -> enchant -> stats.expertise_rating            ) },
-      { "enchant_armor_penetration", OPT_FLT,  &( p -> enchant -> stats.armor_penetration_rating    ) },
-      { "enchant_armor",             OPT_FLT,  &( p -> enchant -> stats.armor                       ) },
-      { "enchant_haste_rating",      OPT_FLT,  &( p -> enchant -> stats.haste_rating                ) },
-      { "enchant_hit_rating",        OPT_FLT,  &( p -> enchant -> stats.hit_rating                  ) },
-      { "enchant_crit_rating",       OPT_FLT,  &( p -> enchant -> stats.crit_rating                 ) },
-      { "enchant_health",            OPT_FLT,  &( p -> enchant -> stats.resource[ RESOURCE_HEALTH ] ) },
-      { "enchant_mana",              OPT_FLT,  &( p -> enchant -> stats.resource[ RESOURCE_MANA   ] ) },
-      { "enchant_rage",              OPT_FLT,  &( p -> enchant -> stats.resource[ RESOURCE_RAGE   ] ) },
-      { "enchant_energy",            OPT_FLT,  &( p -> enchant -> stats.resource[ RESOURCE_ENERGY ] ) },
-      { "enchant_focus",             OPT_FLT,  &( p -> enchant -> stats.resource[ RESOURCE_FOCUS  ] ) },
-      { "enchant_runic",             OPT_FLT,  &( p -> enchant -> stats.resource[ RESOURCE_RUNIC  ] ) },
-      // @option_doc loc=player/all/enchant/procs title="Proc Enchants"
-      { "spellsurge",                OPT_BOOL, &( p -> enchant -> spellsurge ) },
-      { NULL, OPT_UNKNOWN }
-    };
-
-  option_t::copy( option_vector, options );
-
-  return option_vector.size();
-}
-
 // enchant_t::init ==========================================================
 
 void enchant_t::init( player_t* p )
-{}
+{
+  if( p -> is_pet() ) return;
+
+  p -> main_hand_weapon.enchant = p -> items[ SLOT_MAIN_HAND ].enchant;
+  p ->  off_hand_weapon.enchant = p -> items[ SLOT_OFF_HAND  ].enchant;
+  p ->    ranged_weapon.enchant = p -> items[ SLOT_RANGED    ].enchant;
+
+  if ( p -> ranged_weapon.enchant == ENCHANT_SCOPE )
+  {
+    p -> ranged_weapon.enchant_bonus = util_t::ability_rank( p -> level, 15.0,72,  12.0,67,  7.0,0 );
+  }
+}
 
 // enchant_t::register_callbacks ============================================
 
 void enchant_t::register_callbacks( player_t* p )
 {
-  if ( p -> main_hand_weapon.enchant == BERSERKING ||
-       p ->  off_hand_weapon.enchant == BERSERKING )
+  if( p -> is_pet() ) return;
+
+  if ( p -> main_hand_weapon.enchant == ENCHANT_BERSERKING ||
+       p ->  off_hand_weapon.enchant == ENCHANT_BERSERKING )
   {
     p -> register_attack_result_callback( RESULT_HIT_MASK, new berserking_callback_t( p ) );
   }
-  if ( p -> main_hand_weapon.enchant == EXECUTIONER ||
-       p ->  off_hand_weapon.enchant == EXECUTIONER )
+  if ( p -> main_hand_weapon.enchant == ENCHANT_EXECUTIONER ||
+       p ->  off_hand_weapon.enchant == ENCHANT_EXECUTIONER )
   {
     p -> register_attack_result_callback( RESULT_HIT_MASK, new executioner_callback_t( p ) );
   }
-  if ( p -> main_hand_weapon.enchant == MONGOOSE ||
-       p ->  off_hand_weapon.enchant == MONGOOSE )
+  if ( p -> main_hand_weapon.enchant == ENCHANT_MONGOOSE ||
+       p ->  off_hand_weapon.enchant == ENCHANT_MONGOOSE )
   {
     p -> register_attack_result_callback( RESULT_HIT_MASK, new mongoose_callback_t( p ) );
   }
-  if ( p -> enchant -> spellsurge )
+  if ( p -> main_hand_weapon.enchant == ENCHANT_SPELLSURGE ||
+       p ->  off_hand_weapon.enchant == ENCHANT_SPELLSURGE )
   {
     p -> register_spell_result_callback( RESULT_ALL_MASK, new spellsurge_callback_t( p ) );
   }

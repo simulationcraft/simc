@@ -6,11 +6,11 @@ talents=http://www.wowhead.com/?talent#0ZEGMcfrz0eR0huVkbAczb
 actions=flask,type=endless_rage/food,type=hearty_rhino
 actions+=/cat_form
 actions+=/auto_attack
+actions+=/maim
 actions+=/shred,omen_of_clarity=1
 actions+=/tigers_fury,energy<=40
 actions+=/berserk,tigers_fury=1
 actions+=/savage_roar,cp>=1,savage_roar<=4
-actions+=/attack_power_trinket,name=wrathstone,power=856,length=20,cooldown=120,sync=rip
 actions+=/rip,cp>=5,time_to_die>=10
 actions+=/ferocious_bite,cp>=5,rip>=5,savage_roar>=6
 actions+=/rake
@@ -36,22 +36,19 @@ gear_haste_rating=208
 tier8_2pc=1
 tier8_4pc=1
 
-relentless_earthstorm=1
+meta_gem=relentless_earthstorm
 
 # Generic profession bonus
 enchant_attack_power=128
 
 # Trinket Procs
-mjolnir_runestone=1
-blood_of_the_old_god=1
+items=mjolnir_runestone/blood_of_the_old_god
 
 # Weapon
-main_hand=staff,dps=244.6,speed=2.4,enchant=berserking
+main_hand=dreambinder,weapon=staff_245dps_2.4speed,enchant=berserking
 
 # Glyphs
-glyph_rip=1
-glyph_savage_roar=1
-glyph_shred=1
+glyphs=rip/savage_roar/shred
 
 # Relic
-idol_of_the_ravenous_beast=1
+idol=idol_of_the_ravenous_beast

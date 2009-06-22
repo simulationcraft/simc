@@ -24,19 +24,16 @@ gear_haste_rating=295
 tier7_2pc=1
 
 # Meta Gem
-relentless_earthstorm=1
+meta_gem=relentless_earthstorm
 
 # Procs
-darkmoon_greatness=1
-fury_of_the_five_flights=1
+items=darkmoon_card_greatness/fury_of_the_five_flights
 
 # Glyphs
-glyph_chimera_shot=1
-glyph_serpent_sting=1
-glyph_steady_shot=1
+glyphs=chimera_shot/serpent_sting/steady_shot
 
 # Weapons
-ranged=bow,dps=176.3,speed=2.9
+ranged=arrowsong,weapon=bow_141dps_2.8speed
 ammo_dps=67.5
 
 # Pet (cat|devilsaur|raptor|wind_serpent|wolf)

@@ -38,17 +38,14 @@ tier7_2pc=1
 tier7_4pc=1
 
 # Meta Gem
-relentless_earthstorm=1
+meta_gem=relentless_earthstorm
 
 # Weapons
-main_hand=mace,dps=157,speed=2.6,enchant=berserking
-off_hand=mace,dps=157,speed=1.6,enchant=berserking
+main_hand=angry_dread,weapon=mace_157dps_2.5speed,enchant=berserking
+off_hand=split_greathammer,weapon=mace_157dps_1.6speed,enchant=berserking
 
 # Item Procs
-darkmoon_greatness=1
-fury_of_the_five_flights=1
+items=darkmoon_card_greatness/fury_of_the_five_flights
 
 # Glyphs
-glyph_rupture=1
-glyph_slice_and_dice=1
-glyph_sinister_strike=1
+glyphs=rupture/slice_and_dice/sinister_strike

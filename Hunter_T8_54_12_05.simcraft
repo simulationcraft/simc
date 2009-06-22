@@ -25,19 +25,16 @@ tier7_2pc=1
 tier8_2pc=1
 
 # Meta Gem
-relentless_earthstorm=1
+meta_gem=relentless_earthstorm
 
 # Procs
-darkmoon_greatness=1
-mjolnir_runestone=1
+items=darkmoon_card_greatness/mjolnir_runestone
 
 # Glyphs
-glyph_bestial_wrath=1
-glyph_kill_shot=1
-glyph_improved_aspect_of_the_hawk=1
+glyphs=bestial_wrath/kill_shot/improved_aspect_of_the_hawk
 
 # Weapons
-ranged=bow,dps=200.4,speed=2.8
+ranged=sirens_cry,weapon=bow_187dps_2.9speed
 ammo_dps=67.5
 
 # Pet (cat|devilsaur|raptor|wind_serpent|wolf)

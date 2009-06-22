@@ -6,7 +6,7 @@ talents=http://www.wowhead.com/?talent#of0Vck0cZZVIccRcu0f0gfsx
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/arcane_brilliance/molten_armor/focus_magic
 actions+=/counterspell
 actions+=/mana_gem,trigger=1000/speed_potion
-actions+=/haste_trinket,name=scale_of_fates,rating=432,length=20,cooldown=120
+actions+=/use_item,name=scale_of_fates
 actions+=/mirror_image/ice_lance,frozen=1,fb_priority=1/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/frost_bolt
 actions+=/evocation
 
@@ -32,15 +32,10 @@ tier8_2pc=1
 tier8_4pc=1
 
 # Meta Gem
-chaotic_skyflare=1
+meta_gem=chaotic_skyflare
 
 # Item Procs
-flare_of_the_heavens=1
+items=flare_of_the_heavens/scale_of_fates
 
 # Glyphs
-glyph_molten_armor=1
-glyph_frost_bolt=1
-glyph_water_elemental=1
-
-# Armor Type
-armor_type=molten
+glyphs=molten_armor/frost_bolt/water_elemental

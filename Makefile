@@ -51,6 +51,7 @@ endif
 SRC =\
 	simcraft.h		\
 	sc_action.cpp		\
+	sc_armory.cpp		\
 	sc_attack.cpp		\
 	sc_chart.cpp		\
 	sc_consumable.cpp	\
@@ -61,6 +62,7 @@ SRC =\
 	sc_gear_stats.cpp	\
 	sc_hunter.cpp		\
 	sc_http.cpp		\
+	sc_item.cpp		\
 	sc_log.cpp		\
 	sc_mage.cpp		\
 	sc_main.cpp		\
@@ -77,6 +79,7 @@ SRC =\
 	sc_shaman.cpp		\
 	sc_scaling.cpp		\
 	sc_sequence.cpp		\
+	sc_set_bonus.cpp	\
 	sc_sim.cpp		\
 	sc_spell.cpp		\
 	sc_stats.cpp		\
@@ -87,7 +90,8 @@ SRC =\
 	sc_util.cpp		\
 	sc_warlock.cpp		\
 	sc_warrior.cpp		\
-	sc_weapon.cpp
+	sc_weapon.cpp		\
+	sc_xml.cpp
 
 SRC_H   := $(filter %.h,   $(SRC))
 SRC_CPP := $(filter %.cpp, $(SRC))

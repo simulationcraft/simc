@@ -6,6 +6,7 @@ talents=http://www.wowhead.com/?talent#0ZEMMcfrz0eR0huAkbAczb
 actions=flask,type=endless_rage/food,type=blackened_dragonfin
 actions+=/cat_form
 actions+=/auto_attack
+actions+=/maim
 actions+=/shred,omen_of_clarity=1
 actions+=/tigers_fury,energy<=40
 actions+=/berserk,tigers_fury=1
@@ -28,20 +29,16 @@ gear_hit_rating=259
 gear_crit_rating=515
 gear_haste_rating=297
 tier7_2pc=1
-relentless_earthstorm=1
+meta_gem=relentless_earthstorm
 
 # Trinkets
-darkmoon_greatness=1
-grim_toll=1
+items=darkmoon_card_greatness/grim_toll
 
 # Weapon
-main_hand=staff,dps=222.9,speed=2.4,enchant=berserking
+main_hand=journeys_end,weapon=staff_223dps_2.4speed,enchant=berserking
 
 # Glyphs
-glyph_rip=1
-glyph_savage_roar=1
-glyph_shred=1
+glyphs=rip/savage_roar/shred
 
 # Relic
-idol_of_worship=1
-
+idol=idol_of_worship

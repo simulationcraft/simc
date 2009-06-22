@@ -51,32 +51,27 @@ static void remove_white_space( std::string& buffer,
 
 void option_t::print( FILE* file )
 {
-  if( type == OPT_STRING ||
-      type == OPT_STRING_Q )
+  if( type == OPT_STRING )
   {
     std::string& v = *( ( std::string* ) address );
     fprintf( file, "%s=%s\n", name, v.empty() ? "" : v.c_str() );
   }
-  else if( type == OPT_CHARP ||
-	   type == OPT_CHARP_Q )
+  else if( type == OPT_CHARP )
   {
     const char* v = *( ( char** ) address );
     fprintf( file, "%s=%s\n", name, v ? v : "" );
   }
-  else if( type == OPT_BOOL ||
-	   type == OPT_BOOL_Q )
+  else if( type == OPT_BOOL )
   {
     int v = *( ( int* ) address );
     fprintf( file, "%s=%d\n", name, (v>0) ? 1 : 0 );
   }
-  else if( type == OPT_INT ||
-	   type == OPT_INT_Q )
+  else if( type == OPT_INT )
   {
     int v = *( ( int* ) address );
     fprintf( file, "%s=%d\n", name, v );
   }
-  else if( type == OPT_FLT ||
-	   type == OPT_FLT_Q )
+  else if( type == OPT_FLT )
   {
     double v = *( ( double* ) address );
     fprintf( file, "%s=%.2f\n", name, v );
@@ -158,17 +153,12 @@ bool option_t::parse( sim_t*             sim,
   {
     switch ( type )
     {
-    case OPT_STRING:
-    case OPT_STRING_Q: *( ( std::string* ) address ) = v;                         break;
-    case OPT_APPEND:   *( ( std::string* ) address ) += v;                        break;
-    case OPT_CHARP:   
-    case OPT_CHARP_Q:  *( ( char** )       address ) = util_t::dup( v.c_str() );  break;
-    case OPT_INT:      
-    case OPT_INT_Q:    *( ( int* )         address ) = atoi( v.c_str() );         break;
-    case OPT_FLT:    
-    case OPT_FLT_Q:    *( ( double* )      address ) = atof( v.c_str() );         break;
+    case OPT_STRING: *( ( std::string* ) address ) = v;                         break;
+    case OPT_APPEND: *( ( std::string* ) address ) += v;                        break;
+    case OPT_CHARP:  *( ( char** )       address ) = util_t::dup( v.c_str() );  break;
+    case OPT_INT:    *( ( int* )         address ) = atoi( v.c_str() );         break;
+    case OPT_FLT:    *( ( double* )      address ) = atof( v.c_str() );         break;
     case OPT_BOOL:
-    case OPT_BOOL_Q:
       *( ( int* ) address ) = atoi( v.c_str() ) ? 1 : 0;
       if ( v != "0" && v != "1" ) printf( "simcraft: Acceptable values for '%s' are '1' or '0'\n", name );
       break;
@@ -204,16 +194,58 @@ bool option_t::parse( sim_t*                 sim,
 
 // option_t::parse ==========================================================
 
-bool option_t::parse( sim_t*             sim,
-		      option_t*          options,
-                      const std::string& name,
-                      const std::string& value )
+bool option_t::parse( sim_t*                 sim,
+		      const char*            context,
+		      std::vector<option_t>& options,
+                      const std::string&     options_str )
 {
-  for ( int i=0; options[ i ].name; i++ )
-    if( options[ i ].parse( sim, name, value ) )
-      return true;
+  std::vector<std::string> splits;
+  int num_splits = util_t::string_split( splits, options_str, "," );
 
-  return false;
+  for( int i=0; i < num_splits; i++ )
+  {
+    std::string& s = splits[ i ];
+
+    std::string::size_type index = s.find( "=" );
+
+    if( index == std::string::npos )
+    {
+      fprintf( sim -> output_file, "%s: Unexpected parameter '%s'.  Expected format: name=value\n", context, s.c_str() );
+      return false;
+    }
+
+    std::string n = s.substr( 0, index );
+    std::string v = s.substr( index + 1 );
+
+    if( ! option_t::parse( sim, options, n, v ) )
+    {
+      fprintf( sim -> output_file, "%s: Unexpected parameter '%s'.\n", context, n.c_str() );
+      return false;
+    }
+  }
+
+  return true;
+}
+
+// option_t::parse ==========================================================
+
+bool option_t::parse( sim_t*             sim,
+		      const char*        context,
+		      option_t*          options,
+                      const std::string& options_str )
+{
+  int num_options=0;
+  while( options[ num_options ].name ) num_options++;
+
+  std::vector<option_t> options_vector;
+  options_vector.resize( num_options );
+
+  for( int i=0; i < num_options; i++ )
+  {
+    options_vector[ i ] = options[ i ];
+  }
+
+  return parse( sim, context, options_vector, options_str );
 }
 
 // option_t::parse_file =====================================================

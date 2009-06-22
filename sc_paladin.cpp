@@ -451,7 +451,7 @@ struct crusader_strike_t : public paladin_attack_t
 
     base_multiplier *= 1.0 + 0.05 * p -> talents.sanctity_of_battle;
     base_multiplier *= 1.0 + 0.05 * p -> talents.the_art_of_war;
-    if( p -> unique_gear -> tier8_4pc ) base_crit += 0.10;
+    if( p -> set_bonus.tier8_4pc() ) base_crit += 0.10;
   }
   
   virtual void execute()
@@ -483,8 +483,8 @@ struct divine_storm_t : public paladin_attack_t
     base_cost   = p -> resource_base[ RESOURCE_MANA ] * 0.12;
 
     base_multiplier *= 1.0 + 0.05 * p -> talents.the_art_of_war;
-    if( p -> unique_gear -> tier7_2pc ) base_multiplier *= 1.1;
-    if( p -> unique_gear -> tier8_4pc ) base_crit += 0.10;
+    if( p -> set_bonus.tier7_2pc() ) base_multiplier *= 1.1;
+    if( p -> set_bonus.tier8_4pc() ) base_crit += 0.10;
   }
   
   virtual void execute()
@@ -559,7 +559,7 @@ struct judgement_t : public paladin_attack_t
 
     trigger_seal = false;
 
-    cooldown         = 10 - p -> talents.improved_judgements - p -> unique_gear -> tier7_4pc;
+    cooldown         = 10 - p -> talents.improved_judgements - p -> set_bonus.tier7_4pc();
     base_cost        = p -> resource_base[ RESOURCE_MANA ] * 0.05;
 
     base_crit       += 0.06 * p -> talents.fanaticism;
@@ -663,6 +663,15 @@ void paladin_t::init_actions()
   if( action_list_str.empty() )
   {
     action_list_str = "flask,type=endless_rage/food,type=fish_feast/seal_of_blood/auto_attack";
+    int num_items = items.size();
+    for( int i=0; i < num_items; i++ )
+    {
+      if( items[ i ].use.active() )
+      {
+	action_list_str += "/use_item,name=";
+	action_list_str += items[ i ].name();
+      }
+    }
     action_list_str += "/avenging_wrath/crusader_strike/hammer_of_wrath/judgement/divine_storm";
 //    action_list_str += "/consecration/exorcism";
 
@@ -740,13 +749,13 @@ bool paladin_t::get_talent_trees( std::vector<int*>& holy, std::vector<int*>& pr
 
 std::vector<option_t>& paladin_t::get_options()
 {
-  if( option_vector.empty() )
+  if( options.empty() )
   {
     player_t::get_options();
 
-    option_t options[] =
+    option_t paladin_options[] =
     {
-      // @option_doc loc=skip
+      // @option_doc loc=player/paladin/talents title="Talents"
       { "benediction",                    OPT_INT, &( talents.benediction                 ) },
       { "conviction",                     OPT_INT, &( talents.conviction                  ) },
       { "crusade",                        OPT_INT, &( talents.crusade                     ) },
@@ -775,9 +784,9 @@ std::vector<option_t>& paladin_t::get_options()
       { NULL, OPT_UNKNOWN }
     };
 
-    option_t::copy( option_vector, options );
+    option_t::copy( options, paladin_options );
   }
-  return option_vector;
+  return options;
 }
 
 action_t* paladin_t::create_action( const std::string& name, const std::string& options_str )

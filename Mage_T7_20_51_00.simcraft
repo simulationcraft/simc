@@ -27,13 +27,10 @@ tier7_2pc=1
 tier7_4pc=1
 
 # Meta Gem
-chaotic_skyflare=1
+meta_gem=chaotic_skyflare
 
 # Item Procs
-dying_curse=1
-illustration_of_the_dragon_soul=1
+items=dying_curse/illustration_of_the_dragon_soul
 
 # Glyphs
-glyph_fire_ball=1
-glyph_molten_armor=1
-glyph_living_bomb=1
+glyphs=fire_ball/molten_armor/living_bomb

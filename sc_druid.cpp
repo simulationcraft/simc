@@ -236,13 +236,14 @@ struct druid_t : public player_t
   }
 
   // Character Definition
+  virtual void      init_glyphs();
   virtual void      init_base();
+  virtual void      init_items();
   virtual void      init_gains();
   virtual void      init_procs();
   virtual void      init_uptimes();
   virtual void      init_rating();
   virtual void      init_rng();
-  virtual void      init_unique_gear();
   virtual void      init_actions();
   virtual void      reset();
   virtual void      interrupt();
@@ -789,47 +790,6 @@ static void trigger_t8_2pc_feral( action_t* a )
     p -> aura_gain( "Omen of Clarity" );
     p -> _buffs.omen_of_clarity = 1;
     p -> procs.tier8_2pc -> occur();
-  }
-}
-
-// trigger_ashtongue_talisman =================================================
-
-static void trigger_ashtongue_talisman( spell_t* s )
-{
-  struct expiration_t : public event_t
-  {
-    expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      name = "Ashtongue Talisman Expiration";
-      player -> aura_gain( "Ashtongue Talisman" );
-      player -> spell_power[ SCHOOL_MAX ] += 150;
-      sim -> add_event( this, 8.0 );
-    }
-    virtual void execute()
-    {
-      player -> aura_loss( "Ashtongue Talisman" );
-      player -> spell_power[ SCHOOL_MAX ] -= 150;
-      player -> expirations.ashtongue_talisman = 0;
-    }
-  };
-
-  player_t* p = s -> player;
-
-  if ( p -> unique_gear -> ashtongue_talisman &&
-       p -> rngs.ashtongue_talisman -> roll( 0.25 ) )
-  {
-    p -> procs.ashtongue_talisman -> occur();
-
-    event_t*& e = p -> expirations.ashtongue_talisman;
-
-    if ( e )
-    {
-      e -> reschedule( 8.0 );
-    }
-    else
-    {
-      e = new ( s -> sim ) expiration_t( s -> sim, p );
-    }
   }
 }
 
@@ -2639,7 +2599,6 @@ struct starfire_t : public druid_spell_t
 
     if ( result_is_hit() )
     {
-      trigger_ashtongue_talisman( this );
       trigger_earth_and_moon( this );
       if ( result == RESULT_CRIT )
       {
@@ -3155,6 +3114,34 @@ void druid_t::init_rating()
   rating.attack_haste *= 1.0 / 1.30;
 }
 
+// druid_t::init_glyphs =====================================================
+
+void druid_t::init_glyphs()
+{
+  memset( ( void* ) &glyphs, 0x0, sizeof( glyphs_t ) );
+
+  std::vector<std::string> glyph_names;
+  int num_glyphs = util_t::string_split( glyph_names, glyphs_str, ",/" );
+  
+  for( int i=0; i < num_glyphs; i++ )
+  {
+    std::string& n = glyph_names[ i ];
+
+    if     ( n == "berserk"      ) glyphs.berserk = 1;
+    else if( n == "focus"        ) glyphs.focus = 1;
+    else if( n == "innervate"    ) glyphs.innervate = 1;
+    else if( n == "insect_swarm" ) glyphs.insect_swarm = 1;
+    else if( n == "mangle"       ) glyphs.mangle = 1;
+    else if( n == "moonfire"     ) glyphs.moonfire = 1;
+    else if( n == "rip"          ) glyphs.rip = 1;
+    else if( n == "savage_roar"  ) glyphs.savage_roar = 1;
+    else if( n == "shred"        ) glyphs.shred = 1;
+    else if( n == "starfire"     ) glyphs.starfire = 1;
+    else if( n == "starfall"     ) glyphs.starfall = 1;
+    else if( ! sim -> parent ) printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
+  }
+}
+
 // druid_t::init_base =======================================================
 
 void druid_t::init_base()
@@ -3211,6 +3198,56 @@ void druid_t::init_base()
   base_gcd = 1.5;
 }
 
+// druid_t::init_items ======================================================
+
+void druid_t::init_items()
+{
+  player_t::init_items();
+
+  std::string& idol = items[ SLOT_RANGED ].encoded_name_str;
+
+  if     ( idol == "idol_of_the_corruptor"      ) idols.corruptor = 1;
+  else if( idol == "idol_of_the_crying_wind"    ) idols.crying_wind = 1;
+  else if( idol == "idol_of_the_ravenous_beast" ) idols.ravenous_beast = 1;
+  else if( idol == "idol_of_steadfast_renewal"  ) idols.steadfast_renewal = 1;
+  else if( idol == "idol_of_the_shooting_star"  ) idols.shooting_star = 1;
+  else if( idol == "idol_of_the_unseen_moon"    ) idols.unseen_moon = 1;
+  else if( idol == "idol_of_worship"            ) idols.worship = 1;
+  else
+  {
+    printf( "simcraft: %s was unknown idol %s\n", name(), idol.c_str() );
+  }
+
+  if ( talents.moonkin_form )
+  {
+    if ( set_bonus.tier4_2pc() ) tiers.t4_2pc_balance = 1;
+    if ( set_bonus.tier4_4pc() ) tiers.t4_4pc_balance = 1;
+    if ( set_bonus.tier5_2pc() ) tiers.t5_2pc_balance = 1;
+    if ( set_bonus.tier5_4pc() ) tiers.t5_4pc_balance = 1;
+    if ( set_bonus.tier6_2pc() ) tiers.t6_2pc_balance = 1;
+    if ( set_bonus.tier6_4pc() ) tiers.t6_4pc_balance = 1;
+    if ( set_bonus.tier7_2pc() ) tiers.t7_2pc_balance = 1;
+    if ( set_bonus.tier7_4pc() ) tiers.t7_4pc_balance = 1;
+    if ( set_bonus.tier8_2pc() ) tiers.t8_2pc_balance = 1;
+    if ( set_bonus.tier8_4pc() ) tiers.t8_4pc_balance = 1;
+  }
+  else
+  {
+    if ( set_bonus.tier4_2pc() ) tiers.t4_2pc_feral = 1;
+    if ( set_bonus.tier4_4pc() ) tiers.t4_4pc_feral = 1;
+    if ( set_bonus.tier5_2pc() ) tiers.t5_2pc_feral = 1;
+    if ( set_bonus.tier5_4pc() ) tiers.t5_4pc_feral = 1;
+    if ( set_bonus.tier6_2pc() ) tiers.t6_2pc_feral = 1;
+    if ( set_bonus.tier6_4pc() ) tiers.t6_4pc_feral = 1;
+    if ( set_bonus.tier7_2pc() ) tiers.t7_2pc_feral = 1;
+    if ( set_bonus.tier7_4pc() ) tiers.t7_4pc_feral = 1;
+    if ( set_bonus.tier8_2pc() ) tiers.t8_2pc_feral = 1;
+    if ( set_bonus.tier8_4pc() ) tiers.t8_4pc_feral = 1;
+
+    equipped_weapon_dps = main_hand_weapon.damage / main_hand_weapon.swing_time;
+  }
+}
+
 // druid_t::init_gains ======================================================
 
 void druid_t::init_gains()
@@ -3265,42 +3302,6 @@ void druid_t::init_rng()
   rng_unseen_moon     = get_rng( "unseen_moon"     );
 } 
 
-// druid_t::init_unique_gear ================================================
-
-void druid_t::init_unique_gear()
-{
-  player_t::init_unique_gear();
-
-  if ( talents.moonkin_form )
-  {
-    if ( unique_gear -> tier4_2pc ) tiers.t4_2pc_balance = 1;
-    if ( unique_gear -> tier4_4pc ) tiers.t4_4pc_balance = 1;
-    if ( unique_gear -> tier5_2pc ) tiers.t5_2pc_balance = 1;
-    if ( unique_gear -> tier5_4pc ) tiers.t5_4pc_balance = 1;
-    if ( unique_gear -> tier6_2pc ) tiers.t6_2pc_balance = 1;
-    if ( unique_gear -> tier6_4pc ) tiers.t6_4pc_balance = 1;
-    if ( unique_gear -> tier7_2pc ) tiers.t7_2pc_balance = 1;
-    if ( unique_gear -> tier7_4pc ) tiers.t7_4pc_balance = 1;
-    if ( unique_gear -> tier8_2pc ) tiers.t8_2pc_balance = 1;
-    if ( unique_gear -> tier8_4pc ) tiers.t8_4pc_balance = 1;
-  }
-  else
-  {
-    if ( unique_gear -> tier4_2pc ) tiers.t4_2pc_feral = 1;
-    if ( unique_gear -> tier4_4pc ) tiers.t4_4pc_feral = 1;
-    if ( unique_gear -> tier5_2pc ) tiers.t5_2pc_feral = 1;
-    if ( unique_gear -> tier5_4pc ) tiers.t5_4pc_feral = 1;
-    if ( unique_gear -> tier6_2pc ) tiers.t6_2pc_feral = 1;
-    if ( unique_gear -> tier6_4pc ) tiers.t6_4pc_feral = 1;
-    if ( unique_gear -> tier7_2pc ) tiers.t7_2pc_feral = 1;
-    if ( unique_gear -> tier7_4pc ) tiers.t7_4pc_feral = 1;
-    if ( unique_gear -> tier8_2pc ) tiers.t8_2pc_feral = 1;
-    if ( unique_gear -> tier8_4pc ) tiers.t8_4pc_feral = 1;
-
-    equipped_weapon_dps = main_hand_weapon.damage / main_hand_weapon.swing_time;
-  }
-}
-
 // druid_t::init_actions ====================================================
 
 void druid_t::init_actions()
@@ -3311,6 +3312,15 @@ void druid_t::init_actions()
     {
       // Assume balance
       action_list_str+="flask,type=frost_wyrm/food,type=fish_feast/mark_of_the_wild/moonkin_form/mana_potion";
+      int num_items = items.size();
+      for( int i=0; i < num_items; i++ )
+      {
+	if( items[ i ].use.active() )
+        {
+	  action_list_str += "/use_item,name=";
+	  action_list_str += items[ i ].name();
+	}
+      }
       action_list_str+="/innervate,trigger=19000";
       if( talents.force_of_nature ) 
         action_list_str+="/treants";
@@ -3319,13 +3329,31 @@ void druid_t::init_actions()
       action_list_str+="/moonfire,eclipse_left>=12";
       if( talents.insect_swarm )
         action_list_str+="/insect_swarm,skip_on_eclipse=1";
-      action_list_str+="/wrath,eclipse=trigger/starfire";
+      if( sim -> P320 )
+      {
+	action_list_str+="/wrath,eclipse=benefit/wrath,eclipse=trigger";
+	action_list_str+="/starfire,eclipse=benefit/starfire,eclipse=trigger";
+      }
+      else
+      {
+	action_list_str+="/wrath,eclipse=trigger/starfire";
+      }
     }
     else if( talents.mangle )
     {
       // Assume feral
       action_list_str+="flask,type=endless_rage/food,type=blackened_dragonfin";
-      action_list_str+="/cat_form/auto_attack/shred,omen_of_clarity=1/tigers_fury,energy<=40";
+      action_list_str+="/cat_form/auto_attack";
+      int num_items = items.size();
+      for( int i=0; i < num_items; i++ )
+      {
+	if( items[ i ].use.active() )
+        {
+	  action_list_str += "/use_item,name=";
+	  action_list_str += items[ i ].name();
+	}
+      }
+      action_list_str+="/shred,omen_of_clarity=1/tigers_fury,energy<=40";
       if( talents.berserk )
         action_list_str+="/berserk,tigers_fury=1";
       action_list_str+="/savage_roar,cp>=1,savage_roar<=4/rip,cp>=5,time_to_die>=10";
@@ -3504,13 +3532,13 @@ bool druid_t::get_talent_trees( std::vector<int*>& balance,
 
 std::vector<option_t>& druid_t::get_options()
 {
-  if( option_vector.empty() )
+  if( options.empty() )
   {
     player_t::get_options();
 
-    option_t options[] =
+    option_t druid_options[] =
     {
-      // @option_doc loc=skip
+      // @option_doc loc=player/druid/talents title="Talents"
       { "balance_of_power",          OPT_INT,  &( talents.balance_of_power          ) },
       { "berserk",                   OPT_INT,  &( talents.berserk                   ) },
       { "brambles",                  OPT_INT,  &( talents.brambles                  ) },
@@ -3565,49 +3593,15 @@ std::vector<option_t>& druid_t::get_options()
       { "starlight_wrath",           OPT_INT,  &( talents.starlight_wrath           ) },
       { "vengeance",                 OPT_INT,  &( talents.vengeance                 ) },
       { "wrath_of_cenarius",         OPT_INT,  &( talents.wrath_of_cenarius         ) },
-      // @option_doc loc=player/druid/glyphs title="Glyphs"
-      { "glyph_berserk",             OPT_BOOL,  &( glyphs.berserk                   ) },
-      { "glyph_insect_swarm",        OPT_BOOL,  &( glyphs.insect_swarm              ) },
-      { "glyph_innervate",           OPT_BOOL,  &( glyphs.innervate                 ) },
-      { "glyph_mangle",              OPT_BOOL,  &( glyphs.mangle                    ) },
-      { "glyph_moonfire",            OPT_BOOL,  &( glyphs.moonfire                  ) },
-      { "glyph_rip",                 OPT_BOOL,  &( glyphs.rip                       ) },
-      { "glyph_savage_roar",         OPT_BOOL,  &( glyphs.savage_roar               ) },
-      { "glyph_shred",               OPT_BOOL,  &( glyphs.shred                     ) },
-      { "glyph_starfire",            OPT_BOOL,  &( glyphs.starfire                  ) },
-      { "glyph_starfall",            OPT_BOOL,  &( glyphs.starfall                  ) },
-      // @option_doc loc=player/druid/idols title="Idols"
-      { "idol_of_the_corruptor",      OPT_BOOL,  &( idols.corruptor                 ) },
-      { "idol_of_the_crying_wind",    OPT_BOOL,  &( idols.crying_wind               ) },
-      { "idol_of_the_ravenous_beast", OPT_BOOL,  &( idols.ravenous_beast            ) },
-      { "idol_of_steadfast_renewal",  OPT_BOOL,  &( idols.steadfast_renewal         ) },
-      { "idol_of_the_shooting_star",  OPT_BOOL,  &( idols.shooting_star             ) },
-      { "idol_of_the_unseen_moon",    OPT_BOOL,  &( idols.unseen_moon               ) },
-      { "idol_of_worship",            OPT_BOOL,  &( idols.worship                   ) },
-      // @option_doc loc=skip
-      { "tier4_2pc_balance",          OPT_BOOL,  &( tiers.t4_2pc_balance            ) },
-      { "tier4_4pc_balance",          OPT_BOOL,  &( tiers.t4_4pc_balance            ) },
-      { "tier5_2pc_balance",          OPT_BOOL,  &( tiers.t5_2pc_balance            ) },
-      { "tier5_4pc_balance",          OPT_BOOL,  &( tiers.t5_4pc_balance            ) },
-      { "tier6_2pc_balance",          OPT_BOOL,  &( tiers.t6_2pc_balance            ) },
-      { "tier6_4pc_balance",          OPT_BOOL,  &( tiers.t6_4pc_balance            ) },
-      { "tier7_2pc_balance",          OPT_BOOL,  &( tiers.t7_2pc_balance            ) },
-      { "tier7_4pc_balance",          OPT_BOOL,  &( tiers.t7_4pc_balance            ) },
-      { "tier4_2pc_feral",            OPT_BOOL,  &( tiers.t4_2pc_feral              ) },
-      { "tier4_4pc_feral",            OPT_BOOL,  &( tiers.t4_4pc_feral              ) },
-      { "tier5_2pc_feral",            OPT_BOOL,  &( tiers.t5_2pc_feral              ) },
-      { "tier5_4pc_feral",            OPT_BOOL,  &( tiers.t5_4pc_feral              ) },
-      { "tier6_2pc_feral",            OPT_BOOL,  &( tiers.t6_2pc_feral              ) },
-      { "tier6_4pc_feral",            OPT_BOOL,  &( tiers.t6_4pc_feral              ) },
-      { "tier7_2pc_feral",            OPT_BOOL,  &( tiers.t7_2pc_feral              ) },
-      { "tier7_4pc_feral",            OPT_BOOL,  &( tiers.t7_4pc_feral              ) },
+      // @option_doc loc=player/druid/misc title="Misc"
+      { "idol",                      OPT_STRING, &( items[ SLOT_RANGED ].options_str ) },
       { NULL, OPT_UNKNOWN }
     };
 
-    option_t::copy( option_vector, options );
+    option_t::copy( options, druid_options );
   }
 
-  return option_vector;
+  return options;
 }
 
 // player_t::create_druid  ==================================================

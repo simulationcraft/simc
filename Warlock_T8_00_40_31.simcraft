@@ -8,6 +8,4 @@ actions+=/soul_fire,decimation=1/immolate/conflagrate
 actions+=/curse_of_agony/corruption,health_percentage>=35/incinerate
 Warlock_Filler.simcraft
 Warlock_T8_Hit_Gear.simcraft
-glyph_life_tap=1
-glyph_conflagrate=1
-glyph_incinerate=1
+glyphs=life_tap/conflagrate/incinerate

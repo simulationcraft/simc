@@ -17,8 +17,6 @@ actions+=/rupture,min_combo_points=5
 actions+=/backstab
 actions+=/adrenaline_rush
 Rogue_T8_Combat_Gear.simcraft
-main_hand=dagger,dps=188,speed=1.8,enchant=berserking
-off_hand=dagger,dps=188,speed=1.4,enchant=berserking
-glyph_rupture=1
-glyph_slice_and_dice=1
-glyph_backstab=1
+main_hand=fang_of_oblivion,weapon=dagger_188dps_1.8speed,enchant=berserking
+off_hand=bladetwister,weapon=dagger_188dps_1.4speed,enchant=berserking
+glyphs=rupture/slice_and_dice/backstab

@@ -7,6 +7,4 @@ actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/fortitude/divine
 actions+=/shadow_fiend/dispersion
 actions+=/shadow_word_pain,shadow_weaving_wait=1/speed_potion/vampiric_touch/devouring_plague/mind_blast/shadow_word_death,mb_wait=0,mb_priority=0/mind_flay
 Priest_T8_Shadow_Gear.simcraft
-glyph_shadow_word_pain=1
-glyph_shadow=1
-glyph_shadow_word_death=1
+glyphs=shadow_word_pain/shadow/shadow_word_death

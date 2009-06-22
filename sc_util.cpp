@@ -235,6 +235,23 @@ const char* util_t::dmg_type_string( int type )
   return "unknown";
 }
 
+// util_t::meta_gem_type_string ============================================
+
+const char* util_t::meta_gem_type_string( int type )
+{
+  switch ( type )
+  {
+  case META_AUSTERE_EARTHSIEGE:    return "austere_earthsiege";
+  case META_CHAOTIC_SKYFIRE:       return "chaotic_skyfire";
+  case META_CHAOTIC_SKYFLARE:      return "chaotic_skyflare";
+  case META_EMBER_SKYFLARE:        return "ember_skyflare";
+  case META_RELENTLESS_EARTHSIEGE: return "relentless_earthsiege";
+  case META_RELENTLESS_EARTHSTORM: return "relentless_earthstorm";
+  case META_MYSTICAL_SKYFIRE:      return "mystical_skyfire";
+  }
+  return "unknown";
+}
+
 // util_t::result_type_string ==============================================
 
 const char* util_t::result_type_string( int type )
@@ -339,10 +356,10 @@ const char* util_t::weapon_type_string( int weapon )
   case WEAPON_SWORD:    return "sword";
   case WEAPON_MACE:     return "mace";
   case WEAPON_AXE:      return "axe";
-  case WEAPON_BEAST_2H: return "beast_2h";
-  case WEAPON_SWORD_2H: return "sword_2h";
-  case WEAPON_MACE_2H:  return "mace_2h";
-  case WEAPON_AXE_2H:   return "axe_2h";
+  case WEAPON_BEAST_2H: return "beast2h";
+  case WEAPON_SWORD_2H: return "sword2h";
+  case WEAPON_MACE_2H:  return "mace2h";
+  case WEAPON_AXE_2H:   return "axe2h";
   case WEAPON_STAFF:    return "staff";
   case WEAPON_POLEARM:  return "polearm";
   case WEAPON_BOW:      return "bow";
@@ -353,18 +370,20 @@ const char* util_t::weapon_type_string( int weapon )
   return "unknown";
 }
 
-// util_t::weapon_enchant_type_string ======================================
+// util_t::enchant_type_string ==============================================
 
-const char* util_t::weapon_enchant_type_string( int enchant )
+const char* util_t::enchant_type_string( int enchant )
 {
   switch ( enchant )
   {
-  case WEAPON_ENCHANT_NONE: return "none";
-  case BERSERKING:          return "berserking";
-  case DEATH_FROST:         return "deathfrost";
-  case EXECUTIONER:         return "executioner";
-  case MONGOOSE:            return "mongoose";
-  case SCOPE:               return "scope";
+  case ENCHANT_NONE:        return "none";
+  case ENCHANT_BERSERKING:  return "berserking";
+  case ENCHANT_DEATH_FROST: return "deathfrost";
+  case ENCHANT_EXECUTIONER: return "executioner";
+  case ENCHANT_LIGHTWEAVE:  return "lightweave";
+  case ENCHANT_MONGOOSE:    return "mongoose";
+  case ENCHANT_SCOPE:       return "scope";
+  case ENCHANT_SPELLSURGE:  return "spellsurge";
   }
   return "unknown";
 }
@@ -432,6 +451,34 @@ const char* util_t::food_type_string( int food )
   return "unknown";
 }
 
+// util_t::slot_type_string =================================================
+
+const char* util_t::slot_type_string( int slot )
+{
+  switch ( slot )
+  {
+  case SLOT_HEAD:      return "head";
+  case SLOT_NECK:      return "neck";
+  case SLOT_SHOULDERS: return "shoulders";
+  case SLOT_SHIRT:     return "shirt";
+  case SLOT_CHEST:     return "chest";
+  case SLOT_WAIST:     return "waist";
+  case SLOT_LEGS:      return "legs";
+  case SLOT_FEET:      return "feet";
+  case SLOT_WRISTS:    return "wrists";
+  case SLOT_HANDS:     return "hands";
+  case SLOT_FINGER_1:  return "finger1";
+  case SLOT_FINGER_2:  return "finger2";
+  case SLOT_TRINKET_1: return "trinket1";
+  case SLOT_TRINKET_2: return "trinket2";
+  case SLOT_BACK:      return "back";
+  case SLOT_MAIN_HAND: return "main_hand";
+  case SLOT_OFF_HAND:  return "off_hand";
+  case SLOT_RANGED:    return "ranged";
+  }
+  return "unknown";
+}
+
 // util_t::stat_type_string =================================================
 
 const char* util_t::stat_type_string( int stat )
@@ -468,9 +515,9 @@ const char* util_t::stat_type_string( int stat )
 
   case STAT_ARMOR: return "armor";
 
-  default: assert( 0 );
+  case STAT_MAX: return "all";
   }
-  return 0;
+  return "unknown";
 }
 
 // util_t::stat_type_abbrev =================================================
@@ -509,9 +556,9 @@ const char* util_t::stat_type_abbrev( int stat )
 
   case STAT_ARMOR: return "Armor";
 
-  default: assert( 0 );
+  case STAT_MAX: return "All";
   }
-  return 0;
+  return "unknown";
 }
 
 // util_t::string_split ====================================================

@@ -230,6 +230,7 @@ struct hunter_t : public player_t
 
   // Character Definition
   virtual void      init();
+  virtual void      init_glyphs();
   virtual void      init_base();
   virtual void      init_gains();
   virtual void      init_procs();
@@ -554,10 +555,13 @@ struct hunter_pet_t : public pet_t
 
   virtual int primary_resource() { return RESOURCE_FOCUS; }
 
-  virtual bool parse_option( const std::string& name,
-                             const std::string& value )
+  virtual std::vector<option_t>& get_options()
   {
-    option_t options[] =
+    if( options.empty() )
+    {
+      pet_t::get_options();
+
+      option_t hunter_pet_options[] =
       {
         // Talents
         { "cobra_reflexes",   OPT_INT, &( talents.cobra_reflexes   ) },
@@ -574,9 +578,10 @@ struct hunter_pet_t : public pet_t
         { NULL, OPT_UNKNOWN }
       };
 
-    if ( pet_t::parse_option( name, value ) ) return true;
+      option_t::copy( options, hunter_pet_options );
+    }
 
-    return option_t::parse( sim, options, name, value );
+    return options;
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
@@ -623,7 +628,7 @@ struct hunter_attack_t : public attack_t
 
   virtual void add_scope()
   {
-    if ( weapon -> enchant == SCOPE )
+    if ( weapon -> enchant == ENCHANT_SCOPE )
     {
       double bonus_damage = weapon -> enchant_bonus * weapon_multiplier;
 
@@ -1265,6 +1270,10 @@ static void trigger_rabid_power( attack_t* a )
     return;
 
   p -> _buffs.rabid_power_stack++;
+
+  const char* name[] = { 0, "Rabid(1)", "Rabid(2)", "Rabid(3)", "Rabid(4)", "Rabid(5)" };
+
+  p -> aura_gain( name[ p -> _buffs.rabid_power_stack ] );
 }
 
 // trigger_thrill_of_the_hunt ========================================
@@ -1288,7 +1297,7 @@ static void trigger_tier8_4pc( attack_t* a )
 {
   hunter_t* p = a -> player -> cast_hunter();
 
-  if ( ! p -> unique_gear -> tier8_4pc )
+  if ( ! p -> set_bonus.tier8_4pc() )
     return;
 
   // FIXME: Does it have a cooldown?
@@ -1535,7 +1544,7 @@ struct pet_melee_t : public hunter_pet_attack_t
     }
     base_execute_time *= 1.0 / ( 1.0 + 0.04 * o -> talents.serpents_swiftness );
 
-    if ( o -> unique_gear -> tier7_2pc ) base_multiplier *= 1.05;
+    if ( o -> set_bonus.tier7_2pc() ) base_multiplier *= 1.05;
   }
 };
 
@@ -2978,8 +2987,8 @@ struct serpent_sting_t : public hunter_attack_t
     base_tick_time   = 3.0;
     num_ticks        = p -> glyphs.serpent_sting ? 7 : 5;
     tick_power_mod   = 0.2 / 5.0;
-    base_multiplier *= 1.0 + p -> talents.improved_stings * 0.1
-                       + p -> unique_gear -> tier8_2pc * 0.1;
+    base_multiplier *= 1.0 + ( p -> talents.improved_stings * 0.1 +
+			       p -> set_bonus.tier8_2pc() * 0.1   );
 
     observer = &( p -> active_serpent_sting );
   }
@@ -3666,6 +3675,35 @@ void hunter_t::init()
   }
 }
 
+// hunter_t::init_glyphs ===================================================
+
+void hunter_t::init_glyphs()
+{
+  memset( ( void* ) &glyphs, 0x0, sizeof( glyphs_t ) );
+
+  std::vector<std::string> glyph_names;
+  int num_glyphs = util_t::string_split( glyph_names, glyphs_str, ",/" );
+  
+  for( int i=0; i < num_glyphs; i++ )
+  {
+    std::string& n = glyph_names[ i ];
+
+    if     ( n == "aimed_shot"                  ) glyphs.aimed_shot = 1;
+    else if( n == "aspect_of_the_viper"         ) glyphs.aspect_of_the_viper = 1;
+    else if( n == "bestial_wrath"               ) glyphs.bestial_wrath = 1;
+    else if( n == "chimera_shot"                ) glyphs.chimera_shot = 1;
+    else if( n == "explosive_shot"              ) glyphs.explosive_shot = 1;
+    else if( n == "hunters_mark"                ) glyphs.hunters_mark = 1;
+    else if( n == "improved_aspect_of_the_hawk" ) glyphs.improved_aspect_of_the_hawk = 1;
+    else if( n == "kill_shot"                   ) glyphs.kill_shot = 1;
+    else if( n == "rapid_fire"                  ) glyphs.rapid_fire = 1;
+    else if( n == "serpent_sting"               ) glyphs.serpent_sting = 1;
+    else if( n == "steady_shot"                 ) glyphs.steady_shot = 1;
+    else if( n == "trueshot_aura"               ) glyphs.trueshot_aura = 1;
+    else if( ! sim -> parent ) printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
+  }
+}
+
 // hunter_t::init_base ========================================================
 
 void hunter_t::init_base()
@@ -3784,6 +3822,15 @@ void hunter_t::init_actions()
     action_list_str = "flask,type=endless_rage/food,type=blackened_dragonfin/hunters_mark/summon_pet";
     if( talents.trueshot_aura ) action_list_str += "/trueshot_aura";
     action_list_str += "/auto_shot";
+    int num_items = items.size();
+    for( int i=0; i < num_items; i++ )
+    {
+      if( items[ i ].use.active() )
+      {
+	action_list_str += "/use_item,name=";
+	action_list_str += items[ i ].name();
+      }
+    }
     if( talents.bestial_wrath ) action_list_str += "/kill_command,sync=bestial_wrath/bestial_wrath";
     action_list_str += "/aspect";
     if( talents.chimera_shot ) action_list_str += "/serpent_sting";
@@ -3935,13 +3982,13 @@ bool hunter_t::get_talent_trees( std::vector<int*>& beastmastery,
 
 std::vector<option_t>& hunter_t::get_options()
 {
-  if( option_vector.empty() )
+  if( options.empty() )
   {
     player_t::get_options();
 
-    option_t options[] =
+    option_t hunter_options[] =
     {
-      // @option_doc loc=skip
+      // @option_doc loc=player/hunter/talents title="Talents"
       { "aimed_shot",                        OPT_INT, &( talents.aimed_shot                   ) },
       { "animal_handler",                    OPT_INT, &( talents.animal_handler               ) },
       { "aspect_mastery",                    OPT_INT, &( talents.aspect_mastery               ) },
@@ -4003,31 +4050,17 @@ std::vector<option_t>& hunter_t::get_options()
       { "trueshot_aura",                     OPT_INT, &( talents.trueshot_aura                ) },
       { "unleashed_fury",                    OPT_INT, &( talents.unleashed_fury               ) },
       { "wild_quiver",                       OPT_INT, &( talents.wild_quiver                  ) },
-      // @option_doc loc=player/hunter/glyphs title="Glyphs"
-      { "glyph_aimed_shot",                  OPT_BOOL, &( glyphs.aimed_shot                   ) },
-      { "glyph_aspect_of_the_viper",         OPT_BOOL, &( glyphs.aspect_of_the_viper          ) },
-      { "glyph_bestial_wrath",               OPT_BOOL, &( glyphs.bestial_wrath                ) },
-      { "glyph_chimera_shot",                OPT_BOOL, &( glyphs.chimera_shot                 ) },
-      { "glyph_explosive_shot",              OPT_BOOL, &( glyphs.explosive_shot               ) },
-      { "glyph_hunters_mark",                OPT_BOOL, &( glyphs.hunters_mark                 ) },
-      { "glyph_improved_aspect_of_the_hawk", OPT_BOOL, &( glyphs.improved_aspect_of_the_hawk  ) },
-      { "glyph_kill_shot",                   OPT_BOOL, &( glyphs.kill_shot                    ) },
-      { "glyph_rapid_fire",                  OPT_BOOL, &( glyphs.rapid_fire                   ) },
-      { "glyph_serpent_sting",               OPT_BOOL, &( glyphs.serpent_sting                ) },
-      { "glyph_steady_shot",                 OPT_BOOL, &( glyphs.steady_shot                  ) },
-      { "glyph_trueshot_aura",               OPT_BOOL, &( glyphs.trueshot_aura                ) },
       // @option_doc loc=player/hunter/misc title="Misc"
       { "ammo_dps",                          OPT_FLT,    &( ammo_dps                          ) },
       { "quiver_haste",                      OPT_DEPRECATED, NULL                               },
       { "summon_pet",                        OPT_STRING, &( summon_pet_str                    ) },
-
       { NULL, OPT_UNKNOWN }
     };
 
-    option_t::copy( option_vector, options );
+    option_t::copy( options, hunter_options );
   }
 
-  return option_vector;
+  return options;
 }
 
 // player_t::create_hunter  =================================================

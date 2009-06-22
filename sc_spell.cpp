@@ -94,8 +94,10 @@ void spell_t::player_buff()
   player_hit  = p -> composite_spell_hit();
   player_crit = p -> composite_spell_crit();
 
-  if ( p -> unique_gear -> chaotic_skyflare      ||
-       p -> unique_gear -> relentless_earthstorm )
+  if ( p -> meta_gem == META_CHAOTIC_SKYFIRE       ||
+       p -> meta_gem == META_CHAOTIC_SKYFLARE      ||
+       p -> meta_gem == META_RELENTLESS_EARTHSIEGE ||
+       p -> meta_gem == META_RELENTLESS_EARTHSTORM )
   {
     player_crit_multiplier *= 1.03;
   }
