@@ -600,8 +600,7 @@ std::string& armory_t::format( std::string& name )
 {
   if( name.empty() ) return name;
 
-  static std::string buffer;
-  buffer = "";
+  std::string buffer="";
 
   int size = name.size();
   for( int i=0; i < size; i++ )
