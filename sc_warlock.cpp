@@ -4597,6 +4597,8 @@ void warlock_t::init_glyphs()
     else if( n == "kilrogg" )             ;
     else if( n == "souls" )               ;
     else if( n == "unending_breath" )     ;
+    else if( n == "soul_link" )           ;
+    else if( n == "shadowflame" )         ;
     else if( ! sim -> parent ) printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
   }
 }
