@@ -1006,8 +1006,11 @@ bool action_t::ready()
 
   //initialize expression if not already done -> should be done in some init_expressions()
   if (has_if_exp<0){
-    if (if_expression!="")   if_exp=act_expression_t::create(this, if_expression);
+    if (if_expression!="")  
+      if_exp=act_expression_t::create(this, if_expression);
     has_if_exp= (if_exp!=0);
+    if (has_if_exp && sim->debug_exp) 
+      printf("%s", if_exp->to_string().c_str()); //debug
   }
   //check action expression if any
   if (has_if_exp) 
@@ -1069,17 +1072,46 @@ void action_t::cancel()
                   AEXP_AND, AEXP_OR, AEXP_NOT, AEXP_EQ, AEXP_NEQ, AEXP_GREATER, AEXP_LESS, AEXP_GE, AEXP_LE, // these operations result in boolean
                   AEXP_PLUS, AEXP_MINUS, AEXP_MUL, AEXP_DIV, // these operations result in double
                   AEXP_VALUE, AEXP_INT_PTR, AEXP_DOUBLE_PTR, // these are "direct" value return (no operations)
-                  AEXP_CUSTOM, // this one presume overriden class
+                  AEXP_BUFF, AEXP_FUNC, // these presume overriden class
                   AEXP_MAX
   };
 
   enum exp_func_glob { EFG_NONE=0, EFG_GCD, EFG_TIME, EFG_TTD, EFG_HP, EFG_VULN, EFG_INVUL, 
                        EFG_TICKING, EFG_CTICK,EFG_NTICKS, EFG_EXPIRE, EFG_REMAINS, EFG_TCAST, EFG_MOVING, EFG_MAX };
 
+  // definition of operators
+  struct operator_def_t{
+    std::string name;
+    int type;
+    bool binary;
+  };
+
+  static operator_def_t AEXP_operators[]=
+  {
+    { "&&", AEXP_AND,     true},
+    { "&",  AEXP_AND,     true},
+    { "||", AEXP_OR,      true},
+    { "|",  AEXP_OR,      true},
+    { "!",  AEXP_NOT,     false},
+    { "==", AEXP_EQ,      true},
+    { "<>", AEXP_NEQ,     true},
+    { ">=", AEXP_GE,      true},
+    { "<=", AEXP_LE,      true},
+    { ">",  AEXP_GREATER, true},
+    { "<",  AEXP_LESS,    true},
+    { "+",  AEXP_PLUS,    true},
+    { "-",  AEXP_MINUS,   true},
+    { "*",  AEXP_MUL,     true},
+    { "/",  AEXP_DIV,     true},
+    { "\\", AEXP_DIV,     true},
+    { "",   AEXP_NONE,    false}
+  };
+
   // custom class to invoke pbuff_t expiration
-  struct pbuff_expression: public act_expression_t{
+  struct pbuff_expression_t: public act_expression_t{
     pbuff_t* buff;
-    virtual ~pbuff_expression(){};
+    pbuff_expression_t(int e_type, std::string expression_str="", pbuff_t* e_buff=0):act_expression_t(e_type,expression_str,0), buff(e_buff){};
+    virtual ~pbuff_expression_t(){};
     virtual double evaluate() {
       return buff->expiration_time();
     }
@@ -1088,9 +1120,11 @@ void action_t::cancel()
   //custom class to return global functions
   struct global_expression_t: public act_expression_t{
     action_t* action;
+    int glob_type;
+    global_expression_t(int e_type, std::string expression_str="", action_t* e_action=0):act_expression_t(AEXP_FUNC,expression_str,0), action(e_action), glob_type(e_type){};
     virtual ~global_expression_t(){};
     virtual double evaluate() {
-      switch (type){
+      switch (glob_type){
         case EFG_GCD:        return action->gcd();  
         case EFG_TIME:       return action->sim->current_time; 
         case EFG_TTD:        return action->sim -> target ->time_to_die(); 
@@ -1135,13 +1169,14 @@ void action_t::cancel()
   };
 
 
-  act_expression_t::act_expression_t()
+  act_expression_t::act_expression_t(int e_type, std::string expression_str, double e_value)
   {
-    type=AEXP_NONE;
+    type=e_type;
     operand_1=NULL;
     operand_2=NULL;
     p_value=NULL;
-    value=0;
+    value=e_value;
+    exp_str=expression_str;
   }
 
   // evaluate expressions based on 2 or 1 operand
@@ -1194,7 +1229,7 @@ void action_t::cancel()
 
 
   act_expression_t* act_expression_t::find_operator(action_t* action, std::string unmasked, std::string expression, std::string op_str, 
-                                                    int op_type, bool binary, bool can_miss_left)
+                                                    int op_type, bool binary)
   {
     act_expression_t* node=0;
     size_t p=0;
@@ -1212,26 +1247,45 @@ void action_t::cancel()
         if (left!="") warn(2,action,"Unexpected text to the left of unary operator "+op_str+" in : "+unmasked);
       }
       //check allowed cases to miss left operand
-      if (binary && (op1==0) && can_miss_left){
-        op1= new act_expression_t();
-        op1->type=AEXP_VALUE;
-        op1->value= 0;
+      if ( (op1==0) && ((op_type==AEXP_PLUS)||(op_type==AEXP_MINUS)) ){
+        op1= new act_expression_t(AEXP_VALUE,"",0);
       }
       // error handling
       if ((op1==0)||((op2==0)&&binary))
         warn(3,action,"Left or right operand for "+op_str+" missing in : "+unmasked);
       // create new node
-      node= new act_expression_t();
-      node->type= op_type;
+      node= new act_expression_t(op_type,unmasked);
       node->operand_1=op1;
       node->operand_2=op2;
       // optimize if both operands are constants
       if ( (op1->type==AEXP_VALUE) && ((!binary)||(op2->type==AEXP_VALUE)) ){
         double val= node->evaluate();
         delete node;
-        node= new act_expression_t();
-        node->type=AEXP_VALUE;
-        node->value= val;
+        node= new act_expression_t(AEXP_VALUE,unmasked,val);
+      }else
+      // optimize if one operand is constant, for boolean param ops: AEXP_AND, AEXP_OR
+      if ( ((op1->type==AEXP_VALUE)||(op2->type==AEXP_VALUE)) &&  
+           ((op_type==AEXP_AND)||(op_type==AEXP_OR)) ){
+        // get constant value
+        act_expression_t* nc=0;
+        bool c_val=0;
+        if (op1->type==AEXP_VALUE){
+          c_val=op1->ok();
+          nc=op2;
+        }else{
+          c_val=op2->ok();
+          nc=op1;
+        }
+        // now select if it evaluate to constant
+        delete node;
+        if ( ((op_type==AEXP_AND)&&(c_val=false))||
+             ((op_type==AEXP_OR) &&(c_val=true)) ) {
+          node= new act_expression_t(AEXP_VALUE,unmasked,c_val);
+          delete nc;
+        }else{
+          //or it evaluate to single operand
+          node=nc;
+        }
       }
     }
     return node;
@@ -1291,36 +1345,19 @@ void action_t::cancel()
     } while (is_all_enclosed);
 
     // search for operators, starting with lowest priority operator
-    if (!root) root=find_operator(action,e,mask, "&&", AEXP_AND,     true);
-    if (!root) root=find_operator(action,e,mask, "&",  AEXP_AND,     true);
-    if (!root) root=find_operator(action,e,mask, "||", AEXP_OR,      true);
-    if (!root) root=find_operator(action,e,mask, "|",  AEXP_OR,      true);
-    if (!root) root=find_operator(action,e,mask, "!",  AEXP_NOT,     false);
-    if (!root) root=find_operator(action,e,mask, "==", AEXP_EQ,      true);
-    if (!root) root=find_operator(action,e,mask, "<>", AEXP_NEQ,     true);
-    if (!root) root=find_operator(action,e,mask, ">=", AEXP_GE,      true);
-    if (!root) root=find_operator(action,e,mask, "<=", AEXP_LE,      true);
-    if (!root) root=find_operator(action,e,mask, ">",  AEXP_GREATER, true);
-    if (!root) root=find_operator(action,e,mask, "<",  AEXP_LESS,    true);
-    if (!root) root=find_operator(action,e,mask, "+",  AEXP_PLUS,    true,true);
-    if (!root) root=find_operator(action,e,mask, "-",  AEXP_MINUS,   true,true);
-    if (!root) root=find_operator(action,e,mask, "*",  AEXP_MUL,     true);
-    if (!root) root=find_operator(action,e,mask, "/",  AEXP_DIV,     true);
-    if (!root) root=find_operator(action,e,mask, "\\", AEXP_DIV,     true);
-
+    for (int i=0; (AEXP_operators[i].type!=AEXP_NONE)&&(!root); i++)
+      root=find_operator(action,e,mask, AEXP_operators[i].name, AEXP_operators[i].type, AEXP_operators[i].binary);
 
     // check if this is fixed value/number 
     if (!root){
       double val;
       if (str_to_float(e, val)){
-        root= new act_expression_t();
-        root->type=AEXP_VALUE;
-        root->value= val;
+        root= new act_expression_t(AEXP_VALUE,e,val);
       }
     }
 
     // search for "named value", if nothing above found
-    if (!root&&(e!="")){
+    if ((!root)&&(e!="")){
       std::vector<std::string> parts;
       unsigned int num_parts = util_t::string_split( parts, e, "." );
       if ((num_parts>3)||(num_parts==0)) warn(3,action,"Wrong number of parts(.) in : "+e);
@@ -1362,13 +1399,10 @@ void action_t::cancel()
             if (suffix=="buff")   sfx_stacks=true;
             if (suffix=="stacks") sfx_stacks=true;
             if (!sfx_stacks){
-              pbuff_expression* e_buff= new pbuff_expression();
-              e_buff->type=AEXP_CUSTOM;
-              e_buff->buff= buff;
+              pbuff_expression_t* e_buff= new pbuff_expression_t(AEXP_BUFF,e,buff);
               root= e_buff;
             }else{
-              root= new act_expression_t();
-              root->type= AEXP_DOUBLE_PTR;
+              root= new act_expression_t(AEXP_DOUBLE_PTR,e);
               root->p_value= &buff->buff_value;
             }
           }
@@ -1407,9 +1441,7 @@ void action_t::cancel()
           if (func_name=="cast") func_type=EFG_TCAST;
           // now create node if known global value
           if (func_type>0){
-            global_expression_t* g_func= new global_expression_t();
-            g_func->type= func_type;
-            g_func->action=act;
+            global_expression_t* g_func= new global_expression_t(func_type,e,act);
             root= g_func;
           }else
             if (prefix!=0)
@@ -1433,9 +1465,7 @@ void action_t::cancel()
           if (name=="move") glob_type=EFG_MOVING;
           // now create node if known global value
           if (glob_type>0){
-            global_expression_t* g_func= new global_expression_t();
-            g_func->type= glob_type;
-            g_func->action=action;
+            global_expression_t* g_func= new global_expression_t(glob_type,e,action);
             root= g_func;
           }
         }
@@ -1501,16 +1531,47 @@ void action_t::cancel()
             }
           };
           //create constant node with this. Value will be zero(false) if not found
-          root= new act_expression_t();
-          root->type=AEXP_VALUE;
-          root->value= item_value;
+          root= new act_expression_t(AEXP_VALUE,e,item_value);
         }
       }
 
     }
-
-    //return result
+    //return result for act_expression_t::create
     return root;
+  }
+
+  //return name of operand , based on type
+  std::string act_expression_t::op_name(int op_type){
+    if (op_type<=AEXP_NONE) return "NONE";
+    if (op_type==AEXP_VALUE) return "VALUE";
+    if (op_type==AEXP_INT_PTR) return "INT_PTR";
+    if (op_type==AEXP_DOUBLE_PTR) return "DOUBLE_PTR";
+    if (op_type==AEXP_BUFF) return "BUFF";
+    if (op_type==AEXP_FUNC) return "VARIABLE";
+    // now check list
+    for (int i=0; (AEXP_operators[i].type!=AEXP_NONE); i++)
+      if (AEXP_operators[i].type==op_type) 
+        return AEXP_operators[i].name;
+    //if none found
+    return "Unknown operator!";
+  }
+
+  // fill expression into string, for debug purpose
+  std::string act_expression_t::to_string(int level){
+    std::string s="\n";
+    std::string lvl_tab="";
+    for (int i=0; i<level; i++) lvl_tab+="  ";
+    char buff[100];
+    sprintf(buff,"%d",level);
+    s+=lvl_tab+"["+buff+"]:  "+op_name(type);
+    if (type==AEXP_VALUE){
+      sprintf(buff,"%1.2lf",value);
+      s=s+"("+buff+") ";
+    }
+    s+="  : "+exp_str+"\n";
+    if (operand_1) s+=operand_1->to_string(level+1);
+    if (operand_2) s+=operand_2->to_string(level+1);
+    return s;
   }
 
 

@@ -536,15 +536,18 @@ struct act_expression_t{
   int    type;
   double value;
   void   *p_value;
+  std::string exp_str;
   act_expression_t* operand_1;
   act_expression_t* operand_2;
-  act_expression_t();
+  act_expression_t(int e_type, std::string expression_str="", double e_value=0);
+  std::string to_string(int level=0);
   virtual ~act_expression_t() {}
   virtual double evaluate();
   virtual bool   ok();
   static act_expression_t* create(action_t* action, std::string expression);
   static void warn(int severity, action_t* action, std::string msg);
-  static act_expression_t* find_operator(action_t* action, std::string unmasked, std::string expression, std::string op_str, int op_type, bool binary, bool can_miss_left=false);
+  static act_expression_t* find_operator(action_t* action, std::string unmasked, std::string expression, std::string op_str, int op_type, bool binary);
+  static std::string op_name(int op_type);
 
 };
 
@@ -697,6 +700,7 @@ struct sim_t
   FILE* log_file;
   int http_throttle;
   int duration_uptimes;
+  int debug_exp;
 
   // Multi-Threading
   int threads;
