@@ -282,7 +282,13 @@ bool item_t::init()
     if( ! armory_t::download_item( *this, option_id_str ) )
       return false;
 
-    encoded_name_str = armory_name_str;
+    if( encoded_name_str != armory_name_str ) 
+    {
+      printf( "simcraft: Warning! Player %s at slot %s has inconsistency between name '%s' and id '%s'\n",
+	      player -> name(), slot_name(), option_name_str.c_str(), option_id_str.c_str() );
+
+      encoded_name_str = armory_name_str;
+    }
   }
 
   encoded_stats_str   = armory_stats_str;

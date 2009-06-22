@@ -920,18 +920,6 @@ void player_t::init_items()
   }
 
   set_bonus.init( this );
-
-  if( ! sim -> parent )
-  {
-    item_t& t1 = items[ SLOT_TRINKET_1 ];
-    item_t& t2 = items[ SLOT_TRINKET_2 ];
-
-    if( t1.active() && ! t1.equip.active() && ! t1.use.active() ) 
-      printf( "simcraft: Player %s has trinket '%s' which has no known 'equip' or 'use' attribute.\n", name(), t1.name() );
-
-    if( t2.active() && ! t2.equip.active() && ! t2.use.active() ) 
-      printf( "simcraft: Player %s has trinket '%s' which has no known 'equip' or 'use' attribute.\n", name(), t2.name() );
-  }
 }
 
 // player_t::init_core ======================================================
