@@ -1340,6 +1340,11 @@ struct mangle_cat_t : public druid_attack_t
       };
     init_rank( ranks, 48566 );
 
+    if( sim -> P320 )
+    {
+      base_dd_min = base_dd_max = 566;
+    }
+
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier *= 2.0;
 
@@ -1440,7 +1445,10 @@ struct rip_t : public druid_attack_t
     static double dmg_67[] = { 24+48*1, 24+48*2, 24+48*3, 24+48*4, 24+48*5 };
     static double dmg_60[] = { 17+28*1, 17+28*2, 17+28*3, 17+28*4, 17+28*5 };
 
-    combo_point_dmg = ( p -> level >= 80 ? dmg_80 :
+    static double dmg_80_P320[] = { 36+93*1, 36+93*2, 36+93*3, 36+93*4, 36+93*5 };
+
+    combo_point_dmg = ( sim -> P320 ? dmg_80_P320 :
+                        p -> level >= 80 ? dmg_80 :
                         p -> level >= 71 ? dmg_71 :
                         p -> level >= 67 ? dmg_67 :
                         dmg_60 );
@@ -1562,8 +1570,17 @@ struct shred_t : public druid_attack_t
       };
     init_rank( ranks, 48572 );
 
+    if( sim -> P320 )
+    {
+      base_dd_min = base_dd_max = 666;
+      weapon_multiplier *= 2.26;
+    }
+    else
+    {
+      weapon_multiplier *= 2.25;      
+    }
+
     weapon = &( p -> main_hand_weapon );
-    weapon_multiplier *= 2.25;
     requires_position  = POSITION_BACK;
     adds_combo_points  = true;
     may_crit           = true;
