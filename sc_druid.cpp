@@ -210,6 +210,10 @@ struct druid_t : public player_t
     int t7_4pc_balance;
     int t8_2pc_balance;
     int t8_4pc_balance;
+    int t9_2pc_balance;
+    int t9_4pc_balance;
+    int t10_2pc_balance;
+    int t10_4pc_balance;
     int t4_2pc_feral;
     int t4_4pc_feral;
     int t5_2pc_feral;
@@ -220,6 +224,10 @@ struct druid_t : public player_t
     int t7_4pc_feral;
     int t8_2pc_feral;
     int t8_4pc_feral;
+    int t9_2pc_feral;
+    int t9_4pc_feral;
+    int t10_2pc_feral;
+    int t10_4pc_feral;
     tiers_t() { memset( ( void* ) this, 0x0, sizeof( tiers_t ) ); }
   };
   tiers_t tiers;
@@ -1400,6 +1408,8 @@ struct rake_t : public druid_attack_t
     may_crit          = true;
     base_tick_time    = 3.0;
     num_ticks         = 3;
+    if( p -> tiers.t9_2pc_feral ) num_ticks++;
+      
     direct_power_mod  = 0.01;
     tick_power_mod    = 0.06;
     base_cost        -= p -> talents.ferocity;
@@ -1437,7 +1447,7 @@ struct rip_t : public druid_attack_t
     requires_combo_points = true;
     base_cost             = 30;
     base_tick_time        = 2.0;
-
+  
     num_ticks = 6 + ( p -> glyphs.rip ? 2 : 0 ) + ( p -> tiers.t7_2pc_feral ? 2 : 0 );
 
     static double dmg_80[] = { 39+99*1, 39+99*2, 39+99*3, 39+99*4, 39+99*5 };
@@ -1454,7 +1464,7 @@ struct rip_t : public druid_attack_t
                         dmg_60 );
 
     tick_may_crit = ( p -> talents.primal_gore != 0 );
-
+    if( p -> tiers.t9_4pc_feral ) base_crit += 0.05;
     observer = &( p -> active_rip );
   }
 
@@ -1789,6 +1799,8 @@ struct ferocious_bite_t : public druid_attack_t
 
     requires_combo_points = true;
     may_crit  = true;
+    if( p -> tiers.t9_4pc_feral ) base_crit += 0.05;
+
     base_cost = 35;
 
     base_multiplier *= 1.0 + ( p -> talents.feral_aggression * 0.03 );
@@ -2325,7 +2337,8 @@ struct moonfire_t : public druid_spell_t
     direct_power_mod  = 0.15;
     tick_power_mod    = 0.13;
     may_crit          = true;
-
+    tick_may_crit     = ( p -> tiers.t9_2pc_balance != 0 );
+    
     base_cost *= 1.0 - util_t::talent_rank( p -> talents.moonglow,    3, 0.03 );
     base_crit += util_t::talent_rank( p -> talents.improved_moonfire, 2, 0.05 );
 
@@ -2577,6 +2590,8 @@ struct starfire_t : public druid_spell_t
     }
     if ( p -> tiers.t6_4pc_balance ) base_crit += 0.05;
     if ( p -> tiers.t7_4pc_balance ) base_crit += 0.05;
+      // YAWN @ T9_4pc :-(
+    if ( p -> tiers.t9_4pc_balance ) base_crit += 0.05;
   }
 
   virtual void player_buff()
@@ -3249,6 +3264,10 @@ void druid_t::init_items()
     if ( set_bonus.tier7_4pc() ) tiers.t7_4pc_balance = 1;
     if ( set_bonus.tier8_2pc() ) tiers.t8_2pc_balance = 1;
     if ( set_bonus.tier8_4pc() ) tiers.t8_4pc_balance = 1;
+    if ( set_bonus.tier9_2pc() ) tiers.t9_2pc_balance = 1;
+    if ( set_bonus.tier9_4pc() ) tiers.t9_4pc_balance = 1;
+    if ( set_bonus.tier10_2pc() ) tiers.t10_2pc_balance = 1;
+    if ( set_bonus.tier10_4pc() ) tiers.t10_4pc_balance = 1;
   }
   else
   {
@@ -3262,6 +3281,10 @@ void druid_t::init_items()
     if ( set_bonus.tier7_4pc() ) tiers.t7_4pc_feral = 1;
     if ( set_bonus.tier8_2pc() ) tiers.t8_2pc_feral = 1;
     if ( set_bonus.tier8_4pc() ) tiers.t8_4pc_feral = 1;
+    if ( set_bonus.tier9_2pc() ) tiers.t9_2pc_feral = 1;
+    if ( set_bonus.tier9_4pc() ) tiers.t9_4pc_feral = 1;
+    if ( set_bonus.tier10_2pc() ) tiers.t10_2pc_feral = 1;
+    if ( set_bonus.tier10_4pc() ) tiers.t10_4pc_feral = 1;
 
     equipped_weapon_dps = main_hand_weapon.damage / main_hand_weapon.swing_time;
   }
