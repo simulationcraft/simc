@@ -68,6 +68,43 @@
     { "",   AEXP_NONE,    false}
   };
 
+
+  // oldbuff_expression_t:: custom class to calculate "old" buffs expirations
+  oldbuff_expression_t::oldbuff_expression_t(std::string expression_str, void* value_ptr, event_t** e_expiration, int ptr_type)
+                        :act_expression_t(AEXP_BUFF,expression_str,0) 
+  {
+    expiration_ptr=e_expiration;
+    if (ptr_type=2){
+      int_ptr=0;
+      double_ptr=(double*) value_ptr;
+    }else{
+      int_ptr=(int*) value_ptr;
+      double_ptr=0;
+    }
+  }
+
+  double oldbuff_expression_t::evaluate() {
+    double time=0;
+    double value=0;
+    // get current value
+    if (int_ptr) value=*int_ptr;
+    if (double_ptr) value=*double_ptr;
+    // if this old buff do not have expirations, return values 
+    if (expiration_ptr==0) return value; 
+    // get time until expiration
+    event_t* expiration=*expiration_ptr;
+    if (expiration!=0){
+      time= expiration->time;
+      if (expiration->reschedule_time>time) 
+        time= expiration->reschedule_time;
+      time-= expiration->sim->current_time;
+      if (time<0) time=0;
+    }
+    // if expiration is not up, check if buff is marked as up anyway
+    if ((time==0)&&(value!=0)) time=0.1;
+    return time;
+  }
+
   // custom class to invoke pbuff_t expiration
   struct pbuff_expression_t: public act_expression_t{
     pbuff_t* buff;
@@ -75,40 +112,6 @@
     virtual ~pbuff_expression_t(){};
     virtual double evaluate() {
       return buff->expiration_time();
-    }
-  };
-
-  // custom class to calculate "old" buffs expirations
-  struct oldbuff_expression_t: public act_expression_t{
-    event_t** expiration_ptr;
-    int* int_ptr;
-    double* double_ptr;
-    oldbuff_expression_t(std::string expression_str, event_t** e_expiration):act_expression_t(AEXP_BUFF,expression_str,0){
-      expiration_ptr=e_expiration;
-      int_ptr=0;
-      double_ptr=0;
-    }
-    virtual ~oldbuff_expression_t(){};
-    virtual double evaluate() {
-      double time=0;
-      double value=0;
-      // get current value
-      if (int_ptr) value=*int_ptr;
-      if (double_ptr) value=*double_ptr;
-      // if this old buff do not have expirations, return values 
-      if (expiration_ptr==0) return value; 
-      // get time until expiration
-      event_t* expiration=*expiration_ptr;
-      if (expiration!=0){
-        time= expiration->time;
-        if (expiration->reschedule_time>time) 
-          time= expiration->reschedule_time;
-        time-= expiration->sim->current_time;
-        if (time<0) time=0;
-      }
-      // if expiration is not up, check if buff is marked as up anyway
-      if ((time==0)&&(value!=0)) time=0.1;
-      return time;
     }
   };
 
@@ -364,6 +367,7 @@ void act_expression_t::warn(int severity, action_t* action, const char* format, 
       // get name of value, and suffix
       std::string name="";
       std::string suffix="";
+      if (prefix==EXPF_NONE) pfx_candidate="";
       unsigned int p_name=prefix ? 1:0;
       if (p_name<num_parts)   name=parts[p_name]; 
       if (p_name+1<num_parts) suffix=parts[p_name+1]; 
@@ -387,33 +391,6 @@ void act_expression_t::warn(int severity, action_t* action, const char* format, 
             }else{
               root= new act_expression_t(AEXP_DOUBLE_PTR,e);
               root->p_value= &buff->buff_value;
-            }
-          }
-          // if buff. not found, check in "old" player_t
-          // only "interesting" buffs are hard-coded here
-          if ((prefix==EXPF_BUFF)&&(!buff)){
-            int ptr_type;
-            void* value_ptr;
-            event_t** expiration_ptr;
-            action->player->find_buff_name(name, ptr_type, value_ptr, expiration_ptr);
-            // create if found Int or Double buff types
-            if ((ptr_type==1)||(ptr_type==2)){
-              // if simple value of buff is asked 
-              if (sfx_stacks){
-                if (ptr_type ==1) 
-                  root= new act_expression_t(AEXP_INT_PTR,e); 
-                else
-                  root= new act_expression_t(AEXP_DOUBLE_PTR,e);
-                root->p_value= value_ptr;
-              }else{
-                // if expiration time is needed
-                oldbuff_expression_t* node= new oldbuff_expression_t(e, expiration_ptr);
-                if (ptr_type ==1) 
-                  node->int_ptr= (int*)value_ptr; 
-                else
-                  node->double_ptr= (double*)value_ptr; 
-                root=node;
-              }
             }
           }
         }
@@ -560,6 +537,10 @@ void act_expression_t::warn(int severity, action_t* action, const char* format, 
           };
           //create constant node with this. Value will be zero(false) if not found
           root= new act_expression_t(AEXP_VALUE,e,item_value);
+        }
+        // if nothing found so far, try function extensions
+        if (!root){
+          root= action->create_expression(name, pfx_candidate, suffix);
         }
       }
 

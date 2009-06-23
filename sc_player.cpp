@@ -2725,23 +2725,27 @@ bool player_t::save( FILE* file )
   return true;
 }
 
-// player_t::find_buff_name ====================================================
-void player_t::find_buff_name(std::string& name, int& type, void*& value_ptr, event_t**& expiration_ptr){
-  type=1; // 0== not found, 1== INT type, 2== DOUBLE type
-  value_ptr=0;
-  expiration_ptr=0;
-  if (name=="bloodlust")  value_ptr= &buffs.bloodlust;
-  if (name=="cast_time_reduction"){
-    type=2;
-    value_ptr= &buffs.cast_time_reduction;
+// player_t::create_expression ====================================================
+act_expression_t* player_t::create_expression(std::string& name,std::string& prefix,std::string& suffix){
+  act_expression_t* node=0;
+  std::string e_name=name;
+  if (prefix!="") e_name=prefix+"."+e_name;
+  if (suffix!="") e_name=e_name+"."+suffix;
+  if ((prefix=="buff")&&(node==0)){
+    oldbuff_expression_t* buff=0;
+    bool ex=(suffix!="value")&&(suffix!="buff")&&(suffix!="stacks"); // if one of these, ignore expiration time
+    if (name=="tier8_2pc")            buff= new oldbuff_expression_t(e_name, &buffs.tier8_2pc,  ex?&expirations.tier8_2pc:0); else
+    if (name=="tier8_4pc")            buff= new oldbuff_expression_t(e_name, &buffs.tier8_4pc,  ex?&expirations.tier8_4pc:0); else
+    if (name=="tier7_2pc")            buff= new oldbuff_expression_t(e_name, &buffs.tier7_2pc,  ex?&expirations.tier7_2pc:0); else
+    if (name=="tier7_4pc")            buff= new oldbuff_expression_t(e_name, &buffs.tier7_4pc,  ex?&expirations.tier7_4pc:0); else
+    if (name=="tricks_of_the_trade")  buff= new oldbuff_expression_t(e_name, &buffs.tricks_of_the_trade, ex?&expirations.tricks_of_the_trade:0 ); else
+    if (name=="bloodlust")            buff= new oldbuff_expression_t(e_name, &buffs.bloodlust); else
+    if (name=="cast_time_reduction")  buff= new oldbuff_expression_t(e_name, &buffs.cast_time_reduction ,0, 2); 
+    node=buff;
   }
-  if (name=="tricks_of_the_trade")  { value_ptr=&buffs.tricks_of_the_trade; expiration_ptr=&expirations.tricks_of_the_trade; }
-  if (name=="tier7_2pc")            { value_ptr=&buffs.tier7_2pc;  expiration_ptr=&expirations.tier7_2pc; }
-  if (name=="tier7_4pc")            { value_ptr=&buffs.tier7_4pc;  expiration_ptr=&expirations.tier7_4pc; }
-  if (name=="tier8_2pc")            { value_ptr=&buffs.tier8_2pc;  expiration_ptr=&expirations.tier8_2pc; }
-  if (name=="tier8_4pc")            { value_ptr=&buffs.tier8_4pc;  expiration_ptr=&expirations.tier8_4pc; }
-  if (value_ptr==0) type=0;
+  return node;
 }
+
 
 
 // player_t::get_options ====================================================

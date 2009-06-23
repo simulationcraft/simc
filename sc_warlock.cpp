@@ -52,6 +52,20 @@ struct warlock_t : public player_t
     _buffs_t() { reset(); }
   };
   _buffs_t _buffs;
+  
+  // warlock specific expression functions
+  struct warlock_expression_t: public act_expression_t{
+    warlock_t* player;
+    warlock_expression_t(warlock_t* e_player, std::string expression_str, int e_func_type):act_expression_t(e_func_type,expression_str,0),player(e_player){};
+    virtual ~warlock_expression_t(){};
+    virtual double evaluate() {
+      switch(type){
+        case 1:   return player->decimation_queue.size();
+      }
+      return 0;
+    }
+  };
+  
 
 
   // Cooldowns
@@ -277,7 +291,7 @@ struct warlock_t : public player_t
 
   // Event Tracking
   virtual void regen( double periodicity );
-  virtual void find_buff_name(std::string& name, int& type, void*& value_ptr, event_t**& expiration_ptr);      
+  virtual act_expression_t* create_expression(std::string& name, std::string& prefix, std::string& suffix);      
 };
 
 // ==========================================================================
@@ -4832,28 +4846,39 @@ void warlock_t::regen( double periodicity )
 }
 
 
-// warlock_t::find_buff_name =================================================
-
-// Mapping of buff names to variables. Used in expressions. This SHOULD be replaced with pbuff_t
-void warlock_t::find_buff_name(std::string& name, int& type, void*& value_ptr, event_t**& expiration_ptr){
-  // search first if base player has buff with that name
-  player_t::find_buff_name(name,type,value_ptr,expiration_ptr);
-  // if not found , check if it is warlock buff: INT
-  if ((!type)||(value_ptr==0)){
-    // int
-    if (name=="decimation")         { type=1; value_ptr= &_buffs.decimation;      expiration_ptr=&_expirations.decimation;       };        
-    if (name=="demonic_empathy")    { type=1; value_ptr= &_buffs.demonic_empathy; expiration_ptr=&_expirations.demonic_empathy;  };
-    if (name=="flame_shadow")       { type=1; value_ptr= &_buffs.flame_shadow;    expiration_ptr=&_expirations.flame_shadow;     };
-    if (name=="shadow_flame")       { type=1; value_ptr= &_buffs.shadow_flame;    expiration_ptr=&_expirations.shadow_flame;     };
-    if (name=="haunted")            { type=1; value_ptr= &_buffs.haunted;         expiration_ptr=&_expirations.haunted;          };
-    if (name=="metamorphosis")      { type=1; value_ptr= &_buffs.metamorphosis;   expiration_ptr=0;                              };
-    if (name=="pet_sacrifice")      { type=1; value_ptr= &_buffs.pet_sacrifice;   expiration_ptr=0;                              };
-    if (name=="shadow_trance")      { type=1; value_ptr= &_buffs.shadow_trance;   expiration_ptr=0;                              };
-    //double
-    if (name=="fel_armor")          { type=2; value_ptr= &_buffs.fel_armor;       expiration_ptr=0;                              };
-    if (name=="molten_core")        { type=2; value_ptr= &_buffs.molten_core;     expiration_ptr=&_expirations.molten_core;      };
+// warlock_t::create_expression =================================================
+act_expression_t* warlock_t::create_expression(std::string& name,std::string& prefix,std::string& suffix){
+  act_expression_t* node= player_t::create_expression(name,prefix,suffix);
+  if (node!=0) return node;
+  std::string e_name=name;
+  if (prefix!="") e_name=prefix+"."+e_name;
+  if (suffix!="") e_name=e_name+"."+suffix;
+  // old buffs
+  if ((prefix=="buff")&&(node==0)){
+    oldbuff_expression_t* buff=0;
+    bool ex=(suffix!="value")&&(suffix!="buff")&&(suffix!="stacks"); // if one of these, ignore expiration time
+    if (name=="decimation")           buff= new oldbuff_expression_t(e_name, &_buffs.decimation,        ex?&_expirations.decimation:0); else
+    if (name=="metamorphosis")        buff= new oldbuff_expression_t(e_name, &_buffs.metamorphosis,     0); else
+    if (name=="haunted")              buff= new oldbuff_expression_t(e_name, &_buffs.haunted,           ex?&_expirations.haunted:0); else
+    if (name=="shadow_trance")        buff= new oldbuff_expression_t(e_name, &_buffs.shadow_trance,     0); else
+    if (name=="demonic_empathy")      buff= new oldbuff_expression_t(e_name, &_buffs.demonic_empathy,   ex?&_expirations.demonic_empathy:0); else
+    if (name=="shadow_flame")         buff= new oldbuff_expression_t(e_name, &_buffs.shadow_flame,      ex?&_expirations.shadow_flame:0); else
+    if (name=="flame_shadow")         buff= new oldbuff_expression_t(e_name, &_buffs.flame_shadow,      ex?&_expirations.flame_shadow:0); else
+    if (name=="pet_sacrifice")        buff= new oldbuff_expression_t(e_name, &_buffs.pet_sacrifice,     0); else
+    if (name=="fel_armor")            buff= new oldbuff_expression_t(e_name, &_buffs.fel_armor,         0, 2); else 
+    if (name=="molten_core")          buff= new oldbuff_expression_t(e_name, &_buffs.molten_core,       ex?&_expirations.molten_core:0, 2); 
+    node=buff;
   }
+  // general functions
+  if ((node==0)){
+    warlock_expression_t* func=0;
+    if (name=="decimation_queue")     func= new warlock_expression_t(this,e_name, 1);
+    node=func;
+  }
+  // return expression node, if any
+  return node;
 }
+
 
 
 // warlock_t::primary_tree =================================================

@@ -1063,3 +1063,15 @@ void action_t::cancel()
   reset();
 }
 
+// action_t::create_expression ====================================================
+act_expression_t* action_t::create_expression(std::string& name,std::string& prefix,std::string& suffix){
+  act_expression_t* node=0;
+  // check action specific functions
+  //...
+
+  // if none found, check player functions
+  if (node==0)   node=player->create_expression(name,prefix,suffix);
+  //return resutl
+  return node;
+}
+

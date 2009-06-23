@@ -552,6 +552,16 @@ struct act_expression_t{
 
 };
 
+struct oldbuff_expression_t: public act_expression_t{
+  event_t** expiration_ptr;
+  int* int_ptr;
+  double* double_ptr;
+  oldbuff_expression_t(std::string expression_str, void* value_ptr, event_t** e_expiration=0, int ptr_type=1);
+  virtual ~oldbuff_expression_t(){};
+  virtual double evaluate();
+};
+
+
 // Simulation Engine =========================================================
 
 struct sim_t
@@ -1305,7 +1315,7 @@ struct player_t
   virtual pet_t*    find_pet     ( const std::string& name );
 
   virtual void trigger_replenishment();
-  virtual void find_buff_name(std::string& name, int& type, void*& value_ptr, event_t**& expiration_ptr);      
+  virtual act_expression_t* create_expression(std::string& name, std::string& prefix, std::string& suffix);      
 
 
   // Class-Specific Methods
@@ -1682,6 +1692,8 @@ struct action_t
 
   virtual double total_dd_multiplier() { return total_multiplier() * base_dd_multiplier; }
   virtual double total_td_multiplier() { return total_multiplier() * base_td_multiplier; }
+  virtual act_expression_t* create_expression(std::string& name, std::string& prefix, std::string& suffix);      
+
 };
 
 // Attack ====================================================================
