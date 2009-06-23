@@ -2822,6 +2822,10 @@ std::vector<option_t>& player_t::get_options()
       { "tier7_4pc",                            OPT_BOOL,     &( set_bonus.count[ SET_T7_4PC ]                ) },
       { "tier8_2pc",                            OPT_BOOL,     &( set_bonus.count[ SET_T8_2PC ]                ) },
       { "tier8_4pc",                            OPT_BOOL,     &( set_bonus.count[ SET_T8_4PC ]                ) },
+      { "tier9_2pc",                            OPT_BOOL,     &( set_bonus.count[ SET_T9_2PC ]                ) },
+      { "tier9_4pc",                            OPT_BOOL,     &( set_bonus.count[ SET_T9_4PC ]                ) },
+      { "tier10_2pc",                           OPT_BOOL,     &( set_bonus.count[ SET_T10_2PC ]               ) },
+      { "tier10_4pc",                           OPT_BOOL,     &( set_bonus.count[ SET_T10_4PC ]               ) },
       { "meta_gem",                             OPT_STRING,   &( meta_gem_str                                 ) },
       // @option_doc loc=skip
       { "shoulder",                             OPT_STRING,   &( items[ SLOT_SHOULDERS ].options_str          ) },
