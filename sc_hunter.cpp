@@ -131,6 +131,7 @@ struct hunter_t : public player_t
     int  bestial_discipline;
     int  black_arrow;
     int  careful_aim;
+    int  catlike_reflexes;
     int  chimera_shot;
     int  cobra_strikes;
     int  combat_experience;
@@ -3381,7 +3382,7 @@ struct kill_command_t : public hunter_spell_t
     parse_options( options, options_str );
 
     base_cost = p -> resource_base[ RESOURCE_MANA ] * 0.03;
-    cooldown  = 60;
+    cooldown  = 60 - (p -> sim -> P320 ? 10 * p -> talents.catlike_reflexes : 0);
     trigger_gcd = 0;
   }
 
@@ -3963,7 +3964,7 @@ bool hunter_t::get_talent_trees( std::vector<int*>& beastmastery,
       { { 16, &( talents.frenzy                      ) }, { 16, &( talents.combat_experience            ) }, { 16, NULL                                  } },
       { { 17, &( talents.ferocious_inspiration       ) }, { 17, &( talents.ranged_weapon_specialization ) }, { 17, &( talents.lightning_reflexes       ) } },
       { { 18, &( talents.bestial_wrath               ) }, { 18, &( talents.piercing_shots               ) }, { 18, &( talents.resourcefulness          ) } },
-      { { 19, NULL                                     }, { 19, &( talents.trueshot_aura                ) }, { 19, &( talents.expose_weakness          ) } },
+      { { 19, &( talents.catlike_reflexes            ) }, { 19, &( talents.trueshot_aura                ) }, { 19, &( talents.expose_weakness          ) } },
       { { 20, &( talents.invigoration                ) }, { 20, &( talents.improved_barrage             ) }, { 20, NULL                                  } },
       { { 21, &( talents.serpents_swiftness          ) }, { 21, &( talents.master_marksman              ) }, { 21, &( talents.thrill_of_the_hunt       ) } },
       { { 22, &( talents.longevity                   ) }, { 22, &( talents.rapid_recuperation           ) }, { 22, &( talents.master_tactician         ) } },
@@ -4000,6 +4001,7 @@ std::vector<option_t>& hunter_t::get_options()
       { "bestial_discipline",                OPT_INT, &( talents.bestial_discipline           ) },
       { "bestial_wrath",                     OPT_INT, &( talents.bestial_wrath                ) },
       { "careful_aim",                       OPT_INT, &( talents.careful_aim                  ) },
+      { "catlike_reflexes",                  OPT_INT, &( talents.catlike_reflexes             ) },
       { "chimera_shot",                      OPT_INT, &( talents.chimera_shot                 ) },
       { "cobra_strikes",                     OPT_INT, &( talents.cobra_strikes                ) },
       { "combat_experience",                 OPT_INT, &( talents.combat_experience            ) },
