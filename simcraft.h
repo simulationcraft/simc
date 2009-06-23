@@ -494,6 +494,7 @@ struct pbuff_t{
   double buff_value; 
   double value; 
   buff_expiration_t* expiration; 
+  std::string name_expiration;
   int (*callback_expiration)(); //if set, will be called upon expiration
   int *trigger_counter;  // if set, will be incremented/decremented when buff is up/down
   double last_trigger, expected_end;
@@ -544,9 +545,9 @@ struct act_expression_t{
   virtual ~act_expression_t() {}
   virtual double evaluate();
   virtual bool   ok();
-  static act_expression_t* create(action_t* action, std::string expression);
-  static void warn(int severity, action_t* action, std::string msg);
-  static act_expression_t* find_operator(action_t* action, std::string unmasked, std::string expression, std::string op_str, int op_type, bool binary);
+  static act_expression_t* create(action_t* action, std::string& expression);
+  static void warn(int severity, action_t* action, std::string& msg);
+  static act_expression_t* find_operator(action_t* action, std::string& unmasked, std::string& expression, std::string& op_str, int op_type, bool binary);
   static std::string op_name(int op_type);
 
 };

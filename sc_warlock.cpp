@@ -4734,8 +4734,9 @@ void warlock_t::init_actions()
 {
   if( action_list_str.empty() )
   {
-    action_list_str+="flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/spell_stone/fel_armor/summon_pet,";
-
+    action_list_str+="flask,type=frost_wyrm/food,type=tender_shoveltusk_steak";
+    action_list_str+= talents.emberstorm ? "/fire_stone" :  "/spell_stone";
+    action_list_str+="/fel_armor/summon_pet,";
     if (talents.summon_felguard) action_list_str+="felguard"; else 
       if (talents.empowered_imp || talents.improved_imp) action_list_str+="imp"; else 
         action_list_str+="succubus";
@@ -4757,7 +4758,7 @@ void warlock_t::init_actions()
     }
     else if ( talents.chaos_bolt ) // 00_13_58
     {  
-      action_list_str+="/curse_of_doom,time_to_die>=70/immolate/conflagrate/chaos_bolt";
+      action_list_str+="/curse_of_doom,time_to_die>=80/immolate/conflagrate/chaos_bolt";
     }
     else if ( talents.metamorphosis ) // 00_56_15
     {  

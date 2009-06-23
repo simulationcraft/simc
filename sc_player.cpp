@@ -369,6 +369,7 @@ static bool parse_talent_url( sim_t* sim,
   pbuff_t::pbuff_t(player_t* plr, std::string name, double duration, double cooldown, int aura_idx, double use_value, bool t_ignore, double t_chance ){
     player=plr;
     name_str=name;
+    name_expiration = name_str+"_Expiration";
     buff_value=0;
     aura_id=aura_idx;
     buff_duration=duration;
@@ -516,8 +517,7 @@ static bool parse_talent_url( sim_t* sim,
     pbuff=p_buff;
     aura_id=aura_idx;
     if (aura_id==0) aura_id= pbuff->aura_id;
-    std::string name = pbuff->name_str+" Expiration";
-    player -> aura_gain( name.c_str(), aura_id);
+    player -> aura_gain( pbuff->name_expiration.c_str(), aura_id);
     n_trig= pbuff->n_triggers;
     sim -> add_event( this, b_duration );
   }
@@ -561,9 +561,9 @@ static bool parse_talent_url( sim_t* sim,
 
   pbuff_t* buff_list_t::find_buff(std::string& name){
     pbuff_t* res=0;
-    name=proper_option_name(name);
+    std::string prop_name=proper_option_name(name);
     for (pbuff_t* p=first; p && !res; p=p->next){
-      if (proper_option_name(p->name_str)==name)
+      if (proper_option_name(p->name_str)==prop_name)
         res=p;
     }
     return res;

@@ -1190,7 +1190,7 @@ void action_t::cancel()
   //            1= just warning
   //            2= report error, but do not break
   //            3= breaking error, assert
-  void act_expression_t::warn(int severity, action_t* action, std::string msg)
+  void act_expression_t::warn(int severity, action_t* action, std::string& msg)
   {
     std::string e_msg;
     if (severity<2)  e_msg="Warning";  else  e_msg="Error";
@@ -1205,7 +1205,7 @@ void action_t::cancel()
   }
 
 
-  act_expression_t* act_expression_t::find_operator(action_t* action, std::string unmasked, std::string expression, std::string op_str, 
+  act_expression_t* act_expression_t::find_operator(action_t* action, std::string& unmasked, std::string& expression, std::string& op_str, 
                                                     int op_type, bool binary)
   {
     act_expression_t* node=0;
@@ -1239,8 +1239,9 @@ void action_t::cancel()
         double val= node->evaluate();
         delete node;
         node= new act_expression_t(AEXP_VALUE,unmasked,val);
-      }else
+      };
       // optimize if one operand is constant, for boolean param ops: AEXP_AND, AEXP_OR
+      if ((op1!=0)&&(op2!=0))
       if ( ((op1->type==AEXP_VALUE)||(op2->type==AEXP_VALUE)) &&  
            ((op_type==AEXP_AND)||(op_type==AEXP_OR)) ){
         // get constant value
@@ -1255,13 +1256,14 @@ void action_t::cancel()
         }
         // now select if it evaluate to constant
         delete node;
-        if ( ((op_type==AEXP_AND)&&(c_val=false))||
-             ((op_type==AEXP_OR) &&(c_val=true)) ) {
+        if ( ((op_type==AEXP_AND)&&(c_val==false))||
+             ((op_type==AEXP_OR) &&(c_val==true)) ) {
           node= new act_expression_t(AEXP_VALUE,unmasked,c_val);
           delete nc;
         }else{
           //or it evaluate to single operand
           node=nc;
+          node->exp_str=unmasked;
         }
       }
     }
@@ -1295,7 +1297,7 @@ void action_t::cancel()
 
   // this parse expression string and create needed exp.tree
   // using different types of "expression nodes"
-  act_expression_t* act_expression_t::create(action_t* action, std::string expression)
+  act_expression_t* act_expression_t::create(action_t* action, std::string& expression)
   {
     act_expression_t* root=0;
     std::string e=trim(tolower(expression));
