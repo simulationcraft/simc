@@ -148,7 +148,7 @@ static xml_node_t* create_node( const std::string&      input,
   }
   else 
   {
-    printf( "Unexpected character '%c' at index %lu (%s)\n", c, index, node -> name() );
+    printf( "Unexpected character '%c' at index %d (%s)\n", c, (int) index, node -> name() );
     printf( "%s\n", input.c_str() );
     assert( false );
   }

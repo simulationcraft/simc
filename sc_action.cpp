@@ -1146,29 +1146,6 @@ void action_t::cancel()
     }
   };
 
-
-  // exp.class that evaluate to constant value
-  struct expression_value_t: public act_expression_t
-  {
-    double value;
-    virtual double evaluate(){ return value;}
-  };
-
-  // exp.class that evaluate to value from pointer to double
-  struct expression_double_prt_t: public act_expression_t
-  {
-    double* p_value;
-    virtual double evaluate(){ return *p_value;}
-  };
-
-  // exp.class that evaluate to value from pointer to int
-  struct expression_int_prt_t: public act_expression_t
-  {
-    int* p_value;
-    virtual double evaluate(){ return *p_value;}
-  };
-
-
   act_expression_t::act_expression_t(int e_type, std::string expression_str, double e_value)
   {
     type=e_type;
