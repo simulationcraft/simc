@@ -277,6 +277,7 @@ struct warlock_t : public player_t
 
   // Event Tracking
   virtual void regen( double periodicity );
+  virtual void find_buff_name(std::string& name, int& type, void*& value_ptr, event_t**& expiration_ptr);      
 };
 
 // ==========================================================================
@@ -4829,6 +4830,31 @@ void warlock_t::regen( double periodicity )
     resource_gain( RESOURCE_MANA, felhunter_regen, gains_felhunter );
   }
 }
+
+
+// warlock_t::find_buff_name =================================================
+
+// Mapping of buff names to variables. Used in expressions. This SHOULD be replaced with pbuff_t
+void warlock_t::find_buff_name(std::string& name, int& type, void*& value_ptr, event_t**& expiration_ptr){
+  // search first if base player has buff with that name
+  player_t::find_buff_name(name,type,value_ptr,expiration_ptr);
+  // if not found , check if it is warlock buff: INT
+  if ((!type)||(value_ptr==0)){
+    // int
+    if (name=="decimation")         { type=1; value_ptr= &_buffs.decimation;      expiration_ptr=&_expirations.decimation;       };        
+    if (name=="demonic_empathy")    { type=1; value_ptr= &_buffs.demonic_empathy; expiration_ptr=&_expirations.demonic_empathy;  };
+    if (name=="flame_shadow")       { type=1; value_ptr= &_buffs.flame_shadow;    expiration_ptr=&_expirations.flame_shadow;     };
+    if (name=="shadow_flame")       { type=1; value_ptr= &_buffs.shadow_flame;    expiration_ptr=&_expirations.shadow_flame;     };
+    if (name=="haunted")            { type=1; value_ptr= &_buffs.haunted;         expiration_ptr=&_expirations.haunted;          };
+    if (name=="metamorphosis")      { type=1; value_ptr= &_buffs.metamorphosis;   expiration_ptr=0;                              };
+    if (name=="pet_sacrifice")      { type=1; value_ptr= &_buffs.pet_sacrifice;   expiration_ptr=0;                              };
+    if (name=="shadow_trance")      { type=1; value_ptr= &_buffs.shadow_trance;   expiration_ptr=0;                              };
+    //double
+    if (name=="fel_armor")          { type=2; value_ptr= &_buffs.fel_armor;       expiration_ptr=0;                              };
+    if (name=="molten_core")        { type=2; value_ptr= &_buffs.molten_core;     expiration_ptr=&_expirations.molten_core;      };
+  }
+}
+
 
 // warlock_t::primary_tree =================================================
 

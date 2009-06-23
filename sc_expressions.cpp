@@ -17,10 +17,11 @@
 //   - few descendant classes:
 //         global_expression_t (to get functions/values from action,player,sim)
 //         pbuff_expression_t  (to get buff expiration time)
+//         oldbuff_expression_t  (to guess "old" buff expiration time)
 //
 // **************************************************************************
 
-
+  // types of operations in expressions
   enum exp_type { AEXP_NONE=0, 
                   AEXP_AND, AEXP_OR, AEXP_NOT, AEXP_EQ, AEXP_NEQ, AEXP_GREATER, AEXP_LESS, AEXP_GE, AEXP_LE, // these operations result in boolean
                   AEXP_PLUS, AEXP_MINUS, AEXP_MUL, AEXP_DIV, // these operations result in double
@@ -29,8 +30,15 @@
                   AEXP_MAX
   };
 
+  // types of functions and variables in BUFF and FUNC operators
   enum exp_func_glob { EFG_NONE=0, EFG_GCD, EFG_TIME, EFG_TTD, EFG_HP, EFG_VULN, EFG_INVUL, 
                        EFG_TICKING, EFG_CTICK,EFG_NTICKS, EFG_EXPIRE, EFG_REMAINS, EFG_TCAST, EFG_MOVING, EFG_MAX };
+
+  // types of known prefixes in expressions
+  enum exp_prefixes { EXPF_NONE=0, EXPF_BUFF, EXPF_DEBUFF, EXPF_GLOBAL, EXPF_ACTION, EXPF_THIS, 
+                      EXPF_OPTION, EXPF_TALENT, EXPF_GLYPH, EXPF_ITEM, EXPF_GEAR, EXPF_MAX };
+
+
 
   // definition of operators
   struct operator_def_t{
@@ -63,10 +71,44 @@
   // custom class to invoke pbuff_t expiration
   struct pbuff_expression_t: public act_expression_t{
     pbuff_t* buff;
-    pbuff_expression_t(int e_type, std::string expression_str="", pbuff_t* e_buff=0):act_expression_t(e_type,expression_str,0), buff(e_buff){};
+    pbuff_expression_t(std::string expression_str="", pbuff_t* e_buff=0):act_expression_t(AEXP_BUFF,expression_str,0), buff(e_buff){};
     virtual ~pbuff_expression_t(){};
     virtual double evaluate() {
       return buff->expiration_time();
+    }
+  };
+
+  // custom class to calculate "old" buffs expirations
+  struct oldbuff_expression_t: public act_expression_t{
+    event_t** expiration_ptr;
+    int* int_ptr;
+    double* double_ptr;
+    oldbuff_expression_t(std::string expression_str, event_t** e_expiration):act_expression_t(AEXP_BUFF,expression_str,0){
+      expiration_ptr=e_expiration;
+      int_ptr=0;
+      double_ptr=0;
+    }
+    virtual ~oldbuff_expression_t(){};
+    virtual double evaluate() {
+      double time=0;
+      double value=0;
+      // get current value
+      if (int_ptr) value=*int_ptr;
+      if (double_ptr) value=*double_ptr;
+      // if this old buff do not have expirations, return values 
+      if (expiration_ptr==0) return value; 
+      // get time until expiration
+      event_t* expiration=*expiration_ptr;
+      if (expiration!=0){
+        time= expiration->time;
+        if (expiration->reschedule_time>time) 
+          time= expiration->reschedule_time;
+        time-= expiration->sim->current_time;
+        if (time<0) time=0;
+      }
+      // if expiration is not up, check if buff is marked as up anyway
+      if ((time==0)&&(value!=0)) time=0.1;
+      return time;
     }
   };
 
@@ -293,24 +335,27 @@
       std::vector<std::string> parts;
       unsigned int num_parts = util_t::string_split( parts, e, "." );
       if ((num_parts>3)||(num_parts==0)) warn(3,action,"Wrong number of parts(.) in : "+e);
+      
       // check for known prefix (optional for now)
-      int prefix=0;
+      exp_prefixes prefix=EXPF_NONE;
       std::string pfx_candidate=parts[0];
-      if (pfx_candidate=="buff") prefix=1;
-      if (pfx_candidate=="buffs") prefix=1;
-      if (pfx_candidate=="talent") prefix=2;
-      if (pfx_candidate=="talents") prefix=2;
-      if (pfx_candidate=="global") prefix=5;
-      if (pfx_candidate=="action") prefix=6;
-      if (pfx_candidate=="spell") prefix=6;
-      if (pfx_candidate=="dot") prefix=6; 
-      if (pfx_candidate=="this") prefix=7;
-      if (pfx_candidate=="option") prefix=10;
-      if (pfx_candidate=="options") prefix=10;
-      if (pfx_candidate=="talent") prefix=10; //for now, same as options
-      if (pfx_candidate=="glyph") prefix=12;
-      if (pfx_candidate=="item") prefix=13;
-      if (pfx_candidate=="gear") prefix=14; 
+      if (pfx_candidate=="buff") prefix=EXPF_BUFF;
+      if (pfx_candidate=="buffs") prefix=EXPF_BUFF;
+      if (pfx_candidate=="debuff") prefix=EXPF_DEBUFF;
+      if (pfx_candidate=="debuffs") prefix=EXPF_DEBUFF;
+      if (pfx_candidate=="global") prefix=EXPF_GLOBAL;
+      if (pfx_candidate=="action") prefix=EXPF_ACTION;
+      if (pfx_candidate=="spell") prefix=EXPF_ACTION;
+      if (pfx_candidate=="dot") prefix=EXPF_ACTION; 
+      if (pfx_candidate=="this") prefix=EXPF_THIS;
+      if (pfx_candidate=="option") prefix=EXPF_OPTION;
+      if (pfx_candidate=="options") prefix=EXPF_OPTION;
+      if (pfx_candidate=="talent") prefix=EXPF_OPTION; //for now, same as options
+      if (pfx_candidate=="talents") prefix=EXPF_OPTION; 
+      if (pfx_candidate=="glyph") prefix=EXPF_GLYPH;
+      if (pfx_candidate=="item") prefix=EXPF_ITEM;
+      if (pfx_candidate=="gear") prefix=EXPF_GEAR; 
+
       // get name of value, and suffix
       std::string name="";
       std::string suffix="";
@@ -323,28 +368,72 @@
       // now search for name in categories
       if (name!=""){
         // Buffs
-        if ( ((prefix==1)||(prefix==0)) && !root) {
+        if ( ((prefix==EXPF_BUFF)||(prefix==EXPF_NONE)) && !root) {
           pbuff_t* buff=action->player->buff_list.find_buff(name);
+          bool sfx_stacks=false;
+          if (suffix=="value")  sfx_stacks=true;
+          if (suffix=="buff")   sfx_stacks=true;
+          if (suffix=="stacks") sfx_stacks=true;
+          // now set buff if found
           if (buff){
-            bool sfx_stacks=false;
-            if (suffix=="value")  sfx_stacks=true;
-            if (suffix=="buff")   sfx_stacks=true;
-            if (suffix=="stacks") sfx_stacks=true;
             if (!sfx_stacks){
-              pbuff_expression_t* e_buff= new pbuff_expression_t(AEXP_BUFF,e,buff);
+              pbuff_expression_t* e_buff= new pbuff_expression_t(e,buff);
               root= e_buff;
             }else{
               root= new act_expression_t(AEXP_DOUBLE_PTR,e);
               root->p_value= &buff->buff_value;
             }
           }
+          // if buff. not found, check in "old" player_t
+          // only "interesting" buffs are hard-coded here
+          if ((prefix==EXPF_BUFF)&&(!buff)){
+            int ptr_type;
+            void* value_ptr;
+            event_t** expiration_ptr;
+            action->player->find_buff_name(name, ptr_type, value_ptr, expiration_ptr);
+            // create if found Int or Double buff types
+            if ((ptr_type==1)||(ptr_type==2)){
+              // if simple value of buff is asked 
+              if (sfx_stacks){
+                if (ptr_type ==1) 
+                  root= new act_expression_t(AEXP_INT_PTR,e); 
+                else
+                  root= new act_expression_t(AEXP_DOUBLE_PTR,e);
+                root->p_value= value_ptr;
+              }else{
+                // if expiration time is needed
+                oldbuff_expression_t* node= new oldbuff_expression_t(e, expiration_ptr);
+                if (ptr_type ==1) 
+                  node->int_ptr= (int*)value_ptr; 
+                else
+                  node->double_ptr= (double*)value_ptr; 
+                root=node;
+              }
+            }
+          }
+        }
+        // Debuffs, on target
+        if ( (prefix==EXPF_DEBUFF) && !root) {
+            // for now, hard-coded
+            int* int_ptr=0;
+            double* double_ptr=0;
+            if (name=="isb")        int_ptr= &action->sim->target->debuffs.improved_shadow_bolt; 
+            // create if found
+            if (int_ptr!=0){
+              root= new act_expression_t(AEXP_INT_PTR,e);
+              root->p_value= int_ptr;
+            }else
+            if (double_ptr!=0){
+              root= new act_expression_t(AEXP_DOUBLE_PTR,e);
+              root->p_value= double_ptr;
+            }
         }
         // actions, prefix either "cast"(0) or "this.gcd"(7) or "dot.immolate.remains"(6)
-        if ( ((prefix==6)||(prefix==7)||(prefix==0)) && !root) {
+        if ( ((prefix==EXPF_ACTION)||(prefix==EXPF_THIS)||(prefix==EXPF_NONE)) && !root) {
           // find action in question
           action_t* act=0;
           std::string func_name="";
-          if ((prefix==7)||(prefix==0)){ 
+          if ((prefix==EXPF_THIS)||(prefix==EXPF_NONE)){ 
             act=action; 
             func_name=name;
           }else{
@@ -376,11 +465,11 @@
             global_expression_t* g_func= new global_expression_t(func_type,e,act);
             root= g_func;
           }else
-            if (prefix!=0)
+            if (prefix!=EXPF_NONE)
               warn(3,action,"Could not find value/function ("+name+") for "+e);
         }
         // Global functions, player, target or sim related
-        if ( ((prefix==5)||(prefix==0)) && !root) {
+        if ( ((prefix==EXPF_GLOBAL)||(prefix==EXPF_NONE)) && !root) {
           int glob_type=0;
           //first names that are not expressions, but option settings
           if (name=="allow_early_recast"){
@@ -402,10 +491,12 @@
           }
         }
         // Options(10), Glyphs(12), Items(13), Gear(14) - just existence, so "glyph.life_tap"
-        if ( (prefix>=10)&&(prefix<=14) && !root) {
+        if (  (!root) &&
+              ((prefix==EXPF_OPTION)||(prefix==EXPF_GLYPH)||(prefix==EXPF_GEAR)||(prefix==EXPF_ITEM)) )
+        {
           double item_value=0;
           bool item_found=false;
-          if (((prefix==12)||(prefix==14)) && !item_found) { //glyphs
+          if (((prefix==EXPF_GLYPH)||(prefix==EXPF_GEAR)) && !item_found) { //glyphs
             std::vector<std::string> glyph_names;
             int num_glyphs = util_t::string_split( glyph_names, action->player->glyphs_str, ",/" );
             for( int i=0; i < num_glyphs; i++ )
@@ -414,7 +505,7 @@
                 item_found=true;
               }
           };
-          if (((prefix==13)||(prefix==14)) && !item_found){ //items
+          if (((prefix==EXPF_ITEM)||(prefix==EXPF_GEAR)) && !item_found){ //items
             for( int i=0; i < SLOT_MAX; i++ )
             {
               item_t& item = action->player->items[ i ];

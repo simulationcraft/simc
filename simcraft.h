@@ -1095,6 +1095,7 @@ struct player_t
   };
   buff_t buffs;
 
+
   struct expirations_t
   {
     event_t* focus_magic_feedback;
@@ -1304,6 +1305,8 @@ struct player_t
   virtual pet_t*    find_pet     ( const std::string& name );
 
   virtual void trigger_replenishment();
+  virtual void find_buff_name(std::string& name, int& type, void*& value_ptr, event_t**& expiration_ptr);      
+
 
   // Class-Specific Methods
 

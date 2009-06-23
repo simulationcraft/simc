@@ -2725,6 +2725,25 @@ bool player_t::save( FILE* file )
   return true;
 }
 
+// player_t::find_buff_name ====================================================
+void player_t::find_buff_name(std::string& name, int& type, void*& value_ptr, event_t**& expiration_ptr){
+  type=1; // 0== not found, 1== INT type, 2== DOUBLE type
+  value_ptr=0;
+  expiration_ptr=0;
+  if (name=="bloodlust")  value_ptr= &buffs.bloodlust;
+  if (name=="cast_time_reduction"){
+    type=2;
+    value_ptr= &buffs.cast_time_reduction;
+  }
+  if (name=="tricks_of_the_trade")  { value_ptr=&buffs.tricks_of_the_trade; expiration_ptr=&expirations.tricks_of_the_trade; }
+  if (name=="tier7_2pc")            { value_ptr=&buffs.tier7_2pc;  expiration_ptr=&expirations.tier7_2pc; }
+  if (name=="tier7_4pc")            { value_ptr=&buffs.tier7_4pc;  expiration_ptr=&expirations.tier7_4pc; }
+  if (name=="tier8_2pc")            { value_ptr=&buffs.tier8_2pc;  expiration_ptr=&expirations.tier8_2pc; }
+  if (name=="tier8_4pc")            { value_ptr=&buffs.tier8_4pc;  expiration_ptr=&expirations.tier8_4pc; }
+  if (value_ptr==0) type=0;
+}
+
+
 // player_t::get_options ====================================================
 
 std::vector<option_t>& player_t::get_options()
