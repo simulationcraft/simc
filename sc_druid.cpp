@@ -62,6 +62,7 @@ struct druid_t : public player_t
     event_t* mangle;
     event_t* savage_roar;
     event_t* t8_4pc_balance;
+    event_t* tigers_fury;
     event_t* unseen_moon;
 
     void reset() { memset( ( void* ) this, 0x00, sizeof( _expirations_t ) ); }
@@ -1665,6 +1666,7 @@ struct berserk_t : public druid_attack_t
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     update_ready();
     p -> _expirations.berserk = new ( sim ) expiration_t( sim, p );
+    event_t::early( p -> _expirations.tigers_fury);
   }
 
   virtual bool ready()
@@ -1731,7 +1733,7 @@ struct tigers_fury_t : public druid_attack_t
       }
     };
 
-    new ( sim ) expiration_t( sim, player );
+    p -> _expirations.tigers_fury = new ( sim ) expiration_t( sim, p );
 
     update_ready();
   }
