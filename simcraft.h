@@ -211,11 +211,13 @@ enum slot_type { // these enum values match armory settings
 
 enum set_type {
   SET_NONE = 0,
-  SET_T4, SET_T4_2PC, SET_T4_4PC,
-  SET_T5, SET_T5_2PC, SET_T5_4PC,
-  SET_T6, SET_T6_2PC, SET_T6_4PC,
-  SET_T7, SET_T7_2PC, SET_T7_4PC,
-  SET_T8, SET_T8_2PC, SET_T8_4PC,
+  SET_T4,  SET_T4_2PC,  SET_T4_4PC,
+  SET_T5,  SET_T5_2PC,  SET_T5_4PC,
+  SET_T6,  SET_T6_2PC,  SET_T6_4PC,
+  SET_T7,  SET_T7_2PC,  SET_T7_4PC,
+  SET_T8,  SET_T8_2PC,  SET_T8_4PC,
+  SET_T9,  SET_T9_2PC,  SET_T9_4PC,
+  SET_T10, SET_T10_2PC, SET_T10_4PC,
   SET_SPELLSTRIKE,
   SET_MAX
 };
@@ -899,6 +901,10 @@ struct set_bonus_t
   int tier7_4pc();
   int tier8_2pc();
   int tier8_4pc();
+  int tier9_2pc();
+  int tier9_4pc();
+  int tier10_2pc();
+  int tier10_4pc();
   int spellstrike();
   int decode( const std::string& item_name );
   bool init( player_t* );
@@ -1095,11 +1101,13 @@ struct player_t
     double    windfury_totem;
     int       water_elemental;
     int       wrath_of_air;
-    int       tier4_2pc, tier4_4pc;
-    int       tier5_2pc, tier5_4pc;
-    int       tier6_2pc, tier6_4pc;
-    int       tier7_2pc, tier7_4pc;
-    int       tier8_2pc, tier8_4pc;
+    int       tier4_2pc,  tier4_4pc;
+    int       tier5_2pc,  tier5_4pc;
+    int       tier6_2pc,  tier6_4pc;
+    int       tier7_2pc,  tier7_4pc;
+    int       tier8_2pc,  tier8_4pc;
+    int       tier9_2pc,  tier9_4pc;
+    int       tier10_2pc, tier10_4pc;
     void reset() { memset( ( void* ) this, 0x0, sizeof( buff_t ) ); }
     buff_t() { reset(); }
   };
@@ -1112,11 +1120,13 @@ struct player_t
     event_t* hysteria;
     event_t* replenishment;
     event_t* tricks_of_the_trade;
-    event_t *tier4_2pc, *tier4_4pc;
-    event_t *tier5_2pc, *tier5_4pc;
-    event_t *tier6_2pc, *tier6_4pc;
-    event_t *tier7_2pc, *tier7_4pc;
-    event_t *tier8_2pc, *tier8_4pc;
+    event_t *tier4_2pc,  *tier4_4pc;
+    event_t *tier5_2pc,  *tier5_4pc;
+    event_t *tier6_2pc,  *tier6_4pc;
+    event_t *tier7_2pc,  *tier7_4pc;
+    event_t *tier8_2pc,  *tier8_4pc;
+    event_t *tier9_2pc,  *tier9_4pc;
+    event_t *tier10_2pc, *tier10_4pc;
     void reset() { memset( ( void* ) this, 0x00, sizeof( expirations_t ) ); }
     expirations_t() { reset(); }
   };
@@ -1125,11 +1135,13 @@ struct player_t
   struct cooldowns_t
   {
     double bloodlust;
-    double tier4_2pc, tier4_4pc;
-    double tier5_2pc, tier5_4pc;
-    double tier6_2pc, tier6_4pc;
-    double tier7_2pc, tier7_4pc;
-    double tier8_2pc, tier8_4pc;
+    double tier4_2pc,  tier4_4pc;
+    double tier5_2pc,  tier5_4pc;
+    double tier6_2pc,  tier6_4pc;
+    double tier7_2pc,  tier7_4pc;
+    double tier8_2pc,  tier8_4pc;
+    double tier9_2pc,  tier9_4pc;
+    double tier10_2pc, tier10_4pc;
     void reset() { memset( ( void* ) this, 0x00, sizeof( cooldowns_t ) ); }
     cooldowns_t() { reset(); }
   };
@@ -1140,11 +1152,13 @@ struct player_t
     uptime_t* moving;
     uptime_t* replenishment;
     uptime_t* stunned;
-    uptime_t *tier4_2pc, *tier4_4pc;
-    uptime_t *tier5_2pc, *tier5_4pc;
-    uptime_t *tier6_2pc, *tier6_4pc;
-    uptime_t *tier7_2pc, *tier7_4pc;
-    uptime_t *tier8_2pc, *tier8_4pc;
+    uptime_t *tier4_2pc,  *tier4_4pc;
+    uptime_t *tier5_2pc,  *tier5_4pc;
+    uptime_t *tier6_2pc,  *tier6_4pc;
+    uptime_t *tier7_2pc,  *tier7_4pc;
+    uptime_t *tier8_2pc,  *tier8_4pc;
+    uptime_t *tier9_2pc,  *tier9_4pc;
+    uptime_t *tier10_2pc, *tier10_4pc;
     void reset() { memset( ( void* ) this, 0x00, sizeof( uptimes_t ) ); }
     uptimes_t() { reset(); }
   };
@@ -1169,11 +1183,13 @@ struct player_t
     gain_t* spirit_intellect_regen;
     gain_t* vampiric_touch;
     gain_t* water_elemental;
-    gain_t *tier4_2pc, *tier4_4pc;
-    gain_t *tier5_2pc, *tier5_4pc;
-    gain_t *tier6_2pc, *tier6_4pc;
-    gain_t *tier7_2pc, *tier7_4pc;
-    gain_t *tier8_2pc, *tier8_4pc;
+    gain_t *tier4_2pc,  *tier4_4pc;
+    gain_t *tier5_2pc,  *tier5_4pc;
+    gain_t *tier6_2pc,  *tier6_4pc;
+    gain_t *tier7_2pc,  *tier7_4pc;
+    gain_t *tier8_2pc,  *tier8_4pc;
+    gain_t *tier9_2pc,  *tier9_4pc;
+    gain_t *tier10_2pc, *tier10_4pc;
     void reset() { memset( ( void* ) this, 0x00, sizeof( gains_t ) ); }
     gains_t() { reset(); }
   };
@@ -1182,11 +1198,13 @@ struct player_t
   struct procs_t
   {
     proc_t* honor_among_thieves_donor;
-    proc_t *tier4_2pc, *tier4_4pc;
-    proc_t *tier5_2pc, *tier5_4pc;
-    proc_t *tier6_2pc, *tier6_4pc;
-    proc_t *tier7_2pc, *tier7_4pc;
-    proc_t *tier8_2pc, *tier8_4pc;
+    proc_t *tier4_2pc,  *tier4_4pc;
+    proc_t *tier5_2pc,  *tier5_4pc;
+    proc_t *tier6_2pc,  *tier6_4pc;
+    proc_t *tier7_2pc,  *tier7_4pc;
+    proc_t *tier8_2pc,  *tier8_4pc;
+    proc_t *tier9_2pc,  *tier9_4pc;
+    proc_t *tier10_2pc, *tier10_4pc;
     void reset() { memset( ( void* ) this, 0x00, sizeof( procs_t ) ); }
     procs_t() { reset(); }
   };
@@ -1201,11 +1219,13 @@ struct player_t
     rng_t* lag_channel;
     rng_t* lag_gcd;
     rng_t* lag_queue;
-    rng_t *tier4_2pc, *tier4_4pc;
-    rng_t *tier5_2pc, *tier5_4pc;
-    rng_t *tier6_2pc, *tier6_4pc;
-    rng_t *tier7_2pc, *tier7_4pc;
-    rng_t *tier8_2pc, *tier8_4pc;
+    rng_t *tier4_2pc,  *tier4_4pc;
+    rng_t *tier5_2pc,  *tier5_4pc;
+    rng_t *tier6_2pc,  *tier6_4pc;
+    rng_t *tier7_2pc,  *tier7_4pc;
+    rng_t *tier8_2pc,  *tier8_4pc;
+    rng_t *tier9_2pc,  *tier9_4pc;
+    rng_t *tier10_2pc, *tier10_4pc;
     void reset() { memset( ( void* ) this, 0x00, sizeof( rngs_t ) ); }
     rngs_t() { reset(); }
   };

@@ -912,6 +912,10 @@ void player_t::init_gains()
   gains.tier7_4pc              = get_gain( "tier7_4pc" );
   gains.tier8_2pc              = get_gain( "tier8_2pc" );
   gains.tier8_4pc              = get_gain( "tier8_4pc" );
+  gains.tier9_2pc              = get_gain( "tier9_2pc" );
+  gains.tier9_4pc              = get_gain( "tier9_4pc" );
+  gains.tier10_2pc             = get_gain( "tier10_2pc" );
+  gains.tier10_4pc             = get_gain( "tier10_4pc" );
 }
 
 // player_t::init_procs ====================================================
@@ -929,6 +933,10 @@ void player_t::init_procs()
   procs.tier7_4pc = get_proc( "tier7_4pc" );
   procs.tier8_2pc = get_proc( "tier8_2pc" );
   procs.tier8_4pc = get_proc( "tier8_4pc" );
+  procs.tier9_2pc = get_proc( "tier9_2pc" );
+  procs.tier9_4pc = get_proc( "tier9_4pc" );
+  procs.tier10_2pc = get_proc( "tier10_2pc" );
+  procs.tier10_4pc = get_proc( "tier10_4pc" );
 }
 
 // player_t::init_uptimes ==================================================
@@ -948,6 +956,10 @@ void player_t::init_uptimes()
   uptimes.tier7_4pc = get_uptime( "tier7_4pc" );
   uptimes.tier8_2pc = get_uptime( "tier8_2pc" );
   uptimes.tier8_4pc = get_uptime( "tier8_4pc" );
+  uptimes.tier9_2pc = get_uptime( "tier9_2pc" );
+  uptimes.tier9_4pc = get_uptime( "tier9_4pc" );
+  uptimes.tier10_2pc = get_uptime( "tier10_2pc" );
+  uptimes.tier10_4pc = get_uptime( "tier10_4pc" );
 }
 
 // player_t::init_rng ======================================================
@@ -964,6 +976,10 @@ void player_t::init_rng()
   rngs.tier7_4pc = get_rng( "tier7_4pc" );
   rngs.tier8_2pc = get_rng( "tier8_2pc" );
   rngs.tier8_4pc = get_rng( "tier8_4pc" );
+  rngs.tier9_2pc = get_rng( "tier9_2pc" );
+  rngs.tier8_4pc = get_rng( "tier9_4pc" );
+  rngs.tier10_2pc = get_rng( "tier10_2pc" );
+  rngs.tier10_4pc = get_rng( "tier10_4pc" );
 
   rngs.lag_channel = get_rng( "lag_channel" );
   rngs.lag_gcd     = get_rng( "lag_gcd"     );
@@ -2696,6 +2712,10 @@ bool player_t::save( FILE* file )
   if( set_bonus.tier7_4pc() ) fprintf( file, "# tier7_4pc=1\n" );
   if( set_bonus.tier8_2pc() ) fprintf( file, "# tier8_2pc=1\n" );
   if( set_bonus.tier8_4pc() ) fprintf( file, "# tier8_4pc=1\n" );
+  if( set_bonus.tier9_2pc() ) fprintf( file, "# tier9_2pc=1\n" );
+  if( set_bonus.tier9_4pc() ) fprintf( file, "# tier9_4pc=1\n" );
+  if( set_bonus.tier10_2pc() ) fprintf( file, "# tier10_2pc=1\n" );
+  if( set_bonus.tier10_4pc() ) fprintf( file, "# tier10_4pc=1\n" );
 
   for( int i=0; i < SLOT_MAX; i++ )
   {

@@ -35,6 +35,18 @@ int set_bonus_t::tier8_2pc() { return ( count[ SET_T8_2PC ] || count[ SET_T8 ] >
 
 int set_bonus_t::tier8_4pc() { return ( count[ SET_T8_4PC ] || count[ SET_T8 ] >= 4 ) ? 1 : 0; }
 
+// set_bonus_t::tier9 =======================================================
+
+int set_bonus_t::tier9_2pc() { return ( count[ SET_T9_2PC ] || count[ SET_T9 ] >= 2 ) ? 1 : 0; }
+
+int set_bonus_t::tier9_4pc() { return ( count[ SET_T9_4PC ] || count[ SET_T9 ] >= 4 ) ? 1 : 0; }
+
+// set_bonus_t::tier10 =======================================================
+
+int set_bonus_t::tier10_2pc() { return ( count[ SET_T10_2PC ] || count[ SET_T10 ] >= 2 ) ? 1 : 0; }
+
+int set_bonus_t::tier10_4pc() { return ( count[ SET_T10_4PC ] || count[ SET_T10 ] >= 4 ) ? 1 : 0; }
+
 // set_bonus_t::spellstrike =================================================
 
 int set_bonus_t::spellstrike() { return ( count[ SET_SPELLSTRIKE ] >= 2 ) ? 1 : 0; }
