@@ -546,7 +546,7 @@ struct act_expression_t{
   virtual double evaluate();
   virtual bool   ok();
   static act_expression_t* create(action_t* action, std::string& expression);
-  static void warn(int severity, action_t* action, std::string& msg);
+  static void warn(int severity, action_t* action, const char* format, ... );
   static act_expression_t* find_operator(action_t* action, std::string& unmasked, std::string& expression, std::string& op_str, int op_type, bool binary);
   static std::string op_name(int op_type);
 

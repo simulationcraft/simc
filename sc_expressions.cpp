@@ -185,11 +185,16 @@
   //            1= just warning
   //            2= report error, but do not break
   //            3= breaking error, assert
-  void act_expression_t::warn(int severity, action_t* action, std::string& msg)
+void act_expression_t::warn(int severity, action_t* action, const char* format, ... )
   {
+    char buffer[ 1024 ];
+    va_list vap;
+    va_start( vap, format );
+    vsprintf( buffer, format, vap );
+
     std::string e_msg;
     if (severity<2)  e_msg="Warning";  else  e_msg="Error";
-    e_msg+="("+action->name_str+"): "+msg;
+    e_msg+="("+action->name_str+"): "+ buffer;
     printf("%s\n", e_msg.c_str());
     if ( action->sim -> debug ) log_t::output( action->sim, "Exp.parser warning: %s", e_msg.c_str() );
     if (severity==3)
@@ -216,7 +221,7 @@
         op2= act_expression_t::create(action, right);
       }else{
         op1= act_expression_t::create(action, right);
-        if (left!="") warn(2,action,"Unexpected text to the left of unary operator "+op_str+" in : "+unmasked);
+        if (left!="") warn(2,action,"Unexpected text to the left of unary operator %s in : %s", op_str.c_str(), unmasked.c_str() );
       }
       //check allowed cases to miss left operand
       if ( (op1==0) && ((op_type==AEXP_PLUS)||(op_type==AEXP_MINUS)) ){
@@ -224,7 +229,7 @@
       }
       // error handling
       if ((op1==0)||((op2==0)&&binary))
-        warn(3,action,"Left or right operand for "+op_str+" missing in : "+unmasked);
+        warn(3,action,"Left or right operand for %s missing in : %s", op_str.c_str(), unmasked.c_str() );
       // create new node
       node= new act_expression_t(op_type,unmasked);
       node->operand_1=op1;
@@ -305,7 +310,7 @@
     do{
       is_all_enclosed=false;
       m_err= bracket_mask(e,mask);
-      if (m_err!="")  warn(3,action,m_err);
+      if (m_err!="")  warn(3,action,"%s", m_err.c_str() );
       //remove enclosing parentheses if any
       if (mask.length()>1){
         int start_bracket= (mask[0]<0)||((unsigned char)mask[0]>240)?mask[0]:0;
@@ -334,7 +339,7 @@
     if ((!root)&&(e!="")){
       std::vector<std::string> parts;
       unsigned int num_parts = util_t::string_split( parts, e, "." );
-      if ((num_parts>3)||(num_parts==0)) warn(3,action,"Wrong number of parts(.) in : "+e);
+      if ((num_parts>3)||(num_parts==0)) warn(3,action,"Wrong number of parts(.) in : %s", e.c_str() );
       
       // check for known prefix (optional for now)
       exp_prefixes prefix=EXPF_NONE;
@@ -363,7 +368,7 @@
       if (p_name<num_parts)   name=parts[p_name]; 
       if (p_name+1<num_parts) suffix=parts[p_name+1]; 
       if (name=="")
-        warn(3,action,"Wrong prefix.sufix combination for : "+e);
+        warn(3,action,"Wrong prefix.sufix combination for : %s", e.c_str() );
 
       // now search for name in categories
       if (name!=""){
@@ -444,7 +449,7 @@
             }
           }
           if (!act) 
-            warn(3,action,"Could not find action ("+name+") for "+e);
+            warn(3,action,"Could not find action (%s) for %s", name.c_str(), e.c_str() );
           // now create execution node
           int func_type=0;
           if (func_name=="gcd") func_type=EFG_GCD;
@@ -466,7 +471,7 @@
             root= g_func;
           }else
             if (prefix!=EXPF_NONE)
-              warn(3,action,"Could not find value/function ("+name+") for "+e);
+              warn(3,action,"Could not find value/function (%s) for %s", name.c_str(), e.c_str() );
         }
         // Global functions, player, target or sim related
         if ( ((prefix==EXPF_GLOBAL)||(prefix==EXPF_NONE)) && !root) {

@@ -58,6 +58,7 @@ SRC =\
 	sc_death_knight.cpp	\
 	sc_druid.cpp		\
 	sc_enchant.cpp		\
+	sc_expressions.cpp	\
 	sc_event.cpp		\
 	sc_gear_stats.cpp	\
 	sc_hunter.cpp		\
