@@ -246,8 +246,6 @@ static void print_uptime( FILE* file, sim_t* sim )
         first = false;
       }
       fprintf( file, "        %5.1f%% : %-30s", u -> percentage(), u -> name() );
-      if (sim->duration_uptimes && (u ->percentage(2)>0) && (u->percentage()<100.0) )
-        fprintf( file, "  ( %5.1f times/%3.0f for %5.1f sec , %5.1f%% T.uptime on %s )", u->avg_up, u ->percentage(5),u->avg_dur, u ->percentage(2), u -> name() );
       fprintf( file, "\n");
     }
   }
@@ -268,8 +266,6 @@ static void print_uptime( FILE* file, sim_t* sim )
           first = false;
         }
         fprintf( file, "        %5.1f%% : %-30s", u -> percentage(), u -> name() );
-        if (sim->duration_uptimes && (u ->percentage(2)>0))
-          fprintf( file, "  ( %5.1f times/%3.0f for %5.1f sec , %5.1f%% T.uptime on %s )", u->avg_up, u ->percentage(5), u->avg_dur, u ->percentage(2), u -> name() );
         fprintf( file, "\n");
       }
     }

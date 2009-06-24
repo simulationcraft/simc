@@ -257,6 +257,7 @@ struct druid_t : public player_t
   virtual void      reset();
   virtual void      interrupt();
   virtual void      regen( double periodicity );
+  virtual double    available();
   virtual double    composite_attack_power();
   virtual double    composite_attack_power_multiplier();
   virtual double    composite_attack_crit();
@@ -3435,7 +3436,7 @@ void druid_t::interrupt()
   if( melee_attack ) melee_attack -> cancel();
 }
 
-// druid_t::reset ===========================================================
+// druid_t::regen ===========================================================
 
 void druid_t::regen( double periodicity )
 {
@@ -3446,6 +3447,17 @@ void druid_t::regen( double periodicity )
     uptimes_energy_cap -> update( resource_current[ RESOURCE_ENERGY ] ==
                                   resource_max    [ RESOURCE_ENERGY ] );
   }
+}
+
+// druid_t::available =======================================================
+
+double druid_t::available()
+{
+  double energy = resource_current[ RESOURCE_ENERGY ];
+
+  if( energy > 20 ) return 0.1;
+
+  return std::max( ( 20 - energy ) / energy_regen_per_second, 0.1 );
 }
 
 // druid_t::composite_attack_power ==========================================

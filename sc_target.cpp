@@ -139,7 +139,7 @@ uptime_t* target_t::get_uptime( const std::string& name )
       return u;
   }
 
-  u = new uptime_t( name,sim );
+  u = new uptime_t( name );
 
   uptime_t** tail = &uptime_list;
 

@@ -70,7 +70,7 @@
                         :act_expression_t(AEXP_BUFF,expression_str,0) 
   {
     expiration_ptr=e_expiration;
-    if (ptr_type=2){
+    if (ptr_type==2){
       int_ptr=0;
       double_ptr=(double*) value_ptr;
     }else{
@@ -684,7 +684,6 @@ act_expression_t* act_expression_t::find_operator(action_t* action, std::string&
     last_trigger=0;
     expected_end=0;
     buff_value=0; 
-    uptime_cnt->rewind();
   }
   // trigger buff if conditions are met (return false otherwise)
   // will use duration and chance from buff constructor if none supplied here
@@ -699,12 +698,10 @@ act_expression_t* act_expression_t::find_operator(action_t* action, std::string&
         if ( !rng_chance -> roll( chance ) ) return false;
     // if we passed all checks, trigger buff
     n_triggers++;
-    uptime_cnt->n_triggers= n_triggers;
     last_trigger=player->sim->current_time;
     if (trigger_counter) *trigger_counter++;
     // set value and update counters
     buff_value=val;
-    uptime_cnt -> update( 1, true );
     // create and launch expiration event
     if (b_duration==0) b_duration=buff_duration;
     expected_end=last_trigger+b_duration;
@@ -754,7 +751,6 @@ act_expression_t* act_expression_t::find_operator(action_t* action, std::string&
   // update uptime counters
   void pbuff_t::update_uptime(bool skip_usage)
   {
-    uptime_cnt -> update( is_up_silent(), skip_usage ); 
   }
   // decrement buff stack for one, return if buff still up
   bool pbuff_t::dec_buff(){
@@ -807,7 +803,6 @@ act_expression_t* act_expression_t::find_operator(action_t* action, std::string&
       player -> aura_loss( pbuff->name_str.c_str(), aura_id );
       pbuff->buff_value=0;
       pbuff->expected_end=0;
-      pbuff->uptime_cnt -> update( 0, true );
       if (pbuff->trigger_counter) *pbuff->trigger_counter--;
       if (pbuff->callback_expiration) pbuff->callback_expiration();
     }else{
@@ -855,109 +850,6 @@ act_expression_t* act_expression_t::find_operator(action_t* action, std::string&
     else
       return false;
   }
-
-
-
-
-
-
-// **************************************************************************
-//
-// UPTIME_T  implementation
-//
-// **************************************************************************
-
-
-uptime_t::uptime_t( const std::string& n, sim_t* the_sim) : name_str( n ), up( 0 ), down( 0 ), 
-                    type(0), sim(the_sim), last_check(0), total_time(0),last_status(false), up_time(0), n_rewind(0), n_up(0), n_down(0), n_triggers(0),
-                    avg_up(0), avg_dur(0)
-{ 
-}
-
-void uptime_t::rewind()
-{
-  n_rewind++;
-  if (last_status&&(n_up>n_down)) n_down++;
-  last_status=false;
-  last_check=0;
-}
-
-void   uptime_t::update( bool is_up, bool skip_usage ) 
-{ 
-  // this is "duration, time based" statistics
-  if (sim){
-    double t_span= sim->current_time - last_check;
-    // check if rewind (back more than 80% of max_time)
-    if ((t_span<0)&&(fabs(t_span) > sim->max_time*0.8)){
-      rewind();
-      t_span=sim->current_time;
-    }
-    //now process positive span
-    if (t_span>=0){
-      if (last_status) 
-        up_time+= t_span;
-      total_time+= t_span;
-      if (is_up&&!last_status) n_up++;
-      if (last_status&&!is_up) n_down++;
-    }
-    //store new values
-    last_check=sim->current_time;
-    last_status=is_up;
-  }
-  // this is "on use" statistics
-  if (!skip_usage){
-    if ( is_up ) 
-      up++; 
-    else 
-      down++; 
-  }
-}
-
-//return uptime statistics (not all are percentages)
-double uptime_t::percentage(int p_type) 
-{ 
-  //calculate result for default, usage based
-  double p_usage=( up==0 ) ? 0 : ( 100.0*up/( up+down ) );
-  // calculate for other types
-  if (n_down<n_up/4) n_down=n_up; // for those never turned off
-  avg_up= (n_up+n_down)/2.0;
-  if (avg_up>0) avg_dur=up_time/avg_up;
-  if (n_rewind>0){
-    avg_up/=n_rewind;
-    if (avg_dur> total_time/n_rewind)
-      avg_dur=total_time/n_rewind;
-  }
-  double p_time=(total_time==0)? 0 : (100.0* up_time/total_time);
-  double buff_triggers= n_rewind>0?n_triggers/n_rewind: n_triggers;
-  // return result
-  switch (p_type){
-    case 1: return p_usage;       break;
-    case 2: return p_time;        break;
-    case 3: return avg_dur;       break;
-    case 4: return avg_up;        break;
-    case 5: return buff_triggers; break;
-  }
-  //default result
-  return p_usage;
-}
-
-void   uptime_t::merge( uptime_t* other ) 
-{ 
-  up_time+=other->up_time;
-  total_time+=other->total_time;
-  up += other -> up; 
-  down += other -> down; 
-}
-
-const char* uptime_t::name() 
-{ 
-  return name_str.c_str(); 
-}
-
-
-
-
-
 
 
 // **************************************************************************

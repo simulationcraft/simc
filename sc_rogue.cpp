@@ -248,6 +248,7 @@ struct rogue_t : public player_t
   virtual void      reset();
   virtual void      interrupt();
   virtual void      regen( double periodicity );
+  virtual double    available();
   virtual bool      get_talent_trees( std::vector<int*>& assassination, std::vector<int*>& combat, std::vector<int*>& subtlety );
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -3464,7 +3465,7 @@ void rogue_t::combat_begin()
           add_combo_point( p );
           p -> procs_honor_among_thieves_receiver -> occur();
           double mean     = p -> honor_among_thieves_interval;
-          double stddev   = mean / 2.0;
+          double stddev   = mean * 0.5;
           double interval = p -> rng_HAT_interval -> range( mean-stddev, mean+stddev );
           new ( sim ) honor_among_thieves_proc_t( sim, p, interval );
         }
@@ -3535,6 +3536,17 @@ void rogue_t::regen( double periodicity )
                                 resource_max    [ RESOURCE_ENERGY ] );
 
   uptimes_rupture -> update( active_rupture != 0 );
+}
+
+// rogue_t::available ======================================================
+
+double rogue_t::available()
+{
+  double energy = resource_current[ RESOURCE_ENERGY ];
+
+  if( energy > 20 ) return 0.1;
+
+  return std::max( ( 20 - energy ) / energy_regen_per_second, 0.1 );
 }
 
 // rogue_t::get_talent_trees ==============================================

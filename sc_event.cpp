@@ -82,7 +82,7 @@ void player_ready_event_t::execute()
 {
   if ( ! player -> execute_action() )
   {
-    player -> schedule_ready( 0.1, true );
+    player -> schedule_ready( player -> available(), true );
   }
 }
 
