@@ -6,6 +6,7 @@ talents=http://www.wowhead.com/?talent#oZfVc0RhIuVubhstbIccoc
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/arcane_brilliance
 actions+=/counterspell
 actions+=/mana_gem,trigger=1000/speed_potion
+# Scorch will not be invoked if Improved Shadow Bolt is up
 actions+=/scorch,debuff=1
 actions+=/mirror_image/combustion/icy_veins
 actions+=/living_bomb/pyroblast,hot_streak=1/frostfire_bolt
