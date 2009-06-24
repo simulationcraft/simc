@@ -24,7 +24,7 @@ struct judgement_of_wisdom_callback_t : public action_callback_t
     rng  = p -> get_rng ( "judgement_of_wisdom" );
   }
 
-  virtual void trigger( action_t* a, void* call_data )
+  virtual void trigger( action_t* a )
   {
     sim_t* sim = a -> sim;
 
@@ -66,7 +66,7 @@ struct focus_magic_feedback_callback_t : public action_callback_t
 {
   focus_magic_feedback_callback_t( player_t* p ) : action_callback_t( p -> sim, p ) {}
 
-  virtual void trigger( action_t* a, void* call_data )
+  virtual void trigger( action_t* a )
   {
     struct expiration_t : public event_t
     {
@@ -1699,7 +1699,7 @@ double player_t::resource_loss( int       resource,
     last_cast = sim -> current_time;
   }
 
-  action_callback_t::trigger( resource_loss_callbacks[ resource ], action, &amount );
+  if ( action ) action_callback_t::trigger( resource_loss_callbacks[ resource ], action );
 
   if ( sim -> debug ) log_t::output( sim, "Player %s loses %.0f %s", name(), amount, util_t::resource_type_string( resource ) );
 
@@ -1725,7 +1725,7 @@ double player_t::resource_gain( int       resource,
 
   if ( source ) source -> add( actual_amount, amount - actual_amount );
 
-  action_callback_t::trigger( resource_gain_callbacks[ resource ], action, &actual_amount );
+  if ( action ) action_callback_t::trigger( resource_gain_callbacks[ resource ], action );
 
   if ( sim -> log )
   {

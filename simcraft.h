@@ -1825,12 +1825,12 @@ struct action_callback_t
   player_t* listener;
   action_callback_t( sim_t* s, player_t* l ) : sim( s ), listener( l ) {}
   virtual ~action_callback_t() {}
-  virtual void trigger( action_t*, void* call_data=0 ) = 0;
+  virtual void trigger( action_t* ) = 0;
   virtual void reset() {}
-  static void trigger( std::vector<action_callback_t*>& v, action_t* a, void* call_data=0 )
+  static void trigger( std::vector<action_callback_t*>& v, action_t* a )
   {
     std::vector<action_callback_t*>::size_type i = v.size();
-    while ( i ) v[--i]->trigger( a, call_data );
+    while ( i ) v[--i]->trigger( a );
   }
   static void   reset( std::vector<action_callback_t*>& v )
   {

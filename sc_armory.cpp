@@ -362,11 +362,12 @@ static bool parse_item_enchant( item_t& item,
   {
     std::string& s = item.armory_enchant_str;
 
-    if     ( enchant == "Lightweave Embroidery" ) { s += "_lightweave";  }
-    else if( enchant == "Berserking"            ) { s += "_berserking";  }
-    else if( enchant == "Mongoose"              ) { s += "_mongoose";    }
-    else if( enchant == "Executioner"           ) { s += "_executioner"; }
-    else if( enchant == "Spellsurge"            ) { s += "_spellsurge";  }
+    if     ( enchant == "Lightweave Embroidery"    ) { s += "_lightweave";  }
+    else if( enchant == "Hand-Mounted Pyro Rocket" ) { s += "_pyrorocket";  }
+    else if( enchant == "Berserking"               ) { s += "_berserking";  }
+    else if( enchant == "Mongoose"                 ) { s += "_mongoose";    }
+    else if( enchant == "Executioner"              ) { s += "_executioner"; }
+    else if( enchant == "Spellsurge"               ) { s += "_spellsurge";  }
     else
     {
       fuzzy_search( s, enchant );

@@ -4328,7 +4328,7 @@ struct demonic_empathy_callback_t : public action_callback_t
 {
   demonic_empathy_callback_t( player_t* p ) : action_callback_t( p -> sim, p ) {}
 
-  virtual void trigger( action_t* a, void* call_data )
+  virtual void trigger( action_t* a )
   {
     struct expiration_t : public event_t
     {
@@ -4374,7 +4374,7 @@ struct demonic_pact_callback_t : public action_callback_t
 {
   demonic_pact_callback_t( player_t* p ) : action_callback_t( p -> sim, p ) {}
 
-  virtual void trigger( action_t* a, void* call_data )
+  virtual void trigger( action_t* a )
   {
     struct expiration_t : public event_t
     {

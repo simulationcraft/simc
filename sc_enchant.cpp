@@ -47,7 +47,7 @@ struct spellsurge_callback_t : public action_callback_t
     rng = p -> get_rng( "spellsurge" );
   }
 
-  virtual void trigger( action_t* a, void* call_data )
+  virtual void trigger( action_t* a )
   {
     if ( spell -> ready() && rng -> roll( 0.15 ) )
     {
@@ -95,7 +95,7 @@ struct berserking_callback_t : public action_callback_t
 
   virtual void reset() { mh_buff = oh_buff = 0; mh_expiration = oh_expiration = 0; }
 
-  virtual void trigger( action_t* a, void* call_data )
+  virtual void trigger( action_t* a )
   {
     struct berserking_expiration_t : public event_t
     {
@@ -177,7 +177,7 @@ struct mongoose_callback_t : public action_callback_t
 
   virtual void reset() { mh_expiration = oh_expiration = 0; }
 
-  virtual void trigger( action_t* a, void* call_data )
+  virtual void trigger( action_t* a )
   {
     struct mongoose_expiration_t : public event_t
     {
@@ -254,7 +254,7 @@ struct executioner_callback_t : public action_callback_t
 
   virtual void reset() { buff = 0; expiration = 0; }
 
-  virtual void trigger( action_t* a, void* call_data )
+  virtual void trigger( action_t* a )
   {
     struct expiration_t : public event_t
     {

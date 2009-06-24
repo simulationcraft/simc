@@ -773,11 +773,11 @@ void action_t::assess_damage( double amount,
 
   if ( dmg_type == DMG_DIRECT )
   {
-    action_callback_t::trigger( player -> direct_damage_callbacks, this, &amount );
+    action_callback_t::trigger( player -> direct_damage_callbacks, this );
   }
   else // DMG_OVER_TIME
   {
-    action_callback_t::trigger( player -> tick_damage_callbacks, this, &amount );
+    action_callback_t::trigger( player -> tick_damage_callbacks, this );
   }
 }
 
