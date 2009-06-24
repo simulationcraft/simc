@@ -98,13 +98,13 @@ struct rogue_t : public player_t
   uptime_t* uptimes_rupture;
   uptime_t* uptimes_slice_and_dice;
   uptime_t* uptimes_tricks_of_the_trade;
+  uptime_t* uptimes_prey_on_the_weak;
 
   // Random Number Generation
   rng_t* rng_anesthetic_poison;
   rng_t* rng_combat_potency;
   rng_t* rng_cut_to_the_chase;
   rng_t* rng_deadly_poison;
-  rng_t* rng_eviscerate;
   rng_t* rng_focused_attacks;
   rng_t* rng_honor_among_thieves;
   rng_t* rng_HAT_interval;
@@ -124,6 +124,7 @@ struct rogue_t : public player_t
   // Options
   double      honor_among_thieves_interval;
   std::string tricks_of_the_trade_target_str;
+  int         prey_on_the_weak_hp;
 
   struct talents_t
   {
@@ -233,6 +234,7 @@ struct rogue_t : public player_t
 
     // Options
     honor_among_thieves_interval = 0;
+    prey_on_the_weak_hp          = 100; // assume prey_on_the_weak is always active by default
   }
 
   // Character Definition
@@ -304,9 +306,8 @@ struct rogue_attack_t : public attack_t
       min_env_expire( 0 ), max_env_expire( 0 )
   {
     rogue_t* p = player -> cast_rogue();
-    base_crit            += p -> talents.malice * 0.01;
-    base_hit             += p -> talents.precision * 0.01;
-    base_crit_multiplier *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
+    base_crit += p -> talents.malice * 0.01;
+    base_hit  += p -> talents.precision * 0.01;
   }
 
   virtual void   parse_options( option_t*, const std::string& options_str );
@@ -333,8 +334,6 @@ struct rogue_poison_t : public spell_t
     base_hit  += p -> talents.precision * 0.01;
 
     base_multiplier *= 1.0 + util_t::talent_rank( p -> talents.vile_poisons,  3, 0.07, 0.14, 0.20 );
-
-    base_crit_multiplier *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
 
     weapon_multiplier = 0;
 
@@ -915,13 +914,10 @@ void rogue_attack_t::player_buff()
   {
     int target_race = sim -> target -> race;
 
-    if ( target_race == RACE_BEAST     ||
-         target_race == RACE_DRAGONKIN ||
-         target_race == RACE_GIANT     ||
-         target_race == RACE_HUMANOID  )
+    if ( target_race == RACE_BEAST || target_race == RACE_DRAGONKIN ||
+         target_race == RACE_GIANT || target_race == RACE_HUMANOID  )
     {
-      player_multiplier      *= 1.0 + p -> talents.murder * 0.02;
-      player_crit_multiplier *= 1.0 + p -> talents.murder * 0.02;
+      player_multiplier *= 1.0 + p -> talents.murder * 0.02;
     }
   }
   if ( p -> _buffs.shadowstep )
@@ -931,6 +927,13 @@ void rogue_attack_t::player_buff()
   if ( p -> _buffs.killing_spree )
   {
     player_multiplier *= 1.20;
+  }
+  if ( p -> talents.prey_on_the_weak )
+  {
+    // TODO: Add true uptime calculation (when/if we implement raid damage).
+    bool potw_active = sim -> target -> health_percentage() <= p -> prey_on_the_weak_hp;
+    if ( potw_active ) player_crit_multiplier *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
+    p -> uptimes_prey_on_the_weak -> update( potw_active );
   }
   if ( p -> talents.hunger_for_blood )
   {
@@ -1524,10 +1527,7 @@ struct eviscerate_t : public rogue_attack_t
     base_dd_min = combo_point_dmg[ p -> _buffs.combo_points - 1 ].min;
     base_dd_max = combo_point_dmg[ p -> _buffs.combo_points - 1 ].max;
 
-    double range = 0.02 * p -> _buffs.combo_points;
-
-    direct_power_mod  = 0.05 * p -> _buffs.combo_points;
-    direct_power_mod += p-> rng_eviscerate -> range( -range, +range );
+    direct_power_mod = 0.07 * p -> _buffs.combo_points;
 
     rogue_attack_t::execute();
 
@@ -2550,8 +2550,8 @@ struct shadow_dance_t : public rogue_attack_t
         name = "Shadow Dance Expiration";
         p -> aura_gain( "Shadow Dance" );
         p -> _buffs.shadow_dance = 1;
-	double duration = sim -> P320 ? 6 : 10;
-	if( p -> glyphs.shadow_dance ) duration += 4;
+        double duration = sim -> P320 ? 6 : 10;
+        if( p -> glyphs.shadow_dance ) duration += 4;
         sim -> add_event( this, duration );
       }
       virtual void execute()
@@ -2698,20 +2698,23 @@ void rogue_poison_t::player_buff()
   {
     int target_race = sim -> target -> race;
 
-    if ( target_race == RACE_BEAST     ||
-         target_race == RACE_DRAGONKIN ||
-         target_race == RACE_GIANT     ||
-         target_race == RACE_HUMANOID  )
+    if ( target_race == RACE_BEAST || target_race == RACE_DRAGONKIN ||
+         target_race == RACE_GIANT || target_race == RACE_HUMANOID  )
     {
-      player_multiplier      *= 1.0 + p -> talents.murder * 0.02;
-      player_crit_multiplier *= 1.0 + p -> talents.murder * 0.02;
+      player_multiplier *= 1.0 + p -> talents.murder * 0.02;
     }
   }
   if ( p -> _buffs.killing_spree )
   {
     player_multiplier *= 1.20;
   }
-
+  if ( p -> talents.prey_on_the_weak )
+  {
+    // TODO: Add true uptime calculation (when/if we implement raid damage).
+    bool potw_active = sim -> target -> health_percentage() <= p -> prey_on_the_weak_hp;
+    if ( potw_active ) player_crit_multiplier *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
+    p -> uptimes_prey_on_the_weak -> update( potw_active );
+  }
   if ( p -> talents.hunger_for_blood )
   {
     p -> uptimes_hunger_for_blood -> update( p -> _buffs.hunger_for_blood == 15 );
@@ -3152,8 +3155,8 @@ void rogue_t::init_actions()
     {
       if( items[ i ].use.active() )
       {
-	action_list_str += "/use_item,name=";
-	action_list_str += items[ i ].name();
+        action_list_str += "/use_item,name=";
+        action_list_str += items[ i ].name();
       }
     }
 
@@ -3191,7 +3194,7 @@ void rogue_t::init_actions()
       action_list_str += "/tricks_of_the_trade";
       // CP conditionals track reaction time, so responding when you see CP=4 will often result in CP=5 finishers
       action_list_str += "/rupture,min_combo_points=4";
-      if ( talents.improved_poisons ) action_list_str += "/envenom,min_combo_points=4,env<=1";
+      if( talents.improved_poisons ) action_list_str += "/envenom,min_combo_points=4,env<=1";
       action_list_str += "/eviscerate,min_combo_points=4";
       action_list_str += talents.hemorrhage ? "/hemorrhage" : "/sinister_strike";
       action_list_str += ",max_combo_points=2,energy>=80";
@@ -3281,6 +3284,7 @@ void rogue_t::init_glyphs()
     else if( n == "safe_fall"           ) ;
     else if( n == "pick_lock"           ) ;
     else if( n == "blurred_speed"       ) ;
+    else if( n == "vanish"              ) ;
     else if( ! sim -> parent ) printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
   }
 }
@@ -3362,6 +3366,7 @@ void rogue_t::init_uptimes()
   uptimes_rupture             = get_uptime( "rupture" );
   uptimes_slice_and_dice      = get_uptime( "slice_and_dice" );
   uptimes_tricks_of_the_trade = get_uptime( "tricks_of_the_trade" );
+  uptimes_prey_on_the_weak    = get_uptime( "prey_on_the_weak" );
 }
 
 // rogue_t::init_rng =========================================================
@@ -3388,7 +3393,6 @@ void rogue_t::init_rng()
   // Overlapping procs require the use of a "distributed" RNG-stream when normalized_rng=1
   // also useful for frequent checks with low probability of proc and timed effect
 
-  rng_eviscerate   = get_rng( "eviscerate_range", RNG_DISTRIBUTED );
   rng_HAT_interval = get_rng( "HAT_interval",     RNG_DISTRIBUTED );
   rng_HAT_interval -> average_range = false;
 }
@@ -3668,6 +3672,7 @@ std::vector<option_t>& rogue_t::get_options()
       // @option_doc loc=player/rogue/misc title="Misc"
       { "honor_among_thieves_interval", OPT_FLT,    &( honor_among_thieves_interval   ) },
       { "tricks_of_the_trade_target",   OPT_STRING, &( tricks_of_the_trade_target_str ) },
+      { "prey_on_the_weak_hp",          OPT_INT,    &( prey_on_the_weak_hp            ) },
       { NULL, OPT_UNKNOWN }
     };
 
