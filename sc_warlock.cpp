@@ -4758,8 +4758,8 @@ void warlock_t::init_actions()
     {
       if( items[ i ].use.active() )
       {
-	action_list_str += "/use_item,name=";
-	action_list_str += items[ i ].name();
+	      action_list_str += "/use_item,name=";
+	      action_list_str += items[ i ].name();
       }
     }
 

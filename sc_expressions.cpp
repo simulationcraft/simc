@@ -28,40 +28,32 @@
 
   // types of functions and variables in BUFF and FUNC operators
   enum exp_func_glob { EFG_NONE=0, EFG_GCD, EFG_TIME, EFG_TTD, EFG_HP, EFG_VULN, EFG_INVUL, 
-                       EFG_TICKING, EFG_CTICK,EFG_NTICKS, EFG_EXPIRE, EFG_REMAINS, EFG_TCAST, EFG_MOVING, EFG_DISTANCE, EFG_MAX };
+                       EFG_TICKING, EFG_CTICK,EFG_NTICKS, EFG_EXPIRE, EFG_REMAINS, EFG_TCAST, EFG_MOVING, EFG_DISTANCE, EFG_MANA_PERC, EFG_MAX };
 
   // types of known prefixes in expressions
   enum exp_prefixes { EXPF_NONE=0, EXPF_BUFF, EXPF_DEBUFF, EXPF_GLOBAL, EXPF_ACTION, EXPF_THIS, 
                       EXPF_OPTION, EXPF_TALENT, EXPF_GLYPH, EXPF_ITEM, EXPF_GEAR, EXPF_PLAYER, EXPF_UNKNOWN, EXPF_MAX };
 
-
-
-  // definition of operators
-  struct operator_def_t{
-    std::string name;
-    int type;
-    bool binary;
-  };
-
+  
   static operator_def_t AEXP_operators[]=
   {
-    { "&&", AEXP_AND,     true},
-    { "&",  AEXP_AND,     true},
-    { "||", AEXP_OR,      true},
-    { "|",  AEXP_OR,      true},
-    { "!",  AEXP_NOT,     false},
-    { "==", AEXP_EQ,      true},
-    { "<>", AEXP_NEQ,     true},
-    { ">=", AEXP_GE,      true},
-    { "<=", AEXP_LE,      true},
-    { ">",  AEXP_GREATER, true},
-    { "<",  AEXP_LESS,    true},
-    { "+",  AEXP_PLUS,    true},
-    { "-",  AEXP_MINUS,   true},
-    { "*",  AEXP_MUL,     true},
-    { "/",  AEXP_DIV,     true},
-    { "\\", AEXP_DIV,     true},
-    { "",   AEXP_NONE,    false}
+    { "&&", AEXP_AND,     true  ,ETP_BOOL, ETP_BOOL},
+    { "&",  AEXP_AND,     true  ,ETP_BOOL, ETP_BOOL},
+    { "||", AEXP_OR,      true  ,ETP_BOOL, ETP_BOOL},
+    { "|",  AEXP_OR,      true  ,ETP_BOOL, ETP_BOOL},
+    { "!",  AEXP_NOT,     false ,ETP_BOOL, ETP_BOOL},
+    { "==", AEXP_EQ,      true  ,ETP_BOOL, ETP_NUM },
+    { "<>", AEXP_NEQ,     true  ,ETP_BOOL, ETP_NUM },
+    { ">=", AEXP_GE,      true  ,ETP_BOOL, ETP_NUM },
+    { "<=", AEXP_LE,      true  ,ETP_BOOL, ETP_NUM },
+    { ">",  AEXP_GREATER, true  ,ETP_BOOL, ETP_NUM },
+    { "<",  AEXP_LESS,    true  ,ETP_BOOL, ETP_NUM },
+    { "+",  AEXP_PLUS,    true  ,ETP_NUM , ETP_NUM },
+    { "-",  AEXP_MINUS,   true  ,ETP_NUM , ETP_NUM },
+    { "*",  AEXP_MUL,     true  ,ETP_NUM , ETP_NUM },
+    { "/",  AEXP_DIV,     true  ,ETP_NUM , ETP_NUM },
+    { "\\", AEXP_DIV,     true  ,ETP_NUM , ETP_NUM },
+    { "",   AEXP_NONE,    false ,ETP_BOOL, ETP_BOOL},
   };
 
 
@@ -136,10 +128,52 @@
         case EFG_TCAST:      return action->execute_time();
         case EFG_MOVING:     return action->player->moving;
         case EFG_DISTANCE:   return action->player->distance;
+        case EFG_MANA_PERC:  {
+                                double max_mana=action->player->resource_max[ RESOURCE_MANA ];
+                                if (max_mana<=0) return 0;
+                                return action->player->resource_current[ RESOURCE_MANA ]/max_mana*100;
+                             }
       }
       return 0;
     }
   };
+
+
+  // custom class to optimize AND
+  struct op_and_expression_t: public act_expression_t{
+    op_and_expression_t(std::string expression_str):act_expression_t(AEXP_AND,expression_str,0){};
+    virtual ~op_and_expression_t(){};
+    virtual double evaluate() {
+      if (!operand_1->ok())
+        return 0;
+      else
+        return  operand_2->ok();  
+    }
+  };
+
+  // custom class to optimize OR
+  struct op_or_expression_t: public act_expression_t{
+    op_or_expression_t(std::string expression_str):act_expression_t(AEXP_OR,expression_str,0){};
+    virtual ~op_or_expression_t(){};
+    virtual double evaluate() {
+      if (operand_1->ok())
+        return 1;
+      else
+        return  operand_2->ok();  
+    }
+  };
+
+  // custom class to optimize NOT
+  struct op_not_expression_t: public act_expression_t{
+    op_not_expression_t(std::string expression_str):act_expression_t(AEXP_NOT,expression_str,0){};
+    virtual ~op_not_expression_t(){};
+    virtual double evaluate() {
+      return  !operand_1->ok();  
+    }
+  };
+
+
+  // act_expression_t  methods ============================================================
 
   act_expression_t::act_expression_t(int e_type, std::string expression_str, double e_value)
   {
@@ -206,38 +240,41 @@ void act_expression_t::warn(int severity, action_t* action, const char* format, 
 
 
 act_expression_t* act_expression_t::find_operator(action_t* action, std::string& unmasked, std::string& expression, std::string& alias_protect,
-                                                    std::string& op_str, int op_type, bool binary)
+                                                    operator_def_t& op)
   {
-    act_expression_t* node=0;
+    act_expression_t* node=0; 
     size_t p=0;
-    p=expression.find(op_str);
+    p=expression.find(op.name);
     if (p!=std::string::npos){
       std::string left =trim(unmasked.substr(0,p));
-      std::string right=trim(unmasked.substr(p+op_str.length()));
+      std::string right=trim(unmasked.substr(p+op.name.length()));
       act_expression_t* op1= 0;
       act_expression_t* op2= 0;
-      if (binary){
+      if (op.binary){
         op1= act_expression_t::create(action, left  ,alias_protect);
         op2= act_expression_t::create(action, right ,alias_protect);
       }else{
         op1= act_expression_t::create(action, right ,alias_protect);
-        if (left!="") warn(2,action,"Unexpected text to the left of unary operator %s in : %s", op_str.c_str(), unmasked.c_str() );
+        if (left!="") warn(2,action,"Unexpected text to the left of unary operator %s in : %s", op.name.c_str(), unmasked.c_str() );
       }
       //check allowed cases to miss left operand
-      if ( (op1==0) && ((op_type==AEXP_PLUS)||(op_type==AEXP_MINUS)) ){
+      if ( (op1==0) && ((op.type==AEXP_PLUS)||(op.type==AEXP_MINUS)) ){
         op1= new act_expression_t(AEXP_VALUE,"",0);
       }
       // error handling
       if (op1==0) 
-        warn(3,action,"Left operand missing for %s in : %s", op_str.c_str(), unmasked.c_str() );
-      if ((op2==0)&&binary)
-        warn(3,action,"Right operand missing for %s in : %s", op_str.c_str(), unmasked.c_str() );
-      // create new node
-      node= new act_expression_t(op_type,unmasked);
+        warn(3,action,"Left operand missing for %s in : %s", op.name.c_str(), unmasked.c_str() );
+      if ((op2==0)&&op.binary)
+        warn(3,action,"Right operand missing for %s in : %s", op.name.c_str(), unmasked.c_str() );
+      // create new node, check if there are optimized sub-classes
+      if (op.type==AEXP_AND) node= new op_and_expression_t(unmasked); else
+      if (op.type==AEXP_OR)  node= new op_or_expression_t(unmasked); else
+      if (op.type==AEXP_NOT) node= new op_not_expression_t(unmasked); else
+        node= new act_expression_t(op.type,unmasked);
       node->operand_1=op1;
       node->operand_2=op2;
       // optimize if both operands are constants
-      if ( (op1->type==AEXP_VALUE) && ((!binary)||(op2->type==AEXP_VALUE)) ){
+      if ( (op1->type==AEXP_VALUE) && ((!op.binary)||(op2->type==AEXP_VALUE)) ){
         double val= node->evaluate();
         delete node;
         node= new act_expression_t(AEXP_VALUE,unmasked,val);
@@ -245,7 +282,7 @@ act_expression_t* act_expression_t::find_operator(action_t* action, std::string&
       // optimize if one operand is constant, for boolean param ops: AEXP_AND, AEXP_OR
       if ((op1!=0)&&(op2!=0))
       if ( ((op1->type==AEXP_VALUE)||(op2->type==AEXP_VALUE)) &&  
-           ((op_type==AEXP_AND)||(op_type==AEXP_OR)) ){
+           ((op.type==AEXP_AND)||(op.type==AEXP_OR)) ){
         // get constant value
         act_expression_t* nc=0;
         bool c_val=0;
@@ -258,8 +295,8 @@ act_expression_t* act_expression_t::find_operator(action_t* action, std::string&
         }
         // now select if it evaluate to constant
         delete node;
-        if ( ((op_type==AEXP_AND)&&(c_val==false))||
-             ((op_type==AEXP_OR) &&(c_val==true)) ) {
+        if ( ((op.type==AEXP_AND)&&(c_val==false))||
+             ((op.type==AEXP_OR) &&(c_val==true)) ) {
           node= new act_expression_t(AEXP_VALUE,unmasked,c_val);
           delete nc;
         }else{
@@ -327,7 +364,7 @@ act_expression_t* act_expression_t::find_operator(action_t* action, std::string&
 
     // search for operators, starting with lowest priority operator
     for (int i=0; (AEXP_operators[i].type!=AEXP_NONE)&&(!root); i++)
-      root=find_operator(action,e,mask, alias_protect, AEXP_operators[i].name, AEXP_operators[i].type, AEXP_operators[i].binary);
+      root=find_operator(action,e,mask, alias_protect, AEXP_operators[i]);
 
     // check if this is fixed value/number 
     if (!root){
@@ -466,11 +503,14 @@ act_expression_t* act_expression_t::find_operator(action_t* action, std::string&
           if (name=="time") glob_type=EFG_TIME;
           if (name=="time_to_die") glob_type=EFG_TTD;
           if (name=="health_percentage") glob_type=EFG_HP;
+          if (name=="health_perc") glob_type=EFG_HP;
           if (name=="vulnerable") glob_type=EFG_VULN;
           if (name=="invulnerable") glob_type=EFG_INVUL;
           if (name=="moving") glob_type=EFG_MOVING;
           if (name=="move") glob_type=EFG_MOVING;
           if (name=="distance") glob_type=EFG_DISTANCE;
+          if (name=="mana_perc") glob_type=EFG_MANA_PERC;
+          if (name=="mana_percentage") glob_type=EFG_MANA_PERC;
           // now create node if known global value
           if (glob_type>0){
             global_expression_t* g_func= new global_expression_t(glob_type,e,action);
@@ -860,9 +900,26 @@ act_expression_t* act_expression_t::find_operator(action_t* action, std::string&
 
 
 void alias_t::add(std::string& name, std::string& value){
-  // put pair in list
-  alias_name.push_back(name);
-  alias_value.push_back(trim(value));
+  //check validity
+  if (name==""){
+    printf("Alias definition must be in name=text  format\n");
+    assert(0);
+  }
+  // if already exists
+  unsigned int i=0;
+  for (; i<alias_name.size(); i++)
+    if (name==alias_name[i])
+      break;
+  // if found, return alias
+  if (i<alias_name.size()){
+    // rewrite old value
+    alias_value[i]=value;
+    printf("Redefinition of alias (%s): %s",name.c_str(), value.c_str());
+  }else{
+    // put new pair in list
+    alias_name.push_back(name);
+    alias_value.push_back(trim(value));
+  }
 }
 
 
@@ -874,13 +931,10 @@ void alias_t::init_parse(){
     std::string name="";
     if (alx!=""){
       size_t p= alx.find("=");
-      if (p!=std::string::npos)
+      if (p!=std::string::npos){
         name=tolower(alx.substr(0,p));
-      if (name==""){
-        printf("Alias definition must be in name=text  format\n");
-        assert(0);
+        alx.erase(0,p+1);
       }
-      alx.erase(0,p+1);
       // put pair in list
       add(name,alx);
     }

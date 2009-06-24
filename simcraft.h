@@ -357,6 +357,8 @@ enum option_type_t
 };
 
 // Expression Operation types ==================================================
+enum exp_res_t    { ETP_BOOL, ETP_NUM };
+
 enum exp_type { AEXP_NONE=0, 
                 AEXP_AND, AEXP_OR, AEXP_NOT, AEXP_EQ, AEXP_NEQ, AEXP_GREATER, AEXP_LESS, AEXP_GE, AEXP_LE, // these operations result in boolean
                 AEXP_PLUS, AEXP_MINUS, AEXP_MUL, AEXP_DIV, // these operations result in double
@@ -549,6 +551,15 @@ struct buff_list_t{
 
 // Expressions =================================================================
 
+// definition of operators
+struct operator_def_t{
+  std::string name;
+  int type;
+  bool binary;
+  exp_res_t result_type;
+  exp_res_t operand_type;
+};
+
 struct act_expression_t{
   int    type;
   double value;
@@ -564,7 +575,7 @@ struct act_expression_t{
   static act_expression_t* create(action_t* action, std::string& expression, std::string alias_protect);
   static void warn(int severity, action_t* action, const char* format, ... );
   static act_expression_t* find_operator(action_t* action, std::string& unmasked, std::string& expression, std::string& alias_protect, 
-                                         std::string& op_str, int op_type, bool binary);
+                                         operator_def_t& op);
   static std::string op_name(int op_type);
 
 };
