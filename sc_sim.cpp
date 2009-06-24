@@ -564,6 +564,9 @@ bool sim_t::init()
 
   raid_event_t::init( this );
 
+  // initialize aliases
+  alias.init_parse();
+
   return true;
 }
 
@@ -1164,6 +1167,8 @@ std::vector<option_t>& sim_t::get_options()
       { "armory_cache_clear",               OPT_FUNC,   (void*) ::armory_t::clear_cache               },
       { "default_region",                   OPT_STRING, &( default_region_str                       ) },
       { "default_server",                   OPT_STRING, &( default_server_str                       ) },
+      { "alias",                            OPT_STRING, &( alias.alias_str                          ) },
+      { "alias+",                           OPT_APPEND, &( alias.alias_str                          ) },
       { NULL, OPT_UNKNOWN }
     };
 

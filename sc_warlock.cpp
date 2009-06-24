@@ -56,14 +56,11 @@ struct warlock_t : public player_t
   // warlock specific expression functions
   struct warlock_expression_t: public act_expression_t{
     warlock_t* player;
-    warlock_expression_t(warlock_t* e_player, std::string expression_str, int e_func_type):act_expression_t(e_func_type,expression_str,0),player(e_player){};
+    int method;
+    warlock_expression_t(warlock_t* e_player, std::string expression_str, int e_method)
+      :act_expression_t(AEXP_FUNC,expression_str,0),player(e_player),method(e_method){};
     virtual ~warlock_expression_t(){};
-    virtual double evaluate() {
-      switch(type){
-        case 1:   return player->decimation_queue.size();
-      }
-      return 0;
-    }
+    virtual double evaluate();
   };
   
 
@@ -4846,7 +4843,21 @@ void warlock_t::regen( double periodicity )
 }
 
 
+// warlock_t::warlock_t::warlock_expression_t::evaluate =================================================
+// - expression class that can "evaluate" functions that access warlock_t specific methods
+// - "type: is recognized during warlock_t::create_expression
+double warlock_t::warlock_expression_t::evaluate() {
+  switch(method){
+    case 1:   return player->decimation_queue.size();
+    case 2:   return player->decimation_queue.empty();
+  }
+  return 0;
+}
+
 // warlock_t::create_expression =================================================
+// -this is optional support for class specific expression functions or variables
+// -if prefix.name.sufix is recognized, it needs to create "new" act_expression type
+// -if name not recognized, returns 0 
 act_expression_t* warlock_t::create_expression(std::string& name,std::string& prefix,std::string& suffix){
   act_expression_t* node= player_t::create_expression(name,prefix,suffix);
   if (node!=0) return node;
@@ -4872,7 +4883,10 @@ act_expression_t* warlock_t::create_expression(std::string& name,std::string& pr
   // general functions
   if ((node==0)){
     warlock_expression_t* func=0;
-    if (name=="decimation_queue")     func= new warlock_expression_t(this,e_name, 1);
+    if (name=="decimation_queue"){
+      int method=(suffix=="empty")? 2 : 1;
+      func= new warlock_expression_t(this,e_name, method); 
+    }
     node=func;
   }
   // return expression node, if any

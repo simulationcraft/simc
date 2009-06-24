@@ -18,25 +18,21 @@
 //         global_expression_t (to get functions/values from action,player,sim)
 //         pbuff_expression_t  (to get buff expiration time)
 //         oldbuff_expression_t  (to guess "old" buff expiration time)
+//   - there are two phases: 
+//         creation with parse , by calling act_expression_t::create()
+//         evaluation , by calling act_expression_t::evaluate() or ok()
+//   - expressions can be extended via action/player->create_expression
 //
 // **************************************************************************
 
-  // types of operations in expressions
-  enum exp_type { AEXP_NONE=0, 
-                  AEXP_AND, AEXP_OR, AEXP_NOT, AEXP_EQ, AEXP_NEQ, AEXP_GREATER, AEXP_LESS, AEXP_GE, AEXP_LE, // these operations result in boolean
-                  AEXP_PLUS, AEXP_MINUS, AEXP_MUL, AEXP_DIV, // these operations result in double
-                  AEXP_VALUE, AEXP_INT_PTR, AEXP_DOUBLE_PTR, // these are "direct" value return (no operations)
-                  AEXP_BUFF, AEXP_FUNC, // these presume overriden class
-                  AEXP_MAX
-  };
 
   // types of functions and variables in BUFF and FUNC operators
   enum exp_func_glob { EFG_NONE=0, EFG_GCD, EFG_TIME, EFG_TTD, EFG_HP, EFG_VULN, EFG_INVUL, 
-                       EFG_TICKING, EFG_CTICK,EFG_NTICKS, EFG_EXPIRE, EFG_REMAINS, EFG_TCAST, EFG_MOVING, EFG_MAX };
+                       EFG_TICKING, EFG_CTICK,EFG_NTICKS, EFG_EXPIRE, EFG_REMAINS, EFG_TCAST, EFG_MOVING, EFG_DISTANCE, EFG_MAX };
 
   // types of known prefixes in expressions
   enum exp_prefixes { EXPF_NONE=0, EXPF_BUFF, EXPF_DEBUFF, EXPF_GLOBAL, EXPF_ACTION, EXPF_THIS, 
-                      EXPF_OPTION, EXPF_TALENT, EXPF_GLYPH, EXPF_ITEM, EXPF_GEAR, EXPF_MAX };
+                      EXPF_OPTION, EXPF_TALENT, EXPF_GLYPH, EXPF_ITEM, EXPF_GEAR, EXPF_PLAYER, EXPF_UNKNOWN, EXPF_MAX };
 
 
 
@@ -139,6 +135,7 @@
                              }
         case EFG_TCAST:      return action->execute_time();
         case EFG_MOVING:     return action->player->moving;
+        case EFG_DISTANCE:   return action->player->distance;
       }
       return 0;
     }
@@ -203,13 +200,13 @@ void act_expression_t::warn(int severity, action_t* action, const char* format, 
     if (severity==3)
     {
       printf("Expression parser breaking error\n");
-      assert(false);
+      assert(0);
     }
   }
 
 
-  act_expression_t* act_expression_t::find_operator(action_t* action, std::string& unmasked, std::string& expression, std::string& op_str, 
-                                                    int op_type, bool binary)
+act_expression_t* act_expression_t::find_operator(action_t* action, std::string& unmasked, std::string& expression, std::string& alias_protect,
+                                                    std::string& op_str, int op_type, bool binary)
   {
     act_expression_t* node=0;
     size_t p=0;
@@ -220,10 +217,10 @@ void act_expression_t::warn(int severity, action_t* action, const char* format, 
       act_expression_t* op1= 0;
       act_expression_t* op2= 0;
       if (binary){
-        op1= act_expression_t::create(action, left);
-        op2= act_expression_t::create(action, right);
+        op1= act_expression_t::create(action, left  ,alias_protect);
+        op2= act_expression_t::create(action, right ,alias_protect);
       }else{
-        op1= act_expression_t::create(action, right);
+        op1= act_expression_t::create(action, right ,alias_protect);
         if (left!="") warn(2,action,"Unexpected text to the left of unary operator %s in : %s", op_str.c_str(), unmasked.c_str() );
       }
       //check allowed cases to miss left operand
@@ -231,8 +228,10 @@ void act_expression_t::warn(int severity, action_t* action, const char* format, 
         op1= new act_expression_t(AEXP_VALUE,"",0);
       }
       // error handling
-      if ((op1==0)||((op2==0)&&binary))
-        warn(3,action,"Left or right operand for %s missing in : %s", op_str.c_str(), unmasked.c_str() );
+      if (op1==0) 
+        warn(3,action,"Left operand missing for %s in : %s", op_str.c_str(), unmasked.c_str() );
+      if ((op2==0)&&binary)
+        warn(3,action,"Right operand missing for %s in : %s", op_str.c_str(), unmasked.c_str() );
       // create new node
       node= new act_expression_t(op_type,unmasked);
       node->operand_1=op1;
@@ -300,7 +299,7 @@ void act_expression_t::warn(int severity, action_t* action, const char* format, 
 
   // this parse expression string and create needed exp.tree
   // using different types of "expression nodes"
-  act_expression_t* act_expression_t::create(action_t* action, std::string& expression)
+  act_expression_t* act_expression_t::create(action_t* action, std::string& expression, std::string alias_protect)
   {
     act_expression_t* root=0;
     std::string e=trim(tolower(expression));
@@ -328,7 +327,7 @@ void act_expression_t::warn(int severity, action_t* action, const char* format, 
 
     // search for operators, starting with lowest priority operator
     for (int i=0; (AEXP_operators[i].type!=AEXP_NONE)&&(!root); i++)
-      root=find_operator(action,e,mask, AEXP_operators[i].name, AEXP_operators[i].type, AEXP_operators[i].binary);
+      root=find_operator(action,e,mask, alias_protect, AEXP_operators[i].name, AEXP_operators[i].type, AEXP_operators[i].binary);
 
     // check if this is fixed value/number 
     if (!root){
@@ -344,7 +343,9 @@ void act_expression_t::warn(int severity, action_t* action, const char* format, 
       unsigned int num_parts = util_t::string_split( parts, e, "." );
       if ((num_parts>3)||(num_parts==0)) warn(3,action,"Wrong number of parts(.) in : %s", e.c_str() );
       
-      // check for known prefix (optional for now)
+      // check for known prefix 
+      // prexif is optional, but in order to differentiate 2 part conditions
+      // "buff.pyroclasm"  vs "pyroclasm.duration"
       exp_prefixes prefix=EXPF_NONE;
       std::string pfx_candidate=parts[0];
       if (pfx_candidate=="buff") prefix=EXPF_BUFF;
@@ -363,7 +364,10 @@ void act_expression_t::warn(int severity, action_t* action, const char* format, 
       if (pfx_candidate=="glyph") prefix=EXPF_GLYPH;
       if (pfx_candidate=="item") prefix=EXPF_ITEM;
       if (pfx_candidate=="gear") prefix=EXPF_GEAR; 
+      if (pfx_candidate=="player") prefix=EXPF_PLAYER; 
 
+      // is this unknown prefix? can be used for extensions
+      if ((prefix==EXPF_NONE)&&(num_parts==3))  prefix=EXPF_UNKNOWN;
       // get name of value, and suffix
       std::string name="";
       std::string suffix="";
@@ -466,6 +470,7 @@ void act_expression_t::warn(int severity, action_t* action, const char* format, 
           if (name=="invulnerable") glob_type=EFG_INVUL;
           if (name=="moving") glob_type=EFG_MOVING;
           if (name=="move") glob_type=EFG_MOVING;
+          if (name=="distance") glob_type=EFG_DISTANCE;
           // now create node if known global value
           if (glob_type>0){
             global_expression_t* g_func= new global_expression_t(glob_type,e,action);
@@ -542,6 +547,19 @@ void act_expression_t::warn(int severity, action_t* action, const char* format, 
         if (!root){
           root= action->create_expression(name, pfx_candidate, suffix);
         }
+        // if still nothing, try aliases
+        if (!root){
+          std::string alias= action->sim->alias.find(e);
+          if (alias!=""){
+            std::string prot_name="*"+e;
+            prot_name+="*";
+            // check infinite loops due to recursion
+            if (alias_protect.find(prot_name)!=std::string::npos)
+              warn(3,action,"Alias (%s) using same alias in infinite loop !", e.c_str());
+            alias_protect+=prot_name;
+            root= create(action, alias, alias_protect);
+          }
+        }
       }
 
     }
@@ -556,7 +574,7 @@ void act_expression_t::warn(int severity, action_t* action, const char* format, 
     if (op_type==AEXP_INT_PTR) return "INT_PTR";
     if (op_type==AEXP_DOUBLE_PTR) return "DOUBLE_PTR";
     if (op_type==AEXP_BUFF) return "BUFF";
-    if (op_type==AEXP_FUNC) return "VARIABLE";
+    if (op_type==AEXP_FUNC) return "FUNC";
     // now check list
     for (int i=0; (AEXP_operators[i].type!=AEXP_NONE); i++)
       if (AEXP_operators[i].type==op_type) 
@@ -937,3 +955,56 @@ const char* uptime_t::name()
 }
 
 
+
+
+
+
+
+// **************************************************************************
+//
+// ALIAS_T  implementation
+//
+// **************************************************************************
+
+
+void alias_t::add(std::string& name, std::string& value){
+  // put pair in list
+  alias_name.push_back(name);
+  alias_value.push_back(trim(value));
+}
+
+
+void alias_t::init_parse(){
+  std::vector<std::string> parts;
+  unsigned int num_parts = util_t::string_split( parts, alias_str, "/\\" );
+  for (unsigned int i=0; i<num_parts; i++){
+    std::string alx=trim(parts[i]);
+    std::string name="";
+    if (alx!=""){
+      size_t p= alx.find("=");
+      if (p!=std::string::npos)
+        name=tolower(alx.substr(0,p));
+      if (name==""){
+        printf("Alias definition must be in name=text  format\n");
+        assert(0);
+      }
+      alx.erase(0,p+1);
+      // put pair in list
+      add(name,alx);
+    }
+  }
+}
+
+std::string alias_t::find(std::string& candidate){
+  // try to find that name
+  std::string name=tolower(trim(candidate));
+  unsigned int i=0;
+  for (; i<alias_name.size(); i++)
+    if (name==alias_name[i])
+      break;
+  // if found, return alias
+  if (i<alias_name.size())
+    return alias_value[i];
+  else
+    return "";
+}

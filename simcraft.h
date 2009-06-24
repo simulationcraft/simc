@@ -59,6 +59,7 @@ struct patch_t
 
 struct action_t;
 struct action_callback_t;
+struct alias_t;
 struct attack_t;
 struct spell_tick_t;
 struct base_stats_t;
@@ -355,6 +356,16 @@ enum option_type_t
   OPT_UNKNOWN
 };
 
+// Expression Operation types ==================================================
+enum exp_type { AEXP_NONE=0, 
+                AEXP_AND, AEXP_OR, AEXP_NOT, AEXP_EQ, AEXP_NEQ, AEXP_GREATER, AEXP_LESS, AEXP_GE, AEXP_LE, // these operations result in boolean
+                AEXP_PLUS, AEXP_MINUS, AEXP_MUL, AEXP_DIV, // these operations result in double
+                AEXP_VALUE, AEXP_INT_PTR, AEXP_DOUBLE_PTR, // these are "direct" value return (no operations)
+                AEXP_BUFF, AEXP_FUNC, // these presume overriden class
+                AEXP_MAX
+};
+
+
 typedef bool (*option_function_t)( sim_t* sim, const std::string& name, const std::string& value );
 
 struct option_t
@@ -479,7 +490,7 @@ struct gear_stats_t
   static double stat_mod( int stat );
 };
 
-// buffs
+// Buffs ======================================================================
 struct buff_expiration_t : public event_t
 {
   pbuff_t* pbuff;
@@ -535,6 +546,9 @@ struct buff_list_t{
   bool     chk_buff(std::string& name);
 };
 
+
+// Expressions =================================================================
+
 struct act_expression_t{
   int    type;
   double value;
@@ -547,9 +561,10 @@ struct act_expression_t{
   virtual ~act_expression_t() {}
   virtual double evaluate();
   virtual bool   ok();
-  static act_expression_t* create(action_t* action, std::string& expression);
+  static act_expression_t* create(action_t* action, std::string& expression, std::string alias_protect);
   static void warn(int severity, action_t* action, const char* format, ... );
-  static act_expression_t* find_operator(action_t* action, std::string& unmasked, std::string& expression, std::string& op_str, int op_type, bool binary);
+  static act_expression_t* find_operator(action_t* action, std::string& unmasked, std::string& expression, std::string& alias_protect, 
+                                         std::string& op_str, int op_type, bool binary);
   static std::string op_name(int op_type);
 
 };
@@ -563,6 +578,17 @@ struct oldbuff_expression_t: public act_expression_t{
   virtual double evaluate();
 };
 
+// Alias support =============================================================
+struct alias_t{
+  std::string alias_str;
+  std::vector<std::string> alias_name;
+  std::vector<std::string> alias_value;
+  alias_t(){}
+  virtual ~alias_t(){}
+  virtual void add(std::string& name, std::string& value);
+  virtual void init_parse();
+  virtual std::string find(std::string& name);
+};
 
 // Simulation Engine =========================================================
 
@@ -595,6 +621,7 @@ struct sim_t
   int         armor_update_interval;
   int         optimal_raid, log, debug, save_profiles;
   std::string default_region_str, default_server_str;
+  alias_t     alias;
 
   std::vector<option_t> options;
   std::vector<std::string> party_encoding;
@@ -2012,6 +2039,7 @@ struct rng_t
 
   static rng_t* create( sim_t*, const std::string& name, int type=RNG_STANDARD );
 };
+
 
 // Utilities =================================================================
 

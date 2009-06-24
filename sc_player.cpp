@@ -2746,6 +2746,9 @@ bool player_t::save( FILE* file )
 }
 
 // player_t::create_expression ====================================================
+// -this is optional support for player specific expression functions or variables
+// -if prefix.name.sufix is recognized, it needs to create "new" act_expression type
+// -if name not recognized, returns 0 
 act_expression_t* player_t::create_expression(std::string& name,std::string& prefix,std::string& suffix){
   act_expression_t* node=0;
   std::string e_name=name;
@@ -2762,6 +2765,12 @@ act_expression_t* player_t::create_expression(std::string& name,std::string& pre
     if (name=="bloodlust")            buff= new oldbuff_expression_t(e_name, &buffs.bloodlust); else
     if (name=="cast_time_reduction")  buff= new oldbuff_expression_t(e_name, &buffs.cast_time_reduction ,0, 2); 
     node=buff;
+  }
+  if ((prefix=="player")&&(node==0)){
+    if (name=="distance"){
+      node= new act_expression_t(AEXP_DOUBLE_PTR,e_name);
+      node->p_value= &distance;
+    }
   }
   return node;
 }
