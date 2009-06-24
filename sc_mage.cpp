@@ -2430,12 +2430,15 @@ struct scorch_t : public mage_spell_t
     {
       target_t* t = sim -> target;
 
-      if ( t -> debuffs.improved_scorch >= 5 )
+      if ( t -> debuffs.improved_shadow_bolt )
         return false;
 
       event_t* e = t -> expirations.improved_scorch;
 
       if ( e && sim -> current_time < ( e -> occurs() - 6.0 ) )
+        return false;
+
+      if ( ! e && t -> debuffs.improved_scorch > 0 ) // override scenario
         return false;
     }
 

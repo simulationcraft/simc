@@ -3,10 +3,16 @@
 mage=Mage_T7_20_51_00
 level=80
 talents=http://www.wowhead.com/?talent#of0Vck0fZ0Ec0RhIhVubhct
-actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/arcane_brilliance/molten_armor/focus_magic
+actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/arcane_brilliance/focus_magic
+actions+=/counterspell
 actions+=/mana_gem,trigger=1000/speed_potion
-actions+=/scorch,debuff=1/mirror_image/combustion/living_bomb/pyroblast,hot_streak=1/fire_ball
+actions+=/scorch,debuff=1
+actions+=/use_item,name=scale_of_fates
+actions+=/mirror_image/combustion
+actions+=/living_bomb/pyroblast,hot_streak=1/fire_ball
 actions+=/evocation
+# Actions while moving
+actions+=/fire_blast
 
 # Gear: http://www.chardev.org/?template=148452
 gear_strength=10

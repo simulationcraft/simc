@@ -4,17 +4,23 @@ mage=Mage_T7_53_18_00
 level=80
 talents=http://www.wowhead.com/?talent#of0Vcd0IzxGu0xedfVczo0h
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/arcane_brilliance/focus_magic
+actions+=/counterspell
 actions+=/mirror_image/arcane_power
+actions+=/use_item,name=scale_of_fates
 actions+=/presence_of_mind,pyroblast
 actions+=/mana_gem
 actions+=/evocation
 actions+=/choose_rotation
 actions+=/arcane_blast,max=2
 actions+=/arcane_blast,max=3,arcane_power=1
-actions+=/arcane_missiles,barrage=1
 actions+=/arcane_blast,max=3,dps=1
+actions+=/arcane_missiles,barrage=1
+actions+=/arcane_blast,arcane_power=1
 actions+=/arcane_missiles
 actions+=/mana_potion
+# Actions while moving
+actions+=/arcane_barrage
+actions+=/fire_blast
 
 # Gear: http://www.chardev.org/?template=148539
 gear_strength=10
