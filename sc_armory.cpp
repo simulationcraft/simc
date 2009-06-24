@@ -303,24 +303,25 @@ static bool parse_item_gems( item_t& item,
       std::string enchant, color, match;
 
       if( ! xml_t::get_value( enchant, socket, "enchant" ) ||
-	  ! xml_t::get_value( color,   socket, "color"   ) )
-	continue;
+	        ! xml_t::get_value( color,   socket, "color"   ) )
+	          continue;
 
       if( color == "Meta" )
       {
-	if     ( enchant == "+32 Stamina and 2% Increased Armor Value from Items"         ) { s += "_austere_earthsiege";    }
-	else if( enchant == "+21 Critical Strike Rating and 3% Increased Critical Damage" ) { s += "_chaotic_skyflare";      }
-	else if( enchant == "+12 Critical Strike Rating and 3% Increased Critical Damage" ) { s += "_chaotic_skyfire";       }
-	else if( enchant == "+21 Agility and 3% Increased Critical Damage"                ) { s += "_relentless_earthsiege"; }
-	else if( enchant == "+12 Agility and 3% Increased Critical Damage"                ) { s += "_relentless_earthstorm"; }
-	else
-	{
-	  fuzzy_search( s, enchant );
-	}
+	      if     ( enchant == "+32 Stamina and 2% Increased Armor Value from Items"         ) { s += "_austere_earthsiege";    }
+	      else if( enchant == "+25 Spell Power and +2% Intellect"                           ) { s += "_ember_skyflare";        }
+	      else if( enchant == "+21 Critical Strike Rating and 3% Increased Critical Damage" ) { s += "_chaotic_skyflare";      }
+	      else if( enchant == "+12 Critical Strike Rating and 3% Increased Critical Damage" ) { s += "_chaotic_skyfire";       }
+	      else if( enchant == "+21 Agility and 3% Increased Critical Damage"                ) { s += "_relentless_earthsiege"; }
+	      else if( enchant == "+12 Agility and 3% Increased Critical Damage"                ) { s += "_relentless_earthstorm"; }
+	      else
+	      {
+	        fuzzy_search( s, enchant );
+	      }
       }
       else
       {
-	fuzzy_search( s, enchant );
+	       fuzzy_search( s, enchant );
       }
 
       if( ! xml_t::get_value( match, socket, "match" ) || ( match != "1" ) ) socket_bonus = false;
@@ -331,7 +332,7 @@ static bool parse_item_gems( item_t& item,
       std::string enchant;
       if( xml_t::get_value( enchant, socket_data, "socketMatchEnchant/." ) )
       {
-	fuzzy_search( s, enchant );
+	      fuzzy_search( s, enchant );
       }
     }
 
