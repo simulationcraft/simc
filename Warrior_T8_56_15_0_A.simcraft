@@ -1,0 +1,47 @@
+#!simcraft max_time=300 optimal_raid=1
+
+warrior=Warrior_T8_56_15_00_A
+level=80
+#talents=http://www.wowarmory.com/talent-calc.xml?cid=1&tal=3022032023335100202012213231251325000005000000000000000000000000000000000000000000000
+talents=http://www.wowarmory.com/talent-calc.xml?cid=1&tal=3022032023335100102012203231251325000005020000000000000000000000000000000000000000000
+
+# Action queue
+actions=flask,type=endless_rage/food,type=dragonfin_filet
+actions+=/stance,choose=battle/auto_attack
+actions+=/bloodrage,rage<=85
+actions+=/heroic_strike,rage>=95
+actions+=/mortal_strike
+actions+=/rend
+actions+=/overpower
+actions+=/bladestorm
+actions+=/execute
+actions+=/slam,rage>=40
+
+head=Conqueror's_Siegebreaker_Helmet,id=46151,gems=chaotic_skyflare_16arpen_8Str,enchant=50AP_20Crit
+neck=Frigid_Strength_of_Hodir,id=45459,gems=8arpen_12Sta_4Str
+shoulder=Conqueror's_Siegebreaker_Shoulderplates,id=46149,gems=16arpen_4Str,enchant=40AP_15Crit
+back=Drape_of_the_Faceless_General,id=46032,gems=16arpen_16arpen,enchant=23Haste
+chest=Conqueror's_Siegebreaker_Battleplate,id=46146,gems=16arpen_8arpen_12Sta_6Crit,enchant=10All
+wrists=Decimator's_Armguards,id=45264,enchant=50AP
+hands=Conqueror's_Siegebreaker_Gauntlets,id=46148,gems=16arpen,enchant=44AP
+waist=Soul-Devouring_Cinch,id=46095,gems=16arpen_16arpen_16arpen_12AP
+legs=Legguards_of_Cunning_Deception,id=45536,gems=16arpen_16arpen_16arpen,enchant=75AP_22Crit
+feet=Melancholy_Sabatons,id=40591,enchant=12Hit_12Crit
+finger1=Seal_of_the_Betrayed_King,id=45534,gems=16arpen
+finger2=Brann's_Signet_Ring,id=45608,gems=16arpen
+trinket1=Mjolnir_Runestone,id=45931
+trinket2=Darkmoon_Card:_Greatness,id=42987
+main_hand=Dark_Edge_of_Depravity,id=45533,weapon=polearm_244dps_3.5speed,gems=16Str_16Str,enchant=berserking
+ranged=Twirling_Blades,id=45296,gems=9SP_8Haste_4Spi
+
+# Set Bonuses
+tier8_2pc=1
+tier8_4pc=1
+
+# Meta Gem
+meta_gem=chaotic_skyflare
+
+# Item Procs
+items=darkmoon_card_greatness/grim_toll
+
+glyphs=mortal_strike/rending/execution

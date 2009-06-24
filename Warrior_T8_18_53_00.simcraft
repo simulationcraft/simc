@@ -1,0 +1,57 @@
+#!simcraft max_time=300 optimal_raid=1
+
+warrior=Warrior_T8_18_53_00
+level=80
+talents=http://www.wowhead.com/?talent=LG0G0fhZhxj0V0udeRVzAo
+
+# Action queue
+actions=flask,type=endless_rage/food,type=dragonfin_filet
+actions+=/stance,choose=berserker/auto_attack
+# Execute phase
+actions+=/bloodrage,rage<=85
+actions+=/heroic_strike,rage>=75,health_percentage<=20
+actions+=/whirlwind,rage<=95,health_percentage<=20
+actions+=/bloodthirst,rage<=75,health_percentage<=20
+actions+=/slam,bloodsurge=1,rage<=45,health_percentage<=20
+actions+=/death_wish,health_percentage<=20
+actions+=/execute
+actions+=/recklessness,health_percentage<=20
+# 100% to 20%
+actions+=/heroic_strike,rage>=42,health_percentage>=20
+actions+=/whirlwind,health_percentage>=20
+actions+=/bloodthirst,health_percentage>=20
+actions+=/slam,bloodsurge=1,health_percentage>=20
+actions+=/death_wish,time>=10,health_percentage>=20,time_to_die>=135
+actions+=/recklessness,health_percentage>=20,time_to_die>=230
+actions+=/berserker_rage
+
+# Gear summary generated from:
+head=Conqueror's_Siegebreaker_Helmet,id=46151,gems=chaotic_skyflare_16Str_8Str,enchant=50AP_20Crit
+neck=Frigid_Strength_of_Hodir,id=45459,gems=8Str_12Sta_4Str
+shoulder=Conqueror's_Siegebreaker_Shoulderplates,id=46149,gems=16Str_4Str,enchant=40AP_15Crit
+back=Drape_of_the_Faceless_General,id=46032,gems=16Str_16Str,enchant=23Haste
+chest=Conqueror's_Siegebreaker_Battleplate,id=46146,gems=16Str_8Str_12Sta_6Crit,enchant=10All
+wrists=Armbands_of_Bedlam,id=45663,gems=16Str_6Crit,enchant=50AP
+hands=Conqueror's_Siegebreaker_Gauntlets,id=46148,gems=16Str,enchant=44AP
+waist=Soul-Devouring_Cinch,id=46095,gems=16Str_16Str_16Str_12AP
+legs=Plated_Leggings_of_Ruination,id=45134,gems=16Str_16Str_16Str,enchant=75AP_22Crit
+feet=Melancholy_Sabatons,id=40591,enchant=12Hit_12Crit
+finger1=Seal_of_the_Betrayed_King,id=45534,gems=16Str
+finger2=Brann's_Signet_Ring,id=45608,gems=16Str
+trinket1=Mjolnir_Runestone,id=45931
+trinket2=Darkmoon_Card:_Greatness,id=42987
+main_hand=Voldrethar_Dark_Blade_of_Oblivion,id=45516,weapon=sword2h_244dps_3.6speed,gems=16Str_16Str,enchant=berserking
+off_hand=Voldrethar_Dark_Blade_of_Oblivion,id=45516,weapon=sword2h_244dps_3.6speed,gems=16Str_16Str,enchant=berserking
+ranged=Twirling_Blades,id=45296,gems=9SP_8Haste_4Spi
+
+# Set Bonuses
+tier8_2pc=1
+tier8_4pc=1
+
+# Meta Gem
+meta_gem=chaotic_skyflare
+
+# Item Procs
+items=darkmoon_card_greatness/grim_toll
+
+glyphs=heroic_strike/whirlwind/execution
