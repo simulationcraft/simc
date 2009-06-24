@@ -1,8 +1,8 @@
 #!simcraft
 
-optimal_raid=1
-
 Globals_T7.simcraft
+
+optimal_raid=1
 
 Priest_T7_13_00_58.simcraft
 Priest_T7_13_00_58_SWD.simcraft

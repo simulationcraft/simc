@@ -1,8 +1,8 @@
 #!simcraft
 
-optimal_raid=1
-
 Globals_T7.simcraft
+
+optimal_raid=1
 
 Mage_T7_00_53_18.simcraft
 Mage_T7_18_00_53.simcraft   focus_magic_target=Mage_T7_20_51_00

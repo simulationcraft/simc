@@ -1,8 +1,8 @@
 #!simcraft
 
-optimal_raid=1 
-
 Globals_T7.simcraft
+
+optimal_raid=1 
 
 Rogue_T7_07_51_13.simcraft    tricks_of_the_trade_target=Rogue_T7_08_20_43
 Rogue_T7_08_20_43.simcraft    tricks_of_the_trade_target=Rogue_T7_18_51_02_BS

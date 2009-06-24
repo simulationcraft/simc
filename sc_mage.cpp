@@ -31,6 +31,7 @@ struct mage_t : public player_t
     int    hot_streak;
     double hot_streak_pyroblast;
     int    icy_veins;
+    double incanters_absorption;
     int    mage_armor;
     double missile_barrage;
     int    molten_armor;
@@ -45,9 +46,10 @@ struct mage_t : public player_t
   struct _expirations_t
   {
     event_t* arcane_blast;
-    event_t* hot_streak;
-    event_t* missile_barrage;
     event_t* brain_freeze;
+    event_t* hot_streak;
+    event_t* incanters_absorption;
+    event_t* missile_barrage;
 
     void reset() { memset( ( void* ) this, 0x00, sizeof( _expirations_t ) ); }
     _expirations_t() { reset(); }
@@ -74,6 +76,7 @@ struct mage_t : public player_t
   uptime_t* uptimes_fingers_of_frost;
   uptime_t* uptimes_focus_magic_feedback;
   uptime_t* uptimes_icy_veins;
+  uptime_t* uptimes_incanters_absorption;
   uptime_t* uptimes_missile_barrage;
   uptime_t* uptimes_water_elemental;
 
@@ -151,6 +154,7 @@ struct mage_t : public player_t
     int  improved_frost_bolt;
     int  improved_scorch;
     int  improved_water_elemental;
+    int  incanters_absorption;
     int  incineration;
     int  living_bomb;
     int  master_of_elements;
@@ -228,6 +232,7 @@ struct mage_t : public player_t
   virtual int       primary_resource() { return RESOURCE_MANA; }
   virtual int       primary_role()     { return ROLE_SPELL; }
   virtual int       primary_tree();
+  virtual double    composite_spell_power( int school );
 
   // Event Tracking
   virtual void   regen( double periodicity );
@@ -1175,6 +1180,58 @@ static void trigger_replenishment( spell_t* s )
     return;
 
   p -> trigger_replenishment();
+}
+
+// trigger_incanters_absorption ====================================================
+
+static void trigger_incanters_absorption( mage_t* p,
+					  double damage )
+{
+  if( ! p -> talents.incanters_absorption )
+    return;
+
+  double bonus_spell_power = damage * p -> talents.incanters_absorption * 0.05;
+
+  if( p -> _expirations.incanters_absorption )
+  {
+    double remaining_time = p -> _expirations.incanters_absorption -> occurs() - p -> sim -> current_time;
+
+    bonus_spell_power += p -> _buffs.incanters_absorption * remaining_time / 10.0;
+  }
+
+  double bonus_max = p -> resource_max[ RESOURCE_HEALTH ] * 0.05;
+
+  if( bonus_spell_power > bonus_max ) bonus_spell_power = bonus_max;
+
+  p -> _buffs.incanters_absorption = bonus_spell_power;
+
+  struct incanters_absorption_expiration_t : public event_t
+  {
+    incanters_absorption_expiration_t( sim_t* sim, mage_t* p ) : event_t( sim, p )
+    {
+      name = "Incanters Absorption Expiration";
+      p -> aura_gain( "Incanter's Absorption" );
+      sim -> add_event( this, 10.0 );
+    }
+    virtual void execute()
+    {
+      mage_t* p = player -> cast_mage();
+      p -> aura_loss( "Incanter's Absorption" );
+      p -> _buffs.incanters_absorption       = 0;
+      p -> _expirations.incanters_absorption = 0;
+    }
+  };
+
+  event_t*& e = p -> _expirations.incanters_absorption;
+
+  if ( e )
+  {
+    e -> reschedule( 10.0 );
+  }
+  else
+  {
+    e = new ( p -> sim ) incanters_absorption_expiration_t( p -> sim, p );
+  }
 }
 
 // =========================================================================
@@ -3308,6 +3365,7 @@ void mage_t::init_uptimes()
   uptimes_fingers_of_frost     = get_uptime( "fingers_of_frost" );
   uptimes_focus_magic_feedback = get_uptime( "focus_magic_feedback" );
   uptimes_icy_veins            = get_uptime( "icy_veins" );
+  uptimes_incanters_absorption = get_uptime( "incanters_absorption" );
   uptimes_missile_barrage      = get_uptime( "missile_barrage" );
   uptimes_water_elemental      = get_uptime( "water_elemental" );
 }
@@ -3416,6 +3474,21 @@ int mage_t::primary_tree()
   return TALENT_TREE_MAX;
 }
 
+// mage_t::composite_spell_power ===========================================
+
+double mage_t::composite_spell_power( int school )
+{
+  double sp = player_t::composite_spell_power( school );
+
+  if( talents.incanters_absorption )
+  {
+    uptimes_incanters_absorption -> update( _buffs.incanters_absorption != 0 );
+    sp += _buffs.incanters_absorption;
+  }
+
+  return sp;
+}
+
 // mage_t::combat_begin ====================================================
 
 void mage_t::combat_begin()
@@ -3501,13 +3574,20 @@ double mage_t::resource_loss( int       resource,
 {
   double actual_amount = player_t::resource_loss( resource, amount, action );
 
-  if ( rotation.current == ROTATION_DPS )
+  if( resource == RESOURCE_MANA )
   {
-    rotation.dps_mana_loss += actual_amount;
+    if ( rotation.current == ROTATION_DPS )
+    {
+      rotation.dps_mana_loss += actual_amount;
+    }
+    else if ( rotation.current == ROTATION_DPM )
+    {
+      rotation.dpm_mana_loss += actual_amount;
+    }
   }
-  else if ( rotation.current == ROTATION_DPM )
+  else if( resource == RESOURCE_HEALTH )
   {
-    rotation.dpm_mana_loss += actual_amount;
+    trigger_incanters_absorption( this, amount );
   }
 
   return actual_amount;
@@ -3543,7 +3623,7 @@ bool mage_t::get_talent_trees( std::vector<int*>& arcane,
       { { 20, &( talents.arcane_potency       ) }, { 20, &( talents.combustion          ) }, { 20, NULL                                  } },
       { { 21, &( talents.arcane_empowerment   ) }, { 21, &( talents.molten_fury         ) }, { 21, &( talents.arctic_winds             ) } },
       { { 22, &( talents.arcane_power         ) }, { 22, NULL                             }, { 22, &( talents.empowered_frost_bolt     ) } },
-      { { 23, NULL                              }, { 23, &( talents.empowered_fire      ) }, { 23, &( talents.fingers_of_frost         ) } },
+      { { 23, &( talents.incanters_absorption ) }, { 23, &( talents.empowered_fire      ) }, { 23, &( talents.fingers_of_frost         ) } },
       { { 24, &( talents.arcane_flows         ) }, { 24, NULL                             }, { 24, &( talents.brain_freeze             ) } },
       { { 25, &( talents.mind_mastery         ) }, { 25, NULL                             }, { 25, &( talents.summon_water_elemental   ) } },
       { { 26, &( talents.slow                 ) }, { 26, &( talents.hot_streak          ) }, { 26, &( talents.improved_water_elemental ) } },
@@ -3607,6 +3687,7 @@ std::vector<option_t>& mage_t::get_options()
       { "improved_frost_bolt",       OPT_INT,   &( talents.improved_frost_bolt       ) },
       { "improved_scorch",           OPT_INT,   &( talents.improved_scorch           ) },
       { "improved_water_elemental",  OPT_INT,   &( talents.improved_water_elemental  ) },
+      { "incanters_absorption",      OPT_INT,   &( talents.incanters_absorption      ) },
       { "incineration",              OPT_INT,   &( talents.incineration              ) },
       { "living_bomb",               OPT_INT,   &( talents.living_bomb               ) },
       { "master_of_elements",        OPT_INT,   &( talents.master_of_elements        ) },

@@ -1,8 +1,8 @@
 #!simcraft
 
-optimal_raid=1
-
 Globals_T7.simcraft
+
+optimal_raid=1
 
 Hunter_T7_01_15_55.simcraft
 Hunter_T7_15_51_05.simcraft

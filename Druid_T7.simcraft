@@ -1,8 +1,8 @@
 #!simcraft
 
-optimal_raid=1
-
 Globals_T7.simcraft
+
+optimal_raid=1
 
 Druid_T7_58_00_13_SF.simcraft
 Druid_T7_58_00_13_W.simcraft

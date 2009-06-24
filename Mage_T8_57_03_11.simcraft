@@ -18,6 +18,7 @@ actions+=/arcane_missiles,barrage=1
 actions+=/arcane_blast,arcane_power=1
 actions+=/arcane_missiles
 actions+=/mana_potion
+actions+=/arcane_barrage
 
 # Gear
 # http://www.wowhead.com/?compare=46134:46132:45446:44005:45272:45135:40399:45168:45150:45271:45488:45527:45466:45518:40561:45511:45243

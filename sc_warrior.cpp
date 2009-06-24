@@ -70,6 +70,7 @@ struct warrior_t : public player_t
   gain_t* gains_bloodrage;
   gain_t* gains_berserker_rage;
   gain_t* gains_glyph_of_heroic_strike;
+  gain_t* gains_incoming_damage;
   gain_t* gains_mh_attack;
   gain_t* gains_oh_attack;
   gain_t* gains_sudden_death;
@@ -209,6 +210,7 @@ struct warrior_t : public player_t
   virtual void      reset();
   virtual void      interrupt();
   virtual void      regen( double periodicity );
+  virtual double    resource_loss( int resurce, double amount, action_t* );
   virtual bool      get_talent_trees( std::vector<int*>& arms, std::vector<int*>& fury, std::vector<int*>& protection );
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -2623,6 +2625,7 @@ void warrior_t::init_gains()
   gains_bloodrage              = get_gain( "bloodrage" );
   gains_berserker_rage         = get_gain( "berserker_rage" );
   gains_glyph_of_heroic_strike = get_gain( "glyph_of_heroic_strike" );
+  gains_incoming_damage        = get_gain( "incoming_damage" );
   gains_mh_attack              = get_gain( "mh_attack" );
   gains_oh_attack              = get_gain( "oh_attack" );
   gains_sudden_death           = get_gain( "sudden_death" );
@@ -2829,6 +2832,31 @@ void warrior_t::regen( double periodicity )
   uptimes_rage_cap -> update( resource_current[ RESOURCE_RAGE ] ==
                               resource_max    [ RESOURCE_RAGE] );
 
+}
+
+// warrior_t::resource_loss ================================================
+
+double warrior_t::resource_loss( int       resource,
+				 double    amount,
+				 action_t* action )
+{
+  double actual_amount = player_t::resource_loss( resource, amount, action );
+
+  if( resource == RESOURCE_HEALTH )
+  {
+    // FIXME!!! Only works for level 80 currently!
+    double coeff_60 = 453.3;
+    double coeff_70 = 453.3;
+    double coeff_80 = 453.3;
+    
+    double coeff = rating_t::interpolate( level, coeff_60, coeff_70, coeff_80 );
+    
+    double rage_gain = 5 * amount / ( 2 * coeff );
+
+    resource_gain( RESOURCE_RAGE, rage_gain, gains_incoming_damage );
+  }
+
+  return actual_amount;
 }
 
 // warrior_t::get_talent_trees ==============================================

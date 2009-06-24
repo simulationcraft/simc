@@ -1,8 +1,8 @@
 #!simcraft 
 
-# "_mov" version is for generic movement raid
-#opt_raid_mov.simcraft
-opt_raid.simcraft
+Globals_T8.simcraft
+
+optimal_raid=1
 
 Warlock_T8_00_13_58.simcraft
 Warlock_T8_03_13_55.simcraft
