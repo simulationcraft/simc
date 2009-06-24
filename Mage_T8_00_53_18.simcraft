@@ -8,6 +8,7 @@ actions+=/counterspell
 actions+=/mana_gem,trigger=1000/speed_potion
 actions+=/mirror_image/combustion/icy_veins/living_bomb/pyroblast,hot_streak=1/frostfire_bolt
 actions+=/evocation
+# Actions while moving
 actions+=/fire_blast
 
 # Gear (including 75 spell_power profession bonus)

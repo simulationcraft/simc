@@ -6,5 +6,7 @@ talents=http://www.wowhead.com/?talent#bVcbhZZGxfVRfzcfqfzAo
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/fortitude/divine_spirit/inner_fire/shadow_form
 actions+=/shadow_fiend/dispersion
 actions+=/shadow_word_pain,shadow_weaving_wait=1/speed_potion/vampiric_touch/devouring_plague/mind_blast/mind_flay
+# Actions while moving
+actions+=/shadow_word_death
 Priest_T8_Shadow_Gear.simcraft
 glyphs=shadow_word_pain/shadow/shadow_word_death

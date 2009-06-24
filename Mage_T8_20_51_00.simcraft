@@ -11,6 +11,7 @@ actions+=/use_item,name=scale_of_fates
 actions+=/mirror_image/combustion
 actions+=/living_bomb/pyroblast,hot_streak=1/fire_ball
 actions+=/evocation
+# Actions while moving
 actions+=/fire_blast
 
 # Gear summary

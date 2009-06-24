@@ -3430,6 +3430,8 @@ void mage_t::init_actions()
       action_list_str += "/arcane_blast,arcane_power=1";
       action_list_str += "/arcane_missiles";
       action_list_str += "/mana_potion";
+      if( talents.arcane_barrage ) action_list_str += "/arcane_barrage"; // when moving
+      action_list_str += "/fire_blast"; // when moving
     }
     else if( primary_tree() == TREE_FROST )
     {
@@ -3438,6 +3440,7 @@ void mage_t::init_actions()
       if( talents.summon_water_elemental ) action_list_str += "/water_elemental";
       if( talents.cold_snap              ) action_list_str += "/cold_snap";
       action_list_str += "/fire_ball,brain_freeze=1/frost_bolt";
+      action_list_str += "/fire_blast"; // when moving
     }
     else if( primary_tree() == TREE_FIRE )
     {
@@ -3452,6 +3455,7 @@ void mage_t::init_actions()
       {
         action_list_str += "/fire_ball";
       }
+      action_list_str += "/fire_blast"; // when moving
     }
     else action_list_str = "/arcane_missiles";
 

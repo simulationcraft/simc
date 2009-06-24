@@ -1985,6 +1985,7 @@ void priest_t::init_actions()
       action_list_str += "/shadow_word_pain,shadow_weaving_wait=1";
       if( talents.vampiric_touch ) action_list_str += "/vampiric_touch";
       action_list_str += "/devouring_plague/mind_blast/mind_flay";
+      action_list_str += "/shadow_word_death"; // when moving
     }
     else
     {
@@ -1993,6 +1994,7 @@ void priest_t::init_actions()
       action_list_str += "/shadow_word_pain";
       if( talents.power_infusion ) action_list_str += "/power_infusion";
       action_list_str += "/holy_fire/mind_blast/smite";
+      action_list_str += "/shadow_word_death"; // when moving
     }
 
     action_list_default = 1;
