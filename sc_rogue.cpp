@@ -693,7 +693,8 @@ static void trigger_sword_specialization( rogue_attack_t* a )
 
   if ( ! w ) return;
 
-  if ( w -> type != WEAPON_SWORD )
+  if ( w -> type != WEAPON_SWORD &&
+       w -> type != WEAPON_AXE )
     return;
 
   rogue_t* p = a -> player -> cast_rogue();
@@ -2537,7 +2538,7 @@ struct shadow_dance_t : public rogue_attack_t
     parse_options( options, options_str );
 
     trigger_gcd = 0;
-    cooldown = 120;
+    cooldown = sim -> P320 ? 60 : 120;
   }
 
   virtual void execute()
@@ -2549,7 +2550,9 @@ struct shadow_dance_t : public rogue_attack_t
         name = "Shadow Dance Expiration";
         p -> aura_gain( "Shadow Dance" );
         p -> _buffs.shadow_dance = 1;
-        sim -> add_event( this, p -> glyphs.shadow_dance ? 14.0 : 10.0 );
+	double duration = sim -> P320 ? 6 : 10;
+	if( p -> glyphs.shadow_dance ) duration += 4;
+        sim -> add_event( this, duration );
       }
       virtual void execute()
       {

@@ -890,7 +890,8 @@ void shaman_attack_t::execute()
     }
     if ( p -> _buffs.shamanistic_rage )
     {
-      p -> resource_gain( RESOURCE_MANA, player_attack_power * 0.30, p -> gains_shamanistic_rage );
+      double mana = player_attack_power * sim -> P320 ? 0.15 : 0.30;
+      p -> resource_gain( RESOURCE_MANA, mana, p -> gains_shamanistic_rage );
     }
     trigger_flametongue_weapon( this );
     trigger_windfury_weapon( this );
@@ -1652,7 +1653,7 @@ struct shamans_swiftness_t : public shaman_spell_t
     shaman_t* p = player -> cast_shaman();
     assert( p -> talents.natures_swiftness );
     trigger_gcd = 0;
-    cooldown = 180.0;
+    cooldown = sim -> P320 ? 120.0 : 180.0;
     if ( ! options_str.empty() )
     {
       // This will prevent Natures Swiftness from being called before the desired "free spell" is ready to be cast.
@@ -2795,7 +2796,7 @@ struct shamanistic_rage_t : public shaman_spell_t
       };
     parse_options( options, options_str );
 
-    cooldown = 120;
+    cooldown = sim -> P320 ? 60 : 120;
   }
 
   virtual void execute()

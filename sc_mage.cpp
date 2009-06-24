@@ -56,6 +56,7 @@ struct mage_t : public player_t
 
   // Gains
   gain_t* gains_clearcasting;
+  gain_t* gains_empowered_fire;
   gain_t* gains_evocation;
   gain_t* gains_mana_gem;
   gain_t* gains_master_of_elements;
@@ -79,6 +80,7 @@ struct mage_t : public player_t
   // Random Number Generation
   rng_t* rng_arcane_concentration;
   rng_t* rng_brain_freeze;
+  rng_t* rng_empowered_fire;
   rng_t* rng_fingers_of_frost;
   rng_t* rng_frostbite;
   rng_t* rng_hot_streak;
@@ -678,7 +680,20 @@ static void trigger_ignite( spell_t* s,
       reset();
     }
     virtual void target_debuff() {}
-    virtual void player_buff() {}};
+    virtual void player_buff() {}
+    virtual void tick()
+    {
+      mage_t* p = player -> cast_mage();
+      mage_spell_t::tick();
+      if( sim -> P320 && p -> talents.empowered_fire )
+      {
+	if( p -> rng_empowered_fire -> roll( p -> talents.empowered_fire / 3.0 ) )
+	{
+	  p -> resource_gain( RESOURCE_MANA, p -> resource_base[ RESOURCE_MANA ] * 0.01, p -> gains_empowered_fire );
+	}
+      }
+    }
+  };
 
   double ignite_dmg = dmg * p -> talents.ignite * 0.08;
 
@@ -1444,10 +1459,12 @@ struct arcane_blast_t : public mage_spell_t
         { 80, 4, 1185, 1377, 0, 0.08 },
         { 76, 3, 1047, 1215, 0, 0.08 },
         { 71, 2, 897,  1041, 0, 0.08 },
-        { 64, 1, 842,  978, 0, 195  },
+        { 64, 1, 842,  978,  0, 195  },
         { 0, 0 }
       };
     init_rank( ranks );
+
+    if( sim -> P320 ) base_cost *= 0.88;
 
     base_execute_time = 2.5;
     may_crit          = true;
@@ -3258,6 +3275,7 @@ void mage_t::init_gains()
   player_t::init_gains();
 
   gains_clearcasting       = get_gain( "clearcasting" );
+  gains_empowered_fire     = get_gain( "empowered_fire" );
   gains_evocation          = get_gain( "evocation" );
   gains_mana_gem           = get_gain( "mana_gem" );
   gains_master_of_elements = get_gain( "master_of_elements" );
@@ -3302,6 +3320,7 @@ void mage_t::init_rng()
 
   rng_arcane_concentration     = get_rng( "arcane_concentration"     );
   rng_brain_freeze             = get_rng( "brain_freeze"             );
+  rng_empowered_fire           = get_rng( "empowered_fire"           );
   rng_fingers_of_frost         = get_rng( "fingers_of_frost"         );
   rng_frostbite                = get_rng( "frostbite"                );
   rng_improved_scorch          = get_rng( "improved_scorch"          );

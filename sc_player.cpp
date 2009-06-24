@@ -219,8 +219,8 @@ static void replenish_targets( player_t* provider )
       {
         player_t* p = player -> replenishment_targets[ i ];
         if ( p -> sleeping ) continue;
-
-        p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * ( sim -> P320 ? 0.0020 : 0.0025 ), p -> gains.replenishment );
+        double replenishment_regen = p -> resource_max[ RESOURCE_MANA ] * ( sim -> P320 ? 0.0020 : 0.0025 );
+        p -> resource_gain( RESOURCE_MANA, replenishment_regen, p -> gains.replenishment );
       }
 
       event_t*& e = player -> expirations.replenishment;
@@ -1607,13 +1607,13 @@ void player_t::regen( double periodicity )
     {
       double energy_regen = periodicity * energy_regen_per_second;
 
-      resource_gain( resource_type, energy_regen, gains.energy_regen );
+      resource_gain( RESOURCE_ENERGY, energy_regen, gains.energy_regen );
     }
     else if ( resource_type == RESOURCE_FOCUS )
     {
       double focus_regen = periodicity * focus_regen_per_second;
 
-      resource_gain( resource_type, focus_regen, gains.focus_regen );
+      resource_gain( RESOURCE_FOCUS, focus_regen, gains.focus_regen );
     }
     else if ( resource_type == RESOURCE_MANA )
     {
@@ -1621,27 +1621,27 @@ void player_t::regen( double periodicity )
 
       if ( buffs.innervate )
       {
-        resource_gain( resource_type, buffs.innervate * periodicity, gains.innervate );
+        resource_gain( RESOURCE_MANA, buffs.innervate * periodicity, gains.innervate );
       }
       if ( buffs.glyph_of_innervate )
       {
-        resource_gain( resource_type, buffs.glyph_of_innervate * periodicity, gains.glyph_of_innervate );
+        resource_gain( RESOURCE_MANA, buffs.glyph_of_innervate * periodicity, gains.glyph_of_innervate );
       }
       if ( recent_cast() && mana_regen_while_casting < 1.0 )
       {
         spirit_regen *= mana_regen_while_casting;
       }
-      resource_gain( resource_type, spirit_regen, gains.spirit_intellect_regen );
+      resource_gain( RESOURCE_MANA, spirit_regen, gains.spirit_intellect_regen );
 
       double mp5_regen = periodicity * ( mp5 + intellect() * mp5_per_intellect ) / 5.0;
 
-      resource_gain( resource_type, mp5_regen, gains.mp5_regen );
+      resource_gain( RESOURCE_MANA, mp5_regen, gains.mp5_regen );
 
       if ( sim -> overrides.replenishment || ( buffs.replenishment && sim -> replenishment_targets <= 0 ) )
       {
-        double replenishment_regen = periodicity * resource_max[ resource_type ] * 0.0025 / 1.0;
+        double replenishment_regen = periodicity * resource_max[ RESOURCE_MANA ] * ( sim -> P320 ? 0.0020 : 0.0025 ) / 1.0;
 
-        resource_gain( resource_type, replenishment_regen, gains.replenishment );
+        resource_gain( RESOURCE_MANA, replenishment_regen, gains.replenishment );
       }
       uptimes.replenishment -> update( buffs.replenishment != 0 );
 
@@ -1649,14 +1649,14 @@ void player_t::regen( double periodicity )
       {
         double wisdom_regen = periodicity * buffs.blessing_of_wisdom / 5.0;
 
-        resource_gain( resource_type, wisdom_regen, gains.blessing_of_wisdom );
+        resource_gain( RESOURCE_MANA, wisdom_regen, gains.blessing_of_wisdom );
       }
 
       if ( buffs.mana_spring > buffs.blessing_of_wisdom )
       {
         double mana_spring_regen = periodicity * buffs.mana_spring / 2.0;
 
-        resource_gain( resource_type, mana_spring_regen, gains.mana_spring );
+        resource_gain( RESOURCE_MANA, mana_spring_regen, gains.mana_spring );
       }
     }
   }
