@@ -109,8 +109,8 @@ int set_bonus_t::decode( const std::string& name )
   // Warlock
   if( name.find( "plagueheart"  ) != std::string::npos ) return SET_T7;
   if( name.find( "deathbringer" ) != std::string::npos ) return SET_T8;
-  if( name.find( "kel'thuzad"   ) != std::string::npos ) return SET_T9;
-  if( name.find( "gul'dan"      ) != std::string::npos ) return SET_T9;
+  if( name.find( "kelthuzad"    ) != std::string::npos ) return SET_T9;
+  if( name.find( "guldan"       ) != std::string::npos ) return SET_T9;
 
   // Warrior
   if( name.find( "dreadnaught"  ) != std::string::npos ) return SET_T7;
