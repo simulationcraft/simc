@@ -3,6 +3,7 @@
 warrior=Warrior_T8_18_53_00
 level=80
 talents=http://www.wowhead.com/?talent=LG0G0fhZhxj0V0udeRVzAo
+glyphs=heroic_strike/whirlwind/execution
 
 # Action queue
 actions=flask,type=endless_rage/food,type=dragonfin_filet
@@ -25,33 +26,42 @@ actions+=/death_wish,time>=10,health_percentage>=20,time_to_die>=135
 actions+=/recklessness,health_percentage>=20,time_to_die>=230
 actions+=/berserker_rage
 
-# Gear summary generated from:
-head=Conqueror's_Siegebreaker_Helmet,id=46151,gems=chaotic_skyflare_16Str_8Str,enchant=50AP_20Crit
-neck=Frigid_Strength_of_Hodir,id=45459,gems=8Str_12Sta_4Str
-shoulder=Conqueror's_Siegebreaker_Shoulderplates,id=46149,gems=16Str_4Str,enchant=40AP_15Crit
-back=Drape_of_the_Faceless_General,id=46032,gems=16Str_16Str,enchant=23Haste
-chest=Conqueror's_Siegebreaker_Battleplate,id=46146,gems=16Str_8Str_12Sta_6Crit,enchant=10All
-wrists=Armbands_of_Bedlam,id=45663,gems=16Str_6Crit,enchant=50AP
-hands=Conqueror's_Siegebreaker_Gauntlets,id=46148,gems=16Str,enchant=44AP
-waist=Soul-Devouring_Cinch,id=46095,gems=16Str_16Str_16Str_12AP
-legs=Plated_Leggings_of_Ruination,id=45134,gems=16Str_16Str_16Str,enchant=75AP_22Crit
-feet=Melancholy_Sabatons,id=40591,enchant=12Hit_12Crit
-finger1=Seal_of_the_Betrayed_King,id=45534,gems=16Str
-finger2=Brann's_Signet_Ring,id=45608,gems=16Str
-trinket1=Mjolnir_Runestone,id=45931
-trinket2=Darkmoon_Card:_Greatness,id=42987
-main_hand=Voldrethar_Dark_Blade_of_Oblivion,id=45516,weapon=sword2h_244dps_3.6speed,gems=16Str_16Str,enchant=berserking
-off_hand=Voldrethar_Dark_Blade_of_Oblivion,id=45516,weapon=sword2h_244dps_3.6speed,gems=16Str_16Str,enchant=berserking
-ranged=Twirling_Blades,id=45296,gems=9SP_8Haste_4Spi
-
-# Set Bonuses
+# Gear Summary
+gear_strength=1526
+gear_agility=251
+gear_stamina=1440
+gear_intellect=10
+gear_spirit=14
+gear_spell_power=9
+gear_attack_power=635
+gear_expertise_rating=116
+gear_armor_penetration_rating=419
+gear_hit_rating=198
+gear_crit_rating=919
+gear_haste_rating=133
+gear_armor=12764
+meta_gem=chaotic_skyflare
 tier8_2pc=1
 tier8_4pc=1
+main_hand=voldrethar_dark_blade_of_oblivion,weapon=sword2h_244dps_3.6speed,enchant=berserking
+off_hand=voldrethar_dark_blade_of_oblivion,weapon=sword2h_244dps_3.6speed,enchant=berserking
+items=mjolnir_runestone/darkmoon_card_greatness
 
-# Meta Gem
-meta_gem=chaotic_skyflare
-
-# Item Procs
-items=darkmoon_card_greatness/grim_toll
-
-glyphs=heroic_strike/whirlwind/execution
+# Gear summary generated from:
+# head=conquerors_siegebreaker_helmet,id=46151,gems=chaotic_skyflare_16str_8str,enchant=50ap_20crit
+# neck=frigid_strength_of_hodir,id=45459,gems=8str_12sta_4str
+# shoulder=conquerors_siegebreaker_shoulderplates,id=46149,gems=16str_4str,enchant=40ap_15crit
+# back=drape_of_the_faceless_general,id=46032,gems=16str_16str,enchant=23haste
+# chest=conquerors_siegebreaker_battleplate,id=46146,gems=16str_8str_12sta_6crit,enchant=10all
+# wrists=armbands_of_bedlam,id=45663,gems=16str_6crit,enchant=50ap
+# hands=conquerors_siegebreaker_gauntlets,id=46148,gems=16str,enchant=44ap
+# waist=soul-devouring_cinch,id=46095,gems=16str_16str_16str_12ap
+# legs=plated_leggings_of_ruination,id=45134,gems=16str_16str_16str,enchant=75ap_22crit
+# feet=melancholy_sabatons,id=40591,enchant=12hit_12crit
+# finger1=seal_of_the_betrayed_king,id=45534,gems=16str
+# finger2=branns_signet_ring,id=45608,gems=16str
+# trinket1=mjolnir_runestone,id=45931
+# trinket2=darkmoon_card:_greatness,id=42987
+# main_hand=voldrethar_dark_blade_of_oblivion,id=45516,weapon=sword2h_244dps_3.6speed,gems=16str_16str,enchant=berserking
+# off_hand=voldrethar_dark_blade_of_oblivion,id=45516,weapon=sword2h_244dps_3.6speed,gems=16str_16str,enchant=berserking
+# ranged=twirling_blades,id=45296,gems=9sp_8haste_4spi
