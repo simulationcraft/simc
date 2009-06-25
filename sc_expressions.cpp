@@ -745,9 +745,9 @@ act_expression_t* act_expression_t::find_operator(action_t* action, std::string&
     double delta= time_now - last_update;
     if (delta<0) delta=0;
     if (last_update_state)
-      uptime_cnt->timer_downtime+= delta;
-    else
       uptime_cnt->timer_uptime+= delta;
+    else
+      uptime_cnt->timer_downtime+= delta;
     last_update= time_now;
     last_update_state=activated;
   }

@@ -271,7 +271,7 @@ static void print_uptime( FILE* file, sim_t* sim )
         }
         fprintf( file, "        %5.1f%% : %-30s", u -> percentage(), u -> name() );
 
-        if (sim->duration_uptimes&&(typeid(*u)==typeid(buff_uptime_t))){
+        if (typeid(*u)==typeid(buff_uptime_t)){
           double upt= ((buff_uptime_t*)u)->percentage_time();
           double ntrig=((buff_uptime_t*)u)->avg_triggers();
           if (upt>0)  fprintf( file, "  ( %5.1f triggers, %5.1f%% Duration uptime )",ntrig,upt );
