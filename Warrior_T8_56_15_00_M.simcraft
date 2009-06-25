@@ -18,26 +18,25 @@ actions+=/execute
 actions+=/slam,rage>=40
 
 # Gear Summary
-gear_strength=975
+gear_strength=870
 gear_agility=363
-gear_stamina=1260
+gear_stamina=1315
 gear_intellect=10
 gear_spirit=10
-gear_attack_power=787
+gear_attack_power=1011
 gear_expertise_rating=116
 gear_armor_penetration_rating=633
-gear_hit_rating=304
-gear_crit_rating=773
+gear_hit_rating=234
+gear_crit_rating=756
 gear_haste_rating=23
 gear_armor=11148
 meta_gem=chaotic_skyflare
 tier8_2pc=1
 tier8_4pc=1
-main_hand=earthshaper,weapon=mace2h_232dps_3.6speed,enchant=berserking
+main_hand=furious_gladiators_crusher,weapon=mace2h_244dps_3.6speed,enchant=berserking
 ranged=twirling_blades,weapon=thrown_2.1speed_232.38dps
 items=mjolnir_runestone/darkmoon_card_greatness
 
-# Gear summary generated from:
 #head=Conqueror's_Siegebreaker_Helmet,id=46151,gems=chaotic_skyflare_16arpen_8Str,enchant=50AP_20Crit
 #neck=Frigid_Strength_of_Hodir,id=45459,gems=8arpen_12Sta_4Str
 #shoulder=Conqueror's_Siegebreaker_Shoulderplates,id=46149,gems=16arpen_4Str,enchant=40AP_15Crit
@@ -52,5 +51,5 @@ items=mjolnir_runestone/darkmoon_card_greatness
 #finger2=Brann's_Signet_Ring,id=45608,gems=16arpen
 #trinket1=Mjolnir_Runestone,id=45931
 #trinket2=Darkmoon_Card:_Greatness,id=42987
-#main_hand=Earthshaper,id=45521,weapon=mace2h_232dps_3.6speed,enchant=berserking
+#main_hand=Furious_Gladiator's_Crusher,id=45949,weapon=mace2h_244dps_3.6speed,gems=16Str_16Str,enchant=berserking
 #ranged=Twirling_Blades,id=45296,gems=16Str
