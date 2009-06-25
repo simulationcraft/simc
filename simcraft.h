@@ -359,7 +359,7 @@ enum option_type_t
 };
 
 // Expression Operation types ==================================================
-enum exp_res_t    { ETP_BOOL, ETP_NUM };
+enum exp_res_t    { ETP_NONE, ETP_BOOL, ETP_NUM };
 
 enum exp_type { AEXP_NONE=0, 
                 AEXP_AND, AEXP_OR, AEXP_NOT, AEXP_EQ, AEXP_NEQ, AEXP_GREATER, AEXP_LESS, AEXP_GE, AEXP_LE, // these operations result in boolean
@@ -408,7 +408,7 @@ struct event_t
   {
     if ( ! name ) name = "unknown";
   }
-double occurs() { return reschedule_time != 0 ? reschedule_time : time; }
+  double occurs() { return reschedule_time != 0 ? reschedule_time : time; }
   virtual void reschedule( double new_time );
   virtual void execute() { printf( "%s\n", name ? name : "(no name)" ); assert( 0 ); }
   virtual ~event_t() {}
@@ -609,7 +609,7 @@ struct act_expression_t{
   virtual ~act_expression_t() {}
   virtual double evaluate();
   virtual bool   ok();
-  static act_expression_t* create(action_t* action, std::string& expression, std::string alias_protect);
+  static act_expression_t* create(action_t* action, std::string& expression, std::string alias_protect, exp_res_t expected_type);
   static void warn(int severity, action_t* action, const char* format, ... );
   static act_expression_t* find_operator(action_t* action, std::string& unmasked, std::string& expression, std::string& alias_protect, 
                                          operator_def_t& op);
@@ -1411,7 +1411,7 @@ struct player_t
   virtual pet_t*    find_pet     ( const std::string& name );
 
   virtual void trigger_replenishment();
-  virtual act_expression_t* create_expression(std::string& name, std::string& prefix, std::string& suffix);      
+  virtual act_expression_t* create_expression(std::string& name, std::string& prefix, std::string& suffix, exp_res_t expected_type);      
 
 
   // Class-Specific Methods
@@ -1788,7 +1788,7 @@ struct action_t
 
   virtual double total_dd_multiplier() { return total_multiplier() * base_dd_multiplier; }
   virtual double total_td_multiplier() { return total_multiplier() * base_td_multiplier; }
-  virtual act_expression_t* create_expression(std::string& name, std::string& prefix, std::string& suffix);      
+  virtual act_expression_t* create_expression(std::string& name, std::string& prefix, std::string& suffix, exp_res_t expected_type);      
 
 };
 

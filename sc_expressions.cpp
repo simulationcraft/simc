@@ -96,10 +96,25 @@
   // custom class to invoke pbuff_t expiration
   struct pbuff_expression_t: public act_expression_t{
     pbuff_t* buff;
-    pbuff_expression_t(std::string expression_str="", pbuff_t* e_buff=0):act_expression_t(AEXP_BUFF,expression_str,0), buff(e_buff){};
+    action_t* action;
+    int method;
+    pbuff_expression_t(std::string expression_str, pbuff_t* e_buff, int e_method, action_t* e_action=0):act_expression_t(AEXP_BUFF,expression_str,0), 
+                       buff(e_buff), method(e_method), action(e_action){};
     virtual ~pbuff_expression_t(){};
     virtual double evaluate() {
-      return buff->expiration_time();
+      switch(method){
+        case 1: // "buffname" or "buffname.duration<3" or "buffname.time>5"
+                return buff->expiration_time();
+        case 2: // buffname.time_to_think
+                return (buff->buff_value>0)&&((buff->player->sim->current_time - buff->last_trigger) > buff->player->sim->reaction_time);
+        case 3: // buffname.time_to_execute
+                return (buff->buff_value>0)&&( action->execute_time() <= buff->expiration_time() );
+        case 4: // buffname.time_to_do  ( #2 && #3 )
+                return (buff->buff_value>0)&&
+                       ((buff->player->sim->current_time - buff->last_trigger) > buff->player->sim->reaction_time)&&
+                       ( action->execute_time() <= buff->expiration_time() );
+      }
+      return buff->buff_value;
     }
   };
 
@@ -251,10 +266,10 @@ act_expression_t* act_expression_t::find_operator(action_t* action, std::string&
       act_expression_t* op1= 0;
       act_expression_t* op2= 0;
       if (op.binary){
-        op1= act_expression_t::create(action, left  ,alias_protect);
-        op2= act_expression_t::create(action, right ,alias_protect);
+        op1= act_expression_t::create(action, left  ,alias_protect, op.operand_type);
+        op2= act_expression_t::create(action, right ,alias_protect, op.operand_type);
       }else{
-        op1= act_expression_t::create(action, right ,alias_protect);
+        op1= act_expression_t::create(action, right ,alias_protect, op.operand_type);
         if (left!="") warn(2,action,"Unexpected text to the left of unary operator %s in : %s", op.name.c_str(), unmasked.c_str() );
       }
       //check allowed cases to miss left operand
@@ -263,9 +278,9 @@ act_expression_t* act_expression_t::find_operator(action_t* action, std::string&
       }
       // error handling
       if (op1==0) 
-        warn(3,action,"Left operand missing for %s in : %s", op.name.c_str(), unmasked.c_str() );
+        warn(3,action,"First operand missing for %s in : %s", op.name.c_str(), unmasked.c_str() );
       if ((op2==0)&&op.binary)
-        warn(3,action,"Right operand missing for %s in : %s", op.name.c_str(), unmasked.c_str() );
+        warn(3,action,"Second operand missing for %s in : %s", op.name.c_str(), unmasked.c_str() );
       // create new node, check if there are optimized sub-classes
       if (op.type==AEXP_AND) node= new op_and_expression_t(unmasked); else
       if (op.type==AEXP_OR)  node= new op_or_expression_t(unmasked); else
@@ -336,7 +351,7 @@ act_expression_t* act_expression_t::find_operator(action_t* action, std::string&
 
   // this parse expression string and create needed exp.tree
   // using different types of "expression nodes"
-  act_expression_t* act_expression_t::create(action_t* action, std::string& expression, std::string alias_protect)
+  act_expression_t* act_expression_t::create(action_t* action, std::string& expression, std::string alias_protect, exp_res_t expected_type)
   {
     act_expression_t* root=0;
     std::string e=trim(tolower(expression));
@@ -420,14 +435,16 @@ act_expression_t* act_expression_t::find_operator(action_t* action, std::string&
         // Buffs
         if ( ((prefix==EXPF_BUFF)||(prefix==EXPF_NONE)) && !root) {
           pbuff_t* buff=action->player->buff_list.find_buff(name);
-          bool sfx_stacks=false;
-          if (suffix=="value")  sfx_stacks=true;
-          if (suffix=="buff")   sfx_stacks=true;
-          if (suffix=="stacks") sfx_stacks=true;
           // now set buff if found
           if (buff){
+            bool sfx_stacks=(suffix=="value")||(suffix=="buff") || (suffix=="stacks");
+            if ((suffix=="")&&(expected_type==ETP_BOOL)) sfx_stacks=true;
             if (!sfx_stacks){
-              pbuff_expression_t* e_buff= new pbuff_expression_t(e,buff);
+              int method=1;
+              if ((suffix=="time_to_think")||(suffix=="think")) method=2;
+              if (suffix=="time_to_execute") method=3;
+              if (suffix=="time_to_do") method=4; // 2 && 3
+              pbuff_expression_t* e_buff= new pbuff_expression_t(e,buff,method,action);
               root= e_buff;
             }else{
               root= new act_expression_t(AEXP_DOUBLE_PTR,e);
@@ -585,7 +602,7 @@ act_expression_t* act_expression_t::find_operator(action_t* action, std::string&
         }
         // if nothing found so far, try function extensions
         if (!root){
-          root= action->create_expression(name, pfx_candidate, suffix);
+          root= action->create_expression(name, pfx_candidate, suffix,expected_type);
         }
         // if still nothing, try aliases
         if (!root){
@@ -597,7 +614,7 @@ act_expression_t* act_expression_t::find_operator(action_t* action, std::string&
             if (alias_protect.find(prot_name)!=std::string::npos)
               warn(3,action,"Alias (%s) using same alias in infinite loop !", e.c_str());
             alias_protect+=prot_name;
-            root= create(action, alias, alias_protect);
+            root= create(action, alias, alias_protect, expected_type);
           }
         }
       }

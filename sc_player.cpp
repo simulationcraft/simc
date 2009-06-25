@@ -2750,22 +2750,21 @@ bool player_t::save( FILE* file )
 // -this is optional support for player specific expression functions or variables
 // -if prefix.name.sufix is recognized, it needs to create "new" act_expression type
 // -if name not recognized, returns 0 
-act_expression_t* player_t::create_expression(std::string& name,std::string& prefix,std::string& suffix){
+act_expression_t* player_t::create_expression(std::string& name,std::string& prefix,std::string& suffix, exp_res_t expected_type){
   act_expression_t* node=0;
   std::string e_name=name;
   if (prefix!="") e_name=prefix+"."+e_name;
   if (suffix!="") e_name=e_name+"."+suffix;
   if ((prefix=="buff")&&(node==0)){
-    oldbuff_expression_t* buff=0;
     bool ex=(suffix!="value")&&(suffix!="buff")&&(suffix!="stacks"); // if one of these, ignore expiration time
-    if (name=="tier8_2pc")            buff= new oldbuff_expression_t(e_name, &buffs.tier8_2pc,  ex?&expirations.tier8_2pc:0); else
-    if (name=="tier8_4pc")            buff= new oldbuff_expression_t(e_name, &buffs.tier8_4pc,  ex?&expirations.tier8_4pc:0); else
-    if (name=="tier7_2pc")            buff= new oldbuff_expression_t(e_name, &buffs.tier7_2pc,  ex?&expirations.tier7_2pc:0); else
-    if (name=="tier7_4pc")            buff= new oldbuff_expression_t(e_name, &buffs.tier7_4pc,  ex?&expirations.tier7_4pc:0); else
-    if (name=="tricks_of_the_trade")  buff= new oldbuff_expression_t(e_name, &buffs.tricks_of_the_trade, ex?&expirations.tricks_of_the_trade:0 ); else
-    if (name=="bloodlust")            buff= new oldbuff_expression_t(e_name, &buffs.bloodlust); else
-    if (name=="cast_time_reduction")  buff= new oldbuff_expression_t(e_name, &buffs.cast_time_reduction ,0, 2); 
-    node=buff;
+    if ((suffix=="")&&(expected_type==ETP_BOOL)) ex=false; //also ignore expiration value if boolean result is needed
+    if (name=="tier8_2pc")            node= new oldbuff_expression_t(e_name, &buffs.tier8_2pc,  ex?&expirations.tier8_2pc:0); else
+    if (name=="tier8_4pc")            node= new oldbuff_expression_t(e_name, &buffs.tier8_4pc,  ex?&expirations.tier8_4pc:0); else
+    if (name=="tier7_2pc")            node= new oldbuff_expression_t(e_name, &buffs.tier7_2pc,  ex?&expirations.tier7_2pc:0); else
+    if (name=="tier7_4pc")            node= new oldbuff_expression_t(e_name, &buffs.tier7_4pc,  ex?&expirations.tier7_4pc:0); else
+    if (name=="tricks_of_the_trade")  node= new oldbuff_expression_t(e_name, &buffs.tricks_of_the_trade, ex?&expirations.tricks_of_the_trade:0 ); else
+    if (name=="bloodlust")            node= new oldbuff_expression_t(e_name, &buffs.bloodlust); else
+    if (name=="cast_time_reduction")  node= new oldbuff_expression_t(e_name, &buffs.cast_time_reduction ,0, 2); 
   }
   if ((prefix=="player")&&(node==0)){
     if (name=="distance"){

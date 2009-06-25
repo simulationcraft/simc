@@ -1012,7 +1012,7 @@ bool action_t::ready()
   //initialize expression if not already done -> should be done in some init_expressions()
   if (has_if_exp<0){
     if (if_expression!="")  
-      if_exp=act_expression_t::create(this, if_expression,"");
+      if_exp=act_expression_t::create(this, if_expression,"", ETP_BOOL);
     has_if_exp= (if_exp!=0);
     if (has_if_exp && sim->debug_exp) 
       printf("%s", if_exp->to_string().c_str()); //debug
@@ -1069,13 +1069,13 @@ void action_t::cancel()
 }
 
 // action_t::create_expression ====================================================
-act_expression_t* action_t::create_expression(std::string& name,std::string& prefix,std::string& suffix){
+act_expression_t* action_t::create_expression(std::string& name,std::string& prefix,std::string& suffix, exp_res_t expected_type){
   act_expression_t* node=0;
   // check action specific functions
   //...
 
   // if none found, check player functions
-  if (node==0)   node=player->create_expression(name,prefix,suffix);
+  if (node==0)   node=player->create_expression(name,prefix,suffix,expected_type);
   //return resutl
   return node;
 }

@@ -39,7 +39,7 @@ struct warlock_t : public player_t
     int    haunted;
     //double life_tap_glyph;
     int    metamorphosis;
-    double molten_core;
+    //double molten_core;
     int    pet_sacrifice;
     //double pyroclasm;
     //int    shadow_embrace;
@@ -89,7 +89,7 @@ struct warlock_t : public player_t
     event_t* haunted;
     event_t* infernal;
     //event_t* life_tap_glyph;
-    event_t* molten_core;
+    //event_t* molten_core;
     //event_t* pyroclasm;
     //event_t* shadow_embrace;
     event_t* shadow_flame;
@@ -120,7 +120,7 @@ struct warlock_t : public player_t
   uptime_t* uptimes_demonic_soul;
   //uptime_t* uptimes_empowered_imp;
   //uptime_t* uptimes_eradication;
-  uptime_t* uptimes_molten_core;
+  //uptime_t* uptimes_molten_core;
   //uptime_t* uptimes_pyroclasm;
   uptime_t* uptimes_shadow_flame;
   uptime_t* uptimes_flame_shadow;
@@ -133,7 +133,7 @@ struct warlock_t : public player_t
   rng_t* rng_shadow_trance;
   rng_t* rng_soul_leech;
   rng_t* rng_improved_soul_leech;
-  rng_t* rng_molten_core;
+  //rng_t* rng_molten_core;
   //rng_t* rng_eradication;
   rng_t* rng_everlasting_affliction;
   //rng_t* rng_empowered_imp;
@@ -248,6 +248,7 @@ struct warlock_t : public player_t
   pbuff_t* empowered_imp;
   pbuff_t* eradication;
   pbuff_t* life_tap_glyph;
+  pbuff_t* molten_core;
   pbuff_t* pyroclasm;
   pbuff_t* shadow_embrace;
 
@@ -288,7 +289,7 @@ struct warlock_t : public player_t
 
   // Event Tracking
   virtual void regen( double periodicity );
-  virtual act_expression_t* create_expression(std::string& name, std::string& prefix, std::string& suffix);      
+  virtual act_expression_t* create_expression(std::string& name, std::string& prefix, std::string& suffix, exp_res_t expected_type);      
 };
 
 // ==========================================================================
@@ -1328,8 +1329,14 @@ static void trigger_haunted( spell_t* s )
 
 static void trigger_molten_core( spell_t* s )
 {
+  if ( s -> school != SCHOOL_SHADOW ) return;
+  warlock_t* p = s -> player -> cast_warlock();
+  p->molten_core->trigger(p->sim -> current_time);
+
+  /*
   struct expiration_t : public event_t
   {
+
     expiration_t( sim_t* sim, warlock_t* p ) : event_t( sim, p )
     {
       name = "Molten Core Expiration";
@@ -1365,6 +1372,7 @@ static void trigger_molten_core( spell_t* s )
       e = new ( s -> sim ) expiration_t( s -> sim, p );
     }
   }
+  */
 }
 
 // queue_decimation =======================================================
@@ -1794,8 +1802,9 @@ void warlock_spell_t::player_buff()
     if ( p -> _buffs.shadow_flame ) player_spell_power += 135;
     p -> uptimes_shadow_flame -> update( p -> _buffs.shadow_flame != 0 );
 
-    if ( p -> _buffs.molten_core ) player_multiplier *= 1.10;
-    p -> uptimes_molten_core -> update( p -> _buffs.molten_core != 0 );
+    //if ( p -> _buffs.molten_core ) player_multiplier *= 1.10;
+    //p -> uptimes_molten_core -> update( p -> _buffs.molten_core != 0 );
+    player_multiplier *= p->molten_core->mul_value();
 
     //if ( p -> _buffs.pyroclasm ) player_multiplier *= 1.0 + p -> talents.pyroclasm * 0.02;
     //p -> uptimes_pyroclasm -> update( p -> _buffs.pyroclasm != 0 );
@@ -1994,10 +2003,12 @@ bool warlock_spell_t::ready()
 
   if ( molten_core )
   {
-    if ( ! sim -> time_to_think( p -> _buffs.molten_core ) )
+    //if ( ! sim -> time_to_think( p -> _buffs.molten_core ) )
+    if ((!p->molten_core->is_up(true))|| !sim -> time_to_think( p->molten_core->last_trigger ) )
       return false;
 
-    if ( sim -> current_time + execute_time() > p -> _expirations.molten_core -> occurs() )
+    //if ( sim -> current_time + execute_time() > p -> _expirations.molten_core -> occurs() )
+    if ( execute_time() > p->molten_core->expiration_time() )
       return false;
   }
 
@@ -4697,7 +4708,8 @@ void warlock_t::init_uptimes()
                              !talents.empowered_imp, -talents.empowered_imp / 3.0);
   eradication= new pbuff_t(this, "eradication",10,0, 47195 + talents.eradication, 
                            1.0/ ( 1 + talents.eradication * 0.06 + (talents.eradication == 3? 0.02:0) ), !talents.eradication, 0.06);
-  life_tap_glyph= new pbuff_t(this, "life_tap_glyph", sim->patch.after(3,2,0)?40:20 ,0, 63941, 0.2 , !glyphs.life_tap);
+  life_tap_glyph= new pbuff_t(this, "life_tap", sim->patch.after(3,2,0)?40:20 ,0, 63941, 0.2 , !glyphs.life_tap);
+  molten_core= new pbuff_t(this, "molten_core",12,0, 47244+talents.molten_core, 1.10, !talents.molten_core, talents.molten_core * 0.05);
   static int aura_id_pyro[]={ 0, 18096, 18073, 63245 };
   pyroclasm= new pbuff_t(this, "pyroclasm",10,0,aura_id_pyro[talents.pyroclasm%4], 1.0 + talents.pyroclasm * 0.02, !talents.pyroclasm );
   shadow_embrace= new pbuff_t(this, "shadow_embrace",12,0, 32391, 000, !talents.shadow_embrace);
@@ -4710,7 +4722,7 @@ void warlock_t::init_uptimes()
   //uptimes_empowered_imp         = get_uptime( "empowered_imp"         );
   //uptimes_eradication           = get_uptime( "eradication"           );
   uptimes_flame_shadow          = get_uptime( "flame_shadow"          );
-  uptimes_molten_core           = get_uptime( "molten_core"           );
+  //uptimes_molten_core           = get_uptime( "molten_core"           );
   //uptimes_pyroclasm             = get_uptime( "pyroclasm"             );
   uptimes_shadow_flame          = get_uptime( "shadow_flame"          );
   uptimes_shadow_trance         = get_uptime( "shadow_trance"         );
@@ -4735,7 +4747,7 @@ void warlock_t::init_rng()
   rng_shadow_trance = get_rng( "shadow_trance", RNG_DISTRIBUTED );
   //rng_empowered_imp = get_rng( "empowered_imp", RNG_DISTRIBUTED );
   //rng_eradication   = get_rng( "eradication",   RNG_DISTRIBUTED );
-  rng_molten_core   = get_rng( "molten_core",   RNG_DISTRIBUTED );
+  //rng_molten_core   = get_rng( "molten_core",   RNG_DISTRIBUTED );
 }
 
 // warlock_t::init_actions ===================================================
@@ -4856,36 +4868,33 @@ double warlock_t::warlock_expression_t::evaluate() {
 // -this is optional support for class specific expression functions or variables
 // -if prefix.name.sufix is recognized, it needs to create "new" act_expression type
 // -if name not recognized, returns 0 
-act_expression_t* warlock_t::create_expression(std::string& name,std::string& prefix,std::string& suffix){
-  act_expression_t* node= player_t::create_expression(name,prefix,suffix);
+act_expression_t* warlock_t::create_expression(std::string& name,std::string& prefix,std::string& suffix, exp_res_t expected_type){
+  act_expression_t* node= player_t::create_expression(name,prefix,suffix,expected_type);
   if (node!=0) return node;
   std::string e_name=name;
   if (prefix!="") e_name=prefix+"."+e_name;
   if (suffix!="") e_name=e_name+"."+suffix;
   // old buffs
   if ((prefix=="buff")&&(node==0)){
-    oldbuff_expression_t* buff=0;
     bool ex=(suffix!="value")&&(suffix!="buff")&&(suffix!="stacks"); // if one of these, ignore expiration time
-    if (name=="decimation")           buff= new oldbuff_expression_t(e_name, &_buffs.decimation,        ex?&_expirations.decimation:0); else
-    if (name=="metamorphosis")        buff= new oldbuff_expression_t(e_name, &_buffs.metamorphosis,     0); else
-    if (name=="haunted")              buff= new oldbuff_expression_t(e_name, &_buffs.haunted,           ex?&_expirations.haunted:0); else
-    if (name=="shadow_trance")        buff= new oldbuff_expression_t(e_name, &_buffs.shadow_trance,     0); else
-    if (name=="demonic_empathy")      buff= new oldbuff_expression_t(e_name, &_buffs.demonic_empathy,   ex?&_expirations.demonic_empathy:0); else
-    if (name=="shadow_flame")         buff= new oldbuff_expression_t(e_name, &_buffs.shadow_flame,      ex?&_expirations.shadow_flame:0); else
-    if (name=="flame_shadow")         buff= new oldbuff_expression_t(e_name, &_buffs.flame_shadow,      ex?&_expirations.flame_shadow:0); else
-    if (name=="pet_sacrifice")        buff= new oldbuff_expression_t(e_name, &_buffs.pet_sacrifice,     0); else
-    if (name=="fel_armor")            buff= new oldbuff_expression_t(e_name, &_buffs.fel_armor,         0, 2); else 
-    if (name=="molten_core")          buff= new oldbuff_expression_t(e_name, &_buffs.molten_core,       ex?&_expirations.molten_core:0, 2); 
-    node=buff;
+    if ((suffix=="")&&(expected_type==ETP_BOOL)) ex=false; //also ignore expiration value if boolean result is needed
+    if (name=="decimation")           node= new oldbuff_expression_t(e_name, &_buffs.decimation,        ex?&_expirations.decimation:0); else
+    if (name=="metamorphosis")        node= new oldbuff_expression_t(e_name, &_buffs.metamorphosis,     0); else
+    if (name=="haunted")              node= new oldbuff_expression_t(e_name, &_buffs.haunted,           ex?&_expirations.haunted:0); else
+    if (name=="shadow_trance")        node= new oldbuff_expression_t(e_name, &_buffs.shadow_trance,     0); else
+    if (name=="demonic_empathy")      node= new oldbuff_expression_t(e_name, &_buffs.demonic_empathy,   ex?&_expirations.demonic_empathy:0); else
+    if (name=="shadow_flame")         node= new oldbuff_expression_t(e_name, &_buffs.shadow_flame,      ex?&_expirations.shadow_flame:0); else
+    if (name=="flame_shadow")         node= new oldbuff_expression_t(e_name, &_buffs.flame_shadow,      ex?&_expirations.flame_shadow:0); else
+    if (name=="pet_sacrifice")        node= new oldbuff_expression_t(e_name, &_buffs.pet_sacrifice,     0); else
+    if (name=="fel_armor")            node= new oldbuff_expression_t(e_name, &_buffs.fel_armor,         0, 2); 
+    //if (name=="molten_core")          buff= new oldbuff_expression_t(e_name, &_buffs.molten_core,       ex?&_expirations.molten_core:0, 2); 
   }
   // general functions
   if ((node==0)){
-    warlock_expression_t* func=0;
     if (name=="decimation_queue"){
       int method=(suffix=="empty")? 2 : 1;
-      func= new warlock_expression_t(this,e_name, method); 
+      node= new warlock_expression_t(this,e_name, method); 
     }
-    node=func;
   }
   // return expression node, if any
   return node;
