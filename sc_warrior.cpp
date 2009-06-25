@@ -1736,60 +1736,46 @@ struct execute_t : public warrior_attack_t
 
     stancemask = STANCE_BATTLE | STANCE_BERSERKER;
   }
-  virtual void execute()
-  {
+
+  virtual void consume_resource() 
+  { 
     warrior_t* p = player -> cast_warrior();
 
-    if ( sim -> target -> health_percentage() > 20 || p -> _buffs.sudden_death > sim -> current_time )
-    {
-      assert( p -> _buffs.sudden_death > sim -> current_time );
-      // Sudden Death Execute
-      // Consumes a max of 30 rage, also if the target is below 20%, where normal
-      // Execute would use all the rage
-      excess_rage = std::min( p -> resource_current[ RESOURCE_RAGE ], 30.0 ) - warrior_attack_t::cost();
-    }
-    else
-    {
-      excess_rage = ( p -> resource_current[ RESOURCE_RAGE ] - warrior_attack_t::cost() );
-    }
+    resource_consumed = cost();
 
-    warrior_attack_t::consume_resource();
+    bool sudden_death_up = ( p -> _buffs.sudden_death > sim -> current_time );
+
+    double max_consumed = std::min( p -> resource_current[ RESOURCE_RAGE ], ( sudden_death_up ? 30.0 : 100.0 ) );
+
+    double excess_rage = max_consumed - resource_consumed;
+
+    resource_consumed = max_consumed;
+
     if ( sim -> debug )
-      log_t::output( sim, "%s consumes an additional %.1f %s for %s", player -> name(),
-                     excess_rage, util_t::resource_type_string( resource ), name() );
-    player -> resource_loss( resource, excess_rage );
-    stats -> consume_resource( excess_rage );
+      log_t::output( sim, "%s consumes %.1f %s for %s", player -> name(),
+		     resource_consumed, util_t::resource_type_string( resource ), name() );
 
-    if ( p -> glyphs.execution )
-      excess_rage += 10;
+    player -> resource_loss( resource, resource_consumed );
 
-    if ( excess_rage > 0 )
-    {
-      base_dd_adder = excess_rage_mod * excess_rage;
-    }
-    else
-    {
-      base_dd_adder = 0;
-    }
-    // We have to save if it a SD execute, warrior_attack_t::execute() itself
-    // can trigger SD, so afterwards it would look like it was an SD execute
-    bool wasSuddenDeath = false;
-    if ( p -> _buffs.sudden_death > sim -> current_time )
+    stats -> consume_resource( resource_consumed );
+    
+    if ( p -> glyphs.execution ) excess_rage += 10;
+
+    base_dd_adder = ( excess_rage > 0 ) ? excess_rage_mod * excess_rage : 0.0;
+
+    if( sudden_death_up )
     {
       p -> aura_loss( "Sudden Death" );
-      wasSuddenDeath = true;
+      p -> _buffs.sudden_death = 0;
+
+      double current_rage = p -> resource_current[ RESOURCE_RAGE ];
+
+      if( current_rage < 10 )
+      {
+	p -> resource_gain( RESOURCE_RAGE, 10.0 - current_rage, p -> gains_sudden_death );
+      }
     }
-    p -> _buffs.sudden_death = 0;
-
-    warrior_attack_t::execute();
-
-    // Sudden Death: In addition, you keep at least 10 rage after using Execute.
-    if ( wasSuddenDeath &&  p -> resource_current[ RESOURCE_RAGE ] < 10.0 )
-      p -> resource_gain( RESOURCE_RAGE, 10.0 - p -> resource_current[ RESOURCE_RAGE ] , p -> gains_sudden_death );
-
   }
-
-virtual void consume_resource() { }
 
   virtual bool ready()
   {
@@ -1798,15 +1784,13 @@ virtual void consume_resource() { }
 
     warrior_t* p = player -> cast_warrior();
 
-    if ( sim -> target -> health_percentage() > 20 && p -> _buffs.sudden_death < sim -> current_time )
-      return false;
+    bool sudden_death_up = ( p -> _buffs.sudden_death > sim -> current_time );
 
-    if ( p -> _buffs.sudden_death < sim -> current_time )
+    if ( ! sudden_death_up )
     {
       if ( sim -> target -> health_percentage() > 20 )
         return false;
 
-      // Sudden Death not up, but sudden_death flag is set
       if ( sudden_death )
         return false;
     }
@@ -2675,7 +2659,7 @@ void warrior_t::init_rng()
   // Overlapping procs require the use of a "distributed" RNG-stream when normalized_roll=1
   // also useful for frequent checks with low probability of proc and timed effect
 
-  rng_sudden_death = get_rng( "sudden_death", RNG_DISTRIBUTED );
+  rng_sudden_death    = get_rng( "sudden_death",    RNG_DISTRIBUTED );
   rng_sword_and_board = get_rng( "sword_and_board", RNG_DISTRIBUTED );
 }
 
