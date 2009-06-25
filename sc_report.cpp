@@ -24,7 +24,11 @@ static void print_action( FILE* file, stats_t* s )
            s -> dpr,
            s -> portion_dps );
 
-  fprintf( file, "  Miss=%.1f%%", s -> execute_results[ RESULT_MISS ].count * 100.0 / s -> num_executes );
+  double miss_pct = ( s -> execute_results[ RESULT_MISS ].count + 
+		      s ->    tick_results[ RESULT_MISS ].count ) / ( s -> num_executes + s -> num_ticks );
+								     
+
+  fprintf( file, "  Miss=%.1f%%", 100.0 * miss_pct );
 
   if ( s -> execute_results[ RESULT_HIT ].avg_dmg > 0 )
   {

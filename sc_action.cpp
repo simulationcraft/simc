@@ -52,7 +52,7 @@ action_t::action_t( int         ty,
     min_current_time( 0 ), max_current_time( 0 ),
     min_time_to_die( 0 ), max_time_to_die( 0 ),
     min_health_percentage( 0 ), max_health_percentage( 0 ),
-    vulnerable( 0 ), invulnerable( 0 ), wait_on_ready( -1 ), has_if_exp(-1), is_ifall(0), if_exp(NULL),
+    moving( 0 ), vulnerable( 0 ), invulnerable( 0 ), wait_on_ready( -1 ), has_if_exp(-1), is_ifall(0), if_exp(NULL),
     sync_action( 0 ), observer( 0 ), next( 0 )
 {
   if ( sim -> debug ) log_t::output( sim, "Player %s creates action %s", p -> name(), name() );
@@ -108,23 +108,24 @@ void action_t::parse_options( option_t*          options,
 {
   option_t base_options[] =
     {
+      { "allow_early_cast",   OPT_INT,    &is_ifall              },
+      { "allow_early_recast", OPT_INT,    &is_ifall              },
+      { "bloodlust",          OPT_BOOL,   &bloodlust_active      },
+      { "health_percentage<", OPT_FLT,    &max_health_percentage },
+      { "health_percentage>", OPT_FLT,    &min_health_percentage },
+      { "if",                 OPT_STRING, &if_expression         },
+      { "if_buff",            OPT_STRING, &if_expression         },
+      { "invulnerable",       OPT_BOOL,   &invulnerable          },
+      { "moving",             OPT_BOOL,   &moving                },
       { "rank",               OPT_INT,    &rank_index            },
       { "sync",               OPT_STRING, &sync_str              },
-      { "time>",              OPT_FLT,    &min_current_time      },
       { "time<",              OPT_FLT,    &max_current_time      },
-      { "time_to_die>",       OPT_FLT,    &min_time_to_die       },
+      { "time>",              OPT_FLT,    &min_current_time      },
       { "time_to_die<",       OPT_FLT,    &max_time_to_die       },
-      { "health_percentage>", OPT_FLT,    &min_health_percentage },
-      { "health_percentage<", OPT_FLT,    &max_health_percentage },
-      { "bloodlust",          OPT_BOOL,   &bloodlust_active      },
+      { "time_to_die>",       OPT_FLT,    &min_time_to_die       },
       { "travel_speed",       OPT_FLT,    &travel_speed          },
       { "vulnerable",         OPT_BOOL,   &vulnerable            },
-      { "invulnerable",       OPT_BOOL,   &invulnerable          },
       { "wait_on_ready",      OPT_BOOL,   &wait_on_ready         },
-      { "if_buff",            OPT_STRING, &if_expression         },
-      { "if",                 OPT_STRING, &if_expression         },
-      { "allow_early_recast", OPT_INT,    &is_ifall              },
-      { "allow_early_cast",   OPT_INT,    &is_ifall              },
       { NULL }
     };
 
@@ -994,6 +995,10 @@ bool action_t::ready()
 
   if ( player -> moving )
     if( channeled || ( range == 0 ) || ( execute_time() > 0 ) )
+      return false;
+
+  if ( moving )
+    if( ! player -> moving )
       return false;
 
   if ( vulnerable )

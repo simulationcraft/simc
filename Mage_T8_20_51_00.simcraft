@@ -49,5 +49,5 @@ items=flare_of_the_heavens/scale_of_fates
 # trinket1=flare_of_the_heavens,id=45518
 # trinket2=scale_of_fates,id=45466
 # main_hand=starshard_edge,id=45620,gems=9SP_8Spi_5SP,enchant=63SP
-# off_hand=cosmos,stats=52Sta_55Int_84SP_41Crit_51Hit
-# ranged=petrified_ivy_spring,id=45294,gems=9SP_8Haste_4Spi
+# off_hand=cosmos,id=45617
+# ranged=petrified_ivy_sprig,id=45294,gems=9SP_8Haste_4Spi

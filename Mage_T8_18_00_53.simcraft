@@ -2,6 +2,7 @@
 
 mage=Mage_T8_18_00_53
 level=80
+glyphs=molten_armor/frost_bolt/water_elemental
 talents=http://www.wowhead.com/?talent#of0Vck0cZZVIccRcu0f0gfsx
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/arcane_brilliance/molten_armor/focus_magic
 actions+=/counterspell
@@ -12,32 +13,39 @@ actions+=/evocation
 # Actions while moving
 actions+=/fire_blast
 
-# Gear: http://www.chardev.org/?template=182712
+# Gear Summary
 gear_strength=10
 gear_agility=10
-gear_stamina=935
-gear_intellect=883
-gear_spirit=357
-gear_attack_power=0
-gear_expertise_rating=0
-gear_armor_penetration_rating=0
-gear_spell_power=2330
-gear_hit_rating=293
-gear_crit_rating=409
-gear_haste_rating=654
-
-# Professio Bonus
-enchant_spell_power=75
-
-# Set Bonuses
+gear_stamina=928
+gear_intellect=894
+gear_spirit=584
+gear_spell_power=2541
+gear_hit_rating=285
+gear_crit_rating=511
+gear_haste_rating=467
+gear_armor=1811
+meta_gem=chaotic_skyflare
 tier8_2pc=1
 tier8_4pc=1
-
-# Meta Gem
-meta_gem=chaotic_skyflare
-
-# Item Procs
+back=sunglimmer_cloak,enchant=lightweave
+main_hand=starshard_edge,weapon=dagger_1.8speed_108.83dps
 items=flare_of_the_heavens/scale_of_fates
 
-# Glyphs
-glyphs=molten_armor/frost_bolt/water_elemental
+# Gear summary generated from:
+# head=conquerors_kirin_tor_hood,id=46129,gems=chaotic_skyflare_19SP_9SP,enchant=30SP_20Crit
+# neck=pendant_of_fiery_havoc,id=45133,gems=9SP_8Haste_5SP
+# shoulder=conquerors_kirin_tor_shoulderpads,id=46134,gems=19SP,enchant=24SP_15Crit
+# back=sunglimmer_cloak,id=45618,gems=9SP_8Spi_5SP,enchant=lightweave
+# chest=conquerors_kirin_tor_tunic,id=46130,gems=19SP_19SP,enchant=10All
+# wrists=grasps_of_reason,id=45446,gems=19SP_4Spi,enchant=30SP
+# hands=pharos_gloves,id=45665,gems=19SP_19SP,enchant=28SP
+# waist=starwatchers_binding,stats=82Sta_69Int_64Spi_92SP_47Crit,gems=9SP_8Haste_9SP_8Haste_19SP_7SP
+# legs=conquerors_kirin_tor_leggings,id=46133,gems=19SP_9SP_8Spi_6Crit,enchant=50SP_20Spi
+# feet=boots_of_fiery_resolution,id=45135,gems=19SP_9SP_8Hit_6Haste,enchant=12Hit_12Crit
+# finger1=nebula_band,id=46046,gems=9SP_8Hit_4Crit,enchant=19SP
+# finger2=conductive_seal,id=45495,gems=19SP,enchant=19SP
+# trinket1=flare_of_the_heavens,id=45518
+# trinket2=scale_of_fates,id=45466
+# main_hand=starshard_edge,id=45620,gems=9SP_8Spi_5SP,enchant=63SP
+# off_hand=ironmender,id=45271
+# ranged=petrified_ivy_sprig,id=45294,gems=9SP_8Hit_4Spi

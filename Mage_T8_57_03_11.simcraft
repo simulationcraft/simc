@@ -2,6 +2,7 @@
 
 mage=Mage_T8_57_03_11
 level=80
+glyphs=arcane_missiles/arcane_blast/molten_armor
 talents=http://www.wowhead.com/?talent#of0Vcu0IzxGuMtedcZbGc0o
 actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/arcane_brilliance/focus_magic
 actions+=/counterspell
@@ -19,24 +20,42 @@ actions+=/arcane_blast,arcane_power=1
 actions+=/arcane_missiles
 actions+=/mana_potion
 # Actions while moving
-actions+=/arcane_barrage
-actions+=/fire_blast
+actions+=/arcane_barrage,moving=1
+actions+=/fire_blast,moving=1
 
-# Gear
-# http://www.wowhead.com/?compare=46134:46132:45446:44005:45272:45135:40399:45168:45150:45271:45488:45527:45466:45518:40561:45511:45243
-# http://www.wowhead.com/?compare=39998:39998:39998:39998:39998:40014:40048:40048:40048:40026:40026:40026:40026:41285
+# Gear Summary
 gear_strength=10
 gear_agility=10
-gear_stamina=976
-gear_intellect=903
-gear_spirit=364
-gear_spell_power=2403
-gear_hit_rating=213
-gear_crit_rating=519
-gear_haste_rating=720
-tier8_2pc=1
-items=flare_of_the_heavens/scale_of_fates
+gear_stamina=948
+gear_intellect=898
+gear_spirit=605
+gear_spell_power=2540
+gear_hit_rating=210
+gear_crit_rating=529
+gear_haste_rating=474
+gear_armor=1811
 meta_gem=chaotic_skyflare
+tier8_2pc=1
+tier8_4pc=1
+back=sunglimmer_cloak,enchant=lightweave
+main_hand=starshard_edge,weapon=dagger_1.8speed_108.83dps
+items=flare_of_the_heavens/scale_of_fates
 
-# Glyphs
-glyphs=arcane_missiles/arcane_blast/molten_armor
+# Gear summary generated from:
+# head=conquerors_kirin_tor_hood,id=46129,gems=chaotic_skyflare_19SP_9SP,enchant=30SP_20Crit
+# neck=sapphire_amulet_of_renewal,id=45243,gems=19SP_4SP
+# shoulder=conquerors_kirin_tor_shoulderpads,id=46134,gems=19SP,enchant=24SP_15Crit
+# back=sunglimmer_cloak,id=45618,gems=9SP_8Spi_5SP,enchant=lightweave
+# chest=conquerors_kirin_tor_tunic,id=46130,gems=19SP_19SP,enchant=10All
+# wrists=grasps_of_reason,id=45446,gems=19SP_4Spi,enchant=30SP
+# hands=pharos_gloves,id=45665,gems=19SP_19SP,enchant=28SP
+# waist=starwatchers_binding,stats=82Sta_69Int_64Spi_92SP_47Crit,gems=9SP_8Hit_9SP_8Haste_19SP_7SP
+# legs=conquerors_kirin_tor_leggings,id=46133,gems=19SP_9SP_8Spi_6Crit,enchant=50SP_20Spi
+# feet=boots_of_fiery_resolution,id=45135,gems=19SP_9SP_8Hit_6Haste,enchant=12Hit_12Crit
+# finger1=nebula_band,id=46046,gems=9SP_8Hit_4Crit,enchant=19SP
+# finger2=conductive_seal,id=45495,gems=19SP,enchant=19SP
+# trinket1=flare_of_the_heavens,id=45518
+# trinket2=scale_of_fates,id=45466
+# main_hand=starshard_edge,id=45620,gems=9SP_8Spi_5SP,enchant=63SP
+# off_hand=ironmender,id=45271
+# ranged=scepter_of_lost_souls,id=45511
