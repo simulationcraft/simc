@@ -791,6 +791,7 @@ act_expression_t* act_expression_t::find_operator(action_t* action, std::string&
   // update uptime counters
   void pbuff_t::update_uptime(bool skip_usage)
   {
+    if (!skip_usage) uptime_cnt -> update(buff_value!=0); 
   }
   // decrement buff stack for one, return if buff still up
   bool pbuff_t::dec_buff(){
