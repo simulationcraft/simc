@@ -47,10 +47,10 @@ scaling_t::scaling_t( sim_t* s ) :
     scale_value(0),
     calculate_scale_factors(0),
     center_scale_delta(0),
-    scale_lag(1),
+    scale_lag(0),
     scale_factor_noise(0),
     normalize_scale_factors(0),
-    smooth_scale_factors(0),
+    smooth_scale_factors(1),
     debug_scale_factors(0)
 {}
 
@@ -85,6 +85,19 @@ void scaling_t::analyze_stats()
   int num_players = sim -> players_by_name.size();
   if ( num_players == 0 ) return;
 
+  sim_t* baseline_sim = sim;
+  if( smooth_scale_factors )
+  {
+    fprintf( stdout, "\nGenerating smooth baseline...\n" );
+    fflush( stdout );
+
+    baseline_sim = new sim_t( sim );
+    baseline_sim -> smooth_rng         += smooth_scale_factors;
+    baseline_sim -> average_range      += smooth_scale_factors;
+    baseline_sim -> deterministic_roll += smooth_scale_factors;
+    baseline_sim -> execute();
+  }
+
   for ( int i=0; i < STAT_MAX; i++ )
   {
     if ( ! is_scaling_stat( sim, i ) ) continue;
@@ -105,8 +118,8 @@ void scaling_t::analyze_stats()
     child_sim -> deterministic_roll += smooth_scale_factors;
     child_sim -> execute();
 
-    sim_t* ref_sim = sim;
-    if ( center || smooth_scale_factors )
+    sim_t* ref_sim = baseline_sim;
+    if ( center )
     {
       ref_sim = new sim_t( sim );
       ref_sim -> scaling -> scale_stat = i;
@@ -137,9 +150,11 @@ void scaling_t::analyze_stats()
       report_t::print_text( sim -> output_file, child_sim, false );
     }
 
-    if ( ref_sim != sim ) delete ref_sim;
+    if ( ref_sim != baseline_sim ) delete ref_sim;
     delete child_sim;
   }
+
+  if ( baseline_sim != sim ) delete baseline_sim;
 }
 
 // scaling_t::analyze_lag ===================================================
