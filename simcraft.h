@@ -20,6 +20,7 @@
 #include <stdint.h>
 #endif
 
+#include <typeinfo>
 #include <stdarg.h>
 #include <float.h>
 #include <time.h>
