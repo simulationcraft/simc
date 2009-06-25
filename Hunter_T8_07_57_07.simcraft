@@ -7,16 +7,16 @@ glyphs=kill_shot/serpent_sting/steady_shot
 actions=flask,type=endless_rage/food,type=blackened_dragonfin/summon_pet
 actions+=/hunters_mark/trueshot_aura/auto_shot/aspect
 actions+=/serpent_sting/rapid_fire/kill_command/kill_shot/silencing_shot/chimera_shot
-actions+=/readiness,wait_for_rapid_fire=1/arcane_shot/aimed_shot/steady_shot
+actions+=/readiness,wait_for_rapid_fire=1/aimed_shot/steady_shot
 
 # Gear Summary
 gear_strength=10
-gear_agility=1332
+gear_agility=1074
 gear_stamina=921
 gear_intellect=327
 gear_spirit=10
 gear_attack_power=2465
-gear_armor_penetration_rating=346
+gear_armor_penetration_rating=602
 gear_hit_rating=257
 gear_crit_rating=681
 gear_haste_rating=140
