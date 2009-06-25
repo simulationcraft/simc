@@ -1,0 +1,51 @@
+#!simcraft max_time=300 optimal_raid=1
+
+hunter=Hunter_T8_07_57_07_arp
+level=80
+talents=http://www.wowhead.com/?talent#cxbZzeVoRhzGIsguAox00b
+glyphs=serpent_sting/steady_shot/aimed_shot
+actions=flask,type=endless_rage/food,type=blackened_dragonfin/summon_pet
+actions+=/hunters_mark/trueshot_aura/auto_shot/aspect
+actions+=/serpent_sting/rapid_fire/kill_command/silencing_shot/chimera_shot/kill_shot
+actions+=/aimed_shot/readiness,wait_for_rapid_fire=1/steady_shot
+
+# Gear Summary
+gear_strength=10
+gear_agility=1336
+gear_stamina=965
+gear_intellect=321
+gear_spirit=10
+gear_attack_power=2287
+gear_armor_penetration_rating=508
+gear_hit_rating=240
+gear_crit_rating=852
+gear_armor=6803
+meta_gem=relentless_earthsiege
+tier8_2pc=1
+main_hand=lotrafen_spear_of_the_damned,weapon=polearm_3.4speed_232.50dps
+ranged=skyforge_crossbow,weapon=crossbow_2.8speed_200.38dps
+items=dark_matter/mjolnir_runestone
+
+# Gear summary generated from:
+# head=conquerors_scourgestalker_headpiece,stats=82agi_81sta_49int_196ap_50arpen_59crit_1067armor,gems=relentless_earthsiege_16agi_16ap,enchant=50ap_20crit
+# neck=broach_of_the_wailing_night,stats=63agi_69sta_84ap_46arpen_36crit
+# shoulders=mantle_of_fiery_vengeance,stats=57agi_63sta_65int_108ap_41arpen_56crit_985armor,gems=16agi,enchant=40ap_15crit
+# chest=conquerors_scourgestalker_tunic,stats=86agi_65sta_60int_194ap_57hit_59crit_1314armor,gems=16agi_8agi_12sta_6hit,enchant=10all
+# waist=belt_of_the_betrayed,stats=57agi_67sta_43int_170ap_56arpen_44crit_739armor,gems=16agi
+# legs=legguards_of_cunning_deception,stats=112agi_127sta_152ap_66arpen_78crit_533armor,gems=16agi_16agi_16agi,enchant=75ap_22crit
+# feet=boots_of_living_scale,stats=48agi_66sta_45int_138ap_45arpen_48crit_903armor,gems=16agi_16agi,enchant=12hit_12crit
+# wrists=fluxing_energy_coils,stats=63agi_54sta_72ap_30arpen_46hit_259armor,gems=16agi,enchant=50ap
+# hands=gloves_of_the_steady_hand,stats=79agi_75sta_49int_106ap_50hit_55crit_846armor,gems=16agi_16agi,enchant=20agi
+# finger1=band_of_lights,stats=57agi_39sta_98ap_31arpen_46hit,gems=16agi_4agi
+# finger2=branns_signet_ring,stats=64agi_61sta_96ap_33arpen_43crit,gems=16agi
+# trinket1=dark_matter,stats=222ap,equip=onattackhit_612crit_15%_10dur_45cd
+# trinket2=mjolnir_runestone,stats=102crit,equip=onattackhit_665arpen_15%_10dur_45cd
+# back=drape_of_the_faceless_general,stats=69agi_31sta_92ap_30arpen_40crit_157armor,gems=16agi_8agi_8crit_6agi,enchant=22agi
+# main_hand=lotrafen_spear_of_the_damned,stats=120agi_105sta_160ap_80arpen_87crit,enchant=110ap,weapon=polearm_3.4speed_232.50dps
+# ranged=skyforge_crossbow,stats=40agi_40sta_58ap_23hit_28crit,enchant=40crit,weapon=crossbow_2.8speed_200.38dps
+
+# Ammo
+ammo_dps=67.5
+
+# Pet (cat|devilsaur|raptor|wind_serpent|wolf)
+summon_pet=wolf
