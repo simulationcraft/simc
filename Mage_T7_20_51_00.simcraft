@@ -8,7 +8,6 @@ actions+=/counterspell
 actions+=/mana_gem,trigger=1000/speed_potion
 # Scorch will not be invoked if Improved Shadow Bolt is up
 actions+=/scorch,debuff=1
-actions+=/use_item,name=scale_of_fates
 actions+=/mirror_image/combustion
 actions+=/living_bomb/pyroblast,hot_streak=1/fire_ball
 actions+=/evocation
