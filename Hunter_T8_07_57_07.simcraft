@@ -3,37 +3,30 @@
 hunter=Hunter_T8_07_57_07
 level=80
 talents=http://www.wowhead.com/?talent#cxbZ0eVsRhzGIkguAox00b
-
-# Action queue
-actions=flask,type=endless_rage/food,type=blackened_dragonfin/summon_pet/hunters_mark/trueshot_aura
-actions+=/auto_shot/aspect/serpent_sting/rapid_fire/kill_command/kill_shot/silencing_shot/chimera_shot/readiness,wait_for_rapid_fire=1/arcane_shot/aimed_shot/steady_shot
-
-# Gear:
-gear_agility=1274
-gear_stamina=752
-gear_intellect=318
-gear_attack_power=2191
-gear_crit_rating=856
-# gear_hit_rating=266, set to 263 because of the scale factor generation
-gear_hit_rating=263
-gear_armor_penetration_rating=282
-gear_haste_rating=141
-
-# Set Bonuses
-tier8_2pc=1
-tier8_4pc=1
-
-# Meta Gem
-meta_gem=relentless_earthstorm
-
-# Procs
-items=darkmoon_card_greatness/mjolnir_runestone
-
-# Glyphs
 glyphs=kill_shot/serpent_sting/steady_shot
+actions=flask,type=endless_rage/food,type=blackened_dragonfin/summon_pet
+actions+=/hunters_mark/trueshot_aura/auto_shot/aspect
+actions+=/serpent_sting/rapid_fire/kill_command/kill_shot/silencing_shot/chimera_shot
+actions+=/readiness,wait_for_rapid_fire=1/arcane_shot/aimed_shot/steady_shot
 
-# Weapons
-ranged=sirens_cry,weapon=bow_187dps_2.8speed
+head=conquerors_scourgestalker_headpiece,id=46143,gems=relentless_earthsiege_16agi_16ap,enchant=50ap_20crit
+neck=pendulum_of_infinity,id=45517,gems=16agi
+shoulders=conquerors_scourgestalker_spaulders,id=46145,gems=16agi_4haste,enchant=40ap_15crit
+chest=conquerors_scourgestalker_tunic,id=46141,gems=16agi_16agi,enchant=10all
+waist=belt_of_the_betrayed,id=45467,gems=16agi
+legs=legguards_of_cunning_deception,id=45536,gems=16agi_16agi_16agi,enchant=75ap_22crit
+feet=boots_of_the_renewed_flight,id=40549,gems=16agi_16agi,enchant=12hit_12crit
+wrists=frostbound_chain_bracers,id=45454,gems=16agi,enchant=50ap
+hands=conquerors_scourgestalker_handguards,id=46142,gems=16agi_4agi,enchant=44ap
+finger1=band_of_lights,id=46048,gems=16agi_4agi
+finger2=branns_signet_ring,id=45608,gems=16agi
+trinket1=dark_matter,id=46038
+trinket2=darkmoon_card_greatness
+back=drape_of_the_faceless_general,id=46032,gems=16agi_16agi,enchant=22agi
+main_hand=lotrafen_spear_of_the_damned,id=45498,enchant=110ap
+ranged=skyforge_crossbow,id=45570,enchant=40crit
+
+# Ammo
 ammo_dps=67.5
 
 # Pet (cat|devilsaur|raptor|wind_serpent|wolf)
