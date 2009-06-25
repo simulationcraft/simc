@@ -1,0 +1,10 @@
+#!simcraft
+
+Globals_T8.simcraft
+
+optimal_raid=1
+
+Warrior_T8_56_15_0_S.simcraft
+Warrior_T8_56_15_0_M.simcraft
+Warrior_T8_56_15_0_A.simcraft
+Warrior_T8_18_53_00.simcraft

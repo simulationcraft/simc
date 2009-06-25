@@ -2630,7 +2630,7 @@ void warrior_t::init_gains()
   gains_oh_attack              = get_gain( "oh_attack" );
   gains_sudden_death           = get_gain( "sudden_death" );
   gains_unbridled_wrath        = get_gain( "unbridled_wrath" );
-  gains_unbridled_wrath        = get_gain( "sword_and_board" );
+  gains_sword_and_board        = get_gain( "sword_and_board" );
 }
 
 // warrior_t::init_procs =======================================================
