@@ -1743,7 +1743,7 @@ double warlock_spell_t::execute_time()
     //p -> uptimes_eradication -> update( p -> _buffs.eradication != 0 );
     //p -> uptimes_backdraft   -> update( p -> _buffs.backdraft   != 0 );
     //if ( p -> _buffs.backdraft && tree == TREE_DESTRUCTION ) t *= 1.0 - p -> talents.backdraft * 0.10;
-    p->eradication->update_uptime();
+    //p->eradication->update_old_uptime();
     if ( tree == TREE_DESTRUCTION ) t*= p->backdraft->mul_value();
   }
   return t;
@@ -4697,8 +4697,6 @@ void warlock_t::init_uptimes()
                              !talents.empowered_imp, -talents.empowered_imp / 3.0);
   eradication= new pbuff_t(this, "eradication",10,0, 47195 + talents.eradication, 
                            1.0/ ( 1 + talents.eradication * 0.06 + (talents.eradication == 3? 0.02:0) ), !talents.eradication, 0.06);
-  eradication->be_silent=true; // since it is queried on haste() many times, but used only if spell passed
-
   life_tap_glyph= new pbuff_t(this, "life_tap_glyph", sim->patch.after(3,2,0)?40:20 ,0, 63941, 0.2 , !glyphs.life_tap);
   static int aura_id_pyro[]={ 0, 18096, 18073, 63245 };
   pyroclasm= new pbuff_t(this, "pyroclasm",10,0,aura_id_pyro[talents.pyroclasm%4], 1.0 + talents.pyroclasm * 0.02, !talents.pyroclasm );

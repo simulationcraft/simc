@@ -64,6 +64,7 @@ struct attack_t;
 struct spell_tick_t;
 struct base_stats_t;
 struct buff_expiration_t;
+struct buff_uptime_t;
 struct callback_t;
 struct death_knight_t;
 struct druid_t;
@@ -492,6 +493,21 @@ struct gear_stats_t
   static double stat_mod( int stat );
 };
 
+// Uptime ======================================================================
+
+struct uptime_t
+{
+  std::string name_str;
+  uint64_t up, down;
+  uptime_t* next;
+  uptime_t( const std::string& n ) : name_str( n ), up( 0 ), down( 0 ) {}
+  virtual ~uptime_t() {}
+  void   update( bool is_up ) { if ( is_up ) up++; else down++; }
+  double percentage() { return ( up==0 ) ? 0 : ( 100.0*up/( up+down ) ); }
+  virtual void   merge( uptime_t* other ) { up += other -> up; down += other -> down; }
+  const char* name() { return name_str.c_str(); }
+};
+
 // Buffs ======================================================================
 struct buff_expiration_t : public event_t
 {
@@ -499,9 +515,29 @@ struct buff_expiration_t : public event_t
   int aura_id;
   int n_trig;
   buff_expiration_t( pbuff_t* p_buff, double b_duration=0, int aura_idx=0 ) ;
+  virtual ~buff_expiration_t() {}
   virtual void execute();
 };
 
+struct buff_uptime_t : public uptime_t
+{
+  double timer_uptime, timer_downtime;
+  int n_triggers, n_runs;
+  buff_uptime_t( const std::string& n ) : uptime_t(n), timer_uptime(0), timer_downtime(0),
+                                          n_triggers(0),n_runs(0){}
+  virtual ~buff_uptime_t() {}
+  virtual void   merge( uptime_t* other ) { 
+    up += other -> up; down += other -> down; 
+    timer_uptime+= ((buff_uptime_t*)other)->timer_uptime;
+    timer_downtime+= ((buff_uptime_t*)other)->timer_downtime;
+    n_triggers+= ((buff_uptime_t*)other)->n_triggers;
+    n_runs+= ((buff_uptime_t*)other)->n_runs;
+  }
+  virtual double percentage_time(){
+     return ( timer_uptime<=0 ) ? 0 : ( 100.0*timer_uptime/( timer_uptime+timer_downtime ) ); 
+  }
+  virtual double avg_triggers(){ return n_runs==0?  n_triggers : n_triggers/(n_runs+0.0); }
+};
 
 struct pbuff_t{
   std::string name_str;
@@ -512,9 +548,9 @@ struct pbuff_t{
   std::string name_expiration;
   int (*callback_expiration)(); //if set, will be called upon expiration
   int *trigger_counter;  // if set, will be incremented/decremented when buff is up/down
-  double last_trigger, expected_end;
-  uptime_t* uptime_cnt; 
-  bool be_silent;
+  double last_trigger, expected_end, last_update;
+  bool last_update_state;
+  buff_uptime_t* uptime_cnt; 
   int aura_id;
   double chance;
   rng_t* rng_chance;
@@ -523,19 +559,19 @@ struct pbuff_t{
   pbuff_t* next;
   int n_triggers, n_trg_tries;
   // methods
-  pbuff_t(player_t* plr, std::string name, double duration=0, double cooldown=0, int aura_idx=0, double use_value=0, bool t_ignore=false, double t_chance=0 );
+  pbuff_t(player_t* plr, std::string name, double duration=0, double cooldown=0, int aura_idx=0, 
+          double use_value=0, bool t_ignore=false, double t_chance=0 );
   virtual ~pbuff_t() { };
-  virtual void reset();
-  virtual bool trigger(double val=1, double b_duration=0,int aura_idx=0);
-  virtual bool dec_buff();
-  virtual bool is_up_silent();
-  virtual double mul_value_silent();
-  virtual double add_value_silent();
-  virtual void update_uptime(bool skip_usage=false);
-  virtual bool is_up();
-  virtual double mul_value();
-  virtual double add_value();
+  virtual void cancel();
+  virtual void reset_iteration();
+  virtual void uptime_update(bool activated);
+  virtual void update_old_uptime();
   virtual double expiration_time();
+  virtual bool   trigger(double val=1, double b_duration=0,int aura_idx=0);
+  virtual bool   is_up(bool skip_old_uptime=false);
+  virtual double mul_value(bool skip_old_uptime=false);
+  virtual double add_value(bool skip_old_uptime=false);
+  virtual bool   dec_buff(bool skip_old_uptime=false);
 };
 
 struct buff_list_t{
@@ -1941,19 +1977,6 @@ struct proc_t
   const char* name() { return name_str.c_str(); }
 };
 
-// Uptime ======================================================================
-
-struct uptime_t
-{
-  std::string name_str;
-  uint64_t up, down;
-  uptime_t* next;
-  uptime_t( const std::string& n ) : name_str( n ), up( 0 ), down( 0 ) {}
-  void   update( bool is_up ) { if ( is_up ) up++; else down++; }
-  double percentage() { return ( up==0 ) ? 0 : ( 100.0*up/( up+down ) ); }
-  void   merge( uptime_t* other ) { up += other -> up; down += other -> down; }
-  const char* name() { return name_str.c_str(); }
-};
 
 // Report =====================================================================
 

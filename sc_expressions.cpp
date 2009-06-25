@@ -714,16 +714,58 @@ act_expression_t* act_expression_t::find_operator(action_t* action, std::string&
       }
       rng_chance   = player->get_rng( name+"_buff",   rng_type );
     }
-    uptime_cnt= player->get_uptime(name); 
-    be_silent=false;
+    // create uptime and add to list
+    last_update=0;
+    last_update_state=false;
+    // uptime_cnt= player->get_uptime(name); 
+    // get_uptime() does not support buff_uptime_t
+    uptime_cnt = new buff_uptime_t( name );
+    uptime_t** tail = &player->uptime_list;
+    while ( *tail && name > ( ( *tail ) -> name_str ) )
+      tail = &( ( *tail ) -> next );
+    uptime_cnt -> next = *tail;
+    *tail = uptime_cnt;
+    // add buff in list
     player->buff_list.add_buff(this);
   }
   //reset buff, called at end of iteration  
-  void pbuff_t::reset(){
+  void pbuff_t::reset_iteration(){
     expiration=0;
     last_trigger=0;
+    last_update=0;
+    last_update_state=false;
     expected_end=0;
     buff_value=0; 
+    uptime_cnt->n_runs++;
+  }
+  // update time-based uptime counters
+  void pbuff_t::uptime_update(bool activated)
+  {
+    double time_now= player->sim->current_time;
+    double delta= time_now - last_update;
+    if (delta<0) delta=0;
+    if (last_update_state)
+      uptime_cnt->timer_downtime+= delta;
+    else
+      uptime_cnt->timer_uptime+= delta;
+    last_update= time_now;
+    last_update_state=activated;
+  }
+  // update old uptime counters
+  void pbuff_t::update_old_uptime()
+  {
+    uptime_cnt -> update(buff_value!=0); 
+  }
+  // cancel buff if up
+  void pbuff_t::cancel(){
+    if (expiration){
+      //event_t::early(expiration); - can not use, expiration is not of type (event_t)
+      expiration -> canceled = 1; 
+      expiration -> execute(); 
+      expiration=0;
+    }
+    buff_value=0;
+    uptime_update(false);
   }
   // trigger buff if conditions are met (return false otherwise)
   // will use duration and chance from buff constructor if none supplied here
@@ -738,10 +780,11 @@ act_expression_t* act_expression_t::find_operator(action_t* action, std::string&
         if ( !rng_chance -> roll( chance ) ) return false;
     // if we passed all checks, trigger buff
     n_triggers++;
+    buff_value=val;
     last_trigger=player->sim->current_time;
     if (trigger_counter) *trigger_counter++;
-    // set value and update counters
-    buff_value=val;
+    uptime_cnt->n_triggers++;
+    uptime_update(true);
     // create and launch expiration event
     if (b_duration==0) b_duration=buff_duration;
     expected_end=last_trigger+b_duration;
@@ -759,69 +802,50 @@ act_expression_t* act_expression_t::find_operator(action_t* action, std::string&
   //return time till expiration (or 0 if expired). Used as function pointer in expressions
   double  pbuff_t::expiration_time()
   {
-    if (!is_up_silent()) return 0; 
+    if (buff_value==0) return 0; 
     double remains= expected_end - player->sim->current_time;
     if (remains<0) remains=0;
-    if ((remains<=0)&& is_up_silent())
+    if ((remains<=0)&&(buff_value!=0))
       remains=1; // fixing when buff is set outside without triggers - will report as 1sec remaining
     return remains;
   }
 
-
-  // check if buff is up, without updating counters
-  bool pbuff_t::is_up_silent(){
-    return (buff_value!=0);
-  }
   // if buff is up, return "value", otherwise return 1
-  double pbuff_t::mul_value_silent()
+  double pbuff_t::mul_value(bool skip_old_uptime)
   {
-    if (is_up_silent())
+    if (!skip_old_uptime) update_old_uptime();
+    if (buff_value!=0)
       return value;
     else
       return 1;
   }
   // if buff is up, return "value", otherwise return 0
-  double pbuff_t::add_value_silent()
+  double pbuff_t::add_value(bool skip_old_uptime)
   {
-    if (is_up_silent())
+    if (!skip_old_uptime) update_old_uptime();
+    if (buff_value!=0)
       return value;
     else
       return 0;
   }
-  // update uptime counters
-  void pbuff_t::update_uptime(bool skip_usage)
-  {
-    if (!skip_usage) uptime_cnt -> update(buff_value!=0); 
-  }
   // decrement buff stack for one, return if buff still up
-  bool pbuff_t::dec_buff(){
+  bool pbuff_t::dec_buff(bool skip_old_uptime){
     if (buff_value>=1){
       buff_value--;
-      if (expiration&&!is_up_silent()){
-        //event_t::early(expiration);
-        expiration -> canceled = 1; 
-        expiration -> execute(); 
-        expiration=0;
-        update_uptime(true);
-      }
+      if (buff_value<=0) cancel();
+      if (!skip_old_uptime) update_old_uptime();
     }
-    return is_up_silent();
+    return (buff_value!=0);
   }
 
   // now same versions that do change uptime counters
-  bool pbuff_t::is_up(){
-    update_uptime(be_silent);
-    return is_up_silent();
+  bool pbuff_t::is_up(bool skip_old_uptime){
+    if (!skip_old_uptime) update_old_uptime();
+    return (buff_value!=0);
   }
-  double pbuff_t::mul_value(){
-    update_uptime(be_silent);
-    return mul_value_silent();
 
-  }
-  double pbuff_t::add_value(){
-    update_uptime(be_silent);
-    return add_value_silent();
-  }
+
+
 
 
   // 
@@ -844,6 +868,7 @@ act_expression_t* act_expression_t::find_operator(action_t* action, std::string&
       player -> aura_loss( pbuff->name_str.c_str(), aura_id );
       pbuff->buff_value=0;
       pbuff->expected_end=0;
+      pbuff->uptime_update(false);
       if (pbuff->trigger_counter) *pbuff->trigger_counter--;
       if (pbuff->callback_expiration) pbuff->callback_expiration();
     }else{
@@ -869,7 +894,7 @@ act_expression_t* act_expression_t::find_operator(action_t* action, std::string&
   void buff_list_t::reset_buffs()
   {
     for (pbuff_t* p=first; p; p=p->next){
-      p->reset();
+      p->reset_iteration();
     }
       
   }
@@ -887,7 +912,7 @@ act_expression_t* act_expression_t::find_operator(action_t* action, std::string&
   bool buff_list_t::chk_buff(std::string& name){
     pbuff_t* buff= find_buff(name);
     if (buff) 
-      return buff->is_up_silent();
+      return buff->buff_value!=0;
     else
       return false;
   }
