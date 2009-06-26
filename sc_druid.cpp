@@ -3173,6 +3173,14 @@ void druid_t::init_glyphs()
     else if( n == "shred"        ) glyphs.shred = 1;
     else if( n == "starfire"     ) glyphs.starfire = 1;
     else if( n == "starfall"     ) glyphs.starfall = 1;
+    // minor glyphs, to prevent 'not-found' warning
+    else if( n == "aquatic_form"       ) ;
+    else if( n == "challenging_roar"   ) ;
+    else if( n == "dash"               ) ;
+    else if( n == "the_wild"           ) ;
+    else if( n == "thorns"             ) ;
+    else if( n == "typhoon"            ) ;
+    else if( n == "unburdened_rebirth" ) ;
     else if( ! sim -> parent ) printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
   }
 }
