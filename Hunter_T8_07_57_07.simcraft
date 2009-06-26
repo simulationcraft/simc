@@ -2,49 +2,46 @@
 
 hunter=Hunter_T8_07_57_07
 level=80
-talents=http://www.wowhead.com/?talent#cxbZ0eVsRhzGIkguAox00b
-glyphs=kill_shot/serpent_sting/steady_shot
+talents=http://www.wowhead.com/?talent#cxbZzeVoRhzGIsguAox00b
+glyphs=serpent_sting/steady_shot/aimed_shot
 actions=flask,type=endless_rage/food,type=blackened_dragonfin/summon_pet
 actions+=/hunters_mark/trueshot_aura/auto_shot/aspect
-actions+=/serpent_sting/rapid_fire/kill_command/kill_shot/silencing_shot/chimera_shot
-actions+=/readiness,wait_for_rapid_fire=1/aimed_shot/steady_shot
+actions+=/serpent_sting/rapid_fire/kill_command/silencing_shot/chimera_shot/kill_shot
+actions+=/aimed_shot/readiness,wait_for_rapid_fire=1/steady_shot
 
 # Gear Summary
 gear_strength=10
-gear_agility=1074
-gear_stamina=921
-gear_intellect=327
+gear_agility=1336
+gear_stamina=965
+gear_intellect=321
 gear_spirit=10
-gear_attack_power=2465
-gear_armor_penetration_rating=602
-gear_hit_rating=257
-gear_crit_rating=681
-gear_haste_rating=140
-gear_armor=7094
+gear_attack_power=2287
+gear_armor_penetration_rating=508
+gear_hit_rating=240
+gear_crit_rating=852
+gear_armor=6803
 meta_gem=relentless_earthsiege
 tier8_2pc=1
-tier8_4pc=1
-main_hand=lotrafen_spear_of_the_damned,weapon=polearm_3.4speed_232.50dps
 ranged=skyforge_crossbow,weapon=crossbow_2.8speed_200.38dps
-items=dark_matter/darkmoon_card_greatness
+items=dark_matter/mjolnir_runestone
 
 # Gear summary generated from:
 # head=conquerors_scourgestalker_headpiece,id=46143,gems=relentless_earthsiege_16agi_16ap,enchant=50ap_20crit
-# neck=pendulum_of_infinity,id=45517,gems=16agi
-# shoulders=conquerors_scourgestalker_spaulders,id=46145,gems=16agi_4haste,enchant=40ap_15crit
-# chest=conquerors_scourgestalker_tunic,id=46141,gems=16agi_16agi,enchant=10all
+# neck=broach_of_the_wailing_night,id=45820
+# shoulders=mantle_of_fiery_vengeance,id=45300,gems=16agi,enchant=40ap_15crit
+# chest=conquerors_scourgestalker_tunic,id=46141,gems=16agi_8agi_12sta_6hit,enchant=10all
 # waist=belt_of_the_betrayed,id=45467,gems=16agi
 # legs=legguards_of_cunning_deception,id=45536,gems=16agi_16agi_16agi,enchant=75ap_22crit
-# feet=boots_of_the_renewed_flight,id=40549,gems=16agi_16agi,enchant=12hit_12crit
-# wrists=frostbound_chain_bracers,id=45454,gems=16agi,enchant=50ap
-# hands=conquerors_scourgestalker_handguards,id=46142,gems=16agi_4agi,enchant=44ap
+# feet=boots_of_living_scale,id=45562,gems=16agi_16agi,enchant=12hit_12crit
+# wrists=fluxing_energy_coils,id=45869,gems=16agi,enchant=50ap
+# hands=gloves_of_the_steady_hand,id=45444,gems=16agi_16agi,enchant=20agi
 # finger1=band_of_lights,id=46048,gems=16agi_4agi
 # finger2=branns_signet_ring,id=45608,gems=16agi
 # trinket1=dark_matter,id=46038
-# trinket2=darkmoon_card_greatness
-# back=drape_of_the_faceless_general,id=46032,gems=16agi_16agi,enchant=22agi
-# main_hand=lotrafen_spear_of_the_damned,id=45498,enchant=110ap
-# ranged=skyforge_crossbow,id=45570,enchant=40crit
+# trinket2=mjolnir_runestone,id=45931
+# back=drape_of_the_faceless_general,id=46032,gems=16agi_8agi_8crit_6agi,enchant=22agi
+# main_hand=lotrafen_spear_of_the_damned,id=45498,enchant=110ap,weapon=polearm_3.4speed_232.50dps
+# ranged=skyforge_crossbow,id=45570,enchant=40crit,weapon=crossbow_2.8speed_200.38dps
 
 # Ammo
 ammo_dps=67.5
