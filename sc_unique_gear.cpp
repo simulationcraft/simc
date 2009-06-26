@@ -271,37 +271,37 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   std::string e;
 
   // Stat Procs
-  if( name == "blood_of_the_old_god"            ) e = "OnAttackCrit_1284AP_10%_10Dur_50Cd";
-  if( name == "comets_trail"                    ) e = "OnAttackHit_612Haste_10%_10Dur_45Cd";
-  if( name == "dark_matter"                     ) e = "OnAttackHit_612Crit_15%_10Dur_45Cd";
-  if( name == "darkmoon_card_crusade"           ) e = "OnSpellHit_8SP_10Stack_10Dur";
-  if( name == "dying_curse"                     ) e = "OnSpellHit_765SP_15%_10Dur_45Cd";
-  if( name == "elemental_focus_stone"           ) e = "OnSpellHit_522Haste_10%_10Dur_45Cd";
-  if( name == "embrace_of_the_spider"           ) e = "OnSpellHit_505Haste_10%_10Dur_45Cd";
-  if( name == "eye_of_magtheridon"              ) e = "OnSpellMiss_170SP_10Dur";
-  if( name == "eye_of_the_broodmother"          ) e = "OnSpellHit_25SP_5Stack_10Dur";
-  if( name == "flare_of_the_heavens"            ) e = "OnSpellHit_850SP_10%_10Dur_45Cd";
-  if( name == "forge_ember"                     ) e = "OnSpellHit_512SP_10%_10Dur_45Cd";
-  if( name == "fury_of_the_five_flights"        ) e = "OnAttackHit_16SP_20Stack_10Dur";
-  if( name == "grim_toll"                       ) e = "OnAttackHit_612ArPen_15%_10Dur_45Cd";
-  if( name == "illustration_of_the_dragon_soul" ) e = "OnSpellHit_20SP_10Stack_10Dur";
-  if( name == "mark_of_defiance"                ) e = "OnSpellHit_150Mana_15%_15Cd";
-  if( name == "mirror_of_truth"                 ) e = "OnAttackCrit_1000SP_10%_10Dur_50Cd";
-  if( name == "mjolnir_runestone"               ) e = "OnAttackHit_665ArPen_15%_10Dur_45Cd";
-  if( name == "pandoras_plea"                   ) e = "OnSpellHit_850SP_10%_10Dur_45Cd";
-  if( name == "pyrite_infuser"                  ) e = "OnAttackCrit_1234AP_10%_10Dur_50Cd";
-  if( name == "quagmirrans_eye"                 ) e = "OnSpellHit_320Haste_10%_6Dur_45Cd";
-  if( name == "shiffars_nexus_horn"             ) e = "OnSpellCrit_225SP_20%_10Dur_45Cd";
-  if( name == "sextant_of_unstable_currents"    ) e = "OnSpellCrit_190SP_20%_15Dur_45Cd";
-  if( name == "sundial_of_the_exiled"           ) e = "OnSpellHit_590SP_10%_10Dur_45Cd";
-  if( name == "wrath_of_cenarius"               ) e = "OnSpellHit_132SP_5%_10Dur";
+  if     ( name == "blood_of_the_old_god"            ) e = "OnAttackCrit_1284AP_10%_10Dur_50Cd";
+  else if( name == "comets_trail"                    ) e = "OnAttackHit_612Haste_10%_10Dur_45Cd";
+  else if( name == "dark_matter"                     ) e = "OnAttackHit_612Crit_15%_10Dur_45Cd";
+  else if( name == "darkmoon_card_crusade"           ) e = "OnSpellHit_8SP_10Stack_10Dur";
+  else if( name == "dying_curse"                     ) e = "OnSpellHit_765SP_15%_10Dur_45Cd";
+  else if( name == "elemental_focus_stone"           ) e = "OnSpellHit_522Haste_10%_10Dur_45Cd";
+  else if( name == "embrace_of_the_spider"           ) e = "OnSpellHit_505Haste_10%_10Dur_45Cd";
+  else if( name == "eye_of_magtheridon"              ) e = "OnSpellMiss_170SP_10Dur";
+  else if( name == "eye_of_the_broodmother"          ) e = "OnSpellHit_25SP_5Stack_10Dur";
+  else if( name == "flare_of_the_heavens"            ) e = "OnSpellHit_850SP_10%_10Dur_45Cd";
+  else if( name == "forge_ember"                     ) e = "OnSpellHit_512SP_10%_10Dur_45Cd";
+  else if( name == "fury_of_the_five_flights"        ) e = "OnAttackHit_16SP_20Stack_10Dur";
+  else if( name == "grim_toll"                       ) e = "OnAttackHit_612ArPen_15%_10Dur_45Cd";
+  else if( name == "illustration_of_the_dragon_soul" ) e = "OnSpellHit_20SP_10Stack_10Dur";
+  else if( name == "mark_of_defiance"                ) e = "OnSpellHit_150Mana_15%_15Cd";
+  else if( name == "mirror_of_truth"                 ) e = "OnAttackCrit_1000SP_10%_10Dur_50Cd";
+  else if( name == "mjolnir_runestone"               ) e = "OnAttackHit_665ArPen_15%_10Dur_45Cd";
+  else if( name == "pandoras_plea"                   ) e = "OnSpellHit_850SP_10%_10Dur_45Cd";
+  else if( name == "pyrite_infuser"                  ) e = "OnAttackCrit_1234AP_10%_10Dur_50Cd";
+  else if( name == "quagmirrans_eye"                 ) e = "OnSpellHit_320Haste_10%_6Dur_45Cd";
+  else if( name == "shiffars_nexus_horn"             ) e = "OnSpellCrit_225SP_20%_10Dur_45Cd";
+  else if( name == "sextant_of_unstable_currents"    ) e = "OnSpellCrit_190SP_20%_15Dur_45Cd";
+  else if( name == "sundial_of_the_exiled"           ) e = "OnSpellHit_590SP_10%_10Dur_45Cd";
+  else if( name == "wrath_of_cenarius"               ) e = "OnSpellHit_132SP_5%_10Dur";
 
   // Discharge Procs
-  if( name == "bandits_insignia"             ) e = "OnAttackHit_1880Arcane_15%_45Cd";
-  if( name == "extract_of_necromantic_power" ) e = "OnTick_1050Shadow_10%_15Cd";
-  if( name == "lightning_capacitor"          ) e = "OnSpellCrit_750Nature_3Stack_2.5Cd";
-  if( name == "timbals_crystal"              ) e = "OnTick_380Shadow_10%_15Cd";
-  if( name == "thunder_capacitor"            ) e = "OnSpellCrit_1276Nature_3Stack_2.5Cd";
+  else if( name == "bandits_insignia"             ) e = "OnAttackHit_1880Arcane_15%_45Cd";
+  else if( name == "extract_of_necromantic_power" ) e = "OnTick_1050Shadow_10%_15Cd";
+  else if( name == "lightning_capacitor"          ) e = "OnSpellCrit_750Nature_3Stack_2.5Cd";
+  else if( name == "timbals_crystal"              ) e = "OnTick_380Shadow_10%_15Cd";
+  else if( name == "thunder_capacitor"            ) e = "OnSpellCrit_1276Nature_3Stack_2.5Cd";
 
   if( e.empty() ) return false;
 
@@ -320,15 +320,16 @@ bool unique_gear_t::get_use_encoding( std::string&       encoding,
 {
   std::string e;
 
-  if( name == "living_flame"                ) e = "505SP_20Dur_120Cd";
-  if( name == "mark_of_norgannon"           ) e = "491Haste_20Dur_120Cd";
-  if( name == "scale_of_fates"              ) e = "432Haste_20Dur_120Cd";
-  if( name == "wrathstone"                  ) e = "856AP_20Dur_120Cd";
-  if( name == "energy_siphon"               ) e = "408SP_20Dur_120Cd";
-  if( name == "platinum_disks_of_battle"    ) e = "752AP_20Dur_120Cd";
-  if( name == "platinum_disks_of_sorcery"   ) e = "440SP_20Dur_120Cd";
-  if( name == "platinum_disks_of_swiftness" ) e = "375Haste_20Dur_120Cd";
-  if( name == "spirit_world_glass"          ) e = "336Spi_20Dur_120Cd";
+  if     ( name == "energy_siphon"               ) e = "408SP_20Dur_120Cd";
+  else if( name == "hyperspeed_accelerators"     ) e = "340Haste_10Dur_60Cd";
+  else if( name == "living_flame"                ) e = "505SP_20Dur_120Cd";
+  else if( name == "mark_of_norgannon"           ) e = "491Haste_20Dur_120Cd";
+  else if( name == "platinum_disks_of_battle"    ) e = "752AP_20Dur_120Cd";
+  else if( name == "platinum_disks_of_swiftness" ) e = "375Haste_20Dur_120Cd";
+  else if( name == "platinum_disks_of_sorcery"   ) e = "440SP_20Dur_120Cd";
+  else if( name == "scale_of_fates"              ) e = "432Haste_20Dur_120Cd";
+  else if( name == "spirit_world_glass"          ) e = "336Spi_20Dur_120Cd";
+  else if( name == "wrathstone"                  ) e = "856AP_20Dur_120Cd";
 
   if( e.empty() ) return false;
 
