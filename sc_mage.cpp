@@ -2473,13 +2473,16 @@ struct combustion_t : public mage_spell_t
 
 struct frost_bolt_t : public mage_spell_t
 {
+  int frozen;
+
   frost_bolt_t( player_t* player, const std::string& options_str ) :
-      mage_spell_t( "frost_bolt", player, SCHOOL_FROST, TREE_FROST )
+    mage_spell_t( "frost_bolt", player, SCHOOL_FROST, TREE_FROST ), frozen(0)
   {
     mage_t* p = player -> cast_mage();
 
     option_t options[] =
       {
+        { "frozen", OPT_BOOL, &frozen },
         { NULL }
       };
     parse_options( options, options_str );
@@ -2542,6 +2545,21 @@ struct frost_bolt_t : public mage_spell_t
       trigger_replenishment( this );
       trigger_tier8_2pc( this );
     }
+  }
+
+  virtual bool ready()
+  {
+    mage_t* p = player -> cast_mage();
+
+    if ( frozen )
+    {
+      if ( ! p -> _buffs.shatter_combo &&
+           ! p -> _buffs.fingers_of_frost &&
+           ! sim -> time_to_think( sim -> target -> debuffs.frozen ) )
+        return false;
+    }
+
+    return mage_spell_t::ready();
   }
 };
 
