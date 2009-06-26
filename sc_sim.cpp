@@ -160,7 +160,7 @@ sim_t::sim_t( sim_t* p, int index ) :
     events_remaining( 0 ), max_events_remaining( 0 ),
     events_processed( 0 ), total_events_processed( 0 ),
     seed( 0 ), id( 0 ), iterations( 1000 ), current_iteration( 0 ),
-    armor_update_interval( 20 ), 
+    instant_only_gcd_lag( 0 ), armor_update_interval( 20 ), 
     optimal_raid( 0 ), log( 0 ), debug( 0 ), save_profiles(0),
     default_region_str( "us" ),
     smooth_rng( 0 ), deterministic_roll( 0 ), average_range( 1 ), average_gauss( 0 ),
@@ -462,11 +462,13 @@ bool sim_t::init()
   deterministic_rng = rng_t::create( this, "global_deterministic", RNG_MERSENNE_TWISTER );
   deterministic_rng -> seed( 31459 + thread_index );
 
-  if( scaling -> smooth_scale_factors )
+  if( scaling -> smooth_scale_factors && 
+      scaling -> scale_stat != STAT_NONE )
   {
     smooth_rng = 1;
     average_range = 1;
     deterministic_roll = 1;
+    instant_only_gcd_lag = 1;
   }
 
   P312 = patch.after ( 3, 1, 2 );

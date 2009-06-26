@@ -5,8 +5,7 @@
 
 #include "simcraft.h"
 
-namespace
-{ // ANONYMOUS NAMESPACE ==========================================
+namespace { // ANONYMOUS NAMESPACE ==========================================
 
 // is_scaling_stat ===========================================================
 
@@ -92,9 +91,7 @@ void scaling_t::analyze_stats()
     fflush( stdout );
 
     baseline_sim = new sim_t( sim );
-    baseline_sim -> smooth_rng         += smooth_scale_factors;
-    baseline_sim -> average_range      += smooth_scale_factors;
-    baseline_sim -> deterministic_roll += smooth_scale_factors;
+    baseline_sim -> scaling -> scale_stat = STAT_MAX;
     baseline_sim -> execute();
   }
 
@@ -113,9 +110,6 @@ void scaling_t::analyze_stats()
     sim_t* child_sim = new sim_t( sim );
     child_sim -> scaling -> scale_stat = i;
     child_sim -> scaling -> scale_value = +scale_delta / ( center ? 2 : 1 );
-    child_sim -> smooth_rng         += smooth_scale_factors;
-    child_sim -> average_range      += smooth_scale_factors;
-    child_sim -> deterministic_roll += smooth_scale_factors;
     child_sim -> execute();
 
     sim_t* ref_sim = baseline_sim;
@@ -124,9 +118,6 @@ void scaling_t::analyze_stats()
       ref_sim = new sim_t( sim );
       ref_sim -> scaling -> scale_stat = i;
       ref_sim -> scaling -> scale_value = center ? -( scale_delta / 2 ) : 0;
-      ref_sim -> smooth_rng         += smooth_scale_factors;
-      ref_sim -> average_range      += smooth_scale_factors;
-      ref_sim -> deterministic_roll += smooth_scale_factors;
       ref_sim -> execute();
     }
 
@@ -169,20 +160,16 @@ void scaling_t::analyze_lag()
   fprintf( stdout, "\nGenerating scale factors for lag...\n" );
   fflush( stdout );
 
+  sim_t* ref_sim = new sim_t( sim );
+  ref_sim -> scaling -> scale_stat = STAT_MAX;
+  ref_sim -> execute();
+
   sim_t* child_sim = new sim_t( sim );
   child_sim ->   queue_lag += 0.100;
   child_sim ->     gcd_lag += 0.100;
   child_sim -> channel_lag += 0.100;
-  child_sim -> smooth_rng         += smooth_scale_factors;
-  child_sim -> average_range      += smooth_scale_factors;
-  child_sim -> deterministic_roll += smooth_scale_factors;
+  child_sim -> scaling -> scale_stat = STAT_MAX;
   child_sim -> execute();
-
-  sim_t* ref_sim = new sim_t( sim );
-  ref_sim -> smooth_rng         += smooth_scale_factors;
-  ref_sim -> average_range      += smooth_scale_factors;
-  ref_sim -> deterministic_roll += smooth_scale_factors;
-  ref_sim -> execute();
 
   for ( int i=0; i < num_players; i++ )
   {

@@ -666,7 +666,7 @@ struct sim_t
   int         events_processed, total_events_processed;
   int         seed, id, iterations, current_iteration;
   int         infinite_resource[ RESOURCE_MAX ];
-  int         armor_update_interval;
+  int         instant_only_gcd_lag, armor_update_interval;
   int         optimal_raid, log, debug, save_profiles;
   std::string default_region_str, default_server_str;
   alias_t     alias;
