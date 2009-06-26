@@ -9,11 +9,11 @@ actions+=/treants
 actions+=/starfall,skip_on_eclipse=1
 actions+=/moonfire,eclipse_left>=12,skip_on_eclipse=-1
 actions+=/insect_swarm,eclipse_left>=12,skip_on_eclipse=-1
+actions+=/starfire,instant=1
 actions+=/wrath,eclipse=benefit
 actions+=/wrath,eclipse=trigger
 actions+=/use_item,name=scale_of_fates
 actions+=/starfire,eclipse=benefit
-actions+=/starfire,eclipse=trigger
 actions+=/starfire
 
 # Standard Gear Attributes http://www.chardev.org/?template=176626

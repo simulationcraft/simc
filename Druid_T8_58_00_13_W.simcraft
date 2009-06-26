@@ -9,6 +9,7 @@ actions+=/treants
 actions+=/starfall,skip_on_eclipse=1
 actions+=/moonfire,skip_on_eclipse=-1
 actions+=/insect_swarm,eclipse_left>=12
+actions+=/starfire,instant=1
 actions+=/use_item,name=scale_of_fates
 actions+=/starfire,eclipse=trigger
 actions+=/wrath,eclipse=benefit
