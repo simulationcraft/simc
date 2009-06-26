@@ -307,8 +307,8 @@ struct shaman_spell_t : public spell_t
     base_crit += shaman -> talents.blessing_of_the_eternals * 0.02;
   }
 
-  virtual double cost();
-  virtual double cost_reduction() { return base_cost_reduction; }
+  virtual double cost() const;
+  virtual double cost_reduction() const { return base_cost_reduction; }
   virtual void   consume_resource();
   virtual double execute_time();
   virtual void   execute();
@@ -1108,7 +1108,7 @@ struct stormstrike_t : public shaman_attack_t
 
 // shaman_spell_t::cost ====================================================
 
-double shaman_spell_t::cost()
+double shaman_spell_t::cost() const
 {
   shaman_t* p = player -> cast_shaman();
   double c = spell_t::cost();

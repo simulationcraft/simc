@@ -475,7 +475,7 @@ struct death_knight_spell_t : public spell_t
   virtual void   execute();
   virtual void   player_buff();
   virtual bool   ready();
-  virtual double total_crit_bonus();
+  virtual double total_crit_bonus() const;
 };
 
 // ==========================================================================
@@ -1078,7 +1078,7 @@ death_knight_spell_t::ready()
 }
 
 double
-death_knight_spell_t::total_crit_bonus()
+death_knight_spell_t::total_crit_bonus() const
 {
   return spell_t::total_crit_bonus() + 0.5;
 }

@@ -139,7 +139,7 @@ struct paladin_attack_t : public attack_t
 
   virtual void execute();
 
-  virtual double cost()
+  virtual double cost() const
   {
     paladin_t* p = player -> cast_paladin();
     double c = attack_t::cost();

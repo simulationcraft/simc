@@ -311,10 +311,10 @@ struct rogue_attack_t : public attack_t
   }
 
   virtual void   parse_options( option_t*, const std::string& options_str );
-  virtual double cost();
+  virtual double cost() const;
   virtual void   execute();
   virtual void   player_buff();
-  virtual double armor();
+  virtual double armor() const;
   virtual bool   ready();
 };
 
@@ -814,7 +814,7 @@ void rogue_attack_t::parse_options( option_t*          options,
 
 // rogue_attack_t::cost ====================================================
 
-double rogue_attack_t::cost()
+double rogue_attack_t::cost() const
 {
   rogue_t* p = player -> cast_rogue();
   double c = attack_t::cost();
@@ -945,7 +945,7 @@ void rogue_attack_t::player_buff()
 
 // rogue_attack_t::armor() ================================================
 
-double rogue_attack_t::armor()
+double rogue_attack_t::armor() const
 {
   rogue_t* p = player -> cast_rogue();
 

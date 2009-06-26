@@ -229,10 +229,10 @@ struct mage_t : public player_t
   virtual bool      save( FILE* file );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
-  virtual int       primary_resource() { return RESOURCE_MANA; }
-  virtual int       primary_role()     { return ROLE_SPELL; }
-  virtual int       primary_tree();
-  virtual double    composite_spell_power( int school );
+  virtual int       primary_resource() const { return RESOURCE_MANA; }
+  virtual int       primary_role() const     { return ROLE_SPELL; }
+  virtual int       primary_tree() const;
+  virtual double    composite_spell_power( int school ) const;
 
   // Event Tracking
   virtual void   regen( double periodicity );
@@ -320,8 +320,8 @@ struct mage_spell_t : public spell_t
 
   virtual void   parse_options( option_t*, const std::string& );
   virtual bool   ready();
-  virtual double cost();
-  virtual double haste();
+  virtual double cost() const;
+  virtual double haste() const;
   virtual void   execute();
   virtual void   consume_resource();
   virtual void   player_buff();
@@ -1282,7 +1282,7 @@ bool mage_spell_t::ready()
 
 // mage_spell_t::cost ======================================================
 
-double mage_spell_t::cost()
+double mage_spell_t::cost() const
 {
   mage_t* p = player -> cast_mage();
   if ( p -> _buffs.clearcasting ) return 0;
@@ -1293,7 +1293,7 @@ double mage_spell_t::cost()
 
 // mage_spell_t::haste =====================================================
 
-double mage_spell_t::haste()
+double mage_spell_t::haste() const
 {
   mage_t* p = player -> cast_mage();
   double h = spell_t::haste();
@@ -3490,7 +3490,7 @@ void mage_t::init_actions()
 
 // mage_t::primary_tree ====================================================
 
-int mage_t::primary_tree()
+int mage_t::primary_tree() const
 {
   if( talents.arcane_empowerment   ) return TREE_ARCANE;
   if( talents.empowered_fire       ) return TREE_FIRE;
@@ -3501,7 +3501,7 @@ int mage_t::primary_tree()
 
 // mage_t::composite_spell_power ===========================================
 
-double mage_t::composite_spell_power( int school )
+double mage_t::composite_spell_power( int school ) const
 {
   double sp = player_t::composite_spell_power( school );
 

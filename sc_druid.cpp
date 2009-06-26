@@ -1950,10 +1950,10 @@ struct druid_spell_t : public spell_t
   druid_spell_t( const char* n, player_t* p, int s, int t ) :
       spell_t( n, p, RESOURCE_MANA, s, t ), skip_on_eclipse( 0 ) {}
   virtual void   consume_resource();
-  virtual double cost();
+  virtual double cost() const;
   virtual void   execute();
   virtual double execute_time();
-  virtual double haste();
+  virtual double haste() const;
   virtual void   parse_options( option_t*, const std::string& options_str );
   virtual void   player_buff();
   virtual bool   ready();
@@ -1994,7 +1994,7 @@ bool druid_spell_t::ready()
 
 // druid_spell_t::cost =====================================================
 
-double druid_spell_t::cost()
+double druid_spell_t::cost() const
 {
   druid_t* p = player -> cast_druid();
   if ( p -> _buffs.omen_of_clarity ) return 0;
@@ -2003,7 +2003,7 @@ double druid_spell_t::cost()
 
 // druid_spell_t::haste ====================================================
 
-double druid_spell_t::haste()
+double druid_spell_t::haste() const
 {
   druid_t* p = player -> cast_druid();
   double h = spell_t::haste();

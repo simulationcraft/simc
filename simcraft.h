@@ -882,9 +882,9 @@ struct weapon_t
   double enchant_bonus, buff_bonus;
   int    slot;
 
-  int    group();
-  double normalized_weapon_speed();
-  double proc_chance_on_swing( double PPM, double adjusted_swing_time=0 );
+  int    group() const;
+  double normalized_weapon_speed() const;
+  double proc_chance_on_swing( double PPM, double adjusted_swing_time=0 ) const;
 
   weapon_t( int t=WEAPON_NONE, double d=0, double st=2.0, int s=SCHOOL_PHYSICAL ) :
       type( t ), school( s ), damage( d ), swing_time( st ),
@@ -946,10 +946,10 @@ struct item_t
 
   item_t() : sim(0), player(0), slot(SLOT_NONE), enchant(ENCHANT_NONE), unique(false) {}
   item_t( player_t*, const std::string& options_str );
-  bool active();
-  const char* name();
-  const char* slot_name();
-  weapon_t* weapon();
+  bool active() const;
+  const char* name() const;
+  const char* slot_name() const;
+  weapon_t* weapon() const;
   bool init();
   bool parse_options();
   void encode_options();

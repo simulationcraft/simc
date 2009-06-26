@@ -246,9 +246,9 @@ struct hunter_t : public player_t
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet( const std::string& name );
-  virtual int       primary_resource() { return RESOURCE_MANA; }
-  virtual int       primary_role()     { return ROLE_ATTACK; }
-  virtual int       primary_tree();
+  virtual int       primary_resource() const { return RESOURCE_MANA; }
+  virtual int       primary_role() const     { return ROLE_ATTACK; }
+  virtual int       primary_tree() const;
 
   // Event Tracking
   virtual void regen( double periodicity );
@@ -638,7 +638,7 @@ struct hunter_attack_t : public attack_t
     }
   }
 
-  virtual double cost();
+  virtual double cost() const;
   virtual void   execute();
   virtual double execute_time();
   virtual void   player_buff();
@@ -654,7 +654,7 @@ struct hunter_spell_t : public spell_t
       spell_t( n, p, RESOURCE_MANA, s, t )
   {}
 
-  virtual double gcd();
+  virtual double gcd() const;
 };
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
@@ -1449,7 +1449,7 @@ struct hunter_pet_attack_t : public attack_t
     return t;
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
 
@@ -2136,7 +2136,7 @@ action_t* hunter_pet_t::create_action( const std::string& name,
 
 // hunter_attack_t::cost ===================================================
 
-double hunter_attack_t::cost()
+double hunter_attack_t::cost() const
 {
   hunter_t* p = player -> cast_hunter();
   double c = attack_t::cost();
@@ -3133,7 +3133,7 @@ struct steady_shot_t : public hunter_attack_t
 
 // hunter_spell_t::gcd()
 
-double hunter_spell_t::gcd()
+double hunter_spell_t::gcd() const
 {
   // Hunter gcd unaffected by haste
   return trigger_gcd;
@@ -3860,7 +3860,7 @@ void hunter_t::init_actions()
 
 // hunter_t::primary_tree() ==================================================
 
-int hunter_t::primary_tree()
+int hunter_t::primary_tree() const
 {
   if( talents.serpents_swiftness || talents.beast_within ) return TREE_BEAST_MASTERY;
   if( talents.master_marksman ) return TREE_MARKSMANSHIP;

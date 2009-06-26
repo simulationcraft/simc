@@ -282,10 +282,10 @@ struct warlock_t : public player_t
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
-  virtual int       primary_resource() { return RESOURCE_MANA; }
-  virtual int       primary_role()     { return ROLE_SPELL; }
-  virtual int       primary_tree();
-  virtual double    composite_spell_power( int school );
+  virtual int       primary_resource() const { return RESOURCE_MANA; }
+  virtual int       primary_role() const     { return ROLE_SPELL; }
+  virtual int       primary_tree() const;
+  virtual double    composite_spell_power( int school ) const;
 
   // Event Tracking
   virtual void regen( double periodicity );
@@ -976,9 +976,9 @@ struct warlock_spell_t : public spell_t
   {}
 
   // Overridden Methods
-  virtual double haste();
-  virtual double execute_time();
-  virtual double gcd();
+  virtual double haste() const;
+  virtual double execute_time() const;
+  virtual double gcd() const;
   virtual void   player_buff();
   virtual void   target_debuff( int dmg_type );
   virtual void   execute();
@@ -1726,7 +1726,7 @@ static void trigger_life_tap_glyph( spell_t* s )
 
 // warlock_spell_t::haste ===================================================
 
-double warlock_spell_t::haste()
+double warlock_spell_t::haste() const
 {
   warlock_t* p = player -> cast_warlock();
   double h = spell_t::haste();
@@ -1742,7 +1742,7 @@ double warlock_spell_t::haste()
 
 // warlock_spell_t::execute_time ============================================
 
-double warlock_spell_t::execute_time()
+double warlock_spell_t::execute_time() const
 {
   warlock_t* p = player -> cast_warlock();
   double t = spell_t::execute_time();
@@ -1759,7 +1759,7 @@ double warlock_spell_t::execute_time()
 
 // warlock_spell_t::gcd ============================================
 
-double warlock_spell_t::gcd()
+double warlock_spell_t::gcd() const
 {
   double t = spell_t::gcd();
   warlock_t* p = player -> cast_warlock();
@@ -4507,7 +4507,7 @@ void imp_pet_t::fire_bolt_t::execute()
 
 // warlock_t::composite_spell_power =========================================
 
-double warlock_t::composite_spell_power( int school )
+double warlock_t::composite_spell_power( int school ) const
 {
   double sp = player_t::composite_spell_power( school );
 
@@ -4904,7 +4904,7 @@ act_expression_t* warlock_t::create_expression(std::string& name,std::string& pr
 
 // warlock_t::primary_tree =================================================
 
-int warlock_t::primary_tree()
+int warlock_t::primary_tree() const
 {
   if( talents.unstable_affliction ) return TREE_AFFLICTION;
   if( talents.decimation          ) return TREE_DEMONOLOGY;
