@@ -855,6 +855,11 @@ static void trigger_lunar_fury( spell_t* s )
 {
   // http://ptr.wowhead.com/?spell=67361
   
+  druid_t* p = s -> player -> cast_druid();
+  
+  if( ! p -> idols.lunar_fury )
+    return;
+
   struct expiration_idol_of_lunar_fury_t : public event_t
   {
     expiration_idol_of_lunar_fury_t( sim_t* sim, druid_t* p ) : event_t( sim, p )
@@ -872,8 +877,6 @@ static void trigger_lunar_fury( spell_t* s )
       p -> _expirations.idol_of_lunar_fury = 0;
     }
   };
-
-  druid_t* p = s -> player -> cast_druid();
 
   if ( p -> rng_idol_of_lunar_fury -> roll( 0.7 ) )
   {
