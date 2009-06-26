@@ -150,9 +150,9 @@ bool http_t::cache_save()
       if( size > max_size ) max_size = size;
     }
 
-    if(sizeof(double) != fwrite( &url_cache_version, sizeof( double   ), 1, file ) ||
-    	sizeof(uint32_t) != fwrite( &num_records,       sizeof( uint32_t ), 1, file ) ||
-    	sizeof(uint32_t) != fwrite( &max_size,          sizeof( uint32_t ), 1, file ))
+    if(1 != fwrite( &url_cache_version, sizeof( double   ), 1, file ) ||
+    	1 != fwrite( &num_records,       sizeof( uint32_t ), 1, file ) ||
+    	1 != fwrite( &max_size,          sizeof( uint32_t ), 1, file ))
     {
     	perror("fwrite failed while saving cache file"); 
     }
@@ -165,12 +165,12 @@ bool http_t::cache_save()
       uint32_t result_size = c.result.size();
 
       if(
-      	sizeof(uint32_t) != fwrite( &( c.timestamp ), sizeof( uint32_t ), 1, file ) ||
-      	sizeof(uint32_t) != fwrite(    &url_size, sizeof( uint32_t ), 1, file ) ||
-      	sizeof(uint32_t) != fwrite( &result_size, sizeof( uint32_t ), 1, file ) ||
+      	1 != fwrite( &( c.timestamp ), sizeof( uint32_t ), 1, file ) ||
+      	1 != fwrite(    &url_size, sizeof( uint32_t ), 1, file ) ||
+      	1 != fwrite( &result_size, sizeof( uint32_t ), 1, file ) ||
 
-      	sizeof(char)*url_size != fwrite( c.   url.c_str(), sizeof( char ),    url_size, file ) ||
-      	sizeof(char)*result_size != fwrite( c.result.c_str(), sizeof( char ), result_size, file ))
+      	url_size != fwrite( c.   url.c_str(), sizeof( char ),    url_size, file ) ||
+      	result_size != fwrite( c.result.c_str(), sizeof( char ), result_size, file ))
       {
 			perror("fwrite failed while saving cache file"); 
       }
