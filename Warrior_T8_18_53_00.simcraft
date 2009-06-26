@@ -27,18 +27,17 @@ actions+=/recklessness,health_percentage>=20,time_to_die>=230
 actions+=/berserker_rage
 
 # Gear Summary
-gear_strength=1526
+gear_strength=1542
 gear_agility=251
 gear_stamina=1440
 gear_intellect=10
-gear_spirit=14
-gear_spell_power=9
+gear_spirit=10
 gear_attack_power=635
 gear_expertise_rating=116
 gear_armor_penetration_rating=419
 gear_hit_rating=198
 gear_crit_rating=919
-gear_haste_rating=133
+gear_haste_rating=125
 gear_armor=12764
 meta_gem=chaotic_skyflare
 tier8_2pc=1
@@ -65,5 +64,5 @@ items=mjolnir_runestone/darkmoon_card_greatness
 #trinket2=Darkmoon_Card:_Greatness,id=42987
 #main_hand=Voldrethar_Dark_Blade_of_Oblivion,id=45516,weapon=sword2h_244dps_3.6speed,gems=16Str_16Str,enchant=berserking
 #off_hand=Voldrethar_Dark_Blade_of_Oblivion,id=45516,weapon=sword2h_244dps_3.6speed,gems=16Str_16Str,enchant=berserking
-#ranged=Twirling_Blades,id=45296,gems=9SP_8Haste_4Spi
+#ranged=Twirling_Blades,id=45296,gems=16Str
 
