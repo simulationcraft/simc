@@ -99,7 +99,7 @@
     action_t* action;
     int method;
     pbuff_expression_t(std::string expression_str, pbuff_t* e_buff, int e_method, action_t* e_action=0):act_expression_t(AEXP_BUFF,expression_str,0), 
-                       buff(e_buff), method(e_method), action(e_action){};
+                       buff(e_buff), action(e_action), method(e_method){};
     virtual ~pbuff_expression_t(){};
     virtual double evaluate() {
       switch(method){
