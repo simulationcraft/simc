@@ -3401,11 +3401,12 @@ void druid_t::init_rng()
 {
   player_t::init_rng();
 
-  rng_eclipse         = get_rng( "eclipse"         );
-  rng_natures_grace   = get_rng( "natures_grace"   );
-  rng_omen_of_clarity = get_rng( "omen_of_clarity" );
-  rng_primal_fury     = get_rng( "primal_fury"     );
-  rng_unseen_moon     = get_rng( "unseen_moon"     );
+  rng_eclipse            = get_rng( "eclipse"         );
+  rng_natures_grace      = get_rng( "natures_grace"   );
+  rng_idol_of_lunar_fury = get_rng( "unseen_moon"     );
+  rng_omen_of_clarity    = get_rng( "omen_of_clarity" );
+  rng_primal_fury        = get_rng( "primal_fury"     );
+  rng_unseen_moon        = get_rng( "unseen_moon"     );
 } 
 
 // druid_t::init_actions ====================================================
