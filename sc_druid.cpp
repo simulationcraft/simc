@@ -46,6 +46,7 @@ struct druid_t : public player_t
   {
     double eclipse_starfire;
     double eclipse_wrath;
+    double idol_of_lunar_fury;
 
     void reset() { memset( ( void* ) this, 0x00, sizeof( _cooldowns_t ) ); }
     _cooldowns_t() { reset(); }
@@ -57,6 +58,7 @@ struct druid_t : public player_t
   {
     event_t* berserk;
     event_t* eclipse;
+    event_t* idol_of_lunar_fury;
     event_t* idol_of_the_corruptor;
     event_t* natures_grace;
     event_t* mangle;
@@ -80,6 +82,7 @@ struct druid_t : public player_t
   // Procs
   proc_t* procs_combo_points;
   proc_t* procs_combo_points_wasted;
+  proc_t* procs_idol_of_lunar_fury;
   proc_t* procs_omen_of_clarity;
   proc_t* procs_primal_fury;
   proc_t* procs_unseen_moon;
@@ -96,6 +99,7 @@ struct druid_t : public player_t
   // Random Number Generation
   rng_t* rng_eclipse;
   rng_t* rng_natures_grace;
+  rng_t* rng_idol_of_lunar_fury;
   rng_t* rng_omen_of_clarity;
   rng_t* rng_primal_fury;
   rng_t* rng_unseen_moon;
@@ -189,6 +193,7 @@ struct druid_t : public player_t
   {
     int corruptor;
     int crying_wind;
+    int lunar_fury;
     int ravenous_beast;
     int shooting_star;
     int steadfast_renewal;
@@ -813,14 +818,14 @@ static void trigger_unseen_moon( spell_t* s )
     {
       name = "Idol of the Unseen Moon";
       p -> aura_gain( "Idol of the Unseen Moon" );
-      p -> spell_power[ SCHOOL_MAX ] += 140;
+      p -> stat_gain( STAT_SPELL_POWER, 140);
       sim -> add_event( this, 10.0 );
     }
     virtual void execute()
     {
       druid_t* p = player -> cast_druid();
       p -> aura_loss( "Idol of the Unseen Moon" );
-      p -> spell_power[ SCHOOL_MAX ] -= 140;
+      p -> stat_loss( STAT_SPELL_POWER, 140);
       p -> _expirations.unseen_moon = 0;
     }
   };
@@ -840,6 +845,49 @@ static void trigger_unseen_moon( spell_t* s )
     else
     {
       e = new ( s -> sim ) expiration_t( s -> sim, p );
+    }
+  }
+}
+
+// trigger_lunar_fury =========================================================
+
+static void trigger_lunar_fury( spell_t* s )
+{
+  // http://ptr.wowhead.com/?spell=67361
+  
+  struct expiration_idol_of_lunar_fury_t : public event_t
+  {
+    expiration_idol_of_lunar_fury_t( sim_t* sim, druid_t* p ) : event_t( sim, p )
+    {
+      name = "Idol of Lunar Fury";
+      p -> aura_gain( "Idol of Lunar Fury" );
+      p -> stat_gain( STAT_CRIT_RATING, 200);
+      sim -> add_event( this, 12.0 );
+    }
+    virtual void execute()
+    {
+      druid_t* p = player -> cast_druid();
+      p -> aura_loss( "Idol of the Unseen Moon" );
+      p -> stat_loss( STAT_CRIT_RATING, 200);
+      p -> _expirations.idol_of_lunar_fury = 0;
+    }
+  };
+
+  druid_t* p = s -> player -> cast_druid();
+
+  if ( p -> rng_idol_of_lunar_fury -> roll( 0.7 ) )
+  {
+    p -> procs_idol_of_lunar_fury -> occur();
+
+    event_t*& e = p -> _expirations.idol_of_lunar_fury;
+
+    if ( e )
+    {
+      e -> reschedule( 12.0 );
+    }
+    else
+    {
+      e = new ( s -> sim ) expiration_idol_of_lunar_fury_t( s -> sim, p );
     }
   }
 }
@@ -907,14 +955,14 @@ static void trigger_idol_of_the_corruptor( attack_t* a )
     {
       name = "Idol of the Corruptor Expiration";
       player -> aura_gain( "Idol of the Corruptor" );
-      player -> attribute[ ATTR_AGILITY ] += 153;
+      player -> stat_gain( STAT_AGILITY, 153);
       sim -> add_event( this, 12.0 );
     }
     virtual void execute()
     {
       druid_t* p = player -> cast_druid();
       p -> aura_loss( "Idol of the Corruptor" );
-      p -> attribute[ ATTR_AGILITY ] -= 153;
+      player -> stat_loss( STAT_AGILITY, 153);
       p -> _expirations.idol_of_the_corruptor = 0;
     }
   };
@@ -2398,6 +2446,11 @@ struct moonfire_t : public druid_spell_t
 
     return true;
   }
+  virtual void tick()
+  {
+    druid_spell_t::tick();
+    trigger_lunar_fury( this );
+  }
 };
 
 // Cat Form Spell =========================================================
@@ -3249,10 +3302,11 @@ void druid_t::init_items()
 
   std::string& idol = items[ SLOT_RANGED ].encoded_name_str;
 
-  if     ( idol == "idol_of_the_corruptor"      ) idols.corruptor = 1;
+  if     ( idol == "idol_of_lunar_fury"         ) idols.lunar_fury = 1;
+  else if( idol == "idol_of_steadfast_renewal"  ) idols.steadfast_renewal = 1;
+  else if( idol == "idol_of_the_corruptor"      ) idols.corruptor = 1;
   else if( idol == "idol_of_the_crying_wind"    ) idols.crying_wind = 1;
   else if( idol == "idol_of_the_ravenous_beast" ) idols.ravenous_beast = 1;
-  else if( idol == "idol_of_steadfast_renewal"  ) idols.steadfast_renewal = 1;
   else if( idol == "idol_of_the_shooting_star"  ) idols.shooting_star = 1;
   else if( idol == "idol_of_the_unseen_moon"    ) idols.unseen_moon = 1;
   else if( idol == "idol_of_worship"            ) idols.worship = 1;
@@ -3320,6 +3374,7 @@ void druid_t::init_procs()
 
   procs_combo_points        = get_proc( "combo_points"        );
   procs_combo_points_wasted = get_proc( "combo_points_wasted" );
+  procs_idol_of_lunar_fury  = get_proc( "lunar_fury"          );
   procs_omen_of_clarity     = get_proc( "omen_of_clarity"     );
   procs_primal_fury         = get_proc( "primal_fury"         );
   procs_unseen_moon         = get_proc( "unseen_moon"         );
