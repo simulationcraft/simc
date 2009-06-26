@@ -302,7 +302,7 @@ struct death_knight_t : public player_t
   virtual void      init_resources( bool force );
   virtual void      init_actions();
   virtual void      combat_begin();
-  virtual double    composite_attack_power();
+  virtual const double    composite_attack_power() const;
   virtual void      regen( double periodicity );
   virtual void      reset();
   virtual bool      get_talent_trees( std::vector<int*>& blood, std::vector<int*>& frost, std::vector<int*>& unholy );
@@ -1828,8 +1828,8 @@ death_knight_t::combat_begin()
   }
 }
 
-double
-death_knight_t::composite_attack_power()
+const double
+death_knight_t::composite_attack_power() const
 {
   return player_t::composite_attack_power() + ( talents.bladed_armor ? talents.bladed_armor * composite_armor_snapshot() / 180 : 0 );
 }

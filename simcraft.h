@@ -1342,29 +1342,29 @@ struct player_t
   virtual void combat_begin();
   virtual void combat_end();
 
-  virtual double composite_attack_power();
-  virtual double composite_attack_crit();
-  virtual double composite_attack_expertise()   { return attack_expertise;   }
-  virtual double composite_attack_hit()         { return attack_hit;         }
-  virtual double composite_attack_penetration() { return attack_penetration; }
+  virtual const double composite_attack_power() const;
+  virtual const double composite_attack_crit() const;
+  virtual const double composite_attack_expertise() const   { return attack_expertise;   }
+  virtual const double composite_attack_hit() const         { return attack_hit;         }
+  virtual const double composite_attack_penetration() const { return attack_penetration; }
 
-  virtual double composite_armor();
-  virtual double composite_armor_snapshot()     { return armor_snapshot; }
+  virtual const double composite_armor() const;
+  virtual const double composite_armor_snapshot() const    { return armor_snapshot; }
 
-  virtual double composite_spell_power( int school );
-  virtual double composite_spell_crit();
-  virtual double composite_spell_hit()         { return spell_hit;         }
-  virtual double composite_spell_penetration() { return spell_penetration; }
+  virtual const double composite_spell_power( int school ) const;
+  virtual const double composite_spell_crit() const;
+  virtual const double composite_spell_hit() const         { return spell_hit;         }
+  virtual const double composite_spell_penetration() const { return spell_penetration; }
 
-  virtual double composite_attack_power_multiplier();
-  virtual double composite_spell_power_multiplier() { return spell_power_multiplier; }
-  virtual double composite_attribute_multiplier( int attr );
+  virtual const double composite_attack_power_multiplier() const;
+  virtual const double composite_spell_power_multiplier() const { return spell_power_multiplier; }
+  virtual const double composite_attribute_multiplier( int attr ) const;
 
-  virtual double strength();
-  virtual double agility();
-  virtual double stamina();
-  virtual double intellect();
-  virtual double spirit();
+  virtual const double strength() const;
+  virtual const double agility() const;
+  virtual const double stamina() const;
+  virtual const double intellect() const;
+  virtual const double spirit() const;
 
   virtual void      interrupt();
   virtual void      clear_debuffs();

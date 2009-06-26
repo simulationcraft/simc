@@ -263,7 +263,7 @@ struct druid_t : public player_t
   virtual void      interrupt();
   virtual void      regen( double periodicity );
   virtual double    available();
-  virtual double    composite_attack_power();
+  virtual const double    composite_attack_power() const;
   virtual double    composite_attack_power_multiplier();
   virtual double    composite_attack_crit();
   virtual double    composite_spell_hit();
@@ -393,7 +393,7 @@ struct treants_pet_t : public pet_t
 
     melee = new melee_t( this );
   }
-  virtual double composite_attack_power()
+  virtual const double composite_attack_power() const
   {
     double ap = pet_t::composite_attack_power();
     ap += 0.57 * owner -> composite_spell_power( SCHOOL_MAX );
@@ -3529,7 +3529,7 @@ double druid_t::available()
 
 // druid_t::composite_attack_power ==========================================
 
-double druid_t::composite_attack_power()
+const double druid_t::composite_attack_power() const
 {
   double ap = player_t::composite_attack_power();
 

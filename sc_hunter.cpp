@@ -241,7 +241,7 @@ struct hunter_t : public player_t
   virtual void      init_actions();
   virtual void      reset();
   virtual void      interrupt();
-  virtual double    composite_attack_power();
+  virtual const double    composite_attack_power() const;
   virtual bool      get_talent_trees( std::vector<int*>& beastmastery, std::vector<int*>& marksmanship, std::vector<int*>& survival );
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -519,7 +519,7 @@ struct hunter_pet_t : public pet_t
     uptimes_savage_rend    = owner -> get_uptime( "savage_rend" );
   }
 
-  virtual double composite_attack_power()
+  virtual const double composite_attack_power() const
   {
     hunter_t* o = owner -> cast_hunter();
 
@@ -3899,7 +3899,7 @@ void hunter_t::interrupt()
 
 // hunter_t::composite_attack_power ==========================================
 
-double hunter_t::composite_attack_power()
+const double hunter_t::composite_attack_power() const
 {
   double ap = player_t::composite_attack_power();
 

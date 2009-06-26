@@ -205,7 +205,7 @@ struct warrior_t : public player_t
   virtual void      init_actions();
   virtual void      combat_begin();
   virtual double    composite_attribute_multiplier( int attr );
-  virtual double    composite_attack_power();
+  virtual const double    composite_attack_power() const;
   virtual double    composite_armor();
   virtual void      reset();
   virtual void      interrupt();
@@ -2779,7 +2779,7 @@ void warrior_t::interrupt()
 
 // warrior_t::composite_attack_power =========================================
 
-double warrior_t::composite_attack_power()
+const double warrior_t::composite_attack_power() const
 {
   if ( sim -> P320 )
     return player_t::composite_attack_power() + ( talents.armored_to_the_teeth ? talents.armored_to_the_teeth * composite_armor_snapshot() / 108 : 0 );

@@ -254,8 +254,8 @@ struct shaman_t : public player_t
   virtual void      init_actions();
   virtual void      reset();
   virtual void      interrupt();
-  virtual double    composite_attack_power();
-  virtual double    composite_spell_power( int school );
+  virtual const double    composite_attack_power() const;
+  virtual const double    composite_spell_power( int school ) const;
   virtual bool      get_talent_trees( std::vector<int*>& elemental, std::vector<int*>& enhancement, std::vector<int*>& restoration );
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -363,7 +363,7 @@ struct spirit_wolf_pet_t : public pet_t
 
     melee = new melee_t( this );
   }
-  virtual double composite_attack_power()
+  virtual const double composite_attack_power() const
   {
     shaman_t* o = owner -> cast_shaman();
     double ap = pet_t::composite_attack_power();
@@ -3386,7 +3386,7 @@ void shaman_t::interrupt()
 
 // shaman_t::composite_attack_power ==========================================
 
-double shaman_t::composite_attack_power()
+const double shaman_t::composite_attack_power() const
 {
   double ap = player_t::composite_attack_power();
 
@@ -3402,7 +3402,7 @@ double shaman_t::composite_attack_power()
 
 // shaman_t::composite_spell_power ==========================================
 
-double shaman_t::composite_spell_power( int school )
+const double shaman_t::composite_spell_power( int school ) const
 {
   double sp = player_t::composite_spell_power( school );
 

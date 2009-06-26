@@ -112,7 +112,7 @@ struct paladin_t : public player_t
   virtual void      init_actions();
   virtual void      reset();
   virtual void      interrupt();
-  virtual double    composite_attack_power();
+  virtual const double    composite_attack_power() const;
   virtual double    composite_spell_power( int school );
   virtual bool      get_talent_trees( std::vector<int*>& holy, std::vector<int*>& protection, std::vector<int*>& retribution );
   virtual std::vector<option_t>& get_options();
@@ -699,7 +699,7 @@ void paladin_t::interrupt()
   if( auto_attack ) auto_attack -> cancel();
 }
 
-double paladin_t::composite_attack_power()
+const double paladin_t::composite_attack_power() const
 {
   return player_t::composite_attack_power();
 }

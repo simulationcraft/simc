@@ -1102,7 +1102,7 @@ item_t* player_t::find_item( const std::string& str )
 
 // player_t::composite_attack_power ========================================
 
-double player_t::composite_attack_power()
+const double player_t::composite_attack_power() const
 {
   double ap = attack_power;
 
@@ -1116,7 +1116,7 @@ double player_t::composite_attack_power()
 
 // player_t::composite_attack_crit =========================================
 
-double player_t::composite_attack_crit()
+const double player_t::composite_attack_crit() const
 {
   double ac = attack_crit + attack_crit_per_agility * agility();
 
@@ -1133,7 +1133,7 @@ double player_t::composite_attack_crit()
 
 // player_t::composite_armor =========================================
 
-double player_t::composite_armor()
+const double player_t::composite_armor() const
 {
   double a = armor;
 
@@ -1146,7 +1146,7 @@ double player_t::composite_armor()
 
 // player_t::composite_spell_power ========================================
 
-double player_t::composite_spell_power( int school )
+const double player_t::composite_spell_power( int school ) const
 {
   double sp = spell_power[ school ];
 
@@ -1184,7 +1184,7 @@ double player_t::composite_spell_power( int school )
 
 // player_t::composite_spell_crit ==========================================
 
-double player_t::composite_spell_crit()
+const double player_t::composite_spell_crit() const
 {
   double sc = spell_crit + spell_crit_per_intellect * intellect();
 
@@ -1203,7 +1203,7 @@ double player_t::composite_spell_crit()
 
 // player_t::composite_attack_power_multiplier =============================
 
-double player_t::composite_attack_power_multiplier()
+const double player_t::composite_attack_power_multiplier() const
 {
   double m = attack_power_multiplier;
 
@@ -1221,7 +1221,7 @@ double player_t::composite_attack_power_multiplier()
 
 // player_t::composite_attribute_multiplier ================================
 
-double player_t::composite_attribute_multiplier( int attr )
+const double player_t::composite_attribute_multiplier( int attr ) const
 {
   double m = attribute_multiplier[ attr ];
   if ( buffs.blessing_of_kings ) m *= 1.10;
@@ -1230,7 +1230,7 @@ double player_t::composite_attribute_multiplier( int attr )
 
 // player_t::strength() ====================================================
 
-double player_t::strength()
+const double player_t::strength() const
 {
   double a = attribute[ ATTR_STRENGTH ];
 
@@ -1242,7 +1242,7 @@ double player_t::strength()
 
 // player_t::agility() =====================================================
 
-double player_t::agility()
+const double player_t::agility() const
 {
   double a = attribute[ ATTR_AGILITY ];
 
@@ -1254,7 +1254,7 @@ double player_t::agility()
 
 // player_t::stamina() =====================================================
 
-double player_t::stamina()
+const double player_t::stamina() const
 {
   double a = attribute[ ATTR_STAMINA ];
 
@@ -1266,7 +1266,7 @@ double player_t::stamina()
 
 // player_t::intellect() ===================================================
 
-double player_t::intellect()
+const double player_t::intellect() const
 {
   double a = attribute[ ATTR_INTELLECT ];
 
@@ -1278,7 +1278,7 @@ double player_t::intellect()
 
 // player_t::spirit() ======================================================
 
-double player_t::spirit()
+const double player_t::spirit() const
 {
   double a = attribute[ ATTR_SPIRIT ];
 
