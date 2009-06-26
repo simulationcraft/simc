@@ -1137,6 +1137,7 @@ std::vector<option_t>& sim_t::get_options()
       { "deterministic_roll",               OPT_BOOL,   &( deterministic_roll                       ) },
       { "average_range",                    OPT_BOOL,   &( average_range                            ) },
       { "average_gauss",                    OPT_BOOL,   &( average_gauss                            ) },
+      { "instant_only_gcd_lag",             OPT_BOOL,   &( instant_only_gcd_lag                     ) },
       // @option_doc loc=global/party title="Party Composition"
       { "party",                            OPT_LIST,   &( party_encoding                           ) },
       // @option_doc loc=skip
