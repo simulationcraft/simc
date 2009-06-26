@@ -194,7 +194,7 @@ rank_t* action_t::init_rank( rank_t* rank_list,
 
 // action_t::cost ======================================================
 
-double action_t::cost()
+double action_t::cost() const
 {
   double c = base_cost;
 
@@ -392,7 +392,7 @@ void action_t::target_debuff( int dmg_type )
 
 // action_t::result_is_hit ==================================================
 
-bool action_t::result_is_hit()
+bool action_t::result_is_hit() const
 {
   return( result == RESULT_HIT    ||
           result == RESULT_CRIT   ||
@@ -403,7 +403,7 @@ bool action_t::result_is_hit()
 
 // action_t::result_is_miss =================================================
 
-bool action_t::result_is_miss()
+bool action_t::result_is_miss() const
 {
   return( result == RESULT_MISS   ||
           result == RESULT_DODGE  ||
@@ -412,7 +412,7 @@ bool action_t::result_is_miss()
 
 // action_t::armor ==========================================================
 
-double action_t::armor()
+double action_t::armor() const
 {
   target_t* t = sim -> target;
 
@@ -426,7 +426,7 @@ double action_t::armor()
 
 // action_t::resistance =====================================================
 
-double action_t::resistance()
+double action_t::resistance() const
 {
   if ( ! may_resist ) return 0;
 
@@ -493,7 +493,7 @@ double action_t::resistance()
 
 // action_t::total_crit_bonus ================================================
 
-double action_t::total_crit_bonus()
+double action_t::total_crit_bonus() const
 {
   double crit_multiplier = (   base_crit_multiplier *
                                player_crit_multiplier *
@@ -518,7 +518,7 @@ double action_t::total_crit_bonus()
 
 // action_t::total_power =====================================================
 
-double action_t::total_power()
+double action_t::total_power() const
 {
   double power=0;
 

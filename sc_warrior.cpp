@@ -204,9 +204,9 @@ struct warrior_t : public player_t
   virtual void      init_rng();
   virtual void      init_actions();
   virtual void      combat_begin();
-  virtual double    composite_attribute_multiplier( int attr );
-  virtual const double    composite_attack_power() const;
-  virtual double    composite_armor();
+  virtual double    composite_attribute_multiplier( int attr ) const;
+  virtual double    composite_attack_power() const;
+  virtual double    composite_armor() const;
   virtual void      reset();
   virtual void      interrupt();
   virtual void      regen( double periodicity );
@@ -214,14 +214,14 @@ struct warrior_t : public player_t
   virtual bool      get_talent_trees( std::vector<int*>& arms, std::vector<int*>& fury, std::vector<int*>& protection );
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
-  virtual int       primary_resource() { return RESOURCE_RAGE; }
-  virtual int       primary_role()     { return ROLE_ATTACK; }
-  virtual int       primary_tree();
+  virtual int       primary_resource() const { return RESOURCE_RAGE; }
+  virtual int       primary_role() const     { return ROLE_ATTACK; }
+  virtual int       primary_tree() const;
 };
 
 // warrior_t::composite_attribute_multiplier ===============================
 
-double warrior_t::composite_attribute_multiplier( int attr )
+double warrior_t::composite_attribute_multiplier( int attr ) const
 {
   double m = player_t::composite_attribute_multiplier( attr );
   if ( attr == ATTR_STRENGTH )
@@ -261,15 +261,15 @@ struct warrior_attack_t : public attack_t
   }
 
   virtual void   parse_options( option_t*, const std::string& options_str );
-  virtual double dodge_chance( int delta_level );
+  virtual double dodge_chance( int delta_level ) const;
   virtual void   consume_resource();
-  virtual double cost();
+  virtual double cost() const;
   virtual void   execute();
   virtual void   player_buff();
   virtual bool   ready();
 };
 
-double warrior_attack_t::dodge_chance( int delta_level )
+double warrior_attack_t::dodge_chance( int delta_level ) const
 {
   double chance = attack_t::dodge_chance( delta_level );
 
@@ -902,7 +902,7 @@ void warrior_attack_t::parse_options( option_t*          options,
 
 // warrior_attack_t::cost ====================================================
 
-double warrior_attack_t::cost()
+double warrior_attack_t::cost() const
 {
   warrior_t* p = player -> cast_warrior();
   double c = attack_t::cost();
@@ -2734,7 +2734,7 @@ void warrior_t::init_actions()
 
 // mage_t::primary_tree ====================================================
 
-int warrior_t::primary_tree()
+int warrior_t::primary_tree() const
 {
   if( talents.mortal_strike        ) return TREE_ARMS;
   if( talents.bloodthirst          ) return TREE_FURY;
@@ -2779,7 +2779,7 @@ void warrior_t::interrupt()
 
 // warrior_t::composite_attack_power =========================================
 
-const double warrior_t::composite_attack_power() const
+double warrior_t::composite_attack_power() const
 {
   if ( sim -> P320 )
     return player_t::composite_attack_power() + ( talents.armored_to_the_teeth ? talents.armored_to_the_teeth * composite_armor_snapshot() / 108 : 0 );
@@ -2789,7 +2789,7 @@ const double warrior_t::composite_attack_power() const
 
 // warrior_t::composite_armor ================================================
 
-double warrior_t::composite_armor()
+double warrior_t::composite_armor() const
 {
   double final_armor = player_t::composite_armor() - armor_per_agility * agility();
   final_armor *= 1 +  ( talents.toughness ? talents.toughness * 0.02 : 0 );

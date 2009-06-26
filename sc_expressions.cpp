@@ -817,7 +817,7 @@ act_expression_t* act_expression_t::find_operator(action_t* action, std::string&
     return true;
   }
   //return time till expiration (or 0 if expired). Used as function pointer in expressions
-  double  pbuff_t::expiration_time()
+  double  pbuff_t::expiration_time() const
   {
     if (buff_value==0) return 0; 
     double remains= expected_end - player->sim->current_time;
@@ -856,7 +856,7 @@ act_expression_t* act_expression_t::find_operator(action_t* action, std::string&
   }
 
   // now same versions that do change uptime counters
-  bool pbuff_t::is_up(bool skip_old_uptime){
+  bool pbuff_t::is_up(bool skip_old_uptime) {
     if (!skip_old_uptime) update_old_uptime();
     return (buff_value!=0);
   }
@@ -916,7 +916,7 @@ act_expression_t* act_expression_t::find_operator(action_t* action, std::string&
       
   }
 
-  pbuff_t* buff_list_t::find_buff(std::string& name){
+  pbuff_t* buff_list_t::find_buff(std::string& name) const {
     pbuff_t* res=0;
     std::string prop_name=proper_option_name(name);
     for (pbuff_t* p=first; p && !res; p=p->next){
@@ -926,7 +926,7 @@ act_expression_t* act_expression_t::find_operator(action_t* action, std::string&
     return res;
   }
 
-  bool buff_list_t::chk_buff(std::string& name){
+  bool buff_list_t::chk_buff(std::string& name) const {
     pbuff_t* buff= find_buff(name);
     if (buff) 
       return buff->buff_value!=0;

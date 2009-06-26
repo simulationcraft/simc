@@ -112,14 +112,14 @@ struct paladin_t : public player_t
   virtual void      init_actions();
   virtual void      reset();
   virtual void      interrupt();
-  virtual const double    composite_attack_power() const;
-  virtual double    composite_spell_power( int school );
+  virtual double    composite_attack_power() const;
+  virtual double    composite_spell_power( int school ) const;
   virtual bool      get_talent_trees( std::vector<int*>& holy, std::vector<int*>& protection, std::vector<int*>& retribution );
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
-  virtual int       primary_resource() { return RESOURCE_MANA; }
-  virtual int       primary_role()     { return ROLE_HYBRID; }
-  virtual int       primary_tree();
+  virtual int       primary_resource() const { return RESOURCE_MANA; }
+  virtual int       primary_role() const     { return ROLE_HYBRID; }
+  virtual int       primary_tree() const;
 };
 
 struct paladin_attack_t : public attack_t
@@ -699,12 +699,12 @@ void paladin_t::interrupt()
   if( auto_attack ) auto_attack -> cancel();
 }
 
-const double paladin_t::composite_attack_power() const
+double paladin_t::composite_attack_power() const
 {
   return player_t::composite_attack_power();
 }
 
-double paladin_t::composite_spell_power( int school )
+double paladin_t::composite_spell_power( int school ) const
 {
   double sp = player_t::composite_spell_power( school );
   sp += composite_attack_power_multiplier() * composite_attack_power() * talents.sheath_of_light * 0.1;
@@ -802,7 +802,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   return player_t::create_action( name, options_str );
 }
 
-int paladin_t::primary_tree()
+int paladin_t::primary_tree() const
 {
   return TREE_RETRIBUTION;
 }

@@ -408,7 +408,7 @@ struct event_t
   {
     if ( ! name ) name = "unknown";
   }
-  double occurs() { return reschedule_time != 0 ? reschedule_time : time; }
+  double occurs() const { return reschedule_time != 0 ? reschedule_time : time; }
   virtual void reschedule( double new_time );
   virtual void execute() { printf( "%s\n", name ? name : "(no name)" ); assert( 0 ); }
   virtual ~event_t() {}
@@ -454,14 +454,14 @@ struct raid_event_t
   raid_event_t( sim_t*, const char* name );
   virtual ~raid_event_t() {}
 
-  virtual double cooldown_time();
-  virtual double duration_time();
+  virtual double cooldown_time() const;
+  virtual double duration_time() const;
   virtual void schedule();
   virtual void reset();
   virtual void start();
   virtual void finish() {}
   virtual void parse_options( option_t*, const std::string& options_str );
-  virtual const char* name() { return name_str.c_str(); }
+  virtual const char* name() const { return name_str.c_str(); }
   static raid_event_t* create( sim_t* sim, const std::string& name, const std::string& options_str );
   static void init( sim_t* );
 };
@@ -489,7 +489,7 @@ struct gear_stats_t
 
   void   add_stat( int stat, double value );
   void   set_stat( int stat, double value );
-  double get_stat( int stat );
+  double get_stat( int stat ) const;
   void   print( FILE* );
   static double stat_mod( int stat );
 };
@@ -504,9 +504,9 @@ struct uptime_t
   uptime_t( const std::string& n ) : name_str( n ), up( 0 ), down( 0 ) {}
   virtual ~uptime_t() {}
   void   update( bool is_up ) { if ( is_up ) up++; else down++; }
-  double percentage() { return ( up==0 ) ? 0 : ( 100.0*up/( up+down ) ); }
+  double percentage() const { return ( up==0 ) ? 0 : ( 100.0*up/( up+down ) ); }
   virtual void   merge( uptime_t* other ) { up += other -> up; down += other -> down; }
-  const char* name() { return name_str.c_str(); }
+  const char* name() const { return name_str.c_str(); }
 };
 
 // Buffs ======================================================================
@@ -534,10 +534,10 @@ struct buff_uptime_t : public uptime_t
     n_triggers+= ((buff_uptime_t*)other)->n_triggers;
     n_runs+= ((buff_uptime_t*)other)->n_runs;
   }
-  virtual double percentage_time(){
+  virtual double percentage_time() const {
      return ( timer_uptime<=0 ) ? 0 : ( 100.0*timer_uptime/( timer_uptime+timer_downtime ) ); 
   }
-  virtual double avg_triggers(){ return n_runs==0?  n_triggers : n_triggers/(n_runs+0.0); }
+  virtual double avg_triggers() const { return n_runs==0?  n_triggers : n_triggers/(n_runs+0.0); }
 };
 
 struct pbuff_t{
@@ -567,7 +567,7 @@ struct pbuff_t{
   virtual void reset_iteration();
   virtual void uptime_update(bool activated);
   virtual void update_old_uptime();
-  virtual double expiration_time();
+  virtual double expiration_time() const;
   virtual bool   trigger(double val=1, double b_duration=0,int aura_idx=0);
   virtual bool   is_up(bool skip_old_uptime=false);
   virtual double mul_value(bool skip_old_uptime=false);
@@ -581,8 +581,8 @@ struct buff_list_t{
   buff_list_t();
   void add_buff(pbuff_t* new_buff);
   void reset_buffs();
-  pbuff_t* find_buff(std::string& name);
-  bool     chk_buff(std::string& name);
+  pbuff_t* find_buff(std::string& name) const;
+  bool     chk_buff(std::string& name) const;
 };
 
 
@@ -966,22 +966,22 @@ struct item_t
 struct set_bonus_t
 {
   int count[ SET_MAX ];
-  int tier4_2pc();
-  int tier4_4pc();
-  int tier5_2pc();
-  int tier5_4pc();
-  int tier6_2pc();
-  int tier6_4pc();
-  int tier7_2pc();
-  int tier7_4pc();
-  int tier8_2pc();
-  int tier8_4pc();
-  int tier9_2pc();
-  int tier9_4pc();
-  int tier10_2pc();
-  int tier10_4pc();
-  int spellstrike();
-  int decode( const std::string& item_name );
+  int tier4_2pc() const;
+  int tier4_4pc() const;
+  int tier5_2pc() const;
+  int tier5_4pc() const;
+  int tier6_2pc() const;
+  int tier6_4pc() const;
+  int tier7_2pc() const;
+  int tier7_4pc() const;
+  int tier8_2pc() const;
+  int tier8_4pc() const;
+  int tier9_2pc() const;
+  int tier9_4pc() const;
+  int tier10_2pc() const;
+  int tier10_4pc() const;
+  int spellstrike() const;
+  int decode( const std::string& item_name ) const;
   bool init( player_t* );
   set_bonus_t() { memset( (void*) this, 0x00, sizeof( set_bonus_t ) ); }
 };
@@ -1342,43 +1342,43 @@ struct player_t
   virtual void combat_begin();
   virtual void combat_end();
 
-  virtual const double composite_attack_power() const;
-  virtual const double composite_attack_crit() const;
-  virtual const double composite_attack_expertise() const   { return attack_expertise;   }
-  virtual const double composite_attack_hit() const         { return attack_hit;         }
-  virtual const double composite_attack_penetration() const { return attack_penetration; }
+  virtual double composite_attack_power() const;
+  virtual double composite_attack_crit() const;
+  virtual double composite_attack_expertise() const   { return attack_expertise;   }
+  virtual double composite_attack_hit() const         { return attack_hit;         }
+  virtual double composite_attack_penetration() const { return attack_penetration; }
 
-  virtual const double composite_armor() const;
-  virtual const double composite_armor_snapshot() const    { return armor_snapshot; }
+  virtual double composite_armor() const;
+  virtual double composite_armor_snapshot() const    { return armor_snapshot; }
 
-  virtual const double composite_spell_power( int school ) const;
-  virtual const double composite_spell_crit() const;
-  virtual const double composite_spell_hit() const         { return spell_hit;         }
-  virtual const double composite_spell_penetration() const { return spell_penetration; }
+  virtual double composite_spell_power( int school ) const;
+  virtual double composite_spell_crit() const;
+  virtual double composite_spell_hit() const         { return spell_hit;         }
+  virtual double composite_spell_penetration() const { return spell_penetration; }
 
-  virtual const double composite_attack_power_multiplier() const;
-  virtual const double composite_spell_power_multiplier() const { return spell_power_multiplier; }
-  virtual const double composite_attribute_multiplier( int attr ) const;
+  virtual double composite_attack_power_multiplier() const;
+  virtual double composite_spell_power_multiplier() const { return spell_power_multiplier; }
+  virtual double composite_attribute_multiplier( int attr ) const;
 
-  virtual const double strength() const;
-  virtual const double agility() const;
-  virtual const double stamina() const;
-  virtual const double intellect() const;
-  virtual const double spirit() const;
+  virtual double strength() const;
+  virtual double agility() const;
+  virtual double stamina() const;
+  virtual double intellect() const;
+  virtual double spirit() const;
 
   virtual void      interrupt();
   virtual void      clear_debuffs();
   virtual void      schedule_ready( double delta_time=0, bool waiting=false );
-  virtual double    available() { return 0.1; }
+  virtual double    available() const { return 0.1; }
   virtual action_t* execute_action();
 
   virtual void   regen( double periodicity=2.0 );
   virtual double resource_gain( int resource, double amount, gain_t* g=0, action_t* a=0 );
   virtual double resource_loss( int resource, double amount, action_t* a=0 );
-  virtual bool   resource_available( int resource, double cost );
-  virtual int    primary_resource() { return RESOURCE_NONE; }
-  virtual int    primary_role()     { return ROLE_HYBRID; }
-  virtual int    primary_tree()     { return TALENT_TREE_MAX; }
+  virtual bool   resource_available( int resource, double cost ) const;
+  virtual int    primary_resource() const { return RESOURCE_NONE; }
+  virtual int    primary_role() const     { return ROLE_HYBRID; }
+  virtual int    primary_tree() const     { return TALENT_TREE_MAX; }
 
   virtual void stat_gain( int stat, double amount );
   virtual void stat_loss( int stat, double amount );
@@ -1443,7 +1443,7 @@ struct player_t
   warrior_t     * cast_warrior     () { assert( type == WARRIOR      ); return ( warrior_t     * ) this; }
   pet_t         * cast_pet         () { assert( is_pet()             ); return ( pet_t         * ) this; }
 
-  bool      in_gcd() { return gcd_ready > sim -> current_time; }
+  bool      in_gcd() const { return gcd_ready > sim -> current_time; }
   bool      recent_cast();
   item_t*   find_item( const std::string& );
   action_t* find_action( const std::string& );
@@ -1451,7 +1451,7 @@ struct player_t
   void      share_duration( const std::string& name, double ready );
   void      recalculate_haste();
   double    mana_regen_per_second();
-  bool      dual_wield() { return main_hand_weapon.type != WEAPON_NONE && off_hand_weapon.type != WEAPON_NONE; }
+  bool      dual_wield() const { return main_hand_weapon.type != WEAPON_NONE && off_hand_weapon.type != WEAPON_NONE; }
   void      aura_gain( const char* name, int aura_id=0 );
   void      aura_loss( const char* name, int aura_id=0 );
   gain_t*   get_gain  ( const std::string& name );
@@ -1476,11 +1476,11 @@ struct pet_t : public player_t
 
   pet_t( sim_t* sim, player_t* owner, const std::string& name, bool guardian=false );
 
-  virtual double composite_attack_hit() { return owner -> composite_attack_hit(); }
-  virtual double composite_spell_hit()  { return owner -> composite_spell_hit();  }
+  virtual double composite_attack_hit() const { return owner -> composite_attack_hit(); }
+  virtual double composite_spell_hit() const  { return owner -> composite_spell_hit();  }
 
-  virtual double stamina();
-  virtual double intellect();
+  virtual double stamina() const;
+  virtual double intellect() const;
 
   virtual void init();
   virtual void reset();
@@ -1488,7 +1488,7 @@ struct pet_t : public player_t
   virtual void dismiss();
 
   virtual action_t* create_action( const std::string& name, const std::string& options );
-  virtual const char* name() { return full_name_str.c_str(); }
+  virtual const char* name() const { return full_name_str.c_str(); }
   virtual const char* id();
 };
 
@@ -1606,12 +1606,12 @@ struct target_t
   void combat_end();
   void assess_damage( double amount, int school, int type );
   void recalculate_health();
-  double time_to_die();
-  double health_percentage();
-  double base_armor();
+  double time_to_die() const;
+  double health_percentage() const;
+  double base_armor() const;
   uptime_t* get_uptime( const std::string& name );
   int get_options( std::vector<option_t>& );
-  const char* name() { return name_str.c_str(); }
+  const char* name() const { return name_str.c_str(); }
   const char* id();
 };
 
@@ -1740,22 +1740,22 @@ struct action_t
   virtual option_t* merge_options( std::vector<option_t>&, option_t*, option_t* );
   virtual rank_t*   init_rank( rank_t* rank_list, int id=0 );
 
-  virtual double cost();
-  virtual double haste()        { return 1.0;               }
-  virtual double gcd()          { return trigger_gcd;       }
-  virtual double execute_time() { return base_execute_time; }
-  virtual double tick_time()    { return base_tick_time;    }
+  virtual double cost() const;
+  virtual double haste() const        { return 1.0;               }
+  virtual double gcd() const          { return trigger_gcd;       }
+  virtual double execute_time() const { return base_execute_time; }
+  virtual double tick_time() const    { return base_tick_time;    }
   virtual double travel_time();
   virtual void   player_buff();
   virtual void   target_debuff( int dmg_type );
   virtual void   calculate_result() { assert( 0 ); }
-  virtual bool   result_is_hit();
-  virtual bool   result_is_miss();
+  virtual bool   result_is_hit() const;
+  virtual bool   result_is_miss() const;
   virtual double calculate_direct_damage();
   virtual double calculate_tick_damage();
   virtual double calculate_weapon_damage();
-  virtual double armor();
-  virtual double resistance();
+  virtual double armor() const;
+  virtual double resistance() const;
   virtual void   consume_resource();
   virtual void   execute();
   virtual void   tick();
@@ -1773,21 +1773,21 @@ struct action_t
   virtual bool   ready();
   virtual void   reset();
   virtual void   cancel();
-  virtual const char* name() { return name_str.c_str(); }
+  virtual const char* name() const { return name_str.c_str(); }
 
-  virtual double total_multiplier() { return   base_multiplier * player_multiplier * target_multiplier; }
-  virtual double total_hit()        { return   base_hit        + player_hit        + target_hit;        }
-  virtual double total_crit()       { return   base_crit       + player_crit       + target_crit;       }
-  virtual double total_crit_bonus();
+  virtual double total_multiplier() const { return   base_multiplier * player_multiplier * target_multiplier; }
+  virtual double total_hit() const        { return   base_hit        + player_hit        + target_hit;        }
+  virtual double total_crit() const       { return   base_crit       + player_crit       + target_crit;       }
+  virtual double total_crit_bonus() const;
 
-  virtual double total_spell_power()  { return ( base_spell_power  + player_spell_power  + target_spell_power  ) * base_spell_power_multiplier  * player_spell_power_multiplier;  }
-  virtual double total_attack_power() { return ( base_attack_power + player_attack_power + target_attack_power ) * base_attack_power_multiplier * player_attack_power_multiplier; }
-  virtual double total_power();
+  virtual double total_spell_power() const  { return ( base_spell_power  + player_spell_power  + target_spell_power  ) * base_spell_power_multiplier  * player_spell_power_multiplier;  }
+  virtual double total_attack_power() const { return ( base_attack_power + player_attack_power + target_attack_power ) * base_attack_power_multiplier * player_attack_power_multiplier; }
+  virtual double total_power() const;
 
   // Some actions require different multipliers for the "direct" and "tick" portions.
 
-  virtual double total_dd_multiplier() { return total_multiplier() * base_dd_multiplier; }
-  virtual double total_td_multiplier() { return total_multiplier() * base_td_multiplier; }
+  virtual double total_dd_multiplier() const { return total_multiplier() * base_dd_multiplier; }
+  virtual double total_td_multiplier() const { return total_multiplier() * base_td_multiplier; }
   virtual act_expression_t* create_expression(std::string& name, std::string& prefix, std::string& suffix, exp_res_t expected_type);      
 
 };
@@ -1802,8 +1802,8 @@ struct attack_t : public action_t
   virtual ~attack_t() {}
 
   // Attack Overrides
-  virtual double haste();
-  virtual double execute_time();
+  virtual double haste() const;
+  virtual double execute_time() const;
   virtual void   player_buff();
   virtual void   target_debuff( int dmg_type );
   virtual int    build_table( double* chances, int* results );
@@ -1811,13 +1811,13 @@ struct attack_t : public action_t
   virtual void   execute();
 
   // Attack Specific
-  virtual double   miss_chance( int delta_level );
-  virtual double  dodge_chance( int delta_level );
-  virtual double  parry_chance( int delta_level );
-  virtual double glance_chance( int delta_level );
-  virtual double  block_chance( int delta_level );
-  virtual double   crit_chance( int delta_level );
-  virtual double total_expertise() { return base_expertise + player_expertise + target_expertise; }
+  virtual double   miss_chance( int delta_level ) const;
+  virtual double  dodge_chance( int delta_level ) const;
+  virtual double  parry_chance( int delta_level ) const;
+  virtual double glance_chance( int delta_level ) const;
+  virtual double  block_chance( int delta_level ) const;
+  virtual double   crit_chance( int delta_level ) const;
+  virtual double total_expertise() const { return base_expertise + player_expertise + target_expertise; }
 };
 
 // Spell =====================================================================
@@ -1828,13 +1828,13 @@ struct spell_t : public action_t
   virtual ~spell_t() {}
 
   // Spell Overrides
-  virtual double haste();
-  virtual double gcd();
-  virtual double execute_time();
-  virtual double tick_time();
+  virtual double haste() const;
+  virtual double gcd() const;
+  virtual double execute_time() const;
+  virtual double tick_time() const;
   virtual void   player_buff();
   virtual void   target_debuff( int dmg_type );
-  virtual double level_based_miss_chance( int player, int target );
+  virtual double level_based_miss_chance( int player, int target ) const;
   virtual void   calculate_result();
   virtual void   execute();
 };
@@ -1961,7 +1961,7 @@ struct gain_t
   gain_t( const std::string& n, int _id=0 ) : name_str( n ), actual( 0 ), overflow( 0 ), id( _id ) {}
   void add( double a, double o=0 ) { actual += a; overflow += o; }
   void merge( gain_t* other ) { actual += other -> actual; overflow += other -> overflow; }
-  const char* name() { return name_str.c_str(); }
+  const char* name() const { return name_str.c_str(); }
 };
 
 // Proc ======================================================================
@@ -1975,7 +1975,7 @@ struct proc_t
   proc_t( const std::string& n ) : name_str( n ), count( 0 ), frequency( 0 ) {}
   void occur() { count++; }
   void merge( proc_t* other ) { count += other -> count; }
-  const char* name() { return name_str.c_str(); }
+  const char* name() const { return name_str.c_str(); }
 };
 
 
@@ -2054,7 +2054,7 @@ struct rng_t
   rng_t( const std::string& n, bool avg_range=false, bool avg_gauss=false );
   virtual ~rng_t() {}
 
-  virtual int    type() { return RNG_STANDARD; }
+  virtual int    type() const { return RNG_STANDARD; }
   virtual double real();
   virtual int    roll( double chance );
   virtual double range( double min, double max );

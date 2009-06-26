@@ -1080,8 +1080,6 @@ void player_t::init_scaling()
 
       case STAT_ARMOR: initial_armor += v; break;
 
-      case STAT_MAX: break;
-
       default: assert( 0 );
       }
     }
@@ -1102,7 +1100,7 @@ item_t* player_t::find_item( const std::string& str )
 
 // player_t::composite_attack_power ========================================
 
-const double player_t::composite_attack_power() const
+double player_t::composite_attack_power() const
 {
   double ap = attack_power;
 
@@ -1116,7 +1114,7 @@ const double player_t::composite_attack_power() const
 
 // player_t::composite_attack_crit =========================================
 
-const double player_t::composite_attack_crit() const
+double player_t::composite_attack_crit() const
 {
   double ac = attack_crit + attack_crit_per_agility * agility();
 
@@ -1133,7 +1131,7 @@ const double player_t::composite_attack_crit() const
 
 // player_t::composite_armor =========================================
 
-const double player_t::composite_armor() const
+double player_t::composite_armor() const
 {
   double a = armor;
 
@@ -1146,7 +1144,7 @@ const double player_t::composite_armor() const
 
 // player_t::composite_spell_power ========================================
 
-const double player_t::composite_spell_power( int school ) const
+double player_t::composite_spell_power( int school ) const
 {
   double sp = spell_power[ school ];
 
@@ -1184,7 +1182,7 @@ const double player_t::composite_spell_power( int school ) const
 
 // player_t::composite_spell_crit ==========================================
 
-const double player_t::composite_spell_crit() const
+double player_t::composite_spell_crit() const
 {
   double sc = spell_crit + spell_crit_per_intellect * intellect();
 
@@ -1203,7 +1201,7 @@ const double player_t::composite_spell_crit() const
 
 // player_t::composite_attack_power_multiplier =============================
 
-const double player_t::composite_attack_power_multiplier() const
+double player_t::composite_attack_power_multiplier() const
 {
   double m = attack_power_multiplier;
 
@@ -1221,7 +1219,7 @@ const double player_t::composite_attack_power_multiplier() const
 
 // player_t::composite_attribute_multiplier ================================
 
-const double player_t::composite_attribute_multiplier( int attr ) const
+double player_t::composite_attribute_multiplier( int attr ) const
 {
   double m = attribute_multiplier[ attr ];
   if ( buffs.blessing_of_kings ) m *= 1.10;
@@ -1230,7 +1228,7 @@ const double player_t::composite_attribute_multiplier( int attr ) const
 
 // player_t::strength() ====================================================
 
-const double player_t::strength() const
+double player_t::strength() const
 {
   double a = attribute[ ATTR_STRENGTH ];
 
@@ -1242,7 +1240,7 @@ const double player_t::strength() const
 
 // player_t::agility() =====================================================
 
-const double player_t::agility() const
+double player_t::agility() const
 {
   double a = attribute[ ATTR_AGILITY ];
 
@@ -1254,7 +1252,7 @@ const double player_t::agility() const
 
 // player_t::stamina() =====================================================
 
-const double player_t::stamina() const
+double player_t::stamina() const
 {
   double a = attribute[ ATTR_STAMINA ];
 
@@ -1266,7 +1264,7 @@ const double player_t::stamina() const
 
 // player_t::intellect() ===================================================
 
-const double player_t::intellect() const
+double player_t::intellect() const
 {
   double a = attribute[ ATTR_INTELLECT ];
 
@@ -1278,7 +1276,7 @@ const double player_t::intellect() const
 
 // player_t::spirit() ======================================================
 
-const double player_t::spirit() const
+double player_t::spirit() const
 {
   double a = attribute[ ATTR_SPIRIT ];
 
@@ -1505,7 +1503,7 @@ void player_t::schedule_ready( double delta_time,
       {
         lag = rngs.lag_channel -> gauss( sim -> channel_lag, sim -> channel_lag_range );
       }
-      else if ( gcd_adjust > 0 && ( ! sim -> instant_only_gcd_lag || last_foreground_action -> time_to_execute == 0 ) )
+      else if ( gcd_adjust > 0 )
       {
         lag = rngs.lag_gcd -> gauss( sim -> gcd_lag, sim -> gcd_lag_range );
       }
@@ -1749,7 +1747,7 @@ double player_t::resource_gain( int       resource,
 // player_t::resource_available ============================================
 
 bool player_t::resource_available( int    resource,
-                                   double cost )
+                                   double cost ) const
 {
   if ( resource == RESOURCE_NONE || cost == 0 )
   {
