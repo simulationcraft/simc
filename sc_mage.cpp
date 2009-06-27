@@ -1544,7 +1544,7 @@ struct arcane_blast_t : public mage_spell_t
     if ( p -> set_bonus.tier5_2pc() ) base_multiplier *= 1.05;
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     mage_t* p = player -> cast_mage();
     double c = mage_spell_t::cost();
@@ -2098,14 +2098,14 @@ struct fire_ball_t : public mage_spell_t
     player_multiplier *= 1.0 + snared * p -> talents.torment_the_weak * 0.04;
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     mage_t* p = player -> cast_mage();
     if ( p -> _buffs.brain_freeze ) return 0;
     return mage_spell_t::cost();
   }
 
-  virtual double execute_time()
+  virtual double execute_time() const
   {
     mage_t* p = player -> cast_mage();
     if ( p -> _buffs.brain_freeze ) return 0;
@@ -2340,7 +2340,7 @@ struct pyroblast_t : public mage_spell_t
     if ( hot_streak ) duration_ready=0;
   }
 
-  virtual double execute_time()
+  virtual double execute_time() const
   {
     mage_t* p = player -> cast_mage();
     if ( p -> _buffs.hot_streak_pyroblast ) return 0;

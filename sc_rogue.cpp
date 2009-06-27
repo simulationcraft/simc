@@ -1063,7 +1063,7 @@ struct melee_t : public rogue_attack_t
     if ( p -> dual_wield() ) base_hit -= 0.19;
   }
 
-  virtual double haste()
+  virtual double haste() const
   {
     rogue_t* p = player -> cast_rogue();
 
@@ -2069,7 +2069,7 @@ struct killing_spree_t : public rogue_attack_t
   }
 
   // Killing Spree not modified by haste effects
-  virtual double haste() { return 1.0; }
+  virtual double haste() const { return 1.0; }
 };
 
 // Mutilate =================================================================

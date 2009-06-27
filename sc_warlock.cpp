@@ -665,7 +665,7 @@ struct felguard_pet_t : public warlock_pet_t
     melee_t( player_t* player ) :
         warlock_pet_melee_t( player, "felguard_melee" )
     {}
-    virtual double execute_time()
+    virtual double execute_time() const
     {
       felguard_pet_t* p = ( felguard_pet_t* ) player -> cast_pet();
       double t = attack_t::execute_time();
@@ -868,7 +868,7 @@ struct infernal_pet_t : public warlock_pet_t
       repeating         = true;
     }
 
-    virtual double execute_time()
+    virtual double execute_time() const
     {
       // immolation is an aura that ticks every 2 seconds
       return 2.0;
@@ -2310,7 +2310,7 @@ struct shadow_bolt_t : public warlock_spell_t
     base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
   }
 
-  virtual double execute_time()
+  virtual double execute_time() const
   {
     warlock_t* p = player -> cast_warlock();
     p -> uptimes_shadow_trance -> update( p -> _buffs.shadow_trance != 0 );
@@ -3662,7 +3662,7 @@ struct soul_fire_t : public warlock_spell_t
     event_t::early( p -> _expirations.decimation );
   }
 
-  virtual double execute_time()
+  virtual double execute_time() const
   {
     warlock_t* p = player -> cast_warlock();
     double t = warlock_spell_t::execute_time();

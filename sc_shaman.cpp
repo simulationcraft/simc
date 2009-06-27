@@ -310,7 +310,7 @@ struct shaman_spell_t : public spell_t
   virtual double cost() const;
   virtual double cost_reduction() const { return base_cost_reduction; }
   virtual void   consume_resource();
-  virtual double execute_time();
+  virtual double execute_time() const;
   virtual void   execute();
   virtual void   player_buff();
   virtual void   schedule_execute();
@@ -959,7 +959,7 @@ struct melee_t : public shaman_attack_t
     if ( p -> dual_wield() ) base_hit -= 0.19;
   }
 
-  virtual double execute_time()
+  virtual double execute_time() const
   {
     double t = shaman_attack_t::execute_time();
     shaman_t* p = player -> cast_shaman();
@@ -1136,7 +1136,7 @@ void shaman_spell_t::consume_resource()
 
 // shaman_spell_t::execute_time ============================================
 
-double shaman_spell_t::execute_time()
+double shaman_spell_t::execute_time() const
 {
   shaman_t* p = player -> cast_shaman();
   if ( p -> _buffs.natures_swiftness ) return 0;
@@ -1314,7 +1314,7 @@ struct chain_lightning_t : public shaman_spell_t
     }
   }
 
-  virtual double execute_time()
+  virtual double execute_time() const
   {
     double t = shaman_spell_t::execute_time();
     shaman_t* p = player -> cast_shaman();
@@ -1436,7 +1436,7 @@ struct lightning_bolt_t : public shaman_spell_t
     }
   }
 
-  virtual double execute_time()
+  virtual double execute_time() const
   {
     double t = shaman_spell_t::execute_time();
     shaman_t* p = player -> cast_shaman();
@@ -1544,7 +1544,7 @@ struct lava_burst_t : public shaman_spell_t
     p -> _cooldowns.lava_burst = cooldown_ready;
   }
 
-  virtual double execute_time()
+  virtual double execute_time() const
   {
     double t = shaman_spell_t::execute_time();
     shaman_t* p = player -> cast_shaman();
