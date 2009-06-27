@@ -550,6 +550,7 @@ void player_t::init()
   init_uptimes();
   init_rng();
   init_stats();
+  init_expressions();
 }
 
 // player_t::init_items =====================================================
@@ -1085,6 +1086,23 @@ void player_t::init_scaling()
     }
   }
 }
+
+// player_t::init_stats ====================================================
+// must be LAST init_ 
+void player_t::init_expressions()
+{
+  // parse all action expressions
+  for ( action_t* a = action_list; a; a = a -> next  )
+  if (a->has_if_exp<0)
+  {
+    if (a->if_expression!="")  
+      a->if_exp=act_expression_t::create(a, a->if_expression,"", ETP_BOOL);
+    a->has_if_exp= (a->if_exp!=0);
+    if (a->has_if_exp && sim->debug_exp) //debug
+      printf("%s", a->if_exp->to_string().c_str()); 
+  }
+}
+
 
 // player_t::find_item ======================================================
 

@@ -1337,6 +1337,7 @@ struct player_t
   virtual void init_uptimes();
   virtual void init_rng();
   virtual void init_stats();
+  virtual void init_expressions();
 
   virtual void reset();
   virtual void combat_begin();

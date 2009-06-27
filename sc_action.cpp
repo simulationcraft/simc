@@ -1009,14 +1009,6 @@ bool action_t::ready()
     if( ! t -> invulnerable )
       return false;
 
-  //initialize expression if not already done -> should be done in some init_expressions()
-  if (has_if_exp<0){
-    if (if_expression!="")  
-      if_exp=act_expression_t::create(this, if_expression,"", ETP_BOOL);
-    has_if_exp= (if_exp!=0);
-    if (has_if_exp && sim->debug_exp) 
-      printf("%s", if_exp->to_string().c_str()); //debug
-  }
   //check action expression if any
   if (has_if_exp) 
     if (! if_exp->ok())
