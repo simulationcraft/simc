@@ -250,13 +250,13 @@ struct rogue_t : public player_t
   virtual void      reset();
   virtual void      interrupt();
   virtual void      regen( double periodicity );
-  virtual double    available();
+  virtual double    available() const;
   virtual bool      get_talent_trees( std::vector<int*>& assassination, std::vector<int*>& combat, std::vector<int*>& subtlety );
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
-  virtual int       primary_resource() { return RESOURCE_ENERGY; }
-  virtual int       primary_role()     { return ROLE_ATTACK; }
-  virtual int       primary_tree();
+  virtual int       primary_resource() const { return RESOURCE_ENERGY; }
+  virtual int       primary_role() const     { return ROLE_ATTACK; }
+  virtual int       primary_tree() const;
 
   // Utilities
   double combo_point_rank( double* cp_list )
@@ -3129,7 +3129,7 @@ struct stealth_t : public spell_t
 
 // rogue_t::primary_tree ===================================================
 
-int rogue_t::primary_tree()
+int rogue_t::primary_tree() const
 {
   if( talents.mutilate            ) return TREE_ASSASSINATION;
   if( talents.killing_spree       ) return TREE_COMBAT;
@@ -3547,7 +3547,7 @@ void rogue_t::regen( double periodicity )
 
 // rogue_t::available ======================================================
 
-double rogue_t::available()
+double rogue_t::available() const
 {
   double energy = resource_current[ RESOURCE_ENERGY ];
 
