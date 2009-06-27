@@ -1952,7 +1952,7 @@ struct druid_spell_t : public spell_t
   virtual void   consume_resource();
   virtual double cost() const;
   virtual void   execute();
-  virtual double execute_time();
+  virtual double execute_time() const;
   virtual double haste() const;
   virtual void   parse_options( option_t*, const std::string& options_str );
   virtual void   player_buff();
@@ -2017,7 +2017,7 @@ double druid_spell_t::haste() const
 
 // druid_spell_t::execute_time =============================================
 
-double druid_spell_t::execute_time()
+double druid_spell_t::execute_time() const
 {
   druid_t* p = player -> cast_druid();
   if ( p -> _buffs.natures_swiftness ) return 0;
@@ -2686,8 +2686,6 @@ struct starfire_t : public druid_spell_t
     druid_t* p = player -> cast_druid();
     druid_spell_t::execute();
     
-    event_t::early( p -> _expirations.t8_4pc_balance );
-
     if ( result_is_hit() )
     {
       trigger_earth_and_moon( this );
@@ -2703,7 +2701,7 @@ struct starfire_t : public druid_spell_t
       }
     }
   }
-  virtual double execute_time()
+  virtual double execute_time() const
   {
     druid_t* p = player -> cast_druid();
     if ( p -> _buffs.t8_4pc_balance )
