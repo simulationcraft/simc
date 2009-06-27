@@ -640,7 +640,7 @@ struct hunter_attack_t : public attack_t
 
   virtual double cost() const;
   virtual void   execute();
-  virtual double execute_time();
+  virtual double execute_time() const;
   virtual void   player_buff();
 };
 
@@ -1431,7 +1431,7 @@ struct hunter_pet_attack_t : public attack_t
     base_multiplier *= 1.0 + o -> talents.kindred_spirits * 0.04;
   }
 
-  virtual double execute_time()
+  virtual double execute_time() const
   {
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
@@ -2170,7 +2170,7 @@ void hunter_attack_t::execute()
 
 // hunter_attack_t::execute_time ============================================
 
-double hunter_attack_t::execute_time()
+double hunter_attack_t::execute_time() const
 {
   hunter_t* p = player -> cast_hunter();
 
@@ -2362,7 +2362,7 @@ struct aimed_shot_t : public hunter_attack_t
     }
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     hunter_t* p = player -> cast_hunter();
     double c = hunter_attack_t::cost();
@@ -2453,7 +2453,7 @@ struct arcane_shot_t : public hunter_attack_t
                                           p -> talents.marked_for_death * 0.02 );
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     hunter_t* p = player -> cast_hunter();
     if ( p -> _buffs.lock_and_load ) return 0;
@@ -2611,7 +2611,7 @@ struct chimera_shot_t : public hunter_attack_t
     }
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     hunter_t* p = player -> cast_hunter();
     double c = hunter_attack_t::cost();
@@ -2787,7 +2787,7 @@ struct explosive_shot_t : public hunter_attack_t
     explosive_tick = new explosive_tick_t( p );
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     hunter_t* p = player -> cast_hunter();
     if ( p -> _buffs.lock_and_load ) return 0;
