@@ -1102,7 +1102,7 @@ struct melee_t : public warrior_attack_t
     else
       rage_conversion_value = 0.0091107836 * p -> level * p -> level + 3.225598133* p -> level + 4.2652911;
   }
-  virtual double haste()
+  virtual double haste() const
   {
     warrior_t* p = player -> cast_warrior();
 
@@ -1317,7 +1317,7 @@ struct bladestorm_t : public warrior_attack_t
   }
 
   // Bladestorm not modified by haste effects
-  virtual double haste() { return 1.0; }
+  virtual double haste() const { return 1.0; }
 };
 
 // Heroic Strike ===========================================================
@@ -1988,7 +1988,7 @@ struct slam_t : public warrior_attack_t
     normalize_weapon_speed = false;
     weapon = &( p -> main_hand_weapon );
   }
-  virtual double haste()
+  virtual double haste() const
   {
     // No haste for slam cast?
     return 1.0;
@@ -2164,9 +2164,9 @@ struct warrior_spell_t : public spell_t
       stancemask( STANCE_BATTLE|STANCE_BERSERKER|STANCE_DEFENSE )
   {}
 
-  virtual double cost();
+  virtual double cost() const;
   virtual void   execute();
-  virtual double gcd();
+  virtual double gcd() const;
   virtual void   parse_options( option_t*, const std::string& options_str );
   virtual bool   ready();
 };
@@ -2186,7 +2186,7 @@ void warrior_spell_t::execute()
 
 // warrior_spell_t::cost =====================================================
 
-double warrior_spell_t::cost()
+double warrior_spell_t::cost() const
 {
   warrior_t* p = player -> cast_warrior();
   double c = spell_t::cost();
@@ -2203,7 +2203,7 @@ double warrior_spell_t::cost()
 
 // warrior_spell_t::gcd ======================================================
 
-double warrior_spell_t::gcd()
+double warrior_spell_t::gcd() const
 {
   // Unaffected by haste
   return trigger_gcd;

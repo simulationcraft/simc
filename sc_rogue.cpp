@@ -2488,7 +2488,7 @@ struct pool_energy_t : public rogue_attack_t
     if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
   }
 
-  virtual double gcd()
+  virtual double gcd() const
   {
     return wait;
   }

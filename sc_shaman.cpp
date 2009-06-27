@@ -1957,7 +1957,7 @@ struct searing_totem_t : public shaman_spell_t
     update_stats( DMG_OVER_TIME );
   }
 
-virtual double gcd() { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
+virtual double gcd() const { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
 };
 
 // Magma Totem Spell =======================================================
@@ -2040,7 +2040,7 @@ struct magma_totem_t : public shaman_spell_t
     update_stats( DMG_OVER_TIME );
   }
 
-virtual double gcd() { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
+virtual double gcd() const { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
 };
 
 // Totem of Wrath Spell =====================================================
@@ -2148,7 +2148,7 @@ struct totem_of_wrath_t : public shaman_spell_t
     return false;
   }
 
-virtual double gcd() { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
+virtual double gcd() const { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
 };
 
 // Flametongue Totem Spell ====================================================
@@ -2231,7 +2231,7 @@ struct flametongue_totem_t : public shaman_spell_t
     return( player -> buffs.flametongue_totem == 0 );
   }
 
-virtual double gcd() { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
+virtual double gcd() const { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
 };
 
 // Windfury Totem Spell =====================================================
@@ -2305,7 +2305,7 @@ struct windfury_totem_t : public shaman_spell_t
     return( player -> buffs.windfury_totem < bonus );
   }
 
-virtual double gcd() { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
+virtual double gcd() const { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
 };
 
 // Flametongue Weapon Spell ===================================================
@@ -2527,7 +2527,7 @@ struct strength_of_earth_totem_t : public shaman_spell_t
     return( player -> buffs.strength_of_earth < bonus );
   }
 
-virtual double gcd() { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
+virtual double gcd() const { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
 };
 
 // Wrath of Air Totem Spell =================================================
@@ -2591,7 +2591,7 @@ struct wrath_of_air_totem_t : public shaman_spell_t
     return( player -> buffs.wrath_of_air == 0 );
   }
 
-virtual double gcd() { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
+virtual double gcd() const { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
 };
 
 // Mana Tide Totem Spell ==================================================
@@ -2654,7 +2654,7 @@ struct mana_tide_totem_t : public shaman_spell_t
     return( player -> resource_current[ RESOURCE_MANA ] < ( 0.75 * player -> resource_max[ RESOURCE_MANA ] ) );
   }
 
-virtual double gcd() { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
+virtual double gcd() const { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
 };
 
 // Mana Spring Totem Spell ================================================
@@ -2706,7 +2706,7 @@ struct mana_spring_totem_t : public shaman_spell_t
     return shaman_spell_t::ready();
   }
 
-virtual double gcd() { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
+virtual double gcd() const { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
 };
 
 // Bloodlust Spell ===========================================================
