@@ -197,19 +197,19 @@ div#sidebar {
 				margin: 0px 5px;
 				cursor: pointer;
 				width: 64px;
-				height: 84px;
+				height: 85px;
 			}
 	
 				/* The text for each of the add-new-by-class icons */
 				div#sidebar ul#new_member_by_class li.supported_class span {
 					position: absolute;
-					bottom: 5px;
+					top: 64px;
 					left: 0px;
 					display: block;
 					width: 100%;
 					text-align: center;
 					color: #AA0000;
-					font-size: 0.8em;
+					font-size: 0.7em;
 				}
 
 			/* The various class buttons */

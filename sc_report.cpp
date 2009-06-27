@@ -684,9 +684,9 @@ static void print_xml_player_scale_factors( FILE*  file, sim_t* sim, player_t* p
 
 static void print_xml_text( FILE*  file, sim_t* sim )
 {
-  fprintf( file, "    <raw_text>\n" );
+  fprintf( file, "    <raw_text>\n<![CDATA[\n" );
   report_t::print_text( file, sim );
-  fprintf( file, "    </raw_text>\n" );
+  fprintf( file, "    ]]>\n</raw_text>\n" );
 }
 
 // print_wiki_raid ===========================================================
@@ -1044,17 +1044,18 @@ void report_t::print_xml( sim_t* sim )
   fprintf( file, "<xml>\n" );
 
   // Add the overall raid summary data
-  fprintf( file, "  <raid_summary>\n" );
-  if ( num_players > 1 ) print_xml_raid( file, sim );
-  fprintf( file, "  </raid_summary>\n" );
-
+  if ( num_players > 1 ) {
+    fprintf( file, "  <raid_summary>\n" );
+    print_xml_raid( file, sim );
+    fprintf( file, "  </raid_summary>\n" );
+  }
 
   // Loop over the players in the simulation, and print each's simulation results
   fprintf( file, "  <players>\n" );
   for ( int i=0; i < num_players; i++ ) {
         fprintf( file, "    <player name=\"%s\" talent_url=\"%s\">\n",
                         sim -> players_by_name[ i ] -> name(),
-                        sim -> players_by_name[ i ] -> talents_str.c_str()
+                        sim -> players_by_name[ i ] -> talents_str.c_str()	// TODO: These talent URLs should have their ampersands escaped
                 );
 
         // Print the player results

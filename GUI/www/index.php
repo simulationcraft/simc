@@ -18,6 +18,7 @@ if( isset($_POST['simulate']) && ALLOW_SIMULATION===true ) {
 	
 	// Execute the command
 	list($file_contents, $simcraft_output) = execute_simcraft_command($simcraft_command);
+	$file_contents = str_replace('&amp;amp;', '&amp;', str_replace('&','&amp;', $file_contents));
 	
 	// Fetch the result as an XML object, and release it to the browser as output
 	try {
@@ -25,7 +26,7 @@ if( isset($_POST['simulate']) && ALLOW_SIMULATION===true ) {
 		$xml->release_to_browser('xsl/results.xsl');
 	}
 	catch( Exception $e) {
-		throw new Exception("Simcraft did not return valid XML.\n\nsimcraft command:\n$simcraft_command\n\nsimcraft STDOUT:\n$simcraft_output\n\nsimcraft file content:\n$file_contents");
+		throw new Exception("Simcraft did not return valid XML, caused problems ({$e->getMessage()}).\n\nsimcraft command:\n$simcraft_command\n\nsimcraft STDOUT:\n$simcraft_output\n\nsimcraft file content:\n$file_contents");
 	}	
 }
 

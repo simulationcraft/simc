@@ -152,7 +152,7 @@ function generate_simcraft_command( array $arr_options )
 	}
 	
 	// Add the output directives
-	$return_string .= " xml=%s";
+	$return_string .= " xml={OUTPUT_FILENAME}";
 		
 	// Return the output
 	return $return_string;
@@ -178,7 +178,7 @@ function execute_simcraft_command( $simcraft_command )
 	$output_file = tempnam('/tmp', 'simcraft_output');
 	
 	// Replace the file name in the simcraft command template
-	$simcraft_command = sprintf($simcraft_command, escapeshellarg($output_file) );
+	$simcraft_command =  str_replace('{OUTPUT_FILENAME}', escapeshellarg($output_file), $simcraft_command );
 	
 	// Call the simcraft execution
 	$simcraft_output = shell_exec( $simcraft_command );
@@ -218,7 +218,7 @@ function parse_source_file_for_options( $file_path )
 	$file_contents = file_get_contents( $file_path );
 	
 	// Match the file contents for the get_options() method's 'option_t options[] = ' array
-	preg_match('/^[^\n\r]+::get_options\([^)]*\)\s*{.*option_t\s+options\[\]\s*=\s*[^;]*{(.*)}\s*;\s*$/Usm', $file_contents, $parse_matches);
+	preg_match('/^[^\n\r]+::get_options\([^)]*\)\s*{.*option_t\s+[A-Za-z_]+\[\]\s*=\s*[^;]*{(.*)}\s*;\s*$/Usm', $file_contents, $parse_matches);
 	$options = $parse_matches[1];
 	
 	// Match the options array contents for for individual option or option_doc strings

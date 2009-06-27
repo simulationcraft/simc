@@ -424,11 +424,14 @@ class XML_SimcraftConfigForm extends SimpleXMLElement_XSL
 		}
 		
 		// Develop the simcraft command from the form input
-		$simcraft_command = "./simcraft iterations=0 max_time=1 armory=" . escapeshellarg("$region_name,$server_name,$character_name") . " save=%s";
+		$simcraft_command = "./simcraft iterations=0 max_time=1 armory=" . escapeshellarg("$region_name,$server_name,$character_name") . " save={OUTPUT_FILENAME}";
 		
 		// Execute the command
 		list($file_contents, $simcraft_output) = execute_simcraft_command($simcraft_command);
-		
+		if( empty($file_contents) ) {
+			throw new Exception("Simcraft did not succeed in importing the Player.\n\nsimcraft command:\n$simcraft_command\n\nsimcraft STDOUT:\n$simcraft_output\n\nsimcraft file content:\n$file_contents");
+		}
+				
 		// Add the raider definition in the config file to the XML
 		$this->set_option_values_from_file_contents($file_contents, true);
 	}
