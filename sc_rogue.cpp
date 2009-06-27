@@ -1943,8 +1943,8 @@ struct hunger_for_blood_t : public rogue_attack_t
   // Rogues can stack the buff prior to entering combat, so if they have yet to use an
   // offensive ability, then this action will not trigger the GCD nor will it cost any energy.
 
-  virtual double gcd()  { return player -> in_combat ? rogue_attack_t::gcd()  : 0; }
-  virtual double cost() { return player -> in_combat ? rogue_attack_t::cost() : 0; }
+  virtual double gcd() const { return player -> in_combat ? rogue_attack_t::gcd()  : 0; }
+  virtual double cost() const { return player -> in_combat ? rogue_attack_t::cost() : 0; }
 };
 
 // Kick =====================================================================
@@ -2301,6 +2301,7 @@ struct shiv_t : public rogue_attack_t
     parse_options( options, options_str );
 
     weapon = &( p -> off_hand_weapon );
+    base_cost = 20 + weapon -> swing_time * 10.0;
     adds_combo_points = true;
     base_dd_min = base_dd_max = 1;
     base_multiplier *= 1.0 + ( p -> talents.find_weakness    * 0.02 +
@@ -2317,12 +2318,6 @@ struct shiv_t : public rogue_attack_t
     p -> _buffs.shiv = 1;
     rogue_attack_t::execute();
     p -> _buffs.shiv = 0;
-  }
-
-  virtual double cost()
-  {
-    base_cost = 20 + weapon -> swing_time * 10.0;
-    return rogue_attack_t::cost();
   }
 
   virtual void player_buff()
