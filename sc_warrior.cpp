@@ -1114,7 +1114,7 @@ struct melee_t : public warrior_attack_t
   }
 
 
-  virtual double execute_time()
+  virtual double execute_time() const
   {
     double t = warrior_attack_t::execute_time();
     warrior_t* p = player -> cast_warrior();
@@ -1994,7 +1994,7 @@ struct slam_t : public warrior_attack_t
     return 1.0;
   }
 
-  virtual double execute_time()
+  virtual double execute_time() const
   {
     warrior_t* p = player -> cast_warrior();
     if ( p -> _buffs.bloodsurge )
