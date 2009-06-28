@@ -744,7 +744,7 @@ bool paladin_t::get_talent_trees( std::vector<int*>& holy, std::vector<int*>& pr
     { {  0, NULL                                     }, {  0, NULL                                      }, {  0, NULL                                  } }
   };
 
-  return player_t::get_talent_trees( holy, protection, retribution, translation );
+  return get_talent_translation( holy, protection, retribution, translation );
 }
 
 std::vector<option_t>& paladin_t::get_options()

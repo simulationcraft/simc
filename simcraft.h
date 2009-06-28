@@ -22,8 +22,7 @@
 #if defined( _MSC_VER )
 #include "./vs/stdint.h"
 #  define snprintf _snprintf
-// for MSVC const has no performance advantage
-#  define SC_CONST 
+//#  define SC_CONST 
 #else
 #include <stdint.h>
 #endif
@@ -1406,7 +1405,7 @@ struct player_t
   virtual void register_tick_damage_callback  ( action_callback_t* );
   virtual void register_direct_damage_callback( action_callback_t* );
 
-  virtual bool get_talent_trees( std::vector<int*>& tree1, std::vector<int*>& tree2, std::vector<int*>& tree3, talent_translation_t translation[][3] );
+  virtual bool get_talent_translation( std::vector<int*>& tree1, std::vector<int*>& tree2, std::vector<int*>& tree3, talent_translation_t translation[][3] );
   virtual bool get_talent_trees( std::vector<int*>& tree1, std::vector<int*>& tree2, std::vector<int*>& tree3 );
   virtual bool parse_talents( std::vector<int*>& talent_tree, const std::string& talent_string );
   virtual bool parse_talents( const std::string& talent_string );

@@ -3644,7 +3644,7 @@ bool druid_t::get_talent_trees( std::vector<int*>& balance,
       { {  0, NULL                               }, {  0, NULL                                 }, {  0, NULL                                   } },
     };
 
-  return player_t::get_talent_trees( balance, feral, restoration, translation );
+  return get_talent_translation( balance, feral, restoration, translation );
 }
 
 // druid_t::get_options ================================================

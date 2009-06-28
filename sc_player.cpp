@@ -2512,7 +2512,7 @@ void player_t::trigger_replenishment()
 
 // player_t::get_talent_trees ===============================================
 
-bool player_t::get_talent_trees( std::vector<int*>& tree1,
+bool player_t::get_talent_translation( std::vector<int*>& tree1,
                                  std::vector<int*>& tree2,
                                  std::vector<int*>& tree3,
                                  talent_translation_t translation[][3] )

@@ -2075,7 +2075,7 @@ bool priest_t::get_talent_trees( std::vector<int*>& discipline,
         { {  0, NULL                                       }, {  0, NULL                              }, {  0, NULL                                   } }
       };
 
-    return player_t::get_talent_trees( discipline, holy, shadow, translation );
+    return get_talent_translation( discipline, holy, shadow, translation );
   }
   else
   {
@@ -2112,7 +2112,7 @@ bool priest_t::get_talent_trees( std::vector<int*>& discipline,
         { {  0, NULL                                       }, {  0, NULL                              }, {  0, NULL                                   } }
       };
 
-    return player_t::get_talent_trees( discipline, holy, shadow, translation );
+    return get_talent_translation( discipline, holy, shadow, translation );
   }
 }
 

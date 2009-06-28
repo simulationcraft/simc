@@ -3659,7 +3659,7 @@ bool mage_t::get_talent_trees( std::vector<int*>& arcane,
       { {  0, NULL                              }, {  0, NULL                             }, {  0, NULL                                  } }
     };
 
-  return player_t::get_talent_trees( arcane, fire, frost, translation );
+  return get_talent_translation( arcane, fire, frost, translation );
 }
 
 // mage_t::get_options ====================================================

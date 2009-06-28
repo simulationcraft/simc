@@ -3978,7 +3978,7 @@ bool hunter_t::get_talent_trees( std::vector<int*>& beastmastery,
       { {  0, NULL                                     }, {  0, NULL                                      }, {  0, NULL                                  } }
     };
 
-  return player_t::get_talent_trees( beastmastery, marksmanship, survival, translation );
+  return get_talent_translation( beastmastery, marksmanship, survival, translation );
 }
 
 

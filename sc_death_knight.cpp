@@ -1903,7 +1903,7 @@ death_knight_t::get_talent_trees( std::vector<int*>& blood, std::vector<int*>& f
       { {  0, NULL                                  }, {  0, NULL                                 }, {  0, NULL                                  } }
     };
 
-  return player_t::get_talent_trees( blood, frost, unholy, translation );
+  return get_talent_translation( blood, frost, unholy, translation );
 }
 
 std::vector<option_t>& death_knight_t::get_options()

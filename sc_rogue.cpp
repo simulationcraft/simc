@@ -3590,7 +3590,7 @@ bool rogue_t::get_talent_trees( std::vector<int*>& assassination,
       { {  0, NULL                               }, {  0, NULL                                   }, {  0, NULL                                    } }
     };
 
-  return player_t::get_talent_trees( assassination, combat, subtlety, translation );
+  return get_talent_translation( assassination, combat, subtlety, translation );
 }
 
 // rogue_t::get_options ================================================

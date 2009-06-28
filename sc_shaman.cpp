@@ -3479,7 +3479,7 @@ bool shaman_t::get_talent_trees( std::vector<int*>& elemental,
         { {  0, NULL                               }, {  0, NULL                                   }, {  0, NULL                                  } }
       };
 
-    return player_t::get_talent_trees( elemental, enhancement, restoration, translation );
+    return get_talent_translation( elemental, enhancement, restoration, translation );
   }
   else
   {
@@ -3516,7 +3516,7 @@ bool shaman_t::get_talent_trees( std::vector<int*>& elemental,
         { {  0, NULL                               }, {  0, NULL                                   }, {  0, NULL                                  } }
       };
 
-    return player_t::get_talent_trees( elemental, enhancement, restoration, translation );
+    return get_talent_translation( elemental, enhancement, restoration, translation );
   }
 }
 

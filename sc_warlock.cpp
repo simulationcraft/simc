@@ -4951,7 +4951,7 @@ bool warlock_t::get_talent_trees( std::vector<int*>& affliction,
       { { 28, &( talents.haunt                   ) }, {  0, NULL                                  }, {  0, NULL                               } },
       { {  0, NULL                                 }, {  0, NULL                                  }, {  0, NULL                               } }
     };
-  return player_t::get_talent_trees( affliction, demonology, destruction, translation );
+  return get_talent_translation( affliction, demonology, destruction, translation );
 }
 
 // warlock_t::get_options ==================================================

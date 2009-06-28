@@ -2884,7 +2884,7 @@ bool warrior_t::get_talent_trees( std::vector<int*>& arms,
       { { 31, &( talents.bladestorm                      ) }, {  0, NULL                                   }, {  0, NULL                                    } },
       { {  0, NULL                                         }, {  0, NULL                                   }, {  0, NULL                                    } }
     };
-  return player_t::get_talent_trees( arms, fury, protection, translation );
+  return get_talent_translation( arms, fury, protection, translation );
 }
 
 // warrior_t::get_options ================================================
