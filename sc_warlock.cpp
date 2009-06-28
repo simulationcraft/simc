@@ -4049,7 +4049,7 @@ struct immolation_t : public warlock_spell_t
     cooldown       = 30;
   }
 
-  virtual double tick_time()
+  virtual double tick_time() SC_CONST
   {
     return base_tick_time * haste();
   }

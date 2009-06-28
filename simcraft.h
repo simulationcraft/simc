@@ -45,7 +45,7 @@
  * #define SC_CONST 
  */
 
-#define SC_CONST
+#define SC_CONST const
 
 // Patch Specific Modeling ==================================================
 
