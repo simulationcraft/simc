@@ -250,13 +250,13 @@ struct rogue_t : public player_t
   virtual void      reset();
   virtual void      interrupt();
   virtual void      regen( double periodicity );
-  virtual double    available() const;
+  virtual double    available() SC_CONST;
   virtual bool      get_talent_trees( std::vector<int*>& assassination, std::vector<int*>& combat, std::vector<int*>& subtlety );
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
-  virtual int       primary_resource() const { return RESOURCE_ENERGY; }
-  virtual int       primary_role() const     { return ROLE_ATTACK; }
-  virtual int       primary_tree() const;
+  virtual int       primary_resource() SC_CONST { return RESOURCE_ENERGY; }
+  virtual int       primary_role() SC_CONST     { return ROLE_ATTACK; }
+  virtual int       primary_tree() SC_CONST;
 
   // Utilities
   double combo_point_rank( double* cp_list )
@@ -311,10 +311,10 @@ struct rogue_attack_t : public attack_t
   }
 
   virtual void   parse_options( option_t*, const std::string& options_str );
-  virtual double cost() const;
+  virtual double cost() SC_CONST;
   virtual void   execute();
   virtual void   player_buff();
-  virtual double armor() const;
+  virtual double armor() SC_CONST;
   virtual bool   ready();
 };
 
@@ -814,7 +814,7 @@ void rogue_attack_t::parse_options( option_t*          options,
 
 // rogue_attack_t::cost ====================================================
 
-double rogue_attack_t::cost() const
+double rogue_attack_t::cost() SC_CONST
 {
   rogue_t* p = player -> cast_rogue();
   double c = attack_t::cost();
@@ -945,7 +945,7 @@ void rogue_attack_t::player_buff()
 
 // rogue_attack_t::armor() ================================================
 
-double rogue_attack_t::armor() const
+double rogue_attack_t::armor() SC_CONST
 {
   rogue_t* p = player -> cast_rogue();
 
@@ -1063,7 +1063,7 @@ struct melee_t : public rogue_attack_t
     if ( p -> dual_wield() ) base_hit -= 0.19;
   }
 
-  virtual double haste() const
+  virtual double haste() SC_CONST
   {
     rogue_t* p = player -> cast_rogue();
 
@@ -1943,8 +1943,8 @@ struct hunger_for_blood_t : public rogue_attack_t
   // Rogues can stack the buff prior to entering combat, so if they have yet to use an
   // offensive ability, then this action will not trigger the GCD nor will it cost any energy.
 
-  virtual double gcd() const { return player -> in_combat ? rogue_attack_t::gcd()  : 0; }
-  virtual double cost() const { return player -> in_combat ? rogue_attack_t::cost() : 0; }
+  virtual double gcd() SC_CONST { return player -> in_combat ? rogue_attack_t::gcd()  : 0; }
+  virtual double cost() SC_CONST { return player -> in_combat ? rogue_attack_t::cost() : 0; }
 };
 
 // Kick =====================================================================
@@ -2069,7 +2069,7 @@ struct killing_spree_t : public rogue_attack_t
   }
 
   // Killing Spree not modified by haste effects
-  virtual double haste() const { return 1.0; }
+  virtual double haste() SC_CONST { return 1.0; }
 };
 
 // Mutilate =================================================================
@@ -2488,7 +2488,7 @@ struct pool_energy_t : public rogue_attack_t
     if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
   }
 
-  virtual double gcd() const
+  virtual double gcd() SC_CONST
   {
     return wait;
   }
@@ -3124,7 +3124,7 @@ struct stealth_t : public spell_t
 
 // rogue_t::primary_tree ===================================================
 
-int rogue_t::primary_tree() const
+int rogue_t::primary_tree() SC_CONST
 {
   if( talents.mutilate            ) return TREE_ASSASSINATION;
   if( talents.killing_spree       ) return TREE_COMBAT;
@@ -3542,7 +3542,7 @@ void rogue_t::regen( double periodicity )
 
 // rogue_t::available ======================================================
 
-double rogue_t::available() const
+double rogue_t::available() SC_CONST
 {
   double energy = resource_current[ RESOURCE_ENERGY ];
 

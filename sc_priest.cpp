@@ -151,9 +151,9 @@ struct priest_t : public player_t
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
-  virtual int       primary_resource() const { return RESOURCE_MANA; }
-  virtual int       primary_role() const     { return ROLE_SPELL; }
-  virtual int       primary_tree() const     { return talents.shadow_form ? TREE_SHADOW : TREE_HOLY; }
+  virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
+  virtual int       primary_role() SC_CONST     { return ROLE_SPELL; }
+  virtual int       primary_tree() SC_CONST     { return talents.shadow_form ? TREE_SHADOW : TREE_HOLY; }
   virtual void      regen( double periodicity );
 };
 
@@ -175,7 +175,7 @@ struct priest_spell_t : public spell_t
     base_crit       += p -> talents.force_of_will * 0.01;
   }
 
-  virtual double haste() const;
+  virtual double haste() SC_CONST;
   virtual void   schedule_execute();
   virtual void   execute();
   virtual void   player_buff();
@@ -244,7 +244,7 @@ struct shadow_fiend_pet_t : public pet_t
 
     melee = new melee_t( this );
   }
-  virtual double composite_spell_power( int school ) const
+  virtual double composite_spell_power( int school ) SC_CONST
   {
     double sp = owner -> composite_spell_power( school );
     sp -= owner -> spell_power_per_spirit * owner -> spirit();
@@ -567,7 +567,7 @@ static void trigger_replenishment( spell_t* s )
 
 // priest_spell_t::haste ====================================================
 
-double priest_spell_t::haste() const
+double priest_spell_t::haste() SC_CONST
 {
   priest_t* p = player -> cast_priest();
   double h = spell_t::haste();

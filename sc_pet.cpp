@@ -45,14 +45,14 @@ action_t* pet_t::create_action( const std::string& name,
 
 // pet_t::stamina ===========================================================
 
-double pet_t::stamina() const
+double pet_t::stamina() SC_CONST
 {
   return composite_attribute_multiplier( ATTR_STAMINA ) * ( attribute[ ATTR_STAMINA ] + stamina_per_owner * owner -> stamina() );
 }
 
 // pet_t::intellect =========================================================
 
-double pet_t::intellect() const
+double pet_t::intellect() SC_CONST
 {
   return composite_attribute_multiplier( ATTR_INTELLECT ) * ( attribute[ ATTR_INTELLECT ] + intellect_per_owner * owner -> intellect() );
 }

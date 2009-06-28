@@ -186,7 +186,7 @@ struct rng_sfmt_t : public rng_t
   rng_sfmt_t( const std::string& name, bool avg_range=false, bool avg_gauss=false );
 
   virtual ~rng_sfmt_t() {}
-  virtual int type() const { return RNG_MERSENNE_TWISTER; }
+  virtual int type() SC_CONST { return RNG_MERSENNE_TWISTER; }
   virtual double real();
   virtual void seed( uint32_t start );
 };
@@ -412,7 +412,7 @@ struct rng_phase_shift_t : public rng_normalized_t
     actual_roll = real() - 0.5;
   }
   virtual ~rng_phase_shift_t() {}
-  virtual int type() const { return RNG_PHASE_SHIFT; }
+  virtual int type() SC_CONST { return RNG_PHASE_SHIFT; }
 
   virtual double range( double min, double max )
   {
@@ -486,7 +486,7 @@ struct rng_pre_fill_t : public rng_normalized_t
     roll_index = 10;
   }
   virtual ~rng_pre_fill_t() {}
-  virtual int type() const { return RNG_PRE_FILL; }
+  virtual int type() SC_CONST { return RNG_PRE_FILL; }
 
   virtual int roll( double chance )
   {
@@ -745,7 +745,7 @@ struct rng_distance_simple_t : public rng_normalized_t
     range_d.actual = real() - 0.5;
     gauss_d.actual = ( real() - 0.5 ) * 5.0;
   }
-  virtual int type() const { return RNG_DISTANCE_SIMPLE; }
+  virtual int type() SC_CONST { return RNG_DISTANCE_SIMPLE; }
 
   virtual int roll( double chance )
   {
@@ -795,7 +795,7 @@ struct rng_distance_bands_t : public rng_distance_simple_t
   {
     for( int i=0; i < 10; i++ ) roll_bands[ i ].actual = real() - 0.5;
   }
-  virtual int type() const { return RNG_DISTANCE_BANDS; }
+  virtual int type() SC_CONST { return RNG_DISTANCE_BANDS; }
 
   virtual int roll( double chance )
   {

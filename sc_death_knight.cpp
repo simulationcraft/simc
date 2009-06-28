@@ -34,9 +34,9 @@ struct dk_rune_t
 
   dk_rune_t() : cooldown_ready( 0 ), type( RUNE_TYPE_NONE ) {}
 
-  bool is_death(                     ) const { return ( type & RUNE_TYPE_DEATH ) != 0;  }
-  bool is_ready( double current_time ) const { return cooldown_ready <= current_time; }
-  int  get_type(                     ) const { return type & RUNE_TYPE_MASK;          }
+  bool is_death(                     ) SC_CONST { return ( type & RUNE_TYPE_DEATH ) != 0;  }
+  bool is_ready( double current_time ) SC_CONST { return cooldown_ready <= current_time; }
+  int  get_type(                     ) SC_CONST { return type & RUNE_TYPE_MASK;          }
 
   void consume( double current_time, double cooldown, bool convert )
   {
@@ -302,7 +302,7 @@ struct death_knight_t : public player_t
   virtual void      init_resources( bool force );
   virtual void      init_actions();
   virtual void      combat_begin();
-  virtual double    composite_attack_power() const;
+  virtual double    composite_attack_power() SC_CONST;
   virtual void      regen( double periodicity );
   virtual void      reset();
   virtual bool      get_talent_trees( std::vector<int*>& blood, std::vector<int*>& frost, std::vector<int*>& unholy );
@@ -475,7 +475,7 @@ struct death_knight_spell_t : public spell_t
   virtual void   execute();
   virtual void   player_buff();
   virtual bool   ready();
-  virtual double total_crit_bonus() const;
+  virtual double total_crit_bonus() SC_CONST;
 };
 
 // ==========================================================================
@@ -1078,7 +1078,7 @@ death_knight_spell_t::ready()
 }
 
 double
-death_knight_spell_t::total_crit_bonus() const
+death_knight_spell_t::total_crit_bonus() SC_CONST
 {
   return spell_t::total_crit_bonus() + 0.5;
 }
@@ -1829,7 +1829,7 @@ death_knight_t::combat_begin()
 }
 
 double
-death_knight_t::composite_attack_power() const
+death_knight_t::composite_attack_power() SC_CONST
 {
   return player_t::composite_attack_power() + ( talents.bladed_armor ? talents.bladed_armor * composite_armor_snapshot() / 180 : 0 );
 }

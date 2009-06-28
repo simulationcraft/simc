@@ -7,53 +7,53 @@
 
 // set_bonus_t::tier4 =======================================================
 
-int set_bonus_t::tier4_2pc() const { return ( count[ SET_T4_2PC ] || count[ SET_T4 ] >= 2 ) ? 1 : 0; }
+int set_bonus_t::tier4_2pc() SC_CONST { return ( count[ SET_T4_2PC ] || count[ SET_T4 ] >= 2 ) ? 1 : 0; }
 
-int set_bonus_t::tier4_4pc() const { return ( count[ SET_T4_4PC ] || count[ SET_T4 ] >= 4 ) ? 1 : 0; }
+int set_bonus_t::tier4_4pc() SC_CONST { return ( count[ SET_T4_4PC ] || count[ SET_T4 ] >= 4 ) ? 1 : 0; }
 
 // set_bonus_t::tier5 =======================================================
 
-int set_bonus_t::tier5_2pc() const { return ( count[ SET_T5_2PC ] || count[ SET_T5 ] >= 2 ) ? 1 : 0; }
+int set_bonus_t::tier5_2pc() SC_CONST { return ( count[ SET_T5_2PC ] || count[ SET_T5 ] >= 2 ) ? 1 : 0; }
 
-int set_bonus_t::tier5_4pc() const { return ( count[ SET_T5_4PC ] || count[ SET_T5 ] >= 4 ) ? 1 : 0; }
+int set_bonus_t::tier5_4pc() SC_CONST { return ( count[ SET_T5_4PC ] || count[ SET_T5 ] >= 4 ) ? 1 : 0; }
 
 // set_bonus_t::tier6 =======================================================
 
-int set_bonus_t::tier6_2pc() const { return ( count[ SET_T6_2PC ] || count[ SET_T6 ] >= 2 ) ? 1 : 0; }
+int set_bonus_t::tier6_2pc() SC_CONST { return ( count[ SET_T6_2PC ] || count[ SET_T6 ] >= 2 ) ? 1 : 0; }
 
-int set_bonus_t::tier6_4pc() const { return ( count[ SET_T6_4PC ] || count[ SET_T6 ] >= 4 ) ? 1 : 0; }
+int set_bonus_t::tier6_4pc() SC_CONST { return ( count[ SET_T6_4PC ] || count[ SET_T6 ] >= 4 ) ? 1 : 0; }
 
 // set_bonus_t::tier7 =======================================================
 
-int set_bonus_t::tier7_2pc() const { return ( count[ SET_T7_2PC ] || count[ SET_T7 ] >= 2 ) ? 1 : 0; }
+int set_bonus_t::tier7_2pc() SC_CONST { return ( count[ SET_T7_2PC ] || count[ SET_T7 ] >= 2 ) ? 1 : 0; }
 
-int set_bonus_t::tier7_4pc() const { return ( count[ SET_T7_4PC ] || count[ SET_T7 ] >= 4 ) ? 1 : 0; }
+int set_bonus_t::tier7_4pc() SC_CONST { return ( count[ SET_T7_4PC ] || count[ SET_T7 ] >= 4 ) ? 1 : 0; }
 
 // set_bonus_t::tier8 =======================================================
 
-int set_bonus_t::tier8_2pc() const { return ( count[ SET_T8_2PC ] || count[ SET_T8 ] >= 2 ) ? 1 : 0; }
+int set_bonus_t::tier8_2pc() SC_CONST { return ( count[ SET_T8_2PC ] || count[ SET_T8 ] >= 2 ) ? 1 : 0; }
 
-int set_bonus_t::tier8_4pc() const { return ( count[ SET_T8_4PC ] || count[ SET_T8 ] >= 4 ) ? 1 : 0; }
+int set_bonus_t::tier8_4pc() SC_CONST { return ( count[ SET_T8_4PC ] || count[ SET_T8 ] >= 4 ) ? 1 : 0; }
 
 // set_bonus_t::tier9 =======================================================
 
-int set_bonus_t::tier9_2pc() const { return ( count[ SET_T9_2PC ] || count[ SET_T9 ] >= 2 ) ? 1 : 0; }
+int set_bonus_t::tier9_2pc() SC_CONST { return ( count[ SET_T9_2PC ] || count[ SET_T9 ] >= 2 ) ? 1 : 0; }
 
-int set_bonus_t::tier9_4pc() const { return ( count[ SET_T9_4PC ] || count[ SET_T9 ] >= 4 ) ? 1 : 0; }
+int set_bonus_t::tier9_4pc() SC_CONST { return ( count[ SET_T9_4PC ] || count[ SET_T9 ] >= 4 ) ? 1 : 0; }
 
 // set_bonus_t::tier10 =======================================================
 
-int set_bonus_t::tier10_2pc() const { return ( count[ SET_T10_2PC ] || count[ SET_T10 ] >= 2 ) ? 1 : 0; }
+int set_bonus_t::tier10_2pc() SC_CONST { return ( count[ SET_T10_2PC ] || count[ SET_T10 ] >= 2 ) ? 1 : 0; }
 
-int set_bonus_t::tier10_4pc() const { return ( count[ SET_T10_4PC ] || count[ SET_T10 ] >= 4 ) ? 1 : 0; }
+int set_bonus_t::tier10_4pc() SC_CONST { return ( count[ SET_T10_4PC ] || count[ SET_T10 ] >= 4 ) ? 1 : 0; }
 
 // set_bonus_t::spellstrike =================================================
 
-int set_bonus_t::spellstrike() const { return ( count[ SET_SPELLSTRIKE ] >= 2 ) ? 1 : 0; }
+int set_bonus_t::spellstrike() SC_CONST { return ( count[ SET_SPELLSTRIKE ] >= 2 ) ? 1 : 0; }
 
 // set_bonus_t::decode ======================================================
 
-int set_bonus_t::decode( const std::string& name ) const
+int set_bonus_t::decode( const std::string& name ) SC_CONST
 {
   if( name.empty() ) return SET_NONE;
 

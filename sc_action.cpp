@@ -194,7 +194,7 @@ rank_t* action_t::init_rank( rank_t* rank_list,
 
 // action_t::cost ======================================================
 
-double action_t::cost() const
+double action_t::cost() SC_CONST
 {
   double c = base_cost;
 
@@ -392,7 +392,7 @@ void action_t::target_debuff( int dmg_type )
 
 // action_t::result_is_hit ==================================================
 
-bool action_t::result_is_hit() const
+bool action_t::result_is_hit() SC_CONST
 {
   return( result == RESULT_HIT    ||
           result == RESULT_CRIT   ||
@@ -403,7 +403,7 @@ bool action_t::result_is_hit() const
 
 // action_t::result_is_miss =================================================
 
-bool action_t::result_is_miss() const
+bool action_t::result_is_miss() SC_CONST
 {
   return( result == RESULT_MISS   ||
           result == RESULT_DODGE  ||
@@ -412,7 +412,7 @@ bool action_t::result_is_miss() const
 
 // action_t::armor ==========================================================
 
-double action_t::armor() const
+double action_t::armor() SC_CONST
 {
   target_t* t = sim -> target;
 
@@ -426,7 +426,7 @@ double action_t::armor() const
 
 // action_t::resistance =====================================================
 
-double action_t::resistance() const
+double action_t::resistance() SC_CONST
 {
   if ( ! may_resist ) return 0;
 
@@ -493,7 +493,7 @@ double action_t::resistance() const
 
 // action_t::total_crit_bonus ================================================
 
-double action_t::total_crit_bonus() const
+double action_t::total_crit_bonus() SC_CONST
 {
   double crit_multiplier = (   base_crit_multiplier *
                                player_crit_multiplier *
@@ -518,7 +518,7 @@ double action_t::total_crit_bonus() const
 
 // action_t::total_power =====================================================
 
-double action_t::total_power() const
+double action_t::total_power() SC_CONST
 {
   double power=0;
 

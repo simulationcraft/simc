@@ -1118,7 +1118,7 @@ item_t* player_t::find_item( const std::string& str )
 
 // player_t::composite_attack_power ========================================
 
-double player_t::composite_attack_power() const
+double player_t::composite_attack_power() SC_CONST
 {
   double ap = attack_power;
 
@@ -1132,7 +1132,7 @@ double player_t::composite_attack_power() const
 
 // player_t::composite_attack_crit =========================================
 
-double player_t::composite_attack_crit() const
+double player_t::composite_attack_crit() SC_CONST
 {
   double ac = attack_crit + attack_crit_per_agility * agility();
 
@@ -1149,7 +1149,7 @@ double player_t::composite_attack_crit() const
 
 // player_t::composite_armor =========================================
 
-double player_t::composite_armor() const
+double player_t::composite_armor() SC_CONST
 {
   double a = armor;
 
@@ -1162,7 +1162,7 @@ double player_t::composite_armor() const
 
 // player_t::composite_spell_power ========================================
 
-double player_t::composite_spell_power( int school ) const
+double player_t::composite_spell_power( int school ) SC_CONST
 {
   double sp = spell_power[ school ];
 
@@ -1200,7 +1200,7 @@ double player_t::composite_spell_power( int school ) const
 
 // player_t::composite_spell_crit ==========================================
 
-double player_t::composite_spell_crit() const
+double player_t::composite_spell_crit() SC_CONST
 {
   double sc = spell_crit + spell_crit_per_intellect * intellect();
 
@@ -1219,7 +1219,7 @@ double player_t::composite_spell_crit() const
 
 // player_t::composite_attack_power_multiplier =============================
 
-double player_t::composite_attack_power_multiplier() const
+double player_t::composite_attack_power_multiplier() SC_CONST
 {
   double m = attack_power_multiplier;
 
@@ -1237,7 +1237,7 @@ double player_t::composite_attack_power_multiplier() const
 
 // player_t::composite_attribute_multiplier ================================
 
-double player_t::composite_attribute_multiplier( int attr ) const
+double player_t::composite_attribute_multiplier( int attr ) SC_CONST
 {
   double m = attribute_multiplier[ attr ];
   if ( buffs.blessing_of_kings ) m *= 1.10;
@@ -1246,7 +1246,7 @@ double player_t::composite_attribute_multiplier( int attr ) const
 
 // player_t::strength() ====================================================
 
-double player_t::strength() const
+double player_t::strength() SC_CONST
 {
   double a = attribute[ ATTR_STRENGTH ];
 
@@ -1258,7 +1258,7 @@ double player_t::strength() const
 
 // player_t::agility() =====================================================
 
-double player_t::agility() const
+double player_t::agility() SC_CONST
 {
   double a = attribute[ ATTR_AGILITY ];
 
@@ -1270,7 +1270,7 @@ double player_t::agility() const
 
 // player_t::stamina() =====================================================
 
-double player_t::stamina() const
+double player_t::stamina() SC_CONST
 {
   double a = attribute[ ATTR_STAMINA ];
 
@@ -1282,7 +1282,7 @@ double player_t::stamina() const
 
 // player_t::intellect() ===================================================
 
-double player_t::intellect() const
+double player_t::intellect() SC_CONST
 {
   double a = attribute[ ATTR_INTELLECT ];
 
@@ -1294,7 +1294,7 @@ double player_t::intellect() const
 
 // player_t::spirit() ======================================================
 
-double player_t::spirit() const
+double player_t::spirit() SC_CONST
 {
   double a = attribute[ ATTR_SPIRIT ];
 
@@ -1765,7 +1765,7 @@ double player_t::resource_gain( int       resource,
 // player_t::resource_available ============================================
 
 bool player_t::resource_available( int    resource,
-                                   double cost ) const
+                                   double cost ) SC_CONST
 {
   if ( resource == RESOURCE_NONE || cost == 0 )
   {

@@ -112,14 +112,14 @@ struct paladin_t : public player_t
   virtual void      init_actions();
   virtual void      reset();
   virtual void      interrupt();
-  virtual double    composite_attack_power() const;
-  virtual double    composite_spell_power( int school ) const;
+  virtual double    composite_attack_power() SC_CONST;
+  virtual double    composite_spell_power( int school ) SC_CONST;
   virtual bool      get_talent_trees( std::vector<int*>& holy, std::vector<int*>& protection, std::vector<int*>& retribution );
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
-  virtual int       primary_resource() const { return RESOURCE_MANA; }
-  virtual int       primary_role() const     { return ROLE_HYBRID; }
-  virtual int       primary_tree() const;
+  virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
+  virtual int       primary_role() SC_CONST     { return ROLE_HYBRID; }
+  virtual int       primary_tree() SC_CONST;
 };
 
 struct paladin_attack_t : public attack_t
@@ -139,7 +139,7 @@ struct paladin_attack_t : public attack_t
 
   virtual void execute();
 
-  virtual double cost() const
+  virtual double cost() SC_CONST
   {
     paladin_t* p = player -> cast_paladin();
     double c = attack_t::cost();
@@ -699,12 +699,12 @@ void paladin_t::interrupt()
   if( auto_attack ) auto_attack -> cancel();
 }
 
-double paladin_t::composite_attack_power() const
+double paladin_t::composite_attack_power() SC_CONST
 {
   return player_t::composite_attack_power();
 }
 
-double paladin_t::composite_spell_power( int school ) const
+double paladin_t::composite_spell_power( int school ) SC_CONST
 {
   double sp = player_t::composite_spell_power( school );
   sp += composite_attack_power_multiplier() * composite_attack_power() * talents.sheath_of_light * 0.1;
@@ -802,7 +802,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   return player_t::create_action( name, options_str );
 }
 
-int paladin_t::primary_tree() const
+int paladin_t::primary_tree() SC_CONST
 {
   return TREE_RETRIBUTION;
 }

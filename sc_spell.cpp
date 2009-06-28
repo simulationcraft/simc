@@ -23,7 +23,7 @@ spell_t::spell_t( const char* n, player_t* p, int r, int s, int t ) :
 
 // spell_t::haste ============================================================
 
-double spell_t::haste() const
+double spell_t::haste() SC_CONST
 {
   player_t* p = player;
   double h = p -> spell_haste;
@@ -49,7 +49,7 @@ double spell_t::haste() const
 
 // spell_t::gcd =============================================================
 
-double spell_t::gcd() const
+double spell_t::gcd() SC_CONST
 {
   double t = trigger_gcd;
   if ( t == 0 ) return 0;
@@ -62,7 +62,7 @@ double spell_t::gcd() const
 
 // spell_t::execute_time =====================================================
 
-double spell_t::execute_time() const
+double spell_t::execute_time() SC_CONST
 {
   if ( base_execute_time == 0 ) return 0;
 
@@ -76,7 +76,7 @@ double spell_t::execute_time() const
 
 // spell_t::tick_time ========================================================
 
-double spell_t::tick_time() const
+double spell_t::tick_time() SC_CONST
 {
   double t = base_tick_time;
   if ( channeled ) t *= haste();
@@ -132,7 +132,7 @@ void spell_t::target_debuff( int dmg_type )
 // spell_t::level_based_miss_chance ==========================================
 
 double spell_t::level_based_miss_chance( int player,
-    int target ) const
+    int target ) SC_CONST
 {
   int delta_level = target - player;
   double miss=0;

@@ -99,7 +99,7 @@ void target_t::recalculate_health()
 
 // target_t::time_to_die =====================================================
 
-double target_t::time_to_die() const
+double target_t::time_to_die() SC_CONST
 {
   if ( initial_health > 0 )
   {
@@ -113,7 +113,7 @@ double target_t::time_to_die() const
 
 // target_t::health_percentage ===============================================
 
-double target_t::health_percentage() const
+double target_t::health_percentage() SC_CONST
 {
   if ( initial_health <= 0 ) return 100;
 
@@ -122,7 +122,7 @@ double target_t::health_percentage() const
 
 // target_t::base_armor ======================================================
 
-double target_t::base_armor() const
+double target_t::base_armor() SC_CONST
 {
   return armor;
 }

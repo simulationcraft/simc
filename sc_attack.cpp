@@ -43,7 +43,7 @@ attack_t::attack_t( const char* n, player_t* p, int resource, int school, int tr
 
 // attack_t::haste ==========================================================
 
-double attack_t::haste() const
+double attack_t::haste() SC_CONST
 {
   player_t* p = player;
   double h = p -> attack_haste;
@@ -74,7 +74,7 @@ double attack_t::haste() const
 
 // attack_t::execute_time ===================================================
 
-double attack_t::execute_time() const
+double attack_t::execute_time() SC_CONST
 {
   if ( base_execute_time == 0 ) return 0;
   return base_execute_time * haste();
@@ -114,7 +114,7 @@ void attack_t::target_debuff( int dmg_type )
 
 // attack_t::miss_chance ====================================================
 
-double attack_t::miss_chance( int delta_level ) const
+double attack_t::miss_chance( int delta_level ) SC_CONST
 {
   if ( delta_level > 2 )
   {
@@ -129,35 +129,35 @@ double attack_t::miss_chance( int delta_level ) const
 
 // attack_t::dodge_chance ===================================================
 
-double attack_t::dodge_chance( int delta_level ) const
+double attack_t::dodge_chance( int delta_level ) SC_CONST
 {
   return 0.05 + delta_level * 0.005 - total_expertise();
 }
 
 // attack_t::parry_chance ===================================================
 
-double attack_t::parry_chance( int delta_level ) const
+double attack_t::parry_chance( int delta_level ) SC_CONST
 {
   return 0.05 + delta_level * 0.005 - total_expertise();
 }
 
 // attack_t::glance_chance ==================================================
 
-double attack_t::glance_chance( int delta_level ) const
+double attack_t::glance_chance( int delta_level ) SC_CONST
 {
   return ( delta_level + 1 ) * 0.06;
 }
 
 // attack_t::block_chance ===================================================
 
-double attack_t::block_chance( int delta_level ) const
+double attack_t::block_chance( int delta_level ) SC_CONST
 {
   return 0.05 + delta_level * 0.005;
 }
 
 // attack_t::crit_chance ====================================================
 
-double attack_t::crit_chance( int delta_level ) const
+double attack_t::crit_chance( int delta_level ) SC_CONST
 {
   if ( delta_level > 2 )
   {

@@ -235,7 +235,7 @@ raid_event_t::raid_event_t( sim_t* s, const char* n ) :
 
 // raid_event_t::cooldown_time ==============================================
 
-double raid_event_t::cooldown_time() const
+double raid_event_t::cooldown_time() SC_CONST
 {
   double time;
 
@@ -261,7 +261,7 @@ double raid_event_t::cooldown_time() const
 
 // raid_event_t::duration_time ==============================================
 
-double raid_event_t::duration_time() const
+double raid_event_t::duration_time() SC_CONST
 {
   double time = rng -> gauss( duration, duration_stddev );
 

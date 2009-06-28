@@ -241,14 +241,14 @@ struct hunter_t : public player_t
   virtual void      init_actions();
   virtual void      reset();
   virtual void      interrupt();
-  virtual double    composite_attack_power() const;
+  virtual double    composite_attack_power() SC_CONST;
   virtual bool      get_talent_trees( std::vector<int*>& beastmastery, std::vector<int*>& marksmanship, std::vector<int*>& survival );
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet( const std::string& name );
-  virtual int       primary_resource() const { return RESOURCE_MANA; }
-  virtual int       primary_role() const     { return ROLE_ATTACK; }
-  virtual int       primary_tree() const;
+  virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
+  virtual int       primary_role() SC_CONST     { return ROLE_ATTACK; }
+  virtual int       primary_tree() SC_CONST;
 
   // Event Tracking
   virtual void regen( double periodicity );
@@ -519,7 +519,7 @@ struct hunter_pet_t : public pet_t
     uptimes_savage_rend    = owner -> get_uptime( "savage_rend" );
   }
 
-  virtual double composite_attack_power() const
+  virtual double composite_attack_power() SC_CONST
   {
     hunter_t* o = owner -> cast_hunter();
 
@@ -638,9 +638,9 @@ struct hunter_attack_t : public attack_t
     }
   }
 
-  virtual double cost() const;
+  virtual double cost() SC_CONST;
   virtual void   execute();
-  virtual double execute_time() const;
+  virtual double execute_time() SC_CONST;
   virtual void   player_buff();
 };
 
@@ -654,7 +654,7 @@ struct hunter_spell_t : public spell_t
       spell_t( n, p, RESOURCE_MANA, s, t )
   {}
 
-  virtual double gcd() const;
+  virtual double gcd() SC_CONST;
 };
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
@@ -1431,7 +1431,7 @@ struct hunter_pet_attack_t : public attack_t
     base_multiplier *= 1.0 + o -> talents.kindred_spirits * 0.04;
   }
 
-  virtual double execute_time() const
+  virtual double execute_time() SC_CONST
   {
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
@@ -1449,7 +1449,7 @@ struct hunter_pet_attack_t : public attack_t
     return t;
   }
 
-  virtual double cost() const
+  virtual double cost() SC_CONST
   {
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
 
@@ -2136,7 +2136,7 @@ action_t* hunter_pet_t::create_action( const std::string& name,
 
 // hunter_attack_t::cost ===================================================
 
-double hunter_attack_t::cost() const
+double hunter_attack_t::cost() SC_CONST
 {
   hunter_t* p = player -> cast_hunter();
   double c = attack_t::cost();
@@ -2170,7 +2170,7 @@ void hunter_attack_t::execute()
 
 // hunter_attack_t::execute_time ============================================
 
-double hunter_attack_t::execute_time() const
+double hunter_attack_t::execute_time() SC_CONST
 {
   hunter_t* p = player -> cast_hunter();
 
@@ -2362,7 +2362,7 @@ struct aimed_shot_t : public hunter_attack_t
     }
   }
 
-  virtual double cost() const
+  virtual double cost() SC_CONST
   {
     hunter_t* p = player -> cast_hunter();
     double c = hunter_attack_t::cost();
@@ -2453,7 +2453,7 @@ struct arcane_shot_t : public hunter_attack_t
                                           p -> talents.marked_for_death * 0.02 );
   }
 
-  virtual double cost() const
+  virtual double cost() SC_CONST
   {
     hunter_t* p = player -> cast_hunter();
     if ( p -> _buffs.lock_and_load ) return 0;
@@ -2611,7 +2611,7 @@ struct chimera_shot_t : public hunter_attack_t
     }
   }
 
-  virtual double cost() const
+  virtual double cost() SC_CONST
   {
     hunter_t* p = player -> cast_hunter();
     double c = hunter_attack_t::cost();
@@ -2787,7 +2787,7 @@ struct explosive_shot_t : public hunter_attack_t
     explosive_tick = new explosive_tick_t( p );
   }
 
-  virtual double cost() const
+  virtual double cost() SC_CONST
   {
     hunter_t* p = player -> cast_hunter();
     if ( p -> _buffs.lock_and_load ) return 0;
@@ -3133,7 +3133,7 @@ struct steady_shot_t : public hunter_attack_t
 
 // hunter_spell_t::gcd()
 
-double hunter_spell_t::gcd() const
+double hunter_spell_t::gcd() SC_CONST
 {
   // Hunter gcd unaffected by haste
   return trigger_gcd;
@@ -3860,7 +3860,7 @@ void hunter_t::init_actions()
 
 // hunter_t::primary_tree() ==================================================
 
-int hunter_t::primary_tree() const
+int hunter_t::primary_tree() SC_CONST
 {
   if( talents.serpents_swiftness || talents.beast_within ) return TREE_BEAST_MASTERY;
   if( talents.master_marksman ) return TREE_MARKSMANSHIP;
@@ -3899,7 +3899,7 @@ void hunter_t::interrupt()
 
 // hunter_t::composite_attack_power ==========================================
 
-double hunter_t::composite_attack_power() const
+double hunter_t::composite_attack_power() SC_CONST
 {
   double ap = player_t::composite_attack_power();
 

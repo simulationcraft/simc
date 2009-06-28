@@ -229,10 +229,10 @@ struct mage_t : public player_t
   virtual bool      save( FILE* file );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
-  virtual int       primary_resource() const { return RESOURCE_MANA; }
-  virtual int       primary_role() const     { return ROLE_SPELL; }
-  virtual int       primary_tree() const;
-  virtual double    composite_spell_power( int school ) const;
+  virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
+  virtual int       primary_role() SC_CONST     { return ROLE_SPELL; }
+  virtual int       primary_tree() SC_CONST;
+  virtual double    composite_spell_power( int school ) SC_CONST;
 
   // Event Tracking
   virtual void   regen( double periodicity );
@@ -320,8 +320,8 @@ struct mage_spell_t : public spell_t
 
   virtual void   parse_options( option_t*, const std::string& );
   virtual bool   ready();
-  virtual double cost() const;
-  virtual double haste() const;
+  virtual double cost() SC_CONST;
+  virtual double haste() SC_CONST;
   virtual void   execute();
   virtual void   consume_resource();
   virtual void   player_buff();
@@ -1282,7 +1282,7 @@ bool mage_spell_t::ready()
 
 // mage_spell_t::cost ======================================================
 
-double mage_spell_t::cost() const
+double mage_spell_t::cost() SC_CONST
 {
   mage_t* p = player -> cast_mage();
   if ( p -> _buffs.clearcasting ) return 0;
@@ -1293,7 +1293,7 @@ double mage_spell_t::cost() const
 
 // mage_spell_t::haste =====================================================
 
-double mage_spell_t::haste() const
+double mage_spell_t::haste() SC_CONST
 {
   mage_t* p = player -> cast_mage();
   double h = spell_t::haste();
@@ -1544,7 +1544,7 @@ struct arcane_blast_t : public mage_spell_t
     if ( p -> set_bonus.tier5_2pc() ) base_multiplier *= 1.05;
   }
 
-  virtual double cost() const
+  virtual double cost() SC_CONST
   {
     mage_t* p = player -> cast_mage();
     double c = mage_spell_t::cost();
@@ -2098,14 +2098,14 @@ struct fire_ball_t : public mage_spell_t
     player_multiplier *= 1.0 + snared * p -> talents.torment_the_weak * 0.04;
   }
 
-  virtual double cost() const
+  virtual double cost() SC_CONST
   {
     mage_t* p = player -> cast_mage();
     if ( p -> _buffs.brain_freeze ) return 0;
     return mage_spell_t::cost();
   }
 
-  virtual double execute_time() const
+  virtual double execute_time() SC_CONST
   {
     mage_t* p = player -> cast_mage();
     if ( p -> _buffs.brain_freeze ) return 0;
@@ -2340,7 +2340,7 @@ struct pyroblast_t : public mage_spell_t
     if ( hot_streak ) duration_ready=0;
   }
 
-  virtual double execute_time() const
+  virtual double execute_time() SC_CONST
   {
     mage_t* p = player -> cast_mage();
     if ( p -> _buffs.hot_streak_pyroblast ) return 0;
@@ -3490,7 +3490,7 @@ void mage_t::init_actions()
 
 // mage_t::primary_tree ====================================================
 
-int mage_t::primary_tree() const
+int mage_t::primary_tree() SC_CONST
 {
   if( talents.arcane_empowerment   ) return TREE_ARCANE;
   if( talents.empowered_fire       ) return TREE_FIRE;
@@ -3501,7 +3501,7 @@ int mage_t::primary_tree() const
 
 // mage_t::composite_spell_power ===========================================
 
-double mage_t::composite_spell_power( int school ) const
+double mage_t::composite_spell_power( int school ) SC_CONST
 {
   double sp = player_t::composite_spell_power( school );
 

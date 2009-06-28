@@ -406,7 +406,7 @@ const char* chart_t::raid_uptimes( std::string& s,
 
 struct compare_dpet
 {
-  bool operator()( stats_t* l, stats_t* r ) const
+  bool operator()( stats_t* l, stats_t* r ) SC_CONST
   {
     return l -> dpet > r -> dpet;
   }
@@ -572,7 +572,7 @@ const char* chart_t::action_dpet( std::string& s,
 
 struct compare_dmg
 {
-  bool operator()( stats_t* l, stats_t* r ) const
+  bool operator()( stats_t* l, stats_t* r ) SC_CONST
   {
     return l -> total_dmg > r -> total_dmg;
   }
@@ -644,7 +644,7 @@ const char* chart_t::action_dmg( std::string& s,
 
 struct compare_gain
 {
-  bool operator()( gain_t* l, gain_t* r ) const
+  bool operator()( gain_t* l, gain_t* r ) SC_CONST
   {
     return l -> actual > r -> actual;
   }
@@ -1092,7 +1092,7 @@ struct compare_stat_scale_factors
 {
   player_t* player;
   compare_stat_scale_factors( player_t* p ) : player( p ) {}
-  bool operator()( const int& l, const int& r ) const
+  bool operator()( const int& l, const int& r ) SC_CONST
   {
     return( player -> scaling.get_stat( l ) >
             player -> scaling.get_stat( r ) );

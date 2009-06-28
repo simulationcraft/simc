@@ -282,10 +282,10 @@ struct warlock_t : public player_t
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
-  virtual int       primary_resource() const { return RESOURCE_MANA; }
-  virtual int       primary_role() const     { return ROLE_SPELL; }
-  virtual int       primary_tree() const;
-  virtual double    composite_spell_power( int school ) const;
+  virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
+  virtual int       primary_role() SC_CONST     { return ROLE_SPELL; }
+  virtual int       primary_tree() SC_CONST;
+  virtual double    composite_spell_power( int school ) SC_CONST;
 
   // Event Tracking
   virtual void regen( double periodicity );
@@ -665,7 +665,7 @@ struct felguard_pet_t : public warlock_pet_t
     melee_t( player_t* player ) :
         warlock_pet_melee_t( player, "felguard_melee" )
     {}
-    virtual double execute_time() const
+    virtual double execute_time() SC_CONST
     {
       felguard_pet_t* p = ( felguard_pet_t* ) player -> cast_pet();
       double t = attack_t::execute_time();
@@ -868,7 +868,7 @@ struct infernal_pet_t : public warlock_pet_t
       repeating         = true;
     }
 
-    virtual double execute_time() const
+    virtual double execute_time() SC_CONST
     {
       // immolation is an aura that ticks every 2 seconds
       return 2.0;
@@ -976,9 +976,9 @@ struct warlock_spell_t : public spell_t
   {}
 
   // Overridden Methods
-  virtual double haste() const;
-  virtual double execute_time() const;
-  virtual double gcd() const;
+  virtual double haste() SC_CONST;
+  virtual double execute_time() SC_CONST;
+  virtual double gcd() SC_CONST;
   virtual void   player_buff();
   virtual void   target_debuff( int dmg_type );
   virtual void   execute();
@@ -1726,7 +1726,7 @@ static void trigger_life_tap_glyph( spell_t* s )
 
 // warlock_spell_t::haste ===================================================
 
-double warlock_spell_t::haste() const
+double warlock_spell_t::haste() SC_CONST
 {
   warlock_t* p = player -> cast_warlock();
   double h = spell_t::haste();
@@ -1742,7 +1742,7 @@ double warlock_spell_t::haste() const
 
 // warlock_spell_t::execute_time ============================================
 
-double warlock_spell_t::execute_time() const
+double warlock_spell_t::execute_time() SC_CONST
 {
   warlock_t* p = player -> cast_warlock();
   double t = spell_t::execute_time();
@@ -1759,7 +1759,7 @@ double warlock_spell_t::execute_time() const
 
 // warlock_spell_t::gcd ============================================
 
-double warlock_spell_t::gcd() const
+double warlock_spell_t::gcd() SC_CONST
 {
   double t = spell_t::gcd();
   warlock_t* p = player -> cast_warlock();
@@ -2310,7 +2310,7 @@ struct shadow_bolt_t : public warlock_spell_t
     base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
   }
 
-  virtual double execute_time() const
+  virtual double execute_time() SC_CONST
   {
     warlock_t* p = player -> cast_warlock();
     p -> uptimes_shadow_trance -> update( p -> _buffs.shadow_trance != 0 );
@@ -3662,7 +3662,7 @@ struct soul_fire_t : public warlock_spell_t
     event_t::early( p -> _expirations.decimation );
   }
 
-  virtual double execute_time() const
+  virtual double execute_time() SC_CONST
   {
     warlock_t* p = player -> cast_warlock();
     double t = warlock_spell_t::execute_time();
@@ -4507,7 +4507,7 @@ void imp_pet_t::fire_bolt_t::execute()
 
 // warlock_t::composite_spell_power =========================================
 
-double warlock_t::composite_spell_power( int school ) const
+double warlock_t::composite_spell_power( int school ) SC_CONST
 {
   double sp = player_t::composite_spell_power( school );
 
@@ -4904,7 +4904,7 @@ act_expression_t* warlock_t::create_expression(std::string& name,std::string& pr
 
 // warlock_t::primary_tree =================================================
 
-int warlock_t::primary_tree() const
+int warlock_t::primary_tree() SC_CONST
 {
   if( talents.unstable_affliction ) return TREE_AFFLICTION;
   if( talents.decimation          ) return TREE_DEMONOLOGY;

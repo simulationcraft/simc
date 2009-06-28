@@ -204,9 +204,9 @@ struct warrior_t : public player_t
   virtual void      init_rng();
   virtual void      init_actions();
   virtual void      combat_begin();
-  virtual double    composite_attribute_multiplier( int attr ) const;
-  virtual double    composite_attack_power() const;
-  virtual double    composite_armor() const;
+  virtual double    composite_attribute_multiplier( int attr ) SC_CONST;
+  virtual double    composite_attack_power() SC_CONST;
+  virtual double    composite_armor() SC_CONST;
   virtual void      reset();
   virtual void      interrupt();
   virtual void      regen( double periodicity );
@@ -214,14 +214,14 @@ struct warrior_t : public player_t
   virtual bool      get_talent_trees( std::vector<int*>& arms, std::vector<int*>& fury, std::vector<int*>& protection );
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
-  virtual int       primary_resource() const { return RESOURCE_RAGE; }
-  virtual int       primary_role() const     { return ROLE_ATTACK; }
-  virtual int       primary_tree() const;
+  virtual int       primary_resource() SC_CONST { return RESOURCE_RAGE; }
+  virtual int       primary_role() SC_CONST     { return ROLE_ATTACK; }
+  virtual int       primary_tree() SC_CONST;
 };
 
 // warrior_t::composite_attribute_multiplier ===============================
 
-double warrior_t::composite_attribute_multiplier( int attr ) const
+double warrior_t::composite_attribute_multiplier( int attr ) SC_CONST
 {
   double m = player_t::composite_attribute_multiplier( attr );
   if ( attr == ATTR_STRENGTH )
@@ -261,15 +261,15 @@ struct warrior_attack_t : public attack_t
   }
 
   virtual void   parse_options( option_t*, const std::string& options_str );
-  virtual double dodge_chance( int delta_level ) const;
+  virtual double dodge_chance( int delta_level ) SC_CONST;
   virtual void   consume_resource();
-  virtual double cost() const;
+  virtual double cost() SC_CONST;
   virtual void   execute();
   virtual void   player_buff();
   virtual bool   ready();
 };
 
-double warrior_attack_t::dodge_chance( int delta_level ) const
+double warrior_attack_t::dodge_chance( int delta_level ) SC_CONST
 {
   double chance = attack_t::dodge_chance( delta_level );
 
@@ -902,7 +902,7 @@ void warrior_attack_t::parse_options( option_t*          options,
 
 // warrior_attack_t::cost ====================================================
 
-double warrior_attack_t::cost() const
+double warrior_attack_t::cost() SC_CONST
 {
   warrior_t* p = player -> cast_warrior();
   double c = attack_t::cost();
@@ -1102,19 +1102,19 @@ struct melee_t : public warrior_attack_t
     else
       rage_conversion_value = 0.0091107836 * p -> level * p -> level + 3.225598133* p -> level + 4.2652911;
   }
-  virtual double haste() const
+  virtual double haste() SC_CONST
   {
     warrior_t* p = player -> cast_warrior();
 
     double h = warrior_attack_t::haste();
       
-    h *= 1.0 / ( 1.0 + p -> talents.blood_frenzy * 0.03 );
+    h *= 1.0 / ( 1.0 + p -> talents.blood_frenzy * 0.05 );
 
     return h;
   }
 
 
-  virtual double execute_time() const
+  virtual double execute_time() SC_CONST
   {
     double t = warrior_attack_t::execute_time();
     warrior_t* p = player -> cast_warrior();
@@ -1317,7 +1317,7 @@ struct bladestorm_t : public warrior_attack_t
   }
 
   // Bladestorm not modified by haste effects
-  virtual double haste() const { return 1.0; }
+  virtual double haste() SC_CONST { return 1.0; }
 };
 
 // Heroic Strike ===========================================================
@@ -1988,13 +1988,13 @@ struct slam_t : public warrior_attack_t
     normalize_weapon_speed = false;
     weapon = &( p -> main_hand_weapon );
   }
-  virtual double haste() const
+  virtual double haste() SC_CONST
   {
     // No haste for slam cast?
     return 1.0;
   }
 
-  virtual double execute_time() const
+  virtual double execute_time() SC_CONST
   {
     warrior_t* p = player -> cast_warrior();
     if ( p -> _buffs.bloodsurge )
@@ -2164,9 +2164,9 @@ struct warrior_spell_t : public spell_t
       stancemask( STANCE_BATTLE|STANCE_BERSERKER|STANCE_DEFENSE )
   {}
 
-  virtual double cost() const;
+  virtual double cost() SC_CONST;
   virtual void   execute();
-  virtual double gcd() const;
+  virtual double gcd() SC_CONST;
   virtual void   parse_options( option_t*, const std::string& options_str );
   virtual bool   ready();
 };
@@ -2186,7 +2186,7 @@ void warrior_spell_t::execute()
 
 // warrior_spell_t::cost =====================================================
 
-double warrior_spell_t::cost() const
+double warrior_spell_t::cost() SC_CONST
 {
   warrior_t* p = player -> cast_warrior();
   double c = spell_t::cost();
@@ -2203,7 +2203,7 @@ double warrior_spell_t::cost() const
 
 // warrior_spell_t::gcd ======================================================
 
-double warrior_spell_t::gcd() const
+double warrior_spell_t::gcd() SC_CONST
 {
   // Unaffected by haste
   return trigger_gcd;
@@ -2734,7 +2734,7 @@ void warrior_t::init_actions()
 
 // mage_t::primary_tree ====================================================
 
-int warrior_t::primary_tree() const
+int warrior_t::primary_tree() SC_CONST
 {
   if( talents.mortal_strike        ) return TREE_ARMS;
   if( talents.bloodthirst          ) return TREE_FURY;
@@ -2779,7 +2779,7 @@ void warrior_t::interrupt()
 
 // warrior_t::composite_attack_power =========================================
 
-double warrior_t::composite_attack_power() const
+double warrior_t::composite_attack_power() SC_CONST
 {
   if ( sim -> P320 )
     return player_t::composite_attack_power() + ( talents.armored_to_the_teeth ? talents.armored_to_the_teeth * composite_armor_snapshot() / 108 : 0 );
@@ -2789,7 +2789,7 @@ double warrior_t::composite_attack_power() const
 
 // warrior_t::composite_armor ================================================
 
-double warrior_t::composite_armor() const
+double warrior_t::composite_armor() SC_CONST
 {
   double final_armor = player_t::composite_armor() - armor_per_agility * agility();
   final_armor *= 1 +  ( talents.toughness ? talents.toughness * 0.02 : 0 );

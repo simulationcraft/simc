@@ -254,15 +254,15 @@ struct shaman_t : public player_t
   virtual void      init_actions();
   virtual void      reset();
   virtual void      interrupt();
-  virtual double    composite_attack_power() const;
-  virtual double    composite_spell_power( int school ) const;
+  virtual double    composite_attack_power() SC_CONST;
+  virtual double    composite_spell_power( int school ) SC_CONST;
   virtual bool      get_talent_trees( std::vector<int*>& elemental, std::vector<int*>& enhancement, std::vector<int*>& restoration );
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
-  virtual int       primary_resource() const { return RESOURCE_MANA; }
-  virtual int       primary_role() const     { return talents.dual_wield ? ROLE_HYBRID      : ROLE_SPELL;     }
-  virtual int       primary_tree() const     { return talents.dual_wield ? TREE_ENHANCEMENT : TREE_ELEMENTAL; }
+  virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
+  virtual int       primary_role() SC_CONST     { return talents.dual_wield ? ROLE_HYBRID      : ROLE_SPELL;     }
+  virtual int       primary_tree() SC_CONST     { return talents.dual_wield ? TREE_ENHANCEMENT : TREE_ELEMENTAL; }
 
   // Event Tracking
   virtual void regen( double periodicity );
@@ -307,10 +307,10 @@ struct shaman_spell_t : public spell_t
     base_crit += shaman -> talents.blessing_of_the_eternals * 0.02;
   }
 
-  virtual double cost() const;
-  virtual double cost_reduction() const { return base_cost_reduction; }
+  virtual double cost() SC_CONST;
+  virtual double cost_reduction() SC_CONST { return base_cost_reduction; }
   virtual void   consume_resource();
-  virtual double execute_time() const;
+  virtual double execute_time() SC_CONST;
   virtual void   execute();
   virtual void   player_buff();
   virtual void   schedule_execute();
@@ -363,7 +363,7 @@ struct spirit_wolf_pet_t : public pet_t
 
     melee = new melee_t( this );
   }
-  virtual double composite_attack_power() const
+  virtual double composite_attack_power() SC_CONST
   {
     shaman_t* o = owner -> cast_shaman();
     double ap = pet_t::composite_attack_power();
@@ -959,7 +959,7 @@ struct melee_t : public shaman_attack_t
     if ( p -> dual_wield() ) base_hit -= 0.19;
   }
 
-  virtual double execute_time() const
+  virtual double execute_time() SC_CONST
   {
     double t = shaman_attack_t::execute_time();
     shaman_t* p = player -> cast_shaman();
@@ -1108,7 +1108,7 @@ struct stormstrike_t : public shaman_attack_t
 
 // shaman_spell_t::cost ====================================================
 
-double shaman_spell_t::cost() const
+double shaman_spell_t::cost() SC_CONST
 {
   shaman_t* p = player -> cast_shaman();
   double c = spell_t::cost();
@@ -1136,7 +1136,7 @@ void shaman_spell_t::consume_resource()
 
 // shaman_spell_t::execute_time ============================================
 
-double shaman_spell_t::execute_time() const
+double shaman_spell_t::execute_time() SC_CONST
 {
   shaman_t* p = player -> cast_shaman();
   if ( p -> _buffs.natures_swiftness ) return 0;
@@ -1314,7 +1314,7 @@ struct chain_lightning_t : public shaman_spell_t
     }
   }
 
-  virtual double execute_time() const
+  virtual double execute_time() SC_CONST
   {
     double t = shaman_spell_t::execute_time();
     shaman_t* p = player -> cast_shaman();
@@ -1436,7 +1436,7 @@ struct lightning_bolt_t : public shaman_spell_t
     }
   }
 
-  virtual double execute_time() const
+  virtual double execute_time() SC_CONST
   {
     double t = shaman_spell_t::execute_time();
     shaman_t* p = player -> cast_shaman();
@@ -1544,7 +1544,7 @@ struct lava_burst_t : public shaman_spell_t
     p -> _cooldowns.lava_burst = cooldown_ready;
   }
 
-  virtual double execute_time() const
+  virtual double execute_time() SC_CONST
   {
     double t = shaman_spell_t::execute_time();
     shaman_t* p = player -> cast_shaman();
@@ -1957,7 +1957,7 @@ struct searing_totem_t : public shaman_spell_t
     update_stats( DMG_OVER_TIME );
   }
 
-virtual double gcd() const { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
+virtual double gcd() SC_CONST { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
 };
 
 // Magma Totem Spell =======================================================
@@ -2040,7 +2040,7 @@ struct magma_totem_t : public shaman_spell_t
     update_stats( DMG_OVER_TIME );
   }
 
-virtual double gcd() const { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
+virtual double gcd() SC_CONST { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
 };
 
 // Totem of Wrath Spell =====================================================
@@ -2148,7 +2148,7 @@ struct totem_of_wrath_t : public shaman_spell_t
     return false;
   }
 
-virtual double gcd() const { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
+virtual double gcd() SC_CONST { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
 };
 
 // Flametongue Totem Spell ====================================================
@@ -2231,7 +2231,7 @@ struct flametongue_totem_t : public shaman_spell_t
     return( player -> buffs.flametongue_totem == 0 );
   }
 
-virtual double gcd() const { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
+virtual double gcd() SC_CONST { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
 };
 
 // Windfury Totem Spell =====================================================
@@ -2305,7 +2305,7 @@ struct windfury_totem_t : public shaman_spell_t
     return( player -> buffs.windfury_totem < bonus );
   }
 
-virtual double gcd() const { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
+virtual double gcd() SC_CONST { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
 };
 
 // Flametongue Weapon Spell ===================================================
@@ -2527,7 +2527,7 @@ struct strength_of_earth_totem_t : public shaman_spell_t
     return( player -> buffs.strength_of_earth < bonus );
   }
 
-virtual double gcd() const { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
+virtual double gcd() SC_CONST { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
 };
 
 // Wrath of Air Totem Spell =================================================
@@ -2591,7 +2591,7 @@ struct wrath_of_air_totem_t : public shaman_spell_t
     return( player -> buffs.wrath_of_air == 0 );
   }
 
-virtual double gcd() const { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
+virtual double gcd() SC_CONST { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
 };
 
 // Mana Tide Totem Spell ==================================================
@@ -2654,7 +2654,7 @@ struct mana_tide_totem_t : public shaman_spell_t
     return( player -> resource_current[ RESOURCE_MANA ] < ( 0.75 * player -> resource_max[ RESOURCE_MANA ] ) );
   }
 
-virtual double gcd() const { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
+virtual double gcd() SC_CONST { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
 };
 
 // Mana Spring Totem Spell ================================================
@@ -2706,7 +2706,7 @@ struct mana_spring_totem_t : public shaman_spell_t
     return shaman_spell_t::ready();
   }
 
-virtual double gcd() const { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
+virtual double gcd() SC_CONST { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
 };
 
 // Bloodlust Spell ===========================================================
@@ -3386,7 +3386,7 @@ void shaman_t::interrupt()
 
 // shaman_t::composite_attack_power ==========================================
 
-double shaman_t::composite_attack_power() const
+double shaman_t::composite_attack_power() SC_CONST
 {
   double ap = player_t::composite_attack_power();
 
@@ -3402,7 +3402,7 @@ double shaman_t::composite_attack_power() const
 
 // shaman_t::composite_spell_power ==========================================
 
-double shaman_t::composite_spell_power( int school ) const
+double shaman_t::composite_spell_power( int school ) SC_CONST
 {
   double sp = player_t::composite_spell_power( school );
 
