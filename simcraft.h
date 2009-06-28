@@ -13,9 +13,17 @@
 #  define _CRT_SECURE_NO_WARNINGS
 #endif
 
+// Switching of using 'const'-flag on methods possible ======================
+// Results of the sim should always be the same, no matter if this is set to:
+// #define SC_CONST const    -OR-
+// #define SC_CONST 
+ #define SC_CONST const
+
 #if defined( _MSC_VER )
 #include "./vs/stdint.h"
 #  define snprintf _snprintf
+// for MSVC const has no performance advantage
+#  define SC_CONST 
 #else
 #include <stdint.h>
 #endif
@@ -37,15 +45,6 @@
 #include <math.h>
 
 
-// Switching of using 'const'-flag on methods possible ======================
-/* Makes it much easier to test if something went wrong when 'const'-ing all
- * those methods. The results of the sim should always be the same, no matter
- * if this is set to:
- * #define SC_CONST const    -OR-
- * #define SC_CONST 
- */
-
-#define SC_CONST const
 
 // Patch Specific Modeling ==================================================
 
