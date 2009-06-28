@@ -1624,7 +1624,7 @@ struct shield_slam_t : public warrior_attack_t
     }
   }
 
-  virtual double cost()
+  virtual double cost() SC_CONST
   {
     warrior_t* p = player -> cast_warrior();
     if ( p -> _buffs.sword_and_board ) return 0;

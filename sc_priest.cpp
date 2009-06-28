@@ -728,13 +728,13 @@ struct smite_t : public priest_spell_t
     priest_spell_t::execute();
     player -> cast_priest() -> _buffs.surge_of_light = 0;
   }
-  virtual double execute_time()
+  virtual double execute_time() SC_CONST
   {
     priest_t* p = player -> cast_priest();
     return p -> _buffs.surge_of_light ? 0 : priest_spell_t::execute_time();
   }
 
-  virtual double cost()
+  virtual double cost() SC_CONST
   {
     priest_t* p = player -> cast_priest();
     return p -> _buffs.surge_of_light ? 0 : priest_spell_t::cost();

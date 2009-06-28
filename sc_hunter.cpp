@@ -1812,7 +1812,7 @@ struct hunter_pet_spell_t : public spell_t
     base_multiplier *= 1.0 + p -> talents.spiked_collar * 0.03;
   }
 
-  virtual double cost()
+  virtual double cost() SC_CONST
   {
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
 

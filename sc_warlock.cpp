@@ -920,8 +920,8 @@ struct infernal_pet_t : public warlock_pet_t
 
     immolation -> schedule_execute();
   }
-  virtual double composite_attack_hit() { return 0; }
-  virtual double composite_spell_hit()  { return 0; }
+  virtual double composite_attack_hit() SC_CONST { return 0; }
+  virtual double composite_spell_hit()  SC_CONST { return 0; }
 };
 
 // ==========================================================================
