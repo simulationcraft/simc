@@ -434,7 +434,7 @@ struct warlock_pet_t : public pet_t
 
   virtual void register_callbacks();
 
-  virtual int primary_resource() { return RESOURCE_MANA; }
+  virtual int primary_resource() SC_CONST { return RESOURCE_MANA; }
 };
 
 // ==========================================================================

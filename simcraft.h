@@ -1322,7 +1322,7 @@ struct player_t
 
   virtual ~player_t();
 
-  virtual const char* name() { return name_str.c_str(); }
+  virtual const char* name() SC_CONST { return name_str.c_str(); }
   virtual const char* id();
 
   virtual void init();

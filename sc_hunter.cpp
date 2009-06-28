@@ -554,7 +554,7 @@ struct hunter_pet_t : public pet_t
     if( main_hand_attack ) main_hand_attack -> cancel();
   }
 
-  virtual int primary_resource() { return RESOURCE_FOCUS; }
+  virtual int primary_resource() SC_CONST { return RESOURCE_FOCUS; }
 
   virtual std::vector<option_t>& get_options()
   {

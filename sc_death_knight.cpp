@@ -309,7 +309,7 @@ struct death_knight_t : public player_t
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual action_t* execute_action();
-virtual int       primary_resource() { return RESOURCE_RUNIC; }
+virtual int       primary_resource() SC_CONST { return RESOURCE_RUNIC; }
 
   // Utilities
   bool abort_execute_action;
@@ -377,7 +377,7 @@ struct bloodworm_pet_t : public pet_t
     melee -> schedule_execute();
   }
 
-  virtual int primary_resource() { return RESOURCE_MANA; }
+  virtual int primary_resource() SC_CONST { return RESOURCE_MANA; }
 };
 
 const char* bloodworm_pet_t::id[] = { "bloodworm#1", "bloodworm#2", "bloodworm#3", "bloodworm#4" };
