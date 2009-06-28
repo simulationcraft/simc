@@ -656,7 +656,8 @@ static void trigger_tier8_4pc_elemental( spell_t* s )
       num_ticks       = 4;
     }
     void player_buff() {}
-    void target_debuff() {}};
+    void target_debuff( int dmg_type ) {}
+  };
 
   double dmg = s -> direct_dmg * 0.08;
 

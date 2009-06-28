@@ -684,7 +684,7 @@ static void trigger_ignite( spell_t* s,
       may_resist     = false;
       reset();
     }
-    virtual void target_debuff() {}
+    virtual void target_debuff( int dmg_type ) {}
     virtual void player_buff() {}
     virtual void tick()
     {

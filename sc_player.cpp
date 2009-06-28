@@ -1081,6 +1081,8 @@ void player_t::init_scaling()
 
       case STAT_ARMOR: initial_armor += v; break;
 
+      case STAT_MAX: break;
+
       default: assert( 0 );
       }
     }
