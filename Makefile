@@ -15,7 +15,7 @@ OS = UNIX
 # Any UNIX platform
 ifeq (UNIX,${OS})
 CXX        = g++
-CPP_FLAGS  = -Wall
+CPP_FLAGS  = -Wall -Woverloaded-virtual
 LINK_FLAGS = 
 LINK_LIBS  = -lpthread
 OPTS       = -O3 -ffast-math
@@ -41,7 +41,7 @@ endif
 # Windows platform with MinGW32
 ifeq (WINDOWS,${OS})
 CXX        = g++
-CPP_FLAGS  = -Wall -malign-double
+CPP_FLAGS  = -Wall -Woverloaded-virtual -malign-double
 LINK_FLAGS = 
 LINK_LIBS  = -lwsock32
 OPTS       = -O3
