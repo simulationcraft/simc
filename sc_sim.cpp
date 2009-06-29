@@ -105,7 +105,7 @@ static bool parse_player( sim_t*             sim,
       { "region",  OPT_STRING, &region  },
       { "server",  OPT_STRING, &server  },
       { "talents", OPT_STRING, &talents },
-      { NULL }
+      { NULL, OPT_UNKNOWN, NULL }
     };
 
     option_t::parse( sim, "player", options, player_options );
@@ -483,7 +483,7 @@ bool sim_t::init()
   wheel_size = ( uint32_t ) ( wheel_seconds * wheel_granularity );
 
   // Round up the wheel depth to the nearest power of 2 to enable a fast "mod" operation.
-  for ( wheel_mask = 2; wheel_mask < wheel_size; wheel_mask *= 2 );
+  for ( wheel_mask = 2; wheel_mask < wheel_size; wheel_mask *= 2 ) { continue; }
   wheel_size = wheel_mask;
   wheel_mask--;
 
@@ -1172,7 +1172,7 @@ std::vector<option_t>& sim_t::get_options()
       { "default_server",                   OPT_STRING, &( default_server_str                       ) },
       { "alias",                            OPT_STRING, &( alias.alias_str                          ) },
       { "alias+",                           OPT_APPEND, &( alias.alias_str                          ) },
-      { NULL, OPT_UNKNOWN }
+      { NULL, OPT_UNKNOWN, NULL }
     };
 
     option_t::copy( options, global_options );

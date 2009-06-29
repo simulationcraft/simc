@@ -91,7 +91,7 @@ void scaling_t::analyze_stats()
     fflush( stdout );
 
     baseline_sim = new sim_t( sim );
-    baseline_sim -> scaling -> scale_stat = STAT_MAX;
+    baseline_sim -> scaling -> scale_stat = STAT_MAX-1;
     baseline_sim -> execute();
   }
 
@@ -265,7 +265,7 @@ int scaling_t::get_options( std::vector<option_t>& options )
       { "scale_crit_rating",              OPT_FLT,  &( stats.crit_rating                    ) },
       { "scale_haste_rating",             OPT_FLT,  &( stats.haste_rating                   ) },
       { "scale_weapon_dps",               OPT_FLT,  &( stats.weapon_dps                     ) },
-      { NULL, OPT_UNKNOWN }
+      { NULL, OPT_UNKNOWN, NULL }
     };
 
   option_t::copy( options, scaling_options );

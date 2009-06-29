@@ -485,7 +485,7 @@ struct imp_pet_t : public warlock_pet_t
           { 78, 8, 203, 227, 0, 180 },
           { 68, 8, 110, 124, 0, 145 },
           { 58, 7,  83,  93, 0, 115 },
-          { 0,  0 }
+          { 0, 0, 0, 0, 0, 0 }
         };
       init_rank( ranks, 47964 );
       // improved_imp does not influence +SP from player
@@ -562,7 +562,7 @@ struct felguard_pet_t : public warlock_pet_t
         {
           { 76, 4, 124, 124, 0, 0.1 },
           { 68, 3,  78,  78, 0, 0.1 },
-          { 0,  0 }
+          { 0, 0, 0, 0, 0, 0 }
         };
       init_rank( ranks, 47994 );
 
@@ -661,7 +661,7 @@ struct felhunter_pet_t : public warlock_pet_t
         {
           { 74, 5, 118, 118, 0, 0.03 },
           { 66, 4, 101, 101, 0, 0.03 },
-          { 0,  0 }
+          { 0, 0, 0, 0, 0, 0 }
         };
       init_rank( ranks, 54053 );
 
@@ -725,7 +725,7 @@ struct succubus_pet_t : public warlock_pet_t
           { 74, 8, 193, 193, 0, 220 },
           { 68, 7, 123, 123, 0, 190 },
           { 60, 6,  99,  99, 0, 160 },
-          { 0,  0 }
+          { 0, 0, 0, 0, 0, 0 }
         };
       init_rank( ranks );
 
@@ -1341,7 +1341,7 @@ void warlock_spell_t::parse_options( option_t*          options,
       { "no_backdraft",   OPT_BOOL, &backdraft_skip },
       { "backdraft_skip", OPT_BOOL, &backdraft_skip },
       { "molten_core",    OPT_BOOL, &molten_core    },
-      { NULL }
+      { NULL, OPT_UNKNOWN, NULL }
     };
   std::vector<option_t> merged_options;
   spell_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
@@ -1393,7 +1393,7 @@ struct curse_of_elements_t : public warlock_spell_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1401,7 +1401,7 @@ struct curse_of_elements_t : public warlock_spell_t
       {
         { 67, 3, 0, 0, 0, 260 },
         { 56, 2, 0, 0, 0, 200 },
-        { 0,  0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -1475,7 +1475,7 @@ struct curse_of_agony_t : public warlock_spell_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1485,7 +1485,7 @@ struct curse_of_agony_t : public warlock_spell_t
         { 73, 8, 0, 0, 120, 0.10 },
         { 67, 7, 0, 0, 113, 265  },
         { 58, 6, 0, 0,  87, 215  },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks, 47864 );
 
@@ -1557,7 +1557,7 @@ struct curse_of_doom_t : public warlock_spell_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1566,7 +1566,7 @@ struct curse_of_doom_t : public warlock_spell_t
         { 80, 3, 0, 0, 7300, 0.15 },
         { 70, 2, 0, 0, 4200, 380  },
         { 60, 1, 0, 0, 3200, 300  },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -1641,7 +1641,7 @@ struct shadow_bolt_t : public warlock_spell_t
         { "shadow_trance", OPT_BOOL, &shadow_trance },
         { "isb_benefit",   OPT_BOOL, &isb_benefit   },
         { "isb_trigger",   OPT_BOOL, &isb_trigger   },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1652,7 +1652,7 @@ struct shadow_bolt_t : public warlock_spell_t
         { 69, 11, 541, 603, 0, 420  },
         { 60, 10, 482, 538, 0, 380  },
         { 60,  9, 455, 507, 0, 370  },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks, 47809 );
 
@@ -1765,7 +1765,7 @@ struct chaos_bolt_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1776,7 +1776,7 @@ struct chaos_bolt_t : public warlock_spell_t
         { 75, 3, 1217, 1545, 0, 0.07 },
         { 70, 2, 1077, 1367, 0, 0.07 },
         { 60, 1,  837, 1061, 0, 0.09 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
 
     init_rank( ranks );
@@ -1846,7 +1846,7 @@ struct death_coil_t : public warlock_spell_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1856,7 +1856,7 @@ struct death_coil_t : public warlock_spell_t
         { 73, 5, 670, 670, 0, 0.23 },
         { 68, 4, 519, 519, 0, 600  },
         { 58, 3, 400, 400, 0, 480  },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -1895,7 +1895,7 @@ struct shadow_burn_t : public warlock_spell_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1906,7 +1906,7 @@ struct shadow_burn_t : public warlock_spell_t
         { 70,  8, 597, 665, 0, 0.20 },
         { 63,  7, 518, 578, 0, 0.27 },
         { 56,  6, 450, 502, 0, 0.27 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -1971,7 +1971,7 @@ struct shadowfury_t : public warlock_spell_t
     option_t options[] =
       {
         { "cast_gcd",    OPT_FLT,  &cast_gcd    },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1981,7 +1981,7 @@ struct shadowfury_t : public warlock_spell_t
         { 75, 3, 822,  978, 0, 0.27 },
         { 70, 2, 612,  728, 0, 0.27 },
         { 60, 1, 459,  547, 0, 0.37 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
 
 
@@ -2032,7 +2032,7 @@ struct corruption_t : public warlock_spell_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2042,7 +2042,7 @@ struct corruption_t : public warlock_spell_t
         { 71,  9, 0, 0, 165, 0.14 },
         { 65,  8, 0, 0, 150, 370  },
         { 60,  7, 0, 0, 137, 340  },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks, 47813 );
 
@@ -2116,7 +2116,7 @@ struct drain_life_t : public warlock_spell_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2126,7 +2126,7 @@ struct drain_life_t : public warlock_spell_t
         { 69, 8, 0, 0, 108, 425  },
         { 62, 7, 0, 0,  87, 355  },
         { 54, 6, 0, 0,  71, 300  },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -2207,7 +2207,7 @@ struct drain_soul_t : public warlock_spell_t
       {
         { "interrupt",  OPT_BOOL, &interrupt },
         { "target_pct", OPT_DEPRECATED, ( void* ) "health_percentage<" },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2216,7 +2216,7 @@ struct drain_soul_t : public warlock_spell_t
         { 77, 6, 0, 0, 142, 0.14 },
         { 67, 5, 0, 0, 124, 360  },
         { 52, 4, 0, 0,  91, 290  },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     rank_t* rank = init_rank( ranks, 47855 );
 
@@ -2322,7 +2322,7 @@ struct unstable_affliction_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2332,7 +2332,7 @@ struct unstable_affliction_t : public warlock_spell_t
         { 75, 4,  0, 0, 197, 0.15 },
         { 70, 3,  0, 0, 175, 400  },
         { 60, 2,  0, 0, 155, 315  },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks, 47843 );
 
@@ -2408,7 +2408,7 @@ struct haunt_t : public warlock_spell_t
       {
         { "debuff", OPT_BOOL, &debuff     },
         { "only_for_debuff", OPT_DEPRECATED, ( void* ) "debuff" },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
 
     parse_options( options, options_str );
@@ -2419,7 +2419,7 @@ struct haunt_t : public warlock_spell_t
         { 75, 3, 550, 642, 0, 0.12 },
         { 70, 2, 487, 569, 0, 0.12 },
         { 60, 1, 405, 473, 0, 0.12 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks, 59164 );
 
@@ -2486,7 +2486,7 @@ struct immolate_t : public warlock_spell_t
     option_t options[] =
       {
         { "target_pct", OPT_DEPRECATED, ( void* ) "health_percentage>" },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2497,7 +2497,7 @@ struct immolate_t : public warlock_spell_t
         { 69,  9, 327, 327, 123, 445  },
         { 60,  8, 279, 279, 102, 380  },
         { 60,  7, 258, 258,  97, 370  },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks, 47811 );
 
@@ -2574,7 +2574,7 @@ struct shadowflame_t : public warlock_spell_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2582,7 +2582,7 @@ struct shadowflame_t : public warlock_spell_t
       {
         { 80, 2, 615, 671, 128, 0.25 },
         { 75, 1, 520, 568, 108, 0.25 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -2653,14 +2653,14 @@ struct conflagrate_t : public warlock_spell_t
     option_t options[] =
       {
         { "ticks_lost",   OPT_INT,  &ticks_lost   },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
       {
         { 40, 1, 0, 0, 0, 0.16 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -2813,7 +2813,7 @@ struct incinerate_t : public warlock_spell_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2823,7 +2823,7 @@ struct incinerate_t : public warlock_spell_t
         { 74, 3, 485, 563, 0, 0.14 },
         { 70, 2, 429, 497, 0, 300  },
         { 64, 1, 357, 413, 0, 256  },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks, 47838 );
 
@@ -2906,7 +2906,7 @@ struct searing_pain_t : public warlock_spell_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2917,7 +2917,7 @@ struct searing_pain_t : public warlock_spell_t
         { 70,  8, 270, 320, 0, 205  },
         { 65,  7, 243, 287, 0, 191  },
         { 58,  6, 204, 240, 0, 168  },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -2964,7 +2964,7 @@ struct soul_fire_t : public warlock_spell_t
     option_t options[] =
       {
         { "decimation", OPT_BOOL, &decimation },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2975,7 +2975,7 @@ struct soul_fire_t : public warlock_spell_t
         { 70, 4, 1003, 1257, 0, 455  },
         { 64, 3,  839, 1051, 0, 390  },
         { 56, 2,  703,  881, 0, 335  },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks, 47825 );
 
@@ -3066,7 +3066,7 @@ struct life_tap_t : public warlock_spell_t
         { "max",       OPT_BOOL, &max       },
         { "mana_perc<",OPT_FLT,  &mana_perc },
         { "mana_perc", OPT_FLT,  &mana_perc },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -3145,7 +3145,7 @@ struct dark_pact_t : public warlock_spell_t
   {
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -3154,7 +3154,7 @@ struct dark_pact_t : public warlock_spell_t
         { 80, 5, 1200, 1200, 0, 0 },
         { 70, 3,  700,  700, 0, 0 },
         { 60, 2,  545,  545, 0, 0 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -3303,7 +3303,7 @@ struct inferno_t : public warlock_spell_t
       {
         { "target_pct",     OPT_DEPRECATED, ( void* ) "health_percentage<" },
         { "time_remaining", OPT_DEPRECATED, ( void* ) "time_to_die<"       },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -3316,7 +3316,7 @@ struct inferno_t : public warlock_spell_t
     static rank_t ranks[] =
       {
         { 50, 1, 200, 200, 0, 0.80 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -3371,7 +3371,7 @@ struct immolation_t : public warlock_spell_t
   {
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -3425,7 +3425,7 @@ struct metamorphosis_t : public warlock_spell_t
     option_t options[] =
       {
         { "target_pct", OPT_DEPRECATED, ( void* ) "health_percentage<" },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -3467,7 +3467,7 @@ struct demonic_empowerment_t : public warlock_spell_t
       {
         { "target_pct",     OPT_DEPRECATED, ( void* ) "health_percentage<" },
         { "demonic_frenzy", OPT_INT,        &demonic_frenzy              },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -3611,7 +3611,7 @@ struct wait_for_decimation_t : public action_t
     option_t options[] =
       {
         { "time", OPT_FLT, &time },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -4135,8 +4135,7 @@ act_expression_t* warlock_t::create_expression(std::string& name,std::string& pr
   if ((prefix=="buff")&&(node==0)){
     bool ex=(suffix!="value")&&(suffix!="buff")&&(suffix!="stacks"); // if one of these, ignore expiration time
     if ((suffix=="")&&(expected_type==ETP_BOOL)) ex=false; //also ignore expiration value if boolean result is needed
-    if (name=="pet_sacrifice")        node= new oldbuff_expression_t(e_name, &_buffs.pet_sacrifice,     0); else
-    ;
+    if (name=="pet_sacrifice")        node= new oldbuff_expression_t(e_name, &_buffs.pet_sacrifice,     0);
   }
   // general functions
   if ((node==0)){
@@ -4287,7 +4286,7 @@ std::vector<option_t>& warlock_t::get_options()
       { "suppression",              OPT_INT,  &( talents.suppression              ) },
       { "unholy_power",             OPT_INT,  &( talents.unholy_power             ) },
       { "unstable_affliction",      OPT_INT,  &( talents.unstable_affliction      ) },
-      { NULL, OPT_UNKNOWN }
+      { NULL, OPT_UNKNOWN, NULL }
     };
 
     option_t::copy( options, warlock_options );

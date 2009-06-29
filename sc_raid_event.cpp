@@ -84,7 +84,7 @@ struct movement_event_t : public raid_event_t
     option_t options[] =
     {
       { "to", OPT_FLT, &move_to },
-      { NULL }
+      { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
   }
@@ -173,7 +173,7 @@ struct damage_event_t : public raid_event_t
     {
       { "amount",        OPT_FLT, &amount        },
       { "amount_stddev", OPT_FLT, &amount_stddev },
-      { NULL }
+      { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
 
@@ -386,7 +386,7 @@ void raid_event_t::parse_options( option_t*          options,
     { "duration<",       OPT_FLT, &duration_max    },
     { "distance>",       OPT_FLT, &distance_min    },
     { "distance<",       OPT_FLT, &distance_max    },
-    { NULL }
+    { NULL, OPT_UNKNOWN, NULL }
   };
 
   std::vector<option_t> merged_options;

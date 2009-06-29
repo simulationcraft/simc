@@ -1263,7 +1263,7 @@ struct chain_lightning_t : public shaman_spell_t
       {
         { "lvb_cd<",   OPT_FLT, &max_lvb_cd },
         { "maelstrom", OPT_INT, &maelstrom  },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1274,7 +1274,7 @@ struct chain_lightning_t : public shaman_spell_t
         { 70, 6, 734,  838, 0,  760 },
         { 63, 5, 603,  687, 0,  650 },
         { 56, 4, 493,  551, 0,  550 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -1375,7 +1375,7 @@ struct lightning_bolt_t : public shaman_spell_t
       {
         { "maelstrom", OPT_INT,  &maelstrom  },
         { "ss_wait",   OPT_BOOL, &ss_wait    },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1388,7 +1388,7 @@ struct lightning_bolt_t : public shaman_spell_t
         { 56, 10, 419, 467, 0, 265  },
         { 50,  9, 347, 389, 0, 230  },
         { 44,  8, 282, 316, 0, 195  },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -1492,7 +1492,7 @@ struct lava_burst_t : public shaman_spell_t
       {
         { "flame_shock",        OPT_BOOL, &flame_shock        },
         { "max_ticks_consumed", OPT_INT,  &max_ticks_consumed },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1500,7 +1500,7 @@ struct lava_burst_t : public shaman_spell_t
       {
         { 80, 2, 1192, 1518, 0, 0.10 },
         { 75, 1, 1012, 1290, 0, 0.10 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -1687,7 +1687,7 @@ struct earth_shock_t : public shaman_spell_t
     option_t options[] =
       {
         { "ss_wait", OPT_BOOL, &ss_wait },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1698,7 +1698,7 @@ struct earth_shock_t : public shaman_spell_t
         { 69,  8, 658, 692, 0, 535  },
         { 60,  7, 517, 545, 0, 450  },
         { 48,  6, 359, 381, 0, 345  },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -1749,7 +1749,7 @@ struct frost_shock_t : public shaman_spell_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1760,7 +1760,7 @@ struct frost_shock_t : public shaman_spell_t
         { 68, 5, 640, 676, 0, 525  },
         { 58, 4, 486, 514, 0, 430  },
         { 46, 3, 333, 353, 0, 325  },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -1800,7 +1800,7 @@ struct flame_shock_t : public shaman_spell_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1810,7 +1810,7 @@ struct flame_shock_t : public shaman_spell_t
         { 75, 8, 425, 425, 119, 0.17 },
         { 70, 7, 377, 377, 105, 500  },
         { 60, 6, 309, 309,  86, 450  },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -1888,7 +1888,7 @@ struct searing_totem_t : public shaman_spell_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1899,7 +1899,7 @@ struct searing_totem_t : public shaman_spell_t
         { 71,  8, 68,  92, 0, 0.07 },
         { 69,  7, 56,  74, 0, 0.07 },
         { 60,  6, 40,  54, 0, 0.09 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -1972,7 +1972,7 @@ struct magma_totem_t : public shaman_spell_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1982,7 +1982,7 @@ struct magma_totem_t : public shaman_spell_t
         { 73,  6, 314, 314, 0, 0.27 },
         { 65,  5, 180, 180, 0, 0.27 },
         { 56,  4, 131, 131, 0, 0.27 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -2058,7 +2058,7 @@ struct totem_of_wrath_t : public shaman_spell_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2165,7 +2165,7 @@ struct flametongue_totem_t : public shaman_spell_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2176,7 +2176,7 @@ struct flametongue_totem_t : public shaman_spell_t
         { 72, 6,  0,  0, 106, 0.11 },
         { 67, 5, 12, 12,  73, 325  },
         { 58, 4, 15, 15,  62, 275  },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -2248,7 +2248,7 @@ struct windfury_totem_t : public shaman_spell_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2326,7 +2326,7 @@ struct flametongue_weapon_t : public shaman_spell_t
     option_t options[] =
       {
         { "weapon", OPT_STRING, &weapon_str },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2403,7 +2403,7 @@ struct windfury_weapon_t : public shaman_spell_t
     option_t options[] =
       {
         { "weapon", OPT_STRING, &weapon_str },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2542,7 +2542,7 @@ struct wrath_of_air_totem_t : public shaman_spell_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2607,7 +2607,7 @@ struct mana_tide_totem_t : public shaman_spell_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2671,7 +2671,7 @@ struct mana_spring_totem_t : public shaman_spell_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2724,7 +2724,7 @@ struct bloodlust_t : public shaman_spell_t
     option_t options[] =
       {
         { "target_pct", OPT_DEPRECATED, ( void* ) "health_percentage<" },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2793,7 +2793,7 @@ struct shamanistic_rage_t : public shaman_spell_t
   {
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2876,7 +2876,7 @@ struct lightning_shield_t : public shaman_spell_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2887,7 +2887,7 @@ struct lightning_shield_t : public shaman_spell_t
         { 70, 5, 287, 287, 0, 0 },
         { 63, 4, 232, 232, 0, 0 },
         { 56, 3, 198, 198, 0, 0 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -2934,7 +2934,7 @@ struct water_shield_t : public shaman_spell_t
   {
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2944,7 +2944,7 @@ struct water_shield_t : public shaman_spell_t
         { 69, 8, 0, 0, 0,  50 },
         { 62, 7, 0, 0, 0,  43 },
         { 55, 6, 0, 0, 0,  38 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -3030,7 +3030,7 @@ struct spirit_wolf_spell_t : public shaman_spell_t
     option_t options[] =
       {
         { "trigger", OPT_INT, &target_pct },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -3584,7 +3584,7 @@ std::vector<option_t>& shaman_t::get_options()
       { "weapon_mastery",            OPT_INT,  &( talents.weapon_mastery            ) },
       // @option_doc loc=player/druid/misc title="Misc"
       { "totem",                     OPT_STRING, &( items[ SLOT_RANGED ].options_str ) },
-      { NULL, OPT_UNKNOWN }
+      { NULL, OPT_UNKNOWN, NULL }
     };
 
     option_t::copy( options, shaman_options );

@@ -781,7 +781,7 @@ std::vector<option_t>& paladin_t::get_options()
       { "glyph_consecration",             OPT_INT, &( glyphs.consecration                 ) },
       { "glyph_judgement",                OPT_INT, &( glyphs.judgement                    ) },
 
-      { NULL, OPT_UNKNOWN }
+      { NULL, OPT_UNKNOWN, NULL }
     };
 
     option_t::copy( options, paladin_options );

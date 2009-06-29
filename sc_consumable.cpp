@@ -25,7 +25,7 @@ struct flask_t : public action_t
     option_t options[] =
       {
         { "type", OPT_STRING, &type_str },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -104,7 +104,7 @@ struct food_t : public action_t
     option_t options[] =
       {
         { "type", OPT_STRING, &type_str },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -199,7 +199,7 @@ struct destruction_potion_t : public action_t
   {
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -253,7 +253,7 @@ struct speed_potion_t : public action_t
   {
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -307,7 +307,7 @@ struct wild_magic_potion_t : public action_t
   {
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -370,7 +370,7 @@ struct mana_potion_t : public action_t
         { "min",     OPT_INT, &min     },
         { "max",     OPT_INT, &max     },
         { "trigger", OPT_INT, &trigger },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -426,7 +426,7 @@ struct health_stone_t : public action_t
       {
         { "health",  OPT_INT, &health  },
         { "trigger", OPT_INT, &trigger },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -474,7 +474,7 @@ struct dark_rune_t : public action_t
         { "trigger", OPT_INT,  &trigger },
         { "mana",    OPT_INT,  &mana    },
         { "health",  OPT_INT,  &health  },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 

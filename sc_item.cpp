@@ -232,7 +232,7 @@ bool item_t::parse_options()
     { "equip",   OPT_STRING, &option_equip_str   },
     { "use",     OPT_STRING, &option_use_str     },
     { "weapon",  OPT_STRING, &option_weapon_str  },
-    { NULL }
+    { NULL, OPT_UNKNOWN, NULL }
   };
 
   option_t::parse( sim, option_name_str.c_str(), options, remainder );

@@ -2266,7 +2266,7 @@ struct restart_sequence_t : public action_t
     option_t options[] =
       {
         { "name", OPT_STRING, &seq_name_str },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2301,7 +2301,7 @@ struct restore_mana_t : public action_t
     option_t options[] =
       {
         { "mana", OPT_FLT, &mana },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2334,7 +2334,7 @@ struct wait_until_ready_t : public action_t
     option_t options[] =
       {
         { "sec", OPT_FLT, &sec },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
   }
@@ -2379,7 +2379,7 @@ struct use_item_t : public action_t
     option_t options[] =
       {
         { "name", OPT_STRING, &item_name },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2910,7 +2910,7 @@ std::vector<option_t>& player_t::get_options()
       { "elixirs",                              OPT_STRING, &( elixirs_str                                    ) },
       { "flask",                                OPT_STRING, &( flask_str                                      ) },
       { "food",                                 OPT_STRING, &( food_str                                       ) },
-      { NULL, OPT_UNKNOWN }
+      { NULL, OPT_UNKNOWN, NULL }
     };
 
     option_t::copy( options, player_options );

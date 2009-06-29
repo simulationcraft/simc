@@ -316,7 +316,7 @@ int target_t::get_options( std::vector<option_t>& options )
       { "target_armor",          OPT_INT,    &( initial_armor                     ) },
       { "target_shield",         OPT_INT,    &( shield                            ) },
       { "target_block",          OPT_INT,    &( block_value                       ) },
-      { NULL, OPT_UNKNOWN }
+      { NULL, OPT_UNKNOWN, NULL }
     };
 
   option_t::copy( options, target_options );

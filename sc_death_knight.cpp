@@ -837,7 +837,7 @@ death_knight_attack_t::parse_options( option_t* options, const std::string& opti
       { "unholy",  OPT_INT,  &exact_unholy },
       { "unholy>", OPT_INT,  &min_unholy },
       { "unholy<", OPT_INT,  &max_unholy },
-      { NULL }
+      { NULL, OPT_UNKNOWN, NULL }
     };
   std::vector<option_t> merged_options;
   attack_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
@@ -974,7 +974,7 @@ death_knight_spell_t::parse_options( option_t* options, const std::string& optio
       { "unholy",  OPT_INT,  &exact_unholy },
       { "unholy>", OPT_INT,  &min_unholy },
       { "unholy<", OPT_INT,  &max_unholy },
-      { NULL }
+      { NULL, OPT_UNKNOWN, NULL }
     };
   std::vector<option_t> merged_options;
   spell_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
@@ -1181,7 +1181,7 @@ struct death_knight_disease_t : public death_knight_spell_t
     static rank_t ranks[] =
       {
         { 1, 1, 0, 0, 1, 0 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -1231,7 +1231,7 @@ struct blood_strike_t : public death_knight_attack_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1243,7 +1243,7 @@ struct blood_strike_t : public death_knight_attack_t
         { 64,  3, 138.8, 138.8, 0, -10 },
         { 59,  2, 118,   118,   0, -10 },
         { 55,  1, 104,   104,   0, -10 },
-        { 0, 0 }
+        { 0,   0, 0,     0,     0, 0 }
       };
     init_rank( ranks );
 
@@ -1288,7 +1288,7 @@ struct death_strike_t : public death_knight_attack_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1299,7 +1299,7 @@ struct death_strike_t : public death_knight_attack_t
         { 70,  3, 123.75, 123.75, 0, -15 },
         { 63,  2, 97.5,   97.5,   0, -15 },
         { 56,  1, 84,     84,     0, -15 },
-        { 0, 0 }
+        { 0,   0, 0,      0,      0,  0 }
       };
     init_rank( ranks );
 
@@ -1334,7 +1334,7 @@ struct heart_strike_t : public death_knight_attack_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1346,7 +1346,7 @@ struct heart_strike_t : public death_knight_attack_t
         { 64,  3, 167,   167,   0, -10 },
         { 59,  2, 142,   142,   0, -10 },
         { 55,  1, 125,   125,   0, -10 },
-        { 0, 0 }
+        { 0,   0, 0,     0,     0,  0 }
       };
     init_rank( ranks );
 
@@ -1389,7 +1389,7 @@ struct icy_touch_t : public death_knight_spell_t
   {
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1400,7 +1400,7 @@ struct icy_touch_t : public death_knight_spell_t
         { 67, 3, 161, 173, 0, -10 },
         { 61, 2, 144, 156, 0, -10 },
         { 55, 1, 127, 137, 0, -10 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -1428,7 +1428,7 @@ struct obliterate_t : public death_knight_attack_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1438,7 +1438,7 @@ struct obliterate_t : public death_knight_attack_t
         { 73,  3, 381.6, 381.6, 0, -15 },
         { 67,  2, 244,   244,   0, -15 },
         { 61,  1, 198.4, 198.4, 0, -15 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -1493,7 +1493,7 @@ struct plague_strike_t : public death_knight_attack_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1505,7 +1505,7 @@ struct plague_strike_t : public death_knight_attack_t
         { 65,  3, 89,   89,   0, -10 },
         { 60,  2, 75.5, 75.5, 0, -10 },
         { 55,  1, 62.5, 62.5, 0, -10 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -1533,7 +1533,7 @@ struct scourge_strike_t : public death_knight_attack_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1543,7 +1543,7 @@ struct scourge_strike_t : public death_knight_attack_t
         { 73,  3, 291.375, 291.375, 0, -15 },
         { 67,  2, 186.75,  186.75,  0, -15 },
         { 55,  1, 151.875, 151.875, 0, -15 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -1576,7 +1576,7 @@ struct death_coil_t : public death_knight_spell_t
   {
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1587,7 +1587,7 @@ struct death_coil_t : public death_knight_spell_t
         { 68, 3, 275, 275, 0, 40 },
         { 62, 2, 208, 208, 0, 40 },
         { 55, 1, 184, 184, 0, 40 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -1625,7 +1625,7 @@ struct frost_strike_t : public death_knight_attack_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1637,7 +1637,7 @@ struct frost_strike_t : public death_knight_attack_t
         { 65,  3, 69,    69,    0, 40 },
         { 60,  2, 61.8,  61.8,  0, 40 },
         { 55,  1, 52.2,  52.2,  0, 40 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -1670,7 +1670,7 @@ struct hysteria_t : public action_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2008,7 +2008,7 @@ std::vector<option_t>& death_knight_t::get_options()
 
       // @option_doc loc=player/death_knight/misc title="Misc"
       { "scent_of_blood_interval",   OPT_INT, &( scent_of_blood_interval    ) },
-      { NULL, OPT_UNKNOWN }
+      { NULL, OPT_UNKNOWN, NULL }
     };
 
     option_t::copy( options, death_knight_options );

@@ -1011,7 +1011,7 @@ void druid_attack_t::parse_options( option_t*          options,
       { "mangle<",          OPT_FLT,  &max_mangle_expire      },
       { "savage_roar>",     OPT_FLT,  &min_savage_roar_expire },
       { "savage_roar<",     OPT_FLT,  &max_savage_roar_expire },
-      { NULL }
+      { NULL, OPT_UNKNOWN, NULL }
     };
   std::vector<option_t> merged_options;
   attack_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
@@ -1256,7 +1256,7 @@ struct claw_t : public druid_attack_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1266,7 +1266,7 @@ struct claw_t : public druid_attack_t
         { 73, 7, 300, 300, 0, 45 },
         { 67, 6, 190, 190, 0, 45 },
         { 58, 7, 115, 115, 0, 45 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks, 48570 );
 
@@ -1289,7 +1289,7 @@ struct faerie_fire_feral_t : public druid_attack_t
     option_t options[] =
       {
         { "debuff_only", OPT_BOOL, &debuff_only },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1340,7 +1340,7 @@ struct maim_t : public druid_attack_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1387,7 +1387,7 @@ struct mangle_cat_t : public druid_attack_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1397,7 +1397,7 @@ struct mangle_cat_t : public druid_attack_t
         { 75, 4, 536, 536, 0, 45 },
         { 68, 3, 330, 330, 0, 45 },
         { 58, 2, 256, 256, 0, 45 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks, 48566 );
 
@@ -1443,7 +1443,7 @@ struct rake_t : public druid_attack_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1453,7 +1453,7 @@ struct rake_t : public druid_attack_t
         { 72, 6, 150, 150, 321, 40 },
         { 64, 5,  90,  90, 138, 40 },
         { 54, 4,  64,  90,  99, 40 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks, 48574 );
 
@@ -1490,7 +1490,7 @@ struct rip_t : public druid_attack_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1557,7 +1557,7 @@ struct savage_roar_t : public druid_attack_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
     requires_combo_points = true;
@@ -1618,7 +1618,7 @@ struct shred_t : public druid_attack_t
     option_t options[] =
       {
         { "omen_of_clarity", OPT_BOOL, &omen_of_clarity },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1629,7 +1629,7 @@ struct shred_t : public druid_attack_t
         { 70, 7, 405, 405, 0, 60 },
         { 61, 6, 236, 236, 0, 60 },
         { 54, 5, 180, 180, 0, 60 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks, 48572 );
 
@@ -1713,7 +1713,7 @@ struct berserk_t : public druid_attack_t
     option_t options[] =
       {
         { "tigers_fury", OPT_BOOL, &tigers_fury },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
 
     parse_options( options, options_str );
@@ -1774,7 +1774,7 @@ struct tigers_fury_t : public druid_attack_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1844,7 +1844,7 @@ struct ferocious_bite_t : public druid_attack_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1972,7 +1972,7 @@ void druid_spell_t::parse_options( option_t*          options,
   option_t base_options[] =
     {
       { "skip_on_eclipse",  OPT_INT, &skip_on_eclipse        },
-      { NULL }
+      { NULL, OPT_UNKNOWN, NULL }
     };
   std::vector<option_t> merged_options;
   spell_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
@@ -2148,7 +2148,7 @@ struct faerie_fire_t : public druid_spell_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2198,7 +2198,7 @@ struct innervate_t : public druid_spell_t
       {
         { "trigger", OPT_INT,    &trigger    },
         { "target",  OPT_STRING, &target_str },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2306,7 +2306,7 @@ struct insect_swarm_t : public druid_spell_t
     option_t options[] =
       {
         { "eclipse_left>", OPT_FLT, &min_eclipse_left },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2315,7 +2315,7 @@ struct insect_swarm_t : public druid_spell_t
         { 80, 7, 0, 0, 215, 0.08 },
         { 70, 6, 0, 0, 172, 175  },
         { 60, 5, 0, 0, 124, 155  },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks, 48468 );
 
@@ -2386,7 +2386,7 @@ struct moonfire_t : public druid_spell_t
     option_t options[] =
       {
         { "eclipse_left>",   OPT_FLT, &min_eclipse_left },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2397,7 +2397,7 @@ struct moonfire_t : public druid_spell_t
         { 70, 12, 305, 357, 150, 495  },
         { 64, 11, 220, 220, 111, 430  },
         { 58, 10, 189, 221,  96, 375  },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks, 48463 );
 
@@ -2623,7 +2623,7 @@ struct starfire_t : public druid_spell_t
         { "eclipse",  OPT_STRING, &eclipse_str     },
         { "prev",     OPT_STRING, &prev_str        },
         { "instant",  OPT_BOOL,   &instant         },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2642,7 +2642,7 @@ struct starfire_t : public druid_spell_t
         { 72,  9,  854, 1006, 0, 0.16 },
         { 67,  8,  818,  964, 0, 370  },
         { 60,  7,  693,  817, 0, 340  },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks, 48465 );
 
@@ -2801,7 +2801,7 @@ struct wrath_t : public druid_spell_t
       {
         { "eclipse", OPT_STRING, &eclipse_str },
         { "prev",    OPT_STRING, &prev_str    },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2820,7 +2820,7 @@ struct wrath_t : public druid_spell_t
         { 74, 11, 504, 568, 0, 0.11 },
         { 69, 10, 431, 485, 0, 255  },
         { 61,  9, 397, 447, 0, 210  },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks, 48461 );
 
@@ -2940,11 +2940,11 @@ struct starfall_t : public druid_spell_t
 
         static rank_t ranks[] =
           {
-            { 80, 4, 78, 78 },
-            { 75, 3, 66, 66 },
-            { 70, 2, 45, 45 },
-            { 60, 1, 20, 20 },
-            { 0, 0 }
+            { 80, 4, 78, 78, 0, 0 },
+            { 75, 3, 66, 66, 0, 0 },
+            { 70, 2, 45, 45, 0, 0 },
+            { 60, 1, 20, 20, 0, 0 },
+            { 0, 0, 0, 0, 0, 0 }
           };
         init_rank( ranks );
         direct_power_mod  = 0.012;
@@ -3013,7 +3013,7 @@ struct starfall_t : public druid_spell_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -3030,7 +3030,7 @@ struct starfall_t : public druid_spell_t
         { 75, 3, 366, 424, 0, 0.39 },
         { 70, 2, 250, 290, 0, 0.39 },
         { 60, 1, 111, 129, 0, 0.39 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -3097,7 +3097,7 @@ struct treants_spell_t : public druid_spell_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -3733,7 +3733,7 @@ std::vector<option_t>& druid_t::get_options()
       { "wrath_of_cenarius",         OPT_INT,  &( talents.wrath_of_cenarius         ) },
       // @option_doc loc=player/druid/misc title="Misc"
       { "idol",                      OPT_STRING, &( items[ SLOT_RANGED ].options_str ) },
-      { NULL, OPT_UNKNOWN }
+      { NULL, OPT_UNKNOWN, NULL }
     };
 
     option_t::copy( options, druid_options );

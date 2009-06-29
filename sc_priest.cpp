@@ -654,7 +654,7 @@ struct holy_fire_t : public priest_spell_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -666,7 +666,7 @@ struct holy_fire_t : public priest_spell_t
         { 72, 10, 732,  928, 47, 0.11 },
         { 66,  9, 412,  523, 33, 0.11 },
         { 60,  8, 355,  449, 29, 0.13 },
-        { 0,   0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -695,7 +695,7 @@ struct smite_t : public priest_spell_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -708,7 +708,7 @@ struct smite_t : public priest_spell_t
         { 69, 10, 545, 611, 0, 0.15 },
         { 61,  9, 405, 455, 0, 0.17 },
         { 54,  8, 371, 415, 0, 0.17 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -763,7 +763,7 @@ struct penance_tick_t : public priest_spell_t
         { 76, 3, 256, 256, 0, 0 },
         { 68, 2, 224, 224, 0, 0 },
         { 60, 1, 184, 184, 0, 0 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -797,7 +797,7 @@ struct penance_t : public priest_spell_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -849,7 +849,7 @@ struct shadow_word_pain_t : public priest_spell_t
     option_t options[] =
       {
         { "shadow_weaving_wait", OPT_BOOL, &shadow_weaving_wait },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -860,7 +860,7 @@ struct shadow_word_pain_t : public priest_spell_t
         { 70, 10, 0, 0, 186, 0.22  },
         { 65,  9, 0, 0, 151, 0.25  },
         { 58,  8, 0, 0, 128, 0.25  },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -934,7 +934,7 @@ struct vampiric_touch_t : public priest_spell_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -944,7 +944,7 @@ struct vampiric_touch_t : public priest_spell_t
         { 75, 4, 0, 0, 147, 0.16 },
         { 70, 3, 0, 0, 130, 0.16  },
         { 60, 2, 0, 0, 120, 0.18  },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -997,7 +997,7 @@ struct devouring_plague_burst_t : public priest_spell_t
         { 73, 8, 143, 143, 0, 0 },
         { 68, 7, 136, 136, 0, 0 },
         { 60, 6, 113, 113, 0, 0 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -1052,7 +1052,7 @@ struct devouring_plague_t : public priest_spell_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1062,7 +1062,7 @@ struct devouring_plague_t : public priest_spell_t
         { 73, 8, 0, 0, 143, 0.25 },
         { 68, 7, 0, 0, 136, 0.25 },
         { 60, 6, 0, 0, 113, 0.28 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -1132,7 +1132,7 @@ struct vampiric_embrace_t : public priest_spell_t
     static rank_t ranks[] =
       {
         { 1, 1, 0, 0, 0, 0.00 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -1160,7 +1160,7 @@ struct mind_blast_t : public priest_spell_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1173,7 +1173,7 @@ struct mind_blast_t : public priest_spell_t
         { 69, 11, 708,  748, 0, 0.17 },
         { 63, 10, 557,  587, 0, 0.19 },
         { 58,  9, 503,  531, 0, 0.19 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -1242,7 +1242,7 @@ struct shadow_word_death_t : public priest_spell_t
         { "mb_wait",             OPT_FLT,  &mb_wait             },
         { "mb_priority",         OPT_BOOL, &mb_priority         },
         { "devious_mind_filler", OPT_BOOL, &devious_mind_filler },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1252,7 +1252,7 @@ struct shadow_word_death_t : public priest_spell_t
         { 75, 3, 639, 741, 0, 0.12 },
         { 70, 2, 572, 664, 0, 0.12 },
         { 62, 1, 450, 522, 0, 0.14 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -1342,7 +1342,7 @@ struct mind_flay_tick_t : public priest_spell_t
         { 74, 8, 164, 164, 0, 0 },
         { 68, 7, 150, 150, 0, 0 },
         { 60, 6, 121, 121, 0, 0 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -1417,7 +1417,7 @@ struct mind_flay_t : public priest_spell_t
         { "mb_wait",               OPT_FLT,  &mb_wait               },
         { "devious_mind_wait",     OPT_BOOL, &devious_mind_wait     },
         { "devious_mind_priority", OPT_BOOL, &devious_mind_priority },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1785,14 +1785,14 @@ struct shadow_fiend_spell_t : public priest_spell_t
     option_t options[] =
       {
         { "trigger", OPT_INT, &trigger },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
       {
         { 1, 1, 0, 0, 0, 0.00 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -2174,7 +2174,7 @@ std::vector<option_t>& priest_t::get_options()
       { "glyph_penance",                 OPT_BOOL, &( glyphs.penance                        ) },
       // @option_doc loc=player/priest/misc title="Misc"
       { "devious_mind_delay",            OPT_FLT,  &( devious_mind_delay                    ) },
-      { NULL, OPT_UNKNOWN }
+      { NULL, OPT_UNKNOWN, NULL }
     };
 
     option_t::copy( options, priest_options );

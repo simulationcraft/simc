@@ -126,7 +126,7 @@ void action_t::parse_options( option_t*          options,
       { "travel_speed",       OPT_FLT,    &travel_speed          },
       { "vulnerable",         OPT_BOOL,   &vulnerable            },
       { "wait_on_ready",      OPT_BOOL,   &wait_on_ready         },
-      { NULL }
+      { NULL,                 NULL,       NULL }
     };
 
   std::vector<option_t> merged_options;

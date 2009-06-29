@@ -1249,7 +1249,7 @@ void mage_spell_t::parse_options( option_t*          options,
       { "dpm",          OPT_BOOL, &dpm_rotation },
       { "arcane_power", OPT_BOOL, &arcane_power },
       { "icy_veins",    OPT_BOOL, &icy_veins    },
-      { NULL }
+      { NULL, OPT_UNKNOWN, NULL }
     };
   std::vector<option_t> merged_options;
   spell_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
@@ -1437,7 +1437,7 @@ struct arcane_barrage_t : public mage_spell_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1446,7 +1446,7 @@ struct arcane_barrage_t : public mage_spell_t
         { 80, 3, 936, 1144, 0, 0.18 },
         { 70, 2, 709,  865, 0, 0.18 },
         { 60, 1, 386,  470, 0, 0.18 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -1507,7 +1507,7 @@ struct arcane_blast_t : public mage_spell_t
       {
         { "ap_burn", OPT_DEPRECATED, ( void* ) "arcane_power" },
         { "max",     OPT_INT,        &max_buff              },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1517,7 +1517,7 @@ struct arcane_blast_t : public mage_spell_t
         { 76, 3, 1047, 1215, 0, 0.08 },
         { 71, 2, 897,  1041, 0, 0.08 },
         { 64, 1, 842,  978,  0, 195  },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -1651,7 +1651,7 @@ struct arcane_missiles_tick_t : public mage_spell_t
         { 69, 10, 260, 260, 0, 0 },
         { 63,  9, 240, 240, 0, 0 },
         { 60,  8, 230, 230, 0, 0 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -1722,7 +1722,7 @@ struct arcane_missiles_t : public mage_spell_t
       {
         { "barrage",    OPT_BOOL, &barrage    },
         { "clearcast",  OPT_BOOL, &clearcast  },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1894,7 +1894,7 @@ struct focus_magic_t : public mage_spell_t
     option_t options[] =
       {
         { "target", OPT_STRING, &target_str },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2049,7 +2049,7 @@ struct fire_ball_t : public mage_spell_t
     option_t options[] =
       {
         { "brain_freeze", OPT_BOOL, &brain_freeze },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2061,7 +2061,7 @@ struct fire_ball_t : public mage_spell_t
         { 66, 13, 633,  805, 0, 425  },
         { 60, 12, 596,  760, 0, 410  },
         { 60, 11, 561,  715, 0, 395  },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -2153,7 +2153,7 @@ struct fire_blast_t : public mage_spell_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2164,7 +2164,7 @@ struct fire_blast_t : public mage_spell_t
         { 70,  9, 664,  786, 0, 465  },
         { 61,  8, 539,  637, 0, 400  },
         { 54,  7, 431,  509, 0, 340  },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -2208,7 +2208,7 @@ struct living_bomb_t : public mage_spell_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2217,7 +2217,7 @@ struct living_bomb_t : public mage_spell_t
         { 80, 3, 759, 759, 690, 0.22 },
         { 70, 2, 568, 568, 512, 0.22 },
         { 60, 1, 336, 336, 306, 0.22 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -2291,7 +2291,7 @@ struct pyroblast_t : public mage_spell_t
     option_t options[] =
       {
         { "hot_streak", OPT_BOOL, &hot_streak },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2302,7 +2302,7 @@ struct pyroblast_t : public mage_spell_t
         { 70, 10,  939, 1191, 59, 500  },
         { 66,  9,  846, 1074, 52, 460  },
         { 60,  8,  708,  898, 45, 440  },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -2376,7 +2376,7 @@ struct scorch_t : public mage_spell_t
     option_t options[] =
       {
         { "debuff",    OPT_BOOL, &debuff     },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2387,7 +2387,7 @@ struct scorch_t : public mage_spell_t
         { 70,  9, 305, 361, 0, 180  },
         { 64,  8, 269, 317, 0, 165  },
         { 58,  7, 233, 275, 0, 150  },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -2483,7 +2483,7 @@ struct frost_bolt_t : public mage_spell_t
     option_t options[] =
       {
         { "frozen", OPT_BOOL, &frozen },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2498,7 +2498,7 @@ struct frost_bolt_t : public mage_spell_t
         { 56, 10, 429, 463, 0, 260  },
         { 50, 9,  353, 383, 0, 225  },
         { 44, 8,  292, 316, 0, 195  },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -2579,7 +2579,7 @@ struct ice_lance_t : public mage_spell_t
       {
         { "frozen",      OPT_BOOL, &frozen      },
         { "fb_priority", OPT_BOOL, &fb_priority },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2588,7 +2588,7 @@ struct ice_lance_t : public mage_spell_t
         { 78, 3, 221, 255, 0, 0.07 },
         { 72, 2, 182, 210, 0, 0.07 },
         { 66, 1, 161, 187, 0, 150  },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -2677,7 +2677,7 @@ struct frostfire_bolt_t : public mage_spell_t
     option_t options[] =
       {
         { "dot_wait", OPT_BOOL, &dot_wait   },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2685,7 +2685,7 @@ struct frostfire_bolt_t : public mage_spell_t
       {
         { 80, 2, 722, 838, 30, 0.14 },
         { 75, 1, 629, 731, 20, 0.14 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -2777,7 +2777,7 @@ struct icy_veins_t : public mage_spell_t
 
     option_t options[] =
     {
-      { NULL }
+      { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
 
@@ -2816,7 +2816,7 @@ struct cold_snap_t : public mage_spell_t
 
     option_t options[] =
     {
-      { NULL }
+      { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
 
@@ -2928,7 +2928,7 @@ struct counterspell_t : public mage_spell_t
   {
     option_t options[] =
     {
-      { NULL }
+      { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
 
@@ -2973,7 +2973,7 @@ struct water_elemental_spell_t : public mage_spell_t
 
     option_t options[] =
     {
-      { NULL }
+      { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
 
@@ -3011,7 +3011,7 @@ struct mirror_image_spell_t : public mage_spell_t
 
     option_t options[] =
     {
-      { NULL }
+      { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
 
@@ -3048,7 +3048,7 @@ struct mana_gem_t : public action_t
         { "min",     OPT_FLT, &min     },
         { "max",     OPT_FLT, &max     },
         { "trigger", OPT_FLT, &trigger },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -3136,7 +3136,7 @@ struct choose_rotation_t : public action_t
     option_t options[] =
       {
         { "cooldown", OPT_FLT, &cooldown },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -3739,7 +3739,7 @@ std::vector<option_t>& mage_t::get_options()
       // @option_doc loc=player/mage/misc title="Misc"
       { "armor_type",                OPT_STRING, &( armor_type_str                   ) },
       { "focus_magic_target",        OPT_STRING, &( focus_magic_target_str           ) },
-      { NULL, OPT_UNKNOWN }
+      { NULL, OPT_UNKNOWN, NULL }
     };
 
     option_t::copy( options, mage_options );

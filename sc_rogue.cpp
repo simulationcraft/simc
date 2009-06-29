@@ -806,7 +806,7 @@ void rogue_attack_t::parse_options( option_t*          options,
       { "env<",             OPT_FLT, &max_env_expire   },
       { "rup>",             OPT_FLT, &min_rup_expire   },
       { "rup<",             OPT_FLT, &max_rup_expire   },
-      { NULL }
+      { NULL, OPT_UNKNOWN, NULL }
     };
   std::vector<option_t> merged_options;
   attack_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
@@ -1144,7 +1144,7 @@ struct adrenaline_rush_t : public rogue_attack_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1189,7 +1189,7 @@ struct ambush_t : public rogue_attack_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1200,7 +1200,7 @@ struct ambush_t : public rogue_attack_t
         { 70,  8, 509, 509, 0, 60 },
         { 66,  7, 369, 369, 0, 60 },
         { 58,  6, 319, 319, 0, 60 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -1254,7 +1254,7 @@ struct backstab_t : public rogue_attack_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1264,7 +1264,7 @@ struct backstab_t : public rogue_attack_t
         { 74, 11, 383, 383, 0, 60 },
         { 68, 10, 255, 255, 0, 60 },
         { 60,  9, 225, 225, 0, 60 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -1321,7 +1321,7 @@ struct blade_flurry_t : public rogue_attack_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1373,7 +1373,7 @@ struct envenom_t : public rogue_attack_t
       {
         { "min_doses", OPT_INT,  &min_doses },
         { "no_buff",   OPT_BOOL, &no_buff   },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1490,7 +1490,7 @@ struct eviscerate_t : public rogue_attack_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1558,7 +1558,7 @@ struct expose_armor_t : public rogue_attack_t
     option_t options[] =
       {
         { "override_sunder", OPT_BOOL, &override_sunder },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1643,7 +1643,7 @@ struct feint_t : public rogue_attack_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1672,7 +1672,7 @@ struct garrote_t : public rogue_attack_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1681,7 +1681,7 @@ struct garrote_t : public rogue_attack_t
         { 80, 10, 0, 0, 119, 50 },
         { 75,  9, 0, 0, 110, 50 },
         { 70,  8, 0, 0, 102, 50 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -1748,7 +1748,7 @@ struct ghostly_strike_t : public rogue_attack_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1785,7 +1785,7 @@ struct hemorrhage_t : public rogue_attack_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1872,7 +1872,7 @@ struct hunger_for_blood_t : public rogue_attack_t
     option_t options[] =
       {
         { "refresh_at", OPT_FLT, &refresh_at },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1956,7 +1956,7 @@ struct kick_t : public rogue_attack_t
   {
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2013,7 +2013,7 @@ struct killing_spree_t : public rogue_attack_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2084,7 +2084,7 @@ struct mutilate_t : public rogue_attack_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2094,7 +2094,7 @@ struct mutilate_t : public rogue_attack_t
         { 75, 5, 153, 153, 0, 60 },
         { 70, 4, 101, 101, 0, 60 },
         { 60, 3,  88,  88, 0, 60 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -2160,7 +2160,7 @@ struct premeditation_t : public rogue_attack_t
   {
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2207,7 +2207,7 @@ struct rupture_t : public rogue_attack_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2267,7 +2267,7 @@ struct shadowstep_t : public rogue_attack_t
   {
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2296,7 +2296,7 @@ struct shiv_t : public rogue_attack_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2338,7 +2338,7 @@ struct sinister_strike_t : public rogue_attack_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2349,7 +2349,7 @@ struct sinister_strike_t : public rogue_attack_t
         { 70, 10,  98,  98, 0, 45 },
         { 62,  9,  80,  80, 0, 45 },
         { 54,  8,  68,  68, 0, 45 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -2402,7 +2402,7 @@ struct slice_and_dice_t : public rogue_attack_t
   {
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2478,7 +2478,7 @@ struct pool_energy_t : public rogue_attack_t
       {
         { "wait",     OPT_FLT,  &wait     },
         { "for_next", OPT_BOOL, &for_next },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
   }
@@ -2528,7 +2528,7 @@ struct shadow_dance_t : public rogue_attack_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2580,7 +2580,7 @@ struct tricks_of_the_trade_t : public rogue_attack_t
     option_t options[] =
       {
         { "target", OPT_STRING, &target_str },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2640,7 +2640,7 @@ struct vanish_t : public rogue_attack_t
   {
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2964,7 +2964,7 @@ struct apply_poison_t : public rogue_poison_t
       {
         { "main_hand", OPT_STRING, &main_hand_str },
         {  "off_hand", OPT_STRING,  &off_hand_str },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -3036,7 +3036,7 @@ struct cold_blood_t : public spell_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -3065,7 +3065,7 @@ struct preparation_t : public spell_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -3668,7 +3668,7 @@ std::vector<option_t>& rogue_t::get_options()
       { "honor_among_thieves_interval", OPT_FLT,    &( honor_among_thieves_interval   ) },
       { "tricks_of_the_trade_target",   OPT_STRING, &( tricks_of_the_trade_target_str ) },
       { "prey_on_the_weak_hp",          OPT_INT,    &( prey_on_the_weak_hp            ) },
-      { NULL, OPT_UNKNOWN }
+      { NULL, OPT_UNKNOWN, NULL }
     };
 
     option_t::copy( options, rogue_options );

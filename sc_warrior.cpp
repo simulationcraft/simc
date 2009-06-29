@@ -894,7 +894,7 @@ void warrior_attack_t::parse_options( option_t*          options,
       { "max_rage",       OPT_FLT, &max_rage       },
       { "rage>",          OPT_FLT, &min_rage       },
       { "rage<",          OPT_FLT, &max_rage       },
-      { NULL }
+      { NULL, OPT_UNKNOWN, NULL }
     };
   std::vector<option_t> merged_options;
   attack_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
@@ -1278,7 +1278,7 @@ struct bladestorm_t : public warrior_attack_t
     assert( p -> talents.bladestorm );
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1331,7 +1331,7 @@ struct heroic_strike_t : public warrior_attack_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1343,7 +1343,7 @@ struct heroic_strike_t : public warrior_attack_t
         { 66, 10, 234, 234, 0, 15 },
         { 60,  9, 201, 201, 0, 15 },
         { 56,  8, 178, 178, 0, 15 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -1405,7 +1405,7 @@ struct bloodthirst_t : public warrior_attack_t
     assert( p -> talents.bloodthirst );
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1440,7 +1440,7 @@ struct concussion_blow_t : public warrior_attack_t
     assert( p -> talents.concussion_blow );
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1467,7 +1467,7 @@ struct shockwave_t : public warrior_attack_t
     assert( p -> talents.shockwave );
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1497,7 +1497,7 @@ struct devastate_t : public warrior_attack_t
     assert( p -> talents.devastate );
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1506,7 +1506,7 @@ struct devastate_t : public warrior_attack_t
       { 80, 5, 505, 505, 0, 15 },
       { 75, 4, 425, 425, 0, 15 },
       { 70, 3, 280, 280, 0, 15 },
-      { 0, 0 }
+      { 0, 0, 0, 0, 0, 0 }
     };
     init_rank( ranks );
 
@@ -1536,7 +1536,7 @@ struct revenge_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1547,7 +1547,7 @@ struct revenge_t : public warrior_attack_t
       { 63, 7, 699, 853, 0, 5 },
       { 60, 6, 643, 785, 0, 5 },
       { 54, 5, 498, 608, 0, 5 },
-      { 0, 0 }
+      { 0, 0, 0, 0, 0, 0 }
     };
     init_rank( ranks );
 
@@ -1585,7 +1585,7 @@ struct shield_slam_t : public warrior_attack_t
     option_t options[] =
       {
         { "sword_and_board", OPT_BOOL, &sword_and_board },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1596,7 +1596,7 @@ struct shield_slam_t : public warrior_attack_t
       { 70, 6, 549, 577, 0, 20 },
       { 66, 5, 499, 523, 0, 20 },
       { 60, 4, 447, 469, 0, 20 },
-      { 0, 0 }
+      { 0, 0, 0, 0, 0, 0 }
     };
     init_rank( ranks );
 
@@ -1658,7 +1658,7 @@ struct thunderclap_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1669,7 +1669,7 @@ struct thunderclap_t : public warrior_attack_t
       { 67, 7, 123, 123, 0, 20 },
       { 58, 6, 103, 103, 0, 20 },
       { 48, 5, 82, 82, 0, 20 },
-      { 0, 0 }
+      { 0, 0, 0, 0, 0, 0 }
     };
     init_rank( ranks );
 
@@ -1703,7 +1703,7 @@ struct execute_t : public warrior_attack_t
     option_t options[] =
       {
         { "sudden_death", OPT_BOOL, &sudden_death },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1714,7 +1714,7 @@ struct execute_t : public warrior_attack_t
         { 70, 6,  865,  865, 0, 15 },
         { 65, 5,  687,  687, 0, 15 },
         { 56, 4,  554,  554, 0, 15 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -1810,7 +1810,7 @@ struct mortal_strike_t : public warrior_attack_t
     assert( p -> talents.mortal_strike );
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1821,7 +1821,7 @@ struct mortal_strike_t : public warrior_attack_t
         { 70, 6, 210, 210, 0, 30 },
         { 66, 5, 185, 185, 0, 30 },
         { 60, 4, 160, 160, 0, 30 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -1847,7 +1847,7 @@ struct overpower_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1901,7 +1901,7 @@ struct rend_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1911,7 +1911,7 @@ struct rend_t : public warrior_attack_t
         { 71,  9, 0, 0, 63, 10 },
         { 68,  8, 0, 0, 43, 10 },
         { 60,  7, 0, 0, 37, 10 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -1965,7 +1965,7 @@ struct slam_t : public warrior_attack_t
     option_t options[] =
       {
         { "bloodsurge", OPT_BOOL, &bloodsurge },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -1976,7 +1976,7 @@ struct slam_t : public warrior_attack_t
         { 69, 6, 140, 140, 0, 15 },
         { 61, 5, 105, 105, 0, 15 },
         { 54, 4,  87,  87, 0, 15 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -2069,7 +2069,7 @@ struct whirlwind_t : public warrior_attack_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2130,7 +2130,7 @@ struct pummel_t : public warrior_attack_t
   {
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2257,7 +2257,7 @@ void warrior_spell_t::parse_options( option_t*          options,
       { "max_rage",       OPT_FLT, &max_rage       },
       { "rage>",          OPT_FLT, &min_rage       },
       { "rage<",          OPT_FLT, &max_rage       },
-      { NULL }
+      { NULL, OPT_UNKNOWN, NULL }
     };
   std::vector<option_t> merged_options;
   spell_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
@@ -2274,7 +2274,7 @@ struct berserker_rage_t : public warrior_spell_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2303,7 +2303,7 @@ struct bloodrage_t : public warrior_spell_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2355,7 +2355,7 @@ struct death_wish_t : public warrior_spell_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2404,7 +2404,7 @@ struct recklessness_t : public warrior_spell_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2456,7 +2456,7 @@ struct stance_t : public warrior_spell_t
     option_t options[] =
       {
         { "choose",  OPT_STRING, &stance_str     },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2958,7 +2958,7 @@ std::vector<option_t>& warrior_t::get_options()
       { "weapon_mastery",                  OPT_INT, &( talents.weapon_mastery                  ) },
       { "wrecking_crew",                   OPT_INT, &( talents.wrecking_crew                   ) },
       { "glyph_of_blocking",               OPT_BOOL, &( glyphs.blocking                        ) },
-      { NULL, OPT_UNKNOWN }
+      { NULL, OPT_UNKNOWN, NULL }
     };
 
     option_t::copy( options, warrior_options );

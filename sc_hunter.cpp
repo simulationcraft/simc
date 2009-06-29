@@ -576,7 +576,7 @@ struct hunter_pet_t : public pet_t
         { "spiders_bite",     OPT_INT, &( talents.spiders_bite     ) },
         { "call_of_the_wild", OPT_INT, &( talents.call_of_the_wild ) },
         { "rabid",            OPT_INT, &( talents.rabid            ) },
-        { NULL, OPT_UNKNOWN }
+        { NULL, OPT_UNKNOWN, NULL }
       };
 
       option_t::copy( options, hunter_pet_options );
@@ -2310,7 +2310,7 @@ struct aimed_shot_t : public hunter_attack_t
     option_t options[] =
       {
         { "improved_steady_shot", OPT_BOOL, &improved_steady_shot },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2320,7 +2320,7 @@ struct aimed_shot_t : public hunter_attack_t
         { 75, 8, 345, 345, 0, 0.08 },
         { 70, 7, 205, 205, 0, 0.08 },
         { 60, 6, 150, 150, 0, 0.12 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -2410,7 +2410,7 @@ struct arcane_shot_t : public hunter_attack_t
       {
         { "improved_steady_shot", OPT_BOOL, &improved_steady_shot },
         { "lock_and_load",        OPT_BOOL, &lock_and_load        },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2420,7 +2420,7 @@ struct arcane_shot_t : public hunter_attack_t
         { 73, 10, 402, 402, 0, 0.05 },
         { 69, 9,  273, 273, 0, 0.05 },
         { 60, 8,  200, 200, 0, 0.07 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -2515,7 +2515,7 @@ struct black_arrow_t : public hunter_attack_t
         { 63, 3, 0, 0, 1250/5.0, 0.06 },
         { 57, 2, 0, 0,  940/5.0, 0.06 },
         { 50, 1, 0, 0,  785/5.0, 0.06 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -2570,7 +2570,7 @@ struct chimera_shot_t : public hunter_attack_t
       {
         { "active_sting",         OPT_BOOL, &active_sting         },
         { "improved_steady_shot", OPT_BOOL, &improved_steady_shot },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2704,7 +2704,7 @@ struct explosive_tick_t : public hunter_attack_t
         { 75, 3,  325, 391, 0, 0 },
         { 70, 2,  221, 265, 0, 0 },
         { 60, 1,  160, 192, 0, 0 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -2763,7 +2763,7 @@ struct explosive_shot_t : public hunter_attack_t
     option_t options[] =
       {
         { "lock_and_load", OPT_BOOL, &lock_and_load },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2826,7 +2826,7 @@ struct kill_shot_t : public hunter_attack_t
         { 80, 3, 650, 650, 0, 0.07 },
         { 75, 2, 500, 500, 0, 0.07 },
         { 71, 1, 410, 410, 0, 0.07 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -2891,7 +2891,7 @@ struct multi_shot_t : public hunter_attack_t
         { 74, 7, 333, 333, 0, 0.09 },
         { 67, 6, 205, 205, 0, 0.09 },
         { 60, 5, 150, 150, 0, 0.13 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -2965,7 +2965,7 @@ struct serpent_sting_t : public hunter_attack_t
     option_t options[] =
       {
         { "force", OPT_BOOL, &force },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -2975,7 +2975,7 @@ struct serpent_sting_t : public hunter_attack_t
         { 73, 11, 0, 0,  990/5.0, 0.09 },
         { 67, 10, 0, 0,  660/5.0, 0.09 },
         { 60, 9,  0, 0,  555/5.0, 0.13 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -3063,7 +3063,7 @@ struct steady_shot_t : public hunter_attack_t
         { 71, 3, 198, 198, 0, 0.05 },
         { 62, 2, 108, 108, 0, 0.05 },
         { 50, 1,  45,  45, 0, 0.05 },
-        { 0, 0 }
+        { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
@@ -3155,7 +3155,7 @@ struct aspect_t : public hunter_spell_t
         { "hawk_always",     OPT_BOOL, &hawk_always },
         { "viper_start",     OPT_INT,  &viper_start },
         { "viper_stop",      OPT_INT,  &viper_stop  },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -3369,7 +3369,7 @@ struct kill_command_t : public hunter_spell_t
 
     option_t options[] =
       {
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -3416,7 +3416,7 @@ struct rapid_fire_t : public hunter_spell_t
     option_t options[] =
       {
         { "viper", OPT_BOOL, &viper },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -3486,7 +3486,7 @@ struct readiness_t : public hunter_spell_t
         // Only perform Readiness while Rapid Fire is up, allows the sequence
         // Rapid Fire, Readiness, Rapid Fire, for better RF uptime
         { "wait_for_rapid_fire", OPT_BOOL, &wait_for_rf },
-        { NULL }
+        { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
@@ -4051,7 +4051,7 @@ std::vector<option_t>& hunter_t::get_options()
       { "ammo_dps",                          OPT_FLT,    &( ammo_dps                          ) },
       { "quiver_haste",                      OPT_DEPRECATED, NULL                               },
       { "summon_pet",                        OPT_STRING, &( summon_pet_str                    ) },
-      { NULL, OPT_UNKNOWN }
+      { NULL, OPT_UNKNOWN, NULL }
     };
 
     option_t::copy( options, hunter_options );
