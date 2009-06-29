@@ -951,6 +951,7 @@ struct vampiric_touch_t : public priest_spell_t
     base_execute_time = 1.5;
     base_tick_time    = 3.0;
     num_ticks         = 5;
+    if( p -> set_bonus.tier9_2pc() ) num_ticks += 2;
     tick_power_mod    = base_tick_time / 15.0;
     tick_power_mod   *= 2.0;
 

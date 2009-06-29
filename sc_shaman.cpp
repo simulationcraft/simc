@@ -205,6 +205,10 @@ struct shaman_t : public player_t
     int t7_4pc_elemental;
     int t8_2pc_elemental;
     int t8_4pc_elemental;
+    int t9_2pc_elemental;
+    int t9_4pc_elemental;
+    int t10_2pc_elemental;
+    int t10_4pc_elemental;
     int t4_2pc_enhancement;
     int t4_4pc_enhancement;
     int t5_2pc_enhancement;
@@ -215,6 +219,10 @@ struct shaman_t : public player_t
     int t7_4pc_enhancement;
     int t8_2pc_enhancement;
     int t8_4pc_enhancement;
+    int t9_2pc_enhancement;
+    int t9_4pc_enhancement;
+    int t10_2pc_enhancement;
+    int t10_4pc_enhancement;
     tiers_t() { memset( ( void* ) this, 0x0, sizeof( tiers_t ) ); }
   };
   tiers_t tiers;
@@ -923,9 +931,10 @@ void shaman_attack_t::assess_damage( double amount,
 
   attack_t::assess_damage( amount, dmg_type );
 
-  if ( num_ticks == 0 && p -> _buffs.lightning_charges > 0 )
+  if ( num_ticks == 0 && p -> _buffs.lightning_charges > 0 && p -> talents.static_shock )
   {
-    if ( p -> rng_static_shock -> roll( p -> talents.static_shock * 0.02 ) )
+    double chance = p -> talents.static_shock * 0.02 + p -> tiers.t9_2pc_enhancement * 0.03;
+    if ( p -> rng_static_shock -> roll( chance ) )
     {
       p -> _buffs.lightning_charges--;
       p -> active_lightning_charge -> execute();
@@ -1708,7 +1717,7 @@ struct earth_shock_t : public shaman_spell_t
     cooldown          = 6.0;
     cooldown_group    = "shock";
     cooldown         -= ( p -> talents.reverberation * 0.2 );
-    base_multiplier  *= 1.0 + p -> talents.concussion * 0.01;
+    base_multiplier  *= 1.0 + p -> talents.concussion * 0.01 + p -> tiers.t9_2pc_enhancement * 0.25;
     base_hit         += p -> talents.elemental_precision * 0.01;
 
     base_cost_reduction  += ( p -> talents.convection        * 0.02 +
@@ -1771,8 +1780,9 @@ struct frost_shock_t : public shaman_spell_t
     cooldown_group    = "shock";
     cooldown         -= ( p -> talents.reverberation  * 0.2 +
                           p -> talents.booming_echoes * 1.0 );
-    base_multiplier  *= 1.0 + ( p -> talents.concussion     * 0.01 +
-                                p -> talents.booming_echoes * 0.10 );
+    base_multiplier  *= 1.0 + ( p -> talents.concussion       * 0.01 +
+                                p -> talents.booming_echoes   * 0.10 +
+                                p -> tiers.t9_2pc_enhancement * 0.25);
     base_hit         += p -> talents.elemental_precision * 0.01;
 
     base_cost_reduction  += ( p -> talents.convection        * 0.02 +
@@ -1831,10 +1841,12 @@ struct flame_shock_t : public shaman_spell_t
 
     base_hit += p -> talents.elemental_precision * 0.01;
 
-    base_dd_multiplier *= 1.0 + ( p -> talents.concussion     * 0.01 +
-                                  p -> talents.booming_echoes * 0.10 );
+    base_dd_multiplier *= 1.0 + ( p -> talents.concussion       * 0.01 +
+                                  p -> talents.booming_echoes   * 0.10 +
+                                  p -> tiers.t9_2pc_enhancement * 0.25);
 
-    base_td_multiplier *= 1.0 + ( p -> talents.concussion * 0.01 +
+    base_td_multiplier *= 1.0 + ( p -> talents.concussion       * 0.01 +
+                                  p -> tiers.t9_2pc_enhancement * 0.25 +
                                   util_t::talent_rank( p -> talents.storm_earth_and_fire, 3, 0.20 ) );
 
     base_cost_reduction  += ( p -> talents.convection        * 0.02 +
@@ -3232,6 +3244,10 @@ void shaman_t::init_items()
     if ( set_bonus.tier7_4pc() ) tiers.t7_4pc_enhancement = 1;
     if ( set_bonus.tier8_2pc() ) tiers.t8_2pc_enhancement = 1;
     if ( set_bonus.tier8_4pc() ) tiers.t8_4pc_enhancement = 1;
+    if ( set_bonus.tier9_2pc() ) tiers.t9_2pc_enhancement = 1;
+    if ( set_bonus.tier9_4pc() ) tiers.t9_4pc_enhancement = 1;
+    if ( set_bonus.tier10_2pc() ) tiers.t10_2pc_enhancement = 1;
+    if ( set_bonus.tier10_4pc() ) tiers.t10_4pc_enhancement = 1;
   }
   else
   {
@@ -3245,6 +3261,10 @@ void shaman_t::init_items()
     if ( set_bonus.tier7_4pc() ) tiers.t7_4pc_elemental = 1;
     if ( set_bonus.tier8_2pc() ) tiers.t8_2pc_elemental = 1;
     if ( set_bonus.tier8_4pc() ) tiers.t8_4pc_elemental = 1;
+    if ( set_bonus.tier9_2pc() ) tiers.t9_2pc_elemental = 1;
+    if ( set_bonus.tier9_4pc() ) tiers.t9_4pc_elemental = 1;
+    if ( set_bonus.tier10_2pc() ) tiers.t10_2pc_elemental = 1;
+    if ( set_bonus.tier10_4pc() ) tiers.t10_4pc_elemental = 1;
   }
 }
 
