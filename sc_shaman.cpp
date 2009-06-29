@@ -1522,7 +1522,7 @@ struct lava_burst_t : public shaman_spell_t
     base_execute_time   -= p -> talents.lightning_mastery * 0.1;
     base_multiplier     *= 1.0 + p -> talents.concussion * 0.01;
     base_multiplier     *= 1.0 + p -> talents.call_of_flame * 0.02;
-    if( p -> tiers.tier9_4pc_elemental )
+    if( p -> tiers.t9_4pc_elemental )
       base_multiplier   *= 1.2;
     base_hit            += p -> talents.elemental_precision * 0.01;
     direct_power_mod    += p -> talents.shamanism * 0.04;
@@ -1829,7 +1829,7 @@ struct flame_shock_t : public shaman_spell_t
     base_execute_time = 0;
     base_tick_time    = 3.0;
     num_ticks         = 4;
-    if( p -> tiers.t9_2pc_elemental ) num_tick += 3;
+    if( p -> tiers.t9_2pc_elemental ) num_ticks += 3;
     
     direct_power_mod  = 0.215;
     tick_power_mod    = 0.100;
