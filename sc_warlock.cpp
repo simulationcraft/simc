@@ -2454,7 +2454,6 @@ struct haunt_t : public warlock_spell_t
 
   virtual void player_buff()
   {
-    warlock_t* p = player -> cast_warlock();
     warlock_spell_t::player_buff();
   }
 
