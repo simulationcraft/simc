@@ -29,29 +29,41 @@ struct warlock_t : public player_t
   struct _buffs_t
   {
     //int    backdraft;
-    int    decimation;
+    //int    decimation;
     //int    demonic_empathy;
     //int    empowered_imp;
     //double eradication;
     //double fel_armor;
-    int    flame_shadow;
-    int    haunted;
+    //int    flame_shadow;
+    //int    haunted;
     //double life_tap_glyph;
-    int    metamorphosis;
+    //int    metamorphosis;
     //double molten_core;
     int    pet_sacrifice;
     //double pyroclasm;
     //int    shadow_embrace;
-    int    shadow_flame;
+    //int    shadow_flame;
     //int    shadow_trance;
-    double shadow_vulnerability;
-    int    shadow_vulnerability_charges;
-
+    //double shadow_vulnerability;
+    //int    shadow_vulnerability_charges;
     void reset() { memset( ( void* ) this, 0x00, sizeof( _buffs_t ) ); }
     _buffs_t() { reset(); }
   };
   _buffs_t _buffs;
   
+  pbuff_t* backdraft;
+  pbuff_t* decimation;
+  pbuff_t* empowered_imp;
+  pbuff_t* eradication;
+  pbuff_t* fel_armor;
+  pbuff_t* haunted;
+  pbuff_t* life_tap_glyph;
+  pbuff_t* molten_core;
+  pbuff_t* metamorphosis;
+  pbuff_t* pyroclasm;
+  pbuff_t* shadow_embrace;
+  pbuff_t* shadow_trance;
+
   // warlock specific expression functions
   struct warlock_expression_t: public act_expression_t{
     warlock_t* player;
@@ -61,8 +73,6 @@ struct warlock_t : public player_t
     virtual ~warlock_expression_t(){};
     virtual double evaluate();
   };
-  
-
 
   // Cooldowns
   /*
@@ -80,19 +90,19 @@ struct warlock_t : public player_t
   struct _expirations_t
   {
     //event_t* backdraft;
-    event_t* decimation;
+    //event_t* decimation;
     //event_t* demonic_empathy;
     //event_t* empowered_imp;
     //event_t* eradication;
-    event_t* flame_shadow;
-    event_t* haunted;
+    //event_t* flame_shadow;
+    //event_t* haunted;
     event_t* infernal;
     //event_t* life_tap_glyph;
     //event_t* molten_core;
     //event_t* pyroclasm;
     //event_t* shadow_embrace;
-    event_t* shadow_flame;
-    event_t* shadow_vulnerability;
+    //event_t* shadow_flame;
+    //event_t* shadow_vulnerability;
 
     void reset() { memset( ( void* ) this, 0x00, sizeof( _expirations_t ) ); }
     _expirations_t() { reset(); }
@@ -121,10 +131,10 @@ struct warlock_t : public player_t
   //uptime_t* uptimes_eradication;
   //uptime_t* uptimes_molten_core;
   //uptime_t* uptimes_pyroclasm;
-  uptime_t* uptimes_shadow_flame;
-  uptime_t* uptimes_flame_shadow;
+  //uptime_t* uptimes_shadow_flame;
+  //uptime_t* uptimes_flame_shadow;
   //uptime_t* uptimes_shadow_trance;
-  uptime_t* uptimes_shadow_vulnerability;
+  //uptime_t* uptimes_shadow_vulnerability;
   uptime_t* uptimes_spirits_of_the_damned;
 
   // Random Number Generators
@@ -242,16 +252,6 @@ struct warlock_t : public player_t
     glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
   };
   glyphs_t glyphs;
-
-  pbuff_t* backdraft;
-  pbuff_t* empowered_imp;
-  pbuff_t* eradication;
-  pbuff_t* fel_armor;
-  pbuff_t* life_tap_glyph;
-  pbuff_t* molten_core;
-  pbuff_t* pyroclasm;
-  pbuff_t* shadow_embrace;
-  pbuff_t* shadow_trance;
 
 
   warlock_t( sim_t* sim, const std::string& name ) : player_t( sim, WARLOCK, name )
@@ -1025,6 +1025,7 @@ static void trigger_tier5_4pc( spell_t*  s,
 
 // trigger_tier4_2pc ========================================================
 
+/*
 static void trigger_tier4_2pc( spell_t* s )
 {
   struct expiration_t : public event_t
@@ -1082,9 +1083,10 @@ static void trigger_tier4_2pc( spell_t* s )
     }
   }
 }
+*/
 
 // decrement_shadow_vulnerability ===========================================
-
+/*
 static void decrement_shadow_vulnerability( warlock_t* p )
 {
   if ( p -> _buffs.shadow_vulnerability_charges > 0 )
@@ -1096,6 +1098,7 @@ static void decrement_shadow_vulnerability( warlock_t* p )
     }
   }
 }
+*/
 
 // trigger_improved_shadow_bolt ===========================================
 
@@ -1194,7 +1197,7 @@ static void trigger_nightfall( spell_t* s )
 
   warlock_t* p = s -> player -> cast_warlock();
   if (p -> talents.nightfall && !p->shadow_trance->is_up(true)) 
-    p->shadow_trance->trigger();
+    p->shadow_trance->trigger(1, 0.02*p->talents.nightfall);
   /*
   if ( p -> talents.nightfall && ! p -> _buffs.shadow_trance )
   {
@@ -1214,7 +1217,7 @@ static void trigger_corruption_glyph( spell_t* s )
 {
   warlock_t* p = s -> player -> cast_warlock();
   if ( p -> glyphs.corruption && ! p->shadow_trance->is_up(true) )
-    p->shadow_trance->trigger(1,0.04);
+    p->shadow_trance->trigger(1, 0.04);
   /*
   if ( p -> glyphs.corruption && ! p -> _buffs.shadow_trance )
   {
@@ -1302,8 +1305,10 @@ static void trigger_backdraft( spell_t* s )
 
 // trigger_haunt ========================================================
 
+/*
 static void trigger_haunted( spell_t* s )
 {
+
   struct expiration_t : public event_t
   {
     expiration_t( sim_t* sim, warlock_t* p ) : event_t( sim, p )
@@ -1336,6 +1341,7 @@ static void trigger_haunted( spell_t* s )
     e = new ( s -> sim ) expiration_t( s -> sim, p );
   }
 }
+*/
 
 // trigger_molten_core =====================================================
 
@@ -1404,6 +1410,13 @@ static void trigger_decimation( warlock_spell_t* s,
                                 int result )
 {
   warlock_t* p = s -> player -> cast_warlock();
+  p -> decimation_queue.pop();
+  if ( (result!= RESULT_HIT) && (result!= RESULT_CRIT) ) return;
+  if ( s -> sim -> target -> health_percentage() > 35  ) return;
+  p->decimation->trigger();
+  
+  /*
+  warlock_t* p = s -> player -> cast_warlock();
 
   p -> decimation_queue.pop();
 
@@ -1442,6 +1455,7 @@ static void trigger_decimation( warlock_spell_t* s,
   {
     e = new ( s -> sim ) decimation_expiration_t( s -> sim, p );
   }
+  */
 }
 
 // trigger_eradication =====================================================
@@ -1790,7 +1804,8 @@ void warlock_spell_t::player_buff()
 
   spell_t::player_buff();
 
-  if ( p -> _buffs.metamorphosis ) player_multiplier *= 1.20;
+  //if ( p -> _buffs.metamorphosis ) player_multiplier *= 1.20;
+  player_multiplier *= p->metamorphosis->mul_value();
 
   if ( p -> talents.malediction ) player_multiplier *= 1.0 + p -> talents.malediction * 0.01;
 
@@ -1801,8 +1816,8 @@ void warlock_spell_t::player_buff()
     if ( p -> _buffs.pet_sacrifice == PET_FELGUARD ) player_multiplier *= 1.0 + 0.07;
     if ( p -> _buffs.pet_sacrifice == PET_SUCCUBUS ) player_multiplier *= 1.0 + 0.10;
 
-    if ( p -> _buffs.flame_shadow ) player_spell_power += 135;
-    p -> uptimes_flame_shadow -> update( p -> _buffs.flame_shadow != 0 );
+    //if ( p -> _buffs.flame_shadow ) player_spell_power += 135;
+    //p -> uptimes_flame_shadow -> update( p -> _buffs.flame_shadow != 0 );
 
     //if ( p -> _buffs.pyroclasm ) player_multiplier *= 1.0 + p -> talents.pyroclasm * 0.02;
     //p -> uptimes_pyroclasm -> update( p -> _buffs.pyroclasm != 0 );
@@ -1813,8 +1828,8 @@ void warlock_spell_t::player_buff()
     if ( p -> _buffs.pet_sacrifice == PET_FELGUARD ) player_multiplier *= 1.0 + 0.07;
     if ( p -> _buffs.pet_sacrifice == PET_IMP      ) player_multiplier *= 1.0 + 0.10;
 
-    if ( p -> _buffs.shadow_flame ) player_spell_power += 135;
-    p -> uptimes_shadow_flame -> update( p -> _buffs.shadow_flame != 0 );
+    //if ( p -> _buffs.shadow_flame ) player_spell_power += 135;
+    //p -> uptimes_shadow_flame -> update( p -> _buffs.shadow_flame != 0 );
 
     //if ( p -> _buffs.molten_core ) player_multiplier *= 1.10;
     //p -> uptimes_molten_core -> update( p -> _buffs.molten_core != 0 );
@@ -1891,11 +1906,10 @@ void warlock_spell_t::target_debuff( int dmg_type )
     //  target_multiplier *= 1.0 + p -> _buffs.shadow_embrace * p -> talents.shadow_embrace * 0.01;
     if ( p -> shadow_embrace->is_up() && school == SCHOOL_SHADOW )
       target_multiplier *= 1.0 + p -> shadow_embrace->buff_value * p -> talents.shadow_embrace * 0.01;
-
-    if ( p -> _buffs.haunted && school == SCHOOL_SHADOW )
-    {
-      target_multiplier *= ( p -> glyphs.haunt ) ? 1.23 : 1.20;
-    }
+    //if ( p -> _buffs.haunted && school == SCHOOL_SHADOW )
+    //  target_multiplier *= ( p -> glyphs.haunt ) ? 1.23 : 1.20;
+    if ( school == SCHOOL_SHADOW )
+      target_multiplier *= p->haunted->mul_value();
 
     if ( p -> main_hand_weapon.buff == SPELL_STONE )
     {
@@ -1953,7 +1967,7 @@ void warlock_spell_t::execute()
 
   if ( result_is_hit() )
   {
-    trigger_tier4_2pc( this );
+    //trigger_tier4_2pc( this );
     trigger_molten_core( this );
 
     /*
@@ -2007,9 +2021,11 @@ bool warlock_spell_t::ready()
     return false;
 
   if ( metamorphosis > 0 )
-    return( p -> _buffs.metamorphosis != 0 );
+    //return( p -> _buffs.metamorphosis != 0 );
+    return( p->metamorphosis->is_up() );
   else if ( metamorphosis < 0 )
-    return( p -> _buffs.metamorphosis == 0 );
+    //return( p -> _buffs.metamorphosis == 0 );
+    return( !p->metamorphosis->is_up() );
 
   if ( backdraft )
      //if ( ! p -> _buffs.backdraft )
@@ -2543,10 +2559,11 @@ struct death_coil_t : public warlock_spell_t
     if ( result_is_hit() )
     {
       player -> resource_gain( RESOURCE_HEALTH, direct_dmg );
-      decrement_shadow_vulnerability( player -> cast_warlock() );
+      //decrement_shadow_vulnerability( player -> cast_warlock() );
     }
   }
 
+  /*
   virtual void player_buff()
   {
     warlock_t* p = player -> cast_warlock();
@@ -2554,6 +2571,7 @@ struct death_coil_t : public warlock_spell_t
     if ( p -> _buffs.shadow_vulnerability ) player_multiplier *= 1.0 + p -> talents.improved_shadow_bolt * 0.02;
     p -> uptimes_shadow_vulnerability -> update( p -> _buffs.shadow_vulnerability != 0 );
   }
+  */
 };
 
 // Shadow Burn Spell ===========================================================
@@ -2603,7 +2621,7 @@ struct shadow_burn_t : public warlock_spell_t
     if ( result_is_hit() )
     {
       trigger_soul_leech( this );
-      decrement_shadow_vulnerability( player -> cast_warlock() );
+      //decrement_shadow_vulnerability( player -> cast_warlock() );
     }
   }
 
@@ -2611,8 +2629,8 @@ struct shadow_burn_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::player_buff();
-    if ( p -> _buffs.shadow_vulnerability ) player_multiplier *= 1.0 + p -> talents.improved_shadow_bolt * 0.02;
-    p -> uptimes_shadow_vulnerability -> update( p -> _buffs.shadow_vulnerability != 0 );
+    //if ( p -> _buffs.shadow_vulnerability ) player_multiplier *= 1.0 + p -> talents.improved_shadow_bolt * 0.02;
+    //p -> uptimes_shadow_vulnerability -> update( p -> _buffs.shadow_vulnerability != 0 );
     if ( p -> glyphs.shadow_burn )
     {
       if ( sim -> target -> health_percentage() < 35 )
@@ -3122,10 +3140,12 @@ struct haunt_t : public warlock_spell_t
     warlock_spell_t::execute();
     if ( result_is_hit() )
     {
-      trigger_haunted( this );
+      warlock_t* p = player -> cast_warlock();
+      //trigger_haunted( this );
+      p->haunted->trigger();
       trigger_everlasting_affliction( this );
       stack_shadow_embrace( this );
-      decrement_shadow_vulnerability( player -> cast_warlock() );
+      //decrement_shadow_vulnerability( player -> cast_warlock() );
     }
   }
 
@@ -3133,8 +3153,8 @@ struct haunt_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::player_buff();
-    if ( p -> _buffs.shadow_vulnerability ) player_multiplier *= 1.0 + p -> talents.improved_shadow_bolt * 0.02;
-    p -> uptimes_shadow_vulnerability -> update( p -> _buffs.shadow_vulnerability != 0 );
+    //if ( p -> _buffs.shadow_vulnerability ) player_multiplier *= 1.0 + p -> talents.improved_shadow_bolt * 0.02;
+    //p -> uptimes_shadow_vulnerability -> update( p -> _buffs.shadow_vulnerability != 0 );
   }
 
   virtual bool ready()
@@ -3146,8 +3166,11 @@ struct haunt_t : public warlock_spell_t
     if ( ! warlock_spell_t::ready() )
       return false;
 
-    if ( debuff && p -> _expirations.haunted )
-      if ( ( sim -> current_time + execute_time() ) < p -> _expirations.haunted -> occurs() )
+    //if ( debuff && p -> _expirations.haunted )
+    //  if ( ( sim -> current_time + execute_time() ) < p -> _expirations.haunted -> occurs() )
+    //    return false;
+    if ( debuff && p->haunted->is_up(true) )
+      if ( ( sim -> current_time + execute_time() ) < p->haunted->expected_end )
         return false;
 
     return true;
@@ -3684,13 +3707,15 @@ struct soul_fire_t : public warlock_spell_t
     {
       trigger_soul_leech( this );
     }
-    event_t::early( p -> _expirations.decimation );
+    //event_t::early( p -> _expirations.decimation );
+    p->decimation->dec_buff();
   }
 
   virtual double execute_time() SC_CONST
   {
     warlock_t* p = player -> cast_warlock();
     double t = warlock_spell_t::execute_time();
+    /*
     if ( p -> _buffs.decimation )
     {
       if ( p -> talents.decimation == 1 )
@@ -3698,6 +3723,8 @@ struct soul_fire_t : public warlock_spell_t
       else
         t *= 0.40;
     }
+    */
+    t*=p->decimation->mul_value();
     return t;
   }
 
@@ -3710,7 +3737,8 @@ struct soul_fire_t : public warlock_spell_t
 
     if ( decimation )
     {
-      if ( ! p -> _buffs.decimation )
+      //if ( ! p -> _buffs.decimation )
+      if (!p->decimation->is_up())
         return false;
       if ( p -> distance >= 30 && p -> decimation_queue.empty() )
         return false;
@@ -4084,7 +4112,8 @@ struct immolation_t : public warlock_spell_t
   virtual void tick()
   {
     warlock_t* p = player -> cast_warlock();
-    if ( p -> _buffs.metamorphosis )
+    //if ( p -> _buffs.metamorphosis )
+    if (p->metamorphosis->is_up())
       warlock_spell_t::tick();
     else
       current_tick = num_ticks;
@@ -4097,7 +4126,8 @@ struct immolation_t : public warlock_spell_t
     if ( ! warlock_spell_t::ready() )
       return false;
 
-    if ( ! p -> _buffs.metamorphosis )
+    //if ( ! p -> _buffs.metamorphosis )
+    if ( ! p->metamorphosis->is_up() )
       return false;
 
     return true;
@@ -4128,6 +4158,7 @@ struct metamorphosis_t : public warlock_spell_t
 
   virtual void execute()
   {
+    /*
     struct expiration_t : public event_t
     {
       expiration_t( sim_t* sim, player_t* player ) : event_t( sim, player )
@@ -4145,11 +4176,12 @@ struct metamorphosis_t : public warlock_spell_t
         p -> _buffs.metamorphosis = 0;
       }
     };
-
+    */
     warlock_t* p = player -> cast_warlock();
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     update_ready();
-    new ( sim ) expiration_t( sim, p );
+    //new ( sim ) expiration_t( sim, p );
+    p->metamorphosis->trigger();
   }
 
   virtual bool ready()
@@ -4345,7 +4377,8 @@ struct wait_for_decimation_t : public action_t
     if (!p->talents.decimation) return false;
 
     if ( sim -> target -> health_percentage() <= 35 )
-      if ( ! p -> _buffs.decimation )
+      //if ( ! p -> _buffs.decimation )
+      if ( ! p->decimation->is_up() )
         if ( ! p -> decimation_queue.empty() )
           if ( ( p -> decimation_queue.front() - sim -> current_time ) <= time )
             return true;
@@ -4733,19 +4766,24 @@ void warlock_t::init_uptimes()
   player_t::init_uptimes();
 
   backdraft= new pbuff_t(this, "backdraft",15,0, 47257+ talents.backdraft, 1.0 - talents.backdraft * 0.10, !talents.backdraft);
+  static int aura_id_dec[]={ 0, 63156, 63158};
+  decimation= new pbuff_t(this, "decimation",10,0,aura_id_dec[talents.decimation % 3],(talents.decimation==1 ? 0.70:0.40), !talents.decimation );
   static int aura_id_eimp[]={0,47220,47221,47223};
   empowered_imp= new pbuff_t(this, "empowered_imp",8,0, aura_id_eimp[talents.empowered_imp%4], sim->patch.after(3,2,0)? 1.00 : 0.20, 
                              !talents.empowered_imp, -talents.empowered_imp / 3.0);
   eradication= new pbuff_t(this, "eradication",10,0, 47195 + talents.eradication, 
                            1.0/ ( 1 + talents.eradication * 0.06 + (talents.eradication == 3? 0.02:0) ), !talents.eradication, 0.06);
   fel_armor= new pbuff_t(this, "fel_armor",-1,0, 47893);
+  haunted= new pbuff_t(this, "haunted",12, 0,59164, (glyphs.haunt ? 1.23 : 1.20) , !talents.haunt );
+  haunted->trigger_counter=&affliction_effects; // in order to update on expiration also (easier than callback)
   life_tap_glyph= new pbuff_t(this, "life_tap", sim->patch.after(3,2,0)?40:20 ,0, 63941, 0.2 , !glyphs.life_tap);
+  metamorphosis= new pbuff_t(this, "metamorphosis",30.0+glyphs.metamorphosis * 6.0,0, 47241, 1.20, !talents.metamorphosis);
   molten_core= new pbuff_t(this, "molten_core",12,0, 47244+talents.molten_core, 1.10, !talents.molten_core, talents.molten_core * 0.05);
   static int aura_id_pyro[]={ 0, 18096, 18073, 63245 };
   pyroclasm= new pbuff_t(this, "pyroclasm",10,0,aura_id_pyro[talents.pyroclasm%4], 1.0 + talents.pyroclasm * 0.02, !talents.pyroclasm );
   shadow_embrace= new pbuff_t(this, "shadow_embrace",12,0, 32391, 000, !talents.shadow_embrace);
-  shadow_embrace->trigger_counter=&affliction_effects; // in order to update on expiration also (easier than callback)
-  shadow_trance= new pbuff_t(this, "shadow_trance",-1,0, 17941, 000, 0, 0.02*talents.nightfall);
+  shadow_embrace->trigger_counter=&affliction_effects; 
+  shadow_trance= new pbuff_t(this, "shadow_trance",-1,0, 17941, 000, 0, -0.04);
 
 
   //uptimes_backdraft             = get_uptime( "backdraft"             );
@@ -4754,12 +4792,12 @@ void warlock_t::init_uptimes()
   uptimes_demonic_soul          = get_uptime( "demonic_soul"          );
   //uptimes_empowered_imp         = get_uptime( "empowered_imp"         );
   //uptimes_eradication           = get_uptime( "eradication"           );
-  uptimes_flame_shadow          = get_uptime( "flame_shadow"          );
+  //uptimes_flame_shadow          = get_uptime( "flame_shadow"          );
   //uptimes_molten_core           = get_uptime( "molten_core"           );
   //uptimes_pyroclasm             = get_uptime( "pyroclasm"             );
-  uptimes_shadow_flame          = get_uptime( "shadow_flame"          );
+  //uptimes_shadow_flame          = get_uptime( "shadow_flame"          );
   //uptimes_shadow_trance         = get_uptime( "shadow_trance"         );
-  uptimes_shadow_vulnerability  = get_uptime( "shadow_vulnerability"  );
+  //uptimes_shadow_vulnerability  = get_uptime( "shadow_vulnerability"  );
   uptimes_spirits_of_the_damned = get_uptime( "spirits_of_the_damned" );
 }
 
@@ -4867,6 +4905,7 @@ void warlock_t::reset()
   while ( ! decimation_queue.empty() ) decimation_queue.pop();
 
   _buffs.reset();
+
   //_cooldowns.reset();
   _expirations.reset();
 }
@@ -4911,13 +4950,13 @@ act_expression_t* warlock_t::create_expression(std::string& name,std::string& pr
   if ((prefix=="buff")&&(node==0)){
     bool ex=(suffix!="value")&&(suffix!="buff")&&(suffix!="stacks"); // if one of these, ignore expiration time
     if ((suffix=="")&&(expected_type==ETP_BOOL)) ex=false; //also ignore expiration value if boolean result is needed
-    if (name=="decimation")           node= new oldbuff_expression_t(e_name, &_buffs.decimation,        ex?&_expirations.decimation:0); else
-    if (name=="metamorphosis")        node= new oldbuff_expression_t(e_name, &_buffs.metamorphosis,     0); else
-    if (name=="haunted")              node= new oldbuff_expression_t(e_name, &_buffs.haunted,           ex?&_expirations.haunted:0); else
+    //if (name=="decimation")           node= new oldbuff_expression_t(e_name, &_buffs.decimation,        ex?&_expirations.decimation:0); else
+    //if (name=="metamorphosis")        node= new oldbuff_expression_t(e_name, &_buffs.metamorphosis,     0); else
+    //if (name=="haunted")              node= new oldbuff_expression_t(e_name, &_buffs.haunted,           ex?&_expirations.haunted:0); else
     //if (name=="shadow_trance")        node= new oldbuff_expression_t(e_name, &_buffs.shadow_trance,     0); else
     //if (name=="demonic_empathy")      node= new oldbuff_expression_t(e_name, &_buffs.demonic_empathy,   ex?&_expirations.demonic_empathy:0); else
-    if (name=="shadow_flame")         node= new oldbuff_expression_t(e_name, &_buffs.shadow_flame,      ex?&_expirations.shadow_flame:0); else
-    if (name=="flame_shadow")         node= new oldbuff_expression_t(e_name, &_buffs.flame_shadow,      ex?&_expirations.flame_shadow:0); else
+    //if (name=="shadow_flame")         node= new oldbuff_expression_t(e_name, &_buffs.shadow_flame,      ex?&_expirations.shadow_flame:0); else
+    //if (name=="flame_shadow")         node= new oldbuff_expression_t(e_name, &_buffs.flame_shadow,      ex?&_expirations.flame_shadow:0); else
     if (name=="pet_sacrifice")        node= new oldbuff_expression_t(e_name, &_buffs.pet_sacrifice,     0); else
     //if (name=="fel_armor")            node= new oldbuff_expression_t(e_name, &_buffs.fel_armor,         0, 2); 
     //if (name=="molten_core")          buff= new oldbuff_expression_t(e_name, &_buffs.molten_core,       ex?&_expirations.molten_core:0, 2); 
