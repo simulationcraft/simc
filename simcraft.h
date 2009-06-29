@@ -1672,7 +1672,6 @@ struct rank_t
 {
   int level, index;
   double dd_min, dd_max, tick, cost;
-  int id;
 };
 
 // Base Stats ================================================================
