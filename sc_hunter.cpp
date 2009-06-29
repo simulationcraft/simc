@@ -1303,7 +1303,8 @@ static void trigger_tier8_4pc( attack_t* a )
   if ( ! p -> set_bonus.tier8_4pc() )
     return;
 
-  // FIXME: Does it have a cooldown?
+  if ( ! a -> sim -> cooldown_ready( p -> cooldowns.tier8_4pc ) )
+    return;
 
   if ( ! p -> rngs.tier8_4pc -> roll( 0.1 ) )
     return;
@@ -1314,30 +1315,21 @@ static void trigger_tier8_4pc( attack_t* a )
     {
       name = "Precision Shots Expiration";
       p -> aura_gain( "Precision Shots" );
-      p -> attack_power += 600;
+      p -> cooldowns.tier8_4pc = sim -> current_time + 45;
+      p -> stat_gain(STAT_ATTACK_POWER, 600);
       sim -> add_event( this, 15.0 );
     }
     virtual void execute()
     {
       hunter_t* p = player -> cast_hunter();
       p -> aura_loss( "Precision Shots" );
-      p -> attack_power         -= 600;
+      p -> stat_loss(STAT_ATTACK_POWER, 600);
       p -> expirations.tier8_4pc = 0;
     }
   };
 
   p -> procs.tier8_4pc -> occur();
-
-  event_t*& e = p -> expirations.tier8_4pc;
-
-  if ( e )
-  {
-    e -> reschedule( 15.0 );
-  }
-  else
-  {
-    e = new ( a -> sim ) precision_shots_expiration_t( a -> sim, p );
-  }
+  p -> expirations.tier8_4pc = new ( a -> sim ) precision_shots_expiration_t( a -> sim, p );
 }
 
 // trigger_wild_quiver ===============================================
