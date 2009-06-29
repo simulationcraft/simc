@@ -1522,6 +1522,8 @@ struct lava_burst_t : public shaman_spell_t
     base_execute_time   -= p -> talents.lightning_mastery * 0.1;
     base_multiplier     *= 1.0 + p -> talents.concussion * 0.01;
     base_multiplier     *= 1.0 + p -> talents.call_of_flame * 0.02;
+    if( p -> tiers.tier9_4pc_elemental )
+      base_multiplier   *= 1.2;
     base_hit            += p -> talents.elemental_precision * 0.01;
     direct_power_mod    += p -> talents.shamanism * 0.04;
 
@@ -1717,7 +1719,7 @@ struct earth_shock_t : public shaman_spell_t
     cooldown          = 6.0;
     cooldown_group    = "shock";
     cooldown         -= ( p -> talents.reverberation * 0.2 );
-    base_multiplier  *= 1.0 + p -> talents.concussion * 0.01 + p -> tiers.t9_2pc_enhancement * 0.25;
+    base_multiplier  *= 1.0 + p -> talents.concussion * 0.01 + p -> tiers.t9_4pc_enhancement * 0.25;
     base_hit         += p -> talents.elemental_precision * 0.01;
 
     base_cost_reduction  += ( p -> talents.convection        * 0.02 +
@@ -1782,7 +1784,7 @@ struct frost_shock_t : public shaman_spell_t
                           p -> talents.booming_echoes * 1.0 );
     base_multiplier  *= 1.0 + ( p -> talents.concussion       * 0.01 +
                                 p -> talents.booming_echoes   * 0.10 +
-                                p -> tiers.t9_2pc_enhancement * 0.25);
+                                p -> tiers.t9_4pc_enhancement * 0.25);
     base_hit         += p -> talents.elemental_precision * 0.01;
 
     base_cost_reduction  += ( p -> talents.convection        * 0.02 +
@@ -1827,6 +1829,8 @@ struct flame_shock_t : public shaman_spell_t
     base_execute_time = 0;
     base_tick_time    = 3.0;
     num_ticks         = 4;
+    if( p -> tiers.t9_2pc_elemental ) num_tick += 3;
+    
     direct_power_mod  = 0.215;
     tick_power_mod    = 0.100;
     may_crit          = true;
@@ -1843,10 +1847,10 @@ struct flame_shock_t : public shaman_spell_t
 
     base_dd_multiplier *= 1.0 + ( p -> talents.concussion       * 0.01 +
                                   p -> talents.booming_echoes   * 0.10 +
-                                  p -> tiers.t9_2pc_enhancement * 0.25);
+                                  p -> tiers.t9_4pc_enhancement * 0.25);
 
     base_td_multiplier *= 1.0 + ( p -> talents.concussion       * 0.01 +
-                                  p -> tiers.t9_2pc_enhancement * 0.25 +
+                                  p -> tiers.t9_4pc_enhancement * 0.25 +
                                   util_t::talent_rank( p -> talents.storm_earth_and_fire, 3, 0.20 ) );
 
     base_cost_reduction  += ( p -> talents.convection        * 0.02 +
