@@ -490,8 +490,8 @@ struct warlock_pet_attack_t : public attack_t
 
   virtual void execute()
   {
-    warlock_pet_t* p = ( warlock_pet_t* ) player -> cast_pet();
     /*
+    warlock_pet_t* p = ( warlock_pet_t* ) player -> cast_pet();
     if ( p -> _buffs.demonic_empathy > 0 )
     {
       p -> _buffs.demonic_empathy--;
@@ -504,7 +504,7 @@ struct warlock_pet_attack_t : public attack_t
   virtual void player_buff()
   {
     warlock_pet_t* p = ( warlock_pet_t* ) player -> cast_pet();
-    warlock_t* o = p -> owner -> cast_warlock();
+    //warlock_t* o = p -> owner -> cast_warlock();
     attack_t::player_buff();
     player_attack_power += 0.57 * player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_MAX );
     //if ( p -> _buffs.demonic_empathy ) player_multiplier *= 1.0 + o -> talents.demonic_empathy * 0.01;
@@ -543,7 +543,7 @@ struct warlock_pet_spell_t : public spell_t
   virtual void player_buff()
   {
     warlock_pet_t* p = ( warlock_pet_t* ) player -> cast_pet();
-    warlock_t* o = p -> owner -> cast_warlock();
+    //warlock_t* o = p -> owner -> cast_warlock();
     spell_t::player_buff();
     player_spell_power += 0.15 * player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_MAX );
     //if ( p -> _buffs.demonic_empathy ) player_multiplier *= 1.0 + o -> talents.demonic_empathy * 0.01;

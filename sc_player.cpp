@@ -450,15 +450,12 @@ player_t::player_t( sim_t*             s,
   for ( int i=0; i < PROF_MAX; i++ ) profession[ i ] = 0;
   for ( int i=0; i < STAT_MAX; i++ ) scales_with[ i ] = 0;
 
-  if ( ! is_pet() )
+  items.resize( SLOT_MAX );
+  for ( int i=0; i < SLOT_MAX; i++ )
   {
-    items.resize( SLOT_MAX );
-    for ( int i=0; i < SLOT_MAX; i++ )
-    {
-      items[ i ].slot = i;
-      items[ i ].sim = sim;
-      items[ i ].player = this;
-    }
+    items[ i ].slot = i;
+    items[ i ].sim = sim;
+    items[ i ].player = this;
   }
 
   main_hand_weapon.slot = SLOT_MAIN_HAND;
