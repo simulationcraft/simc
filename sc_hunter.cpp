@@ -3696,6 +3696,9 @@ void hunter_t::init_glyphs()
     else if( n == "steady_shot"                 ) glyphs.steady_shot = 1;
     else if( n == "the_hawk"                    ) glyphs.improved_aspect_of_the_hawk = 1;
     else if( n == "trueshot_aura"               ) glyphs.trueshot_aura = 1;
+    else if( n == "the_pack"			) {}
+    else if( n == "revive_pet"			) {}
+    else if( n == "feign_death"			) {}
     else if( ! sim -> parent ) printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
   }
 }
