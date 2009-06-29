@@ -522,9 +522,8 @@ struct uptime_t
 struct buff_expiration_t : public event_t
 {
   pbuff_t* pbuff;
-  int aura_id;
   int n_trig;
-  buff_expiration_t( pbuff_t* p_buff, double b_duration=0, int aura_idx=0 ) ;
+  buff_expiration_t( pbuff_t* p_buff) ;
   virtual ~buff_expiration_t() {}
   virtual void execute();
 };
@@ -564,12 +563,12 @@ struct pbuff_t{
   int aura_id;
   double chance;
   rng_t* rng_chance;
-  double buff_duration, buff_cooldown;
+  double duration, cooldown;
   bool ignore; // if he can not obtain this buff (no talents etc)
   pbuff_t* next;
   int n_triggers, n_trg_tries;
   // methods
-  pbuff_t(player_t* plr, std::string name, double duration=0, double cooldown=0, int aura_idx=0, 
+  pbuff_t(player_t* plr, std::string name, double buff_duration=0, double buff_cooldown=0, int aura_idx=0, 
           double use_value=0, bool t_ignore=false, double t_chance=0 );
   virtual ~pbuff_t() { };
   virtual void cancel();
@@ -577,11 +576,11 @@ struct pbuff_t{
   virtual void uptime_update(bool activated);
   virtual void update_old_uptime();
   virtual double expiration_time() SC_CONST;
-  virtual bool   trigger(double val=1, double b_duration=0,int aura_idx=0);
+  virtual bool   trigger(double val=1, double b_chance=-1);
+  virtual void   dec_buff();
   virtual bool   is_up(bool skip_old_uptime=false);
   virtual double mul_value(bool skip_old_uptime=false);
   virtual double add_value(bool skip_old_uptime=false);
-  virtual bool   dec_buff(bool skip_old_uptime=false);
 };
 
 struct buff_list_t{
@@ -590,6 +589,7 @@ struct buff_list_t{
   buff_list_t();
   void add_buff(pbuff_t* new_buff);
   void reset_buffs();
+  void cancel_buffs();
   pbuff_t* find_buff(std::string& name) SC_CONST;
   bool     chk_buff(std::string& name) SC_CONST;
 };

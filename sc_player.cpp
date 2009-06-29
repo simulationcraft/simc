@@ -1385,6 +1385,8 @@ void player_t::combat_end()
     }
     iteration_dps[ sim -> current_iteration ] = iteration_dmg / iteration_seconds;
   }
+
+  buff_list.cancel_buffs();
 }
 
 // player_t::reset =========================================================
