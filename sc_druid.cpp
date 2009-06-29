@@ -2665,8 +2665,7 @@ struct starfire_t : public druid_spell_t
     }
     if ( p -> tiers.t6_4pc_balance ) base_crit += 0.05;
     if ( p -> tiers.t7_4pc_balance ) base_crit += 0.05;
-      // YAWN @ T9_4pc :-(
-    if ( p -> tiers.t9_4pc_balance ) base_crit += 0.05;
+    if ( p -> tiers.t9_4pc_balance ) base_crit += 0.03;
   }
 
   virtual void player_buff()
@@ -2836,6 +2835,7 @@ struct wrath_t : public druid_spell_t
     base_crit_bonus_multiplier *= 1.0 + util_t::talent_rank( p -> talents.vengeance, 5, 0.20 );
 
     if ( p -> tiers.t7_4pc_balance ) base_crit += 0.05;
+    if ( p -> tiers.t9_4pc_balance ) base_crit += 0.03;
 
     if ( p -> idols.steadfast_renewal )
     {
