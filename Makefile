@@ -15,7 +15,7 @@ OS = UNIX
 # Any UNIX platform
 ifeq (UNIX,${OS})
 CXX        = g++
-CPP_FLAGS  = -Wall -Woverloaded-virtual
+CPP_FLAGS  = -Wall -Woverloaded-virtual -Wextra -Wno-unused-parameter
 LINK_FLAGS = 
 LINK_LIBS  = -lpthread
 OPTS       = -O3 -ffast-math
