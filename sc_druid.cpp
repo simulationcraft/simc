@@ -91,6 +91,7 @@ struct druid_t : public player_t
   uptime_t* uptimes_eclipse_starfire;
   uptime_t* uptimes_eclipse_wrath;
   uptime_t* uptimes_energy_cap;
+  uptime_t* uptimes_lunar_fury;
   uptime_t* uptimes_natures_grace;
   uptime_t* uptimes_savage_roar;
   uptime_t* uptimes_rip;
@@ -1959,6 +1960,7 @@ struct druid_spell_t : public spell_t
   virtual bool   ready();
   virtual void   schedule_execute();
   virtual void   target_debuff( int dmg_type );
+  virtual void   tick();
 
 };
 
@@ -2050,6 +2052,9 @@ void druid_spell_t::execute()
 {
   druid_t* p = player -> cast_druid();
 
+  if( may_crit )
+    p -> uptimes_lunar_fury -> update( p -> _expirations.idol_of_lunar_fury != 0 );
+
   spell_t::execute();
 
   if ( result == RESULT_CRIT )
@@ -2116,6 +2121,19 @@ void druid_spell_t::target_debuff( int dmg_type )
   if ( t -> debuffs.faerie_fire )
   {
     target_crit += p -> talents.improved_faerie_fire * 0.01;
+  }
+}
+
+// druid_spell_t::tick() ===================================================
+
+void druid_spell_t::tick()
+{
+  spell_t::tick();
+  if( tick_may_crit )
+  {
+    druid_t* p = player -> cast_druid();
+    p -> uptimes_lunar_fury -> update( 
+                          p -> _expirations.idol_of_lunar_fury != 0 );
   }
 }
 
@@ -3390,6 +3408,7 @@ void druid_t::init_uptimes()
   uptimes_eclipse_starfire = get_uptime( "eclipse_starfire" );
   uptimes_eclipse_wrath    = get_uptime( "eclipse_wrath"    );
   uptimes_energy_cap       = get_uptime( "energy_cap"       );
+  uptimes_lunar_fury       = get_uptime( "lunar_fury"       );
   uptimes_natures_grace    = get_uptime( "natures_grace"    );
   uptimes_savage_roar      = get_uptime( "savage_roar"      );
   uptimes_rip              = get_uptime( "rip"              );
