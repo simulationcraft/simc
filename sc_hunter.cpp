@@ -224,7 +224,7 @@ struct hunter_t : public player_t
     active_viper_sting     = 0;
 
     ranged_attack = 0;
-    ammo_dps = 0;
+    ammo_dps = 67.5;
     quiver_haste = 1.15;
     summon_pet_str = "wolf";
   }
@@ -3697,6 +3697,7 @@ void hunter_t::init_glyphs()
     else if( n == "the_hawk"                    ) glyphs.improved_aspect_of_the_hawk = 1;
     else if( n == "trueshot_aura"               ) glyphs.trueshot_aura = 1;
     else if( n == "the_pack"			) {}
+    else if( n == "mend_pet"			) {}
     else if( n == "revive_pet"			) {}
     else if( n == "feign_death"			) {}
     else if( ! sim -> parent ) printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
