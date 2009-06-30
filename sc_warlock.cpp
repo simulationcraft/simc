@@ -362,6 +362,11 @@ struct warlock_pet_t : public pet_t
         a -> base_crit       +=       o -> talents.master_demonologist * 0.01;
       }
     }
+
+    if ( o -> set_bonus.tier9_2pc() )
+    {
+        a -> base_crit       +=       0.10;
+    }
   }
 
   void adjust_player_modifiers( action_t* a )
@@ -2056,7 +2061,8 @@ struct corruption_t : public warlock_spell_t
     base_multiplier *= 1.0 + ( p -> talents.shadow_mastery      * 0.03 +
                                p -> talents.contagion           * 0.01 +
                                p -> talents.improved_corruption * 0.02 +
-                               ( ( p -> talents.siphon_life ) ? 0.05 : 0 ) );
+                               p -> set_bonus.tier9_4pc()       * 0.11 +
+                               ( ( p -> talents.siphon_life ) ?   0.05 : 0 ) );
     tick_power_mod  += p -> talents.empowered_corruption * 0.02;
     tick_power_mod  += p -> talents.everlasting_affliction * 0.01;
 
@@ -2345,6 +2351,7 @@ struct unstable_affliction_t : public warlock_spell_t
     base_hit         +=       p -> talents.suppression * 0.01;
     base_multiplier  *= 1.0 + ( p -> talents.shadow_mastery * 0.03 +
 				p -> set_bonus.tier8_2pc()  * 0.20 + //FIXME assuming additive
+        p -> set_bonus.tier9_4pc()  * 0.11 +
 				( ( p -> talents.siphon_life ) ? 0.05 : 0 ) );
 
     tick_power_mod   += p -> talents.everlasting_affliction * 0.01;
@@ -2518,13 +2525,15 @@ struct immolate_t : public warlock_spell_t
     base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
     base_dd_multiplier *= 1.0 + ( p -> talents.emberstorm        * 0.03 +
                                   p -> talents.improved_immolate * 0.10 +
-                                  p -> set_bonus.tier8_2pc()     * 0.10 );
+                                  p -> set_bonus.tier8_2pc()     * 0.10 +
+                                  p -> set_bonus.tier9_4pc()     * 0.11 );
 
     base_td_multiplier *= 1.0 + ( p -> talents.emberstorm        * 0.03 +
                                   p -> talents.improved_immolate * 0.10 +
                                   p -> glyphs.immolate           * 0.10 +
                                   p -> talents.aftermath         * 0.03 +
-                                  p -> set_bonus.tier8_2pc()     * 0.10 );
+                                  p -> set_bonus.tier8_2pc()     * 0.10 +
+                                  p -> set_bonus.tier9_4pc()     * 0.11 );
 
 
     if ( ! sim -> P312 )
@@ -3986,9 +3995,9 @@ void warlock_t::init_uptimes()
   shadow_trance= new pbuff_t(this, "shadow_trance",-1,0, 17941, 000, 0, 0.04);
 
 
-  uptimes_demonic_pact          = get_uptime( "demonic_pact"          );
-  uptimes_demonic_soul          = get_uptime( "demonic_soul"          );
-  uptimes_spirits_of_the_damned = get_uptime( "spirits_of_the_damned" );
+  uptimes_demonic_pact          = get_uptime( "demonic_pact"          ); // kept in player_t::buffs
+  uptimes_demonic_soul          = get_uptime( "demonic_soul"          ); // tier7_2pc buff in player_t
+  uptimes_spirits_of_the_damned = get_uptime( "spirits_of_the_damned" ); // tier7_pc4 buff in player_t
 }
 
 // warlock_t::init_rng =======================================================
