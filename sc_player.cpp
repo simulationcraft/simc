@@ -976,7 +976,7 @@ void player_t::init_rng()
   rngs.tier8_2pc = get_rng( "tier8_2pc" );
   rngs.tier8_4pc = get_rng( "tier8_4pc" );
   rngs.tier9_2pc = get_rng( "tier9_2pc" );
-  rngs.tier8_4pc = get_rng( "tier9_4pc" );
+  rngs.tier9_4pc = get_rng( "tier9_4pc" );
   rngs.tier10_2pc = get_rng( "tier10_2pc" );
   rngs.tier10_4pc = get_rng( "tier10_4pc" );
 

@@ -42,6 +42,7 @@ struct rogue_t : public player_t
     int tricks_ready;
     player_t* tricks_target;
     double combo_points_proc[ MAX_COMBO_POINTS+1 ];
+    int tier9_2pc;
 
     void reset() { memset( ( void* ) this, 0x00, sizeof( _buffs_t ) ); }
     _buffs_t() { reset(); }
@@ -863,6 +864,13 @@ void rogue_attack_t::execute()
     p -> _buffs.cold_blood = 0;
 
   p -> _buffs.shadowstep = 0;
+  
+  if ( p -> _buffs.tier9_2pc && base_cost > 0 )
+  {
+    p -> _buffs.tier9_2pc = 0;
+    double refund = resource_consumed > 40 ? 40 : resource_consumed;
+    p -> resource_gain( RESOURCE_ENERGY, refund, p -> gains.tier9_2pc );
+  }
 }
 
 // rogue_attack_t::player_buff ============================================
@@ -1286,6 +1294,7 @@ struct backstab_t : public rogue_attack_t
 
     base_crit += ( p -> talents.puncturing_wounds * 0.10 +
                    p -> talents.turn_the_tables   * 0.02 );
+    if( p -> set_bonus.tier9_4pc() ) base_crit += .05;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
   }
@@ -1800,6 +1809,7 @@ struct hemorrhage_t : public rogue_attack_t
                                           p -> talents.surprise_attacks * 0.10 +
                                           p -> set_bonus.tier6_4pc()    * 0.06 );
     base_crit                  += p -> talents.turn_the_tables * 0.02;
+    if( p -> set_bonus.tier9_4pc() ) base_crit += .05;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
 
     damage_adder = util_t::ability_rank( p -> level,  75.0,80,  42.0,70,  29.0,0 );
@@ -2110,6 +2120,7 @@ struct mutilate_t : public rogue_attack_t
 
     base_crit += ( p -> talents.puncturing_wounds * 0.05 +
                    p -> talents.turn_the_tables   * 0.02 );
+    if( p -> set_bonus.tier9_4pc() ) base_crit += .05;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
 
@@ -2256,6 +2267,18 @@ struct rupture_t : public rogue_attack_t
     rogue_attack_t::player_buff();
     trigger_dirty_deeds( this );
   }
+  
+  virtual void tick()
+  {
+    rogue_t* p = player -> cast_rogue();
+    rogue_attack_t::tick();
+
+    if ( p -> set_bonus.tier9_2pc() && p -> rngs.tier9_2pc -> roll( .02 ) )
+    {
+      p -> procs.tier9_2pc -> occur();
+      p -> _buffs.tier9_2pc = 1;
+    }
+  }
 };
 
 // Shadowstep ===============================================================
@@ -2367,6 +2390,7 @@ struct sinister_strike_t : public rogue_attack_t
                                p -> set_bonus.tier6_4pc()    * 0.06 );
 
     base_crit += p -> talents.turn_the_tables * 0.02;
+    if( p -> set_bonus.tier9_4pc() ) base_crit += .05;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
   }
 
