@@ -1515,7 +1515,16 @@ struct devastate_t : public warrior_attack_t
 
 
     weapon = &( p -> main_hand_weapon );
-    weapon_multiplier = 0.50;
+    if ( sim -> P320 )
+    {
+      base_dd_min = 605;
+      base_dd_max = 605;
+      weapon_multiplier = 0.60;
+    }
+    else
+    {
+      weapon_multiplier = 0.50;
+    }
 
     may_crit   = true;
     base_cost -= p -> talents.puncture;
@@ -2566,6 +2575,7 @@ void warrior_t::init_glyphs()
     else if( n == "overpower"     ) glyphs.overpower = 1;
     else if( n == "rending"       ) glyphs.rending = 1;
     else if( n == "whirlwind"     ) glyphs.whirlwind = 1;
+    else if( n == "blocking"     ) glyphs.blocking = 1;
     else if( ! sim -> parent ) printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
   }
 }
@@ -2960,7 +2970,6 @@ std::vector<option_t>& warrior_t::get_options()
       { "vitality",                        OPT_INT, &( talents.vitality                        ) },
       { "weapon_mastery",                  OPT_INT, &( talents.weapon_mastery                  ) },
       { "wrecking_crew",                   OPT_INT, &( talents.wrecking_crew                   ) },
-      { "glyph_of_blocking",               OPT_BOOL, &( glyphs.blocking                        ) },
       { NULL, OPT_UNKNOWN, NULL }
     };
 
