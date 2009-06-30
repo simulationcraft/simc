@@ -2630,6 +2630,7 @@ struct chimera_shot_t : public hunter_attack_t
     if ( result_is_hit() && sting )
     {
       sting -> refresh_duration();
+	  sting -> result = RESULT_HIT;
 
       double sting_dmg = sting -> num_ticks * sting -> calculate_tick_damage();
 
