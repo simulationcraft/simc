@@ -1358,6 +1358,11 @@ struct mind_flay_tick_t : public priest_spell_t
                                 p -> talents.twin_disciplines * 0.01 );
     base_crit        += p -> talents.mind_melt * 0.02;
 
+    if ( p -> set_bonus.tier9_4pc() )
+    {
+      base_crit      += 0.05;
+    }
+
     base_crit_bonus_multiplier *= 1.0 + p -> talents.shadow_power * 0.20;
 
     if ( p -> set_bonus.tier4_4pc() ) base_multiplier *= 1.05;
