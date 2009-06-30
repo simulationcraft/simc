@@ -992,7 +992,7 @@ struct set_bonus_t
   int spellstrike() SC_CONST;
   int decode( const std::string& item_name ) SC_CONST;
   bool init( player_t* );
-  set_bonus_t() { memset( (void*) this, 0x00, sizeof( set_bonus_t ) ); }
+  set_bonus_t();
 };
 
 // Player ====================================================================
