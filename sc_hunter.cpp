@@ -2652,6 +2652,8 @@ struct chimera_shot_t : public hunter_attack_t
             may_miss = true;
             may_crit = true;
           }
+          virtual void player_buff() {}
+          virtual void target_debuff( int dmg_type ) {}
         };
 
         if ( ! p -> active_chimera_serpent ) p -> active_chimera_serpent = new chimera_serpent_t( p );
