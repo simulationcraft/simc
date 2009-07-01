@@ -94,7 +94,7 @@ int set_bonus_t::decode( const std::string& name ) SC_CONST
   // Mage
   if( name.find( "frostfire"   ) != std::string::npos ) return SET_T7;
   if( name.find( "kirin_tor"   ) != std::string::npos ) return SET_T8;
-  if( name.find( "sundstriger" ) != std::string::npos ) return SET_T9;
+  if( name.find( "sundstrider" ) != std::string::npos ) return SET_T9;
   if( name.find( "khadgar"     ) != std::string::npos ) return SET_T9;
 
   // Paladin
