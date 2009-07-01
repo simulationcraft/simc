@@ -128,7 +128,9 @@ static bool parse_player( sim_t*             sim,
 
     for( int i=2; i < num_splits; i++ )
     {
-      sim -> active_player = armory_t::download_player( sim, region, server, splits[ i ] );
+      bool talents_2nd= (splits[i].length()>1)&&(splits[i][0]=='!');
+      if (talents_2nd) splits[i].erase(0,1);
+      sim -> active_player = armory_t::download_player( sim, region, server, splits[ i ] , !talents_2nd);
       if( ! sim -> active_player ) return false;
     }
   }
