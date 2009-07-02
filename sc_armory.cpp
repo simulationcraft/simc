@@ -466,10 +466,13 @@ player_t* armory_t::download_player( sim_t* sim,
   if( ! xml_t::get_value( p -> level, sheet_xml, "character/level" ) ) return 0;
 
   std::vector<xml_node_t*> talent_nodes;
-  if( 2 != xml_t::get_nodes( talent_nodes, talents_xml, "talentGroup" ) ) return 0;
+  // For characters without dual spec, there's just one node. For US hunters there can be more than two, because
+  // the armory contains their pet specs too (woot!), we need to distinguish between <talents><talentGroup> and
+  // <pet><talentGroup>, especially for US hunters without dual specs...
+  if( xml_t::get_nodes( talent_nodes, talents_xml, "talentGroup" ) < 1 ) return 0;
 
   xml_node_t*   active_talents = talent_nodes[ 0 ];
-  xml_node_t* inactive_talents = talent_nodes[ 1 ];
+  xml_node_t* inactive_talents = talent_nodes.size() > 1 ? talent_nodes[ 1 ] : 0;
 
   int active_value=0;
   if( ! xml_t::get_value( active_value, active_talents, "active" ) || ! active_value ) std::swap( active_talents, inactive_talents );
