@@ -5,7 +5,8 @@ Globals_T8.simcraft
 optimal_raid=1 
 
 Rogue_T8_07_51_13_FD.simcraft  tricks_of_the_trade_target=Rogue_T8_08_20_43
-Rogue_T8_08_20_43.simcraft     tricks_of_the_trade_target=Rogue_T8_15_51_05_FD
+Rogue_T8_08_20_43.simcraft     tricks_of_the_trade_target=Rogue_T8_10_18_43
+Rogue_T8_10_18_43.simcraft     tricks_of_the_trade_target=Rogue_T8_15_51_05_FD
 Rogue_T8_15_51_05_FD.simcraft  tricks_of_the_trade_target=Rogue_T8_15_51_05_M
 Rogue_T8_15_51_05_M.simcraft   tricks_of_the_trade_target=Rogue_T8_15_51_05_S
 Rogue_T8_15_51_05_S.simcraft   tricks_of_the_trade_target=Rogue_T8_18_51_02_BS
