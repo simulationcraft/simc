@@ -1169,7 +1169,7 @@ std::vector<option_t>& sim_t::get_options()
       { "pet",                              OPT_FUNC,   (void*) ::parse_player                        },
       { "player",                           OPT_FUNC,   (void*) ::parse_player                        },
       { "armory",                           OPT_FUNC,   (void*) ::parse_player                        },
-      { "armory_cache_clear",               OPT_FUNC,   (void*) ::armory_t::clear_cache               },
+      { "http_cache_clear",                 OPT_FUNC,   (void*) ::http_t::clear_cache                 },
       { "default_region",                   OPT_STRING, &( default_region_str                       ) },
       { "default_server",                   OPT_STRING, &( default_server_str                       ) },
       { "alias",                            OPT_STRING, &( alias.alias_str                          ) },

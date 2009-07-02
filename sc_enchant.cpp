@@ -123,13 +123,14 @@ struct berserking_callback_t : public action_callback_t
     player_t* p = a -> player;
     weapon_t* w = a -> weapon;
     if ( ! w ) return;
-    bool mh = ( w -> slot == SLOT_MAIN_HAND );
+    if( w -> enchant != ENCHANT_BERSERKING ) return;
 
     // Berserking has a 1.2 PPM (proc per minute) which translates into 1 proc every 50sec on average
     // We cannot use the base swing time because that would over-value haste.  Instead, we use
     // the hasted swing time which is represented in the "time_to_execute" field.  When this field
     // is zero, we are dealing with a "special" attack in which case the base swing time is used.
 
+    bool mh = ( w -> slot == SLOT_MAIN_HAND );
 
     int&       b = mh ? mh_buff       : oh_buff;
     event_t*&  e = mh ? mh_expiration : oh_expiration;
@@ -205,12 +206,14 @@ struct mongoose_callback_t : public action_callback_t
     player_t* p = a -> player;
     weapon_t* w = a -> weapon;
     if ( ! w ) return;
-    bool mh = ( w -> slot == SLOT_MAIN_HAND );
+    if( w -> enchant != ENCHANT_MONGOOSE ) return;
 
     // Mongoose has a 1.2 PPM (proc per minute) which translates into 1 proc every 50sec on average
     // We cannot use the base swing time because that would over-value haste.  Instead, we use
     // the hasted swing time which is represented in the "time_to_execute" field.  When this field
     // is zero, we are dealing with a "special" attack in which case the base swing time is used.
+
+    bool mh = ( w -> slot == SLOT_MAIN_HAND );
 
     int& b = mh ? p -> buffs.mongoose_mh : p -> buffs.mongoose_oh;
 
@@ -279,6 +282,7 @@ struct executioner_callback_t : public action_callback_t
     player_t* p = a -> player;
     weapon_t* w = a -> weapon;
     if ( ! w ) return;
+    if( w -> enchant != ENCHANT_EXECUTIONER ) return;
 
     // Executioner has a 1.2 PPM (proc per minute) which translates into 1 proc every 50sec on average
     // We cannot use the base swing time because that would over-value haste.  Instead, we use

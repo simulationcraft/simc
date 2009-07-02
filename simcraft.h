@@ -2151,7 +2151,19 @@ struct armory_t
   static bool download_item( item_t&, const std::string& id_str );
 
   static std::string& format( std::string& name );
-  static bool clear_cache( sim_t*, const std::string& name, const std::string& value );
+};
+
+// wowhead  ==================================================================
+
+struct wowhead_t
+{
+  static player_t* download_player( sim_t* sim,
+				    const std::string& name, 
+				    const std::string& id,
+				    bool active_talents=true );
+
+  static bool download_slot( item_t&, const std::string& id_str, const std::string& enchant_id_str, const std::string gem_ids[ 3 ] );
+  static bool download_item( item_t&, const std::string& id_str );
 };
 
 // HTTP Download  ============================================================
@@ -2165,6 +2177,7 @@ struct http_t
   static bool cache_get( std::string& result, const std::string& url, bool force=false );
   static bool download( std::string& result, const std::string& url );
   static bool get( std::string& result, const std::string& url, const std::string& confirmation=std::string(), int throttle_seconds=0 );
+  static bool clear_cache( sim_t*, const std::string& name, const std::string& value );
 };
 
 // XML =======================================================================

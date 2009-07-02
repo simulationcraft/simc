@@ -630,13 +630,3 @@ std::string& armory_t::format( std::string& name )
   return name;
 }
 
-// armory_t::clear_cache ====================================================
-
-bool armory_t::clear_cache( sim_t* sim, 
-			    const std::string& name, 
-			    const std::string& value )
-{
-  assert( name == "armory_clear_cache" );
-  if( value != "0" && ! sim -> parent ) http_t::cache_clear();
-  return true;
-}

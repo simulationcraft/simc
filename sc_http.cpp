@@ -11,6 +11,17 @@
 // PLATFORM INDEPENDENT SECTION
 // ==========================================================================
 
+// http_t::clear_cache ======================================================
+
+bool http_t::clear_cache( sim_t* sim, 
+			  const std::string& name, 
+			  const std::string& value )
+{
+  assert( name == "http_clear_cache" );
+  if( value != "0" && ! sim -> parent ) http_t::cache_clear();
+  return true;
+}
+
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
 static const char*  url_cache_file = "url_cache.dat";
