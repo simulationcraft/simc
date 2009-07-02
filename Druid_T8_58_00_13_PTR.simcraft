@@ -16,14 +16,14 @@ actions+=/use_item,name=scale_of_fates
 actions+=/starfire,eclipse=benefit
 actions+=/starfire
 
-# Standard Gear Attributes http://www.chardev.org/?template=176626
+# http://profiler.wowhead.com/?profile=11251712
 gear_stamina=958
-gear_intellect=1005
-gear_spirit=464
-gear_spell_power=2361
+gear_intellect=914
+gear_spirit=453
+gear_spell_power=2411
 gear_hit_rating=261
-gear_crit_rating=614
-gear_haste_rating=349
+gear_crit_rating=677
+gear_haste_rating=447
 
 tier8_2pc=1
 tier8_4pc=1

@@ -322,6 +322,7 @@ bool unique_gear_t::get_use_encoding( std::string&       encoding,
 
   if     ( name == "energy_siphon"               ) e = "408SP_20Dur_120Cd";
   else if( name == "hyperspeed_accelerators"     ) e = "340Haste_10Dur_60Cd";
+  else if( name == "hyperspeed_accelerators320"  ) e = "340Haste_12Dur_60Cd";
   else if( name == "living_flame"                ) e = "505SP_20Dur_120Cd";
   else if( name == "mark_of_norgannon"           ) e = "491Haste_20Dur_120Cd";
   else if( name == "platinum_disks_of_battle"    ) e = "752AP_20Dur_120Cd";
