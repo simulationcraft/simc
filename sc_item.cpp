@@ -363,6 +363,13 @@ bool item_t::decode_gems()
     {
       stats.add_stat( s, t.value );
     }
+    else if( t.name == "all" )
+    {
+      for( int j=0; j < ATTRIBUTE_MAX; j++ ) 
+      {
+	stats.add_stat( j, t.value );
+      }
+    }
     else if( is_meta_prefix( t.name ) )
     {
       meta_prefix = t.name;

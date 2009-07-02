@@ -98,6 +98,7 @@ static void fuzzy_search( std::string&       encoding_str,
   util_t::string_split( splits, buffer, "_." );
 
   stat_search( encoding_str, splits, STAT_MAX,  "all stats" );
+  stat_search( encoding_str, splits, STAT_MAX,  "to all stats" );
 
   stat_search( encoding_str, splits, STAT_STRENGTH,  "strength" );
   stat_search( encoding_str, splits, STAT_AGILITY,   "agility" );
