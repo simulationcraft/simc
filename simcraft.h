@@ -2184,8 +2184,8 @@ struct http_t
 
 struct xml_t
 {
-  static xml_node_t* get_node( xml_node_t* root, const std::string& name );
-  static int  get_nodes( std::vector<xml_node_t*>&, xml_node_t* root, const std::string& name );
+  static xml_node_t* get_node( xml_node_t* root, const std::string& path );
+  static int  get_nodes( std::vector<xml_node_t*>&, xml_node_t* root, const std::string& path );
   static bool get_value( std::string& value, xml_node_t* root, const std::string& path = std::string() );
   static bool get_value( int&         value, xml_node_t* root, const std::string& path = std::string() );
   static bool get_value( double&      value, xml_node_t* root, const std::string& path = std::string() );

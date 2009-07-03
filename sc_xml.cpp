@@ -198,6 +198,24 @@ static int create_children( xml_node_t*             root,
   return root -> children.size();
 }
 
+// search_tree =============================================================
+
+static xml_node_t* search_tree( xml_node_t*        root,
+				const std::string& name_str )
+{
+  if( name_str.empty() || name_str.size() == 0 || name_str == root -> name() ) 
+    return root;
+
+  int num_children = root -> children.size();
+  for( int i=0; i < num_children; i++ )
+  {
+    xml_node_t* node = search_tree( root -> children[ i ], name_str );
+    if( node ) return node;
+  }
+
+  return 0;
+}
+
 // split_path ==============================================================
 
 static xml_node_t* split_path( xml_node_t*        node,
@@ -215,7 +233,7 @@ static xml_node_t* split_path( xml_node_t*        node,
 
     for( int i=0; i < num_splits-1; i++ )
     {
-      node = xml_t::get_node( node, splits[ i ] );
+      node = search_tree( node, splits[ i ] );
       if( ! node ) return 0;
     }
 
@@ -277,37 +295,38 @@ xml_node_t* xml_t::create( const std::string& input )
 // xml_t::get_node =========================================================
 
 xml_node_t* xml_t::get_node( xml_node_t*        root,
-			     const std::string& name_str )
+			     const std::string& path )
 {
-  if( name_str.empty() || name_str.size() == 0 || name_str == root -> name() ) 
+  if( path.empty() || path.size() == 0 || path == root -> name() ) 
     return root;
 
-  int num_children = root -> children.size();
-  for( int i=0; i < num_children; i++ )
-  {
-    xml_node_t* node = get_node( root -> children[ i ], name_str );
-    if( node ) return node;
-  }
+  std::string name_str;
+  xml_node_t* node = split_path( root, name_str, path );
 
-  return 0;
+  if( node ) node = search_tree( node, name_str );
+
+  return node;
 }
 
 // xml_t::get_nodes ========================================================
 
 int xml_t::get_nodes( std::vector<xml_node_t*>& nodes,
 		      xml_node_t*               root,
-		      const std::string&        name_str )
+		      const std::string&        path )
 {
-  if( name_str.empty() || name_str.size() == 0 || name_str == root -> name() )
+  if( path.empty() || path.size() == 0 || path == root -> name() )
   {
     nodes.push_back( root );
   }
   else
   {
-    int num_children = root -> children.size();
+    std::string name_str;
+    xml_node_t* node = split_path( root, name_str, path );
+
+    int num_children = node -> children.size();
     for( int i=0; i < num_children; i++ )
     {
-      get_nodes( nodes, root -> children[ i ], name_str );
+      get_nodes( nodes, node -> children[ i ], name_str );
     }
   }
 

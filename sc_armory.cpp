@@ -450,10 +450,11 @@ player_t* armory_t::download_player( sim_t* sim,
     return 0;
   }
 
-  std::string type_str, name_str;
+  std::string type_str, cid_str, name_str;
 
-  if( ! xml_t::get_value( type_str, sheet_xml, "character/class" ) ) return 0;
-  if( ! xml_t::get_value( name_str, sheet_xml, "character/name"  ) ) return 0;
+  if( ! xml_t::get_value( type_str, sheet_xml, "character/class"   ) ) return 0;
+  if( ! xml_t::get_value(  cid_str, sheet_xml, "character/classId" ) ) return 0;
+  if( ! xml_t::get_value( name_str, sheet_xml, "character/name"    ) ) return 0;
 
   armory_t::format( type_str );
   armory_t::format( name_str );
@@ -482,7 +483,7 @@ player_t* armory_t::download_player( sim_t* sim,
   std::string talents_encoding;
   if( ! xml_t::get_value( talents_encoding, active_talents, "talentSpec/value" ) ) return 0;
   if( ! p -> parse_talents( talents_encoding ) ) return 0;
-  p -> talents_str = "http://www.wowarmory.com/talent-calc.xml?c=" + type_str + "&tal=" + talents_encoding;
+  p -> talents_str = "http://www.wowarmory.com/talent-calc.xml?cid=" + cid_str + "&tal=" + talents_encoding;
 
   p -> glyphs_str = "";
   std::vector<xml_node_t*> glyph_nodes;
