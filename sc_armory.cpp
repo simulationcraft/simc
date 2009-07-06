@@ -468,7 +468,7 @@ player_t* armory_t::download_player( sim_t* sim,
 
   if( ! xml_t::get_value( p -> level, sheet_xml, "character/level" ) ) return 0;
 
-  xml_node_t* talents_node = xml_t::get_node( talents_xml, "talents" );
+  xml_node_t* talents_node = xml_t::get_node( talents_xml, "talentGroups" );
   if( talents_node )
   {
     xml_node_t*   active_talents = 0;
@@ -484,9 +484,9 @@ player_t* armory_t::download_player( sim_t* sim,
     {
       if( inactive_talents )
       {
-	int active_value=0;
-	if( ! xml_t::get_value( active_value, active_talents, "active" ) || ! active_value ) std::swap( active_talents, inactive_talents );
-	if( ! use_active_talents ) std::swap( active_talents, inactive_talents );
+	      int active_value=0;
+	      if( ! xml_t::get_value( active_value, active_talents, "active" ) || ! active_value ) std::swap( active_talents, inactive_talents );
+	      if( ! use_active_talents ) std::swap( active_talents, inactive_talents );
       }
 
       std::string talents_encoding;
@@ -499,12 +499,12 @@ player_t* armory_t::download_player( sim_t* sim,
       int num_glyphs = xml_t::get_nodes( glyph_nodes, active_talents, "glyph" );
       for( int i=0; i < num_glyphs; i++ )
       {
-	std::string name;
-	if( ! xml_t::get_value( name, glyph_nodes[ i ], "name" ) ) return 0;
-	name.erase( 0, 9 ); // remove "Glyph of "
-	armory_t::format( name );
-	if( i ) p -> glyphs_str += ",";
-	p -> glyphs_str += name;
+	      std::string name;
+	      if( ! xml_t::get_value( name, glyph_nodes[ i ], "name" ) ) return 0;
+	      name.erase( 0, 9 ); // remove "Glyph of "
+	      armory_t::format( name );
+	      if( i ) p -> glyphs_str += ",";
+	      p -> glyphs_str += name;
       }
     }
   }
