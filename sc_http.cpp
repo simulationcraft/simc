@@ -285,7 +285,8 @@ bool http_t::get( std::string& result,
   {
     printf( "@" ); fflush( stdout );
     throttle( throttle_seconds );
-    success = download( result, url );
+    std::string encoded_url;
+    success = download( result, format( encoded_url, url ) );
 
     if( success )
     {
@@ -304,6 +305,32 @@ bool http_t::get( std::string& result,
   thread_t::mutex_unlock( mutex );
 
   return success;
+}
+
+// http_t::format ===========================================================
+
+std::string& http_t::format( std::string& encoded_url, 
+			     const std::string& url )
+{
+  encoded_url.clear();
+
+  int size = url.size();
+  for( int i=0; i < size; i++ )
+  {
+    char c = url[ i ];
+
+    if( c == '+' || c == ' ' ) 
+    {
+      encoded_url += "%20";
+    }
+    else if( c == '\'' )
+    {
+      encoded_url += "%27";
+    }
+    else encoded_url += c;
+  }
+
+  return encoded_url;
 }
 
 #if defined( NO_HTTP )

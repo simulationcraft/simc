@@ -2178,6 +2178,7 @@ struct http_t
   static bool download( std::string& result, const std::string& url );
   static bool get( std::string& result, const std::string& url, const std::string& confirmation=std::string(), int throttle_seconds=0 );
   static bool clear_cache( sim_t*, const std::string& name, const std::string& value );
+  static std::string& format( std::string& encoded_url, const std::string& url );
 };
 
 // XML =======================================================================
