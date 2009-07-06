@@ -468,7 +468,11 @@ player_t* armory_t::download_player( sim_t* sim,
 
   if( ! xml_t::get_value( p -> level, sheet_xml, "character/level" ) ) return 0;
 
-  xml_node_t* talents_node = xml_t::get_node( talents_xml, "talentGroups" );
+  xml_node_t* talents_node = xml_t::get_node( talents_xml, "talents" );
+  
+  // US/EU Armory pages using different notations!
+  if( ! talents_node ) talents_node = xml_t::get_node( talents_xml, "talentGroups" );
+
   if( talents_node )
   {
     xml_node_t*   active_talents = 0;
