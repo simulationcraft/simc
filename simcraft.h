@@ -83,6 +83,7 @@ struct event_t;
 struct gain_t;
 struct hunter_t;
 struct item_t;
+struct js_node_t;
 struct mage_t;
 struct option_t;
 struct paladin_t;
@@ -1946,6 +1947,7 @@ struct enchant_t
 {
   static void init( player_t* );
   static void register_callbacks( player_t* );
+  static bool download_enchant( item_t&, const std::string& enchant_id_str );
 };
 
 // Consumable ================================================================
@@ -2153,17 +2155,18 @@ struct armory_t
   static std::string& format( std::string& name );
 };
 
-// wowhead  ==================================================================
+// Wowhead  ==================================================================
 
 struct wowhead_t
 {
   static player_t* download_player( sim_t* sim,
 				    const std::string& name, 
-				    const std::string& id,
-				    bool active_talents=true );
+				    const std::string& id );
 
   static bool download_slot( item_t&, const std::string& id_str, const std::string& enchant_id_str, const std::string gem_ids[ 3 ] );
   static bool download_item( item_t&, const std::string& id_str );
+  static bool download_gem ( item_t&, const std::string& gem_id );
+  static bool download_glyph( std::string& glyph_name, const std::string& glyph_id );
 };
 
 // HTTP Download  ============================================================
@@ -2185,14 +2188,33 @@ struct http_t
 
 struct xml_t
 {
-  static xml_node_t* get_node( xml_node_t* root, const std::string& path );
-  static int  get_nodes( std::vector<xml_node_t*>&, xml_node_t* root, const std::string& path );
+  static xml_node_t* get_child( xml_node_t* root, const std::string& name );
+  static xml_node_t* get_node ( xml_node_t* root, const std::string& path );
+  static int  get_children( std::vector<xml_node_t*>&, xml_node_t* root, const std::string& name );
+  static int  get_nodes   ( std::vector<xml_node_t*>&, xml_node_t* root, const std::string& path );
   static bool get_value( std::string& value, xml_node_t* root, const std::string& path = std::string() );
   static bool get_value( int&         value, xml_node_t* root, const std::string& path = std::string() );
   static bool get_value( double&      value, xml_node_t* root, const std::string& path = std::string() );
   static xml_node_t* download( const std::string& url, const std::string& confirmation=std::string(), int throttle_seconds=0 );
   static xml_node_t* create( const std::string& buffer );
   static void print( xml_node_t* root, FILE*, int spacing=0 );
+};
+
+
+// Java Script ===============================================================
+
+struct js_t
+{
+  static js_node_t* get_child( js_node_t* root, const std::string& name );
+  static js_node_t* get_node ( js_node_t* root, const std::string& path );
+  static int  get_children( std::vector<js_node_t*>&, js_node_t* root, const std::string& name );
+  static int  get_nodes   ( std::vector<js_node_t*>&, js_node_t* root, const std::string& path );
+  static int  get_value( std::vector<std::string>& value, js_node_t* root, const std::string& path = std::string() );
+  static bool get_value( std::string& value, js_node_t* root, const std::string& path = std::string() );
+  static bool get_value( int&         value, js_node_t* root, const std::string& path = std::string() );
+  static bool get_value( double&      value, js_node_t* root, const std::string& path = std::string() );
+  static js_node_t* create( const std::string& buffer );
+  static void print( js_node_t* root, FILE*, int spacing=0 );
 };
 
 

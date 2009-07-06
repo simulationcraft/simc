@@ -292,6 +292,37 @@ xml_node_t* xml_t::create( const std::string& input )
   return root;
 }
 
+// xml_t::get_child ========================================================
+
+xml_node_t* xml_t::get_child( xml_node_t*        root,
+			      const std::string& name_str )
+{
+  int num_children = root -> children.size();
+  for( int i=0; i < num_children; i++ )
+  {
+    xml_node_t* node = root -> children[ i ];
+    if( name_str == node -> name() ) return node;
+  }
+
+  return 0;
+}
+
+// xml_t::get_children ======================================================
+
+int xml_t::get_children( std::vector<xml_node_t*>& nodes,
+			 xml_node_t*               root,
+			 const std::string&        name_str )
+{
+  int num_children = root -> children.size();
+  for( int i=0; i < num_children; i++ )
+  {
+    xml_node_t* node = root -> children[ i ];
+    if( name_str == node -> name() ) nodes.push_back( node );
+  }
+
+  return nodes.size();
+}
+
 // xml_t::get_node =========================================================
 
 xml_node_t* xml_t::get_node( xml_node_t*        root,

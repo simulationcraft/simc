@@ -400,9 +400,9 @@ static bool parse_item_weapon( item_t& item,
        xml_t::get_value( dps,   xml, "dps/."   ) )
   {
     std::string sub_class;
-    int inventory_type;
-    if( ! xml_t::get_value( sub_class,      xml, "subclassName/."  ) ) return false;
-    if( ! xml_t::get_value( inventory_type, xml, "inventoryType/." ) ) return false;
+    int inventory_type = -1;
+    xml_t::get_value( sub_class,      xml, "subclassName/."  );
+    xml_t::get_value( inventory_type, xml, "inventoryType/." );
 
     int weapon_type = WEAPON_NONE;
     if     ( sub_class == "Axe" && inventory_type == 17   ) weapon_type = WEAPON_AXE;
@@ -420,6 +420,7 @@ static bool parse_item_weapon( item_t& item,
     else if( sub_class == "Gun"                           ) weapon_type = WEAPON_GUN;
     else if( sub_class == "Thrown"                        ) weapon_type = WEAPON_THROWN;
     else if( sub_class == "Wand"                          ) weapon_type = WEAPON_WAND;
+    else if( sub_class.empty() && inventory_type == 21    ) weapon_type = WEAPON_POLEARM; // Fishing Pole
 
     if( weapon_type == WEAPON_NONE ) return false;
     if( weapon_type == WEAPON_WAND ) return true;
@@ -467,35 +468,45 @@ player_t* armory_t::download_player( sim_t* sim,
 
   if( ! xml_t::get_value( p -> level, sheet_xml, "character/level" ) ) return 0;
 
-  std::vector<xml_node_t*> talent_nodes;
-  // For characters without dual spec, there's just one node. For US hunters there can be more than two, because
-  // the armory contains their pet specs too (woot!), we need to distinguish between <talents><talentGroup> and
-  // <pet><talentGroup>, especially for US hunters without dual specs...
-  if( xml_t::get_nodes( talent_nodes, talents_xml, "talentGroup" ) < 1 ) return 0;
-
-  xml_node_t*   active_talents = talent_nodes[ 0 ];
-  xml_node_t* inactive_talents = talent_nodes.size() > 1 ? talent_nodes[ 1 ] : 0;
-
-  int active_value=0;
-  if( ! xml_t::get_value( active_value, active_talents, "active" ) || ! active_value ) std::swap( active_talents, inactive_talents );
-  if( ! use_active_talents ) std::swap( active_talents, inactive_talents );
-
-  std::string talents_encoding;
-  if( ! xml_t::get_value( talents_encoding, active_talents, "talentSpec/value" ) ) return 0;
-  if( ! p -> parse_talents( talents_encoding ) ) return 0;
-  p -> talents_str = "http://www.wowarmory.com/talent-calc.xml?cid=" + cid_str + "&tal=" + talents_encoding;
-
-  p -> glyphs_str = "";
-  std::vector<xml_node_t*> glyph_nodes;
-  int num_glyphs = xml_t::get_nodes( glyph_nodes, active_talents, "glyph" );
-  for( int i=0; i < num_glyphs; i++ )
+  xml_node_t* talents_node = xml_t::get_node( talents_xml, "talents" );
+  if( talents_node )
   {
-    std::string name;
-    if( ! xml_t::get_value( name, glyph_nodes[ i ], "name" ) ) return 0;
-    name.erase( 0, 9 ); // remove "Glyph of "
-    armory_t::format( name );
-    if( i ) p -> glyphs_str += ",";
-    p -> glyphs_str += name;
+    xml_node_t*   active_talents = 0;
+    xml_node_t* inactive_talents = 0;
+
+    std::vector<xml_node_t*> talent_groups;
+    int num_groups = xml_t::get_children( talent_groups, talents_node, "talentGroup" );
+  
+    if( num_groups > 0 )   active_talents = talent_groups[ 0 ];
+    if( num_groups > 1 ) inactive_talents = talent_groups[ 1 ];
+
+    if( active_talents )
+    {
+      if( inactive_talents )
+      {
+	int active_value=0;
+	if( ! xml_t::get_value( active_value, active_talents, "active" ) || ! active_value ) std::swap( active_talents, inactive_talents );
+	if( ! use_active_talents ) std::swap( active_talents, inactive_talents );
+      }
+
+      std::string talents_encoding;
+      if( ! xml_t::get_value( talents_encoding, active_talents, "talentSpec/value" ) ) return 0;
+      if( ! p -> parse_talents( talents_encoding ) ) return 0;
+      p -> talents_str = "http://www.wowarmory.com/talent-calc.xml?cid=" + cid_str + "&tal=" + talents_encoding;
+
+      p -> glyphs_str = "";
+      std::vector<xml_node_t*> glyph_nodes;
+      int num_glyphs = xml_t::get_nodes( glyph_nodes, active_talents, "glyph" );
+      for( int i=0; i < num_glyphs; i++ )
+      {
+	std::string name;
+	if( ! xml_t::get_value( name, glyph_nodes[ i ], "name" ) ) return 0;
+	name.erase( 0, 9 ); // remove "Glyph of "
+	armory_t::format( name );
+	if( i ) p -> glyphs_str += ",";
+	p -> glyphs_str += name;
+      }
+    }
   }
 
   std::vector<xml_node_t*> item_nodes;
