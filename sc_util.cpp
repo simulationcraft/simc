@@ -939,18 +939,52 @@ int util_t::string_split( const std::string& str,
   return str_size;
 }
 
+// util_t::milliseconds ====================================================
 
-int util_t::milliseconds()
+int64_t util_t::milliseconds()
 {
-
-#if defined( _MSC_VER )
-  return clock()/( CLOCKS_PER_SEC/1000 );
-#else
-  return clock()/( CLOCKS_PER_SEC/1000 ); //if this is not available to other compilers, use below
-  //return time( NULL )*1000;
-#endif
+  return clock()/( CLOCKS_PER_SEC/1000 ); 
 }
 
+// util_t::parse_date ======================================================
+
+int64_t util_t::parse_date( const std::string& month_day_year )
+{
+  std::vector<std::string> splits;
+  int num_splits = util_t::string_split( splits, month_day_year, " _,;-/" );
+  if( num_splits != 3 ) return 0;
+
+  std::string month = splits[ 0 ];
+  std::string day   = splits[ 1 ];
+  std::string year  = splits[ 2 ];
+  
+  for( int i=0; month[ i ]; i++ ) month[ i ] = tolower( month[ i ] );
+
+  if( month.find( "jan" ) != std::string::npos ) month = "01";
+  if( month.find( "feb" ) != std::string::npos ) month = "02";
+  if( month.find( "mar" ) != std::string::npos ) month = "03";
+  if( month.find( "apr" ) != std::string::npos ) month = "04";
+  if( month.find( "may" ) != std::string::npos ) month = "05";
+  if( month.find( "jun" ) != std::string::npos ) month = "06";
+  if( month.find( "jul" ) != std::string::npos ) month = "07";
+  if( month.find( "aug" ) != std::string::npos ) month = "08";
+  if( month.find( "sep" ) != std::string::npos ) month = "09";
+  if( month.find( "oct" ) != std::string::npos ) month = "10";
+  if( month.find( "nov" ) != std::string::npos ) month = "11";
+  if( month.find( "ded" ) != std::string::npos ) month = "12";
+
+  if( month.size() == 1 ) month.insert( month.begin(), '0'  );
+  if( day  .size() == 1 ) day  .insert( day  .begin(), '0'  );
+  if( year .size() == 2 ) year .insert( year .begin(), 2, '0' );
+
+  if( day.size()   != 2 ) return 0;
+  if( month.size() != 2 ) return 0;
+  if( year.size()  != 4 ) return 0;
+
+  std::string buffer = year + month + day;
+
+  return atoi( buffer.c_str() );
+}
 
 //-------------------------------
 // std::STRING   utils

@@ -65,6 +65,11 @@ double attack_t::haste() SC_CONST
       h *= 1.0 / ( 1.0 + p -> buffs.windfury_totem );
     }
 
+    if( sim -> auras.celerity )
+    {
+      h *= 1.0 / ( 1.0 + 0.20 );
+    }
+
     if ( p -> buffs.mongoose_mh ) h *= 1.0 / ( 1.0 + 0.02 );
     if ( p -> buffs.mongoose_oh ) h *= 1.0 / ( 1.0 + 0.02 );
   }

@@ -25,8 +25,7 @@ bool http_t::clear_cache( sim_t* sim,
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
 static const char*  url_cache_file = "url_cache.dat";
-static const double url_cache_version = 1.0;
-static const uint32_t expiration_seconds = 12 * 60 * 60;
+static const double url_cache_version = 2.0;
 
 static void* cache_mutex = 0;
 
@@ -34,9 +33,9 @@ struct url_cache_t
 {
   std::string url;
   std::string result;
-  uint32_t timestamp;
+  int64_t timestamp;
   url_cache_t() : timestamp(0) {}
-  url_cache_t( const std::string& u, const std::string& r, uint32_t t ) : url(u), result(r), timestamp(t) {}
+  url_cache_t( const std::string& u, const std::string& r, int64_t t ) : url(u), result(r), timestamp(t) {}
 };
 
 static std::vector<url_cache_t> url_cache_db;
@@ -109,9 +108,10 @@ bool http_t::cache_load()
     
         for( unsigned i=0; i < num_records; i++ )
         {
-          uint32_t timestamp, url_size, result_size;
+	   int64_t timestamp;
+          uint32_t url_size, result_size;
           
-          if( fread( &timestamp,   sizeof( uint32_t ), 1, file ) &&
+          if( fread( &timestamp,   sizeof(  int64_t ), 1, file ) &&
               fread( &url_size,    sizeof( uint32_t ), 1, file ) &&
               fread( &result_size, sizeof( uint32_t ), 1, file ) )
           {
@@ -175,13 +175,11 @@ bool http_t::cache_save()
       uint32_t    url_size = c.   url.size();
       uint32_t result_size = c.result.size();
 
-      if(
-      	1 != fwrite( &( c.timestamp ), sizeof( uint32_t ), 1, file ) ||
-      	1 != fwrite(    &url_size, sizeof( uint32_t ), 1, file ) ||
-      	1 != fwrite( &result_size, sizeof( uint32_t ), 1, file ) ||
-
-      	url_size != fwrite( c.   url.c_str(), sizeof( char ),    url_size, file ) ||
-      	result_size != fwrite( c.result.c_str(), sizeof( char ), result_size, file ))
+      if( 1 != fwrite( &( c.timestamp ), sizeof(  int64_t ), 1, file ) ||
+	  1 != fwrite( &url_size,        sizeof( uint32_t ), 1, file ) ||
+	  1 != fwrite( &result_size,     sizeof( uint32_t ), 1, file ) ||
+	  url_size    != fwrite( c.   url.c_str(), sizeof( char ),    url_size, file ) ||
+	  result_size != fwrite( c.result.c_str(), sizeof( char ), result_size, file ) )
       {
 	perror("fwrite failed while saving cache file"); 
       }
@@ -204,13 +202,14 @@ void http_t::cache_clear()
 
 // http_t::cache_get ========================================================
 
-bool http_t::cache_get( std::string& result,
+bool http_t::cache_get( std::string&       result,
                         const std::string& url,
-                        bool force )
+                        int64_t            timestamp )
 {
+  if( timestamp < 0 ) return false;
+
   thread_t::mutex_lock( cache_mutex );
 
-  uint32_t now = (uint32_t) time( NULL );
   bool success = false;
 
   int num_records = url_cache_db.size();
@@ -220,9 +219,9 @@ bool http_t::cache_get( std::string& result,
 
     if( url == c.url )
     {
-      if( ! force )
-        if( ( now - c.timestamp ) > expiration_seconds ) 
-          break;
+      if( timestamp > 0 )
+	if( timestamp > c.timestamp )
+	  break;
 
       result = c.result;
       success = true;
@@ -238,11 +237,11 @@ bool http_t::cache_get( std::string& result,
 
 void http_t::cache_set( const std::string& url,
                         const std::string& result,
-                        uint32_t           timestamp )
+                        int64_t            timestamp )
 {
-  thread_t::mutex_lock( cache_mutex );
+  if( timestamp < 0 ) return;
 
-  if( timestamp == 0 ) timestamp = (uint32_t) time( NULL );
+  thread_t::mutex_lock( cache_mutex );
 
   int num_records = url_cache_db.size();
   bool success = false;
@@ -271,6 +270,7 @@ void http_t::cache_set( const std::string& url,
 bool http_t::get( std::string& result,
                   const std::string& url,
                   const std::string& confirmation,
+		  int64_t timestamp,
                   int throttle_seconds )
 {
   static void* mutex = 0;
@@ -279,7 +279,7 @@ bool http_t::get( std::string& result,
 
   result.clear();
 
-  bool success = cache_get( result, url, false );
+  bool success = cache_get( result, url, timestamp );
 
   if( ! success )
   {
@@ -293,11 +293,11 @@ bool http_t::get( std::string& result,
       if( confirmation.size() > 0 && ( result.find( confirmation ) == std::string::npos ) )
       {
         printf( "X" ); fflush( stdout );
-        success = cache_get( result, url, true );
+        success = cache_get( result, url, 0 );
       }
       else
       {
-        cache_set( url, result, 0 );
+        cache_set( url, result, timestamp );
       }
     }
   }

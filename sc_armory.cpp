@@ -21,9 +21,9 @@ static bool is_number( const std::string s )
 // stat_search ==============================================================
 
 static void stat_search( std::string&              encoding_str,
-			 std::vector<std::string>& description_tokens,
-			 int                       stat_type,
-			 const std::string&        stat_str )
+                         std::vector<std::string>& description_tokens,
+                         int                       stat_type,
+                         const std::string&        stat_str )
 {
   std::vector<std::string> stat_tokens;
   int num_stats = util_t::string_split( stat_tokens, stat_str, " " );
@@ -37,11 +37,11 @@ static void stat_search( std::string&              encoding_str,
     {
       if( ( i + j ) == num_descriptions )
       {
-	match = false;
+        match = false;
       }
       else if( stat_tokens[ j ] != description_tokens[ i + j ] )
       {
-	match = false;
+        match = false;
       }
     }
 
@@ -50,20 +50,20 @@ static void stat_search( std::string&              encoding_str,
       std::string value_str;
 
       if( ( i > 0 ) && 
-	  ( is_number( description_tokens[ i-1 ] ) ) )
+          ( is_number( description_tokens[ i-1 ] ) ) )
       {
-	value_str = description_tokens[ i-1 ];
+        value_str = description_tokens[ i-1 ];
       }
       if( ( ( i + num_stats + 1 ) < num_descriptions ) && 
-	  ( description_tokens[ i + num_stats ] == "by" ) &&
-	  ( is_number( description_tokens[ i + num_stats + 1 ] ) ) )
+          ( description_tokens[ i + num_stats ] == "by" ) &&
+          ( is_number( description_tokens[ i + num_stats + 1 ] ) ) )
       {
-	value_str = description_tokens[ i + num_stats + 1 ];
+        value_str = description_tokens[ i + num_stats + 1 ];
       }
 
       if( ! value_str.empty() )
       {
-	encoding_str += "_" + value_str + util_t::stat_type_abbrev( stat_type );
+        encoding_str += "_" + value_str + util_t::stat_type_abbrev( stat_type );
       }
     }
   }
@@ -84,7 +84,7 @@ static bool is_proc_description( const std::string& description_str )
 // fuzzy_search =============================================================
 
 static void fuzzy_search( std::string&       encoding_str,
-			  const std::string& description_str )
+                          const std::string& description_str )
 {
   if( description_str.empty() ) return;
 
@@ -128,13 +128,13 @@ static void fuzzy_search( std::string&       encoding_str,
 // download_character_sheet =================================================
 
 static xml_node_t* download_character_sheet( sim_t* sim,
-					     const std::string& region, 
-					     const std::string& server, 
-					     const std::string& name )
+                                             const std::string& region, 
+                                             const std::string& server, 
+                                             const std::string& name )
 {
   std::string url = "http://" + region + ".wowarmory.com/character-sheet.xml?r=" + server + "&n=" + name;
 
-  xml_node_t* node = xml_t::download( url, "</characterTab>" );
+  xml_node_t* node = xml_t::download( url, "</characterTab>", -1 );
 
   if( sim -> debug || ! node )
   {
@@ -148,13 +148,13 @@ static xml_node_t* download_character_sheet( sim_t* sim,
 // download_character_talents ===============================================
 
 static xml_node_t* download_character_talents( sim_t* sim,
-					       const std::string& region, 
-					       const std::string& server, 
-					       const std::string& name )
+                                               const std::string& region, 
+                                               const std::string& server, 
+                                               const std::string& name )
 {
   std::string url = "http://" + region + ".wowarmory.com/character-talents.xml?r=" + server + "&n=" + name;
 
-  xml_node_t* node = xml_t::download( url, "</talentGroup>" );
+  xml_node_t* node = xml_t::download( url, "</talentGroup>", -1 );
 
   if( sim -> debug || ! node )
   {
@@ -167,20 +167,22 @@ static xml_node_t* download_character_talents( sim_t* sim,
 
 // download_item_tooltip ====================================================
 
-static xml_node_t* download_item_tooltip( sim_t* sim,
-					  const std::string& region, 
-					  const std::string& server, 
-					  const std::string& name,
-					  const std::string& id,
-					  int slot )
+static xml_node_t* download_item_tooltip( player_t* p,
+                                          const std::string& id_str,
+                                          int slot )
 {
-  std::string url = "http://" + region + ".wowarmory.com/item-tooltip.xml?r=" + server + "&n=" + name + "&i=" + id;
+  sim_t* sim = p -> sim;
+
+  std::string url = "http://" + p -> region_str + ".wowarmory.com/item-tooltip.xml";
+  url += "?r=" + p -> server_str;
+  url += "&n=" + p -> name_str;
+  url += "&i=" + id_str;
 
   char buffer[ 80 ];
   sprintf( buffer, "&s=%d", slot );
   url += buffer;
 
-  xml_node_t* node = xml_t::download( url, "</itemTooltip>", 1 );
+  xml_node_t* node = xml_t::download( url, "</itemTooltip>", p -> last_modified, 1 );
 
   if( sim -> debug || ! node )
   {
@@ -193,13 +195,14 @@ static xml_node_t* download_item_tooltip( sim_t* sim,
 
 // download_item_tooltip ====================================================
 
-static xml_node_t* download_item_tooltip( sim_t* sim,
-					  const std::string& region, 
-					  const std::string& id )
+static xml_node_t* download_item_tooltip( player_t* p,
+                                          const std::string& id_str )
 {
-  std::string url = "http://" + region + ".wowarmory.com/item-tooltip.xml?i=" + id;
+  sim_t* sim = p -> sim;
 
-  xml_node_t* node = xml_t::download( url, "</itemTooltip>", 1 );
+  std::string url = "http://" + p -> region_str + ".wowarmory.com/item-tooltip.xml?i=" + id_str;
+
+  xml_node_t* node = xml_t::download( url, "</itemTooltip>", 0, 1 );
 
   if( sim -> debug || ! node )
   {
@@ -213,7 +216,7 @@ static xml_node_t* download_item_tooltip( sim_t* sim,
 // parse_item_name ==========================================================
 
 static bool parse_item_name( item_t& item,
-			     xml_node_t* node )
+                             xml_node_t* node )
 {
   if( ! xml_t::get_value( item.armory_id_str,   node, "id/."   ) ) return false;
   if( ! xml_t::get_value( item.armory_name_str, node, "name/." ) ) return false;
@@ -226,7 +229,7 @@ static bool parse_item_name( item_t& item,
 // parse_item_stats =========================================================
 
 static bool parse_item_stats( item_t& item,
-			      xml_node_t* xml )
+                              xml_node_t* xml )
 {
   std::string& s = item.armory_stats_str;
   s.clear();
@@ -261,10 +264,10 @@ static bool parse_item_stats( item_t& item,
     {
       if( xml_t::get_value( value, spell_nodes[ i ], "trigger/." ) && ( value == "1" ) )
       {
-	if( xml_t::get_value( value, spell_nodes[ i ], "desc/." ) )
-	{
-	  fuzzy_search( s, value );
-	}
+        if( xml_t::get_value( value, spell_nodes[ i ], "desc/." ) )
+        {
+          fuzzy_search( s, value );
+        }
       }
     }
   }
@@ -284,7 +287,7 @@ static bool parse_item_stats( item_t& item,
 // parse_item_gems ==========================================================
 
 static bool parse_item_gems( item_t& item,
-			     xml_node_t* xml )
+                             xml_node_t* xml )
 {
   item.armory_gems_str.clear();
 
@@ -304,25 +307,25 @@ static bool parse_item_gems( item_t& item,
       std::string enchant, color, match;
 
       if( ! xml_t::get_value( enchant, socket, "enchant" ) ||
-	  ! xml_t::get_value( color,   socket, "color"   ) )
-	continue;
+          ! xml_t::get_value( color,   socket, "color"   ) )
+        continue;
 
       if( color == "Meta" )
       {
-	if     ( enchant == "+32 Stamina and 2% Increased Armor Value from Items"         ) { s += "_austere_earthsiege";    }
-	else if( enchant == "+21 Critical Strike Rating and 3% Increased Critical Damage" ) { s += "_chaotic_skyflare";      }
-	else if( enchant == "+12 Critical Strike Rating and 3% Increased Critical Damage" ) { s += "_chaotic_skyfire";       }
-	else if( enchant == "+25 Spell Power and +2% Intellect"                           ) { s += "_ember_skyflare";        }
-	else if( enchant == "+21 Agility and 3% Increased Critical Damage"                ) { s += "_relentless_earthsiege"; }
-	else if( enchant == "+12 Agility and 3% Increased Critical Damage"                ) { s += "_relentless_earthstorm"; }
-	else
-	{
-	  fuzzy_search( s, enchant );
-	}
+        if     ( enchant == "+32 Stamina and 2% Increased Armor Value from Items"         ) { s += "_austere_earthsiege";    }
+        else if( enchant == "+21 Critical Strike Rating and 3% Increased Critical Damage" ) { s += "_chaotic_skyflare";      }
+        else if( enchant == "+12 Critical Strike Rating and 3% Increased Critical Damage" ) { s += "_chaotic_skyfire";       }
+        else if( enchant == "+25 Spell Power and +2% Intellect"                           ) { s += "_ember_skyflare";        }
+        else if( enchant == "+21 Agility and 3% Increased Critical Damage"                ) { s += "_relentless_earthsiege"; }
+        else if( enchant == "+12 Agility and 3% Increased Critical Damage"                ) { s += "_relentless_earthstorm"; }
+        else
+        {
+          fuzzy_search( s, enchant );
+        }
       }
       else
       {
-	fuzzy_search( s, enchant );
+        fuzzy_search( s, enchant );
       }
 
       if( ! xml_t::get_value( match, socket, "match" ) || ( match != "1" ) ) socket_bonus = false;
@@ -333,7 +336,7 @@ static bool parse_item_gems( item_t& item,
       std::string enchant;
       if( xml_t::get_value( enchant, socket_data, "socketMatchEnchant/." ) )
       {
-	fuzzy_search( s, enchant );
+        fuzzy_search( s, enchant );
       }
     }
 
@@ -355,7 +358,7 @@ static bool parse_item_gems( item_t& item,
 // parse_item_enchant =======================================================
 
 static bool parse_item_enchant( item_t& item,
-				xml_node_t* xml )
+                                xml_node_t* xml )
 {
   item.armory_enchant_str.clear();
 
@@ -392,7 +395,7 @@ static bool parse_item_enchant( item_t& item,
 // parse_item_weapon ========================================================
 
 static bool parse_item_weapon( item_t& item,
-			       xml_node_t* xml )
+                               xml_node_t* xml )
 {
   item.armory_weapon_str.clear();
 
@@ -438,10 +441,10 @@ static bool parse_item_weapon( item_t& item,
 // armory_t::download_player ================================================
 
 player_t* armory_t::download_player( sim_t* sim,
-				     const std::string& region, 
-				     const std::string& server, 
-				     const std::string& name,
-				     bool use_active_talents )
+                                     const std::string& region, 
+                                     const std::string& server, 
+                                     const std::string& name,
+                                     bool use_active_talents )
 {
   xml_node_t*   sheet_xml = download_character_sheet  ( sim, region, server, name );
   xml_node_t* talents_xml = download_character_talents( sim, region, server, name );
@@ -469,6 +472,12 @@ player_t* armory_t::download_player( sim_t* sim,
 
   if( ! xml_t::get_value( p -> level, sheet_xml, "character/level" ) ) return 0;
 
+  std::string last_modified;
+  if( xml_t::get_value( last_modified, sheet_xml, "character/lastModified" ) )
+  {
+    p -> last_modified = util_t::parse_date( last_modified );
+  }
+
   xml_node_t* talents_node = xml_t::get_node( talents_xml, "talents" );
   
   // US/EU Armory pages using different notations!
@@ -489,9 +498,9 @@ player_t* armory_t::download_player( sim_t* sim,
     {
       if( inactive_talents )
       {
-	      int active_value=0;
-	      if( ! xml_t::get_value( active_value, active_talents, "active" ) || ! active_value ) std::swap( active_talents, inactive_talents );
-	      if( ! use_active_talents ) std::swap( active_talents, inactive_talents );
+        int active_value=0;
+        if( ! xml_t::get_value( active_value, active_talents, "active" ) || ! active_value ) std::swap( active_talents, inactive_talents );
+        if( ! use_active_talents ) std::swap( active_talents, inactive_talents );
       }
 
       std::string talents_encoding;
@@ -504,12 +513,12 @@ player_t* armory_t::download_player( sim_t* sim,
       int num_glyphs = xml_t::get_nodes( glyph_nodes, active_talents, "glyph" );
       for( int i=0; i < num_glyphs; i++ )
       {
-	      std::string name;
-	      if( ! xml_t::get_value( name, glyph_nodes[ i ], "name" ) ) return 0;
-	      name.erase( 0, 9 ); // remove "Glyph of "
-	      armory_t::format( name );
-	      if( i ) p -> glyphs_str += ",";
-	      p -> glyphs_str += name;
+        std::string name;
+        if( ! xml_t::get_value( name, glyph_nodes[ i ], "name" ) ) return 0;
+        name.erase( 0, 9 ); // remove "Glyph of "
+        armory_t::format( name );
+        if( i ) p -> glyphs_str += ",";
+        p -> glyphs_str += name;
       }
     }
   }
@@ -522,12 +531,12 @@ player_t* armory_t::download_player( sim_t* sim,
     int slot;
 
     if( xml_t::get_value( id_str, item_nodes[ i ], "id"   ) &&
-	xml_t::get_value( slot,   item_nodes[ i ], "slot" ) )
+        xml_t::get_value( slot,   item_nodes[ i ], "slot" ) )
     {
       if( slot == -1 ) continue;
 
       if( ! armory_t::download_slot( p -> items[ slot ], id_str ) ) 
-	return 0;
+        return 0;
     }
     else return 0;
   }
@@ -538,11 +547,11 @@ player_t* armory_t::download_player( sim_t* sim,
 // armory_t::download_slot ==================================================
 
 bool armory_t::download_slot( item_t& item,
-			      const std::string& id_str )
+                              const std::string& id_str )
 {
   player_t* p = item.player;
 
-  xml_node_t* slot_xml = download_item_tooltip( p -> sim, p -> region_str, p -> server_str, p -> name_str, id_str, item.slot );
+  xml_node_t* slot_xml = download_item_tooltip( p, id_str, item.slot );
   if( ! slot_xml ) 
   {
     printf( "simcraft: Unable to download item %s at slot %d for player %s\n", id_str.c_str(), item.slot, p -> name() );
@@ -585,11 +594,11 @@ bool armory_t::download_slot( item_t& item,
 // armory_t::download_item ==================================================
 
 bool armory_t::download_item( item_t& item,
-			      const std::string& id_str )
+                              const std::string& id_str )
 {
   player_t* p = item.player;
 
-  xml_node_t* item_xml = download_item_tooltip( p -> sim, p -> region_str, id_str );
+  xml_node_t* item_xml = download_item_tooltip( p, id_str );
   if( ! item_xml ) 
   {
     printf( "simcraft: Player %s unable to download item %s for slot %s.\n", p -> name(), id_str.c_str(), item.slot_name() );
@@ -638,9 +647,9 @@ std::string& armory_t::format( std::string& name )
       c = '_';
     }
     else if( c != '_' && 
-	     c != '.' && 
-	     c != '%' && 
-	     ! isdigit( c ) )
+             c != '.' && 
+             c != '%' && 
+             ! isdigit( c ) )
     {
       continue;
     }

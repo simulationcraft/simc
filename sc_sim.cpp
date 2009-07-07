@@ -96,21 +96,33 @@ static bool parse_player( sim_t*             sim,
       player_name    = value.substr( 0, cut_pt );
     }
 
+    std::string wowhead;
     std::string region = sim -> default_region_str;
     std::string server = sim -> default_server_str;
     std::string talents = "active";
+    int refresh=0;
 
     option_t options[] =
     {
+      { "wowhead", OPT_STRING, &wowhead },
       { "region",  OPT_STRING, &region  },
       { "server",  OPT_STRING, &server  },
       { "talents", OPT_STRING, &talents },
+      { "refresh", OPT_BOOL,   &refresh },
       { NULL, OPT_UNKNOWN, NULL }
     };
 
     option_t::parse( sim, "player", options, player_options );
 
-    sim -> active_player = armory_t::download_player( sim, region, server, player_name, ( talents == "active" ) );
+    if( wowhead.empty() )
+    {
+      sim -> active_player = armory_t::download_player( sim, region, server, player_name, ( talents == "active" ) );
+    }
+    else
+    {
+      sim -> active_player = wowhead_t::download_player( sim, wowhead, player_name, ( talents == "active" ) );
+    }
+    if( sim -> active_player && refresh ) sim -> active_player -> last_modified = 0;
   }
   else if( name == "armory" ) 
   {
@@ -128,11 +140,33 @@ static bool parse_player( sim_t*             sim,
 
     for( int i=2; i < num_splits; i++ )
     {
-      bool talents_2nd= (splits[i].length()>1)&&(splits[i][0]=='!');
-      if (talents_2nd) splits[i].erase(0,1);
-      sim -> active_player = armory_t::download_player( sim, region, server, splits[ i ] , !talents_2nd);
+      std::string player_name = splits[ i ];
+      bool active_talents = true;
+      if( player_name[ 0 ] == '!' )
+      {
+	player_name.erase( 0, 1 );
+	active_talents = false;
+      }
+      sim -> active_player = armory_t::download_player( sim, region, server, player_name, active_talents );
       if( ! sim -> active_player ) return false;
     }
+  }
+  else if( name == "wowhead" ) 
+  {
+    std::vector<std::string> splits;
+    int num_splits = util_t::string_split( splits, value, "," );
+
+    if( num_splits != 1 && num_splits != 2 )
+    {
+      printf( "simcraft: Expected format is: wowhead=id,name OR wowhead=id\n" );
+      assert( false );
+    }
+
+    std::string player_id = splits[ 0 ];
+    std::string player_name;
+    if( num_splits == 2 ) player_name = splits[ 1 ];
+
+    sim -> active_player = wowhead_t::download_player( sim, player_id, player_name );
   }
   else
   {
@@ -414,6 +448,7 @@ void sim_t::combat_begin()
 
   reset();
 
+  if ( overrides.celerity               ) auras.celerity = 1;
   if ( overrides.improved_moonkin_aura  ) auras.improved_moonkin = 1;
   if ( overrides.leader_of_the_pack     ) auras.leader_of_the_pack = 1;
   if ( overrides.moonkin_aura           ) auras.moonkin = 1;
@@ -923,7 +958,7 @@ void sim_t::partition()
 
 void sim_t::execute()
 {
-  int start_time = util_t::milliseconds();
+  int64_t start_time = util_t::milliseconds();
 
   partition();
   iterate();
@@ -1089,6 +1124,7 @@ std::vector<option_t>& sim_t::get_options()
       { "blood_frenzy",                     OPT_BOOL,   &( overrides.blood_frenzy                   ) },
       { "bloodlust",                        OPT_BOOL,   &( overrides.bloodlust                      ) },
       { "bloodlust_early",                  OPT_BOOL,   &( overrides.bloodlust_early                ) },
+      { "celerity",                         OPT_BOOL,   &( overrides.celerity                       ) },
       { "crypt_fever",                      OPT_BOOL,   &( overrides.crypt_fever                    ) },
       { "curse_of_elements",                OPT_BOOL,   &( overrides.curse_of_elements              ) },
       { "divine_spirit",                    OPT_BOOL,   &( overrides.divine_spirit                  ) },
@@ -1169,6 +1205,7 @@ std::vector<option_t>& sim_t::get_options()
       { "pet",                              OPT_FUNC,   (void*) ::parse_player                        },
       { "player",                           OPT_FUNC,   (void*) ::parse_player                        },
       { "armory",                           OPT_FUNC,   (void*) ::parse_player                        },
+      { "wowhead",                          OPT_FUNC,   (void*) ::parse_player                        },
       { "http_cache_clear",                 OPT_FUNC,   (void*) ::http_t::clear_cache                 },
       { "default_region",                   OPT_STRING, &( default_region_str                       ) },
       { "default_server",                   OPT_STRING, &( default_server_str                       ) },

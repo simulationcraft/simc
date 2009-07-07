@@ -42,6 +42,11 @@ double spell_t::haste() SC_CONST
     {
       h *= 1.0 / ( 1.0 + 0.05 );
     }
+
+    if( sim -> auras.celerity )
+    {
+      h *= 1.0 / ( 1.0 + 0.20 );
+    }
   }
 
   return h;

@@ -373,7 +373,7 @@ player_t::player_t( sim_t*             s,
   party(0), member(0),
   distance(0), gcd_ready(0), base_gcd(1.5), 
   potion_used(0), stunned(0), moving(0), sleeping(0), initialized(0), 
-  pet_list(0),
+  pet_list(0), last_modified(0), race(RACE_NONE),
   // Haste
   base_haste_rating(0), initial_haste_rating(0), haste_rating(0), spell_haste(1.0), attack_haste(1.0),
   // Spell Mechanics

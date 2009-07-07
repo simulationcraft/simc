@@ -26,7 +26,7 @@ struct xml_node_t
     int num_parms = parameters.size();
     for( int i=0; i < num_parms; i++ ) 
       if( name_str == parameters[ i ].name() )
-	return &( parameters[ i ] );
+        return &( parameters[ i ] );
     return 0;
   }
 };
@@ -52,9 +52,9 @@ static int create_children( xml_node_t* root, const std::string& input, std::str
 static bool is_white_space( char c )
 {
   return( c == ' '  ||
-	  c == '\t' ||
-	  c == '\n' ||
-	  c == '\r' );
+          c == '\t' ||
+          c == '\n' ||
+          c == '\r' );
 }
 
 // is_name_char ============================================================
@@ -69,8 +69,8 @@ static bool is_name_char( char c )
 // parse_name ==============================================================
 
 static bool parse_name( std::string&            name_str,
-			const std::string&      input,
-			std::string::size_type& index )
+                        const std::string&      input,
+                        std::string::size_type& index )
 {
   name_str.clear();
 
@@ -91,8 +91,8 @@ static bool parse_name( std::string&            name_str,
 // create_parameter ========================================================
 
 static void create_parameter( xml_node_t*             node,
-			      const std::string&      input,
-			      std::string::size_type& index )
+                              const std::string&      input,
+                              std::string::size_type& index )
 {
   // required format:  name="value"
 
@@ -120,7 +120,7 @@ static void create_parameter( xml_node_t*             node,
 // create_node =============================================================
 
 static xml_node_t* create_node( const std::string&      input,
-				std::string::size_type& index )
+                                std::string::size_type& index )
 {
   char c = input[ index ];
   if( c == '?' ) index++;
@@ -159,8 +159,8 @@ static xml_node_t* create_node( const std::string&      input,
 // create_children =========================================================
 
 static int create_children( xml_node_t*             root,
-			    const std::string&      input,
-			    std::string::size_type& index )
+                            const std::string&      input,
+                            std::string::size_type& index )
 {
   while( true )
   {
@@ -172,34 +172,34 @@ static int create_children( xml_node_t*             root,
       
       if( input[ index ] == '/' )
       {
-	std::string name_str;
-	parse_name( name_str, input, ++index );
-	assert( name_str == root -> name() );
-	index++;
-	break;
+        std::string name_str;
+        parse_name( name_str, input, ++index );
+        assert( name_str == root -> name() );
+        index++;
+        break;
       }
       else if( input[ index ] == '!' )
       {
-	index++;
-	if( input.substr( index, 7 ) == "[CDATA[" )
-	{
-	  index += 7;
-	  std::string::size_type start = index;
-	  while( input[ index ] && input[ index ] != ']' ) index++;
-	  root -> parameters.push_back( xml_parm_t( "cdata", input.substr( start, index-start ) ) );
-	  if( ! input[ index ] ) break;
-	  index += 2;
-	}
-	else
-	{
-	  while( input[ index ] && input[ index ] != '>' ) index++;
-	  if( ! input[ index ] ) break;
-	}
-	index++;
+        index++;
+        if( input.substr( index, 7 ) == "[CDATA[" )
+        {
+          index += 7;
+          std::string::size_type start = index;
+          while( input[ index ] && input[ index ] != ']' ) index++;
+          root -> parameters.push_back( xml_parm_t( "cdata", input.substr( start, index-start ) ) );
+          if( ! input[ index ] ) break;
+          index += 2;
+        }
+        else
+        {
+          while( input[ index ] && input[ index ] != '>' ) index++;
+          if( ! input[ index ] ) break;
+        }
+        index++;
       }
       else
       {
-	root -> children.push_back( create_node( input, index ) );
+        root -> children.push_back( create_node( input, index ) );
       }
     }
     else if( input[ index ] == '\0' )
@@ -220,7 +220,7 @@ static int create_children( xml_node_t*             root,
 // search_tree =============================================================
 
 static xml_node_t* search_tree( xml_node_t*        root,
-				const std::string& name_str )
+                                const std::string& name_str )
 {
   if( name_str.empty() || name_str.size() == 0 || name_str == root -> name() ) 
     return root;
@@ -238,8 +238,8 @@ static xml_node_t* search_tree( xml_node_t*        root,
 // split_path ==============================================================
 
 static xml_node_t* split_path( xml_node_t*        node,
-			       std::string&       key,
-			       const std::string& path )
+                               std::string&       key,
+                               const std::string& path )
 {
   if( path.find( "/" ) == path.npos )
   {
@@ -269,8 +269,9 @@ static xml_node_t* split_path( xml_node_t*        node,
 // xml_t::download =========================================================
 
 xml_node_t* xml_t::download( const std::string& url, 
-			     const std::string& confirmation, 
-			     int                throttle_seconds )
+                             const std::string& confirmation, 
+			     int64_t            timestamp,
+                             int                throttle_seconds )
 {
   thread_t::mutex_lock( xml_mutex );
 
@@ -287,7 +288,7 @@ xml_node_t* xml_t::download( const std::string& url,
   {
     std::string result;
 
-    if( http_t::get( result, url, confirmation, throttle_seconds ) )
+    if( http_t::get( result, url, confirmation, timestamp, throttle_seconds ) )
     {
       node = xml_t::create( result );
 
@@ -329,7 +330,7 @@ xml_node_t* xml_t::create( FILE* input )
 // xml_t::get_child ========================================================
 
 xml_node_t* xml_t::get_child( xml_node_t*        root,
-			      const std::string& name_str )
+                              const std::string& name_str )
 {
   int num_children = root -> children.size();
   for( int i=0; i < num_children; i++ )
@@ -344,8 +345,8 @@ xml_node_t* xml_t::get_child( xml_node_t*        root,
 // xml_t::get_children ======================================================
 
 int xml_t::get_children( std::vector<xml_node_t*>& nodes,
-			 xml_node_t*               root,
-			 const std::string&        name_str )
+                         xml_node_t*               root,
+                         const std::string&        name_str )
 {
   int num_children = root -> children.size();
   for( int i=0; i < num_children; i++ )
@@ -360,7 +361,7 @@ int xml_t::get_children( std::vector<xml_node_t*>& nodes,
 // xml_t::get_node =========================================================
 
 xml_node_t* xml_t::get_node( xml_node_t*        root,
-			     const std::string& path )
+                             const std::string& path )
 {
   if( path.empty() || path.size() == 0 || path == root -> name() ) 
     return root;
@@ -376,8 +377,8 @@ xml_node_t* xml_t::get_node( xml_node_t*        root,
 // xml_t::get_nodes ========================================================
 
 int xml_t::get_nodes( std::vector<xml_node_t*>& nodes,
-		      xml_node_t*               root,
-		      const std::string&        path )
+                      xml_node_t*               root,
+                      const std::string&        path )
 {
   if( path.empty() || path.size() == 0 || path == root -> name() )
   {
@@ -401,8 +402,8 @@ int xml_t::get_nodes( std::vector<xml_node_t*>& nodes,
 // xml_t::get_value ========================================================
 
 bool xml_t::get_value( std::string&       value,
-		       xml_node_t*        root,
-		       const std::string& path )
+                       xml_node_t*        root,
+                       const std::string& path )
 {
   std::string key;
   xml_node_t* node = split_path( root, key, path );
@@ -419,8 +420,8 @@ bool xml_t::get_value( std::string&       value,
 // xml_t::get_value ========================================================
 
 bool xml_t::get_value( int&               value,
-		       xml_node_t*        root,
-		       const std::string& path )
+                       xml_node_t*        root,
+                       const std::string& path )
 {
   std::string key;
   xml_node_t* node = split_path( root, key, path );
@@ -437,8 +438,8 @@ bool xml_t::get_value( int&               value,
 // xml_t::get_value ========================================================
 
 bool xml_t::get_value( double&            value,
-		       xml_node_t*        root,
-		       const std::string& path )
+                       xml_node_t*        root,
+                       const std::string& path )
 {
   std::string key;
   xml_node_t* node = split_path( root, key, path );
@@ -455,8 +456,8 @@ bool xml_t::get_value( double&            value,
 // xml_t::print ============================================================
 
 void xml_t::print( xml_node_t* root,
-		   FILE*       file,
-		   int         spacing )
+                   FILE*       file,
+                   int         spacing )
 {
   if( ! root ) return;
 

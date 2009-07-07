@@ -64,6 +64,7 @@ SRC =\
 	sc_hunter.cpp		\
 	sc_http.cpp		\
 	sc_item.cpp		\
+	sc_js.cpp		\
 	sc_log.cpp		\
 	sc_mage.cpp		\
 	sc_main.cpp		\
@@ -91,6 +92,7 @@ SRC =\
 	sc_warlock.cpp		\
 	sc_warrior.cpp		\
 	sc_weapon.cpp		\
+	sc_wowhead.cpp		\
 	sc_xml.cpp
 
 SRC_H   := $(filter %.h,   $(SRC))

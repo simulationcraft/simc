@@ -699,6 +699,8 @@ struct sim_t
   // Buffs and Debuffs Overrides
   struct overrides_t
   {
+    // Overrides for Encounter buffs
+    int celerity;
     // Overrides for NYI classes
     int battle_shout;
     int blessing_of_kings;
@@ -755,6 +757,7 @@ struct sim_t
   // Auras
   struct auras_t
   {
+    int celerity;
     int improved_moonkin;
     int leader_of_the_pack;
     int moonkin;
@@ -1009,6 +1012,7 @@ struct player_t
   int         potion_used, stunned, moving, sleeping, initialized;
   rating_t    rating;
   pet_t*      pet_list;
+  int64_t     last_modified;
 
   // Option Parsing
   std::vector<option_t> options;
@@ -2135,7 +2139,8 @@ struct util_t
   static int string_split( std::vector<std::string>& results, const std::string& str, const char* delim );
   static int string_split( const std::string& str, const char* delim, const char* format, ... );
 
-  static int milliseconds();
+  static int64_t milliseconds();
+  static int64_t parse_date( const std::string& month_day_year );
 };
 
 // String utils =================================================================
@@ -2181,8 +2186,8 @@ struct armory_t
 struct wowhead_t
 {
   static player_t* download_player( sim_t* sim,
-				    const std::string& name, 
-				    const std::string& id,
+				    const std::string& id, 
+				    const std::string& name,
 				    bool active_talents=true );
 
   static bool download_slot( item_t&, const std::string& id_str, const std::string& enchant_id_str, const std::string gem_ids[ 3 ] );
@@ -2198,10 +2203,10 @@ struct http_t
   static bool cache_load();
   static bool cache_save();
   static void cache_clear();
-  static void cache_set( const std::string& url, const std::string& result, uint32_t timestamp=0 );
-  static bool cache_get( std::string& result, const std::string& url, bool force=false );
+  static void cache_set( const std::string& url, const std::string& result, int64_t timestamp=0 );
+  static bool cache_get( std::string& result, const std::string& url, int64_t timestamp=0 );
   static bool download( std::string& result, const std::string& url );
-  static bool get( std::string& result, const std::string& url, const std::string& confirmation=std::string(), int throttle_seconds=0 );
+  static bool get( std::string& result, const std::string& url, const std::string& confirmation=std::string(), int64_t timestamp=0, int throttle_seconds=0 );
   static bool clear_cache( sim_t*, const std::string& name, const std::string& value );
   static std::string& format( std::string& encoded_url, const std::string& url );
 };
@@ -2217,7 +2222,7 @@ struct xml_t
   static bool get_value( std::string& value, xml_node_t* root, const std::string& path = std::string() );
   static bool get_value( int&         value, xml_node_t* root, const std::string& path = std::string() );
   static bool get_value( double&      value, xml_node_t* root, const std::string& path = std::string() );
-  static xml_node_t* download( const std::string& url, const std::string& confirmation=std::string(), int throttle_seconds=0 );
+  static xml_node_t* download( const std::string& url, const std::string& confirmation=std::string(), int64_t timestamp=0, int throttle_seconds=0 );
   static xml_node_t* create( const std::string& input );
   static xml_node_t* create( FILE* input );
   static void print( xml_node_t* root, FILE* f=0, int spacing=0 );
@@ -2238,7 +2243,7 @@ struct js_t
   static bool get_value( double&      value, js_node_t* root, const std::string& path = std::string() );
   static js_node_t* create( const std::string& input );
   static js_node_t* create( FILE* input );
-  static void print( js_node_t* root, FILE*, int spacing=0 );
+  static void print( js_node_t* root, FILE* f=0, int spacing=0 );
 };
 
 
