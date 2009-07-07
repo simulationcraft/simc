@@ -2653,6 +2653,7 @@ struct starfire_t : public druid_spell_t
     base_cost         *= 1.0 - util_t::talent_rank( p -> talents.moonglow, 3, 0.03 );
     base_execute_time -= util_t::talent_rank( p -> talents.starlight_wrath, 5, 0.1 );
     base_multiplier   *= 1.0 + util_t::talent_rank( p -> talents.moonfury, 3, 0.03, 0.06, 0.10 );
+    if ( p -> tiers.t9_4pc_balance ) base_multiplier   *= 1.04;
     base_crit         += util_t::talent_rank( p -> talents.natures_majesty, 2, 0.02 );
     direct_power_mod  += util_t::talent_rank( p -> talents.wrath_of_cenarius, 5, 0.04 );
     base_crit_bonus_multiplier *= 1.0 + util_t::talent_rank( p -> talents.vengeance, 5, 0.20 );
@@ -2665,7 +2666,6 @@ struct starfire_t : public druid_spell_t
     }
     if ( p -> tiers.t6_4pc_balance ) base_crit += 0.05;
     if ( p -> tiers.t7_4pc_balance ) base_crit += 0.05;
-    if ( p -> tiers.t9_4pc_balance ) base_crit += 0.03;
   }
 
   virtual void player_buff()
@@ -2830,12 +2830,13 @@ struct wrath_t : public druid_spell_t
     base_cost         *= 1.0 - util_t::talent_rank( p -> talents.moonglow, 3, 0.03 );
     base_execute_time -= util_t::talent_rank( p -> talents.starlight_wrath, 5, 0.1 );
     base_multiplier   *= 1.0 + util_t::talent_rank( p -> talents.moonfury, 3, 0.03, 0.06, 0.10 );
+    if ( p -> tiers.t9_4pc_balance ) base_multiplier   *= 1.04;
     base_crit         += util_t::talent_rank( p -> talents.natures_majesty, 2, 0.02 );
     direct_power_mod  += util_t::talent_rank( p -> talents.wrath_of_cenarius, 5, 0.02 );
     base_crit_bonus_multiplier *= 1.0 + util_t::talent_rank( p -> talents.vengeance, 5, 0.20 );
 
     if ( p -> tiers.t7_4pc_balance ) base_crit += 0.05;
-    if ( p -> tiers.t9_4pc_balance ) base_crit += 0.03;
+
 
     if ( p -> idols.steadfast_renewal )
     {
