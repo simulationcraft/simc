@@ -46,70 +46,6 @@ static int parse_tokens( std::vector<token_t>& tokens,
   return num_splits;
 }
 
-// parse_stat ==============================================================
-
-static int parse_stat( const std::string& option_name )
-{
-  for( int i=0; i < STAT_MAX; i++ )
-  {
-    const char* stat_name = util_t::stat_type_abbrev( i );
-
-    for( int j=0; tolower( stat_name[ j ] ) == tolower( option_name[ j ] ); j++ )
-      if( stat_name[ j ] == '\0' )
-	return i;
-  }
-
-  return STAT_NONE;
-}
-
-// parse_schoool ============================================================
-
-static int parse_school( const std::string& option_name )
-{
-  for( int i=0; i < SCHOOL_MAX; i++ )
-  {
-    const char* school_name = util_t::school_type_string( i );
-
-    for( int j=0; tolower( school_name[ j ] ) == tolower( option_name[ j ] ); j++ )
-      if( school_name[ j ] == '\0' )
-	return i;
-  }
-
-  return SCHOOL_NONE;
-}
-
-// parse_enchant ===========================================================
-
-static int parse_enchant( const std::string& option_name )
-{
-  for( int i=0; i < ENCHANT_MAX; i++ )
-  {
-    const char* enchant_name = util_t::enchant_type_string( i );
-
-    for( int j=0; tolower( enchant_name[ j ] ) == tolower( option_name[ j ] ); j++ )
-      if( enchant_name[ j ] == '\0' )
-	return i;
-  }
-
-  return ENCHANT_NONE;
-}
-
-// parse_weapon =============================================================
-
-static int parse_weapon( const std::string& option_name )
-{
-  for( int i=0; i < WEAPON_MAX; i++ )
-  {
-    const char* weapon_name = util_t::weapon_type_string( i );
-
-    for( int j=0; tolower( weapon_name[ j ] ) == tolower( option_name[ j ] ); j++ )
-      if( weapon_name[ j ] == '\0' )
-	return i;
-  }
-
-  return WEAPON_NONE;
-}
-
 // is_meta_prefix ===========================================================
 
 static bool is_meta_prefix( const std::string& option_name )
@@ -329,7 +265,7 @@ bool item_t::decode_stats()
   {
     token_t& t = tokens[ i ];
 
-    int s = parse_stat( t.name );
+    int s = util_t::parse_stat_type( t.name );
 
     if( s != STAT_NONE )
     {
@@ -359,16 +295,9 @@ bool item_t::decode_gems()
     token_t& t = tokens[ i ];
     int s;
 
-    if( ( s = parse_stat( t.name ) ) != STAT_NONE )
+    if( ( s = util_t::parse_stat_type( t.name ) ) != STAT_NONE )
     {
       stats.add_stat( s, t.value );
-    }
-    else if( t.name == "all" )
-    {
-      for( int j=0; j < ATTRIBUTE_MAX; j++ ) 
-      {
-	stats.add_stat( j, t.value );
-      }
     }
     else if( is_meta_prefix( t.name ) )
     {
@@ -407,20 +336,13 @@ bool item_t::decode_enchant()
     token_t& t = tokens[ i ];
     int s, e;
 
-    if( ( s = parse_stat( t.name ) ) != STAT_NONE )
+    if( ( s = util_t::parse_stat_type( t.name ) ) != STAT_NONE )
     {
       stats.add_stat( s, t.value );
     }
-    else if( ( e = parse_enchant( t.name ) ) != ENCHANT_NONE )
+    else if( ( e = util_t::parse_enchant_type( t.name ) ) != ENCHANT_NONE )
     {
       enchant = e;
-    }
-    else if( t.name == "all" )
-    {
-      for( int j=0; j < ATTRIBUTE_MAX; j++ ) 
-      {
-	stats.attribute[ j ] += t.value;
-      }
     }
     else if( t.full == "pyrorocket" )
     {
@@ -450,12 +372,12 @@ bool item_t::decode_equip()
     token_t& t = tokens[ i ];
     int s;
 
-    if( ( s = parse_stat( t.name ) ) != STAT_NONE )
+    if( ( s = util_t::parse_stat_type( t.name ) ) != STAT_NONE )
     {
       equip.stat = s;
       equip.amount = t.value;
     }
-    else if( ( s = parse_school( t.name ) ) != SCHOOL_NONE )
+    else if( ( s = util_t::parse_school_type( t.name ) ) != SCHOOL_NONE )
     {
       equip.school = s;
       equip.amount = t.value;
@@ -509,12 +431,12 @@ bool item_t::decode_use()
     token_t& t = tokens[ i ];
     int s;
 
-    if( ( s = parse_stat( t.name ) ) != STAT_NONE )
+    if( ( s = util_t::parse_stat_type( t.name ) ) != STAT_NONE )
     {
       use.stat = s;
       use.amount = t.value;
     }
-    else if( ( s = parse_school( t.name ) ) != SCHOOL_NONE )
+    else if( ( s = util_t::parse_school_type( t.name ) ) != SCHOOL_NONE )
     {
       use.school = s;
       use.amount = t.value;
@@ -554,11 +476,11 @@ bool item_t::decode_weapon()
     token_t& t = tokens[ i ];
     int type, school;
 
-    if( ( type = parse_weapon( t.name ) ) != WEAPON_NONE )
+    if( ( type = util_t::parse_weapon_type( t.name ) ) != WEAPON_NONE )
     {
       w -> type = type;
     }
-    else if( ( school = parse_school( t.name ) ) != SCHOOL_NONE )
+    else if( ( school = util_t::parse_school_type( t.name ) ) != SCHOOL_NONE )
     {
       w -> school = school;
     }

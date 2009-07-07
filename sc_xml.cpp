@@ -178,6 +178,25 @@ static int create_children( xml_node_t*             root,
 	index++;
 	break;
       }
+      else if( input[ index ] == '!' )
+      {
+	index++;
+	if( input.substr( index, 7 ) == "[CDATA[" )
+	{
+	  index += 7;
+	  std::string::size_type start = index;
+	  while( input[ index ] && input[ index ] != ']' ) index++;
+	  root -> parameters.push_back( xml_parm_t( "cdata", input.substr( start, index-start ) ) );
+	  if( ! input[ index ] ) break;
+	  index += 2;
+	}
+	else
+	{
+	  while( input[ index ] && input[ index ] != '>' ) index++;
+	  if( ! input[ index ] ) break;
+	}
+	index++;
+      }
       else
       {
 	root -> children.push_back( create_node( input, index ) );
@@ -245,6 +264,8 @@ static xml_node_t* split_path( xml_node_t*        node,
 
 } // ANONYMOUS NAMESPACE ===================================================
 
+#ifndef UNIT_TEST
+
 // xml_t::download =========================================================
 
 xml_node_t* xml_t::download( const std::string& url, 
@@ -279,6 +300,8 @@ xml_node_t* xml_t::download( const std::string& url,
   return node;
 }
 
+#endif
+
 // xml_t::create ===========================================================
 
 xml_node_t* xml_t::create( const std::string& input )
@@ -290,6 +313,17 @@ xml_node_t* xml_t::create( const std::string& input )
   create_children( root, input, index );
 
   return root;
+}
+
+// xml_t::create ===========================================================
+
+xml_node_t* xml_t::create( FILE* input )
+{
+  if( ! input ) return 0;
+  std::string buffer;
+  char c;
+  while( ( c = fgetc( input ) ) != EOF ) buffer += c;
+  return create( buffer );
 }
 
 // xml_t::get_child ========================================================
@@ -426,6 +460,8 @@ void xml_t::print( xml_node_t* root,
 {
   if( ! root ) return;
 
+  if( ! file ) file = stdout;
+
   fprintf( file, "%*s%s", spacing, "", root -> name() );
 
   int num_parms = root -> parameters.size();
@@ -443,3 +479,25 @@ void xml_t::print( xml_node_t* root,
   }
 }
 
+#ifdef UNIT_TEST
+
+int main( int argc, char** argv )
+{
+  if( argc < 2 )
+  {
+    printf( "Usage: xml filename\n" );
+    exit(0);
+  }
+  FILE* file = fopen( argv[ 1 ], "r" );
+  if( ! file )
+  {
+    printf( "Unable to open file %s\n", argv[ 1 ] );
+    exit(0);
+  }
+
+  xml_t::print( xml_t::create( file ) );
+
+  return 0;
+}
+
+#endif

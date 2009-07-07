@@ -48,6 +48,8 @@ void gear_stats_t::add_stat( int    stat,
 
   case STAT_ARMOR: armor += value; break;
 
+  case STAT_MAX: for( int i=0; i < ATTRIBUTE_MAX; i++ ) { attribute[ i ] += value; } break;
+
   default: assert( 0 );
   }
 }
@@ -90,6 +92,8 @@ void gear_stats_t::set_stat( int    stat,
   case STAT_WEAPON_SPEED: weapon_speed = value; break;
 
   case STAT_ARMOR: armor = value; break;
+
+  case STAT_MAX: for( int i=0; i < ATTRIBUTE_MAX; i++ ) { attribute[ i ] = value; } break;
 
   default: assert( 0 );
   }

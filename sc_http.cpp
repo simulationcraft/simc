@@ -161,11 +161,11 @@ bool http_t::cache_save()
       if( size > max_size ) max_size = size;
     }
 
-    if(1 != fwrite( &url_cache_version, sizeof( double   ), 1, file ) ||
+    if( 1 != fwrite( &url_cache_version, sizeof( double   ), 1, file ) ||
     	1 != fwrite( &num_records,       sizeof( uint32_t ), 1, file ) ||
     	1 != fwrite( &max_size,          sizeof( uint32_t ), 1, file ))
     {
-    	perror("fwrite failed while saving cache file"); 
+      perror("fwrite failed while saving cache file"); 
     }
 
     for( unsigned i=0; i < num_records; i++ )
@@ -183,7 +183,7 @@ bool http_t::cache_save()
       	url_size != fwrite( c.   url.c_str(), sizeof( char ),    url_size, file ) ||
       	result_size != fwrite( c.result.c_str(), sizeof( char ), result_size, file ))
       {
-			perror("fwrite failed while saving cache file"); 
+	perror("fwrite failed while saving cache file"); 
       }
     }  
 
@@ -551,8 +551,8 @@ bool http_t::download( std::string& result,
 
 #ifdef UNIT_TEST
 
-void thread_t::lock() {}
-void thread_t::unlock() {}
+void thread_t::mutex_lock( void* mutex ) {}
+void thread_t::mutex_unlock( void* mutex ) {}
 
 int main( int argc, char** argv )
 {

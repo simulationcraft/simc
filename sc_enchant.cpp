@@ -5,6 +5,68 @@
 
 #include "simcraft.h"
 
+struct enchant_data_t 
+{ 
+  std::string id, name, encoding;
+};
+static std::vector<enchant_data_t> enchant_db;
+static void* enchant_mutex = 0;
+
+namespace { // ANONYMOUS NAMESPACE =========================================
+
+static void init_database()
+{
+  FILE* file = fopen( "permanentenchant.xml", "r" );
+  xml_node_t* root = xml_t::create( file );
+  if( ! root )
+  {
+    printf( "simcraft: Unable to open enchant database 'permanentenchant.xml'\n" );
+    exit(0);
+  }
+
+  std::vector<xml_node_t*> nodes;
+  int num_nodes = xml_t::get_nodes( nodes, root, "permanentenchant" );
+  enchant_db.resize( num_nodes );
+
+  for( int i=0; i < num_nodes; i++ )
+  {
+    xml_node_t* node = nodes[ i ];
+    enchant_data_t& enchant = enchant_db[ i ];
+
+    if( ! xml_t::get_value( enchant.id,   node, "id"   ) ||
+	! xml_t::get_value( enchant.name, node, "name" ) )
+    {
+      printf( "simcraft: Unable to parse enchant database 'permanentenchant.xml'\n" );
+      exit(0);
+    }
+
+    std::string stats;
+    if( xml_t::get_value( stats, node, "stats/cdata" ) )
+    {
+      std::vector<std::string> splits;
+      int num_splits = util_t::string_split( splits, stats, "," );
+
+      for( int j=0; j < num_splits; j++ )
+      {
+	std::string abbrev, value;
+
+	if( 2 == util_t::string_split( splits[ j ], ":", "S S", &abbrev, &value ) )
+	{
+	  int type = util_t::parse_stat_type( abbrev );
+	  if( type != STAT_NONE )
+	  {
+	    if( j > 0 ) enchant.encoding += "_";
+	    enchant.encoding += value;
+	    enchant.encoding += util_t::stat_type_abbrev( type );
+	  }
+	}
+      }
+    }
+  }
+}
+
+} // ANONYMOUS NAMESPACE ===================================================
+
 // Spellsurge Enchant =======================================================
 
 struct spellsurge_callback_t : public action_callback_t
@@ -355,3 +417,33 @@ void enchant_t::register_callbacks( player_t* p )
     p -> register_spell_result_callback( RESULT_ALL_MASK, new spellsurge_callback_t( p ) );
   }
 }
+
+// enchant_t::get_encoding ==================================================
+
+bool enchant_t::get_encoding( std::string& name,
+			      std::string& encoding,
+			      const std::string& enchant_id )
+{
+  bool success = false;
+  thread_t::mutex_lock( enchant_mutex );
+
+  if( enchant_db.empty() ) init_database();
+
+  int num_enchants = enchant_db.size();
+  for( int i = num_enchants-1; i >= 0; i-- )
+  {
+    enchant_data_t& enchant = enchant_db[ i ];
+
+    if( enchant.id == enchant_id )
+    {
+      name     = enchant.name;
+      encoding = enchant.encoding;
+      success  = true;
+      break;
+    }
+  }
+  
+  thread_t::mutex_unlock( enchant_mutex );
+  return success;
+}
+

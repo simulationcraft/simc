@@ -1947,7 +1947,7 @@ struct enchant_t
 {
   static void init( player_t* );
   static void register_callbacks( player_t* );
-  static bool download_enchant( item_t&, const std::string& enchant_id_str );
+  static bool get_encoding( std::string& name, std::string& encoding, const std::string& enchant_id );
 };
 
 // Consumable ================================================================
@@ -2108,9 +2108,29 @@ struct util_t
   static const char* slot_type_string          ( int type );
   static const char* stat_type_string          ( int type );
   static const char* stat_type_abbrev          ( int type );
+  static const char* stat_type_wowhead         ( int type );
   static const char* talent_tree_string        ( int tree );
   static const char* weapon_buff_type_string   ( int type );
   static const char* weapon_type_string        ( int type );
+
+  static int parse_attribute_type     ( const std::string& name );
+  static int parse_dmg_type           ( const std::string& name );
+  static int parse_elixir_type        ( const std::string& name );
+  static int parse_enchant_type       ( const std::string& name );
+  static int parse_flask_type         ( const std::string& name );
+  static int parse_food_type          ( const std::string& name );
+  static int parse_meta_gem_type      ( const std::string& name );
+  static int parse_player_type        ( const std::string& name );
+  static int parse_profession_type    ( const std::string& name );
+  static int parse_race_type          ( const std::string& name );
+  static int parse_resource_type      ( const std::string& name );
+  static int parse_result_type        ( const std::string& name );
+  static int parse_school_type        ( const std::string& name );
+  static int parse_slot_type          ( const std::string& name );
+  static int parse_stat_type          ( const std::string& name );
+  static int parse_talent_tree        ( const std::string& name );
+  static int parse_weapon_buff_type   ( const std::string& name );
+  static int parse_weapon_type        ( const std::string& name );
 
   static int string_split( std::vector<std::string>& results, const std::string& str, const char* delim );
   static int string_split( const std::string& str, const char* delim, const char* format, ... );
@@ -2151,6 +2171,7 @@ struct armory_t
 
   static bool download_slot( item_t&, const std::string& id_str );
   static bool download_item( item_t&, const std::string& id_str );
+  static bool download_gem ( item_t&, const std::string& gem_id );
 
   static std::string& format( std::string& name );
 };
@@ -2161,7 +2182,8 @@ struct wowhead_t
 {
   static player_t* download_player( sim_t* sim,
 				    const std::string& name, 
-				    const std::string& id );
+				    const std::string& id,
+				    bool active_talents=true );
 
   static bool download_slot( item_t&, const std::string& id_str, const std::string& enchant_id_str, const std::string gem_ids[ 3 ] );
   static bool download_item( item_t&, const std::string& id_str );
@@ -2196,8 +2218,9 @@ struct xml_t
   static bool get_value( int&         value, xml_node_t* root, const std::string& path = std::string() );
   static bool get_value( double&      value, xml_node_t* root, const std::string& path = std::string() );
   static xml_node_t* download( const std::string& url, const std::string& confirmation=std::string(), int throttle_seconds=0 );
-  static xml_node_t* create( const std::string& buffer );
-  static void print( xml_node_t* root, FILE*, int spacing=0 );
+  static xml_node_t* create( const std::string& input );
+  static xml_node_t* create( FILE* input );
+  static void print( xml_node_t* root, FILE* f=0, int spacing=0 );
 };
 
 
@@ -2213,7 +2236,8 @@ struct js_t
   static bool get_value( std::string& value, js_node_t* root, const std::string& path = std::string() );
   static bool get_value( int&         value, js_node_t* root, const std::string& path = std::string() );
   static bool get_value( double&      value, js_node_t* root, const std::string& path = std::string() );
-  static js_node_t* create( const std::string& buffer );
+  static js_node_t* create( const std::string& input );
+  static js_node_t* create( FILE* input );
   static void print( js_node_t* root, FILE*, int spacing=0 );
 };
 

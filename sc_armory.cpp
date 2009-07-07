@@ -304,8 +304,8 @@ static bool parse_item_gems( item_t& item,
       std::string enchant, color, match;
 
       if( ! xml_t::get_value( enchant, socket, "enchant" ) ||
-	        ! xml_t::get_value( color,   socket, "color"   ) )
-	          continue;
+	  ! xml_t::get_value( color,   socket, "color"   ) )
+	continue;
 
       if( color == "Meta" )
       {
@@ -322,7 +322,7 @@ static bool parse_item_gems( item_t& item,
       }
       else
       {
-	       fuzzy_search( s, enchant );
+	fuzzy_search( s, enchant );
       }
 
       if( ! xml_t::get_value( match, socket, "match" ) || ( match != "1" ) ) socket_bonus = false;
@@ -333,7 +333,7 @@ static bool parse_item_gems( item_t& item,
       std::string enchant;
       if( xml_t::get_value( enchant, socket_data, "socketMatchEnchant/." ) )
       {
-	      fuzzy_search( s, enchant );
+	fuzzy_search( s, enchant );
       }
     }
 
@@ -344,8 +344,9 @@ static bool parse_item_gems( item_t& item,
     }
 
     if( item.sim -> debug && ! s.empty() )
+    {
       log_t::output( item.sim, "%s %s %s armory_gems=%s", item.player -> name(), item.slot_name(), item.name(), s.c_str() );
-
+    }
   }
   
   return true;

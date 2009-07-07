@@ -163,6 +163,22 @@ const char* util_t::race_type_string( int type )
   return "unknown";
 }
 
+// util_t::parse_race_type =================================================
+
+int util_t::parse_race_type( const std::string& name )
+{
+  for( int i=0; i < RACE_MAX; i++ )
+  {
+    const char* race_name = util_t::race_type_string( i );
+
+    for( int j=0; tolower( race_name[ j ] ) == tolower( name[ j ] ); j++ )
+      if( race_name[ j ] == '\0' )
+	return i;
+  }
+
+  return RACE_NONE;
+}
+
 // util_t::profession_type_string ==========================================
 
 const char* util_t::profession_type_string( int type )
@@ -183,6 +199,22 @@ const char* util_t::profession_type_string( int type )
   case PROF_TAILORING:      return "tailoring";
   }
   return "unknown";
+}
+
+// util_t::parse_profession_type ===========================================
+
+int util_t::parse_profession_type( const std::string& name )
+{
+  for( int i=0; i < PROF_MAX; i++ )
+  {
+    const char* prof_name = util_t::profession_type_string( i );
+
+    for( int j=0; tolower( prof_name[ j ] ) == tolower( name[ j ] ); j++ )
+      if( prof_name[ j ] == '\0' )
+	return i;
+  }
+
+  return PROF_NONE;
 }
 
 // util_t::player_type_string ==============================================
@@ -208,6 +240,22 @@ const char* util_t::player_type_string( int type )
   return "unknown";
 }
 
+// util_t::parse_player_type ===============================================
+
+int util_t::parse_player_type( const std::string& name )
+{
+  for( int i=0; i < PLAYER_MAX; i++ )
+  {
+    const char* player_name = util_t::player_type_string( i );
+
+    for( int j=0; tolower( player_name[ j ] ) == tolower( name[ j ] ); j++ )
+      if( player_name[ j ] == '\0' )
+	return i;
+  }
+
+  return PLAYER_NONE;
+}
+
 // util_t::attribute_type_string ===========================================
 
 const char* util_t::attribute_type_string( int type )
@@ -221,6 +269,22 @@ const char* util_t::attribute_type_string( int type )
   case ATTR_SPIRIT:    return "spirit";
   }
   return "unknown";
+}
+
+// util_t::parse_attribute_type ============================================
+
+int util_t::parse_attribute_type( const std::string& name )
+{
+  for( int i=0; i < ATTRIBUTE_MAX; i++ )
+  {
+    const char* attr_name = util_t::attribute_type_string( i );
+
+    for( int j=0; tolower( attr_name[ j ] ) == tolower( name[ j ] ); j++ )
+      if( attr_name[ j ] == '\0' )
+	return i;
+  }
+
+  return ATTRIBUTE_NONE;
 }
 
 // util_t::dmg_type_string =================================================
@@ -252,6 +316,22 @@ const char* util_t::meta_gem_type_string( int type )
   return "unknown";
 }
 
+// util_t::parse_meta_gem_type =============================================
+
+int util_t::parse_meta_gem_type( const std::string& name )
+{
+  for( int i=0; i < META_GEM_MAX; i++ )
+  {
+    const char* meta_name = util_t::meta_gem_type_string( i );
+
+    for( int j=0; tolower( meta_name[ j ] ) == tolower( name[ j ] ); j++ )
+      if( meta_name[ j ] == '\0' )
+	return i;
+  }
+
+  return META_GEM_NONE;
+}
+
 // util_t::result_type_string ==============================================
 
 const char* util_t::result_type_string( int type )
@@ -271,6 +351,22 @@ const char* util_t::result_type_string( int type )
   return "unknown";
 }
 
+// util_t::parse_result_type ===============================================
+
+int util_t::parse_result_type( const std::string& name )
+{
+  for( int i=0; i < RESULT_MAX; i++ )
+  {
+    const char* result_name = util_t::result_type_string( i );
+
+    for( int j=0; tolower( result_name[ j ] ) == tolower( name[ j ] ); j++ )
+      if( result_name[ j ] == '\0' )
+	return i;
+  }
+
+  return RESULT_NONE;
+}
+
 // util_t::resource_type_string ============================================
 
 const char* util_t::resource_type_string( int type )
@@ -286,6 +382,22 @@ const char* util_t::resource_type_string( int type )
   case RESOURCE_RUNIC:  return "runic_power";
   }
   return "unknown";
+}
+
+// util_t::parse_resource_type =============================================
+
+int util_t::parse_resource_type( const std::string& name )
+{
+  for( int i=0; i < RESOURCE_MAX; i++ )
+  {
+    const char* resource_name = util_t::resource_type_string( i );
+
+    for( int j=0; tolower( resource_name[ j ] ) == tolower( name[ j ] ); j++ )
+      if( resource_name[ j ] == '\0' )
+	return i;
+  }
+
+  return RESOURCE_NONE;
 }
 
 // util_t::school_type_string ==============================================
@@ -306,6 +418,22 @@ const char* util_t::school_type_string( int school )
   case SCHOOL_SHADOW:    return "shadow";
   }
   return "unknown";
+}
+
+// util_t::parse_school_type ===============================================
+
+int util_t::parse_school_type( const std::string& name )
+{
+  for( int i=0; i < SCHOOL_MAX; i++ )
+  {
+    const char* school_name = util_t::school_type_string( i );
+
+    for( int j=0; tolower( school_name[ j ] ) == tolower( name[ j ] ); j++ )
+      if( school_name[ j ] == '\0' )
+	return i;
+  }
+
+  return SCHOOL_NONE;
 }
 
 // util_t::talent_tree_string ==============================================
@@ -343,6 +471,22 @@ const char* util_t::talent_tree_string( int tree )
   return "unknown";
 }
 
+// util_t::parse_talent_tree ===============================================
+
+int util_t::parse_talent_tree( const std::string& name )
+{
+  for( int i=0; i < TALENT_TREE_MAX; i++ )
+  {
+    const char* tree_name = util_t::talent_tree_string( i );
+
+    for( int j=0; tolower( tree_name[ j ] ) == tolower( name[ j ] ); j++ )
+      if( tree_name[ j ] == '\0' )
+	return i;
+  }
+
+  return TREE_NONE;
+}
+
 // util_t::weapon_type_string ==============================================
 
 const char* util_t::weapon_type_string( int weapon )
@@ -370,6 +514,22 @@ const char* util_t::weapon_type_string( int weapon )
   return "unknown";
 }
 
+// util_t::parse_weapon_type ===============================================
+
+int util_t::parse_weapon_type( const std::string& name )
+{
+  for( int i=0; i < WEAPON_MAX; i++ )
+  {
+    const char* weapon_name = util_t::weapon_type_string( i );
+
+    for( int j=0; tolower( weapon_name[ j ] ) == tolower( name[ j ] ); j++ )
+      if( weapon_name[ j ] == '\0' )
+	return i;
+  }
+
+  return WEAPON_NONE;
+}
+
 // util_t::enchant_type_string ==============================================
 
 const char* util_t::enchant_type_string( int enchant )
@@ -386,6 +546,22 @@ const char* util_t::enchant_type_string( int enchant )
   case ENCHANT_SPELLSURGE:  return "spellsurge";
   }
   return "unknown";
+}
+
+// util_t::parse_enchant_type ==============================================
+
+int util_t::parse_enchant_type( const std::string& name )
+{
+  for( int i=0; i < ENCHANT_MAX; i++ )
+  {
+    const char* enchant_name = util_t::enchant_type_string( i );
+
+    for( int j=0; tolower( enchant_name[ j ] ) == tolower( name[ j ] ); j++ )
+      if( enchant_name[ j ] == '\0' )
+	return i;
+  }
+
+  return ENCHANT_NONE;
 }
 
 // util_t::weapon_buff_type_string =========================================
@@ -409,6 +585,22 @@ const char* util_t::weapon_buff_type_string( int buff )
   return "unknown";
 }
 
+// util_t::parse_weapon_buff_type ==========================================
+
+int util_t::parse_weapon_buff_type( const std::string& name )
+{
+  for( int i=0; i < WEAPON_BUFF_MAX; i++ )
+  {
+    const char* buff_name = util_t::weapon_buff_type_string( i );
+
+    for( int j=0; tolower( buff_name[ j ] ) == tolower( name[ j ] ); j++ )
+      if( buff_name[ j ] == '\0' )
+	return i;
+  }
+
+  return WEAPON_BUFF_NONE;
+}
+
 // util_t::flask_type_string ===============================================
 
 const char* util_t::flask_type_string( int flask )
@@ -426,6 +618,22 @@ const char* util_t::flask_type_string( int flask )
   case FLASK_SUPREME_POWER:      return "supreme_power";
   }
   return "unknown";
+}
+
+// util_t::parse_flask_type ================================================
+
+int util_t::parse_flask_type( const std::string& name )
+{
+  for( int i=0; i < FLASK_MAX; i++ )
+  {
+    const char* flask_name = util_t::flask_type_string( i );
+
+    for( int j=0; tolower( flask_name[ j ] ) == tolower( name[ j ] ); j++ )
+      if( flask_name[ j ] == '\0' )
+	return i;
+  }
+
+  return FLASK_NONE;
 }
 
 // util_t::food_type_string ================================================
@@ -449,6 +657,22 @@ const char* util_t::food_type_string( int food )
   case FOOD_FISH_FEAST:              return "fish_feast";
   }
   return "unknown";
+}
+
+// util_t::parse_food_type =================================================
+
+int util_t::parse_food_type( const std::string& name )
+{
+  for( int i=0; i < FOOD_MAX; i++ )
+  {
+    const char* food_name = util_t::food_type_string( i );
+
+    for( int j=0; tolower( food_name[ j ] ) == tolower( name[ j ] ); j++ )
+      if( food_name[ j ] == '\0' )
+	return i;
+  }
+
+  return FOOD_NONE;
 }
 
 // util_t::slot_type_string =================================================
@@ -478,6 +702,22 @@ const char* util_t::slot_type_string( int slot )
   case SLOT_TABARD:    return "tabard";
   }
   return "unknown";
+}
+
+// util_t::parse_slot_type =================================================
+
+int util_t::parse_slot_type( const std::string& name )
+{
+  for( int i=0; i < SLOT_MAX; i++ )
+  {
+    const char* slot_name = util_t::slot_type_string( i );
+
+    for( int j=0; tolower( slot_name[ j ] ) == tolower( name[ j ] ); j++ )
+      if( slot_name[ j ] == '\0' )
+	return i;
+  }
+
+  return SLOT_NONE;
 }
 
 // util_t::stat_type_string =================================================
@@ -560,6 +800,83 @@ const char* util_t::stat_type_abbrev( int stat )
   case STAT_MAX: return "All";
   }
   return "unknown";
+}
+
+// util_t::stat_type_wowhead ================================================
+
+const char* util_t::stat_type_wowhead( int stat )
+{
+  switch ( stat )
+  {
+  case STAT_STRENGTH:  return "str";
+  case STAT_AGILITY:   return "agi";
+  case STAT_STAMINA:   return "sta";
+  case STAT_INTELLECT: return "int";
+  case STAT_SPIRIT:    return "spi";
+
+  case STAT_HEALTH: return "health";
+  case STAT_MANA:   return "mana";
+  case STAT_RAGE:   return "rage";
+  case STAT_ENERGY: return "energy";
+  case STAT_FOCUS:  return "focus";
+  case STAT_RUNIC:  return "runic";
+
+  case STAT_SPELL_POWER:       return "splpwr";
+  case STAT_SPELL_PENETRATION: return "splpen";
+  case STAT_MP5:               return "manargn";
+
+  case STAT_ATTACK_POWER:             return "atkpwr";
+  case STAT_EXPERTISE_RATING:         return "exprtng";
+  case STAT_ARMOR_PENETRATION_RATING: return "__arpen";
+
+  case STAT_HIT_RATING:   return "hitrtng";
+  case STAT_CRIT_RATING:  return "critstrkrtng";
+  case STAT_HASTE_RATING: return "hastertng";
+
+  case STAT_WEAPON_DPS:   return "__wdps";
+  case STAT_WEAPON_SPEED: return "__wspeed";
+
+  case STAT_ARMOR: return "armor";
+
+  case STAT_MAX: return "__all";
+  }
+  return "unknown";
+}
+
+// util_t::parse_stat_type =================================================
+
+int util_t::parse_stat_type( const std::string& name )
+{
+  for( int i=0; i <= STAT_MAX; i++ )
+  {
+    const char* stat_name = util_t::stat_type_string( i );
+
+    for( int j=0; tolower( stat_name[ j ] ) == tolower( name[ j ] ); j++ )
+      if( stat_name[ j ] == '\0' )
+	return i;
+  }
+
+  for( int i=0; i <= STAT_MAX; i++ )
+  {
+    const char* stat_name = util_t::stat_type_abbrev( i );
+
+    for( int j=0; tolower( stat_name[ j ] ) == tolower( name[ j ] ); j++ )
+      if( stat_name[ j ] == '\0' )
+	return i;
+  }
+
+  for( int i=0; i <= STAT_MAX; i++ )
+  {
+    const char* stat_name = util_t::stat_type_wowhead( i );
+
+    for( int j=0; tolower( stat_name[ j ] ) == tolower( name[ j ] ); j++ )
+      if( stat_name[ j ] == '\0' )
+	return i;
+  }
+
+  if( name == "rgdcritstrkrtng" ) return STAT_CRIT_RATING;
+
+  return STAT_NONE;
 }
 
 // util_t::string_split ====================================================
@@ -686,16 +1003,6 @@ void replace_str( std::string& src, std::string old_str, std::string new_str  )
   }
   dest+=src;
   src=dest;
-}
-
-
-// convert full descriptive name into "option name", without rewriting input
-// spaces become underscores, all lower letters, remove apostrophes and colons
-std::string proper_option_name( const std::string& full_name )
-{
-  std::string new_name=full_name;
-  armory_t::format(new_name);
-  return new_name;
 }
 
 bool my_isdigit( char c )

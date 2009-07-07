@@ -1019,3 +1019,13 @@ std::string alias_t::find(std::string& candidate){
   else
     return "";
 }
+
+// convert full descriptive name into "option name", without rewriting input
+// spaces become underscores, all lower letters, remove apostrophes and colons
+std::string proper_option_name( const std::string& full_name )
+{
+  std::string new_name=full_name;
+  armory_t::format(new_name);
+  return new_name;
+}
+
