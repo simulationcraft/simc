@@ -28,12 +28,14 @@ static bool is_white_space( char c )
           c == '\r' );
 }
 
-// is_name_char ============================================================
+// is_token_char ===========================================================
 
-static bool is_name_char( char c )
+static bool is_token_char( char c )
 {
   if( isalpha( c ) ) return true;
   if( isdigit( c ) ) return true;
+  if( c == '-' ) return true;
+  if( c == '+' ) return true;
   if( c == '_' ) return true;
   if( c == '.' ) return true;
   if( c == '$' ) return true;
@@ -82,10 +84,10 @@ static char parse_token( std::string&            token_str,
     }
     return 'S';
   }
-  else if( is_name_char( c ) )
+  else if( is_token_char( c ) )
   {
     token_str += c;
-    while( is_name_char( input[ index ] ) ) token_str += input[ index++ ];
+    while( is_token_char( input[ index ] ) ) token_str += input[ index++ ];
     if( token_str == "new" ) return 'N';
     return 'S';
   }

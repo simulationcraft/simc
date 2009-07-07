@@ -2186,8 +2186,13 @@ struct armory_t
 struct wowhead_t
 {
   static player_t* download_player( sim_t* sim,
-				    const std::string& id, 
+				    const std::string& region, 
+				    const std::string& server, 
 				    const std::string& name,
+				    bool active_talents=true );
+
+  static player_t* download_player( sim_t* sim,
+				    const std::string& id,
 				    bool active_talents=true );
 
   static bool download_slot( item_t&, const std::string& id_str, const std::string& enchant_id_str, const std::string gem_ids[ 3 ] );

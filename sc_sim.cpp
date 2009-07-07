@@ -120,11 +120,31 @@ static bool parse_player( sim_t*             sim,
     }
     else
     {
-      sim -> active_player = wowhead_t::download_player( sim, wowhead, player_name, ( talents == "active" ) );
+      sim -> active_player = wowhead_t::download_player( sim, wowhead, ( talents == "active" ) );
+
+      if( sim -> active_player )
+	if( player_name != sim -> active_player -> name() )
+	  printf( "simcraft: Warning! Mismatch between player name '%s' and wowhead name '%s' for id '%s'\n",
+		  player_name.c_str(), sim -> active_player -> name(), wowhead.c_str() );
+	
     }
     if( sim -> active_player && refresh ) sim -> active_player -> last_modified = 0;
   }
-  else if( name == "armory" ) 
+  else
+  {
+    sim -> active_player = player_t::create( sim, name, value );
+  }
+
+  return sim -> active_player != 0;
+}
+
+// parse_armory =============================================================
+
+static bool parse_armory( sim_t*             sim,
+			  const std::string& name,
+			  const std::string& value )
+{
+  if( name == "armory" ) 
   {
     std::vector<std::string> splits;
     int num_splits = util_t::string_split( splits, value, "," );
@@ -151,26 +171,55 @@ static bool parse_player( sim_t*             sim,
       if( ! sim -> active_player ) return false;
     }
   }
-  else if( name == "wowhead" ) 
+
+  return sim -> active_player != 0;
+}
+
+// parse_wowhead ============================================================
+
+static bool parse_wowhead( sim_t*             sim,
+			   const std::string& name,
+			   const std::string& value )
+{
+  if( name == "wowhead" ) 
   {
     std::vector<std::string> splits;
     int num_splits = util_t::string_split( splits, value, "," );
 
-    if( num_splits != 1 && num_splits != 2 )
+    if( num_splits == 1 )
     {
-      printf( "simcraft: Expected format is: wowhead=id,name OR wowhead=id\n" );
+      std::string player_id = splits[ 0 ];
+      bool active_talents = true;
+      if( player_id[ 0 ] == '!' )
+      {
+	player_id.erase( 0, 1 );
+	active_talents = false;
+      }
+      sim -> active_player = wowhead_t::download_player( sim, player_id );
+    }
+    else if( num_splits >= 3 )
+    {
+      std::string region = splits[ 0 ];
+      std::string server = splits[ 1 ];
+
+      for( int i=2; i < num_splits; i++ )
+      {
+	std::string player_name = splits[ i ];
+	bool active_talents = true;
+	if( player_name[ 0 ] == '!' )
+        {
+	  player_name.erase( 0, 1 );
+	  active_talents = false;
+	}
+	sim -> active_player = wowhead_t::download_player( sim, region, server, player_name, active_talents );
+	if( ! sim -> active_player ) return false;
+      }
+    }
+    else
+    {
+      printf( "simcraft: Expected format is: wowhead=id OR wowhead=region,server,player1,player2,...\n" );
       assert( false );
     }
-
-    std::string player_id = splits[ 0 ];
-    std::string player_name;
-    if( num_splits == 2 ) player_name = splits[ 1 ];
-
-    sim -> active_player = wowhead_t::download_player( sim, player_id, player_name );
-  }
-  else
-  {
-    sim -> active_player = player_t::create( sim, name, value );
   }
 
   return sim -> active_player != 0;
@@ -1204,8 +1253,8 @@ std::vector<option_t>& sim_t::get_options()
       { "warrior",                          OPT_FUNC,   (void*) ::parse_player                        },
       { "pet",                              OPT_FUNC,   (void*) ::parse_player                        },
       { "player",                           OPT_FUNC,   (void*) ::parse_player                        },
-      { "armory",                           OPT_FUNC,   (void*) ::parse_player                        },
-      { "wowhead",                          OPT_FUNC,   (void*) ::parse_player                        },
+      { "armory",                           OPT_FUNC,   (void*) ::parse_armory                        },
+      { "wowhead",                          OPT_FUNC,   (void*) ::parse_wowhead                       },
       { "http_cache_clear",                 OPT_FUNC,   (void*) ::http_t::clear_cache                 },
       { "default_region",                   OPT_STRING, &( default_region_str                       ) },
       { "default_server",                   OPT_STRING, &( default_server_str                       ) },
