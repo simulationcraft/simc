@@ -1520,6 +1520,7 @@ struct devastate_t : public warrior_attack_t
       base_dd_min = 605;
       base_dd_max = 605;
       weapon_multiplier = 0.60;
+      if ( p -> set_bonus.tier9_2pc() ) base_multiplier   *= 1.05; 
     }
     else
     {
@@ -1757,7 +1758,15 @@ struct execute_t : public warrior_attack_t
 
     bool sudden_death_up = ( p -> _buffs.sudden_death > sim -> current_time );
 
-    double max_consumed = std::min( p -> resource_current[ RESOURCE_RAGE ], ( sudden_death_up ? 30.0 : 100.0 ) );
+    double max_consumed = 0;
+    if( sim -> P320 )
+    {
+      max_consumed = std::min( p -> resource_current[ RESOURCE_RAGE ], 30.0);
+    }
+    else
+    {
+      max_consumed = std::min( p -> resource_current[ RESOURCE_RAGE ], ( sudden_death_up ? 30.0 : 100.0 ) );
+    }
 
     double excess_rage = max_consumed - resource_consumed;
 
