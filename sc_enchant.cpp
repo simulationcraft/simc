@@ -23,6 +23,7 @@ static void init_database()
     printf( "simcraft: Unable to open enchant database 'permanentenchant.xml'\n" );
     exit(0);
   }
+  fclose( file );
 
   std::vector<xml_node_t*> nodes;
   int num_nodes = xml_t::get_nodes( nodes, root, "permanentenchant" );

@@ -2564,17 +2564,19 @@ bool player_t::parse_talents( const std::string& talent_string )
 
   int size1 = talent_tree1.size();
   int size2 = talent_tree2.size();
-  std::string temp_talent_string = talent_string;
+  int size3 = talent_tree3.size();
 
-  /* 0/0/0 talents returns an empty string from the Armory rather than a string of zero's. */
-  if ( temp_talent_string.empty() )
+  std::string buffer = talent_string;
+
+  int total_size = ( size1 + size2 + size3 );
+  if( ( total_size - buffer.size() ) > 0 )
   {
-    temp_talent_string.resize( size1 + size2, '0' );
+    buffer.resize( total_size, '0' );
   }
 
-  std::string talent_string1( temp_talent_string,     0,  size1 );
-  std::string talent_string2( temp_talent_string, size1,  size2 );
-  std::string talent_string3( temp_talent_string, size1 + size2 );
+  std::string talent_string1( buffer,     0,  size1 );
+  std::string talent_string2( buffer, size1,  size2 );
+  std::string talent_string3( buffer, size1 + size2 );
 
   parse_talents( talent_tree1, talent_string1 );
   parse_talents( talent_tree2, talent_string2 );
