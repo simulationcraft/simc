@@ -1039,4 +1039,7 @@
   <permanentenchant id="3845" name="+50 Attack Power" spellId="44575" itemId="0">
     <stats><![CDATA[atkpwr:50]]></stats>
   </permanentenchant>
+  <permanentenchant id="3872" name="+50 Spell Power and +20 Spirit" spellId="0" itemId="0">
+    <stats><![CDATA[splpwr:50,spi:20]]></stats>
+  </permanentenchant>
 </permanentenchants>
