@@ -42,6 +42,7 @@ static xml_node_t* download_id( const std::string& id_str )
   if( id_str.empty() || id_str == "" || id_str == "0" ) return 0;
   std::string url = "http://www.wowhead.com/?item=" + id_str + "&xml";
   xml_node_t* node = xml_t::download( url, "</json>", 0 );
+  //xml_t::print( node );
   if( ! node ) printf( "simcraft: Unable to download glyph id %s from wowhead\n", id_str.c_str() );
   return node;
 }
@@ -69,6 +70,58 @@ static void parse_stats( std::string& encoding,
       }
     }
   }
+}
+
+// parse_weapon =============================================================
+
+static bool parse_weapon( std::string& encoding,
+			  const std::string& subclass_str,
+			  const std::string& stats_str )
+{
+  std::string speed, dps;
+
+  std::vector<std::string> splits;
+  int num_splits = util_t::string_split( splits, stats_str, "," );
+
+  for( int i=0; i < num_splits; i++ )
+  {
+    std::string type_str, value_str;
+
+    if( 2 == util_t::string_split( splits[ i ], ":", "S S", &type_str, &value_str ) )
+    {
+      if( type_str == "speed" ) speed = value_str;
+      if( type_str == "dps"   ) dps   = value_str;
+    }
+  }
+
+  if( ! speed.empty() && ! dps.empty() )
+  {
+    int weapon_type = WEAPON_NONE;
+    if     ( subclass_str == "One-Handed Axes"         ) weapon_type = WEAPON_AXE;
+    else if( subclass_str == "Two-Handed Axes"         ) weapon_type = WEAPON_AXE_2H;
+    else if( subclass_str == "Daggers"                 ) weapon_type = WEAPON_DAGGER;
+    else if( subclass_str == "Fist Weapons"            ) weapon_type = WEAPON_FIST;
+    else if( subclass_str == "One-Handed Maces"        ) weapon_type = WEAPON_MACE;
+    else if( subclass_str == "Two-Handed Maces"        ) weapon_type = WEAPON_MACE_2H;
+    else if( subclass_str == "Polearms"                ) weapon_type = WEAPON_POLEARM;
+    else if( subclass_str == "Staves"                  ) weapon_type = WEAPON_STAFF;
+    else if( subclass_str == "One-Handed Swords"       ) weapon_type = WEAPON_SWORD;
+    else if( subclass_str == "Two-Handed Swords"       ) weapon_type = WEAPON_SWORD_2H;
+    else if( subclass_str == "Bows"                    ) weapon_type = WEAPON_BOW;
+    else if( subclass_str == "Crossbows"               ) weapon_type = WEAPON_CROSSBOW;
+    else if( subclass_str == "Guns"                    ) weapon_type = WEAPON_GUN;
+    else if( subclass_str == "Thrown"                  ) weapon_type = WEAPON_THROWN;
+    else if( subclass_str == "Wands"                   ) weapon_type = WEAPON_WAND;
+    else if( subclass_str == "Miscellaneous (Weapons)" ) weapon_type = WEAPON_POLEARM; // Fishing Pole
+
+    if( weapon_type == WEAPON_NONE ) return false;
+    if( weapon_type == WEAPON_WAND ) return true;
+    
+    encoding = util_t::weapon_type_string( weapon_type );
+    encoding += "_" + speed + "speed" + "_" + dps + "dps";
+  }
+
+  return true;
 }
 
 // translate_class_id =======================================================
@@ -231,11 +284,22 @@ bool wowhead_t::download_item( item_t&            item,
       armory_t::format( item.armory_name_str );
 
       item.armory_stats_str.clear();
+      item.armory_weapon_str.clear();
+
       std::string stats_str;
       if( xml_t::get_value( stats_str, node, "jsonEquip/cdata" ) )
       {
 	parse_stats( item.armory_stats_str, stats_str );
 	armory_t::format( item.armory_stats_str );
+
+	std::string subclass_str;
+	if( xml_t::get_value( subclass_str, node, "subclass/cdata" ) )
+	{
+	  if( ! parse_weapon( item.armory_weapon_str, subclass_str, stats_str ) )
+	    return false;
+
+	  armory_t::format( item.armory_weapon_str );
+	}
       }
 
       return true;
