@@ -1016,8 +1016,7 @@ struct devouring_plague_burst_t : public priest_spell_t
 
     base_multiplier  *= 1.0 + ( p -> talents.darkness                  * 0.02 +
                                 p -> talents.twin_disciplines          * 0.01 +
-                                p -> talents.improved_devouring_plague * 0.05 +
-                                p -> set_bonus.tier8_2pc()             * 0.15 ); // FIX ME! Is tier8_2pc additive or multiplicative?
+                                p -> talents.improved_devouring_plague * 0.05 );
 
     base_hit += p -> talents.shadow_focus * 0.01;
   }
