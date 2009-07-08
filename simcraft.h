@@ -2175,8 +2175,8 @@ struct armory_t
 				    const std::string& name,
 				    bool active_talents=true );
 
-  static bool download_slot( item_t&, const std::string& id_str );
-  static bool download_item( item_t&, const std::string& id_str );
+  static bool download_slot( item_t&, const std::string& item_id );
+  static bool download_item( item_t&, const std::string& item_id );
   static bool download_gem ( item_t&, const std::string& gem_id );
 
   static std::string& format( std::string& name );
@@ -2196,8 +2196,8 @@ struct wowhead_t
 				    const std::string& id,
 				    bool active_talents=true );
 
-  static bool download_slot( item_t&, const std::string& id_str, const std::string& enchant_id_str, const std::string gem_ids[ 3 ] );
-  static bool download_item( item_t&, const std::string& id_str );
+  static bool download_slot( item_t&, const std::string& item_id, const std::string& enchant_id, const std::string gem_ids[ 3 ] );
+  static bool download_item( item_t&, const std::string& item_id );
   static bool download_gem ( item_t&, const std::string& gem_id );
   static bool download_glyph( std::string& glyph_name, const std::string& glyph_id );
 };

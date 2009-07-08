@@ -56,9 +56,50 @@ static const char* translate_class_id( const std::string& cid_str )
   return "unknown";
 }
 
+// translate_inventory_id ===================================================
+
+static const char* translate_inventory_id( int slot )
+{
+  return "unknown";
+}
+
 } // ANONYMOUS NAMESPACE ====================================================
 
-// wwhead_t::download_player ================================================
+// wowhead_t::download_glyph ================================================
+
+bool wowhead_t::download_glyph( std::string&       glyph_name,
+				const std::string& glyph_id )
+{
+  return false;
+}
+
+// wowhead_t::download_gem ==================================================
+
+bool wowhead_t::download_gem( item_t&            item, 
+			      const std::string& gem_id )
+{
+  return false;
+}
+
+// wowhead_t::download_item =================================================
+
+bool wowhead_t::download_item( item_t&            item, 
+			       const std::string& item_id )
+{
+  return false;
+}
+
+// wowhead_t::download_slot =================================================
+
+bool wowhead_t::download_slot( item_t&            item, 
+			       const std::string& item_id,
+			       const std::string& enchant_id, 
+			       const std::string  gem_ids[ 3 ] )
+{
+  return false;
+}
+
+// wowhead_t::download_player ===============================================
 
 player_t* wowhead_t::download_player( sim_t* sim,
 				      const std::string& region, 
@@ -93,7 +134,7 @@ player_t* wowhead_t::download_player( sim_t* sim,
   return 0;
 }
 
-// wwhead_t::download_player ================================================
+// wowhead_t::download_player ===============================================
 
 player_t* wowhead_t::download_player( sim_t* sim,
 				      const std::string& id, 
@@ -118,20 +159,68 @@ player_t* wowhead_t::download_player( sim_t* sim,
   player_t* p = player_t::create( sim, type_str, name_str );
   if( ! p ) return 0;
 
-  p -> origin_str = "http://profiler.wowhead.com/?profile==" + id;
+  std::vector<std::string> region_data;
+  int num_region = js_t::get_value( region_data, profile_js, "region" );
+  if( num_region > 0 ) p -> region_str = region_data[ 0 ];
+
+  std::vector<std::string> realm_data;
+  int num_realm = js_t::get_value( realm_data, profile_js, "realm" );
+  if( num_realm > 0 ) p -> server_str = realm_data[ 0 ];
+
+  if( p -> region_str.empty() || p -> server_str.empty() )
+  {
+    p -> origin_str = "http://profiler.wowhead.com/?profile=" + id;
+  }
+  else
+  {
+    p -> origin_str = "http://profiler.wowhead.com/?profile=" + p -> region_str + "." + p -> server_str + "." + name_str;
+  }
+
+  int active_talents = 0;
+  js_t::get_value( active_talents, profile_js, "talents/active" );
+  if( ! use_active_talents ) active_talents = ( active_talents ? 0 : 1 );
 
   std::vector<std::string> talent_encodings;
   int num_builds = js_t::get_value( talent_encodings, profile_js, "talents/build" );
   if( num_builds == 2 )
   {
-    int active_talents = 0;
-    js_t::get_value( active_talents, profile_js, "talents/active" );
-    if( ! use_active_talents ) active_talents = ( active_talents ? 0 : 1 );
-
     if( ! p -> parse_talents( talent_encodings[ active_talents ] ) ) return 0;
     p -> talents_str = "http://www.wowarmory.com/talent-calc.xml?cid=" + cid_str + "&tal=" + talent_encodings[ active_talents ];
   }
   
+  std::vector<std::string> glyph_encodings;
+  num_builds = js_t::get_value( glyph_encodings, profile_js, "talents/glyphs" );
+  if( num_builds == 2 )
+  {
+    p -> glyphs_str = "";
+    std::vector<std::string> glyph_ids;
+    int num_glyphs = util_t::string_split( glyph_ids, glyph_encodings[ active_talents ], ":" );
+    for( int i=0; i < num_glyphs; i++ )
+    {
+      std::string glyph_name;
+      if( ! download_glyph( glyph_name, glyph_ids[ i ] ) ) return 0;
+      if( i ) p -> glyphs_str += "/";
+      p -> glyphs_str += glyph_name;
+    }
+  }
+
+  for( int i=0; i < SLOT_MAX; i++ )
+  {
+    std::vector<std::string> inventory_data;
+    if( js_t::get_value( inventory_data, profile_js, translate_inventory_id( i ) ) )
+    {
+      std::string    item_id = inventory_data[ 0 ];
+      std::string enchant_id = inventory_data[ 2 ];
+
+      std::string gem_ids[ 3 ];
+      gem_ids[ 0 ] = inventory_data[ 4 ];
+      gem_ids[ 1 ] = inventory_data[ 5 ];
+      gem_ids[ 2 ] = inventory_data[ 6 ];
+
+      if( ! download_slot( p -> items[ i ], item_id, enchant_id, gem_ids ) )
+	return 0;
+    }
+  }
 
   return p;
 }
