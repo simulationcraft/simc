@@ -299,6 +299,40 @@ const char* util_t::dmg_type_string( int type )
   return "unknown";
 }
 
+// util_t::gem_type_string =================================================
+
+const char* util_t::gem_type_string( int type )
+{
+  switch ( type )
+  {
+  case GEM_META:      return "meta";
+  case GEM_PRISMATIC: return "prismatic";
+  case GEM_RED:       return "red";
+  case GEM_YELLOW:    return "yellow";
+  case GEM_BLUE:      return "blue";
+  case GEM_ORANGE:    return "orange";
+  case GEM_GREEN:     return "green";
+  case GEM_PURPLE:    return "purple";
+  }
+  return "unknown";
+}
+
+// util_t::parse_gem_type ==================================================
+
+int util_t::parse_gem_type( const std::string& name )
+{
+  for( int i=0; i < GEM_MAX; i++ )
+  {
+    const char* gem_name = util_t::gem_type_string( i );
+
+    for( int j=0; tolower( gem_name[ j ] ) == tolower( name[ j ] ); j++ )
+      if( gem_name[ j ] == '\0' )
+	return i;
+  }
+
+  return GEM_NONE;
+}
+
 // util_t::meta_gem_type_string ============================================
 
 const char* util_t::meta_gem_type_string( int type )

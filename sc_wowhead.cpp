@@ -35,6 +35,42 @@ static js_node_t* download_profile( sim_t* sim,
   return 0;
 }
 
+// download_id ==============================================================
+
+static xml_node_t* download_id( const std::string& id_str )
+{
+  if( id_str.empty() || id_str == "" || id_str == "0" ) return 0;
+  std::string url = "http://www.wowhead.com/?item=" + id_str + "&xml";
+  xml_node_t* node = xml_t::download( url, "</json>", 0 );
+  if( ! node ) printf( "simcraft: Unable to download glyph id %s from wowhead\n", id_str.c_str() );
+  return node;
+}
+
+// parse_stats ==============================================================
+
+static void parse_stats( std::string& encoding,
+			 const std::string& stats_str )
+{
+  std::vector<std::string> splits;
+  int num_splits = util_t::string_split( splits, stats_str, "," );
+
+  for( int i=0; i < num_splits; i++ )
+  {
+    std::string type_str, value_str;
+
+    if( 2 == util_t::string_split( splits[ i ], ":", "S S", &type_str, &value_str ) )
+    {
+      int type = util_t::parse_stat_type( type_str );
+      if( type != STAT_NONE )
+      {
+	encoding += "_";
+	encoding += value_str;
+	encoding += util_t::stat_type_abbrev( type );
+      }
+    }
+  }
+}
+
 // translate_class_id =======================================================
 
 static const char* translate_class_id( const std::string& cid_str )
@@ -60,6 +96,28 @@ static const char* translate_class_id( const std::string& cid_str )
 
 static const char* translate_inventory_id( int slot )
 {
+  switch( slot )
+  {
+  case SLOT_HEAD:      return "inventory/1";
+  case SLOT_NECK:      return "inventory/2";
+  case SLOT_SHOULDERS: return "inventory/3";
+  case SLOT_SHIRT:     return "inventory/4";
+  case SLOT_CHEST:     return "inventory/5";
+  case SLOT_WAIST:     return "inventory/6";
+  case SLOT_LEGS:      return "inventory/7";
+  case SLOT_FEET:      return "inventory/8";
+  case SLOT_WRISTS:    return "inventory/9";
+  case SLOT_HANDS:     return "inventory/10";
+  case SLOT_FINGER_1:  return "inventory/11";
+  case SLOT_FINGER_2:  return "inventory/12";
+  case SLOT_TRINKET_1: return "inventory/13";
+  case SLOT_TRINKET_2: return "inventory/14";
+  case SLOT_BACK:      return "inventory/15";
+  case SLOT_MAIN_HAND: return "inventory/16";
+  case SLOT_OFF_HAND:  return "inventory/17";
+  case SLOT_RANGED:    return "inventory/18";
+  }
+
   return "unknown";
 }
 
@@ -70,15 +128,93 @@ static const char* translate_inventory_id( int slot )
 bool wowhead_t::download_glyph( std::string&       glyph_name,
 				const std::string& glyph_id )
 {
+  xml_node_t* node = download_id( glyph_id );
+  if( node )
+  {
+    if( xml_t::get_value( glyph_name, node, "name/cdata" ) )
+    {
+      glyph_name.erase( 0, 9 ); // remove "Glyph of "
+      armory_t::format( glyph_name );
+      return true;
+    }
+  }
+  return false;
+}
+
+// wowhead_t::download_enchant ==============================================
+
+bool wowhead_t::download_enchant( item_t&            item, 
+				  const std::string& enchant_id )
+{
+  item.armory_enchant_str.clear();
+
+  if( enchant_id.empty() || enchant_id == "" || enchant_id == "0" )
+    return true;
+
+  std::string enchant_name;
+  if( enchant_t::get_encoding( enchant_name, item.armory_enchant_str, enchant_id ) )
+  {
+    if     ( enchant_name == "Lightweave Embroidery"    ) { item.armory_enchant_str = "lightweave";  }
+    else if( enchant_name == "Hand-Mounted Pyro Rocket" ) { item.armory_enchant_str = "pyrorocket";  }
+    else if( enchant_name == "Berserking"               ) { item.armory_enchant_str = "berserking";  }
+    else if( enchant_name == "Mongoose"                 ) { item.armory_enchant_str = "mongoose";    }
+    else if( enchant_name == "Executioner"              ) { item.armory_enchant_str = "executioner"; }
+    else if( enchant_name == "Spellsurge"               ) { item.armory_enchant_str = "spellsurge";  }
+
+    armory_t::format( item.armory_enchant_str );
+
+    return true;
+  }
+
   return false;
 }
 
 // wowhead_t::download_gem ==================================================
 
-bool wowhead_t::download_gem( item_t&            item, 
-			      const std::string& gem_id )
+int wowhead_t::download_gem( item_t&            item, 
+			     const std::string& gem_id )
 {
-  return false;
+  if( gem_id.empty() || gem_id == "" || gem_id == "0" )
+    return true;
+
+  xml_node_t* node = download_id( gem_id );
+
+  if( node )
+  {
+    std::string color_str;
+    if( xml_t::get_value( color_str, node, "subclass/cdata" ) )
+    {
+      std::string::size_type pos = color_str.find( ' ' );
+      if( pos != std::string::npos ) color_str.erase( pos );
+      armory_t::format( color_str );
+      int gem_type = util_t::parse_gem_type( color_str );
+    
+      if( gem_type == GEM_META )
+      {
+	std::string name_str;
+	if( xml_t::get_value( name_str, node, "name/cdata" ) )
+	{
+	  std::string::size_type pos = name_str.find( " Diamond" );
+	  if( pos != std::string::npos ) name_str.erase( pos );
+	  armory_t::format( name_str );
+	  item.armory_gems_str += "_";
+	  item.armory_gems_str += name_str;
+	}	
+      }
+      else
+      {
+	std::string stats_str;
+	if( xml_t::get_value( stats_str, node, "jsonEquip/cdata" ) )
+	{
+	  parse_stats( item.armory_gems_str, stats_str );
+	}
+      }
+
+      return gem_type;
+    }
+  }
+
+  return GEM_NONE;
 }
 
 // wowhead_t::download_item =================================================
@@ -86,6 +222,26 @@ bool wowhead_t::download_gem( item_t&            item,
 bool wowhead_t::download_item( item_t&            item, 
 			       const std::string& item_id )
 {
+  xml_node_t* node = download_id( item_id );
+
+  if( node )
+  {
+    if( xml_t::get_value( item.armory_name_str, node, "name/cdata" ) )
+    {
+      armory_t::format( item.armory_name_str );
+
+      item.armory_stats_str.clear();
+      std::string stats_str;
+      if( xml_t::get_value( stats_str, node, "jsonEquip/cdata" ) )
+      {
+	parse_stats( item.armory_stats_str, stats_str );
+	armory_t::format( item.armory_stats_str );
+      }
+
+      return true;
+    }
+  }
+
   return false;
 }
 
@@ -96,7 +252,32 @@ bool wowhead_t::download_slot( item_t&            item,
 			       const std::string& enchant_id, 
 			       const std::string  gem_ids[ 3 ] )
 {
-  return false;
+  player_t* p = item.player;
+
+  if( ! download_item( item, item_id ) )
+  {
+    printf( "simcraft: Player %s unable to parse name for item %s at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
+    return false;
+  }
+
+  item.armory_gems_str.clear();
+  for( int i=0; i < 3; i++ )
+  {
+    if( ! download_gem( item, gem_ids[ i ] ) )
+    {
+      printf( "simcraft: Player %s unable to parse gem id %s for item \"%s\" at slot %s.\n", p -> name(), gem_ids[ i ].c_str(), item.name(), item.slot_name() );
+      return false;
+    }
+  }
+  armory_t::format( item.armory_gems_str );
+
+  if( ! download_enchant( item, enchant_id ) )
+  {
+    printf( "simcraft: Player %s unable to parse enchant id %s for item \"%s\" at slot %s.\n", p -> name(), enchant_id.c_str(), item.name(), item.slot_name() );
+    return false;
+  }
+
+  return true;
 }
 
 // wowhead_t::download_player ===============================================
@@ -148,6 +329,8 @@ player_t* wowhead_t::download_player( sim_t* sim,
     return 0;
   }
 
+  if( sim -> debug ) js_t::print( profile_js );
+
   std::string name_str;
   if( ! js_t::get_value( name_str, profile_js, "name"  ) ) return 0;
   armory_t::format( name_str );
@@ -167,7 +350,8 @@ player_t* wowhead_t::download_player( sim_t* sim,
   int num_realm = js_t::get_value( realm_data, profile_js, "realm" );
   if( num_realm > 0 ) p -> server_str = realm_data[ 0 ];
 
-  if( p -> region_str.empty() || p -> server_str.empty() )
+  int user_id=0;
+  if( js_t::get_value( user_id, profile_js, "user" ) && ( user_id != 0 ) )
   {
     p -> origin_str = "http://profiler.wowhead.com/?profile=" + id;
   }
@@ -189,7 +373,7 @@ player_t* wowhead_t::download_player( sim_t* sim,
   }
   
   std::vector<std::string> glyph_encodings;
-  num_builds = js_t::get_value( glyph_encodings, profile_js, "talents/glyphs" );
+  num_builds = js_t::get_value( glyph_encodings, profile_js, "glyphs" );
   if( num_builds == 2 )
   {
     p -> glyphs_str = "";

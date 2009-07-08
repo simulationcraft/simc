@@ -62,13 +62,14 @@ static char parse_token( std::string&            token_str,
     return c;
   }
 
-  if( c == '\'' )
+  if( c == '\'' || c == '\"' )
   {
+    char start = c;
     while( true )
     {
-      char c = input[ index++ ];
+      c = input[ index++ ];
       if( c == '\0' ) return c;
-      if( c == '\'' ) break;
+      if( c == start ) break;
       if( c == '\\' )
       {
         c = input[ index++ ];
@@ -449,7 +450,15 @@ int main( int argc, char** argv )
     exit(0);
   }
 
-  js_t::print( js_t::create( file ) );
+  std::string buffer;
+  char c;
+  while( ( c = fgetc( file ) ) != EOF ) 
+  {
+    //if( c == '\\' ) c = fgetc( file );
+    buffer += c;
+  }
+
+  js_t::print( js_t::create( buffer ) );
 
   return 0;
 }

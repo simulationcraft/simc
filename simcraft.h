@@ -235,6 +235,14 @@ enum set_type {
   SET_MAX
 };
 
+enum gem_type {
+  GEM_NONE=0,
+  GEM_META, GEM_PRISMATIC,
+  GEM_RED, GEM_YELLOW, GEM_BLUE,
+  GEM_ORANGE, GEM_GREEN, GEM_PURPLE,
+  GEM_MAX
+};
+
 enum meta_gem_type {
   META_GEM_NONE=0,
   META_AUSTERE_EARTHSIEGE,
@@ -2103,6 +2111,7 @@ struct util_t
   static const char* enchant_type_string       ( int type );
   static const char* flask_type_string         ( int type );
   static const char* food_type_string          ( int type );
+  static const char* gem_type_string           ( int type );
   static const char* meta_gem_type_string      ( int type );
   static const char* player_type_string        ( int type );
   static const char* profession_type_string    ( int type );
@@ -2124,6 +2133,7 @@ struct util_t
   static int parse_enchant_type       ( const std::string& name );
   static int parse_flask_type         ( const std::string& name );
   static int parse_food_type          ( const std::string& name );
+  static int parse_gem_type           ( const std::string& name );
   static int parse_meta_gem_type      ( const std::string& name );
   static int parse_player_type        ( const std::string& name );
   static int parse_profession_type    ( const std::string& name );
@@ -2177,7 +2187,7 @@ struct armory_t
 
   static bool download_slot( item_t&, const std::string& item_id );
   static bool download_item( item_t&, const std::string& item_id );
-  static bool download_gem ( item_t&, const std::string& gem_id );
+  static int  download_gem ( item_t&, const std::string& gem_id );
 
   static std::string& format( std::string& name );
 };
@@ -2196,9 +2206,10 @@ struct wowhead_t
 				    const std::string& id,
 				    bool active_talents=true );
 
-  static bool download_slot( item_t&, const std::string& item_id, const std::string& enchant_id, const std::string gem_ids[ 3 ] );
-  static bool download_item( item_t&, const std::string& item_id );
-  static bool download_gem ( item_t&, const std::string& gem_id );
+  static bool download_slot   ( item_t&, const std::string& item_id, const std::string& enchant_id, const std::string gem_ids[ 3 ] );
+  static bool download_item   ( item_t&, const std::string& item_id );
+  static int  download_gem    ( item_t&, const std::string& gem_id );
+  static bool download_enchant( item_t&, const std::string& enchant_id );
   static bool download_glyph( std::string& glyph_name, const std::string& glyph_id );
 };
 

@@ -647,6 +647,10 @@ std::string& armory_t::format( std::string& name )
     {
       c = '_';
     }
+    else if( c == '_' && i == 0 )
+    {
+      continue;
+    }
     else if( c != '_' && 
              c != '.' && 
              c != '%' && 

@@ -425,6 +425,9 @@ bool enchant_t::get_encoding( std::string& name,
 			      std::string& encoding,
 			      const std::string& enchant_id )
 {
+  if( enchant_id.empty() || enchant_id == "" || enchant_id == "0" ) 
+    return false;
+
   bool success = false;
   thread_t::mutex_lock( enchant_mutex );
 

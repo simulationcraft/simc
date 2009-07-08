@@ -184,11 +184,15 @@ static int create_children( xml_node_t*             root,
         if( input.substr( index, 7 ) == "[CDATA[" )
         {
           index += 7;
-          std::string::size_type start = index;
-          while( input[ index ] && input[ index ] != ']' ) index++;
-          root -> parameters.push_back( xml_parm_t( "cdata", input.substr( start, index-start ) ) );
-          if( ! input[ index ] ) break;
-          index += 2;
+          std::string::size_type finish = input.find( "]]", index );
+	  if( finish == std::string::npos ) 
+	  {
+	    printf( "Unexpected EOF at index %d (%s)\n", (int) index, root -> name() );
+	    printf( "%s\n", input.c_str() );
+	    assert( false );
+	  }
+          root -> parameters.push_back( xml_parm_t( "cdata", input.substr( index, finish-index ) ) );
+          index = finish + 2;
         }
         else
         {
