@@ -797,6 +797,7 @@ struct sim_t
   std::vector<std::string> dps_charts, gear_charts, dpet_charts;
   std::string downtime_chart, uptimes_chart;
   std::string output_file_str, log_file_str, html_file_str, wiki_file_str, xml_file_str;
+  std::deque<std::string> active_files;
   FILE* output_file;
   FILE* log_file;
   int http_throttle;
@@ -1005,7 +1006,7 @@ struct player_t
 {
   sim_t*      sim;
   std::string name_str, talents_str, glyphs_str, id_str;
-  std::string region_str, server_str;
+  std::string region_str, server_str, origin_str;
   player_t*   next;
   int         index, type, level, party, member;
   double      distance, gcd_ready, base_gcd;

@@ -467,8 +467,9 @@ player_t* armory_t::download_player( sim_t* sim,
   player_t* p = player_t::create( sim, type_str, name_str );
   if( ! p ) return 0;
 
-  p -> region_str  = region;
-  p -> server_str  = server;
+  p -> region_str = region;
+  p -> server_str = server;
+  p -> origin_str = "http://" + region + ".wowarmory.com/character-sheet.xml?r=" + server + "&n=" + name;
 
   if( ! xml_t::get_value( p -> level, sheet_xml, "character/level" ) ) return 0;
 

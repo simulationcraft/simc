@@ -302,9 +302,12 @@ bool option_t::parse_token( sim_t*       sim,
     if ( ! file )
     {
       printf( "simcraft: Unexpected parameter '%s'.  Expected format: name=value\n", token.c_str() );
+      return false;
     }
+    sim -> active_files.push_back( token );
     parse_file( sim, file );
     fclose( file );
+    sim -> active_files.pop_back();
     return true;
   }
 
@@ -320,8 +323,10 @@ bool option_t::parse_token( sim_t*       sim,
     {
       printf( "simcraft: Unable to open input parameter file '%s'\n", value.c_str() );
     }
+    sim -> active_files.push_back( token );
     parse_file( sim, file );
     fclose( file );
+    sim -> active_files.pop_back();
   }
   else if ( ! sim -> parse_option( name, value ) )
   {

@@ -368,7 +368,7 @@ player_t::player_t( sim_t*             s,
                     int                t,
                     const std::string& n ) :
   sim(s), name_str(n), 
-  region_str(s->default_region_str), server_str(s->default_server_str), 
+  region_str(s->default_region_str), server_str(s->default_server_str), origin_str("unknown"),
   next(0), index(-1), type(t), level(80), 
   party(0), member(0),
   distance(0), gcd_ready(0), base_gcd(1.5), 
@@ -462,6 +462,7 @@ player_t::player_t( sim_t*             s,
   off_hand_weapon.slot = SLOT_OFF_HAND;
   ranged_weapon.slot = SLOT_RANGED;
 
+  if( ! sim -> active_files.empty() ) origin_str = sim -> active_files.back();
 }
 
 // player_t::~player_t =====================================================
@@ -2697,6 +2698,7 @@ bool player_t::parse_talents( const std::string& talent_string,
 bool player_t::save( FILE* file )
 {
   fprintf( file, "%s=%s\n", util_t::player_type_string( type ), name() );
+  fprintf( file, "origin=%s\n", origin_str.c_str() );
   fprintf( file, "level=%d\n", level );
 
   if( ! talents_str.empty() )
@@ -2815,6 +2817,7 @@ std::vector<option_t>& player_t::get_options()
     {
       // @option_doc loc=player/all/general title="General"
       { "name",                                 OPT_STRING,   &( name_str                                     ) },
+      { "origin",                               OPT_STRING,   &( origin_str                                   ) },
       { "id",                                   OPT_STRING,   &( id_str                                       ) },
       { "talents",                              OPT_FUNC,     (void*) ::parse_talent_url                        },
       { "glyphs",                               OPT_STRING,   &( glyphs_str                                   ) },

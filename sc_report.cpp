@@ -534,7 +534,8 @@ static void print_html_scale_factors( FILE*  file, sim_t* sim )
 
 static void print_html_player( FILE* file, player_t* p )
 {
-  fprintf( file, "<h1><a href=\"%s\">%s</a></h1>\n", p -> talents_str.c_str(), p -> name() );
+  fprintf( file, "<h1>%s</h1>\n", p -> name() );
+  fprintf( file, "<ul><li><a href=\"%s\">Talents</a><li><a href=\"%s\">Origin</a></ul>\n", p -> talents_str.c_str(), p -> origin_str.c_str() );
 
   if ( ! p -> action_dpet_chart.empty() )
   {
@@ -843,7 +844,7 @@ static void print_wiki_player( FILE*     file,
   fprintf( file, "----\n" );
   fprintf( file, "----\n" );
   fprintf( file, "= %s =\n", p -> name() );
-  fprintf( file, "[%s Talents]\n", p -> talents_str.c_str() );
+  fprintf( file, " * [%s Talents]\n * [%s Origin]\n", p -> talents_str.c_str(), p -> origin_str.c_str() );
   fprintf( file, "\n" );
   fprintf( file, "|| %s || %s ||\n", action_dpet.c_str(), uptimes_and_procs.c_str() );
   fprintf( file, "|| %s || %s ||\n", action_dmg.c_str(),  gains.c_str() );
@@ -919,6 +920,7 @@ void report_t::print_text( FILE* file, sim_t* sim, bool detail )
     }
 
     fprintf( file, "\n" );
+    fprintf( file, "  Origin: %s\n", p -> origin_str.c_str() );
 
     print_core_stats   ( file, p );
     print_spell_stats  ( file, p );

@@ -7,6 +7,8 @@
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
+// download_profile =========================================================
+
 static js_node_t* download_profile( sim_t* sim, 
 				    const std::string& id )
 {
@@ -33,8 +35,24 @@ static js_node_t* download_profile( sim_t* sim,
   return 0;
 }
 
-static const char* translate_class_id( int class_id )
+// translate_class_id =======================================================
+
+static const char* translate_class_id( const std::string& cid_str )
 {
+  switch( atoi( cid_str.c_str() ) )
+  {
+  case 1: return "warrior";
+  case 2: return "paladin";
+  case 3: return "hunter";
+  case 4: return "rogue";
+  case 5: return "priest";
+  case 6: return "death_knight";
+  case 7: return "shaman";
+  case 8: return "mage";
+  case 9: return "warlock";
+  case 11: return "druid";
+  }
+
   return "unknown";
 }
 
@@ -90,16 +108,30 @@ player_t* wowhead_t::download_player( sim_t* sim,
   }
 
   std::string name_str;
-  if( ! js_t::get_value( name_str, profile_js, "character/name"  ) ) return 0;
+  if( ! js_t::get_value( name_str, profile_js, "name"  ) ) return 0;
   armory_t::format( name_str );
 
-  int class_id;
-  if( ! js_t::get_value( class_id, profile_js, "character/class" ) ) return 0;
-  std::string type_str = translate_class_id( class_id );
+  std::string cid_str;
+  if( ! js_t::get_value( cid_str, profile_js, "classs" ) ) return 0;
+  std::string type_str = translate_class_id( cid_str );
 
   player_t* p = player_t::create( sim, type_str, name_str );
   if( ! p ) return 0;
+
+  p -> origin_str = "http://profiler.wowhead.com/?profile==" + id;
+
+  std::vector<std::string> talent_encodings;
+  int num_builds = js_t::get_value( talent_encodings, profile_js, "talents/build" );
+  if( num_builds == 2 )
+  {
+    int active_talents = 0;
+    js_t::get_value( active_talents, profile_js, "talents/active" );
+    if( ! use_active_talents ) active_talents = ( active_talents ? 0 : 1 );
+
+    if( ! p -> parse_talents( talent_encodings[ active_talents ] ) ) return 0;
+    p -> talents_str = "http://www.wowarmory.com/talent-calc.xml?cid=" + cid_str + "&tal=" + talent_encodings[ active_talents ];
+  }
   
 
-  return 0;
+  return p;
 }
