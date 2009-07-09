@@ -693,7 +693,7 @@ void player_t::init_attack()
 
   initial_attack_power = base_attack_power + stats.attack_power;
 
-  initial_attack_hit = base_attack_hit + stats.hit_rating / rating.attack_hit;
+  initial_attack_hit = base_attack_hit + stats.hit_rating / rating.attack_hit + ( sim -> overrides.heroic_presence ? 0.01 : 0.00 );
 
   initial_attack_crit = base_attack_crit + stats.crit_rating / rating.attack_crit;
 
