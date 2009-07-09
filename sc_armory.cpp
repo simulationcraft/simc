@@ -492,6 +492,20 @@ player_t* armory_t::download_player( sim_t* sim,
     p -> last_modified = util_t::parse_date( last_modified );
   }
 
+  p -> professions_str = "";
+  std::vector<xml_node_t*> skill_nodes;
+  int num_skills = xml_t::get_nodes( skill_nodes, sheet_xml, "professions/skill" );
+  for( int i=0; i < num_skills; i++ )
+  {
+    std::string key_str, value_str;
+    if( xml_t::get_value(   key_str, skill_nodes[ i ], "key"   ) &&
+	xml_t::get_value( value_str, skill_nodes[ i ], "value" ) )
+    {
+      if( i ) p -> professions_str += "/";
+      p -> professions_str += key_str + "=" + value_str;
+    }
+  }
+
   xml_node_t* talents_node = xml_t::get_node( talents_xml, "talents" );
   
   // US/EU Armory pages using different notations!

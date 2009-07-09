@@ -780,37 +780,28 @@ void player_t::init_professions()
 {
   if ( professions_str.empty() ) return;
 
-  bool invalid = false;
-
   std::vector<std::string> splits;
   int size = util_t::string_split( splits, professions_str, ",/" );
 
-  for ( int i=0; i<size; i++ )
+  for ( int i=0; i < size; i++ )
   {
-    invalid = true;
+    std::string prof_name;
+    int prof_value=0;
 
-    std::string parm;
-    int value=0;
-
-    if( 2 == util_t::string_split( splits[ i ], "=", "S i", &parm, &value ) )
+    if( 2 != util_t::string_split( splits[ i ], "=", "S i", &prof_name, &prof_value ) )
     {
-      for ( int p=0; p < PROF_MAX && invalid; p++ )
-      {
-	if( parm == util_t::profession_type_string( p ) )
-	{
-	  profession[ p ] = value;
-	  invalid = false;
-	}
-      }
+      prof_name  = splits[ i ];
+      prof_value = 450;
     }
 
-    if( invalid ) break;
-  }
+    int prof_type = util_t::parse_profession_type( prof_name );
+    if ( prof_type == PROF_NONE )
+    {
+      printf( "Invalid profession encoding: %s\n", professions_str.c_str() );
+      assert( 0 );
+    }
 
-  if ( invalid )
-  {
-    printf( "Invalid profession encoding: %s\n", professions_str.c_str() );
-    assert( 0 );
+    profession[ prof_type ] = prof_value;
   }
 
   // Miners gain additional stamina
@@ -2706,15 +2697,19 @@ bool player_t::save( FILE* file )
   fprintf( file, "origin=%s\n", origin_str.c_str() );
   fprintf( file, "level=%d\n", level );
 
-  if( ! talents_str.empty() )
+  if( professions_str.size() > 0 )
+  {
+    fprintf( file, "professions=%s\n", professions_str.c_str() );
+  };
+  if( talents_str.size() > 0 )
   {
     fprintf( file, "talents=%s\n", talents_str.c_str() );
   };
-  if( ! glyphs_str.empty() )
+  if( glyphs_str.size() > 0 )
   {
     fprintf( file, "glyphs=%s\n", glyphs_str.c_str() );
   }
-  if( ! action_list_str.empty() )
+  if( action_list_str.size() > 0 )
   {
     std::vector<std::string> splits;
     int num_splits = util_t::string_split( splits, action_list_str, "/" );
