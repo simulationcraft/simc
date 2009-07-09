@@ -459,22 +459,32 @@ player_t* armory_t::download_player( sim_t* sim,
   }
 
   std::string type_str, cid_str, name_str;
+  int level;
 
-  if( ! xml_t::get_value( type_str, sheet_xml, "character/class"   ) ) return 0;
-  if( ! xml_t::get_value(  cid_str, sheet_xml, "character/classId" ) ) return 0;
-  if( ! xml_t::get_value( name_str, sheet_xml, "character/name"    ) ) return 0;
-
+  if( ! xml_t::get_value( type_str, sheet_xml, "character/class"   ) ||
+      ! xml_t::get_value(  cid_str, sheet_xml, "character/classId" ) ||
+      ! xml_t::get_value( name_str, sheet_xml, "character/name"    ) ||
+      ! xml_t::get_value(    level, sheet_xml, "character/level"   ) )
+  {
+    printf( "simcraft: Unable to determine class/name/level from armory xml for %s|%s|%s.\n", 
+	    region.c_str(), server.c_str(), name.c_str() );
+    return 0;
+  }
   armory_t::format( type_str );
   armory_t::format( name_str );
 
   player_t* p = player_t::create( sim, type_str, name_str );
-  if( ! p ) return 0;
+  if( ! p ) 
+  {
+    printf( "simcraft: Unable to build player with class '%s' and name '%s' from armory %s|%s|%s.\n", 
+	    type_str.c_str(), name_str.c_str(), region.c_str(), server.c_str(), name.c_str() );
+    return 0;
+  }
 
+  p -> level      = level;
   p -> region_str = region;
   p -> server_str = server;
   p -> origin_str = "http://" + region + ".wowarmory.com/character-sheet.xml?r=" + server + "&n=" + name;
-
-  if( ! xml_t::get_value( p -> level, sheet_xml, "character/level" ) ) return 0;
 
   std::string last_modified;
   if( xml_t::get_value( last_modified, sheet_xml, "character/lastModified" ) )
@@ -508,8 +518,16 @@ player_t* armory_t::download_player( sim_t* sim,
       }
 
       std::string talents_encoding;
-      if( ! xml_t::get_value( talents_encoding, active_talents, "talentSpec/value" ) ) return 0;
-      if( ! p -> parse_talents( talents_encoding ) ) return 0;
+      if( ! xml_t::get_value( talents_encoding, active_talents, "talentSpec/value" ) ) 
+      {
+	printf( "simcraft: Player %s unable to determine talents from armory xml.\n", p -> name() );
+	return 0;
+      }
+      if( ! p -> parse_talents( talents_encoding ) ) 
+      {
+	printf( "simcraft: Player %s unable to parse talents '%s'.\n", p -> name(), talents_encoding.c_str() );
+	return 0;
+      }
       p -> talents_str = "http://www.wowarmory.com/talent-calc.xml?cid=" + cid_str + "&tal=" + talents_encoding;
 
       p -> glyphs_str = "";
@@ -518,7 +536,11 @@ player_t* armory_t::download_player( sim_t* sim,
       for( int i=0; i < num_glyphs; i++ )
       {
         std::string glyph_name;
-        if( ! xml_t::get_value( glyph_name, glyph_nodes[ i ], "name" ) ) return 0;
+        if( ! xml_t::get_value( glyph_name, glyph_nodes[ i ], "name" ) ) 
+	{
+	  printf( "simcraft: Player %s unable to determine glyph name from armory xml.\n", p -> name() );
+	  return 0;
+	}
         glyph_name.erase( 0, 9 ); // remove "Glyph of "
         armory_t::format( glyph_name );
         if( i ) p -> glyphs_str += "/";

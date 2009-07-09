@@ -484,15 +484,28 @@ player_t* wowhead_t::download_player( sim_t* sim,
   if( sim -> debug ) js_t::print( profile_js );
 
   std::string name_str;
-  if( ! js_t::get_value( name_str, profile_js, "name"  ) ) return 0;
+  if( ! js_t::get_value( name_str, profile_js, "name"  ) ) 
+  {
+    printf( "simcraft: Unable to extract player name from wowhead id '%s'.\n", id.c_str() );
+    return 0;
+  }
   armory_t::format( name_str );
 
   std::string cid_str;
-  if( ! js_t::get_value( cid_str, profile_js, "classs" ) ) return 0;
+  if( ! js_t::get_value( cid_str, profile_js, "classs" ) ) 
+  {
+    printf( "simcraft: Unable to extract player class from wowhead id '%s'.\n", id.c_str() );
+    return 0;
+  }
   std::string type_str = translate_class_id( cid_str );
 
   player_t* p = player_t::create( sim, type_str, name_str );
-  if( ! p ) return 0;
+  if( ! p ) 
+  {
+    printf( "simcraft: Unable to build player with class '%s' and name '%s' from wowhead id '%s'.\n", 
+	    type_str.c_str(), name_str.c_str(), id.c_str() );
+    return 0;
+  }
 
   std::vector<std::string> region_data;
   int num_region = js_t::get_value( region_data, profile_js, "region" );
@@ -520,8 +533,13 @@ player_t* wowhead_t::download_player( sim_t* sim,
   int num_builds = js_t::get_value( talent_encodings, profile_js, "talents/build" );
   if( num_builds == 2 )
   {
-    if( ! p -> parse_talents( talent_encodings[ active_talents ] ) ) return 0;
-    p -> talents_str = "http://www.wowarmory.com/talent-calc.xml?cid=" + cid_str + "&tal=" + talent_encodings[ active_talents ];
+    std::string& encoding = talent_encodings[ active_talents ];
+    if( ! p -> parse_talents( encoding ) ) 
+    {
+      printf( "simcraft: Player %s unable to parse talent encoding '%s'.\n", p -> name(), encoding.c_str() );
+      return 0;
+    }
+    p -> talents_str = "http://www.wowarmory.com/talent-calc.xml?cid=" + cid_str + "&tal=" + encoding;
   }
   
   std::vector<std::string> glyph_encodings;
@@ -533,9 +551,14 @@ player_t* wowhead_t::download_player( sim_t* sim,
     int num_glyphs = util_t::string_split( glyph_ids, glyph_encodings[ active_talents ], ":" );
     for( int i=0; i < num_glyphs; i++ )
     {
-      if( glyph_ids[ i ] == "0" ) continue;
+      std::string& glyph_id = glyph_ids[ i ];
+      if( glyph_id == "0" ) continue;
       std::string glyph_name;
-      if( ! download_glyph( glyph_name, glyph_ids[ i ] ) ) return 0;
+      if( ! download_glyph( glyph_name, glyph_id ) ) 
+      {
+	printf( "simcraft: Player %s unable to download glyph id '%s' from wowhead.\n", p -> name(), glyph_id.c_str() );
+	return 0;
+      }
       if( i ) p -> glyphs_str += "/";
       p -> glyphs_str += glyph_name;
     }
