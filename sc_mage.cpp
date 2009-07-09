@@ -2487,17 +2487,19 @@ struct frost_bolt_t : public mage_spell_t
       };
     parse_options( options, options_str );
 
+    double pct = sim -> P320 ? 0.11 : 0.13;
+
     static rank_t ranks[] =
       {
-        { 79, 16, 799, 861, 0, 0.13 },
-        { 75, 15, 702, 758, 0, 0.13 },
-        { 70, 14, 630, 680, 0, 0.13 },
-        { 68, 13, 597, 644, 0, 330  },
-        { 62, 12, 522, 563, 0, 300  },
-        { 60, 11, 515, 555, 0, 290  },
-        { 56, 10, 429, 463, 0, 260  },
-        { 50, 9,  353, 383, 0, 225  },
-        { 44, 8,  292, 316, 0, 195  },
+        { 79, 16, 799, 861, 0, pct },
+        { 75, 15, 702, 758, 0, pct },
+        { 70, 14, 630, 680, 0, pct },
+        { 68, 13, 597, 644, 0, 330 },
+        { 62, 12, 522, 563, 0, 300 },
+        { 60, 11, 515, 555, 0, 290 },
+        { 56, 10, 429, 463, 0, 260 },
+        { 50, 9,  353, 383, 0, 225 },
+        { 44, 8,  292, 316, 0, 195 },
         { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
@@ -2513,8 +2515,16 @@ struct frost_bolt_t : public mage_spell_t
     base_multiplier   *= 1.0 + p -> talents.arcane_instability * 0.01;
     base_multiplier   *= 1.0 + p -> talents.chilled_to_the_bone * 0.01;
     base_crit         += p -> talents.arcane_instability * 0.01;
-    base_crit         += p -> talents.empowered_frost_bolt * 0.02;
     direct_power_mod  += p -> talents.empowered_frost_bolt * 0.05;
+
+    if( sim -> P320 )
+    {
+      base_execute_time -= p -> talents.empowered_frost_bolt * 0.1;
+    }
+    else
+    {
+      base_crit += p -> talents.empowered_frost_bolt * 0.02;
+    }
 
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.ice_shards  * 1.0/3 ) +
                                           ( p -> talents.spell_power * 0.25  ) +
@@ -2583,11 +2593,13 @@ struct ice_lance_t : public mage_spell_t
       };
     parse_options( options, options_str );
 
+    double pct = sim -> P320 ? 0.06 : 0.07;
+
     static rank_t ranks[] =
       {
-        { 78, 3, 221, 255, 0, 0.07 },
-        { 72, 2, 182, 210, 0, 0.07 },
-        { 66, 1, 161, 187, 0, 150  },
+        { 78, 3, 221, 255, 0, pct },
+        { 72, 2, 182, 210, 0, pct },
+        { 66, 1, 161, 187, 0, 150 },
         { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
@@ -3457,10 +3469,10 @@ void mage_t::init_actions()
     else if( primary_tree() == TREE_FROST )
     {
       action_list_str += "/mana_gem,trigger=1000/speed_potion";
-      action_list_str += "/ice_lance,frozen=1,fb_priority=1";
+      action_list_str += "/frost_bolt,frozen=1";
       if( talents.summon_water_elemental ) action_list_str += "/water_elemental";
       if( talents.cold_snap              ) action_list_str += "/cold_snap";
-      action_list_str += "/fire_ball,brain_freeze=1/frost_bolt";
+      if( talents.brain_freeze           ) action_list_str += "/fire_ball,brain_freeze=1/frost_bolt";
       action_list_str += "/fire_blast"; // when moving
     }
     else if( primary_tree() == TREE_FIRE )
