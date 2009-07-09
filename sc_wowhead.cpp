@@ -533,6 +533,7 @@ player_t* wowhead_t::download_player( sim_t* sim,
     int num_glyphs = util_t::string_split( glyph_ids, glyph_encodings[ active_talents ], ":" );
     for( int i=0; i < num_glyphs; i++ )
     {
+      if( glyph_ids[ i ] == "0" ) continue;
       std::string glyph_name;
       if( ! download_glyph( glyph_name, glyph_ids[ i ] ) ) return 0;
       if( i ) p -> glyphs_str += "/";
