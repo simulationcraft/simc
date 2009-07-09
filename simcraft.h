@@ -1964,6 +1964,7 @@ struct enchant_t
   static void init( player_t* );
   static void register_callbacks( player_t* );
   static bool get_encoding( std::string& name, std::string& encoding, const std::string& enchant_id );
+  static bool download( item_t&, const std::string& enchant_id );
 };
 
 // Consumable ================================================================
@@ -2150,6 +2151,8 @@ struct util_t
   static int parse_weapon_buff_type   ( const std::string& name );
   static int parse_weapon_type        ( const std::string& name );
 
+  static bool socket_gem_match( int socket, int gem );
+
   static int string_split( std::vector<std::string>& results, const std::string& str, const char* delim );
   static int string_split( const std::string& str, const char* delim, const char* format, ... );
 
@@ -2187,11 +2190,9 @@ struct armory_t
 				    const std::string& server, 
 				    const std::string& name,
 				    bool active_talents=true );
-
   static bool download_slot( item_t&, const std::string& item_id );
   static bool download_item( item_t&, const std::string& item_id );
-  static int  download_gem ( item_t&, const std::string& gem_id );
-
+  static void fuzzy_stats( std::string& encoding, const std::string& description );
   static std::string& format( std::string& name );
 };
 
@@ -2204,15 +2205,11 @@ struct wowhead_t
 				    const std::string& server, 
 				    const std::string& name,
 				    bool active_talents=true );
-
   static player_t* download_player( sim_t* sim,
 				    const std::string& id,
 				    bool active_talents=true );
-
-  static bool download_slot   ( item_t&, const std::string& item_id, const std::string& enchant_id, const std::string gem_ids[ 3 ] );
-  static bool download_item   ( item_t&, const std::string& item_id );
-  static int  download_gem    ( item_t&, const std::string& gem_id );
-  static bool download_enchant( item_t&, const std::string& enchant_id );
+  static bool download_slot( item_t&, const std::string& item_id, const std::string& enchant_id, const std::string gem_ids[ 3 ] );
+  static bool download_item( item_t&, const std::string& item_id );
   static bool download_glyph( std::string& glyph_name, const std::string& glyph_id );
 };
 

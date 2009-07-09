@@ -864,7 +864,7 @@ const char* util_t::stat_type_wowhead( int stat )
 
   case STAT_ATTACK_POWER:             return "atkpwr";
   case STAT_EXPERTISE_RATING:         return "exprtng";
-  case STAT_ARMOR_PENETRATION_RATING: return "__arpen";
+  case STAT_ARMOR_PENETRATION_RATING: return "armorpenrtng";
 
   case STAT_HIT_RATING:   return "hitrtng";
   case STAT_CRIT_RATING:  return "critstrkrtng";
@@ -914,6 +914,22 @@ int util_t::parse_stat_type( const std::string& name )
   if( name == "rgdcritstrkrtng" ) return STAT_CRIT_RATING;
 
   return STAT_NONE;
+}
+
+// util_t::socket_gem_match ================================================
+
+bool util_t::socket_gem_match( int socket,
+			       int gem )
+{
+  if( socket == GEM_NONE || gem == GEM_PRISMATIC ) return true;
+
+  if( socket == GEM_META ) return ( gem == GEM_META );
+
+  if( socket == GEM_RED    ) return ( gem == GEM_RED    || gem == GEM_ORANGE || gem == GEM_PURPLE );
+  if( socket == GEM_YELLOW ) return ( gem == GEM_YELLOW || gem == GEM_ORANGE || gem == GEM_GREEN  );
+  if( socket == GEM_BLUE   ) return ( gem == GEM_BLUE   || gem == GEM_PURPLE || gem == GEM_GREEN  );
+
+  return false;
 }
 
 // util_t::string_split ====================================================

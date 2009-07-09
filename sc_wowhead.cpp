@@ -72,14 +72,135 @@ static void parse_stats( std::string& encoding,
   }
 }
 
+// parse_gem ================================================================
+
+static int parse_gem( item_t&            item, 
+		      const std::string& gem_id )
+{
+  if( gem_id.empty() || gem_id == "" || gem_id == "0" )
+    return GEM_NONE;
+
+  xml_node_t* node = download_id( gem_id );
+
+  if( node )
+  {
+    std::string color_str;
+    if( xml_t::get_value( color_str, node, "subclass/cdata" ) )
+    {
+      std::string::size_type pos = color_str.find( ' ' );
+      if( pos != std::string::npos ) color_str.erase( pos );
+      armory_t::format( color_str );
+      int gem_type = util_t::parse_gem_type( color_str );
+    
+      if( gem_type == GEM_META )
+      {
+	std::string name_str;
+	if( xml_t::get_value( name_str, node, "name/cdata" ) )
+	{
+	  std::string::size_type pos = name_str.find( " Diamond" );
+	  if( pos != std::string::npos ) name_str.erase( pos );
+	  armory_t::format( name_str );
+	  item.armory_gems_str += "_";
+	  item.armory_gems_str += name_str;
+	}	
+      }
+      else
+      {
+	std::string stats_str;
+	if( xml_t::get_value( stats_str, node, "jsonEquip/cdata" ) )
+	{
+	  parse_stats( item.armory_gems_str, stats_str );
+	}
+      }
+
+      return gem_type;
+    }
+  }
+
+  return GEM_NONE;
+}
+
+// parse_gems ===============================================================
+
+static bool parse_gems( item_t&           item, 
+			xml_node_t*       node,
+			const std::string gem_ids[ 3 ] )
+{
+  item.armory_gems_str.clear();
+
+  std::string stats_str;
+  if( ! xml_t::get_value( stats_str, node, "jsonEquip/cdata" ) ) 
+    return true;
+
+  int sockets[ 3 ] = { 0, 0, 0 };
+  std::vector<std::string> splits;
+  int num_splits = util_t::string_split( splits, stats_str, "," );
+
+  for( int i=0; i < num_splits; i++ )
+  {
+    std::string type_str;
+    int value;
+
+    if( 2 == util_t::string_split( splits[ i ], ":", "S i", &type_str, &value ) )
+    {
+      if( type_str == "socket1" ) sockets[ 0 ] = value;
+      if( type_str == "socket2" ) sockets[ 1 ] = value;
+      if( type_str == "socket3" ) sockets[ 2 ] = value;
+    }
+  }
+  
+  bool match = true;
+  for( int i=0; i < 3; i++ )
+  {
+    int gem = parse_gem( item, gem_ids[ i ] );
+
+    switch( sockets[ i ] )
+    {
+    case 0: sockets[ i ] = GEM_NONE;   break;
+    case 1: sockets[ i ] = GEM_META;   break;
+    case 2: sockets[ i ] = GEM_RED;    break;
+    case 4: sockets[ i ] = GEM_YELLOW; break;
+    case 8: sockets[ i ] = GEM_BLUE;   break;
+    }
+
+    if( ! util_t::socket_gem_match( sockets[ i ], gem ) )
+      match = false;
+  }
+
+  if( match )
+  {
+    std::string tooltip_str;
+    if( xml_t::get_value( tooltip_str, node, "htmlTooltip/cdata" ) )
+    {
+      const char* search = "Socket Bonus: ";
+      std::string::size_type pos = tooltip_str.find( search );
+      if( pos != std::string::npos )
+      {
+	std::string::size_type start = pos + strlen( search );
+	std::string::size_type pos = tooltip_str.find( "<", start );
+	if( pos != std::string::npos )
+        {
+	  armory_t::fuzzy_stats( item.armory_gems_str, tooltip_str.substr( start, pos-start ) );
+	}
+      }
+    }
+  }
+
+  armory_t::format( item.armory_gems_str );
+
+  return true;
+}
+
 // parse_weapon =============================================================
 
-static bool parse_weapon( std::string& encoding,
-			  const std::string& subclass_str,
-			  const std::string& stats_str )
+static bool parse_weapon( item_t&     item,
+			  xml_node_t* node )
 {
-  std::string speed, dps;
+  std::string stats_str;
+  if( ! xml_t::get_value( stats_str, node, "jsonEquip/cdata" ) ) 
+    return true;
 
+  std::string speed, dps;
   std::vector<std::string> splits;
   int num_splits = util_t::string_split( splits, stats_str, "," );
 
@@ -94,32 +215,65 @@ static bool parse_weapon( std::string& encoding,
     }
   }
 
-  if( ! speed.empty() && ! dps.empty() )
-  {
-    int weapon_type = WEAPON_NONE;
-    if     ( subclass_str == "One-Handed Axes"         ) weapon_type = WEAPON_AXE;
-    else if( subclass_str == "Two-Handed Axes"         ) weapon_type = WEAPON_AXE_2H;
-    else if( subclass_str == "Daggers"                 ) weapon_type = WEAPON_DAGGER;
-    else if( subclass_str == "Fist Weapons"            ) weapon_type = WEAPON_FIST;
-    else if( subclass_str == "One-Handed Maces"        ) weapon_type = WEAPON_MACE;
-    else if( subclass_str == "Two-Handed Maces"        ) weapon_type = WEAPON_MACE_2H;
-    else if( subclass_str == "Polearms"                ) weapon_type = WEAPON_POLEARM;
-    else if( subclass_str == "Staves"                  ) weapon_type = WEAPON_STAFF;
-    else if( subclass_str == "One-Handed Swords"       ) weapon_type = WEAPON_SWORD;
-    else if( subclass_str == "Two-Handed Swords"       ) weapon_type = WEAPON_SWORD_2H;
-    else if( subclass_str == "Bows"                    ) weapon_type = WEAPON_BOW;
-    else if( subclass_str == "Crossbows"               ) weapon_type = WEAPON_CROSSBOW;
-    else if( subclass_str == "Guns"                    ) weapon_type = WEAPON_GUN;
-    else if( subclass_str == "Thrown"                  ) weapon_type = WEAPON_THROWN;
-    else if( subclass_str == "Wands"                   ) weapon_type = WEAPON_WAND;
-    else if( subclass_str == "Miscellaneous (Weapons)" ) weapon_type = WEAPON_POLEARM; // Fishing Pole
+  if( speed.empty() || dps.empty() ) return true;
 
-    if( weapon_type == WEAPON_NONE ) return false;
-    if( weapon_type == WEAPON_WAND ) return true;
+  std::string subclass_str;
+  if( ! xml_t::get_value( subclass_str, node, "subclass/cdata" ) )
+    return true;
+
+  int weapon_type = WEAPON_NONE;
+  if     ( subclass_str == "One-Handed Axes"         ) weapon_type = WEAPON_AXE;
+  else if( subclass_str == "Two-Handed Axes"         ) weapon_type = WEAPON_AXE_2H;
+  else if( subclass_str == "Daggers"                 ) weapon_type = WEAPON_DAGGER;
+  else if( subclass_str == "Fist Weapons"            ) weapon_type = WEAPON_FIST;
+  else if( subclass_str == "One-Handed Maces"        ) weapon_type = WEAPON_MACE;
+  else if( subclass_str == "Two-Handed Maces"        ) weapon_type = WEAPON_MACE_2H;
+  else if( subclass_str == "Polearms"                ) weapon_type = WEAPON_POLEARM;
+  else if( subclass_str == "Staves"                  ) weapon_type = WEAPON_STAFF;
+  else if( subclass_str == "One-Handed Swords"       ) weapon_type = WEAPON_SWORD;
+  else if( subclass_str == "Two-Handed Swords"       ) weapon_type = WEAPON_SWORD_2H;
+  else if( subclass_str == "Bows"                    ) weapon_type = WEAPON_BOW;
+  else if( subclass_str == "Crossbows"               ) weapon_type = WEAPON_CROSSBOW;
+  else if( subclass_str == "Guns"                    ) weapon_type = WEAPON_GUN;
+  else if( subclass_str == "Thrown"                  ) weapon_type = WEAPON_THROWN;
+  else if( subclass_str == "Wands"                   ) weapon_type = WEAPON_WAND;
+  else if( subclass_str == "Miscellaneous (Weapons)" ) weapon_type = WEAPON_POLEARM; // Fishing Pole
+
+  if( weapon_type == WEAPON_NONE ) return false;
+  if( weapon_type == WEAPON_WAND ) return true;
     
-    encoding = util_t::weapon_type_string( weapon_type );
-    encoding += "_" + speed + "speed" + "_" + dps + "dps";
-  }
+  item.armory_weapon_str = util_t::weapon_type_string( weapon_type );
+  item.armory_weapon_str += "_" + speed + "speed" + "_" + dps + "dps";
+
+  return true;
+}
+
+// parse_item_stats =========================================================
+
+static bool parse_item_stats( item_t&     item,
+			      xml_node_t* node )
+{
+  item.armory_stats_str.clear();
+
+  std::string stats_str;
+  if( ! xml_t::get_value( stats_str, node, "jsonEquip/cdata" ) )
+    return true;
+
+  parse_stats( item.armory_stats_str, stats_str );
+  armory_t::format( item.armory_stats_str );
+
+  return true;
+}
+
+// parse_item_name ==========================================================
+
+static bool parse_item_name( item_t&     item,
+			     xml_node_t* node )
+{
+  if( ! xml_t::get_value( item.armory_name_str, node, "name/cdata" ) )
+    return false;
+
+  armory_t::format( item.armory_name_str );
 
   return true;
 }
@@ -194,119 +348,39 @@ bool wowhead_t::download_glyph( std::string&       glyph_name,
   return false;
 }
 
-// wowhead_t::download_enchant ==============================================
-
-bool wowhead_t::download_enchant( item_t&            item, 
-				  const std::string& enchant_id )
-{
-  item.armory_enchant_str.clear();
-
-  if( enchant_id.empty() || enchant_id == "" || enchant_id == "0" )
-    return true;
-
-  std::string enchant_name;
-  if( enchant_t::get_encoding( enchant_name, item.armory_enchant_str, enchant_id ) )
-  {
-    if     ( enchant_name == "Lightweave Embroidery"    ) { item.armory_enchant_str = "lightweave";  }
-    else if( enchant_name == "Hand-Mounted Pyro Rocket" ) { item.armory_enchant_str = "pyrorocket";  }
-    else if( enchant_name == "Berserking"               ) { item.armory_enchant_str = "berserking";  }
-    else if( enchant_name == "Mongoose"                 ) { item.armory_enchant_str = "mongoose";    }
-    else if( enchant_name == "Executioner"              ) { item.armory_enchant_str = "executioner"; }
-    else if( enchant_name == "Spellsurge"               ) { item.armory_enchant_str = "spellsurge";  }
-
-    armory_t::format( item.armory_enchant_str );
-
-    return true;
-  }
-
-  return false;
-}
-
-// wowhead_t::download_gem ==================================================
-
-int wowhead_t::download_gem( item_t&            item, 
-			     const std::string& gem_id )
-{
-  if( gem_id.empty() || gem_id == "" || gem_id == "0" )
-    return true;
-
-  xml_node_t* node = download_id( gem_id );
-
-  if( node )
-  {
-    std::string color_str;
-    if( xml_t::get_value( color_str, node, "subclass/cdata" ) )
-    {
-      std::string::size_type pos = color_str.find( ' ' );
-      if( pos != std::string::npos ) color_str.erase( pos );
-      armory_t::format( color_str );
-      int gem_type = util_t::parse_gem_type( color_str );
-    
-      if( gem_type == GEM_META )
-      {
-	std::string name_str;
-	if( xml_t::get_value( name_str, node, "name/cdata" ) )
-	{
-	  std::string::size_type pos = name_str.find( " Diamond" );
-	  if( pos != std::string::npos ) name_str.erase( pos );
-	  armory_t::format( name_str );
-	  item.armory_gems_str += "_";
-	  item.armory_gems_str += name_str;
-	}	
-      }
-      else
-      {
-	std::string stats_str;
-	if( xml_t::get_value( stats_str, node, "jsonEquip/cdata" ) )
-	{
-	  parse_stats( item.armory_gems_str, stats_str );
-	}
-      }
-
-      return gem_type;
-    }
-  }
-
-  return GEM_NONE;
-}
-
 // wowhead_t::download_item =================================================
 
 bool wowhead_t::download_item( item_t&            item, 
 			       const std::string& item_id )
 {
+  player_t* p = item.player;
+
   xml_node_t* node = download_id( item_id );
-
-  if( node )
+  if( ! node ) 
   {
-    if( xml_t::get_value( item.armory_name_str, node, "name/cdata" ) )
-    {
-      armory_t::format( item.armory_name_str );
-
-      item.armory_stats_str.clear();
-      item.armory_weapon_str.clear();
-
-      std::string stats_str;
-      if( xml_t::get_value( stats_str, node, "jsonEquip/cdata" ) )
-      {
-	parse_stats( item.armory_stats_str, stats_str );
-	armory_t::format( item.armory_stats_str );
-
-	std::string subclass_str;
-	if( xml_t::get_value( subclass_str, node, "subclass/cdata" ) )
-	{
-	  if( ! parse_weapon( item.armory_weapon_str, subclass_str, stats_str ) )
-	    return false;
-
-	  armory_t::format( item.armory_weapon_str );
-	}
-      }
-
-      return true;
-    }
+    printf( "simcraft: Player %s nable to download item id '%s' from wowhead at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
+    return false;
   }
 
-  return false;
+  if( ! parse_item_name( item, node ) )
+  {
+    printf( "simcraft: Player %s unable to determine item name for id '%s' at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
+    return false;
+  }
+
+  if( ! parse_item_stats( item, node ) )
+  {
+    printf( "simcraft: Player %s unable to determine stats for item '%s' at slot %s.\n", p -> name(), item.name(), item.slot_name() );
+    return false;
+  }
+
+  if( ! parse_weapon( item, node ) )
+  {
+    printf( "simcraft: Player %s unable to determine weapon info for item '%s' at slot %s.\n", p -> name(), item.name(), item.slot_name() );
+    return false;
+  }
+
+  return true;
 }
 
 // wowhead_t::download_slot =================================================
@@ -318,24 +392,38 @@ bool wowhead_t::download_slot( item_t&            item,
 {
   player_t* p = item.player;
 
-  if( ! download_item( item, item_id ) )
+  xml_node_t* node = download_id( item_id );
+  if( ! node ) 
   {
-    printf( "simcraft: Player %s unable to parse name for item %s at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
+    printf( "simcraft: Player %s nable to download item id '%s' from wowhead at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
     return false;
   }
 
-  item.armory_gems_str.clear();
-  for( int i=0; i < 3; i++ )
+  if( ! parse_item_name( item, node ) )
   {
-    if( ! download_gem( item, gem_ids[ i ] ) )
-    {
-      printf( "simcraft: Player %s unable to parse gem id %s for item \"%s\" at slot %s.\n", p -> name(), gem_ids[ i ].c_str(), item.name(), item.slot_name() );
-      return false;
-    }
+    printf( "simcraft: Player %s unable to determine item name for id '%s' at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
+    return false;
   }
-  armory_t::format( item.armory_gems_str );
 
-  if( ! download_enchant( item, enchant_id ) )
+  if( ! parse_item_stats( item, node ) )
+  {
+    printf( "simcraft: Player %s unable to determine stats for item '%s' at slot %s.\n", p -> name(), item.name(), item.slot_name() );
+    return false;
+  }
+
+  if( ! parse_weapon( item, node ) )
+  {
+    printf( "simcraft: Player %s unable to determine weapon info for item '%s' at slot %s.\n", p -> name(), item.name(), item.slot_name() );
+    return false;
+  }
+
+  if( ! parse_gems( item, node, gem_ids ) )
+  {
+    printf( "simcraft: Player %s unable to determine gems for item '%s' at slot %s.\n", p -> name(), item.name(), item.slot_name() );
+    return false;
+  }
+
+  if( ! enchant_t::download( item, enchant_id ) )
   {
     printf( "simcraft: Player %s unable to parse enchant id %s for item \"%s\" at slot %s.\n", p -> name(), enchant_id.c_str(), item.name(), item.slot_name() );
     return false;

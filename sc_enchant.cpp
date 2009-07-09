@@ -425,9 +425,6 @@ bool enchant_t::get_encoding( std::string& name,
 			      std::string& encoding,
 			      const std::string& enchant_id )
 {
-  if( enchant_id.empty() || enchant_id == "" || enchant_id == "0" ) 
-    return false;
-
   bool success = false;
   thread_t::mutex_lock( enchant_mutex );
 
@@ -451,3 +448,30 @@ bool enchant_t::get_encoding( std::string& name,
   return success;
 }
 
+// enchant_t::download ======================================================
+
+bool enchant_t::download( item_t&            item,
+			  const std::string& enchant_id )
+{
+  item.armory_enchant_str.clear();
+
+  if( enchant_id.empty() || enchant_id == "" || enchant_id == "0" ) 
+    return true;
+
+  std::string enchant_name;
+  if( get_encoding( enchant_name, item.armory_enchant_str, enchant_id ) )
+  {
+    if     ( enchant_name == "Lightweave Embroidery"    ) { item.armory_enchant_str = "lightweave";  }
+    else if( enchant_name == "Hand-Mounted Pyro Rocket" ) { item.armory_enchant_str = "pyrorocket";  }
+    else if( enchant_name == "Berserking"               ) { item.armory_enchant_str = "berserking";  }
+    else if( enchant_name == "Mongoose"                 ) { item.armory_enchant_str = "mongoose";    }
+    else if( enchant_name == "Executioner"              ) { item.armory_enchant_str = "executioner"; }
+    else if( enchant_name == "Spellsurge"               ) { item.armory_enchant_str = "spellsurge";  }
+
+    armory_t::format( item.armory_enchant_str );
+
+    return true;
+  }
+
+  return false;
+}

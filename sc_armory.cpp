@@ -81,50 +81,6 @@ static bool is_proc_description( const std::string& description_str )
   return false;
 }
 
-// fuzzy_search =============================================================
-
-static void fuzzy_search( std::string&       encoding_str,
-                          const std::string& description_str )
-{
-  if( description_str.empty() ) return;
-
-  std::string buffer = description_str;
-  armory_t::format( buffer );
-
-  if( is_proc_description( buffer ) )
-    return;
-
-  std::vector<std::string> splits;
-  util_t::string_split( splits, buffer, "_." );
-
-  stat_search( encoding_str, splits, STAT_MAX,  "all stats" );
-  stat_search( encoding_str, splits, STAT_MAX,  "to all stats" );
-
-  stat_search( encoding_str, splits, STAT_STRENGTH,  "strength" );
-  stat_search( encoding_str, splits, STAT_AGILITY,   "agility" );
-  stat_search( encoding_str, splits, STAT_STAMINA,   "stamina" );
-  stat_search( encoding_str, splits, STAT_INTELLECT, "intellect" );
-  stat_search( encoding_str, splits, STAT_SPIRIT,    "spirit" );
-
-  stat_search( encoding_str, splits, STAT_SPELL_POWER, "spell power" );
-  stat_search( encoding_str, splits, STAT_MP5,         "mana regen" );
-  stat_search( encoding_str, splits, STAT_MP5,         "mana every 5" );
-  stat_search( encoding_str, splits, STAT_MP5,         "mana per 5" );
-  stat_search( encoding_str, splits, STAT_MP5,         "mana restored per 5" );
-  stat_search( encoding_str, splits, STAT_MP5,         "mana 5" );
-
-  stat_search( encoding_str, splits, STAT_ATTACK_POWER,             "attack power" );
-  stat_search( encoding_str, splits, STAT_EXPERTISE_RATING,         "expertise rating" );
-  stat_search( encoding_str, splits, STAT_ARMOR_PENETRATION_RATING, "armor penetration rating" );
-
-  stat_search( encoding_str, splits, STAT_HASTE_RATING, "haste rating" );
-  stat_search( encoding_str, splits, STAT_HIT_RATING,   "ranged hit rating" );
-  stat_search( encoding_str, splits, STAT_HIT_RATING,   "hit rating" );
-  stat_search( encoding_str, splits, STAT_CRIT_RATING,  "ranged critical strike" );
-  stat_search( encoding_str, splits, STAT_CRIT_RATING,  "critical strike rating" );
-  stat_search( encoding_str, splits, STAT_CRIT_RATING,  "crit rating" );
-}
-
 // download_character_sheet =================================================
 
 static xml_node_t* download_character_sheet( sim_t* sim,
@@ -266,7 +222,7 @@ static bool parse_item_stats( item_t& item,
       {
         if( xml_t::get_value( value, spell_nodes[ i ], "desc/." ) )
         {
-          fuzzy_search( s, value );
+          armory_t::fuzzy_stats( s, value );
         }
       }
     }
@@ -323,12 +279,12 @@ static bool parse_item_gems( item_t& item,
         else if( enchant == "+12 Agility and 3% Increased Critical Damage"                ) { s += "_relentless_earthstorm"; }
         else
         {
-          fuzzy_search( s, enchant );
+          armory_t::fuzzy_stats( s, enchant );
         }
       }
       else
       {
-        fuzzy_search( s, enchant );
+        armory_t::fuzzy_stats( s, enchant );
       }
 
       if( ! xml_t::get_value( match, socket, "match" ) || ( match != "1" ) ) socket_bonus = false;
@@ -339,7 +295,7 @@ static bool parse_item_gems( item_t& item,
       std::string enchant;
       if( xml_t::get_value( enchant, socket_data, "socketMatchEnchant/." ) )
       {
-        fuzzy_search( s, enchant );
+        armory_t::fuzzy_stats( s, enchant );
       }
     }
 
@@ -379,7 +335,7 @@ static bool parse_item_enchant( item_t& item,
     else if( enchant == "Spellsurge"               ) { s += "_spellsurge";  }
     else
     {
-      fuzzy_search( s, enchant );
+      armory_t::fuzzy_stats( s, enchant );
     }
 
     if( ! s.empty() ) 
@@ -440,6 +396,50 @@ static bool parse_item_weapon( item_t& item,
 }
 
 } // ANONYMOUS NAMESPACE ===================================================
+
+// armory_t::fuzzy_stats ====================================================
+
+void armory_t::fuzzy_stats( std::string&       encoding_str,
+			    const std::string& description_str )
+{
+  if( description_str.empty() ) return;
+
+  std::string buffer = description_str;
+  armory_t::format( buffer );
+
+  if( is_proc_description( buffer ) )
+    return;
+
+  std::vector<std::string> splits;
+  util_t::string_split( splits, buffer, "_." );
+
+  stat_search( encoding_str, splits, STAT_MAX,  "all stats" );
+  stat_search( encoding_str, splits, STAT_MAX,  "to all stats" );
+
+  stat_search( encoding_str, splits, STAT_STRENGTH,  "strength" );
+  stat_search( encoding_str, splits, STAT_AGILITY,   "agility" );
+  stat_search( encoding_str, splits, STAT_STAMINA,   "stamina" );
+  stat_search( encoding_str, splits, STAT_INTELLECT, "intellect" );
+  stat_search( encoding_str, splits, STAT_SPIRIT,    "spirit" );
+
+  stat_search( encoding_str, splits, STAT_SPELL_POWER, "spell power" );
+  stat_search( encoding_str, splits, STAT_MP5,         "mana regen" );
+  stat_search( encoding_str, splits, STAT_MP5,         "mana every 5" );
+  stat_search( encoding_str, splits, STAT_MP5,         "mana per 5" );
+  stat_search( encoding_str, splits, STAT_MP5,         "mana restored per 5" );
+  stat_search( encoding_str, splits, STAT_MP5,         "mana 5" );
+
+  stat_search( encoding_str, splits, STAT_ATTACK_POWER,             "attack power" );
+  stat_search( encoding_str, splits, STAT_EXPERTISE_RATING,         "expertise rating" );
+  stat_search( encoding_str, splits, STAT_ARMOR_PENETRATION_RATING, "armor penetration rating" );
+
+  stat_search( encoding_str, splits, STAT_HASTE_RATING, "haste rating" );
+  stat_search( encoding_str, splits, STAT_HIT_RATING,   "ranged hit rating" );
+  stat_search( encoding_str, splits, STAT_HIT_RATING,   "hit rating" );
+  stat_search( encoding_str, splits, STAT_CRIT_RATING,  "ranged critical strike" );
+  stat_search( encoding_str, splits, STAT_CRIT_RATING,  "critical strike rating" );
+  stat_search( encoding_str, splits, STAT_CRIT_RATING,  "crit rating" );
+}
 
 // armory_t::download_player ================================================
 
@@ -539,8 +539,19 @@ player_t* armory_t::download_player( sim_t* sim,
     {
       if( slot == -1 ) continue;
 
+      std::string enchant_id, gem_ids[ 3 ];
+
+      if( xml_t::get_value( enchant_id,   item_nodes[ i ], "permanentenchant" ) &&
+	  xml_t::get_value( gem_ids[ 0 ], item_nodes[ i ], "gem0Id"           ) &&
+	  xml_t::get_value( gem_ids[ 1 ], item_nodes[ i ], "gem1Id"           ) &&
+	  xml_t::get_value( gem_ids[ 2 ], item_nodes[ i ], "gem2Id"           ) )
+      {
+	if( wowhead_t::download_slot( p -> items[ slot ], id_str, enchant_id, gem_ids ) )
+	  continue;
+      }
+
       if( ! armory_t::download_slot( p -> items[ slot ], id_str ) ) 
-        return 0;
+	return 0;
     }
     else return 0;
   }
