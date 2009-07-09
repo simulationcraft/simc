@@ -185,7 +185,7 @@ const char* util_t::profession_type_string( int type )
 {
   switch ( type )
   {
-  case PROF_NONE:           return "none";
+  case PROFESSION_NONE:     return "none";
   case PROF_ALCHEMY:        return "alchemy";
   case PROF_BLACKSMITHING:  return "blacksmithing";
   case PROF_ENCHANTING:     return "enchanting";
@@ -205,7 +205,7 @@ const char* util_t::profession_type_string( int type )
 
 int util_t::parse_profession_type( const std::string& name )
 {
-  for( int i=0; i < PROF_MAX; i++ )
+  for( int i=0; i < PROFESSION_MAX; i++ )
   {
     const char* prof_name = util_t::profession_type_string( i );
 
@@ -214,7 +214,7 @@ int util_t::parse_profession_type( const std::string& name )
 	return i;
   }
 
-  return PROF_NONE;
+  return PROFESSION_NONE;
 }
 
 // util_t::player_type_string ==============================================

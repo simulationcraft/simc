@@ -447,7 +447,7 @@ player_t::player_t( sim_t*             s,
     resource_lost[ i ] = resource_gained[ i ] = 0;
   }
 
-  for ( int i=0; i < PROF_MAX; i++ ) profession[ i ] = 0;
+  for ( int i=0; i < PROFESSION_MAX; i++ ) profession[ i ] = 0;
   for ( int i=0; i < STAT_MAX; i++ ) scales_with[ i ] = 0;
 
   items.resize( SLOT_MAX );
@@ -795,7 +795,7 @@ void player_t::init_professions()
     }
 
     int prof_type = util_t::parse_profession_type( prof_name );
-    if ( prof_type == PROF_NONE )
+    if ( prof_type == PROFESSION_NONE )
     {
       printf( "Invalid profession encoding: %s\n", professions_str.c_str() );
       assert( 0 );

@@ -299,6 +299,27 @@ static const char* translate_class_id( const std::string& cid_str )
   return "unknown";
 }
 
+// translate_profession_id ==================================================
+
+static const char* translate_profession_id( int type )
+{
+  switch ( type )
+  {
+  case PROF_ALCHEMY:        return "skills/171";
+  case PROF_BLACKSMITHING:  return "skills/164";
+  case PROF_ENCHANTING:     return "skills/333";
+  case PROF_ENGINEERING:    return "skills/202";
+  case PROF_HERBALISM:      return "skills/182";
+  case PROF_INSCRIPTION:    return "skills/773";
+  case PROF_JEWELCRAFTING:  return "skills/755";
+  case PROF_LEATHERWORKING: return "skills//165";
+  case PROF_MINING:         return "skills/186";
+  case PROF_SKINNING:       return "skills/393";
+  case PROF_TAILORING:      return "skills/197";
+  }
+  return "unknown";
+}
+
 // translate_inventory_id ===================================================
 
 static const char* translate_inventory_id( int slot )
@@ -523,6 +544,19 @@ player_t* wowhead_t::download_player( sim_t* sim,
   else
   {
     p -> origin_str = "http://profiler.wowhead.com/?profile=" + p -> region_str + "." + p -> server_str + "." + name_str;
+  }
+
+  p -> professions_str = "";
+  for( int i=0; i < PROFESSION_MAX; i++ )
+  {
+    std::vector<std::string> skill_levels;
+    if( 2 == js_t::get_value( skill_levels, profile_js, translate_profession_id( i ) ) )
+    {
+      if( p -> professions_str.size() > 0 ) p -> professions_str += "/";
+      p -> professions_str += util_t::profession_type_string( i );
+      p -> professions_str += "=";
+      p -> professions_str += skill_levels[ 0 ];
+    }
   }
 
   int active_talents = 0;

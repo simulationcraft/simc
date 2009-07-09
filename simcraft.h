@@ -326,7 +326,7 @@ enum position_type { POSITION_NONE=0, POSITION_FRONT, POSITION_BACK, POSITION_RA
 enum encoding_type { ENCODING_NONE=0, ENCODING_BLIZZARD, ENCODING_MMO, ENCODING_WOWHEAD, ENCODING_MAX };
 
 enum profession_type {
-  PROF_NONE=0,
+  PROFESSION_NONE=0,
   PROF_ALCHEMY,
   PROF_MINING,
   PROF_HERBALISM,
@@ -338,7 +338,7 @@ enum profession_type {
   PROF_TAILORING,
   PROF_JEWELCRAFTING,
   PROF_ENCHANTING,
-  PROF_MAX
+  PROFESSION_MAX
 };
 
 enum role_type { ROLE_NONE=0, ROLE_ATTACK, ROLE_SPELL, ROLE_TANK, ROLE_HYBRID, ROLE_MAX };
@@ -1031,7 +1031,7 @@ struct player_t
 
   // Profs
   std::string professions_str;
-  int profession[ PROF_MAX ];
+  int profession[ PROFESSION_MAX ];
 
   // Race
   std::string race_str;
