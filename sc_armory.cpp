@@ -313,9 +313,12 @@ static bool parse_item_gems( item_t& item,
       if( color == "Meta" )
       {
         if     ( enchant == "+32 Stamina and 2% Increased Armor Value from Items"         ) { s += "_austere_earthsiege";    }
+        else if( enchant == "+21 Critical Strike Rating and +2% Mana"                     ) { s += "_beaming_earthsiege";    }
         else if( enchant == "+21 Critical Strike Rating and 3% Increased Critical Damage" ) { s += "_chaotic_skyflare";      }
         else if( enchant == "+12 Critical Strike Rating and 3% Increased Critical Damage" ) { s += "_chaotic_skyfire";       }
         else if( enchant == "+25 Spell Power and +2% Intellect"                           ) { s += "_ember_skyflare";        }
+        else if( enchant == "+21 Intellect and Chance to restore mana on spellcast"       ) { s += "_insightful_earthsiege"; }
+        else if( enchant == "+12 Intellect and Chance to restore mana on spellcast"       ) { s += "_insightful_earthstorm"; }
         else if( enchant == "+21 Agility and 3% Increased Critical Damage"                ) { s += "_relentless_earthsiege"; }
         else if( enchant == "+12 Agility and 3% Increased Critical Damage"                ) { s += "_relentless_earthstorm"; }
         else

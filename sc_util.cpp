@@ -340,9 +340,12 @@ const char* util_t::meta_gem_type_string( int type )
   switch ( type )
   {
   case META_AUSTERE_EARTHSIEGE:    return "austere_earthsiege";
+  case META_BEAMING_EARTHSIEGE:    return "beaming_earthsiege";
   case META_CHAOTIC_SKYFIRE:       return "chaotic_skyfire";
   case META_CHAOTIC_SKYFLARE:      return "chaotic_skyflare";
   case META_EMBER_SKYFLARE:        return "ember_skyflare";
+  case META_INSIGHTFUL_EARTHSIEGE: return "insightful_earthsiege";
+  case META_INSIGHTFUL_EARTHSTORM: return "insightful_earthstorm";
   case META_RELENTLESS_EARTHSIEGE: return "relentless_earthsiege";
   case META_RELENTLESS_EARTHSTORM: return "relentless_earthstorm";
   case META_MYSTICAL_SKYFIRE:      return "mystical_skyfire";

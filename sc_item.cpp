@@ -90,12 +90,8 @@ static int parse_meta_gem( const std::string& prefix,
   if( prefix.empty() || suffix.empty() ) return META_GEM_NONE;
 
   std::string name = prefix + "_" + suffix;
-  
-  for( int i=0; i < META_GEM_MAX; i++ )
-    if( name == util_t::meta_gem_type_string( i ) )
-      return i;
 
-  return META_GEM_NONE;
+  return util_t::parse_meta_gem_type( name );
 }
 
 } // ANONYMOUS NAMESPACE ====================================================

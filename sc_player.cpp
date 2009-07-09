@@ -588,9 +588,12 @@ void player_t::init_items()
   }
 
   if     ( meta_gem == META_AUSTERE_EARTHSIEGE    ) item_stats.attribute[ ATTR_STAMINA ] += 32;
+  else if( meta_gem == META_BEAMING_EARTHSIEGE    ) item_stats.crit_rating += 21;
   else if( meta_gem == META_CHAOTIC_SKYFLARE      ) item_stats.crit_rating += 21;
   else if( meta_gem == META_CHAOTIC_SKYFIRE       ) item_stats.crit_rating += 12;
   else if( meta_gem == META_EMBER_SKYFLARE        ) item_stats.spell_power += 25;
+  else if( meta_gem == META_INSIGHTFUL_EARTHSIEGE ) item_stats.attribute[ ATTR_INTELLECT ] += 21;
+  else if( meta_gem == META_INSIGHTFUL_EARTHSTORM ) item_stats.attribute[ ATTR_INTELLECT ] += 12;
   else if( meta_gem == META_RELENTLESS_EARTHSIEGE ) item_stats.attribute[ ATTR_AGILITY ] += 21;
   else if( meta_gem == META_RELENTLESS_EARTHSTORM ) item_stats.attribute[ ATTR_AGILITY ] += 12;
 

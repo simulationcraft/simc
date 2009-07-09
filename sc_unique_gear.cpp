@@ -175,6 +175,10 @@ void unique_gear_t::init( player_t* p )
   {
     p -> attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.02;
   }
+  else if( p -> meta_gem == META_BEAMING_EARTHSIEGE )
+  {
+    p -> mana_per_intellect *= 1.02;
+  }
 }
 
 // ==========================================================================
@@ -252,6 +256,16 @@ void unique_gear_t::register_callbacks( player_t* p )
   if( p -> meta_gem == META_MYSTICAL_SKYFIRE )
   {
     cb = new stat_proc_callback_t( "mystical_skyfire", p, STAT_HASTE_RATING, 1, 320, 0.15, 4.0, 45.0 );
+    p -> register_spell_result_callback( RESULT_HIT_MASK, cb );
+  }
+  else if( p -> meta_gem == META_INSIGHTFUL_EARTHSTORM )
+  {
+    cb = new stat_proc_callback_t( "insightful_earthstorm", p, STAT_MANA, 1, 300, 0.05, 0, 15.0 );
+    p -> register_spell_result_callback( RESULT_HIT_MASK, cb );
+  }
+  else if( p -> meta_gem == META_INSIGHTFUL_EARTHSIEGE )
+  {
+    cb = new stat_proc_callback_t( "insightful_earthsiege", p, STAT_MANA, 1, 600, 0.05, 0, 15.0 );
     p -> register_spell_result_callback( RESULT_HIT_MASK, cb );
   }
   if( p -> set_bonus.spellstrike() )

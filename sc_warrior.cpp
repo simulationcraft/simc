@@ -2584,7 +2584,12 @@ void warrior_t::init_glyphs()
     else if( n == "overpower"     ) glyphs.overpower = 1;
     else if( n == "rending"       ) glyphs.rending = 1;
     else if( n == "whirlwind"     ) glyphs.whirlwind = 1;
-    else if( n == "blocking"     ) glyphs.blocking = 1;
+    else if( n == "blocking"      ) glyphs.blocking = 1;
+    else if( n == "shield_wall"   ) ;
+    else if( n == "thunder_clap"  ) ;
+    else if( n == "battle"        ) ;
+    else if( n == "devastate"     ) ;
+    else if( n == "charge"        ) ;
     else if( ! sim -> parent ) printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
   }
 }
