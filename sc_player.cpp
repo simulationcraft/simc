@@ -2700,6 +2700,8 @@ bool player_t::parse_talents( const std::string& talent_string,
 
 bool player_t::save( FILE* file )
 {
+  fprintf( file, "#!simcraft\n\n" );
+
   fprintf( file, "%s=%s\n", util_t::player_type_string( type ), name() );
   fprintf( file, "origin=%s\n", origin_str.c_str() );
   fprintf( file, "level=%d\n", level );
