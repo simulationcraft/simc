@@ -300,6 +300,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\sc_sequence.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\sc_set_bonus.cpp"
 			>
 		</File>
