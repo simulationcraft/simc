@@ -1517,7 +1517,7 @@ void player_t::schedule_ready( double delta_time,
       {
         lag = rngs.lag_channel -> gauss( sim -> channel_lag, sim -> channel_lag_range );
       }
-      else if ( gcd_adjust > 0 )
+      else if ( gcd_adjust > 0 && last_foreground_action -> time_to_execute == 0 )
       {
         lag = rngs.lag_gcd -> gauss( sim -> gcd_lag, sim -> gcd_lag_range );
       }

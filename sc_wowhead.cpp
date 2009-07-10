@@ -43,7 +43,7 @@ static xml_node_t* download_id( const std::string& id_str )
   std::string url = "http://www.wowhead.com/?item=" + id_str + "&xml";
   xml_node_t* node = xml_t::download( url, "</json>", 0 );
   //xml_t::print( node );
-  if( ! node ) printf( "simcraft: Unable to download glyph id %s from wowhead\n", id_str.c_str() );
+  if( ! node ) printf( "\nsimcraft: Unable to download glyph id %s from wowhead\n", id_str.c_str() );
   return node;
 }
 
@@ -237,7 +237,8 @@ static bool parse_weapon( item_t&     item,
   else if( subclass_str == "Guns"                    ) weapon_type = WEAPON_GUN;
   else if( subclass_str == "Thrown"                  ) weapon_type = WEAPON_THROWN;
   else if( subclass_str == "Wands"                   ) weapon_type = WEAPON_WAND;
-  else if( subclass_str == "Miscellaneous (Weapons)" ) weapon_type = WEAPON_POLEARM; // Fishing Pole
+  else if( subclass_str == "Fishing Poles"           ) weapon_type = WEAPON_POLEARM;
+  else if( subclass_str == "Miscellaneous (Weapons)" ) weapon_type = WEAPON_POLEARM;
 
   if( weapon_type == WEAPON_NONE ) return false;
   if( weapon_type == WEAPON_WAND ) return true;
@@ -379,25 +380,25 @@ bool wowhead_t::download_item( item_t&            item,
   xml_node_t* node = download_id( item_id );
   if( ! node ) 
   {
-    printf( "simcraft: Player %s nable to download item id '%s' from wowhead at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
+    printf( "\nsimcraft: Player %s nable to download item id '%s' from wowhead at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
     return false;
   }
 
   if( ! parse_item_name( item, node ) )
   {
-    printf( "simcraft: Player %s unable to determine item name for id '%s' at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
+    printf( "\nsimcraft: Player %s unable to determine item name for id '%s' at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
     return false;
   }
 
   if( ! parse_item_stats( item, node ) )
   {
-    printf( "simcraft: Player %s unable to determine stats for item '%s' at slot %s.\n", p -> name(), item.name(), item.slot_name() );
+    printf( "\nsimcraft: Player %s unable to determine stats for item '%s' at slot %s.\n", p -> name(), item.name(), item.slot_name() );
     return false;
   }
 
   if( ! parse_weapon( item, node ) )
   {
-    printf( "simcraft: Player %s unable to determine weapon info for item '%s' at slot %s.\n", p -> name(), item.name(), item.slot_name() );
+    printf( "\nsimcraft: Player %s unable to determine weapon info for item '%s' at slot %s.\n", p -> name(), item.name(), item.slot_name() );
     return false;
   }
 
@@ -416,37 +417,37 @@ bool wowhead_t::download_slot( item_t&            item,
   xml_node_t* node = download_id( item_id );
   if( ! node ) 
   {
-    printf( "simcraft: Player %s nable to download item id '%s' from wowhead at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
+    printf( "\nsimcraft: Player %s nable to download item id '%s' from wowhead at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
     return false;
   }
 
   if( ! parse_item_name( item, node ) )
   {
-    printf( "simcraft: Player %s unable to determine item name for id '%s' at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
+    printf( "\nsimcraft: Player %s unable to determine item name for id '%s' at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
     return false;
   }
 
   if( ! parse_item_stats( item, node ) )
   {
-    printf( "simcraft: Player %s unable to determine stats for item '%s' at slot %s.\n", p -> name(), item.name(), item.slot_name() );
+    printf( "\nsimcraft: Player %s unable to determine stats for item '%s' at slot %s.\n", p -> name(), item.name(), item.slot_name() );
     return false;
   }
 
   if( ! parse_weapon( item, node ) )
   {
-    printf( "simcraft: Player %s unable to determine weapon info for item '%s' at slot %s.\n", p -> name(), item.name(), item.slot_name() );
+    printf( "\nsimcraft: Player %s unable to determine weapon info for item '%s' at slot %s.\n", p -> name(), item.name(), item.slot_name() );
     return false;
   }
 
   if( ! parse_gems( item, node, gem_ids ) )
   {
-    printf( "simcraft: Player %s unable to determine gems for item '%s' at slot %s.\n", p -> name(), item.name(), item.slot_name() );
+    printf( "\nsimcraft: Player %s unable to determine gems for item '%s' at slot %s.\n", p -> name(), item.name(), item.slot_name() );
     return false;
   }
 
   if( ! enchant_t::download( item, enchant_id ) )
   {
-    printf( "simcraft: Player %s unable to parse enchant id %s for item \"%s\" at slot %s.\n", p -> name(), enchant_id.c_str(), item.name(), item.slot_name() );
+    printf( "\nsimcraft: Player %s unable to parse enchant id %s for item \"%s\" at slot %s.\n", p -> name(), enchant_id.c_str(), item.name(), item.slot_name() );
     return false;
   }
 
@@ -498,16 +499,16 @@ player_t* wowhead_t::download_player( sim_t* sim,
 
   if( ! profile_js )
   {
-    printf( "simcraft: Unable to download character profile %s from wowhead.\n", id.c_str() );
+    printf( "\nsimcraft: Unable to download character profile %s from wowhead.\n", id.c_str() );
     return 0;
   }
 
-  if( sim -> debug ) js_t::print( profile_js );
+  if( sim -> debug ) js_t::print( profile_js, sim -> output_file );
 
   std::string name_str;
   if( ! js_t::get_value( name_str, profile_js, "name"  ) ) 
   {
-    printf( "simcraft: Unable to extract player name from wowhead id '%s'.\n", id.c_str() );
+    printf( "\nsimcraft: Unable to extract player name from wowhead id '%s'.\n", id.c_str() );
     return 0;
   }
   armory_t::format( name_str );
@@ -515,7 +516,7 @@ player_t* wowhead_t::download_player( sim_t* sim,
   std::string cid_str;
   if( ! js_t::get_value( cid_str, profile_js, "classs" ) ) 
   {
-    printf( "simcraft: Unable to extract player class from wowhead id '%s'.\n", id.c_str() );
+    printf( "\nsimcraft: Unable to extract player class from wowhead id '%s'.\n", id.c_str() );
     return 0;
   }
   std::string type_str = translate_class_id( cid_str );
@@ -523,7 +524,7 @@ player_t* wowhead_t::download_player( sim_t* sim,
   player_t* p = player_t::create( sim, type_str, name_str );
   if( ! p ) 
   {
-    printf( "simcraft: Unable to build player with class '%s' and name '%s' from wowhead id '%s'.\n", 
+    printf( "\nsimcraft: Unable to build player with class '%s' and name '%s' from wowhead id '%s'.\n", 
 	    type_str.c_str(), name_str.c_str(), id.c_str() );
     return 0;
   }
@@ -570,7 +571,7 @@ player_t* wowhead_t::download_player( sim_t* sim,
     std::string& encoding = talent_encodings[ active_talents ];
     if( ! p -> parse_talents( encoding ) ) 
     {
-      printf( "simcraft: Player %s unable to parse talent encoding '%s'.\n", p -> name(), encoding.c_str() );
+      printf( "\nsimcraft: Player %s unable to parse talent encoding '%s'.\n", p -> name(), encoding.c_str() );
       return 0;
     }
     p -> talents_str = "http://www.wowarmory.com/talent-calc.xml?cid=" + cid_str + "&tal=" + encoding;
@@ -590,7 +591,7 @@ player_t* wowhead_t::download_player( sim_t* sim,
       std::string glyph_name;
       if( ! download_glyph( glyph_name, glyph_id ) ) 
       {
-	printf( "simcraft: Player %s unable to download glyph id '%s' from wowhead.\n", p -> name(), glyph_id.c_str() );
+	printf( "\nsimcraft: Player %s unable to download glyph id '%s' from wowhead.\n", p -> name(), glyph_id.c_str() );
 	return 0;
       }
       if( i ) p -> glyphs_str += "/";

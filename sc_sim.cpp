@@ -170,9 +170,23 @@ static bool parse_armory( sim_t*             sim,
       sim -> active_player = armory_t::download_player( sim, region, server, player_name, active_talents );
       if( ! sim -> active_player ) return false;
     }
+    return true;
+  }
+  else if( name == "guild" ) 
+  {
+    std::vector<std::string> splits;
+    int num_splits = util_t::string_split( splits, value, "," );
+
+    if( num_splits != 3 )
+    {
+      printf( "simcraft: Expected format is: guild=region,server,name\n" );
+      assert( false );
+    }
+
+    return armory_t::download_guild( sim, splits[ 0 ], splits[ 1 ], splits[ 2 ] );
   }
 
-  return sim -> active_player != 0;
+  return false;
 }
 
 // parse_wowhead ============================================================
@@ -1254,6 +1268,7 @@ std::vector<option_t>& sim_t::get_options()
       { "pet",                              OPT_FUNC,   (void*) ::parse_player                        },
       { "player",                           OPT_FUNC,   (void*) ::parse_player                        },
       { "armory",                           OPT_FUNC,   (void*) ::parse_armory                        },
+      { "guild",                            OPT_FUNC,   (void*) ::parse_armory                        },
       { "wowhead",                          OPT_FUNC,   (void*) ::parse_wowhead                       },
       { "http_cache_clear",                 OPT_FUNC,   (void*) ::http_t::clear_cache                 },
       { "default_region",                   OPT_STRING, &( default_region_str                       ) },

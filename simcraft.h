@@ -2185,6 +2185,7 @@ struct thread_t
 
 struct armory_t
 {
+  static bool download_guild( sim_t* sim, const std::string& region, const std::string& server, const std::string& name );
   static player_t* download_player( sim_t* sim,
 				    const std::string& region, 
 				    const std::string& server, 
@@ -2205,9 +2206,7 @@ struct wowhead_t
 				    const std::string& server, 
 				    const std::string& name,
 				    bool active_talents=true );
-  static player_t* download_player( sim_t* sim,
-				    const std::string& id,
-				    bool active_talents=true );
+  static player_t* download_player( sim_t* sim, const std::string& id, bool active_talents=true );
   static bool download_slot( item_t&, const std::string& item_id, const std::string& enchant_id, const std::string gem_ids[ 3 ] );
   static bool download_item( item_t&, const std::string& item_id );
   static bool download_glyph( std::string& glyph_name, const std::string& glyph_id );
