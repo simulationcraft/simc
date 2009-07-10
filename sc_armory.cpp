@@ -92,11 +92,7 @@ static xml_node_t* download_character_sheet( sim_t* sim,
 
   xml_node_t* node = xml_t::download( url, "</characterTab>", -1 );
 
-  if( sim -> debug || ! node )
-  {
-    fprintf( sim -> output_file, "\nxml url: %s\n", url.c_str() );
-    xml_t::print( node, sim -> output_file );
-  }
+  if( sim -> debug ) xml_t::print( node, sim -> output_file );
 
   return node;
 }
@@ -112,11 +108,7 @@ static xml_node_t* download_character_talents( sim_t* sim,
 
   xml_node_t* node = xml_t::download( url, "</talentGroup>", -1 );
 
-  if( sim -> debug || ! node )
-  {
-    fprintf( sim -> output_file, "\nxml url: %s\n", url.c_str() );
-    xml_t::print( node, sim -> output_file );
-  }
+  if( sim -> debug ) xml_t::print( node, sim -> output_file );
 
   return node;
 }

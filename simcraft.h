@@ -151,6 +151,14 @@ enum result_type {
 #define RESULT_MISS_MASK ( (1<<RESULT_MISS) )
 #define RESULT_ALL_MASK  -1
 
+enum proc_type {
+  PROC_NONE=0,
+  PROC_DAMAGE,
+  PROC_ATTACK,
+  PROC_SPELL,
+  PROC_MAX
+};
+
 enum action_type { ACTION_USE=0, ACTION_SPELL, ACTION_ATTACK, ACTION_SEQUENCE, ACTION_OTHER, ACTION_MAX };
 
 enum school_type {
@@ -1359,6 +1367,7 @@ struct player_t
   virtual void init_glyphs() {}
   virtual void init_base() = 0;
   virtual void init_items();
+  virtual void init_meta_gem( gear_stats_t& );
   virtual void init_core();
   virtual void init_race();
   virtual void init_spell();
@@ -1967,7 +1976,14 @@ struct regen_event_t : public event_t
 struct unique_gear_t
 {
   static void init( player_t* );
-  static void register_callbacks( player_t* );
+  static void register_stat_proc( int type, int mask, const std::string& name, player_t*, 
+				  int stat, int max_stacks, double amount, 
+				  double proc_chance, double duration, double cooldown, 
+				  int rng_type=RNG_DEFAULT );
+  static void register_discharge_proc( int type, int mask, const std::string& name, player_t*, 
+				       int max_stacks, int school, double min_dmg, double max_dmg, 
+				       double proc_chance, double cooldown, 
+				       int rng_type=RNG_DEFAULT );
   static bool get_equip_encoding( std::string& encoding, const std::string& item_name );
   static bool get_use_encoding  ( std::string& encoding, const std::string& item_name );
 };
@@ -1977,7 +1993,6 @@ struct unique_gear_t
 struct enchant_t
 {
   static void init( player_t* );
-  static void register_callbacks( player_t* );
   static bool get_encoding( std::string& name, std::string& encoding, const std::string& enchant_id );
   static bool download( item_t&, const std::string& enchant_id );
 };

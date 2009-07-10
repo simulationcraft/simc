@@ -37,7 +37,9 @@ struct shaman_t : public player_t
     int    nature_vulnerability_charges;
     int    natures_swiftness;
     int    shamanistic_rage;
+    int    stonebreaker;
     double totem_of_wrath_glyph;
+    int    tundra;
     double water_shield;
 
     void reset() { memset( ( void* ) this, 0x00, sizeof( _buffs_t ) ); }
@@ -50,6 +52,7 @@ struct shaman_t : public player_t
   {
     double windfury_weapon;
     double lava_burst;
+    double totem;
 
     void reset() { memset( ( void* ) this, 0x00, sizeof( _cooldowns_t ) ); }
     _cooldowns_t() { reset(); }
@@ -61,7 +64,6 @@ struct shaman_t : public player_t
   {
     event_t* elemental_devastation;
     event_t* elemental_oath;
-    event_t* indomitability;
     event_t* maelstrom_weapon;
     event_t* nature_vulnerability;
 
@@ -85,7 +87,10 @@ struct shaman_t : public player_t
   uptime_t* uptimes_elemental_focus;
   uptime_t* uptimes_elemental_oath;
   uptime_t* uptimes_flurry;
+  uptime_t* uptimes_indomitability;
   uptime_t* uptimes_nature_vulnerability;
+  uptime_t* uptimes_stonebreaker;
+  uptime_t* uptimes_tundra;
   uptime_t* uptimes_unleashed_rage;
 
   // Random Number Generators
@@ -114,6 +119,7 @@ struct shaman_t : public player_t
     int  convection;
     int  dual_wield;
     int  dual_wield_specialization;
+    int  earth_shield;
     int  elemental_devastation;
     int  elemental_focus;
     int  elemental_fury;
@@ -187,7 +193,10 @@ struct shaman_t : public player_t
     int hex;
     int indomitability;
     int dancing_flame;
+    int splintering;
+    int stonebreaker;
     int thunderfall;
+    int tundra;
 
     totems_t() { memset( ( void* ) this, 0x0, sizeof( totems_t ) ); }
   };
@@ -270,7 +279,7 @@ struct shaman_t : public player_t
   virtual pet_t*    create_pet   ( const std::string& name );
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
   virtual int       primary_role() SC_CONST     { return talents.dual_wield ? ROLE_HYBRID      : ROLE_SPELL;     }
-  virtual int       primary_tree() SC_CONST     { return talents.dual_wield ? TREE_ENHANCEMENT : TREE_ELEMENTAL; }
+  virtual int       primary_tree() SC_CONST;
 
   // Event Tracking
   virtual void regen( double periodicity );
@@ -441,6 +450,7 @@ static void trigger_windfury_weapon( attack_t* a )
       background  = true;
       trigger_gcd = 0;
       base_multiplier *= 1.0 + p -> talents.elemental_weapons * 0.133333;
+      if( p -> totems.splintering ) base_attack_power += 212;
       reset();
     }
     virtual void player_buff()
@@ -816,30 +826,33 @@ static void trigger_totem_of_dueling( attack_t* a )
 {
   shaman_t* p = a -> player -> cast_shaman();
 
-  if ( p -> totems.dueling )
+  if ( ! p -> totems.dueling ) return;
+
+  double current_time = p -> sim -> current_time;
+
+  if( current_time < p -> _cooldowns.totem ) return;
+  
+  struct totem_of_dueling_expiration_t : public event_t
   {
-    struct totem_of_dueling_expiration_t : public event_t
+    totem_of_dueling_expiration_t( sim_t* sim, player_t* player ) : event_t( sim, player )
     {
-      totem_of_dueling_expiration_t( sim_t* sim, player_t* player ) : event_t( sim, player )
-      {
-        name = "Totem of Dueling Expiration";
-        player -> aura_gain( "Totem of Dueling" );
-        player -> haste_rating += 60;
-        player -> recalculate_haste();
-        sim -> add_event( this, 6.0 );
-      }
-      virtual void execute()
-      {
-        player -> aura_loss( "Totem of Dueling" );
-        player -> haste_rating -= 60;
-        player -> recalculate_haste();
-      }
-    };
+      name = "Totem of Dueling Expiration";
+      player -> aura_gain( "Totem of Dueling" );
+      player -> haste_rating += 60;
+      player -> recalculate_haste();
+      sim -> add_event( this, 6.0 );
+    }
+    virtual void execute()
+    {
+      player -> aura_loss( "Totem of Dueling" );
+      player -> haste_rating -= 60;
+      player -> recalculate_haste();
+    }
+  };
 
-    assert( a -> cooldown > 6.0 );  // Make sure we don't have to perform refreshes
+  new ( a -> sim ) totem_of_dueling_expiration_t( a -> sim, p );
 
-    new ( a -> sim ) totem_of_dueling_expiration_t( a -> sim, p );
-  }
+  p -> _cooldowns.totem = current_time + 10.01;
 }
 
 // trigger_totem_of_indomitability ===============================================
@@ -850,6 +863,10 @@ static void trigger_totem_of_indomitability( attack_t* a )
 
   if ( ! p -> totems.indomitability ) return;
 
+  double current_time = p -> sim -> current_time;
+
+  if( current_time < p -> _cooldowns.totem ) return;
+  
   struct indomitability_expiration_t : public event_t
   {
     indomitability_expiration_t( sim_t* sim, shaman_t* p ) : event_t( sim, p )
@@ -862,20 +879,76 @@ static void trigger_totem_of_indomitability( attack_t* a )
     {
       shaman_t* p = player -> cast_shaman();
       p -> _buffs.indomitability = 0;
-      p -> _expirations.indomitability = 0;
     }
   };
 
-  event_t*& e = p -> _expirations.indomitability;
+  new ( a -> sim ) indomitability_expiration_t( a -> sim, p );
 
-  if ( e )
+  p -> _cooldowns.totem = current_time + 10.01;
+}
+
+// trigger_totem_of_the_tundra ===================================================
+
+static void trigger_totem_of_the_tundra( spell_t* s )
+{
+  shaman_t* p = s -> player -> cast_shaman();
+
+  if ( ! p -> totems.tundra ) return;
+
+  double current_time = p -> sim -> current_time;
+
+  if( current_time < p -> _cooldowns.totem ) return;
+  
+  struct tundra_expiration_t : public event_t
   {
-    e -> reschedule( 10.0 );
-  }
-  else
+    tundra_expiration_t( sim_t* sim, shaman_t* p ) : event_t( sim, p )
+    {
+      name = "Tundra Expiration";
+      p -> _buffs.tundra = 1;
+      sim -> add_event( this, 10.0 );
+    }
+    virtual void execute()
+    {
+      shaman_t* p = player -> cast_shaman();
+      p -> _buffs.tundra = 0;
+    }
+  };
+
+  new ( s -> sim ) tundra_expiration_t( s -> sim, p );
+    
+  p -> _cooldowns.totem = current_time + 10.01;
+}
+
+// trigger_stonebreakers_totem ===================================================
+
+static void trigger_stonebreakers_totem( spell_t* s )
+{
+  shaman_t* p = s -> player -> cast_shaman();
+
+  if ( ! p -> totems.tundra ) return;
+
+  double current_time = p -> sim -> current_time;
+
+  if( current_time < p -> _cooldowns.totem ) return;
+  
+  struct stonebreaker_expiration_t : public event_t
   {
-    e = new ( a -> sim ) indomitability_expiration_t( a -> sim, p );
-  }
+    stonebreaker_expiration_t( sim_t* sim, shaman_t* p ) : event_t( sim, p )
+    {
+      name = "Stonebreaker Expiration";
+      p -> _buffs.stonebreaker = 1;
+      sim -> add_event( this, 10.0 );
+    }
+    virtual void execute()
+    {
+      shaman_t* p = player -> cast_shaman();
+      p -> _buffs.stonebreaker = 0;
+    }
+  };
+
+  new ( s -> sim ) stonebreaker_expiration_t( s -> sim, p );
+    
+  p -> _cooldowns.totem = current_time + 10.01;
 }
 
 // =========================================================================
@@ -906,6 +979,10 @@ void shaman_attack_t::execute()
     trigger_windfury_weapon( this );
     stack_maelstrom_weapon( this );
   }
+
+  if( p -> totems.indomitability ) p -> uptimes_indomitability -> update( p -> _buffs.indomitability != 0 );
+  if( p -> totems.stonebreaker   ) p -> uptimes_stonebreaker   -> update( p -> _buffs.stonebreaker   != 0 );
+  if( p -> totems.tundra         ) p -> uptimes_tundra         -> update( p -> _buffs.tundra         != 0 );
 }
 
 // shaman_attack_t::player_buff ============================================
@@ -1735,6 +1812,13 @@ struct earth_shock_t : public shaman_spell_t
     }
   }
 
+  virtual void execute()
+  {
+    shaman_spell_t::execute();
+    trigger_totem_of_the_tundra( this );
+    trigger_stonebreakers_totem( this );
+  }
+
   virtual bool ready()
   {
     shaman_t* p = player -> cast_shaman();
@@ -1798,6 +1882,13 @@ struct frost_shock_t : public shaman_spell_t
       trigger_gcd = 0.5;
       min_gcd     = 0.5;
     }
+  }
+
+  virtual void execute()
+  {
+    shaman_spell_t::execute();
+    trigger_totem_of_the_tundra( this );
+    trigger_stonebreakers_totem( this );
   }
 };
 
@@ -1867,6 +1958,13 @@ struct flame_shock_t : public shaman_spell_t
 
     observer = &( p -> active_flame_shock );
   }
+
+  virtual void execute()
+  {
+    shaman_spell_t::execute();
+    trigger_totem_of_the_tundra( this );
+    trigger_stonebreakers_totem( this );
+  }
 };
 
 // Wind Shock Spell ========================================================
@@ -1884,6 +1982,13 @@ struct wind_shock_t : public shaman_spell_t
     base_spell_power_multiplier = 0;
     cooldown_group = "shock";
     cooldown = 6.0 - ( p -> talents.reverberation * 0.2 );
+  }
+
+  virtual void execute()
+  {
+    shaman_spell_t::execute();
+    trigger_totem_of_the_tundra( this );
+    trigger_stonebreakers_totem( this );
   }
 
   virtual bool ready()
@@ -3172,6 +3277,17 @@ void shaman_t::init_glyphs()
     else if( n == "thunderstorm"       ) glyphs.thunderstorm = 1;
     else if( n == "totem_of_wrath"     ) glyphs.totem_of_wrath = 1;
     else if( n == "windfury_weapon"    ) glyphs.windfury_weapon = 1;
+    // To prevent warnings....
+    else if( n == "astral_recall"        ) ;
+    else if( n == "chain_heal"           ) ;
+    else if( n == "ghost_wolf"           ) ;
+    else if( n == "healing_stream_totem" ) ;
+    else if( n == "lesser_healing_wave"  ) ;
+    else if( n == "renewed_life"         ) ;
+    else if( n == "water_breathing"      ) ;
+    else if( n == "water_mastery"        ) ;
+    else if( n == "water_shield"         ) ;
+    else if( n == "water_walking"        ) ;
     else if( ! sim -> parent ) printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
   }
 }
@@ -3226,11 +3342,16 @@ void shaman_t::init_items()
 
   std::string& totem = items[ SLOT_RANGED ].encoded_name_str;
 
-  if      ( totem == "totem_of_dueling"           ) totems.dueling = 1;
+  if      ( totem == "stonebreakers_totem"        ) totems.stonebreaker = 1;
+  else if ( totem == "totem_of_dueling"           ) totems.dueling = 1;
   else if ( totem == "totem_of_hex"               ) totems.hex = 1;
   else if ( totem == "totem_of_indomitability"    ) totems.indomitability = 1;
+  else if ( totem == "totem_of_splintering"       ) totems.splintering = 1;
   else if ( totem == "totem_of_the_dancing_flame" ) totems.dancing_flame = 1;
+  else if ( totem == "totem_of_the_tundra"        ) totems.tundra = 1;
   else if ( totem == "thunderfall_totem"          ) totems.thunderfall = 1;
+  // To prevent warnings...
+  else if ( totem == "totem_of_healing_rains" ) ;
   else
   {
     printf( "simcraft: %s was unknown totem %s\n", name(), totem.c_str() );
@@ -3315,6 +3436,9 @@ void shaman_t::init_uptimes()
   uptimes_flurry                = get_uptime( "flurry"                   );
   uptimes_nature_vulnerability  = get_uptime( "nature_vulnerability"     );
   uptimes_unleashed_rage        = get_uptime( "unleashed_rage"           );
+  uptimes_indomitability        = get_uptime( "indomitability_totem"     );
+  uptimes_stonebreaker          = get_uptime( "stonebreaker_totem"       );
+  uptimes_tundra                = get_uptime( "tundra_totem"             );
 }
 
 // shaman_t::init_rng ========================================================
@@ -3342,11 +3466,11 @@ void shaman_t::init_actions()
       int num_items = items.size();
       for( int i=0; i < num_items; i++ )
       {
-	if( items[ i ].use.active() )
-	{
-	  action_list_str += "/use_item,name=";
-	  action_list_str += items[ i ].name();
-	}
+        if( items[ i ].use.active() )
+        {
+          action_list_str += "/use_item,name=";
+          action_list_str += items[ i ].name();
+        }
       }
       action_list_str += "/wind_shock/strength_of_earth_totem/windfury_totem/bloodlust,time_to_die<=60";
       action_list_str += "/auto_attack/lightning_bolt,maelstrom=5";
@@ -3362,11 +3486,11 @@ void shaman_t::init_actions()
       int num_items = items.size();
       for( int i=0; i < num_items; i++ )
       {
-	if( items[ i ].use.active() )
-	{
-	  action_list_str += "/use_item,name=";
-	  action_list_str += items[ i ].name();
-	}
+        if( items[ i ].use.active() )
+        {
+          action_list_str += "/use_item,name=";
+          action_list_str += items[ i ].name();
+        }
       }
       action_list_str += "/wind_shock/mana_spring_totem";
       if( talents.totem_of_wrath ) action_list_str += "/wrath_of_air_totem";
@@ -3421,6 +3545,8 @@ double shaman_t::composite_attack_power() SC_CONST
   }
 
   if ( _buffs.indomitability ) ap += 120;
+  if ( _buffs.stonebreaker   ) ap += 110;
+  if ( _buffs.tundra         ) ap += 94;
 
   return ap;
 }
@@ -3462,6 +3588,15 @@ void shaman_t::regen( double periodicity )
   }
 }
 
+// shaman_t::primary_tree =================================================
+
+int shaman_t::primary_tree() SC_CONST
+{
+  if( talents.dual_wield ) return TREE_ENHANCEMENT;
+  if( talents.earth_shield || talents.mana_tide_totem ) return TREE_RESTORATION;
+  return TREE_ELEMENTAL;
+}
+
 // shaman_t::get_talent_trees ==============================================
 
 bool shaman_t::get_talent_trees( std::vector<int*>& elemental,
@@ -3494,7 +3629,7 @@ bool shaman_t::get_talent_trees( std::vector<int*>& elemental,
         { { 20, &( talents.lightning_overload    ) }, { 20, &( talents.dual_wield                ) }, { 20, NULL                                  } },
         { { 21, NULL                               }, { 21, &( talents.stormstrike               ) }, { 21, NULL                                  } },
         { { 22, &( talents.totem_of_wrath        ) }, { 22, &( talents.static_shock              ) }, { 22, NULL                                  } },
-        { { 23, &( talents.lava_flows            ) }, { 23, &( talents.lava_lash                 ) }, { 23, NULL                                  } },
+        { { 23, &( talents.lava_flows            ) }, { 23, &( talents.lava_lash                 ) }, { 23, &( talents.earth_shield             ) } },
         { { 24, &( talents.shamanism             ) }, { 24, &( talents.improved_stormstrike      ) }, { 24, NULL                                  } },
         { { 25, &( talents.thunderstorm          ) }, { 25, &( talents.mental_quickness          ) }, { 25, NULL                                  } },
         { {  0, NULL                               }, { 26, &( talents.shamanistic_rage          ) }, { 26, NULL                                  } },

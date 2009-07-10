@@ -587,6 +587,31 @@ void player_t::init_items()
     }
   }
 
+  init_meta_gem( item_stats );
+
+  for( int i=0; i < STAT_MAX; i++ )
+  {
+    if( gear.get_stat( i ) == 0 )
+    {
+      gear.set_stat( i, item_stats.get_stat( i ) );
+    }
+  }
+
+  if( sim -> debug )
+  {
+    log_t::output( sim, "%s gear:", name() );
+    gear.print( sim -> output_file );
+  }
+
+  set_bonus.init( this );
+}
+
+// player_t::init_meta_gem ==================================================
+
+void player_t::init_meta_gem( gear_stats_t& item_stats )
+{
+  if( ! meta_gem_str.empty() ) meta_gem = util_t::parse_meta_gem_type( meta_gem_str );
+
   if     ( meta_gem == META_AUSTERE_EARTHSIEGE      ) item_stats.attribute[ ATTR_STAMINA ] += 32;
   else if( meta_gem == META_BEAMING_EARTHSIEGE      ) item_stats.crit_rating += 21;
   else if( meta_gem == META_BRACING_EARTHSIEGE      ) item_stats.spell_power += 25;
@@ -612,21 +637,26 @@ void player_t::init_items()
   else if( meta_gem == META_SWIFT_STARFLARE         ) item_stats.attack_power += 34;
   else if( meta_gem == META_TIRELESS_STARFLARE      ) item_stats.spell_power  += 20;
 
-  for( int i=0; i < STAT_MAX; i++ )
+  if( meta_gem == META_EMBER_SKYFLARE )
   {
-    if( gear.get_stat( i ) == 0 )
-    {
-      gear.set_stat( i, item_stats.get_stat( i ) );
-    }
+    attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.02;
   }
-
-  if( sim -> debug )
+  else if( meta_gem == META_BEAMING_EARTHSIEGE )
   {
-    log_t::output( sim, "%s gear:", name() );
-    gear.print( sim -> output_file );
+    mana_per_intellect *= 1.02;
   }
-
-  set_bonus.init( this );
+  else if( meta_gem == META_MYSTICAL_SKYFIRE )
+  {
+    unique_gear_t::register_stat_proc( PROC_SPELL, RESULT_HIT_MASK, "mystical_skyfire", this, STAT_HASTE_RATING, 1, 320, 0.15, 4.0, 45.0 );
+  }
+  else if( meta_gem == META_INSIGHTFUL_EARTHSTORM )
+  {
+    unique_gear_t::register_stat_proc( PROC_SPELL, RESULT_HIT_MASK, "insightful_earthstorm", this, STAT_MANA, 1, 300, 0.05, 0, 15.0 );
+  }
+  else if( meta_gem == META_INSIGHTFUL_EARTHSIEGE )
+  {
+    unique_gear_t::register_stat_proc( PROC_SPELL, RESULT_HIT_MASK, "insightful_earthsiege", this, STAT_MANA, 1, 600, 0.05, 0, 15.0 );
+  }
 }
 
 // player_t::init_core ======================================================
@@ -1925,16 +1955,12 @@ void player_t::register_callbacks()
   }
 
   register_spell_result_callback( RESULT_CRIT_MASK, new focus_magic_feedback_callback_t( this ) );
-
-  unique_gear_t::register_callbacks( this );
-
-  enchant_t::register_callbacks( this );
 }
 
 // player_t::register_resource_gain_callback ================================
 
 void player_t::register_resource_gain_callback( int                resource,
-    action_callback_t* cb )
+						action_callback_t* cb )
 {
   resource_gain_callbacks[ resource ].push_back( cb );
 }
@@ -1942,7 +1968,7 @@ void player_t::register_resource_gain_callback( int                resource,
 // player_t::register_resource_loss_callback ================================
 
 void player_t::register_resource_loss_callback( int                resource,
-    action_callback_t* cb )
+						action_callback_t* cb )
 {
   resource_loss_callbacks[ resource ].push_back( cb );
 }
@@ -1950,7 +1976,7 @@ void player_t::register_resource_loss_callback( int                resource,
 // player_t::register_attack_result_callback ================================
 
 void player_t::register_attack_result_callback( int                mask,
-    action_callback_t* cb )
+						action_callback_t* cb )
 {
   for ( int i=0; i < RESULT_MAX; i++ )
   {
@@ -1964,7 +1990,7 @@ void player_t::register_attack_result_callback( int                mask,
 // player_t::register_spell_result_callback =================================
 
 void player_t::register_spell_result_callback( int                mask,
-    action_callback_t* cb )
+					       action_callback_t* cb )
 {
   for ( int i=0; i < RESULT_MAX; i++ )
   {

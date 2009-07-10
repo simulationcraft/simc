@@ -21,6 +21,7 @@ static enchant_data_t enchant_db[] =
   { "3870",  "Blood Draining",                                            ""                               },
   { "3855",  "+69 Spell Power",                                           "69SP"                           },
   { "3854",  "+81 Spell Power",                                           "81SP"                           },
+  { "3853",  "+40 Resilience Rating +28 Stamina",                         "28Sta"                          },
   { "3852",  "+30 Stamina and +15 Resilience Rating",                     "30Sta"                          },
   { "3851",  "+50 Stamina",                                               "50Sta"                          },
   { "3850",  "+40 Stamina",                                               "40Sta"                          },
@@ -736,13 +737,6 @@ void enchant_t::init( player_t* p )
   {
     p -> ranged_weapon.enchant_bonus = util_t::ability_rank( p -> level, 15.0,72,  12.0,67,  7.0,0 );
   }
-}
-
-// enchant_t::register_callbacks ============================================
-
-void enchant_t::register_callbacks( player_t* p )
-{
-  if( p -> is_pet() ) return;
 
   if ( p -> main_hand_weapon.enchant == ENCHANT_BERSERKING ||
        p ->  off_hand_weapon.enchant == ENCHANT_BERSERKING )
@@ -763,6 +757,10 @@ void enchant_t::register_callbacks( player_t* p )
        p ->  off_hand_weapon.enchant == ENCHANT_SPELLSURGE )
   {
     p -> register_spell_result_callback( RESULT_ALL_MASK, new spellsurge_callback_t( p ) );
+  }
+  if( p -> items[ SLOT_BACK ].enchant == ENCHANT_LIGHTWEAVE )
+  {
+    unique_gear_t::register_stat_proc( PROC_SPELL, RESULT_HIT_MASK, "lightweave_embroidery", p, STAT_SPELL_POWER, 1, 250, 0.50, 15.0, 45.0 );
   }
 }
 

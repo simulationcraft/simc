@@ -692,10 +692,10 @@ static void trigger_ignite( spell_t* s,
       mage_spell_t::tick();
       if( sim -> P320 && p -> talents.empowered_fire )
       {
-	if( p -> rng_empowered_fire -> roll( p -> talents.empowered_fire / 3.0 ) )
-	{
-	  p -> resource_gain( RESOURCE_MANA, p -> resource_base[ RESOURCE_MANA ] * 0.01, p -> gains_empowered_fire );
-	}
+        if( p -> rng_empowered_fire -> roll( p -> talents.empowered_fire / 3.0 ) )
+        {
+          p -> resource_gain( RESOURCE_MANA, p -> resource_base[ RESOURCE_MANA ] * 0.01, p -> gains_empowered_fire );
+        }
       }
     }
   };
@@ -1185,7 +1185,7 @@ static void trigger_replenishment( spell_t* s )
 // trigger_incanters_absorption ====================================================
 
 static void trigger_incanters_absorption( mage_t* p,
-					  double damage )
+                                          double damage )
 {
   if( ! p -> talents.incanters_absorption )
     return;
@@ -3313,7 +3313,7 @@ void mage_t::init_glyphs()
     else if( n == "arcane_blast"    ) glyphs.arcane_blast = 1;
     else if( n == "arcane_missiles" ) glyphs.arcane_missiles = 1;
     else if( n == "arcane_power"    ) glyphs.arcane_power = 1;
-    else if( n == "fire_ball"       ) glyphs.fire_ball = 1;
+    else if( n == "fireball"        ) glyphs.fire_ball = 1;
     else if( n == "frost_bolt"      ) glyphs.frost_bolt = 1;
     else if( n == "ice_lance"       ) glyphs.ice_lance = 1;
     else if( n == "improved_scorch" ) glyphs.improved_scorch = 1;
@@ -3324,6 +3324,18 @@ void mage_t::init_glyphs()
     else if( n == "molten_armor"    ) glyphs.molten_armor = 1;
     else if( n == "water_elemental" ) glyphs.water_elemental = 1;
     else if( n == "frostfire"       ) glyphs.frostfire = 1;
+    // To prevent warnings....
+    else if( n == "arcane_intellect" ) ;
+    else if( n == "blast_wave"       ) ;
+    else if( n == "blink"            ) ;
+    else if( n == "evocation"        ) ;
+    else if( n == "fire_blast"       ) ;
+    else if( n == "fire_ward"        ) ;
+    else if( n == "frost_armor"      ) ;
+    else if( n == "frost_ward"       ) ;
+    else if( n == "ice_barrier"      ) ;
+    else if( n == "slow_fall"        ) ;
+    else if( n == "the_penguin"      ) ;
     else if( ! sim -> parent ) printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
   }
 }
@@ -3440,8 +3452,8 @@ void mage_t::init_actions()
     {
       if( items[ i ].use.active() )
       {
-	action_list_str += "/use_item,name=";
-	action_list_str += items[ i ].name();
+        action_list_str += "/use_item,name=";
+        action_list_str += items[ i ].name();
       }
     }
     if( talents.combustion   ) action_list_str += "/combustion";
@@ -3472,7 +3484,8 @@ void mage_t::init_actions()
       action_list_str += "/frost_bolt,frozen=1";
       if( talents.summon_water_elemental ) action_list_str += "/water_elemental";
       if( talents.cold_snap              ) action_list_str += "/cold_snap";
-      if( talents.brain_freeze           ) action_list_str += "/fire_ball,brain_freeze=1/frost_bolt";
+      if( talents.brain_freeze           ) action_list_str += "/fire_ball,brain_freeze=1";
+      action_list_str += "/frost_bolt";
       action_list_str += "/fire_blast"; // when moving
     }
     else if( primary_tree() == TREE_FIRE )

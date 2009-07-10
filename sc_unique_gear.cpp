@@ -162,33 +162,6 @@ void unique_gear_t::init( player_t* p )
 {
   if( p -> is_pet() ) return;
 
-  for( int i=0; i < META_GEM_MAX; i++ )
-  {
-    if( p -> meta_gem_str == util_t::meta_gem_type_string( i ) )
-    {
-      p -> meta_gem = i;
-      break;
-    }
-  }
-
-  if( p -> meta_gem == META_EMBER_SKYFLARE )
-  {
-    p -> attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.02;
-  }
-  else if( p -> meta_gem == META_BEAMING_EARTHSIEGE )
-  {
-    p -> mana_per_intellect *= 1.02;
-  }
-}
-
-// ==========================================================================
-// unique_gear_t::register_callbacks
-// ==========================================================================
-
-void unique_gear_t::register_callbacks( player_t* p )
-{
-  if( p -> is_pet() ) return;
-
   int num_items = p -> items.size();
 
   for( int i=0; i < num_items; i++ )
@@ -223,13 +196,6 @@ void unique_gear_t::register_callbacks( player_t* p )
     }
   }
 
-  action_callback_t* cb;
-
-  if( p -> items[ SLOT_BACK ].enchant == ENCHANT_LIGHTWEAVE )
-  {
-    cb = new stat_proc_callback_t( "lightweave_embroidery", p, STAT_SPELL_POWER, 1, 250, 0.50, 15.0, 45.0 );
-    p -> register_spell_result_callback( RESULT_HIT_MASK, cb );
-  }
   if( item_t* item = p -> find_item( "darkmoon_card_greatness" ) )
   {
     item -> unique = true;
@@ -248,30 +214,80 @@ void unique_gear_t::register_callbacks( player_t* p )
         max_stat = stat[ i ];
       }
     }
-    cb = new stat_proc_callback_t( "darkmoon_greatness", p, max_stat, 1, 300, 0.35, 15.0, 45.0 );
+    action_callback_t* cb = new stat_proc_callback_t( "darkmoon_greatness", p, max_stat, 1, 300, 0.35, 15.0, 45.0 );
 
     p -> register_tick_damage_callback( cb );
     p -> register_direct_damage_callback( cb );
   }
-  if( p -> meta_gem == META_MYSTICAL_SKYFIRE )
-  {
-    cb = new stat_proc_callback_t( "mystical_skyfire", p, STAT_HASTE_RATING, 1, 320, 0.15, 4.0, 45.0 );
-    p -> register_spell_result_callback( RESULT_HIT_MASK, cb );
-  }
-  else if( p -> meta_gem == META_INSIGHTFUL_EARTHSTORM )
-  {
-    cb = new stat_proc_callback_t( "insightful_earthstorm", p, STAT_MANA, 1, 300, 0.05, 0, 15.0 );
-    p -> register_spell_result_callback( RESULT_HIT_MASK, cb );
-  }
-  else if( p -> meta_gem == META_INSIGHTFUL_EARTHSIEGE )
-  {
-    cb = new stat_proc_callback_t( "insightful_earthsiege", p, STAT_MANA, 1, 600, 0.05, 0, 15.0 );
-    p -> register_spell_result_callback( RESULT_HIT_MASK, cb );
-  }
   if( p -> set_bonus.spellstrike() )
   {
-    cb = new stat_proc_callback_t( "spellstrike", p, STAT_SPELL_POWER, 1, 92, 0.05, 10.0, 0.0 );
-    p -> register_spell_result_callback( RESULT_HIT_MASK, cb );
+    unique_gear_t::register_stat_proc( PROC_SPELL, RESULT_HIT_MASK, "spellstrike", p, STAT_SPELL_POWER, 1, 92, 0.05, 10.0, 0.0 );
+  }
+}
+
+// ==========================================================================
+// unique_gear_t::register_stat_proc
+// ==========================================================================
+
+void unique_gear_t::register_stat_proc( int                type,
+					int                mask,
+					const std::string& name,
+					player_t*          player,
+					int                stat,
+					int                max_stacks,
+					double             amount,
+					double             proc_chance,
+					double             duration,
+					double             cooldown,
+					int                rng_type )
+{
+  action_callback_t* cb = new stat_proc_callback_t( name, player, stat, max_stacks, amount, proc_chance, duration, cooldown, rng_type );
+  
+  if( type == PROC_DAMAGE )
+  {
+    player -> register_tick_damage_callback( cb );
+    player -> register_direct_damage_callback( cb );
+  }
+  else if( type == PROC_ATTACK )
+  {
+    player -> register_attack_result_callback( mask, cb );
+  }
+  else if( type == PROC_SPELL )
+  {
+    player -> register_spell_result_callback( mask, cb );
+  }
+}
+
+// ==========================================================================
+// unique_gear_t::register_discharge_proc
+// ==========================================================================
+
+void unique_gear_t::register_discharge_proc( int                type,
+					     int                mask,
+					     const std::string& name,
+					     player_t*          player,
+					     int                max_stacks,
+					     int                school,
+					     double             min_dmg,
+					     double             max_dmg,
+					     double             proc_chance,
+					     double             cooldown,
+					     int                rng_type )
+{
+  action_callback_t* cb = new discharge_proc_callback_t( name, player, max_stacks, school, min_dmg, max_dmg, proc_chance, cooldown, rng_type );
+  
+  if( type == PROC_DAMAGE )
+  {
+    player -> register_tick_damage_callback( cb );
+    player -> register_direct_damage_callback( cb );
+  }
+  else if( type == PROC_ATTACK )
+  {
+    player -> register_attack_result_callback( mask, cb );
+  }
+  else if( type == PROC_SPELL )
+  {
+    player -> register_spell_result_callback( mask, cb );
   }
 }
 
