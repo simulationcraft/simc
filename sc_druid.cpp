@@ -46,7 +46,7 @@ struct druid_t : public player_t
   {
     double eclipse_starfire;
     double eclipse_wrath;
-    double idol_of_lunar_fury;
+    double idol;
 
     void reset() { memset( ( void* ) this, 0x00, sizeof( _cooldowns_t ) ); }
     _cooldowns_t() { reset(); }
@@ -101,6 +101,7 @@ struct druid_t : public player_t
   rng_t* rng_eclipse;
   rng_t* rng_natures_grace;
   rng_t* rng_idol_of_lunar_fury;
+  rng_t* rng_idol_of_terror;
   rng_t* rng_omen_of_clarity;
   rng_t* rng_primal_fury;
   rng_t* rng_unseen_moon;
@@ -195,9 +196,11 @@ struct druid_t : public player_t
     int corruptor;
     int crying_wind;
     int lunar_fury;
+    int raven_goddess;
     int ravenous_beast;
     int shooting_star;
     int steadfast_renewal;
+    int terror;
     int unseen_moon;
     int worship;
     idols_t() { memset( ( void* ) this, 0x0, sizeof( idols_t ) ); }
@@ -819,14 +822,14 @@ static void trigger_unseen_moon( spell_t* s )
     {
       name = "Idol of the Unseen Moon";
       p -> aura_gain( "Idol of the Unseen Moon" );
-      p -> stat_gain( STAT_SPELL_POWER, 140);
+      p -> stat_gain( STAT_SPELL_POWER, 140 );
       sim -> add_event( this, 10.0 );
     }
     virtual void execute()
     {
       druid_t* p = player -> cast_druid();
       p -> aura_loss( "Idol of the Unseen Moon" );
-      p -> stat_loss( STAT_SPELL_POWER, 140);
+      p -> stat_loss( STAT_SPELL_POWER, 140 );
       p -> _expirations.unseen_moon = 0;
     }
   };
@@ -867,14 +870,14 @@ static void trigger_lunar_fury( spell_t* s )
     {
       name = "Idol of Lunar Fury";
       p -> aura_gain( "Idol of Lunar Fury" );
-      p -> stat_gain( STAT_CRIT_RATING, 200);
+      p -> stat_gain( STAT_CRIT_RATING, 200 );
       sim -> add_event( this, 12.0 );
     }
     virtual void execute()
     {
       druid_t* p = player -> cast_druid();
       p -> aura_loss( "Idol of the Unseen Moon" );
-      p -> stat_loss( STAT_CRIT_RATING, 200);
+      p -> stat_loss( STAT_CRIT_RATING, 200 );
       p -> _expirations.idol_of_lunar_fury = 0;
     }
   };
@@ -950,8 +953,9 @@ static void trigger_primal_precision( druid_attack_t* a )
 
 static void trigger_idol_of_the_corruptor( attack_t* a )
 {
-
   druid_t* p = a -> player -> cast_druid();
+
+  if( ! p -> idols.corruptor ) return;
 
   struct idol_of_the_corruptor_expiration_t : public event_t
   {
@@ -981,6 +985,42 @@ static void trigger_idol_of_the_corruptor( attack_t* a )
   {
     e = new ( a -> sim ) idol_of_the_corruptor_expiration_t( a -> sim, p );
   }
+}
+
+// trigger_idol_of_terror ==================================================
+
+static void trigger_idol_of_terror( attack_t* a )
+{
+  druid_t* p = a -> player -> cast_druid();
+
+  if( ! p -> idols.terror ) return;
+
+  double current_time = p -> sim -> current_time;
+
+  if( current_time < p -> _cooldowns.idol ) return;
+
+  if( ! p -> rng_idol_of_terror -> roll( 0.85 ) ) return;
+
+  struct idol_of_terror_expiration_t : public event_t
+  {
+    idol_of_terror_expiration_t( sim_t* sim, player_t* player ) : event_t( sim, player )
+    {
+      name = "Idol of Terror Expiration";
+      player -> aura_gain( "Idol of Terror" );
+      player -> stat_gain( STAT_AGILITY, 65 );
+      sim -> add_event( this, 10.0 );
+    }
+    virtual void execute()
+    {
+      druid_t* p = player -> cast_druid();
+      p -> aura_loss( "Idol of Terror" );
+      player -> stat_loss( STAT_AGILITY, 65 );
+    }
+  };
+
+  new ( a -> sim ) idol_of_terror_expiration_t( a -> sim, p );
+
+  p -> _cooldowns.idol = current_time + 10.01;
 }
 
 // =========================================================================
@@ -1424,10 +1464,8 @@ struct mangle_cat_t : public druid_attack_t
     if ( result_is_hit() )
     {
       trigger_mangle( this );
-      if ( player -> cast_druid() -> idols.corruptor )
-      {
-        trigger_idol_of_the_corruptor( this );
-      }
+      trigger_idol_of_the_corruptor( this );
+      trigger_idol_of_terror( this );
     }
   }
 };
@@ -3247,13 +3285,26 @@ void druid_t::init_glyphs()
     else if( n == "starfire"     ) glyphs.starfire = 1;
     else if( n == "starfall"     ) glyphs.starfall = 1;
     // minor glyphs, to prevent 'not-found' warning
-    else if( n == "aquatic_form"       ) ;
-    else if( n == "challenging_roar"   ) ;
-    else if( n == "dash"               ) ;
-    else if( n == "the_wild"           ) ;
-    else if( n == "thorns"             ) ;
-    else if( n == "typhoon"            ) ;
-    else if( n == "unburdened_rebirth" ) ;
+    else if( n == "aquatic_form"          ) ;
+    else if( n == "challenging_roar"      ) ;
+    else if( n == "dash"                  ) ;
+    else if( n == "entangling_roots"      ) ;
+    else if( n == "frenzied_regeneration" ) ;
+    else if( n == "growling"              ) ;
+    else if( n == "healing_touch"         ) ;
+    else if( n == "hurricane"             ) ;
+    else if( n == "lifebloom"             ) ;
+    else if( n == "maul"                  ) ;
+    else if( n == "monsoon"               ) ;
+    else if( n == "nourish"               ) ;
+    else if( n == "rejuvenation"          ) ;
+    else if( n == "survival_instincts"    ) ;
+    else if( n == "swiftmend"             ) ;
+    else if( n == "the_wild"              ) ;
+    else if( n == "thorns"                ) ;
+    else if( n == "typhoon"               ) ;
+    else if( n == "unburdened_rebirth"    ) ;
+    else if( n == "wrath"                 ) ;
     else if( ! sim -> parent ) printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
   }
 }
@@ -3324,16 +3375,24 @@ void druid_t::init_items()
 
   if     ( idol == "idol_of_lunar_fury"         ) idols.lunar_fury = 1;
   else if( idol == "idol_of_steadfast_renewal"  ) idols.steadfast_renewal = 1;
+  else if( idol == "idol_of_terror"             ) idols.terror = 1;
   else if( idol == "idol_of_the_corruptor"      ) idols.corruptor = 1;
   else if( idol == "idol_of_the_crying_wind"    ) idols.crying_wind = 1;
+  else if( idol == "idol_of_the_raven_goddess"  ) idols.raven_goddess = 1;
   else if( idol == "idol_of_the_ravenous_beast" ) idols.ravenous_beast = 1;
   else if( idol == "idol_of_the_shooting_star"  ) idols.shooting_star = 1;
   else if( idol == "idol_of_the_unseen_moon"    ) idols.unseen_moon = 1;
   else if( idol == "idol_of_worship"            ) idols.worship = 1;
+  // To prevent warnings....
+  else if( idol == "idol_of_awakening"           ) ;
+  else if( idol == "idol_of_lush_moss"           ) ;
+  else if( idol == "harolds_rejuvenating_broach" ) ;
   else
   {
-    printf( "simcraft: %s was unknown idol %s\n", name(), idol.c_str() );
+    printf( "simcraft: %s has unknown idol %s\n", name(), idol.c_str() );
   }
+
+  if( idols.raven_goddess ) gear.add_stat( STAT_CRIT_RATING, 40 );
 
   if ( talents.moonkin_form )
   {
@@ -3422,12 +3481,13 @@ void druid_t::init_rng()
 {
   player_t::init_rng();
 
-  rng_eclipse            = get_rng( "eclipse"         );
-  rng_natures_grace      = get_rng( "natures_grace"   );
-  rng_idol_of_lunar_fury = get_rng( "unseen_moon"     );
-  rng_omen_of_clarity    = get_rng( "omen_of_clarity" );
-  rng_primal_fury        = get_rng( "primal_fury"     );
-  rng_unseen_moon        = get_rng( "unseen_moon"     );
+  rng_eclipse            = get_rng( "eclipse"            );
+  rng_natures_grace      = get_rng( "natures_grace"      );
+  rng_idol_of_lunar_fury = get_rng( "idol_of_lunar_fury" );
+  rng_idol_of_terror     = get_rng( "idol_of_terror"     );
+  rng_omen_of_clarity    = get_rng( "omen_of_clarity"    );
+  rng_primal_fury        = get_rng( "primal_fury"        );
+  rng_unseen_moon        = get_rng( "unseen_moon"        );
 } 
 
 // druid_t::init_actions ====================================================
