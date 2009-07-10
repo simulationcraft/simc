@@ -447,7 +447,8 @@ void armory_t::fuzzy_stats( std::string&       encoding_str,
 bool armory_t::download_guild( sim_t* sim,
 			       const std::string& region, 
 			       const std::string& server, 
-			       const std::string& name )
+			       const std::string& name,
+			       int player_type )
 {
   std::string url = "http://" + region + ".wowarmory.com/guild-info.xml?r=" + server + "&gn=" + name;
 
@@ -473,15 +474,21 @@ bool armory_t::download_guild( sim_t* sim,
   for( int i=0; i < num_characters; i++ )
   {
     std::string character_name;
-    int         character_level;
+    int character_cid;
+    int character_level;
 
-    if( xml_t::get_value( character_name,  characters[ i ], "name"  ) &&
-	xml_t::get_value( character_level, characters[ i ], "level" ) )
+    if( xml_t::get_value( character_name,  characters[ i ], "name"    ) &&
+	xml_t::get_value( character_cid,   characters[ i ], "classId" ) &&
+	xml_t::get_value( character_level, characters[ i ], "level"   ) )
     {
-      if( character_level >= 80 )
-      {
-	character_names.push_back( character_name );
-      }
+      if( character_level < 80 )
+	continue;
+
+      if( player_type != PLAYER_NONE )
+	if( player_type != util_t::translate_class_id( character_cid ) )
+	  continue;
+
+      character_names.push_back( character_name );
     }
   }
 
@@ -502,7 +509,12 @@ bool armory_t::download_guild( sim_t* sim,
       int tree = p -> primary_tree();
       if( tree == TREE_RESTORATION || tree == TREE_HOLY || tree == TREE_PROTECTION )
       {
-	fprintf( sim -> output_file, "\nsimcraft: Setting quiet=1 on non-DPS character %s\n", character_name.c_str() );
+	fprintf( sim -> output_file, "\nsimcraft: Setting quiet=1 on healer %s\n", character_name.c_str() );
+	p -> quiet = true;
+      }
+      if( tree == TREE_PROTECTION )
+      {
+	fprintf( sim -> output_file, "\nsimcraft: Setting quiet=1 on tank %s\n", character_name.c_str() );
 	p -> quiet = true;
       }
     }
@@ -645,19 +657,20 @@ player_t* armory_t::download_player( sim_t* sim,
     {
       if( slot == -1 ) continue;
 
-      std::string enchant_id, gem_ids[ 3 ];
+      bool success = false;
 
+      std::string enchant_id, gem_ids[ 3 ];
       if( xml_t::get_value( enchant_id,   item_nodes[ i ], "permanentenchant" ) &&
 	  xml_t::get_value( gem_ids[ 0 ], item_nodes[ i ], "gem0Id"           ) &&
 	  xml_t::get_value( gem_ids[ 1 ], item_nodes[ i ], "gem1Id"           ) &&
 	  xml_t::get_value( gem_ids[ 2 ], item_nodes[ i ], "gem2Id"           ) )
       {
-	if( wowhead_t::download_slot( p -> items[ slot ], id_str, enchant_id, gem_ids ) )
-	  continue;
+	success = wowhead_t::download_slot( p -> items[ slot ], id_str, enchant_id, gem_ids );
       }
-
-      if( ! armory_t::download_slot( p -> items[ slot ], id_str ) ) 
-	return 0;
+      
+      if( ! success ) success = armory_t::download_slot( p -> items[ slot ], id_str );
+      
+      if( ! success ) return 0;
     }
     else return 0;
   }

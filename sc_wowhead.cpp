@@ -279,27 +279,6 @@ static bool parse_item_name( item_t&     item,
   return true;
 }
 
-// translate_class_id =======================================================
-
-static const char* translate_class_id( const std::string& cid_str )
-{
-  switch( atoi( cid_str.c_str() ) )
-  {
-  case 1: return "warrior";
-  case 2: return "paladin";
-  case 3: return "hunter";
-  case 4: return "rogue";
-  case 5: return "priest";
-  case 6: return "death_knight";
-  case 7: return "shaman";
-  case 8: return "mage";
-  case 9: return "warlock";
-  case 11: return "druid";
-  }
-
-  return "unknown";
-}
-
 // translate_profession_id ==================================================
 
 static const char* translate_profession_id( int type )
@@ -448,7 +427,7 @@ bool wowhead_t::download_slot( item_t&            item,
   if( ! enchant_t::download( item, enchant_id ) )
   {
     printf( "\nsimcraft: Player %s unable to parse enchant id %s for item \"%s\" at slot %s.\n", p -> name(), enchant_id.c_str(), item.name(), item.slot_name() );
-    return false;
+    //return false;
   }
 
   return true;
@@ -519,7 +498,8 @@ player_t* wowhead_t::download_player( sim_t* sim,
     printf( "\nsimcraft: Unable to extract player class from wowhead id '%s'.\n", id.c_str() );
     return 0;
   }
-  std::string type_str = translate_class_id( cid_str );
+  int player_type = util_t::translate_class_id( atoi( cid_str.c_str() ) );
+  std::string type_str = util_t::player_type_string( player_type );
 
   player_t* p = player_t::create( sim, type_str, name_str );
   if( ! p ) 

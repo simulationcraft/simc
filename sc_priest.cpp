@@ -1890,6 +1890,22 @@ void priest_t::init_glyphs()
     else if( n == "shadow_word_pain"  ) glyphs.shadow_word_pain = 1;
     else if( n == "shadow"            ) glyphs.shadow = 1;
     else if( n == "penance"           ) glyphs.penance = 1;
+    // Just to prevent warnings....
+    else if( n == "circle_of_healing" ) ;
+    else if( n == "dispel_magic"      ) ;
+    else if( n == "fading"            ) ;
+    else if( n == "flash_heal"        ) ;
+    else if( n == "fortitude"         ) ;
+    else if( n == "levitate"          ) ;
+    else if( n == "mind_flay"         ) ;
+    else if( n == "pain_suppression"  ) ;
+    else if( n == "power_word_shield" ) ;
+    else if( n == "prayer_of_healing" ) ;
+    else if( n == "psychic_scream"    ) ;
+    else if( n == "renew"             ) ;
+    else if( n == "shackle_undead"    ) ;
+    else if( n == "shadow_protection" ) ;
+    else if( n == "shadowfiend"       ) ;
     else if( ! sim -> parent ) printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
   }
 }
@@ -1986,7 +2002,9 @@ void priest_t::init_actions()
 
     if( primary_tree() == TREE_SHADOW )
     {
-      action_list_str += "/shadow_form/shadow_fiend/dispersion/speed_potion";
+      action_list_str += "/shadow_form/shadow_fiend";
+      if( talents.dispersion ) action_list_str += "/dispersion";
+      action_list_str += "/speed_potion";
       action_list_str += "/shadow_word_pain,shadow_weaving_wait=1";
       if( talents.vampiric_touch ) action_list_str += "/vampiric_touch";
       action_list_str += "/devouring_plague/mind_blast/mind_flay";

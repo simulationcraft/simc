@@ -305,8 +305,8 @@ bool item_t::decode_gems()
     }
     else
     {
-      printf( "simcraft: %s has unknown 'gems=' token '%s' at slot %s\n", player -> name(), t.full.c_str(), slot_name() );
-      return false;
+      printf( "\nsimcraft: %s has unknown 'gems=' token '%s' at slot %s\n", player -> name(), t.full.c_str(), slot_name() );
+      //return false;
     }
   }
 

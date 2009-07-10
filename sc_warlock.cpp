@@ -3887,14 +3887,17 @@ void warlock_t::init_glyphs()
     else if( n == "siphon_life"         ) glyphs.siphon_life = 1;
     else if( n == "unstable_affliction" ) glyphs.unstable_affliction = 1;
     // minor glyphs, to prevent 'not-found' warning
-    else if( n == "drain_soul" )          ;
     else if( n == "curse_of_exhaustion" ) ;
+    else if( n == "drain_soul" )          ;
     else if( n == "enslave_demon" )       ;
+    else if( n == "healthstone" )         ;
     else if( n == "kilrogg" )             ;
-    else if( n == "souls" )               ;
-    else if( n == "unending_breath" )     ;
-    else if( n == "soul_link" )           ;
     else if( n == "shadowflame" )         ;
+    else if( n == "soul_link" )           ;
+    else if( n == "souls" )               ;
+    else if( n == "soulstone" )           ;
+    else if( n == "unending_breath" )     ;
+    else if( n == "voidwalker" )          ;
     else if( ! sim -> parent ) printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
   }
 }

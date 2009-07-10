@@ -916,6 +916,27 @@ int util_t::parse_stat_type( const std::string& name )
   return STAT_NONE;
 }
 
+// util_t::translate_class_id ==============================================
+
+int util_t::translate_class_id( int cid )
+{
+  switch( cid )
+  {
+  case  1: return WARRIOR;
+  case  2: return PALADIN;
+  case  3: return HUNTER;
+  case  4: return ROGUE;
+  case  5: return PRIEST;
+  case  6: return DEATH_KNIGHT;
+  case  7: return SHAMAN;
+  case  8: return MAGE;
+  case  9: return WARLOCK;
+  case 11: return DRUID;
+  }
+
+  return PLAYER_NONE;
+}
+
 // util_t::socket_gem_match ================================================
 
 bool util_t::socket_gem_match( int socket,

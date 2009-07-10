@@ -100,7 +100,6 @@ static bool parse_player( sim_t*             sim,
     std::string region = sim -> default_region_str;
     std::string server = sim -> default_server_str;
     std::string talents = "active";
-    int refresh=0;
 
     option_t options[] =
     {
@@ -108,7 +107,6 @@ static bool parse_player( sim_t*             sim,
       { "region",  OPT_STRING, &region  },
       { "server",  OPT_STRING, &server  },
       { "talents", OPT_STRING, &talents },
-      { "refresh", OPT_BOOL,   &refresh },
       { NULL, OPT_UNKNOWN, NULL }
     };
 
@@ -128,7 +126,6 @@ static bool parse_player( sim_t*             sim,
 		  player_name.c_str(), sim -> active_player -> name(), wowhead.c_str() );
 	
     }
-    if( sim -> active_player && refresh ) sim -> active_player -> last_modified = 0;
   }
   else
   {
@@ -174,16 +171,36 @@ static bool parse_armory( sim_t*             sim,
   }
   else if( name == "guild" ) 
   {
-    std::vector<std::string> splits;
-    int num_splits = util_t::string_split( splits, value, "," );
+    std::string guild_name = value;
+    std::string guild_options = "";
 
-    if( num_splits != 3 )
+    std::string::size_type cut_pt = value.find_first_of( "," );
+
+    if ( cut_pt != value.npos )
     {
-      printf( "simcraft: Expected format is: guild=region,server,name\n" );
-      assert( false );
+      guild_options = value.substr( cut_pt + 1 );
+      guild_name    = value.substr( 0, cut_pt );
     }
 
-    return armory_t::download_guild( sim, splits[ 0 ], splits[ 1 ], splits[ 2 ] );
+    std::string region = sim -> default_region_str;
+    std::string server = sim -> default_server_str;
+    std::string type_str;
+
+    option_t options[] =
+    {
+      { "region", OPT_STRING, &region   },
+      { "server", OPT_STRING, &server   },
+      { "class",  OPT_STRING, &type_str },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+
+    if( ! option_t::parse( sim, "guild", options, guild_options ) )
+      return false;
+
+    int player_type = PLAYER_NONE;
+    if( ! type_str.empty() ) player_type = util_t::parse_player_type( type_str );
+
+    return armory_t::download_guild( sim, region, server, guild_name, player_type );
   }
 
   return false;

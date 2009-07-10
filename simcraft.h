@@ -2151,6 +2151,7 @@ struct util_t
   static int parse_weapon_buff_type   ( const std::string& name );
   static int parse_weapon_type        ( const std::string& name );
 
+  static int  translate_class_id( int cid );
   static bool socket_gem_match( int socket, int gem );
 
   static int string_split( std::vector<std::string>& results, const std::string& str, const char* delim );
@@ -2185,7 +2186,11 @@ struct thread_t
 
 struct armory_t
 {
-  static bool download_guild( sim_t* sim, const std::string& region, const std::string& server, const std::string& name );
+  static bool download_guild( sim_t* sim, 
+			      const std::string& region, 
+			      const std::string& server, 
+			      const std::string& name,
+			      int player_type = PLAYER_NONE );
   static player_t* download_player( sim_t* sim,
 				    const std::string& region, 
 				    const std::string& server, 
